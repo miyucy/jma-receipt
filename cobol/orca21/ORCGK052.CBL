@@ -28,6 +28,7 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *  01.00.01    NACL-多々納  05/11/17  MONFUNC 対応
+      *  03.04.00    NACL-多々納  07/03/13  経過措置費追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -89,6 +90,7 @@
            03  WRK-KIDMSG              PIC X(70).
       *
            03  WRK-PATH            PIC X(64).
+           03  WRK-MCP-WIDGET      PIC X(64).
       *
       *
       *****************************************************************
@@ -112,6 +114,8 @@
            COPY    "CPORCSLNK.INC".
       *    数字変換領域
            COPY    "CPORCSNUM.INC".
+      *   画面日付変換サブ
+           COPY    "CPORCSGDAY.INC".
       *
       *    一覧印刷変換領域
            COPY    "CPORCHCSET.INC".
@@ -254,16 +258,14 @@
            EVALUATE    SPA-MOTOPG
                WHEN    "KID1"
                    PERFORM 3001-KID1-SYORI-SEC
-                   MOVE    SPACE              TO  SPA-KIDCD
-                   GO      TO      3OO-SCREEN-EXT
+                   MOVE    SPACE               TO  SPA-KIDCD
+               WHEN    OTHER
+                   PERFORM 310-SPA-SET-SEC
+                   MOVE    1                   TO  SPA-K052-CUR
            END-EVALUATE
       *
-           PERFORM                     310-SPA-SET-SEC
-      *
-           MOVE    1                   TO  SPA-K052-CUR
-      *
            .
-       3OO-SCREEN-EXT.
+       300-SCREEN-EXT.
            EXIT.
       *
       *****************************************************************
@@ -296,6 +298,8 @@
       *
            MOVE    SPACE               TO  SPA-K052-INPUTCD1
            MOVE    ALL "9"             TO  SPA-K052-INPUTCD2
+           MOVE    SPACE               TO  SPA-K052-KEIKAYMD
+           MOVE    SPACE               TO  SPA-K052-NAI-KEIKAYMD
       *
            MOVE    1                   TO  SPA-K052-CUR
       *
@@ -314,6 +318,7 @@
       *    画面編集
            MOVE    SPA-K052-INPUTCD1    TO  K052-INPUTCD1
            MOVE    SPA-K052-INPUTCD2    TO  K052-INPUTCD2
+           MOVE    SPA-K052-KEIKAYMD    TO  K052-KEIKAYMD
       *
            PERFORM 5001-MAPCUR-SEC
            .
@@ -325,12 +330,25 @@
       *****************************************************************
        5001-MAPCUR-SEC             SECTION.
       *
+           IF      SPA-K052-CUR        =   ZERO
+               EVALUATE    WRK-MCP-WIDGET
+                   WHEN    "INPUTCD1"
+                       MOVE    2               TO  SPA-K052-CUR
+                   WHEN    "INPUTCD2"
+                       MOVE    3               TO  SPA-K052-CUR
+                   WHEN    "KEIKAYMD"
+                       MOVE    9               TO  SPA-K052-CUR
+               END-EVALUATE
+           END-IF
+      *
            EVALUATE    SPA-K052-CUR
                WHEN    1
                    MOVE    "INPUTCD1"          TO  MCP-WIDGET
                WHEN    2
                    MOVE    "INPUTCD2"          TO  MCP-WIDGET
                WHEN    3
+                   MOVE    "KEIKAYMD"          TO  MCP-WIDGET
+               WHEN    9
                    MOVE    "B09"               TO  MCP-WIDGET
            END-EVALUATE
       *
@@ -363,20 +381,38 @@
       *****************************************************************
        200-ENTRY                   SECTION.
       *
-           MOVE    K052-INPUTCD1       TO  SPA-K052-INPUTCD1
-           MOVE    K052-INPUTCD2       TO  SPA-K052-INPUTCD2
+           MOVE    MCP-WIDGET          TO  WRK-MCP-WIDGET
+           MOVE    ZERO                TO  SPA-K052-CUR
       *
-           EVALUATE    MCP-EVENT       ALSO    MCP-WIDGET
-      *        セットコード１
-               WHEN    "ACTIVATE"      ALSO    "INPUTCD1"
-                   PERFORM 2001-INPUTCD1-SEC
-      *        セットコード２
-               WHEN    "ACTIVATE"      ALSO    "INPUTCD2"
-                   PERFORM 2002-INPUTCD2-SEC
-           END-EVALUATE
+      *    入力チェック処理
+           PERFORM 410-INPUT-CHK-SEC
       *
            .
        200-ENTRY-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    入力チェック処理
+      *****************************************************************
+       410-INPUT-CHK-SEC          SECTION.
+      *
+           MOVE    K052-INPUTCD1       TO  SPA-K052-INPUTCD1
+           MOVE    K052-INPUTCD2       TO  SPA-K052-INPUTCD2
+           MOVE    K052-KEIKAYMD       TO  SPA-K052-KEIKAYMD
+      *
+      *    セットコード入力１
+           PERFORM 2001-INPUTCD1-SEC
+      *
+      *    セットコード入力２
+           IF      SPA-ERRCD           =   SPACE
+               PERFORM 2002-INPUTCD2-SEC
+           END-IF
+      *    経過措置日
+           IF      SPA-ERRCD           =   SPACE
+               PERFORM 2002-KEIKAYMD-SEC
+           END-IF
+           .
+       410-INPUT-CHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -384,19 +420,14 @@
       *****************************************************************
        2001-INPUTCD1-SEC                SECTION.
       *
-           MOVE    1                   TO  SPA-K052-CUR
-           MOVE    K052-INPUTCD1       TO  SPA-K052-INPUTCD1
-      *
            IF     (SPA-K052-INPUTCD1       =   SPACE  )  OR
                   (SPA-K052-INPUTCD1(1:1)  =   "S"    OR
                                                "P"    )
                CONTINUE
            ELSE
                MOVE    "0001"              TO  SPA-ERRCD
-               GO      TO      2001-INPUTCD1-EXT
+               MOVE    1                   TO  SPA-K052-CUR
            END-IF
-      *
-           MOVE    2                   TO  SPA-K052-CUR
       *
            .
        2001-INPUTCD1-EXT.
@@ -407,9 +438,6 @@
       *****************************************************************
        2002-INPUTCD2-SEC                SECTION.
       *
-           MOVE    2                   TO  SPA-K052-CUR
-           MOVE    K052-INPUTCD2       TO  SPA-K052-INPUTCD2
-      *
            IF      SPA-K052-INPUTCD2   =   SPACE
                MOVE    ALL "9"             TO  SPA-K052-INPUTCD2
            END-IF
@@ -419,19 +447,44 @@
                CONTINUE
            ELSE
                MOVE    "0001"              TO  SPA-ERRCD
-               GO      TO      2002-INPUTCD2-EXT
+               MOVE    2                   TO  SPA-K052-CUR
            END-IF
-           IF      SPA-K052-INPUTCD2   NOT =   ALL "9"
-               IF      SPA-K052-INPUTCD1   >  SPA-K052-INPUTCD2
-                   MOVE    "0002"              TO  SPA-ERRCD
-                   GO      TO      2002-INPUTCD2-EXT
+           IF      SPA-ERRCD           =   SPACE
+               IF      SPA-K052-INPUTCD2   NOT =   ALL "9"
+                   IF      SPA-K052-INPUTCD1   >  SPA-K052-INPUTCD2
+                       MOVE    "0002"              TO  SPA-ERRCD
+                       MOVE    2                   TO  SPA-K052-CUR
+                   END-IF
                END-IF
            END-IF
       *
-           MOVE    3                   TO  SPA-K052-CUR
-      *
            .
        2002-INPUTCD2-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    経過措置処理
+      *****************************************************************
+       2002-KEIKAYMD-SEC                   SECTION.
+      *
+           IF      SPA-K052-KEIKAYMD   =   SPACE
+               MOVE    SPACE               TO  SPA-K052-NAI-KEIKAYMD
+           ELSE
+               INITIALIZE                      ORCSGDAYAREA
+               MOVE    SPA-K052-KEIKAYMD   TO  SGDAY-INDAY
+               CALL    "ORCSGDAY"          USING
+                                           ORCSGDAYAREA
+               IF      SGDAY-RC            =   ZERO
+                   MOVE    SGDAY-OTDAY         TO  SPA-K052-KEIKAYMD
+                   MOVE    SGDAY-SDAY          TO  SPA-K052-NAI-KEIKAYMD
+               ELSE
+                   MOVE    "0004"              TO  SPA-ERRCD
+                   MOVE    3                   TO  SPA-K052-CUR
+               END-IF
+           END-IF
+      *
+           .
+       2002-KEIKAYMD-EXT.
            EXIT.
       *
       *****************************************************************
@@ -439,23 +492,9 @@
       *****************************************************************
        300-PRINT-SEC                   SECTION.
       *
-      *    セットコード１
-           PERFORM 2001-INPUTCD1-SEC
+      *    入力チェック処理
+           PERFORM 410-INPUT-CHK-SEC
            IF      SPA-ERRCD       NOT =   SPACE
-               GO      TO      300-PRINT-EXT
-           END-IF
-      *    セットコード２
-           PERFORM 2002-INPUTCD2-SEC
-           IF      SPA-ERRCD       NOT =   SPACE
-               GO      TO      300-PRINT-EXT
-           END-IF
-           IF      SPA-K052-INPUTCD2   =   SPACE
-               MOVE    ALL "9"             TO  SPA-K052-INPUTCD2
-           END-IF
-           IF     (SPA-K052-INPUTCD2   NOT =   ALL "9"     )  AND
-                  (SPA-K052-INPUTCD1   >   SPA-K052-INPUTCD2)
-               MOVE    "0002"              TO  SPA-ERRCD
-               MOVE    2                   TO  SPA-K052-CUR
                GO      TO      300-PRINT-EXT
            END-IF
       *
@@ -524,6 +563,7 @@
            INITIALIZE                  ORCHCSETAREA
            MOVE    WRK-STR-SETCD       TO  HCSET-STR-SETCD
            MOVE    WRK-END-SETCD       TO  HCSET-END-SETCD
+           MOVE    SPA-K052-NAI-KEIKAYMD   TO  HCSET-KEIKAYMD
       *
            CALL    "ORCHCSET"          USING   SPA-AREA
                                                ORCHCSETAREA
@@ -592,7 +632,10 @@
                    MOVE    "開始コード＞終了コードです。"
                                        TO  SPA-ERRMSG
                WHEN    "0003"
-                   MOVE    "対象データがありません。"
+                   MOVE    "セットコードの対象データがありません。"
+                                       TO  SPA-ERRMSG
+               WHEN    "0004"
+                   MOVE    "経過措置日暦日エラー"
                                        TO  SPA-ERRMSG
            END-EVALUATE
       *

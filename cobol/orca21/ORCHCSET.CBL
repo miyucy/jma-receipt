@@ -32,6 +32,7 @@
       *                                     ＭＯＮＰＥに対応
       *  01.00.03    NACL-多々納  05/11/17  MONFUNC 対応
       *  03.04.00    NACL-多々納  06/11/14  検査正式名称表示追加
+      *  03.04.01    NACL-多々納  07/03/13  経過措置日追加
       *****************************************************************
       *
       *
@@ -75,6 +76,7 @@
            03  FLG-TENSU           PIC 9(01).
            03  FLG-INPUTSET        PIC 9(01).
            03  FLG-INPUTCD         PIC 9(01).
+           03  FLG-SRYCDCHG        PIC 9(01).
       *
            03  FLG-KAISU           PIC 9(01).
            03  FLG-SP              PIC 9(01).
@@ -85,6 +87,10 @@
            03  FLG-KIKAN           PIC 9(01).
            03  FLG-ZENKAKU          PIC 9(01).
            03  FLG-HANKAKU          PIC 9(01).
+      *
+           03  FLG-KEIKA-GAI        PIC 9(01).
+           03  FLG-KEIKA            PIC 9(01).
+           03  FLG-OK-KEIKA         PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -152,11 +158,19 @@
            03  WRK-MOJISU              PIC 9(02).
            03  WRK-FTNKBN              PIC X(20).
       *
+           03  WRK-TNS-KEIKASOCHIYMD   PIC X(08).
+      *
+           03  WRK-KEIKAYMD-G.
+               05  WRK-KEIKA-H         PIC X(14).
+               05  WRK-KEIKAYMD        PIC X(10).
+               05  WRK-KEIKA-H2        PIC X(14).
+               05  WRK-CHNGCD          PIC X(09).
       *
       *    印刷内容
        01  HEAD-01.
            03  FILLER                  PIC X(10)   VALUE   SPACE.
            03  H01-MIDASI              PIC X(50).
+           03  FILLER                  PIC X(05)   VALUE   SPACE.
            03  FILLER                  PIC X(08)   VALUE   "作成日：".
            03  H01-YY                  PIC 9(04).
            03  FILLER                  PIC X(01)   VALUE   ".".
@@ -165,6 +179,9 @@
            03  H01-DD                  PIC Z9.
            03  FILLER                  PIC X(04)   VALUE   "  P-".
            03  H01-PCNT                PIC ZZ9.
+       01  HEAD-010.
+           03  FILLER                  PIC X(30)   VALUE   SPACE.
+           03  H01-KEIKA-YMD           PIC X(30).
        01  HEAD-02.
            03  FILLER                  PIC X(02).
            03  H02-SETCD               PIC X(06).
@@ -200,6 +217,10 @@
            03  B01-NAME-G2             REDEFINES   B01-NAME-G.
                05  B01-NAME-2              PIC X(70).
                05  FILLER                  PIC X(01).
+           03  B01-NAME-G3             REDEFINES   B01-NAME-G.
+               05  B01-YOBI-03             PIC X(20).
+               05  B01-HENSYU-3            PIC X(50).
+               05  FILLER                  PIC X(01).
       *
        01  WRK-B01-HENSYU.
            03  WRK-B01-SURYO-HEN           PIC X(15).
@@ -231,7 +252,7 @@
       *
       *    内容
        01  WRK-HEN-AREA.
-           03  WRK-TBL-REC             PIC X(90)   OCCURS   200.
+           03  WRK-TBL-REC             PIC X(90)   OCCURS   300.
       *
            03  WRK-PAGE-MAX            PIC 9(03).
       *
@@ -268,6 +289,10 @@
       *    入力セットコード
        01  INPUTSET-REC.
            COPY    "CPINPUTSET.INC".
+      *
+      *    老人一般コード変換
+       01  SRYCDCHG-REC.
+           COPY    "CPSRYCDCHG.INC".
       *
       *****************************************************************
       *    サブプロ用　領域
@@ -492,6 +517,18 @@
       *
            MOVE    "セット登録一覧表"  TO  H01-MIDASI
       *
+           IF      HCSET-KEIKAYMD  NOT =   SPACE
+               MOVE    HCSET-KEIKAYMD      TO  WRK-SYMD
+               PERFORM 800-SEIWA-HEN-SEC
+               STRING  "《経過措置日："
+                       WRK-HENYMDG
+                       "　》"              DELIMITED  BY  SIZE
+                                       INTO    H01-KEIKA-YMD
+               END-STRING
+           ELSE
+               MOVE    SPACE               TO  H01-KEIKA-YMD
+           END-IF
+      *
            MOVE    SPA-SRYYMD(1:4)     TO  H01-YY
            MOVE    SPA-SRYYMD(5:2)     TO  H01-MM
            MOVE    SPA-SRYYMD(7:2)     TO  H01-DD
@@ -506,24 +543,39 @@
       *
            INITIALIZE                  WRK-HEN-AREA
            MOVE    ZERO                TO  FLG-KIKAN
+           MOVE    ZERO                TO  FLG-KEIKA
            MOVE    ZERO                TO  IDX
            MOVE    ISET-SETCD          TO  WRK-KEY-SETCD
+      *
       *    見出し編集
            MOVE    ZERO                TO  WRK-HEN-MAX
            PERFORM 2001-HEAD-HEN-SEC
            MOVE    SPACE               TO  WRK-YUKOSTYMD
            MOVE    SPACE               TO  WRK-YUKOEDYMD
       *
-           PERFORM 2002-MEISAI-HEN-SEC
+           PERFORM
                    UNTIL    (FLG-END       =    1    )  OR
                             (ISET-SETCD    NOT =   WRK-KEY-SETCD)
+               PERFORM 2002-MEISAI-HEN-SEC
+           END-PERFORM
       *
-      *    印刷編集処理
-           PERFORM 2100-PRINT-HENSYU-SEC
+      *        経過措置対象なし
+           IF     (HCSET-KEIKAYMD  NOT =   SPACE )  AND
+                  (FLG-KEIKA           =   ZERO  )
+               INITIALIZE                  WRK-HEN-AREA
+               MOVE    ZERO                TO  WRK-HEN-MAX
+               MOVE    ZERO                TO  FLG-KEIKA
+               IF      IDX-P               =   ZERO
+                   COMPUTE PCNT                =   PCNT    -   1
+               END-IF
+           ELSE
+      *        印刷編集処理
+               PERFORM 2100-PRINT-HENSYU-SEC
       *
-           ADD     1                   TO  IDX-P
-           IF      IDX-P               <=  69
-               MOVE    ALL "-"             TO  HCPOM-MOJI  (IDX-P)
+               ADD     1                   TO  IDX-P
+               IF      IDX-P               <=  69
+                   MOVE    ALL "-"             TO  HCPOM-MOJI  (IDX-P)
+               END-IF
            END-IF
       *
            .
@@ -549,6 +601,10 @@
                    ADD     1                   TO  IDX-P
                    MOVE    HEAD-01             TO  HCPOM-MOJI  (IDX-P)
                    ADD     1                   TO  IDX-P
+                   IF      HCSET-KEIKAYMD  NOT =   SPACE
+                       MOVE    HEAD-010        TO  HCPOM-MOJI  (IDX-P)
+                       ADD     1                   TO  IDX-P
+                   END-IF
                END-IF
                ADD     1                   TO  IDX-P
                MOVE    WRK-TBL-REC (IDX)   TO  HCPOM-MOJI  (IDX-P)
@@ -570,6 +626,10 @@
                ADD     1                   TO  WRK-HEN-MAX
                MOVE    HEAD-01             TO  WRK-TBL-REC (WRK-HEN-MAX)
                ADD     1                   TO  WRK-HEN-MAX
+               IF      HCSET-KEIKAYMD  NOT =   SPACE
+                   MOVE    HEAD-010        TO  WRK-TBL-REC (WRK-HEN-MAX)
+                   ADD     1               TO  WRK-HEN-MAX
+               END-IF
            END-IF
       *
            MOVE    SPACE               TO  HEAD-02
@@ -697,8 +757,16 @@
        2009-HEAD04-PRINT-SEC          SECTION.
       *
            IF      FLG-KIKAN           =   1
-      *        印刷編集処理
-               PERFORM 2100-PRINT-HENSYU-SEC
+      *        経過措置対象なし
+               IF     (HCSET-KEIKAYMD  NOT =   SPACE )  AND
+                      (FLG-KEIKA           =   ZERO  )
+                   INITIALIZE                  WRK-HEN-AREA
+                   MOVE    ZERO                TO  WRK-HEN-MAX
+                   MOVE    ZERO                TO  FLG-KEIKA
+               ELSE
+      *            印刷編集処理
+                   PERFORM 2100-PRINT-HENSYU-SEC
+               END-IF
            END-IF
       *
            MOVE    1                   TO  FLG-KIKAN
@@ -723,6 +791,15 @@
       *****************************************************************
        2002-MEISAI-HEN-SEC          SECTION.
       *
+      *    経過措置日設定判定
+           MOVE    ZERO                TO  FLG-KEIKA-GAI
+           IF     (HCSET-KEIKAYMD  NOT =   SPACE )
+      *        有効終了日＜経過措置日 は対象外
+               IF      (ISET-YUKOEDYMD     <   HCSET-KEIKAYMD)
+                   MOVE    1               TO  FLG-KEIKA-GAI
+               END-IF
+           END-IF
+      *
       *    期間編集
            IF     (ISET-YUKOSTYMD      =   "00000000" )  AND
                   (ISET-YUKOEDYMD      =   "99999999" )
@@ -739,8 +816,27 @@
                    MOVE    ISET-YUKOEDYMD      TO  WRK-YUKOEDYMD
                END-IF
            END-IF
+      *
+           IF      FLG-KEIKA-GAI       =   ZERO
+               PERFORM 20020-MEI-HENSYU-SEC
+           END-IF
+      *
+           MOVE    "tbl_inputset"      TO  MCP-TABLE
+           MOVE    "key4"              TO  MCP-PATHNAME
+           PERFORM 900-INPUTSET-READ-SEC
+      *
+           .
+       2002-MEISAI-HEN-EXT.
+           EXIT.
+      *****************************************************************
+      *    明細編集処理
+      *****************************************************************
+       20020-MEI-HENSYU-SEC          SECTION.
+      *
            MOVE    SPACE               TO  BODY-01
            MOVE    SPACE               TO  WRK-NAME
+           MOVE    SPACE               TO  WRK-TNS-KEIKASOCHIYMD
+           MOVE    SPACE               TO  WRK-KEIKAYMD-G
            MOVE    ISET-INPUTCD        TO  B01-SRYCD
            EVALUATE    ISET-INPUTCD(1:1)
                WHEN    "S"
@@ -785,13 +881,20 @@
                    MOVE    BODY-01         TO  WRK-TBL-REC (WRK-HEN-MAX)
                END-IF
            END-IF
-      *
-           MOVE    "tbl_inputset"      TO  MCP-TABLE
-           MOVE    "key4"              TO  MCP-PATHNAME
-           PERFORM 900-INPUTSET-READ-SEC
-      *
+      *    経過措置日
+           IF      WRK-KEIKAYMD-G  NOT =   SPACE
+               MOVE    SPACE               TO  BODY-01
+               MOVE    WRK-KEIKAYMD-G      TO  B01-HENSYU-3
+               INSPECT B01-YOBI1       REPLACING  ALL "  "  BY  "　"
+               INSPECT B01-ZUMIFLG     REPLACING  ALL "  "  BY  "　"
+               INSPECT B01-YOBI2       REPLACING  ALL "  "  BY  "　"
+               INSPECT B01-YOBI3       REPLACING  ALL "  "  BY  "　"
+               ADD     1               TO  WRK-HEN-MAX
+               MOVE    BODY-01         TO  WRK-TBL-REC (WRK-HEN-MAX)
+               MOVE    SPACE           TO  WRK-KEIKAYMD-G
+           END-IF
            .
-       2002-MEISAI-HEN-EXT.
+       20020-MEI-HENSYU-EXT.
            EXIT.
       *****************************************************************
       *    約束セット処理
@@ -846,11 +949,9 @@
                                                 TO  WRK-NAME
            END-SEARCH 
       *
-      *
            .
        20022-SRYSYUKBN-HEN-EXT.
            EXIT.
-      *
       *
       *****************************************************************
       *   診療コード処理
@@ -874,6 +975,7 @@
            END-IF
       *
            MOVE    ZERO                TO  FLG-OK
+           MOVE    ZERO                TO  FLG-OK-KEIKA
            PERFORM UNTIL    (FLG-TENSU     =   1  )  OR
                             (FLG-OK        =   1  )
                MOVE    TNS-NAME            TO  WRK-NAME
@@ -897,6 +999,26 @@
       *            診療日対象分
                    MOVE    1               TO  FLG-OK
                END-IF
+      *        経過措置日設定あり
+               IF     (HCSET-KEIKAYMD      NOT =   SPACE )
+                   IF     (TNS-YUKOSTYMD       <=  HCSET-KEIKAYMD ) AND
+                          (TNS-YUKOEDYMD       >=  HCSET-KEIKAYMD )
+      *                経過措置日に有効
+                       MOVE    1               TO  FLG-OK
+                   END-IF
+      *            経過措置日判定
+                   IF      HCSET-KEIKAYMD      =   TNS-KEIKASOCHIYMD
+                       MOVE    1               TO  FLG-KEIKA
+                       MOVE    1               TO  FLG-OK-KEIKA
+                   END-IF
+               END-IF
+      *        経過措置日
+               IF      TNS-KEIKASOCHIYMD   =   SPACE  OR  ZERO
+                   CONTINUE
+               ELSE
+                   MOVE    TNS-KEIKASOCHIYMD   TO  WRK-TNS-KEIKASOCHIYMD
+               END-IF
+      *
                MOVE    "key4"              TO  MCP-PATHNAME
                PERFORM 910-TENSU-READ-SEC
            END-PERFORM
@@ -906,10 +1028,26 @@
       *
            IF      FLG-OK              =   ZERO
                MOVE    "削"            TO  B01-ZUMIFLG
+           ELSE
+      *        経過措置日判定
+               IF     FLG-OK-KEIKA         =   1
+                   MOVE    "経"            TO  B01-ZUMIFLG
+               END-IF
            END-IF
       *
            IF      ISET-COMMENT    NOT =   SPACE
                MOVE    ISET-COMMENT        TO  WRK-NAME
+           END-IF
+      *    経過措置日
+           IF      WRK-TNS-KEIKASOCHIYMD   NOT =   SPACE
+               MOVE    SPACE               TO  WRK-KEIKAYMD-G
+               MOVE    WRK-TNS-KEIKASOCHIYMD   TO  WRK-SYMD
+               PERFORM 800-SEIWA-HEN-SEC
+               MOVE    WRK-HENYMDG         TO  WRK-KEIKAYMD
+               MOVE    "【経過措置日】"    TO  WRK-KEIKA-H
+               PERFORM 200231-SRYCDCHG-CHK-SEC
+           ELSE
+               MOVE    SPACE               TO  WRK-KEIKAYMD-G
            END-IF
       *
            MOVE    SPACE               TO  WRK-HEN-SURYO
@@ -955,6 +1093,37 @@
        20023-SRYCD-HEN-EXT.
            EXIT.
       *
+      *****************************************************************
+      *    経過措置コード判定処理
+      *****************************************************************
+       200231-SRYCDCHG-CHK-SEC             SECTION.
+      *
+           INITIALIZE                  SRYCDCHG-REC 
+           MOVE    ISET-INPUTCD        TO  CHG-IPNSRYCD
+      *
+           MOVE    SRYCDCHG-REC        TO  MCPDATA-REC
+           MOVE    "tbl_srycdchg"      TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_srycdchg"      TO  MCP-TABLE
+               MOVE    "key2"              TO  MCP-PATHNAME
+               PERFORM 990-SRYCDCHG-READ-SEC
+           ELSE
+               INITIALIZE                  SRYCDCHG-REC
+               MOVE    1               TO  FLG-SRYCDCHG
+           END-IF
+           MOVE    "tbl_srycdchg"      TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+           IF      FLG-SRYCDCHG        =   ZERO
+               MOVE    CHG-RJNSRYCD          TO  WRK-CHNGCD
+               MOVE    "　移行コード："      TO  WRK-KEIKA-H2
+           END-IF
+      *
+           .
+       200231-SRYCDCHG-CHK-EXT.
+           EXIT.
       *****************************************************************
       *    西暦和暦編集処理
       *****************************************************************
@@ -1038,6 +1207,23 @@
       *
            .
        900-INPUTSET-READ-EXT.
+           EXIT.
+      *****************************************************************
+      *    老人一般コード変換読込
+      *****************************************************************
+       990-SRYCDCHG-READ-SEC         SECTION.
+      *
+           PERFORM 920-DBFETCH-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC         TO  SRYCDCHG-REC
+               MOVE    ZERO                TO  FLG-SRYCDCHG
+           ELSE
+               INITIALIZE                      SRYCDCHG-REC
+               MOVE    1                   TO  FLG-SRYCDCHG
+           END-IF
+      *
+           .
+       990-SRYCDCHG-READ-EXT.
            EXIT.
       *****************************************************************
       *    テーブル検索処理
