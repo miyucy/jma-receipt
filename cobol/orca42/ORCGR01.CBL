@@ -3027,6 +3027,7 @@
                MOVE    RECE07-REC          TO  SPA-RECE07-REC
                MOVE    "99999999"          TO  SPA-RECE07-HKNJANUM 
                MOVE    "00"                TO  SPA-RECE07-SRYKA 
+                                               SPA-RECE07-SRYKA-KOKUHO
       *
       *        一括作成のとき主科設定の有無チェック
       **       IF    ( SPA-R01-FILEKBN         =   "1"         )
@@ -3625,6 +3626,8 @@
                                           TO  SPA-R01-RECE07-HKNJANUM
                            MOVE    SPA-RECE07-SRYKA-KOKUHO
                                           TO SPA-R01-RECE07-SRYKA-KOKUHO
+                           INITIALIZE     SPA-R01-RECE07-RECE-PUTH(1)
+                                          SPA-R01-RECE07-RECE-PUTH(2)
                        END-IF
                      END-IF
                    ELSE
