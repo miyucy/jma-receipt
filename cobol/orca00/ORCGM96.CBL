@@ -520,10 +520,10 @@
            PERFORM 700-SEIWA-HEN-SEC
            MOVE    WRK-HENYMDG         TO  SPA-GMN-STARTYMD (2)
       *
-           MOVE    JOB-ENDYMD          TO  SPA-NAI-ENDYMD  (2)
-           MOVE    JOB-ENDTIME         TO  SPA-NAI-ENDTIME (2)
+           MOVE    JOB1-ENDYMD         TO  SPA-NAI-ENDYMD  (2)
+           MOVE    JOB1-ENDTIME        TO  SPA-NAI-ENDTIME (2)
       *
-           MOVE    JOB-ENDYMD          TO  WRK-SYMD
+           MOVE    JOB1-ENDYMD         TO  WRK-SYMD
            PERFORM 700-SEIWA-HEN-SEC
            MOVE    WRK-HENYMDG         TO  SPA-GMN-ENDYMD (2)
       *
@@ -539,16 +539,16 @@
                MOVE    JOB-STARTTIME(5:2)
                                        TO  SPA-GMN-STARTTIME (2)(7:2)
            END-IF.
-           IF      JOB-ENDTIME         =   SPACE
+           IF      JOB1-ENDTIME        =   SPACE
                MOVE    SPACE           TO  SPA-GMN-ENDTIME (2)
            ELSE
                MOVE    ":"             TO  SPA-GMN-ENDTIME (2)(3:1)
                MOVE    ":"             TO  SPA-GMN-ENDTIME (2)(6:1)
-               MOVE    JOB-ENDTIME(1:2)
+               MOVE    JOB1-ENDTIME(1:2)
                                        TO  SPA-GMN-ENDTIME (2)(1:2)
-               MOVE    JOB-ENDTIME(3:2)
+               MOVE    JOB1-ENDTIME(3:2)
                                        TO  SPA-GMN-ENDTIME (2)(4:2)
-               MOVE    JOB-ENDTIME(5:2)
+               MOVE    JOB1-ENDTIME(5:2)
                                        TO  SPA-GMN-ENDTIME (2)(7:2)
            END-IF
            IF     JOB-STEPSTARTTIME    =   SPACE
@@ -745,8 +745,8 @@
            PERFORM 820-JOBKANRI-READ-SEC
       *
            IF      FLG-SJOBKANRI       =   ZERO
-               IF      (JOB-ENDTIME    =   SPA-NAI-ENDTIME(2)) AND
-                       (JOB-ENDYMD     =   SPA-NAI-ENDYMD (2))
+               IF      (JOB1-ENDTIME   =   SPA-NAI-ENDTIME(2)) AND
+                       (JOB1-ENDYMD    =   SPA-NAI-ENDYMD (2))
       *    ジョブ管理削除
                    MOVE    "DEL"          TO  SJOBKANRI-MODE
                    INITIALIZE             JOBKANRI-REC
@@ -791,8 +791,8 @@
                                             OR  "01"
                    CONTINUE
                ELSE
-                   IF      (JOB-ENDTIME       NOT =   SPACE)  AND
-                           (JOB-ENDYMD        NOT =   SPACE)
+                   IF      (JOB1-ENDTIME      NOT =   SPACE)  AND
+                           (JOB1-ENDYMD       NOT =   SPACE)
                        CONTINUE
                    ELSE
       *            マスタ更新中
