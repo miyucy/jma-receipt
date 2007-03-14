@@ -3389,6 +3389,13 @@
                IF      WRK-COM-INPUTCD (IDX)      =   "113001210"  OR
                                                       "113001310"  OR
                                                       "113002110"
+      *          ÆÃÄêÌôºÞ¼£ÎÅ´ÉÍýÎÁ
+                                                   OR "113000410"
+                                                   OR "113000510"
+                                                   OR "113000670"
+                                                   OR "113000770"
+                                                   OR "180000110"
+                                                   OR "180000210"
                    MOVE    1               TO  FLG-FUKA
                END-IF
       *
@@ -3938,7 +3945,7 @@
                    UNTIL      (IDX2        >   4       )   OR
                               (TNS-AGEKSNSRYCD(IDX2)   =   SPACE  OR
                                                            ZERO )
-               MOVE    ZERO                TO  FLG-ERR
+               MOVE    ZERO                    TO  FLG-ERR
       *        ²Ã»»ÄÉ²Ã
                MOVE    TNS-AGEKSNSRYCD (IDX2)  TO  WRK-SRYCD
       *        ¾å¸ÂÇ¯ÎðÈ½Äê
