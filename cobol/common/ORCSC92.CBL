@@ -3321,6 +3321,9 @@
            IF     (TNS-SRYCD(1:1)      =   "1" ) AND
                   (FLG-TENSU           =   ZERO)
                PERFORM 9101-TENSUPLUS-SYORI-SEC
+           ELSE
+               MOVE    SPACE               TO  TENSUPLUS-REC
+               INITIALIZE                      TENSUPLUS-REC
            END-IF
            .
        910-TENSU-READ-EXT.

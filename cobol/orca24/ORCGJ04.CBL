@@ -843,9 +843,9 @@
       *
       *    DISPLAY "*** ORCSNPL    START  ***"
       *
-           INITIALIZE                  FLG-AREA
-           INITIALIZE                  STS-AREA
-           INITIALIZE                  WRK-AREA
+      *    INITIALIZE                  FLG-AREA
+      *    INITIALIZE                  STS-AREA
+      *    INITIALIZE                  WRK-AREA
       *
       *    エラー画面より
            IF      SPA-MOTOPG          =   "JERR"
@@ -904,8 +904,10 @@
                GO      TO      1002-J04SPA-SET-EXT
            END-IF
       *
-           INITIALIZE          SPA-SCR-REC
-           INITIALIZE          WRK-DATA-REC
+           MOVE    SPACE               TO  SPA-SCR-REC
+           INITIALIZE                  SPA-SCR-REC
+           MOVE    SPACE               TO  WRK-DATA-REC
+           INITIALIZE                  WRK-DATA-REC
            MOVE    ZERO                TO  FLG-SPASCR
            MOVE    ZERO                TO  IDX
            PERFORM UNTIL       FLG-SPASCR  =   1
@@ -939,8 +941,8 @@
       *
            MOVE    SPA-SCR-REC         TO  WRK-DATA-REC
            PERFORM VARYING     IDX     FROM   1   BY  1
-                   UNTIL      (IDX     >   10  )  OR
-                              (WRK-DATA (IDX)     =   SPACE)
+                   UNTIL      (IDX     >   10  )
+                           OR ( WRK-DATA (IDX) =   SPACE )
       *
                MOVE    WRK-DATA (IDX)      TO  SPA-DATA-REC
                WRITE                       SPA-DATA-REC
@@ -951,7 +953,7 @@
       *
            CLOSE                       SPASCR-FILE
            .
-       1003-J04SPA-SET-EXT.
+       1003-J04SPA-OUT-EXT.
            EXIT.
       *
       *****************************************************************
@@ -2096,12 +2098,16 @@
                    END-IF
                END-IF
            END-PERFORM
-           IF      (WRK-YMDS1          <   SPA-NAI-TTEKSTYMD (IDX)  OR
+           IF      SPA-J04-SYORI       =   1
+               CONTINUE
+           ELSE
+               IF      (WRK-YMDS1      <   SPA-NAI-TTEKSTYMD (IDX)  OR
                                        >   SPA-NAI-TTEKEDYMD (IDX))
-               OR  (WRK-YMDS2          <   SPA-NAI-TTEKSTYMD (IDX)  OR
+                   OR  (WRK-YMDS2      <   SPA-NAI-TTEKSTYMD (IDX)  OR
                                        >   SPA-NAI-TTEKEDYMD (IDX))
-               MOVE    "1036"              TO  SPA-ERRCD
-               MOVE    10                  TO  SPA-GMN-CUR
+                   MOVE    "1036"              TO  SPA-ERRCD
+                   MOVE    10                  TO  SPA-GMN-CUR
+               END-IF
            END-IF
       *
       *    労災判定
@@ -7189,7 +7195,6 @@
        500-GMNHEN-EXT.
            EXIT.
       *
-      *
       *****************************************************************
       *    行位置とカーソル位置の決定処理
       *****************************************************************
@@ -7359,8 +7364,12 @@
                MOVE    1               TO  WRK-IDX2
            END-IF
       *
-           IF      WRK-IDX2            >   20
-               MOVE    00              TO  SPA-GMN-CUR
+           IF      SPA-GMN-CUR         =   10
+               CONTINUE
+           ELSE
+               IF      WRK-IDX2            >   20
+                   MOVE    00              TO  SPA-GMN-CUR
+               END-IF
            END-IF
       *
            EVALUATE    SPA-GMN-CUR
