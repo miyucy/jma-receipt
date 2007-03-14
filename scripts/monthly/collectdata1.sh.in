@@ -53,7 +53,7 @@ DASUPLOAD=$SCRIPTSDIR/monthly/das-upload.sh
 
 #   入院分処理
 
-	$DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBC010 -parameter $1,$2,$3,$4,1,$6,$7,$ERRFILE 2>&1 | tee $LOGFILE
+	$DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBC010 -parameter $1,$2,$3,$4,1,$6,$7,$ERRFILE 2>&1 | tee -a $LOGFILE
 	if  [ -e $ERRFILE ]; then
 	    rm -f /var/tmp/COLDT*
 	    exit
@@ -67,11 +67,11 @@ DASUPLOAD=$SCRIPTSDIR/monthly/das-upload.sh
     fi
 
     if  [ $5 -eq '1' ]; then
-	tar cvfz $DASDIR/collect-$4.tar.gz /tmp/$COLLECTG /tmp/$COLLECTN
+	tar cvfz $DASDIR/collect-$4.tar.gz -C/ tmp/$COLLECTG tmp/$COLLECTN
 	rm -f /tmp/$COLLECTG
 	rm -f /tmp/$COLLECTN
     else
-	tar cvfz $DASDIR/collect-$4.tar.gz /tmp/$COLLECTG
+	tar cvfz $DASDIR/collect-$4.tar.gz -C/ tmp/$COLLECTG
 	rm -f /tmp/$COLLECTG
     fi
 

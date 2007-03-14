@@ -3947,8 +3947,12 @@
                    MOVE    "媒体をドライブにセットして下さい"
                                        TO  WRK-TIDMSG
                WHEN    "2002"
-                   MOVE    "データ収集用のファイルを作成しますか"
-                                            TO  WRK-TIDMSG
+                   STRING   "データ収集用のファイルを作成し、定点"
+                                       DELIMITED  BY  SIZE
+                            "調査収集サーバへアップロードしますか？"
+                                       DELIMITED  BY  SIZE
+                                       INTO    WRK-TIDMSG
+                   END-STRING
                WHEN    "2003"
                    COMPUTE WRK-WRNO    =   SPA-T01-WRNO +   1
                    MOVE    WRK-WRNO        TO  WRK-MSG1-WRNO
