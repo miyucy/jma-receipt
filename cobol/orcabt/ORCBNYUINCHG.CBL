@@ -736,6 +736,14 @@
                PERFORM 900-TBL-CLOSE-SEC
            END-IF
       *
+      *    月内で異動処理分のデータでないことのチェック
+           IF   WRK-ERRCD           =    SPACE
+               IF  (WRK-PARA-SRYYM  =    PTNYUINRRK-TENNYUYMD(1:6)) OR
+                   (WRK-PARA-SRYYM  =    PTNYUINRRK-TENSTUYMD(1:6))
+                   MOVE   "2010"    TO   WRK-ERRCD
+               END-IF
+           END-IF
+      *
            IF        (FLG-NYUINACCTARI   =    1)   AND
                      (WRK-ERRCD          =    SPACE)
       *        既に作成済の入院会計が存在すれば
@@ -852,6 +860,9 @@
                    WHEN    "2009"
                        MOVE  "定期請求済みのため処理できません"
                                                       TO  WRK-NAIYO
+                   WHEN    "2010"
+                      MOVE  "対象月での異動処理があるため処理できません"
+                                                      TO  WRK-NAIYO
                    END-EVALUATE
            END-IF
            MOVE    WRK-NAIYO           TO  LST-NAIYO (CNT-LINE)
@@ -916,7 +927,7 @@
            MOVE    LNK-PRTKANRI-PRIORITY
                                    TO  SPRT-PRIORITY
            MOVE   "HCMSL55.red"    TO  SPRT-PRTID
-           MOVE    "入院会計一括作成"
+           MOVE    "入院会計一括置換え"
                                     TO  SPRT-TITLE
            MOVE    HCMSL55          TO  SPRT-PRTDATA
            MOVE    LNK-PRTKANRI-TERMID
