@@ -672,6 +672,9 @@
                MOVE    RECE07-REC          TO  SPA-RECE07-REC
                MOVE    "99999999"          TO  SPA-RECE07-HKNJANUM
                MOVE    "00"                TO  SPA-RECE07-SRYKA 
+                                               SPA-RECE07-SRYKA-KOKUHO
+               INITIALIZE                      SPA-RECE07-RECE-PUTH-T(1)
+                                               SPA-RECE07-RECE-PUTH-T(2)
       *
       *        一括作成で国保処理のとき編綴順設定の有無チェック
                IF    ( SPA-R01-FILEKBN         =   "1"         )
