@@ -150,6 +150,7 @@
            03  WRK-CHKLST-SEL              PIC 9(05).
            03  WRK-MOTOPG                  PIC X(05).
            03  WRK-SELKBNCD                PIC X(08).
+           03  WRK-NAME                    PIC X(100).
       *
        01  WRK-ROW-AREA.
            03  WRK-CHKLST-ROW              PIC S9(9).
@@ -580,7 +581,7 @@
       *
            IF    ( WKSPA-PTID    =   ZERO )
              OR  ( WKSPA-PTID    =   SPA-NAI-PTID )
-               CONTINUE
+               MOVE    2           TO  SPA-GMN-CUR
            ELSE
                MOVE    WKSPA-PTNUM TO  SPA-GMN-PTNUM
                MOVE    WKSPA-PTID  TO  SPA-NAI-PTID
@@ -637,6 +638,7 @@
            WHEN    "CLICKED"       ALSO    "B07"
                PERFORM 270-NEXTPAGE-SEC
            WHEN    "CLICKED"       ALSO    "B09"
+               MOVE    SPACE       TO      WRK-NAME
                PERFORM 490-KENSAKU-SEC
            WHEN    "CLICKED"       ALSO    "B12"
                PERFORM 412-KAKUTEI-SEC
@@ -991,8 +993,14 @@
            MOVE    SPTNUM-PTNUM    TO  SPA-GMN-PTNUM
                                        WRK-PTNUM
            IF    ( SPTNUM-RC       NOT =   ZERO )
-               MOVE    "0002"      TO  SPA-ERRCD
-               MOVE    2           TO  SPA-GMN-CUR
+      *        IF    ( SPTNUM-RC       =   20 )
+      *            MOVE    SPA-GMN-PTNUM   TO  WRK-NAME
+      *            PERFORM 490-KENSAKU-SEC
+      *            GO  TO  4101-PTNUM-CHK-EXT
+      *        ELSE
+                   MOVE    "0002"      TO  SPA-ERRCD
+                   MOVE    2           TO  SPA-GMN-CUR
+      *        END-IF
            END-IF
       *
            IF    ( SPA-ERRCD       =   SPACE )
@@ -1332,8 +1340,7 @@
            MOVE    "D02"               TO  SPA-MOTOPG
            MOVE    "P97"               TO  SPA-SAKIPG
       *
-      *    氏名をクリアする
-           MOVE    SPACE               TO  SPA-NAME
+           MOVE    WRK-NAME            TO  SPA-NAME
            MOVE    SPA-KYOUTU          TO  LNK-KYOUTU
       *
            MOVE    "CHANGE"            TO  MCP-PUTTYPE
