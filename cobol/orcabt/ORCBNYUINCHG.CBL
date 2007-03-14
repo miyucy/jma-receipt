@@ -74,6 +74,7 @@
            03  FLG-PTRSIINF                PIC 9(01).
            03  FLG-INPUTCD                 PIC 9(01).
            03  FLG-NYUKSN                  PIC 9(01).
+           03  FLG-SYUNOU                  PIC 9(01).
            03  FLG-DBRC                    PIC 9(01).
       *
       *    カウント領域
@@ -319,6 +320,10 @@
        01  PTKOHINF-REC.
            COPY    "CPPTKOHINF.INC".
       *
+      *    収納
+       01  SYUNOU-REC.
+           COPY    "CPSYUNOU.INC".
+      *
       *    ジョブ管理マスタ
        01  JOBKANRI-REC.
            COPY    "CPJOBKANRI.INC".
@@ -545,19 +550,25 @@
            INITIALIZE                           PTNYUINRRK-REC
            INITIALIZE                           PTNYUINRRK-REC
            MOVE    SYS-1001-HOSPID      TO      PTNYUINRRK-HOSPID
+      *    月末日
            INITIALIZE                           STS-AREA-DAY
            INITIALIZE                           LNK-DAY7-AREA
            MOVE    "71"                 TO      LNK-DAY7-IRAI
            MOVE    WRK-PARA-SRYYM       TO      LNK-DAY7-YM
            CALL    "ORCSDAY"            USING   STS-AREA-DAY
                                                 LNK-DAY7-AREA
-           MOVE    LNK-DAY7-KOYOMI      TO      PTNYUINRRK-NYUINYMD
+           MOVE    LNK-DAY7-KOYOMI      TO      PTNYUINRRK-TENNYUYMD
+      *    月初日
+           MOVE    WRK-PARA-SRYYM       TO      PTNYUINRRK-TENSTUYMD
+                                                                (1:6)
+           MOVE    "01"                 TO      PTNYUINRRK-TENSTUYMD
+                                                                (7:2)
            MOVE    "tbl_ptnyuinrrk"     TO      MCP-TABLE
-           MOVE    "key27"              TO      MCP-PATHNAME
+           MOVE    "key40"              TO      MCP-PATHNAME
            PERFORM   910-PTNYUINRRK-SELECT-SEC
            IF      FLG-PTNYUINRRK       =       ZERO
                MOVE    "tbl_ptnyuinrrk"     TO      MCP-TABLE
-               MOVE    "key27"              TO      MCP-PATHNAME
+               MOVE    "key40"              TO      MCP-PATHNAME
                PERFORM  910-PTNYUINRRK-READ-SEC
                PERFORM  UNTIL  FLG-PTNYUINRRK    =    1
                        IF   (PTNYUINRRK-BTUNUM  =   WRK-PARA-BTUNUM) AND
@@ -569,13 +580,13 @@
                            PERFORM     2001-NYUINACCT-UPD-SEC
                        END-IF
                    MOVE    "tbl_ptnyuinrrk"     TO      MCP-TABLE
-                   MOVE    "key27"              TO      MCP-PATHNAME
+                   MOVE    "key40"              TO      MCP-PATHNAME
                    PERFORM  910-PTNYUINRRK-READ-SEC
                END-PERFORM
            END-IF
       *
            MOVE    "tbl_ptnyuinrrk"     TO      MCP-TABLE
-           MOVE    "key27"              TO      MCP-PATHNAME
+           MOVE    "key40"              TO      MCP-PATHNAME
            PERFORM   900-TBL-CLOSE-SEC
       *
            IF    ( CNT-LINE            >   ZERO )
@@ -689,9 +700,40 @@
       *****************************************************************
        2001-NYUINACCT-UPD-SEC          SECTION.
       *
+           MOVE    SPACE          TO        WRK-ERRCD
+      *
+      *    入院当月分でないことのチェック
            IF  (WRK-PARA-SRYYM    =    PTNYUINRRK-NYUINYMD(1:6)) AND
                (WRK-PARA-SRYYM    =    PTNYUINRRK-TENNYUYMD(1:6))
                MOVE   "2007"      TO        WRK-ERRCD
+           END-IF
+      *
+      *    退院済分でないことのチェック
+           IF  (PTNYUINRRK-TAIINYMD    NOT =  "99999999")
+               MOVE   "2008"      TO        WRK-ERRCD
+           END-IF
+      *
+      *    定期請求済分でないことのチェック
+           IF   WRK-ERRCD         =     SPACE
+               INITIALIZE                      SYUNOU-REC
+               MOVE    PTNYUINRRK-HOSPID   TO  SYU-HOSPID
+               MOVE    PTNYUINRRK-PTID     TO  SYU-PTID
+               MOVE    WRK-PARA-SRYYM      TO  SYU-SRYYMD(1:6)
+               MOVE    "%"                 TO  SYU-SRYYMD(7:1)
+               MOVE    "tbl_syunou"        TO  MCP-TABLE
+               MOVE    "key60"             TO  MCP-PATHNAME
+               PERFORM 910-SYUNOU-SELECT-SEC
+               IF      FLG-SYUNOU          =   ZERO
+                   MOVE    "tbl_syunou"    TO  MCP-TABLE
+                   MOVE    "key60"         TO  MCP-PATHNAME
+                   PERFORM 910-SYUNOU-READ-SEC
+                   IF    FLG-SYUNOU        =   ZERO
+                       MOVE   "2009"       TO  WRK-ERRCD
+                   END-IF
+               END-IF
+               MOVE    "tbl_syunou"        TO  MCP-TABLE
+               MOVE    "key60"             TO  MCP-PATHNAME
+               PERFORM 900-TBL-CLOSE-SEC
            END-IF
       *
            IF        (FLG-NYUINACCTARI   =    1)   AND
@@ -731,7 +773,7 @@
            .
        2001-NYUINACCT-UPD-EXT.
            EXIT.
-      ****************************a*************************************
+      ******************************************************************
       *    帳票編集処理
       *****************************************************************
        2002-HCMSL55-HEN-SEC            SECTION.
@@ -802,7 +844,13 @@
                        MOVE  "入院料加算の取得に失敗しました"
                                                       TO  WRK-NAIYO
                    WHEN    "2007"
-                       MOVE  "当月入院登録分のため処理できません"
+                       MOVE  "対象月入院登録分のため処理できません"
+                                                      TO  WRK-NAIYO
+                   WHEN    "2008"
+                       MOVE  "退院済み患者のため処理できません"
+                                                      TO  WRK-NAIYO
+                   WHEN    "2009"
+                       MOVE  "定期請求済みのため処理できません"
                                                       TO  WRK-NAIYO
                    END-EVALUATE
            END-IF
@@ -3209,6 +3257,47 @@
       *
            .
        910-NYUINACCT-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    収納マスター検索
+      *****************************************************************
+       910-SYUNOU-SELECT-SEC        SECTION.
+      *
+           MOVE    SYUNOU-REC          TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    ZERO            TO  FLG-SYUNOU
+           ELSE
+               MOVE    1               TO  FLG-SYUNOU
+           END-IF
+      *
+           .
+       910-SYUNOU-SELECT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    収納マスター読込
+      *****************************************************************
+       910-SYUNOU-READ-SEC        SECTION.
+      *
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC     TO  SYUNOU-REC
+               MOVE    ZERO            TO  FLG-SYUNOU
+           ELSE
+               INITIALIZE                  SYUNOU-REC
+               MOVE    1               TO  FLG-SYUNOU
+           END-IF
+      *
+           .
+       910-SYUNOU-READ-EXT.
            EXIT.
       *
       *****************************************************************
