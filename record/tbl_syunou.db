@@ -1312,3 +1312,18 @@ path	key59 	{
 	};
 };
 
+path	key60 	{
+	DBSELECT	{
+		DECLARE tbl_syunou_key60_csr CURSOR FOR
+		SELECT *
+		FROM tbl_syunou
+		WHERE   HOSPID      =   :HOSPID
+		AND     NYUGAIKBN   =   '1'
+		AND     PTID        =   :PTID
+		AND     SRYYMD      LIKE :SRYYMD
+		AND     DENPJTIKBN  <>  '3'
+		AND     CREATEKBN   =   '2'
+		;
+	};
+};
+
