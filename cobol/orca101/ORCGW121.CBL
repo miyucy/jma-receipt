@@ -176,39 +176,45 @@
                            11  SPA-GMN-F1     PIC X(01).
                            11  SPA-GMN-HKNJANUM-PRTKBNMEI
                                               PIC X(22).
-                       09  SPA-GMN-PRTJYUN1-G.
-                           11  SPA-GMN-PRTJYUN1
+      *
+                       09  SPA-GMN-HEAD1-OCC  OCCURS  2.
+                           11  SPA-GMN-PRTJYUN1-G.
+                               13  SPA-GMN-PRTJYUN1
                                                PIC X(02).
-                           11  SPA-GMN-F1      PIC X(01).
-                           11  SPA-GMN-PRTJYUN1MEI
+                               13  SPA-GMN-F1  PIC X(01).
+                               13  SPA-GMN-PRTJYUN1MEI
                                                PIC X(28).
-                       09  SPA-GMN-PRTJYUN2-G.
-                           11  SPA-GMN-PRTJYUN2
+                           11  SPA-GMN-PRTJYUN2-G.
+                               13  SPA-GMN-PRTJYUN2
                                                PIC X(02).
-                           11  SPA-GMN-F1      PIC X(01).
-                           11  SPA-GMN-PRTJYUN2MEI
+                               13  SPA-GMN-F1  PIC X(01).
+                               13  SPA-GMN-PRTJYUN2MEI
                                                PIC X(28).
-                       09  SPA-GMN-SRT-LAST-G.
-                           11  SPA-GMN-SRT-LAST
+                           11  SPA-GMN-SRT-LAST-G.
+                               13  SPA-GMN-SRT-LAST
                                                PIC X(01).
-                           11  SPA-GMN-F1      PIC X(01).
-                           11  SPA-GMN-SRT-LASTMEI
+                               13  SPA-GMN-F1  PIC X(01).
+                               13  SPA-GMN-SRT-LASTMEI
                                                PIC X(12).
-                       09  SPA-GMN-ZAITAKU-G.
-                           11  SPA-GMN-ZAITAKU
+                           11  SPA-GMN-ZAITAKU-G.
+                               13  SPA-GMN-ZAITAKU
                                                PIC X(01).
-                           11  SPA-GMN-F1      PIC X(01).
-                           11  SPA-GMN-ZAITAKUMEI
+                               13  SPA-GMN-F1  PIC X(01).
+                               13  SPA-GMN-ZAITAKUMEI
                                                PIC X(24).
-                       09  SPA-GMN-CHOUKI-G.
-                           11  SPA-GMN-CHOUKI  PIC X(01).
-                           11  SPA-GMN-F1      PIC X(01).
-                           11  SPA-GMN-CHOUKIMEI
+                           11  SPA-GMN-CHOUKI-G.
+                               13  SPA-GMN-CHOUKI
+                                               PIC X(01).
+                               13  SPA-GMN-F1  PIC X(01).
+                               13  SPA-GMN-CHOUKIMEI
                                                PIC X(24).
-                       09  SPA-GMN-GRP1-NO-MAX PIC 9(03).
-                       09  SPA-GMN-KOUGAKU-TEN PIC 9(07).
+                           11  SPA-GMN-GRP1-NO-MAX
+                                               PIC 9(03).
+                           11  SPA-GMN-KOUGAKU-TEN
+                                               PIC 9(07).
       *
                    07  SPA-GMN-GRP-KOUMOKU.
+                       09  SPA-GMN-GRP-OCC     OCCURS  2.
                            11  SPA-GMN-GRP-SETTEI
                                                PIC X(01).
                            11  SPA-GMN-GRP-KAIJYO
@@ -221,6 +227,7 @@
                            11  SPA-NAI-GRP1-NO PIC 9(03).
       *
                    07  SPA-GMN-BODY-KOUMOKU.
+                       09  SPA-GMN-BODY-OCC    OCCURS  2.
                            11  SPA-GMN-RECESYUBETU
                                                PIC X(04).
                            11  SPA-GMN-SYUBETUNAME 
@@ -244,31 +251,33 @@
                                                    PIC X(20).
       *
                    07  SPA-GMN-BODYLIST.
-                       09  SPA-GMN-BODYLIST-TBL        OCCURS  50.
-                           11  SPA-GMN-BODYLIST-TSYUBETU
+                       09  SPA-GMN-BODYLIST-OCC    OCCURS  2.
+                           11  SPA-GMN-BODYLIST-TBL        OCCURS  50.
+                               13  SPA-GMN-BODYLIST-TSYUBETU
                                                        PIC X(04).
-                           11  SPA-GMN-BODYLIST-TSYUBETUNAME
+                               13  SPA-GMN-BODYLIST-TSYUBETUNAME
                                                        PIC X(40).
-                           11  SPA-NAI-BODYLIST-TGRP1-NO.
-                               13  SPA-NAI-BODYLIST-TGRP1-NO-9
+                               13  SPA-NAI-BODYLIST-TGRP1-NO.
+                                   15  SPA-NAI-BODYLIST-TGRP1-NO-9
                                                        PIC 9(03).
-                           11  SPA-NAI-BODYLIST-TGRP2-NO
+                               13  SPA-NAI-BODYLIST-TGRP2-NO
                                                        PIC X(03).
-                           11  SPA-NAI-BODYLIST-TPRTJYUN1
+                               13  SPA-NAI-BODYLIST-TPRTJYUN1
                                                        PIC X(02).
-                           11  SPA-NAI-BODYLIST-TPRTJYUN2
+                               13  SPA-NAI-BODYLIST-TPRTJYUN2
                                                        PIC X(02).
       *
-                           11  SPA-GMN-KOHLIST.
-                               13  SPA-GMN-KOHLIST-TBL OCCURS  30.
-                                   15  SPA-GMN-KOHLIST-THKNNUM
+                               13  SPA-GMN-KOHLIST.
+                                   15  SPA-GMN-KOHLIST-TBL OCCURS  30.
+                                       17  SPA-GMN-KOHLIST-THKNNUM
                                                        PIC X(03).
-                                   15  SPA-GMN-KOHLIST-TSEIDONAME
+                                       17  SPA-GMN-KOHLIST-TSEIDONAME
                                                        PIC X(20).
-                                   15  SPA-GMN-KOHLIST-TJYUN
+                                       17  SPA-GMN-KOHLIST-TJYUN
                                                        PIC X(01).
-                               13  SPA-GMN-KOHLIST-MAX PIC 9(03).
-                   07  SPA-GMN-BODYLIST-MAX    PIC 9(02).
+                                   15  SPA-GMN-KOHLIST-MAX PIC 9(03).
+                        09  SPA-GMN-BODYLIST-MAX    PIC 9(02)
+                                                    OCCURS  2.
       *
                05  SPA-NAI-AREA.
                    07  SPA-NAI-HEADLIST.
@@ -284,10 +293,11 @@
                            11  SPA-NAI-EDYUKYMD    PIC 9(08).
       *
                        09  SPA-NAI-BODY-KOUMOKU.
-                           11  SPA-NAI-SELNUM2     PIC 9(02).
-                           11  SPA-NAI-KOH-KOUMOKU.
-                               13  SPA-NAI-SELNUM3 PIC 9(03).
-                       09  SPA-NAI-SELNUM2-ROW     PIC 9(02).
+                           11  SPA-NAI-BODY-OCC    OCCURS  2.
+                               13  SPA-NAI-SELNUM2     PIC 9(02).
+                               13  SPA-NAI-KOH-KOUMOKU.
+                                   15  SPA-NAI-SELNUM3 PIC 9(03).
+                               13  SPA-NAI-SELNUM2-ROW PIC 9(02).
       *
                05  SPA-1001-PREFNUM    PIC 9(02). 
                05  SPA-W121-PAGENO     PIC S9(9)   BINARY.
@@ -312,8 +322,8 @@
            03  FLG-RECE-PUTB       PIC 9(01).
       *
            03  FLG-HEADLIST-ROW    PIC 9(01).
-           03  FLG-BODYLIST-ROW    PIC 9(01).
-           03  FLG-KOHLIST-ROW     PIC 9(01).
+           03  FLG-BODYLIST-ROW    PIC 9(01)   OCCURS  2.
+           03  FLG-KOHLIST-ROW     PIC 9(01)   OCCURS  2.
            03  FLG-UPDFLG          PIC 9(01).
            03  FLG-TOUROKU         PIC 9(01).
            03  FLG-CHK             PIC 9(01).
@@ -324,6 +334,9 @@
            03  IDX                 PIC 9(04).
            03  IDY                 PIC 9(04).
            03  IDZ                 PIC 9(04).
+           03  IDXX                PIC 9(04).
+           03  IDYY                PIC 9(04).
+           03  IDZZ                PIC 9(04).
       *
       *    一時領域
       *
@@ -343,6 +356,10 @@
       *
            03  WRK-SELNUM          PIC 9(03).
            03  WRK-HKNNUM          PIC X(03).
+           03  WRK-PAGENO          PIC 9(01).
+      *
+           03  WRK-SELNUM2         PIC 9(03).
+           03  WRK-SELNUM3         PIC 9(03).
       *
            03  WRK-Z9              PIC Z9.
            03  WRK-ZZ9             PIC ZZ9.
@@ -355,9 +372,9 @@
            03  WRK-W121-HEADLIST-ROW
                                    PIC S9(09).
            03  WRK-W121-BODYLIST-ROW
-                                   PIC S9(09).
+                                   PIC S9(09)   OCCURS  2.
            03  WRK-W121-KOHLIST-ROW
-                                   PIC S9(09).
+                                   PIC S9(09)   OCCURS  2.
       *
            03  WRK-TOP-CNT         PIC 9(03).
            03  WRK-BOTTOM-CNT      PIC 9(03).
@@ -672,10 +689,22 @@
                END-EVALUATE    
            END-IF
       *
-           IF      SPA-NAI-SELNUM2 >   ZERO
-               MOVE    SPA-NAI-SELNUM2 TO  W121-BODYLIST-ROW
-               MOVE    ZERO            TO  FLG-BODYLIST-ROW
-           END-IF
+           EVALUATE    SPA-W121-PAGENO
+               WHEN    ZERO 
+                   IF      SPA-NAI-SELNUM2 (1)
+                                       >   ZERO
+                       MOVE    SPA-NAI-SELNUM2 (1)
+                                               TO  W121-BODYLIST-ROW
+                       MOVE    ZERO            TO  FLG-BODYLIST-ROW (1)
+                   END-IF
+               WHEN    1 
+                   IF      SPA-NAI-SELNUM2 (2)
+                                       >   ZERO
+                       MOVE    SPA-NAI-SELNUM2 (2)
+                                               TO  W121-BODYLIST-1-ROW
+                       MOVE    ZERO            TO  FLG-BODYLIST-ROW (2)
+                   END-IF
+           END-EVALUATE
       *
            MOVE    SPACE           TO  SPA-WID1-FLG
            MOVE    SPACE           TO  SPA-WIDCD      
@@ -838,7 +867,8 @@
            IF      FLG-SYSKANRI            =   ZERO
                MOVE    MCPDATA-REC             TO  SYS-1001-REC
                MOVE    SYS-1001-PREFNUM        TO  SPA-1001-PREFNUM
-           END-IF 
+           END-IF
+      *
       *    レセプト（編綴順）情報
            MOVE    SPACE               TO  SYS-2008-REC
            INITIALIZE                      SYS-2008-REC
@@ -915,12 +945,17 @@
       *    レセプト（編綴順）情報編集処理
            PERFORM 3102-SPA-2008-HENSYU-SEC
       *
-           MOVE    "T"                 TO  SPA-GMN-GRP1
-           MOVE    "F"                 TO  SPA-GMN-GRP2
+           MOVE    "T"                 TO  SPA-GMN-GRP1 (1)
+                                           SPA-GMN-GRP1 (2)
+           MOVE    "F"                 TO  SPA-GMN-GRP2 (1)
+                                           SPA-GMN-GRP2 (2)
       *
            MOVE    1                   TO  FLG-HEADLIST-ROW
-                                           FLG-BODYLIST-ROW
-                                           FLG-KOHLIST-ROW 
+                                           FLG-BODYLIST-ROW (1)
+                                           FLG-BODYLIST-ROW (2)
+                                           FLG-KOHLIST-ROW  (1)
+                                           FLG-KOHLIST-ROW  (2)
+                                           
       *
            MOVE    1                   TO  SPA-GMN-CUR
            . 
@@ -1141,6 +1176,16 @@
       *****************************************************************
        200-GMNSENI                   SECTION.  
       *
+           IF      W121-PAGENO       =   0
+               MOVE    1           TO  WRK-PAGENO
+           ELSE
+               MOVE    2           TO  WRK-PAGENO
+           END-IF
+           MOVE    SPA-NAI-SELNUM2 (WRK-PAGENO)
+                                   TO  WRK-SELNUM2
+           MOVE    SPA-NAI-SELNUM3 (WRK-PAGENO)
+                                   TO  WRK-SELNUM3
+      * 
            EVALUATE    MCP-EVENT       ALSO    MCP-WIDGET
       *    戻る
                WHEN    "CLICKED"       ALSO    "B01"
@@ -1154,36 +1199,47 @@
                    PERFORM 490-TOUROKU-SEC
       *    ↑
                WHEN    "CLICKED"       ALSO    "SYUBETU_UP"
+               WHEN    "CLICKED"       ALSO    "SYUBETU_UP_1"
                    PERFORM 490-SYUBETU-UP-SEC
       *    ↓
                WHEN    "CLICKED"       ALSO    "SYUBETU_DOWN"
+               WHEN    "CLICKED"       ALSO    "SYUBETU_DOWN_1"
                    PERFORM 490-SYUBETU-DOWN-SEC
       *    グループ設定
                WHEN    "CLICKED"       ALSO    "GRP_SETTEI"
+               WHEN    "CLICKED"       ALSO    "GRP_SETTEI_1"
                    PERFORM 490-GRP-SETTEI-SEC
       *    グループ解除
                WHEN    "CLICKED"       ALSO    "GRP_KAIJYO"
+               WHEN    "CLICKED"       ALSO    "GRP_KAIJYO_1"
                    PERFORM 490-GRP-KAIJYO-SEC
       *    グループ１
                WHEN    "CLICKED"       ALSO    "GRP1"
+               WHEN    "CLICKED"       ALSO    "GRP1_1"
                    PERFORM 490-GRP1-SETTEI-SEC
       *    グループ２
                WHEN    "CLICKED"       ALSO    "GRP2"
+               WHEN    "CLICKED"       ALSO    "GRP2_1"
                    PERFORM 490-GRP2-SETTEI-SEC
       *    ↑
                WHEN    "CLICKED"       ALSO    "KOH_UP"
+               WHEN    "CLICKED"       ALSO    "KOH_UP_1"
                    PERFORM 490-KOH-UP-SEC
       *    ↓
                WHEN    "CLICKED"       ALSO    "KOH_DOWN"
+               WHEN    "CLICKED"       ALSO    "KOH_DOWN_1"
                    PERFORM 490-KOH-DOWN-SEC
       *    先頭
                WHEN    "CLICKED"       ALSO    "TOP"
+               WHEN    "CLICKED"       ALSO    "TOP_1"
                    PERFORM 490-KOH-TOP-HENSYU-SEC
       *    後尾
                WHEN    "CLICKED"       ALSO    "BOTTOM"
+               WHEN    "CLICKED"       ALSO    "BOTTOM_1"
                    PERFORM 490-KOH-BOTTOM-HENSYU-SEC
       *    削除
                WHEN    "CLICKED"       ALSO    "DEL"
+               WHEN    "CLICKED"       ALSO    "DEL_1"
                    PERFORM 490-KOH-DELETE-SEC
       *    タグ
                WHEN    "CLICKED"       ALSO    "N01"
@@ -1198,6 +1254,16 @@
       *    会話　処理
       *****************************************************************
        200-ENTRY                   SECTION.
+      *
+           IF      W121-PAGENO       =   0
+               MOVE    1           TO  WRK-PAGENO
+           ELSE
+               MOVE    2           TO  WRK-PAGENO
+           END-IF
+           MOVE    SPA-NAI-SELNUM2 (WRK-PAGENO)
+                                   TO  WRK-SELNUM2
+           MOVE    SPA-NAI-SELNUM3 (WRK-PAGENO)
+                                   TO  WRK-SELNUM3
       *
            EVALUATE    MCP-EVENT       ALSO    MCP-WIDGET
       *        選択番号
@@ -1215,9 +1281,11 @@
                    PERFORM 41021-EDYUKYMD-CHK-SEC
       *        グループ１番号
                WHEN    "ACTIVATE"       ALSO    "GRP1_NO"
+               WHEN    "ACTIVATE"       ALSO    "GRP1_NO_1"
                    PERFORM 41021-GRP1-NO-CHK-SEC
       *        グループ２番号
                WHEN    "ACTIVATE"       ALSO    "GRP2_NO"
+               WHEN    "ACTIVATE"       ALSO    "GRP2_NO_1"
                    PERFORM 41021-GRP2-NO-CHK-SEC
       *        一括分
                WHEN    OTHER
@@ -1239,7 +1307,7 @@
                                        SPA-GMN-BODY-KOUMOKU
                                        SPA-GMN-GRP-KOUMOKU
                                        SPA-GMN-BODYLIST
-                                       SPA-GMN-BODYLIST-MAX
+      ***                              SPA-GMN-BODYLIST-MAX
       *
            MOVE    W121-SELNUM1    TO  SPA-GMN-SELNUM1
       *
@@ -1338,66 +1406,71 @@
                PERFORM 900-HKNJAINF-READ-SEC
                MOVE    HKNJA-HKNJANAME     TO  SPA-GMN-HKNJANAME
       *         
-               PERFORM VARYING IDZ FROM    1   BY  1
-                       UNTIL   IDZ >       1  
-                 MOVE    RECE-PUTH-SRT-01 (IDZ)
-                                             TO  SPA-GMN-PRTJYUN1
+               PERFORM VARYING IDXX    FROM    1   BY  1
+                       UNTIL   IDXX    >       2  
+                 MOVE    RECE-PUTH-SRT-01 (IDXX)
+                                             TO  SPA-GMN-PRTJYUN1 (IDXX)
                  PERFORM VARYING IDY FROM    1   BY  1
                          UNTIL   IDY >       SPA-GMN-PRTJYUN1-MAX
-                   IF      SPA-GMN-PRTJYUN1 =   SPA-GMN-PRTJYUN1L (IDY)
+                   IF      SPA-GMN-PRTJYUN1 (IDXX)
+                                         =   SPA-GMN-PRTJYUN1L (IDY)
                        MOVE    SPA-GMN-PRTJYUN1LST (IDY)
-                                           TO  SPA-GMN-PRTJYUN1-G
+                                           TO  SPA-GMN-PRTJYUN1-G (IDXX)
                        MOVE    SPA-GMN-PRTJYUN1-MAX
                                            TO  IDY
                    END-IF
                  END-PERFORM
       *         
-                 MOVE    RECE-PUTH-KKHKBN (IDZ)
-                                             TO  SPA-GMN-PRTJYUN2
+                 MOVE    RECE-PUTH-KKHKBN (IDXX)
+                                             TO  SPA-GMN-PRTJYUN2 (IDXX)
                  PERFORM VARYING IDY FROM    1   BY  1
                          UNTIL   IDY >       SPA-GMN-PRTJYUN2-MAX
-                   IF      SPA-GMN-PRTJYUN2 =   SPA-GMN-PRTJYUN2L (IDY)
+                   IF      SPA-GMN-PRTJYUN2 (IDXX)
+                                       =   SPA-GMN-PRTJYUN2L (IDY)
                        MOVE    SPA-GMN-PRTJYUN2LST (IDY)
-                                           TO  SPA-GMN-PRTJYUN2-G
+                                           TO  SPA-GMN-PRTJYUN2-G (IDXX)
                        MOVE    SPA-GMN-PRTJYUN2-MAX
                                            TO  IDY
                    END-IF
                  END-PERFORM
       *         
-                 MOVE    RECE-PUTH-SRT-LAST (IDZ)
-                                             TO  SPA-GMN-SRT-LAST
+                 MOVE    RECE-PUTH-SRT-LAST (IDXX)
+                                             TO  SPA-GMN-SRT-LAST (IDXX)
                  PERFORM VARYING IDY FROM    1   BY  1
                          UNTIL   IDY >       SPA-GMN-SRT-LAST-MAX
-                   IF      SPA-GMN-SRT-LAST =   SPA-GMN-SRT-LASTL (IDY)
+                   IF      SPA-GMN-SRT-LAST (IDXX)
+                                       =   SPA-GMN-SRT-LASTL (IDY)
                        MOVE    SPA-GMN-SRT-LASTLST (IDY)
-                                           TO  SPA-GMN-SRT-LAST-G
+                                           TO  SPA-GMN-SRT-LAST-G (IDXX)
                        MOVE    SPA-GMN-SRT-LAST-MAX
                                            TO  IDY
                    END-IF
                  END-PERFORM
       *         
-                 MOVE    RECE-PUTH-KOUGAKU-TEN (IDZ)
-                                             TO  SPA-GMN-KOUGAKU-TEN
+                 MOVE    RECE-PUTH-KOUGAKU-TEN (IDXX)
+                                           TO  SPA-GMN-KOUGAKU-TEN(IDXX)
       *         
-                 MOVE    RECE-PUTH-ZAITAKU (IDZ)
-                                             TO  SPA-GMN-ZAITAKU
+                 MOVE    RECE-PUTH-ZAITAKU (IDXX)
+                                             TO  SPA-GMN-ZAITAKU (IDXX)
                  PERFORM VARYING IDY FROM    1   BY  1
                          UNTIL   IDY >       SPA-GMN-ZAITAKU-MAX
-                   IF      SPA-GMN-ZAITAKU =   SPA-GMN-ZAITAKUL (IDY)
+                   IF      SPA-GMN-ZAITAKU (IDXX)
+                                       =   SPA-GMN-ZAITAKUL (IDY)
                        MOVE    SPA-GMN-ZAITAKULST (IDY)
-                                           TO  SPA-GMN-ZAITAKU-G
+                                           TO  SPA-GMN-ZAITAKU-G (IDXX)
                        MOVE    SPA-GMN-ZAITAKU-MAX
                                            TO  IDY
                    END-IF
                  END-PERFORM
       *
-                 MOVE    RECE-PUTH-CHOUKI (IDZ)
-                                             TO  SPA-GMN-CHOUKI
+                 MOVE    RECE-PUTH-CHOUKI (IDXX)
+                                             TO  SPA-GMN-CHOUKI (IDXX)
                  PERFORM VARYING IDY FROM    1   BY  1
                        UNTIL   IDY >       SPA-GMN-CHOUKI-MAX
-                   IF      SPA-GMN-CHOUKI  =   SPA-GMN-CHOUKIL (IDY)
+                   IF      SPA-GMN-CHOUKI (IDXX)
+                                       =   SPA-GMN-CHOUKIL (IDY)
                        MOVE    SPA-GMN-CHOUKILST (IDY)
-                                           TO  SPA-GMN-CHOUKI-G
+                                           TO  SPA-GMN-CHOUKI-G (IDXX)
                        MOVE    SPA-GMN-CHOUKI-MAX
                                            TO  IDY
                    END-IF
@@ -1412,108 +1485,120 @@
            PERFORM 3103-2003-HENSYU-SEC
       *
       *    ＢＯＤＹ部表示
-           INITIALIZE                  RECE-PUTB-REC
-           MOVE    SPA-HOSPID      TO  RECE-PUTB-HOSPID
-           MOVE    "1"             TO  RECE-PUTB-PREFKBN
-           MOVE    SPA-NAI-HEADLIST-TSTYUKYMD (SPA-GMN-SELNUM1)
-                                   TO  RECE-PUTB-STYUKYMD
-           MOVE    SPA-NAI-HEADLIST-TEDYUKYMD (SPA-GMN-SELNUM1)
-                                   TO  RECE-PUTB-EDYUKYMD
-           MOVE    RECE-PUTB-REC   TO  MCPDATA-REC
-           MOVE    "DBSELECT"      TO  MCP-FUNC
-           MOVE    "tbl_rece_putb" TO  MCP-TABLE
-           MOVE    "key2"          TO  MCP-PATHNAME
-           CALL    "MONFUNC"       USING
-                                       MCPAREA
-                                       MCPDATA-REC
-           IF      MCP-RC          =   ZERO
-               MOVE    "tbl_rece_putb" TO  MCP-TABLE
-               MOVE    "key2"          TO  MCP-PATHNAME
-               PERFORM 900-RECE-PUTB-READ-N-SEC
-           ELSE
+           PERFORM VARYING IDXX    FROM    1   BY  1
+                   UNTIL   IDXX    >       2  
                INITIALIZE                  RECE-PUTB-REC
-               MOVE    1               TO  FLG-RECE-PUTB
-           END-IF
+               MOVE    SPA-HOSPID      TO  RECE-PUTB-HOSPID
+               EVALUATE    IDXX
+                   WHEN    1
+                       MOVE    "1"             TO  RECE-PUTB-PREFKBN
+                   WHEN    2
+                       MOVE    "2"             TO  RECE-PUTB-PREFKBN
+               END-EVALUATE 
+               MOVE    SPA-NAI-HEADLIST-TSTYUKYMD (SPA-GMN-SELNUM1)
+                                       TO  RECE-PUTB-STYUKYMD
+               MOVE    SPA-NAI-HEADLIST-TEDYUKYMD (SPA-GMN-SELNUM1)
+                                       TO  RECE-PUTB-EDYUKYMD
+               MOVE    RECE-PUTB-REC   TO  MCPDATA-REC
+               MOVE    "DBSELECT"      TO  MCP-FUNC
+               MOVE    "tbl_rece_putb" TO  MCP-TABLE
+               MOVE    "key2"          TO  MCP-PATHNAME
+               CALL    "MONFUNC"       USING
+                                           MCPAREA
+                                           MCPDATA-REC
+               IF      MCP-RC          =   ZERO
+                   MOVE    "tbl_rece_putb" TO  MCP-TABLE
+                   MOVE    "key2"          TO  MCP-PATHNAME
+                   PERFORM 900-RECE-PUTB-READ-N-SEC
+               ELSE
+                   INITIALIZE                  RECE-PUTB-REC
+                   MOVE    1               TO  FLG-RECE-PUTB
+               END-IF
       *
-           MOVE    ZERO            TO  IDX
-           PERFORM     UNTIL   FLG-RECE-PUTB   =   1
-                       OR      IDX            >=  WRK-CONS-BODYLIST-MAX
+               MOVE    ZERO            TO  IDX
+               PERFORM     UNTIL   FLG-RECE-PUTB   =   1
+                           OR      IDX             >=
+                                               WRK-CONS-BODYLIST-MAX
       *
-               EVALUATE    RECE-PUTB-KOUHI-NO
-                   WHEN    ZERO
-                       ADD     1   TO  IDX
-                       MOVE    RECE-PUTB-GRP-NO1
-                                   TO  SPA-NAI-BODYLIST-TGRP1-NO (IDX)
-                       IF      SPA-GMN-GRP1-NO-MAX
-                                   <   SPA-NAI-BODYLIST-TGRP1-NO-9 (IDX)
-                           MOVE    SPA-NAI-BODYLIST-TGRP1-NO-9 (IDX)
-                                       TO  SPA-GMN-GRP1-NO-MAX
-                       END-IF
-                       MOVE    RECE-PUTB-GRP-NO2
-                                   TO  SPA-NAI-BODYLIST-TGRP2-NO (IDX)
-                       MOVE    RECE-PUTB-SYUBETU-GAI
-                                   TO  SPA-GMN-BODYLIST-TSYUBETU (IDX)
-                       PERFORM VARYING IDZ FROM    1   BY  1
-                               UNTIL   IDZ >       50
-                               OR  WRK-2003-TSYUBETU (IDZ) =   SPACE
-                           IF      RECE-PUTB-SYUBETU-GAI
-                                           =   WRK-2003-TSYUBETU (IDZ)
-                               MOVE    WRK-2003-TSYUBETUNAME (IDZ)
-                                   TO  SPA-GMN-BODYLIST-TSYUBETUNAME
-                                                                  (IDX)
+                   EVALUATE    RECE-PUTB-KOUHI-NO
+                       WHEN    ZERO
+                           ADD     1   TO  IDX
+                           MOVE    RECE-PUTB-GRP-NO1
+                               TO  SPA-NAI-BODYLIST-TGRP1-NO (IDXX IDX)
+                           IF      SPA-GMN-GRP1-NO-MAX <
+                               SPA-NAI-BODYLIST-TGRP1-NO-9 (IDXX IDX)
+                               MOVE    SPA-NAI-BODYLIST-TGRP1-NO-9
+                                                           (IDXX IDX)
+                                       TO  SPA-GMN-GRP1-NO-MAX (IDXX)
                            END-IF
-                       END-PERFORM
-                       MOVE    RECE-PUTB-SYUBETU-UNDER-NO1
-                                   TO  SPA-NAI-BODYLIST-TPRTJYUN1 (IDX)
-                       MOVE    RECE-PUTB-SYUBETU-UNDER-NO2
-                                   TO  SPA-NAI-BODYLIST-TPRTJYUN2 (IDX)
-                   WHEN    OTHER
-                       ADD     1   TO  SPA-GMN-KOHLIST-MAX (IDX)
-                       MOVE    SPA-GMN-KOHLIST-MAX (IDX)
-                                   TO  IDY
-                       MOVE    RECE-PUTB-KOUHI-NUM
-                                   TO  SPA-GMN-KOHLIST-THKNNUM
-                                                           (IDX IDY)
-                       IF      RECE-PUTB-KOUHI-NO  <   500
-                           MOVE    "T"                                    
-                                   TO  SPA-GMN-KOHLIST-TJYUN (IDX IDY)
-                       ELSE
-                           MOVE    "B"                                    
-                                   TO  SPA-GMN-KOHLIST-TJYUN (IDX IDY)
-                       END-IF
-                       EVALUATE    RECE-PUTB-KOUHI-NUM
-                           WHEN    "XXX"
-                               MOVE    "長期"              TO
-                                   SPA-GMN-KOHLIST-TSEIDONAME
-                                                           (IDX IDY)
-                           WHEN    "YYY"
-                               MOVE    "在総診・在医総"    TO
-                                   SPA-GMN-KOHLIST-TSEIDONAME
-                                                           (IDX IDY)
-                           WHEN    OTHER
-                               INITIALIZE                  HKNNUM-REC
-                               MOVE    SPA-HOSPID      TO  HKN-HOSPID
-                               MOVE    RECE-PUTB-KOUHI-NUM
+                           MOVE    RECE-PUTB-GRP-NO2
+                               TO  SPA-NAI-BODYLIST-TGRP2-NO (IDXX IDX)
+                           MOVE    RECE-PUTB-SYUBETU-GAI
+                               TO  SPA-GMN-BODYLIST-TSYUBETU (IDXX IDX)
+                           PERFORM VARYING IDZ FROM    1   BY  1
+                                   UNTIL   IDZ >       50
+                                   OR  WRK-2003-TSYUBETU (IDZ) =   SPACE
+                               IF      RECE-PUTB-SYUBETU-GAI
+                                           =   WRK-2003-TSYUBETU (IDZ)
+                                   MOVE    WRK-2003-TSYUBETUNAME (IDZ)
+                                       TO  SPA-GMN-BODYLIST-TSYUBETUNAME
+                                                              (IDXX IDX)
+                               END-IF
+                           END-PERFORM
+                           MOVE    RECE-PUTB-SYUBETU-UNDER-NO1
+                               TO  SPA-NAI-BODYLIST-TPRTJYUN1 (IDXX IDX)
+                           MOVE    RECE-PUTB-SYUBETU-UNDER-NO2
+                               TO  SPA-NAI-BODYLIST-TPRTJYUN2 (IDXX IDX)
+                       WHEN    OTHER
+                           ADD     1   TO  SPA-GMN-KOHLIST-MAX(IDXX IDX)
+                           MOVE    SPA-GMN-KOHLIST-MAX (IDXX IDX)
+                                       TO  IDY
+                           MOVE    RECE-PUTB-KOUHI-NUM
+                                       TO  SPA-GMN-KOHLIST-THKNNUM
+                                                       (IDXX IDX IDY)
+                           IF      RECE-PUTB-KOUHI-NO  <   500
+                               MOVE    "T"                                    
+                                   TO  SPA-GMN-KOHLIST-TJYUN
+                                                       (IDXX IDX IDY)
+                           ELSE
+                               MOVE    "B"                                    
+                                   TO  SPA-GMN-KOHLIST-TJYUN
+                                                       (IDXX IDX IDY)
+                           END-IF
+                           EVALUATE    RECE-PUTB-KOUHI-NUM
+                               WHEN    "XXX"
+                                   MOVE    "長期"              TO
+                                       SPA-GMN-KOHLIST-TSEIDONAME
+                                                         (IDXX IDX IDY)
+                               WHEN    "YYY"
+                                   MOVE    "在総診・在医総"    TO
+                                       SPA-GMN-KOHLIST-TSEIDONAME
+                                                         (IDXX IDX IDY)
+                               WHEN    OTHER
+                                   INITIALIZE              HKNNUM-REC
+                                   MOVE    SPA-HOSPID  TO  HKN-HOSPID
+                                   MOVE    RECE-PUTB-KOUHI-NUM
                                                        TO  HKN-HKNNUM
-                               MOVE    "00"            TO  HKN-PAYKBN
-                               MOVE    HKNNUM-REC      TO  MCPDATA-REC
-                               PERFORM 900-HKNNUM-READ-SEC
-                               MOVE    HKN-TANSEIDONAME    TO
-                                   SPA-GMN-KOHLIST-TSEIDONAME
-                                                           (IDX IDY)
-                       END-EVALUATE
-               END-EVALUATE
+                                   MOVE    "00"        TO  HKN-PAYKBN
+                                   MOVE    HKNNUM-REC  TO  MCPDATA-REC
+                                   PERFORM 900-HKNNUM-READ-SEC
+                                   MOVE    HKN-TANSEIDONAME    TO
+                                       SPA-GMN-KOHLIST-TSEIDONAME
+                                                        (IDXX IDX IDY)
+                           END-EVALUATE
+                   END-EVALUATE
+      *
+                   MOVE    "tbl_rece_putb" TO  MCP-TABLE
+                   MOVE    "key2"          TO  MCP-PATHNAME
+                   PERFORM 900-RECE-PUTB-READ-N-SEC
+               END-PERFORM
       *
                MOVE    "tbl_rece_putb" TO  MCP-TABLE
                MOVE    "key2"          TO  MCP-PATHNAME
-               PERFORM 900-RECE-PUTB-READ-N-SEC
+               PERFORM 900-CLOSE-SEC
+      *
+               MOVE    IDX             TO  SPA-GMN-BODYLIST-MAX (IDXX)
            END-PERFORM
-      *
-           MOVE    "tbl_rece_putb" TO  MCP-TABLE
-           MOVE    "key2"          TO  MCP-PATHNAME
-           PERFORM 900-CLOSE-SEC
-      *
-           MOVE    IDX             TO  SPA-GMN-BODYLIST-MAX
       *
            MOVE    SPA-GMN-SELNUM1 TO  W121-HEADLIST-ROW
            MOVE    ZERO            TO  FLG-HEADLIST-ROW
@@ -1550,7 +1635,7 @@
                                        SPA-GMN-BODY-KOUMOKU
                                        SPA-GMN-GRP-KOUMOKU
                                        SPA-GMN-BODYLIST
-                                       SPA-GMN-BODYLIST-MAX
+      *****                            SPA-GMN-BODYLIST-MAX
       *
            IF      WRK-SELNUM         >   ZERO
                MOVE    WRK-SELNUM         TO  SPA-GMN-SELNUM1
@@ -1573,14 +1658,20 @@
            EVALUATE    MCP-EVENT       ALSO    MCP-WIDGET
       *
                WHEN    ANY             ALSO    "BODYLIST"
+               WHEN    ANY             ALSO    "BODYLIST_1"
                    PERFORM 41011-BODYLIST-SEL-SEC
       *
                WHEN    ANY             ALSO    "KOHLIST"
+               WHEN    ANY             ALSO    "KOHLIST_1"
                    PERFORM 41012-KOHLIST-SEL-SEC
       *            入力チェック処理
                    MOVE    ZERO                TO  FLG-TOUROKU
                    PERFORM 410-INPUT-CHK-SEC
-                   MOVE    101                 TO  SPA-GMN-CUR
+                   IF      WRK-PAGENO          =   1
+                       MOVE    101                 TO  SPA-GMN-CUR
+                   ELSE
+                       MOVE    301                 TO  SPA-GMN-CUR
+                   END-IF
                WHEN    OTHER
       *            入力チェック処理
                    MOVE    ZERO                TO  FLG-TOUROKU
@@ -1597,36 +1688,64 @@
       *
            MOVE    ZERO                TO  WRK-SELNUM
       *
-           PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX     >       SPA-GMN-BODYLIST-MAX
-               IF      W121-BODYLIST-SELECT (IDX)  =   "T"
-                   IF      IDX                 =   SPA-NAI-SELNUM2
-                       CONTINUE
-                   ELSE
-                       MOVE    IDX                 TO  WRK-SELNUM
-                       MOVE    SPA-GMN-BODYLIST-MAX
-                                                   TO  IDX
+           PERFORM VARYING     IDX FROM    1   BY  1
+                   UNTIL       IDX >       SPA-GMN-BODYLIST-MAX
+                                                   (WRK-PAGENO)
+               IF      WRK-PAGENO      =   1
+                   IF      W121-BODYLIST-SELECT (IDX)  =   "T"
+                       IF      IDX     =   SPA-NAI-SELNUM2 (WRK-PAGENO)
+                           CONTINUE
+                       ELSE
+                           MOVE    IDX                 TO  WRK-SELNUM
+                           MOVE    SPA-GMN-BODYLIST-MAX (WRK-PAGENO)
+                                                       TO  IDX
+                       END-IF
                    END-IF
-               END-IF
+               ELSE
+                   IF      W121-BODYLIST-1-SELECT (IDX) =   "T"
+                       IF      IDX     =   SPA-NAI-SELNUM2 (WRK-PAGENO)
+                           CONTINUE
+                       ELSE
+                           MOVE    IDX                 TO  WRK-SELNUM
+                           MOVE    SPA-GMN-BODYLIST-MAX (WRK-PAGENO)
+                                                       TO  IDX
+                       END-IF
+                   END-IF
            END-PERFORM
       *
            IF      WRK-SELNUM          >   ZERO
-               INITIALIZE                      SPA-GMN-BODY-KOUMOKU
-                                               SPA-NAI-BODY-KOUMOKU
-                                               SPA-NAI-SELNUM2-ROW
-               MOVE    WRK-SELNUM          TO  SPA-NAI-SELNUM2
+               INITIALIZE              SPA-GMN-BODY-OCC    (WRK-PAGENO)
+                                       SPA-NAI-BODY-OCC    (WRK-PAGENO)
+                                       SPA-NAI-SELNUM2-ROW (WRK-PAGENO)
+               MOVE    WRK-SELNUM      TO  SPA-NAI-SELNUM2 (WRK-PAGENO)
            END-IF
-      *
+           MOVE    SPA-NAI-SELNUM2 (WRK-PAGENO)
+                                       TO  WRK-SELNUM2
+           MOVE    SPA-NAI-SELNUM3 (WRK-PAGENO)
+                                       TO  WRK-SELNUM3
+     *
            EVALUATE    TRUE
-               WHEN    SPA-GMN-GRP-SETTEI  =   "1"
+               WHEN    SPA-GMN-GRP-SETTEI (WRK-PAGENO) =   "1"
                    PERFORM 410111-GRP-HENSYU-SEC
-                   MOVE    50              TO  SPA-GMN-CUR
-               WHEN    SPA-GMN-GRP-KAIJYO  =   "1"
+                   IF      WRK-PAGENO      =   1
+                       MOVE    50              TO  SPA-GMN-CUR
+                   ELSE
+                       MOVE    250             TO  SPA-GMN-CUR
+                   END-IF
+               WHEN    SPA-GMN-GRP-KAIJYO(WRK-PAGENO)  =   "1"
                    PERFORM 410112-GRP-KAIJYO-SEC
-                   MOVE    100             TO  SPA-GMN-CUR
+                   IF      WRK-PAGENO      =   1
+                       MOVE    100             TO  SPA-GMN-CUR
+                   ELSE
+                       MOVE    300             TO  SPA-GMN-CUR
+                   END-IF
                WHEN    OTHER
                    PERFORM 41021-SELNUM2-HENSYU-SEC
-                   MOVE    13              TO  SPA-GMN-CUR
+                   IF      WRK-PAGENO      =   1
+                       MOVE    13             TO  SPA-GMN-CUR
+                   ELSE
+                       MOVE    213            TO  SPA-GMN-CUR
+                   END-IF
            END-EVALUATE
       *
            .
@@ -1639,60 +1758,77 @@
        410111-GRP-HENSYU-SEC       SECTION.
       *
       *    グループ１の設定
-           IF      SPA-GMN-GRP1        =   "T"
-               IF      SPA-NAI-GRP1-NO     =   ZERO
-                   MOVE    50                  TO  SPA-GMN-CUR
-                   MOVE    "0011"              TO  SPA-ERRCD
-                   MOVE    ZERO                TO  FLG-BODYLIST-ROW
-                   MOVE    ZERO                TO  SPA-NAI-SELNUM2
-                                                   SPA-NAI-SELNUM2-ROW
+           IF      SPA-GMN-GRP1 (WRK-PAGENO)   =   "T"
+               IF      SPA-NAI-GRP1-NO(WRK-PAGENO) =   ZERO
+                   IF      WRK-PAGENO      =   1
+                       MOVE    50              TO  SPA-GMN-CUR
+                   ELSE
+                       MOVE    250             TO  SPA-GMN-CUR
+                   END-IF
+                   MOVE    "0011"          TO  SPA-ERRCD
+                   MOVE    ZERO            TO  FLG-BODYLIST-ROW
+                                                       (WRK-PAGENO)
+                   MOVE    ZERO            TO  SPA-NAI-SELNUM2
+                                                       (WRK-PAGENO)
+                                               SPA-NAI-SELNUM2-ROW
+                                                       (WRK-PAGENO)
                    GO  TO  410111-GRP-HENSYU-EXT
                END-IF 
       *
       *        元情報と設定場所を取得
                MOVE    ZERO            TO  WRK-GRP-INDEX
                MOVE    ZERO            TO  WRK-INDEX
-               IF      SPA-GMN-GRP1-NO-MAX <   SPA-NAI-GRP1-NO
+               IF      SPA-GMN-GRP1-NO-MAX (WRK-PAGENO)
+                                       <   SPA-NAI-GRP1-NO (WRK-PAGENO)
       *            既にグループ１番号を設定済のとき設定場所を取得
-                   IF      SPA-NAI-BODYLIST-TGRP1-NO (SPA-NAI-SELNUM2)
+                   IF      SPA-NAI-BODYLIST-TGRP1-NO
+                                               (WRK-PAGENO WRK-SELNUM2)
                                            NOT =   "000"
-                       COMPUTE IDX =   SPA-NAI-SELNUM2     +   1
-                       IF    ( SPA-NAI-BODYLIST-TGRP1-NO (IDX)
+                       COMPUTE IDX =   SPA-NAI-SELNUM2 (WRK-PAGENO)
+                                       +   1
+                       IF    ( SPA-NAI-BODYLIST-TGRP1-NO(WRK-PAGENO IDX)
                                            =   "000"                )
-                       OR    ( SPA-NAI-BODYLIST-TGRP1-NO (IDX)
-                                       NOT =   SPA-NAI-BODYLIST-TGRP1-NO
-                                                  (SPA-NAI-SELNUM2) ) 
+                       OR    ( SPA-NAI-BODYLIST-TGRP1-NO(WRK-PAGENO IDX)
+                                       NOT =
+                               SPA-NAI-BODYLIST-TGRP1-NO
+                                           (WRK-PAGENO WRK-SELNUM2) ) 
                            CONTINUE
                        ELSE
-                           PERFORM VARYING IDX FROM    SPA-NAI-SELNUM2
-                                                       BY  1
-                                   UNTIL   IDX >   SPA-GMN-BODYLIST-MAX
-                               IF    ( SPA-NAI-BODYLIST-TGRP1-NO (IDX)
+                           PERFORM VARYING IDX FROM   WRK-SELNUM2  BY  1
+                                   UNTIL   IDX >
+                                       SPA-GMN-BODYLIST-MAX (WRK-PAGENO)
+                               IF    ( SPA-NAI-BODYLIST-TGRP1-NO
+                                                     (WRK-PAGENO IDX)
                                                    NOT =
-                                           SPA-NAI-BODYLIST-TGRP1-NO
-                                                     (SPA-NAI-SELNUM2) ) 
-                               AND   ( SPA-NAI-SELNUM2 NOT =   IDX     )
+                                         SPA-NAI-BODYLIST-TGRP1-NO
+                                            (WRK-PAGENO WRK-SELNUM2)  ) 
+                               AND   ( SPA-NAI-SELNUM2(WRK-PAGENO)
+                                                  NOT =   IDX         )
                                    COMPUTE WRK-GRP-INDEX
                                                       =    IDX -   1
-                                   MOVE    SPA-GMN-BODYLIST-MAX
+                                   MOVE    SPA-GMN-BODYLIST-MAX 
+                                                           (WRK-PAGENO)
                                                            TO  IDX
                                END-IF
                            END-PERFORM
                        END-IF    
                    END-IF
                ELSE
-                   PERFORM VARYING IDX FROM    SPA-GMN-BODYLIST-MAX
-                                               BY  -1
+                   PERFORM VARYING IDX FROM
+                               SPA-GMN-BODYLIST-MAX (WRK-PAGENO)  BY  -1
                            UNTIL   IDX <       1
-                       IF    ( SPA-NAI-BODYLIST-TGRP1-NO (IDX)
-                                               =   SPA-NAI-GRP1-NO )
-                       AND   ( IDX         NOT =   SPA-NAI-SELNUM2 )
+                       IF    ( SPA-NAI-BODYLIST-TGRP1-NO
+                                                   (WRK-PAGENO IDX)
+                                       =   SPA-NAI-GRP1-NO(WRK-PAGENO) )
+                       AND   ( IDX NOT =   SPA-NAI-SELNUM2(WRK-PAGENO) )
                            MOVE    IDX             TO  WRK-GRP-INDEX
-                           IF    ( SPA-NAI-BODYLIST-TPRTJYUN1 (IDX)
+                           IF    ( SPA-NAI-BODYLIST-TPRTJYUN1
+                                          (WRK-PAGENO IDX)
                                                    =   SPACE        )
-                           AND   ( SPA-NAI-BODYLIST-TPRTJYUN2 (IDX)
+                           AND   ( SPA-NAI-BODYLIST-TPRTJYUN2
+                                          (WRK-PAGENO IDX)
                                                    =   SPACE        )
-                           AND   ( SPA-GMN-KOHLIST-MAX (IDX)
+                           AND   ( SPA-GMN-KOHLIST-MAX (WRK-PAGENO IDX)
                                                    =   ZERO         )
                                CONTINUE
                            ELSE
@@ -1704,72 +1840,91 @@
                END-IF
       *
       *        既に設定済の同グループの設定との設定のチェック
-               IF    ( SPA-GMN-GRP1-NO-MAX <   SPA-NAI-GRP1-NO )
-               OR    ((SPA-NAI-BODYLIST-TPRTJYUN1 (SPA-NAI-SELNUM2)
+               IF    ( SPA-GMN-GRP1-NO-MAX (WRK-PAGENO)
+                                   <   SPA-NAI-GRP1-NO (WRK-PAGENO) )
+               OR    ((SPA-NAI-BODYLIST-TPRTJYUN1
+                                               (WRK-PAGENO WRK-SELNUM2)
                                            =   SPACE    )
-                  AND (SPA-NAI-BODYLIST-TPRTJYUN2 (SPA-NAI-SELNUM2)
+                  AND (SPA-NAI-BODYLIST-TPRTJYUN2
+                                               (WRK-PAGENO WRK-SELNUM2)
                                            =   SPACE    )
-                  AND (SPA-GMN-KOHLIST-MAX (SPA-NAI-SELNUM2)
-                                           =   ZERO     )      )
-               OR    ( WRK-INDEX           =   ZERO            )
+                  AND (SPA-GMN-KOHLIST-MAX     (WRK-PAGENO WRK-SELNUM2)
+                                           =   ZERO     )           )
+               OR    ( WRK-INDEX           =   ZERO                 )
                    CONTINUE
                ELSE
-                   IF    ( SPA-NAI-BODYLIST-TPRTJYUN1 (SPA-NAI-SELNUM2)
-                                            NOT =
-                               SPA-NAI-BODYLIST-TPRTJYUN1 (WRK-INDEX) )
-                   OR    ( SPA-NAI-BODYLIST-TPRTJYUN2 (SPA-NAI-SELNUM2)
-                                            NOT =
-                               SPA-NAI-BODYLIST-TPRTJYUN2 (WRK-INDEX) )
-                   OR    ( SPA-GMN-KOHLIST            (SPA-NAI-SELNUM2)
-                                            NOT =
-                               SPA-GMN-KOHLIST (WRK-INDEX)            )
-                       MOVE    "0002"       TO  SPA-ERRCD
+                   IF    ( SPA-NAI-BODYLIST-TPRTJYUN1
+                                           (WRK-PAGENO WRK-SELNUM2)
+                                           NOT =
+                               SPA-NAI-BODYLIST-TPRTJYUN1
+                                               (WRK-PAGENO WRK-INDEX) )
+                   OR    ( SPA-NAI-BODYLIST-TPRTJYUN2
+                                           (WRK-PAGENO WRK-SELNUM2)
+                                           NOT =
+                               SPA-NAI-BODYLIST-TPRTJYUN2
+                                               (WRK-PAGENO WRK-INDEX) )
+                   OR    ( SPA-GMN-KOHLIST (WRK-PAGENO WRK-SELNUM2)
+                                           NOT =
+                               SPA-GMN-KOHLIST (WRK-PAGENO WRK-INDEX) )
+                       MOVE    "0002"      TO  SPA-ERRCD
                        GO  TO  410111-GRP-HENSYU-EXT
                    END-IF
                END-IF
       *
       *        グループ１番号と設定内容の設定
-               MOVE    SPA-NAI-GRP1-NO TO
-                           SPA-NAI-BODYLIST-TGRP1-NO (SPA-NAI-SELNUM2)
+               MOVE    SPA-NAI-GRP1-NO (WRK-PAGENO)
+                                       TO  SPA-NAI-BODYLIST-TGRP1-NO
+                                               (WRK-PAGENO WRK-SELNUM2)
       *
                IF      WRK-INDEX       >   ZERO
-                   MOVE    SPA-NAI-BODYLIST-TPRTJYUN1 (WRK-INDEX)
+                   MOVE    SPA-NAI-BODYLIST-TPRTJYUN1
+                                              (WRK-PAGENO WRK-INDEX)
                                            TO
-                                           SPA-NAI-BODYLIST-TPRTJYUN1
-                                                      (SPA-NAI-SELNUM2)
-                   MOVE    SPA-NAI-BODYLIST-TPRTJYUN2 (WRK-INDEX)
+                               SPA-NAI-BODYLIST-TPRTJYUN1
+                               (WRK-PAGENO WRK-SELNUM2)
+                   MOVE    SPA-NAI-BODYLIST-TPRTJYUN2
+                                              (WRK-PAGENO WRK-INDEX)
                                            TO
-                                           SPA-NAI-BODYLIST-TPRTJYUN2
-                                                      (SPA-NAI-SELNUM2)
-                   MOVE    SPA-GMN-KOHLIST  (WRK-INDEX)
+                               SPA-NAI-BODYLIST-TPRTJYUN2
+                                               (WRK-PAGENO WRK-SELNUM2)
+                   MOVE    SPA-GMN-KOHLIST  (WRK-PAGENO WRK-INDEX)
                                            TO
-                                           SPA-GMN-KOHLIST 
-                                                      (SPA-NAI-SELNUM2)
+                               SPA-GMN-KOHLIST (WRK-PAGENO WRK-SELNUM2)
                ELSE
-                   IF    ( SPA-GMN-GRP1-NO-MAX <   SPA-NAI-GRP1-NO )
-                   OR    ((SPA-NAI-BODYLIST-TPRTJYUN1 (SPA-NAI-SELNUM2)
-                                               =   SPACE           )
-                      AND (SPA-NAI-BODYLIST-TPRTJYUN2 (SPA-NAI-SELNUM2)
-                                               =   SPACE    )
-                      AND (SPA-GMN-KOHLIST-MAX (SPA-NAI-SELNUM2)
-                                               =   ZERO     )      )
+                   IF    ( SPA-GMN-GRP1-NO-MAX (WRK-PAGENO)
+                                       <   SPA-NAI-GRP1-NO (WRK-PAGENO))
+                   OR    ((SPA-NAI-BODYLIST-TPRTJYUN1
+                                           (WRK-PAGENO WRK-SELNUM2)
+                                       =   SPACE           )
+                      AND (SPA-NAI-BODYLIST-TPRTJYUN2
+                                            (WRK-PAGENO WRK-SELNUM2)
+                                       =   SPACE    )
+                      AND (SPA-GMN-KOHLIST-MAX
+                                            (WRK-PAGENO WRK-SELNUM2)
+                                       =   ZERO     )      )
                        CONTINUE
                    ELSE
                        PERFORM VARYING IDX FROM    1   BY  1
-                               UNTIL   IDX >       SPA-GMN-BODYLIST-MAX
-                           IF    ( SPA-NAI-BODYLIST-TGRP1-NO (IDX)
-                                                   =   SPA-NAI-GRP1-NO )
-                           AND   ( IDX         NOT =   SPA-NAI-SELNUM2 )
+                               UNTIL   IDX >
+                                       SPA-GMN-BODYLIST-MAX (WRK-PAGENO)
+                           IF    ( SPA-NAI-BODYLIST-TGRP1-NO
+                                                       (WRK-PAGENO IDX)
+                                                   =   SPA-NAI-GRP1-NO
+                                                       (WRK-PAGENO) )
+                           AND   ( IDX         NOT =   SPA-NAI-SELNUM2
+                                                       (WRK-PAGENO) )
                                MOVE    SPA-NAI-BODYLIST-TPRTJYUN1
-                                                       (SPA-NAI-SELNUM2)
+                                               (WRK-PAGENO WRK-SELNUM2)
                                        TO  SPA-NAI-BODYLIST-TPRTJYUN1
-                                                           (IDX)
+                                                       (WRK-PAGENO IDX)
                                MOVE    SPA-NAI-BODYLIST-TPRTJYUN2
-                                                       (SPA-NAI-SELNUM2)
+                                               (WRK-PAGENO WRK-SELNUM2)
                                        TO  SPA-NAI-BODYLIST-TPRTJYUN2
-                                                           (IDX)
-                               MOVE    SPA-GMN-KOHLIST (SPA-NAI-SELNUM2)
-                                       TO  SPA-GMN-KOHLIST (IDX)
+                                                       (WRK-PAGENO IDX)
+                               MOVE    SPA-GMN-KOHLIST
+                                               (WRK-PAGENO WRK-SELNUM2)
+                                       TO  SPA-GMN-KOHLIST
+                                                      (WRK-PAGENO IDX)
                            END-IF
                        END-PERFORM    
                    END-IF
@@ -1777,64 +1932,101 @@
       *
       *        既に設定済の同グループの最後に置き換える
                IF      WRK-GRP-INDEX       >   ZERO    
-                   MOVE    SPA-GMN-BODYLIST    TO  WRK-GMN-BODYLIST-AREA
-                   INITIALIZE                      SPA-GMN-BODYLIST
-                   MOVE    ZERO                TO  IDY
+                   MOVE    SPA-GMN-BODYLIST-OCC (WRK-PAGENO)
+                                           TO  WRK-GMN-BODYLIST-AREA
+                   INITIALIZE                  SPA-GMN-BODYLIST-OCC
+                                                       (WRK-PAGENO)
+                   MOVE    ZERO            TO  IDY
                    PERFORM VARYING IDX FROM    1   BY  1
                            UNTIL   IDX >       SPA-GMN-BODYLIST-MAX
-                       IF      IDX             =   SPA-NAI-SELNUM2
+                                                       (WRK-PAGENO)
+                       IF      IDX     =   SPA-NAI-SELNUM2 (WRK-PAGENO)
                            CONTINUE
                        ELSE
                            ADD     1               TO  IDY
                            MOVE    WRK-GMN-BODYLIST-TBL (IDX)
                                                    TO
-                                               SPA-GMN-BODYLIST-TBL(IDY)
+                                   SPA-GMN-BODYLIST-TBL(WRK-PAGENO IDY)
                            IF      IDX             =  WRK-GRP-INDEX
                                ADD     1               TO  IDY
                                MOVE    WRK-GMN-BODYLIST-TBL
-                                           (SPA-NAI-SELNUM2)
+                                                       (WRK-SELNUM2)
                                                        TO
-                                               SPA-GMN-BODYLIST-TBL(IDY)
-                               MOVE    IDY             TO
-                                               W121-BODYLIST-ROW
+                                   SPA-GMN-BODYLIST-TBL(WRK-PAGENO IDY)
+                               IF      WRK-PAGENO      =   1
+                                   MOVE    IDY TO  W121-BODYLIST-ROW
+                               ELSE
+                                   MOVE    IDY TO  W121-BODYLIST-1-ROW
+                               END-IF
                            END-IF
                        END-IF
                    END-PERFORM
                    INITIALIZE                  WRK-GMN-BODYLIST-AREA
                ELSE
-                   MOVE    SPA-NAI-SELNUM2 TO  W121-BODYLIST-ROW
+                   IF      WRK-PAGENO      =   1
+                       MOVE    SPA-NAI-SELNUM2 (WRK-PAGENO)    TO
+                                                   W121-BODYLIST-ROW
+                   ELSE
+                       MOVE    SPA-NAI-SELNUM2 (WRK-PAGENO)    TO
+                                                   W121-BODYLIST-1-ROW
+                   END-IF
                END-IF
-               MOVE    ZERO                TO  SPA-NAI-SELNUM2
-               MOVE    W121-BODYLIST-ROW   TO  SPA-NAI-SELNUM2-ROW
+               MOVE    ZERO            TO  SPA-NAI-SELNUM2 (WRK-PAGENO)
+               IF      WRK-PAGENO      =   1
+                   MOVE    W121-BODYLIST-ROW
+                                       TO  SPA-NAI-SELNUM2-ROW
+                                                           (WRK-PAGENO)
+               ELSE
+                   MOVE    W121-BODYLIST-1-ROW
+                                       TO  SPA-NAI-SELNUM2-ROW
+                                                           (WRK-PAGENO)
+               END-IF
       *
                MOVE    ZERO            TO  SPA-GMN-GRP1-NO-MAX
+                                                           (WRK-PAGENO)
                PERFORM VARYING IDX FROM    1   BY  1
                        UNTIL   IDX >       SPA-GMN-BODYLIST-MAX
-                   IF      SPA-GMN-GRP1-NO-MAX
-                               <   SPA-NAI-BODYLIST-TGRP1-NO-9 (IDX)
-                       MOVE    SPA-NAI-BODYLIST-TGRP1-NO-9 (IDX)
-                                       TO  SPA-GMN-GRP1-NO-MAX
+                                                           (WRK-PAGENO)
+                   IF      SPA-GMN-GRP1-NO-MAX (WRK-PAGENO)
+                               <   SPA-NAI-BODYLIST-TGRP1-NO-9
+                                                   (WRK-PAGENO IDX)
+                       MOVE    SPA-NAI-BODYLIST-TGRP1-NO-9
+                                                       (WRK-PAGENO IDX)
+                                   TO  SPA-GMN-GRP1-NO-MAX (WRK-PAGENO)
                    END-IF
                END-PERFORM
            END-IF
       * 
       *    グループ２の設定
-           IF      SPA-GMN-GRP2        =   "T"
-               IF      SPA-GMN-GRP2-NO     =   SPACE
-                   MOVE    51                  TO  SPA-GMN-CUR
-                   MOVE    "0012"              TO  SPA-ERRCD
-                   MOVE    ZERO                TO  FLG-BODYLIST-ROW
-                   MOVE    ZERO                TO  SPA-NAI-SELNUM2
-                                                   SPA-NAI-SELNUM2-ROW
+           IF      SPA-GMN-GRP2 (WRK-PAGENO)       =   "T"
+               IF      SPA-GMN-GRP2-NO (WRK-PAGENO)     =   SPACE
+                   IF      WRK-PAGENO      =   1
+                       MOVE    51              TO  SPA-GMN-CUR
+                   ELSE
+                       MOVE    251             TO  SPA-GMN-CUR
+                   END-IF
+                   MOVE    "0012"      TO  SPA-ERRCD
+                   MOVE    ZERO        TO  FLG-BODYLIST-ROW (WRK-PAGENO)
+                   MOVE    ZERO        TO  SPA-NAI-SELNUM2  (WRK-PAGENO)
+                                           SPA-NAI-SELNUM2-ROW
+                                                            (WRK-PAGENO)
                    GO  TO  410111-GRP-HENSYU-EXT
                END-IF 
-               MOVE    SPA-GMN-GRP2-NO TO
-                           SPA-NAI-BODYLIST-TGRP2-NO(SPA-NAI-SELNUM2)
-               MOVE    SPA-NAI-SELNUM2 TO  W121-BODYLIST-ROW
-                                           SPA-NAI-SELNUM2-ROW
+               MOVE    SPA-GMN-GRP2-NO (WRK-PAGENO) TO
+                               SPA-NAI-BODYLIST-TGRP2-NO
+                                           (WRK-PAGENO WRK-SELNUM2)
+               IF      WRK-PAGENO      =   1
+                   MOVE    SPA-NAI-SELNUM2 (WRK-PAGENO) TO
+                                                   W121-BODYLIST-ROW
+               ELSE
+                   MOVE    SPA-NAI-SELNUM2 (WRK-PAGENO) TO
+                                                   W121-BODYLIST-1-ROW
+               END-IF
+                   MOVE    SPA-NAI-SELNUM2 (WRK-PAGENO) TO
+                                       SPA-NAI-SELNUM2-ROW (WRK-PAGENO)
            END-IF
       *
-           MOVE    ZERO            TO  FLG-BODYLIST-ROW
+           MOVE    ZERO            TO  FLG-BODYLIST-ROW (WRK-PAGENO)
       **** MOVE    SPA-NAI-SELNUM2 TO  W121-BODYLIST-ROW
       *
            .
@@ -1847,49 +2039,72 @@
        410112-GRP-KAIJYO-SEC       SECTION.
       *
       *    グループ１の解除
-           IF      SPA-GMN-GRP1        =   "T"
-               IF      SPA-NAI-BODYLIST-TGRP1-NO  (SPA-NAI-SELNUM2)
+           IF      SPA-GMN-GRP1 (WRK-PAGENO)       =   "T"
+               IF      SPA-NAI-BODYLIST-TGRP1-NO
+                                           (WRK-PAGENO WRK-SELNUM2)
                                        =   "000"
                    GO  TO  410112-GRP-KAIJYO-EXT
                END-IF
       *
-               MOVE    SPA-NAI-BODYLIST-TGRP1-NO (SPA-NAI-SELNUM2)
+               MOVE    SPA-NAI-BODYLIST-TGRP1-NO
+                                          (WRK-PAGENO WRK-SELNUM2)
                                            TO  WRK-GRP1-NO
       *
                MOVE    "000"               TO
-                           SPA-NAI-BODYLIST-TGRP1-NO (SPA-NAI-SELNUM2)
-               INITIALIZE              SPA-GMN-KOHLIST
-                                                 (SPA-NAI-SELNUM2)
-                                       SPA-NAI-BODYLIST-TPRTJYUN1
-                                                 (SPA-NAI-SELNUM2)
-                                       SPA-NAI-BODYLIST-TPRTJYUN2
-                                                 (SPA-NAI-SELNUM2)
+                           SPA-NAI-BODYLIST-TGRP1-NO
+                                               (WRK-PAGENO WRK-SELNUM2)
+               INITIALIZE      SPA-GMN-KOHLIST (WRK-PAGENO WRK-SELNUM2)
+                               SPA-GMN-KOHLIST-MAX
+                                               (WRK-PAGENO WRK-SELNUM2)
+                               SPA-NAI-BODYLIST-TPRTJYUN1
+                                               (WRK-PAGENO WRK-SELNUM2)
+                               SPA-NAI-BODYLIST-TPRTJYUN2
+                                               (WRK-PAGENO WRK-SELNUM2)
       *
-               IF      SPA-NAI-SELNUM2     =   SPA-GMN-BODYLIST-MAX
-                   MOVE    SPA-NAI-SELNUM2     TO  W121-BODYLIST-ROW
+               IF      SPA-NAI-SELNUM2 (WRK-PAGENO)
+                                   =   SPA-GMN-BODYLIST-MAX (WRK-PAGENO)
+                   IF      WRK-PAGENO     =   1
+                       MOVE    SPA-NAI-SELNUM2 (WRK-PAGENO)
+                                              TO  W121-BODYLIST-ROW
+                   ELSE
+                       MOVE    SPA-NAI-SELNUM2 (WRK-PAGENO)
+                                              TO  W121-BODYLIST-1-ROW
+                   END-IF
                ELSE
-                   COMPUTE IDX =   SPA-NAI-SELNUM2     +   1
-                   IF    ( SPA-NAI-BODYLIST-TGRP1-NO (IDX)
+                   COMPUTE IDX =   SPA-NAI-SELNUM2 (WRK-PAGENO)
+                               +   1
+                   IF    ( SPA-NAI-BODYLIST-TGRP1-NO (WRK-PAGENO IDX)
                                        =   "000"       )
-                   OR    ( SPA-NAI-BODYLIST-TGRP1-NO (IDX)
+                   OR    ( SPA-NAI-BODYLIST-TGRP1-NO (WRK-PAGENO IDX)
                                    NOT =   WRK-GRP1-NO ) 
-                       MOVE    SPA-NAI-SELNUM2 TO  W121-BODYLIST-ROW
+                       IF      WRK-PAGENO     =   1
+                           MOVE    SPA-NAI-SELNUM2 (WRK-PAGENO)
+                                              TO  W121-BODYLIST-ROW
+                       ELSE
+                           MOVE    SPA-NAI-SELNUM2 (WRK-PAGENO)
+                                              TO  W121-BODYLIST-1-ROW
+                       END-IF
                    ELSE
                        MOVE    ZERO            TO  WRK-GRP-INDEX
-                       PERFORM VARYING IDX FROM    SPA-NAI-SELNUM2
+                       PERFORM VARYING IDX FROM
+                                       SPA-NAI-SELNUM2 (WRK-PAGENO)
                                                    BY  1
-                               UNTIL   IDX >   SPA-GMN-BODYLIST-MAX
-                           IF    ( SPA-NAI-BODYLIST-TGRP1-NO (IDX)
+                               UNTIL   IDX > 
+                                       SPA-GMN-BODYLIST-MAX (WRK-PAGENO)
+                           IF    ( SPA-NAI-BODYLIST-TGRP1-NO
+                                                   (WRK-PAGENO IDX)
                                                    NOT =   WRK-GRP1-NO ) 
-                           AND   ( SPA-NAI-SELNUM2 NOT =   IDX         )
+                           AND   ( SPA-NAI-SELNUM2 (WRK-PAGENO)
+                                                   NOT =   IDX         )
                                MOVE    IDX         TO  WRK-GRP-INDEX
-                               MOVE    SPA-GMN-BODYLIST-MAX
+                               MOVE    SPA-GMN-BODYLIST-MAX (WRK-PAGENO)
                                                    TO  IDX
                            END-IF
                        END-PERFORM
                        IF      WRK-GRP-INDEX       =   ZERO
                            COMPUTE WRK-GRP-INDEX
-                                   =   SPA-GMN-BODYLIST-MAX    +   1
+                                   =   SPA-GMN-BODYLIST-MAX (WRK-PAGENO)
+                                   +   1
                        ELSE
                            COMPUTE WRK-GRP-INDEX
                                    =   WRK-GRP-INDEX           -   1
@@ -1897,27 +2112,44 @@
                        PERFORM 4901-SYUBETU-HENSYU-SEC
                    END-IF    
                END-IF
-               MOVE    W121-BODYLIST-ROW   TO  SPA-NAI-SELNUM2-ROW
+               IF      WRK-PAGENO     =   1
+                   MOVE    W121-BODYLIST-ROW
+                                   TO  SPA-NAI-SELNUM2-ROW (WRK-PAGENO)
+               ELSE
+                   MOVE    W121-BODYLIST-1-ROW
+                                   TO  SPA-NAI-SELNUM2-ROW (WRK-PAGENO)
+               END-IF
       *
-               MOVE    ZERO            TO  SPA-GMN-GRP1-NO-MAX
+               MOVE    ZERO        TO  SPA-GMN-GRP1-NO-MAX (WRK-PAGENO)
                PERFORM VARYING IDX FROM    1   BY  1
-                       UNTIL   IDX >       SPA-GMN-BODYLIST-MAX
-                   IF      SPA-GMN-GRP1-NO-MAX
-                               <   SPA-NAI-BODYLIST-TGRP1-NO-9 (IDX)
-                       MOVE    SPA-NAI-BODYLIST-TGRP1-NO-9 (IDX)
-                                       TO  SPA-GMN-GRP1-NO-MAX
+                       UNTIL   IDX > 
+                                       SPA-GMN-BODYLIST-MAX (WRK-PAGENO)
+                   IF      SPA-GMN-GRP1-NO-MAX (WRK-PAGENO)
+                               <   SPA-NAI-BODYLIST-TGRP1-NO-9
+                                                       (WRK-PAGENO IDX)
+                       MOVE    SPA-NAI-BODYLIST-TGRP1-NO-9
+                                                       (WRK-PAGENO IDX)
+                                   TO  SPA-GMN-GRP1-NO-MAX (WRK-PAGENO)
                    END-IF
                END-PERFORM
            END-IF
       *    グループ２の解除
-           IF      SPA-GMN-GRP2        =   "T"
+           IF      SPA-GMN-GRP2 (WRK-PAGENO)        =   "T"
                MOVE    SPACE               TO
-                           SPA-NAI-BODYLIST-TGRP2-NO (SPA-NAI-SELNUM2)
-               MOVE    SPA-NAI-SELNUM2     TO  W121-BODYLIST-ROW
-                                               SPA-NAI-SELNUM2-ROW
+                           SPA-NAI-BODYLIST-TGRP2-NO
+                                               (WRK-PAGENO WRK-SELNUM2)
+               IF      WRK-PAGENO          =   1
+                   MOVE    SPA-NAI-SELNUM2 (WRK-PAGENO)
+                                               TO  W121-BODYLIST-ROW
+               ELSE
+                   MOVE    SPA-NAI-SELNUM2 (WRK-PAGENO)
+                                               TO  W121-BODYLIST-1-ROW
+               END-IF
+               MOVE    SPA-NAI-SELNUM2 (WRK-PAGENO)
+                                   TO  SPA-NAI-SELNUM2-ROW (WRK-PAGENO)
            END-IF
       *
-           MOVE    ZERO            TO  FLG-BODYLIST-ROW
+           MOVE    ZERO            TO  FLG-BODYLIST-ROW (WRK-PAGENO)
       **** MOVE    SPA-NAI-SELNUM2 TO  W121-BODYLIST-ROW
       *
            .
@@ -1929,39 +2161,57 @@
       *****************************************************************
        41021-SELNUM2-HENSYU-SEC        SECTION.
       *
-           MOVE    SPA-GMN-BODYLIST-TSYUBETU     (SPA-NAI-SELNUM2)
-                                   TO  SPA-GMN-RECESYUBETU
-           MOVE    SPA-GMN-BODYLIST-TSYUBETUNAME (SPA-NAI-SELNUM2)
-                                   TO  SPA-GMN-SYUBETUNAME
-           MOVE    SPA-NAI-BODYLIST-TPRTJYUN1    (SPA-NAI-SELNUM2)
+           MOVE    SPA-GMN-BODYLIST-TSYUBETU
+                           (WRK-PAGENO WRK-SELNUM2)
+                                   TO  SPA-GMN-RECESYUBETU (WRK-PAGENO)
+           MOVE    SPA-GMN-BODYLIST-TSYUBETUNAME
+                           (WRK-PAGENO WRK-SELNUM2)
+                                   TO  SPA-GMN-SYUBETUNAME (WRK-PAGENO)
+           MOVE    SPA-NAI-BODYLIST-TPRTJYUN1
+                           (WRK-PAGENO WRK-SELNUM2)
                                    TO  SPA-GMN-SYUBETU-PRTJYUN1
+                                                           (WRK-PAGENO)
            PERFORM VARYING IDY FROM    1   BY  1
                    UNTIL   IDY >   SPA-GMN-SYUBETU-PRTJYUN1-MAX
-               IF      SPA-GMN-SYUBETU-PRTJYUN1
+               IF      SPA-GMN-SYUBETU-PRTJYUN1 (WRK-PAGENO)
                                =   SPA-GMN-SYUBETU-PRTJYUN1L (IDY)
                    MOVE    SPA-GMN-SYUBETU-PRTJYUN1LST (IDY)
                                        TO  SPA-GMN-SYUBETU-PRTJYUN1-G
+                                                           (WRK-PAGENO)
                    MOVE    SPA-GMN-SYUBETU-PRTJYUN1-MAX
                                        TO  IDY
                END-IF                                     
            END-PERFORM
-           MOVE    SPA-NAI-BODYLIST-TPRTJYUN2    (SPA-NAI-SELNUM2)
+           MOVE    SPA-NAI-BODYLIST-TPRTJYUN2
+                               (WRK-PAGENO WRK-SELNUM2)
                                    TO  SPA-GMN-SYUBETU-PRTJYUN2
+                                                       (WRK-PAGENO)
            PERFORM VARYING IDY FROM    1   BY  1
                    UNTIL   IDY >   SPA-GMN-SYUBETU-PRTJYUN2-MAX
-               IF      SPA-GMN-SYUBETU-PRTJYUN2
+               IF      SPA-GMN-SYUBETU-PRTJYUN2 (WRK-PAGENO)
                                =   SPA-GMN-SYUBETU-PRTJYUN2L (IDY)
                    MOVE    SPA-GMN-SYUBETU-PRTJYUN2LST (IDY)
                                        TO  SPA-GMN-SYUBETU-PRTJYUN2-G
+                                                            (WRK-PAGENO)
                    MOVE    SPA-GMN-SYUBETU-PRTJYUN2-MAX
                                        TO  IDY
                END-IF                                     
            END-PERFORM
       *
-           MOVE    SPA-NAI-SELNUM2 TO  W121-BODYLIST-ROW
-           MOVE    ZERO            TO  FLG-BODYLIST-ROW
+           IF      WRK-PAGENO      =   1
+               MOVE    SPA-NAI-SELNUM2 (WRK-PAGENO) 
+                                       TO  W121-BODYLIST-ROW
+           ELSE
+               MOVE    SPA-NAI-SELNUM2 (WRK-PAGENO) 
+                                       TO  W121-BODYLIST-1-ROW
+           END-IF 
+           MOVE    ZERO            TO  FLG-BODYLIST-ROW  (WRK-PAGENO)
       *
-           MOVE    13              TO  SPA-GMN-CUR
+           IF      WRK-PAGENO      =   1
+               MOVE    13              TO  SPA-GMN-CUR
+           ELSE
+               MOVE    213             TO  SPA-GMN-CUR
+           END-IF
            .
        41021-SELNUM2-HENSYU-EXT.
            EXIT.
@@ -1975,16 +2225,33 @@
       *
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >       SPA-GMN-KOHLIST-MAX
-                                                   (SPA-NAI-SELNUM2)
-               IF      W121-KOHLIST-SELECT (IDX)   =   "T"
-                   MOVE    SPA-GMN-KOHLIST-THKNNUM (SPA-NAI-SELNUM2 IDX)
-                                               TO  WRK-HKNNUM
-                   MOVE    SPA-GMN-KOHLIST-MAX     (SPA-NAI-SELNUM2)
-                                               TO  IDX
-               END-IF
+                                               (WRK-PAGENO WRK-SELNUM2)
+               IF      WRK-PAGENO          =   1
+                   IF      W121-KOHLIST-SELECT (IDX)   =   "T"
+                       MOVE    SPA-GMN-KOHLIST-THKNNUM
+                           (WRK-PAGENO WRK-SELNUM2 IDX)
+                                                   TO  WRK-HKNNUM
+                       MOVE    SPA-GMN-KOHLIST-MAX
+                               (WRK-PAGENO WRK-SELNUM2)
+                                                   TO  IDX
+                   END-IF
+               ELSE
+                   IF      W121-KOHLIST-1-SELECT (IDX)  =   "T"
+                       MOVE    SPA-GMN-KOHLIST-THKNNUM
+                           (WRK-PAGENO WRK-SELNUM2 IDX)
+                                                   TO  WRK-HKNNUM
+                       MOVE    SPA-GMN-KOHLIST-MAX
+                               (WRK-PAGENO WRK-SELNUM2)
+                                                   TO  IDX
+                   END-IF
+               END-IF    
            END-PERFORM
       *
-           MOVE    WRK-HKNNUM          TO  W121-HKNNUM
+           IF      WRK-PAGENO      =   1
+               MOVE    WRK-HKNNUM      TO  W121-HKNNUM
+           ELSE
+               MOVE    WRK-HKNNUM      TO  W121-HKNNUM-1
+           END-IF
            .
        41012-KOHLIST-SEL-EXT.
            EXIT.
@@ -2004,9 +2271,16 @@
                PERFORM 4102-KIHON-CHK-SEC
            END-IF
       *
-           IF      SPA-NAI-SELNUM2 >   ZERO
-               MOVE    SPA-NAI-SELNUM2     TO  W121-BODYLIST-ROW
-               MOVE    ZERO                TO  FLG-BODYLIST-ROW
+           IF      SPA-NAI-SELNUM2 (WRK-PAGENO)
+                                       >   ZERO
+               IF      WRK-PAGENO          =   1
+                   MOVE    SPA-NAI-SELNUM2 (WRK-PAGENO)
+                                               TO  W121-BODYLIST-ROW
+               ELSE
+                   MOVE    SPA-NAI-SELNUM2 (WRK-PAGENO)
+                                               TO  W121-BODYLIST-1-ROW
+               END-IF 
+               MOVE    ZERO            TO  FLG-BODYLIST-ROW (WRK-PAGENO)
            END-IF
            .
        410-INPUT-CHK-EXT.
@@ -2022,16 +2296,29 @@
            MOVE    W121-HKNJANUM       TO  SPA-GMN-HKNJANUM
            MOVE    W121-HKNJ-PRTKBN    TO  SPA-GMN-HKNJANUM-PRTKBN-G
       *
-           MOVE    W121-PRTJYUN1       TO  SPA-GMN-PRTJYUN1-G
-           MOVE    W121-PRTJYUN2       TO  SPA-GMN-PRTJYUN2-G
-           MOVE    W121-SRT-LAST       TO  SPA-GMN-SRT-LAST-G
-           MOVE    W121-ZAITAKU        TO  SPA-GMN-ZAITAKU-G
-           MOVE    W121-CHOUKI         TO  SPA-GMN-CHOUKI-G
-           MOVE    W121-KOUGAKU-TEN    TO  SPA-GMN-KOUGAKU-TEN
+      *    県内
+           MOVE    W121-PRTJYUN1       TO  SPA-GMN-PRTJYUN1-G        (1)
+           MOVE    W121-PRTJYUN2       TO  SPA-GMN-PRTJYUN2-G        (1)
+           MOVE    W121-SRT-LAST       TO  SPA-GMN-SRT-LAST-G        (1)
+           MOVE    W121-ZAITAKU        TO  SPA-GMN-ZAITAKU-G         (1)
+           MOVE    W121-CHOUKI         TO  SPA-GMN-CHOUKI-G          (1)
+           MOVE    W121-KOUGAKU-TEN    TO  SPA-GMN-KOUGAKU-TEN       (1)
       *
-           MOVE    W121-SYU-PRTJYUN1   TO  SPA-GMN-SYUBETU-PRTJYUN1-G
-           MOVE    W121-SYU-PRTJYUN2   TO  SPA-GMN-SYUBETU-PRTJYUN2-G
-           MOVE    W121-HKNNUM         TO  SPA-GMN-HKNNUM
+           MOVE    W121-SYU-PRTJYUN1   TO  SPA-GMN-SYUBETU-PRTJYUN1-G(1)
+           MOVE    W121-SYU-PRTJYUN2   TO  SPA-GMN-SYUBETU-PRTJYUN2-G(1)
+           MOVE    W121-HKNNUM         TO  SPA-GMN-HKNNUM            (1)
+      *
+      *    県外
+           MOVE    W121-PRTJYUN1-1     TO  SPA-GMN-PRTJYUN1-G        (2)
+           MOVE    W121-PRTJYUN2-1     TO  SPA-GMN-PRTJYUN2-G        (2)
+           MOVE    W121-SRT-LAST-1     TO  SPA-GMN-SRT-LAST-G        (2)
+           MOVE    W121-ZAITAKU-1      TO  SPA-GMN-ZAITAKU-G         (2)
+           MOVE    W121-CHOUKI-1       TO  SPA-GMN-CHOUKI-G          (2)
+           MOVE    W121-KOUGAKU-TEN-1  TO  SPA-GMN-KOUGAKU-TEN       (2)
+      *
+           MOVE    W121-SYU-PRTJYUN1-1 TO  SPA-GMN-SYUBETU-PRTJYUN1-G(2)
+           MOVE    W121-SYU-PRTJYUN2-1 TO  SPA-GMN-SYUBETU-PRTJYUN2-G(2)
+           MOVE    W121-HKNNUM-1       TO  SPA-GMN-HKNNUM            (2)
       *
            .
        4101-GMN-SPA-SET-EXT.
@@ -2116,20 +2403,24 @@
       *****************************************************************
        4103-KANREN-CHK-SEC          SECTION.
       *
-           IF      SPA-GMN-BODYLIST-MAX =   ZERO
-               IF    ( SPA-GMN-GRP1-NO  NOT =   SPACE )
-               OR    ( SPA-GMN-GRP2-NO  NOT =   SPACE )
+           IF      SPA-GMN-BODYLIST-MAX (WRK-PAGENO)
+                                    =   ZERO
+               IF    ( SPA-GMN-GRP1-NO  (WRK-PAGENO)
+                                    NOT =   SPACE )
+               OR    ( SPA-GMN-GRP2-NO  (WRK-PAGENO)
+                                    NOT =   SPACE )
                    MOVE    "0102"           TO  SPA-ERRCD
                END-IF
            END-IF
       *
            IF      SPA-ERRCD        =   SPACE
-               IF    ( SPA-NAI-SELNUM2  =   ZERO )
-                   IF    ( SPA-GMN-SYUBETU-PRTJYUN1
+               IF    ( SPA-NAI-SELNUM2  (WRK-PAGENO)
+                                        =   ZERO )
+                   IF    ( SPA-GMN-SYUBETU-PRTJYUN1 (WRK-PAGENO)
                                         NOT =   SPACE )
-                   OR    ( SPA-GMN-SYUBETU-PRTJYUN2
+                   OR    ( SPA-GMN-SYUBETU-PRTJYUN2 (WRK-PAGENO)
                                         NOT =   SPACE )
-                   OR    ( SPA-GMN-HKNNUM
+                   OR    ( SPA-GMN-HKNNUM           (WRK-PAGENO)
                                         NOT =   SPACE )
                        MOVE    "0103"           TO  SPA-ERRCD
                    END-IF
@@ -2261,16 +2552,25 @@
       *
            IF      SPA-ERRCD       =   SPACE
                IF      SPA-GMN-SELNUM1     =   ZERO
+      *
+               INITIALIZE                  SPA-NAI-BODY-KOUMOKU
+                                           SPA-GMN-BODY-KOUMOKU
+                                           SPA-GMN-GRP-KOUMOKU
+                                           SPA-GMN-BODYLIST
+                                           SPA-GMN-HEAD1-OCC (1)
+                                           SPA-GMN-HEAD1-OCC (2)
       *            レセプト（編綴順）情報編集処理
                    PERFORM 3102-SPA-2008-HENSYU-SEC
       *            レセプト種別情報編集処理
                    PERFORM 410211-RECESYUBETU-HENSYU-SEC
       *
                    MOVE    SPA-GMN-PRTJYUN1LST (1)
-                                       TO  SPA-GMN-PRTJYUN1-G
+                                       TO  SPA-GMN-PRTJYUN1-G (1)
+                                           SPA-GMN-PRTJYUN1-G (2)
       *
                    MOVE    SPA-GMN-SRT-LASTLST (1)
-                                       TO  SPA-GMN-SRT-LAST-G
+                                       TO  SPA-GMN-SRT-LAST-G (1)
+                                           SPA-GMN-SRT-LAST-G (2)
                END-IF 
       *
                MOVE    4               TO  SPA-GMN-CUR
@@ -2299,13 +2599,15 @@
                        OR      IDY >=      WRK-CONS-BODYLIST-MAX
                    ADD     1                           TO  IDY   
                    MOVE    WRK-2003-TSYUBETU    (IDX)  TO
-                                   SPA-GMN-BODYLIST-TSYUBETU     (IDY)
+                                   SPA-GMN-BODYLIST-TSYUBETU     (1 IDY)
+                                   SPA-GMN-BODYLIST-TSYUBETU     (2 IDY)
                    MOVE    WRK-2003-TSYUBETUNAME(IDX)  TO
-                                   SPA-GMN-BODYLIST-TSYUBETUNAME (IDY)
+                                   SPA-GMN-BODYLIST-TSYUBETUNAME (1 IDY)
+                                   SPA-GMN-BODYLIST-TSYUBETUNAME (2 IDY)
       *
-                   MOVE    IDY     TO  SPA-GMN-BODYLIST-MAX
+                   MOVE    IDY     TO  SPA-GMN-BODYLIST-MAX (1)
+                                       SPA-GMN-BODYLIST-MAX (2)
                END-PERFORM     
-           ELSE
                PERFORM VARYING IDZ FROM    1   BY  1
                        UNTIL   IDZ >       3
                        OR      IDY >=      WRK-CONS-BODYLIST-MAX
@@ -2337,11 +2639,14 @@
                        WHEN    3   ALSO        "3"     ALSO    "4"
                            ADD     1                           TO  IDY   
                            MOVE    WRK-2003-TSYUBETU    (IDX)  TO
-                                   SPA-GMN-BODYLIST-TSYUBETU     (IDY)
+                                   SPA-GMN-BODYLIST-TSYUBETU     (1 IDY)
+                                   SPA-GMN-BODYLIST-TSYUBETU     (2 IDY)
                            MOVE    WRK-2003-TSYUBETUNAME(IDX)  TO
-                                   SPA-GMN-BODYLIST-TSYUBETUNAME (IDY)
+                                   SPA-GMN-BODYLIST-TSYUBETUNAME (1 IDY)
+                                   SPA-GMN-BODYLIST-TSYUBETUNAME (2 IDY)
       *
-                           MOVE    IDY     TO  SPA-GMN-BODYLIST-MAX
+                           MOVE    IDY     TO  SPA-GMN-BODYLIST-MAX (1)
+                                               SPA-GMN-BODYLIST-MAX (2)
                      END-EVALUATE
                    END-PERFORM
                END-PERFORM
@@ -2393,7 +2698,7 @@
        41021-HKNJANUM-PRTJYUN-CHK-SEC       SECTION.
       *
            IF      SPA-GMN-HKNJANUM-PRTJYUN
-                                       =   SPACE
+                                           =   SPACE
                IF      SPA-GMN-PRTJYUN1    =   "02"
                    CONTINUE
                ELSE 
@@ -2504,30 +2809,38 @@
       *****************************************************************
        41021-PRTJYUN1-CHK-SEC   SECTION.
       *
-           IF      SPA-GMN-PRTJYUN1    =   SPACE
+           IF      SPA-GMN-PRTJYUN1 (WRK-PAGENO)
+                                       =   SPACE
                MOVE    SPA-GMN-PRTJYUN1LST (1)
-                                           TO  SPA-GMN-PRTJYUN1-G
+                                   TO  SPA-GMN-PRTJYUN1-G (WRK-PAGENO)
            ELSE
                PERFORM VARYING IDY FROM    1   BY  1
                        UNTIL   IDY >   SPA-GMN-PRTJYUN1-MAX
-                   IF      SPA-GMN-PRTJYUN1    =
-                                   SPA-GMN-PRTJYUN1L (IDY)
+                   IF      SPA-GMN-PRTJYUN1(WRK-PAGENO)
+                                   =   SPA-GMN-PRTJYUN1L (IDY)
                        MOVE    SPA-GMN-PRTJYUN1LST (IDY)
-                                           TO  SPA-GMN-PRTJYUN1-G
+                                   TO  SPA-GMN-PRTJYUN1-G (WRK-PAGENO)
                        MOVE    SPA-GMN-PRTJYUN1-MAX
                                            TO  IDY
                    END-IF                                     
                END-PERFORM
       *     
-               IF      SPA-GMN-PRTJYUN1MEI =   SPACE
+               IF      SPA-GMN-PRTJYUN1MEI (WRK-PAGENO) 
+                                               =   SPACE
                    MOVE    "0009"                  TO  SPA-ERRCD
                END-IF
            END-IF    
       *
            IF      SPA-ERRCD       NOT =   SPACE
-               MOVE    8               TO  SPA-GMN-CUR
+               IF      WRK-PAGENO      =   1
+                   MOVE    8               TO  SPA-GMN-CUR
+               ELSE
+                   MOVE    208             TO  SPA-GMN-CUR
+               END-IF
            ELSE
-               IF      SPA-GMN-PRTJYUN1    =   "02"
+               IF    ( WRK-PAGENO      =   1    )
+               AND   ( SPA-GMN-PRTJYUN1 (WRK-PAGENO)
+                                       =   "02" )
                    MOVE    SPACE       TO  SPA-GMN-HKNJANUM
                                            SPA-GMN-HKNJANAME
                                            SPA-GMN-HKNJANUM-PRTKBN-G
@@ -2543,27 +2856,33 @@
       *****************************************************************
        41021-PRTJYUN2-CHK-SEC   SECTION.
       *
-           IF      SPA-GMN-PRTJYUN2    =   SPACE
+           IF      SPA-GMN-PRTJYUN2 (WRK-PAGENO)
+                                   =   SPACE
                CONTINUE
            ELSE
                PERFORM VARYING IDY FROM    1   BY  1
                        UNTIL   IDY >   SPA-GMN-PRTJYUN2-MAX
-                   IF      SPA-GMN-PRTJYUN2    =
-                                   SPA-GMN-PRTJYUN2L (IDY)
+                   IF      SPA-GMN-PRTJYUN2 (WRK-PAGENO)
+                                   =   SPA-GMN-PRTJYUN2L (IDY)
                        MOVE    SPA-GMN-PRTJYUN2LST (IDY)
-                                           TO  SPA-GMN-PRTJYUN2-G
+                                   TO  SPA-GMN-PRTJYUN2-G (WRK-PAGENO)
                        MOVE    SPA-GMN-PRTJYUN2-MAX
                                            TO  IDY
                    END-IF                                     
                END-PERFORM
       *     
-               IF      SPA-GMN-PRTJYUN2MEI =   SPACE
+               IF      SPA-GMN-PRTJYUN2MEI (WRK-PAGENO)
+                                               =   SPACE
                    MOVE    "0010"                  TO  SPA-ERRCD
                END-IF
            END-IF    
       *
            IF      SPA-ERRCD       NOT =   SPACE
-               MOVE    9               TO  SPA-GMN-CUR
+               IF      WRK-PAGENO      =   1
+                   MOVE    9               TO  SPA-GMN-CUR
+               ELSE
+                   MOVE    209             TO  SPA-GMN-CUR
+               END-IF
            END-IF
            .
        41021-PRTJYUN2-CHK-EXT.
@@ -2574,28 +2893,34 @@
       *****************************************************************
        41021-SRT-LAST-CHK-SEC   SECTION.
       *
-           IF      SPA-GMN-SRT-LAST    =   SPACE
+           IF      SPA-GMN-SRT-LAST (WRK-PAGENO)
+                                       =   SPACE
                MOVE    SPA-GMN-SRT-LASTLST (1)
-                                           TO  SPA-GMN-SRT-LAST-G
+                                   TO  SPA-GMN-SRT-LAST-G (WRK-PAGENO)
            ELSE
                PERFORM VARYING IDY FROM    1   BY  1
                        UNTIL   IDY >   SPA-GMN-SRT-LAST-MAX
-                   IF      SPA-GMN-SRT-LAST    =
-                                   SPA-GMN-SRT-LASTL (IDY)
+                   IF      SPA-GMN-SRT-LAST (WRK-PAGENO)
+                                       =   SPA-GMN-SRT-LASTL (IDY)
                        MOVE    SPA-GMN-SRT-LASTLST (IDY)
-                                           TO  SPA-GMN-SRT-LAST-G
+                                   TO  SPA-GMN-SRT-LAST-G (WRK-PAGENO)
                        MOVE    SPA-GMN-SRT-LAST-MAX
                                            TO  IDY
                    END-IF                                     
                END-PERFORM
       *     
-               IF      SPA-GMN-SRT-LASTMEI =   SPACE
+               IF      SPA-GMN-SRT-LASTMEI (WRK-PAGENO)
+                                           =   SPACE
                    MOVE    "0013"              TO  SPA-ERRCD
                END-IF
            END-IF    
       *
            IF      SPA-ERRCD       NOT =   SPACE
-               MOVE    16              TO  SPA-GMN-CUR
+               IF      WRK-PAGENO      =   1
+                   MOVE    16              TO  SPA-GMN-CUR
+               ELSE
+                   MOVE    216             TO  SPA-GMN-CUR
+               END-IF
            END-IF
             .
        41021-SRT-LAST-CHK-EXT.
@@ -2615,27 +2940,33 @@
       *****************************************************************
        41021-ZAITAKU-CHK-SEC       SECTION.
       *
-           IF      SPA-GMN-ZAITAKU =   SPACE
+           IF      SPA-GMN-ZAITAKU (WRK-PAGENO)
+                                   =   SPACE
                CONTINUE
            ELSE
                PERFORM VARYING IDY FROM    1   BY  1
                        UNTIL   IDY >       SPA-GMN-ZAITAKU-MAX
-                   IF      SPA-GMN-ZAITAKU
+                   IF      SPA-GMN-ZAITAKU (WRK-PAGENO)
                                    =   SPA-GMN-ZAITAKUL (IDY)
                        MOVE    SPA-GMN-ZAITAKULST (IDY)
-                                           TO  SPA-GMN-ZAITAKU-G
+                                   TO  SPA-GMN-ZAITAKU-G (WRK-PAGENO)
                        MOVE    SPA-GMN-ZAITAKU-MAX
-                                           TO  IDY
+                                   TO  IDY
                    END-IF                                     
                END-PERFORM
       *     
-               IF      SPA-GMN-ZAITAKUMEI  =   SPACE
+               IF      SPA-GMN-ZAITAKUMEI (WRK-PAGENO)
+                                               =   SPACE
                    MOVE    "0024"                  TO  SPA-ERRCD
                END-IF
            END-IF    
       *
            IF      SPA-ERRCD       NOT =   SPACE
-               MOVE    10              TO  SPA-GMN-CUR
+               IF      WRK-PAGENO      =   1
+                   MOVE    10              TO  SPA-GMN-CUR
+               ELSE
+                   MOVE    210             TO  SPA-GMN-CUR
+               END-IF
            END-IF
            .
        41021-ZAITAKU-CHK-EXT.
@@ -2646,28 +2977,34 @@
       *****************************************************************
        41021-CHOUKI-CHK-SEC       SECTION.
       *
-           IF      SPA-GMN-CHOUKI  =   SPACE
+           IF      SPA-GMN-CHOUKI (WRK-PAGENO)
+                                   =   SPACE
                CONTINUE
            ELSE
                PERFORM VARYING IDY FROM    1   BY  1
                        UNTIL   IDY >       SPA-GMN-CHOUKI-MAX
-                   IF      SPA-GMN-CHOUKI
+                   IF      SPA-GMN-CHOUKI (WRK-PAGENO)
                                    =   SPA-GMN-CHOUKIL (IDY)
                        MOVE    SPA-GMN-CHOUKILST (IDY)
                                            TO
-                                           SPA-GMN-CHOUKI-G
+                                           SPA-GMN-CHOUKI-G (WRK-PAGENO)
                        MOVE    SPA-GMN-CHOUKI-MAX
                                            TO  IDY
                    END-IF                                     
                END-PERFORM
       *     
-               IF      SPA-GMN-CHOUKIMEI =   SPACE
-                   MOVE    "0025"                  TO  SPA-ERRCD
+               IF      SPA-GMN-CHOUKIMEI (WRK-PAGENO)
+                                           =   SPACE
+                   MOVE    "0025"              TO  SPA-ERRCD
                END-IF
            END-IF    
       *
            IF      SPA-ERRCD       NOT =   SPACE
-               MOVE    11               TO  SPA-GMN-CUR
+               IF      WRK-PAGENO      =   1
+                   MOVE    11              TO  SPA-GMN-CUR
+               ELSE
+                   MOVE    211             TO  SPA-GMN-CUR
+               END-IF
            END-IF
            .
        41021-CHOUKI-CHK-EXT.
@@ -2678,27 +3015,29 @@
       *****************************************************************
        41021-SYUBETU-PRTJYUN1-CHK-SEC   SECTION.
       *
-           IF      SPA-GMN-SYUBETU-PRTJYUN1
+           IF      SPA-GMN-SYUBETU-PRTJYUN1 (WRK-PAGENO)
                                        =   SPACE
                CONTINUE
            ELSE
                PERFORM VARYING IDY FROM    1   BY  1
                        UNTIL   IDY >   SPA-GMN-SYUBETU-PRTJYUN1-MAX
-                   IF      SPA-GMN-SYUBETU-PRTJYUN1
+                   IF      SPA-GMN-SYUBETU-PRTJYUN1 (WRK-PAGENO)
                                =   SPA-GMN-SYUBETU-PRTJYUN1L (IDY)
                        MOVE    SPA-GMN-SYUBETU-PRTJYUN1LST (IDY)
                                            TO
-                                       SPA-GMN-SYUBETU-PRTJYUN1-G
+                               SPA-GMN-SYUBETU-PRTJYUN1-G (WRK-PAGENO)
                        MOVE    SPA-GMN-SYUBETU-PRTJYUN1-MAX
                                            TO  IDY
                    END-IF                                     
                END-PERFORM
       *     
-               IF      SPA-GMN-SYUBETU-PRTJYUN1MEI =   SPACE
+               IF      SPA-GMN-SYUBETU-PRTJYUN1MEI (WRK-PAGENO)
+                                               =   SPACE
                    MOVE    "0030"                  TO  SPA-ERRCD
                ELSE
-                   IF    ( SPA-GMN-PRTJYUN1    NOT =   "02" )
-                   AND   ( SPA-GMN-SYUBETU-PRTJYUN1
+                   IF    ( SPA-GMN-PRTJYUN1 (WRK-PAGENO)
+                                               NOT =   "02" )
+                   AND   ( SPA-GMN-SYUBETU-PRTJYUN1 (WRK-PAGENO)
                                                    =   "07" ) 
                        MOVE    "0031"              TO  SPA-ERRCD
                    END-IF
@@ -2706,25 +3045,32 @@
            END-IF    
       *
            IF      SPA-ERRCD       NOT =   SPACE
-               MOVE    12                  TO  SPA-GMN-CUR
+               IF      WRK-PAGENO      =   1
+                   MOVE    12              TO  SPA-GMN-CUR
+               ELSE
+                   MOVE    212             TO  SPA-GMN-CUR
+               END-IF
            ELSE
-               MOVE    SPA-GMN-SYUBETU-PRTJYUN1
+               MOVE    SPA-GMN-SYUBETU-PRTJYUN1 (WRK-PAGENO)
                                            TO
-                                       SPA-NAI-BODYLIST-TPRTJYUN1
-                                           (SPA-NAI-SELNUM2)
-               IF      SPA-NAI-BODYLIST-TGRP1-NO (SPA-NAI-SELNUM2)
+                                           SPA-NAI-BODYLIST-TPRTJYUN1
+                                               (WRK-PAGENO WRK-SELNUM2)
+               IF      SPA-NAI-BODYLIST-TGRP1-NO
+                                   (WRK-PAGENO WRK-SELNUM2)
                                NOT =   "000"
                    PERFORM VARYING IDX FROM    1   BY  1
                            UNTIL   IDX >       SPA-GMN-BODYLIST-MAX
+                                                       (WRK-PAGENO)
                        IF    ( SPA-NAI-BODYLIST-TGRP1-NO
-                                                   (SPA-NAI-SELNUM2)
+                                           (WRK-PAGENO WRK-SELNUM2)
                                        =   SPA-NAI-BODYLIST-TGRP1-NO
-                                                   (IDX)   )
-                       AND   ( IDX NOT =   SPA-NAI-SELNUM2 )
-                           MOVE    SPA-GMN-SYUBETU-PRTJYUN1
+                                                   (WRK-PAGENO IDX)   )
+                       AND   ( IDX NOT =   SPA-NAI-SELNUM2
+                                                   (WRK-PAGENO)       )
+                           MOVE    SPA-GMN-SYUBETU-PRTJYUN1 (WRK-PAGENO)
                                                TO
                                            SPA-NAI-BODYLIST-TPRTJYUN1
-                                                               (IDX)
+                                                       (WRK-PAGENO IDX)
                        END-IF
                    END-PERFORM
                END-IF
@@ -2738,59 +3084,68 @@
       *****************************************************************
        41021-SYUBETU-PRTJYUN2-CHK-SEC   SECTION.
       *
-           IF      SPA-GMN-SYUBETU-PRTJYUN2
+           IF      SPA-GMN-SYUBETU-PRTJYUN2 (WRK-PAGENO)
                                            =   SPACE
                CONTINUE
            ELSE
                PERFORM VARYING IDY FROM    1   BY  1
                        UNTIL   IDY >   SPA-GMN-SYUBETU-PRTJYUN2-MAX
-                   IF      SPA-GMN-SYUBETU-PRTJYUN2
+                   IF      SPA-GMN-SYUBETU-PRTJYUN2 (WRK-PAGENO)
                                    =
                                    SPA-GMN-SYUBETU-PRTJYUN2L (IDY)
                        MOVE    SPA-GMN-SYUBETU-PRTJYUN2LST (IDY)
                                            TO
-                                       SPA-GMN-SYUBETU-PRTJYUN2-G
+                               SPA-GMN-SYUBETU-PRTJYUN2-G (WRK-PAGENO)
                        MOVE    SPA-GMN-SYUBETU-PRTJYUN2-MAX
                                            TO  IDY
                    END-IF                                     
                END-PERFORM
       *     
-               IF      SPA-GMN-SYUBETU-PRTJYUN2MEI =   SPACE
+               IF      SPA-GMN-SYUBETU-PRTJYUN2MEI (WRK-PAGENO)
+                                               =   SPACE
                    MOVE    "0032"                  TO  SPA-ERRCD
                END-IF
            END-IF    
       *
            IF      SPA-ERRCD           =   SPACE
-               IF    ( SPA-GMN-PRTJYUN1    NOT =   "02"  )
-               AND   ( SPA-GMN-SYUBETU-PRTJYUN2
+               IF    ( SPA-GMN-PRTJYUN1         (WRK-PAGENO)
+                                           NOT =   "02"  )
+               AND   ( SPA-GMN-SYUBETU-PRTJYUN2 (WRK-PAGENO)
                                            NOT =   SPACE )
                    MOVE    SPACE           TO 
-                                           SPA-GMN-SYUBETU-PRTJYUN2-G
+                               SPA-GMN-SYUBETU-PRTJYUN2-G (WRK-PAGENO)
                    MOVE    "0033"          TO  SPA-ERRCD
                END-IF
            END-IF
       *
            IF      SPA-ERRCD       NOT =   SPACE
-               MOVE    13               TO  SPA-GMN-CUR
+               IF      WRK-PAGENO      =   1
+                   MOVE    13              TO  SPA-GMN-CUR
+               ELSE
+                   MOVE    213             TO  SPA-GMN-CUR
+               END-IF
            ELSE
-               MOVE    SPA-GMN-SYUBETU-PRTJYUN2
+               MOVE    SPA-GMN-SYUBETU-PRTJYUN2 (WRK-PAGENO)
                                            TO
-                                       SPA-NAI-BODYLIST-TPRTJYUN2
-                                           (SPA-NAI-SELNUM2)
+                                           SPA-NAI-BODYLIST-TPRTJYUN2
+                                               (WRK-PAGENO WRK-SELNUM2)
       *
-               IF      SPA-NAI-BODYLIST-TGRP1-NO (SPA-NAI-SELNUM2)
+               IF      SPA-NAI-BODYLIST-TGRP1-NO
+                               (WRK-PAGENO WRK-SELNUM2)
                                    NOT =   "000"
                    PERFORM VARYING IDX FROM    1   BY  1
                            UNTIL   IDX >       SPA-GMN-BODYLIST-MAX
+                                                           (WRK-PAGENO)
                        IF    ( SPA-NAI-BODYLIST-TGRP1-NO
-                                                   (SPA-NAI-SELNUM2)
+                                       (WRK-PAGENO WRK-SELNUM2)
                                        =   SPA-NAI-BODYLIST-TGRP1-NO
-                                                   (IDX)   )
-                       AND   ( IDX NOT =   SPA-NAI-SELNUM2 )
-                           MOVE    SPA-GMN-SYUBETU-PRTJYUN2
+                                                   (WRK-PAGENO IDX)   )
+                       AND   ( IDX NOT =   SPA-NAI-SELNUM2
+                                                   (WRK-PAGENO)       )
+                           MOVE    SPA-GMN-SYUBETU-PRTJYUN2 (WRK-PAGENO)
                                                TO
                                            SPA-NAI-BODYLIST-TPRTJYUN2
-                                                               (IDX)
+                                                       (WRK-PAGENO IDX)
                        END-IF
                    END-PERFORM
                END-IF
@@ -2804,18 +3159,21 @@
       *****************************************************************
        41021-HKNNUM-CHK-SEC           SECTION.
       *
-           MOVE    SPACE           TO  SPA-GMN-SEIDONAME
-           MOVE    ZERO            TO  SPA-NAI-SELNUM3
+           MOVE    SPACE           TO  SPA-GMN-SEIDONAME (WRK-PAGENO)
+           MOVE    ZERO            TO  SPA-NAI-SELNUM3   (WRK-PAGENO)
       *
-           IF      SPA-GMN-HKNNUM  =   SPACE
+           IF      SPA-GMN-HKNNUM  (WRK-PAGENO)
+                                   =   SPACE
                CONTINUE
            ELSE
                EVALUATE    TRUE
-                   WHEN    SPA-GMN-HKNNUM (1:1)    >=  "1" AND <=  "8"
+                   WHEN    SPA-GMN-HKNNUM (WRK-PAGENO) (1:1)
+                                           >=  "1" AND <=  "8"
                        MOVE    SPACE           TO  HKNNUM-REC
                        INITIALIZE                  HKNNUM-REC
                        MOVE    SPA-HOSPID      TO  HKN-HOSPID
-                       MOVE    SPA-GMN-HKNNUM  TO  HKN-HKNNUM
+                       MOVE    SPA-GMN-HKNNUM (WRK-PAGENO)
+                                               TO  HKN-HKNNUM
                        MOVE    "00"            TO  HKN-PAYKBN
                        MOVE    HKNNUM-REC      TO  MCPDATA-REC
                        PERFORM 900-HKNNUM-READ-SEC
@@ -2823,50 +3181,73 @@
                        IF      FLG-HKNNUM      =   ZERO
                            MOVE    HKN-TANSEIDONAME
                                                   TO  SPA-GMN-SEIDONAME
+                                                           (WRK-PAGENO)
                            IF      HKN-RECESKYKBN  =   "3"
                                MOVE    "0034"          TO  SPA-ERRCD
                            END-IF
                        ELSE
                            MOVE    "0035"          TO  SPA-ERRCD
                        END-IF
-                   WHEN    SPA-GMN-HKNNUM  =   "XXX"
+                   WHEN    SPA-GMN-HKNNUM (WRK-PAGENO) =   "XXX"
                        MOVE    "長期"          TO  SPA-GMN-SEIDONAME
-                   WHEN    SPA-GMN-HKNNUM  =   "YYY"
+                                                           (WRK-PAGENO)
+                   WHEN    SPA-GMN-HKNNUM  (WRK-PAGENO)=   "YYY"
                        MOVE    "在総診・在医総"
                                                TO  SPA-GMN-SEIDONAME
+                                                           (WRK-PAGENO)
                    WHEN    OTHER
                        MOVE    "0035"          TO  SPA-ERRCD
                END-EVALUATE
       * 
                IF      SPA-ERRCD           =   SPACE
-                   IF      SPA-NAI-SELNUM2     =   ZERO
+                   IF      SPA-NAI-SELNUM2 (WRK-PAGENO)     =   ZERO
                        MOVE    "0103"              TO  SPA-ERRCD
-                       MOVE    4                   TO  SPA-GMN-CUR
+                       IF      WRK-PAGENO      =   1
+                           MOVE    4               TO  SPA-GMN-CUR
+                       ELSE
+                           MOVE    204             TO  SPA-GMN-CUR
+                       END-IF
                        GO  TO   41021-HKNNUM-CHK-EXT
                    END-IF
       * 
-                   PERFORM VARYING IDX     FROM    1   BY  1
-                           UNTIL   IDX     >       SPA-GMN-KOHLIST-MAX
-                                                   (SPA-NAI-SELNUM2)
+                   PERFORM VARYING IDX FROM    1   BY  1
+                           UNTIL   IDX >       SPA-GMN-KOHLIST-MAX
+                                                (WRK-PAGENO WRK-SELNUM2)
                        IF      SPA-GMN-KOHLIST-THKNNUM
-                                                   (SPA-NAI-SELNUM2 IDX)
-                                               =   SPA-GMN-HKNNUM
-                           MOVE    IDX             TO  SPA-NAI-SELNUM3
+                           (WRK-PAGENO WRK-SELNUM2 IDX)
+                                           =   SPA-GMN-HKNNUM
+                                                       (WRK-PAGENO)
+                           MOVE    IDX     TO  SPA-NAI-SELNUM3
+                                                       (WRK-PAGENO)
                            MOVE    SPA-GMN-KOHLIST-MAX 
-                                                   (SPA-NAI-SELNUM2)
-                                                   TO  IDX
+                               (WRK-PAGENO WRK-SELNUM2)
+                                           TO  IDX
                        END-IF
                    END-PERFORM
       *
-                   IF      SPA-NAI-SELNUM3 >   ZERO
-                       MOVE    SPA-NAI-SELNUM3 TO  W121-KOHLIST-ROW
-                       MOVE    ZERO            TO  FLG-KOHLIST-ROW
+                   IF      SPA-NAI-SELNUM3 (WRK-PAGENO)
+                                           >   ZERO
+                       IF      WRK-PAGENO      =   1
+                           MOVE    SPA-NAI-SELNUM3 (WRK-PAGENO)
+                                               TO  W121-KOHLIST-ROW
+                       ELSE
+                           MOVE    SPA-NAI-SELNUM3 (WRK-PAGENO)
+                                               TO  W121-KOHLIST-1-ROW
+                       END-IF
+                       MOVE    ZERO    TO  FLG-KOHLIST-ROW (WRK-PAGENO)
                    END-IF
                END-IF
            END-IF
       *
+           MOVE    SPA-NAI-SELNUM3 (WRK-PAGENO)
+                                       TO  WRK-SELNUM3
+      *
            IF      SPA-ERRCD       NOT =   SPACE
-               MOVE    15              TO  SPA-GMN-CUR
+               IF      WRK-PAGENO      =   1
+                   MOVE    15              TO  SPA-GMN-CUR
+               ELSE
+                   MOVE    215             TO  SPA-GMN-CUR
+               END-IF
            END-IF
       *
            .
@@ -2878,28 +3259,61 @@
       *****************************************************************
        41021-GRP1-NO-CHK-SEC           SECTION.
       *
-           MOVE    50              TO  SPA-GMN-CUR
+           EVALUATE    MCP-WIDGET
+               WHEN    "GRP1_NO"
+                   MOVE    1           TO  WRK-PAGENO
+                   MOVE    50          TO  SPA-GMN-CUR
+               WHEN    "GRP1_NO_1"
+                   MOVE    2           TO  WRK-PAGENO
+                   MOVE    250         TO  SPA-GMN-CUR
+           END-EVALUATE
+           MOVE    SPA-NAI-SELNUM2 (WRK-PAGENO)
+                                   TO  WRK-SELNUM2
+           MOVE    SPA-NAI-SELNUM3 (WRK-PAGENO)
+                                   TO  WRK-SELNUM3
       *
-           IF      SPA-NAI-SELNUM2     >   ZERO
-               MOVE    SPA-NAI-SELNUM2     TO  W121-BODYLIST-ROW
-                                               SPA-NAI-SELNUM2-ROW
+           IF      SPA-NAI-SELNUM2 (WRK-PAGENO)
+                                       >   ZERO
+               IF      WRK-PAGENO          =   1
+                   MOVE    SPA-NAI-SELNUM2 (WRK-PAGENO)
+                                           TO  W121-BODYLIST-ROW
+               ELSE
+                   MOVE    SPA-NAI-SELNUM2 (WRK-PAGENO)
+                                           TO  W121-BODYLIST-1-ROW
+               END-IF
+               MOVE    SPA-NAI-SELNUM2 (WRK-PAGENO)
+                                   TO  SPA-NAI-SELNUM2-ROW (WRK-PAGENO)
            ELSE
-               IF      SPA-NAI-SELNUM2-ROW >   ZERO
-                   MOVE    SPA-NAI-SELNUM2-ROW TO  W121-BODYLIST-ROW
+               IF      SPA-NAI-SELNUM2-ROW (WRK-PAGENO)
+                                       >   ZERO
+                   IF      WRK-PAGENO      =   1
+                       MOVE    SPA-NAI-SELNUM2-ROW (WRK-PAGENO)
+                                               TO  W121-BODYLIST-ROW
+                   ELSE
+                       MOVE    SPA-NAI-SELNUM2-ROW (WRK-PAGENO)
+                                               TO  W121-BODYLIST-1-ROW
+                   END-IF
                END-IF 
            END-IF
-           MOVE    2                   TO  FLG-BODYLIST-ROW
-           MOVE    ZERO                TO  SPA-NAI-SELNUM2
+           MOVE    2                   TO  FLG-BODYLIST-ROW (WRK-PAGENO)
+           MOVE    ZERO                TO  SPA-NAI-SELNUM2  (WRK-PAGENO)
       *
-           MOVE    W121-GRP1-NO    TO  SPA-GMN-GRP1-NO
-           MOVE    ZERO            TO  SPA-NAI-GRP1-NO
+           IF      WRK-PAGENO      =   1
+               MOVE    W121-GRP1-NO    TO  SPA-GMN-GRP1-NO (WRK-PAGENO)
+           ELSE
+               MOVE    W121-GRP1-NO-1  TO  SPA-GMN-GRP1-NO (WRK-PAGENO)
+           END-IF
+           MOVE    ZERO            TO  SPA-NAI-GRP1-NO (WRK-PAGENO)
       * 
-           IF    ( SPA-GMN-GRP1-NO NOT =   SPACE )
-           AND   ( SPA-GMN-GRP1        =   "F"   )    
-               MOVE    "0036"                  TO  SPA-ERRCD
+           IF    ( SPA-GMN-GRP1-NO (WRK-PAGENO)
+                                   NOT =   SPACE )
+           AND   ( SPA-GMN-GRP1    (WRK-PAGENO)
+                                       =   "F"   )    
+               MOVE    "0036"              TO  SPA-ERRCD
            ELSE
                INITIALIZE                  ORCSNUMAREA
-               MOVE    SPA-GMN-GRP1-NO     TO  SNUM-INX
+               MOVE    SPA-GMN-GRP1-NO (WRK-PAGENO)
+                                       TO  SNUM-INX
                CALL    "ORCSNUM"           USING
                                            ORCSNUMAREA
                IF    ( SNUM-RC         NOT =   ZERO  )
@@ -2908,11 +3322,16 @@
                    MOVE    "0037"              TO  SPA-ERRCD
                ELSE
                    MOVE    SNUM-OUTNUM         TO  SPA-NAI-GRP1-NO
+                                                           (WRK-PAGENO)
                END-IF
            END-IF
       *
            IF      SPA-ERRCD       =   SPACE
-               MOVE    100             TO  SPA-GMN-CUR
+               IF      WRK-PAGENO      =   1
+                   MOVE    100             TO  SPA-GMN-CUR
+               ELSE
+                   MOVE    300             TO  SPA-GMN-CUR
+               END-IF
            END-IF
            .
        41021-GRP1-NO-CHK-EXT.
@@ -2923,34 +3342,77 @@
       *****************************************************************
        41021-GRP2-NO-CHK-SEC           SECTION.
       *
-           MOVE    51              TO  SPA-GMN-CUR
+           EVALUATE    MCP-WIDGET
+               WHEN    "GRP2_NO"
+                   MOVE    1           TO  WRK-PAGENO
+                   MOVE    51          TO  SPA-GMN-CUR
+               WHEN    "GRP2_NO_1"
+                   MOVE    2           TO  WRK-PAGENO
+                   MOVE    251         TO  SPA-GMN-CUR
+           END-EVALUATE
+           MOVE    SPA-NAI-SELNUM2 (WRK-PAGENO)
+                                   TO  WRK-SELNUM2
+           MOVE    SPA-NAI-SELNUM3 (WRK-PAGENO)
+                                   TO  WRK-SELNUM3
       *
-           IF      SPA-NAI-SELNUM2     >   ZERO
-               MOVE    SPA-NAI-SELNUM2     TO  W121-BODYLIST-ROW
-                                               SPA-NAI-SELNUM2-ROW
+           IF      SPA-NAI-SELNUM2 (WRK-PAGENO)
+                                       >   ZERO
+               IF      WRK-PAGENO          =   1
+                   MOVE    SPA-NAI-SELNUM2 (WRK-PAGENO)
+                                           TO  W121-BODYLIST-ROW
+               ELSE
+                   MOVE    SPA-NAI-SELNUM2 (WRK-PAGENO)
+                                           TO  W121-BODYLIST-1-ROW
+               END-IF
+               MOVE    SPA-NAI-SELNUM2 (WRK-PAGENO)
+                                   TO  SPA-NAI-SELNUM2-ROW (WRK-PAGENO)
            ELSE
-               IF      SPA-NAI-SELNUM2-ROW >   ZERO
-                   MOVE    SPA-NAI-SELNUM2-ROW TO  W121-BODYLIST-ROW
+               IF      SPA-NAI-SELNUM2-ROW (WRK-PAGENO)
+                                       >   ZERO
+                   IF      WRK-PAGENO      =   1
+                       MOVE    SPA-NAI-SELNUM2-ROW (WRK-PAGENO)
+                                               TO  W121-BODYLIST-ROW
+                   ELSE
+                       MOVE    SPA-NAI-SELNUM2-ROW (WRK-PAGENO)
+                                               TO  W121-BODYLIST-1-ROW
+                   END-IF
                END-IF 
            END-IF
-           MOVE    2                   TO  FLG-BODYLIST-ROW
-           MOVE    ZERO                TO  SPA-NAI-SELNUM2
+           MOVE    2                   TO  FLG-BODYLIST-ROW (WRK-PAGENO)
+           MOVE    ZERO                TO  SPA-NAI-SELNUM2  (WRK-PAGENO)
       *
-           MOVE    W121-GRP2-NO    TO  SPA-GMN-GRP2-NO
+           IF      WRK-PAGENO      =   1
+               MOVE    W121-GRP2-NO    TO  SPA-GMN-GRP2-NO (WRK-PAGENO)
+           ELSE
+               MOVE    W121-GRP2-NO-1  TO  SPA-GMN-GRP2-NO (WRK-PAGENO)
+           END-IF
       *
-           MOVE    SPA-NAI-SELNUM2 TO  W121-BODYLIST-ROW
-                                       SPA-NAI-SELNUM2-ROW
-           MOVE    ZERO            TO  FLG-BODYLIST-ROW
-           MOVE    ZERO            TO  SPA-NAI-SELNUM2
+           IF      WRK-PAGENO      =   1
+               MOVE    SPA-NAI-SELNUM2 (WRK-PAGENO)
+                                       TO  W121-BODYLIST-ROW
+           ELSE 
+               MOVE    SPA-NAI-SELNUM2 (WRK-PAGENO)
+                                       TO  W121-BODYLIST-1-ROW
+           END-IF
+           MOVE    SPA-NAI-SELNUM2 (WRK-PAGENO)
+                                   TO  SPA-NAI-SELNUM2-ROW (WRK-PAGENO)
+           MOVE    ZERO            TO  FLG-BODYLIST-ROW    (WRK-PAGENO)
+           MOVE    ZERO            TO  SPA-NAI-SELNUM2     (WRK-PAGENO)
       *
       *
-           IF    ( SPA-GMN-GRP2-NO NOT =   SPACE )
-           AND   ( SPA-GMN-GRP2        =   "F"   )    
-               MOVE    "0038"                  TO  SPA-ERRCD
+           IF    ( SPA-GMN-GRP2-NO (WRK-PAGENO)
+                                   NOT =   SPACE )
+           AND   ( SPA-GMN-GRP2    (WRK-PAGENO)
+                                       =   "F"   )    
+               MOVE    "0038"              TO  SPA-ERRCD
            END-IF
       *
            IF      SPA-ERRCD       =   SPACE
-               MOVE    100             TO  SPA-GMN-CUR
+               IF      WRK-PAGENO      =   1
+                   MOVE    100             TO  SPA-GMN-CUR
+               ELSE
+                   MOVE    300             TO  SPA-GMN-CUR
+               END-IF
            END-IF
            .
        41021-GRP2-NO-CHK-EXT.
@@ -2963,13 +3425,13 @@
       *
            EVALUATE    MCP-WIDGET
                WHEN    "N01"
-                   MOVE   0            TO  IDX
+                   MOVE   0            TO  IDYY
                WHEN    "N02"
-                  MOVE    1            TO  IDX
+                  MOVE    1            TO  IDYY
            END-EVALUATE
       *
       *    タグが変わったとき項目チェック
-           IF      IDX              NOT =   W121-PAGENO
+           IF      IDYY              NOT =   W121-PAGENO
                MOVE    MCP-WIDGET          TO  WRK-MCP-WIDGET
                MOVE    ZERO                TO  SPA-GMN-CUR
       *
@@ -2977,13 +3439,20 @@
                PERFORM 410-INPUT-CHK-SEC
                IF      SPA-ERRCD            =   SPACE
       *            関連チェック
-                   PERFORM 4900-KANRENCHK-SEC
+      ****         PERFORM 4900-KANRENCHK-SEC
                    IF      SPA-ERRCD        =   SPACE
-                       EVALUATE    IDX
+      *
+      *                グループ設定解除の設定
+                       INITIALIZE              SPA-GMN-GRP-OCC
+                                                           (WRK-PAGENO) 
+                       MOVE    "T"         TO  SPA-GMN-GRP1(WRK-PAGENO)
+                       MOVE    "F"         TO  SPA-GMN-GRP2(WRK-PAGENO)
+      *
+                       EVALUATE    IDYY
                            WHEN    0
-                               MOVE    1            TO  SPA-GMN-CUR
+                               MOVE    8            TO  SPA-GMN-CUR
                            WHEN    1
-                               MOVE    200          TO  SPA-GMN-CUR
+                               MOVE    208          TO  SPA-GMN-CUR
                        END-EVALUATE
                    END-IF
                END-IF
@@ -3015,31 +3484,49 @@
       *****************************************************************
        490-SYUBETU-UP-SEC              SECTION.
       *
-           IF      SPA-NAI-SELNUM2     =   ZERO
+           EVALUATE    MCP-WIDGET
+               WHEN    "SYUBETU_UP"
+                   MOVE    1           TO  WRK-PAGENO
+               WHEN    "SYUBETU_UP_1"
+                   MOVE    2           TO  WRK-PAGENO
+           END-EVALUATE
+           MOVE    SPA-NAI-SELNUM2 (WRK-PAGENO)
+                                   TO  WRK-SELNUM2
+           MOVE    SPA-NAI-SELNUM3 (WRK-PAGENO)
+                                   TO  WRK-SELNUM3
+      *
+           IF      SPA-NAI-SELNUM2 (WRK-PAGENO)
+                                       =   ZERO
                MOVE    "0103"              TO  SPA-ERRCD
            ELSE
-               IF    ( SPA-NAI-SELNUM2     =   1 )
-               OR    ( SPA-GMN-BODYLIST-MAX
+               IF    ( SPA-NAI-SELNUM2 (WRK-PAGENO)
+                                           =   1 )
+               OR    ( SPA-GMN-BODYLIST-MAX (WRK-PAGENO)
                                            =   1 )
                    GO  TO  490-SYUBETU-UP-EXT
                END-IF
            END-IF
       *
            IF      SPA-ERRCD           =   SPACE
-               COMPUTE IDX =   SPA-NAI-SELNUM2     -   1
+               COMPUTE IDX =   SPA-NAI-SELNUM2 (WRK-PAGENO)    -   1
       *        上のグループ１と違うときの処理
-               IF    ( SPA-NAI-BODYLIST-TGRP1-NO (SPA-NAI-SELNUM2)
+               IF    ( SPA-NAI-BODYLIST-TGRP1-NO
+                              (WRK-PAGENO WRK-SELNUM2)
                                        NOT =   SPA-NAI-BODYLIST-TGRP1-NO
-                                                              (IDX) )
+                                                  (WRK-PAGENO IDX) )
       *            既にグループ１が設定済のとき        
-                   IF      SPA-NAI-BODYLIST-TGRP1-NO (SPA-NAI-SELNUM2)
+                   IF      SPA-NAI-BODYLIST-TGRP1-NO
+                               (WRK-PAGENO WRK-SELNUM2)
                                            NOT =   "000"    
-                       IF      SPA-NAI-SELNUM2 <   SPA-GMN-BODYLIST-MAX
-                           COMPUTE IDX =   SPA-NAI-SELNUM2     +   1
+                       IF      SPA-NAI-SELNUM2 (WRK-PAGENO)
+                                               <   SPA-GMN-BODYLIST-MAX
+                                                       (WRK-PAGENO)
+                           COMPUTE IDX =   SPA-NAI-SELNUM2 (WRK-PAGENO)
+                                           +   1
                            IF     SPA-NAI-BODYLIST-TGRP1-NO
-                                                   (SPA-NAI-SELNUM2)
+                               (WRK-PAGENO WRK-SELNUM2)
                                        =   SPA-NAI-BODYLIST-TGRP1-NO
-                                                   (IDX)
+                                                   (WRK-PAGENO IDX)
                                MOVE    "0039"      TO  SPA-ERRCD
                                GO  TO  490-SYUBETU-UP-EXT
                            END-IF
@@ -3047,19 +3534,23 @@
                    END-IF
       *
                    MOVE    ZERO            TO  WRK-GRP-INDEX
-                   COMPUTE IDX =   SPA-NAI-SELNUM2     -   1
-                   MOVE    SPA-NAI-BODYLIST-TGRP1-NO (IDX)
+                   COMPUTE IDX =   SPA-NAI-SELNUM2 (WRK-PAGENO)    -   1
+                   MOVE    SPA-NAI-BODYLIST-TGRP1-NO (WRK-PAGENO IDX)
                                            TO  WRK-GRP1-NO
-                   PERFORM VARYING IDX FROM    SPA-NAI-SELNUM2 BY  -1
+                   PERFORM VARYING IDX FROM
+                                   SPA-NAI-SELNUM2 (WRK-PAGENO)   BY  -1
                            UNTIL   IDX <       1
-                       IF      SPA-NAI-SELNUM2 NOT =   IDX
+                       IF      SPA-NAI-SELNUM2 (WRK-PAGENO)
+                                               NOT =   IDX
                            IF    ( WRK-GRP1-NO NOT =   "000"       )
-                           AND   ( SPA-NAI-BODYLIST-TGRP1-NO (IDX)
+                           AND   ( SPA-NAI-BODYLIST-TGRP1-NO
+                                                       (WRK-PAGENO IDX)
                                                NOT =   WRK-GRP1-NO )
                                MOVE    IDX         TO  WRK-GRP-INDEX
                                MOVE    1           TO  IDX
                            ELSE
-                               IF      SPA-NAI-BODYLIST-TGRP1-NO (IDX)
+                               IF      SPA-NAI-BODYLIST-TGRP1-NO
+                                                       (WRK-PAGENO IDX)
                                                            =   "000"
                                    COMPUTE WRK-GRP-INDEX   =   IDX -   1
                                    MOVE    1           TO  IDX
@@ -3070,16 +3561,22 @@
                    PERFORM 4901-SYUBETU-HENSYU-SEC
                ELSE
       *            グループ１が同じときの処理
-                   MOVE    SPA-GMN-BODYLIST-TBL (SPA-NAI-SELNUM2)
+                   MOVE    SPA-GMN-BODYLIST-TBL
+                               (WRK-PAGENO WRK-SELNUM2)
                                            TO  WRK-GMN-BODYLIST-TBL (1)
-                   MOVE    SPA-GMN-BODYLIST-TBL (IDX)
+                   MOVE    SPA-GMN-BODYLIST-TBL (WRK-PAGENO IDX)
                                            TO  SPA-GMN-BODYLIST-TBL
-                                                    (SPA-NAI-SELNUM2)
+                               (WRK-PAGENO WRK-SELNUM2)
                    MOVE    WRK-GMN-BODYLIST-TBL (1)
                                            TO  SPA-GMN-BODYLIST-TBL
-                                                    (IDX)
+                                                    (WRK-PAGENO IDX)
                    MOVE    IDX             TO  SPA-NAI-SELNUM2
-                                               W121-BODYLIST-ROW
+                                                    (WRK-PAGENO)
+                   IF      WRK-PAGENO      =   1 
+                       MOVE    IDX             TO  W121-BODYLIST-ROW
+                   ELSE
+                       MOVE    IDX             TO  W121-BODYLIST-1-ROW
+                   END-IF   
                END-IF
            END-IF
            .
@@ -3091,48 +3588,71 @@
       *****************************************************************
        4901-SYUBETU-HENSYU-SEC              SECTION.
       *
-           MOVE    SPA-GMN-BODYLIST    TO  WRK-GMN-BODYLIST-AREA
-           INITIALIZE                      SPA-GMN-BODYLIST
+           MOVE    SPA-GMN-BODYLIST-OCC (WRK-PAGENO)
+                                       TO  WRK-GMN-BODYLIST-AREA
+           INITIALIZE                      SPA-GMN-BODYLIST-OCC
+                                                       (WRK-PAGENO)
            MOVE    ZERO                TO  IDY
       *
       *    先頭に移動するとき
            IF      WRK-GRP-INDEX       =   ZERO
                ADD     1                   TO  IDY
-               MOVE    WRK-GMN-BODYLIST-TBL (SPA-NAI-SELNUM2)
-                                           TO  SPA-GMN-BODYLIST-TBL(IDY)
-               MOVE    IDY                 TO  W121-BODYLIST-ROW
+               MOVE    WRK-GMN-BODYLIST-TBL (WRK-SELNUM2)
+                                           TO  SPA-GMN-BODYLIST-TBL
+                                                       (WRK-PAGENO IDY)
+               IF      WRK-PAGENO      =   1 
+                   MOVE    IDY             TO  W121-BODYLIST-ROW
+               ELSE
+                   MOVE    IDY             TO  W121-BODYLIST-1-ROW
+               END-IF   
            END-IF
       * 
            PERFORM VARYING IDX FROM    1   BY  1
-                   UNTIL   IDX >       SPA-GMN-BODYLIST-MAX
-               IF      IDX             =   SPA-NAI-SELNUM2
+                   UNTIL   IDX >       SPA-GMN-BODYLIST-MAX (WRK-PAGENO)
+               IF      IDX             =   SPA-NAI-SELNUM2 (WRK-PAGENO)
                    CONTINUE
                ELSE
                    ADD     1               TO  IDY
                    MOVE    WRK-GMN-BODYLIST-TBL (IDX)
-                                           TO  SPA-GMN-BODYLIST-TBL(IDY)
+                                           TO  SPA-GMN-BODYLIST-TBL
+                                                       (WRK-PAGENO IDY)
                    IF      IDX             =  WRK-GRP-INDEX
                        ADD     1               TO  IDY
-                       MOVE    WRK-GMN-BODYLIST-TBL
-                                           (SPA-NAI-SELNUM2)
+                       MOVE    WRK-GMN-BODYLIST-TBL (WRK-SELNUM2)
                                                TO
-                                               SPA-GMN-BODYLIST-TBL(IDY)
-                       MOVE    IDY             TO  W121-BODYLIST-ROW
+                                   SPA-GMN-BODYLIST-TBL(WRK-PAGENO IDY)
+                       IF      WRK-PAGENO      =   1 
+                           MOVE    IDY         TO  W121-BODYLIST-ROW
+                       ELSE
+                           MOVE    IDY         TO  W121-BODYLIST-1-ROW
+                       END-IF   
                    END-IF
                END-IF
            END-PERFORM
       *
       *    最後に移動するとき
            IF      WRK-GRP-INDEX       >   SPA-GMN-BODYLIST-MAX
+                                                   (WRK-PAGENO)
                ADD     1                   TO  IDY
-               MOVE    WRK-GMN-BODYLIST-TBL (SPA-NAI-SELNUM2)
-                                           TO  SPA-GMN-BODYLIST-TBL(IDY)
-               MOVE    IDY                 TO  W121-BODYLIST-ROW
+               MOVE    WRK-GMN-BODYLIST-TBL (WRK-SELNUM2)
+                                           TO  SPA-GMN-BODYLIST-TBL
+                                                   (WRK-PAGENO IDY)
+               IF      WRK-PAGENO       =   1 
+                   MOVE    IDY         TO  W121-BODYLIST-ROW
+               ELSE
+                   MOVE    IDY         TO  W121-BODYLIST-1-ROW
+               END-IF   
            END-IF
       *
-          INITIALIZE                      WRK-GMN-BODYLIST-AREA
+           INITIALIZE                      WRK-GMN-BODYLIST-AREA
       *
-          MOVE    W121-BODYLIST-ROW   TO  SPA-NAI-SELNUM2
+           IF      WRK-PAGENO       =   1 
+               MOVE    W121-BODYLIST-ROW   TO
+                                           SPA-NAI-SELNUM2 (WRK-PAGENO)
+           ELSE
+               MOVE    W121-BODYLIST-1-ROW TO
+                                           SPA-NAI-SELNUM2 (WRK-PAGENO)
+           END-IF
       *
            .
        4901-SYUBETU-HENSYU-EXT.
@@ -3143,30 +3663,48 @@
       *****************************************************************
        490-SYUBETU-DOWN-SEC              SECTION.
       *
-           IF      SPA-NAI-SELNUM2     =   ZERO
+           EVALUATE    MCP-WIDGET
+               WHEN    "SYUBETU_DOWN"
+                   MOVE    1           TO  WRK-PAGENO
+               WHEN    "SYUBETU_DOWN_1"
+                   MOVE    2           TO  WRK-PAGENO
+           END-EVALUATE
+           MOVE    SPA-NAI-SELNUM2 (WRK-PAGENO)
+                                   TO  WRK-SELNUM2
+           MOVE    SPA-NAI-SELNUM3 (WRK-PAGENO)
+                                   TO  WRK-SELNUM3
+      *
+           IF      SPA-NAI-SELNUM2 (WRK-PAGENO)
+                                       =   ZERO
                MOVE    "0103"              TO  SPA-ERRCD
            ELSE
-               IF    ( SPA-NAI-SELNUM2     =   SPA-GMN-BODYLIST-MAX )
-               OR    ( SPA-GMN-BODYLIST-MAX
+               IF    ( SPA-NAI-SELNUM2 (WRK-PAGENO)
+                                           =   SPA-GMN-BODYLIST-MAX
+                                                        (WRK-PAGENO))
+               OR    ( SPA-GMN-BODYLIST-MAX (WRK-PAGENO)
                                            =   1                    )
                    GO  TO  490-SYUBETU-DOWN-EXT
                END-IF
            END-IF
       *    
            IF      SPA-ERRCD           =   SPACE
-               COMPUTE IDX =   SPA-NAI-SELNUM2     +   1
-               IF    ( SPA-NAI-BODYLIST-TGRP1-NO (SPA-NAI-SELNUM2)
+               COMPUTE IDX =   SPA-NAI-SELNUM2 (WRK-PAGENO)    +   1
+               IF    ( SPA-NAI-BODYLIST-TGRP1-NO
+                               (WRK-PAGENO WRK-SELNUM2)
                                    NOT =   SPA-NAI-BODYLIST-TGRP1-NO
-                                                          (IDX) )
+                                                      (WRK-PAGENO IDX) )
       *            下のグループ１と違うときの処理
-                   IF      SPA-NAI-BODYLIST-TGRP1-NO  (SPA-NAI-SELNUM2)
+                   IF      SPA-NAI-BODYLIST-TGRP1-NO
+                               (WRK-PAGENO WRK-SELNUM2)
                                        NOT =   "000"    
-                       IF      SPA-NAI-SELNUM2 >   1
-                           COMPUTE IDX =   SPA-NAI-SELNUM2     -   1
+                       IF      SPA-NAI-SELNUM2 (WRK-PAGENO)
+                                               >   1
+                           COMPUTE IDX =   SPA-NAI-SELNUM2 (WRK-PAGENO)
+                                           -   1
                            IF     SPA-NAI-BODYLIST-TGRP1-NO
-                                                   (SPA-NAI-SELNUM2)
+                               (WRK-PAGENO WRK-SELNUM2)
                                        =   SPA-NAI-BODYLIST-TGRP1-NO
-                                                   (IDX)
+                                                   (WRK-PAGENO IDX)
                                MOVE    "0039"      TO  SPA-ERRCD
                                GO  TO  490-SYUBETU-DOWN-EXT
                            END-IF
@@ -3174,23 +3712,29 @@
                    END-IF
       *
                    MOVE    ZERO            TO  WRK-GRP-INDEX
-                   COMPUTE IDX =   SPA-NAI-SELNUM2     +   1
-                   MOVE    SPA-NAI-BODYLIST-TGRP1-NO (IDX)
+                   COMPUTE IDX =   SPA-NAI-SELNUM2 (WRK-PAGENO)    +   1
+                   MOVE    SPA-NAI-BODYLIST-TGRP1-NO (WRK-PAGENO IDX)
                                            TO  WRK-GRP1-NO
-                   PERFORM VARYING IDX FROM    SPA-NAI-SELNUM2 BY  1
+                   PERFORM VARYING IDX FROM
+                                   SPA-NAI-SELNUM2 (WRK-PAGENO)    BY  1
                            UNTIL   IDX >   SPA-GMN-BODYLIST-MAX
-                       IF      SPA-NAI-SELNUM2 NOT =   IDX
+                                                       (WRK-PAGENO)
+                       IF      SPA-NAI-SELNUM2 (WRK-PAGENO)
+                                               NOT =   IDX
                            IF    ( WRK-GRP1-NO NOT =   "000"       )
-                           AND   ( SPA-NAI-BODYLIST-TGRP1-NO (IDX)
+                           AND   ( SPA-NAI-BODYLIST-TGRP1-NO
+                                                       (WRK-PAGENO IDX)
                                                NOT =   WRK-GRP1-NO )
                                COMPUTE WRK-GRP-INDEX   =   IDX -   1
-                               MOVE    SPA-GMN-BODYLIST-MAX
+                               MOVE    SPA-GMN-BODYLIST-MAX (WRK-PAGENO)
                                                    TO  IDX
                            ELSE
-                               IF      SPA-NAI-BODYLIST-TGRP1-NO (IDX)
+                               IF      SPA-NAI-BODYLIST-TGRP1-NO
+                                                       (WRK-PAGENO IDX)
                                                            =   "000"
                                    MOVE    IDX         TO  WRK-GRP-INDEX
                                    MOVE    SPA-GMN-BODYLIST-MAX
+                                                           (WRK-PAGENO)
                                                        TO  IDX
                                END-IF
                            END-IF
@@ -3198,21 +3742,28 @@
                    END-PERFORM
                    IF      WRK-GRP-INDEX       =   ZERO
                        COMPUTE WRK-GRP-INDEX
-                                   =   SPA-GMN-BODYLIST-MAX    +   1
+                                   =   SPA-GMN-BODYLIST-MAX (WRK-PAGENO)
+                                       +   1
                    END-IF
                    PERFORM 4901-SYUBETU-HENSYU-SEC
                ELSE
       *            グループ１が同じときの処理
-                   MOVE    SPA-GMN-BODYLIST-TBL (SPA-NAI-SELNUM2)
+                   MOVE    SPA-GMN-BODYLIST-TBL
+                               (WRK-PAGENO WRK-SELNUM2)
                                            TO  WRK-GMN-BODYLIST-TBL (1)
-                   MOVE    SPA-GMN-BODYLIST-TBL (IDX)
+                   MOVE    SPA-GMN-BODYLIST-TBL (WRK-PAGENO IDX)
                                            TO  SPA-GMN-BODYLIST-TBL
-                                                    (SPA-NAI-SELNUM2)
+                               (WRK-PAGENO WRK-SELNUM2)
                    MOVE    WRK-GMN-BODYLIST-TBL (1)
                                            TO  SPA-GMN-BODYLIST-TBL
-                                                    (IDX)
+                                                    (WRK-PAGENO IDX)
                    MOVE    IDX             TO  SPA-NAI-SELNUM2
-                                               W121-BODYLIST-ROW
+                                                    (WRK-PAGENO)
+                   IF      WRK-PAGENO      =   1 
+                       MOVE    IDX             TO  W121-BODYLIST-ROW
+                   ELSE
+                       MOVE    IDX             TO  W121-BODYLIST-1-ROW
+                   END-IF
                END-IF
            END-IF
            .
@@ -3224,39 +3775,86 @@
       *****************************************************************
        490-GRP-SETTEI-SEC              SECTION.
       *
-           IF      SPA-GMN-BODYLIST-MAX    =   ZERO
+           EVALUATE    MCP-WIDGET
+               WHEN    "GRP_SETTEI"
+                   MOVE    1           TO  WRK-PAGENO
+               WHEN    "GRP_SETTEI_1"
+                   MOVE    2           TO  WRK-PAGENO
+           END-EVALUATE
+           MOVE    SPA-NAI-SELNUM2 (WRK-PAGENO)
+                                   TO  WRK-SELNUM2
+           MOVE    SPA-NAI-SELNUM3 (WRK-PAGENO)
+                                   TO  WRK-SELNUM3
+      *
+           IF      SPA-GMN-BODYLIST-MAX (WRK-PAGENO)
+                                       =   ZERO
                MOVE    "0102"              TO  SPA-ERRCD
                MOVE    1                   TO  SPA-GMN-CUR
            ELSE
-               IF      SPA-NAI-SELNUM2     >   ZERO
-                   MOVE    SPA-NAI-SELNUM2     TO  W121-BODYLIST-ROW
-                                                   SPA-NAI-SELNUM2-ROW
+               IF      SPA-NAI-SELNUM2 (WRK-PAGENO)
+                                           >   ZERO
+                   IF      WRK-PAGENO      =   1 
+                       MOVE    SPA-NAI-SELNUM2 (WRK-PAGENO)
+                                               TO  W121-BODYLIST-ROW
+                   ELSE
+                       MOVE    SPA-NAI-SELNUM2 (WRK-PAGENO)
+                                               TO  W121-BODYLIST-1-ROW
+                   END-IF
+                   MOVE    SPA-NAI-SELNUM2 (WRK-PAGENO)
+                                               TO
+                                       SPA-NAI-SELNUM2-ROW (WRK-PAGENO)
                ELSE
-                   IF      SPA-NAI-SELNUM2-ROW >   ZERO
-                       MOVE    SPA-NAI-SELNUM2-ROW TO  W121-BODYLIST-ROW
+                   IF      SPA-NAI-SELNUM2-ROW (WRK-PAGENO)
+                                               >   ZERO
+                       IF      WRK-PAGENO      =   1 
+                           MOVE    SPA-NAI-SELNUM2 (WRK-PAGENO)
+                                               TO  W121-BODYLIST-ROW
+                       ELSE
+                           MOVE    SPA-NAI-SELNUM2 (WRK-PAGENO)
+                                               TO  W121-BODYLIST-1-ROW
+                       END-IF
                    END-IF 
                END-IF
                MOVE    2                   TO  FLG-BODYLIST-ROW
+                                                           (WRK-PAGENO)
                MOVE    ZERO                TO  SPA-NAI-SELNUM2
+                                                           (WRK-PAGENO)
       *
-               EVALUATE    SPA-GMN-GRP-SETTEI
+               EVALUATE    SPA-GMN-GRP-SETTEI (WRK-PAGENO)
                    WHEN    SPACE
                        MOVE    SPACE       TO  SPA-GMN-GRP-KAIJYO
+                                                           (WRK-PAGENO)
                        MOVE    "1"         TO  SPA-GMN-GRP-SETTEI
-                       COMPUTE IDX =   SPA-GMN-GRP1-NO-MAX +   1
+                                                           (WRK-PAGENO)
+                       COMPUTE IDX =   SPA-GMN-GRP1-NO-MAX (WRK-PAGENO)
+                                       +   1
                        MOVE    IDX         TO  SPA-NAI-GRP1-NO
+                                                           (WRK-PAGENO)
                        MOVE    IDX (2:3)   TO  SPA-GMN-GRP1-NO
+                                                           (WRK-PAGENO)
                        MOVE    SPACE       TO  SPA-GMN-GRP2-NO
-                       MOVE    "T"         TO  SPA-GMN-GRP1
-                       MOVE    "F"         TO  SPA-GMN-GRP2
-                       INITIALIZE              SPA-GMN-BODY-KOUMOKU
-                                               SPA-NAI-BODY-KOUMOKU
-                       MOVE    50          TO  SPA-GMN-CUR
+                                                           (WRK-PAGENO)
+                       MOVE    "T"         TO  SPA-GMN-GRP1(WRK-PAGENO)
+                       MOVE    "F"         TO  SPA-GMN-GRP2(WRK-PAGENO)
+                       INITIALIZE              SPA-GMN-BODY-OCC
+                                                           (WRK-PAGENO)
+                                               SPA-NAI-BODY-OCC
+                                                           (WRK-PAGENO)
+                       IF      WRK-PAGENO      =   1
+                           MOVE    50              TO  SPA-GMN-CUR
+                       ELSE
+                           MOVE    250             TO  SPA-GMN-CUR
+                       END-IF
                    WHEN    "1"
-                       INITIALIZE              SPA-GMN-GRP-KOUMOKU
-                       MOVE    "T"         TO  SPA-GMN-GRP1
-                       MOVE    "F"         TO  SPA-GMN-GRP2
-                       MOVE    13          TO  SPA-GMN-CUR
+                       INITIALIZE              SPA-GMN-GRP-OCC
+                                                           (WRK-PAGENO) 
+                       MOVE    "T"         TO  SPA-GMN-GRP1(WRK-PAGENO)
+                       MOVE    "F"         TO  SPA-GMN-GRP2(WRK-PAGENO)
+                       IF      WRK-PAGENO      =   1
+                           MOVE    13              TO  SPA-GMN-CUR
+                       ELSE
+                           MOVE    213             TO  SPA-GMN-CUR
+                       END-IF
                END-EVALUATE
            END-IF
            .
@@ -3268,36 +3866,80 @@
       *****************************************************************
        490-GRP-KAIJYO-SEC              SECTION.
       *
-           IF      SPA-GMN-BODYLIST-MAX    =   ZERO
+           EVALUATE    MCP-WIDGET
+               WHEN    "GRP_KAIJYO"
+                   MOVE    1           TO  WRK-PAGENO
+               WHEN    "GRP_KAIJYO_1"
+                   MOVE    2           TO  WRK-PAGENO
+           END-EVALUATE
+           MOVE    SPA-NAI-SELNUM2 (WRK-PAGENO)
+                                   TO  WRK-SELNUM2
+           MOVE    SPA-NAI-SELNUM3 (WRK-PAGENO)
+                                   TO  WRK-SELNUM3
+      *
+           IF      SPA-GMN-BODYLIST-MAX (WRK-PAGENO)
+                                       =   ZERO
                MOVE    "0102"              TO  SPA-ERRCD
                MOVE    1                   TO  SPA-GMN-CUR
            ELSE
-               IF      SPA-NAI-SELNUM2     >   ZERO
-                   MOVE    SPA-NAI-SELNUM2     TO  W121-BODYLIST-ROW
-                                                   SPA-NAI-SELNUM2-ROW
+               IF      SPA-NAI-SELNUM2 (WRK-PAGENO)
+                                           >   ZERO
+                   IF      WRK-PAGENO      =   1 
+                       MOVE    SPA-NAI-SELNUM2 (WRK-PAGENO)
+                                               TO  W121-BODYLIST-ROW
+                   ELSE
+                       MOVE    SPA-NAI-SELNUM2 (WRK-PAGENO)
+                                               TO  W121-BODYLIST-1-ROW
+                   END-IF
+                   MOVE    SPA-NAI-SELNUM2 (WRK-PAGENO)
+                                           TO  SPA-NAI-SELNUM2-ROW
+                                                           (WRK-PAGENO)
                ELSE
-                   IF      SPA-NAI-SELNUM2-ROW >   ZERO
-                       MOVE    SPA-NAI-SELNUM2-ROW TO  W121-BODYLIST-ROW
+                   IF      SPA-NAI-SELNUM2-ROW (WRK-PAGENO)
+                                               >   ZERO
+                       IF      WRK-PAGENO      =   1 
+                           MOVE    SPA-NAI-SELNUM2-ROW (WRK-PAGENO)
+                                               TO  W121-BODYLIST-ROW
+                       ELSE
+                           MOVE    SPA-NAI-SELNUM2-ROW (WRK-PAGENO)
+                                               TO  W121-BODYLIST-1-ROW
+                       END-IF
                    END-IF 
                END-IF
                MOVE    2                   TO  FLG-BODYLIST-ROW
+                                                           (WRK-PAGENO)
                MOVE    ZERO                TO  SPA-NAI-SELNUM2
+                                                           (WRK-PAGENO)
       *
-               EVALUATE    SPA-GMN-GRP-KAIJYO
+               EVALUATE    SPA-GMN-GRP-KAIJYO (WRK-PAGENO)
                    WHEN    SPACE
-                       INITIALIZE              SPA-GMN-GRP-KOUMOKU
+                       INITIALIZE              SPA-GMN-GRP-OCC
+                                                           (WRK-PAGENO)
                        MOVE    SPACE       TO  SPA-GMN-GRP-SETTEI
+                                                           (WRK-PAGENO)
                        MOVE    "1"         TO  SPA-GMN-GRP-KAIJYO
-                       INITIALIZE              SPA-GMN-BODY-KOUMOKU
-                                               SPA-NAI-BODY-KOUMOKU
-                       MOVE    "T"         TO  SPA-GMN-GRP1
-                       MOVE    "F"         TO  SPA-GMN-GRP2
-                       MOVE    100         TO  SPA-GMN-CUR
+                                                           (WRK-PAGENO)
+                       INITIALIZE              SPA-GMN-BODY-OCC
+                                                           (WRK-PAGENO)
+                                               SPA-NAI-BODY-OCC
+                                                           (WRK-PAGENO)
+                       MOVE    "T"         TO  SPA-GMN-GRP1(WRK-PAGENO)
+                       MOVE    "F"         TO  SPA-GMN-GRP2(WRK-PAGENO)
+                       IF      WRK-PAGENO      =   1
+                           MOVE    100             TO  SPA-GMN-CUR
+                       ELSE
+                           MOVE    300             TO  SPA-GMN-CUR
+                       END-IF
                    WHEN    "1"
-                       INITIALIZE              SPA-GMN-GRP-KOUMOKU
-                       MOVE    "T"         TO  SPA-GMN-GRP1
-                       MOVE    "F"         TO  SPA-GMN-GRP2
-                       MOVE    13          TO  SPA-GMN-CUR
+                       INITIALIZE              SPA-GMN-GRP-OCC
+                                                           (WRK-PAGENO)
+                       MOVE    "T"         TO  SPA-GMN-GRP1(WRK-PAGENO)
+                       MOVE    "F"         TO  SPA-GMN-GRP2(WRK-PAGENO)
+                       IF      WRK-PAGENO      =   1
+                           MOVE    13              TO  SPA-GMN-CUR
+                       ELSE
+                           MOVE    213             TO  SPA-GMN-CUR
+                       END-IF
                END-EVALUATE
            END-IF
            .
@@ -3309,35 +3951,75 @@
       *****************************************************************
        490-GRP1-SETTEI-SEC          SECTION.
       *
-           MOVE    W121-GRP1           TO  SPA-GMN-GRP1
-           MOVE    W121-GRP2           TO  SPA-GMN-GRP2
+           EVALUATE    MCP-WIDGET
+               WHEN    "GRP1"
+                   MOVE    1           TO  WRK-PAGENO
+                   MOVE    W121-GRP1   TO  SPA-GMN-GRP1 (WRK-PAGENO)
+                   MOVE    W121-GRP2   TO  SPA-GMN-GRP2 (WRK-PAGENO)
+               WHEN    "GRP1_1"
+                   MOVE    2           TO  WRK-PAGENO
+                   MOVE    W121-GRP1-1 TO  SPA-GMN-GRP1 (WRK-PAGENO)
+                   MOVE    W121-GRP2-1 TO  SPA-GMN-GRP2 (WRK-PAGENO)
+           END-EVALUATE
+           MOVE    SPA-NAI-SELNUM2 (WRK-PAGENO)
+                                   TO  WRK-SELNUM2
+           MOVE    SPA-NAI-SELNUM3 (WRK-PAGENO)
+                                   TO  WRK-SELNUM3
       *
-           IF      SPA-NAI-SELNUM2     >   ZERO
-               MOVE    SPA-NAI-SELNUM2     TO  W121-BODYLIST-ROW
-                                               SPA-NAI-SELNUM2-ROW
+           IF      SPA-NAI-SELNUM2 (WRK-PAGENO)
+                                        >   ZERO
+               IF      WRK-PAGENO      =   1 
+                   MOVE    SPA-NAI-SELNUM2 (WRK-PAGENO)
+                                           TO  W121-BODYLIST-ROW
+               ELSE
+                   MOVE    SPA-NAI-SELNUM2 (WRK-PAGENO)
+                                           TO  W121-BODYLIST-1-ROW
+               END-IF
+               MOVE    SPA-NAI-SELNUM2 (WRK-PAGENO)
+                                           TO  SPA-NAI-SELNUM2-ROW
+                                                           (WRK-PAGENO)
            ELSE
-               IF      SPA-NAI-SELNUM2-ROW >   ZERO
-                   MOVE    SPA-NAI-SELNUM2-ROW TO  W121-BODYLIST-ROW
+               IF      SPA-NAI-SELNUM2-ROW (WRK-PAGENO)
+                                           >   ZERO
+                   IF      WRK-PAGENO      =   1 
+                       MOVE    SPA-NAI-SELNUM2-ROW (WRK-PAGENO)
+                                               TO  W121-BODYLIST-ROW
+                   ELSE
+                       MOVE    SPA-NAI-SELNUM2-ROW (WRK-PAGENO)
+                                               TO  W121-BODYLIST-1-ROW
+                   END-IF
                END-IF 
            END-IF
-           MOVE    2                   TO  FLG-BODYLIST-ROW
-           MOVE    ZERO                TO  SPA-NAI-SELNUM2
+           MOVE    2                   TO  FLG-BODYLIST-ROW (WRK-PAGENO)
+           MOVE    ZERO                TO  SPA-NAI-SELNUM2  (WRK-PAGENO)
       *
-           IF      SPA-GMN-GRP1        =   "T"
-               IF      SPA-GMN-GRP-SETTEI  =   "1"
-                   COMPUTE IDX     =   SPA-GMN-GRP1-NO-MAX +   1
-                   MOVE    IDX                 TO  SPA-NAI-GRP1-NO
-                   MOVE    IDX (2:3)           TO  SPA-GMN-GRP1-NO
+           IF      SPA-GMN-GRP1 (WRK-PAGENO)
+                                       =   "T"
+               IF      SPA-GMN-GRP-SETTEI (WRK-PAGENO)
+                                           =   "1"
+                   COMPUTE IDX     =   SPA-GMN-GRP1-NO-MAX (WRK-PAGENO)
+                                       +   1
+                   MOVE    IDX         TO  SPA-NAI-GRP1-NO(WRK-PAGENO)
+                   MOVE    IDX (2:3)   TO  SPA-GMN-GRP1-NO(WRK-PAGENO)
                ELSE
-                   MOVE    SPACE               TO  SPA-GMN-GRP2-NO
-                   MOVE    ZERO                TO  SPA-NAI-GRP1-NO
+                   MOVE    SPACE       TO  SPA-GMN-GRP2-NO(WRK-PAGENO)
+                   MOVE    ZERO        TO  SPA-NAI-GRP1-NO(WRK-PAGENO)
                END-IF
-               MOVE    SPACE               TO  SPA-GMN-GRP2-NO
+               MOVE    SPACE           TO  SPA-GMN-GRP2-NO(WRK-PAGENO)
       *
-               IF      SPA-GMN-GRP-SETTEI  =   "1"
-                   MOVE    50                  TO  SPA-GMN-CUR
+               IF      SPA-GMN-GRP-SETTEI (WRK-PAGENO)
+                                           =   "1"
+                   IF      WRK-PAGENO      =   1
+                       MOVE    50              TO  SPA-GMN-CUR
+                   ELSE
+                       MOVE    250             TO  SPA-GMN-CUR
+                   END-IF
                ELSE
-                   MOVE    100                 TO  SPA-GMN-CUR
+                   IF      WRK-PAGENO      =   1
+                       MOVE    100             TO  SPA-GMN-CUR
+                   ELSE
+                       MOVE    300             TO  SPA-GMN-CUR
+                   END-IF
                END-IF
            END-IF
            .
@@ -3349,27 +4031,65 @@
       *****************************************************************
        490-GRP2-SETTEI-SEC          SECTION.
       *
-           MOVE    W121-GRP1           TO  SPA-GMN-GRP1
-           MOVE    W121-GRP2           TO  SPA-GMN-GRP2
+           EVALUATE    MCP-WIDGET
+               WHEN    "GRP2"
+                   MOVE    1           TO  WRK-PAGENO
+                   MOVE    W121-GRP1   TO  SPA-GMN-GRP1 (WRK-PAGENO)
+                   MOVE    W121-GRP2   TO  SPA-GMN-GRP2 (WRK-PAGENO)
+               WHEN    "GRP2_1"
+                   MOVE    2           TO  WRK-PAGENO
+                   MOVE    W121-GRP1-1 TO  SPA-GMN-GRP1 (WRK-PAGENO)
+                   MOVE    W121-GRP2-1 TO  SPA-GMN-GRP2 (WRK-PAGENO)
+           END-EVALUATE
+           MOVE    SPA-NAI-SELNUM2 (WRK-PAGENO)
+                                   TO  WRK-SELNUM2
+           MOVE    SPA-NAI-SELNUM3 (WRK-PAGENO)
+                                   TO  WRK-SELNUM3
       *
-           IF      SPA-NAI-SELNUM2     >   ZERO
-               MOVE    SPA-NAI-SELNUM2     TO  W121-BODYLIST-ROW
-                                               SPA-NAI-SELNUM2-ROW
+           IF      SPA-NAI-SELNUM2 (WRK-PAGENO)
+                                       >   ZERO
+               IF      WRK-PAGENO          =   1
+                   MOVE    SPA-NAI-SELNUM2 (WRK-PAGENO) 
+                                           TO  W121-BODYLIST-ROW
+               ELSE
+                   MOVE    SPA-NAI-SELNUM2 (WRK-PAGENO) 
+                                           TO  W121-BODYLIST-1-ROW
+               END-IF
+               MOVE    SPA-NAI-SELNUM2 (WRK-PAGENO) 
+                                           TO  SPA-NAI-SELNUM2-ROW
+                                                       (WRK-PAGENO)
            ELSE
-               IF      SPA-NAI-SELNUM2-ROW >   ZERO
-                   MOVE    SPA-NAI-SELNUM2-ROW TO  W121-BODYLIST-ROW
+               IF      SPA-NAI-SELNUM2-ROW (WRK-PAGENO)
+                                       >   ZERO
+                   IF      WRK-PAGENO          =   1
+                       MOVE    SPA-NAI-SELNUM2-ROW (WRK-PAGENO)
+                                               TO  W121-BODYLIST-ROW
+                   ELSE
+                       MOVE    SPA-NAI-SELNUM2-ROW (WRK-PAGENO)
+                                               TO  W121-BODYLIST-1-ROW
+                   END-IF
                END-IF 
            END-IF
-           MOVE    2                   TO  FLG-BODYLIST-ROW
-           MOVE    ZERO                TO  SPA-NAI-SELNUM2
+           MOVE    2                   TO  FLG-BODYLIST-ROW(WRK-PAGENO)
+           MOVE    ZERO                TO  SPA-NAI-SELNUM2 (WRK-PAGENO)
       *
-           IF      SPA-GMN-GRP2        =   "T"
-               MOVE    SPACE               TO  SPA-GMN-GRP1-NO
-               MOVE    ZERO                TO  SPA-NAI-GRP1-NO
-               IF      SPA-GMN-GRP-SETTEI  =   "1"
-                   MOVE    51                  TO  SPA-GMN-CUR
+           IF      SPA-GMN-GRP2 (WRK-PAGENO)
+                                       =   "T"
+               MOVE    SPACE           TO  SPA-GMN-GRP1-NO (WRK-PAGENO)
+               MOVE    ZERO            TO  SPA-NAI-GRP1-NO (WRK-PAGENO)
+               IF      SPA-GMN-GRP-SETTEI (WRK-PAGENO)
+                                           =   "1"
+                   IF      WRK-PAGENO      =   1
+                       MOVE    51              TO  SPA-GMN-CUR
+                   ELSE
+                       MOVE    251             TO  SPA-GMN-CUR
+                       END-IF
                ELSE
-                   MOVE    100                 TO  SPA-GMN-CUR
+                   IF      WRK-PAGENO      =   1
+                       MOVE    100             TO  SPA-GMN-CUR
+                   ELSE
+                       MOVE    300             TO  SPA-GMN-CUR
+                   END-IF
                END-IF
            END-IF
            .
@@ -3381,53 +4101,80 @@
       *****************************************************************
        490-KOH-UP-SEC              SECTION.
       *
-           IF      SPA-NAI-SELNUM2     >   ZERO
-               MOVE    SPA-NAI-SELNUM2     TO  W121-BODYLIST-ROW
-               MOVE    ZERO                TO  FLG-BODYLIST-ROW
+           EVALUATE    MCP-WIDGET
+               WHEN    "KOH_UP"
+                   MOVE    1           TO  WRK-PAGENO
+               WHEN    "KOH_UP_1"
+                   MOVE    2           TO  WRK-PAGENO
+           END-EVALUATE
+           MOVE    SPA-NAI-SELNUM2 (WRK-PAGENO)
+                                   TO  WRK-SELNUM2
+           MOVE    SPA-NAI-SELNUM3 (WRK-PAGENO)
+                                   TO  WRK-SELNUM3
+      *
+           IF      SPA-NAI-SELNUM2 (WRK-PAGENO)
+                                       >   ZERO
+               IF      WRK-PAGENO          =   1
+                   MOVE    SPA-NAI-SELNUM2 (WRK-PAGENO)
+                                           TO  W121-BODYLIST-ROW
+               ELSE
+                   MOVE    SPA-NAI-SELNUM2 (WRK-PAGENO)
+                                           TO  W121-BODYLIST-1-ROW
+               END-IF
+               MOVE    ZERO                TO  FLG-BODYLIST-ROW 
+                                                       (WRK-PAGENO)
            END-IF
       *
-           IF    ( SPA-NAI-SELNUM2     =   ZERO )
-           OR    ( SPA-NAI-SELNUM3     =   ZERO )
+           IF    ( SPA-NAI-SELNUM2 (WRK-PAGENO) 
+                                       =   ZERO )
+           OR    ( SPA-NAI-SELNUM3 (WRK-PAGENO)
+                                       =   ZERO )
                MOVE    "0104"              TO  SPA-ERRCD
            ELSE
-               IF    ( SPA-NAI-SELNUM3     =   1 )
-               OR    ( SPA-GMN-KOHLIST-MAX (SPA-NAI-SELNUM2)
+               IF    ( SPA-NAI-SELNUM3 (WRK-PAGENO)
+                                           =   1 )
+               OR    ( SPA-GMN-KOHLIST-MAX (WRK-PAGENO WRK-SELNUM2)
                                            =   1 )
                    GO  TO  490-KOH-UP-EXT
                ELSE
-                   COMPUTE IDX =   SPA-NAI-SELNUM3     -   1
+                   COMPUTE IDX =   SPA-NAI-SELNUM3 (WRK-PAGENO)    -   1
                    IF      SPA-GMN-KOHLIST-TJYUN
-                                      (SPA-NAI-SELNUM2 SPA-NAI-SELNUM3)
+                                   (WRK-PAGENO WRK-SELNUM2 WRK-SELNUM3)
                                    NOT =   SPA-GMN-KOHLIST-TJYUN
-                                                  (SPA-NAI-SELNUM2 IDX)
+                                           (WRK-PAGENO WRK-SELNUM2 IDX)
                        MOVE    "0040"              TO  SPA-ERRCD
                    ELSE
                        MOVE    SPA-GMN-KOHLIST-TBL
-                                      (SPA-NAI-SELNUM2 SPA-NAI-SELNUM3)
+                                   (WRK-PAGENO WRK-SELNUM2 WRK-SELNUM3)
                                            TO  WRK-GMN-KOHLIST-TBL-R (1)
                        MOVE    SPA-GMN-KOHLIST-TBL
-                                      (SPA-NAI-SELNUM2 IDX)
-                                           TO  SPA-GMN-KOHLIST-TBL
-                                      (SPA-NAI-SELNUM2 SPA-NAI-SELNUM3)
+                                          (WRK-PAGENO WRK-SELNUM2 IDX)
+                                           TO
+                               SPA-GMN-KOHLIST-TBL
+                                   (WRK-PAGENO WRK-SELNUM2 WRK-SELNUM3)
                        MOVE    WRK-GMN-KOHLIST-TBL-R (1)
                                            TO  SPA-GMN-KOHLIST-TBL
-                                                   (SPA-NAI-SELNUM2 IDX)
+                                           (WRK-PAGENO WRK-SELNUM2 IDX)
                        MOVE    IDX         TO  SPA-NAI-SELNUM3
+                                                            (WRK-PAGENO)
       *
       *               グループ１設定済のとき 
                       IF      SPA-NAI-BODYLIST-TGRP1-NO
-                                               (SPA-NAI-SELNUM2)
+                                               (WRK-PAGENO WRK-SELNUM2)
                                            NOT = "000"
                           PERFORM VARYING IDX FROM    1   BY  1
                                   UNTIL   IDX >   SPA-GMN-BODYLIST-MAX
+                                                           (WRK-PAGENO)
                               IF    ( SPA-NAI-BODYLIST-TGRP1-NO
-                                                   (SPA-NAI-SELNUM2)
+                                           (WRK-PAGENO WRK-SELNUM2)
                                        =   SPA-NAI-BODYLIST-TGRP1-NO
-                                                               (IDX) )
-                              AND   ( IDX NOT =   SPA-NAI-SELNUM2    )
+                                                      (WRK-PAGENO IDX) )
+                              AND   ( IDX NOT =   SPA-NAI-SELNUM2
+                                                      (WRK-PAGENO)     )
                                   MOVE    SPA-GMN-KOHLIST
-                                                  (SPA-NAI-SELNUM2)
-                                               TO  SPA-GMN-KOHLIST (IDX)
+                                              (WRK-PAGENO WRK-SELNUM2)
+                                               TO  SPA-GMN-KOHLIST
+                                                       (WRK-PAGENO IDX)
                               END-IF
                           END-PERFORM
                        END-IF
@@ -3435,7 +4182,11 @@
       ***              MOVE    SPACE       TO  SPA-GMN-HKNNUM
       ***                                      SPA-GMN-SEIDONAME
                    END-IF
-                   MOVE    101         TO  SPA-GMN-CUR
+                   IF      WRK-PAGENO          =   1
+                       MOVE    101         TO  SPA-GMN-CUR
+                   ELSE 
+                       MOVE    301         TO  SPA-GMN-CUR
+                   END-IF 
                END-IF
            END-IF
            .
@@ -3447,54 +4198,82 @@
       *****************************************************************
        490-KOH-DOWN-SEC              SECTION.
       *
-           IF      SPA-NAI-SELNUM2     >   ZERO
-               MOVE    SPA-NAI-SELNUM2     TO  W121-BODYLIST-ROW
-               MOVE    ZERO                TO  FLG-BODYLIST-ROW
+           EVALUATE    MCP-WIDGET
+               WHEN    "KOH_DOWN"
+                   MOVE    1           TO  WRK-PAGENO
+               WHEN    "KOH_DOWN_1"
+                   MOVE    2           TO  WRK-PAGENO
+           END-EVALUATE
+           MOVE    SPA-NAI-SELNUM2 (WRK-PAGENO)
+                                   TO  WRK-SELNUM2
+           MOVE    SPA-NAI-SELNUM3 (WRK-PAGENO)
+                                   TO  WRK-SELNUM3
+      *
+           IF      SPA-NAI-SELNUM2 (WRK-PAGENO)
+                                       >   ZERO
+               IF      WRK-PAGENO          =   1
+                   MOVE    SPA-NAI-SELNUM2 (WRK-PAGENO)
+                                           TO  W121-BODYLIST-ROW
+               ELSE
+                   MOVE    SPA-NAI-SELNUM2 (WRK-PAGENO)
+                                           TO  W121-BODYLIST-1-ROW
+               END-IF
+               MOVE    ZERO                TO  FLG-BODYLIST-ROW 
+                                                       (WRK-PAGENO)
            END-IF
       *
-           IF    ( SPA-NAI-SELNUM2     =   ZERO )
-           OR    ( SPA-NAI-SELNUM3     =   ZERO )
+           IF    ( SPA-NAI-SELNUM2 (WRK-PAGENO)
+                                       =   ZERO )
+           OR    ( SPA-NAI-SELNUM3 (WRK-PAGENO)
+                                       =   ZERO )
                MOVE    "0104"              TO  SPA-ERRCD
            ELSE
-               IF    ( SPA-NAI-SELNUM3     =   SPA-GMN-KOHLIST-MAX
-                                                   (SPA-NAI-SELNUM2) )
-               OR    ( SPA-GMN-KOHLIST-MAX (SPA-NAI-SELNUM2)
-                                           =   1                     )
+               IF    ( SPA-NAI-SELNUM3 (WRK-PAGENO) 
+                                       =   SPA-GMN-KOHLIST-MAX
+                             (WRK-PAGENO WRK-SELNUM2) )
+               OR    ( SPA-GMN-KOHLIST-MAX
+                             (WRK-PAGENO WRK-SELNUM2)
+                                           =   1      )
                    GO  TO  490-KOH-DOWN-EXT
                ELSE
-                   COMPUTE IDX =   SPA-NAI-SELNUM3     +   1
+      *
+                   COMPUTE IDX =   SPA-NAI-SELNUM3 (WRK-PAGENO) +   1
                    IF      SPA-GMN-KOHLIST-TJYUN
-                                      (SPA-NAI-SELNUM2 SPA-NAI-SELNUM3)
+                                   (WRK-PAGENO WRK-SELNUM2 WRK-SELNUM3)
                                    NOT =   SPA-GMN-KOHLIST-TJYUN
-                                                  (SPA-NAI-SELNUM2 IDX)
+                                           (WRK-PAGENO WRK-SELNUM2 IDX)
                        MOVE    "0040"              TO  SPA-ERRCD
                    ELSE
                        MOVE    SPA-GMN-KOHLIST-TBL
-                                      (SPA-NAI-SELNUM2 SPA-NAI-SELNUM3)
+                                   (WRK-PAGENO WRK-SELNUM2 WRK-SELNUM3)
                                            TO  WRK-GMN-KOHLIST-TBL-R (1)
                        MOVE    SPA-GMN-KOHLIST-TBL
-                                      (SPA-NAI-SELNUM2 IDX)
+                                      (WRK-PAGENO WRK-SELNUM2 IDX)
                                            TO  SPA-GMN-KOHLIST-TBL
-                                      (SPA-NAI-SELNUM2 SPA-NAI-SELNUM3)
+                                    (WRK-PAGENO WRK-SELNUM2 WRK-SELNUM3)
                        MOVE    WRK-GMN-KOHLIST-TBL-R (1)
                                            TO  SPA-GMN-KOHLIST-TBL
-                                                   (SPA-NAI-SELNUM2 IDX)
+                                           (WRK-PAGENO WRK-SELNUM2 IDX)
                        MOVE    IDX         TO  SPA-NAI-SELNUM3
+                                                       (WRK-PAGENO)
       *
       *               グループ１設定済のとき 
                       IF      SPA-NAI-BODYLIST-TGRP1-NO
-                                               (SPA-NAI-SELNUM2)
+                                           (WRK-PAGENO WRK-SELNUM2)
                                            NOT = "000"
                           PERFORM VARYING IDX FROM    1   BY  1
                                   UNTIL   IDX >   SPA-GMN-BODYLIST-MAX
+                                                     (WRK-PAGENO)
                               IF    ( SPA-NAI-BODYLIST-TGRP1-NO
-                                                   (SPA-NAI-SELNUM2)
+                                           (WRK-PAGENO WRK-SELNUM2)
                                        =   SPA-NAI-BODYLIST-TGRP1-NO
-                                                               (IDX) )
-                              AND   ( IDX NOT =   SPA-NAI-SELNUM2    )
+                                                   (WRK-PAGENO IDX) )
+                              AND   ( IDX NOT =   SPA-NAI-SELNUM2
+                                                    (WRK-PAGENO)    )
                                   MOVE    SPA-GMN-KOHLIST
-                                                  (SPA-NAI-SELNUM2)
-                                               TO  SPA-GMN-KOHLIST (IDX)
+                                          (WRK-PAGENO WRK-SELNUM2)
+                                               TO  SPA-GMN-KOHLIST
+                                                       (WRK-PAGENO IDX)
                               END-IF
                           END-PERFORM
                        END-IF
@@ -3502,7 +4281,11 @@
       ***                 MOVE    SPACE       TO  SPA-GMN-HKNNUM
       ***                                         SPA-GMN-SEIDONAME
                    END-IF
-                   MOVE    101         TO  SPA-GMN-CUR
+                   IF      WRK-PAGENO          =   1
+                       MOVE    101         TO  SPA-GMN-CUR
+                   ELSE 
+                       MOVE    301         TO  SPA-GMN-CUR
+                   END-IF 
                END-IF
            END-IF
            .
@@ -3514,50 +4297,79 @@
       *****************************************************************
        490-KOH-TOP-HENSYU-SEC          SECTION.
       *
-           MOVE    15                  TO  SPA-GMN-CUR
+           EVALUATE    MCP-WIDGET
+               WHEN    "TOP"
+                   MOVE    1           TO  WRK-PAGENO
+                   MOVE    15          TO  SPA-GMN-CUR
+               WHEN    "TOP_1"
+                   MOVE    2           TO  WRK-PAGENO
+                   MOVE    215         TO  SPA-GMN-CUR
+           END-EVALUATE
+           MOVE    SPA-NAI-SELNUM2 (WRK-PAGENO)
+                                   TO  WRK-SELNUM2
+           MOVE    SPA-NAI-SELNUM3 (WRK-PAGENO)
+                                   TO  WRK-SELNUM3
       *
-           IF      SPA-NAI-SELNUM2     >   ZERO
-               MOVE    SPA-NAI-SELNUM2     TO  W121-BODYLIST-ROW
-               MOVE    ZERO                TO  FLG-BODYLIST-ROW
+           IF      SPA-NAI-SELNUM2 (WRK-PAGENO)
+                                       >   ZERO
+               IF      WRK-PAGENO          =   1
+                   MOVE    SPA-NAI-SELNUM2 (WRK-PAGENO)
+                                           TO  W121-BODYLIST-ROW
+               ELSE
+                   MOVE    SPA-NAI-SELNUM2 (WRK-PAGENO)
+                                           TO  W121-BODYLIST-1-ROW
+               END-IF
+               MOVE    ZERO                TO  FLG-BODYLIST-ROW 
+                                                       (WRK-PAGENO)
            END-IF
       * 
-           IF    ( SPA-GMN-HKNNUM      =   SPACE )
-           OR    ( SPA-GMN-SEIDONAME   =   SPACE )
+           IF    ( SPA-GMN-HKNNUM (WRK-PAGENO)
+                                       =   SPACE )
+           OR    ( SPA-GMN-SEIDONAME (WRK-PAGENO)
+                                       =   SPACE )
                MOVE    "0041"              TO  SPA-ERRCD
                GO  TO  490-KOH-TOP-HENSYU-EXT
            END-IF
       * 
-           EVALUATE    SPA-GMN-HKNNUM
+           EVALUATE    SPA-GMN-HKNNUM (WRK-PAGENO)
                WHEN    "XXX"
-                   IF      SPA-GMN-CHOUKI  NOT =   SPACE
+                   IF      SPA-GMN-CHOUKI (WRK-PAGENO)
+                                               NOT =   SPACE
                        MOVE    "0042"              TO  SPA-ERRCD
                        GO  TO  490-KOH-TOP-HENSYU-EXT
                    END-IF
                WHEN    "YYY"
-                   IF      SPA-GMN-ZAITAKU NOT =   SPACE
+                   IF      SPA-GMN-ZAITAKU (WRK-PAGENO)
+                                               NOT =   SPACE
                        MOVE    "0043"              TO  SPA-ERRCD
                        GO  TO  490-KOH-TOP-HENSYU-EXT
                    END-IF
            END-EVALUATE
       * 
-           IF      SPA-NAI-SELNUM3     =   ZERO
-               IF      SPA-GMN-KOHLIST-MAX (SPA-NAI-SELNUM2)
+           IF      SPA-NAI-SELNUM3 (WRK-PAGENO)
+                                        =   ZERO
+               IF      SPA-GMN-KOHLIST-MAX
+                      (WRK-PAGENO WRK-SELNUM2)
                                             >=  WRK-CONS-KOHLIST-MAX
                    MOVE    "0105"              TO  SPA-ERRCD
                    MOVE    SPACE               TO  SPA-GMN-HKNNUM
+                                                           (WRK-PAGENO)
                                                    SPA-GMN-SEIDONAME
+                                                           (WRK-PAGENO)
                    GO  TO  490-KOH-TOP-HENSYU-EXT
                END-IF
            ELSE
                IF      SPA-GMN-KOHLIST-TJYUN
-                                  (SPA-NAI-SELNUM2 SPA-NAI-SELNUM3)
+                              (WRK-PAGENO WRK-SELNUM2 WRK-SELNUM3)
                                            =   "T"
                    MOVE    SPACE               TO  SPA-GMN-HKNNUM
+                                                           (WRK-PAGENO)
                                                    SPA-GMN-SEIDONAME
+                                                           (WRK-PAGENO)
                    GO  TO  490-KOH-TOP-HENSYU-EXT
                ELSE
                    INITIALIZE          SPA-GMN-KOHLIST-TBL
-                                       (SPA-NAI-SELNUM2 SPA-NAI-SELNUM3)
+                              (WRK-PAGENO WRK-SELNUM2 WRK-SELNUM3)
                END-IF
            END-IF     
       *
@@ -3576,11 +4388,12 @@
            INITIALIZE              WRK-GMN-KOHLIST-AREA           
            PERFORM VARYING IDX FROM    1   BY  1
                    UNTIL   IDX >       SPA-GMN-KOHLIST-MAX
-                                               (SPA-NAI-SELNUM2)
-               IF      SPA-GMN-KOHLIST-THKNNUM (SPA-NAI-SELNUM2 IDX)
+                                           (WRK-PAGENO WRK-SELNUM2)
+               IF      SPA-GMN-KOHLIST-THKNNUM
+                                      (WRK-PAGENO WRK-SELNUM2 IDX)
                                    NOT =   SPACE
                    EVALUATE    SPA-GMN-KOHLIST-TJYUN
-                                         (SPA-NAI-SELNUM2 IDX)
+                                     (WRK-PAGENO WRK-SELNUM2 IDX)
                        WHEN    "T"
                            MOVE    1           TO  IDY
                        WHEN    "B"             
@@ -3590,7 +4403,8 @@
                    ADD     1           TO  WRK-GMN-KOHLIST-MAX (IDY)
                    MOVE    WRK-GMN-KOHLIST-MAX (IDY)
                                        TO  IDZ
-                   MOVE    SPA-GMN-KOHLIST-TBL   (SPA-NAI-SELNUM2 IDX)
+                   MOVE    SPA-GMN-KOHLIST-TBL
+                               (WRK-PAGENO WRK-SELNUM2 IDX)
                                        TO  WRK-GMN-KOHLIST-TBL (IDY IDZ)
                END-IF
            END-PERFORM
@@ -3608,9 +4422,10 @@
                ADD     1               TO  WRK-GMN-KOHLIST-MAX(IDY)
                MOVE    WRK-GMN-KOHLIST-MAX  (IDY)
                                        TO  IDZ
-               MOVE    SPA-GMN-HKNNUM  TO  WRK-GMN-KOHLIST-THKNNUM 
+               MOVE    SPA-GMN-HKNNUM (WRK-PAGENO)
+                                       TO  WRK-GMN-KOHLIST-THKNNUM 
                                                               (IDY IDZ)
-               MOVE    SPA-GMN-SEIDONAME
+               MOVE    SPA-GMN-SEIDONAME (WRK-PAGENO)
                                        TO  WRK-GMN-KOHLIST-TSEIDONAME 
                                                               (IDY IDZ)
                MOVE    WRK-KOH-KBN     TO  WRK-GMN-KOHLIST-TJYUN
@@ -3618,7 +4433,8 @@
            END-IF
       *
       *    先頭・後尾の順にＳＰＡへ設定 
-           INITIALIZE                  SPA-GMN-KOHLIST (SPA-NAI-SELNUM2)
+           INITIALIZE                  SPA-GMN-KOHLIST
+                                           (WRK-PAGENO WRK-SELNUM2)
            MOVE    ZERO            TO  IDZ
            PERFORM VARYING IDX     FROM    1   BY  1
                    UNTIL   IDX     >       60
@@ -3627,32 +4443,36 @@
                                        NOT =   SPACE      
                    ADD     1               TO  IDZ
                    MOVE    WRK-GMN-KOHLIST-TBL-R (IDX)
-                                           TO  SPA-GMN-KOHLIST-TBL
-                                                   (SPA-NAI-SELNUM2 IDZ)
+                                           TO
+                                    SPA-GMN-KOHLIST-TBL
+                                       (WRK-PAGENO WRK-SELNUM2 IDZ)
                END-IF
            END-PERFORM
            MOVE    IDZ                 TO  SPA-GMN-KOHLIST-MAX
-                                                    (SPA-NAI-SELNUM2)
+                                            (WRK-PAGENO WRK-SELNUM2)
       *
       *    グループ１設定済のとき 
-           IF      SPA-NAI-BODYLIST-TGRP1-NO-9 (SPA-NAI-SELNUM2)
+           IF      SPA-NAI-BODYLIST-TGRP1-NO-9 (WRK-PAGENO WRK-SELNUM2)
                                >   ZERO
                PERFORM VARYING IDX FROM    1   BY  1
-                       UNTIL   IDX >       SPA-GMN-BODYLIST-MAX
+                       UNTIL   IDX >
+                                   SPA-GMN-BODYLIST-MAX (WRK-PAGENO)
                    IF    ( SPA-NAI-BODYLIST-TGRP1-NO-9
-                                               (SPA-NAI-SELNUM2)
+                                           (WRK-PAGENO WRK-SELNUM2)
                                    =   SPA-NAI-BODYLIST-TGRP1-NO-9
-                                               (IDX)   )
-                   AND   ( IDX NOT =   SPA-NAI-SELNUM2 )
-                           MOVE    SPA-GMN-KOHLIST (SPA-NAI-SELNUM2)
-                                               TO  SPA-GMN-KOHLIST (IDX)
+                                                 (WRK-PAGENO IDX)   )
+                   AND   ( IDX NOT =   WRK-SELNUM2 )
+                           MOVE    SPA-GMN-KOHLIST
+                                       (WRK-PAGENO WRK-SELNUM2)
+                                       TO
+                                       SPA-GMN-KOHLIST (WRK-PAGENO IDX)
                    END-IF
                END-PERFORM
            END-IF
       *
-           MOVE    SPACE               TO  SPA-GMN-HKNNUM
-                                           SPA-GMN-SEIDONAME
-           MOVE    ZERO                TO  SPA-NAI-SELNUM3
+           MOVE    SPACE               TO  SPA-GMN-HKNNUM   (WRK-PAGENO)
+                                           SPA-GMN-SEIDONAME(WRK-PAGENO)
+           MOVE    ZERO                TO  SPA-NAI-SELNUM3  (WRK-PAGENO)
            .
        4901-KOH-HENYSU-EXT.
            EXIT.
@@ -3662,50 +4482,75 @@
       *****************************************************************
        490-KOH-BOTTOM-HENSYU-SEC          SECTION.
       *
-           MOVE    15                  TO  SPA-GMN-CUR
+           EVALUATE    MCP-WIDGET
+               WHEN    "BOTTOM"
+                   MOVE    1           TO  WRK-PAGENO
+                   MOVE    15          TO  SPA-GMN-CUR
+               WHEN    "BOTTOM_1"
+                   MOVE    2           TO  WRK-PAGENO
+                   MOVE    215         TO  SPA-GMN-CUR
+           END-EVALUATE
+           MOVE    SPA-NAI-SELNUM2 (WRK-PAGENO)
+                                   TO  WRK-SELNUM2
+           MOVE    SPA-NAI-SELNUM3 (WRK-PAGENO)
+                                   TO  WRK-SELNUM3
       *
-           IF      SPA-NAI-SELNUM2     >   ZERO
-               MOVE    SPA-NAI-SELNUM2     TO  W121-BODYLIST-ROW
-               MOVE    ZERO                TO  FLG-BODYLIST-ROW
+           IF      SPA-NAI-SELNUM2 (WRK-PAGENO)
+                                       >   ZERO
+               IF      WRK-PAGENO          =   2
+                   MOVE    SPA-NAI-SELNUM2 (WRK-PAGENO)
+                                           TO  W121-BODYLIST-ROW
+               ELSE
+                   MOVE    SPA-NAI-SELNUM2 (WRK-PAGENO)
+                                           TO  W121-BODYLIST-1-ROW
+               END-IF
+               MOVE    ZERO                TO  FLG-BODYLIST-ROW 
+                                                       (WRK-PAGENO)
            END-IF
       *
-           IF    ( SPA-GMN-HKNNUM      =   SPACE )
-           OR    ( SPA-GMN-SEIDONAME   =   SPACE )
+           IF    ( SPA-GMN-HKNNUM    (WRK-PAGENO)
+                                       =   SPACE )
+           OR    ( SPA-GMN-SEIDONAME (WRK-PAGENO)
+                                       =   SPACE )
                MOVE    "0041"              TO  SPA-ERRCD
                GO  TO  490-KOH-BOTTOM-HENSYU-EXT
            END-IF
       * 
-           EVALUATE    SPA-GMN-HKNNUM
+           EVALUATE    SPA-GMN-HKNNUM (WRK-PAGENO)
                WHEN    "XXX"
-                   IF      SPA-GMN-CHOUKI  NOT =   SPACE
+                   IF      SPA-GMN-CHOUKI (WRK-PAGENO)
+                                           NOT =   SPACE
                        MOVE    "0042"              TO  SPA-ERRCD
                        GO  TO  490-KOH-BOTTOM-HENSYU-EXT
                    END-IF
                WHEN    "YYY"
-                   IF      SPA-GMN-ZAITAKU NOT =   SPACE
+                   IF      SPA-GMN-ZAITAKU(WRK-PAGENO)
+                                           NOT =   SPACE
                        MOVE    "0043"              TO  SPA-ERRCD
                        GO  TO  490-KOH-BOTTOM-HENSYU-EXT
                    END-IF
            END-EVALUATE
       * 
-           IF      SPA-NAI-SELNUM3     =   ZERO
-               IF      SPA-GMN-KOHLIST-MAX (SPA-NAI-SELNUM2)
+           IF      SPA-NAI-SELNUM3 (WRK-PAGENO)
+                                        =   ZERO
+               IF      SPA-GMN-KOHLIST-MAX
+                       (WRK-PAGENO WRK-SELNUM2)
                                             >=  WRK-CONS-KOHLIST-MAX
-                   MOVE    "0105"              TO  SPA-ERRCD
-                   MOVE    SPACE               TO  SPA-GMN-HKNNUM
-                                                   SPA-GMN-SEIDONAME
+                   MOVE    "0105"      TO  SPA-ERRCD
+                   MOVE    SPACE       TO  SPA-GMN-HKNNUM (WRK-PAGENO)
+                                           SPA-GMN-SEIDONAME(WRK-PAGENO)
                    GO  TO  490-KOH-BOTTOM-HENSYU-EXT
                END-IF
            ELSE
                IF      SPA-GMN-KOHLIST-TJYUN
-                                  (SPA-NAI-SELNUM2 SPA-NAI-SELNUM3)
+                                  (WRK-PAGENO WRK-SELNUM2 WRK-SELNUM3)
                                            =   "B"
-                   MOVE    SPACE               TO  SPA-GMN-HKNNUM
-                                                   SPA-GMN-SEIDONAME
+                   MOVE    SPACE       TO  SPA-GMN-HKNNUM (WRK-PAGENO)
+                                           SPA-GMN-SEIDONAME(WRK-PAGENO)
                    GO  TO  490-KOH-BOTTOM-HENSYU-EXT
                ELSE
                    INITIALIZE          SPA-GMN-KOHLIST-TBL
-                                       (SPA-NAI-SELNUM2 SPA-NAI-SELNUM3)
+                                   (WRK-PAGENO WRK-SELNUM2 WRK-SELNUM3)
                END-IF 
            END-IF     
       *
@@ -3720,25 +4565,48 @@
       *****************************************************************
        490-KOH-DELETE-SEC          SECTION.
       *
-           MOVE    15                  TO  SPA-GMN-CUR
+           EVALUATE    MCP-WIDGET
+               WHEN    "DEL"
+                   MOVE    1           TO  WRK-PAGENO
+                   MOVE    15          TO  SPA-GMN-CUR
+               WHEN    "DEL_1"
+                   MOVE    2           TO  WRK-PAGENO
+                   MOVE    215         TO  SPA-GMN-CUR
+           END-EVALUATE
+           MOVE    SPA-NAI-SELNUM2 (WRK-PAGENO)
+                                   TO  WRK-SELNUM2
+           MOVE    SPA-NAI-SELNUM3 (WRK-PAGENO)
+                                   TO  WRK-SELNUM3
       *
-           IF      SPA-NAI-SELNUM2     >   ZERO
-               MOVE    SPA-NAI-SELNUM2     TO  W121-BODYLIST-ROW
-               MOVE    ZERO                TO  FLG-BODYLIST-ROW
+           IF      SPA-NAI-SELNUM2 (WRK-PAGENO)
+                                       >   ZERO
+               IF      WRK-PAGENO          =   2
+                   MOVE    SPA-NAI-SELNUM2 (WRK-PAGENO)
+                                           TO  W121-BODYLIST-ROW
+               ELSE
+                   MOVE    SPA-NAI-SELNUM2 (WRK-PAGENO)
+                                           TO  W121-BODYLIST-1-ROW
+               END-IF
+               MOVE    ZERO                TO  FLG-BODYLIST-ROW 
+                                                       (WRK-PAGENO)
            END-IF
       *
-           IF    ( SPA-GMN-HKNNUM      =   SPACE )
-           OR    ( SPA-GMN-SEIDONAME   =   SPACE )
+           IF    ( SPA-GMN-HKNNUM    (WRK-PAGENO)
+                                       =   SPACE )
+           OR    ( SPA-GMN-SEIDONAME (WRK-PAGENO)
+                                       =   SPACE )
                MOVE    "0104"              TO  SPA-ERRCD
                GO  TO  490-KOH-DELETE-EXT
            END-IF
       * 
-           IF      SPA-NAI-SELNUM3     =   ZERO
+           IF      SPA-NAI-SELNUM3 (WRK-PAGENO) 
+                                       =   ZERO
                MOVE    "0044"              TO  SPA-ERRCD
                GO  TO  490-KOH-DELETE-EXT
-           END-IF     
+           END-IF
+      *  
            INITIALIZE                  SPA-GMN-KOHLIST-TBL
-                                       (SPA-NAI-SELNUM2 SPA-NAI-SELNUM3)
+                                   (WRK-PAGENO WRK-SELNUM2 WRK-SELNUM3)
       *
            MOVE    SPACE               TO  WRK-KOH-KBN
            PERFORM 4901-KOH-HENYSU-SEC
@@ -3767,20 +4635,25 @@
                                        SPA-GMN-BODY-KOUMOKU
                                        SPA-GMN-GRP-KOUMOKU
                                        SPA-GMN-BODYLIST
-                                       SPA-GMN-BODYLIST-MAX
+      ****                             SPA-GMN-BODYLIST-MAX
       *
-           MOVE    "T"                 TO  SPA-GMN-GRP1
-           MOVE    "F"                 TO  SPA-GMN-GRP2
+           MOVE    "T"                 TO  SPA-GMN-GRP1 (1)
+                                           SPA-GMN-GRP1 (2)
+           MOVE    "F"                 TO  SPA-GMN-GRP2 (1)
+                                           SPA-GMN-GRP2 (2)
       *
       *    レセプト（編綴順）情報編集処理
            PERFORM 3102-SPA-2008-HENSYU-SEC
       *
            MOVE    1                   TO  FLG-HEADLIST-ROW
-                                           FLG-BODYLIST-ROW
-                                           FLG-KOHLIST-ROW 
+                                           FLG-BODYLIST-ROW (1)
+                                           FLG-BODYLIST-ROW (2)
+                                           FLG-KOHLIST-ROW  (1)
+                                           FLG-KOHLIST-ROW  (2)
       *
       *
-           MOVE    1               TO  SPA-GMN-CUR 
+           MOVE    1               TO  SPA-GMN-CUR
+           MOVE    ZERO            TO  SPA-W121-PAGENO
            .
        490-CLEAR-EXT.
            EXIT.
@@ -3828,14 +4701,6 @@
                    MOVE    "0003"              TO  SPA-ERRCD
                    GO  TO  4900-KANRENCHK-EXT
                END-IF
-           END-IF
-      *
-      *    種別一覧の未入力チェック
-           IF      SPA-GMN-BODYLIST-MAX
-                                       =   ZERO    
-               MOVE    8                   TO  SPA-GMN-CUR
-               MOVE    "0102"              TO  SPA-ERRCD
-               GO  TO  4900-KANRENCHK-EXT
            END-IF
       *
       *    有効期間の重複チェック
@@ -3887,8 +4752,23 @@
                GO  TO  4900-KANRENCHK-EXT
            END-IF
       *
-      *    第一出力順と保険者印刷順
-           IF      SPA-GMN-PRTJYUN1    =   "02"
+      *    種別一覧の未入力チェック
+           IF      SPA-GMN-BODYLIST-MAX (1)
+                                       =   ZERO    
+               MOVE    8                   TO  SPA-GMN-CUR
+               MOVE    "0102"              TO  SPA-ERRCD
+               GO  TO  4900-KANRENCHK-EXT
+           END-IF
+           IF      SPA-GMN-BODYLIST-MAX (2)
+                                       =   ZERO    
+               MOVE    208                 TO  SPA-GMN-CUR
+               MOVE    "0102"              TO  SPA-ERRCD
+               GO  TO  4900-KANRENCHK-EXT
+           END-IF
+      *
+      *    第一出力順と保険者印刷順（県内）
+           IF      SPA-GMN-PRTJYUN1 (1)
+                                       =   "02"
                IF      SPA-GMN-HKNJANUM-PRTJYUN
                                            =   SPACE
                    CONTINUE
@@ -3899,8 +4779,9 @@
                END-IF 
            END-IF 
       *
-      *    第一出力順と所在地保険者
-           IF      SPA-GMN-PRTJYUN1    =   "02"
+      *    第一出力順と所在地保険者（県内）
+           IF      SPA-GMN-PRTJYUN1 (1)
+                                       =   "02"
                IF    ( SPA-GMN-HKNJANUM    =   SPACE )
                AND   ( SPA-GMN-HKNJANUM-PRTKBN
                                            =   SPACE )
@@ -3913,53 +4794,77 @@
            END-IF 
       *
       *    第一出力順とグループ２
-           PERFORM VARYING IDX FROM    1   BY  1
-                   UNTIL   IDX >       SPA-GMN-BODYLIST-MAX
+           PERFORM VARYING IDXX    FROM    1   BY  1
+                   UNTIL   IDXX    >       2
                    OR      SPA-ERRCD   NOT =   SPACE             
+             PERFORM VARYING IDX FROM    1   BY  1
+                     UNTIL   IDX >       SPA-GMN-BODYLIST-MAX
+                     OR      SPA-ERRCD   NOT =   SPACE             
       *        グループ２
-               IF    ( SPA-GMN-PRTJYUN1        =   "01"  )
-               AND   ( SPA-NAI-BODYLIST-TGRP2-NO (IDX)
+               IF    ( SPA-GMN-PRTJYUN1 (IDXX) =   "01"  )
+               AND   ( SPA-NAI-BODYLIST-TGRP2-NO (IDXX IDX)
                                            NOT =   SPACE )
-                   MOVE    8                   TO  SPA-GMN-CUR  
                    MOVE    "0046"              TO  SPA-ERRCD
+                   IF      IDXX                =   1
+                       MOVE    8                   TO  SPA-GMN-CUR
+                   ELSE   
+                       MOVE    208                 TO  SPA-GMN-CUR  
+                   END-IF         
                END-IF
       *        第一出力順と種別内設定１
                IF      SPA-ERRCD       =   SPACE             
-                   IF    ( SPA-GMN-PRTJYUN1    NOT =   "02" )
-                   AND   ( SPA-NAI-BODYLIST-TPRTJYUN1 (IDX)
-                                                   =   "07" )
-                       MOVE    8                   TO  SPA-GMN-CUR  
+                   IF    ( SPA-GMN-PRTJYUN1 (IDXX) NOT =   "02" )
+                   AND   ( SPA-NAI-BODYLIST-TPRTJYUN1 (IDXX IDX)
+                                                       =   "07" )
                        MOVE    "0033"              TO  SPA-ERRCD
+                   IF      IDXX                =   1
+                       MOVE    8                   TO  SPA-GMN-CUR
+                   ELSE   
+                       MOVE    208                 TO  SPA-GMN-CUR  
+                   END-IF         
                    END-IF
                END-IF
       *        第一出力順と種別内設定２
                IF      SPA-ERRCD       =   SPACE             
-                   IF    ( SPA-GMN-PRTJYUN1    NOT =   "02"  )
-                   AND   ( SPA-NAI-BODYLIST-TPRTJYUN2 (IDX)
-                                               NOT =   SPACE )
-                       MOVE    8                   TO  SPA-GMN-CUR  
+                   IF    ( SPA-GMN-PRTJYUN1 (IDXX) NOT =   "02"  )
+                   AND   ( SPA-NAI-BODYLIST-TPRTJYUN2 (IDXX IDX)
+                                                   NOT =   SPACE )
                        MOVE    "0033"              TO  SPA-ERRCD
+                       IF      IDXX                =   1
+                           MOVE    8                   TO  SPA-GMN-CUR
+                       ELSE   
+                           MOVE    208                 TO  SPA-GMN-CUR  
+                       END-IF         
                    END-IF
                END-IF
       *
                PERFORM VARYING IDY FROM    1   BY  1
-                       UNTIL   IDY >       SPA-GMN-KOHLIST-MAX (IDX) 
+                       UNTIL   IDY >       SPA-GMN-KOHLIST-MAX(IDXX IDX) 
                        OR      SPA-ERRCD   NOT =   SPACE             
       *            在総診・在医総
-                   IF    ( SPA-GMN-ZAITAKU NOT =   SPACE )
-                   AND   ( SPA-GMN-KOHLIST-THKNNUM (IDX IDY)
-                                               =   "YYY" )
-                       MOVE    9                   TO  SPA-GMN-CUR  
+                   IF    ( SPA-GMN-ZAITAKU (IDXX)  NOT =   SPACE )
+                   AND   ( SPA-GMN-KOHLIST-THKNNUM (IDXX IDX IDY)
+                                                       =   "YYY" )
                        MOVE    "0043"              TO  SPA-ERRCD
+                       IF      IDXX                =   1
+                           MOVE    10                  TO  SPA-GMN-CUR
+                       ELSE   
+                           MOVE    210                 TO  SPA-GMN-CUR  
+                       END-IF         
                    END-IF
       *            長期
-                   IF    ( SPA-GMN-CHOUKI  NOT =   SPACE )
-                   AND   ( SPA-GMN-KOHLIST-THKNNUM (IDX IDY)
-                                               =   "XXX" )
-                       MOVE    10                  TO  SPA-GMN-CUR  
+                   IF    ( SPA-GMN-CHOUKI  (IDXX)  NOT =   SPACE )
+                   AND   ( SPA-GMN-KOHLIST-THKNNUM (IDXX IDX IDY)
+                                                       =   "XXX" )
                        MOVE    "0042"              TO  SPA-ERRCD
+                       IF      IDXX                =   1
+                           MOVE    11                  TO  SPA-GMN-CUR
+                       ELSE   
+                           MOVE    211                 TO  SPA-GMN-CUR  
+                       END-IF         
                    END-IF
                END-PERFORM
+             END-PERFORM
            END-PERFORM        
       *    
            .
@@ -4012,20 +4917,18 @@
                                        TO  RECE-PUTH-HKNJANUM
            MOVE    SPA-GMN-HKNJANUM-PRTKBN
                                        TO  RECE-PUTH-HKNJANUM-PRTKBN
-           MOVE    SPA-GMN-PRTJYUN1    TO  RECE-PUTH-SRT-01 (1) 
-           MOVE    SPA-GMN-PRTJYUN2    TO  RECE-PUTH-KKHKBN (1) 
-           MOVE    SPA-GMN-CHOUKI      TO  RECE-PUTH-CHOUKI (1) 
-           MOVE    SPA-GMN-ZAITAKU     TO  RECE-PUTH-ZAITAKU (1) 
-           MOVE    SPA-GMN-KOUGAKU-TEN TO  RECE-PUTH-KOUGAKU-TEN (1) 
-           MOVE    SPA-GMN-SRT-LAST    TO  RECE-PUTH-SRT-LAST (1)
-      *???
-           MOVE    SPA-GMN-PRTJYUN1    TO  RECE-PUTH-SRT-01 (2) 
-           MOVE    SPA-GMN-PRTJYUN2    TO  RECE-PUTH-KKHKBN (2) 
-           MOVE    SPA-GMN-CHOUKI      TO  RECE-PUTH-CHOUKI (2) 
-           MOVE    SPA-GMN-ZAITAKU     TO  RECE-PUTH-ZAITAKU (2) 
-           MOVE    SPA-GMN-KOUGAKU-TEN TO  RECE-PUTH-KOUGAKU-TEN (2) 
-           MOVE    SPA-GMN-SRT-LAST    TO  RECE-PUTH-SRT-LAST (2)
-      *???
+           PERFORM VARYING IDXX    FROM    1   BY  1
+                   UNTIL   IDXX    >       2
+               MOVE    SPA-GMN-PRTJYUN1(IDXX) TO RECE-PUTH-SRT-01 (IDXX) 
+               MOVE    SPA-GMN-PRTJYUN2(IDXX) TO RECE-PUTH-KKHKBN (IDXX) 
+               MOVE    SPA-GMN-CHOUKI  (IDXX) TO RECE-PUTH-CHOUKI (IDXX) 
+               MOVE    SPA-GMN-ZAITAKU (IDXX) TO RECE-PUTH-ZAITAKU(IDXX) 
+               MOVE    SPA-GMN-KOUGAKU-TEN
+                                       (IDXX) TO RECE-PUTH-KOUGAKU-TEN
+                                                                  (IDXX) 
+               MOVE    SPA-GMN-SRT-LAST(IDXX) TO RECE-PUTH-SRT-LAST
+                                                                  (IDXX)
+           END-PERFORM
            MOVE    SPA-TERMID          TO  RECE-PUTH-TERMID
            MOVE    SPA-OPID            TO  RECE-PUTH-OPID
       *
@@ -4082,128 +4985,140 @@
                END-IF
            END-IF
       *
-           MOVE    ZERO            TO  WRK-SYUBETU-SRT1
-           MOVE    SPACE           TO  WRK-SYUBETU-GAI
-                                       WRK-SYUBETU-NYU
-           MOVE    SPACE           TO  WRK-GRP1-NO
-           PERFORM VARYING IDX FROM    1   BY  1
-                   UNTIL   IDX >       SPA-GMN-BODYLIST-MAX
-                   OR      SPA-ERRCD   NOT =   SPACE
-               INITIALIZE                      RECE-PUTB-REC
-               MOVE    SPA-HOSPID          TO  RECE-PUTB-HOSPID
-               MOVE    "1"                 TO  RECE-PUTB-PREFKBN
-               MOVE    SPA-NAI-STYUKYMD    TO  RECE-PUTB-STYUKYMD
-               MOVE    SPA-NAI-EDYUKYMD    TO  RECE-PUTB-EDYUKYMD
-               MOVE    SPA-GMN-BODYLIST-TSYUBETU (IDX)
-                                           TO  RECE-PUTB-SYUBETU-GAI
-                                               RECE-PUTB-SYUBETU-NYU
-               EVALUATE    RECE-PUTB-SYUBETU-GAI (4:1)
-                   WHEN    "2"
-                       MOVE    "1"         TO
+           PERFORM VARYING IDXX    FROM    1   BY  1
+                   UNTIL   IDXX    >       2
+               MOVE    ZERO            TO  WRK-SYUBETU-SRT1
+               MOVE    SPACE           TO  WRK-SYUBETU-GAI
+                                           WRK-SYUBETU-NYU
+               MOVE    SPACE           TO  WRK-GRP1-NO
+               PERFORM VARYING IDX FROM    1   BY  1
+                       UNTIL   IDX >       SPA-GMN-BODYLIST-MAX (IDXX)
+                       OR      SPA-ERRCD   NOT =   SPACE
+                   INITIALIZE                      RECE-PUTB-REC
+                   MOVE    SPA-HOSPID          TO  RECE-PUTB-HOSPID
+                   EVALUATE    IDXX
+                       WHEN    1
+                           MOVE    "1"         TO  RECE-PUTB-PREFKBN
+                       WHEN    2
+                           MOVE    "2"         TO  RECE-PUTB-PREFKBN
+                   END-EVALUATE
+                   MOVE    SPA-NAI-STYUKYMD    TO  RECE-PUTB-STYUKYMD
+                   MOVE    SPA-NAI-EDYUKYMD    TO  RECE-PUTB-EDYUKYMD
+                   MOVE    SPA-GMN-BODYLIST-TSYUBETU (IDXX IDX)
+                                               TO  RECE-PUTB-SYUBETU-GAI
+                                                   RECE-PUTB-SYUBETU-NYU
+                   EVALUATE    RECE-PUTB-SYUBETU-GAI (4:1)
+                       WHEN    "2"
+                           MOVE    "1"         TO
                                            RECE-PUTB-SYUBETU-NYU (4:1)
-                   WHEN    "4"
-                       MOVE    "3"         TO
+                       WHEN    "4"
+                           MOVE    "3"         TO
                                            RECE-PUTB-SYUBETU-NYU (4:1)
-                   WHEN    "6"
-                       MOVE    "5"         TO
+                       WHEN    "6"
+                           MOVE    "5"         TO
                                            RECE-PUTB-SYUBETU-NYU (4:1)
-                   WHEN    "8"
-                       MOVE    "7"         TO
+                       WHEN    "8"
+                           MOVE    "7"         TO
                                            RECE-PUTB-SYUBETU-NYU (4:1)
-                   WHEN    "0"
-                       MOVE    "9"         TO
+                       WHEN    "0"
+                           MOVE    "9"         TO
                                            RECE-PUTB-SYUBETU-NYU (4:1)
-               END-EVALUATE
-               IF      SPA-NAI-BODYLIST-TGRP1-NO (IDX)
-                                       NOT =   "000"
-                   IF      SPA-NAI-BODYLIST-TGRP1-NO (IDX)
-                                           NOT =   WRK-GRP1-NO
-                       MOVE    SPA-NAI-BODYLIST-TGRP1-NO (IDX)
+                   END-EVALUATE
+                   IF      SPA-NAI-BODYLIST-TGRP1-NO (IDXX IDX)
+                                           NOT =   "000"
+                       IF      SPA-NAI-BODYLIST-TGRP1-NO (IDXX IDX)
+                                               NOT =   WRK-GRP1-NO
+                           MOVE    SPA-NAI-BODYLIST-TGRP1-NO (IDXX IDX)
                                                    TO  WRK-GRP1-NO
-                       MOVE    IDX                 TO  WRK-SYUBETU-SRT1
-                       MOVE    RECE-PUTB-SYUBETU-GAI
+                           MOVE    IDX             TO  WRK-SYUBETU-SRT1
+                           MOVE    RECE-PUTB-SYUBETU-GAI
                                                    TO  WRK-SYUBETU-GAI
-                       MOVE    RECE-PUTB-SYUBETU-NYU
+                           MOVE    RECE-PUTB-SYUBETU-NYU
                                                    TO  WRK-SYUBETU-NYU
-                   END-IF
-                   MOVE    WRK-SYUBETU-SRT1    TO
+                       END-IF
+                       MOVE    WRK-SYUBETU-SRT1    TO
                                            RECE-PUTB-SYUBETU-SRT1
-                   MOVE    WRK-SYUBETU-GAI     TO
+                       MOVE    WRK-SYUBETU-GAI     TO
                                            RECE-PUTB-SYUBETU-GAI-SRT1
-                   MOVE    WRK-SYUBETU-NYU     TO
+                       MOVE    WRK-SYUBETU-NYU     TO
                                            RECE-PUTB-SYUBETU-NYU-SRT1
-               ELSE
-                   MOVE    ZERO        TO  WRK-SYUBETU-SRT1
-                   MOVE    IDX         TO  RECE-PUTB-SYUBETU-SRT1
-                   MOVE    RECE-PUTB-SYUBETU-GAI
+                   ELSE
+                       MOVE    ZERO        TO  WRK-SYUBETU-SRT1
+                       MOVE    IDX         TO  RECE-PUTB-SYUBETU-SRT1
+                       MOVE    RECE-PUTB-SYUBETU-GAI
                                        TO  RECE-PUTB-SYUBETU-GAI-SRT1
-                   MOVE    RECE-PUTB-SYUBETU-NYU
+                       MOVE    RECE-PUTB-SYUBETU-NYU
                                        TO  RECE-PUTB-SYUBETU-NYU-SRT1
-               END-IF  
-               MOVE    SPA-NAI-BODYLIST-TGRP1-NO (IDX)
+                   END-IF  
+                   MOVE    SPA-NAI-BODYLIST-TGRP1-NO (IDXX IDX)
                                            TO  RECE-PUTB-GRP-NO1
-               MOVE    IDX                 TO  RECE-PUTB-SYUBETU-SRT2
-               MOVE    SPA-NAI-BODYLIST-TGRP2-NO (IDX)
+                   MOVE    IDX             TO  RECE-PUTB-SYUBETU-SRT2
+                   MOVE    SPA-NAI-BODYLIST-TGRP2-NO (IDXX IDX)
                                            TO  RECE-PUTB-GRP-NO2
-               MOVE    SPA-NAI-BODYLIST-TPRTJYUN1 (IDX)    TO
+                   MOVE    SPA-NAI-BODYLIST-TPRTJYUN1(IDXX IDX) TO
                                            RECE-PUTB-SYUBETU-UNDER-NO1
-               MOVE    SPA-NAI-BODYLIST-TPRTJYUN2 (IDX)    TO
+                   MOVE    SPA-NAI-BODYLIST-TPRTJYUN2(IDXX IDX) TO
                                            RECE-PUTB-SYUBETU-UNDER-NO2 
-               MOVE    ZERO                TO  RECE-PUTB-KOUHI-NO
-               MOVE    SPACE               TO  RECE-PUTB-KOUHI-NUM 
-               MOVE    SPA-TERMID          TO  RECE-PUTB-TERMID
-               MOVE    SPA-OPID            TO  RECE-PUTB-OPID
-               MOVE    SMCNDATE-YMD        TO  RECE-PUTB-CREYMD
-               MOVE    SMCNDATE-YMD        TO  RECE-PUTB-UPYMD
-               MOVE    SMCNDATE-HMS        TO  RECE-PUTB-UPHMS
-               MOVE    RECE-PUTB-REC       TO  MCPDATA-REC
-               MOVE    "DBINSERT"          TO  MCP-FUNC
-               MOVE    "tbl_rece_putb"     TO  MCP-TABLE
-               MOVE    "key"               TO  MCP-PATHNAME
-               CALL    "MONFUNC"           USING
+                   MOVE    ZERO            TO  RECE-PUTB-KOUHI-NO
+                   MOVE    SPACE           TO  RECE-PUTB-KOUHI-NUM 
+                   MOVE    SPA-TERMID      TO  RECE-PUTB-TERMID
+                   MOVE    SPA-OPID        TO  RECE-PUTB-OPID
+                   MOVE    SMCNDATE-YMD    TO  RECE-PUTB-CREYMD
+                   MOVE    SMCNDATE-YMD    TO  RECE-PUTB-UPYMD
+                   MOVE    SMCNDATE-HMS    TO  RECE-PUTB-UPHMS
+                   MOVE    RECE-PUTB-REC   TO  MCPDATA-REC
+                   MOVE    "DBINSERT"      TO  MCP-FUNC
+                   MOVE    "tbl_rece_putb" TO  MCP-TABLE
+                   MOVE    "key"           TO  MCP-PATHNAME
+                   CALL    "MONFUNC"       USING
                                                MCPAREA
                                                MCPDATA-REC
-               IF      MCP-RC          NOT =   ZERO
-                   MOVE    "1004"              TO  SPA-ERRCD
-               ELSE
-      *            公費情報更新
-                   MOVE    RECE-PUTB-REC       TO  WRK-RECE-PUTB-REC
-                   MOVE    ZERO                TO  WRK-TOP-CNT
-                   MOVE    500                 TO  WRK-BOTTOM-CNT
+                   IF      MCP-RC      NOT =   ZERO
+                       MOVE    "1004"          TO  SPA-ERRCD
+                   ELSE
+      *                公費情報更新
+                       MOVE    RECE-PUTB-REC   TO  WRK-RECE-PUTB-REC
+                       MOVE    ZERO            TO  WRK-TOP-CNT
+                       MOVE    500             TO  WRK-BOTTOM-CNT
       * 
-                   PERFORM VARYING IDY FROM    1   BY  1
-                           UNTIL   IDY >       SPA-GMN-KOHLIST-MAX(IDX)
-                           OR      SPA-ERRCD   NOT =   SPACE
-                       MOVE    WRK-RECE-PUTB-REC       TO  RECE-PUTB-REC
-                       MOVE    SPA-GMN-KOHLIST-THKNNUM (IDX IDY)
+                       PERFORM VARYING IDY FROM    1   BY  1
+                               UNTIL   IDY >       SPA-GMN-KOHLIST-MAX
+                                                           (IDXX IDX)
+                               OR      SPA-ERRCD   NOT =   SPACE
+                           MOVE    WRK-RECE-PUTB-REC   TO  RECE-PUTB-REC
+                           MOVE    SPA-GMN-KOHLIST-THKNNUM(IDXX IDX IDY)
                                                TO  RECE-PUTB-KOUHI-NUM
-                       EVALUATE    SPA-GMN-KOHLIST-TJYUN   (IDX IDY)
-                           WHEN    "T"
-                               ADD     1           TO  WRK-TOP-CNT
-                               MOVE    WRK-TOP-CNT TO
+                           EVALUATE    SPA-GMN-KOHLIST-TJYUN
+                                                       (IDXX IDX IDY)
+                               WHEN    "T"
+                                   ADD     1           TO  WRK-TOP-CNT
+                                   MOVE    WRK-TOP-CNT TO
                                                    RECE-PUTB-KOUHI-NO
-                           WHEN    "B"
-                               ADD     1           TO  WRK-BOTTOM-CNT
-                               MOVE    WRK-BOTTOM-CNT  TO
+                               WHEN    "B"
+                                   ADD     1           TO
+                                                   WRK-BOTTOM-CNT
+                                   MOVE    WRK-BOTTOM-CNT
+                                                       TO
                                                    RECE-PUTB-KOUHI-NO
-                       END-EVALUATE
-                       MOVE    SPA-TERMID          TO  RECE-PUTB-TERMID
-                       MOVE    SPA-OPID            TO  RECE-PUTB-OPID
-                       MOVE    SMCNDATE-YMD        TO  RECE-PUTB-CREYMD
-                       MOVE    SMCNDATE-YMD        TO  RECE-PUTB-UPYMD
-                       MOVE    SMCNDATE-HMS        TO  RECE-PUTB-UPHMS
-                       MOVE    RECE-PUTB-REC       TO  MCPDATA-REC
-                       MOVE    "DBINSERT"          TO  MCP-FUNC
-                       MOVE    "tbl_rece_putb"     TO  MCP-TABLE
-                       MOVE    "key"               TO  MCP-PATHNAME
-                       CALL    "MONFUNC"           USING
+                           END-EVALUATE
+                           MOVE    SPA-TERMID      TO  RECE-PUTB-TERMID
+                           MOVE    SPA-OPID        TO  RECE-PUTB-OPID
+                           MOVE    SMCNDATE-YMD    TO  RECE-PUTB-CREYMD
+                           MOVE    SMCNDATE-YMD    TO  RECE-PUTB-UPYMD
+                           MOVE    SMCNDATE-HMS    TO  RECE-PUTB-UPHMS
+                           MOVE    RECE-PUTB-REC   TO  MCPDATA-REC
+                           MOVE    "DBINSERT"      TO  MCP-FUNC
+                           MOVE    "tbl_rece_putb" TO  MCP-TABLE
+                           MOVE    "key"           TO  MCP-PATHNAME
+                           CALL    "MONFUNC"       USING
                                                        MCPAREA
-                                                   MCPDATA-REC
-                       IF      MCP-RC          NOT =   ZERO
-                           MOVE    "1004"              TO  SPA-ERRCD
-                       END-IF 
-                   END-PERFORM
-               END-IF
+                                                       MCPDATA-REC
+                           IF      MCP-RC      NOT =   ZERO
+                               MOVE    "1004"          TO  SPA-ERRCD
+                           END-IF 
+                       END-PERFORM
+                   END-IF
+               END-PERFORM
            END-PERFORM
       *
            IF      SPA-ERRCD           =   SPACE
@@ -4239,9 +5154,9 @@
            MOVE    SPACE               TO  LINKAREA
       *
            MOVE    "CURRENT"           TO  MCP-PUTTYPE
-           MOVE    "W121    "          TO  MCP-WINDOW
+           MOVE    "W121"              TO  MCP-WINDOW
       *
-           PERFORM 900-PUT-WINDOW.
+           PERFORM 900-PUT-WINDOW
            .
        500-SET-SCREEN-EXT.
            EXIT.
@@ -4255,15 +5170,25 @@
            ELSE
                MOVE    W121-HEADLIST-ROW   TO  WRK-W121-HEADLIST-ROW
            END-IF
-           IF      FLG-BODYLIST-ROW    =   1
-               MOVE    ZERO                TO  WRK-W121-BODYLIST-ROW
+           IF      FLG-BODYLIST-ROW(1) =   1
+               MOVE    ZERO                TO  WRK-W121-BODYLIST-ROW(1)
            ELSE
-               MOVE    W121-BODYLIST-ROW   TO  WRK-W121-BODYLIST-ROW
+               MOVE    W121-BODYLIST-ROW   TO  WRK-W121-BODYLIST-ROW(1)
            END-IF
-           IF      FLG-KOHLIST-ROW     =   1
-               MOVE    ZERO                TO  WRK-W121-KOHLIST-ROW
+           IF      FLG-BODYLIST-ROW(2) =   1
+               MOVE    ZERO                TO  WRK-W121-BODYLIST-ROW(2)
            ELSE
-               MOVE    W121-KOHLIST-ROW    TO  WRK-W121-KOHLIST-ROW
+               MOVE    W121-BODYLIST-1-ROW TO  WRK-W121-BODYLIST-ROW(2)
+           END-IF
+           IF      FLG-KOHLIST-ROW (1) =   1
+               MOVE    ZERO                TO  WRK-W121-KOHLIST-ROW (1)
+           ELSE
+               MOVE    W121-KOHLIST-ROW    TO  WRK-W121-KOHLIST-ROW (1)
+           END-IF
+           IF      FLG-KOHLIST-ROW (2) =   1
+               MOVE    ZERO                TO  WRK-W121-KOHLIST-ROW (2)
+           ELSE
+               MOVE    W121-KOHLIST-1-ROW  TO  WRK-W121-KOHLIST-ROW (2)
            END-IF
       *
            INITIALIZE                      W121
@@ -4281,26 +5206,6 @@
            MOVE    SPA-GMN-HKNJANUM-PRTKBN-G
                                            TO  W121-HKNJ-PRTKBN
       *
-           MOVE    SPA-GMN-PRTJYUN1-G      TO  W121-PRTJYUN1
-           MOVE    SPA-GMN-PRTJYUN2-G      TO  W121-PRTJYUN2
-           MOVE    SPA-GMN-ZAITAKU-G       TO  W121-ZAITAKU
-           MOVE    SPA-GMN-CHOUKI-G        TO  W121-CHOUKI
-           MOVE    SPA-GMN-SRT-LAST-G      TO  W121-SRT-LAST
-           MOVE    SPA-GMN-KOUGAKU-TEN     TO  W121-KOUGAKU-TEN
-      *
-           MOVE    SPA-GMN-RECESYUBETU     TO  W121-RECESYUBETU
-           MOVE    SPA-GMN-SYUBETUNAME     TO  W121-SYUBETUNAME
-           MOVE    SPA-GMN-HKNNUM          TO  W121-HKNNUM
-           MOVE    SPA-GMN-SEIDONAME       TO  W121-SEIDONAME
-           MOVE    SPA-GMN-SYUBETU-PRTJYUN1-G
-                                           TO  W121-SYU-PRTJYUN1
-           MOVE    SPA-GMN-SYUBETU-PRTJYUN2-G
-                                           TO  W121-SYU-PRTJYUN2
-           MOVE    SPA-GMN-GRP1            TO  W121-GRP1
-           MOVE    SPA-GMN-GRP2            TO  W121-GRP2
-           MOVE    SPA-GMN-GRP1-NO         TO  W121-GRP1-NO
-           MOVE    SPA-GMN-GRP2-NO         TO  W121-GRP2-NO
-      *     
            PERFORM VARYING IDY     FROM    1   BY  1
                    UNTIL   IDY     >       SPA-GMN-PREFKBN-PRTJYUN-MAX
                MOVE    SPA-GMN-PREFKBN-PRTJYUNLST (IDY)
@@ -4328,63 +5233,79 @@
            PERFORM VARYING IDY     FROM    1   BY  1
                    UNTIL   IDY     >   SPA-GMN-PRTJYUN1-MAX
                MOVE    SPA-GMN-PRTJYUN1LST (IDY)
-                                       TO  W121-PRTJYUN1LST (IDY)
+                                           TO  W121-PRTJYUN1LST   (IDY)
+                                               W121-PRTJYUN1-1LST (IDY)
            END-PERFORM
            MOVE    SPA-GMN-PRTJYUN1-MAX
                                        TO  W121-PRTJYUN1-COUNT 
+                                           W121-PRTJYUN1-1-COUNT 
       *     
            PERFORM VARYING IDY     FROM    1   BY  1
                    UNTIL   IDY     >   SPA-GMN-PRTJYUN2-MAX
                MOVE    SPA-GMN-PRTJYUN2LST (IDY)
-                                       TO  W121-PRTJYUN2LST (IDY)
+                                           TO  W121-PRTJYUN2LST   (IDY)
+                                               W121-PRTJYUN2-1LST (IDY) 
            END-PERFORM
            MOVE    SPA-GMN-PRTJYUN2-MAX
                                        TO  W121-PRTJYUN2-COUNT 
+                                           W121-PRTJYUN2-1-COUNT 
       *     
            PERFORM VARYING IDY     FROM    1   BY  1
                    UNTIL   IDY     >   SPA-GMN-SRT-LAST-MAX
                MOVE    SPA-GMN-SRT-LASTLST (IDY)
                                        TO  W121-SRT-LASTLST (IDY)
+                                           W121-SRT-LAST-1LST (IDY)
            END-PERFORM
            MOVE    SPA-GMN-SRT-LAST-MAX
-                                       TO  W121-SRT-LAST-COUNT 
+                                   TO  W121-SRT-LAST-COUNT
+                                       W121-SRT-LAST-1-COUNT
       *     
            PERFORM VARYING IDY     FROM    1   BY  1
                    UNTIL   IDY     >       SPA-GMN-ZAITAKU-MAX
                MOVE    SPA-GMN-ZAITAKULST (IDY)
                                        TO  W121-ZAITAKULST (IDY)
+                                           W121-ZAITAKU-1LST (IDY)
            END-PERFORM
-           MOVE    SPA-GMN-ZAITAKU-MAX TO  W121-ZAITAKU-COUNT 
+           MOVE    SPA-GMN-ZAITAKU-MAX TO  W121-ZAITAKU-COUNT
+                                           W121-ZAITAKU-1-COUNT
       *     
            PERFORM VARYING IDY     FROM    1   BY  1
                    UNTIL   IDY     >       SPA-GMN-CHOUKI-MAX
                MOVE    SPA-GMN-CHOUKILST (IDY)
                                        TO  W121-CHOUKILST (IDY)
+                                           W121-CHOUKI-1LST (IDY)
            END-PERFORM
-           MOVE    SPA-GMN-CHOUKI-MAX  TO  W121-CHOUKI-COUNT 
+           MOVE    SPA-GMN-CHOUKI-MAX  TO  W121-CHOUKI-COUNT
+                                           W121-CHOUKI-1-COUNT 
       *     
            PERFORM VARYING IDY     FROM    1   BY  1
                    UNTIL   IDY     >   SPA-GMN-SYUBETU-PRTJYUN1-MAX
                MOVE    SPA-GMN-SYUBETU-PRTJYUN1LST (IDY)
-                                       TO
-                                       W121-SYU-PRTJYUN1LST (IDY)
+                                       TO  W121-SYU-PRTJYUN1LST   (IDY)
+                                           W121-SYU-PRTJYUN1-1LST (IDY)
            END-PERFORM
-           IF      SPA-GMN-PRTJYUN1    NOT =   "02"
+           IF      SPA-GMN-PRTJYUN1 (1)    NOT =   "02"
                MOVE    6               TO  W121-SYU-PRTJYUN1-COUNT
            ELSE
                MOVE    SPA-GMN-SYUBETU-PRTJYUN1-MAX
                                        TO  W121-SYU-PRTJYUN1-COUNT
            END-IF 
+           IF      SPA-GMN-PRTJYUN1 (2)    NOT =   "02"
+               MOVE    6               TO  W121-SYU-PRTJYUN1-1-COUNT
+           ELSE
+               MOVE    SPA-GMN-SYUBETU-PRTJYUN1-MAX
+                                       TO  W121-SYU-PRTJYUN1-1-COUNT
+           END-IF 
       *     
            PERFORM VARYING IDY     FROM    1   BY  1
                    UNTIL   IDY     >   SPA-GMN-SYUBETU-PRTJYUN2-MAX
                MOVE    SPA-GMN-SYUBETU-PRTJYUN2LST (IDY)
-                                       TO
-                                       W121-SYU-PRTJYUN2LST (IDY)
+                                       TO  W121-SYU-PRTJYUN2LST   (IDY)
+                                           W121-SYU-PRTJYUN2-1LST (IDY)
            END-PERFORM
            MOVE    SPA-GMN-SYUBETU-PRTJYUN2-MAX
-                                       TO
-                                       W121-SYU-PRTJYUN2-COUNT 
+                                       TO  W121-SYU-PRTJYUN2-COUNT
+                                           W121-SYU-PRTJYUN2-1-COUNT 
       *
            PERFORM VARYING IDX     FROM    1   BY  1
                    UNTIL   IDX     >       SPA-GMN-HEADLIST-MAX
@@ -4410,88 +5331,109 @@
                                            TO  W121-HEADLIST-ROW
            END-IF
       *
+      *    県内設定
+           MOVE    SPA-GMN-PRTJYUN1-G (1)  TO  W121-PRTJYUN1
+           MOVE    SPA-GMN-PRTJYUN2-G (1)  TO  W121-PRTJYUN2
+           MOVE    SPA-GMN-ZAITAKU-G  (1)  TO  W121-ZAITAKU
+           MOVE    SPA-GMN-CHOUKI-G   (1)  TO  W121-CHOUKI
+           MOVE    SPA-GMN-SRT-LAST-G (1)  TO  W121-SRT-LAST
+           MOVE    SPA-GMN-KOUGAKU-TEN(1)  TO  W121-KOUGAKU-TEN
+      *
+           MOVE    SPA-GMN-RECESYUBETU(1)  TO  W121-RECESYUBETU
+           MOVE    SPA-GMN-SYUBETUNAME(1)  TO  W121-SYUBETUNAME
+           MOVE    SPA-GMN-HKNNUM     (1)  TO  W121-HKNNUM
+           MOVE    SPA-GMN-SEIDONAME  (1)  TO  W121-SEIDONAME
+           MOVE    SPA-GMN-SYUBETU-PRTJYUN1-G (1)
+                                           TO  W121-SYU-PRTJYUN1
+           MOVE    SPA-GMN-SYUBETU-PRTJYUN2-G (1)
+                                           TO  W121-SYU-PRTJYUN2
+           MOVE    SPA-GMN-GRP1       (1)  TO  W121-GRP1
+           MOVE    SPA-GMN-GRP2       (1)  TO  W121-GRP2
+           MOVE    SPA-GMN-GRP1-NO    (1)  TO  W121-GRP1-NO
+           MOVE    SPA-GMN-GRP2-NO    (1)  TO  W121-GRP2-NO
+      *     
            PERFORM VARYING IDX     FROM    1   BY  1
-                   UNTIL   IDX     >       SPA-GMN-BODYLIST-MAX
+                   UNTIL   IDX     >       SPA-GMN-BODYLIST-MAX (1)
                MOVE    IDX             TO  WRK-Z9
                MOVE    WRK-Z9          TO  W121-BODYLIST-TNO   (IDX)
-               MOVE    SPA-GMN-BODYLIST-TSYUBETU   (IDX)
+               MOVE    SPA-GMN-BODYLIST-TSYUBETU   (1 IDX)
                                        TO
                                        W121-BODYLIST-TRECESYUBETU (IDX)
-               MOVE    SPA-GMN-BODYLIST-TSYUBETUNAME (IDX)
+               MOVE    SPA-GMN-BODYLIST-TSYUBETUNAME (1 IDX)
                                        TO
                                        W121-BODYLIST-TSYUBETUNAME (IDX)
-               IF      SPA-NAI-BODYLIST-TGRP1-NO (IDX)
+               IF      SPA-NAI-BODYLIST-TGRP1-NO (1 IDX)
                                    NOT =   "000"    
-                   MOVE    SPA-NAI-BODYLIST-TGRP1-NO (IDX)
+                   MOVE    SPA-NAI-BODYLIST-TGRP1-NO (1 IDX)
                                            TO  W121-BODYLIST-TGRP1 (IDX)
                END-IF
-               MOVE    SPA-NAI-BODYLIST-TGRP2-NO (IDX)
+               MOVE    SPA-NAI-BODYLIST-TGRP2-NO (1 IDX)
                                        TO  W121-BODYLIST-TGRP2  (IDX)
-               IF    ( SPA-NAI-BODYLIST-TPRTJYUN1 (IDX) NOT =   SPACE )
-               OR    ( SPA-NAI-BODYLIST-TPRTJYUN2 (IDX) NOT =   SPACE )
-               OR    ( SPA-GMN-KOHLIST-MAX (IDX)            >   ZERO  )
+               IF    ( SPA-NAI-BODYLIST-TPRTJYUN1(1 IDX) NOT =   SPACE )
+               OR    ( SPA-NAI-BODYLIST-TPRTJYUN2(1 IDX) NOT =   SPACE )
+               OR    ( SPA-GMN-KOHLIST-MAX (1 IDX)           >   ZERO  )
                    MOVE    "○"        TO  W121-BODYLIST-TSETTEI(IDX)
                END-IF
       *
-               IF      FLG-BODYLIST-ROW    =   2
+               IF      FLG-BODYLIST-ROW (1)    =   2
                    MOVE    "F"     TO  W121-BODYLIST-SELECT (IDX)
                ELSE
-                   IF      IDX         =   SPA-NAI-SELNUM2
-                                       OR  SPA-NAI-SELNUM2-ROW  
+                   IF      IDX         =   SPA-NAI-SELNUM2     (1)
+                                       OR  SPA-NAI-SELNUM2-ROW (1) 
                        MOVE    "T"     TO  W121-BODYLIST-SELECT (IDX)
                    ELSE
                        MOVE    "F"     TO  W121-BODYLIST-SELECT (IDX)
                    END-IF
                END-IF
            END-PERFORM
-           MOVE    SPA-GMN-BODYLIST-MAX
+           MOVE    SPA-GMN-BODYLIST-MAX (1)
                                        TO  W121-BODYLIST-COUNT
            MOVE    ZERO                TO  W121-BODYLIST-ROW
-           IF      WRK-W121-BODYLIST-ROW
+           IF      WRK-W121-BODYLIST-ROW (1)
                                        >   ZERO
-               MOVE    WRK-W121-BODYLIST-ROW
+               MOVE    WRK-W121-BODYLIST-ROW (1)
                                            TO  W121-BODYLIST-ROW
                MOVE    2                   TO  W121-BODYLIST-ROWATTR
            END-IF
       *
-           IF    ( FLG-BODYLIST-ROW    NOT =   2    )
-           AND   ( SPA-NAI-SELNUM2         >   ZERO )
+           IF    ( FLG-BODYLIST-ROW(1) NOT =   2    )
+           AND   ( SPA-NAI-SELNUM2 (1)     >   ZERO )
+               MOVE    SPA-NAI-SELNUM2 (1)
+                                           TO  IDYY
+               MOVE    SPA-GMN-KOHLIST-MAX (1 IDYY)
+                                           TO  IDZZ
                PERFORM VARYING IDX     FROM    1   BY  1
-                       UNTIL   IDX     >       SPA-GMN-KOHLIST-MAX
-                                               (SPA-NAI-SELNUM2)
+                       UNTIL   IDX     >       IDZZ
                    MOVE    IDX             TO  WRK-ZZ9
                    MOVE    WRK-ZZ9         TO  W121-KOHLIST-TNO    (IDX)
-                   MOVE    SPA-GMN-KOHLIST-THKNNUM
-                                               (SPA-NAI-SELNUM2 IDX)
+                   MOVE    SPA-GMN-KOHLIST-THKNNUM    (1 IDYY IDX)
                                        TO  W121-KOHLIST-THKNNUM    (IDX)
-                   MOVE    SPA-GMN-KOHLIST-TSEIDONAME
-                                               (SPA-NAI-SELNUM2 IDX)
+                   MOVE    SPA-GMN-KOHLIST-TSEIDONAME (1 IDYY IDX)
                                        TO  W121-KOHLIST-TSEIDONAME (IDX)
-                   EVALUATE    SPA-GMN-KOHLIST-TJYUN
-                                               (SPA-NAI-SELNUM2 IDX)
+                   EVALUATE    SPA-GMN-KOHLIST-TJYUN  (1 IDYY IDX)
                        WHEN    "T"
                            MOVE    "先頭"  TO  W121-KOHLIST-TJYUN  (IDX)
                        WHEN    "B"
                            MOVE    "後尾"  TO  W121-KOHLIST-TJYUN  (IDX)
                    END-EVALUATE
       *
-                   IF      IDX         =   SPA-NAI-SELNUM3
+                   IF      IDX         =   SPA-NAI-SELNUM3 (1)
                        MOVE    "T"         TO  W121-KOHLIST-SELECT (IDX)
                    ELSE
                        MOVE    "F"         TO  W121-KOHLIST-SELECT (IDX)
                    END-IF
                END-PERFORM
-               MOVE    SPA-GMN-KOHLIST-MAX (SPA-NAI-SELNUM2)
-                                       TO  W121-KOHLIST-COUNT
+               MOVE    IDZZ            TO  W121-KOHLIST-COUNT
                MOVE    ZERO            TO  W121-KOHLIST-ROW
-               IF      WRK-W121-KOHLIST-ROW
+               IF      WRK-W121-KOHLIST-ROW (1)
                                        >   ZERO
-                   MOVE    WRK-W121-KOHLIST-ROW
+                   MOVE    WRK-W121-KOHLIST-ROW (1)
                                               TO  W121-KOHLIST-ROW
                END-IF
            END-IF 
       *
-           EVALUATE    SPA-GMN-GRP-SETTEI  ALSO    SPA-GMN-GRP-KAIJYO
+           EVALUATE    SPA-GMN-GRP-SETTEI(1)
+                                           ALSO    SPA-GMN-GRP-KAIJYO(1)
                WHEN    "1"                 ALSO    SPACE
                    MOVE    WIDGET-NORMAL       TO  W121-GRP1-STATE
                                                    W121-GRP1-NO-STATE
@@ -4509,24 +5451,24 @@
                                                    W121-GRP2-NO-STATE
            END-EVALUATE
       *
-           EVALUATE    SPA-GMN-GRP-SETTEI
+           EVALUATE    SPA-GMN-GRP-SETTEI (1)
                WHEN    SPACE
                    MOVE    "グループ設定"      TO  W121-GRP-SETTEI
                WHEN    "1"
                    MOVE    "グループ終了"      TO  W121-GRP-SETTEI
            END-EVALUATE
       *
-           EVALUATE    SPA-GMN-GRP-KAIJYO
+           EVALUATE    SPA-GMN-GRP-KAIJYO (1)
                WHEN    SPACE
                    MOVE    "グループ解除"      TO  W121-GRP-KAIJYO
                WHEN    "1"
                    MOVE    "解除設定終了"      TO  W121-GRP-KAIJYO
            END-EVALUATE
       *
-           IF      SPA-GMN-GRP-SETTEI  =   "1"
+           IF      SPA-GMN-GRP-SETTEI  (1) =   "1"
                MOVE    "グループ設定中"    TO  W121-GRP-DSP
            END-IF
-           IF      SPA-GMN-GRP-KAIJYO  =   "1"
+           IF      SPA-GMN-GRP-KAIJYO  (1) =   "1"
                MOVE    "グループ解除中"    TO  W121-GRP-DSP
            END-IF
       *
@@ -4534,7 +5476,7 @@
                                            W121-HKNJANUM-STATE
                                            W121-HKN-PRTJYUN-STATE
            MOVE    WIDGET-INSENSITIVE  TO  W121-SYU-PRTJYUN2-STATE
-           EVALUATE    SPA-GMN-PRTJYUN1
+           EVALUATE    SPA-GMN-PRTJYUN1 (1)
                WHEN    "01"
                    MOVE    WIDGET-INSENSITIVE
                                            TO  W121-GRP2-STATE
@@ -4547,8 +5489,8 @@
                    MOVE    WIDGET-NORMAL   TO  W121-SYU-PRTJYUN2-STATE
            END-EVALUATE
       *
-           IF    ( SPA-GMN-GRP-SETTEI  =   SPACE )
-           AND   ( SPA-GMN-GRP-KAIJYO  =   SPACE )
+           IF    ( SPA-GMN-GRP-SETTEI  (1) =   SPACE )
+           AND   ( SPA-GMN-GRP-KAIJYO  (1) =   SPACE )
                MOVE    WIDGET-NORMAL       TO  W121-SYU-PRTJYUN1-STATE
                                                W121-SYU-PRTJYUN2-STATE
                                                W121-HKNNUM-STATE
@@ -4560,7 +5502,7 @@
                                                W121-BOTTOM-STATE
                                                W121-DEL-STATE
                                                W121-SCR4-STATE
-               IF      SPA-GMN-PRTJYUN1    =   "02"
+               IF      SPA-GMN-PRTJYUN1 (1)    =   "02"
                    CONTINUE
                ELSE 
                    MOVE    WIDGET-INSENSITIVE  TO
@@ -4580,9 +5522,197 @@
                                                W121-SCR4-STATE
            END-IF
       *
+      *    県外設定
+           MOVE    SPA-GMN-PRTJYUN1-G (2)  TO  W121-PRTJYUN1-1
+           MOVE    SPA-GMN-PRTJYUN2-G (2)  TO  W121-PRTJYUN2-1
+           MOVE    SPA-GMN-ZAITAKU-G  (2)  TO  W121-ZAITAKU-1
+           MOVE    SPA-GMN-CHOUKI-G   (2)  TO  W121-CHOUKI-1
+           MOVE    SPA-GMN-SRT-LAST-G (2)  TO  W121-SRT-LAST-1
+           MOVE    SPA-GMN-KOUGAKU-TEN(2)  TO  W121-KOUGAKU-TEN-1
+      *
+           MOVE    SPA-GMN-RECESYUBETU(2)  TO  W121-RECESYUBETU-1
+           MOVE    SPA-GMN-SYUBETUNAME(2)  TO  W121-SYUBETUNAME-1
+           MOVE    SPA-GMN-HKNNUM     (2)  TO  W121-HKNNUM-1
+           MOVE    SPA-GMN-SEIDONAME  (2)  TO  W121-SEIDONAME-1
+           MOVE    SPA-GMN-SYUBETU-PRTJYUN1-G (2)
+                                           TO  W121-SYU-PRTJYUN1-1
+           MOVE    SPA-GMN-SYUBETU-PRTJYUN2-G (2)
+                                           TO  W121-SYU-PRTJYUN2-1
+           MOVE    SPA-GMN-GRP1       (2)  TO  W121-GRP1-1
+           MOVE    SPA-GMN-GRP2       (2)  TO  W121-GRP2-1
+           MOVE    SPA-GMN-GRP1-NO    (2)  TO  W121-GRP1-NO-1
+           MOVE    SPA-GMN-GRP2-NO    (2)  TO  W121-GRP2-NO-1
+      *     
+           PERFORM VARYING IDX     FROM    1   BY  1
+                   UNTIL   IDX     >       SPA-GMN-BODYLIST-MAX (2)
+               MOVE    IDX             TO  WRK-Z9
+               MOVE    WRK-Z9          TO  W121-BODYLIST-1-TNO   (IDX)
+               MOVE    SPA-GMN-BODYLIST-TSYUBETU   (2 IDX)
+                                       TO
+                                       W121-BODYLIST-1-TRECESYUBETU(IDX)
+               MOVE    SPA-GMN-BODYLIST-TSYUBETUNAME (2 IDX)
+                                       TO
+                                       W121-BODYLIST-1-TSYUBETUNAME(IDX)
+               IF      SPA-NAI-BODYLIST-TGRP1-NO (2 IDX)
+                                   NOT =   "000"    
+                   MOVE    SPA-NAI-BODYLIST-TGRP1-NO (2 IDX)
+                                       TO  W121-BODYLIST-1-TGRP1 (IDX)
+               END-IF
+               MOVE    SPA-NAI-BODYLIST-TGRP2-NO (2 IDX)
+                                       TO  W121-BODYLIST-1-TGRP2(IDX)
+               IF    ( SPA-NAI-BODYLIST-TPRTJYUN1(2 IDX) NOT =   SPACE )
+               OR    ( SPA-NAI-BODYLIST-TPRTJYUN2(2 IDX) NOT =   SPACE )
+               OR    ( SPA-GMN-KOHLIST-MAX (2 IDX)           >   ZERO  )
+                   MOVE    "○"        TO  W121-BODYLIST-1-TSETTEI(IDX)
+               END-IF
+      *
+               IF      FLG-BODYLIST-ROW (2)    =   2
+                   MOVE    "F"     TO  W121-BODYLIST-1-SELECT (IDX)
+               ELSE
+                   IF      IDX         =   SPA-NAI-SELNUM2     (2)
+                                       OR  SPA-NAI-SELNUM2-ROW (2) 
+                       MOVE    "T"     TO  W121-BODYLIST-1-SELECT (IDX)
+                   ELSE
+                       MOVE    "F"     TO  W121-BODYLIST-1-SELECT (IDX)
+                   END-IF
+               END-IF
+           END-PERFORM
+           MOVE    SPA-GMN-BODYLIST-MAX (2)
+                                       TO  W121-BODYLIST-1-COUNT
+           MOVE    ZERO                TO  W121-BODYLIST-1-ROW
+           IF      WRK-W121-BODYLIST-ROW (2)
+                                       >   ZERO
+               MOVE    WRK-W121-BODYLIST-ROW (2)
+                                           TO  W121-BODYLIST-1-ROW
+               MOVE    2                   TO  W121-BODYLIST-1-ROWATTR
+           END-IF
+      *
+           IF    ( FLG-BODYLIST-ROW(2) NOT =   2    )
+           AND   ( SPA-NAI-SELNUM2 (2)     >   ZERO )
+               MOVE    SPA-NAI-SELNUM2 (2)
+                                           TO  IDYY
+               MOVE    SPA-GMN-KOHLIST-MAX (2 IDYY)
+                                           TO  IDZZ
+               PERFORM VARYING IDX     FROM    1   BY  1
+                       UNTIL   IDX     >       IDZZ
+                   MOVE    IDX             TO  WRK-ZZ9
+                   MOVE    WRK-ZZ9         TO  W121-KOHLIST-1-TNO  (IDX)
+                   MOVE    SPA-GMN-KOHLIST-THKNNUM    (2 IDYY IDX)
+                                       TO  W121-KOHLIST-1-THKNNUM  (IDX)
+                   MOVE    SPA-GMN-KOHLIST-TSEIDONAME (2 IDYY IDX)
+                                       TO  W121-KOHLIST-1-TSEIDONAME
+                                                                  (IDX)
+                   EVALUATE    SPA-GMN-KOHLIST-TJYUN  (2 IDYY IDX)
+                       WHEN    "T"
+                           MOVE    "先頭"  TO  W121-KOHLIST-1-TJYUN(IDX)
+                       WHEN    "B"
+                           MOVE    "後尾"  TO  W121-KOHLIST-1-TJYUN(IDX)
+                   END-EVALUATE
+      *
+                   IF      IDX         =   SPA-NAI-SELNUM3 (2)
+                       MOVE    "T"     TO  W121-KOHLIST-1-SELECT (IDX)
+                   ELSE
+                       MOVE    "F"     TO  W121-KOHLIST-1-SELECT (IDX)
+                   END-IF
+               END-PERFORM
+               MOVE    IDZZ            TO  W121-KOHLIST-1-COUNT
+               MOVE    ZERO            TO  W121-KOHLIST-1-ROW
+               IF      WRK-W121-KOHLIST-ROW (2)
+                                       >   ZERO
+                   MOVE    WRK-W121-KOHLIST-ROW (2)
+                                              TO  W121-KOHLIST-1-ROW
+               END-IF
+           END-IF 
+      *
+           EVALUATE    SPA-GMN-GRP-SETTEI(2)
+                                           ALSO    SPA-GMN-GRP-KAIJYO(2)
+               WHEN    "1"                 ALSO    SPACE
+                   MOVE    WIDGET-NORMAL       TO  W121-GRP1-1-STATE
+                                                   W121-GRP1-NO-1-STATE
+                                                   W121-GRP2-1-STATE
+                                                   W121-GRP2-NO-1-STATE
+               WHEN    SPACE               ALSO    "1"
+                   MOVE    WIDGET-NORMAL       TO  W121-GRP1-1-STATE
+                                                   W121-GRP2-1-STATE
+                   MOVE    WIDGET-INSENSITIVE  TO  W121-GRP1-NO-1-STATE
+                                                   W121-GRP2-NO-1-STATE
+               WHEN    OTHER
+                   MOVE    WIDGET-INSENSITIVE  TO  W121-GRP1-1-STATE
+                                                   W121-GRP1-NO-1-STATE
+                                                   W121-GRP2-1-STATE
+                                                   W121-GRP2-NO-1-STATE
+           END-EVALUATE
+      *
+           EVALUATE    SPA-GMN-GRP-SETTEI (2)
+               WHEN    SPACE
+                   MOVE    "グループ設定"      TO  W121-GRP-SETTEI-1
+               WHEN    "1"
+                   MOVE    "グループ終了"      TO  W121-GRP-SETTEI-1
+           END-EVALUATE
+      *
+           EVALUATE    SPA-GMN-GRP-KAIJYO (2)
+               WHEN    SPACE
+                   MOVE    "グループ解除"      TO  W121-GRP-KAIJYO-1
+               WHEN    "1"
+                   MOVE    "解除設定終了"      TO  W121-GRP-KAIJYO-1
+           END-EVALUATE
+      *
+           IF      SPA-GMN-GRP-SETTEI  (2) =   "1"
+               MOVE    "グループ設定中"    TO  W121-GRP-DSP-1
+           END-IF
+           IF      SPA-GMN-GRP-KAIJYO  (2) =   "1"
+               MOVE    "グループ解除中"    TO  W121-GRP-DSP-1
+           END-IF
+      *
+           MOVE    WIDGET-INSENSITIVE  TO  W121-SYU-PRTJYUN2-1-STATE
+           EVALUATE    SPA-GMN-PRTJYUN1 (2)
+               WHEN    "01"
+                   MOVE    WIDGET-INSENSITIVE
+                                           TO  W121-GRP2-1-STATE
+                                               W121-GRP2-NO-1-STATE
+               WHEN    "02"
+                   MOVE    WIDGET-NORMAL   TO  W121-SYU-PRTJYUN2-1-STATE
+           END-EVALUATE
+      *
+           IF    ( SPA-GMN-GRP-SETTEI  (2) =   SPACE )
+           AND   ( SPA-GMN-GRP-KAIJYO  (2) =   SPACE )
+               MOVE    WIDGET-NORMAL       TO  W121-SYU-PRTJYUN1-1-STATE
+                                               W121-SYU-PRTJYUN2-1-STATE
+                                               W121-HKNNUM-1-STATE
+                                               W121-SYUBETU-UP-1-STATE
+                                               W121-SYUBETU-DOWN-1-STATE
+                                               W121-KOH-UP-1-STATE
+                                               W121-KOH-DOWN-1-STATE
+                                               W121-TOP-1-STATE
+                                               W121-BOTTOM-1-STATE
+                                               W121-DEL-1-STATE
+                                               W121-SCR4-1-STATE
+               IF      SPA-GMN-PRTJYUN1 (2)    =   "02"
+                   CONTINUE
+               ELSE 
+                   MOVE    WIDGET-INSENSITIVE  TO
+                                               W121-SYU-PRTJYUN2-1-STATE
+               END-IF
+           ELSE
+               MOVE    WIDGET-INSENSITIVE  TO  W121-SYU-PRTJYUN1-1-STATE
+                                               W121-SYU-PRTJYUN2-1-STATE
+                                               W121-HKNNUM-1-STATE
+                                               W121-SYUBETU-UP-1-STATE
+                                               W121-SYUBETU-DOWN-1-STATE
+                                               W121-KOH-UP-1-STATE
+                                               W121-KOH-DOWN-STATE
+                                               W121-TOP-1-STATE
+                                               W121-BOTTOM-1-STATE
+                                               W121-DEL-1-STATE
+                                               W121-SCR4-1-STATE
+           END-IF
+      *
            MOVE    "blue"          TO  W121-RECESYUBETU-STYLE
                                        W121-SYUBETUNAME-STYLE
                                        W121-GRP-DSP-STYLE
+                                       W121-RECESYUBETU-1-STYLE
+                                       W121-SYUBETUNAME-1-STYLE
+                                       W121-GRP-DSP-1-STYLE
       *
            PERFORM 5001-MAPCUR-SEC
       *
@@ -4840,6 +5970,7 @@
                     MOVE  "HKNJANUM"       TO  MCP-WIDGET
                 WHEN    7
                     MOVE  "HKNJ_PRTKBN"    TO  MCP-WIDGET
+      *         県内
                 WHEN    8
                     MOVE  "PRTJYUN1"       TO  MCP-WIDGET
                 WHEN    9
@@ -4866,17 +5997,44 @@
                     MOVE  "SYUBETU_UP"     TO  MCP-WIDGET
                 WHEN    101
                     MOVE  "KOH_UP"         TO  MCP-WIDGET
+      *         県外
+                WHEN    208
+                    MOVE  "PRTJYUN1_1"     TO  MCP-WIDGET
+                WHEN    209
+                    MOVE  "PRTJYUN2_1"     TO  MCP-WIDGET
+                WHEN    210
+                    MOVE  "ZAITAKU_1"      TO  MCP-WIDGET
+                WHEN    211
+                    MOVE  "CHOUKI_1"       TO  MCP-WIDGET
+                WHEN    213
+                    MOVE  "SYU_PRTJYUN1_1" TO  MCP-WIDGET
+                WHEN    214
+                    MOVE  "SYU_PRTJYUN2_1" TO  MCP-WIDGET
+                WHEN    215
+                    MOVE  "HKNNUM_1"       TO  MCP-WIDGET
+                WHEN    216
+                    MOVE  "SRT_LAST_1"     TO  MCP-WIDGET
+                WHEN    217
+                    MOVE  "KOUGAKU_TEN_1"  TO  MCP-WIDGET
+                WHEN    250
+                    MOVE  "GRP1_NO_1"      TO  MCP-WIDGET
+                WHEN    251
+                    MOVE  "GRP2_NO_1"      TO  MCP-WIDGET
+                WHEN    300
+                    MOVE  "SYUBETU_UP_1"   TO  MCP-WIDGET
+                WHEN    301
+                    MOVE  "KOH_UP_1"       TO  MCP-WIDGET
       *
                 WHEN    999
                     MOVE  "B12"            TO  MCP-WIDGET
            END-EVALUATE
       *
            EVALUATE    SPA-GMN-CUR
-                WHEN    1   THRU    199
+                WHEN    8   THRU    199
                     MOVE    0              TO  W121-PAGENO
-                WHEN    200 THRU    299
+                WHEN    208 THRU    399
                     MOVE    1              TO  W121-PAGENO
-                WHEN    999
+                WHEN    OTHER
                     MOVE    SPA-W121-PAGENO
                                            TO  W121-PAGENO
             END-EVALUATE
@@ -4899,21 +6057,42 @@
                WHEN    "EDYUKYMD"
                    MOVE    4           TO  SPA-GMN-CUR
                WHEN    "PR_PRTJYUN"
-                   MOVE    5           TO  SPA-GMN-CUR
+                   IF      SPA-GMN-PRTJYUN1 (1)    =   "02"
+                       IF      W121-PAGENO         =   ZERO 
+                           MOVE    8          TO  SPA-GMN-CUR
+                       ELSE
+                           MOVE    208        TO  SPA-GMN-CUR
+                       END-IF
+                   ELSE
+                       MOVE    5          TO  SPA-GMN-CUR
+                   END-IF
                WHEN    "HKN_PRTJYUN"
-                   IF      SPA-GMN-PRTJYUN1    =   "02"
-                       MOVE    8          TO  SPA-GMN-CUR
+                   IF      SPA-GMN-PRTJYUN1 (1)    =   "02"
+                       IF      W121-PAGENO         =   ZERO 
+                           MOVE    8          TO  SPA-GMN-CUR
+                       ELSE
+                           MOVE    208        TO  SPA-GMN-CUR
+                       END-IF
                    ELSE
                        MOVE    6          TO  SPA-GMN-CUR
                    END-IF
                WHEN    "HKNJANUM"
-                   IF      SPA-GMN-HKNJANUM    =   SPACE
-                       MOVE    8           TO  SPA-GMN-CUR
-                   ELSE
+                   IF      SPA-GMN-HKNJANUM    NOT =   SPACE
                        MOVE    7           TO  SPA-GMN-CUR
+                   ELSE
+                       IF      W121-PAGENO         =   ZERO 
+                           MOVE    8           TO  SPA-GMN-CUR
+                       ELSE
+                           MOVE    208         TO  SPA-GMN-CUR
+                       END-IF
                    END-IF
                WHEN    "HKNJ_PRTKBN"
-                   MOVE    8           TO  SPA-GMN-CUR
+                   IF      W121-PAGENO         =   ZERO 
+                       MOVE    8           TO  SPA-GMN-CUR
+                   ELSE
+                       MOVE    208         TO  SPA-GMN-CUR
+                   END-IF
+      * 
                WHEN    "PRTJYUN1"
                    MOVE    9           TO  SPA-GMN-CUR
                WHEN    "PRTJYUN2"
@@ -4927,7 +6106,7 @@
                WHEN    "KOUGAKU_TEN"
                    MOVE    13          TO  SPA-GMN-CUR
                WHEN    "SYU_PRTJYUN1"
-                   IF      SPA-GMN-PRTJYUN1    =   "02"
+                   IF      SPA-GMN-PRTJYUN1 (1)    =   "02"
                        MOVE    14          TO  SPA-GMN-CUR
                    ELSE
                        MOVE    15          TO  SPA-GMN-CUR
@@ -4938,7 +6117,33 @@
                WHEN    "GRP2_NO"
                    MOVE    13          TO  SPA-GMN-CUR
                WHEN    "HKNNUM"
-                   MOVE    99          TO  SPA-GMN-CUR
+                   MOVE    15          TO  SPA-GMN-CUR
+      * 
+               WHEN    "PRTJYUN1_1"
+                   MOVE    209           TO  SPA-GMN-CUR
+               WHEN    "PRTJYUN2_1"
+                   MOVE    216          TO  SPA-GMN-CUR
+               WHEN    "SRT_LAST_1"
+                   MOVE    210          TO  SPA-GMN-CUR
+               WHEN    "ZAITAKU_1"
+                   MOVE    211          TO  SPA-GMN-CUR
+               WHEN    "CHOUKI_1"
+                   MOVE    217          TO  SPA-GMN-CUR
+               WHEN    "KOUGAKU_TEN_1"
+                   MOVE    213          TO  SPA-GMN-CUR
+               WHEN    "SYU_PRTJYUN1_1"
+                   IF      SPA-GMN-PRTJYUN1 (2)    =   "02"
+                       MOVE    214          TO  SPA-GMN-CUR
+                   ELSE
+                       MOVE    215          TO  SPA-GMN-CUR
+                   END-IF
+               WHEN    "SYU_PRTJYUN2_1"
+                   MOVE    215          TO  SPA-GMN-CUR
+               WHEN    "GRP1_NO_1"
+               WHEN    "GRP2_NO_1"
+                   MOVE    213          TO  SPA-GMN-CUR
+               WHEN    "HKNNUM_1"
+                   MOVE    215          TO  SPA-GMN-CUR
            END-EVALUATE
       *
            .

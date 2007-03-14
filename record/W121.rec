@@ -10,13 +10,13 @@ W121	{
 			value	varchar(10);
 		};
 		HKNJANUM	{
-                        state   int;
+			state   int;
 			value	varchar(8);
 		};
 		HKNJANAME	{
 			value	varchar(20);
 		};
-		note1	{
+		nt1	{
 			pageno	int;
 			fi8	{
 				TOP	{
@@ -51,10 +51,6 @@ W121	{
 					style   varchar(20);
 					value	varchar(14);
 				};
-				GRP2	{
-					state   int;
-					value	bool;
-				};
 				GRP1_NO	{
 					state   int;
 					value	varchar(3);
@@ -62,64 +58,6 @@ W121	{
 				GRP2_NO	{
 					state   int;
 					value	varchar(3);
-				};
-				CHOUKI_COMBO	{
-					CHOUKI	{
-						value	varchar(26);
-					};
-					count	int;
-					item	varchar(26)[5];
-				};
-				ZAITAKU_COMBO	{
-					ZAITAKU	{
-						value	varchar(26);
-					};
-					count	int;
-					item	varchar(26)[5];
-				};
-				PRTJYUN1_COMBO	{
-					PRTJYUN1	{
-						value	varchar(31);
-					};
-					count	int;
-					item	varchar(31)[5];
-				};
-				PRTJYUN2_COMBO	{
-					PRTJYUN2	{
-						value	varchar(31);
-					};
-					count	int;
-					item	varchar(31)[5];
-				};
-				SRT_LAST_COMBO	{
-					SRT_LAST	{
-						value	varchar(14);
-					};
-					count	int;
-					item	varchar(14)[5];
-				};
-				KOUGAKU_TEN	{
-					value	number(7);
-				};
-				GRP1	{
-					state   int;
-					value	bool;
-				};
-				SYU_PRTJYUN1_COMBO	{
-					state   int;
-					SYU_PRTJYUN1	{
-						value	varchar(31);
-					};
-					count	int;
-					item	varchar(31)[10];
-				};
-				SYU_PRTJYUN2_COMBO	{
-					state   int;
-					SYU_PRTJYUN2	{
-						value	varchar(31);
-					};
-					count	int;
-					item	varchar(31)[10];
 				};
 				GRP_SETTEI	{
 					label	varchar(12);
@@ -166,15 +104,218 @@ W121	{
 						select	bool[100];
 					};
 				};
+				GRP1	{
+					state   int;
+					value	bool;
+				};
+				GRP2	{
+					state   int;
+					value	bool;
+				};
+				SYU_PRTJYUN2_COMBO	{
+					state   int;
+					SYU_PRTJYUN2	{
+						value	varchar(31);
+					};
+					count	int;
+					item	varchar(31)[10];
+				};
+				SYU_PRTJYUN1_COMBO	{
+					state   int;
+					SYU_PRTJYUN1	{
+						value	varchar(31);
+					};
+					count	int;
+					item	varchar(31)[10];
+				};
+				PRTJYUN1_COMBO	{
+					PRTJYUN1	{
+						value	varchar(31);
+					};
+					count	int;
+					item	varchar(31)[5];
+				};
+				PRTJYUN2_COMBO	{
+					PRTJYUN2	{
+						value	varchar(31);
+					};
+					count	int;
+					item	varchar(31)[5];
+				};
+				ZAITAKU_COMBO	{
+					ZAITAKU	{
+						value	varchar(26);
+					};
+					count	int;
+					item	varchar(26)[5];
+				};
+				CHOUKI_COMBO	{
+					CHOUKI	{
+						value	varchar(26);
+					};
+					count	int;
+					item	varchar(26)[5];
+				};
+				KOUGAKU_TEN	{
+					value	number(7);
+				};
+				SRT_LAST_COMBO	{
+					SRT_LAST	{
+						value	varchar(14);
+					};
+					count	int;
+					item	varchar(14)[5];
+				};
 			};
-		};
-		HKNJ_PRTKBN_COMBO	{
-			state   int;
-			HKNJ_PRTKBN	{
-				value	varchar(24);
+			fi7	{
+				TOP_1	{
+					state   int;
+				};
+				BOTTOM_1	{
+					state   int;
+				};
+				DEL_1	{
+					state   int;
+				};
+				SYUBETU_UP_1	{
+					state   int;
+				};
+				SYUBETU_DOWN_1	{
+					state   int;
+				};
+				KOH_UP_1	{
+					state   int;
+				};
+				KOH_DOWN_1	{
+					state   int;
+				};
+				HKNNUM_1	{
+					state   int;
+					value	varchar(3);
+				};
+				SEIDONAME_1	{
+					value	varchar(20);
+				};
+				GRP_DSP_1	{
+					style   varchar(20);
+					value	varchar(14);
+				};
+				GRP1_NO_1	{
+					state   int;
+					value	varchar(3);
+				};
+				GRP2_NO_1	{
+					state   int;
+					value	varchar(3);
+				};
+				GRP_SETTEI_1	{
+					label	varchar(12);
+				};
+				GRP_KAIJYO_1	{
+					label	varchar(12);
+				};
+				RECESYUBETU_1	{
+					style   varchar(20);
+					value	varchar(4);
+				};
+				SYUBETUNAME_1	{
+					style   varchar(20);
+					value	varchar(40);
+				};
+				scr13	{
+					BODYLIST_1	{
+						count	int;
+						row	int;
+						rowattr int;
+						item	{
+							value0	varchar(2);
+							value1	varchar(3);
+							value2	varchar(3);
+							value3	varchar(4);
+							value4	varchar(40);
+							value5	varchar(6);
+						}	[50];
+						select	bool[50];
+					};
+				};
+				scr14	{
+					state   int;
+					KOHLIST_1	{
+						count	int;
+						row	int;
+						rowattr int;
+						item	{
+							value0	varchar(3);
+							value1	varchar(3);
+							value2	varchar(20);
+							value3	varchar(10);
+						}	[100];
+						select	bool[100];
+					};
+				};
+				GRP1_1	{
+					state   int;
+					value	bool;
+				};
+				GRP2_1	{
+					state   int;
+					value	bool;
+				};
+				SYU_PRTJYUN2_1_COMBO	{
+					state   int;
+					SYU_PRTJYUN2_1	{
+						value	varchar(31);
+					};
+					count	int;
+					item	varchar(31)[10];
+				};
+				SYU_PRTJYUN1_1_COMBO	{
+					state   int;
+					SYU_PRTJYUN1_1	{
+						value	varchar(31);
+					};
+					count	int;
+					item	varchar(31)[10];
+				};
+				PRTJYUN1_1_COMBO	{
+					PRTJYUN1_1	{
+						value	varchar(31);
+					};
+					count	int;
+					item	varchar(31)[5];
+				};
+				PRTJYUN2_1_COMBO	{
+					PRTJYUN2_1	{
+						value	varchar(31);
+					};
+					count	int;
+					item	varchar(31)[5];
+				};
+				ZAITAKU_1_COMBO	{
+					ZAITAKU_1	{
+						value	varchar(26);
+					};
+					count	int;
+					item	varchar(26)[5];
+				};
+				CHOUKI_1_COMBO	{
+					CHOUKI_1	{
+						value	varchar(26);
+					};
+					count	int;
+					item	varchar(26)[5];
+				};
+				KOUGAKU_TEN_1	{
+					value	number(7);
+				};
+				SRT_LAST_1_COMBO	{
+					SRT_LAST_1	{
+						value	varchar(14);
+					};
+					count	int;
+					item	varchar(14)[5];
+				};
 			};
-			count	int;
-			item	varchar(24)[5];
 		};
 		HKN_PRTJYUN_COMBO	{
 			state   int;
@@ -183,13 +324,6 @@ W121	{
 			};
 			count	int;
 			item	varchar(46)[6];
-		};
-		PR_PRTJYUN_COMBO	{
-			PR_PRTJYUN	{
-				value	varchar(28);
-			};
-			count	int;
-			item	varchar(28)[5];
 		};
 		scr1	{
 			HEADLIST	{
@@ -203,6 +337,21 @@ W121	{
 				}	[50];
 				select	bool[50];
 			};
+		};
+		PR_PRTJYUN_COMBO	{
+			PR_PRTJYUN	{
+				value	varchar(28);
+			};
+			count	int;
+			item	varchar(28)[5];
+		};
+		HKNJ_PRTKBN_COMBO	{
+			state   int;
+			HKNJ_PRTKBN	{
+				value	varchar(24);
+			};
+			count	int;
+			item	varchar(24)[5];
 		};
 	};
 };
