@@ -6840,15 +6840,24 @@
           END-EVALUATE
            EVALUATE    RECE-PUTB-SYUBETU-UNDER-NO2
                WHEN    "01"
-                   MOVE    RECE02-KYURATE  TO  RECE08-SYUBETU-UNDER-2
+                   COMPUTE WRK-KYURATE-9   =   100 -   RECE02-KYURATE
+                   MOVE    WRK-KYURATE-X   TO  RECE08-SYUBETU-UNDER-2
                WHEN    "02"
                    MOVE    RECE02-KYURATE  TO  RECE08-SYUBETU-UNDER-2
                WHEN    "03"
-                   MOVE    RECE02-KOHHBTNUM
+                   MOVE    RECE02-KOHHBTNUM(1)
                                            TO  RECE08-SYUBETU-UNDER-2
                WHEN    "04"
-                   MOVE    RECE02-KOHHBTNUM
-                                           TO  RECE08-SYUBETU-UNDER-2
+                   IF      RECE02-KOHHBTNUM(1) NUMERIC
+                       MOVE    RECE02-KOHHBTNUM(1) TO
+                                                   WRK-RECE02-HBTNUM-X
+                   ELSE
+                       MOVE    "00"                TO
+                                                   WRK-RECE02-HBTNUM-X
+                   END-IF
+                   COMPUTE WRK-HBTNUM-9    =   100 -
+                                               WRK-RECE02-HBTNUM-9
+                   MOVE    WRK-HBTNUM-X    TO  RECE08-SYUBETU-UNDER-2
           END-EVALUATE
       *
           IF      RECE-PUTH-SRT-01 (IDXX) =   "02"
