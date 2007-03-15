@@ -1397,9 +1397,14 @@
                    MOVE    "初診算定日が暦日ではありません。"
                                        TO  SPA-ERRMSG
                WHEN    "1017"
-                   MOVE
-                   "初診算定日を登録して、再診料自動算定をして下さい"
-                                       TO  SPA-ERRMSG
+      *?           MOVE
+      *            "初診算定日を登録して、再診料自動算定をして下さい"
+      *?                               TO  SPA-ERRMSG
+                   STRING  "初診算定日を初診料の横に入力して初診算定日"
+                           "を登録後、再診料の自動算定をして下さい"
+                                           DELIMITED  BY  SIZE
+                                           INTO    SPA-ERRMSG
+                   END-STRING
                WHEN    "1018"
                    MOVE
                    "対象患者の中途終了データはありません。"
