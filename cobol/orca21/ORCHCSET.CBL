@@ -800,24 +800,24 @@
                END-IF
            END-IF
       *
+           IF      FLG-KEIKA-GAI       =   ZERO
       *    ´ü´ÖÊÔ½¸
-           IF     (ISET-YUKOSTYMD      =   "00000000" )  AND
-                  (ISET-YUKOEDYMD      =   "99999999" )
-               MOVE    ISET-YUKOSTYMD      TO  WRK-YUKOSTYMD
-               MOVE    ISET-YUKOEDYMD      TO  WRK-YUKOEDYMD
-           ELSE
-               IF     (ISET-YUKOSTYMD      =   WRK-YUKOSTYMD ) AND
-                      (ISET-YUKOEDYMD      =   WRK-YUKOEDYMD )
-                   CONTINUE
-               ELSE
-      *            ´ü´Ö°õºþ
-                   PERFORM 2009-HEAD04-PRINT-SEC
+               IF     (ISET-YUKOSTYMD      =   "00000000" )  AND
+                      (ISET-YUKOEDYMD      =   "99999999" )
                    MOVE    ISET-YUKOSTYMD      TO  WRK-YUKOSTYMD
                    MOVE    ISET-YUKOEDYMD      TO  WRK-YUKOEDYMD
+               ELSE
+                   IF     (ISET-YUKOSTYMD      =   WRK-YUKOSTYMD ) AND
+                          (ISET-YUKOEDYMD      =   WRK-YUKOEDYMD )
+                       CONTINUE
+                   ELSE
+      *                ´ü´Ö°õºþ
+                       PERFORM 2009-HEAD04-PRINT-SEC
+                       MOVE    ISET-YUKOSTYMD      TO  WRK-YUKOSTYMD
+                       MOVE    ISET-YUKOEDYMD      TO  WRK-YUKOEDYMD
+                   END-IF
                END-IF
-           END-IF
       *
-           IF      FLG-KEIKA-GAI       =   ZERO
                PERFORM 20020-MEI-HENSYU-SEC
            END-IF
       *
