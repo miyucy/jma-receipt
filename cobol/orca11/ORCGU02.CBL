@@ -3196,7 +3196,7 @@
      *
            IF      SPA-U02Q-MAX        =   ZERO
                MOVE    "0200"              TO  SPA-ERRCD
-               MOVE    1                   TO  SPA-GMN-CUR
+               MOVE    2                   TO  SPA-GMN-CUR
            ELSE
      *
                MOVE    "U02"               TO  SPA-MOTOPG
