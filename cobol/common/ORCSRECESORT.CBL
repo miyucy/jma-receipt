@@ -171,7 +171,13 @@
                                                         (IDX IDY1)
                    ELSE
       *            フィルム以外
-                       PERFORM 2001-KIZAI-HEN-SEC
+      *                酸素補正率は対象外とする
+                       IF      ORCSRECESORT-IN-SRYCD (IDX2)
+                                               =   "770020070"
+                           CONTINUE
+                       ELSE
+                           PERFORM 2001-KIZAI-HEN-SEC
+                       END-IF
                    END-IF
                END-IF
       *        コメント
@@ -232,6 +238,10 @@
                        ADD     1               TO  IDY2
                        MOVE    ORCSRECESORT-IN-SRYCD (IDX2)
                                                TO  ORCSRECESORT-SRYCD
+                                                        (IDX IDY2)
+      *                酸素補正率を酸素の直下に再編集
+                       ADD     1               TO  IDY2
+                       MOVE    "770020070"     TO  ORCSRECESORT-SRYCD
                                                         (IDX IDY2)
                    END-IF
                WHEN    3
