@@ -162,9 +162,10 @@
        900-PUT-WINDOW              SECTION.
       *
            MOVE   "PUTWINDOW"       TO  MCP-FUNC.
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL   "ORCDBMAIN"       USING
+                                        MCPAREA
+                                        MCPDATA-REC
+                                        SPA-AREA
            .
       *
            .

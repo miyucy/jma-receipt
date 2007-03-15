@@ -385,14 +385,15 @@
                    MOVE    WRK-JOBID           TO  BTPARA-JOBID
                    MOVE    SMCNDATE-YMD        TO  BTPARA-UPYMD
                    MOVE    SMCNDATE-HMS        TO  BTPARA-UPHMS
-grpsys*            MOVE SPA-HOSPNUM TO -HOSPNUM
+                   MOVE    SPA-HOSPNUM         TO  BTPARA-HOSPNUM
                    MOVE    BTPARA-REC          TO  MCPDATA-REC
                    MOVE    "tbl_btpara"        TO  MCP-TABLE
                    MOVE    "upd1"              TO  MCP-PATHNAME
                    MOVE    "DBUPDATE"          TO  MCP-FUNC
-grpsys             CALL "ORCDBMAIN" USING MCPAREA
-                                          MCPDATA-REC
-grpsys                                    SPA-AREA
+                   CALL    "ORCDBMAIN"         USING
+                                                   MCPAREA
+                                                   MCPDATA-REC
+                                                   SPA-AREA
                    IF      MCP-RC      NOT =   ZERO
                        MOVE    "1006"          TO  SPA-ERRCD
                    END-IF
@@ -548,7 +549,7 @@ grpsys                                    SPA-AREA
                                        TO  BTPARA-SHELLID
            MOVE    SPA-NAI-T02-TSHELLID (SPA-NAI-T02-SELNUM1)
                                        TO  BTPARA-SCRIPTID
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  BTPARA-HOSPNUM
            MOVE    BTPARA-REC          TO  MCPDATA-REC
            MOVE    "tbl_btpara"        TO  MCP-TABLE
            MOVE    "key3"              TO  MCP-PATHNAME
@@ -565,9 +566,10 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
        4100111-SHELLID-LST-SEC         SECTION.
       *
            MOVE    "DBSELECT"          TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"         USING
+                                           MCPAREA
+                                           MCPDATA-REC
+                                           SPA-AREA
            IF      MCP-RC              =   ZERO
                MOVE    "tbl_btpara"        TO  MCP-TABLE
                MOVE    "key3"              TO  MCP-PATHNAME
@@ -597,10 +599,10 @@ grpsys                            SPA-AREA
                                MOVE    BTPARA-INFO-PARA TO
                                                SPA-GMN-T02-TPARA (IDX)
                                INITIALIZE          HKNJAINF-REC
-                               MOVE    SPA-HOSPID  TO  HKNJA-HOSPID
+      *************************MOVE    SPA-HOSPID  TO  HKNJA-HOSPID
                                MOVE   SPA-GMN-T02-TPARA (IDX)
                                                    TO HKNJA-HKNJANUM
-grpsys*                        MOVE SPA-HOSPNUM TO -HOSPNUM
+                               MOVE    SPA-HOSPNUM TO HKNJA-HOSPNUM
                                MOVE    HKNJAINF-REC
                                                    TO  MCPDATA-REC
                                PERFORM 900-HKNJA-READ-SEC
@@ -613,7 +615,7 @@ grpsys*                        MOVE SPA-HOSPNUM TO -HOSPNUM
                                                SPA-GMN-T02-TPARA (IDX)
                                MOVE    BTPARA-INFO-PTID    TO 
                                                SPA-NAI-T02-TPTID (IDX)
-                               MOVE    SPA-HOSPID      TO  PTINF-HOSPID
+      *************************MOVE    SPA-HOSPID      TO  PTINF-HOSPID
                                MOVE    SPA-NAI-T02-TPTID (IDX)
                                                        TO  PTINF-PTID
                                PERFORM 900-PTINF-READ-SEC
@@ -739,9 +741,9 @@ grpsys*                        MOVE SPA-HOSPNUM TO -HOSPNUM
                            MOVE    "0012"          TO  SPA-ERRCD
                        ELSE
                            INITIALIZE                  HKNJAINF-REC
-                           MOVE    SPA-HOSPID      TO  HKNJA-HOSPID
+      *********************MOVE    SPA-HOSPID      TO  HKNJA-HOSPID
                            MOVE   SPA-GMN-T02-PARA TO  HKNJA-HKNJANUM
-grpsys*                    MOVE SPA-HOSPNUM TO -HOSPNUM
+                           MOVE    SPA-HOSPNUM     TO  HKNJA-HOSPNUM
                            MOVE    HKNJAINF-REC    TO  MCPDATA-REC
                            PERFORM 900-HKNJA-READ-SEC
                            IF      FLG-HKNJAINF    =   ZERO
@@ -753,14 +755,15 @@ grpsys*                    MOVE SPA-HOSPNUM TO -HOSPNUM
                        END-IF
                    WHEN    "2"
                        INITIALIZE                  ORCSPTIDAREA
-                       MOVE    SPA-HOSPID          TO  SPTID-HOSPID
+      *****************MOVE    SPA-HOSPID          TO  SPTID-HOSPID
+                       MOVE    SPA-HOSPNUM         TO  SPTID-HOSPNUM
                        MOVE    SPA-GMN-T02-PARA    TO  SPTID-PTNUM
                        CALL    "ORCSPTID"          USING   ORCSPTIDAREA
                                                            SPA-1009-TBL
                        IF      SPTID-RC        =   ZERO
                            MOVE    SPTID-PTNUM     TO  SPA-GMN-T02-PARA
                            MOVE    SPTID-PTID      TO  SPA-NAI-T02-PTID
-                           MOVE    SPA-HOSPID      TO  PTINF-HOSPID
+      *********************MOVE    SPA-HOSPID      TO  PTINF-HOSPID
                            MOVE    SPA-NAI-T02-PTID
                                                    TO  PTINF-PTID
                            PERFORM 900-PTINF-READ-SEC
@@ -868,14 +871,15 @@ grpsys*                    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SMCNDATE-YMD        TO  BTPARA-CREYMD
            MOVE    SMCNDATE-YMD        TO  BTPARA-UPYMD
            MOVE    SMCNDATE-HMS        TO  BTPARA-UPHMS
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  BTPARA-HOSPNUM
            MOVE    BTPARA-REC          TO  MCPDATA-REC
            MOVE    "tbl_btpara"        TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
            MOVE    "DBINSERT"          TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"         USING
+                                           MCPAREA
+                                           MCPDATA-REC
+                                           SPA-AREA
            IF      MCP-RC      NOT =   ZERO
                MOVE    "1002"          TO  SPA-ERRCD
            ELSE
@@ -943,14 +947,15 @@ grpsys                            SPA-AREA
                END-EVALUATE
                MOVE    SMCNDATE-YMD        TO  BTPARA-UPYMD
                MOVE    SMCNDATE-HMS        TO  BTPARA-UPHMS
-grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
+               MOVE    SPA-HOSPNUM         TO  BTPARA-HOSPNUM
                MOVE    BTPARA-REC          TO  MCPDATA-REC
                MOVE    "tbl_btpara"        TO  MCP-TABLE
                MOVE    "key"               TO  MCP-PATHNAME
                MOVE    "DBUPDATE"          TO  MCP-FUNC
-grpsys         CALL "ORCDBMAIN" USING MCPAREA
-                                      MCPDATA-REC
-grpsys                                SPA-AREA
+               CALL    "ORCDBMAIN"         USING
+                                               MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
                IF      MCP-RC      NOT =   ZERO
                    MOVE    "1003"          TO  SPA-ERRCD
                END-IF
@@ -1157,14 +1162,15 @@ grpsys                                SPA-AREA
                                    TO  BTPARA-RENNUM
            MOVE    SPA-NAI-T02-TSHELLID (SPA-NAI-T02-SELNUM1)
                                    TO  BTPARA-SCRIPTID
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM     TO  BTPARA-HOSPNUM
            MOVE    BTPARA-REC      TO  MCPDATA-REC
            MOVE    "DBDELETE"      TO  MCP-FUNC
            MOVE    "tbl_btpara"    TO  MCP-TABLE
            MOVE    "del2"          TO  MCP-PATHNAME
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"     USING
+                                       MCPAREA
+                                       MCPDATA-REC
+                                       SPA-AREA
            IF      MCP-RC      NOT =   ZERO
                MOVE    "1005"          TO  SPA-ERRCD
            ELSE
@@ -1179,7 +1185,7 @@ grpsys                            SPA-AREA
                                            TO  BTPARA-SHELLID
                MOVE    SPA-NAI-T02-TSHELLID (SPA-NAI-T02-SELNUM1)
                                            TO  BTPARA-SCRIPTID
-grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
+               MOVE    SPA-HOSPNUM         TO  BTPARA-HOSPNUM
                MOVE    BTPARA-REC          TO  MCPDATA-REC
                MOVE    "tbl_btpara"        TO  MCP-TABLE
                MOVE    "key3"              TO  MCP-PATHNAME
@@ -1282,7 +1288,7 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SPA-NAI-SKYYM       TO  SYS-3003-STYUKYMD (1:6)
            MOVE    "01"                TO  SYS-3003-STYUKYMD (7:2)
            MOVE    SYS-3003-STYUKYMD   TO  SYS-3003-EDYUKYMD
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  SYS-3003-HOSPNUM
            MOVE    SYS-3003-REC        TO  MCPDATA-REC
            PERFORM 900-SYSKANRI-READ-SEC
            IF      FLG-SYSKANRI        =   ZERO
@@ -1649,21 +1655,23 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *****************************************************************
        900-PTINF-READ-SEC         SECTION.
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  PTINF-HOSPNUM
            MOVE    PTINF-REC           TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "tbl_ptinf"         TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"         USING
+                                           MCPAREA
+                                           MCPDATA-REC
+                                           SPA-AREA
            IF      MCP-RC              =   ZERO
                MOVE    "DBFETCH"           TO  MCP-FUNC
                MOVE    "tbl_ptinf"         TO  MCP-TABLE
                MOVE    "key"               TO  MCP-PATHNAME
-grpsys         CALL "ORCDBMAIN" USING MCPAREA
-                                      MCPDATA-REC
-grpsys                                SPA-AREA
+               CALL    "ORCDBMAIN"         USING
+                                               MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
                IF      MCP-RC              =   ZERO
                    MOVE    MCPDATA-REC         TO  PTINF-REC
                    MOVE    ZERO                TO  FLG-PTINF
@@ -1692,16 +1700,18 @@ grpsys                                SPA-AREA
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "tbl_hknjainf"      TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"         USING
+                                           MCPAREA
+                                           MCPDATA-REC
+                                           SPA-AREA
            IF      MCP-RC              =   ZERO
                MOVE    "DBFETCH"           TO  MCP-FUNC
                MOVE    "tbl_hknjainf"      TO  MCP-TABLE
                MOVE    "key"               TO  MCP-PATHNAME
-grpsys         CALL "ORCDBMAIN" USING MCPAREA
-                                      MCPDATA-REC
-grpsys                                SPA-AREA
+               CALL    "ORCDBMAIN"         USING
+                                               MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
                IF      MCP-RC              =   ZERO
                    MOVE    ZERO                TO  FLG-HKNJAINF
                    MOVE    MCPDATA-REC         TO  HKNJAINF-REC
@@ -1725,14 +1735,15 @@ grpsys                                SPA-AREA
       *****************************************************************
        900-BTPARA-READ-SEC         SECTION.
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  BTPARA-HOSPNUM
            MOVE    BTPARA-REC          TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
            MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"         USING
+                                           MCPAREA
+                                           MCPDATA-REC
+                                           SPA-AREA
            IF      MCP-RC              =   ZERO
                MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
                MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
@@ -1756,9 +1767,10 @@ grpsys                            SPA-AREA
        900-BTPARA-READ-N-SEC          SECTION.
       *
            MOVE    "DBFETCH"           TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"         USING
+                                           MCPAREA
+                                           MCPDATA-REC
+                                           SPA-AREA
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC         TO  BTPARA-REC
                MOVE    ZERO                TO  FLG-BTPARA
@@ -1779,16 +1791,18 @@ grpsys                            SPA-AREA
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key10"             TO  MCP-PATHNAME
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"         USING
+                                           MCPAREA
+                                           MCPDATA-REC
+                                           SPA-AREA
            IF      MCP-RC              =   ZERO
                MOVE    "DBFETCH"           TO  MCP-FUNC
                MOVE    "tbl_syskanri"      TO  MCP-TABLE
                MOVE    "key10"             TO  MCP-PATHNAME
-grpsys         CALL "ORCDBMAIN" USING MCPAREA
-                                      MCPDATA-REC
-grpsys                                SPA-AREA
+               CALL    "ORCDBMAIN"         USING
+                                               MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
                IF      MCP-RC              =   ZERO
                    MOVE    ZERO            TO  FLG-SYSKANRI
                ELSE
@@ -1812,9 +1826,10 @@ grpsys                                SPA-AREA
        900-CLOSE-SEC               SECTION.
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"         USING
+                                           MCPAREA
+                                           MCPDATA-REC
+                                           SPA-AREA
       *
            .
        900-CLOSE-EXT.
@@ -1826,9 +1841,10 @@ grpsys                            SPA-AREA
        900-PUT-WINDOW              SECTION.
       *
            MOVE   "PUTWINDOW"       TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL   "ORCDBMAIN"       USING
+                                        MCPAREA
+                                        MCPDATA-REC
+                                        SPA-AREA
            .
        900-PUT-WINDOW-EXT.
            EXIT.

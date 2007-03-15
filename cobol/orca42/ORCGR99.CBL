@@ -330,14 +330,14 @@
                    MOVE    SPA-R01-PRTKANRI-TBL-GROUP
                                            TO  SHELLTBL-ARG2
       *     
-grpsys*            MOVE SPA-HOSPNUM TO -HOSPNUM
                    MOVE    SHELLTBL        TO  MCPDATA-REC
                    MOVE    "SHELL"         TO  MCP-FUNC
                    MOVE    "shell"         TO  MCP-TABLE
                    MOVE    "shell"         TO  MCP-PATHNAME
-grpsys             CALL "ORCDBMAIN" USING MCPAREA
-                                          MCPDATA-REC
-grpsys                                    SPA-AREA
+                   CALL    "ORCDBMAIN"     USING
+                                               MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
                END-IF
              END-IF
            END-IF
@@ -652,7 +652,7 @@ grpsys                                    SPA-AREA
                MOVE    "tbl_recekanri"     TO  WRK-MCP-TABLE
                MOVE    "key5"              TO  WRK-MCP-PATHNAME
            END-IF
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  RECE07-HOSPNUM
            MOVE    RECE07-REC          TO  MCPDATA-REC
            PERFORM 900-RECE07-INV-SEC
            IF      FLG-RECE07          =   ZERO
@@ -666,7 +666,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                    MOVE    "tbl_recekanri"     TO  WRK-MCP-TABLE
                    MOVE    "key6"              TO  WRK-MCP-PATHNAME
                    MOVE    "2"                 TO  RECE07-TEISYUTUSAKI
-grpsys*            MOVE SPA-HOSPNUM TO -HOSPNUM
+                   MOVE    SPA-HOSPNUM         TO  RECE07-HOSPNUM
                    MOVE    RECE07-REC          TO  MCPDATA-REC
                    PERFORM 900-RECE07-INV-SEC
                    IF      FLG-RECE07          =   ZERO
@@ -682,7 +682,7 @@ grpsys*            MOVE SPA-HOSPNUM TO -HOSPNUM
                    MOVE    "tbl_recekanri"     TO  WRK-MCP-TABLE
                    MOVE    "key11"             TO  WRK-MCP-PATHNAME
                    MOVE    "1"                 TO  RECE07-TEISYUTUSAKI
-grpsys*            MOVE SPA-HOSPNUM TO -HOSPNUM
+                   MOVE    SPA-HOSPNUM         TO  RECE07-HOSPNUM
                    MOVE    RECE07-REC          TO  MCPDATA-REC
                    PERFORM 900-RECE07-INV-SEC
                    IF      FLG-RECE07          =   ZERO
@@ -691,7 +691,7 @@ grpsys*            MOVE SPA-HOSPNUM TO -HOSPNUM
                    MOVE    "tbl_recekanri"     TO  WRK-MCP-TABLE
                    MOVE    "key11"             TO  WRK-MCP-PATHNAME
                    MOVE    "2"                 TO  RECE07-TEISYUTUSAKI
-grpsys*            MOVE SPA-HOSPNUM TO -HOSPNUM
+                   MOVE    SPA-HOSPNUM         TO  RECE07-HOSPNUM
                    MOVE    RECE07-REC          TO  MCPDATA-REC
                    PERFORM 900-RECE07-INV-SEC
                    IF      FLG-RECE07          =   ZERO
@@ -734,16 +734,18 @@ grpsys*            MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
            MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"         USING
+                                           MCPAREA
+                                           MCPDATA-REC
+                                           SPA-AREA
            IF      MCP-RC              =   ZERO
                MOVE    "DBFETCH"           TO  MCP-FUNC
                MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
                MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
-grpsys         CALL "ORCDBMAIN" USING MCPAREA
-                                      MCPDATA-REC
-grpsys                                SPA-AREA
+               CALL    "ORCDBMAIN"         USING
+                                               MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
                IF      MCP-RC              =   ZERO
                    MOVE    ZERO                TO  FLG-RECE07
                    MOVE    MCPDATA-REC         TO  RECE07-REC
@@ -768,9 +770,10 @@ grpsys                                SPA-AREA
        900-CLOSE-SEC               SECTION.
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"         USING
+                                           MCPAREA
+                                           MCPDATA-REC
+                                           SPA-AREA
       *
            .
        900-CLOSE-EXT.
@@ -782,9 +785,10 @@ grpsys                            SPA-AREA
        900-PUT-WINDOW              SECTION.
       *
            MOVE   "PUTWINDOW"       TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL   "ORCDBMAIN"       USING
+                                        MCPAREA
+                                        MCPDATA-REC
+                                        SPA-AREA
            .
        900-PUT-WINDOW-EXT.
            EXIT.
