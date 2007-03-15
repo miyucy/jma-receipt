@@ -374,11 +374,6 @@
       <width>1010</width>
       <height>550</height>
       <can_focus>True</can_focus>
-      <signal>
-	<name>switch_page</name>
-	<handler>switch_page</handler>
-	<last_modification_time>Mon, 18 Dec 2006 01:43:51 GMT</last_modification_time>
-      </signal>
       <show_tabs>True</show_tabs>
       <show_border>True</show_border>
       <tab_pos>GTK_POS_TOP</tab_pos>
