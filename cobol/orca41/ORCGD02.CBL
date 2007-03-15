@@ -583,9 +583,9 @@
              OR  ( WKSPA-PTID    =   SPA-NAI-PTID )
                MOVE    2           TO  SPA-GMN-CUR
            ELSE
-               MOVE    WKSPA-PTNUM TO  SPA-GMN-PTNUM
-               MOVE    WKSPA-PTID  TO  SPA-NAI-PTID
-               MOVE    WKSPA-NAME  TO  SPA-GMN-NAME
+               MOVE    WKSPA-PTNUM TO  D02-PTNUM
+               PERFORM 4100-PTNUM-CHK-SEC
+               MOVE    SPACE       TO  SPA-ERRCD
                MOVE    2           TO  SPA-GMN-CUR
            END-IF
       *
@@ -821,6 +821,7 @@
            PERFORM 4101-PTNUM-CHK-SEC
            IF    ( SPA-ERRCD           =   SPACE )
             AND  ( SPA-GMN-PTNUM  NOT  =   SPACE )
+            AND  ( FLG-END             =   ZERO  )
                IF    ( SPA-GMN-CHKLST-SEL  =   ZERO )
       *
                    INITIALIZE              WRK-KBNCD-G
@@ -993,14 +994,14 @@
            MOVE    SPTNUM-PTNUM    TO  SPA-GMN-PTNUM
                                        WRK-PTNUM
            IF    ( SPTNUM-RC       NOT =   ZERO )
-      *        IF    ( SPTNUM-RC       =   20 )
-      *            MOVE    SPA-GMN-PTNUM   TO  WRK-NAME
-      *            PERFORM 490-KENSAKU-SEC
-      *            GO  TO  4101-PTNUM-CHK-EXT
-      *        ELSE
+               IF    ( SPTNUM-RC       =   20 )
+                   MOVE    SPA-GMN-PTNUM   TO  WRK-NAME
+                   PERFORM 490-KENSAKU-SEC
+                   GO  TO  4101-PTNUM-CHK-EXT
+               ELSE
                    MOVE    "0002"      TO  SPA-ERRCD
                    MOVE    2           TO  SPA-GMN-CUR
-      *        END-IF
+               END-IF
            END-IF
       *
            IF    ( SPA-ERRCD       =   SPACE )
@@ -1240,12 +1241,20 @@
       *****************************************************************
        220-CLEAR-SEC                   SECTION.
       *
-           PERFORM 3101-SPASET-SEC
+           IF    ( SPA-GMN-SELNUM  NOT =   ZERO )
+            OR   ( SPA-GMN-PTNUM   NOT =   SPACE )
+               INITIALIZE              SPA-GMN-INPUT-AREA
+                                       SPA-NAI-INPUT-AREA
+                                       SPA-GMN-CHKLST-SEL
+               MOVE    2               TO   SPA-GMN-CUR
+           ELSE
+               PERFORM 3101-SPASET-SEC
       *
-           MOVE    "3%"            TO   WRK-DELKBNCD
-           PERFORM 410011-DEL-CK2001-SEC
-           IF    ( SPA-ERRCD       =   SPACE )
-               PERFORM 3101-EDIT-CHKLST-SEC
+               MOVE    "3%"            TO   WRK-DELKBNCD
+               PERFORM 410011-DEL-CK2001-SEC
+               IF    ( SPA-ERRCD       =   SPACE )
+                   PERFORM 3101-EDIT-CHKLST-SEC
+               END-IF
            END-IF
       *
            .
@@ -1548,6 +1557,8 @@
                MOVE    ZERO            TO  D02-CHKLST-ROWATTR
            END-IF
       *
+           MOVE    "blue"              TO  D02-LBLSRYYM-STYLE
+                                           D02-LBLNYUGAI-STYLE
            MOVE    SPA-GMN-LBLSRYYM    TO  D02-LBLSRYYM
            MOVE    SPA-GMN-LBLNYUGAI   TO  D02-LBLNYUGAI
            MOVE    SPA-GMN-SELNUM      TO  D02-SELNUM
