@@ -1884,7 +1884,8 @@
        3201-SRYYM-BODY-HEN-SEC     SECTION.
       *
       *    月遅れ分以外は処理抜ける
-           IF      TOKEI-SYOKBN    NOT =   "3"
+      *     IF      TOKEI-SYOKBN    NOT =   "3"
+           IF      TOKEI-SYOKBN    =   "1"
                MOVE    TOKEI-SRYYMFLG  TO  WRK-SRYYMFLG
                MOVE    SPACE           TO  CSV-SRYYM
                GO  TO  3201-SRYYM-BODY-HEN-EXT
