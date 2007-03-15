@@ -1716,6 +1716,7 @@
                                                        TO  IDX
                        END-IF
                    END-IF
+               END-IF
            END-PERFORM
       *
            IF      WRK-SELNUM          >   ZERO
