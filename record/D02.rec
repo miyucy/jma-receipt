@@ -7,9 +7,11 @@ D02	{
 			state	int;
 		};
 		LBLSRYYM	{
+			style		varchar(20);
 			value		varchar(30);
 		};
 		LBLNYUGAI	{
+			style		varchar(20);
 			value		varchar(20);
 		};
 		SELNUM	{
