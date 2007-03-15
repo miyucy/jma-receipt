@@ -795,7 +795,7 @@
            MOVE    ZERO                TO  FLG-KEIKA-GAI
            IF     (HCSET-KEIKAYMD  NOT =   SPACE )
       *        有効終了日＜経過措置日 は対象外
-               IF      (ISET-YUKOEDYMD     <   HCSET-KEIKAYMD)
+               IF      (ISET-YUKOEDYMD     <=  HCSET-KEIKAYMD)
                    MOVE    1               TO  FLG-KEIKA-GAI
                END-IF
            END-IF
@@ -1000,7 +1000,10 @@
                    MOVE    1               TO  FLG-OK
                END-IF
       *        経過措置日設定あり
-               IF     (HCSET-KEIKAYMD      NOT =   SPACE )
+               IF     (HCSET-KEIKAYMD      NOT =   SPACE )   AND
+                      (TNS-SRYCD (1:1)         =   "6"   )   AND
+                      (TNS-KEIKASOCHIYMD   NOT =   SPACE
+                                               AND ZERO  )
                    IF     (TNS-YUKOSTYMD       <=  HCSET-KEIKAYMD ) AND
                           (TNS-YUKOEDYMD       >=  HCSET-KEIKAYMD )
       *                経過措置日に有効
