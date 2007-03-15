@@ -1095,7 +1095,7 @@
            MOVE    SYS-2008-ZAITAKU    TO  SPA-GMN-ZAITAKU (1)
            PERFORM VARYING IDY FROM    1   BY  1
                    UNTIL   IDY >       SPA-GMN-ZAITAKU-MAX
-               IF      SPA-GMN-ZAITAKU =   SPA-GMN-ZAITAKUL (IDY)
+               IF      SPA-GMN-ZAITAKU (1) =   SPA-GMN-ZAITAKUL (IDY)
                    MOVE    SPA-GMN-ZAITAKULST (IDY)
                                        TO  SPA-GMN-ZAITAKU-G (1)
                    MOVE    SPA-GMN-ZAITAKU-MAX
@@ -1108,7 +1108,7 @@
            MOVE    SYS-2008-CHOUKI     TO  SPA-GMN-CHOUKI (1)
            PERFORM VARYING IDY FROM    1   BY  1
                    UNTIL   IDY >       SPA-GMN-CHOUKI-MAX
-               IF      SPA-GMN-CHOUKI  =   SPA-GMN-CHOUKIL (IDY)
+               IF      SPA-GMN-CHOUKI  (1) =   SPA-GMN-CHOUKIL (IDY)
                    MOVE    SPA-GMN-CHOUKILST (IDY)
                                        TO  SPA-GMN-CHOUKI-G (1)
                    MOVE    SPA-GMN-CHOUKI-MAX
