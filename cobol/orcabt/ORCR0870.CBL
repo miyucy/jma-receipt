@@ -59,7 +59,7 @@
       *  03.03.01    NACL-門脇    06/10/19  療養病棟レセコメント記載対応
       *  03.04.01    NACL-門脇    06/12/01  自賠責健保準拠対応
       *  03.04.02    NACL-門脇    07/01/12  リハビリ発症終了日対応
-      *  03.04.03    NACL-門脇    07/01/15  リハビリ手術日・急性憎悪日記載対応
+      *  03.04.03    NACL-門脇    07/01/15  リハビリ手術日・急性増悪日記載対応
       *  03.04.04    NACL-門脇    07/03/05  酸素計算式修正
       *****************************************************************
       *
@@ -1782,7 +1782,7 @@
                                TO  WRK-RECE85XX-NAME(IDX-RECE85 1)(31:4)
                  WHEN       2
                    MOVE    20  TO  WRK-RECE85XX-YUKOKETA(IDX-RECE85 1)
-                   MOVE    "脳血管疾患等リハ：急性憎悪　　　月　　日"
+                   MOVE    "脳血管疾患等リハ：急性増悪　　　月　　日"
                                TO  WRK-RECE85XX-NAME(IDX-RECE85 1)
                    MOVE    WRK-KYUSEIYMD(5:2)   TO  DAY-IDX2
                    MOVE    TBL-DAY(DAY-IDX2)
@@ -1827,7 +1827,7 @@
                                TO  WRK-RECE85XX-NAME(IDX-RECE85 1)(25:4)
                  WHEN       2
                    MOVE    17  TO  WRK-RECE85XX-YUKOKETA(IDX-RECE85 1)
-                   MOVE    "運動器リハ：急性憎悪　　　月　　日"
+                   MOVE    "運動器リハ：急性増悪　　　月　　日"
                                TO  WRK-RECE85XX-NAME(IDX-RECE85 1)
                    MOVE    WRK-KYUSEIYMD(5:2)   TO  DAY-IDX2
                    MOVE    TBL-DAY(DAY-IDX2)
@@ -1916,7 +1916,7 @@
                                TO  WRK-RECE85XX-NAME(IDX-RECE85 1)(27:4)
                  WHEN       2
                    MOVE    18  TO  WRK-RECE85XX-YUKOKETA(IDX-RECE85 1)
-                   MOVE    "難病患者リハ：急性憎悪　　　月　　日"
+                   MOVE    "難病患者リハ：急性増悪　　　月　　日"
                                TO  WRK-RECE85XX-NAME(IDX-RECE85 1)
                    MOVE    WRK-KYUSEIYMD(5:2)   TO  DAY-IDX2
                    MOVE    TBL-DAY(DAY-IDX2)
