@@ -1069,28 +1069,6 @@
                    END-IF
                END-PERFORM
            END-IF    
-      *         
-           MOVE    SYS-2008-ZAITAKU    TO  SPA-GMN-ZAITAKU
-           PERFORM VARYING IDY FROM    1   BY  1
-                   UNTIL   IDY >       SPA-GMN-ZAITAKU-MAX
-               IF      SPA-GMN-ZAITAKU =   SPA-GMN-ZAITAKUL (IDY)
-                   MOVE    SPA-GMN-ZAITAKULST (IDY)
-                                       TO  SPA-GMN-ZAITAKU-G
-                   MOVE    SPA-GMN-ZAITAKU-MAX
-                                       TO  IDY
-               END-IF
-           END-PERFORM
-      *
-           MOVE    SYS-2008-CHOUKI     TO  SPA-GMN-CHOUKI
-           PERFORM VARYING IDY FROM    1   BY  1
-                   UNTIL   IDY >       SPA-GMN-CHOUKI-MAX
-               IF      SPA-GMN-CHOUKI  =   SPA-GMN-CHOUKIL (IDY)
-                   MOVE    SPA-GMN-CHOUKILST (IDY)
-                                       TO  SPA-GMN-CHOUKI-G
-                   MOVE    SPA-GMN-CHOUKI-MAX
-                                       TO  IDY
-               END-IF
-           END-PERFORM
       *
            MOVE    SYS-2008-HKNJANUM-PRTKBN
                                        TO  SPA-GMN-HKNJANUM-PRTKBN
@@ -1113,6 +1091,33 @@
            MOVE    HKNJAINF-REC        TO  MCPDATA-REC
            PERFORM 900-HKNJAINF-READ-SEC
            MOVE    HKNJA-HKNJANAME     TO  SPA-GMN-HKNJANAME
+      *         
+           MOVE    SYS-2008-ZAITAKU    TO  SPA-GMN-ZAITAKU (1)
+           PERFORM VARYING IDY FROM    1   BY  1
+                   UNTIL   IDY >       SPA-GMN-ZAITAKU-MAX
+               IF      SPA-GMN-ZAITAKU =   SPA-GMN-ZAITAKUL (IDY)
+                   MOVE    SPA-GMN-ZAITAKULST (IDY)
+                                       TO  SPA-GMN-ZAITAKU-G (1)
+                   MOVE    SPA-GMN-ZAITAKU-MAX
+                                       TO  IDY
+               END-IF
+           END-PERFORM
+           MOVE    SPA-GMN-ZAITAKU-G (1)
+                                       TO  SPA-GMN-ZAITAKU-G (2)
+      *
+           MOVE    SYS-2008-CHOUKI     TO  SPA-GMN-CHOUKI (1)
+           PERFORM VARYING IDY FROM    1   BY  1
+                   UNTIL   IDY >       SPA-GMN-CHOUKI-MAX
+               IF      SPA-GMN-CHOUKI  =   SPA-GMN-CHOUKIL (IDY)
+                   MOVE    SPA-GMN-CHOUKILST (IDY)
+                                       TO  SPA-GMN-CHOUKI-G (1)
+                   MOVE    SPA-GMN-CHOUKI-MAX
+                                       TO  IDY
+               END-IF
+           END-PERFORM
+           MOVE    SPA-GMN-CHOUKI-G (1)
+                                       TO  SPA-GMN-CHOUKI-G (2)
+      *
            .
        3102-SPA-2008-HENSYU-EXT.
            EXIT.
@@ -1525,7 +1530,7 @@
                            ADD     1   TO  IDX
                            MOVE    RECE-PUTB-GRP-NO1
                                TO  SPA-NAI-BODYLIST-TGRP1-NO (IDXX IDX)
-                           IF      SPA-GMN-GRP1-NO-MAX <
+                           IF      SPA-GMN-GRP1-NO-MAX (IDXX)  <
                                SPA-NAI-BODYLIST-TGRP1-NO-9 (IDXX IDX)
                                MOVE    SPA-NAI-BODYLIST-TGRP1-NO-9
                                                            (IDXX IDX)
@@ -2607,7 +2612,8 @@
       *
                    MOVE    IDY     TO  SPA-GMN-BODYLIST-MAX (1)
                                        SPA-GMN-BODYLIST-MAX (2)
-               END-PERFORM     
+               END-PERFORM
+           ELSE     
                PERFORM VARYING IDZ FROM    1   BY  1
                        UNTIL   IDZ >       3
                        OR      IDY >=      WRK-CONS-BODYLIST-MAX
@@ -2699,7 +2705,7 @@
       *
            IF      SPA-GMN-HKNJANUM-PRTJYUN
                                            =   SPACE
-               IF      SPA-GMN-PRTJYUN1    =   "02"
+               IF      SPA-GMN-PRTJYUN1 (1)    =   "02"
                    CONTINUE
                ELSE 
                    MOVE    SPA-GMN-HKNJANUM-PRTJYUNLST (1)
@@ -3015,6 +3021,10 @@
       *****************************************************************
        41021-SYUBETU-PRTJYUN1-CHK-SEC   SECTION.
       *
+           IF      WRK-SELNUM2          =   ZERO
+               GO  TO  41021-SYUBETU-PRTJYUN1-CHK-EXT
+           END-IF
+      *
            IF      SPA-GMN-SYUBETU-PRTJYUN1 (WRK-PAGENO)
                                        =   SPACE
                CONTINUE
@@ -3083,6 +3093,10 @@
       *    印刷順指定・レセプト種別チェック
       *****************************************************************
        41021-SYUBETU-PRTJYUN2-CHK-SEC   SECTION.
+      *
+           IF      WRK-SELNUM2          =   ZERO
+               GO  TO  41021-SYUBETU-PRTJYUN2-CHK-EXT
+           END-IF
       *
            IF      SPA-GMN-SYUBETU-PRTJYUN2 (WRK-PAGENO)
                                            =   SPACE
@@ -3158,6 +3172,10 @@
       *    保険番号チェック処理
       *****************************************************************
        41021-HKNNUM-CHK-SEC           SECTION.
+      *
+           IF      WRK-SELNUM2          =   ZERO
+               GO  TO  41021-HKNNUM-CHK-EXT
+           END-IF
       *
            MOVE    SPACE           TO  SPA-GMN-SEIDONAME (WRK-PAGENO)
            MOVE    ZERO            TO  SPA-NAI-SELNUM3   (WRK-PAGENO)
@@ -4798,8 +4816,8 @@
                    UNTIL   IDXX    >       2
                    OR      SPA-ERRCD   NOT =   SPACE             
              PERFORM VARYING IDX FROM    1   BY  1
-                     UNTIL   IDX >       SPA-GMN-BODYLIST-MAX
-                     OR      SPA-ERRCD   NOT =   SPACE             
+                     UNTIL   IDX >       SPA-GMN-BODYLIST-MAX (IDXX)
+                     OR      SPA-ERRCD   NOT =   SPACE
       *        グループ２
                IF    ( SPA-GMN-PRTJYUN1 (IDXX) =   "01"  )
                AND   ( SPA-NAI-BODYLIST-TGRP2-NO (IDXX IDX)
