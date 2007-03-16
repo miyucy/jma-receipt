@@ -130,3 +130,5 @@
                 04  U02-B08-STATE   PIC S9(9)   BINARY.
               03  U02-B09S.
                 04  U02-B09S-STATE   PIC S9(9)   BINARY.
+              03  U02-B10S.
+                04  U02-B10S-STATE   PIC S9(9)   BINARY.

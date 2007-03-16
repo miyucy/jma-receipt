@@ -934,6 +934,8 @@
                                                SPA-P02KYOUTU
                                                SPA-P02SCRAREA
                                                P02
+      *    ＱＲデータ判定
+           PERFORM 3101-QRDATA-CHK-SEC
       *
       *    患者情報以外のセット
            IF      SPA-P02-SYORI       =   2
@@ -945,6 +947,37 @@
       *
            .
        310-SPA-SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ＱＲデータ処理
+      *****************************************************************
+       3101-QRDATA-CHK-SEC              SECTION.
+      *
+           INITIALIZE                      QRCDHKN-REC
+           MOVE    SPA-HOSPID          TO  QRCDHKN-HOSPID
+           MOVE    QRCDHKN-REC         TO  MCPDATA-REC
+           MOVE    "tbl_qrcdhkn"       TO  MCP-TABLE
+           MOVE    "key5"              TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_qrcdhkn"       TO  MCP-TABLE
+               MOVE    "key5"              TO  MCP-PATHNAME
+               PERFORM 900-QRCDHKN-READ-SEC
+           ELSE
+               MOVE    1                   TO  FLG-QRCDHKN
+               INITIALIZE                      QRCDHKN-REC
+           END-IF
+           MOVE    "tbl_qrcdhkn"       TO  MCP-TABLE
+           MOVE    "key5"              TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+           IF      FLG-QRCDHKN         =   ZERO
+               MOVE    1                   TO  SPA-QRFLG
+           ELSE
+               MOVE    ZERO                TO  SPA-QRFLG
+           END-IF
+           .
+       3101-QRDATA-CHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -2002,18 +2035,17 @@
            MOVE    SPA-WORK            TO  SPA-P02KYOUTU
       *
            IF      SPA-P02Q-MAX        =   ZERO
-               MOVE    "1023"              TO  SPA-ERRCD
+               MOVE    "B05"               TO  MCP-WIDGET
            ELSE
-      *
-               MOVE    "P02"               TO  SPA-MOTOPG
-               MOVE    "P02Q"              TO  SPA-SAKIPG
-      *
-               MOVE    "NEW"               TO  MCP-PUTTYPE
-               MOVE    "P02Q"              TO  MCP-WINDOW
                MOVE    "SELNUM"            TO  MCP-WIDGET
-               PERFORM 900-PUT-WINDOW
-               MOVE    1                   TO  FLG-END
            END-IF
+           MOVE    "P02"               TO  SPA-MOTOPG
+           MOVE    "P02Q"              TO  SPA-SAKIPG
+      *
+           MOVE    "NEW"               TO  MCP-PUTTYPE
+           MOVE    "P02Q"              TO  MCP-WINDOW
+           PERFORM 900-PUT-WINDOW
+           MOVE    1                   TO  FLG-END
            .
        49021-P02Q-SYORI-EXT.
            EXIT.

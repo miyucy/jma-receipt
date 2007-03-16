@@ -149,5 +149,8 @@ U02	{
 		B09S	{
 	           	state	int;
 		};
+		B10S	{
+	           	state	int;
+		};
 	};
 };

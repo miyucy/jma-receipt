@@ -84,3 +84,15 @@ path	key4 	{
 	};
 };
 
+path	key5 	{
+	DBSELECT	{
+		DECLARE tbl_qrcdhkn_key5_csr CURSOR FOR
+		SELECT *
+		FROM tbl_qrcdhkn
+			WHERE   HOSPID    =   :HOSPID
+			AND   DELKBN         <>  '1'
+			ORDER BY   REGISTID
+		;
+	};
+};
+

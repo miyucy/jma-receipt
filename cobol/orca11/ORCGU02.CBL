@@ -849,9 +849,42 @@
                MOVE    1                   TO  SPA-USERPG-MAX
                MOVE    SPA-GMN-USERPGLST (1)   TO  SPA-GMN-USERPG-G
            END-IF
+      *    ＱＲデータ判定
+           PERFORM 3101-QRDATA-CHK-SEC
       *
            .
        310-SPASET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ＱＲデータ処理
+      *****************************************************************
+       3101-QRDATA-CHK-SEC              SECTION.
+      *
+           INITIALIZE                      QRCDHKN-REC
+           MOVE    SPA-HOSPID          TO  QRCDHKN-HOSPID
+           MOVE    QRCDHKN-REC         TO  MCPDATA-REC
+           MOVE    "tbl_qrcdhkn"       TO  MCP-TABLE
+           MOVE    "key5"              TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_qrcdhkn"       TO  MCP-TABLE
+               MOVE    "key5"              TO  MCP-PATHNAME
+               PERFORM 900-QRCDHKN-READ-SEC
+           ELSE
+               MOVE    1                   TO  FLG-QRCDHKN
+               INITIALIZE                      QRCDHKN-REC
+           END-IF
+           MOVE    "tbl_qrcdhkn"       TO  MCP-TABLE
+           MOVE    "key5"              TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+           IF      FLG-QRCDHKN         =   ZERO
+               MOVE    1                   TO  SPA-QRFLG
+           ELSE
+               MOVE    ZERO                TO  SPA-QRFLG
+           END-IF
+           .
+       3101-QRDATA-CHK-EXT.
            EXIT.
       *****************************************************************
       *    予約，受付編集処理
@@ -5153,6 +5186,12 @@
            ELSE
                MOVE    WIDGET-INSENSITIVE  TO  U02-B09S-STATE
            END-IF
+      *    ＱＲ一覧
+           IF      SPA-QRFLG               =   ZERO
+               MOVE    WIDGET-INSENSITIVE  TO  U02-B10S-STATE
+           ELSE
+               MOVE    WIDGET-NORMAL       TO  U02-B10S-STATE
+           END-IF
       *
            .
        51O-GSRAUTH-EXT.
@@ -5376,7 +5415,7 @@
                    MOVE    "これ以上受付はできません。"
                                                 TO  SPA-ERRMSG(33:)
                WHEN    "0200"
-                   MOVE    "ＱＲデータはありません。"
+                   MOVE    "患者登録処理済みのＱＲデータはありません。"
                                                 TO  SPA-ERRMSG
       *
                WHEN    "K002"

@@ -2570,6 +2570,12 @@
            ELSE
                MOVE    WIDGET-NORMAL       TO  P02-B04-STATE
            END-IF
+      *    ＱＲ一覧
+           IF      SPA-QRFLG               =   ZERO
+               MOVE    WIDGET-INSENSITIVE  TO  P02-B12S-STATE
+           ELSE
+               MOVE    WIDGET-NORMAL       TO  P02-B12S-STATE
+           END-IF
       *    排他中更新不可
            IF      SPA-LOCK            =   ZERO
                MOVE    WIDGET-NORMAL       TO  P02-B12-STATE
