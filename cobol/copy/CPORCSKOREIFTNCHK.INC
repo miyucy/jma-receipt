@@ -30,25 +30,12 @@
       *  03.04.02    NACL-門脇    07/03/16  全国公費有り無しフラグ追加
       *                                     公費を含む場合の主保険の一部負
       *                                     担額２追加
-      *  03.04.03    NACL-門脇    07/04/01  高齢者・若人区分追加
-      *                                     年齢追加
-      *                                     若人区分追加
-      *                                     返却値に請求金額追加
-      *
-      *  03.05.01    NACL-藤原    07/04/19  グループ診療対応
-      *  03.05.02    NACL-門脇    07/12/03  県番号追加
-      *  04.02.01    NACL-門脇    08/04/01  就学前区分追加
-      *                                     軽減特例措置対象者区分追加
-      *                                     マル長公費ＩＤ追加
-      *  04.03.01    NACL-門脇    09/01/05  ７５歳到達月の特例区分追加
-      *                                     マル長のみ区分追加
-      *  04.07.01    NACL-門脇    13/11/11  減額（円）の対応
       ************************************************************
        01  ORCSKOREIFTNCHKAREA.
       *
       *入力値
       *    医療機関ＩＤ
-           03  LNK-KOREIFTNCHK-HOSPNUM      PIC 9(2).
+           03  LNK-KOREIFTNCHK-HOSPID       PIC X(24).
       *    患者ＩＤ
            03  LNK-KOREIFTNCHK-PTID         PIC 9(10).
       *    入外区分
@@ -71,26 +58,10 @@
            03  LNK-KOREIFTNCHK-GENGAKU-RITU PIC 9(03).
       *    減額（金額）
            03  LNK-KOREIFTNCHK-GENGAKU-KIN  PIC 9(07).
-      *    減額計算フラグ
-           03  LNK-KOREIFTNCHK-GENGAKUFLG   PIC 9(01).
       *    高額４回目以降
-           03  LNK-KOREIFTNCHK-KOHYONKAIME  PIC 9(01).
-      *    高齢者・若人区分
-           03  LNK-KOREIFTNCHK-NENREIKBN    PIC X(01).
-      *    年齢
-           03  LNK-KOREIFTNCHK-AGE          PIC 9(03).
-      *    県番号
-           03  LNK-KOREIFTNCHK-PREFNUM      PIC X(02).
-      *    就学前区分
-           03  LNK-KOREIFTNCHK-SYUGAKUKBN   PIC 9(01).
-      *    マル長公費ＩＤ
-           03  LNK-KOREIFTNCHK-KOHID-CYOKI  PIC 9(10).
-      *    ７５歳到達月の特例区分
-           03  LNK-KOREIFTNCHK-TOKU75       PIC 9(01).
-      *    マル長のみ区分
-           03  LNK-KOREIFTNCHK-CYOKINOMI    PIC 9(01).
-      *    所得区分
-           03  LNK-KOREIFTNCHK-SYOTOKUKBN   PIC 9(01).
+           03  LNK-KOREIFTNCHK-KOHYONKAIME  PIC X(01).
+      *    全国公費有り無しフラグ
+           03  LNK-KOREIFTNCHK-ZENKOHARI    PIC X(01).
       *
       *返却値
            03  LNK-KOREIFTNCHK-OUT-AREA.
@@ -100,9 +71,9 @@
              05 LNK-KOREIFTNCHK-KOHFTNGAKU  PIC 9(07).
       *公費を含む場合の主保険の一部負担額
              05 LNK-KOREIFTNCHK-ICHIBUGAKU  PIC 9(07).
-      *公費を含む場合の主保険の一部負担額（１円単位）（判定用）
+      *公費を含む場合の主保険の一部負担額２
              05 LNK-KOREIFTNCHK-ICHIBUGAKU2 PIC 9(07).
-      *入　：高齢者＋地方公費の請求金額
+      *入院：高齢者２割＋地方公費の請求金額
              05 LNK-KOREIFTNCHK-CHIHOUGAKU  PIC 9(07).
       *
       *復帰コード
