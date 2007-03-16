@@ -235,7 +235,7 @@
               ( WRK-PARA-STIDX     <=   "31")
                CONTINUE
            ELSE
-               MOVE    "削除開始日が誤りです"   TO  WRK-RECEERR
+               MOVE    "開始日が誤りです"   TO  WRK-RECEERR
                PERFORM 500-ERR-HENSYU-SEC
                GO  TO  110-PARA-HENSYU-EXT
            END-IF
@@ -243,14 +243,14 @@
               ( WRK-PARA-EDIDX     <=   "31")
                CONTINUE
            ELSE
-               MOVE    "削除終了日が誤りです"   TO  WRK-RECEERR
+               MOVE    "終了日が誤りです"   TO  WRK-RECEERR
                PERFORM 500-ERR-HENSYU-SEC
                GO  TO  110-PARA-HENSYU-EXT
            END-IF
            IF ( WRK-PARA-STIDX     <=    WRK-PARA-EDIDX)
                CONTINUE
            ELSE
-               MOVE    "削除開始日が削除終了日より後日付です"
+               MOVE    "開始日が終了日より後日付です"
                                    TO  WRK-RECEERR
                PERFORM 500-ERR-HENSYU-SEC
                GO  TO  110-PARA-HENSYU-EXT
