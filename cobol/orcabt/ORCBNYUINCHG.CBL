@@ -444,7 +444,7 @@
            MOVE    WRK-PARA-JOBID      TO  JOB-JOBID
            MOVE    WRK-PARA-SHELLID    TO  JOB-SHELLID
            MOVE    "ORCBCRENYUACCT"    TO  JOB-PGID
-           MOVE    "入院会計一括作成"  TO  JOB-SHELLMSG
+           MOVE    "入院会計一括置換"  TO  JOB-SHELLMSG
       *
            CALL    "ORCSJOB"               USING
                                            ORCSJOBKANRIAREA
