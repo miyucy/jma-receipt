@@ -48,6 +48,8 @@
                 04  P02-B12-STATE   PIC S9(9)   BINARY.
               03  P02-B05S.
                 04  P02-B05S-STATE   PIC S9(9)   BINARY.
+              03  P02-B12S.
+                04  P02-B12S-STATE   PIC S9(9)   BINARY.
               03  P02-NB2.
                 04  P02-PAGENO  PIC S9(9)   BINARY.
                 04  P02-FIXPAGE1.

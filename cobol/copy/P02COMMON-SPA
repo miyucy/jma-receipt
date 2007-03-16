@@ -166,9 +166,12 @@
       *    労災保険パラメタデータ
            03  SPA-RSPAR-FLG                PIC X(01).
       *
-      *   ＱＲ選択情報
-           03  SPA-QR-FLG                   PIC 9(01).
+      *    ＱＲ情報有無
+           03  SPA-QRFLG                    PIC 9(01).
+      *
+      *    ＱＲ選択情報
            03  SPA-QRDATA-AREA.
+               05  SPA-QR-FLG                  PIC 9(01).
                05  SPA-QR-SYORI                PIC X(01).
                05  SPA-QR-REGISTID             PIC 9(05).
                05  SPA-QR-REGISTYMD            PIC X(08).

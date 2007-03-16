@@ -37,6 +37,9 @@ P02	{
 		B05S	{
 	           	state	int;
 		};
+		B12S	{
+	           	state	int;
+		};
 		nb2	{
 			pageno	int;
 			FP1	{
