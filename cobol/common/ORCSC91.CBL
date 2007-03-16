@@ -1364,7 +1364,8 @@
       *
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL      (IDX         >   200 )  OR
-                              (SPA-GMN-INPUTCD (IDX)   =   SPACE)
+                             ((SPA-GMN-INPUTCD (IDX)   =   SPACE) AND
+                              (SPA-COM-INPUTCD (IDX)   =   SPACE))
       *@
              IF      (SPA-COM-HKNCOMBI (IDX)   =   "9999")
                CONTINUE
@@ -1533,8 +1534,8 @@
            MOVE    SPACE               TO  TENSUPLUS-REC
            INITIALIZE                      TENSUPLUS-REC
            MOVE    TNS-SRYCD           TO  TNSP-SRYCD
-           MOVE    TNS-YUKOSTYMD       TO  TNSP-YUKOSTYMD
-           MOVE    TNS-YUKOEDYMD       TO  TNSP-YUKOEDYMD
+           MOVE    SPA-SRYYMD          TO  TNSP-YUKOSTYMD
+           MOVE    SPA-SRYYMD          TO  TNSP-YUKOEDYMD
       *
            MOVE    TENSUPLUS-REC       TO  MCPDATA-REC
            MOVE    "tbl_tensuplus"     TO  MCP-TABLE
