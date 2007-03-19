@@ -4002,6 +4002,9 @@
                MOVE    WRK-CHOUKI      TO  WRK-RECE09-CHOUKI
                MOVE    WRK-ZAITAKU     TO  WRK-RECE09-ZAITAKU
                MOVE    WRK-KOUGAKU     TO  WRK-RECE09-KOUGAKU
+               IF      WRK-KOUGAKU     =   SPACE
+                       MOVE  "A"       TO  WRK-RECE09-KOUGAKU
+               END-IF
                MOVE    WRK-SRT-LAST    TO  WRK-RECE09-SRT-LAST
            END-IF
       *
