@@ -365,14 +365,14 @@
                    MOVE    SHELL-ARG2          TO  SHELLTBL-ARG2
                    MOVE    SHELL-ARG3          TO  SHELLTBL-ARG3
                    MOVE    SHELL-ARG4          TO  SHELLTBL-ARG4
-grpsys*            MOVE SPA-HOSPNUM TO -HOSPNUM
                    MOVE    SHELLTBL            TO  MCPDATA-REC
                    MOVE    "SHELL"             TO  MCP-FUNC
                    MOVE    "shell"             TO  MCP-TABLE
                    MOVE    "shell"             TO  MCP-PATHNAME
-grpsys             CALL "ORCDBMAIN" USING MCPAREA
-                                          MCPDATA-REC
-grpsys                                    SPA-AREA
+                   CALL    "ORCDBMAIN"         USING
+                                                   MCPAREA
+                                                   MCPDATA-REC
+                                                   SPA-AREA
                    MOVE    1                   TO  FLG-END
                    MOVE    SPACE               TO  SPA-MOTOPG
                    MOVE    SPACE               TO  SPA-GMN-KBN
@@ -815,9 +815,10 @@ grpsys                                    SPA-AREA
        900-PUT-WINDOW              SECTION.
       *
            MOVE   "PUTWINDOW"                   TO  MCP-FUNC.
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL   "ORCDBMAIN"      USING
+                                       MCPAREA
+                                       MCPDATA-REC
+                                       SPA-AREA
       *
        900-PUT-WINDOW-EXT.
            EXIT.
@@ -1346,7 +1347,8 @@ grpsys                            SPA-AREA
                          NOT  AT  END
                            IF  EIE01-REC(1:8)  NOT =  "SRYYM***"  AND
       *½¤Àµ/*³«»Ï*03.06.05*********************************************
-                                                      "HOSPID**"
+      ********************                            "HOSPID**"
+                                                      "HOSPNUM*"
       *½¤Àµ/*½ªÎ»*03.06.05*********************************************
                                MOVE    EIE01-REC TO  WK-TBL-MSG-B (IDX1)
                                MOVE    IDX1      TO  SPA-GMN-MAX-B
@@ -1443,10 +1445,12 @@ grpsys                            SPA-AREA
                (WK-TBL-MSG-KBN   = "T")
                PERFORM VARYING IDX1  FROM  1  BY 1
                        UNTIL   IDX1  >     900
-                   IF  WK-TBL-MSG-C (IDX1)(1:6)   =   "HOSPID"
+      *************IF  WK-TBL-MSG-C (IDX1)(1:6)   =   "HOSPID"
+                   IF  WK-TBL-MSG-C (IDX1)(1:7)   =   "HOSPNUM"
                        MOVE    SPACE                 TO  EIE01-REC
                        MOVE    WK-TBL-MSG-C (IDX1)   TO  EIE01-REC
-                       MOVE    "HOSPID**"            TO  EIE01-REC(1:8)
+      *****************MOVE    "HOSPID**"            TO  EIE01-REC(1:8)
+                       MOVE    "HOSPNUM*"            TO  EIE01-REC(1:8)
                        WRITE   EIE01-REC
                        MOVE    901                   TO  IDX1
                    END-IF

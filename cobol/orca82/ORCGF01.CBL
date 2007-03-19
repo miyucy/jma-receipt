@@ -630,9 +630,10 @@
        900-PUT-WINDOW              SECTION.
       *
            MOVE   "PUTWINDOW"                   TO  MCP-FUNC.
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL   "ORCDBMAIN"                   USING
+                                                    MCPAREA
+                                                    MCPDATA-REC
+                                                    SPA-AREA
       *
        900-PUT-WINDOW-EXT.
            EXIT.
@@ -710,14 +711,14 @@ grpsys                            SPA-AREA
                MOVE    SHELL-ARG4        TO  SHELLTBL-ARG4
                MOVE    SHELL-ARG5        TO  SHELLTBL-ARG5
                MOVE    SHELL-ARG6        TO  SHELLTBL-ARG6
-grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    SHELLTBL          TO  MCPDATA-REC
                MOVE    "SHELL"           TO  MCP-FUNC
                MOVE    "shell"           TO  MCP-TABLE
                MOVE    "shell"           TO  MCP-PATHNAME
-grpsys         CALL "ORCDBMAIN" USING MCPAREA
-                                      MCPDATA-REC
-grpsys                                SPA-AREA
+               CALL    "ORCDBMAIN"       USING
+                                             MCPAREA
+                                             MCPDATA-REC
+                                             SPA-AREA
            ELSE
                MOVE    SPACE             TO  SHELL-KBEN
                PERFORM VARYING IDX1  FROM  1  BY 1
@@ -744,14 +745,14 @@ grpsys                                SPA-AREA
                        MOVE    SHELL-ARG4        TO  SHELLTBL-ARG4
                        MOVE    SHELL-ARG5        TO  SHELLTBL-ARG5
                        MOVE    SHELL-ARG6        TO  SHELLTBL-ARG6
-grpsys*                MOVE SPA-HOSPNUM TO -HOSPNUM
                        MOVE    SHELLTBL          TO  MCPDATA-REC
                        MOVE    "SHELL"           TO  MCP-FUNC
                        MOVE    "shell"           TO  MCP-TABLE
                        MOVE    "shell"           TO  MCP-PATHNAME
-grpsys                 CALL "ORCDBMAIN" USING MCPAREA
-                                              MCPDATA-REC
-grpsys                                        SPA-AREA
+                       CALL    "ORCDBMAIN"       USING
+                                                     MCPAREA
+                                                     MCPDATA-REC
+                                                     SPA-AREA
                    END-IF
                END-PERFORM
                INITIALIZE                ORCSMKPASSAREA
@@ -771,14 +772,14 @@ grpsys                                        SPA-AREA
                MOVE    SHELL-ARG4        TO  SHELLTBL-ARG4
                MOVE    SHELL-ARG5        TO  SHELLTBL-ARG5
                MOVE    SHELL-ARG6        TO  SHELLTBL-ARG6
-grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    SHELLTBL          TO  MCPDATA-REC
                MOVE    "SHELL"           TO  MCP-FUNC
                MOVE    "shell"           TO  MCP-TABLE
                MOVE    "shell"           TO  MCP-PATHNAME
-grpsys         CALL "ORCDBMAIN" USING MCPAREA
-                                      MCPDATA-REC
-grpsys                                SPA-AREA
+               CALL    "ORCDBMAIN"       USING
+                                             MCPAREA
+                                             MCPDATA-REC
+                                             SPA-AREA
            END-IF.
       *
        T-000-WRITABLE-EXT.
