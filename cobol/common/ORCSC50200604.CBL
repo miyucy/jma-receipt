@@ -176,7 +176,7 @@
            COPY     "CMSANSOTBL.INC".
       *
       *    保険別算定履歴テーブル
-           COPY   "CMSANTEITBL.INC".
+      *D   COPY   "CMSANTEITBL.INC".
       *
       *****************************************************************
       *    ファイルレイアウト
