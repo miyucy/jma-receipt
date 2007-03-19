@@ -113,6 +113,7 @@
            03  TBL-HKTSANTEI-DATA-G        OCCURS   600.
                05  TBL-HKTSRYCD            PIC X(09).
                05  TBL-SANTEIKBN           PIC X(01).
+               05  TBL-KENTAIKBN           PIC X(01).
       *
       *    保存ＳＰＡ領域ワーク
        01  HZN-SCR-REC.
@@ -615,6 +616,7 @@
                ADD     1                   TO  IDX-H
                MOVE    HKTSANTEI-SRYCD     TO  TBL-HKTSRYCD (IDX-H)
                MOVE    HKTSANTEI-SANTEIKBN TO  TBL-SANTEIKBN (IDX-H)
+               MOVE    HKTSANTEI-KENTAIKBN TO  TBL-KENTAIKBN (IDX-H)
                MOVE    "tbl_hktsantei"     TO  MCP-TABLE
                MOVE    "key2"              TO  MCP-PATHNAME
                PERFORM 910-HKTSANTEI-READ-SEC
@@ -714,6 +716,7 @@
        20021-SRYCD-CHECK-SEC            SECTION.
       *
            MOVE    ZERO                TO  FLG-CHK2
+           MOVE    ZERO                TO  FLG-CHK3
            PERFORM VARYING     IDX-H    FROM    1   BY  1
                    UNTIL      (IDX-H    >  600   )  OR
                               (TBL-HKTSRYCD(IDX-H) =   SPACE)
@@ -722,9 +725,28 @@
                    IF      TBL-SANTEIKBN (IDX-H)   =   "1"
                        MOVE    2               TO  FLG-CHK2
                    END-IF
+                   IF      TBL-KENTAIKBN (IDX-H)    =   "1"
+                       MOVE    1               TO  FLG-CHK3
+                   END-IF
                    MOVE    600             TO  IDX-H
                END-IF
            END-PERFORM
+      *
+      *    外来診療料で上の行が検体コード尿の場合のみ対象
+           IF      FLG-CHK3            =   1
+               IF    (TBL-KANRICD (IDX)    =   "001")  AND
+                     (FLG-CHK2             =   1    )
+                   IF     (IDX-Z               >   1  )  AND
+                          (SPA-COM-INPUTCD (IDX-Z - 1 )
+                                               =   "160138910" )
+                       MOVE    1               TO  FLG-CHK2
+                   ELSE
+                       MOVE    ZERO            TO  FLG-CHK2
+                   END-IF
+               ELSE
+                   MOVE    ZERO                TO  FLG-CHK3
+               END-IF
+           END-IF
       *
       *    包括コード
            IF      FLG-CHK2            =   1
@@ -758,11 +780,17 @@
       *
            MOVE    ZERO                TO  FLG-CHK3
            EVALUATE    SPA-COM-SRYKBN (IDX-Z)(1:1)
-      *?       投薬（外来はチェックなし）
-      *        WHEN    "2"
-      *            IF      WRK-HKTKBN20    =   1
-      *                MOVE    1           TO  FLG-CHK3
-      *?           END-IF
+      *        投薬
+               WHEN    "2"
+                   IF      SPA-NYUGAIKBN       =   "1"
+      *                入院
+                       IF      WRK-HKTKBN20    =   1
+                           MOVE    1           TO  FLG-CHK3
+                       END-IF
+                   ELSE
+      *                外来
+                       PERFORM 200221-SRYSYUKBN-HEN-SEC
+                   END-IF
                WHEN    "3"
                    IF      WRK-HKTKBN30    =   1
                        MOVE    1           TO  FLG-CHK3
@@ -823,6 +851,40 @@
            END-IF
            .
        20022-SRYKBN-CHECK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    外来の投薬包括処理
+      *****************************************************************
+       200221-SRYSYUKBN-HEN-SEC         SECTION.
+      *
+           IF      SPA-COM-SRYSYUKBN(IDX-Z)    =   SPACE
+                                               OR  "210"
+                                               OR  "220"
+                                               OR  "230"
+                                               OR  "211"
+                                               OR  "221"
+                                               OR  "231"
+      *        診療種別を包括剤に変更する
+               PERFORM VARYING     IDX-Z2  FROM    IDX-Z  BY  -1
+                       UNTIL      (IDX-Z2  <   1   )
+                   IF     (IDX-Z           NOT =   IDX-Z2  )  AND
+                          (SPA-COM-ZAIEND (IDX-Z2) =   "1" )
+                       MOVE    1                   TO  IDX-Z2
+                   ELSE
+                       IF      SPA-GMN-INPUTCD (IDX)(1:1)  =   "."
+                           MOVE    "3"             TO  SPA-GMN-INPUTCD
+                                                        (IDX)(4:1)
+                       END-IF
+                       MOVE    "3"                 TO  SPA-COM-SRYSYUKBN
+                                                        (IDX)(3:1)
+                   END-IF
+               END-PERFORM
+           ELSE
+               MOVE    1                   TO  FLG-CHK3
+           END-IF
+           .
+       200221-SRYSYUKBN-HEN-EXT.
            EXIT.
       *
       *****************************************************************
@@ -921,6 +983,7 @@
        30021-SRYCD-CHECK-SEC         SECTION.
       *
            MOVE    ZERO                TO  FLG-CHK2
+           MOVE    ZERO                TO  FLG-CHK3
            PERFORM VARYING     IDX-H    FROM    1   BY  1
                    UNTIL      (IDX-H    >  600   )  OR
                               (TBL-HKTSRYCD(IDX-H) =   SPACE)
@@ -929,9 +992,28 @@
                    IF      TBL-SANTEIKBN (IDX-H)   =   "1"
                        MOVE    2               TO  FLG-CHK2
                    END-IF
+                   IF      TBL-KENTAIKBN (IDX-H)    =   "1"
+                       MOVE    1               TO  FLG-CHK3
+                   END-IF
                    MOVE    600             TO  IDX-H
                END-IF
            END-PERFORM
+      *
+      *    外来診療料で上の行が検体コード尿の場合のみ対象
+           IF      FLG-CHK3            =   1
+               IF    (TBL-KANRICD (IDX)    =   "001")  AND
+                     (FLG-CHK2             =   1    )
+                   IF     (IDX-Z               >   1  )  AND
+                          (SPA-COM-INPUTCD (IDX-Z - 1 )
+                                               =   "160138910" )
+                       MOVE    1               TO  FLG-CHK2
+                   ELSE
+                       MOVE    ZERO            TO  FLG-CHK2
+                   END-IF
+               ELSE
+                   MOVE    ZERO                TO  FLG-CHK3
+               END-IF
+           END-IF
       *
       *    包括コード
            IF      FLG-CHK2            =   2

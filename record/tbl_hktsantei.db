@@ -4,6 +4,7 @@ tbl_hktsantei {
 	YUKOEDYMD	  		char(8);
 	SRYCD				char(9);
 	SANTEIKBN			char(1);
+	KENTAIKBN			char(1);
 	TERMID  			varchar(16);
 	OPID    			varchar(16);
 	CREYMD  			char(8);
