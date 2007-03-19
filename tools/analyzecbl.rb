@@ -9,7 +9,7 @@ $all_modules=[]
 $all_schemas=[]
 
 $orca_schemas=[]
-Find.find ('./record') {|f|
+Find.find('./record') {|f|
 	if  f=~/(tbl_|query_|view_)(.*).db$/
 	   $orca_schemas.push(($1 + $2).upcase)  
 	end
@@ -88,7 +88,7 @@ def analyze_module(name,file)
 
 	modules.each {|m|
 		if ($all_modules.index(m) == nil && IGNORED_MODULES.split(/\|/).index(m) == nil)
-			Find.find ('./cobol') {|f|
+			Find.find('./cobol') {|f|
 				if  f=~/#{m}.CBL$/
 					File.open(f){|y|
 						fname = name + '->' + m
