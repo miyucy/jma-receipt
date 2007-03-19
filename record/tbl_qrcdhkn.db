@@ -90,6 +90,7 @@ path	key5 	{
 		SELECT *
 		FROM tbl_qrcdhkn
 			WHERE   HOSPID    =   :HOSPID
+			AND   MOD_FLG        <>  '1'
 			AND   DELKBN         <>  '1'
 			ORDER BY   REGISTID
 		;
