@@ -223,7 +223,7 @@
       *    ¹ñÊÝ
       *----(00.00.01)--UPD-START---
            PERFORM VARYING IDY     FROM    2   BY  1
-                   UNTIL   IDY     >   21
+                   UNTIL   IDY     >   SPA-GMN-PAGE-MAX
            PERFORM VARYING IDX     FROM    1   BY  1
                    UNTIL   IDX     >   36
                    OR      SPA-GMN-TSYURUINAME(IDY IDX) =  SPACE
