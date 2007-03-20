@@ -2548,6 +2548,11 @@
                PERFORM 970-PTNYUINRRK-READ-SEC
                IF  (FLG-PTNYUINRRK     =   ZERO)   AND
                    (PTNYUINRRK-TOKUTEI-KBN  =   SPACE)
+                IF (SPA-NAI-SRYYM      =  PTNYUINRRK-TENSTUYMD(1:6)) AND
+                   (PTNYUINRRK-TENSTUYMD(7:2)  =  "01")   AND
+                   (PTNYUINRRK-TAIINYMD(7:2)   =  "99")
+                    CONTINUE
+                ELSE
                    INITIALIZE                      SYSKANRI-REC
                    MOVE    "5001"              TO  SYS-KANRICD
                    MOVE    PTNYUINRRK-BTUNUM   TO  SYS-KBNCD
@@ -2599,6 +2604,7 @@
                      "病棟の情報が取得できません。確認してください。"
                                        TO      SPA-GMN-KEIKOKU
                    END-IF
+                END-IF
                END-IF
            ELSE
                INITIALIZE                  PTNYUINRRK-REC
