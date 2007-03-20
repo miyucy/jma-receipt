@@ -1,4 +1,5 @@
 CREATE TABLE tbl_uketuke (
+    hospid character(24) NOT NULL,
     ukeymd character(8) NOT NULL,
     ukeid numeric(5,0) NOT NULL,
     uketime character(6),
@@ -19,10 +20,11 @@ CREATE TABLE tbl_uketuke (
     opid character varying(16),
     creymd character(8),
     upymd character(8),
-    uphms character(6),
-    hospnum numeric(2,0) NOT NULL
+    uphms character(6)
 );
 
 ALTER TABLE ONLY tbl_uketuke
-    ADD CONSTRAINT tbl_uketuke_primary_key PRIMARY KEY (hospnum, ukeymd, ukeid);
+    ADD CONSTRAINT tbl_uketuke_primary_key PRIMARY KEY (hospid, ukeymd, ukeid);
+
+COMMENT ON TABLE tbl_uketuke IS 'ºı…’';
 

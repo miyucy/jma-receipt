@@ -7,7 +7,7 @@ CREATE TABLE tbl_pgkanri (
     updateflg character(1),
     restartflg character(1),
     installdir character varying(256),
-    comment character varying(400),
+    "comment" character varying(400),
     termid character varying(32),
     opid character varying(16),
     creymd character(8),
@@ -17,4 +17,6 @@ CREATE TABLE tbl_pgkanri (
 
 ALTER TABLE ONLY tbl_pgkanri
     ADD CONSTRAINT tbl_pgkanri_primary_key PRIMARY KEY (debianversion, systemversion, pgno);
+
+COMMENT ON TABLE tbl_pgkanri IS 'プログラム管理';
 

@@ -13,13 +13,11 @@ CREATE TABLE tbl_prtdata (
     prtflg character(1) NOT NULL,
     sitekbn character(1) DEFAULT '0'::bpchar NOT NULL,
     prtnm character(16) DEFAULT ' '::bpchar NOT NULL,
-    prtdata character varying(20000),
-    hospnum numeric(2,0) NOT NULL,
-    tbl_uuid character(36) NOT NULL,
-    gyoumu_cd numeric(3,0),
-    creymd character varying(8)
+    prtdata character varying(20000)
 );
 
 ALTER TABLE ONLY tbl_prtdata
-    ADD CONSTRAINT tbl_prtdata_primary_key PRIMARY KEY (hospnum, tbl_key, rennum, tbl_group, tbl_uuid, shori_rennum, page);
+    ADD CONSTRAINT tbl_prtdata_primary_key PRIMARY KEY (tbl_key, rennum, tbl_group, shori_rennum, page);
+
+COMMENT ON TABLE tbl_prtdata IS '°õºþ¥Ç¡¼¥¿';
 

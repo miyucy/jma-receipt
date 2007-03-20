@@ -1,4 +1,5 @@
 CREATE TABLE tbl_kyuseirrk (
+    hospid character(24) NOT NULL,
     ptid numeric(10,0) NOT NULL,
     chgymd character(8) NOT NULL,
     kananame character varying(100),
@@ -8,10 +9,11 @@ CREATE TABLE tbl_kyuseirrk (
     opid character varying(16),
     creymd character(8),
     upymd character(8),
-    uphms character(6),
-    hospnum numeric(2,0) NOT NULL
+    uphms character(6)
 );
 
 ALTER TABLE ONLY tbl_kyuseirrk
-    ADD CONSTRAINT tbl_kyuseirrk_primary_key PRIMARY KEY (hospnum, ptid, chgymd);
+    ADD CONSTRAINT tbl_kyuseirrk_primary_key PRIMARY KEY (hospid, ptid, chgymd);
+
+COMMENT ON TABLE tbl_kyuseirrk IS 'µìÀ«ÍúÎò';
 

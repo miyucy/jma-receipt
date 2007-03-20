@@ -1,4 +1,5 @@
 CREATE TABLE tbl_inputcd (
+    hospid character(24) NOT NULL,
     cdsyu character(1) NOT NULL,
     inputcd character(20) NOT NULL,
     srykbn character(2),
@@ -9,12 +10,13 @@ CREATE TABLE tbl_inputcd (
     opid character varying(16),
     creymd character(8),
     upymd character(8),
-    uphms character(6),
-    hospnum numeric(2,0) NOT NULL
+    uphms character(6)
 );
 
-ALTER TABLE ONLY tbl_inputcd
-    ADD CONSTRAINT tbl_inputcd_primary_key PRIMARY KEY (hospnum, cdsyu, inputcd);
+CREATE INDEX idx_inputcd_key2 ON tbl_inputcd USING btree (srycd, hospid);
 
-CREATE INDEX idx_inputcd_key2 ON tbl_inputcd USING btree (srycd, hospnum);
+ALTER TABLE ONLY tbl_inputcd
+    ADD CONSTRAINT tbl_inputcd_primary_key PRIMARY KEY (hospid, cdsyu, inputcd);
+
+COMMENT ON TABLE tbl_inputcd IS '入力コード';
 

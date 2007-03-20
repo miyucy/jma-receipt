@@ -400,10 +400,11 @@ CREATE TABLE tbl_lock (
     locktable_flg47 character(1),
     locktable_flg48 character(1),
     locktable_flg49 character(1),
-    locktable_flg50 character(1),
-    hospnum numeric(2,0) NOT NULL
+    locktable_flg50 character(1)
 );
 
 ALTER TABLE ONLY tbl_lock
-    ADD CONSTRAINT tbl_lock_primary_key PRIMARY KEY (hospnum, lock_termid);
+    ADD CONSTRAINT tbl_lock_pkey PRIMARY KEY (lock_termid);
+
+COMMENT ON TABLE tbl_lock IS '排他制御管理';
 

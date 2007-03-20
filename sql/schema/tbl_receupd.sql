@@ -1,4 +1,5 @@
 CREATE TABLE tbl_receupd (
+    hospid character(24) NOT NULL,
     ptid numeric(10,0) NOT NULL,
     nyugaikbn character(1) NOT NULL,
     sryka character(2) NOT NULL,
@@ -21,12 +22,13 @@ CREATE TABLE tbl_receupd (
     opid character varying(16),
     creymd character(8),
     upymd character(8),
-    uphms character(6),
-    hospnum numeric(2,0) NOT NULL
+    uphms character(6)
 );
 
-ALTER TABLE ONLY tbl_receupd
-    ADD CONSTRAINT tbl_receupd_primary_key PRIMARY KEY (hospnum, ptid, nyugaikbn, sryka, sryym, hknkbn, hknkbn2);
+CREATE INDEX idx_receupd_upymd ON tbl_receupd USING btree (hospid, upymd, nyugaikbn);
 
-CREATE INDEX idx_receupd_upymd ON tbl_receupd USING btree (hospnum, upymd, nyugaikbn);
+ALTER TABLE ONLY tbl_receupd
+    ADD CONSTRAINT tbl_receupd_pkey PRIMARY KEY (hospid, ptid, nyugaikbn, sryka, sryym, hknkbn, hknkbn2);
+
+COMMENT ON TABLE tbl_receupd IS 'レセプト作成管理';
 

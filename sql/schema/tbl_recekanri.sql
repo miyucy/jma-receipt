@@ -33,13 +33,13 @@ CREATE TABLE tbl_recekanri (
     zaitaku_kbn character(1),
     chouki_kbn character(1),
     srt_last character(1),
-    kougaku_ten numeric(7,0) DEFAULT 0,
-    hospnum numeric(2,0) NOT NULL,
-    prtkbn character(1)
+    kougaku_ten numeric(7,0) DEFAULT 0
 );
 
-ALTER TABLE ONLY tbl_recekanri
-    ADD CONSTRAINT tbl_recekanri_primary_key PRIMARY KEY (hospnum, prtid, syokbn, creymd, crehms, teisyutusaki, sryka, prefkbn_srt, hknjanum_srt, hknjanum, recesyubetu, recesyubetu_srt, zaitaku, chouki);
+CREATE INDEX idx_recekanri_sryym ON tbl_recekanri USING btree (sryym);
 
-CREATE INDEX idx_recekanri_sryym ON tbl_recekanri USING btree (hospnum, sryym);
+ALTER TABLE ONLY tbl_recekanri
+    ADD CONSTRAINT tbl_recekanri_primary_key PRIMARY KEY (prtid, syokbn, creymd, crehms, teisyutusaki, sryka, prefkbn_srt, hknjanum_srt, hknjanum, recesyubetu, recesyubetu_srt, zaitaku, chouki);
+
+COMMENT ON TABLE tbl_recekanri IS 'レセプト管理';
 

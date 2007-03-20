@@ -12,3 +12,5 @@ CREATE TABLE tbl_kensasort (
 ALTER TABLE ONLY tbl_kensasort
     ADD CONSTRAINT tbl_kensasort_primary_key PRIMARY KEY (knsbunrui, srycd);
 
+COMMENT ON TABLE tbl_kensasort IS '∏°∫∫ ¨Œ‡';
+

@@ -12,3 +12,5 @@ CREATE TABLE tbl_sskijyo (
 ALTER TABLE ONLY tbl_sskijyo
     ADD CONSTRAINT tbl_sskijyo_primary_key PRIMARY KEY (syojyoucd);
 
+COMMENT ON TABLE tbl_sskijyo IS '¾É¾õÁ¼ÃÖµ¡½ø';
+

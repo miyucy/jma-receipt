@@ -11,10 +11,11 @@ CREATE TABLE tbl_btpara (
     opid character varying(16),
     creymd character(8),
     upymd character(8),
-    uphms character(6),
-    hospnum numeric(2,0) NOT NULL
+    uphms character(6)
 );
 
 ALTER TABLE ONLY tbl_btpara
-    ADD CONSTRAINT tbl_btpara_primary_key PRIMARY KEY (hospnum, shellid, run_opid, dsp_rennum, rennum);
+    ADD CONSTRAINT tbl_btpara_primary_key PRIMARY KEY (shellid, run_opid, dsp_rennum, rennum);
+
+COMMENT ON TABLE tbl_btpara IS 'バッチ連係パラメタ';
 

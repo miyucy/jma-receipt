@@ -13,10 +13,11 @@ CREATE TABLE tbl_chktrd (
     opid character varying(16),
     creymd character(8),
     upymd character(8),
-    uphms character(6),
-    hospnum numeric(2,0) NOT NULL
+    uphms character(6)
 );
 
 ALTER TABLE ONLY tbl_chktrd
-    ADD CONSTRAINT tbl_chktrd_primary_key PRIMARY KEY (hospnum, chkkbn, srycd, yukostymd, yukoedymd, cdkbn, rennum);
+    ADD CONSTRAINT tbl_chktrd_primary_key PRIMARY KEY (chkkbn, srycd, yukostymd, yukoedymd, cdkbn, rennum);
+
+COMMENT ON TABLE tbl_chktrd IS 'チェック3';
 

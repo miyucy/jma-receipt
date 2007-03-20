@@ -1,4 +1,5 @@
 CREATE TABLE tbl_userbyomei (
+    hospid character(24) NOT NULL,
     cdsyu character(1) NOT NULL,
     byomeiinputcd character varying(20) NOT NULL,
     bunruicd character(3),
@@ -42,10 +43,11 @@ CREATE TABLE tbl_userbyomei (
     opid character varying(16),
     creymd character(8),
     upymd character(8),
-    uphms character(6),
-    hospnum numeric(2,0) NOT NULL
+    uphms character(6)
 );
 
 ALTER TABLE ONLY tbl_userbyomei
-    ADD CONSTRAINT tbl_userbyomei_primary_key PRIMARY KEY (hospnum, cdsyu, byomeiinputcd);
+    ADD CONSTRAINT tbl_userbyomei_primary_key PRIMARY KEY (hospid, cdsyu, byomeiinputcd);
+
+COMMENT ON TABLE tbl_userbyomei IS '¼«±¡ÉÂÌ¾';
 

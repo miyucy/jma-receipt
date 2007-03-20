@@ -5,10 +5,11 @@ CREATE TABLE tbl_teikirrk (
     opid character varying(16),
     creymd character varying(8),
     upymd character varying(8),
-    uphms character varying(6),
-    hospnum numeric(2,0) NOT NULL
+    uphms character varying(6)
 );
 
 ALTER TABLE ONLY tbl_teikirrk
-    ADD CONSTRAINT tbl_teikirrk_primary_key PRIMARY KEY (hospnum, sryym, kbt);
+    ADD CONSTRAINT tbl_teikirrk_primary_key PRIMARY KEY (sryym, kbt);
+
+COMMENT ON TABLE tbl_teikirrk IS 'Äê´üÀÁµáÍúÎò';
 

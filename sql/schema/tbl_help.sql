@@ -12,14 +12,15 @@ CREATE TABLE tbl_help (
     opid character varying(16),
     creymd character(8),
     upymd character(8),
-    uphms character(6),
-    hospnum numeric(2,0) NOT NULL
+    uphms character(6)
 );
 
+CREATE INDEX idx_help_key_opid ON tbl_help USING btree (key_opid);
+
+CREATE INDEX idx_help_menu ON tbl_help USING btree (menu);
+
 ALTER TABLE ONLY tbl_help
-    ADD CONSTRAINT tbl_help_primary_key PRIMARY KEY (hospnum, helpkbn, key_opid, ldname, menunum1, menunum2, edanum);
+    ADD CONSTRAINT tbl_help_primary_key PRIMARY KEY (helpkbn, key_opid, ldname, menunum1, menunum2, edanum);
 
-CREATE INDEX idx_help_key_opid ON tbl_help USING btree (hospnum, key_opid);
-
-CREATE INDEX idx_help_menu ON tbl_help USING btree (hospnum, menu);
+COMMENT ON TABLE tbl_help IS '¥Ø¥ë¥×';
 

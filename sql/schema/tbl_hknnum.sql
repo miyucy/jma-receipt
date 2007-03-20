@@ -1,4 +1,5 @@
 CREATE TABLE tbl_hknnum (
+    hospid character(24) NOT NULL,
     hknnum character(3) NOT NULL,
     tekstymd character(8) NOT NULL,
     paykbn character(2) NOT NULL,
@@ -104,10 +105,11 @@ CREATE TABLE tbl_hknnum (
     opid character varying(16),
     creymd character(8),
     upymd character(8),
-    uphms character(6),
-    hospnum numeric(2,0) NOT NULL
+    uphms character(6)
 );
 
 ALTER TABLE ONLY tbl_hknnum
-    ADD CONSTRAINT tbl_hknnum_primary_key PRIMARY KEY (hospnum, hknnum, tekstymd, paykbn);
+    ADD CONSTRAINT tbl_hknnum_primary_key PRIMARY KEY (hospid, hknnum, tekstymd, paykbn);
+
+COMMENT ON TABLE tbl_hknnum IS ' ›∏±»÷πÊ';
 

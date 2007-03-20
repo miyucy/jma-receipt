@@ -1,4 +1,5 @@
 CREATE TABLE tbl_order (
+    hospid character(24) NOT NULL,
     karte_key character varying(36) NOT NULL,
     ordernum numeric(2,0) NOT NULL,
     nyugaikbn character(1),
@@ -21,18 +22,17 @@ CREATE TABLE tbl_order (
     opid character varying(16),
     creymd character(8),
     upymd character(8),
-    uphms character(6),
-    hospnum numeric(2,0) NOT NULL
+    uphms character(6)
 );
 
-COMMENT ON TABLE tbl_order IS '入院オーダ';
+CREATE INDEX idx_order_ukeymd ON tbl_order USING btree (ukeymd);
+
+CREATE INDEX idx_order_sryymd ON tbl_order USING btree (sryymd);
+
+CREATE INDEX idx_order_ptnum ON tbl_order USING btree (ptnum);
 
 ALTER TABLE ONLY tbl_order
-    ADD CONSTRAINT tbl_order_primary_key PRIMARY KEY (hospnum, karte_key, ordernum);
+    ADD CONSTRAINT tbl_order_primary_key PRIMARY KEY (hospid, karte_key, ordernum);
 
-CREATE INDEX idx_order_ptnum ON tbl_order USING btree (hospnum, ptnum);
-
-CREATE INDEX idx_order_sryymd ON tbl_order USING btree (hospnum, sryymd);
-
-CREATE INDEX idx_order_ukeymd ON tbl_order USING btree (hospnum, ukeymd);
+COMMENT ON TABLE tbl_order IS '入院オーダ';
 

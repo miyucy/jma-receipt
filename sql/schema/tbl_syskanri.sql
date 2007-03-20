@@ -8,10 +8,11 @@ CREATE TABLE tbl_syskanri (
     opid character varying(16),
     creymd character(8),
     upymd character(8),
-    uphms character(6),
-    hospnum numeric(2,0) NOT NULL
+    uphms character(6)
 );
 
 ALTER TABLE ONLY tbl_syskanri
-    ADD CONSTRAINT tbl_syskanri_primary_key PRIMARY KEY (hospnum, kanricd, kbncd, styukymd, edyukymd);
+    ADD CONSTRAINT tbl_syskanri_primary_key PRIMARY KEY (kanricd, kbncd, styukymd, edyukymd);
+
+COMMENT ON TABLE tbl_syskanri IS 'システム管理情報';
 

@@ -1,8 +1,10 @@
 CREATE TABLE tbl_dbkanri (
     kanricd character(8) NOT NULL,
-    version character varying(64),
+    "version" character varying(64),
     dbsversion1 character varying(64),
     dbsversion2 character varying(64),
+    dbrversion1 character varying(64),
+    dbrversion2 character varying(64),
     termid character varying(32),
     opid character varying(16),
     creymd character(8),
@@ -12,4 +14,6 @@ CREATE TABLE tbl_dbkanri (
 
 ALTER TABLE ONLY tbl_dbkanri
     ADD CONSTRAINT tbl_dbkanri_primary_key PRIMARY KEY (kanricd);
+
+COMMENT ON TABLE tbl_dbkanri IS 'データベース管理情報';
 

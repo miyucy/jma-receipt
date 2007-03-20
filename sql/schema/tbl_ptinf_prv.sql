@@ -1,5 +1,6 @@
 CREATE TABLE tbl_ptinf_prv (
-    ptid bigint NOT NULL,
+    hospid character(24) NOT NULL,
+    ptid numeric(10,0) NOT NULL,
     kananame character varying(100),
     name character varying(100),
     nickname character varying(100),
@@ -49,22 +50,23 @@ CREATE TABLE tbl_ptinf_prv (
     kisei_tel character varying(15),
     tstptnumkbn character(1),
     nyukin_hoho character(2),
-    maxzainum integer DEFAULT 0,
-    rrknum smallint DEFAULT 0,
-    rrkedanum smallint DEFAULT 0,
+    maxzainum numeric(8,0) DEFAULT 0,
+    rrknum numeric(3,0) DEFAULT 0,
+    rrkedanum numeric(3,0) DEFAULT 0,
     skyprtflg character(1),
     termid character varying(16),
     opid character varying(16),
     creymd character(8),
     upymd character(8),
-    uphms character(6),
-    hospnum smallint NOT NULL
+    uphms character(6)
 );
 
+CREATE INDEX idx_ptinf_prv_kananame ON tbl_ptinf_prv USING btree (kananame);
+
+CREATE INDEX idx_ptinf_prv_name ON tbl_ptinf_prv USING btree (name);
+
 ALTER TABLE ONLY tbl_ptinf_prv
-    ADD CONSTRAINT tbl_ptinf_prv_primary_key PRIMARY KEY (hospnum, ptid);
+    ADD CONSTRAINT tbl_ptinf_prv_primary_key PRIMARY KEY (hospid, ptid);
 
-CREATE INDEX idx_ptinf_prv_kananame ON tbl_ptinf_prv USING btree (hospnum, kananame);
-
-CREATE INDEX idx_ptinf_prv_name ON tbl_ptinf_prv USING btree (hospnum, name);
+COMMENT ON TABLE tbl_ptinf_prv IS '患者情報(プレビュー)';
 

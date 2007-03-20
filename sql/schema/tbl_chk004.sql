@@ -9,12 +9,11 @@ CREATE TABLE tbl_chk004 (
     creymd character(8),
     upymd character(8),
     uphms character(6),
-    ptid numeric(10,0) DEFAULT 0,
-    hospnum numeric(2,0) NOT NULL
+    ptid numeric(10,0) DEFAULT 0
 );
 
-COMMENT ON TABLE tbl_chk004 IS 'チェックマスタ４';
-
 ALTER TABLE ONLY tbl_chk004
-    ADD CONSTRAINT tbl_chk004_primary_key PRIMARY KEY (hospnum, kanricd, kbncd, styukymd, edyukymd);
+    ADD CONSTRAINT tbl_chk004_primary_key PRIMARY KEY (kanricd, kbncd, styukymd, edyukymd);
+
+COMMENT ON TABLE tbl_chk004 IS 'チェック4';
 

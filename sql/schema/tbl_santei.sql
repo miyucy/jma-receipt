@@ -1,4 +1,5 @@
 CREATE TABLE tbl_santei (
+    hospid character(24) NOT NULL,
     ptid numeric(10,0) NOT NULL,
     sryym character(6) NOT NULL,
     srycd character(9) NOT NULL,
@@ -46,10 +47,11 @@ CREATE TABLE tbl_santei (
     opid character varying(16),
     creymd character(8),
     upymd character(8),
-    uphms character(6),
-    hospnum numeric(2,0) NOT NULL
+    uphms character(6)
 );
 
 ALTER TABLE ONLY tbl_santei
-    ADD CONSTRAINT tbl_santei_primary_key PRIMARY KEY (hospnum, ptid, sryym, srycd, nyugaikbn, sryka, hkncombinum);
+    ADD CONSTRAINT tbl_santei_primary_key PRIMARY KEY (hospid, ptid, sryym, srycd, nyugaikbn, sryka, hkncombinum);
+
+COMMENT ON TABLE tbl_santei IS '»»ÄêÍúÎò';
 

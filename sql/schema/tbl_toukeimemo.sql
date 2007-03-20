@@ -17,13 +17,11 @@ CREATE TABLE tbl_toukeimemo (
     opid character varying(16),
     creymd character(8),
     upymd character(8),
-    uphms character(6),
-    hospnum numeric(2,0) NOT NULL,
-    savepara character(1),
-    para9 character varying(20),
-    para10 character varying(20)
+    uphms character(6)
 );
 
 ALTER TABLE ONLY tbl_toukeimemo
-    ADD CONSTRAINT tbl_toukeimemo_primary_key PRIMARY KEY (hospnum, pgid, kanricd, kbncd, styukymd, edyukymd);
+    ADD CONSTRAINT tbl_toukeimemo_primary_key PRIMARY KEY (pgid, kanricd, kbncd, styukymd, edyukymd);
+
+COMMENT ON TABLE tbl_toukeimemo IS 'Åý·×³Ð½ñ';
 

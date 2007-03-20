@@ -56,10 +56,11 @@ CREATE TABLE tbl_ldmap (
     ldmap_chk_ldname47 character varying(20),
     ldmap_chk_ldname48 character varying(20),
     ldmap_chk_ldname49 character varying(20),
-    ldmap_chk_ldname50 character varying(20),
-    hospnum numeric(2,0) NOT NULL
+    ldmap_chk_ldname50 character varying(20)
 );
 
 ALTER TABLE ONLY tbl_ldmap
-    ADD CONSTRAINT tbl_ldmap_primary_key PRIMARY KEY (hospnum, map_ldname);
+    ADD CONSTRAINT tbl_ldmap_pkey PRIMARY KEY (map_ldname);
+
+COMMENT ON TABLE tbl_ldmap IS 'ÇÓÂ¾À©¸æ¶ÈÌ³´ÉÍý';
 

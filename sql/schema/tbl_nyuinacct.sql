@@ -1,4 +1,5 @@
 CREATE TABLE tbl_nyuinacct (
+    hospid character(24) NOT NULL,
     nyugaikbn character(1) NOT NULL,
     ptid numeric(10,0) DEFAULT 0 NOT NULL,
     sryka character(2) NOT NULL,
@@ -52,10 +53,11 @@ CREATE TABLE tbl_nyuinacct (
     opid character varying(16),
     creymd character(8),
     upymd character(8),
-    uphms character(6),
-    hospnum numeric(2,0) NOT NULL
+    uphms character(6)
 );
 
 ALTER TABLE ONLY tbl_nyuinacct
-    ADD CONSTRAINT tbl_nyuinacct_primary_key PRIMARY KEY (hospnum, nyugaikbn, ptid, sryka, sryym, srykbn, zainum);
+    ADD CONSTRAINT tbl_nyuinacct_primary_key PRIMARY KEY (hospid, nyugaikbn, ptid, sryka, sryym, srykbn, zainum);
+
+COMMENT ON TABLE tbl_nyuinacct IS 'Æþ±¡²ñ·×';
 

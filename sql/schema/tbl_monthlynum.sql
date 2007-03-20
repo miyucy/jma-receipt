@@ -1,4 +1,5 @@
 CREATE TABLE tbl_monthlynum (
+    hospid character(24) NOT NULL,
     ptid numeric(10,0) NOT NULL,
     kohnum character(3) NOT NULL,
     sryym character(6) NOT NULL,
@@ -9,10 +10,11 @@ CREATE TABLE tbl_monthlynum (
     creymd character(8),
     upymd character(8),
     uphms character(6),
-    kohid numeric(10,0) DEFAULT 0 NOT NULL,
-    hospnum numeric(2,0) NOT NULL
+    kohid numeric(10,0) DEFAULT 0 NOT NULL
 );
 
 ALTER TABLE ONLY tbl_monthlynum
-    ADD CONSTRAINT tbl_monthlynum_primary_key PRIMARY KEY (hospnum, ptid, kohnum, kohid, sryym, nyugaikbn);
+    ADD CONSTRAINT tbl_monthlynum_primary_key PRIMARY KEY (hospid, ptid, kohnum, kohid, sryym, nyugaikbn);
+
+COMMENT ON TABLE tbl_monthlynum IS '月代り受給者番号';
 

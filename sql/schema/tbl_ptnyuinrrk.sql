@@ -1,7 +1,8 @@
 CREATE TABLE tbl_ptnyuinrrk (
-    ptid bigint NOT NULL,
-    rrknum smallint NOT NULL,
-    rrkedanum smallint NOT NULL,
+    hospid character(24) NOT NULL,
+    ptid numeric(10,0) NOT NULL,
+    rrknum numeric(3,0) NOT NULL,
+    rrkedanum numeric(3,0) NOT NULL,
     btunum character(2),
     btuname character varying(20),
     brmnum character(8),
@@ -16,7 +17,7 @@ CREATE TABLE tbl_ptnyuinrrk (
     teiki_seikyukbn character(1),
     kensaku_dispkbn character(1),
     shokaikbn character(1),
-    shonum smallint,
+    shonum numeric(3,0),
     drcd1 character(5),
     drcd2 character(5),
     drcd3 character(5),
@@ -25,9 +26,9 @@ CREATE TABLE tbl_ptnyuinrrk (
     santei_brmnum character(8),
     tennyuymd character(8),
     tenstuymd character(8),
-    taisyonissu integer,
-    tusannissu1 integer,
-    tusannissu2 integer,
+    taisyonissu numeric(5,0),
+    tusannissu1 numeric(5,0),
+    tusannissu2 numeric(5,0),
     nyuinchukbn character(1),
     doujitsukbn character(1),
     termid character varying(16),
@@ -35,16 +36,13 @@ CREATE TABLE tbl_ptnyuinrrk (
     creymd character(8),
     upymd character(8),
     uphms character(6),
-    maxedanum smallint,
+    maxedanum numeric(3,0),
     skjkbn character(1),
-    senteikbn character(1),
-    hospnum smallint NOT NULL,
-    timekbn_in character(1),
-    tainrelkbn character(1),
-    kaigokbn character(1),
-    nyucalkbn character(1)
+    senteikbn character(1)
 );
 
 ALTER TABLE ONLY tbl_ptnyuinrrk
-    ADD CONSTRAINT tbl_ptnyuinrrk_primary_key PRIMARY KEY (hospnum, ptid, rrknum, rrkedanum);
+    ADD CONSTRAINT tbl_ptnyuinrrk_primary_key PRIMARY KEY (hospid, ptid, rrknum, rrkedanum);
+
+COMMENT ON TABLE tbl_ptnyuinrrk IS '´µ¼ÔÆþ±¡ÍúÎò';
 

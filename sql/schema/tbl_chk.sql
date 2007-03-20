@@ -1,18 +1,21 @@
 CREATE TABLE tbl_chk (
-    hospnum numeric(2,0) NOT NULL,
     chkkbn character(1) NOT NULL,
     srycd character(9) NOT NULL,
-    grpnum numeric(2,0) NOT NULL,
     yukostymd character(8) NOT NULL,
     yukoedymd character(8) NOT NULL,
     cdkbn character(1) NOT NULL,
-    cd character varying(9) NOT NULL,
-    nyugaikbn character(1),
-    nyugaibndkbn character(1),
-    syorikbn character(1),
-    chkerr numeric(1,0),
-    datakbn character(1),
-    rennum numeric(3,0),
+    rennum numeric(2,0) NOT NULL,
+    tekcdnum numeric(3,0) DEFAULT 0,
+    cd1 character(9),
+    cd2 character(9),
+    cd3 character(9),
+    cd4 character(9),
+    cd5 character(9),
+    cd6 character(9),
+    cd7 character(9),
+    cd8 character(9),
+    cd9 character(9),
+    cd10 character(9),
     termid character varying(16),
     opid character varying(16),
     creymd character(8),
@@ -21,5 +24,7 @@ CREATE TABLE tbl_chk (
 );
 
 ALTER TABLE ONLY tbl_chk
-    ADD CONSTRAINT tbl_chk_primary_key PRIMARY KEY (hospnum, chkkbn, srycd, grpnum, yukostymd, yukoedymd, cdkbn, cd);
+    ADD CONSTRAINT tbl_chk_primary_key PRIMARY KEY (chkkbn, srycd, yukostymd, yukoedymd, cdkbn, rennum);
+
+COMMENT ON TABLE tbl_chk IS 'チェック';
 

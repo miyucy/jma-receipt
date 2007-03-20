@@ -1,4 +1,5 @@
 CREATE TABLE tbl_ptteikirrk (
+    hospid character(24) NOT NULL,
     ptid numeric(10,0) NOT NULL,
     sryym character(6) NOT NULL,
     sakkbn character(1) NOT NULL,
@@ -19,10 +20,11 @@ CREATE TABLE tbl_ptteikirrk (
     opid character varying(16),
     creymd character varying(8),
     upymd character varying(8),
-    uphms character varying(6),
-    hospnum numeric(2,0) NOT NULL
+    uphms character varying(6)
 );
 
 ALTER TABLE ONLY tbl_ptteikirrk
-    ADD CONSTRAINT tbl_ptteikirrk_primary_key PRIMARY KEY (hospnum, ptid, sryym, sakkbn, hkncombinum, denpnum);
+    ADD CONSTRAINT tbl_ptteikirrk_primary_key PRIMARY KEY (hospid, ptid, sryym, sakkbn, hkncombinum, denpnum);
+
+COMMENT ON TABLE tbl_ptteikirrk IS '¥µº‘ƒÍ¥¸¿¡µ·Õ˙ŒÚ';
 

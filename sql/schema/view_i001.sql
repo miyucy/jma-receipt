@@ -1,5 +1,5 @@
 CREATE VIEW view_i001 AS
-    SELECT a.hospnum,
+    SELECT a.hospid,
            a.ptid,
            b.rrknum,
            b.rrkedanum,
@@ -12,7 +12,6 @@ CREATE VIEW view_i001 AS
            a.home_post,
            a.home_adrs,
            a.home_banti,
-           a.deathkbn,
            b.btunum,
            b.brmnum,
            b.nyuinka,
@@ -25,33 +24,33 @@ CREATE VIEW view_i001 AS
       FROM tbl_ptnyuinrrk b,
            tbl_ptnyuinrrk d,
            
-   (SELECT tbl_ptnyuinrrk.hospnum,
+   (SELECT tbl_ptnyuinrrk.hospid,
            tbl_ptnyuinrrk.ptid,
            tbl_ptnyuinrrk.rrknum,
            max(tbl_ptnyuinrrk.rrkedanum) AS rrkedanum_max 
       FROM tbl_ptnyuinrrk 
-     GROUP BY tbl_ptnyuinrrk.hospnum,
+     GROUP BY tbl_ptnyuinrrk.hospid,
            tbl_ptnyuinrrk.ptid,
            tbl_ptnyuinrrk.rrknum) e,
            tbl_ptinf a,
            tbl_ptnum c 
-     WHERE ((((((((((((((((b.hospnum = a.hospnum) 
+     WHERE ((((((((((((((((b.hospid = a.hospid) 
        AND (b.ptid = a.ptid)) 
-       AND (b.hospnum = c.hospnum)) 
+       AND (b.hospid = c.hospid)) 
        AND (b.ptid = c.ptid)) 
-       AND (b.hospnum = d.hospnum)) 
+       AND (b.hospid = d.hospid)) 
        AND (b.ptid = d.ptid)) 
-       AND (a.rrknum <> 0)) 
-       AND (a.rrkedanum <> 0)) 
+       AND (a.rrknum <> (0)::numeric)) 
+       AND (a.rrkedanum <> (0)::numeric)) 
        AND (a.rrknum = d.rrknum)) 
        AND (a.rrkedanum = d.rrkedanum)) 
        AND (d.kensaku_dispkbn = '1'::bpchar)) 
        AND (b.jtikbn <> '5'::bpchar)) 
        AND (b.jtikbn <> '6'::bpchar)) 
-       AND (b.hospnum = e.hospnum)) 
+       AND (b.hospid = e.hospid)) 
        AND (b.ptid = e.ptid)) 
        AND (b.rrknum = e.rrknum));
 
-
-COMMENT ON VIEW view_i001 IS '入院患者照会ビュー';
+COMMENT 
+        ON VIEW view_i001 IS '入院患者照会ビュー';
 

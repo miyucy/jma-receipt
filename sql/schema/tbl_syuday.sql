@@ -1,4 +1,5 @@
 CREATE TABLE tbl_syuday (
+    hospid character(24) NOT NULL,
     nyugaikbn character(1) NOT NULL,
     ptid numeric(10,0) NOT NULL,
     denpnum numeric(7,0) NOT NULL,
@@ -660,10 +661,11 @@ CREATE TABLE tbl_syuday (
     opid character varying(16),
     creymd character(8),
     upymd character(8),
-    uphms character(6),
-    hospnum numeric(2,0) NOT NULL
+    uphms character(6)
 );
 
 ALTER TABLE ONLY tbl_syuday
-    ADD CONSTRAINT tbl_syuday_primary_key PRIMARY KEY (hospnum, nyugaikbn, ptid, denpnum);
+    ADD CONSTRAINT tbl_syuday_primary_key PRIMARY KEY (hospid, nyugaikbn, ptid, denpnum);
+
+COMMENT ON TABLE tbl_syuday IS 'ÆüÊÌ¼ýÇ¼';
 

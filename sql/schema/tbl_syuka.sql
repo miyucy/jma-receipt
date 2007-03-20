@@ -1,4 +1,5 @@
 CREATE TABLE tbl_syuka (
+    hospid character(24) NOT NULL,
     nyugaikbn character(1) NOT NULL,
     ptid numeric(10,0) NOT NULL,
     ten_kbn character(1) NOT NULL,
@@ -31,13 +32,13 @@ CREATE TABLE tbl_syuka (
     opid character varying(16),
     creymd character(8),
     upymd character(8),
-    uphms character(6),
-    hospnum numeric(2,0) NOT NULL,
-    kohid bigint DEFAULT 0 NOT NULL
+    uphms character(6)
 );
 
-ALTER TABLE ONLY tbl_syuka
-    ADD CONSTRAINT tbl_syuka_primary_key PRIMARY KEY (hospnum, nyugaikbn, ptid, ten_kbn, sryym, teisyutusaki, hknjanum, hojokbn, kohid, recesyubetu, sryka);
+CREATE INDEX idx_syuka_sryym ON tbl_syuka USING btree (hospid, nyugaikbn, sryym);
 
-CREATE INDEX idx_syuka_sryym ON tbl_syuka USING btree (hospnum, nyugaikbn, sryym);
+ALTER TABLE ONLY tbl_syuka
+    ADD CONSTRAINT tbl_syuka_primary_key PRIMARY KEY (hospid, nyugaikbn, ptid, ten_kbn, sryym, teisyutusaki, hknjanum, hojokbn, recesyubetu, sryka);
+
+COMMENT ON TABLE tbl_syuka IS '¼ç²Ê¾ðÊó';
 

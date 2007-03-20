@@ -1,4 +1,5 @@
 CREATE TABLE tbl_odritem (
+    hospid character(24) NOT NULL,
     karte_key character varying(36) NOT NULL,
     ordernum numeric(2,0) NOT NULL,
     itemnum numeric(2,0) NOT NULL,
@@ -11,12 +12,11 @@ CREATE TABLE tbl_odritem (
     opid character varying(16),
     creymd character(8),
     upymd character(8),
-    uphms character(6),
-    hospnum numeric(2,0) NOT NULL
+    uphms character(6)
 );
 
-COMMENT ON TABLE tbl_odritem IS '入院オーダ項目';
-
 ALTER TABLE ONLY tbl_odritem
-    ADD CONSTRAINT tbl_odritem_primary_key PRIMARY KEY (hospnum, karte_key, ordernum, itemnum);
+    ADD CONSTRAINT tbl_odritem_primary_key PRIMARY KEY (hospid, karte_key, ordernum, itemnum);
+
+COMMENT ON TABLE tbl_odritem IS '入院オーダ項目';
 

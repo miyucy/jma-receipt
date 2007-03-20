@@ -39,13 +39,11 @@ CREATE TABLE tbl_receprt (
     syubetu_under_1 character varying(80),
     grp_no2 character(3),
     syubetu_under_2 character varying(40),
-    syubetu_srt2 integer DEFAULT 0,
-    hospnum numeric(2,0) NOT NULL,
-    drcd character(5),
-    drcd_sryka character(2),
-    sort_1 character varying(10)
+    syubetu_srt2 integer DEFAULT 0
 );
 
 ALTER TABLE ONLY tbl_receprt
-    ADD CONSTRAINT tbl_receprt_primary_key PRIMARY KEY (hospnum, prtid, receym, creymd, crehms, teisyutusaki, sryka, prefkbn_srt, hknjanum_srt, hknjanum, recesyubetu, tekstymd, zaitaku, chouki, ptnum, rennum, recenum);
+    ADD CONSTRAINT tbl_receprt_primary_key PRIMARY KEY (prtid, receym, creymd, crehms, teisyutusaki, sryka, prefkbn_srt, hknjanum_srt, hknjanum, recesyubetu, tekstymd, zaitaku, chouki, ptnum, rennum, recenum);
+
+COMMENT ON TABLE tbl_receprt IS 'レセプト明細書';
 

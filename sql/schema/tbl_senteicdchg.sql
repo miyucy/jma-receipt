@@ -8,8 +8,10 @@ CREATE TABLE tbl_senteicdchg (
     uphms character(6)
 );
 
+CREATE INDEX idx_senteicdchg_senteisrycd ON tbl_senteicdchg USING btree (senteisrycd);
+
 ALTER TABLE ONLY tbl_senteicdchg
     ADD CONSTRAINT tbl_senteicdchg_primary_key PRIMARY KEY (ipnsrycd, senteisrycd);
 
-CREATE INDEX idx_senteicdchg_senteisrycd ON tbl_senteicdchg USING btree (senteisrycd);
+COMMENT ON TABLE tbl_senteicdchg IS '联年闻蛙锐ˇ办忍コ〖ド慷仑';
 

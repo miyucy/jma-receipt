@@ -1,4 +1,5 @@
 CREATE TABLE tbl_yyk (
+    hospid character(24) NOT NULL,
     srynaiyo character(2) NOT NULL,
     drcd character(5) NOT NULL,
     yykymd character(8) NOT NULL,
@@ -17,10 +18,11 @@ CREATE TABLE tbl_yyk (
     opid character varying(16),
     creymd character(8),
     upymd character(8),
-    uphms character(6),
-    hospnum numeric(2,0) NOT NULL
+    uphms character(6)
 );
 
 ALTER TABLE ONLY tbl_yyk
-    ADD CONSTRAINT tbl_yyk_primary_key PRIMARY KEY (hospnum, srynaiyo, drcd, yykymd, keyyyktime, yykid);
+    ADD CONSTRAINT tbl_yyk_primary_key PRIMARY KEY (hospid, srynaiyo, drcd, yykymd, keyyyktime, yykid);
+
+COMMENT ON TABLE tbl_yyk IS 'Í½Ìó';
 

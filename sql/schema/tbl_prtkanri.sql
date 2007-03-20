@@ -12,13 +12,11 @@ CREATE TABLE tbl_prtkanri (
     title character varying(100),
     termid character varying(32),
     opid character varying(16),
-    prtnm character varying(16),
-    hospnum numeric(2,0) NOT NULL,
-    tbl_uuid character(36) NOT NULL,
-    gyoumu_cd numeric(3,0),
-    creymd character varying(8)
+    prtnm character varying(16)
 );
 
 ALTER TABLE ONLY tbl_prtkanri
-    ADD CONSTRAINT tbl_prtkanri_primary_key PRIMARY KEY (hospnum, tbl_key, rennum, tbl_group, tbl_uuid, shori_rennum);
+    ADD CONSTRAINT tbl_prtkanri_primary_key PRIMARY KEY (tbl_key, rennum, tbl_group, shori_rennum);
+
+COMMENT ON TABLE tbl_prtkanri IS '°õºþ´ÉÍý';
 

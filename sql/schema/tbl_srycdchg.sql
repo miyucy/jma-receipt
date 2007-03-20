@@ -5,12 +5,13 @@ CREATE TABLE tbl_srycdchg (
     opid character varying(16),
     creymd character(8),
     upymd character(8),
-    uphms character(6),
-    hospnum numeric(2,0) NOT NULL
+    uphms character(6)
 );
 
-ALTER TABLE ONLY tbl_srycdchg
-    ADD CONSTRAINT tbl_srycdchg_primary_key PRIMARY KEY (hospnum, ipnsrycd, rjnsrycd);
+CREATE INDEX idx_srycdchg_rjnsrycd ON tbl_srycdchg USING btree (rjnsrycd);
 
-CREATE INDEX idx_srycdchg_rjnsrycd ON tbl_srycdchg USING btree (hospnum, rjnsrycd);
+ALTER TABLE ONLY tbl_srycdchg
+    ADD CONSTRAINT tbl_srycdchg_primary_key PRIMARY KEY (ipnsrycd, rjnsrycd);
+
+COMMENT ON TABLE tbl_srycdchg IS '∞Ï»Ãœ∑øÕ√÷¥π';
 

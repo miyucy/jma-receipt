@@ -1,4 +1,5 @@
 CREATE TABLE tbl_sryacctplus_prv (
+    hospid character(24) NOT NULL,
     nyugaikbn character(1) NOT NULL,
     ptid numeric(10,0) NOT NULL,
     sryka character(2) NOT NULL,
@@ -53,10 +54,11 @@ CREATE TABLE tbl_sryacctplus_prv (
     opid character varying(16),
     creymd character(8),
     upymd character(8),
-    uphms character(6),
-    hospnum numeric(2,0) NOT NULL
+    uphms character(6)
 );
 
 ALTER TABLE ONLY tbl_sryacctplus_prv
-    ADD CONSTRAINT tbl_sryacctplus_prv_primary_key PRIMARY KEY (hospnum, nyugaikbn, ptid, sryka, sryym, zainum, rennum);
+    ADD CONSTRAINT tbl_sryacctplus_prv_primary_key PRIMARY KEY (hospid, nyugaikbn, ptid, sryka, sryym, zainum, rennum);
+
+COMMENT ON TABLE tbl_sryacctplus_prv IS '診療会計付加(プレビュー)';
 

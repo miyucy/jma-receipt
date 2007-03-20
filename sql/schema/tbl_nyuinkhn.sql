@@ -17,6 +17,20 @@ CREATE TABLE tbl_nyuinkhn (
     kagen_srycd5 character(9),
     kagen_srycd6 character(9),
     kagen_srycd7 character(9),
+    kagen_ten1 numeric(6,0),
+    kagen_ten2 numeric(6,0),
+    kagen_ten3 numeric(6,0),
+    kagen_ten4 numeric(6,0),
+    kagen_ten5 numeric(6,0),
+    kagen_ten6 numeric(6,0),
+    kagen_ten7 numeric(6,0),
+    kettei_ten1 numeric(6,0),
+    kettei_ten2 numeric(6,0),
+    kettei_ten3 numeric(6,0),
+    kettei_ten4 numeric(6,0),
+    kettei_ten5 numeric(6,0),
+    kettei_ten6 numeric(6,0),
+    kettei_ten7 numeric(6,0),
     termid character varying(16),
     opid character varying(16),
     creymd character(8),
@@ -24,8 +38,10 @@ CREATE TABLE tbl_nyuinkhn (
     uphms character(6)
 );
 
+CREATE INDEX idx_nyuinkhn_key2 ON tbl_nyuinkhn USING btree (btusbtkbn, heikinzaikbn, kangohaichikbn, kangohiritukbn, kangohojohaichikbn);
+
 ALTER TABLE ONLY tbl_nyuinkhn
     ADD CONSTRAINT tbl_nyuinkhn_primary_key PRIMARY KEY (khn_srycd, yukostymd, yukoedymd);
 
-CREATE INDEX idx_nyuinkhn_key2 ON tbl_nyuinkhn USING btree (btusbtkbn, heikinzaikbn, kangohaichikbn, kangohiritukbn, kangohojohaichikbn);
+COMMENT ON TABLE tbl_nyuinkhn IS 'Æþ±¡´ðËÜÎÁ';
 

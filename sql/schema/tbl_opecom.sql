@@ -1,4 +1,5 @@
 CREATE TABLE tbl_opecom (
+    hospid character(24) NOT NULL,
     ptid numeric(10,0) NOT NULL,
     sryymd character(8) NOT NULL,
     srycd character(9) NOT NULL,
@@ -17,10 +18,11 @@ CREATE TABLE tbl_opecom (
     opid character varying(16),
     creymd character(8),
     upymd character(8),
-    uphms character(6),
-    hospnum numeric(2,0) NOT NULL
+    uphms character(6)
 );
 
 ALTER TABLE ONLY tbl_opecom
-    ADD CONSTRAINT tbl_opecom_primary_key PRIMARY KEY (hospnum, ptid, sryymd, srycd, rennum);
+    ADD CONSTRAINT tbl_opecom_primary_key PRIMARY KEY (hospid, ptid, sryymd, srycd, rennum);
+
+COMMENT ON TABLE tbl_opecom IS '手術歴コメント';
 

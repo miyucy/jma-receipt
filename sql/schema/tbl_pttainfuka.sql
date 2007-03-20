@@ -1,4 +1,5 @@
 CREATE TABLE tbl_pttainfuka (
+    hospid character(24) NOT NULL,
     ptid numeric(10,0) NOT NULL,
     rrknum numeric(3,0) NOT NULL,
     byomei1 character varying(80),
@@ -11,10 +12,11 @@ CREATE TABLE tbl_pttainfuka (
     opid character varying(16),
     creymd character(8),
     upymd character(8),
-    uphms character(6),
-    hospnum numeric(2,0) NOT NULL
+    uphms character(6)
 );
 
 ALTER TABLE ONLY tbl_pttainfuka
-    ADD CONSTRAINT tbl_pttainfuka_primary_key PRIMARY KEY (hospnum, ptid, rrknum);
+    ADD CONSTRAINT tbl_pttainfuka_primary_key PRIMARY KEY (hospid, ptid, rrknum);
+
+COMMENT ON TABLE tbl_pttainfuka IS '患者他院歴付加情報';
 

@@ -6,10 +6,11 @@ CREATE TABLE tbl_teikikanri (
     sryym character(6),
     page numeric(5,0),
     kensu numeric(5,0),
-    termid character varying(16),
-    hospnum numeric(2,0) NOT NULL
+    termid character varying(16)
 );
 
 ALTER TABLE ONLY tbl_teikikanri
-    ADD CONSTRAINT tbl_teikikanri_primary_key PRIMARY KEY (hospnum, btunum);
+    ADD CONSTRAINT tbl_teikikanri_primary_key PRIMARY KEY (btunum);
+
+COMMENT ON TABLE tbl_teikikanri IS 'Äê´üÀÁµá´ÉÍý';
 

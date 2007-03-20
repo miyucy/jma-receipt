@@ -1,4 +1,5 @@
 CREATE TABLE tbl_receden (
+    hospid character(24) NOT NULL,
     sryym numeric(6,0) DEFAULT 0 NOT NULL,
     nyugaikbn character(1) NOT NULL,
     ptid numeric(10,0) DEFAULT 0 NOT NULL,
@@ -13,12 +14,11 @@ CREATE TABLE tbl_receden (
     creymd character(8),
     totalten numeric(10,0) DEFAULT 0,
     sjkbn character(2),
-    recedata character varying(2500),
-    hospnum numeric(2,0) NOT NULL,
-    kohid_key bigint DEFAULT 0 NOT NULL,
-    crehms character(6)
+    recedata character varying(2500)
 );
 
 ALTER TABLE ONLY tbl_receden
-    ADD CONSTRAINT tbl_receden_primary_key PRIMARY KEY (hospnum, sryym, nyugaikbn, ptid, receka, teisyutusaki, recesyubetu, hknjanum, hojokbn_key, kohid_key, tekstymd, reckbn, rennum);
+    ADD CONSTRAINT tbl_receden_primary_key PRIMARY KEY (hospid, sryym, nyugaikbn, ptid, receka, teisyutusaki, recesyubetu, hknjanum, hojokbn_key, tekstymd, reckbn, rennum);
+
+COMMENT ON TABLE tbl_receden IS 'レセプト電算';
 

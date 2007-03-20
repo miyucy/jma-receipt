@@ -27,12 +27,11 @@ CREATE TABLE tbl_prvkanri (
     opid character varying(16),
     creymd character varying(8),
     upymd character varying(8),
-    uphms character varying(6),
-    hospnum numeric(2,0) NOT NULL,
-    tbl_uuid character(36) NOT NULL,
-    gyoumu_cd numeric(3,0)
+    uphms character varying(6)
 );
 
 ALTER TABLE ONLY tbl_prvkanri
-    ADD CONSTRAINT tbl_prvkanri_primary_key PRIMARY KEY (hospnum, tbl_key, rennum, tbl_group, tbl_uuid, shori_rennum, page);
+    ADD CONSTRAINT tbl_prvkanri_pkey PRIMARY KEY (tbl_key, rennum, tbl_group, shori_rennum, page);
+
+COMMENT ON TABLE tbl_prvkanri IS 'プレビュー管理';
 

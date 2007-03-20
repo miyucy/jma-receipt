@@ -1,11 +1,12 @@
 CREATE TABLE tbl_ryocom (
+    hospid character(24) NOT NULL,
     nyugaikbn character(1) NOT NULL,
     ptid numeric(10,0) NOT NULL,
     sryym character(6) NOT NULL,
     zainum numeric(8,0) NOT NULL,
     zaiskbkbn character(1),
     srycd character(9),
-    month numeric(2,0),
+    "month" numeric(2,0),
     day_1 numeric(2,0),
     day_2 numeric(2,0),
     day_3 numeric(2,0),
@@ -41,10 +42,11 @@ CREATE TABLE tbl_ryocom (
     opid character varying(16),
     creymd character(8),
     upymd character(8),
-    uphms character(6),
-    hospnum numeric(2,0) NOT NULL
+    uphms character(6)
 );
 
 ALTER TABLE ONLY tbl_ryocom
-    ADD CONSTRAINT tbl_ryocom_primary_key PRIMARY KEY (hospnum, nyugaikbn, ptid, sryym, zainum);
+    ADD CONSTRAINT tbl_ryocom_primary_key PRIMARY KEY (hospid, nyugaikbn, ptid, sryym, zainum);
+
+COMMENT ON TABLE tbl_ryocom IS '療養レセプトコメント';
 

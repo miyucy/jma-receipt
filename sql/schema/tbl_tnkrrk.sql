@@ -1,5 +1,6 @@
 CREATE TABLE tbl_tnkrrk (
-    ptid bigint NOT NULL,
+    hospid character(24) NOT NULL,
+    ptid numeric(10,0) NOT NULL,
     stymd character(8) NOT NULL,
     edymd character(8) NOT NULL,
     rri_fukushi_kbn character(1) NOT NULL,
@@ -7,12 +8,11 @@ CREATE TABLE tbl_tnkrrk (
     opid character varying(16),
     creymd character(8),
     upymd character(8),
-    uphms character(6),
-    hospnum smallint NOT NULL,
-    skjninstymd character(8),
-    hkntekkbn character(1)
+    uphms character(6)
 );
 
 ALTER TABLE ONLY tbl_tnkrrk
-    ADD CONSTRAINT tbl_tnkrrk_primary_key PRIMARY KEY (hospnum, ptid, stymd);
+    ADD CONSTRAINT tbl_tnkrrk_primary_key PRIMARY KEY (hospid, ptid, stymd);
+
+COMMENT ON TABLE tbl_tnkrrk IS '«Ø∂‚Õ˙ŒÚ';
 
