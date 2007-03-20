@@ -2,7 +2,7 @@ M00.glade	orca00	(M00)マスターメニュー
 M01.glade	orca00	(M01)業務メニュー
 M01N.glade	orca00	(M01N)業務メニュー
 M02.glade	orca00	(M02)マスタ登録
-M95.glade	orca00	(M95)業務選択−日付セット
+M95.glade	orca00	(M95)業務選択-日付セット
 M96.glade	orca00	(M96)マスタ更新管理一覧
 M97.glade	orca00	(M97)プログラム更新管理一覧
 M98.glade	orca00	(M98)データ収集閲覧画面
@@ -29,15 +29,18 @@ XDERR.glade	orca03	(XDERR)エラー情報
 XDID1.glade	orca03	(XDID1)確認画面
 
 U02.glade	orca11	(U02)受付
+U02Q.glade	orca11	(U02Q)受付登録-ＱＲ一覧
 U2ERR.glade	orca11	(U2ERR)エラー情報
 U02X.glade	orca11	(U02X)受付ＣＬＡＩＭ送信選択サブ
 
-P02.glade	orca12	(P02)患者登録	-	患者登録
+P02.glade	orca12	(P02)患者登録-患者登録
 P0201.glade	orca12	(P0201)患者登録-未登録受付一覧
 P02A.glade	orca12	(P02A)患者登録
 P02D.glade	orca12	(P02D)患者登録-労災自賠保険入力
 P02E.glade	orca12	(P02E)患者登録-患者複写画面
 P02F.glade	orca12	(P02F)患者登録-複写元患者一覧
+P02Q.glade	orca12	(P02Q)患者登録-ＱＲ受付一覧
+P02Q1.glade	orca12	(P02Q1)患者登録-ＱＲ患者確認
 P02S.glade	orca12	(P02S)患者登録-主科設定画面
 P02X.glade	orca12	(P02X)患者登録ＣＬＡＩＭ送信選択サブ
 P014.glade	orca12	(P01)患者登録-患者番号発行
@@ -49,8 +52,8 @@ P100.glade	orca12	(P100)漢字選択画面
 PERR.glade	orca12	(PERR)エラー情報
 PID1.glade	orca12	(PID1)確認画面
 
-Q01.glade	orca13	(Q01)患者照会	-	検索条件入力
-Q02.glade	orca13	(Q02)患者照会	-	検索結果
+Q01.glade	orca13	(Q01)患者照会-検索条件入力
+Q02.glade	orca13	(Q02)患者照会-検索結果
 Q03.glade	orca13	(Q03)明細書連携確認
 Q96.glade	orca13	(Q96)診療行為一覧選択
 Q97.glade	orca13	(Q97)処理結果
@@ -167,15 +170,15 @@ I41.glade	orca32	(I41)入院会計照会-カード入力
 I42.glade	orca32	(I42)会計照会-チェック
 I43.glade	orca32	(I43)会計照会-コメント入力
 I44.glade	orca32	(I44)会計照会-剤内容変更
-I47.glade	orca32	(I47)会計照会−医療区分・ＡＤＬ区分登録
+I47.glade	orca32	(I47)会計照会-医療区分・ＡＤＬ区分登録
 I48.glade	orca32	(I48)診療行為一覧選択サブ
 I49.glade	orca32	(I49)ｐカ入力
 I4ERR.glade	orca32	(I4ERR)エラー情報
 I4ID1.glade	orca32	(I4ID1)確認画面
 
-O01.glade	orca33	(O01)患者請求	-	定期請求
-O02.glade	orca33	(O02)患者請求	-	個別作成
-O03.glade	orca33	(O03)患者請求	-	印刷指示
+O01.glade	orca33	(O01)患者請求-定期請求
+O02.glade	orca33	(O02)患者請求-個別作成
+O03.glade	orca33	(O03)患者請求-印刷指示
 O04.glade	orca33	(O04)定期請求-請求確認
 O05.glade	orca33	(O05)患者請求-請求削除
 O99.glade	orca33	(O99)処理結果
@@ -239,7 +242,7 @@ LID2.glade	orca51	(LID2)確認画面
 
 G01.glade	orca52	(G01)月次統計
 G02.glade	orca52	(G02)月次統計データ作成
-G03.glade	orca52	(G03)月次統計−パラメータ説明
+G03.glade	orca52	(G03)月次統計-パラメータ説明
 G99.glade	orca52	(G99)処理結果
 GERR.glade	orca52	(GERR)エラー情報
 GID1.glade	orca52	(GID1)確認画面
@@ -325,6 +328,8 @@ X05.glade	orca103	(X05)チェックマスタ設定-適用コード設定
 X91.glade	orca103	(X91)チェックマスター帳票出力設定
 X97.glade	orca103	(X97)処理結果
 X98.glade	orca103	(X98)診療行為一覧選択サブ
+X99.glade	orca103	(X99)病名一覧選択
+X100.glade	orca103	(X100)病名コード一覧
 XERR.glade	orca103	(XERR)エラー情報
 XID1.glade	orca103	(XID1)確認画面
 XID2.glade	orca103	(XID2)確認画面
@@ -344,7 +349,7 @@ N11ERR.glade	orca106	(N11ERR)エラー情報
 N11ID1.glade	orca106	(N11ID1)確認画面
 
 N21.glade	orca107	(N21)薬剤情報マスタ設定
-N22.glade	orca107	(N22)薬剤情報マスタ設定	-	参照
+N22.glade	orca107	(N22)薬剤情報マスタ設定-参照
 N23.glade	orca107	(N23)薬剤情報マスター帳票出力設定
 N29.glade	orca107	(N29)処理結果
 N21ERR.glade	orca107	(N21ERR)エラー情報
