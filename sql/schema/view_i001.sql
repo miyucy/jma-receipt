@@ -1,4 +1,5 @@
-CREATE VIEW "view_i001" as SELECT a.hospid,
+CREATE VIEW view_i001 AS
+    SELECT a.hospid,
            a.ptid,
            b.rrknum,
            b.rrkedanum,
@@ -39,8 +40,8 @@ CREATE VIEW "view_i001" as SELECT a.hospid,
        AND (b.ptid = c.ptid)) 
        AND (b.hospid = d.hospid)) 
        AND (b.ptid = d.ptid)) 
-       AND (a.rrknum <> '0'::"numeric")) 
-       AND (a.rrkedanum <> '0'::"numeric")) 
+       AND (a.rrknum <> (0)::numeric)) 
+       AND (a.rrkedanum <> (0)::numeric)) 
        AND (a.rrknum = d.rrknum)) 
        AND (a.rrkedanum = d.rrkedanum)) 
        AND (d.kensaku_dispkbn = '1'::bpchar)) 
@@ -51,5 +52,5 @@ CREATE VIEW "view_i001" as SELECT a.hospid,
        AND (b.rrknum = e.rrknum));
 
 COMMENT 
-        ON VIEW "view_i001" IS '入院患者照会ビュー';
+        ON VIEW view_i001 IS '入院患者照会ビュー';
 

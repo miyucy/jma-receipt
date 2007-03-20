@@ -1,4 +1,5 @@
-CREATE VIEW "view_bd001" as SELECT a.hospid,
+CREATE VIEW view_bd001 AS
+    SELECT a.hospid,
            a.ptid,
            b.ptnum,
            c.name,
@@ -20,5 +21,6 @@ CREATE VIEW "view_bd001" as SELECT a.hospid,
        AND (a.createkbn <> '3'::bpchar)) 
        AND (c.tstptnumkbn <> '1'::bpchar));
 
-COMMENT ON VIEW "view_bd001" IS '¼ýÇ¼¥Ó¥å¡¼';
+COMMENT 
+        ON VIEW view_bd001 IS '¼ýÇ¼¥Ó¥å¡¼';
 

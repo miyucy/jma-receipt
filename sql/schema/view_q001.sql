@@ -1,4 +1,5 @@
-CREATE VIEW "view_q001" as SELECT tbl_hkncombi.hospid,
+CREATE VIEW view_q001 AS
+    SELECT tbl_hkncombi.hospid,
            tbl_hkncombi.ptid,
            tbl_hkncombi.hkncombinum,
            tbl_jyurrk.nyugaikbn,
@@ -36,6 +37,6 @@ CREATE VIEW "view_q001" as SELECT tbl_hkncombi.hospid,
         OR ((tbl_hkncombi.koh4id = tbl_ptkohinf.kohid) 
        AND (tbl_hkncombi.koh4hknnum = tbl_ptkohinf.kohnum))))));
 
-
-COMMENT ON VIEW "view_q001" IS '患者照会ビュー';
+COMMENT 
+        ON VIEW view_q001 IS '患者照会ビュー';
 

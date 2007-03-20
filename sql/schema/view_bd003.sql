@@ -1,4 +1,5 @@
-CREATE VIEW "view_bd003" as SELECT a.hospid,
+CREATE VIEW view_bd003 AS
+    SELECT a.hospid,
            a.nyugaikbn,
            a.ptid,
            a.denpnum,
@@ -13,5 +14,6 @@ CREATE VIEW "view_bd003" as SELECT a.hospid,
            ptid,
            denpnum));
 
-COMMENT ON VIEW "view_bd003" IS '¼ýÇ¼¥Ó¥å¡¼3';
+COMMENT 
+        ON VIEW view_bd003 IS '¼ýÇ¼¥Ó¥å¡¼3';
 
