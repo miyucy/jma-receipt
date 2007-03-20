@@ -15,3 +15,5 @@ CREATE TABLE tbl_genericname (
 ALTER TABLE ONLY tbl_genericname
     ADD CONSTRAINT tbl_genericname_primary_key PRIMARY KEY (yakkakjncd);
 
+COMMENT ON TABLE tbl_genericname IS '∞Ï»ÃÃæ';
+

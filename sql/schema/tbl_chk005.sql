@@ -17,14 +17,13 @@ CREATE TABLE tbl_chk005 (
     opid character varying(16),
     creymd character(8),
     upymd character(8),
-    uphms character(6),
-    hospnum numeric(2,0) NOT NULL
+    uphms character(6)
 );
 
-COMMENT ON TABLE tbl_chk005 IS 'チェック5';
+CREATE INDEX idx_chk005_rennum ON tbl_chk005 USING btree (chkkbn, rennum);
 
 ALTER TABLE ONLY tbl_chk005
-    ADD CONSTRAINT tbl_chk005_primary_key PRIMARY KEY (hospnum, chkkbn, id, rennum);
+    ADD CONSTRAINT tbl_chk005_primary_key PRIMARY KEY (chkkbn, id, rennum);
 
-CREATE INDEX idx_chk005_rennum ON tbl_chk005 USING btree (hospnum, chkkbn, rennum);
+COMMENT ON TABLE tbl_chk005 IS 'チェック5';
 

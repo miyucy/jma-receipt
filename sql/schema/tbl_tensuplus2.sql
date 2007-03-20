@@ -49,12 +49,11 @@ CREATE TABLE tbl_tensuplus2 (
     opid character varying(16),
     creymd character(8),
     upymd character(8),
-    uphms character(6),
-    hospnum numeric(2,0) NOT NULL,
-    tukijgnkaisu numeric(3,0) DEFAULT 0,
-    tukijgntouyoryo numeric(10,5) DEFAULT 0
+    uphms character(6)
 );
 
 ALTER TABLE ONLY tbl_tensuplus2
-    ADD CONSTRAINT tbl_tensuplus2_primary_key PRIMARY KEY (hospnum, srycd);
+    ADD CONSTRAINT tbl_tensuplus2_primary_key PRIMARY KEY (srycd);
+
+COMMENT ON TABLE tbl_tensuplus2 IS '点数付加2';
 

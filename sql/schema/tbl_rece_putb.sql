@@ -1,4 +1,5 @@
 CREATE TABLE tbl_rece_putb (
+    hospid character(24) NOT NULL,
     prefkbn character(1) NOT NULL,
     syubetu_srt1 integer NOT NULL,
     grp_no1 character(3) NOT NULL,
@@ -18,10 +19,11 @@ CREATE TABLE tbl_rece_putb (
     upymd character(8),
     uphms character(6),
     syubetu_gai_srt1 character(4),
-    syubetu_nyu_srt1 character(4),
-    hospnum numeric(2,0) NOT NULL
+    syubetu_nyu_srt1 character(4)
 );
 
 ALTER TABLE ONLY tbl_rece_putb
-    ADD CONSTRAINT tbl_rece_putb_primary_key PRIMARY KEY (hospnum, prefkbn, syubetu_srt1, grp_no1, syubetu_srt2, grp_no2, kouhi_no, styukymd, edyukymd);
+    ADD CONSTRAINT tbl_rece_putb_pkey PRIMARY KEY (hospid, prefkbn, syubetu_srt1, grp_no1, syubetu_srt2, grp_no2, kouhi_no, styukymd, edyukymd);
+
+COMMENT ON TABLE tbl_rece_putb IS 'レセプト編綴順明細';
 

@@ -15,3 +15,5 @@ CREATE TABLE tbl_hktsantei (
 ALTER TABLE ONLY tbl_hktsantei
     ADD CONSTRAINT tbl_hktsantei_pkey PRIMARY KEY (kanricd, yukostymd, yukoedymd, srycd);
 
+COMMENT ON TABLE tbl_hktsantei IS 'Êñ³ç¥Á¥§¥Ã¥¯';
+

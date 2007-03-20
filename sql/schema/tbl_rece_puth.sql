@@ -1,4 +1,5 @@
 CREATE TABLE tbl_rece_puth (
+    hospid character(24) NOT NULL,
     prefkbn_prtjyun character(1),
     hknjanum_prtjyun character(1),
     hknjanum character(8),
@@ -21,10 +22,11 @@ CREATE TABLE tbl_rece_puth (
     opid character varying(16),
     creymd character(8),
     upymd character(8),
-    uphms character(6),
-    hospnum numeric(2,0) NOT NULL
+    uphms character(6)
 );
 
 ALTER TABLE ONLY tbl_rece_puth
-    ADD CONSTRAINT tbl_rece_puth_primary_key PRIMARY KEY (hospnum, styukymd, edyukymd);
+    ADD CONSTRAINT tbl_rece_puth_pkey PRIMARY KEY (hospid, styukymd, edyukymd);
+
+COMMENT ON TABLE tbl_rece_puth IS '¥ì¥»¥×¥ÈÊÔÄÖ½ç¥Ø¥Ã¥À';
 
