@@ -4943,7 +4943,11 @@
       *
            IF    ( SPA-GMN-PRTJYUN1    =   "06" )
            AND   ( SPA-GMN-PAGE-MAX    >   1    )
+            IF    (SPA-NAI-2008-HYOUJI   =   1)
                MOVE    WIDGET-NORMAL       TO  R02-B13-STATE
+            ELSE 
+               MOVE    WIDGET-INSENSITIVE  TO  R02-B13-STATE
+            END-IF
            ELSE 
                MOVE    WIDGET-INSENSITIVE  TO  R02-B13-STATE
            END-IF
