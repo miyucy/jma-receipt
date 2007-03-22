@@ -55,7 +55,6 @@
       *    ¥Õ¥é¥°ÎÎ°è
        01  FLG-AREA.
            03  FLG-OK                      PIC 9(01).
-           03  FLG-JIRITU-SAI              PIC 9(01).
            03  FLG-TOKUSYU-SAI             PIC 9(01).
       *
       *    ¥«¥¦¥ó¥ÈÎÎ°è
@@ -454,9 +453,6 @@
                 MOVE     SYUNOU-REC           TO  LNK-SYUNOU-REC(IDX)
                 MOVE     WRK-ORCS01-REC       TO  LNK-ORCS01-REC
       *
-                IF       LNK-S01-JIRITU-SAI-KBN     =    "1"
-                     MOVE      1       TO     FLG-JIRITU-SAI
-                END-IF
                 IF       LNK-S01-TOKUSYU-SAI-KBN    =    "1"
                      MOVE      1       TO     FLG-TOKUSYU-SAI
                 END-IF
@@ -464,9 +460,8 @@
            END-PERFORM.
       *
       *    ÆÃ¼ì·×»»¡ÊºÆ·×»»¡Ë
-           IF       CNT-KENSU  >   1
-              IF      (FLG-JIRITU-SAI        =    1)
-              OR      (FLG-TOKUSYU-SAI       =    1)
+           IF       CNT-KENSU        >    1
+              IF    FLG-TOKUSYU-SAI  =    1
                  PERFORM     100-TOKUSYU-SANTEI-SEC
               END-IF
            END-IF.
