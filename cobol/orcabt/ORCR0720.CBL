@@ -1571,6 +1571,7 @@
       *
       *    「使用しない」以外のときＨＥＡＤ部の情報を２００８に設定
            IF      RECE-PUTH-PREFKBN-PRTJYUN =   "3"
+            OR     FLG-RECE-PUTH             =    1
                CONTINUE
            ELSE
                MOVE    RECE-PUTH-PREFKBN-PRTJYUN
