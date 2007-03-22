@@ -2547,7 +2547,11 @@
                MOVE    SYS-1005-RECESRYKA  TO  TOUKEI02-RECESRYKA
                MOVE    ACCT-SRYKBN         TO  TOUKEI02-SRYKBN
                MOVE    ACCT-JIHOKBN        TO  TOUKEI02-JIHOKBN
-               MOVE    ACCT-ZAITEN         TO  TOUKEI02-ZAITEN
+               IF      ACCT-JIHOKBN        =   "1"
+                   MOVE    ZERO            TO  TOUKEI02-ZAITEN
+               ELSE
+                   MOVE    ACCT-ZAITEN     TO  TOUKEI02-ZAITEN
+               END-IF
                MOVE    ACCT-ZAIKAISU       TO  TOUKEI02-ZAIKAISU
                MOVE    ACCT-MEISAISU       TO  TOUKEI02-MEISAISU
                MOVE    ACCT-SYUTEN1        TO  TOUKEI02-SYUTEN1
