@@ -389,17 +389,22 @@
       *
            PERFORM 900-SRYACT-KEY2-SEL-SEC
       *
-           PERFORM VARYING IDX-SRY FROM    1   BY  1
-                   UNTIL ( IDX-SRY >   CONST-SRY-MAX )
+           PERFORM     UNTIL ( FLG-SRYACT  NOT =   ZERO )
       *
-               IF    ( SRY-SRYCD (IDX-SRY) (1:3)
+               PERFORM VARYING IDX-SRY FROM    1   BY  1
+                       UNTIL ( IDX-SRY >   CONST-SRY-MAX )
+      *
+                   IF    ( SRY-SRYCD (IDX-SRY) (1:3)
                                        =   "095" OR "096" )
-                AND  ( SRY-JIHIMONEY (IDX-SRY)
+                    AND  ( SRY-JIHIMONEY (IDX-SRY)
                                        >   ZERO )
-                   PERFORM 200111-JIHISRY-HEN-SEC
-               END-IF
+                       PERFORM 200111-JIHISRY-HEN-SEC
+                   END-IF
+      *
+               END-PERFORM
       *
                PERFORM 900-SRYACT-KEY2-FET-SEC
+      *
            END-PERFORM
       *
            MOVE    "tbl_sryact"    TO  MCP-TABLE
