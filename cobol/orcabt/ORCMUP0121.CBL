@@ -63,7 +63,7 @@
        FD  ERR-FILE.
        01  ERR-GENERICNAMEWK-REC.
            COPY    "CPGENERICNAMEWK.INC"    REPLACING
-                         //GENERICNAMEWK-// BY //ERR-GENERICNAMEWK-//.
+                         //GENERICWK-// BY //ERR-GENERICWK-//.
       *
       *    出力：プルーフファイル
        FD  PLF-FILE.
