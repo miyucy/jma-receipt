@@ -40,3 +40,4 @@
                 05  M00-LBLMSG2         PIC X(100).
               04  M00-HTML1-G.
                 05  M00-HTML1          PIC X(200).
+              04  M00-B11-LABEL        PIC X(10).
