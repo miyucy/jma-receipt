@@ -2447,7 +2447,9 @@
                        END-PERFORM
       *            保険の期間判定
                    WHEN    "5"
-                       PERFORM 31061-HKN-KIKANCHK-SEC
+                       IF   SPA-GMN-KEIKOKU   =    SPACE
+                           PERFORM 31061-HKN-KIKANCHK-SEC
+                       END-IF
       *            病棟設定と算定入院料のチェック
                    WHEN    "1"
                        PERFORM 31062-SANTEI-NYUINCHK-SEC
