@@ -504,6 +504,15 @@
                WHEN    "ORCADB11"
                    MOVE    "適応病名マスタ"
                                           TO  SPA-GMN-MASTNAME(IDX2)
+               WHEN    "ORCADB12"
+                   MOVE    "一般名マスタ"
+                                          TO  SPA-GMN-MASTNAME(IDX2)
+               WHEN    "ORCADB13"
+                   MOVE    "包括チェックマスタ"
+                                          TO  SPA-GMN-MASTNAME(IDX2)
+               WHEN    "ORCADB14"
+                   MOVE    "包括診療コードマスタ"
+                                          TO  SPA-GMN-MASTNAME(IDX2)
                WHEN    OTHER
                    MOVE    DBKANRI-KANRICD
                                           TO  SPA-GMN-MASTNAME(IDX2)

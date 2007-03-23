@@ -16,33 +16,30 @@
       * 113-8621, Japan.
       ********************************************************************
       ************************************************************
-      *    包括診療コードテーブル        COPY (CPHKTSRYCDWK.INC)
-      *
+      *         一般名マスタ  COPY (CPGENERICNAMEWK.INC)     *
       ************************************************************
       ************************************************************
       *  コピー句修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       ************************************************************
-      *01  HKTSRYCDWK-REC.
-           03  HKTSRYCDWK-SYORIKBN            PIC  X(01).
-           03  HKTSRYCDWK-KEY.
-      *包括管理番号
-               05  HKTSRYCDWK-KANRICD         PIC  9(03).
-      *包括管理番号連番
-               05  HKTSRYCDWK-RENNUM          PIC  9(02).
-      *有効開始日
-               05  HKTSRYCDWK-YUKOSTYMD       PIC  X(08).
-      *有効終了日
-               05  HKTSRYCDWK-YUKOEDYMD       PIC  X(08).
-      *包括対象診療行為コード
-           03  HKTSRYCDWK-SRYCD               PIC  X(09).
-      *端末ＩＤ
-           03  HKTSRYCDWK-TERMID              PIC  X(16).
-      *オペレータＩＤ
-           03  HKTSRYCDWK-OPID                PIC  X(16).
-      *作成年月日
-           03  HKTSRYCDWK-CREYMD              PIC  X(08).
-      *更新年月日
-           03  HKTSRYCDWK-UPYMD               PIC  X(08).
-      *更新時間
-           03  HKTSRYCDWK-UPHMS               PIC  X(06).
+      *01  GENERICNAMEWK-REC.
+           03  GENERICWK-SYORIKBN        PIC X(01).
+           03  GENERICWK-KEY.
+      *    薬価基準コード
+               05  GENERICWK-YAKKAKJNCD  PIC  X(09).
+      *    一般名有効桁
+           03  GENERICWK-YUKOKETA        PIC  9(02).
+      *    一般名
+           03  GENERICWK-GENERICNAME     PIC  X(200).
+      *    単位コード
+           03  GENERICWK-TANICD          PIC  X(03).
+      *    単位名称
+           03  GENERICWK-TANINAME        PIC  X(24).
+      *    数量換算値
+           03  GENERICWK-KANZANCHI       PIC  9(05)V9(05).
+      *
+           03  GENERICWK-TERMID          PIC  X(16).
+           03  GENERICWK-OPID            PIC  X(16).
+           03  GENERICWK-CREYMD          PIC  X(08).
+           03  GENERICWK-UPYMD           PIC  X(08).
+           03  GENERICWK-UPHMS           PIC  X(06).
