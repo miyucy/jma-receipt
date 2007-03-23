@@ -216,6 +216,7 @@
            03  WRK-NYUKINTTL               PIC  S9(08).
            03  WRK-KONNYUKINTTL            PIC  S9(08).
            03  WRK-PATHNAME                PIC X(64).
+           03  WRK-NYUKINLIMIT             PIC  S9(08).
       *
        01  KBT-AREA.
            03  KBT-OCC                             OCCURS  3.
@@ -2141,20 +2142,25 @@
                                        TO  I04-CHOSEI
       *
       *    入金上限額
-           MOVE    "入金上限額："      TO  I04-LBLNYUKINMAX
            IF    ( SPA-GMN-I04-NYKNKNRKBN-CD   =   "1" )
                MOVE    SPA-NAI-I04-SEIKYU (SPA-I0-SYUNOU-CNT)
-                                       TO  WRK-Z99
+                                       TO  WRK-NYUKINLIMIT
            ELSE
                MOVE    SPA-GMN-I04-SEIGOK
-                                       TO  WRK-Z99
+                                       TO  WRK-NYUKINLIMIT
            END-IF
-           MOVE    WRK-Z99         TO  WRK-STR
-           PERFORM 800-LTRIM-SEC
-           STRING  WRK-STR         DELIMITED   BY  SPACE
-                   "円"            DELIMITED   BY  SIZE
-           INTO  I04-NYUKINMAX
-           END-STRING
+      *
+           IF    ( SPA-GMN-I04-SEIKYU  >   ZERO )
+            AND  ( WRK-NYUKINLIMIT     >   ZERO )
+               MOVE    "入金上限額："  TO  I04-LBLNYUKINMAX
+               MOVE    WRK-NYUKINLIMIT TO  WRK-Z99
+               MOVE    WRK-Z99         TO  WRK-STR
+               PERFORM 800-LTRIM-SEC
+               STRING  WRK-STR         DELIMITED   BY  SPACE
+                       "円"            DELIMITED   BY  SIZE
+               INTO  I04-NYUKINMAX
+               END-STRING
+           END-IF
       *
            IF    ( SPA-GMN-I04-NYKNKNRKBN-CD   =   "1" )
             AND  ( SPA-GMN-I04-HKNCOMBILST-CNT =   1   )
@@ -2779,7 +2785,11 @@
       *    今回請求額がゼロ以上であること
            COMPUTE WRK-SEIKYU      =   SPA-NAI-I04-CHOSEI (IDXZ)
                                    +   SPA-NAI-I04-SEIKYU-KON (IDXZ)
+                                   +   SPA-NAI-I04-SEIKYU-MOT (IDXZ)
                                    -   SPA-NAI-I04-CHOSEI-MOT (IDXZ)
+      *
+           DISPLAY "WRK-SEIKYU  = " WRK-SEIKYU  
+      *
            IF     (WRK-SEIKYU          <   ZERO )
                MOVE    "0004"      TO  SPA-ERRCD
                MOVE    102         TO  SPA-GMN-I04-CUR
@@ -2832,7 +2842,9 @@
                IF    ( SPA-GMN-I04-NYKNKNRKBN-CD   =   "1" )
       *
       *            今回入金が請求額以下であること
-                   IF    ( SPA-GMN-I04-NYUKIN
+                   IF   ( SPA-GMN-I04-SEIKYU
+                                       >=  ZERO )
+                    AND ( SPA-GMN-I04-NYUKIN
                                        >   SPA-GMN-I04-SEIKYU )
                        MOVE    "0008"  TO  SPA-ERRCD
                        MOVE    1       TO  SPA-GMN-I04-CUR
@@ -2841,7 +2853,9 @@
                ELSE
       *
       *            今回入金が入金上限額以下であること
-                   IF    ( SPA-NAI-I04-NYUKIN (SPA-I0-SYUNOU-CNT)
+                   IF    ( SPA-GMN-I04-SEIGOK
+                                       >=  ZERO )
+                    AND  ( SPA-NAI-I04-NYUKIN (SPA-I0-SYUNOU-CNT)
                        +   SPA-GMN-I04-NYUKIN
                        -   SPA-NAI-I04-NYUKIN (IDXZ)
                                        >   SPA-GMN-I04-SEIGOK )
@@ -4173,7 +4187,8 @@
                                                TO  IDX-SYU
       *
                IF    ( SPA-I0-SYUNOU-TTLDAT-FLG (IDX-SYU)  =   ZERO )
-                   IF    ( SPA-NAI-I04-SEIKYU (IDX-SYU)
+                   IF    ( SPA-NAI-I04-SEIKYU (IDX-SYU)   >=   ZERO )
+                    AND  ( SPA-NAI-I04-SEIKYU (IDX-SYU)
                                        <   SPA-NAI-I04-NYUKIN (IDX-SYU))
                        MOVE    "0008"  TO  SPA-ERRCD
                        MOVE    IDX-LST TO  SPA-GMN-I04-SELNUM
