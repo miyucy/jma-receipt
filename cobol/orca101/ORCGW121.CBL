@@ -2837,6 +2837,12 @@
                    MOVE    "0009"                  TO  SPA-ERRCD
                END-IF
            END-IF    
+      *----> take add st
+               IF      SPA-GMN-PRTJYUN1-G (2)(1:2)
+                                               =   "02"
+                   MOVE    "0048"                  TO  SPA-ERRCD
+               END-IF
+      *----> take add ed
       *
            IF      SPA-ERRCD       NOT =   SPACE
                IF      WRK-PAGENO      =   1
@@ -5867,6 +5873,12 @@
                    MOVE
             "第一印刷順がレセプト種別のとき保険者印刷順は入力できません"
                                                        TO  SPA-ERRMSG
+      *-----> take add st
+               WHEN    "0048"
+                   MOVE
+            "県内のみ選択可能な区分です"
+                                                       TO  SPA-ERRMSG
+      *-----> take add ed
                WHEN    "0098"
                    STRING
                        "医療機関の所在地保険者印刷位置を選択して"
