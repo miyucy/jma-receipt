@@ -160,6 +160,7 @@
       *  03.04.01    NACL-藤原    06/12/05  未請求レセ対応
       *  03.04.02    NACL-藤原    07/02/06  月途中の受給者番号変更に対応
       *  03.04.03    NACL-門脇    07/02/19  本人−外来−回−上限額のセット
+      *  03.04.04    NACL-門脇    07/03/23  月途中医療機関コード変更時対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -524,11 +525,13 @@
            03  FILLER          PIC X(09)   VALUE   "114012410".
       *    在宅時医学総合管理料２（院外処方せん）
            03  FILLER          PIC X(09)   VALUE   "114007510".
+      *    在医総・在医総管（ＤＵＭＭＹ）
+           03  FILLER          PIC X(09)   VALUE   "099140003".
       *
        01  TBL-ZAITAKU2-R      REDEFINES   TBL-ZAITAKU2-AREA.
-            03  TBL-ZAITAKU2   PIC X(09)   OCCURS   6.
+            03  TBL-ZAITAKU2   PIC X(09)   OCCURS   7.
       *
-       01  TBL-ZAITAKU2-MAX    PIC 9(02)   VALUE    6.
+       01  TBL-ZAITAKU2-MAX    PIC 9(02)   VALUE    7.
       *
            COPY    "MCPAREA".
       *
@@ -2285,10 +2288,16 @@
                            MOVE    "SRYACCT-KEY31"  TO  ORC-DBPATH 
                            PERFORM   SRYACCT-READ-SEC
                            IF      FLG-SRYACCT  =       ZERO
+                             IF TBL-ZAITAKU2(IDX3)  = "099140003"
+                               IF  (ACCT-ZAIKAISU NOT =  ZERO)
+                                   MOVE    "1" TO   WRK-ZAITAKU
+                               END-IF
+                             ELSE
                                IF  (ACCT-ZAITEN   NOT =  ZERO)  AND
                                    (ACCT-ZAIKAISU NOT =  ZERO)
                                    MOVE    "1" TO   WRK-ZAITAKU
                                END-IF
+                             END-IF
                            END-IF
                        END-IF
       *

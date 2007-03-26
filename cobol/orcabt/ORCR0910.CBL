@@ -69,6 +69,7 @@
       *  03.03.01    NACL-門脇    06/10/19  療養病棟レセコメント記載対応
       *  03.04.01    NACL-門脇    06/12/01  自賠責健保準拠対応
       *  03.04.02    NACL-門脇    07/03/08  点滴（種別３４０）の記載編集修正
+      *  03.04.03    NACL-門脇    07/03/23  月途中医療機関コード変更時対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -544,10 +545,12 @@
            03  FILLER          PIC X(09)   VALUE   "111000110".
       *    育児栄養指導加算（ＤＵＭＭＹ）
            03  FILLER          PIC X(09)   VALUE   "099114001".
+      *    在医総・在医総管（ＤＵＭＭＹ）
+           03  FILLER          PIC X(09)   VALUE   "099140003".
        01  TBL-NOSRYCD-R       REDEFINES   TBL-NOSRYCD-AREA.
-            03  TBL-NOSRYCD     PIC X(09)   OCCURS  18.       
+            03  TBL-NOSRYCD     PIC X(09)   OCCURS  19.       
       *
-       01  TBL-NOSRYCD-MAX     PIC 9(02)   VALUE  18.         
+       01  TBL-NOSRYCD-MAX     PIC 9(02)   VALUE  19.         
       *
       *    固定値
        01  CONST-AREA.
