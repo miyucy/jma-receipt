@@ -142,7 +142,7 @@
       *
        WORKING-STORAGE             SECTION.
       *
-       01  PRGSKBNO                PIC X(08)  VALUE "20061001".
+       01  PRGSKBNO                PIC X(08)  VALUE "20070327".
       *
            COPY    "CPCOMMONDAT5.INC"
                                    REPLACING  //TEIKI01PARA//
@@ -177,8 +177,6 @@
            03  FLG-PTHKNINF                    PIC 9(01).
            03  FLG-PTKOHINF                    PIC 9(01).
            03  FLG-PTINF                       PIC 9(01).
-           03  FLG-KYUSEIRRK                   PIC 9(01).
-           03  FLG-MONTHLYNUM                  PIC 9(01).
            03  FLG-SRYACT                      PIC 9(01).
            03  FLG-TENSU                       PIC 9(01).
            03  FLG-PTCOM                       PIC 9(01).
@@ -326,6 +324,7 @@
            02  WRK-COLDAT01-OCC    OCCURS  100.
            COPY    "CPCDF001.INC"  REPLACING  //COLDAT01//
                                    BY         //WRK-COLDAT01//.
+       01  WRK-COLDAT01-TABLE-MAX      PIC 9(03)   VALUE    100.
       *
       *    ワーク患者病名
        01  WRK-PTBYOMEI-REC.
@@ -1174,16 +1173,6 @@
       *        診療会計編集処理
                PERFORM 20012-NYUIN-SRYACCT-HENSYU-SEC
       *
-      *        実日数編集
-               PERFORM   20012-JNISSU-SET-SEC
-               PERFORM   20013-TOTALTENSU-SET-SEC
-               INITIALIZE                  TBL-JNISSU
-               INITIALIZE                  TBL-JNISSU-GEN
-               INITIALIZE                  TBL-TOTALTENSU-INF
-               INITIALIZE                  TBL-SKJNISSU-INF
-               INITIALIZE                  TBL-SKJRYOYOHI-INF
-               INITIALIZE                  TBL-SKJFTN-INF
-      *
       *        基本ファイル出力処理
                PERFORM 2002-KIHON-WRITE-SEC
            END-IF
@@ -1566,27 +1555,35 @@
            END-IF
       *
            PERFORM UNTIL       FLG-SRYACCT     =   1
-      *        保険組合せ読込み
-               INITIALIZE                  HKNCOMBI-REC
-               MOVE    WRK-PARA-HOSPID     TO  COMB-HOSPID
-               MOVE    PTINF-PTID          TO  COMB-PTID
-               MOVE    KEY-N-HKNCOMBI      TO  COMB-HKNCOMBINUM
-               MOVE    HKNCOMBI-REC        TO  MCPDATA-REC
-               PERFORM 910-HKNCOMBI-INV-SEC
-      *
       *        未訂正分があるか
                MOVE    SPACE               TO  WRK-ERR-AREA
                INITIALIZE                      WRK-ERR-AREA
       *
-               IF      FLG-HKNCOMBI    =   ZERO
-                   IF      COMB-TEKSTYMD   <=  WRK-STYMD
-                   AND     COMB-TEKEDYMD   >=  WRK-EDYMD
-                       MOVE    SPACE           TO  WRK-UPDKBN
-                    ELSE
-                       MOVE    "1"             TO  WRK-UPDKBN
-                   END-IF
+               IF      KEY-N-HKNCOMBI      =   9999
+                   INITIALIZE                  HKNCOMBI-REC
+                   MOVE    WRK-PARA-HOSPID     TO  COMB-HOSPID
+                   MOVE    PTINF-PTID          TO  COMB-PTID
+                   MOVE    KEY-N-HKNCOMBI      TO  COMB-HKNCOMBINUM 
+                   MOVE    ZERO                TO  FLG-HKNCOMBI 
                ELSE
-                   MOVE    "1"             TO  WRK-TEISEIKBN
+      *            保険組合せ読込み
+                   INITIALIZE                  HKNCOMBI-REC
+                   MOVE    WRK-PARA-HOSPID     TO  COMB-HOSPID
+                   MOVE    PTINF-PTID          TO  COMB-PTID
+                   MOVE    KEY-N-HKNCOMBI      TO  COMB-HKNCOMBINUM 
+                   MOVE    HKNCOMBI-REC        TO  MCPDATA-REC
+                   PERFORM 910-HKNCOMBI-INV-SEC
+      *
+                   IF      FLG-HKNCOMBI    =   ZERO
+                       IF      COMB-TEKSTYMD   <=  WRK-STYMD
+                       AND     COMB-TEKEDYMD   >=  WRK-EDYMD
+                           MOVE    SPACE           TO  WRK-UPDKBN
+                        ELSE
+                           MOVE    "1"             TO  WRK-UPDKBN
+                       END-IF
+                   ELSE
+                      MOVE    "1"             TO  WRK-TEISEIKBN
+                   END-IF
                END-IF
       *
                MOVE    KEY-NEW             TO  KEY-OLD
@@ -1612,6 +1609,15 @@
                        PERFORM 900-SRYACCT-READ-SEC
                    END-IF
                END-PERFORM
+      *        実日数編集
+               PERFORM   20012-JNISSU-SET-SEC
+               PERFORM   20013-TOTALTENSU-SET-SEC
+               INITIALIZE                  TBL-JNISSU
+               INITIALIZE                  TBL-JNISSU-GEN
+               INITIALIZE                  TBL-TOTALTENSU-INF
+               INITIALIZE                  TBL-SKJNISSU-INF
+               INITIALIZE                  TBL-SKJRYOYOHI-INF
+               INITIALIZE                  TBL-SKJFTN-INF
            END-PERFORM
       *
            MOVE    "tbl_sryacct"      TO  MCP-TABLE
@@ -1842,6 +1848,10 @@
                MOVE    KEY-NEW             TO  KEY-OLD
                PERFORM         UNTIL   FLG-SRYACCT     =   1
                                OR      KEY-N-PTID  NOT =   KEY-O-PTID
+      *            未訂正分があるか
+                   MOVE    SPACE               TO  WRK-ERR-AREA
+                   INITIALIZE                      WRK-ERR-AREA
+      *
                    IF      KEY-N-HKNCOMBI      =   9999
                        INITIALIZE                  HKNCOMBI-REC
                        MOVE    WRK-PARA-HOSPID     TO  COMB-HOSPID
@@ -1856,10 +1866,6 @@
                        MOVE    KEY-N-HKNCOMBI      TO  COMB-HKNCOMBINUM
                        MOVE    HKNCOMBI-REC        TO  MCPDATA-REC
                        PERFORM 910-HKNCOMBI-INV-SEC
-      *
-      *                未訂正分があるか
-                       MOVE    SPACE               TO  WRK-ERR-AREA
-                       INITIALIZE                      WRK-ERR-AREA
       *
                        IF      FLG-HKNCOMBI    =   ZERO
                            IF      COMB-TEKSTYMD   <=  WRK-STYMD
@@ -2163,16 +2169,22 @@
              END-EVALUATE
            END-IF
       *
+           IF      COMB-HKNCOMBINUM    =    9999
+               MOVE    "9999999"            TO  COLDAT01-HKNJANUM
+           END-IF
+      *
            PERFORM VARYING IDXX    FROM    1   BY  1
-                   UNTIL   IDXX    >       100
+                   UNTIL   IDXX    >       WRK-COLDAT01-TABLE-MAX
                IF      WRK-COLDAT01-HOSPID (IDXX)  =   SPACE
                    PERFORM 20011-COLDAT01-WRITE-SEC
-                   MOVE    100             TO  IDXX
+                   MOVE    WRK-COLDAT01-TABLE-MAX
+                                              TO  IDXX
                ELSE
                    IF      WRK-COLDAT01-KEY (IDXX) =
-                                           COLDAT01-KEY
+                                               COLDAT01-KEY
                        PERFORM 20011-COLDAT01-REWRITE-SEC
-                       MOVE    100             TO  IDXX
+                       MOVE    WRK-COLDAT01-TABLE-MAX
+                                                   TO  IDXX
                    END-IF
                END-IF
            END-PERFORM
@@ -2560,7 +2572,7 @@
                        END-IF
                        GO  TO  200121-KOHID-HENSYU-EXT
                    END-IF
-      *            全国公費のとき（長期・老人原爆以外）
+      *            全国公費のとき（長期・老人原爆・生保以外）
                    MOVE    "1"         TO  COLDAT01-TRECESKYKBN(IDY)
                END-IF
            END-IF
@@ -2718,7 +2730,7 @@
        2002-KIHON-WRITE-SEC              SECTION.
       *
            PERFORM VARYING IDXX    FROM    1   BY  1
-                   UNTIL   IDXX    >       100
+                   UNTIL   IDXX    >       WRK-COLDAT01-TABLE-MAX
                    OR      WRK-COLDAT01-HOSPID (IDXX)  =   SPACE
                MOVE    WRK-COLDAT01-OCC (IDXX)     TO  COLDAT01-REC
       *
@@ -2761,6 +2773,10 @@
       *    保険変更後、訂正していないとき
       *    保険組合せがないとき
            IF      COLDAT01-TEISEIKBN  =   "1"
+               GO  TO  20021-RECESYUBETU-SET-EXT
+           END-IF
+      *    包括のとき
+           IF      COLDAT01-HKNJANUM   =   "9999999"
                GO  TO  20021-RECESYUBETU-SET-EXT
            END-IF
       *
@@ -4000,6 +4016,11 @@
       *****************************************************************
        910-HKNCOMBI-INV-SEC         SECTION.
       *
+           IF      COMB-HKNCOMBINUM =   9999
+               MOVE    ZERO                TO  FLG-HKNCOMBI
+               GO  TO  910-HKNCOMBI-INV-EXT
+           END-IF
+      *
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "tbl_hkncombi"      TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
@@ -4560,5 +4581,5 @@
                                            MCPAREA
                                            MCPDATA-REC
            .
-       900-DBCLOSE-EXT.
+       900-DBDISCONNECT-EXT.
            EXIT.

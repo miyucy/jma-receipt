@@ -118,7 +118,7 @@
       *
        WORKING-STORAGE             SECTION.
       *
-       01  PRGSKBNO                PIC X(08)  VALUE "20061113".
+       01  PRGSKBNO                PIC X(08)  VALUE "20070327".
       *
       *    病院基本情報データ
            COPY    "CPCOMMONDAT5.INC"
@@ -164,13 +164,13 @@
            03  CNT-COLDAT04                    PIC 9(06).
       *
        01  INDEX-AREA.
-           03  IDX                             PIC 9(03). 
-           03  IDY                             PIC 9(03). 
+           03  IDX                             PIC 9(03).
+           03  IDY                             PIC 9(03).
            03  IDZ                             PIC 9(03).
            03  IDW                             PIC 9(03).
-           03  IDX1                            PIC 9(03). 
-           03  IDX2                            PIC 9(03). 
-           03  IDX3                            PIC 9(03). 
+           03  IDX1                            PIC 9(03).
+           03  IDX2                            PIC 9(03).
+           03  IDX3                            PIC 9(03).
       *
       *    一時領域
       *
@@ -998,6 +998,9 @@
                    MOVE    "C"         TO  WRK-DATA
                WHEN  OTHER
                    MOVE    "S"         TO  WRK-DATA
+                   IF  COLDAT02-JIHOKBN    =  "1"
+                       MOVE    "O"     TO  WRK-DATA
+                   END-IF
            END-EVALUATE
            MOVE    1                   TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC
@@ -1062,7 +1065,8 @@
                  MOVE    1               TO  WRK-END
                END-IF
                PERFORM 5005-NUM-HENSYU-SEC
-               IF      WRK-REC(1:1)    NOT =   "S"
+               IF     (WRK-REC(1:1)    NOT =   "S")  AND
+                      (WRK-REC(1:1)    NOT =   "O")
                    MOVE    1                 TO  FLG-KOIHEAD
                END-IF
              ELSE
@@ -1080,7 +1084,7 @@
              END-IF
            END-IF
       *
-           IF      WRK-REC(1:1)        =   "S"
+           IF      WRK-REC(1:1)        =   "S"  OR  "O"
              IF      FLG-KOIHEAD       =   ZERO
       *        手技点数１
                IF    COLDAT02-SYUTEN1    =   0
@@ -1159,7 +1163,8 @@
            END-IF
       *
            IF      (WRK-REC(1:1)       =   "Z" OR "C")
-             OR   ((WRK-REC(1:1)       =   "S")
+             OR  (((WRK-REC(1:1)       =   "S")
+             OR    (WRK-REC(1:1)       =   "O"))
              AND   (COLDAT02-SRYCD (1:3) < "099"))
       *
       *      名称
