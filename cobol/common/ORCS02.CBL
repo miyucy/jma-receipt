@@ -3146,10 +3146,6 @@
            IF     FLG-GENBUTU70   NOT =  ZERO
               EVALUATE   FLG-GENBUTU70
                 WHEN        1
-                  MOVE    150000   TO   WK-GEN70-GENDOGAKU
-                  IF  FLG-KOHYONKAIME = 1
-                     MOVE  83400   TO   WK-GEN70-GENDOGAKU
-                  END-IF
                 WHEN        2
                   MOVE     80100   TO   WK-GEN70-GENDOGAKU
                   IF  FLG-KOHYONKAIME = 1
@@ -3312,12 +3308,9 @@
                                        TO   MAX-KIN-KOHI1-M
                     MOVE    "1"        TO   COMB-KOH1-NYUJGNKBN
                     EVALUATE  WK-GEN70-GENDOGAKU
-                      WHEN      150000
-                        MOVE  WK-ZENGAKU TO WK-KOUREI-IRYOHI70K
-                        MOVE  1          TO FLG-IRYOHI70K
                       WHEN       80100
                         MOVE  WK-ZENGAKU TO WK-KOUREI-IRYOHI70K
-                        MOVE  2          TO FLG-IRYOHI70K
+                        MOVE  1          TO FLG-IRYOHI70K
                     END-EVALUATE
                END-IF
       *
@@ -4114,93 +4107,124 @@
       *
            IF  FLG-GENBUTU70   NOT =   ZERO
       *
-              MOVE WK-GEN70-GENDOGAKU  TO  MAX-KIN-SYU-M
+               EVALUATE   FLG-GENBUTU70
+                WHEN        1
+                  MOVE    150000   TO   MAX-KIN-SYU-M
+                  IF  FLG-KOHYONKAIME = 1
+                     MOVE  83400   TO   MAX-KIN-SYU-M
+                  END-IF
+                WHEN        2
+                  MOVE     80100   TO   MAX-KIN-SYU-M
+                  IF  FLG-KOHYONKAIME = 1
+                     MOVE  44400   TO   MAX-KIN-SYU-M
+                  END-IF
+                WHEN        3
+                  MOVE     35400   TO   MAX-KIN-SYU-M
+                  IF  FLG-KOHYONKAIME = 1
+                     MOVE  24600   TO   MAX-KIN-SYU-M
+                  END-IF
+               END-EVALUATE
       *
-              IF  (COMB-KOH1HKNNUM    =  SPACE)
-              AND (COMB-KOH2HKNNUM    =  SPACE)
-              AND (COMB-KOH3HKNNUM    =  SPACE)
-              AND (COMB-KOH4HKNNUM    =  SPACE)
-                 EVALUATE  WK-GEN70-GENDOGAKU
+               IF  (COMB-KOH1HKNNUM    =  SPACE)
+               AND (COMB-KOH2HKNNUM    =  SPACE)
+               AND (COMB-KOH3HKNNUM    =  SPACE)
+               AND (COMB-KOH4HKNNUM    =  SPACE)
+                  EVALUATE  MAX-KIN-SYU-M
                    WHEN      150000
                      MOVE  WK-ZENGAKU  TO  WK-KOUREI-IRYOHI70
                      MOVE  1           TO  FLG-IRYOHI70
                    WHEN       80100
                      MOVE  WK-ZENGAKU  TO  WK-KOUREI-IRYOHI70
                      MOVE  2           TO  FLG-IRYOHI70
-                 END-EVALUATE
-              END-IF
+                  END-EVALUATE
+               END-IF
       *
-              IF (( COMB-KOH1HKNNUM(1:1)  >=     "1" ) AND
-                  ( COMB-KOH1HKNNUM(1:1)  <=     "8" ) AND
-                  ( COMB-KOH2HKNNUM        =    SPACE) AND
-                  ( COMB-KOH3HKNNUM        =    SPACE) AND
-                  ( COMB-KOH4HKNNUM        =    SPACE))
-              OR (( COMB-KOH1HKNNUM(1:1)  >=     "1" ) AND
-                  ( COMB-KOH1HKNNUM(1:1)  <=     "8" ) AND
-                  ( COMB-KOH2HKNNUM(1:2)   =     "99") AND
-                  ( COMB-KOH3HKNNUM        =    SPACE) AND
-                  ( COMB-KOH4HKNNUM        =    SPACE))
-              OR (( COMB-KOH1HKNNUM(1:1)  >=     "1" ) AND
-                  ( COMB-KOH1HKNNUM(1:1)  <=     "8" ) AND
-                  ( COMB-KOH2HKNNUM(1:1)  >=     "1" ) AND
-                  ( COMB-KOH2HKNNUM(1:1)  <=     "8" ) AND
-                  ( COMB-KOH3HKNNUM        =    SPACE) AND
-                  ( COMB-KOH4HKNNUM        =    SPACE))
-              OR (( COMB-KOH1HKNNUM(1:1)  >=     "1" ) AND
-                  ( COMB-KOH1HKNNUM(1:1)  <=     "8" ) AND
-                  ( COMB-KOH2HKNNUM(1:1)  >=     "1" ) AND
-                  ( COMB-KOH2HKNNUM(1:1)  <=     "8" ) AND
-                  ( COMB-KOH3HKNNUM(1:2)   =     "99") AND
-                  ( COMB-KOH4HKNNUM        =    SPACE))
-              OR (( COMB-KOH1HKNNUM(1:2)   =     "99") AND
-                  ( COMB-KOH2HKNNUM        =    SPACE) AND
-                  ( COMB-KOH3HKNNUM        =    SPACE) AND
-                  ( COMB-KOH4HKNNUM        =    SPACE))
-      **             MOVE    "1"    TO   FLG-SYUHEN
-                     EVALUATE  WK-GEN70-GENDOGAKU
-                       WHEN      150000
-                         MOVE  WK-ZENGAKU  TO  WK-KOUREI-IRYOHI70
-                         MOVE  3           TO  FLG-IRYOHI70
-                       WHEN       80100
-                         MOVE  WK-ZENGAKU  TO  WK-KOUREI-IRYOHI70
-                         MOVE  4           TO  FLG-IRYOHI70
-                     END-EVALUATE
-              ELSE
+               IF (( COMB-KOH1HKNNUM(1:1)  >=     "1" ) AND
+                   ( COMB-KOH1HKNNUM(1:1)  <=     "8" ) AND
+                   ( COMB-KOH2HKNNUM        =    SPACE) AND
+                   ( COMB-KOH3HKNNUM        =    SPACE) AND
+                   ( COMB-KOH4HKNNUM        =    SPACE))
+               OR (( COMB-KOH1HKNNUM(1:1)  >=     "1" ) AND
+                   ( COMB-KOH1HKNNUM(1:1)  <=     "8" ) AND
+                   ( COMB-KOH2HKNNUM(1:2)   =     "99") AND
+                   ( COMB-KOH3HKNNUM        =    SPACE) AND
+                   ( COMB-KOH4HKNNUM        =    SPACE))
+               OR (( COMB-KOH1HKNNUM(1:1)  >=     "1" ) AND
+                   ( COMB-KOH1HKNNUM(1:1)  <=     "8" ) AND
+                   ( COMB-KOH2HKNNUM(1:1)  >=     "1" ) AND
+                   ( COMB-KOH2HKNNUM(1:1)  <=     "8" ) AND
+                   ( COMB-KOH3HKNNUM        =    SPACE) AND
+                   ( COMB-KOH4HKNNUM        =    SPACE))
+               OR (( COMB-KOH1HKNNUM(1:1)  >=     "1" ) AND
+                   ( COMB-KOH1HKNNUM(1:1)  <=     "8" ) AND
+                   ( COMB-KOH2HKNNUM(1:1)  >=     "1" ) AND
+                   ( COMB-KOH2HKNNUM(1:1)  <=     "8" ) AND
+                   ( COMB-KOH3HKNNUM(1:2)   =     "99") AND
+                   ( COMB-KOH4HKNNUM        =    SPACE))
+               OR (( COMB-KOH1HKNNUM(1:2)   =     "99") AND
+                   ( COMB-KOH2HKNNUM        =    SPACE) AND
+                   ( COMB-KOH3HKNNUM        =    SPACE) AND
+                   ( COMB-KOH4HKNNUM        =    SPACE))
+      ***          MOVE    "1"    TO   FLG-SYUHEN
+                   EVALUATE  MAX-KIN-SYU-M
+                     WHEN      150000
+                       MOVE  WK-ZENGAKU  TO  WK-KOUREI-IRYOHI70
+                       MOVE  3           TO  FLG-IRYOHI70
+                     WHEN       80100
+                       MOVE  WK-ZENGAKU  TO  WK-KOUREI-IRYOHI70
+                       MOVE  4           TO  FLG-IRYOHI70
+                   END-EVALUATE
+               ELSE
                 IF   ( COMB-KOH1HKNNUM   =   "012" )
                 OR   ( COMB-KOH2HKNNUM   =   "012" )
                 OR   ( COMB-KOH3HKNNUM   =   "012" )
                 OR   ( COMB-KOH4HKNNUM   =   "012" )
-      **            MOVE    "1"    TO   FLG-SYUHEN
-                    IF  FLG-KOHYONKAIME = 1
-                       MOVE  24600   TO   WK-GEN70-GENDOGAKU2
-                    ELSE
-                       MOVE  35400   TO   WK-GEN70-GENDOGAKU2
-                    END-IF
-                    IF MAX-KIN-SYU-M  >   WK-GEN70-GENDOGAKU2
-                       MOVE WK-GEN70-GENDOGAKU2
-                                     TO   MAX-KIN-SYU-M
-                    END-IF
+      ***          MOVE    "1"    TO   FLG-SYUHEN
+                   IF  FLG-KOHYONKAIME = 1
+                      MOVE  24600   TO   WK-GEN70-GENDOGAKU2
+                   ELSE
+                      MOVE  35400   TO   WK-GEN70-GENDOGAKU2
+                   END-IF
+                   IF MAX-KIN-SYU-M  >   WK-GEN70-GENDOGAKU2
+                      MOVE WK-GEN70-GENDOGAKU2
+                                    TO   MAX-KIN-SYU-M
+                   END-IF
                 ELSE
-                  IF   ( COMB-KOH1HKNNUM  =   "972" OR "974" )
-                  OR   ( COMB-KOH2HKNNUM  =   "972" OR "974" )
-                  OR   ( COMB-KOH3HKNNUM  =   "972" OR "974" )
-                  OR   ( COMB-KOH4HKNNUM  =   "972" OR "974" )
-                  OR   ( COMB-KOH1HKNNUM(1:1) = "0"          )
-                  OR   ( COMB-KOH2HKNNUM(1:1) = "0"          )
-                  OR   ( COMB-KOH3HKNNUM(1:1) = "0"          )
-                  OR   ( COMB-KOH4HKNNUM(1:1) = "0"          )
-      **             MOVE    "1"    TO   FLG-SYUHEN
-                     EVALUATE  WK-GEN70-GENDOGAKU
-                       WHEN      150000
-                         MOVE  WK-ZENGAKU  TO  WK-KOUREI-IRYOHI70
-                         MOVE  5           TO  FLG-IRYOHI70
-                       WHEN       80100
-                         MOVE  WK-ZENGAKU  TO  WK-KOUREI-IRYOHI70
-                         MOVE  6           TO  FLG-IRYOHI70
-                     END-EVALUATE
+                 IF   ( COMB-KOH1HKNNUM  =   "972" )
+                 OR   ( COMB-KOH2HKNNUM  =   "972" )
+                 OR   ( COMB-KOH3HKNNUM  =   "972" )
+                 OR   ( COMB-KOH4HKNNUM  =   "972" )
+      ***             MOVE    "1"    TO   FLG-SYUHEN
+                      IF   MAX-KIN-SYU-M   >  10000
+                          MOVE   10000   TO   MAX-KIN-SYU-M
+                      END-IF
+                 ELSE
+                  IF  ( COMB-KOH1HKNNUM  =   "974" )
+                  OR  ( COMB-KOH2HKNNUM  =   "974" )
+                  OR  ( COMB-KOH3HKNNUM  =   "974" )
+                  OR  ( COMB-KOH4HKNNUM  =   "974" )
+      ***             MOVE    "1"    TO   FLG-SYUHEN
+                      IF   MAX-KIN-SYU-M   >  20000
+                          MOVE   20000   TO   MAX-KIN-SYU-M
+                      END-IF
+                  ELSE
+                   IF  (COMB-KOH1HKNNUM(1:1) = "0")
+                   OR  (COMB-KOH2HKNNUM(1:1) = "0")
+                   OR  (COMB-KOH3HKNNUM(1:1) = "0")
+                   OR  (COMB-KOH4HKNNUM(1:1) = "0")
+      ***             MOVE    "1"        TO   FLG-SYUHEN
+                      IF  FLG-KOHYONKAIME = 1
+                        MOVE   44400       TO   MAX-KIN-SYU-M
+                      ELSE
+                        MOVE   80100       TO   MAX-KIN-SYU-M
+                        MOVE   WK-ZENGAKU  TO   WK-KOUREI-IRYOHI70
+                        MOVE   6           TO   FLG-IRYOHI70
+                      END-IF
+                   END-IF
                   END-IF
+                 END-IF
                 END-IF
-              END-IF
+               END-IF
       *
            END-IF.
       *
@@ -5283,7 +5307,7 @@
                               EVALUATE  WK-GEN70-GENDOGAKU
                                WHEN       80100
                                  MOVE  WK-ZENGAKU TO WK-KOUREI-IRYOHI70K
-                                 MOVE  3          TO FLG-IRYOHI70K
+                                 MOVE  1          TO FLG-IRYOHI70K
                               END-EVALUATE
                             END-IF
                          END-IF
@@ -6395,7 +6419,7 @@
            END-IF.
       *
            IF     FLG-GENBUTU70   NOT =   ZERO
-              IF     FLG-IRYOHI70     =  1 OR 3 OR 5
+              IF     FLG-IRYOHI70     =  1 OR 3
                 IF  WK-KOUREI-IRYOHI70  >  500000
                    COMPUTE WK-KOUREI-IRYOHI70X =
                         (( WK-KOUREI-IRYOHI70 - 500000 ) * 0.01 ) + 0.5
@@ -6420,14 +6444,6 @@
               END-IF
       *       ¼«Î©»Ù±çÅùÍÑ
               IF     FLG-IRYOHI70K    =  1
-                IF  WK-KOUREI-IRYOHI70K >  500000
-                   COMPUTE WK-KOUREI-IRYOHI70X =
-                        (( WK-KOUREI-IRYOHI70K - 500000 ) * 0.01 ) + 0.5
-                   COMPUTE  MAX-KIN-KOHI1-M  =   MAX-KIN-KOHI1-M
-                                             +   WK-KOUREI-IRYOHI70X
-                END-IF
-              END-IF
-              IF     FLG-IRYOHI70K    =  2 OR 3
                 IF  WK-KOUREI-IRYOHI70K >  267000
                    COMPUTE WK-KOUREI-IRYOHI70X =
                         (( WK-KOUREI-IRYOHI70K - 267000 ) * 0.01 ) + 0.5
@@ -7009,7 +7025,7 @@
            IF ((COMB-KOH1HKNNUM       NOT =  SPACE           ) AND
                (COMB-KOH1-NYUJGNKBN       =  "1"             ) AND
                (FLG-KOUREI                =  ZERO            ))
-           OR ( FLG-IRYOHI70              =  3 OR 4 OR 5 OR 6 )
+           OR ( FLG-IRYOHI70              =  3 OR 4 OR 6      )
            OR ( FLG-IRYOHI3               =  2                )
              IF  ( SYU-NYUGAIKBN              =   "1"   )
              OR  ((SYU-NYUGAIKBN              =   "2"  ) AND
@@ -7024,7 +7040,7 @@
                      (COMB-KOH1ID         =  WRK-COMB-KOH4ID))
       *
                  IF  FLG-GENBUTU70    NOT =  ZERO
-                  IF   FLG-IRYOHI70  =  3 OR 4 OR 5 OR 6
+                  IF   FLG-IRYOHI70  =  3 OR 4 OR 6
                     COMPUTE  WK-KOUREI-IRYOHI70  =
                              WK-KOUREI-IRYOHI70  +
                             (SYU-HKNTEN (16) * 10)
@@ -7565,11 +7581,11 @@
                      (COMB-KOH2ID         =  WRK-COMB-KOH4ID))
       *
                  IF  FLG-GENBUTU70    NOT =  ZERO
-                  IF  ((FLG-IRYOHI70       =  5 OR 6       ) AND
+                  IF  ((FLG-IRYOHI70       =  6            ) AND
                        (WK-1001-PREFNUM    =  07           ) AND
                        (LNK-SYU-KOH2HKNNUM = "245" OR "246") AND
                        (FLG-SYUKEI         =  ZERO         ))
-                  OR  ((FLG-IRYOHI70       =  5 OR 6       ) AND
+                  OR  ((FLG-IRYOHI70       =  6            ) AND
                        (WK-1001-PREFNUM    =  11           ) AND
                        (LNK-SYU-KOH2HKNNUM = "181" OR "182"
                                           OR "183" OR "281") AND
@@ -16625,7 +16641,6 @@
                   ELSE
                     MOVE    ZERO   TO    FLG-KOUGAKUCYO-GEN70
                   END-IF
-                WHEN      5
                 WHEN      6
                     MOVE    ZERO   TO    FLG-KOUGAKUCYO-GEN70
               END-EVALUATE
