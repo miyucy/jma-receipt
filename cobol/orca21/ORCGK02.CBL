@@ -7732,8 +7732,6 @@
                        MOVE    SPACE           TO  LNK-SC91-ERRCD
                        MOVE    SPACE           TO  LNK-SC91-ERRMSG
                        MOVE    SPACE           TO  SPA-COM-CUR (IDX)
-                       MOVE    "1"             TO  SPA-COM-HCHKFLG
-                                                                (IDX)
                    END-IF
                END-IF
                MOVE    LNK-SC91-ERRCD      TO  SPA-ERRCD

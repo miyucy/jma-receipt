@@ -5846,8 +5846,6 @@
                            MOVE    SPACE           TO  LNK-SC91-ERRMSG
                            MOVE    SPACE           TO  SPA-COM-CUR
                                                                   (IDX)
-                           MOVE    "1"             TO  SPA-COM-HCHKFLG
-                                                                  (IDX)
                        END-IF
                    END-IF
                    MOVE    LNK-SC91-ERRCD      TO  SPA-ERRCD
@@ -5858,7 +5856,8 @@
                    END-IF
                    MOVE    LNK-SC91-ERRMSG     TO  SPA-ERRMSG2
       *
-                   IF      SPA-ERRCD           =   SPACE
+                   IF     (SPA-ERRCD               =   SPACE )  AND
+                          (SPA-COM-HCHKFLG (IDX)   =   SPACE )
       *                併用算定チェック
       *                点数マスタ編集・基本チェック
                        INITIALIZE                  ORCSC92AREA
@@ -5886,12 +5885,15 @@
                            MOVE    LNK-SC92-ERRCD(6)   TO  SPA-ERRCD
                            MOVE    LNK-SC92-ERRMSG     TO  SPA-ERRMSG2
                        END-IF
+                       MOVE    SPACE       TO  SPA-COM-HCHKFLG (IDX)
                    END-IF
       *
                END-IF
            END-PERFORM
       *
-           IF      SPA-ERRCD       NOT =   SPACE
+           IF      SPA-ERRCD           =   SPACE
+               MOVE    "1"                 TO  SPA-COM-HCHKFLG (IDX)
+           ELSE
                MOVE    "1"                 TO  SPA-COM-CUR (IDX)
            END-IF
       *

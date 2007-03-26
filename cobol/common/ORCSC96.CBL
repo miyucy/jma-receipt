@@ -1269,6 +1269,13 @@
                                                DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
+               WHEN    "8043"
+                   STRING  "リハビリテーション料は逓減になります。"
+                                               DELIMITED  BY  SIZE
+                       "逓減を分けて入力して下さい。"
+                                               DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
       *投薬附加情報エラー
                WHEN    "0200"
                    STRING  "長期投与日数以上です。"
@@ -1402,7 +1409,7 @@
       *?                               TO  SPA-ERRMSG
                    STRING  "初診算定日を初診料の横に入力して初診算定日"
                            "を登録後、再診料の自動算定をして下さい"
-                                           DELIMITED  BY  SIZE
+                                           DELIMITED   BY  SIZE
                                            INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "1018"

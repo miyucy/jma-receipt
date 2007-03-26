@@ -39,6 +39,7 @@
       * 01.00.09     NACL-多々納  05/11/22  MONFUNC 対応 他
       * 01.00.11     NACL-多々納  06/06/12  診療科毎の同日初診判定
       * 03.04.00     NACL-多々納  07/01/11  リハビリ終了日追加
+      * 03.04.01     NACL-多々納  07/03/XX  リハビリ逓減追加(H19.4改正）
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -212,6 +213,7 @@
                 05   WRK-SYO-DD    PIC 9(02).
       *    診療日
            03   WRK-SRYYMD         PIC X(08).
+           03   WRK-EDSRYYMD       PIC X(08).
       **** 急性発生日＋15
       *    03   WRK-KYUSEI-15      PIC X(08).
       *    急性発生日＋30
@@ -233,6 +235,11 @@
       *
            03   WRK-RIHA-KBN       PIC X(01).
            03   WRK-RIHA-KBN2      PIC X(01).
+           03   WRK-RIHA-GEN       PIC X(01).
+      *@    逓減開始日
+           03   WRK-TEIGEN-YMD     PIC X(08).
+           03   WRK-TEIGEN         PIC X(08).
+           03   WRK-TEIGEN-MSG     PIC X(80).
       *
       *    自賠責金額用
            03  WRK-KINGAK          PIC 9(08).
@@ -359,6 +366,9 @@
       *
       *    診療行為用共通パラメタ
            COPY    "K01COMMON-SPA".
+      *
+      *    画面表示編集パラメタ
+           COPY    "CPORCSC94.INC".
       *
       *****************************************************************
       *    連絡　領域
@@ -1391,11 +1401,18 @@
            SEARCH  TBL-RIHABIRI-OCC    VARYING   TBL-RIH
                    AT  END
                        MOVE    ZERO            TO  FLG-RIHA-OK
+                       MOVE    SPACE           TO  WRK-RIHA-KBN
+                       MOVE    SPACE           TO  WRK-RIHA-KBN2
+                       MOVE    SPACE           TO  WRK-RIHA-GEN
                    WHEN    WRK-COM-INPUTCD (IDX-Z)
                                                =   TBL-RIHA-SRYCD
                                                            (TBL-RIH)
                        MOVE    TBL-RIHA-KBN (TBL-RIH)
                                                TO  WRK-RIHA-KBN
+                       MOVE    TBL-RIHA-KBN2 (TBL-RIH)
+                                               TO  WRK-RIHA-KBN2
+                       MOVE    TBL-RIHA-GEN (TBL-RIH)
+                                               TO  WRK-RIHA-GEN
                        MOVE    1               TO  FLG-RIHA-OK
            END-SEARCH 
       *
@@ -1405,7 +1422,10 @@
       *
       *    急性発生日計算処理
            PERFORM 1001121-KYUSEIYMD15-SEC
-      *
+      *@@
+      *    逓減開始日計算処理
+           PERFORM 100112-TEIGENYMD15-SEC
+      *@@
            IF     (SPA-NYUGAIKBN       =   "2" ) OR
                   (LNK-ORCSC-SYORIFLG  =   1   )
       *        外来か訂正の時の日上限と月上限のチェックと自動逓減
@@ -1473,6 +1493,71 @@
            .
        1001121-KYUSEIYMD15-EXT.
            EXIT.
+      *@@
+      *****************************************************************
+      *     逓減開始日計算処理
+      *****************************************************************
+       100112-TEIGENYMD15-SEC          SECTION.
+      *
+           MOVE    SPACE           TO  WRK-TEIGEN
+           MOVE    SPACE           TO  WRK-TEIGEN-YMD
+           MOVE    SPACE           TO  WRK-TEIGEN-MSG
+      *    急性発生日計算処理
+           EVALUATE    WRK-RIHA-KBN
+               WHEN    "1"
+                   MOVE    WRK-KYUSEI1-YMD     TO  WRK-TEIGEN
+                   IF      WRK-KYUSEI-ST (1)   =   "1"
+                       MOVE    SPA-SRYYMD          TO  WRK-TEIGEN
+                   END-IF
+                   MOVE    120                 TO  WRK-ZOGEN
+               WHEN    "2"
+                   MOVE    WRK-KYUSEI2-YMD     TO  WRK-TEIGEN
+                   IF      WRK-KYUSEI-ST (2)   =   "1"
+                       MOVE    SPA-SRYYMD          TO  WRK-TEIGEN
+                   END-IF
+                   MOVE    140                 TO  WRK-ZOGEN
+               WHEN    "3"
+                   MOVE    WRK-KYUSEI3-YMD     TO  WRK-TEIGEN
+                   IF      WRK-KYUSEI-ST (3)   =   "1"
+                       MOVE    SPA-SRYYMD          TO  WRK-TEIGEN
+                   END-IF
+                   MOVE    120                 TO  WRK-ZOGEN
+               WHEN    "4"
+                   MOVE    WRK-KYUSEI4-YMD     TO  WRK-TEIGEN
+                   IF      WRK-KYUSEI-ST (4)   =   "1"
+                       MOVE    SPA-SRYYMD          TO  WRK-TEIGEN
+                   END-IF
+                   MOVE    80                  TO  WRK-ZOGEN
+           END-EVALUATE
+      *
+           IF      WRK-TEIGEN      NOT =   SPACE
+      *    日後計算
+      *        逓減開始日
+               ADD     1                   TO  WRK-ZOGEN
+               INITIALIZE                      STS-AREA-DAY
+               INITIALIZE                      LNK-DAY6-AREA
+               MOVE    "61"                TO  LNK-DAY6-IRAI
+               MOVE    WRK-TEIGEN          TO  LNK-DAY6-KIJUN
+               MOVE    "1"                 TO  LNK-DAY6-ZOGENPTN
+               MOVE    WRK-ZOGEN           TO  LNK-DAY6-ZOGEN
+               CALL    "ORCSDAY"           USING   STS-AREA-DAY
+                                                   LNK-DAY6-AREA
+               MOVE    LNK-DAY6-KOYOMI     TO  WRK-TEIGEN-YMD
+      *        発生日
+               INITIALIZE                      STS-AREA-DAY
+               INITIALIZE                      LNK-DAY2-AREA
+               MOVE    "21"                TO  LNK-DAY2-IRAI
+               MOVE    WRK-TEIGEN-YMD      TO  LNK-DAY2-YMD
+               CALL    "ORCSDAY"           USING   STS-AREA-DAY
+                                                   LNK-DAY2-AREA
+               STRING  "逓減開始日："      DELIMITED  BY  SIZE
+                       LNK-DAY2-EDTYMD3    DELIMITED  BY  SIZE
+                      INTO                 WRK-TEIGEN-MSG
+               END-STRING
+           END-IF
+           .
+       100112-TEIGENYMD15-EXT.
+      *@@
       *
       *****************************************************************
       *     精神通院の加算チェック処理
@@ -2147,6 +2232,12 @@
       *
            MOVE    SPA-SRYYMD(7:2)    TO  IDD
            MOVE    SPA-SRYYMD         TO  WRK-SRYYMD
+      *@@
+      *    逓減チェック処理
+           IF      WRK-SRYYMD         >=  "20070401"
+               PERFORM 20020-TEIGEN-CHEK-SEC
+           END-IF
+      *@@
       *
            MOVE    ZERO               TO  WRK-DAYCNT
       *
@@ -2160,6 +2251,112 @@
        2002-GAIRAI-ALL-CHK-EXT.
            EXIT.
       *
+      *****************************************************************
+      *    逓減チェック処理（外来）
+      *****************************************************************
+       20020-TEIGEN-CHEK-SEC         SECTION.
+      *
+           MOVE    SPACE               TO  WRK-SRYCD
+           IF     (WRK-TEIGEN-YMD  NOT =   SPACE )  AND
+                  (WRK-TEIGEN-YMD      <=  WRK-SRYYMD)
+      *        逓減
+               IF      WRK-RIHA-GEN        =   "2"
+                   CONTINUE
+               ELSE
+      *        逓減コードに変更
+                   SET     TBL-RIH             TO  1
+                   SEARCH  TBL-RIHABIRI-OCC    VARYING   TBL-RIH
+                       AT  END
+                           MOVE    SPACE           TO  WRK-SRYCD
+                       WHEN   (TBL-RIHA-KBN (TBL-RIH)
+                                               =   WRK-RIHA-KBN )
+                       AND    (TBL-RIHA-KBN2(TBL-RIH)
+                                               =   WRK-RIHA-KBN2 )
+                       AND    (TBL-RIHA-GEN (TBL-RIH)
+                                               =   "2"    )
+                           MOVE    TBL-RIHA-SRYCD (TBL-RIH)
+                                                   TO  WRK-SRYCD
+                   END-SEARCH
+               END-IF
+           END-IF
+           IF     (WRK-TEIGEN-YMD  NOT =   SPACE )  AND
+                  (WRK-TEIGEN-YMD      >   WRK-SRYYMD)
+      *        逓減期間外
+               IF      WRK-RIHA-GEN        =   "2"
+      *        逓減を変更
+                   SET     TBL-RIH             TO  1
+                   SEARCH  TBL-RIHABIRI-OCC    VARYING   TBL-RIH
+                       AT  END
+                           MOVE    SPACE           TO  WRK-SRYCD
+                       WHEN   (TBL-RIHA-KBN (TBL-RIH)
+                                               =   WRK-RIHA-KBN )
+                       AND    (TBL-RIHA-KBN2(TBL-RIH)
+                                               =   WRK-RIHA-KBN2 )
+                       AND    (TBL-RIHA-GEN (TBL-RIH)
+                                               =   SPACE  )
+                           MOVE    TBL-RIHA-SRYCD (TBL-RIH)
+                                                   TO  WRK-SRYCD
+                   END-SEARCH
+               END-IF
+           END-IF
+      *
+           IF      (WRK-SRYCD     NOT =   SPACE )  AND
+                   (WRK-SRYCD     NOT =   WRK-COM-INPUTCD (IDX-Z))
+               PERFORM 200201-TENGEN-HEN-SEC
+           END-IF
+      *
+           .
+       20020-TEIGEN-CHEK-EXT.
+           EXIT.
+      *****************************************************************
+      *    リハビリコード置換え処理
+      *****************************************************************
+       200201-TENGEN-HEN-SEC                SECTION.
+      *
+      *    点数マスタ編集・基本チェック
+           MOVE    WRK-SCR-REC         TO  HZN-SCR-REC
+      *
+           MOVE    WRK-SRYCD           TO  WRK-COM-INPUTCD (IDX-Z)
+           MOVE    WRK-SRYCD           TO  WRK-GMN-INPUTCD (IDX-Z)
+           INITIALIZE                  ORCSC92AREA
+           MOVE    SPACE               TO  LNK-SC92-KBN
+           MOVE    SPACE               TO  WRK-COM-CHKFLG (IDX-Z)
+           MOVE    SPACE               TO  WRK-COM-HCHKFLG (IDX-Z)
+           MOVE    LNK-ORCSC-SYORIFLG  TO  LNK-SC92-SYORIFLG
+           MOVE    LNK-ORCSC-PG        TO  LNK-SC92-PG
+           MOVE    IDX-Z               TO  LNK-SC92-GMN-IDX
+           MOVE    WRK-SRYCD           TO  LNK-SC92-SRYCD
+           MOVE    LNK-ORCSC-NENREI    TO  LNK-SC92-NENREI
+           MOVE    LNK-ORCSC-ROUJIN    TO  LNK-SC92-ROUJIN
+           MOVE    LNK-ORCSC-LSTSRYKA  TO  LNK-SC92-LSTSRYKA
+           MOVE    LNK-ORCSC-LSTSRYKAMEI   TO  LNK-SC92-LSTSRYKAMEI
+           MOVE    LNK-ORCSC-TEISEI-AREA TO  LNK-SC92-TEISEI-AREA
+           CALL    "ORCSC92"           USING
+                                       MCPAREA
+                                       ORCSC92AREA
+                                       WRK-SCR-REC
+                                       SPA-AREA
+      *
+      *    エラーの時、変更なし
+           IF     (SPA-ERRCD           NOT =   SPACE )  OR
+                  (LNK-SC92-ERRAREA    NOT =   SPACE )
+               MOVE    SPACE               TO  SPA-ERRCD
+               MOVE    HZN-SCR-REC         TO  WRK-SCR-REC
+           ELSE
+      *    画面再編集・基本チェック
+               INITIALIZE                  ORCSC94AREA
+               MOVE    "1"                 TO  LNK-SC94-KBN
+               MOVE    LNK-SC92-PG         TO  LNK-SC94-PG
+               MOVE    IDX-Z               TO  LNK-SC94-IDX
+               CALL    "ORCSC94"           USING
+                                           ORCSC94AREA
+                                           WRK-SCR-REC
+                                           SPA-AREA
+      *
+           END-IF
+           .
+       200201-TENGEN-HEN-EXT.
+           EXIT.
       *****************************************************************
       *    当日上限チェック処理
       *****************************************************************
@@ -2182,13 +2379,6 @@
                        WHEN    "4"
                            MOVE    "K834"          TO  SPA-ERRCD
                    END-EVALUATE
-      ***********  IF      SPA-NYUGAIKBN   =   "1"
-      *                MOVE    SPACE           TO  LNK-ORCSC-ERRMSG
-      *                STRING  IDD             DELIMITED  BY  SIZE
-      *                        "日"            DELIMITED  BY  SIZE
-      *                                    INTO    LNK-ORCSC-ERRMSG
-      *                END-STRING
-      ************ END-IF
                    MOVE    WRK-KYUSEI-MSG  TO  LNK-ORCSC-ERRMSG
                    MOVE    "1"             TO  WRK-COM-CUR  (IDX-Z)
                END-IF
@@ -2261,6 +2451,13 @@
       *****************************************************************
        2001-NYUIN-ALL-CHK-SEC         SECTION.
       *
+      *@@
+      *    逓減チェック処理
+           IF     (SPA-SRYYMD         >=  "20070401" )
+             AND  (WRK-TEIGEN-YMD NOT =   SPACE      )
+               PERFORM  20010-TEIGEN-CHEKN-SEC
+           END-IF
+      *@@
       *    入力日分のチェック
            PERFORM VARYING     IDX2    FROM    1   BY  1
                    UNTIL      (IDX2    >   31  )   OR
@@ -2279,6 +2476,86 @@
       *
            .
        2001-NYUIN-ALL-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    逓減チェック処理（入院）
+      *****************************************************************
+       20010-TEIGEN-CHEKN-SEC                SECTION.
+      *
+           MOVE    SPACE               TO  WRK-SRYCD
+           MOVE    SPACE               TO  WRK-SRYYMD
+           MOVE    SPACE               TO  WRK-EDSRYYMD
+           PERFORM VARYING     IDX2    FROM    1   BY  1
+                   UNTIL      (IDX2    >   31  )   OR
+                              (SPA-ERRCD   NOT =   SPACE )
+               IF      WRK-COM-NYUINDAY (IDX-Z IDX2)   >   ZERO
+                   MOVE    IDX2                TO  IDD
+                   IF      WRK-SRYYMD          =   SPACE
+                       MOVE    SPA-SRYYMD          TO  WRK-SRYYMD
+                       MOVE    IDD                 TO  WRK-SRYYMD (7:2)
+                   END-IF
+                   MOVE    SPA-SRYYMD          TO  WRK-EDSRYYMD
+                   MOVE    IDD                 TO  WRK-EDSRYYMD (7:2)
+               END-IF
+           END-PERFORM
+      *
+      *    逓減開始日の範囲チェック
+           IF     (WRK-TEIGEN-YMD      <=  WRK-SRYYMD)
+      *        逓減
+               IF      WRK-RIHA-GEN        =   "2"
+                   CONTINUE
+               ELSE
+      *        逓減コードに変更
+                   SET     TBL-RIH             TO  1
+                   SEARCH  TBL-RIHABIRI-OCC    VARYING   TBL-RIH
+                       AT  END
+                           MOVE    SPACE           TO  WRK-SRYCD
+                       WHEN   (TBL-RIHA-KBN (TBL-RIH)
+                                               =   WRK-RIHA-KBN )
+                       AND    (TBL-RIHA-KBN2(TBL-RIH)
+                                               =   WRK-RIHA-KBN2 )
+                       AND    (TBL-RIHA-GEN (TBL-RIH)
+                                               =   "2"    )
+                           MOVE    TBL-RIHA-SRYCD (TBL-RIH)
+                                                   TO  WRK-SRYCD
+                   END-SEARCH
+               END-IF
+           END-IF
+           IF     (WRK-TEIGEN-YMD      >   WRK-SRYYMD )  AND
+                  (WRK-TEIGEN-YMD      >   WRK-EDSRYYMD)
+      *        逓減期間外
+               IF      WRK-RIHA-GEN        =   "2"
+      *        逓減を変更
+                   SET     TBL-RIH             TO  1
+                   SEARCH  TBL-RIHABIRI-OCC    VARYING   TBL-RIH
+                       AT  END
+                           MOVE    SPACE           TO  WRK-SRYCD
+                       WHEN   (TBL-RIHA-KBN (TBL-RIH)
+                                               =   WRK-RIHA-KBN )
+                       AND    (TBL-RIHA-KBN2(TBL-RIH)
+                                               =   WRK-RIHA-KBN2 )
+                       AND    (TBL-RIHA-GEN (TBL-RIH)
+                                               =   SPACE  )
+                           MOVE    TBL-RIHA-SRYCD (TBL-RIH)
+                                                   TO  WRK-SRYCD
+                   END-SEARCH
+               END-IF
+           END-IF
+      *    逓減期間が混在する時、エラー
+           IF     (WRK-TEIGEN-YMD      >   WRK-SRYYMD )  AND
+                  (WRK-TEIGEN-YMD      <=  WRK-EDSRYYMD)
+               MOVE    "8043"          TO  SPA-ERRCD
+               MOVE    WRK-TEIGEN-MSG  TO  LNK-ORCSC-ERRMSG
+               MOVE    "1"             TO  WRK-COM-CUR  (IDX-Z)
+           END-IF
+      *    逓減コード置換え
+           IF      (WRK-SRYCD     NOT =   SPACE )  AND
+                   (WRK-SRYCD     NOT =   WRK-COM-INPUTCD (IDX-Z))
+               PERFORM 200201-TENGEN-HEN-SEC
+           END-IF
+           .
+       20010-TEIGEN-CHEKN-EXT.
            EXIT.
       *
       *****************************************************************
