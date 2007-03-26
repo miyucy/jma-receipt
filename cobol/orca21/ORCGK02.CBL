@@ -6359,6 +6359,11 @@
            IF      SPA-GMN-IDX         =   ZERO
                GO      TO      410119-SAIINPUT-EXT
            END-IF
+      *    他画面遷移時カーソル移動なし
+           IF      FLG-HENKOU          =   1
+               GO      TO      410119-SAIINPUT-EXT
+           END-IF
+      *
       *    数量・回数入力なし
            IF     (SPA-COM-SURFLG (SPA-GMN-IDX)  =   SPACE ) AND
                   (SPA-COM-IN2    (SPA-GMN-IDX)  =   "2"   ) AND

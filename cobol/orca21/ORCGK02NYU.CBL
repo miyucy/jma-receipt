@@ -4631,6 +4631,10 @@
            ELSE
                MOVE    WRK-IN-IDX          TO  SPA-GMN-IDX
            END-IF
+      *    他画面遷移時カーソル移動なし
+           IF      FLG-HENKOU          =   1
+               GO      TO      410119-SAIINPUT-EXT
+           END-IF
       *
       *    数量・回数入力なし
            IF     (SPA-GMN-IDX             >   ZERO        ) AND
