@@ -1977,6 +1977,11 @@
                   (FLG-RKAN-OK2        =   1    ))
                GO      TO      20054-RIHA-CHKSYORI-EXT
            END-IF
+      *    どちらかが慢性疼痛疾患管理料の場合、エラー
+           IF     (LNK-SC92-SRYCD      =   "113006510" OR
+                   WRK-CHK-CD          =   "113006510" )
+               GO      TO      20054-RIHA-CHKSYORI-EXT
+           END-IF
       *
       *    直帰の初診算定日を決定する
            PERFORM 200531-SYOSIN-SANTEI-SEC
