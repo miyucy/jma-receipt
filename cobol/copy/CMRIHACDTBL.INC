@@ -48,12 +48,9 @@
       *    呼吸器リハビリ（８０超）
            03  FILLER              PIC X(13)   VALUE   "421 180029710".
            03  FILLER              PIC X(13)   VALUE   "422 180029810".
-      *Ｈ２０．４から(算定履歴作成用）
-      *    脳血管疾病リハビリ３
-           03  FILLER              PIC X(13)   VALUE   "2 3 180030810".
       *
        01  TBL-RIHABIRI-AREA-R     REDEFINES   TBL-RIHABIRI-AREA.
-           03  TBL-RIHABIRI-OCC    OCCURS   17   INDEXED   TBL-RIH.
+           03  TBL-RIHABIRI-OCC    OCCURS   16   INDEXED   TBL-RIH.
       *        リハビリ種類
                05  TBL-RIHA-KBN        PIC X(01).
                05  TBL-RIHA-GEN        PIC X(01).
