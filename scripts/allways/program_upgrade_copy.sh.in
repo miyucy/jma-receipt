@@ -20,7 +20,7 @@ if ! [	-d	$HOME/$PRGDIR	];	then
 fi
 
 #プログラム複写
-	cp	$HOME/$PRGDIR/$1	 $PATCHDIR/$2
+	cp -p	$HOME/$PRGDIR/$1	 $PATCHDIR/$2
 	touch	$PATCHDIR/copying
 #
 exit
