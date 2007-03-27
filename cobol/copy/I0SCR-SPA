@@ -789,6 +789,8 @@
                                15  SPA-NAI-I04-SEIKYU-OCC
                                                          OCCURS    23.
                                    17  SPA-NAI-I04-SEIKYU    PIC S9(07).
+                                   17  SPA-NAI-I04-SEIKYU-PLUS
+                                                            PIC S9(07).
                                    17  SPA-NAI-I04-SEIKYU-KON
                                                              PIC S9(07).
                                    17  SPA-NAI-I04-SEIKYU-MOT

@@ -758,7 +758,9 @@
            PERFORM 3100-MISYU-DAT-EDIT-SEC
       *
       *    入金額編集
-           PERFORM 3100-NYUKIN-DAT-EDIT-SEC
+           IF    ( SPA-NAI-I04-NYKNJYOTAI  =   "1" )
+               PERFORM 3100-NYUKIN-DAT-EDIT-SEC
+           END-IF
       *
       *    合計行編集処理
            PERFORM 4101-TTL-LINE-EDIT-SEC
@@ -1370,6 +1372,22 @@
       *****************************************************************
        3100-NYUKIN-DAT-EDIT-SEC        SECTION.
       *
+           MOVE    ZERO            TO  SPA-NAI-I04-NYUKIN
+                                       (SPA-I0-SYUNOU-CNT)
+      *
+           PERFORM VARYING IDX1    FROM    1   BY  1
+                   UNTIL ( IDX1    >   SPA-I0-SYUNOU-CNT )
+               IF    ( SPA-I0-SYUNOU-TTLDAT-FLG (IDX1)
+                                       =   ZERO )
+      *
+                   COMPUTE SPA-NAI-I04-NYUKIN (SPA-I0-SYUNOU-CNT)
+                       =   SPA-NAI-I04-NYUKIN (SPA-I0-SYUNOU-CNT)
+                       +   SPA-NAI-I04-SEIKYU-PLUS
+                                              (IDX1)
+      *
+               END-IF
+           END-PERFORM
+      *
            MOVE    SPA-I0-SYUNOU-CNT   TO  IDX-LST
            MOVE    SPA-NAI-I04-NYUKIN (SPA-I0-SYUNOU-CNT)
                                        TO  WRK-NYUKIN
@@ -1413,6 +1431,12 @@
                                                    (IDX1)
                                            SPA-NAI-I04-SEIKYU-KON
                                                    (IDX1)
+      *
+               IF    ( WRK-SKYMONEY    >   ZERO )
+                   MOVE    WRK-SKYMONEY TO SPA-NAI-I04-SEIKYU-PLUS
+                                                   (IDX1)
+               END-IF
+      *
                MOVE    WKSYU-CHOSEI    TO  SPA-NAI-I04-CHOSEI
                                                    (IDX1)
                                            SPA-NAI-I04-CHOSEI-MOT
@@ -1423,7 +1447,8 @@
       *        MOVE    WKSYU-SKYMONEY      TO  SPA-NAI-I04-NYUKIN
       *                                            (IDX1)
                IF    ( SPA-NAI-I04-NYKNJYOTAI  =   "1" )
-                   IF    ( WRK-SKYMONEY    >=  ZERO )
+                   IF    ( WRK-SKYMONEY
+                                       >=  ZERO )
                        MOVE    WRK-SKYMONEY
                                        TO  SPA-NAI-I04-NYUKIN
                                                    (IDX1)
@@ -1561,7 +1586,7 @@
       *
       *
       *    合計請求額
-           COMPUTE SPA-GMN-I04-SEIGOK  =   SPA-NAI-I04-SEIKYU
+           COMPUTE SPA-GMN-I04-SEIGOK  =   SPA-NAI-I04-SEIKYU-PLUS
                                                 (SPA-I0-SYUNOU-CNT)
                                        +   SPA-GMN-I04-ZENMISYU-NYU
       *
@@ -2143,23 +2168,28 @@
       *
       *    入金上限額
            IF    ( SPA-GMN-I04-NYKNKNRKBN-CD   =   "1" )
-               MOVE    SPA-NAI-I04-SEIKYU (SPA-I0-SYUNOU-CNT)
+               MOVE    SPA-NAI-I04-SEIKYU-PLUS (SPA-I0-SYUNOU-CNT)
                                        TO  WRK-NYUKINLIMIT
            ELSE
                MOVE    SPA-GMN-I04-SEIGOK
                                        TO  WRK-NYUKINLIMIT
            END-IF
       *
-           IF    ( SPA-GMN-I04-SEIKYU  >   ZERO )
-            AND  ( WRK-NYUKINLIMIT     >   ZERO )
-               MOVE    "入金上限額："  TO  I04-LBLNYUKINMAX
-               MOVE    WRK-NYUKINLIMIT TO  WRK-Z99
-               MOVE    WRK-Z99         TO  WRK-STR
-               PERFORM 800-LTRIM-SEC
-               STRING  WRK-STR         DELIMITED   BY  SPACE
-                       "円"            DELIMITED   BY  SIZE
-               INTO  I04-NYUKINMAX
-               END-STRING
+           IF    ( SPA-GMN-I04-HKNCOMBILST-SEL >   ZERO )
+               MOVE    SPA-NAI-I04-TSYUNOUIDX
+                                       (SPA-GMN-I04-HKNCOMBILST-SEL)
+                                       TO  IDX1
+               IF    ( SPA-NAI-I04-SEIKYU-PLUS (IDX1)  >   ZERO )
+                AND  ( WRK-NYUKINLIMIT     >   ZERO )
+                   MOVE    "入金上限額："  TO  I04-LBLNYUKINMAX
+                   MOVE    WRK-NYUKINLIMIT TO  WRK-Z99
+                   MOVE    WRK-Z99         TO  WRK-STR
+                   PERFORM 800-LTRIM-SEC
+                   STRING  WRK-STR         DELIMITED   BY  SPACE
+                           "円"            DELIMITED   BY  SIZE
+                   INTO  I04-NYUKINMAX
+                   END-STRING
+               END-IF
            END-IF
       *
            IF    ( SPA-GMN-I04-NYKNKNRKBN-CD   =   "1" )
@@ -2398,9 +2428,18 @@
                END-IF
            END-IF
       *
-           IF    ( SPA-GMN-I04-SEIKYU  <=  ZERO )
-               MOVE    WIDGET-INSENSITIVE
+           IF    ( SPA-GMN-I04-HKNCOMBILST-SEL =   ZERO )
+                   MOVE    WIDGET-INSENSITIVE
                                    TO  I04-NYUKIN-STT
+           ELSE
+               MOVE    SPA-NAI-I04-TSYUNOUIDX
+                                       (SPA-GMN-I04-HKNCOMBILST-SEL)
+                                       TO  IDX1
+               IF    ( SPA-NAI-I04-SEIKYU-PLUS (IDX1)
+                                   <=  ZERO )
+                   MOVE    WIDGET-INSENSITIVE
+                                   TO  I04-NYUKIN-STT
+               END-IF
            END-IF
       *
            .
@@ -2788,8 +2827,6 @@
                                    +   SPA-NAI-I04-SEIKYU-MOT (IDXZ)
                                    -   SPA-NAI-I04-CHOSEI-MOT (IDXZ)
       *
-           DISPLAY "WRK-SEIKYU  = " WRK-SEIKYU  
-      *
            IF     (WRK-SEIKYU          <   ZERO )
                MOVE    "0004"      TO  SPA-ERRCD
                MOVE    102         TO  SPA-GMN-I04-CUR
@@ -2842,10 +2879,8 @@
                IF    ( SPA-GMN-I04-NYKNKNRKBN-CD   =   "1" )
       *
       *            今回入金が請求額以下であること
-                   IF   ( SPA-GMN-I04-SEIKYU
-                                       >=  ZERO )
-                    AND ( SPA-GMN-I04-NYUKIN
-                                       >   SPA-GMN-I04-SEIKYU )
+                   IF   (SPA-GMN-I04-NYUKIN
+                                   >   SPA-NAI-I04-SEIKYU-PLUS(IDXZ))
                        MOVE    "0008"  TO  SPA-ERRCD
                        MOVE    1       TO  SPA-GMN-I04-CUR
                        GO  TO  4100-NYUKIN-CHK-EXT
@@ -2973,15 +3008,15 @@
                            =   SPA-NAI-I04-NYUKIN (IDX7)
                            +   WRK-NYUKIN
       *
-                       IF    ( SPA-NAI-I04-SEIKYU (IDX7)
+                       IF    ( SPA-NAI-I04-SEIKYU-PLUS (IDX7)
                                        >   SPA-NAI-I04-NYUKIN (IDX7) )
                            MOVE    ZERO    TO  WRK-NYUKIN
                        ELSE
                            COMPUTE WRK-NYUKIN
                                =   SPA-NAI-I04-NYUKIN (IDX7)
-                               -   SPA-NAI-I04-SEIKYU (IDX7)
+                               -   SPA-NAI-I04-SEIKYU-PLUS (IDX7)
       *
-                           MOVE    SPA-NAI-I04-SEIKYU (IDX7)
+                           MOVE    SPA-NAI-I04-SEIKYU-PLUS (IDX7)
                                            TO  SPA-NAI-I04-NYUKIN (IDX7)
       *
                        END-IF
@@ -3091,15 +3126,15 @@
       *
                        MOVE    WRK-NYUKIN  TO  SPA-NAI-I04-NYUKIN (IDX7)
       *
-                       IF    ( SPA-NAI-I04-SEIKYU (IDX7)
+                       IF    ( SPA-NAI-I04-SEIKYU-PLUS (IDX7)
                                        >   SPA-NAI-I04-NYUKIN (IDX7) )
                            MOVE    ZERO    TO  WRK-NYUKIN
                        ELSE
                            COMPUTE WRK-NYUKIN
                                =   SPA-NAI-I04-NYUKIN (IDX7)
-                               -   SPA-NAI-I04-SEIKYU (IDX7)
+                               -   SPA-NAI-I04-SEIKYU-PLUS (IDX7)
       *
-                           MOVE    SPA-NAI-I04-SEIKYU (IDX7)
+                           MOVE    SPA-NAI-I04-SEIKYU-PLUS (IDX7)
                                        TO  SPA-NAI-I04-NYUKIN (IDX7)
       *
                        END-IF
@@ -3124,8 +3159,17 @@
                                        -   SPA-NAI-I04-CHOSEI-MOT
                                                               (IDX-G)
       *
+      *
            MOVE    SPA-NAI-I04-SEIKYU (IDX-G)
                                        TO  SPA-GMN-I04-SEIKYU
+                                           SPA-NAI-I04-SEIKYU-PLUS
+                                                              (IDX-G)
+      *
+           IF    ( SPA-NAI-I04-SEIKYU-PLUS (IDX-G)
+                                       <   ZERO )
+               MOVE    ZERO            TO  SPA-NAI-I04-SEIKYU-PLUS
+                                                              (IDX-G)
+           END-IF
       *
       *    今回入金
       *    IF    ( SPA-GMN-I04-SEIKYU  <   ZERO )
@@ -3143,7 +3187,7 @@
            PERFORM 4101-TTL-LINE-EDIT-SEC
       *
       *    合計請求額
-           COMPUTE SPA-GMN-I04-SEIGOK  =   SPA-NAI-I04-SEIKYU
+           COMPUTE SPA-GMN-I04-SEIGOK  =   SPA-NAI-I04-SEIKYU-PLUS
                                                 (SPA-I0-SYUNOU-CNT)
                                        +   SPA-GMN-I04-ZENMISYU-NYU
       *
@@ -3162,6 +3206,8 @@
                =   SPA-I0-SYUNOU-CNT   -   1
       *
            MOVE    ZERO    TO  SPA-NAI-I04-SEIKYU (SPA-I0-SYUNOU-CNT)
+                               SPA-NAI-I04-SEIKYU-PLUS
+                                                  (SPA-I0-SYUNOU-CNT)
                                SPA-NAI-I04-CHOSEI (SPA-I0-SYUNOU-CNT)
       *                        SPA-NAI-I04-NYUKIN (SPA-I0-SYUNOU-CNT)
       *
@@ -3174,6 +3220,7 @@
                    MOVE    IDXY    TO  IDX-SUM
                    MOVE    ZERO
                            TO  SPA-NAI-I04-SEIKYU (IDX-SUM)
+                               SPA-NAI-I04-SEIKYU-PLUS (IDX-SUM)
                                SPA-NAI-I04-CHOSEI (IDX-SUM)
                                SPA-NAI-I04-NYUKIN (IDX-SUM)
                ELSE
@@ -3187,6 +3234,20 @@
                        COMPUTE SPA-NAI-I04-SEIKYU (SPA-I0-SYUNOU-CNT)
                            =   SPA-NAI-I04-SEIKYU (SPA-I0-SYUNOU-CNT)
                            +   SPA-NAI-I04-SEIKYU (IDXY)
+      *
+      *                請求金額（プラス分）
+                       COMPUTE SPA-NAI-I04-SEIKYU-PLUS
+                                                  (IDX-SUM)
+                           =   SPA-NAI-I04-SEIKYU-PLUS
+                                                  (IDX-SUM)
+                           +   SPA-NAI-I04-SEIKYU-PLUS
+                                                  (IDXY)
+                       COMPUTE SPA-NAI-I04-SEIKYU-PLUS
+                                                 (SPA-I0-SYUNOU-CNT)
+                           =   SPA-NAI-I04-SEIKYU-PLUS
+                                                 (SPA-I0-SYUNOU-CNT)
+                           +   SPA-NAI-I04-SEIKYU-PLUS
+                                                 (IDXY)
       *
       *                調整金額
                        COMPUTE SPA-NAI-I04-CHOSEI (IDX-SUM)
@@ -3478,13 +3539,15 @@
       *
            PERFORM 3100-MISYU-DAT-EDIT-SEC
       *
-           PERFORM 3100-NYUKIN-DAT-EDIT-SEC
+           IF    ( SPA-NAI-I04-NYKNJYOTAI  =   "1" )
+               PERFORM 3100-NYUKIN-DAT-EDIT-SEC
+           END-IF
       *
            PERFORM 4101-TTL-LINE-EDIT-SEC
       *
            PERFORM 3100-HKNCOMBILST-EDIT-SEC
       *
-           MOVE    SPA-NAI-I04-TSYUNOUIDX(1)
+           MOVE    SPA-NAI-I04-TSYUNOUIDX(SPA-GMN-I04-SELNUM)
                                    TO  WRK-LST-IDX
            PERFORM 3100-SEIKYU-DAT-EDIT-SEC
       *
@@ -3522,10 +3585,14 @@
       *
            MOVE    SPA-I0-SYUNOU-CNT   TO  IDX-LST
            IF    ( SPA-GMN-I04-NYKNKNRKBN-CD   =   "1" )
-               MOVE    SPA-NAI-I04-SEIKYU (SPA-I0-SYUNOU-CNT)
+               MOVE    SPA-NAI-I04-SEIKYU-PLUS (SPA-I0-SYUNOU-CNT)
                                            TO  WRK-NYUKIN
            ELSE
-               MOVE    SPA-GMN-I04-SEIGOK  TO  WRK-NYUKIN
+               MOVE   SPA-GMN-I04-SEIGOK  TO  WRK-NYUKIN
+           END-IF
+      *
+           IF    ( WRK-NYUKIN      <   ZERO )
+               MOVE    ZERO        TO  WRK-NYUKIN
            END-IF
       *
            PERFORM 4101-NYUKIN-SORT-SEC
