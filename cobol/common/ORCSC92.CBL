@@ -2122,7 +2122,10 @@
                END-IF
                IF    ((FLG-RKAN-OK         =   1  )  OR
                       (FLG-RKAN-OK2        =   1  ))
-                   MOVE    SANTEI-FSANTEIYMD   TO  WRK-FSANTEIYMD
+      *            診療日より前
+                   IF      SPA-SRYYMD      >   SANTEI-FSANTEIYMD
+                       MOVE    SANTEI-FSANTEIYMD   TO  WRK-FSANTEIYMD
+                   END-IF
                END-IF
            END-IF
       *
@@ -2193,9 +2196,17 @@
                END-IF
       *        初回リハビリ管理料より前の時なしとする
                IF     (WRK-FSANTEIYMD  NOT =   SPACE )  AND
-                      (WRK-YMD2            <   WRK-FSANTEIYMD)
+                      (WRK-YMD2            <   WRK-FSANTEIYMD) AND
+                      (WRK-FSANTEIYMD      <   SPA-SRYYMD    )
                    IF      LNK-SC92-SRYCD  =   WRK-SRYCD
                        MOVE    SPACE           TO  WRK-YMD
+                   END-IF
+               END-IF
+      *        今回が初回
+               IF     (WRK-FSANTEIYMD      =   SPACE )  AND
+                      (WRK-YMD2            >=  SPA-SRYYMD)
+                   IF      LNK-SC92-SRYCD  =   WRK-SRYCD
+                       MOVE    SPA-SRYYMD      TO  WRK-YMD
                    END-IF
                END-IF
            END-IF
@@ -2452,7 +2463,10 @@
                END-IF
                IF    ((FLG-RKAN-OK         =   1  )  OR
                       (FLG-RKAN-OK2        =   1  ))
-                   MOVE    SANTEI-FSANTEIYMD   TO  WRK-FSANTEIYMD
+      *            診療日より前
+                   IF      SPA-SRYYMD      >   SANTEI-FSANTEIYMD
+                       MOVE    SANTEI-FSANTEIYMD   TO  WRK-FSANTEIYMD
+                   END-IF
                END-IF
            END-IF
       *
