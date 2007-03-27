@@ -30,7 +30,7 @@
       *  01.00.04    NACL-多々納  05/11/18  MONFUNC 対応 他
       *  03.03.00    NACL-多々納  06/10/20  矯正固定等追加
       *  03.04.00    NACL-多々納  06/12/01  自賠責健保準拠追加
-      *  03.04.01    NACL-多々納  07/03/20  リハビリ管理料追加（H19.4改正）
+      *  03.04.01    NACL-多々納  07/03/XX  リハビリ管理料追加（H19.4改正）
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -126,21 +126,6 @@
       *    慢性疼痛疾患
        01  WRK-MANSE-AREA.
            03  WRK-MANSEI          PIC X(09)   VALUE   "113006510".
-      *
-       01  TBL-RIHA-KANRI-AREA.
-      *    リハビリ医学管理料
-           03  FILLER              PIC X(09)   VALUE   "180029910".
-           03  FILLER              PIC X(09)   VALUE   "180030010".
-           03  FILLER              PIC X(09)   VALUE   "180030110".
-           03  FILLER              PIC X(09)   VALUE   "180030210".
-           03  FILLER              PIC X(09)   VALUE   "180030310".
-           03  FILLER              PIC X(09)   VALUE   "180030410".
-           03  FILLER              PIC X(09)   VALUE   "180030510".
-           03  FILLER              PIC X(09)   VALUE   "180030610".
-       01  TBL-RIHA-KANRI-AREA-R   REDEFINES   TBL-RIHA-KANRI-AREA.
-           03  TBL-RIHA-KANRI-OCC      OCCURS   8
-                                                INDEXED   TBL-RKA.
-               05  TBL-RIHA-KAN-SRYCD      PIC X(09).
       *
       *    保険別算定履歴テーブル
            COPY   "CMSANTEITBL.INC".
@@ -383,7 +368,7 @@
                WHEN   (SSANTEI-SRYCD   =   TBL-SANTEI-SRYCD
                                                           (TBL-SAN))
                   AND (TBL-RSI-KBN (TBL-SAN)   =   "S"   )
-                       MOVE    1               TO  FLG-RKAN-OK
+                  MOVE    1               TO  FLG-RKAN-OK
            END-SEARCH
            IF      FLG-RKAN-OK         =   1
                PERFORM 1009-MANSE-CHK-SEC
@@ -733,9 +718,11 @@
            MOVE    "tbl_santei"        TO  MCP-TABLE
            MOVE    "key11"             TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
+      *
+           MOVE    WRK-YMD         TO  WRK-SYOSINYMD
            .
       *
-       1009-MANSE-CHK-EXT.
+       10091-SRYKARRK-CHK-EXT.
            EXIT.
       *
       *****************************************************************
