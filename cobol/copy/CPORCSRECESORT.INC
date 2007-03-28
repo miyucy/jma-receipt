@@ -41,9 +41,23 @@
       *剤内容
                05  ORCSRECESORT-IN-TBL.
                    07  ORCSRECESORT-IN-SRYCD-G  OCCURS   50.
+      *                診療コード
                        09  ORCSRECESORT-IN-SRYCD    PIC X(09).
       *                データ区分
                        09  ORCSRECESORT-IN-DATAKBN  PIC X(01).
+      *                数量
+                       09  ORCSRECESORT-IN-SRYSURYO PIC  9(05)V9(03).
+      *                回数
+                       09  ORCSRECESORT-IN-SRYKAISU PIC  9(03).
+      *                単位コード
+                       09  ORCSRECESORT-IN-TANICD   PIC  9(03).
+      *                点数識別区分
+                       09  ORCSRECESORT-IN-TENSIKIBETU
+                                                    PIC  9(01).
+      *                点数
+                       09  ORCSRECESORT-IN-TEN      PIC  9(09)V9(02).
+      *                漢字名称
+                       09  ORCSRECESORT-IN-NAME     PIC  X(200).
       *                特定器材種別１
                        09  ORCSRECESORT-IN-TOKUKIZAISBT1 
                                                     PIC X(01).
@@ -55,10 +69,27 @@
                05  ORCSRECESORT-DATE-TBL       OCCURS   4.
       *            点数
                    07  ORCSRECESORT-ZAITEN     PIC  9(08).
-      *            器材コード
-                   07  ORCSRECESORT-SRYCD-G.
-                       09  ORCSRECESORT-SRYCD       PIC X(09)
-                                                    OCCURS   50.
+      *            ＭＡＸ
+                   07  ORCSRECESORT-TBLMAX     PIC  9(02).
+      *
+                   07  ORCSRECESORT-SRYCD-G         OCCURS   50.
+      *                診療コード
+                       09  ORCSRECESORT-SRYCD       PIC X(09).
+      *                データ区分
+                       09  ORCSRECESORT-DATAKBN     PIC X(01).
+      *                数量
+                       09  ORCSRECESORT-SRYSURYO    PIC  9(05)V9(03).
+      *                回数
+                       09  ORCSRECESORT-SRYKAISU    PIC  9(03).
+      *                単位コード
+                       09  ORCSRECESORT-TANICD      PIC  9(03).
+      *                点数識別区分
+                       09  ORCSRECESORT-TENSIKIBETU PIC  9(01).
+      *                点数
+                       09  ORCSRECESORT-TEN         PIC  9(09)V9(02).
+      *                漢字名称
+                       09  ORCSRECESORT-NAME        PIC  X(200).
+                                             
       *エラーコード（１：剤なし）
            03  ORCSRECESORT-ERRCD           PIC 9(01).
       *
