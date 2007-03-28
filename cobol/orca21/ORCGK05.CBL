@@ -2374,7 +2374,12 @@
            IF     SPA-K05-NAI-YUKOEDYMD   <   "99999999"
                MOVE    SPA-K05-NAI-YUKOEDYMD   TO  SPA-SRYYMD
            ELSE
-               MOVE    SPA-K05-MAE-SRYYMD      TO  SPA-SRYYMD
+      *TEST
+               IF      SPA-K05-NAI-YUKOSTYMD   =   "00000000"
+                   MOVE    SPA-K05-MAE-SRYYMD      TO  SPA-SRYYMD
+               ELSE
+                   MOVE    SPA-K05-NAI-YUKOSTYMD   TO  SPA-SRYYMD
+               END-IF
            END-IF
            .
        300113-YUKOKIKAN-HEN-EXT.
@@ -2515,8 +2520,9 @@
                                            OR  "99999999"
                MOVE    "99999999"          TO  SPA-K05-GMN-YUKOEDYMD
                MOVE    "99999999"          TO  SPA-K05-NAI-YUKOEDYMD
-               IF      SPA-K05-MAE-SRYYMD
-                                       NOT =   SPA-SRYYMD
+               IF     (SPA-K05-MAE-SRYYMD
+                                       NOT =   SPA-SRYYMD )
+                 AND  (SPA-K05-NAI-YUKOSTYMD   <   SPA-SRYYMD)
                    MOVE    SPA-K05-MAE-SRYYMD  TO  SPA-SRYYMD
                    PERFORM 410121-SAIHEN-SEC
                END-IF
