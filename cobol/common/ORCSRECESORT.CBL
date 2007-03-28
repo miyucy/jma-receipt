@@ -54,6 +54,10 @@
            03  IDY2                PIC 9(04).
            03  IDY3                PIC 9(04).
            03  IDY4                PIC 9(04).
+           03  IDXZ                PIC 9(04).
+      *
+           03  IDX-HZN             PIC 9(04).
+           03  IDX-HOSI            PIC 9(04).
       *
       *    ∞Ïª˛ŒŒ∞Ë
       *01  WRK-AREA.
@@ -150,6 +154,19 @@
       *****************************************************************
        200-MAIN-SYORI-SEC             SECTION.
       *
+      *    ª¿¡« ‰¿µŒ®∑ËƒÍ
+           MOVE    ZERO                TO  IDX-HOSI
+           PERFORM VARYING     IDX2    FROM    1   BY  1
+                   UNTIL      (IDX2    >   50  )
+                         OR   (ORCSRECESORT-IN-SRYCD (IDX2)  =   SPACE)
+      *        ª¿¡« ‰¿µŒ®
+               IF      ORCSRECESORT-IN-SRYCD (IDX2)
+                                               =   "770020070"
+                   MOVE    IDX2                TO  IDX-HOSI
+                   MOVE    50                  TO  IDX2
+               END-IF
+           END-PERFORM
+      *
            MOVE    ZERO                TO  IDY1
            MOVE    ZERO                TO  IDY2
            MOVE    ZERO                TO  IDY3
@@ -166,9 +183,8 @@
                                                        =   "799990070")
                        MOVE    1               TO  IDX
                        ADD     1               TO  IDY1
-                       MOVE    ORCSRECESORT-IN-SRYCD (IDX2)
-                                               TO  ORCSRECESORT-SRYCD
-                                                        (IDX IDY1)
+                       MOVE    IDY1            TO  IDXZ
+                       PERFORM 2009-TBL-HEN-SEC
                    ELSE
       *            •’•£•Î•‡∞ ≥∞
       *                ª¿¡« ‰¿µŒ®§œ¬–æ›≥∞§»§π§Î
@@ -193,6 +209,11 @@
                END-IF
            END-PERFORM
       *
+      *    •∆°º•÷•ÎøÙ
+           MOVE    IDY1                TO  ORCSRECESORT-TBLMAX (1)
+           MOVE    IDY2                TO  ORCSRECESORT-TBLMAX (2)
+           MOVE    IDY3                TO  ORCSRECESORT-TBLMAX (3)
+           MOVE    IDY4                TO  ORCSRECESORT-TBLMAX (4)
       *    ≈¿øÙ ‘Ω∏
       *    ª¿¡«
            MOVE    ACCTP-SANSOTEN      TO  ORCSRECESORT-ZAITEN (2)
@@ -214,6 +235,46 @@
       *****************************************************************
       *    •’•£•Î•‡∞ ≥∞ ‘Ω∏ΩËÕ˝
       *****************************************************************
+       2009-TBL-HEN-SEC            SECTION.
+      *
+           MOVE    ORCSRECESORT-IN-SRYCD (IDX2)
+                                       TO  ORCSRECESORT-SRYCD
+                                                        (IDX IDXZ)
+      *    •«°º•ø∂Ë ¨
+           MOVE    ORCSRECESORT-IN-DATAKBN (IDX2)
+                                       TO  ORCSRECESORT-DATAKBN
+                                                        (IDX IDXZ)
+      *    øÙŒÃ
+           MOVE    ORCSRECESORT-IN-SRYSURYO (IDX2)
+                                       TO  ORCSRECESORT-SRYSURYO
+                                                        (IDX IDXZ)
+      *    ≤ÛøÙ
+           MOVE    ORCSRECESORT-IN-SRYKAISU (IDX2)
+                                       TO  ORCSRECESORT-SRYKAISU
+                                                        (IDX IDXZ)
+      *    √±∞Ã•≥°º•…
+           MOVE    ORCSRECESORT-IN-TANICD (IDX2)
+                                       TO  ORCSRECESORT-TANICD
+                                                        (IDX IDXZ)
+      *    ≈¿øÙº± Ã∂Ë ¨
+           MOVE    ORCSRECESORT-IN-TENSIKIBETU (IDX2)
+                                       TO  ORCSRECESORT-TENSIKIBETU
+                                                        (IDX IDXZ)
+      *    ≈¿øÙ
+           MOVE    ORCSRECESORT-IN-TEN (IDX2)
+                                       TO  ORCSRECESORT-TEN
+                                                        (IDX IDXZ)
+      *    ¥¡ª˙ÃææŒ
+           MOVE    ORCSRECESORT-IN-NAME (IDX2)
+                                       TO  ORCSRECESORT-NAME
+                                                        (IDX IDXZ)
+           .
+       2009-TBL-HEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    •’•£•Î•‡∞ ≥∞ ‘Ω∏ΩËÕ˝
+      *****************************************************************
        2001-KIZAI-HEN-SEC            SECTION.
       *
            EVALUATE    ORCSRECESORT-IN-TOKUKIZAISBT1 (IDX2)
@@ -221,36 +282,44 @@
       *            ¥Ô∫‡
                    MOVE    4                   TO  IDX
                    ADD     1                   TO  IDY4
-                   MOVE    ORCSRECESORT-IN-SRYCD (IDX2)
-                                               TO  ORCSRECESORT-SRYCD
-                                                        (IDX IDY4)
+                   MOVE    IDY4                TO  IDXZ
+                   PERFORM 2009-TBL-HEN-SEC
                WHEN    2
                    IF      ORCSRECESORT-IN-SANSOKBN (IDX2) =   "9"
       *            √‚¡«
                        MOVE    3               TO  IDX
                        ADD     1               TO  IDY3
-                       MOVE    ORCSRECESORT-IN-SRYCD (IDX2)
-                                               TO  ORCSRECESORT-SRYCD
-                                                        (IDX IDY3)
+                       MOVE    IDY3            TO  IDXZ
+                       PERFORM 2009-TBL-HEN-SEC
                    ELSE
       *            ª¿¡«
                        MOVE    2               TO  IDX
                        ADD     1               TO  IDY2
-                       MOVE    ORCSRECESORT-IN-SRYCD (IDX2)
-                                               TO  ORCSRECESORT-SRYCD
-                                                        (IDX IDY2)
+                       MOVE    IDY2            TO  IDXZ
+                       PERFORM 2009-TBL-HEN-SEC
+      *                π‚µ§∞µ≤√ªª∞ ≥∞
+                       IF     (ORCSRECESORT-IN-SANSOKBN (IDX2) =   "1")
+                         AND  (ORCSRECESORT-IN-SRYCD (IDX2)
+                                               NOT =   "770000000"  )
+                           CONTINUE
+                       ELSE
       *                ª¿¡« ‰¿µŒ®§Úª¿¡«§Œƒæ≤º§À∫∆ ‘Ω∏
-                       ADD     1               TO  IDY2
-                       MOVE    "770020070"     TO  ORCSRECESORT-SRYCD
-                                                        (IDX IDY2)
+                           IF      IDX-HOSI    NOT =   ZERO
+                               ADD     1               TO  IDY2
+                               MOVE    IDX2            TO  IDX-HZN
+                               MOVE    IDX-HOSI        TO  IDX2
+                               MOVE    IDY2            TO  IDXZ
+                               PERFORM 2009-TBL-HEN-SEC
+                               MOVE    IDX-HZN         TO  IDX2
+                           END-IF
+                       END-IF
                    END-IF
                WHEN    3
       *            π‚¿˛ŒÃŒ®•§•Í•∏•¶•‡° §Ω§Œ¬æ¥Ô∫‡°À
                    MOVE    4                   TO  IDX
                    ADD     1                   TO  IDY4
-                   MOVE    ORCSRECESORT-IN-SRYCD (IDX2)
-                                               TO  ORCSRECESORT-SRYCD
-                                                        (IDX IDY4)
+                   MOVE    IDY4            TO  IDXZ
+                   PERFORM 2009-TBL-HEN-SEC
            END-EVALUATE
       *
            .
@@ -266,27 +335,23 @@
                WHEN    1
       *            •’•£•Î•‡
                    ADD     1                   TO  IDY1
-                   MOVE    ORCSRECESORT-IN-SRYCD (IDX2)
-                                               TO  ORCSRECESORT-SRYCD
-                                                        (IDX IDY1)
+                   MOVE    IDY1                TO  IDXZ
+                   PERFORM 2009-TBL-HEN-SEC
                WHEN    2
       *            ª¿¡«
                    ADD     1                   TO  IDY2
-                   MOVE    ORCSRECESORT-IN-SRYCD (IDX2)
-                                               TO  ORCSRECESORT-SRYCD
-                                                        (IDX IDY2)
+                   MOVE    IDY2                TO  IDXZ
+                   PERFORM 2009-TBL-HEN-SEC
                WHEN    3
       *            √‚¡«
                    ADD     1                   TO  IDY3
-                   MOVE    ORCSRECESORT-IN-SRYCD (IDX2)
-                                               TO  ORCSRECESORT-SRYCD
-                                                        (IDX IDY3)
+                   MOVE    IDY3                TO  IDXZ
+                   PERFORM 2009-TBL-HEN-SEC
                WHEN    4
       *            §Ω§Œ¬æ¥Ô∫‡
                    ADD     1                   TO  IDY4
-                   MOVE    ORCSRECESORT-IN-SRYCD (IDX2)
-                                               TO  ORCSRECESORT-SRYCD
-                                                        (IDX IDY4)
+                   MOVE    IDY4                TO  IDXZ
+                   PERFORM 2009-TBL-HEN-SEC
            END-EVALUATE
       *
            .
