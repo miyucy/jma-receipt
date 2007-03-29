@@ -168,6 +168,7 @@
       *
       *  03.04.01    NACL-藤原    06/12/21  入院料加算のコメントを記録する
       *  03.04.02    NACL-門脇    07/03/22  公費給付対象一部負担金編集修正
+      *  03.04.03    NACL-藤原    07/03/27  特定器材の記載方法の変更
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -637,7 +638,11 @@
       *                漢字名称
                        09  TBL-ZAIW-NAME            PIC  X(200).
       *            データ識別(１：フィルム ２：特定機材)
-                   07  TBL-ZAIW-DATSKB              PIC 9(01).
+                   07  TBL-ZAIW-DATSKB              PIC  9(01).
+      *            特定器材種別１
+                   07  TBL-ZAIW-TOKUKIZAISBT1       PIC  9(01).
+      *            酸素等区分  
+                   07  TBL-ZAIW-SANSOKBN            PIC  9(01).
       *
       *    診療行為・コメント用テーブル
        01  TBL-KOUI-AREA.
@@ -1362,6 +1367,9 @@
       *****************************************************************
       *    サブプロ用領域
       *****************************************************************
+      *
+      *    レセ器材再編集サブ
+           COPY    "CPORCSRECESORT.INC".
       *
       *    入院会計作成用パラメタ
            COPY    "CPORCSNYURECEDEN.INC".
@@ -3463,7 +3471,11 @@
                        WHEN    "6"
                            PERFORM 200711-YKZ-TAIHI-SEC
                        WHEN    "7"
-                           PERFORM 200711-KIZAI-TAIHI-SEC
+      *********************IF      RECE641-ZAIREQFLG       =   SPACE
+      *********************    PERFORM 200711-KIZAI-TAIHI-SEC
+      *********************ELSE
+                               PERFORM 200711-KIZAI-ACCT-TAIHI-SEC
+      *********************END-IF
                    END-EVALUATE
                  END-IF
                 END-IF
@@ -4026,6 +4038,49 @@
            END-IF
            .
        200711-KIZAI-TAIHI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    摘要データ（その他）特定器材退避処理
+      *****************************************************************
+       200711-KIZAI-ACCT-TAIHI-SEC          SECTION.
+      *
+           IF      RECE641-SRYKBN    NOT =   "70"
+               IF      RECE641-KIZAITEN  =   ZERO
+                   GO  TO  200711-KIZAI-TAIHI-EXT
+               END-IF
+           END-IF
+      *                                   
+           ADD     1                   TO  WRK-TBLMAX7
+      *     
+           IF      WRK-TBLMAX7         >   100
+               MOVE    "*** ORCR0300 TABLE 100 OVER  ***"
+                                           TO  WRK-RECEERR
+               PERFORM 500-ERR-HENSYU-SEC
+               MOVE    1                   TO  FLG-END
+           ELSE
+               MOVE    RECE65-SRYCD      (IDX) TO
+                                   TBL-ZAIW-SRYCD      (2 WRK-TBLMAX7)
+               MOVE    RECE65-SRYSURYO   (IDX) TO
+                                   TBL-ZAIW-SRYSURYO   (2 WRK-TBLMAX7)
+               MOVE    RECE65-TANICD     (IDX) TO
+                                   TBL-ZAIW-TANICD     (2 WRK-TBLMAX7)
+               MOVE    RECE65-TENSIKIBETU(IDX) TO
+                                   TBL-ZAIW-TENSIKIBETU(2 WRK-TBLMAX7)
+               MOVE    RECE65-TEN        (IDX) TO
+                                   TBL-ZAIW-TEN        (2 WRK-TBLMAX7)
+               MOVE    RECE65-DATAKBN    (IDX) TO
+                                   TBL-ZAIW-DATAKBN    (2 WRK-TBLMAX7)
+               MOVE    RECE65-NAMEINF   (IDX)  TO
+                                   TBL-ZAIW-NAMEINF    (2 WRK-TBLMAX7)
+               MOVE    RECE65-TOKUKIZAISBT1 (IDX)  TO
+                                   TBL-ZAIW-TOKUKIZAISBT1
+                                                       (2 WRK-TBLMAX7)
+               MOVE    RECE65-SANSOKBN  (IDX)  TO
+                                   TBL-ZAIW-SANSOKBN   (2 WRK-TBLMAX7)
+           END-IF
+           .
+       200711-KIZAI-ACCT-TAIHI-EXT.
            EXIT.
       *
       *****************************************************************
@@ -4770,15 +4825,66 @@
            END-IF
       *
       *    特定器材データの編集                 
-           PERFORM VARYING IDXX    FROM    1   BY  1
-                   UNTIL   IDXX    >       2
+      *****IF      RECE641-ZAIREQFLG       =   SPACE
+      *****    PERFORM VARYING IDXX    FROM    1   BY  1
+      *****            UNTIL   IDXX    >       2
+      *****        PERFORM VARYING IDX FROM    1   BY  1
+      *****                UNTIL   IDX >       WRK-TBLMAX7
+      *****            IF      IDXX        =   TBL-ZAIW-DATSKB (2 IDX)
+      *****                PERFORM 200723-KIZAI-HENSYU-SEC
+      *****            END-IF
+      *****        END-PERFORM
+      *****    END-PERFORM
+      *****ELSE
+               INITIALIZE                      ORCSRECESORTAREA
+               MOVE    RECE62-HOSPID       TO  ORCSRECESORT-HOSPID
+               MOVE    RECE62-NYUGAIKBN    TO  ORCSRECESORT-NYUGAIKBN
+               MOVE    RECE62-PTID         TO  ORCSRECESORT-PTID
+               MOVE    RECE62-SRYYM        TO  ORCSRECESORT-SRYYM
+               MOVE    RECE641-SRYKBN      TO  ORCSRECESORT-SRYKBN
+               MOVE    RECE641-ZAINUM      TO  ORCSRECESORT-ZAINUM
                PERFORM VARYING IDX FROM    1   BY  1
                        UNTIL   IDX >       WRK-TBLMAX7
-                   IF      IDXX        =   TBL-ZAIW-DATSKB (2 IDX)
-                       PERFORM 200723-KIZAI-HENSYU-SEC
-                   END-IF
+                   MOVE    TBL-ZAIW-SRYCD         (2 IDX)  TO
+                                   ORCSRECESORT-IN-SRYCD (IDX)
+                   MOVE    TBL-ZAIW-DATAKBN       (2 IDX)  TO
+                                   ORCSRECESORT-IN-DATAKBN(IDX)
+                   MOVE    TBL-ZAIW-SRYSURYO      (2 IDX)  TO
+                                   ORCSRECESORT-IN-SRYSURYO (IDX)
+                   MOVE    TBL-ZAIW-SRYKAISU      (2 IDX)  TO
+                                   ORCSRECESORT-IN-SRYKAISU (IDX)
+                   MOVE    TBL-ZAIW-TANICD        (2 IDX)  TO
+                                   ORCSRECESORT-IN-TANICD (IDX)
+                   MOVE    TBL-ZAIW-TEN           (2 IDX)  TO
+                                   ORCSRECESORT-IN-TEN (IDX)
+                   MOVE    TBL-ZAIW-TENSIKIBETU   (2 IDX)  TO
+                                   ORCSRECESORT-IN-TENSIKIBETU (IDX)
+                   MOVE    TBL-ZAIW-NAME          (2 IDX)  TO
+                                   ORCSRECESORT-IN-NAME (IDX)
+                   MOVE    TBL-ZAIW-TOKUKIZAISBT1 (2 IDX)  TO
+                                   ORCSRECESORT-IN-TOKUKIZAISBT1 (IDX)
+                   MOVE    TBL-ZAIW-SANSOKBN      (2 IDX)  TO
+                                   ORCSRECESORT-IN-SANSOKBN (IDX)
                END-PERFORM
-           END-PERFORM
+               CALL    "ORCSRECESORT"      USING   ORCSRECESORTAREA
+               IF      ORCSRECESORT-ERRCD  =   ZERO
+                   PERFORM VARYING IDXX    FROM    1   BY  1
+                           UNTIL   IDXX    >       4
+                       PERFORM VARYING IDX     FROM    1   BY  1
+                               UNTIL   IDX     >       50
+                               OR      ORCSRECESORT-SRYCD (IDXX IDX)
+                                                       =   SPACE
+                           PERFORM 200723-KIZAI-SORT-HENSYU-SEC
+                       END-PERFORM
+                   END-PERFORM
+               ELSE    
+                   MOVE    2                   TO  IDXX
+                   PERFORM VARYING IDX FROM    1   BY  1
+                           UNTIL   IDX >       WRK-TBLMAX7
+                       PERFORM 200723-KIZAI-HENSYU-SEC
+                   END-PERFORM
+               END-IF
+      *****END-IF
            .
        20072-ZAI-HENSYU-EXT.
            EXIT.
@@ -5083,6 +5189,111 @@
            PERFORM 5001-FILE-WRITE-SEC
            .
        200723-KIZAI-HENSYU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    摘要データ（再編集特定機材）編集処理
+      *****************************************************************
+       200723-KIZAI-SORT-HENSYU-SEC    SECTION.
+      *
+           MOVE    SPACE               TO  WRK-REC
+           MOVE    ZERO                TO  WRK-REC-LENGTH
+      *          
+           MOVE    "TO,"               TO  WRK-REC
+           MOVE    3                   TO  WRK-REC-LENGTH
+      *    診療識別
+           IF      WRK-SRYKBN      NOT =   SPACE     
+               MOVE    WRK-SRYKBN          TO  WRK-DATA
+               MOVE    2                   TO  WRK-NAGASA
+               MOVE    SPACE               TO  WRK-SRYKBN
+           END-IF    
+           PERFORM 5004-MOJI-HENSYU-SEC  
+      *    負担区分
+           MOVE    WRK-FTNKBN          TO  WRK-DATA
+           MOVE    1                   TO  WRK-NAGASA
+           PERFORM 5004-MOJI-HENSYU-SEC  
+      *    特定器材コード
+           MOVE    ORCSRECESORT-SRYCD (IDXX IDX)
+                                       TO  WRK-DATA
+           MOVE    9                   TO  WRK-NAGASA
+           PERFORM 5004-MOJI-HENSYU-SEC  
+      *    使用量
+           IF      ORCSRECESORT-SRYSURYO (IDXX IDX)
+                                       >   ZERO
+               MOVE    ORCSRECESORT-SRYSURYO (IDXX IDX)
+                                           TO  WRK-SRYSURYO
+               MOVE    WRK-SRYSURYO        TO  WRK-NUM
+               MOVE    9                   TO  WRK-NAGASA
+               MOVE    3                   TO  WRK-SYOSUU
+           END-IF        
+           PERFORM 5005-NUM-HENSYU-SEC  
+      *    点数 
+           IF      ORCSRECESORT-TBLMAX (IDXX)
+                                       =   IDX
+               MOVE    ORCSRECESORT-ZAITEN (IDXX)
+                                           TO  WRK-TENSU
+               IF      WRK-TENSU       >   ZERO
+                   MOVE    WRK-TENSU           TO  WRK-NUM
+                   MOVE    7                   TO  WRK-NAGASA
+               END-IF
+           END-IF
+           PERFORM 5005-NUM-HENSYU-SEC  
+      *    回数
+           IF      ORCSRECESORT-TBLMAX (IDXX)
+                                       =   IDX
+               IF      RECE641-ZAIKAISU    >   ZERO
+                   MOVE    RECE641-ZAIKAISU    TO  WRK-NUM
+                   MOVE    3                   TO  WRK-NAGASA
+               END-IF
+           END-IF        
+           PERFORM 5005-NUM-HENSYU-SEC
+      *    単位コード
+           IF      ORCSRECESORT-TANICD (IDXX IDX)
+                                       >   ZERO
+               MOVE    ORCSRECESORT-TANICD (IDXX IDX)
+                                               TO  WRK-NUM
+               MOVE    3                       TO  WRK-NAGASA
+           END-IF        
+           PERFORM 5005-NUM-HENSYU-SEC  
+      *    単価
+           IF    ( ORCSRECESORT-TENSIKIBETU (IDXX IDX)
+                                       =   2               )
+           OR    ( ORCSRECESORT-SRYCD       (IDXX IDX)
+                                       =   "777770000"     )
+           OR    ( ORCSRECESORT-SRYCD       (IDXX IDX)
+                                       =   WRK-CONS-SANSO1
+                                       OR  WRK-CONS-SANSO2
+                                       OR  WRK-CONS-SANSO3
+                                       OR  WRK-CONS-SANSO4
+                                       OR  WRK-CONS-SANSO5
+                                       OR  WRK-CONS-SANSO6
+                                       OR  WRK-CONS-SANSO7
+                                       OR  WRK-CONS-SANSO8 )
+               IF      ORCSRECESORT-TEN (IDXX IDX)  >   ZERO
+                   MOVE    ORCSRECESORT-TEN (IDXX IDX)
+                                                 TO  WRK-TANKA
+                   MOVE    WRK-TANKA             TO  WRK-NUM
+                   MOVE    10                    TO  WRK-NAGASA
+                   MOVE    2                     TO  WRK-SYOSUU
+               END-IF
+           END-IF        
+           PERFORM 5005-NUM-HENSYU-SEC  
+      *    特定器材名称
+           IF      ORCSRECESORT-SRYCD (IDXX IDX)
+                                       =   "777770000"
+               MOVE    ORCSRECESORT-NAME (IDXX IDX)
+                                           TO  WRK-DATA
+           END-IF
+           MOVE    40                  TO  WRK-NAGASA
+           PERFORM 5004-MOJI-HENSYU-SEC
+      *    商品名及び規格名及びサイズ
+           MOVE    300                 TO  WRK-NAGASA
+           MOVE    1                   TO  WRK-END 
+           PERFORM 5004-MOJI-HENSYU-SEC
+      *
+           PERFORM 5001-FILE-WRITE-SEC
+           .
+       200723-KIZAI-SORT-HENSYU-EXT.
            EXIT.
       *
       *****************************************************************
