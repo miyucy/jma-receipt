@@ -1273,6 +1273,12 @@
            MOVE    WRK-YKZTEN          TO  ACCT-YKZTEN
       *    ¥Ô∫‡≈¿øÙ
            MOVE    WRK-KIZAITEN        TO  ACCT-KIZAITEN
+      *!!
+      *    …Ì≤√æ Û§¢§Í
+           IF      LNK-WKSRYP-ADDKBN(01)   =   "1"
+      *        ∫ﬁ¿¡µ·•’•È•∞
+               MOVE    "1"                 TO  ACCT-ZAIREQFLG
+           END-IF
       *@
       *     Ò≥Á∫ﬁ§Œ¿ﬂƒÍ
            IF      LNK-WKSRY-CONTKBN (1)   =   "H"
