@@ -848,40 +848,6 @@
            EXIT.
       *
       *****************************************************************
-      *    外来の投薬包括処理
-      *****************************************************************
-       200221-SRYSYUKBN-HEN-SEC         SECTION.
-      *
-           IF      SPA-COM-SRYSYUKBN(IDX-Z)    =   SPACE
-                                               OR  "210"
-                                               OR  "220"
-                                               OR  "230"
-                                               OR  "211"
-                                               OR  "221"
-                                               OR  "231"
-      *        診療種別を包括剤に変更する
-               PERFORM VARYING     IDX-Z2  FROM    IDX-Z  BY  -1
-                       UNTIL      (IDX-Z2  <   1   )
-                   IF     (IDX-Z           NOT =   IDX-Z2  )  AND
-                          (SPA-COM-ZAIEND (IDX-Z2) =   "1" )
-                       MOVE    1                   TO  IDX-Z2
-                   ELSE
-                       IF      SPA-GMN-INPUTCD (IDX)(1:1)  =   "."
-                           MOVE    "3"             TO  SPA-GMN-INPUTCD
-                                                        (IDX)(4:1)
-                       END-IF
-                       MOVE    "3"                 TO  SPA-COM-SRYSYUKBN
-                                                        (IDX)(3:1)
-                   END-IF
-               END-PERFORM
-           ELSE
-               MOVE    1                   TO  FLG-CHK3
-           END-IF
-           .
-       200221-SRYSYUKBN-HEN-EXT.
-           EXIT.
-      *
-      *****************************************************************
       *    自動発生分のみ処理
       *****************************************************************
        300-AUTO-SYORI-SEC         SECTION.
