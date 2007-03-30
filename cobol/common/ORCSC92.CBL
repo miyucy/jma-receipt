@@ -577,6 +577,7 @@
       **** IF      LNK-SC92-KBN    NOT =   "6"
            IF      LNK-SC92-KBN        =   "1"
                                        OR  "3"
+                                       OR  "8"
                IF     (TNS-SANTEIRRKKBN    =   ZERO   )  OR
                       (SPA-HKNCOMBINUM     =   "9999" )
                    OR (LNK-SC92-PG     NOT =   "K02"  )
@@ -681,7 +682,8 @@
                       (LNK-SC92-SRYCD(1:1) =   "1"   )
                   AND (LNK-SC92-PG         =   "K02" )
                   AND (LNK-SC92-KBN        =   "1"
-                                           OR  "3" )
+                                           OR  "3"
+                                           OR  "8" )
                    PERFORM 2005-HEIYOU-CHK-SEC
                END-IF
            END-IF

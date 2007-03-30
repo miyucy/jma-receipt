@@ -263,6 +263,12 @@
       *        編集
                MOVE    ZERO            TO  FLG-SYORI
                MOVE    ISET-INPUTCD    TO  SPA-GMN-INPUTCD(SPA-GMN-IDX)
+      *        保険組合せは前の行を複写する
+               IF     (SPA-GMN-IDX     >   1   )  AND
+                      (SPA-COM-HKNCOMBI (SPA-GMN-IDX - 1 ) =   "9999")
+                  MOVE    "9999"           TO  SPA-COM-HKNCOMBI
+                                                      (SPA-GMN-IDX)
+               END-IF
       *
                EVALUATE    SPA-GMN-INPUTCD(SPA-GMN-IDX)(1:1)
                    WHEN    "S"
@@ -504,6 +510,7 @@
            MOVE    ORCSCSETHEN-PG      TO  LNK-SC92-PG
            MOVE    ORCSCSETHEN-SYORIFLG    TO  LNK-SC92-SYORIFLG
            MOVE    SPACE               TO  LNK-SC92-KBN
+           MOVE    "8"                 TO  LNK-SC92-KBN
            MOVE    SPA-GMN-IDX         TO  LNK-SC92-GMN-IDX
            MOVE    SPA-COM-INPUTCD(SPA-GMN-IDX)
                                        TO  LNK-SC92-SRYCD
@@ -558,7 +565,7 @@
            IF     (SPA-ERRCD           NOT =   SPACE )  OR
                   (LNK-SC92-ERRAREA    NOT =   SPACE )
                MOVE    SPACE           TO  SPA-ERRCD
-               INITIALIZE              SPA-GMN-TBLREC  (SPA-GMN-IDX)
+               INITIALIZE              SPA-GMN-TBLREC (SPA-GMN-IDX)
                INITIALIZE              SPA-COM-TBLREC (SPA-GMN-IDX)
                IF      WRK-GMN-IDX         =   SPA-GMN-IDX
                    CONTINUE
