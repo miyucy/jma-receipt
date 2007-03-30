@@ -781,16 +781,10 @@
            MOVE    ZERO                TO  FLG-CHK3
            EVALUATE    SPA-COM-SRYKBN (IDX-Z)(1:1)
       *        ÅêÌô
-               WHEN    "2"
-                   IF      SPA-NYUGAIKBN       =   "1"
-      *                Æþ±¡
-                       IF      WRK-HKTKBN20    =   1
-                           MOVE    1           TO  FLG-CHK3
-                       END-IF
-                   ELSE
-      *                ³°Íè
-                       PERFORM 200221-SRYSYUKBN-HEN-SEC
-                   END-IF
+      ****     WHEN    "2"
+      *            IF      WRK-HKTKBN20    =   1
+      *                MOVE    1           TO  FLG-CHK3
+      ****         END-IF
                WHEN    "3"
                    IF      WRK-HKTKBN30    =   1
                        MOVE    1           TO  FLG-CHK3
