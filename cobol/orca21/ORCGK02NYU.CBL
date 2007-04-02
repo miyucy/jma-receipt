@@ -243,9 +243,11 @@
            03  FLG-INIT              PIC 9(01).
            03  FLG-MAE-TENSU         PIC 9(01).
       *
-           03  FLG-WKSRYACT-ARI       PIC 9(01).
+           03  FLG-WKSRYACT-ARI        PIC 9(01).
       *
-           03  FLG-KENSADEL           PIC 9(01).
+           03  FLG-KENSADEL            PIC 9(01).
+      *
+           03  FLG-HOUKATU-ZAI         PIC 9(01).
       *
       *    ≈∫ª˙ŒŒ∞Ë
        01  IDX-AREA.
@@ -6353,6 +6355,7 @@
       *    ≈¿øÙ∫∆•ª•√•»
       *    ø«ª°∆¸§ÚÃ·§π
            MOVE    WRK-SPA-SRYYMD      TO  SPA-SRYYMD
+           MOVE    ZERO                TO  FLG-HOUKATU-ZAI
       *
            PERFORM VARYING     IDX-Z   FROM    1   BY  1
                    UNTIL       IDX-Z       >   WRK-MAX
@@ -6402,14 +6405,10 @@
                                                                (IDX-Z)
                END-IF
       *         Ò≥Áø«Œ≈•≥°º•…§Œ≤√ªª§‚ Ò≥Á ¨§»§π§Î
-               IF     ( WRK-COM-AUTOKBN (IDX-Z)    =   "2" ) OR
-                      ((WRK-COM-INPUTCD (IDX-Z)(1:1)
-                                                   =   "1" ) AND
-                       (WRK-COM-DATAKBN (IDX-Z)    =   "2" ))
-                   IF      (WRK-COM-INPUTCD (IDX-Z - 1 )(1:1)
-                                                   =   "1" )  AND
-                           (WRK-COM-HOUKATU-FLG (IDX-Z - 1)
-                                                   =   1   )
+               IF     (WRK-COM-HOUKATU-ZAI (IDX-Z) =   1   )
+                   MOVE    1                   TO  FLG-HOUKATU-ZAI
+               ELSE
+                   IF      FLG-HOUKATU-ZAI     =   1
                        MOVE    1               TO  WRK-COM-HOUKATU-ZAI
                                                            (IDX-Z)
                    END-IF
@@ -9209,6 +9208,7 @@
            PERFORM 41001-KIHON-CHK-SEC
            IF     (SPA-ERRCD       NOT =   SPACE )  OR
                   (SPA-KIDCD           =   "0180" )
+             OR   (FLG-KINKI           =   1     )
                GO      TO      4100-TOROKU-EXT
            END-IF
       *
