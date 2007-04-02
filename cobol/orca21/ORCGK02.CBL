@@ -289,7 +289,7 @@
            03  FLG-KENSADEL            PIC 9(01).
       *    包括診療用
            03  FLG-HKTCHK              PIC 9(01).
-      *
+           03  FLG-HOUKATU-ZAI         PIC 9(01).
       *    添字領域
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
@@ -723,10 +723,6 @@
       *    継続の時、自動発生のチェック
        01  WRK-CONTCHK-TBL.
            03  WRK-IDX-Y               PIC 9(04).
-      *    03  WRK-CONTCHK-OCC         OCCURS  30.
-      *        05  WRK-TBL-SRYCD       PIC X(09).
-      *    03  IDX-TBL                 PIC 9(04).
-      *    03  FLG-CNTCHK              PIC 9(01).
       *
       *    自動加算テーブル
        01  WRK-KASAN-AREA.
@@ -7250,7 +7246,7 @@
       *    禁忌チェックを行う
            IF     (FLG-TOROKU          =   SPACE ) 
       ************(FLG-SYOKI           =   ZERO  )
-            AND   (FLG-INIT            =   ZERO   )
+            AND   (FLG-INIT            =   ZERO  )
                PERFORM 51010-KNKCHK-SEC
                IF      FLG-KINKI           =   1
                    GO      TO      510-TBLHEN-EXT
@@ -7685,7 +7681,7 @@
                               (SPA-COM-INPUTCD (IDX)   =   SPACE ))
                IF      (SPA-COM-INPUTCD (IDX)(1:1) =   "1" ) 
                  AND   (SPA-COM-HKNCOMBI(IDX)  NOT =   "9999")
-                 AND   (SPA-COM-HCHKFLG (IDX)      =   SPACE )
+                 AND   (SPA-COM-HCHKFLG (IDX)      =   SPACE)
                    PERFORM 510171-SANCHK-SYORI-SEC
                    IF      SPA-ERRCD           =   SPACE
                        MOVE    "1"             TO  SPA-COM-HCHKFLG(IDX)
@@ -7710,6 +7706,7 @@
                    (SPA-COM-KAISU (IDX)        =   1      )
                CONTINUE
            ELSE
+      *
       *        算定履歴チェック処理
                INITIALIZE                  ORCSC91AREA
                MOVE    SPA-SYORIFLG        TO  LNK-SC91-SYORIFLG
@@ -8140,6 +8137,7 @@
                MOVE    SPA-KIDCD           TO  WRK-KIDCD
            END-IF
       *
+           MOVE    ZERO                TO  FLG-HOUKATU-ZAI
       *    編集後内容セット
            PERFORM VARYING     IDX-Z   FROM    1   BY  1
                    UNTIL      (IDX-Z       >   200  )  OR
@@ -8236,14 +8234,10 @@
                    MOVE    WRK-SRYKA        TO  WRK-COM-SRYKA (IDX-Z)
                END-IF
       *        包括診療コードの加算も包括分とする
-               IF     ( WRK-COM-AUTOKBN (IDX-Z)    =   "2" ) OR
-                      ((WRK-COM-INPUTCD (IDX-Z)(1:1)
-                                                   =   "1" ) AND
-                       (WRK-COM-DATAKBN (IDX-Z)    =   "2" ))
-                   IF      (WRK-COM-INPUTCD (IDX-Z - 1 )(1:1)
-                                                   =   "1" )  AND
-                           (WRK-COM-HOUKATU-FLG (IDX-Z - 1)
-                                                   =   1   )
+               IF     (WRK-COM-HOUKATU-ZAI (IDX-Z) =   1   )
+                   MOVE    1                   TO  FLG-HOUKATU-ZAI
+               ELSE
+                   IF      FLG-HOUKATU-ZAI     =   1
                        MOVE    1               TO  WRK-COM-HOUKATU-ZAI
                                                            (IDX-Z)
                    END-IF
@@ -8373,7 +8367,7 @@
                END-IF
            END-IF
            .
-       51010-KNKCHK--EXT.
+       51010-KNKCHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -11268,6 +11262,7 @@
            PERFORM 41001-KIHON-CHK-SEC
            IF     (SPA-ERRCD       NOT =   SPACE )  OR
                   (SPA-KIDCD           =   "0180")
+             OR   (FLG-KINKI           =   1     )
                GO      TO      4100-TOROKU-EXT
            END-IF
       *
