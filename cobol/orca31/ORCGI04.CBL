@@ -909,16 +909,18 @@
            MOVE    SPA-I01-I04-SKYSTYMD TO SYS-STYUKYMD
                                            SYS-EDYUKYMD
            PERFORM 900-SYSKANRI-KEY10-SEL-SEC
-           MOVE    SYSKANRI-REC        TO  SYS-5010-REC
+           IF    ( FLG-SYSKANRI    =   ZERO )
+               MOVE    SYSKANRI-REC        TO  SYS-5010-REC
       *
-           EVALUATE    TRUE
-           WHEN    SYS-5010-SEIKYU-DAY (1) =   99
-               MOVE    "1" TO  SPA-NAI-I04-SAKKBN-MAX
-           WHEN    SYS-5010-SEIKYU-DAY (2) =   99
-               MOVE    "2" TO  SPA-NAI-I04-SAKKBN-MAX
-           WHEN    OTHER
-               MOVE    "3" TO  SPA-NAI-I04-SAKKBN-MAX
-           END-EVALUATE
+               EVALUATE    TRUE
+               WHEN    SYS-5010-SEIKYU-DAY (1) =   99
+                   MOVE    "1" TO  SPA-NAI-I04-SAKKBN-MAX
+               WHEN    SYS-5010-SEIKYU-DAY (2) =   99
+                   MOVE    "2" TO  SPA-NAI-I04-SAKKBN-MAX
+               WHEN    OTHER
+                   MOVE    "3" TO  SPA-NAI-I04-SAKKBN-MAX
+               END-EVALUATE
+           END-IF
       *
             .
        3100-SYOKI-SET-EXT.
