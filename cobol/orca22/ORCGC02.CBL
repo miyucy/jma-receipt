@@ -210,6 +210,7 @@
       *                                     項目のクリア
       *  03.04.03    NACL-藤原    06/12/01  月途中保険変更時の病名対応
       *  03.04.04    NACL-藤原    07/03/02  月途中保険変更時の病名対応中止
+      *  03.04.05    NACL-藤原    07/04/03  カルテ病名の表示の修正
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -5824,7 +5825,7 @@
                                        TO  KANACHK-MAE-INPUT
            MOVE    80                  TO  KANACHK-MAX-CNT
            CALL    "ORCSKANACHK"       USING   ORCSKANACHKAREA
-           MOVE    KANACHK-MAE-INPUT   TO  SPA-GMN-C02-BYOMEI
+           MOVE    KANACHK-MAE-INPUT   TO  SPA-GMN-C02-CHARTBYOMEI
            IF      KANACHK-RC          =   ZERO
            AND     KANACHK-SYUBETU     =   "2"
       *        病名文字数
