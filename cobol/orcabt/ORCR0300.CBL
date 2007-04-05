@@ -555,6 +555,7 @@
            03  WRK-TBLMAX1             PIC 9(03).
            03  WRK-TBLMAX6             PIC 9(03).
            03  WRK-TBLMAX7             PIC 9(03).
+           03  WRK-TBLMAX7-SRT         PIC 9(03).
            03  WRK-TBLMAX8             PIC 9(03).
            03  WRK-SURYO               PIC 9(08).
            03  WRK-TENSU               PIC 9(07).
@@ -643,9 +644,9 @@
       *    ÆþÂà±¡ÍúÎòÊÔ½¸¡Ê¼«±¡Îò¡ÝÆþ±¡Ãæ¶èÊ¬¡Ë
            03  WRK-NYUINCHUKBN                 PIC X(01).
       *
-      *    °åÌôÉÊ¡¦ÆÃÄê´ïºàÍÑ¥Æ¡¼¥Ö¥ë
+      *    °åÌôÉÊ¡¦ÆÃÄê´ïºàÍÑ¥Æ¡¼¥Ö¥ë¡Ê£±°åÌôÉÊ £²ÆÃÄê´ïºà £³ÆÃÄê´ïºàÊÂ¤ÓÊÑ¤¨ÍÑ¡Ë
        01  TBL-ZAIW-AREA.
-           03  TBL-ZAIW-TABLE          OCCURS  2.
+           03  TBL-ZAIW-TABLE          OCCURS  3.
                05  TBL-ZAIW-REC        OCCURS 100.
                    07  TBL-ZAIW-SRYACTINF.
       *                ¿ÇÎÅ¥³¡¼¥É
@@ -2937,6 +2938,7 @@
            MOVE    ZERO                TO  WRK-TBLMAX1
                                            WRK-TBLMAX6
                                            WRK-TBLMAX7
+                                           WRK-TBLMAX7-SRT
                                            WRK-TBLMAX8
                                            FLG-TEIGEN
                                            FLG-YKZ20
@@ -3070,9 +3072,8 @@
                        WHEN    "6"
                            PERFORM 200711-YKZ-TAIHI-SEC
                        WHEN    "7"
-                           IF      RECE041-ZAIREQFLG       =   SPACE
-                               PERFORM 200711-KIZAI-TAIHI-SEC
-                           ELSE
+                           PERFORM 200711-KIZAI-TAIHI-SEC
+                           IF      RECE041-ZAIREQFLG       =   1
                                PERFORM 200711-KIZAI-ACCT-TAIHI-SEC
                            END-IF
                    END-EVALUATE
@@ -3690,37 +3691,38 @@
       *
            IF      RECE041-SRYKBN    NOT =   "70"
                IF      RECE041-KIZAITEN  =   ZERO
-                   GO  TO  200711-KIZAI-TAIHI-EXT
+                   GO  TO  200711-KIZAI-ACCT-TAIHI-EXT
                END-IF
            END-IF
       *                                   
-           ADD     1                   TO  WRK-TBLMAX7
+           ADD     1                   TO  WRK-TBLMAX7-SRT
       *     
-           IF      WRK-TBLMAX7         >   100
+           IF      WRK-TBLMAX7-SRT     >   100
                MOVE    "*** ORCR0300 TABLE 100 OVER  ***"
                                            TO  WRK-RECEERR
                PERFORM 500-ERR-HENSYU-SEC
                MOVE    1                   TO  FLG-END
            ELSE
                MOVE    RECE05-SRYCD      (IDX) TO
-                                   TBL-ZAIW-SRYCD      (2 WRK-TBLMAX7)
+                                   TBL-ZAIW-SRYCD    (3 WRK-TBLMAX7-SRT)
                MOVE    RECE05-SRYSURYO   (IDX) TO
-                                   TBL-ZAIW-SRYSURYO   (2 WRK-TBLMAX7)
+                                   TBL-ZAIW-SRYSURYO (3 WRK-TBLMAX7-SRT)
                MOVE    RECE05-TANICD     (IDX) TO
-                                   TBL-ZAIW-TANICD     (2 WRK-TBLMAX7)
+                                   TBL-ZAIW-TANICD   (3 WRK-TBLMAX7-SRT)
                MOVE    RECE05-TENSIKIBETU(IDX) TO
-                                   TBL-ZAIW-TENSIKIBETU(2 WRK-TBLMAX7)
+                                   TBL-ZAIW-TENSIKIBETU
+                                                     (3 WRK-TBLMAX7-SRT)
                MOVE    RECE05-TEN        (IDX) TO
-                                   TBL-ZAIW-TEN        (2 WRK-TBLMAX7)
+                                   TBL-ZAIW-TEN      (3 WRK-TBLMAX7-SRT)
                MOVE    RECE05-DATAKBN    (IDX) TO
-                                   TBL-ZAIW-DATAKBN    (2 WRK-TBLMAX7)
+                                   TBL-ZAIW-DATAKBN  (3 WRK-TBLMAX7-SRT)
                MOVE    RECE05-NAMEINF   (IDX)  TO
-                                   TBL-ZAIW-NAMEINF    (2 WRK-TBLMAX7)
+                                   TBL-ZAIW-NAMEINF  (3 WRK-TBLMAX7-SRT)
                MOVE    RECE05-TOKUKIZAISBT1 (IDX)  TO
                                    TBL-ZAIW-TOKUKIZAISBT1
-                                                       (2 WRK-TBLMAX7)
+                                                     (3 WRK-TBLMAX7-SRT)
                MOVE    RECE05-SANSOKBN  (IDX)  TO
-                                   TBL-ZAIW-SANSOKBN   (2 WRK-TBLMAX7)
+                                   TBL-ZAIW-SANSOKBN (3 WRK-TBLMAX7-SRT)
            END-IF
            .
        200711-KIZAI-ACCT-TAIHI-EXT.
@@ -4274,38 +4276,50 @@
                MOVE    RECE041-SRYKBN      TO  ORCSRECESORT-SRYKBN
                MOVE    RECE041-ZAINUM      TO  ORCSRECESORT-ZAINUM
                PERFORM VARYING IDX FROM    1   BY  1
-                       UNTIL   IDX >       WRK-TBLMAX7
-                   MOVE    TBL-ZAIW-SRYCD         (2 IDX)  TO
-                                   ORCSRECESORT-IN-SRYCD (IDX)
-                   MOVE    TBL-ZAIW-DATAKBN       (2 IDX)  TO
-                                   ORCSRECESORT-IN-DATAKBN(IDX)
-                   MOVE    TBL-ZAIW-SRYSURYO      (2 IDX)  TO
-                                   ORCSRECESORT-IN-SRYSURYO (IDX)
-                   MOVE    TBL-ZAIW-SRYKAISU      (2 IDX)  TO
-                                   ORCSRECESORT-IN-SRYKAISU (IDX)
-                   MOVE    TBL-ZAIW-TANICD        (2 IDX)  TO
-                                   ORCSRECESORT-IN-TANICD (IDX)
-                   MOVE    TBL-ZAIW-TEN           (2 IDX)  TO
-                                   ORCSRECESORT-IN-TEN (IDX)
-                   MOVE    TBL-ZAIW-TENSIKIBETU   (2 IDX)  TO
-                                   ORCSRECESORT-IN-TENSIKIBETU (IDX)
-                   MOVE    TBL-ZAIW-NAME          (2 IDX)  TO
-                                   ORCSRECESORT-IN-NAME (IDX)
-                   MOVE    TBL-ZAIW-TOKUKIZAISBT1 (2 IDX)  TO
+                       UNTIL   IDX >       WRK-TBLMAX7-SRT
+                   MOVE    TBL-ZAIW-SRYCD         (3 IDX)  TO
+                                   ORCSRECESORT-IN-SRYCD         (IDX)
+                   MOVE    TBL-ZAIW-DATAKBN       (3 IDX)  TO
+                                   ORCSRECESORT-IN-DATAKBN       (IDX)
+                   MOVE    TBL-ZAIW-SRYSURYO      (3 IDX)  TO
+                                   ORCSRECESORT-IN-SRYSURYO      (IDX)
+                   MOVE    TBL-ZAIW-SRYKAISU      (3 IDX)  TO
+                                   ORCSRECESORT-IN-SRYKAISU      (IDX)
+                   MOVE    TBL-ZAIW-TANICD        (3 IDX)  TO
+                                   ORCSRECESORT-IN-TANICD        (IDX)
+                   MOVE    TBL-ZAIW-TEN           (3 IDX)  TO
+                                   ORCSRECESORT-IN-TEN           (IDX)
+                   MOVE    TBL-ZAIW-TENSIKIBETU   (3 IDX)  TO
+                                   ORCSRECESORT-IN-TENSIKIBETU   (IDX)
+                   MOVE    TBL-ZAIW-NAME          (3 IDX)  TO
+                                   ORCSRECESORT-IN-NAME          (IDX)
+                   MOVE    TBL-ZAIW-TOKUKIZAISBT1 (3 IDX)  TO
                                    ORCSRECESORT-IN-TOKUKIZAISBT1 (IDX)
-                   MOVE    TBL-ZAIW-SANSOKBN      (2 IDX)  TO
-                                   ORCSRECESORT-IN-SANSOKBN (IDX)
+                   MOVE    TBL-ZAIW-SANSOKBN      (3 IDX)  TO
+                                   ORCSRECESORT-IN-SANSOKBN      (IDX)
                END-PERFORM
                CALL    "ORCSRECESORT"      USING   ORCSRECESORTAREA
-               PERFORM VARYING IDXX    FROM    1   BY  1
-                       UNTIL   IDXX    >       4
-                   PERFORM VARYING IDX     FROM    1   BY  1
-                           UNTIL   IDX     >       50
-                           OR      ORCSRECESORT-SRYCD (IDXX IDX)
-                                                   =   SPACE
-                       PERFORM 200723-KIZAI-SORT-HENSYU-SEC
+               IF      ORCSRECESORT-ERRCD  =   0
+                   PERFORM VARYING IDXX    FROM    1   BY  1
+                           UNTIL   IDXX    >       4
+                       PERFORM VARYING IDX     FROM    1   BY  1
+                               UNTIL   IDX     >       50
+                               OR      ORCSRECESORT-SRYCD (IDXX IDX)
+                                                       =   SPACE
+                           PERFORM 200723-KIZAI-SORT-HENSYU-SEC
+                       END-PERFORM
                    END-PERFORM
-               END-PERFORM
+               ELSE
+                   PERFORM VARYING IDXX    FROM    1   BY  1
+                           UNTIL   IDXX    >       2
+                       PERFORM VARYING IDX FROM    1   BY  1
+                               UNTIL   IDX >       WRK-TBLMAX7
+                           IF      IDXX    =   TBL-ZAIW-DATSKB (2 IDX)
+                               PERFORM 200723-KIZAI-HENSYU-SEC
+                           END-IF
+                       END-PERFORM
+                   END-PERFORM
+               END-IF    
            END-IF
            .
        20072-ZAI-HENSYU-EXT.
