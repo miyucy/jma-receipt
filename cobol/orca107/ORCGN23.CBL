@@ -1787,5 +1787,7 @@
                                        MCPDATA-REC
                                        SPA-AREA
       *
+           .
+      *
        900-PUT-WINDOW-EXT.
            EXIT.
