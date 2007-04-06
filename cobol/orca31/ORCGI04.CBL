@@ -1618,6 +1618,20 @@
       *        ELSE
       *                 MOVE    1      TO  FLG-TEISEIINF
                END-IF
+      *
+               IF    ( SPA-GMN-I04-HKNCOMBILST-CNT     =   1 )
+                   PERFORM VARYING IDX0 FROM   1   BY  1
+                           UNTIL ( IDX0    >   SPA-I0-SYUNOU-CNT )
+                       IF    ( SPA-I0-SYUNOU-TTLDAT-FLG  (IDX0)
+                                               =   ZERO )
+                            IF    ( SPA-I0-SYUNOU-UPDFLG (IDX0)
+                                               = ZERO )
+                                MOVE    1      TO  FLG-TEISEIINF
+                            END-IF
+                       END-IF
+                   END-PERFORM
+               END-IF
+      *
            END-IF
       *
            IF    ( FLG-TEISEIINF       =   1 )
@@ -2824,10 +2838,21 @@
            END-IF
       *
       *    今回請求額がゼロ以上であること
-           COMPUTE WRK-SEIKYU      =   SPA-NAI-I04-CHOSEI (IDXZ)
-                                   +   SPA-NAI-I04-SEIKYU-KON (IDXZ)
-                                   +   SPA-NAI-I04-SEIKYU-MOT (IDXZ)
-                                   -   SPA-NAI-I04-CHOSEI-MOT (IDXZ)
+           MOVE    ZERO                        TO  WRK-SEIKYU
+           IF    ( SPA-I01-I04-PROCKBN =   "2" )
+            AND  ( SPA-I0-SYUNOU-UPDFLG (IDXZ)  =   ZERO )
+            AND  ( SPA-NAI-I04-SAIKEISANFLG        =   1 )
+      *
+               COMPUTE WRK-SEIKYU
+                   =   SPA-NAI-I04-SEIKYU (IDXZ)
+                   +   SPA-NAI-I04-SEIKYU-MOT (IDXZ)
+                   -   SPA-I0-UPD-SKYMONEY(IDXZ)
+      *
+               MOVE    SYU-DENPNUM TO  WRK-DENPNUM
+           ELSE
+               COMPUTE WRK-SEIKYU
+                   =   SPA-NAI-I04-SEIKYU (IDXZ)
+           END-IF
       *
            IF     (WRK-SEIKYU          <   ZERO )
                MOVE    "0004"      TO  SPA-ERRCD
@@ -3786,6 +3811,26 @@
                INITIALIZE          WRK-CMB-ITM
                                    WRK-CMB-IDX
            END-SEARCH
+      *
+      *
+           IF    ( WRK-CMB-ITM     =   SPACE )
+      *
+               INITIALIZE                  SYSKANRI-REC
+               MOVE    "1010"          TO  SYS-KANRICD
+               MOVE    "1"             TO  SYS-KBNCD (1:1)
+               MOVE    WRK-CMB-CD      TO  SYS-KBNCD (2:)
+               MOVE    SPA-GMN-I01-DISPKBNMEIL (5)
+                                       TO  SYS-STYUKYMD
+                                           SYS-EDYUKYMD
+               PERFORM 900-SYSKANRI-KEY10-SEL-SEC
+               IF    ( FLG-SYSKANRI    =   ZERO )
+                   MOVE    SYSKANRI-REC    TO  SYS-1010-REC
+                   MOVE    SYS-1010-KBNCD (2:4)
+                                           TO  WRK-CMB-ITM (1:4)
+                   MOVE    SYS-1010-NAME   TO  WRK-CMB-ITM (6:)
+               END-IF
+      *
+           END-IF
       *
            .
       *
