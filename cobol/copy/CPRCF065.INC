@@ -36,57 +36,31 @@
       *  02.06.01    NACL-藤原    05/08/22  検体検査コメントの追加
       *
       *  02.09.01    NACL-藤原    06/04/13  検査等実施判断グループの追加
-      *  03.04.01    NACL-門脇    07/02/19  レセプト対象外フラグの追加
-      *  03.04.02    NACL-藤原    07/03/27  特定器材種別１、酸素等区分の追加
-      *  03.05.01    NACL-小豆沢  07/05/30  グループ診療対応
-      *  04.01.01    NACL-門脇    07/11/26  特定器材商品名記載対応
       *
-      *  04.04.01    NACL-藤原    09/04/21  告示等識別区分２、通則加算対
-      *                                     象外区分の追加
-      *  04.04.02    NACL-藤原    09/12/07  時間外加算区分の追加
-      *
-      *  04.05.01    NACL-藤原    09/07/14  小数点以下５桁対応
-      *  04.05.02    NACL-門脇    09/11/30  レセ電フォーマットコメント拡張
-      *                                     対応（ファイル編集）
-      *
-      *  04.06.01    NACL-藤原    10/06/23  レセ電請求時の受付エラー分の
-      *                                     種別不明レセ対応
-      *  04.06.02    NACL-藤原    10/10/12  公費単独のレセ分離対応
-      *                                     キーにkohid 追加
-      *
-      *  04.07.01    NACL-藤原    12/12/17  複数枚レセプト分割対応
-      *
-      *  04.08.01    NACL-門脇    16/01/12  点検用レセプト院外処方
-      *                                     一般名記載対応
+      *  03.03.01    NACL-藤原    07/03/27  特定器材種別１、酸素等区分の追加
       ************************************************************
       *01  RECE65-REC.
            03  RECE65-KEY.
-               05  RECE65-KEY1.
       *医療機関ＩＤ
-                   07  RECE65-HOSPNUM      PIC 9(2).
+               05  RECE65-HOSPID          PIC  X(24).
       *診療年月
-                   07  RECE65-SRYYM        PIC 9(06).
+               05  RECE65-SRYYM           PIC  9(06).
       *入外区分
-                   07  RECE65-NYUGAIKBN    PIC X(01).
+               05  RECE65-NYUGAIKBN       PIC  X(01).
       *患者ＩＤ
-                   07  RECE65-PTID         PIC 9(10).
+               05  RECE65-PTID            PIC  9(10).
       *レセプト科
-                   07  RECE65-RECEKA       PIC X(02).
+               05  RECE65-RECEKA          PIC  X(02).
       *審査支払機関
-                   07  RECE65-TEISYUTUSAKI
-                                           PIC 9(01).
+               05  RECE65-TEISYUTUSAKI    PIC  9(01).
       *レセプト種別
-                   07  RECE65-RECESYUBETU  PIC 9(04).
+               05  RECE65-RECESYUBETU     PIC  9(04).
       *保険者番号        
-                   07  RECE65-HKNJANUM     PIC X(08).
+               05  RECE65-HKNJANUM        PIC  X(08).
       *補助区分
-                   07  RECE65-HOJOKBN      PIC X(01).
-      *公費ＩＤ
-                   07  RECE65-KOHID        PIC 9(10).
+               05  RECE65-HOJOKBN         PIC  X(01).
       *適用開始年月日
-                   07  RECE65-TEKSTYMD     PIC X(08). 
-      *分割区分
-                   07  RECE65-RECEIPT-KBN  PIC X(10).
+               05  RECE65-TEKSTYMD        PIC  X(08).
       *剤番号
                05  RECE65-ZAINUM          PIC  9(08).
       *剤連番
@@ -114,7 +88,7 @@
       *診療種別区分
                    07  RECE65-SRYSYUKBN-X     PIC  X(03).
       *数量
-                   07  RECE65-SRYSURYO        PIC  9(05)V9(05).
+                   07  RECE65-SRYSURYO        PIC  9(05)V9(03).
       *回数
                    07  RECE65-SRYKAISU        PIC  9(03).
       *単位コード
@@ -154,12 +128,6 @@
                        09  RECE65-KOUHYOJYUNNUM    PIC  9(09).
       *告示等識別区分１
                    07  RECE65-KOKUJISKBKBN1   PIC  9(01).
-      *告示等識別区分２
-                   07  RECE65-KOKUJISKBKBN2   PIC  9(01).
-      *通則加算対象外区分
-                   07  RECE65-TUSOKUGAIKBN    PIC  9(01).
-      *時間外加算区分
-                   07  RECE65-TIMEKSNKBN      PIC  9(01).
       *きざみ値計算識別
                    07  RECE65-KZMCOMPSIKIBETU PIC  9(01).
       *注加算コード
@@ -175,41 +143,15 @@
       *名称情報
                05  RECE65-NAMEINF.
       *漢字有効桁数
-                   07  RECE65-YUKOKETA         PIC  9(03).
+                   07  RECE65-YUKOKETA         PIC  9(02).
       *漢字名称
                    07  RECE65-NAME             PIC  X(200).
       *特定器材種別１
                05  RECE65-TOKUKIZAISBT1        PIC  9(01).
-      *酸素等区分  
+      *酸素等区分
                05  RECE65-SANSOKBN             PIC  9(01).
-      *レセプト編集情報
-               05  RECE65-SSTKIJUNCDTBL             OCCURS 10.
-                   07  RECE65-SSTKIJUNCD       PIC  9(03).
       *その他情報
                05  RECE65-SONOTAINF.
       *レセプト電算対象外フラグ
                    07  RECE65-RECEDENFLG       PIC  X(01).
-      *レセプト対象外フラグ
-                   07  RECE65-RECEPTFLG        PIC  X(01).
-      *レセ電用特定器材商品名
-                   07  RECE65-RECEDENNAME      PIC  X(300).
-      *レセ用特定器材商品名編集フラグ
-                   07  RECE65-RECEHENFLG       PIC  X(01).
-      *関係コメント関連設定フラグ
-                   07  RECE65-SETCOMATFLG      PIC  9(03).
-      *
-      *医療情報連携用情報
-               05  RECE65-IRYORENKEIINF.
-      *一般名記載院外処方フラグ
-                   07  RECE65-INGAIFLG         PIC  X(01).
-      *一般名記載院外処方フラグ（レセプト用）
-                   07  RECE65-INGAIFLG-RECE    PIC  X(01).
-      *一般名コード（薬価基準コード）
-                   07  RECE65-YAKKAKJNCD       PIC  X(12).
-      *一般名処方加算区分
-                   07  RECE65-GENERIC-KBN      PIC  X(01).
-      *一般名称
-                   07  RECE65-GENERICNAME      PIC  X(200).
-      *漢字有効桁数
-                   07  RECE65-GENERICYUKOKETA  PIC  9(03).
       *
