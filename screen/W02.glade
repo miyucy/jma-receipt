@@ -2088,7 +2088,7 @@
 
 	<widget>
 	  <class>GtkLabel</class>
-	  <name></name>
+	  <name>label1650</name>
 	  <x>56</x>
 	  <y>88</y>
 	  <width>155</width>
@@ -2104,7 +2104,7 @@
 
 	<widget>
 	  <class>GtkLabel</class>
-	  <name></name>
+	  <name>label1651</name>
 	  <x>56</x>
 	  <y>56</y>
 	  <width>155</width>
@@ -2120,7 +2120,7 @@
 
 	<widget>
 	  <class>GtkLabel</class>
-	  <name></name>
+	  <name>label1652</name>
 	  <x>56</x>
 	  <y>24</y>
 	  <width>155</width>
