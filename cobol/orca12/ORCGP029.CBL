@@ -795,7 +795,7 @@
                        MOVE    SMCNDATE-YMD        TO  MONTHLYNUM-UPYMD
                        MOVE    SMCNDATE-HMS        TO  MONTHLYNUM-UPHMS
       *
-                       MOVE    SPA-HOSPNUM         TO  MONTHLYNUM-HOSPNUM
+                       MOVE    SPA-HOSPNUM     TO  MONTHLYNUM-HOSPNUM
                        MOVE    MONTHLYNUM-REC      TO  MCPDATA-REC
                        MOVE    "DBUPDATE"          TO  MCP-FUNC
                        MOVE    "tbl_monthlynum"    TO  MCP-TABLE
