@@ -9959,7 +9959,7 @@
       *
            MOVE    SPACE               TO  SPA-ERRCD
            INITIALIZE                  LNK-ORCSSAIKEISAN-REC
-           MOVE    SYU-HOSPID          TO  LNK-ORCSSKS-HOSPID
+      *****MOVE    SYU-HOSPID          TO  LNK-ORCSSKS-HOSPID
            MOVE    SYU-NYUGAIKBN       TO  LNK-ORCSSKS-NYUGAIKBN
            MOVE    SYU-PTID            TO  LNK-ORCSSKS-PTID
            MOVE    SYU-DENPNUM         TO  LNK-ORCSSKS-DENPNUM

@@ -6358,7 +6358,7 @@
       *
            INITIALIZE                      ORCSRECEUPDAREA
            MOVE    "2"                 TO  LNK-UPD-SYORI
-           MOVE    SPA-HOSPID          TO  LNK-UPD-HOSPID
+      *****MOVE    SPA-HOSPID          TO  LNK-UPD-HOSPID
            MOVE    SPA-GMN-PTID        TO  LNK-UPD-PTID
            MOVE    SPA-TERMID          TO  LNK-UPD-TERMID
            MOVE    SPA-OPID            TO  LNK-UPD-OPID
