@@ -866,7 +866,6 @@
       *      
            INITIALIZE                  BYOMEI-REC
            MOVE    SPA-NAI-C05-BYOKEN      TO  BYO-BYOMEI
-           MOVE    SPA-HOSPNUM         TO  BYO-HOSPNUM
            MOVE    BYOMEI-REC          TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "tbl_byomei"        TO  MCP-TABLE
@@ -1431,7 +1430,6 @@
       *****************************************************************
        900-BYOMEI-INV-SEC         SECTION.
       *
-           MOVE    SPA-HOSPNUM         TO  BYO-HOSPNUM
            MOVE    BYOMEI-REC          TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "tbl_byomei"        TO  MCP-TABLE

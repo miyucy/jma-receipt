@@ -2147,7 +2147,6 @@
       *****************************************************************
        900-BYOMEI-READ-SEC         SECTION.
       *
-           MOVE    SPA-HOSPNUM         TO  BYO-HOSPNUM
            MOVE    BYOMEI-REC          TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "tbl_byomei"        TO  MCP-TABLE
