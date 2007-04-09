@@ -2271,7 +2271,7 @@
       *
            INITIALIZE                  I001-REC
            MOVE    WRK-SQL             TO  I001-SQL
-           MOVE    SPA-HOSPNUM         TO  I001-HOSPNUM
+      *****MOVE    SPA-HOSPNUM         TO  I001-HOSPNUM
            MOVE    I001-REC            TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "view_I001"         TO  MCP-TABLE
@@ -2830,7 +2830,7 @@
       *
            INITIALIZE                  I001-REC
            MOVE    WRK-SQL             TO  I001-SQL
-           MOVE    SPA-HOSPNUM         TO  I001-HOSPNUM
+      *****MOVE    SPA-HOSPNUM         TO  I001-HOSPNUM
            MOVE    I001-REC            TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "view_I001"         TO  MCP-TABLE
