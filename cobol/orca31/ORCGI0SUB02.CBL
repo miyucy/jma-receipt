@@ -244,8 +244,8 @@
                                        LNK-SYUDAY-REC-T
                                        WRK-NYUFTN-MAX
       *
-      *****MOVE    SPA-HOSPID      TO  LNK-S02-HOSPID
-           MOVE    SPA-HOSPNUM     TO  LNK-S02-HOSPNUM
+           MOVE    SPA-HOSPID      TO  LNK-S02-HOSPID
+      *****MOVE    SPA-HOSPNUM     TO  LNK-S02-HOSPNUM
            MOVE    "1"             TO  LNK-S02-NYUGAIKBN
            MOVE    SPA-PTID        TO  LNK-S02-PTID
            MOVE    I0SUB02-NISSU   TO  LNK-S02-NYUIN-TSUSAN-NISSU

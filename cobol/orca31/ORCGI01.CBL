@@ -5082,6 +5082,7 @@
                MOVE    SPA-NAI-I01-PTID
                                        TO  WKPTNYUINRRK-PTID
                MOVE    SPA-GMN-I01-SHONUM
+                                       TO  WKPTNYUINRRK-SHONUM
                MOVE    SPA-HOSPNUM     TO  WKPTNYUINRRK-HOSPNUM
                MOVE    WKPTNYUINRRK-REC
                                        TO  MCPDATA-REC
@@ -13869,8 +13870,8 @@
                                        WRK-SANTEISTYMD
       *
            INITIALIZE                  ORCSTUSANAREA
-      *****MOVE    SPA-HOSPID      TO  STUSAN-HOSPID
-           MOVE    SPA-HOSPNUM     TO  STUSAN-HOSPNUM
+           MOVE    SPA-HOSPID      TO  STUSAN-HOSPID
+      *****MOVE    SPA-HOSPNUM     TO  STUSAN-HOSPNUM
            MOVE    PTNYUINRRK-PTID TO  STUSAN-PTID
       *---------------退院日の同日入院処理ここから----------------------
            IF   WRK-DOU-TENNYUYMD    NOT =   SPACE

@@ -1916,10 +1916,10 @@
            INITIALIZE                  SODR-AREA
            INITIALIZE                  LNK-ODRITEM-REC
       *
-      *****MOVE    SPA-NAI-TALLHOSPID    (SPA-GMN-ALLIDOLST-SEL)
-      *****                        TO  SODR-HOSPID
-           MOVE    SPA-NAI-TALLHOSPNUM   (SPA-GMN-ALLIDOLST-SEL)
-                                   TO  SODR-HOSPNUM
+           MOVE    SPA-NAI-TALLHOSPID    (SPA-GMN-ALLIDOLST-SEL)
+                                   TO  SODR-HOSPID
+      *****MOVE    SPA-NAI-TALLHOSPNUM   (SPA-GMN-ALLIDOLST-SEL)
+      *****                        TO  SODR-HOSPNUM
            MOVE    SPA-NAI-TALLKARTE-KEY (SPA-GMN-ALLIDOLST-SEL)
                                    TO  SODR-KARTE-KEY
            MOVE    SPA-NAI-TALLORDERNUM (SPA-GMN-ALLIDOLST-SEL)
@@ -4761,8 +4761,8 @@
       *****************************************************************
        2300-SODR-COMMON-SET-SEC       SECTION.
       *
-      *****MOVE    SPA-HOSPID          TO  SODR-HOSPID
-           MOVE    SPA-HOSPNUM         TO  SODR-HOSPNUM
+           MOVE    SPA-HOSPID          TO  SODR-HOSPID
+      *****MOVE    SPA-HOSPNUM         TO  SODR-HOSPNUM
            MOVE    ORDER-KARTE-KEY     TO  SODR-KARTE-KEY
            MOVE    ORDER-ORDERNUM      TO  SODR-ORDERNUM
            MOVE    ORDER-NYUGAIKBN     TO  SODR-NYUGAIKBN
