@@ -1249,8 +1249,8 @@
            IF      FLG-PTNYUINRRK      =   ZERO
                IF      PTNYUINRRK-NYUINYMD NOT =   SPACE
                    INITIALIZE                  ORCSTUSANAREA
-      *************MOVE    SPA-HOSPID      TO  STUSAN-HOSPID
-                   MOVE    SPA-HOSPNUM     TO  STUSAN-HOSPNUM
+                   MOVE    SPA-HOSPID      TO  STUSAN-HOSPID
+      *************MOVE    SPA-HOSPNUM     TO  STUSAN-HOSPNUM
                    MOVE    PTNYUINRRK-PTID TO  STUSAN-PTID
                    MOVE    PTNYUINRRK-NYUINYMD
                                            TO  STUSAN-KJNYMD
@@ -1305,8 +1305,8 @@
       *
            IF      FLG-PTNYUINRRK      =   ZERO
                INITIALIZE                  ORCSTUSANAREA
-      *********MOVE    SPA-HOSPID      TO  STUSAN-HOSPID
-               MOVE    SPA-HOSPNUM     TO  STUSAN-HOSPNUM
+               MOVE    SPA-HOSPID      TO  STUSAN-HOSPID
+      *********MOVE    SPA-HOSPNUM     TO  STUSAN-HOSPNUM
                MOVE    PTNYUINRRK-PTID TO  STUSAN-PTID
                MOVE    SPA-SYSYMD      TO  STUSAN-KJNYMD
                CALL    "ORCSTUSAN"     USING   ORCSTUSANAREA
@@ -5496,8 +5496,8 @@
                                        WRK-SANTEISTYMD
       *
            INITIALIZE                  ORCSTUSANAREA
-      *****MOVE    SPA-HOSPID      TO  STUSAN-HOSPID
-           MOVE    SPA-HOSPNUM     TO  STUSAN-HOSPNUM
+           MOVE    SPA-HOSPID      TO  STUSAN-HOSPID
+      *****MOVE    SPA-HOSPNUM     TO  STUSAN-HOSPNUM
            MOVE    PTNYUINRRK-PTID TO  STUSAN-PTID
            MOVE    SPA-NAI-SRYYM   TO  STUSAN-KJNYMD(1:6)
            IF   IPN-NYUKAIKEI-SAKUSEI-FLG  =   "1"
