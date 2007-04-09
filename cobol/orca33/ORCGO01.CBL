@@ -2294,7 +2294,7 @@
            INITIALIZE                  QTEIKI-REC
            MOVE    "%"             TO  QTEIKI-SELTAIINYMD(1)
                                        QTEIKI-SELTAIINYMD(2)
-           MOVE    SPA-HOSPNUM     TO  QTEIKI-HOSPNUM
+      *****MOVE    SPA-HOSPNUM     TO  QTEIKI-HOSPNUM
            MOVE    QTEIKI-REC      TO  MCPDATA-REC
            MOVE    "query_teiki"   TO  MCP-TABLE
            MOVE    "key"           TO  MCP-PATHNAME
@@ -2344,7 +2344,7 @@
            END-PERFORM
            MOVE    "%"             TO  QTEIKI-SELTAIINYMD(1)
                                        QTEIKI-SELTAIINYMD(2)
-           MOVE    SPA-HOSPNUM     TO  QTEIKI-HOSPNUM
+      *****MOVE    SPA-HOSPNUM     TO  QTEIKI-HOSPNUM
            MOVE    QTEIKI-REC      TO  MCPDATA-REC
            MOVE    "query_teiki"   TO  MCP-TABLE
            MOVE    "key11"         TO  MCP-PATHNAME

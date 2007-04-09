@@ -878,8 +878,8 @@
                                            LNK-SYUNOU-REC-T
                                            LNK-SYUDAY-REC-T
       *
-      *************MOVE    SPA-HOSPID  TO  LNK-S02-HOSPID
-                   MOVE    SPA-HOSPNUM TO  LNK-S02-HOSPNUM
+                   MOVE    SPA-HOSPID  TO  LNK-S02-HOSPID
+      *************MOVE    SPA-HOSPNUM TO  LNK-S02-HOSPNUM
                    MOVE    "1"         TO  LNK-S02-NYUGAIKBN
                    MOVE    SPA-NAI-O04-PTID
                                        TO  LNK-S02-PTID

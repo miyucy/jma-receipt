@@ -2152,7 +2152,7 @@
                    MOVE    "%"         TO  QTEIKI-SELTAIINYMD(1)
                                            QTEIKI-SELTAIINYMD(2)
            END-IF
-           MOVE    SPA-HOSPNUM     TO  QTEIKI-HOSPNUM
+      *****MOVE    SPA-HOSPNUM     TO  QTEIKI-HOSPNUM
            MOVE    QTEIKI-REC      TO  MCPDATA-REC
            PERFORM 9001-EDIT-QTEIKI-KEY-SEC
            MOVE    "query_teiki"   TO  MCP-TABLE
