@@ -857,8 +857,8 @@
       *
            IF      FLG-READ            =   ZERO
                INITIALIZE                  ORCSSYUBETUAREA
-      *********MOVE    SPA-HOSPID      TO  LNK-SYUBETU-HOSPID
-               MOVE    SPA-HOSPNUM     TO  LNK-SYUBETU-HOSPNUM
+               MOVE    SPA-HOSPID      TO  LNK-SYUBETU-HOSPID
+      *********MOVE    SPA-HOSPNUM     TO  LNK-SYUBETU-HOSPNUM
                MOVE    SPA-PREFNUM     TO  LNK-SYUBETU-PREFNUM
                MOVE    SPA-NAI-R96-SRYYM
                                        TO  LNK-SYUBETU-SRYYM

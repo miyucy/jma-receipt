@@ -2080,7 +2080,7 @@
       *****************************************************************
        900-HKNNUM-INV-SEC         SECTION.
       *
-           MOVE    SPA-HOSPNUM         TO  HKNNUM-HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  HKN-HOSPNUM
            MOVE    HKNNUM-REC          TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "tbl_hknnum"        TO  MCP-TABLE

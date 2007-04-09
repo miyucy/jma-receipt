@@ -1407,8 +1407,8 @@
                                        SPA-NAI-R01-BTPARA-TSRYYMH (IDX)
       *
                INITIALIZE                  SS001-AREA
-      *********MOVE    SPA-HOSPID      TO  SS001-HOSPID
-               MOVE    SPA-HOSPNUM     TO  SS001-HOSPNUM
+               MOVE    SPA-HOSPID      TO  SS001-HOSPID
+      *********MOVE    SPA-HOSPNUM     TO  SS001-HOSPNUM
                MOVE    SYUKA-PTID      TO  SS001-PTID
                MOVE    SYUKA-SRYYM     TO  SS001-SRYYM
                CALL    "ORCSS001"      USING   SS001-AREA
