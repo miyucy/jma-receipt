@@ -1754,8 +1754,8 @@
                                        LNK-SYUNOU-REC-T
                                        LNK-SYUDAY-REC-T
       *
-      *****MOVE    SPA-HOSPID      TO  LNK-S02-HOSPID
-           MOVE    SPA-HOSPNUM     TO  LNK-S02-HOSPNUM
+           MOVE    SPA-HOSPID      TO  LNK-S02-HOSPID
+      *****MOVE    SPA-HOSPNUM     TO  LNK-S02-HOSPNUM
            MOVE    "1"             TO  LNK-S02-NYUGAIKBN
            MOVE    SPA-NAI-I51-PTID
                                    TO  LNK-S02-PTID
@@ -1767,8 +1767,8 @@
                                    TO  LNK-S02-SKYEDYMD
            MOVE    SPA-SYSYMD      TO  LNK-S02-SYSYMD
            MOVE    "1"             TO  LNK-S02-SYORI-KBN
-      *****DISPLAY "LNK-S02-HOSPID             = " LNK-S02-HOSPID
-           DISPLAY "LNK-S02-HOSPNUM            = " LNK-S02-HOSPNUM
+           DISPLAY "LNK-S02-HOSPID             = " LNK-S02-HOSPID
+      *****DISPLAY "LNK-S02-HOSPNUM            = " LNK-S02-HOSPNUM
            DISPLAY "LNK-S02-NYUGAIKBN          = " LNK-S02-NYUGAIKBN
            DISPLAY "LNK-S02-PTID               = " LNK-S02-PTID
            DISPLAY "LNK-S02-NYUIN-TSUSAN-NISSU = "
