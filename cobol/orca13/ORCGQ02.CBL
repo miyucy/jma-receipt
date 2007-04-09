@@ -2205,7 +2205,6 @@
            MOVE    "key2"              TO  MCP-PATHNAME
            MOVE    SPACE               TO  QUERY-PTINF-REC
            MOVE    WRK-SQL             TO  QUERY-PTINF-SQL
-           MOVE    SPA-HOSPNUM         TO  QUERY-PTINF-HOSPNUM
            MOVE    QUERY-PTINF-REC     TO  MCPDATA-REC
            PERFORM 910-DBSELECT-SEC
            IF    ( MCP-RC              =   ZERO )
