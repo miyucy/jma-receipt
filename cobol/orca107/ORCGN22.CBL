@@ -768,6 +768,7 @@
                                            MCPAREA
                                            MCPDATA-REC
                                            SPA-AREA
+           END-IF
       *
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "tbl_yakujyo_temp"  TO  MCP-TABLE

@@ -1303,6 +1303,7 @@
                                                MCPAREA
                                                MCPDATA-REC
                                                SPA-AREA
+           END-IF
            MOVE    "DBDELETE"          TO  MCP-FUNC
            MOVE    "tbl_yakujyo_temp"  TO  MCP-TABLE
            MOVE    "termid"            TO  MCP-PATHNAME
