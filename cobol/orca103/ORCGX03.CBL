@@ -1550,7 +1550,7 @@
            INITIALIZE                  TEKIOUBYOMEI-REC
            MOVE    SPA-X01-CHKKBN      TO  TEKBYO-CHKKBN
            MOVE    WRK-RCHKLST-SRYCD   TO  TEKBYO-SRYCD
-           MOVE    SPA-HOSPNUM         TO  TEKBYO-HOSPNUM
+      *****MOVE    SPA-HOSPNUM         TO  TEKBYO-HOSPNUM
            MOVE    TEKIOUBYOMEI-REC    TO  MCPDATA-REC
            MOVE    "tbl_tekioubyomei"  TO  MCP-TABLE
            MOVE    "key2"                  TO  MCP-PATHNAME
@@ -2701,7 +2701,7 @@
                MOVE    "%"             TO  TEKBYO-SELNAME
            END-IF
       *
-           MOVE    SPA-HOSPNUM              TO  TEKBYO-HOSPNUM
+      *****MOVE    SPA-HOSPNUM              TO  TEKBYO-HOSPNUM
            MOVE    TEKIOUBYOMEI-REC         TO  MCPDATA-REC
            MOVE    "tbl_tekioubyomei"       TO  MCP-TABLE
            MOVE    "key4"                   TO  MCP-PATHNAME

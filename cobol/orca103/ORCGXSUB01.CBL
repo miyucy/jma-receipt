@@ -619,7 +619,7 @@
       *
            INITIALIZE                  BYOMEI-REC
            MOVE    WRK-RECECD      TO  BYO-BYOMEICD
-           MOVE    SPA-HOSPNUM     TO  BYO-HOSPNUM
+      *****MOVE    SPA-HOSPNUM     TO  BYO-HOSPNUM
            MOVE    BYOMEI-REC      TO  MCPDATA-REC
            MOVE    "tbl_byomei"    TO MCP-TABLE
            MOVE    "key"           TO MCP-PATHNAME

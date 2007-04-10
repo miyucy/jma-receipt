@@ -3929,7 +3929,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SPA-X01-SRYCD   TO  TEKBYO-SRYCD
            MOVE    1               TO  TEKBYO-RENNUM
       *
-           MOVE    SPA-HOSPNUM         TO  TEKBYO-HOSPNUM
+      *****MOVE    SPA-HOSPNUM         TO  TEKBYO-HOSPNUM
            MOVE    TEKIOUBYOMEI-REC    TO  MCPDATA-REC
            MOVE    "tbl_tekioubyomei"  TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
@@ -3966,7 +3966,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            END-STRING
            
       *
-           MOVE    SPA-HOSPNUM         TO  TEKBYO-HOSPNUM
+      *****MOVE    SPA-HOSPNUM         TO  TEKBYO-HOSPNUM
            MOVE    TEKIOUBYOMEI-REC    TO  MCPDATA-REC
            MOVE    "tbl_tekioubyomei"  TO  MCP-TABLE
            MOVE    "key3"              TO  MCP-PATHNAME
