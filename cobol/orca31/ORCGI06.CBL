@@ -259,8 +259,8 @@
                    07  SPA-NAI-UKEYMD              PIC X(08).
                05  SPA-NAI-ALLIDOLST-AREA.
                    07  SPA-NAI-ALLIDOLST-OCC       OCCURS  50.
-      *****************09  SPA-NAI-TALLHOSPID      PIC X(24).
-                       09  SPA-NAI-TALLHOSPNUM     PIC X(24).
+                       09  SPA-NAI-TALLHOSPID      PIC X(24).
+      *****************09  SPA-NAI-TALLHOSPNUM     PIC X(24).
                        09  SPA-NAI-TALLKARTE-KEY   PIC X(36).
                        09  SPA-NAI-TALLORDERNUM    PIC 9(02).
                        09  SPA-NAI-TALLIDOYMD      PIC X(08).
@@ -1486,10 +1486,10 @@
       *
                COMPUTE IDX-MAX =   IDX-MAX +   1
       *
-      *********MOVE    ORDER-HOSPID
-      *********                    TO  SPA-NAI-TALLHOSPID    (IDX-MAX)
-               MOVE    ORDER-HOSPNUM
-                                   TO  SPA-NAI-TALLHOSPNUM   (IDX-MAX)
+               MOVE    ORDER-HOSPID
+                                   TO  SPA-NAI-TALLHOSPID    (IDX-MAX)
+      *********MOVE    ORDER-HOSPNUM
+      *********                    TO  SPA-NAI-TALLHOSPNUM   (IDX-MAX)
                MOVE    ORDER-KARTE-KEY
                                    TO  SPA-NAI-TALLKARTE-KEY (IDX-MAX)
                MOVE    ORDER-ORDERNUM
@@ -6496,6 +6496,8 @@
                                            MCPAREA
                                            MCPDATA-REC
                                            SPA-AREA
+      *
+           .
       *
        900-PUT-WINDOW-EXT.
            EXIT.

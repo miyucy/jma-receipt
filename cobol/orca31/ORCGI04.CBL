@@ -3933,10 +3933,10 @@
                    MOVE    ORCHCN03-CNT
                                        TO  IDX2
       *
-      *************MOVE    WRK-SPA-HOSPID
-      *************                    TO ORCHCN03-HOSPID (IDX2)
-                   MOVE    WRK-SPA-HOSPNUM
-                                       TO ORCHCN03-HOSPNUM (IDX2)
+                   MOVE    WRK-SPA-HOSPID
+                                       TO ORCHCN03-HOSPID (IDX2)
+      *************MOVE    WRK-SPA-HOSPNUM
+      *************                    TO ORCHCN03-HOSPNUM (IDX2)
                    MOVE    WRK-SPA-PTID
                                        TO ORCHCN03-PTID   (IDX2)
                    MOVE    WRK-SPA-PTNUM

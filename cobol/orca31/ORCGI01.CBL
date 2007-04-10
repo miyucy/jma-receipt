@@ -12567,6 +12567,7 @@
                            ADD   1        TO  NACCT-ZAIKAISU
                        END-IF
                    END-PERFORM   
+               END-IF
                MOVE    SPA-HOSPNUM         TO  NACCT-HOSPNUM
                MOVE     NYUINACCT-REC      TO  MCPDATA-REC
                MOVE    "tbl_nyuinacct"     TO  MCP-TABLE
