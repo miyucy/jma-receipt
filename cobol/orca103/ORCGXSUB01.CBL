@@ -647,7 +647,7 @@
            MOVE    ZERO            TO  FLG-USERBYOMEI
       *
            INITIALIZE                  USERBYOMEI-REC
-           MOVE    SPA-HOSPID      TO  USBYO-HOSPID
+      *****MOVE    SPA-HOSPID      TO  USBYO-HOSPID
            MOVE    WRK-BYOCD       TO  USBYO-BYOMEIINPUTCD
            MOVE    SPA-HOSPNUM     TO  USBYO-HOSPNUM
            MOVE    USERBYOMEI-REC  TO  MCPDATA-REC
