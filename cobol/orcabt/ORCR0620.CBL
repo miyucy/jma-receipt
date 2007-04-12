@@ -119,6 +119,7 @@
       *  03.04.03    NACL-Æ£¸¶    07/02/06  ·îÅÓÃæ¤Î¼õµë¼ÔÈÖ¹æÊÑ¹¹¤ËÂÐ±þ
       *  03.04.04    NACL-ÌçÏÆ    07/02/19  ¸øÈñ¡ÝËÜ¿Í¡ÝÆþ±¡¡Ý²ó¡ÝÉéÃ´³ä¹ç
       *                                     ¤Î¥»¥Ã¥È
+      *  03.04.05    NACL-ÌçÏÆ    07/04/01  ¸½ÊªµëÉÕÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1232,21 +1233,23 @@
            END-EVALUATE
       *     
       *    ¹âÎð¼Ô¥Õ¥é¥°
-           IF      RECE62-SRYYM      >=  "200210"
-              IF    ( RECE62-AGE          >=  70      )   OR
-                    ( RECE62-AGE          >=  65  AND                    
-                      RECE61-KOHID    NOT  =   ZERO   )   OR             
-                    ( RECE62-AGE          >=  65  AND                    
+           MOVE     SPACE    TO    RECE62-KOUREI
+           IF  (RECE62-RECESYUBETU   =   "8888" OR "6666")
+           OR  (RECE62-HKNNUM        =   SPACE           )
+              CONTINUE
+           ELSE
+              IF      RECE62-SRYYM  >=  "200210"
+                IF  ( RECE62-AGE          >=  70      )   OR
+                    ( RECE62-AGE          >=  65  AND
+                      RECE61-KOHID    NOT  =   ZERO   )   OR
+                    ( RECE62-AGE          >=  65  AND
                       FLG-ROUJINHOKEN      =   1      )
-                  MOVE    "1"                 TO  RECE62-KOUREI
-      *
-                  IF  RECE62-RECESYUBETU   =   "8888" OR "6666"
-                      MOVE  SPACE       TO  RECE62-KOUREI
+                   MOVE     "1"     TO   RECE62-KOUREI
+                ELSE
+                  IF  RECE62-SRYYM  >=  "200704"
+                     MOVE   "2"     TO   RECE62-KOUREI
                   END-IF
-                  IF  RECE62-HKNNUM        =   SPACE 
-                      MOVE  SPACE       TO  RECE62-KOUREI
-                  END-IF
-      *
+                END-IF
               END-IF
            END-IF
       *
