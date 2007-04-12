@@ -39,7 +39,8 @@
       *  03.04.06    NACL-Æ£¸¶    07/02/27  ÀÁµá´ÉÍý¤ØÊÝ¸±£É£Ä¡¢
       *                                     Ï·¿ÍÊÝ¸±£É£Ä¡¢¸øÈñ£É£Ä¤ÎÄÉ²Ã
       *  03.04.07    NACL-Æ£¸¶    07/03/01  ¹ñÊÝ¥ì¥»¥×¥ÈÊÔÄÖ½ç¾ÜºÙÀßÄêÂÐ±þ
-     *****************************************************************
+      *  03.04.08    NACL-ÌçÏÆ    07/04/01  ¸½ÊªµëÉÕÂÐ±þ
+      *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
        CONFIGURATION               SECTION.
@@ -643,11 +644,17 @@
            03  FILLER          PIC X(10)   VALUE   "£±£µ·Ð²á".
            03  FILLER          PIC X(02)   VALUE   "16".
            03  FILLER          PIC X(10)   VALUE   "£±£¶Ä¹£²".
+           03  FILLER          PIC X(02)   VALUE   "17".
+           03  FILLER          PIC X(10)   VALUE   "£±£·¾å°Ì".
+           03  FILLER          PIC X(02)   VALUE   "18".
+           03  FILLER          PIC X(10)   VALUE   "£±£¸°ìÈÌ".
+           03  FILLER          PIC X(02)   VALUE   "19".
+           03  FILLER          PIC X(10)   VALUE   "£±£¹Äã½ê".
        01  TBL-TOKKI-R         REDEFINES   TBL-TOKKI-AREA.
-           03  TBL-TOKKI       OCCURS   14.
+           03  TBL-TOKKI       OCCURS   17.
                05  TBL-TOKKICD             PIC X(02).
                05  TBL-TOKKINAME           PIC X(10).
-       01  TBL-TOKKI-MAX           PIC 9(02)   VALUE   14.
+       01  TBL-TOKKI-MAX           PIC 9(02)   VALUE   17.
       *
       *   ¾É¾õ¾Üµ­¶èÊ¬¤ÎÉ½Âê
        01  TBL-RECECOM-AREA.
@@ -5144,7 +5151,7 @@
                MOVE    RECE62-TOTALTEN (IDX1) TO  WRK-KGK10
                MOVE    WRK-KGK10              TO  HC06-TOTALTEN(1)
                IF    ( RECE62-FTNMONEY (IDX1) >    ZERO   )
-               OR    ( RECE62-KOUREI      NOT =    SPACE  )
+               OR    ( RECE62-KOUREI          = "1" OR "2")
                    MOVE    RECE62-FTNMONEY (IDX1) TO  WRK-KGK7
                    IF      RECE62-GENMENKBN   =   ZERO
                        MOVE    WRK-KGK7           TO  HC06-FTNMONEY(1)

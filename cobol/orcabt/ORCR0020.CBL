@@ -161,6 +161,7 @@
       *  03.04.02    NACL-藤原    07/02/06  月途中の受給者番号変更に対応
       *  03.04.03    NACL-門脇    07/02/19  本人−外来−回−上限額のセット
       *  03.04.04    NACL-門脇    07/03/23  月途中医療機関コード変更時対応
+      *  03.04.05    NACL-門脇    07/04/01  現物給付対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -319,6 +320,7 @@
       *
            03  FLG-SET                                 PIC 9(01).
            03  FLG-ROUJINHOKEN                         PIC 9(01).
+           03  FLG-GENBUTU70                           PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -2230,20 +2232,24 @@
            END-IF
       *
       *    対象でない患者のとき在宅総合・在宅末期フラグをクリアする
+           MOVE    ZERO    TO   FLG-GENBUTU70
+           MOVE    SPACE   TO   WRK-ZAITAKU
            IF    ( RECE02-AGE          >=  70      )   OR
                  ( RECE02-AGE          >=  65  AND                    
                    RECE01-KOHID    NOT  =   ZERO   )   OR
                  ( RECE02-AGE          >=  65  AND                    
                    FLG-ROUJINHOKEN      =   1      )
-               CONTINUE
+               MOVE   1    TO   FLG-GENBUTU70
            ELSE
+             IF  RECE01-SRYYM    >=  "200704"
+               MOVE   2    TO   FLG-GENBUTU70
+             ELSE
                MOVE    SPACE           TO  RECE02-ZAITAKU
                GO  TO  ZAITAKU-SET-EXT
+             END-IF
            END-IF
       *
            IF   RECE01-SRYYM    >=  "200210"
-      *
-            MOVE      SPACE     TO    WRK-ZAITAKU
       *
             IF  RECE01-SRYYM    >=  "200604"
              PERFORM   VARYING   IDX3   FROM    1   BY  1
@@ -2374,13 +2380,12 @@
             END-IF
       *
             IF    WRK-ZAITAKU   =   "1"
-      *******  IF  ( RECE02-AGE          >=  70      )   OR
-      *******      ( RECE02-AGE          >=  65  AND                    
-      *******        RECE01-KOHID    NOT  =   ZERO   )   OR
-      *******      ( RECE02-AGE          >=  65  AND                    
-      *******        FLG-ROUJINHOKEN      =   1      )
-                 MOVE    "1"           TO  RECE02-ZAITAKU
-      *******  END-IF
+              EVALUATE   FLG-GENBUTU70
+                WHEN        1
+                   MOVE   "1"   TO  RECE02-ZAITAKU
+                WHEN        2
+                   MOVE   "2"   TO  RECE02-ZAITAKU
+              END-EVALUATE
             END-IF
       *
            END-IF
