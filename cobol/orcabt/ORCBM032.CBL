@@ -35,6 +35,9 @@
       *  03.04.02    NACL-Æ£¸¶    07/03/13  È÷¹ÍÍó¤Î¸øÈñÌ¾¾Î¤òº¹¤·¹þ¤ß¹à
       *                                     ÌÜ¤È¤¹¤ë
       *                                     HCM2YV02.red ¢ª  HCM2YV03.red
+      *  03.04.03    NACL-Æ£¸¶    07/04/13  £²£°£°£·¡¥£´²þÀµÂÐ±þ
+      *                                     £±£°¡Ê·ë£³£´¡Ë¢ª£±£°¡Ê´¶À÷£³£·¤Î£²¡Ë
+      *                                     £±£±¡Ê·ë£³£µ¡Ë¢ª£±£±¡Ê·ë³ËÆþ±¡¡Ë
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -133,6 +136,11 @@
       *----(03.04.01)--ADD-END-----
       *
            COPY    "CPSHELLTBL.INC".
+      *
+      *    ¸ÇÄê¹àÌÜ
+       01  WRK-CONS-AREA.
+      *    £²£°£°£·Ç¯£´·î²þÀµ
+           03  WRK-CONS-SRYYM-200704   PIC X(06)   VALUE   "200704".
       *
       *****************************************************************
       *    ¥Õ¥¡¥¤¥ë¥ì¥¤¥¢¥¦¥È
@@ -562,8 +570,13 @@
            MOVE    SYS-1005-SRYKANAME  TO  HCM2Y-SRYKA
       *
            MOVE    "£´£³¡ÊÏ·¿ÍÈïÇú¡Ë"  TO  HCM2Y-BKO-KOHKBN (1)
-           MOVE    "£±£°¡Ê·ë£³£´¡Ë"    TO  HCM2Y-BKO-KOHKBN (2)
-           MOVE    "£±£±¡Ê·ë£³£µ¡Ë"    TO  HCM2Y-BKO-KOHKBN (3)
+           IF      LNK-PRTKANRI-SRYYM  <   WRK-CONS-SRYYM-200704
+               MOVE    "£±£°¡Ê·ë£³£´¡Ë"    TO  HCM2Y-BKO-KOHKBN (2)
+               MOVE    "£±£±¡Ê·ë£³£µ¡Ë"    TO  HCM2Y-BKO-KOHKBN (3)
+           ELSE
+               MOVE    "£±£°(´¶À÷37¤Î2) "  TO  HCM2Y-BKO-KOHKBN (2)
+               MOVE    "£±£±¡Ê·ë³ËÆþ±¡¡Ë"  TO  HCM2Y-BKO-KOHKBN (3)
+           END-IF
            MOVE    "£±£²¡ÊÀ¸ÊÝ¡Ë"      TO  HCM2Y-BKO-KOHKBN (4)
            MOVE    "£±£µ¡Ê¹¹À¸¡Ë"      TO  HCM2Y-BKO-KOHKBN (5)
            MOVE    "£²£°¡ÊÀº£²£¹¡Ë"    TO  HCM2Y-BKO-KOHKBN (6)
