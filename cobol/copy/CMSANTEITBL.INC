@@ -28,6 +28,7 @@
       *  01.00.03    NACL-多々納  04/12/02  急性発生日追加
       *  03.03.00    NACL-多々納  06/10/20  矯正固定等追加
       *  03.04.00    NACL-多々納  07/01/11  リハビリ終了日追加
+      *  03.04.01    NACL-多々納  07/03/XX  医学管理料追加
       *****************************************************************
       *
       *    算定履歴保険番号毎のコード
@@ -148,12 +149,18 @@
            03  FILLER              PIC X(12)   VALUE   "  S180030410".
            03  FILLER              PIC X(12)   VALUE   "  S180030510".
            03  FILLER              PIC X(12)   VALUE   "  S180030610".
+      *リハビリ医学管理料算定時の実施日（Ｈ１９／４）
+           03  FILLER              PIC X(12)   VALUE   "   099800311".
+           03  FILLER              PIC X(12)   VALUE   "   099800321".
+           03  FILLER              PIC X(12)   VALUE   "   099800331".
+           03  FILLER              PIC X(12)   VALUE   "   099800341".
       *
        01  TBL-SANTEI-AREA-R       REDEFINES   TBL-SANTEI-AREA.
       **** 03  TBL-SANTEI-OCC      OCCURS   39  INDEXED   TBL-SAN.
       *****03  TBL-SANTEI-OCC      OCCURS   41  INDEXED   TBL-SAN.
       **** 03  TBL-SANTEI-OCC      OCCURS   65  INDEXED   TBL-SAN.
-           03  TBL-SANTEI-OCC      OCCURS   73  INDEXED   TBL-SAN.
+      **** 03  TBL-SANTEI-OCC      OCCURS   73  INDEXED   TBL-SAN.
+           03  TBL-SANTEI-OCC      OCCURS   77  INDEXED   TBL-SAN.
       *        リハビリ（K:個別、S:集団）(H:Ｈ１８．４から）
                05  TBL-RIGAKU-RYO      PIC X(01).
       *        リハビリ（R:理学,S:作業, G:言語)

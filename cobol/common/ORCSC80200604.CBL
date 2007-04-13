@@ -263,6 +263,11 @@
       *    リハビリ回数集計
        01  WRK-RIGAKU-NCNT-AREA.
            03  WRK-RIGAKU-INT2             PIC X(01).
+      *    今回リハビリ発生日
+           03  WRK-KYUSEI-INP-G.
+               05  WRK-KYUSEI-IN-G         OCCURS   7.
+                   07  WRK-KYUSEI-ST       PIC X(01).
+                   07  WRK-KYUSEI-ED       PIC X(01).
       *    当月算定回数
            03  WRK-RIHA-DAY-G.
                05  WRK-RIHA-DAY            PIC 9(03)
@@ -271,11 +276,6 @@
            03  WRK-RIHA-CNT-G.
                05  WRK-RIHA-CNT            PIC 9(03)
                                            OCCURS   31.
-      *    今回リハビリ発生日
-           03  WRK-KYUSEI-INP-G.
-               05  WRK-KYUSEI-IN-G         OCCURS   7.
-                   07  WRK-KYUSEI-ST       PIC X(01).
-                   07  WRK-KYUSEI-ED       PIC X(01).
       *    リハビリ発生日
            03  WRK-KYUSEI1-YMD             PIC X(08).
            03  WRK-KYUSEI2-YMD             PIC X(08).
@@ -415,7 +415,7 @@
                IF      WRK-RIGAKU-INT2     =   SPACE
       *            今回算定回数クリア
                    INITIALIZE  WRK-RIHA-CNT-G
-                   INITIALIZE  WRK-KYUSEI-INP-G
+      ************ INITIALIZE  WRK-KYUSEI-INP-G
                    MOVE    "1"             TO  WRK-RIGAKU-INT2
                END-IF
            ELSE
@@ -1454,15 +1454,27 @@
            EVALUATE    WRK-RIHA-KBN
                WHEN    "1"
                    MOVE    WRK-KYUSEI1-YMD     TO  WRK-KYUSEI
+                   IF      WRK-KYUSEI-ST (1)   =   "1"
+                       MOVE    SPA-SRYYMD          TO  WRK-KYUSEI
+                   END-IF
                    MOVE    150                 TO  WRK-ZOGEN
                WHEN    "2"
                    MOVE    WRK-KYUSEI2-YMD     TO  WRK-KYUSEI
+                   IF      WRK-KYUSEI-ST (2)   =   "1"
+                       MOVE    SPA-SRYYMD          TO  WRK-KYUSEI
+                   END-IF
                    MOVE    180                 TO  WRK-ZOGEN
                WHEN    "3"
                    MOVE    WRK-KYUSEI3-YMD     TO  WRK-KYUSEI
+                   IF      WRK-KYUSEI-ST (3)   =   "1"
+                       MOVE    SPA-SRYYMD          TO  WRK-KYUSEI
+                   END-IF
                    MOVE    150                 TO  WRK-ZOGEN
                WHEN    "4"
                    MOVE    WRK-KYUSEI4-YMD     TO  WRK-KYUSEI
+                   IF      WRK-KYUSEI-ST (4)   =   "1"
+                       MOVE    SPA-SRYYMD          TO  WRK-KYUSEI
+                   END-IF
                    MOVE    90                  TO  WRK-ZOGEN
            END-EVALUATE
       *
@@ -2619,7 +2631,6 @@
            .
        10071-SANSO-KEISAN-EXT.
            EXIT.
-      *
       *
       *****************************************************************
       *    全診療行為チェック処理
