@@ -569,6 +569,12 @@
            03  WRK-KYUSEI-END          PIC X(08).
       *
            03  WRK-SYOKAI-YMD          PIC X(08).
+      *@
+      *    今回リハビリ発生日
+           03  WRK-KYUSEI-INP-G.
+               05  WRK-KYUSEI-IN-G         OCCURS   7.
+                   07  WRK-KYUSEI-ST       PIC X(01).
+                   07  WRK-KYUSEI-ED       PIC X(01).
       *
       *   年齢表示
        01  WRK-NENREI-G.
@@ -5432,6 +5438,7 @@
            INITIALIZE                      WRK-NYUIN-AREA
            MOVE    SPACE               TO  WRK-KYUSEI-YMD
            MOVE    SPACE               TO  WRK-KYUSEI-END
+           MOVE    SPACE               TO  WRK-KYUSEI-INP-G
            PERFORM VARYING     IDX     FROM    WRK-GYO-MAX BY  -1
                    UNTIL       IDX     <   1
                IF     (SPA-GMN-INPUTCD (IDX)   =   SPACE )  AND
@@ -5500,9 +5507,8 @@
       *            その他の算定有無
                    IF      SPA-COM-SRYKBN (IDX)    =   "80"
                        MOVE    1               TO  FLG-SONOTA
-      *                急性発生日判定
-                       IF      SPA-COM-INPUTCD(IDX)    =   "099800101"
-                                                       OR  "099800102"
+      *                各急性発生日判定
+                       IF      SPA-COM-INPUTCD(IDX)(1:4)   =   "0998"
                            PERFORM 51019-KYUSEI-SEC
                        END-IF
                    END-IF
@@ -5599,6 +5605,8 @@
            INITIALIZE                  ORCSC00AREA
       *    リハビリ初回
            MOVE    SPACE               TO  SPA-RIGAKU-INIT
+      *    リハビリ算定回数
+           MOVE    WRK-KYUSEI-INP-G    TO  SPA-RIGAKU-REC (1:14)
       *
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL      (IDX     >   WRK-GYO-MAX      )   OR
@@ -5933,6 +5941,23 @@
                    END-IF
                END-PERFORM
            END-IF
+           EVALUATE    SPA-COM-INPUTCD(IDX)
+      *       疾患別リハビリ発生日
+               WHEN    "099800111"
+                   MOVE    "1"             TO  WRK-KYUSEI-ST (1)
+               WHEN    "099800121"
+                   MOVE    "1"             TO  WRK-KYUSEI-ST (2)
+               WHEN    "099800131"
+                   MOVE    "1"             TO  WRK-KYUSEI-ST (3)
+               WHEN    "099800141"
+                   MOVE    "1"             TO  WRK-KYUSEI-ST (4)
+               WHEN    "099800151"
+                   MOVE    "1"             TO  WRK-KYUSEI-ST (5)
+               WHEN    "099800161"
+                   MOVE    "1"             TO  WRK-KYUSEI-ST (6)
+               WHEN    "099800171"
+                   MOVE    "1"             TO  WRK-KYUSEI-ST (7)
+           END-EVALUATE
       *
            .
        51019-KYUSEI-EXT.
