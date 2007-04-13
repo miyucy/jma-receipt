@@ -47,7 +47,9 @@
       *                                     HCM2W.red ¢ª HCM2WV01.red
       *                                     HCM2X.red ¢ª HCM2XV01.red 
       *  03.03.02    NACL-Æ£¸¶    06/11/08  À¸³èÎÅÍÜ¤Î¤ß¤Î¾ì¹ç¤Î½¸·×
+      *
       *  03.04.01    NACL-¿¹ÏÆ    07/01/16  °åÎÅµ¡Ì¾¾Î¡¢½»½êÊÔ½¸
+      *  03.04.02    NACL-Æ£¸¶    07/04/13  °åÎÅµ¡´Ø¾ðÊó¼èÆÀ¤Î¾ò·ï¤ò½¤Àµ
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -425,8 +427,13 @@
            INITIALIZE              SYS-1001-REC
            MOVE    "1001"          TO  SYS-1001-KANRICD
            MOVE    "*"             TO  SYS-1001-KBNCD
+           MOVE    LNK-PRTKANRI-SRYYM
+                                   TO  SYS-1001-STYUKYMD (1:6)
+           MOVE    "01"            TO  SYS-1001-STYUKYMD (7:2)
+           MOVE    SYS-1001-STYUKYMD
+                                   TO  SYS-1001-EDYUKYMD
            MOVE    SYS-1001-REC    TO  MCPDATA-REC
-           PERFORM 910-SYSKANRI-INV-SEC
+           PERFORM 910-SYSKANRI-KEY10-SEC
            IF      FLG-SYSKANRI    =   ZERO
                MOVE    MCPDATA-REC     TO  SYS-1001-REC
                IF      SYS-1001-HOSPNAME   =   LOW-VALUE
@@ -446,8 +453,13 @@
            INITIALIZE              SYS-1002-REC
            MOVE    "1002"          TO  SYS-1002-KANRICD
            MOVE    "*"             TO  SYS-1002-KBNCD
+           MOVE    LNK-PRTKANRI-SRYYM
+                                   TO  SYS-1002-STYUKYMD (1:6)
+           MOVE    "01"            TO  SYS-1002-STYUKYMD (7:2)
+           MOVE    SYS-1002-STYUKYMD
+                                   TO  SYS-1002-EDYUKYMD
            MOVE    SYS-1002-REC    TO  MCPDATA-REC
-           PERFORM 910-SYSKANRI-INV-SEC
+           PERFORM 910-SYSKANRI-KEY10-SEC
            IF      FLG-SYSKANRI    =   ZERO
                MOVE    MCPDATA-REC     TO  SYS-1002-REC
                IF      SYS-1002-ADRS   =   LOW-VALUE
@@ -1705,44 +1717,6 @@
            EXIT.
       *
       *----(03.04.01)--ADD-END-----
-      *****************************************************************
-      *    ¥·¥¹¥Æ¥à´ÉÍý¥Þ¥¹¥¿ÆÉ¹þ
-      *****************************************************************
-       910-SYSKANRI-INV-SEC         SECTION.
-      *
-           MOVE    LNK-PRTKANRI-SKYYMD TO  ORC-DBYMD
-           MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
-           IF      MCP-RC              =   ZERO
-               MOVE    "DBFETCH"           TO  MCP-FUNC
-               MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
-               CALL    "ORCMCPSUB"          USING
-                                            MCPAREA
-                                            ORCMCPAREA
-                                            MCPDATA-REC
-               IF      MCP-RC              =   ZERO
-                   MOVE    ZERO                TO  FLG-SYSKANRI
-               ELSE
-                   MOVE    1                   TO  FLG-SYSKANRI
-               END-IF
-           ELSE
-               MOVE    1                   TO  FLG-SYSKANRI
-           END-IF
-      *
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
-      *
-           .
-       910-SYSKANRI-INV-EXT.
-           EXIT.
       *
       *****************************************************************
       *    ÀÁµá´ÉÍý¥Þ¥¹¥¿ÆÉ¹þ
