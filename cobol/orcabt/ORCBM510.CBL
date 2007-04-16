@@ -38,7 +38,8 @@
       *  01.01.07     NACL-森脇    06/06/16  症状詳記区分追加monfunc対応
       *  03.03.01     NACL-森脇    06/10/18  老人三割対応
       *
-      *  03.04.01    NACL-藤原    07/02/06  月途中の受給者番号変更に対応
+      *  03.04.01     NACL-藤原    07/02/06  月途中の受給者番号変更に対応
+      *  03.04.01     NACL-森脇    07/04/16  コメント見出し追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -160,6 +161,14 @@
            03  WRK-MOJI8.
                05  FILLER81            PIC X(50)   VALUE
                    "【診療報酬明細書摘要欄記載コメント】".
+      *----(03.04.02)--ADD-START---
+           03  WRK-MOJI9.
+               05  FILLER91            PIC X(50)   VALUE
+                   "【薬事法に規定する治験に係る治験概要】".
+           03  WRK-MOJI10.
+               05  FILLER101           PIC X(50)   VALUE
+                   "【疾患別リハビリテーションに係る治療継続の理由等】".
+      *----(03.04.02)--ADD-END-----
       *
            COPY    "CPSHELLTBL.INC".
       *
@@ -419,6 +428,14 @@
                            WHEN    "07"
                                MOVE    WRK-MOJI7
                                        TO  HCM37-NAIYO(CNT-LINE)
+      *----(03.04.02)--ADD-START---
+                           WHEN    "50"
+                               MOVE    WRK-MOJI9
+                                       TO  HCM37-NAIYO(CNT-LINE)
+                           WHEN    "51"
+                               MOVE    WRK-MOJI10
+                                       TO  HCM37-NAIYO(CNT-LINE)
+      *----(03.04.02)--ADD-END-----
                            WHEN    "99"
                                MOVE    WRK-MOJI8
                                        TO  HCM37-NAIYO(CNT-LINE)
@@ -1038,6 +1055,10 @@
                                            OR  "05"
                                            OR  "06"
                                            OR  "07"
+      *----(03.04.02)--ADD-START---
+                                           OR  "50"
+                                           OR  "51"
+      *----(03.04.02)--ADD-END-----
                                            OR  "99"
                        ADD     1               TO  CNT-RECEDEN
                        MOVE    1               TO  FLG-RECEDENOK
