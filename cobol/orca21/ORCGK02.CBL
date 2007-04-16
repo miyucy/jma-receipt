@@ -5755,11 +5755,10 @@
               AND (SPA-HKNCOMBINUM     NOT =   "9999"  )
               AND (SPA-COM-HKNCOMBI(SPA-GMN-IDX)
                                        NOT =   "9999" )
-      *
-               MOVE    SPA-MAE-INPUTCD(SPA-GMN-IDX)
-                                       TO  SPA-GMN-INPUTCD(SPA-GMN-IDX)
                PERFORM 4101122-SYOSIN-SAISIN-SEC
-               GO      TO                  41011-KOUI-HEN2-EXT
+               IF      FLG-OK          NOT =   ZERO
+                   GO      TO                  41011-KOUI-HEN2-EXT
+               END-IF
            END-IF
       *!TEST
       *
@@ -6958,6 +6957,8 @@
            IF      FLG-OK             =   ZERO
                CONTINUE
            ELSE
+               MOVE    SPA-MAE-INPUTCD(SPA-GMN-IDX)
+                                       TO  SPA-GMN-INPUTCD(SPA-GMN-IDX)
                IF      (SPA-SYORIFLG       =   ZERO )  AND
                        (SPA-SYOSINFLG      =   1    )  AND
                        (SPA-LSTYMD     NOT =   SPACE)  AND
