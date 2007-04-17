@@ -28,6 +28,8 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  03.04.01    NACL-藤原    07/04/16  レセプト請求がない地方公費
+      *                                     を入力時の登録を不可とする
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -3208,6 +3210,8 @@
                                                   TO  SPA-GMN-SEIDONAME
                                                            (WRK-PAGENO)
                            IF      HKN-RECESKYKBN  =   "3"
+                               MOVE    SPACE           TO
+                                          SPA-GMN-SEIDONAME (WRK-PAGENO)
                                MOVE    "0034"          TO  SPA-ERRCD
                            END-IF
                        ELSE
