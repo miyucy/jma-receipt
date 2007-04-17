@@ -6883,14 +6883,14 @@
                           MOVE   SYU-KOH1COMPFTN
                                             TO   WK-SYU-SYUCOMPFTN
       *
-                          IF  ( COMB-KOH2HKNNUM        =    SPACE)
-                          AND ( COMB-KOH3HKNNUM        =    SPACE)
-                          AND ( COMB-KOH4HKNNUM        =    SPACE)
-                          AND ( FLG-IRYOHI         NOT =    ZERO )
-                             COMPUTE   WK-KOUREI-IRYOHI  =   
-                                       WK-KOUREI-IRYOHI  +  
-                                      (SYU-HKNTEN (16) * 10)
-                          END-IF
+      ****                IF  ( COMB-KOH2HKNNUM        =    SPACE)
+      ****                AND ( COMB-KOH3HKNNUM        =    SPACE)
+      ****                AND ( COMB-KOH4HKNNUM        =    SPACE)
+      ****                AND ( FLG-IRYOHI         NOT =    ZERO )
+      ****                   COMPUTE   WK-KOUREI-IRYOHI  =   
+      ****                             WK-KOUREI-IRYOHI  +  
+      ****                            (SYU-HKNTEN (16) * 10)
+      ****                END-IF
       *
                           COMPUTE WK-ENTANI =
                                  SYU-KOH1COMPFTN-ENTANI + 0.9
@@ -6898,6 +6898,14 @@
                        END-IF
                        ADD   WK-SYU-SYUCOMPFTN     TO   FTN-KOHI1-M      
                        ADD   WK-ENTANI       TO   FTN-KOHI1-M-ENTANI
+                       IF  ( COMB-KOH2HKNNUM        =    SPACE)
+                       AND ( COMB-KOH3HKNNUM        =    SPACE)
+                       AND ( COMB-KOH4HKNNUM        =    SPACE)
+                       AND ( FLG-IRYOHI         NOT =    ZERO )
+                          COMPUTE   WK-KOUREI-IRYOHI  =   
+                                    WK-KOUREI-IRYOHI  +  
+                                   (SYU-HKNTEN (16) * 10)
+                       END-IF
       *
                        MOVE  1                     TO   FLG-KOUREI       
                       END-IF
@@ -6952,19 +6960,28 @@
                           MOVE  SYU-SYUCOMPFTN TO  WK-SYU-SYUCOMPFTN
                           COMPUTE WK-ENTANI =
                                          SYU-SYUCOMPFTN-ENTANI + 0.9
-                          IF  ( COMB-KOH1HKNNUM        =    SPACE )
-                          AND ( COMB-KOH2HKNNUM        =    SPACE )
-                          AND ( COMB-KOH3HKNNUM        =    SPACE )
-                          AND ( COMB-KOH4HKNNUM        =    SPACE )
-                          AND ( FLG-IRYOHI70           =    1 OR 2)
-                             COMPUTE   WK-KOUREI-IRYOHI70  =
-                                       WK-KOUREI-IRYOHI70  +
-                                      (SYU-HKNTEN (16) * 10)
-                          END-IF
+      ****                IF  ( COMB-KOH1HKNNUM        =    SPACE )
+      ****                AND ( COMB-KOH2HKNNUM        =    SPACE )
+      ****                AND ( COMB-KOH3HKNNUM        =    SPACE )
+      ****                AND ( COMB-KOH4HKNNUM        =    SPACE )
+      ****                AND ( FLG-IRYOHI70           =    1 OR 2)
+      ****                   COMPUTE   WK-KOUREI-IRYOHI70  =
+      ****                             WK-KOUREI-IRYOHI70  +
+      ****                            (SYU-HKNTEN (16) * 10)
+      ****                END-IF
                         END-IF
                        END-IF
                        ADD   WK-SYU-SYUCOMPFTN     TO   FTN-SYU-M        
                        ADD   WK-ENTANI       TO   FTN-SYU-M-ENTANI
+                       IF  ( COMB-KOH1HKNNUM        =    SPACE )
+                       AND ( COMB-KOH2HKNNUM        =    SPACE )
+                       AND ( COMB-KOH3HKNNUM        =    SPACE )
+                       AND ( COMB-KOH4HKNNUM        =    SPACE )
+                       AND ( FLG-IRYOHI70           =    1 OR 2)
+                          COMPUTE   WK-KOUREI-IRYOHI70  =
+                                    WK-KOUREI-IRYOHI70  +
+                                   (SYU-HKNTEN (16) * 10)
+                       END-IF
                       ELSE
                        IF  (SYU-KOH1HKNNUM     NOT = SPACE)              
                        OR  (SYU-KOH2HKNNUM     NOT = SPACE)
@@ -6982,15 +6999,15 @@
                           MOVE   SYU-SYUCOMPFTN
                                             TO   WK-SYU-SYUCOMPFTN
       *
-                          IF  ( COMB-KOH1HKNNUM        =    SPACE)
-                          AND ( COMB-KOH2HKNNUM        =    SPACE)
-                          AND ( COMB-KOH3HKNNUM        =    SPACE)
-                          AND ( COMB-KOH4HKNNUM        =    SPACE)
-                          AND ( FLG-IRYOHI         NOT =    ZERO )
-                             COMPUTE   WK-KOUREI-IRYOHI  =   
-                                       WK-KOUREI-IRYOHI  +  
-                                      (SYU-HKNTEN (16) * 10)
-                          END-IF
+      ****                IF  ( COMB-KOH1HKNNUM        =    SPACE)
+      ****                AND ( COMB-KOH2HKNNUM        =    SPACE)
+      ****                AND ( COMB-KOH3HKNNUM        =    SPACE)
+      ****                AND ( COMB-KOH4HKNNUM        =    SPACE)
+      ****                AND ( FLG-IRYOHI         NOT =    ZERO )
+      ****                   COMPUTE   WK-KOUREI-IRYOHI  =   
+      ****                             WK-KOUREI-IRYOHI  +  
+      ****                            (SYU-HKNTEN (16) * 10)
+      ****                END-IF
       *
                           COMPUTE WK-ENTANI =
                                  SYU-SYUCOMPFTN-ENTANI + 0.9
@@ -6998,6 +7015,15 @@
                        END-IF
                        ADD   WK-SYU-SYUCOMPFTN     TO   FTN-SYU-M        
                        ADD   WK-ENTANI       TO   FTN-SYU-M-ENTANI
+                       IF  ( COMB-KOH1HKNNUM        =    SPACE)
+                       AND ( COMB-KOH2HKNNUM        =    SPACE)
+                       AND ( COMB-KOH3HKNNUM        =    SPACE)
+                       AND ( COMB-KOH4HKNNUM        =    SPACE)
+                       AND ( FLG-IRYOHI         NOT =    ZERO )
+                          COMPUTE   WK-KOUREI-IRYOHI  =   
+                                    WK-KOUREI-IRYOHI  +  
+                                   (SYU-HKNTEN (16) * 10)
+                       END-IF
                       END-IF
                      END-IF
                     END-IF
