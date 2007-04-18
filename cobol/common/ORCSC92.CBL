@@ -187,6 +187,9 @@
            03  WRK-STYMD.
                05  WRK-STYYMM          PIC X(06).
                05  WRK-STDD            PIC 9(02).
+           03  WRK-EDYMD.
+               05  WRK-EDYYMM          PIC X(06).
+               05  WRK-EDDD            PIC 9(02).
       *
            03  WRK-CHK-CD              PIC X(09).
            03  WRK-CHK-CD2             PIC X(09).
@@ -2091,43 +2094,57 @@
        200542-HASSYOHI-SEC                SECTION.
       *
            MOVE    SPACE               TO  WRK-SRYCD
+           MOVE    SPACE               TO  WRK-SRYCD2
       *    心大血管疾患リハビリテーション
            IF     (WRK-KAN-KBN         =   "1"  )  OR
                   (WRK-KAN-KBN2        =   "1"  )
                MOVE    "099800111"         TO  WRK-SRYCD
+               MOVE    "099800112"         TO  WRK-SRYCD2
            END-IF
       *    脳血管疾患リハビリテーション
            IF     (WRK-KAN-KBN         =   "2"  )  OR
                   (WRK-KAN-KBN2        =   "2"  )
                MOVE    "099800121"         TO  WRK-SRYCD
+               MOVE    "099800122"         TO  WRK-SRYCD2
            END-IF
       *    運動器リハビリテーション
            IF     (WRK-KAN-KBN         =   "3"  )  OR
                   (WRK-KAN-KBN2        =   "3"  )
                MOVE    "099800131"         TO  WRK-SRYCD
+               MOVE    "099800132"         TO  WRK-SRYCD2
            END-IF
       *    呼吸器リハビリテーション
            IF     (WRK-KAN-KBN         =   "4"  )  OR
                   (WRK-KAN-KBN2        =   "4"  )
                MOVE    "099800141"         TO  WRK-SRYCD
+               MOVE    "099800142"         TO  WRK-SRYCD2
            END-IF
       *
       *    保険毎
            MOVE    1                   TO  FLG-HKNSAN
            INITIALIZE                  HZN2-SANTEI-REC
+           INITIALIZE                  HZN-SANTEI-REC
            MOVE    ZERO                TO  FLG-SANTEI-OK
            PERFORM VARYING     IDX2    FROM    1   BY   1
                    UNTIL      (IDX2    >   IDX-TBL )  OR
                               (FLG-SANTEI-OK   =   1  )
                IF      WRK-SRYCD           =   TBLW-SANTEI-SRYCD(IDX2)
       *            対象の算定履歴判定
+                   MOVE    TBLW-SANTEI-REC(IDX2)   TO  HZN-SANTEI-REC
+                   PERFORM 200511-SANTEI-CHK-SEC
+                   IF      FLG-SANTEI-OK       =   ZERO
+                       INITIALIZE                  HZN-SANTEI-REC
+                   END-IF
+               END-IF
+               IF      WRK-SRYCD2          =   TBLW-SANTEI-SRYCD(IDX2)
+      *            対象の算定履歴判定
                    MOVE    TBLW-SANTEI-REC(IDX2)   TO  HZN2-SANTEI-REC
                    PERFORM 200511-SANTEI-CHK-SEC
+                   IF      FLG-SANTEI-OK       =   ZERO
+                       INITIALIZE                  HZN2-SANTEI-REC
+                   END-IF
                END-IF
            END-PERFORM
-           IF      FLG-SANTEI-OK       =   ZERO
-               INITIALIZE                  HZN2-SANTEI-REC
-           END-IF
       *
       *    訂正の時、訂正分はカウントしない
            IF      LNK-SC92-SYORIFLG   =   1
@@ -2136,18 +2153,27 @@
                                (LNK-SC92-TEI-SRYCD (IDX)  =   SPACE)
                    IF      LNK-SC92-TEI-SRYCD (IDX)    =   WRK-SRYCD
                        MOVE    SPA-SRYYMD(7:2)     TO  IDX-Y2
+                       MOVE    ZERO                TO  HZN-SANTEI-DAY
+                                                           (IDX-Y2)
+                   END-IF
+               END-PERFORM
+               PERFORM VARYING IDX     FROM    1   BY  1
+                       UNTIL   (IDX     >   100 )  OR
+                               (LNK-SC92-TEI-SRYCD (IDX)  =   SPACE)
+                   IF      LNK-SC92-TEI-SRYCD (IDX)    =   WRK-SRYCD2
+                       MOVE    SPA-SRYYMD(7:2)     TO  IDX-Y2
                        MOVE    ZERO                TO  HZN2-SANTEI-DAY
                                                            (IDX-Y2)
                    END-IF
                END-PERFORM
            END-IF
            MOVE    SPACE               TO  WRK-STYMD
-           IF      HZN2-SANTEI-MSANTEICNT  >   ZERO
+           IF      HZN-SANTEI-MSANTEICNT   >   ZERO
                MOVE    SPA-SRYYMD(7:2)     TO  IDX-DD
                MOVE    ZERO                TO  WRK-STDD
                PERFORM VARYING     IDX-Y2  FROM    1   BY  1
                        UNTIL       IDX-Y2      >   31
-                   IF      HZN2-SANTEI-DAY (IDX-Y2)    >   ZERO
+                   IF      HZN-SANTEI-DAY (IDX-Y2)    >   ZERO
                        IF      WRK-KAN-KBN         =   SPACE
       *                    医学管理料以外を今回入力時、前の発生日
                            IF      IDX-Y2          <=  IDX-DD
@@ -2169,15 +2195,49 @@
                    MOVE    SPACE               TO  WRK-STYMD
                END-IF
            END-IF
+      *
+           MOVE    SPACE               TO  WRK-EDYMD
+           IF      HZN2-SANTEI-MSANTEICNT  >   ZERO
+               MOVE    SPA-SRYYMD(7:2)     TO  IDX-DD
+               MOVE    ZERO                TO  WRK-EDDD
+               PERFORM VARYING     IDX-Y2  FROM    1   BY  1
+                       UNTIL       IDX-Y2      >   31
+                   IF      HZN2-SANTEI-DAY (IDX-Y2)    >   ZERO
+                       IF      WRK-KAN-KBN         =   SPACE
+      *                    医学管理料以外を今回入力時、前の発生日
+                           IF      IDX-Y2          <=  IDX-DD
+                               MOVE    IDX-Y2          TO  WRK-EDDD
+                               MOVE    31              TO  IDX-Y2
+                           END-IF
+                       ELSE
+      *                    医学管理料を今回入力時、後の発生日
+                           IF      IDX-Y2          >   IDX-DD
+                               MOVE    IDX-Y2          TO  WRK-EDDD
+                               MOVE    31              TO  IDX-Y2
+                           END-IF
+                       END-IF
+                   END-IF
+               END-PERFORM
+               IF      WRK-EDDD        NOT =   ZERO
+                   MOVE    SANTEI-SRYYM        TO  WRK-EDYYMM
+               ELSE
+                   MOVE    SPACE               TO  WRK-EDYMD
+               END-IF
+           END-IF
       *    画面入力
            PERFORM VARYING     IDX     FROM    1  BY  1
                    UNTIL       IDX     >   200
                IF      SPA-COM-INPUTCD (IDX)   =   WRK-SRYCD
                    MOVE    SPA-SRYYMD          TO  WRK-STYMD
-                   MOVE    200                 TO  IDX
+               END-IF
+               IF      SPA-COM-INPUTCD (IDX)   =   WRK-SRYCD2
+                   MOVE    SPA-SRYYMD          TO  WRK-EDYMD
                END-IF
            END-PERFORM
       *
+           IF     (WRK-STYMD           =   SPACE )
+               MOVE    WRK-EDYMD           TO  WRK-STYMD
+           END-IF
            .
        200542-HASSYOHI-EXT.
            EXIT.
@@ -2333,6 +2393,10 @@
                    IF      LNK-SC92-SRYCD  =   WRK-SRYCD
                        MOVE    SPA-SRYYMD      TO  WRK-YMD
                    END-IF
+               END-IF
+      *        発生日より後の時、算定なしとする
+               IF      WRK-STYMD           <=  WRK-YMD2
+                   MOVE    SPACE               TO  WRK-YMD
                END-IF
            END-IF
       *
