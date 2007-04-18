@@ -1431,8 +1431,7 @@
       *            リハビリ医学管理料算定時、外来管理加算算定なし
                    IF     (WRK-RIHA-KBN        =   "S"
                                                OR  "H"
-                                               OR  "E"   )  AND
-                          (SANTEI-MSANTEICNT   >   ZERO  )
+                                               OR  "E"   )
                        PERFORM 100112-RIHABI-HEN-SEC
                    END-IF
            END-EVALUATE
@@ -1494,8 +1493,11 @@
                      AND (SANTEI-FSANTEIYMD    >   SPA-SRYYMD )
                        CONTINUE
                    ELSE
-                       MOVE    WRK-RDD         TO  WRK-RIHA-DD
+      *                訂正時に回数ゼロになれば対象外
+                       IF      SANTEI-MSANTEICNT   >   ZERO
+                           MOVE    WRK-RDD         TO  WRK-RIHA-DD
                                                              (IDX-R)
+                       END-IF
                    END-IF
                WHEN    "H"
       *            リハビリ開始日
