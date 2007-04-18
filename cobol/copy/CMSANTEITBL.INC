@@ -34,126 +34,126 @@
       *    »»ÄêÍúÎòÊÝ¸±ÈÖ¹æËè¤Î¥³¡¼¥É
        01  TBL-SANTEI-AREA.
       *    Íý³ØÎÅË¡¡Ê¸ÄÊÌ¡Ë£±£°Ã±°Ì¥Á¥§¥Ã¥¯¥Æ¡¼¥Ö¥ë
-           03  FILLER              PIC X(12)   VALUE   "KR 180022110".
-           03  FILLER              PIC X(12)   VALUE   "KR 180022310".
-           03  FILLER              PIC X(12)   VALUE   "KR 180022510".
-           03  FILLER              PIC X(12)   VALUE   "KR 180022710".
+           03  FILLER              PIC X(13)   VALUE   "KR 180022110".
+           03  FILLER              PIC X(13)   VALUE   "KR 180022310".
+           03  FILLER              PIC X(13)   VALUE   "KR 180022510".
+           03  FILLER              PIC X(13)   VALUE   "KR 180022710".
       *    ºî¶ÈÎÅË¡¡Ê¸ÄÊÌ¡Ë
-           03  FILLER              PIC X(12)   VALUE   "KS 180023610".
-           03  FILLER              PIC X(12)   VALUE   "KS 180023810".
+           03  FILLER              PIC X(13)   VALUE   "KS 180023610".
+           03  FILLER              PIC X(13)   VALUE   "KS 180023810".
       *    ¸À¸ìÎÅË¡¡Ê¸ÄÊÌ¡Ë
-           03  FILLER              PIC X(12)   VALUE   "KG 180024810".
-           03  FILLER              PIC X(12)   VALUE   "KG 180025010".
+           03  FILLER              PIC X(13)   VALUE   "KG 180024810".
+           03  FILLER              PIC X(13)   VALUE   "KG 180025010".
       *    ¸À¸ìÎÅË¡£³¡Ê¸ÄÊÌ¡Ë
-           03  FILLER              PIC X(12)   VALUE   "KG 180025410".
+           03  FILLER              PIC X(13)   VALUE   "KG 180025410".
       *    Íý³ØÎÅË¡¡Ê¸ÄÊÌ¡Ë¡ÊÏ·¿Í¡Ë
-           03  FILLER              PIC X(12)   VALUE   "KR 180706810".
-           03  FILLER              PIC X(12)   VALUE   "KR 180707010".
-           03  FILLER              PIC X(12)   VALUE   "KR 180707210".
-           03  FILLER              PIC X(12)   VALUE   "KR 180707410".
+           03  FILLER              PIC X(13)   VALUE   "KR 180706810".
+           03  FILLER              PIC X(13)   VALUE   "KR 180707010".
+           03  FILLER              PIC X(13)   VALUE   "KR 180707210".
+           03  FILLER              PIC X(13)   VALUE   "KR 180707410".
       *    ºî¶ÈÎÅË¡¡Ê¸ÄÊÌ¡Ë¡ÊÏ·¿Í¡Ë
-           03  FILLER              PIC X(12)   VALUE   "KS 180708110".
-           03  FILLER              PIC X(12)   VALUE   "KS 180708310".
+           03  FILLER              PIC X(13)   VALUE   "KS 180708110".
+           03  FILLER              PIC X(13)   VALUE   "KS 180708310".
       *
       *    Íý³ØÎÅË¡¡Ê½¸ÃÄ¡Ë
-           03  FILLER              PIC X(12)   VALUE   "SR 180022210".
-           03  FILLER              PIC X(12)   VALUE   "SR 180022410".
-           03  FILLER              PIC X(12)   VALUE   "SR 180022610".
-           03  FILLER              PIC X(12)   VALUE   "SR 180022810".
+           03  FILLER              PIC X(13)   VALUE   "SR 180022210".
+           03  FILLER              PIC X(13)   VALUE   "SR 180022410".
+           03  FILLER              PIC X(13)   VALUE   "SR 180022610".
+           03  FILLER              PIC X(13)   VALUE   "SR 180022810".
       *    ºî¶ÈÎÅË¡¡Ê½¸ÃÄ¡Ë
-           03  FILLER              PIC X(12)   VALUE   "SS 180023710".
-           03  FILLER              PIC X(12)   VALUE   "SS 180023910".
+           03  FILLER              PIC X(13)   VALUE   "SS 180023710".
+           03  FILLER              PIC X(13)   VALUE   "SS 180023910".
       *    ¸À¸ìÎÅË¡¡Ê½¸ÃÄ¡Ë
-           03  FILLER              PIC X(12)   VALUE   "SG 180024910".
-           03  FILLER              PIC X(12)   VALUE   "SG 180025110".
+           03  FILLER              PIC X(13)   VALUE   "SG 180024910".
+           03  FILLER              PIC X(13)   VALUE   "SG 180025110".
       *    ¸À¸ìÎÅË¡£³¡Ê½¸ÃÄ¡Ë
-           03  FILLER              PIC X(12)   VALUE   "SG 180025510".
+           03  FILLER              PIC X(13)   VALUE   "SG 180025510".
       *    Íý³ØÎÅË¡¡Ê½¸ÃÄ¡Ë¡ÊÏ·¿Í¡Ë
-           03  FILLER              PIC X(12)   VALUE   "SR 180706910".
-           03  FILLER              PIC X(12)   VALUE   "SR 180707110".
-           03  FILLER              PIC X(12)   VALUE   "SR 180707310".
-           03  FILLER              PIC X(12)   VALUE   "SR 180707510".
+           03  FILLER              PIC X(13)   VALUE   "SR 180706910".
+           03  FILLER              PIC X(13)   VALUE   "SR 180707110".
+           03  FILLER              PIC X(13)   VALUE   "SR 180707310".
+           03  FILLER              PIC X(13)   VALUE   "SR 180707510".
       *    ºî¶ÈÎÅË¡¡Ê½¸ÃÄ¡Ë¡ÊÏ·¿Í¡Ë
-           03  FILLER              PIC X(12)   VALUE   "SS 180708210".
-           03  FILLER              PIC X(12)   VALUE   "SS 180708410".
+           03  FILLER              PIC X(13)   VALUE   "SS 180708210".
+           03  FILLER              PIC X(13)   VALUE   "SS 180708410".
       *
       *    ¾Ã±êÄÃÄË½èÃÖ
       *    ¥Þ¥Ã¥µ¡¼¥¸Åù¤Î¼êµ»¤Ë¤è¤ë
-           03  FILLER              PIC X(12)   VALUE   " M 140029610".
+           03  FILLER              PIC X(13)   VALUE   " M 140029610".
       *    ´ï¶ñÅù¤Ë¤è¤ë
-           03  FILLER              PIC X(12)   VALUE   " K 140040310".
+           03  FILLER              PIC X(13)   VALUE   " K 140040310".
       *    ¼¾ÉÛ½èÃÖ£±
-           03  FILLER              PIC X(12)   VALUE   " P 140002210".
+           03  FILLER              PIC X(13)   VALUE   " P 140002210".
       *    ¼¾ÉÛ½èÃÖ£²
-           03  FILLER              PIC X(12)   VALUE   " P 140002310".
+           03  FILLER              PIC X(13)   VALUE   " P 140002310".
       *    ²ðÃ£¸£°ú
-           03  FILLER              PIC X(12)   VALUE   " T 140048010".
+           03  FILLER              PIC X(13)   VALUE   " T 140048010".
       *H18/04¤«¤é
       *    ²ðÃ£¸£°ú¡Ê¶ºÀµ¸ÇÄê¡Ë
-           03  FILLER              PIC X(12)   VALUE   "HT 140030350".
+           03  FILLER              PIC X(13)   VALUE   "HT 140030350".
       *    ²ðÃ£¸£°ú¡ÊÊÑ·Áµ¡³£¶ºÀµ½Ñ¡Ë
-           03  FILLER              PIC X(12)   VALUE   "HT 140048250".
+           03  FILLER              PIC X(13)   VALUE   "HT 140048250".
       *    ¹øÉô¸ÇÄêÂÓ¸ÇÄê
-           03  FILLER              PIC X(12)   VALUE   "HE 140048350".
+           03  FILLER              PIC X(13)   VALUE   "HE 140048350".
       *    ¶»Éô¸ÇÄêÂÓ¸ÇÄê
-           03  FILLER              PIC X(12)   VALUE   "HE 140048450".
+           03  FILLER              PIC X(13)   VALUE   "HE 140048450".
       *    Äã½ÐÎÏ¥ì¡¼¥¶¾È¼Í
-           03  FILLER              PIC X(12)   VALUE   "HE 140048550".
+           03  FILLER              PIC X(13)   VALUE   "HE 140048550".
       *    æêÌç½èÃÖ
-           03  FILLER              PIC X(12)   VALUE   "HE 140002450".
+           03  FILLER              PIC X(13)   VALUE   "HE 140002450".
       *
       *    Ï«ºÒ¤ÎµßµÞ°åÎÅ´ÉÍý²Ã»»
-           03  FILLER              PIC X(12)   VALUE   "  R101110020".
-           03  FILLER              PIC X(12)   VALUE   "  R101110030".
+           03  FILLER              PIC X(13)   VALUE   "  R101110020".
+           03  FILLER              PIC X(13)   VALUE   "  R101110030".
       *    Ï«ºÒ¤ÎºÆ½¢Ï«ÎÅÍÜ»ØÆ³´ÉÍýÎÁ
-           03  FILLER              PIC X(12)   VALUE   "   101130010".
+           03  FILLER              PIC X(13)   VALUE   "   101130010".
       *    Ï«ºÒ¤ÎÎÅÍÜ¤ÎµëÉÕÀÁµá½ñ¼è°·ÎÁ
-           03  FILLER              PIC X(12)   VALUE   "  R101130020".
+           03  FILLER              PIC X(13)   VALUE   "  R101130020".
       *    Ï«ºÒ¤Î½é¿Ç»þ¥Ö¥é¥Ã¥·¥ó¥°ÎÁ
-           03  FILLER              PIC X(12)   VALUE   "  R101400030".
+           03  FILLER              PIC X(13)   VALUE   "  R101400030".
       *    Ï«ºÒ¤Î¼ê»Ø¤ÎÁÏ½ý¤Ë·¸¤ëµ¡Ç½²óÉü»ØÆ³²Ã»»
-           03  FILLER              PIC X(12)   VALUE   "  R101500080".
+           03  FILLER              PIC X(13)   VALUE   "  R101500080".
       *
       *    Ç¾·ì´ÉµÞÀ­È¯À¸Æü
-           03  FILLER              PIC X(12)   VALUE   "   099800101".
+           03  FILLER              PIC X(13)   VALUE   "   099800101".
       *    Ç¾·ì´ÉµÞÀ­È¯À¸½ªÎ»
-           03  FILLER              PIC X(12)   VALUE   "   099800102".
+           03  FILLER              PIC X(13)   VALUE   "   099800102".
       *£È£±£¸¡¿£´¤«¤é
       *    ¥ê¥Ï¥Ó¥ê»»Äê²ó¿ô¡Ê¡©¡©¡Ë
-           03  FILLER              PIC X(12)   VALUE   "   099800201".
+           03  FILLER              PIC X(13)   VALUE   "   099800201".
       *    ¥ê¥Ï¥Ó¥ê³ÆÈ¯À¸Æü
-           03  FILLER              PIC X(12)   VALUE   "   099800111".
-           03  FILLER              PIC X(12)   VALUE   "   099800121".
-           03  FILLER              PIC X(12)   VALUE   "   099800131".
-           03  FILLER              PIC X(12)   VALUE   "   099800141".
-           03  FILLER              PIC X(12)   VALUE   "   099800151".
-           03  FILLER              PIC X(12)   VALUE   "   099800161".
-           03  FILLER              PIC X(12)   VALUE   "   099800171".
+           03  FILLER              PIC X(13)   VALUE   "  H0998001111".
+           03  FILLER              PIC X(13)   VALUE   "  H0998001212".
+           03  FILLER              PIC X(13)   VALUE   "  H0998001313".
+           03  FILLER              PIC X(13)   VALUE   "  H0998001414".
+           03  FILLER              PIC X(13)   VALUE   "   099800151".
+           03  FILLER              PIC X(13)   VALUE   "   099800161".
+           03  FILLER              PIC X(13)   VALUE   "   099800171".
       *    ¥ê¥Ï¥Ó¥ê³Æ½ªÎ»Æü
-           03  FILLER              PIC X(12)   VALUE   "   099800112".
-           03  FILLER              PIC X(12)   VALUE   "   099800122".
-           03  FILLER              PIC X(12)   VALUE   "   099800132".
-           03  FILLER              PIC X(12)   VALUE   "   099800142".
-           03  FILLER              PIC X(12)   VALUE   "   099800152".
-           03  FILLER              PIC X(12)   VALUE   "   099800162".
-           03  FILLER              PIC X(12)   VALUE   "   099800172".
+           03  FILLER              PIC X(13)   VALUE   "  E0998001121".
+           03  FILLER              PIC X(13)   VALUE   "  E0998001222".
+           03  FILLER              PIC X(13)   VALUE   "  E0998001323".
+           03  FILLER              PIC X(13)   VALUE   "  E0998001424".
+           03  FILLER              PIC X(13)   VALUE   "   099800152".
+           03  FILLER              PIC X(13)   VALUE   "   099800162".
+           03  FILLER              PIC X(13)   VALUE   "   099800172".
       *¼«ÇåÀÕ·òÊÝ½àµòÄÉ²Ã¡Ê£È£±£¸¡¿£´¤«¤é¡Ë
       *    £Ã£Ô¡¦£Í£Ò£É»»Äê
-           03  FILLER              PIC X(12)   VALUE   "   099700101".
+           03  FILLER              PIC X(13)   VALUE   "   099700101".
       *¥ê¥Ï¥Ó¥ê°å³Ø´ÉÍýÎÁÄÉ²Ã¡Ê£È£±£¹¡¿£´¤«¤é¡Ë
-           03  FILLER              PIC X(12)   VALUE   "  S180029910".
-           03  FILLER              PIC X(12)   VALUE   "  S180030010".
-           03  FILLER              PIC X(12)   VALUE   "  S180030110".
-           03  FILLER              PIC X(12)   VALUE   "  S180030210".
-           03  FILLER              PIC X(12)   VALUE   "  S180030310".
-           03  FILLER              PIC X(12)   VALUE   "  S180030410".
-           03  FILLER              PIC X(12)   VALUE   "  S180030510".
-           03  FILLER              PIC X(12)   VALUE   "  S180030610".
+           03  FILLER              PIC X(13)   VALUE   "  S1800299101".
+           03  FILLER              PIC X(13)   VALUE   "  S1800300101".
+           03  FILLER              PIC X(13)   VALUE   "  S1800301102".
+           03  FILLER              PIC X(13)   VALUE   "  S1800302102".
+           03  FILLER              PIC X(13)   VALUE   "  S1800303103".
+           03  FILLER              PIC X(13)   VALUE   "  S1800304103".
+           03  FILLER              PIC X(13)   VALUE   "  S1800305104".
+           03  FILLER              PIC X(13)   VALUE   "  S1800306104".
       *¥ê¥Ï¥Ó¥ê°å³Ø´ÉÍýÎÁ»»Äê»þ¤Î¼Â»ÜÆü¡Ê£È£±£¹¡¿£´¡Ë
-           03  FILLER              PIC X(12)   VALUE   "   099800311".
-           03  FILLER              PIC X(12)   VALUE   "   099800321".
-           03  FILLER              PIC X(12)   VALUE   "   099800331".
-           03  FILLER              PIC X(12)   VALUE   "   099800341".
+           03  FILLER              PIC X(13)   VALUE   "   099800311".
+           03  FILLER              PIC X(13)   VALUE   "   099800321".
+           03  FILLER              PIC X(13)   VALUE   "   099800331".
+           03  FILLER              PIC X(13)   VALUE   "   099800341".
       *
        01  TBL-SANTEI-AREA-R       REDEFINES   TBL-SANTEI-AREA.
       **** 03  TBL-SANTEI-OCC      OCCURS   39  INDEXED   TBL-SAN.
@@ -171,6 +171,8 @@
                05  TBL-RSI-KBN         PIC X(01).
       *
                05  TBL-SANTEI-SRYCD    PIC X(09).
+      *        ¼À´µÊÌ¥ê¥Ï¥Ó¥ê¶èÊ¬(1:¿´Âç·ì´É,2:Ç¾·ì´É,3:±¿Æ°´ï,4:¸ÆµÛ´ï)
+               05  TBL-RIHA-SYUKBN     PIC X(01).
       *
       *    ÊÝ¸±Ëè»»Äê¤¢¤ê
        01  FLG-HKNSAN                  PIC 9(01).

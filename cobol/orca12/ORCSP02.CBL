@@ -2580,7 +2580,9 @@
            IF      SPA-LOCK            =   ZERO
                MOVE    WIDGET-NORMAL       TO  P02-B12-STATE
                MOVE    WIDGET-NORMAL       TO  P02-B05S-STATE
-               MOVE    WIDGET-NORMAL       TO  P02-B04-STATE
+               IF      SPA-NAI-PTNUMDEL-FLG    NOT =   "1"
+                   MOVE    WIDGET-NORMAL       TO  P02-B04-STATE
+               END-IF
            ELSE
                MOVE    WIDGET-INSENSITIVE  TO  P02-B12-STATE
                MOVE    WIDGET-INSENSITIVE  TO  P02-B05S-STATE
