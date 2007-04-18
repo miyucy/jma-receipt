@@ -142,7 +142,7 @@
       *
        WORKING-STORAGE             SECTION.
       *
-       01  PRGSKBNO                PIC X(08)  VALUE "20070327".
+       01  PRGSKBNO                PIC X(08)  VALUE "20070419".
       *
            COPY    "CPCOMMONDAT5.INC"
                                    REPLACING  //TEIKI01PARA//
@@ -3013,8 +3013,9 @@
                END-IF
            END-IF
       *
-           IF    ( WK-RJN          NOT =   SPACE )     
-           AND   ( WK-HONKZKKBN        =   "1"   )     
+           IF    ( WK-RJN          NOT =   SPACE )
+           AND   ( COLDAT01-THONKZKKBN (IDY)
+                                       =   "1"   )
                IF      COLDAT01-HKNNUM =   "063"   OR  "072"   OR
                                            "073"   OR  "074"   OR
                                            "075"
