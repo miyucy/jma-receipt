@@ -3209,7 +3209,7 @@
                            MOVE    HKN-TANSEIDONAME
                                                   TO  SPA-GMN-SEIDONAME
                                                            (WRK-PAGENO)
-                           IF      HKN-RECESKYKBN  =   "3"
+                           IF      HKN-RECESKYKBN  =   "1" OR "3"
                                MOVE    SPACE           TO
                                           SPA-GMN-SEIDONAME (WRK-PAGENO)
                                MOVE    "0034"          TO  SPA-ERRCD
