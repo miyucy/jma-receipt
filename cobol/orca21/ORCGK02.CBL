@@ -5098,8 +5098,6 @@
            END-IF
       *    訂正の時、エラー
            IF      SPA-SYORIFLG        =   1
-      *********MOVE    "1008"              TO  SPA-ERRCD
-      *******  CONTINUE
       *        訂正で継続のある時、エラーとする
                IF      (SPA-CONTKBN        =   "1"   OR  "2")  AND
                        (SPA-DENPJTIKBN     =   "1"   )
@@ -5144,8 +5142,6 @@
                MOVE    "0107"              TO  SPA-KIDCD
            END-IF
       *
-      *********PERFORM 41013-SRYKA-CHANGE-SEC
-      *****END-IF
            .
        41013-SRYKAI-SYORI-EXT.
            EXIT.
@@ -5219,38 +5215,6 @@
            MOVE    SPA-GMN-SRYKA       TO  SPA-SRYKA
            MOVE    SPA-GMN-SRYKAMEI    TO  SPA-SRYKAMEI
       *
-      **   MOVE    SPA-DRCD            TO  WRK-DRCD
-      *    MOVE    SPACE               TO  SPA-DRCD
-      *
-      *    初期ＳＰＡ編集処理
-      *    INITIALIZE                  ORCSC95AREA
-      *    MOVE    SPA-NAI-SRYYMD      TO  LNK-SC95-SRYYMD
-      *    MOVE    SPA-GMN-SRYYMD      TO  LNK-SC95-SRYYMDG
-      *    INITIALIZE                  SPA-DENPNUM
-      *    INITIALIZE                  SPA-SYORIFLG
-      *    INITIALIZE                  SPA-K02-AREA
-      *    INITIALIZE                  SPA-SCR-REC
-      *    MOVE    SPA-SRYKA           TO  SPA-GMN-SRYKA
-      *    MOVE    SPA-SRYKAMEI        TO  SPA-GMN-SRYKAMEI
-      **** MOVE    "5"                 TO  LNK-SC95-KBN
-      *    MOVE    "2"                 TO  LNK-SC95-KBN
-      *    MOVE    "K02"               TO  LNK-SC95-PG
-      *    CALL    "ORCSC95"           USING
-      *                                MCPAREA
-      *                                ORCSC95AREA
-      *                                SPA-AREA
-      *                                SPA-K01KYOUTU
-      *                                SPA-K02
-      *    IF      SPA-DRCD            =   SPACE
-      *        MOVE    WRK-DRCD            TO  SPA-DRCD
-      *    END-IF
-      *
-      *    スパ共通編集処理
-      *    PERFORM                 310-SPA-SET-SEC
-      *
-      *    チェック用月内診療行為セット
-      **** PERFORM                 320-SPA-CHKSET-SEC
-      *
            IF      LNK-SC95-DOUJI-RENNUM   NOT =   ZERO
                MOVE    "0103"          TO  SPA-KIDCD
                GO      TO      41013-SRYKA-CHANGE-EXT
@@ -5276,6 +5240,9 @@
       *
       *    画面用スパ編集処理
       *****PERFORM                 310-SPA-GMNSET-SEC
+      *    保険組合編集
+           MOVE    SPA-HKNCOMBINUM     TO  SPA-GMN-HKNCOMBINUM
+           PERFORM 3101-HKNCOMBI-HEN-SEC
       *
       *    診察料のみ変換する
            MOVE    SPA-K01KYOUTU       TO  SPA-WORK
@@ -5743,7 +5710,7 @@
                PERFORM 4101120-SAISIN-SYOSIN-SEC
                GO      TO                  41011-KOUI-HEN2-EXT
            END-IF
-      *!TEST
+      *
       *    初診料を再診料へ変更する
            IF    ((SPA-GMN-INPUTCD(SPA-GMN-IDX)(1:4)  =   ".120"  AND
                    SPA-GMN-INPUTCD(SPA-GMN-IDX)(5:)   =   SPACE )   OR
@@ -5755,12 +5722,13 @@
               AND (SPA-HKNCOMBINUM     NOT =   "9999"  )
               AND (SPA-COM-HKNCOMBI(SPA-GMN-IDX)
                                        NOT =   "9999" )
+      *
                PERFORM 4101122-SYOSIN-SAISIN-SEC
                IF      FLG-OK          NOT =   ZERO
                    GO      TO                  41011-KOUI-HEN2-EXT
                END-IF
            END-IF
-      *!TEST
+      *
       *
            IF     LNK-SC97-NYURYOKU    =   1
       *///     セットコードに変更がない時
@@ -12686,12 +12654,11 @@
            MOVE    SPACE               TO  WRK-KIDMSG
            EVALUATE    SPA-KIDCD
                WHEN    "0101"
-                   MOVE
-                   "すでに当日診察料を算定しています。"
-                                       TO  WRK-KIDMSG(1:34)
-                   MOVE
-                   "ＯＫで同日再診へ振り替えます。"
-                                       TO  WRK-KIDMSG(35:)
+                   STRING  "すでに当日診察料を算定しています。"
+                           "ＯＫで同日再診へ振り替えます。"
+                                       DELIMITED   BY  SIZE
+                                       INTO    WRK-KIDMSG
+                   END-STRING
                WHEN    "0102"
                    MOVE    "外来管理加算は算定できません。削除します"
                                        TO  WRK-KIDMSG
@@ -12722,16 +12689,17 @@
                    MOVE     "よろしいですか。"
                                        TO  WRK-KIDMSG(25:)
                WHEN    "0108"
-               MOVE
-               "初診算定日を登録します。現在の診療内容はクリアします。"
-                                       TO  WRK-KIDMSG
+                   STRING  "初診算定日を登録します。"
+                           "現在の診療内容はクリアします。"
+                                       DELIMITED   BY  SIZE
+                                       INTO    WRK-KIDMSG
+                   END-STRING
                WHEN    "0109"
-                   MOVE
-                   "既に診察料を他科で算定しています。"
-                                       TO  WRK-KIDMSG(1:34)
-                   MOVE
-                   "ＯＫで同日再診料へ変更します。"
-                                       TO  WRK-KIDMSG(35:)
+                   STRING  "既に診察料を他科で算定しています。"
+                           "ＯＫで同日再診料へ変更します。"
+                                       DELIMITED   BY  SIZE
+                                       INTO    WRK-KIDMSG
+                   END-STRING
                WHEN    "0110"
                MOVE
                    "初診料算定へ変更します。よろしいですか？"
@@ -12745,17 +12713,18 @@
                    "診療日が未来日です。よろしいですか？"
                                        TO  WRK-KIDMSG
                WHEN    "0112"
-                   MOVE    "初診料算定へ変更しますが、"
-                                       TO  WRK-KIDMSG
-                   MOVE    "転帰が未入力の病名が存在します。"
-                                       TO  WRK-KIDMSG(27:)
-                   MOVE    "よろしいですか？"
-                                       TO  WRK-KIDMSG(59:)
+                   STRING  "初診料算定へ変更しますが、"
+                           "転帰が未入力の病名が存在します。"
+                           "よろしいですか？"
+                                       DELIMITED   BY  SIZE
+                                       INTO    WRK-KIDMSG
+                   END-STRING
                WHEN    "0113"
-                   MOVE    "特定疾患処方管理加算が算定できます。"
-                                       TO  WRK-KIDMSG
-                   MOVE    "ＯＫで自動算定します。"
-                                       TO  WRK-KIDMSG(37:)
+                   STRING  "特定疾患処方管理加算が算定できます。"
+                            "ＯＫで自動算定します。"
+                                       DELIMITED   BY  SIZE
+                                       INTO    WRK-KIDMSG
+                   END-STRING
                WHEN    "0130"
                    MOVE    "長期投薬加算が算定できます。"
                                        TO  WRK-KIDMSG

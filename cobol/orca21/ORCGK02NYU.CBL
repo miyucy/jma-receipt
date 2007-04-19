@@ -3111,7 +3111,6 @@
                IF      SPA-GMN-IDX         >   WRK-GYO-MAX
                    MOVE    "7001"          TO  SPA-ERRCD
                    MOVE    WRK-GYO-MAX     TO  SPA-GMN-IDX
-                   GO      TO      2001-INPUT-SET-EXT
                END-IF
            END-IF
       *
@@ -3867,6 +3866,9 @@
                MOVE    "0122"          TO  SPA-KIDCD
            END-IF
       *
+      *     ›∏±¡»πÁ
+           MOVE    SPA-HKNCOMBINUM     TO  SPA-GMN-HKNCOMBINUM
+           PERFORM 3101-HKNCOMBI-HEN-SEC
       *
            MOVE    HZN-SCR-REC         TO  SPA-SCR-REC
            IF     (SPA-SYORIFLG        =   ZERO )  AND
