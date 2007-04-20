@@ -1144,35 +1144,6 @@
                PERFORM 4201-DOSEL-CHECK-SEC
            END-IF
       *
-      *    IF      WRK-BANGO           =   ZERO
-      *        GO      TO      440-MEILIST-CHK-EXT
-      *    END-IF
-      *
-      *    MOVE    WRK-BANGO           TO  WRK-ZZ
-      *    MOVE    SPACE               TO  WRK-BANGO-X
-      *    MOVE    ZERO                TO  IDX-D1
-      *    PERFORM VARYING     IDX-D2  FROM    1   BY  1
-      *            UNTIL       IDX-D2  >   3
-      *        IF      WRK-ZZ(IDX-D2:1)    NOT =   SPACE
-      *            ADD     1               TO  IDX-D1
-      *            MOVE    WRK-ZZ(IDX-D2:1)    TO  WRK-BANGO-X(IDX-D1:1)
-      *        END-IF
-      *    END-PERFORM
-      *
-      *    MOVE    SPA-GMN-DOSEL       TO  WRK-DOSEL
-      *    MOVE    SPACE               TO  SPA-GMN-DOSEL
-      *    IF      WRK-DOSEL           =   SPACE
-      *        STRING WRK-BANGO-X         DELIMITED   BY  SPACE
-      *               INTO                SPA-GMN-DOSEL
-      *        END-STRING
-      *    ELSE
-      *        STRING  WRK-DOSEL           DELIMITED   BY  SPACE
-      *                ","                 DELIMITED   BY  SIZE
-      *                WRK-BANGO-X         DELIMITED   BY  SPACE
-      *               INTO                SPA-GMN-DOSEL
-      *        END-STRING
-      **** END-IF
-      *
            .
        440-MEILIST-CHK-EXT.
            EXIT.
@@ -1626,20 +1597,20 @@
                IF      SPA-K09NAI-DOUJI-RENNUM (SPA-NAI-DOSELNUM)
                                            =   JYURRK-DOUJI-RENNUM
       *            ¿ÇÎÅ¶èÊ¬¤ÎÈ½Äê
-                   IF      JYURRK-EDANUM       =   1
-                       MOVE    ZERO                TO  FLG-OK2
-                       IF      SPA-GMN-SRYKBN      =   "00"
-                                                   OR  "90"
-                            MOVE    1              TO  FLG-OK2
-                       ELSE
-                            PERFORM 41012-SRYKBN-CHK-SEC
-                       END-IF
-                   END-IF
+      ****         IF      JYURRK-EDANUM       =   1
+      *                MOVE    ZERO                TO  FLG-OK2
+      *                IF      SPA-GMN-SRYKBN      =   "00"
+      *                                            OR  "90"
+      *                     MOVE    1              TO  FLG-OK2
+      *                ELSE
+      *                     PERFORM 41012-SRYKBN-CHK-SEC
+      *                END-IF
+      ****         END-IF
       *
                    PERFORM VARYING     IDX-R   FROM    1   BY  1
                            UNTIL      (IDG             >   400 )  OR
                                       (IDX-R           >   15  )
-                                   OR (FLG-OK2         =   ZERO)
+      *************                OR (FLG-OK2         =   ZERO)
                        IF      JYURRK-ZAINUM (IDX-R)   NOT =   ZERO
                            PERFORM 41011-ZAISET-HEN-SEC
                        END-IF
@@ -1720,7 +1691,7 @@
       *    ¿ÇÎÅ¹Ô°Ù¸¡º÷½èÍý
       *****************************************************************
        41011-ZAISET-HEN-SEC           SECTION.
-      *     ¥ï¡¼¥¯¿ÇÎÅ¹Ô°Ù¤Î¥ì¥¤¥¢¥¦¥È¤ØÊÔ½¸¸å¡¢²èÌÌÍÑÊÔ½¸¤Ø
+      *    ¥ï¡¼¥¯¿ÇÎÅ¹Ô°Ù¤Î¥ì¥¤¥¢¥¦¥È¤ØÊÔ½¸¸å¡¢²èÌÌÍÑÊÔ½¸¤Ø
            MOVE    SPACE               TO  LNK-WKSRYACT-AREA
            MOVE    ZERO                TO  IDX-KOUI
            MOVE    ZERO                TO  IDX-KAI
