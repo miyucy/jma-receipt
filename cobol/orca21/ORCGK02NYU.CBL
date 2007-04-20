@@ -575,6 +575,7 @@
                05  WRK-KYUSEI-IN-G         OCCURS   7.
                    07  WRK-KYUSEI-ST       PIC X(01).
                    07  WRK-KYUSEI-ED       PIC X(01).
+               05  WRK-TEIGEN-IN           PIC X(01).
       *
       *   年齢表示
        01  WRK-NENREI-G.
@@ -5608,7 +5609,7 @@
       *    リハビリ初回
            MOVE    SPACE               TO  SPA-RIGAKU-INIT
       *    リハビリ算定回数
-           MOVE    WRK-KYUSEI-INP-G    TO  SPA-RIGAKU-REC (1:14)
+           MOVE    WRK-KYUSEI-INP-G    TO  SPA-RIGAKU-REC (1:15)
       *
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL      (IDX     >   WRK-GYO-MAX      )   OR
@@ -5959,6 +5960,8 @@
                    MOVE    "1"             TO  WRK-KYUSEI-ST (6)
                WHEN    "099800171"
                    MOVE    "1"             TO  WRK-KYUSEI-ST (7)
+               WHEN    "099800401"
+                   MOVE    "1"             TO  WRK-TEIGEN-IN
            END-EVALUATE
       *
            .
