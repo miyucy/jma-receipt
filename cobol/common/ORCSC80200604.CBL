@@ -268,6 +268,7 @@
                05  WRK-KYUSEI-IN-G         OCCURS   7.
                    07  WRK-KYUSEI-ST       PIC X(01).
                    07  WRK-KYUSEI-ED       PIC X(01).
+               05  WRK-TEIGEN-IN           PIC X(01).
       *    Åö·î»»Äê²ó¿ô
            03  WRK-RIHA-DAY-G.
                05  WRK-RIHA-DAY            PIC 9(03)
@@ -288,6 +289,9 @@
            03  WRK-KYUSEI6-CHK             PIC X(01).
            03  WRK-KYUSEI7-YMD             PIC X(08).
            03  WRK-KYUSEI7-CHK             PIC X(01).
+      *    Äþ¸ºÂÐ¾Ý³°
+           03  WRK-TEIGEN-GAI              PIC X(08).
+      *
       *    ÄÌ±¡Àº¿ÀÍÑÆ±Æü½é¿Ç
            03  WRK-DOUSYOSIN-AREA.
                05  WRK-DOUSYOSIN-OCC       OCCURS   10.
@@ -562,6 +566,10 @@
                    END-IF
                END-IF
            END-IF
+      *    Äþ¸ºÂÐ¾Ý³°
+           MOVE    "099800401"         TO  WRK-SRYCD
+           PERFORM 10001-KYUSEI-YMD-SEC
+           MOVE    WRK-YMD             TO  WRK-TEIGEN-GAI
       *
       *    ³°Íè¤Î»þ¡¢Àº¿ÀÄÌ±¡
            IF      SPA-NYUGAIKBN       =   "2"
@@ -603,6 +611,8 @@
       *
       *    Ï«ºÒËè¤È¤¹¤ë
            IF      SPA-HKNKBN          =   1
+      *        Äþ¸ºÂÐ¾Ý³°¤Ï£±·ï
+              AND (WRK-SRYCD       NOT =   "099800401" )
                MOVE    SPA-HKNCOMBINUM     TO  SANTEI-HKNCOMBINUM
            ELSE
                MOVE    ZERO                TO  SANTEI-HKNCOMBINUM
@@ -1253,6 +1263,9 @@
                            MOVE    "1"         TO  WRK-COM-CUR(IDX-Z)
                        END-IF
                    END-IF
+      *
+               WHEN    "099800401"
+                   MOVE    "1"                 TO  WRK-TEIGEN-IN
            END-EVALUATE
       *
            .
@@ -1541,6 +1554,12 @@
                    END-IF
                    MOVE    80                  TO  WRK-ZOGEN
            END-EVALUATE
+      *    Äþ¸ºÂÐ¾Ý³°¤Î¥³¡¼¥É»»Äê¤Î»þ¡¢Äþ¸º¤È¤·¤Ê¤¤
+           IF    ((WRK-TEIGEN-GAI  NOT =   SPACE )
+              AND (WRK-TEIGEN-GAI      >=  WRK-TEIGEN ))
+               OR (WRK-TEIGEN-IN       =   "1"   )
+               MOVE    SPACE               TO  WRK-TEIGEN
+           END-IF
       *
            IF      WRK-TEIGEN      NOT =   SPACE
       *    Æü¸å·×»»
