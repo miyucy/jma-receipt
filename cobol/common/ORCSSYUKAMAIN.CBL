@@ -28,24 +28,6 @@
       * Maj/Min/Rev  修正者       日付      内容
       *  03.04.01    NACL-藤原    07/04/23  入院基本料カレンダー未設定時の
       *                                     主科設定対応
-      *
-      *  03.05.01    NACL-藤原    07/04/19  グループ診療対応
-      *
-      *  04.01.01    NACL-藤原    07/01/21  月途中の負担者番号変更対応
-      *                                     （生保の公費単独のみ） 
-      *
-      *  04.02.01    NACL-藤原    08/03/04  平成２０年４月改正対応
-      *
-      *  04.05.01    NACL-藤原    11/09/16  公費単独対応
-      *                                     公費を最大５０に変更に併せて
-      *                                     保険組合せも変更
-      *
-      *  04.06.01    NACL-藤原    10/10/12  公費単独のレセ分離対応
-      *                                     kohid 追加
-      *  04.06.02    NACL-藤原    11/12/12  点検レセ０点公費印字対応
-      *  04.06.02    NACL-藤原    12/10/26  特記事項０７（老併）及び
-      *                                     ０８（老健）のレセプト対応
-      *                                     receipt_kbn 追加 
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -65,6 +47,7 @@
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
            03  IDY                 PIC 9(04).
+           03  IDZ                 PIC 9(04).
            03  IDX1                PIC 9(04).
            03  IDX2                PIC 9(04).
            03  IDX3                PIC 9(04).
@@ -79,10 +62,6 @@
                05  WRK-YY          PIC 9(04).
                05  WRK-MM          PIC 9(02).
                05  WRK-DD          PIC 9(02).
-      *
-       01  WRK-CONS-AREA.
-           03  WRK-CONS-SRYYM-200804
-                                   PIC 9(06)   VALUE   200804.      
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -143,7 +122,6 @@
            MOVE    ZERO            TO  LNK-SYUACC-RC
       *****INITIALIZE                  LNK-SYUACC-IO
       *
-      *
       *    入力項目チェック
            IF      SPA-SYUKA-KBN   =   ZERO
                MOVE    1               TO  FLG-END 
@@ -154,7 +132,7 @@
                                            =   "01"    OR  "02"    OR
                                                "03"    OR  "04"    OR
                                                "05"    OR  "06"    OR
-                                               "07"    OR  "08"
+                                               "07"
                            CONTINUE
                        ELSE
                            MOVE    1               TO  FLG-END
@@ -163,7 +141,7 @@
                        IF      LNK-SYUACC-I-KBN
                                            =   "01"    OR  "02"    OR
                                                "05"    OR  "06"    OR
-                                               "07"    OR  "08"
+                                               "07"
                            CONTINUE
                        ELSE
                            MOVE    1               TO  FLG-END
@@ -242,8 +220,7 @@
                END-EVALUATE
            ELSE
                IF      LNK-SYUACC-I-KBN    =   "01"    OR  "02"    OR  
-                                               "06"    OR  "07"    OR
-                                               "08"
+                                               "06"    OR  "07"
                    PERFORM 2004-ORCSSYUACC-SEC
                ELSE
                    IF      SPA-SYUKA-MODE  =   "2"
@@ -299,7 +276,7 @@
        2001-ORCSSYUBETU-SEC        SECTION.
       *
            INITIALIZE              ORCSSYUBETUAREA
-grpsys     MOVE    SPA-HOSPNUM     TO  LNK-SYUBETU-HOSPNUM
+           MOVE    SPA-HOSPID      TO  LNK-SYUBETU-HOSPID
            MOVE    SPA-PREFNUM     TO  LNK-SYUBETU-PREFNUM
            MOVE    LNK-SYUACC-I-SRYYM
                                    TO  LNK-SYUBETU-SRYYM
@@ -307,7 +284,6 @@ grpsys     MOVE    SPA-HOSPNUM     TO  LNK-SYUBETU-HOSPNUM
            MOVE    SPA-PTID        TO  LNK-SYUBETU-PTID
            MOVE    SPA-BIRTHDAY    TO  LNK-SYUBETU-BIRTHDAY
            CALL    "ORCSSYUBETU"   USING   ORCSSYUBETUAREA
-                                           SPA-AREA
            IF      LNK-SYUBETU-RC  =   ZERO
                PERFORM VARYING IDY FROM    1   BY  1
                        UNTIL   IDY >       100
@@ -323,20 +299,8 @@ grpsys     MOVE    SPA-HOSPNUM     TO  LNK-SYUBETU-HOSPNUM
                                    TO  LNK-SYUACC-IO-HKNJANUM     (IDY)
                    MOVE    LNK-SYUBETU-HOJOKBN      (IDY)
                                    TO  LNK-SYUACC-IO-HOJOKBN      (IDY)
-                   MOVE    LNK-SYUBETU-KOHID        (IDY)
-                                   TO  LNK-SYUACC-IO-KOHID        (IDY)
-                   MOVE    LNK-SYUBETU-RECEIPT-KBN  (IDY)
-                                   TO  LNK-SYUACC-IO-RECEIPT-KBN  (IDY)
                    MOVE    LNK-SYUBETU-HKNNUM       (IDY)
                                    TO  LNK-SYUACC-IO-HKNNUM       (IDY)
-      *            精神入院か生保単独複数のとき
-                   IF    ( LNK-SYUBETU-HKNNUM   (IDY)
-                                               =   SPACE      )
-                   AND   ( LNK-SYUBETU-TEKSTYMD (IDY)
-                                           NOT =   "00000000" )
-                       MOVE    LNK-SYUBETU-TEKSTYMD     (IDY)
-                                   TO  LNK-SYUACC-IO-HKNJANUM     (IDY)
-                   END-IF 
                END-PERFORM
            ELSE
                MOVE    LNK-SYUBETU-RC  TO  LNK-SYUACC-RC
@@ -360,7 +324,7 @@ grpsys     MOVE    SPA-HOSPNUM     TO  LNK-SYUBETU-HOSPNUM
            END-IF
       *
            INITIALIZE                  ORCSTOTALACCT-AREA
-grpsys     MOVE    SPA-HOSPNUM     TO  LNK-ORCSTOTALACCT-HOSPNUM
+           MOVE    SPA-HOSPID      TO  LNK-ORCSTOTALACCT-HOSPID
            MOVE    SPA-NYUGAIKBN   TO  LNK-ORCSTOTALACCT-NYUGAIKBN
            MOVE    SPA-PTID        TO  LNK-ORCSTOTALACCT-PTID
            MOVE    LNK-SYUACC-I-SRYYM
@@ -374,7 +338,6 @@ grpsys     MOVE    SPA-HOSPNUM     TO  LNK-ORCSTOTALACCT-HOSPNUM
                END-EVALUATE
            END-IF
            CALL    "ORCSTOTALACCT" USING   ORCSTOTALACCT-AREA
-                                           SPA-AREA
            IF      LNK-ORCSTOTALACCT-RC    =   ZERO
                CONTINUE
            ELSE
@@ -388,7 +351,7 @@ grpsys     MOVE    SPA-HOSPNUM     TO  LNK-ORCSTOTALACCT-HOSPNUM
       *
       *    レセプト別集計
            PERFORM VARYING IDX1    FROM    1   BY  1
-                   UNTIL   IDX1    >       50
+                   UNTIL   IDX1    >       10
                    OR      LNK-ORCSTOTALACCT-HKNCOMBINUM (IDX1)
                                                =   ZERO
                PERFORM VARYING IDY1    FROM    1   BY  1
@@ -475,7 +438,7 @@ grpsys     MOVE    SPA-HOSPNUM     TO  LNK-ORCSTOTALACCT-HOSPNUM
            END-IF
       *
            INITIALIZE                  ORCHCN33SUB-AREA
-grpsys     MOVE    SPA-HOSPNUM     TO  LNK-ORCHCN33SUB-HOSPNUM
+           MOVE    SPA-HOSPID      TO  LNK-ORCHCN33SUB-HOSPID
            MOVE    SPA-PTID        TO  LNK-ORCHCN33SUB-PTID
            MOVE    LNK-SYUACC-I-SRYYM
                                    TO  LNK-ORCHCN33SUB-SANTEIYM
@@ -488,7 +451,6 @@ grpsys     MOVE    SPA-HOSPNUM     TO  LNK-ORCHCN33SUB-HOSPNUM
                    MOVE    "2"         TO  LNK-ORCHCN33SUB-SHORIKBN
            END-EVALUATE
            CALL    "ORCHCN33SUB"   USING   ORCHCN33SUB-AREA
-                                           SPA-AREA
            IF      LNK-ORCHCN33SUB-RC  =   ZERO
                CONTINUE
            ELSE
@@ -508,7 +470,7 @@ grpsys     MOVE    SPA-HOSPNUM     TO  LNK-ORCHCN33SUB-HOSPNUM
       *    レセプト別集計
            PERFORM VARYING IDX1    FROM    1   BY  1
                    UNTIL   IDX1    >       10
-                   OR      LNK-ORCHCN33SUB-HENKYAKU-HKNCOM (IDX1)
+                   OR      LNK-ORCHCN33SUB-HENKYAKU-HKNCOMBINUM (IDX1)
                                            =   ZERO
                PERFORM VARYING IDY1    FROM    1   BY  1
                        UNTIL   IDY1    >       100
@@ -518,7 +480,7 @@ grpsys     MOVE    SPA-HOSPNUM     TO  LNK-ORCHCN33SUB-HOSPNUM
                            UNTIL   IDY2    >       10
                            OR      LNK-SYUBETU-HKNCOMBI (IDY1 IDY2)
                                                    =   ZERO
-                       IF      LNK-ORCHCN33SUB-HENKYAKU-HKNCOM
+                       IF      LNK-ORCHCN33SUB-HENKYAKU-HKNCOMBINUM
                                                         (IDX1)
                                    =   LNK-SYUBETU-HKNCOMBI (IDY1 IDY2)
                            PERFORM 20031-ORCHCN33SUB-SYUKEI-SEC
@@ -556,12 +518,12 @@ grpsys     MOVE    SPA-HOSPNUM     TO  LNK-ORCHCN33SUB-HOSPNUM
                                                        (IDY1 IDY3 IDY4)
                                                    =   ZERO
                                MOVE
-                                   LNK-ORCHCN33SUB-HENKYAKU-HKNCOM
+                                   LNK-ORCHCN33SUB-HENKYAKU-HKNCOMBINUM
                                                        (IDX1)
                                            TO  LNK-SYUACC-IO-HKNCOMBI
                                                         (IDY1 IDY3 IDY4)
                            END-IF
-                           IF      LNK-ORCHCN33SUB-HENKYAKU-HKNCOM
+                           IF      LNK-ORCHCN33SUB-HENKYAKU-HKNCOMBINUM
                                                        (IDX1)
                                            =   LNK-SYUACC-IO-HKNCOMBI
                                                         (IDY1 IDY3 IDY4)
