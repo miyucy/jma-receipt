@@ -2063,6 +2063,22 @@
                                    END-IF
                                END-IF    
                            END-IF
+      *
+      *                    症状詳記区分の見出しを記載
+                           IF      FLG-RECECOM-SJKBN   =   1
+                               IF      WRK-LINETEK      >=  WRK-LINE-MAX
+                                   PERFORM 34120-PAGE-SEC
+                               END-IF
+                               ADD     1               TO  WRK-LINETEK
+                               IF      CNT-PAGE        =   1   
+                                   MOVE    WRK-RECECOM-NAME
+                                           TO  HC22-TEKIYO2(WRK-LINETEK)
+                               ELSE                
+                                   MOVE    WRK-RECECOM-NAME
+                                           TO  HC24-TEKIYO (WRK-LINETEK)
+                               END-IF
+                               MOVE    ZERO        TO  FLG-RECECOM-SJKBN
+                           END-IF            
       *                 
                            IF      WRK-LINETEK      >=  WRK-LINE-MAX
                                PERFORM 34120-PAGE-SEC
