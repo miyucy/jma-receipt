@@ -31,7 +31,7 @@
        01  ORCHCN33SUB-AREA.
       *
       *医療機関ＩＤ
-           03  LNK-ORCHCN33SUB-HOSPNUM               PIC 9(2).
+           03  LNK-ORCHCN33SUB-HOSPID                PIC  X(24).
       *患者ＩＤ
            03  LNK-ORCHCN33SUB-PTID                  PIC  9(10).
       *算定年月
@@ -48,7 +48,7 @@
       *入院料返却テーブル
                05  LNK-ORCHCN33SUB-HENKYAKU-TBL      OCCURS  31.
       *入院点数
-                   07  LNK-ORCHCN33SUB-TEN           PIC S9(07).
+                   07  LNK-ORCHCN33SUB-TEN           PIC  9(07).
       *その他点数（療養担当手当）
                    07  LNK-ORCHCN33SUB-ETCTEN        PIC  9(07).
       *食事療養
@@ -58,7 +58,7 @@
       *保険組合せ返却テーブル
                05  LNK-ORCHCN33SUB-HENKYAKU-TBL2     OCCURS  10.
       *保険組合せ番号
-                   07  LNK-ORCHCN33SUB-HENKYAKU-HKNCOM  PIC 9(04).
+                   07  LNK-ORCHCN33SUB-HENKYAKU-HKNCOMBINUM  PIC 9(04).
       *診療科返却テーブル
                    07  LNK-ORCHCN33SUB-HENKYAKU-TBL3     OCCURS  50.
       *診療科
@@ -68,11 +68,14 @@
       *終了日
                        09  LNK-ORCHCN33SUB-EDDAY     PIC  9(02).
       *点数
-                       09  LNK-ORCHCN33SUB-TENSU     PIC S9(07).
+                       09  LNK-ORCHCN33SUB-TENSU     PIC  9(07).
       *日数
                        09  LNK-ORCHCN33SUB-DAY       PIC  9(02).
       *
+      *診療科別入院点数返却テーブル
       *復帰コード（１：算定年月エラー　２：患者検索エラー　３：診療科エラー
-      *            ４：入院会計なし　　５：入院履歴なし）
+      *            ４：入院会計なし（保険組合せ）　５：入院履歴なし
+      *            ６：入院会計なし（入院基本料）
+      *          　７：入院基本料カレンダー未設定）
            03  LNK-ORCHCN33SUB-RC                    PIC S9(9) BINARY.
       *
