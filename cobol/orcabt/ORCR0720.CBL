@@ -42,6 +42,7 @@
       *  £²£°£°£·Ç¯£´·î²þÀµ
       *  03.04.08    NACL-ÌçÏÆ    07/04/01  ¸½ÊªµëÉÕÂÐ±þ
       *  03.04.09    NACL-Æ£¸¶    07/04/13  ¾É¾õ¾Üµ­¶èÊ¬¥³¡¼¥ÉÄÉ²Ã¤ËÈ¼¤¦ÂÐ±þ
+      *  03.04.10    NACL-Æ£¸¶    07/04/23  ¡Ö¶èÊ¬¡×Íó¤Îµ­ºÜ¤ÎÊÑ¹¹
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -3764,14 +3765,14 @@
       *                                                                 
                 EVALUATE  RECE62-BYOTOKBN(IDY4)                         
                    WHEN "01"                                            
-                      MOVE  "Àº¿À¡¡"   TO  HC06-NYUINKBN(IDY5:6)        
-                      ADD    6         TO  IDY5                         
+                      MOVE  "£°£±Àº¿À¡¡"   TO  HC06-NYUINKBN(IDY5:10)        
+                      ADD    10            TO  IDY5                         
                    WHEN "02"                                            
-                      MOVE  "·ë³Ë¡¡"   TO  HC06-NYUINKBN(IDY5:6)        
-                      ADD    6         TO  IDY5                         
+                      MOVE  "£°£²·ë³Ë¡¡"   TO  HC06-NYUINKBN(IDY5:10)        
+                      ADD    10            TO  IDY5                         
                    WHEN "07"                                            
-                      MOVE  "ÎÅÍÜ¡¡"   TO  HC06-NYUINKBN(IDY5:6)        
-                      ADD    6         TO  IDY5                         
+                      MOVE  "£°£·ÎÅÍÜ¡¡"   TO  HC06-NYUINKBN(IDY5:10)        
+                      ADD    10            TO  IDY5                         
                 END-EVALUATE                                            
       *                                                                 
            END-PERFORM                                                  
