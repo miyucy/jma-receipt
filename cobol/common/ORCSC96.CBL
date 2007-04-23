@@ -1276,6 +1276,18 @@
                                                DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
+               WHEN    "8044"
+                   STRING  "労災・自賠責ではリハビリテーション料の"
+                           "逓減はありません。"
+                                               DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
+               WHEN    "8045"
+                   STRING  "労災・自賠責ではリハビリテーション"
+                           "医学管理料は算定できません。"
+                                               DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
       *投薬附加情報エラー
                WHEN    "0200"
                    STRING  "長期投与日数以上です。"
