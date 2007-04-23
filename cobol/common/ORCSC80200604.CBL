@@ -1716,6 +1716,7 @@
            IF      WRK-TBL-RSI-KBN     =   "S"
                MOVE    "8045"          TO  WRK-ERRCD
                MOVE    "1"             TO  WRK-COM-CUR (IDX-Z)
+               GO      TO      100113-RSIHKN-SYORI-EXT
            END-IF
       *
       *    リハビリテーション総合計画評価料は対象外
