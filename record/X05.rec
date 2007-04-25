@@ -1,11 +1,14 @@
 X05	{
 	fixed2	{
+		B03	{
+			state	int;
+		};
+		B11	{
+			label	varchar(10);
+		};
 		NAME	{
 			value	varchar(100);
 		};
-	        B03	{
-	           	state	int;
-	        };
 		NO01	{
 			value	number(3);
 		};
@@ -188,66 +191,86 @@ X05	{
 		};
 		DMKBN01	{
 			value	number(1);
+			state	int;
 		};
 		DMKBN02	{
 			value	number(1);
+			state	int;
 		};
 		DMKBN03	{
 			value	number(1);
+			state	int;
 		};
 		DMKBN04	{
 			value	number(1);
+			state	int;
 		};
 		DMKBN05	{
 			value	number(1);
+			state	int;
 		};
 		DMKBN06	{
 			value	number(1);
+			state	int;
 		};
 		DMKBN07	{
 			value	number(1);
+			state	int;
 		};
 		DMKBN08	{
 			value	number(1);
+			state	int;
 		};
 		DMKBN09	{
 			value	number(1);
+			state	int;
 		};
 		DMKBN10	{
 			value	number(1);
+			state	int;
 		};
 		DMKBN11	{
 			value	number(1);
+			state	int;
 		};
 		DMKBN12	{
 			value	number(1);
+			state	int;
 		};
 		DMKBN13	{
 			value	number(1);
+			state	int;
 		};
 		DMKBN14	{
 			value	number(1);
+			state	int;
 		};
 		DMKBN15	{
 			value	number(1);
+			state	int;
 		};
 		DMKBN16	{
 			value	number(1);
+			state	int;
 		};
 		DMKBN17	{
 			value	number(1);
+			state	int;
 		};
 		DMKBN18	{
 			value	number(1);
+			state	int;
 		};
 		DMKBN19	{
 			value	number(1);
+			state	int;
 		};
 		DMKBN20	{
 			value	number(1);
+			state	int;
 		};
 		SRYCD	{
-			value	varchar(9);
+			value	varchar(200);
 		};
 		STYUKYMD	{
 			value	varchar(9);
@@ -264,16 +287,42 @@ X05	{
 		CMB_NYUGAIKBN	{
 			NYUGAIKBN	{
 				value	varchar(22);
+				state	int;
 			};
 			count	int;
 			item	varchar(22)[05];
+			state	int;
 		};
 		CMB_NYUGAIBNDKBN	{
 			NYUGAIBNDKBN	{
 				value	varchar(22);
+				state	int;
 			};
 			count	int;
 			item	varchar(22)[05];
+			state	int;
+		};
+		CMB_JYKNKBN	{
+			JYKNKBN	{
+				value	varchar(12);
+				state	int;
+			};
+			count	int;
+			item	varchar(12)[05];
+			state	int;
+		};
+		LBLSRYCD	{
+			value	varchar(20);
+			style varchar(20);
+		};
+		LBLNYUGAIBND	{
+			value	varchar(20);
+		};
+		LBLJYKN	{
+			value	varchar(20);
+		};
+		LBLDM	{
+			value	varchar(20);
 		};
 	};
 };

@@ -32,5 +32,8 @@ M97	{
 			style   varchar(20);
 			value	varchar(122);
 		};
+		pandatimer1     {
+			duration        int;
+		};
 	};
 };

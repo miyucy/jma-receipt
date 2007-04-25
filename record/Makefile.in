@@ -331,6 +331,16 @@ RECORD_files = \
 	JERR2.rec \
 	R06.rec \
 	W981.rec \
+	XE01.rec \
+	X99.rec \
+	X100.rec \
+	P02Q.rec \
+	P02Q1.rec \
+	U02Q.rec \
+	C12.rec \
+	D02.rec \
+	W121.rec \
+	W32.rec \
 
 DEF_files = \
 	HC01.def \
@@ -508,8 +518,12 @@ DB_files = \
 	tbl_tensuplus2.db \
 	tbl_genericname.db \
 	tbl_syurrk.db \
-	tbl_sysbase.db \
-	tbl_mstkanri.db
+	tbl_qrcdhkn.db \
+	tbl_chk005.db \
+	tbl_rece_puth.db \
+	tbl_rece_putb.db \
+	tbl_hktsantei.db \
+	tbl_hktsrycd.db \
 
 all:   
 

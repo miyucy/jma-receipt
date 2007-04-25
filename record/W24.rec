@@ -342,6 +342,13 @@ W24	{
 			count	int;
 			item	varchar(20)[05];
 		};
+		CMB_NYKNKNRKBN	{
+			NYKNKNRKBN	{
+				value	varchar(40);
+			};
+			count	int;
+			item	varchar(40)[10];
+		};
 		CMB_SKYPRTKBN	{
 			SKYPRTKBN	{
 				value	varchar(30);
@@ -403,6 +410,13 @@ W24	{
 			count	int;
 			item	varchar(10)[05];
 			state	int;
+		};
+		CMB_TEIKISAGAKUACT	{
+			TEIKISAGAKUACT	{
+				value	varchar(20);
+			};
+			count	int;
+			item	varchar(20)[05];
 		};
 	};
 };

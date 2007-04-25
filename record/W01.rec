@@ -37,7 +37,7 @@ W01	{
 				value	varchar(35);
 			};
 			count	int;
-			item	varchar(35)[50];
+			item	varchar(35)[100];
 		};
 	};
 };

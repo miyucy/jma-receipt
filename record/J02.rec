@@ -7,9 +7,11 @@ J02	{
 			value	varchar(6);
 		};
 		KANANAME	{
+			style	varchar(20);
 			value	varchar(50);
 		};
 		NAME	{
+			style	varchar(20);
 			value	varchar(50);
 		};
 		BIRTHDAY	{
@@ -234,6 +236,33 @@ J02	{
 		NYUINMSG2	{
 		    style   varchar(20);
 			value	varchar(50);
+		};
+		B04	{
+	           	state	int;
+		};
+		B05	{
+	           	state	int;
+		};
+		B08	{
+	           	state	int;
+		};
+		B12	{
+	           	state	int;
+		};
+		B02S	{
+	           	state	int;
+		};
+		B04S	{
+	           	state	int;
+		};
+		B09S	{
+	           	state	int;
+		};
+		B10S	{
+	           	state	int;
+		};
+		B11S	{
+	           	state	int;
 		};
 	};
 };

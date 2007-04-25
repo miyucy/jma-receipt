@@ -4,6 +4,7 @@ P02	{
 			value	varchar(20);
 		};
 		NAMEH	{
+			style	varchar(20);
 			value	varchar(50);
 		};
 		SEXH	{
@@ -28,6 +29,15 @@ P02	{
 	           	state	int;
 		};
 		B10S	{
+	           	state	int;
+		};
+		B12	{
+	           	state	int;
+		};
+		B05S	{
+	           	state	int;
+		};
+		B12S	{
 	           	state	int;
 		};
 		nb2	{

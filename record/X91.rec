@@ -43,5 +43,11 @@ X91	{
 		SYU3	{
 			value	bool;
 		};
+		CHKBYOYKZ	{
+			value	bool;
+		};
+		CHKBYOSRY	{
+			value	bool;
+		};
 	};
 };

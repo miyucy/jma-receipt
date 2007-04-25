@@ -175,24 +175,24 @@ W06	{
 			TG2	{
 				SKYPRTFLG_COMB	{
 					SKYPRTFLG	{
-						value	varchar(26);
+						value	varchar(30);
 					};
 					count	int;
-					item	varchar(26)[5];
+					item	varchar(30)[5];
 				};
 				SYOHOPRTFLG_COMB	{
 					SYOHOPRTFLG	{
-						value	varchar(26);
+						value	varchar(30);
 					};
 					count	int;
-					item	varchar(26)[5];
+					item	varchar(30)[5];
 				};
 				YAKUJYOFLG_COMB	{
 					YAKUJYOFLG	{
-						value	varchar(26);
+						value	varchar(30);
 					};
 					count	int;
-					item	varchar(26)[5];
+					item	varchar(30)[5];
 				};
 				MEIPRTFLG_COMB	{
 					MEIPRTFLG	{

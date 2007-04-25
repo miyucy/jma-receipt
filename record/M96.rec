@@ -47,5 +47,8 @@ M96	{
 		        style   varchar(20);
 			value	varchar(62);
 		};
+		pandatimer1     {
+			duration        int;
+		};
 	};
 };

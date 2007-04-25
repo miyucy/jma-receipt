@@ -1,0 +1,46 @@
+X99	{
+	fixed32	{
+		B07	{
+			state	int;
+		};
+		B07S	{
+			state	int;
+		};
+		SELNUM	{
+			value	varchar(3);
+		};
+		SEL_BYOMEI	{
+			value	varchar(100);
+		};
+		CMB_SRCBYOKBN	{
+			SRCBYOKBN	{
+				value	varchar(22);
+			};
+			count	int;
+			item	varchar(22)[05];
+		};
+		CMB_SRTKBN	{
+			SRTKBN	{
+				value	varchar(23);
+			};
+			count	int;
+			item	varchar(23)[50];
+		};
+		scrolledwindow3	{
+			SRCBYOLST	{
+				LBLSRCBYOCD	{
+					value	varchar(10);
+				};
+				count	int;
+				row	int;
+				rowattr	int;
+				item	{
+					value0	varchar(3);
+					value1	varchar(100);
+					value2	varchar(12);
+				}	[100];
+				select	bool[100];
+			};
+		};
+	};
+};

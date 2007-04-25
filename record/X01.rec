@@ -1,5 +1,9 @@
 X01	{
 	fixed1	{
+		B10	{
+			label	varchar(10);
+			state	int;
+		};
 		scrolledwindow1	{
 			TENSU_LIST	{
 				count	int;
@@ -22,8 +26,11 @@ X01	{
 		EDYUKYMD	{
 			value	varchar(10);
 		};
+		LBLSRYCD	{
+			value	varchar(20);
+		};
 		SRYCD	{
-			value	varchar(9);
+			value	varchar(100);
 		};
 		NAME	{
 			value	varchar(100);
@@ -34,6 +41,10 @@ X01	{
 			};
 			count	int;
 			item	varchar(32)[9];
+		};
+		LBLBYOSTATUS	{
+			style	varchar(20);
+			value	varchar(20);
 		};
 	};
 };

@@ -1533,18 +1533,18 @@ R02	{
 		};
 		PRTJYUN_COMBO	{
 			PRTJYUN	{
-				value	varchar(27);
+				value	varchar(31);
 			};
 			count	int;
-			item	varchar(27)[10];
+			item	varchar(31)[10];
 		};
 		PRTJYUN1_COMBO	{
 			state	int;
 			PRTJYUN1	{
-				value	varchar(27);
+				value	varchar(31);
 			};
 			count	int;
-			item	varchar(27)[10];
+			item	varchar(31)[10];
 		};
 		PREFKBN_COMBO	{
 			state	int;
@@ -1573,9 +1573,6 @@ R02	{
 			label	varchar(6);
 		};
 		LABEL2	{
-			label	varchar(6);
-		};
-		LABEL3	{
 			label	varchar(6);
 		};
 	};

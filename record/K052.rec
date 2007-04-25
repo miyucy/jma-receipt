@@ -6,5 +6,8 @@ K052	{
 		INPUTCD2	{
 			value	varchar(6);
 		};
+		KEIKAYMD	{
+			value	varchar(13);
+		};
 	};
 };

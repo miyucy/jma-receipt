@@ -23,5 +23,8 @@ M00	{
 		HTML1	{
 			value	varchar(200);
 		};
+		B11	{
+			label	varchar(10);
+		};
 	};
 };

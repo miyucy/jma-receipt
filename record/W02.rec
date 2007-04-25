@@ -80,17 +80,17 @@ W02	{
 				};
 				SKYPRTFLG_COMBO	{
 					SKYPRTFLG	{
-						value	varchar(22);
+						value	varchar(30);
 					};
 					count	int;
-					item	varchar(22)[3];
+					item	varchar(30)[5];
 				};
 				SYOHOPRTFLG_COMBO	{
 					SYOHOPRTFLG	{
-						value	varchar(14);
+						value	varchar(30);
 					};
 					count	int;
-					item	varchar(14)[3];
+					item	varchar(30)[5];
 				};
 				ZENSYOHOFLG_COMBO	{
 					ZENSYOHOFLG	{
@@ -101,10 +101,10 @@ W02	{
 				};
 				YAKUJYOFLG_COMBO	{
 					YAKUJYOFLG	{
-						value	varchar(14);
+						value	varchar(30);
 					};
 					count	int;
-					item	varchar(14)[2];
+					item	varchar(30)[3];
 				};
 				DISCOUNTHASU_COMBO	{
 					DISCOUNTHASU	{

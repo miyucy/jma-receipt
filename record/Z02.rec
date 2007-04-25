@@ -77,5 +77,8 @@ Z02	{
 		INPCHKKBN	{
 			value	number(1);
 		};
+		LABEL1	{
+			value	varchar(20);
+		};
 	};
 };

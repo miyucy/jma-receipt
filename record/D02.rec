@@ -1,0 +1,48 @@
+D02	{
+	fixed6	{
+		B06	{
+			state	int;
+		};
+		B07	{
+			state	int;
+		};
+		LBLSRYYM	{
+			style		varchar(20);
+			value		varchar(30);
+		};
+		LBLNYUGAI	{
+			style		varchar(20);
+			value		varchar(20);
+		};
+		SELNUM	{
+			value	number(5);
+		};
+		PTNUM	{
+			value	varchar(20);
+		};
+		NAME	{
+			value	varchar(100);
+		};
+		scrolledwindow1	{
+			CHKLST	{
+				count	int;
+				row	int;
+				rowattr	int;
+				item	{
+					value0	varchar(5);
+					value1	varchar(2);
+					value2	varchar(20);
+					value3	varchar(100);
+				}	[200];
+				select	bool[200];
+			};
+		};
+		CMB_TAISYO	{
+			TAISYO	{
+				value	varchar(32);
+			};
+			count	int;
+			item	varchar(32)[05];
+		};
+	};
+};

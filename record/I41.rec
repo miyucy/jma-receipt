@@ -227,5 +227,29 @@ I41	{
 		TSUSANNISSU	{
 			value	number(6);
 		};
+		SYUBETSU1	{
+			style   varchar(20);
+			value	varchar(20);
+		};
+		SYUBETSU2	{
+			style   varchar(20);
+			value	varchar(20);
+		};
+		SYUBETSU3	{
+			style   varchar(20);
+			value	varchar(20);
+		};
+		SYUBETSU4	{
+			style   varchar(20);
+			value	varchar(20);
+		};
+		SYUBETSU5	{
+			style   varchar(20);
+			value	varchar(20);
+		};
+		SYUBETSU6	{
+			style   varchar(20);
+			value	varchar(20);
+		};
 	};
 };
