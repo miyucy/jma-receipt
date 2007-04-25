@@ -5,19 +5,16 @@
   <name>K051</name>
   <program_name>K051</program_name>
   <directory></directory>
-  <source_directory>src</source_directory>
   <pixmaps_directory>pixmaps</pixmaps_directory>
-  <language>C</language>
   <gnome_support>True</gnome_support>
   <gtkpanda_support>False</gtkpanda_support>
-  <gettext_support>True</gettext_support>
 </project>
 
 <widget>
   <class>GtkWindow</class>
   <name>K052</name>
-  <width>300</width>
-  <height>160</height>
+  <width>330</width>
+  <height>220</height>
   <signal>
     <name>map_event</name>
     <handler>map_event</handler>
@@ -28,7 +25,7 @@
     <handler>set_focus</handler>
     <last_modification_time>Thu, 21 Dec 2000 08:12:31 GMT</last_modification_time>
   </signal>
-  <signal>    
+  <signal>
     <name>delete_event</name>
     <handler>gtk_true</handler>
     <last_modification_time>Mon, 25 Nov 2002 06:01:39 GMT</last_modification_time>
@@ -56,8 +53,8 @@
       <class>GtkButton</class>
       <name>B01</name>
       <x>16</x>
-      <y>120</y>
-      <width>62</width>
+      <y>184</y>
+      <width>80</width>
       <height>24</height>
       <can_focus>True</can_focus>
       <accelerator>
@@ -78,9 +75,9 @@
     <widget>
       <class>GtkButton</class>
       <name>B09</name>
-      <x>224</x>
-      <y>120</y>
-      <width>62</width>
+      <x>240</x>
+      <y>184</y>
+      <width>80</width>
       <height>24</height>
       <can_focus>True</can_focus>
       <accelerator>
@@ -157,8 +154,8 @@
     <widget>
       <class>GtkButton</class>
       <name>B02</name>
-      <x>88</x>
-      <y>120</y>
+      <x>112</x>
+      <y>184</y>
       <width>80</width>
       <height>24</height>
       <can_focus>True</can_focus>
@@ -194,15 +191,6 @@
     </widget>
 
     <widget>
-      <class>GtkHSeparator</class>
-      <name>hseparator1</name>
-      <x>8</x>
-      <y>96</y>
-      <width>290</width>
-      <height>16</height>
-    </widget>
-
-    <widget>
       <class>GtkLabel</class>
       <name>label1</name>
       <x>88</x>
@@ -216,6 +204,68 @@
       <yalign>0.5</yalign>
       <xpad>0</xpad>
       <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkPandaEntry</class>
+      <name>KEIKAYMD</name>
+      <x>168</x>
+      <y>104</y>
+      <width>91</width>
+      <height>24</height>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>changed</name>
+	<handler>entry_changed</handler>
+	<data>CHANGED</data>
+	<last_modification_time>Fri, 02 Feb 2001 09:51:25 GMT</last_modification_time>
+      </signal>
+      <signal>
+	<name>activate</name>
+	<handler>send_event</handler>
+	<data>ACTIVATE</data>
+	<last_modification_time>Fri, 02 Feb 2001 09:32:57 GMT</last_modification_time>
+      </signal>
+      <editable>True</editable>
+      <text_visible>True</text_visible>
+      <text_max_length>13</text_max_length>
+      <text>2004.01.11</text>
+      <input_mode>XIM</input_mode>
+      <xim_enabled>False</xim_enabled>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label3</name>
+      <x>56</x>
+      <y>104</y>
+      <width>100</width>
+      <height>24</height>
+      <label>経過措置日</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkHSeparator</class>
+      <name>hseparator1</name>
+      <x>0</x>
+      <y>80</y>
+      <width>328</width>
+      <height>16</height>
+    </widget>
+
+    <widget>
+      <class>GtkHSeparator</class>
+      <name>hseparator2</name>
+      <x>0</x>
+      <y>152</y>
+      <width>328</width>
+      <height>16</height>
     </widget>
   </widget>
 </widget>

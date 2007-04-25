@@ -42,17 +42,6 @@
   <widget>
     <class>GtkFixed</class>
     <name>fixed4</name>
-    <signal>
-      <name>toggled</name>
-      <handler>button_toggled</handler>
-      <last_modification_time>Wed, 07 May 2003 03:02:54 GMT</last_modification_time>
-    </signal>
-    <signal>
-      <name>clicked</name>
-      <handler>send_event</handler>
-      <data>CLICKED</data>
-      <last_modification_time>Wed, 07 May 2003 03:03:04 GMT</last_modification_time>
-    </signal>
 
     <widget>
       <class>GtkButton</class>
@@ -725,15 +714,6 @@
     </widget>
 
     <widget>
-      <class>GtkHSeparator</class>
-      <name>hseparator1</name>
-      <x>10</x>
-      <y>135</y>
-      <width>688</width>
-      <height>16</height>
-    </widget>
-
-    <widget>
       <class>GtkPandaCombo</class>
       <name>CMB_RRKKBN</name>
       <x>350</x>
@@ -827,6 +807,15 @@
 	<input_mode>XIM</input_mode>
 	<xim_enabled>False</xim_enabled>
       </widget>
+    </widget>
+
+    <widget>
+      <class>GtkHSeparator</class>
+      <name>hseparator1</name>
+      <x>10</x>
+      <y>135</y>
+      <width>688</width>
+      <height>16</height>
     </widget>
   </widget>
 </widget>

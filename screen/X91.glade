@@ -43,6 +43,182 @@
     <name>fixed2</name>
 
     <widget>
+      <class>GtkHSeparator</class>
+      <name>hseparator21</name>
+      <x>88</x>
+      <y>64</y>
+      <width>832</width>
+      <height>16</height>
+    </widget>
+
+    <widget>
+      <class>GtkHSeparator</class>
+      <name>hseparator25</name>
+      <x>88</x>
+      <y>112</y>
+      <width>832</width>
+      <height>16</height>
+    </widget>
+
+    <widget>
+      <class>GtkHSeparator</class>
+      <name>hseparator26</name>
+      <x>88</x>
+      <y>160</y>
+      <width>832</width>
+      <height>16</height>
+    </widget>
+
+    <widget>
+      <class>GtkHSeparator</class>
+      <name>hseparator27</name>
+      <x>88</x>
+      <y>208</y>
+      <width>832</width>
+      <height>16</height>
+    </widget>
+
+    <widget>
+      <class>GtkHSeparator</class>
+      <name>hseparator37</name>
+      <x>88</x>
+      <y>256</y>
+      <width>832</width>
+      <height>16</height>
+    </widget>
+
+    <widget>
+      <class>GtkHSeparator</class>
+      <name>hseparator31</name>
+      <x>88</x>
+      <y>16</y>
+      <width>832</width>
+      <height>16</height>
+    </widget>
+
+    <widget>
+      <class>GtkHSeparator</class>
+      <name>hseparator38</name>
+      <x>88</x>
+      <y>312</y>
+      <width>832</width>
+      <height>16</height>
+    </widget>
+
+    <widget>
+      <class>GtkHSeparator</class>
+      <name>hseparator45</name>
+      <x>88</x>
+      <y>664</y>
+      <width>832</width>
+      <height>16</height>
+    </widget>
+
+    <widget>
+      <class>GtkHSeparator</class>
+      <name>hseparator44</name>
+      <x>88</x>
+      <y>616</y>
+      <width>832</width>
+      <height>16</height>
+    </widget>
+
+    <widget>
+      <class>GtkHSeparator</class>
+      <name>hseparator43</name>
+      <x>88</x>
+      <y>568</y>
+      <width>832</width>
+      <height>16</height>
+    </widget>
+
+    <widget>
+      <class>GtkVSeparator</class>
+      <name>vseparator17</name>
+      <x>80</x>
+      <y>576</y>
+      <width>16</width>
+      <height>96</height>
+    </widget>
+
+    <widget>
+      <class>GtkVSeparator</class>
+      <name>vseparator18</name>
+      <x>912</x>
+      <y>576</y>
+      <width>16</width>
+      <height>96</height>
+    </widget>
+
+    <widget>
+      <class>GtkHSeparator</class>
+      <name>hseparator42</name>
+      <x>88</x>
+      <y>544</y>
+      <width>832</width>
+      <height>16</height>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label163</name>
+      <x>112</x>
+      <y>448</y>
+      <width>104</width>
+      <height>32</height>
+      <label>½ÐÎÏ½ç»ØÄê</label>
+      <justify>GTK_JUSTIFY_LEFT</justify>
+      <wrap>True</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkHSeparator</class>
+      <name>hseparator41</name>
+      <x>88</x>
+      <y>432</y>
+      <width>832</width>
+      <height>16</height>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label164</name>
+      <x>408</x>
+      <y>368</y>
+      <width>50</width>
+      <height>25</height>
+      <label>¡Á</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkVSeparator</class>
+      <name>vseparator15</name>
+      <x>80</x>
+      <y>24</y>
+      <width>16</width>
+      <height>528</height>
+    </widget>
+
+    <widget>
+      <class>GtkVSeparator</class>
+      <name>vseparator16</name>
+      <x>912</x>
+      <y>24</y>
+      <width>16</width>
+      <height>528</height>
+    </widget>
+
+    <widget>
       <class>GtkButton</class>
       <name>B01</name>
       <x>8</x>
@@ -287,10 +463,178 @@
     </widget>
 
     <widget>
+      <class>GtkCheckButton</class>
+      <name>CHKYKZBYO</name>
+      <x>112</x>
+      <y>32</y>
+      <width>192</width>
+      <height>32</height>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>toggled</name>
+	<handler>button_toggled</handler>
+	<last_modification_time>Fri, 11 Jan 2002 02:34:48 GMT</last_modification_time>
+      </signal>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Fri, 11 Jan 2002 02:35:17 GMT</last_modification_time>
+      </signal>
+      <label>ÌôºÞ¤ÈÉÂÌ¾</label>
+      <active>False</active>
+      <draw_indicator>True</draw_indicator>
+    </widget>
+
+    <widget>
+      <class>GtkCheckButton</class>
+      <name>CHKSRYBYO</name>
+      <x>112</x>
+      <y>80</y>
+      <width>192</width>
+      <height>32</height>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>toggled</name>
+	<handler>button_toggled</handler>
+	<last_modification_time>Thu, 05 Dec 2002 08:37:36 GMT</last_modification_time>
+      </signal>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Thu, 05 Dec 2002 08:38:07 GMT</last_modification_time>
+      </signal>
+      <label>¿ÇÎÅ¹Ô°Ù¤ÈÉÂÌ¾</label>
+      <active>False</active>
+      <draw_indicator>True</draw_indicator>
+    </widget>
+
+    <widget>
+      <class>GtkCheckButton</class>
+      <name>CHKYKZHEI</name>
+      <x>112</x>
+      <y>128</y>
+      <width>192</width>
+      <height>32</height>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>toggled</name>
+	<handler>button_toggled</handler>
+	<last_modification_time>Fri, 11 Jan 2002 02:38:12 GMT</last_modification_time>
+      </signal>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Fri, 11 Jan 2002 02:38:37 GMT</last_modification_time>
+      </signal>
+      <label>ÌôºÞ¤ÈÊ»ÍÑ¶Ø´÷</label>
+      <active>False</active>
+      <draw_indicator>True</draw_indicator>
+    </widget>
+
+    <widget>
+      <class>GtkCheckButton</class>
+      <name>CHKSRYHEI</name>
+      <x>112</x>
+      <y>176</y>
+      <width>192</width>
+      <height>32</height>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>toggled</name>
+	<handler>button_toggled</handler>
+	<last_modification_time>Thu, 05 Dec 2002 08:49:02 GMT</last_modification_time>
+      </signal>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Thu, 05 Dec 2002 08:49:26 GMT</last_modification_time>
+      </signal>
+      <label>¿ÇÎÅ¹Ô°Ù¤ÎÊ»ÍÑ»»Äê</label>
+      <active>False</active>
+      <draw_indicator>True</draw_indicator>
+    </widget>
+
+    <widget>
+      <class>GtkCheckButton</class>
+      <name>CHKYKZKNKBYO</name>
+      <x>112</x>
+      <y>224</y>
+      <width>192</width>
+      <height>32</height>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>toggled</name>
+	<handler>button_toggled</handler>
+	<last_modification_time>Thu, 05 Dec 2002 08:49:02 GMT</last_modification_time>
+      </signal>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Thu, 05 Dec 2002 08:49:26 GMT</last_modification_time>
+      </signal>
+      <label>ÅêÍ¿¶Ø´÷ÌôºÞ¤ÈÉÂÌ¾</label>
+      <active>False</active>
+      <draw_indicator>True</draw_indicator>
+    </widget>
+
+    <widget>
+      <class>GtkCheckButton</class>
+      <name>CHKSRYSNT</name>
+      <x>112</x>
+      <y>272</y>
+      <width>192</width>
+      <height>32</height>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>toggled</name>
+	<handler>button_toggled</handler>
+	<last_modification_time>Thu, 05 Dec 2002 08:49:02 GMT</last_modification_time>
+      </signal>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Thu, 05 Dec 2002 08:49:26 GMT</last_modification_time>
+      </signal>
+      <label>¿ÇÎÅ¹Ô°Ù¤É¤¦¤·¤Î»»ÄêÏ³¤ì</label>
+      <active>False</active>
+      <draw_indicator>True</draw_indicator>
+    </widget>
+
+    <widget>
+      <class>GtkCheckButton</class>
+      <name>CHKSRYRANGE</name>
+      <x>112</x>
+      <y>328</y>
+      <width>192</width>
+      <height>32</height>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>toggled</name>
+	<handler>button_toggled</handler>
+	<last_modification_time>Thu, 05 Dec 2002 08:49:02 GMT</last_modification_time>
+      </signal>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Thu, 05 Dec 2002 08:49:26 GMT</last_modification_time>
+      </signal>
+      <label>¿ÇÎÅ¹Ô°Ù¥³¡¼¥É¤Ç¹Ê¹þ¤à</label>
+      <active>False</active>
+      <draw_indicator>True</draw_indicator>
+    </widget>
+
+    <widget>
       <class>GtkPandaEntry</class>
       <name>STSRYCD</name>
-      <x>120</x>
-      <y>455</y>
+      <x>128</x>
+      <y>368</y>
       <width>160</width>
       <height>24</height>
       <can_focus>True</can_focus>
@@ -317,8 +661,8 @@
     <widget>
       <class>GtkPandaEntry</class>
       <name>STSRYNAME</name>
-      <x>120</x>
-      <y>485</y>
+      <x>128</x>
+      <y>400</y>
       <width>280</width>
       <height>25</height>
       <editable>False</editable>
@@ -332,8 +676,8 @@
     <widget>
       <class>GtkPandaEntry</class>
       <name>EDSRYCD</name>
-      <x>460</x>
-      <y>455</y>
+      <x>456</x>
+      <y>368</y>
       <width>160</width>
       <height>24</height>
       <can_focus>True</can_focus>
@@ -358,64 +702,12 @@
     </widget>
 
     <widget>
-      <class>GtkHSeparator</class>
-      <name>hseparator32</name>
-      <x>80</x>
-      <y>520</y>
-      <width>840</width>
-      <height>0</height>
-    </widget>
-
-    <widget>
-      <class>GtkHSeparator</class>
-      <name>hseparator33</name>
-      <x>80</x>
-      <y>620</y>
-      <width>840</width>
-      <height>0</height>
-    </widget>
-
-    <widget>
-      <class>GtkVSeparator</class>
-      <name>vseparator15</name>
-      <x>80</x>
-      <y>20</y>
-      <width>0</width>
-      <height>600</height>
-    </widget>
-
-    <widget>
-      <class>GtkVSeparator</class>
-      <name>vseparator16</name>
-      <x>920</x>
-      <y>20</y>
-      <width>0</width>
-      <height>600</height>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>label163</name>
-      <x>104</x>
-      <y>536</y>
-      <width>104</width>
-      <height>24</height>
-      <label>½ÐÎÏ½ç»ØÄê</label>
-      <justify>GTK_JUSTIFY_LEFT</justify>
-      <wrap>True</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
       <class>GtkRadioButton</class>
       <name>SYU1</name>
       <x>248</x>
-      <y>536</y>
-      <width>150</width>
-      <height>24</height>
+      <y>448</y>
+      <width>160</width>
+      <height>32</height>
       <can_focus>True</can_focus>
       <signal>
 	<name>toggled</name>
@@ -438,9 +730,9 @@
       <class>GtkRadioButton</class>
       <name>SYU2</name>
       <x>248</x>
-      <y>560</y>
-      <width>150</width>
-      <height>24</height>
+      <y>480</y>
+      <width>160</width>
+      <height>32</height>
       <can_focus>True</can_focus>
       <signal>
 	<name>toggled</name>
@@ -463,9 +755,9 @@
       <class>GtkRadioButton</class>
       <name>SYU3</name>
       <x>248</x>
-      <y>584</y>
-      <width>150</width>
-      <height>26</height>
+      <y>512</y>
+      <width>160</width>
+      <height>32</height>
       <can_focus>True</can_focus>
       <signal>
 	<name>toggled</name>
@@ -485,28 +777,12 @@
     </widget>
 
     <widget>
-      <class>GtkLabel</class>
-      <name>label164</name>
-      <x>400</x>
-      <y>455</y>
-      <width>50</width>
-      <height>25</height>
-      <label>¡Á</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
       <class>GtkCheckButton</class>
-      <name>CHKSRYRANGE</name>
-      <x>110</x>
-      <y>425</y>
-      <width>300</width>
-      <height>26</height>
+      <name>CHKBYOYKZ</name>
+      <x>112</x>
+      <y>584</y>
+      <width>192</width>
+      <height>32</height>
       <can_focus>True</can_focus>
       <signal>
 	<name>toggled</name>
@@ -519,129 +795,18 @@
 	<data>CLICKED</data>
 	<last_modification_time>Thu, 05 Dec 2002 08:49:26 GMT</last_modification_time>
       </signal>
-      <label>¿ÇÎÅ¹Ô°Ù¥³¡¼¥É¤Ç¹Ê¹þ¤à</label>
-      <active>False</active>
-      <draw_indicator>True</draw_indicator>
-    </widget>
-
-    <widget>
-      <class>GtkHSeparator</class>
-      <name>hseparator31</name>
-      <x>80</x>
-      <y>20</y>
-      <width>840</width>
-      <height>0</height>
-    </widget>
-
-    <widget>
-      <class>GtkCheckButton</class>
-      <name>CHKYKZBYO</name>
-      <x>110</x>
-      <y>40</y>
-      <width>150</width>
-      <height>24</height>
-      <can_focus>True</can_focus>
-      <signal>
-	<name>toggled</name>
-	<handler>button_toggled</handler>
-	<last_modification_time>Fri, 11 Jan 2002 02:34:48 GMT</last_modification_time>
-      </signal>
-      <signal>
-	<name>clicked</name>
-	<handler>send_event</handler>
-	<data>CLICKED</data>
-	<last_modification_time>Fri, 11 Jan 2002 02:35:17 GMT</last_modification_time>
-      </signal>
-      <label>ÌôºÞ¤ÈÉÂÌ¾</label>
+      <label>ÉÂÌ¾¤ÈÌôºÞ</label>
       <active>False</active>
       <draw_indicator>True</draw_indicator>
     </widget>
 
     <widget>
       <class>GtkCheckButton</class>
-      <name>CHKSRYBYO</name>
-      <x>110</x>
-      <y>105</y>
-      <width>150</width>
-      <height>24</height>
-      <can_focus>True</can_focus>
-      <signal>
-	<name>toggled</name>
-	<handler>button_toggled</handler>
-	<last_modification_time>Thu, 05 Dec 2002 08:37:36 GMT</last_modification_time>
-      </signal>
-      <signal>
-	<name>clicked</name>
-	<handler>send_event</handler>
-	<data>CLICKED</data>
-	<last_modification_time>Thu, 05 Dec 2002 08:38:07 GMT</last_modification_time>
-      </signal>
-      <label>¿ÇÎÅ¹Ô°Ù¤ÈÉÂÌ¾</label>
-      <active>False</active>
-      <draw_indicator>True</draw_indicator>
-    </widget>
-
-    <widget>
-      <class>GtkHSeparator</class>
-      <name>hseparator21</name>
-      <x>80</x>
-      <y>85</y>
-      <width>840</width>
-      <height>0</height>
-    </widget>
-
-    <widget>
-      <class>GtkHSeparator</class>
-      <name>hseparator25</name>
-      <x>80</x>
-      <y>150</y>
-      <width>840</width>
-      <height>0</height>
-    </widget>
-
-    <widget>
-      <class>GtkHSeparator</class>
-      <name>hseparator26</name>
-      <x>80</x>
-      <y>215</y>
-      <width>840</width>
-      <height>0</height>
-    </widget>
-
-    <widget>
-      <class>GtkHSeparator</class>
-      <name>hseparator34</name>
-      <x>80</x>
-      <y>280</y>
-      <width>840</width>
-      <height>0</height>
-    </widget>
-
-    <widget>
-      <class>GtkHSeparator</class>
-      <name>hseparator27</name>
-      <x>80</x>
-      <y>345</y>
-      <width>840</width>
-      <height>0</height>
-    </widget>
-
-    <widget>
-      <class>GtkHSeparator</class>
-      <name>hseparator35</name>
-      <x>80</x>
-      <y>410</y>
-      <width>840</width>
-      <height>0</height>
-    </widget>
-
-    <widget>
-      <class>GtkCheckButton</class>
-      <name>CHKYKZKNKBYO</name>
-      <x>110</x>
-      <y>300</y>
-      <width>150</width>
-      <height>26</height>
+      <name>CHKBYOSRY</name>
+      <x>112</x>
+      <y>632</y>
+      <width>192</width>
+      <height>32</height>
       <can_focus>True</can_focus>
       <signal>
 	<name>toggled</name>
@@ -654,79 +819,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Thu, 05 Dec 2002 08:49:26 GMT</last_modification_time>
       </signal>
-      <label>ÅêÍ¿¶Ø´÷ÌôºÞ¤ÈÉÂÌ¾</label>
-      <active>False</active>
-      <draw_indicator>True</draw_indicator>
-    </widget>
-
-    <widget>
-      <class>GtkCheckButton</class>
-      <name>CHKSRYHEI</name>
-      <x>110</x>
-      <y>235</y>
-      <width>150</width>
-      <height>26</height>
-      <can_focus>True</can_focus>
-      <signal>
-	<name>toggled</name>
-	<handler>button_toggled</handler>
-	<last_modification_time>Thu, 05 Dec 2002 08:49:02 GMT</last_modification_time>
-      </signal>
-      <signal>
-	<name>clicked</name>
-	<handler>send_event</handler>
-	<data>CLICKED</data>
-	<last_modification_time>Thu, 05 Dec 2002 08:49:26 GMT</last_modification_time>
-      </signal>
-      <label>¿ÇÎÅ¹Ô°Ù¤ÎÊ»ÍÑ»»Äê</label>
-      <active>False</active>
-      <draw_indicator>True</draw_indicator>
-    </widget>
-
-    <widget>
-      <class>GtkCheckButton</class>
-      <name>CHKYKZHEI</name>
-      <x>110</x>
-      <y>170</y>
-      <width>150</width>
-      <height>24</height>
-      <can_focus>True</can_focus>
-      <signal>
-	<name>toggled</name>
-	<handler>button_toggled</handler>
-	<last_modification_time>Fri, 11 Jan 2002 02:38:12 GMT</last_modification_time>
-      </signal>
-      <signal>
-	<name>clicked</name>
-	<handler>send_event</handler>
-	<data>CLICKED</data>
-	<last_modification_time>Fri, 11 Jan 2002 02:38:37 GMT</last_modification_time>
-      </signal>
-      <label>ÌôºÞ¤ÈÊ»ÍÑ¶Ø´÷</label>
-      <active>False</active>
-      <draw_indicator>True</draw_indicator>
-    </widget>
-
-    <widget>
-      <class>GtkCheckButton</class>
-      <name>CHKSRYSNT</name>
-      <x>110</x>
-      <y>365</y>
-      <width>195</width>
-      <height>25</height>
-      <can_focus>True</can_focus>
-      <signal>
-	<name>toggled</name>
-	<handler>button_toggled</handler>
-	<last_modification_time>Thu, 05 Dec 2002 08:49:02 GMT</last_modification_time>
-      </signal>
-      <signal>
-	<name>clicked</name>
-	<handler>send_event</handler>
-	<data>CLICKED</data>
-	<last_modification_time>Thu, 05 Dec 2002 08:49:26 GMT</last_modification_time>
-      </signal>
-      <label>¿ÇÎÅ¹Ô°Ù¤É¤¦¤·¤Î»»ÄêÏ³¤ì</label>
+      <label>ÉÂÌ¾¤È¿ÇÎÅ¹Ô°Ù</label>
       <active>False</active>
       <draw_indicator>True</draw_indicator>
     </widget>
