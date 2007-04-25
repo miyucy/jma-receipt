@@ -113,6 +113,12 @@ db	{
         tbl_tensuplus2;
         tbl_genericname;
         tbl_syurrk;
-        tbl_sysbase;
-        tbl_mstkanri;
+	tbl_qrcdhkn;
+	tbl_chk005;
+	tbl_rece_puth;
+	tbl_rece_putb;
+	tbl_hktsantei;
+	tbl_hktsrycd;
+	tbl_sysbase;
+	tbl_mstkanri;
 };
