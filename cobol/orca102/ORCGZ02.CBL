@@ -828,15 +828,6 @@
            IF      FLG-OK              =   ZERO
                MOVE    "0007"              TO  SPA-ERRCD
                MOVE    18                  TO  SPA-GMN-CUR
-           ELSE
-      *        金額種別が４ 税込みの時、金額に入金があること
-               IF      SPA-JIHIKBN         =   2
-                   IF     (SPA-GMN-BUIKBN      =   "4" )  AND
-                          (SPA-GMN-TEN         =   ZERO)
-                       MOVE    "0010"              TO  SPA-ERRCD
-                       MOVE    14                  TO  SPA-GMN-CUR
-                   END-IF
-               END-IF
            END-IF
            .
       *
@@ -1059,9 +1050,10 @@
            MOVE    "DBDELETE"          TO  MCP-FUNC
            MOVE    "tbl_tensu"         TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
-           CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               COMMON-SPA
+           CALL    "ORCDBMAIN"         USING
+                                           MCPAREA
+                                           MCPDATA-REC
+                                           SPA-AREA
            IF      MCP-RC          NOT =   ZERO
                DISPLAY "Z02 TENSU DEL ERR!!"   MCP-RC
                        ",KEY:"   TNS-KEY
@@ -1082,7 +1074,7 @@
            CALL    "ORCDBMAIN"         USING
                                            MCPAREA
                                            MCPDATA-REC
-                                           COMMON-SPA
+                                           SPA-AREA
       *
       *    入力コード削除
            IF     (SPA-Z01-SELNUM      =   1    )  AND
@@ -1097,7 +1089,7 @@
                CALL    "ORCDBMAIN"         USING
                                                MCPAREA
                                                MCPDATA-REC
-                                               COMMON-SPA
+                                               SPA-AREA
            END-IF
       *
            IF      SPA-ERRCD          =   SPACE
@@ -1309,7 +1301,7 @@
                CALL    "ORCDBMAIN"         USING
                                                MCPAREA
                                                MCPDATA-REC
-                                               COMMON-SPA
+                                               SPA-AREA
                IF      MCP-RC              NOT =   ZERO
                    DISPLAY "Z02 TENSU UPD ERR:" MCP-RC
                            ",KEY:" TNS-KEY
@@ -1376,7 +1368,7 @@
                CALL    "ORCDBMAIN"         USING
                                                MCPAREA
                                                MCPDATA-REC
-                                               COMMON-SPA
+                                               SPA-AREA
                IF      MCP-RC              NOT =   ZERO
                    DISPLAY "Z02 TENSU UPD ERR:" MCP-RC
                            ",KEY:" TNS-KEY
@@ -1414,7 +1406,7 @@
            CALL    "ORCDBMAIN"         USING
                                            MCPAREA
                                            MCPDATA-REC
-                                           COMMON-SPA
+                                           SPA-AREA
            IF      MCP-RC          NOT =   ZERO
                MOVE    1                   TO  SPA-GMN-CUR
                MOVE    "9003"              TO  SPA-ERRCD
@@ -1594,12 +1586,6 @@
                                        TO  Z02-BUIKBNLST   (IDXX)
            END-PERFORM
            MOVE    SPA-GMN-BUIKBN-MAX   TO  Z02-BUIKBN-COUNT
-      *
-           IF      SPA-JIHIKBN         =   ZERO
-               MOVE    "部位区分"          TO  Z02-LABEL1
-           ELSE
-               MOVE    "金額内容"          TO  Z02-LABEL1
-           END-IF
       *
            PERFORM 5001-MAPCUR-SEC
       *
@@ -1921,7 +1907,7 @@
            CALL    "ORCDBMAIN"     USING
                                        MCPAREA
                                        MCPDATA-REC
-                                       COMMON-SPA
+                                       SPA-AREA
       *
            .
        910-DBSELECT-EXT.
@@ -1935,7 +1921,7 @@
            CALL    "ORCDBMAIN"     USING
                                        MCPAREA
                                        MCPDATA-REC
-                                       COMMON-SPA
+                                       SPA-AREA
       *
            .
       *
@@ -1950,7 +1936,7 @@
            CALL    "ORCDBMAIN"         USING
                                            MCPAREA
                                            MCPDATA-REC
-                                           COMMON-SPA
+                                           SPA-AREA
            .
        990-DBLOSEC-EXT.
            EXIT.
@@ -2047,7 +2033,7 @@
            CALL   "ORCDBMAIN"                    USING
                                                      MCPAREA
                                                      MCPDATA-REC
-                                                     COMMON-SPA
+                                                     SPA-AREA
            .
        900-PUT-WINDOW-EXT.
            EXIT.
