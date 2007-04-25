@@ -230,6 +230,10 @@
            03  WK-SKJ-ZEIKEI2          PIC 9(07).
            03  WK-SKJ-ZEIKEIL          PIC 9(07).
            03  WK-SKJ-ZEIKEI2L         PIC 9(07).
+           03  WK-GENBUTU-KOH1COMPFTN  PIC 9(07).
+           03  WK-GENBUTU-KOH2COMPFTN  PIC 9(07).
+           03  WK-GENBUTU-KOH3COMPFTN  PIC 9(07).
+           03  WK-GENBUTU-KOH4COMPFTN  PIC 9(07).
        01  FLG-AREA.
            03  FLG-SYUNOU              PIC 9(01).
            03  FLG-TNKRRK              PIC 9(01).
@@ -274,6 +278,8 @@
            03  FLG-GENBUTU70           PIC 9(01).
            03  FLG-SYUKEI              PIC 9(01).
            03  FLG-SYUKEI2             PIC 9(01).
+           03  FLG-GENBUTU-TAISYODATA  PIC 9(01).
+           03  FLG-GENBUTU-TAISYOOK    PIC 9(01).
       *
        01  WRK-AREA.
            03  WK-PAYKBN               PIC X(02).
@@ -6971,17 +6977,26 @@
       ****                END-IF
                         END-IF
                        END-IF
-                       ADD   WK-SYU-SYUCOMPFTN     TO   FTN-SYU-M        
-                       ADD   WK-ENTANI       TO   FTN-SYU-M-ENTANI
                        IF  ( COMB-KOH1HKNNUM        =    SPACE )
                        AND ( COMB-KOH2HKNNUM        =    SPACE )
                        AND ( COMB-KOH3HKNNUM        =    SPACE )
                        AND ( COMB-KOH4HKNNUM        =    SPACE )
-                       AND ( FLG-IRYOHI70           =    1 OR 2)
+                        IF   FLG-IRYOHI70           =    1 OR 2
+                         IF  SYU-KOHTAIYKZKBN       =   "9"
                           COMPUTE   WK-KOUREI-IRYOHI70  =
                                     WK-KOUREI-IRYOHI70  +
                                    (SYU-HKNTEN (16) * 10)
+                         END-IF
+                        END-IF
+                        IF   SYU-KOHTAIYKZKBN       =   "9"
+                          CONTINUE
+                        ELSE
+                          MOVE   ZERO  TO  WK-SYU-SYUCOMPFTN
+                          MOVE   ZERO  TO  WK-ENTANI
+                        END-IF
                        END-IF
+                       ADD   WK-SYU-SYUCOMPFTN     TO   FTN-SYU-M        
+                       ADD   WK-ENTANI       TO   FTN-SYU-M-ENTANI
                       ELSE
                        IF  (SYU-KOH1HKNNUM     NOT = SPACE)              
                        OR  (SYU-KOH2HKNNUM     NOT = SPACE)
@@ -9556,6 +9571,7 @@
       *    保険・公費毎の患者負担金額の計算
            MOVE     ZERO       TO       WK-DAY-NYUKFTNRATE.
            MOVE     ZERO       TO       WK-KOH-FTNRATE.
+           MOVE     ZERO       TO       FLG-GENBUTU-TAISYODATA.
            IF    ((COMB-KOH1-HKNKOHSBTKBN    =   "3")    AND
                   (COMB-KOH1HKNNUM           =   "027")) OR 
                  ((COMB-KOH2-HKNKOHSBTKBN    =   "3")    AND
@@ -12044,9 +12060,27 @@
                               END-IF
                         END-IF
       *
+                        IF    FLG-GENBUTU70          NOT =  ZERO
+      ***                   IF  LNK-SYU-SYUCOMPFTN   >=  21000
+                            IF  WK-TOKUTEI-COMPFTN2  >=  21000
+                               MOVE   1   TO  FLG-GENBUTU-TAISYODATA
+                            END-IF
+                        END-IF
                         IF   (LNK-S02-KOUREI-NYUIN-KBN   =   "1")
                         OR   (FLG-KOHININBARAI           =    1 )
                         OR   (FLG-GENBUTU70          NOT =  ZERO)
+                         IF  (FLG-GENBUTU70      NOT =  ZERO )
+                         AND (COMB-KOH1HKNNUM        =  SPACE)
+                         AND (COMB-KOH2HKNNUM        =  SPACE)
+                         AND (COMB-KOH3HKNNUM        =  SPACE)
+                         AND (COMB-KOH4HKNNUM        =  SPACE)
+                         AND (FLG-GENBUTU-TAISYODATA =  ZERO )
+                            MOVE WK-TOKUTEI-COMPFTN2
+                                                 TO  WK-TOKUTEI-COMPFTN
+                            IF    FLG-KOUGAKUCYO-GEN70 =    1
+                               MOVE   ZERO  TO  FLG-KOUGAKUCYO-GEN70
+                            END-IF
+                         ELSE
                             IF  FLG-SYUHEN   =   "1"
                               IF  ZAN-SYU-M-HEN  <  LNK-SYU-SYUCOMPFTN 
                                 MOVE ZAN-SYU-M-HEN
@@ -12088,6 +12122,7 @@
                                 MOVE  ZAN-SYU-M-ENTANI
                                           TO  LNK-SYU-SYUCOMPFTN-ENTANI
                             END-IF                                      
+                         END-IF
                         ELSE
                                 MOVE WK-TOKUTEI-COMPFTN2                
                                                  TO  WK-TOKUTEI-COMPFTN 
@@ -12177,9 +12212,27 @@
                               END-IF
                         END-IF
       *
+                        IF    FLG-GENBUTU70          NOT =  ZERO
+      ***                   IF  LNK-SYU-SYUCOMPFTN   >=  21000
+                            IF  WK-TOKUTEI-COMPFTN2  >=  21000
+                               MOVE   1   TO  FLG-GENBUTU-TAISYODATA
+                            END-IF
+                        END-IF
                         IF   (LNK-S02-KOUREI-NYUIN-KBN   =   "1")
                         OR   (FLG-KOHININBARAI           =    1 )
                         OR   (FLG-GENBUTU70          NOT =  ZERO)
+                         IF  (FLG-GENBUTU70      NOT =  ZERO )
+                         AND (COMB-KOH1HKNNUM        =  SPACE)
+                         AND (COMB-KOH2HKNNUM        =  SPACE)
+                         AND (COMB-KOH3HKNNUM        =  SPACE)
+                         AND (COMB-KOH4HKNNUM        =  SPACE)
+                         AND (FLG-GENBUTU-TAISYODATA =  ZERO )
+                            MOVE WK-TOKUTEI-COMPFTN2
+                                                 TO  WK-TOKUTEI-COMPFTN
+                            IF    FLG-KOUGAKUCYO-GEN70 =    1
+                               MOVE   ZERO  TO  FLG-KOUGAKUCYO-GEN70
+                            END-IF
+                         ELSE
                             IF  FLG-SYUHEN   =   "1"
                               IF  ZAN-SYU-M-HEN  <  LNK-SYU-SYUCOMPFTN 
                                 MOVE ZAN-SYU-M-HEN
@@ -12221,6 +12274,7 @@
                                 MOVE  ZAN-SYU-M-ENTANI
                                           TO  LNK-SYU-SYUCOMPFTN-ENTANI
                             END-IF                                      
+                         END-IF
                         ELSE
                                 MOVE WK-TOKUTEI-COMPFTN2                
                                                  TO  WK-TOKUTEI-COMPFTN 
@@ -15867,6 +15921,13 @@
                END-IF
            END-IF.
       *
+           IF   FLG-GENBUTU70   NOT =   ZERO
+              MOVE   LNK-SYU-KOH1COMPFTN   TO   WK-GENBUTU-KOH1COMPFTN
+              MOVE   LNK-SYU-KOH2COMPFTN   TO   WK-GENBUTU-KOH2COMPFTN
+              MOVE   LNK-SYU-KOH3COMPFTN   TO   WK-GENBUTU-KOH3COMPFTN
+              MOVE   LNK-SYU-KOH4COMPFTN   TO   WK-GENBUTU-KOH4COMPFTN
+           END-IF.
+      *
            IF   (COMB-KOH1HKNNUM     = "972" OR "974") OR
                 (COMB-KOH2HKNNUM     = "972" OR "974") OR
                 (COMB-KOH3HKNNUM     = "972" OR "974") OR
@@ -16818,6 +16879,9 @@
               END-IF
       *
            END-IF.
+      *
+      *    現物給付に関する対象データフラグ編集
+           PERFORM   23096-GENBUTU-TAISYODATA-HENSYU-SEC.
       *
        2309-FTNKIN-HIKAKU-EXT.
            EXIT.
@@ -18130,6 +18194,62 @@
            .
       *
        23095-OITA-TOKUSYU-KEISAN-EXT.
+           EXIT.
+      *
+      ******************************************************************
+      *    現物給付に関する対象データフラグ編集
+      ******************************************************************
+       23096-GENBUTU-TAISYODATA-HENSYU-SEC         SECTION.
+      *
+           IF  (FLG-GENBUTU70       NOT =   ZERO)
+           AND (FLG-GENBUTU-TAISYODATA  =    1  )
+      *
+               MOVE      ZERO            TO    FLG-GENBUTU-TAISYOOK
+      *
+               IF  ( COMB-KOH1HKNNUM   =  SPACE )
+               AND ( COMB-KOH2HKNNUM   =  SPACE )
+               AND ( COMB-KOH3HKNNUM   =  SPACE )
+               AND ( COMB-KOH4HKNNUM   =  SPACE )
+                         MOVE    1       TO    FLG-GENBUTU-TAISYOOK
+               ELSE
+                 IF ( COMB-KOH1HKNNUM  =  "972" OR "974" )
+                 OR ( COMB-KOH2HKNNUM  =  "972" OR "974" )
+                 OR ( COMB-KOH3HKNNUM  =  "972" OR "974" )
+                 OR ( COMB-KOH4HKNNUM  =  "972" OR "974" )
+                         CONTINUE
+                 ELSE
+                   IF    COMB-KOH1HKNNUM  NOT = SPACE
+                      IF  WK-GENBUTU-KOH1COMPFTN  NOT = ZERO
+                         MOVE    1       TO    FLG-GENBUTU-TAISYOOK
+                      END-IF
+                   END-IF
+                   IF    COMB-KOH2HKNNUM  NOT = SPACE
+                      IF  WK-GENBUTU-KOH2COMPFTN  NOT = ZERO
+                         MOVE    1       TO    FLG-GENBUTU-TAISYOOK
+                      END-IF
+                   END-IF
+                   IF    COMB-KOH3HKNNUM  NOT = SPACE
+                      IF  WK-GENBUTU-KOH3COMPFTN  NOT = ZERO
+                         MOVE    1       TO    FLG-GENBUTU-TAISYOOK
+                      END-IF
+                   END-IF
+                   IF    COMB-KOH4HKNNUM  NOT = SPACE
+                      IF  WK-GENBUTU-KOH4COMPFTN  NOT = ZERO
+                         MOVE    1       TO    FLG-GENBUTU-TAISYOOK
+                      END-IF
+                   END-IF
+                 END-IF
+               END-IF
+      *
+               IF   FLG-GENBUTU-TAISYOOK  =  1
+                   MOVE    "9"    TO    LNK-SYU-KOHTAIYKZKBN
+               END-IF
+      *
+           END-IF
+      *
+           .
+      *
+       23096-GENBUTU-TAISYODATA-HENSYU-EXT.
            EXIT.
       *
       *****************************************************************
