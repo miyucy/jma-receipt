@@ -14,9 +14,13 @@
       * this license along with this program. If not, stop using this
       * program and contact JMA, 2-28-16 Honkomagome, Bunkyo-ku, Tokyo,
       * 113-8621, Japan.
-      ********************************************************************
+      ************************************************************
+      *  コピー句修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      *  03.05.01    NACL-藤原    07/04/19  グループ診療対応
+      ************************************************************
        01  SS001-AREA.
-           03  SS001-HOSPID            PIC X(24).
+           03  SS001-HOSPNUM           PIC S9(9) BINARY.
            03  SS001-PTID              PIC 9(10).
            03  SS001-SRYYM             PIC X(06).
            03  SS001-HKNGRP-G.
