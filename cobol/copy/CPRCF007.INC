@@ -35,11 +35,18 @@
       *                                     保険者番号
       *                                     在総診・長期（長期高額療養費）
       *                                     在総診・長期のページ
-      ************************************************************
+      *
+      *  03.04.01    NACL-藤原    07/03/01  国保レセプト編綴順詳細設定対応
+      *                                     在総診印刷設定区分
+      *                                     長期（長期高額療養費）印刷設定区分
+      *                                     高額点数フラグ
+      *                                     高額点数頁
+      ***********************************************************
       *01  RECE07-REC.
       *ＫＥＹ
            03  RECE07-KEY.
-               05  RECE07-HOSPNUM           PIC S9(9) BINARY.
+      *医療機関ＩＤ
+               05  RECE07-HOSPNUM          PIC S9(9) BINARY.
       *帳票ＩＤ
                05  RECE07-PRTID            PIC  X(04).
       *処理区分（１：一括、２：個別）
@@ -66,6 +73,8 @@
                05  RECE07-ZAITAKU          PIC  X(01).
       *長期（長期高額療養費）（未使用）
                05  RECE07-CHOUKI           PIC  X(01).
+      *高額点数
+           03  RECE07-KOUGAKU              PIC  X(01).
       *入外区分
            03  RECE07-NYUGAIKBN            PIC  X(01).
       *診療年月（一括：診療年月、個別：先頭の診療年月）
@@ -76,6 +85,8 @@
            03  RECE07-PAGE-ZAITAKU         PIC  9(05).  
       *ページ
            03  RECE07-PAGE-CHOUKI          PIC  9(05).  
+      *ページ
+           03  RECE07-PAGE-KOUGAKU         PIC  9(05).  
       *ページ
            03  RECE07-PAGE-DUP             PIC  9(05).  
       *件数
@@ -90,6 +101,20 @@
            03  RECE07-EDYMD                PIC  X(08).
       *編綴順情報
            03  RECE07-HSEQNUM              PIC  9(08).
+      *先頭種別（詳細設定時）
+           03  RECE07-SYUBETU-SRT1         PIC  X(04).
+      *編綴順詳細設定
+           03  RECE07-RECE-PUTH.
+      *県内県外区分
+               05  RECE07-PREFKBN          PIC  X(01).
+      *在総診
+               05  RECE07-ZAITAKU-KBN      PIC  X(01).
+      *長期（長期高額療養費）
+               05  RECE07-CHOUKI-KBN       PIC  X(01).
+      *最終出力順
+               05  RECE07-SRT-LAST         PIC  X(01).
+      *高額点数
+               05  RECE07-KOUGAKU-TEN      PIC  9(07).
       *端末ＩＤ
            03  RECE07-TERMID               PIC  X(64).
       *オペレータＩＤ

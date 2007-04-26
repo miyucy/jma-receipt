@@ -13,11 +13,13 @@ tbl_recekanri	{
         RECESYUBETU_SRT     char(3);
         ZAITAKU             char(1);
         CHOUKI              char(1);
+        KOUGAKU             char(1);
         NYUGAIKBN           char(1);
         SRYYM               char(6);
         PAGE                number(5);
         PAGE_ZAITAKU        number(5);
         PAGE_CHOUKI         number(5);
+        PAGE_KOUGAKU        number(5);
         PAGE_DUP            number(5);
         KENSU               number(5);
         RECEKBN             char(1);
@@ -25,6 +27,12 @@ tbl_recekanri	{
         STYMD               char(8);
         EDYMD               char(8);
         HSEQNUM             number(8);
+        SYUBETU_SRT1        char(4);
+        PREFKBN             char(1);
+        ZAITAKU_KBN         char(1);
+        CHOUKI_KBN          char(1);
+        SRT_LAST            char(1);
+        KOUGAKU_TEN         number(7);
         TERMID              varchar(64);
         OPID                varchar(16);
 };
@@ -39,7 +47,7 @@ path	key		{
 		SELECT *
 		FROM tbl_recekanri
 		WHERE 	HOSPNUM	= :HOSPNUM
-                    AND   PRTID        =   :PRTID
+                    AND     PRTID        =   :PRTID
                     AND     SYOKBN       =   :SYOKBN
                     AND     CREYMD       =   :CREYMD
                     AND     CREHMS       =   :CREHMS
@@ -61,7 +69,7 @@ path	key2		{
 		SELECT *
 		FROM tbl_recekanri
 		WHERE 	HOSPNUM	= :HOSPNUM
-                    AND   PRTID        =   :PRTID
+                    AND     PRTID        =   :PRTID
                     AND     SYOKBN       =   :SYOKBN
                     ORDER BY  CREYMD DESC,CREHMS DESC,TEISYUTUSAKI,RECESYUBETU
 		;
@@ -74,7 +82,7 @@ path	key3		{
 		SELECT *
 		FROM tbl_recekanri
 		WHERE 	HOSPNUM	= :HOSPNUM
-                    AND   PRTID        =   :PRTID
+                    AND     PRTID        =   :PRTID
                     AND     SYOKBN       =   :SYOKBN
                     AND     CREYMD       =   :CREYMD
                     AND     CREHMS       =   :CREHMS
@@ -94,7 +102,7 @@ path	key4		{
 		SELECT *
 		FROM tbl_recekanri
 		WHERE 	HOSPNUM	= :HOSPNUM
-                    AND   PRTID        =   :PRTID
+                    AND     PRTID        =   :PRTID
                     AND     SRYYM        =   :SRYYM
                     AND     CREYMD       =   :CREYMD
                     AND     CREHMS       =   :CREHMS
@@ -118,7 +126,7 @@ path	key5		{
 		SELECT *
 		FROM tbl_recekanri
 		WHERE 	HOSPNUM	= :HOSPNUM
-                    AND   PRTID        =   :PRTID
+                    AND     PRTID        =   :PRTID
                     AND     SYOKBN       =   :SYOKBN
                     AND     NYUGAIKBN    =   :NYUGAIKBN
                     ORDER BY  CREYMD DESC,CREHMS DESC,TEISYUTUSAKI,RECESYUBETU
@@ -132,7 +140,7 @@ path	key6		{
 		SELECT *
 		FROM tbl_recekanri
 		WHERE 	HOSPNUM	= :HOSPNUM
-                    AND   PRTID        =   :PRTID
+                    AND     PRTID        =   :PRTID
                     AND     SRYYM        =   :SRYYM
                     AND     CREYMD       =   :CREYMD
                     AND     CREHMS       =   :CREHMS
@@ -152,7 +160,7 @@ path	key7		{
 		SELECT *
 		FROM tbl_recekanri
 		WHERE 	HOSPNUM	= :HOSPNUM
-                    AND   PRTID        =   :PRTID
+                    AND     PRTID        =   :PRTID
                     AND     SYOKBN       =   :SYOKBN
                     AND     SRYYM        =   :SRYYM
                     AND     NYUGAIKBN    =   :NYUGAIKBN
@@ -167,7 +175,7 @@ path	del1 	{
 		DELETE
 		FROM tbl_recekanri
 		WHERE 	HOSPNUM	= :HOSPNUM
-                    AND   PRTID        =   :PRTID
+                    AND     PRTID        =   :PRTID
                     AND     SYOKBN       =   :SYOKBN
                     AND     CREYMD       =   :CREYMD
                     AND     CREHMS       =   :CREHMS
@@ -182,7 +190,7 @@ path	del2 	{
 		DELETE
 		FROM tbl_recekanri
 		WHERE 	HOSPNUM	= :HOSPNUM
-                    AND   PRTID        =   :PRTID
+                    AND     PRTID        =   :PRTID
                     AND     SYOKBN       =   '2'
                     AND     NYUGAIKBN    =   :NYUGAIKBN
 		;
@@ -194,7 +202,6 @@ path	all	{
 		DECLARE tbl_recekanri_all_csr CURSOR FOR
 		SELECT *
 		FROM tbl_recekanri
-		WHERE 	HOSPNUM	= :HOSPNUM
  		;
 	};
 };
@@ -202,10 +209,10 @@ path	all	{
 path	key8		{ 	
 	DBSELECT	{
 		DECLARE tbl_recekanri_key8_csr CURSOR FOR
-		SELECT  SRYKA,PREFKBN_SRT,HKNJANUM,SUM(PAGE) AS PAGE,SUM(KENSU) AS KENSU,SUM(PAGE_CHOUKI) AS PAGE_CHOUKI,SUM(PAGE_ZAITAKU) AS PAGE_ZAITAKU
+		SELECT  SRYKA,PREFKBN_SRT,HKNJANUM,SYUBETU_SRT1,PREFKBN,SUM(PAGE) AS PAGE,SUM(KENSU) AS KENSU,SUM(PAGE_CHOUKI) AS PAGE_CHOUKI,SUM(PAGE_ZAITAKU) AS PAGE_ZAITAKU,SUM(PAGE_KOUGAKU) AS PAGE_KOUGAKU
 		FROM tbl_recekanri
 		WHERE 	HOSPNUM	= :HOSPNUM
-                    AND   PRTID        =   :PRTID
+                    AND     PRTID        =   :PRTID
                     AND     SYOKBN       =   :SYOKBN
                     AND     CREYMD       =   :CREYMD
                     AND     CREHMS       =   :CREHMS
@@ -215,7 +222,7 @@ path	key8		{
                     AND     RECESYUBETU  <>  '8888'
                     AND     RECESYUBETU  <>  '6666'
                     AND     SRYKA        like :SRYKA
-                    GROUP BY PREFKBN_SRT,HKNJANUM_SRT,HKNJANUM,SRYKA
+                    GROUP BY PREFKBN_SRT,HKNJANUM_SRT,HKNJANUM,SYUBETU_SRT1,PREFKBN,SRYKA
                     ORDER BY PREFKBN_SRT,HKNJANUM_SRT,HKNJANUM,SRYKA
 		;
 	};
@@ -227,7 +234,7 @@ path	key9		{
 		SELECT  RECESYUBETU,SRYKA,SUM(PAGE) AS PAGE,SUM(KENSU) AS KENSU
 		FROM tbl_recekanri
 		WHERE 	HOSPNUM	= :HOSPNUM
-                    AND   PRTID        =   :PRTID
+                    AND     PRTID        =   :PRTID
                     AND     SYOKBN       =   :SYOKBN
                     AND     CREYMD       =   :CREYMD
                     AND     CREHMS       =   :CREHMS
@@ -246,7 +253,7 @@ path	key10		{
 		SELECT *
 		FROM tbl_recekanri
 		WHERE 	HOSPNUM	= :HOSPNUM
-                    AND   PRTID        =   :PRTID
+                    AND     PRTID        =   :PRTID
                     AND     SYOKBN       =   :SYOKBN
                     AND     CREYMD       =   :CREYMD
                     AND     CREHMS       =   :CREHMS
@@ -263,12 +270,33 @@ path	key11		{
 		SELECT *
 		FROM tbl_recekanri
 		WHERE 	HOSPNUM	= :HOSPNUM
-                    AND   PRTID        =   :PRTID
+                    AND     PRTID        =   :PRTID
                     AND     SRYYM        =   :SRYYM
                     AND     CREYMD       =   :CREYMD
                     AND     CREHMS       =   :CREHMS
                     AND     TEISYUTUSAKI =   :TEISYUTUSAKI
                     AND     NYUGAIKBN    =   :NYUGAIKBN
+                    ORDER BY  SRYKA DESC
+		;
+	};
+};
+
+path	key12		{ 	
+	DBSELECT	{
+		DECLARE tbl_recekanri_key12_csr CURSOR FOR
+		SELECT *
+		FROM tbl_recekanri
+		WHERE 	HOSPNUM	= :HOSPNUM
+                    AND     PRTID        =   :PRTID
+                    AND     SRYYM        =   :SRYYM
+                    AND     CREYMD       =   :CREYMD
+                    AND     CREHMS       =   :CREHMS
+                    AND     TEISYUTUSAKI =   :TEISYUTUSAKI
+                    AND     RECESYUBETU  <>  '0000'
+                    AND     RECESYUBETU  <>  '6666'
+                    AND     RECESYUBETU  <>  '8888'
+                    AND     NYUGAIKBN    =   :NYUGAIKBN
+                    AND     PREFKBN      =   :PREFKBN
                     ORDER BY  SRYKA DESC
 		;
 	};

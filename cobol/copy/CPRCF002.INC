@@ -80,11 +80,18 @@
       *                                     入退院履歴記載フラグの追加
       *
       *  03.04.01    NACL-藤原    06/12/05  未請求レセ対応
+      *  03.04.02    NACL-門脇    07/02/19  公費の一部負担金再掲追加
+      *                                     公費の一部負担金再掲フラグ追加
+      *                                     公費−本人−外来−回−上限額追加
+      *  03.04.03    NACL-門脇    07/03/27  在宅総合・在宅末期一部負担金
+      *                                     再掲２追加
+      *
+      *  03.05.01    NACL-藤原    07/04/19  グループ診療対応
       ************************************************************
       *01  RECE02-REC.
            03  RECE02-KEY.
       *医療機関ＩＤ
-               05  RECE02-HOSPID          PIC  X(24).
+               05  RECE02-HOSPNUM         PIC  9(02).
       *診療年月
                05  RECE02-SRYYM           PIC  9(06).
       *入外区分
@@ -198,6 +205,9 @@
       *公費−本人−外来−回−負担割合
                    07 RECE02-HON-GAIKFTNRATE
                                           PIC  9(03).
+      *公費−本人−外来−回−上限額
+                   07 RECE02-HON-GAIKJGNGAK
+                                          PIC  9(06).
       *公費−本人−外来−日−上限額
                    07 RECE02-HON-GAIDJGNGAK
                                           PIC  9(06).
@@ -282,6 +292,7 @@
            03  RECE02-GENGAKURATE         PIC  9(03).
       *減額金額
            03  RECE02-GENGAKU             PIC  9(07).
+      *
       *割引点数単価（未使用）
            03  RECE02-DISCOUNTTENTNK      PIC  X(02).
       *食事療養費情報
@@ -353,24 +364,6 @@
                    07  RECE02-KOHSKY-KOHFTNJANUM
                                           PIC  X(08).
       *
-      *請求点がない公費領域
-           03 RECE02-SEINOT-KOHI-AREA.
-               05  RECE02-SEINOT-KOHI-TBL OCCURS  4.
-      *    公費ＩＤ
-                   07  RECE02-SEINOT-KOHID
-                                          PIC  9(10).
-      *    公費保険番号
-                   07  RECE02-SEINOT-KOHNUM
-                                          PIC  X(03).
-      *    公費負担者番号
-                   07  RECE02-SEINOT-KOHFTNJANUM
-                                          PIC  X(08).
-      *
-      *請求点がない公費を含む保険組合せ番号情報
-           03 RECE02-SEINOT-HKNCOMBIINF-AREA.
-               05  RECE02-SEINOT-HKNCOMBIINF     OCCURS  10.
-                   07  RECE02-SEINOT-HKNCOMBI    PIC  9(04).
-      *
       *初診時間区分
            03  RECE02-SHOSHINTIME         PIC  X(01).
       *再診摘要印刷区分
@@ -385,6 +378,12 @@
            03  RECE02-ZAITAKU             PIC  X(01).
       *在宅総合・在宅末期一部負担金再掲
            03  RECE02-ZAITAKU-SAIKEI      PIC  9(09).
+      *在宅総合・在宅末期一部負担金再掲２
+           03  RECE02-ZAITAKU-SAIKEI2     PIC  9(09).
+      *公費の一部負担金再掲
+           03  RECE02-KOH-SAIKEI          PIC  9(09).
+      *公費の一部負担金再掲フラグ
+           03  RECE02-KOH-SAIKEIFLG       PIC  9(01).
       *船員保険（被保険者）＋通勤災害フラグ
            03  RECE02-SENIN-TUUSAI        PIC  X(01).
       *コメントカウントフラグ
