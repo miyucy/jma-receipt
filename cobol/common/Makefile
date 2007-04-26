@@ -1,7 +1,5 @@
 SRCS = ORCHC01.CBL \
        ORCHC03.CBL \
-       ORCHC02.CBL \
-       ORCHC19.CBL \
        ORCHC28.CBL \
        ORCMCPSUB.CBL \
        ORCSC10.CBL \

@@ -26,6 +26,8 @@
       *  管理者            : 
       *  作成日付    作業者        記述
       *  02.09.01    NACL-竹田    06/04/17  MONFUNC 対応 他
+      *  03.04.01    NACL-多々納  07/04/XX  リハビリ管理料追加（H19.4改正）
+      *  03.05.00    NACL-多々納  07/04/XX  グループ診療対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -53,6 +55,8 @@
       *
            03  FLG-NAIBUN-ADD      PIC 9(01).
            03  FLG-NAIBUN-DEL      PIC 9(01).
+      *
+           03  FLG-RKAN-OK         PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -99,6 +103,10 @@
            03  WRK-DBPATH              PIC X(64). 
       *
            03  WRK-RIGAKU-RYO          PIC X(01). 
+      *
+           03  WRK-STR-SRYCD           PIC X(09).
+           03  WRK-STR-YMD             PIC X(08).
+           03  WRK-RIH-YMD             PIC X(08).
       *
       *    同一初回算定日コードテーブル
        01  TBL-AREA.
@@ -343,6 +351,19 @@
            IF     (WRK-MAE-SRYCD       =   WRK-MANSEI ) 
                PERFORM 1009-MANSE-CHK-SEC
            END-IF
+      *    リハビリ医学管理料の時、慢性疼痛と同様の処理とする
+           SET     TBL-SAN             TO  1
+           SEARCH  TBL-SANTEI-OCC      VARYING   TBL-SAN
+               AT  END
+                       MOVE    ZERO            TO  FLG-RKAN-OK
+               WHEN   (SSANTEI-SRYCD   =   TBL-SANTEI-SRYCD
+                                                          (TBL-SAN))
+                  AND (TBL-RSI-KBN (TBL-SAN)   =   "S"   )
+                  MOVE    1               TO  FLG-RKAN-OK
+           END-SEARCH
+           IF      FLG-RKAN-OK         =   1
+               PERFORM 10011-RIHAKANRI-SYORI-SEC
+           END-IF
       *
            .
        100-SYOKAI-EXT.
@@ -358,7 +379,6 @@
       *    算定履歴検索
            MOVE    "SANTEI-KEY4"       TO  WRK-DBPATH
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SANTEI-REC          TO  MCPDATA-REC
            MOVE    "tbl_santei_prv"    TO  MCP-TABLE
            MOVE    "key4"              TO  MCP-PATHNAME
@@ -398,7 +418,6 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *    算定履歴検索
            MOVE    "SANTEI-KEY4"       TO  WRK-DBPATH
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SANTEI-REC          TO  MCPDATA-REC
            MOVE    "tbl_santei_prv"    TO  MCP-TABLE
            MOVE    "key4"              TO  MCP-PATHNAME
@@ -464,7 +483,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *
       *    算定履歴検索
            INITIALIZE                  SANTEI-REC
-           MOVE    SPA-HOSPID          TO  SANTEI-HOSPID
+           MOVE    SPA-HOSPNUM         TO  SANTEI-HOSPNUM
            MOVE    SSANTEI-PTID        TO  SANTEI-PTID
            MOVE    WRK-SRYCD           TO  SANTEI-SRYCD
            MOVE    WRK-SRYYMD(1:6)     TO  SANTEI-SRYYM
@@ -493,7 +512,6 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    ZERO                TO  SANTEI-HKNCOMBINUM
            END-IF
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SANTEI-REC          TO  MCPDATA-REC
            MOVE    "tbl_santei_prv"    TO  MCP-TABLE
            MOVE    WRK-DBPATH          TO  MCP-PATHNAME
@@ -657,15 +675,24 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *****************************************************************
        100912-SANTEI-CHK-SEC      SECTION.
       *
+      *    保険毎のコードの判定
+           PERFORM 1000-SANTEI-CHK-SEC
+      *
            MOVE    SPACE               TO  WRK-YMD
       *    算定履歴検索
            INITIALIZE                  SANTEI-REC
-           MOVE    SPA-HOSPID          TO  SANTEI-HOSPID
+           MOVE    SPA-HOSPNUM         TO  SANTEI-HOSPNUM
            MOVE    SPA-PTID            TO  SANTEI-PTID
            MOVE    WRK-SRYCD           TO  SANTEI-SRYCD
            MOVE    WRK-SRYYM           TO  SANTEI-SRYYM
+      *    健保以外で保険別の時、保険をセット
+           IF     (FLG-HKNSAN          =   1   )  AND
+                  (SSANTEI-HKNKBN  NOT =   ZERO)
+               MOVE    SSANTEI-HKNCOMBINUM TO  SANTEI-HKNCOMBINUM
+           ELSE
+               MOVE    ZERO                TO  SANTEI-HKNCOMBINUM
+           END-IF
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SANTEI-REC          TO  MCPDATA-REC
            MOVE    "tbl_santei_prv"    TO  MCP-TABLE
            MOVE    "key8"              TO  MCP-PATHNAME
@@ -731,6 +758,77 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            .
        1000-SANTEI-CHK-EXT.
            EXIT.
+      *****************************************************************
+      *     疾患別リハビリ医学管理料処理
+      *****************************************************************
+       10011-RIHAKANRI-SYORI-SEC             SECTION.
+      *
+           MOVE    SPACE               TO  WRK-STR-SRYCD
+           EVALUATE    SSANTEI-SRYCD
+      *        心大血管疾患
+               WHEN    "180029910"
+               WHEN    "180030010"
+                   MOVE    "099800111"         TO  WRK-STR-SRYCD
+      *        脳血管疾患
+               WHEN    "180030110"
+               WHEN    "180030210"
+                   MOVE    "099800121"         TO  WRK-STR-SRYCD
+      *        運動器
+               WHEN    "180030310"
+               WHEN    "180030410"
+                   MOVE    "099800131"         TO  WRK-STR-SRYCD
+      *        呼吸器
+               WHEN    "180030510"
+               WHEN    "180030610"
+                   MOVE    "099800141"         TO  WRK-STR-SRYCD
+           END-EVALUATE
+           MOVE    SSANTEI-SRYYMD(1:6) TO  WRK-SRYYM
+           MOVE    SPACE               TO  WRK-STR-YMD
+      *    発生日検索
+           MOVE    WRK-STR-SRYCD       TO  WRK-SRYCD
+           PERFORM 100912-SANTEI-CHK-SEC
+           MOVE    WRK-YMD             TO  WRK-STR-YMD
+           MOVE    WRK-STR-YMD         TO  WRK-RIH-YMD
+      *    慢性疼痛と同様に初回算定日を決定する
+      *    初診料算定日がない時、診療科履歴から算定
+           IF      SSANTEI-SYOYMD      =   SPACE
+               MOVE    SSANTEI-SRYYMD(1:6)     TO  WRK-SRYYM
+               PERFORM 10091-SRYKARRK-CHK-SEC
+           ELSE
+               MOVE    SSANTEI-SYOYMD      TO  WRK-SYOSINYMD
+           END-IF
+      *    初診算定日より、発生日が後の時
+           IF      WRK-SYOSINYMD       <   WRK-RIH-YMD
+               MOVE    WRK-RIH-YMD         TO  WRK-SYOSINYMD
+           END-IF
+      *
+           IF     (WRK-SYOSINYMD       =   SPACE )  OR
+                  (WRK-SYOSINYMD       >   WRK-FSANTEIYMD)
+               IF     (SSANTEI-NYUGAIKBN   =   "1"   ) AND
+                      (WRK-SYOSINYMD       =   SPACE ) AND
+                      (WRK-FSANTEIYMD  NOT =   SPACE )
+                   CONTINUE
+               ELSE
+                   MOVE    SSANTEI-SRYYMD      TO  WRK-FSANTEIYMD
+               END-IF
+           END-IF
+           MOVE    WRK-SYOSINYMD       TO  WRK-SYOSINYMD-1
+      *
+           MOVE    ZERO                TO  FLG-MANSEI-ALL
+           MOVE    ZERO                TO  FLG-SYOKAI
+           IF      WRK-FSANTEIYMD-OLD  NOT =   SPACE
+               MOVE    WRK-FSANTEIYMD-OLD(1:6) TO  WRK-SRYYM
+               PERFORM 10091-SRYKARRK-CHK-SEC
+               IF     (WRK-SYOSINYMD   NOT =   SPACE     )   AND
+                      (WRK-SYOSINYMD       <   WRK-FSANTEIYMD-OLD) AND
+                      (WRK-SYOSINYMD       =   WRK-SYOSINYMD-1)
+                   MOVE    1               TO  FLG-MANSEI-ALL
+                   MOVE    WRK-FSANTEIYMD  TO  WRK-KON-FSANTEIYMD
+               END-IF
+           END-IF
+           .
+       10011-RIHAKANRI-SYORI-EXT.
+           EXIT.
       *
       *****************************************************************
       *     新規、変更処理
@@ -784,7 +882,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *
       *        新規追加編集
                INITIALIZE                  SANTEI-REC
-               MOVE    SPA-HOSPID          TO  SANTEI-HOSPID
+               MOVE    SPA-HOSPNUM         TO  SANTEI-HOSPNUM
                MOVE    SSANTEI-PTID        TO  SANTEI-PTID
                MOVE    WRK-SRYYMD(1:6)     TO  SANTEI-SRYYM
                MOVE    WRK-SRYCD           TO  SANTEI-SRYCD
@@ -1465,7 +1563,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            ELSE
       *    新規
                INITIALIZE                  SANTEI-REC
-               MOVE    SPA-HOSPID          TO  SANTEI-HOSPID
+               MOVE    SPA-HOSPNUM         TO  SANTEI-HOSPNUM
                MOVE    KEN-SANTEI-PTID     TO  SANTEI-PTID
                MOVE    KEN-SANTEI-SRYYM    TO  SANTEI-SRYYM
                MOVE    WRK-SRYCD           TO  SANTEI-SRYCD
@@ -1496,7 +1594,6 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
        30011-NAIBUFUKA-SUM-SEC         SECTION.
       *
       *    算定履歴検索
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SANTEI-REC          TO  MCPDATA-REC
            MOVE    "tbl_santei_prv"    TO  MCP-TABLE
            MOVE    "key9"              TO  MCP-PATHNAME
@@ -1542,14 +1639,13 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SMCNDATE-YMD        TO  SANTEI-UPYMD
            MOVE    SMCNDATE-HMS        TO  SANTEI-UPHMS
       *    新規
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SANTEI-REC          TO  MCPDATA-REC
            MOVE    "DBINSERT"          TO  MCP-FUNC
            MOVE    "tbl_santei_prv"    TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
            IF      MCP-RC          NOT =   ZERO
                DISPLAY "ORCSSANTEI  INS ERR:" SANTEI-KEY
                                       ","   MCP-RC
@@ -1568,14 +1664,13 @@ grpsys                            SPA-AREA
            MOVE    SMCNDATE-YMD        TO  SANTEI-UPYMD
            MOVE    SMCNDATE-HMS        TO  SANTEI-UPHMS
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SANTEI-REC          TO  MCPDATA-REC
            MOVE    "DBUPDATE"          TO  MCP-FUNC
            MOVE    "tbl_santei_prv"    TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
            IF      MCP-RC          NOT =   ZERO
                DISPLAY "ORCSSANTEI UPD ERR:" SANTEI-KEY
                                                   ","  MCP-RC
@@ -1590,14 +1685,13 @@ grpsys                            SPA-AREA
       *****************************************************************
        520-SANTEI-DEL-SEC                SECTION.
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SANTEI-REC          TO  MCPDATA-REC
            MOVE    "DBDELETE"          TO  MCP-FUNC
            MOVE    "tbl_santei_prv"    TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
            IF      MCP-RC          NOT =   ZERO
                DISPLAY "ORCSSANTEI DEL ERR:" SANTEI-KEY
                                                   ","  MCP-RC
@@ -1616,7 +1710,7 @@ grpsys                            SPA-AREA
            MOVE    SSANTEI-SRYYMD      TO  TNS-YUKOSTYMD
            MOVE    SSANTEI-SRYYMD      TO  TNS-YUKOEDYMD
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  TNS-HOSPNUM
            MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
            MOVE    "tbl_tensu"         TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
@@ -1670,9 +1764,9 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
        910-DBSELECT-SEC                SECTION.
       *
            MOVE    "DBSELECT"      TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
        910-DBSELECT-EXT.
@@ -1683,9 +1777,9 @@ grpsys                            SPA-AREA
        920-DBFETCH-SEC                 SECTION.
       *
            MOVE    "DBFETCH"       TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
       *
@@ -1698,9 +1792,9 @@ grpsys                            SPA-AREA
        990-DBCLOSE-SEC           SECTION.
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
        990-DBCLOSE-EXT.
