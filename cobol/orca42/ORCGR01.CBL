@@ -107,6 +107,7 @@
       *                                     ºÇÂç¹Ô¤ò£µ£°£°¤ËÊÑ¹¹ 
       *  03.04.02    NACL-Æ£¸¶    06/12/05  Ì¤ÀÁµá¥ì¥»ÂÐ±þ
       *  03.04.03    NACL-Æ£¸¶    06/12/22  ¼«ÇåÀÕ·òÊÝ½àµòÂÐ±þ
+      *  03.04.04    NACL-Æ£¸¶    07/04/26  ºï½ü½èÍý»þ¤Î²èÌÌÊÔ½¸¤Î½¤Àµ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -219,16 +220,24 @@
        01  WRK-GMN-SORT.
            03  WRK-GMN-TBL.
                05  WRK-GMN-TBL-G           OCCURS   500.
-                   07  WRK-GMN-TRENNUM     PIC 9(03).
-                   07  WRK-GMN-TPTNUM      PIC X(20).
-                   07  WRK-GMN-TNAME       PIC X(50).
-                   07  WRK-GMN-TSRYYM      PIC X(06).
-                   07  WRK-GMN-TNYUGAIKBN  PIC X(01).
+                   07  WRK-GMN-TRENNUM PIC 9(03).
+                   07  WRK-GMN-TTSTPTNUMKBN
+                                       PIC X(02).
+                   07  WRK-GMN-TPTNUM  PIC X(20).
+                   07  WRK-GMN-TNAME   PIC X(50).
+                   07  WRK-GMN-TSRYYM  PIC X(06).
+                   07  WRK-GMN-TNYUGAIKBN
+                                       PIC X(01).
+                   07  WRK-GMN-TTAISYO PIC X(02).
+                   07  WRK-GMN-TIHO    PIC X(04).
+                   07  WRK-GMN-TRSI    PIC X(04).
+                   07  WRK-GMN-TJBI    PIC X(04).
       * 
            03  WRK-NAI-TBL.
                05  WRK-NAI-TBL-G           OCCURS   500.
                    07  WRK-NAI-TPTID       PIC 9(10).
                    07  WRK-NAI-TSRYYM      PIC 9(06).
+                   07  WRK-NAI-TTAISYO     PIC 9(01).
       *
       *    °ì»þÎÎ°è
        01  WRK-AREA.
