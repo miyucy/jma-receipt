@@ -59,4 +59,6 @@
                    07  ORCSCWKSRY-KSN-ZAIEND      PIC X(01).
                    07  ORCSCWKSRY-KSN-INPUTCD     PIC X(22).
                    07  ORCSCWKSRY-KSN-AUTOKBN     PIC X(01).
+      *            Êñ³çºÞ
+                   07  ORCSCWKSRY-KSN-HKTKBN      PIC 9(01).
                05  ORCSCWKSRY-KSN-IDX             PIC 9(04).
