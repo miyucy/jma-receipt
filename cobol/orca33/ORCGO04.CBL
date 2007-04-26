@@ -248,6 +248,9 @@
       *    ÆüÊó¥­¡¼¼èÆÀ¥µ¥Ö
            COPY "CPORCSDAILYKEY.INC".
       *
+      *    ¼ýÇ¼¹¹¿·º¹³Û¼èÆÀ
+           COPY  "CPORCSS002.INC".
+      *
       *    £Ä£Â¸¡º÷
            COPY    "MCPDATA.INC".
            COPY    "ORCA-DBPATH".
@@ -976,6 +979,12 @@
                MOVE    SMEI-NYUHEN-MONEY
                                        TO  SPA-GMN-O04-TNYUKIN (IDX1)
                MOVE    SMEI-JOUTAIKBN  TO  SPA-NAI-O04-TJOUTAIKBN (IDX1)
+               MOVE    SMEI-SYURRKUPDKBN
+                                   TO  SPA-NAI-O04-TSYURRKUPDKBN(IDX1)
+               MOVE    SMEI-SYURRKNUM
+                                   TO  SPA-NAI-O04-TSYURRKNUM   (IDX1)
+               MOVE    SMEI-SYUEDANUM
+                                   TO  SPA-NAI-O04-TSYUEDANUM   (IDX1)
       *
                EVALUATE    SMEI-JOUTAIKBN
                WHEN    SPACE
@@ -2473,6 +2482,12 @@
                                        TO  SPA-NAI-O04-DENPEDANUM
            MOVE    SPA-NAI-O04-TJOUTAIKBN(SPA-GMN-O04-SELNUM)
                                        TO  SPA-NAI-O04-DENPJTIKBN
+           MOVE    SPA-NAI-O04-TSYURRKUPDKBN(SPA-GMN-O04-SELNUM)
+                                       TO  SPA-NAI-O04-SYURRKUPDKBN
+           MOVE    SPA-NAI-O04-TSYURRKNUM(SPA-GMN-O04-SELNUM)
+                                       TO  SPA-NAI-O04-SYURRKNUM
+           MOVE    SPA-NAI-O04-TSYUEDANUM(SPA-GMN-O04-SELNUM)
+                                       TO  SPA-NAI-O04-SYUEDANUM
       *
            MOVE    ZERO                TO  SPA-NAI-O04-PROC-FLG
       *
@@ -3421,6 +3436,20 @@
                PERFORM 800-MCNDATE-SEC
                MOVE    SMCNDATE-YMD        TO  SYU-UPYMD
                MOVE    SMCNDATE-HMS        TO  SYU-UPHMS
+      *
+               INITIALIZE                  SS002-AREA
+               MOVE    "2"                 TO  SS002-UPDKBN
+               MOVE    SPA-NAI-O04-SYURRKNUM
+                                           TO  SS002-IN-SYURRKNUM
+               MOVE    SPA-NAI-O04-SYUEDANUM
+                                           TO  SS002-IN-SYUEDANUM
+               MOVE    SPA-NAI-O04-SYURRKUPDKBN
+                                           TO  SS002-IN-SYURRKUPDKBN
+               CALL    "ORCSS002"  USING   SS002-AREA
+                                           SYUNOU-REC
+               IF    ( SS002-RC    NOT =   ZERO )
+                   GO  TO  49021-SYUNOU-UPD-EXT
+               END-IF
       *
                MOVE    SPA-HOSPNUM         TO  SYU-HOSPNUM
                MOVE    SYUNOU-REC          TO  MCPDATA-REC
