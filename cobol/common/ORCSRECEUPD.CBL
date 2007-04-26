@@ -27,6 +27,7 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *  01.00.01    NACL-多々納  05/11/11  MONFUNC 対応 他
+      *  03.05.00    NACL-多々納  07/04/XX  グループ診療対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -38,8 +39,6 @@
       *FILE                        SECTION.
       *
        WORKING-STORAGE             SECTION.
-grpsys*
-grpsys COPY    "COMMON-SPA".
       *
       *    フラグ領域
        01  FLG-AREA.
@@ -103,10 +102,13 @@ grpsys COPY    "COMMON-SPA".
        LINKAGE                     SECTION.
       *
            COPY    "CPORCSRECEUPD.INC".
+grpsys*
+grpsys      COPY    "COMMON-SPA".
       *****************************************************************
      *
        PROCEDURE                   DIVISION    USING
-                                   ORCSRECEUPDAREA.
+                                   ORCSRECEUPDAREA
+           SPA-AREA.
      *
       *****************************************************************
       *    主処理
@@ -140,7 +142,7 @@ grpsys COPY    "COMMON-SPA".
            EVALUATE    LNK-UPD-SYORI
                WHEN    "1"
                    INITIALIZE                  JYURRK-REC
-                   MOVE    LNK-UPD-HOSPID  TO  JYURRK-HOSPID
+                   MOVE    LNK-UPD-HOSPNUM TO  JYURRK-HOSPNUM
                    MOVE    LNK-UPD-PTID    TO  JYURRK-PTID
                    MOVE    WRK-SYSYMD(1:6) TO  JYURRK-SRYYMD (1:6)
                    MOVE    "__"            TO  JYURRK-SRYYMD (7:2)
@@ -149,7 +151,7 @@ grpsys COPY    "COMMON-SPA".
                    PERFORM 200-HENSYU-SEC
                WHEN    "2"
                    INITIALIZE                  JYURRK-REC
-                   MOVE    LNK-UPD-HOSPID  TO  JYURRK-HOSPID
+                   MOVE    LNK-UPD-HOSPNUM TO  JYURRK-HOSPNUM
                    MOVE    LNK-UPD-PTID    TO  JYURRK-PTID
                    MOVE    LNK-UPD-NYUGAIKBN
                                            TO  JYURRK-NYUGAIKBN
@@ -176,11 +178,10 @@ grpsys COPY    "COMMON-SPA".
            MOVE    "tbl_jyurrk"        TO  MCP-TABLE
            MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
            MOVE    "DBSELECT"          TO  MCP-FUNC
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    JYURRK-REC          TO  MCPDATA-REC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
            IF      MCP-RC              =   ZERO
                MOVE    "tbl_jyurrk"        TO  MCP-TABLE
                MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
@@ -192,7 +193,7 @@ grpsys                            SPA-AREA
            PERFORM     UNTIL       FLG-JYURRK     =   1
                        OR          LNK-UPD-RC NOT =   ZERO
                INITIALIZE                  RECEUPD-REC
-               MOVE    JYURRK-HOSPID  TO  RECEUPD-HOSPID
+               MOVE    JYURRK-HOSPNUM  TO  RECEUPD-HOSPNUM
                MOVE    JYURRK-NYUGAIKBN
                                        TO  RECEUPD-NYUGAIKBN
                MOVE    JYURRK-PTID     TO  RECEUPD-PTID
@@ -204,7 +205,7 @@ grpsys                            SPA-AREA
                PERFORM 900-RECEUPD-READ-SEC
                IF      FLG-RECEUPD     =   1
                    INITIALIZE                  RECEUPD-REC
-                   MOVE    JYURRK-HOSPID  TO  RECEUPD-HOSPID
+                   MOVE    JYURRK-HOSPNUM  TO  RECEUPD-HOSPNUM
                    MOVE    JYURRK-NYUGAIKBN
                                            TO  RECEUPD-NYUGAIKBN
                    MOVE    JYURRK-PTID     TO  RECEUPD-PTID
@@ -231,13 +232,12 @@ grpsys                            SPA-AREA
                        MOVE    "DBUPDATE"          TO  MCP-FUNC
                END-EVALUATE    
       *
-grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    RECEUPD-REC         TO  MCPDATA-REC
                MOVE    "tbl_receupd"       TO  MCP-TABLE
                MOVE    "key"               TO  MCP-PATHNAME
-grpsys         CALL "ORCDBMAIN" USING MCPAREA
-                                      MCPDATA-REC
-grpsys                                SPA-AREA
+grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
+                                                   MCPDATA-REC
+                                                   SPA-AREA
                IF      MCP-RC          NOT =   ZERO
                    MOVE    "2"                 TO  LNK-UPD-RC
                ELSE
@@ -250,9 +250,9 @@ grpsys                                SPA-AREA
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "tbl_jyurrk"        TO  MCP-TABLE
            MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
            .
        200-HENSYU-EXT.
            EXIT.
@@ -262,21 +262,20 @@ grpsys                            SPA-AREA
       *****************************************************************
        900-RECEUPD-READ-SEC         SECTION.
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    RECEUPD-REC          TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "tbl_receupd"       TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
            IF      MCP-RC              =   ZERO
                MOVE    "tbl_receupd"       TO  MCP-TABLE
                MOVE    "key"               TO  MCP-PATHNAME
                MOVE    "DBFETCH"           TO  MCP-FUNC
-grpsys         CALL "ORCDBMAIN" USING MCPAREA
-                                      MCPDATA-REC
-grpsys                                SPA-AREA
+grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
+                                                   MCPDATA-REC
+                                                   SPA-AREA
                IF      MCP-RC              =   ZERO
                    MOVE    ZERO                TO  FLG-RECEUPD
                    MOVE    MCPDATA-REC         TO  RECEUPD-REC
@@ -290,9 +289,9 @@ grpsys                                SPA-AREA
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "tbl_receupd"       TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
        900-RECEUPD-READ-EXT.
@@ -304,9 +303,9 @@ grpsys                            SPA-AREA
        900-JYURRK-READ-N-SEC         SECTION.
       *
            MOVE    "DBFETCH"           TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
            IF      MCP-RC              =   ZERO
                MOVE    ZERO            TO  FLG-JYURRK
                MOVE    MCPDATA-REC     TO  JYURRK-REC
