@@ -27,13 +27,15 @@
       ************************************************************
       *  コピー句修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *
+      *  03.05.01    NACL-藤原    07/04/19  グループ診療対応
       ************************************************************
       *
        01  ORCSSYUBETUAREA.
       *
            03  LNK-SYUBETU-IN.
       *        医療機関ＩＤ
-               05  LNK-SYUBETU-HOSPID      PIC X(24).
+               05  LNK-SYUBETU-HOSPNUM     PIC S9(9) BINARY.
       *        県番号
                05  LNK-SYUBETU-PREFNUM     PIC 9(02).
       *        診療年月
