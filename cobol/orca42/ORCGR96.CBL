@@ -28,6 +28,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  03.05.01    NACL-藤原    07/04/19  グループ診療対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -383,12 +384,11 @@
            MOVE    ZERO            TO  IDXX
       *
            INITIALIZE                  SYUKA-REC
-      *****MOVE    SPA-HOSPID      TO  SYUKA-HOSPID
+grpsys     MOVE    SPA-HOSPNUM     TO  SYUKA-HOSPNUM
            MOVE    SPA-GMN-R96-NYUGAIKBN  
                                    TO  SYUKA-NYUGAIKBN
            MOVE    "YYYY"          TO  SYUKA-RECESYUBETU
            MOVE    "02"            TO  SYUKA-MISEIKYU-FLG
-           MOVE    SPA-HOSPNUM     TO  SYUKA-HOSPNUM
            MOVE    SYUKA-REC       TO  MCPDATA-REC
            MOVE    "tbl_syuka"     TO  WRK-MCP-TABLE
            MOVE    "key14"         TO  WRK-MCP-PATHNAME
@@ -397,10 +397,7 @@
            MOVE    WRK-MCP-PATHNAME
                                    TO  MCP-PATHNAME
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           CALL    "ORCDBMAIN"         USING
-                                           MCPAREA
-                                           MCPDATA-REC
-                                           SPA-AREA
+           PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC              =   ZERO
                MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
                MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
@@ -423,18 +420,17 @@
       *
                MOVE    SYUKA-PTID  TO  SPA-NAI-R96-KAIJYO-TPTID   (IDXX)
                INITIALIZE              ORCSPTIDAREA
-      *********MOVE    SPA-HOSPID  TO  SPTID-HOSPID
-               MOVE    SPA-HOSPNUM TO  SPTID-HOSPNUM
+grpsys         MOVE    SPA-HOSPNUM TO  SPTID-HOSPNUM
                MOVE    SYUKA-PTID  TO  SPTID-PTID
                CALL    "ORCSPTID"  USING   ORCSPTIDAREA
-                                           SPA-1009-TBL
+                                           SPA-AREA
                MOVE    SPTID-PTNUM TO  SPA-GMN-R96-KAIJYO-TPTNUM  (IDXX)
       *
                MOVE    SYUKA-NYUGAIKBN
                                    TO  SPA-NAI-R96-KAIJYO-TNYUGAIKBN
                                                                   (IDXX)
       *
-      *********MOVE    SPA-HOSPID  TO  PTINF-HOSPID
+grpsys         MOVE    SPA-HOSPNUM TO  PTINF-HOSPNUM
                MOVE    SPA-NAI-R96-KAIJYO-TPTID   (IDXX)
                                    TO  PTINF-PTID
                PERFORM 900-PTINF-READ-SEC
@@ -471,14 +467,13 @@
            MOVE    ZERO            TO  IDXX
       *
            INITIALIZE                  SYUKA-REC
-      *****MOVE    SPA-HOSPID      TO  SYUKA-HOSPID
+grpsys     MOVE    SPA-HOSPNUM     TO  SYUKA-HOSPNUM
            MOVE    SPA-NAI-R96-SRYYM
                                    TO  SYUKA-SRYYM
            MOVE    SPA-GMN-R96-NYUGAIKBN  
                                    TO  SYUKA-NYUGAIKBN
            MOVE    "YYYY"          TO  SYUKA-RECESYUBETU
            MOVE    "01"            TO  SYUKA-MISEIKYU-FLG
-           MOVE    SPA-HOSPNUM     TO  SYUKA-HOSPNUM
            MOVE    SYUKA-REC       TO  MCPDATA-REC
            MOVE    "tbl_syuka"     TO  WRK-MCP-TABLE
            MOVE    "key13"         TO  WRK-MCP-PATHNAME
@@ -487,10 +482,7 @@
            MOVE    WRK-MCP-PATHNAME
                                    TO  MCP-PATHNAME
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           CALL    "ORCDBMAIN"     USING
-                                       MCPAREA
-                                       MCPDATA-REC
-                                       SPA-AREA
+           PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC              =   ZERO
                MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
                MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
@@ -508,16 +500,15 @@
                MOVE    SYUKA-PTID  TO  SPA-NAI-R96-MISEIKYU-TPTID (IDXX)
       *
                INITIALIZE              ORCSPTIDAREA
-      *********MOVE    SPA-HOSPID  TO  SPTID-HOSPID
-               MOVE    SPA-HOSPNUM TO  SPTID-HOSPNUM
+grpsys         MOVE    SPA-HOSPNUM TO  SPTID-HOSPNUM
                MOVE    SPA-NAI-R96-MISEIKYU-TPTID (IDXX)
                                    TO  SPTID-PTID
                CALL    "ORCSPTID"  USING   ORCSPTIDAREA
-                                           SPA-1009-TBL
+                                           SPA-AREA
                MOVE    SPTID-PTNUM TO  SPA-GMN-R96-MISEIKYU-TPTNUM
                                                                   (IDXX)
       *
-      *********MOVE    SPA-HOSPID  TO  PTINF-HOSPID
+grpsys         MOVE    SPA-HOSPNUM TO  PTINF-HOSPNUM
                MOVE    SPA-NAI-R96-MISEIKYU-TPTID (IDXX)
                                    TO  PTINF-PTID
                PERFORM 900-PTINF-READ-SEC
@@ -815,25 +806,23 @@
       *
            IF    SPA-GMN-R96-NYUGAIKBN =   "2"
                INITIALIZE                      JYURRK-REC
-      *********MOVE    SPA-HOSPID          TO  JYURRK-HOSPID
+grpsys         MOVE    SPA-HOSPNUM         TO  JYURRK-HOSPNUM
                MOVE    SPA-NAI-R96-SRYYM   TO  JYURRK-SRYYMD(1:6)
                MOVE    "% "                TO  JYURRK-SRYYMD(7:)
                MOVE    SPA-GMN-R96-NYUGAIKBN
                                            TO  JYURRK-NYUGAIKBN
                MOVE    SPA-NAI-R96-PTID    TO  JYURRK-PTID
-               MOVE    SPA-HOSPNUM         TO  JYURRK-HOSPNUM
                MOVE    JYURRK-REC          TO  MCPDATA-REC
                MOVE    "tbl_jyurrk"        TO  WRK-MCP-TABLE
                MOVE    "key40"             TO  WRK-MCP-PATHNAME
            ELSE
                INITIALIZE                      PTNYUINRRK-REC
-      *********MOVE    SPA-HOSPID          TO  PTNYUINRRK-HOSPID
+grpsys         MOVE    SPA-HOSPNUM         TO  PTNYUINRRK-HOSPNUM
                MOVE    SPA-NAI-R96-PTID    TO  PTNYUINRRK-PTID
                MOVE    SPA-NAI-R96-SRYYM   TO  PTNYUINRRK-TENSTUYMD(1:6)
                MOVE    "01"                TO  PTNYUINRRK-TENSTUYMD(7:)
                MOVE    SPA-NAI-R96-SRYYM   TO  PTNYUINRRK-TENNYUYMD(1:6)
                MOVE    "31"                TO  PTNYUINRRK-TENNYUYMD(7:)
-               MOVE    SPA-HOSPNUM         TO  PTNYUINRRK-HOSPNUM
                MOVE    PTNYUINRRK-REC      TO  MCPDATA-REC
                MOVE    "tbl_ptnyuinrrk"    TO  WRK-MCP-TABLE
                MOVE    "key46"             TO  WRK-MCP-PATHNAME
@@ -857,8 +846,7 @@
       *
            IF      FLG-READ            =   ZERO
                INITIALIZE                  ORCSSYUBETUAREA
-               MOVE    SPA-HOSPID      TO  LNK-SYUBETU-HOSPID
-      *********MOVE    SPA-HOSPNUM     TO  LNK-SYUBETU-HOSPNUM
+grpsys         MOVE    SPA-HOSPNUM     TO  LNK-SYUBETU-HOSPNUM
                MOVE    SPA-PREFNUM     TO  LNK-SYUBETU-PREFNUM
                MOVE    SPA-NAI-R96-SRYYM
                                        TO  LNK-SYUBETU-SRYYM
@@ -984,11 +972,10 @@
                MOVE    "0003"              TO  SPA-ERRCD
            ELSE
                INITIALIZE                      ORCSPTIDAREA
-      *********MOVE    SPA-HOSPID          TO  SPTID-HOSPID
-               MOVE    SPA-HOSPNUM         TO  SPTID-HOSPNUM
+grpsys         MOVE    SPA-HOSPNUM             TO  SPTID-HOSPNUM
                MOVE    SPA-GMN-R96-PTNUM       TO  SPTID-PTNUM
                CALL    "ORCSPTID"          USING   ORCSPTIDAREA
-                                                   SPA-1009-TBL
+                                                   SPA-AREA
                IF      SPTID-RC        NOT =   ZERO
                    MOVE    "0003"              TO  SPA-ERRCD
                ELSE
@@ -996,7 +983,7 @@
                    MOVE    SPTID-PTID          TO  SPA-NAI-R96-PTID
       *
       *            患者マスター存在チェック
-      *************MOVE    SPA-HOSPID          TO  PTINF-HOSPID
+grpsys             MOVE    SPA-HOSPNUM         TO  PTINF-HOSPNUM
                    MOVE    SPA-NAI-R96-PTID    TO  PTINF-PTID
                    PERFORM 900-PTINF-READ-SEC
                    IF      FLG-PTINF       NOT =   ZERO
@@ -1269,6 +1256,11 @@
                GO  TO  440-KAIJYO-MAE-EXT
            END-IF 
       *
+           IF      SPA-NAI-R96-SELNUM  =   ZERO
+               MOVE    "0101"              TO  SPA-ERRCD
+               GO  TO  440-KAIJYO-MAE-EXT
+           END-IF
+      *
            IF    ( SPA-NAI-R96-KAIJYO-SELNUM
                                    =   ZERO                     )
            AND   ( SPA-GMN-R96-KAIJYO-TBL-MAX
@@ -1278,13 +1270,12 @@
            END-IF
       *
            INITIALIZE                  SYUKA-REC
-      *****MOVE    SPA-HOSPID      TO  SYUKA-HOSPID
+grpsys     MOVE    SPA-HOSPNUM         TO  SYUKA-HOSPNUM
            MOVE    SPA-NAI-R96-PTID    TO  SYUKA-PTID
            MOVE    SPA-NAI-R96-SRYYM   TO  SYUKA-SRYYM
            MOVE    SPA-GMN-R96-NYUGAIKBN
                                    TO  SYUKA-NYUGAIKBN
            MOVE    "YYYY"          TO  SYUKA-RECESYUBETU
-           MOVE    SPA-HOSPNUM     TO  SYUKA-HOSPNUM
            MOVE    SYUKA-REC       TO  MCPDATA-REC
            MOVE    "tbl_syuka"     TO  WRK-MCP-TABLE
            MOVE    "key15"         TO  WRK-MCP-PATHNAME
@@ -1293,8 +1284,12 @@
                MOVE    "0101"          TO  SPA-ERRCD
                MOVE    4               TO  SPA-GMN-R96-CUR
            ELSE
-      *****    MOVE    "1002"          TO  SPA-RIDCD
-               PERFORM 440-KAIJYO-SEC
+               IF      SYUKA-MISEIKYU-FLG  =   "01"
+      *****        MOVE    "1002"          TO  SPA-RIDCD
+                   PERFORM 440-KAIJYO-SEC
+               ELSE
+                   MOVE    "0101"          TO  SPA-ERRCD
+               END-IF
            END-IF
            .
        440-KAIJYO-MAE-EXT.
@@ -1311,7 +1306,7 @@
                                        ORCSMCNDATEAREA
       *
            INITIALIZE                  SYUKA-REC
-      *****MOVE    SPA-HOSPID      TO  SYUKA-HOSPID
+grpsys     MOVE    SPA-HOSPNUM     TO  SYUKA-HOSPNUM
            MOVE    SPA-NAI-R96-PTID
                                    TO  SYUKA-PTID
            MOVE    SPA-NAI-R96-SRYYM
@@ -1324,16 +1319,12 @@
            MOVE    SPA-OPID        TO  SYUKA-OPID
            MOVE    SMCNDATE-YMD        TO  SYUKA-UPYMD
            MOVE    SMCNDATE-HMS        TO  SYUKA-UPHMS
-           MOVE    SPA-HOSPNUM     TO  SYUKA-HOSPNUM
            MOVE    SYUKA-REC       TO  MCPDATA-REC
       *
            MOVE    "DBUPDATE"      TO  MCP-FUNC
            MOVE    "tbl_syuka"     TO  MCP-TABLE
            MOVE    "upd4"          TO  MCP-PATHNAME
-           CALL    "ORCDBMAIN"     USING
-                                       MCPAREA
-                                       MCPDATA-REC
-                                       SPA-AREA
+           PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC      NOT =   ZERO
                DISPLAY "SYUKA KEY=" 
                                    MCP-FUNC " " SYUKA-KEY
@@ -1367,8 +1358,9 @@
       *
       *    請求管理テーブルの存在チェック
            INITIALIZE                  RECE10-REC
-      *****MOVE    SPA-HOSPID      TO  RECE10-HOSPID
-           MOVE    SPA-NAI-R96-SRYYM   TO  RECE10-SRYYM
+grpsys     MOVE    SPA-HOSPNUM     TO  RECE10-HOSPNUM
+           MOVE    SPA-NAI-R96-SRYYM
+                                   TO  RECE10-SRYYM
            MOVE    SPA-GMN-R96-NYUGAIKBN
                                    TO  RECE10-NYUGAIKBN
            MOVE    SPA-NAI-R96-PTID
@@ -1398,20 +1390,18 @@
            IF      SPA-RIDCD      =   "1001"
       *        請求管理削除
                INITIALIZE                  RECE10-REC
-      *********MOVE    SPA-HOSPID      TO  RECE10-HOSPID
-               MOVE    SPA-NAI-R96-SRYYM   TO  RECE10-SRYYM
+grpsys         MOVE    SPA-HOSPNUM     TO  RECE10-HOSPNUM
+               MOVE    SPA-NAI-R96-SRYYM
+                                       TO  RECE10-SRYYM
                MOVE    SPA-GMN-R96-NYUGAIKBN
                                        TO  RECE10-NYUGAIKBN
-               MOVE    SPA-NAI-R96-PTID    TO  RECE10-PTID
-               MOVE    SPA-HOSPNUM     TO  RECE10-HOSPNUM
+               MOVE    SPA-NAI-R96-PTID
+                                       TO  RECE10-PTID
                MOVE    RECE10-REC      TO  MCPDATA-REC
                MOVE    "tbl_seikyu"    TO  MCP-TABLE
-               MOVE    "del4"          TO  MCP-PATHNAME
+               MOVE    "del7"          TO  MCP-PATHNAME
                MOVE    "DBDELETE"      TO  MCP-FUNC
-               CALL    "ORCDBMAIN"     USING
-                                           MCPAREA
-                                           MCPDATA-REC
-                                           SPA-AREA
+               PERFORM 900-ORCDBMAIN-SEC
                IF      MCP-RC      NOT =   ZERO
                    DISPLAY "SEIKYU KEY=" RECE10-KEY
                    MOVE    "1002"          TO  SPA-ERRCD
@@ -1420,20 +1410,18 @@
       *
       *        公費請求書削除
                INITIALIZE                  KOHSKY-REC
-      *********MOVE    SPA-HOSPID      TO  KOHSKY-HOSPID
-               MOVE    SPA-NAI-R96-SRYYM   TO  KOHSKY-SRYYM
+grpsys         MOVE    SPA-HOSPNUM     TO  KOHSKY-HOSPNUM
+               MOVE    SPA-NAI-R96-SRYYM
+                                       TO  KOHSKY-SRYYM
                MOVE    SPA-GMN-R96-NYUGAIKBN
                                        TO  KOHSKY-NYUGAIKBN
-               MOVE    SPA-NAI-R96-PTID    TO  KOHSKY-PTID
-               MOVE    SPA-HOSPNUM     TO  KOHSKY-HOSPNUM
+               MOVE    SPA-NAI-R96-PTID
+                                       TO  KOHSKY-PTID
                MOVE    KOHSKY-REC      TO  MCPDATA-REC
                MOVE    "tbl_kohsky"    TO  MCP-TABLE
-               MOVE    "del2"          TO  MCP-PATHNAME
+               MOVE    "del4"          TO  MCP-PATHNAME
                MOVE    "DBDELETE"      TO  MCP-FUNC
-               CALL    "ORCDBMAIN"     USING
-                                           MCPAREA
-                                           MCPDATA-REC
-                                           SPA-AREA
+               PERFORM 900-ORCDBMAIN-SEC
                IF      MCP-RC      NOT =   ZERO
                    DISPLAY "KOHKSY KEY=" KOHSKY-KEY
                    MOVE    "1003"          TO  SPA-ERRCD
@@ -1442,20 +1430,18 @@
       *
       *        レセ電削除
                INITIALIZE                  RECEDEN-REC
-      *********MOVE    SPA-HOSPID      TO  RECEDEN-HOSPID
-               MOVE    SPA-NAI-R96-SRYYM   TO  RECEDEN-SRYYM
+grpsys         MOVE    SPA-HOSPNUM     TO  RECEDEN-HOSPNUM
+               MOVE    SPA-NAI-R96-SRYYM
+                                       TO  RECEDEN-SRYYM
                MOVE    SPA-GMN-R96-NYUGAIKBN
                                        TO  RECEDEN-NYUGAIKBN
-               MOVE    SPA-NAI-R96-PTID    TO  RECEDEN-PTID
-               MOVE    SPA-HOSPNUM     TO  RECEDEN-HOSPNUM
+               MOVE    SPA-NAI-R96-PTID
+                                       TO  RECEDEN-PTID
                MOVE    RECEDEN-REC     TO  MCPDATA-REC
                MOVE    "tbl_receden"   TO  MCP-TABLE
                MOVE    "del2"          TO  MCP-PATHNAME
                MOVE    "DBDELETE"      TO  MCP-FUNC
-               CALL    "ORCDBMAIN"     USING
-                                           MCPAREA
-                                           MCPDATA-REC
-                                           SPA-AREA
+               PERFORM 900-ORCDBMAIN-SEC
                IF      MCP-RC      NOT =   ZERO
                    DISPLAY "RECEDEN KEY=" RECEDEN-KEY
                    MOVE    "1004"          TO  SPA-ERRCD
@@ -1464,20 +1450,19 @@
            END-IF
       *
            INITIALIZE                  SYUKA-REC
-      *****MOVE    SPA-HOSPID      TO  SYUKA-HOSPID
+grpsys     MOVE    SPA-HOSPNUM         TO  SYUKA-HOSPNUM
            MOVE    SPA-NAI-R96-PTID    TO  SYUKA-PTID
            MOVE    SPA-NAI-R96-SRYYM   TO  SYUKA-SRYYM
            MOVE    SPA-GMN-R96-NYUGAIKBN
                                    TO  SYUKA-NYUGAIKBN
            MOVE    "YYYY"          TO  SYUKA-RECESYUBETU
-           MOVE    SPA-HOSPNUM     TO  SYUKA-HOSPNUM
            MOVE    SYUKA-REC       TO  MCPDATA-REC
            MOVE    "tbl_syuka"     TO  WRK-MCP-TABLE
            MOVE    "key15"         TO  WRK-MCP-PATHNAME
            PERFORM 900-SYUKA-READ-SEC
            IF      FLG-SYUKA       =   1
                INITIALIZE                  SYUKA-REC
-      *********MOVE    SPA-HOSPID      TO  SYUKA-HOSPID
+grpsys         MOVE    SPA-HOSPNUM         TO  SYUKA-HOSPNUM
                MOVE    SPA-NAI-R96-PTID    TO  SYUKA-PTID
                MOVE    SPA-NAI-R96-SRYYM   TO  SYUKA-SRYYM
                MOVE    SPA-GMN-R96-NYUGAIKBN
@@ -1497,7 +1482,6 @@
                MOVE    SMCNDATE-YMD        TO  SYUKA-UPYMD
                MOVE    SMCNDATE-HMS        TO  SYUKA-UPHMS
            END-IF
-           MOVE    SPA-HOSPNUM     TO  SYUKA-HOSPNUM
            MOVE    SYUKA-REC       TO  MCPDATA-REC
       *
            IF      FLG-SYUKA       =   ZERO
@@ -1509,10 +1493,7 @@
                MOVE    "tbl_syuka"     TO  MCP-TABLE
                MOVE    "key"           TO  MCP-PATHNAME
            END-IF
-           CALL    "ORCDBMAIN"         USING
-                                           MCPAREA
-                                           MCPDATA-REC
-                                           SPA-AREA
+           PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC      NOT =   ZERO
                DISPLAY "SYUKA KEY=" 
                                    MCP-FUNC " " SYUKA-KEY
@@ -1888,23 +1869,16 @@
       *****************************************************************
        900-PTINF-READ-SEC         SECTION.
       *
-           MOVE    SPA-HOSPNUM         TO  PTINF-HOSPNUM
            MOVE    PTINF-REC           TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "tbl_ptinf"         TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
-           CALL    "ORCDBMAIN"         USING
-                                           MCPAREA
-                                           MCPDATA-REC
-                                           SPA-AREA
+           PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC              =   ZERO
                MOVE    "DBFETCH"           TO  MCP-FUNC
                MOVE    "tbl_ptinf"         TO  MCP-TABLE
                MOVE    "key"               TO  MCP-PATHNAME
-               CALL    "ORCDBMAIN"         USING
-                                               MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+               PERFORM 900-ORCDBMAIN-SEC
                IF      MCP-RC              =   ZERO
                    MOVE    MCPDATA-REC         TO  PTINF-REC
                    MOVE    ZERO                TO  FLG-PTINF
@@ -1933,10 +1907,7 @@
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
            MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
-           CALL    "ORCDBMAIN"         USING
-                                           MCPAREA
-                                           MCPDATA-REC
-                                           SPA-AREA
+           PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC              =   ZERO
                MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
                MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
@@ -1959,10 +1930,7 @@
        910-SYUKA-NEXT-SEC         SECTION.
       * 
            MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "ORCDBMAIN"         USING
-                                           MCPAREA
-                                           MCPDATA-REC
-                                           SPA-AREA
+           PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC               =   ZERO
                MOVE    ZERO                 TO  FLG-SYUKA
                MOVE    MCPDATA-REC          TO  SYUKA-REC
@@ -1980,15 +1948,11 @@
       *****************************************************************
        900-SEIKYU-READ-SEC         SECTION.
       *
-           MOVE    SPA-HOSPNUM         TO  RECE10-HOSPNUM
            MOVE    RECE10-REC          TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "tbl_seikyu"        TO  MCP-TABLE
            MOVE    "key59"             TO  MCP-PATHNAME
-           CALL    "ORCDBMAIN"         USING
-                                           MCPAREA
-                                           MCPDATA-REC
-                                           SPA-AREA
+           PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC              =   ZERO
                MOVE    "tbl_seikyu"        TO  MCP-TABLE
                MOVE    "key59"             TO  MCP-PATHNAME
@@ -2011,10 +1975,7 @@
        900-SEIKYU-NEXT-SEC         SECTION.
       *
            MOVE    "DBFETCH"       TO  MCP-FUNC
-           CALL    "ORCDBMAIN"     USING
-                                       MCPAREA
-                                       MCPDATA-REC
-                                       SPA-AREA
+           PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC          =   ZERO
                MOVE    ZERO            TO  FLG-SEIKYU
            ELSE
@@ -2026,64 +1987,61 @@
            EXIT.
       *
       *****************************************************************
-      *    テーブル検索処理
+      *    ＤＢＳＥＬＥＣＴ処理
       *****************************************************************
        900-DBSELECT-SEC                SECTION.
       *
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           CALL    "ORCDBMAIN"         USING
-                                           MCPAREA
-                                           MCPDATA-REC
-                                           SPA-AREA
+grpsys     PERFORM 900-ORCDBMAIN-SEC
            .
        900-DBSELECT-EXT.
            EXIT.
       *
       *****************************************************************
-      *    テーブル検索処理
+      *    ＤＢＦＥＴＣＨ処理
       *****************************************************************
        900-DBFETCH-SEC                SECTION.
       *
            MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "ORCDBMAIN"         USING
-                                           MCPAREA
-                                           MCPDATA-REC
-                                           SPA-AREA
-           IF      MCP-RC              =   ZERO
-               MOVE    ZERO                TO  FLG-READ
-           ELSE
-               MOVE    1                   TO  FLG-READ
-           END-IF
+grpsys     PERFORM 900-ORCDBMAIN-SEC
       *
            .
        900-DBFETCH-EXT.
            EXIT.
       *
       *****************************************************************
-      *    クローズ処理
+      *    テーブルクローズ処理
       *****************************************************************
        900-CLOSE-SEC               SECTION.
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           CALL    "ORCDBMAIN"         USING
-                                           MCPAREA
-                                           MCPDATA-REC
-                                           SPA-AREA
+grpsys     PERFORM 900-ORCDBMAIN-SEC
       *
            .
        900-CLOSE-EXT.
            EXIT.
       *
       *****************************************************************
-      *    ＰＵＴ　処理
+      *    テーブルアクセス処理
+      *****************************************************************
+       900-ORCDBMAIN-SEC               SECTION.
+      *
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
+           .
+      *
+       900-ORCDBMAIN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ＰＵＴ処理
       *****************************************************************
        900-PUT-WINDOW              SECTION.
       *
-           MOVE   "PUTWINDOW"       TO  MCP-FUNC
-           CALL   "ORCDBMAIN"       USING
-                                        MCPAREA
-                                        MCPDATA-REC
-                                        SPA-AREA
+           MOVE   "PUTWINDOW"          TO  MCP-FUNC
+grpsys     PERFORM 900-ORCDBMAIN-SEC
            .
+      *
        900-PUT-WINDOW-EXT.
            EXIT.

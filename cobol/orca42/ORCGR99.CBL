@@ -53,6 +53,9 @@
       *
       *  03.04.01    NACL-藤原    06/12/01  主科未設定分があるときは印刷
       *                                     指示画面への自動遷移をしない
+      *  03.04.02    NACL-藤原    07/03/01  国保レセプト編綴順詳細設定対応
+      *
+      *  03.05.01    NACL-藤原    07/04/19  グループ診療対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -70,6 +73,15 @@
                                    BY         //SPA-RECE07//.
            03  SPA-RECE07-SRYKA-KOKUHO
                                    PIC X(02).
+           03  SPA-RECE07-RECE-PUTH-T   OCCURS 2.
+               05  SPA-RECE07-ZAITAKU-KBN-T
+                                   PIC  X(01).
+               05  SPA-RECE07-CHOUKI-KBN-T
+                                   PIC  X(01).
+               05  SPA-RECE07-SRT-LAST-T
+                                   PIC  X(01).
+               05  SPA-RECE07-KOUGAKU-TEN-T
+                                   PIC  9(07).
       *
       *   
            COPY    "ENUM-VALUE".
@@ -91,6 +103,7 @@
       *    添字領域
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
+           03  IDXX                PIC 9(04).
       *
        01  WRK-AREA.
            03  WRK-PAGE            PIC ZZZZ9.
@@ -270,9 +283,7 @@
                MOVE    WRK-CONS-JOB-SHELLID
                                        TO  JOB-SHELLID
            END-IF
-           CALL    "ORCSJOB"       USING
-                                   ORCSJOBKANRIAREA 
-                                   JOBKANRI-REC
+grpsys     PERFORM 900-CALL-ORCSJOB-SEC
            IF    ( SJOBKANRI-RETURN
                                    =   ZERO  )
              IF    ( SPA-R01-GMNKBN  =   "R02"  OR  "R04"           )
@@ -293,9 +304,7 @@
                                            TO  JOB-SHELLID
                END-IF
                MOVE    1               TO  JOB-STOPFLG
-               CALL    "ORCSJOB"       USING
-                                       ORCSJOBKANRIAREA  
-                                       JOBKANRI-REC
+grpsys         PERFORM 900-CALL-ORCSJOB-SEC
       *        ジョブ管理終了処理
                MOVE    "STP"           TO  SJOBKANRI-MODE
                INITIALIZE                  JOBKANRI-REC
@@ -311,9 +320,7 @@
                                            TO  JOB-SHELLID
                END-IF
                MOVE    1               TO  JOB-STOPFLG
-               CALL    "ORCSJOB"       USING
-                                       ORCSJOBKANRIAREA  
-                                       JOBKANRI-REC
+grpsys         PERFORM 900-CALL-ORCSJOB-SEC
       *
       *        
                IF      SPA-R01-GMNKBN  =   "R02"  OR  "R04"
@@ -334,10 +341,7 @@
                    MOVE    "SHELL"         TO  MCP-FUNC
                    MOVE    "shell"         TO  MCP-TABLE
                    MOVE    "shell"         TO  MCP-PATHNAME
-                   CALL    "ORCDBMAIN"     USING
-                                               MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+                   PERFORM 900-ORCDBMAIN-SEC
                END-IF
              END-IF
            END-IF
@@ -390,9 +394,7 @@
                    MOVE    WRK-CONS-JOB-SHELLID
                                            TO  JOB-SHELLID
                END-IF
-               CALL    "ORCSJOB"       USING
-                                       ORCSJOBKANRIAREA 
-                                       JOBKANRI-REC
+grpsys         PERFORM 900-CALL-ORCSJOB-SEC
                IF    ( SJOBKANRI-RETURN    =   ZERO )
                AND   ( JOB-STOPFLG         =   ZERO )
                    IF    ( SPA-R01-GMNKBN  =   "R02"  OR  "R04"        )
@@ -414,9 +416,7 @@
                                                    TO  JOB-SHELLID
                        END-IF
                        MOVE    1               TO  JOB-STOPFLG
-                       CALL    "ORCSJOB"       USING
-                                               ORCSJOBKANRIAREA  
-                                               JOBKANRI-REC
+grpsys                 PERFORM 900-CALL-ORCSJOB-SEC
                    END-IF
                END-IF
            END-IF    
@@ -435,9 +435,7 @@
                MOVE    WRK-CONS-JOB-SHELLID
                                        TO  JOB-SHELLID
            END-IF
-           CALL    "ORCSJOB"       USING
-                                   ORCSJOBKANRIAREA 
-                                   JOBKANRI-REC 
+grpsys     PERFORM 900-CALL-ORCSJOB-SEC
            IF      SJOBKANRI-RETURN
                                    =   ZERO
                MOVE    1               TO  IDX                    
@@ -503,6 +501,10 @@
                                           TO  SPA-R01-RECE07-HKNJANUM
                                    MOVE    SPA-RECE07-SRYKA-KOKUHO
                                           TO SPA-R01-RECE07-SRYKA-KOKUHO
+                                   MOVE    SPA-RECE07-RECE-PUTH-T (1)
+                                          TO SPA-R01-RECE07-RECE-PUTH(1)
+                                   MOVE    SPA-RECE07-RECE-PUTH-T (2)
+                                          TO SPA-R01-RECE07-RECE-PUTH(2)
                                END-IF
                            END-IF   
                        END-IF
@@ -639,6 +641,7 @@
                    MOVE    "HC23"              TO  RECE07-PRTID
                END-IF
            END-IF            
+grpsys     MOVE    SPA-HOSPNUM         TO  RECE07-HOSPNUM
            IF      SPA-R01-FILEKBN         =   "1"
                MOVE    SPA-R01-SRYYM       TO  RECE07-SRYYM
                MOVE    "1"                 TO  RECE07-SYOKBN
@@ -652,13 +655,15 @@
                MOVE    "tbl_recekanri"     TO  WRK-MCP-TABLE
                MOVE    "key5"              TO  WRK-MCP-PATHNAME
            END-IF
-           MOVE    SPA-HOSPNUM         TO  RECE07-HOSPNUM
            MOVE    RECE07-REC          TO  MCPDATA-REC
            PERFORM 900-RECE07-INV-SEC
            IF      FLG-RECE07          =   ZERO
                MOVE    RECE07-REC          TO  SPA-RECE07-REC
                MOVE    "99999999"          TO  SPA-RECE07-HKNJANUM
                MOVE    "00"                TO  SPA-RECE07-SRYKA 
+                                               SPA-RECE07-SRYKA-KOKUHO
+               INITIALIZE                      SPA-RECE07-RECE-PUTH-T(1)
+                                               SPA-RECE07-RECE-PUTH-T(2)
       *
       *        一括作成で国保処理のとき編綴順設定の有無チェック
                IF    ( SPA-R01-FILEKBN         =   "1"         )
@@ -666,11 +671,62 @@
                    MOVE    "tbl_recekanri"     TO  WRK-MCP-TABLE
                    MOVE    "key6"              TO  WRK-MCP-PATHNAME
                    MOVE    "2"                 TO  RECE07-TEISYUTUSAKI
-                   MOVE    SPA-HOSPNUM         TO  RECE07-HOSPNUM
                    MOVE    RECE07-REC          TO  MCPDATA-REC
                    PERFORM 900-RECE07-INV-SEC
                    IF      FLG-RECE07          =   ZERO
                        MOVE    RECE07-HKNJANUM TO  SPA-RECE07-HKNJANUM
+                       MOVE    RECE07-HSEQNUM  TO  SPA-RECE07-HSEQNUM
+      *                編綴順設定のとき詳細情報を取得
+                       IF    ( SPA-RECE07-HKNJANUM
+                                               NOT =   "99999999" )
+                       AND   ( SPA-RECE07-HSEQNUM  =   "99999999" )
+                           MOVE    "tbl_recekanri" TO  WRK-MCP-TABLE
+                           MOVE    "key12"         TO  WRK-MCP-PATHNAME
+                           MOVE    "1"             TO  RECE07-PREFKBN
+                           MOVE    "2"             TO
+                                                   RECE07-TEISYUTUSAKI
+                           MOVE    RECE07-REC      TO  MCPDATA-REC
+                           PERFORM 900-RECE07-INV-SEC
+                           IF      FLG-RECE07      =   ZERO
+                               EVALUATE    RECE07-PREFKBN-SRT (1:1)
+                                   WHEN    "1"
+                                       MOVE    1           TO  IDXX
+                                   WHEN    "2"
+                                       MOVE    2           TO  IDXX
+                               END-EVALUATE    
+                               MOVE    RECE07-ZAITAKU-KBN  TO
+                                         SPA-RECE07-ZAITAKU-KBN-T (IDXX)
+                               MOVE    RECE07-CHOUKI-KBN   TO
+                                         SPA-RECE07-CHOUKI-KBN-T  (IDXX)
+                               MOVE    RECE07-SRT-LAST     TO
+                                         SPA-RECE07-SRT-LAST-T    (IDXX)
+                               MOVE    RECE07-KOUGAKU-TEN  TO
+                                         SPA-RECE07-KOUGAKU-TEN-T (IDXX)
+                           END-IF
+                           MOVE    "tbl_recekanri" TO  WRK-MCP-TABLE
+                           MOVE    "key12"         TO  WRK-MCP-PATHNAME
+                           MOVE    "2"             TO  RECE07-PREFKBN
+                           MOVE    "2"             TO
+                                                   RECE07-TEISYUTUSAKI
+                           MOVE    RECE07-REC      TO  MCPDATA-REC
+                           PERFORM 900-RECE07-INV-SEC
+                           IF      FLG-RECE07      =   ZERO
+                               EVALUATE    RECE07-PREFKBN-SRT (1:1)
+                                   WHEN    "1"
+                                       MOVE    1           TO  IDXX
+                                   WHEN    "2"
+                                       MOVE    2           TO  IDXX
+                               END-EVALUATE    
+                               MOVE    RECE07-ZAITAKU-KBN  TO
+                                         SPA-RECE07-ZAITAKU-KBN-T (IDXX)
+                               MOVE    RECE07-CHOUKI-KBN   TO
+                                         SPA-RECE07-CHOUKI-KBN-T  (IDXX)
+                               MOVE    RECE07-SRT-LAST     TO
+                                         SPA-RECE07-SRT-LAST-T    (IDXX)
+                               MOVE    RECE07-KOUGAKU-TEN  TO
+                                         SPA-RECE07-KOUGAKU-TEN-T (IDXX)
+                           END-IF
+                       END-IF
                    END-IF
                END-IF  
       *
@@ -682,7 +738,6 @@
                    MOVE    "tbl_recekanri"     TO  WRK-MCP-TABLE
                    MOVE    "key11"             TO  WRK-MCP-PATHNAME
                    MOVE    "1"                 TO  RECE07-TEISYUTUSAKI
-                   MOVE    SPA-HOSPNUM         TO  RECE07-HOSPNUM
                    MOVE    RECE07-REC          TO  MCPDATA-REC
                    PERFORM 900-RECE07-INV-SEC
                    IF      FLG-RECE07          =   ZERO
@@ -691,7 +746,6 @@
                    MOVE    "tbl_recekanri"     TO  WRK-MCP-TABLE
                    MOVE    "key11"             TO  WRK-MCP-PATHNAME
                    MOVE    "2"                 TO  RECE07-TEISYUTUSAKI
-                   MOVE    SPA-HOSPNUM         TO  RECE07-HOSPNUM
                    MOVE    RECE07-REC          TO  MCPDATA-REC
                    PERFORM 900-RECE07-INV-SEC
                    IF      FLG-RECE07          =   ZERO
@@ -731,21 +785,13 @@
       *****************************************************************
        900-RECE07-INV-SEC         SECTION.
       *
-           MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
            MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
-           CALL    "ORCDBMAIN"         USING
-                                           MCPAREA
-                                           MCPDATA-REC
-                                           SPA-AREA
+grpsys     PERFORM 900-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
-               MOVE    "DBFETCH"           TO  MCP-FUNC
                MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
                MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
-               CALL    "ORCDBMAIN"         USING
-                                               MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+grpsys         PERFORM 900-DBFETCH-SEC
                IF      MCP-RC              =   ZERO
                    MOVE    ZERO                TO  FLG-RECE07
                    MOVE    MCPDATA-REC         TO  RECE07-REC
@@ -765,30 +811,75 @@
            EXIT.
       *
       *****************************************************************
+      *    ジョブ管理ＤＢ制御処理
+      *****************************************************************
+       900-CALL-ORCSJOB-SEC            SECTION.
+      *
+grpsys     MOVE    SPA-HOSPNUM     TO  JOB-HOSPNUM
+           CALL    "ORCSJOB"       USING
+                                   ORCSJOBKANRIAREA 
+                                   JOBKANRI-REC
+                                   SPA-AREA
+           .
+       900-CALL-ORCSJOB-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ＤＢＳＥＬＥＣＴ処理
+      *****************************************************************
+       900-DBSELECT-SEC                SECTION.
+      *
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+grpsys     PERFORM 900-ORCDBMAIN-SEC
+           .
+       900-DBSELECT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ＤＢＦＥＴＣＨ処理
+      *****************************************************************
+       900-DBFETCH-SEC                SECTION.
+      *
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+grpsys     PERFORM 900-ORCDBMAIN-SEC
+      *
+           .
+       900-DBFETCH-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    テーブルクローズ処理
       *****************************************************************
        900-CLOSE-SEC               SECTION.
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           CALL    "ORCDBMAIN"         USING
-                                           MCPAREA
-                                           MCPDATA-REC
-                                           SPA-AREA
+grpsys     PERFORM 900-ORCDBMAIN-SEC
       *
            .
        900-CLOSE-EXT.
            EXIT.
       *
       *****************************************************************
-      *    ＰＵＴ　処理
+      *    テーブルアクセス処理
+      *****************************************************************
+       900-ORCDBMAIN-SEC               SECTION.
+      *
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
+           .
+      *
+       900-ORCDBMAIN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ＰＵＴ処理
       *****************************************************************
        900-PUT-WINDOW              SECTION.
       *
-           MOVE   "PUTWINDOW"       TO  MCP-FUNC
-           CALL   "ORCDBMAIN"       USING
-                                        MCPAREA
-                                        MCPDATA-REC
-                                        SPA-AREA
+           MOVE   "PUTWINDOW"          TO  MCP-FUNC
+grpsys     PERFORM 900-ORCDBMAIN-SEC
            .
+      *
        900-PUT-WINDOW-EXT.
            EXIT.
