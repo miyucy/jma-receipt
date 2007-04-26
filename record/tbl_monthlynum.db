@@ -63,6 +63,7 @@ path	all 	{
 		DECLARE tbl_monthlynum_all_csr CURSOR FOR
 		SELECT *
 		FROM tbl_monthlynum
+			WHERE   HOSPNUM    =   :HOSPNUM
  		;
 	};
 };

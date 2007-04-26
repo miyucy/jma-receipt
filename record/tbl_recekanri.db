@@ -202,6 +202,7 @@ path	all	{
 		DECLARE tbl_recekanri_all_csr CURSOR FOR
 		SELECT *
 		FROM tbl_recekanri
+		WHERE 	HOSPNUM	= :HOSPNUM
  		;
 	};
 };
