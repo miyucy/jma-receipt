@@ -1083,7 +1083,7 @@
                   "((C.SRYYMD <= '"
                   WRK-EDSRYYMD
                   "') AND (C.TENKIYMD = '        '"
-                  "))) AND "
+                  "))) AND (DLTFLG = ' ') AND "
            DELIMITED   BY  SIZE
            INTO        WRK-SQL
            WITH POINTER WRK-SQL-PNT
@@ -1184,7 +1184,9 @@
                           "') AND ("               DELIMITED BY SIZE
                           WRK-SQL-TBL-NAME         DELIMITED BY SPACE
                           ".TENKIYMD = '        '" DELIMITED BY SIZE
-                          "))) AND "               DELIMITED BY SIZE
+                          "))) AND ("              DELIMITED BY SIZE
+                          WRK-SQL-TBL-NAME         DELIMITED BY SPACE
+                          ".DLTFLG = ' ') AND "    DELIMITED BY SIZE
                    INTO        WRK-SQL
                    WITH POINTER WRK-SQL-PNT
                    END-STRING
