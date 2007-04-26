@@ -27,6 +27,7 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *  01.00.01    NACL-多々納  06/05/15  MONFUNC 対応
+      *  03.05.00    NACL-多々納  07/04/XX  グループ診療対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -208,10 +209,9 @@
            INITIALIZE                  ORCBZ001S-PTNUM-AREA
       *
            INITIALIZE                      PTNUM-REC
-           MOVE    SPA-HOSPID          TO  PTNUM-HOSPID
+           MOVE    SPA-HOSPNUM         TO  PTNUM-HOSPNUM
            MOVE    WRK-ST-PTNUM        TO  PTNUM-PTNUM
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PTNUM-REC           TO  MCPDATA-REC
            MOVE    "tbl_ptnum"         TO  MCP-TABLE
            MOVE    "key3"              TO  MCP-PATHNAME
@@ -587,9 +587,9 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
        910-DBSELECT-SEC                SECTION.
       *
            MOVE    "DBSELECT"      TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
        910-DBSELECT-EXT.
@@ -600,9 +600,9 @@ grpsys                            SPA-AREA
        920-DBFETCH-SEC                 SECTION.
       *
            MOVE    "DBFETCH"       TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
       *
@@ -615,9 +615,9 @@ grpsys                            SPA-AREA
        990-DBCLOSE-SEC         SECTION.
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
        990-DBCLOSE-EXT.

@@ -28,6 +28,8 @@
       *  ¥×¥í¥°¥é¥à½¤ÀµÍúÎò
       * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
       *  01.00.01    NACL-Â¿¡¹Ç¼  05/11/22  MONFUNC ÂÐ±þ
+      *  03.04.00    NACL-Â¿¡¹Ç¼  07/02/XX  Êñ³ç¿ÇÎÅÂÐ±þ
+      *  03.05.00    NACL-Â¿¡¹Ç¼  07/04/XX  ¥°¥ë¡¼¥×¿ÇÎÅÂÐ±þ
       *****************************************************************
       *
       *
@@ -195,7 +197,6 @@
            MOVE    ORCSCZAICHK-SRYYM   TO  ACCT-SRYYM
            MOVE    ORCSCZAICHK-SRYKBN  TO  ACCT-SRYKBN
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SRYACCT-REC         TO  MCPDATA-REC
            MOVE    "tbl_sryacct"       TO  MCP-TABLE
            MOVE    "key3"              TO  MCP-PATHNAME
@@ -223,6 +224,8 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                  AND   (ACCT-ZAITEN        =   ORCSCZAICHK-ZAITEN    )
                  AND   (ACCT-MEISAISU      =   ORCSCZAICHK-MEISAISU  )
                  AND   (ACCT-SURYOUTOTAL   =   ORCSCZAICHK-SURYOUTOTAL)
+      *          ¼«ÊÝ¶èÊ¬¡ÊÊñ³çºÞ¡Ë
+                 AND   (ACCT-JIHOKBN       =   ORCSCZAICHK-JIHOKBN   )
                    MOVE    ACCT-ZAINUM         TO  WRK-H-ZAINUM
       *            ¿ÇÎÅ¹Ô°ÙÆâÍÆ¤ÎÈæ³Ó½èÍý
                    PERFORM 1002-SRYACCT-CHK-SEC
@@ -267,7 +270,6 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    ACCT-SRYYM          TO  SRY-SRYYM
            MOVE    ACCT-ZAINUM         TO  SRY-ZAINUM
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SRYACT-REC          TO  MCPDATA-REC
            MOVE    "tbl_sryact"        TO  MCP-TABLE
            MOVE    "key2"              TO  MCP-PATHNAME
@@ -314,7 +316,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                                                              (IDX-SIN)
                        IF     (SRY-SRYCD (IDX2)(1:1)   =   "8" ) OR
                               (SRY-SRYCD (IDX2)(1:3)   =   "008")
-                           MOVE    SRY-HOSPNUM        TO  PTCOM-HOSPNUM
+                           MOVE    SRY-HOSPNUM         TO  PTCOM-HOSPNUM
                            MOVE    SRY-PTID            TO  PTCOM-PTID
                            MOVE    SRY-ZAINUM          TO  PTCOM-ZAINUM
                            MOVE    SRY-SRYCD (IDX2)    TO  PTCOM-SRYCD
@@ -431,7 +433,6 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *****************************************************************
        950-PTCOM-READ-SEC         SECTION.
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PTCOM-REC           TO  MCPDATA-REC
            MOVE    "tbl_ptcom"         TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
@@ -463,9 +464,9 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
        910-DBSELECT-SEC                SECTION.
       *
            MOVE    "DBSELECT"      TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
        910-DBSELECT-EXT.
@@ -476,9 +477,9 @@ grpsys                            SPA-AREA
        920-DBFETCH-SEC                 SECTION.
       *
            MOVE    "DBFETCH"       TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
       *
@@ -491,9 +492,9 @@ grpsys                            SPA-AREA
        990-DBCLOSE-SEC           SECTION.
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
        990-DBCLOSE-EXT.

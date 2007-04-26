@@ -28,6 +28,7 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *  01.00.01    NACL-多々納  05/11/17  MONFUNC 対応
+      *  03.05.00    NACL-多々納  07/04/XX  グループ診療対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -322,7 +323,7 @@
            MOVE    SPA-SRYYMD          TO  SYS-5007-STYUKYMD
            MOVE    SPA-SRYYMD          TO  SYS-5007-EDYUKYMD
       *
-grpsys     MOVE    SPA-HOSPNUM         TO  SYS-5007-HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  SYS-5007-HOSPNUM
            MOVE    SYS-5007-REC        TO  MCPDATA-REC
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key2"              TO  MCP-PATHNAME
@@ -449,10 +450,9 @@ grpsys     MOVE    SPA-HOSPNUM         TO  SYS-5007-HOSPNUM
            MOVE    SPACE               TO  PTNYUINRRK-REC
            INITIALIZE                  PTNYUINRRK-REC
            INITIALIZE                  HZN-PTNYUINRRK-REC
-           MOVE    SPA-HOSPNUM          TO  PTNYUINRRK-HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  PTNYUINRRK-HOSPNUM
            MOVE    SPA-PTID            TO  PTNYUINRRK-PTID
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PTNYUINRRK-REC      TO  MCPDATA-REC
            MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
            MOVE    "key36"             TO  MCP-PATHNAME
@@ -546,7 +546,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SPA-SRYYMD          TO  SYS-1010-EDYUKYMD
       *
       *    システム管理検索
-grpsys     MOVE    SPA-HOSPNUM         TO  SYS-1010-HOSPNUM
+grpsys*    MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            MOVE    SYS-1010-REC        TO  MCPDATA-REC
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key10"             TO  MCP-PATHNAME
@@ -1645,9 +1645,9 @@ grpsys     MOVE    SPA-HOSPNUM         TO  SYS-1010-HOSPNUM
        910-DBSELECT-SEC                SECTION.
       *
            MOVE    "DBSELECT"      TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
        910-DBSELECT-EXT.
@@ -1658,9 +1658,9 @@ grpsys                            SPA-AREA
        920-DBFETCH-SEC                 SECTION.
       *
            MOVE    "DBFETCH"       TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
       *
@@ -1673,9 +1673,9 @@ grpsys                            SPA-AREA
        990-DBCLOSE-SEC           SECTION.
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
        990-DBCLOSE-EXT.
@@ -1687,9 +1687,9 @@ grpsys                            SPA-AREA
        900-PUT-WINDOW              SECTION.
       *
            MOVE   "PUTWINDOW"       TO  MCP-FUNC.
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
        900-PUT-WINDOW-EXT.

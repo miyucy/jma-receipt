@@ -58,6 +58,7 @@
       * 02.00.20     NACL-Â¿¡¹Ç¼  05/11/21  ³«Êü·¿ÉÂ±¡¶¦Æ±»ØÆ³ÎÁ¥Á¥§¥Ã¥¯ÄÉ²Ã
       *                                     MONFUNC ÂÐ±þ Â¾
       * 02.00.21     NACL-Â¿¡¹Ç¼  05/12/08  ÆñÉÂ³°Íè»ØÆ³´ÉÍýÎÁÅù¤Î½é¿Ç»»ÄêÆüÈ½Äê½¤Àµ
+      *  03.05.00    NACL-Â¿¡¹Ç¼  07/04/XX  ¥°¥ë¡¼¥×¿ÇÎÅÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -695,7 +696,11 @@
       *        ½ýÉÂ¼êÅö°Õ¸«½ñ¸òÉÕÎÁ
                                                OR  "180000710"
       *        ÎÅÍÜÈñÆ±°Õ½ñ¸òÉÕÎÁ
-                                               OR  "113004310" )
+                                               OR  "113004310"
+      *        Âà±¡Á°Ë¬Ìä»ØÆ³ÎÁ
+                                               OR  "190030310"
+      *        Âà±¡»þ¿ÇÎÅ¾õ¶·ÅºÉÕ²Ã»»
+                                               OR  "113009470" )
                CONTINUE
            ELSE
                MOVE    "0008"          TO  WRK-ERRCD
@@ -1099,6 +1104,7 @@
       *
       *    Êñ³ç¤Þ¤È¤áÆþÎÏ¤Ï°Ê²¼ÂÐ¾Ý³°
            IF      SPA-HKNCOMBINUM     =   "9999"
+               OR (WRK-COM-HKNCOMBI (IDX-Z) =   "9999" )
                GO      TO      100114-SYUGISYORI-CHK-EXT
            END-IF
       *
@@ -1292,12 +1298,11 @@
       *        ½é¿ÇÎÁ¤Î»þ¡¢²áµî¤Ë¼õ¿Ç¤¬¤Ê¤¤¤³¤È
       *        ¼õ¿ÇÎò¤ò¸¡º÷¤¹¤ë  °åÎÅµ¡´Ø¡¢´µ¼Ô£É£Ä
                INITIALIZE                  JYURRK-REC
-               MOVE    SPA-HOSPNUM          TO  JYURRK-HOSPNUM
+               MOVE    SPA-HOSPNUM         TO  JYURRK-HOSPNUM
                MOVE    SPA-PTID            TO  JYURRK-PTID
                MOVE    SPA-NYUGAIKBN       TO  JYURRK-NYUGAIKBN
                MOVE    SPA-HKNCOMBINUM     TO  JYURRK-HKNCOMBINUM
       *
-grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    JYURRK-REC          TO  MCPDATA-REC
                MOVE    "tbl_jyurrk"        TO  MCP-TABLE
                MOVE    "key15"             TO  MCP-PATHNAME
@@ -1337,12 +1342,11 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
       *        ½é¿ÇÎÁ¤Î»þ¡¢²áµî¤Ë¼õ¿Ç¤¬¤Ê¤¤¤³¤È
       *        ¼õ¿ÇÎò¤ò¸¡º÷¤¹¤ë  °åÎÅµ¡´Ø¡¢´µ¼Ô£É£Ä
                INITIALIZE                  JYURRK-REC
-               MOVE    SPA-HOSPNUM          TO  JYURRK-HOSPNUM
+               MOVE    SPA-HOSPNUM         TO  JYURRK-HOSPNUM
                MOVE    SPA-PTID            TO  JYURRK-PTID
                MOVE    SPA-NYUGAIKBN       TO  JYURRK-NYUGAIKBN
                MOVE    SPA-HKNCOMBINUM     TO  JYURRK-HKNCOMBINUM
       *
-grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    JYURRK-REC          TO  MCPDATA-REC
                MOVE    "tbl_jyurrk"        TO  MCP-TABLE
                MOVE    "key15"             TO  MCP-PATHNAME
@@ -1749,7 +1753,6 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                GO      TO      1002-KASAN-SET-EXT
            END-IF
       *
-      *
       *    »þ´Ö¼«Æ°²Ã»»¡¡Â¸ºß¥Á¥§¥Ã¥¯
            MOVE    ZERO                TO  FLG-ARI
            MOVE    ZERO                TO  IDX-T
@@ -1843,10 +1846,12 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                    UNTIL      (IDX1        >   200     )   OR
                               (FLG-ARI                 =   1    ) OR
                               (WRK-GMN-INPUTCD (IDX1)  =   SPACE )
+             IF    WRK-COM-HKNCOMBI (IDX1) NOT =   "9999"
                IF       WRK-COM-INPUTCD (IDX1) =   WRK-SRYCD
                     MOVE    IDX1           TO  IDX-T
                     MOVE    1              TO  FLG-ARI
                END-IF
+             END-IF
            END-PERFORM
            .
        1110-KASAN-CHK-EXT.
@@ -2355,13 +2360,12 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                SET     TBL-TOK             TO  IDX
                MOVE    TBL-TOKSRYCD  (TBL-TOK) TO  WRK-SRYCD
                INITIALIZE                  SANTEI-REC
-               MOVE    SPA-HOSPNUM          TO  SANTEI-HOSPNUM
+               MOVE    SPA-HOSPNUM         TO  SANTEI-HOSPNUM
                MOVE    SPA-PTID            TO  SANTEI-PTID
                MOVE    WRK-SRYCD           TO  SANTEI-SRYCD
                MOVE    ZERO                TO  SANTEI-NYUGAIKBN
                MOVE    ZERO                TO  SANTEI-SRYKA
       *
-grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    SANTEI-REC          TO  MCPDATA-REC
                MOVE    "tbl_santei"        TO  MCP-TABLE
                MOVE    "key3"              TO  MCP-PATHNAME
@@ -2434,6 +2438,7 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                    UNTIL      (IDX1        >   200     )   OR
                               (WRK-GMN-INPUTCD (IDX1)  =   SPACE ) OR
                               (WRK-ERRCD       NOT =   SPACE )
+             IF    WRK-COM-HKNCOMBI (IDX1) NOT =   "9999"
                EVALUATE    WRK-COM-INPUTCD (IDX1)
                    WHEN    "113000770"
       *            ÆÃÄêÌôºÞ¼£ÎÅ´ÉÍýÎÁ¤¬Åö·îÂ¸ºß¤·¤Ê¤¤¤³¤È
@@ -2460,6 +2465,7 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                            END-IF
                        END-IF
                END-EVALUATE
+             END-IF
            END-PERFORM
            IF      WRK-ERRCD       NOT =   SPACE
                GO      TO      10011-TOKUYAKU-EXT
@@ -2648,6 +2654,9 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                    UNTIL      (IDX1        >   200     )   OR
                               (WRK-GMN-INPUTCD (IDX1)  =   SPACE ) OR
                               (WRK-COM-YM      NOT =   SPACE )
+             IF   (WRK-COM-HKNCOMBI (IDX1) =   "9999" )
+               CONTINUE
+             ELSE
                EVALUATE    WRK-COM-INPUTCD (IDX1)
                    WHEN    "840000038"
                        IF     (WRK-COM-ATAI1(IDX1) NOT =   SPACE ) AND
@@ -2672,6 +2681,7 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                            MOVE    LNK-DAY1-YMD(1:6)   TO  WRK-COM-YM
                        END-IF
                END-EVALUATE
+             END-IF
            END-PERFORM
            .
        100110-COMMNT-CHK-EXT.
@@ -2752,7 +2762,7 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                SET     TBL-TOK             TO  IDX
       *        »»ÄêÍúÎò¸¡º÷
                INITIALIZE                  SANTEI-REC
-               MOVE    SPA-HOSPNUM          TO  SANTEI-HOSPNUM
+               MOVE    SPA-HOSPNUM         TO  SANTEI-HOSPNUM
                MOVE    SPA-PTID            TO  SANTEI-PTID
                MOVE    TBL-TOKSRYCD (TBL-TOK)
                                            TO  SANTEI-SRYCD
@@ -2761,7 +2771,6 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    ZERO                TO  SANTEI-NYUGAIKBN
                MOVE    ZERO                TO  SANTEI-SRYKA
       *
-grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    SANTEI-REC          TO  MCPDATA-REC
                MOVE    "tbl_santei"        TO  MCP-TABLE
                MOVE    "key4"              TO  MCP-PATHNAME
@@ -2826,7 +2835,7 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
       *
       *    »»ÄêÍúÎò¸¡º÷
            INITIALIZE                  SANTEI-REC
-           MOVE    SPA-HOSPNUM          TO  SANTEI-HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  SANTEI-HOSPNUM
            MOVE    SPA-PTID            TO  SANTEI-PTID
            MOVE    WRK-SRYCD           TO  SANTEI-SRYCD
            IF      WRK-DBPATH          =   "key"
@@ -2836,7 +2845,6 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    ZERO                TO  SANTEI-NYUGAIKBN
            MOVE    ZERO                TO  SANTEI-SRYKA
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SANTEI-REC          TO  MCPDATA-REC
            MOVE    "tbl_santei"        TO  MCP-TABLE
            MOVE    WRK-DBPATH          TO  MCP-PATHNAME
@@ -2968,7 +2976,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
        10141-SANTEI-KEN02-SEC                  SECTION.
       *
            INITIALIZE                  SANTEI-REC
-           MOVE    SPA-HOSPNUM          TO  SANTEI-HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  SANTEI-HOSPNUM
            MOVE    SPA-PTID            TO  SANTEI-PTID
            MOVE    WRK-SRYCD           TO  SANTEI-SRYCD
       *    »»ÄêÍúÎò¶èÊ¬¤Ï¡Ç£±¡Ç¤Ç¤¢¤ë¤³¤È¤È¤¹¤ë
@@ -2976,7 +2984,6 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    ZERO                TO  SANTEI-SRYKA
            MOVE    ZERO                TO  SANTEI-HKNCOMBINUM
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SANTEI-REC          TO  MCPDATA-REC
            MOVE    "tbl_santei"        TO  MCP-TABLE
            MOVE    "key3"              TO  MCP-PATHNAME
@@ -3057,7 +3064,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            END-IF
       *
            INITIALIZE                  SANTEI-REC
-           MOVE    SPA-HOSPNUM          TO  SANTEI-HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  SANTEI-HOSPNUM
            MOVE    SPA-PTID            TO  SANTEI-PTID
            MOVE    WRK-SRYCD           TO  SANTEI-SRYCD
       *    »»ÄêÍúÎò¶èÊ¬¤Ï¡Ç£±¡Ç¤Ç¤¢¤ë¤³¤È¤È¤¹¤ë
@@ -3065,7 +3072,6 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    ZERO                TO  SANTEI-SRYKA
            MOVE    ZERO                TO  SANTEI-HKNCOMBINUM
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SANTEI-REC          TO  MCPDATA-REC
            MOVE    "tbl_santei"        TO  MCP-TABLE
            MOVE    "key3"              TO  MCP-PATHNAME
@@ -3131,6 +3137,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *
       *    Êñ³ç¤Þ¤È¤áÆþÎÏ¤Ï°Ê²¼ÂÐ¾Ý³°
            IF      SPA-HKNCOMBINUM     =   "9999"
+               OR (WRK-COM-HKNCOMBI (IDX-Z) =   "9999" )
                GO      TO      10018-COMMENT-EXT
            END-IF
       *
@@ -3242,6 +3249,9 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                    UNTIL      (IDX         >   200     )   OR
                               (WRK-GMN-INPUTCD (IDX)   =   SPACE  AND
                                WRK-COM-INPUTCD (IDX)   =   SPACE )
+             IF   (WRK-COM-HKNCOMBI (IDX)  =   "9999" )
+               CONTINUE
+             ELSE
                IF      WRK-GMN-INPUTCD(IDX)    =   ".110"  OR
                                                    ".120"
                    MOVE    1                   TO  FLG-OK
@@ -3250,6 +3260,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                                                    "099120001"
                    MOVE    1                   TO  FLG-OK
                END-IF
+             END-IF
            END-PERFORM
            IF      FLG-OK              =   ZERO
                MOVE    "0136"          TO  WRK-ERRCD
@@ -3624,6 +3635,9 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                    UNTIL      (IDX-Z       >   200      )   OR
                               (SPA-ERRCD           NOT =   SPACE )  OR
                               (WRK-GMN-INPUTCD (IDX-Z) =   SPACE )
+             IF   (WRK-COM-HKNCOMBI (IDX-Z) =   "9999" )
+               CONTINUE
+             ELSE
       *        ¿Ç»¡ÎÁ¤ÎÈ½Äê
                IF      IDX-SINSATU         =   ZERO
                    PERFORM 2001-SINSATU-CHK-SEC
@@ -3836,6 +3850,8 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                        MOVE    1               TO  FLG-JIKASAN
                    END-IF
                END-IF
+      *
+             END-IF
            END-PERFORM
       *
       *    ¿Ç»¡ÎÁ°Ê³°¥Á¥§¥Ã¥¯
@@ -3844,8 +3860,9 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                               (SPA-ERRCD           NOT =   SPACE )  OR
                              ((WRK-GMN-INPUTCD (IDX-Z) =   SPACE ) AND
                               (WRK-COM-INPUTCD (IDX-Z) =   SPACE ))
-             IF      WRK-COM-SRYKBN (IDX-Z)    =   "96"
-                                               OR  "95"
+             IF     (WRK-COM-SRYKBN (IDX-Z)    =   "96"
+                                               OR  "95" )
+                OR  (WRK-COM-HKNCOMBI (IDX-Z) =   "9999" )
                 CONTINUE
              ELSE
       *         »ØÆ³ÎÁ¡¦½é¿ÇÆü¥Á¥§¥Ã¥¯
@@ -4174,6 +4191,9 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                    UNTIL      (IDX-Z       >   200      )   OR
                               (SPA-ERRCD           NOT =   SPACE )  OR
                               (WRK-GMN-INPUTCD (IDX-Z) =   SPACE )
+             IF   (WRK-COM-HKNCOMBI (IDX-Z) =   "9999" )
+               CONTINUE
+             ELSE
                MOVE    ZERO                TO  FLG-CHK
                MOVE    ZERO                TO  FLG-KEI
       *        ¿Ç»¡¤Ç¼êµ»¤Î»þ¡¢½ÅÊ£¥Á¥§¥Ã¥¯¤ò¹Ô¤¦
@@ -4208,6 +4228,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                                       (IDX-KEI         >   ZERO  )  OR
                                       (WRK-GMN-INPUTCD (IDX-Z2)
                                                        =   SPACE )
+                     IF   (WRK-COM-HKNCOMBI (IDX-Z2) NOT =   "9999" )
                        IF     (WRK-COM-SRYKBN  (IDX-Z)
                                            =   WRK-COM-SRYKBN(IDX-Z2))
                          AND  (WRK-COM-INPUTCD (IDX-Z)
@@ -4222,6 +4243,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                                                               (IDX-Z2)
                            END-IF
                        END-IF
+                     END-IF
                    END-PERFORM
       *
       *            ·Ù¹ð
@@ -4244,6 +4266,8 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                        END-IF
                    END-IF
                END-IF
+      *
+             END-IF
            END-PERFORM
       *
            .
@@ -5231,11 +5255,10 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
        910-TENSU-READ-SEC         SECTION.
       *
       *
-           MOVE    SPA-HOSPNUM         TO  TNS-HOSPNUM
            MOVE    SPA-SRYYMD          TO  TNS-YUKOSTYMD
            MOVE    SPA-SRYYMD          TO  TNS-YUKOEDYMD
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  TNS-HOSPNUM
            MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
            MOVE    "tbl_tensu"         TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
@@ -5306,9 +5329,9 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
        910-DBSELECT-SEC                SECTION.
       *
            MOVE    "DBSELECT"      TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
        910-DBSELECT-EXT.
@@ -5319,9 +5342,9 @@ grpsys                            SPA-AREA
        920-DBFETCH-SEC                 SECTION.
       *
            MOVE    "DBFETCH"       TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
       *
@@ -5334,9 +5357,9 @@ grpsys                            SPA-AREA
        990-DBCLOSE-SEC         SECTION.
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
        990-DBCLOSE-EXT.

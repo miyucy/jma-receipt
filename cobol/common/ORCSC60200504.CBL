@@ -44,6 +44,7 @@
       *                                     複数保険・科追加
       *  01.00.13    NACL-多々納  04/12/09  重複チェック修正
       *  01.00.14    NACL-多々納  05/12/08  MONFUNC 対応 他
+      *  03.05.00    NACL-多々納  07/04/XX  グループ診療対応
       *****************************************************************
       *
       *
@@ -896,7 +897,7 @@
            MOVE    SPA-SRYYMD          TO  SYS-1006-STYUKYMD
            MOVE    SPA-SRYYMD          TO  SYS-1006-EDYUKYMD
       *    システム管理検索
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  SYS-1006-HOSPNUM
            MOVE    SYS-1006-REC        TO  MCPDATA-REC
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key10"             TO  MCP-PATHNAME
@@ -1191,7 +1192,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *
       *    算定履歴検索
            INITIALIZE                  SANTEI-REC
-           MOVE    SPA-HOSPID          TO  SANTEI-HOSPID
+           MOVE    SPA-HOSPNUM         TO  SANTEI-HOSPNUM
            MOVE    SPA-PTID            TO  SANTEI-PTID
            MOVE    SPA-SRYYMD (1:6)    TO  SANTEI-SRYYM
            MOVE    WRK-SRYCD           TO  SANTEI-SRYCD
@@ -1210,7 +1211,6 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                    MOVE    SPA-SRYKA           TO  SANTEI-SRYKA
            END-EVALUATE
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SANTEI-REC          TO  MCPDATA-REC
            MOVE    "tbl_santei"        TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
@@ -1315,7 +1315,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *
       *    算定履歴検索（算定履歴区分は１とする）
            INITIALIZE                  SANTEI-REC
-           MOVE    SPA-HOSPID          TO  SANTEI-HOSPID
+           MOVE    SPA-HOSPNUM         TO  SANTEI-HOSPNUM
            MOVE    SPA-PTID            TO  SANTEI-PTID
            MOVE    SPA-SRYYMD (1:6)    TO  SANTEI-SRYYM
            MOVE    WRK-SRYCD           TO  SANTEI-SRYCD
@@ -1323,7 +1323,6 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    ZERO                TO  SANTEI-SRYKA
            MOVE    ZERO                TO  SANTEI-HKNCOMBINUM
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SANTEI-REC          TO  MCPDATA-REC
            MOVE    "tbl_santei"        TO  MCP-TABLE
            MOVE    "key8"              TO  MCP-PATHNAME
@@ -2379,13 +2378,12 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *
            MOVE    SPACE               TO  SRYACCT-REC
            INITIALIZE                      SRYACCT-REC
-           MOVE    SPA-HOSPID          TO  ACCT-HOSPID
+           MOVE    SPA-HOSPNUM         TO  ACCT-HOSPNUM
            MOVE    SPA-NYUGAIKBN       TO  ACCT-NYUGAIKBN
            MOVE    SPA-PTID            TO  ACCT-PTID
            MOVE    SPA-SRYYMD(1:6)     TO  ACCT-SRYYM
            MOVE    "60"                TO  ACCT-SRYKBN
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SRYACCT-REC         TO  MCPDATA-REC
            MOVE    "tbl_sryacct"       TO  MCP-TABLE
            MOVE    "key14"             TO  MCP-PATHNAME
@@ -2430,14 +2428,13 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *    診療会計マスターから診療行為マスターを検索する
            MOVE    SPACE               TO  SRYACT-REC
            INITIALIZE                      SRYACT-REC
-           MOVE    ACCT-HOSPID         TO  SRY-HOSPID
+           MOVE    ACCT-HOSPNUM        TO  SRY-HOSPNUM
            MOVE    ACCT-NYUGAIKBN      TO  SRY-NYUGAIKBN
            MOVE    ACCT-PTID           TO  SRY-PTID
            MOVE    ACCT-SRYKA          TO  SRY-SRYKA
            MOVE    ACCT-SRYYM          TO  SRY-SRYYM
            MOVE    ACCT-ZAINUM         TO  SRY-ZAINUM
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SRYACT-REC          TO  MCPDATA-REC
            MOVE    "tbl_sryact"        TO  MCP-TABLE
            MOVE    "key2"              TO  MCP-PATHNAME
@@ -3785,7 +3782,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SPA-SRYYMD          TO  TNS-YUKOSTYMD
            MOVE    SPA-SRYYMD          TO  TNS-YUKOEDYMD
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  TNS-HOSPNUM
            MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
            MOVE    "tbl_tensu"         TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
@@ -3890,9 +3887,9 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
        910-DBSELECT-SEC                SECTION.
       *
            MOVE    "DBSELECT"      TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
        910-DBSELECT-EXT.
@@ -3903,9 +3900,9 @@ grpsys                            SPA-AREA
        920-DBFETCH-SEC                 SECTION.
       *
            MOVE    "DBFETCH"       TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
       *
@@ -3918,9 +3915,9 @@ grpsys                            SPA-AREA
        990-DBCLOSE-SEC         SECTION.
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
        990-DBCLOSE-EXT.

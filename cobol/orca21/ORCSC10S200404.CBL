@@ -52,6 +52,7 @@
       * 02.00.05     NACL-多々納  05/11/18  MONFUNC 対応 他
       * 02.00.06     NACL-多々納  05/11/21  開放型病院共同指導料チェック追加
       * 02.00.07     NACL-多々納  05/12/14  .213 自動変換対応
+      *  03.05.00    NACL-多々納  07/04/XX  グループ診療対応
       *****************************************************************
       *
       *
@@ -61,29 +62,29 @@
        FILE-CONTROL.
       *
       *    パラメタデータ
-           SELECT  PARA-FILE       ASSIGN  FILE-NAME2
-                                   ORGANIZATION    IS  LINE SEQUENTIAL
-                                   FILE    STATUS  IS  STS-PARA.
+      *    SELECT  PARA-FILE       ASSIGN  FILE-NAME2
+      *                            ORGANIZATION    IS  LINE SEQUENTIAL
+      *                            FILE    STATUS  IS  STS-PARA.
       *
        DATA                    DIVISION.
        FILE                        SECTION.
       *
       *    パラメタデータ
-       FD  PARA-FILE.
-       01  PARA-REC.
-           03  PARA-KEY.
-               05  PARA-FILEMEI         PIC X(08).
-               05  PARA-EDABAN          PIC 9(03).
-           03  PARA-DATA-REC            PIC X(60000).
+      *FD  PARA-FILE.
+      *01  PARA-REC.
+      *    03  PARA-KEY.
+      *        05  PARA-FILEMEI         PIC X(08).
+      *        05  PARA-EDABAN          PIC 9(03).
+      *    03  PARA-DATA-REC            PIC X(60000).
       *
        WORKING-STORAGE             SECTION.
       *
       *    パラメタファイル名
-       01  FILE-NAME2.
-           03  FILLER              PIC X(09)   VALUE   "/var/tmp/".
-           03  FILLER              PIC X(07)   VALUE   "K01PARA".
-           03  FILE-TERMID2        PIC X(64)   VALUE   SPACE.
-           03  FILLER              PIC X(06)   VALUE   ".TXT".
+      *01  FILE-NAME2.
+      *    03  FILLER              PIC X(09)   VALUE   "/var/tmp/".
+      *    03  FILLER              PIC X(07)   VALUE   "K01PARA".
+      *    03  FILE-TERMID2        PIC X(64)   VALUE   SPACE.
+      *    03  FILLER              PIC X(06)   VALUE   ".TXT".
       *
       *    フラグ領域
        01  STS-AREA.
@@ -765,7 +766,7 @@
       *    受診歴を検索する（診療月１日から診療日までの範囲）
            MOVE    SPACE               TO  JYURRK-REC
            INITIALIZE                  JYURRK-KEY
-           MOVE    SPA-HOSPNUM          TO  JYURRK-HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  JYURRK-HOSPNUM
            MOVE    SPA-NYUGAIKBN       TO  JYURRK-NYUGAIKBN
            MOVE    SPA-PTID            TO  JYURRK-PTID
            IF      SPA-HKNKBN          =   1
@@ -784,7 +785,6 @@
       *
            MOVE    SPA-SRYYMD          TO  JYURRK-UPSRYYMD
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    JYURRK-REC          TO  MCPDATA-REC
            MOVE    "tbl_jyurrk"        TO  MCP-TABLE
            MOVE    "key14"             TO  MCP-PATHNAME
@@ -920,7 +920,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *
                MOVE    SPACE               TO  SRYACT-REC
                INITIALIZE                  SRYACT-REC
-               MOVE    SPA-HOSPNUM          TO  SRY-HOSPNUM
+               MOVE    SPA-HOSPNUM         TO  SRY-HOSPNUM
                MOVE    SPA-NYUGAIKBN       TO  SRY-NYUGAIKBN
                MOVE    JYURRK-PTID         TO  SRY-PTID
                MOVE    JYURRK-SRYKA        TO  SRY-SRYKA
@@ -928,7 +928,6 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    JYURRK-ZAINUM (IDX)
                                            TO  SRY-ZAINUM
       *
-grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    SRYACT-REC          TO  MCPDATA-REC
                MOVE    "tbl_sryact"        TO  MCP-TABLE
                MOVE    "key2"              TO  MCP-PATHNAME
@@ -1194,11 +1193,10 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
       *    算定履歴検索
            MOVE    SPACE               TO  SANTEI-REC
            INITIALIZE                  SANTEI-REC
-           MOVE    SPA-HOSPNUM          TO  SANTEI-HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  SANTEI-HOSPNUM
            MOVE    SPA-PTID            TO  SANTEI-PTID
            MOVE    SPA-SRYYMD (1:6)    TO  SANTEI-SRYYM
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SANTEI-REC          TO  MCPDATA-REC
            MOVE    "tbl_santei"        TO  MCP-TABLE
            MOVE    "key2"              TO  MCP-PATHNAME
@@ -1524,7 +1522,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *    算定履歴検索
            MOVE    SPACE               TO  SANTEI-REC
            INITIALIZE                  SANTEI-REC
-           MOVE    SPA-HOSPNUM          TO  SANTEI-HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  SANTEI-HOSPNUM
            MOVE    SPA-PTID            TO  SANTEI-PTID
            MOVE    WRK-SRYCD           TO  SANTEI-SRYCD
            MOVE    ZERO                TO  SANTEI-NYUGAIKBN
@@ -1537,7 +1535,6 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    ZERO                TO  SANTEI-HKNCOMBINUM
            END-IF
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SANTEI-REC          TO  MCPDATA-REC
            MOVE    "tbl_santei"        TO  MCP-TABLE
            MOVE    "key3"              TO  MCP-PATHNAME
@@ -1713,7 +1710,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *    算定履歴検索
            MOVE    SPACE               TO  SANTEI-REC
            INITIALIZE                  SANTEI-REC
-           MOVE    SPA-HOSPNUM          TO  SANTEI-HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  SANTEI-HOSPNUM
            MOVE    SPA-PTID            TO  SANTEI-PTID
       *
            IF     (WRK-SANTEI-NASI     NOT =   SPACE )  AND
@@ -1724,7 +1721,6 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            END-IF
       **** MOVE    WRK-SANTEI-NASI     TO  SANTEI-SRYYM
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SANTEI-REC          TO  MCPDATA-REC
            MOVE    "tbl_santei"        TO  MCP-TABLE
            MOVE    "key2"              TO  MCP-PATHNAME
@@ -1895,7 +1891,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *    算定履歴検索
            MOVE    SPACE               TO  SANTEI-REC
            INITIALIZE                  SANTEI-REC
-           MOVE    SPA-HOSPNUM          TO  SANTEI-HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  SANTEI-HOSPNUM
            MOVE    SPA-PTID            TO  SANTEI-PTID
            MOVE    WRK-SRYCD           TO  SANTEI-SRYCD
            EVALUATE    TNS-SANTEIRRKKBN
@@ -1920,7 +1916,6 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    ZERO                TO  SANTEI-HKNCOMBINUM
            END-IF
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SANTEI-REC          TO  MCPDATA-REC
            MOVE    "tbl_santei"        TO  MCP-TABLE
            MOVE    "key3"              TO  MCP-PATHNAME
@@ -2758,7 +2753,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *    算定履歴検索
            MOVE    SPACE               TO  SANTEI-REC
            INITIALIZE                  SANTEI-REC
-           MOVE    SPA-HOSPNUM          TO  SANTEI-HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  SANTEI-HOSPNUM
            MOVE    SPA-PTID            TO  SANTEI-PTID
            MOVE    WRK-SRYCD           TO  SANTEI-SRYCD
       *!!  EVALUATE    TNS-SANTEIRRKKBN
@@ -2784,7 +2779,6 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            END-IF
            MOVE    SPA-SRYYMD(1:6)     TO  SANTEI-SRYYM
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SANTEI-REC          TO  MCPDATA-REC
            MOVE    "tbl_santei"        TO  MCP-TABLE
            MOVE    "key8"              TO  MCP-PATHNAME
@@ -5305,7 +5299,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SPA-SRYYMD          TO  SYS-1010-STYUKYMD
            MOVE    SPA-SRYYMD          TO  SYS-1010-EDYUKYMD
       *    システム管理検索
-grpsys     MOVE    SPA-HOSPNUM         TO  SYS-1010-HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  SYS-1010-HOSPNUM
            MOVE    SYS-1010-REC        TO  MCPDATA-REC
            PERFORM 960-SYSKANRI-READ-SEC
       *
@@ -5542,7 +5536,7 @@ grpsys     MOVE    SPA-HOSPNUM         TO  SYS-1010-HOSPNUM
            IF     (SPA-ERRCD           =   SPACE  )  AND
                    SPA-NAI-ROUJIN2     =   1
                INITIALIZE                  ORCSAGECHKAREA
-               MOVE    SPA-HOSPNUM          TO  AGECHK-HOSPNUM
+               MOVE    SPA-HOSPNUM         TO  AGECHK-HOSPNUM
                MOVE    SPA-PTID            TO  AGECHK-PTID
                MOVE    SPA-SRYYMD          TO  AGECHK-SRYYMD
                MOVE    SPA-BIRTHDAY        TO  AGECHK-BIRTHDAY
@@ -5550,6 +5544,7 @@ grpsys     MOVE    SPA-HOSPNUM         TO  SYS-1010-HOSPNUM
                MOVE    WRK-HKNCOMBI        TO  AGECHK-HKNCOMBINUM
                CALL    "ORCSAGECHK"        USING
                                            ORCSAGECHKAREA
+                                           SPA-AREA
                IF      SPA-NAI-ROUJIN  NOT =   AGECHK-ROUJIN
                    MOVE    "1052"          TO  SPA-ERRCD
                    MOVE    SPACE           TO  SPA-MAE-INPUTCD
@@ -5668,7 +5663,7 @@ grpsys     MOVE    SPA-HOSPNUM         TO  SYS-1010-HOSPNUM
            MOVE    SPA-SRYYMD          TO  TNS-YUKOSTYMD
            MOVE    SPA-SRYYMD          TO  TNS-YUKOEDYMD
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  TNS-HOSPNUM
            MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
            MOVE    "tbl_tensu"         TO  MCP-TABLE
            MOVE    "key22"             TO  MCP-PATHNAME
@@ -5704,7 +5699,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SPA-SRYYMD          TO  TNS-YUKOSTYMD
            MOVE    SPA-SRYYMD          TO  TNS-YUKOEDYMD
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  TNS-HOSPNUM
            MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
            MOVE    "tbl_tensu"         TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
@@ -5821,27 +5816,27 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *****************************************************************
       *    パラメタデータ順読み
       *****************************************************************
-       980-PARA-READ-SEC         SECTION.
+      *980-PARA-READ-SEC         SECTION.
       *
-           READ    PARA-FILE 
-               AT  END
-                   MOVE    1           TO  FLG-PARA
-               NOT AT  END
-                   MOVE    ZERO        TO  FLG-PARA
-           END-READ
+      *    READ    PARA-FILE 
+      *        AT  END
+      *            MOVE    1           TO  FLG-PARA
+      *        NOT AT  END
+      *            MOVE    ZERO        TO  FLG-PARA
+      *    END-READ
       *
-           .
-       980-PARA-READ-EXT.
-           EXIT.
+      *    .
+      *980-PARA-READ-EXT.
+      *    EXIT.
       *****************************************************************
       *    テーブル検索処理
       *****************************************************************
        910-DBSELECT-SEC                SECTION.
       *
            MOVE    "DBSELECT"      TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
        910-DBSELECT-EXT.
@@ -5852,9 +5847,9 @@ grpsys                            SPA-AREA
        920-DBFETCH-SEC                 SECTION.
       *
            MOVE    "DBFETCH"       TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
       *
@@ -5867,9 +5862,9 @@ grpsys                            SPA-AREA
        990-DBCLOSE-SEC           SECTION.
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
        990-DBCLOSE-EXT.

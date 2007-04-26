@@ -29,6 +29,7 @@
       * Maj/Min/Rev  修正者       日付      内容
       *  01.00.01    NACL-多々納  02/09/20  入力インターフェースの変更
       *  01.00.02    NACL-多々納  05/11/17  MONFUNC 対応
+      *  03.05.00    NACL-多々納  07/04/XX  グループ診療対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -56,6 +57,7 @@
        01  FILE-NAME1.
            03  FILLER              PIC X(09)   VALUE   "/var/tmp/".
            03  FILLER              PIC X(09)   VALUE   "K02SPASCR".
+           03  FILE-HOSPNUM1       PIC 9(02)   VALUE   ZERO.
            03  FILE-TERMID1        PIC X(64)   VALUE   SPACE.
            03  FILLER              PIC X(06)   VALUE   ".TXT".
       *
@@ -450,11 +452,10 @@
            INITIALIZE                      INPUTCD-REC
       *
            MOVE    SPACE               TO  INPUTCD-REC
-           MOVE    SPA-HOSPNUM          TO  ICD-HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  ICD-HOSPNUM
            MOVE    SPA-K023-SRYCD  (SPA-K023-MAX)
                                        TO  ICD-SRYCD
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    INPUTCD-REC         TO  MCPDATA-REC
            MOVE    "tbl_inputcd"       TO  MCP-TABLE
            MOVE    "key4"              TO  MCP-PATHNAME
@@ -498,6 +499,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            INITIALIZE          WRK-DATA-REC
       *
            MOVE    SPA-TERMID          TO  FILE-TERMID1
+           MOVE    SPA-HOSPNUM         TO  FILE-HOSPNUM1
       *
            OPEN    INPUT               SPASCR-FILE
            IF      STS-SPASCR     NOT =   ZERO
@@ -940,7 +942,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            INITIALIZE                      INPUTCD-REC
       *
            MOVE    SPACE               TO  INPUTCD-REC
-           MOVE    SPA-HOSPNUM          TO  ICD-HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  ICD-HOSPNUM
       *    漢字入力
            IF      FLG-KANJI           =   1
                MOVE    "J"                 TO  ICD-CDSYU
@@ -968,7 +970,6 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    "key"               TO  WRK-PATH
            END-IF
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    INPUTCD-REC         TO  MCPDATA-REC
            MOVE    "tbl_inputcd"       TO  MCP-TABLE
            MOVE    WRK-PATH            TO  MCP-PATHNAME
@@ -1304,13 +1305,10 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *    入力コードチェック
            MOVE    SPACE               TO  INPUTCD-REC
            INITIALIZE                      INPUTCD-REC
-           MOVE    SPA-HOSPNUM          TO  ICD-HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  ICD-HOSPNUM
            MOVE    SPA-K023-SRYCD (IDX)
                                        TO  ICD-SRYCD
       *
-           MOVE    "INPUTCD-KEY4"      TO  WRK-PATH
-      *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    INPUTCD-REC         TO  MCPDATA-REC
            MOVE    "tbl_inputcd"       TO  MCP-TABLE
            MOVE    "key4"              TO  MCP-PATHNAME
@@ -1348,16 +1346,15 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            IF     IDX-T            NOT =   ZERO
                MOVE    SPACE               TO  INPUTCD-REC
                INITIALIZE                      INPUTCD-REC
-               MOVE    SPA-HOSPNUM          TO  ICD-HOSPNUM
+               MOVE    SPA-HOSPNUM         TO  ICD-HOSPNUM
                MOVE    SPA-K023-SRYCD (IDX)    TO  ICD-SRYCD
-grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    INPUTCD-REC         TO  MCPDATA-REC
                MOVE    "DBDELETE"          TO  MCP-FUNC
                MOVE    "tbl_inputcd"       TO  MCP-TABLE
                MOVE    "del22"             TO  MCP-PATHNAME
-grpsys         CALL "ORCDBMAIN" USING MCPAREA
-                                      MCPDATA-REC
-grpsys                                SPA-AREA
+grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
+                                                   MCPDATA-REC
+                                                   SPA-AREA
            END-IF
            .
        410022-INPUTCD-HOZON-EXT.
@@ -1369,7 +1366,7 @@ grpsys                                SPA-AREA
        410021-INPUTCD-INS-SEC          SECTION.
       *
            INITIALIZE                      INPUTCD-REC
-           MOVE    SPA-HOSPNUM          TO  ICD-HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  ICD-HOSPNUM
            MOVE    WRK-CDSYU           TO  ICD-CDSYU
            MOVE    WRK-INPUTCD         TO  ICD-INPUTCD
            MOVE    SPA-K023-SRYCD (IDX)    TO  ICD-SRYCD
@@ -1380,14 +1377,13 @@ grpsys                                SPA-AREA
            MOVE    SMCNDATE-YMD        TO  ICD-UPYMD
            MOVE    SMCNDATE-HMS        TO  ICD-UPHMS
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    INPUTCD-REC         TO  MCPDATA-REC
            MOVE    "DBINSERT"          TO  MCP-FUNC
            MOVE    "tbl_inputcd"       TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
            IF      MCP-RC          NOT =   ZERO
                MOVE    "1001"          TO  SPA-ERRCD
                DISPLAY "K023 INPUTCD INS ERR:"  MCP-RC
@@ -1576,9 +1572,9 @@ grpsys                            SPA-AREA
        910-DBSELECT-SEC                SECTION.
       *
            MOVE    "DBSELECT"      TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
        910-DBSELECT-EXT.
@@ -1589,9 +1585,9 @@ grpsys                            SPA-AREA
        920-DBFETCH-SEC                 SECTION.
       *
            MOVE    "DBFETCH"       TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
       *
@@ -1604,9 +1600,9 @@ grpsys                            SPA-AREA
        990-DBCLOSE-SEC         SECTION.
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
        990-DBCLOSE-EXT.
@@ -1618,9 +1614,9 @@ grpsys                            SPA-AREA
        900-PUT-WINDOW              SECTION.
       *
            MOVE   "PUTWINDOW"       TO  MCP-FUNC.
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
        900-PUT-WINDOW-EXT.

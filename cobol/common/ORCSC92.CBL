@@ -57,6 +57,8 @@
       *  03.03.00    NACL-多々納  06/10/20  矯正固定等追加
       *  03.04.00    NACL-多々納  06/11/13  検査正式名称表示追加
       *  03.04.01    NACL-多々納  06/12/11  薬剤附加情報追加
+      *  03.04.02    NACL-多々納  07/03/XX  リハビリ医学管理料追加(H19.4改正）
+      *  03.05.00    NACL-多々納  07/04/XX  グループ診療対応
       *****************************************************************
       *
       *
@@ -97,12 +99,16 @@
            03  FLG-SSTKIJUNCD-ERR      PIC  9(01).
            03  FLG-INPUT-CHK           PIC  9(01).
       *
-           03  FLG-SP              PIC 9(01).
+           03  FLG-SP                  PIC 9(01).
       *
            03  FLG-MANSEI-CHK          PIC 9(01).
       *
            03  FLG-KONKAI              PIC 9(01).
       *
+           03  FLG-RKAN-OK             PIC 9(01).
+           03  FLG-RKAN-OK2            PIC 9(01).
+           03  FLG-RKAN-ARI            PIC 9(01).
+           03  FLG-RKAN-ARI2           PIC 9(01).
       *    添字領域
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
@@ -119,6 +125,7 @@
            03  IDX-SST             PIC 9(04).
            03  IDX-SS2             PIC 9(04).
            03  IDX-Y2              PIC 9(02).
+           03  IDX-DD              PIC 9(02).
       *
            03  IDZ                 PIC 9(02).
            03  IDX-ICD1            PIC 9(01).
@@ -167,11 +174,23 @@
            03  WRK-SRYKAMEI        PIC X(20).
       *
            03  WRK-SRYCD               PIC X(09).
+           03  WRK-SRYCD2              PIC X(09).
+           03  WRK-SRYCD-3             PIC X(09).
       *
            03  WRK-SYOSINYMD1          PIC X(08).
            03  WRK-YMD.
                05  WRK-YYMM            PIC X(06).
                05  WRK-DD              PIC 9(02).
+           03  WRK-YMD2.
+               05  WRK-YYMM2           PIC X(06).
+               05  WRK-DD2             PIC 9(02).
+           03  WRK-FSANTEIYMD          PIC X(08).
+           03  WRK-STYMD.
+               05  WRK-STYYMM          PIC X(06).
+               05  WRK-STDD            PIC 9(02).
+           03  WRK-EDYMD.
+               05  WRK-EDYYMM          PIC X(06).
+               05  WRK-EDDD            PIC 9(02).
       *
            03  WRK-CHK-CD              PIC X(09).
            03  WRK-CHK-CD2             PIC X(09).
@@ -184,6 +203,9 @@
            03  WRK-TNS-KGNAGE          PIC X(02).
            03  WRK-TNS-JGNAGE          PIC X(02).
            03  WRK-LNK-SC92-ERRCD5     PIC X(04).
+      *
+           03  WRK-KAN-KBN             PIC X(01).
+           03  WRK-KAN-KBN2            PIC X(01).
       *
       *    コメントの入力値用
        01  WRK-INPUT-SET-AREA.
@@ -232,8 +254,28 @@
        01  TBL-SUJI-R          REDEFINES   TBL-SUJI-AREA.
            03  TBL-SUJI        PIC X(02)   OCCURS   10.
       *
+      *    リハビリ医学管理料テーブル
+       01  TBL-RIHA-KANRI-AREA.
+      *    リハビリ医学管理料
+           03  FILLER              PIC X(11)   VALUE   "1 180029910".
+           03  FILLER              PIC X(11)   VALUE   "1 180030010".
+           03  FILLER              PIC X(11)   VALUE   "2 180030110".
+           03  FILLER              PIC X(11)   VALUE   "2 180030210".
+           03  FILLER              PIC X(11)   VALUE   "3 180030310".
+           03  FILLER              PIC X(11)   VALUE   "3 180030410".
+           03  FILLER              PIC X(11)   VALUE   "4 180030510".
+           03  FILLER              PIC X(11)   VALUE   "4 180030610".
+       01  TBL-RIHA-KANRI-AREA-R   REDEFINES   TBL-RIHA-KANRI-AREA.
+           03  TBL-RIHA-KANRI-OCC      OCCURS   8
+                                                INDEXED   TBL-RKA.
+               05  TBL-RIHA-KAN-KBN        PIC X(01).
+               05  TBL-RIHA-YOBI           PIC X(01).
+               05  TBL-RIHA-KAN-SRYCD      PIC X(09).
+      *
       *    保険別算定履歴テーブル
            COPY   "CMSANTEITBL.INC".
+      *    リハビリ同一算定コードテーブル
+           COPY   "CMRIHACDTBL.INC".
       *
       *    酸素コードテーブル
            COPY     "CMSANSOTBL.INC".
@@ -288,6 +330,10 @@
        01  HZN-SANTEI-REC.
            COPY    "CPSANTEI.INC"    REPLACING
                                      //SANTEI-// BY //HZN-SANTEI-//.
+      *    算定履歴（発生日用）
+       01  HZN2-SANTEI-REC.
+           COPY    "CPSANTEI.INC"    REPLACING
+                                     //SANTEI-// BY //HZN2-SANTEI-//.
       *    算定履歴
        01  TBLW-SANTEI-AREA.
          02  TBLW-SANTEI-REC          OCCURS   100.
@@ -545,7 +591,10 @@
                END-IF
            END-IF
       *    算定回数チェック
-           IF      LNK-SC92-KBN    NOT =   "6"
+      **** IF      LNK-SC92-KBN    NOT =   "6"
+           IF      LNK-SC92-KBN        =   "1"
+                                       OR  "3"
+                                       OR  "8"
                IF     (TNS-SANTEIRRKKBN    =   ZERO   )  OR
                       (SPA-HKNCOMBINUM     =   "9999" )
                    OR (LNK-SC92-PG     NOT =   "K02"  )
@@ -577,7 +626,7 @@
            INITIALIZE                  SRYCDCHG-REC 
            MOVE    LNK-SC92-SRYCD      TO  CHG-IPNSRYCD
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  CHG-HOSPNUM
            MOVE    SRYCDCHG-REC        TO  MCPDATA-REC
            MOVE    "tbl_srycdchg"      TO  MCP-TABLE
            MOVE    "key2"              TO  MCP-PATHNAME
@@ -650,6 +699,9 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                IF     (LNK-SC92-ERRCD3     =   SPACE ) AND
                       (LNK-SC92-SRYCD(1:1) =   "1"   )
                   AND (LNK-SC92-PG         =   "K02" )
+                  AND (LNK-SC92-KBN        =   "1"
+                                           OR  "3"
+                                           OR  "8" )
                    PERFORM 2005-HEIYOU-CHK-SEC
                END-IF
            END-IF
@@ -765,7 +817,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                    MOVE    TNS-SRYCD           TO  CHG-RJNSRYCD
                    MOVE    "key3"              TO  WRK-PATH
            END-EVALUATE
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  CHG-HOSPNUM
            MOVE    SRYCDCHG-REC        TO  MCPDATA-REC
            MOVE    "tbl_srycdchg"      TO  MCP-TABLE
            MOVE    WRK-PATH            TO  MCP-PATHNAME
@@ -1127,12 +1179,10 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                                                        "101120060" ))
                        MOVE     SPACE              TO  SPA-ERRCD
                    END-IF
-      *TEST
       *            処置の時
                    IF      TNS-SRYKBN      =   "40"
                        MOVE     SPACE              TO  SPA-ERRCD
                    END-IF
-      *TEST
                END-IF
            END-IF
       *
@@ -1240,7 +1290,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SPA-SRYYMD          TO  SYS-1006-STYUKYMD
            MOVE    SPA-SRYYMD          TO  SYS-1006-EDYUKYMD
       *    システム管理検索
-grpsys     MOVE    SPA-HOSPNUM         TO  SYS-1006-HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  SYS-1006-HOSPNUM
            MOVE    SYS-1006-REC        TO  MCPDATA-REC
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key2"              TO  MCP-PATHNAME
@@ -1429,9 +1479,11 @@ grpsys     MOVE    SPA-HOSPNUM         TO  SYS-1006-HOSPNUM
           IF      SPA-HKNCOMBINUM     =   "9999"
                GO      TO      2005-HEIYOU-CHK-EXT
            END-IF
-      *
-      *
-           IF      SPA-COM-CHKFLG (IDX-T)  =   "1"
+           IF      SPA-COM-HKNCOMBI(IDX-T)  =   "9999"
+               GO      TO      2005-HEIYOU-CHK-EXT
+           END-IF
+      *    併用算定済み
+           IF      SPA-COM-HCHKFLG (IDX-T) =   "1"
                GO      TO      2005-HEIYOU-CHK-EXT
            END-IF
       *
@@ -1447,9 +1499,9 @@ grpsys     MOVE    SPA-HOSPNUM         TO  SYS-1006-HOSPNUM
            MOVE    ZERO                TO  CHK-RENNUM
            MOVE    SPA-SRYYMD          TO  CHK-YUKOSTYMD
            MOVE    SPA-SRYYMD          TO  CHK-YUKOEDYMD
+           MOVE    SPA-HOSPNUM         TO  CHK-HOSPNUM
       *
            MOVE    ZERO                TO  FLG-CHKMST
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    CHK-REC             TO  MCPDATA-REC
            MOVE    "tbl_chk"           TO  MCP-TABLE
            MOVE    "key3"              TO  MCP-PATHNAME
@@ -1513,6 +1565,20 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                    PERFORM 20053-MANSEI-CHK-SEC
                END-IF
            END-IF
+      *@   リハビリテーション管理料チェック
+           IF     (LNK-SC92-ERRCD6 NOT =   SPACE      )  AND
+                  (SPA-SRYYMD          >=  "20070401" )
+      *        今回入力時エラーはそのまま
+               IF      FLG-KONKAI          =   ZERO
+                   PERFORM 20054-RIHA-CHKSYORI-SEC
+               END-IF
+           END-IF
+      *@
+           IF     (LNK-SC92-ERRCD6     =   SPACE )
+               MOVE    "1"             TO  SPA-COM-HCHKFLG (IDX-T)
+           ELSE
+               MOVE    SPACE           TO  SPA-COM-HCHKFLG (IDX-T)
+           END-IF
       *
            .
        2005-HEIYOU-CHK-EXT.
@@ -1528,11 +1594,10 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *    算定履歴検索
            MOVE    SPACE               TO  SANTEI-REC
            INITIALIZE                  SANTEI-REC
-           MOVE    SPA-HOSPNUM          TO  SANTEI-HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  SANTEI-HOSPNUM
            MOVE    SPA-PTID            TO  SANTEI-PTID
            MOVE    SPA-SRYYMD (1:6)    TO  SANTEI-SRYYM
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SANTEI-REC          TO  MCPDATA-REC
            MOVE    "tbl_santei"        TO  MCP-TABLE
            MOVE    "key2"              TO  MCP-PATHNAME
@@ -1722,9 +1787,12 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
        20052-CHK-INPUT-SEC                SECTION.
       *
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL      (IDX     >   WRK-MAX   )  OR
+                   UNTIL      (IDX     >   200          )  OR
+                             ((SPA-GMN-INPUTCD (IDX)   =   SPACE ) AND
+                              (SPA-COM-INPUTCD (IDX)   =   SPACE )) OR
                               (FLG-KONKAI          =   1     )
                IF      IDX                 =   IDX-T
+                 OR   (SPA-COM-HKNCOMBI (IDX)  =   "9999" )
                    CONTINUE
                ELSE
                    IF      SPA-COM-INPUTCD(IDX)
@@ -1821,8 +1889,12 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    ZERO                TO  FLG-MANSEI-ARI
            IF      LNK-SC92-SRYCD  NOT =   WRK-SRYCD
                PERFORM VARYING     IDX     FROM    1   BY  1
-                       UNTIL       IDX     >   WRK-MAX
-                   IF      SPA-COM-INPUTCD (IDX)   =   WRK-SRYCD
+                       UNTIL      (IDX     >   200  )  OR
+                                 ((SPA-GMN-INPUTCD (IDX)
+                                               =   SPACE ) AND
+                                  (SPA-COM-INPUTCD (IDX)
+                                               =   SPACE ))
+                  IF      SPA-COM-INPUTCD (IDX)   =   WRK-SRYCD
                        MOVE    1                   TO  FLG-MANSEI-ARI
                    END-IF
                END-PERFORM
@@ -1896,6 +1968,462 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            END-IF
            .
        20055-NYUIN-MANSEI-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    リハビリ管理料のチェック処理
+      *****************************************************************
+       20054-RIHA-CHKSYORI-SEC        SECTION.
+      *
+           SET     TBL-RKA             TO  1
+           SEARCH  TBL-RIHA-KANRI-OCC  VARYING   TBL-RKA
+                   AT  END
+                       MOVE    ZERO            TO  FLG-RKAN-OK
+                       MOVE    SPACE           TO  WRK-KAN-KBN
+                   WHEN   (LNK-SC92-SRYCD      =   TBL-RIHA-KAN-SRYCD
+                                                           (TBL-RKA))
+                       MOVE    1               TO  FLG-RKAN-OK
+                       MOVE    TBL-RIHA-KAN-KBN (TBL-RKA)
+                                               TO  WRK-KAN-KBN
+           END-SEARCH
+      *
+           SET     TBL-RKA             TO  1
+           SEARCH  TBL-RIHA-KANRI-OCC  VARYING   TBL-RKA
+                   AT  END
+                       MOVE    ZERO            TO  FLG-RKAN-OK2
+                       MOVE    SPACE           TO  WRK-KAN-KBN2
+                   WHEN   (WRK-CHK-CD          =   TBL-RIHA-KAN-SRYCD
+                                                          (TBL-RKA))
+                       MOVE    1               TO  FLG-RKAN-OK2
+                       MOVE    TBL-RIHA-KAN-KBN (TBL-RKA)
+                                               TO  WRK-KAN-KBN2
+           END-SEARCH
+      *    両方ともにリハビリ管理料の場合、エラー
+           IF    ((FLG-RKAN-OK         =   ZERO )  AND
+                  (FLG-RKAN-OK2        =   ZERO ))     OR
+                 ((FLG-RKAN-OK         =   1    )  AND
+                  (FLG-RKAN-OK2        =   1    ))
+               GO      TO      20054-RIHA-CHKSYORI-EXT
+           END-IF
+      *    どちらかが慢性疼痛疾患管理料の場合、エラー
+           IF     (LNK-SC92-SRYCD      =   "113006510" OR
+                   WRK-CHK-CD          =   "113006510" )
+               GO      TO      20054-RIHA-CHKSYORI-EXT
+           END-IF
+      *
+      *    直帰の初診算定日を決定する
+           PERFORM 200531-SYOSIN-SANTEI-SEC
+      *
+      *    発生日の判定
+           PERFORM 200542-HASSYOHI-SEC
+      *
+      *    直帰のリハビリ管理料算定日
+           IF      FLG-RKAN-OK         =   1
+               MOVE    LNK-SC92-SRYCD      TO  WRK-SRYCD
+               MOVE    WRK-CHK-CD          TO  WRK-SRYCD2
+           ELSE
+               MOVE    WRK-CHK-CD          TO  WRK-SRYCD
+               MOVE    LNK-SC92-SRYCD      TO  WRK-SRYCD2
+           END-IF
+           MOVE    SPACE               TO  WRK-FSANTEIYMD
+      *    入力が医学管理料の時、算定履歴検索
+           IF      LNK-SC92-SRYCD      =   WRK-SRYCD
+               PERFORM 2005332-SANTEI-CHK-SEC
+           ELSE
+      *        今月の算定有無
+               PERFORM 200543-KANRICHK-SEC
+           END-IF
+      *    訂正の時、訂正日が初回の場合
+           IF      LNK-SC92-SYORIFLG   =   1
+               PERFORM VARYING     IDX     FROM    1   BY  1
+                       UNTIL      (IDX     >   100 )  OR
+                                  (LNK-SC92-TEI-SRYCD (IDX)  =   SPACE)
+                   IF      LNK-SC92-TEI-SRYCD (IDX)    =   WRK-SRYCD
+                       IF      WRK-FSANTEIYMD      =   SPA-SRYYMD
+                           MOVE    SPACE           TO  WRK-FSANTEIYMD
+                           MOVE    SPACE           TO  WRK-YMD
+                       END-IF
+                   END-IF
+               END-PERFORM
+           END-IF
+           PERFORM 200541-RIHASANTEI-CHK-SEC
+      *    今回入力でないこと
+           MOVE    ZERO                TO  FLG-RKAN-ARI
+           MOVE    ZERO                TO  FLG-RKAN-ARI2
+           IF      LNK-SC92-SRYCD  NOT =   WRK-SRYCD
+               PERFORM VARYING     IDX     FROM    1   BY  1
+                       UNTIL      (IDX     >   200  )  OR
+                                 ((SPA-GMN-INPUTCD (IDX)
+                                               =   SPACE ) AND
+                                  (SPA-COM-INPUTCD (IDX)
+                                               =   SPACE ))
+                   IF      SPA-COM-INPUTCD(IDX)    =   WRK-SRYCD
+                       MOVE    1                   TO  FLG-RKAN-ARI
+                   END-IF
+                   IF      SPA-COM-INPUTCD(IDX)    =   WRK-SRYCD2
+                       MOVE    1                   TO  FLG-RKAN-ARI2
+                   END-IF
+               END-PERFORM
+           END-IF
+      *
+      *    初回リハビリ管理料がない時ＯＫ
+           IF     (WRK-YMD             =   SPACE  )  AND
+                  (FLG-RKAN-ARI        =   ZERO   )
+               MOVE    SPACE           TO  LNK-SC92-ERRCD6
+               MOVE    SPACE           TO  LNK-SC92-ERRMSG
+           END-IF
+      *    訂正の時、当日ならＯＫとする
+           IF      LNK-SC92-SYORIFLG   =   1
+               IF     (WRK-YMD             =   SPA-SRYYMD  )  AND
+                      (FLG-RKAN-ARI        =   ZERO   )  AND
+                      (FLG-RKAN-ARI2       =   ZERO   )
+                   MOVE    SPACE           TO  LNK-SC92-ERRCD6
+                   MOVE    SPACE           TO  LNK-SC92-ERRMSG
+               END-IF
+           END-IF
+      *
+      *    初診算定日が前回の算定日より後の時、算定ができること
+           IF    ((WRK-YMD             =   SPACE  )  OR
+                  (WRK-SYOSINYMD1      >   WRK-YMD))
+              AND (FLG-RKAN-ARI        =   ZERO   )
+              AND (FLG-RKAN-ARI2       =   ZERO   )
+               MOVE    SPACE           TO  LNK-SC92-ERRCD6
+               MOVE    SPACE           TO  LNK-SC92-ERRMSG
+           END-IF
+      *
+           .
+       20054-RIHA-CHKSYORI-EXT.
+           EXIT.
+      *****************************************************************
+      *    リハビリ発生日処理
+      *****************************************************************
+       200542-HASSYOHI-SEC                SECTION.
+      *
+           MOVE    SPACE               TO  WRK-SRYCD
+           MOVE    SPACE               TO  WRK-SRYCD2
+      *    心大血管疾患リハビリテーション
+           IF     (WRK-KAN-KBN         =   "1"  )  OR
+                  (WRK-KAN-KBN2        =   "1"  )
+               MOVE    "099800111"         TO  WRK-SRYCD
+               MOVE    "099800112"         TO  WRK-SRYCD2
+           END-IF
+      *    脳血管疾患リハビリテーション
+           IF     (WRK-KAN-KBN         =   "2"  )  OR
+                  (WRK-KAN-KBN2        =   "2"  )
+               MOVE    "099800121"         TO  WRK-SRYCD
+               MOVE    "099800122"         TO  WRK-SRYCD2
+           END-IF
+      *    運動器リハビリテーション
+           IF     (WRK-KAN-KBN         =   "3"  )  OR
+                  (WRK-KAN-KBN2        =   "3"  )
+               MOVE    "099800131"         TO  WRK-SRYCD
+               MOVE    "099800132"         TO  WRK-SRYCD2
+           END-IF
+      *    呼吸器リハビリテーション
+           IF     (WRK-KAN-KBN         =   "4"  )  OR
+                  (WRK-KAN-KBN2        =   "4"  )
+               MOVE    "099800141"         TO  WRK-SRYCD
+               MOVE    "099800142"         TO  WRK-SRYCD2
+           END-IF
+      *
+      *    保険毎
+           MOVE    1                   TO  FLG-HKNSAN
+           INITIALIZE                  HZN2-SANTEI-REC
+           INITIALIZE                  HZN-SANTEI-REC
+           MOVE    ZERO                TO  FLG-SANTEI-OK
+           PERFORM VARYING     IDX2    FROM    1   BY   1
+                   UNTIL      (IDX2    >   IDX-TBL )  OR
+                              (FLG-SANTEI-OK   =   1  )
+               IF      WRK-SRYCD           =   TBLW-SANTEI-SRYCD(IDX2)
+      *            対象の算定履歴判定
+                   MOVE    TBLW-SANTEI-REC(IDX2)   TO  HZN-SANTEI-REC
+                   PERFORM 200511-SANTEI-CHK-SEC
+                   IF      FLG-SANTEI-OK       =   ZERO
+                       INITIALIZE                  HZN-SANTEI-REC
+                   END-IF
+               END-IF
+               IF      WRK-SRYCD2          =   TBLW-SANTEI-SRYCD(IDX2)
+      *            対象の算定履歴判定
+                   MOVE    TBLW-SANTEI-REC(IDX2)   TO  HZN2-SANTEI-REC
+                   PERFORM 200511-SANTEI-CHK-SEC
+                   IF      FLG-SANTEI-OK       =   ZERO
+                       INITIALIZE                  HZN2-SANTEI-REC
+                   END-IF
+               END-IF
+           END-PERFORM
+      *
+      *    訂正の時、訂正分はカウントしない
+           IF      LNK-SC92-SYORIFLG   =   1
+               PERFORM VARYING IDX     FROM    1   BY  1
+                       UNTIL   (IDX     >   100 )  OR
+                               (LNK-SC92-TEI-SRYCD (IDX)  =   SPACE)
+                   IF      LNK-SC92-TEI-SRYCD (IDX)    =   WRK-SRYCD
+                       MOVE    SPA-SRYYMD(7:2)     TO  IDX-Y2
+                       MOVE    ZERO                TO  HZN-SANTEI-DAY
+                                                           (IDX-Y2)
+                   END-IF
+               END-PERFORM
+               PERFORM VARYING IDX     FROM    1   BY  1
+                       UNTIL   (IDX     >   100 )  OR
+                               (LNK-SC92-TEI-SRYCD (IDX)  =   SPACE)
+                   IF      LNK-SC92-TEI-SRYCD (IDX)    =   WRK-SRYCD2
+                       MOVE    SPA-SRYYMD(7:2)     TO  IDX-Y2
+                       MOVE    ZERO                TO  HZN2-SANTEI-DAY
+                                                           (IDX-Y2)
+                   END-IF
+               END-PERFORM
+           END-IF
+           MOVE    SPACE               TO  WRK-STYMD
+           IF      HZN-SANTEI-MSANTEICNT   >   ZERO
+               MOVE    SPA-SRYYMD(7:2)     TO  IDX-DD
+               MOVE    ZERO                TO  WRK-STDD
+               PERFORM VARYING     IDX-Y2  FROM    1   BY  1
+                       UNTIL       IDX-Y2      >   31
+                   IF      HZN-SANTEI-DAY (IDX-Y2)    >   ZERO
+                       IF      WRK-KAN-KBN         =   SPACE
+      *                    医学管理料以外を今回入力時、前の発生日
+                           IF      IDX-Y2          <=  IDX-DD
+                               MOVE    IDX-Y2          TO  WRK-STDD
+                               MOVE    31              TO  IDX-Y2
+                           END-IF
+                       ELSE
+      *                    医学管理料を今回入力時、後の発生日
+                           IF      IDX-Y2          >   IDX-DD
+                               MOVE    IDX-Y2          TO  WRK-STDD
+                               MOVE    31              TO  IDX-Y2
+                           END-IF
+                       END-IF
+                   END-IF
+               END-PERFORM
+               IF      WRK-STDD        NOT =   ZERO
+                   MOVE    SANTEI-SRYYM        TO  WRK-STYYMM
+               ELSE
+                   MOVE    SPACE               TO  WRK-STYMD
+               END-IF
+           END-IF
+      *
+           MOVE    SPACE               TO  WRK-EDYMD
+           IF      HZN2-SANTEI-MSANTEICNT  >   ZERO
+               MOVE    SPA-SRYYMD(7:2)     TO  IDX-DD
+               MOVE    ZERO                TO  WRK-EDDD
+               PERFORM VARYING     IDX-Y2  FROM    1   BY  1
+                       UNTIL       IDX-Y2      >   31
+                   IF      HZN2-SANTEI-DAY (IDX-Y2)    >   ZERO
+                       IF      WRK-KAN-KBN         =   SPACE
+      *                    医学管理料以外を今回入力時、前の発生日
+                           IF      IDX-Y2          <=  IDX-DD
+                               MOVE    IDX-Y2          TO  WRK-EDDD
+                               MOVE    31              TO  IDX-Y2
+                           END-IF
+                       ELSE
+      *                    医学管理料を今回入力時、後の発生日
+                           IF      IDX-Y2          >   IDX-DD
+                               MOVE    IDX-Y2          TO  WRK-EDDD
+                               MOVE    31              TO  IDX-Y2
+                           END-IF
+                       END-IF
+                   END-IF
+               END-PERFORM
+               IF      WRK-EDDD        NOT =   ZERO
+                   MOVE    SANTEI-SRYYM        TO  WRK-EDYYMM
+               ELSE
+                   MOVE    SPACE               TO  WRK-EDYMD
+               END-IF
+           END-IF
+      *    画面入力
+           PERFORM VARYING     IDX     FROM    1  BY  1
+                   UNTIL       IDX     >   200
+               IF      SPA-COM-INPUTCD (IDX)   =   WRK-SRYCD
+                   MOVE    SPA-SRYYMD          TO  WRK-STYMD
+               END-IF
+               IF      SPA-COM-INPUTCD (IDX)   =   WRK-SRYCD2
+                   MOVE    SPA-SRYYMD          TO  WRK-EDYMD
+               END-IF
+           END-PERFORM
+      *
+           IF     (WRK-STYMD           =   SPACE )
+               MOVE    WRK-EDYMD           TO  WRK-STYMD
+           END-IF
+           .
+       200542-HASSYOHI-EXT.
+           EXIT.
+      *****************************************************************
+      *    算定履歴チェック処理（リハビリ）
+      *****************************************************************
+       200543-KANRICHK-SEC                SECTION.
+      *
+      *    保険毎のコードの判定
+           SET     TBL-SAN             TO  1
+           SEARCH  TBL-SANTEI-OCC      VARYING   TBL-SAN
+               AT  END
+                   MOVE    ZERO            TO  FLG-HKNSAN
+                   MOVE    SPACE           TO  WRK-RSI-KBN
+               WHEN    WRK-SRYCD           =   TBL-SANTEI-SRYCD
+                                                          (TBL-SAN)
+                   MOVE    1               TO  FLG-HKNSAN
+                   MOVE    TBL-RSI-KBN    (TBL-SAN)
+                                           TO  WRK-RSI-KBN
+      *            Ｈ１８／４月から対応
+                   IF      TBL-RIGAKU-RYO(TBL-SAN) =   "H"
+                       IF      SPA-SRYYMD      >=  "20060401"
+                           MOVE    ZERO            TO  FLG-HKNSAN
+                           MOVE    SPACE           TO  WRK-RSI-KBN
+                       END-IF
+                   END-IF
+           END-SEARCH
+      *
+           INITIALIZE                  SANTEI-REC
+           MOVE    ZERO                TO  FLG-SANTEI-OK
+           PERFORM VARYING     IDX2    FROM    1   BY   1
+                   UNTIL      (IDX2    >   IDX-TBL )  OR
+                              (FLG-SANTEI-OK   =   1  )
+               IF      WRK-SRYCD       =   TBLW-SANTEI-SRYCD(IDX2)
+      *            対象の算定履歴判定
+                   MOVE    TBLW-SANTEI-REC(IDX2)   TO  SANTEI-REC
+                   PERFORM 200511-SANTEI-CHK-SEC
+               END-IF
+           END-PERFORM
+           IF      FLG-SANTEI-OK       =   ZERO
+               INITIALIZE                  SANTEI-REC
+           END-IF
+           IF      SANTEI-MSANTEICNT   >   ZERO
+               PERFORM VARYING     IDX-Y2  FROM    1  BY  1
+                       UNTIL       IDX-Y2      >   31
+                   IF      SANTEI-DAY (IDX-Y2) >   ZERO
+                       MOVE    IDX-Y2          TO  WRK-DD
+      *D               MOVE    31              TO  IDX-Y2
+                   END-IF
+               END-PERFORM
+               MOVE    SANTEI-SRYYM        TO  WRK-YYMM
+      *        初回リハビリ管理料の時、診療日より後の時なしとする
+               IF    ((FLG-RKAN-OK         =   1  )  OR
+                      (FLG-RKAN-OK2        =   1  ))  AND
+                      (SANTEI-FSANTEIYMD(1:6)
+                                           =   SANTEI-SRYYM ) AND
+                       (SPA-SRYYMD(1:6)    =   SANTEI-SRYYM ) AND
+                       (SPA-SRYYMD(7:2)    <   SANTEI-MSANTEID)
+                   MOVE    SPACE               TO  WRK-YMD
+               END-IF
+               IF    ((FLG-RKAN-OK         =   1  )  OR
+                      (FLG-RKAN-OK2        =   1  ))
+      *            診療日より前
+                   IF      SPA-SRYYMD      >   SANTEI-FSANTEIYMD
+                       MOVE    SANTEI-FSANTEIYMD   TO  WRK-FSANTEIYMD
+                   END-IF
+               END-IF
+               IF    ((FLG-RKAN-OK         =   1  )  OR
+                      (FLG-RKAN-OK2        =   1  ))
+      *            発生日より前の時、算定なしとする
+                   IF      WRK-STYMD       >   WRK-YMD
+                       MOVE    SPACE               TO  WRK-YMD
+                   END-IF
+               END-IF
+           END-IF
+      *
+           .
+       200543-KANRICHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    算定履歴チェック処理（リハビリ）
+      *****************************************************************
+       200541-RIHASANTEI-CHK-SEC                SECTION.
+      *
+           MOVE    SPACE               TO  WRK-YMD2
+      *
+      *    保険毎のコードの判定
+           SET     TBL-SAN             TO  1
+           SEARCH  TBL-SANTEI-OCC      VARYING   TBL-SAN
+               AT  END
+                   MOVE    ZERO            TO  FLG-HKNSAN
+                   MOVE    SPACE           TO  WRK-RSI-KBN
+               WHEN    WRK-SRYCD2          =   TBL-SANTEI-SRYCD
+                                                          (TBL-SAN)
+                   MOVE    1               TO  FLG-HKNSAN
+                   MOVE    TBL-RSI-KBN    (TBL-SAN)
+                                           TO  WRK-RSI-KBN
+      *            Ｈ１８／４月から対応
+                   IF      TBL-RIGAKU-RYO(TBL-SAN) =   "H"
+                       IF      SPA-SRYYMD      >=  "20060401"
+                           MOVE    ZERO            TO  FLG-HKNSAN
+                           MOVE    SPACE           TO  WRK-RSI-KBN
+                       END-IF
+                   END-IF
+           END-SEARCH
+      *
+           INITIALIZE                  HZN-SANTEI-REC
+      *
+           INITIALIZE                  SANTEI-REC
+           MOVE    ZERO                TO  FLG-SANTEI-OK
+           PERFORM VARYING     IDX2    FROM    1   BY   1
+                   UNTIL      (IDX2    >   IDX-TBL )  OR
+                              (FLG-SANTEI-OK   =   1  )
+               IF      WRK-SRYCD2          =   TBLW-SANTEI-SRYCD(IDX2)
+      *            対象の算定履歴判定
+                   MOVE    TBLW-SANTEI-REC(IDX2)   TO  SANTEI-REC
+                   PERFORM 200511-SANTEI-CHK-SEC
+               END-IF
+           END-PERFORM
+           IF      FLG-SANTEI-OK       =   ZERO
+               INITIALIZE                  SANTEI-REC
+           END-IF
+      *
+      *    訂正の時、訂正分はカウントしない
+           IF      LNK-SC92-SYORIFLG   =   1
+               MOVE    SPA-SRYYMD(7:2)     TO  IDX-Y2
+               IF     (SANTEI-SRYYM        =   SPA-SRYYMD(1:6)) AND
+                      (SANTEI-DAY (IDX-Y2) >   ZERO ) 
+                   MOVE    ZERO            TO  SANTEI-DAY (IDX-Y2)
+               END-IF
+           END-IF
+           IF      SANTEI-MSANTEICNT   >   ZERO
+               PERFORM VARYING     IDX-Y2  FROM    1  BY  1
+                       UNTIL       IDX-Y2      >   31
+                   IF      SANTEI-DAY (IDX-Y2) >   ZERO
+                       MOVE    IDX-Y2          TO  WRK-DD2
+                   END-IF
+               END-PERFORM
+               IF      WRK-DD2         NOT =   SPACE
+                   MOVE    SANTEI-SRYYM        TO  WRK-YYMM2
+               END-IF
+      *        初回リハビリ管理料より前の時なしとする
+               IF     (WRK-FSANTEIYMD  NOT =   SPACE )  AND
+                      (WRK-YMD2            <   WRK-FSANTEIYMD) AND
+                      (WRK-FSANTEIYMD      <   SPA-SRYYMD    )
+                   IF      LNK-SC92-SRYCD  =   WRK-SRYCD
+                       MOVE    SPACE           TO  WRK-YMD
+                   END-IF
+               END-IF
+      *        今回が初回
+               IF     (WRK-FSANTEIYMD      =   SPACE )  AND
+                      (WRK-YMD2            >=  SPA-SRYYMD)
+                   IF      LNK-SC92-SRYCD  =   WRK-SRYCD
+                       MOVE    SPA-SRYYMD      TO  WRK-YMD
+                   END-IF
+               END-IF
+      *        発生日より後の時、算定なしとする
+               IF      WRK-STYMD           <=  WRK-YMD2
+                   MOVE    SPACE               TO  WRK-YMD
+               END-IF
+           END-IF
+      *
+           .
+      *
+       200541-RIHASANTEI-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *     リハビリ料チェック処理
+      *****************************************************************
+       200542-RIHA-HENKAN-SEC        SECTION.
+      *
+           SET     TBL-RIH             TO  1
+           SEARCH  TBL-RIHABIRI-OCC    VARYING   TBL-RIH
+                   AT  END
+                       MOVE    ZERO            TO  FLG-RIHA-OK
+                   WHEN    WRK-SRYCD-3     =   TBL-RIHA-SRYCD(TBL-RIH)
+                       MOVE    1               TO  FLG-RIHA-OK
+           END-SEARCH
+           .
+       200542-RIHA-HENKAN-EXT.
            EXIT.
       *
       *****************************************************************
@@ -2053,7 +2581,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            INITIALIZE                  HZN-SANTEI-REC
       *    算定履歴検索
            INITIALIZE                  SANTEI-REC
-           MOVE    SPA-HOSPNUM          TO  SANTEI-HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  SANTEI-HOSPNUM
            MOVE    SPA-PTID            TO  SANTEI-PTID
            MOVE    WRK-SRYCD           TO  SANTEI-SRYCD
            MOVE    SPA-SRYYMD(1:6)     TO  SANTEI-SRYYM
@@ -2064,7 +2592,6 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    ZERO                TO  SANTEI-HKNCOMBINUM
            END-IF
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SANTEI-REC          TO  MCPDATA-REC
            MOVE    "tbl_santei"        TO  MCP-TABLE
            MOVE    "key8"              TO  MCP-PATHNAME
@@ -2107,6 +2634,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                        UNTIL       IDX-Y2      >   31
                    IF      SANTEI-DAY (IDX-Y2) >   ZERO
                        MOVE    IDX-Y2          TO  WRK-DD
+                       MOVE    31              TO  IDX-Y2
                    END-IF
                END-PERFORM
                MOVE    SANTEI-SRYYM        TO  WRK-YYMM
@@ -2117,6 +2645,22 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                           (SPA-SRYYMD(1:6) =   SANTEI-SRYYM ) AND
                           (SPA-SRYYMD(7:2) <   SANTEI-MSANTEID)
                    MOVE    SPACE               TO  WRK-YMD
+               END-IF
+      *        初回リハビリ管理料の時、診療日より後の時なしとする
+               IF    ((FLG-RKAN-OK         =   1  )  OR
+                      (FLG-RKAN-OK2        =   1  ))  AND
+                      (SANTEI-FSANTEIYMD(1:6)
+                                           =   SANTEI-SRYYM ) AND
+                       (SPA-SRYYMD(1:6)    =   SANTEI-SRYYM ) AND
+                       (SPA-SRYYMD(7:2)    <   SANTEI-MSANTEID)
+                   MOVE    SPACE               TO  WRK-YMD
+               END-IF
+               IF    ((FLG-RKAN-OK         =   1  )  OR
+                      (FLG-RKAN-OK2        =   1  ))
+      *            診療日より前
+                   IF      SPA-SRYYMD      >   SANTEI-FSANTEIYMD
+                       MOVE    SANTEI-FSANTEIYMD   TO  WRK-FSANTEIYMD
+                   END-IF
                END-IF
            END-IF
       *
@@ -2752,7 +3296,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SPA-SRYYMD          TO  SYS-1005-STYUKYMD
            MOVE    SPA-SRYYMD          TO  SYS-1005-EDYUKYMD
       *    システム管理検索
-grpsys     MOVE    SPA-HOSPNUM         TO  SYS-1005-HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  SYS-1005-HOSPNUM
            MOVE    SYS-1005-REC        TO  MCPDATA-REC
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key10"             TO  MCP-PATHNAME
@@ -3089,11 +3633,10 @@ grpsys     MOVE    SPA-HOSPNUM         TO  SYS-1005-HOSPNUM
            MOVE    SPACE               TO  SPA-COM-ICD-INPUTCD(IDX-T)
       *
            INITIALIZE                      INPUTCD-REC
-           MOVE    SPA-HOSPNUM          TO  ICD-HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  ICD-HOSPNUM
            MOVE    SPA-COM-INPUTCD(IDX-T)
                                        TO  ICD-SRYCD
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    INPUTCD-REC         TO  MCPDATA-REC
            MOVE    "tbl_inputcd"       TO  MCP-TABLE
            MOVE    "key4"              TO  MCP-PATHNAME
@@ -3168,17 +3711,22 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                  ((SPA-COM-KAISU  (IDX-T)          >  1    )
              OR   (SPA-COM-SURYO  (IDX-T)          >  1    ))
       *
-               IF      SPA-COM-SANTEIRRKKBN (IDX-T)   NOT =   ZERO
-               MOVE    LNK-SC92-SRYCD      TO  TNS-SRYCD
-               PERFORM 910-TENSU-READ-SEC
-      *        算定回数チェック
-               IF     (TNS-SANTEIRRKKBN    =   ZERO   )  OR
-                      (SPA-HKNCOMBINUM     =   "9999" )
-                   CONTINUE
-               ELSE
-                   PERFORM 2001-SANTEI-CHK-SEC
-               END-IF
-              END-IF
+      *        IF     (SPA-COM-SANTEIRRKKBN (IDX-T)    =   ZERO)  OR
+      *               (SPA-COM-HKNCOMBI (IDX-T)    =   "9999" )  OR
+      *               (SPA-HKNCOMBINUM             =   "9999" )
+      *            CONTINUE
+      *        ELSE
+      *            MOVE    LNK-SC92-SRYCD      TO  TNS-SRYCD
+      *            PERFORM 910-TENSU-READ-SEC
+      *            算定回数チェック
+      *            IF     (TNS-SANTEIRRKKBN    =   ZERO   )
+      *                CONTINUE
+      *            ELSE
+      *                PERFORM 2001-SANTEI-CHK-SEC
+      *            END-IF
+      *?       END-IF
+      *        算定履歴・併用チェッククリア
+               MOVE    SPACE               TO  SPA-COM-HCHKFLG(IDX-T)
             END-IF
            END-IF
       *
@@ -3265,11 +3813,10 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *****************************************************************
        910-TENSU-READ-SEC         SECTION.
       *
-           MOVE    SPA-HOSPNUM         TO  TNS-HOSPNUM
            MOVE    SPA-SRYYMD          TO  TNS-YUKOSTYMD
            MOVE    SPA-SRYYMD          TO  TNS-YUKOEDYMD
+           MOVE    SPA-HOSPNUM         TO  TNS-HOSPNUM
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
            MOVE    "tbl_tensu"         TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
@@ -3308,8 +3855,11 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            IF     (TNS-SRYCD(1:1)      =   "1" ) AND
                   (FLG-TENSU           =   ZERO)
                PERFORM 9101-TENSUPLUS-SYORI-SEC
+           ELSE
+               MOVE    SPACE               TO  TENSUPLUS-REC
+               INITIALIZE                      TENSUPLUS-REC
            END-IF
-           .
+          .
        910-TENSU-READ-EXT.
            EXIT.
       *
@@ -3320,12 +3870,11 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *
            MOVE    SPACE               TO  TENSUPLUS-REC
            INITIALIZE                      TENSUPLUS-REC
-           MOVE    TNS-HOSPNUM         TO  TNSP-HOSPNUM
            MOVE    TNS-SRYCD           TO  TNSP-SRYCD
            MOVE    TNS-YUKOSTYMD       TO  TNSP-YUKOSTYMD
            MOVE    TNS-YUKOEDYMD       TO  TNSP-YUKOEDYMD
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  TNSP-HOSPNUM
            MOVE    TENSUPLUS-REC       TO  MCPDATA-REC
            MOVE    "tbl_tensuplus"     TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
@@ -3360,10 +3909,9 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *
            MOVE    SPACE               TO  TENSUPLUS2-REC
            INITIALIZE                      TENSUPLUS2-REC
-           MOVE    TNS-HOSPNUM         TO  TNSP2-HOSPNUM
            MOVE    TNS-SRYCD           TO  TNSP2-SRYCD
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  TNSP2-HOSPNUM
            MOVE    TENSUPLUS2-REC      TO  MCPDATA-REC
            MOVE    "tbl_tensuplus2"    TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
@@ -3394,11 +3942,10 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *****************************************************************
        911-TENSU-READ22-SEC         SECTION.
       *
-           MOVE    SPA-HOSPNUM         TO  TNS-HOSPNUM
            MOVE    SPA-SRYYMD          TO  TNS-YUKOSTYMD
            MOVE    SPA-SRYYMD          TO  TNS-YUKOEDYMD
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  TNS-HOSPNUM
            MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
            MOVE    "tbl_tensu"         TO  MCP-TABLE
            MOVE    "key22"             TO  MCP-PATHNAME
@@ -3532,9 +4079,9 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
        910-DBSELECT-SEC                SECTION.
       *
            MOVE    "DBSELECT"      TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
        910-DBSELECT-EXT.
@@ -3545,9 +4092,9 @@ grpsys                            SPA-AREA
        920-DBFETCH-SEC                 SECTION.
       *
            MOVE    "DBFETCH"       TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
       *
@@ -3560,9 +4107,9 @@ grpsys                            SPA-AREA
        990-DBCLOSE-SEC                 SECTION.
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
            .
        990-DBCLOSE-EXT.
            EXIT.

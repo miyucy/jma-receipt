@@ -31,6 +31,7 @@
       *  01.00.01    NACL¡ÝÂ¿¡¹Ç¼ 03.01.24  Æþ±¡ÄÉ²Ã
       *  01.00.02    NACL¡ÝÂ¿¡¹Ç¼ 06/03/XX  ²ó¿ô¥Á¥§¥Ã¥¯ÄÉ²Ã
       *  01.00.03    NACL¡ÝÂ¿¡¹Ç¼ 06/05/17  ·×»»ÊýË¡½¤ÀµÂ¾
+      *  03.05.00    NACL-Â¿¡¹Ç¼  07/04/XX  ¥°¥ë¡¼¥×¿ÇÎÅÂÐ±þ
       *****************************************************************
       *
       *
@@ -712,7 +713,7 @@
       *
       *    »»ÄêÍúÎò¸¡º÷¡Ê»»ÄêÍúÎò¶èÊ¬¤Ï£±¤È¤¹¤ë¡Ë
            INITIALIZE                  SANTEI-REC
-           MOVE    SPA-HOSPID          TO  SANTEI-HOSPID
+           MOVE    SPA-HOSPNUM         TO  SANTEI-HOSPNUM
            MOVE    SPA-PTID            TO  SANTEI-PTID
            MOVE    SPA-SRYYMD (1:6)    TO  SANTEI-SRYYM
            MOVE    WRK-SRYCD           TO  SANTEI-SRYCD
@@ -720,7 +721,6 @@
            MOVE    ZERO                TO  SANTEI-SRYKA
            MOVE    ZERO                TO  SANTEI-HKNCOMBINUM
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SANTEI-REC          TO  MCPDATA-REC
            MOVE    "tbl_santei"        TO  MCP-TABLE
            MOVE    "key8"              TO  MCP-PATHNAME
@@ -815,9 +815,9 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
        910-DBSELECT-SEC                SECTION.
       *
            MOVE    "DBSELECT"      TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
            .
        910-DBSELECT-EXT.
            EXIT.
@@ -827,9 +827,9 @@ grpsys                            SPA-AREA
        920-DBFETCH-SEC                 SECTION.
       *
            MOVE    "DBFETCH"       TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
            .
        920-DBFETCH-EXT.
            EXIT.
@@ -840,9 +840,9 @@ grpsys                            SPA-AREA
        990-DBCLOSE-SEC         SECTION.
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
            .
        990-DBCLOSE-EXT.
            EXIT.

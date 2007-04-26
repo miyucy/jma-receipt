@@ -28,6 +28,7 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *  01.00.01    NACL-多々納  05/11/17  MONFUNC 対応
+      *  03.05.00    NACL-多々納  07/04/XX  グループ診療対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -323,7 +324,7 @@
                MOVE    SPA-KHELP-MENUNUM1  TO  HELP-MENUNUM1
            END-IF
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  HELP-HOSPNUM
            MOVE    HELP-REC            TO  MCPDATA-REC
            MOVE    "tbl_help"          TO  MCP-TABLE
            IF      SPA-KHELP-MENUNUM1  =   ZERO
@@ -663,8 +664,8 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SPA-KHELP-LDNAME    TO  HELP-LDNAME
            MOVE    SPA-KHELP-MENUNUM1  TO  HELP-MENUNUM1
            MOVE    SPA-KHELP-MENUNUM2  TO  HELP-MENUNUM2
+           MOVE    SPA-HOSPNUM         TO  HELP-HOSPNUM
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    HELP-REC            TO  MCPDATA-REC
            MOVE    "tbl_help"          TO  MCP-TABLE
            MOVE    "key3"              TO  MCP-PATHNAME
@@ -802,8 +803,8 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SPA-KHELP-LDNAME    TO  HELP-LDNAME
            MOVE    WRK-INPUT-MENU
                                        TO  HELP-MENU
+           MOVE    SPA-HOSPNUM         TO  HELP-HOSPNUM
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    HELP-REC            TO  MCPDATA-REC
            MOVE    "tbl_help"          TO  MCP-TABLE
            MOVE    "key4"              TO  MCP-PATHNAME
@@ -906,7 +907,6 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    HELP-REC            TO  WRK-HELP-REC
            MOVE    ZERO                TO  FLG-CHK
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    HELP-REC            TO  MCPDATA-REC
            MOVE    "tbl_help"          TO  MCP-TABLE
            MOVE    "key2"              TO  MCP-PATHNAME
@@ -1161,9 +1161,9 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    "tbl_help"          TO  MCP-TABLE
       *
            MOVE    "DBFETCH"       TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC     TO  HELP-REC
                MOVE    ZERO            TO  FLG-HELP
@@ -1183,9 +1183,9 @@ grpsys                            SPA-AREA
            MOVE    ZERO            TO  MCP-RC
       *
            MOVE    "DBSELECT"      TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
        910-DBSELECT-EXT.
@@ -1197,9 +1197,9 @@ grpsys                            SPA-AREA
        990-DBCLOSE-SEC           SECTION.
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
        990-DBCLOSE-EXT.
@@ -1211,9 +1211,9 @@ grpsys                            SPA-AREA
        900-PUT-WINDOW              SECTION.
       *
            MOVE   "PUTWINDOW"       TO  MCP-FUNC.
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
        900-PUT-WINDOW-EXT.

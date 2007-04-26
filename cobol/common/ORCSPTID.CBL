@@ -32,6 +32,8 @@
       *  01.00.01    MCC-太田      01/05/22  患者番号ゼロ詰め処理
       *  01.00.02    MCC-多々納    01/11/27  自由構成区分の追加修正
       *  02.07.00    NACL-太田     05/10/24  MONFUNC 対応
+      *
+      *  03.05.01    NACL-藤原    07/04/19  グループ診療対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -45,8 +47,6 @@
       *
       *
        WORKING-STORAGE             SECTION.
-grpsys*
-grpsys COPY    "COMMON-SPA".
       *
       *    フラグ領域
        01  FLG-AREA.
@@ -90,43 +90,15 @@ grpsys COPY    "COMMON-SPA".
       *
            COPY    "CPORCSPTID.INC".
       *
-      *----(01.00.01) LINE ADD END   --------------------------------
-           01  WRK-1009-TBL.
-      *患者番号構成区分
-               03  WRK-1009-PTNUMKSIKBN             PIC X(01).
-      *    自由構成桁数
-               03  WRK-1009-JIYKSI.
-      *    自由構成区分
-                   05  WRK-1009-JIYKSIKBN           PIC X(01).
-      *    自由構成桁数
-                   05  WRK-1009-JIYKSIKETA          PIC 9(02).
-      *標準構成区分
-               03  WRK-1009-HJNKSI.
-      *    標準構成区分
-                   05  WRK-1009-HJNKSIKBN           PIC X(01).
-      *    標準構成年区分
-                   05  WRK-1009-HJNKSINENKBN        PIC X(01).
-      *    標準構成連番初期化区分
-                   05  WRK-1009-HJNKSIRENNUMKBN     PIC X(01).
-      *    標準構成連番号桁数
-                   05  WRK-1009-HJNKSIRENNUMKETA    PIC 9(02).
-      *拡張構成区分
-               03  WRK-1009-KKCYKSI.
-      *    拡張構成区分
-                   05  WRK-1009-KKCKSIKBN           PIC X(01).
-      *    拡張構成前桁数
-                   05  WRK-1009-KKCKSIMAEKETA       PIC 9(02).
-      *    拡張構成連番号桁数
-                   05  WRK-1009-KKCKSIRENNUMKETA    PIC 9(02).
-      *    拡張構成後桁数
-                   05  WRK-1009-KKCKSIATOKETA       PIC 9(02).
-      *----(01.00.01) LINE ADD END   --------------------------------
+grpsys*
+          COPY    "COMMON-SPA".
       *
        PROCEDURE                    DIVISION    USING
       *----(01.00.01) LINE MOD START -------------------------------
       *     ORCSPTIDAREA.
            ORCSPTIDAREA
-           WRK-1009-TBL.
+           SPA-AREA
+           .
       *----(01.00.01) LINE MOD END   -------------------------------
       *
       *****************************************************************
@@ -136,7 +108,8 @@ grpsys COPY    "COMMON-SPA".
       *
            MOVE    ZERO                TO  SPTID-RC
            IF      SPTID-HOSPNUM        =   ZERO
-               MOVE    1               TO  SPTID-HOSPNUM
+      *******  MOVE    1               TO  SPTID-HOSPNUM
+               MOVE    1                   TO  SPTID-RC
            END-IF
       *
            IF     (SPTID-PTNUM      NOT =   SPACE )  AND
@@ -290,13 +263,13 @@ grpsys                            SPA-AREA
            MOVE    SPTID-PTNUM         TO  WRK-PTNUM
       *
       *    標準構成時のみ変換
-      *****IF  WRK-1009-PTNUMKSIKBN    =   "1"  OR  "3"
-           IF  WRK-1009-PTNUMKSIKBN    =   "3"
+      *****IF  SPA-1009-PTNUMKSIKBN    =   "1"  OR  "3"
+           IF  SPA-1009-PTNUMKSIKBN    =   "3"
                GO  TO                  120-KETA-CNT-EXT
            END-IF
       *    自由構成で数字型の時変換
-           IF  (WRK-1009-PTNUMKSIKBN   =   "1"  )  AND
-               (WRK-1009-JIYKSIKBN NOT =   "2"  )
+           IF  (SPA-1009-PTNUMKSIKBN   =   "1"  )  AND
+               (SPA-1009-JIYKSIKBN NOT =   "2"  )
                GO  TO                  120-KETA-CNT-EXT
            END-IF
       *
@@ -308,21 +281,21 @@ grpsys                            SPA-AREA
            END-PERFORM
       *
       *    自由構成の桁数編集
-           IF  WRK-1009-PTNUMKSIKBN    =   "1"
-               MOVE    WRK-1009-JIYKSIKETA     TO  WRK-RENKETA
+           IF  SPA-1009-PTNUMKSIKBN    =   "1"
+               MOVE    SPA-1009-JIYKSIKETA     TO  WRK-RENKETA
            ELSE
       *    標準構成の桁数
       *    システム管理マスタで設定された桁数をカウント
-               MOVE    WRK-1009-HJNKSIRENNUMKETA   TO  WRK-RENKETA
-               IF  WRK-1009-HJNKSIKBN      =   "1"  OR  "2"
-                   EVALUATE    WRK-1009-HJNKSINENKBN
+               MOVE    SPA-1009-HJNKSIRENNUMKETA   TO  WRK-RENKETA
+               IF  SPA-1009-HJNKSIKBN      =   "1"  OR  "2"
+                   EVALUATE    SPA-1009-HJNKSINENKBN
                    WHEN    "1"
                        ADD     3           TO  WRK-RENKETA
                    WHEN    "2"
                        ADD     4           TO  WRK-RENKETA
                    END-EVALUATE
                END-IF
-               IF  WRK-1009-HJNKSIKBN      =   "1"  OR  "3"
+               IF  SPA-1009-HJNKSIKBN      =   "1"  OR  "3"
                    ADD     1               TO  WRK-RENKETA
                END-IF
            END-IF

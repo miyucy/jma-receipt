@@ -33,6 +33,7 @@
       *  01.00.03    NACL¡ÝÂ¿¡¹Ç¼ 03/04/14  Á´³ÑÈ½Äê½¤Àµ¡¢ÌóÂ«½èÊý½¤Àµ
       *  01.00.04    NACL-Â¿¡¹Ç¼  05/11/22  MONFUNC ÂÐ±þ Â¾
       *  01.00.05    NACL-Â¿¡¹Ç¼  06/01/19  ¥³¥á¥ó¥È£¸£´ÂÐ±þ
+      *  03.05.00    NACL-Â¿¡¹Ç¼  07/04/XX  ¥°¥ë¡¼¥×¿ÇÎÅÂÐ±þ
       *****************************************************************
       *
       *
@@ -1092,7 +1093,7 @@
            IF     WRK-ICD-CDSYU    NOT =   SPACE
       *
                MOVE    SPACE               TO  INPUTCD-REC
-               MOVE    SPA-HOSPNUM          TO  ICD-HOSPNUM
+               MOVE    SPA-HOSPNUM         TO  ICD-HOSPNUM
                MOVE    WRK-ICD-CDSYU       TO  ICD-CDSYU
                MOVE    WRK-CD              TO  ICD-INPUTCD
       *
@@ -1451,21 +1452,20 @@
                MOVE    "%"             TO  ICD-INPUTCD(IDK:1)
            END-IF
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    INPUTCD-REC         TO  MCPDATA-REC
            MOVE    "tbl_inputcd"       TO  MCP-TABLE
            MOVE    WRK-PATH            TO  MCP-PATHNAME
            MOVE    "DBSELECT"          TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
            IF      MCP-RC              =   ZERO
                MOVE    "tbl_inputcd"       TO  MCP-TABLE
                MOVE    WRK-PATH            TO  MCP-PATHNAME
                MOVE    "DBFETCH"           TO  MCP-FUNC
-grpsys         CALL "ORCDBMAIN" USING MCPAREA
-                                      MCPDATA-REC
-grpsys                                SPA-AREA
+grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
+                                                   MCPDATA-REC
+                                                   SPA-AREA
                IF      MCP-RC              =   ZERO
                    MOVE    MCPDATA-REC         TO  INPUTCD-REC
                    MOVE    ZERO                TO  FLG-INPUTCD
@@ -1481,9 +1481,9 @@ grpsys                                SPA-AREA
            MOVE    "tbl_inputcd"       TO  MCP-TABLE
            MOVE    WRK-PATH            TO  MCP-PATHNAME
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
        930-INPUTCD-READ-EXT.

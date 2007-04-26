@@ -37,6 +37,7 @@
       * 01.00.07     NACL-多々納  03/06/06  人工心肺不使用加算の計算修正
       * 01.00.08     NACL-多々納  04/03/16  Ｈ１６年４月改正追加
       * 01.00.09     NACL-多々納  05/12/14  MONFUNC 対応
+      * 03.05.00     NACL-多々納  07/04/XX  グループ診療対応
       *****************************************************************
       *
       *
@@ -176,7 +177,7 @@
            COPY     "CMSANSOTBL.INC".
       *
       *    保険別算定履歴テーブル
-           COPY   "CMSANTEITBL.INC".
+      *    COPY   "CMSANTEITBL.INC".
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -521,7 +522,7 @@
            MOVE    SPA-SRYYMD          TO  SYS-1006-STYUKYMD
            MOVE    SPA-SRYYMD          TO  SYS-1006-EDYUKYMD
       *    システム管理検索
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  SYS-1006-HOSPNUM
            MOVE    SYS-1006-REC        TO  MCPDATA-REC
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key10"             TO  MCP-PATHNAME
@@ -638,12 +639,12 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *    初診時ブラッシング料は初診算定時のみの算定とする
            IF     (IDX-ZS                  >   ZERO       )  AND
                   (WRK-COM-INPUTCD(IDX-ZS) =   "101400030")
-               IF      LNK-ORCSC-SYOSIN2       =   1
-                   CONTINUE
-               ELSE
-                   MOVE    "8014"              TO  SPA-ERRCD
-                   MOVE    "1"                 TO  WRK-COM-CUR (IDX-ZS)
-               END-IF
+      *@@      IF      LNK-ORCSC-SYOSIN2       =   1
+      *            CONTINUE
+      *        ELSE
+      *            MOVE    "8014"              TO  SPA-ERRCD
+      *            MOVE    "1"                 TO  WRK-COM-CUR (IDX-ZS)
+      *@@      END-IF
       *        アフターケアの時算定不可
                IF      SPA-RSI-HKNKBN          =   "3"
                    MOVE    "8018"              TO  SPA-ERRCD
@@ -832,17 +833,18 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                IF       WRK-COM-INPUTCD (IDX1) =   "101500010"  OR
                                                    "101500020"  OR
                                                    "099509901"
-                   IF      FLG-ROU-ARI     =   ZERO
-                       MOVE    "8004"          TO  SPA-ERRCD
-                       MOVE    "1"             TO  WRK-COM-CUR (IDX1)
-                   ELSE
+      *D           IF      FLG-ROU-ARI     =   ZERO
+      *                MOVE    "8004"          TO  SPA-ERRCD
+      *                MOVE    "1"             TO  WRK-COM-CUR (IDX1)
+      *                MOVE    SPACE           TO  WRK-COM-CUR (IDX1)
+      *D           ELSE
                        IF      IDX-KSN         >   ZERO
                            MOVE    "8004"      TO  SPA-ERRCD
                            MOVE    "1"         TO  WRK-COM-CUR (IDX1)
                        ELSE
                            MOVE    IDX1        TO  IDX-KSN
                        END-IF
-                   END-IF
+      *D           END-IF
                END-IF
            END-PERFORM
       *    自動発生の有無
@@ -1890,9 +1892,9 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
        910-DBSELECT-SEC                SECTION.
       *
            MOVE    "DBSELECT"      TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
        910-DBSELECT-EXT.
@@ -1903,9 +1905,9 @@ grpsys                            SPA-AREA
        920-DBFETCH-SEC                 SECTION.
       *
            MOVE    "DBFETCH"       TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
       *
@@ -1918,9 +1920,9 @@ grpsys                            SPA-AREA
        990-DBCLOSE-SEC           SECTION.
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
        990-DBCLOSE-EXT.

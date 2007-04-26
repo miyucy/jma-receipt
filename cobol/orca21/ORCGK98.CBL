@@ -44,6 +44,7 @@
       *  01.00.12    NACL−多々納 04/12/07  点数検査検索追加他
       *  01.00.13    NACL-多々納  05/11/17  MONFUNC 対応
       *  03.04.00    NACL-多々納  06/11/13  検査正式名称表示追加
+      *  03.05.00    NACL-多々納  07/04/XX  グループ診療対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -946,7 +947,7 @@
       *
       *    ＳＰＡセット
            MOVE    ZERO                TO  SPA-K98-NEXT
-           MOVE    1                   TO  SPA-K98-PAGE
+      *D   MOVE    1                   TO  SPA-K98-PAGE
            PERFORM 3102-TENSU-SET-SEC
       *
            .
@@ -977,7 +978,7 @@
            END-PERFORM
       *
            MOVE    SPACE               TO  INPUTCD-REC
-           MOVE    SPA-HOSPNUM          TO  ICD-HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  ICD-HOSPNUM
            MOVE    SPA-K98-CDSYUBETU   TO  ICD-CDSYU
            MOVE    SPA-K98-GMN-INPUT   TO  ICD-INPUTCD
            IF      WRK-KETA            =   20
@@ -988,7 +989,6 @@
                MOVE    "key"               TO  WRK-PATH
            END-IF
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    INPUTCD-REC         TO  MCPDATA-REC
            MOVE    "tbl_inputcd"       TO  MCP-TABLE
            MOVE    WRK-PATH            TO  MCP-PATHNAME
@@ -1106,12 +1106,11 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *    入力セットマスタ検索
            MOVE    SPACE               TO  INPUTSET-REC
            INITIALIZE                      INPUTSET-REC
-           MOVE    SPA-HOSPNUM          TO  ISET-HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  ISET-HOSPNUM
            MOVE    ICD-SRYCD           TO  ISET-SETCD
            MOVE    SPA-SRYYMD          TO  ISET-YUKOSTYMD
            MOVE    SPA-SRYYMD          TO  ISET-YUKOEDYMD
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    INPUTSET-REC        TO  MCPDATA-REC
            MOVE    "tbl_inputset"      TO  MCP-TABLE
            IF      SPA-K98-MOTOPG      =   "K05"
@@ -2385,7 +2384,6 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    1                   TO  SPA-K98-PAGE
            MOVE    SPACE               TO  SPA-K98-GMN-ALL
            PERFORM                     310-SPA-SET-SEC
-      *
       *T2
            IF      SPA-K98-GMN-MAX     =   ZERO
       *        全角で対象がない時、前の条件で検索
@@ -3486,7 +3484,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *
            MOVE    SPA-SRYYMD          TO  TNS-YUKOSTYMD
            MOVE    SPA-SRYYMD          TO  TNS-YUKOEDYMD
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  TNS-HOSPNUM
            MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
       *
            MOVE    "tbl_tensu"         TO  MCP-TABLE
@@ -3525,9 +3523,8 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *
            MOVE    SPA-SRYYMD          TO  TNS-YUKOSTYMD
            MOVE    SPA-SRYYMD          TO  TNS-YUKOEDYMD
-grpsys     MOVE    SPA-HOSPNUM         TO  TNS-HOSPNUM
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  TNS-HOSPNUM
            MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
            MOVE    "tbl_tensu"         TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
@@ -3593,9 +3590,9 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
        910-DBSELECT-SEC                SECTION.
       *
            MOVE    "DBSELECT"      TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
        910-DBSELECT-EXT.
@@ -3606,9 +3603,9 @@ grpsys                            SPA-AREA
        920-DBFETCH-SEC                 SECTION.
       *
            MOVE    "DBFETCH"       TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
       *
@@ -3621,9 +3618,9 @@ grpsys                            SPA-AREA
        990-DBCLOSE-SEC         SECTION.
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
        990-DBCLOSE-EXT.
@@ -3635,9 +3632,9 @@ grpsys                            SPA-AREA
        900-PUT-WINDOW              SECTION.
       *
            MOVE   "PUTWINDOW"       TO  MCP-FUNC.
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
        900-PUT-WINDOW-EXT.

@@ -49,6 +49,8 @@
       *  01.00.20    NACL-多々納  06/07/06  収納変更対応
       *  01.00.21    NACL-多々納  06/08/18  福岡県地方公費に同日初診追加
       *  03.04.00    NACL-多々納  06/11/14  検査正式名称表示追加他
+      *  03.04.01    NACL-多々納  07/02/XX  包括診療処理追加
+      *  03.05.00    NACL-多々納  07/04/XX  グループ診療対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -105,6 +107,7 @@
        01  FILE-NAME2.
            03  FILLER              PIC X(09)   VALUE   "/var/tmp/".
            03  FILLER              PIC X(07)   VALUE   "K01PARA".
+           03  FILE-HOSPNUM2       PIC 9(02)   VALUE   ZERO.
            03  FILE-TERMID2        PIC X(64)   VALUE   SPACE.
            03  FILLER              PIC X(06)   VALUE   ".TXT".
       *
@@ -112,18 +115,21 @@
        01  FILE-NAME1.
            03  FILLER              PIC X(09)   VALUE   "/var/tmp/".
            03  FILLER              PIC X(09)   VALUE   "K02SPASCR".
+           03  FILE-HOSPNUM1       PIC 9(02)   VALUE   ZERO.
            03  FILE-TERMID1        PIC X(64)   VALUE   SPACE.
            03  FILLER              PIC X(04)   VALUE   ".TXT".
       *    パラメタファイル名
        01  FILE-NAME02.
            03  FILLER              PIC X(09)   VALUE   "/var/tmp/".
            03  FILLER              PIC X(10)   VALUE   "WRKK01PARA".
+           03  FILE-HOSPNUM02      PIC 9(02)   VALUE   ZERO.
            03  FILE-TERMID02       PIC X(64)   VALUE   SPACE.
            03  FILLER              PIC X(06)   VALUE   ".TXT".
       *    パラメタファイル名（プレビュー）
        01  FILE-PREVIEW.
            03  FILLER              PIC X(09)   VALUE   "/var/tmp/".
            03  FILLER              PIC X(10)   VALUE   "PRVK01PARA".
+           03  FILE-HOSPNUMPRV     PIC 9(02)   VALUE   ZERO.
            03  FILE-TERMIDPRV      PIC X(64)   VALUE   SPACE.
            03  FILLER              PIC X(06)   VALUE   ".TXT".
       *
@@ -466,6 +472,8 @@
            03  WRK-HOUKNS-CNT          PIC 9(02).
            03  WRK-HOUKNS-IDX          PIC 9(04).
            03  WRK-HOUKNS-NAME         PIC X(100).
+      *    包括剤の判定
+           03  WRK-HKTZAI              PIC X(01).
       *
       *    継続の時、自動発生のチェック
        01  WRK-CONTCHK-TBL.
@@ -1104,7 +1112,7 @@
            MOVE    "*"                 TO  SYS-1008-KBNCD
            MOVE    SPA-SRYYMD          TO  SYS-1008-STYUKYMD
            MOVE    SPA-SRYYMD          TO  SYS-1008-EDYUKYMD
-grpsys     MOVE    SPA-HOSPNUM         TO  SYS-1008-HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  SYS-1008-HOSPNUM
            MOVE    SYS-1008-REC        TO  MCPDATA-REC
       *
       *    システム管理検索
@@ -1149,6 +1157,7 @@ grpsys     MOVE    SPA-HOSPNUM         TO  SYS-1008-HOSPNUM
            MOVE    ZERO                TO  IDG
       *TEST
            MOVE    SPA-TERMID          TO  FILE-TERMID02
+           MOVE    SPA-HOSPNUM         TO  FILE-HOSPNUM02
            OPEN    OUTPUT              PARA-FILE02
            MOVE    ZERO                TO  WRK-EDANUM
       *TEST
@@ -1165,6 +1174,7 @@ grpsys     MOVE    SPA-HOSPNUM         TO  SYS-1008-HOSPNUM
            MOVE    ZERO                TO  LNK-SYUNOU-MAX
       *
            MOVE    SPA-TERMID          TO  FILE-TERMID2
+           MOVE    SPA-HOSPNUM         TO  FILE-HOSPNUM2
            OPEN    INPUT               PARA-FILE
       *
            IF      STS-PARA           =  ZERO
@@ -1462,6 +1472,16 @@ grpsys     MOVE    SPA-HOSPNUM         TO  SYS-1008-HOSPNUM
                END-IF
            END-PERFORM
       *
+      *    包括剤の判定
+           MOVE    SPACE               TO  WRK-HKTZAI
+           IF     (SPA-HKNCOMBINUM     =   "9999" )  OR
+                  (WRK-HKNCOMBI        =   "9999" )
+               MOVE    "2"                 TO  WRK-HKTZAI
+           ELSE
+               IF       (LNK-WKSRY-CONTKBN (1)   =   "H" )
+                   MOVE    "1"                 TO  WRK-HKTZAI
+               END-IF
+           END-IF
       *    剤別編集
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL      (IDX     >   IDX-KOUI )
@@ -1471,13 +1491,10 @@ grpsys     MOVE    SPA-HOSPNUM         TO  SYS-1008-HOSPNUM
       *        回数計
                MOVE    LNK-WKSRY-ZAIKAIKEI(IDX)    TO  WRK-SRYKAISUKEI
       *        自費
-      *        IF      LNK-WKSRY-JIHIMONEYTOTAL (IDX)
-      ***                                      NOT =   ZERO
-                   MOVE    LNK-WKSRY-JIHIMONEYTOTAL (IDX)
+               MOVE    LNK-WKSRY-JIHIMONEYTOTAL (IDX)
                                                   TO  WRK-JIHIMONEY
-                   ADD     LNK-WKSRY-JIHIMONEYTOTAL (IDX)
+               ADD     LNK-WKSRY-JIHIMONEYTOTAL (IDX)
                                                   TO  WRK-JIHIMONEY-KEI
-      ***      END-IF
       *
       *        剤内１行目
                IF      IDX                 =   1
@@ -1558,6 +1575,11 @@ grpsys     MOVE    SPA-HOSPNUM         TO  SYS-1008-HOSPNUM
            END-IF
            COMPUTE WRK-KEI-G           =   WRK-ZAITEN
                                        *   WRK-SRYKAISUKEI
+      *    包括分
+           IF      WRK-HKTZAI      NOT =   SPACE
+               MOVE    ZERO            TO  WRK-KEI-G
+           END-IF
+      *
            MOVE    WRK-KEI-G           TO  SPA-NAI-HKNTEN  (IDX-NAI)
       *    労災金額の時、ゼロ（指導料、その他のみ）
            IF      LNK-WKSRY-SRYKBN (01)   =   "13"  OR  "80"
@@ -1734,7 +1756,7 @@ grpsys     MOVE    SPA-HOSPNUM         TO  SYS-1008-HOSPNUM
            MOVE    SPA-SRYYMD          TO  SYS-1010-STYUKYMD
            MOVE    SPA-SRYYMD          TO  SYS-1010-EDYUKYMD
       *    システム管理検索
-grpsys     MOVE    SPA-HOSPNUM         TO  SYS-1010-HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  SYS-1010-HOSPNUM
            MOVE    SYS-1010-REC        TO  MCPDATA-REC
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key10"             TO  MCP-PATHNAME
@@ -1902,6 +1924,11 @@ grpsys     MOVE    SPA-HOSPNUM         TO  SYS-1010-HOSPNUM
                                        *   LNK-SC97-KAISU
            COMPUTE WRK-KEI-G           =   WRK-ZAITEN
                                        *   WRK-KAISU-9
+      *    包括分
+           IF      WRK-HKTZAI      NOT =   SPACE
+               MOVE    ZERO            TO  WRK-KEI-G
+           END-IF
+      *
            ADD     WRK-KEI-G           TO  SPA-NAI-HKNTEN  (IDX-NAI)
       *    労災金額の時、ゼロ（指導料、その他のみ）
            IF      LNK-WKSRY-SRYKBN (01)   =   "13"  OR  "80"
@@ -1984,6 +2011,11 @@ grpsys     MOVE    SPA-HOSPNUM         TO  SYS-1010-HOSPNUM
                                        *   LNK-SC97-KAISU
            COMPUTE WRK-KEI-G           =   WRK-JIHIMONEY-KEI
                                        *   WRK-KAISU-9
+      *    包括分
+           IF      WRK-HKTZAI      NOT =   SPACE
+               MOVE    ZERO            TO  WRK-KEI-G
+           END-IF
+      *
            MOVE    WRK-KEI-G           TO  WRK-KEI
            MOVE    SPACE               TO  WRK-ZAIKEIJIJ
       *    計集計
@@ -2131,6 +2163,10 @@ grpsys     MOVE    SPA-HOSPNUM         TO  SYS-1010-HOSPNUM
                MOVE    LNK-WKSRY-SRYSYUKBN (IDX)
                                        TO  SPA-GMN-TMEISYO1(IDG)(2:3)
                MOVE    WRK-SRYSYUMEI   TO  SPA-GMN-TMEISYO1(IDG)(7:)
+           END-IF
+      *    包括剤
+           IF      WRK-HKTZAI          =   "1"
+               MOVE    "【包括診療】"  TO   SPA-GMN-TMEISYO1(IDG)(57:)
            END-IF
       *
            INSPECT SPA-GMN-TMEISYO1 (IDG)  REPLACING  ALL "  "  BY "　"
@@ -2467,7 +2503,7 @@ grpsys     MOVE    SPA-HOSPNUM         TO  SYS-1010-HOSPNUM
        310120-YAKUSOKU-SET-SEC        SECTION.
       *
            MOVE    SPACE               TO  INPUTCD-REC
-           MOVE    SPA-HOSPNUM          TO  ICD-HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  ICD-HOSPNUM
       *    セットの桁数は６とする
            MOVE    "6"                 TO  ICD-CDSYU
            MOVE    LNK-WKSRY-SRYCD (IDX IDZ)(1:6)
@@ -2667,6 +2703,11 @@ grpsys     MOVE    SPA-HOSPNUM         TO  SYS-1010-HOSPNUM
            END-IF
            COMPUTE WRK-KEI-G           =   WRK-ZAITEN
                                        *   WRK-SRYKAISUKEI
+      *    包括分
+           IF      WRK-HKTZAI      NOT =   SPACE
+               MOVE    ZERO            TO  WRK-KEI-G
+           END-IF
+      *
            MOVE    WRK-KEI-G           TO  WRK-KEI
       *    合計点数集計
       *****IF      LNK-WKSRY-SRYCD (01 01)     =   "630010002"
@@ -2742,7 +2783,7 @@ grpsys     MOVE    SPA-HOSPNUM         TO  SYS-1010-HOSPNUM
            MOVE    "01"                TO  SYS-5007-KBNCD
            MOVE    SPA-SRYYMD          TO  SYS-5007-STYUKYMD
            MOVE    SPA-SRYYMD          TO  SYS-5007-EDYUKYMD
-grpsys     MOVE    SPA-HOSPNUM         TO  SYS-5007-HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  SYS-5007-HOSPNUM
            MOVE    SYS-5007-REC        TO  MCPDATA-REC
       *
       *    システム管理検索
@@ -3336,6 +3377,7 @@ grpsys     MOVE    SPA-HOSPNUM         TO  SYS-5007-HOSPNUM
            MOVE    ZERO                TO  LNK-SYUNOU-MAX
       *
            MOVE    SPA-TERMID          TO  FILE-TERMID2
+           MOVE    SPA-HOSPNUM         TO  FILE-HOSPNUM2
            OPEN    INPUT               PARA-FILE
       *
            IF      STS-PARA           =  ZERO
@@ -3391,6 +3433,7 @@ grpsys     MOVE    SPA-HOSPNUM         TO  SYS-5007-HOSPNUM
       *
       *    追加
            MOVE    SPA-TERMID          TO  FILE-TERMID2
+           MOVE    SPA-HOSPNUM         TO  FILE-HOSPNUM2
            OPEN    OUTPUT              PARA-FILE
       *
       *    診療行為更新
@@ -3428,6 +3471,7 @@ grpsys     MOVE    SPA-HOSPNUM         TO  SYS-5007-HOSPNUM
        45011-WKSRYACT-PARA2-SEC             SECTION.
       *
            MOVE    SPA-TERMID          TO  FILE-TERMID02
+           MOVE    SPA-HOSPNUM         TO  FILE-HOSPNUM02
            OPEN    INPUT               PARA-FILE02
            MOVE    ZERO                TO  IDX
            IF      STS-PARA           =  ZERO
@@ -3487,11 +3531,6 @@ grpsys     MOVE    SPA-HOSPNUM         TO  SYS-5007-HOSPNUM
                    ADD     1                   TO  IDX2
                    MOVE    "WKSRYACT"          TO  PARA-FILEMEI
                    MOVE    IDX2                TO  PARA-EDANUM
-      *----> take For fiel destroy st
-                   MOVE   "00"                 TO  LNK-SORT-SRYKBN
-                                                         (IDX)
-      *----> take For fiel destroy ed
-
                    MOVE    LNK-WKSRYACT-REC (IDX)
                                                TO  PARA-DATA-REC
                    WRITE                   PARA-REC
@@ -3694,15 +3733,21 @@ grpsys     MOVE    SPA-HOSPNUM         TO  SYS-5007-HOSPNUM
            ELSE
       *        保険算定年齢が７０歳以上か、老人保険の時
                INITIALIZE                  ORCSAGECHKAREA
-               MOVE    SPA-HOSPNUM          TO  AGECHK-HOSPNUM
+               MOVE    SPA-HOSPNUM         TO  AGECHK-HOSPNUM
                MOVE    SPA-PTID            TO  AGECHK-PTID
                MOVE    SPA-SRYYMD          TO  AGECHK-SRYYMD
                MOVE    SPA-BIRTHDAY        TO  AGECHK-BIRTHDAY
                MOVE    SPA-NYUGAIKBN       TO  AGECHK-NYUGAIKBN
                CALL    "ORCSAGECHK"        USING
                                            ORCSAGECHKAREA
+                                           SPA-AREA
                IF     (AGECHK-NENREI       >=   70  )  OR
                       (SPA-NAI-ROUJIN      =    1   )
+                   MOVE    "1"             TO
+                                           LNK-S01-KOUREI-ZAITAKU-KBN
+               END-IF
+      *        Ｈ１９．４から年令に関係なくすべて対象
+               IF     ( SPA-SRYYMD         >=  "20070401")
                    MOVE    "1"             TO
                                            LNK-S01-KOUREI-ZAITAKU-KBN
                END-IF
@@ -4299,11 +4344,10 @@ grpsys     MOVE    SPA-HOSPNUM         TO  SYS-5007-HOSPNUM
       *    保険組合マスター編集
            MOVE    SPACE               TO  HKNCOMBI-REC
            INITIALIZE                  HKNCOMBI-REC
-           MOVE    SPA-HOSPNUM         TO  COMB-HOSPNUM
+           MOVE    SPA-HOSPNUM        TO  COMB-HOSPNUM
            MOVE    SPA-PTID           TO  COMB-PTID
            MOVE    SPA-HKNCOMBINUM    TO  COMB-HKNCOMBINUM
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    HKNCOMBI-REC        TO  MCPDATA-REC
            MOVE    "tbl_hkncombi"      TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
@@ -4432,7 +4476,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *
            MOVE    SPACE               TO  JYURRK-REC
            INITIALIZE                  JYURRK-REC
-           MOVE    SPA-HOSPNUM          TO  JYURRK-HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  JYURRK-HOSPNUM
            MOVE    SPA-PTID            TO  JYURRK-PTID
            MOVE    SPA-NYUGAIKBN       TO  JYURRK-NYUGAIKBN
            MOVE    SPA-SRYKA           TO  JYURRK-SRYKA
@@ -4444,7 +4488,6 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    SPA-RENNUM          TO  JYURRK-RENNUM
            END-IF
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    JYURRK-REC          TO  MCPDATA-REC
            MOVE    "tbl_jyurrk"        TO  MCP-TABLE
            MOVE    "key5"              TO  MCP-PATHNAME
@@ -4474,14 +4517,13 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *            診療会計マスタ読み込み
                    MOVE    SPACE               TO  SRYACCT-REC
                    INITIALIZE                      SRYACCT-REC
-                   MOVE    SPA-HOSPNUM          TO  ACCT-HOSPNUM
+                   MOVE    SPA-HOSPNUM         TO  ACCT-HOSPNUM
                    MOVE    SPA-NYUGAIKBN       TO  ACCT-NYUGAIKBN
                    MOVE    SPA-PTID            TO  ACCT-PTID
                    MOVE    SPA-SRYKA           TO  ACCT-SRYKA
                    MOVE    SPA-SRYYMD(1:6)     TO  ACCT-SRYYM
                    MOVE    JYURRK-ZAINUM(IDX)  TO  ACCT-ZAINUM
       *
-grpsys*            MOVE SPA-HOSPNUM TO -HOSPNUM
                    MOVE    SRYACCT-REC         TO  MCPDATA-REC
                    MOVE    "tbl_sryacct"       TO  MCP-TABLE
                    MOVE    "key5"              TO  MCP-PATHNAME
@@ -4551,14 +4593,13 @@ grpsys*            MOVE SPA-HOSPNUM TO -HOSPNUM
       *    診療会計マスターから診療行為マスターを検索する
            MOVE    SPACE               TO  SRYACT-REC
            INITIALIZE                      SRYACT-REC
-           MOVE    ACCT-HOSPNUM         TO  SRY-HOSPNUM
+           MOVE    ACCT-HOSPNUM        TO  SRY-HOSPNUM
            MOVE    ACCT-NYUGAIKBN      TO  SRY-NYUGAIKBN
            MOVE    ACCT-PTID           TO  SRY-PTID
            MOVE    ACCT-SRYKA          TO  SRY-SRYKA
            MOVE    ACCT-SRYYM          TO  SRY-SRYYM
            MOVE    ACCT-ZAINUM         TO  SRY-ZAINUM
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SRYACT-REC          TO  MCPDATA-REC
            MOVE    "tbl_sryact"        TO  MCP-TABLE
            MOVE    "key2"              TO  MCP-PATHNAME
@@ -4629,6 +4670,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            INITIALIZE                  HZN-PARA-AREA
       *
            MOVE    SPA-TERMID          TO  FILE-TERMID2
+           MOVE    SPA-HOSPNUM         TO  FILE-HOSPNUM2
            OPEN    INPUT               PARA-FILE
            IF      STS-PARA           =  ZERO
                PERFORM 980-PARA-READ-SEC
@@ -4677,6 +4719,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *
       *    追加
            MOVE    SPA-TERMID          TO  FILE-TERMID2
+           MOVE    SPA-HOSPNUM         TO  FILE-HOSPNUM2
            OPEN    OUTPUT              PARA-FILE
       *
       *    診療行為更新
@@ -4764,6 +4807,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
        210-WRKPARA-DEL-SEC               SECTION.
       *
            MOVE    SPA-TERMID          TO  FILE-TERMID02
+           MOVE    SPA-HOSPNUM         TO  FILE-HOSPNUM02
       *
            MOVE    ZERO                TO  IF-RESULT
            MOVE    FILE-NAME02         TO  IF-FILENAME
@@ -4783,6 +4827,8 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *
            MOVE    SPA-TERMID          TO  FILE-TERMID1
            MOVE    SPA-TERMID          TO  FILE-TERMID2
+           MOVE    SPA-HOSPNUM         TO  FILE-HOSPNUM1
+           MOVE    SPA-HOSPNUM         TO  FILE-HOSPNUM2
       *
            MOVE    ZERO                TO  IF-RESULT
            MOVE    FILE-NAME1          TO  IF-FILENAME
@@ -4819,6 +4865,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    ZERO                TO  LNK-SYUNOU-MAX
       *
            MOVE    SPA-TERMID          TO  FILE-TERMID2
+           MOVE    SPA-HOSPNUM         TO  FILE-HOSPNUM2
            OPEN    INPUT               PARA-FILE
       *
            IF      STS-PARA           =  ZERO
@@ -4885,6 +4932,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *
       *    追加
            MOVE    SPA-TERMID          TO  FILE-TERMID2
+           MOVE    SPA-HOSPNUM         TO  FILE-HOSPNUM2
            OPEN    OUTPUT              PARA-FILE
       *
       *    診療行為更新
@@ -4959,11 +5007,10 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
        4900-WKSRYACT-CLEAR-SEC             SECTION.
       *
            INITIALIZE                  WKSRYACT-REC
-           MOVE    SPA-HOSPNUM          TO  WKSRY-HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  WKSRY-HOSPNUM
            MOVE    SPA-NYUGAIKBN       TO  WKSRY-NYUGAIKBN
            MOVE    SPA-PTID            TO  WKSRY-PTID
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    WKSRYACT-REC        TO  MCPDATA-REC
            MOVE    "tbl_wksryact"      TO  MCP-TABLE
            MOVE    "key6"              TO  MCP-PATHNAME
@@ -4980,14 +5027,13 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                UNTIL   FLG-WKSRYACT    =   1
                MOVE    ZERO                TO  WKSRY-MOD-FLG
       *
-grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    WKSRYACT-REC        TO  MCPDATA-REC
                MOVE    "DBUPDATE"          TO  MCP-FUNC
                MOVE    "tbl_wksryact"      TO  MCP-TABLE
                MOVE    "key"               TO  MCP-PATHNAME
-grpsys         CALL "ORCDBMAIN" USING MCPAREA
-                                      MCPDATA-REC
-grpsys                                SPA-AREA
+grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
+                                                   MCPDATA-REC
+                                                   SPA-AREA
       *
                MOVE    "tbl_wksryact"      TO  MCP-TABLE
                MOVE    "key6"              TO  MCP-PATHNAME
@@ -5264,6 +5310,7 @@ grpsys                                SPA-AREA
            MOVE    ZERO                TO  LNK-SYUNOU-MAX
       *
            MOVE    SPA-TERMID          TO  FILE-TERMID2
+           MOVE    SPA-HOSPNUM         TO  FILE-HOSPNUM2
            OPEN    INPUT               PARA-FILE
       *
            IF      STS-PARA           =  ZERO
@@ -5290,10 +5337,13 @@ grpsys                                SPA-AREA
                        MOVE    IDX                 TO  LNK-WKSRYACT-MAX
       *            収納
                    WHEN    "SYUNOU"
-                       ADD     1                   TO  LNK-SYUNOU-MAX
-                       IF      LNK-SYUNOU-MAX      <=  15
-                           MOVE    PARA-DATA-REC   TO  LNK-SYUNOU-REC
+                       MOVE    PARA-DATA-REC       TO  SYUNOU-REC
+                       IF     (SYU-HKNCOMBINUM     NOT =   "9999" )
+                           ADD     1               TO  LNK-SYUNOU-MAX
+                           IF      LNK-SYUNOU-MAX      <=  15
+                             MOVE    PARA-DATA-REC   TO  LNK-SYUNOU-REC
                                                        (LNK-SYUNOU-MAX)
+                           END-IF
                        END-IF
       *            その他
                    WHEN    OTHER
@@ -5309,6 +5359,7 @@ grpsys                                SPA-AREA
       *
       *    追加
            MOVE    SPA-TERMID          TO  FILE-TERMIDPRV
+           MOVE    SPA-HOSPNUM         TO  FILE-HOSPNUMPRV
            OPEN    OUTPUT              PARA-PREVIEW
       *
       *    診療行為更新（プレビュー）
@@ -5359,6 +5410,7 @@ grpsys                                SPA-AREA
       *
       *    ファイル削除
            MOVE    SPA-TERMID          TO  FILE-TERMIDPRV
+           MOVE    SPA-HOSPNUM         TO  FILE-HOSPNUMPRV
            MOVE    ZERO                TO  IF-RESULT
            MOVE    FILE-PREVIEW        TO  IF-FILENAME
            CALL    "orcfiledel"        USING
@@ -5376,8 +5428,14 @@ grpsys                                SPA-AREA
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   LNK-WKSRYACT-MAX
                MOVE    ZERO                TO  FLG-DEL
+      *        包括分は対象外
+               IF     (LNK-WKSRY-HKNCOMBI (IDX)    =   "9999")
+                   OR (LNK-WKSRY-CONTKBN  (IDX)    =   "H"   )
+                   MOVE    1               TO  FLG-DEL
+               END-IF
                PERFORM VARYING     IDY     FROM    1   BY  1
-                       UNTIL       IDY     >   600
+                       UNTIL      (IDY     >   600     )
+                               OR (FLG-DEL =   1       )
                    IF      LNK-WKSRY-ZAINUM (IDX)  =   SPA-NAI-ZAINUM
                                                                  (IDY)
                        IF      SPA-NAI-DELFLG (IDY)    =   1
@@ -5392,10 +5450,6 @@ grpsys                                SPA-AREA
                    ADD     1                   TO  IDX2
                    MOVE    "WKSRYACT"          TO  PARA-FILEMEIPRV
                    MOVE    IDX2                TO  PARA-EDANUMPRV
-      *----> take For fiel destroy st
-                   MOVE   "00"                 TO  LNK-SORT-SRYKBN
-                                                         (IDX)
-      *----> take For fiel destroy ed
                    MOVE    LNK-WKSRYACT-REC (IDX)
                                                TO  PARA-DATA-RECPRV
                    WRITE                       PARA-RECPRV
@@ -5426,6 +5480,7 @@ grpsys                                SPA-AREA
            INITIALIZE                  HZN-PARA-AREA
       *
            MOVE    SPA-TERMID          TO  FILE-TERMID2
+           MOVE    SPA-HOSPNUM         TO  FILE-HOSPNUM2
            OPEN    INPUT               PARA-FILE
            IF      STS-PARA           =  ZERO
                PERFORM 980-PARA-READ-SEC
@@ -5455,6 +5510,7 @@ grpsys                                SPA-AREA
       *
       *    追加
            MOVE    SPA-TERMID          TO  FILE-TERMIDPRV
+           MOVE    SPA-HOSPNUM         TO  FILE-HOSPNUMPRV
            OPEN    OUTPUT              PARA-PREVIEW
       *
       *    診療行為更新（プレビュー）
@@ -5481,6 +5537,7 @@ grpsys                                SPA-AREA
       *
       *    ファイル削除
            MOVE    SPA-TERMID          TO  FILE-TERMIDPRV
+           MOVE    SPA-HOSPNUM         TO  FILE-HOSPNUMPRV
            MOVE    ZERO                TO  IF-RESULT
            MOVE    FILE-PREVIEW        TO  IF-FILENAME
            CALL    "orcfiledel"        USING
@@ -5992,7 +6049,7 @@ grpsys                                SPA-AREA
            MOVE    "*"                 TO  SYS-4001-KBNCD
            MOVE    SPA-SRYYMD          TO  SYS-4001-STYUKYMD
            MOVE    SPA-SRYYMD          TO  SYS-4001-EDYUKYMD
-grpsys     MOVE    SPA-HOSPNUM         TO  SYS-4001-HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  SYS-4001-HOSPNUM
            MOVE    SYS-4001-REC        TO  MCPDATA-REC
       *
       *    システム管理検索
@@ -6028,9 +6085,8 @@ grpsys     MOVE    SPA-HOSPNUM         TO  SYS-4001-HOSPNUM
       *
            MOVE    SPA-SRYYMD          TO  TNS-YUKOSTYMD
            MOVE    SPA-SRYYMD          TO  TNS-YUKOEDYMD
-grpsys     MOVE    SPA-HOSPNUM         TO  TNS-HOSPNUM
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  TNS-HOSPNUM
            MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
            MOVE    "tbl_tensu"         TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
@@ -6137,7 +6193,6 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *****************************************************************
        930-INPUTCD-READ-SEC         SECTION.
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    INPUTCD-REC         TO  MCPDATA-REC
            MOVE    "tbl_inputcd"       TO  MCP-TABLE
            MOVE    "key2"              TO  MCP-PATHNAME
@@ -6287,9 +6342,9 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
        910-DBSELECT-SEC                SECTION.
       *
            MOVE    "DBSELECT"      TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
        910-DBSELECT-EXT.
@@ -6300,9 +6355,9 @@ grpsys                            SPA-AREA
        920-DBFETCH-SEC                 SECTION.
       *
            MOVE    "DBFETCH"       TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
       *
@@ -6315,9 +6370,9 @@ grpsys                            SPA-AREA
        990-DBCLOSE-SEC         SECTION.
       *
            MOVE    "DBCLOSECURSOR"      TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
        990-DBCLOSE-EXT.
@@ -6346,9 +6401,9 @@ grpsys                            SPA-AREA
        900-PUT-WINDOW              SECTION.
       *
            MOVE   "PUTWINDOW"       TO  MCP-FUNC.
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
        900-PUT-WINDOW-EXT.

@@ -45,6 +45,8 @@
       *  01.00.13    NACL-多々納  04/12/09  重複チェック修正
       *  01.00.14    NACL-多々納  05/12/08  MONFUNC 対応 他
       *  01.00.15    NACL-多々納  06/03/XX  Ｈ１８．４改正対応
+      *  03.04.00    NACL-多々納  07/01/26  コンタクトレンズ検査チェック追加
+      *  03.05.00    NACL-多々納  07/04/XX  グループ診療対応
       *****************************************************************
       *
       *
@@ -811,6 +813,14 @@
                    IF      WRK-COM-INPUTCD (IDX-Z) =   "160161510"
                        PERFORM 100113-NYUINSYOKAI-SEC
                    END-IF
+      *            初回コンタクトレンズ検査チェック
+                   IF     (SPA-ERRCD           =   SPACE ) AND
+                          (LNK-ORCSC-PG        =   "K02" ) AND
+                          (WRK-COM-INPUTCD (IDX-Z) =   "160179210"
+                                                   OR  "160179410") AND
+                          (WRK-COM-KZMFLG (IDX-Z)  =   SPACE    ) 
+                       PERFORM 100115-CONTAKUCHEK-SEC
+                   END-IF
       *        器材
                WHEN    "7"
       *            酸素区分判定
@@ -931,7 +941,7 @@
            MOVE    SPA-SRYYMD          TO  SYS-1006-STYUKYMD
            MOVE    SPA-SRYYMD          TO  SYS-1006-EDYUKYMD
       *    システム管理検索
-grpsys     MOVE    SPA-HOSPNUM         TO  SYS-1006-HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  SYS-1006-HOSPNUM
            MOVE    SYS-1006-REC        TO  MCPDATA-REC
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key10"             TO  MCP-PATHNAME
@@ -1234,7 +1244,7 @@ grpsys     MOVE    SPA-HOSPNUM         TO  SYS-1006-HOSPNUM
       *
       *    算定履歴検索
            INITIALIZE                  SANTEI-REC
-           MOVE    SPA-HOSPNUM          TO  SANTEI-HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  SANTEI-HOSPNUM
            MOVE    SPA-PTID            TO  SANTEI-PTID
            MOVE    SPA-SRYYMD (1:6)    TO  SANTEI-SRYYM
            MOVE    WRK-SRYCD           TO  SANTEI-SRYCD
@@ -1255,7 +1265,6 @@ grpsys     MOVE    SPA-HOSPNUM         TO  SYS-1006-HOSPNUM
                    MOVE    SPA-SRYKA           TO  SANTEI-SRYKA
            END-EVALUATE
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SANTEI-REC          TO  MCPDATA-REC
            MOVE    "tbl_santei"        TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
@@ -1360,7 +1369,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *
       *    算定履歴検索（算定履歴区分は１とする）
            INITIALIZE                  SANTEI-REC
-           MOVE    SPA-HOSPNUM          TO  SANTEI-HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  SANTEI-HOSPNUM
            MOVE    SPA-PTID            TO  SANTEI-PTID
            MOVE    SPA-SRYYMD (1:6)    TO  SANTEI-SRYYM
            MOVE    WRK-SRYCD           TO  SANTEI-SRYCD
@@ -1368,7 +1377,6 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    ZERO                TO  SANTEI-SRYKA
            MOVE    ZERO                TO  SANTEI-HKNCOMBINUM
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SANTEI-REC          TO  MCPDATA-REC
            MOVE    "tbl_santei"        TO  MCP-TABLE
            MOVE    "key8"              TO  MCP-PATHNAME
@@ -1429,6 +1437,118 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            END-IF
            .
        100113-NYUINSYOKAI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    初回コンタクトレンズ検査チェックク処理
+      *****************************************************************
+       100115-CONTAKUCHEK-SEC                  SECTION.
+      *
+           MOVE    WRK-COM-INPUTCD (IDX-Z)
+                                       TO  WRK-SRYCD
+           PERFORM 1001151-CONT-SANTEICHK-SEC
+           IF      SPA-ERRCD           =   SPACE
+               IF      WRK-COM-INPUTCD (IDX-Z) =   "160179210"
+      *            コンタクトレンズ検査１（既装用者）
+                   MOVE    "160179310"         TO  WRK-SRYCD
+               ELSE
+      *            コンタクトレンズ検査２（既装用者）
+                   MOVE    "160179510"         TO  WRK-SRYCD
+               END-IF
+               PERFORM 1001151-CONT-SANTEICHK-SEC
+           END-IF
+           .
+       100115-CONTAKUCHEK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    初回コンタクトレンズ検査チェックク処理
+      *****************************************************************
+       1001151-CONT-SANTEICHK-SEC                  SECTION.
+      *
+           MOVE    ZERO               TO  WRK-TEI-CNT
+           IF      LNK-ORCSC-SYORIFLG  =   1
+               PERFORM VARYING     IDT     FROM    1   BY  1
+                       UNTIL      (IDT     >   200 )  OR
+                                  (LNK-ORCSC-TEI-SRYCD(IDT)
+                                           =   SPACE )
+                   IF      WRK-SRYCD       =   LNK-ORCSC-TEI-SRYCD(IDT)
+                       ADD     LNK-ORCSC-TEI-KAISU(IDT)
+                                           TO  WRK-TEI-CNT
+                   END-IF
+               END-PERFORM
+           END-IF
+      *
+      *    算定履歴検索（算定履歴区分は１とする）
+           INITIALIZE                  SANTEI-REC
+           MOVE    SPA-HOSPNUM         TO  SANTEI-HOSPNUM
+           MOVE    SPA-PTID            TO  SANTEI-PTID
+           MOVE    SPA-SRYYMD (1:6)    TO  SANTEI-SRYYM
+           MOVE    WRK-SRYCD           TO  SANTEI-SRYCD
+           MOVE    ZERO                TO  SANTEI-NYUGAIKBN
+           MOVE    ZERO                TO  SANTEI-SRYKA
+           MOVE    ZERO                TO  SANTEI-HKNCOMBINUM
+      *
+           MOVE    SANTEI-REC          TO  MCPDATA-REC
+           MOVE    "tbl_santei"        TO  MCP-TABLE
+           MOVE    "key8"              TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_santei"        TO  MCP-TABLE
+               MOVE    "key8"              TO  MCP-PATHNAME
+               PERFORM 920-SANTEI-READ-SEC
+           ELSE
+               MOVE    1                   TO  FLG-SANTEI
+           END-IF
+           MOVE    ZERO                TO  FLG-SYOKAI-OK
+           PERFORM UNTIL   (FLG-SANTEI     =   1   )  OR
+                           (FLG-SYOKAI-OK  =   1   )
+               MOVE    SANTEI-SRYYM        TO  WRK-YM
+               MOVE    ZERO                TO  WRK-DD
+               PERFORM VARYING    IDX2     FROM    1   BY  1
+                       UNTIL     (IDX2     >   31  )  OR
+                                 (FLG-SYOKAI-OK    =   1   )
+                   IF      SANTEI-DAY (IDX2)   NOT =   ZERO
+                       MOVE    1               TO  FLG-SYOKAI-OK
+                       MOVE    IDX2            TO  WRK-DD
+      *                訂正の時当日分は算定なしとする
+                       IF     (LNK-ORCSC-SYORIFLG  =   1  )  AND
+                              (WRK-YMD             =   SPA-SRYYMD) AND
+                              (WRK-TEI-CNT         >   ZERO )
+                           MOVE    ZERO        TO  FLG-SYOKAI-OK
+                       END-IF
+                   END-IF
+               END-PERFORM
+               MOVE    "tbl_santei"        TO  MCP-TABLE
+               MOVE    "key8"              TO  MCP-PATHNAME
+               PERFORM 920-SANTEI-READ-SEC
+           END-PERFORM
+      *
+           MOVE    "tbl_santei"        TO  MCP-TABLE
+           MOVE    "key8"              TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+      *
+           IF      FLG-SYOKAI-OK       =   1
+               IF      LNK-ORCSC-KEI-IDX   =   ZERO
+                   MOVE    IDX-Z           TO  LNK-ORCSC-KEI-IDX
+                   MOVE    "1"             TO  WRK-COM-KZMFLG (IDX-Z)
+                   MOVE    "K600"          TO  WRK-ERRCD
+                   MOVE    "1"             TO  WRK-COM-CUR (IDX-Z)
+      *            発生日
+                   INITIALIZE                      STS-AREA-DAY
+                   INITIALIZE                      LNK-DAY2-AREA
+                   MOVE    "21"            TO  LNK-DAY2-IRAI
+                   MOVE    WRK-YMD         TO  LNK-DAY2-YMD
+                   CALL    "ORCSDAY"       USING   STS-AREA-DAY
+                                                   LNK-DAY2-AREA
+                   STRING  "算定日："          DELIMITED  BY  SIZE
+                           LNK-DAY2-EDTYMD3    DELIMITED  BY  SIZE
+                          INTO                 LNK-ORCSC-ERRMSG
+                   END-STRING
+               END-IF
+           END-IF
+           .
+       1001151-CONT-SANTEICHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -2254,6 +2374,17 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *            ２つ以上のチェック
                    PERFORM 20012-JYUFUKU-CHK2-SEC
                END-IF
+      *!
+      *        コンタクトレンズ検査料の算定不可
+               IF     (SPA-ERRCD           =   SPACE )  AND
+                      (WRK-COM-CDKBN-KBN   (IDX-Z)
+                                           =   "D"   )  AND
+                      (WRK-COM-CDKBN-KBNNUM (IDX-Z)
+                                           =   "282" )  AND
+                      (WRK-COM-CDKBN-KBNNUM-EDA(IDX-Z)
+                                           =   "03"   )
+                   PERFORM 2003-CCONTAKU-CHK2-SEC
+               END-IF
              END-IF
            END-PERFORM
       *
@@ -2498,13 +2629,12 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *
            MOVE    SPACE               TO  SRYACCT-REC
            INITIALIZE                      SRYACCT-REC
-           MOVE    SPA-HOSPNUM          TO  ACCT-HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  ACCT-HOSPNUM
            MOVE    SPA-NYUGAIKBN       TO  ACCT-NYUGAIKBN
            MOVE    SPA-PTID            TO  ACCT-PTID
            MOVE    SPA-SRYYMD(1:6)     TO  ACCT-SRYYM
            MOVE    "60"                TO  ACCT-SRYKBN
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SRYACCT-REC         TO  MCPDATA-REC
            MOVE    "tbl_sryacct"       TO  MCP-TABLE
            MOVE    "key14"             TO  MCP-PATHNAME
@@ -2549,14 +2679,13 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *    診療会計マスターから診療行為マスターを検索する
            MOVE    SPACE               TO  SRYACT-REC
            INITIALIZE                      SRYACT-REC
-           MOVE    ACCT-HOSPNUM         TO  SRY-HOSPNUM
+           MOVE    ACCT-HOSPNUM        TO  SRY-HOSPNUM
            MOVE    ACCT-NYUGAIKBN      TO  SRY-NYUGAIKBN
            MOVE    ACCT-PTID           TO  SRY-PTID
            MOVE    ACCT-SRYKA          TO  SRY-SRYKA
            MOVE    ACCT-SRYYM          TO  SRY-SRYYM
            MOVE    ACCT-ZAINUM         TO  SRY-ZAINUM
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SRYACT-REC          TO  MCPDATA-REC
            MOVE    "tbl_sryact"        TO  MCP-TABLE
            MOVE    "key2"              TO  MCP-PATHNAME
@@ -2702,6 +2831,40 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            .
       *
        20011-JYUFUKU-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *     コンタクトレンズ検査料の算定不可
+      *****************************************************************
+       2003-CCONTAKU-CHK2-SEC           SECTION.
+      *
+           PERFORM VARYING     IDX2    FROM    1   BY  1
+                   UNTIL      (IDX2    >   200  )  OR
+                              (WRK-COM-INPUTCD (IDX2)  =   SPACE  AND
+                               WRK-GMN-INPUTCD (IDX2)  =   SPACE )  OR
+                              (SPA-ERRCD   NOT =   SPACE  )
+               IF     (IDX-Z           NOT =   IDX2   )  AND
+                      (WRK-COM-CDKBN-KBN(IDX2)
+                                           =   "D"   )
+                   EVALUATE    WRK-COM-CDKBN-KBNNUM (IDX2)
+                       WHEN    "255"  THRU   "281"
+                           MOVE    "0600"          TO  SPA-ERRCD
+                           MOVE    "1"             TO  WRK-COM-CUR
+                                                                  (IDX2)
+                       WHEN    "282"
+                           IF      WRK-COM-CDKBN-KBNNUM-EDA(IDX2)
+                                                   =   "00"
+                                                   OR  "02"
+                                                   OR  "03"
+                               MOVE    "0600"          TO  SPA-ERRCD
+                               MOVE    "1"             TO  WRK-COM-CUR
+                                                                  (IDX2)
+                           END-IF
+                   END-EVALUATE
+               END-IF
+           END-PERFORM
+           .
+       2003-CCONTAKU-CHK2-EXT.
            EXIT.
       *
       *****************************************************************
@@ -3228,6 +3391,13 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                IF      WRK-COM-INPUTCD (IDX)      =   "113001210"  OR
                                                       "113001310"  OR
                                                       "113002110"
+      *          特定薬剤治療管理料
+                                                   OR "113000410"
+                                                   OR "113000510"
+                                                   OR "113000670"
+                                                   OR "113000770"
+                                                   OR "180000110"
+                                                   OR "180000210"
                    MOVE    1               TO  FLG-FUKA
                END-IF
       *
@@ -3552,6 +3722,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                    MOVE    WRK-KEN-HKNCOMBI (WRK-KENIDX)
                                                TO  WRK-KENTAI-HKNCOMBI
                END-IF
+      *
                MOVE    1               TO  FLG-KENTAI2
                ADD     1               TO  WRK-KENTAI2-CNT
            END-IF
@@ -3561,7 +3732,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    院外　算定処理
+      *    入院回数集計処理
       *****************************************************************
        3009-NYUINKAISU-SEC              SECTION.
       *
@@ -3776,7 +3947,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                    UNTIL      (IDX2        >   4       )   OR
                               (TNS-AGEKSNSRYCD(IDX2)   =   SPACE  OR
                                                            ZERO )
-               MOVE    ZERO                TO  FLG-ERR
+               MOVE    ZERO                    TO  FLG-ERR
       *        加算追加
                MOVE    TNS-AGEKSNSRYCD (IDX2)  TO  WRK-SRYCD
       *        上限年齢判定
@@ -4128,9 +4299,8 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *
            MOVE    SPA-SRYYMD          TO  TNS-YUKOSTYMD
            MOVE    SPA-SRYYMD          TO  TNS-YUKOEDYMD
-grpsys     MOVE    SPA-HOSPNUM         TO  TNS-HOSPNUM
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  TNS-HOSPNUM
            MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
            MOVE    "tbl_tensu"         TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
@@ -4235,9 +4405,9 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
        910-DBSELECT-SEC                SECTION.
       *
            MOVE    "DBSELECT"      TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
        910-DBSELECT-EXT.
@@ -4248,9 +4418,9 @@ grpsys                            SPA-AREA
        920-DBFETCH-SEC                 SECTION.
       *
            MOVE    "DBFETCH"       TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
       *
@@ -4263,9 +4433,9 @@ grpsys                            SPA-AREA
        990-DBCLOSE-SEC         SECTION.
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
        990-DBCLOSE-EXT.

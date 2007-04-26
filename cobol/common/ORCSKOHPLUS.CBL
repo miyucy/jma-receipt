@@ -29,6 +29,8 @@
       * Maj/Min/Rev  修正者       日付      内容
       *  01.00.01    NACL−小豆沢 03/10/07  引数にレセプト請求区分の追加
       *  01.00.02    NACL−小豆沢 06/12/15  MONFUNC対応
+      *
+      *  03.05.01    NACL-藤原    07/04/19  グループ診療対応
       *****************************************************************
       *
       *
@@ -42,8 +44,6 @@
       *FILE                        SECTION.
       *
        WORKING-STORAGE             SECTION.
-grpsys*
-grpsys COPY    "COMMON-SPA".
       *
       *    フラグ領域
        01  FLG-AREA.
@@ -114,9 +114,12 @@ grpsys COPY    "COMMON-SPA".
       *
       *    公費付加情報取得用パラメタ
            COPY    "CPORCSKOHPLUS.INC".
+grpsys*
+grpsys     COPY    "COMMON-SPA".
       *
        PROCEDURE                   DIVISION    USING
            ORCSKOHPLUS-AREA
+grpsys     SPA-AREA
            .
       *
       *****************************************************************
@@ -160,7 +163,7 @@ grpsys COPY    "COMMON-SPA".
       *
       *    患者マスター検索
            INITIALIZE                      PTINF-REC
-           MOVE    LNK-SKOHPLUS-HOSPID    TO  PTINF-HOSPID
+grpsys     MOVE    LNK-SKOHPLUS-HOSPNUM   TO  PTINF-HOSPNUM
            MOVE    LNK-SKOHPLUS-PTID      TO  PTINF-PTID
            PERFORM 900-PTINF-READ-SEC
            IF      FLG-PTINF           NOT =   ZERO
@@ -181,7 +184,8 @@ grpsys COPY    "COMMON-SPA".
       *保険組合せ情報取得
            MOVE    ZERO                TO   FLG-HKNCOMBI
            INITIALIZE                       HKNCOMBI-REC
-           MOVE    LNK-SKOHPLUS-HOSPID TO   COMB-HOSPID
+grpsys     MOVE    LNK-SKOHPLUS-HOSPNUM
+                                       TO   COMB-HOSPNUM
            MOVE    LNK-SKOHPLUS-PTID   TO   COMB-PTID
            MOVE    LNK-SKOHPLUS-HKNCOMBI
                                        TO   COMB-HKNCOMBINUM
@@ -219,7 +223,7 @@ grpsys COPY    "COMMON-SPA".
            END-IF
       *市町村番号の取得（公費負担者番号の５桁目から長さ３桁）
            INITIALIZE                         PTKOHINF-REC
-           MOVE    LNK-SKOHPLUS-HOSPID    TO  PTKOH-HOSPID
+grpsys     MOVE    LNK-SKOHPLUS-HOSPNUM   TO  PTKOH-HOSPNUM
            MOVE    LNK-SKOHPLUS-PTID      TO  PTKOH-PTID
            MOVE    COMB-KOHID(KOH-IDX)    TO  PTKOH-KOHID
            MOVE    "tbl_ptkohinf"         TO  MCP-TABLE
@@ -237,7 +241,7 @@ grpsys COPY    "COMMON-SPA".
       *
       *公費付加情報テーブルより情報取得
            INITIALIZE                         KOHPLUS-REC
-           MOVE    LNK-SKOHPLUS-HOSPID    TO  KOHPLUS-HOSPID
+grpsys     MOVE    LNK-SKOHPLUS-HOSPNUM   TO  KOHPLUS-HOSPNUM
            MOVE    LNK-SKOHPLUS-PREFNUM   TO  KOHPLUS-PREFNUM
            MOVE    PTKOH-FTNJANUM(5:3)    TO  KOHPLUS-CITYNUM
            MOVE    COMB-KOHHKNNUM(KOH-IDX) TO KOHPLUS-KOHNUM
@@ -265,7 +269,7 @@ grpsys COPY    "COMMON-SPA".
                    MOVE    "key2"                 TO  MCP-PATHNAME
                    PERFORM   910-DB-CLOSE-SEC
                    INITIALIZE                         KOHPLUS-REC
-                   MOVE    LNK-SKOHPLUS-HOSPID    TO  KOHPLUS-HOSPID
+grpsys             MOVE    LNK-SKOHPLUS-HOSPNUM   TO  KOHPLUS-HOSPNUM
                    MOVE    LNK-SKOHPLUS-PREFNUM   TO  KOHPLUS-PREFNUM
                    MOVE    PTKOH-FTNJANUM(5:3)    TO  KOHPLUS-CITYNUM
                    MOVE    COMB-KOHHKNNUM(KOH-IDX) TO KOHPLUS-KOHNUM
@@ -318,21 +322,14 @@ grpsys COPY    "COMMON-SPA".
       *****************************************************************
        900-PTINF-READ-SEC         SECTION.
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PTINF-REC           TO  MCPDATA-REC
-           MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "tbl_ptinf"         TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     PERFORM 900-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
-               MOVE    "DBFETCH"           TO  MCP-FUNC
                MOVE    "tbl_ptinf"         TO  MCP-TABLE
                MOVE    "key"               TO  MCP-PATHNAME
-grpsys         CALL "ORCDBMAIN" USING MCPAREA
-                                      MCPDATA-REC
-grpsys                                SPA-AREA
+grpsys         PERFORM 900-DBFETCH-SEC
                IF      MCP-RC              =   ZERO
                    MOVE    MCPDATA-REC     TO  PTINF-REC
                    MOVE    ZERO            TO  FLG-PTINF
@@ -358,12 +355,8 @@ grpsys                                SPA-AREA
       *****************************************************************
        910-PTKOHINF-SELECT-SEC        SECTION.
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PTKOHINF-REC        TO  MCPDATA-REC
-           MOVE    "DBSELECT"          TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     PERFORM 900-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
                MOVE    ZERO            TO  FLG-PTKOHINF
            ELSE
@@ -379,10 +372,7 @@ grpsys                            SPA-AREA
       *****************************************************************
        910-PTKOHINF-READ-SEC        SECTION.
       *
-           MOVE    "DBFETCH"            TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     PERFORM 900-DBFETCH-SEC
            IF      MCP-RC               =   ZERO
                MOVE    MCPDATA-REC      TO  PTKOHINF-REC
                MOVE    ZERO             TO  FLG-PTKOHINF
@@ -400,12 +390,8 @@ grpsys                            SPA-AREA
       *****************************************************************
        910-KOHPLUS-SELECT-SEC        SECTION.
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    KOHPLUS-REC         TO  MCPDATA-REC
-           MOVE    "DBSELECT"          TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     PERFORM 900-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
                MOVE    ZERO            TO  FLG-KOHPLUS
            ELSE
@@ -421,10 +407,7 @@ grpsys                            SPA-AREA
       *****************************************************************
        910-KOHPLUS-READ-SEC        SECTION.
       *
-           MOVE    "DBFETCH"            TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     PERFORM 900-DBFETCH-SEC
            IF      MCP-RC               =   ZERO
                MOVE    MCPDATA-REC      TO  KOHPLUS-REC
                MOVE    ZERO             TO  FLG-KOHPLUS
@@ -442,12 +425,8 @@ grpsys                            SPA-AREA
       *****************************************************************
        910-HKNCOMBI-SELECT-SEC        SECTION.
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    HKNCOMBI-REC        TO  MCPDATA-REC
-           MOVE    "DBSELECT"          TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     PERFORM 900-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
                MOVE    ZERO            TO  FLG-HKNCOMBI
            ELSE
@@ -463,10 +442,7 @@ grpsys                            SPA-AREA
       *****************************************************************
        910-HKNCOMBI-READ-SEC         SECTION.
       *
-           MOVE    "DBFETCH"           TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     PERFORM 900-DBFETCH-SEC
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC         TO  HKNCOMBI-REC
                MOVE    ZERO                TO  FLG-HKNCOMBI
@@ -480,16 +456,49 @@ grpsys                            SPA-AREA
            EXIT.
       *
       *****************************************************************
+      *    ＤＢＳＥＬＥＣＴ処理
+      *****************************************************************
+       900-DBSELECT-SEC                SECTION.
+      *
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+grpsys     PERFORM 900-ORCDBMAIN-SEC
+           .
+       900-DBSELECT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ＤＢＦＥＴＣＨ処理
+      *****************************************************************
+       900-DBFETCH-SEC                SECTION.
+      *
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+grpsys     PERFORM 900-ORCDBMAIN-SEC
+      *
+           .
+       900-DBFETCH-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    ＤＢクローズ処理
       *****************************************************************
        910-DB-CLOSE-SEC                 SECTION.
       *
            MOVE    "DBCLOSECURSOR"      TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
-      *
+grpsys     PERFORM 900-ORCDBMAIN-SEC
            .
       *
        910-DB-CLOSE-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    テーブルアクセス処理
+      *****************************************************************
+       900-ORCDBMAIN-SEC               SECTION.
+      *
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
+           .
+      *
+       900-ORCDBMAIN-EXT.
            EXIT.

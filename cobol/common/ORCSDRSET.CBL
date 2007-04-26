@@ -1,4 +1,4 @@
-      ******************************************************************
+      *******************************************************************
       * Project code name "ORCA"
       * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
@@ -29,6 +29,7 @@
       * Maj/Min/Rev  修正者       日付      内容
       *  01.00.01    NACL−多々納 04/06/25  診療所で２０名以上を科別へ
       *  01.00.02    NACL−多々納 06/08/16  当日担当医設定追加
+      *  03.05.00    NACL-多々納  07/04/XX  グループ診療対応
       *****************************************************************
       *
       *
@@ -201,7 +202,7 @@
            MOVE    ORCSDR-SYSYMD       TO  SYS-1010-EDYUKYMD
       *
       *    システム管理検索
-grpsys     MOVE    SPA-HOSPNUM         TO  SYS-1010-HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  SYS-1010-HOSPNUM
            MOVE    SYS-1010-REC        TO  MCPDATA-REC
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key2"              TO  MCP-PATHNAME
@@ -282,7 +283,7 @@ grpsys     MOVE    SPA-HOSPNUM         TO  SYS-1010-HOSPNUM
            MOVE    ORCSDR-SYSYMD       TO  SYS-1011-STYUKYMD
            MOVE    ORCSDR-SYSYMD       TO  SYS-1011-EDYUKYMD
       *    システム管理検索
-grpsys     MOVE    SPA-HOSPNUM         TO  SYS-1011-HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  SYS-1011-HOSPNUM
            MOVE    SYS-1011-REC        TO  MCPDATA-REC
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key10"             TO  MCP-PATHNAME
@@ -345,7 +346,7 @@ grpsys     MOVE    SPA-HOSPNUM         TO  SYS-1011-HOSPNUM
            MOVE    ORCSDR-SYSYMD       TO  SYS-1010-EDYUKYMD
       *
       *    システム管理検索
-grpsys     MOVE    SPA-HOSPNUM         TO  SYS-1010-HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  SYS-1010-HOSPNUM
            MOVE    SYS-1010-REC        TO  MCPDATA-REC
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key10"             TO  MCP-PATHNAME
@@ -428,7 +429,7 @@ grpsys     MOVE    SPA-HOSPNUM         TO  SYS-1010-HOSPNUM
            MOVE    ORCSDR-SYSYMD       TO  SYS-1010-EDYUKYMD
       *
       *    システム管理検索
-grpsys     MOVE    SPA-HOSPNUM         TO  SYS-1010-HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  SYS-1010-HOSPNUM
            MOVE    SYS-1010-REC        TO  MCPDATA-REC
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key2"              TO  MCP-PATHNAME
@@ -515,7 +516,7 @@ grpsys     MOVE    SPA-HOSPNUM         TO  SYS-1010-HOSPNUM
            MOVE    ORCSDR-SYSYMD       TO  SYS-1010-EDYUKYMD
       *
       *    システム管理検索
-grpsys     MOVE    SPA-HOSPNUM         TO  SYS-1010-HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  SYS-1010-HOSPNUM
            MOVE    SYS-1010-REC        TO  MCPDATA-REC
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key10"             TO  MCP-PATHNAME
@@ -639,9 +640,9 @@ grpsys     MOVE    SPA-HOSPNUM         TO  SYS-1010-HOSPNUM
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
       *
            MOVE    "DBFETCH"           TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
            IF      MCP-RC              =   ZERO
                MOVE    ZERO                TO  FLG-SYSKANRI
            ELSE
@@ -657,9 +658,9 @@ grpsys                            SPA-AREA
        910-DBSELECT-SEC                SECTION.
       *
            MOVE    "DBSELECT"      TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
        910-DBSELECT-EXT.
@@ -671,9 +672,9 @@ grpsys                            SPA-AREA
        990-DBCLOSE-SEC         SECTION.
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
        990-DBCLOSE-EXT.

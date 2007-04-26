@@ -29,6 +29,8 @@
       * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
       *  01.00.01    NACL-Â¿¡¹Ç¼  06/07/07  ÎÎ¼ý½ñÊÑ¹¹ÂÐ±þ
       *  03.04.01    NACL-¿¹ÏÆ    07/01/17  °åÎÅµ¡´ØÌ¾¾Î¡¢½»½ê¥»¥Ã¥ÈÊÑ¹¹
+      *  03.04.02    NACL-Â¿¡¹Ç¼  07/02/28  Êñ³çÊ¬ÂÐ¾Ý³°ÄÉ²Ã
+      *  03.05.00    NACL-Â¿¡¹Ç¼  07/04/XX  ¥°¥ë¡¼¥×¿ÇÎÅÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -147,6 +149,17 @@
                05  WRK-SURYO-ZF    PIC X(03).
                05  WRK-SURYO-Z4    PIC ZZZZ9.
       *
+      *----(03.04.01)--ADD-START---
+           03  WRK-HOSPNAME            PIC X(100).
+           03  WRK-HOSPNAME-R          REDEFINES   WRK-HOSPNAME.
+               05  WRK-HOSPNAME1       PIC X(50).
+               05  WRK-HOSPNAME2       PIC X(50).
+           03  WRK-HOSPADRS            PIC X(100).
+           03  WRK-HOSPADRS-R          REDEFINES   WRK-HOSPADRS.
+               05  WRK-HOSPADRS1       PIC X(50).
+               05  WRK-HOSPADRS2       PIC X(50).
+           03  WRK-HOSPTEL         PIC X(15).
+      *----(03.04.01)--ADD-END-----
       *
        01  WRK-MEISAI-AREA.
            03  WRK-TBL-AREA            OCCURS   50.
@@ -320,7 +333,7 @@
            MOVE    SPA-SRYYMD          TO  SYS-1001-STYUKYMD
            MOVE    SPA-SRYYMD          TO  SYS-1001-EDYUKYMD
       *    ¥·¥¹¥Æ¥à´ÉÍý¸¡º÷
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  SYS-1001-HOSPNUM
            MOVE    SYS-1001-REC        TO  MCPDATA-REC
            PERFORM 900-SYSKANRI-KEY10-SEC
            IF      FLG-SYSKANRI        =   ZERO
@@ -336,7 +349,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SPA-SRYYMD          TO  SYS-1002-STYUKYMD
            MOVE    SPA-SRYYMD          TO  SYS-1002-EDYUKYMD
       *    ¥·¥¹¥Æ¥à´ÉÍý¸¡º÷
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  SYS-1002-HOSPNUM
            MOVE    SYS-1002-REC        TO  MCPDATA-REC
            PERFORM 900-SYSKANRI-KEY10-SEC
            IF      FLG-SYSKANRI        =   ZERO
@@ -357,12 +370,11 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                                        SYS-1031-REC
       *
       *----(03.04.01)--ADD-START---
+           MOVE    SYS-1001-HOSPNAME   TO  WRK-HOSPNAME
+           MOVE    SYS-1002-ADRS       TO  WRK-HOSPADRS
+           MOVE    SYS-1002-TEL        TO  WRK-HOSPTEL
       *    °åÎÅµ¡´ØÊÔ½¸¾ðÊó
            PERFORM 900-1900-READ-SEC
-      *    °åÎÅµ¡´ØÌ¾¾ÎÊÔ½¸¾ðÊó
-           PERFORM 900-1901-READ-SEC
-      *    °åÎÅµ¡´Ø½»½êÊÔ½¸¾ðÊó
-           PERFORM 900-1902-READ-SEC
       *----(03.04.01)--ADD-END-----
       *
            .
@@ -429,12 +441,11 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
        2011-SYUNOU-HEN-SEC             SECTION.
       *
            INITIALIZE                  SYUNOU-REC
-           MOVE    SPA-HOSPID          TO  SYU-HOSPID
+           MOVE    SPA-HOSPNUM         TO  SYU-HOSPNUM
            MOVE    SPA-NYUGAIKBN       TO  SYU-NYUGAIKBN
            MOVE    SPA-PTID            TO  SYU-PTID
            MOVE    ORCHC04-DENPNUM     TO  SYU-DENPNUM
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYUNOU-REC          TO  MCPDATA-REC
            MOVE    "tbl_syunou"        TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
@@ -464,12 +475,11 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    ZERO                TO  IDX-TBL
       *    ¼õ¿ÇÍúÎò¸¡º÷
            INITIALIZE                  JYURRK-REC
-           MOVE    SPA-HOSPID          TO  JYURRK-HOSPID
+           MOVE    SPA-HOSPNUM         TO  JYURRK-HOSPNUM
            MOVE    SPA-NYUGAIKBN       TO  JYURRK-NYUGAIKBN
            MOVE    SPA-PTID            TO  JYURRK-PTID
            MOVE    SYU-DENPNUM         TO  JYURRK-DENPNUM
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    JYURRK-REC          TO  MCPDATA-REC
            MOVE    "tbl_jyurrk"        TO  MCP-TABLE
            MOVE    "key6"              TO  MCP-PATHNAME
@@ -527,7 +537,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *
       *    ¿ÇÎÅ²ñ·×
            INITIALIZE                      SRYACCT-REC
-           MOVE    JYURRK-HOSPID       TO  ACCT-HOSPID
+           MOVE    JYURRK-HOSPNUM      TO  ACCT-HOSPNUM
            MOVE    JYURRK-NYUGAIKBN    TO  ACCT-NYUGAIKBN
            MOVE    JYURRK-PTID         TO  ACCT-PTID
            MOVE    JYURRK-SRYKA        TO  ACCT-SRYKA
@@ -535,7 +545,6 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    JYURRK-ZAINUM (IDX-JYU)
                                        TO  ACCT-ZAINUM
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SRYACCT-REC         TO  MCPDATA-REC
            MOVE    "tbl_sryacct"       TO  MCP-TABLE
            MOVE    "key5"              TO  MCP-PATHNAME
@@ -559,6 +568,11 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                   (ACCT-ZAITEN         =   ZERO )  OR
                   (ACCT-SRYKBN         =   "98"
                                        OR  "99" )
+      *---(03.04.02) LINE ADD START -----------------------------------
+      *      Êñ³çÊ¬¤ÏÂÐ¾Ý³°
+               OR (ACCT-HKNCOMBI       =   "9999")
+               OR (ACCT-JIHOKBN        =   "1"   )
+      *---(03.04.02) LINE ADD END   -----------------------------------
                CONTINUE
            ELSE
                PERFORM 20021-SRYACT-SYORI-SEC
@@ -572,14 +586,13 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
        20021-SRYACT-SYORI-SEC      SECTION.
       *
            INITIALIZE                  SRYACT-REC
-           MOVE    ACCT-HOSPID         TO  SRY-HOSPID
+           MOVE    ACCT-HOSPNUM        TO  SRY-HOSPNUM
            MOVE    ACCT-NYUGAIKBN      TO  SRY-NYUGAIKBN
            MOVE    ACCT-PTID           TO  SRY-PTID
            MOVE    ACCT-SRYKA          TO  SRY-SRYKA
            MOVE    ACCT-SRYYM          TO  SRY-SRYYM
            MOVE    ACCT-ZAINUM         TO  SRY-ZAINUM
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SRYACT-REC          TO  MCPDATA-REC
            MOVE    "tbl_sryact"        TO  MCP-TABLE
            MOVE    "key2"              TO  MCP-PATHNAME
@@ -611,6 +624,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                        PERFORM 200211-MEISE-HEN-SEC
                    END-IF
                END-PERFORM
+      *
                MOVE    "tbl_sryact"        TO  MCP-TABLE
                MOVE    "key2"              TO  MCP-PATHNAME
                PERFORM 920-SRYACT-READ-SEC
@@ -731,14 +745,13 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *
            MOVE    SPACE               TO  SRYACCTPLUS-REC
            INITIALIZE                  SRYACCTPLUS-REC
-           MOVE    ACCT-HOSPID         TO  ACCTP-HOSPID
+           MOVE    ACCT-HOSPNUM        TO  ACCTP-HOSPNUM
            MOVE    ACCT-NYUGAIKBN      TO  ACCTP-NYUGAIKBN
            MOVE    ACCT-PTID           TO  ACCTP-PTID
            MOVE    ACCT-SRYKA          TO  ACCTP-SRYKA
            MOVE    ACCT-SRYYM          TO  ACCTP-SRYYM
            MOVE    ACCT-ZAINUM         TO  ACCTP-ZAINUM
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SRYACCTPLUS-REC     TO  MCPDATA-REC
            MOVE    "tbl_sryacctplus"   TO  MCP-TABLE
            MOVE    "key2"              TO  MCP-PATHNAME
@@ -1087,7 +1100,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *
       *    ÊÝ¸±ÁÈ¹ç¤»¥Þ¥¹¥¿¡¼¸¡º÷
            INITIALIZE                      HKNCOMBI-REC
-           MOVE    SPA-HOSPID          TO  COMB-HOSPID
+           MOVE    SPA-HOSPNUM         TO  COMB-HOSPNUM
            MOVE    SPA-PTID            TO  COMB-PTID
            MOVE    SYU-HKNCOMBINUM     TO  COMB-HKNCOMBINUM
            PERFORM 910-HKNCOMBI-READ-SEC
@@ -1134,7 +1147,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SPA-SRYYMD          TO  SYS-1005-STYUKYMD
            MOVE    SPA-SRYYMD          TO  SYS-1005-EDYUKYMD
       *    ¥·¥¹¥Æ¥à´ÉÍý¸¡º÷
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  SYS-1005-HOSPNUM
            MOVE    SYS-1005-REC        TO  MCPDATA-REC
            PERFORM 900-SYSKANRI-KEY10-SEC
            IF      FLG-SYSKANRI        =   ZERO
@@ -1193,27 +1206,17 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *
       *----(03.04.01)--UPD-START---
       *    °åÎÅµ¡´Ø½»½ê
-           IF      SYS-1902-ADRS1      NOT =   SPACE
-               MOVE    SYS-1902-ADRS1      TO  HCM04-IRYOADRS(1:50)
-               MOVE    SYS-1902-ADRS2      TO  HCM04-IRYOADRS(51:50)
-           ELSE
-               MOVE    SYS-1002-ADRS       TO  HCM04-IRYOADRS
-           END-IF
-      *
+      *    MOVE    SYS-1002-ADRS       TO  HCM04-IRYOADRS
       *    °åÎÅµ¡´ØÌ¾
-           IF      SYS-1901-HOSPNAME1  NOT =   SPACE
-               MOVE    SYS-1901-HOSPNAME1  TO  HCM04-IRYOMEI(1:50)
-               MOVE    SYS-1901-HOSPNAME2  TO  HCM04-IRYOMEI(51:50)
-           ELSE
-               MOVE    SYS-1001-HOSPNAME   TO  HCM04-IRYOMEI
-           END-IF
-      *
+      *    MOVE    SYS-1001-HOSPNAME   TO  HCM04-IRYOMEI
       *    °åÎÅµ¡´Ø£Ô£Å£Ì
-           IF      SYS-1902-TEL        NOT =   SPACE
-               MOVE    SYS-1902-TEL        TO  HCM04-IRYOTEL
-           ELSE
-               MOVE    SYS-1002-TEL        TO  HCM04-IRYOTEL
-           END-IF
+      **** MOVE    SYS-1002-TEL        TO  HCM04-IRYOTEL
+      *    °åÎÅµ¡´Ø½»½ê
+           MOVE    WRK-HOSPADRS        TO  HCM04-IRYOADRS
+      *    °åÎÅµ¡´ØÌ¾
+           MOVE    WRK-HOSPNAME        TO  HCM04-IRYOMEI
+      *    °åÎÅµ¡´Ø£Ô£Å£Ì
+           MOVE    WRK-HOSPTEL         TO  HCM04-IRYOTEL
       *----(03.04.01)--UPD-END-----
       *
       *    ÌÀºÙÆâÍÆ
@@ -1242,12 +1245,11 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYU-GRP-DENPNUM     TO  WRK-GRP-DENPNUM
       *
            INITIALIZE                  SYUNOU-REC
-           MOVE    SPA-HOSPID          TO  SYU-HOSPID
+           MOVE    SPA-HOSPNUM         TO  SYU-HOSPNUM
            MOVE    SPA-NYUGAIKBN       TO  SYU-NYUGAIKBN
            MOVE    SPA-PTID            TO  SYU-PTID
            MOVE    WRK-GRP-DENPNUM     TO  SYU-GRP-DENPNUM
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYUNOU-REC          TO  MCPDATA-REC
            MOVE    "tbl_syunou"        TO  MCP-TABLE
            MOVE    "key27"             TO  MCP-PATHNAME
@@ -1305,11 +1307,17 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    "*"             TO  SYS-1900-KBNCD
            MOVE    SPA-SRYYMD      TO  SYS-1900-STYUKYMD
            MOVE    SPA-SRYYMD      TO  SYS-1900-EDYUKYMD
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  SYS-1900-HOSPNUM
            MOVE    SYS-1900-REC    TO  MCPDATA-REC
            PERFORM 900-SYSKANRI-KEY10-SEC
            IF      FLG-SYSKANRI        =   ZERO
                MOVE    MCPDATA-REC     TO  SYS-1900-REC
+               IF      SYS-1900-PRTKBN(12) NOT =   SPACE
+      *            °åÎÅµ¡´ØÌ¾¾ÎÊÔ½¸¾ðÊó
+                   PERFORM 900-1901-READ-SEC
+      *            °åÎÅµ¡´Ø½»½êÊÔ½¸¾ðÊó
+                   PERFORM 900-1902-READ-SEC
+               END-IF
            ELSE
                INITIALIZE                  SYS-1900-REC
            END-IF
@@ -1323,11 +1331,6 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *****************************************************************
        900-1901-READ-SEC           SECTION.
       *
-           IF      SYS-1900-PRTKBN(12) =   SPACE
-               MOVE    SPACE           TO  SYS-1901-REC
-               GO  TO  900-1901-READ-EXT
-           END-IF
-      *
       *    °åÎÅµ¡´ØÌ¾¾ÎÊÔ½¸¾ðÊóÆÉ¤ß¹þ¤ß
            MOVE    SPACE           TO  SYS-1901-REC
            INITIALIZE                  SYS-1901-REC
@@ -1336,11 +1339,13 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                                    TO  SYS-1901-KBNCD
            MOVE    SPA-SRYYMD      TO  SYS-1901-STYUKYMD
            MOVE    SPA-SRYYMD      TO  SYS-1901-EDYUKYMD
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  SYS-1901-HOSPNUM
            MOVE    SYS-1901-REC    TO  MCPDATA-REC
            PERFORM 900-SYSKANRI-KEY10-SEC
            IF      FLG-SYSKANRI        =   ZERO
                MOVE    MCPDATA-REC     TO  SYS-1901-REC
+               MOVE    SYS-1901-HOSPNAME1  TO  WRK-HOSPNAME1
+               MOVE    SYS-1901-HOSPNAME2  TO  WRK-HOSPNAME2
            ELSE
                INITIALIZE                  SYS-1901-REC
            END-IF
@@ -1354,11 +1359,6 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *****************************************************************
        900-1902-READ-SEC           SECTION.
       *
-           IF      SYS-1900-PRTKBN(12) =   SPACE
-               MOVE    SPACE           TO  SYS-1902-REC
-               GO  TO  900-1902-READ-EXT
-           END-IF
-      *
       *    °åÎÅµ¡´Ø½»½êÊÔ½¸¾ðÊóÆÉ¤ß¹þ¤ß
            MOVE    SPACE           TO  SYS-1902-REC
            INITIALIZE                  SYS-1902-REC
@@ -1367,11 +1367,14 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                                    TO  SYS-1902-KBNCD
            MOVE    SPA-SRYYMD      TO  SYS-1902-STYUKYMD
            MOVE    SPA-SRYYMD      TO  SYS-1902-EDYUKYMD
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  SYS-1902-HOSPNUM
            MOVE    SYS-1902-REC    TO  MCPDATA-REC
            PERFORM 900-SYSKANRI-KEY10-SEC
            IF      FLG-SYSKANRI        =   ZERO
                MOVE    MCPDATA-REC     TO  SYS-1902-REC
+               MOVE    SYS-1902-ADRS1  TO  WRK-HOSPADRS1
+               MOVE    SYS-1902-ADRS2  TO  WRK-HOSPADRS2
+               MOVE    SYS-1902-TEL    TO  WRK-HOSPTEL
            ELSE
                INITIALIZE                  SYS-1902-REC
            END-IF
@@ -1509,7 +1512,6 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *****************************************************************
        910-HKNCOMBI-READ-SEC         SECTION.
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    HKNCOMBI-REC        TO  MCPDATA-REC
            MOVE    "tbl_hkncombi"      TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
@@ -1543,7 +1545,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SPA-SRYYMD          TO  TNS-YUKOSTYMD
            MOVE    SPA-SRYYMD          TO  TNS-YUKOEDYMD
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  TNS-HOSPNUM
            MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
            MOVE    "tbl_tensu"         TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
@@ -1577,9 +1579,9 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
        910-DBSELECT-SEC                SECTION.
       *
            MOVE    "DBSELECT"      TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
            .
        910-DBSELECT-EXT.
            EXIT.
@@ -1589,9 +1591,9 @@ grpsys                            SPA-AREA
        920-DBFETCH-SEC                 SECTION.
       *
            MOVE    "DBFETCH"       TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
            .
        920-DBFETCH-EXT.
            EXIT.
@@ -1602,9 +1604,9 @@ grpsys                            SPA-AREA
        990-DBCLOSE-SEC                 SECTION.
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
            .
        990-DBCLOSE-EXT.
            EXIT.

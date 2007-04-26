@@ -33,6 +33,11 @@
       *  01.00.05    NACL-ÌçÏÆ    05/10/04  Åçº¬¸©ÃÏÊý¸øÈñÂÐ±þ
       *  03.02.01    NACL-ÌçÏÆ    06/09/05  Ä¹´ü£¹£·£´ÂÐ±þ
       *  03.03.01    NACL-ÌçÏÆ    06/11/02  ¸º³Û¡¦ÌÈ½ü¡¦»ÙÊ§Í±Í½ÂÐ±þ
+      *  03.04.01    NACL-ÌçÏÆ    07/02/14  Ê¡Åç¸©ÈÓ´ÛÂ¼ÂÐ±þ
+      *  03.04.02    NACL-ÌçÏÆ    07/03/22  ºë¶Ì¸©ÃÏÊý¸øÈñÂÐ±þ
+      *                                     ¡ÊÀî¸ý¡¦½ÕÆüÉô»Ô¡Ë
+      *
+      *  03.05.01    NACL-Æ£¸¶    07/04/19  ¥°¥ë¡¼¥×¿ÇÎÅÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -46,8 +51,6 @@
       *
       *
        WORKING-STORAGE             SECTION.
-grpsys*
-grpsys COPY    "COMMON-SPA".
       *
       *    ¥Õ¥é¥°ÎÎ°è
        01  FLG-AREA.
@@ -135,9 +138,13 @@ grpsys COPY    "COMMON-SPA".
        LINKAGE                     SECTION.
       *
            COPY    "CPORCSFTNJGNCHK.INC".
+grpsys*
+grpsys     COPY    "COMMON-SPA".
       *
        PROCEDURE                    DIVISION    USING
-           ORCSFTNJGNCHKAREA.
+           ORCSFTNJGNCHKAREA
+grpsys     SPA-AREA
+           .
       *
       *****************************************************************
       *    ¼ç¡¡¡¡½èÍý
@@ -172,7 +179,7 @@ grpsys COPY    "COMMON-SPA".
       *
       *    ´µ¼Ô¥Þ¥¹¥¿¡¼¸¡º÷
            INITIALIZE                      PTINF-REC
-           MOVE    LNK-FTNJGNCHK-HOSPID    TO  PTINF-HOSPID
+grpsys     MOVE    LNK-FTNJGNCHK-HOSPNUM   TO  PTINF-HOSPNUM
            MOVE    LNK-FTNJGNCHK-PTID      TO  PTINF-PTID
            PERFORM 900-PTINF-READ-SEC
            IF      FLG-PTINF           NOT =   ZERO
@@ -193,7 +200,7 @@ grpsys COPY    "COMMON-SPA".
            MOVE    "*"                 TO  SYS-1001-KBNCD
            MOVE    LNK-FTNJGNCHK-SRYYM TO  ORC-DBYMD(1:6)
            MOVE    "01"                TO  ORC-DBYMD(7:2)
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+grpsys     MOVE    SPA-HOSPNUM         TO  SYS-1001-HOSPNUM
            MOVE    SYS-1001-REC        TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
@@ -260,7 +267,8 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            END-IF
       *
            INITIALIZE                           HKNNUM-REC
-           MOVE    LNK-FTNJGNCHK-HOSPID TO      HKN-HOSPID
+grpsys     MOVE    LNK-FTNJGNCHK-HOSPNUM
+                                        TO      HKN-HOSPNUM
            MOVE    LNK-FTNJGNCHK-KOHNUM TO      HKN-HKNNUM
            MOVE    "HKNNUM-KEY2"        TO      ORC-DBPATH
            PERFORM  910-HKNNUM-SELECT-SEC
@@ -339,9 +347,8 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *
       *    Ç¯¶âÍúÎò¤è¤ê
            INITIALIZE                        TNKRRK-REC
-           MOVE    LNK-FTNJGNCHK-HOSPID  TO  TNKRRK-HOSPID
+grpsys     MOVE    LNK-FTNJGNCHK-HOSPNUM TO  TNKRRK-HOSPNUM
            MOVE    LNK-FTNJGNCHK-PTID    TO  TNKRRK-PTID
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    TNKRRK-REC            TO  MCPDATA-REC
            MOVE    "DBSELECT"            TO  MCP-FUNC
            MOVE    "TNKRRK-KEY3"         TO  ORC-DBPATH
@@ -367,9 +374,8 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *
       *    Äã½êÆÀ¤è¤ê
            INITIALIZE                        TSYRRK-REC
-           MOVE    LNK-FTNJGNCHK-HOSPID  TO  TSYRRK-HOSPID
+grpsys     MOVE    LNK-FTNJGNCHK-HOSPNUM TO  TSYRRK-HOSPNUM
            MOVE    LNK-FTNJGNCHK-PTID    TO  TSYRRK-PTID
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    TSYRRK-REC            TO  MCPDATA-REC
            MOVE    "DBSELECT"            TO  MCP-FUNC
            MOVE    "TSYRRK-KEY3"         TO  ORC-DBPATH
@@ -420,10 +426,14 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                (LNK-FTNJGNCHK-KOHNUM         = "186"   )  AND
                (LNK-FTNJGNCHK-SRYYM         >= "200310"))
       *
+           OR ((WRK-PREFNUM                  =  07     )  AND
+               (LNK-FTNJGNCHK-KOHNUM         = "281"   )  AND
+               (LNK-FTNJGNCHK-SRYYM         >= "200702"))
+      *
       *         ¸øÈñ·î¾å¸Â³Û¼èÆÀ
                 INITIALIZE                    LNK-ORCSJGNGET-REC
-                MOVE  LNK-FTNJGNCHK-HOSPID
-                                          TO  LNK-ORCSJGNGET-HOSPID
+                MOVE  LNK-FTNJGNCHK-HOSPNUM
+                                          TO  LNK-ORCSJGNGET-HOSPNUM
                 MOVE  LNK-FTNJGNCHK-NYUGAIKBN
                                           TO  LNK-ORCSJGNGET-NYUGAIKBN
                 MOVE  LNK-FTNJGNCHK-PTID  TO  LNK-ORCSJGNGET-PTID
@@ -434,6 +444,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *
                 CALL    "ORCSJGNGET"      USING
                                           LNK-ORCSJGNGET-REC
+grpsys                                    SPA-AREA
       *
                 IF    LNK-ORCSJGNGET-RC   =   ZERO
                  IF    LNK-FTNJGNCHK-NYUGAIKBN     =   "1"
@@ -457,7 +468,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *
       *    ¼ýÇ¼¥Þ¥¹¥¿ÆÉ¤ß¹þ¤ßÂÐ¾Ý¤ÎÊÝ¸±ÁÈ¹ç¤»ÈÖ¹æ¼èÆÀ
            INITIALIZE                          HKNCOMBI-REC
-           MOVE    LNK-FTNJGNCHK-HOSPID    TO  COMB-HOSPID
+grpsys     MOVE    LNK-FTNJGNCHK-HOSPNUM   TO  COMB-HOSPNUM
            MOVE    LNK-FTNJGNCHK-PTID      TO  COMB-PTID
            MOVE    LNK-FTNJGNCHK-KOHID     TO  COMB-KOHID(1)
            MOVE    LNK-FTNJGNCHK-KOHID     TO  COMB-KOHID(2)
@@ -522,8 +533,8 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                          MOVE    1           TO  FLG-OK
       *
                          INITIALIZE              ORCSAGECHKAREA
-                         MOVE    LNK-FTNJGNCHK-HOSPID
-                                             TO  AGECHK-HOSPID
+grpsys                   MOVE    LNK-FTNJGNCHK-HOSPNUM
+                                             TO  AGECHK-HOSPNUM
                          MOVE    LNK-FTNJGNCHK-PTID
                                              TO  AGECHK-PTID
                          MOVE    LNK-FTNJGNCHK-SRYYM
@@ -533,6 +544,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                                              TO  AGECHK-BIRTHDAY
                          CALL    "ORCSAGECHK"    USING
                                                  ORCSAGECHKAREA
+grpsys                                           SPA-AREA
                          IF      AGECHK-RC       =   ZERO
                            IF  ( AGECHK-NENREI   >=  70      )
                            OR  ( AGECHK-NENREI   >=  65  AND
@@ -572,7 +584,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
        2101-SYUKEI-SEC            SECTION.
       *
            INITIALIZE                          SYUNOU-REC
-           MOVE    LNK-FTNJGNCHK-HOSPID    TO  SYU-HOSPID
+grpsys     MOVE    LNK-FTNJGNCHK-HOSPNUM   TO  SYU-HOSPNUM
            MOVE    LNK-FTNJGNCHK-PTID      TO  SYU-PTID
            MOVE    LNK-FTNJGNCHK-NYUGAIKBN TO  SYU-NYUGAIKBN
            MOVE    LNK-FTNJGNCHK-SRYYM     TO  SYU-SRYYMD(1:6)
@@ -637,7 +649,15 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                        END-IF
                        PERFORM  910-SYUNOU-READ-SEC
                    END-PERFORM
-                   EVALUATE   LNK-FTNJGNCHK-KOHNUM
+                   IF  (WRK-PREFNUM            =  11     )
+                   AND (LNK-FTNJGNCHK-KOHNUM   =
+                         "181" OR "182" OR "183" OR "281")
+                   AND (LNK-FTNJGNCHK-SRYYM   >= "200704")
+                    IF   WRK-KOHFTN   NOT = ZERO
+                           MOVE   01        TO  LNK-FTNJGNCHK-RC
+                    END-IF
+                   ELSE
+                    EVALUATE   LNK-FTNJGNCHK-KOHNUM
                      WHEN       "012"
                        IF   WRK-SEIKYU            =   ZERO
                            MOVE   01        TO  LNK-FTNJGNCHK-RC
@@ -655,7 +675,8 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                        IF     WRK-HKNMST-JGNGAK   >   WRK-KOHFTN
                            MOVE   01        TO  LNK-FTNJGNCHK-RC
                        END-IF
-                   END-EVALUATE
+                    END-EVALUATE
+                   END-IF
                END-IF
            END-IF
       *    ¼ýÇ¼¥¯¥í¡¼¥º
@@ -697,7 +718,6 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *****************************************************************
        900-PTINF-READ-SEC         SECTION.
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PTINF-REC            TO  MCPDATA-REC
            MOVE    "DBSELECT"           TO  MCP-FUNC
            MOVE    "PTINF-KEY"          TO  ORC-DBPATH
@@ -780,7 +800,6 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *****************************************************************
        910-HKNCOMBI-SELECT-SEC        SECTION.
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    HKNCOMBI-REC        TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            CALL    "ORCMCPSUB"          USING
@@ -824,7 +843,6 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *****************************************************************
        910-SYUNOU-SELECT-SEC        SECTION.
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYUNOU-REC          TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            CALL    "ORCMCPSUB"          USING
@@ -868,7 +886,6 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *****************************************************************
        910-HKNNUM-SELECT-SEC        SECTION.
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    HKNNUM-REC          TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            CALL    "ORCMCPSUB"         USING

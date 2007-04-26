@@ -27,6 +27,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  03.05.01    NACL-藤原    07/04/19  グループ診療対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -38,8 +39,6 @@
        FILE                        SECTION.
       *
        WORKING-STORAGE             SECTION.
-grpsys*
-grpsys COPY    "COMMON-SPA".
       *
       *    フラグ領域
        01  FLG-AREA.
@@ -99,9 +98,12 @@ grpsys COPY    "COMMON-SPA".
        LINKAGE                     SECTION.
       *
            COPY  "CPORCSS001.INC".
+grpsys*
+grpsys     COPY  "COMMON-SPA".
       *
        PROCEDURE                   DIVISION    USING
            SS001-AREA
+           SPA-AREA
            .
       *
       *****************************************************************
@@ -279,13 +281,12 @@ grpsys COPY    "COMMON-SPA".
            MOVE    ZERO                TO  FLG-JYURRK
       *
            INITIALIZE                  JYURRK-REC
-           MOVE    SS001-HOSPID        TO  JYURRK-HOSPID
+grpsys     MOVE    SS001-HOSPNUM       TO  JYURRK-HOSPNUM
            MOVE    SS001-PTID          TO  JYURRK-PTID
            STRING  SS001-SRYYM         DELIMITED   BY  SIZE
                    "%"                 DELIMITED   BY  SIZE
            INTO    JYURRK-SRYYMD
            END-STRING
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    JYURRK-REC          TO  MCPDATA-REC
            MOVE    "tbl_jyurrk"        TO  MCP-TABLE
            MOVE    "key37"             TO  MCP-PATHNAME
@@ -328,12 +329,11 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    ZERO                TO  FLG-NYUINACCT
            INITIALIZE                  NYUINACCT-REC
       *
-           MOVE    SS001-HOSPID        TO  NACCT-HOSPID
+grpsys     MOVE    SS001-HOSPNUM       TO  NACCT-HOSPNUM
            MOVE    SS001-PTID          TO  NACCT-PTID
            MOVE    SS001-SRYYM         TO  NACCT-SRYYM
            MOVE    "1"                 TO  NACCT-NYUGAIKBN
            MOVE    "5"                 TO  NACCT-ZAISKBKBN
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    NYUINACCT-REC       TO  MCPDATA-REC
            MOVE    "tbl_nyuinacct"     TO  MCP-TABLE
            MOVE    "key17"             TO  MCP-PATHNAME
@@ -360,10 +360,9 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    ZERO                    TO  FLG-HKNCOMBI
       *
            INITIALIZE                          HKNCOMBI-REC
-           MOVE    SS001-HOSPID            TO  COMB-HOSPID
+grpsys     MOVE    SS001-HOSPNUM           TO  COMB-HOSPNUM
            MOVE    SS001-PTID              TO  COMB-PTID
            MOVE    WRK-COMB-HKNCOMBINUM    TO  COMB-HKNCOMBINUM
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    HKNCOMBI-REC            TO  MCPDATA-REC
            MOVE    "tbl_hkncombi"          TO  MCP-TABLE
            MOVE    "key"                   TO  MCP-PATHNAME

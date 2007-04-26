@@ -28,6 +28,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  03.05.00    NACL-多々納  07/04/XX  グループ診療対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -193,12 +194,11 @@
        100-SYUNOU-KEN-SEC             SECTION.
       *
            INITIALIZE                  SYUNOU-REC
-           MOVE    SPA-HOSPID          TO  SYU-HOSPID
+           MOVE    SPA-HOSPNUM         TO  SYU-HOSPNUM
            MOVE    SPA-NYUGAIKBN       TO  SYU-NYUGAIKBN
            MOVE    SPA-PTID            TO  SYU-PTID
            MOVE    ORCHC03-DENPNUM     TO  SYU-DENPNUM
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYUNOU-REC          TO  MCPDATA-REC
            MOVE    "tbl_syunou"        TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
@@ -287,12 +287,11 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYU-GRP-DENPNUM     TO  WRK-GRP-DENPNUM
       *
            INITIALIZE                  SYUNOU-REC
-           MOVE    SPA-HOSPID          TO  SYU-HOSPID
+           MOVE    SPA-HOSPNUM         TO  SYU-HOSPNUM
            MOVE    SPA-NYUGAIKBN       TO  SYU-NYUGAIKBN
            MOVE    SPA-PTID            TO  SYU-PTID
            MOVE    WRK-GRP-DENPNUM     TO  SYU-GRP-DENPNUM
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYUNOU-REC          TO  MCPDATA-REC
            MOVE    "tbl_syunou"        TO  MCP-TABLE
            MOVE    "key27"             TO  MCP-PATHNAME
@@ -483,13 +482,12 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
        30022-SYUTOTAL-CHK-SEC             SECTION.
       *
            INITIALIZE                  SYUTTL-REC
-           MOVE    WRK-SYU-HOSPID      TO  SYUTTL-HOSPID 
+           MOVE    WRK-SYU-HOSPNUM     TO  SYUTTL-HOSPNUM 
            MOVE    WRK-SYU-NYUGAIKBN   TO  SYUTTL-NYUGAIKBN 
            MOVE    WRK-SYU-PTID        TO  SYUTTL-PTID 
            MOVE    WRK-SYU-FUKU-DENPNUM
                                        TO  SYUTTL-DENPNUM 
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYUTTL-REC          TO  MCPDATA-REC
            MOVE    "tbl_syutotal"      TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
@@ -913,9 +911,9 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
        910-DBSELECT-SEC                SECTION.
       *
            MOVE    "DBSELECT"      TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
            .
        910-DBSELECT-EXT.
            EXIT.
@@ -925,9 +923,9 @@ grpsys                            SPA-AREA
        920-DBFETCH-SEC                 SECTION.
       *
            MOVE    "DBFETCH"       TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
            .
        920-DBFETCH-EXT.
            EXIT.
@@ -938,9 +936,9 @@ grpsys                            SPA-AREA
        990-DBCLOSE-SEC                 SECTION.
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
            .
        990-DBCLOSE-EXT.
            EXIT.

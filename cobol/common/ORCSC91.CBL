@@ -39,6 +39,7 @@
       *  03.03.00    NACL-多々納  06/10/20  矯正固定等追加
       *  03.03.00    NACL-多々納  06/11/17  同時算定チェック方法修正
       *  03.04.00    NACL-多々納  06/12/05  上限回数ユーザ指定追加
+      *  03.05.00    NACL-多々納  07/04/XX  グループ診療対応
       *****************************************************************
       *
       *
@@ -428,6 +429,12 @@
                MOVE    1                   TO  FLG-HKN-SANTEI
            END-IF
       *
+           IF      WRK-RSI-KBN         =   "R"
+               CONTINUE
+           ELSE
+               MOVE    SPACE               TO  WRK-RSI-KBN
+           END-IF
+      *
            .
        1000-SANTEI-CHK-EXT.
            EXIT.
@@ -456,9 +463,10 @@
                PERFORM 1002-SANTEI-ETC-SEC
            ELSE
                PERFORM 1001-SANTEI-YMD-SEC
+               MOVE    TNS-JGNCNT          TO  LNK-SC91-MAXCNT
            END-IF
            MOVE    TNS-JGNCNT1D        TO  LNK-SC91-DAYMAXCNT
-           MOVE    TNS-JGNCNT          TO  LNK-SC91-MAXCNT
+      *D   MOVE    TNS-JGNCNT          TO  LNK-SC91-MAXCNT
       *
            MOVE    TNS-JGNCNTERR       TO  WRK-JGNCNTERR
       *
@@ -576,7 +584,7 @@
       *
       *    算定履歴検索
            INITIALIZE                  SANTEI-REC
-           MOVE    SPA-HOSPNUM          TO  SANTEI-HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  SANTEI-HOSPNUM
            MOVE    SPA-PTID            TO  SANTEI-PTID
            MOVE    SPA-SRYYMD (1:6)    TO  SANTEI-SRYYM
            MOVE    WRK-SRYCD           TO  SANTEI-SRYCD
@@ -609,7 +617,6 @@
                MOVE    "key3"              TO  WRK-ORC-DBPATH
            END-IF
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SANTEI-REC          TO  MCPDATA-REC
            MOVE    "tbl_santei"        TO  MCP-TABLE
            MOVE    WRK-ORC-DBPATH      TO  MCP-PATHNAME
@@ -728,91 +735,85 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                COMPUTE WRK-STRMM       =   WRK-STRMM
                                        -  (TNS-JGNCNTETCM   -  1 )
            END-IF
+      *    保険毎のコードの判定
+           PERFORM 1000-SANTEI-CHK-SEC
+      *    算定履歴検索
+           INITIALIZE                  SANTEI-REC
+           MOVE    SPA-HOSPNUM         TO  SANTEI-HOSPNUM
+           MOVE    SPA-PTID            TO  SANTEI-PTID
+           MOVE    SPA-SRYYMD (1:6)    TO  SANTEI-SRYYM
+           MOVE    WRK-SRYCD           TO  SANTEI-SRYCD
+           IF     (FLG-HKNSAN          =   1   )  AND
+                  (SPA-HKNKBN      NOT =   ZERO)
+               MOVE    SPA-HKNCOMBINUM     TO  SANTEI-HKNCOMBINUM
+           ELSE
+               MOVE    ZERO                TO  SANTEI-HKNCOMBINUM
+           END-IF
+      *
+           MOVE    SANTEI-REC          TO  MCPDATA-REC
+           MOVE    "tbl_santei"        TO  MCP-TABLE
+           MOVE    "key8"              TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_santei"        TO  MCP-TABLE
+               MOVE    "key8"              TO  MCP-PATHNAME
+               PERFORM 920-SANTEI-READ-SEC
+           ELSE
+               MOVE    1                   TO  FLG-SANTEI
+               INITIALIZE                  SANTEI-REC
+           END-IF
       *
            MOVE    ZERO                TO  WRK-SANTEI-CNT
-           PERFORM VARYING IDX         FROM    1   BY  1
-                   UNTIL  (IDX         =   TNS-JGNCNTETCM )  OR
-                          (WRK-STRYM   >   SPA-SRYYMD(1:6))
-      *
-      *        保険毎のコードの判定
-               PERFORM 1000-SANTEI-CHK-SEC
-      *        算定履歴検索
-               INITIALIZE                  SANTEI-REC
-               MOVE    SPA-HOSPNUM          TO  SANTEI-HOSPNUM
-               MOVE    SPA-PTID            TO  SANTEI-PTID
-               MOVE    WRK-STRYM           TO  SANTEI-SRYYM
-    **         MOVE    LNK-SC91-SRYCD      TO  SANTEI-SRYCD
-               MOVE    WRK-SRYCD           TO  SANTEI-SRYCD
-               EVALUATE    TNS-SANTEIRRKKBN
-                   WHEN    1
-                       MOVE    ZERO                TO  SANTEI-NYUGAIKBN
-                       MOVE    ZERO                TO  SANTEI-SRYKA
-                   WHEN    2
-                       MOVE    SPA-NYUGAIKBN       TO  SANTEI-NYUGAIKBN
-                       MOVE    ZERO                TO  SANTEI-SRYKA
-                   WHEN    3
-                       MOVE    ZERO                TO  SANTEI-NYUGAIKBN
-                       MOVE    SPA-SRYKA           TO  SANTEI-SRYKA
-                   WHEN    4
-                       MOVE    SPA-NYUGAIKBN       TO  SANTEI-NYUGAIKBN
-                       MOVE    SPA-SRYKA           TO  SANTEI-SRYKA
-               END-EVALUATE
-               IF     (FLG-HKNSAN          =   1   )  AND
-                      (SPA-HKNKBN      NOT =   ZERO)
-                   MOVE    SPA-HKNCOMBINUM     TO  SANTEI-HKNCOMBINUM
+           PERFORM UNTIL   FLG-SANTEI      =   1
+               IF      SANTEI-SRYYM    <   WRK-STRYM
+                   MOVE    1               TO  FLG-SANTEI
                ELSE
-                   MOVE    ZERO                TO  SANTEI-HKNCOMBINUM
-               END-IF
+                   IF      WRK-CHK-SRYYMD  =   SPACE
+                       MOVE    SANTEI-SRYYM        TO  WRK-CHK-SRYYMD
+                                                               (1:6)
+                       MOVE    SPA-SRYYMD(7:2)     TO  IDX-Y2
+                       ADD     1                   TO  IDX-Y2
+                       PERFORM VARYING     IDX-Y2  FROM    31  BY  -1
+                               UNTIL       IDX-Y2  <   1
+                           IF      SANTEI-DAY (IDX-Y2)    >   ZERO
+                               MOVE    IDX-Y2      TO  WRK-CHK-SRYYMD
+                                                                (7:2)
+                               MOVE    1           TO  IDX-Y2
+                           END-IF
+                       END-PERFORM
+                   END-IF
+                   MOVE    SANTEI-MSANTEICNT   TO  WRK-SANTEI-CNTW
+      *            労災でリハビリの時３月以内の件数はカウントしない
+                   IF     (SPA-HKNKBN      NOT =   ZERO  )  AND
+                          (FLG-HKN-SANTEI      =   1     )
+                       MOVE    WRK-SANTEI-CNTW     TO  WRK-RSI-CNT
+                       PERFORM 10012-RSI-MCNT-SEC
+                       MOVE    WRK-RSI-CNT         TO  WRK-SANTEI-CNTW
+                   END-IF
+                   ADD     WRK-SANTEI-CNTW         TO  WRK-SANTEI-CNT
       *
-grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
-               MOVE    SANTEI-REC          TO  MCPDATA-REC
-               MOVE    "tbl_santei"        TO  MCP-TABLE
-               MOVE    "key"               TO  MCP-PATHNAME
-               PERFORM 910-DBSELECT-SEC
-               IF      MCP-RC              =   ZERO
-                   MOVE    "tbl_santei"        TO  MCP-TABLE
-                   MOVE    "key"               TO  MCP-PATHNAME
-                   PERFORM 920-SANTEI-READ-SEC
-               ELSE
-                   MOVE    1                   TO  FLG-SANTEI
-                   INITIALIZE                  SANTEI-REC
+      *            訂正日以降の回数を求める
+                   IF     (LNK-SC91-SYORIFLG   =   1    )  AND
+                          (SPA-SRYYMD(1:6)     =   SANTEI-SRYYM)
+                       MOVE    SPA-SRYYMD(7:2)     TO  IDX-Y2
+                       ADD     1                   TO  IDX-Y2
+                       PERFORM VARYING     IDY     FROM    IDX-Y2  BY  1
+                               UNTIL       IDY     >   31
+                           ADD     SANTEI-DAY (IDY)    TO  WRK-ATO-CNT
+                       END-PERFORM
+                   END-IF
                END-IF
-      *
-               MOVE    "tbl_santei"        TO  MCP-TABLE
-               MOVE    "key"               TO  MCP-PATHNAME
-               PERFORM 990-DBCLOSE-SEC
       *
                IF      FLG-SANTEI          =   ZERO
-      *************ADD     SANTEI-MSANTEICNT   TO  WRK-SANTEI-CNT
-                   MOVE    SANTEI-MSANTEICNT   TO  WRK-SANTEI-CNTW
-               ELSE
-                   MOVE    ZERO                TO  WRK-SANTEI-CNTW
-               END-IF
-      *        労災でリハビリの時３月以内の件数はカウントしない
-               IF     (SPA-HKNKBN      NOT =   ZERO  )  AND
-                      (FLG-HKN-SANTEI      =   1     )
-                   MOVE    WRK-SANTEI-CNTW     TO  WRK-RSI-CNT
-                   PERFORM 10012-RSI-MCNT-SEC
-                   MOVE    WRK-RSI-CNT         TO  WRK-SANTEI-CNTW
-               END-IF
-               ADD     WRK-SANTEI-CNTW         TO  WRK-SANTEI-CNT
-      *
-      *        訂正日以降の回数を求める
-               IF      LNK-SC91-SYORIFLG   =   1
-                   MOVE    SPA-SRYYMD(7:2)     TO  IDX-Y2
-                   ADD     1                   TO  IDX-Y2
-                   PERFORM VARYING     IDY     FROM    IDX-Y2  BY  1
-                           UNTIL       IDY     >   31
-                       ADD     SANTEI-DAY (IDY)    TO  WRK-ATO-CNT
-                   END-PERFORM
-               END-IF
-      *
-               ADD     1                   TO  WRK-STRMM
-               IF      WRK-STRMM           >   12
-                   COMPUTE WRK-STRYY       =   WRK-STRYY   +   1
-                   MOVE    1               TO  WRK-STRMM
+                   MOVE    "tbl_santei"        TO  MCP-TABLE
+                   MOVE    "key8"              TO  MCP-PATHNAME
+                   PERFORM 920-SANTEI-READ-SEC
                END-IF
            END-PERFORM
+      *
+           MOVE    "tbl_santei"        TO  MCP-TABLE
+           MOVE    "key8"              TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
       *
       *    算定歴の回数をチェックする
            MOVE    TNS-JGNCNTETC       TO  LNK-SC91-MAXCNT
@@ -828,7 +829,7 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    WRK-SANTEI-CNT      TO  LNK-SC91-CNT
       *
            .
-       1002-SANTEI-CHK-EXT.
+       1002-SANTEI-ETC-EXT.
            EXIT.
       *****************************************************************
       *    今回診療行為チェック処理
@@ -840,6 +841,11 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL      (IDX         >   200 )  OR
                               (SPA-GMN-INPUTCD (IDX)   =   SPACE)
+      *
+      *@
+             IF      (SPA-COM-HKNCOMBI (IDX)   =   "9999")
+               CONTINUE
+             ELSE
       *        入院で１日上限の時、入力日のみ
                MOVE    ZERO            TO  FLG-NYU-CHK
                IF     (SPA-NYUGAIKBN       =   "1"   )  AND
@@ -881,6 +887,9 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                    END-IF
                END-IF
              END-IF
+      *
+           END-IF
+      *
            END-PERFORM
       *
            .
@@ -1130,7 +1139,7 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
       *
       *    算定履歴検索
       *    INITIALIZE                  SANTEI-REC
-      *    MOVE    SPA-HOSPNUM          TO  SANTEI-HOSPNUM
+      *    MOVE    SPA-HOSPNUM         TO  SANTEI-HOSPNUM
       *    MOVE    SPA-PTID            TO  SANTEI-PTID
       *    MOVE    SPA-SRYYMD (1:6)    TO  SANTEI-SRYYM
       *    MOVE    WRK-SRYCD           TO  SANTEI-SRYCD
@@ -1250,91 +1259,92 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                COMPUTE WRK-STRMM       =   WRK-STRMM
                                        -  (TNS-JGNCNTETCM   -  1 )
            END-IF
+      *    保険毎のコードの判定
+           PERFORM 1000-SANTEI-CHK-SEC
+      *    算定履歴検索
+           INITIALIZE                  SANTEI-REC
+           MOVE    SPA-HOSPNUM         TO  SANTEI-HOSPNUM
+           MOVE    SPA-PTID            TO  SANTEI-PTID
+           MOVE    SPA-SRYYMD (1:6)    TO  SANTEI-SRYYM
+           MOVE    WRK-SRYCD           TO  SANTEI-SRYCD
+           IF     (FLG-HKNSAN          =   1   )  AND
+                  (SPA-HKNKBN      NOT =   ZERO)
+               MOVE    SPA-HKNCOMBINUM     TO  SANTEI-HKNCOMBINUM
+           ELSE
+               MOVE    ZERO                TO  SANTEI-HKNCOMBINUM
+           END-IF
+      *
+           MOVE    SANTEI-REC          TO  MCPDATA-REC
+           MOVE    "tbl_santei"        TO  MCP-TABLE
+           MOVE    "key8"              TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_santei"        TO  MCP-TABLE
+               MOVE    "key8"              TO  MCP-PATHNAME
+               PERFORM 920-SANTEI-READ-SEC
+           ELSE
+               MOVE    1                   TO  FLG-SANTEI
+               INITIALIZE                  SANTEI-REC
+           END-IF
       *
            MOVE    ZERO                TO  WRK-SANTEI-CNT
-           PERFORM VARYING IDX         FROM    1   BY  1
-                   UNTIL  (IDX         =   TNS-JGNCNTETCM )  OR
-                          (WRK-STRYM   >   SPA-SRYYMD(1:6))
-      *
-      *        保険毎のコードの判定
-               PERFORM 1000-SANTEI-CHK-SEC
-      *        算定履歴検索
-               INITIALIZE                  SANTEI-REC
-               MOVE    SPA-HOSPNUM          TO  SANTEI-HOSPNUM
-               MOVE    SPA-PTID            TO  SANTEI-PTID
-               MOVE    WRK-STRYM           TO  SANTEI-SRYYM
-    **         MOVE    LNK-SC91-SRYCD      TO  SANTEI-SRYCD
-               MOVE    WRK-SRYCD           TO  SANTEI-SRYCD
-               EVALUATE    TNS-SANTEIRRKKBN
-                   WHEN    1
-                       MOVE    ZERO                TO  SANTEI-NYUGAIKBN
-                       MOVE    ZERO                TO  SANTEI-SRYKA
-                   WHEN    2
-                       MOVE    SPA-NYUGAIKBN       TO  SANTEI-NYUGAIKBN
-                       MOVE    ZERO                TO  SANTEI-SRYKA
-                   WHEN    3
-                       MOVE    ZERO                TO  SANTEI-NYUGAIKBN
-                       MOVE    SPA-SRYKA           TO  SANTEI-SRYKA
-                   WHEN    4
-                       MOVE    SPA-NYUGAIKBN       TO  SANTEI-NYUGAIKBN
-                       MOVE    SPA-SRYKA           TO  SANTEI-SRYKA
-               END-EVALUATE
-      *
-               IF     (FLG-HKNSAN          =   1   )  AND
-                      (SPA-HKNKBN      NOT =   ZERO)
-                   MOVE    SPA-HKNCOMBINUM     TO  SANTEI-HKNCOMBINUM
+           PERFORM UNTIL   FLG-SANTEI      =   1
+               IF      SANTEI-SRYYM    <   WRK-STRYM
+                   MOVE    1               TO  FLG-SANTEI
                ELSE
-                   MOVE    ZERO                TO  SANTEI-HKNCOMBINUM
+                   IF      WRK-CHK-SRYYMD  =   SPACE
+                       MOVE    SANTEI-SRYYM        TO  WRK-CHK-SRYYMD
+                                                               (1:6)
+                       MOVE    SPA-SRYYMD(7:2)     TO  IDX-Y2
+                       ADD     1                   TO  IDX-Y2
+                       PERFORM VARYING     IDX-Y2  FROM    31  BY  -1
+                               UNTIL       IDX-Y2  <   1
+                           IF      SANTEI-DAY (IDX-Y2)    >   ZERO
+                               MOVE    IDX-Y2      TO  WRK-CHK-SRYYMD
+                                                                (7:2)
+                               MOVE    1           TO  IDX-Y2
+                           END-IF
+                       END-PERFORM
+                   END-IF
+                   MOVE    SANTEI-MSANTEICNT   TO  WRK-SANTEI-CNTW
+      *            労災でリハビリの時３月以内の件数はカウントしない
+                   IF     (SPA-HKNKBN      NOT =   ZERO  )  AND
+                          (FLG-HKN-SANTEI      =   1     )
+                       MOVE    WRK-SANTEI-CNTW     TO  WRK-RSI-CNT
+                       PERFORM 10012-RSI-MCNT-SEC
+                       MOVE    WRK-RSI-CNT         TO  WRK-SANTEI-CNTW
+                   END-IF
+                   ADD     WRK-SANTEI-CNTW         TO  WRK-SANTEI-CNT
+      *
+                   IF      WRK-SANTEI-CNTW     >   ZERO
+                       MOVE    SANTEI-SRYYM        TO  WRK-CHK-SRYYM
+                       MOVE    SANTEI-MSANTEID     TO  WRK-CHK-SRYDD
+                       MOVE    WRK-SRYCD           TO  WRK-CHK-SRYCD
+                       MOVE    TNS-NAME            TO  WRK-CHK-NAME
+                   END-IF
+      *
+      *            訂正日以降の回数を求める
+                   IF     (LNK-SC91-SYORIFLG   =   1    )  AND
+                          (SPA-SRYYMD(1:6)     =   SANTEI-SRYYM)
+                       MOVE    SPA-SRYYMD(7:2)     TO  IDX-Y2
+                       ADD     1                   TO  IDX-Y2
+                       PERFORM VARYING     IDY     FROM    IDX-Y2  BY  1
+                               UNTIL       IDY     >   31
+                           ADD     SANTEI-DAY (IDY)    TO  WRK-ATO-CNT
+                       END-PERFORM
+                   END-IF
                END-IF
-      *
-      *
-grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
-               MOVE    SANTEI-REC          TO  MCPDATA-REC
-               MOVE    "tbl_santei"        TO  MCP-TABLE
-               MOVE    "key"               TO  MCP-PATHNAME
-               PERFORM 910-DBSELECT-SEC
-               IF      MCP-RC              =   ZERO
-                   MOVE    "tbl_santei"        TO  MCP-TABLE
-                   MOVE    "key"               TO  MCP-PATHNAME
-                   PERFORM 920-SANTEI-READ-SEC
-               ELSE
-                   MOVE    1                   TO  FLG-SANTEI
-               END-IF
-      *
-               MOVE    "tbl_santei"        TO  MCP-TABLE
-               MOVE    "key"               TO  MCP-PATHNAME
-               PERFORM 990-DBCLOSE-SEC
       *
                IF      FLG-SANTEI          =   ZERO
-      ***********  ADD     SANTEI-MSANTEICNT   TO  WRK-SANTEI-CNT
-                   MOVE    SANTEI-MSANTEICNT   TO  WRK-SANTEI-CNTW
-               ELSE
-                   MOVE    ZERO                TO  WRK-SANTEI-CNTW
+                   MOVE    "tbl_santei"        TO  MCP-TABLE
+                   MOVE    "key8"              TO  MCP-PATHNAME
+                   PERFORM 920-SANTEI-READ-SEC
                END-IF
-      *        労災でリハビリの時３月以内の件数はカウントしない
-               IF     ((SPA-HKNKBN          =   1 ) AND
-                       (SPA-RSI-HKNKBN  NOT =   "5" )) AND
-                      (FLG-HKN-SANTEI      =   1     )
-                   MOVE    WRK-SANTEI-CNTW     TO  WRK-RSI-CNT
-                   PERFORM 10012-RSI-MCNT-SEC
-                   MOVE    WRK-RSI-CNT         TO  WRK-SANTEI-CNTW
-               END-IF
-               ADD     WRK-SANTEI-CNTW     TO  WRK-SANTEI-CNT
-      *
-               IF      WRK-SANTEI-CNTW     >   ZERO
-                   MOVE    SANTEI-SRYYM        TO  WRK-CHK-SRYYM
-                   MOVE    SANTEI-MSANTEID     TO  WRK-CHK-SRYDD
-                   MOVE    WRK-SRYCD           TO  WRK-CHK-SRYCD
-                   MOVE    TNS-NAME            TO  WRK-CHK-NAME
-               END-IF
-      *
-               ADD     1                   TO  WRK-STRMM
-               IF      WRK-STRMM           >   12
-                   COMPUTE WRK-STRYY       =   WRK-STRYY   +   1
-                   MOVE    1               TO  WRK-STRMM
-               END-IF
-      *
            END-PERFORM
+      *
+           MOVE    "tbl_santei"        TO  MCP-TABLE
+           MOVE    "key8"              TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
       *
       *    訂正の時、訂正分はカウントしない
            IF      LNK-SC91-SYORIFLG   =   1
@@ -1359,7 +1369,13 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
       *
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL      (IDX         >   200 )  OR
-                              (SPA-GMN-INPUTCD (IDX)   =   SPACE)
+                             ((SPA-GMN-INPUTCD (IDX)   =   SPACE) AND
+                              (SPA-COM-INPUTCD (IDX)   =   SPACE))
+      *@
+             IF      (SPA-COM-HKNCOMBI (IDX)   =   "9999")
+               CONTINUE
+             ELSE
+      *
       *        入院で１日上限の時、入力日のみ
                MOVE    ZERO            TO  FLG-NYU-CHK
                IF     (SPA-NYUGAIKBN       =   "1"   )  AND
@@ -1399,6 +1415,9 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                    END-IF
                END-IF
              END-IF
+      *
+             END-IF
+      *
            END-PERFORM
       *
            .
@@ -1415,11 +1434,10 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
       *
            MOVE    SPACE               TO  SANTEI-REC
            INITIALIZE                  SANTEI-REC
-           MOVE    SPA-HOSPNUM          TO  SANTEI-HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  SANTEI-HOSPNUM
            MOVE    SPA-PTID            TO  SANTEI-PTID
            MOVE    SPA-SRYYMD (1:6)    TO  SANTEI-SRYYM
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SANTEI-REC          TO  MCPDATA-REC
            MOVE    "tbl_santei"        TO  MCP-TABLE
            MOVE    "key2"              TO  MCP-PATHNAME
@@ -1481,9 +1499,8 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *    算定履歴に関する項目のみ
            MOVE    SPA-SRYYMD          TO  TNS-YUKOSTYMD
            MOVE    SPA-SRYYMD          TO  TNS-YUKOEDYMD
-grpsys     MOVE    SPA-HOSPNUM         TO  TNS-HOSPNUM
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  TNS-HOSPNUM
            MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
            MOVE    "tbl_tensu"         TO  MCP-TABLE
            MOVE    "key22"             TO  MCP-PATHNAME
@@ -1523,11 +1540,10 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SPACE               TO  TENSUPLUS-REC
            INITIALIZE                      TENSUPLUS-REC
            MOVE    TNS-SRYCD           TO  TNSP-SRYCD
-           MOVE    TNS-YUKOSTYMD       TO  TNSP-YUKOSTYMD
-           MOVE    TNS-YUKOEDYMD       TO  TNSP-YUKOEDYMD
-grpsys     MOVE    TNS-HOSPNUM         TO  TNSP-HOSPNUM
+           MOVE    SPA-SRYYMD          TO  TNSP-YUKOSTYMD
+           MOVE    SPA-SRYYMD          TO  TNSP-YUKOEDYMD
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  TNSP-HOSPNUM
            MOVE    TENSUPLUS-REC       TO  MCPDATA-REC
            MOVE    "tbl_tensuplus"     TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
@@ -1585,9 +1601,9 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
        910-DBSELECT-SEC                SECTION.
       *
            MOVE    "DBSELECT"      TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
        910-DBSELECT-EXT.
@@ -1598,9 +1614,9 @@ grpsys                            SPA-AREA
        920-DBFETCH-SEC                 SECTION.
       *
            MOVE    "DBFETCH"       TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
       *
@@ -1613,9 +1629,9 @@ grpsys                            SPA-AREA
        990-DBCLOSE-SEC           SECTION.
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
        990-DBCLOSE-EXT.

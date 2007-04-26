@@ -43,6 +43,7 @@
       * 01.00.13     NACL-多々納  05/12/14  MONFUNC 対応
       * 03.03.00     NACL-多々納  06/10/20  矯正固定等追加
       * 03.03.01     NACL-多々納  06/12/27  労災加算対象追加
+      * 03.05.00     NACL-多々納  07/04/XX  グループ診療対応
       *****************************************************************
       *
       *
@@ -574,7 +575,7 @@
            MOVE    SPA-SRYYMD          TO  SYS-1006-STYUKYMD
            MOVE    SPA-SRYYMD          TO  SYS-1006-EDYUKYMD
       *    システム管理検索
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  SYS-1006-HOSPNUM
            MOVE    SYS-1006-REC        TO  MCPDATA-REC
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key10"             TO  MCP-PATHNAME
@@ -623,6 +624,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *
       *    包括まとめ入力は以下対象外
            IF      SPA-HKNCOMBINUM     =   "9999"
+               OR (WRK-COM-HKNCOMBI (IDX-Z) =   "9999")
                GO      TO      100112-SYOEN-CHK-EXT
            END-IF
       *
@@ -806,7 +808,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *    算定履歴検索
            MOVE    SPACE               TO  SANTEI-REC
            INITIALIZE                  SANTEI-REC
-           MOVE    SPA-HOSPID          TO  SANTEI-HOSPID
+           MOVE    SPA-HOSPNUM         TO  SANTEI-HOSPNUM
            MOVE    SPA-PTID            TO  SANTEI-PTID
            MOVE    WRK-SRYCD           TO  SANTEI-SRYCD
            MOVE    SPA-SRYYMD (1:6)    TO  SANTEI-SRYYM
@@ -814,7 +816,6 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    ZERO                TO  SANTEI-NYUGAIKBN
            MOVE    ZERO                TO  SANTEI-SRYKA
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SANTEI-REC          TO  MCPDATA-REC
            MOVE    "tbl_santei"        TO  MCP-TABLE
            MOVE    "key5"              TO  MCP-PATHNAME
@@ -928,12 +929,12 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *
       *    初診時ブラッシング料は初診算定時のみの算定とする
            IF      WRK-COM-INPUTCD(IDX-ZS) =   "101400030"
-               IF      LNK-ORCSC-SYOSIN2       =   1
-                   CONTINUE
-               ELSE
-                   MOVE    "8014"              TO  WRK-ERRCD
-                   MOVE    "1"                 TO  WRK-COM-CUR (IDX-ZS)
-               END-IF
+      *@@      IF      LNK-ORCSC-SYOSIN2       =   1
+      *            CONTINUE
+      *        ELSE
+      *            MOVE    "8014"              TO  WRK-ERRCD
+      *            MOVE    "1"                 TO  WRK-COM-CUR (IDX-ZS)
+      *@@      END-IF
       *        アフターケアの時算定不可
                IF      SPA-RSI-HKNKBN          =   "3"
                    MOVE    "8018"              TO  WRK-ERRCD
@@ -1156,6 +1157,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                    (SPA-HKNCOMBINUM    NOT =   "9999") AND
                    (LNK-ORCSC-SINSATU-ARI  =   ZERO )  AND
                    (SPA-GAI-JIKANKBN   NOT =   ZERO )
+              AND  (WRK-COM-HKNCOMBI (IDX-ZS) NOT =   "9999")
                PERFORM 10019-JIKANKASAN-CHK-SEC
            END-IF
       *    時間加算
@@ -2129,9 +2131,9 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
        910-DBSELECT-SEC                SECTION.
       *
            MOVE    "DBSELECT"      TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
        910-DBSELECT-EXT.
@@ -2142,9 +2144,9 @@ grpsys                            SPA-AREA
        920-DBFETCH-SEC                 SECTION.
       *
            MOVE    "DBFETCH"       TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
       *
@@ -2157,9 +2159,9 @@ grpsys                            SPA-AREA
        990-DBCLOSE-SEC           SECTION.
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
        990-DBCLOSE-EXT.

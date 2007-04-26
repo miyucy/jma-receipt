@@ -48,6 +48,7 @@
       * 02.00.01     NACL-Â¿¡¹Ç¼  05/04/27  ¥ì¥»ÅÅÂÐ±þ
       * 02.00.02     NACL-Â¿¡¹Ç¼  05/12/14  MONFUNC ÂÐ±þ
       * 02.00.03     NACL-Â¿¡¹Ç¼  06/03/16  £È£±£¸Ç¯£´·î²þÀµÄÉ²Ã
+      * 03.05.00     NACL-Â¿¡¹Ç¼  07/04/XX  ¥°¥ë¡¼¥×¿ÇÎÅÂÐ±þ
       *****************************************************************
       *
       *
@@ -943,7 +944,7 @@
            MOVE    SPA-SRYYMD          TO  SYS-1006-STYUKYMD
            MOVE    SPA-SRYYMD          TO  SYS-1006-EDYUKYMD
       *    ¥·¥¹¥Æ¥à´ÉÍý¸¡º÷
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  SYS-1006-HOSPNUM
            MOVE    SYS-1006-REC        TO  MCPDATA-REC
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key10"             TO  MCP-PATHNAME
@@ -1092,6 +1093,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *
       *    Êñ³ç¤Þ¤È¤áÆþÎÏ¤ÏÂÐ¾Ý³°
            IF      SPA-HKNCOMBINUM     =   "9999"
+             OR   (WRK-COM-HKNCOMBI (IDX-Z) =   "9999")
                GO      TO      10012-SYUGI-CHK-EXT
            END-IF
       *
@@ -2471,6 +2473,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                    UNTIL      (IDX-Z       >   200     )   OR
                               (SPA-ERRCD           NOT =   SPACE )  OR
                               (WRK-GMN-INPUTCD (IDX-Z) =   SPACE )
+             IF   (WRK-COM-HKNCOMBI (IDX-Z) NOT =   "9999")
       *        »þ´Ö³°¶ÛµÞ±¡Æâ²èÁü¿ÇÃÇ²Ã»»
                IF      WRK-COM-INPUTCD(IDX-Z)  =   "170016010"
                    MOVE    IDX-Z           TO  IDX-GAI
@@ -2508,6 +2511,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                    MOVE    1               TO  FLG-TENTEKI
                END-IF
       *
+             END-IF
            END-PERFORM
       *
            IF      SPA-ERRCD       NOT =   SPACE
@@ -2809,6 +2813,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                    UNTIL      (IDX-Z       >   200     )   OR
                               (SPA-ERRCD           NOT =   SPACE )  OR
                               (WRK-GMN-INPUTCD (IDX-Z) =   SPACE )
+             IF   (WRK-COM-HKNCOMBI (IDX-Z) NOT =   "9999")
                IF     (WRK-COM-SRYKBN (IDX-Z)  =   "70")  AND
                       (WRK-COM-INPUTCD(IDX-Z)(1:1)
                                                =   "1"  )  AND
@@ -2875,6 +2880,8 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                    MOVE    ZERO                TO  FLG-CTMRI-ARI
                    MOVE    ZERO                TO  FLG-KAKUI-ARI
                END-IF
+      *
+             END-IF
            END-PERFORM
       *    ²èÁü¿ÇÃÇ´ÉÍý²Ã»»ÄÉ²Ã
            PERFORM 3001-GAZOUKSN-SET-SEC
@@ -3156,7 +3163,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SPA-SRYYMD          TO  TNS-YUKOSTYMD
            MOVE    SPA-SRYYMD          TO  TNS-YUKOEDYMD
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  TNS-HOSPNUM
            MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
            MOVE    "tbl_tensu"         TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
@@ -3206,9 +3213,9 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
        910-DBSELECT-SEC                SECTION.
       *
            MOVE    "DBSELECT"      TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
        910-DBSELECT-EXT.
@@ -3219,9 +3226,9 @@ grpsys                            SPA-AREA
        920-DBFETCH-SEC                 SECTION.
       *
            MOVE    "DBFETCH"       TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
       *
@@ -3234,9 +3241,9 @@ grpsys                            SPA-AREA
        990-DBCLOSE-SEC           SECTION.
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
        990-DBCLOSE-EXT.

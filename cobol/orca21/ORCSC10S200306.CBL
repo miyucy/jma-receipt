@@ -47,6 +47,7 @@
       * 02.00.02     NACL-Â¿¡¹Ç¼  03/10/27  °é»ù±ÉÍÜ²Ã»»¼«Æ°»»ÄêÄÉ²Ã
       * 02.00.02     NACL-Â¿¡¹Ç¼  04/03/11  ¾®»ù²Ê³°Íè¿Ç»¡ÎÁ¥Á¥§¥Ã¥¯½¤Àµ
       * 02.00.03     NACL-Â¿¡¹Ç¼  05/11/18  MONFUNC ÂÐ±þ Â¾
+      * 03.05.00     NACL-Â¿¡¹Ç¼  07/04/XX  ¥°¥ë¡¼¥×¿ÇÎÅÂÐ±þ
       *****************************************************************
       *
       *
@@ -56,29 +57,30 @@
        FILE-CONTROL.
       *
       *    ¥Ñ¥é¥á¥¿¥Ç¡¼¥¿
-           SELECT  PARA-FILE       ASSIGN  FILE-NAME2
-                                   ORGANIZATION    IS  LINE SEQUENTIAL
-                                   FILE    STATUS  IS  STS-PARA.
+      *    SELECT  PARA-FILE       ASSIGN  FILE-NAME2
+      *                            ORGANIZATION    IS  LINE SEQUENTIAL
+      *                            FILE    STATUS  IS  STS-PARA.
       *
        DATA                    DIVISION.
        FILE                        SECTION.
       *
       *    ¥Ñ¥é¥á¥¿¥Ç¡¼¥¿
-       FD  PARA-FILE.
-       01  PARA-REC.
-           03  PARA-KEY.
-               05  PARA-FILEMEI         PIC X(08).
-               05  PARA-EDABAN          PIC 9(03).
-           03  PARA-DATA-REC            PIC X(60000).
+      *FD  PARA-FILE.
+      *01  PARA-REC.
+      *    03  PARA-KEY.
+      *        05  PARA-FILEMEI         PIC X(08).
+      *        05  PARA-EDABAN          PIC 9(03).
+      *    03  PARA-DATA-REC            PIC X(60000).
       *
        WORKING-STORAGE             SECTION.
       *
       *    ¥Ñ¥é¥á¥¿¥Õ¥¡¥¤¥ëÌ¾
-       01  FILE-NAME2.
-           03  FILLER              PIC X(09)   VALUE   "/var/tmp/".
-           03  FILLER              PIC X(07)   VALUE   "K01PARA".
-           03  FILE-TERMID2        PIC X(64)   VALUE   SPACE.
-           03  FILLER              PIC X(06)   VALUE   ".TXT".
+      *01  FILE-NAME2.
+      *    03  FILLER              PIC X(09)   VALUE   "/var/tmp/".
+      *    03  FILLER              PIC X(07)   VALUE   "K01PARA".
+      *    03  FILE-HOSPNUM2       PIC 9(02)   VALUE   ZERO.
+      *    03  FILE-TERMID2        PIC X(64)   VALUE   SPACE.
+      *    03  FILLER              PIC X(06)   VALUE   ".TXT".
       *
       *    ¥Õ¥é¥°ÎÎ°è
        01  STS-AREA.
@@ -693,7 +695,7 @@
       *    ¼õ¿ÇÎò¤ò¸¡º÷¤¹¤ë¡Ê¿ÇÎÅ·î£±Æü¤«¤é¿ÇÎÅÆü¤Þ¤Ç¤ÎÈÏ°Ï¡Ë
            MOVE    SPACE               TO  JYURRK-REC
            INITIALIZE                  JYURRK-KEY
-           MOVE    SPA-HOSPNUM          TO  JYURRK-HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  JYURRK-HOSPNUM
            MOVE    SPA-NYUGAIKBN       TO  JYURRK-NYUGAIKBN
            MOVE    SPA-PTID            TO  JYURRK-PTID
            IF      SPA-HKNKBN          =   1
@@ -714,7 +716,6 @@
       *
            MOVE    "JYURRK-KEY14"      TO  WRK-PATH
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    JYURRK-REC          TO  MCPDATA-REC
            MOVE    "tbl_jyurrk"        TO  MCP-TABLE
            MOVE    "key14"             TO  MCP-PATHNAME
@@ -855,7 +856,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *
                MOVE    SPACE               TO  SRYACT-REC
                INITIALIZE                  SRYACT-REC
-               MOVE    SPA-HOSPNUM          TO  SRY-HOSPNUM
+               MOVE    SPA-HOSPNUM         TO  SRY-HOSPNUM
                MOVE    SPA-NYUGAIKBN       TO  SRY-NYUGAIKBN
                MOVE    JYURRK-PTID         TO  SRY-PTID
                MOVE    JYURRK-SRYKA        TO  SRY-SRYKA
@@ -863,7 +864,6 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    JYURRK-ZAINUM (IDX)
                                            TO  SRY-ZAINUM
       *
-grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    SRYACT-REC          TO  MCPDATA-REC
                MOVE    "tbl_sryact"        TO  MCP-TABLE
                MOVE    "key2"              TO  MCP-PATHNAME
@@ -1128,11 +1128,10 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
       *    »»ÄêÍúÎò¸¡º÷
            MOVE    SPACE               TO  SANTEI-REC
            INITIALIZE                  SANTEI-REC
-           MOVE    SPA-HOSPNUM          TO  SANTEI-HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  SANTEI-HOSPNUM
            MOVE    SPA-PTID            TO  SANTEI-PTID
            MOVE    SPA-SRYYMD (1:6)    TO  SANTEI-SRYYM
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SANTEI-REC          TO  MCPDATA-REC
            MOVE    "tbl_santei"        TO  MCP-TABLE
            MOVE    "key2"              TO  MCP-PATHNAME
@@ -1398,7 +1397,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *    »»ÄêÍúÎò¸¡º÷
            MOVE    SPACE               TO  SANTEI-REC
            INITIALIZE                  SANTEI-REC
-           MOVE    SPA-HOSPNUM          TO  SANTEI-HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  SANTEI-HOSPNUM
            MOVE    SPA-PTID            TO  SANTEI-PTID
       *
            IF     (WRK-SANTEI-NASI     NOT =   SPACE )  AND
@@ -1409,7 +1408,6 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            END-IF
       **** MOVE    WRK-SANTEI-NASI     TO  SANTEI-SRYYM
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SANTEI-REC          TO  MCPDATA-REC
            MOVE    "tbl_santei"        TO  MCP-TABLE
            MOVE    "key2"              TO  MCP-PATHNAME
@@ -1610,7 +1608,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *    »»ÄêÍúÎò¸¡º÷
            MOVE    SPACE               TO  SANTEI-REC
            INITIALIZE                  SANTEI-REC
-           MOVE    SPA-HOSPNUM          TO  SANTEI-HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  SANTEI-HOSPNUM
            MOVE    SPA-PTID            TO  SANTEI-PTID
            MOVE    WRK-SRYCD           TO  SANTEI-SRYCD
            EVALUATE    TNS-SANTEIRRKKBN
@@ -1635,7 +1633,6 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    ZERO                TO  SANTEI-HKNCOMBINUM
            END-IF
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SANTEI-REC          TO  MCPDATA-REC
            MOVE    "tbl_santei"        TO  MCP-TABLE
            MOVE    "key3"              TO  MCP-PATHNAME
@@ -2471,7 +2468,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *    »»ÄêÍúÎò¸¡º÷
            MOVE    SPACE               TO  SANTEI-REC
            INITIALIZE                  SANTEI-REC
-           MOVE    SPA-HOSPNUM          TO  SANTEI-HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  SANTEI-HOSPNUM
            MOVE    SPA-PTID            TO  SANTEI-PTID
            MOVE    WRK-SRYCD           TO  SANTEI-SRYCD
            EVALUATE    TNS-SANTEIRRKKBN
@@ -2496,7 +2493,6 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    ZERO                TO  SANTEI-HKNCOMBINUM
            END-IF
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SANTEI-REC          TO  MCPDATA-REC
            MOVE    "tbl_santei"        TO  MCP-TABLE
            MOVE    "key3"              TO  MCP-PATHNAME
@@ -4395,7 +4391,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SPA-SRYYMD          TO  TNS-YUKOSTYMD
            MOVE    SPA-SRYYMD          TO  TNS-YUKOEDYMD
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  TNS-HOSPNUM
            MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
            MOVE    "tbl_tensu"         TO  MCP-TABLE
            MOVE    "key22"             TO  MCP-PATHNAME
@@ -4485,27 +4481,27 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *****************************************************************
       *    ¥Ñ¥é¥á¥¿¥Ç¡¼¥¿½çÆÉ¤ß
       *****************************************************************
-       980-PARA-READ-SEC         SECTION.
+      *980-PARA-READ-SEC         SECTION.
       *
-           READ    PARA-FILE 
-               AT  END
-                   MOVE    1           TO  FLG-PARA
-               NOT AT  END
-                   MOVE    ZERO        TO  FLG-PARA
-           END-READ
+      *    READ    PARA-FILE 
+      *        AT  END
+      *            MOVE    1           TO  FLG-PARA
+      *        NOT AT  END
+      *            MOVE    ZERO        TO  FLG-PARA
+      *    END-READ
       *
-           .
-       980-PARA-READ-EXT.
-           EXIT.
+      *    .
+      *980-PARA-READ-EXT.
+      *    EXIT.
       *****************************************************************
       *    ¥Æ¡¼¥Ö¥ë¸¡º÷½èÍý
       *****************************************************************
        910-DBSELECT-SEC                SECTION.
       *
            MOVE    "DBSELECT"      TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
        910-DBSELECT-EXT.
@@ -4516,9 +4512,9 @@ grpsys                            SPA-AREA
        920-DBFETCH-SEC                 SECTION.
       *
            MOVE    "DBFETCH"       TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
       *
@@ -4531,9 +4527,9 @@ grpsys                            SPA-AREA
        990-DBCLOSE-SEC           SECTION.
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
        990-DBCLOSE-EXT.

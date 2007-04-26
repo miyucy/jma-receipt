@@ -36,6 +36,7 @@
       *  01.00.05    NACL-太田    03.09.10  入力パラメータ特定入院料コード
       *                                     の最大数を１０に変更
       *  03.01.00    NACL-太田    06.06.30  入院料が拾えないケースを認める
+      *  03.05.00    NACL-多々納  07/04/26  グループ診療対応
       *****************************************************************
       *
        ENVIRONMENT                         DIVISION.
@@ -49,8 +50,6 @@
       *
       *
        WORKING-STORAGE                     SECTION.
-grpsys*
-grpsys COPY    "COMMON-SPA".
       *
       *    フラグ領域
        01  FLG-AREA.
@@ -163,9 +162,12 @@ grpsys COPY    "COMMON-SPA".
        LINKAGE                             SECTION.
       *
            COPY    "CPORCSTUSAN.INC".
+      *    スパ領域
+           COPY    "COMMON-SPA".
       *
        PROCEDURE                           DIVISION    USING
-           ORCSTUSANAREA.
+           ORCSTUSANAREA
+           SPA-AREA.
       *
       *****************************************************************
       *    主　　処理
@@ -314,12 +316,11 @@ grpsys COPY    "COMMON-SPA".
            IF    ( STUSAN-RRKNUMKBN    =   "1" )
       *
                INITIALIZE                  PTNYUINRRK-REC
-               MOVE    STUSAN-HOSPID   TO  PTNYUINRRK-HOSPID
+               MOVE    STUSAN-HOSPNUM   TO  PTNYUINRRK-HOSPNUM
                MOVE    STUSAN-PTID     TO  PTNYUINRRK-PTID
                MOVE    STUSAN-RRKNUM   TO  PTNYUINRRK-RRKNUM
                MOVE    1               TO  PTNYUINRRK-RRKEDANUM
                MOVE    PATH-TBL-PTNYUINRRK-KEY     TO  MCP-PATH
-grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    PTNYUINRRK-REC  TO  MCPDATA-REC
                PERFORM 910-DBSELECT-SEC
                IF    ( MCP-RC          =   ZERO )
@@ -333,11 +334,10 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
            ELSE
       *
                INITIALIZE                  PTNYUINRRK-REC
-               MOVE    STUSAN-HOSPID   TO  PTNYUINRRK-HOSPID
+               MOVE    STUSAN-HOSPNUM   TO  PTNYUINRRK-HOSPNUM
                MOVE    STUSAN-PTID     TO  PTNYUINRRK-PTID
                MOVE    STUSAN-KJNYMD   TO  PTNYUINRRK-NYUINYMD
                MOVE    PATH-TBL-PTNYUINRRK-KEY17   TO  MCP-PATH
-grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    PTNYUINRRK-REC  TO  MCPDATA-REC
                PERFORM 910-DBSELECT-SEC
                IF    ( MCP-RC          =   ZERO )
@@ -468,11 +468,10 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
       *
            MOVE    ZERO                TO  FLG-NYUINACCT
            INITIALIZE                      NYUINACCT-REC
-           MOVE    PTNYUINRRK-HOSPID   TO  NACCT-HOSPID
+           MOVE    PTNYUINRRK-HOSPNUM   TO  NACCT-HOSPNUM
            MOVE    "1"                 TO  NACCT-NYUGAIKBN
            MOVE    PTNYUINRRK-PTID     TO  NACCT-PTID
            MOVE    WRK-STSRYYM         TO  NACCT-SRYYM
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    NYUINACCT-REC       TO  MCPDATA-REC
            MOVE    PATH-TBL-NYUINACCT-KEY7 TO  MCP-PATH
            PERFORM 910-DBSELECT-SEC
@@ -518,12 +517,11 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *
            MOVE    ZERO                TO  FLG-NYUINACT
            INITIALIZE                      NYUINACT-REC
-           MOVE    NACCT-HOSPID        TO  NSRY-HOSPID
+           MOVE    NACCT-HOSPNUM       TO  NSRY-HOSPNUM
            MOVE    NACCT-NYUGAIKBN     TO  NSRY-NYUGAIKBN
            MOVE    NACCT-PTID          TO  NSRY-PTID
            MOVE    NACCT-SRYYM         TO  NSRY-SRYYM
            MOVE    NACCT-ZAINUM        TO  NSRY-ZAINUM
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    NYUINACT-REC        TO  MCPDATA-REC
            MOVE    PATH-TBL-NYUINACT-KEY9
                                        TO  MCP-PATH
@@ -553,7 +551,6 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    NACCT-SRYYM         TO  TNS-YUKOSTYMD(1:6)
                MOVE    "01"                TO  TNS-YUKOSTYMD(7:2)
                MOVE    TNS-YUKOSTYMD       TO  TNS-YUKOEDYMD
-grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
                MOVE    PATH-TBL-TENSU-KEY  TO  MCP-PATH
                PERFORM 910-DBSELECT-SEC
@@ -666,7 +663,6 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
            ELSE
                INITIALIZE  SENTEICDCHG-REC
                MOVE    TNS-SRYCD       TO  SENCHG-IPNSRYCD
-grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    SENTEICDCHG-REC TO  MCPDATA-REC
                MOVE    PATH-TBL-SENTEICDCHG-KEY2
                                    TO  MCP-PATH
@@ -725,7 +721,6 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
       *
            MOVE    PATH-TBL-PTNYUINRRK-KEY38
                                        TO  MCP-PATH
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PTNYUINRRK-REC      TO  MCPDATA-REC
            PERFORM 910-DBSELECT-SEC
            IF    ( MCP-RC              =   1 )

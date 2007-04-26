@@ -30,6 +30,7 @@
       *  01.00.01    NACL-多々納  03/07/10  入院調剤料算定なし追加
       *  01.00.02    NACL-多々納  06/02/09  MONFUNC 対応
       *                                     退院の翌日入院の対応
+      *  03.05.00    NACL-多々納  07/04/XX  グループ診療対応
       *****************************************************************
       *
       *
@@ -350,13 +351,12 @@
       *    診療年月の診療会計マスタ読み込み
            MOVE    SPACE               TO  SRYACCT-REC
            INITIALIZE                      SRYACCT-REC
-           MOVE    SPA-HOSPID          TO  ACCT-HOSPID
+           MOVE    SPA-HOSPNUM         TO  ACCT-HOSPNUM
            MOVE    SPA-NYUGAIKBN       TO  ACCT-NYUGAIKBN
            MOVE    ORCSCHO-PTID        TO  ACCT-PTID
            MOVE    WRK-SRYYM           TO  ACCT-SRYYM
            MOVE    "21"                TO  ACCT-SRYKBN
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SRYACCT-REC         TO  MCPDATA-REC
            MOVE    "tbl_sryacct"       TO  MCP-TABLE
            MOVE    "key14"             TO  MCP-PATHNAME
@@ -505,13 +505,12 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *    診療年月の診療会計マスタ読み込み
            MOVE    SPACE               TO  SRYACCT-REC
            INITIALIZE                      SRYACCT-REC
-           MOVE    SPA-HOSPID          TO  ACCT-HOSPID
+           MOVE    SPA-HOSPNUM         TO  ACCT-HOSPNUM
            MOVE    SPA-NYUGAIKBN       TO  ACCT-NYUGAIKBN
            MOVE    ORCSCHO-PTID        TO  ACCT-PTID
            MOVE    WRK-SRYYM           TO  ACCT-SRYYM
            MOVE    WRK-SRYKBN          TO  ACCT-SRYKBN
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SRYACCT-REC         TO  MCPDATA-REC
            MOVE    "tbl_sryacct"       TO  MCP-TABLE
            MOVE    "key14"             TO  MCP-PATHNAME
@@ -582,14 +581,13 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *    診療会計マスターから診療行為マスターを検索する
            MOVE    SPACE               TO  SRYACT-REC
            INITIALIZE                      SRYACT-REC
-           MOVE    ACCT-HOSPID         TO  SRY-HOSPID
+           MOVE    ACCT-HOSPNUM        TO  SRY-HOSPNUM
            MOVE    ACCT-NYUGAIKBN      TO  SRY-NYUGAIKBN
            MOVE    ACCT-PTID           TO  SRY-PTID
            MOVE    ACCT-SRYKA          TO  SRY-SRYKA
            MOVE    ACCT-SRYYM          TO  SRY-SRYYM
            MOVE    ACCT-ZAINUM         TO  SRY-ZAINUM
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SRYACT-REC          TO  MCPDATA-REC
            MOVE    "tbl_sryact"        TO  MCP-TABLE
            MOVE    "key2"              TO  MCP-PATHNAME
@@ -648,13 +646,12 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *
       *    診療会計マスターを特定する
            INITIALIZE                      NYUINACCT-REC
-           MOVE    SPA-HOSPID          TO  NACCT-HOSPID
+           MOVE    SPA-HOSPNUM         TO  NACCT-HOSPNUM
            MOVE    SPA-NYUGAIKBN       TO  NACCT-NYUGAIKBN
            MOVE    ORCSCHO-PTID        TO  NACCT-PTID
            MOVE    ORCSCHO-SRYYM       TO  NACCT-SRYYM
            MOVE    "2"                 TO  NACCT-ZAISKBKBN
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    NYUINACCT-REC       TO  MCPDATA-REC
            MOVE    "tbl_nyuinacct"     TO  MCP-TABLE
            MOVE    "key17"             TO  MCP-PATHNAME
@@ -690,10 +687,9 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *    入院履歴判定
            MOVE    SPACE               TO  PTNYUINRRK-REC
            INITIALIZE                  PTNYUINRRK-REC
-           MOVE    SPA-HOSPID          TO  PTNYUINRRK-HOSPID
+           MOVE    SPA-HOSPNUM         TO  PTNYUINRRK-HOSPNUM
            MOVE    ORCSCHO-PTID        TO  PTNYUINRRK-PTID
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PTNYUINRRK-REC      TO  MCPDATA-REC
            MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
            MOVE    "key33"             TO  MCP-PATHNAME
@@ -807,13 +803,12 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *    診療年月の診療会計マスタ読み込み
            MOVE    SPACE               TO  SRYACCT-REC
            INITIALIZE                      SRYACCT-REC
-           MOVE    SPA-HOSPID          TO  ACCT-HOSPID
+           MOVE    SPA-HOSPNUM         TO  ACCT-HOSPNUM
            MOVE    SPA-NYUGAIKBN       TO  ACCT-NYUGAIKBN
            MOVE    ORCSCHO-PTID        TO  ACCT-PTID
            MOVE    ORCSCHO-SRYYM       TO  ACCT-SRYYM
            MOVE    "24"                TO  ACCT-SRYKBN
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SRYACCT-REC         TO  MCPDATA-REC
            MOVE    "tbl_sryacct"       TO  MCP-TABLE
            MOVE    "key14"             TO  MCP-PATHNAME
@@ -857,13 +852,12 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *    診療年月の診療会計マスタ読み込み
            MOVE    SPACE               TO  SRYACCT-REC
            INITIALIZE                      SRYACCT-REC
-           MOVE    SPA-HOSPID          TO  ACCT-HOSPID
+           MOVE    SPA-HOSPNUM         TO  ACCT-HOSPNUM
            MOVE    SPA-NYUGAIKBN       TO  ACCT-NYUGAIKBN
            MOVE    ORCSCHO-PTID        TO  ACCT-PTID
            MOVE    ORCSCHO-SRYYM       TO  ACCT-SRYYM
            MOVE    "26"                TO  ACCT-SRYKBN
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SRYACCT-REC         TO  MCPDATA-REC
            MOVE    "tbl_sryacct"       TO  MCP-TABLE
            MOVE    "key14"             TO  MCP-PATHNAME
@@ -1147,7 +1141,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                               (TBL-CHO-ZAINUM(IDX) =   ZERO )
                           OR  (ORCSCHO-ERRCD   NOT =   ZERO )
                INITIALIZE                      SRYACCT-REC
-               MOVE    SPA-HOSPID          TO  ACCT-HOSPID
+               MOVE    SPA-HOSPNUM         TO  ACCT-HOSPNUM
                MOVE    SPA-NYUGAIKBN       TO  ACCT-NYUGAIKBN
                MOVE    ORCSCHO-PTID        TO  ACCT-PTID
                MOVE    TBL-CHO-SRYKA (IDX) TO  ACCT-SRYKA
@@ -1155,7 +1149,6 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    "24"                TO  ACCT-SRYKBN
                MOVE    TBL-CHO-ZAINUM(IDX) TO  ACCT-ZAINUM
       *
-grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    SRYACCT-REC         TO  MCPDATA-REC
                MOVE    "tbl_sryacct"       TO  MCP-TABLE
                MOVE    "key"               TO  MCP-PATHNAME
@@ -1190,14 +1183,13 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                        MOVE    SMCNDATE-YMD        TO  ACCT-UPYMD
                        MOVE    SMCNDATE-HMS        TO  ACCT-UPHMS
       *
-grpsys*                MOVE SPA-HOSPNUM TO -HOSPNUM
                        MOVE    SRYACCT-REC         TO  MCPDATA-REC
                        MOVE    "DBUPDATE"          TO  MCP-FUNC
                        MOVE    "tbl_sryacct"       TO  MCP-TABLE
                        MOVE    "key"               TO  MCP-PATHNAME
-grpsys                 CALL "ORCDBMAIN" USING MCPAREA
-                                              MCPDATA-REC
-grpsys                                        SPA-AREA
+grpsys                 CALL    "ORCDBMAIN"         USING   MCPAREA
+                                                           MCPDATA-REC
+                                                           SPA-AREA
                        IF      MCP-RC          NOT =   ZERO
                             DISPLAY "ORCSCHOZAI SRYACCT UPD ERR:" MCP-RC
                                 ",KEY:" ACCT-KEY
@@ -1233,14 +1225,13 @@ grpsys                                        SPA-AREA
            MOVE    SRYACCT-REC         TO  HZN-SRYACCT-REC
       *
            INITIALIZE                      SRYACCT-REC
-           MOVE    SPA-HOSPID          TO  ACCT-HOSPID
+           MOVE    SPA-HOSPNUM         TO  ACCT-HOSPNUM
            MOVE    SPA-NYUGAIKBN       TO  ACCT-NYUGAIKBN
            MOVE    ORCSCHO-PTID        TO  ACCT-PTID
            MOVE    HZN-ACCT-SRYKA      TO  ACCT-SRYKA
            MOVE    ORCSCHO-SRYYM       TO  ACCT-SRYYM
            MOVE    HZN-ACCT-HKNCOMBI   TO  ACCT-HKNCOMBI
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SRYACCT-REC         TO  MCPDATA-REC
            MOVE    "tbl_sryacct"       TO  MCP-TABLE
            MOVE    "key11"             TO  MCP-PATHNAME
@@ -1286,35 +1277,33 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
        40052-SRYACCT-DEL-SEC           SECTION.
       *
            INITIALIZE                  SRYACT-REC
-           MOVE    ACCT-HOSPID         TO  SRY-HOSPID
+           MOVE    ACCT-HOSPNUM        TO  SRY-HOSPNUM
            MOVE    ACCT-NYUGAIKBN      TO  SRY-NYUGAIKBN
            MOVE    ACCT-PTID           TO  SRY-PTID
            MOVE    ACCT-SRYKA          TO  SRY-SRYKA
            MOVE    ACCT-SRYYM          TO  SRY-SRYYM
            MOVE    ACCT-ZAINUM         TO  SRY-ZAINUM
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SRYACT-REC          TO  MCPDATA-REC
            MOVE    "DBDELETE"          TO  MCP-FUNC
            MOVE    "tbl_sryact"        TO  MCP-TABLE
            MOVE    "del11"             TO  MCP-PATHNAME
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
            IF      MCP-RC          NOT =   ZERO
                DISPLAY "ORCSCHOZAI SRYACT DEL ERR:" MCP-RC
                        ",KEY:" SRY-KEY
                MOVE    1               TO  ORCSCHO-ERRCD
            END-IF
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SRYACCT-REC         TO  MCPDATA-REC
            MOVE    "DBDELETE"          TO  MCP-FUNC
            MOVE    "tbl_sryacct"       TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
            IF      MCP-RC          NOT =   ZERO
                DISPLAY "ORCSCHOZAI SRYACCT DEL ERR:" MCP-RC
                                 ",KEY:" ACCT-KEY
@@ -1322,7 +1311,7 @@ grpsys                            SPA-AREA
            END-IF
       *
       *    受診履歴削除
-           MOVE    ACCT-HOSPID         TO  SRY-HOSPID
+           MOVE    ACCT-HOSPNUM        TO  SRY-HOSPNUM
            MOVE    ACCT-NYUGAIKBN      TO  SRY-NYUGAIKBN
            MOVE    ACCT-PTID           TO  SRY-PTID
            MOVE    ACCT-SRYKA          TO  SRY-SRYKA
@@ -1331,7 +1320,7 @@ grpsys                            SPA-AREA
       *
            MOVE    SPACE               TO  JYURRK-REC
            INITIALIZE                      JYURRK-REC
-           MOVE    ACCT-HOSPID         TO  JYURRK-HOSPID
+           MOVE    ACCT-HOSPNUM        TO  JYURRK-HOSPNUM
            MOVE    ACCT-PTID           TO  JYURRK-PTID
            MOVE    ACCT-NYUGAIKBN      TO  JYURRK-NYUGAIKBN
            MOVE    ACCT-SRYKA          TO  JYURRK-SRYKA
@@ -1341,7 +1330,6 @@ grpsys                            SPA-AREA
                MOVE    ACCT-ZAINUM         TO  JYURRK-ZAINUM (IDX3)
            END-PERFORM
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    JYURRK-REC          TO  MCPDATA-REC
            MOVE    "tbl_jyurrk"        TO  MCP-TABLE
            MOVE    "key20"             TO  MCP-PATHNAME
@@ -1378,14 +1366,13 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    SMCNDATE-YMD        TO  JYURRK-UPYMD
                MOVE    SMCNDATE-HMS        TO  JYURRK-UPHMS
       *
-grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    JYURRK-REC          TO  MCPDATA-REC
                MOVE    "DBUPDATE"          TO  MCP-FUNC
                MOVE    "tbl_jyurrk"        TO  MCP-TABLE
                MOVE    "key"               TO  MCP-PATHNAME
-grpsys         CALL "ORCDBMAIN" USING MCPAREA
-                                      MCPDATA-REC
-grpsys                                SPA-AREA
+grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
+                                                   MCPDATA-REC
+                                                   SPA-AREA
                IF      MCP-RC          NOT =   ZERO
                     DISPLAY "ORCSCHOZAI JYURRK UPD ERR:" MCP-RC
                             ",KEY:" JYURRK-KEY
@@ -1433,7 +1420,7 @@ grpsys                                SPA-AREA
                               (TBL-MAD-ZAINUM(IDX) =   ZERO )
                           OR  (ORCSCHO-ERRCD   NOT =   ZERO )
                INITIALIZE                      SRYACCT-REC
-               MOVE    SPA-HOSPID          TO  ACCT-HOSPID
+               MOVE    SPA-HOSPNUM         TO  ACCT-HOSPNUM
                MOVE    SPA-NYUGAIKBN       TO  ACCT-NYUGAIKBN
                MOVE    ORCSCHO-PTID        TO  ACCT-PTID
                MOVE    TBL-MAD-SRYKA (IDX) TO  ACCT-SRYKA
@@ -1441,7 +1428,6 @@ grpsys                                SPA-AREA
                MOVE    "26"                TO  ACCT-SRYKBN
                MOVE    TBL-MAD-ZAINUM(IDX) TO  ACCT-ZAINUM
       *
-grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    SRYACCT-REC         TO  MCPDATA-REC
                MOVE    "tbl_sryacct"       TO  MCP-TABLE
                MOVE    "key"               TO  MCP-PATHNAME
@@ -1477,14 +1463,13 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                    MOVE    SMCNDATE-YMD        TO  ACCT-UPYMD
                    MOVE    SMCNDATE-HMS        TO  ACCT-UPHMS
       *
-grpsys*            MOVE SPA-HOSPNUM TO -HOSPNUM
                    MOVE    SRYACCT-REC         TO  MCPDATA-REC
                    MOVE    "DBUPDATE"          TO  MCP-FUNC
                    MOVE    "tbl_sryacct"       TO  MCP-TABLE
                    MOVE    "key"               TO  MCP-PATHNAME
-grpsys             CALL "ORCDBMAIN" USING MCPAREA
-                                          MCPDATA-REC
-grpsys                                    SPA-AREA
+grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
+                                                       MCPDATA-REC
+                                                       SPA-AREA
                    IF      MCP-RC          NOT =   ZERO
                         DISPLAY "ORCSCHOZAI SRYACCT UPD ERR:" MCP-RC
                                 ",KEY:" ACCT-KEY
@@ -1583,7 +1568,7 @@ grpsys                                    SPA-AREA
       *
            MOVE    SPACE               TO  SRYACCT-REC
            INITIALIZE                      SRYACCT-REC
-           MOVE    SPA-HOSPID          TO  ACCT-HOSPID
+           MOVE    SPA-HOSPNUM         TO  ACCT-HOSPNUM
            MOVE    SPA-NYUGAIKBN       TO  ACCT-NYUGAIKBN
            MOVE    ORCSCHO-PTID        TO  ACCT-PTID
            MOVE    ORCSCHO-SRYYM       TO  ACCT-SRYYM
@@ -1621,14 +1606,13 @@ grpsys                                    SPA-AREA
            MOVE    SMCNDATE-YMD        TO  ACCT-UPYMD
            MOVE    SMCNDATE-HMS        TO  ACCT-UPHMS
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SRYACCT-REC         TO  MCPDATA-REC
            MOVE    "DBINSERT"          TO  MCP-FUNC
            MOVE    "tbl_sryacct"       TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
            IF      MCP-RC          NOT =   ZERO
                DISPLAY "SYRACCT INS ERR:" MCP-RC
                        ",KEY:" ACCT-KEY
@@ -1646,7 +1630,7 @@ grpsys                            SPA-AREA
       *
       *    患者マスターより、最終剤番号を再番し、患者マスターを更新する
            INITIALIZE                      PTINF-REC
-           MOVE    SPA-HOSPID          TO  PTINF-HOSPID
+           MOVE    SPA-HOSPNUM         TO  PTINF-HOSPNUM
            MOVE    ORCSCHO-PTID        TO  PTINF-PTID
            PERFORM 940-PTINF-READ-SEC
            IF      FLG-PTINF           =   1
@@ -1665,14 +1649,13 @@ grpsys                            SPA-AREA
            MOVE    SMCNDATE-YMD        TO  PTINF-UPYMD
            MOVE    SMCNDATE-HMS        TO  PTINF-UPHMS
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PTINF-REC           TO  MCPDATA-REC
            MOVE    "DBUPDATE"          TO  MCP-FUNC
            MOVE    "tbl_ptinf"         TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
            IF      MCP-RC          NOT =   ZERO
                DISPLAY "PTINF UPDTE ERR:"   MCP-RC ",KEY:" PTINF-KEY
                MOVE    3                   TO  ORCSCHO-ERRCD 
@@ -1689,7 +1672,7 @@ grpsys                            SPA-AREA
        40053-SRYACT-INS-SEC         SECTION.
       *
            INITIALIZE                          SRYACT-REC
-           MOVE    ACCT-HOSPID         TO  SRY-HOSPID
+           MOVE    ACCT-HOSPNUM        TO  SRY-HOSPNUM
            MOVE    ACCT-NYUGAIKBN      TO  SRY-NYUGAIKBN
            MOVE    ACCT-PTID           TO  SRY-PTID
            MOVE    ACCT-SRYKA          TO  SRY-SRYKA
@@ -1713,14 +1696,13 @@ grpsys                            SPA-AREA
            MOVE    SMCNDATE-YMD        TO  SRY-UPYMD
            MOVE    SMCNDATE-HMS        TO  SRY-UPHMS
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SRYACT-REC          TO  MCPDATA-REC
            MOVE    "DBINSERT"          TO  MCP-FUNC
            MOVE    "tbl_sryact"        TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            IF      MCP-RC          NOT =   ZERO
                DISPLAY "CHOZAI SRYACT INS ERR:" SRY-KEY  "."
@@ -1755,13 +1737,12 @@ grpsys                            SPA-AREA
        5001-TAIIN-DEL-SEC         SECTION.
       *
            INITIALIZE                      SRYACCT-REC
-           MOVE    SPA-HOSPID          TO  ACCT-HOSPID
+           MOVE    SPA-HOSPNUM         TO  ACCT-HOSPNUM
            MOVE    SPA-NYUGAIKBN       TO  ACCT-NYUGAIKBN
            MOVE    ORCSCHO-PTID        TO  ACCT-PTID
            MOVE    ORCSCHO-SRYYM       TO  ACCT-SRYYM
            MOVE    WRK-SRYKBN          TO  ACCT-SRYKBN
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SRYACCT-REC         TO  MCPDATA-REC
            MOVE    "tbl_sryacct"       TO  MCP-TABLE
            MOVE    "key14"             TO  MCP-PATHNAME
@@ -1787,14 +1768,13 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                    MOVE    SMCNDATE-YMD        TO  ACCT-UPYMD
                    MOVE    SMCNDATE-HMS        TO  ACCT-UPHMS
       *
-grpsys*            MOVE SPA-HOSPNUM TO -HOSPNUM
                    MOVE    SRYACCT-REC         TO  MCPDATA-REC
                    MOVE    "DBUPDATE"          TO  MCP-FUNC
                    MOVE    "tbl_sryacct"       TO  MCP-TABLE
                    MOVE    "key"               TO  MCP-PATHNAME
-grpsys             CALL "ORCDBMAIN" USING MCPAREA
-                                          MCPDATA-REC
-grpsys                                    SPA-AREA
+grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
+                                                       MCPDATA-REC
+                                                       SPA-AREA
                    IF      MCP-RC          NOT =   ZERO
                         DISPLAY "ORCSCHOZAI SRYACCT UPD ERR:" MCP-RC
                                 ",KEY:" ACCT-KEY
@@ -1843,7 +1823,7 @@ grpsys                                    SPA-AREA
            MOVE    WRK-DD              TO  TNS-YUKOSTYMD(7:2)
            MOVE    TNS-YUKOSTYMD       TO  TNS-YUKOEDYMD
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  TNS-HOSPNUM
            MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
            MOVE    "tbl_tensu"         TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
@@ -1930,7 +1910,6 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *****************************************************************
        940-PTINF-READ-SEC         SECTION.
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PTINF-REC           TO  MCPDATA-REC
            MOVE    "tbl_ptinf"         TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
@@ -1997,9 +1976,9 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    ZERO            TO  MCP-RC
       *
            MOVE    "DBSELECT"      TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
        910-DBSELECT-EXT.
@@ -2010,9 +1989,9 @@ grpsys                            SPA-AREA
        920-DBFETCH-SEC                 SECTION.
       *
            MOVE    "DBFETCH"       TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
       *
@@ -2024,9 +2003,9 @@ grpsys                            SPA-AREA
        990-DBCLOSE-SEC               SECTION.
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
        990-DBCLOSE-EXT.

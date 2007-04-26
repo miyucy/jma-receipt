@@ -23,6 +23,7 @@
       *  コンポーネント名  : まとめ入金サブ（未収まとめ入金画面用）
       *  管理者            : 
       *  作成日付    作業者        記述
+      *  03.05.00    NACL-多々納  07/04/XX  グループ診療対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -131,7 +132,7 @@
       *
       *    患者マスター検索
            INITIALIZE                      PTINF-REC
-           MOVE    LNK-SCNYUKINS-HOSPID    TO  PTINF-HOSPID
+           MOVE    LNK-SCNYUKINS-HOSPNUM   TO  PTINF-HOSPNUM
            MOVE    LNK-SCNYUKINS-PTID      TO  PTINF-PTID
            PERFORM 900-PTINF-READ-SEC
            IF      FLG-PTINF           NOT =   ZERO
@@ -168,7 +169,7 @@
        300-SYUNOU-UPD-SEC                SECTION.
       *
            INITIALIZE                          SYUNOU-REC
-           MOVE    LNK-SCNYUKINS-HOSPID    TO  SYU-HOSPID
+           MOVE    LNK-SCNYUKINS-HOSPNUM   TO  SYU-HOSPNUM
            MOVE    LNK-SCNYUKINS-PTID      TO  SYU-PTID
            MOVE    LNK-SCNYUKINS-NYUGAIKBN(IDX)
                                            TO  SYU-NYUGAIKBN
@@ -203,14 +204,13 @@
                    MOVE    SMCNDATE-HMS    TO  SYU-UPHMS
       *
       *           収納更新
-grpsys*           MOVE SPA-HOSPNUM TO -HOSPNUM
                   MOVE    SYUNOU-REC          TO  MCPDATA-REC
                   MOVE    "DBUPDATE"          TO  MCP-FUNC
                   MOVE    "tbl_syunou"        TO  MCP-TABLE
                   MOVE    "key"               TO  MCP-PATHNAME
-grpsys            CALL "ORCDBMAIN" USING MCPAREA
-                                         MCPDATA-REC
-grpsys                                   SPA-AREA
+grpsys            CALL    "ORCDBMAIN"         USING   MCPAREA
+                                                      MCPDATA-REC
+                                                      SPA-AREA
                    IF      MCP-RC              NOT =   ZERO
                        DISPLAY "ORCSNYUKINS SYUNOU UPD ERR:"
                                 MCP-RC  "."
@@ -235,18 +235,17 @@ grpsys                                   SPA-AREA
       *
       *    新規作成の収納明細マスタに必要な伝票番号枝番取得
            INITIALIZE                      SYUMEI-REC
-           MOVE    SYU-HOSPID          TO  SMEI-HOSPID
+           MOVE    SYU-HOSPNUM         TO  SMEI-HOSPNUM
            MOVE    SYU-NYUGAIKBN       TO  SMEI-NYUGAIKBN
            MOVE    SYU-PTID            TO  SMEI-PTID
            MOVE    SYU-DENPNUM         TO  SMEI-DENPNUM
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYUMEI-REC          TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "tbl_syumei"        TO  MCP-TABLE
            MOVE    "key2"              TO  MCP-PATHNAME
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
            IF      MCP-RC              =    ZERO
                  MOVE    "tbl_syumei"  TO  MCP-TABLE
                  MOVE    "key2"        TO  MCP-PATHNAME
@@ -272,7 +271,7 @@ grpsys                            SPA-AREA
       *収納明細作成処理
            MOVE    SPACE               TO  SYUMEI-REC
            INITIALIZE                      SYUMEI-REC
-           MOVE    SYU-HOSPID          TO  SMEI-HOSPID
+           MOVE    SYU-HOSPNUM         TO  SMEI-HOSPNUM
            MOVE    SYU-NYUGAIKBN       TO  SMEI-NYUGAIKBN
            MOVE    SYU-PTID            TO  SMEI-PTID
       *伝票番号
@@ -333,14 +332,13 @@ grpsys                            SPA-AREA
            PERFORM 800-DAILYKEY-SEC
            MOVE    SDAILYKEY-DAILYKEY  TO  SMEI-DAILYKEY
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYUMEI-REC          TO  MCPDATA-REC
            MOVE    "DBINSERT"          TO  MCP-FUNC
            MOVE    "tbl_syumei"        TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
            IF      MCP-RC              NOT =   ZERO
                    DISPLAY "ORCSNYUKINS SYUMEI INS ERR:"  MCP-RC  "."
                    MOVE    12          TO  LNK-SCNYUKINS-RC
@@ -365,21 +363,20 @@ grpsys                            SPA-AREA
       *****************************************************************
        900-PTINF-READ-SEC         SECTION.
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PTINF-REC           TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "tbl_ptinf"         TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
            IF      MCP-RC              =   ZERO
                MOVE    "DBFETCH"           TO  MCP-FUNC
                MOVE    "tbl_ptinf"         TO  MCP-TABLE
                MOVE    "key"               TO  MCP-PATHNAME
-grpsys         CALL "ORCDBMAIN" USING MCPAREA
-                                      MCPDATA-REC
-grpsys                                SPA-AREA
+grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
+                                                   MCPDATA-REC
+                                                   SPA-AREA
                IF      MCP-RC              =   ZERO
                    MOVE    MCPDATA-REC        TO  PTINF-REC
                    MOVE    ZERO               TO  FLG-PTINF
@@ -405,12 +402,11 @@ grpsys                                SPA-AREA
       *****************************************************************
        910-SYUNOU-SELECT-SEC        SECTION.
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYUNOU-REC          TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
            IF      MCP-RC              =   ZERO
                MOVE    ZERO               TO  FLG-SYUNOU
            ELSE
@@ -427,9 +423,9 @@ grpsys                            SPA-AREA
        910-SYUNOU-READ-SEC         SECTION.
       *
            MOVE    "DBFETCH"           TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC         TO  SYUNOU-REC
                MOVE    ZERO                TO  FLG-SYUNOU
@@ -448,9 +444,9 @@ grpsys                            SPA-AREA
        910-SYUMEI-READ-SEC         SECTION.
       *
            MOVE    "DBFETCH"           TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC         TO  SYUMEI-REC
                MOVE    ZERO                TO  FLG-SYUMEI
@@ -469,9 +465,9 @@ grpsys                            SPA-AREA
        910-DB-CLOSE-SEC                 SECTION.
       *
            MOVE    "DBCLOSECURSOR"      TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
       *

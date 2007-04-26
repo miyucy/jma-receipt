@@ -28,6 +28,7 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *  01.00.01    NACL-多々納  05/11/17  MONFUNC 対応
+      *  03.05.00    NACL-多々納  07/04/XX  グループ診療対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -256,8 +257,10 @@
                    UNTIL      (IDX     >   SPA-HKN-MAX ) OR
                               (SPA-HKNCOMBINUM     =   "9999") OR
                               (SPA-HKNKBN          =   1     )
-               IF     (SPA-GMN-THKNCOMBINUM(IDX)   =   "9999") OR
-                      (SPA-NAI-RSI-HKNKBN(IDX) NOT =   SPACE )
+      *******  IF     (SPA-GMN-THKNCOMBINUM(IDX)   =   "9999") OR
+               IF     (SPA-NAI-RSI-HKNKBN(IDX) NOT =   SPACE )  OR
+                     ((SPA-GMN-THKNCOMBINUM(IDX)   =   "9999") AND
+                      (SPA-SRYYMD                  <   "20060401"))
                    CONTINUE
                ELSE
                    ADD     1               TO  IDY
@@ -740,11 +743,10 @@
       *
       *    受診内容ファイルを特定する
            INITIALIZE                      UKETUKE-REC
-           MOVE    SPA-HOSPNUM          TO  UKE-HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  UKE-HOSPNUM
            MOVE    SPA-SYSYMD          TO  UKE-UKEYMD
            MOVE    SPA-PTID            TO  UKE-PTID
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    UKETUKE-REC         TO  MCPDATA-REC
            MOVE    "tbl_uketuke"       TO  MCP-TABLE
            MOVE    "key2"              TO  MCP-PATHNAME
@@ -1058,9 +1060,9 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
        900-UKETUKE-READ-SEC           SECTION.
       *
            MOVE    "DBFETCH"       TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC         TO  UKETUKE-REC 
                MOVE    ZERO                TO  FLG-UKETUKE
@@ -1077,9 +1079,9 @@ grpsys                            SPA-AREA
        910-DBSELECT-SEC                SECTION.
       *
            MOVE    "DBSELECT"      TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
        910-DBSELECT-EXT.
@@ -1090,9 +1092,9 @@ grpsys                            SPA-AREA
        920-DBFETCH-SEC                 SECTION.
       *
            MOVE    "DBFETCH"       TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
       *
@@ -1105,9 +1107,9 @@ grpsys                            SPA-AREA
        990-DBCLOSE-SEC         SECTION.
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
        990-DBCLOSE-EXT.
@@ -1119,9 +1121,9 @@ grpsys                            SPA-AREA
        900-PUT-WINDOW              SECTION.
       *
            MOVE   "PUTWINDOW"       TO  MCP-FUNC.
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
        900-PUT-WINDOW-EXT.

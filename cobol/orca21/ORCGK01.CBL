@@ -40,6 +40,7 @@
       *  02.00.06    NACL-多々納  04/07/23  継続入力区分の削除
       *  02.00.07    NACL-多々納  05/11/17  MONFUNC 対応
       *  02.00.08    NACL−多々納 06/08/17  当日担当医設定追加他
+      *  03.05.00    NACL-多々納  07/04/XX  グループ診療対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -48,29 +49,29 @@
        FILE-CONTROL.
       *
       *    パラメタデータ
-           SELECT  PARA-FILE       ASSIGN  FILE-NAME2
-                                   ORGANIZATION    IS  LINE SEQUENTIAL
-                                   FILE    STATUS  IS  STS-PARA.
+      *    SELECT  PARA-FILE       ASSIGN  FILE-NAME2
+      *                            ORGANIZATION    IS  LINE SEQUENTIAL
+      *                            FILE    STATUS  IS  STS-PARA.
       *
        DATA                    DIVISION.
        FILE                        SECTION.
       *
       *    パラメタデータ
-       FD  PARA-FILE.
-       01  PARA-REC.
-           03  PARA-KEY.
-               05  PARA-FILEMEI         PIC X(08).
-               05  PARA-EDANUM          PIC 9(03).
-           03  PARA-DATA-REC            PIC X(60000).
+      *FD  PARA-FILE.
+      *01  PARA-REC.
+      *    03  PARA-KEY.
+      *        05  PARA-FILEMEI         PIC X(08).
+      *        05  PARA-EDANUM          PIC 9(03).
+      *    03  PARA-DATA-REC            PIC X(60000).
       *
        WORKING-STORAGE             SECTION.
       *
       *    パラメタファイル名
-       01  FILE-NAME2.
-           03  FILLER              PIC X(09)   VALUE   "/var/tmp/".
-           03  FILLER              PIC X(07)   VALUE   "K01PARA".
-           03  FILE-TERMID2        PIC X(64)   VALUE   SPACE.
-           03  FILLER              PIC X(06)   VALUE   ".TXT".
+      *01  FILE-NAME2.
+      *    03  FILLER              PIC X(09)   VALUE   "/var/tmp/".
+      *    03  FILLER              PIC X(07)   VALUE   "K01PARA".
+      *    03  FILE-TERMID2        PIC X(64)   VALUE   SPACE.
+      *    03  FILLER              PIC X(06)   VALUE   ".TXT".
       *
       *    スパ領域
            COPY    "COMMON-SPA".
@@ -764,7 +765,7 @@
            MOVE    "*"                 TO  SYS-1001-KBNCD
            MOVE    SPA-SRYYMD          TO  SYS-1001-STYUKYMD
            MOVE    SPA-SRYYMD          TO  SYS-1001-EDYUKYMD
-grpsys     MOVE    SPA-HOSPNUM         TO  SYS-1001-HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  SYS-1001-HOSPNUM
            MOVE    SYS-1001-REC        TO  MCPDATA-REC
       *
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
@@ -1023,8 +1024,8 @@ grpsys     MOVE    SPA-HOSPNUM         TO  SYS-1001-HOSPNUM
            MOVE    "1005"              TO  SYS-1005-KANRICD
            MOVE    SPA-NAI-SRYYMDS     TO  SYS-1005-STYUKYMD
            MOVE    SPA-NAI-SRYYMDS     TO  SYS-1005-EDYUKYMD
+           MOVE    SPA-HOSPNUM         TO  SYS-1005-HOSPNUM
       *    システム管理検索
-grpsys     MOVE    SPA-HOSPNUM         TO  SYS-1005-HOSPNUM
            MOVE    SYS-1005-REC        TO  MCPDATA-REC
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key2"              TO  MCP-PATHNAME
@@ -1248,7 +1249,7 @@ grpsys     MOVE    SPA-HOSPNUM         TO  SYS-1005-HOSPNUM
            MOVE    K01-PTNUM           TO  SPA-GMN-PTNUM
       *
            INITIALIZE                      ORCSPTIDAREA
-           MOVE    SPA-HOSPNUM          TO  SPTID-HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  SPTID-HOSPNUM
            MOVE    SPA-GMN-PTNUM       TO  SPTID-PTNUM
            CALL    "ORCSPTID"          USING   ORCSPTIDAREA
       *---(01.00.02) LINE ADD START  ----------------------------------
@@ -1264,7 +1265,7 @@ grpsys     MOVE    SPA-HOSPNUM         TO  SYS-1005-HOSPNUM
       *---(01.00.02) LINE ADD END    ----------------------------------
       *
       *    患者マスター存在チェック
-           MOVE    SPA-HOSPNUM          TO  PTINF-HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  PTINF-HOSPNUM
            MOVE    SPA-GMN-PTID        TO  PTINF-PTID
            PERFORM 900-PTINF-READ-SEC
            IF      FLG-PTINF       NOT =   ZERO
@@ -1437,10 +1438,9 @@ grpsys     MOVE    SPA-HOSPNUM         TO  SYS-1005-HOSPNUM
       *    入院履歴判定
            MOVE    SPACE               TO  PTNYUINRRK-REC
            INITIALIZE                  PTNYUINRRK-REC
-           MOVE    SPA-HOSPNUM          TO  PTNYUINRRK-HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  PTNYUINRRK-HOSPNUM
            MOVE    SPA-GMN-PTID        TO  PTNYUINRRK-PTID
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PTNYUINRRK-REC      TO  MCPDATA-REC
            MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
            MOVE    "key34"             TO  MCP-PATHNAME
@@ -1511,11 +1511,10 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *    受付マスタよりドクターコード設定
            MOVE    SPACE               TO  UKETUKE-REC
            INITIALIZE                  UKETUKE-REC
-           MOVE    SPA-HOSPNUM          TO  UKE-HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  UKE-HOSPNUM
            MOVE    SPA-SYSYMD          TO  UKE-UKEYMD
            MOVE    SPA-GMN-PTID        TO  UKE-PTID
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    UKETUKE-REC         TO  MCPDATA-REC
            MOVE    "tbl_uketuke"       TO  MCP-TABLE
            MOVE    "key2"              TO  MCP-PATHNAME
@@ -1675,7 +1674,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *
            MOVE    SPACE               TO  JYURRK-REC
            INITIALIZE                  JYURRK-REC
-           MOVE    SPA-HOSPNUM          TO  JYURRK-HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  JYURRK-HOSPNUM
            MOVE    SPA-GMN-PTID        TO  JYURRK-PTID
            MOVE    SPA-NYUGAIKBN       TO  JYURRK-NYUGAIKBN
            MOVE    SPA-GMN-SRYKA       TO  JYURRK-SRYKA
@@ -1687,7 +1686,6 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    "key11"             TO  WRK-ORC-DBPATH
            END-IF
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    JYURRK-REC          TO  MCPDATA-REC
            MOVE    "tbl_jyurrk"        TO  MCP-TABLE
            MOVE    WRK-ORC-DBPATH      TO  MCP-PATHNAME
@@ -1765,7 +1763,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *    収納テーブル読み込み
       *    MOVE    SPACE               TO  SYUNOU-REC
       *    INITIALIZE                  SYUNOU-REC
-      *    MOVE    SPA-HOSPNUM          TO  SYU-HOSPNUM
+      *    MOVE    SPA-HOSPNUM         TO  SYU-HOSPNUM
       *    MOVE    SPA-NYUGAIKBN       TO  SYU-NYUGAIKBN
       *    MOVE    SPA-GMN-PTID        TO  SYU-PTID
       *    MOVE    JYURRK-DENPNUM      TO  SYU-DENPNUM
@@ -2473,7 +2471,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *****MOVE    "2"                 TO  SPA-NYUGAIKBN
       *
       *    患者マスター読み込み
-           MOVE    SPA-HOSPNUM          TO  PTINF-HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  PTINF-HOSPNUM
            MOVE    SPA-GMN-PTID        TO  PTINF-PTID
            PERFORM 900-PTINF-READ-SEC
            MOVE    PTINF-KANANAME      TO  SPA-KANANAME
@@ -2555,14 +2553,13 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SPACE               TO  WRK-SRYYYMM
            MOVE    SPACE               TO  WKSRYACT-REC
            INITIALIZE                  WKSRYACT-REC
-           MOVE    SPA-HOSPNUM          TO  WKSRY-HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  WKSRY-HOSPNUM
            MOVE    SPA-NYUGAIKBN       TO  WKSRY-NYUGAIKBN
            MOVE    SPA-GMN-PTID        TO  WKSRY-PTID
            MOVE    SPA-GMN-SRYKA       TO  WKSRY-SRYKA
            MOVE    SPA-NAI-SRYYMDS     TO  WKSRY-SRYYMD
            MOVE    SPA-GMN-HKNCOMBINUM TO  WKSRY-HKNCOMBI
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    WKSRYACT-REC        TO  MCPDATA-REC
            MOVE    "tbl_wksryact"      TO  MCP-TABLE
            MOVE    "key2"              TO  MCP-PATHNAME
@@ -3176,7 +3173,6 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *****************************************************************
        900-PTINF-READ-SEC         SECTION.
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PTINF-REC           TO  MCPDATA-REC
            MOVE    "tbl_ptinf"         TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
@@ -3270,9 +3266,9 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
        910-DBSELECT-SEC                SECTION.
       *
            MOVE    "DBSELECT"      TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
        910-DBSELECT-EXT.
@@ -3283,9 +3279,9 @@ grpsys                            SPA-AREA
        920-DBFETCH-SEC                 SECTION.
       *
            MOVE    "DBFETCH"       TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
       *
@@ -3298,9 +3294,9 @@ grpsys                            SPA-AREA
        990-DBCLOSE-SEC         SECTION.
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
        990-DBCLOSE-EXT.
@@ -3347,9 +3343,9 @@ grpsys                            SPA-AREA
        900-PUT-WINDOW              SECTION.
       *
            MOVE   "PUTWINDOW"       TO  MCP-FUNC.
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
        900-PUT-WINDOW-EXT.

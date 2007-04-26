@@ -31,6 +31,7 @@
       * Maj/Min/Rev  修正者        日付      内容
       *  02.07.00    NACL-太田     05/10/24  MONFUNC 対応
       *  03.03.00    NACL-多々納   06/10/06  名前検索の追加
+      *  03.05.00    NACL-多々納  07/04/XX  グループ診療対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -183,10 +184,10 @@
            END-IF
       *
            INITIALIZE                      ORCSPTIDAREA
-           MOVE    SPA-HOSPNUM          TO  SPTID-HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  SPTID-HOSPNUM
            MOVE    SPTNUM-PTNUM        TO  SPTID-PTNUM
            CALL    "ORCSPTID"          USING   ORCSPTIDAREA
-                                               SPA-1009-TBL
+                                               SPA-AREA
            IF      SPTID-RC        NOT =   ZERO
                MOVE    10                  TO  SPTNUM-RC
                MOVE    SPTID-PTNUM         TO  SPTNUM-PTNUM
@@ -215,7 +216,7 @@
       *
       *    漢字検索
            INITIALIZE                  PTINF-REC
-           MOVE    SPA-HOSPNUM          TO  PTINF-HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  PTINF-HOSPNUM
            MOVE    SPACE               TO  PTINF-NAME
            MOVE    WRK-NAME
                                        TO  PTINF-NAME
@@ -223,14 +224,13 @@
                                        TO  PTINF-KANANAME
       *
       *    患者マスターを漢字氏名で検索
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PTINF-REC           TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "tbl_ptinf"         TO  MCP-TABLE
            MOVE    "key5"              TO  MCP-PATHNAME
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
            IF      MCP-RC              =   ZERO
                MOVE    "key5"          TO  MCP-PATHNAME
                PERFORM 910-PTINF-READ-SEC
@@ -253,17 +253,17 @@ grpsys                            SPA-AREA
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "tbl_ptinf"         TO  MCP-TABLE
            MOVE    "key5"              TO  MCP-PATHNAME
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
       *    患者決定
            IF      IDX                 =   1
                INITIALIZE                      ORCSPTIDAREA
-               MOVE    SPA-HOSPNUM          TO  SPTID-HOSPNUM
+               MOVE    SPA-HOSPNUM         TO  SPTID-HOSPNUM
                MOVE    WRK-PTID            TO  SPTID-PTID
                CALL    "ORCSPTID"          USING   ORCSPTIDAREA
-                                                   SPA-1009-TBL
+                                                   SPA-AREA
                IF      SPTID-RC        NOT =   ZERO
                    MOVE    10                  TO  SPTNUM-RC
                ELSE
@@ -346,9 +346,9 @@ grpsys                            SPA-AREA
            MOVE    "tbl_ptinf"         TO  MCP-TABLE
       *
            MOVE    "DBFETCH"           TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
            IF      MCP-RC              =   ZERO
                MOVE    ZERO                TO  FLG-PTINF
                MOVE    MCPDATA-REC         TO  PTINF-REC

@@ -30,6 +30,9 @@
       *  01.00.01    NACL-ÌçÏÆ    06/03/20  ¼«Î©»Ù±çË¡ÂÐ±þ
       *  01.00.02    NACL-ÌçÏÆ    06/10/30  ¾ã³²»ù»ÜÀß°åÎÅ¡¦ÎÅÍÜ²ð¸î°åÎÅ
       *                                     ÂÐ±þ
+      *  03.04.01    NACL-ÌçÏÆ    07/02/14  Ê¡Åç¸©ÈÓ´ÛÂ¼ÂÐ±þ
+      *
+      *  03.05.01    NACL-Æ£¸¶    07/04/19  ¥°¥ë¡¼¥×¿ÇÎÅÂÐ±þ
       *****************************************************************
        ENVIRONMENT         DIVISION.
        CONFIGURATION       SECTION.
@@ -41,8 +44,6 @@
        FILE                        SECTION.
       *
        WORKING-STORAGE SECTION.
-grpsys*
-grpsys COPY    "COMMON-SPA".
       *
       *    Åº¤¨»úÎÎ°è
        01  IDX-AREA.
@@ -146,9 +147,13 @@ grpsys COPY    "COMMON-SPA".
       ***
        LINKAGE             SECTION.
            COPY  "CPORCSJGNGET.INC".
+grpsys*
+grpsys     COPY    "COMMON-SPA".
       /
        PROCEDURE           DIVISION  USING
-                                     LNK-ORCSJGNGET-REC.
+                                     LNK-ORCSJGNGET-REC
+grpsys                               SPA-AREA
+                                     .
       ******************************************************************
       *        °ÍÍêÀ©¸æ½èÍý
       ******************************************************************
@@ -171,7 +176,7 @@ grpsys COPY    "COMMON-SPA".
              MOVE    "*"                  TO    SYS-1001-KBNCD
              MOVE    LNK-ORCSJGNGET-SRYYM TO    ORC-DBYMD(1:6)
              MOVE    "01"                 TO    ORC-DBYMD(7:2)
-grpsys*      MOVE SPA-HOSPNUM TO -HOSPNUM
+grpsys       MOVE    SPA-HOSPNUM          TO    SYS-1001-HOSPNUM
              MOVE    SYS-1001-REC         TO    MCPDATA-REC
              MOVE    "DBSELECT"           TO    MCP-FUNC
              MOVE    "SYSKANRI-KEY"       TO    ORC-DBPATH
@@ -266,10 +271,9 @@ grpsys*      MOVE SPA-HOSPNUM TO -HOSPNUM
       ***                                   MCPDATA-REC
       *
            INITIALIZE                              PTKOHFTN-REC
-           MOVE    LNK-ORCSJGNGET-HOSPID   TO      PTKOHFTN-HOSPID
+grpsys     MOVE    LNK-ORCSJGNGET-HOSPNUM  TO      PTKOHFTN-HOSPNUM
            MOVE    LNK-ORCSJGNGET-PTID     TO      PTKOHFTN-PTID
            MOVE    LNK-ORCSJGNGET-KOHID    TO      PTKOHFTN-KOHID
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PTKOHFTN-REC            TO      MCPDATA-REC
            MOVE    "DBSELECT"              TO      MCP-FUNC
            MOVE    "PTKOHFTN-KEY5"         TO      ORC-DBPATH
@@ -314,6 +318,16 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                EVALUATE   LNK-ORCSJGNGET-KOHHKNNUM
                   WHEN     "024"
                   WHEN     "079"
+                     MOVE   LNK-ORCSJGNGET-NYUJGNGAK
+                                TO  LNK-ORCSJGNGET-TAFTNRUIKEI
+                     MOVE   LNK-ORCSJGNGET-GAIJGNGAK
+                                TO  LNK-ORCSJGNGET-NYUJGNGAK
+               END-EVALUATE
+           END-IF
+      *    Ê¡Åç¸©ÈÓ´ÛÂ¼
+           IF     LNK-ORCSJGNGET-SRYYM   >=   "200702"
+               EVALUATE   LNK-ORCSJGNGET-KOHHKNNUM
+                  WHEN     "281"
                      MOVE   LNK-ORCSJGNGET-NYUJGNGAK
                                 TO  LNK-ORCSJGNGET-TAFTNRUIKEI
                      MOVE   LNK-ORCSJGNGET-GAIJGNGAK
@@ -365,13 +379,12 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
        2001-HKNCOMBINUM-GET-SEC.
       *
            INITIALIZE                          HKNCOMBI-REC
-           MOVE    LNK-ORCSJGNGET-HOSPID   TO  COMB-HOSPID
+grpsys     MOVE    LNK-ORCSJGNGET-HOSPNUM  TO  COMB-HOSPNUM
            MOVE    LNK-ORCSJGNGET-PTID     TO  COMB-PTID
            MOVE    LNK-ORCSJGNGET-KOHID    TO  COMB-KOHID(1)
            MOVE    LNK-ORCSJGNGET-KOHID    TO  COMB-KOHID(2)
            MOVE    LNK-ORCSJGNGET-KOHID    TO  COMB-KOHID(3)
            MOVE    LNK-ORCSJGNGET-KOHID    TO  COMB-KOHID(4)
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    HKNCOMBI-REC            TO  MCPDATA-REC
            MOVE    "DBSELECT"              TO  MCP-FUNC
            MOVE    "HKNCOMBI-KEY4"         TO  ORC-DBPATH
@@ -414,11 +427,10 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *
       *    ¿ÇÎÅ²ñ·×½èÍý
            INITIALIZE                            SRYACCT-REC
-           MOVE    LNK-ORCSJGNGET-HOSPID    TO   ACCT-HOSPID
+grpsys     MOVE    LNK-ORCSJGNGET-HOSPNUM   TO   ACCT-HOSPNUM
            MOVE    "1"                      TO   ACCT-NYUGAIKBN
            MOVE    LNK-ORCSJGNGET-PTID      TO   ACCT-PTID
            MOVE    LNK-ORCSJGNGET-SRYYM     TO   ACCT-SRYYM
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SRYACCT-REC              TO   MCPDATA-REC
            MOVE    "DBSELECT"               TO   MCP-FUNC
            MOVE    "SRYACCT-KEY33"          TO   ORC-DBPATH
@@ -446,11 +458,10 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *
       *    Æþ±¡²ñ·×½èÍý
            INITIALIZE                            NYUINACCT-REC
-           MOVE    LNK-ORCSJGNGET-HOSPID    TO   NACCT-HOSPID
+grpsys     MOVE    LNK-ORCSJGNGET-HOSPNUM   TO   NACCT-HOSPNUM
            MOVE    LNK-ORCSJGNGET-PTID      TO   NACCT-PTID
            MOVE    LNK-ORCSJGNGET-SRYYM     TO   NACCT-SRYYM
            MOVE    "5"                      TO   NACCT-ZAISKBKBN
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    NYUINACCT-REC            TO   MCPDATA-REC
            MOVE    "DBSELECT"               TO   MCP-FUNC
            MOVE    "NYUINACCT-KEY17"        TO   ORC-DBPATH
@@ -614,10 +625,9 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE         ZERO               TO      IDX1
       *
            INITIALIZE                              PTKOHFTN-REC
-           MOVE    LNK-ORCSJGNGET-HOSPID   TO      PTKOHFTN-HOSPID
+grpsys     MOVE    LNK-ORCSJGNGET-HOSPNUM  TO      PTKOHFTN-HOSPNUM
            MOVE    LNK-ORCSJGNGET-PTID     TO      PTKOHFTN-PTID
            MOVE    LNK-ORCSJGNGET-KOHID    TO      PTKOHFTN-KOHID
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PTKOHFTN-REC            TO      MCPDATA-REC
            MOVE    "DBSELECT"              TO      MCP-FUNC
            MOVE    "PTKOHFTN-KEY5"         TO      ORC-DBPATH

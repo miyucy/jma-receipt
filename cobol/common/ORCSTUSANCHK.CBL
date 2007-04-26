@@ -41,8 +41,6 @@
       *
       *
        WORKING-STORAGE                     SECTION.
-grpsys*
-grpsys COPY    "COMMON-SPA".
       *
       *    フラグ領域
        01  FLG-AREA.
@@ -96,9 +94,12 @@ grpsys COPY    "COMMON-SPA".
        LINKAGE                             SECTION.
       *
            COPY    "CPORCSTUSANCHK.INC".
+grpsys*
+           COPY    "COMMON-SPA".
       *
        PROCEDURE                           DIVISION    USING
-           ORCSTUSANCHKAREA.
+           ORCSTUSANCHKAREA
+           SPA-AREA.
       *
       *****************************************************************
       *    主　　処理
@@ -200,12 +201,13 @@ grpsys COPY    "COMMON-SPA".
        2100-ORCSTUSANCHK-CALL-SEC          SECTION.
       *
            INITIALIZE                  ORCSTUSANAREA
-           MOVE    STUSANCHK-HOSPID    TO  STUSAN-HOSPID
+           MOVE    STUSANCHK-HOSPNUM   TO  STUSAN-HOSPNUM
            MOVE    STUSANCHK-PTID      TO  STUSAN-PTID
            MOVE    STUSANCHK-NYUINYMD  TO  STUSAN-KJNYMD
            MOVE    "1"                 TO  STUSAN-RRKNUMKBN
            MOVE    STUSANCHK-RRKNUM    TO  STUSAN-RRKNUM
            CALL    "ORCSTUSAN"     USING   ORCSTUSANAREA
+                                           SPA-AREA
            IF    ( STUSAN-RC           NOT =   ZERO )
                MOVE    99              TO  STUSANCHK-RC
                GO  TO  2100-ORCSTUSANCHK-CALL-EXT

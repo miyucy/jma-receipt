@@ -58,6 +58,9 @@
       *  02.00.23    NACL-多々納  06/04/10  診療費明細書発行追加
       *  02.00.24    NACL-多々納  06/07/06  収納変更対応
       *  03.02.00    NACL-多々納  06/09/XX  返金処理対応
+      *  03.04.00    NACL-多々納  07/02/06  処方せん等の訂正時印刷無し追加
+      *  03.04.01    NACL-多々納  07/02/27  複数保険に包括保険追加
+      *  03.05.00    NACL-多々納  07/04/XX  グループ診療対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -85,6 +88,7 @@
        01  FILE-NAME.
            03  FILLER              PIC X(09)   VALUE   "/var/tmp/".
            03  FILLER              PIC X(07)   VALUE   "K01PARA".
+           03  FILE-HOSPNUM        PIC 9(02)   VALUE   ZERO.
            03  FILE-TERMID         PIC X(64)   VALUE   SPACE.
            03  FILLER              PIC X(06)   VALUE   ".TXT".
       *
@@ -161,12 +165,14 @@
            03  IDX-ATO             PIC 9(04).
            03  IDX-YAKUZAI         PIC 9(04).
            03  IDX-Y2              PIC 9(02).
+           03  IDX-S               PIC 9(04).
       *
            03  IDX-1               PIC 9(04).
            03  IDX-2               PIC 9(02).
            03  IDX-3               PIC 9(02).
       *
            03  IDS1               PIC 9(04).
+           03  IDX-SYU            PIC 9(04).
       *
            03  IDH1               PIC 9(04).
            03  IDH2               PIC 9(04).
@@ -719,6 +725,7 @@
            MOVE    ZERO                TO  SPA-IDX-KOUI
       *
            MOVE    SPA-TERMID          TO  FILE-TERMID
+           MOVE    SPA-HOSPNUM         TO  FILE-HOSPNUM
            OPEN    INPUT               PARA-FILE
            PERFORM 980-PARA-READ-SEC
       *
@@ -850,6 +857,14 @@
                                        TO  SPA-GMN-HAKFLGLST (03)
            MOVE    3                   TO  SPA-HAKFLG-MAX
            MOVE    SPA-SKYPRTFLG       TO  SPA-GMN-HAKFLG
+      *@
+           IF      SPA-SKYPRTFLG       =   "3"
+               IF      SPA-SYORIFLG        =   ZERO
+                   MOVE    "1"             TO  SPA-GMN-HAKFLG
+               ELSE
+                   MOVE    "0"             TO  SPA-GMN-HAKFLG
+               END-IF
+           END-IF
       *
       *    診療費明細フラグ
            MOVE    "0 発行なし"        TO  SPA-GMN-MEIPRTFLGLST(01)
@@ -873,6 +888,22 @@
            MOVE    "0 発行なし"        TO  SPA-GMN-SYOHOPRTLST (01)
            MOVE    "1 発行あり"        TO  SPA-GMN-SYOHOPRTLST (02)
            MOVE    "2 院内処方発行"    TO  SPA-GMN-SYOHOPRTLST (03)
+      *@
+           IF      SPA-SYOHOPRTFLG     =   "3"
+               IF      SPA-SYORIFLG        =   ZERO
+                   MOVE    "1"             TO  SPA-GMN-SYOHOPRTFLG
+               ELSE
+                   MOVE    "0"             TO  SPA-GMN-SYOHOPRTFLG
+               END-IF
+           END-IF
+           IF      SPA-SYOHOPRTFLG     =   "4"
+               IF      SPA-SYORIFLG        =   ZERO
+                   MOVE    "2"             TO  SPA-GMN-SYOHOPRTFLG
+               ELSE
+                   MOVE    "0"             TO  SPA-GMN-SYOHOPRTFLG
+               END-IF
+           END-IF
+      *@
            MOVE    3                   TO  SPA-SYOHOPRTFLG-MAX
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   SPA-SYOHOPRTFLG-MAX
@@ -888,6 +919,15 @@
            MOVE    "0 発行なし"        TO  SPA-GMN-YAKJYOLST (01)
            MOVE    "1 発行あり"        TO  SPA-GMN-YAKJYOLST (02)
            MOVE    "2 院外分発行"      TO  SPA-GMN-YAKJYOLST (03)
+      *@
+           IF      SPA-YAKJYOPRTFLG    =   "2"
+               IF      SPA-SYORIFLG        =   ZERO
+                   MOVE    "1"             TO  SPA-GMN-YAKJYOFLG
+               ELSE
+                   MOVE    "0"             TO  SPA-GMN-YAKJYOFLG
+               END-IF
+           END-IF
+      *@
            MOVE    3                   TO  SPA-YAKJYOFLG-MAX
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   SPA-YAKJYOFLG-MAX
@@ -919,6 +959,8 @@
            INITIALIZE                  SPA-GMN-SRYKA-LSTG
            INITIALIZE                  SPA-GMN-HKNCOMBI-LSTG
            IF      SPA-TBL-HKNCOMBI (2)    =   SPACE
+              OR ((SPA-TBL-HKNCOMBI (2)    =   "9999" )  AND
+                  (SPA-TBL-HKNCOMBI (3)    =   SPACE  ))
                MOVE    1                       TO  SPA-HKN-MAX
                MOVE    SPA-TBL-HKNCOMBI(1)     TO  SPA-GMN-THKNCOMBINUM
                                                        (SPA-HKN-MAX)
@@ -935,6 +977,7 @@
                PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL      (IDX     >   15  )  OR
                               (SPA-TBL-HKNCOMBI (IDX)  =   SPACE )
+               IF      SPA-TBL-HKNCOMBI (IDX)  NOT =   "9999"
                    ADD     1               TO  SPA-HKN-MAX
                    MOVE    SPA-TBL-HKNCOMBI(IDX)
                                            TO  SPA-GMN-THKNCOMBINUM
@@ -946,6 +989,7 @@
                                            TO  SPA-NAI-TFTNRATEMEI
                                                        (SPA-HKN-MAX)
                    PERFORM 3003-SRYKA-HEN-SEC
+               END-IF
                END-PERFORM
            END-IF
            MOVE    SPA-GMN-HKN-LIST(1)     TO  SPA-GMN-HKNCOMBI-G
@@ -1345,7 +1389,6 @@
       *****************************************************************
        31092-SYUNOU-MAE-SEC             SECTION.
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYUNOU-REC          TO  MCPDATA-REC
            MOVE    "tbl_syunou"        TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
@@ -1382,11 +1425,10 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *
       *    複数科まとめ集計
            INITIALIZE                  SYUTTL-REC
-           MOVE    SYU-HOSPNUM          TO  SYUTTL-HOSPNUM 
+           MOVE    SYU-HOSPNUM         TO  SYUTTL-HOSPNUM 
            MOVE    SYU-NYUGAIKBN       TO  SYUTTL-NYUGAIKBN 
            MOVE    SYU-PTID            TO  SYUTTL-PTID 
            MOVE    SYU-DENPNUM         TO  SYUTTL-DENPNUM 
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYUTTL-REC          TO  MCPDATA-REC
            MOVE    "tbl_syutotal"      TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
@@ -1711,7 +1753,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SPA-SRYYMD          TO  SYS-1013-STYUKYMD
            MOVE    SPA-SRYYMD          TO  SYS-1013-EDYUKYMD
       *    システム管理検索
-grpsys     MOVE    SPA-HOSPNUM         TO  SYS-1013-HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  SYS-1013-HOSPNUM
            MOVE    SYS-1013-REC        TO  MCPDATA-REC
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key2"              TO  MCP-PATHNAME
@@ -1883,7 +1925,7 @@ grpsys     MOVE    SPA-HOSPNUM         TO  SYS-1013-HOSPNUM
            MOVE    SPA-SRYYMD          TO  SYS-1038-STYUKYMD
            MOVE    SPA-SRYYMD          TO  SYS-1038-EDYUKYMD
       *    システム管理検索
-grpsys     MOVE    SPA-HOSPNUM         TO  SYS-1038-HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  SYS-1038-HOSPNUM
            MOVE    SYS-1038-REC        TO  MCPDATA-REC
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key2"              TO  MCP-PATHNAME
@@ -1964,7 +2006,7 @@ grpsys     MOVE    SPA-HOSPNUM         TO  SYS-1038-HOSPNUM
            MOVE    SPA-SRYYMD          TO  SYS-1041-STYUKYMD
            MOVE    SPA-SRYYMD          TO  SYS-1041-EDYUKYMD
       *    システム管理検索
-grpsys     MOVE    SPA-HOSPNUM         TO  SYS-1041-HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  SYS-1041-HOSPNUM
            MOVE    SYS-1041-REC        TO  MCPDATA-REC
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key2"              TO  MCP-PATHNAME
@@ -2038,10 +2080,9 @@ grpsys     MOVE    SPA-HOSPNUM         TO  SYS-1041-HOSPNUM
            MOVE    ZERO                TO  SPA-GMN-CHOKAKIN
       *
            INITIALIZE                      SYUNOU-REC
-           MOVE    SPA-HOSPNUM          TO  SYU-HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  SYU-HOSPNUM
            MOVE    "2"                 TO  SYU-NYUGAIKBN
            MOVE    SPA-PTID            TO  SYU-PTID
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYUNOU-REC          TO  MCPDATA-REC
            MOVE    "tbl_syunou"        TO  MCP-TABLE
            MOVE    "key13"             TO  MCP-PATHNAME
@@ -2084,10 +2125,9 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    ZERO                TO  WRK-NYUIN-MISYU
       *    入院分未収集計
            INITIALIZE                      SYUNOU-REC
-           MOVE    SPA-HOSPNUM          TO  SYU-HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  SYU-HOSPNUM
            MOVE    "1"                 TO  SYU-NYUGAIKBN
            MOVE    SPA-PTID            TO  SYU-PTID
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYUNOU-REC          TO  MCPDATA-REC
            MOVE    "tbl_syunou"        TO  MCP-TABLE
            MOVE    "key2"              TO  MCP-PATHNAME
@@ -3357,6 +3397,8 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                    MOVE    SPA-GMN-NYUKIN      TO  SPA-MAE-NYUKIN
                    MOVE    SPA-GMN-HENKIN      TO  SPA-MAE-HENKIN
                    MOVE    SPA-GMN-CHOSEI      TO  SPA-MAE-CHOSEI
+               ELSE
+                   MOVE    "E"                 TO  SPA-MAE-NYUKINKBN
                END-IF
            END-IF
       *
@@ -3747,7 +3789,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *
       *    まとめ入金編集
            INITIALIZE                  ORCSNYUKINAREA
-           MOVE    SPA-HOSPNUM          TO  LNK-SCNYUKIN-HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  LNK-SCNYUKIN-HOSPNUM
            MOVE    SPA-PTID            TO  LNK-SCNYUKIN-PTID
            MOVE    SPA-NYUGAIKBN       TO  LNK-SCNYUKIN-NYUGAIKBN
       *    処理区分
@@ -3767,6 +3809,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SPA-GMN-NYUKINHOU   TO  LNK-SCNYUKIN-NYUKIN-HOHO
       *    返金のみ
            IF     (SPA-GMN-NYUKINKBN   =   "2"  OR  "3" )  AND
+                  (SPA-GOK-HENKIN  NOT =   ZERO   )  AND
                   (WRK-HENKIN-GAKU     =   ZERO         )
                MOVE    "1"                 TO  LNK-SCNYUKIN-HENKINKBN
            END-IF
@@ -3991,10 +4034,20 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
        310515-HENKIN-SYORI-EXT.
            EXIT.
       *****************************************************************
-      *    訂正返金額充当計算処理
+      *    訂正入金額チェック処理
       *****************************************************************
        310516-HENKIN-TEISEI-SEC          SECTION.
       *
+           IF    ((SPA-GMN-HKNCOMBI    NOT =   ZERO )  AND
+                  (SPA-GMN-SRYKA       NOT =   ZERO ))  OR
+                  (SPA-NAI-NYUKINFLG       =   1    )
+      *        今回請求額が入金額以内であること
+               IF     (SPA-GMN-NYUKIN          >   ZERO   )  AND
+                      (SPA-GMN-NYUKIN          >   SPA-GMN-SEIKYU )
+                   MOVE    "0008"              TO  SPA-ERRCD
+                   MOVE    1                   TO  SPA-GMN-CUR
+               END-IF
+           END-IF
            .
        310516-HENKIN-TEISEI-EXT.
            EXIT.
@@ -4464,6 +4517,11 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *****************************************************************
        4801-FUKU-HKNCOMBI-CHG-SEC           SECTION.
       *
+           IF      SPA-GMN-HKNCOMBI    =   SPACE
+               MOVE    SPA-GMN-THKNCOMBINUM (SPA-HKN-MAX)
+                                           TO  SPA-GMN-HKNCOMBI
+               MOVE    SPA-GMN-HKNCOMBI    TO  WRK-HKNCOMBI
+           END-IF
            MOVE    ZERO                TO  FLG-CHK
            PERFORM VARYING    IDX      FROM    1   BY  1
                    UNTIL     (IDX      >   SPA-HKN-MAX ) OR
@@ -4556,6 +4614,10 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *****************************************************************
        4901-FUKU-SRYKA-CHG-SEC          SECTION.
       *
+           IF      SPA-GMN-SRYKA    =   SPACE
+               MOVE    SPA-GMN-TSRYKA (SPA-GMN-SRYKA-MAX)
+                                           TO  SPA-GMN-SRYKA
+           END-IF
            MOVE    ZERO                TO  FLG-CHK
            PERFORM VARYING    IDX      FROM    1   BY  1
                    UNTIL     (IDX      >   SPA-GMN-SRYKA-MAX ) OR
@@ -5234,7 +5296,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *
       *    まとめ入金編集
            INITIALIZE                  ORCSNYUKINAREA
-           MOVE    SPA-HOSPNUM          TO  LNK-SCNYUKIN-HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  LNK-SCNYUKIN-HOSPNUM
            MOVE    SPA-PTID            TO  LNK-SCNYUKIN-PTID
            MOVE    SPA-NYUGAIKBN       TO  LNK-SCNYUKIN-NYUGAIKBN
       *    処理区分
@@ -5254,6 +5316,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SPA-GMN-NYUKINHOU   TO  LNK-SCNYUKIN-NYUKIN-HOHO
       *    返金のみ
            IF     (SPA-GMN-NYUKINKBN   =   "2"  OR  "3" )  AND
+                  (SPA-GOK-HENKIN  NOT =   ZERO   )  AND
                   (WRK-HENKIN-GAKU     =   ZERO         )
                MOVE    "1"                 TO  LNK-SCNYUKIN-HENKINKBN
            END-IF
@@ -5431,9 +5494,15 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            END-IF
       *
            MOVE    ZERO                TO  WRK-HENKIN
-           PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX     >   SPA-SYUNOU-MAX
-               MOVE    SPA-SYUNOU-REC(IDX) TO  SYUNOU-REC
+           MOVE    ZERO                TO  IDX
+           MOVE    ZERO                TO  IDX-SYU
+           PERFORM VARYING     IDX-S   FROM    1   BY  1
+                   UNTIL       IDX-S   >   SPA-SYUNOU-MAX
+               MOVE    SPA-SYUNOU-REC(IDX-S)   TO  SYUNOU-REC
+               IF      SYU-HKNCOMBINUM     NOT =   "9999"
+      *
+               ADD     1               TO  IDX
+               ADD     1               TO  IDX-SYU
                MOVE    SYU-DENPNUM     TO  ORCHC03-OLD-DENPNUM (IDX)
                MOVE    SYU-SRYKA       TO  ORCHC03-OLD-SRYKA   (IDX)
                MOVE    SYU-HKNCOMBINUM TO  ORCHC03-OLD-HKNCOMBI (IDX)
@@ -5461,7 +5530,13 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                        ADD     SPA-SYU-HENKIN (IDX)    TO  WRK-HENKIN
                    END-IF
                END-IF
+      *
+               END-IF
            END-PERFORM
+      *    収納単独
+           IF      IDX-SYU             =   1
+               MOVE    ZERO                TO  ORCHC03-HAKHOUFLG
+           END-IF
       *    今回返金充当額
            IF      SPA-SYORIFLG        =   1
                MOVE    ZERO                TO  ORCHC03-ZEN-HENKIN
@@ -5497,7 +5572,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            END-IF
       *    発行方法
            MOVE    SPA-GMN-HAKHOUFLG   TO  ORCHC04-HAKHOUFLG
-           IF      SPA-SYUNOU-MAX      =   1
+           IF      IDX-SYU             =   1
       *        単独の時
                MOVE    ZERO                TO  ORCHC04-HAKHOUFLG
            END-IF
@@ -5582,7 +5657,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SPA-SRYYMD          TO  SYS-9000-STYUKYMD
            MOVE    SPA-SRYYMD          TO  SYS-9000-EDYUKYMD
       *    システム管理検索
-grpsys     MOVE    SPA-HOSPNUM         TO  SYS-9000-HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  SYS-9000-HOSPNUM
            MOVE    SYS-9000-REC        TO  MCPDATA-REC
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key10"             TO  MCP-PATHNAME
@@ -5673,7 +5748,7 @@ grpsys     MOVE    SPA-HOSPNUM         TO  SYS-9000-HOSPNUM
            MOVE    SPA-SRYYMD          TO  SYS-9001-STYUKYMD
            MOVE    SPA-SRYYMD          TO  SYS-9001-EDYUKYMD
       *    システム管理検索
-grpsys     MOVE    SPA-HOSPNUM         TO  SYS-9001-HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  SYS-9001-HOSPNUM
            MOVE    SYS-9001-REC        TO  MCPDATA-REC
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key2"              TO  MCP-PATHNAME
@@ -5748,7 +5823,7 @@ grpsys     MOVE    SPA-HOSPNUM         TO  SYS-9001-HOSPNUM
                    MOVE    SYU-SRYKA           TO  SHELLTBL-ARG3
                    MOVE    SPA-SRYYMD          TO  SHELLTBL-ARG4
                    MOVE    SYU-HKNCOMBINUM     TO  SHELLTBL-ARG5
-                   MOVE    SPA-HOSPNUM          TO  SHELLTBL-ARG6
+                   MOVE    SPA-HOSPNUM         TO  SHELLTBL-ARG6
                    MOVE    SYS-9001-ADDRESS    TO  SHELLTBL-ARG7
                    MOVE    SYS-9001-PORT2      TO  SHELLTBL-ARG8
       *            ドクター
@@ -5760,14 +5835,13 @@ grpsys     MOVE    SPA-HOSPNUM         TO  SYS-9001-HOSPNUM
                    MOVE    SYU-DENPNUM         TO  SHELLTBL-ARG10
       *            連番
                    MOVE    WRK-RENNUM          TO  SHELLTBL-ARG11 (1:2)
-grpsys*            MOVE SPA-HOSPNUM TO -HOSPNUM
                    MOVE    SHELLTBL            TO  MCPDATA-REC
                    MOVE    "SHELL"             TO  MCP-FUNC
                    MOVE    "shell"             TO  MCP-TABLE
                    MOVE    "shell"             TO  MCP-PATHNAME
-grpsys             CALL "ORCDBMAIN" USING MCPAREA
-                                          MCPDATA-REC
-grpsys                                    SPA-AREA
+grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
+                                                       MCPDATA-REC
+                                                       SPA-AREA
                END-IF
            END-PERFORM
       *
@@ -5893,11 +5967,17 @@ grpsys                                    SPA-AREA
                    MOVE    "調整金は整数７桁で入力して下さい。"
                                        TO  SPA-ERRMSG
                WHEN    "0002"
-                   MOVE    "患者マスタがありません。処理順エラー"
-                                       TO  SPA-ERRMSG
+                   STRING  "【患者情報が検索できませんでした。"
+                           "患者情報テーブルを確認して下さい。】"
+                                       DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
                WHEN    "0003"
-                   MOVE    "伝票番号取得エラー"
-                                       TO  SPA-ERRMSG
+                   STRING  "【伝票番号が取得できませんでした。"
+                           "システム管理テーブルを確認して下さい。】"
+                                       DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
                WHEN    "0004"
                    MOVE
                    "今回請求額がゼロ以下になります。"
@@ -5906,8 +5986,11 @@ grpsys                                    SPA-AREA
                    "調整金を再入力して下さい"
                                        TO  SPA-ERRMSG(33:)
                WHEN    "0005"
-                   MOVE    "更新エラー"
-                                       TO  SPA-ERRMSG
+                   STRING  "【ＤＢ更新がエラーになりました。"
+                           "ＳＥに連絡して下さい。】"
+                                       DELIMITED  BY  SIZE
+                                       INTO  SPA-ERRMSG
+                   END-STRING
                WHEN    "0006"
                    MOVE    "請求書兼領収書選択エラー"
                                        TO  SPA-ERRMSG
@@ -6045,7 +6128,7 @@ grpsys                                    SPA-AREA
                    END-STRING
       *
                WHEN    "9000"
-                   MOVE    "算定履歴の更新エラーです。"
+                   MOVE    "【算定履歴の更新ができませんでした】"
                                        TO  SPA-ERRMSG
                WHEN    "K001"
                    MOVE    SPA-ERRMSG2     TO  SPA-ERRMSG
@@ -6080,12 +6163,11 @@ grpsys                                    SPA-AREA
       *
            EVALUATE    SPA-KIDCD
                WHEN    "0101"
-                   MOVE
-                   "継続分も含め受診履歴を削除します。"
-                                       TO  WRK-KIDMSG(1:34)
-                   MOVE
-                   "よろしいですか？"
-                                       TO  WRK-KIDMSG(35:)
+                   STRING  "継続分も含め受診履歴を削除します。"
+                           "よろしいですか？"
+                                            DELIMITED  BY  SIZE
+                                       INTO    WRK-KIDMSG
+                   END-STRING
            END-EVALUATE
       *
            MOVE    SPACE               TO  KID1
@@ -6173,9 +6255,9 @@ grpsys                                    SPA-AREA
        910-DBSELECT-SEC                SECTION.
       *
            MOVE    "DBSELECT"      TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
        910-DBSELECT-EXT.
@@ -6186,9 +6268,9 @@ grpsys                            SPA-AREA
        920-DBFETCH-SEC                 SECTION.
       *
            MOVE    "DBFETCH"       TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
       *
@@ -6201,9 +6283,9 @@ grpsys                            SPA-AREA
        990-DBCLOSE-SEC         SECTION.
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
        990-DBCLOSE-EXT.
@@ -6246,9 +6328,9 @@ grpsys                            SPA-AREA
        900-PUT-WINDOW              SECTION.
       *
            MOVE   "PUTWINDOW"       TO  MCP-FUNC.
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
        900-PUT-WINDOW-EXT.
