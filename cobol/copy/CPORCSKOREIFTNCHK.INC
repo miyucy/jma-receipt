@@ -27,12 +27,21 @@
       *                                     公費を含む場合の患者負担額追加
       *  03.03.01    NACL-門脇    06/11/02  減額・免除・支払猶予対応
       *  03.04.01    NACL-門脇    06/11/20  高額４回目以降対応
+      *  03.04.02    NACL-門脇    07/03/16  全国公費有り無しフラグ追加
+      *                                     公費を含む場合の主保険の一部負
+      *                                     担額２追加
+      *  03.04.03    NACL-門脇    07/04/01  高齢者・若人区分追加
+      *                                     年齢追加
+      *                                     若人区分追加
+      *                                     返却値に請求金額追加
+      *
+      *  03.05.01    NACL-藤原    07/04/19  グループ診療対応
       ************************************************************
        01  ORCSKOREIFTNCHKAREA.
       *
       *入力値
       *    医療機関ＩＤ
-           03  LNK-KOREIFTNCHK-HOSPID       PIC X(24).
+           03  LNK-KOREIFTNCHK-HOSPNUM      PIC S9(9) BINARY.
       *    患者ＩＤ
            03  LNK-KOREIFTNCHK-PTID         PIC 9(10).
       *    入外区分
@@ -56,18 +65,38 @@
       *    減額（金額）
            03  LNK-KOREIFTNCHK-GENGAKU-KIN  PIC 9(07).
       *    高額４回目以降
-           03  LNK-KOREIFTNCHK-KOHYONKAIME  PIC X(01).
+           03  LNK-KOREIFTNCHK-KOHYONKAIME  PIC 9(01).
+      *    全国公費有り無しフラグ
+           03  LNK-KOREIFTNCHK-ZENKOHARI    PIC 9(01).
+      *    高齢者・若人区分
+           03  LNK-KOREIFTNCHK-NENREIKBN    PIC X(01).
+      *    年齢
+           03  LNK-KOREIFTNCHK-AGE          PIC 9(03).
+      *    若人所得区分
+           03  LNK-KOREIFTNCHK-SYOTOKUKBN   PIC 9(01).
       *
       *返却値
            03  LNK-KOREIFTNCHK-OUT-AREA.
       *主保険単独の患者負担額
-             05  LNK-KOREIFTNCHK-FTNGAKU    PIC 9(07).
+             05 LNK-KOREIFTNCHK-FTNGAKU     PIC 9(07).
       *公費を含む場合の患者負担額
-             05  LNK-KOREIFTNCHK-KOHFTNGAKU PIC 9(07).
+             05 LNK-KOREIFTNCHK-KOHFTNGAKU  PIC 9(07).
       *公費を含む場合の主保険の一部負担額
-             05  LNK-KOREIFTNCHK-ICHIBUGAKU PIC 9(07).
-      *入院：高齢者２割＋地方公費の請求金額
-             05  LNK-KOREIFTNCHK-CHIHOUGAKU PIC 9(07).
+             05 LNK-KOREIFTNCHK-ICHIBUGAKU  PIC 9(07).
+      *公費を含む場合の主保険の一部負担額２
+             05 LNK-KOREIFTNCHK-ICHIBUGAKU2 PIC 9(07).
+      *入　：高齢者＋地方公費の請求金額
+      *入外：７０歳未満現物給付＋地方公費の請求金額
+             05 LNK-KOREIFTNCHK-CHIHOUGAKU  PIC 9(07).
+      *入外：７０歳未満現物給付＋全国公費ありの請求金額
+             05 LNK-KOREIFTNCHK-CHIHOUGAKU2 PIC 9(07).
+      *入外：７０歳未満現物給付＋単独なし時の請求金額
+             05 LNK-KOREIFTNCHK-CHIHOUGAKU3 PIC 9(07).
+      *
+      *入外：７０歳未満現物給付＋単独あり時
+             05 LNK-KOREIFTNCHK-FTNGAKU-GEN70     PIC 9(07).
+             05 LNK-KOREIFTNCHK-KOHFTNGAKU-GEN70  PIC 9(07).
+             05 LNK-KOREIFTNCHK-CHIHOUGAKU-GEN70  PIC 9(07).
       *
       *復帰コード
            03  LNK-KOREIFTNCHK-RC           PIC 9(02).
