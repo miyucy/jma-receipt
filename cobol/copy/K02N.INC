@@ -19,10 +19,12 @@
       ****  02  K02N-FIXED2.
               03  K02N-PTNUM.
                 04  K02N-VALUE  PIC X(20).
-              03  K02N-KANANAME.
-                04  K02N-VALUE  PIC X(50).
-              03  K02N-NAME.
-                04  K02N-VALUE  PIC X(50).
+              03  K02N-KANANAME-G.
+                04  K02N-KANANAME-STYLE   PIC X(20).
+                04  K02N-KANANAME   PIC X(50).
+              03  K02N-NAME-G.
+                04  K02N-NAME-STYLE   PIC X(20).
+                04  K02N-NAME   PIC X(50).
               03  K02N-SEX.
                 04  K02N-VALUE  PIC X(2).
               03  K02N-HKNCOMBICOMB.
@@ -38,12 +40,14 @@
                 04  K02N-VALUE  PIC X(6).
               03  K02N-SRYYMD.
                 04  K02N-VALUE  PIC X(14).
-              03  K02N-SRYKBN    OCCURS   24.
-                04  K02N-VALUE   PIC X(2).
+              03  K02N-SRYKBN-G    OCCURS   24.
+                04  K02N-SRYKBN-STYLE   PIC X(20).
+                04  K02N-SRYKBN   PIC X(2).
               03  K02N-INPUTCD   OCCURS   24.
                 04  K02N-VALUE   PIC X(22).
-              03  K02N-MEISYO    OCCURS   24.
-                04  K02N-VALUE   PIC X(80).
+              03  K02N-MEISYO-G    OCCURS   24.
+                04  K02N-MEISYO-STYLE   PIC X(20).
+                04  K02N-MEISYO   PIC X(80).
               03  K02N-SURYO-G   OCCURS   24.
                 04  K02N-SURYO-STYLE   PIC X(20).
                 04  K02N-SURYO   PIC X(60).
@@ -103,4 +107,13 @@
               03  K02N-KENSA.
                 04  K02N-KENSA-VALUE  PIC X.
                 04  K02N-KENSA-LABEL  PIC X(10).
+              03  K02N-B12.
+                04  K02N-B12-STATE   PIC S9(9)   BINARY.
+              03  K02N-B06S.
+                04  K02N-B06S-STATE   PIC S9(9)   BINARY.
+              03  K02N-B11S.
+                04  K02N-B11S-STATE   PIC S9(9)   BINARY.
+              03  K02N-B12S.
+                04  K02N-B12S-STATE   PIC S9(9)   BINARY.
+
 
