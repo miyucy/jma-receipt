@@ -26,7 +26,7 @@
       *01  RECE09-REC.
            03  RECE09-KEY.
       *°åÎÅµ¡´Ø£É£Ä
-               05  RECE09-HOSPNUM         PIC  9(02).
+               05  RECE09-HOSPNUM         PIC S9(9) BINARY.
       *¿ÇÎÅÇ¯·î
                05  RECE09-SRYYM           PIC  9(06).
       *Æþ³°¶èÊ¬
