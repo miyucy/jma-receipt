@@ -229,8 +229,6 @@
        FILE                        SECTION.
       *
        WORKING-STORAGE SECTION.
-grpsys*
-grpsys COPY    "COMMON-SPA".
       *
        01  STS-AREA.
            03  STS-SYUNOU              PIC X(02).
@@ -1000,12 +998,15 @@ grpsys COPY    "COMMON-SPA".
         02 LNK-WRK-SYUNOU-REC      OCCURS 15.
            COPY  "CPSYUNOU.INC" 
                                REPLACING  //SYU-// BY //LNK-WRK-SYU-//.
+grpsys*
+grpsys     COPY    "COMMON-SPA".
       /
        PROCEDURE           DIVISION  USING
                                      MCPAREA
                                      LNK-ORCS01-REC
                                      LNK-SYU-SYUNOU-REC
-                                     LNK-WRK-SYUNOU-REC-T.
+                                     LNK-WRK-SYUNOU-REC-T
+                                     SPA-AREA.
       *
       ******************************************************************
       *        依頼制御処理
