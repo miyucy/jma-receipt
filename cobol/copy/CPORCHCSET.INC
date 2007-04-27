@@ -29,4 +29,6 @@
            03  HCSET-STR-SETCD          PIC X(06).
       *    終了セットコード
            03  HCSET-END-SETCD          PIC X(06).
+      *    経過措置日
+           03  HCSET-KEIKAYMD           PIC X(08).
       *

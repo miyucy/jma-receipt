@@ -24,7 +24,7 @@
       ************************************************************
        01  ORCSTUSANCHKAREA.
       *  °åÎÅµ¡´Ø¥³¡¼¥É
-           03  STUSANCHK-HOSPID            PIC  X(24).
+           03  STUSANCHK-HOSPNUM           PIC  9(02).
       *  ´µ¼Ô£É£Ä
            03  STUSANCHK-PTID              PIC  9(10).
       *    Æþ±¡Æü

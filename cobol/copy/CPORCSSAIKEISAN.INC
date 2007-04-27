@@ -26,7 +26,7 @@
        01  LNK-ORCSSAIKEISAN-REC.
       *
       *°åÎÅµ¡´Ø£É£Ä
-           03  LNK-ORCSSKS-HOSPID          PIC  X(24).
+           03  LNK-ORCSSKS-HOSPNUM         PIC  9(02).
       *Æþ³°¶èÊ¬
            03  LNK-ORCSSKS-NYUGAIKBN       PIC  X(01).
       *´µ¼Ô£É£Ä

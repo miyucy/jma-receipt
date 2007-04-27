@@ -27,6 +27,7 @@
       *****************************************************************
       *  ¥×¥í¥°¥é¥à½¤ÀµÍúÎò
       * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      *  03.05.00    NACL-Â¿¡¹Ç¼  07/04/XX  ¥°¥ë¡¼¥×¿ÇÎÅÂÐ±þ
       *****************************************************************
       *
       *
@@ -224,6 +225,7 @@
            MOVE    "1014"              TO  SYS-1014-KANRICD
            MOVE    SPA-SRYYMD          TO  SYS-1014-STYUKYMD
            MOVE    SPA-SRYYMD          TO  SYS-1014-EDYUKYMD
+           MOVE    SPA-HOSPNUM         TO  SYS-1014-HOSPNUM
            MOVE    SYS-1014-REC        TO  MCPDATA-REC
       *
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
@@ -281,6 +283,7 @@
            MOVE    TBL-KANRICD (IDX)   TO  HKTSRYCD-KANRICD
            MOVE    SPA-SRYYMD          TO  HKTSRYCD-YUKOSTYMD
            MOVE    SPA-SRYYMD          TO  HKTSRYCD-YUKOEDYMD
+grpsys*    MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            MOVE    HKTSRYCD-REC        TO  MCPDATA-REC
       *
            MOVE    "tbl_hktsrycd"      TO  MCP-TABLE
@@ -490,7 +493,7 @@
       *    »»ÄêÍúÎò¸¡º÷
            MOVE    SPACE               TO  SANTEI-REC
            INITIALIZE                  SANTEI-REC
-           MOVE    SPA-HOSPID          TO  SANTEI-HOSPID
+           MOVE    SPA-HOSPNUM         TO  SANTEI-HOSPNUM
            MOVE    SPA-PTID            TO  SANTEI-PTID
            MOVE    SPA-SRYYMD (1:6)    TO  SANTEI-SRYYM
       *
@@ -597,6 +600,7 @@
            MOVE    TBL-KANRICD (IDX)   TO  HKTSANTEI-KANRICD
            MOVE    SPA-SRYYMD          TO  HKTSANTEI-YUKOSTYMD
            MOVE    SPA-SRYYMD          TO  HKTSANTEI-YUKOEDYMD
+grpsys*    MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            MOVE    HKTSANTEI-REC       TO  MCPDATA-REC
       *
            MOVE    "tbl_hktsantei"     TO  MCP-TABLE
@@ -1117,9 +1121,9 @@
        910-DBSELECT-SEC                SECTION.
       *
            MOVE    "DBSELECT"      TO  MCP-FUNC
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
        910-DBSELECT-EXT.
@@ -1130,9 +1134,9 @@
        920-DBFETCH-SEC                 SECTION.
       *
            MOVE    "DBFETCH"       TO  MCP-FUNC
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
       *
@@ -1145,9 +1149,9 @@
        990-DBCLOSE-SEC         SECTION.
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
        990-DBCLOSE-EXT.
