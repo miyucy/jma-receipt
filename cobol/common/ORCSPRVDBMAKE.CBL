@@ -241,9 +241,7 @@
                                        ORCSMCNDATEAREA
       *    前回のデータが残っている場合は削除
            CALL    "ORCSPRVDBDEL"      USING
-                                       SPA-HOSPNUM
-                                       SPA-NYUGAIKBN
-                                       SPA-PTID
+                                       SPA-AREA
       *
            PERFORM 100-PRV-DBMAKE-SEC
       *

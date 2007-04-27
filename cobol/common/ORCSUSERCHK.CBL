@@ -27,6 +27,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  03.05.00    NACL-多々納  07/04/XX  グループ診療対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -39,8 +40,6 @@
       *FILE                        SECTION.
       *
        WORKING-STORAGE             SECTION.
-grpsys*
-grpsys COPY    "COMMON-SPA".
       *
       *    フラグ領域
        01  FLG-AREA.
@@ -93,9 +92,12 @@ grpsys COPY    "COMMON-SPA".
       *
       *    ユーザプログラム起動チェックサブパラメタ
            COPY    "CPORCSUSERCHK.INC".
+grpsys*
+           COPY    "COMMON-SPA".
       *
        PROCEDURE                   DIVISION    USING
            ORCSUSERCHKAREA
+           SPA-AREA
            .
       *
       *****************************************************************
@@ -139,7 +141,7 @@ grpsys COPY    "COMMON-SPA".
            MOVE    "00000000"          TO  SYS-9700-STYUKYMD
            MOVE    "99999999"          TO  SYS-9700-EDYUKYMD
       *
-grpsys     MOVE    SPA-HOSPNUM         TO  SYS-9700-HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  SYS-9700-HOSPNUM
            MOVE    SYS-9700-REC        TO  MCPDATA-REC
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key10"             TO  MCP-PATHNAME
@@ -191,7 +193,7 @@ grpsys     MOVE    SPA-HOSPNUM         TO  SYS-9700-HOSPNUM
            MOVE    "00000000"          TO  SYS-9701-STYUKYMD
            MOVE    "99999999"          TO  SYS-9701-EDYUKYMD
       *
-grpsys     MOVE    SPA-HOSPNUM         TO  SYS-9701-HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  SYS-9701-HOSPNUM
            MOVE    SYS-9701-REC        TO  MCPDATA-REC
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key2"              TO  MCP-PATHNAME
@@ -252,6 +254,7 @@ grpsys     MOVE    SPA-HOSPNUM         TO  SYS-9701-HOSPNUM
       *
            CALL    "ORCSUSERPG"        USING
                                        ORCSUSERPGAREA
+                                       SPA-AREA
       *
            .
        2001-SHELL-SYORI-EXT.
@@ -280,9 +283,9 @@ grpsys     MOVE    SPA-HOSPNUM         TO  SYS-9701-HOSPNUM
        910-DBSELECT-SEC                SECTION.
       *
            MOVE    "DBSELECT"      TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
        910-DBSELECT-EXT.
@@ -293,9 +296,9 @@ grpsys                            SPA-AREA
        920-DBFETCH-SEC                 SECTION.
       *
            MOVE    "DBFETCH"       TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
       *
@@ -308,9 +311,9 @@ grpsys                            SPA-AREA
        990-DBCLOSE-SEC           SECTION.
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
        990-DBCLOSE-EXT.

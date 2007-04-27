@@ -28,6 +28,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  03.05.00    NACL-多々納  07/04/XX  グループ診療対応（未使用）
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -183,7 +184,7 @@
       *
       *    算定履歴検索
            INITIALIZE                  SANTEI-REC
-           MOVE    SPA-HOSPID          TO  SANTEI-HOSPID
+           MOVE    SPA-HOSPNUM         TO  SANTEI-HOSPNUM
            MOVE    SPA-PTID            TO  SANTEI-PTID
            MOVE    WRK-SRYCD           TO  SANTEI-SRYCD
            MOVE    WRK-SRYYMD(1:6)     TO  SANTEI-SRYYM
@@ -202,7 +203,7 @@
                    MOVE    SPA-SRYKA           TO  SANTEI-SRYKA
            END-EVALUATE
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+grpsys*    MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            MOVE    SANTEI-REC          TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "SANTEI-KEY"        TO  ORC-DBPATH
@@ -230,7 +231,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    ZERO                TO  TNS-YUKOSTYMD
            MOVE    ALL "9"             TO  TNS-YUKOEDYMD
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  TNS-HOSPNUM
            MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "TENSU-KEY"         TO  ORC-DBPATH
