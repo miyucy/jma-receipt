@@ -289,6 +289,7 @@
            03  FLG-GENERICNAME                   PIC 9(01).
            03  FLG-TENSUPLUS2-CHK                PIC 9(01).
            03  FLG-NENREI-CD                     PIC 9(01).
+           03  FLG-TENSU-OK                      PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -793,8 +794,13 @@
            PERFORM 990-DBCLOSE-SEC
       *
            IF      FLG-TENSU           =   ZERO
+               MOVE    1                   TO  FLG-TENSU-OK
+               MOVE    TNS-TENSU-REC       TO  WRK-TNS-TENSU-REC
       *        点数マスタ編集
                PERFORM 3001-SPASET-SEC
+           ELSE
+               MOVE    ZERO                TO  FLG-TENSU-OK
+               MOVE    SPACE               TO  WRK-TNS-TENSU-REC
            END-IF
       *
       *    点数マスタ付加情報検索
@@ -1112,7 +1118,8 @@
       *****************************************************************
        3102-TENSUPLUS2-HEN-SEC            SECTION.
       *
-           IF      FLG-TENSU           =   ZERO
+           IF      FLG-TENSU-OK        =   1
+                MOVE    WRK-TNS-TENSU-REC   TO  TNS-TENSU-REC
                INITIALIZE                  TENSUPLUS2-REC 
                MOVE    SPACE               TO  TENSUPLUS2-REC
                MOVE    TNS-SRYCD           TO  TNSP2-SRYCD
@@ -1198,7 +1205,8 @@
       *****************************************************************
        3103-GENERICNAME-HEN-SEC            SECTION.
       *
-           IF      FLG-TENSU           =   ZERO
+           IF      FLG-TENSU-OK        =   1
+               MOVE    WRK-TNS-TENSU-REC   TO  TNS-TENSU-REC
                INITIALIZE                  GENERICNAME-REC 
                MOVE    SPACE               TO  GENERICNAME-REC
                MOVE    TNS-YAKKAKJNCD(1:9)
