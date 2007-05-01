@@ -6493,9 +6493,9 @@
                MOVE    1               TO  FLG-CHKEND (18)
            END-IF
       *
-      *    病名と薬剤チェック処理
+      *    病名と診療行為チェック処理
            IF    ( FLG-CHKEND (18)     =   ZERO )
-            AND  ( FLG-BYOYKZ          =   1 )
+            AND  ( FLG-BYOSRY          =   1 )
                MOVE    "9"             TO  WRK-CHKKBN
                MOVE    "2"             TO  WRK-CDKBN
                MOVE    18              TO  IDX-CHK
