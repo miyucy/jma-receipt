@@ -1253,7 +1253,7 @@
            MOVE    SPA-GMN-PTNUM       TO  SPTID-PTNUM
            CALL    "ORCSPTID"          USING   ORCSPTIDAREA
       *---(01.00.02) LINE ADD START  ----------------------------------
-                                               SPA-1009-TBL
+                                               SPA-AREA
       *---(01.00.02) LINE ADD END    ----------------------------------
            IF      SPTID-RC        NOT =   ZERO
                MOVE    "0003"          TO  SPA-ERRCD
