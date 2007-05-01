@@ -52,6 +52,8 @@
       *  01.00.21    NACL-Â¿¡¹Ç¼  06/01/23  ÍÑÎÌ³ä¹ç¡¦Êñ³ç¸¡ºº¿ôÄÉ²Ã
       *  01.00.22    NACL-Â¿¡¹Ç¼  06/05/14  ¥³¥á¥ó¥ÈÆþÎÏ²èÌÌÊÑ¹¹
       *  03.04.00    NACL-Â¿¡¹Ç¼  06/11/13  ¸¡ººÀµ¼°Ì¾¾ÎÉ½¼¨ÄÉ²Ã
+      *  03.04.01    NACL-Â¿¡¹Ç¼  07/02/28  Êñ³ç¿ÇÎÅÄÉ²ÃÂÐ±þ
+      *  03.05.00    NACL-Â¿¡¹Ç¼  07/05/XX  ¥°¥ë¡¼¥×¿ÇÎÅÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -96,12 +98,14 @@
        01  FILE-NAME1.
            03  FILLER              PIC X(09)   VALUE   "/var/tmp/".
            03  FILLER              PIC X(09)   VALUE   "J02SPASCR".
+           03  FILE-HOSPNUM        PIC 9(02)   VALUE   ZERO.
            03  FILE-TERMID         PIC X(64)   VALUE   SPACE.
            03  FILLER              PIC X(06)   VALUE   ".TXT".
       *
        01  FILE-NAME2.
            03  FILLER              PIC X(09)   VALUE   "/var/tmp/".
            03  FILLER              PIC X(07)   VALUE   "J01PARA".
+           03  FILE-HOSPNUM2       PIC 9(02)   VALUE   ZERO.
            03  FILE-TERMID2        PIC X(64)   VALUE   SPACE.
       *
        01  WRK-DATA-REC.
@@ -357,6 +361,7 @@
            03  WRK-IDG             PIC 9(04).
       * 
            03  WRK-ERRCD            PIC X(04).
+           03  WRK-HZN-ERRCD            PIC X(04).
            03  WRK-ERRCD02          PIC X(04).
       *    ÊÝ¸±ÁÈ¹ç¤»Ì¾¾Î
            03  WRK-HKNCOMBI         PIC X(04).
@@ -856,6 +861,7 @@
        1002-J02SPA-SET-SEC             SECTION.
       *
            MOVE    SPA-TERMID          TO  FILE-TERMID
+           MOVE    SPA-HOSPNUM         TO  FILE-HOSPNUM
       *
            OPEN    INPUT               SPASCR-FILE
            IF      STS-SPASCR     NOT =   ZERO
@@ -888,6 +894,7 @@
        1003-J02SPA-OUT-SEC             SECTION.
       *
            MOVE    SPA-TERMID          TO  FILE-TERMID
+           MOVE    SPA-HOSPNUM         TO  FILE-HOSPNUM
       *
            OPEN    OUTPUT              SPASCR-FILE
            IF      STS-SPASCR     NOT =   ZERO
@@ -2055,7 +2062,6 @@
        30081-JIBAISEKI-HEN-SEC             SECTION.
       *
            INITIALIZE                  ORCSAGECHKAREA
-      *****MOVE    SPA-HOSPID          TO  AGECHK-HOSPID
            MOVE    SPA-HOSPNUM         TO  AGECHK-HOSPNUM
            MOVE    SPA-GMN-PTID        TO  AGECHK-PTID
            MOVE    SPA-NAI-SRYYM       TO  AGECHK-SRYYMD(1:6)
@@ -2066,6 +2072,7 @@
            MOVE    SPA-GMN-NYUGAIKBN   TO  AGECHK-NYUGAIKBN
            CALL    "ORCSAGECHK"        USING
                                        ORCSAGECHKAREA
+                                       SPA-AREA
       *    ¼«ÇåÀÕ¶èÊ¬
            EVALUATE    AGECHK-HKNKBN
                WHEN    2
@@ -2092,10 +2099,9 @@
            MOVE    "DBDELETE"          TO  MCP-FUNC
            MOVE    "tbl_para"          TO  MCP-TABLE
            MOVE    "del3"              TO  MCP-PATHNAME
-           CALL    "ORCDBMAIN"         USING
-                                           MCPAREA
-                                           MCPDATA-REC
-                                           SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
       *    ¥Ñ¥é¥á¥¿ºï½ü
            INITIALIZE                      PARA-REC
@@ -2107,10 +2113,9 @@
            MOVE    "DBDELETE"          TO  MCP-FUNC
            MOVE    "tbl_para"          TO  MCP-TABLE
            MOVE    "del3"              TO  MCP-PATHNAME
-           CALL    "ORCDBMAIN"         USING
-                                           MCPAREA
-                                           MCPDATA-REC
-                                           SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
        3106-PARA-DEL-EXT.
@@ -2123,13 +2128,12 @@
       *
       *    ¼õ¿ÇÎò¤ò¸¡º÷¤¹¤ë  °åÎÅµ¡´Ø¡¢´µ¼Ô£É£Ä
            INITIALIZE                  JYURRK-REC
-      *****MOVE    SPA-HOSPID          TO  JYURRK-HOSPID
+           MOVE    SPA-HOSPNUM          TO  JYURRK-HOSPNUM
            MOVE    SPA-GMN-PTID        TO  JYURRK-PTID
            MOVE    SPA-NYUGAIKBN       TO  JYURRK-NYUGAIKBN
            MOVE    SPA-NAI-SRYYM       TO  JYURRK-SRYYMD(1:6)
            MOVE    "31"                TO  JYURRK-SRYYMD(7:2)
       *
-           MOVE    SPA-HOSPNUM         TO  JYURRK-HOSPNUM
            MOVE    JYURRK-REC          TO  MCPDATA-REC
            MOVE    "tbl_jyurrk"        TO  MCP-TABLE
            MOVE    "key35"             TO  MCP-PATHNAME
@@ -2158,12 +2162,11 @@
                   (SPA-J01-SRYKA       =   SPACE ) 
       *        ¿ÇÎÅ²ñ·×¥Þ¥¹¥¿¡¼¤òÊÔ½¸
                INITIALIZE                      SRYACCT-REC 
-      *********MOVE    SPA-HOSPID          TO  ACCT-HOSPID
+               MOVE    SPA-HOSPNUM          TO  ACCT-HOSPNUM
                MOVE    SPA-NYUGAIKBN       TO  ACCT-NYUGAIKBN
                MOVE    SPA-GMN-PTID        TO  ACCT-PTID
                MOVE    SPA-NAI-SRYYM       TO  ACCT-SRYYM
       *
-               MOVE    SPA-HOSPNUM         TO  ACCT-HOSPNUM
                MOVE    SRYACCT-REC         TO  MCPDATA-REC
                MOVE    "tbl_sryacct"       TO  MCP-TABLE
                MOVE    "key7"              TO  MCP-PATHNAME
@@ -2213,7 +2216,7 @@
       *
       *    ¼õ¿ÇÎò¤ò¸¡º÷¤¹¤ë  °åÎÅµ¡´Ø¡¢´µ¼Ô£É£Ä
            INITIALIZE                  JYURRK-REC
-      *****MOVE    SPA-HOSPID          TO  JYURRK-HOSPID
+           MOVE    SPA-HOSPNUM          TO  JYURRK-HOSPNUM
            MOVE    SPA-GMN-PTID        TO  JYURRK-PTID
            MOVE    SPA-NYUGAIKBN       TO  JYURRK-NYUGAIKBN
            MOVE    SPA-J01-SRYKA       TO  JYURRK-SRYKA
@@ -2227,7 +2230,6 @@
                MOVE    "key12"         TO  WRK-ORC-DBPATH
            END-IF
       *
-           MOVE    SPA-HOSPNUM         TO  JYURRK-HOSPNUM
            MOVE    JYURRK-REC          TO  MCPDATA-REC
            MOVE    "tbl_jyurrk"        TO  MCP-TABLE
            MOVE    WRK-ORC-DBPATH      TO  MCP-PATHNAME
@@ -2448,14 +2450,15 @@
            MOVE    ACCT-DAY-AREA        TO  SPA-NAI-DAY-AREA (IDX)
       *    Ï«ºÒ¤Ç³°Íè´ÉÍý²Ã»»¤Î¿¶ÂØ¤¨¤¢¤ê¤Î»þ¡¢¼êµ»ÎÁ£²¤¬¤¢¤ë
            MOVE    ACCT-SYUTEN2         TO  SPA-NAI-SYUTEN2 (IDX)
+      *    Êñ³ç¿ÇÎÅÊ¬
+           MOVE    ACCT-JIHOKBN         TO  SPA-NAI-JIHOKBN (IDX)
       *
       *    Ï·¿ÍÈ½Äê
            INITIALIZE                  HKNCOMBI-REC
-      *****MOVE    SPA-HOSPID          TO  COMB-HOSPID
+           MOVE    SPA-HOSPNUM          TO  COMB-HOSPNUM
            MOVE    SPA-GMN-PTID        TO  COMB-PTID
            MOVE    ACCT-HKNCOMBI       TO  COMB-HKNCOMBINUM
       *
-           MOVE    SPA-HOSPNUM         TO  COMB-HOSPNUM
            MOVE    HKNCOMBI-REC        TO  MCPDATA-REC
            MOVE    "tbl_hkncombi"      TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
@@ -2492,7 +2495,7 @@
            MOVE    ZERO                TO  WRK-IDG
       *    ¿ÇÎÅ¹Ô°Ù¥Þ¥¹¥¿¡¼ÆÉ¤ß¹þ¤ß
            INITIALIZE                      SRYACT-REC
-      *****MOVE    ACCT-HOSPID         TO  SRY-HOSPID
+           MOVE    ACCT-HOSPNUM         TO  SRY-HOSPNUM
            MOVE    ACCT-NYUGAIKBN      TO  SRY-NYUGAIKBN
            MOVE    ACCT-PTID           TO  SRY-PTID
            MOVE    ACCT-SRYKA          TO  SRY-SRYKA
@@ -2509,7 +2512,6 @@
                END-IF
            END-PERFORM
       *
-           MOVE    SPA-HOSPNUM         TO  SRY-HOSPNUM
            MOVE    SRYACT-REC          TO  MCPDATA-REC
            MOVE    "tbl_sryact"        TO  MCP-TABLE
            MOVE    "key2"              TO  MCP-PATHNAME
@@ -2675,12 +2677,17 @@
            END-IF
       *
       *    Êñ³çÊ¬¤ÎÌ¾¾ÎÊÔ½¸
-           IF      ACCT-HKNCOMBI       =   "9999"
+           IF      ACCT-JIHOKBN        =   "1"
                MOVE    SPACE               TO  WRK-SRYSYUMEI2
-               STRING  WRK-SRYSYUMEI       DELIMITED  BY  SPACE
-                       "¡ÊÊñ³çÊ¬¡Ë"        DELIMITED  BY  SIZE
+               IF      WRK-SRYSYUMEI(15:)  =   SPACE
+                   MOVE    WRK-SRYSYUMEI       TO  WRK-SRYSYUMEI2
+                   MOVE    "¡ÚÊñ³ç¿ÇÎÅ¡Û"      TO  WRK-SRYSYUMEI2(15:)
+               ELSE
+                   STRING  WRK-SRYSYUMEI       DELIMITED  BY  SPACE
+                           "¡ÚÊñ³ç¿ÇÎÅ¡Û"      DELIMITED  BY  SIZE
                                        INTO    WRK-SRYSYUMEI2
-               END-STRING
+                   END-STRING
+               END-IF
                MOVE    WRK-SRYSYUMEI2      TO  WRK-SRYSYUMEI
            END-IF
       *
@@ -2691,6 +2698,11 @@
                MOVE    "."             TO  SPA-GMN-TMEISYO (IDG)(1:1)
                MOVE    SRY-SRYSYUKBN   TO  SPA-GMN-TMEISYO (IDG)(2:3)
                MOVE    WRK-SRYSYUMEI   TO  SPA-GMN-TMEISYO (IDG)(7:)
+           END-IF
+      *    Êñ³çÊ¬¤ÏÅÀ¿ô¤Ë¡ö¤òÊÔ½¸
+           IF     (ACCT-HKNCOMBI       =   "9999" )
+              OR  (ACCT-JIHOKBN        =   "1"    )
+               MOVE    ALL "*"             TO  SPA-GMN-TTENSU (IDG)
            END-IF
       *
            MOVE    SRY-SRYSYUKBN       TO  SPA-NAI-SRYSYU (IDG)
@@ -2966,7 +2978,7 @@
        310120-YAKUSOKU-SET-SEC        SECTION.
       *
            MOVE    SPACE               TO  INPUTCD-REC
-      *****MOVE    SPA-HOSPID          TO  ICD-HOSPID
+           MOVE    SPA-HOSPNUM         TO  ICD-HOSPNUM
       *    ¥»¥Ã¥È¤Î·å¿ô¤Ï£¶¤È¤¹¤ë
            MOVE    "6"                 TO  ICD-CDSYU
            MOVE    SRY-SRYCD (IDZ)(1:6)
@@ -3072,7 +3084,7 @@
        310122-KNJCOM-SET-SEC              SECTION.
       *
            INITIALIZE                      PTCOM-REC
-      *****MOVE    SRY-HOSPID          TO  PTCOM-HOSPID
+           MOVE    SRY-HOSPNUM          TO  PTCOM-HOSPNUM
            MOVE    SRY-PTID            TO  PTCOM-PTID
            MOVE    SRY-ZAINUM          TO  PTCOM-ZAINUM
            MOVE    SRY-SRYCD (IDZ)     TO  PTCOM-SRYCD
@@ -3144,6 +3156,14 @@
            MOVE    SPA-GMN-PTNUM       TO  J02-PTNUM
            MOVE    SPA-GMN-KANANAME    TO  J02-KANANAME
            MOVE    SPA-GMN-NAME        TO  J02-NAME
+      *    ÇÓÂ¾Ãæ
+           IF      SPA-LOCK                =   ZERO
+               MOVE    "black"             TO  J02-NAME-STYLE
+               MOVE    "black"             TO  J02-KANANAME-STYLE
+           ELSE
+               MOVE    "red"               TO  J02-NAME-STYLE
+               MOVE    "red"               TO  J02-KANANAME-STYLE
+           END-IF
            MOVE    SPA-GMN-SEX         TO  J02-SEX
            MOVE    SPA-GMN-SRYYM       TO  J02-SRYYM
            MOVE    SPA-GMN-BIRTHDAYW   TO  J02-BIRTHDAY
@@ -3358,6 +3378,28 @@
       *    IF      SPA-J02-SYORI       =   2
       *        MOVE    WIDGET-NORMAL       TO  J02-HENSRYYMD-STATE
       *    END-IF
+      *    ÇÓÂ¾Ãæ
+           IF      SPA-LOCK            =   ZERO
+               MOVE    WIDGET-NORMAL       TO  J02-B04-STATE
+               MOVE    WIDGET-NORMAL       TO  J02-B05-STATE
+               MOVE    WIDGET-NORMAL       TO  J02-B08-STATE
+               MOVE    WIDGET-NORMAL       TO  J02-B12-STATE
+               MOVE    WIDGET-NORMAL       TO  J02-B02S-STATE
+               MOVE    WIDGET-NORMAL       TO  J02-B04S-STATE
+               MOVE    WIDGET-NORMAL       TO  J02-B09S-STATE
+               MOVE    WIDGET-NORMAL       TO  J02-B10S-STATE
+               MOVE    WIDGET-NORMAL       TO  J02-B11S-STATE
+           ELSE
+               MOVE    WIDGET-INSENSITIVE  TO  J02-B04-STATE
+               MOVE    WIDGET-INSENSITIVE  TO  J02-B05-STATE
+               MOVE    WIDGET-INSENSITIVE  TO  J02-B08-STATE
+               MOVE    WIDGET-INSENSITIVE  TO  J02-B12-STATE
+               MOVE    WIDGET-INSENSITIVE  TO  J02-B02S-STATE
+               MOVE    WIDGET-INSENSITIVE  TO  J02-B04S-STATE
+               MOVE    WIDGET-INSENSITIVE  TO  J02-B09S-STATE
+               MOVE    WIDGET-INSENSITIVE  TO  J02-B10S-STATE
+               MOVE    WIDGET-INSENSITIVE  TO  J02-B11S-STATE
+           END-IF
            .
        51O-GSRAUTH-EXT.
            EXIT.
@@ -3605,7 +3647,7 @@
            MOVE    SPTID-PTNUM         TO  SPA-GMN-PTNUM
            MOVE    SPTID-PTID          TO  SPA-GMN-PTID
       *    ´µ¼Ô¥Þ¥¹¥¿¡¼Â¸ºß¥Á¥§¥Ã¥¯
-      *****MOVE    SPA-HOSPID         TO  PTINF-HOSPID
+           MOVE    SPA-HOSPNUM         TO  PTINF-HOSPNUM
            MOVE    SPA-GMN-PTID       TO  PTINF-PTID
            PERFORM 900-PTINF-READ-SEC
            IF      FLG-PTINF      NOT =   ZERO
@@ -3740,6 +3782,7 @@
                    MOVE    06              TO  SPA-GMN-CUR
                END-IF
            END-IF
+           MOVE    WRK-HZN-ERRCD       TO  SPA-ERRCD
       *
            .
        41010-PTNUM-SYORI-EXT.
@@ -3792,10 +3835,9 @@
       *    Æþ±¡ÍúÎòÈ½Äê
            MOVE    SPACE               TO  PTNYUINRRK-REC
            INITIALIZE                  PTNYUINRRK-REC
-      *****MOVE    SPA-HOSPID          TO  PTNYUINRRK-HOSPID
+           MOVE    SPA-HOSPNUM          TO  PTNYUINRRK-HOSPNUM
            MOVE    SPA-GMN-PTID        TO  PTNYUINRRK-PTID
       *
-           MOVE    SPA-HOSPNUM         TO  PTNYUINRRK-HOSPNUM
            MOVE    PTNYUINRRK-REC      TO  MCPDATA-REC
            MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
            MOVE    "key34"             TO  MCP-PATHNAME
@@ -5176,13 +5218,12 @@
                                            TO  TBL-HKNCOMBI(1 1)
            ELSE
                INITIALIZE                  JYURRK-REC
-      *********MOVE    SPA-HOSPID          TO  JYURRK-HOSPID
+               MOVE    SPA-HOSPNUM          TO  JYURRK-HOSPNUM
                MOVE    SPA-GMN-PTID        TO  JYURRK-PTID
                MOVE    SPA-GMN-NYUGAIKBN   TO  JYURRK-NYUGAIKBN
                MOVE    SPA-RRK-GRP-DENPNUM(SPA-NAI-RRKSELNUM)
                                            TO  JYURRK-GRP-DENPNUM
       *
-               MOVE    SPA-HOSPNUM         TO  JYURRK-HOSPNUM
                MOVE    JYURRK-REC          TO  MCPDATA-REC
                MOVE    "tbl_jyurrk"        TO  MCP-TABLE
                MOVE    "key26"             TO  MCP-PATHNAME
@@ -5297,7 +5338,7 @@
       *
       *    ¼õ¿ÇÍúÎòÊÑ¹¹
            INITIALIZE                  JYURRK-REC
-      *****MOVE    SPA-HOSPID          TO  JYURRK-HOSPID
+           MOVE    SPA-HOSPNUM          TO  JYURRK-HOSPNUM
            MOVE    SPA-GMN-PTID        TO  JYURRK-PTID
            MOVE    SPA-GMN-NYUGAIKBN   TO  JYURRK-NYUGAIKBN
            MOVE    SPA-RRK-SRYKA  (SPA-NAI-RRKSELNUM)
@@ -5322,7 +5363,6 @@
                END-IF
            END-IF
       *
-           MOVE    SPA-HOSPNUM         TO  JYURRK-HOSPNUM
            MOVE    JYURRK-REC          TO  MCPDATA-REC
            MOVE    "tbl_jyurrk"        TO  MCP-TABLE
            MOVE    WRK-ORC-DBPATH      TO  MCP-PATHNAME
@@ -5417,7 +5457,7 @@
        41016101-ACCT-CHKSYORI-SEC      SECTION.
       *
            INITIALIZE                      SRYACCT-REC
-      *****MOVE    SPA-HOSPID          TO  ACCT-HOSPID
+           MOVE    SPA-HOSPNUM          TO  ACCT-HOSPNUM
            MOVE    JYURRK-NYUGAIKBN    TO  ACCT-NYUGAIKBN
            MOVE    JYURRK-PTID         TO  ACCT-PTID
            MOVE    JYURRK-SRYKA        TO  ACCT-SRYKA
@@ -5425,7 +5465,6 @@
            MOVE    JYURRK-ZAINUM(IDX-Z)
                                        TO  ACCT-ZAINUM
       *
-           MOVE    SPA-HOSPNUM         TO  ACCT-HOSPNUM
            MOVE    SRYACCT-REC         TO  MCPDATA-REC
            MOVE    "tbl_sryacct"       TO  MCP-TABLE
            MOVE    "key5"              TO  MCP-PATHNAME
@@ -5445,6 +5484,8 @@
            IF      FLG-SRYACCT          =   ZERO
       *        ¼«Èñ¤Î»þÂÐ¾Ý³°
                IF      ACCT-SRYKBN          =   "95"  OR  "96"
+      *                Êñ³ç¿ÇÎÅÂÐ¾Ý³°
+                  OR  (ACCT-JIHOKBN        =   "1"   )
                    CONTINUE
                ELSE
                    MOVE    1                TO  IDX
@@ -5470,7 +5511,7 @@
        410161011-SANTEI-CHK-SEC      SECTION.
       *    ¿ÇÎÅ¹Ô°Ù¥Þ¥¹¥¿¡¼ÆÉ¤ß¹þ¤ß
            INITIALIZE                      SRYACT-REC
-      **** MOVE    ACCT-HOSPID         TO  SRY-HOSPID
+           MOVE    ACCT-HOSPNUM         TO  SRY-HOSPNUM
            MOVE    ACCT-NYUGAIKBN      TO  SRY-NYUGAIKBN
            MOVE    ACCT-PTID           TO  SRY-PTID
            MOVE    ACCT-SRYKA          TO  SRY-SRYKA
@@ -5491,7 +5532,6 @@
                END-IF
            END-PERFORM
       *
-           MOVE    SPA-HOSPNUM         TO  SRY-HOSPNUM
            MOVE    SRYACT-REC          TO  MCPDATA-REC
            MOVE    "tbl_sryact"        TO  MCP-TABLE
            MOVE    "key2"              TO  MCP-PATHNAME
@@ -5562,7 +5602,7 @@
            INITIALIZE                  TBL-GRP-AREA
       *    ¼õ¿ÇÍúÎòÊÑ¹¹
            INITIALIZE                  JYURRK-REC
-      *****MOVE    SPA-HOSPID          TO  JYURRK-HOSPID
+           MOVE    SPA-HOSPNUM          TO  JYURRK-HOSPNUM
            MOVE    SPA-GMN-PTID        TO  JYURRK-PTID
            MOVE    SPA-GMN-NYUGAIKBN   TO  JYURRK-NYUGAIKBN
            MOVE    SPA-RRK-SRYKA  (SPA-NAI-RRKSELNUM)
@@ -5587,7 +5627,6 @@
                END-IF
            END-IF
       *
-           MOVE    SPA-HOSPNUM         TO  JYURRK-HOSPNUM
            MOVE    JYURRK-REC          TO  MCPDATA-REC
            MOVE    "tbl_jyurrk"        TO  MCP-TABLE
            MOVE    WRK-ORC-DBPATH      TO  MCP-PATHNAME
@@ -5657,15 +5696,13 @@
                MOVE    SMCNDATE-YMD        TO  JYURRK-UPYMD
                MOVE    SMCNDATE-HMS        TO  JYURRK-UPHMS
       *
-               MOVE    SPA-HOSPNUM         TO  JYURRK-HOSPNUM
                MOVE    JYURRK-REC          TO  MCPDATA-REC
                MOVE    "DBUPDATE"          TO  MCP-FUNC
                MOVE    "tbl_jyurrk"        TO  MCP-TABLE
                MOVE    "upd1"              TO  MCP-PATHNAME
-               CALL    "ORCDBMAIN"         USING
-                                               MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
+                                                   MCPDATA-REC
+                                                   SPA-AREA
                IF      MCP-RC          NOT =   ZERO
                    DISPLAY "J02 JYURRK UPD ERR:" MCP-RC
                            ",KEY:" JYURRK-KEY
@@ -5779,7 +5816,7 @@
        4101612-ACCT-UPDSYORI-SEC      SECTION.
       *
            INITIALIZE                      SRYACCT-REC
-      *****MOVE    SPA-HOSPID          TO  ACCT-HOSPID
+           MOVE    SPA-HOSPNUM          TO  ACCT-HOSPNUM
            MOVE    JYURRK-NYUGAIKBN    TO  ACCT-NYUGAIKBN
            MOVE    JYURRK-PTID         TO  ACCT-PTID
            MOVE    JYURRK-SRYKA        TO  ACCT-SRYKA
@@ -5787,7 +5824,6 @@
            MOVE    JYURRK-ZAINUM(IDX-Z)
                                        TO  ACCT-ZAINUM
       *
-           MOVE    SPA-HOSPNUM         TO  ACCT-HOSPNUM
            MOVE    SRYACCT-REC         TO  MCPDATA-REC
            MOVE    "tbl_sryacct"       TO  MCP-TABLE
            MOVE    "key5"              TO  MCP-PATHNAME
@@ -5833,15 +5869,13 @@
                    MOVE    SMCNDATE-YMD        TO  ACCT-UPYMD
                    MOVE    SMCNDATE-HMS        TO  ACCT-UPHMS
       *
-                   MOVE    SPA-HOSPNUM         TO  ACCT-HOSPNUM
                    MOVE    SRYACCT-REC         TO  MCPDATA-REC
                    MOVE    "DBUPDATE"          TO  MCP-FUNC
                    MOVE    "tbl_sryacct"       TO  MCP-TABLE
                    MOVE    "key"               TO  MCP-PATHNAME
-                   CALL    "ORCDBMAIN"         USING
-                                                   MCPAREA
-                                                   MCPDATA-REC
-                                                   SPA-AREA
+grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
+                                                       MCPDATA-REC
+                                                       SPA-AREA
                    IF      MCP-RC          NOT =   ZERO
                        DISPLAY "J02 SRYACCT UPD ERR:" MCP-RC
                                ",KEY:" ACCT-KEY
@@ -5872,7 +5906,7 @@
                PERFORM 41016131-SYUNOU-UPDSYORI-SEC
            END-PERFORM
            .
-       4101612-ACCT-UPDSYORI-EXT.
+       4101613-SYUNOU-UPD-EXT.
            EXIT.
       *
       *****************************************************************
@@ -5880,12 +5914,11 @@
       *****************************************************************
        41016131-SYUNOU-UPDSYORI-SEC      SECTION.
            INITIALIZE                  SYUNOU-REC
-      *****MOVE    SPA-HOSPID          TO  SYU-HOSPID
+           MOVE    SPA-HOSPNUM          TO  SYU-HOSPNUM
            MOVE    SPA-GMN-PTID        TO  SYU-PTID
            MOVE    SPA-NYUGAIKBN       TO  SYU-NYUGAIKBN
            MOVE    TBL-DENPNUM(IDX)    TO  SYU-DENPNUM
       *
-           MOVE    SPA-HOSPNUM         TO  SYU-HOSPNUM
            MOVE    SYUNOU-REC          TO  MCPDATA-REC
            MOVE    "tbl_syunou"        TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
@@ -5911,15 +5944,13 @@
                MOVE    SMCNDATE-YMD        TO  SYU-UPYMD
                MOVE    SMCNDATE-HMS        TO  SYU-UPHMS
       *
-               MOVE    SPA-HOSPNUM         TO  SYU-HOSPNUM
                MOVE    SYUNOU-REC          TO  MCPDATA-REC
                MOVE    "DBUPDATE"          TO  MCP-FUNC
                MOVE    "tbl_syunou"        TO  MCP-TABLE
                MOVE    "key"               TO  MCP-PATHNAME
-               CALL    "ORCDBMAIN"         USING
-                                               MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
+                                                   MCPDATA-REC
+                                                   SPA-AREA
       *
       *        ¼ýÇ¼¹ç·×
                IF     (SYU-GRP-DENPNUM     >   ZERO )  AND
@@ -5939,12 +5970,11 @@
        410161312-SYUTOTAL-UPD-SEC      SECTION.
       *
            INITIALIZE                  SYUTTL-REC
-      *****MOVE    SYU-HOSPID          TO  SYUTTL-HOSPID
+           MOVE    SYU-HOSPNUM          TO  SYUTTL-HOSPNUM
            MOVE    SYU-NYUGAIKBN       TO  SYUTTL-NYUGAIKBN
            MOVE    SYU-PTID            TO  SYUTTL-PTID
            MOVE    SYU-FUKU-DENPNUM    TO  SYUTTL-DENPNUM
       *
-           MOVE    SPA-HOSPNUM         TO  SYUTTL-HOSPNUM
            MOVE    SYUTTL-REC          TO  MCPDATA-REC
            MOVE    "tbl_syutotal"      TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
@@ -5967,15 +5997,13 @@
                MOVE    SMCNDATE-YMD        TO  SYUTTL-UPYMD
                MOVE    SMCNDATE-HMS        TO  SYUTTL-UPHMS
       *
-               MOVE    SPA-HOSPNUM         TO  SYUTTL-HOSPNUM
                MOVE    SYUTTL-REC          TO  MCPDATA-REC
                MOVE    "DBUPDATE"          TO  MCP-FUNC
                MOVE    "tbl_syutotal"      TO  MCP-TABLE
                MOVE    "key"               TO  MCP-PATHNAME
-               CALL    "ORCDBMAIN"         USING
-                                               MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
+                                                   MCPDATA-REC
+                                                   SPA-AREA
                IF      MCP-RC          NOT =   ZERO
                    DISPLAY "J02 SYUTTL UPD ERR:" SYUTTL-KEY
                        ",MCP-RC:"  MCP-RC
@@ -6009,7 +6037,7 @@
       *
       *    ¼õ¿ÇÍúÎòÊÑ¹¹
            INITIALIZE                  JYURRK-REC
-      *****MOVE    SPA-HOSPID          TO  JYURRK-HOSPID
+           MOVE    SPA-HOSPNUM          TO  JYURRK-HOSPNUM
            MOVE    SPA-GMN-PTID        TO  JYURRK-PTID
            MOVE    SPA-NYUGAIKBN       TO  JYURRK-NYUGAIKBN
            MOVE    TBL-SRYKA (IDX)
@@ -6017,7 +6045,6 @@
            MOVE    SPA-RRK-RRKYMD (SPA-NAI-RRKSELNUM)
                                        TO  JYURRK-SRYYMD
       *
-           MOVE    SPA-HOSPNUM         TO  JYURRK-HOSPNUM
            MOVE    JYURRK-REC          TO  MCPDATA-REC
            MOVE    "tbl_jyurrk"        TO  MCP-TABLE
            MOVE    "key4"              TO  MCP-PATHNAME
@@ -6085,15 +6112,13 @@
                    MOVE    SMCNDATE-YMD        TO  JYURRK-UPYMD
                    MOVE    SMCNDATE-HMS        TO  JYURRK-UPHMS
       *
-                   MOVE    SPA-HOSPNUM         TO  JYURRK-HOSPNUM
                    MOVE    JYURRK-REC          TO  MCPDATA-REC
                    MOVE    "DBUPDATE"          TO  MCP-FUNC
                    MOVE    "tbl_jyurrk"        TO  MCP-TABLE
                    MOVE    "upd1"              TO  MCP-PATHNAME
-                   CALL    "ORCDBMAIN"         USING
-                                                   MCPAREA
-                                                   MCPDATA-REC
-                                                   SPA-AREA
+grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
+                                                       MCPDATA-REC
+                                                       SPA-AREA
                    IF      MCP-RC          NOT =   ZERO
                         DISPLAY "J02 JYURRK UPD ERR:" MCP-RC
                                ",KEY:" JYURRK-KEY
@@ -6161,7 +6186,7 @@
            INITIALIZE                  TBL-GRP-AREA
       *    ¼õ¿ÇÍúÎòÊÑ¹¹
            INITIALIZE                  JYURRK-REC
-      *****MOVE    SPA-HOSPID          TO  JYURRK-HOSPID
+           MOVE    SPA-HOSPNUM          TO  JYURRK-HOSPNUM
            MOVE    SPA-GMN-PTID        TO  JYURRK-PTID
            MOVE    SPA-GMN-NYUGAIKBN   TO  JYURRK-NYUGAIKBN
            MOVE    SPA-RRK-SRYKA  (SPA-NAI-RRKSELNUM)
@@ -6185,7 +6210,7 @@
                    MOVE    "key26"         TO  WRK-ORC-DBPATH
                END-IF
            END-IF
-           MOVE    SPA-HOSPNUM         TO  JYURRK-HOSPNUM
+      *
            MOVE    JYURRK-REC          TO  MCPDATA-REC
            MOVE    "tbl_jyurrk"        TO  MCP-TABLE
            MOVE    WRK-ORC-DBPATH      TO  MCP-PATHNAME
@@ -6270,15 +6295,13 @@
                MOVE    SMCNDATE-YMD        TO  JYURRK-UPYMD
                MOVE    SMCNDATE-HMS        TO  JYURRK-UPHMS
       *
-               MOVE    SPA-HOSPNUM         TO  JYURRK-HOSPNUM
                MOVE    JYURRK-REC          TO  MCPDATA-REC
                MOVE    "DBINSERT"          TO  MCP-FUNC
                MOVE    "tbl_jyurrk"        TO  MCP-TABLE
                MOVE    "key"               TO  MCP-PATHNAME
-               CALL    "ORCDBMAIN"         USING
-                                               MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
+                                                   MCPDATA-REC
+                                                   SPA-AREA
                IF      MCP-RC          NOT =   ZERO
                    DISPLAY "J02 JYURRK INS ERR:" MCP-RC
                                ",KEY:" JYURRK-KEY
@@ -6389,12 +6412,11 @@
            END-IF
       *
       *    ¼ýÇ¼ºîÀ®
-      *****MOVE    JYURRK-HOSPID       TO  SYU-HOSPID
+           MOVE    JYURRK-HOSPNUM       TO  SYU-HOSPNUM
            MOVE    JYURRK-PTID         TO  SYU-PTID
            MOVE    JYURRK-NYUGAIKBN    TO  SYU-NYUGAIKBN
            MOVE    HZN-JYURRK-DENPNUM  TO  SYU-DENPNUM
       *
-           MOVE    SPA-HOSPNUM         TO  SYU-HOSPNUM
            MOVE    SYUNOU-REC          TO  MCPDATA-REC
            MOVE    "tbl_syunou"        TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
@@ -6454,15 +6476,13 @@
                MOVE    SMCNDATE-YMD        TO  SYU-UPYMD
                MOVE    SMCNDATE-HMS        TO  SYU-UPHMS
       *
-               MOVE    SPA-HOSPNUM         TO  SYU-HOSPNUM
                MOVE    SYUNOU-REC          TO  MCPDATA-REC
                MOVE    "DBINSERT"          TO  MCP-FUNC
                MOVE    "tbl_syunou"        TO  MCP-TABLE
                MOVE    "key"               TO  MCP-PATHNAME
-               CALL    "ORCDBMAIN"         USING
-                                               MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
+                                                   MCPDATA-REC
+                                                   SPA-AREA
                IF      MCP-RC          NOT =   ZERO
                    DISPLAY "J02 SYUNOU INS ERR:" SYU-KEY
                                       ",MCP-RC:" MCP-RC 
@@ -6486,13 +6506,12 @@
        41016211-SYUTTL-INS-SEC             SECTION.
       *
            INITIALIZE                  SYUTTL-REC
-      *****MOVE    SYU-HOSPID          TO  SYUTTL-HOSPID
+           MOVE    SYU-HOSPNUM          TO  SYUTTL-HOSPNUM
            MOVE    SYU-NYUGAIKBN       TO  SYUTTL-NYUGAIKBN
            MOVE    SYU-PTID            TO  SYUTTL-PTID
            MOVE    WRK-SYU-FUKU-DENPNUM
                                        TO  SYUTTL-DENPNUM
       *
-           MOVE    SPA-HOSPNUM         TO  SYUTTL-HOSPNUM
            MOVE    SYUTTL-REC          TO  MCPDATA-REC
            MOVE    "tbl_syutotal"      TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
@@ -6519,15 +6538,13 @@
                MOVE    SMCNDATE-YMD        TO  SYUTTL-UPYMD
                MOVE    SMCNDATE-HMS        TO  SYUTTL-UPHMS
       *
-               MOVE    SPA-HOSPNUM         TO  SYUTTL-HOSPNUM
                MOVE    SYUTTL-REC          TO  MCPDATA-REC
                MOVE    "DBINSERT"          TO  MCP-FUNC
                MOVE    "tbl_syutotal"      TO  MCP-TABLE
                MOVE    "key"               TO  MCP-PATHNAME
-               CALL    "ORCDBMAIN"         USING
-                                               MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
+                                                   MCPDATA-REC
+                                                   SPA-AREA
                IF      MCP-RC          NOT =   ZERO
                    DISPLAY "J02 SYUTTL INS ERR:" SYUTTL-KEY
                        ",MCP-RC:"  MCP-RC
@@ -6918,12 +6935,11 @@
       *
       *    ¿ÇÎÅ²ñ·×¥Þ¥¹¥¿¡¼¤òÊÔ½¸
            INITIALIZE                      SRYACCT-REC 
-      *****MOVE    SPA-HOSPID          TO  ACCT-HOSPID
+           MOVE    SPA-HOSPNUM          TO  ACCT-HOSPNUM
            MOVE    SPA-NYUGAIKBN       TO  ACCT-NYUGAIKBN
            MOVE    SPA-GMN-PTID        TO  ACCT-PTID
            MOVE    SPA-NAI-SRYYM       TO  ACCT-SRYYM
       *
-           MOVE    SPA-HOSPNUM         TO  ACCT-HOSPNUM
            MOVE    SRYACCT-REC         TO  MCPDATA-REC
            MOVE    "tbl_sryacct"       TO  MCP-TABLE
            MOVE    "key39"             TO  MCP-PATHNAME
@@ -6973,7 +6989,7 @@
        420012-JYURRKDEL-CHK-SEC        SECTION.
       *
            INITIALIZE                  JYURRK-REC
-      *****MOVE    ACCT-HOSPID         TO  JYURRK-HOSPID
+           MOVE    ACCT-HOSPNUM         TO  JYURRK-HOSPNUM
            MOVE    ACCT-PTID           TO  JYURRK-PTID
            MOVE    ACCT-NYUGAIKBN      TO  JYURRK-NYUGAIKBN
            MOVE    ACCT-SRYKA          TO  JYURRK-SRYKA
@@ -6983,7 +6999,6 @@
                MOVE    ACCT-ZAINUM         TO  JYURRK-ZAINUM (IDZ)
            END-PERFORM
       *
-           MOVE    SPA-HOSPNUM         TO  JYURRK-HOSPNUM
            MOVE    JYURRK-REC          TO  MCPDATA-REC
            MOVE    "tbl_jyurrk"        TO  MCP-TABLE
            MOVE    "key20"             TO  MCP-PATHNAME
@@ -7014,14 +7029,13 @@
        420011-SRYACT-DEL-SEC        SECTION.
       *
            INITIALIZE                      SRYACT-REC
-      *****MOVE    ACCT-HOSPID         TO  SRY-HOSPID
+           MOVE    ACCT-HOSPNUM         TO  SRY-HOSPNUM
            MOVE    ACCT-NYUGAIKBN      TO  SRY-NYUGAIKBN
            MOVE    ACCT-PTID           TO  SRY-PTID
            MOVE    ACCT-SRYKA          TO  SRY-SRYKA
            MOVE    ACCT-SRYYM          TO  SRY-SRYYM
            MOVE    ACCT-ZAINUM         TO  SRY-ZAINUM
       *
-           MOVE    SPA-HOSPNUM         TO  SRY-HOSPNUM
            MOVE    SRYACT-REC          TO  MCPDATA-REC
            MOVE    "tbl_sryact"        TO  MCP-TABLE
            MOVE    "key2"              TO  MCP-PATHNAME
@@ -7067,21 +7081,19 @@
            PERFORM 990-DBCLOSE-SEC
       *
            INITIALIZE                  SRYACT-REC
-      *****MOVE    ACCT-HOSPID         TO  SRY-HOSPID
+           MOVE    ACCT-HOSPNUM         TO  SRY-HOSPNUM
            MOVE    ACCT-NYUGAIKBN      TO  SRY-NYUGAIKBN
            MOVE    ACCT-PTID           TO  SRY-PTID
            MOVE    ACCT-SRYKA          TO  SRY-SRYKA
            MOVE    ACCT-SRYYM          TO  SRY-SRYYM
            MOVE    ACCT-ZAINUM         TO  SRY-ZAINUM
-           MOVE    SPA-HOSPNUM         TO  SRY-HOSPNUM
            MOVE    SRYACT-REC          TO  MCPDATA-REC
            MOVE    "DBDELETE"          TO  MCP-FUNC
            MOVE    "tbl_sryact"        TO  MCP-TABLE
            MOVE    "del11"             TO  MCP-PATHNAME
-           CALL    "ORCDBMAIN"         USING
-                                           MCPAREA
-                                           MCPDATA-REC
-                                           SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
            IF      MCP-RC          NOT =   ZERO
                DISPLAY "K03 SRYACT DEL ERR:" MCP-RC
                        ",KEY:" SRY-KEY
@@ -7089,34 +7101,30 @@
            END-IF
       *    ¥³¥á¥ó¥È
            INITIALIZE                  PTCOM-REC
-      *****MOVE    ACCT-HOSPID         TO  PTCOM-HOSPID
+           MOVE    ACCT-HOSPNUM        TO  PTCOM-HOSPNUM
            MOVE    ACCT-PTID           TO  PTCOM-PTID
            MOVE    ACCT-ZAINUM         TO  PTCOM-ZAINUM
       *
-           MOVE    SPA-HOSPNUM         TO  PTCOM-HOSPNUM
            MOVE    PTCOM-REC           TO  MCPDATA-REC
            MOVE    "DBDELETE"          TO  MCP-FUNC
            MOVE    "tbl_ptcom"         TO  MCP-TABLE
            MOVE    "del11"             TO  MCP-PATHNAME
-           CALL    "ORCDBMAIN"         USING
-                                           MCPAREA
-                                           MCPDATA-REC
-                                           SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
            IF      MCP-RC          NOT =   ZERO
                DISPLAY "J02  PTCOM  DEL ERR:" MCP-RC
                      ",KEY:" PTCOM-KEY
                MOVE    "2004"              TO  SPA-ERRCD
            END-IF
       *
-           MOVE    SPA-HOSPNUM         TO  ACCT-HOSPNUM
            MOVE    SRYACCT-REC         TO  MCPDATA-REC
            MOVE    "DBDELETE"          TO  MCP-FUNC
            MOVE    "tbl_sryacct"       TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
-           CALL    "ORCDBMAIN"         USING
-                                           MCPAREA
-                                           MCPDATA-REC
-                                           SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
            IF      MCP-RC          NOT =   ZERO
                DISPLAY "J02 SRYACCT DEL ERR:" MCP-RC
                         ",KEY:" ACCT-KEY
@@ -7125,22 +7133,20 @@
       *
       *    Éí²Ã¾ðÊóºï½ü
            INITIALIZE                  SRYACCTPLUS-REC
-      *****MOVE    ACCT-HOSPID         TO  ACCTP-HOSPID
+           MOVE    ACCT-HOSPNUM         TO  ACCTP-HOSPNUM
            MOVE    ACCT-NYUGAIKBN      TO  ACCTP-NYUGAIKBN
            MOVE    ACCT-PTID           TO  ACCTP-PTID
            MOVE    ACCT-SRYKA          TO  ACCTP-SRYKA
            MOVE    ACCT-SRYYM          TO  ACCTP-SRYYM
            MOVE    ACCT-ZAINUM         TO  ACCTP-ZAINUM
       *
-           MOVE    SPA-HOSPNUM         TO  ACCTP-HOSPNUM
            MOVE    SRYACCTPLUS-REC     TO  MCPDATA-REC
            MOVE    "DBDELETE"          TO  MCP-FUNC
            MOVE    "tbl_sryacctplus"   TO  MCP-TABLE
            MOVE    "del2"              TO  MCP-PATHNAME
-           CALL    "ORCDBMAIN"         USING
-                                           MCPAREA
-                                           MCPDATA-REC
-                                           SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
            IF      MCP-RC          NOT =   ZERO
                DISPLAY "J02  SRYACCTPLUS  DEL ERR:" MCP-RC
                      ",KEY:" ACCTP-KEY
@@ -7174,7 +7180,7 @@
       *    »»ÄêÍúÎò¸¡º÷
            MOVE    SPACE               TO  SANTEI-REC
            INITIALIZE                  SANTEI-REC
-      *****MOVE    SPA-HOSPID          TO  SANTEI-HOSPID
+           MOVE    SPA-HOSPNUM          TO  SANTEI-HOSPNUM
            MOVE    SPA-PTID            TO  SANTEI-PTID
            MOVE    ACCT-SRYYM          TO  SANTEI-SRYYM
            MOVE    WRK-SRYCD           TO  SANTEI-SRYCD
@@ -7200,7 +7206,6 @@
                MOVE    ZERO                TO  SANTEI-HKNCOMBINUM
            END-IF
       *
-           MOVE    SPA-HOSPNUM         TO  SANTEI-HOSPNUM
            MOVE    SANTEI-REC          TO  MCPDATA-REC
            MOVE    "tbl_santei"        TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
@@ -7218,15 +7223,13 @@
       *
            IF      (FLG-SANTEI         =   ZERO )  AND
                    (SANTEI-MSANTEICNT  =   ZERO )
-               MOVE    SPA-HOSPNUM         TO  SANTEI-HOSPNUM
                MOVE    SANTEI-REC          TO  MCPDATA-REC
                MOVE    "DBDELETE"          TO  MCP-FUNC
                MOVE    "tbl_santei"        TO  MCP-TABLE
                MOVE    "key"               TO  MCP-PATHNAME
-               CALL    "ORCDBMAIN"         USING
-                                               MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
+                                                   MCPDATA-REC
+                                                   SPA-AREA
                IF      MCP-RC          NOT =   ZERO
                    DISPLAY "J02 SRYACCT DEL ERR:" MCP-RC
                             ",KEY:" ACCT-KEY
@@ -7366,6 +7369,9 @@
                                        TO  SPA-ZAINUM
       *    »ÞÈÖ
            MOVE    SPA-NAI-RENNUM(IDX) TO  SPA-RENNUM
+      *    Êñ³ç¿ÇÎÅ¶èÊ¬
+           MOVE    SPA-NAI-JIHOKBN (IDX)   TO  SPA-JIHOKBN
+      *
       *    Ï·¿Í¶èÊ¬
       **** MOVE    SPA-NAI-ROUJIN(IDX)
       ****************                 TO  SPA-ROUJIN
@@ -7384,8 +7390,7 @@
       *
       *    ÊÝ¸±»»ÄêÇ¯Îð¥Á¥§¥Ã¥¯Åù
            INITIALIZE                  ORCSAGECHKAREA
-      *****MOVE    SPA-HOSPID          TO  AGECHK-HOSPID
-           MOVE    SPA-HOSPNUM         TO  AGECHK-HOSPNUM
+           MOVE    SPA-HOSPNUM          TO  AGECHK-HOSPNUM
            MOVE    SPA-GMN-PTID        TO  AGECHK-PTID
            MOVE    SPA-NAI-SRYYM       TO  AGECHK-SRYYMD(1:6)
            MOVE    "01"                TO  AGECHK-SRYYMD(7:2)
@@ -7394,6 +7399,7 @@
            MOVE    SPA-GMN-NYUGAIKBN   TO  AGECHK-NYUGAIKBN
            CALL    "ORCSAGECHK"        USING
                                        ORCSAGECHKAREA
+                                       SPA-AREA
       *    ÉéÃ´Î¨
            MOVE    AGECHK-FTNRATEMEI   TO  SPA-J02-FTNRATEMEI
       *    Ï·¿Í¶èÊ¬
@@ -7510,14 +7516,13 @@
            MOVE    "DBDELETE"          TO  MCP-FUNC
            MOVE    "tbl_para"          TO  MCP-TABLE
            MOVE    "del3"              TO  MCP-PATHNAME
-           CALL    "ORCDBMAIN"         USING
-                                           MCPAREA
-                                           MCPDATA-REC
-                                           SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
       *    ¿ÇÎÅ²ñ·×¥Þ¥¹¥¿¡¼¤òÊÔ½¸
            INITIALIZE                      SRYACCT-REC 
-      *****MOVE    SPA-HOSPID          TO  ACCT-HOSPID
+           MOVE    SPA-HOSPNUM          TO  ACCT-HOSPNUM
            MOVE    SPA-NYUGAIKBN       TO  ACCT-NYUGAIKBN
            MOVE    SPA-GMN-PTID        TO  ACCT-PTID
            MOVE    SPA-NAI-SRYYM       TO  ACCT-SRYYM
@@ -7533,7 +7538,6 @@
                MOVE    "key18"             TO  WRK-ORC-DBPATH
            END-IF
       *
-           MOVE    SPA-HOSPNUM         TO  ACCT-HOSPNUM
            MOVE    SRYACCT-REC         TO  MCPDATA-REC
            MOVE    "tbl_sryacct"       TO  MCP-TABLE
            MOVE    WRK-ORC-DBPATH      TO  MCP-PATHNAME
@@ -7583,10 +7587,9 @@
                    MOVE    "DBINSERT"          TO  MCP-FUNC
                    MOVE    "tbl_para"          TO  MCP-TABLE
                    MOVE    "key"               TO  MCP-PATHNAME
-                   CALL    "ORCDBMAIN"         USING
-                                                   MCPAREA
-                                                   MCPDATA-REC
-                                                   SPA-AREA
+grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
+                                                       MCPDATA-REC
+                                                       SPA-AREA
                    IF      MCP-RC          NOT =   ZERO
                        DISPLAY "J02 PARA INSERT ERR:"  MCP-RC
                                ",KEY1:" PARA-KEY(1:42)
@@ -8998,7 +9001,7 @@
                    UNTIL     (IDX      >   SPA-NAI-MAX )  OR
                              (SPA-ERRCD    NOT =   SPACE )
                INITIALIZE                      SRYACCT-REC
-      *********MOVE    SPA-HOSPID          TO  ACCT-HOSPID
+               MOVE    SPA-HOSPNUM          TO  ACCT-HOSPNUM
                MOVE    SPA-NYUGAIKBN       TO  ACCT-NYUGAIKBN
                MOVE    SPA-GMN-PTID        TO  ACCT-PTID
       *********MOVE    SPA-J01-SRYKA       TO  ACCT-SRYKA
@@ -9007,7 +9010,6 @@
                MOVE    SPA-NAI-SRYKBN(IDX) TO  ACCT-SRYKBN
                MOVE    SPA-NAI-ZAINUM(IDX) TO  ACCT-ZAINUM
       *
-               MOVE    SPA-HOSPNUM         TO  ACCT-HOSPNUM
                MOVE    SRYACCT-REC         TO  MCPDATA-REC
                MOVE    "tbl_sryacct"       TO  MCP-TABLE
                MOVE    "key"               TO  MCP-PATHNAME
@@ -9030,15 +9032,13 @@
                    MOVE    SMCNDATE-YMD        TO  ACCT-UPYMD
                    MOVE    SMCNDATE-HMS        TO  ACCT-UPHMS
       *
-                   MOVE    SPA-HOSPNUM         TO  ACCT-HOSPNUM
                    MOVE    SRYACCT-REC         TO  MCPDATA-REC
                    MOVE    "DBUPDATE"          TO  MCP-FUNC
                    MOVE    "tbl_sryacct"       TO  MCP-TABLE
                    MOVE    "key"               TO  MCP-PATHNAME
-                   CALL    "ORCDBMAIN"         USING
-                                                   MCPAREA
-                                                   MCPDATA-REC
-                                                   SPA-AREA
+grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
+                                                       MCPDATA-REC
+                                                       SPA-AREA
                    IF      MCP-RC          NOT =   ZERO
                         DISPLAY "J02 SRYACCT UPD ERR:" MCP-RC
                         MOVE    "2000"          TO  SPA-ERRCD
@@ -9209,7 +9209,7 @@
       *
       *    ¼õ¿ÇÎò¤ò¸¡º÷¤¹¤ë  °åÎÅµ¡´Ø¡¢´µ¼Ô£É£Ä¡¢ÅÁÉ¼ÈÖ¹æ
            INITIALIZE                  JYURRK-REC
-      *****MOVE    SPA-HOSPID          TO  JYURRK-HOSPID
+           MOVE    SPA-HOSPNUM          TO  JYURRK-HOSPNUM
            MOVE    SPA-GMN-PTID        TO  JYURRK-PTID
            MOVE    SPA-NYUGAIKBN       TO  JYURRK-NYUGAIKBN
            MOVE    SPA-RRK-SRYKA (IDX) TO  JYURRK-SRYKA
@@ -9230,7 +9230,6 @@
                MOVE    "key19"             TO  WRK-ORC-DBPATH
            END-IF
       *
-           MOVE    SPA-HOSPNUM         TO  JYURRK-HOSPNUM
            MOVE    JYURRK-REC          TO  MCPDATA-REC
            MOVE    "tbl_jyurrk"        TO  MCP-TABLE
            MOVE    WRK-ORC-DBPATH      TO  MCP-PATHNAME
@@ -9387,15 +9386,13 @@
            MOVE    SMCNDATE-YMD        TO  JYURRK-UPYMD
            MOVE    SMCNDATE-HMS        TO  JYURRK-UPHMS
       *
-           MOVE    SPA-HOSPNUM         TO  JYURRK-HOSPNUM
            MOVE    JYURRK-REC          TO  MCPDATA-REC
            MOVE    "DBUPDATE"          TO  MCP-FUNC
            MOVE    "tbl_jyurrk"        TO  MCP-TABLE
            MOVE    "upd1"              TO  MCP-PATHNAME
-           CALL    "ORCDBMAIN"         USING
-                                           MCPAREA
-                                           MCPDATA-REC
-                                           SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
            IF      MCP-RC          NOT =   ZERO
                DISPLAY "J02 JYURRK UPD ERR:" MCP-RC
                                ",KEY:" JYURRK-KEY
@@ -9419,15 +9416,13 @@
            MOVE    SMCNDATE-YMD        TO  JYURRK-UPYMD
            MOVE    SMCNDATE-HMS        TO  JYURRK-UPHMS
       *
-           MOVE    SPA-HOSPNUM         TO  JYURRK-HOSPNUM
            MOVE    JYURRK-REC          TO  MCPDATA-REC
            MOVE    "DBINSERT"          TO  MCP-FUNC
            MOVE    "tbl_jyurrk"        TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
-           CALL    "ORCDBMAIN"         USING
-                                           MCPAREA
-                                           MCPDATA-REC
-                                           SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
            IF      MCP-RC          NOT =   ZERO
                DISPLAY "J02 JYURRK INS ERR:" MCP-RC
                                ",KEY:" JYURRK-KEY
@@ -9444,15 +9439,13 @@
       *****************************************************************
        490112-JYURRK-DEL-SEC           SECTION.
       *
-           MOVE    SPA-HOSPNUM         TO  JYURRK-HOSPNUM
            MOVE    JYURRK-REC          TO  MCPDATA-REC
            MOVE    "DBDELETE"          TO  MCP-FUNC
            MOVE    "tbl_jyurrk"        TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
-           CALL    "ORCDBMAIN"         USING
-                                           MCPAREA
-                                           MCPDATA-REC
-                                           SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
            IF      MCP-RC          NOT =   ZERO
                DISPLAY "J02 JYURRK DEL ERR:" MCP-RC
                                ",KEY:" JYURRK-KEY
@@ -9469,7 +9462,7 @@
        4901121-JYURRK-ADDHEN-SEC           SECTION.
       *
            INITIALIZE                      JYURRK-REC
-      *****MOVE    SPA-HOSPID          TO  JYURRK-HOSPID
+           MOVE    SPA-HOSPNUM          TO  JYURRK-HOSPNUM
            MOVE    SPA-GMN-PTID        TO  JYURRK-PTID
            MOVE    SPA-NYUGAIKBN       TO  JYURRK-NYUGAIKBN
            MOVE    SPA-RRK-SRYKA (IDX) TO  JYURRK-SRYKA
@@ -9536,7 +9529,7 @@
       *
            MOVE    SPACE               TO  SYUNOU-REC
            INITIALIZE                  SYUNOU-REC
-      *****MOVE    SPA-HOSPID          TO  SYU-HOSPID
+           MOVE    SPA-HOSPNUM          TO  SYU-HOSPNUM
            MOVE    SPA-GMN-PTID        TO  SYU-PTID
            MOVE    SPA-NYUGAIKBN       TO  SYU-NYUGAIKBN
            MOVE    SPA-RRK-SRYKA (IDX) TO  SYU-SRYKA
@@ -9579,15 +9572,13 @@
            MOVE    SMCNDATE-YMD        TO  SYU-UPYMD
            MOVE    SMCNDATE-HMS        TO  SYU-UPHMS
       *
-           MOVE    SPA-HOSPNUM         TO  SYU-HOSPNUM
            MOVE    SYUNOU-REC          TO  MCPDATA-REC
            MOVE    "DBINSERT"          TO  MCP-FUNC
            MOVE    "tbl_syunou"        TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
-           CALL    "ORCDBMAIN"         USING
-                                           MCPAREA
-                                           MCPDATA-REC
-                                           SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
            IF      MCP-RC          NOT =   ZERO
                DISPLAY "J02 SYUNOU INS ERR:" SYU-KEY
                                 ",MCP-RC:" MCP-RC 
@@ -9640,15 +9631,13 @@
                MOVE    SMCNDATE-HMS        TO  SYS-0041-UPHMS
       *
       *
-               MOVE    SPA-HOSPNUM         TO  SYS-0041-HOSPNUM
                MOVE    SYS-0041-REC        TO  MCPDATA-REC
                MOVE    "DBUPDATE"          TO  MCP-FUNC
                MOVE    "tbl_syskanri"      TO  MCP-TABLE
                MOVE    "key"               TO  MCP-PATHNAME
-               CALL    "ORCDBMAIN"         USING
-                                               MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
+                                                   MCPDATA-REC
+                                                   SPA-AREA
                IF      MCP-RC         NOT  =   ZERO
                    MOVE    "2002"              TO  SPA-ERRCD
                    DISPLAY "J02 SYSKANRI UPDATE:" MCP-RC
@@ -9732,13 +9721,12 @@
            END-IF
       *
            INITIALIZE                  SYUNOU-REC
-      *****MOVE    SPA-HOSPID          TO  SYU-HOSPID
+           MOVE    SPA-HOSPNUM          TO  SYU-HOSPNUM
            MOVE    SPA-GMN-PTID        TO  SYU-PTID
            MOVE    SPA-NYUGAIKBN       TO  SYU-NYUGAIKBN
            MOVE    SPA-RRK-DENPNUM(IDX)
                                        TO  SYU-DENPNUM
       *
-           MOVE    SPA-HOSPNUM         TO  SYU-HOSPNUM
            MOVE    SYUNOU-REC          TO  MCPDATA-REC
            MOVE    "tbl_syunou"        TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
@@ -9765,15 +9753,13 @@
                MOVE    SMCNDATE-YMD        TO  SYU-UPYMD
                MOVE    SMCNDATE-HMS        TO  SYU-UPHMS
       *
-               MOVE    SPA-HOSPNUM         TO  SYU-HOSPNUM
                MOVE    SYUNOU-REC          TO  MCPDATA-REC
                MOVE    "DBUPDATE"          TO  MCP-FUNC
                MOVE    "tbl_syunou"        TO  MCP-TABLE
                MOVE    "key"               TO  MCP-PATHNAME
-               CALL    "ORCDBMAIN"         USING
-                                               MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
+                                                   MCPDATA-REC
+                                                   SPA-AREA
                IF      MCP-RC         NOT  =   ZERO
                    MOVE    "2001"              TO  SPA-ERRCD
                    DISPLAY "J02 SYUNOU UPDATE:" MCP-RC
@@ -9793,13 +9779,12 @@
            INITIALIZE                  SPA-J025-AREA
       *
            INITIALIZE                  SYUNOU-REC
-      *****MOVE    SPA-HOSPID          TO  SYU-HOSPID
+           MOVE    SPA-HOSPNUM          TO  SYU-HOSPNUM
            MOVE    SPA-GMN-PTID        TO  SYU-PTID
            MOVE    SPA-NYUGAIKBN       TO  SYU-NYUGAIKBN
            MOVE    SPA-NAI-SRYYM       TO  SYU-SRYYMD(1:6)
            MOVE    "%"                 TO  SYU-SRYYMD(7:1)
       *
-           MOVE    SPA-HOSPNUM         TO  SYU-HOSPNUM
            MOVE    SYUNOU-REC          TO  MCPDATA-REC
            MOVE    "tbl_syunou"        TO  MCP-TABLE
            MOVE    "key28"             TO  MCP-PATHNAME
@@ -9857,7 +9842,6 @@
            MOVE    SYUNOU-REC          TO  WRK-SYUNOU-REC
            INITIALIZE                  TBL-SYUNOU-AREA
       *
-           MOVE    SPA-HOSPNUM         TO  SYU-HOSPNUM
            MOVE    SYUNOU-REC          TO  MCPDATA-REC
            MOVE    "tbl_syunou"        TO  MCP-TABLE
            MOVE    "key27"             TO  MCP-PATHNAME
@@ -9906,7 +9890,6 @@
       *
       *        ÄÉ²ÃÊ¬
                IF      TBL-SYU-ACCT-UPDKBN(IDX)    =   "2"
-                   MOVE    SPA-HOSPNUM         TO  SYU-HOSPNUM
                    MOVE    SYUNOU-REC          TO  MCPDATA-REC
                    MOVE    "tbl_syunou"        TO  MCP-TABLE
                    MOVE    "key"               TO  MCP-PATHNAME
@@ -9959,7 +9942,7 @@
       *
            MOVE    SPACE               TO  SPA-ERRCD
            INITIALIZE                  LNK-ORCSSAIKEISAN-REC
-      *****MOVE    SYU-HOSPID          TO  LNK-ORCSSKS-HOSPID
+           MOVE    SYU-HOSPNUM          TO  LNK-ORCSSKS-HOSPNUM
            MOVE    SYU-NYUGAIKBN       TO  LNK-ORCSSKS-NYUGAIKBN
            MOVE    SYU-PTID            TO  LNK-ORCSSKS-PTID
            MOVE    SYU-DENPNUM         TO  LNK-ORCSSKS-DENPNUM
@@ -9979,7 +9962,6 @@
       *
            MOVE    SPACE               TO  SPA-ERRCD
       *
-           MOVE    SPA-HOSPNUM         TO  SYU-HOSPNUM
            MOVE    SYUNOU-REC          TO  MCPDATA-REC
            MOVE    "tbl_syunou"        TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
@@ -10028,15 +10010,13 @@
                    MOVE    SMCNDATE-YMD        TO  SYU-UPYMD
                    MOVE    SMCNDATE-HMS        TO  SYU-UPHMS
       *
-                   MOVE    SPA-HOSPNUM         TO  SYU-HOSPNUM
                    MOVE    SYUNOU-REC          TO  MCPDATA-REC
                    MOVE    "DBUPDATE"          TO  MCP-FUNC
                    MOVE    "tbl_syunou"        TO  MCP-TABLE
                    MOVE    "key"               TO  MCP-PATHNAME
-                   CALL    "ORCDBMAIN"         USING
-                                                   MCPAREA
-                                                   MCPDATA-REC
-                                                   SPA-AREA
+grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
+                                                       MCPDATA-REC
+                                                       SPA-AREA
                    IF      MCP-RC         NOT  =   ZERO
                        MOVE    "2001"              TO  SPA-ERRCD
                        DISPLAY "J02 SYUNOU UPDATE:" MCP-RC
@@ -10080,15 +10060,13 @@
            MOVE    SMCNDATE-YMD        TO  SYU-UPYMD
            MOVE    SMCNDATE-HMS        TO  SYU-UPHMS
       *
-           MOVE    SPA-HOSPNUM         TO  SYU-HOSPNUM
            MOVE    SYUNOU-REC          TO  MCPDATA-REC
            MOVE    "DBUPDATE"          TO  MCP-FUNC
            MOVE    "tbl_syunou"        TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
-           CALL    "ORCDBMAIN"         USING
-                                           MCPAREA
-                                           MCPDATA-REC
-                                           SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
            IF      MCP-RC         NOT  =   ZERO
                MOVE    "2001"              TO  SPA-ERRCD
                DISPLAY "J02 SYUNOU UPDATE:" MCP-RC
@@ -10097,14 +10075,13 @@
       *    ¼ýÇ¼ÌÀºÙ
            MOVE    SPACE               TO  SYUMEI-REC
            INITIALIZE                      SYUMEI-REC
-      *****MOVE    SYU-HOSPID          TO  SMEI-HOSPID
+           MOVE    SYU-HOSPNUM          TO  SMEI-HOSPNUM
            MOVE    SYU-NYUGAIKBN       TO  SMEI-NYUGAIKBN
            MOVE    SYU-PTID            TO  SMEI-PTID
       *    ÅÁÉ¼ÈÖ¹æ
            MOVE    SYU-DENPNUM         TO  SMEI-DENPNUM
       *    ÅÁÉ¼ÈÖ¹æ»ÞÈÖ
            MOVE    01                  TO  SMEI-DENPEDANUM
-           MOVE    SPA-HOSPNUM         TO  SMEI-HOSPNUM
            MOVE    SYUMEI-REC          TO  MCPDATA-REC
            MOVE    "tbl_syumei"        TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
@@ -10143,12 +10120,11 @@
         4901291-SYUTOTAL-ERRUPD-SEC      SECTION.
       *
            INITIALIZE                  SYUTTL-REC
-      *****MOVE    SYU-HOSPID          TO  SYUTTL-HOSPID
+           MOVE    SYU-HOSPNUM          TO  SYUTTL-HOSPNUM
            MOVE    SYU-NYUGAIKBN       TO  SYUTTL-NYUGAIKBN
            MOVE    SYU-PTID            TO  SYUTTL-PTID
            MOVE    SYU-FUKU-DENPNUM    TO  SYUTTL-DENPNUM
       *
-           MOVE    SPA-HOSPNUM         TO  SYUTTL-HOSPNUM
            MOVE    SYUTTL-REC          TO  MCPDATA-REC
            MOVE    "tbl_syutotal"      TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
@@ -10173,15 +10149,13 @@
                MOVE    SMCNDATE-YMD        TO  SYUTTL-UPYMD
                MOVE    SMCNDATE-HMS        TO  SYUTTL-UPHMS
       *
-               MOVE    SPA-HOSPNUM         TO  SYUTTL-HOSPNUM
                MOVE    SYUTTL-REC          TO  MCPDATA-REC
                MOVE    "DBUPDATE"          TO  MCP-FUNC
                MOVE    "tbl_syutotal"      TO  MCP-TABLE
                MOVE    "key"               TO  MCP-PATHNAME
-               CALL    "ORCDBMAIN"         USING
-                                               MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
+                                                   MCPDATA-REC
+                                                   SPA-AREA
                IF      MCP-RC          NOT =   ZERO
                    DISPLAY "J02 SYUTTL UPD ERR:" SYUTTL-KEY
                        ",MCP-RC:"  MCP-RC
@@ -10200,7 +10174,7 @@
       *
            MOVE    SPACE               TO  SYUMEI-REC
            INITIALIZE                      SYUMEI-REC
-      *****MOVE    SYU-HOSPID          TO  SMEI-HOSPID
+           MOVE    SYU-HOSPNUM          TO  SMEI-HOSPNUM
            MOVE    SYU-NYUGAIKBN       TO  SMEI-NYUGAIKBN
            MOVE    SYU-PTID            TO  SMEI-PTID
       *ÅÁÉ¼ÈÖ¹æ
@@ -10259,15 +10233,13 @@
            PERFORM 800-DAILYKEY-SEC
            MOVE    SDAILYKEY-DAILYKEY  TO  SMEI-DAILYKEY
       *
-           MOVE    SPA-HOSPNUM         TO  SMEI-HOSPNUM
            MOVE    SYUMEI-REC          TO  MCPDATA-REC
            MOVE    "DBINSERT"          TO  MCP-FUNC
            MOVE    "tbl_syumei"        TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
-           CALL    "ORCDBMAIN"         USING
-                                           MCPAREA
-                                           MCPDATA-REC
-                                           SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
            IF      MCP-RC          NOT =   ZERO
                MOVE    "2002"          TO  SPA-ERRCD
                DISPLAY "J02 SINMEI-SYORI MCP-RC:" MCP-RC
@@ -10370,13 +10342,12 @@
        4901211-JYURRK-UPDKBN-SEC           SECTION.
       *
            INITIALIZE                  JYURRK-REC
-      *****MOVE    SYU-HOSPID          TO  JYURRK-HOSPID
+           MOVE    SYU-HOSPNUM          TO  JYURRK-HOSPNUM
            MOVE    SYU-PTID            TO  JYURRK-PTID
            MOVE    SYU-NYUGAIKBN       TO  JYURRK-NYUGAIKBN
            MOVE    SYU-SRYKA           TO  JYURRK-SRYKA
            MOVE    SYU-DENPNUM         TO  JYURRK-DENPNUM
       *
-           MOVE    SPA-HOSPNUM         TO  JYURRK-HOSPNUM
            MOVE    JYURRK-REC          TO  MCPDATA-REC
            MOVE    "tbl_jyurrk"        TO  MCP-TABLE
            MOVE    "key6"              TO  MCP-PATHNAME
@@ -10404,15 +10375,13 @@
                MOVE    SMCNDATE-YMD        TO  JYURRK-UPYMD
                MOVE    SMCNDATE-HMS        TO  JYURRK-UPHMS
       *
-               MOVE    SPA-HOSPNUM         TO  JYURRK-HOSPNUM
                MOVE    JYURRK-REC          TO  MCPDATA-REC
                MOVE    "DBUPDATE"          TO  MCP-FUNC
                MOVE    "tbl_jyurrk"        TO  MCP-TABLE
                MOVE    "key"               TO  MCP-PATHNAME
-               CALL    "ORCDBMAIN"         USING
-                                               MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
+                                                   MCPDATA-REC
+                                                   SPA-AREA
                IF      MCP-RC          NOT =   ZERO
                    DISPLAY "J02 JYURRK UPD ERR:" MCP-RC
                                    ",KEY:" JYURRK-KEY
@@ -10437,10 +10406,14 @@
            IF      ACCT-SRYKBN         =   "95"  OR  "96"
                GO      TO      4902-SANTEI-KOUSIN-EXT
            END-IF
+      *    Êñ³ç¿ÇÎÅÂÐ¾Ý³°
+           IF      ACCT-JIHOKBN        =   "1"
+               GO      TO      4902-SANTEI-KOUSIN-EXT
+           END-IF
       *
       *    ¿ÇÎÅ¹Ô°Ù¥Þ¥¹¥¿¡¼ÆÉ¤ß¹þ¤ß
            INITIALIZE                      SRYACT-REC
-      *****MOVE    ACCT-HOSPID         TO  SRY-HOSPID
+           MOVE    ACCT-HOSPNUM         TO  SRY-HOSPNUM
            MOVE    ACCT-NYUGAIKBN      TO  SRY-NYUGAIKBN
            MOVE    ACCT-PTID           TO  SRY-PTID
            MOVE    ACCT-SRYKA          TO  SRY-SRYKA
@@ -10457,7 +10430,6 @@
                END-IF
            END-PERFORM
       *
-           MOVE    SPA-HOSPNUM         TO  SRY-HOSPNUM
            MOVE    SRYACT-REC          TO  MCPDATA-REC
            MOVE    "tbl_sryact"        TO  MCP-TABLE
            MOVE    "key2"              TO  MCP-PATHNAME
@@ -10723,11 +10695,10 @@
            MOVE    SPACE               TO  WRK-HKNCOMBIMEI
       *
            INITIALIZE                  HKNCOMBI-REC
-      *****MOVE    SPA-HOSPID          TO  COMB-HOSPID
+           MOVE    SPA-HOSPNUM          TO  COMB-HOSPNUM
            MOVE    SPA-GMN-PTID        TO  COMB-PTID
            MOVE    WRK-HKNCOMBI        TO  COMB-HKNCOMBINUM
       *
-           MOVE    SPA-HOSPNUM         TO  COMB-HOSPNUM
            MOVE    HKNCOMBI-REC        TO  MCPDATA-REC
            MOVE    "tbl_hkncombi"      TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
@@ -10799,10 +10770,9 @@
            IF      COMB-HKNNUM         =   "971"  OR  "973"
       *        ´µ¼ÔÊÝ¸±¾ðÊó¸¡º÷
                INITIALIZE                      PTRSIINF-REC
-      *********MOVE    SPA-HOSPID          TO  PTRSI-HOSPID
+               MOVE    SPA-HOSPNUM          TO  PTRSI-HOSPNUM
                MOVE    SPA-GMN-PTID        TO  PTRSI-PTID
                MOVE    COMB-HKNID          TO  PTRSI-HKNID
-               MOVE    SPA-HOSPNUM         TO  PTRSI-HOSPNUM
                MOVE    PTRSIINF-REC        TO  MCPDATA-REC
                MOVE    "tbl_ptrsiinf"      TO  MCP-TABLE
                MOVE    "key"               TO  MCP-PATHNAME
@@ -10909,7 +10879,7 @@
       *    »»ÄêÍúÎò¸¡º÷
            MOVE    SPACE               TO  SANTEI-REC
            INITIALIZE                  SANTEI-REC
-      *****MOVE    SPA-HOSPID          TO  SANTEI-HOSPID
+           MOVE    SPA-HOSPNUM          TO  SANTEI-HOSPNUM
            MOVE    SPA-PTID            TO  SANTEI-PTID
            MOVE    WRK-SRYCD           TO  SANTEI-SRYCD
            EVALUATE    TNS-SANTEIRRKKBN
@@ -10934,7 +10904,6 @@
                MOVE    ZERO                TO  SANTEI-HKNCOMBINUM
            END-IF
       *
-           MOVE    SPA-HOSPNUM         TO  SANTEI-HOSPNUM
            MOVE    SANTEI-REC          TO  MCPDATA-REC
            MOVE    "tbl_santei"        TO  MCP-TABLE
            MOVE    "key3"              TO  MCP-PATHNAME
@@ -11618,7 +11587,7 @@
        40101-HKNNUM-CHK-SEC          SECTION.
       *
            INITIALIZE                  JYURRK-REC
-      *****MOVE    SPA-HOSPID          TO  JYURRK-HOSPID
+           MOVE    SPA-HOSPNUM          TO  JYURRK-HOSPNUM
            MOVE    SPA-GMN-PTID        TO  JYURRK-PTID
            MOVE    SPA-NYUGAIKBN       TO  JYURRK-NYUGAIKBN
            MOVE    WRK-HKNCOMBI        TO  JYURRK-HKNCOMBINUM
@@ -11627,7 +11596,6 @@
            MOVE    SPA-NAI-SRYYM       TO  JYURRK-UPSRYYMD(1:6)
            MOVE    "31"                TO  JYURRK-UPSRYYMD(7:2)
       *
-           MOVE    SPA-HOSPNUM         TO  JYURRK-HOSPNUM
            MOVE    JYURRK-REC          TO  MCPDATA-REC
            MOVE    "tbl_jyurrk"        TO  MCP-TABLE
            MOVE    "key17"             TO  MCP-PATHNAME
@@ -11743,6 +11711,13 @@
                        (SPA-NAI-NAIBUNCHK      =   ZERO )
                    MOVE    1               TO  SPA-NAI-NAIBUNCHK
                    MOVE    "0120"          TO  SPA-JIDCD
+               END-IF
+           END-IF
+      *
+           IF      SPA-ERRCD           =   SPACE
+               IF      SPA-LOCK        =   2
+                   MOVE    "9998"              TO  SPA-ERRCD
+                   MOVE    1                   TO  SPA-LOCK
                END-IF
            END-IF
       *
@@ -12058,6 +12033,12 @@
                    MOVE    "Â¾Ã¼Ëö¤Ç»ÈÍÑÃæ¤Ç¤¹¡£"
                                                TO  WRK-ERRMSG
                    MOVE    SLOCK-MSG           TO  WRK-ERRMSG(21:)
+               WHEN    "9998"
+                   STRING  "Â¾Ã¼Ëö¤Ç»ÈÍÑÃæ¤Ç¤¹¡£" 
+                           "¹¹¿·¤Ï¤Ç¤­¤Þ¤»¤ó¡£"    DELIMITED  BY  SIZE
+                           SLOCK-MSG               DELIMITED  BY  SIZE
+                                               INTO    WRK-ERRMSG
+                   END-STRING
       *
                WHEN    OTHER
                    MOVE    SPA-ERRCD
@@ -12406,7 +12387,6 @@
       *****************************************************************
        900-PTINF-READ-SEC         SECTION.
       *
-           MOVE    SPA-HOSPNUM         TO  PTINF-HOSPNUM
            MOVE    PTINF-REC           TO  MCPDATA-REC
            MOVE    "tbl_ptinf"         TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
@@ -12495,7 +12475,6 @@
       *****************************************************************
        950-PTCOM-READ-SEC              SECTION.
       *
-           MOVE    SPA-HOSPNUM         TO  PTCOM-HOSPNUM
            MOVE    PTCOM-REC           TO  MCPDATA-REC
            MOVE    "tbl_ptcom"         TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
@@ -12564,7 +12543,6 @@
       *****************************************************************
        930-INPUTCD-READ-SEC         SECTION.
       *
-           MOVE    SPA-HOSPNUM         TO  ICD-HOSPNUM
            MOVE    INPUTCD-REC         TO  MCPDATA-REC
            MOVE    "tbl_inputcd"       TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
@@ -12707,10 +12685,9 @@
        910-DBSELECT-SEC                SECTION.
       *
            MOVE    "DBSELECT"      TO  MCP-FUNC
-           CALL    "ORCDBMAIN"     USING
-                                       MCPAREA
-                                       MCPDATA-REC
-                                       SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
        910-DBSELECT-EXT.
@@ -12721,10 +12698,9 @@
        920-DBFETCH-SEC                 SECTION.
       *
            MOVE    "DBFETCH"       TO  MCP-FUNC
-           CALL    "ORCDBMAIN"     USING
-                                       MCPAREA
-                                       MCPDATA-REC
-                                       SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
       *
@@ -12737,10 +12713,9 @@
        990-DBCLOSE-SEC         SECTION.
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           CALL    "ORCDBMAIN"         USING
-                                           MCPAREA
-                                           MCPDATA-REC
-                                           SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
        990-DBCLOSE-EXT.
@@ -12760,6 +12735,11 @@
                                        ORCSLOCKAREA
            IF      SLOCK-RETURN    NOT =   ZERO
                MOVE    "9999"              TO  SPA-ERRCD
+           END-IF
+      *
+           IF      SPA-LOCK            =   1
+               MOVE    SPACE               TO  SPA-ERRCD
+               MOVE    2                   TO  SPA-LOCK
            END-IF
            .
        990-LOCK-IN-EXT.
@@ -12787,6 +12767,7 @@
        999-FILE-DEL-SEC         SECTION.
       *
            MOVE    SPA-TERMID          TO  FILE-TERMID
+           MOVE    SPA-HOSPNUM         TO  FILE-HOSPNUM
            MOVE    ZERO                TO  IF-RESULT
            MOVE    FILE-NAME1          TO  IF-FILENAME
            CALL    "orcfiledel"        USING
@@ -12803,10 +12784,9 @@
            MOVE    "DBDELETE"          TO  MCP-FUNC
            MOVE    "tbl_para"          TO  MCP-TABLE
            MOVE    "del2"              TO  MCP-PATHNAME
-           CALL    "ORCDBMAIN"         USING
-                                           MCPAREA
-                                           MCPDATA-REC
-                                           SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
        999-FILE-DEL-EXT.
@@ -12819,10 +12799,9 @@
        900-PUT-WINDOW              SECTION.
       *
            MOVE   "PUTWINDOW"       TO  MCP-FUNC.
-           CALL   "ORCDBMAIN"       USING
-                                        MCPAREA
-                                        MCPDATA-REC
-                                        SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
        900-PUT-WINDOW-EXT.

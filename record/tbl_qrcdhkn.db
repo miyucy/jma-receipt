@@ -1,5 +1,5 @@
 tbl_qrcdhkn {
-	HOSPID				char(24);
+	HOSPNUM				integer;
 	REGISTYMD  			char(8);
 	REGISTID    			number(5,0);
 	REGISTTIME 			char(6);
@@ -29,7 +29,7 @@ tbl_qrcdhkn {
 	UPHMS				char(6);
 };
 primary	{
-	HOSPID,REGISTYMD,REGISTID;
+	HOSPNUM,REGISTYMD,REGISTID;
 };
 
 path	key 	{
@@ -37,7 +37,7 @@ path	key 	{
 		DECLARE tbl_qrcdhkn_key_csr CURSOR FOR
 		SELECT *
 		FROM tbl_qrcdhkn
-			WHERE   HOSPID    =   :HOSPID
+			WHERE   HOSPNUM    =   :HOSPNUM
 			AND   REGISTYMD      =   :REGISTYMD
 			AND   REGISTID       =   :REGISTID
 		;
@@ -49,7 +49,7 @@ path	key2 	{
 		DECLARE tbl_qrcdhkn_key2_csr CURSOR FOR
 		SELECT *
 		FROM tbl_qrcdhkn
-			WHERE   HOSPID    =   :HOSPID
+			WHERE   HOSPNUM    =   :HOSPNUM
 			AND   REGISTYMD      =   :REGISTYMD
 			ORDER BY   REGISTID DESC
 		;
@@ -61,7 +61,7 @@ path	key3 	{
 		DECLARE tbl_qrcdhkn_key3_csr CURSOR FOR
 		SELECT *
 		FROM tbl_qrcdhkn
-			WHERE   HOSPID    =   :HOSPID
+			WHERE   HOSPNUM    =   :HOSPNUM
 			AND   REGISTYMD      =   :REGISTYMD
 			AND   MOD_FLG        =   '0'
 			AND   DELKBN         <>  '1'
@@ -75,7 +75,7 @@ path	key4 	{
 		DECLARE tbl_qrcdhkn_key4_csr CURSOR FOR
 		SELECT *
 		FROM tbl_qrcdhkn
-			WHERE   HOSPID    =   :HOSPID
+			WHERE   HOSPNUM    =   :HOSPNUM
 			AND   REGISTYMD      =   :REGISTYMD
 			AND   MOD_FLG        =   '1'
 			AND   DELKBN         <>  '1'
@@ -89,7 +89,7 @@ path	key5 	{
 		DECLARE tbl_qrcdhkn_key5_csr CURSOR FOR
 		SELECT *
 		FROM tbl_qrcdhkn
-			WHERE   HOSPID    =   :HOSPID
+			WHERE   HOSPNUM    =   :HOSPNUM
 			AND   MOD_FLG        <>  '1'
 			AND   DELKBN         <>  '1'
 			ORDER BY   REGISTID
