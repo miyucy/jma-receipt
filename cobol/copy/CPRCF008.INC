@@ -50,11 +50,24 @@
       *                                     連番の長さ変更
       *
       *  03.02.01    NACL-藤原    06/08/31  主科用出力順識別番号追加
+      *
+      *  03.02.01    NACL-藤原    07/03/01  国保編綴詳細設定対応
+      *                                     種別出力順
+      *                                     グループ設定１
+      *                                     本人家族区分
+      *                                     公費出力順 
+      *                                     種別内出力順１
+      *                                     グループ設定２
+      *                                     種別内出力順２
+      *                                     出力順 
+      *
+      *  03.05.01    NACL-藤原    07/04/19  グループ診療対応
       *************************************************************
        01  RECE08-REC.
       *ＫＥＹ
            03  RECE08-KEY.
-               05  RECE08-HOSPNUM           PIC S9(9) BINARY.
+      *医療機関ＩＤ
+               05  RECE08-HOSPNUM          PIC S9(9) BINARY.
       *帳票ＩＤ（検索用ＫＥＹ）
                05  RECE08-PRTID            PIC  X(04).
       *診療年月（検索用ＫＥＹ　一括：診療年月、個別：ゼロ）
@@ -101,12 +114,34 @@
            03  RECE08-PRTRENNUM            PIC  9(06).
       *入外区分
            03  RECE08-NYUGAIKBN            PIC  X(01).
+      *高額点数
+           03  RECE08-KOUGAKU              PIC  X(01).
       *在総診・在医総
            03  RECE08-ZAITAKU              PIC  X(01).
       *長期（長期高額療養費）  
            03  RECE08-CHOUKI               PIC  X(01).
       *検索用保険者番号        
            03  RECE08-HKNJANUM-S           PIC  X(08).
+      *
+           03  RECE08-SYUBETU-SRT1         PIC S9(9)   BINARY.
+      *
+           03  RECE08-GRP-NO1              PIC 9(3).
+      *
+           03  RECE08-HONKZKKBN            PIC X(1).
+      *
+           03  RECE08-KOUHI-NO             PIC S9(3).
+      *
+           03  RECE08-SYUBETU-UNDER-1.
+               05  RECE08-SYUBETU-UNDER-1-1
+                                           PIC X(40).
+               05  RECE08-SYUBETU-UNDER-1-2
+                                           PIC X(40).
+      *
+           03  RECE08-GRP-NO2              PIC X(3).
+      *
+           03  RECE08-SYUBETU-UNDER-2      PIC X(40).
+      *
+           03  RECE08-SYUBETU-SRT2         PIC S9(9)   BINARY.
       *帳票ＩＤ
            03  RECE08-FORMID               PIC  X(20).
       *帳票データ

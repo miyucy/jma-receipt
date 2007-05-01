@@ -23,9 +23,18 @@ tbl_receprt	{
         PRTJYUN             number(2);
         PRTRENNUM           number(6);
         NYUGAIKBN           char(1);
+        KOUGAKU             char(1);
         ZAITAKU             char(1);
         CHOUKI              char(1);
         HKNJANUM_S          char(8);
+        SYUBETU_SRT1        integer;
+        GRP_NO1             number(3);
+        HONKZKKBN           char(1); 
+        KOUHI_NO            number(3);
+        SYUBETU_UNDER_1     varchar(80);
+        GRP_NO2             char(3);
+        SYUBETU_UNDER_2     varchar(40);
+        SYUBETU_SRT2        integer;
         FORMID              char(20);
         PRTDATA             varchar(10000);
         PRTNM               char(16);
@@ -224,9 +233,9 @@ path	key10		{
                     AND     RECEYM       =   :RECEYM
                     AND     CREYMD       =   :CREYMD
                     AND     CREHMS       =   :CREHMS
-                    AND     TEISYUTUSAKI =   :TEISYUTUSAKI
+                    AND     TEISYUTUSAKI LIKE :TEISYUTUSAKI
                     AND     RECESYUBETU  =   :RECESYUBETU
-                    AND     PREFKBN      =   :PREFKBN
+                    AND     PREFKBN      LIKE :PREFKBN
                     AND     KANANAME     >=  :STKANANAME
                     AND     KANANAME     <=  :EDKANANAME 
                     AND     NYUGAIKBN    =   :NYUGAIKBN
@@ -248,9 +257,9 @@ path	key11	{
                     AND     RECEYM       =   :RECEYM
                     AND     CREYMD       =   :CREYMD
                     AND     CREHMS       =   :CREHMS
-                    AND     TEISYUTUSAKI =   :TEISYUTUSAKI
+                    AND     TEISYUTUSAKI LIKE :TEISYUTUSAKI
                     AND     RECESYUBETU  =   :RECESYUBETU
-                    AND     PREFKBN      =   :PREFKBN
+                    AND     PREFKBN      LIKE :PREFKBN
                     AND     PTNUM        >=  :STKANANAME
                     AND     PTNUM        <=  :EDKANANAME 
                     AND     NYUGAIKBN    =   :NYUGAIKBN
@@ -306,13 +315,16 @@ path	key14		{
                     AND     RECEYM       =   :RECEYM
                     AND     CREYMD       =   :CREYMD
                     AND     CREHMS       =   :CREHMS
+                    AND     TEISYUTUSAKI LIKE :TEISYUTUSAKI
                     AND     RECESYUBETU  =   :RECESYUBETU
+                    AND     PREFKBN      LIKE :PREFKBN
                     AND     KANANAME     >=  :STKANANAME
                     AND     KANANAME     <=  :EDKANANAME 
                     AND     NYUGAIKBN    =   :NYUGAIKBN
+                    AND     SRYKA        LIKE :SRYKA
                     AND     RENNUM       >=  :STRENNUM
                     AND     RENNUM       <=  :EDRENNUM
-                   ORDER BY  PREFKBN,PREFNUM,HKNKBN,HKNJANUM,KANANAME,PTNUM,SRYYM,RENNUM
+                   ORDER BY PREFKBN,PREFNUM,KANANAME,PTNUM,SRYYM,RENNUM
 		;
 	};
 };
@@ -327,13 +339,16 @@ path	key15	{
                     AND     RECEYM       =   :RECEYM
                     AND     CREYMD       =   :CREYMD
                     AND     CREHMS       =   :CREHMS
+                    AND     TEISYUTUSAKI LIKE :TEISYUTUSAKI
                     AND     RECESYUBETU  =   :RECESYUBETU
+                    AND     PREFKBN      LIKE :PREFKBN
                     AND     PTNUM        >=  :STKANANAME
                     AND     PTNUM        <=  :EDKANANAME 
                     AND     NYUGAIKBN    =   :NYUGAIKBN
+                    AND     SRYKA        LIKE :SRYKA
                     AND     RENNUM       >=  :STRENNUM
                     AND     RENNUM       <=  :EDRENNUM
-                   ORDER BY  PREFKBN,PREFNUM,HKNKBN,HKNJANUM,PTNUM,SRYYM,RENNUM
+                   ORDER BY PREFKBN,PREFNUM,PTNUM,SRYYM,RENNUM
 		;
 	};
 };
@@ -731,7 +746,6 @@ path    del3    {
         };
 };
 
-
 path	key31		{ 	
 	DBSELECT	{
 		DECLARE tbl_receprt_key31_csr CURSOR FOR
@@ -742,7 +756,7 @@ path	key31		{
                     AND     RECEYM       =   :RECEYM
                     AND     CREYMD       =   :CREYMD
                     AND     CREHMS       =   :CREHMS
-                    AND     TEISYUTUSAKI =   :TEISYUTUSAKI
+                    AND     TEISYUTUSAKI LIKE :TEISYUTUSAKI
                     AND     RECESYUBETU  =   :RECESYUBETU
                     AND     PREFKBN      LIKE :PREFKBN
                     AND     KANANAME     >=  :STKANANAME
@@ -766,7 +780,7 @@ path	key32	{
                     AND     RECEYM       =   :RECEYM
                     AND     CREYMD       =   :CREYMD
                     AND     CREHMS       =   :CREHMS
-                    AND     TEISYUTUSAKI =   :TEISYUTUSAKI
+                    AND     TEISYUTUSAKI LIKE :TEISYUTUSAKI
                     AND     RECESYUBETU  =   :RECESYUBETU
                     AND     PREFKBN      LIKE :PREFKBN
                     AND     PTNUM        >=  :STKANANAME
@@ -790,13 +804,16 @@ path	key33		{
                     AND     RECEYM       =   :RECEYM
                     AND     CREYMD       =   :CREYMD
                     AND     CREHMS       =   :CREHMS
+                    AND     TEISYUTUSAKI LIKE :TEISYUTUSAKI
                     AND     RECESYUBETU  =   :RECESYUBETU
+                    AND     PREFKBN      LIKE :PREFKBN
                     AND     KANANAME     >=  :STKANANAME
                     AND     KANANAME     <=  :EDKANANAME 
                     AND     NYUGAIKBN    =   :NYUGAIKBN
+                    AND     SRYKA        LIKE :SRYKA
                     AND     RENNUM       >=  :STRENNUM
                     AND     RENNUM       <=  :EDRENNUM
-                   ORDER BY  HKNKBN,HKNJANUM,KANANAME,PTNUM,SRYYM,RENNUM
+                   ORDER BY KANANAME,PTNUM,SRYYM,RENNUM
 		;
 	};
 };
@@ -811,13 +828,16 @@ path	key34	{
                     AND     RECEYM       =   :RECEYM
                     AND     CREYMD       =   :CREYMD
                     AND     CREHMS       =   :CREHMS
+                    AND     TEISYUTUSAKI LIKE :TEISYUTUSAKI
                     AND     RECESYUBETU  =   :RECESYUBETU
+                    AND     PREFKBN      LIKE :PREFKBN
                     AND     PTNUM        >=  :STKANANAME
                     AND     PTNUM        <=  :EDKANANAME 
                     AND     NYUGAIKBN    =   :NYUGAIKBN
+                    AND     SRYKA        LIKE :SRYKA
                     AND     RENNUM       >=  :STRENNUM
                     AND     RENNUM       <=  :EDRENNUM
-                   ORDER BY  HKNKBN,HKNJANUM,PTNUM,SRYYM,RENNUM
+                   ORDER BY PTNUM,SRYYM,RENNUM
 		;
 	};
 };
@@ -923,7 +943,7 @@ path	key38		{
                     AND     SRYKA        LIKE :SRYKA
                     AND     RENNUM       >=  :STRENNUM
                     AND     RENNUM       <=  :EDRENNUM
-                   ORDER BY  KANANAME,PTNUM,SRYYM,RENNUM
+                    ORDER BY  KANANAME,PTNUM,SRYYM,RENNUM
 		;
 	};
 };
@@ -947,7 +967,70 @@ path	key39	{
                     AND     SRYKA        LIKE :SRYKA
                     AND     RENNUM       >=  :STRENNUM
                     AND     RENNUM       <=  :EDRENNUM
-                   ORDER BY  PTNUM,SRYYM,RENNUM
+                    ORDER BY  PTNUM,SRYYM,RENNUM
 		;
 	};
 };
+
+path	key40	{
+	DBSELECT	{
+		DECLARE tbl_receprt_key40_csr CURSOR FOR
+		SELECT *
+		FROM tbl_receprt
+		WHERE 	HOSPNUM	= :HOSPNUM
+                    AND   PRTID        =   :PRTID
+                    AND     RECEYM       =   :RECEYM
+                    AND     CREYMD       =   :CREYMD
+                    AND     CREHMS       =   :CREHMS
+                    AND     TEISYUTUSAKI =   :TEISYUTUSAKI
+                    AND     KANANAME     >=  :STKANANAME
+                    AND     KANANAME     <=  :EDKANANAME 
+                    AND     NYUGAIKBN    =   :NYUGAIKBN 
+                    AND     RECESYUBETU  <>  '0000'
+                    AND     RECESYUBETU  <>  '8888' 
+                    AND     RECESYUBETU  <>  '6666' 
+                    AND     RENNUM       >=  :STRENNUM
+                    AND     RENNUM       <=  :EDRENNUM
+                    AND     HKNJANUM_S   =   :HKNJANUM_S
+                    AND     KOUGAKU      LIKE :KOUGAKU
+                    AND     CHOUKI       LIKE :CHOUKI
+                    AND     ZAITAKU      LIKE :ZAITAKU
+                    AND     SRYKA        LIKE :SRYKA
+                    AND     PRTJYUN_SYUKA =   0
+                    AND     PRTRENNUM    =    0 
+                   ORDER BY KOUGAKU,CHOUKI,ZAITAKU,RECESYUBETU_SRT,SYUBETU_SRT1,GRP_NO1,HONKZKKBN,KOUHI_NO,SYUBETU_UNDER_1,SYUBETU_UNDER_2,SYUBETU_SRT2,KANANAME,SRYYM,RENNUM
+		;
+	};
+};
+
+path	key41	{
+	DBSELECT	{
+		DECLARE tbl_receprt_key41_csr CURSOR FOR
+		SELECT *
+		FROM tbl_receprt
+		WHERE 	HOSPNUM	= :HOSPNUM
+                    AND   PRTID        =   :PRTID
+                    AND     RECEYM       =   :RECEYM
+                    AND     CREYMD       =   :CREYMD
+                    AND     CREHMS       =   :CREHMS
+                    AND     TEISYUTUSAKI =   :TEISYUTUSAKI
+                    AND     PTNUM        >=  :STKANANAME
+                    AND     PTNUM        <=  :EDKANANAME 
+                    AND     NYUGAIKBN    =   :NYUGAIKBN 
+                    AND     RECESYUBETU  <>  '0000'
+                    AND     RECESYUBETU  <>  '8888' 
+                    AND     RECESYUBETU  <>  '6666' 
+                    AND     RENNUM       >=  :STRENNUM
+                    AND     RENNUM       <=  :EDRENNUM
+                    AND     HKNJANUM_S   =   :HKNJANUM_S
+                    AND     KOUGAKU      LIKE :KOUGAKU
+                    AND     CHOUKI       LIKE :CHOUKI
+                    AND     ZAITAKU      LIKE :ZAITAKU
+                    AND     SRYKA        LIKE :SRYKA
+                    AND     PRTJYUN_SYUKA =   0
+                    AND     PRTRENNUM    =    0 
+                   ORDER BY KOUGAKU,CHOUKI,ZAITAKU,RECESYUBETU_SRT,SYUBETU_SRT1,GRP_NO1,HONKZKKBN,KOUHI_NO,SYUBETU_UNDER_1,SYUBETU_UNDER_2,SYUBETU_SRT2,PTNUM,SRYYM,RENNUM
+		;
+	};
+};
+

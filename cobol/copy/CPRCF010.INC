@@ -38,12 +38,17 @@
       *                                     砷么驰惰尸纳裁
       *                                     淡很嘲给锐≥砷么垛驰に灌誊
       *                                     纳裁
+      *
+      *  03.04.01    NACL-疲付    07/02/27  瘦副ＩＤ、戏客瘦副ＩＤ、
+      *                                     给锐ＩＤの纳裁
+      *
+      *  03.05.01    NACL-疲付    07/04/19  グル〖プ壳闻滦炳
       ************************************************************
        01  RECE10-REC.
       *ＫＥＹ
            03  RECE10-KEY.
       *板闻怠簇ＩＤ
-               05  RECE10-HOSPNUM           PIC  S9(9) BINARY.
+               05  RECE10-HOSPNUM          PIC S9(9) BINARY.
       *壳闻钳奉
                05  RECE10-SRYYM            PIC  9(06).
       *掐嘲惰尸
@@ -84,6 +89,8 @@
            03  RECE10-TEISEIKBN            PIC  X(01).
       *肩瘦副≥瘦副戎规
            03  RECE10-HKNNUM               PIC  X(03).
+      *肩瘦副≥瘦副ＩＤ
+           03  RECE10-HKNID                PIC  9(10).
       *肩瘦副≥塑客踩虏惰尸
            03  RECE10-HONKZKKBN            PIC  X(01).
       *肩瘦副≥输锦惰尸
@@ -96,10 +103,16 @@
            03  RECE10-NUM                  PIC  X(80).
       *戏客瘦副≥瘦副戎规
            03  RECE10-RJNHKNNUM            PIC  X(03).
+      *戏客瘦副≥瘦副ＩＤ
+           03  RECE10-RJNHKNID             PIC  9(10).
       *给锐攫鼠
            03  RECE10-KOHINF               OCCURS  4.
       *给锐≥瘦副戎规
                05  RECE10-KOHNUM           PIC  X(03).
+      *给锐攫鼠
+           03  RECE10-KOHIDINF             OCCURS  4.
+      *给锐≥给锐ＩＤ
+               05  RECE10-KOHID            PIC  9(10).
       *悸泣眶攫鼠
            03  RECE10-JNISSUINF            OCCURS  5.
       *悸泣眶

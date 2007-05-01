@@ -20,16 +20,22 @@ HENREIYM			char(6);
 SKYKBN		        char(1);
 TEISEIKBN	        char(1);
 HKNNUM          		char(3);
+HKNID	          		number(10);
 HONKZKKBN          		char(1);
 HOJOKBN          		char(1);
 CONTKBN          		char(1);
 KIGO				varchar(80);
 NUM				varchar(80);
 RJNHKNNUM          		char(3);
+RJNHKNID	          	number(10);
 KOHNUM1          		char(3);
 KOHNUM2          		char(3);
 KOHNUM3          		char(3);
 KOHNUM4          		char(3);
+KOHID1	          		number(10);
+KOHID2	          		number(10);
+KOHID3	          		number(10);
+KOHID4	          		number(10);
 JNISSU1	        		number(2,0);
 JNISSU2	        		number(2,0);
 JNISSU3	        		number(2,0);
@@ -485,7 +491,7 @@ path	key3	{
 		DECLARE tbl_seikyu_key3_csr CURSOR FOR
 		SELECT *
 		FROM tbl_seikyu
-                WHERE (      HOSPNUM      =   :HOSPNUM     )
+                WHERE (      HOSPNUM      =   :HOSPNUM   )
                   AND (      HKNNUM_S    <>  '060'       )
                   AND (      HKNNUM_S    <>  '067'       ) 
                   AND (      HKNNUM_S    <>  '068'       )
@@ -505,7 +511,7 @@ path	key4	{
 		DECLARE tbl_seikyu_key4_csr CURSOR FOR
 		SELECT *
 		FROM tbl_seikyu
-                WHERE (      HOSPNUM      =   :HOSPNUM     )
+                WHERE (      HOSPNUM      =   :HOSPNUM   )
                   AND (      HKNNUM_S    =  '060'                   
                         OR   HKNNUM_S    =  '067'        ) 
                   AND (      RECESYUBETU <>  '0000'      ) 
@@ -542,7 +548,7 @@ path	key6	{
 		DECLARE tbl_seikyu_key6_csr CURSOR FOR
 		SELECT *
 		FROM tbl_seikyu
-                WHERE (      HOSPNUM      =   :HOSPNUM              )
+                WHERE (      HOSPNUM      =   :HOSPNUM            )
                   AND (      HKNNUM_S    =  '060'                   
                         OR   HKNNUM_S    =  '067'                 ) 
                   AND (      RECESYUBETU <>  '0000'               ) 
@@ -564,7 +570,7 @@ path	key7	{
 		DECLARE tbl_seikyu_key7_csr CURSOR FOR
 		SELECT *
 		FROM tbl_seikyu
-                WHERE (      HOSPNUM      =   :HOSPNUM              )
+                WHERE (      HOSPNUM      =   :HOSPNUM            )
                   AND (      HKNNUM_S    =  '060'                   
                         OR   HKNNUM_S    =  '067'                 ) 
                   AND (      RECESYUBETU <>  '0000'               ) 
@@ -584,7 +590,7 @@ path	key8	{
 		DECLARE tbl_seikyu_key8_csr CURSOR FOR
 		SELECT *
 		FROM tbl_seikyu
-                WHERE (      HOSPNUM      =   :HOSPNUM     )
+                WHERE (      HOSPNUM      =   :HOSPNUM   )
                   AND (      HKNNUM_S    <>  '060'       )
                   AND (      HKNNUM_S    <>  '067'       ) 
                   AND (      HKNNUM_S    <>  '068'       )
@@ -606,7 +612,7 @@ path	key9	{
 		DECLARE tbl_seikyu_key9_csr CURSOR FOR
 		SELECT *
 		FROM tbl_seikyu
-                WHERE (      HOSPNUM      =   :HOSPNUM     )
+                WHERE (      HOSPNUM      =   :HOSPNUM   )
                   AND (      HKNNUM_S    <>  '060'       )
                   AND (      HKNNUM_S    <>  '067'       ) 
                   AND (      HKNNUM_S    <>  '068'       )
@@ -629,7 +635,7 @@ path	key10	{
 		DECLARE tbl_seikyu_key10_csr CURSOR FOR
 		SELECT *
 		FROM tbl_seikyu
-                WHERE (      HOSPNUM      =   :HOSPNUM     )
+                WHERE (      HOSPNUM      =   :HOSPNUM   )
                   AND (      HKNNUM_S    <>  '060'       )
                   AND (      HKNNUM_S    <>  '067'       ) 
                   AND (      HKNNUM_S    <>  '068'       )
@@ -652,7 +658,7 @@ path	key11 {
 		DECLARE tbl_seikyu_key11_csr CURSOR FOR
 		SELECT *
 		FROM tbl_seikyu
-                WHERE (      HOSPNUM      =   :HOSPNUM     )
+                WHERE (      HOSPNUM      =   :HOSPNUM   )
                   AND (      HKNNUM_S    =  '060'                   
                         OR   HKNNUM_S    =  '067'        ) 
                   AND (      RECESYUBETU <>  '0000'      ) 
@@ -674,7 +680,7 @@ path	key12	{
 		DECLARE tbl_seikyu_key12_csr CURSOR FOR
 		SELECT *
 		FROM tbl_seikyu
-                WHERE (      HOSPNUM      =   :HOSPNUM     )
+                WHERE (      HOSPNUM      =   :HOSPNUM   )
                   AND (      HKNNUM_S    =  '060'                   
                         OR   HKNNUM_S    =  '067'        ) 
                   AND (      RECESYUBETU <>  '0000'      ) 
@@ -697,7 +703,7 @@ path	key13	{
 		DECLARE tbl_seikyu_key13_csr CURSOR FOR
 		SELECT *
 		FROM tbl_seikyu
-                WHERE (      HOSPNUM      =   :HOSPNUM     )
+                WHERE (      HOSPNUM      =   :HOSPNUM   )
                   AND (      HKNNUM_S    =  '060'                   
                         OR   HKNNUM_S    =  '067'        ) 
                   AND (      RECESYUBETU <>  '0000'      ) 
@@ -720,7 +726,7 @@ path	key14	{
 		DECLARE tbl_seikyu_key14_csr CURSOR FOR
 		SELECT *
 		FROM tbl_seikyu
-                WHERE (      HOSPNUM      =   :HOSPNUM     )
+                WHERE (      HOSPNUM      =   :HOSPNUM   )
                   AND (      HKNNUM_S    =  '060'                   
                         OR   HKNNUM_S    =  '067'        ) 
                   AND (      RECESYUBETU <>  '0000'      ) 
@@ -761,7 +767,7 @@ path	key16	{
 		DECLARE tbl_seikyu_key16_csr CURSOR FOR
 		SELECT *
 		FROM tbl_seikyu
-                WHERE (      HOSPNUM      =   :HOSPNUM     )
+                WHERE (      HOSPNUM      =   :HOSPNUM   )
                   AND (      HKNNUM_S    =  '060'                   
                         OR   HKNNUM_S    =  '067'        ) 
                   AND (      RECESYUBETU <>  '0000'      ) 
@@ -783,7 +789,7 @@ path	key17	{
 		DECLARE tbl_seikyu_key17_csr CURSOR FOR
 		SELECT *
 		FROM tbl_seikyu
-                WHERE (      HOSPNUM      =   :HOSPNUM     )
+                WHERE (      HOSPNUM      =   :HOSPNUM   )
                   AND (      HKNNUM_S    =  '060'                   
                         OR   HKNNUM_S    =  '067'        ) 
                   AND (      RECESYUBETU <>  '0000'      ) 
@@ -805,7 +811,7 @@ path	key18	{
 		DECLARE tbl_seikyu_key18_csr CURSOR FOR
 		SELECT *
 		FROM tbl_seikyu
-                WHERE (      HOSPNUM      =   :HOSPNUM     )
+                WHERE (      HOSPNUM      =   :HOSPNUM   )
                   AND (      HKNNUM_S    <>  '060'       )
                   AND (      HKNNUM_S    <>  '067'       ) 
                   AND (      HKNNUM_S    <>  '068'       )
@@ -841,7 +847,7 @@ path	key20	{
 		DECLARE tbl_seikyu_key20_csr CURSOR FOR
 		SELECT *
 		FROM tbl_seikyu
-                WHERE (      HOSPNUM      =   :HOSPNUM              )
+                WHERE (      HOSPNUM      =   :HOSPNUM            )
                   AND (      HKNNUM_S    =  '060'                   
                         OR   HKNNUM_S    =  '067'                 ) 
                   AND (      RECESYUBETU <>  '0000'               ) 
@@ -862,7 +868,7 @@ path	key21	{
 		DECLARE tbl_seikyu_key21_csr CURSOR FOR
 		SELECT *
 		FROM tbl_seikyu
-                WHERE (      HOSPNUM      =   :HOSPNUM     )
+                WHERE (      HOSPNUM      =   :HOSPNUM   )
                   AND (      HKNNUM_S    =  '060'                   
                         OR   HKNNUM_S    =  '067'        ) 
                   AND (      RECESYUBETU <>  '0000'      ) 
@@ -886,7 +892,7 @@ path	key22	{
 		DECLARE tbl_seikyu_key22_csr CURSOR FOR
 		SELECT *
 		FROM tbl_seikyu
-                WHERE (      HOSPNUM      =   :HOSPNUM     )
+                WHERE (      HOSPNUM      =   :HOSPNUM   )
                   AND (      HKNNUM_S    =  '060'                   
                         OR   HKNNUM_S    =  '067'        ) 
                   AND (      RECESYUBETU <>  '0000'      ) 
@@ -910,7 +916,7 @@ path	key23	{
 		DECLARE tbl_seikyu_key23_csr CURSOR FOR
 		SELECT *
 		FROM tbl_seikyu
-                WHERE (      HOSPNUM      =   :HOSPNUM     )
+                WHERE (      HOSPNUM      =   :HOSPNUM   )
                   AND (      HKNNUM_S    <>  '060'       )
                   AND (      HKNNUM_S    <>  '067'       ) 
                   AND (      HKNNUM_S    <>  '068'       )
@@ -932,7 +938,7 @@ path	key24	{
 		DECLARE tbl_seikyu_key24_csr CURSOR FOR
 		SELECT *
 		FROM tbl_seikyu
-                WHERE (      HOSPNUM      =   :HOSPNUM     )
+                WHERE (      HOSPNUM      =   :HOSPNUM   )
                   AND (      HKNNUM_S    =  '060'                   
                         OR   HKNNUM_S    =  '067'        ) 
                   AND (      RECESYUBETU <>  '0000'      ) 
@@ -952,7 +958,7 @@ path	all	{
 		DECLARE tbl_seikyu_all_csr CURSOR FOR
 		SELECT *
 		FROM tbl_seikyu
-                WHERE   HOSPNUM              =   :HOSPNUM
+		WHERE   HOSPNUM    =   :HOSPNUM
 		;
 	};
 };
@@ -1038,8 +1044,8 @@ path	all2	{
 		DECLARE tbl_seikyu_all2_csr CURSOR FOR
 		SELECT *
 		FROM tbl_seikyu
-                WHERE   HOSPNUM              =   :HOSPNUM
-                AND   SRYYM       =   :SRYYM
+                WHERE   HOSPNUM       =   :HOSPNUM
+                  AND   SRYYM        =   :SRYYM
 		;
 	};
 };
@@ -1049,7 +1055,7 @@ path	st_key1	{
 		DECLARE tbl_seikyu_st_key1_csr CURSOR FOR
 		SELECT *
 		FROM tbl_seikyu
-                WHERE (      HOSPNUM      =   :HOSPNUM     )
+                WHERE (      HOSPNUM      =   :HOSPNUM   )
                   AND (      HKNNUM_S    =  '060'
                         OR   HKNNUM_S    =  '067'        )
                   AND (      RECESYUBETU <>  '0000'      )
@@ -1072,7 +1078,7 @@ path	st_key2	{
 		DECLARE tbl_seikyu_st_key2_csr CURSOR FOR
 		SELECT *
 		FROM tbl_seikyu
-                WHERE (      HOSPNUM      =   :HOSPNUM     )
+                WHERE (      HOSPNUM      =   :HOSPNUM   )
                   AND (      HKNNUM_S    =  '060'
                         OR   HKNNUM_S    =  '067'        )
                   AND (      RECESYUBETU <>  '0000'      )
@@ -1096,7 +1102,7 @@ path	key25	{
 		DECLARE tbl_seikyu_key25_csr CURSOR FOR
 		SELECT *
 		FROM tbl_seikyu
-                WHERE (      HOSPNUM      =   :HOSPNUM     )
+                WHERE (      HOSPNUM      =   :HOSPNUM   )
                   AND (      NYUGAIKBN   =   :NYUGAIKBN  )
                   AND (      HKNNUM_S    <>  '060'       )
                   AND (      HKNNUM_S    <>  '067'       ) 
@@ -1119,7 +1125,7 @@ path	key26	{
 		DECLARE tbl_seikyu_key26_csr CURSOR FOR
 		SELECT *
 		FROM tbl_seikyu
-                WHERE (      HOSPNUM      =   :HOSPNUM     )
+                WHERE (      HOSPNUM      =   :HOSPNUM   )
                   AND (      NYUGAIKBN   =   :NYUGAIKBN  )
                   AND (      HKNNUM_S    =  '060'                   
                         OR   HKNNUM_S    =  '067'        ) 
@@ -1165,7 +1171,7 @@ path	key27	{
 		DECLARE tbl_seikyu_key27_csr CURSOR FOR
 		SELECT *
 		FROM tbl_seikyu
-                WHERE (      HOSPNUM      =    :HOSPNUM     )
+                WHERE (      HOSPNUM      =    :HOSPNUM   )
                   AND (      HKNNUM_S    <>   '060'       )
                   AND (      HKNNUM_S    <>   '067'       ) 
                   AND (      HKNNUM_S    <>   '068'       )
@@ -1191,7 +1197,7 @@ path	key28	{
 		DECLARE tbl_seikyu_key28_csr CURSOR FOR
 		SELECT *
 		FROM tbl_seikyu
-                WHERE (      HOSPNUM      =    :HOSPNUM     )
+                WHERE (      HOSPNUM      =    :HOSPNUM   )
                   AND (      HKNNUM_S    <>   '060'       )
                   AND (      HKNNUM_S    <>   '067'       ) 
                   AND (      HKNNUM_S    <>   '068'       )
@@ -1217,7 +1223,7 @@ path	key29	{
 		DECLARE tbl_seikyu_key29_csr CURSOR FOR
 		SELECT *
 		FROM tbl_seikyu
-                WHERE (      HOSPNUM      =    :HOSPNUM     )
+                WHERE (      HOSPNUM      =    :HOSPNUM   )
                   AND (      HKNNUM_S    <>   '060'       )
                   AND (      HKNNUM_S    <>   '067'       ) 
                   AND (      HKNNUM_S    <>   '068'       )
@@ -1243,7 +1249,7 @@ path	key30	{
 		DECLARE tbl_seikyu_key30_csr CURSOR FOR
 		SELECT *
 		FROM tbl_seikyu
-                WHERE (      HOSPNUM      =    :HOSPNUM     )
+                WHERE (      HOSPNUM      =    :HOSPNUM   )
                   AND (      HKNNUM_S    <>   '060'       )
                   AND (      HKNNUM_S    <>   '067'       ) 
                   AND (      HKNNUM_S    <>   '068'       )
@@ -1269,7 +1275,7 @@ path	key31	{
 		DECLARE tbl_seikyu_key31_csr CURSOR FOR
 		SELECT *
 		FROM tbl_seikyu
-                WHERE (      HOSPNUM      =    :HOSPNUM     )
+                WHERE (      HOSPNUM      =    :HOSPNUM   )
                   AND (      HKNNUM_S    <>   '060'       )
                   AND (      HKNNUM_S    <>   '067'       ) 
                   AND (      HKNNUM_S    <>   '068'       )
@@ -1294,7 +1300,7 @@ path	key32	{
 		DECLARE tbl_seikyu_key32_csr CURSOR FOR
 		SELECT *
 		FROM tbl_seikyu
-                WHERE (      HOSPNUM      =    :HOSPNUM     )
+                WHERE (      HOSPNUM      =    :HOSPNUM   )
                   AND (      HKNNUM_S    <>   '060'       )
                   AND (      HKNNUM_S    <>   '067'       ) 
                   AND (      HKNNUM_S    <>   '068'       )
@@ -1319,7 +1325,7 @@ path	key33	{
 		DECLARE tbl_seikyu_key33_csr CURSOR FOR
 		SELECT *
 		FROM tbl_seikyu
-                WHERE (      HOSPNUM      =   :HOSPNUM     )
+                WHERE (      HOSPNUM      =   :HOSPNUM   )
                   AND (      HKNNUM_S    =  '060'                   
                         OR   HKNNUM_S    =  '067'        ) 
                   AND (      RECESYUBETU <>  '0000'      ) 
@@ -1344,7 +1350,7 @@ path	key34	{
 		DECLARE tbl_seikyu_key34_csr CURSOR FOR
 		SELECT *
 		FROM tbl_seikyu
-                WHERE (      HOSPNUM      =   :HOSPNUM     )
+                WHERE (      HOSPNUM      =   :HOSPNUM   )
                   AND (      HKNNUM_S    =  '060'                   
                         OR   HKNNUM_S    =  '067'        ) 
                   AND (      RECESYUBETU <>  '0000'      ) 
@@ -1369,7 +1375,7 @@ path	key35	{
 		DECLARE tbl_seikyu_key35_csr CURSOR FOR
 		SELECT *
 		FROM tbl_seikyu
-                WHERE (      HOSPNUM      =   :HOSPNUM     )
+                WHERE (      HOSPNUM      =   :HOSPNUM   )
                   AND (      HKNNUM_S    =  '060'                   
                         OR   HKNNUM_S    =  '067'        ) 
                   AND (      RECESYUBETU <>  '0000'      ) 
@@ -1394,7 +1400,7 @@ path	key36	{
 		DECLARE tbl_seikyu_key36_csr CURSOR FOR
 		SELECT *
 		FROM tbl_seikyu
-                WHERE (      HOSPNUM      =   :HOSPNUM     )
+                WHERE (      HOSPNUM      =   :HOSPNUM   )
                   AND (      HKNNUM_S    =  '060'                   
                         OR   HKNNUM_S    =  '067'        ) 
                   AND (      RECESYUBETU <>  '0000'      ) 
@@ -1419,7 +1425,7 @@ path	key37	{
 		DECLARE tbl_seikyu_key37_csr CURSOR FOR
 		SELECT *
 		FROM tbl_seikyu
-                WHERE (      HOSPNUM      =   :HOSPNUM     )
+                WHERE (      HOSPNUM      =   :HOSPNUM   )
                   AND (      HKNNUM_S    =  '060'                   
                         OR   HKNNUM_S    =  '067'        ) 
                   AND (      RECESYUBETU <>  '0000'      ) 
@@ -1441,7 +1447,7 @@ path	key38	{
 		DECLARE tbl_seikyu_key38_csr CURSOR FOR
 		SELECT *
 		FROM tbl_seikyu
-                WHERE (      HOSPNUM      =   :HOSPNUM     )
+                WHERE (      HOSPNUM      =   :HOSPNUM   )
                   AND (      HKNNUM_S    =  '060'                   
                         OR   HKNNUM_S    =  '067'        ) 
                   AND (      RECESYUBETU <>  '0000'      ) 
@@ -1463,7 +1469,7 @@ path	key39	{
 		DECLARE tbl_seikyu_key39_csr CURSOR FOR
 		SELECT *
 		FROM tbl_seikyu
-                WHERE (      HOSPNUM      =   :HOSPNUM     )
+                WHERE (      HOSPNUM      =   :HOSPNUM   )
                   AND (      HKNNUM_S    =  '068'                   
                         OR   HKNNUM_S    =  '069'        ) 
                   AND (   (( SRYYM       =   :SKYYM   )
@@ -1486,7 +1492,7 @@ path	key40	{
 		DECLARE tbl_seikyu_key40_csr CURSOR FOR
 		SELECT *
 		FROM tbl_seikyu
-                WHERE (      HOSPNUM      =   :HOSPNUM     )
+                WHERE (      HOSPNUM      =   :HOSPNUM   )
                   AND (      HKNNUM_S    =  '068'                   
                         OR   HKNNUM_S    =  '069'        ) 
                   AND (   (( SRYYM       =   :SKYYM   )
@@ -1509,7 +1515,7 @@ path	key41	{
 		DECLARE tbl_seikyu_key41_csr CURSOR FOR
 		SELECT *
 		FROM tbl_seikyu
-                WHERE (      HOSPNUM      =   :HOSPNUM     )
+                WHERE (      HOSPNUM      =   :HOSPNUM   )
                   AND (      HKNNUM_S    =  '068'                   
                         OR   HKNNUM_S    =  '069'        ) 
                   AND (      RECESYUBETU <>  '0000'      ) 
@@ -1530,7 +1536,7 @@ path	key42	{
 		DECLARE tbl_seikyu_key42_csr CURSOR FOR
 		SELECT *
 		FROM tbl_seikyu
-                WHERE (      HOSPNUM      =   :HOSPNUM     )
+                WHERE (      HOSPNUM      =   :HOSPNUM   )
                   AND (      SRYYM       <=  :SRYYM      )
                   AND (      SKYYM       <>  '000000'    )
                   AND (      SKYYM       <=  :SKYYM      )
@@ -1564,7 +1570,7 @@ path	key44	{
 		DECLARE tbl_seikyu_key44_csr CURSOR FOR
 		SELECT *
 		FROM tbl_seikyu
-                WHERE (      HOSPNUM      =    :HOSPNUM     )
+                WHERE (      HOSPNUM      =    :HOSPNUM   )
                   AND (      HKNNUM_S    <>   '060'       )
                   AND (      HKNNUM_S    <>   '067'       ) 
                   AND (      HKNNUM_S    <>   '068'       )
@@ -1585,7 +1591,7 @@ path	key45	{
 		DECLARE tbl_seikyu_key45_csr CURSOR FOR
 		SELECT *
 		FROM tbl_seikyu
-                WHERE (      HOSPNUM      =    :HOSPNUM     )
+                WHERE (      HOSPNUM      =    :HOSPNUM   )
                   AND (      HKNNUM_S    <>   '060'       )
                   AND (      HKNNUM_S    <>   '067'       ) 
                   AND (      HKNNUM_S    <>   '068'       )
@@ -1619,7 +1625,7 @@ path	key46	{
 		DECLARE tbl_seikyu_key46_csr CURSOR FOR
 		SELECT *
 		FROM tbl_seikyu
-                WHERE (      HOSPNUM      =    :HOSPNUM     )
+                WHERE (      HOSPNUM      =    :HOSPNUM   )
                   AND (      HKNNUM_S    <>   '060'       )
                   AND (      HKNNUM_S    <>   '067'       ) 
                   AND (      HKNNUM_S    <>   '068'       )
@@ -1653,7 +1659,7 @@ path	key47	{
 		DECLARE tbl_seikyu_key47_csr CURSOR FOR
 		SELECT *
 		FROM tbl_seikyu
-                WHERE (      HOSPNUM      =    :HOSPNUM     )
+                WHERE (      HOSPNUM      =    :HOSPNUM   )
                   AND (      HKNNUM_S    <>   '060'       )
                   AND (      HKNNUM_S    <>   '067'       ) 
                   AND (      HKNNUM_S    <>   '068'       )
@@ -1687,7 +1693,7 @@ path	key48	{
 		DECLARE tbl_seikyu_key48_csr CURSOR FOR
 		SELECT *
 		FROM tbl_seikyu
-                WHERE (      HOSPNUM      =    :HOSPNUM     )
+                WHERE (      HOSPNUM      =    :HOSPNUM   )
                   AND (      HKNNUM_S    <>   '060'       )
                   AND (      HKNNUM_S    <>   '067'       ) 
                   AND (      HKNNUM_S    <>   '068'       )
@@ -1721,7 +1727,7 @@ path	key49	{
 		DECLARE tbl_seikyu_key49_csr CURSOR FOR
 		SELECT *
 		FROM tbl_seikyu
-                WHERE (      HOSPNUM      =    :HOSPNUM     )
+                WHERE (      HOSPNUM      =    :HOSPNUM   )
                   AND (      HKNNUM_S    <>   '060'       )
                   AND (      HKNNUM_S    <>   '067'       ) 
                   AND (      HKNNUM_S    <>   '068'       )
@@ -1754,7 +1760,7 @@ path	key50	{
 		DECLARE tbl_seikyu_key50_csr CURSOR FOR
 		SELECT *
 		FROM tbl_seikyu
-                WHERE (      HOSPNUM      =    :HOSPNUM     )
+                WHERE (      HOSPNUM      =    :HOSPNUM   )
                   AND (      HKNNUM_S    <>   '060'       )
                   AND (      HKNNUM_S    <>   '067'       ) 
                   AND (      HKNNUM_S    <>   '068'       )
@@ -1787,7 +1793,7 @@ path	key51	{
 		DECLARE tbl_seikyu_key51_csr CURSOR FOR
 		SELECT *
 		FROM tbl_seikyu
-                WHERE (      HOSPNUM      =    :HOSPNUM     )
+                WHERE (      HOSPNUM      =    :HOSPNUM   )
                   AND (      HKNNUM_S    <>   '060'       )
                   AND (      HKNNUM_S    <>   '067'       ) 
                   AND (      HKNNUM_S    <>   '068'       )
@@ -1821,7 +1827,7 @@ path	key52	{
 		DECLARE tbl_seikyu_key52_csr CURSOR FOR
 		SELECT *
 		FROM tbl_seikyu
-                WHERE (      HOSPNUM      =    :HOSPNUM     )
+                WHERE (      HOSPNUM      =    :HOSPNUM   )
                   AND (      HKNNUM_S    <>   '060'       )
                   AND (      HKNNUM_S    <>   '067'       ) 
                   AND (      HKNNUM_S    <>   '068'       )
@@ -1855,7 +1861,7 @@ path	key53	{
 		DECLARE tbl_seikyu_key53_csr CURSOR FOR
 		SELECT *
 		FROM tbl_seikyu
-                WHERE (      HOSPNUM      =    :HOSPNUM     )
+                WHERE (      HOSPNUM      =    :HOSPNUM   )
                   AND (      HKNNUM_S    <>   '060'       )
                   AND (      HKNNUM_S    <>   '067'       ) 
                   AND (      HKNNUM_S    <>   '068'       )
@@ -1889,7 +1895,7 @@ path	key54	{
 		DECLARE tbl_seikyu_key54_csr CURSOR FOR
 		SELECT *
 		FROM tbl_seikyu
-                WHERE (      HOSPNUM      =    :HOSPNUM     )
+                WHERE (      HOSPNUM      =    :HOSPNUM   )
                   AND (      HKNNUM_S    <>   '060'       )
                   AND (      HKNNUM_S    <>   '067'       ) 
                   AND (      HKNNUM_S    <>   '068'       )
@@ -1923,7 +1929,7 @@ path	key55	{
 		DECLARE tbl_seikyu_key55_csr CURSOR FOR
 		SELECT *
 		FROM tbl_seikyu
-                WHERE (      HOSPNUM      =    :HOSPNUM     )
+                WHERE (      HOSPNUM      =    :HOSPNUM   )
                   AND (      HKNNUM_S    <>   '060'       )
                   AND (      HKNNUM_S    <>   '067'       ) 
                   AND (      HKNNUM_S    <>   '068'       )
@@ -1956,7 +1962,7 @@ path	key56	{
 		DECLARE tbl_seikyu_key56_csr CURSOR FOR
 		SELECT *
 		FROM tbl_seikyu
-                WHERE (      HOSPNUM      =    :HOSPNUM     )
+                WHERE (      HOSPNUM      =    :HOSPNUM   )
                   AND (      HKNNUM_S    <>   '060'       )
                   AND (      HKNNUM_S    <>   '067'       ) 
                   AND (      HKNNUM_S    <>   '068'       )
@@ -1989,7 +1995,7 @@ path	key57	{
 		DECLARE tbl_seikyu_key57_csr CURSOR FOR
 		SELECT *
 		FROM tbl_seikyu
-                WHERE (      HOSPNUM      =    :HOSPNUM     )
+                WHERE (      HOSPNUM     =    :HOSPNUM   )
                   AND (      HKNNUM_S    =  '060'
                         OR   HKNNUM_S    =  '067'
                         OR   HKNNUM_S    =  '068'
@@ -2011,7 +2017,7 @@ path	key58	{
 		DECLARE tbl_seikyu_key58_csr CURSOR FOR
 		SELECT *
 		FROM tbl_seikyu
-                WHERE (      HOSPNUM      =   :HOSPNUM              )
+                WHERE (      HOSPNUM      =   :HOSPNUM            )
                   AND (      HKNNUM_S    =  '060'                   
                         OR   HKNNUM_S    =  '067'                 ) 
                   AND (   (( SRYYM       =   :SKYYM   )
@@ -2031,6 +2037,19 @@ path	key59		{
 	DBSELECT	{
 		DECLARE tbl_seikyu_key59_csr CURSOR FOR
 		SELECT *
+		FROM tbl_seikyu
+                WHERE   HOSPNUM      =   :HOSPNUM
+                  AND   SRYYM       =   :SRYYM
+                  AND   NYUGAIKBN   =   :NYUGAIKBN
+                  AND   PTID        =   :PTID
+		;
+	};
+};
+
+
+path	del7 	{
+	DBDELETE	{
+		DELETE
 		FROM tbl_seikyu
                 WHERE   HOSPNUM      =   :HOSPNUM
                   AND   SRYYM       =   :SRYYM
