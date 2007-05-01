@@ -59,4 +59,6 @@
       *ÆâÉþ£·¼ïÎàÄþ¸ºÂÐ¾ÝºÞÈÖ¹æ
       *    05  WKSRYP-GRP-ZAINUM         PIC  9(08)
       *                                  OCCURS   50.
+      *@@@
+           05  WKSRYP-YOBI               PIC X(20).
       *

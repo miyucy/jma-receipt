@@ -590,7 +590,6 @@
                                      //WKSRYP-// BY //LNK-WKSRYP-//.
       *TEST
            03  LNK-SORT-SRYKBN        PIC X(02).
-      *TEST
        01  LNK-WKSRYACT-MAX           PIC 9(04).
       *
       *    壳闻乖百マスタワ〖ク
@@ -1409,10 +1408,15 @@
                                                             (IDX-KOUI)
       *TEST
       *        茶烫山绩界に判峡する
+               MOVE    SPACE               TO  PARA-REC02
+               INITIALIZE                      PARA-REC02
                MOVE    "WKSRYACT"          TO  PARA-FILEMEI02
                ADD     1                   TO  WRK-EDANUM
                MOVE    WRK-EDANUM          TO  PARA-EDANUM02
-               MOVE    SRT-WKSRYACT-REC (IDX2) TO  PARA-DATA-REC02
+      *@TEST
+               MOVE    SRT-WKSRYACT-REC (IDX2) TO  WRK-WKSRYACT-REC
+               MOVE    ALL "9"             TO  WRK-WKSRYP-YOBI
+               MOVE    WRK-WKSRYACT-REC    TO  PARA-DATA-REC02
                WRITE   PARA-REC02
       *TEST
            END-PERFORM
@@ -3436,6 +3440,14 @@
            MOVE    SPA-HOSPNUM         TO  FILE-HOSPNUM2
            OPEN    OUTPUT              PARA-FILE
       *
+           PERFORM VARYING     IDY     FROM    1   BY  1
+                   UNTIL       IDY     >   5
+               IF      HZN-PARA-DATA-REC (IDY) NOT =   SPACE
+                   MOVE    HZN-PARA-REC(IDY)   TO  PARA-REC
+                   WRITE                       PARA-REC
+               END-IF
+           END-PERFORM
+      *
       *    壳闻乖百构糠
            PERFORM 45011-SRYACT-SYORI-SEC
       *    箭羌构糠
@@ -3449,14 +3461,6 @@
                MOVE    LNK-SYUNOU2-REC(IDX)
                                            TO  PARA-DATA-REC
                WRITE                       PARA-REC
-           END-PERFORM
-      *
-           PERFORM VARYING     IDY     FROM    1   BY  1
-                   UNTIL       IDY     >   5
-               IF      HZN-PARA-DATA-REC (IDY) NOT =   SPACE
-                   MOVE    HZN-PARA-REC(IDY)   TO  PARA-REC
-                   WRITE                       PARA-REC
-               END-IF
            END-PERFORM
       *
            CLOSE                       PARA-FILE
@@ -3531,9 +3535,11 @@
                    ADD     1                   TO  IDX2
                    MOVE    "WKSRYACT"          TO  PARA-FILEMEI
                    MOVE    IDX2                TO  PARA-EDANUM
-                   MOVE    LNK-WKSRYACT-REC (IDX)
-                                               TO  PARA-DATA-REC
-                   WRITE                   PARA-REC
+      *@TEST
+                   MOVE    LNK-WKSRYACT-REC (IDX) TO  WRK-WKSRYACT-REC
+                   MOVE    ALL "9"             TO  WRK-WKSRYP-YOBI
+                   MOVE    WRK-WKSRYACT-REC    TO  PARA-DATA-REC
+                   WRITE                       PARA-REC
                ELSE
                    MOVE    SPACE               TO  LNK-WKSRYACT-REC(IDX)
                    INITIALIZE                      LNK-WKSRYACT-REC(IDX)
@@ -4722,9 +4728,6 @@
            MOVE    SPA-HOSPNUM         TO  FILE-HOSPNUM2
            OPEN    OUTPUT              PARA-FILE
       *
-      *    壳闻乖百构糠
-           PERFORM 45011-SRYACT-SYORI-SEC
-      *
            PERFORM VARYING     IDY     FROM    1   BY  1
                    UNTIL       IDY     >   5
                IF      HZN-PARA-DATA-REC (IDY) NOT =   SPACE
@@ -4732,6 +4735,9 @@
                    WRITE                       PARA-REC
                END-IF
            END-PERFORM
+      *
+      *    壳闻乖百构糠
+           PERFORM 45011-SRYACT-SYORI-SEC
       *
            CLOSE                       PARA-FILE
       *
@@ -4935,9 +4941,6 @@
            MOVE    SPA-HOSPNUM         TO  FILE-HOSPNUM2
            OPEN    OUTPUT              PARA-FILE
       *
-      *    壳闻乖百构糠
-           PERFORM 45011-SRYACT-SYORI-SEC
-      *
            PERFORM VARYING     IDY     FROM    1   BY  1
                    UNTIL       IDY     >   5
                IF      HZN-PARA-DATA-REC (IDY) NOT =   SPACE
@@ -4945,6 +4948,9 @@
                    WRITE                       PARA-REC
                END-IF
            END-PERFORM
+      *
+      *    壳闻乖百构糠
+           PERFORM 45011-SRYACT-SYORI-SEC
       *
            CLOSE                       PARA-FILE
       *
@@ -5450,8 +5456,12 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                    ADD     1                   TO  IDX2
                    MOVE    "WKSRYACT"          TO  PARA-FILEMEIPRV
                    MOVE    IDX2                TO  PARA-EDANUMPRV
-                   MOVE    LNK-WKSRYACT-REC (IDX)
-                                               TO  PARA-DATA-RECPRV
+      *            MOVE    LNK-WKSRYACT-REC (IDX)
+      *                                        TO  PARA-DATA-RECPRV
+      *@TEST
+                   MOVE    LNK-WKSRYACT-REC (IDX) TO  WRK-WKSRYACT-REC
+                   MOVE    ALL "9"             TO  WRK-WKSRYP-YOBI
+                   MOVE    WRK-WKSRYACT-REC    TO  PARA-DATA-RECPRV
                    WRITE                       PARA-RECPRV
                ELSE
                    MOVE    SPACE               TO  LNK-WKSRYACT-REC(IDX)
@@ -5513,9 +5523,6 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPA-HOSPNUM         TO  FILE-HOSPNUMPRV
            OPEN    OUTPUT              PARA-PREVIEW
       *
-      *    壳闻乖百构糠∈プレビュ〖∷
-           PERFORM 401011-SRYACT-PREVIEW-SEC
-      *
            PERFORM VARYING     IDY     FROM    1   BY  1
                    UNTIL       IDY     >   5
                IF      HZN-PARA-DATA-REC (IDY) NOT =   SPACE
@@ -5523,6 +5530,9 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                    WRITE                       PARA-RECPRV
                END-IF
            END-PERFORM
+      *
+      *    壳闻乖百构糠∈プレビュ〖∷
+           PERFORM 401011-SRYACT-PREVIEW-SEC
       *
            CLOSE                       PARA-PREVIEW
       *

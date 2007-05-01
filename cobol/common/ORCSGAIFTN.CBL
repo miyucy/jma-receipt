@@ -43,8 +43,6 @@
        FILE                        SECTION.
       *
        WORKING-STORAGE SECTION.
-grpsys*
-grpsys COPY    "COMMON-SPA".
       *
       *    Åº¤¨»úÎÎ°è
        01  IDX-AREA.
@@ -57,7 +55,6 @@ grpsys COPY    "COMMON-SPA".
       *    ¥Õ¥é¥°ÎÎ°è
        01  FLG-AREA.
            03  FLG-OK                      PIC 9(01).
-           03  FLG-JIRITU-SAI              PIC 9(01).
            03  FLG-TOKUSYU-SAI             PIC 9(01).
       *
       *    ¥«¥¦¥ó¥ÈÎÎ°è
@@ -250,12 +247,15 @@ grpsys COPY    "COMMON-SPA".
        01  LNK-SYUNOU-REC-T.
          02 LNK-SYUNOU-REC     OCCURS 15.
            COPY  "CPSYUNOU.INC"    REPLACING  //SYU-// BY //LNK-SYU-//.
-
+grpsys*
+grpsys     COPY    "COMMON-SPA".
       /
        PROCEDURE           DIVISION  USING
                                      MCPAREA
                                      LNK-ORCS01-REC
-                                     LNK-SYUNOU-REC-T.
+                                     LNK-SYUNOU-REC-T
+                                       SPA-AREA
+           .
       ******************************************************************
       *        °ÍÍêÀ©¸æ½èÍý
       ******************************************************************
@@ -457,9 +457,6 @@ grpsys COPY    "COMMON-SPA".
                 MOVE     SYUNOU-REC           TO  LNK-SYUNOU-REC(IDX)
                 MOVE     WRK-ORCS01-REC       TO  LNK-ORCS01-REC
       *
-                IF       LNK-S01-JIRITU-SAI-KBN     =    "1"
-                     MOVE      1       TO     FLG-JIRITU-SAI
-                END-IF
                 IF       LNK-S01-TOKUSYU-SAI-KBN    =    "1"
                      MOVE      1       TO     FLG-TOKUSYU-SAI
                 END-IF
@@ -467,9 +464,8 @@ grpsys COPY    "COMMON-SPA".
            END-PERFORM.
       *
       *    ÆÃ¼ì·×»»¡ÊºÆ·×»»¡Ë
-           IF       CNT-KENSU  >   1
-              IF      (FLG-JIRITU-SAI        =    1)
-              OR      (FLG-TOKUSYU-SAI       =    1)
+           IF       CNT-KENSU        >    1
+              IF    FLG-TOKUSYU-SAI  =    1
                  PERFORM     100-TOKUSYU-SANTEI-SEC
               END-IF
            END-IF.
