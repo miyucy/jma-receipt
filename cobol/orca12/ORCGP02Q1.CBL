@@ -309,7 +309,7 @@
            INITIALIZE                      SPA-P02Q1-QRAREA
       *
            INITIALIZE                      QRCDHKN-REC
-           MOVE    SPA-HOSPID          TO  QRCDHKN-HOSPID
+           MOVE    SPA-HOSPNUM         TO  QRCDHKN-HOSPNUM
            MOVE    SPA-P02Q-SYSYMD     TO  QRCDHKN-REGISTYMD
            MOVE    SPA-P02Q-REGISTID   TO  QRCDHKN-REGISTID
            MOVE    QRCDHKN-REC         TO  MCPDATA-REC
@@ -393,7 +393,7 @@
       *
       *    保険者番号　検索チェック
            INITIALIZE                    HKNJAINF-REC
-           MOVE    SPA-HOSPID            TO  HKNJA-HOSPID
+           MOVE    SPA-HOSPNUM           TO  HKNJA-HOSPNUM
            MOVE    WRK-HKNJANUM          TO  HKNJA-HKNJANUM
       *
            MOVE    HKNJAINF-REC          TO  MCPDATA-REC
@@ -419,7 +419,7 @@
                MOVE    HKNJA-HKNNUM        TO  WRK-HKNNUM
       *        保険情報
                MOVE    SPACE               TO  HKNNUM-REC
-               MOVE    SPA-HOSPID          TO  HKN-HOSPID
+               MOVE    SPA-HOSPNUM         TO  HKN-HOSPNUM
                MOVE    HKNJA-HKNNUM        TO  HKN-HKNNUM
                MOVE    SPA-SYSYMD          TO  HKN-TEKSTYMD
                MOVE    SPA-SYSYMD          TO  HKN-TEKEDYMD
@@ -478,9 +478,9 @@
            MOVE    "DBUPDATE"          TO  MCP-FUNC
            MOVE    "tbl_qrcdhkn"       TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
            IF      MCP-RC          NOT =   ZERO 
                MOVE    "1001"              TO  SPA-ERRCD
                DISPLAY "P02Q QRCDHKN KEY UPD ERR:"  MCP-RC
@@ -499,7 +499,7 @@
            INITIALIZE                      SPA-P02Q1-LIST-G
       *
            INITIALIZE                      PTINF-REC
-           MOVE    SPA-HOSPID          TO  PTINF-HOSPID
+           MOVE    SPA-HOSPNUM         TO  PTINF-HOSPNUM
            MOVE    QRCDHKN-BIRTHDAYS   TO  PTINF-BIRTHDAY
            MOVE    QRCDHKN-SEX         TO  PTINF-SEX
       *
@@ -545,11 +545,11 @@
            MOVE    PTINF-PTID          TO  SPA-P02Q1-TPTID (IDX)
       *    患者番号
            INITIALIZE                      ORCSPTIDAREA
-           MOVE    SPA-HOSPID          TO  SPTID-HOSPID
+           MOVE    SPA-HOSPNUM         TO  SPTID-HOSPNUM
            MOVE    PTINF-PTID          TO  SPTID-PTID
            CALL    "ORCSPTID"          USING
                                            ORCSPTIDAREA
-                                           SPA-1009-TBL
+                                           SPA-AREA
            IF      SPTID-RC            =   ZERO
                MOVE    SPTID-PTNUM     TO  SPA-P02Q1-TPTNUM (IDX)
            END-IF
@@ -592,7 +592,7 @@
            MOVE    SPA-P02Q1-TPTID(IDX)    TO  SPA-P02Q1-PTID
       *
            INITIALIZE                      PTINF-REC
-           MOVE    SPA-HOSPID          TO  PTINF-HOSPID
+           MOVE    SPA-HOSPNUM          TO  PTINF-HOSPNUM
            MOVE    SPA-P02Q1-TPTID(IDX)
                                        TO  PTINF-PTID
       *
@@ -615,11 +615,11 @@
       *
       *    患者番号
            INITIALIZE                      ORCSPTIDAREA
-           MOVE    SPA-HOSPID          TO  SPTID-HOSPID
+           MOVE    SPA-HOSPNUM         TO  SPTID-HOSPNUM
            MOVE    PTINF-PTID          TO  SPTID-PTID
            CALL    "ORCSPTID"          USING
                                            ORCSPTIDAREA
-                                           SPA-1009-TBL
+                                           SPA-AREA
            IF      SPTID-RC            =   ZERO
                MOVE    SPTID-PTNUM     TO  SPA-P02Q1-PTNUM
            END-IF
@@ -646,7 +646,7 @@
       *
       *    保険情報検索
            INITIALIZE                  PTHKNINF-REC
-           MOVE    PTINF-HOSPID        TO  PTHKN-HOSPID
+           MOVE    PTINF-HOSPNUM       TO  PTHKN-HOSPNUM
            MOVE    PTINF-PTID          TO  PTHKN-PTID
       *
            MOVE    PTHKNINF-REC        TO  MCPDATA-REC
@@ -1362,9 +1362,9 @@
        910-DBSELECT-SEC                SECTION.
       *
            MOVE    "DBSELECT"      TO  MCP-FUNC
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
        910-DBSELECT-EXT.
@@ -1375,9 +1375,9 @@
        920-DBFETCH-SEC                 SECTION.
       *
            MOVE    "DBFETCH"       TO  MCP-FUNC
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
       *
@@ -1390,9 +1390,9 @@
        990-DBCLOSE-SEC         SECTION.
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
        990-DBCLOSE-EXT.
@@ -1404,9 +1404,9 @@
        900-PUT-WINDOW              SECTION.
       *
            MOVE   "PUTWINDOW"       TO  MCP-FUNC.
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
        900-PUT-WINDOW-EXT.

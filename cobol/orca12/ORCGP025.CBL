@@ -32,6 +32,7 @@
       *  01.00.03    MCC-多々納   01/07/03  日付入力チェックサブ追加
       *  02.00.01    NACL-多々納  02/07/31  パラメタファイルをＤＢへ
       *  02.00.02    NACL-多々納  05/11/11  MONFUNC 対応 他
+      *  03.05.00    NACL-多々納  07/05/XX  グループ診療対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -191,7 +192,7 @@
       **********************  REPLACING  //KYUSEI-// BY //LNK-KYU-//.
       *        変更前の開始日・終了日（更新時使用）
       *        03  LNK-KYU-KEY-O.
-      *            05  LNK-KYU-HOSPID-O       PIC X(24).
+      *            05  LNK-KYU-HOSPNUM-O       PIC X(24).
       *            05  LNK-KYU-PTID-O         PIC 9(10).
       *            05  LNK-KYU-CHGYMD-O       PIC X(08).
       *
@@ -249,6 +250,8 @@
            COPY    "P100.INC".
            COPY    "P02X.INC".
            COPY    "P02S.INC".
+           COPY    "P02Q.INC".
+           COPY    "P02Q1.INC".
            COPY    "PERR.INC".
            COPY    "PID1.INC".
       *
@@ -431,9 +434,8 @@
       *
            MOVE    ZERO                TO  FLG-SRYKARRK
            MOVE    SPACE               TO  SRYKARRK-REC
-      *****MOVE    SPA-HOSPID          TO  KARRK-HOSPID
-           MOVE    SPA-GMN-PTID        TO  KARRK-PTID
            MOVE    SPA-HOSPNUM         TO  KARRK-HOSPNUM
+           MOVE    SPA-GMN-PTID        TO  KARRK-PTID
            MOVE    SRYKARRK-REC        TO  MCPDATA-REC
       *
            MOVE    "tbl_srykarrk"      TO  MCP-TABLE
@@ -1279,12 +1281,11 @@
       *
            MOVE    ZERO                  TO  FLG-JYURRK
            MOVE    SPACE                 TO  JYURRK-REC
-      *****MOVE    SPA-HOSPID            TO  JYURRK-HOSPID
+           MOVE    SPA-HOSPNUM           TO  JYURRK-HOSPNUM
            MOVE    SPA-GMN-PTID          TO  JYURRK-PTID
            MOVE    WRK-SRYKA             TO  JYURRK-SRYKA
            MOVE    "2"                   TO  JYURRK-NYUGAIKBN
       *
-           MOVE    SPA-HOSPNUM           TO  JYURRK-HOSPNUM
            MOVE    JYURRK-REC            TO  MCPDATA-REC
            MOVE    "tbl_jyurrk"          TO  MCP-TABLE
            MOVE    "key7"                TO  MCP-PATHNAME
@@ -1486,10 +1487,9 @@
        910-DBSELECT-SEC                SECTION.
       *
            MOVE    "DBSELECT"      TO  MCP-FUNC
-           CALL    "ORCDBMAIN"     USING
-                                       MCPAREA
-                                       MCPDATA-REC
-                                       SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
        910-DBSELECT-EXT.
@@ -1500,10 +1500,9 @@
        920-DBFETCH-SEC                 SECTION.
       *
            MOVE    "DBFETCH"       TO  MCP-FUNC
-           CALL    "ORCDBMAIN"     USING
-                                       MCPAREA
-                                       MCPDATA-REC
-                                       SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
       *
@@ -1516,10 +1515,9 @@
        990-DBCLOSE-SEC         SECTION.
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           CALL    "ORCDBMAIN"         USING
-                                           MCPAREA
-                                           MCPDATA-REC
-                                           SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
        990-DBCLOSE-EXT.
@@ -1530,10 +1528,9 @@
        900-PUT-WINDOW              SECTION.
       *
            MOVE   "PUTWINDOW"       TO  MCP-FUNC.
-           CALL   "ORCDBMAIN"       USING
-                                        MCPAREA
-                                        MCPDATA-REC
-                                        SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
            .
        900-PUT-WINDOW-EXT.
            EXIT.

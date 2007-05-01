@@ -39,6 +39,7 @@
       *  02.00.05    NACL-¬ø°π«º  05/11/11  MONFUNC ¬–±˛ ¬æ
       *  02.00.06    NACL-¬ø°π«º  06/03/10  ¿∫ø¿ƒÃ±°°¢ÃææŒ —ππ¬–±˛
       *  03.02.00    NACL-¬ø°π«º  06/09/07  œ∑Œ °ª„«Ø∂‚ºıµÎæ⁄ƒ…≤√
+      *  03.05.00    NACL-¬ø°π«º  07/05/XX  •∞•Î°º•◊ø«Œ≈¬–±˛
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -243,6 +244,8 @@
            COPY    "P100.INC".
            COPY    "P02X.INC".
            COPY    "P02S.INC".
+           COPY    "P02Q.INC".
+           COPY    "P02Q1.INC".
            COPY    "PERR.INC".
            COPY    "PID1.INC".
       *
@@ -519,6 +522,7 @@
                  IF     (SPA-NAI24-KOHNUM (SPA-NAI24-FTNSELNUM)
                                            =   "021"
                                            OR  "015"
+                                           OR  "281"
                                            OR  "016"     )  AND
                       (SPA-NAI24-TKOHSTYMD (SPA-NAI24-FTNSELNUM)
                                            >=   "20060401"  )
@@ -1034,8 +1038,8 @@
                        MOVE    ALL "9"     TO  LNK-TSY-UPYMD      (IDX)
                    ELSE
       **************    —ππ¡∞•≠°º≈æ¡˜
-      *                MOVE    LNK-TSY-HOSPID (IDX)
-      *                                    TO  LNK-TSY-HOSPID-O   (IDX)
+      *                MOVE    LNK-TSY-HOSPNUM (IDX)
+      *                                    TO  LNK-TSY-HOSPNUM-O   (IDX)
       *                MOVE    LNK-TSY-PTID   (IDX)
       *                                    TO  LNK-TSY-PTID-O     (IDX)
       *                MOVE    LNK-TSY-NINSTYMD (IDX)
@@ -1064,7 +1068,6 @@
                        ADD     1               TO  IDY
       *
                        INITIALIZE                  LNK-TSY-REC (IDY)
-      *****************MOVE    SPA-HOSPID      TO  LNK-TSY-HOSPID (IDY)
                        MOVE    SPA-HOSPNUM     TO  LNK-TSY-HOSPNUM (IDY)
                        MOVE    SPA-GMN-PTID    TO  LNK-TSY-PTID (IDY)
                        MOVE    SPA-GMN24-TSYDPSTYMD (IDX)
@@ -1106,8 +1109,6 @@
            MOVE    SPA-HOSPNUM         TO  PARA-HOSPNUM
            MOVE    PARA-REC            TO  MCPDATA-REC
       *
-           MOVE    SPA-HOSPNUM         TO  PARA-HOSPNUM
-           MOVE    PARA-REC            TO  MCPDATA-REC
            MOVE    "tbl_para"          TO  MCP-TABLE
            MOVE    "key4"              TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
@@ -1134,10 +1135,9 @@
                MOVE    "DBINSERT"          TO  MCP-FUNC
                MOVE    "tbl_para"          TO  MCP-TABLE
                MOVE    "key"               TO  MCP-PATHNAME
-               CALL    "ORCDBMAIN"         USING
-                                               MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
+                                                   MCPDATA-REC
+                                                   SPA-AREA
                IF      MCP-RC          NOT =   ZERO
                    DISPLAY "P02 PARA INSERT ERR:"  MCP-RC
                            ",KEY:" PARA-KEY(1:42)
@@ -1150,10 +1150,9 @@
                MOVE    "DBUPDATE"          TO  MCP-FUNC
                MOVE    "tbl_para"          TO  MCP-TABLE
                MOVE    "key"               TO  MCP-PATHNAME
-               CALL    "ORCDBMAIN"         USING
-                                               MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
+                                                   MCPDATA-REC
+                                                   SPA-AREA
                IF      MCP-RC          NOT =   ZERO
                    DISPLAY "P02 PARA UPDATE ERR:"  MCP-RC
                            ",KEY:" PARA-KEY(1:42)
@@ -1182,8 +1181,8 @@
                        MOVE    ALL "9"     TO  LNK-TNK-UPYMD   (IDX)
                    ELSE
       ************      —ππ¡∞•≠°º≈æ¡˜
-      *                MOVE    LNK-TNK-HOSPID (IDX)
-      *                                    TO  LNK-TNK-HOSPID-O(IDX)
+      *                MOVE    LNK-TNK-HOSPNUM (IDX)
+      *                                    TO  LNK-TNK-HOSPNUM-O(IDX)
       *                MOVE    LNK-TNK-PTID (IDX)
       *                                    TO  LNK-TNK-PTID-O  (IDX)
       *                MOVE    LNK-TNK-STYMD (IDX)
@@ -1215,7 +1214,6 @@
                        ADD     1               TO  IDY
       *
                        INITIALIZE                  LNK-TNK-REC (IDY)
-      *****************MOVE    SPA-HOSPID      TO  LNK-TNK-HOSPID (IDY)
                        MOVE    SPA-HOSPNUM     TO  LNK-TNK-HOSPNUM (IDY)
                        MOVE    SPA-GMN-PTID    TO  LNK-TNK-PTID   (IDY)
                        MOVE    SPA-GMN24-TNKDPSTYMD (IDX)
@@ -1281,10 +1279,10 @@
                MOVE    PARA-REC            TO  MCPDATA-REC
                MOVE    "DBINSERT"          TO  MCP-FUNC
                MOVE    "tbl_para"          TO  MCP-TABLE
-               CALL    "ORCDBMAIN"         USING
-                                               MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+               MOVE    "key"               TO  MCP-PATHNAME
+grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
+                                                   MCPDATA-REC
+                                                   SPA-AREA
                IF      MCP-RC          NOT =   ZERO
                    DISPLAY "P02 PARA INSERT ERR:"  MCP-RC
                            ",KEY2:" PARA-KEY(1:42)
@@ -1297,10 +1295,9 @@
                MOVE    "DBUPDATE"          TO  MCP-FUNC
                MOVE    "tbl_para"          TO  MCP-TABLE
                MOVE    "key"               TO  MCP-PATHNAME
-               CALL    "ORCDBMAIN"         USING
-                                               MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
+                                                   MCPDATA-REC
+                                                   SPA-AREA
                IF      MCP-RC          NOT =   ZERO
                    DISPLAY "P02 PARA UPDATE ERR:"  MCP-RC
                            ",KEY2:" PARA-KEY(1:42)
@@ -1522,6 +1519,7 @@
                IF     (SPA-NAI24-KOHNUM (SPA-NAI24-FTNSELNUM)
                                            =   "021"
                                            OR  "015"
+                                           OR  "281"
                                            OR  "016"     )  AND
                       (SPA-NAI24-TKOHSTYMD (SPA-NAI24-FTNSELNUM)
                                            >=   "20060401"  )
@@ -1764,7 +1762,6 @@
       *
       *    ∏¯»Ò…È√¥ ‘Ω∏
            INITIALIZE                      PTKOHFTN-REC
-      *****MOVE    SPA-HOSPID          TO  PTKOHFTN-HOSPID
            MOVE    SPA-HOSPNUM         TO  PTKOHFTN-HOSPNUM
            MOVE    SPA-GMN-PTID        TO  PTKOHFTN-PTID
            MOVE    SPA-NAI24-KOHID  (SPA-NAI24-FTNSELNUM)
@@ -1807,10 +1804,9 @@
            MOVE    "DBDELETE"          TO  MCP-FUNC
            MOVE    "tbl_para"          TO  MCP-TABLE
            MOVE    "del11"             TO  MCP-PATHNAME
-           CALL    "ORCDBMAIN"         USING
-                                           MCPAREA
-                                           MCPDATA-REC
-                                           SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            MOVE    ZERO                TO  WRK-PARA-EDANUM
       *
@@ -2805,9 +2801,9 @@
       *    •—•È•·•ø≈–œø
            MOVE    "P02"               TO  PARA-GYOUMUID
            MOVE    SPA-TERMID          TO  PARA-TERMID
+           MOVE    SPA-HOSPNUM         TO  PARA-HOSPNUM
            MOVE    PARA-REC            TO  HZN-PARA-REC
       *
-           MOVE    SPA-HOSPNUM         TO  PARA-HOSPNUM
            MOVE    PARA-REC            TO  MCPDATA-REC
            MOVE    "tbl_para"          TO  MCP-TABLE
            MOVE    "key4"              TO  MCP-PATHNAME
@@ -2825,30 +2821,26 @@
       *
            MOVE    HZN-PARA-REC        TO  PARA-REC
            IF      FLG-PARA            =   1
-               MOVE    SPA-HOSPNUM         TO  PARA-HOSPNUM
                MOVE    PARA-REC            TO  MCPDATA-REC
                MOVE    "DBINSERT"          TO  MCP-FUNC
                MOVE    "tbl_para"          TO  MCP-TABLE
                MOVE    "key"               TO  MCP-PATHNAME
-               CALL    "ORCDBMAIN"         USING
-                                               MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
+                                                   MCPDATA-REC
+                                                   SPA-AREA
                IF      MCP-RC          NOT =   ZERO
                    DISPLAY "P02 PARA INSERT ERR:"  MCP-RC
                            ",KEY2:" PARA-KEY
                            ",EDANUM:" PARA-EDANUM
                END-IF
            ELSE
-               MOVE    SPA-HOSPNUM         TO  PARA-HOSPNUM
                MOVE    PARA-REC            TO  MCPDATA-REC
                MOVE    "DBUPDATE"          TO  MCP-FUNC
                MOVE    "tbl_para"          TO  MCP-TABLE
                MOVE    "key"               TO  MCP-PATHNAME
-               CALL    "ORCDBMAIN"         USING
-                                               MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
+                                                   MCPDATA-REC
+                                                   SPA-AREA
                IF      MCP-RC          NOT =   ZERO
                    DISPLAY "P02 PARA UPDATE ERR:"  MCP-RC
                            ",KEY2:" PARA-KEY
@@ -2885,10 +2877,9 @@
        910-DBSELECT-SEC                SECTION.
       *
            MOVE    "DBSELECT"      TO  MCP-FUNC
-           CALL    "ORCDBMAIN"     USING
-                                       MCPAREA
-                                       MCPDATA-REC
-                                       SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
        910-DBSELECT-EXT.
@@ -2899,10 +2890,9 @@
        920-DBFETCH-SEC                 SECTION.
       *
            MOVE    "DBFETCH"       TO  MCP-FUNC
-           CALL    "ORCDBMAIN"     USING
-                                       MCPAREA
-                                       MCPDATA-REC
-                                       SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
       *
@@ -2915,10 +2905,9 @@
        990-DBCLOSE-SEC         SECTION.
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           CALL    "ORCDBMAIN"         USING
-                                           MCPAREA
-                                           MCPDATA-REC
-                                           SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
        990-DBCLOSE-EXT.

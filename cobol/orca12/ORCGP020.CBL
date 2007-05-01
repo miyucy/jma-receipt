@@ -34,6 +34,7 @@
       *  02.00.01    NACL-多々納  02/07/31  パラメタファイルをＤＢへ
       *  02.00.02    NACL-多々納  02/11/26  診療科・ドクター件数修正
       *  02.00.03    NACL-多々納  05/11/11  MONFUNC 対応 他
+      *  03.05.00    NACL-多々納  07/05/XX  グループ診療対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -249,6 +250,8 @@
            COPY    "P100.INC".
            COPY    "P02X.INC".
            COPY    "P02S.INC".
+           COPY    "P02Q.INC".
+           COPY    "P02Q1.INC".
            COPY    "PERR.INC".
            COPY    "PID1.INC".
       *
@@ -535,10 +538,9 @@
       *
       *    予約マスターより
            MOVE    SPACE               TO  YYK-REC
-      *****MOVE    SPA-HOSPID          TO  YYK-HOSPID
+           MOVE    SPA-HOSPNUM          TO  YYK-HOSPNUM
            MOVE    SPA-GMN-PTID            TO  YYK-PTID
            MOVE    SPA-SYSYMD          TO  YYK-YYKYMD
-           MOVE    SPA-HOSPNUM         TO  YYK-HOSPNUM
            MOVE    YYK-REC             TO  MCPDATA-REC
            MOVE    "tbl_yyk"           TO  MCP-TABLE
            MOVE    "key4"              TO  MCP-PATHNAME
@@ -1507,10 +1509,9 @@
            INITIALIZE                       P0201
            INITIALIZE                       SPA-NAI201-AREA
       *
-      *****MOVE  SPA-HOSPID                 TO  UKE-HOSPID.
+           MOVE  SPA-HOSPNUM                 TO  UKE-HOSPNUM.
            MOVE  SPA-SYSYMD                 TO  UKE-UKEYMD.
            MOVE  ZERO                       TO  UKE-PTID.
-           MOVE  SPA-HOSPNUM                TO  UKE-HOSPNUM
            MOVE  UKETUKE-REC                TO  MCPDATA-REC.
       *
            MOVE    "tbl_uketuke"       TO  MCP-TABLE
@@ -1607,17 +1608,15 @@
            MOVE    "DBDELETE"          TO  MCP-FUNC
            MOVE    "tbl_para"          TO  MCP-TABLE
            MOVE    "del3"              TO  MCP-PATHNAME
-           CALL    "ORCDBMAIN"         USING
-                                           MCPAREA
-                                           MCPDATA-REC
-                                           SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            INITIALIZE                  UKETUKE-REC
-      *****MOVE    SPA-HOSPID          TO  UKE-HOSPID
+           MOVE    SPA-HOSPNUM          TO  UKE-HOSPNUM
            MOVE    SPA-SYSYMD          TO  UKE-UKEYMD
            MOVE    SPA-GMN-PTID        TO  UKE-PTID
       *
-           MOVE    SPA-HOSPNUM         TO  UKE-HOSPNUM
            MOVE    UKETUKE-REC         TO  MCPDATA-REC
            MOVE    "tbl_uketuke"       TO  MCP-TABLE
            MOVE    "key2"              TO  MCP-PATHNAME
@@ -1685,14 +1684,14 @@
                ELSE
                    IF      SPA-NAI20-UKEID (IDX)  NOT =   ZERO
                        INITIALIZE                      UKETUKE-REC
-      *****************MOVE    SPA-HOSPID          TO  UKE-HOSPID
+                       MOVE    SPA-HOSPNUM         TO  UKE-HOSPNUM
                        MOVE    SPA-SYSYMD          TO  UKE-UKEYMD
                        MOVE    SPA-GMN-NAME        TO  UKE-NAME
                        MOVE    SPA-NAI20-UKEID(IDX)
                                                    TO  UKE-UKEID
                    ELSE
                        INITIALIZE                      UKETUKE-REC
-      *****************MOVE    SPA-HOSPID          TO  UKE-HOSPID
+                       MOVE    SPA-HOSPNUM         TO  UKE-HOSPNUM
                        MOVE    SPA-SYSYMD          TO  UKE-UKEYMD
                        MOVE    99999               TO  UKE-UKEID
                        MOVE    SPA-GMN-NAME        TO  UKE-NAME
@@ -1760,10 +1759,9 @@
            MOVE    "DBINSERT"          TO  MCP-FUNC
            MOVE    "tbl_para"          TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
-           CALL    "ORCDBMAIN"         USING
-                                           MCPAREA
-                                           MCPDATA-REC
-                                           SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
           IF      MCP-RC          NOT =   ZERO
                DISPLAY "P02 PARA INSERT ERR:"  MCP-RC
                            ",KEY2:" PARA-KEY
@@ -1845,10 +1843,9 @@
        910-DBSELECT-SEC                SECTION.
       *
            MOVE    "DBSELECT"      TO  MCP-FUNC
-           CALL    "ORCDBMAIN"     USING
-                                       MCPAREA
-                                       MCPDATA-REC
-                                       SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
        910-DBSELECT-EXT.
@@ -1859,10 +1856,9 @@
        920-DBFETCH-SEC                 SECTION.
       *
            MOVE    "DBFETCH"       TO  MCP-FUNC
-           CALL    "ORCDBMAIN"     USING
-                                       MCPAREA
-                                       MCPDATA-REC
-                                       SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
       *
@@ -1875,10 +1871,9 @@
        990-DBCLOSE-SEC         SECTION.
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           CALL    "ORCDBMAIN"         USING
-                                           MCPAREA
-                                           MCPDATA-REC
-                                           SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
        990-DBCLOSE-EXT.
@@ -1890,10 +1885,9 @@
        900-PUT-WINDOW              SECTION.
       *
            MOVE   "PUTWINDOW"       TO  MCP-FUNC.
-           CALL   "ORCDBMAIN"       USING
-                                        MCPAREA
-                                        MCPDATA-REC
-                                        SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
        900-PUT-WINDOW-EXT.

@@ -43,6 +43,7 @@
       * 03.00.01     NACL-多々納  06/08/25  平成１８年１０月改正対応
       *                                     （老人割合変更）
       * 03.04.00     NACL-多々納  06/10/30  受給者検証番号警告追加
+      * 03.05.00     NACL-多々納  07/05/XX  グループ診療対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -409,6 +410,15 @@
                END-IF
                MOVE    20                  TO  SPA-GMN-CUR
            END-IF
+      *    老人公費は８桁であること
+           IF     (SPA-GMN-FTNJANUM (IDX-K)  NOT =   SPACE ) AND
+                  (SPA-GMN-KOHNUM   (IDX-K)  =   "027" ) AND
+                  (KANACHK-MAX         NOT =   8     )
+               IF      SPA-ERRCD           =   SPACE
+                   MOVE    "0071"              TO  SPA-ERRCD
+               END-IF
+               MOVE    20                  TO  SPA-GMN-CUR
+           END-IF
       *
            IF     (SPA-GMN-FTNJANUM (IDX-K)  NOT =   SPACE ) AND
                   (SPA-ERRCD           =   SPACE )  AND
@@ -427,10 +437,9 @@
       *
       *    保険者番号　検索チェック
            INITIALIZE                    HKNJAINF-REC
-      *****MOVE    SPA-HOSPID            TO  HKNJA-HOSPID
+           MOVE    SPA-HOSPNUM           TO  HKNJA-HOSPNUM
            MOVE    SPA-GMN-FTNJANUM (IDX-K)
                                          TO  HKNJA-HKNJANUM
-           MOVE    SPA-HOSPNUM           TO  HKNJA-HOSPNUM
            MOVE    HKNJAINF-REC          TO  MCPDATA-REC
            MOVE    "tbl_hknjainf"        TO  MCP-TABLE
            MOVE    "key"                 TO  MCP-PATHNAME
@@ -552,11 +561,10 @@
       *
            MOVE    ZERO                TO  FLG-HKNNUM-CHK
            MOVE    SPACE               TO  HKNNUM-REC
-      *****MOVE    HKNJA-HOSPID        TO  HKN-HOSPID
+           MOVE    HKNJA-HOSPNUM       TO  HKN-HOSPNUM
            MOVE    HKNJA-HKNNUM        TO  HKN-HKNNUM
            MOVE    ZERO                TO  HKN-PAYKBN
       *
-           MOVE    SPA-HOSPNUM         TO  HKN-HOSPNUM
            MOVE    HKNNUM-REC          TO  MCPDATA-REC
            MOVE    "tbl_hknnum"        TO  MCP-TABLE
            MOVE    "key7"              TO  MCP-PATHNAME
@@ -631,12 +639,11 @@
            END-IF
       *
            INITIALIZE                  HKNNUM-REC
-      *****MOVE    SPA-HOSPID          TO  HKN-HOSPID
+           MOVE    SPA-HOSPNUM         TO  HKN-HOSPNUM
            MOVE    SPA-GMN-FTNJANUM(IDX-K) (1:2)
                                        TO  HKN-HBTNUM
            MOVE    SPA-SYSYMD          TO  HKN-TEKSTYMD
            MOVE    SPA-SYSYMD          TO  HKN-TEKEDYMD
-           MOVE    SPA-HOSPNUM         TO  HKN-HOSPNUM
            MOVE    HKNNUM-REC          TO  MCPDATA-REC
            MOVE    "tbl_hknnum"       TO  MCP-TABLE
            MOVE    "key4"              TO  MCP-PATHNAME
@@ -1278,7 +1285,7 @@
            MOVE    SPACE               TO  WRK-HKN2-TEKEDYMD
       *
            MOVE    SPACE               TO  HKNNUM-REC
-      *****MOVE    SPA-HOSPID          TO  HKN-HOSPID
+           MOVE    SPA-HOSPNUM          TO  HKN-HOSPNUM
            MOVE    SPA-GMN-KOHNUM(IDX-K)
                                        TO  HKN-HKNNUM
            IF     (SPA-GMN-KOHNUM(IDX-K)   =   "027"  )  AND
@@ -1293,7 +1300,6 @@
                                            TO  HKN-PAYKBN
            END-IF
       *
-           MOVE    SPA-HOSPNUM         TO  HKN-HOSPNUM
            MOVE    HKNNUM-REC          TO  MCPDATA-REC
            MOVE    "tbl_hknnum"        TO  MCP-TABLE
            MOVE    "key7"              TO  MCP-PATHNAME
@@ -2218,13 +2224,12 @@
       *
       *    開始日セット
            MOVE    SPACE               TO  HKNNUM-REC
-      *****MOVE    SPA-HOSPID          TO  HKN-HOSPID
+           MOVE    SPA-HOSPNUM          TO  HKN-HOSPNUM
            MOVE    SPA-GMN-KOHNUM(IDX-K)
                                        TO  HKN-HKNNUM
            MOVE    SPA-NAI-PTKOH-PAYKBN (IDX-K)
                                        TO  HKN-PAYKBN
       *
-           MOVE    SPA-HOSPNUM         TO  HKN-HOSPNUM
            MOVE    HKNNUM-REC          TO  MCPDATA-REC
            MOVE    "tbl_hknnum"        TO  MCP-TABLE
            MOVE    "key7"              TO  MCP-PATHNAME
@@ -2340,13 +2345,12 @@
       *
       *    開始日セット
            MOVE    SPACE               TO  HKNNUM-REC
-      *****MOVE    SPA-HOSPID          TO  HKN-HOSPID
+           MOVE    SPA-HOSPNUM         TO  HKN-HOSPNUM
            MOVE    SPA-GMN-KOHNUM(IDX-K)
                                        TO  HKN-HKNNUM
            MOVE    SPA-NAI-PTKOH-PAYKBN (IDX-K)
                                        TO  HKN-PAYKBN
       *
-           MOVE    SPA-HOSPNUM         TO  HKN-HOSPNUM
            MOVE    HKNNUM-REC          TO  MCPDATA-REC
            MOVE    "tbl_hknnum"        TO  MCP-TABLE
            MOVE    "key7"              TO  MCP-PATHNAME
@@ -2537,10 +2541,9 @@
        910-DBSELECT-SEC                SECTION.
       *
            MOVE    "DBSELECT"      TO  MCP-FUNC
-           CALL    "ORCDBMAIN"     USING
-                                       MCPAREA
-                                       MCPDATA-REC
-                                       SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
        910-DBSELECT-EXT.
@@ -2551,10 +2554,9 @@
        920-DBFETCH-SEC                 SECTION.
       *
            MOVE    "DBFETCH"       TO  MCP-FUNC
-           CALL    "ORCDBMAIN"     USING
-                                       MCPAREA
-                                       MCPDATA-REC
-                                       SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
       *
@@ -2567,10 +2569,9 @@
        990-DBCLOSE-SEC         SECTION.
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           CALL    "ORCDBMAIN"         USING
-                                           MCPAREA
-                                           MCPDATA-REC
-                                           SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
        990-DBCLOSE-EXT.

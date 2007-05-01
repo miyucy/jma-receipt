@@ -66,6 +66,12 @@
       *  03.04.01    NACL-ÌçÏÆ    06/11/20  ¹â³Û°ÑÇ¤Ê§¤¤À©ÅÙ¡¢¹â³Û£´²óÌÜ°Ê¹ß
       *                                     ÂÐ±þ
       *  03.04.02    NACL-ÌçÏÆ    06/11/29  ÊÝ¸±ÁÈ¤ß¹ç¤ï¤»ºîÀ®¾ò·ï½¤Àµ
+      *  03.04.03    NACL-ÌçÏÆ    07/01/25  ¡ã²¬»³¡ä£°£¹£±¡Ü½Å¿´¤Î
+      *                                     ÊÝ¸±ÁÈ¹ç¤»ºîÀ®
+      *  03.03.04    NACL-ÌçÏÆ    07/02/15  ¡ãµÜºê¡ä£°£¹£±¡Ü¾ã³²¤Î
+      *                                     ÊÝ¸±ÁÈ¹ç¤»ºîÀ®
+      *  03.04.05    NACL-ÌçÏÆ    07/02/21  ¹â³Û¸½ÊªµëÉÕÂÐ±þ
+      *  03.05.00    NACL-Â¿¡¹Ç¼  07/05/XX  ¥°¥ë¡¼¥×¿ÇÎÅÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -525,7 +531,7 @@
                IF     (PTKOH-SAKJOKBN  NOT =   SPACE          )  OR
                       (PTKOH-KOHNUM        =   "978" OR  "979" ) OR
                       (PTKOH-KOHNUM        >=  "960"   AND
-                                           <=  "965"           )
+                                           <=  "967"           )
                    CONTINUE
                ELSE
                    ADD     1               TO  CNT-KOH
@@ -562,6 +568,9 @@
            MOVE    PTHKN-TEKEDYMD       TO  WRK-HKN-TEKEDYMD (CNT-HKN)
            MOVE    PTHKN-SAKJOKBN       TO  WRK-HKN-SAKJOKBN (CNT-HKN)
       *
+      *TEST
+           DISPLAY "330-HKNINF-SET-SEC PTHKN-HKNNUM:"  PTHKN-HKNNUM
+      *TEST
       *    À©ÅÙÌ¾Åù¤ÏËè²óÊÔ½¸¤¹¤ë
       *****IF  PTHKN-SBT                =   SPACE
                INITIALIZE                   WRK-KENSAKU-AREA
@@ -573,7 +582,13 @@
                MOVE    PTHKN-TEKEDYMD   TO  WRK-KEN-TEKEDYMD
       *----(01.00.01) LINE MOD END   ---------------------------------
       *    ÊÝ¸±ÈÖ¹æ¥Þ¥¹¥¿¤è¤êÀ©ÅÙÌ¾¼èÆÀ
+      *TEST
+           DISPLAY " WRK-KEN-HKNNUM:"  WRK-KEN-HKNNUM
+      *TEST
            PERFORM 4410-HKNKOH-KAKUNIN-SEC
+      *TEST
+           DISPLAY " WRK-KEN-ERFLG:"  WRK-KEN-ERFLG
+      *TEST
            IF  WRK-KEN-ERFLG    NOT =   SPACE
                MOVE    "0065"       TO  SPA-ERRCD
            ELSE
@@ -772,10 +787,9 @@
            MOVE    "DBDELETE"          TO  MCP-FUNC
            MOVE    "tbl_para"          TO  MCP-TABLE
            MOVE    "del3"              TO  MCP-PATHNAME
-           CALL    "ORCDBMAIN"         USING
-                                           MCPAREA
-                                           MCPDATA-REC
-                                           SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
       *   ¼çÊÝ¸±Ãæ¿´¡¡ÁÈ¹ç¤»ºîÀ®½èÍý
            PERFORM     57011-SYUHKN-HEN-SEC
@@ -829,8 +843,7 @@
       ******** INITIALIZE                  NC01PARA-REC
       *        MOVE    SPA-TERMID      TO  PARA-NC01-TERMID
       *********MOVE    CNT-COMB        TO  PARA-NC01-EDANUM
-      *********MOVE    SPA-HOSPID      TO  WRK-LCOMB-HOSPID     (IDZ)
-               MOVE    SPA-HOSPNUM     TO  WRK-LCOMB-HOSPNUM    (IDZ)
+      *D       MOVE    SPA-HOSPNUM      TO  WRK-LCOMB-HOSPNUM     (IDZ)
                MOVE    SPA-PTID        TO  WRK-LCOMB-PTID       (IDZ)
                MOVE    ZERO            TO  WRK-LCOMB-HKNCOMBINUM(IDZ)
       ******** MOVE    WRK-LCOMB-REC (IDZ)
@@ -851,16 +864,14 @@
                MOVE    "DBINSERT"          TO  MCP-FUNC
                MOVE    "tbl_para"          TO  MCP-TABLE
                MOVE    "key"               TO  MCP-PATHNAME
-               CALL    "ORCDBMAIN"         USING
-                                               MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
+                                                   MCPDATA-REC
+                                                   SPA-AREA
               ELSE
                IF   (WRK-LCOMB-TEKSTYMD(IDZ)  < WRK-SYOCYO-TEKSTYMD)
                AND  (WRK-SYOCYO-TEKSTYMD  NOT = 99999999           )
                   ADD     1               TO  CNT-COMB
-      ************MOVE    SPA-HOSPID      TO  WRK-LCOMB-HOSPID     (IDZ)
-                  MOVE    SPA-HOSPNUM     TO  WRK-LCOMB-HOSPNUM    (IDZ)
+    ****          MOVE    SPA-HOSPNUM      TO  WRK-LCOMB-HOSPNUM   (IDZ)
                   MOVE    SPA-PTID        TO  WRK-LCOMB-PTID       (IDZ)
                   MOVE    ZERO            TO  WRK-LCOMB-HKNCOMBINUM(IDZ)
                   INITIALIZE                      PARA-REC
@@ -890,16 +901,14 @@
                   MOVE    "DBINSERT"          TO  MCP-FUNC
                   MOVE    "tbl_para"          TO  MCP-TABLE
                   MOVE    "key"               TO  MCP-PATHNAME
-                  CALL    "ORCDBMAIN"         USING
-                                                  MCPAREA
-                                                  MCPDATA-REC
-                                                  SPA-AREA
+grpsys            CALL    "ORCDBMAIN"         USING   MCPAREA
+                                                      MCPDATA-REC
+                                                      SPA-AREA
                END-IF
                IF   (WRK-LCOMB-TEKEDYMD(IDZ)  > WRK-SYOCYO-TEKEDYMD)
                AND  (WRK-SYOCYO-TEKEDYMD  NOT = ZERO               )
                   ADD     1               TO  CNT-COMB
-      ************MOVE    SPA-HOSPID      TO  WRK-LCOMB-HOSPID     (IDZ)
-                  MOVE    SPA-HOSPNUM     TO  WRK-LCOMB-HOSPNUM    (IDZ)
+   *****          MOVE    SPA-HOSPNUM     TO  WRK-LCOMB-HOSPNUM   (IDZ)
                   MOVE    SPA-PTID        TO  WRK-LCOMB-PTID       (IDZ)
                   MOVE    ZERO            TO  WRK-LCOMB-HKNCOMBINUM(IDZ)
                   INITIALIZE                      PARA-REC
@@ -929,10 +938,9 @@
                   MOVE    "DBINSERT"          TO  MCP-FUNC
                   MOVE    "tbl_para"          TO  MCP-TABLE
                   MOVE    "key"               TO  MCP-PATHNAME
-                  CALL    "ORCDBMAIN"         USING
-                                                  MCPAREA
-                                                  MCPDATA-REC
-                                                  SPA-AREA
+grpsys            CALL    "ORCDBMAIN"         USING   MCPAREA
+                                                      MCPDATA-REC
+                                                      SPA-AREA
                END-IF
               END-IF
       ***    END-IF
@@ -3559,6 +3567,28 @@
                                 PERFORM 5701413-SYUKOH-HJO-SEC
                              END-IF
                             END-IF
+                          WHEN     33
+                            IF  WRK-SRT-HJO-KOHNO  =  "091"
+                             IF WRK-KOH-HKNNUM(WRK-COMB-HJOIDX)(2:2)
+                                                          = "80"
+                                PERFORM 5701413-SYUKOH-HJO-SEC
+                             END-IF
+                            ELSE
+                             IF  WRK-SRT-HJO-KOHNO  NOT  =  "020"
+                                PERFORM 5701413-SYUKOH-HJO-SEC
+                             END-IF
+                            END-IF
+                          WHEN     45
+                            IF  WRK-SRT-HJO-KOHNO  =  "091"
+                             IF WRK-KOH-HKNNUM(WRK-COMB-HJOIDX)(2:2)
+                                                          = "95"
+                                PERFORM 5701413-SYUKOH-HJO-SEC
+                             END-IF
+                            ELSE
+                             IF  WRK-SRT-HJO-KOHNO  NOT  =  "020"
+                                PERFORM 5701413-SYUKOH-HJO-SEC
+                             END-IF
+                            END-IF
                           WHEN     OTHER
                              IF  WRK-SRT-HJO-KOHNO  NOT  =  "020"
                                PERFORM 5701413-SYUKOH-HJO-SEC
@@ -4413,7 +4443,7 @@
                    MOVE    "3"            TO  WRK-FTN-FLG
                 END-IF
              END-IF
-             IF   SPA-PREFNUM  =  01
+             IF   SPA-PREFNUM  =  01 OR 33 OR 45
                IF  ((WRK-KCOMB-KOH1-HKNKOHSBTKBN (IDX2)  =  "3" ) AND
                     (WRK-KCOMB-KOH2HKNNUM (IDX2)         = "091"))
                OR  ( WRK-KCOMB-KOH1HKNNUM (IDX2)         = "091" )
@@ -4928,9 +4958,8 @@
       *
            MOVE    ZERO               TO  FLG-HKNNUM
            MOVE    SPACE              TO  HKNNUM-REC
-      *****MOVE    SPA-HOSPID         TO  HKN-HOSPID
+           MOVE    SPA-HOSPNUM         TO  HKN-HOSPNUM
            MOVE    WRK-KEN-HKNNUM     TO  HKN-HKNNUM
-           MOVE    SPA-HOSPNUM        TO  HKN-HOSPNUM
            MOVE    HKNNUM-REC         TO  MCPDATA-REC
            MOVE    "tbl_hknnum"       TO  MCP-TABLE
            MOVE    "key2"             TO  MCP-PATHNAME
@@ -4946,6 +4975,11 @@
                MOVE    1              TO  FLG-HKNNUM
                MOVE    "2"            TO  WRK-KEN-ERFLG
            END-IF
+      *TEST
+           DISPLAY "SPA-HOSPNUM:" SPA-HOSPNUM
+             ",WRK-KEN-HKNNUM:" WRK-KEN-HKNNUM
+             ",FLG-HKNNUM:" FLG-HKNNUM
+      *TEST
       *
            MOVE    ZERO                   TO  FLG-RJN
            PERFORM   UNTIL   FLG-HKNNUM   =   1
@@ -5084,10 +5118,9 @@
        910-DBSELECT-SEC                SECTION.
       *
            MOVE    "DBSELECT"      TO  MCP-FUNC
-           CALL    "ORCDBMAIN"     USING
-                                       MCPAREA
-                                       MCPDATA-REC
-                                       SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
        910-DBSELECT-EXT.
@@ -5098,10 +5131,9 @@
        920-DBFETCH-SEC                 SECTION.
       *
            MOVE    "DBFETCH"       TO  MCP-FUNC
-           CALL    "ORCDBMAIN"     USING
-                                       MCPAREA
-                                       MCPDATA-REC
-                                       SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
       *
@@ -5114,10 +5146,9 @@
        990-DBCLOSE-SEC         SECTION.
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           CALL    "ORCDBMAIN"         USING
-                                           MCPAREA
-                                           MCPDATA-REC
-                                           SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
        990-DBCLOSE-EXT.

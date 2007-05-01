@@ -40,6 +40,9 @@
       *  02.00.04    NACL-多々納  03/06/27  カスタマイズ帳票名取得サブ追加
       *  02.00.05    NACL-多々納  05/11/11  MONFUNC 対応 他
       *  02.00.06    NACL-多々納  06/02/27  主科対応
+      *  03.04.00    NACL-藤原    07/02/06  月途中の受給者番号変更に対応
+      *  03.04.01    NACL-多々納  07/02/16  ＱＲデータ対応
+      *  03.05.00    NACL-多々納  07/05/XX  グループ診療対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -112,6 +115,7 @@
            03  FLG-PTKOHFTN        PIC 9(01).
            03  FLG-JYURRK          PIC 9(01).
            03  FLG-PTBYOMEI        PIC 9(01).
+           03  FLG-QRCDHKN         PIC 9(01).
       *
            03  FLG-SYORI           PIC X(01).
            03  FLG-SYORI2          PIC X(01).
@@ -162,6 +166,9 @@
            03  WRK-UKEID           PIC 9(05).
            03  WRK-HKN-CNT         PIC 9(04).
            03  WRK-KOH-CNT         PIC 9(04).
+      *
+           03  WRK-MCP-TABLE       PIC X(64).
+           03  WRK-MCP-PATHNAME    PIC X(64).
       *
       *    カルテＰＧ名
            03  WRK-KARUTE-PG           PIC X(20).
@@ -244,6 +251,10 @@
       *    患者公費負担
        01  PTKOHFTN-REC.
            COPY    "CPPTKOHFTN.INC".
+      *
+      *    QRコード(被保険者証)
+       01  QRCDHKN-REC.
+           COPY    "CPQRCDHKN.INC".
       *
       *    パラメタテーブル
        01  PARA-REC.
@@ -379,17 +390,15 @@
       *
       *    公費負担額
            INITIALIZE                      PTKOHFTN-REC
-      *****MOVE    SPA-HOSPID          TO  PTKOHFTN-HOSPID
-           MOVE    SPA-GMN-PTID        TO  PTKOHFTN-PTID
            MOVE    SPA-HOSPNUM         TO  PTKOHFTN-HOSPNUM
+           MOVE    SPA-GMN-PTID        TO  PTKOHFTN-PTID
            MOVE    PTKOHFTN-REC        TO  MCPDATA-REC
            MOVE    "DBDELETE"          TO  MCP-FUNC
            MOVE    "tbl_ptkohftn"      TO  MCP-TABLE
            MOVE    "del1"              TO  MCP-PATHNAME
-           CALL    "ORCDBMAIN"         USING
-                                           MCPAREA
-                                           MCPDATA-REC
-                                           SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
       *    パラメタファイルより
            INITIALIZE                      PARA-REC
@@ -464,6 +473,12 @@
                PERFORM 2110-SYUKA-INSERT-SEC
            END-IF
       *
+      *    ＱＲ情報更新
+           IF     (SPA-ERRCD           =   SPACE )  AND
+                  (SPA-QR-SYORI    NOT =   SPACE )
+               PERFORM 2120-QRCDHKN-UPD-SEC
+           END-IF
+      *
       *    カルテ／処方箋発行処理
            PERFORM 2100-HC01-SYORI-SEC
       *
@@ -483,7 +498,6 @@
       *
            INITIALIZE                      ORCSRECEUPDAREA
            MOVE    "1"                 TO  LNK-UPD-SYORI
-      *****MOVE    SPA-HOSPID          TO  LNK-UPD-HOSPID
            MOVE    SPA-HOSPNUM         TO  LNK-UPD-HOSPNUM
            MOVE    SPA-GMN-PTID        TO  LNK-UPD-PTID
            MOVE    SPA-TERMID          TO  LNK-UPD-TERMID
@@ -504,15 +518,14 @@
       *
       *
            INITIALIZE                      PTINF-REC
-      *****MOVE    SPA-HOSPID          TO  PTINF-HOSPID
-           MOVE    SPA-GMN-PTID        TO  PTINF-PTID
            MOVE    SPA-HOSPNUM         TO  PTINF-HOSPNUM
+           MOVE    SPA-GMN-PTID        TO  PTINF-PTID
            MOVE    PTINF-REC           TO  MCPDATA-REC
            PERFORM 900-PTINF-READ-SEC
       *
            IF      FLG-PTINF           =   1
                INITIALIZE                      PTINF-REC
-      *********MOVE    SPA-HOSPID          TO  PTINF-HOSPID
+               MOVE    SPA-HOSPNUM         TO  PTINF-HOSPNUM
                MOVE    SPA-GMN-PTID        TO  PTINF-PTID
       *        入力値編集
                PERFORM 2101-PTINF-HENSYU-SEC
@@ -523,15 +536,13 @@
       *
                MOVE    SMCNDATE-HMS        TO  PTINF-UPHMS
       *
-               MOVE    SPA-HOSPNUM         TO  PTINF-HOSPNUM
                MOVE    PTINF-REC           TO  MCPDATA-REC
                MOVE    "DBINSERT"          TO  MCP-FUNC
                MOVE    "tbl_ptinf"         TO  MCP-TABLE
                MOVE    "key"               TO  MCP-PATHNAME
-               CALL    "ORCDBMAIN"         USING
-                                               MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
+                                                   MCPDATA-REC
+                                                   SPA-AREA
                IF      MCP-RC          NOT =   ZERO
                    DISPLAY "P029 PTINF INS ERR:" MCP-RC
                            ",KEY:" PTINF-KEY
@@ -546,15 +557,13 @@
       *
                MOVE    SMCNDATE-HMS        TO  PTINF-UPHMS
       *
-               MOVE    SPA-HOSPNUM         TO  PTINF-HOSPNUM
                MOVE    PTINF-REC           TO  MCPDATA-REC
                MOVE    "DBUPDATE"          TO  MCP-FUNC
                MOVE    "tbl_ptinf"         TO  MCP-TABLE
                MOVE    "key"               TO  MCP-PATHNAME
-               CALL    "ORCDBMAIN"         USING
-                                               MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
+                                                   MCPDATA-REC
+                                                   SPA-AREA
                IF      MCP-RC          NOT =   ZERO
                    DISPLAY "P029 PTINF UPD ERR:" MCP-RC
                            ",KEY:" PTINF-KEY
@@ -641,7 +650,6 @@
            MOVE    PARA-DATA-REC       TO  PTHKNINF-REC
       *
            MOVE    SPA-GMN-PTID        TO  PTHKN-PTID
-           MOVE    SPA-HOSPNUM         TO  PTHKN-HOSPNUM
            MOVE    PTHKNINF-REC        TO  MCPDATA-REC
            PERFORM 910-PTHKNINF-READ-SEC
       *
@@ -651,15 +659,13 @@
                MOVE    SMCNDATE-YMD        TO  PTHKN-UPYMD
                MOVE    SMCNDATE-HMS        TO  PTHKN-UPHMS
       *
-               MOVE    SPA-HOSPNUM         TO  PTHKN-HOSPNUM
                MOVE    PTHKNINF-REC        TO  MCPDATA-REC
                MOVE    "DBINSERT"          TO  MCP-FUNC
                MOVE    "tbl_pthkninf"      TO  MCP-TABLE
                MOVE    "key"               TO  MCP-PATHNAME
-               CALL    "ORCDBMAIN"         USING
-                                               MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
+                                                   MCPDATA-REC
+                                                   SPA-AREA
              IF      MCP-RC          NOT =   ZERO
                    DISPLAY "P029 PTHKNINF INS ERR:" MCP-RC 
                            ",PTHKN-KEY:" PTHKN-KEY
@@ -673,15 +679,13 @@
                MOVE    SMCNDATE-YMD        TO  PTHKN-UPYMD
                MOVE    SMCNDATE-HMS        TO  PTHKN-UPHMS
       *
-               MOVE    SPA-HOSPNUM         TO  PTHKN-HOSPNUM
                MOVE    PTHKNINF-REC        TO  MCPDATA-REC
                MOVE    "DBUPDATE"          TO  MCP-FUNC
                MOVE    "tbl_pthkninf"      TO  MCP-TABLE
                MOVE    "key"               TO  MCP-PATHNAME
-               CALL    "ORCDBMAIN"         USING
-                                               MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
+                                                   MCPDATA-REC
+                                                   SPA-AREA
                IF      MCP-RC          NOT =   ZERO
                    DISPLAY "P029 PTHKNINF UPD ERR:" MCP-RC
                            ",PTHKN-KEY:" PTHKN-KEY
@@ -700,7 +704,6 @@
            MOVE    PARA-DATA-REC        TO  PTKOHINF-REC
       *
            MOVE    SPA-GMN-PTID        TO  PTKOH-PTID
-           MOVE    SPA-HOSPNUM         TO  PTKOH-HOSPNUM
            MOVE    PTKOHINF-REC        TO  MCPDATA-REC
            PERFORM 920-PTKOHINF-READ-SEC
       *
@@ -711,15 +714,13 @@
                MOVE    SMCNDATE-YMD        TO  PTKOH-UPYMD
                MOVE    SMCNDATE-HMS        TO  PTKOH-UPHMS
       *
-               MOVE    SPA-HOSPNUM         TO  PTKOH-HOSPNUM
                MOVE    PTKOHINF-REC        TO  MCPDATA-REC
                MOVE    "DBINSERT"          TO  MCP-FUNC
                MOVE    "tbl_ptkohinf"      TO  MCP-TABLE
                MOVE    "key"               TO  MCP-PATHNAME
-               CALL    "ORCDBMAIN"         USING
-                                               MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
+                                                   MCPDATA-REC
+                                                   SPA-AREA
                IF      MCP-RC          NOT =   ZERO
                    DISPLAY "P029 PTKOHINF INS ERR:" MCP-RC
                            ",KEY:" PTKOH-KEY
@@ -732,15 +733,13 @@
                MOVE    SMCNDATE-YMD        TO  PTKOH-UPYMD
                MOVE    SMCNDATE-HMS        TO  PTKOH-UPHMS
       *
-               MOVE    SPA-HOSPNUM         TO  PTKOH-HOSPNUM
                MOVE    PTKOHINF-REC        TO  MCPDATA-REC
                MOVE    "DBUPDATE"          TO  MCP-FUNC
                MOVE    "tbl_ptkohinf"      TO  MCP-TABLE
                MOVE    "key"               TO  MCP-PATHNAME
-               CALL    "ORCDBMAIN"         USING
-                                               MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
+                                                   MCPDATA-REC
+                                                   SPA-AREA
                IF      MCP-RC          NOT =   ZERO
                    DISPLAY "P029 PTKOHINF UPD ERR:" MCP-RC
                            ",KEY:" PTKOH-KEY
@@ -763,30 +762,42 @@
            MOVE    PARA-DATA-REC       TO  PTKOHINF-REC
            MOVE    SPA-GMN-PTID        TO  PTKOH-PTID
       *
-      *    編集
-           MOVE    SPACE               TO  MONTHLYNUM-REC
-           INITIALIZE                      MONTHLYNUM-REC
-      *****MOVE    PTKOH-HOSPID        TO  MONTHLYNUM-HOSPID
-           MOVE    PTKOH-PTID          TO  MONTHLYNUM-PTID
-           MOVE    PTKOH-KOHNUM        TO  MONTHLYNUM-KOHNUM
-           MOVE    "2"                 TO  MONTHLYNUM-NYUGAIKBN
-      *    適用開始年月日
-           MOVE    PTKOH-TEKSTYMD(1:6) TO  MONTHLYNUM-SRYYM
-           PERFORM 925-MONTHLYNUM-READ-SEC
-      *
-           IF      FLG-MONTHLYNUM      =   ZERO
+           IF      PTKOH-SAKJOKBN      =   "1"
       *        削除分
-               IF      PTKOH-SAKJOKBN      =   "1"
-                   MOVE    SPA-HOSPNUM         TO  MONTHLYNUM-HOSPNUM
+               MOVE    SPACE               TO  MONTHLYNUM-REC
+               INITIALIZE                      MONTHLYNUM-REC
+               MOVE    PTKOH-HOSPNUM       TO  MONTHLYNUM-HOSPNUM
+               MOVE    PTKOH-PTID          TO  MONTHLYNUM-PTID
+               MOVE    PTKOH-KOHNUM        TO  MONTHLYNUM-KOHNUM
+               MOVE    "2"                 TO  MONTHLYNUM-NYUGAIKBN
+      *        適用開始年月日
+               MOVE    PTKOH-TEKSTYMD(1:6) TO  MONTHLYNUM-SRYYM
+               MOVE    "tbl_monthlynum"    TO  WRK-MCP-TABLE
+               MOVE    "key"               TO  WRK-MCP-PATHNAME
+               PERFORM 925-MONTHLYNUM-READ-SEC
+               IF      FLG-MONTHLYNUM      =   ZERO
                    MOVE    MONTHLYNUM-REC      TO  MCPDATA-REC
                    MOVE    "DBDELETE"          TO  MCP-FUNC
                    MOVE    "tbl_monthlynum"    TO  MCP-TABLE
                    MOVE    "key"               TO  MCP-PATHNAME
-                   CALL    "ORCDBMAIN"         USING
-                                                   MCPAREA
-                                                   MCPDATA-REC
-                                                   SPA-AREA
-               ELSE
+grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
+                                                       MCPDATA-REC
+                                                       SPA-AREA
+               END-IF
+           ELSE
+      *        編集
+               MOVE    SPACE               TO  MONTHLYNUM-REC
+               INITIALIZE                      MONTHLYNUM-REC
+               MOVE    PTKOH-HOSPNUM       TO  MONTHLYNUM-HOSPNUM
+               MOVE    PTKOH-PTID          TO  MONTHLYNUM-PTID
+               MOVE    PTKOH-KOHID         TO  MONTHLYNUM-KOHID
+               MOVE    "2"                 TO  MONTHLYNUM-NYUGAIKBN
+      *        適用開始年月日
+               MOVE    PTKOH-TEKSTYMD(1:6) TO  MONTHLYNUM-SRYYM
+               MOVE    "tbl_monthlynum"    TO  WRK-MCP-TABLE
+               MOVE    "key4"              TO  WRK-MCP-PATHNAME
+               PERFORM 925-MONTHLYNUM-READ-SEC
+               IF      FLG-MONTHLYNUM      =   ZERO
       *            修正分
                    IF     (PTKOH-JKYSNUM   NOT =   SPACE )  AND
                           (PTKOH-JKYSNUM   NOT =   MONTHLYNUM-JKYSNUM)
@@ -795,55 +806,90 @@
                        MOVE    SMCNDATE-YMD        TO  MONTHLYNUM-UPYMD
                        MOVE    SMCNDATE-HMS        TO  MONTHLYNUM-UPHMS
       *
-                       MOVE    SPA-HOSPNUM     TO  MONTHLYNUM-HOSPNUM
                        MOVE    MONTHLYNUM-REC      TO  MCPDATA-REC
                        MOVE    "DBUPDATE"          TO  MCP-FUNC
                        MOVE    "tbl_monthlynum"    TO  MCP-TABLE
                        MOVE    "key"               TO  MCP-PATHNAME
-                       CALL    "ORCDBMAIN"         USING
-                                                       MCPAREA
-                                                       MCPDATA-REC
-                                                       SPA-AREA
+grpsys                 CALL    "ORCDBMAIN"         USING   MCPAREA
+                                                           MCPDATA-REC
+                                                           SPA-AREA
                        IF      MCP-RC          NOT =   ZERO
                             DISPLAY "P029 MONTHLYNUM UPD ERR:" MCP-RC
                                    ",KEY:" MONTHLYNUM-KEY
                            MOVE    "9000"          TO  SPA-ERRCD
                        END-IF
                    END-IF
-               END-IF
-           ELSE
-               IF      PTKOH-JKYSNUM       =   SPACE
-                   GO      TO      2301-MONTHLYNUM-SYORI-EXT
-               END-IF
-      *        新規
-               MOVE    SPACE               TO  MONTHLYNUM-REC
-               INITIALIZE                      MONTHLYNUM-REC
-      *********MOVE    PTKOH-HOSPID        TO  MONTHLYNUM-HOSPID
-               MOVE    PTKOH-PTID          TO  MONTHLYNUM-PTID
-               MOVE    PTKOH-KOHNUM        TO  MONTHLYNUM-KOHNUM
-               MOVE    PTKOH-TEKSTYMD(1:6) TO  MONTHLYNUM-SRYYM
-               MOVE    "2"                 TO  MONTHLYNUM-NYUGAIKBN
-               MOVE    PTKOH-JKYSNUM       TO  MONTHLYNUM-JKYSNUM
+               ELSE
+                   MOVE    SPACE               TO  MONTHLYNUM-REC
+                   INITIALIZE                      MONTHLYNUM-REC
+                   MOVE    PTKOH-HOSPNUM       TO  MONTHLYNUM-HOSPNUM
+                   MOVE    PTKOH-PTID          TO  MONTHLYNUM-PTID
+                   MOVE    PTKOH-KOHNUM        TO  MONTHLYNUM-KOHNUM
+                   MOVE    "2"                 TO  MONTHLYNUM-NYUGAIKBN
+      *            適用開始年月日
+                   MOVE    PTKOH-TEKSTYMD(1:6) TO  MONTHLYNUM-SRYYM
+                   MOVE    "tbl_monthlynum"    TO  WRK-MCP-TABLE
+                   MOVE    "key"               TO  WRK-MCP-PATHNAME
+                   PERFORM 925-MONTHLYNUM-READ-SEC
+                   IF      FLG-MONTHLYNUM      =   ZERO
+      *                修正分
+                       IF     (PTKOH-JKYSNUM   NOT =   SPACE )  AND
+                              (PTKOH-JKYSNUM   NOT =
+                                                   MONTHLYNUM-JKYSNUM)
+                           MOVE    PTKOH-JKYSNUM   TO MONTHLYNUM-JKYSNUM
+      *                    更新情報
+                           MOVE    SMCNDATE-YMD    TO  MONTHLYNUM-UPYMD
+                           MOVE    SMCNDATE-HMS    TO  MONTHLYNUM-UPHMS
       *
-               MOVE    SMCNDATE-YMD        TO  MONTHLYNUM-CREYMD
-               MOVE    SMCNDATE-YMD        TO  MONTHLYNUM-UPYMD
-               MOVE    SMCNDATE-HMS        TO  MONTHLYNUM-UPHMS
+                           MOVE    MONTHLYNUM-REC  TO  MCPDATA-REC
+                           MOVE    "DBUPDATE"      TO  MCP-FUNC
+                           MOVE    "tbl_monthlynum"
+                                                   TO  MCP-TABLE
+                           MOVE    "key"           TO  MCP-PATHNAME
+grpsys                     CALL    "ORCDBMAIN"     USING   MCPAREA
+                                                           MCPDATA-REC
+                                                           SPA-AREA
+                           IF      MCP-RC          NOT =   ZERO
+                              DISPLAY "P029 MONTHLYNUM UPD ERR:" MCP-RC
+                                     ",KEY:" MONTHLYNUM-KEY
+                             MOVE    "9000"          TO  SPA-ERRCD
+                           END-IF
+                       END-IF
+                   ELSE
+                       IF      PTKOH-JKYSNUM       =   SPACE
+                           GO      TO      2301-MONTHLYNUM-SYORI-EXT
+                       END-IF
+      *                新規
+                       MOVE    SPACE           TO  MONTHLYNUM-REC
+                       INITIALIZE                  MONTHLYNUM-REC
+                       MOVE    PTKOH-HOSPNUM   TO  MONTHLYNUM-HOSPNUM
+                       MOVE    PTKOH-PTID      TO  MONTHLYNUM-PTID
+                       MOVE    PTKOH-KOHNUM    TO  MONTHLYNUM-KOHNUM
+                       MOVE    PTKOH-KOHID     TO  MONTHLYNUM-KOHID
+                       MOVE    PTKOH-TEKSTYMD(1:6)
+                                               TO  MONTHLYNUM-SRYYM
+                       MOVE    "2"             TO  MONTHLYNUM-NYUGAIKBN
+                       MOVE    PTKOH-JKYSNUM   TO  MONTHLYNUM-JKYSNUM
       *
+                       MOVE    SMCNDATE-YMD    TO  MONTHLYNUM-CREYMD
+                       MOVE    SMCNDATE-YMD    TO  MONTHLYNUM-UPYMD
+                       MOVE    SMCNDATE-HMS    TO  MONTHLYNUM-UPHMS
       *
-               MOVE    SPA-HOSPNUM         TO  MONTHLYNUM-HOSPNUM
-               MOVE    MONTHLYNUM-REC      TO  MCPDATA-REC
-               MOVE    "DBINSERT"          TO  MCP-FUNC
-               MOVE    "tbl_monthlynum"    TO  MCP-TABLE
-               MOVE    "key"               TO  MCP-PATHNAME
-               CALL    "ORCDBMAIN"         USING
-                                               MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
-               IF      MCP-RC          NOT =   ZERO
-                    DISPLAY "P029 MONTHLYNUM INS ERR:" MCP-RC
-                                   ",KEY:" MONTHLYNUM-KEY
-                   MOVE    "9000"          TO  SPA-ERRCD
-               END-IF
+                       MOVE    MONTHLYNUM-REC  TO  MCPDATA-REC
+                       MOVE    "DBINSERT"      TO  MCP-FUNC
+                       MOVE    "tbl_monthlynum"
+                                               TO  MCP-TABLE
+                       MOVE    "key"           TO  MCP-PATHNAME
+grpsys                 CALL    "ORCDBMAIN"         USING   MCPAREA
+                                                           MCPDATA-REC
+                                                           SPA-AREA
+                       IF      MCP-RC          NOT =   ZERO
+                           DISPLAY "P029 MONTHLYNUM INS ERR:" MCP-RC
+                                       ",KEY:" MONTHLYNUM-KEY
+                           MOVE    "9000"          TO  SPA-ERRCD
+                       END-IF
+                   END-IF
+               END-IF    
            END-IF
       *
       *
@@ -865,16 +911,14 @@
            END-IF
       *
            MOVE    SPA-GMN-PTID        TO  UKE-PTID
-           MOVE    SPA-HOSPNUM         TO  UKE-HOSPNUM
            MOVE    UKETUKE-REC         TO  MCPDATA-REC
            PERFORM 930-UKETUKE-READ-SEC
       *
            IF      FLG-UKETUKE         =   1
       *        追加の時、受付ＩＤを取得
-      *********MOVE    SPA-HOSPID          TO  UKE-HOSPID
+               MOVE    SPA-HOSPNUM         TO  UKE-HOSPNUM
                MOVE    SPA-SYSYMD          TO  UKE-UKEYMD
                MOVE    ZERO                TO  UKE-UKEID
-               MOVE    SPA-HOSPNUM         TO  UKE-HOSPNUM
                MOVE    UKETUKE-REC         TO  MCPDATA-REC
                PERFORM 930-UKETUKE-READ-SEC
                IF      FLG-UKETUKE         =   ZERO
@@ -888,15 +932,13 @@
                    MOVE    SMCNDATE-YMD        TO  UKE-UPYMD
                    MOVE    SMCNDATE-HMS        TO  UKE-UPHMS
       *
-                   MOVE    SPA-HOSPNUM         TO  UKE-HOSPNUM
                    MOVE    UKETUKE-REC         TO  MCPDATA-REC
                    MOVE    "DBUPDATE"          TO  MCP-FUNC
                    MOVE    "tbl_uketuke"       TO  MCP-TABLE
                    MOVE    "key"               TO  MCP-PATHNAME
-                   CALL    "ORCDBMAIN"         USING
-                                                   MCPAREA
-                                                   MCPDATA-REC
-                                                   SPA-AREA
+grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
+                                                       MCPDATA-REC
+                                                       SPA-AREA
                    IF      MCP-RC          NOT =   ZERO
                        DISPLAY "P029 UKETUKE UPD ERR:" MCP-RC 
                                ",KEY:"  UKE-KEY
@@ -904,7 +946,7 @@
                    END-IF
                ELSE
                    INITIALIZE                  UKETUKE-REC
-      *************MOVE    SPA-HOSPID          TO  UKE-HOSPID
+                   MOVE    SPA-HOSPNUM         TO  UKE-HOSPNUM
                    MOVE    SPA-SYSYMD          TO  UKE-UKEYMD
                    MOVE    ZERO                TO  UKE-UKEID
                    MOVE    1                   TO  UKE-PTID
@@ -914,15 +956,13 @@
                    MOVE    SMCNDATE-YMD        TO  UKE-UPYMD
                    MOVE    SMCNDATE-HMS        TO  UKE-UPHMS
       *
-                   MOVE    SPA-HOSPNUM         TO  UKE-HOSPNUM
                    MOVE    UKETUKE-REC         TO  MCPDATA-REC
                    MOVE    "DBINSERT"          TO  MCP-FUNC
                    MOVE    "tbl_uketuke"       TO  MCP-TABLE
                    MOVE    "key"               TO  MCP-PATHNAME
-                   CALL    "ORCDBMAIN"         USING
-                                                   MCPAREA
-                                                   MCPDATA-REC
-                                                   SPA-AREA
+grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
+                                                       MCPDATA-REC
+                                                       SPA-AREA
                    IF      MCP-RC          NOT =   ZERO
                        DISPLAY "P029 UKETUKE INS ERR:" MCP-RC 
                                ",KEY:"  UKE-KEY
@@ -938,15 +978,13 @@
                MOVE    SMCNDATE-YMD        TO  UKE-UPYMD
                MOVE    SMCNDATE-HMS        TO  UKE-UPHMS
       *
-               MOVE    SPA-HOSPNUM         TO  UKE-HOSPNUM
                MOVE    UKETUKE-REC         TO  MCPDATA-REC
                MOVE    "DBINSERT"          TO  MCP-FUNC
                MOVE    "tbl_uketuke"       TO  MCP-TABLE
                MOVE    "key"               TO  MCP-PATHNAME
-               CALL    "ORCDBMAIN"         USING
-                                               MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
+                                                   MCPDATA-REC
+                                                   SPA-AREA
                IF      MCP-RC          NOT =   ZERO
                    DISPLAY "P029 UKETUKE INS ERR:" MCP-RC
                                ",KEY:"  UKE-KEY
@@ -958,15 +996,13 @@
       *
                IF      UKE-UPYMD       =   ALL "9"
       *            削除
-                   MOVE    SPA-HOSPNUM         TO  UKE-HOSPNUM
                    MOVE    UKETUKE-REC         TO  MCPDATA-REC
                    MOVE    "DBDELETE"          TO  MCP-FUNC
                    MOVE    "tbl_uketuke"       TO  MCP-TABLE
                    MOVE    "key"               TO  MCP-PATHNAME
-                   CALL    "ORCDBMAIN"         USING
-                                                   MCPAREA
-                                                   MCPDATA-REC
-                                                   SPA-AREA
+grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
+                                                       MCPDATA-REC
+                                                       SPA-AREA
                    IF      MCP-RC          NOT =   ZERO
                        DISPLAY "P029 UKETUKE UPD ERR:" MCP-RC
                                ",KEY:"  UKE-KEY
@@ -977,15 +1013,13 @@
                    MOVE    SMCNDATE-HMS        TO  UKE-UPHMS
       *
       *            更新
-                   MOVE    SPA-HOSPNUM         TO  UKE-HOSPNUM
                    MOVE    UKETUKE-REC         TO  MCPDATA-REC
                    MOVE    "DBUPDATE"          TO  MCP-FUNC
                    MOVE    "tbl_uketuke"       TO  MCP-TABLE
                    MOVE    "key"               TO  MCP-PATHNAME
-                   CALL    "ORCDBMAIN"         USING
-                                                   MCPAREA
-                                                   MCPDATA-REC
-                                                   SPA-AREA
+grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
+                                                       MCPDATA-REC
+                                                       SPA-AREA
                    IF      MCP-RC          NOT =   ZERO
                        DISPLAY "P029 UKETUKE UPD ERR:" MCP-RC
                                ",KEY:"  UKE-KEY
@@ -1008,14 +1042,13 @@
        2401-YYK-SYORI-SEC             SECTION.
       *
            INITIALIZE                  YYK-REC
-      *****MOVE    UKE-HOSPID          TO  YYK-HOSPID
+           MOVE    UKE-HOSPNUM         TO  YYK-HOSPNUM
            MOVE    UKE-SRYNAIYO        TO  YYK-SRYNAIYO
            MOVE    UKE-DRCD            TO  YYK-DRCD
            MOVE    UKE-UKEYMD          TO  YYK-YYKYMD
            MOVE    UKE-KEYYYKTIME      TO  YYK-KEYYYKTIME
            MOVE    UKE-YYKID           TO  YYK-YYKID
       *
-           MOVE    SPA-HOSPNUM         TO  YYK-HOSPNUM
            MOVE    YYK-REC             TO  MCPDATA-REC
            MOVE    "tbl_yyk"           TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
@@ -1039,28 +1072,24 @@
                IF      UKE-UPYMD       =   ALL "9"
                    IF      YYK-RAIINZUMI   =   "1"
                        MOVE    SPACE               TO  YYK-RAIINZUMI
-                       MOVE    SPA-HOSPNUM         TO  YYK-HOSPNUM
                        MOVE    YYK-REC             TO  MCPDATA-REC
                        MOVE    "DBUPDATE"          TO  MCP-FUNC
                        MOVE    "tbl_yyk"           TO  MCP-TABLE
                        MOVE    "key"               TO  MCP-PATHNAME
-                       CALL    "ORCDBMAIN"         USING
-                                                       MCPAREA
-                                                       MCPDATA-REC
-                                                       SPA-AREA
+grpsys                 CALL    "ORCDBMAIN"         USING   MCPAREA
+                                                           MCPDATA-REC
+                                                           SPA-AREA
                    END-IF
                ELSE
                    IF      YYK-RAIINZUMI   =   SPACE
                        MOVE    "1"                 TO  YYK-RAIINZUMI
-                       MOVE    SPA-HOSPNUM         TO  YYK-HOSPNUM
                        MOVE    YYK-REC             TO  MCPDATA-REC
                        MOVE    "DBUPDATE"          TO  MCP-FUNC
                        MOVE    "tbl_yyk"           TO  MCP-TABLE
                        MOVE    "key"               TO  MCP-PATHNAME
-                       CALL    "ORCDBMAIN"         USING
-                                                       MCPAREA
-                                                       MCPDATA-REC
-                                                       SPA-AREA
+grpsys                 CALL    "ORCDBMAIN"         USING   MCPAREA
+                                                           MCPDATA-REC
+                                                           SPA-AREA
                    END-IF
                END-IF
            END-IF
@@ -1077,7 +1106,6 @@
            MOVE    PARA-DATA-REC       TO  HKNCOMBI-REC
       *
            MOVE    SPA-GMN-PTID        TO  COMB-PTID
-           MOVE    SPA-HOSPNUM         TO  COMB-HOSPNUM
            MOVE    HKNCOMBI-REC        TO  MCPDATA-REC
            PERFORM 940-HKNCOMBI-READ-SEC
       *    保険変更による受診履歴修正の有無チェック
@@ -1096,15 +1124,13 @@
                MOVE    SMCNDATE-YMD        TO  COMB-UPYMD
                MOVE    SMCNDATE-HMS        TO  COMB-UPHMS
       *
-               MOVE    SPA-HOSPNUM         TO  COMB-HOSPNUM
                MOVE    HKNCOMBI-REC        TO  MCPDATA-REC
                MOVE    "DBINSERT"          TO  MCP-FUNC
                MOVE    "tbl_hkncombi"      TO  MCP-TABLE
                MOVE    "key"               TO  MCP-PATHNAME
-               CALL    "ORCDBMAIN"         USING
-                                               MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
+                                                   MCPDATA-REC
+                                                   SPA-AREA
                IF      MCP-RC          NOT =   ZERO
                    DISPLAY "P029 HKNCOMBI INS ERR:" MCP-RC
                            ",KEY:" COMB-KEY
@@ -1116,15 +1142,13 @@
                MOVE    SMCNDATE-YMD        TO  COMB-UPYMD
                MOVE    SMCNDATE-HMS        TO  COMB-UPHMS
       *
-               MOVE    SPA-HOSPNUM         TO  COMB-HOSPNUM
                MOVE    HKNCOMBI-REC        TO  MCPDATA-REC
                MOVE    "DBUPDATE"          TO  MCP-FUNC
                MOVE    "tbl_hkncombi"      TO  MCP-TABLE
                MOVE    "key"               TO  MCP-PATHNAME
-               CALL    "ORCDBMAIN"         USING
-                                               MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
+                                                   MCPDATA-REC
+                                                   SPA-AREA
                IF      MCP-RC          NOT =   ZERO
                    DISPLAY "P029 HKNCOMBI UPD ERR:" MCP-RC
                            ",KEY:" COMB-KEY
@@ -1143,12 +1167,11 @@
       *
            MOVE    SPACE               TO  JYURRK-REC
            INITIALIZE                  JYURRK-REC
-      *****MOVE    HZN-COMB-HOSPID     TO  JYURRK-HOSPID
+           MOVE    HZN-COMB-HOSPNUM    TO  JYURRK-HOSPNUM
            MOVE    HZN-COMB-PTID       TO  JYURRK-PTID
            MOVE    HZN-COMB-HKNCOMBINUM
                                        TO  JYURRK-HKNCOMBINUM
       *
-           MOVE    SPA-HOSPNUM         TO  JYURRK-HOSPNUM
            MOVE    JYURRK-REC          TO  MCPDATA-REC
            MOVE    "tbl_jyurrk"        TO  MCP-TABLE
            MOVE    "key23"             TO  MCP-PATHNAME
@@ -1181,12 +1204,11 @@
       *    病名チェック
            MOVE    SPACE               TO  PTBYOMEI-REC
            INITIALIZE                  PTBYOMEI-REC
-      *****MOVE    HZN-COMB-HOSPID     TO  PTBYO-HOSPID
+           MOVE    HZN-COMB-HOSPNUM    TO  PTBYO-HOSPNUM
            MOVE    HZN-COMB-PTID       TO  PTBYO-PTID
            MOVE    HZN-COMB-HKNCOMBINUM
                                        TO  PTBYO-HKNCOMBI
       *
-           MOVE    SPA-HOSPNUM         TO  PTBYO-HOSPNUM
            MOVE    PTBYOMEI-REC        TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "tbl_ptbyomei"      TO  MCP-TABLE
@@ -1242,7 +1264,7 @@
                    UNTIL       IDX     >   SPA-NAI25-KYU-MAX
                IF     SPA-GMN25-KYU-DELKBN (IDX)   =   SPACE
                    INITIALIZE                      KYUSEIRRK-REC
-      *************MOVE    SPA-HOSPID          TO  KYUSEI-HOSPID
+                   MOVE    SPA-HOSPNUM         TO  KYUSEI-HOSPNUM
                    MOVE    SPA-GMN-PTID        TO  KYUSEI-PTID
                    MOVE    SPA-GMN25-KYU-CHGYMD (IDX)
                                                TO  KYUSEI-CHGYMD
@@ -1270,14 +1292,12 @@
       *
       *
                    MOVE    "DBINSERT"          TO  MCP-FUNC
-                   MOVE    SPA-HOSPNUM         TO  KYUSEI-HOSPNUM
                    MOVE    KYUSEIRRK-REC       TO  MCPDATA-REC
                    MOVE    "tbl_kyuseirrk"     TO  MCP-TABLE
                    MOVE    "key"               TO  MCP-PATHNAME
-                   CALL    "ORCDBMAIN"         USING
-                                                   MCPAREA
-                                                   MCPDATA-REC
-                                                   SPA-AREA
+grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
+                                                       MCPDATA-REC
+                                                       SPA-AREA
                    IF      MCP-RC          NOT =   ZERO
                        DISPLAY "P029 KYUSEIRRK INS ERR:" MCP-RC
                                ",KEY:" KYUSEI-KEY
@@ -1296,18 +1316,16 @@
        260-KYUSEIRRK-DEL-SEC            SECTION.
       *
            INITIALIZE                      KYUSEIRRK-REC
-      *****MOVE    SPA-HOSPID          TO  KYUSEI-HOSPID
-           MOVE    SPA-GMN-PTID        TO  KYUSEI-PTID
            MOVE    SPA-HOSPNUM         TO  KYUSEI-HOSPNUM
+           MOVE    SPA-GMN-PTID        TO  KYUSEI-PTID
            MOVE    KYUSEIRRK-REC       TO  MCPDATA-REC
       *
            MOVE    "DBDELETE"          TO  MCP-FUNC
            MOVE    "tbl_kyuseirrk"     TO  MCP-TABLE
            MOVE    "del1"              TO  MCP-PATHNAME
-           CALL    "ORCDBMAIN"         USING
-                                           MCPAREA
-                                           MCPDATA-REC
-                                           SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
        260-KYUSEIRRK-DEL-EXT.
@@ -1362,10 +1380,9 @@
                MOVE    "DBUPDATE"          TO  MCP-FUNC
                MOVE    "tbl_syskanri"      TO  MCP-TABLE
                MOVE    "key"               TO  MCP-PATHNAME
-               CALL    "ORCDBMAIN"         USING
-                                               MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
+                                                   MCPDATA-REC
+                                                   SPA-AREA
                IF      MCP-RC         NOT  =   ZERO
                    MOVE    "1011"          TO  SPA-ERRCD
                    DISPLAY "P012 SYSKANRI UPDATE:" MCP-RC "."
@@ -1375,10 +1392,9 @@
       *
       *
            INITIALIZE                      PTNUM-REC
-      *****MOVE    SPA-HOSPID          TO  PTNUM-HOSPID
+           MOVE    SPA-HOSPNUM         TO  PTNUM-HOSPNUM
            MOVE    SPA-GMN-PTID        TO  PTNUM-PTID
       *
-           MOVE    SPA-HOSPNUM         TO  PTNUM-HOSPNUM
            MOVE    PTNUM-REC           TO  MCPDATA-REC
            MOVE    "tbl_ptnum"         TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
@@ -1396,7 +1412,7 @@
       *
            IF      FLG-PTNUM           =   1
                INITIALIZE                      PTNUM-REC
-      *********MOVE    SPA-HOSPID              TO  PTNUM-HOSPID
+               MOVE    SPA-HOSPNUM             TO  PTNUM-HOSPNUM
                MOVE    SPA-GMN-PTID            TO  PTNUM-PTID
                MOVE    SPA-GMN-PTNUM           TO  PTNUM-PTNUM
                MOVE    SPA-PTNUM-HKNID         TO  PTNUM-HKNID
@@ -1409,15 +1425,13 @@
                MOVE    SMCNDATE-HMS        TO  PTNUM-UPHMS
       *
       *
-               MOVE    SPA-HOSPNUM         TO  PTNUM-HOSPNUM
                MOVE    PTNUM-REC           TO  MCPDATA-REC
                MOVE    "DBINSERT"          TO  MCP-FUNC
                MOVE    "tbl_ptnum"         TO  MCP-TABLE
                MOVE    "key"               TO  MCP-PATHNAME
-               CALL    "ORCDBMAIN"         USING
-                                               MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
+                                                   MCPDATA-REC
+                                                   SPA-AREA
                IF      MCP-RC          NOT =   ZERO
                    DISPLAY "P029 PTNUM INS ERR:" MCP-RC
                           ",KEY:" PTNUM-KEY   "."
@@ -1428,7 +1442,7 @@
                    MOVE    "8003"              TO  SPA-ERRCD
                    GO      TO      280-PTNUM-SYORI-EXT
                END-IF
-      *********MOVE    SPA-HOSPID              TO  PTNUM-HOSPID
+               MOVE    SPA-HOSPNUM             TO  PTNUM-HOSPNUM
                MOVE    SPA-GMN-PTID            TO  PTNUM-PTID
                MOVE    SPA-GMN-PTNUM           TO  PTNUM-PTNUM
                MOVE    SPA-PTNUM-HKNID         TO  PTNUM-HKNID
@@ -1439,15 +1453,13 @@
                MOVE    SMCNDATE-YMD        TO  PTNUM-UPYMD
                MOVE    SMCNDATE-HMS        TO  PTNUM-UPHMS
       *
-               MOVE    SPA-HOSPNUM         TO  PTNUM-HOSPNUM
                MOVE    PTNUM-REC           TO  MCPDATA-REC
                MOVE    "DBUPDATE"          TO  MCP-FUNC
                MOVE    "tbl_ptnum"         TO  MCP-TABLE
                MOVE    "key"               TO  MCP-PATHNAME
-               CALL    "ORCDBMAIN"         USING
-                                               MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
+                                                   MCPDATA-REC
+                                                   SPA-AREA
                IF      MCP-RC          NOT =   ZERO
                    DISPLAY "P029 PTNUM UPD ERR:" MCP-RC "."
                           ",KEY:" PTNUM-KEY   "."
@@ -1468,15 +1480,13 @@
            EVALUATE    TRUE
       *    削除
            WHEN    ( TSYRRK-UPYMD      =   ALL "9" )
-               MOVE    SPA-HOSPNUM     TO  TSYRRK-HOSPNUM
                MOVE    TSYRRK-REC      TO  MCPDATA-REC
                MOVE    "DBDELETE"      TO  MCP-FUNC
                MOVE    "tbl_tsyrrk"        TO  MCP-TABLE
                MOVE    "key"               TO  MCP-PATHNAME
-               CALL    "ORCDBMAIN"         USING
-                                               MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
+                                                   MCPDATA-REC
+                                                   SPA-AREA
                IF      MCP-RC      NOT =   ZERO
                    DISPLAY "P029 TSYRRK DEL ERR:" MCP-RC
                           ",KEY:" TSYRRK-KEY
@@ -1489,15 +1499,13 @@
                MOVE    SMCNDATE-YMD        TO  TSYRRK-UPYMD
                MOVE    SMCNDATE-HMS        TO  TSYRRK-UPHMS
       *
-               MOVE    SPA-HOSPNUM         TO  TSYRRK-HOSPNUM
                MOVE    TSYRRK-REC      TO  MCPDATA-REC
                MOVE    "DBUPDATE"      TO  MCP-FUNC
                MOVE    "tbl_tsyrrk"        TO  MCP-TABLE
                MOVE    "upd1"              TO  MCP-PATHNAME
-               CALL    "ORCDBMAIN"         USING
-                                               MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
+                                                   MCPDATA-REC
+                                                   SPA-AREA
                IF      MCP-RC      NOT =   ZERO
                    DISPLAY "P029 TSYRRK UPD ERR:" MCP-RC
                           ",KEY:" TSYRRK-KEY
@@ -1511,15 +1519,13 @@
                MOVE    SMCNDATE-YMD        TO  TSYRRK-UPYMD
                MOVE    SMCNDATE-HMS        TO  TSYRRK-UPHMS
       *
-               MOVE    SPA-HOSPNUM         TO  TSYRRK-HOSPNUM
                MOVE    TSYRRK-REC          TO  MCPDATA-REC
                MOVE    "DBINSERT"          TO  MCP-FUNC
                MOVE    "tbl_tsyrrk"        TO  MCP-TABLE
                MOVE    "key"               TO  MCP-PATHNAME
-               CALL    "ORCDBMAIN"         USING
-                                               MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
+                                                   MCPDATA-REC
+                                                   SPA-AREA
                IF      MCP-RC          NOT =   ZERO
                    DISPLAY "P029 TSYRRK INS ERR:" MCP-RC
                           ",KEY:" TSYRRK-KEY
@@ -1541,15 +1547,13 @@
            EVALUATE    TRUE
       *    削除
            WHEN    ( TNKRRK-UPYMD      =   ALL "9" )
-               MOVE    SPA-HOSPNUM     TO  TNKRRK-HOSPNUM
                MOVE    TNKRRK-REC      TO  MCPDATA-REC
                MOVE    "DBDELETE"      TO  MCP-FUNC
                MOVE    "tbl_tnkrrk"        TO  MCP-TABLE
                MOVE    "key"               TO  MCP-PATHNAME
-               CALL    "ORCDBMAIN"         USING
-                                               MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
+                                                   MCPDATA-REC
+                                                   SPA-AREA
                IF      MCP-RC      NOT =   ZERO
                    DISPLAY "P029 TNKRRK DEL ERR:" MCP-RC
                           ",KEY:" TNKRRK-KEY
@@ -1562,15 +1566,13 @@
                MOVE    SMCNDATE-YMD        TO  TNKRRK-UPYMD
                MOVE    SMCNDATE-HMS        TO  TNKRRK-UPHMS
       *
-               MOVE    SPA-HOSPNUM         TO  TNKRRK-HOSPNUM
                MOVE    TNKRRK-REC          TO  MCPDATA-REC
                MOVE    "DBUPDATE"          TO  MCP-FUNC
                MOVE    "tbl_tnkrrk"        TO  MCP-TABLE
                MOVE    "upd1"              TO  MCP-PATHNAME
-               CALL    "ORCDBMAIN"         USING
-                                               MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
+                                                   MCPDATA-REC
+                                                   SPA-AREA
                IF      MCP-RC      NOT =   ZERO
                    DISPLAY "P029 TNKRRK UPD ERR:" MCP-RC
                           ",KEY:" TNKRRK-KEY
@@ -1584,15 +1586,13 @@
                MOVE    SMCNDATE-YMD        TO  TNKRRK-UPYMD
                MOVE    SMCNDATE-HMS        TO  TNKRRK-UPHMS
       *
-               MOVE    SPA-HOSPNUM         TO  TNKRRK-HOSPNUM
                MOVE    TNKRRK-REC          TO  MCPDATA-REC
                MOVE    "DBINSERT"          TO  MCP-FUNC
                MOVE    "tbl_tnkrrk"        TO  MCP-TABLE
                MOVE    "key"               TO  MCP-PATHNAME
-               CALL    "ORCDBMAIN"         USING
-                                               MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
+                                                   MCPDATA-REC
+                                                   SPA-AREA
                IF      MCP-RC          NOT =   ZERO
                    DISPLAY "P029 TNKRRK INS ERR:" MCP-RC
                           ",KEY:" TNKRRK-KEY
@@ -1611,7 +1611,6 @@
            MOVE    PARA-DATA-REC       TO  PTRSIINF-REC
       *
            MOVE    SPA-GMN-PTID        TO  PTRSI-PTID
-           MOVE    SPA-HOSPNUM         TO  PTRSI-HOSPNUM
            MOVE    PTRSIINF-REC        TO  MCPDATA-REC
            PERFORM 990-PTRSIINF-READ-SEC
       *
@@ -1621,15 +1620,13 @@
                MOVE    SMCNDATE-YMD        TO  PTRSI-UPYMD
                MOVE    SMCNDATE-HMS        TO  PTRSI-UPHMS
       *
-               MOVE    SPA-HOSPNUM         TO  PTRSI-HOSPNUM
                MOVE    PTRSIINF-REC        TO  MCPDATA-REC
                MOVE    "DBINSERT"          TO  MCP-FUNC
                MOVE    "tbl_ptrsiinf"      TO  MCP-TABLE
                MOVE    "key"               TO  MCP-PATHNAME
-               CALL    "ORCDBMAIN"         USING
-                                               MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
+                                                   MCPDATA-REC
+                                                   SPA-AREA
                IF      MCP-RC          NOT =   ZERO
                    DISPLAY "P029 PTRSIINF INS ERR:" MCP-RC
                           ",KEY:" PTRSI-KEY
@@ -1642,15 +1639,13 @@
                MOVE    SMCNDATE-YMD        TO  PTRSI-UPYMD
                MOVE    SMCNDATE-HMS        TO  PTRSI-UPHMS
       *
-               MOVE    SPA-HOSPNUM         TO  PTRSI-HOSPNUM
                MOVE    PTRSIINF-REC        TO  MCPDATA-REC
                MOVE    "DBUPDATE"          TO  MCP-FUNC
                MOVE    "tbl_ptrsiinf"      TO  MCP-TABLE
                MOVE    "key"               TO  MCP-PATHNAME
-               CALL    "ORCDBMAIN"         USING
-                                               MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
+                                                   MCPDATA-REC
+                                                   SPA-AREA
                IF      MCP-RC          NOT =   ZERO
                    DISPLAY "P029 PTRSIINF UPD ERR:" MCP-RC
                           ",KEY:" PTRSI-KEY
@@ -1669,7 +1664,6 @@
            MOVE    PARA-DATA-REC       TO  PTKOHFTN-REC
       *    公費負担読込み
            MOVE    SPA-GMN-PTID        TO  PTKOHFTN-PTID
-           MOVE    SPA-HOSPNUM         TO  PTKOHFTN-HOSPNUM
            MOVE    PTKOHFTN-REC        TO  MCPDATA-REC
            MOVE    "tbl_ptkohftn"      TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
@@ -1694,15 +1688,13 @@
       *
       *        新規
                MOVE    SPA-GMN-PTID        TO  PTKOHFTN-PTID
-               MOVE    SPA-HOSPNUM         TO  PTKOHFTN-HOSPNUM
                MOVE    PTKOHFTN-REC        TO  MCPDATA-REC
                MOVE    "DBINSERT"          TO  MCP-FUNC
                MOVE    "tbl_ptkohftn"      TO  MCP-TABLE
                MOVE    "key"               TO  MCP-PATHNAME
-               CALL    "ORCDBMAIN"         USING
-                                               MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
+                                                   MCPDATA-REC
+                                                   SPA-AREA
                IF      MCP-RC          NOT =   ZERO
                    DISPLAY "P029 PTKOHFTN INS ERR:" MCP-RC
                                    ",KEY:" PTKOHFTN-KEY
@@ -1715,15 +1707,13 @@
                MOVE    SMCNDATE-HMS        TO  PTKOHFTN-UPHMS
       *
       *        更新
-               MOVE    SPA-HOSPNUM         TO  PTKOHFTN-HOSPNUM
                MOVE    PTKOHFTN-REC        TO  MCPDATA-REC
                MOVE    "DBUPDATE"          TO  MCP-FUNC
                MOVE    "tbl_ptkohftn"      TO  MCP-TABLE
                MOVE    "key"               TO  MCP-PATHNAME
-               CALL    "ORCDBMAIN"         USING
-                                               MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
+                                                   MCPDATA-REC
+                                                   SPA-AREA
                IF      MCP-RC          NOT =   ZERO
                    DISPLAY "P029 PTKOHFTN UPD ERR:" MCP-RC
                                    ",KEY:" PTKOHFTN-KEY
@@ -1757,6 +1747,55 @@
       *
            .
        2110-SYUKA-INSERT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ＱＲ情報更新処理
+      *****************************************************************
+       2120-QRCDHKN-UPD-SEC         SECTION.
+      *
+           INITIALIZE                      QRCDHKN-REC
+           MOVE    SPA-HOSPNUM          TO  QRCDHKN-HOSPNUM
+           MOVE    SPA-QR-REGISTYMD    TO  QRCDHKN-REGISTYMD
+           MOVE    SPA-QR-REGISTID     TO  QRCDHKN-REGISTID
+           MOVE    QRCDHKN-REC         TO  MCPDATA-REC
+           MOVE    "tbl_qrcdhkn"       TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_qrcdhkn"       TO  MCP-TABLE
+               MOVE    "key"               TO  MCP-PATHNAME
+               PERFORM 900-QRCDHKN-READ-SEC
+           ELSE
+               MOVE    1                   TO  FLG-QRCDHKN
+               INITIALIZE                      QRCDHKN-REC
+           END-IF
+           MOVE    "tbl_qrcdhkn"       TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+      *
+           IF      FLG-QRCDHKN         =   ZERO
+               MOVE    SPA-GMN-PTID        TO  QRCDHKN-PTID
+               MOVE    1                   TO  QRCDHKN-MOD-FLG
+               MOVE    SMCNDATE-YMD        TO  QRCDHKN-UPYMD
+               MOVE    SMCNDATE-HMS        TO  QRCDHKN-UPHMS
+      *
+               MOVE    QRCDHKN-REC         TO  MCPDATA-REC
+               MOVE    "DBUPDATE"          TO  MCP-FUNC
+               MOVE    "tbl_qrcdhkn"       TO  MCP-TABLE
+               MOVE    "key"               TO  MCP-PATHNAME
+grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
+                                                   MCPDATA-REC
+                                                   SPA-AREA
+               IF      MCP-RC          NOT =   ZERO 
+                   MOVE    "9000"              TO  SPA-ERRCD
+                   DISPLAY "P029 QRCDHKN KEY UPD ERR:"  MCP-RC
+                       ",KEY:" QRCDHKN-KEY
+               END-IF
+           END-IF
+      *
+           .
+       2120-QRCDHKN-UPD-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1992,7 +2031,6 @@
       *****************************************************************
        900-PTINF-READ-SEC         SECTION.
       *
-           MOVE    SPA-HOSPNUM         TO  PTINF-HOSPNUM
            MOVE    PTINF-REC           TO  MCPDATA-REC
            MOVE    "tbl_ptinf"         TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
@@ -2021,7 +2059,6 @@
       *****************************************************************
        910-PTHKNINF-READ-SEC         SECTION.
       *
-           MOVE    SPA-HOSPNUM         TO  PTHKN-HOSPNUM
            MOVE    PTHKNINF-REC        TO  MCPDATA-REC
            MOVE    "tbl_pthkninf"      TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
@@ -2051,7 +2088,6 @@
       *****************************************************************
        920-PTKOHINF-READ-SEC         SECTION.
       *
-           MOVE    SPA-HOSPNUM         TO  PTKOH-HOSPNUM
            MOVE    PTKOHINF-REC        TO  MCPDATA-REC
            MOVE    "tbl_ptkohinf"      TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
@@ -2081,14 +2117,13 @@
       *****************************************************************
        925-MONTHLYNUM-READ-SEC         SECTION.
       *
-           MOVE    SPA-HOSPNUM         TO  MONTHLYNUM-HOSPNUM
            MOVE    MONTHLYNUM-REC      TO  MCPDATA-REC
-           MOVE    "tbl_monthlynum"    TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
+           MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
+           MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
-               MOVE    "tbl_monthlynum"    TO  MCP-TABLE
-               MOVE    "key"               TO  MCP-PATHNAME
+               MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
+               MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
                PERFORM 920-DBFETCH-SEC
                IF      MCP-RC              =   ZERO
                    MOVE    ZERO            TO  FLG-MONTHLYNUM
@@ -2099,8 +2134,8 @@
            ELSE
                MOVE    1               TO  FLG-MONTHLYNUM
            END-IF
-           MOVE    "tbl_monthlynum"    TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
+           MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
+           MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
       *
            .
@@ -2112,7 +2147,6 @@
       *****************************************************************
        990-PTRSIINF-READ-SEC         SECTION.
       *
-           MOVE    SPA-HOSPNUM         TO  PTRSI-HOSPNUM
            MOVE    PTRSIINF-REC        TO  MCPDATA-REC
            MOVE    "tbl_ptrsiinf"      TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
@@ -2293,15 +2327,30 @@
        960-SYSKANRI-READ-EXT.
            EXIT.
       *****************************************************************
+      *    QRコード(被保険者証)読込
+      *****************************************************************
+       900-QRCDHKN-READ-SEC         SECTION.
+      *
+           PERFORM 920-DBFETCH-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC     TO  QRCDHKN-REC
+               MOVE    ZERO            TO  FLG-QRCDHKN
+           ELSE
+               INITIALIZE                  QRCDHKN-REC
+               MOVE    1               TO  FLG-QRCDHKN
+           END-IF
+           .
+       900-QRCDHKN-READ-EXT.
+           EXIT.
+      *****************************************************************
       *    テーブル検索処理
       *****************************************************************
        910-DBSELECT-SEC                SECTION.
       *
            MOVE    "DBSELECT"      TO  MCP-FUNC
-           CALL    "ORCDBMAIN"     USING
-                                       MCPAREA
-                                       MCPDATA-REC
-                                       SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
        910-DBSELECT-EXT.
@@ -2312,10 +2361,9 @@
        920-DBFETCH-SEC                 SECTION.
       *
            MOVE    "DBFETCH"       TO  MCP-FUNC
-           CALL    "ORCDBMAIN"     USING
-                                       MCPAREA
-                                       MCPDATA-REC
-                                       SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
       *
@@ -2328,10 +2376,9 @@
        990-DBCLOSE-SEC         SECTION.
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           CALL    "ORCDBMAIN"         USING
-                                           MCPAREA
-                                           MCPDATA-REC
-                                           SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
        990-DBCLOSE-EXT.
