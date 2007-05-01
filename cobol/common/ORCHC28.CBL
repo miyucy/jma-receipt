@@ -28,6 +28,7 @@
       *  プログラム修正履歴
       *  Maj/Min/Rev  修正者       日付      内容
       *  00.00.01     NACL-森脇    03/07/15  出力先プリンタサブ追加
+      *  03.05.00     NACL-多々納  07/04/XX  グループ診療対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -323,11 +324,11 @@
            IF  FLG-PTINF  =  ZERO
       *
                INITIALIZE                  ORCSPTIDAREA
-               MOVE    SPA-HOSPID          TO  SPTID-HOSPID
+               MOVE    SPA-HOSPNUM         TO  SPTID-HOSPNUM
                MOVE    PTINF-PTID          TO  SPTID-PTID
       *
                CALL    "ORCSPTID"          USING   ORCSPTIDAREA
-                                                   SPA-1009-TBL
+                                                   SPA-AREA
                IF      SPTID-RC            =   ZERO
                    MOVE    SPTID-PTNUM
                                      TO  HC28-PTNUM(CNT-LINE)
@@ -385,7 +386,7 @@
            MOVE  SHELL-ARG3            TO  SHELLTBL-ARG3
            MOVE  SHELL-ARG4            TO  SHELLTBL-ARG4
            MOVE  SHELL-ARG5            TO  SHELLTBL-ARG5
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+grpsys*    MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            MOVE  SHELLTBL              TO  MCPDATA-REC
            MOVE    "SHELL"             TO  MCP-FUNC
            MOVE    PATH-SHELL-SHELL    TO  MCP-PATH
@@ -455,9 +456,8 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
        900-DBREAD-SEC                 SECTION.
       *
            INITIALIZE                     PTINF-REC
-           MOVE    SPA-HOSPID             TO  PTINF-HOSPID
+           MOVE    SPA-HOSPNUM            TO  PTINF-HOSPNUM
            MOVE    ORCHC28-PTID(CNT-DAT)  TO  PTINF-PTID
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PTINF-REC              TO  MCPDATA-REC
            MOVE    "DBSELECT"             TO  MCP-FUNC
            MOVE    "PTINF-KEY"            TO  ORC-DBPATH
