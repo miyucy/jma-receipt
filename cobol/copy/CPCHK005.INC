@@ -24,6 +24,7 @@
       ************************************************************
       * 01  CHK005-REC.
             03  CHK005-KEY.
+                05  CHK005-HOSPNUM  PIC S9(9)   BINARY.
                 05  CHK005-CHKKBN   PIC X(1).
                 05  CHK005-ID   PIC S9(9)   BINARY.
                 05  CHK005-YUKOSTYMD    PIC X(8).
@@ -43,10 +44,8 @@
             03  CHK005-CREYMD   PIC X(8).
             03  CHK005-UPYMD    PIC X(8).
             03  CHK005-UPHMS    PIC X(6).
+            03  CHK005-UPHOSPNUM  PIC S9(9)   BINARY.
             03  CHK005-UPCHKKBN PIC X(1).
-            03  CHK005-UPCHKKBN-RENNUM  PIC S9(9)   BINARY.
-            03  CHK005-UPYUKOSTYMD  PIC X(8).
-            03  CHK005-UPYUKOEDYMD  PIC X(8).
-            03  CHK005-UPCDKBN  PIC X(1).
+            03  CHK005-UPID  PIC S9(9)   BINARY.
             03  CHK005-UPRENNUM PIC S9(9)   BINARY.
             03  CHK005-SELNAME  PIC X(200).
