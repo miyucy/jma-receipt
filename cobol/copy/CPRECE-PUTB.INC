@@ -25,7 +25,7 @@
       ************************************************************
       *01  RECE-PUTB-REC.
       *°åÎÅµ¡´Ø£É£Ä
-            02  RECE-PUTB-HOSPID       PIC X(24).
+            02  RECE-PUTB-HOSPNUM      PIC S9(9)   BINARY.
       *
             02  RECE-PUTB-PREFKBN      PIC X(1).
       *
