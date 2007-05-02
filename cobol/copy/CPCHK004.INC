@@ -25,7 +25,7 @@
        01  CHK004-REC.
       *キー
            03  CHK004-KEY.
-               05  CHK004-HOSPNUM         PIC S9(9) BINARY.
+               05  CHK004-HOSPNUM          PIC  S9(9)  BINARY.
       *管理コード
                05  CHK004-KANRICD          PIC  X(04).
       *区分コード
@@ -34,6 +34,8 @@
                05  CHK004-STYUKYMD         PIC  X(08).
       *終了有効年月日
                05  CHK004-EDYUKYMD         PIC  X(08).
+      *患者ＩＤ
+           03  CHK004-PTID                 PIC  9(10).
       *管理テーブル
            03  CHK004-KANRITBL             PIC  X(500).
       *端末ＩＤ
@@ -48,7 +50,10 @@
            03  CHK004-UPHMS                PIC  X(06).
       *　　主キー更新用項目
            03  CHK004-UPDKEY.
+               05  CHK004-UPHOSPNUM        PIC  S9(9)  BINARY.
                05  CHK004-UPKANRICD        PIC X(04).
                05  CHK004-UPKBNCD          PIC X(08).
                05  CHK004-UPSTYUKYMD       PIC X(08).
                05  CHK004-UPEDYUKYMD       PIC X(08).
+           03  CHK004-SELLIMIT             PIC 9(08).
+           03  CHK004-SELOFFSET            PIC 9(08).
