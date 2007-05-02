@@ -74,6 +74,7 @@
            03  TNSP-UPHMS               PIC  X(06).
       *　　主キー更新用項目
            03  TNSP-UP-KEY.
+               05  TNSP-UP-HOSPNUM       PIC S9(9) BINARY.
                05  TNSP-UP-SRYCD         PIC  X(09).
                05  TNSP-UP-YUKOSTYMD     PIC  X(08).
                05  TNSP-UP-YUKOEDYMD     PIC  X(08).

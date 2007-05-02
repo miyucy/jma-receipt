@@ -27,6 +27,7 @@ tbl_tensuplus {
 	UPYMD    			char(8);
 	UPHMS				char(6);
 #-----> 主キー更新用項目
+	UPHOSPNUM			integer,virtual;
 	UPSRYCD				char(9),virtual;
 	UPYUKOSTYMD			char(8),virtual;
 	UPYUKOEDYMD			char(8),virtual;
@@ -79,7 +80,7 @@ path	upd1	{
 	CREYMD 			=	:CREYMD,
 	UPYMD 			=	:UPYMD,
 	UPHMS			=	:UPHMS
-		WHERE 	HOSPNUM	= :HOSPNUM
+		WHERE 	HOSPNUM	= :UPHOSPNUM
 			AND   SRYCD      =   :UPSRYCD
 			AND		YUKOSTYMD     =  :UPYUKOSTYMD
 			AND		YUKOEDYMD     =  :UPYUKOEDYMD
