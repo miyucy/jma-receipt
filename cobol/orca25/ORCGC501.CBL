@@ -27,6 +27,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  03.05.00    NACL-多々納  07/05/XX  グループ診療対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -293,10 +294,9 @@
       *
            MOVE    SPACE               TO  EXAMPLE-REC
            INITIALIZE                  EXAMPLE-REC
-      *****MOVE    SPA-HOSPID          TO  EXAMPLE-HOSPID
+           MOVE    SPA-HOSPNUM         TO  EXAMPLE-HOSPNUM
            MOVE    "1"                 TO  EXAMPLE-KUBUN
       *
-           MOVE    SPA-HOSPNUM         TO  EXAMPLE-HOSPNUM
            MOVE    EXAMPLE-REC         TO  MCPDATA-REC
            MOVE    "tbl_example"       TO  MCP-TABLE
            MOVE    "key1"              TO  MCP-PATHNAME
@@ -542,12 +542,11 @@
       *    雛形有無
            MOVE    SPACE               TO  EXAMPLE-REC
            INITIALIZE                  EXAMPLE-REC
-      *****MOVE    SPA-HOSPID          TO  EXAMPLE-HOSPID
+           MOVE    SPA-HOSPNUM         TO  EXAMPLE-HOSPNUM
            MOVE    "1"                 TO  EXAMPLE-KUBUN
            MOVE    SPA-C501-TRENNUM (SPA-C501-TBL)
                                        TO  EXAMPLE-RENNUM
       *
-           MOVE    SPA-HOSPNUM         TO  EXAMPLE-HOSPNUM
            MOVE    EXAMPLE-REC         TO  MCPDATA-REC
            MOVE    "tbl_example"       TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
@@ -618,20 +617,18 @@
       *
            MOVE    SPACE               TO  EXAMPLE-REC
            INITIALIZE                  EXAMPLE-REC
-      *****MOVE    SPA-HOSPID          TO  EXAMPLE-HOSPID
+           MOVE    SPA-HOSPNUM         TO  EXAMPLE-HOSPNUM
            MOVE    "1"                 TO  EXAMPLE-KUBUN
            MOVE    SPA-C501-TRENNUM (SPA-C501-TBL)
                                        TO  EXAMPLE-RENNUM
       *
-           MOVE    SPA-HOSPNUM         TO  EXAMPLE-HOSPNUM
            MOVE    EXAMPLE-REC         TO  MCPDATA-REC
            MOVE    "DBDELETE"          TO  MCP-FUNC
            MOVE    "tbl_example"       TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
-           CALL    "ORCDBMAIN"         USING
-                                           MCPAREA
-                                           MCPDATA-REC
-                                           SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
            IF      MCP-RC          NOT =   ZERO
                DISPLAY "C501 EXAMPLE DEL ERR:" MCP-RC "."
            END-IF
@@ -830,10 +827,9 @@
        910-DBSELECT-SEC                SECTION.
       *
            MOVE    "DBSELECT"      TO  MCP-FUNC
-           CALL    "ORCDBMAIN"     USING
-                                       MCPAREA
-                                       MCPDATA-REC
-                                       SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
        910-DBSELECT-EXT.
@@ -844,10 +840,9 @@
        920-DBFETCH-SEC                 SECTION.
       *
            MOVE    "DBFETCH"       TO  MCP-FUNC
-           CALL    "ORCDBMAIN"     USING
-                                       MCPAREA
-                                       MCPDATA-REC
-                                       SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
       *
@@ -860,10 +855,9 @@
        990-DBCLOSE-SEC         SECTION.
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           CALL    "ORCDBMAIN"         USING
-                                           MCPAREA
-                                           MCPDATA-REC
-                                           SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
        990-DBCLOSE-EXT.
@@ -874,10 +868,9 @@
        900-PUT-WINDOW              SECTION.
       *
            MOVE   "PUTWINDOW"       TO  MCP-FUNC.
-           CALL   "ORCDBMAIN"       USING
-                                        MCPAREA
-                                        MCPDATA-REC
-                                        SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
        900-PUT-WINDOW-EXT.
