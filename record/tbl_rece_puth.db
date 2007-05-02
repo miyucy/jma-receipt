@@ -1,5 +1,5 @@
 tbl_rece_puth {
-	HOSPID				char(24);
+	HOSPNUM				integer;
 	PREFKBN_PRTJYUN 		char(1);
 	HKNJANUM_PRTJYUN		char(1);
 	HKNJANUM			char(8);
@@ -29,7 +29,7 @@ tbl_rece_puth {
 };
 
 primary	{
-	HOSPID,STYUKYMD,EDYUKYMD;
+	HOSPNUM,STYUKYMD,EDYUKYMD;
 };
 
 path	key 	{
@@ -37,7 +37,7 @@ path	key 	{
 		DECLARE tbl_rece_puth_key_csr CURSOR FOR
 		SELECT *
 		FROM tbl_rece_puth
-			WHERE   HOSPID	        =   :HOSPID
+			WHERE   HOSPNUM	        =   :HOSPNUM
 			AND   STYUKYMD	        <=  :STYUKYMD
 			AND   EDYUKYMD	        >=  :EDYUKYMD
 		;
@@ -49,7 +49,7 @@ path	key2 	{
 		DECLARE tbl_rece_puth_key2_csr CURSOR FOR
 		SELECT STYUKYMD,EDYUKYMD
 		FROM tbl_rece_puth
-			WHERE   HOSPID	=   :HOSPID
+			WHERE   HOSPNUM	=   :HOSPNUM
 			GROUP BY STYUKYMD,EDYUKYMD
 			ORDER BY STYUKYMD,EDYUKYMD
 		;
@@ -61,7 +61,7 @@ path    upd1    {
 		UPDATE  tbl_rece_puth
 			SET
 #                       :*
-			HOSPID           =   :HOSPID,
+			HOSPNUM           =   :HOSPNUM,
 			PREFKBN_PRTJYUN  =   :PREFKBN_PRTJYUN,
 			HKNJANUM_PRTJYUN =   :HKNJANUM_PRTJYUN,
 			HKNJANUM         =   :HKNJANUM,
@@ -89,5 +89,16 @@ path    upd1    {
 		AND     EDYUKYMD         =   :UPEDYUKYMD
                 ;
         };
+};
+
+
+path	all	{
+	DBSELECT	{
+		DECLARE tbl_rece_puth_all_csr CURSOR FOR
+		SELECT *
+		FROM tbl_rece_puth
+		WHERE   HOSPNUM    =   :HOSPNUM
+		;
+	};
 };
 

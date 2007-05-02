@@ -1,5 +1,5 @@
 tbl_rece_putb {
-	HOSPID				char(24);
+	HOSPNUM				integer;
 	PREFKBN				char(1);
 	SYUBETU_SRT1			integer;
 	GRP_NO1				char(3);
@@ -23,7 +23,7 @@ tbl_rece_putb {
 };
 
 primary	{
-	HOSPID,PREFKBN,SYUBETU_SRT1,GRP_NO1,SYUBETU_SRT2,GRP_NO2,KOUHI_NO,STYUKYMD,EDYUKYMD;
+	HOSPNUM,PREFKBN,SYUBETU_SRT1,GRP_NO1,SYUBETU_SRT2,GRP_NO2,KOUHI_NO,STYUKYMD,EDYUKYMD;
 };
 
 path	key 	{
@@ -31,7 +31,7 @@ path	key 	{
 		DECLARE tbl_rece_putb_key_csr CURSOR FOR
 		SELECT *
 		FROM tbl_rece_putb
-			WHERE HOSPID		=   :HOSPID
+			WHERE HOSPNUM		=   :HOSPNUM
 			AND   PREFKBN		=   :PREFKBN
 			AND   SYUBETU_SRT1	=   :SYUBETU_SRT1
 			AND   GRP_NO1		=   :GRP_NO1
@@ -49,7 +49,7 @@ path	key2 	{
 		DECLARE tbl_rece_putb_key2_csr CURSOR FOR
 		SELECT *
 		FROM tbl_rece_putb
-			WHERE   HOSPID		=   :HOSPID
+			WHERE   HOSPNUM		=   :HOSPNUM
 			AND   PREFKBN		=   :PREFKBN
 			AND   STYUKYMD		=   :STYUKYMD
 			AND   EDYUKYMD		=   :EDYUKYMD
@@ -63,7 +63,7 @@ path	key3 	{
 		DECLARE tbl_rece_putb_key3_csr CURSOR FOR
 		SELECT *
 		FROM tbl_rece_putb
-			WHERE   HOSPID		=   :HOSPID
+			WHERE   HOSPNUM		=   :HOSPNUM
 			AND   PREFKBN		=   :PREFKBN
 			AND   SYUBETU_SRT2	=   :SYUBETU_SRT2
 			AND   STYUKYMD		=   :STYUKYMD
@@ -78,7 +78,7 @@ path	key4 	{
 		DECLARE tbl_rece_putb_key4_csr CURSOR FOR
 		SELECT *
 		FROM tbl_rece_putb
-			WHERE   HOSPID		=   :HOSPID
+			WHERE   HOSPNUM		=   :HOSPNUM
 			AND   PREFKBN		=   :PREFKBN
 			AND   STYUKYMD		<=  :STYUKYMD
 			AND   EDYUKYMD		>=  :EDYUKYMD
@@ -91,10 +91,20 @@ path    del1   {
         DBDELETE        {
                 DELETE
                 FROM tbl_rece_putb
-			WHERE   HOSPID		=   :HOSPID
+			WHERE   HOSPNUM		=   :HOSPNUM
 			AND     STYUKYMD	=   :STYUKYMD
 			AND     EDYUKYMD	=   :EDYUKYMD
                 ;
         };
+};
+
+path	all	{
+	DBSELECT	{
+		DECLARE tbl_rece_putb_all_csr CURSOR FOR
+		SELECT *
+		FROM tbl_rece_putb
+		WHERE   HOSPNUM    =   :HOSPNUM
+		;
+	};
 };
 
