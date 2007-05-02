@@ -17,10 +17,13 @@
       ********************************************************************
        01  SS002-AREA.
            03  SS002-IN.
-               05  SS002-UPDKBN        PIC X(01).
-               05  SS002-EDANUM        PIC 9(02).
+      *        ¶õÇò:ÀÁµá¡¦ÄûÀµ/1:ÊÝ¸±ÊÑ¹¹/2:Ä´À°¶â
+               05  SS002-UPDKBN            PIC X(01).
+               05  SS002-IN-SYURRKNUM      PIC S9(09).
+               05  SS002-IN-SYUEDANUM      PIC S9(09).
+               05  SS002-IN-SYURRKUPDKBN   PIC X(01).
            03  SS002-OT.
-               05  SS002-SYURRKNUM     PIC S9(09)  BINARY.
-               05  SS002-SYUEDANUM     PIC S9(09)  BINARY.
-               05  SS002-SYURRKUPDKBN  PIC X(01).
-               05  SS002-RC            PIC S9(09)  BINARY.
+               05  SS002-SYURRKNUM         PIC S9(09).
+               05  SS002-SYUEDANUM         PIC S9(09).
+               05  SS002-SYURRKUPDKBN      PIC X(01).
+               05  SS002-RC                PIC S9(09)  BINARY.

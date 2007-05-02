@@ -66,24 +66,24 @@
                     06  W02-SYOHOKBN-COUNT   PIC S9(9)   BINARY.
                     06  W02-SYOHOKBNLST      PIC X(8)    OCCURS  2.
                   05  W02-SKYPRTFLG-COMBO.
-                    06  W02-SKYPRTFLG        PIC X(22).
+                    06  W02-SKYPRTFLG        PIC X(30).
                     06  W02-SKYPRTFLG-COUNT  PIC S9(9)   BINARY.
-                    06  W02-SKYPRTFLGLST     PIC X(22)   OCCURS  3.
+                    06  W02-SKYPRTFLGLST     PIC X(30)   OCCURS  5.
                   05  W02-SYOHOPRTFLG-COMBO.
-                    06  W02-SYOHOPRTFLG      PIC X(14).
+                    06  W02-SYOHOPRTFLG      PIC X(30).
                     06  W02-SYOHOPRTFLG-COUNT
                                              PIC S9(9)   BINARY.
-                    06  W02-SYOHOPRTFLGLST   PIC X(14)   OCCURS  3.
+                    06  W02-SYOHOPRTFLGLST   PIC X(30)   OCCURS  5.
                   05  W02-ZENSYOHOFLG-COMBO.
                     06  W02-ZENSYOHOFLG      PIC X(14).
                     06  W02-ZENSYOHOFLG-COUNT
                                              PIC S9(9)   BINARY.
                     06  W02-ZENSYOHOFLGLST   PIC X(14)   OCCURS  2.
                   05  W02-YAKUJYOFLG-COMBO.
-                    06  W02-YAKUJYOFLG       PIC X(14).
+                    06  W02-YAKUJYOFLG       PIC X(30).
                     06  W02-YAKUJYOFLG-COUNT
                                              PIC S9(9)   BINARY.
-                    06  W02-YAKUJYOFLGLST PIC X(14)   OCCURS  2.
+                    06  W02-YAKUJYOFLGLST PIC X(30)   OCCURS  3.
                   05  W02-DISCOUNTHASU-COMBO.
                     06  W02-DISCOUNTHASU     PIC X(32).
                     06  W02-DISCOUNTHASU-COUNT

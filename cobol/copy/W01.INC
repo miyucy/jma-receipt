@@ -44,4 +44,4 @@
                 04  W01-KANRICD.
                   05  W01-VALUE   PIC X(35).
                 04  W01-KANRICD-COUNT   PIC S9(9)   BINARY.
-                04  W01-KANRICD-ITEM    PIC X(35)   OCCURS  50 TIMES.
+                04  W01-KANRICD-ITEM    PIC X(35)   OCCURS  100 TIMES.

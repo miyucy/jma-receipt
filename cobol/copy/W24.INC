@@ -119,6 +119,12 @@
                                                BINARY.
                 05  W24-SAIKEISANKBN-ITM       PIC X(20)
                                                OCCURS  5.
+              04  W24-CMB-NYKNKNRKBN.
+                05  W24-NYKNKNRKBN             PIC X(40).
+                05  W24-NYKNKNRKBN-CNT         PIC S9(9)
+                                               BINARY.
+                05  W24-NYKNKNRKBN-ITM         PIC X(40)
+                                               OCCURS  10.
               04  W24-CMB-SKYPRTKBN.
                 05  W24-SKYPRTKBN              PIC X(30).
                 05  W24-SKYPRTKBN-CNT          PIC S9(9)
@@ -179,4 +185,10 @@
                                                OCCURS  5.
                 05  W24-ADLINPUT-ITM-STATE     PIC S9(9)
                                                BINARY.
+              04  W24-CMB-TEIKISAGAKUACT.
+                05  W24-TEIKISAGAKUACT         PIC X(20).
+                05  W24-TEIKISAGAKUACT-CNT     PIC S9(9)
+                                               BINARY.
+                05  W24-TEIKISAGAKUACT-ITM     PIC X(20)
+                                               OCCURS  5.
 
