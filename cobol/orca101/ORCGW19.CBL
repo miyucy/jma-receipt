@@ -27,6 +27,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  03.05.00    NACL-多々納  07/05/02  グループ診療対応
       *****************************************************************
       *
        ENVIRONMENT                     DIVISION.
@@ -136,6 +137,7 @@
            COPY    "W11.INC".
            COPY    "W111.INC".
            COPY    "W12.INC".
+           COPY    "W121.INC".
            COPY    "W13.INC".
            COPY    "W14.INC".
            COPY    "W15.INC".
@@ -155,6 +157,7 @@
            COPY    "W29.INC".
            COPY    "W30.INC".
            COPY    "W31.INC".
+           COPY    "W32.INC".
            COPY    "W60.INC".
            COPY    "W61.INC".
            COPY    "W62.INC".
@@ -353,6 +356,7 @@
       *
                MOVE    PATH-TBL-SYSKANRI-KEY2
                                            TO  WRK-MCP-PATH
+               MOVE    "key2"              TO  WRK-MCP-PATH
            ELSE
                MOVE    WRK-KANRICD         TO  SYS-KANRICD
                MOVE    SPA-W10-KBNCD(1:1)  TO  SYS-KBNCD (1:1)
@@ -363,11 +367,13 @@
       *
                MOVE    PATH-TBL-SYSKANRI-KEY
                                            TO  WRK-MCP-PATH
+               MOVE    "key10"             TO  WRK-MCP-PATH
            END-IF
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  SYS-HOSPNUM
            MOVE    SYSKANRI-REC        TO  MCPDATA-REC
-           MOVE    WRK-MCP-PATH        TO  MCP-PATH
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    WRK-MCP-PATH        TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF    ( MCP-RC              =   ZERO )
                MOVE    MCPDATA-REC     TO  SYSKANRI-REC
@@ -429,7 +435,8 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                    MOVE    1             TO  SPA-GMN-W19-TSTATUS (IDX1)
                END-EVALUATE
       *
-               MOVE    WRK-MCP-PATH      TO  MCP-PATH
+               MOVE    "tbl_syskanri"      TO  MCP-TABLE
+               MOVE    WRK-MCP-PATH        TO  MCP-PATHNAME
                PERFORM 910-DBFETCH-SEC
                IF    ( MCP-RC              =   ZERO )
                    MOVE    MCPDATA-REC TO  SYSKANRI-REC
@@ -442,7 +449,8 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *
            MOVE    IDX1                TO  SPA-GMN-W19-TYOHYOLST-MAX
       *
-           MOVE    WRK-MCP-PATH        TO  MCP-PATH
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    WRK-MCP-PATH        TO  MCP-PATHNAME
            PERFORM 910-DBCLOSE-SEC
       *
            .
@@ -462,11 +470,13 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SPA-W01-SEL-STYUKYMD
                                        TO  SYS-STYUKYMD
                                            SYS-EDYUKYMD
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  SYS-HOSPNUM
            MOVE    SYSKANRI-REC        TO  MCPDATA-REC
       *
            MOVE    PATH-TBL-SYSKANRI-KEY2
                                        TO  MCP-PATH
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF    ( MCP-RC              =   ZERO )
                MOVE    MCPDATA-REC     TO  SYSKANRI-REC
@@ -492,8 +502,8 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                                                          (WRK-PGSRH-MAX)
                END-IF
       *
-               MOVE    PATH-TBL-SYSKANRI-KEY2
-                                       TO  MCP-PATH
+               MOVE    "tbl_syskanri"      TO  MCP-TABLE
+               MOVE    "key2"              TO  MCP-PATHNAME
                PERFORM 910-DBFETCH-SEC
                IF    ( MCP-RC              =   ZERO )
                    MOVE    MCPDATA-REC TO  SYSKANRI-REC
@@ -504,8 +514,8 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *
            END-PERFORM
       *
-           MOVE    PATH-TBL-SYSKANRI-KEY2
-                                       TO  MCP-PATH
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
            PERFORM 910-DBCLOSE-SEC
       *
            .
@@ -975,9 +985,9 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
        910-DBSELECT-SEC                SECTION.
       *
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           CALL    "MCPSUB"            USING
-                                       MCPAREA
-                                       MCPDATA-REC
+           CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            IF    ( MCP-RC          =   ZERO )
                PERFORM 910-DBFETCH-SEC
@@ -993,9 +1003,9 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
        910-DBFETCH-SEC                  SECTION.
       *
            MOVE    "DBFETCH"       TO   MCP-FUNC
-           CALL    "MCPSUB"             USING
-                                        MCPAREA
-                                        MCPDATA-REC
+           CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
       *
@@ -1007,9 +1017,9 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
        910-DBCLOSE-SEC                  SECTION.
       *
            MOVE    "DBCLOSECURSOR"      TO  MCP-FUNC
-           CALL    "MCPSUB"             USING
-                                        MCPAREA
-                                        MCPDATA-REC
+           CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
       *
@@ -1021,9 +1031,9 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
        900-PUT-WINDOW                  SECTION.
       *
            MOVE   "PUTWINDOW"       TO  MCP-FUNC.
-           CALL   "MCPSUB"          USING
-                                    MCPAREA
-                                    MCPDATA-REC
+           CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
        900-PUT-WINDOW-EXT.

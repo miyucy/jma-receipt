@@ -27,6 +27,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  03.05.00    NACL-多々納  07/05/02  グループ診療対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -447,6 +448,7 @@
            INITIALIZE                      HKTSRYCD-REC
            MOVE    SPA-SYSYMD          TO  HKTSRYCD-YUKOSTYMD
            MOVE    SPA-SYSYMD          TO  HKTSRYCD-YUKOEDYMD
+grpsys*    MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            MOVE    HKTSRYCD-REC        TO  MCPDATA-REC
            MOVE    "tbl_hktsrycd"      TO  MCP-TABLE
            MOVE    "key4"              TO  MCP-PATHNAME
@@ -572,6 +574,7 @@
            MOVE    "1014"              TO  SYS-1014-KANRICD
            MOVE    SPA-GMN-KBNCD       TO  SYS-1014-KBNCD (1:3)
            MOVE    "%"                 TO  SYS-1014-KBNCD (4:1)
+           MOVE    SPA-HOSPNUM         TO  SYS-1014-HOSPNUM
            MOVE    SYS-1014-REC        TO  MCPDATA-REC
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key4"              TO  MCP-PATHNAME
@@ -840,6 +843,7 @@
            MOVE    SPA-GMN-KBNCD       TO  SYS-1014-KBNCD
            MOVE    SPA-NAI-STYUKYMD    TO  SYS-1014-STYUKYMD 
            MOVE    SPA-NAI-STYUKYMD    TO  SYS-1014-EDYUKYMD 
+           MOVE    SPA-HOSPNUM         TO  SYS-1014-HOSPNUM
            MOVE    SYS-1014-REC        TO  MCPDATA-REC
            PERFORM 900-SYSKANRI-KEY-SEC
            IF      FLG-SYSKANRI            =   ZERO
@@ -1234,13 +1238,14 @@
            MOVE    SPA-MAE-STYUKYMD        TO  SYS-1014-STYUKYMD
            MOVE    SPA-MAE-EDYUKYMD        TO  SYS-1014-EDYUKYMD
       *
+           MOVE    SPA-HOSPNUM         TO  SYS-1014-HOSPNUM
            MOVE    SYS-1014-REC        TO  MCPDATA-REC
            MOVE    "DBDELETE"          TO  MCP-FUNC
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            IF      MCP-RC              NOT =   ZERO 
                MOVE    "1002"              TO  SPA-ERRCD
@@ -1379,6 +1384,7 @@
            MOVE    SPA-MAE-STYUKYMD    TO  SYS-1014-STYUKYMD
            MOVE    SPA-MAE-STYUKYMD    TO  SYS-1014-EDYUKYMD
       *
+           MOVE    SPA-HOSPNUM         TO  SYS-1014-HOSPNUM
            MOVE    SYS-1014-REC        TO  MCPDATA-REC
            PERFORM 900-SYSKANRI-KEY-SEC
            IF      FLG-SYSKANRI            =   ZERO
@@ -1415,13 +1421,14 @@
                MOVE    SPA-MAE-STYUKYMD    TO  SYSUP-STYUKYMD
                MOVE    SPA-MAE-EDYUKYMD    TO  SYSUP-EDYUKYMD
       *
+               MOVE    SPA-HOSPNUM         TO  SYS-HOSPNUM
                MOVE    SYSKANRI-REC        TO  MCPDATA-REC
                MOVE    "DBUPDATE"          TO  MCP-FUNC
                MOVE    "tbl_syskanri"      TO  MCP-TABLE
                MOVE    "upd1"              TO  MCP-PATHNAME
-               CALL    "MONFUNC"           USING
-                                           MCPAREA
-                                           MCPDATA-REC
+grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
+                                                   MCPDATA-REC
+                                                   SPA-AREA
                IF      MCP-RC          NOT =   ZERO 
                    MOVE    "1001"              TO  SPA-ERRCD
                    DISPLAY "W32 DB UPD ERR KEY:" SYS-1014-KEY 
@@ -1432,13 +1439,14 @@
                MOVE    SMCNDATE-YMD        TO  SYS-1014-UPYMD
                MOVE    SMCNDATE-HMS        TO  SYS-1014-UPHMS
       *
+               MOVE    SPA-HOSPNUM         TO  SYS-1014-HOSPNUM
                MOVE    SYS-1014-REC        TO  MCPDATA-REC
                MOVE    "DBINSERT"          TO  MCP-FUNC
                MOVE    "tbl_syskanri"      TO  MCP-TABLE
                MOVE    "key"               TO  MCP-PATHNAME
-               CALL    "MONFUNC"           USING
-                                           MCPAREA
-                                           MCPDATA-REC
+grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
+                                                   MCPDATA-REC
+                                                   SPA-AREA
                IF      MCP-RC          NOT =   ZERO 
                    MOVE    "1001"              TO  SPA-ERRCD
                    DISPLAY "W32 DB INS ERR KEY:" SYS-1014-KEY 
@@ -1889,9 +1897,9 @@
        910-DBSELECT-SEC                SECTION.
       *
            MOVE    "DBSELECT"      TO  MCP-FUNC
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
        910-DBSELECT-EXT.
@@ -1902,9 +1910,9 @@
        920-DBFETCH-SEC                 SECTION.
       *
            MOVE    "DBFETCH"       TO  MCP-FUNC
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
       *
@@ -1917,9 +1925,9 @@
        990-DBCLOSE-SEC           SECTION.
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
        990-DBCLOSE-EXT.
@@ -1931,9 +1939,9 @@
        900-PUT-WINDOW              SECTION.
       *
            MOVE   "PUTWINDOW"       TO  MCP-FUNC.
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
        900-PUT-WINDOW-EXT.

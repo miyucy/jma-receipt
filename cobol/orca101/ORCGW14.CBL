@@ -33,6 +33,7 @@
       *                                     の追加
       *  01.00.04    NACL-藤原    05/02/16  標準国保レセ電総括表印刷指示
       *                                     の追加
+      *  03.05.00    NACL-多々納  07/05/02  グループ診療対応
       *****************************************************************
       *
        ENVIRONMENT                               DIVISION.
@@ -189,6 +190,7 @@
            COPY    "W11.INC".
            COPY    "W111.INC".
            COPY    "W12.INC".
+           COPY    "W121.INC".
            COPY    "W13.INC".
            COPY    "W14.INC".
            COPY    "W15.INC".
@@ -208,6 +210,7 @@
            COPY    "W29.INC".
            COPY    "W30.INC".
            COPY    "W31.INC".
+           COPY    "W32.INC".
            COPY    "W60.INC".
            COPY    "W61.INC".
            COPY    "W62.INC".
@@ -358,7 +361,7 @@
            MOVE    "3003"              TO  SYS-3003-KANRICD
            MOVE    "044"               TO  SYS-3003-KBNCD
            MOVE    SPA-W01-STYUKYMD    TO  ORC-DBYMD
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  SYS-3003-HOSPNUM
            MOVE    SYS-3003-REC        TO  MCPDATA-REC
            PERFORM 900-SYSKANRI-INV-SEC
            IF      FLG-SYSKANRI        =   ZERO
@@ -393,7 +396,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            INITIALIZE                      SYS-3004-REC
            MOVE    SPA-W01-KANRICD     TO  SYS-3004-KANRICD
            MOVE    SPA-W01-STYUKYMD    TO  ORC-DBYMD
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  SYS-3004-HOSPNUM
            MOVE    SYS-3004-REC        TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH
@@ -989,7 +992,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    "3003"              TO  SYS-3003-KANRICD
            MOVE    "044"               TO  SYS-3003-KBNCD
            MOVE    SPA-W01-STYUKYMD    TO  ORC-DBYMD
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  SYS-3003-HOSPNUM
            MOVE    SYS-3003-REC        TO  MCPDATA-REC
            PERFORM 900-SYSKANRI-INV-SEC
            IF      FLG-SYSKANRI        =   ZERO
@@ -1018,7 +1021,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    "1"                 TO  SYS-3003-PRTKBN3
            END-IF        
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  SYS-3003-HOSPNUM
            MOVE    SYS-3003-REC        TO  MCPDATA-REC
            MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
            IF      FLG-SYSKANRI        =   ZERO
@@ -1040,7 +1043,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            INITIALIZE                      SYS-3004-REC
            MOVE    SPA-W01-KANRICD     TO  SYS-3004-KANRICD
            MOVE    SPA-W01-STYUKYMD    TO  ORC-DBYMD
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  SYS-3004-HOSPNUM
            MOVE    SYS-3004-REC        TO  MCPDATA-REC
            MOVE    "DBDELETE"          TO  MCP-FUNC
            MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH
@@ -1069,7 +1072,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                    MOVE    SPA-GMN-PRTNM    (IDX)  TO  SYS-3004-PRTNM
                    MOVE    SPA-GMN-PARAKBN  (IDX)  TO  SYS-3004-PARAKBN
       *
-grpsys*            MOVE SPA-HOSPNUM TO -HOSPNUM
+                   MOVE    SPA-HOSPNUM         TO  SYS-3004-HOSPNUM
                    MOVE    SYS-3004-REC            TO  MCPDATA-REC
                    MOVE    "SYSKANRI-KEY"          TO  ORC-DBPATH
                    MOVE    "DBINSERT"              TO  MCP-FUNC

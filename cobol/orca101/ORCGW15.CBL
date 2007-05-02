@@ -27,6 +27,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  03.05.00    NACL-多々納  07/05/02  グループ診療対応
       *****************************************************************
       *
        ENVIRONMENT                               DIVISION.
@@ -158,6 +159,7 @@
            COPY    "W11.INC".
            COPY    "W111.INC".
            COPY    "W12.INC".
+           COPY    "W121.INC".
            COPY    "W13.INC".
            COPY    "W14.INC".
            COPY    "W15.INC".
@@ -177,6 +179,7 @@
            COPY    "W29.INC".
            COPY    "W30.INC".
            COPY    "W31.INC".
+           COPY    "W32.INC".
            COPY    "W60.INC".
            COPY    "W61.INC".
            COPY    "W62.INC".
@@ -307,7 +310,7 @@
            MOVE    SPA-W01-KANRICD     TO  SYS-1033-KANRICD
            MOVE    "*"                 TO  SYS-1033-KBNCD
            MOVE    SPA-W01-STYUKYMD    TO  ORC-DBYMD
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  SYS-1033-HOSPNUM
            MOVE    SYS-1033-REC        TO  MCPDATA-REC
            PERFORM 900-SYSKANRI-INV-SEC
            IF      FLG-SYSKANRI            =   ZERO
@@ -321,10 +324,9 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *
                    MOVE    SPACE               TO  HKNJAINF-REC
                    INITIALIZE                      HKNJAINF-REC
-                   MOVE    SPA-HOSPID          TO  HKNJA-HOSPID
+                   MOVE    SPA-HOSPNUM          TO  HKNJA-HOSPNUM
                    MOVE    SPA-GMN-HKNJANUM (IDX)
                                                TO  HKNJA-HKNJANUM
-grpsys*            MOVE SPA-HOSPNUM TO -HOSPNUM
                    MOVE    HKNJAINF-REC        TO  MCPDATA-REC
                    PERFORM 900-HKNJAINF-INV-SEC
                    IF      FLG-HKNJAINF        =   ZERO
@@ -462,10 +464,9 @@ grpsys*            MOVE SPA-HOSPNUM TO -HOSPNUM
                IF     SPA-GMN-HKNJANUM (IDX)    NOT =   SPACE
                    MOVE    SPACE               TO  HKNJAINF-REC
                    INITIALIZE                      HKNJAINF-REC
-                   MOVE    SPA-HOSPID          TO  HKNJA-HOSPID
+                   MOVE    SPA-HOSPNUM         TO  HKNJA-HOSPNUM
                    MOVE    SPA-GMN-HKNJANUM (IDX)
                                                TO  HKNJA-HKNJANUM
-grpsys*            MOVE SPA-HOSPNUM TO -HOSPNUM
                    MOVE    HKNJAINF-REC        TO  MCPDATA-REC
                    PERFORM 900-HKNJAINF-INV-SEC
                    IF      FLG-HKNJAINF        =   ZERO
@@ -505,7 +506,7 @@ grpsys*            MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SPA-W01-KANRICD     TO  SYS-1033-KANRICD
                    MOVE    "*"         TO  SYS-1033-KBNCD
            MOVE    SPA-W01-STYUKYMD    TO  ORC-DBYMD
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  SYS-1033-HOSPNUM
            MOVE    SYS-1033-REC        TO  MCPDATA-REC
            PERFORM 900-SYSKANRI-INV-SEC
       *
@@ -545,7 +546,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    "SYSKANRI-KEY"          TO  ORC-DBPATH
                MOVE    "DBINSERT"              TO  MCP-FUNC
            END-IF
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM             TO  SYS-HOSPNUM
            MOVE    SYSKANRI-REC            TO  MCPDATA-REC
            CALL    "ORCMCPSUB"              USING
                                             MCPAREA

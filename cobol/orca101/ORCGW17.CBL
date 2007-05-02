@@ -27,6 +27,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  03.05.00    NACL-多々納  07/05/02  グループ診療対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -209,6 +210,7 @@
            COPY    "W11.INC".
            COPY    "W111.INC".
            COPY    "W12.INC".
+           COPY    "W121.INC".
            COPY    "W13.INC".
            COPY    "W14.INC".
            COPY    "W15.INC".
@@ -228,6 +230,7 @@
            COPY    "W29.INC".
            COPY    "W30.INC".
            COPY    "W31.INC".
+           COPY    "W32.INC".
            COPY    "W60.INC".
            COPY    "W61.INC".
            COPY    "W62.INC".
@@ -425,10 +428,9 @@
       *    保険番号読み込み
            MOVE    ZERO            TO  FLG-HKNNUM
            INITIALIZE                  HKNNUM-REC
-           MOVE    SPA-HOSPID      TO  HKN-HOSPID
+           MOVE    SPA-HOSPNUM      TO  HKN-HOSPNUM
            MOVE    SPA-NAI-YUKOSTYMD   TO  HKN-TEKSTYMD
            MOVE    SPA-NAI-YUKOSTYMD   TO  HKN-TEKEDYMD
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    HKNNUM-REC      TO  MCPDATA-REC
            MOVE    "HKNNUM-KEY3"   TO  WRK-DBPATH-KOH
       *
@@ -470,13 +472,12 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    ZERO            TO  FLG-HKNNUM
            INITIALIZE                  HKNNUM-REC
       *
-           MOVE    SPA-HOSPID      TO  HKN-HOSPID
+           MOVE    SPA-HOSPNUM      TO  HKN-HOSPNUM
            MOVE    SYS-1040-KBNCD  TO  HKN-HKNNUM
            MOVE    SYS-1040-STYUKYMD
                                    TO  HKN-TEKSTYMD
            MOVE    SYS-1040-STYUKYMD
                                    TO  HKN-TEKEDYMD
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    HKNNUM-REC      TO  MCPDATA-REC
            MOVE    "HKNNUM-KEY5"   TO  WRK-DBPATH-KOH
            PERFORM 31011-HKNNUM-SELECT-SEC
@@ -514,7 +515,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *
            MOVE    "1040"          TO  SYS-1040-KANRICD
            MOVE    "SYSKANRI-KEY5" TO  WRK-DBPATH-SYS
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  SYS-1040-HOSPNUM
            MOVE    SYS-1040-REC    TO  MCPDATA-REC
       *
       *    システム管理検索処理
@@ -1064,7 +1065,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            PERFORM 4701-KOUMOKU-SET-SEC
       *
       *    チェック排除情報マスタ追加
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  SYS-1040-HOSPNUM
            MOVE    SYS-1040-REC    TO  MCPDATA-REC
            MOVE    "SYSKANRI-KEY"  TO  ORC-DBPATH
            MOVE    "DBINSERT"      TO  MCP-FUNC
@@ -1169,7 +1170,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SPA-MOT-EDYMD   TO  SYSUP-EDYUKYMD
       *
       *    チェック排除情報マスタ更新
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  SYS-HOSPNUM
            MOVE    SYSKANRI-REC    TO  MCPDATA-REC
            MOVE    "SYSKANRI-UPD1" TO  ORC-DBPATH
            MOVE    "DBUPDATE"      TO  MCP-FUNC
@@ -1226,7 +1227,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SPA-MOT-STYMD   TO  SYS-1040-STYUKYMD
            MOVE    SPA-MOT-EDYMD   TO  SYS-1040-EDYUKYMD
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  SYS-1040-HOSPNUM
            MOVE    SYS-1040-REC    TO  MCPDATA-REC
            MOVE    "SYSKANRI-KEY"  TO  ORC-DBPATH
            MOVE    "DBDELETE"      TO  MCP-FUNC
@@ -1309,7 +1310,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    "1040"              TO  SYS-1040-KANRICD
            MOVE    SPA-GMN-KOHCD       TO  SYS-1040-KBNCD
            MOVE    "SYSKANRI-KEY8"     TO  WRK-DBPATH-SYS
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  SYS-1040-HOSPNUM
            MOVE    SYS-1040-REC        TO  MCPDATA-REC
       *
       *    システム管理検索処理

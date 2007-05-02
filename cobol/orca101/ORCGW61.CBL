@@ -37,6 +37,7 @@
       *  02.08.01    NACL-藤原    06/02/25  有効期間の未入力時の更新処理
       *
       *  03.01.01    NACL-藤原    06/08/23  DBCLOSECURSOR追加
+      *  03.05.00    NACL-多々納  07/05/02  グループ診療対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -344,6 +345,7 @@
            COPY    "W11.INC".
            COPY    "W111.INC".
            COPY    "W12.INC".
+           COPY    "W121.INC".
            COPY    "W13.INC".
            COPY    "W14.INC".
            COPY    "W15.INC".
@@ -363,6 +365,7 @@
            COPY    "W29.INC".
            COPY    "W30.INC".
            COPY    "W31.INC".
+           COPY    "W32.INC".
            COPY    "W60.INC".
            COPY    "W61.INC".
            COPY    "W62.INC".
@@ -557,7 +560,7 @@
       *
            INITIALIZE              SYSKANRI-REC
            MOVE    "2006"          TO  SYS-KANRICD
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  SYS-HOSPNUM
            MOVE    SYSKANRI-REC    TO  MCPDATA-REC
            MOVE    PATH-TBL-SYSKANRI-KEY5
                                    TO  MCP-PATH
@@ -595,10 +598,9 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    SYS-2006-HKNNUM     TO  SPA-GMN-THKNNUM   (IDX)
                MOVE    SPACE               TO  HKNNUM-REC
                INITIALIZE                      HKNNUM-REC
-               MOVE    SPA-HOSPID          TO  HKN-HOSPID
+               MOVE    SPA-HOSPNUM          TO  HKN-HOSPNUM
                MOVE    SYS-2006-HKNNUM     TO  HKN-HKNNUM
                MOVE    "00"                TO  HKN-PAYKBN
-grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    HKNNUM-REC          TO  MCPDATA-REC
                PERFORM 900-HKNNUM-READ-SEC
                MOVE    HKN-SEIDONAME       TO SPA-GMN-TSEIDONAME (IDX)
@@ -994,7 +996,7 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                                        TO  SYS-STYUKYMD
            MOVE    SPA-NAI-TEDYUKYMD (SPA-NAI-SELNUM)
                                        TO  SYS-EDYUKYMD
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  SYS-HOSPNUM
            MOVE    SYSKANRI-REC        TO  MCPDATA-REC
            MOVE    PATH-TBL-SYSKANRI-KEY10
                                        TO  WRK-SYSKANRI-PATH
@@ -1015,10 +1017,9 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    SYS-2006-HKNNUM     TO  SPA-GMN-HKNNUM
                MOVE    SPACE               TO  HKNNUM-REC
                INITIALIZE                      HKNNUM-REC
-               MOVE    SPA-HOSPID          TO  HKN-HOSPID
+               MOVE    SPA-HOSPNUM          TO  HKN-HOSPNUM
                MOVE    SPA-GMN-HKNNUM      TO  HKN-HKNNUM
                MOVE    "00"                TO  HKN-PAYKBN
-grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    HKNNUM-REC          TO  MCPDATA-REC
                PERFORM 900-HKNNUM-READ-SEC
                MOVE    HKN-SEIDONAME       TO SPA-GMN-SEIDONAME
@@ -1026,9 +1027,8 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    SYS-2006-HKNJANUM   TO SPA-GMN-HKNJANUM
                MOVE    SPACE               TO  HKNJAINF-REC
                INITIALIZE                      HKNJAINF-REC
-               MOVE    SPA-HOSPID          TO  HKNJA-HOSPID
+               MOVE    SPA-HOSPNUM          TO  HKNJA-HOSPNUM
                MOVE    SPA-GMN-HKNJANUM    TO  HKNJA-HKNJANUM
-grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    HKNJAINF-REC        TO  MCPDATA-REC
                PERFORM 900-HKNJAINF-READ-SEC
                MOVE    HKNJA-HKNJANAME     TO SPA-GMN-HKNJANAME
@@ -1264,10 +1264,9 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
            ELSE 
                MOVE    SPACE           TO  HKNNUM-REC
                INITIALIZE                  HKNNUM-REC
-               MOVE    SPA-HOSPID      TO  HKN-HOSPID
+               MOVE    SPA-HOSPNUM     TO  HKN-HOSPNUM
                MOVE    SPA-GMN-HKNNUM  TO  HKN-HKNNUM
                MOVE    "00"            TO  HKN-PAYKBN
-grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    HKNNUM-REC      TO  MCPDATA-REC
                PERFORM 900-HKNNUM-READ-SEC
       *
@@ -1331,10 +1330,9 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
            ELSE 
                MOVE    SPACE           TO  HKNJAINF-REC
                INITIALIZE                  HKNJAINF-REC
-               MOVE    SPA-HOSPID      TO  HKNJA-HOSPID
+               MOVE    SPA-HOSPNUM     TO  HKNJA-HOSPNUM
                MOVE    SPA-GMN-HKNJANUM
                                        TO  HKNJA-HKNJANUM
-grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    HKNJAINF-REC    TO  MCPDATA-REC
                PERFORM 900-HKNJAINF-READ-SEC
                IF      FLG-HKNJAINF    =   ZERO
@@ -2062,7 +2060,7 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SPA-NAI-KBNCD       TO  SYS-KBNCD
            MOVE    SPA-NAI-STYUKYMD    TO  SYS-STYUKYMD
            MOVE    SPA-NAI-EDYUKYMD    TO  SYS-EDYUKYMD
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  SYS-HOSPNUM
            MOVE    SYSKANRI-REC        TO  MCPDATA-REC
            MOVE    PATH-TBL-SYSKANRI-KEY
                                        TO  MCP-PATH
@@ -2127,7 +2125,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                                            TO  SYS-2006-STYUKYMD
                MOVE    SPA-NAI-TEDYUKYMD (SPA-NAI-SELNUM)
                                            TO  SYS-2006-EDYUKYMD
-grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
+               MOVE    SPA-HOSPNUM         TO  SYS-2006-HOSPNUM
                MOVE    SYS-2006-REC        TO  MCPDATA-REC
                MOVE    PATH-TBL-SYSKANRI-KEY10
                                            TO  WRK-SYSKANRI-PATH
@@ -2141,7 +2139,7 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    SPACE               TO  SYS-2006-REC
                INITIALIZE                      SYS-2006-REC
                MOVE    "2006"              TO  SYS-2006-KANRICD
-grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
+               MOVE    SPA-HOSPNUM         TO  SYS-2006-HOSPNUM
                MOVE    SYS-2006-REC        TO  MCPDATA-REC
                MOVE    PATH-TBL-SYSKANRI-KEY13
                                            TO  WRK-SYSKANRI-PATH
@@ -2229,7 +2227,7 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                                                TO  MCP-PATH
                END-IF 
       *
-grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
+               MOVE    SPA-HOSPNUM         TO  SYS-HOSPNUM
                MOVE    SYSKANRI-REC        TO  MCPDATA-REC
                CALL    "MCPSUB"            USING
                                                MCPAREA
