@@ -1,51 +1,136 @@
 tbl_syurrk {
-	HOSPNUM				integer;
-	PTID				number(10,0);
-	NYUGAIKBN			char(1);
-	DENPNUM          		integer;
-	SYURRKNUM          		integer;
-	SYUEDANUM          		integer;
-	JOUTAIKBN          		char(1);
-	SRYKA				char(2);
-	HKNCOMBINUM			char(4);
+	HOSPNUM						integer;
+	PTID							number(10,0);
+	NYUGAIKBN					char(1);
+	DENPNUM						integer;
+	SYURRKNUM					integer;
+	SYUEDANUM					integer;
+	JOUTAIKBN					char(1);
+	SRYKA							char(2);
+	HKNCOMBINUM				char(4);
+	SSU_HKNTEN				integer;
+	SSU_MONEY					integer;
+	SSU_TGMONEY				integer;
+	SSU_TGMONEY_TAX		integer;
+	SDO_HKNTEN				integer;
+	SDO_MONEY					integer;
+	SDO_TGMONEY				integer;
+	SDO_TGMONEY_TAX		integer;
+	ZTK_HKNTEN				integer;
+	ZTK_MONEY					integer;
+	ZTK_TGMONEY				integer;
+	ZTK_TGMONEY_TAX		integer;
+	TYK_HKNTEN				integer;
+	TYK_MONEY					integer;
+	TYK_TGMONEY				integer;
+	TYK_TGMONEY_TAX		integer;
+	CSY_HKNTEN				integer;
+	CSY_MONEY					integer;
+	CSY_TGMONEY				integer;
+	CSY_TGMONEY_TAX		integer;
+	SYC_HKNTEN				integer;
+	SYC_MONEY					integer;
+	SYC_TGMONEY				integer;
+	SYC_TGMONEY_TAX		integer;
+	SJT_HKNTEN				integer;
+	SJT_MONEY					integer;
+	SJT_TGMONEY				integer;
+	SJT_TGMONEY_TAX		integer;
+	MSI_HKNTEN				integer;
+	MSI_MONEY					integer;
+	MSI_TGMONEY				integer;
+	MSI_TGMONEY_TAX		integer;
+	KNS_HKNTEN				integer;
+	KNS_MONEY					integer;
+	KNS_TGMONEY				integer;
+	KNS_TGMONEY_TAX		integer;
+	GZU_HKNTEN				integer;
+	GZU_MONEY					integer;
+	GZU_TGMONEY				integer;
+	GZU_TGMONEY_TAX		integer;
+	ETC_HKNTEN				integer;
+	ETC_MONEY					integer;
+	ETC_TGMONEY				integer;
+	ETC_TGMONEY_TAX		integer;
+	SSN_HKNTEN				integer;
+	SSN_MONEY					integer;
+	SSN_TGMONEY				integer;
+	SSN_TGMONEY_TAX		integer;
+	HOU_HKNTEN				integer;
+	HOU_MONEY					integer;
+	HOU_TGMONEY				integer;
+	HOU_TGMONEY_TAX		integer;
+	NYN_HKNTEN				integer;
+	NYN_MONEY					integer;
+	NYN_TGMONEY				integer;
+	NYN_TGMONEY_TAX		integer;
+	RYO_HKNTEN				integer;
+	RYO_MONEY					integer;
+	RYO_TGMONEY				integer;
+	RYO_TGMONEY_TAX		integer;
 	TOTAL_HKNTEN			integer;
-	HKNTEKMONEY			integer;
-	RJN_FTN 			integer;
-	KOH_FTN				integer;
-	RSI_TOTAL			integer;
-	JIHI_TOTAL  			integer;
-	JIHI_TOTAL_TAX 			integer;
-	JIHI_TAX  			integer;
+	TOTAL_MONEY				integer;
 	TOTAL_TGMONEY			integer;
-	TOTAL_TGMONEY_TAX		integer;
-        SKYMONEY_SKJ_JIHI_KEI           integer;
-        SKYMONEY_LIFE_JIHI_KEI          integer;
-	RMSAGAKU  			integer;
-        SKYMONEY_SKJ_KEI                integer;
-        SKYMONEY_LIFE_KEI               integer;
-        SKYMONEY			integer;
-        CHOSEI				integer;
-	DISCOUNT_MONEY			integer;
-	JIHI_1  			integer;
-	JIHI_1_TAX 			integer;
-	JIHI_2  			integer;
-	JIHI_2_TAX 			integer;
-	JIHI_3  			integer;
-	JIHI_3_TAX 			integer;
-	JIHI_4  			integer;
-	JIHI_4_TAX 			integer;
-	JIHI_5  			integer;
-	JIHI_5_TAX 			integer;
-	JIHI_6  			integer;
-	JIHI_6_TAX 			integer;
-	JIHI_7  			integer;
-	JIHI_7_TAX 			integer;
-	JIHI_8  			integer;
-	JIHI_8_TAX 			integer;
-	JIHI_9  			integer;
-	JIHI_9_TAX 			integer;
-	JIHI_10  			integer;
+	TOTAL_TGMONEY_TAX	integer;
+	SHOHOU_SAI				integer;
+	TGMONEY_TAX_SAI		integer;
+	JIHI_1  					integer;
+	JIHI_1_TAX 				integer;
+	JIHI_2  					integer;
+	JIHI_2_TAX 				integer;
+	JIHI_3  					integer;
+	JIHI_3_TAX 				integer;
+	JIHI_4  					integer;
+	JIHI_4_TAX 				integer;
+	JIHI_5  					integer;
+	JIHI_5_TAX 				integer;
+	JIHI_6  					integer;
+	JIHI_6_TAX 				integer;
+	JIHI_7  					integer;
+	JIHI_7_TAX 				integer;
+	JIHI_8  					integer;
+	JIHI_8_TAX 				integer;
+	JIHI_9  					integer;
+	JIHI_9_TAX 				integer;
+	JIHI_10  					integer;
 	JIHI_10_TAX 			integer;
+	JIHI_TOTAL  			integer;
+	JIHI_TOTAL_TAX 		integer;
+	JIHI_TAX  				integer;
+	RJN_FTN 					integer;
+	KOH_FTN						integer;
+	YKZ_FTN 					integer;
+	CHOSEI  					integer;
+	HKNTEKMONEY				integer;
+	DISCOUNT_KBN			char(2);
+	DISCOUNT_MONEY		integer;
+	RSISHOSHIN_MONEY	integer;
+	RSISAISHIN_MONEY	integer;
+	RSISDO_MONEY	    integer;
+	RSIETC_MONEY		  integer;
+	RSI_TAX_SAI				integer;
+	RSI_TOTAL						integer;
+	RSIJIBAI_SKYMONEY		integer;
+	SKYMONEY_TAX_SAI		integer;
+	SKYMONEY						integer;
+	RMSAGAKU  					integer;
+	RMSAGAKU_TAX_SAI		integer;
+	RYOYOHI_SKJ					integer;
+	SKYMONEY_SKJ				integer;
+	SKYMONEY_SKJ_TAX		integer;
+	SKYMONEY_SKJ_KEI		integer;
+	RYOYOHI_SKJ_JIHI		integer;
+	SKYMONEY_SKJ_JIHI			integer;
+	SKYMONEY_SKJ_JIHI_TAX	integer;
+	SKYMONEY_SKJ_JIHI_KEI	integer;
+	RYOYOHI_LIFE					integer;
+	SKYMONEY_LIFE					integer;
+	SKYMONEY_LIFE_TAX			integer;
+	SKYMONEY_LIFE_KEI			integer;
+	RYOYOHI_LIFE_JIHI			integer;
+	SKYMONEY_LIFE_JIHI		integer;
+	SKYMONEY_LIFE_JIHI_TAX	integer;
+	SKYMONEY_LIFE_JIHI_KEI	integer;
 	TERMID  			varchar(16);
 	OPID    			varchar(16);
 	CREYMD  			char(8);
@@ -61,7 +146,7 @@ path	key 	{
 		DECLARE tbl_syurrk_key_csr CURSOR FOR
 		SELECT *
 		FROM tbl_syurrk
-			WHERE   HOSPNUM    =   :HOSPNUM
+			WHERE   HOSPNUM   =   :HOSPNUM
 			AND   PTID        =   :PTID
 			AND   NYUGAIKBN   =   :NYUGAIKBN
 			AND   DENPNUM     =   :DENPNUM
@@ -76,7 +161,7 @@ path	key2 	{
 		DECLARE tbl_syurrk_key2_csr CURSOR FOR
 		SELECT *
 		FROM tbl_syurrk
-			WHERE   HOSPNUM    =   :HOSPNUM
+			WHERE   HOSPNUM   =   :HOSPNUM
 			AND   PTID        =   :PTID
 			AND   NYUGAIKBN   =   :NYUGAIKBN
 			AND   DENPNUM     =   :DENPNUM
@@ -89,10 +174,103 @@ path	del1 	{
 	DBDELETE	{
 		DELETE
 		FROM tbl_syurrk
-			WHERE   HOSPNUM        =  :HOSPNUM
-			AND   NYUGAIKBN       =  :NYUGAIKBN
+			WHERE   HOSPNUM       =  :HOSPNUM
 			AND   PTID            =  :PTID
+			AND   NYUGAIKBN       =  :NYUGAIKBN
 			AND   DENPNUM         =  :DENPNUM
+		;
+	};
+};
+
+path	key3 	{
+	DBSELECT	{
+		DECLARE tbl_syurrk_key3_csr CURSOR FOR
+		SELECT *
+		FROM tbl_syurrk
+			WHERE   HOSPNUM   =   :HOSPNUM
+			AND   PTID        =   :PTID
+			AND   NYUGAIKBN   =   :NYUGAIKBN
+			AND   DENPNUM     =   :DENPNUM
+			AND   SYURRKNUM   =   :SYURRKNUM
+			ORDER BY SYUEDANUM DESC
+		;
+	};
+};
+
+path	upd1 	{
+	DBUPDATE	{
+		UPDATE tbl_syurrk
+		SET  CHOSEI   = tbl_syurrk.CHOSEI   + :CHOSEI * -1,
+				 SKYMONEY = tbl_syurrk.SKYMONEY + :SKYMONEY * -1,
+				 CREYMD   = :CREYMD,
+				 UPYMD    = :UPYMD,
+				 UPHMS    = :UPHMS
+		FROM tbl_syumei b
+			WHERE tbl_syurrk.HOSPNUM     =   :HOSPNUM
+			AND   tbl_syurrk.PTID        =   :PTID
+			AND   tbl_syurrk.NYUGAIKBN   =   :NYUGAIKBN
+			AND   tbl_syurrk.DENPNUM     =   :DENPNUM
+			AND		tbl_syurrk.SYURRKNUM  >=   :SYURRKNUM
+			AND   tbl_syurrk.SYUEDANUM   =   1
+			AND		b.HOSPNUM =   tbl_syurrk.HOSPNUM
+			AND   b.NYUGAIKBN   =   tbl_syurrk.NYUGAIKBN
+			AND   b.PTID        =   tbl_syurrk.PTID
+			AND   b.DENPNUM     =   tbl_syurrk.DENPNUM
+			AND		b.SYURRKNUM   =   tbl_syurrk.SYURRKNUM
+			AND   b.SYURRKUPDKBN   =   '1'
+		;
+	};
+};
+
+path	upd2 	{
+	DBUPDATE	{
+		UPDATE tbl_syurrk
+		SET  CHOSEI   = tbl_syurrk.CHOSEI   + :CHOSEI,
+				 SKYMONEY = tbl_syurrk.SKYMONEY + :SKYMONEY,
+				 CREYMD   = :CREYMD,
+				 UPYMD    = :UPYMD,
+				 UPHMS    = :UPHMS
+		FROM tbl_syumei b
+			WHERE tbl_syurrk.HOSPNUM     =   :HOSPNUM
+			AND   tbl_syurrk.PTID        =   :PTID
+			AND   tbl_syurrk.NYUGAIKBN   =   :NYUGAIKBN
+			AND   tbl_syurrk.DENPNUM     =   :DENPNUM
+			AND		tbl_syurrk.SYURRKNUM  >=   :SYURRKNUM
+			AND   tbl_syurrk.SYUEDANUM   =   2
+			AND		b.HOSPNUM =   tbl_syurrk.HOSPNUM
+			AND   b.NYUGAIKBN   =   tbl_syurrk.NYUGAIKBN
+			AND   b.PTID        =   tbl_syurrk.PTID
+			AND   b.DENPNUM     =   tbl_syurrk.DENPNUM
+			AND		b.SYURRKNUM   =   tbl_syurrk.SYURRKNUM
+			AND   b.SYURRKUPDKBN   =   '1'
+		;
+	};
+};
+
+path	upd3 	{
+	DBUPDATE	{
+		UPDATE tbl_syurrk
+		SET  CHOSEI   = CHOSEI   + :CHOSEI,
+				 SKYMONEY = SKYMONEY + :SKYMONEY,
+				 CREYMD   = :CREYMD,
+				 UPYMD    = :UPYMD,
+				 UPHMS    = :UPHMS
+		WHERE HOSPNUM     =   :HOSPNUM
+		AND   PTID        =   :PTID
+		AND   NYUGAIKBN   =   :NYUGAIKBN
+		AND   DENPNUM     =   :DENPNUM
+		AND		SYURRKNUM   =   :SYURRKNUM
+		AND   SYUEDANUM   =   :SYUEDANUM
+		;
+	};
+};
+
+path	del2 	{
+	DBDELETE	{
+		DELETE
+		FROM tbl_syurrk
+			WHERE   HOSPNUM       =  :HOSPNUM
+			AND   PTID            =  :PTID
 		;
 	};
 };
