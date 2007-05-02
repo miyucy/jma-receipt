@@ -751,3 +751,15 @@ path	st_key1	{
 		AND (  b.TSTPTNUMKBN <> '1'    )
 	};
 };
+
+path	del4 	{
+	DBDELETE	{
+		DELETE
+		FROM tbl_kohsky
+                WHERE   HOSPNUM     =   :HOSPNUM
+                  AND   SRYYM       =   :SRYYM
+                  AND   NYUGAIKBN   =   :NYUGAIKBN
+                  AND   PTID        =   :PTID
+		;
+	};
+};

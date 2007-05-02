@@ -11,6 +11,7 @@ tbl_syskanri	{
 	UPYMD		char(8);
 	UPHMS		char(6);
 #-----> 主キー更新用項目
+	UPHOSPNUM	integer,virtual;
 	UPKANRICD	char(4),virtual;
 	UPKBNCD	char(8),virtual;
 	UPSTYUKYMD	char(8),virtual;
@@ -168,7 +169,7 @@ path	upd1	{
 					CREYMD       =   :CREYMD,
 					UPYMD        =   :UPYMD,
 					UPHMS        =   :UPHMS
-		WHERE 	HOSPNUM	= :HOSPNUM
+		WHERE 	HOSPNUM	= :UPHOSPNUM
 			AND   KANRICD      =   :UPKANRICD
 			AND		KBNCD        =   :UPKBNCD
 			AND		STYUKYMD     =   :UPSTYUKYMD
@@ -231,7 +232,7 @@ path	upd2	{
 					EDYUKYMD     =   :EDYUKYMD,
 					UPYMD        =   :UPYMD,
 					UPHMS        =   :UPHMS
-		WHERE 	HOSPNUM	= :HOSPNUM
+		WHERE 	HOSPNUM	= :UPHOSPNUM
 			AND   KANRICD      =   :UPKANRICD
 			AND		STYUKYMD     =   :UPSTYUKYMD
 			AND		EDYUKYMD     =   :UPEDYUKYMD
@@ -288,6 +289,33 @@ path	key16	{
 			AND     KBNCD        =   :KBNCD
 			AND     STYUKYMD     <   :STYUKYMD
 			ORDER	BY	STYUKYMD DESC
+		;
+	};
+};
+
+path	key17	{
+	DBSELECT	{
+		DECLARE tbl_syskanri_key17_csr CURSOR FOR
+		SELECT *
+		FROM tbl_syskanri
+		WHERE 	HOSPNUM	= :HOSPNUM
+			AND   KANRICD      =   :KANRICD
+			ORDER	BY	STYUKYMD,
+                                        KBNCD
+		;
+	};
+};
+
+path	key18	{
+	DBSELECT	{
+		DECLARE tbl_syskanri_key18_csr CURSOR FOR
+		SELECT STYUKYMD,EDYUKYMD
+		FROM tbl_syskanri
+		WHERE 	HOSPNUM	= :HOSPNUM
+			AND   KANRICD      =   :KANRICD
+			AND     KBNCD        <   :KBNCD
+			GROUP   BY	STYUKYMD,EDYUKYMD
+			ORDER	BY	STYUKYMD DESC,EDYUKYMD
 		;
 	};
 };
