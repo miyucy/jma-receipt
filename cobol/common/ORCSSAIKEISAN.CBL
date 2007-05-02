@@ -776,6 +776,7 @@
                  INITIALIZE                   SS002-AREA
                  CALL    "ORCSS002"   USING   SS002-AREA
                                               SYUNOU-REC
+                                              SPA-AREA
                  MOVE    SS002-SYURRKNUM     TO  WRK-SYURRKNUM
                  MOVE    SS002-SYUEDANUM     TO  WRK-SYUEDANUM
                  MOVE    SS002-SYURRKUPDKBN  TO  WRK-SYURRKUPDKBN

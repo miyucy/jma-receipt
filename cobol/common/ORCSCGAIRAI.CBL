@@ -1187,6 +1187,7 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
            INITIALIZE                  SS002-AREA
            CALL    "ORCSS002"          USING    SS002-AREA
                                                 SYUNOU-REC
+                                                SPA-AREA
       *
            .
        100218-ORCSS002-CALL-EXT.
