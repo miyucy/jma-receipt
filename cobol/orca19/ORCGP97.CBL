@@ -906,7 +906,7 @@
                MOVE    PTINF-PTID          TO  SPTID-PTID
                CALL    "ORCSPTID"      USING   ORCSPTIDAREA
       *----(01.00.02) LINE ADD START -------------------------------
-                                               SPA-1009-TBL
+                                               SPA-AREA
       *----(01.00.02) LINE ADD END   -------------------------------
                IF      SPTID-RC        NOT =   ZERO
                    MOVE    SPACE           TO  SPA-GMN-PTNUM  (IDX)
