@@ -80,6 +80,11 @@
       *
       *  03.04.01    NACL-藤原    07/01/16  レセプト一括作成出力順区分
       *                                     （全体）の追加
+      *  03.04.05    NACL-藤原    07/01/24  レセプト作成出力順区分
+      *                                     種別・カナ氏名順、種別・患者
+      *                                     番号順の追加
+      *  03.04.06    NACL-藤原    07/02/07  編綴詳細設定画面の追加
+      *  03.05.00    NACL-多々納  07/05/02  グループ診療対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -226,25 +231,25 @@
                                               PIC X(02).
                            11  SPA-GMN-F1     PIC X(01).
                            11  SPA-GMN-PRTJYUN1MEI
-                                              PIC X(22).
+                                              PIC X(28).
                        09  SPA-GMN-PRTJYUN2-G.
                            11  SPA-GMN-PRTJYUN2
                                               PIC X(02).
                            11  SPA-GMN-F1     PIC X(01).
                            11  SPA-GMN-PRTJYUN2MEI
-                                              PIC X(22).
+                                              PIC X(28).
                        09  SPA-GMN-PRTJYUN3-G.
                            11  SPA-GMN-PRTJYUN3
                                               PIC X(02).
                            11  SPA-GMN-F1     PIC X(01).
                            11  SPA-GMN-PRTJYUN3MEI
-                                              PIC X(22).
+                                              PIC X(28).
                        09  SPA-GMN-PRTJYUN4-G.
                            11  SPA-GMN-PRTJYUN4
                                               PIC X(02).
                            11  SPA-GMN-F1     PIC X(01).
                            11  SPA-GMN-PRTJYUN4MEI
-                                              PIC X(22).
+                                              PIC X(28).
                        09  SPA-GMN-AUTODSPKBN-G.
                            11  SPA-GMN-AUTODSPKBN
                                               PIC X(01).
@@ -553,28 +558,28 @@
                        09  SPA-GMN-PRTJYUN1L  PIC X(02).
                        09  SPA-GMN-F1L        PIC X(01).
                        09  SPA-GMN-PRTJYUN1MEIL
-                                              PIC X(22).
+                                              PIC X(28).
                    07  SPA-GMN-PRTJYUN1-MAX   PIC 9(02).   
       * 
                    07  SPA-GMN-PRTJYUN2LST    OCCURS  10.
                        09  SPA-GMN-PRTJYUN2L  PIC X(02).
                        09  SPA-GMN-F1L        PIC X(01).
                        09  SPA-GMN-PRTJYUN2MEIL
-                                              PIC X(22).
+                                              PIC X(28).
                    07  SPA-GMN-PRTJYUN2-MAX   PIC 9(02).   
       * 
                    07  SPA-GMN-PRTJYUN3LST    OCCURS  10.
                        09  SPA-GMN-PRTJYUN3L  PIC X(02).
                        09  SPA-GMN-F1L        PIC X(01).
                        09  SPA-GMN-PRTJYUN3MEIL
-                                              PIC X(22).
+                                              PIC X(28).
                    07  SPA-GMN-PRTJYUN3-MAX   PIC 9(02).   
       * 
                    07  SPA-GMN-PRTJYUN4LST    OCCURS  10.
                        09  SPA-GMN-PRTJYUN4L  PIC X(02).
                        09  SPA-GMN-F1L        PIC X(01).
                        09  SPA-GMN-PRTJYUN4MEIL
-                                              PIC X(22).
+                                              PIC X(28).
                    07  SPA-GMN-PRTJYUN4-MAX   PIC 9(02).   
       * 
                    07  SPA-GMN-AUTODSPKBNLST  OCCURS  2.
@@ -875,6 +880,7 @@
            COPY    "W11.INC".
            COPY    "W111.INC".
            COPY    "W12.INC".
+           COPY    "W121.INC".
            COPY    "W13.INC".
            COPY    "W14.INC".
            COPY    "W15.INC".
@@ -894,6 +900,7 @@
            COPY    "W29.INC".
            COPY    "W30.INC".
            COPY    "W31.INC".
+           COPY    "W32.INC".
            COPY    "W60.INC".
            COPY    "W61.INC".
            COPY    "W62.INC".
@@ -999,6 +1006,10 @@
            EVALUATE    SPA-MOTOPG
                WHEN    "WID1"
                    PERFORM 330-WID1-SET-SEC
+                   GO      TO      300-SCREEN-EXT
+               WHEN    "W121"
+                   PERFORM 310-SPASET-SEC
+                   MOVE    70           TO  SPA-GMN-CUR
                    GO      TO      300-SCREEN-EXT
            END-EVALUATE
       *
@@ -1202,22 +1213,26 @@
            MOVE    2                   TO  SPA-GMN-JIHITEKKSIKBN-MAX 
       *
            MOVE    "01"                TO  SPA-GMN-PRTJYUN1L    (1)
-           MOVE    "保険者番号・カナ氏名順"
+           MOVE    "種別・保険者番号・カナ氏名順"
                                        TO  SPA-GMN-PRTJYUN1MEIL (1)
            MOVE    "02"                TO  SPA-GMN-PRTJYUN1L    (2)
-           MOVE    "保険者番号・患者番号順"
+           MOVE    "種別・保険者番号・患者番号順"
                                        TO  SPA-GMN-PRTJYUN1MEIL (2)
            MOVE    "03"                TO  SPA-GMN-PRTJYUN1L    (3)
            MOVE    "カナ氏名順"        TO  SPA-GMN-PRTJYUN1MEIL (3)
            MOVE    "04"                TO  SPA-GMN-PRTJYUN1L    (4)
            MOVE    "患者番号順"        TO  SPA-GMN-PRTJYUN1MEIL (4)
-           MOVE    4                   TO  SPA-GMN-PRTJYUN1-MAX 
+           MOVE    "09"                TO  SPA-GMN-PRTJYUN1L    (5)
+           MOVE    "種別・カナ氏名順"  TO  SPA-GMN-PRTJYUN1MEIL (5)
+           MOVE    "10"                TO  SPA-GMN-PRTJYUN1L    (6)
+           MOVE    "種別・患者番号順"  TO  SPA-GMN-PRTJYUN1MEIL (6)
+           MOVE    6                   TO  SPA-GMN-PRTJYUN1-MAX 
       *
            MOVE    "01"                TO  SPA-GMN-PRTJYUN3L    (1)
-           MOVE    "保険者番号・カナ氏名順"
+           MOVE    "種別・保険者番号・カナ氏名順"
                                        TO  SPA-GMN-PRTJYUN3MEIL (1)
            MOVE    "02"                TO  SPA-GMN-PRTJYUN3L    (2)
-           MOVE    "保険者番号・患者番号順"
+           MOVE    "種別・保険者番号・患者番号順"
                                        TO  SPA-GMN-PRTJYUN3MEIL (2)
            MOVE    "03"                TO  SPA-GMN-PRTJYUN3L    (3)
            MOVE    "カナ氏名順"        TO  SPA-GMN-PRTJYUN3MEIL (3)
@@ -1225,13 +1240,17 @@
            MOVE    "患者番号順"        TO  SPA-GMN-PRTJYUN3MEIL (4)
            MOVE    "06"                TO  SPA-GMN-PRTJYUN3L    (5)
            MOVE    "編綴順"            TO  SPA-GMN-PRTJYUN3MEIL (5)
-           MOVE    5                   TO  SPA-GMN-PRTJYUN3-MAX 
+           MOVE    "09"                TO  SPA-GMN-PRTJYUN3L    (6)
+           MOVE    "種別・カナ氏名順"  TO  SPA-GMN-PRTJYUN3MEIL (6)
+           MOVE    "10"                TO  SPA-GMN-PRTJYUN3L    (7)
+           MOVE    "種別・患者番号順"  TO  SPA-GMN-PRTJYUN3MEIL (7)
+           MOVE    7                   TO  SPA-GMN-PRTJYUN3-MAX 
       *
            MOVE    "01"                TO  SPA-GMN-PRTJYUN2L    (1)
-           MOVE    "保険者番号・カナ氏名順"
+           MOVE    "種別・保険者番号・カナ氏名順"
                                        TO  SPA-GMN-PRTJYUN2MEIL (1)
            MOVE    "02"                TO  SPA-GMN-PRTJYUN2L    (2)
-           MOVE    "保険者番号・患者番号順"
+           MOVE    "種別・保険者番号・患者番号順"
                                        TO  SPA-GMN-PRTJYUN2MEIL (2)
            MOVE    "03"                TO  SPA-GMN-PRTJYUN2L    (3)
            MOVE    "カナ氏名順"        TO  SPA-GMN-PRTJYUN2MEIL (3)
@@ -1245,7 +1264,11 @@
            MOVE    "08"                TO  SPA-GMN-PRTJYUN2L    (7)
            MOVE    "患者番号順（全体）"
                                        TO  SPA-GMN-PRTJYUN2MEIL (7)
-           MOVE    7                   TO  SPA-GMN-PRTJYUN2-MAX 
+           MOVE    "09"                TO  SPA-GMN-PRTJYUN2L    (8)
+           MOVE    "種別・カナ氏名順"  TO  SPA-GMN-PRTJYUN2MEIL (8)
+           MOVE    "10"                TO  SPA-GMN-PRTJYUN2L    (9)
+           MOVE    "種別・患者番号順"  TO  SPA-GMN-PRTJYUN2MEIL (9)
+           MOVE    9                   TO  SPA-GMN-PRTJYUN2-MAX 
       *
            MOVE    "07"                TO  SPA-GMN-PRTJYUN4L    (1)
            MOVE    "カナ氏名順（全体）"
@@ -1451,7 +1474,7 @@
            MOVE    SPA-W01-SEL-EDYUKYMD
                                        TO  SYS-1001-STYUKYMD
                                            SYS-1001-EDYUKYMD
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  SYS-1001-HOSPNUM
            MOVE    SYS-1001-REC        TO  MCPDATA-REC
            MOVE    "tbl_syskanri"      TO  WRK-MCP-TABLE
            MOVE    "key10"             TO  WRK-MCP-PATHNAME
@@ -1471,7 +1494,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                                        TO  SYS-2005-STYUKYMD
            MOVE    SPA-W01-SEL-EDYUKYMD
                                        TO  SYS-2005-EDYUKYMD
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  SYS-2005-HOSPNUM
            MOVE    SYS-2005-REC        TO  MCPDATA-REC
            MOVE    "tbl_syskanri"     TO  WRK-MCP-TABLE
            MOVE    "key10"             TO  WRK-MCP-PATHNAME
@@ -1905,7 +1928,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                                        TO  SYS-2008-STYUKYMD
            MOVE    SPA-W01-SEL-EDYUKYMD
                                        TO  SYS-2008-EDYUKYMD
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  SYS-2008-HOSPNUM
            MOVE    SYS-2008-REC        TO  MCPDATA-REC
            MOVE    "tbl_syskanri"      TO  WRK-MCP-TABLE
            MOVE    "key13"             TO  WRK-MCP-PATHNAME
@@ -2000,9 +2023,9 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    SYS-2008-HKNJANUM   TO  SPA-GMN-HKNJANUM
                MOVE    SPACE               TO  HKNJAINF-REC
                INITIALIZE                      HKNJAINF-REC
-               MOVE    SPA-HOSPID          TO  HKNJA-HOSPID
+               MOVE    SPA-HOSPNUM          TO  HKNJA-HOSPNUM
                MOVE    SPA-GMN-HKNJANUM    TO  HKNJA-HKNJANUM
-grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
+grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
                MOVE    HKNJAINF-REC        TO  MCPDATA-REC
                PERFORM 900-HKNJAINF-READ-SEC
                MOVE    HKNJA-HKNJANAME     TO  SPA-GMN-HKNJANAME
@@ -2021,7 +2044,7 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                                        TO  SYS-2009-STYUKYMD
            MOVE    SPA-W01-SEL-EDYUKYMD
                                        TO  SYS-2009-EDYUKYMD
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  SYS-2009-HOSPNUM
            MOVE    SYS-2009-REC        TO  MCPDATA-REC
            MOVE    "tbl_syskanri"      TO  WRK-MCP-TABLE
            MOVE    "key10"             TO  WRK-MCP-PATHNAME
@@ -2261,6 +2284,9 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                WHEN    "CLICKED"       ALSO    "B01"
                    MOVE   "CHANGE"             TO  MCP-PUTTYPE
                    PERFORM 210-BACK
+      *    登録
+               WHEN    "CLICKED"       ALSO    "B36"
+                   PERFORM 490-SYOUSAI-SETTEI-SEC
       *    登録
                WHEN    "CLICKED"       ALSO    "B12"
                    PERFORM 490-TOUROKU-SEC
@@ -3609,9 +3635,8 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            ELSE
                MOVE    SPACE               TO  HKNJAINF-REC
                INITIALIZE                      HKNJAINF-REC
-               MOVE    SPA-HOSPID          TO  HKNJA-HOSPID
+               MOVE    SPA-HOSPNUM         TO  HKNJA-HOSPNUM
                MOVE    SPA-GMN-HKNJANUM    TO  HKNJA-HKNJANUM
-grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    HKNJAINF-REC        TO  MCPDATA-REC
                PERFORM 900-HKNJAINF-READ-SEC
                IF      FLG-HKNJAINF        =   ZERO
@@ -4119,6 +4144,25 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
       *****************************************************************
       *       登録前処理
       *****************************************************************
+       490-SYOUSAI-SETTEI-SEC              SECTION.
+      *
+           MOVE    "W12"               TO  SPA-MOTOPG
+           MOVE    "W121"              TO  SPA-SAKIPG
+      *
+      *
+           MOVE   "JOIN"               TO  MCP-PUTTYPE
+           MOVE   SPA-SAKIPG           TO  MCP-WINDOW
+      *
+           PERFORM 900-PUT-WINDOW
+      *
+           MOVE    1                   TO  FLG-END
+           .
+       490-SYOUSAI-SETTEI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *       登録前処理
+      *****************************************************************
        490-TOUROKU-SEC              SECTION.
       *
       *    入力チェック処理
@@ -4147,7 +4191,7 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    "*"                     TO  SYS-2005-KBNCD
            MOVE    SPA-W01-SEL-STYUKYMD    TO  SYS-2005-STYUKYMD
            MOVE    SPA-W01-SEL-EDYUKYMD    TO  SYS-2005-EDYUKYMD
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM             TO  SYS-2005-HOSPNUM
            MOVE    SYS-2005-REC            TO  MCPDATA-REC
            MOVE    "tbl_syskanri"      TO  WRK-MCP-TABLE
            MOVE    "key10"             TO  WRK-MCP-PATHNAME
@@ -4246,11 +4290,11 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    "key"                   TO  MCP-PATHNAME
                MOVE    "DBINSERT"              TO  MCP-FUNC
            END-IF
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  SYS-HOSPNUM
            MOVE    SYSKANRI-REC        TO  MCPDATA-REC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
            IF      MCP-RC              NOT =   ZERO 
                MOVE    "1003"                  TO  SPA-ERRCD
                GO  TO  490-KOUSHIN-EXT
@@ -4265,7 +4309,7 @@ grpsys                            SPA-AREA
                                        TO  SYS-2009-STYUKYMD
            MOVE    SPA-W01-SEL-EDYUKYMD
                                        TO  SYS-2009-EDYUKYMD
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  SYS-2009-HOSPNUM
            MOVE    SYS-2009-REC        TO  MCPDATA-REC
            MOVE    "tbl_syskanri"      TO  WRK-MCP-TABLE
            MOVE    "key10"             TO  WRK-MCP-PATHNAME
@@ -4314,11 +4358,11 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    "key"               TO  MCP-PATHNAME
                MOVE    "DBINSERT"          TO  MCP-FUNC
            END-IF
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  SYS-HOSPNUM
            MOVE    SYSKANRI-REC        TO  MCPDATA-REC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
            IF      MCP-RC              NOT =   ZERO 
                MOVE    "1003"                  TO  SPA-ERRCD
                GO  TO  490-KOUSHIN-EXT
@@ -4351,7 +4395,7 @@ grpsys                            SPA-AREA
                                                TO  SYS-2008-STYUKYMD
                    MOVE    SPA-W01-SEL-EDYUKYMD
                                                TO  SYS-2008-EDYUKYMD
-grpsys*            MOVE SPA-HOSPNUM TO -HOSPNUM
+                   MOVE    SPA-HOSPNUM         TO  SYS-2008-HOSPNUM
                    MOVE    SYS-2008-REC        TO  MCPDATA-REC
                    MOVE    "tbl_syskanri"      TO  WRK-MCP-TABLE
                    MOVE    "key10"             TO  WRK-MCP-PATHNAME
@@ -4420,11 +4464,11 @@ grpsys*            MOVE SPA-HOSPNUM TO -HOSPNUM
                    MOVE    "tbl_syskanri"      TO  MCP-TABLE
                    MOVE    "key"               TO  MCP-PATHNAME
                    MOVE    "DBINSERT"          TO  MCP-FUNC
-grpsys*            MOVE SPA-HOSPNUM TO -HOSPNUM
+                   MOVE    SPA-HOSPNUM         TO  SYS-HOSPNUM
                    MOVE    SYSKANRI-REC        TO  MCPDATA-REC
-grpsys             CALL "ORCDBMAIN" USING MCPAREA
-                                          MCPDATA-REC
-grpsys                                    SPA-AREA
+grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
+                                                       MCPDATA-REC
+                                                       SPA-AREA
                    IF      MCP-RC          NOT =   ZERO 
                        MOVE    "1003"              TO  SPA-ERRCD
                        GO  TO  490-KOUSHIN-EXT
@@ -5618,16 +5662,16 @@ grpsys                                    SPA-AREA
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
            MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
            IF      MCP-RC              =   ZERO
                MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
                MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
                MOVE    "DBFETCH"           TO  MCP-FUNC
-grpsys         CALL "ORCDBMAIN" USING MCPAREA
-                                      MCPDATA-REC
-grpsys                                SPA-AREA
+grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
+                                                   MCPDATA-REC
+                                                   SPA-AREA
                IF      MCP-RC              =   ZERO
                    MOVE    ZERO                TO  FLG-SYSKANRI
                ELSE
@@ -5653,16 +5697,16 @@ grpsys                                SPA-AREA
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "tbl_hknjainf"      TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
            IF      MCP-RC              =   ZERO
                MOVE    "DBFETCH"           TO  MCP-FUNC
                MOVE    "tbl_hknjainf"      TO  MCP-TABLE
                MOVE    "key"               TO  MCP-PATHNAME
-grpsys         CALL "ORCDBMAIN" USING MCPAREA
-                                      MCPDATA-REC
-grpsys                                SPA-AREA
+grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
+                                                   MCPDATA-REC
+                                                   SPA-AREA
                IF      MCP-RC              =   ZERO
                    MOVE    ZERO                TO  FLG-HKNJAINF
                    MOVE    MCPDATA-REC         TO  HKNJAINF-REC
@@ -5687,9 +5731,9 @@ grpsys                                SPA-AREA
        900-CLOSE-SEC               SECTION.
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
        900-CLOSE-EXT.
@@ -5701,9 +5745,9 @@ grpsys                            SPA-AREA
        900-PUT-WINDOW              SECTION.
       *
            MOVE   "PUTWINDOW"          TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
        900-PUT-WINDOW-EXT.

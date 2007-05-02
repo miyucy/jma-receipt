@@ -32,6 +32,7 @@
       *  02.00.02    NACL-多々納  03/10/02  新規登録・削除追加
       *  02.00.03    NACL-多々納  06/04/24  MONFUNC 対応
       *  03.04.00    NACL-多々納  06/10/26  診療コード対応
+      *  03.05.00    NACL-多々納  07/05/02  グループ診療対応
       *****************************************************************
       *
        ENVIRONMENT                               DIVISION.
@@ -221,6 +222,7 @@
            COPY    "W11.INC".
            COPY    "W111.INC".
            COPY    "W12.INC".
+           COPY    "W121.INC".
            COPY    "W13.INC".
            COPY    "W14.INC".
            COPY    "W15.INC".
@@ -240,6 +242,7 @@
            COPY    "W29.INC".
            COPY    "W30.INC".
            COPY    "W31.INC".
+           COPY    "W32.INC".
            COPY    "W60.INC".
            COPY    "W61.INC".
            COPY    "W62.INC".
@@ -375,7 +378,7 @@
            MOVE    "0031"              TO  SYS-0031-KANRICD
            MOVE    SPA-W01-STYUKYMD    TO  SYS-0031-STYUKYMD
            MOVE    SPA-W01-STYUKYMD    TO  SYS-0031-EDYUKYMD
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  SYS-0031-HOSPNUM
            MOVE    SYS-0031-REC            TO  MCPDATA-REC
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key2"              TO  MCP-PATHNAME
@@ -407,7 +410,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    "1006"              TO  SYS-1006-KANRICD
            MOVE    SPA-W01-STYUKYMD    TO  SYS-1006-STYUKYMD
            MOVE    SPA-W01-STYUKYMD    TO  SYS-1006-EDYUKYMD
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  SYS-1006-HOSPNUM
            MOVE    SYS-1006-REC        TO  MCPDATA-REC
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key2"              TO  MCP-PATHNAME
@@ -482,14 +485,14 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    "1006"              TO  SYS-1006-KANRICD
            MOVE    SPA-W01-STYUKYMD    TO  SYS-1006-STYUKYMD
            MOVE    SPA-W01-STYUKYMD    TO  SYS-1006-EDYUKYMD
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  SYS-1006-HOSPNUM
            MOVE    SYS-1006-REC        TO  MCPDATA-REC
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
-           MOVE    "key5"              TO  MCP-PATHNAME
+           MOVE    "key17"             TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
                MOVE    "tbl_syskanri"      TO  MCP-TABLE
-               MOVE    "key5"              TO  MCP-PATHNAME
+               MOVE    "key17"             TO  MCP-PATHNAME
                PERFORM 900-SYSKANRI-READ-SEC
            ELSE
                MOVE    1               TO  FLG-SYSKANRI
@@ -498,7 +501,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    ZERO                TO  IDX
            MOVE    SPACE               TO  WRK-EDYUKYMD
            PERFORM     UNTIL   FLG-SYSKANRI   =   1
-                       OR      IDX            >=  1000
+      *D               OR      IDX            >=  1000
                MOVE    MCPDATA-REC         TO  SYS-1006-REC
                IF      SPA-W01-STYUKYMD    >   SYS-1006-EDYUKYMD
                    IF      WRK-EDYUKYMD        <   SYS-1006-EDYUKYMD
@@ -516,16 +519,17 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                                                TO  SPA-NAI-TSSTKIJUN
                                                               (IDX)
                    END-PERFORM
+                   MOVE    SYS-1006-EDYUKYMD   TO  WRK-EDYUKYMD
                END-IF
       *
                MOVE    "tbl_syskanri"      TO  MCP-TABLE
-               MOVE    "key5"              TO  MCP-PATHNAME
+               MOVE    "key17"              TO  MCP-PATHNAME
                PERFORM 900-SYSKANRI-READ-SEC
            END-PERFORM
       *
       *    カーソルクロース
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
-           MOVE    "key5"              TO  MCP-PATHNAME
+           MOVE    "key17"             TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
       *
       *    施設基準があるかの判定
@@ -537,7 +541,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    IDY                 TO  SYS-0031-KBNCD (1:4)
                MOVE    SPA-W01-STYUKYMD    TO  SYS-0031-STYUKYMD
                MOVE    SPA-W01-STYUKYMD    TO  SYS-0031-EDYUKYMD
-grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
+               MOVE    SPA-HOSPNUM         TO  SYS-0031-HOSPNUM
                MOVE    SYS-0031-REC        TO  MCPDATA-REC
                PERFORM 900-SYSKANRI-INV-SEC
                IF      FLG-SYSKANRI        =   ZERO
@@ -582,7 +586,7 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                                            TO  SYS-0031-KBNCD (1:4)
                    MOVE    SPA-W01-STYUKYMD    TO  SYS-0031-STYUKYMD
                    MOVE    SPA-W01-STYUKYMD    TO  SYS-0031-EDYUKYMD
-grpsys*            MOVE SPA-HOSPNUM TO -HOSPNUM
+                   MOVE    SPA-HOSPNUM         TO  SYS-0031-HOSPNUM
                    MOVE    SYS-0031-REC    TO  MCPDATA-REC
                    PERFORM 900-SYSKANRI-INV-SEC
                    IF      FLG-SYSKANRI    =   ZERO
@@ -1291,14 +1295,14 @@ grpsys*            MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    "1006"              TO  SYS-1006-KANRICD
                MOVE    SPA-W01-STYUKYMD    TO  SYS-1006-STYUKYMD
                MOVE    SPA-W01-STYUKYMD    TO  SYS-1006-EDYUKYMD
-grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
+               MOVE    SPA-HOSPNUM         TO  SYS-1006-HOSPNUM
                MOVE    SYS-1006-REC        TO  MCPDATA-REC
                MOVE    "DBDELETE"          TO  MCP-FUNC
                MOVE    "tbl_syskanri"      TO  MCP-TABLE
                MOVE    "del11"             TO  MCP-PATHNAME
-grpsys         CALL "ORCDBMAIN" USING MCPAREA
-                                      MCPDATA-REC
-grpsys                                SPA-AREA
+grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
+                                                   MCPDATA-REC
+                                                   SPA-AREA
            END-IF
       *
       *    新規作成
@@ -1320,14 +1324,14 @@ grpsys                                SPA-AREA
                                            TO  SYS-1006-SSTKIJUN  (IDY)
                END-PERFORM
       *
-grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
+               MOVE    SPA-HOSPNUM         TO  SYS-1006-HOSPNUM
                MOVE    SYS-1006-REC            TO  MCPDATA-REC
                MOVE    "DBINSERT"              TO  MCP-FUNC
                MOVE    "tbl_syskanri"          TO  MCP-TABLE
                MOVE    "key"                   TO  MCP-PATHNAME
-grpsys         CALL "ORCDBMAIN" USING MCPAREA
-                                      MCPDATA-REC
-grpsys                                SPA-AREA
+grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
+                                                   MCPDATA-REC
+                                                   SPA-AREA
                IF      MCP-RC              NOT =   ZERO
                    DISPLAY "W03 SYSKANRI INS ERR:" MCP-RC
                             ",KEY:" SYS-1006-KEY
@@ -1404,14 +1408,14 @@ grpsys                                SPA-AREA
            MOVE    "1006"              TO  SYS-1006-KANRICD
            MOVE    SPA-W01-STYUKYMD    TO  SYS-1006-STYUKYMD
            MOVE    SPA-W01-STYUKYMD    TO  SYS-1006-EDYUKYMD
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  SYS-1006-HOSPNUM
            MOVE    SYS-1006-REC        TO  MCPDATA-REC
            MOVE    "DBDELETE"          TO  MCP-FUNC
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "del11"             TO  MCP-PATHNAME
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            IF      MCP-RC              NOT =   ZERO 
                MOVE    "1002"                  TO  SPA-ERRCD
@@ -1841,7 +1845,7 @@ grpsys                            SPA-AREA
            MOVE    SPA-W01-EDYUKYMD    TO  TNS-YUKOSTYMD
            MOVE    SPA-W01-EDYUKYMD    TO  TNS-YUKOEDYMD
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  TNS-HOSPNUM
            MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
            MOVE    "tbl_tensu"         TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
@@ -1874,9 +1878,9 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
        910-DBSELECT-SEC                SECTION.
       *
            MOVE    "DBSELECT"      TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
        910-DBSELECT-EXT.
@@ -1887,9 +1891,9 @@ grpsys                            SPA-AREA
        920-DBFETCH-SEC                 SECTION.
       *
            MOVE    "DBFETCH"       TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
       *
@@ -1902,9 +1906,9 @@ grpsys                            SPA-AREA
        990-DBCLOSE-SEC         SECTION.
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
        990-DBCLOSE-EXT.
@@ -1916,9 +1920,9 @@ grpsys                            SPA-AREA
        900-PUT-WINDOW              SECTION.
       *
            MOVE   "PUTWINDOW"       TO  MCP-FUNC.
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
        900-PUT-WINDOW-EXT.

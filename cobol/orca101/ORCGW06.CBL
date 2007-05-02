@@ -47,6 +47,7 @@
       *                                     MONFUNC 対応
       * 03.00.03     NACL-多々納  06/04/11  診療費明細書発行追加
       * 03.04.00     NACL-多々納  06/11/13  検査正式名称表示区分の追加
+      * 03.05.00     NACL-多々納  07/05/02  グループ診療対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -161,17 +162,17 @@
                    07  SPA-ORCA21FLG-MAX       PIC 9(04).  
       *            請求書初期表示
                    07  SPA-GMN-SKYPRTFLG-LSTG.
-                       09  SPA-GMN-SKYPRTFLG-LST   PIC X(26)
+                       09  SPA-GMN-SKYPRTFLG-LST   PIC X(30)
                                                    OCCURS  5. 
                    07  SPA-SKYPRTFLG-MAX       PIC 9(04).  
       *            院外処方せん
                    07  SPA-GMN-SYOHOPRTFLG-LSTG.
-                       09  SPA-GMN-SYOHOPRTFLG-LST   PIC X(26)
+                       09  SPA-GMN-SYOHOPRTFLG-LST   PIC X(30)
                                                    OCCURS  5. 
                    07  SPA-SYOHOPRTFLG-MAX      PIC 9(04).  
       *            薬剤情報発行
                    07  SPA-GMN-YAKUJYOFLG-LSTG.
-                       09  SPA-GMN-YAKUJYOFLG-LST   PIC X(26)
+                       09  SPA-GMN-YAKUJYOFLG-LST   PIC X(30)
                                                    OCCURS  5. 
                    07  SPA-YAKUJYOFLG-MAX      PIC 9(04).  
       *            診療費明細書
@@ -196,17 +197,17 @@
                    07  SPA-GMN-SKYPRTFLG-G. 
                        09  SPA-GMN-SKYPRTFLG       PIC X(01).
                        09  SPA-GMN-SKYPRTFLG-F1    PIC X(01).
-                       09  SPA-GMN-SKYPRTFLG-MEI   PIC X(24).
+                       09  SPA-GMN-SKYPRTFLG-MEI   PIC X(28).
       *            院外処方せん
                    07  SPA-GMN-SYOHOPRTFLG-G. 
                        09  SPA-GMN-SYOHOPRTFLG       PIC X(01).
                        09  SPA-GMN-SYOHOPRTFLG-F1    PIC X(01).
-                       09  SPA-GMN-SYOHOPRTFLG-MEI   PIC X(24).
+                       09  SPA-GMN-SYOHOPRTFLG-MEI   PIC X(28).
       *            薬剤情報発行
                    07  SPA-GMN-YAKUJYOFLG-G. 
                        09  SPA-GMN-YAKUJYOFLG       PIC X(01).
                        09  SPA-GMN-YAKUJYOFLG-F1    PIC X(01).
-                       09  SPA-GMN-YAKUJYOFLG-MEI   PIC X(24).
+                       09  SPA-GMN-YAKUJYOFLG-MEI   PIC X(28).
       *            診療費明細書
                    07  SPA-GMN-MEIPRTFLG-G. 
                        09  SPA-GMN-MEIPRTFLG        PIC X(01).
@@ -354,6 +355,7 @@
            COPY    "W11.INC".
            COPY    "W111.INC".
            COPY    "W12.INC".
+           COPY    "W121.INC".
            COPY    "W13.INC".
            COPY    "W14.INC".
            COPY    "W15.INC".
@@ -373,6 +375,7 @@
            COPY    "W29.INC".
            COPY    "W30.INC".
            COPY    "W31.INC".
+           COPY    "W32.INC".
            COPY    "W60.INC".
            COPY    "W61.INC".
            COPY    "W62.INC".
@@ -548,16 +551,24 @@
            MOVE    "1 発行する"        TO  SPA-GMN-SKYPRTFLG-LST (2)
            MOVE    "2 発行する（請求額あり）"
                                        TO  SPA-GMN-SKYPRTFLG-LST (3)
-           MOVE    3                   TO  SPA-SKYPRTFLG-MAX
+           MOVE    "3 発行する（訂正時なし）"
+                                       TO  SPA-GMN-SKYPRTFLG-LST (4)
+           MOVE    4                   TO  SPA-SKYPRTFLG-MAX
       *    院外処方せん発行フラグ
            MOVE    "0 発行しない"      TO  SPA-GMN-SYOHOPRTFLG-LST (1)
            MOVE    "1 発行する"        TO  SPA-GMN-SYOHOPRTFLG-LST (2)
            MOVE    "2 院内処方発行"    TO  SPA-GMN-SYOHOPRTFLG-LST (3)
-           MOVE    3                   TO  SPA-SYOHOPRTFLG-MAX
+           MOVE    "3 発行する（訂正時なし）"
+                                       TO  SPA-GMN-SYOHOPRTFLG-LST (4)
+           MOVE    "4 院内処方発行（訂正時なし）" 
+                                       TO  SPA-GMN-SYOHOPRTFLG-LST (5)
+           MOVE    5                   TO  SPA-SYOHOPRTFLG-MAX
       *    薬剤情報発行フラグ
            MOVE    "0 発行しない"      TO  SPA-GMN-YAKUJYOFLG-LST (1)
            MOVE    "1 発行する"        TO  SPA-GMN-YAKUJYOFLG-LST (2)
-           MOVE    2                   TO  SPA-YAKUJYOFLG-MAX
+           MOVE    "2 発行する（訂正時なし）" 
+                                       TO  SPA-GMN-YAKUJYOFLG-LST (3)
+           MOVE    3                   TO  SPA-YAKUJYOFLG-MAX
       *    診療費明細書フラグ
            MOVE    "0 発行しない"      TO  SPA-GMN-MEIPRTFLG-LST (1)
            MOVE    "1 発行する"        TO  SPA-GMN-MEIPRTFLG-LST (2)
@@ -575,7 +586,7 @@
            MOVE    SPACE               TO  SYS-1010-REC
            INITIALIZE                      SYS-1010-REC
            MOVE    "1010"              TO  SYS-1010-KANRICD
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  SYS-1010-HOSPNUM
            MOVE    SYS-1010-REC        TO  MCPDATA-REC
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key6"              TO  MCP-PATHNAME
@@ -675,7 +686,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    "1010"              TO  SYS-1010-KANRICD
            MOVE    SPA-GMN-SYOKUKBN    TO  SYS-1010-KBNCD (1:1)
            MOVE    "%"                 TO  SYS-1010-KBNCD (2:1)
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  SYS-1010-HOSPNUM
            MOVE    SYS-1010-REC        TO  MCPDATA-REC
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key14"             TO  MCP-PATHNAME
@@ -728,7 +739,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    "1010"              TO  SYS-1010-KANRICD
            MOVE    SPA-GMN-SYOKUKBN    TO  SYS-1010-KBNCD (1:1)
            MOVE    "%"                 TO  SYS-1010-KBNCD (2:1)
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  SYS-1010-HOSPNUM
            MOVE    SYS-1010-REC        TO  MCPDATA-REC
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key14"             TO  MCP-PATHNAME
@@ -780,7 +791,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    "1005"              TO  SYS-1005-KANRICD
            MOVE    SPA-SYSYMD          TO  SYS-1005-STYUKYMD
            MOVE    SPA-SYSYMD          TO  SYS-1005-EDYUKYMD
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  SYS-1005-HOSPNUM
            MOVE    SYS-1005-REC        TO  MCPDATA-REC
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key2"              TO  MCP-PATHNAME
@@ -825,7 +836,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    "*"                 TO  SYS-1001-KBNCD
            MOVE    SPA-SYSYMD          TO  SYS-1001-STYUKYMD 
            MOVE    SPA-SYSYMD          TO  SYS-1001-EDYUKYMD 
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  SYS-1001-HOSPNUM
            MOVE    SYS-1001-REC        TO  MCPDATA-REC
            PERFORM 900-SYSKANRI-KEY-SEC
            IF      FLG-SYSKANRI        =   ZERO
@@ -845,7 +856,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    "*"                 TO  SYS-1038-KBNCD
            MOVE    SPA-SYSYMD          TO  SYS-1038-STYUKYMD 
            MOVE    SPA-SYSYMD          TO  SYS-1038-EDYUKYMD 
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  SYS-1038-HOSPNUM
            MOVE    SYS-1038-REC        TO  MCPDATA-REC
            PERFORM 900-SYSKANRI-KEY-SEC
            IF      FLG-SYSKANRI        =   ZERO
@@ -1072,7 +1083,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SPA-GMN-SYOKUKBN    TO  SYS-1010-KBNCD (1:1)
            MOVE    SPA-GMN-SYOKUCOD    TO  SYS-1010-KBNCD (2:4)
            MOVE    "%"                 TO  SYS-1010-KBNCD (6:1)
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  SYS-1010-HOSPNUM
            MOVE    SYS-1010-REC        TO  MCPDATA-REC
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key4"              TO  MCP-PATHNAME
@@ -1238,7 +1249,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SPA-GMN-SYOKUCOD    TO  SYS-1010-KBNCD (2:4)
            MOVE    SPA-NAI-STYUKYMD    TO  SYS-1010-STYUKYMD 
            MOVE    SPA-NAI-STYUKYMD    TO  SYS-1010-EDYUKYMD 
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  SYS-1010-HOSPNUM
            MOVE    SYS-1010-REC        TO  MCPDATA-REC
            PERFORM 900-SYSKANRI-KEY-SEC
            IF      FLG-SYSKANRI            =   ZERO
@@ -1833,7 +1844,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                END-STRING
                MOVE    SPA-SYSYMD          TO  SYS-1010-STYUKYMD 
                MOVE    SPA-SYSYMD          TO  SYS-1010-EDYUKYMD 
-grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
+               MOVE    SPA-HOSPNUM         TO  SYS-1010-HOSPNUM
                MOVE    SYS-1010-REC        TO  MCPDATA-REC
                MOVE    "tbl_syskanri"      TO  MCP-TABLE
                MOVE    "key3"              TO  MCP-PATHNAME
@@ -2424,14 +2435,14 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SPA-MAE-STYUKYMD        TO  SYS-1010-STYUKYMD
            MOVE    SPA-MAE-EDYUKYMD        TO  SYS-1010-EDYUKYMD
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  SYS-1010-HOSPNUM
            MOVE    SYS-1010-REC        TO  MCPDATA-REC
            MOVE    "DBDELETE"          TO  MCP-FUNC
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            IF      MCP-RC              NOT =   ZERO 
                MOVE    "1002"              TO  SPA-ERRCD
@@ -2585,7 +2596,7 @@ grpsys                            SPA-AREA
            MOVE    SPA-MAE-STYUKYMD    TO  SYS-1010-STYUKYMD
            MOVE    SPA-MAE-STYUKYMD    TO  SYS-1010-EDYUKYMD
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  SYS-1010-HOSPNUM
            MOVE    SYS-1010-REC        TO  MCPDATA-REC
            PERFORM 900-SYSKANRI-KEY-SEC
            IF      FLG-SYSKANRI            =   ZERO
@@ -2637,14 +2648,14 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    SPA-MAE-STYUKYMD    TO  SYSUP-STYUKYMD
                MOVE    SPA-MAE-EDYUKYMD    TO  SYSUP-EDYUKYMD
       *
-grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
+               MOVE    SPA-HOSPNUM         TO  SYS-HOSPNUM
                MOVE    SYSKANRI-REC        TO  MCPDATA-REC
                MOVE    "DBUPDATE"          TO  MCP-FUNC
                MOVE    "tbl_syskanri"      TO  MCP-TABLE
                MOVE    "upd1"              TO  MCP-PATHNAME
-grpsys         CALL "ORCDBMAIN" USING MCPAREA
-                                      MCPDATA-REC
-grpsys                                SPA-AREA
+grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
+                                                   MCPDATA-REC
+                                                   SPA-AREA
                IF      MCP-RC          NOT =   ZERO 
                    MOVE    "1001"              TO  SPA-ERRCD
                    DISPLAY "W06 DB UPD ERR KEY:" SYS-1010-KEY 
@@ -2655,14 +2666,14 @@ grpsys                                SPA-AREA
                MOVE    SMCNDATE-YMD        TO  SYS-1010-UPYMD
                MOVE    SMCNDATE-HMS        TO  SYS-1010-UPHMS
       *
-grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
+               MOVE    SPA-HOSPNUM         TO  SYS-1010-HOSPNUM
                MOVE    SYS-1010-REC        TO  MCPDATA-REC
                MOVE    "DBINSERT"          TO  MCP-FUNC
                MOVE    "tbl_syskanri"      TO  MCP-TABLE
                MOVE    "key"               TO  MCP-PATHNAME
-grpsys         CALL "ORCDBMAIN" USING MCPAREA
-                                      MCPDATA-REC
-grpsys                                SPA-AREA
+grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
+                                                   MCPDATA-REC
+                                                   SPA-AREA
                IF      MCP-RC          NOT =   ZERO 
                    MOVE    "1001"              TO  SPA-ERRCD
                    DISPLAY "W06 DB INS ERR KEY:" SYS-1010-KEY 
@@ -3578,9 +3589,9 @@ grpsys                                SPA-AREA
        910-DBSELECT-SEC                SECTION.
       *
            MOVE    "DBSELECT"      TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
        910-DBSELECT-EXT.
@@ -3591,9 +3602,9 @@ grpsys                            SPA-AREA
        920-DBFETCH-SEC                 SECTION.
       *
            MOVE    "DBFETCH"       TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
       *
@@ -3606,9 +3617,9 @@ grpsys                            SPA-AREA
        990-DBCLOSE-SEC           SECTION.
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
        990-DBCLOSE-EXT.
@@ -3620,9 +3631,9 @@ grpsys                            SPA-AREA
        900-PUT-WINDOW              SECTION.
       *
            MOVE   "PUTWINDOW"       TO  MCP-FUNC.
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
        900-PUT-WINDOW-EXT.

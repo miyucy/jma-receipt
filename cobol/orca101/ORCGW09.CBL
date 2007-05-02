@@ -199,6 +199,7 @@
            COPY    "W11.INC".
            COPY    "W111.INC".
            COPY    "W12.INC".
+           COPY    "W121.INC".
            COPY    "W13.INC".
            COPY    "W14.INC".
            COPY    "W15.INC".
@@ -218,6 +219,7 @@
            COPY    "W29.INC".
            COPY    "W30.INC".
            COPY    "W31.INC".
+           COPY    "W32.INC".
            COPY    "W60.INC".
            COPY    "W61.INC".
            COPY    "W62.INC".
@@ -391,7 +393,7 @@
            MOVE    "2003"                  TO  SYS-2003-KANRICD
            MOVE    SPA-W01-KBNCD           TO  SYS-2003-KBNCD
            MOVE    SPA-W01-STYUKYMD        TO  ORC-DBYMD
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM             TO  SYS-2003-HOSPNUM
            MOVE    SYS-2003-REC            TO  MCPDATA-REC
            MOVE    "SYSKANRI-KEY"          TO  WRK-PATH
            PERFORM 900-SYSKANRI-INV-SEC
@@ -456,7 +458,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    "2004"                  TO  SYS-2004-KANRICD
            MOVE    SPA-GMN-SYUBETU (IDX)   TO  SYS-2004-KBNCD
            MOVE    SPA-W01-STYUKYMD        TO  ORC-DBYMD
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM             TO  SYS-2004-HOSPNUM
            MOVE    SYS-2004-REC            TO  MCPDATA-REC
            MOVE    "SYSKANRI-KEY"          TO  WRK-PATH
            PERFORM 900-SYSKANRI-INV-SEC
@@ -763,7 +765,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SPA-W01-KBNCD           TO  SYS-2003-KBNCD
            MOVE    SPA-W01-STYUKYMD        TO  SYS-2003-STYUKYMD
            MOVE    SPA-W01-EDYUKYMD        TO  SYS-2003-EDYUKYMD
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM             TO  SYS-2003-HOSPNUM
            MOVE    SYS-2003-REC            TO  MCPDATA-REC
            MOVE    "DBDELETE"              TO  MCP-FUNC
            MOVE    "SYSKANRI-KEY"          TO  ORC-DBPATH
@@ -813,7 +815,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    "2003"                  TO  SYS-2003-KANRICD
            MOVE    SPA-W01-KBNCD           TO  SYS-2003-KBNCD
            MOVE    SPA-W01-STYUKYMD        TO  ORC-DBYMD
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM             TO  SYS-2003-HOSPNUM
            MOVE    SYS-2003-REC            TO  MCPDATA-REC
            MOVE    "SYSKANRI-KEY"          TO  WRK-PATH
            PERFORM 900-SYSKANRI-INV-SEC
@@ -855,7 +857,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    "SYSKANRI-KEY"          TO  ORC-DBPATH
                MOVE    "DBINSERT"              TO  MCP-FUNC
            END-IF
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM             TO  SYS-HOSPNUM
            MOVE    SYSKANRI-REC            TO  MCPDATA-REC
            CALL    "ORCMCPSUB"              USING
                                                 MCPAREA

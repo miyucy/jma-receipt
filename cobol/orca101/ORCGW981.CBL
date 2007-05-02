@@ -27,6 +27,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  03.05.00    NACL-多々納  07/05/02  グループ診療対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -57,6 +58,7 @@
       *
            03  FLG-CHK             PIC 9(01).
            03  FLG-SELNUM          PIC 9(01).
+           03  FLG-ERR             PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -66,7 +68,12 @@
       *    一時領域
        01  WRK-AREA.
            03  WRK-WIDGET              PIC X(64).
-           03  WRK-WIDMSG              PIC X(70).
+           03  WRK-WIDMSG              PIC X(80).
+           03  WRK-SDATE               PIC X(06).
+           03  WRK-STIME.
+               05  WRK-SHH              PIC 9(02).
+               05  WRK-SMM              PIC 9(02).
+               05  WRK-SSS              PIC 9(02).
       *
            03  WRK-SELNUM              PIC 9(03).
            03  WRK-ZZ9                 PIC ZZ9.
@@ -141,6 +148,7 @@
            COPY    "W11.INC".
            COPY    "W111.INC".
            COPY    "W12.INC".
+           COPY    "W121.INC".
            COPY    "W13.INC".
            COPY    "W14.INC".
            COPY    "W15.INC".
@@ -160,6 +168,7 @@
            COPY    "W29.INC".
            COPY    "W30.INC".
            COPY    "W31.INC".
+           COPY    "W32.INC".
            COPY    "W60.INC".
            COPY    "W61.INC".
            COPY    "W62.INC".
@@ -231,6 +240,9 @@
       *
       *        初期画面編集
                PERFORM 300-SCREEN-SEC
+               IF      SPA-WIDCD       NOT =   SPACE
+                   PERFORM 520-WIDSET-SEC
+               END-IF
       *
       *        画面編集
                PERFORM 500-GMNHEN-SEC
@@ -276,21 +288,38 @@
            EVALUATE    SPA-WIDCD
                WHEN    "1001"
       *            一括削除
+                   MOVE    SPACE           TO  SPA-WIDCD
                    IF      SPA-WID1-FLG    =   "OK"
                        PERFORM 2401-ALL-DELETE-SYORI-SEC
                    ELSE
                        MOVE    1           TO  SPA-W981-CUR
                    END-IF
+               WHEN    "1002"
+      *            一括削除確認後
+                   IF      SPA-WID1-FLG    =   "OK"
+                       PERFORM 2402-ALL-DELETE-SEC
+                   ELSE
+                       MOVE    1           TO  SPA-W981-CUR
+                   END-IF
+                   MOVE    SPACE           TO  SPA-WIDCD
                WHEN    "1003"
+      *            削除
+                   MOVE    SPACE           TO  SPA-WIDCD
+                   IF      SPA-WID1-FLG    =   "OK"
+                       PERFORM 2301-DELETE-SYORI-SEC
+                   ELSE
+                       MOVE    1           TO  SPA-W981-CUR
+                   END-IF
+               WHEN    "1004"
       *            削除
                    IF      SPA-WID1-FLG    =   "OK"
                        PERFORM 2301-DELETE-SYORI-SEC
                    ELSE
                        MOVE    1           TO  SPA-W981-CUR
                    END-IF
+                   MOVE    SPACE           TO  SPA-WIDCD
            END-EVALUATE
            MOVE    SPACE           TO  SPA-WID1-FLG
-           MOVE    SPACE           TO  SPA-WIDCD
       *
            .
        330-WID1-SET-EXT.
@@ -307,7 +336,7 @@
            INITIALIZE                  SPA-W981-LIST-G
            MOVE    SPACE               TO  TBL-LOCK
            INITIALIZE                      TBL-LOCK
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  LOCK-HOSPNUM
            MOVE    TBL-LOCK            TO  MCPDATA-REC
            MOVE    "tbl_lock"          TO  MCP-TABLE
            MOVE    "all"               TO  MCP-PATHNAME
@@ -353,10 +382,10 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    LOCK-OPID           TO  SPA-W981-OPID (IDX)
       *
            INITIALIZE                      ORCSPTIDAREA
-           MOVE    SPA-HOSPID          TO  SPTID-HOSPID
+           MOVE    SPA-HOSPNUM         TO  SPTID-HOSPNUM
            MOVE    LOCK-PTID (1)       TO  SPTID-PTID
            CALL    "ORCSPTID"          USING   ORCSPTIDAREA
-                                               SPA-1009-TBL
+                                               SPA-AREA
            IF      SPTID-RC        NOT =   ZERO
                MOVE    SPACE           TO  SPA-W981-PTNUM  (IDX)
            ELSE
@@ -657,15 +686,24 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    "key"               TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
       *
+           MOVE    SPACE               TO  SPA-WIDCD
            IF      FLG-LOCK            =   ZERO
-grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
+               PERFORM 2311-TIME-CHK-SEC
+               IF      FLG-ERR             =   1
+                   MOVE    "1004"          TO  SPA-WIDCD
+                   GO      TO       2301-DELETE-SYORI-EXT
+               END-IF
+           END-IF
+      *
+           IF      FLG-LOCK            =   ZERO
+               MOVE    SPA-HOSPNUM         TO  LOCK-HOSPNUM
                MOVE    TBL-LOCK            TO  MCPDATA-REC
                MOVE    "DBDELETE"          TO  MCP-FUNC
                MOVE    "tbl_lock"         TO  MCP-TABLE
                MOVE    "key"               TO  MCP-PATHNAME
-grpsys         CALL "ORCDBMAIN" USING MCPAREA
-                                      MCPDATA-REC
-grpsys                                SPA-AREA
+grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
+                                                   MCPDATA-REC
+                                                   SPA-AREA
                IF      MCP-RC              NOT =   ZERO 
                    MOVE    "9001"              TO  SPA-ERRCD
                    DISPLAY "W981 DEL LOCK-KEY =>" LOCK-TERMID
@@ -678,6 +716,30 @@ grpsys                                SPA-AREA
            END-IF
            .
        2301-DELETE-SYORI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    削除対象チェック処理
+      *****************************************************************
+       2311-TIME-CHK-SEC                   SECTION.
+      *
+           MOVE    ZERO                TO  FLG-ERR
+           ACCEPT  WRK-SDATE           FROM  DATE
+           ACCEPT  WRK-STIME           FROM  TIME
+      *    現在の時間から１分前とする
+           IF      WRK-SMM             >=  1
+               COMPUTE WRK-SMM             =   WRK-SMM    -  1
+           ELSE
+               MOVE    59                  TO  WRK-SMM
+               COMPUTE WRK-SHH             =   WRK-SHH    -  1
+           END-IF
+           IF      WRK-SDATE           =   LOCK-STARTDATE(01)
+               IF      WRK-STIME       <   LOCK-STARTTIME(01)
+                   MOVE    1               TO  FLG-ERR
+               END-IF
+           END-IF
+           .
+       2311-TIME-CHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -700,14 +762,53 @@ grpsys                                SPA-AREA
       *
            MOVE    SPACE               TO  TBL-LOCK
            INITIALIZE                      TBL-LOCK
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  LOCK-HOSPNUM
+           MOVE    TBL-LOCK            TO  MCPDATA-REC
+           MOVE    "tbl_lock"          TO  MCP-TABLE
+           MOVE    "all"               TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC               =   ZERO
+               MOVE    "tbl_lock"          TO  MCP-TABLE
+               MOVE    "all"               TO  MCP-PATHNAME
+               PERFORM 910-LOCK-READ-SEC
+           ELSE
+               MOVE    1                   TO  FLG-LOCK
+           END-IF
+           PERFORM UNTIL  (FLG-LOCK        =   1 )  OR
+                          (FLG-ERR         =   1 )
+               PERFORM 2311-TIME-CHK-SEC
+      *
+               MOVE    "tbl_lock"          TO  MCP-TABLE
+               MOVE    "all"               TO  MCP-PATHNAME
+               PERFORM 910-LOCK-READ-SEC
+           END-PERFORM
+           MOVE    "tbl_lock"          TO  MCP-TABLE
+           MOVE    "all"               TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+      *
+           IF      FLG-ERR             =   1
+               MOVE    "1002"          TO  SPA-WIDCD
+           ELSE
+               PERFORM 2402-ALL-DELETE-SEC
+           END-IF
+           .
+       2401-ALL-DELETE-SYORI-EXT.
+           EXIT.
+      *****************************************************************
+      *    一括削除処理
+      *****************************************************************
+       2402-ALL-DELETE-SEC          SECTION.
+      *
+           MOVE    SPACE               TO  TBL-LOCK
+           INITIALIZE                      TBL-LOCK
+           MOVE    SPA-HOSPNUM         TO  LOCK-HOSPNUM
            MOVE    TBL-LOCK            TO  MCPDATA-REC
            MOVE    "DBDELETE"          TO  MCP-FUNC
            MOVE    "tbl_lock"          TO  MCP-TABLE
            MOVE    "del1"              TO  MCP-PATHNAME
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
            IF      MCP-RC              NOT =   ZERO 
                MOVE    "9001"              TO  SPA-ERRCD
                DISPLAY "W981 DEL LOCK-KEY =>" LOCK-TERMID
@@ -718,7 +819,7 @@ grpsys                            SPA-AREA
                PERFORM 310-SPASET-SEC
            END-IF
            .
-       2401-ALL-DELETE-SYORI-EXT.
+       2402-ALL-DELETE-EXT.
            EXIT.
       *
       *****************************************************************
@@ -809,14 +910,26 @@ grpsys                            SPA-AREA
            EVALUATE    SPA-WIDCD
                WHEN    "1001"
                    STRING  "排他情報をすべて削除します。"
+                           "端末が展開中でないことを確認して下さい。"
                                                    DELIMITED  BY  SIZE
-                           "よろしいですか？"      DELIMITED  BY  SIZE
+                                                   INTO    WRK-WIDMSG
+                   END-STRING
+               WHEN    "1002"
+                   STRING  "端末展開中と思われる排他時間があります。"
+                           "端末が展開中でないことを確認して下さい"
+                                                   DELIMITED  BY  SIZE
                                                    INTO    WRK-WIDMSG
                    END-STRING
                WHEN    "1003"
                    STRING  "選択された排他情報を削除します。"
+                           "端末が展開中でないことを確認して下さい。"
                                                    DELIMITED  BY  SIZE
-                           "よろしいですか？"      DELIMITED  BY  SIZE
+                                                   INTO    WRK-WIDMSG
+                   END-STRING
+               WHEN    "1004"
+                   STRING  "端末展開中と思われる排他時間です。"
+                           "端末が展開中でないことを確認して下さい"
+                                                   DELIMITED  BY  SIZE
                                                    INTO    WRK-WIDMSG
                    END-STRING
           END-EVALUATE
@@ -862,9 +975,9 @@ grpsys                            SPA-AREA
        910-DBSELECT-SEC                SECTION.
       *
            MOVE    "DBSELECT"      TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
        910-DBSELECT-EXT.
@@ -875,9 +988,9 @@ grpsys                            SPA-AREA
        920-DBFETCH-SEC                 SECTION.
       *
            MOVE    "DBFETCH"       TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
       *
@@ -890,9 +1003,9 @@ grpsys                            SPA-AREA
        990-DBCLOSE-SEC         SECTION.
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
        990-DBCLOSE-EXT.
@@ -904,9 +1017,9 @@ grpsys                            SPA-AREA
        900-PUT-WINDOW              SECTION.
       *
            MOVE   "PUTWINDOW"       TO  MCP-FUNC.
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
        900-PUT-WINDOW-EXT.

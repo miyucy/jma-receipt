@@ -28,6 +28,7 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *  01.00.01    NACL-多々納  06/07/13  MONFUNC 対応
+      *  03.05.00    NACL-多々納  07/05/02  グループ診療対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -216,6 +217,7 @@
            COPY    "W11.INC".
            COPY    "W111.INC".
            COPY    "W12.INC".
+           COPY    "W121.INC".
            COPY    "W13.INC".
            COPY    "W14.INC".
            COPY    "W15.INC".
@@ -235,6 +237,7 @@
            COPY    "W29.INC".
            COPY    "W30.INC".
            COPY    "W31.INC".
+           COPY    "W32.INC".
            COPY    "W60.INC".
            COPY    "W61.INC".
            COPY    "W62.INC".
@@ -393,7 +396,7 @@
            MOVE    "1%"                TO  SYS-9700-KBNCD
            MOVE    SPA-SYSYMD          TO  SYS-9700-STYUKYMD
            MOVE    SPA-SYSYMD          TO  SYS-9700-EDYUKYMD
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  SYS-9700-HOSPNUM
            MOVE    SYS-9700-REC        TO  MCPDATA-REC
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
@@ -569,7 +572,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SPA-SYSYMD          TO  SYS-9701-STYUKYMD
            MOVE    SPA-SYSYMD          TO  SYS-9701-EDYUKYMD
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  SYS-9701-HOSPNUM
            MOVE    SYS-9701-REC        TO  MCPDATA-REC
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key2"              TO  MCP-PATHNAME
@@ -917,7 +920,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    "1%"                TO  SYS-9700-KBNCD
            MOVE    "00000000"          TO  SYS-9700-STYUKYMD
            MOVE    "99999999"          TO  SYS-9700-EDYUKYMD
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  SYS-9700-HOSPNUM
            MOVE    SYS-9700-REC        TO  MCPDATA-REC
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
@@ -960,15 +963,15 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *
            IF      FLG-SYSKANRI        =   ZERO
       *        更新
-grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
+               MOVE    SPA-HOSPNUM         TO  SYS-9700-HOSPNUM
                MOVE    SYS-9700-REC        TO  MCPDATA-REC
       *
                MOVE    "tbl_syskanri"      TO  MCP-TABLE
                MOVE    "key"               TO  MCP-PATHNAME
                MOVE    "DBUPDATE"          TO  MCP-FUNC
-grpsys         CALL "ORCDBMAIN" USING MCPAREA
-                                      MCPDATA-REC
-grpsys                                SPA-AREA
+grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
+                                                   MCPDATA-REC
+                                                   SPA-AREA
                IF      MCP-RC          NOT =   ZERO 
                    MOVE    "1002"              TO  SPA-ERRCD
                    DISPLAY "W97 DB UPD ERR KEY:" SYS-9700-KEY 
@@ -976,7 +979,7 @@ grpsys                                SPA-AREA
            ELSE
       *    新規
                MOVE    SMCNDATE-YMD            TO  SYS-9700-CREYMD
-grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
+               MOVE    SPA-HOSPNUM             TO  SYS-9700-HOSPNUM
                MOVE    SYS-9700-REC            TO  MCPDATA-REC
       *
                PERFORM 4901-INSERT-SYORI-SEC
@@ -997,14 +1000,14 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    "00000000"          TO  SYS-9701-STYUKYMD
            MOVE    "99999999"          TO  SYS-9701-EDYUKYMD
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  SYS-9701-HOSPNUM
            MOVE    SYS-9701-REC        TO  MCPDATA-REC
            MOVE    "DBDELETE"          TO  MCP-FUNC
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "del11"             TO  MCP-PATHNAME
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            IF      MCP-RC              NOT =   ZERO 
                MOVE    "1003"              TO  SPA-ERRCD
@@ -1045,7 +1048,7 @@ grpsys                            SPA-AREA
            MOVE    SMCNDATE-YMD            TO  SYS-9701-UPYMD
            MOVE    SMCNDATE-HMS            TO  SYS-9701-UPHMS
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM             TO  SYS-9701-HOSPNUM
            MOVE    SYS-9701-REC            TO  MCPDATA-REC
       *    新規
            PERFORM 4901-INSERT-SYORI-SEC
@@ -1062,9 +1065,9 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    "DBINSERT"          TO  MCP-FUNC
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
            IF      MCP-RC          NOT =   ZERO 
                MOVE    "1001"              TO  SPA-ERRCD
                DISPLAY "W97 DB INS ERR KEY:" SYS-9701-KEY 
@@ -1081,9 +1084,9 @@ grpsys                            SPA-AREA
            MOVE    "DBUPDATE"          TO  MCP-FUNC
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
            IF      MCP-RC          NOT =   ZERO 
                MOVE    "1002"              TO  SPA-ERRCD
                DISPLAY "W97 DB UPD ERR KEY:" SYS-9700-KEY 
@@ -1385,9 +1388,9 @@ grpsys                            SPA-AREA
        910-DBSELECT-SEC                SECTION.
       *
            MOVE    "DBSELECT"      TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
        910-DBSELECT-EXT.
@@ -1398,9 +1401,9 @@ grpsys                            SPA-AREA
        920-DBFETCH-SEC                 SECTION.
       *
            MOVE    "DBFETCH"       TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
       *
@@ -1413,9 +1416,9 @@ grpsys                            SPA-AREA
        990-DBCLOSE-SEC           SECTION.
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
        990-DBCLOSE-EXT.
@@ -1427,9 +1430,9 @@ grpsys                            SPA-AREA
        900-PUT-WINDOW              SECTION.
       *
            MOVE   "PUTWINDOW"       TO  MCP-FUNC.
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
        900-PUT-WINDOW-EXT.

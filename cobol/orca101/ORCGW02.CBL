@@ -60,6 +60,7 @@
       *  01.00.28    NACL-多々納  06/07/13  MONFUNC 対応
       *  03.03.00    NACL-太田    06/10/24  地方公費保険番号タブ区分追加
       *  03.04.01    NACL-森脇    06/12/13  ユーザーＵＲＬ追加
+      *  03.05.00    NACL-多々納  07/05/02  グループ診療対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -114,26 +115,29 @@
                            11  SPA-GMN-SYOHOKBNL      PIC X(01).
                            11  SPA-GMN-F6L            PIC X(01).
                            11  SPA-GMN-SYOHOKBNMEIL   PIC X(06).
-                       09  SPA-GMN-SKYPRTFLGLST       OCCURS  3.
+                       09  SPA-GMN-SKYPRTFLGLST       OCCURS  5.
                            11  SPA-GMN-SKYPRTFLGL     PIC X(01).
                            11  SPA-GMN-F7L            PIC X(01).
-                           11  SPA-GMN-SKYPRTFLGMEIL  PIC X(20).
-                       09  SPA-GMN-SYOHOPRTFLGLST     OCCURS  3.
+                           11  SPA-GMN-SKYPRTFLGMEIL  PIC X(28).
+                       09  SPA-SYKPRTFLG-MAX          PIC 9(02).
+                       09  SPA-GMN-SYOHOPRTFLGLST     OCCURS  5.
                            11  SPA-GMN-SYOHOPRTFLGL   PIC X(01).
                            11  SPA-GMN-F8L            PIC X(01).
                            11  SPA-GMN-SYOHOPRTFLGMEIL
-                                                      PIC X(12).
+                                                      PIC X(28).
+                       09  SPA-SYOHOPRTFLG-MAX        PIC 9(02).
                        09  SPA-GMN-ZENSYOHOFLGLST     OCCURS  2.
                            11  SPA-GMN-ZENSYOHOFLGL   PIC X(01).
                            11  SPA-GMN-F9L            PIC X(01).
                            11  SPA-GMN-ZENSYOHOFLGMEIL
                                                       PIC X(12).
       *----(01.00.09) LINE ADD START ----------------------------------
-                       09  SPA-GMN-YAKUJYOFLGLST      OCCURS  2.
+                       09  SPA-GMN-YAKUJYOFLGLST      OCCURS  3.
                            11  SPA-GMN-YAKUJYOFLGL    PIC X(01).
                            11  SPA-GMN-F10L           PIC X(01).
                            11  SPA-GMN-YAKUJYOFLGMEIL
-                                                      PIC X(12).
+                                                      PIC X(28).
+                       09  SPA-YAKUJYOFLG-MAX         PIC 9(02).
       *----(01.00.09) LINE ADD END   ----------------------------------
                        09  SPA-GMN-MEIPRTFLGLST      OCCURS  2.
                            11  SPA-GMN-MEIPRTFLGL    PIC X(01).
@@ -225,7 +229,7 @@
                                13  SPA-GMN-SKYPRTFLG  PIC X(01).
                                13  SPA-GMN-F7         PIC X(01).
                                13  SPA-GMN-SKYPRTFLGMEI
-                                                      PIC X(20).
+                                                      PIC X(28).
       *----(01.00.02) LINE ADD START ----------------------------------
       *院外処方せん発行フラグ
                            11  SPA-GMN-SYOHOPRTFLG-G.
@@ -233,7 +237,7 @@
                                                       PIC X(01).
                                13  SPA-GMN-F8         PIC X(01).
                                13  SPA-GMN-SYOHOPRTFLGMEI
-                                                      PIC X(12).
+                                                      PIC X(28).
       *前回処方表示フラグ
                            11  SPA-GMN-ZENSYOHOFLG-G.
                                13  SPA-GMN-ZENSYOHOFLG
@@ -249,7 +253,7 @@
                                                       PIC X(01).
                                13  SPA-GMN-F10        PIC X(01).
                                13  SPA-GMN-YAKUJYOFLGMEI
-                                                      PIC X(12).
+                                                      PIC X(28).
       *診療費明細書発行区分フラグ
                            11  SPA-GMN-MEIPRTFLG-G.
                                13  SPA-GMN-MEIPRTFLG
@@ -564,6 +568,7 @@
            COPY    "W11.INC".
            COPY    "W111.INC".
            COPY    "W12.INC".
+           COPY    "W121.INC".
            COPY    "W13.INC".
            COPY    "W14.INC".
            COPY    "W15.INC".
@@ -583,6 +588,7 @@
            COPY    "W29.INC".
            COPY    "W30.INC".
            COPY    "W31.INC".
+           COPY    "W32.INC".
            COPY    "W60.INC".
            COPY    "W61.INC".
            COPY    "W62.INC".
@@ -854,6 +860,10 @@
            MOVE    "2"                TO  SPA-GMN-SKYPRTFLGL   (3)
            MOVE    "発行する（請求あり）"
                                       TO  SPA-GMN-SKYPRTFLGMEIL(3)
+           MOVE    "3"                TO  SPA-GMN-SKYPRTFLGL   (4)
+           MOVE    "発行する（訂正時なし）"
+                                      TO  SPA-GMN-SKYPRTFLGMEIL(4)
+           MOVE    4                  TO  SPA-SYKPRTFLG-MAX
       *
            MOVE    "0"                TO  SPA-GMN-SYOHOPRTFLGL    (1) 
            MOVE    "発行しない"       TO  SPA-GMN-SYOHOPRTFLGMEIL (1)
@@ -861,6 +871,13 @@
            MOVE    "発行する"         TO  SPA-GMN-SYOHOPRTFLGMEIL (2)
            MOVE    "2"                TO  SPA-GMN-SYOHOPRTFLGL    (3)
            MOVE    "院内処方発行"     TO  SPA-GMN-SYOHOPRTFLGMEIL (3)
+           MOVE    "3"                TO  SPA-GMN-SYOHOPRTFLGL    (4)
+           MOVE    "発行する（訂正時なし）"
+                                      TO  SPA-GMN-SYOHOPRTFLGMEIL (4)
+           MOVE    "4"                TO  SPA-GMN-SYOHOPRTFLGL    (5)
+           MOVE    "院内処方発行（訂正時なし）" 
+                                      TO  SPA-GMN-SYOHOPRTFLGMEIL (5)
+           MOVE    5                  TO  SPA-SYOHOPRTFLG-MAX
       *
            MOVE    "0"                TO  SPA-GMN-ZENSYOHOFLGL    (1) 
            MOVE    "表示する"         TO  SPA-GMN-ZENSYOHOFLGMEIL (1)
@@ -872,6 +889,10 @@
            MOVE    "発行しない"       TO  SPA-GMN-YAKUJYOFLGMEIL (1)
            MOVE    "1"                TO  SPA-GMN-YAKUJYOFLGL    (2)
            MOVE    "発行する"         TO  SPA-GMN-YAKUJYOFLGMEIL (2)
+           MOVE    "2"                TO  SPA-GMN-YAKUJYOFLGL    (3)
+           MOVE    "発行する（訂正時なし）"
+                                      TO  SPA-GMN-YAKUJYOFLGMEIL (3)
+           MOVE    3                  TO  SPA-YAKUJYOFLG-MAX
       *----(01.00.09) LINE ADD END   ----------------------------------
            MOVE    "0"                TO  SPA-GMN-MEIPRTFLGL    (1)
            MOVE    "発行しない"       TO  SPA-GMN-MEIPRTFLGMEIL (1)
@@ -995,7 +1016,7 @@
            END-EVALUATE
            MOVE    SPA-W01-STYUKYMD        TO  SYS-1001-STYUKYMD
            MOVE    SPA-W01-STYUKYMD        TO  SYS-1001-EDYUKYMD
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  SYS-1001-HOSPNUM
            MOVE    SYS-1001-REC            TO  MCPDATA-REC
            PERFORM 900-SYSKANRI-INV-SEC
            IF      FLG-SYSKANRI            =   ZERO
@@ -1195,7 +1216,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    "*"                 TO  SYS-2009-KBNCD
            MOVE    SPA-W01-STYUKYMD    TO  SYS-2009-STYUKYMD
            MOVE    SPA-W01-STYUKYMD    TO  SYS-2009-EDYUKYMD
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  SYS-2009-HOSPNUM
            MOVE    SYS-2009-REC        TO  MCPDATA-REC
            PERFORM 900-SYSKANRI-INV-SEC
            IF      FLG-SYSKANRI        =   ZERO
@@ -1247,7 +1268,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SPA-W01-STYUKYMD    TO  SYS-1001-STYUKYMD
            MOVE    SPA-W01-STYUKYMD    TO  SYS-1001-EDYUKYMD
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  SYS-1001-HOSPNUM
            MOVE    SYS-1001-REC        TO  MCPDATA-REC
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key5"              TO  MCP-PATHNAME
@@ -1365,21 +1386,21 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            END-PERFORM
            MOVE    SYS-1001-SKYPRTFLG  TO  SPA-GMN-SKYPRTFLG
            PERFORM VARYING IDY FROM    1   BY  1
-                   UNTIL   IDY >       3
+                   UNTIL   IDY >       SPA-SYKPRTFLG-MAX
                IF      SYS-1001-SKYPRTFLG  =   SPA-GMN-SKYPRTFLGL (IDY)
                    MOVE    SPA-GMN-SKYPRTFLGLST (IDY)
                                            TO  SPA-GMN-SKYPRTFLG-G
-                   MOVE    3               TO  IDY
+                   MOVE    SPA-SYKPRTFLG-MAX   TO  IDY
                END-IF
            END-PERFORM
            MOVE    SYS-1001-SYOHOPRTFLG    TO  SPA-GMN-SYOHOPRTFLG 
            PERFORM VARYING IDY     FROM    1   BY  1
-                   UNTIL   IDY     >       3
+                   UNTIL   IDY     >       SPA-SYOHOPRTFLG-MAX
                IF      SYS-1001-SYOHOPRTFLG
                                        =   SPA-GMN-SYOHOPRTFLGL (IDY)
                    MOVE    SPA-GMN-SYOHOPRTFLGLST (IDY)
                                            TO  SPA-GMN-SYOHOPRTFLG-G
-                   MOVE    3               TO  IDY
+                   MOVE    SPA-SYOHOPRTFLG-MAX TO  IDY
                END-IF
            END-PERFORM
       *
@@ -1400,12 +1421,12 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            END-IF
            MOVE    SYS-1001-YAKUJYOPRTFLG  TO  SPA-GMN-YAKUJYOFLG
            PERFORM VARYING IDY     FROM    1   BY  1
-                   UNTIL   IDY     >       2
+                   UNTIL   IDY     >       SPA-YAKUJYOFLG-MAX
                IF      SYS-1001-YAKUJYOPRTFLG
                                        =   SPA-GMN-YAKUJYOFLGL (IDY)
                    MOVE    SPA-GMN-YAKUJYOFLGLST (IDY)
                                            TO  SPA-GMN-YAKUJYOFLG-G
-                   MOVE    2               TO  IDY
+                   MOVE    SPA-YAKUJYOFLG-MAX  TO  IDY
                END-IF
            END-PERFORM
       *    診療費明細書発行区分空白の時、ゼロとする
@@ -1551,7 +1572,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    "1027"              TO  SYS-1027-KANRICD
            MOVE    SPA-W01-STYUKYMD    TO  SYS-1027-STYUKYMD
            MOVE    SPA-W01-STYUKYMD    TO  SYS-1027-EDYUKYMD
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  SYS-1027-HOSPNUM
            MOVE    SYS-1027-REC        TO  MCPDATA-REC
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key2"              TO  MCP-PATHNAME
@@ -2377,7 +2398,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *
            MOVE    ZERO                TO  FLG-OK
            PERFORM VARYING IDY     FROM    1   BY  1
-                   UNTIL   IDY     >       3
+                   UNTIL   IDY     >       SPA-SYKPRTFLG-MAX
                IF      SPA-GMN-SKYPRTFLG    =   SPA-GMN-SKYPRTFLGL (IDY)
                    MOVE    SPA-GMN-SKYPRTFLGLST (IDY)
                                            TO  SPA-GMN-SKYPRTFLG-G
@@ -2400,7 +2421,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *
            MOVE    ZERO                TO  FLG-OK
            PERFORM VARYING IDY     FROM    1   BY  1
-                   UNTIL   IDY     >       3
+                   UNTIL   IDY     >       SPA-SYOHOPRTFLG-MAX
                IF      SPA-GMN-SYOHOPRTFLG =   SPA-GMN-SYOHOPRTFLGL
                                                               (IDY)
                    MOVE    SPA-GMN-SYOHOPRTFLGLST (IDY)
@@ -2449,7 +2470,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *
            MOVE    ZERO                TO  FLG-OK
            PERFORM VARYING IDY     FROM    1   BY  1
-                   UNTIL   IDY     >       2
+                   UNTIL   IDY     >       SPA-YAKUJYOFLG-MAX
                IF      SPA-GMN-YAKUJYOFLG =   SPA-GMN-YAKUJYOFLGL
                                                               (IDY)
                    MOVE    SPA-GMN-YAKUJYOFLGLST (IDY)
@@ -3046,14 +3067,14 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            END-EVALUATE
            MOVE    SPA-W01-STYUKYMD        TO  SYS-1001-STYUKYMD
            MOVE    SPA-W01-EDYUKYMD        TO  SYS-1001-EDYUKYMD
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM             TO  SYS-1001-HOSPNUM
            MOVE    SYS-1001-REC            TO  MCPDATA-REC
            MOVE    "DBDELETE"              TO  MCP-FUNC
            MOVE    "tbl_syskanri"          TO  MCP-TABLE
            MOVE    "key"                   TO  MCP-PATHNAME
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            IF      MCP-RC              NOT =   ZERO 
                MOVE    "1002"                  TO  SPA-ERRCD
@@ -3114,7 +3135,7 @@ grpsys                            SPA-AREA
            END-EVALUATE
            MOVE    SPA-W01-STYUKYMD        TO  SYS-1001-STYUKYMD
            MOVE    SPA-W01-STYUKYMD        TO  SYS-1001-EDYUKYMD
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM             TO  SYS-1001-HOSPNUM
            MOVE    SYS-1001-REC            TO  MCPDATA-REC
            PERFORM 900-SYSKANRI-INV-SEC
       *
@@ -3344,11 +3365,11 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    "key"                   TO  MCP-PATHNAME
                MOVE    "DBINSERT"              TO  MCP-FUNC
            END-IF
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  SYS-HOSPNUM
            MOVE    SYSKANRI-REC        TO  MCPDATA-REC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
            IF      MCP-RC              NOT =   ZERO 
                MOVE    "1001"                  TO  SPA-ERRCD
                GO  TO  490-KOUSHIN-EXT
@@ -3610,17 +3631,17 @@ grpsys                            SPA-AREA
            END-PERFORM    
            MOVE    2                   TO  W02-SYOHOKBN-COUNT     
            PERFORM VARYING IDX FROM    1   BY  1
-                   UNTIL   IDX >       3
+                   UNTIL   IDX >       SPA-SYKPRTFLG-MAX
                MOVE    SPA-GMN-SKYPRTFLGLST(IDX)
                                        TO  W02-SKYPRTFLGLST  (IDX)
            END-PERFORM    
-           MOVE    3                   TO  W02-SKYPRTFLG-COUNT     
+           MOVE    SPA-SYKPRTFLG-MAX   TO  W02-SKYPRTFLG-COUNT     
            PERFORM VARYING IDX FROM    1   BY  1
-                   UNTIL   IDX >       3
+                   UNTIL   IDX >       SPA-SYOHOPRTFLG-MAX
                MOVE    SPA-GMN-SYOHOPRTFLGLST(IDX)
                                        TO  W02-SYOHOPRTFLGLST  (IDX)
            END-PERFORM    
-           MOVE    3                   TO  W02-SYOHOPRTFLG-COUNT     
+           MOVE    SPA-SYOHOPRTFLG-MAX TO  W02-SYOHOPRTFLG-COUNT     
            PERFORM VARYING IDX FROM    1   BY  1
                    UNTIL   IDX >       2
                MOVE    SPA-GMN-ZENSYOHOFLGLST(IDX)
@@ -3629,11 +3650,11 @@ grpsys                            SPA-AREA
            MOVE    2                   TO  W02-ZENSYOHOFLG-COUNT     
       *----(01.00.09) LINE ADD START ----------------------------------
            PERFORM VARYING IDX FROM    1   BY  1
-                   UNTIL   IDX >       2
+                   UNTIL   IDX >       SPA-YAKUJYOFLG-MAX
                MOVE    SPA-GMN-YAKUJYOFLGLST(IDX)
                                        TO  W02-YAKUJYOFLGLST  (IDX)
            END-PERFORM    
-           MOVE    2                   TO  W02-YAKUJYOFLG-COUNT
+           MOVE    SPA-YAKUJYOFLG-MAX  TO  W02-YAKUJYOFLG-COUNT
       *    診療費明細書発行区分
            MOVE    SPA-GMN-MEIPRTFLG-G
                                        TO  W02-MEIPRTFLG
@@ -4360,9 +4381,9 @@ grpsys                            SPA-AREA
        910-DBSELECT-SEC                SECTION.
       *
            MOVE    "DBSELECT"      TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
        910-DBSELECT-EXT.
@@ -4373,9 +4394,9 @@ grpsys                            SPA-AREA
        920-DBFETCH-SEC                 SECTION.
       *
            MOVE    "DBFETCH"       TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
       *
@@ -4388,9 +4409,9 @@ grpsys                            SPA-AREA
        990-DBCLOSE-SEC         SECTION.
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
        990-DBCLOSE-EXT.
@@ -4402,9 +4423,9 @@ grpsys                            SPA-AREA
        900-PUT-WINDOW              SECTION.
       *
            MOVE   "PUTWINDOW"       TO  MCP-FUNC.
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
        900-PUT-WINDOW-EXT.

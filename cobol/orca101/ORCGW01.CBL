@@ -76,6 +76,10 @@
       *  01.05.26    NACL-多々納  06/06/09  1102 チェックマスタ機能情報３追加
       *  01.05.27    NACL-多々納  06/07/13  MONFUNC 対応
       *  01.05.28    NACL-太田    06/09/14  医療区分表示設定画面追加
+      *  01.05.29    NACL-藤原    07/02/05  期間変更不可チェックにレセプ
+      *                                     ト・総括印刷情報を追加
+      *  03.04.00    NACL-多々納  07/02/21  包括診療行為設定追加
+      *  03.05.00    NACL-多々納  07/05/02  グループ診療対応
       *****************************************************************
       *
        ENVIRONMENT                               DIVISION.
@@ -109,7 +113,7 @@
                            11  SPA-GMN-TSTYUKYMD  PIC X(09).
                            11  SPA-GMN-TEDYUKYMD  PIC X(09).  
       *---- (01.02.04) LINE ADD START --------------------------------
-                   07  SPA-GMN-KANRICDLST         OCCURS  50.
+                   07  SPA-GMN-KANRICDLST         OCCURS  100.
                        09  SPA-GMN-KANRICDL       PIC X(04).
                        09  SPA-GMN-F1L            PIC X(01).
                        09  SPA-GMN-KANRICDMEIL    PIC X(30).
@@ -240,6 +244,8 @@
            03  FILLER              PIC X(35)   VALUE
                "1013 請求書自費名称情報".
            03  FILLER              PIC X(35)   VALUE
+               "1014 包括診療行為設定情報".
+           03  FILLER              PIC X(35)   VALUE
                "1017 患者登録機能情報".
            03  FILLER              PIC X(35)   VALUE
                "1018 患者状態コメント情報".
@@ -293,11 +299,11 @@
                "4001 労災自賠医療機関情報".
       *
        01  TBL-KANRICD-AREAR           REDEFINES   TBL-KANRICD-AREA.
-           03  TBL-KANRICD-TBL         OCCURS   36.
+           03  TBL-KANRICD-TBL         OCCURS   37.
                05  TBL-KANRICD             PIC X(04).
                05  TBL-FILLER              PIC X(01).
                05  TBL-KANRICDMEI          PIC X(30).
-       01  TBL-KANRICD-MAX                 PIC 9(04)   VALUE   36.
+       01  TBL-KANRICD-MAX                 PIC 9(04)   VALUE   37.
       *
       *外来のみ
        01  TBL-KANRICD-G-AREA.
@@ -442,6 +448,7 @@
            COPY    "W11.INC".
            COPY    "W111.INC".
            COPY    "W12.INC".
+           COPY    "W121.INC".
            COPY    "W13.INC".
            COPY    "W14.INC".
            COPY    "W15.INC".
@@ -461,6 +468,7 @@
            COPY    "W29.INC".
            COPY    "W30.INC".
            COPY    "W31.INC".
+           COPY    "W32.INC".
            COPY    "W60.INC".
            COPY    "W61.INC".
            COPY    "W62.INC".
@@ -577,7 +585,7 @@
       *    共通の編集
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL      (IDX     >   TBL-KANRICD-MAX )  OR
-                              (IDX-MAX     >=  50  )
+                              (IDX-MAX     >=  100  )
                ADD     1                   TO  IDX-MAX
                MOVE    TBL-KANRICD (IDX)   TO  SPA-GMN-KANRICDL
                                                            (IDX-MAX)
@@ -590,7 +598,7 @@
       *        外来分
                PERFORM VARYING     IDX     FROM    1   BY  1
                        UNTIL      (IDX         >   TBL-KANRICDG-MAX) OR
-                                  (IDX-MAX     >=  50  )
+                                  (IDX-MAX     >=  100  )
                    ADD     1                   TO  IDX-MAX
                    MOVE    TBL-KANRICD-G (IDX) TO  SPA-GMN-KANRICDL
                                                            (IDX-MAX)
@@ -606,7 +614,7 @@
       *    入院分
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL      (IDX         >   TBL-KANRICDN-MAX )  OR
-                              (IDX-MAX     >=  50  )
+                              (IDX-MAX     >=  100  )
                ADD     1                   TO  IDX-MAX
                MOVE    TBL-KANRICD-N (IDX) TO  SPA-GMN-KANRICDL
                                                            (IDX-MAX)
@@ -1080,6 +1088,9 @@
       *---- (01.05.24) LINE ADD START --------------------------------
                WHEN    "1010"
       *---- (01.05.24) LINE ADD END   --------------------------------
+      *---- (03.04.00) LINE ADD START --------------------------------
+               WHEN    "1014"
+      *---- (03.04.00) LINE ADD END   --------------------------------
                WHEN    "1036"
                WHEN    "1100"
                WHEN    "1102"
@@ -1117,7 +1128,7 @@
       *    システム管理読み込み
            MOVE    SPACE               TO  SYS-KEY
            MOVE    SPA-GMN-KANRICD     TO  SYS-KANRICD
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  SYS-HOSPNUM
            MOVE    SYSKANRI-REC        TO  MCPDATA-REC
            IF      SPA-GMN-KANRICD     =   "1901"
                MOVE    "key12"             TO  WRK-PATHNAME
@@ -1194,7 +1205,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SPACE               TO  SYS-KEY
            MOVE    SPA-GMN-KANRICD     TO  SYS-KANRICD
            MOVE    "*%"                TO  SYS-KBNCD
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  SYS-HOSPNUM
            MOVE    SYSKANRI-REC        TO  MCPDATA-REC
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key4"              TO  MCP-PATHNAME
@@ -1260,7 +1271,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SPACE               TO  SYS-KEY
            MOVE    SPA-GMN-KANRICD     TO  SYS-KANRICD
            MOVE    "01%"               TO  SYS-KBNCD
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  SYS-HOSPNUM
            MOVE    SYSKANRI-REC        TO  MCPDATA-REC
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key4"              TO  MCP-PATHNAME
@@ -1324,7 +1335,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *    システム管理読み込み
            MOVE    SPACE               TO  SYS-KEY
            MOVE    SPA-GMN-KANRICD     TO  SYS-KANRICD
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  SYS-HOSPNUM
            MOVE    SYSKANRI-REC        TO  MCPDATA-REC
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key6"              TO  MCP-PATHNAME
@@ -1511,6 +1522,12 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *                MOVE    "0012"          TO  SPA-ERRCD
       *                GO  TO  4105-KBNCD-CHK-EXT
       ************ END-IF
+      *---- (03.04.00) LINE ADD START --------------------------------
+               WHEN    "1014"
+                   MOVE    SPACE               TO  SPA-GMN-KBNCD
+                   MOVE    12                  TO  SPA-GMN-CUR
+                   GO  TO  4105-KBNCD-CHK-EXT
+      *---- (03.04.00) LINE ADD END   --------------------------------
       *---- (01.02.02) LINE ADD START --------------------------------
                WHEN    "2004"
                    MOVE    4                   TO  WRK-CODE-MAX
@@ -1583,7 +1600,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                    "%"                 DELIMITED  BY  SIZE
                                        INTO    SYS-KBNCD
            END-STRING
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  SYS-HOSPNUM
            MOVE    SYSKANRI-REC        TO  MCPDATA-REC
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key4"              TO  MCP-PATHNAME
@@ -1705,6 +1722,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
              OR                            "2006"
       *---- (01.05.24) LINE ADD START --------------------------------
              OR                            "1010"
+             OR                            "1014"
              OR                            "9700")
       *---- (01.05.24) LINE ADD END   --------------------------------
                CONTINUE
@@ -1739,6 +1757,8 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                    MOVE    "W04"               TO  SPA-SAKIPG
                WHEN    "1010" 
                    MOVE    "W06"               TO  SPA-SAKIPG
+               WHEN    "1014" 
+                   MOVE    "W32"               TO  SPA-SAKIPG
                WHEN    "1007" 
       *---- (01.05.01) LINE ADD START --------------------------------
       *********WHEN    "1008"
@@ -1863,6 +1883,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            EVALUATE    SPA-GMN-KANRICD
                WHEN    "1005"
                WHEN    "1010"
+               WHEN    "1014"
                WHEN    "1012"
                WHEN    "1013"
                WHEN    "1018"
@@ -1893,6 +1914,8 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                WHEN    "1009"
       *        出力先プリンタ名
                WHEN    "1031"
+      *        レセプト・総括印刷情報
+               WHEN    "2005"
                    IF     (SPA-NAI-STYUKYMD    =   ZERO )  AND
                           (SPA-NAI-EDYUKYMD    =   99999999)
                        CONTINUE
@@ -1969,6 +1992,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            EVALUATE    SPA-GMN-KANRICD
                WHEN    "1005"
                WHEN    "1010"
+               WHEN    "1014"
                WHEN    "1012"
                WHEN    "1013"
                WHEN    "1018"
@@ -2258,9 +2282,9 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
        910-DBSELECT-SEC                SECTION.
       *
            MOVE    "DBSELECT"      TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
        910-DBSELECT-EXT.
@@ -2271,9 +2295,9 @@ grpsys                            SPA-AREA
        920-DBFETCH-SEC                 SECTION.
       *
            MOVE    "DBFETCH"       TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
       *
@@ -2286,9 +2310,9 @@ grpsys                            SPA-AREA
        990-DBCLOSE-SEC         SECTION.
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
        990-DBCLOSE-EXT.
@@ -2299,9 +2323,9 @@ grpsys                            SPA-AREA
        900-PUT-WINDOW              SECTION.
       *
            MOVE   "PUTWINDOW"       TO  MCP-FUNC.
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
        900-PUT-WINDOW-EXT.
