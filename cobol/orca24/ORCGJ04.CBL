@@ -6371,6 +6371,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                END-EVALUATE
            END-IF
            CALL    "ORCSRECEUPD"       USING    ORCSRECEUPDAREA
+                                                SPA-AREA
            IF      LNK-UPD-RC      NOT =   ZERO
                MOVE    "0005"              TO  SPA-ERRCD
                DISPLAY "LNK-UPD-RC =>" LNK-UPD-RC

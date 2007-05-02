@@ -503,6 +503,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPA-TERMID          TO  LNK-UPD-TERMID
            MOVE    SPA-OPID            TO  LNK-UPD-OPID
            CALL    "ORCSRECEUPD"       USING    ORCSRECEUPDAREA
+                                                SPA-AREA
            IF      LNK-UPD-RC      NOT =   ZERO
                MOVE    "9000"              TO  SPA-ERRCD
                DISPLAY "LNK-UPD-RC =>" LNK-UPD-RC
