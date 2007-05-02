@@ -1,5 +1,4 @@
 tbl_genericname {
-	HOSPNUM				integer;
 	YAKKAKJNCD			char(9);
 	YUKOKETA			number(2,0);
 	GENERICNAME			char(200);
@@ -13,7 +12,7 @@ tbl_genericname {
 	UPHMS				char(6);
 };
 primary	{
-	HOSPNUM,YAKKAKJNCD;
+	YAKKAKJNCD;
 };
 
 path	key 	{
@@ -21,8 +20,7 @@ path	key 	{
 		DECLARE tbl_genericname_key_csr CURSOR FOR
 		SELECT *
 		FROM tbl_genericname
-		WHERE 	HOSPNUM	= :HOSPNUM
-		AND   YAKKAKJNCD    =   :YAKKAKJNCD
+		WHERE   YAKKAKJNCD    =   :YAKKAKJNCD
 		;
 	};
 };
@@ -32,7 +30,6 @@ path	all	{
 		DECLARE tbl_genericname_all_csr CURSOR FOR
 		SELECT *
 		FROM tbl_genericname
-		WHERE 	HOSPNUM	= :HOSPNUM
  		;
 	};
 };
