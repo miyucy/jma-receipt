@@ -36,6 +36,7 @@
       *  01.01.06    NACL-多々納  05/12/07  送受信フラグ追加
       *                                     MONFUNC対応
       *  03.04.00    NACL−多々納 07/01/12  受付一覧年齢追加
+      *  03.05.00    NACL-多々納  07/05/07  グループ診療対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -195,6 +196,7 @@
                    07  SPA-WRK-PTNUM       PIC X(20).
                    07  SPA-WRK-PTID        PIC 9(10).
                    07  SPA-WRK-NAME        PIC X(50).
+                   07  SPA-WRK-NENREI      PIC X(06).
                    07  SPA-WRK-NICKNAME    PIC X(50).
                    07  SPA-WRK-CONDITION   PIC X(06).
                    07  SPA-WRK-SRYKAMEI    PIC X(06).
@@ -868,7 +870,7 @@
                CONTINUE
            ELSE
                INITIALIZE                      PTINF-REC
-      *********MOVE    SPA-HOSPID          TO  PTINF-HOSPID
+               MOVE    SPA-HOSPNUM         TO  PTINF-HOSPNUM
                MOVE    SPA-PTID            TO  PTINF-PTID
                PERFORM 900-PTINF-READ-SEC
       *
@@ -1251,10 +1253,9 @@
       *
       *    受付マスタよりドクターコード設定
            INITIALIZE                  UKETUKE-REC
-      *****MOVE    SPA-HOSPID          TO  UKE-HOSPID
+           MOVE    SPA-HOSPNUM         TO  UKE-HOSPNUM
            MOVE    SPA-SYSYMD          TO  UKE-UKEYMD
       *
-           MOVE    SPA-HOSPNUM         TO  UKE-HOSPNUM
            MOVE    UKETUKE-REC         TO  MCPDATA-REC
            MOVE    "tbl_uketuke"       TO  MCP-TABLE
            MOVE    "key3"              TO  MCP-PATHNAME
@@ -1370,7 +1371,7 @@
       *    患者マスタ読み出し
            IF      SPA-GMN-PTID(IDX IDX2) NOT  =  ZERO
                INITIALIZE                      PTINF-REC
-      *********MOVE    SPA-HOSPID          TO  PTINF-HOSPID
+               MOVE    SPA-HOSPNUM         TO  PTINF-HOSPNUM
                MOVE    SPA-GMN-PTID(IDX IDX2)  TO  PTINF-PTID
                PERFORM 900-PTINF-READ-SEC
                IF      FLG-PTINF           =   ZERO
@@ -1386,13 +1387,12 @@
       *
       *        患者番号取得
                INITIALIZE                      ORCSPTIDAREA
-      *********MOVE    SPA-HOSPID          TO  SPTID-HOSPID
-               MOVE    SPA-HOSPNUM         TO  SPTID-HOSPNUM
+               MOVE    SPA-HOSPNUM          TO  SPTID-HOSPNUM
                MOVE    SPA-GMN-PTID(IDX IDX2)
                                            TO  SPTID-PTID
                CALL    "ORCSPTID"          USING   ORCSPTIDAREA
       *----(01.01.01) LINE ADD START ----------------------------------
-                                                   SPA-1009-TBL
+                                                   SPA-AREA
       *----(01.01.01) LINE ADD END   ----------------------------------
                IF      SPTID-RC            =   ZERO
                    MOVE    SPTID-PTNUM         TO  SPA-GMN-PTNUM
@@ -1496,12 +1496,11 @@
            MOVE    SPACE               TO  WRK-HKNCOMBI
       *
            INITIALIZE                  HKNCOMBI-REC
-      *****MOVE    SPA-HOSPID          TO  COMB-HOSPID
+           MOVE    SPA-HOSPNUM         TO  COMB-HOSPNUM
            MOVE    SPA-GMN-PTID(IDX IDX2)
                                        TO  COMB-PTID
            MOVE    SPA-GMN-HKNCOMBI(IDX IDX2)
                                        TO  COMB-HKNCOMBINUM
-           MOVE    SPA-HOSPNUM         TO  COMB-HOSPNUM
            MOVE    HKNCOMBI-REC        TO  MCPDATA-REC
            MOVE    "tbl_hkncombi"      TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
@@ -1564,10 +1563,9 @@
            IF      COMB-HKNNUM         =   "971"  OR  "973"
       *        患者保険情報検索
                INITIALIZE                      PTRSIINF-REC
-      ******** MOVE    SPA-HOSPID          TO  PTRSI-HOSPID
+               MOVE    SPA-HOSPNUM         TO  PTRSI-HOSPNUM
                MOVE    SPA-PTID            TO  PTRSI-PTID
                MOVE    COMB-HKNID          TO  PTRSI-HKNID
-               MOVE    SPA-HOSPNUM         TO  PTRSI-HOSPNUM
                MOVE    PTRSIINF-REC        TO  MCPDATA-REC
                MOVE    "tbl_ptrsiinf"      TO  MCP-TABLE
                MOVE    "key"               TO  MCP-PATHNAME
@@ -1622,7 +1620,6 @@
        50032-SPA-NENREI-SEC             SECTION.
       *
            INITIALIZE                  ORCSAGECHKAREA
-      *****MOVE    SPA-HOSPID          TO  AGECHK-HOSPID
            MOVE    SPA-HOSPNUM         TO  AGECHK-HOSPNUM
            MOVE    PTINF-PTID          TO  AGECHK-PTID
            MOVE    SPA-SYSYMD          TO  AGECHK-SRYYMD
@@ -1630,6 +1627,7 @@
            MOVE    "2"                 TO  AGECHK-NYUGAIKBN
            CALL    "ORCSAGECHK"        USING
                                        ORCSAGECHKAREA
+                                       SPA-AREA
       *    画面表示用
            MOVE    SPACE               TO  WRK-NENREI-G
            IF      AGECHK-NENREI2-YY   =   ZERO
@@ -1763,12 +1761,11 @@
            PERFORM VARYING   IDX      FROM    1   BY  1
                    UNTIL     IDX          >   SPA-GMN-MAX(1)
                INITIALIZE                  UKETUKE-REC
-      *********MOVE    SPA-HOSPID          TO  UKE-HOSPID
+               MOVE    SPA-HOSPNUM         TO  UKE-HOSPNUM
                MOVE    SPA-SYSYMD          TO  UKE-UKEYMD
                MOVE    SPA-GMN-UKEID(1 IDX)
                                            TO  UKE-UKEID
       *
-               MOVE    SPA-HOSPNUM         TO  UKE-HOSPNUM
                MOVE    UKETUKE-REC         TO  MCPDATA-REC
                MOVE    "tbl_uketuke"       TO  MCP-TABLE
                MOVE    "key"               TO  MCP-PATHNAME
@@ -1786,15 +1783,13 @@
                PERFORM 990-DBCLOSE-SEC
                IF        FLG-UKETUKE       =   ZERO
                    MOVE    IDX                 TO  UKE-HYOJIJUN
-                   MOVE    SPA-HOSPNUM         TO  UKE-HOSPNUM
                    MOVE    UKETUKE-REC         TO  MCPDATA-REC
                    MOVE    "DBUPDATE"          TO  MCP-FUNC
                    MOVE    "tbl_uketuke"       TO  MCP-TABLE
                    MOVE    "key"               TO  MCP-PATHNAME
-                   CALL    "ORCDBMAIN"         USING
-                                                   MCPAREA
-                                                   MCPDATA-REC
-                                                   SPA-AREA
+grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
+                                                       MCPDATA-REC
+                                                       SPA-AREA
                END-IF
            END-PERFORM
            .
@@ -1825,7 +1820,6 @@
       *****************************************************************
        900-PTINF-READ-SEC         SECTION.
       *
-           MOVE    SPA-HOSPNUM         TO  PTINF-HOSPNUM
            MOVE    PTINF-REC           TO  MCPDATA-REC
            MOVE    "tbl_ptinf"         TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
@@ -1925,10 +1919,9 @@
        910-DBSELECT-SEC                SECTION.
       *
            MOVE    "DBSELECT"      TO  MCP-FUNC
-           CALL    "ORCDBMAIN"     USING
-                                       MCPAREA
-                                       MCPDATA-REC
-                                       SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
        910-DBSELECT-EXT.
@@ -1939,10 +1932,9 @@
        920-DBFETCH-SEC                 SECTION.
       *
            MOVE    "DBFETCH"       TO  MCP-FUNC
-           CALL    "ORCDBMAIN"     USING
-                                       MCPAREA
-                                       MCPDATA-REC
-                                       SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
       *
@@ -1955,10 +1947,9 @@
        990-DBCLOSE-SEC         SECTION.
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           CALL    "ORCDBMAIN"         USING
-                                           MCPAREA
-                                           MCPDATA-REC
-                                           SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
        990-DBCLOSE-EXT.
@@ -1970,10 +1961,9 @@
        900-PUT-WINDOW              SECTION.
       *
            MOVE   "PUTWINDOW"       TO  MCP-FUNC.
-           CALL   "ORCDBMAIN"       USING
-                                        MCPAREA
-                                        MCPDATA-REC
-                                        SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
        900-PUT-WINDOW-EXT.

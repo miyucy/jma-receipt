@@ -30,6 +30,7 @@
       * 01.00.01     NACL-多々納  03/11/06  出力先プリンタサブ追加
       *                                     出力先を予約一覧（７）へ
       * 01.00.01     NACL-多々納  05/12/07  MONFUNC対応
+      *  03.05.00    NACL-多々納  07/05/07  グループ診療対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -265,12 +266,11 @@
       *        患者番号変換
                IF      UKE-PTID        NOT =   ZERO
                    INITIALIZE                  ORCSPTIDAREA
-      *************MOVE    SPA-HOSPID      TO  SPTID-HOSPID
                    MOVE    SPA-HOSPNUM     TO  SPTID-HOSPNUM
                    MOVE    UKE-PTID        TO  SPTID-PTID
                    CALL    "ORCSPTID"          USING
                                                ORCSPTIDAREA
-                                               SPA-1009-TBL
+                                               SPA-AREA
                    IF      SPTID-RC    =   ZERO
                        MOVE    SPTID-PTNUM     TO  HCM16-PTNUM(CNT-LINE)
                    END-IF
@@ -501,9 +501,8 @@
        900-UKETUKE-SELECT-SEC      SECTION.
       *
            INITIALIZE                  UKETUKE-REC
-      *****MOVE    SPA-HOSPID      TO  UKE-HOSPID
-           MOVE    SPA-SYSYMD      TO  UKE-UKEYMD
            MOVE    SPA-HOSPNUM     TO  UKE-HOSPNUM
+           MOVE    SPA-SYSYMD      TO  UKE-UKEYMD
            MOVE    UKETUKE-REC     TO  MCPDATA-REC
       *
            MOVE    "tbl_uketuke"   TO  MCP-TABLE
@@ -561,10 +560,9 @@
        910-DBSELECT-SEC                SECTION.
       *
            MOVE    "DBSELECT"      TO  MCP-FUNC
-           CALL    "ORCDBMAIN"     USING
-                                       MCPAREA
-                                       MCPDATA-REC
-                                       SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
        910-DBSELECT-EXT.
@@ -575,10 +573,9 @@
        920-DBFETCH-SEC                 SECTION.
       *
            MOVE    "DBFETCH"       TO  MCP-FUNC
-           CALL    "ORCDBMAIN"     USING
-                                       MCPAREA
-                                       MCPDATA-REC
-                                       SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
       *
@@ -591,10 +588,9 @@
        990-DBCLOSE-SEC         SECTION.
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           CALL    "ORCDBMAIN"         USING
-                                           MCPAREA
-                                           MCPDATA-REC
-                                           SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
        990-DBCLOSE-EXT.
