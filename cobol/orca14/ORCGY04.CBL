@@ -26,6 +26,7 @@
       *  01.00.01    NACL-多々納  02/09/11  ドクター編集の修正
       *  01.00.02    NACL-多々納  03/03/07  ドクター件数の修正
       *  01.00.05    NACL-多々納  06/05/12  MONFUNC 対応
+      *  03.05.00    NACL-多々納  07/05/07  グループ診療対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -473,7 +474,7 @@
       *
       *        予約マスター検索
                INITIALIZE                  YYK-REC
-      *********MOVE    SPA-HOSPID          TO  YYK-HOSPID
+               MOVE    SPA-HOSPNUM         TO  YYK-HOSPNUM
                MOVE    SPA-GMN-SINRYOCD    TO  YYK-SRYNAIYO
                MOVE    SPA-NAI-DRNCD       TO  YYK-DRCD
                MOVE    SPA-NAI-YYKYMD(IDX) TO  YYK-YYKYMD
@@ -483,7 +484,6 @@
                ELSE
                    MOVE    "key3"          TO  WRK-PATH
                END-IF
-               MOVE    SPA-HOSPNUM         TO  YYK-HOSPNUM
                MOVE    YYK-REC             TO  MCPDATA-REC
                MOVE    "tbl_yyk"           TO  MCP-TABLE
                MOVE    WRK-PATH            TO  MCP-PATHNAME

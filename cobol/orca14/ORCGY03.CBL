@@ -34,6 +34,7 @@
       *  01.00.03    NACL-多々納  03/05/19  診療内容・ドクター選択追加
       *  01.00.04    NACL-多々納  03/12/02  前頁・次頁追加
       *  01.00.05    NACL-多々納  06/05/12  MONFUNC 対応
+      *  03.05.00    NACL-多々納  07/05/07  グループ診療対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -533,7 +534,7 @@
       *    予約一覧編集
            INITIALIZE                  YYK-KEY
            INITIALIZE                  YYK-REC
-      *****MOVE    SPA-HOSPID          TO  YYK-HOSPID
+           MOVE    SPA-HOSPNUM         TO  YYK-HOSPNUM
      ***** MOVE    SPA-Y01-YYKYMDS     TO  YYK-YYKYMD
            MOVE    SPA-NAI-SINYMD      TO  YYK-YYKYMD
            MOVE    SPA-GMN-SINRYOCD    TO  YYK-SRYNAIYO
@@ -545,7 +546,6 @@
                MOVE    "key3"              TO  WRK-PATH
            END-IF
       *
-           MOVE    SPA-HOSPNUM         TO  YYK-HOSPNUM
            MOVE    YYK-REC             TO  MCPDATA-REC
            MOVE    "tbl_yyk"           TO  MCP-TABLE
            MOVE    WRK-PATH            TO  MCP-PATHNAME
@@ -736,16 +736,11 @@
       *    患者番号変換より、患者IDより患者NOを取得する
       *
            INITIALIZE                      ORCSPTIDAREA
-      *----(01.00.01) LINE MOD START ---------------------------------
-      *    MOVE    ALL "1"             TO  SPTID-HOSPID
-      *****MOVE    SPA-HOSPID          TO  SPTID-HOSPID
-      *----(01.00.01) LINE MOD END ----------------------------------- 
+           MOVE    SPA-HOSPNUM         TO  SPTID-HOSPNUM
            MOVE    YYK-PTID            TO  SPTID-PTID
       *
            CALL    "ORCSPTID"          USING  ORCSPTIDAREA
-      *----(01.00.02) LINE ADD START ----------------------------------
-                                              SPA-1009-TBL
-      *----(01.00.02) LINE ADD END   ----------------------------------
+                                              SPA-AREA
            IF      SPTID-RC        NOT =   ZERO
                MOVE    SPACE           TO  WRK-PTNUM
            ELSE
