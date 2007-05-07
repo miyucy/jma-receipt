@@ -195,6 +195,7 @@
                    07  SPA-WRK-PTNUM       PIC X(20).
                    07  SPA-WRK-PTID        PIC 9(10).
                    07  SPA-WRK-NAME        PIC X(50).
+                   07  SPA-WRK-NENREI      PIC X(06).
                    07  SPA-WRK-NICKNAME    PIC X(50).
                    07  SPA-WRK-CONDITION   PIC X(06).
                    07  SPA-WRK-SRYKAMEI    PIC X(06).
