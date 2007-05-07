@@ -836,6 +836,7 @@
            MOVE    "1"                 TO  ORCSUSERCHK-SYORI
            CALL    "ORCSUSERCHK"       USING
                                        ORCSUSERCHKAREA
+                                       SPA-AREA
            MOVE    ORCSUSERCHK-GYOUMU-FLG  TO  SPA-NAI-GYOUMU-FLG
            MOVE    ORCSUSERCHK-GYOUMU-ARI  TO  SPA-NAI-GYOUMU-ARI
       *
@@ -4251,6 +4252,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE    SPA-SYORI-FLG       TO  ORCSUSERCHK-SYORI-FLG
                    CALL    "ORCSUSERCHK"       USING
                                                ORCSUSERCHKAREA
+                                               SPA-AREA
                END-IF
            END-IF
       *

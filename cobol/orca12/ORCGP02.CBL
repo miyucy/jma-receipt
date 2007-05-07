@@ -3642,6 +3642,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE    SPA-SYORI-FLG       TO  ORCSUSERCHK-SYORI-FLG
                    CALL    "ORCSUSERCHK"       USING
                                                ORCSUSERCHKAREA
+                                               SPA-AREA
                END-IF
            END-IF
       *
