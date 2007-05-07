@@ -851,6 +851,7 @@
                MOVE    SYS-KBNCD               TO  SYSUP-KBNCD
                MOVE    SPA-W01-SEL-STYUKYMD    TO  SYSUP-STYUKYMD
                MOVE    SPA-W01-SEL-EDYUKYMD    TO  SYSUP-EDYUKYMD
+               MOVE    SPA-HOSPNUM             TO  SYSUP-HOSPNUM
                MOVE    "SYSKANRI-UPD1"         TO  ORC-DBPATH
                MOVE    "DBUPDATE"              TO  MCP-FUNC
            ELSE

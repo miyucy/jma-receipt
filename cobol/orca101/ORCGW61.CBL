@@ -2220,6 +2220,7 @@
                                                TO  SYSUP-STYUKYMD
                    MOVE    SPA-NAI-TEDYUKYMD (SPA-NAI-SELNUM)
                                                TO  SYSUP-EDYUKYMD
+                   MOVE    SPA-HOSPNUM         TO  SYSUP-HOSPNUM
                    MOVE    SMCNDATE-YMD        TO  SYS-UPYMD
                    MOVE    SMCNDATE-HMS        TO  SYS-UPHMS
                    MOVE    "DBUPDATE"          TO  MCP-FUNC

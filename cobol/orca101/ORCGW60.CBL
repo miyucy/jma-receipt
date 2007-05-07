@@ -1347,7 +1347,7 @@
                PERFORM 800-MCNDATE-SEC
                MOVE    SMCNDATE-YMD            TO  SYS-UPYMD
                MOVE    SMCNDATE-HMS            TO  SYS-UPHMS
-               MOVE    SPA-HOSPNUM             TO  SYS-HOSPNUM
+               MOVE    SPA-HOSPNUM             TO  SYSUP-HOSPNUM
                MOVE    SYSKANRI-REC            TO  MCPDATA-REC
                MOVE    "tbl_syskanri"          TO  MCP-TABLE
                MOVE    "upd1"                  TO  MCP-PATHNAME

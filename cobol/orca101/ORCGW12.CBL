@@ -4279,6 +4279,7 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
                MOVE    SYS-KBNCD               TO  SYSUP-KBNCD
                MOVE    SPA-W01-SEL-STYUKYMD    TO  SYSUP-STYUKYMD
                MOVE    SPA-W01-SEL-EDYUKYMD    TO  SYSUP-EDYUKYMD
+               MOVE    SPA-HOSPNUM             TO  SYSUP-HOSPNUM
                MOVE    "tbl_syskanri"          TO  MCP-TABLE
                MOVE    "upd1"                  TO  MCP-PATHNAME
                MOVE    "DBUPDATE"              TO  MCP-FUNC
@@ -4347,6 +4348,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                            TO  SYSUP-STYUKYMD
                MOVE    SPA-W01-SEL-EDYUKYMD
                                            TO  SYSUP-EDYUKYMD
+               MOVE    SPA-HOSPNUM         TO  SYSUP-HOSPNUM
                MOVE    "tbl_syskanri"      TO  MCP-TABLE
                MOVE    "upd1"              TO  MCP-PATHNAME
                MOVE    "DBUPDATE"          TO  MCP-FUNC

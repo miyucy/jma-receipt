@@ -3353,6 +3353,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            END-EVALUATE 
       *     
            IF      FLG-SYSKANRI            =   ZERO
+               MOVE    SPA-HOSPNUM             TO  SYSUP-HOSPNUM
                MOVE    SYS-KANRICD             TO  SYSUP-KANRICD
                MOVE    SYS-KBNCD               TO  SYSUP-KBNCD
                MOVE    SPA-W01-SEL-STYUKYMD    TO  SYSUP-STYUKYMD

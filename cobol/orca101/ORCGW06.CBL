@@ -1278,6 +1278,7 @@
       *
                PERFORM VARYING IDX FROM    1   BY  1
                        UNTIL   IDX >       5
+                   MOVE    SPACE           TO  SPA-GMN-SEMONKACD-G (IDX)
                    MOVE    SYS-1010-SEMONKACD (IDX)
                                            TO  SPA-GMN-SEMONKACD (IDX)
                    PERFORM VARYING     IDY     FROM    1   BY  1
@@ -2643,6 +2644,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    SMCNDATE-HMS        TO  SYS-1010-UPHMS
                MOVE    SYS-1010-REC        TO  SYSKANRI-REC
       *
+               MOVE    SPA-HOSPNUM         TO  SYSUP-HOSPNUM
                MOVE    SYS-KANRICD         TO  SYSUP-KANRICD
                MOVE    SYS-KBNCD           TO  SYSUP-KBNCD
                MOVE    SPA-MAE-STYUKYMD    TO  SYSUP-STYUKYMD

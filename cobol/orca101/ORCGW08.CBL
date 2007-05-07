@@ -518,6 +518,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    SYS-KBNCD               TO  SYSUP-KBNCD
                MOVE    SPA-W01-SEL-STYUKYMD    TO  SYSUP-STYUKYMD
                MOVE    SPA-W01-SEL-EDYUKYMD    TO  SYSUP-EDYUKYMD
+               MOVE    SPA-HOSPNUM             TO  SYSUP-HOSPNUM
       *
                MOVE    SPA-HOSPNUM         TO  SYS-HOSPNUM
                MOVE    SYSKANRI-REC        TO  MCPDATA-REC

@@ -844,6 +844,7 @@
                MOVE    SYS-KBNCD               TO  SYSUP-KBNCD
                MOVE    SPA-W01-STYUKYMD        TO  SYSUP-STYUKYMD
                MOVE    SPA-W01-EDYUKYMD        TO  SYSUP-EDYUKYMD
+               MOVE    SPA-HOSPNUM             TO  SYSUP-HOSPNUM
                MOVE    "tbl_syskanri"          TO  MCP-TABLE
                MOVE    "key"                   TO  MCP-PATHNAME
                MOVE    "DBUPDATE"              TO  MCP-FUNC

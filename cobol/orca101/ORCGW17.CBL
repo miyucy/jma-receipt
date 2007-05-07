@@ -1168,6 +1168,7 @@
            MOVE    SPA-MOT-KOHCD   TO  SYSUP-KBNCD
            MOVE    SPA-MOT-STYMD   TO  SYSUP-STYUKYMD
            MOVE    SPA-MOT-EDYMD   TO  SYSUP-EDYUKYMD
+           MOVE    SPA-HOSPNUM     TO  SYSUP-HOSPNUM
       *
       *    チェック排除情報マスタ更新
            MOVE    SPA-HOSPNUM         TO  SYS-HOSPNUM

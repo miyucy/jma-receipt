@@ -693,6 +693,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SYS-1005-REC            TO  SYSKANRI-REC
       *     
            IF      FLG-SYSKANRI            =   ZERO
+               MOVE    SPA-HOSPNUM             TO  SYSUP-HOSPNUM
                MOVE    SYS-KANRICD             TO  SYSUP-KANRICD
                MOVE    SYS-KBNCD               TO  SYSUP-KBNCD
                MOVE    SPA-W01-SEL-STYUKYMD    TO  SYSUP-STYUKYMD
@@ -705,13 +706,15 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    "tbl_syskanri"          TO  MCP-TABLE
                MOVE    "key"                   TO  MCP-PATHNAME
            END-IF
-           MOVE    SPA-HOSPNUM         TO  SYS-1005-HOSPNUM
-           MOVE    SYSKANRI-REC            TO  MCPDATA-REC
+           MOVE    SPA-HOSPNUM         TO  SYS-HOSPNUM
+           MOVE    SYSKANRI-REC        TO  MCPDATA-REC
 grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                                MCPDATA-REC
                                                SPA-AREA
            IF      MCP-RC              NOT =   ZERO 
                MOVE    "1003"                  TO  SPA-ERRCD
+               DISPLAY "W05 UPDATE ERR:" SYS-KEY
+                  ",MCP-RC:" MCP-RC "@"
                GO  TO  490-KOUSHIN-EXT
            END-IF      
       *
