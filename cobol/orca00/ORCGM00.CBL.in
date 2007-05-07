@@ -356,10 +356,6 @@
       *---- (01.00.04) LINE ADD END   --------------------------------
       *
            INITIALIZE              SPA-AREA
-      *    医療機関識別番号セット SPA-HOSPNUM
-           CALL    "ORCSHOSPNUM"   USING
-                                       MCPAREA
-                                       SPA-AREA
       *    システム日付セット
            ACCEPT  SYS-YMD         FROM    DATE
            COMPUTE WRK-SYSYY       =   SYS-YY      +   2000
@@ -402,6 +398,11 @@
       *---- (01.00.04) LINE ADD START --------------------------------
            END-IF
       *---- (01.00.04) LINE ADD END   --------------------------------
+
+      *    医療機関識別番号セット SPA-HOSPNUM
+           CALL    "ORCSHOSPNUM"   USING
+                                       MCPAREA
+                                       SPA-AREA
       *
       *    医療機関ＩＤ編集
            MOVE    SPACE               TO  SYS-1001-REC
