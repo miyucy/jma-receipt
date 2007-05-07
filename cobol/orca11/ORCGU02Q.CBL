@@ -27,6 +27,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  03.05.00    NACL-多々納  07/05/07  グループ診療対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -279,7 +280,7 @@
            INITIALIZE                      SPA-U02Q-QRLIST
       *
            INITIALIZE                      QRCDHKN-REC
-           MOVE    SPA-HOSPID          TO  QRCDHKN-HOSPID
+           MOVE    SPA-HOSPNUM         TO  QRCDHKN-HOSPNUM
            MOVE    SPA-SYSYMD          TO  QRCDHKN-REGISTYMD
            MOVE    QRCDHKN-REC         TO  MCPDATA-REC
            MOVE    "tbl_qrcdhkn"       TO  MCP-TABLE
@@ -326,7 +327,7 @@
            PERFORM 300111-PTNUM-HEN-SEC
       *    患者情報
            INITIALIZE                      PTINF-REC
-           MOVE    SPA-HOSPID          TO  PTINF-HOSPID
+           MOVE    SPA-HOSPNUM         TO  PTINF-HOSPNUM
            MOVE    QRCDHKN-PTID        TO  PTINF-PTID
       *
            MOVE    PTINF-REC           TO  MCPDATA-REC
@@ -384,7 +385,7 @@
        30009-QRCDHKN-CR-SEC              SECTION.
       *
            INITIALIZE                      QRCDHKN-REC
-           MOVE    SPA-HOSPID          TO  QRCDHKN-HOSPID
+           MOVE    SPA-HOSPNUM         TO  QRCDHKN-HOSPNUM
            MOVE    SPA-SYSYMD          TO  QRCDHKN-REGISTYMD
            MOVE    SPA-U02Q-REGISTID   TO  QRCDHKN-REGISTID
            MOVE    QRCDHKN-REC         TO  MCPDATA-REC
@@ -410,9 +411,9 @@
                MOVE    "DBUPDATE"          TO  MCP-FUNC
                MOVE    "tbl_qrcdhkn"       TO  MCP-TABLE
                MOVE    "key"               TO  MCP-PATHNAME
-               CALL    "MONFUNC"           USING
-                                           MCPAREA
-                                           MCPDATA-REC
+grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
+                                                   MCPDATA-REC
+                                                   SPA-AREA
                IF      MCP-RC          NOT =   ZERO 
                    MOVE    "1001"              TO  SPA-ERRCD
                    DISPLAY "U02Q QRCDHKN KEY UPD ERR:"  MCP-RC
@@ -429,11 +430,11 @@
       *
       *    患者番号変換(管理）を検索し、患者IDより患者NOを取得
            INITIALIZE                      ORCSPTIDAREA
-           MOVE    SPA-HOSPID          TO  SPTID-HOSPID
+           MOVE    SPA-HOSPNUM         TO  SPTID-HOSPNUM
            MOVE    QRCDHKN-PTID        TO  SPTID-PTID
            CALL    "ORCSPTID"          USING
                                            ORCSPTIDAREA
-                                           SPA-1009-TBL
+                                           SPA-AREA
            IF      SPTID-RC            =   ZERO
                MOVE    SPTID-PTNUM     TO  SPA-U02Q-TPTNUM (IDX)
                MOVE    QRCDHKN-PTID    TO  SPA-U02Q-TPTID  (IDX)
@@ -449,7 +450,7 @@
       *
       *    保険情報検索
            INITIALIZE                  PTHKNINF-REC
-           MOVE    SPA-HOSPID          TO  PTHKN-HOSPID
+           MOVE    SPA-HOSPNUM         TO  PTHKN-HOSPNUM
            MOVE    QRCDHKN-PTID        TO  PTHKN-PTID
       *
            MOVE    PTHKNINF-REC        TO  MCPDATA-REC
@@ -501,7 +502,7 @@
       *
       *    保険情報
            MOVE    SPACE               TO  HKNNUM-REC
-           MOVE    SPA-HOSPID          TO  HKN-HOSPID
+           MOVE    SPA-HOSPNUM         TO  HKN-HOSPNUM
            MOVE    SPA-U02Q-THKNNUM(IDX)
                                        TO  HKN-HKNNUM
            MOVE    "00"                TO  HKN-PAYKBN 
@@ -731,7 +732,7 @@
                                            TO  SPA-U02Q-REGISTID
       *
            INITIALIZE                      QRCDHKN-REC
-           MOVE    SPA-HOSPID          TO  QRCDHKN-HOSPID
+           MOVE    SPA-HOSPNUM         TO  QRCDHKN-HOSPNUM
            MOVE    SPA-SYSYMD          TO  QRCDHKN-REGISTYMD
            MOVE    SPA-U02Q-REGISTID   TO  QRCDHKN-REGISTID
            MOVE    QRCDHKN-REC         TO  MCPDATA-REC
@@ -763,9 +764,9 @@
                MOVE    "DBUPDATE"          TO  MCP-FUNC
                MOVE    "tbl_qrcdhkn"       TO  MCP-TABLE
                MOVE    "key"               TO  MCP-PATHNAME
-               CALL    "MONFUNC"           USING
-                                           MCPAREA
-                                           MCPDATA-REC
+grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
+                                                   MCPDATA-REC
+                                                   SPA-AREA
                IF      MCP-RC          NOT =   ZERO 
                    MOVE    "1001"              TO  SPA-ERRCD
                    DISPLAY "U02Q QRCDHKN KEY UPD ERR:"  MCP-RC
@@ -929,9 +930,9 @@
        910-DBSELECT-SEC                SECTION.
       *
            MOVE    "DBSELECT"      TO  MCP-FUNC
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
        910-DBSELECT-EXT.
@@ -942,9 +943,9 @@
        920-DBFETCH-SEC                 SECTION.
       *
            MOVE    "DBFETCH"       TO  MCP-FUNC
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
       *
@@ -957,9 +958,9 @@
        990-DBCLOSE-SEC         SECTION.
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
        990-DBCLOSE-EXT.
@@ -971,9 +972,9 @@
        900-PUT-WINDOW              SECTION.
       *
            MOVE   "PUTWINDOW"       TO  MCP-FUNC.
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
        900-PUT-WINDOW-EXT.

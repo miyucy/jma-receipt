@@ -21,6 +21,7 @@
       *****************************************************************
       *  ¥×¥í¥°¥é¥à½¤ÀµÍúÎò
       * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      *  03.04.00    NACL-Â¿¡¹Ç¼  07/02/19  £Ñ£Ò¼õÉÕÂÐ±þ
       *****************************************************************
        01  SPA-U02.
            03  SPA-U02-AREA.
@@ -74,6 +75,7 @@
                            11  SPA-GMN-KOH4-TANSEIDONAME  PIC X(12).
       *
                            11  SPA-NAI-HKNNUM             PIC X(03).
+                           11  SPA-NAI-COB-HKNID          PIC 9(10).
       *
                        09  SPA-COMBI-MAX                   PIC 9(04).
       *
@@ -208,4 +210,33 @@
       *
       *Ìá¤êÀè
            03  SPA-HZN-MOTOPG          PIC X(08).
+      *    £Ñ£Ò¥Ç¡¼¥¿Í­Ìµ
+           03  SPA-QRFLG               PIC 9(01).
+      *
+      *    £Ñ£Ò²èÌÌ¡Ê£Õ£°£²£Ñ¡Ë
+           03  SPA-U02Q-AREA.
+               05  SPA-U02Q-CUR                    PIC 9(02).
+      *
+               05  SPA-U02Q-SELNUM                 PIC 9(03).
+               05  SPA-U02Q-QRLIST.
+                   07  SPA-U02Q-QRLIST-T           OCCURS  50.
+                       09  SPA-U02Q-TNUM           PIC 9(03).
+                       09  SPA-U02Q-TPTNUM         PIC X(20).
+                       09  SPA-U02Q-TNAME          PIC X(50).
+                       09  SPA-U02Q-TBIRTHDAY      PIC X(10).
+                       09  SPA-U02Q-TSEX           PIC X(02).
+                       09  SPA-U02Q-THKNNUMMEI     PIC X(20).
+                       09  SPA-U02Q-TTIME          PIC X(05).
+      *
+                       09  SPA-U02Q-TREGISTID      PIC 9(05).
+                       09  SPA-U02Q-TPTID          PIC 9(10).
+                       09  SPA-U02Q-THKNNUM        PIC X(03).
+                       09  SPA-U02Q-THKNID         PIC 9(10).
+                   07  SPA-U02Q-MAX                PIC 9(04).
+      *
+               05  SPA-U02Q-DATA-G.
+                   07  SPA-U02Q-REGISTID           PIC 9(05).
+                   07  SPA-U02Q-PTNUM              PIC X(20).
+                   07  SPA-U02Q-PTID               PIC 9(10).
+                   07  SPA-U02Q-HKNID              PIC 9(10).
       *

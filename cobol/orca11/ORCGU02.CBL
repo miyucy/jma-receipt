@@ -67,6 +67,8 @@
       *  02.00.16    NACL-多々納  05/12/07  年齢追加、警告追加
       *  02.00.17    NACL−多々納 06/08/16  当日担当医設定追加
       *  03.02.00    NACL−多々納 06/08/30  老人警告追加
+      *  03.04.00    NACL-多々納  07/02/19  ＱＲ受付対応
+      *  03.05.00    NACL-多々納  07/05/07  グループ診療対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -111,6 +113,7 @@
            03  FLG-HKNNUM              PIC 9(01).
            03  FLG-PTRSIINF            PIC 9(01).
            03  FLG-SRYKARRK            PIC 9(01).
+           03  FLG-QRCDHKN         PIC 9(01).
       *
            03  FLG-HENFLG              PIC 9(01).
            03  FLG-TOUROKU             PIC 9(01).
@@ -147,12 +150,14 @@
        01  FILE-NAME1.
            03  FILLER              PIC X(09)   VALUE   "/var/tmp/".
            03  FILLER              PIC X(09)   VALUE   "K02SPASCR".
+           03  FILE-HOSPNUM1       PIC 9(02)   VALUE   ZERO.
            03  FILE-TERMID1        PIC X(64)   VALUE   SPACE.
            03  FILLER              PIC X(04)   VALUE   ".TXT".
       *    診療行為パラメタファイル名
        01  FILE-NAME2.
            03  FILLER              PIC X(09)   VALUE   "/var/tmp/".
            03  FILLER              PIC X(07)   VALUE   "K01PARA".
+           03  FILE-HOSPNUM2       PIC 9(02)   VALUE   ZERO.
            03  FILE-TERMID2        PIC X(64)   VALUE   SPACE.
            03  FILLER              PIC X(06)   VALUE   ".TXT".
       *
@@ -245,6 +250,12 @@
       *
            03  WORK-SORT                               PIC X(100).
       *
+           03  WRK-U02Q-DATA-G.
+               05  WRK-U02Q-REGISTID           PIC 9(05).
+               05  WRK-U02Q-PTNUM              PIC X(20).
+               05  WRK-U02Q-PTID               PIC 9(10).
+               05  WRK-U02Q-HKNID              PIC 9(10).
+      *
        01  WRK-HENSYU-AREA.
            03  WRK-HENYMDG                  PIC X(09).
            03  WRK-HENYMD.
@@ -336,6 +347,10 @@
        01  SRYKARRK-REC.
            COPY    "CPSRYKARRK.INC".
       *
+      *    QRコード(被保険者証)
+       01  QRCDHKN-REC.
+           COPY    "CPQRCDHKN.INC".
+      *
       *
       *****************************************************************
       *    サブプロ用領域
@@ -400,6 +415,7 @@
       *
        01  SCRAREA.
            COPY    "U02.INC".
+           COPY    "U02Q.INC".
            COPY    "U02X.INC".
            COPY    "U2ERR.INC".
       *
@@ -526,12 +542,16 @@
                        PERFORM 3009-CLAIM-SYORI-SEC
                    END-IF
                    GO      TO                  300-SCREEN-EXT
-           END-EVALUATE
-      *
-           PERFORM 310-SPASET-SEC
-      *
-           EVALUATE    SPA-MOTOPG
+               WHEN    "U02Q"
+      *        ＱＲ一覧画面より
+                   IF      SPA-U02Q-REGISTID   NOT =   ZERO
+                       PERFORM 30010-QRHKN-UKETUKE-SEC
+                   ELSE
+                       MOVE    1                   TO  SPA-GMN-CUR
+                   END-IF
                WHEN    "P02"
+      *            患者登録画面より
+                   PERFORM 310-SPASET-SEC
                    IF     (SPA-ERRMSG(1:2)    =   "NO"  )  AND
                           (SPA-PTNUM(1:1)     =   "*"   )
                        MOVE    SPACE              TO  SPA-PTNUM
@@ -551,10 +571,16 @@
                            MOVE    4                   TO  SPA-GMN-CUR
                        END-IF
                    END-IF
+                   IF      SPA-MOTOPG(1:3)     =   "K02"
+                       MOVE    SPA-MOTOPG          TO  SPA-HZN-MOTOPG
+                   END-IF
+      *
+               WHEN    OTHER
+                   PERFORM 310-SPASET-SEC
+                   IF      SPA-MOTOPG(1:3)     =   "K02"
+                       MOVE    SPA-MOTOPG          TO  SPA-HZN-MOTOPG
+                   END-IF
            END-EVALUATE
-           IF      SPA-MOTOPG(1:3)     =   "K02"
-               MOVE    SPA-MOTOPG          TO  SPA-HZN-MOTOPG
-           END-IF
       *
            .
        300-SCREEN-EXT.
@@ -607,6 +633,66 @@
            END-IF
            .
        3101-U01SPASET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ＱＲより受付処理
+      *****************************************************************
+       30010-QRHKN-UKETUKE-SEC              SECTION.
+      *
+           MOVE    SPA-U02Q-DATA-G     TO  WRK-U02Q-DATA-G
+      *
+           MOVE    SPA-U02Q-PTNUM      TO  SPA-GMN-PTNUM
+           MOVE    SPA-U02Q-PTNUM      TO  U02-PTNUM
+           MOVE    1                   TO  FLG-IN-PTNUM
+           PERFORM 4101-PTNUM-CHK-SEC
+           MOVE    WRK-U02Q-DATA-G     TO  SPA-U02Q-DATA-G
+      *
+      *    選択の保険を含む保険組合せを選択とする
+           MOVE    ZERO                TO  WRK-IDXH
+           MOVE    ZERO                TO  WRK-CNT-HKN
+           MOVE    ZERO                TO  WRK-CNT-HKN2
+           PERFORM VARYING     IDX-C   FROM    1   BY  1
+                   UNTIL       IDX-C   >   SPA-COMBI-MAX
+               IF      SPA-NAI-COB-HKNID (IDX-C)   =   WRK-U02Q-HKNID
+                   MOVE    SPA-GMN-HKNCOMBINUM (IDX-C)
+                                               TO  SPA-GMN-COMBINUM
+                   IF      WRK-IDXH            =   ZERO
+                       MOVE    IDX-C               TO  WRK-IDXH
+                   END-IF
+                   MOVE    ZERO                TO  WRK-CNT-HKN2
+                   IF      SPA-GMN-KOH1-TANSEIDONAME(IDX-C)
+                                               NOT =   SPACE
+                       ADD     1               TO  WRK-CNT-HKN2
+                   END-IF
+                   IF      SPA-GMN-KOH2-TANSEIDONAME(IDX-C)
+                                               NOT =   SPACE
+                       ADD     1               TO  WRK-CNT-HKN2
+                   END-IF
+                   IF      SPA-GMN-KOH3-TANSEIDONAME(IDX-C)
+                                               NOT =   SPACE
+                       ADD     1               TO  WRK-CNT-HKN2
+                   END-IF
+                   IF      SPA-GMN-KOH4-TANSEIDONAME(IDX-C)
+                                               NOT =   SPACE
+                       ADD     1               TO  WRK-CNT-HKN2
+                   END-IF
+                   IF      WRK-CNT-HKN         <=  WRK-CNT-HKN2
+                       MOVE    IDX-C               TO  WRK-IDXH
+                       MOVE    WRK-CNT-HKN2        TO  WRK-CNT-HKN
+                   END-IF
+             END-IF
+           END-PERFORM
+      *
+           IF      WRK-IDXH            =   ZERO
+               MOVE    1               TO  IDX-C
+           ELSE
+               MOVE    WRK-IDXH        TO  IDX-C
+           END-IF
+           MOVE    SPA-GMN-HKNCOMBINUM (IDX-C)
+                                       TO  SPA-GMN-COMBINUM
+           .
+       30010-QRHKN-UKETUKE-EXT.
            EXIT.
       *
       *****************************************************************
@@ -768,9 +854,42 @@
                MOVE    1                   TO  SPA-USERPG-MAX
                MOVE    SPA-GMN-USERPGLST (1)   TO  SPA-GMN-USERPG-G
            END-IF
+      *    ＱＲデータ判定
+           PERFORM 3101-QRDATA-CHK-SEC
       *
            .
        310-SPASET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ＱＲデータ処理
+      *****************************************************************
+       3101-QRDATA-CHK-SEC              SECTION.
+      *
+           INITIALIZE                      QRCDHKN-REC
+           MOVE    SPA-HOSPNUM         TO  QRCDHKN-HOSPNUM
+           MOVE    QRCDHKN-REC         TO  MCPDATA-REC
+           MOVE    "tbl_qrcdhkn"       TO  MCP-TABLE
+           MOVE    "key5"              TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_qrcdhkn"       TO  MCP-TABLE
+               MOVE    "key5"              TO  MCP-PATHNAME
+               PERFORM 900-QRCDHKN-READ-SEC
+           ELSE
+               MOVE    1                   TO  FLG-QRCDHKN
+               INITIALIZE                      QRCDHKN-REC
+           END-IF
+           MOVE    "tbl_qrcdhkn"       TO  MCP-TABLE
+           MOVE    "key5"              TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+           IF      FLG-QRCDHKN         =   ZERO
+               MOVE    1                   TO  SPA-QRFLG
+           ELSE
+               MOVE    ZERO                TO  SPA-QRFLG
+           END-IF
+           .
+       3101-QRDATA-CHK-EXT.
            EXIT.
       *****************************************************************
       *    予約，受付編集処理
@@ -785,10 +904,9 @@
       *
       *    予約マスター読み込み
            INITIALIZE                  YYK-REC
-      *****MOVE    SPA-HOSPID          TO  YYK-HOSPID
+           MOVE    SPA-HOSPNUM         TO  YYK-HOSPNUM
            MOVE    SPA-SYSYMD          TO  YYK-YYKYMD
       *
-           MOVE    SPA-HOSPNUM         TO  YYK-HOSPNUM
            MOVE    YYK-REC             TO  MCPDATA-REC
            MOVE    "tbl_yyk"           TO  MCP-TABLE
            MOVE    "key5"              TO  MCP-PATHNAME
@@ -826,9 +944,8 @@
       *
       *    受付テーブル読み込み
            INITIALIZE                  UKETUKE-REC
-      *****MOVE    SPA-HOSPID          TO  UKE-HOSPID
-           MOVE    SPA-SYSYMD          TO  UKE-UKEYMD
            MOVE    SPA-HOSPNUM         TO  UKE-HOSPNUM
+           MOVE    SPA-SYSYMD          TO  UKE-UKEYMD
            MOVE    UKETUKE-REC         TO  MCPDATA-REC
            MOVE    "tbl_uketuke"       TO  MCP-TABLE
            MOVE    "key3"              TO  MCP-PATHNAME
@@ -873,7 +990,7 @@
                               (UKE-NAME          =   SPACE )
       *
       *    患者マスター存在チェック
-      *********************MOVE    SPA-HOSPID          TO  PTINF-HOSPID
+                           MOVE    SPA-HOSPNUM         TO  PTINF-HOSPNUM
                            MOVE    UKE-PTID            TO  PTINF-PTID
                            PERFORM 900-PTINF-READ-SEC
                            IF      FLG-PTINF       =   ZERO
@@ -882,13 +999,11 @@
                                MOVE    PTINF-NAME
                                                TO  UKE-NAME
       *
-                               MOVE    SPA-HOSPNUM     TO  PTINF-HOSPNUM
                                MOVE    UKETUKE-REC     TO  MCPDATA-REC
                                MOVE    "tbl_uketuke"   TO  MCP-TABLE
                                MOVE    "key"           TO  MCP-PATHNAME
                                MOVE    "DBUPDATE"      TO  MCP-FUNC
-                               CALL    "ORCDBMAIN"     USING
-                                                           MCPAREA
+grpsys                         CALL    "ORCDBMAIN"     USING   MCPAREA
                                                            MCPDATA-REC
                                                            SPA-AREA
                            END-IF
@@ -903,7 +1018,6 @@
            MOVE    "tbl_uketuke"       TO  MCP-TABLE
            MOVE    "key3"              TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
-      *
       *
            PERFORM  31012-SORT-SEC
       *
@@ -943,11 +1057,11 @@
                    MOVE    SPACE               TO  SPA-GMN-TPTNUM(IDX)
                ELSE
                    INITIALIZE                  ORCSPTIDAREA
-      *************MOVE    SPA-HOSPID          TO  SPTID-HOSPID
+                   MOVE    SPA-HOSPNUM         TO  SPTID-HOSPNUM
                    MOVE    SPA-GMN-TPTID(IDX)  TO  SPTID-PTID
                    CALL    "ORCSPTID"          USING   ORCSPTIDAREA
       *----(01.02.02) LINE ADD START ----------------------------------
-                                                       SPA-1009-TBL
+                                                       SPA-AREA
       *----(01.02.02) LINE ADD END   ----------------------------------
                    IF      SPTID-RC            =   ZERO
                        MOVE    SPTID-PTNUM     TO  SPA-GMN-TPTNUM(IDX)
@@ -1049,9 +1163,8 @@
        31019-JYURRK-HEN-SEC            SECTION.
       *    最終受診日セット
            INITIALIZE                  JYURRK-REC
-      *****MOVE    SPA-HOSPID          TO  JYURRK-HOSPID
-           MOVE    SPA-GMN-TPTID (IDX) TO  JYURRK-PTID
            MOVE    SPA-HOSPNUM         TO  JYURRK-HOSPNUM
+           MOVE    SPA-GMN-TPTID (IDX) TO  JYURRK-PTID
            MOVE    JYURRK-REC          TO  MCPDATA-REC
            MOVE    "tbl_jyurrk"        TO  MCP-TABLE
            MOVE    "key8"              TO  MCP-PATHNAME
@@ -1091,10 +1204,9 @@
       *
            MOVE    SPACE               TO  SRYKARRK-REC
            INITIALIZE                  SRYKARRK-REC
-      *****MOVE    SPA-HOSPID          TO  KARRK-HOSPID
+           MOVE    SPA-HOSPNUM         TO  KARRK-HOSPNUM
            MOVE    SPA-GMN-TPTID (IDX) TO  KARRK-PTID
       *
-           MOVE    SPA-HOSPNUM         TO  KARRK-HOSPNUM
            MOVE    SRYKARRK-REC        TO  MCPDATA-REC
            MOVE    "tbl_srykarrk"      TO  MCP-TABLE
            MOVE    "key4"              TO  MCP-PATHNAME
@@ -1131,13 +1243,14 @@
        31020-NENREI-KEI-SEC            SECTION.
       *
            INITIALIZE                  ORCSAGECHKAREA
-      *****MOVE    SPA-HOSPID          TO  AGECHK-HOSPID
+           MOVE    SPA-HOSPNUM         TO  AGECHK-HOSPNUM
            MOVE    SPA-GMN-TPTID (IDX) TO  AGECHK-PTID
            MOVE    SPA-SYSYMD          TO  AGECHK-SRYYMD
            MOVE    SPACE               TO  AGECHK-BIRTHDAY
            MOVE    "2"                 TO  AGECHK-NYUGAIKBN
            CALL    "ORCSAGECHK"        USING
                                        ORCSAGECHKAREA
+                                       SPA-AREA
       *    画面表示用
            MOVE    SPACE               TO  WRK-NENREI-G
            IF      AGECHK-NENREI2-YY   =   ZERO
@@ -1158,11 +1271,10 @@
        31013-HKNCOMBI-HEN-SEC              SECTION.
       *
            INITIALIZE                  HKNCOMBI-REC
-      *****MOVE    SPA-HOSPID          TO  COMB-HOSPID
+           MOVE    SPA-HOSPNUM         TO  COMB-HOSPNUM
            MOVE    SPA-GMN-TPTID (IDX) TO  COMB-PTID
            MOVE    SPA-GMN-THKNCOMBI(IDX)
                                        TO  COMB-HKNCOMBINUM
-           MOVE    SPA-HOSPNUM         TO  COMB-HOSPNUM
            MOVE    HKNCOMBI-REC        TO  MCPDATA-REC
            MOVE    "tbl_hkncombi"      TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
@@ -1225,10 +1337,9 @@
            IF      COMB-HKNNUM         =   "971"  OR  "973"
       *        患者保険情報検索
                INITIALIZE                      PTRSIINF-REC
-      *********MOVE    SPA-HOSPID          TO  PTRSI-HOSPID
+               MOVE    SPA-HOSPNUM         TO  PTRSI-HOSPNUM
                MOVE    SPA-PTID            TO  PTRSI-PTID
                MOVE    COMB-HKNID          TO  PTRSI-HKNID
-               MOVE    SPA-HOSPNUM         TO  PTRSI-HOSPNUM
                MOVE    PTRSIINF-REC        TO  MCPDATA-REC
                MOVE    "DBSELECT"          TO  MCP-FUNC
                MOVE    "tbl_ptrsiinf"      TO  MCP-TABLE
@@ -1363,6 +1474,9 @@
       *    次（↓）
                WHEN    "CLICKED"       ALSO    "B07S"
                    PERFORM 475-DOWN-SYORI-SEC
+      *    ＱＲ一覧へ
+               WHEN    "CLICKED"       ALSO    "B10S"
+                   PERFORM 4105-U02Q-SYORI-SEC
       *    保険チェック
                WHEN    "CLICKED"       ALSO    "BHK1"
                WHEN    "CLICKED"       ALSO    "BHK2"
@@ -1556,10 +1670,10 @@
       *
       *    患者ＩＤ読み出し
            INITIALIZE                  ORCSPTIDAREA
-      *****MOVE    SPA-HOSPID          TO  SPTID-HOSPID
+           MOVE    SPA-HOSPNUM         TO  SPTID-HOSPNUM
            MOVE    SPA-GMN-PTNUM       TO  SPTID-PTNUM
            CALL    "ORCSPTID"          USING   ORCSPTIDAREA
-                                               SPA-1009-TBL
+                                               SPA-AREA
            IF      SPTID-RC        NOT =   ZERO
                MOVE    "0002"              TO  SPA-ERRCD
                MOVE    2                   TO  SPA-GMN-CUR
@@ -1569,7 +1683,7 @@
            MOVE    SPTID-PTID          TO  SPA-GMN-PTID
       *
       *    患者マスター存在チェック
-      *****MOVE    SPA-HOSPID          TO  PTINF-HOSPID
+           MOVE    SPA-HOSPNUM         TO  PTINF-HOSPNUM
            MOVE    SPA-GMN-PTID        TO  PTINF-PTID
            PERFORM 900-PTINF-READ-SEC
            IF      FLG-PTINF           NOT =   ZERO
@@ -1622,13 +1736,14 @@
        41011-NENREI-SET-SEC            SECTION.
       *
            INITIALIZE                  ORCSAGECHKAREA
-      *****MOVE    SPA-HOSPID          TO  AGECHK-HOSPID
+           MOVE    SPA-HOSPNUM         TO  AGECHK-HOSPNUM
            MOVE    SPA-GMN-PTID        TO  AGECHK-PTID
            MOVE    SPA-SYSYMD          TO  AGECHK-SRYYMD
            MOVE    SPA-NAI-BIRTHDAY    TO  AGECHK-BIRTHDAY
            MOVE    "2"                 TO  AGECHK-NYUGAIKBN
            CALL    "ORCSAGECHK"        USING
                                        ORCSAGECHKAREA
+                                       SPA-AREA
       *    画面表示用
            MOVE    SPACE               TO  WRK-NENREI-G
            IF      AGECHK-NENREI2-YY   =   ZERO
@@ -1735,13 +1850,12 @@
            PERFORM 201-NAME-HEN-SEC
       *    漢字検索
            INITIALIZE                  PTINF-REC
-      *****MOVE    SPA-HOSPID          TO  PTINF-HOSPID
+           MOVE    SPA-HOSPNUM         TO  PTINF-HOSPNUM
            MOVE    SPACE               TO  PTINF-NAME
            MOVE    WRK-NAME-KEY        TO  PTINF-NAME
            MOVE    WRK-NAME-KEY        TO  PTINF-KANANAME
       *
       *    患者マスターを漢字氏名で検索
-           MOVE    SPA-HOSPNUM         TO  PTINF-HOSPNUM
            MOVE    PTINF-REC           TO  MCPDATA-REC
            MOVE    "tbl_ptinf"         TO  MCP-TABLE
            MOVE    "key5"              TO  MCP-PATHNAME
@@ -1835,11 +1949,11 @@
            MOVE    PTINF-PTID          TO  WRK-PTID
       *
            INITIALIZE                      ORCSPTIDAREA
-      *****MOVE    SPA-HOSPID          TO  SPTID-HOSPID
+           MOVE    SPA-HOSPNUM         TO  SPTID-HOSPNUM
            MOVE    PTINF-PTID          TO  SPTID-PTID
            CALL    "ORCSPTID"          USING  ORCSPTIDAREA
       *----(01.02.02) LINE ADD START ----------------------------------
-                                              SPA-1009-TBL
+                                              SPA-AREA
       *----(01.02.02) LINE ADD END   ----------------------------------
            IF      SPTID-RC        NOT =   ZERO
                MOVE    SPACE           TO  WRK-PTNUM
@@ -1920,12 +2034,11 @@
        41031-JYURRK-SRYKA-SEC               SECTION.
       *
            INITIALIZE                  JYURRK-REC
-      *****MOVE    SPA-HOSPID          TO  JYURRK-HOSPID
+           MOVE    SPA-HOSPNUM         TO  JYURRK-HOSPNUM
            MOVE    SPA-GMN-PTID        TO  JYURRK-PTID
            MOVE    SPA-SYSYMD          TO  JYURRK-SRYYMD
            MOVE    SPA-GMN-SRYKA       TO  JYURRK-SRYKA
       *
-           MOVE    SPA-HOSPNUM         TO  JYURRK-HOSPNUM
            MOVE    JYURRK-REC          TO  MCPDATA-REC
            MOVE    "tbl_jyurrk"        TO  MCP-TABLE
            MOVE    "key30"             TO  MCP-PATHNAME
@@ -2194,7 +2307,7 @@
                                        TO  SPA-GMN-SRYNAIYOCD-G
            PERFORM 41041-DRCDLIST-HEN-SEC
       *
-      *****MOVE    SPA-HOSPID          TO  PTINF-HOSPID
+           MOVE    SPA-HOSPNUM         TO  PTINF-HOSPNUM
            MOVE    SPA-GMN-TPTID (IDX) TO  PTINF-PTID
            PERFORM 900-PTINF-READ-SEC
            IF      FLG-PTINF               =   ZERO
@@ -2325,9 +2438,8 @@
            MOVE   ZERO                 TO  SPA-COMBI-MAX
       *
            INITIALIZE                  HKNCOMBI-REC
-      *****MOVE    SPA-HOSPID          TO  COMB-HOSPID
-           MOVE    SPA-GMN-PTID        TO  COMB-PTID
            MOVE    SPA-HOSPNUM         TO  COMB-HOSPNUM
+           MOVE    SPA-GMN-PTID        TO  COMB-PTID
            MOVE    HKNCOMBI-REC        TO  MCPDATA-REC
            MOVE    "tbl_hkncombi"      TO  MCP-TABLE
            MOVE    "key2"              TO  MCP-PATHNAME
@@ -2375,6 +2487,7 @@
                                     TO  SPA-GMN-KOH4-TANSEIDONAME(IDX)
       *
                    MOVE    COMB-HKNNUM     TO  SPA-NAI-HKNNUM  (IDX)
+                   MOVE    COMB-HKNID      TO  SPA-NAI-COB-HKNID (IDX)
       *            労災の時、部位を公費１の項目へ
                    IF      COMB-HKNNUM         =   "971"  OR  "973"
                        PERFORM 4101152-RSI-HENSYU-SEC
@@ -2399,11 +2512,10 @@
        410114-RSIINF-CHK-SEC           SECTION.
       *
            INITIALIZE                      PTRSIINF-REC
-      *****MOVE    SPA-HOSPID          TO  PTRSI-HOSPID
+           MOVE    SPA-HOSPNUM         TO  PTRSI-HOSPNUM
            MOVE    SPA-GMN-PTID        TO  PTRSI-PTID
            MOVE    COMB-HKNID          TO  PTRSI-HKNID
       *
-           MOVE    SPA-HOSPNUM         TO  PTRSI-HOSPNUM
            MOVE    PTRSIINF-REC        TO  MCPDATA-REC
            MOVE    "tbl_ptrsiinf"      TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
@@ -2434,9 +2546,8 @@
       *
       *   保険読み出し
            INITIALIZE                  PTHKNINF-REC
-      *****MOVE    SPA-HOSPID          TO  PTHKN-HOSPID
-           MOVE    SPA-GMN-PTID        TO  PTHKN-PTID
            MOVE    SPA-HOSPNUM         TO  PTHKN-HOSPNUM
+           MOVE    SPA-GMN-PTID        TO  PTHKN-PTID
            MOVE    PTHKNINF-REC        TO  MCPDATA-REC
            MOVE    "tbl_pthkninf"      TO  MCP-TABLE
            MOVE    "key2"              TO  MCP-PATHNAME
@@ -2459,11 +2570,10 @@
       *
       *            保険番号読込み  
                    INITIALIZE                  HKNNUM-REC
-      *************MOVE    SPA-HOSPID          TO  HKN-HOSPID
+                   MOVE    SPA-HOSPNUM         TO  HKN-HOSPNUM
                    MOVE    PTHKN-HKNNUM        TO  HKN-HKNNUM
                    MOVE    PTHKN-TEKSTYMD      TO  HKN-TEKSTYMD
                    MOVE    "00"                TO  HKN-PAYKBN 
-                   MOVE    SPA-HOSPNUM         TO  HKN-HOSPNUM
                    MOVE    HKNNUM-REC          TO  MCPDATA-REC
                    PERFORM 900-HKNNUM-INV-SEC
       *            労災の時、対象外
@@ -2520,9 +2630,8 @@
       *
       *    公費読み出し
            INITIALIZE                  PTKOHINF-REC
-      *****MOVE    SPA-HOSPID          TO  PTKOH-HOSPID
-           MOVE    SPA-GMN-PTID        TO  PTKOH-PTID
            MOVE    SPA-HOSPNUM         TO  PTKOH-HOSPNUM
+           MOVE    SPA-GMN-PTID        TO  PTKOH-PTID
            MOVE    PTKOHINF-REC        TO  MCPDATA-REC
            MOVE    "tbl_ptkohinf"      TO  MCP-TABLE
            MOVE    "key2"              TO  MCP-PATHNAME
@@ -2543,10 +2652,10 @@
       *
       *            保険番号読込み  
                    INITIALIZE                  HKNNUM-REC
-      *************MOVE    SPA-HOSPID          TO  HKN-HOSPID
+                   MOVE    SPA-HOSPNUM         TO  HKN-HOSPNUM
                    MOVE    PTKOH-KOHNUM        TO  HKN-HKNNUM
                    MOVE    PTKOH-TEKSTYMD      TO  HKN-TEKSTYMD
-                   MOVE    SPA-HOSPNUM         TO  HKN-HOSPNUM
+                   MOVE    PTKOH-TEKEDYMD      TO  HKN-TEKEDYMD
                    MOVE    HKNNUM-REC          TO  MCPDATA-REC
                    MOVE    "tbl_hknnum"        TO  MCP-TABLE
                    MOVE    "key5"              TO  MCP-PATHNAME
@@ -2604,11 +2713,10 @@
       *    労災の時、部位を追加
       *    患者保険情報検索
            INITIALIZE                      PTRSIINF-REC
-      *****MOVE    SPA-HOSPID          TO  PTRSI-HOSPID
+           MOVE    SPA-HOSPNUM         TO  PTRSI-HOSPNUM
            MOVE    SPA-GMN-PTID        TO  PTRSI-PTID
            MOVE    COMB-HKNID          TO  PTRSI-HKNID
       *
-           MOVE    SPA-HOSPNUM         TO  PTRSI-HOSPNUM
            MOVE    PTRSIINF-REC        TO  MCPDATA-REC
            MOVE    "tbl_ptrsiinf"      TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
@@ -2685,11 +2793,10 @@
       *
       *    受診履歴ＯＰＥＮ
            INITIALIZE                  JYURRK-REC
-      *****MOVE    SPA-HOSPID          TO  JYURRK-HOSPID
+           MOVE    SPA-HOSPNUM         TO  JYURRK-HOSPNUM
            MOVE    SPA-GMN-PTID        TO  JYURRK-PTID
            MOVE    SPA-SYSYMD          TO  JYURRK-SRYYMD
       *
-           MOVE    SPA-HOSPNUM         TO  JYURRK-HOSPNUM
            MOVE    JYURRK-REC          TO  MCPDATA-REC
            MOVE    "tbl_jyurrk"        TO  MCP-TABLE
            MOVE    "key10"             TO  MCP-PATHNAME
@@ -2893,6 +3000,10 @@
       *****************************************************************
        210-BACK                        SECTION.
       *
+      *    ＱＲデータ解除処理
+           IF      SPA-U02Q-REGISTID   NOT =   ZERO
+               PERFORM 4906-QRHKCD-KAIJO-SEC
+           END-IF
       *    排他制御解除処理
            PERFORM 990-LOCK-OUT-SEC
       *
@@ -2936,6 +3047,8 @@
       *
            MOVE    SPA-TERMID          TO  FILE-TERMID1
            MOVE    SPA-TERMID          TO  FILE-TERMID2
+           MOVE    SPA-HOSPNUM         TO  FILE-HOSPNUM1
+           MOVE    SPA-HOSPNUM         TO  FILE-HOSPNUM2
       *
            MOVE    ZERO                TO  IF-RESULT
            MOVE    FILE-NAME1          TO  IF-FILENAME
@@ -2956,6 +3069,10 @@
       *****************************************************************
        493-CLEAR-SEC                   SECTION.
       *
+      *    ＱＲデータ解除処理
+           IF      SPA-U02Q-REGISTID   NOT =   ZERO
+               PERFORM 4906-QRHKCD-KAIJO-SEC
+           END-IF
       *    クリア
            PERFORM 1009-HEAD-CLEAR-SEC
       *
@@ -3099,6 +3216,44 @@
            EXIT.
       *---- (01.00.05) LINE ADD END -----------------------------------
       *
+      *****************************************************************
+      *    ＱＲ一覧へ
+      *****************************************************************
+       4105-U02Q-SYORI-SEC             SECTION.
+      *
+           MOVE    SPA-AREA            TO  SPA-COMMON
+           MOVE    SPA-U02             TO  SPA-FREE
+      *
+           MOVE    "LINK"              TO  MCP-STATUS
+           MOVE    SPACE               TO  MCP-EVENT
+      *
+           CALL    "ORCGU02Q"          USING
+                                       MCPAREA
+                                       SPAAREA
+                                       LINKAREA
+                                       SCRAREA.
+      *
+           MOVE    SPA-COMMON          TO  SPA-AREA
+           MOVE    SPA-FREE            TO  SPA-U02
+     *
+           IF      SPA-U02Q-MAX        =   ZERO
+               MOVE    "0200"              TO  SPA-ERRCD
+               MOVE    2                   TO  SPA-GMN-CUR
+           ELSE
+     *
+               MOVE    "U02"               TO  SPA-MOTOPG
+               MOVE    "U02Q"              TO  SPA-SAKIPG
+               MOVE    "SELNUM"            TO  MCP-WIDGET
+      *
+               MOVE    "NEW"               TO  MCP-PUTTYPE
+               MOVE    "U02Q"              TO  MCP-WINDOW
+               PERFORM 900-PUT-WINDOW
+               MOVE    1                   TO  FLG-END
+           END-IF
+      *
+           .
+       4105-U02Q-SYORI-EXT.
+           EXIT.
       *****************************************************************
       *    予約画面へ
       *****************************************************************
@@ -3398,6 +3553,12 @@
       *        保険・公費情報更新
                PERFORM 4904-HKN-KOUSIN-SEC
            END-IF
+           IF      SPA-ERRCD           =   SPACE
+      *        ＱＲデータ更新
+               IF      SPA-U02Q-REGISTID   NOT =   ZERO
+                   PERFORM 4905-QRHKCD-KOUSIN-SEC
+               END-IF
+           END-IF
       *
            IF      SPA-ERRCD       NOT =   SPACE
                GO  TO  49001-KOUSIN-EXT
@@ -3529,14 +3690,13 @@
        41091-UKETUKE-CHK-SEC              SECTION.
       *
            INITIALIZE                       UKETUKE-REC
-      *****MOVE    SPA-HOSPID          TO  UKE-HOSPID
+           MOVE    SPA-HOSPNUM         TO  UKE-HOSPNUM
            MOVE    SPA-SYSYMD          TO  UKE-UKEYMD
            MOVE    SPA-GMN-PTID        TO  UKE-PTID
            MOVE    SPA-GMN-SRYKA       TO  UKE-SRYKA
       *    保険組合せ
            MOVE    SPA-GMN-COMBINUM    TO  UKE-HKNCOMBI
       *
-           MOVE    SPA-HOSPNUM         TO  UKE-HOSPNUM
            MOVE    UKETUKE-REC         TO  MCPDATA-REC
            MOVE    "tbl_uketuke"       TO  MCP-TABLE
            MOVE    "key6"              TO  MCP-PATHNAME
@@ -3581,7 +3741,7 @@
        41092-HKNHOJOKBN-CHK-SEC              SECTION.
       *
            INITIALIZE                  ORCSAGECHKAREA
-      *****MOVE    SPA-HOSPID          TO  AGECHK-HOSPID
+           MOVE    SPA-HOSPNUM         TO  AGECHK-HOSPNUM
            MOVE    SPA-GMN-PTID        TO  AGECHK-PTID
            MOVE    SPA-SYSYMD          TO  AGECHK-SRYYMD
            MOVE    SPA-NAI-BIRTHDAY    TO  AGECHK-BIRTHDAY
@@ -3589,6 +3749,7 @@
            MOVE    "2"                 TO  AGECHK-NYUGAIKBN
            CALL    "ORCSAGECHK"        USING
                                        ORCSAGECHKAREA
+                                       SPA-AREA
            IF      AGECHK-RJNCHK       =   ZERO
                IF      AGECHK-KAKUNINCHK   =   1
       *            国保で前期高齢者日以降に確認がない時
@@ -3623,7 +3784,7 @@
       *    受付ＩＤ＝００検索
            MOVE    SPACE               TO  UKETUKE-REC
            INITIALIZE                  UKETUKE-REC
-      *****MOVE    SPA-HOSPID          TO  UKE-HOSPID
+           MOVE    SPA-HOSPNUM         TO  UKE-HOSPNUM
            MOVE    SPA-SYSYMD          TO  UKE-UKEYMD
            MOVE    ZERO                TO  UKE-UKEID
            PERFORM 900-UKETUKE-READ-SEC
@@ -3638,18 +3799,16 @@
                MOVE    SMCNDATE-YMD        TO  UKE-UPYMD
                MOVE    SMCNDATE-HMS        TO  UKE-UPHMS
       *
-               MOVE    SPA-HOSPNUM         TO  UKE-HOSPNUM
                MOVE    UKETUKE-REC         TO  MCPDATA-REC
                MOVE    "DBUPDATE"          TO  MCP-FUNC
                MOVE    "tbl_uketuke"       TO  MCP-TABLE
                MOVE    "key"               TO  MCP-PATHNAME
-               CALL    "ORCDBMAIN"         USING
-                                               MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
+                                                   MCPDATA-REC
+                                                   SPA-AREA
            ELSE
                INITIALIZE                  UKETUKE-REC
-      *********MOVE    SPA-HOSPID          TO  UKE-HOSPID
+               MOVE    SPA-HOSPNUM         TO  UKE-HOSPNUM
                MOVE    SPA-SYSYMD          TO  UKE-UKEYMD
                MOVE    ZERO                TO  UKE-UKEID
                MOVE    1                   TO  UKE-PTID
@@ -3659,15 +3818,13 @@
                MOVE    SMCNDATE-YMD        TO  UKE-UPYMD
                MOVE    SMCNDATE-HMS        TO  UKE-UPHMS
       *
-               MOVE    SPA-HOSPNUM         TO  UKE-HOSPNUM
                MOVE    UKETUKE-REC         TO  MCPDATA-REC
                MOVE    "DBINSERT"          TO  MCP-FUNC
                MOVE    "tbl_uketuke"       TO  MCP-TABLE
                MOVE    "key"               TO  MCP-PATHNAME
-               CALL    "ORCDBMAIN"         USING
-                                               MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
+                                                   MCPDATA-REC
+                                                   SPA-AREA
            END-IF
       * 
            IF      MCP-RC          NOT =   ZERO 
@@ -3680,7 +3837,7 @@
       *    明細レコード追加
       *
            INITIALIZE                       UKETUKE-REC
-      *****MOVE    SPA-HOSPID               TO  UKE-HOSPID
+           MOVE    SPA-HOSPNUM              TO  UKE-HOSPNUM
            MOVE    SPA-SYSYMD               TO  UKE-UKEYMD
            MOVE    WRK-UKEID                TO  UKE-UKEID
            ACCEPT  UKE-UKETIME              FROM   TIME
@@ -3722,15 +3879,13 @@
                GO      TO      4901-UKEADD-EXT
            END-IF
       *
-           MOVE    SPA-HOSPNUM         TO  UKE-HOSPNUM
            MOVE    WRK-UKETUKE-REC     TO  MCPDATA-REC
            MOVE    "DBINSERT"          TO  MCP-FUNC
            MOVE    "tbl_uketuke"       TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
-           CALL    "ORCDBMAIN"         USING
-                                           MCPAREA
-                                           MCPDATA-REC
-                                           SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            IF      MCP-RC          NOT =   ZERO 
                MOVE    "1002"              TO  SPA-ERRCD
@@ -3750,7 +3905,7 @@
        4902-UKEUPD-SEC              SECTION.
       *
            INITIALIZE                        UKETUKE-REC
-      *****MOVE    SPA-HOSPID                TO  UKE-HOSPID
+           MOVE    SPA-HOSPNUM               TO  UKE-HOSPNUM
            MOVE    SPA-SYSYMD                TO  UKE-UKEYMD
            MOVE    SPA-GMN-TUKEID  (IDX)     TO  UKE-UKEID
       *
@@ -3791,15 +3946,13 @@
            MOVE    SMCNDATE-HMS        TO  UKE-UPHMS
       *
       *
-           MOVE    SPA-HOSPNUM         TO  UKE-HOSPNUM
            MOVE    UKETUKE-REC         TO  MCPDATA-REC
            MOVE    "DBUPDATE"          TO  MCP-FUNC
            MOVE    "tbl_uketuke"       TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
-           CALL    "ORCDBMAIN"         USING
-                                           MCPAREA
-                                           MCPDATA-REC
-                                           SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            IF      MCP-RC          NOT =   ZERO 
                MOVE    "1003"              TO  SPA-ERRCD
@@ -3819,7 +3972,7 @@
        4903-YYKUPD-SEC              SECTION.
       * 
            INITIALIZE                    YYK-KEY
-      *****MOVE   SPA-HOSPID             TO  YYK-HOSPID
+           MOVE   SPA-HOSPNUM            TO  YYK-HOSPNUM
            MOVE   SPA-GMN-TSRYNAIYOCD(IDX)
                                          TO  YYK-SRYNAIYO
            MOVE   "1"                    TO  YYK-DRCD
@@ -3834,15 +3987,13 @@
                MOVE    SMCNDATE-YMD        TO  YYK-UPYMD
                MOVE    SMCNDATE-HMS        TO  YYK-UPHMS
       * 
-               MOVE    SPA-HOSPNUM         TO  YYK-HOSPNUM
                MOVE    YYK-REC             TO  MCPDATA-REC
                MOVE    "DBUPDATE"          TO  MCP-FUNC
                MOVE    "tbl_yyk"           TO  MCP-TABLE
                MOVE    "key"               TO  MCP-PATHNAME
-               CALL    "ORCDBMAIN"         USING
-                                               MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
+                                                   MCPDATA-REC
+                                                   SPA-AREA
       *
                IF      MCP-RC          NOT =   ZERO 
                    MOVE    "1004"              TO  SPA-ERRCD
@@ -3932,7 +4083,7 @@
            MOVE    WRK-PTID            TO  SHELLTBL-ARG2
            MOVE    SPA-GMN-SRYKA       TO  SHELLTBL-ARG3
            MOVE    UKE-UKETIME         TO  SHELLTBL-ARG4
-           MOVE    SPA-HOSPID          TO  SHELLTBL-ARG5
+           MOVE    SPA-HOSPNUM         TO  SHELLTBL-ARG5
       *
            MOVE    SYS-9001-ADDRESS    TO  SHELLTBL-ARG6
            MOVE    SYS-9001-PORT1      TO  SHELLTBL-ARG7
@@ -3956,14 +4107,14 @@
            ADD     1                   TO  WRK-RENNUM
            MOVE    WRK-RENNUM          TO  SHELLTBL-ARG11 (1:2)
       *
+grpsys*    MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            MOVE    SHELLTBL            TO  MCPDATA-REC
            MOVE    "SHELL"             TO  MCP-FUNC
            MOVE    "shell"             TO  MCP-TABLE
            MOVE    "shell"             TO  MCP-PATHNAME
-           CALL    "ORCDBMAIN"         USING
-                                           MCPAREA
-                                           MCPDATA-REC
-                                           SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
        49061-CLAIM-SOUSINSYOSI-EXT.
@@ -4178,11 +4329,10 @@
       *            保険
                    WHEN    1
                        INITIALIZE                  PTHKNINF-REC
-      *****************MOVE    SPA-HOSPID          TO  PTHKN-HOSPID
+                       MOVE    SPA-HOSPNUM         TO  PTHKN-HOSPNUM
                        MOVE    SPA-GMN-PTID        TO  PTHKN-PTID
                        MOVE    SPA-NAI-HKNID (IDX) TO  PTHKN-HKNID
       *
-                       MOVE    SPA-HOSPNUM         TO  PTHKN-HOSPNUM
                        MOVE    PTHKNINF-REC        TO  MCPDATA-REC
                        MOVE    "DBSELECT"          TO  MCP-FUNC
                        MOVE    "tbl_pthkninf"      TO  MCP-TABLE
@@ -4204,13 +4354,11 @@
                            MOVE    SMCNDATE-YMD        TO  PTHKN-UPYMD
                            MOVE    SMCNDATE-HMS        TO  PTHKN-UPHMS
       *
-                           MOVE    SPA-HOSPNUM     TO  PTHKN-HOSPNUM
                            MOVE    PTHKNINF-REC        TO  MCPDATA-REC
                            MOVE    "DBUPDATE"          TO  MCP-FUNC
                            MOVE    "tbl_pthkninf"      TO  MCP-TABLE
                            MOVE    "key"               TO  MCP-PATHNAME
-                           CALL    "ORCDBMAIN"         USING
-                                                           MCPAREA
+grpsys                     CALL    "ORCDBMAIN"         USING   MCPAREA
                                                            MCPDATA-REC
                                                            SPA-AREA
                        END-IF
@@ -4218,11 +4366,10 @@
       *            公費
                    WHEN    2
                        INITIALIZE                  PTKOHINF-REC
-      *****************MOVE    SPA-HOSPID          TO  PTKOH-HOSPID
+                       MOVE    SPA-HOSPNUM         TO  PTKOH-HOSPNUM
                        MOVE    SPA-GMN-PTID        TO  PTKOH-PTID
                        MOVE    SPA-NAI-HKNID (IDX) TO  PTKOH-KOHID
       *
-                       MOVE    SPA-HOSPNUM         TO  PTKOH-HOSPNUM
                        MOVE    PTKOHINF-REC        TO  MCPDATA-REC
                        MOVE    "DBSELECT"          TO  MCP-FUNC
                        MOVE    "tbl_ptkohinf"      TO  MCP-TABLE
@@ -4244,13 +4391,11 @@
                            MOVE    SMCNDATE-YMD        TO  PTKOH-UPYMD
                            MOVE    SMCNDATE-HMS        TO  PTKOH-UPHMS
       *
-                           MOVE    SPA-HOSPNUM     TO  PTKOH-HOSPNUM
                            MOVE    PTKOHINF-REC        TO  MCPDATA-REC
                            MOVE    "DBUPDATE"          TO  MCP-FUNC
                            MOVE    "tbl_ptkohinf"      TO  MCP-TABLE
                            MOVE    "key"               TO  MCP-PATHNAME
-                           CALL    "ORCDBMAIN"         USING
-                                                           MCPAREA
+grpsys                     CALL    "ORCDBMAIN"         USING   MCPAREA
                                                            MCPDATA-REC
                                                            SPA-AREA
                        END-IF
@@ -4260,6 +4405,96 @@
       *
            .
        4904-HKN-KOUSIN-EXT.
+           EXIT.
+      *****************************************************************
+      *    ＱＲデータ更新処理
+      *****************************************************************
+       4905-QRHKCD-KOUSIN-SEC              SECTION.
+      *
+           INITIALIZE                      QRCDHKN-REC
+           MOVE    SPA-HOSPNUM         TO  QRCDHKN-HOSPNUM
+           MOVE    SPA-SYSYMD          TO  QRCDHKN-REGISTYMD
+           MOVE    SPA-U02Q-REGISTID   TO  QRCDHKN-REGISTID
+           MOVE    QRCDHKN-REC         TO  MCPDATA-REC
+           MOVE    "tbl_qrcdhkn"       TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_qrcdhkn"       TO  MCP-TABLE
+               MOVE    "key"               TO  MCP-PATHNAME
+               PERFORM 900-QRCDHKN-READ-SEC
+           ELSE
+               MOVE    1                   TO  FLG-QRCDHKN
+               INITIALIZE                      QRCDHKN-REC
+           END-IF
+           MOVE    "tbl_qrcdhkn"       TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+      *
+           IF      FLG-QRCDHKN         =   ZERO
+               MOVE    1                   TO  QRCDHKN-MOD-FLG2
+      *
+               MOVE    QRCDHKN-REC         TO  MCPDATA-REC
+               MOVE    "DBUPDATE"          TO  MCP-FUNC
+               MOVE    "tbl_qrcdhkn"       TO  MCP-TABLE
+               MOVE    "key"               TO  MCP-PATHNAME
+grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
+                                                   MCPDATA-REC
+                                                   SPA-AREA
+               IF      MCP-RC          NOT =   ZERO 
+                   MOVE    "1001"              TO  SPA-ERRCD
+                   DISPLAY "U02Q QRCDHKN KEY UPD ERR:"  MCP-RC
+                           ",KEY:" QRCDHKN-KEY
+               END-IF
+           END-IF
+           INITIALIZE                  SPA-U02Q-DATA-G
+           .
+       4905-QRHKCD-KOUSIN-EXT.
+           EXIT.
+      *****************************************************************
+      *    ＱＲデータ解除処理
+      *****************************************************************
+       4906-QRHKCD-KAIJO-SEC              SECTION.
+      *
+           INITIALIZE                      QRCDHKN-REC
+           MOVE    SPA-HOSPNUM         TO  QRCDHKN-HOSPNUM
+           MOVE    SPA-SYSYMD          TO  QRCDHKN-REGISTYMD
+           MOVE    SPA-U02Q-REGISTID   TO  QRCDHKN-REGISTID
+           MOVE    QRCDHKN-REC         TO  MCPDATA-REC
+           MOVE    "tbl_qrcdhkn"       TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_qrcdhkn"       TO  MCP-TABLE
+               MOVE    "key"               TO  MCP-PATHNAME
+               PERFORM 900-QRCDHKN-READ-SEC
+           ELSE
+               MOVE    1                   TO  FLG-QRCDHKN
+               INITIALIZE                      QRCDHKN-REC
+           END-IF
+           MOVE    "tbl_qrcdhkn"       TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+      *
+           IF      FLG-QRCDHKN         =   ZERO
+               MOVE    ZERO                TO  QRCDHKN-MOD-FLG2
+      *
+               MOVE    QRCDHKN-REC         TO  MCPDATA-REC
+               MOVE    "DBUPDATE"          TO  MCP-FUNC
+               MOVE    "tbl_qrcdhkn"       TO  MCP-TABLE
+               MOVE    "key"               TO  MCP-PATHNAME
+grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
+                                                   MCPDATA-REC
+                                                   SPA-AREA
+               IF      MCP-RC          NOT =   ZERO 
+                   MOVE    "1001"              TO  SPA-ERRCD
+                   DISPLAY "U02 QRCDHKN KEY UPD ERR:"  MCP-RC
+                           ",KEY:" QRCDHKN-KEY
+               END-IF
+           END-IF
+           INITIALIZE                  SPA-U02Q-DATA-G
+           .
+       4906-QRHKCD-KAIJO-EXT.
            EXIT.
       *****************************************************************
       *    受付取消処理
@@ -4280,21 +4515,19 @@
            MOVE    SPA-GMN-SELNUM          TO  IDX
       *
            INITIALIZE                      UKETUKE-REC
-      *****MOVE    SPA-HOSPID              TO  UKE-HOSPID
+           MOVE    SPA-HOSPNUM             TO  UKE-HOSPNUM
            MOVE    SPA-SYSYMD              TO  UKE-UKEYMD
            MOVE    SPA-GMN-TUKEID(IDX)     TO  UKE-UKEID
       *
            PERFORM 900-UKETUKE-READ-SEC
            IF      FLG-UKETUKE         =   ZERO
-               MOVE    SPA-HOSPNUM         TO  UKE-HOSPNUM
                MOVE    UKETUKE-REC         TO  MCPDATA-REC
                MOVE    "DBDELETE"          TO  MCP-FUNC
                MOVE    "tbl_uketuke"       TO  MCP-TABLE
                MOVE    "key"               TO  MCP-PATHNAME
-               CALL    "ORCDBMAIN"         USING
-                                               MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
+                                                   MCPDATA-REC
+                                                   SPA-AREA
       *
                IF      MCP-RC          NOT =   ZERO 
                    MOVE    "1005"              TO  SPA-ERRCD
@@ -4307,7 +4540,7 @@
       *    予約マスタ更新
            IF      SPA-GMN-TYYKTIME(IDX)  NOT       =  SPACE
                INITIALIZE                      YYK-KEY
-      *********MOVE    SPA-HOSPID              TO  YYK-HOSPID
+               MOVE    SPA-HOSPNUM             TO  YYK-HOSPNUM
                MOVE    SPA-GMN-TSRYNAIYOCD(IDX)
                                                TO  YYK-SRYNAIYO
                MOVE    "1"                     TO  YYK-DRCD
@@ -4323,15 +4556,13 @@
                    MOVE    SMCNDATE-YMD        TO  YYK-UPYMD
                    MOVE    SMCNDATE-HMS        TO  YYK-UPHMS
       *
-                   MOVE    SPA-HOSPNUM         TO  YYK-HOSPNUM
                    MOVE    YYK-REC             TO  MCPDATA-REC
                    MOVE    "DBUPDATE"          TO  MCP-FUNC
                    MOVE    "tbl_yyk"           TO  MCP-TABLE
                    MOVE    "key"               TO  MCP-PATHNAME
-                   CALL    "ORCDBMAIN"         USING
-                                                   MCPAREA
-                                                   MCPDATA-REC
-                                                   SPA-AREA
+grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
+                                                       MCPDATA-REC
+                                                       SPA-AREA
                    IF      MCP-RC          NOT =   ZERO 
                        MOVE    "1004"              TO  SPA-ERRCD
                        DISPLAY "U02 YYK UPDATE ERR:" MCP-RC
@@ -4420,7 +4651,6 @@
                GO  TO  492-ORCGP01-EXT
            END-IF
       *
-      *
            IF      SPA-GMN-SELNUM      >   ZERO
       *
       *    選択番号チェック
@@ -4437,7 +4667,7 @@
       *
       *  患者番号チェック
               IF      SPA-GMN-PTNUM        NOT =  SPACE
-      ************MOVE    SPA-HOSPID           TO  PTINF-HOSPID
+                  MOVE    SPA-HOSPNUM          TO  PTINF-HOSPNUM
                   MOVE    SPA-GMN-PTID         TO  PTINF-PTID
                   PERFORM 900-PTINF-READ-SEC
                   IF      FLG-PTINF                =   1
@@ -4453,6 +4683,10 @@
       *********END-IF
            END-IF    
       *---- (01.00.04) LINE MOD END -----------------------------------
+      *    ＱＲデータ解除処理
+           IF      SPA-U02Q-REGISTID   NOT =   ZERO
+               PERFORM 4906-QRHKCD-KAIJO-SEC
+           END-IF
       *
       *    共通ＳＰＡセット
            PERFORM 4921-SPA-SET-SEC
@@ -4540,6 +4774,10 @@
                    GO       TO      493-ORCGK02-EXT
                END-IF
            END-IF
+      *    ＱＲデータ解除処理
+           IF      SPA-U02Q-REGISTID   NOT =   ZERO
+               PERFORM 4906-QRHKCD-KAIJO-SEC
+           END-IF
       *
            PERFORM 4921-SPA-SET-SEC
            IF      SPA-GMN-SELNUM      >   ZERO
@@ -4580,6 +4818,11 @@
                MOVE    "0022"              TO  SPA-ERRCD
                GO       TO      494-ORCGC02-EXT
            END-IF
+      *    ＱＲデータ解除処理
+           IF      SPA-U02Q-REGISTID   NOT =   ZERO
+               PERFORM 4906-QRHKCD-KAIJO-SEC
+           END-IF
+      *
            PERFORM 4921-SPA-SET-SEC
       *
       *    排他制御解除処理
@@ -4614,6 +4857,11 @@
                MOVE    "0022"              TO  SPA-ERRCD
                GO       TO      495-ORCGS02-EXT
            END-IF
+      *    ＱＲデータ解除処理
+           IF      SPA-U02Q-REGISTID   NOT =   ZERO
+               PERFORM 4906-QRHKCD-KAIJO-SEC
+           END-IF
+      *
            PERFORM 4921-SPA-SET-SEC
       *
       *    排他制御解除処理
@@ -4647,6 +4895,10 @@
                   (SPA-GMN-PTID        =   ZERO  )
                MOVE    "0022"              TO  SPA-ERRCD
                GO       TO      496-ORCGJ02-EXT
+           END-IF
+      *    ＱＲデータ解除処理
+           IF      SPA-U02Q-REGISTID   NOT =   ZERO
+               PERFORM 4906-QRHKCD-KAIJO-SEC
            END-IF
       *
            PERFORM 4921-SPA-SET-SEC
@@ -4947,6 +5199,12 @@
            ELSE
                MOVE    WIDGET-INSENSITIVE  TO  U02-B09S-STATE
            END-IF
+      *    ＱＲ一覧
+           IF      SPA-QRFLG               =   ZERO
+               MOVE    WIDGET-INSENSITIVE  TO  U02-B10S-STATE
+           ELSE
+               MOVE    WIDGET-NORMAL       TO  U02-B10S-STATE
+           END-IF
       *
            .
        51O-GSRAUTH-EXT.
@@ -5169,6 +5427,9 @@
                                                 TO  SPA-ERRMSG
                    MOVE    "これ以上受付はできません。"
                                                 TO  SPA-ERRMSG(33:)
+               WHEN    "0200"
+                   MOVE    "患者登録処理済みのＱＲデータはありません。"
+                                                TO  SPA-ERRMSG
       *
                WHEN    "K002"
                    STRING  "警告！！老人保険の割合が設定されていません"
@@ -5263,7 +5524,6 @@
       *****************************************************************
        900-YOYAKU-READ-SEC         SECTION.
       *
-           MOVE    SPA-HOSPNUM         TO  YYK-HOSPNUM
            MOVE    YYK-REC             TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "tbl_yyk"           TO  MCP-TABLE
@@ -5292,10 +5552,9 @@
            MOVE    "tbl_yyk"           TO  MCP-TABLE
       *
            MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "ORCDBMAIN"         USING
-                                           MCPAREA
-                                           MCPDATA-REC
-                                           SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
            IF      MCP-RC              =   ZERO
                MOVE    ZERO                TO  FLG-YYK
                MOVE    MCPDATA-REC         TO  YYK-REC
@@ -5312,7 +5571,6 @@
       *****************************************************************
        900-UKETUKE-READ-SEC         SECTION.
       *
-           MOVE    SPA-HOSPNUM         TO  UKE-HOSPNUM
            MOVE    UKETUKE-REC         TO  MCPDATA-REC
            MOVE    "tbl_uketuke"       TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
@@ -5340,10 +5598,9 @@
            MOVE    "tbl_uketuke"       TO  MCP-TABLE
       *
            MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "ORCDBMAIN"         USING
-                                           MCPAREA
-                                           MCPDATA-REC
-                                           SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
            IF      MCP-RC              =   ZERO
                MOVE    ZERO                TO  FLG-UKETUKE
                MOVE    MCPDATA-REC         TO  UKETUKE-REC
@@ -5360,7 +5617,6 @@
       *****************************************************************
        900-PTINF-READ-SEC         SECTION.
       *
-           MOVE    SPA-HOSPNUM         TO  PTINF-HOSPNUM
            MOVE    PTINF-REC           TO  MCPDATA-REC
       *
            MOVE    "DBSELECT"          TO  MCP-FUNC
@@ -5369,10 +5625,9 @@
            PERFORM 910-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
                MOVE    "DBFETCH"           TO  MCP-FUNC
-               CALL    "ORCDBMAIN"         USING
-                                               MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
+                                                   MCPDATA-REC
+                                                   SPA-AREA
                IF      MCP-RC              =   ZERO
                    MOVE    MCPDATA-REC         TO  PTINF-REC
                    MOVE    ZERO                TO  FLG-PTINF
@@ -5400,10 +5655,9 @@
       *
            MOVE    "tbl_ptinf"         TO  MCP-TABLE
            MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "ORCDBMAIN"         USING
-                                           MCPAREA
-                                           MCPDATA-REC
-                                           SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
            IF      MCP-RC              =   ZERO
                MOVE    ZERO                TO  FLG-PTINF
                MOVE    MCPDATA-REC         TO  PTINF-REC
@@ -5423,10 +5677,9 @@
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
       *
            MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "ORCDBMAIN"         USING
-                                           MCPAREA
-                                           MCPDATA-REC
-                                           SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
            IF      MCP-RC              =   ZERO
                MOVE    ZERO            TO  FLG-SYSKANRI
            ELSE
@@ -5443,10 +5696,9 @@
       *
            MOVE    "tbl_hkncombi"      TO  MCP-TABLE
            MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "ORCDBMAIN"         USING
-                                           MCPAREA
-                                           MCPDATA-REC
-                                           SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC     TO  HKNCOMBI-REC
                MOVE    ZERO            TO  FLG-HKNCOMBI
@@ -5466,10 +5718,9 @@
       *
            MOVE    "tbl_pthkninf"      TO  MCP-TABLE
            MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "ORCDBMAIN"         USING
-                                           MCPAREA
-                                           MCPDATA-REC
-                                           SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC     TO  PTHKNINF-REC
                MOVE    ZERO            TO  FLG-PTHKNINF
@@ -5489,10 +5740,9 @@
       *
            MOVE    "tbl_ptkohinf"      TO  MCP-TABLE
            MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "ORCDBMAIN"         USING
-                                           MCPAREA
-                                           MCPDATA-REC
-                                           SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC     TO  PTKOHINF-REC
                MOVE    ZERO            TO  FLG-PTKOHINF
@@ -5510,7 +5760,6 @@
       *****************************************************************
        900-HKNNUM-INV-SEC         SECTION.
       *
-           MOVE    SPA-HOSPNUM         TO  HKN-HOSPNUM
            MOVE    HKNNUM-REC          TO  MCPDATA-REC
            MOVE    "tbl_hknnum"        TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
@@ -5536,10 +5785,9 @@
            MOVE    "tbl_hknnum"        TO  MCP-TABLE
       *
            MOVE    "DBFETCH"       TO  MCP-FUNC
-           CALL    "ORCDBMAIN"     USING
-                                       MCPAREA
-                                       MCPDATA-REC
-                                       SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC     TO  HKNNUM-REC
                MOVE    ZERO            TO  FLG-HKNNUM
@@ -5560,10 +5808,9 @@
            MOVE    "tbl_jyurrk"        TO  MCP-TABLE
       *
            MOVE    "DBFETCH"       TO  MCP-FUNC
-           CALL    "ORCDBMAIN"     USING
-                                       MCPAREA
-                                       MCPDATA-REC
-                                       SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC     TO  JYURRK-REC
                MOVE    ZERO            TO  FLG-JYURRK
@@ -5583,10 +5830,9 @@
       *
            MOVE    "tbl_ptrsiinf"      TO  MCP-TABLE
            MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "ORCDBMAIN"         USING
-                                           MCPAREA
-                                           MCPDATA-REC
-                                           SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC     TO  PTRSIINF-REC
                MOVE    ZERO            TO  FLG-PTRSIINF
@@ -5607,10 +5853,9 @@
            MOVE    "tbl_srykarrk"      TO  MCP-TABLE
       *
            MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "ORCDBMAIN"         USING
-                                           MCPAREA
-                                           MCPDATA-REC
-                                           SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC         TO  SRYKARRK-REC
                MOVE    ZERO                TO  FLG-SRYKARRK
@@ -5622,19 +5867,47 @@
            .
        975-SRYKARRK-READ-EXT.
            EXIT.
+      *
+      *****************************************************************
+      *    QRコード(被保険者証)読込
+      *****************************************************************
+       900-QRCDHKN-READ-SEC         SECTION.
+      *
+           PERFORM 920-DBFETCH-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC     TO  QRCDHKN-REC
+               MOVE    ZERO            TO  FLG-QRCDHKN
+           ELSE
+               INITIALIZE                  QRCDHKN-REC
+               MOVE    1               TO  FLG-QRCDHKN
+           END-IF
+           .
+       900-QRCDHKN-READ-EXT.
+           EXIT.
       *****************************************************************
       *    テーブル検索処理
       *****************************************************************
        910-DBSELECT-SEC                SECTION.
       *
            MOVE    "DBSELECT"      TO  MCP-FUNC
-           CALL    "ORCDBMAIN"     USING
-                                       MCPAREA
-                                       MCPDATA-REC
-                                       SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
        910-DBSELECT-EXT.
+           EXIT.
+      *****************************************************************
+      *    ＤＢ読み込み処理
+      *****************************************************************
+       920-DBFETCH-SEC                 SECTION.
+      *
+           MOVE    "DBFETCH"       TO  MCP-FUNC
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
+           .
+       920-DBFETCH-EXT.
            EXIT.
       *
       *****************************************************************
@@ -5643,10 +5916,9 @@
        990-DBCLOSE-SEC         SECTION.
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           CALL    "ORCDBMAIN"         USING
-                                           MCPAREA
-                                           MCPDATA-REC
-                                           SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
        990-DBCLOSE-EXT.
@@ -5692,10 +5964,9 @@
        900-PUT-WINDOW              SECTION.
       *
            MOVE   "PUTWINDOW"                   TO  MCP-FUNC.
-           CALL   "ORCDBMAIN"                   USING
-                                                    MCPAREA
-                                                    MCPDATA-REC
-                                                    SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
            .
       *
        900-PUT-WINDOW-EXT.
