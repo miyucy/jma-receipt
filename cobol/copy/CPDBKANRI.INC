@@ -23,12 +23,20 @@
       * Maj/Min/Rev  修正者       日付      内容
       ************************************************************
       *01  DBKANRI-REC.
+      *キー
+           03  DBKANRI-KEY.
+      *管理コード
+               05  DBKANRI-KANRICD         PIC  X(08).
       *バージョン
            03  DBKANRI-VERSION             PIC  X(64).
       *ＤＢ構造バージョン１
            03  DBKANRI-DBSVERSION1         PIC  X(64).
       *ＤＢ構造バージョン２
            03  DBKANRI-DBSVERSION2         PIC  X(64).
+      *ＤＢレコードバージョン１
+           03  DBKANRI-DBRVERSION1         PIC  X(64).
+      *ＤＢレコードバージョン２
+           03  DBKANRI-DBRVERSION2         PIC  X(64).
       *端末ＩＤ
            03  DBKANRI-TERMID              PIC  X(32).
       *オペーレータＩＤ

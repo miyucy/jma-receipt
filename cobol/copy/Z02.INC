@@ -69,3 +69,6 @@
                 04  Z02-VALUE   PIC X(200).
               03  Z02-INPCHKKBN.
                 04  Z02-VALUE   PIC S9(1).
+              03  Z02-LABEL1.
+                04  Z02-VALUE   PIC X(20).
+

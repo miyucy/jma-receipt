@@ -35,6 +35,7 @@
       *  01.00.04    NACL-多々納  05/04/04  マスタ更新管理情報の分割
       *  01.00.05    NACL-伊藤    06/02/22  MONFUNC 対応
       *  01.00.06    NACL-伊藤    06/07/12  ライセンスマスタ対応
+      *  03.04.01    NACL-森脇    07/01/24  タイマーイベント追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -306,7 +307,7 @@
            INITIALIZE                  SPA-GMN-TBLG3
       *    ＤＢ管理検索処理
            INITIALIZE                  DBKANRI-REC
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+grpsys*    MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            MOVE    DBKANRI-REC         TO  MCPDATA-REC
            MOVE    "tbl_dbkanri"       TO  MCP-TABLE 
            MOVE    "all"               TO  MCP-PATHNAME 
@@ -409,6 +410,30 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            ELSE
                MOVE    SPACE           TO  SPA-GMN-MSG2
            END-IF
+      *
+      *----(03.04.01)--ADD-START---
+           MOVE    0           TO  SPA-GMN-DURATION
+      *
+           IF    ( FLG-SJOBKANRI       =   ZERO )  AND
+                 ( JOB-ERRCD(1:2)  NOT =   "99" )  AND
+                 ( JOB-ERRCD(1:2)  NOT =   "01" )
+               IF    ( JOB-ENDTIME     =   SPACE)  OR
+                     ( JOB-ENDYMD      =   SPACE)
+                   MOVE    5           TO  SPA-GMN-DURATION
+               END-IF
+           END-IF
+      *
+           IF    (  FLG-SJOBKANRI1     =   ZERO )  AND
+                 ( JOB1-ERRCD(1:2) NOT =   "99" )  AND
+                 ( JOB1-ERRCD(1:2) NOT =   "98" )  AND
+                 ( JOB1-ERRCD(1:2) NOT =   "01" )
+               IF    ( JOB1-ENDTIME    =   SPACE)  OR
+                     ( JOB1-ENDYMD     =   SPACE)
+                   MOVE    5           TO  SPA-GMN-DURATION
+               END-IF
+           END-IF
+      *----(03.04.01)--ADD-END-----
+      *
            .
        310-DBHENSYU-EXT.
            EXIT.
@@ -480,6 +505,15 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                WHEN    "ORCADB11"
                    MOVE    "適応病名マスタ"
                                           TO  SPA-GMN-MASTNAME(IDX2)
+               WHEN    "ORCADB12"
+                   MOVE    "一般名マスタ"
+                                          TO  SPA-GMN-MASTNAME(IDX2)
+               WHEN    "ORCADB13"
+                   MOVE    "包括チェックマスタ"
+                                          TO  SPA-GMN-MASTNAME(IDX2)
+               WHEN    "ORCADB14"
+                   MOVE    "包括診療コードマスタ"
+                                          TO  SPA-GMN-MASTNAME(IDX2)
                WHEN    OTHER
                    MOVE    DBKANRI-KANRICD
                                           TO  SPA-GMN-MASTNAME(IDX2)
@@ -496,10 +530,10 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            PERFORM 700-SEIWA-HEN-SEC
            MOVE    WRK-HENYMDG         TO  SPA-GMN-STARTYMD (2)
       *
-           MOVE    JOB-ENDYMD          TO  SPA-NAI-ENDYMD  (2)
-           MOVE    JOB-ENDTIME         TO  SPA-NAI-ENDTIME (2)
+           MOVE    JOB1-ENDYMD         TO  SPA-NAI-ENDYMD  (2)
+           MOVE    JOB1-ENDTIME        TO  SPA-NAI-ENDTIME (2)
       *
-           MOVE    JOB-ENDYMD          TO  WRK-SYMD
+           MOVE    JOB1-ENDYMD         TO  WRK-SYMD
            PERFORM 700-SEIWA-HEN-SEC
            MOVE    WRK-HENYMDG         TO  SPA-GMN-ENDYMD (2)
       *
@@ -515,16 +549,16 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    JOB-STARTTIME(5:2)
                                        TO  SPA-GMN-STARTTIME (2)(7:2)
            END-IF.
-           IF      JOB-ENDTIME         =   SPACE
+           IF      JOB1-ENDTIME        =   SPACE
                MOVE    SPACE           TO  SPA-GMN-ENDTIME (2)
            ELSE
                MOVE    ":"             TO  SPA-GMN-ENDTIME (2)(3:1)
                MOVE    ":"             TO  SPA-GMN-ENDTIME (2)(6:1)
-               MOVE    JOB-ENDTIME(1:2)
+               MOVE    JOB1-ENDTIME(1:2)
                                        TO  SPA-GMN-ENDTIME (2)(1:2)
-               MOVE    JOB-ENDTIME(3:2)
+               MOVE    JOB1-ENDTIME(3:2)
                                        TO  SPA-GMN-ENDTIME (2)(4:2)
-               MOVE    JOB-ENDTIME(5:2)
+               MOVE    JOB1-ENDTIME(5:2)
                                        TO  SPA-GMN-ENDTIME (2)(7:2)
            END-IF
            IF     JOB-STEPSTARTTIME    =   SPACE
@@ -567,6 +601,9 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *        情報削除
                WHEN    "CLICKED"       ALSO    "B02"
                    PERFORM 201-DELETE-SEC
+      *----(03.04.01)---ADD-START---
+               WHEN    "CLICKED"   ALSO    "pandatimer1"
+      *----(03.04.01)---ADD-END-----
       *        情報
                WHEN    "CLICKED"       ALSO    "B11"
                    PERFORM 211-JYOUKYOU-SEC
@@ -697,15 +734,15 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            CALL    "ORCSMKPASS"         USING  ORCSMKPASSAREA
            MOVE    MKPASS-OT-01         TO  SHELLTBL-NAME
            MOVE    SPA-HOSPID           TO  SHELLTBL-ARG1
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+grpsys*    MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            MOVE    SHELLTBL             TO  MCPDATA-REC
       *
            MOVE    "SHELL"              TO  MCP-FUNC
            MOVE    "shell"              TO  MCP-TABLE
            MOVE    "shell"              TO  MCP-PATHNAME
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
       *
@@ -719,8 +756,8 @@ grpsys                            SPA-AREA
            PERFORM 820-JOBKANRI-READ-SEC
       *
            IF      FLG-SJOBKANRI       =   ZERO
-               IF      (JOB-ENDTIME    =   SPA-NAI-ENDTIME(2)) AND
-                       (JOB-ENDYMD     =   SPA-NAI-ENDYMD (2))
+               IF      (JOB1-ENDTIME   =   SPA-NAI-ENDTIME(2)) AND
+                       (JOB1-ENDYMD    =   SPA-NAI-ENDYMD (2))
       *    ジョブ管理削除
                    MOVE    "DEL"          TO  SJOBKANRI-MODE
                    INITIALIZE             JOBKANRI-REC
@@ -765,8 +802,8 @@ grpsys                            SPA-AREA
                                             OR  "01"
                    CONTINUE
                ELSE
-                   IF      (JOB-ENDTIME       NOT =   SPACE)  AND
-                           (JOB-ENDYMD        NOT =   SPACE)
+                   IF      (JOB1-ENDTIME      NOT =   SPACE)  AND
+                           (JOB1-ENDYMD       NOT =   SPACE)
                        CONTINUE
                    ELSE
       *            マスタ更新中
@@ -899,6 +936,10 @@ grpsys                            SPA-AREA
            MOVE    SPA-GMN-MSG2            TO  M96-MSG2-VALUE
            MOVE    SPA-GMN-MSG2-STYLE      TO  M96-MSG2-STYLE
       *
+      *----(03.04.01)--ADD-START---
+           MOVE    SPA-GMN-DURATION        TO  M96-DURATION
+      *----(03.04.01)--ADD-END-----
+      *
            PERFORM 5001-MAPCUR-SEC
            .
       *
@@ -943,6 +984,10 @@ grpsys                            SPA-AREA
                 WHEN    OTHER
                     MOVE    SPACE               TO  SPA-ERRMSG
             END-EVALUATE.
+      *
+      *----(03.04.01)--ADD-START---
+           MOVE    ZERO            TO  M96-DURATION
+      *----(03.04.01)--ADD-END-----
       *
            MOVE    SPACE                TO  MERR
            MOVE    SPA-ERRCD            TO  MERR-ERRCODE
@@ -1077,9 +1122,9 @@ grpsys                            SPA-AREA
        900-DBKANRI-READ-SEC         SECTION.
       *
            MOVE    "DBFETCH"       TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC     TO  DBKANRI-REC
                MOVE    ZERO            TO  FLG-DBKANRI
@@ -1099,9 +1144,9 @@ grpsys                            SPA-AREA
            MOVE    ZERO            TO  MCP-RC
       *
            MOVE    "DBSELECT"      TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
        910-DBSELECT-EXT.
@@ -1113,9 +1158,9 @@ grpsys                            SPA-AREA
        990-DBCLOSE-SEC           SECTION.
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
        990-DBCLOSE-EXT.
@@ -1127,9 +1172,10 @@ grpsys                            SPA-AREA
        900-PUT-WINDOW              SECTION.
       *
            MOVE   "PUTWINDOW"          TO  MCP-FUNC.
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
+           .
        900-PUT-WINDOW-EXT.
            EXIT.
