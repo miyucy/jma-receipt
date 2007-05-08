@@ -31,6 +31,7 @@
       *  01.00.01    NACL−多々納 05/02/01  残量廃棄判定追加
       *  01.00.02    NACL-多々納  05/12/22  MONFUNC 対応
       *  01.00.03    NACL-多々納  06/03/02  セット期間対応
+      *  03.05.00    NACL-多々納  07/05/08  グループ診療対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -227,12 +228,11 @@
       *    入力セットマスタ検索
            MOVE    SPACE               TO  INPUTSET-REC
            INITIALIZE                      INPUTSET-REC
-           MOVE    SPA-HOSPNUM          TO  ISET-HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  ISET-HOSPNUM
            MOVE    WRK-SETCD           TO  ISET-SETCD
            MOVE    SPA-SRYYMD          TO  ISET-YUKOSTYMD
            MOVE    SPA-SRYYMD          TO  ISET-YUKOEDYMD
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    INPUTSET-REC        TO  MCPDATA-REC
            MOVE    "tbl_inputset"      TO  MCP-TABLE
            MOVE    "key2"              TO  MCP-PATHNAME
@@ -264,6 +264,12 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *        編集
                MOVE    ZERO            TO  FLG-SYORI
                MOVE    ISET-INPUTCD    TO  SPA-GMN-INPUTCD(SPA-GMN-IDX)
+      *        保険組合せは前の行を複写する
+               IF     (SPA-GMN-IDX     >   1   )  AND
+                      (SPA-COM-HKNCOMBI (SPA-GMN-IDX - 1 ) =   "9999")
+                  MOVE    "9999"           TO  SPA-COM-HKNCOMBI
+                                                      (SPA-GMN-IDX)
+               END-IF
       *
                EVALUATE    SPA-GMN-INPUTCD(SPA-GMN-IDX)(1:1)
                    WHEN    "S"
@@ -505,6 +511,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    ORCSCSETHEN-PG      TO  LNK-SC92-PG
            MOVE    ORCSCSETHEN-SYORIFLG    TO  LNK-SC92-SYORIFLG
            MOVE    SPACE               TO  LNK-SC92-KBN
+           MOVE    "8"                 TO  LNK-SC92-KBN
            MOVE    SPA-GMN-IDX         TO  LNK-SC92-GMN-IDX
            MOVE    SPA-COM-INPUTCD(SPA-GMN-IDX)
                                        TO  LNK-SC92-SRYCD
@@ -559,7 +566,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            IF     (SPA-ERRCD           NOT =   SPACE )  OR
                   (LNK-SC92-ERRAREA    NOT =   SPACE )
                MOVE    SPACE           TO  SPA-ERRCD
-               INITIALIZE              SPA-GMN-TBLREC  (SPA-GMN-IDX)
+               INITIALIZE              SPA-GMN-TBLREC (SPA-GMN-IDX)
                INITIALIZE              SPA-COM-TBLREC (SPA-GMN-IDX)
                IF      WRK-GMN-IDX         =   SPA-GMN-IDX
                    CONTINUE
@@ -737,12 +744,11 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *    入力セットマスタ検索
            MOVE    SPACE               TO  INPUTSET-REC
            INITIALIZE                      INPUTSET-REC
-           MOVE    SPA-HOSPNUM          TO  ISET-HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  ISET-HOSPNUM
            MOVE    WRK-SETCD           TO  ISET-SETCD
            MOVE    SPA-SRYYMD          TO  ISET-YUKOSTYMD
            MOVE    SPA-SRYYMD          TO  ISET-YUKOEDYMD
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    INPUTSET-REC        TO  MCPDATA-REC
            MOVE    "tbl_inputset"      TO  MCP-TABLE
            MOVE    "key2"              TO  MCP-PATHNAME
@@ -855,7 +861,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
        41011921-INPSET-MEI-SEC           SECTION.
       *
            MOVE    SPACE               TO  INPUTCD-REC
-           MOVE    SPA-HOSPNUM          TO  ICD-HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  ICD-HOSPNUM
            MOVE    "6"                 TO  ICD-CDSYU
       *
            STRING    WRK-INPUTCD       DELIMITED   BY  SPACE
@@ -935,7 +941,6 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *****************************************************************
        930-INPUTCD-READ-SEC         SECTION.
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    INPUTCD-REC         TO  MCPDATA-REC
            MOVE    "tbl_inputcd"       TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
@@ -981,9 +986,9 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
        910-DBSELECT-SEC                SECTION.
       *
            MOVE    "DBSELECT"      TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
        910-DBSELECT-EXT.
@@ -994,9 +999,9 @@ grpsys                            SPA-AREA
        920-DBFETCH-SEC                 SECTION.
       *
            MOVE    "DBFETCH"       TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
       *
@@ -1009,9 +1014,9 @@ grpsys                            SPA-AREA
        990-DBCLOSE-SEC           SECTION.
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
        990-DBCLOSE-EXT.

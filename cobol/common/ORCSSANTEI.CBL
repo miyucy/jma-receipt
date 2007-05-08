@@ -30,6 +30,8 @@
       *  01.00.04    NACL-Â¿¡¹Ç¼  05/11/18  MONFUNC ÂÐ±þ Â¾
       *  03.03.00    NACL-Â¿¡¹Ç¼  06/10/20  ¶ºÀµ¸ÇÄêÅùÄÉ²Ã
       *  03.04.00    NACL-Â¿¡¹Ç¼  06/12/01  ¼«ÇåÀÕ·òÊÝ½àµòÄÉ²Ã
+      *  03.04.01    NACL-Â¿¡¹Ç¼  07/03/XX  ¥ê¥Ï¥Ó¥ê´ÉÍýÎÁÄÉ²Ã¡ÊH19.4²þÀµ¡Ë
+      *  03.05.00    NACL-Â¿¡¹Ç¼  07/05/08  ¥°¥ë¡¼¥×¿ÇÎÅÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -58,6 +60,8 @@
       *
            03  FLG-NAIBUN-ADD      PIC 9(01).
            03  FLG-NAIBUN-DEL      PIC 9(01).
+      *
+           03  FLG-RKAN-OK         PIC 9(01).
       *
       *    Åº»úÎÎ°è
        01  IDX-AREA.
@@ -104,6 +108,10 @@
            03  WRK-DBPATH              PIC X(64). 
       *
            03  WRK-RIGAKU-RYO          PIC X(01). 
+      *
+           03  WRK-STR-SRYCD           PIC X(09).
+           03  WRK-STR-YMD             PIC X(08).
+           03  WRK-RIH-YMD             PIC X(08).
       *
       *    Æ±°ì½é²ó»»ÄêÆü¥³¡¼¥É¥Æ¡¼¥Ö¥ë
        01  TBL-AREA.
@@ -255,6 +263,7 @@
       *    ½é²ó»»ÄêÆü·èÄê½èÍý
       *****************************************************************
        100-SYOKAI-SEC                SECTION.
+      *
       *    ½é²óÇ¯·îÆü¤Ï¡¢ÆÃÄêÌôºÞ¼£ÎÅ´ÉÍý²Ã»»¤Î¤ß¤È¤¹¤ë
            MOVE    SPACE               TO  WRK-KBN
            SET     TBL-IDX             TO  1
@@ -356,6 +365,19 @@
            IF     (WRK-MAE-SRYCD       =   WRK-MANSEI ) 
                PERFORM 1009-MANSE-CHK-SEC
            END-IF
+      *    ¥ê¥Ï¥Ó¥ê°å³Ø´ÉÍýÎÁ¤Î»þ¡¢ËýÀ­áÖÄË¤ÈÆ±ÍÍ¤Î½èÍý¤È¤¹¤ë
+           SET     TBL-SAN             TO  1
+           SEARCH  TBL-SANTEI-OCC      VARYING   TBL-SAN
+               AT  END
+                       MOVE    ZERO            TO  FLG-RKAN-OK
+               WHEN   (SSANTEI-SRYCD   =   TBL-SANTEI-SRYCD
+                                                          (TBL-SAN))
+                  AND (TBL-RSI-KBN (TBL-SAN)   =   "S"   )
+                  MOVE    1               TO  FLG-RKAN-OK
+           END-SEARCH
+           IF      FLG-RKAN-OK         =   1
+               PERFORM 10011-RIHAKANRI-SYORI-SEC
+           END-IF
       *
            .
        100-SYOKAI-EXT.
@@ -371,7 +393,6 @@
       *    »»ÄêÍúÎò¸¡º÷
            MOVE    "SANTEI-KEY4"       TO  WRK-DBPATH
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SANTEI-REC          TO  MCPDATA-REC
            MOVE    "tbl_santei"        TO  MCP-TABLE
            MOVE    "key4"              TO  MCP-PATHNAME
@@ -411,7 +432,6 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *    »»ÄêÍúÎò¸¡º÷
            MOVE    "SANTEI-KEY4"       TO  WRK-DBPATH
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SANTEI-REC          TO  MCPDATA-REC
            MOVE    "tbl_santei"        TO  MCP-TABLE
            MOVE    "key4"              TO  MCP-PATHNAME
@@ -477,7 +497,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *
       *    »»ÄêÍúÎò¸¡º÷
            INITIALIZE                  SANTEI-REC
-           MOVE    SPA-HOSPNUM          TO  SANTEI-HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  SANTEI-HOSPNUM
            MOVE    SSANTEI-PTID        TO  SANTEI-PTID
            MOVE    WRK-SRYCD           TO  SANTEI-SRYCD
            MOVE    WRK-SRYYMD(1:6)     TO  SANTEI-SRYYM
@@ -506,7 +526,6 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    ZERO                TO  SANTEI-HKNCOMBINUM
            END-IF
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SANTEI-REC          TO  MCPDATA-REC
            MOVE    "tbl_santei"        TO  MCP-TABLE
            MOVE    WRK-DBPATH          TO  MCP-PATHNAME
@@ -567,7 +586,13 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                PERFORM 10091-SRYKARRK-CHK-SEC
                IF     (WRK-SYOSINYMD       =   SPACE )  OR
                       (WRK-SYOSINYMD       >   WRK-FSANTEIYMD)
-                   MOVE    SSANTEI-SRYYMD      TO  WRK-FSANTEIYMD
+                   IF     (SSANTEI-NYUGAIKBN   =   "1"   ) AND
+                          (WRK-SYOSINYMD       =   SPACE ) AND
+                          (WRK-FSANTEIYMD  NOT =   SPACE )
+                       CONTINUE
+                   ELSE
+                       MOVE    SSANTEI-SRYYMD      TO  WRK-FSANTEIYMD
+                   END-IF
                END-IF
                MOVE    WRK-SYOSINYMD       TO  WRK-SYOSINYMD-1
            ELSE
@@ -600,69 +625,115 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
        10091-SRYKARRK-CHK-SEC      SECTION.
       *
            MOVE    SPACE               TO  WRK-SYOSINYMD
-      *    ÉÂ±¡
+      **** ÉÂ±¡
       *    Ï·¿Í
-           MOVE    "111700110"         TO  WRK-SRYCD
-           PERFORM 100912-SANTEI-CHK-SEC
-           IF     (WRK-SYOSINYMD       =   SPACE  )  OR
-                  (WRK-YMD             >   WRK-SYOSINYMD)
-               MOVE    WRK-YMD         TO  WRK-SYOSINYMD
-           END-IF
-           MOVE    "111000110"         TO  WRK-SRYCD
-           PERFORM 100912-SANTEI-CHK-SEC
-           IF     (WRK-SYOSINYMD       =   SPACE  )  OR
-                  (WRK-YMD             >   WRK-SYOSINYMD)
-               MOVE    WRK-YMD         TO  WRK-SYOSINYMD
-           END-IF
+      *    MOVE    "111700110"         TO  WRK-SRYCD
+      *    PERFORM 100912-SANTEI-CHK-SEC
+      *    IF     (WRK-SYOSINYMD       =   SPACE  )  OR
+      *           (WRK-YMD             >   WRK-SYOSINYMD)
+      *        MOVE    WRK-YMD         TO  WRK-SYOSINYMD
+      *    END-IF
+      *    MOVE    "111000110"         TO  WRK-SRYCD
+      *    PERFORM 100912-SANTEI-CHK-SEC
+      *    IF     (WRK-SYOSINYMD       =   SPACE  )  OR
+      *           (WRK-YMD             >   WRK-SYOSINYMD)
+      *        MOVE    WRK-YMD         TO  WRK-SYOSINYMD
+      *    END-IF
       *    ¿ÇÎÅ½ê
       *    Ï·¿Í
-           MOVE    "111700210"         TO  WRK-SRYCD
-           PERFORM 100912-SANTEI-CHK-SEC
-           IF     (WRK-SYOSINYMD       =   SPACE  )  OR
-                  (WRK-YMD             >   WRK-SYOSINYMD)
-               MOVE    WRK-YMD         TO  WRK-SYOSINYMD
-           END-IF
+      *    MOVE    "111700210"         TO  WRK-SRYCD
+      *    PERFORM 100912-SANTEI-CHK-SEC
+      *    IF     (WRK-SYOSINYMD       =   SPACE  )  OR
+      *           (WRK-YMD             >   WRK-SYOSINYMD)
+      *        MOVE    WRK-YMD         TO  WRK-SYOSINYMD
+      *    END-IF
       *    Ï·¿Í³°
-           MOVE    "111003610"         TO  WRK-SRYCD
-           PERFORM 100912-SANTEI-CHK-SEC
-           IF     (WRK-SYOSINYMD       =   SPACE  )  OR
-                  (WRK-YMD             >   WRK-SYOSINYMD)
-               MOVE    WRK-YMD         TO  WRK-SYOSINYMD
-           END-IF
+      *    MOVE    "111003610"         TO  WRK-SRYCD
+      *    PERFORM 100912-SANTEI-CHK-SEC
+      *    IF     (WRK-SYOSINYMD       =   SPACE  )  OR
+      *           (WRK-YMD             >   WRK-SYOSINYMD)
+      *        MOVE    WRK-YMD         TO  WRK-SYOSINYMD
+      *    END-IF
       *    ¾®»ù²Ê¿Ç»¡ÎÁ
       *    ±¡³°½èÊý   ½é¿Ç
-           MOVE    "113003510"         TO  WRK-SRYCD
-           PERFORM 100912-SANTEI-CHK-SEC
-           IF     (WRK-SYOSINYMD       =   SPACE  )  OR
-                  (WRK-YMD             >   WRK-SYOSINYMD)
-               MOVE    WRK-YMD         TO  WRK-SYOSINYMD
-           END-IF
+      *    MOVE    "113003510"         TO  WRK-SRYCD
+      *    PERFORM 100912-SANTEI-CHK-SEC
+      *    IF     (WRK-SYOSINYMD       =   SPACE  )  OR
+      *           (WRK-YMD             >   WRK-SYOSINYMD)
+      *        MOVE    WRK-YMD         TO  WRK-SYOSINYMD
+      *    END-IF
       *    ¡¡¡¡±¡Æâ½èÊý   ½é¿Ç
-           MOVE    "113003710"         TO  WRK-SRYCD
-           PERFORM 100912-SANTEI-CHK-SEC
-           IF     (WRK-SYOSINYMD       =   SPACE  )  OR
-                  (WRK-YMD             >   WRK-SYOSINYMD)
-               MOVE    WRK-YMD         TO  WRK-SYOSINYMD
-           END-IF
+      *    MOVE    "113003710"         TO  WRK-SRYCD
+      *    PERFORM 100912-SANTEI-CHK-SEC
+      *    IF     (WRK-SYOSINYMD       =   SPACE  )  OR
+      *           (WRK-YMD             >   WRK-SYOSINYMD)
+      *        MOVE    WRK-YMD         TO  WRK-SYOSINYMD
+      *    END-IF
       *
       *    ²¾¤Î½é¿ÇÎÁ
-           MOVE    "099110001"         TO  WRK-SRYCD
-           PERFORM 100912-SANTEI-CHK-SEC
-           IF     (WRK-SYOSINYMD       =   SPACE  )  OR
-                  (WRK-YMD             >   WRK-SYOSINYMD)
-               MOVE    WRK-YMD         TO  WRK-SYOSINYMD
-           END-IF
+      *    MOVE    "099110001"         TO  WRK-SRYCD
+      *    PERFORM 100912-SANTEI-CHK-SEC
+      *    IF     (WRK-SYOSINYMD       =   SPACE  )  OR
+      *           (WRK-YMD             >   WRK-SYOSINYMD)
+      *        MOVE    WRK-YMD         TO  WRK-SYOSINYMD
+      *    END-IF
       *
       *    Ï«ºÒ½é¿ÇÎÁ
-           MOVE    "101110010"         TO  WRK-SRYCD
-           PERFORM 100912-SANTEI-CHK-SEC
-           IF     (WRK-SYOSINYMD       =   SPACE  )  OR
-                  (WRK-YMD             >   WRK-SYOSINYMD)
-               MOVE    WRK-YMD         TO  WRK-SYOSINYMD
+      *    MOVE    "101110010"         TO  WRK-SRYCD
+      *    PERFORM 100912-SANTEI-CHK-SEC
+      *    IF     (WRK-SYOSINYMD       =   SPACE  )  OR
+      *           (WRK-YMD             >   WRK-SYOSINYMD)
+      *        MOVE    WRK-YMD         TO  WRK-SYOSINYMD
+      ***  END-IF
+      *
+           MOVE    SPACE               TO  WRK-YMD
+      *    »»ÄêÍúÎò¸¡º÷
+           INITIALIZE                  SANTEI-REC
+           MOVE    SPA-HOSPNUM         TO  SANTEI-HOSPNUM
+           MOVE    SPA-PTID            TO  SANTEI-PTID
+           MOVE    WRK-SRYCD           TO  SANTEI-SRYCD
+           MOVE    WRK-SRYYM           TO  SANTEI-SRYYM
+      *
+           MOVE    SANTEI-REC          TO  MCPDATA-REC
+           MOVE    "tbl_santei"        TO  MCP-TABLE
+           MOVE    "key11"             TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "key11"             TO  MCP-PATHNAME
+               PERFORM 920-SANTEI-READ-SEC
+           ELSE
+               MOVE    1                   TO  FLG-SANTEI
            END-IF
+      *
+           PERFORM UNTIL       FLG-SANTEI          =   1
+      *        ½ªÎ»È½Äê
+               IF      SANTEI-MSANTEICNT   >   ZERO
+                   IF      SANTEI-SRYYM    <=  WRK-SRYYM
+                       PERFORM VARYING     IDX-Y2  FROM    1  BY  1
+                               UNTIL       IDX-Y2      >   31
+                           IF      SANTEI-DAY (IDX-Y2) >   ZERO
+                               MOVE    IDX-Y2          TO  WRK-DD
+                           END-IF
+                       END-PERFORM
+                       MOVE    SANTEI-SRYYM        TO  WRK-YMD(1:6)
+                       IF      SSANTEI-SRYYMD      >=  WRK-YMD
+                           MOVE    1                   TO  FLG-SANTEI
+                       END-IF
+                   END-IF
+               END-IF
+               IF      FLG-SANTEI          =   ZERO
+                   MOVE    "key11"             TO  MCP-PATHNAME
+                   PERFORM 920-SANTEI-READ-SEC
+               END-IF
+           END-PERFORM
+           MOVE    "tbl_santei"        TO  MCP-TABLE
+           MOVE    "key11"             TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+      *
+           MOVE    WRK-YMD         TO  WRK-SYOSINYMD
            .
       *
-       1009-MANSE-CHK-EXT.
+       10091-SRYKARRK-CHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -670,15 +741,24 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *****************************************************************
        100912-SANTEI-CHK-SEC      SECTION.
       *
+      *    ÊÝ¸±Ëè¤Î¥³¡¼¥É¤ÎÈ½Äê
+           PERFORM 1000-SANTEI-CHK-SEC
+      *
            MOVE    SPACE               TO  WRK-YMD
       *    »»ÄêÍúÎò¸¡º÷
            INITIALIZE                  SANTEI-REC
-           MOVE    SPA-HOSPNUM          TO  SANTEI-HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  SANTEI-HOSPNUM
            MOVE    SPA-PTID            TO  SANTEI-PTID
            MOVE    WRK-SRYCD           TO  SANTEI-SRYCD
            MOVE    WRK-SRYYM           TO  SANTEI-SRYYM
+      *    ·òÊÝ°Ê³°¤ÇÊÝ¸±ÊÌ¤Î»þ¡¢ÊÝ¸±¤ò¥»¥Ã¥È
+           IF     (FLG-HKNSAN          =   1   )  AND
+                  (SSANTEI-HKNKBN  NOT =   ZERO)
+               MOVE    SSANTEI-HKNCOMBINUM TO  SANTEI-HKNCOMBINUM
+           ELSE
+               MOVE    ZERO                TO  SANTEI-HKNCOMBINUM
+           END-IF
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SANTEI-REC          TO  MCPDATA-REC
            MOVE    "tbl_santei"        TO  MCP-TABLE
            MOVE    "key8"              TO  MCP-PATHNAME
@@ -698,10 +778,17 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                                UNTIL       IDX-Y2      >   31
                            IF      SANTEI-DAY (IDX-Y2) >   ZERO
                                MOVE    IDX-Y2          TO  WRK-DD
+                               MOVE    31              TO  IDX-Y2
                            END-IF
                        END-PERFORM
                        MOVE    SANTEI-SRYYM        TO  WRK-YMD(1:6)
-                       MOVE    1                   TO  FLG-SANTEI
+      *                »»ÄêÆü¤è¤ê¸å¤Î»»Äê¤ÏÂÐ¾Ý³°
+                       IF     (SANTEI-SRYYM        =   WRK-SRYYM)
+                         AND  (SSANTEI-SRYYMD      <   WRK-YMD  )
+                           CONTINUE
+                       ELSE
+                           MOVE    1                   TO  FLG-SANTEI
+                       END-IF
                    END-IF
                END-IF
       *
@@ -752,6 +839,78 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *
            .
        1000-SANTEI-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *     ¼À´µÊÌ¥ê¥Ï¥Ó¥ê°å³Ø´ÉÍýÎÁ½èÍý
+      *****************************************************************
+       10011-RIHAKANRI-SYORI-SEC             SECTION.
+      *
+           MOVE    SPACE               TO  WRK-STR-SRYCD
+           EVALUATE    SSANTEI-SRYCD
+      *        ¿´Âç·ì´É¼À´µ
+               WHEN    "180029910"
+               WHEN    "180030010"
+                   MOVE    "099800111"         TO  WRK-STR-SRYCD
+      *        Ç¾·ì´É¼À´µ
+               WHEN    "180030110"
+               WHEN    "180030210"
+                   MOVE    "099800121"         TO  WRK-STR-SRYCD
+      *        ±¿Æ°´ï
+               WHEN    "180030310"
+               WHEN    "180030410"
+                   MOVE    "099800131"         TO  WRK-STR-SRYCD
+      *        ¸ÆµÛ´ï
+               WHEN    "180030510"
+               WHEN    "180030610"
+                   MOVE    "099800141"         TO  WRK-STR-SRYCD
+           END-EVALUATE
+           MOVE    SSANTEI-SRYYMD(1:6) TO  WRK-SRYYM
+           MOVE    SPACE               TO  WRK-STR-YMD
+      *    È¯À¸Æü¸¡º÷
+           MOVE    WRK-STR-SRYCD       TO  WRK-SRYCD
+           PERFORM 100912-SANTEI-CHK-SEC
+           MOVE    WRK-YMD             TO  WRK-STR-YMD
+           MOVE    WRK-STR-YMD         TO  WRK-RIH-YMD
+      *    ËýÀ­áÖÄË¤ÈÆ±ÍÍ¤Ë½é²ó»»ÄêÆü¤ò·èÄê¤¹¤ë
+      *    ½é¿ÇÎÁ»»ÄêÆü¤¬¤Ê¤¤»þ¡¢¿ÇÎÅ²ÊÍúÎò¤«¤é»»Äê
+           IF      SSANTEI-SYOYMD      =   SPACE
+               MOVE    SSANTEI-SRYYMD(1:6)     TO  WRK-SRYYM
+               PERFORM 10091-SRYKARRK-CHK-SEC
+           ELSE
+               MOVE    SSANTEI-SYOYMD      TO  WRK-SYOSINYMD
+           END-IF
+      *    ½é¿Ç»»ÄêÆü¤è¤ê¡¢È¯À¸Æü¤¬¸å¤Î»þ
+           IF      WRK-SYOSINYMD       <   WRK-RIH-YMD
+               MOVE    WRK-RIH-YMD         TO  WRK-SYOSINYMD
+           END-IF
+      *
+           IF     (WRK-SYOSINYMD       =   SPACE )  OR
+                  (WRK-SYOSINYMD       >   WRK-FSANTEIYMD)
+               IF     (SSANTEI-NYUGAIKBN   =   "1"   ) AND
+                      (WRK-SYOSINYMD       =   SPACE ) AND
+                      (WRK-FSANTEIYMD  NOT =   SPACE )
+                   CONTINUE
+               ELSE
+                   MOVE    SSANTEI-SRYYMD      TO  WRK-FSANTEIYMD
+               END-IF
+           END-IF
+           MOVE    WRK-SYOSINYMD       TO  WRK-SYOSINYMD-1
+      *
+           MOVE    ZERO                TO  FLG-MANSEI-ALL
+           MOVE    ZERO                TO  FLG-SYOKAI
+           IF      WRK-FSANTEIYMD-OLD  NOT =   SPACE
+               MOVE    WRK-FSANTEIYMD-OLD(1:6) TO  WRK-SRYYM
+               PERFORM 10091-SRYKARRK-CHK-SEC
+               IF     (WRK-SYOSINYMD   NOT =   SPACE     )   AND
+                      (WRK-SYOSINYMD       <   WRK-FSANTEIYMD-OLD) AND
+                      (WRK-SYOSINYMD       =   WRK-SYOSINYMD-1)
+                   MOVE    1               TO  FLG-MANSEI-ALL
+                   MOVE    WRK-FSANTEIYMD  TO  WRK-KON-FSANTEIYMD
+               END-IF
+           END-IF
+           .
+       10011-RIHAKANRI-SYORI-EXT.
            EXIT.
       *
       *****************************************************************
@@ -807,7 +966,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *
       *        ¿·µ¬ÄÉ²ÃÊÔ½¸
                INITIALIZE                  SANTEI-REC
-               MOVE    SPA-HOSPNUM          TO  SANTEI-HOSPNUM
+               MOVE    SPA-HOSPNUM         TO  SANTEI-HOSPNUM
                MOVE    SSANTEI-PTID        TO  SANTEI-PTID
                MOVE    WRK-SRYYMD(1:6)     TO  SANTEI-SRYYM
                MOVE    WRK-SRYCD           TO  SANTEI-SRYCD
@@ -1489,7 +1648,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            ELSE
       *    ¿·µ¬
                INITIALIZE                  SANTEI-REC
-               MOVE    SPA-HOSPNUM          TO  SANTEI-HOSPNUM
+               MOVE    SPA-HOSPNUM         TO  SANTEI-HOSPNUM
                MOVE    KEN-SANTEI-PTID     TO  SANTEI-PTID
                MOVE    KEN-SANTEI-SRYYM    TO  SANTEI-SRYYM
                MOVE    WRK-SRYCD           TO  SANTEI-SRYCD
@@ -1520,7 +1679,6 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
        30011-NAIBUFUKA-SUM-SEC         SECTION.
       *
       *    »»ÄêÍúÎò¸¡º÷
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SANTEI-REC          TO  MCPDATA-REC
            MOVE    "tbl_santei"        TO  MCP-TABLE
            MOVE    "key9"              TO  MCP-PATHNAME
@@ -1566,14 +1724,13 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SMCNDATE-YMD        TO  SANTEI-UPYMD
            MOVE    SMCNDATE-HMS        TO  SANTEI-UPHMS
       *    ¿·µ¬
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SANTEI-REC          TO  MCPDATA-REC
            MOVE    "DBINSERT"          TO  MCP-FUNC
            MOVE    "tbl_santei"        TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
            IF      MCP-RC          NOT =   ZERO
                DISPLAY "ORCSSANTEI  INS ERR:" SANTEI-KEY
                                       ","   MCP-RC
@@ -1592,14 +1749,13 @@ grpsys                            SPA-AREA
            MOVE    SMCNDATE-YMD        TO  SANTEI-UPYMD
            MOVE    SMCNDATE-HMS        TO  SANTEI-UPHMS
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SANTEI-REC          TO  MCPDATA-REC
            MOVE    "DBUPDATE"          TO  MCP-FUNC
            MOVE    "tbl_santei"        TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
            IF      MCP-RC          NOT =   ZERO
                DISPLAY "ORCSSANTEI UPD ERR:" SANTEI-KEY
                                                   ","  MCP-RC
@@ -1614,14 +1770,13 @@ grpsys                            SPA-AREA
       *****************************************************************
        520-SANTEI-DEL-SEC                SECTION.
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SANTEI-REC          TO  MCPDATA-REC
            MOVE    "DBDELETE"          TO  MCP-FUNC
            MOVE    "tbl_santei"        TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
            IF      MCP-RC          NOT =   ZERO
                DISPLAY "ORCSSANTEI DEL ERR:" SANTEI-KEY
                                                   ","  MCP-RC
@@ -1639,9 +1794,8 @@ grpsys                            SPA-AREA
       *
            MOVE    SSANTEI-SRYYMD      TO  TNS-YUKOSTYMD
            MOVE    SSANTEI-SRYYMD      TO  TNS-YUKOEDYMD
-grpsys     MOVE    SPA-HOSPNUM         TO  TNS-HOSPNUM
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  TNS-HOSPNUM
            MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
            MOVE    "tbl_tensu"         TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
@@ -1680,12 +1834,11 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *
            MOVE    SPACE               TO  TENSUPLUS-REC
            INITIALIZE                      TENSUPLUS-REC
-grpsys     MOVE    TNS-HOSPNUM         TO  TNSP-HOSPNUM
            MOVE    TNS-SRYCD           TO  TNSP-SRYCD
            MOVE    TNS-YUKOSTYMD       TO  TNSP-YUKOSTYMD
            MOVE    TNS-YUKOEDYMD       TO  TNSP-YUKOEDYMD
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  TNSP-HOSPNUM
            MOVE    TENSUPLUS-REC       TO  MCPDATA-REC
            MOVE    "tbl_tensuplus"     TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
@@ -1745,9 +1898,9 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
        910-DBSELECT-SEC                SECTION.
       *
            MOVE    "DBSELECT"      TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
        910-DBSELECT-EXT.
@@ -1758,9 +1911,9 @@ grpsys                            SPA-AREA
        920-DBFETCH-SEC                 SECTION.
       *
            MOVE    "DBFETCH"       TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
       *
@@ -1773,9 +1926,9 @@ grpsys                            SPA-AREA
        990-DBCLOSE-SEC           SECTION.
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
        990-DBCLOSE-EXT.
