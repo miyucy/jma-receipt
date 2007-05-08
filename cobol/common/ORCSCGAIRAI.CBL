@@ -1030,6 +1030,7 @@
                MOVE    ZERO                TO  SYU-GRP-HAKHOUFLG
            END-IF
       *
+           MOVE    SPA-HOSPNUM         TO  SYU-HOSPNUM
            IF      SPA-SYORIFLG        =   ZERO
       *        ¼ýÇ¼¹¹¿·º¹³Û¼èÆÀ
                PERFORM 100218-ORCSS002-CALL-SEC

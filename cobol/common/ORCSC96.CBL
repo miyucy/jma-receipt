@@ -318,6 +318,12 @@
                WHEN    "0055"
                    MOVE    "自費入力できません"
                                        TO  SPA-ERRMSG
+               WHEN    "0086"
+                   STRING  "金額が税込みです。"
+                           ".950 では算定できません。"
+                                       DELIMITED  BY  SIZE
+                                       INTO  SPA-ERRMSG
+                   END-STRING
                WHEN    "0056"
                    MOVE    "検査の逓減ができません。算定日が前後します"
                                        TO  SPA-ERRMSG
@@ -961,6 +967,20 @@
                                        DELIMITED  BY  SPACE
                                        INTO    SPA-ERRMSG
                    END-STRING
+      *        コンタクトレンズ検査
+               WHEN    "K600"
+                   STRING  "警告！コンタクトレンズ検査料"
+                           "は既に算定されています。"
+                           "初回装用者は算定できません。"
+                                       DELIMITED   BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
+               WHEN    "0600"
+                   STRING  "コンタクトレンズ検査料算定時に算定できない"
+                           "検査です。"
+                                       DELIMITED   BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
       *
                WHEN    "9300"
                    MOVE    "患者登録の業務権限はありません。"
@@ -1249,6 +1269,25 @@
                                                DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
+               WHEN    "8043"
+                   STRING  "リハビリテーション料は逓減になります。"
+                                               DELIMITED  BY  SIZE
+                       "逓減を分けて入力して下さい。"
+                                               DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
+               WHEN    "8044"
+                   STRING  "労災・自賠責ではリハビリテーション料の"
+                           "逓減はありません。"
+                                               DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
+               WHEN    "8045"
+                   STRING  "労災・自賠責ではリハビリテーション"
+                           "医学管理料は算定できません。"
+                                               DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
       *投薬附加情報エラー
                WHEN    "0200"
                    STRING  "長期投与日数以上です。"
@@ -1268,6 +1307,14 @@
                WHEN    "K201"
                    STRING  "警告！"
                            "投与量以上です。数量を変更して下さい。"
+                                               DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
+      *!
+               WHEN    "K202"
+                   STRING  "警告！"
+                           "剤内に包括診療コード以外の算定があります。"
+                           "剤分離をして下さい。"
                                                DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
@@ -1369,9 +1416,14 @@
                    MOVE    "初診算定日が暦日ではありません。"
                                        TO  SPA-ERRMSG
                WHEN    "1017"
-                   MOVE
-                   "初診算定日を登録して、再診料自動算定をして下さい"
-                                       TO  SPA-ERRMSG
+      *?           MOVE
+      *            "初診算定日を登録して、再診料自動算定をして下さい"
+      *?                               TO  SPA-ERRMSG
+                   STRING  "初診算定日を初診料の横に入力して初診算定日"
+                           "を登録後、再診料の自動算定をして下さい"
+                                           DELIMITED   BY  SIZE
+                                           INTO    SPA-ERRMSG
+                   END-STRING
                WHEN    "1018"
                    MOVE
                    "対象患者の中途終了データはありません。"

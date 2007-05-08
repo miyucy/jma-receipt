@@ -69,6 +69,11 @@
            03  WRK-KINGAK-9        PIC 9(08)V99.
            03  WRK-KINGAK          PIC 9(08).
       *
+           03  WRK-ZEIKIN-9        PIC 9(08)V9(5).
+           03  WRK-ZEIKIN          PIC 9(08).
+           03  WRK-TANKA           PIC 9(08)V99.
+           03  WRK-KISOTEN         PIC 9(08)V99.
+      *
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -225,7 +230,16 @@
       *!                                                  (IDX-Z)
       *!               END-IF
       *!           END-IF
-                           CONTINUE
+      *            Ｈ１９／４／１から税込み追加
+                   IF     (WRK-COM-INPUTCD(IDX-Z)(1:3) =   "095" OR
+                                                           "096" )
+                       IF     (WRK-COM-TENSIKIBETU(IDX-Z)  =  4  )  AND
+                              (WRK-COM-SRYKBN  (IDX-Z)     =  "95")
+                           MOVE    "0086"          TO  WRK-ERRCD
+                           MOVE    "1"             TO  WRK-COM-CUR
+                                                          (IDX-Z)
+                       END-IF
+                   END-IF
       *
                WHEN    OTHER
       *            計算できる点数識別であること
@@ -331,12 +345,42 @@
            IF      WRK-COM-KISOTEN(IDX-Z)      =   ZERO
                CONTINUE
            ELSE
-               COMPUTE WRK-KINGAK      =   WRK-COM-KISOTEN (IDX-Z)
+      *        消費税計算
+               IF      (SPA-SRYYMD     >=  "20070401" )  AND
+                       (WRK-COM-SRYKBN(IDX-Z)  =   "96")  AND
+                       (WRK-COM-TENSIKIBETU(IDX-Z)  =  0 )
+                   MOVE    WRK-COM-KISOTEN (IDX-Z)  TO  WRK-KISOTEN
+                   PERFORM 10021-ZEIKEISEN-SEC
+               ELSE
+                   MOVE    WRK-COM-KISOTEN (IDX-Z)  TO  WRK-TANKA
+               END-IF
+               COMPUTE WRK-KINGAK      =   WRK-TANKA
                                        *   WRK-COM-SURYO(IDX-Z)
            END-IF
       *
            .
        10021-JIHI-KEI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    消費税計算処理
+      *****************************************************************
+       10021-ZEIKEISEN-SEC                  SECTION.
+      *
+           COMPUTE WRK-ZEIKIN-9        =   WRK-KISOTEN
+                                       *   0.05
+           IF      SPA-TAX-HASU-KBN    =   "1"
+      *        小数点以下四捨五入
+               COMPUTE WRK-ZEIKIN      =   WRK-ZEIKIN-9
+                                       +   0.5
+           ELSE
+      *        小数点以下切り捨て
+               MOVE    WRK-ZEIKIN-9        TO  WRK-ZEIKIN
+           END-IF
+           COMPUTE WRK-TANKA           =   WRK-KISOTEN
+                                       +   WRK-ZEIKIN
+           .
+       10021-ZEIKEISEN-EXT.
            EXIT.
       *
       *****************************************************************
@@ -355,16 +399,30 @@
            EVALUATE    WRK-COM-TENSIKIBETU(IDX-Z)
       *        金額
                WHEN    1
-                   COMPUTE WRK-KINGAK-9    =   WRK-COM-KISOTEN (IDX-Z)
+      *            消費税計算
+                   IF      (SPA-SRYYMD     >=  "20070401" )  AND
+                           (WRK-COM-SRYKBN(IDX-Z)  =   "96")
+                       MOVE    WRK-COM-KISOTEN (IDX-Z)  TO  WRK-KISOTEN
+                       PERFORM 10021-ZEIKEISEN-SEC
+                   ELSE
+                       MOVE    WRK-COM-KISOTEN (IDX-Z)  TO  WRK-TANKA
+                   END-IF
+                   COMPUTE WRK-KINGAK-9    =   WRK-TANKA
                                            *   WRK-COM-SURYO(IDX-Z)
                                            +   0.5
                    MOVE    WRK-KINGAK-9    TO  WRK-KINGAK
       *        点数
                WHEN    3
                WHEN    4
-                   COMPUTE WRK-KINGAK      =  (WRK-COM-KISOTEN(IDX-Z)
-                                           *   WRK-COM-SURYO(IDX-Z) )
+                   COMPUTE WRK-KISOTEN     =   WRK-COM-KISOTEN (IDX-Z)
                                            *   10
+                   IF      (SPA-SRYYMD     >=  "20070401" )  AND
+                           (WRK-COM-SRYKBN(IDX-Z)  =   "96")
+                       PERFORM 10021-ZEIKEISEN-SEC
+                   ELSE
+                       MOVE    WRK-KISOTEN     TO  WRK-TANKA
+                   END-IF
+                   MOVE    WRK-TANKA       TO  WRK-KINGAK
            END-EVALUATE
       *
            .
