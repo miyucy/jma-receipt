@@ -758,7 +758,7 @@
       *
       *    入力コード読み込み
            INITIALIZE              INPUTCD-REC
-      *****MOVE    SPA-HOSPID      TO  ICD-HOSPID
+           MOVE    SPA-HOSPNUM     TO  ICD-HOSPNUM
            MOVE    WRK-CDSYU       TO  ICD-CDSYU
            IF      WRK-IPCPATH     =   "key"
                INITIALIZE                  ORCSADDSIGNAREA
@@ -770,7 +770,6 @@
            ELSE
                MOVE    SPA-GMN-KENCD   TO  ICD-INPUTCD
            END-IF
-           MOVE    SPA-HOSPNUM     TO  ICD-HOSPNUM
            MOVE    INPUTCD-REC     TO  MCPDATA-REC
            MOVE    "tbl_inputcd"   TO  WRK-PATH-TABLE
            MOVE    WRK-IPCPATH     TO  WRK-PATH-PATHNAME
@@ -1299,18 +1298,261 @@
                    MOVE    "blob"          TO  MCP-TABLE
                    MOVE    "primary"       TO  MCP-PATHNAME
                    MOVE    SPA-GMN-PHOTO   TO  ORCA-BLOB-FILE
-                   CALL    "ORCDBMAIN"     USING
-                                               MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
+                                                       MCPDATA-REC
+                                                       SPA-AREA
+                   MOVE    ORCA-BLOB-OBJECT    TO  SPA-GMN-OBJECT
+               ELSE
+                   MOVE    "0015"          TO  SPA-ERRCD
+                   MOVE    10              TO  SPA-GMN-CUR
+               END-IF
            END-IF
+           .
+      *
+       430-GAZOCHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    画像ファイル存在チェック
+      *****************************************************************
+       430-GAZOCHK2-SEC         SECTION.
+      *
+           MOVE  ZERO    TO FLG-GAZO
+           PERFORM VARYING IDZ FROM 256 BY -1 
+                   UNTIL   IDZ <    1
+               IF  SPA-GMN-PHOTO(IDZ:1) NOT = SPACE
+                   COMPUTE IDZ = IDZ - 3
+                   IF  IDZ > ZERO
+                       EVALUATE    SPA-GMN-PHOTO(IDZ:4)
+                           WHEN    ".JPG"
+                           WHEN    ".GIF"
+                           WHEN    ".PNG"
+                           WHEN    ".jpg"
+                           WHEN    ".gif"
+                           WHEN    ".png"
+                              MOVE  1    TO FLG-GAZO
+                           WHEN    OTHER
+                              MOVE  ZERO    TO FLG-GAZO
+                       END-EVALUATE
+                   END-IF
+                   MOVE  1     TO  IDZ
+               END-IF
+           END-PERFORM
+           .
+      *
+       430-GAZOCHK2-EXT.
+           EXIT.
+      *
+      *----(03.03.03)--ADD-START---
+      *****************************************************************
+      *    画像フォルダチェック
+      *****************************************************************
+       430-FOLDERCHK-SEC           SECTION.
+      *
+           MOVE    SPACE           TO  WRK-FILEMEI
+      *
+           IF      WRK-PASSMEI     =   SPACE
+               GO  TO  430-FOLDERCHK-EXT
+           END-IF
+      *
+           PERFORM VARYING IDZ FROM 128 BY -1 
+                   UNTIL   IDZ <    1
+               IF  SPA-GMN-FOLDER(IDZ:)    NOT =   SPACE
+                   IF  SPA-GMN-FOLDER(1:IDZ)   =   WRK-PASSMEI(1:IDZ)
+                       COMPUTE IDZ  =  IDZ +   1
+                       MOVE    WRK-PASSMEI(IDZ:)   TO  WRK-FILEMEI
+                   ELSE
+                       MOVE    WRK-PASSMEI         TO  WRK-FILEMEI
+                   END-IF
+                   MOVE  1     TO  IDZ
+               END-IF
+           END-PERFORM
+           .
+      *
+       430-FOLDERCHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    画像パスチェック
+      *****************************************************************
+       430-PASSCHK-SEC           SECTION.
+      *
+           MOVE    SPACE           TO  WRK-PASSMEI
+      *
+           IF      WRK-FILEMEI     =   SPACE
+               GO  TO  430-PASSCHK-EXT
+           END-IF
+      *
+           PERFORM VARYING IDZ FROM 128 BY -1 
+                   UNTIL   IDZ <    1
+               IF  WRK-FILEMEI(IDZ:)   NOT =   SPACE
+                   IF  WRK-FILEMEI(IDZ:1)  =   "/"
+                       MOVE    WRK-FILEMEI     TO  WRK-PASSMEI
+                       MOVE  1     TO  IDZ
+                   END-IF
+               END-IF
+           END-PERFORM
+      *
+           IF  WRK-PASSMEI        =   SPACE      
+               STRING  SPA-GMN-FOLDER      DELIMITED  BY  SPACE
+                       WRK-FILEMEI         DELIMITED  BY  SPACE
+                                   INTO    WRK-PASSMEI
+               END-STRING
+           END-IF
+           .
+      *
+       430-PASSCHK-EXT.
+           EXIT.
+      *
+      *----(03.03.03)--ADD-END-----
+      *----(02.02.02)--ADD-START---
+      *****************************************************************
+      *    リスト印刷処理
+      *****************************************************************
+       440-LSTPRT-SEC              SECTION.
+      *
+           MOVE    SPACE               TO  LINKAREA
+           MOVE    SPA-N21KYOUTU       TO  SPA-WORK
+           MOVE    SPA-AREA            TO  SPA-COMMON
+      *
+           MOVE    "N23"               TO  SPA-SAKIPG
+           MOVE    "N21"               TO  SPA-MOTOPG
+      *
+           MOVE   "CHANGE"             TO  MCP-PUTTYPE
+           MOVE   SPA-SAKIPG           TO  MCP-WINDOW
+      *
+           PERFORM 900-PUT-WINDOW
+      *
+           MOVE    1                   TO  FLG-END
+           .
+      *
+       440-LSTPRT-EXT.
+           EXIT.
+      *
+      *----(02.02.02)--ADD-END-----
+      *****************************************************************
+      *    参照処理
+      *****************************************************************
+       440-SANSYO-SEC              SECTION.
+      *
+      *----(02.02.02)--ADD-START---
+           PERFORM 430-TEXTCHK-SEC
+      *----(02.02.02)--ADD-END-----
+      *
+           IF          SPA-ERRCD    NOT    =   SPACE
+               GO  TO  440-SANSYO-EXT
+           END-IF
+      *
+           INITIALIZE                  SPA-N22-AREA
+           MOVE    SPA-NAI-SRYCD   TO  SPA-N22-KENCD
+           MOVE    SPA-GMN-KENNAME TO  SPA-N22-KENNAME
+      *
+           MOVE    SPACE           TO  SPA-MOTOPG
+           MOVE    SPA-N21KYOUTU   TO  SPA-WORK
+           MOVE    SPA-AREA        TO  SPA-COMMON
+           MOVE    SPA-N21SCRAREA  TO  SPA-FREE
+      *
+           MOVE    "LINK"          TO  MCP-STATUS
+           MOVE    SPACE           TO  MCP-EVENT
+      *
+           CALL    "ORCGN22"           USING
+                                       MCPAREA
+                                       SPAAREA
+                                       LINKAREA
+                                       SCRAREA.
+      *
+           MOVE    SPA-COMMON      TO  SPA-AREA
+           MOVE    SPA-FREE        TO  SPA-N21SCRAREA
+           MOVE    SPA-WORK        TO  SPA-N21KYOUTU
+      *
+           MOVE    "SELNUM"        TO  MCP-WIDGET
+      *
+           MOVE    "N21"       TO  SPA-MOTOPG
+           MOVE    "N22"       TO  SPA-SAKIPG
+      *
+           MOVE    "NEW"       TO  MCP-PUTTYPE
+           MOVE    "N22"       TO  MCP-WINDOW
+      *
+      *    ＰＵＴ処理
+           PERFORM 900-PUT-WINDOW.
+      *
+           MOVE    1           TO  FLG-END
+           .
+      *
+       440-SANSYO-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    カーソル移動処理
+      *****************************************************************
+       440-CURMOVE-SEC         SECTION.
+      *
+      *    テキストチェック
+           PERFORM 430-TEXTCHK-SEC
+      *
+           IF          SPA-ERRCD   NOT     =   SPACE
+               GO  TO  440-CURMOVE-SEC-EXT
+           END-IF
+      *
+           EVALUATE    SPA-GMN-CUR
+               WHEN    10
+                   MOVE    99          TO  SPA-GMN-CUR
+               WHEN    99
+                   MOVE    2           TO  SPA-GMN-CUR
+               WHEN    OTHER
+                   COMPUTE SPA-GMN-CUR =   SPA-GMN-CUR +   1
+           END-EVALUATE
+           .
+      *
+       440-CURMOVE-SEC-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    戻る　処理
+      *****************************************************************
+       450-BACK                SECTION.
+      *
+           PERFORM 451-TEMP-DEL-SEC
+      *
+           MOVE    "M02"       TO  SPA-SAKIPG
+           MOVE    "N21"       TO  SPA-MOTOPG
+      *
+           MOVE    SPACE       TO  LINKAREA
+      *
+           INITIALIZE          SPA-KYOTUKEY
+           MOVE    SPA-KYOUTU  TO  LNK-KYOUTU
+      *
+           MOVE   "CHANGE"     TO  MCP-PUTTYPE
+           MOVE    SPA-SAKIPG  TO  MCP-WINDOW
+      *
+      *    ＰＵＴ処理
+           PERFORM 900-PUT-WINDOW
+      *
+           MOVE    1           TO  FLG-END
+      *
+           .
+      *
+       450-BACK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    削除処理
+      *****************************************************************
+       451-TEMP-DEL-SEC            SECTION.
+      *
+           MOVE    SPACE           TO  TEMP-REC
+           INITIALIZE                  TEMP-REC
+      *
+           MOVE    SPA-TERMID      TO  TEMP-TERMID
+      *
+           MOVE    SPA-HOSPNUM     TO  TEMP-HOSPNUM
+           MOVE    TEMP-REC            TO  MCPDATA-REC
            MOVE    "DBDELETE"          TO  MCP-FUNC
            MOVE    "tbl_yakujyo_temp"  TO  MCP-TABLE
            MOVE    "termid"            TO  MCP-PATHNAME
-           CALL    "ORCDBMAIN"         USING
-                                           MCPAREA
-                                           MCPDATA-REC
-                                           SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
       *
@@ -1353,19 +1595,17 @@
            MOVE    SPACE       TO  YAKUJYO-REC
            INITIALIZE              YAKUJYO-REC
       *
-      *****MOVE    SPA-HOSPID      TO  YAKUJYO-HOSPID
+           MOVE    SPA-HOSPNUM     TO  YAKUJYO-HOSPNUM
            MOVE    SPA-NAI-SRYCD   TO  YAKUJYO-SRYCD
            MOVE    1               TO  YAKUJYO-TEKNUM
       *
-           MOVE    SPA-HOSPNUM     TO  YAKUJYO-HOSPNUM
            MOVE    YAKUJYO-REC     TO  MCPDATA-REC
            MOVE    "DBDELETE"      TO  MCP-FUNC
            MOVE    "tbl_yakujyo"   TO  MCP-TABLE
            MOVE    "key"           TO  MCP-PATHNAME
-           CALL    "ORCDBMAIN"     USING
-                                       MCPAREA
-                                       MCPDATA-REC
-                                       SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            IF          MCP-RC      NOT     =   ZERO
                MOVE    "1002"      TO  SPA-ERRCD
@@ -1429,7 +1669,7 @@
            MOVE    SPACE       TO  YAKUJYO-REC
            INITIALIZE              YAKUJYO-REC
       *
-      *****MOVE    SPA-HOSPID      TO  YAKUJYO-HOSPID
+           MOVE    SPA-HOSPNUM     TO  YAKUJYO-HOSPNUM
            MOVE    SPA-NAI-SRYCD   TO  YAKUJYO-SRYCD
            MOVE    1               TO  YAKUJYO-TEKNUM
       *
@@ -1459,14 +1699,12 @@
                MOVE    SPA-SYSYMD      TO  YAKUJYO-CREYMD
            END-IF
       *
-           MOVE    SPA-HOSPNUM     TO  YAKUJYO-HOSPNUM
            MOVE    YAKUJYO-REC     TO  MCPDATA-REC
            MOVE    "tbl_yakujyo"   TO  MCP-TABLE
            MOVE    "key"           TO  MCP-PATHNAME
-           CALL    "ORCDBMAIN"     USING
-                                       MCPAREA
-                                       MCPDATA-REC
-                                       SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            IF      MCP-RC              NOT =   ZERO 
                MOVE    "1001"          TO  SPA-ERRCD
@@ -1531,7 +1769,7 @@
            MOVE    SPACE       TO  YAKUJYO-REC
            INITIALIZE              YAKUJYO-REC
       *
-      *****MOVE    SPA-HOSPID      TO  YAKUJYO-HOSPID
+           MOVE    SPA-HOSPNUM     TO  YAKUJYO-HOSPNUM
            MOVE    SPA-NAI-SRYCD   TO  YAKUJYO-SRYCD
            MOVE    1               TO  YAKUJYO-TEKNUM
       *
@@ -1554,14 +1792,12 @@
                MOVE    SPA-SYSYMD      TO  YAKUJYO-CREYMD
            END-IF
       *
-           MOVE    SPA-HOSPNUM     TO  YAKUJYO-HOSPNUM
            MOVE    YAKUJYO-REC     TO  MCPDATA-REC
            MOVE    "tbl_yakujyo"   TO  MCP-TABLE
            MOVE    "key"           TO  MCP-PATHNAME
-           CALL    "ORCDBMAIN"     USING
-                                       MCPAREA
-                                       MCPDATA-REC
-                                       SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            IF      MCP-RC              NOT =   ZERO 
                MOVE    "1001"          TO  SPA-ERRCD
@@ -2195,10 +2431,9 @@
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    WRK-PATH-TABLE      TO  MCP-TABLE
            MOVE    WRK-PATH-PATHNAME   TO  MCP-PATHNAME
-           CALL    "ORCDBMAIN"         USING
-                                           MCPAREA
-                                           MCPDATA-REC
-                                           SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
            IF          MCP-RC      =   ZERO
                MOVE    ZERO        TO  FLG-TENSU
                PERFORM 900-TENSU-FETCH-SEC
@@ -2218,10 +2453,9 @@
            MOVE    "DBFETCH"           TO  MCP-FUNC
            MOVE    WRK-PATH-TABLE      TO  MCP-TABLE
            MOVE    WRK-PATH-PATHNAME   TO  MCP-PATHNAME
-           CALL    "ORCDBMAIN"         USING
-                                           MCPAREA
-                                           MCPDATA-REC
-                                           SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            IF          MCP-RC      =   ZERO
                MOVE    ZERO            TO  FLG-TENSU
@@ -2242,10 +2476,9 @@
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    WRK-PATH-TABLE      TO  MCP-TABLE
            MOVE    WRK-PATH-PATHNAME   TO  MCP-PATHNAME
-           CALL    "ORCDBMAIN"         USING
-                                           MCPAREA
-                                           MCPDATA-REC
-                                           SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
            .
       *
        900-TENSU-CLOSE-EXT.
@@ -2259,10 +2492,9 @@
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    WRK-PATH-TABLE      TO  MCP-TABLE
            MOVE    WRK-PATH-PATHNAME   TO  MCP-PATHNAME
-           CALL    "ORCDBMAIN"         USING
-                                           MCPAREA
-                                           MCPDATA-REC
-                                           SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
            IF          MCP-RC      =   ZERO
                MOVE    ZERO        TO  FLG-INPUTCD
                PERFORM 900-INPUTCD-FETCH-SEC
@@ -2282,10 +2514,9 @@
            MOVE    "DBFETCH"           TO  MCP-FUNC
            MOVE    WRK-PATH-TABLE      TO  MCP-TABLE
            MOVE    WRK-PATH-PATHNAME   TO  MCP-PATHNAME
-           CALL    "ORCDBMAIN"         USING
-                                           MCPAREA
-                                           MCPDATA-REC
-                                           SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            IF          MCP-RC      =   ZERO
                MOVE    ZERO            TO  FLG-INPUTCD
@@ -2306,10 +2537,9 @@
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    WRK-PATH-TABLE      TO  MCP-TABLE
            MOVE    WRK-PATH-PATHNAME   TO  MCP-PATHNAME
-           CALL    "ORCDBMAIN"         USING
-                                           MCPAREA
-                                           MCPDATA-REC
-                                           SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
            .
       *
        900-INPUTCD-CLOSE-EXT.
@@ -2321,28 +2551,25 @@
        900-YAKUJYO-READ-SEC        SECTION.
       *
            INITIALIZE                  YAKUJYO-REC
-      *****MOVE    SPA-HOSPID      TO  YAKUJYO-HOSPID
+           MOVE    SPA-HOSPNUM     TO  YAKUJYO-HOSPNUM
            MOVE    SPA-NAI-SRYCD   TO  YAKUJYO-SRYCD
            MOVE    1               TO  YAKUJYO-TEKNUM
-           MOVE    SPA-HOSPNUM     TO  YAKUJYO-HOSPNUM
            MOVE    YAKUJYO-REC     TO  MCPDATA-REC
       *
            MOVE    "DBSELECT"      TO  MCP-FUNC
            MOVE    "tbl_yakujyo"   TO  MCP-TABLE
            MOVE    "key"           TO  MCP-PATHNAME
-           CALL    "ORCDBMAIN"     USING
-                                       MCPAREA
-                                       MCPDATA-REC
-                                       SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            IF          MCP-RC      =   ZERO
                MOVE    "DBFETCH"       TO  MCP-FUNC
                MOVE    "tbl_yakujyo"   TO  MCP-TABLE
                MOVE    "key"           TO  MCP-PATHNAME
-               CALL    "ORCDBMAIN"     USING
-                                           MCPAREA
-                                           MCPDATA-REC
-                                           SPA-AREA
+grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
+                                                   MCPDATA-REC
+                                                   SPA-AREA
                IF          MCP-RC      =   ZERO
                    MOVE    ZERO            TO  FLG-YAKUJYO
                    MOVE    MCPDATA-REC     TO  YAKUJYO-REC
@@ -2356,10 +2583,9 @@
            MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
            MOVE    "tbl_yakujyo"   TO  MCP-TABLE
            MOVE    "key"           TO  MCP-PATHNAME
-           CALL    "ORCDBMAIN"     USING
-                                       MCPAREA
-                                       MCPDATA-REC
-                                       SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
             .
        900-YAKUJYO-READ-EXT.
            EXIT.
@@ -2385,19 +2611,17 @@
            MOVE    "DBSELECT"      TO  MCP-FUNC
            MOVE    "tbl_syskanri"  TO  MCP-TABLE
            MOVE    "key"           TO  MCP-PATHNAME
-           CALL    "ORCDBMAIN"     USING
-                                       MCPAREA
-                                       MCPDATA-REC
-                                       SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            IF      MCP-RC          =   ZERO
                MOVE    "DBFETCH"       TO  MCP-FUNC
                MOVE    "tbl_syskanri"  TO  MCP-TABLE
                MOVE    "key"           TO  MCP-PATHNAME
-               CALL    "ORCDBMAIN"     USING
-                                           MCPAREA
-                                           MCPDATA-REC
-                                           SPA-AREA
+grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
+                                                   MCPDATA-REC
+                                                   SPA-AREA
                IF      MCP-RC          =   ZERO
                    MOVE    ZERO            TO  FLG-SYSKANRI
                    MOVE    MCPDATA-REC     TO  SYS-1030-REC
@@ -2411,10 +2635,9 @@
            MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
            MOVE    "tbl_syskanri"  TO  MCP-TABLE
            MOVE    "key"           TO  MCP-PATHNAME
-           CALL    "ORCDBMAIN"     USING
-                                       MCPAREA
-                                       MCPDATA-REC
-                                       SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
            .
        900-SYS1030-READ-EXT.
            EXIT.
@@ -2425,10 +2648,9 @@
        900-PUT-WINDOW              SECTION.
       *
            MOVE    "PUTWINDOW"     TO  MCP-FUNC.
-           CALL    "ORCDBMAIN"     USING
-                                       MCPAREA
-                                       MCPDATA-REC
-                                       SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
            .
       *
        900-PUT-WINDOW-EXT.

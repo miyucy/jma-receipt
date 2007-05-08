@@ -327,14 +327,14 @@
            CALL    "ORCSMKPASS"        USING
                                        ORCSMKPASSAREA
            MOVE    MKPASS-OT-01    TO  SHELLTBL-NAME
+grpsys*    MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            MOVE    SHELLTBL        TO  MCPDATA-REC
            MOVE    "SHELL"         TO  MCP-FUNC
            MOVE    "shell"         TO  MCP-TABLE
            MOVE    "shell"         TO  MCP-PATHNAME
-           CALL    "ORCDBMAIN"     USING
-                                       MCPAREA
-                                       MCPDATA-REC
-                                       SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *----(01.01.02)--ADD-START---
            MOVE    1                TO  SPA-N22-JYOKYOFLG
       *----(01.01.02)--ADD-END-----
@@ -477,14 +477,14 @@
            CALL    "ORCSMKPASS"        USING
                                        ORCSMKPASSAREA
            MOVE    MKPASS-OT-01    TO  SHELLTBL-NAME
+grpsys*    MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            MOVE    SHELLTBL        TO  MCPDATA-REC
            MOVE    "SHELL"         TO  MCP-FUNC
            MOVE    "shell"         TO  MCP-TABLE
            MOVE    "shell"         TO  MCP-PATHNAME
-           CALL    "ORCDBMAIN"     USING
-                                       MCPAREA
-                                       MCPDATA-REC
-                                       SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
        400-GAZOCOPY-SEC-EXT.
@@ -764,19 +764,16 @@
                MOVE    "blob"          TO  MCP-TABLE
                MOVE    "primary"       TO  MCP-PATHNAME
                MOVE    WRK-GAZOFILE    TO  ORCA-BLOB-FILE
-               CALL    "ORCDBMAIN"     USING
-                                           MCPAREA
-                                           MCPDATA-REC
-                                           SPA-AREA
-           END-IF
+grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
+                                                   MCPDATA-REC
+                                                   SPA-AREA
       *
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "tbl_yakujyo_temp"  TO  MCP-TABLE
            MOVE    "srycd"             TO  MCP-PATHNAME
-           CALL    "ORCDBMAIN"         USING
-                                           MCPAREA
-                                           MCPDATA-REC
-                                           SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
            IF      MCP-RC          =   ZERO
                MOVE    ZERO            TO  FLG-TEMP
                PERFORM 900-TEMP-FETCH-SEC
@@ -796,10 +793,9 @@
            MOVE    "DBFETCH"       TO  MCP-FUNC
            MOVE    "tbl_yakujyo_temp"  TO  MCP-TABLE
            MOVE    "srycd"             TO  MCP-PATHNAME
-           CALL    "ORCDBMAIN"         USING
-                                           MCPAREA
-                                           MCPDATA-REC
-                                           SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            IF      MCP-RC          =   ZERO
                MOVE    ZERO            TO  FLG-TEMP
@@ -820,10 +816,9 @@
            MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
            MOVE    "tbl_yakujyo_temp"  TO  MCP-TABLE
            MOVE    "srycd"             TO  MCP-PATHNAME
-           CALL    "ORCDBMAIN"         USING
-                                           MCPAREA
-                                           MCPDATA-REC
-                                           SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
            .
       *
        900-TEMP-CLOSE-EXT.
@@ -835,10 +830,9 @@
        900-PUT-WINDOW              SECTION.
       *
            MOVE    "PUTWINDOW"     TO  MCP-FUNC.
-           CALL    "ORCDBMAIN"     USING
-                                       MCPAREA
-                                       MCPDATA-REC
-                                       SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
            .
       *
        900-PUT-WINDOW-EXT.
