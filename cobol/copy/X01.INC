@@ -17,6 +17,8 @@
       ********************************************************************
         02  X01.
       *****   02  X01-FIXED1.
+              03  X01-B10-LABEL   PIC X(10).
+              03  X01-B10-STATE   PIC S9(9)   BINARY.
               03  X01-SCROLLEDWINDOW1.
                 04  X01-TENSU-LIST.
                   05  X01-COUNT   PIC S9(9)   BINARY.
@@ -33,8 +35,10 @@
                 04  X01-VALUE   PIC X(10).
               03  X01-EDYUKYMD.
                 04  X01-VALUE   PIC X(10).
+              03  X01-LBLSRYCD.
+                04  X01-VALUE   PIC X(20).
               03  X01-SRYCD.
-                04  X01-VALUE   PIC X(9).
+                04  X01-VALUE   PIC X(100).
               03  X01-NAME.
                 04  X01-VALUE   PIC X(100).
               03  X01-CHKKBNCOMB.
@@ -42,3 +46,5 @@
                   05  X01-VALUE   PIC X(32).
                 04  X01-CHKKBNCOUNT   PIC S9(9)   BINARY.
                 04  X01-CHKKBNLIST    PIC X(32)   OCCURS  9 TIMES.
+              03  X01-LBLBYOSTATUS-STYLE   PIC X(20).
+              03  X01-LBLBYOSTATUS         PIC X(20).

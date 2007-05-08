@@ -26,6 +26,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  03.05.00    NACL-多々納  07/05/08  グループ診療対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -60,6 +61,7 @@
            03  FLG-CHK                     PIC 9(01).
            03  FLG-CHKSND                  PIC 9(01).
            03  FLG-CHKTRD                  PIC 9(01).
+           03  FLG-CHK005                  PIC 9(01).
            03  FLG-TENSU                   PIC 9(01).
            03  FLG-HIZUKE-ERR              PIC 9(01).
            03  FLG-ENTRYCHK                PIC 9(01).
@@ -99,6 +101,7 @@
            03  WRK-KANACHK-MAE-INPUT       PIC X(400).
            03  WRK-KANACHK-OUT-INPUT       PIC X(400).
            03  WRK-RCHKLST-SRYCD           PIC X(09).
+           03  WRK-RCHKLST-ID              PIC 9(09).
            03  WRK-TNS-NAME                PIC X(70).
            03  WRK-CHK-CD                  PIC X(09).
            03  WRK-NAME                    PIC X(70).
@@ -171,6 +174,10 @@
        01  CHKTRD-REC.
            COPY    "CPCHKTRD.INC".
       *
+      *    チェック５
+       01  CHK005-REC.
+           COPY    "CPCHK005.INC".
+      *
       *    適応病名マスター
        01  TEKIOUBYOMEI-REC.
            COPY    "CPTEKIOUBYOMEI.INC".
@@ -209,7 +216,9 @@
            COPY    "X05.INC".
            COPY    "X91.INC".
            COPY    "X97.INC".
-           COPY    "X98.INC". 
+           COPY    "X98.INC".
+           COPY    "X99.INC".
+           COPY    "X100.INC".
            COPY    "XERR.INC".
            COPY    "XID1.INC".
            COPY    "XID2.INC".
@@ -423,6 +432,18 @@
                MOVE    "7"                 TO  SPA-X03-GMN-CHKKBNL   (1)
                MOVE    "診療行為どうしの算定漏れ"
                                            TO  SPA-X03-GMN-CHKKBNMEIL(1)
+           WHEN    "8"
+      *
+               MOVE    1                   TO  SPA-X03-GMN-CHKKBN-MAX
+      *
+               MOVE    "8"                 TO  SPA-X03-GMN-CHKKBNL   (1)
+               MOVE    "病名と薬剤"        TO  SPA-X03-GMN-CHKKBNMEIL(1)
+           WHEN    "9"
+      *
+               MOVE    1                   TO  SPA-X03-GMN-CHKKBN-MAX
+      *
+               MOVE    "9"                 TO  SPA-X03-GMN-CHKKBNL   (1)
+               MOVE    "病名と診療行為"    TO  SPA-X03-GMN-CHKKBNMEIL(1)
            END-EVALUATE
       *
            . 
@@ -433,7 +454,8 @@
       *****************************************************************
        3101-SELCHKLST-HEN-SEC          SECTION.
       *
-           EVALUATE    SPA-X03-GMN-CHKKBN
+           EVALUATE    
+           SPA-X03-GMN-CHKKBN
            WHEN    "1"
            WHEN    "2"
            WHEN    "6"
@@ -448,6 +470,9 @@
                END-IF
            WHEN    "7"
                PERFORM 3101-SELCHKLST-CHKTRD-SEC
+           WHEN    "8"
+           WHEN    "9"
+               PERFORM 3101-SELCHKLST-CHK005-SEC
            WHEN    OTHER
                PERFORM 3101-SELCHKLST-CHKMST-SEC
            END-EVALUATE
@@ -778,6 +803,103 @@
        3101-SELCHKLST-CHKTRD-EXT.
            EXIT.
       *****************************************************************
+      *    チェック項目リスト編集処理（チェックマスタ５より）
+      *****************************************************************
+       3101-SELCHKLST-CHK005-SEC       SECTION.
+      *
+           MOVE    1                   TO  FLG-SELCHKLST-ROW
+      *
+           INITIALIZE                  SPA-X03-GMN-SELCHKLST
+                                       SPA-X03-NAI-SELCHKLST
+      *
+           MOVE    ZERO                TO  CNT-SELCHKLST
+      *
+      *    チェックマスタ検索
+           PERFORM 900-CHK005-KEY5-SEL-SEC
+           IF    ( FLG-CHK005         =   ZERO )
+               PERFORM 900-CHK005-KEY5-FET-SEC
+               IF    ( FLG-CHK005     =   ZERO )
+                   COMPUTE CNT-SELCHKLST  = CNT-SELCHKLST   +   1
+               END-IF
+           END-IF
+      *
+      *    読込スキップ処理
+           PERFORM 3101-SELCHKLST-SKIP-SEC
+      *
+           PERFORM UNTIL ( FLG-CHK005      NOT =   ZERO )
+                    OR   ( SPA-X03-GMN-SELCHKLST-MAX
+                                          >= CONST-SELCHKLST-MAX )
+      *
+               COMPUTE SPA-X03-GMN-SELCHKLST-MAX
+                   =   SPA-X03-GMN-SELCHKLST-MAX   +   1
+      *
+               MOVE    SPA-X03-GMN-SELCHKLST-MAX
+                                       TO  IDX-LST
+      *
+               MOVE    CNT-SELCHKLST   TO  SPA-X03-GMN-TSEL-CHKNUM
+                                                               (IDX-LST)
+      *
+               MOVE    CHK005-BYOMEI   TO  SPA-X03-GMN-TSEL-NAME
+                                                               (IDX-LST)
+      *
+               MOVE    CHK005-YUKOSTYMD
+                                       TO  SPA-X03-NAI-TSEL-YUKOSTYMD
+                                                               (IDX-LST)
+               IF    ( CHK005-YUKOSTYMD   =   "00000000" )
+                   MOVE    CHK005-YUKOSTYMD
+                                       TO  SPA-X03-GMN-TSEL-YUKOSTYMD
+                                                           (IDX-LST)
+               ELSE
+                   MOVE    CHK005-YUKOSTYMD
+                                       TO  WRK-YMD
+                   PERFORM 800-SEIWA-HEN-SEC
+                   MOVE    WRK-HENYMDG TO  SPA-X03-GMN-TSEL-YUKOSTYMD
+                                                           (IDX-LST)
+               END-IF
+      *
+               MOVE    CHK005-YUKOEDYMD
+                                       TO  SPA-X03-NAI-TSEL-YUKOEDYMD
+                                                               (IDX-LST)
+               IF    ( CHK005-YUKOEDYMD   =   "99999999" )
+                   MOVE    CHK005-YUKOEDYMD
+                                       TO  SPA-X03-GMN-TSEL-YUKOEDYMD
+                                                           (IDX-LST)
+               ELSE
+                   MOVE    CHK005-YUKOEDYMD
+                                       TO  WRK-YMD
+                   PERFORM 800-SEIWA-HEN-SEC
+                   MOVE    WRK-HENYMDG TO  SPA-X03-GMN-TSEL-YUKOEDYMD
+                                                           (IDX-LST)
+               END-IF
+      *
+               MOVE    CHK005-ID       TO  SPA-X03-NAI-TSEL-ID
+                                                           (IDX-LST)
+      *
+               MOVE    CHK005-DAYMONTHKBN  TO  SPA-X03-GMN-TRCHK-JYKN
+                                                           (IDX-LST)
+      *
+      *        チェックマスタ読込処理
+               PERFORM 900-CHK005-KEY5-FET-SEC
+               IF    ( FLG-CHK005     =    ZERO )
+                   COMPUTE CNT-SELCHKLST   = CNT-SELCHKLST   +   1
+               END-IF
+      *
+           END-PERFORM
+      *
+           MOVE    "tbl_chk005"           TO  MCP-TABLE
+           MOVE    "key5"                 TO  MCP-PATHNAME
+           PERFORM 910-DBCLOSECURSOR-SEC
+      *
+           IF    ( FLG-CHK005              =   ZERO )
+               MOVE    1               TO  SPA-X03-GMN-NEXT
+           ELSE
+               MOVE    ZERO            TO  SPA-X03-GMN-NEXT
+           END-IF
+      *
+           . 
+       3101-SELCHKLST-CHK005-EXT.
+           EXIT.
+      *****************************************************************
       *    チェック項目リスト編集処理（適応病名マスタより）
       *****************************************************************
        3101-SELCHKLST-TEKBYO-SEC       SECTION.
@@ -901,6 +1023,17 @@
       *
                    PERFORM 900-CHKTRD-KEY11-FET-SEC
                    IF    ( FLG-CHKTRD      =   ZERO )
+                       COMPUTE CNT-SELCHKLST = CNT-SELCHKLST   +   1
+                   END-IF
+      *
+               END-PERFORM
+           WHEN    "8"
+           WHEN    "9"
+               PERFORM UNTIL ( FLG-CHK005  NOT =   ZERO )
+                        OR   ( CNT-SELCHKLST   >   WRK-SKIP-MAX )
+      *
+                   PERFORM 900-CHK005-KEY5-FET-SEC
+                   IF    ( FLG-CHK005      =   ZERO )
                        COMPUTE CNT-SELCHKLST = CNT-SELCHKLST   +   1
                    END-IF
       *
@@ -1257,6 +1390,9 @@
       *
                    MOVE    SPA-X03-NAI-TSEL-SRYCD (IDX2)
                                    TO  WRK-RCHKLST-SRYCD
+      *
+                   MOVE    SPA-X03-NAI-TSEL-ID (IDX2)
+                                   TO  WRK-RCHKLST-ID
       *            チェック先リスト編集処理
                    EVALUATE    SPA-X03-GMN-CHKKBN
                    WHEN  "1"
@@ -1267,6 +1403,9 @@
                        PERFORM 41011-RCHKLST-TEKBYO-HEN-SEC
                    WHEN  "7"
                        PERFORM 41011-RCHKLST-CHKTRD-HEN-SEC
+                   WHEN  "8"
+                   WHEN  "9"
+                       PERFORM 41011-RCHKLST-CHK005-HEN-SEC
                    WHEN  OTHER
                        PERFORM 41011-RCHKLST-CHKMST-HEN-SEC
                    END-EVALUATE
@@ -1447,6 +1586,84 @@
       *
            .
        41011-RCHKLST-CHKTRD-HEN-EXT.
+           EXIT.
+      *****************************************************************
+      *    チェック先リスト編集処理（チェックマスタ３より)
+      *****************************************************************
+       41011-RCHKLST-CHK005-HEN-SEC    SECTION.
+      *
+           MOVE    1                   TO  FLG-RCHKLST-ROW
+      *
+           INITIALIZE                      SPA-X03-GMN-RCHKLST
+                                           SPA-X03-NAI-RCHKLST
+      *
+           MOVE    ZERO                TO  FLG-CHK005
+      *
+      *    チェックマスタ読み込み 
+           INITIALIZE                  CHK005-REC
+           MOVE    SPA-X03-GMN-CHKKBN  TO  CHK005-CHKKBN
+           MOVE    WRK-RCHKLST-ID      TO  CHK005-ID
+           MOVE    SPA-X03-NAI-KJNYMD  TO  CHK005-YUKOSTYMD
+                                           CHK005-YUKOEDYMD
+           MOVE    "2"                 TO  CHK005-CDKBN
+           MOVE    SPA-HOSPNUM         TO  CHK005-HOSPNUM
+           MOVE    CHK005-REC          TO  MCPDATA-REC
+           MOVE    "tbl_chk005"            TO  MCP-TABLE
+           MOVE    "key3"                  TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF    ( MCP-RC              =   ZERO )
+               MOVE    MCPDATA-REC     TO  CHK005-REC
+           ELSE
+               MOVE    1               TO  FLG-CHK005
+               INITIALIZE                  CHK005-REC
+           END-IF
+      *
+           PERFORM UNTIL ( FLG-CHK005  NOT =   ZERO )
+                   OR    ( SPA-X03-GMN-RCHKLST-MAX
+                                          >=   CONST-CHKLST-MAX )
+      *
+               COMPUTE SPA-X03-GMN-RCHKLST-MAX
+                   =   SPA-X03-GMN-RCHKLST-MAX +   1
+      *
+               MOVE    SPA-X03-GMN-RCHKLST-MAX
+                                           TO  IDXA
+      *
+               MOVE    IDXA                TO  SPA-X03-GMN-TRCHK-NUM
+                                                                  (IDXA)
+               MOVE    CHK005-SRYCD        TO  SPA-X03-NAI-TRCHK-SRYCD
+                                                                  (IDXA)
+      *
+      *        点数マスタ読み込み
+               MOVE    CHK005-SRYCD        TO  WRK-CHK-CD
+               PERFORM 41011-TNS-NAME-HEN-SEC
+               MOVE    WRK-NAME            TO  SPA-X03-GMN-TRCHK-NAME
+                                                               (IDXA)
+               MOVE    FLG-SRYCD-DEL
+                                           TO  SPA-X03-NAI-TRCHK-DELFLG
+                                                               (IDXA)
+      *
+               MOVE    CHK005-DAYMONTHKBN  TO  SPA-X03-GMN-TRCHK-JYKN
+                                                               (IDXA)
+      *
+               MOVE    "tbl_chk005"            TO  MCP-TABLE
+               MOVE    "key3"                  TO  MCP-PATHNAME
+               PERFORM 910-DBFETCH-SEC
+               IF    ( MCP-RC          =   ZERO )
+                   MOVE    MCPDATA-REC TO  CHK005-REC
+               ELSE
+                   MOVE    1           TO  FLG-CHK005
+                   INITIALIZE          CHK005-REC
+               END-IF
+      *
+           END-PERFORM
+      *
+      *    カーソルクロース
+           MOVE    "tbl_chk005"            TO  MCP-TABLE
+           MOVE    "key3"                  TO  MCP-PATHNAME
+           PERFORM 910-DBCLOSECURSOR-SEC
+      *
+           .
+       41011-RCHKLST-CHK005-HEN-EXT.
            EXIT.
       *****************************************************************
       *    チェック先リスト編集処理（チェックマスタより)
@@ -2061,6 +2278,8 @@
            WHEN    "6"
                MOVE    "X04"           TO  SPA-SAKIPG
            WHEN    "7"
+           WHEN    "8"
+           WHEN    "9"
                MOVE    "X05"           TO  SPA-SAKIPG
            WHEN    OTHER
                MOVE    "X02"           TO  SPA-SAKIPG
@@ -2130,6 +2349,8 @@
            WHEN    "6"
                MOVE    "X04"           TO  SPA-SAKIPG
            WHEN    "7"
+           WHEN    "8"
+           WHEN    "9"
                MOVE    "X05"           TO  SPA-SAKIPG
            WHEN    OTHER
                MOVE    "X02"           TO  SPA-SAKIPG
@@ -2203,6 +2424,8 @@
                    PERFORM 4300-JYKNLST-CHK-SEC
                    MOVE    WRK-CMB-ITM     TO  X03-TLCHK-JYKN(IDX1)
                WHEN    "7"
+               WHEN    "8"
+               WHEN    "9"
                    MOVE    SPA-X03-GMN-TLCHK-JYKN (IDX1)
                                            TO  WRK-CMB-CD
                    PERFORM 4300-DMKBNLST-CHK-SEC
@@ -2240,6 +2463,8 @@
                    PERFORM 4300-JYKNLST-CHK-SEC
                    MOVE    WRK-CMB-ITM     TO  X03-TRCHK-JYKN(IDX1)
                WHEN    "7"
+               WHEN    "8"
+               WHEN    "9"
                    MOVE    SPA-X03-GMN-TRCHK-JYKN (IDX1)
                                            TO  WRK-CMB-CD
                    PERFORM 4300-DMKBNLST-CHK-SEC
@@ -2299,6 +2524,8 @@
                MOVE    "一致"          TO  X03-LBLLJYKN
                                            X03-LBLRJYKN
            WHEN    "7"
+           WHEN    "8"
+           WHEN    "9"
                MOVE    "日／月"        TO  X03-LBLLJYKN
                                            X03-LBLRJYKN
            END-EVALUATE
@@ -2671,6 +2898,68 @@
        900-CHKTRD-KEY11-FET-EXT.
            EXIT.
       *****************************************************************
+      *    チェックマスタ５検索処理
+      *****************************************************************
+       900-CHK005-KEY5-SEL-SEC        SECTION.
+      *
+           MOVE    ZERO                TO  FLG-CHK005
+      *
+           INITIALIZE                      CHK005-REC
+           MOVE    SPA-X03-GMN-CHKKBN  TO  CHK005-CHKKBN
+           MOVE    SPA-X03-NAI-KJNYMD  TO  CHK005-YUKOSTYMD
+                                           CHK005-YUKOEDYMD
+      *
+           PERFORM VARYING IDX0    FROM    70  BY  -1
+                   UNTIL ( IDX0    <   1 )
+                    OR   ( SPA-X03-GMN-SELNAME (IDX0:1)
+                               NOT =   SPACE )
+      *
+               CONTINUE
+      *
+           END-PERFORM
+      *
+           IF    ( IDX0    >   ZERO )
+               STRING  SPA-X03-GMN-SELNAME (1:IDX0)
+                                           DELIMITED   BY  SIZE
+                       "%"                 DELIMITED   BY  SIZE
+               INTO    CHK005-SELNAME
+               END-STRING
+           ELSE
+               MOVE    "%"             TO  CHK005-SELNAME
+           END-IF
+      *
+           MOVE    SPA-HOSPNUM         TO  CHK005-HOSPNUM
+           MOVE    CHK005-REC          TO  MCPDATA-REC
+           MOVE    "tbl_chk005"        TO  MCP-TABLE
+           MOVE    "key5"              TO  MCP-PATHNAME
+           PERFORM 911-DBSELECT-SEC
+           IF    ( MCP-RC          NOT =   ZERO )
+               MOVE    1               TO  FLG-CHK005
+               INITIALIZE                  CHK005-REC
+           END-IF
+      *
+           .
+       900-CHK005-KEY5-SEL-EXT.
+           EXIT.
+      *****************************************************************
+      *    チェックマスタ５読込処理
+      *****************************************************************
+       900-CHK005-KEY5-FET-SEC         SECTION.
+      *
+           MOVE    "tbl_chk005"        TO  MCP-TABLE
+           MOVE    "key5"              TO  MCP-PATHNAME
+           PERFORM 910-DBFETCH-SEC
+           IF    ( MCP-RC          =   ZERO )
+               MOVE    MCPDATA-REC     TO  CHK005-REC
+           ELSE
+               MOVE    1               TO  FLG-CHK005
+               INITIALIZE                  CHK005-REC
+           END-IF
+      *
+           .
+       900-CHK005-KEY5-FET-EXT.
+           EXIT.
+      *****************************************************************
       *    適応病名マスタ検索処理（ＫＥＹ４）
       *****************************************************************
        900-TEKIOUBYOMEI-KEY4-SEL-SEC       SECTION.
@@ -2701,7 +2990,7 @@
                MOVE    "%"             TO  TEKBYO-SELNAME
            END-IF
       *
-      *****MOVE    SPA-HOSPNUM              TO  TEKBYO-HOSPNUM
+      **** MOVE    SPA-HOSPNUM         TO  TEKBYO-HOSPNUM
            MOVE    TEKIOUBYOMEI-REC         TO  MCPDATA-REC
            MOVE    "tbl_tekioubyomei"       TO  MCP-TABLE
            MOVE    "key4"                   TO  MCP-PATHNAME
@@ -2767,10 +3056,9 @@
        910-DBSELECT-SEC                SECTION.
       *
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           CALL    "ORCDBMAIN"         USING
-                                           MCPAREA
-                                           MCPDATA-REC
-                                           SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
            IF    ( MCP-RC          =   ZERO )
                PERFORM 910-DBFETCH-SEC
            END-IF
@@ -2785,10 +3073,9 @@
        911-DBSELECT-SEC                SECTION.
       *
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           CALL    "ORCDBMAIN"         USING
-                                           MCPAREA
-                                           MCPDATA-REC
-                                           SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
       *
@@ -2800,10 +3087,9 @@
        910-DBFETCH-SEC                 SECTION.
       *
            MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "ORCDBMAIN"         USING
-                                           MCPAREA
-                                           MCPDATA-REC
-                                           SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
       *
@@ -2815,10 +3101,9 @@
        910-DBCLOSECURSOR-SEC           SECTION.
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           CALL    "ORCDBMAIN"         USING
-                                           MCPAREA
-                                           MCPDATA-REC
-                                           SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
       *
@@ -2830,12 +3115,9 @@
        900-PUT-WINDOW              SECTION.
       *
            MOVE   "PUTWINDOW"          TO  MCP-FUNC.
-           CALL   "ORCDBMAIN"          USING
-                                           MCPAREA
-                                           MCPDATA-REC
-                                           SPA-AREA
-      *
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
            .
-      *
        900-PUT-WINDOW-EXT.
            EXIT.

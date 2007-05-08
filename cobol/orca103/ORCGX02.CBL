@@ -40,6 +40,7 @@
       *                                     遷移を追加
       *  01.00.08    NACL-太田    04/07/07  検索画面戻り時のカーソル制御
       *                                     修正
+      *  03.05.00    NACL-多々納  07/05/08  グループ診療対応
       *****************************************************************
       *
        ENVIRONMENT                               DIVISION.
@@ -251,7 +252,9 @@
            COPY    "X05.INC".
            COPY    "X91.INC".
            COPY    "X97.INC".
-           COPY    "X98.INC". 
+           COPY    "X98.INC".
+           COPY    "X99.INC".
+           COPY    "X100.INC".
            COPY    "XERR.INC".
            COPY    "XID1.INC".
            COPY    "XID2.INC".
@@ -276,6 +279,10 @@
            MOVE    SPA-WORK        TO  SPA-X01KYOUTU 
            MOVE    SPA-FREE        TO  SPA-X01FREE
            MOVE    SPA-X01SONOTA   TO  SPA-X02 
+      *TEST
+           DISPLAY "000-PROC-SEC SPA-SAKIPG:" SPA-SAKIPG
+                ", SPA-MOTOPG:"   SPA-MOTOPG
+                ", MCP-STATUS:"   MCP-STATUS
       *
            MOVE    SPACE           TO  SPA-ERRCD
            MOVE    ZERO            TO  FLG-END
@@ -356,20 +363,16 @@
       *
            EVALUATE    SPA-MOTOPG
                WHEN    "X98"
-      *    病名セット処理
+      *        病名セット処理
                    PERFORM 320-X98SPASET-SEC
-                   GO      TO      300-SCREEN-EXT
                WHEN    "XID1"
                    PERFORM 330-XID1-SET-SEC
-                   GO      TO      300-SCREEN-EXT
                WHEN    "X03"
                    PERFORM 340-X03-SET-SEC
-                   GO      TO      300-SCREEN-EXT
+               WHEN    OTHER
+                   PERFORM 310-SPASET-SEC
+                   MOVE    1               TO  SPA-GMN-PAGE
            END-EVALUATE
-      *
-           PERFORM 310-SPASET-SEC
-      *
-           MOVE    1               TO  SPA-GMN-PAGE
       *
            .
        300-SCREEN-EXT.
@@ -380,6 +383,8 @@
       *****************************************************************
        310-SPASET-SEC              SECTION.
       *
+      *TEST
+           DISPLAY "SPA-HOSPNUM:" SPA-HOSPNUM
       *
            INITIALIZE              SPA-X02-AREA
       *
@@ -886,7 +891,7 @@
            END-IF
       *
            INITIALIZE              INPUTCD-REC
-      *****MOVE    SPA-HOSPID      TO  ICD-HOSPID
+           MOVE    SPA-HOSPNUM     TO  ICD-HOSPNUM
            MOVE    WRK-CDSYUBETU   TO  ICD-CDSYU
            MOVE    WRK-SRYCD       TO  ICD-INPUTCD
       *
@@ -1442,7 +1447,7 @@
                        MOVE    SPA-GMN-TTEKCD (IDY)    TO  CHK-CD (IDZ)
                    END-IF
                END-PERFORM
-               MOVE    SPA-HOSPNUM     TO  CHK-HOSPNUM
+               MOVE    SPA-HOSPNUM         TO  CHK-HOSPNUM
                MOVE    CHK-REC             TO  MCPDATA-REC
                MOVE    "tbl_chk"       TO  MCP-TABLE
                MOVE    "key"           TO  MCP-PATHNAME
@@ -1910,7 +1915,6 @@
       *
            MOVE    ZERO                TO  FLG-INPUTCD
       *
-           MOVE    SPA-HOSPNUM         TO  ICD-HOSPNUM
            MOVE    INPUTCD-REC         TO  MCPDATA-REC
            MOVE    "tbl_inputcd"       TO  MCP-TABLE
            MOVE    "key2"              TO  MCP-PATHNAME
@@ -1935,10 +1939,9 @@
        910-DBSELECT-SEC                SECTION.
       *
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           CALL    "ORCDBMAIN"         USING
-                                           MCPAREA
-                                           MCPDATA-REC
-                                           SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
            IF    ( MCP-RC          =   ZERO )
                PERFORM 910-DBFETCH-SEC
            END-IF
@@ -1953,10 +1956,9 @@
        911-DBSELECT-SEC                SECTION.
       *
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           CALL    "ORCDBMAIN"         USING
-                                           MCPAREA
-                                           MCPDATA-REC
-                                           SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
       *
@@ -1968,10 +1970,9 @@
        910-DBFETCH-SEC                 SECTION.
       *
            MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "ORCDBMAIN"         USING
-                                           MCPAREA
-                                           MCPDATA-REC
-                                           SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
       *
@@ -1983,10 +1984,9 @@
        910-DBCLOSECURSOR-SEC           SECTION.
       *
            MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
-           CALL    "ORCDBMAIN"     USING
-                                       MCPAREA
-                                       MCPDATA-REC
-                                       SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
       *
@@ -1998,10 +1998,9 @@
        910-DBDELETE-SEC                 SECTION.
       *
            MOVE    "DBDELETE"      TO  MCP-FUNC
-           CALL    "ORCDBMAIN"     USING
-                                       MCPAREA
-                                       MCPDATA-REC
-                                       SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
       *
@@ -2013,10 +2012,9 @@
        910-DBINSERT-SEC                 SECTION.
       *
            MOVE    "DBINSERT"      TO  MCP-FUNC
-           CALL    "ORCDBMAIN"     USING
-                                       MCPAREA
-                                       MCPDATA-REC
-                                       SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
       *
@@ -2028,10 +2026,9 @@
        900-PUT-WINDOW              SECTION.
       *
            MOVE   "PUTWINDOW"       TO  MCP-FUNC.
-           CALL   "ORCDBMAIN"       USING
-                                        MCPAREA
-                                        MCPDATA-REC
-                                        SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
        900-PUT-WINDOW-EXT.

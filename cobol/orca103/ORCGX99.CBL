@@ -27,6 +27,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  03.05.00    NACL-多々納  07/05/08  グループ診療対応
       *****************************************************************
       *
        ENVIRONMENT                     DIVISION.
@@ -1482,6 +1483,7 @@
       *
            MOVE    ZERO            TO  FLG-SYSKANRI
       *
+           MOVE    SPA-HOSPNUM     TO  SYS-HOSPNUM
            MOVE    SYSKANRI-REC    TO  MCPDATA-REC
            MOVE    "tbl_syskanri"  TO  MCP-TABLE
            MOVE    "key2"          TO  MCP-PATHNAME
@@ -1540,6 +1542,7 @@
            INTO    PTBYO-BYOMEI
            END-STRING
       *
+           MOVE    SPA-HOSPNUM     TO  PTBYO-HOSPNUM
            MOVE    PTBYOMEI-REC    TO  MCPDATA-REC
            MOVE    "tbl_ptbyomei"  TO  MCP-TABLE
            MOVE    "key26"         TO  MCP-PATHNAME
@@ -1592,6 +1595,7 @@
            MOVE    WRK-SEL-EDBYOMEICD  TO  BYO-IKOSAKICD
       *
            MOVE    BYO-BYOMEI      TO  BYO-BYOMEIKANA
+grpsys*    MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            MOVE    BYOMEI-REC      TO  MCPDATA-REC
            MOVE    "tbl_byomei"    TO  MCP-TABLE
            MOVE    "key7"          TO  MCP-PATHNAME
@@ -1643,7 +1647,7 @@
            MOVE    ZERO            TO  FLG-USERBYOMEI
       *
            INITIALIZE              USERBYOMEI-REC
-           MOVE    SPA-HOSPID      TO  USBYO-HOSPID
+           MOVE    SPA-HOSPNUM     TO  USBYO-HOSPNUM
       *
            MOVE    USERBYOMEI-REC  TO  MCPDATA-REC
            MOVE    "tbl_userbyomei"
@@ -1689,7 +1693,7 @@
            MOVE    ZERO            TO  FLG-USERBYOMEI
       *
            INITIALIZE              USERBYOMEI-REC
-           MOVE    SPA-HOSPID      TO  USBYO-HOSPID
+           MOVE    SPA-HOSPNUM     TO  USBYO-HOSPNUM
       *
            MOVE    WRK-SEL-BUNRUICD
                                    TO  USBYO-BUNRUICD
@@ -1741,9 +1745,9 @@
        910-DBSELECT-SEC                SECTION.
       *
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
            IF    ( MCP-RC          =   ZERO )
                PERFORM 910-DBFETCH-SEC
            END-IF
@@ -1758,9 +1762,9 @@
        911-DBSELECT-SEC                SECTION.
       *
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
       *
@@ -1772,9 +1776,9 @@
        910-DBFETCH-SEC                 SECTION.
       *
            MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
       *
@@ -1786,9 +1790,9 @@
        910-DBCLOSECURSOR-SEC                 SECTION.
       *
            MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
       *
@@ -1800,9 +1804,9 @@
        910-DBDELETE-SEC                 SECTION.
       *
            MOVE    "DBDELETE"          TO  MCP-FUNC
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
       *
@@ -1814,9 +1818,9 @@
        910-DBINSERT-SEC                SECTION.
       *
            MOVE    "DBINSERT"          TO  MCP-FUNC
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
       *
@@ -1828,9 +1832,9 @@
        900-PUT-WINDOW              SECTION.
       *
            MOVE   "PUTWINDOW"          TO  MCP-FUNC.
-           CALL   "MONFUNC"            USING
-                                       MCPAREA
-                                       MCPDATA-REC.
-      *
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
+           .
        900-PUT-WINDOW-EXT.
            EXIT.
