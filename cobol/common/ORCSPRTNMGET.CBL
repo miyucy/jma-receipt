@@ -28,7 +28,9 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *  03.01.01    NACL-藤原    06/07/11  労災・自賠責のプリンタ指定対応
-      *                                     （入院外・入院別）
+      *                                     （入院外・入院別
+      *
+      *  03.05.01    NACL-藤原    07/04/19  グループ診療対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -39,8 +41,6 @@
        FILE                        SECTION.
       *
        WORKING-STORAGE             SECTION.
-grpsys*
-grpsys COPY    "COMMON-SPA".
       *
       *    添字領域
        01  IDX-AREA.
@@ -82,9 +82,12 @@ grpsys COPY    "COMMON-SPA".
         LINKAGE                     SECTION.
       *
            COPY  "CPORCSPRTNMGET.INC".
+grpsys*
+grpsys COPY    "COMMON-SPA".
       *
        PROCEDURE                   DIVISION    USING
-                                   ORCSPRTNMGETAREA.
+                                   ORCSPRTNMGETAREA
+                                   SPA-AREA.
       *
       *****************************************************************
       *    主　　処理
@@ -100,7 +103,7 @@ grpsys COPY    "COMMON-SPA".
            MOVE    "1031"              TO  SYS-1031-KANRICD
            MOVE    PRTNMGET-YMD        TO  SYS-1031-STYUKYMD
                                            SYS-1031-EDYUKYMD
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+grpsys     MOVE    SPA-HOSPNUM         TO  SYS-1031-HOSPNUM
            MOVE    SYS-1031-REC        TO  MCPDATA-REC
            MOVE    "tbl_syskanri"      TO  WRK-MCP-TABLE
            MOVE    "key2"              TO  WRK-MCP-PATHNAME
@@ -126,7 +129,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    "1034"              TO  SYS-1034-KANRICD
            MOVE    PRTNMGET-YMD        TO  SYS-1034-STYUKYMD
                                            SYS-1034-EDYUKYMD
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+grpsys     MOVE    SPA-HOSPNUM         TO  SYS-1034-HOSPNUM
            MOVE    SYS-1034-REC        TO  MCPDATA-REC
            MOVE    "tbl_syskanri"      TO  WRK-MCP-TABLE
            MOVE    "key2"              TO  WRK-MCP-PATHNAME
@@ -153,7 +156,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    "*"                 TO  SYS-2005-KBNCD
            MOVE    PRTNMGET-YMD        TO  SYS-2005-STYUKYMD
                                            SYS-2005-EDYUKYMD
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+grpsys     MOVE    SPA-HOSPNUM         TO  SYS-2005-HOSPNUM
            MOVE    SYS-2005-REC        TO  MCPDATA-REC
            MOVE    "tbl_syskanri"      TO  WRK-MCP-TABLE
            MOVE    "key10"             TO  WRK-MCP-PATHNAME
@@ -218,7 +221,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    "*"                 TO  SYS-3004-KBNCD
            MOVE    PRTNMGET-YMD        TO  SYS-3004-STYUKYMD
                                            SYS-3004-EDYUKYMD
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+grpsys     MOVE    SPA-HOSPNUM         TO  SYS-3004-HOSPNUM
            MOVE    SYS-3004-REC        TO  MCPDATA-REC
            MOVE    "tbl_syskanri"      TO  WRK-MCP-TABLE
            MOVE    "key2"              TO  WRK-MCP-PATHNAME
@@ -293,10 +296,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *
            MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
            MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
-           MOVE    "DBSELECT"          TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     PERFORM 900-DBSELECT-SEC
       *
            IF      MCP-RC              =   ZERO
                PERFORM 900-SYSKANRI-READ-SEC
@@ -315,10 +315,7 @@ grpsys                            SPA-AREA
       *
            MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
            MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
-           MOVE    "DBFETCH"           TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     PERFORM 900-DBFETCH-SEC
            IF      MCP-RC          =   ZERO
                MOVE    ZERO            TO  FLG-SYSKANRI
            ELSE
@@ -330,15 +327,50 @@ grpsys                            SPA-AREA
            EXIT.
       *
       *****************************************************************
-      *    クローズ処理
+      *    ＤＢＳＥＬＥＣＴ処理
       *****************************************************************
-       900-CLOSE-SEC      SECTION.
+       900-DBSELECT-SEC                SECTION.
+      *
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+grpsys     PERFORM 900-ORCDBMAIN-SEC
+           .
+       900-DBSELECT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ＤＢＦＥＴＣＨ処理
+      *****************************************************************
+       900-DBFETCH-SEC                SECTION.
+      *
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+grpsys     PERFORM 900-ORCDBMAIN-SEC
+      *
+           .
+       900-DBFETCH-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    テーブルクローズ処理
+      *****************************************************************
+       900-CLOSE-SEC               SECTION.
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     PERFORM 900-ORCDBMAIN-SEC
       *
            .
        900-CLOSE-EXT.
            EXIT.
+      *
+      *****************************************************************
+      *    テーブルアクセス処理
+      *****************************************************************
+       900-ORCDBMAIN-SEC               SECTION.
+      *
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
+           .
+      *
+       900-ORCDBMAIN-EXT.
+           EXIT.
+      *      
