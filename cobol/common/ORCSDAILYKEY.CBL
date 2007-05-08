@@ -27,6 +27,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  03.05.00    NACL-多々納  07/05/08  グループ診療対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -39,8 +40,6 @@
       *FILE                        SECTION.
       *
        WORKING-STORAGE             SECTION.
-grpsys*
-grpsys COPY    "COMMON-SPA".
       *
       *    フラグ領域
        01  FLG-AREA.
@@ -69,7 +68,7 @@ grpsys COPY    "COMMON-SPA".
       *
            COPY    "MCPDATA.INC".
            COPY    "MCPAREA".
-           COPY    "ORCA-DBPATH".
+      *D   COPY    "ORCA-DBPATH".
       *
       *****************************************************************
       *    連絡　領域
@@ -77,9 +76,12 @@ grpsys COPY    "COMMON-SPA".
         LINKAGE                     SECTION.
       *
            COPY "CPORCSDAILYKEY.INC".
+grpsys*
+           COPY    "COMMON-SPA".
       *
         PROCEDURE                   DIVISION    USING
            SDAILYKEYAREA
+           SPA-AREA
            .
       *
       *****************************************************************
@@ -161,9 +163,10 @@ grpsys COPY    "COMMON-SPA".
       *
            MOVE    ZERO                TO  FLG-SYSKANRI
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  SYS-HOSPNUM
            MOVE    SYSKANRI-REC        TO  MCPDATA-REC
-           MOVE    PATH-TBL-SYSKANRI-KEY10 TO  MCP-PATH
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key10"             TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF    ( MCP-RC              =   ZERO )
                MOVE    MCPDATA-REC     TO  SYSKANRI-REC
@@ -172,7 +175,8 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    MCPDATA-REC     TO  SYSKANRI-REC
            END-IF
       *
-           MOVE    PATH-TBL-SYSKANRI-KEY10 TO  MCP-PATH
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key10"             TO  MCP-PATHNAME
            PERFORM 910-DBCLOSECURSOR-SEC
       *
            .
@@ -184,9 +188,9 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
        910-DBSELECT-SEC                SECTION.
       *
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           CALL    "MCPSUB"            USING
-                                       MCPAREA
-                                       MCPDATA-REC
+           CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
            IF    ( MCP-RC          =   ZERO )
                PERFORM 910-DBFETCH-SEC
            END-IF
@@ -201,9 +205,9 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
        911-DBSELECT-SEC                SECTION.
       *
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           CALL    "MCPSUB"            USING
-                                       MCPAREA
-                                       MCPDATA-REC
+           CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
       *
@@ -215,9 +219,9 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
        910-DBFETCH-SEC                 SECTION.
       *
            MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "MCPSUB"            USING
-                                       MCPAREA
-                                       MCPDATA-REC
+           CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
       *
@@ -229,9 +233,9 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
        910-DBCLOSECURSOR-SEC                 SECTION.
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           CALL    "MCPSUB"            USING
-                                       MCPAREA
-                                       MCPDATA-REC
+           CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
       *
