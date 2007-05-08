@@ -595,17 +595,12 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
        910-JOBKANRI-INV-SEC         SECTION.
       *
            MOVE    "tbl_jobkanri"      TO  MCP-TABLE
-           MOVE    "key"
-                                       TO  MCP-PATHNAME
+           MOVE    "key"               TO  MCP-PATHNAME
 grpsys     PERFORM 900-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
                MOVE    "tbl_jobkanri"      TO  MCP-TABLE
-               MOVE    "key"
-                                       TO  MCP-PATHNAME
-grpsys         PERFORM 900-DBSELECT-SEC
-      *????
-               DISPLAY "FETCH=" MCP-RC    
-      *???? 
+               MOVE    "key"               TO  MCP-PATHNAME
+grpsys         PERFORM 900-DBFETCH-SEC
                IF      MCP-RC              =   ZERO
                    MOVE    MCPDATA-REC         TO  WRK-JOBKANRI-REC
                    MOVE    ZERO                TO  FLG-JOBKANRI
@@ -636,9 +631,6 @@ grpsys     PERFORM 900-DBSELECT-SEC
                MOVE    "tbl_jobkanri"  TO  MCP-TABLE
                MOVE    "key2"          TO  MCP-PATHNAME
 grpsys         PERFORM 900-DBFETCH-SEC
-      *????
-               DISPLAY "FETCH=" MCP-RC    
-      *???? 
                IF      MCP-RC              =   ZERO
                    MOVE    MCPDATA-REC         TO  WRK-JOBKANRI-REC
                    MOVE    ZERO                TO  FLG-JOBKANRI
