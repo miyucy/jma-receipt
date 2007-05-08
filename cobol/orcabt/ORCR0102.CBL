@@ -586,6 +586,7 @@ grpsys     MOVE    SPA-HOSPNUM         TO  SYS-1009-HOSPNUM
                MOVE    MKPASS-OT-01    TO  SHELLTBL-NAME
       *         
                MOVE    HC01PARA        TO  SHELLTBL-ARG1
+               MOVE    SPA-HOSPNUM     TO  SHELLTBL-ARG2
                MOVE    SHELLTBL        TO  MCPDATA-REC
                MOVE    "SHELL"         TO  MCP-FUNC
                MOVE    "shell"         TO  MCP-TABLE

@@ -28,6 +28,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  03.05.01    NACL-藤原    07/04/19  グループ診療対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -110,7 +111,11 @@ grpsys COPY    "COMMON-SPA".
       *
       *    一時領域
        01  WRK-AREA.
-           03  WRK-PATH            PIC X(64). 
+           03  WRK-PATH            PIC X(64).
+      *
+           03  WRK-MCP-TABLE       PIC X(64).
+           03  WRK-MCP-PATHNAME    PIC X(64).
+      *
       *
       *  01.01.02  ADD START
            03  WRK-FILENAME        PIC X(200).
@@ -120,14 +125,16 @@ grpsys COPY    "COMMON-SPA".
            03  WRK-PRT-TBL-GROUP   PIC X(14).
       *  01.01.02  ADD END
       *
+         01  WRK-PARA.
+           03  PARA-FILENM         PIC X(200).
+           03  WRK-PARA-HOSPNUM    PIC X(02).
+      *
        01  WRK-TBL-GROUP.
            03  WK-TBL-G           PIC  X(14) OCCURS 5.
       *    ファイルデイレクトリ位置指定サブ
            COPY  "CPMKPASS.INC".
       *
            COPY    "CPSHELLTBL.INC".
-      *     
-           COPY    "ORCA-DBPATH".         
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -153,7 +160,6 @@ grpsys COPY    "COMMON-SPA".
            COPY    "MCPAREA".
       *
            COPY    "MCPDATA.INC".
-           COPY    "CPORCMCP.INC".
       *
       *   ファイル取得関数
        01 ORCFILEGET-AREA.
@@ -168,7 +174,7 @@ grpsys COPY    "COMMON-SPA".
       ****************************************************************
        LINKAGE                 SECTION.
        01  COMMAND-PARAM.
-           02  PARA-FILENM     PIC X(200).
+           02  FILLER          PIC X(300).
       ****************************************************************
        PROCEDURE           DIVISION
                USING
@@ -198,6 +204,13 @@ grpsys COPY    "COMMON-SPA".
            INITIALIZE                  STS-AREA
            INITIALIZE                  WRK-AREA
            INITIALIZE                  CNT-AREA
+                                       SPA-AREA
+      *
+           UNSTRING   COMMAND-PARAM    DELIMITED  BY  ","
+                                       INTO    PARA-FILENM
+                                               WRK-PARA-HOSPNUM
+           END-UNSTRING
+           MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
       *
            PERFORM 100-DBOPEN-SEC
       *
@@ -256,6 +269,7 @@ grpsys COPY    "COMMON-SPA".
            MOVE    PRT-TBL-GROUP   TO  PRTDATA-TBL-GROUP
            MOVE    PRT-TBL-KEY     TO  PRTDATA-TBL-KEY
            MOVE    PRT-PAGE        TO  PRTDATA-PAGE
+grpsys     MOVE    SPA-HOSPNUM     TO  PRTDATA-HOSPNUM
            PERFORM 900-PRTDATA-INV-SEC
            IF      FLG-PRTDATA     =   1     
                DISPLAY "PRTDATA NOT DATA"
@@ -284,6 +298,8 @@ grpsys COPY    "COMMON-SPA".
            MOVE    PRTDATA-PTID        TO  PRVKANRI-PTID
            MOVE    PRTDATA-PAGE        TO  PRVKANRI-PAGE
            MOVE    PRTDATA-PRTNM       TO  PRVKANRI-PRTNM
+grpsys     MOVE    PRTDATA-HOSPNUM     TO  PRVKANRI-HOSPNUM
+                                           PRTKANRI-HOSPNUM
       *
            PERFORM 900-PRVKANRI-INV-SEC
            IF      FLG-PRVKANRI        =   ZERO  
@@ -334,17 +350,14 @@ grpsys COPY    "COMMON-SPA".
                END-PERFORM
              END-IF
       *
-grpsys*      MOVE SPA-HOSPNUM TO -HOSPNUM
+grpsys       MOVE    PRTDATA-HOSPNUM     TO  PRVKANRI-HOSPNUM
              MOVE    PRVKANRI-REC        TO  MCPDATA-REC
-             MOVE    PATH-TBL-PRVKANRI-KEY
-                                         TO  MCP-PATH
+             MOVE    "tbl_prvkanri"      TO  MCP-TABLE
+             MOVE    "key"               TO  MCP-PATHNAME
              MOVE    "DBINSERT"          TO  MCP-FUNC
-             CALL    "MCPSUB"            USING
-                                         MCPAREA
-                                         MCPDATA-REC
+grpsys       PERFORM 900-ORCDBMAIN-SEC
            END-IF
       *
-      *+++++++++++++++++++++++++++++++++++++++++++++++++
            MOVE    SPACE               TO  PREVIEW-REC
            INITIALIZE                      PREVIEW-REC
            MOVE    PRTDATA-TBL-KEY     TO  PREVIEW-TBL-KEY
@@ -360,6 +373,7 @@ grpsys*      MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PRTDATA-PAGE        TO  PREVIEW-PAGE
            MOVE    PRTDATA-PRTNM       TO  PREVIEW-PRTNM
            MOVE    PS-PRTDATA          TO  PREVIEW-PRTDATA
+grpsys     MOVE    PRTDATA-HOSPNUM     TO  PREVIEW-HOSPNUM
       *
            PERFORM 900-PREVDATA-INV-SEC
            IF      FLG-PREVIEW         =   ZERO  
@@ -393,7 +407,7 @@ grpsys*      MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    PRTDATA-PAGE        TO  PREVIEW-PAGE
                MOVE    PRTDATA-PRTNM       TO  PREVIEW-PRTNM
                MOVE    PS-PRTDATA          TO  PREVIEW-PRTDATA
-grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
+grpsys         MOVE    PRTDATA-HOSPNUM     TO  PREVIEW-HOSPNUM
                MOVE    PREVIEW-REC         TO  MCPDATA-REC
       *     ラージオブジェクト対応までコメント★
       *        MOVE    PATH-TBL-PREVIEW-KEY
@@ -431,9 +445,6 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
       *****************************************************************
        300-END-SEC                 SECTION.
       *
-      *  10        20        30        40        50        60
-----+-*--+----+----+----+----+----+----+----+----+----+----+----+----+
-      *
            DISPLAY "tbl-key = "     WRK-PRT-TBL-KEY
            IF      WRK-PRT-TBL-KEY     NOT =   "RECEPT2"
                    PERFORM 900-PRV-RRKDEL-SEC
@@ -454,8 +465,6 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
       *   プレビュー管理DBの履歴削除 
       *****************************************************************
        900-PRV-RRKDEL-SEC              SECTION.
-      *  10        20        30        40        50        60
-----+-*--+----+----+----+----+----+----+----+----+----+----+----+----+
       *
       *        最新以外の帳票管理ＤＢを削除
            IF      WRK-PRT-TBL-KEY     =   "RECEPTX"
@@ -464,16 +473,13 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SPACE               TO  PRVKANRI-REC
            INITIALIZE                  PRVKANRI-REC
            MOVE    WRK-PRT-TBL-KEY     TO  PRVKANRI-TBL-KEY
-           MOVE    WRK-PRT-TBL-GROUP
-                                       TO  PRVKANRI-TBL-GROUP
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    WRK-PRT-TBL-GROUP   TO  PRVKANRI-TBL-GROUP
+grpsys     MOVE    SPA-HOSPNUM         TO  PRVKANRI-HOSPNUM
            MOVE    PRVKANRI-REC        TO  MCPDATA-REC
            MOVE    "DBDELETE"          TO  MCP-FUNC
-           MOVE    PATH-TBL-PRVKANRI-DEL12
-                                       TO  MCP-PATH
-           CALL    "MCPSUB"            USING
-                                       MCPAREA
-                                       MCPDATA-REC
+           MOVE    "tbl_prvkanri"  TO  MCP-TABLE
+           MOVE    "del12"         TO  MCP-PATHNAME
+grpsys     PERFORM 900-ORCDBMAIN-SEC
       *
            OPEN    INPUT      PREVIEW-FILE
            IF      STS-PREVIEW         =   ZERO
@@ -536,14 +542,11 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *
                MOVE    WRK-FILENAME    TO  SHELLTBL-ARG1
                MOVE    WRK-FILENAME1   TO  SHELLTBL-ARG2
-grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    SHELLTBL        TO  MCPDATA-REC
                MOVE    "SHELL"         TO  MCP-FUNC
-               MOVE    PATH-SHELL-SHELL
-                                       TO  MCP-PATH
-               CALL    "MCPSUB"        USING
-                                           MCPAREA
-                                           MCPDATA-REC
+               MOVE    "shell"         TO  MCP-TABLE
+               MOVE    "shell"         TO  MCP-PATHNAME
+grpsys         PERFORM 900-ORCDBMAIN-SEC
                END-IF
               END-IF
              END-PERFORM
@@ -595,23 +598,16 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                                            WRK-PRT-TBL-GROUP
            MOVE    PRT-TBL-KEY         TO  PRVKANRI-TBL-KEY
                                            WRK-PRT-TBL-KEY
+grpsys     MOVE    SPA-HOSPNUM         TO  PRVKANRI-HOSPNUM
       *    TBLキーセット
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PRVKANRI-REC        TO  MCPDATA-REC
-           MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    PATH-TBL-PRVKANRI-KEY4
-                                       TO  MCP-PATH
-           CALL    "MCPSUB"            USING
-                                       MCPAREA
-                                       MCPDATA-REC
-      *
-           IF      MCP-RC              =   ZERO
-               MOVE    "DBFETCH"       TO  MCP-FUNC
-               MOVE    PATH-TBL-PRVKANRI-KEY4
-                                       TO  MCP-PATH
-               CALL    "MCPSUB"        USING
-                                       MCPAREA
-                                       MCPDATA-REC
+           MOVE    "tbl_prvkanri"      TO  MCP-TABLE
+           MOVE    "key4"              TO  MCP-PATHNAME
+grpsys     PERFORM 900-DBSELECT-SEC
+           IF      MCP-RC             =   ZERO
+               MOVE    "tbl_prvkanri"      TO  MCP-TABLE
+               MOVE    "key4"              TO  MCP-PATHNAME
+grpsys         PERFORM 900-DBFETCH-SEC
                MOVE    SPACE           TO  WRK-TBL-GROUP
                IF      MCP-RC              =   ZERO
                    MOVE    ZERO            TO  FLG-PRVKANRI
@@ -626,12 +622,9 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    1                   TO  FLG-PRVKANRI
            END-IF
       *
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           MOVE    PATH-TBL-PRVKANRI-KEY4
-                                       TO  MCP-PATH
-           CALL    "MCPSUB"            USING
-                                       MCPAREA
-                                       MCPDATA-REC
+           MOVE    "tbl_prvkanri"      TO  MCP-TABLE
+           MOVE    "key4"              TO  MCP-PATHNAME
+           PERFORM 900-CLOSE-SEC
            .
        900-PRV-RRKSET-EXT.
            EXIT.
@@ -668,22 +661,15 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *****************************************************************
        900-PRTDATA-INV-SEC            SECTION.
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PRTDATA-REC         TO  MCPDATA-REC
-           MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    PATH-TBL-PRTDATA-KEY
-                                       TO  MCP-PATH
-           CALL    "MCPSUB"            USING
-                                       MCPAREA
-                                       MCPDATA-REC
+           MOVE    "tbl_prtdata"       TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+grpsys     PERFORM 900-DBSELECT-SEC
       *
            IF      MCP-RC             =   ZERO
-               MOVE    "DBFETCH"           TO  MCP-FUNC
-               MOVE    PATH-TBL-PRTDATA-KEY
-                                           TO  MCP-PATH
-               CALL    "MCPSUB"            USING
-                                               MCPAREA
-                                               MCPDATA-REC
+               MOVE    "tbl_prtdata"       TO  MCP-TABLE
+               MOVE    "key"               TO  MCP-PATHNAME
+grpsys         PERFORM 900-DBFETCH-SEC
                IF      MCP-RC              =   ZERO
                    MOVE    MCPDATA-REC         TO  PRTDATA-REC
                    MOVE    ZERO                TO  FLG-PRTDATA
@@ -696,12 +682,9 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                INITIALIZE                      PRTDATA-REC
            END-IF
       *
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           MOVE    PATH-TBL-PRTDATA-KEY
-                                       TO  MCP-PATH
-           CALL    "MCPSUB"            USING
-                                       MCPAREA
-                                       MCPDATA-REC
+           MOVE    "tbl_prtdata"       TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 900-CLOSE-SEC
            .
        900-PRTDATA-INV-EXT.
            EXIT.
@@ -711,22 +694,15 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *****************************************************************
        900-PRVKANRI-INV-SEC            SECTION.
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PRVKANRI-REC        TO  MCPDATA-REC
-           MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    PATH-TBL-PRVKANRI-KEY
-                                       TO  MCP-PATH
-           CALL    "MCPSUB"            USING
-                                       MCPAREA
-                                       MCPDATA-REC
+           MOVE    "tbl_prvkanri"      TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+grpsys     PERFORM 900-DBSELECT-SEC
       *
-           IF      MCP-RC             =   ZERO
-               MOVE    "DBFETCH"           TO  MCP-FUNC
-               MOVE    PATH-TBL-PRVKANRI-KEY
-                                           TO  MCP-PATH
-               CALL    "MCPSUB"            USING
-                                               MCPAREA
-                                               MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_prvkanri"      TO  MCP-TABLE
+               MOVE    "key"               TO  MCP-PATHNAME
+grpsys         PERFORM 900-DBFETCH-SEC
                IF      MCP-RC              =   ZERO
              DISPLAY "take fetch ok"
                    MOVE    ZERO                TO  FLG-PRVKANRI
@@ -738,12 +714,9 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    1                   TO  FLG-PRVKANRI
            END-IF
       *
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           MOVE    PATH-TBL-PRVKANRI-KEY
-                                       TO  MCP-PATH
-           CALL    "MCPSUB"            USING
-                                       MCPAREA
-                                       MCPDATA-REC
+           MOVE    "tbl_prvkanri"      TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 900-CLOSE-SEC
            .
        900-PREVDATA-INV-EXT.
            EXIT.
@@ -753,22 +726,15 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *****************************************************************
        900-PRTKANRI-INV-SEC            SECTION.
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PRTKANRI-REC        TO  MCPDATA-REC
-           MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    PATH-TBL-PRTKANRI-KEY
-                                       TO  MCP-PATH
-           CALL    "MCPSUB"            USING
-                                       MCPAREA
-                                       MCPDATA-REC
+           MOVE    "tbl_prtkanri"      TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+grpsys     PERFORM 900-DBSELECT-SEC
       *
            IF      MCP-RC             =   ZERO
-               MOVE    "DBFETCH"           TO  MCP-FUNC
-               MOVE    PATH-TBL-PRTKANRI-KEY
-                                           TO  MCP-PATH
-               CALL    "MCPSUB"            USING
-                                               MCPAREA
-                                               MCPDATA-REC
+               MOVE    "tbl_prtkanri"      TO  MCP-TABLE
+               MOVE    "key"               TO  MCP-PATHNAME
+grpsys         PERFORM 900-DBFETCH-SEC
                IF      MCP-RC              =   ZERO
                    MOVE    ZERO                TO  FLG-PRTKANRI
                    MOVE    MCPDATA-REC         TO  PRTKANRI-REC
@@ -779,14 +745,11 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    1                   TO  FLG-PRTKANRI
            END-IF
       *
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           MOVE    PATH-TBL-PRTKANRI-KEY
-                                       TO  MCP-PATH
-           CALL    "MCPSUB"            USING
-                                       MCPAREA
-                                       MCPDATA-REC
+           MOVE    "tbl_prtkanri"      TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 900-CLOSE-SEC
            .
-       900-PREVDATA-INV-EXT.
+       900-PRTKANRI-INV-EXT.
            EXIT.
       *      
       *****************************************************************
@@ -794,7 +757,6 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *****************************************************************
        900-PREVDATA-INV-SEC            SECTION.
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PREVIEW-REC         TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
       *     ラージオブジェクト対応までコメント★
@@ -835,43 +797,88 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            .
        900-PREVDATA-INV-EXT.
            EXIT.
+      *
+      *****************************************************************
+      *    ＤＢＳＥＬＥＣＴ処理
+      *****************************************************************
+       900-DBSELECT-SEC                SECTION.
+      *
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+grpsys     PERFORM 900-ORCDBMAIN-SEC
+           .
+       900-DBSELECT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ＤＢＦＥＴＣＨ処理
+      *****************************************************************
+       900-DBFETCH-SEC                SECTION.
+      *
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+grpsys     PERFORM 900-ORCDBMAIN-SEC
+      *
+           .
+       900-DBFETCH-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    テーブルクローズ処理
+      *****************************************************************
+       900-CLOSE-SEC               SECTION.
+      *
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
+grpsys     PERFORM 900-ORCDBMAIN-SEC
+      *
+           .
+       900-CLOSE-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    テーブルアクセス処理
+      *****************************************************************
+       900-ORCDBMAIN-SEC               SECTION.
+      *
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
+           .
+      *
+       900-ORCDBMAIN-EXT.
+           EXIT.
       *      
       *****************************************************************
-      *    ＤＢ　オープン処理
+      *    ＤＢオープン処理
       *****************************************************************
        100-DBOPEN-SEC                SECTION.
       *
-           MOVE    "DBOPEN"             TO  MCP-FUNC.
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC.
+           MOVE    LOW-VALUE           TO  MCP-TABLE
+                                           MCP-PATHNAME
+           MOVE    "DBOPEN"            TO  MCP-FUNC
+grpsys     PERFORM 900-ORCDBMAIN-SEC
       *
-           MOVE    "DBSTART"           TO  MCP-FUNC.
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC.
+           MOVE    LOW-VALUE           TO  MCP-TABLE
+                                           MCP-PATHNAME
+           MOVE    "DBSTART"           TO  MCP-FUNC
+grpsys     PERFORM 900-ORCDBMAIN-SEC
+           .
        100-DBOPEN-EXT.
            EXIT.
       *
       *****************************************************************
-      *    ＤＢ　クローズ処理
+      *    ＤＢクローズ処理
       *****************************************************************
        900-DBDISCONNECT-SEC            SECTION.
       *
-           MOVE    "DBCOMMIT"          TO  MCP-FUNC.
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC.
+           MOVE    LOW-VALUE           TO  MCP-TABLE
+                                           MCP-PATHNAME
+           MOVE    "DBCOMMIT"          TO  MCP-FUNC
+grpsys     PERFORM 900-ORCDBMAIN-SEC
       *
-           MOVE    "DBDISCONNECT"       TO  MCP-FUNC.
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC.
-      *
+           MOVE    LOW-VALUE           TO  MCP-TABLE
+                                           MCP-PATHNAME
+           MOVE    "DBDISCONNECT"      TO  MCP-FUNC
+grpsys     PERFORM 900-ORCDBMAIN-SEC
+           .
        900-DBDISCONNECT-EXT.
            EXIT.
       *
@@ -880,10 +887,10 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *****************************************************************
        900-DBCOMMIT-SEC            SECTION.
       *
-           MOVE    "DBCOMMIT"          TO  MCP-FUNC.
-           CALL    "MCPSUB"          USING
-                                        MCPAREA
-                                        MCPDATA-REC.
+           MOVE    LOW-VALUE           TO  MCP-TABLE
+                                           MCP-PATHNAME
+           MOVE    "DBCOMMIT"          TO  MCP-FUNC
+grpsys     PERFORM 900-ORCDBMAIN-SEC
       *
            .
        900-DBCOMMIT-EXT.
@@ -894,11 +901,10 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *****************************************************************
        900-DBSTART-SEC                SECTION.
       *
-           MOVE    "DBSTART"           TO  MCP-FUNC.
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC.
+           MOVE    LOW-VALUE           TO  MCP-TABLE
+                                           MCP-PATHNAME
+           MOVE    "DBSTART"           TO  MCP-FUNC
+grpsys     PERFORM 900-ORCDBMAIN-SEC
            .
        900-DBSTART-EXT.
            EXIT.
