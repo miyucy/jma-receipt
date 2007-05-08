@@ -45,9 +45,9 @@ fi
             rm  /home/orca/recept1.log
         fi
         
-        rm  /var/tmp/${16}RECE0*
-        rm  /var/tmp/${16}RECE11*
-        rm  /var/tmp/${16}RECE12*
+        rm  /var/tmp/${16}00RECE0*
+        rm  /var/tmp/${16}00RECE11*
+        rm  /var/tmp/${16}00RECE12*
 
         if [ ${2} -eq  '1' ]; then
            LOG_FILE="/home/orca/${16}recept1a.log"
