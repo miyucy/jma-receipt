@@ -25,52 +25,50 @@
       ************************************************************
        01  ORCSTENTEK2AREA.
       *
-      *入力
-           03  ORCSTEN2-IN-AREA.
+      *医療機関ＩＤ
+           03  LNK-ORCSTEN2-HOSPID             PIC  X(24).
       *患者ＩＤ
-               05  ORCSTEN2-PTID               PIC  9(10).
+           03  LNK-ORCSTEN2-PTID               PIC  9(10).
       *診療年月
-               05  ORCSTEN2-SRYYM              PIC  X(06).
+           03  LNK-ORCSTEN2-SRYYM              PIC  X(06).
       *保険組合
-               05  ORCSTEN2-HKNCOMBI           PIC 9(04).
+           03  LNK-ORCSTEN2-HKNCOMBI           PIC 9(04).
       *返却項目
-           03  ORCSTEN2-OUT-AREA.
+           03  LNK-ORCSTEN2-OUT-AREA.
+      *        剤番号
+               05  LNK-ORCSTEN2-ZAINUM         PIC 9(08)  OCCURS 20.
       *        点滴注射
-               05  ORCSTEN2-TENTEK-AREA.
-                   07  ORCSTEN2-TENTEK-DAY          OCCURS   31.
+               05  LNK-ORCSTEN2-TENTEK-AREA.
+                   07  LNK-ORCSTEN2-TENTEK-DAY            OCCURS   31.
       *              明細数
-                     09  ORCSTEN2-TENTEK-MEISAISU   PIC 9(03).
+                     09  LNK-ORCSTEN2-TENTEK-MEISAISU     PIC 9(03).
       *              剤点数
-                     09  ORCSTEN2-TENTEK-ZAITEN     PIC 9(07).
-      *              剤点数
-                     09  ORCSTEN2-TENTEK-SRYCD-TOTAL PIC 9(13).
+                     09  LNK-ORCSTEN2-TENTEK-ZAITEN       PIC 9(07).
+      *              診療コードトータル
+                     09  LNK-ORCSTEN2-TENTEK-SRYCDTOTAL   PIC 9(13).
       *              明細返却
-                     09  ORCSTEN2-TENTEK-MEISAI       OCCURS  5.
+                     09  LNK-ORCSTEN2-TENTEK-MEISAI       OCCURS  5.
       *                診療行為コード
-                       11  ORCSTEN2-TENTEK-SRYCD      PIC X(09).
-      *                剤番号
-                       11  ORCSTEN2-TENTEK-ZAINUM     PIC 9(08).
-      *                名称入力番号
-                       11  ORCSTEN2-TENTEK-INPUTNUM   PIC 9(03).
-      *        エラーコード（０：正常終了　１：異常終了（または対象なし）
-                  07  ORCSTEN2-TENTEK-ERRCD       PIC 9(01).
+                       11  LNK-ORCSTEN2-TENTEK-SRYCD      PIC X(09).
+      *        エラーコード（０：正常終了　１：対象なし）
+                  07  LNK-ORCSTEN2-TENTEK-ERRCD           PIC 9(01).
       *
       *        中心静脈
-               05  ORCSTEN2-CHUJOU-AREA.
-                   07  ORCSTEN2-CHUJOU-DAY          OCCURS   31.
+               05  LNK-ORCSTEN2-CHUJOU-AREA.
+                   07  LNK-ORCSTEN2-CHUJOU-DAY            OCCURS   31.
       *              明細数
-                     09  ORCSTEN2-CHUJOU-MEISAISU   PIC 9(03).
+                     09  LNK-ORCSTEN2-CHUJOU-MEISAISU     PIC 9(03).
       *              剤点数
-                     09  ORCSTEN2-CHUJOU-ZAITEN     PIC 9(07).
-      *              剤点数
-                     09  ORCSTEN2-CHUJOU-SRYCD-TOTAL PIC 9(13).
+                     09  LNK-ORCSTEN2-CHUJOU-ZAITEN       PIC 9(07).
+      *              診療コードトータル
+                     09  LNK-ORCSTEN2-CHUJOU-SRYCDTOTAL   PIC 9(13).
       *              明細返却
-                     09  ORCSTEN2-CHUJOU-MEISAI       OCCURS  5.
+                     09  LNK-ORCSTEN2-CHUJOU-MEISAI       OCCURS  5.
       *                診療行為コード
-                       11  ORCSTEN2-CHUJOU-SRYCD      PIC X(09).
-      *                剤番号
-                       11  ORCSTEN2-CHUJOU-ZAINUM     PIC 9(08).
-      *                名称入力番号
-                       11  ORCSTEN2-CHUJOU-INPUTNUM   PIC 9(03).
-      *        エラーコード（０：正常終了　１：異常終了（または対象なし）
-                  07  ORCSTEN2-CHUJOU-ERRCD       PIC 9(01).
+                       11  LNK-ORCSTEN2-CHUJOU-SRYCD      PIC X(09).
+      *        エラーコード（０：正常終了　１：対象なし）
+                  07  LNK-ORCSTEN2-CHUJOU-ERRCD           PIC 9(01).
+      *      復帰コード（１：診療年月エラー　２：患者検索エラー
+      *                  ３：保険組合せエラー　４：入院会計なし）
+             03  LNK-ORCSTEN2-RC              PIC S9(9)  BINARY.
+      *
