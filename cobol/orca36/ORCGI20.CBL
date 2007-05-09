@@ -2645,7 +2645,7 @@
            MOVE    SPA-HOSPNUM     TO  SPTID-HOSPNUM
            MOVE    I001-PTID       TO  SPTID-PTID
            CALL    "ORCSPTID"          USING   ORCSPTIDAREA
-                                               SPA-1009-TBL
+                                               SPA-AREA
            IF      SPTID-RC        =   ZERO
                MOVE    SPTID-PTNUM         TO  SPA-GMN-TPTNUM  (IDX)
            END-IF
