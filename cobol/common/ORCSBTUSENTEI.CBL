@@ -30,6 +30,7 @@
       * Maj/Min/Rev  修正者       日付      内容
       *  00.00.01    NACL-小豆沢  05/01/14  選定自己負担定額時に一般と
       *                                     老人患者の算定額を取得可能に変更
+      *  03.05.00    NACL-太田    07/05/09  グループ診療対応
       *****************************************************************
       *
        ENVIRONMENT                         DIVISION.
@@ -43,8 +44,6 @@
       *
       *
        WORKING-STORAGE                     SECTION.
-grpsys*
-grpsys COPY    "COMMON-SPA".
       *
       *    フラグ領域
        01  FLG-AREA.
@@ -122,9 +121,11 @@ grpsys COPY    "COMMON-SPA".
        LINKAGE                             SECTION.
       *
            COPY    "CPORCSBTUSENTEI.INC".
+           COPY    "COMMON-SPA".
       *
        PROCEDURE                           DIVISION    USING
-           ORCSBTUSENTEIAREA.
+           ORCSBTUSENTEIAREA
+           SPA-AREA.
       *
       *****************************************************************
       *    主　　処理
@@ -201,7 +202,7 @@ grpsys COPY    "COMMON-SPA".
       *
       *    入院患者の老人判定
            INITIALIZE   ORCSAGECHKAREA
-           MOVE    SBTUSENTEI-HOSPID   TO  AGECHK-HOSPID
+           MOVE    SBTUSENTEI-HOSPNUM  TO  AGECHK-HOSPNUM
            MOVE    SBTUSENTEI-PTID     TO  AGECHK-PTID
            MOVE    WRK-MMSTYMD         TO  AGECHK-SRYYMD
            IF    ( WRK-MMSTYMD         <   PTNYUINRRK-NYUINYMD )
@@ -210,6 +211,7 @@ grpsys COPY    "COMMON-SPA".
            END-IF
            CALL    "ORCSAGECHK"        USING
                                        ORCSAGECHKAREA
+                                       SPA-AREA
            IF      ( AGECHK-RC    =    ZERO )
                CONTINUE
            ELSE
@@ -256,6 +258,7 @@ grpsys COPY    "COMMON-SPA".
            INITIALIZE                      SRH-5001-AREA
       *
            INITIALIZE                      SYSKANRI-REC
+           MOVE    SBTUSENTEI-HOSPNUM  TO  SYS-HOSPNUM
            MOVE    "5001"              TO  SYS-KANRICD
            MOVE    WRK-MMEDYMD         TO  SYS-STYUKYMD
            MOVE    WRK-MMSTYMD         TO  SYS-EDYUKYMD
@@ -500,7 +503,6 @@ grpsys COPY    "COMMON-SPA".
       *
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key2"              TO  MCP-PATHNAME
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE     SYSKANRI-REC       TO  MCPDATA-REC
            PERFORM  910-DBSELECT-SEC
            IF    ( MCP-RC           =  ZERO )
@@ -539,11 +541,10 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    ZERO                TO  FLG-PTNYUINRRK
       *
            INITIALIZE  PTNYUINRRK-REC
-           MOVE    SBTUSENTEI-HOSPID   TO  PTNYUINRRK-HOSPID
+           MOVE    SBTUSENTEI-HOSPNUM  TO  PTNYUINRRK-HOSPNUM
            MOVE    SBTUSENTEI-PTID     TO  PTNYUINRRK-PTID
            MOVE    WRK-MMEDYMD         TO  PTNYUINRRK-TENNYUYMD
            MOVE    WRK-MMSTYMD         TO  PTNYUINRRK-TENSTUYMD
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PTNYUINRRK-REC      TO  MCPDATA-REC
            MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
            MOVE    "key41"             TO  MCP-PATHNAME

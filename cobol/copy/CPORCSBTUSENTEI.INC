@@ -24,7 +24,7 @@
       ************************************************************
        01  ORCSBTUSENTEIAREA.
       *  °åÎÅµ¡´Ø¥³¡¼¥É
-           03  SBTUSENTEI-HOSPID           PIC  X(24).
+           03  SBTUSENTEI-HOSPNUM          PIC  9(02).
       *  ´µ¼Ô£É£Ä
            03  SBTUSENTEI-PTID             PIC  9(10).
       *    ¿ÇÎÅÇ¯·î

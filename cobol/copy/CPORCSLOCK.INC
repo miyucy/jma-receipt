@@ -12,6 +12,8 @@
       *    処理区分                              
              05  SLOCK-MODE     PIC  9(01). 
            03  SLOCK-OUT.
+      *     ロック情報追加区分
+018900       05  SLOCK-INSERT   PIC  X(1).
       *    端末ＩＤ     
 018900       05  SLOCK-TERMID   PIC  X(64).
       *    オペレータＩＤ     

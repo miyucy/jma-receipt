@@ -38,8 +38,6 @@
        FILE                            SECTION.
       *
        WORKING-STORAGE                 SECTION.
-grpsys*
-grpsys COPY    "COMMON-SPA".
       *
       *    ¥Õ¥é¥°ÎÎ°è
        01  FLG-AREA.
@@ -187,63 +185,4 @@ grpsys COPY    "COMMON-SPA".
       *
            .
        800-CALENDAR-EXT.
-           EXIT.
-      *****************************************************************
-      *    £Ä£Â¸¡º÷½èÍý
-      *****************************************************************
-       910-DBSELECT-SEC                SECTION.
-      *
-           MOVE    "DBSELECT"          TO  MCP-FUNC
-           CALL    "MCPSUB"            USING
-                                       MCPAREA
-                                       MCPDATA-REC
-           IF    ( MCP-RC          =   ZERO )
-               PERFORM 910-DBFETCH-SEC
-           END-IF
-      *
-           .
-      *
-       910-DB-SELECT-EXT.
-           EXIT.
-      *****************************************************************
-      *    £Ä£Â¸¡º÷½èÍý
-      *****************************************************************
-       911-DBSELECT-SEC                SECTION.
-      *
-           MOVE    "DBSELECT"          TO  MCP-FUNC
-           CALL    "MCPSUB"            USING
-                                       MCPAREA
-                                       MCPDATA-REC
-      *
-           .
-      *
-       910-DB-SELECT-EXT.
-           EXIT.
-      *****************************************************************
-      *    £Ä£ÂÆÉ¤ß¹þ¤ß½èÍý
-      *****************************************************************
-       910-DBFETCH-SEC                 SECTION.
-      *
-           MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "MCPSUB"            USING
-                                       MCPAREA
-                                       MCPDATA-REC
-      *
-           .
-      *
-       910-DBFETCH-EXT.
-           EXIT.
-      *****************************************************************
-      *    £Ä£Â¥¯¥í¡¼¥º½èÍý
-      *****************************************************************
-       910-DBCLOSECURSOR-SEC                 SECTION.
-      *
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           CALL    "MCPSUB"            USING
-                                       MCPAREA
-                                       MCPDATA-REC
-      *
-           .
-      *
-       910-DBCLOSECURSOR-EXT.
            EXIT.
