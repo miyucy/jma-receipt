@@ -109,12 +109,9 @@
       *
        WORKING-STORAGE             SECTION.
       *
-      *
       *    エラーファイル 名称領域 
-           COPY    "CPRECEDAT1.INC"
-                                   REPLACING  //RECEDAT1PARA//
+           COPY    "CPERRFL.INC"   REPLACING  //ERRFLPARA//
                                    BY         //RECEERR//.
-           03  FILLER              PIC X(04)   VALUE   ".dat".
       *
       *    スパ領域
            COPY    "COMMON-SPA".
@@ -290,6 +287,9 @@
       *    印刷管理ＤＢのキー値  
            03  WRK-CONS-PRTKANRI-TBL-KEY
                                    PIC X(08)   VALUE   "RECEPT2".
+      *
+      *    エラーファイルＩＤ
+           03  WRK-CONS-FILE-ID    PIC X(08)   VALUE   "OR042ERR".
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -2002,7 +2002,7 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
       *                    MOVE    "2"             TO  SHELL-RECEKBN
       *                END-IF
       *****        END-IF
-                   MOVE    "OR42ERR"           TO  RECEERR-FILE-ID
+                   MOVE    WRK-CONS-FILE-ID    TO  RECEERR-FILE-ID
                    MOVE    SPA-TERMID          TO  RECEERR-TERMID
 grpsys             MOVE    SPA-HOSPNUM         TO  RECEERR-HOSPNUM
       *

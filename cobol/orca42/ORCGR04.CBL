@@ -83,10 +83,8 @@
        WORKING-STORAGE             SECTION.
       *
       *    エラーファイル 名称領域 
-           COPY    "CPRECEDAT1.INC"
-                                   REPLACING  //RECEDAT1PARA//
+           COPY    "CPERRFL.INC"   REPLACING  //ERRFLPARA//
                                    BY         //RECEERR//.
-           03  FILLER              PIC X(04)   VALUE   ".dat".
       *
       *    帳票出力用パラメタ  
        01  WRK-RECE09-REC. 
@@ -233,6 +231,9 @@
                                    PIC X(08)   VALUE   "RECEPT2".
            03  WRK-CONS-PRTKANRI-TBL-GROUP
                                    PIC X(14)   VALUE   SPACE.
+      *
+      *    エラーファイルＩＤ
+           03  WRK-CONS-FILE-ID    PIC X(08)   VALUE   "OR042ERR".
       *
            COPY    "CPSHELLTBL.INC".
       *
@@ -1504,7 +1505,7 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
       *    MOVE    "1"                 TO  SHELL-SYOKBN
       *****MOVE    "0"                 TO  SHELL-RECEKBN 
       *     
-           MOVE    "OR42ERR"           TO  RECEERR-FILE-ID
+           MOVE    WRK-CONS-FILE-ID    TO  RECEERR-FILE-ID
            MOVE    SPA-TERMID          TO  RECEERR-TERMID
 grpsys     MOVE    SPA-HOSPNUM         TO  RECEERR-HOSPNUM
       *

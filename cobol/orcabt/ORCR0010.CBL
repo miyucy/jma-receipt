@@ -211,10 +211,8 @@
                                    BY         //RECE01X//.
       *
       *    エラーファイル 名称領域 
-           COPY    "CPRECEDAT1.INC" 
-                                   REPLACING  //RECEDAT1PARA//
+           COPY    "CPERRFL.INC"   REPLACING  //ERRFLPARA//
                                    BY         //RECEERR//.
-           03  FILLER              PIC X(04)   VALUE   ".dat".
       *
       *    フラグ領域
        01  STS-AREA.
@@ -591,6 +589,7 @@
            UNSTRING    COMMAND-PARAM   DELIMITED  BY  ","
                                        INTO    WRK-PARA
                                                WRK-PARA-HOSPNUM
+                                               RECEERR
            END-UNSTRING
            MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
       *
@@ -604,10 +603,6 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE01PARA-HOSPNUM
            MOVE    "RECE01X"           TO  RECE01XPARA-FILE-ID
            MOVE    WRK-PARA-TERMID     TO  RECE01XPARA-TERMID
 grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE01XPARA-HOSPNUM
-      *
-           MOVE    "OR42ERR"           TO  RECEERR-FILE-ID
-           MOVE    WRK-PARA-TERMID     TO  RECEERR-TERMID
-grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECEERR-HOSPNUM
       *
            IF      WRK-PARA-SHELLID    NOT =   "RECEPTX"
       *    ＤＢオープン処理

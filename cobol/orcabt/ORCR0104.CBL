@@ -156,6 +156,7 @@
       *  £²£°£°£·Ç¯£´·î²þÀµ
       *  03.04.08    NACL-ÌçÏÆ    07/04/01  ¸½ÊªµëÉÕÂÐ±þ
       *  03.04.09    NACL-Æ£¸¶    07/04/13  ¾É¾õ¾Üµ­¶èÊ¬¥³¡¼¥ÉÄÉ²Ã¤ËÈ¼¤¦ÂÐ±þ
+      *  03.04.10    NACL-ÌçÏÆ    07/05/07  Âè£²¸øÈñ°ìÉôÉéÃ´¶âµ­ºÜ¾ò·ï½¤Àµ
       *
       *  03.05.01    NACL-Æ£¸¶    07/04/19  ¥°¥ë¡¼¥×¿ÇÎÅÂÐ±þ
       *****************************************************************
@@ -294,10 +295,8 @@ grpsys     COPY    "COMMON-SPA".
                                    BY         //RECE12//.
       *
       *    ¥¨¥é¡¼¥Õ¥¡¥¤¥ë Ì¾¾ÎÎÎ°è 
-           COPY    "CPRECEDAT1.INC"
-                                   REPLACING  //RECEDAT1PARA//
+           COPY    "CPERRFL.INC"   REPLACING  //ERRFLPARA//
                                    BY         //RECEERR//.
-           03                      PIC X(04)   VALUE   ".dat".
       *
       *     
       ***  COPY    "HCM09.INC"     REPLACING  //HCM09//
@@ -4543,14 +4542,16 @@ grpsys         OR     ( RECE02-HOSPNUM   NOT =   RECE031-HOSPNUM      )
              AND ((RECE02-TOTALTEN (IDX3)
                                       NOT =   RECE02-TOTALTEN (IDX1)) OR
                   (RECE02-FTNMONEY (IDX3)
-                                      NOT =   RECE02-FTNMONEY (IDX1))  )
-               IF  RECE02-FTNMONEY (IDX3)
-                                      NOT =   RECE02-FTNMONEY (IDX2)
+                                      NOT =   RECE02-FTNMONEY (IDX1)) OR
+                  (RECE02-FTNMONEY (IDX3)
+                                      NOT =   RECE02-FTNMONEY (IDX2))  )
+      ***      IF  RECE02-FTNMONEY (IDX3)
+      ***                             NOT =   RECE02-FTNMONEY (IDX2)
                  IF  RECE02-FTNMONEY (IDX3)   >   ZERO
                    MOVE    RECE02-FTNMONEY (IDX3) TO  WRK-KGK7
                    MOVE    WRK-KGK7               TO  HC06-FTNMONEY(3)
                  END-IF
-               END-IF
+      ***      END-IF
              END-IF
              IF    ( RECE02-TOTALTEN (IDX3) >   ZERO                  )
              AND   ( RECE02-FTNMONEY (IDX3) =   RECE02-FTNMONEY (IDX2))

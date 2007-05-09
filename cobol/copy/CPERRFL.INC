@@ -17,16 +17,17 @@
       ********************************************************************
       *****************************************************************
       *
-      *     レセプト作成用中間ファイル名称領域      CPRECEDAT1.INC
+      *     エラーファイル名称領域      CPERRFL.INC
       *            
       *****************************************************************
       *  コピー句修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *****************************************************************
-       01  RECEDAT1PARA.
+       01  ERRFLPARA.
            03  FILLER                  PIC X(05)   VALUE   "/tmp/".
-           03  RECEDAT1PARA-HOSPNUM    PIC 9(02).
-           03  RECEDAT1PARA-SYOKBN     PIC 9(01)   VALUE   0.
-           03  RECEDAT1PARA-RECEKBN    PIC 9(01)   VALUE   0.
-           03  RECEDAT1PARA-FILE-ID    PIC X(07).
-           03  RECEDAT1PARA-TERMID     PIC X(16).
+           03  ERRFLPARA-HOSPNUM       PIC 9(02).
+           03  ERRFLPARA-SYOKBN1       PIC 9(01)   VALUE   0.
+           03  ERRFLPARA-SYOKBN2       PIC 9(01)   VALUE   0.
+           03  ERRFLPARA-FILE-ID       PIC X(08).
+           03  ERRFLPARA-TERMID        PIC X(16).
+           03  FILLER                  PIC X(04)   VALUE   ".dat".

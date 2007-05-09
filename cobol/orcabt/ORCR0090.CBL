@@ -266,10 +266,8 @@
                                    BY         //RECE06//.
       *
       *    エラーファイル 名称領域 
-           COPY    "CPRECEDAT1.INC"
-                                   REPLACING  //RECEDAT1PARA//
+           COPY    "CPERRFL.INC"   REPLACING  //ERRFLPARA//
                                    BY         //RECEERR//.
-           03  FILLER              PIC X(04)   VALUE   ".dat".
       *     
       *    フラグ領域
        01  STS-AREA.

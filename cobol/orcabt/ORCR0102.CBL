@@ -165,10 +165,8 @@
            COPY    "CPCOMMONPRT.INC".
       *
       *    エラーファイル 名称領域 
-           COPY    "CPRECEDAT1.INC"
-                                   REPLACING  //RECEDAT1PARA//
+           COPY    "CPERRFL.INC"   REPLACING  //ERRFLPARA//
                                    BY         //RECEERR//.
-           03  FILLER              PIC X(04)   VALUE   ".dat".
       *
       *    システム領域
        01  SYS-AREA.

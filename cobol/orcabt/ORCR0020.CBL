@@ -286,10 +286,8 @@
                                    BY         //RECE12//.
       *
       *    エラーファイル 名称領域 
-           COPY    "CPRECEDAT1.INC"
-                                   REPLACING  //RECEDAT1PARA//
+           COPY    "CPERRFL.INC"   REPLACING  //ERRFLPARA//
                                    BY         //RECEERR//.
-           03  FILLER              PIC X(04)   VALUE   ".dat".
       *    フラグ領域
        01  STS-AREA.
            03  STS-RECE01                              PIC X(02).
@@ -631,7 +629,6 @@
       *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
-           COPY    "CPORCMCP.INC".
       *
       *    主科取得サブ
        01  ORCSSYUACCAREA.
@@ -681,15 +678,12 @@
            UNSTRING    COMMAND-PARAM   DELIMITED  BY  ","
                                        INTO    WRK-PARA
                                                WRK-PARA-HOSPNUM
+                                               RECEERR
            END-UNSTRING
            MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
       *
       *
            MOVE    ZERO                TO  FLG-END
-      *
-           MOVE    "OR42ERR"           TO  RECEERR-FILE-ID
-           MOVE    WRK-PARA-TERMID     TO  RECEERR-TERMID
-grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECEERR-HOSPNUM
       *
            IF      WRK-PARA-SHELLID    NOT =   "RECEPTX"
       *    ＤＢオープン処理
@@ -1034,13 +1028,12 @@ grpsys         MOVE    RECE01-HOSPNUM      TO  PTKOH-HOSPNUM
                MOVE    RECE01-PTID         TO  PTKOH-PTID
                MOVE    RECE01-KOHID        TO  PTKOH-KOHID
                MOVE    PTKOHINF-REC        TO  MCPDATA-REC
-               MOVE    "DBSELECT"          TO  MCP-FUNC
-               MOVE    "PTKOHINF-KEY"      TO  ORC-DBPATH
-               CALL    "ORCMCPSUB"         USING   MCPAREA
-                                                   ORCMCPAREA
-                                                   MCPDATA-REC
+               MOVE    "tbl_ptkohinf"      TO  MCP-TABLE
+               MOVE    "key"               TO  MCP-PATHNAME
+grpsys         PERFORM 900-DBSELECT-SEC
                IF      MCP-RC              =   ZERO
-                   MOVE    "PTKOHINF-KEY"      TO  ORC-DBPATH
+                   MOVE    "tbl_ptkohinf"      TO  MCP-TABLE
+                   MOVE    "key"               TO  MCP-PATHNAME
                    PERFORM PTKOHINF-READ-SEC
                    IF      FLG-PTKOHINF        =   ZERO
                        MOVE    PTKOH-KOHID         TO  RECE02-RJNHKNID
@@ -1081,8 +1074,9 @@ grpsys                 MOVE   RECE01-HOSPNUM   TO  HKN-HOSPNUM
                ELSE
                    DISPLAY   "PTKOHINF SELECT ERR" 
                END-IF
-               MOVE   "PTKOHINF-KEY"      TO  WK-PATH
-               PERFORM   CSR-CLOSE-SEC
+               MOVE    "tbl_ptkohinf"      TO  MCP-TABLE
+               MOVE    "key"               TO  MCP-PATHNAME
+               PERFORM 900-CLOSE-SEC
            END-IF
       *
       *    長期高額療養費の編集
@@ -1102,13 +1096,12 @@ grpsys           MOVE    RECE01-HOSPNUM        TO  HKN-HOSPNUM
                  MOVE    RECE01-SRYYM          TO  HKN-TEKEDYMD(1:6)
                  MOVE    "01"                  TO  HKN-TEKEDYMD(7:2)
                  MOVE    HKNNUM-REC            TO  MCPDATA-REC
-                 MOVE    "DBSELECT"            TO  MCP-FUNC
-                 MOVE    "HKNNUM-KEY"          TO  ORC-DBPATH
-                 CALL    "ORCMCPSUB"            USING   MCPAREA
-                                                        ORCMCPAREA
-                                                        MCPDATA-REC
+                 MOVE    "tbl_hknnum"          TO  MCP-TABLE
+                 MOVE    "key"                 TO  MCP-PATHNAME
+grpsys           PERFORM 900-DBSELECT-SEC
                  IF      MCP-RC                =   ZERO
-                   MOVE    "HKNNUM-KEY"        TO  ORC-DBPATH
+                   MOVE    "tbl_hknnum"            TO  MCP-TABLE
+                   MOVE    "key"                   TO  MCP-PATHNAME
                    PERFORM  HKNNUM-READ-SEC
                    IF       FLG-HKNNUM    =   0
                        IF   HKN-HKNKOHSBTKBN   =   "2"
@@ -1129,8 +1122,9 @@ grpsys           MOVE    RECE01-HOSPNUM        TO  HKN-HOSPNUM
                        END-IF     
                    END-IF
                  END-IF
-                 MOVE    "HKNNUM-KEY"      TO  WK-PATH
-                 PERFORM CSR-CLOSE-SEC
+                 MOVE    "tbl_hknnum"          TO  MCP-TABLE
+                 MOVE    "key"                 TO  MCP-PATHNAME
+                 PERFORM 900-CLOSE-SEC
                END-IF
            END-PERFORM
       *
@@ -1205,13 +1199,12 @@ grpsys             MOVE    RECE01-HOSPNUM       TO  PTKOH-HOSPNUM
                    MOVE    RECE01-PTID          TO  PTKOH-PTID
                    MOVE    "027"                TO  PTKOH-KOHNUM
                    MOVE    PTKOHINF-REC         TO  MCPDATA-REC
-                   MOVE    "DBSELECT"           TO  MCP-FUNC
-                   MOVE    "PTKOHINF-KEY4"      TO  ORC-DBPATH
-                   CALL    "ORCMCPSUB"           USING   MCPAREA
-                                                         ORCMCPAREA
-                                                         MCPDATA-REC
-                   IF      MCP-RC               =       ZERO
-                       MOVE    "PTKOHINF-KEY4"  TO      ORC-DBPATH
+                   MOVE    "tbl_ptkohinf"       TO  MCP-TABLE
+                   MOVE    "key4"               TO  MCP-PATHNAME
+grpsys             PERFORM 900-DBSELECT-SEC
+                   IF      MCP-RC               =   ZERO
+                       MOVE    "tbl_ptkohinf"       TO  MCP-TABLE
+                       MOVE    "key4"               TO  MCP-PATHNAME
                        PERFORM  PTKOHINF-READ-SEC
                        PERFORM  UNTIL   FLG-PTKOHINF    =   1
                            IF      PTKOH-TEKSTYMD(1:6)  <=
@@ -1225,13 +1218,15 @@ grpsys             MOVE    RECE01-HOSPNUM       TO  PTKOH-HOSPNUM
                                MOVE    1            TO  FLG-ROUJINHOKEN
                                MOVE    1            TO  FLG-PTKOHINF     
                            ELSE
-                              MOVE    "PTKOHINF-KEY4"  TO  ORC-DBPATH
-                              PERFORM  PTKOHINF-READ-SEC
+                               MOVE    "tbl_ptkohinf"   TO  MCP-TABLE
+                               MOVE    "key4"           TO  MCP-PATHNAME
+                               PERFORM  PTKOHINF-READ-SEC
                            END-IF   
                        END-PERFORM
                    END-IF
-                   MOVE    "PTKOHINF-KEY4"   TO  WK-PATH
-                   PERFORM CSR-CLOSE-SEC
+                   MOVE    "tbl_ptkohinf"       TO  MCP-TABLE
+                   MOVE    "key4"               TO  MCP-PATHNAME
+                   PERFORM 900-CLOSE-SEC
                END-IF
            END-IF              
       *
@@ -1242,57 +1237,59 @@ grpsys             MOVE    RECE01-HOSPNUM       TO  PTKOH-HOSPNUM
       *
       *      年金履歴より
              INITIALIZE                      TNKRRK-REC
-grpsys       MOVE    RECE01-HOSPNUM         TO  TNKRRK-HOSPNUM
+grpsys       MOVE    RECE01-HOSPNUM      TO  TNKRRK-HOSPNUM
              MOVE    RECE01-PTID         TO  TNKRRK-PTID
              MOVE    TNKRRK-REC          TO  MCPDATA-REC
-             MOVE    "DBSELECT"          TO  MCP-FUNC
-             MOVE    "TNKRRK-KEY3"       TO  ORC-DBPATH
-             CALL    "ORCMCPSUB"          USING     MCPAREA
-                                                    ORCMCPAREA
-                                                    MCPDATA-REC
+             MOVE    "tbl_tnkrrk"        TO  MCP-TABLE
+             MOVE    "key3"              TO  MCP-PATHNAME
+grpsys       PERFORM 900-DBSELECT-SEC
              IF      MCP-RC              =   ZERO
-                 MOVE    "TNKRRK-KEY3"      TO  ORC-DBPATH
+                 MOVE    "tbl_tnkrrk"        TO  MCP-TABLE
+                 MOVE    "key3"              TO  MCP-PATHNAME
                  PERFORM TNKRRK-READ-SEC
                  PERFORM  UNTIL  
                        ( FLG-TNKRRK          =   1                ) OR
                       (( TNKRRK-STYMD       <=  WRK-TEISYOTOKU-YMD  AND
                          WRK-TEISYOTOKU-YMD <=  TNKRRK-EDYMD      ))  
       *
-                        MOVE    "TNKRRK-KEY3"      TO  ORC-DBPATH
+                        MOVE    "tbl_tnkrrk"        TO  MCP-TABLE
+                        MOVE    "key3"              TO  MCP-PATHNAME
                         PERFORM TNKRRK-READ-SEC
       *
                  END-PERFORM
              END-IF
       *
-             MOVE   "TNKRRK-KEY3"       TO  WK-PATH
-             PERFORM   CSR-CLOSE-SEC
+             MOVE    "tbl_tnkrrk"        TO  MCP-TABLE
+             MOVE    "key3"              TO  MCP-PATHNAME
+             PERFORM 900-CLOSE-SEC
       *
       *      低所得より
              INITIALIZE                      TSYRRK-REC
 grpsys       MOVE    RECE01-HOSPNUM      TO  TSYRRK-HOSPNUM
              MOVE    RECE01-PTID         TO  TSYRRK-PTID
              MOVE    TSYRRK-REC          TO  MCPDATA-REC
-             MOVE    "DBSELECT"          TO  MCP-FUNC
-             MOVE    "TSYRRK-KEY3"       TO  ORC-DBPATH
-             CALL    "ORCMCPSUB"          USING     MCPAREA
-                                                    ORCMCPAREA
-                                                    MCPDATA-REC
+             MOVE    "tbl_tsyrrk"        TO  MCP-TABLE
+             MOVE    "key3"              TO  MCP-PATHNAME
+grpsys       PERFORM 900-DBSELECT-SEC
              IF      MCP-RC              =   ZERO
-                 MOVE    "TSYRRK-KEY3"      TO  ORC-DBPATH
+                 MOVE    "tbl_tsyrrk"        TO  MCP-TABLE
+                 MOVE    "key3"              TO  MCP-PATHNAME
                  PERFORM TSYRRK-READ-SEC
                  PERFORM  UNTIL  
                      ( FLG-TSYRRK            =   1                ) OR
                     (( TSYRRK-NINSTYMD      <= WRK-TEISYOTOKU-YMD   AND
                        WRK-TEISYOTOKU-YMD   <= TSYRRK-NINEDYMD    ))  
       *
-                        MOVE    "TSYRRK-KEY3"      TO  ORC-DBPATH
+                        MOVE    "tbl_tsyrrk"        TO  MCP-TABLE
+                        MOVE    "key3"              TO  MCP-PATHNAME
                         PERFORM TSYRRK-READ-SEC
       *
                  END-PERFORM
              END-IF
       *
-             MOVE   "TSYRRK-KEY3"       TO  WK-PATH
-             PERFORM   CSR-CLOSE-SEC
+             MOVE    "tbl_tsyrrk"        TO  MCP-TABLE
+             MOVE    "key3"              TO  MCP-PATHNAME
+             PERFORM 900-CLOSE-SEC
       *
              EVALUATE    FLG-TSYRRK    ALSO     FLG-TNKRRK
                  WHEN    1             ALSO     1
@@ -1344,13 +1341,12 @@ grpsys             MOVE    RECE02-HOSPNUM          TO  PTKOH-HOSPNUM
                    MOVE    RECE02-KOHSKY-KOHID  (IDX)
                                                    TO  PTKOH-KOHID
                    MOVE    PTKOHINF-REC            TO  MCPDATA-REC
-                   MOVE    "DBSELECT"              TO  MCP-FUNC
-                   MOVE    "PTKOHINF-KEY"          TO  ORC-DBPATH
-                   CALL    "ORCMCPSUB"             USING   MCPAREA
-                                                           ORCMCPAREA
-                                                           MCPDATA-REC
-                   IF      MCP-RC                  =   ZERO
-                       MOVE    "PTKOHINF-KEY"      TO  ORC-DBPATH
+                   MOVE    "tbl_ptkohinf"      TO  MCP-TABLE
+                   MOVE    "key"               TO  MCP-PATHNAME
+grpsys             PERFORM 900-DBSELECT-SEC
+                   IF      MCP-RC              =   ZERO
+                       MOVE    "tbl_ptkohinf"      TO  MCP-TABLE
+                       MOVE    "key"               TO  MCP-PATHNAME
                        PERFORM PTKOHINF-READ-SEC
                        IF      FLG-PTKOHINF           =   ZERO
                            MOVE    PTKOH-FTNJANUM       TO
@@ -1358,12 +1354,9 @@ grpsys             MOVE    RECE02-HOSPNUM          TO  PTKOH-HOSPNUM
                        END-IF
                    END-IF    
       *
-                   MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-                   MOVE    "PTKOHINF-KEY"      TO  ORC-DBPATH
-                   CALL    "ORCMCPSUB"         USING
-                                               MCPAREA
-                                               ORCMCPAREA
-                                               MCPDATA-REC
+                   MOVE    "tbl_ptkohinf"      TO  MCP-TABLE
+                   MOVE    "key"               TO  MCP-PATHNAME
+                   PERFORM 900-CLOSE-SEC
                END-PERFORM
            END-IF
       *
@@ -1494,13 +1487,12 @@ grpsys     MOVE    RECE01-HOSPNUM       TO      PTKOH-HOSPNUM
            MOVE    RECE01-PTID          TO      PTKOH-PTID
            MOVE    RECE01-KOHID-O(IDX)  TO      PTKOH-KOHID
            MOVE    PTKOHINF-REC         TO      MCPDATA-REC
-           MOVE    "DBSELECT"           TO      MCP-FUNC
-           MOVE    "PTKOHINF-KEY"       TO      ORC-DBPATH
-           CALL    "ORCMCPSUB"           USING   MCPAREA
-                                                 ORCMCPAREA
-                                                 MCPDATA-REC
-           IF      MCP-RC               =       ZERO
-               MOVE    "PTKOHINF-KEY"   TO      ORC-DBPATH
+           MOVE    "tbl_ptkohinf"      TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+grpsys     PERFORM 900-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_ptkohinf"      TO  MCP-TABLE
+               MOVE    "key"               TO  MCP-PATHNAME
                PERFORM  PTKOHINF-READ-SEC
                IF       FLG-PTKOHINF       =   ZERO
                    ADD     1               TO  IDX2
@@ -1585,8 +1577,9 @@ grpsys                     MOVE    RECE02-HOSPNUM  TO
            ELSE
                DISPLAY   "PTKOHINF SELECT ERR" 
            END-IF
-           MOVE    "PTKOHINF-KEY"      TO  WK-PATH
-           PERFORM CSR-CLOSE-SEC
+           MOVE    "tbl_ptkohinf"      TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 900-CLOSE-SEC
       *
       *    神奈川地方公費対応
            IF    ( RECE02-PREFNUM  =   "14"           )
@@ -2279,13 +2272,12 @@ grpsys         MOVE    RECE01-HOSPNUM       TO      SRY-HOSPNUM
                MOVE    TBL-ZAITAKU2(IDX3)   TO      SRY-SRYCD(4)
                MOVE    TBL-ZAITAKU2(IDX3)   TO      SRY-SRYCD(5)
                MOVE    SRYACT-REC           TO      MCPDATA-REC
-               MOVE    "DBSELECT"           TO      MCP-FUNC
-               MOVE    "SRYACT-KEY7"        TO      ORC-DBPATH
-               CALL    "ORCMCPSUB"           USING   MCPAREA
-                                                     ORCMCPAREA
-                                                     MCPDATA-REC
+               MOVE    "tbl_sryact"         TO      MCP-TABLE
+               MOVE    "key7"               TO      MCP-PATHNAME
+grpsys         PERFORM 900-DBSELECT-SEC
                IF      MCP-RC               =       ZERO
-                   MOVE    "SRYACT-KEY7"    TO      ORC-DBPATH 
+                   MOVE    "tbl_sryact"         TO  MCP-TABLE
+                   MOVE    "key7"               TO  MCP-PATHNAME
                    PERFORM   SRYACT-READ-SEC
                    IF      FLG-SRYACT       =       ZERO
                        INITIALIZE                   SRYACCT-REC
@@ -2296,14 +2288,12 @@ grpsys                 MOVE    SRY-HOSPNUM      TO   ACCT-HOSPNUM
                        MOVE    SRY-SRYYM        TO   ACCT-SRYYM
                        MOVE    SRY-ZAINUM       TO   ACCT-ZAINUM
                        MOVE    SRYACCT-REC      TO   MCPDATA-REC
-                       MOVE    "DBSELECT"       TO   MCP-FUNC
-                       MOVE    "SRYACCT-KEY31"  TO   ORC-DBPATH
-                       CALL    "ORCMCPSUB"           USING
-                                                     MCPAREA
-                                                     ORCMCPAREA
-                                                     MCPDATA-REC
+                       MOVE    "tbl_sryacct"    TO   MCP-TABLE
+                       MOVE    "key31"          TO   MCP-PATHNAME
+grpsys                 PERFORM 900-DBSELECT-SEC
                        IF      MCP-RC           =       ZERO
-                           MOVE    "SRYACCT-KEY31"  TO  ORC-DBPATH 
+                           MOVE    "tbl_sryacct"    TO   MCP-TABLE
+                           MOVE    "key31"          TO   MCP-PATHNAME
                            PERFORM   SRYACCT-READ-SEC
                            IF      FLG-SRYACCT  =       ZERO
                              IF TBL-ZAITAKU2(IDX3)  = "099140003"
@@ -2319,14 +2309,16 @@ grpsys                 MOVE    SRY-HOSPNUM      TO   ACCT-HOSPNUM
                            END-IF
                        END-IF
       *
-                       MOVE    "SRYACCT-KEY31" TO    WK-PATH
-                       PERFORM   CSR-CLOSE-SEC
+                       MOVE    "tbl_sryacct"    TO   MCP-TABLE
+                       MOVE    "key31"          TO   MCP-PATHNAME
+                       PERFORM 900-CLOSE-SEC
       *
                    END-IF
                END-IF
       *
-               MOVE    "SRYACT-KEY7"    TO    WK-PATH
-               PERFORM   CSR-CLOSE-SEC
+               MOVE    "tbl_sryact"         TO  MCP-TABLE
+               MOVE    "key7"               TO  MCP-PATHNAME
+               PERFORM 900-CLOSE-SEC
       *
              END-PERFORM
             ELSE
@@ -2345,13 +2337,12 @@ grpsys         MOVE    RECE01-HOSPNUM       TO      SRY-HOSPNUM
                MOVE    TBL-ZAITAKU(IDX3)    TO      SRY-SRYCD(4)
                MOVE    TBL-ZAITAKU(IDX3)    TO      SRY-SRYCD(5)
                MOVE    SRYACT-REC           TO      MCPDATA-REC
-               MOVE    "DBSELECT"           TO      MCP-FUNC
-               MOVE    "SRYACT-KEY7"        TO      ORC-DBPATH
-               CALL    "ORCMCPSUB"           USING   MCPAREA
-                                                     ORCMCPAREA
-                                                     MCPDATA-REC
+               MOVE    "tbl_sryact"         TO      MCP-TABLE
+               MOVE    "key7"               TO      MCP-PATHNAME
+grpsys         PERFORM 900-DBSELECT-SEC
                IF      MCP-RC               =       ZERO
-                   MOVE    "SRYACT-KEY7"    TO      ORC-DBPATH 
+                   MOVE    "tbl_sryact"         TO  MCP-TABLE
+                   MOVE    "key7"               TO  MCP-PATHNAME
                    PERFORM   SRYACT-READ-SEC
                    IF      FLG-SRYACT       =       ZERO
                        INITIALIZE                   SRYACCT-REC
@@ -2362,14 +2353,12 @@ grpsys                 MOVE    SRY-HOSPNUM      TO   ACCT-HOSPNUM
                        MOVE    SRY-SRYYM        TO   ACCT-SRYYM
                        MOVE    SRY-ZAINUM       TO   ACCT-ZAINUM
                        MOVE    SRYACCT-REC      TO   MCPDATA-REC
-                       MOVE    "DBSELECT"       TO   MCP-FUNC
-                       MOVE    "SRYACCT-KEY31"  TO   ORC-DBPATH
-                       CALL    "ORCMCPSUB"           USING
-                                                     MCPAREA
-                                                     ORCMCPAREA
-                                                     MCPDATA-REC
+                       MOVE    "tbl_sryacct"    TO   MCP-TABLE
+                       MOVE    "key31"          TO   MCP-PATHNAME
+grpsys                 PERFORM 900-DBSELECT-SEC
                        IF      MCP-RC           =       ZERO
-                           MOVE    "SRYACCT-KEY31"  TO  ORC-DBPATH 
+                           MOVE    "tbl_sryacct"    TO   MCP-TABLE
+                           MOVE    "key31"          TO   MCP-PATHNAME
                            PERFORM   SRYACCT-READ-SEC
                            IF      FLG-SRYACCT  =       ZERO
                                IF  (ACCT-ZAITEN   NOT =  ZERO)  AND
@@ -2379,14 +2368,16 @@ grpsys                 MOVE    SRY-HOSPNUM      TO   ACCT-HOSPNUM
                            END-IF
                        END-IF
       *
-                       MOVE    "SRYACCT-KEY31" TO    WK-PATH
-                       PERFORM   CSR-CLOSE-SEC
+                       MOVE    "tbl_sryacct"    TO   MCP-TABLE
+                       MOVE    "key31"          TO   MCP-PATHNAME
+                       PERFORM 900-CLOSE-SEC
       *
                    END-IF
                END-IF
       *
-               MOVE    "SRYACT-KEY7"    TO    WK-PATH
-               PERFORM   CSR-CLOSE-SEC
+               MOVE    "tbl_sryact"         TO  MCP-TABLE
+               MOVE    "key7"               TO  MCP-PATHNAME
+               PERFORM 900-CLOSE-SEC
       *
              END-PERFORM
             END-IF
@@ -2471,13 +2462,12 @@ grpsys             MOVE    RECE01-HOSPNUM       TO  PTHKN-HOSPNUM
                    MOVE    RECE01-TEKEDYMDX(IDX)
                                                 TO  PTHKN-TEKEDYMD
                    MOVE    PTHKNINF-REC         TO  MCPDATA-REC
-                   MOVE    "DBSELECT"           TO  MCP-FUNC
-                   MOVE    "PTHKNINF-KEY4"      TO  ORC-DBPATH
-                   CALL    "ORCMCPSUB"          USING   MCPAREA
-                                                        ORCMCPAREA
-                                                        MCPDATA-REC
+                   MOVE    "tbl_pthkninf"       TO  MCP-TABLE
+                   MOVE    "key4"               TO  MCP-PATHNAME
+grpsys             PERFORM 900-DBSELECT-SEC
                    IF      MCP-RC               =   ZERO
-                       MOVE    "PTHKNINF-KEY4"  TO  ORC-DBPATH
+                       MOVE    "tbl_pthkninf"       TO  MCP-TABLE
+                       MOVE    "key4"               TO  MCP-PATHNAME
                        PERFORM PTHKNINF-READ-SEC
                    ELSE
                        MOVE    1                TO  FLG-PTHKNINF  
@@ -2502,14 +2492,12 @@ grpsys                     MOVE   RECE01-HOSPNUM   TO  HKN-HOSPNUM
                            MOVE   RECE01-TEKEDYMDX (IDX)
                                                    TO  HKN-TEKEDYMD
                            MOVE   HKNNUM-REC       TO  MCPDATA-REC
-                           MOVE   "DBSELECT"       TO  MCP-FUNC
-                           MOVE   "HKNNUM-KEY5"    TO  ORC-DBPATH
-                           CALL   "ORCMCPSUB"      USING
-                                                   MCPAREA
-                                                   ORCMCPAREA
-                                                   MCPDATA-REC
+                           MOVE   "tbl_hknnum"     TO  MCP-TABLE
+                           MOVE   "key5"           TO  MCP-PATHNAME
+grpsys                     PERFORM 900-DBSELECT-SEC
                            IF     MCP-RC           =   ZERO
-                               MOVE    "HKNNUM-KEY5"   TO  ORC-DBPATH
+                               MOVE   "tbl_hknnum"     TO  MCP-TABLE
+                               MOVE   "key5"           TO  MCP-PATHNAME
                                PERFORM HKNNUM-READ-SEC
                                IF      FLG-HKNNUM      =   ZERO
                                    MOVE   HKN-TANSEIDONAME
@@ -2518,16 +2506,19 @@ grpsys                     MOVE   RECE01-HOSPNUM   TO  HKN-HOSPNUM
                                                TO RECE09-HKNHBTNUM
                                END-IF
                            END-IF
-                           MOVE   "HKNNUM-KEY5"       TO  WK-PATH
-                           PERFORM   CSR-CLOSE-SEC
+                           MOVE   "tbl_hknnum"     TO  MCP-TABLE
+                           MOVE   "key5"           TO  MCP-PATHNAME
+                           PERFORM 900-CLOSE-SEC
                            MOVE    1                TO  FLG-PTHKNINF
                        ELSE
-                           MOVE    "PTHKNINF-KEY4"  TO  ORC-DBPATH
+                           MOVE    "tbl_pthkninf"   TO  MCP-TABLE
+                           MOVE    "key4"           TO  MCP-PATHNAME
                            PERFORM PTHKNINF-READ-SEC
                        END-IF
                    END-PERFORM
-                   MOVE   "PTHKNINF-KEY4"     TO  WK-PATH
-                   PERFORM   CSR-CLOSE-SEC
+                   MOVE    "tbl_pthkninf"       TO  MCP-TABLE
+                   MOVE    "key4"               TO  MCP-PATHNAME
+                   PERFORM 900-CLOSE-SEC
       *
                    WRITE   RECE09-REC
                    ADD     1                  TO  CNT-RECE09
@@ -2669,14 +2660,12 @@ grpsys     MOVE    RECE02-HOSPNUM      TO  ACCT-HOSPNUM
            MOVE    RECE02-SRYYM        TO  ACCT-SRYYM
            MOVE    "1"                 TO  ACCT-NYUGAIKBN
            MOVE    SRYACCT-REC         TO  MCPDATA-REC
-           MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "SRYACCT-KEY37"     TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"         USING
-                                       MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC
+           MOVE    "tbl_sryacct"       TO  MCP-TABLE
+           MOVE    "key37"             TO  MCP-PATHNAME
+grpsys     PERFORM 900-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
-               MOVE    "SRYACCT-KEY37"     TO  ORC-DBPATH
+               MOVE    "tbl_sryacct"       TO   MCP-TABLE
+               MOVE    "key37"             TO   MCP-PATHNAME
                PERFORM 900-SRYACCT-READ-SEC
            ELSE
                INITIALIZE                  SRYACCT-REC
@@ -2716,13 +2705,15 @@ grpsys         MOVE    RECE02-HOSPNUM  TO  COMB-HOSPNUM
                MOVE    KEY-NEW             TO  KEY-OLD
                PERFORM     UNTIL   FLG-SRYACCT     =   1 
                            OR      KEY-NEW     NOT =   KEY-OLD
-                   MOVE    "SRYACCT-KEY37"     TO  ORC-DBPATH
+                   MOVE    "tbl_sryacct"    TO   MCP-TABLE
+                   MOVE    "key37"          TO   MCP-PATHNAME
                    PERFORM 900-SRYACCT-READ-SEC
                END-PERFORM
            END-PERFORM
       *
-           MOVE    "SRYACCT-KEY37"     TO  WK-PATH
-           PERFORM CSR-CLOSE-SEC
+           MOVE    "tbl_sryacct"    TO   MCP-TABLE
+           MOVE    "key37"          TO   MCP-PATHNAME
+           PERFORM 900-CLOSE-SEC
       *
            PERFORM VARYING IDX FROM    1   BY  1
                    UNTIL   IDX >       10
@@ -2734,9 +2725,10 @@ grpsys             MOVE    RECE02-HOSPNUM      TO  PTHKN-HOSPNUM
                    MOVE    RECE02-PTID         TO  PTHKN-PTID
                    MOVE    WRK-COMB-HKNID (IDX)
                                                TO  PTHKN-HKNID
-                   MOVE    PTHKNINF-REC        TO  MCPDATA-REC
                    MOVE    WRK-COMB-TEKSTYMD (IDX)
-                                               TO  ORC-DBYMD
+                                               TO  PTHKN-TEKSTYMD
+                                                   PTHKN-TEKEDYMD
+                   MOVE    PTHKNINF-REC        TO  MCPDATA-REC
                    PERFORM 910-PTHKNINF-INV-SEC
                    MOVE    PTHKN-TEKSTYMD      TO  WRK-TEKSTYMDX (IDX)
                    MOVE    PTHKN-TEKEDYMD      TO  WRK-TEKEDYMDX (IDX)
@@ -2769,11 +2761,9 @@ grpsys     MOVE    RECE02-HOSPNUM      TO  PTNYUINRRK-HOSPNUM
            MOVE    RECE02-SRYYM        TO  PTNYUINRRK-TAIINYMD (1:6)
            MOVE    "01"                TO  PTNYUINRRK-TAIINYMD (7:2)
            MOVE    PTNYUINRRK-REC      TO  MCPDATA-REC
-           MOVE    "PTNYUINRRK-KEY23"  TO  ORC-DBPATH
-           MOVE    "DBSELECT"          TO  MCP-FUNC
-           CALL    "ORCMCPSUB"         USING   MCPAREA
-                                               ORCMCPAREA
-                                               MCPDATA-REC
+           MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
+           MOVE    "key23"             TO  MCP-PATHNAME
+grpsys     PERFORM 900-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
                PERFORM 900-PTNYUINRRK-KEY23-READ-SEC
            ELSE
@@ -2821,11 +2811,9 @@ grpsys     MOVE    RECE02-HOSPNUM      TO  PTNYUINRRK-HOSPNUM
              PERFORM 900-PTNYUINRRK-KEY23-READ-SEC
            END-PERFORM        
       *                 
-           MOVE    "PTNYUINRRK-KEY23"  TO  ORC-DBPATH
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           CALL    "ORCMCPSUB"         USING   MCPAREA
-                                               ORCMCPAREA
-                                               MCPDATA-REC
+           MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
+           MOVE    "key23"             TO  MCP-PATHNAME
+           PERFORM 900-CLOSE-SEC
       *                                                                
            .
        240-PTNYUINRRK-SYORI-EXT.
@@ -2850,12 +2838,10 @@ grpsys         MOVE    RECE01-HOSPNUM  TO  PTNYUINRRK-HOSPNUM
                MOVE    RECE01-SRYYM    TO  PTNYUINRRK-NYUINYMD (1:6)
                MOVE    "31"            TO  PTNYUINRRK-NYUINYMD (7:2)
                MOVE    PTNYUINRRK-REC  TO  MCPDATA-REC
-               MOVE    "PTNYUINRRK-KEY22"
-                                       TO  ORC-DBPATH
-               MOVE    "DBSELECT"      TO  MCP-FUNC
-               CALL    "ORCMCPSUB"     USING   MCPAREA
-                                               ORCMCPAREA
-                                               MCPDATA-REC
+               MOVE    "tbl_ptnyuinrrk"
+                                       TO  MCP-TABLE
+               MOVE    "key22"         TO  MCP-PATHNAME
+grpsys         PERFORM 900-DBSELECT-SEC
                IF      MCP-RC              =   ZERO
                    PERFORM 900-PTNYUINRRK-KEY22-READ-SEC
                ELSE
@@ -2867,11 +2853,10 @@ grpsys         MOVE    RECE01-HOSPNUM  TO  PTNYUINRRK-HOSPNUM
                    PERFORM 900-PTNYUINRRK-KEY22-READ-SEC
                END-PERFORM
       *                 
-               MOVE    "PTNYUINRRK-KEY22"  TO  ORC-DBPATH
-               MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-               CALL    "ORCMCPSUB"         USING   MCPAREA
-                                                   ORCMCPAREA
-                                                   MCPDATA-REC
+               MOVE    "tbl_ptnyuinrrk"
+                                       TO  MCP-TABLE
+               MOVE    "key22"         TO  MCP-PATHNAME
+               PERFORM 900-CLOSE-SEC
            END-IF
            .
        2401-PTNYUINRRK-HENSYU-EXT.
@@ -3018,11 +3003,7 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
       *****************************************************************
        PTHKNINF-READ-SEC           SECTION.
       *
-           MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+grpsys     PERFORM 900-DBFETCH-SEC
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC     TO  PTHKNINF-REC
                MOVE    ZERO            TO  FLG-PTHKNINF
@@ -3039,11 +3020,7 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
       *****************************************************************
        PTKOHINF-READ-SEC           SECTION.
       *
-           MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+grpsys     PERFORM 900-DBFETCH-SEC
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC     TO  PTKOHINF-REC
                MOVE    ZERO            TO  FLG-PTKOHINF
@@ -3087,13 +3064,12 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
 grpsys         MOVE   RECE02-HOSPNUM       TO  HKN-HOSPNUM
                MOVE   WRK-CHK-HKNNUM       TO  HKN-HKNNUM
                MOVE   HKNNUM-REC           TO  MCPDATA-REC
-               MOVE   "DBSELECT"           TO  MCP-FUNC
-               MOVE   "HKNNUM-KEY2"        TO  ORC-DBPATH
-               CALL   "ORCMCPSUB"          USING   MCPAREA
-                                                   ORCMCPAREA
-                                                   MCPDATA-REC
+               MOVE   "tbl_hknnum"         TO  MCP-TABLE
+               MOVE   "key2"               TO  MCP-PATHNAME
+grpsys         PERFORM 900-DBSELECT-SEC
                IF     MCP-RC               =   ZERO
-                   MOVE    "HKNNUM-KEY2"       TO  ORC-DBPATH
+                   MOVE   "tbl_hknnum"         TO  MCP-TABLE
+                   MOVE   "key2"               TO  MCP-PATHNAME
                    PERFORM HKNNUM-READ-SEC
                    PERFORM UNTIL ( FLG-HKNNUM  =    1                 )
                            OR    ((HKN-TEKSTYMD (1:6)
@@ -3101,7 +3077,8 @@ grpsys         MOVE   RECE02-HOSPNUM       TO  HKN-HOSPNUM
                                     AND
                                   (RECE02-SRYYM
                                                <=  HKN-TEKEDYMD(1:6)) )
-                       MOVE    "HKNNUM-KEY2"       TO  ORC-DBPATH
+                       MOVE   "tbl_hknnum"         TO  MCP-TABLE
+                       MOVE   "key2"               TO  MCP-PATHNAME
                        PERFORM HKNNUM-READ-SEC
                    END-PERFORM
       *
@@ -3123,12 +3100,9 @@ grpsys         MOVE   RECE02-HOSPNUM       TO  HKN-HOSPNUM
                    MOVE    1               TO  FLG-HKNNUM
                END-IF
       *
-               MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-               MOVE   "HKNNUM-KEY2"        TO  ORC-DBPATH
-               CALL    "ORCMCPSUB"         USING
-                                           MCPAREA
-                                           ORCMCPAREA
-                                           MCPDATA-REC
+               MOVE   "tbl_hknnum"         TO  MCP-TABLE
+               MOVE   "key2"               TO  MCP-PATHNAME
+               PERFORM 900-CLOSE-SEC
            END-IF
       *
            .
@@ -3140,11 +3114,7 @@ grpsys         MOVE   RECE02-HOSPNUM       TO  HKN-HOSPNUM
       *****************************************************************
        HKNNUM-READ-SEC           SECTION.
       *
-           MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+grpsys     PERFORM 900-DBFETCH-SEC
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC     TO  HKNNUM-REC
                MOVE    ZERO            TO  FLG-HKNNUM
@@ -3162,11 +3132,7 @@ grpsys         MOVE   RECE02-HOSPNUM       TO  HKN-HOSPNUM
       *****************************************************************
        TSYRRK-READ-SEC        SECTION.
       *
-           MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+grpsys     PERFORM 900-DBFETCH-SEC
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC     TO  TSYRRK-REC
                MOVE    ZERO            TO  FLG-TSYRRK
@@ -3184,11 +3150,7 @@ grpsys         MOVE   RECE02-HOSPNUM       TO  HKN-HOSPNUM
       *****************************************************************
        TNKRRK-READ-SEC        SECTION.
       *
-           MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+grpsys     PERFORM 900-DBFETCH-SEC
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC     TO  TNKRRK-REC
                MOVE    ZERO            TO  FLG-TNKRRK
@@ -3206,11 +3168,7 @@ grpsys         MOVE   RECE02-HOSPNUM       TO  HKN-HOSPNUM
       *****************************************************************
        SRYACCT-READ-SEC         SECTION.
       *
-           MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+grpsys     PERFORM 900-DBFETCH-SEC
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC     TO  SRYACCT-REC
                MOVE    ZERO            TO  FLG-SRYACCT
@@ -3228,11 +3186,7 @@ grpsys         MOVE   RECE02-HOSPNUM       TO  HKN-HOSPNUM
       *****************************************************************
        SRYACT-READ-SEC         SECTION.
       *
-           MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+grpsys     PERFORM 900-DBFETCH-SEC
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC     TO  SRYACT-REC
                MOVE    ZERO            TO  FLG-SRYACT
@@ -3322,11 +3276,7 @@ grpsys         PERFORM 900-DBFETCH-SEC
       *****************************************************************
        900-SRYACCT-READ-SEC         SECTION.
       *
-           MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+grpsys     PERFORM 900-DBFETCH-SEC
            IF      MCP-RC              =   ZERO
                MOVE    ZERO                TO  FLG-SRYACCT
                MOVE    MCPDATA-REC         TO  SRYACCT-REC
@@ -3362,19 +3312,13 @@ grpsys     PERFORM 900-DBFETCH-SEC
       *****************************************************************
        910-HKNCOMBI-INV-SEC         SECTION.
       *
-           MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "HKNCOMBI-KEY"      TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           MOVE    "tbl_hkncombi"      TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+grpsys     PERFORM 900-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
-               MOVE    "DBFETCH"           TO  MCP-FUNC
-               MOVE    "HKNCOMBI-KEY"      TO  ORC-DBPATH
-               CALL    "ORCMCPSUB"          USING
-                                            MCPAREA
-                                            ORCMCPAREA
-                                            MCPDATA-REC
+               MOVE    "tbl_hkncombi"      TO  MCP-TABLE
+               MOVE    "key"               TO  MCP-PATHNAME
+grpsys         PERFORM 900-DBFETCH-SEC
                IF      MCP-RC              =   ZERO
                    MOVE    ZERO                TO  FLG-HKNCOMBI
                    MOVE    MCPDATA-REC         TO  HKNCOMBI-REC
@@ -3390,8 +3334,9 @@ grpsys     PERFORM 900-DBFETCH-SEC
                INITIALIZE                      HKNCOMBI-REC
            END-IF
       *
-           MOVE    "HKNCOMBI-KEY"      TO  WK-PATH
-           PERFORM CSR-CLOSE-SEC
+           MOVE    "tbl_hkncombi"      TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 900-CLOSE-SEC
       *
            .
        910-HKNCOMBI-INV-EXT.
@@ -3403,12 +3348,9 @@ grpsys     PERFORM 900-DBFETCH-SEC
       *****************************************************************
        900-PTNYUINRRK-KEY22-READ-SEC    SECTION.
       *    
-           MOVE    "DBFETCH"            TO  MCP-FUNC
-           MOVE    "PTNYUINRRK-KEY22"   TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
+           MOVE    "key22"             TO  MCP-PATHNAME
+grpsys     PERFORM 900-DBFETCH-SEC
            IF      MCP-RC               =   ZERO
                MOVE    ZERO                 TO  FLG-PTNYUINRRK22
                MOVE    MCPDATA-REC          TO  PTNYUINRRK-REC
@@ -3424,12 +3366,9 @@ grpsys     PERFORM 900-DBFETCH-SEC
       *****************************************************************
        900-PTNYUINRRK-KEY23-READ-SEC    SECTION.
       *    
-           MOVE    "DBFETCH"            TO  MCP-FUNC
-           MOVE    "PTNYUINRRK-KEY23"   TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
+           MOVE    "key23"             TO  MCP-PATHNAME
+grpsys     PERFORM 900-DBFETCH-SEC
            IF      MCP-RC               =   ZERO
                MOVE    ZERO                 TO  FLG-PTNYUINRRK23
                MOVE    MCPDATA-REC          TO  PTNYUINRRK-REC
@@ -3445,19 +3384,13 @@ grpsys     PERFORM 900-DBFETCH-SEC
       *****************************************************************
        910-PTHKNINF-INV-SEC         SECTION.
       *
-           MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "PTHKNINF-KEY3"     TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           MOVE    "tbl_pthkninf"     TO  MCP-TABLE
+           MOVE    "key3"             TO  MCP-PATHNAME
+grpsys     PERFORM 900-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
-               MOVE    "DBFETCH"           TO  MCP-FUNC
-               MOVE    "PTHKNINF-KEY3"     TO  ORC-DBPATH
-               CALL    "ORCMCPSUB"          USING
-                                            MCPAREA
-                                            ORCMCPAREA
-                                            MCPDATA-REC
+               MOVE    "tbl_pthkninf"     TO  MCP-TABLE
+               MOVE    "key3"             TO  MCP-PATHNAME
+grpsys         PERFORM 900-DBFETCH-SEC
                IF      MCP-RC              =   ZERO
                    MOVE    ZERO                TO  FLG-PTHKNINF
                    MOVE    MCPDATA-REC         TO  PTHKNINF-REC
@@ -3471,8 +3404,9 @@ grpsys     PERFORM 900-DBFETCH-SEC
                MOVE    1                   TO  FLG-PTHKNINF
            END-IF
       *
-           MOVE    "PTHKNINF-KEY3"     TO  WK-PATH
-           PERFORM CSR-CLOSE-SEC
+           MOVE    "tbl_pthkninf"     TO  MCP-TABLE
+           MOVE    "key3 "            TO  MCP-PATHNAME
+           PERFORM 900-CLOSE-SEC
       *
            .
        910-PTHKNINF-INV-EXT.
@@ -3506,22 +3440,6 @@ grpsys         PERFORM 900-DBFETCH-SEC
       *
            .
        900-KYUSEIRRK-READ-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    カーソルクローズ処理
-      *****************************************************************
-       CSR-CLOSE-SEC            SECTION.
-      *
-           INITIALIZE                  MCPAREA
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           MOVE    WK-PATH             TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
-           .
-       CSR-CLOSE-EXT.
            EXIT.
       *
       *****************************************************************

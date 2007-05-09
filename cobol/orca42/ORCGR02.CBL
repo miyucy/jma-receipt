@@ -131,10 +131,8 @@
        WORKING-STORAGE             SECTION.
       *
       *    ¥¨¥é¡¼¥Õ¥¡¥¤¥ë Ì¾¾ÎÎÎ°è 
-           COPY    "CPRECEDAT1.INC"
-                                   REPLACING  //RECEDAT1PARA//
+           COPY    "CPERRFL.INC"   REPLACING  //ERRFLPARA//
                                    BY         //RECEERR//.
-           03  FILLER              PIC X(04)   VALUE   ".dat".
       *
       *    Ä¢É¼½ÐÎÏÍÑ¥Ñ¥é¥á¥¿  
        01  WRK-RECE09-REC. 
@@ -323,6 +321,10 @@
                                    PIC X(08)   VALUE   "RECEPT2".
            03  WRK-CONS-PRTKANRI-TBL-GROUP
                                    PIC X(14)   VALUE   SPACE.
+      *
+      *    ¥¨¥é¡¼¥Õ¥¡¥¤¥ë£É£Ä
+           03  WRK-CONS-FILE-ID    PIC X(08)   VALUE   "OR042ERR".
+      *
       *    ¥×¥ì¥Ó¥å¡¼ÍÑ¾ðÊó
            COPY    "CPXC01LNK.INC".
       *
@@ -3634,7 +3636,7 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
       *
       *    °õºþ½èÍý³«»Ï¡Ê£Ï£Ò£Ã£Ò£°£±£°£²¡Ë
       *
-           MOVE    "OR42ERR"           TO  RECEERR-FILE-ID
+           MOVE    WRK-CONS-FILE-ID    TO  RECEERR-FILE-ID
            MOVE    SPA-TERMID          TO  RECEERR-TERMID
 grpsys     MOVE    SPA-HOSPNUM         TO  RECEERR-HOSPNUM
       *
@@ -3976,9 +3978,10 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
       *
       *¡¡¡¡¡Ê£Ï£Ò£Ã£Ò£°£±£°£±¡Ë¡¡
       *
-           MOVE    "OR42ERR"           TO  RECEERR-FILE-ID
-           MOVE    SPA-TERMID          TO  RECEERR-TERMID
-grpsys     MOVE    SPA-HOSPNUM         TO  RECEERR-HOSPNUM
+           MOVE    WRK-CONS-FILE-ID
+                                   TO  RECEERR-FILE-ID
+           MOVE    SPA-TERMID      TO  RECEERR-TERMID
+grpsys     MOVE    SPA-HOSPNUM     TO  RECEERR-HOSPNUM
       *
            ADD     1               TO  WRK-RECE08-PRTJYUN                 
       *
@@ -4058,9 +4061,10 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
       *
       *¡¡¡¡¡Ê£Ï£Ò£Ã£Ò£°£±£°£±¡Ë¡¡
       *
-           MOVE    "OR42ERR"           TO  RECEERR-FILE-ID
-           MOVE    SPA-TERMID          TO  RECEERR-TERMID
-grpsys     MOVE    SPA-HOSPNUM         TO  RECEERR-HOSPNUM
+           MOVE    WRK-CONS-FILE-ID
+                                   TO  RECEERR-FILE-ID
+           MOVE    SPA-TERMID      TO  RECEERR-TERMID
+grpsys     MOVE    SPA-HOSPNUM     TO  RECEERR-HOSPNUM
       *
            ADD     1               TO  WRK-RECE08-PRTJYUN                 
       *

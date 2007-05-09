@@ -132,10 +132,8 @@
        WORKING-STORAGE             SECTION.
       *
       *    エラーファイル 名称領域 
-           COPY    "CPRECEDAT1.INC"
-                                   REPLACING  //RECEDAT1PARA//
+           COPY    "CPERRFL.INC"   REPLACING  //ERRFLPARA//
                                    BY         //RECEERR//.
-           03  FILLER              PIC X(04)   VALUE   ".dat".
       *
       *    スパ領域
            COPY    "COMMON-SPA".
@@ -342,6 +340,9 @@
                                    PIC X(03)   VALUE   "973". 
       *
            03  WRK-CONS-LINE-MAX   PIC 9(03)   VALUE   500.
+      *
+      *    エラーファイルＩＤ
+           03  WRK-CONS-FILE-ID    PIC X(08)   VALUE   "OR042ERR".
       *
            COPY    "CPSHELLTBL.INC".
       *
@@ -3277,7 +3278,7 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
 grpsys     PERFORM 900-CALL-ORCSJOB-SEC
       *
       *     
-           MOVE    "OR42ERR"           TO  RECEERR-FILE-ID
+           MOVE    WRK-CONS-FILE-ID    TO  RECEERR-FILE-ID
            MOVE    SPA-TERMID          TO  RECEERR-TERMID
 grpsys     MOVE    SPA-HOSPNUM         TO  RECEERR-HOSPNUM
       *
