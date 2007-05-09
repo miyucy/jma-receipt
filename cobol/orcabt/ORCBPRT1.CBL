@@ -35,6 +35,8 @@
       *  01.01.02    NACL-藤原    03/01/20  プレビューＤＢ処理追加
       *  01.01.03    NACL-藤原    04/11/29  引数にエラーファイル名を追加
       *  01.01.04    NACL-伊藤    06/03/07  オフセット対応
+      *
+      *  03.05.01    NACL-藤原    07/04/19  グループ診療対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -87,12 +89,8 @@ grpsys COPY    "COMMON-SPA".
            COPY    "CPCOMMONPRT.INC".
       *
       *    エラーファイル 名称領域 
-           COPY    "CPCOMMONDAT2.INC"
-                                   REPLACING  //RECE01PARA//
+           COPY    "CPERRFL.INC"   REPLACING  //ERRFLPARA//
                                    BY         //RECEERR//.
-           03  FILLER              PIC X(04)   VALUE   ".dat".
-      *    シェル用領域
-      *****COPY    "CPCOMMONSHELL.INC".
       *
       *    システム領域
        01  SYS-AREA.
@@ -146,6 +144,7 @@ grpsys COPY    "COMMON-SPA".
            03  WRK-PARA-STPAGE     PIC 9(05).
            03  WRK-PARA-EDPAGE     PIC 9(05).
            03  WRK-PARA-PRTFLG     PIC X(01).
+           03  WRK-PARA-HOSPNUM    PIC X(02).
       *
            03  WRK-IN              PIC X(01).
       *
@@ -157,7 +156,6 @@ grpsys COPY    "COMMON-SPA".
       *
            COPY    "CPSHELLTBL.INC".
       *     
-           COPY    "ORCA-DBPATH".         
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -166,9 +164,6 @@ grpsys COPY    "COMMON-SPA".
       *    ジョブ管理マスタ
        01  JOBKANRI-REC.
            COPY    "CPJOBKANRI.INC".
-      *
-      *    出力先プリンタ名割り当て情報
-           COPY    "CPSK1031.INC".
       *
       *    オフセット情報
            COPY    "CPSK1044.INC".
@@ -199,7 +194,6 @@ grpsys COPY    "COMMON-SPA".
            COPY    "MCPAREA".
       *
            COPY    "MCPDATA.INC".
-           COPY    "CPORCMCP.INC".
       *
       *   ファイル取得関数
        01 ORCFILEGET-AREA.
@@ -243,6 +237,7 @@ grpsys COPY    "COMMON-SPA".
            INITIALIZE                  STS-AREA
            INITIALIZE                  WRK-AREA
            INITIALIZE                  CNT-AREA
+                                       SPA-AREA
       *
            ACCEPT  SYS-TIME            FROM    TIME     
       *
@@ -264,24 +259,18 @@ grpsys COPY    "COMMON-SPA".
                                                WRK-PARA-STPAGE
                                                WRK-PARA-EDPAGE
                                                WRK-PARA-PRTFLG     
+                                               WRK-PARA-HOSPNUM
            END-UNSTRING
       *
+           MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
            PERFORM 100-DBOPEN-SEC
       *
       *    ステップ管理開始処理
            MOVE    "STS"           TO  SJOBKANRI-MODE
            INITIALIZE                  JOBKANRI-REC
-           MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
-           MOVE    WRK-PARA-SHELLID
-                                   TO  JOB-SHELLID
-           MOVE    "ORCBPRT1"       TO  JOB-PGID
+           MOVE    "ORCBPRT1"      TO  JOB-PGID
            MOVE    "帳票印刷処理"  TO  JOB-SHELLMSG
-           CALL    "ORCSJOB"       USING
-                                   ORCSJOBKANRIAREA  
-                                   JOBKANRI-REC
-      *
-      *    出力先プリンタ名割り当て情報処理
-      *****PERFORM 110-SYSKANRI-HENSYU-SEC
+grpsys     PERFORM 900-CALL-ORCSJOB-SEC
       *
       *    印刷管理ＤＢ読み込み処理
            PERFORM 900-PRTKANRI-SELECT-SEC
@@ -301,29 +290,6 @@ grpsys COPY    "COMMON-SPA".
            .
        100-INIT-EXT.
            EXIT.
-      *
-      *****************************************************************
-      *    出力先プリンタ名割り当て情報処理
-      *****************************************************************
-       110-SYSKANRI-HENSYU-SEC                   SECTION.
-      *
-      *    出力先プリンタ名割り当て情報編集
-           MOVE    SPACE               TO  SYS-1031-REC
-           INITIALIZE                  SYS-1031-REC
-           MOVE    "1031"              TO  SYS-1031-KANRICD
-           MOVE    "*"                 TO  SYS-1031-KBNCD
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
-           MOVE    SYS-1031-REC        TO  MCPDATA-REC
-           PERFORM 800-SYSKANRI-READ-SEC
-           IF      FLG-SYSKANRI        =   ZERO
-               MOVE    MCPDATA-REC         TO  SYS-1031-REC
-           ELSE    
-               INITIALIZE                  SYS-1031-REC
-           END-IF                                     
-           .
-       110-PARA-HENSYU-EXT.
-           EXIT.
-      *
       *
       *****************************************************************
       *    主　　処理
@@ -348,12 +314,10 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                    PERFORM 900-PRTDATA-FET-SEC
                END-PERFORM    
       *
-               MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-               MOVE    PATH-TBL-PRTDATA-KEY2
-                                           TO  MCP-PATH
-               CALL    "MCPSUB"        USING
-                                           MCPAREA
-                                           MCPDATA-REC
+               MOVE    "tbl_prtdata"       TO  MCP-TABLE
+               MOVE    "key2"              TO  MCP-PATHNAME
+               PERFORM 900-CLOSE-SEC
+      *
                PERFORM 2003-PRTKANRI-UPD-SEC
                PERFORM 900-PRTKANRI-FET-SEC
            END-PERFORM                                
@@ -374,14 +338,12 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    MKPASS-OT-01    TO  SHELLTBL-NAME
       *         
                MOVE    HC01PARA        TO  SHELLTBL-ARG1
-grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
+grpsys         MOVE    SPA-HOSPNUM     TO  SHELLTBL-ARG2
                MOVE    SHELLTBL        TO  MCPDATA-REC
                MOVE    "SHELL"         TO  MCP-FUNC
-               MOVE    PATH-SHELL-SHELL
-                                       TO  MCP-PATH
-               CALL    "MCPSUB"        USING
-                                           MCPAREA
-                                           MCPDATA-REC
+               MOVE    "shell"         TO  MCP-TABLE
+               MOVE    "shell"         TO  MCP-PATHNAME
+grpsys         PERFORM 900-ORCDBMAIN-SEC
            END-IF                                                
       *
            MOVE    1                   TO  FLG-END     
@@ -473,21 +435,15 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
            END-STRING
            MOVE    "99999999"          TO  SYS-1044-STYUKYMD
            MOVE    "99999999"          TO  SYS-1044-EDYUKYMD
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+grpsys     MOVE    SPA-HOSPNUM         TO  SYS-1044-HOSPNUM
            MOVE    SYS-1044-REC        TO  MCPDATA-REC
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key3"              TO  MCP-PATHNAME
-           MOVE    "DBSELECT"          TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     PERFORM 900-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
                MOVE    "tbl_syskanri"  TO  MCP-TABLE
                MOVE    "key3"          TO  MCP-PATHNAME
-               MOVE    "DBFETCH"       TO  MCP-FUNC
-grpsys         CALL "ORCDBMAIN" USING MCPAREA
-                                      MCPDATA-REC
-grpsys                                SPA-AREA
+grpsys         PERFORM 900-DBFETCH-SEC
                IF      MCP-RC          =   ZERO
                    MOVE  MCPDATA-REC   TO  SYS-1044-REC
                    IF   (SYS-1044-FORMID  =   PRT-PRTID)  AND
@@ -502,12 +458,10 @@ grpsys                                SPA-AREA
            ELSE
                INITIALIZE              SYS-1044-REC
            END-IF
+      *
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key3"              TO  MCP-PATHNAME
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           PERFORM 900-CLOSE-SEC
       *
            .
        2002-OFFSET-GET-EXT.
@@ -521,14 +475,11 @@ grpsys                            SPA-AREA
       *    印刷フラグセット
            MOVE    "1"                 TO  PRTDATA-PRTFLG
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PRTDATA-REC         TO  MCPDATA-REC
            MOVE    "DBUPDATE"          TO  MCP-FUNC
-           MOVE    PATH-TBL-PRTDATA-KEY
-                                       TO  MCP-PATH
-           CALL    "MCPSUB"            USING
-                                       MCPAREA
-                                       MCPDATA-REC
+           MOVE    "tbl_prtdata"       TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+grpsys     PERFORM 900-ORCDBMAIN-SEC
       *
            IF      MCP-RC             =   ZERO
                CONTINUE
@@ -547,14 +498,12 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
        2003-PRTKANRI-UPD-SEC          SECTION.
       *
            MOVE    "1"                 TO  PRTKANRI-PRTFLG
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+      *
            MOVE    PRTKANRI-REC        TO  MCPDATA-REC
            MOVE    "DBUPDATE"          TO  MCP-FUNC
-           MOVE    PATH-TBL-PRTKANRI-KEY
-                                       TO  MCP-PATH
-           CALL    "MCPSUB"            USING
-                                       MCPAREA
-                                       MCPDATA-REC
+           MOVE    "tbl_prtkanri"      TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+grpsys     PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC               =   ZERO
                CONTINUE
            ELSE
@@ -565,78 +514,6 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            .
        2003-PRTKANRI-UPD-EXT.
            EXIT.
-      *
-      *  01.01.02  SATRT
-      *****************************************************************
-      *    プレビューＤＢ削除処理
-      *****************************************************************
-      * 900-PREVIEW-DELETE-SEC        SECTION.
-      *
-      *    TBLキーセット
-      *     DISPLAY "BPRT DELETE KEY= " LNK-PRTKANRI-TBL-KEY
-      *     MOVE    LNK-PRTKANRI-TBL-KEY
-      *                                 TO  PREVIEW-TBL-KEY
-      **
-      *     MOVE    PREVIEW-REC         TO  MCPDATA-REC
-      *     MOVE    "DBDELETE"          TO  MCP-FUNC
-      *     MOVE    PATH-TBL-PREVIEW-DEL11
-      *                                 TO  MCP-PATH
-      *     CALL    "MCPSUB"            USING
-      *                                 MCPAREA
-      *                                 MCPDATA-REC
-      **
-      *     IF      MCP-RC             =   ZERO
-      *         CONTINUE
-      *     ELSE
-      *         MOVE    "プレビューＤＢの削除でエラーになりました"
-      *                                    TO  WRK-RECEERR
-      *         PERFORM 500-ERR-HENSYU-SEC
-      *    END-IF    
-      *     .
-      * 900-PREVIEW-DELETE-EXT.
-      *     EXIT.
-      **
-      *****************************************************************
-      *    プレビューＤＢ追加処理
-      *****************************************************************
-      *2004-PREVIEW-INS-SEC          SECTION.
-      *
-      *    TBLキーセット
-      *    MOVE    LNK-PRTKANRI-TBL-KEY
-      *                                 TO  PREVIEW-TBL-KEY
-      *     MOVE    CNT-IN              TO  PREVIEW-TBL-NUMBER
-      *     MOVE    PRT-PSFILE-AREA     TO  PREVIEW-FILENAME
-      *     MOVE    PRTDATA-PRTID       TO  PREVIEW-PRTID
-      *     MOVE    PRTKANRI-TITLE      TO  PREVIEW-TITLE
-      *     MOVE    PRTDATA-PTID        TO  PREVIEW-PTID
-      *     MOVE    PRTKANRI-SRYYM      TO  PREVIEW-SRYYM
-      *     MOVE    PRTKANRI-SKYYMD     TO  PREVIEW-SKYYMD
-      *     MOVE    PRTKANRI-PRTNM      TO  PREVIEW-PRTNM
-      *     MOVE    PRTKANRI-OPID       TO  PREVIEW-OPID
-      *     MOVE    SYS-TIME            TO  PREVIEW-CREYMD
-      *     MOVE    SPACE               TO  PREVIEW-UPYMD
-      *     MOVE    SPACE               TO  PREVIEW-UPHMS
-      **
-      *:     MOVE    PREVIEW-REC         TO  MCPDATA-REC
-      *     MOVE    "DBINSERT"          TO  MCP-FUNC
-      *     MOVE    PATH-TBL-PREVIEW-KEY
-      *                                 TO  MCP-PATH
-      *     CALL    "MCPSUB"            USING
-      *                                 MCPAREA
-      *                                 MCPDATA-REC
-      **
-      *     IF      MCP-RC             =   ZERO
-      *         CONTINUE
-      *     ELSE
-      *         MOVE    "プレビューＤＢの追加でエラーになりました"
-      *                                    TO  WRK-RECEERR
-      *         PERFORM 500-ERR-HENSYU-SEC
-      *    END-IF    
-      *     .
-      * 2004-PREVIEW-INS-EXT.
-      *     EXIT.
-      *
-      *  01.01.02  END
       *
       *****************************************************************
       *    エラー出力処理
@@ -656,14 +533,10 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *        ジョブ管理開始処理
                MOVE    "JBE"           TO  SJOBKANRI-MODE
                INITIALIZE                  JOBKANRI-REC
-               MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
-               MOVE    WRK-PARA-SHELLID
-                                       TO  JOB-SHELLID
                MOVE    WRK-RECEERR     TO  JOB-YOBI
+               MOVE    SPA-HOSPNUM     TO  JOB-HOSPNUM
                MOVE    "9999"          TO  JOB-ERRCD
-               CALL    "ORCSJOB"       USING
-                                       ORCSJOBKANRIAREA  
-                                       JOBKANRI-REC
+grpsys         PERFORM 900-CALL-ORCSJOB-SEC
            END-IF
       *
            MOVE    1                   TO  FLG-END
@@ -681,13 +554,8 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *    ステップ管理終了処理
            MOVE    "STE"           TO  SJOBKANRI-MODE
            INITIALIZE                  JOBKANRI-REC
-           MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
-           MOVE    WRK-PARA-SHELLID
-                                   TO  JOB-SHELLID
            MOVE    CNT-OUT         TO  JOB-UPDCNT                        
-           CALL    "ORCSJOB"       USING
-                                   ORCSJOBKANRIAREA  
-                                   JOBKANRI-REC
+grpsys     PERFORM 900-CALL-ORCSJOB-SEC
       *
            PERFORM 900-DBDISCONNECT-SEC
       *
@@ -708,14 +576,12 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    LNK-PRTKANRI-TBL-GROUP      TO  PRVKANRI-TBL-GROUP 
            MOVE    PRTDATA-SHORI-RENNUM        TO  PRVKANRI-SHORI-RENNUM
            MOVE    PRTDATA-PAGE                TO  PRVKANRI-PAGE  
+grpsys     MOVE    SPA-HOSPNUM                 TO  PRVKANRI-HOSPNUM
 grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PRVKANRI-REC        TO  MCPDATA-REC
-           MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    PATH-TBL-PRVKANRI-KEY
-                                       TO  MCP-PATH
-           CALL    "MCPSUB"            USING
-                                       MCPAREA
-                                       MCPDATA-REC
+           MOVE    "tbl_prvkanri"      TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 900-DBSELECT-SEC
       *
            IF      MCP-RC             =   ZERO
                PERFORM 900-PRVKANRI-FET1-SEC
@@ -725,12 +591,9 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                DISPLAY "ORCBPRT1 SYSTEM ERR!!"
            END-IF
       *
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           MOVE    PATH-TBL-PRVKANRI-KEY
-                                       TO  MCP-PATH
-           CALL    "MCPSUB"            USING
-                                       MCPAREA
-                                       MCPDATA-REC
+           MOVE    "tbl_prvkanri"      TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 900-CLOSE-SEC
            .
        900-PRVKANRI-INV-EXT.
            EXIT.
@@ -751,14 +614,11 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    LNK-PRTKANRI-SHORI-RENNUM
                                        TO  PRVKANRI-SHORI-RENNUM
            MOVE    WRK-PARA-STPAGE     TO  PRVKANRI-PAGE
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+grpsys     MOVE    SPA-HOSPNUM         TO  PRVKANRI-HOSPNUM
            MOVE    PRVKANRI-REC        TO  MCPDATA-REC
-           MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    PATH-TBL-PRVKANRI-KEY
-                                       TO  MCP-PATH
-           CALL    "MCPSUB"            USING
-                                       MCPAREA
-                                       MCPDATA-REC
+           MOVE    "tbl_prvkanri"      TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+grpsys     PERFORM 900-DBSELECT-SEC
       *
            IF      MCP-RC             =   ZERO
                PERFORM 900-PRVKANRI-FET1-SEC
@@ -768,12 +628,9 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                DISPLAY "ORCBPRT1 SYSTEM ERR!!"
            END-IF
       *
-          MOVE    "DBCLOSECURSOR"      TO  MCP-FUNC
-           MOVE    PATH-TBL-PRVKANRI-KEY
-                                       TO  MCP-PATH
-           CALL    "MCPSUB"            USING
-                                       MCPAREA
-                                       MCPDATA-REC
+           MOVE    "tbl_prvkanri"      TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 900-CLOSE-SEC
       *
            IF      FLG-PRVKANRI        =   1 
                GO      TO             900-PRVKANRI-SELECT1-EXT
@@ -791,14 +648,11 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    LNK-PRTKANRI-SHORI-RENNUM
                                        TO  PRVKANRI-SHORI-RENNUM
            MOVE    WRK-PARA-EDPAGE     TO  PRVKANRI-PAGE
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+grpsys     MOVE    SPA-HOSPNUM         TO  PRVKANRI-HOSPNUM
            MOVE    PRVKANRI-REC        TO  MCPDATA-REC
-           MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    PATH-TBL-PRVKANRI-KEY
-                                       TO  MCP-PATH
-           CALL    "MCPSUB"            USING
-                                       MCPAREA
-                                       MCPDATA-REC
+           MOVE    "tbl_prvkanri"      TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+grpsys     PERFORM 900-DBSELECT-SEC
       *
            IF      MCP-RC             =   ZERO
                PERFORM 900-PRVKANRI-FET1-SEC
@@ -808,12 +662,9 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                DISPLAY "ORCBPRT1 SYSTEM ERR!!"
            END-IF
       *
-           MOVE    "DBCLOSECURSOR"      TO  MCP-FUNC
-           MOVE    PATH-TBL-PRVKANRI-KEY
-                                       TO  MCP-PATH
-           CALL    "MCPSUB"            USING
-                                       MCPAREA
-                                       MCPDATA-REC
+           MOVE    "tbl_prvkanri"      TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 900-CLOSE-SEC
       *
            IF      FLG-PRVKANRI        =   1 
                GO      TO             900-PRVKANRI-SELECT1-EXT
@@ -851,12 +702,9 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *****************************************************************
        900-PRVKANRI-FET1-SEC           SECTION.
       *
-           MOVE    "DBFETCH"           TO  MCP-FUNC
-           MOVE    PATH-TBL-PRVKANRI-KEY
-                                       TO  MCP-PATH
-           CALL    "MCPSUB"            USING
-                                       MCPAREA
-                                       MCPDATA-REC
+           MOVE    "tbl_prvkanri"      TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+grpsys     PERFORM 900-DBFETCH-SEC
       *                                  
            IF      MCP-RC              =   ZERO
                MOVE    ZERO                TO  FLG-PRVKANRI
@@ -874,12 +722,9 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *****************************************************************
        900-PRVKANRI-FET-SEC            SECTION.
       *
-           MOVE    "DBFETCH"           TO  MCP-FUNC
-           MOVE    PATH-TBL-PRVKANRI-KEY2
-                                       TO  MCP-PATH
-           CALL    "MCPSUB"            USING
-                                       MCPAREA
-                                       MCPDATA-REC
+           MOVE    "tbl_prvkanri"      TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+grpsys     PERFORM 900-DBFETCH-SEC
       *                                  
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC         TO  PRVKANRI-REC
@@ -919,14 +764,12 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                                        TO  PRTKANRI-TBL-KEY
            MOVE    LNK-PRTKANRI-TBL-GROUP
                                        TO  PRTKANRI-TBL-GROUP
+grpsys     MOVE    SPA-HOSPNUM         TO  PRTKANRI-HOSPNUM
 grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PRTKANRI-REC        TO  MCPDATA-REC
-           MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    PATH-TBL-PRTKANRI-KEY2
-                                       TO  MCP-PATH
-           CALL    "MCPSUB"            USING
-                                       MCPAREA
-                                       MCPDATA-REC
+           MOVE    "tbl_prtkanri"      TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+grpsys     PERFORM 900-DBSELECT-SEC
       *
            IF      MCP-RC             =   ZERO
                PERFORM 900-PRTKANRI-FET-SEC
@@ -943,12 +786,9 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *****************************************************************
        900-PRTKANRI-FET-SEC            SECTION.
       *
-           MOVE    "DBFETCH"           TO  MCP-FUNC
-           MOVE    PATH-TBL-PRTKANRI-KEY2
-                                       TO  MCP-PATH
-           CALL    "MCPSUB"            USING
-                                       MCPAREA
-                                       MCPDATA-REC
+           MOVE    "tbl_prtkanri"      TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+grpsys     PERFORM 900-DBFETCH-SEC
       *                                  
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC         TO  PRTKANRI-REC
@@ -991,15 +831,12 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PRTKANRI-TBL-KEY    TO  PRTDATA-TBL-KEY
            MOVE    WRK-PARA-STPAGE     TO  PRTDATAXX-STPAGE
            MOVE    WRK-PARA-EDPAGE     TO  PRTDATAXX-EDPAGE
+grpsys     MOVE    SPA-HOSPNUM         TO  PRTDATA-HOSPNUM
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PRTDATA-REC         TO  MCPDATA-REC
-           MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    PATH-TBL-PRTDATA-KEY2
-                                       TO  MCP-PATH
-           CALL    "MCPSUB"            USING
-                                       MCPAREA
-                                       MCPDATA-REC
+           MOVE    "tbl_prtdata"       TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+grpsys     PERFORM 900-DBSELECT-SEC
       *
            IF      MCP-RC             =   ZERO
                PERFORM 900-PRTDATA-FET-SEC
@@ -1015,12 +852,9 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *****************************************************************
        900-PRTDATA-FET-SEC            SECTION.
       *
-           MOVE    "DBFETCH"           TO  MCP-FUNC
-           MOVE    PATH-TBL-PRTDATA-KEY2
-                                       TO  MCP-PATH
-           CALL    "MCPSUB"            USING
-                                       MCPAREA
-                                       MCPDATA-REC
+           MOVE    "tbl_prtdata"       TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+grpsys     PERFORM 900-DBFETCH-SEC
       *                                  
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC         TO  PRTDATA-REC
@@ -1034,80 +868,102 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    管理マスタ読み込み
+      *    ジョブ管理ＤＢ制御処理
       *****************************************************************
-       800-SYSKANRI-READ-SEC           SECTION.
+       900-CALL-ORCSJOB-SEC            SECTION.
       *
-           MOVE    LNK-PRTKANRI-SRYYM  TO  ORC-DBYMD (1:6)
-           MOVE    "01"                TO  ORC-DBYMD (7:2) 
+           MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
+           MOVE    WRK-PARA-SHELLID
+                                   TO  JOB-SHELLID
+grpsys     MOVE    SPA-HOSPNUM     TO  JOB-HOSPNUM
+           CALL    "ORCSJOB"       USING
+                                   ORCSJOBKANRIAREA 
+                                   JOBKANRI-REC
+                                   SPA-AREA
+           .
+       900-CALL-ORCSJOB-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ＤＢＳＥＬＥＣＴ処理
+      *****************************************************************
+       900-DBSELECT-SEC                SECTION.
+      *
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
-           IF      MCP-RC              =   ZERO
-               MOVE    "DBFETCH"           TO  MCP-FUNC
-               MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
-               CALL    "ORCMCPSUB"          USING
-                                            MCPAREA
-                                            ORCMCPAREA
-                                            MCPDATA-REC
-               IF      MCP-RC              =   ZERO
-                   MOVE    ZERO            TO  FLG-SYSKANRI
-               ELSE
-                   MOVE    1               TO  FLG-SYSKANRI
-               END-IF
-           ELSE
-               MOVE    1               TO  FLG-SYSKANRI
-           END-IF
+grpsys     PERFORM 900-ORCDBMAIN-SEC
+           .
+       900-DBSELECT-EXT.
+           EXIT.
       *
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+      *****************************************************************
+      *    ＤＢＦＥＴＣＨ処理
+      *****************************************************************
+       900-DBFETCH-SEC                SECTION.
+      *
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+grpsys     PERFORM 900-ORCDBMAIN-SEC
       *
            .
-       800-SYSKANRI-READ-EXT.
+       900-DBFETCH-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    テーブルクローズ処理
+      *****************************************************************
+       900-CLOSE-SEC               SECTION.
+      *
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
+grpsys     PERFORM 900-ORCDBMAIN-SEC
+      *
+           .
+       900-CLOSE-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    テーブルアクセス処理
+      *****************************************************************
+       900-ORCDBMAIN-SEC               SECTION.
+      *
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
+           .
+      *
+       900-ORCDBMAIN-EXT.
            EXIT.
       *      
       *****************************************************************
-      *    ＤＢ　オープン処理
+      *    ＤＢオープン処理
       *****************************************************************
        100-DBOPEN-SEC                SECTION.
       *
-           MOVE    "DBOPEN"             TO  MCP-FUNC.
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC.
+           MOVE    LOW-VALUE           TO  MCP-TABLE
+                                           MCP-PATHNAME
+           MOVE    "DBOPEN"            TO  MCP-FUNC
+grpsys     PERFORM 900-ORCDBMAIN-SEC
       *
-           MOVE    "DBSTART"           TO  MCP-FUNC.
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC.
+           MOVE    LOW-VALUE           TO  MCP-TABLE
+                                           MCP-PATHNAME
+           MOVE    "DBSTART"           TO  MCP-FUNC
+grpsys     PERFORM 900-ORCDBMAIN-SEC
+           .
        100-DBOPEN-EXT.
            EXIT.
       *
       *****************************************************************
-      *    ＤＢ　クローズ処理
+      *    ＤＢクローズ処理
       *****************************************************************
        900-DBDISCONNECT-SEC            SECTION.
       *
-           MOVE    "DBCOMMIT"          TO  MCP-FUNC.
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC.
+           MOVE    LOW-VALUE           TO  MCP-TABLE
+                                           MCP-PATHNAME
+           MOVE    "DBCOMMIT"          TO  MCP-FUNC
+grpsys     PERFORM 900-ORCDBMAIN-SEC
       *
-           MOVE    "DBDISCONNECT"       TO  MCP-FUNC.
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC.
-      *
+           MOVE    LOW-VALUE           TO  MCP-TABLE
+                                           MCP-PATHNAME
+           MOVE    "DBDISCONNECT"      TO  MCP-FUNC
+grpsys     PERFORM 900-ORCDBMAIN-SEC
+           .
        900-DBDISCONNECT-EXT.
            EXIT.
