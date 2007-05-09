@@ -33,6 +33,7 @@
       *                                     （看護・医師配置適合）の追加
       *平成１８年４月改定対応
       *  00.00.03    NACL-小豆沢  06/03/15  有床診療所入院基本料対応
+      *  03.05.00    NACL-多々納  07/05/09  グループ診療対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -45,8 +46,6 @@
       *FILE                        SECTION.
       *
        WORKING-STORAGE             SECTION.
-grpsys*
-grpsys COPY    "COMMON-SPA".
       *
       *    フラグ領域
        01  FLG-AREA.
@@ -171,9 +170,12 @@ grpsys COPY    "COMMON-SPA".
         LINKAGE                     SECTION.
       *
            COPY  "CPORCSSYOKIKSN.INC".
+grpsys*
+grpsys      COPY    "COMMON-SPA".
       *
        PROCEDURE                   DIVISION    USING
                                                ORCSSYOKIKSNAREA
+                                               SPA-AREA
            .
       *
       *****************************************************************
@@ -432,7 +434,7 @@ grpsys COPY    "COMMON-SPA".
            MOVE    SYOKIKSN-IN-SANTEISTYMD
                                        TO  NYUKHN-YUKOSTYMD
                                            NYUKHN-YUKOEDYMD
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  NYUKHN-HOSPNUM
            MOVE    NYUINKHN-REC        TO  MCPDATA-REC
            MOVE    "NYUINKHN-KEY"      TO  WRK-DBPATH
            PERFORM 900-TBL-SELECT-SEC

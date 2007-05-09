@@ -29,6 +29,7 @@
       * Maj/Min/Rev  修正者       日付      内容
       *  01.00.00    NACL-多々納  04/05/06  会計照会と同じ機能とする
       *  01.00.01    NACL-多々納  06/05/19  MONFUNC対応,I43,I45削除
+      *  03.05.00    NACL-多々納  07/05/09  グループ診療対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -772,7 +773,7 @@
 040800*
 041200*    診療会計マスターから編集
 041300     INITIALIZE                      SRYACCT-REC
-041400*****MOVE    SPA-HOSPID          TO  ACCT-HOSPID
+041400     MOVE    SPA-HOSPNUM         TO  ACCT-HOSPNUM
 041500     MOVE    SPA-GMN-NYUGAIKBN   TO  ACCT-NYUGAIKBN
 041600     MOVE    SPA-GMN-PTID        TO  ACCT-PTID
 041700     MOVE    SPA-GMN-SRYKA       TO  ACCT-SRYKA
@@ -785,7 +786,6 @@
            END-IF
       *
       *
-           MOVE    SPA-HOSPNUM         TO  ACCT-HOSPNUM
            MOVE    SRYACCT-REC         TO  MCPDATA-REC
            MOVE    "tbl_sryacct"       TO  MCP-TABLE
            MOVE    WRK-ORC-DBPATH      TO  MCP-PATHNAME
@@ -876,7 +876,7 @@
       *
       *    診療行為マスター読み込み
            INITIALIZE                      SRYACT-REC
-      *****MOVE    ACCT-HOSPID         TO  SRY-HOSPID
+           MOVE    ACCT-HOSPNUM        TO  SRY-HOSPNUM
            MOVE    ACCT-NYUGAIKBN      TO  SRY-NYUGAIKBN
            MOVE    ACCT-PTID           TO  SRY-PTID
            MOVE    ACCT-SRYKA          TO  SRY-SRYKA
@@ -893,7 +893,6 @@
                END-IF
            END-PERFORM
       *
-           MOVE    SPA-HOSPNUM         TO  SRY-HOSPNUM
            MOVE    SRYACT-REC          TO  MCPDATA-REC
            MOVE    "tbl_sryact"        TO  MCP-TABLE
            MOVE    "key2"              TO  MCP-PATHNAME
@@ -1157,7 +1156,7 @@
            INITIALIZE                      TBL-GAIHAKU-G
       *
            INITIALIZE                      NYUINACCT-REC
-      *****MOVE    SPA-HOSPID          TO  NACCT-HOSPID
+           MOVE    SPA-HOSPNUM         TO  NACCT-HOSPNUM
            MOVE    SPA-GMN-NYUGAIKBN   TO  NACCT-NYUGAIKBN
            MOVE    SPA-GMN-PTID        TO  NACCT-PTID
       *    診療科（変更時のみ）
@@ -1168,7 +1167,6 @@
            END-IF
            MOVE    WRK-SRYYM           TO  NACCT-SRYYM
       *
-           MOVE    SPA-HOSPNUM         TO  NACCT-HOSPNUM
            MOVE    NYUINACCT-REC       TO  MCPDATA-REC
            MOVE    "tbl_nyuinacct"     TO  MCP-TABLE
            MOVE    "key2"              TO  MCP-PATHNAME
@@ -1222,7 +1220,7 @@
       *
       *    診療行為マスター読み込み
            INITIALIZE                      NYUINACT-REC
-      *****MOVE    NACCT-HOSPID        TO  NSRY-HOSPID
+           MOVE    NACCT-HOSPNUM       TO  NSRY-HOSPNUM
            MOVE    NACCT-NYUGAIKBN     TO  NSRY-NYUGAIKBN
            MOVE    NACCT-PTID          TO  NSRY-PTID
            MOVE    NACCT-SRYKA         TO  NSRY-SRYKA
@@ -1239,7 +1237,6 @@
                END-IF
            END-PERFORM
       *
-           MOVE    SPA-HOSPNUM         TO  NSRY-HOSPNUM
            MOVE    NYUINACT-REC        TO  MCPDATA-REC
            MOVE    "tbl_nyuinact"      TO  MCP-TABLE
            MOVE    "key2"              TO  MCP-PATHNAME
@@ -1674,12 +1671,11 @@
            MOVE    ZERO                TO  WRK-GOK-NYUTEN2
       *    診療会計マスターから編集
            INITIALIZE                      SRYACCT-REC
-      *****MOVE    SPA-HOSPID          TO  ACCT-HOSPID
+           MOVE    SPA-HOSPNUM         TO  ACCT-HOSPNUM
            MOVE    SPA-GMN-NYUGAIKBN   TO  ACCT-NYUGAIKBN
            MOVE    SPA-GMN-PTID        TO  ACCT-PTID
            MOVE    WRK-SRYYM           TO  ACCT-SRYYM
       *
-           MOVE    SPA-HOSPNUM         TO  ACCT-HOSPNUM
            MOVE    SRYACCT-REC         TO  MCPDATA-REC
            MOVE    "tbl_sryacct"       TO  MCP-TABLE
            MOVE    "key7"              TO  MCP-PATHNAME
@@ -1786,13 +1782,12 @@
            INITIALIZE                      TBL-NYUIN-TENSU-AREA
       *
            INITIALIZE                      NYUINACCT-REC
-      *****MOVE    SPA-HOSPID          TO  NACCT-HOSPID
+           MOVE    SPA-HOSPNUM         TO  NACCT-HOSPNUM
            MOVE    SPA-GMN-NYUGAIKBN   TO  NACCT-NYUGAIKBN
            MOVE    SPA-GMN-PTID        TO  NACCT-PTID
            MOVE    "00"                TO  NACCT-SRYKA
            MOVE    WRK-SRYYM           TO  NACCT-SRYYM
       *
-           MOVE    SPA-HOSPNUM         TO  NACCT-HOSPNUM
            MOVE    NYUINACCT-REC       TO  MCPDATA-REC
            MOVE    "tbl_nyuinacct"     TO  MCP-TABLE
            MOVE    "key2"              TO  MCP-PATHNAME
@@ -1888,11 +1883,10 @@
        310911-HKNCOMBI-HEN-SEC                SECTION.
       *
            INITIALIZE                  HKNCOMBI-REC
-      *****MOVE    ACCT-HOSPID         TO  COMB-HOSPID
+           MOVE    ACCT-HOSPNUM        TO  COMB-HOSPNUM
            MOVE    ACCT-PTID           TO  COMB-PTID
            MOVE    ACCT-HKNCOMBI       TO  COMB-HKNCOMBINUM
       *
-           MOVE    SPA-HOSPNUM         TO  COMB-HOSPNUM
            MOVE    HKNCOMBI-REC        TO  MCPDATA-REC
            MOVE    "tbl_hkncombi"      TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
@@ -1926,7 +1920,7 @@
       *
       *    診療行為マスター読み込み
            INITIALIZE                      SRYACT-REC
-      *****MOVE    ACCT-HOSPID         TO  SRY-HOSPID
+           MOVE    ACCT-HOSPNUM        TO  SRY-HOSPNUM
            MOVE    ACCT-NYUGAIKBN      TO  SRY-NYUGAIKBN
            MOVE    ACCT-PTID           TO  SRY-PTID
            MOVE    ACCT-SRYKA          TO  SRY-SRYKA
@@ -1943,7 +1937,6 @@
                END-IF
            END-PERFORM
       *
-           MOVE    SPA-HOSPNUM         TO  SRY-HOSPNUM
            MOVE    SRYACT-REC          TO  MCPDATA-REC
            MOVE    "tbl_sryact"        TO  MCP-TABLE
            MOVE    "key2"              TO  MCP-PATHNAME
@@ -2747,10 +2740,9 @@
        910-DBSELECT-SEC               SECTION.
       *
            MOVE    "DBSELECT"      TO  MCP-FUNC
-           CALL    "ORCDBMAIN"     USING
-                                       MCPAREA
-                                       MCPDATA-REC
-                                       SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
       *
@@ -2763,10 +2755,9 @@
        920-DBFETCH-SEC                 SECTION.
       *
            MOVE    "DBFETCH"       TO  MCP-FUNC
-           CALL    "ORCDBMAIN"     USING
-                                       MCPAREA
-                                       MCPDATA-REC
-                                       SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
       *
@@ -2779,10 +2770,9 @@
        990-DBCLOSE-SEC                SECTION.
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           CALL    "ORCDBMAIN"         USING
-                                           MCPAREA
-                                           MCPDATA-REC
-                                           SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
            .
        990-DBCLOSE-EXT.
            EXIT.
@@ -2792,10 +2782,9 @@
        900-PUT-WINDOW              SECTION.
       *
            MOVE   "PUTWINDOW"       TO  MCP-FUNC.
-           CALL   "ORCDBMAIN"       USING
-                                        MCPAREA
-                                        MCPDATA-REC
-                                        SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
        900-PUT-WINDOW-EXT.

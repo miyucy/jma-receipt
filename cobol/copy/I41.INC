@@ -91,3 +91,33 @@
                 06  I41-SAGAKU         PIC X(22).
               05  I41-SAGAKULIST-SELECT  PIC X      OCCURS  30 TIMES.
           03  I41-TSUSANNISSU     PIC S9(6).
+          03  I41-SYUBETSU1-G.
+            04  I41-SYUBETSU1-STYLE.
+              05  I41-VALUE       PIC X(20).
+            04  I41-SYUBETSU1.
+              05  I41-VALUE       PIC X(20).
+          03  I41-SYUBETSU2-G.
+            04  I41-SYUBETSU2-STYLE.
+              05  I41-VALUE       PIC X(20).
+            04  I41-SYUBETSU2.
+              05  I41-VALUE       PIC X(20).
+          03  I41-SYUBETSU3-G.
+            04  I41-SYUBETSU3-STYLE.
+              05  I41-VALUE       PIC X(20).
+            04  I41-SYUBETSU3.
+              05  I41-VALUE       PIC X(20).
+          03  I41-SYUBETSU4-G.
+            04  I41-SYUBETSU4-STYLE.
+              05  I41-VALUE       PIC X(20).
+            04  I41-SYUBETSU4.
+              05  I41-VALUE       PIC X(20).
+          03  I41-SYUBETSU5-G.
+            04  I41-SYUBETSU5-STYLE.
+              05  I41-VALUE       PIC X(20).
+            04  I41-SYUBETSU5.
+              05  I41-VALUE       PIC X(20).
+          03  I41-SYUBETSU6-G.
+            04  I41-SYUBETSU6-STYLE.
+              05  I41-VALUE       PIC X(20).
+            04  I41-SYUBETSU6.
+              05  I41-VALUE       PIC X(20).

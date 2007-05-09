@@ -61,6 +61,12 @@
                    07  SPA-GMN-TSUSANNISSU     PIC S9(06).
                    07  SPA-NAI-NYUINBI         PIC X(08).
                    07  SPA-NAI-TAINBI          PIC X(08).
+                   07  SPA-GMN-SYUBETSU1       PIC X(20).
+                   07  SPA-GMN-SYUBETSU2       PIC X(20).
+                   07  SPA-GMN-SYUBETSU3       PIC X(20).
+                   07  SPA-GMN-SYUBETSU4       PIC X(20).
+                   07  SPA-GMN-SYUBETSU5       PIC X(20).
+                   07  SPA-GMN-SYUBETSU6       PIC X(20).
       *
       *診療区分
                05  SPA-SRYKBN                  PIC X(02).
@@ -90,6 +96,7 @@
       *    次月会計作成用の保険組合せと食事の退避領域
                05  SPA-TAIHI-HKN                   PIC 9(03).
                05  SPA-TAIHI-SHOKUJI               PIC 9(03).
+               05  SPA-SHOKUDOU-OFF                PIC 9(03).
       *
            03  SPA-IID1-AREA.
       *警告メッセージ

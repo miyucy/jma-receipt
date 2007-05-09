@@ -549,6 +549,7 @@
            MOVE    LNK-SCNYUACCT-STSRYYMD(1:6)
                                        TO  LNK-HYOUKETU-SANTEIYM
            CALL    "ORCSHYOUKETU"      USING   ORCSHYOUKETU-AREA
+                                               SPA-AREA
            IF      LNK-HYOUKETU-RC     =   ZERO
                CONTINUE
            ELSE
@@ -576,6 +577,7 @@
            MOVE    LNK-SCNYUACCT-TOKUTEINYUIN-KBN
                                        TO  LNK-TEISU-TOKUTEINYUIN-KBN
            CALL    "ORCSTEISU"         USING   ORCSTEISU-AREA
+                                               SPA-AREA
            IF      LNK-TEISU-RC        =   ZERO
                CONTINUE
            ELSE
