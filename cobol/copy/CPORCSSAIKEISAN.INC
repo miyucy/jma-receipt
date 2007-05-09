@@ -26,7 +26,7 @@
        01  LNK-ORCSSAIKEISAN-REC.
       *
       *°åÎÅµ¡´Ø£É£Ä
-           03  LNK-ORCSSKS-HOSPNUM         PIC  9(02).
+           03  LNK-ORCSSKS-HOSPNUM         PIC  S9(9) BINARY.
       *Æþ³°¶èÊ¬
            03  LNK-ORCSSKS-NYUGAIKBN       PIC  X(01).
       *´µ¼Ô£É£Ä
