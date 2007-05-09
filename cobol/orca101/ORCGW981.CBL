@@ -672,6 +672,8 @@
            INITIALIZE                      TBL-LOCK
            MOVE    SPA-W981-TERMID (SPA-W981-SELNUM)
                                        TO  LOCK-TERMID
+           MOVE    SPA-HOSPNUM         TO  LOCK-HOSPNUM
+           MOVE    TBL-LOCK            TO  MCPDATA-REC
            MOVE    "tbl_lock"          TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
