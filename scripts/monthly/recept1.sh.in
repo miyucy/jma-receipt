@@ -44,10 +44,14 @@ fi
         if  [ -e /home/orca/recept1.log ]; then
             rm  /home/orca/recept1.log
         fi
+
+        rm  -f /var/tmp/RECE0*
+        rm  -f /var/tmp/RECE11*
+        rm  -f /var/tmp/RECE12*
         
-        rm  /var/tmp/${16}00RECE0*
-        rm  /var/tmp/${16}00RECE11*
-        rm  /var/tmp/${16}00RECE12*
+        rm  /tmp/${16}00RECE0*
+        rm  /tmp/${16}00RECE11*
+        rm  /tmp/${16}00RECE12*
 
         if [ ${2} -eq  '1' ]; then
            LOG_FILE="/home/orca/${16}recept1a.log"
@@ -56,7 +60,7 @@ fi
         fi
 
         
-	    $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCR0010 -parameter $1$2$3$5$6,${16},${4} > $LOG_FILE 2>&1
+	$DBSTUB -dir $LDDIRECTORY -bd orcabt ORCR0010 -parameter $1$2$3$5$6,${16},${4} > $LOG_FILE 2>&1
 	
         if  [ -e $4 ]; then
             exit  
