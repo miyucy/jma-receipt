@@ -3272,6 +3272,8 @@
                MOVE    PTINF-BIRTHDAY  TO  AGECHK-BIRTHDAY
                MOVE    LNK-SYU-HKNCOMBINUM 
                                        TO  AGECHK-HKNCOMBINUM
+               MOVE    LNK-SYU-NYUGAIKBN
+                                       TO  AGECHK-NYUGAIKBN
                CALL    "ORCSAGECHK"        USING
                                            ORCSAGECHKAREA
                                            SPA-AREA
