@@ -32,6 +32,7 @@
       *  01.00.02    NACL-ÌçÏÆ    04/11/25  Ê¡Åç¸©ÆýÍÄ»ùÆÃ¼ì·×»»ÂÐ±þ
       *  01.00.03    NACL-ÌçÏÆ    05/07/19  ¼ýÇ¼¹àÌÜÄÉ²Ã¤ËÈ¼¤¦½¤Àµ
       *  01.00.04    NACL-ÌçÏÆ    06/03/22  ¼«Î©»Ù±çË¡ÂÐ±þ
+      *  03.05.00    NACL-ÌçÏÆ    07/05/08  ¥°¥ë¡¼¥×¿ÇÎÅÂÐ±þ
       *****************************************************************
        ENVIRONMENT         DIVISION.
        CONFIGURATION       SECTION.
@@ -237,7 +238,7 @@
       *
       *    £Ä£Â¸¡º÷
            COPY    "MCPDATA.INC".
-           COPY    "CPORCMCP.INC".
+      ***  COPY    "CPORCMCP.INC".
       *
       /
       ***
@@ -247,14 +248,14 @@
        01  LNK-SYUNOU-REC-T.
          02 LNK-SYUNOU-REC     OCCURS 15.
            COPY  "CPSYUNOU.INC"    REPLACING  //SYU-// BY //LNK-SYU-//.
-grpsys*
+      *
 grpsys     COPY    "COMMON-SPA".
       /
        PROCEDURE           DIVISION  USING
                                      MCPAREA
                                      LNK-ORCS01-REC
                                      LNK-SYUNOU-REC-T
-                                       SPA-AREA
+                                     SPA-AREA
            .
       ******************************************************************
       *        °ÍÍêÀ©¸æ½èÍý
@@ -452,6 +453,7 @@ grpsys     COPY    "COMMON-SPA".
                                                    WRK-ORCS01-REC
                                                    SYUNOU-REC
                                                    WRK-SYUNOU-REC-T
+                                                   SPA-AREA
                 END-IF
       *
                 MOVE     SYUNOU-REC           TO  LNK-SYUNOU-REC(IDX)
@@ -1462,6 +1464,7 @@ grpsys     COPY    "COMMON-SPA".
                                                    WRK-ORCS01-REC
                                                    SYUNOU-REC
                                                    WRK-SYUNOU-REC-T
+                                                   SPA-AREA
                 END-IF
       *
                 MOVE     SYUNOU-REC           TO  LNK-SYUNOU-REC(IDX)

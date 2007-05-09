@@ -26,7 +26,7 @@
        01  LNK-ORCSROUKAISU-REC.
       *
       *°åÎÅµ¡´Ø£É£Ä
-           03  LNK-ORCSROUKAISU-HOSPID          PIC  X(24).
+           03  LNK-ORCSROUKAISU-HOSPNUM         PIC  S9(9) BINARY.
       *Æþ³°¶èÊ¬
            03  LNK-ORCSROUKAISU-NYUGAIKBN       PIC  X(01).
       *´µ¼Ô£É£Ä

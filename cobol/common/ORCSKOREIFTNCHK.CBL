@@ -103,9 +103,8 @@
       *    サブプロ用　領域
       *****************************************************************
       *
-      *01  MCPDATA-REC                 PIC X(5000).
            COPY    "MCPDATA.INC".
-           COPY    "CPORCMCP.INC".
+      ***  COPY    "CPORCMCP.INC".
       *
       *****************************************************************
       *    連絡　領域
@@ -113,7 +112,7 @@
        LINKAGE                     SECTION.
       *
            COPY    "CPORCSKOREIFTNCHK.INC".
-grpsys*
+      *
 grpsys     COPY    "COMMON-SPA".
       *
        PROCEDURE                    DIVISION    USING
@@ -153,7 +152,7 @@ grpsys     SPA-AREA
       *
       *    患者マスター検索
            INITIALIZE                          PTINF-REC
-grpsys     MOVE    LNK-KOREIFTNCHK-HOSPNUM  TO  PTINF-HOSPNUM
+grpsys     MOVE    LNK-KOREIFTNCHK-HOSPNUM TO  PTINF-HOSPNUM
            MOVE    LNK-KOREIFTNCHK-PTID    TO  PTINF-PTID
            PERFORM 900-PTINF-READ-SEC
            IF      FLG-PTINF           NOT =   ZERO
@@ -185,13 +184,15 @@ grpsys     MOVE    LNK-KOREIFTNCHK-HOSPNUM  TO  PTINF-HOSPNUM
 grpsys     MOVE    LNK-KOREIFTNCHK-HOSPNUM TO  COMB-HOSPNUM
            MOVE    LNK-KOREIFTNCHK-PTID    TO  COMB-PTID
            MOVE    LNK-KOREIFTNCHK-HKNID   TO  COMB-HKNID
-           MOVE    "HKNCOMBI-KEY5"         TO  ORC-DBPATH
+           MOVE    "tbl_hkncombi"          TO  MCP-TABLE
+           MOVE    "key5"                  TO  MCP-PATHNAME
            PERFORM 900-HKNCOMBI-SELECT-SEC
            IF      FLG-HKNCOMBI            NOT =   ZERO
                MOVE    01                  TO  LNK-KOREIFTNCHK-RC
                GO  TO  200-MAIN-EXT
            ELSE
-               MOVE    "HKNCOMBI-KEY5"     TO  ORC-DBPATH
+               MOVE    "tbl_hkncombi"      TO  MCP-TABLE
+               MOVE    "key5"              TO  MCP-PATHNAME
                PERFORM 910-HKNCOMBI-READ-SEC
                PERFORM
                     UNTIL   (IDX1             >=    50 )   OR
@@ -223,12 +224,14 @@ grpsys     MOVE    LNK-KOREIFTNCHK-HOSPNUM TO  COMB-HOSPNUM
                    END-IF
                    PERFORM   210-KYURATE-HENSYU-SEC
       *
-                   MOVE    "HKNCOMBI-KEY5"   TO  ORC-DBPATH
+                   MOVE   "tbl_hkncombi"   TO  MCP-TABLE
+                   MOVE   "key5"           TO  MCP-PATHNAME
                    PERFORM 910-HKNCOMBI-READ-SEC
                END-PERFORM
            END-IF
       *
-           MOVE    "HKNCOMBI-KEY5"    TO  ORC-DBPATH
+           MOVE     "tbl_hkncombi"   TO  MCP-TABLE
+           MOVE     "key5"           TO  MCP-PATHNAME
            PERFORM   920-DB-CLOSE-SEC
       *
       *    収納マスタから一部負担額チェック等
@@ -260,12 +263,14 @@ grpsys     MOVE   LNK-KOREIFTNCHK-HOSPNUM
            MOVE   LNK-KOREIFTNCHK-HKNID  TO    PTHKN-HKNID
            MOVE   PTHKNINF-REC           TO    MCPDATA-REC
            MOVE   "DBSELECT"             TO    MCP-FUNC
-           MOVE   "PTHKNINF-KEY"         TO    ORC-DBPATH
-           CALL   "ORCMCPSUB"            USING MCPAREA
-                                               ORCMCPAREA
+           MOVE   "tbl_pthkninf"         TO    MCP-TABLE
+           MOVE   "key"                  TO    MCP-PATHNAME
+           CALL   "ORCDBMAIN"            USING MCPAREA
                                                MCPDATA-REC
+                                               SPA-AREA
            IF      MCP-RC            =     ZERO
-               MOVE    "PTHKNINF-KEY"    TO    ORC-DBPATH
+               MOVE    "tbl_pthkninf"    TO    MCP-TABLE
+               MOVE    "key"             TO    MCP-PATHNAME
                PERFORM  900-PTHKNINF-READ-SEC
                IF     FLG-PTHKNINF   =     ZERO
                   IF   PTHKN-HKNJANUM  = "67330753"
@@ -274,7 +279,8 @@ grpsys     MOVE   LNK-KOREIFTNCHK-HOSPNUM
                END-IF
            END-IF
       *
-           MOVE    "PTHKNINF-KEY"        TO  ORC-DBPATH
+           MOVE     "tbl_pthkninf"       TO    MCP-TABLE
+           MOVE     "key"                TO    MCP-PATHNAME
            PERFORM   920-DB-CLOSE-SEC
       *
            .
@@ -443,13 +449,15 @@ grpsys           MOVE    LNK-KOREIFTNCHK-HOSPNUM   TO  SYU-HOSPNUM
                  MOVE    LNK-KOREIFTNCHK-SRYYM     TO  SYU-SRYYMD(1:6)
                  MOVE    "__"                      TO  SYU-SRYYMD(7:2)
                  MOVE    WRK-HKNCOMBINUM(IDX1)     TO  SYU-HKNCOMBINUM
-                 MOVE    "SYUNOU-KEY19"            TO  ORC-DBPATH
+                 MOVE    "tbl_syunou"              TO  MCP-TABLE
+                 MOVE    "key19"                   TO  MCP-PATHNAME
                  PERFORM 900-SYUNOU-SELECT-SEC
                  IF      FLG-SYUNOU            NOT =   ZERO
                      MOVE    01                TO  LNK-KOREIFTNCHK-RC
                      GO  TO  220-NYUIN-SYUKEI-EXT
                  ELSE
-                     MOVE    "SYUNOU-KEY19"    TO  ORC-DBPATH
+                     MOVE   "tbl_syunou"           TO  MCP-TABLE
+                     MOVE   "key19"                TO  MCP-PATHNAME
                      PERFORM 910-SYUNOU-READ-SEC
                      IF    FLG-SYUNOU   =    ZERO
                          MOVE    1    TO    FLG-ZENKOH-ARI
@@ -457,7 +465,8 @@ grpsys           MOVE    LNK-KOREIFTNCHK-HOSPNUM   TO  SYU-HOSPNUM
                      END-IF
                  END-IF
       *
-                 MOVE    "SYUNOU-KEY19"    TO  ORC-DBPATH
+                 MOVE     "tbl_syunou"             TO  MCP-TABLE
+                 MOVE     "key19"                  TO  MCP-PATHNAME
                  PERFORM   920-DB-CLOSE-SEC
       *
               END-IF
@@ -476,13 +485,15 @@ grpsys        MOVE    LNK-KOREIFTNCHK-HOSPNUM   TO  SYU-HOSPNUM
               MOVE    LNK-KOREIFTNCHK-SRYYM     TO  SYU-SRYYMD(1:6)
               MOVE    "__"                      TO  SYU-SRYYMD(7:2)
               MOVE    WRK-HKNCOMBINUM(IDX1)     TO  SYU-HKNCOMBINUM
-              MOVE    "SYUNOU-KEY19"            TO  ORC-DBPATH
+              MOVE    "tbl_syunou"              TO  MCP-TABLE
+              MOVE    "key19"                   TO  MCP-PATHNAME
               PERFORM 900-SYUNOU-SELECT-SEC
               IF      FLG-SYUNOU            NOT =   ZERO
                   MOVE    01                    TO  LNK-KOREIFTNCHK-RC
                   GO  TO  220-NYUIN-SYUKEI-EXT
               ELSE
-                  MOVE    "SYUNOU-KEY19"        TO  ORC-DBPATH
+                  MOVE   "tbl_syunou"           TO  MCP-TABLE
+                  MOVE   "key19"                TO  MCP-PATHNAME
                   PERFORM 910-SYUNOU-READ-SEC
                   PERFORM  UNTIL
                              (FLG-SYUNOU        =    1)
@@ -494,12 +505,14 @@ grpsys        MOVE    LNK-KOREIFTNCHK-HOSPNUM   TO  SYU-HOSPNUM
                        PERFORM     2202-NYUIN-WAKODO-SYUKEI-SEC
                    END-EVALUATE
       *
-                   MOVE   "SYUNOU-KEY19"   TO  ORC-DBPATH
+                   MOVE   "tbl_syunou"          TO  MCP-TABLE
+                   MOVE   "key19"               TO  MCP-PATHNAME
                    PERFORM 910-SYUNOU-READ-SEC
                   END-PERFORM
               END-IF
       *
-              MOVE    "SYUNOU-KEY19"    TO  ORC-DBPATH
+              MOVE     "tbl_syunou"             TO  MCP-TABLE
+              MOVE     "key19"                  TO  MCP-PATHNAME
               PERFORM   920-DB-CLOSE-SEC
       *
            END-PERFORM
@@ -512,6 +525,10 @@ grpsys        MOVE    LNK-KOREIFTNCHK-HOSPNUM   TO  SYU-HOSPNUM
       *    一部負担額集計（入院）（高齢者）
       *****************************************************************
        2201-NYUIN-KOREI-SYUKEI-SEC            SECTION.
+      *
+           COMPUTE  LNK-KOREIFTNCHK-CHIHOUGAKU3 =
+                    LNK-KOREIFTNCHK-CHIHOUGAKU3 +
+                   (SYU-TOTAL-HKNTEN * 10)
       *
            IF  ( SYU-KOH-HKNNUM(1)  =  SPACE  OR "027" )
            AND ( SYU-KOH-HKNNUM(2)  =  SPACE           )
@@ -685,14 +702,29 @@ grpsys        MOVE    LNK-KOREIFTNCHK-HOSPNUM   TO  SYU-HOSPNUM
       *****************************************************************
        2202-NYUIN-WAKODO-SYUKEI-SEC            SECTION.
       *
+           COMPUTE  LNK-KOREIFTNCHK-CHIHOUGAKU3 =
+                    LNK-KOREIFTNCHK-CHIHOUGAKU3 +
+                   (SYU-TOTAL-HKNTEN * 10)
+      *
+           IF     SYU-KOHTAIYKZKBN  =   "9"
+                COMPUTE  LNK-KOREIFTNCHK-CHIHOUGAKU-GEN70 =
+                         LNK-KOREIFTNCHK-CHIHOUGAKU-GEN70 +
+                        (SYU-TOTAL-HKNTEN * 10)
+           END-IF
+      *
            IF  ( SYU-KOH-HKNNUM(1)  =  SPACE )
            AND ( SYU-KOH-HKNNUM(2)  =  SPACE )
            AND ( SYU-KOH-HKNNUM(3)  =  SPACE )
            AND ( SYU-KOH-HKNNUM(4)  =  SPACE )
              ADD    SYU-SYUCOMPFTN   TO  LNK-KOREIFTNCHK-FTNGAKU
-             ADD    SYU-TOTAL-HKNTEN TO  LNK-KOREIFTNCHK-CHIHOUGAKU3
+             IF     SYU-KOHTAIYKZKBN  =   "9"
+               ADD  SYU-SYUCOMPFTN   TO  LNK-KOREIFTNCHK-FTNGAKU-GEN70
+             END-IF
            ELSE
              ADD    SYU-KOH-FTN      TO  LNK-KOREIFTNCHK-KOHFTNGAKU
+             IF     SYU-KOHTAIYKZKBN  =   "9"
+               ADD  SYU-KOH-FTN   TO  LNK-KOREIFTNCHK-KOHFTNGAKU-GEN70
+             END-IF
       *
              COMPUTE  WRK-FTNKEI = SYU-TOTAL-HKNTEN
                                  * 10
@@ -876,13 +908,15 @@ grpsys           MOVE    LNK-KOREIFTNCHK-HOSPNUM   TO  SYU-HOSPNUM
                  MOVE    LNK-KOREIFTNCHK-SRYYM     TO  SYU-SRYYMD(1:6)
                  MOVE    "__"                      TO  SYU-SRYYMD(7:2)
                  MOVE    WRK-HKNCOMBINUM(IDX1)     TO  SYU-HKNCOMBINUM
-                 MOVE    "SYUNOU-KEY41"            TO  ORC-DBPATH
+                 MOVE    "tbl_syunou"              TO  MCP-TABLE
+                 MOVE    "key41"                   TO  MCP-PATHNAME
                  PERFORM 900-SYUNOU-SELECT-SEC
                  IF      FLG-SYUNOU            NOT =   ZERO
                      MOVE    01                TO  LNK-KOREIFTNCHK-RC
                      GO  TO  230-GAIRAI-SYUKEI-EXT
                  ELSE
-                     MOVE    "SYUNOU-KEY41"    TO  ORC-DBPATH
+                     MOVE   "tbl_syunou"           TO  MCP-TABLE
+                     MOVE   "key41"                TO  MCP-PATHNAME
                      PERFORM 910-SYUNOU-READ-SEC
                      IF    FLG-SYUNOU   =    ZERO
                          MOVE    1    TO    FLG-ZENKOH-ARI
@@ -890,7 +924,8 @@ grpsys           MOVE    LNK-KOREIFTNCHK-HOSPNUM   TO  SYU-HOSPNUM
                      END-IF
                  END-IF
       *
-                 MOVE    "SYUNOU-KEY41"    TO  ORC-DBPATH
+                 MOVE     "tbl_syunou"             TO  MCP-TABLE
+                 MOVE     "key41"                  TO  MCP-PATHNAME
                  PERFORM   920-DB-CLOSE-SEC
       *
               END-IF
@@ -909,13 +944,15 @@ grpsys        MOVE    LNK-KOREIFTNCHK-HOSPNUM   TO  SYU-HOSPNUM
               MOVE    LNK-KOREIFTNCHK-SRYYM     TO  SYU-SRYYMD(1:6)
               MOVE    "__"                      TO  SYU-SRYYMD(7:2)
               MOVE    WRK-HKNCOMBINUM(IDX1)     TO  SYU-HKNCOMBINUM
-              MOVE    "SYUNOU-KEY41"            TO  ORC-DBPATH
+              MOVE   "tbl_syunou"               TO  MCP-TABLE
+              MOVE   "key41"                    TO  MCP-PATHNAME
               PERFORM 900-SYUNOU-SELECT-SEC
               IF      FLG-SYUNOU            NOT =   ZERO
                   MOVE    01                    TO  LNK-KOREIFTNCHK-RC
                   GO  TO  230-GAIRAI-SYUKEI-EXT
               ELSE
-                  MOVE    "SYUNOU-KEY41"        TO  ORC-DBPATH
+                  MOVE   "tbl_syunou"           TO  MCP-TABLE
+                  MOVE   "key41"                TO  MCP-PATHNAME
                   PERFORM 910-SYUNOU-READ-SEC
                   PERFORM  UNTIL
                              (FLG-SYUNOU        =    1)
@@ -927,12 +964,14 @@ grpsys        MOVE    LNK-KOREIFTNCHK-HOSPNUM   TO  SYU-HOSPNUM
                        PERFORM     2302-GAIRAI-WAKODO-SYUKEI-SEC
                    END-EVALUATE
       *
-                   MOVE   "SYUNOU-KEY41"   TO  ORC-DBPATH
+                   MOVE   "tbl_syunou"          TO  MCP-TABLE
+                   MOVE   "key41"               TO  MCP-PATHNAME
                    PERFORM 910-SYUNOU-READ-SEC
                   END-PERFORM
               END-IF
       *
-              MOVE    "SYUNOU-KEY41"    TO  ORC-DBPATH
+              MOVE     "tbl_syunou"             TO  MCP-TABLE
+              MOVE     "key41"                  TO  MCP-PATHNAME
               PERFORM   920-DB-CLOSE-SEC
       *
            END-PERFORM
@@ -945,6 +984,10 @@ grpsys        MOVE    LNK-KOREIFTNCHK-HOSPNUM   TO  SYU-HOSPNUM
       *    一部負担額集計（外来）（高齢者）
       *****************************************************************
        2301-GAIRAI-KOREI-SYUKEI-SEC            SECTION.
+      *
+           COMPUTE  LNK-KOREIFTNCHK-CHIHOUGAKU3 =
+                    LNK-KOREIFTNCHK-CHIHOUGAKU3 +
+                   (SYU-TOTAL-HKNTEN * 10)
       *
            IF  ( SYU-KOH-HKNNUM(1)  =  SPACE  OR "027" )
            AND ( SYU-KOH-HKNNUM(2)  =  SPACE           )
@@ -1085,14 +1128,29 @@ grpsys        MOVE    LNK-KOREIFTNCHK-HOSPNUM   TO  SYU-HOSPNUM
       *****************************************************************
        2302-GAIRAI-WAKODO-SYUKEI-SEC            SECTION.
       *
+           COMPUTE  LNK-KOREIFTNCHK-CHIHOUGAKU3 =
+                    LNK-KOREIFTNCHK-CHIHOUGAKU3 +
+                   (SYU-TOTAL-HKNTEN * 10)
+      *
+           IF     SYU-KOHTAIYKZKBN  =   "9"
+                COMPUTE  LNK-KOREIFTNCHK-CHIHOUGAKU-GEN70 =
+                         LNK-KOREIFTNCHK-CHIHOUGAKU-GEN70 +
+                        (SYU-TOTAL-HKNTEN * 10)
+           END-IF
+      *
            IF  ( SYU-KOH-HKNNUM(1)  =  SPACE )
            AND ( SYU-KOH-HKNNUM(2)  =  SPACE )
            AND ( SYU-KOH-HKNNUM(3)  =  SPACE )
            AND ( SYU-KOH-HKNNUM(4)  =  SPACE )
              ADD    SYU-SYUCOMPFTN   TO  LNK-KOREIFTNCHK-FTNGAKU
-             ADD    SYU-TOTAL-HKNTEN TO  LNK-KOREIFTNCHK-CHIHOUGAKU3
+             IF     SYU-KOHTAIYKZKBN  =   "9"
+               ADD  SYU-SYUCOMPFTN   TO  LNK-KOREIFTNCHK-FTNGAKU-GEN70
+             END-IF
            ELSE
              ADD    SYU-KOH-FTN      TO  LNK-KOREIFTNCHK-KOHFTNGAKU
+             IF     SYU-KOHTAIYKZKBN  =   "9"
+               ADD  SYU-KOH-FTN   TO  LNK-KOREIFTNCHK-KOHFTNGAKU-GEN70
+             END-IF
       *
              COMPUTE  WRK-FTNKEI = SYU-TOTAL-HKNTEN
                                  * 10
@@ -1356,18 +1414,18 @@ grpsys        MOVE    LNK-KOREIFTNCHK-HOSPNUM   TO  SYU-HOSPNUM
       *
            MOVE    PTINF-REC            TO  MCPDATA-REC
            MOVE    "DBSELECT"           TO  MCP-FUNC
-           MOVE    "PTINF-KEY"          TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           MOVE    "tbl_ptinf"          TO  MCP-TABLE
+           MOVE    "key"                TO  MCP-PATHNAME
+           CALL    "ORCDBMAIN"          USING   MCPAREA
+                                                MCPDATA-REC
+                                                SPA-AREA
            IF      MCP-RC               =   ZERO
                MOVE    "DBFETCH"        TO  MCP-FUNC
-               MOVE    "PTINF-KEY"      TO  ORC-DBPATH
-               CALL    "ORCMCPSUB"      USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+               MOVE    "tbl_ptinf"      TO  MCP-TABLE
+               MOVE    "key"            TO  MCP-PATHNAME
+               CALL    "ORCDBMAIN"      USING   MCPAREA
+                                                MCPDATA-REC
+                                                SPA-AREA
                IF      MCP-RC           =   ZERO
                    MOVE    MCPDATA-REC  TO  PTINF-REC
                    MOVE    ZERO         TO  FLG-PTINF
@@ -1380,7 +1438,8 @@ grpsys        MOVE    LNK-KOREIFTNCHK-HOSPNUM   TO  SYU-HOSPNUM
                MOVE    1                TO  FLG-PTINF
            END-IF
       *
-           MOVE    "PTINF-KEY"          TO  ORC-DBPATH
+           MOVE     "tbl_ptinf"         TO  MCP-TABLE
+           MOVE     "key"               TO  MCP-PATHNAME
            PERFORM   920-DB-CLOSE-SEC
       *
            .
@@ -1394,10 +1453,9 @@ grpsys        MOVE    LNK-KOREIFTNCHK-HOSPNUM   TO  SYU-HOSPNUM
       *
            MOVE    HKNCOMBI-REC        TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
            IF      MCP-RC              =   ZERO
                MOVE    ZERO               TO  FLG-HKNCOMBI
            ELSE
@@ -1414,10 +1472,9 @@ grpsys        MOVE    LNK-KOREIFTNCHK-HOSPNUM   TO  SYU-HOSPNUM
        910-HKNCOMBI-READ-SEC         SECTION.
       *
            MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "ORCMCPSUB"         USING
-                                       MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC
+           CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC     TO  HKNCOMBI-REC
                MOVE    ZERO            TO  FLG-HKNCOMBI
@@ -1437,10 +1494,9 @@ grpsys        MOVE    LNK-KOREIFTNCHK-HOSPNUM   TO  SYU-HOSPNUM
       *
            MOVE    SYUNOU-REC          TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
            IF      MCP-RC              =   ZERO
                MOVE    ZERO               TO  FLG-SYUNOU
            ELSE
@@ -1457,10 +1513,9 @@ grpsys        MOVE    LNK-KOREIFTNCHK-HOSPNUM   TO  SYU-HOSPNUM
        910-SYUNOU-READ-SEC         SECTION.
       *
            MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "ORCMCPSUB"         USING
-                                       MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC
+           CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC     TO  SYUNOU-REC
                MOVE    ZERO            TO  FLG-SYUNOU
@@ -1479,10 +1534,9 @@ grpsys        MOVE    LNK-KOREIFTNCHK-HOSPNUM   TO  SYU-HOSPNUM
        900-PTHKNINF-READ-SEC           SECTION.
       *
            MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "ORCMCPSUB"         USING
-                                       MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC
+           CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC     TO  PTHKNINF-REC
                MOVE    ZERO            TO  FLG-PTHKNINF
@@ -1501,10 +1555,9 @@ grpsys        MOVE    LNK-KOREIFTNCHK-HOSPNUM   TO  SYU-HOSPNUM
        920-DB-CLOSE-SEC                 SECTION.
       *
            MOVE    "DBCLOSECURSOR"      TO  MCP-FUNC
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
       *
