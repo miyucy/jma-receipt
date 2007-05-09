@@ -31,6 +31,7 @@
       *  01.00.02    NACL-太田    03.09.19  自院歴より継続して入院している
       *                                     場合の入院日を修正
       *  01.00.03    NACL-小豆沢  06.06.12  入院歴、通算期間の編集追加
+      *  03.05.00    NACL-多々納  07/05/09  グループ診療対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -325,7 +326,7 @@
       *
       *    患者マスター検索
            INITIALIZE                    PTINF-REC
-           MOVE    SPA-HOSPID        TO  PTINF-HOSPID
+           MOVE    SPA-HOSPNUM       TO  PTINF-HOSPNUM
            MOVE    SPA-PTID          TO  PTINF-PTID
            PERFORM 900-PTINF-READ-SEC
            IF      FLG-PTINF           =   1
@@ -337,7 +338,7 @@
            INITIALIZE                  SYS-1001-REC
            MOVE    "1001"              TO  SYS-1001-KANRICD
            MOVE    "*"                 TO  SYS-1001-KBNCD
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  SYS-1001-HOSPNUM
            MOVE    SYS-1001-REC        TO  MCPDATA-REC
            PERFORM 800-SYSKANRI-READ-SEC
            IF      FLG-SYSKANRI        =   ZERO
@@ -348,7 +349,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            INITIALIZE                  SYS-1002-REC
            MOVE    "1002"              TO  SYS-1002-KANRICD
            MOVE    "*"                 TO  SYS-1002-KBNCD
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  SYS-1002-HOSPNUM
            MOVE    SYS-1002-REC        TO  MCPDATA-REC
            PERFORM 800-SYSKANRI-READ-SEC
            IF      FLG-SYSKANRI        =   ZERO
@@ -362,7 +363,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                INITIALIZE                      SYS-1010-REC
                MOVE    "1010"                  TO  SYS-1010-KANRICD
                MOVE    LNK-PTNYUINRRK-DRCD1    TO  SYS-1010-KBNCD
-grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
+               MOVE    SPA-HOSPNUM             TO  SYS-1010-HOSPNUM
                MOVE    SYS-1010-REC            TO  MCPDATA-REC
                PERFORM 800-SYSKANRI-READ-SEC
                IF      FLG-SYSKANRI        =   ZERO
@@ -452,7 +453,7 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
            INITIALIZE                  SYS-5000-REC
            MOVE    "5000"              TO  SYS-5000-KANRICD
            MOVE    "*"                 TO  SYS-5000-KBNCD
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  SYS-5000-HOSPNUM
            MOVE    SYS-5000-REC        TO  MCPDATA-REC
            PERFORM 800-SYSKANRI-READ-SEC
            IF      FLG-SYSKANRI        =   ZERO
@@ -531,10 +532,11 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
        3101-NTYMD-HEN1-SEC              SECTION.
       *
            INITIALIZE                  ORCSNTYMDAREA
-           MOVE    PTINF-HOSPID        TO  SNTYMD-HOSPID
+           MOVE    PTINF-HOSPNUM       TO  SNTYMD-HOSPNUM
            MOVE    PTINF-PTID          TO  SNTYMD-PTID
            MOVE    "3"                 TO  SNTYMD-KBN
            CALL    "ORCSNTYMD" USING   ORCSNTYMDAREA
+                                       SPA-AREA
       *
            PERFORM VARYING IDX2    FROM    1   BY   1
                    UNTIL ( IDX2    >   SNTYMD-MAX )
@@ -574,10 +576,11 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            INITIALIZE                  ORCHCN02SUB-AREA
       *
            INITIALIZE                  ORCSNTYMDAREA
-           MOVE    PTINF-HOSPID        TO  SNTYMD-HOSPID
+           MOVE    PTINF-HOSPNUM       TO  SNTYMD-HOSPNUM
            MOVE    PTINF-PTID          TO  SNTYMD-PTID
            MOVE    "3"                 TO  SNTYMD-KBN
            CALL    "ORCSNTYMD" USING   ORCSNTYMDAREA
+                                       SPA-AREA
       *
            PERFORM VARYING IDX2    FROM    1   BY   1
                    UNTIL ( IDX2    >   SNTYMD-MAX )
@@ -619,9 +622,10 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *
       *    退院証明書用入院取得サブ
       *
-           MOVE    PTINF-HOSPID        TO  LNK-ORCHCN02SUB-HOSPID
+           MOVE    PTINF-HOSPNUM       TO  LNK-ORCHCN02SUB-HOSPNUM
            MOVE    PTINF-PTID          TO  LNK-ORCHCN02SUB-PTID
            CALL    "ORCHCN02SUB"       USING   ORCHCN02SUB-AREA
+                                               SPA-AREA
            IF      LNK-ORCHCN02SUB-RC  NOT =   ZERO
                DISPLAY "LNK-ORCHCN02SUB-RC=" LNK-ORCHCN02SUB-RC 
            END-IF
@@ -725,7 +729,6 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *****************************************************************
        900-PTINF-READ-SEC         SECTION.
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PTINF-REC           TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "PTINF-KEY"         TO  ORC-DBPATH

@@ -29,6 +29,7 @@
       * Maj/Min/Rev  修正者       日付      内容
       *  01.00.01    NACL-太田    03.05.16  病名編集をコメント化
       *  01.00.02    NACL-太田    03.07.01  出力先プリンタサブ追加
+      *  03.05.00    NACL-多々納  07/05/09  グループ診療対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -327,7 +328,7 @@
       *
       *    患者マスター検索
            INITIALIZE                      PTINF-REC
-           MOVE    SPA-HOSPID          TO  PTINF-HOSPID
+           MOVE    SPA-HOSPNUM         TO  PTINF-HOSPNUM
            MOVE    SPA-PTID            TO  PTINF-PTID
            PERFORM 900-PTINF-READ-SEC
            IF      FLG-PTINF           =   1
@@ -343,7 +344,7 @@
                INITIALIZE                  SYS-1005-REC
                MOVE    "1005"              TO  SYS-1005-KANRICD
                MOVE    SPA-SRYKA           TO  SYS-1005-KBNCD
-grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
+               MOVE    SPA-HOSPNUM         TO  SYS-1005-HOSPNUM
                MOVE    SYS-1005-REC        TO  MCPDATA-REC
                PERFORM 900-SYSKANRI-READ-SEC
                IF      FLG-SYSKANRI        =   ZERO
@@ -364,7 +365,7 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                    INITIALIZE                  SYS-1010-REC
                    MOVE    "1010"              TO  SYS-1010-KANRICD
                    MOVE    ORCHCN01-DR (IDX)   TO  SYS-1010-KBNCD
-grpsys*            MOVE SPA-HOSPNUM TO -HOSPNUM
+                   MOVE    SPA-HOSPNUM         TO  SYS-1010-HOSPNUM
                    MOVE    SYS-1010-REC        TO  MCPDATA-REC
                    PERFORM 900-SYSKANRI-READ-SEC
                    IF      FLG-SYSKANRI        =   ZERO
@@ -630,7 +631,7 @@ grpsys*            MOVE SPA-HOSPNUM TO -HOSPNUM
                    UNTIL       IDY     >   2
                IF      COMB-KOHID (IDY)    NOT =   SPACE
                    INITIALIZE                  PTKOHINF-REC
-                   MOVE    SPA-HOSPID          TO  PTKOH-HOSPID
+                   MOVE    SPA-HOSPNUM         TO  PTKOH-HOSPNUM
                    MOVE    SPA-PTID            TO  PTKOH-PTID
                    MOVE    COMB-KOHID (IDY)    TO  PTKOH-KOHID
                    PERFORM 940-PTKOHINF-READ-SEC
@@ -673,10 +674,9 @@ grpsys*            MOVE SPA-HOSPNUM TO -HOSPNUM
            IF      COMB-HKNNUM         =   "971"  OR  "973"
       *        患者保険情報検索
                INITIALIZE                      PTRSIINF-REC
-               MOVE    SPA-HOSPID          TO  PTRSI-HOSPID
+               MOVE    SPA-HOSPNUM         TO  PTRSI-HOSPNUM
                MOVE    SPA-PTID            TO  PTRSI-PTID
                MOVE    COMB-HKNID          TO  PTRSI-HKNID
-grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    PTRSIINF-REC        TO  MCPDATA-REC
                MOVE    "DBSELECT"          TO  MCP-FUNC
                MOVE    "PTRSIINF-KEY"      TO  ORC-DBPATH
@@ -714,7 +714,7 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
            INITIALIZE                      WRK-HKN-AREA
       *
            INITIALIZE                      HKNCOMBI-REC
-           MOVE    SPA-HOSPID          TO  COMB-HOSPID
+           MOVE    SPA-HOSPNUM         TO  COMB-HOSPNUM
            MOVE    SPA-PTID            TO  COMB-PTID
            MOVE    SPA-HKNCOMBINUM     TO  COMB-HKNCOMBINUM
            PERFORM 910-HKNCOMBI-READ-SEC
@@ -725,7 +725,7 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
       *    患者保険情報検索
       *    主保険−ＩＤ
            INITIALIZE                      PTHKNINF-REC
-           MOVE    SPA-HOSPID          TO  PTHKN-HOSPID
+           MOVE    SPA-HOSPNUM         TO  PTHKN-HOSPNUM
            MOVE    SPA-PTID            TO  PTHKN-PTID
            MOVE    COMB-HKNID          TO  PTHKN-HKNID
            PERFORM 920-PTHKNINF-READ-SEC
@@ -782,7 +782,7 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
       *
       *    保険番号マスター検索
            INITIALIZE                  HKNNUM-REC
-           MOVE    SPA-HOSPID          TO  HKN-HOSPID
+           MOVE    SPA-HOSPNUM         TO  HKN-HOSPNUM
            MOVE    COMB-HKNNUM         TO  HKN-HKNNUM
            MOVE    COMB-TEKSTYMD       TO  HKN-TEKSTYMD
            PERFORM 930-HKNNUM-READ-SEC
@@ -792,9 +792,8 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
       *
       *    保険者番号　検索チェック
            INITIALIZE                  HKNJAINF-REC
-           MOVE    SPA-HOSPID          TO  HKNJA-HOSPID
+           MOVE    SPA-HOSPNUM         TO  HKNJA-HOSPNUM
            MOVE    PTHKN-HKNJA-G       TO  HKNJA-HKNJANUM
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    HKNJAINF-REC        TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "HKNJAINF-KEY"      TO  ORC-DBPATH
@@ -859,11 +858,10 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    1                   TO  WRK-PRT-CNT
       *
            INITIALIZE                      PTBYOMEI-REC
-           MOVE    SPA-HOSPID          TO  PTBYO-HOSPID
+           MOVE    SPA-HOSPNUM         TO  PTBYO-HOSPNUM
            MOVE    SPA-PTID            TO  PTBYO-PTID
            MOVE    SPA-SRYKA           TO  PTBYO-SRYKA
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PTBYOMEI-REC        TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "PTBYOMEI-KEY2"     TO  ORC-DBPATH
@@ -1036,7 +1034,6 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *****************************************************************
        900-PTINF-READ-SEC         SECTION.
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PTINF-REC           TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "PTINF-KEY"         TO  ORC-DBPATH
@@ -1075,7 +1072,6 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *****************************************************************
        910-HKNCOMBI-READ-SEC         SECTION.
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    HKNCOMBI-REC        TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "HKNCOMBI-KEY"      TO  ORC-DBPATH
@@ -1115,7 +1111,6 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *****************************************************************
        920-PTHKNINF-READ-SEC         SECTION.
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PTHKNINF-REC        TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "PTHKNINF-KEY"      TO  ORC-DBPATH
@@ -1156,7 +1151,6 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *****************************************************************
        930-HKNNUM-READ-SEC         SECTION.
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    HKNNUM-REC          TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "HKNNUM-KEY"        TO  ORC-DBPATH
@@ -1197,7 +1191,6 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *****************************************************************
        940-PTKOHINF-READ-SEC         SECTION.
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PTKOHINF-REC        TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "PTKOHINF-KEY"      TO  ORC-DBPATH
