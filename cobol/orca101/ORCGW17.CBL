@@ -428,10 +428,13 @@
       *    保険番号読み込み
            MOVE    ZERO            TO  FLG-HKNNUM
            INITIALIZE                  HKNNUM-REC
-           MOVE    SPA-HOSPNUM      TO  HKN-HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  HKN-HOSPNUM
            MOVE    SPA-NAI-YUKOSTYMD   TO  HKN-TEKSTYMD
            MOVE    SPA-NAI-YUKOSTYMD   TO  HKN-TEKEDYMD
-           MOVE    HKNNUM-REC      TO  MCPDATA-REC
+           MOVE    HKNNUM-REC          TO  MCPDATA-REC
+      *
+           MOVE    "tbl_hknnum"        TO  MCP-TABLE
+           MOVE    "key3"              TO  MCP-PATHNAME
            MOVE    "HKNNUM-KEY3"   TO  WRK-DBPATH-KOH
       *
            PERFORM 31011-HKNNUM-SELECT-SEC
@@ -450,6 +453,8 @@
                    MOVE    HKN-HKNNUM  TO  SPA-GMN-KOHCDL(IDX-KOH)
                END-IF
       *
+               MOVE    "tbl_hknnum"        TO  MCP-TABLE
+               MOVE    "key3"              TO  MCP-PATHNAME
       *        保険番号読み込み
                PERFORM 31011-HKNNUM-FETCH-SEC
            END-PERFORM
@@ -457,7 +462,9 @@
            MOVE    IDX-KOH         TO  SPA-GMN-KOUHI-MAX
       *
       *    保険番号クローズ
-           PERFORM 31011-HKNNUM-CLOSE-SEC
+           MOVE    "tbl_hknnum"        TO  MCP-TABLE
+           MOVE    "key3"              TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
       *
            .
        3101-HKNNUM-COMBO-SET-EXT.
@@ -479,7 +486,9 @@
            MOVE    SYS-1040-STYUKYMD
                                    TO  HKN-TEKEDYMD
            MOVE    HKNNUM-REC      TO  MCPDATA-REC
-           MOVE    "HKNNUM-KEY5"   TO  WRK-DBPATH-KOH
+      **** MOVE    "HKNNUM-KEY5"   TO  WRK-DBPATH-KOH
+           MOVE    "tbl_hknnum"        TO  MCP-TABLE
+           MOVE    "key5"              TO  MCP-PATHNAME
            PERFORM 31011-HKNNUM-SELECT-SEC
       *
       *    公費の種類セット
@@ -494,11 +503,15 @@
                END-IF
       *
       *        保険番号読み込み
+               MOVE    "tbl_hknnum"        TO  MCP-TABLE
+               MOVE    "key5"              TO  MCP-PATHNAME
                PERFORM 31011-HKNNUM-FETCH-SEC
            END-PERFORM
       *
       *    保険番号クローズ
-           PERFORM 31011-HKNNUM-CLOSE-SEC
+           MOVE    "tbl_hknnum"        TO  MCP-TABLE
+           MOVE    "key5"              TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
       *
            .
        3101-HKNNUM-CLIST-SET-EXT.
@@ -514,20 +527,23 @@
            INITIALIZE                  SYS-1040-REC
       *
            MOVE    "1040"          TO  SYS-1040-KANRICD
-           MOVE    "SYSKANRI-KEY5" TO  WRK-DBPATH-SYS
-           MOVE    SPA-HOSPNUM         TO  SYS-1040-HOSPNUM
+           MOVE    SPA-HOSPNUM     TO  SYS-1040-HOSPNUM
+           MOVE    SPA-SYSYMD      TO  SYS-1040-STYUKYMD
+           MOVE    SPA-SYSYMD      TO  SYS-1040-EDYUKYMD
            MOVE    SYS-1040-REC    TO  MCPDATA-REC
       *
+      ***  MOVE    "SYSKANRI-KEY5" TO  WRK-DBPATH-SYS
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key5"              TO  MCP-PATHNAME
       *    システム管理検索処理
            PERFORM 3101-SYSKANRI-SELECT-SEC
-           IF      FLG-SYSKANRI        =   ZERO
-               MOVE    MCPDATA-REC     TO  SYS-1040-REC
-           END-IF
       *
       *    チェックリストセット
            MOVE    ZERO            TO  IDX-LST
            PERFORM UNTIL ( FLG-SYSKANRI    =   1  )
                    OR    ( IDX-LST         >=  CONST-CLIST-MAX )
+      *
+               MOVE    MCPDATA-REC     TO  SYS-1040-REC
                ADD     1               TO  IDX-LST
       *
       *        番号
@@ -559,16 +575,17 @@
                MOVE    WRK-SYMD        TO  SPA-NAI-EDYMD(IDX-LST)
       *
       *        チェック排除読み込み
+               MOVE    "tbl_syskanri"      TO  MCP-TABLE
+               MOVE    "key5"              TO  MCP-PATHNAME
                PERFORM 3101-SYSKANRI-FETCH-SEC
-               IF      FLG-SYSKANRI    =   ZERO
-                   MOVE    MCPDATA-REC     TO  SYS-1040-REC
-               END-IF
            END-PERFORM
       *
            MOVE    IDX-LST         TO  SPA-GMN-CLIST-MAX
       *
       *    チェック排除CLOSE
-           PERFORM 3101-SYSKANRI-CLOSE-SEC
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key5"              TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
       *
            .
        3101-CLIST-SET-EXT.
@@ -1066,13 +1083,13 @@
       *
       *    チェック排除情報マスタ追加
            MOVE    SPA-HOSPNUM         TO  SYS-1040-HOSPNUM
-           MOVE    SYS-1040-REC    TO  MCPDATA-REC
-           MOVE    "SYSKANRI-KEY"  TO  ORC-DBPATH
-           MOVE    "DBINSERT"      TO  MCP-FUNC
-           CALL    "ORCMCPSUB"         USING
-                                       MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC
+           MOVE    SYS-1040-REC        TO  MCPDATA-REC
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           MOVE    "DBINSERT"          TO  MCP-FUNC
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
            IF    ( MCP-RC              =   ZERO )
                CONTINUE
            ELSE
@@ -1172,13 +1189,13 @@
       *
       *    チェック排除情報マスタ更新
            MOVE    SPA-HOSPNUM         TO  SYS-HOSPNUM
-           MOVE    SYSKANRI-REC    TO  MCPDATA-REC
-           MOVE    "SYSKANRI-UPD1" TO  ORC-DBPATH
-           MOVE    "DBUPDATE"      TO  MCP-FUNC
-           CALL    "ORCMCPSUB"         USING
-                                       MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC
+           MOVE    SYSKANRI-REC        TO  MCPDATA-REC
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "upd1"              TO  MCP-PATHNAME
+           MOVE    "DBUPDATE"          TO  MCP-FUNC
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
            IF    ( MCP-RC          =   ZERO )
                CONTINUE
            ELSE
@@ -1229,13 +1246,13 @@
            MOVE    SPA-MOT-EDYMD   TO  SYS-1040-EDYUKYMD
       *
            MOVE    SPA-HOSPNUM         TO  SYS-1040-HOSPNUM
-           MOVE    SYS-1040-REC    TO  MCPDATA-REC
-           MOVE    "SYSKANRI-KEY"  TO  ORC-DBPATH
-           MOVE    "DBDELETE"      TO  MCP-FUNC
-           CALL    "ORCMCPSUB"         USING
-                                       MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC
+           MOVE    SYS-1040-REC        TO  MCPDATA-REC
+           MOVE    "DBDELETE"          TO  MCP-FUNC
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
            IF    ( MCP-RC              =   ZERO )
                CONTINUE
            ELSE
@@ -1310,17 +1327,21 @@
            INITIALIZE                      SYS-1040-REC
            MOVE    "1040"              TO  SYS-1040-KANRICD
            MOVE    SPA-GMN-KOHCD       TO  SYS-1040-KBNCD
-           MOVE    "SYSKANRI-KEY8"     TO  WRK-DBPATH-SYS
            MOVE    SPA-HOSPNUM         TO  SYS-1040-HOSPNUM
+           MOVE    SPA-SYSYMD          TO  SYS-1040-STYUKYMD
+           MOVE    SPA-SYSYMD          TO  SYS-1040-EDYUKYMD
            MOVE    SYS-1040-REC        TO  MCPDATA-REC
       *
+      ***  MOVE    "SYSKANRI-KEY8"     TO  WRK-DBPATH-SYS
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key8"              TO  MCP-PATHNAME
       *    システム管理検索処理
            PERFORM 3101-SYSKANRI-SELECT-SEC
-           IF      FLG-SYSKANRI    =   ZERO
-               MOVE    MCPDATA-REC     TO  SYS-1040-REC
-           END-IF
       *
            PERFORM UNTIL ( FLG-SYSKANRI    NOT =   ZERO )
+      *
+               MOVE    MCPDATA-REC     TO  SYS-1040-REC
+      *
                IF    ( WRK-UPDKBN         =   "UPD" )
                    AND   ( SPA-MOT-KOHCD  =   SYS-1040-KBNCD )
                    AND   ( SPA-MOT-FTSCD  =   SYS-1040-FTNJANUMCHK )
@@ -1338,20 +1359,20 @@
                END-IF
       *
       *        システム管理読み込み処理
+               MOVE    "tbl_syskanri"      TO  MCP-TABLE
+               MOVE    "key8"              TO  MCP-PATHNAME
                PERFORM 3101-SYSKANRI-FETCH-SEC
-               IF      FLG-SYSKANRI    =   ZERO
-                   MOVE    MCPDATA-REC     TO  SYS-1040-REC
-               END-IF
            END-PERFORM
       *
       *    システム管理CLOSE処理
-           PERFORM 3101-SYSKANRI-CLOSE-SEC
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key8"              TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
       *
            IF    ( FLG-DABURI    =   1 )
       *        期間重複エラー
                MOVE    "1103"          TO  SPA-ERRCD
                MOVE    005             TO  SPA-GMN-CUR
-               GO  TO  4901-RIREKI-CHK-EXT
            END-IF
       *
            .
@@ -1714,13 +1735,7 @@
       *****************************************************************
        3101-SYSKANRI-SELECT-SEC    SECTION.
       *
-          MOVE    SPA-SYSYMD      TO  ORC-DBYMD
-           MOVE    WRK-DBPATH-SYS  TO  ORC-DBPATH
-           MOVE    "DBSELECT"      TO  MCP-FUNC
-           CALL    "ORCMCPSUB"         USING
-                                       MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC
+           PERFORM 910-DBSELECT-SEC
            IF    ( MCP-RC              =   ZERO )
       *        チェック排除情報読込処理
                PERFORM 3101-SYSKANRI-FETCH-SEC
@@ -1736,12 +1751,7 @@
       *****************************************************************
         3101-SYSKANRI-FETCH-SEC    SECTION.
       *
-           MOVE    WRK-DBPATH-SYS  TO  ORC-DBPATH
-           MOVE    "DBFETCH"       TO  MCP-FUNC
-           CALL    "ORCMCPSUB"         USING
-                                       MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC
+           PERFORM 920-DBFETCH-SEC
            IF    ( MCP-RC              =   ZERO )
                MOVE    ZERO            TO  FLG-SYSKANRI
            ELSE
@@ -1752,30 +1762,11 @@
        3101-SYSKANRI-FETCH-EXT.
            EXIT.
       *****************************************************************
-      *    チェック排除情報CLOSE処理
-      *****************************************************************
-       3101-SYSKANRI-CLOSE-SEC     SECTION.
-      *
-           MOVE    WRK-DBPATH-SYS  TO  ORC-DBPATH
-           MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
-           CALL    "ORCMCPSUB"         USING
-                                       MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC
-           .
-       3101-SYSKANRI-CLOSE-EXT.
-           EXIT.
-      *****************************************************************
       *    保険番号マスター検索処理
       *****************************************************************
        31011-HKNNUM-SELECT-SEC     SECTION.
       *
-           MOVE    WRK-DBPATH-KOH  TO  ORC-DBPATH
-           MOVE    "DBSELECT"      TO  MCP-FUNC
-           CALL    "ORCMCPSUB"         USING
-                                       MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC
+           PERFORM 910-DBSELECT-SEC
            IF    ( MCP-RC              =   ZERO )
       *        保険番号マスター読込処理
                PERFORM 31011-HKNNUM-FETCH-SEC
@@ -1795,12 +1786,7 @@
       *
            PERFORM UNTIL ( FLG-SKIP    =   ZERO )
                     OR   ( FLG-HKNNUM  =   1    )
-               MOVE    WRK-DBPATH-KOH  TO  ORC-DBPATH
-               MOVE    "DBFETCH"       TO  MCP-FUNC
-               CALL    "ORCMCPSUB"         USING
-                                           MCPAREA
-                                           ORCMCPAREA
-                                           MCPDATA-REC
+               PERFORM 920-DBFETCH-SEC
                IF    ( MCP-RC          =   ZERO )
                    MOVE    ZERO        TO  FLG-HKNNUM
                    MOVE    MCPDATA-REC TO  HKNNUM-REC
@@ -1819,19 +1805,45 @@
        31011-HKNNUM-FETCH-EXT.
            EXIT.
       *****************************************************************
-      *    保険番号マスタークローズ処理
+      *    テーブル検索処理
       *****************************************************************
-       31011-HKNNUM-CLOSE-SEC      SECTION.
+       910-DBSELECT-SEC                SECTION.
       *
-           MOVE    WRK-DBPATH-KOH  TO  ORC-DBPATH
-           MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
-           CALL    "ORCMCPSUB"         USING
-                                       MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC
+           MOVE    "DBSELECT"      TO  MCP-FUNC
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
-       31011-HKNNUM-CLOSE-EXT.
+       910-DBSELECT-EXT.
+           EXIT.
+      *****************************************************************
+      *    ＤＢ読み込み処理
+      *****************************************************************
+       920-DBFETCH-SEC                 SECTION.
+      *
+           MOVE    "DBFETCH"       TO  MCP-FUNC
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
+      *
+           .
+      *
+       920-DBFETCH-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ＤＢクロース処理
+      *****************************************************************
+       990-DBCLOSE-SEC         SECTION.
+      *
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
+      *
+           .
+       990-DBCLOSE-EXT.
            EXIT.
       *****************************************************************
       *    ＰＵＴ　処理
@@ -1839,10 +1851,9 @@
        900-PUT-WINDOW              SECTION.
       *
            MOVE   "PUTWINDOW"      TO  MCP-FUNC.
-           CALL   "ORCMCPSUB"          USING
-                                       MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC.
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
        900-PUT-WINDOW-EXT.
