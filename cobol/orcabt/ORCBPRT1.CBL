@@ -105,7 +105,6 @@ grpsys COPY    "COMMON-SPA".
        01  FLG-AREA.
            03  FLG-END             PIC 9(01).
            03  FLG-ERR             PIC 9(01).
-           03  FLG-SYSKANRI        PIC 9(01).
            03  FLG-PRTDATA         PIC 9(01).
            03  FLG-PRTKANRI        PIC 9(01).
            03  FLG-PRVKANRI        PIC 9(01).
@@ -131,8 +130,6 @@ grpsys COPY    "COMMON-SPA".
       *
            03  WRK-RECEERR         PIC X(200). 
       *
-           03  WRK-PATH            PIC X(64). 
-      *
       *  01.01.02  ADD START 
            03  WRK-FILENAME        PIC X(8). 
       *  01.01.02  ADD END   
@@ -145,8 +142,6 @@ grpsys COPY    "COMMON-SPA".
            03  WRK-PARA-EDPAGE     PIC 9(05).
            03  WRK-PARA-PRTFLG     PIC X(01).
            03  WRK-PARA-HOSPNUM    PIC X(02).
-      *
-           03  WRK-IN              PIC X(01).
       *
       *    印刷用コンスタント領域 
            COPY    "CPPRTCONST.INC".          
@@ -261,8 +256,8 @@ grpsys COPY    "COMMON-SPA".
                                                WRK-PARA-PRTFLG     
                                                WRK-PARA-HOSPNUM
            END-UNSTRING
-      *
            MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
+      *
            PERFORM 100-DBOPEN-SEC
       *
       *    ステップ管理開始処理
@@ -765,7 +760,6 @@ grpsys     PERFORM 900-DBFETCH-SEC
            MOVE    LNK-PRTKANRI-TBL-GROUP
                                        TO  PRTKANRI-TBL-GROUP
 grpsys     MOVE    SPA-HOSPNUM         TO  PRTKANRI-HOSPNUM
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PRTKANRI-REC        TO  MCPDATA-REC
            MOVE    "tbl_prtkanri"      TO  MCP-TABLE
            MOVE    "key2"              TO  MCP-PATHNAME
