@@ -49,9 +49,9 @@ fi
         rm  -f /var/tmp/RECE11*
         rm  -f /var/tmp/RECE12*
         
-        rm  /tmp/${16}00RECE0*
-        rm  /tmp/${16}00RECE11*
-        rm  /tmp/${16}00RECE12*
+        rm  -f /tmp/${16}00RECE0*
+        rm  -f /tmp/${16}00RECE11*
+        rm  -f /tmp/${16}00RECE12*
 
         if [ ${2} -eq  '1' ]; then
            LOG_FILE="/home/orca/${16}recept1a.log"
