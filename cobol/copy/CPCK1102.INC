@@ -35,6 +35,8 @@
                05  CK4-1102-STYUKYMD    PIC  X(08).
       *有効終了年月日
                05  CK4-1102-EDYUKYMD    PIC  X(08).
+      *患者ＩＤ
+           03  CK4-1102-PTID            PIC  9(10).
       *管理テーブル
            03  CK4-1102-TBL.
                05  CK4-1102-HKNJANUM    PIC  X(08).

@@ -1226,9 +1226,10 @@
                MOVE    SPA-MOT-KBNCD       TO  CHK004-UPKBNCD
                MOVE    SPA-MOT-STYUKYMD    TO  CHK004-UPSTYUKYMD
                MOVE    SPA-MOT-EDYUKYMD    TO  CHK004-UPEDYUKYMD
+               MOVE    SPA-HOSPNUM         TO  CHK004-UPHOSPNUM
       *
                MOVE    SPA-HOSPNUM         TO  CHK004-HOSPNUM
-               MOVE    CHK004-REC           TO  MCPDATA-REC
+               MOVE    CHK004-REC          TO  MCPDATA-REC
                MOVE    "tbl_chk004"        TO  MCP-TABLE
                MOVE    "upd1"              TO  MCP-PATHNAME
                PERFORM 910-DBUPDATE-SEC
