@@ -1360,6 +1360,7 @@
            MOVE    ORCHC33-SRYKA       TO  LNK-ORCHCN33SUB-SRYKA
            CALL   "ORCHCN33SUB"        USING
                                        ORCHCN33SUB-AREA
+                                       SPA-AREA
            IF      LNK-ORCHCN33SUB-RC  NOT =   ZERO
                DISPLAY "ORCHCN33 ORCHCN33SUB ERR:"  LNK-ORCHCN33SUB-RC
            END-IF

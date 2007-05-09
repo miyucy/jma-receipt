@@ -384,14 +384,14 @@
       *****************************************************************
         LINKAGE                     SECTION.
       *
-      *    スパ領域
-           COPY    "COMMON-SPA".
       *    入院会計作成用パラメタ
            COPY    "CPORCHCN33SUB.INC".
+      *    スパ領域
+           COPY    "COMMON-SPA".
       *
        PROCEDURE                   DIVISION    USING
-      *     SPA-AREA
             ORCHCN33SUB-AREA
+            SPA-AREA
            .
       *
       *****************************************************************
@@ -2380,6 +2380,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    LNK-ORCHCN33SUB-PTID     TO  LNK-NYULIFE-PTID
            MOVE    LNK-ORCHCN33SUB-SANTEIYM TO  LNK-NYULIFE-SANTEIYM
            CALL    "ORCSNYULIFE"    USING  ORCSNYULIFE-AREA
+                                           SPA-AREA
       *    
       *    食事療養費計算
            PERFORM    VARYING   IDX1   FROM   1   BY   1

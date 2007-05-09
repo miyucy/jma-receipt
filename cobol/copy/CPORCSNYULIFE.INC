@@ -32,7 +32,7 @@
        01  ORCSNYULIFE-AREA.
       *
       *°åÎÅµ¡´Ø£É£Ä
-           03  LNK-NYULIFE-HOSPID                     PIC  X(24).
+           03  LNK-NYULIFE-HOSPNUM                    PIC  S9(9) BINARY.
       *´µ¼Ô£É£Ä
            03  LNK-NYULIFE-PTID                       PIC  9(10).
       *»»ÄêÇ¯·î

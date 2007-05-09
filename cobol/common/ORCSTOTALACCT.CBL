@@ -27,6 +27,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  03.05.00    NACL-門脇    07/05/09  グループ診療対応
       *****************************************************************
       *
       *
@@ -40,8 +41,6 @@
       *FILE                        SECTION.
       *
        WORKING-STORAGE             SECTION.
-grpsys*
-grpsys COPY    "COMMON-SPA".
       *
       *    フラグ領域
        01  FLG-AREA.
@@ -93,14 +92,15 @@ grpsys COPY    "COMMON-SPA".
       *****************************************************************
         LINKAGE                     SECTION.
       *
-      *    スパ領域
-      *    COPY    "COMMON-SPA".
       *    入院会計作成用パラメタ
            COPY    "CPORCSTOTALACCT.INC".
       *
+grpsys     COPY    "COMMON-SPA".
+
+      *
        PROCEDURE                   DIVISION    USING
-      *     SPA-AREA
             ORCSTOTALACCT-AREA
+            SPA-AREA
            .
       *
       *****************************************************************
@@ -146,7 +146,7 @@ grpsys COPY    "COMMON-SPA".
       *
       *    患者マスター検索
            INITIALIZE                             PTINF-REC
-           MOVE    LNK-ORCSTOTALACCT-HOSPID   TO  PTINF-HOSPID
+           MOVE    LNK-ORCSTOTALACCT-HOSPNUM  TO  PTINF-HOSPNUM
            MOVE    LNK-ORCSTOTALACCT-PTID     TO  PTINF-PTID
            PERFORM 900-PTINF-READ-SEC
            IF      FLG-PTINF           NOT =   ZERO
@@ -207,18 +207,17 @@ grpsys COPY    "COMMON-SPA".
        2001-TENSU-HENSYU-SEC            SECTION.
       *
            INITIALIZE                               SRYACCT-REC
-           MOVE    LNK-ORCSTOTALACCT-HOSPID     TO  ACCT-HOSPID
+           MOVE    LNK-ORCSTOTALACCT-HOSPNUM    TO  ACCT-HOSPNUM
            MOVE    LNK-ORCSTOTALACCT-NYUGAIKBN  TO  ACCT-NYUGAIKBN
            MOVE    LNK-ORCSTOTALACCT-PTID       TO  ACCT-PTID
            MOVE    LNK-ORCSTOTALACCT-SANTEIYM   TO  ACCT-SRYYM
            MOVE    "tbl_sryacct"                TO  MCP-TABLE
            MOVE    "key44"                      TO  MCP-PATHNAME
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SRYACCT-REC                  TO  MCPDATA-REC
            MOVE    "DBSELECT"                   TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     CALL    "ORCDBMAIN"                  USING MCPAREA
+                                                      MCPDATA-REC
+                                                      SPA-AREA
            IF      MCP-RC               =       ZERO
                MOVE    "tbl_sryacct"            TO  MCP-TABLE
                MOVE    "key44"                  TO  MCP-PATHNAME
@@ -319,7 +318,7 @@ grpsys                            SPA-AREA
        2002-KAISU-HENSYU-SEC            SECTION.
       *
            INITIALIZE                              JYURRK-REC
-           MOVE    LNK-ORCSTOTALACCT-HOSPID    TO  JYURRK-HOSPID
+           MOVE    LNK-ORCSTOTALACCT-HOSPNUM   TO  JYURRK-HOSPNUM
            MOVE    LNK-ORCSTOTALACCT-PTID      TO  JYURRK-PTID
            MOVE    LNK-ORCSTOTALACCT-NYUGAIKBN TO  JYURRK-NYUGAIKBN
            MOVE    LNK-ORCSTOTALACCT-SANTEIYM  TO  JYURRK-SRYYMD(1:6)
@@ -328,12 +327,11 @@ grpsys                            SPA-AREA
            MOVE    "31"                        TO  JYURRK-UPSRYYMD(7:2)
            MOVE    "tbl_jyurrk"                TO  MCP-TABLE
            MOVE    "key33"                     TO  MCP-PATHNAME
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    JYURRK-REC                  TO  MCPDATA-REC
            MOVE    "DBSELECT"                  TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     CALL    "ORCDBMAIN"                 USING  MCPAREA
+                                                      MCPDATA-REC
+                                                      SPA-AREA
            IF      MCP-RC              =   ZERO
                MOVE    "tbl_jyurrk"            TO  MCP-TABLE
                MOVE    "key33"                 TO  MCP-PATHNAME
@@ -420,19 +418,18 @@ grpsys                            SPA-AREA
       *
            MOVE    "tbl_ptinf"         TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PTINF-REC           TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING  MCPAREA
+                                              MCPDATA-REC
+                                              SPA-AREA
            IF      MCP-RC              =   ZERO
                MOVE    "tbl_ptinf"         TO  MCP-TABLE
                MOVE    "key"               TO  MCP-PATHNAME
                MOVE    "DBFETCH"           TO  MCP-FUNC
-grpsys         CALL "ORCDBMAIN" USING MCPAREA
-                                      MCPDATA-REC
-grpsys                                SPA-AREA
+grpsys         CALL    "ORCDBMAIN"         USING  MCPAREA
+                                                  MCPDATA-REC
+                                                  SPA-AREA
                IF      MCP-RC          =   ZERO
                    MOVE    MCPDATA-REC TO  PTINF-REC
                    MOVE    ZERO        TO  FLG-PTINF
@@ -459,9 +456,9 @@ grpsys                                SPA-AREA
        900-SRYACCT-READ-SEC        SECTION.
       *
            MOVE    "DBFETCH"            TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     CALL    "ORCDBMAIN"          USING  MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC        TO  SRYACCT-REC
                MOVE    ZERO               TO  FLG-SRYACCT
@@ -480,9 +477,9 @@ grpsys                            SPA-AREA
        900-JYURRK-READ-SEC         SECTION.
       *
            MOVE    "DBFETCH"           TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING  MCPAREA
+                                              MCPDATA-REC
+                                              SPA-AREA
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC     TO  JYURRK-REC
                MOVE    ZERO            TO  FLG-JYURRK
@@ -501,9 +498,9 @@ grpsys                            SPA-AREA
        910-DB-CLOSE-SEC                 SECTION.
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING  MCPAREA
+                                              MCPDATA-REC
+                                              SPA-AREA
       *
            .
       *
