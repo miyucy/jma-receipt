@@ -568,9 +568,6 @@
            MOVE    PTHKN-TEKEDYMD       TO  WRK-HKN-TEKEDYMD (CNT-HKN)
            MOVE    PTHKN-SAKJOKBN       TO  WRK-HKN-SAKJOKBN (CNT-HKN)
       *
-      *TEST
-           DISPLAY "330-HKNINF-SET-SEC PTHKN-HKNNUM:"  PTHKN-HKNNUM
-      *TEST
       *    制度名等は毎回編集する
       *****IF  PTHKN-SBT                =   SPACE
                INITIALIZE                   WRK-KENSAKU-AREA
@@ -582,13 +579,7 @@
                MOVE    PTHKN-TEKEDYMD   TO  WRK-KEN-TEKEDYMD
       *----(01.00.01) LINE MOD END   ---------------------------------
       *    保険番号マスタより制度名取得
-      *TEST
-           DISPLAY " WRK-KEN-HKNNUM:"  WRK-KEN-HKNNUM
-      *TEST
            PERFORM 4410-HKNKOH-KAKUNIN-SEC
-      *TEST
-           DISPLAY " WRK-KEN-ERFLG:"  WRK-KEN-ERFLG
-      *TEST
            IF  WRK-KEN-ERFLG    NOT =   SPACE
                MOVE    "0065"       TO  SPA-ERRCD
            ELSE
@@ -843,7 +834,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       ******** INITIALIZE                  NC01PARA-REC
       *        MOVE    SPA-TERMID      TO  PARA-NC01-TERMID
       *********MOVE    CNT-COMB        TO  PARA-NC01-EDANUM
-      *D       MOVE    SPA-HOSPNUM      TO  WRK-LCOMB-HOSPNUM     (IDZ)
+               MOVE    SPA-HOSPNUM     TO  WRK-LCOMB-HOSPNUM     (IDZ)
                MOVE    SPA-PTID        TO  WRK-LCOMB-PTID       (IDZ)
                MOVE    ZERO            TO  WRK-LCOMB-HKNCOMBINUM(IDZ)
       ******** MOVE    WRK-LCOMB-REC (IDZ)
@@ -871,7 +862,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                IF   (WRK-LCOMB-TEKSTYMD(IDZ)  < WRK-SYOCYO-TEKSTYMD)
                AND  (WRK-SYOCYO-TEKSTYMD  NOT = 99999999           )
                   ADD     1               TO  CNT-COMB
-    ****          MOVE    SPA-HOSPNUM      TO  WRK-LCOMB-HOSPNUM   (IDZ)
+                  MOVE    SPA-HOSPNUM     TO  WRK-LCOMB-HOSPNUM   (IDZ)
                   MOVE    SPA-PTID        TO  WRK-LCOMB-PTID       (IDZ)
                   MOVE    ZERO            TO  WRK-LCOMB-HKNCOMBINUM(IDZ)
                   INITIALIZE                      PARA-REC
@@ -908,7 +899,7 @@ grpsys            CALL    "ORCDBMAIN"         USING   MCPAREA
                IF   (WRK-LCOMB-TEKEDYMD(IDZ)  > WRK-SYOCYO-TEKEDYMD)
                AND  (WRK-SYOCYO-TEKEDYMD  NOT = ZERO               )
                   ADD     1               TO  CNT-COMB
-   *****          MOVE    SPA-HOSPNUM     TO  WRK-LCOMB-HOSPNUM   (IDZ)
+                  MOVE    SPA-HOSPNUM     TO  WRK-LCOMB-HOSPNUM   (IDZ)
                   MOVE    SPA-PTID        TO  WRK-LCOMB-PTID       (IDZ)
                   MOVE    ZERO            TO  WRK-LCOMB-HKNCOMBINUM(IDZ)
                   INITIALIZE                      PARA-REC
@@ -4958,7 +4949,7 @@ grpsys            CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            MOVE    ZERO               TO  FLG-HKNNUM
            MOVE    SPACE              TO  HKNNUM-REC
-           MOVE    SPA-HOSPNUM         TO  HKN-HOSPNUM
+           MOVE    SPA-HOSPNUM        TO  HKN-HOSPNUM
            MOVE    WRK-KEN-HKNNUM     TO  HKN-HKNNUM
            MOVE    HKNNUM-REC         TO  MCPDATA-REC
            MOVE    "tbl_hknnum"       TO  MCP-TABLE
@@ -4975,11 +4966,6 @@ grpsys            CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    1              TO  FLG-HKNNUM
                MOVE    "2"            TO  WRK-KEN-ERFLG
            END-IF
-      *TEST
-           DISPLAY "SPA-HOSPNUM:" SPA-HOSPNUM
-             ",WRK-KEN-HKNNUM:" WRK-KEN-HKNNUM
-             ",FLG-HKNNUM:" FLG-HKNNUM
-      *TEST
       *
            MOVE    ZERO                   TO  FLG-RJN
            PERFORM   UNTIL   FLG-HKNNUM   =   1
