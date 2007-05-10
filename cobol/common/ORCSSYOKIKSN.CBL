@@ -33,7 +33,7 @@
       *                                     （看護・医師配置適合）の追加
       *平成１８年４月改定対応
       *  00.00.03    NACL-小豆沢  06/03/15  有床診療所入院基本料対応
-      *  03.05.00    NACL-多々納  07/05/09  グループ診療対応
+      *  03.05.00    NACL-太田    07/05/10  グループ診療対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -50,7 +50,6 @@
       *    フラグ領域
        01  FLG-AREA.
            03  FLG-ERR                     PIC 9(01).
-           03  FLG-DBRC                    PIC 9(01).
            03  FLG-SINRYOJO-VAL-1804       PIC 9(01).
       *
       *    添字領域
@@ -69,7 +68,6 @@
                05  WRK-SMM                 PIC 9(02).
                05  WRK-SDD                 PIC 9(02).
            03  WRK-HENYMDG                 PIC X(09).
-           03  WRK-DBPATH                  PIC X(20).
            03  WRK-STYMD                   PIC X(08).
            03  WRK-EDYMD                   PIC X(08).
            03  WRK-NISSU1                  PIC 9(05).
@@ -162,7 +160,6 @@
       *    ＤＢ検索
            COPY    "MCPAREA".
            COPY    "MCPDATA.INC".
-           COPY    "CPORCMCP.INC".
       *
       *****************************************************************
       *    連絡　領域
@@ -170,12 +167,11 @@
         LINKAGE                     SECTION.
       *
            COPY  "CPORCSSYOKIKSN.INC".
-grpsys*
-grpsys      COPY    "COMMON-SPA".
+           COPY  "COMMON-SPA".
       *
        PROCEDURE                   DIVISION    USING
                                                ORCSSYOKIKSNAREA
-                                               SPA-AREA
+                                               SPA-AREA.
            .
       *
       *****************************************************************
@@ -429,23 +425,25 @@ grpsys      COPY    "COMMON-SPA".
        210-NYUINKHN-SEL-SEC            SECTION.
       *
            INITIALIZE  NYUINKHN-REC
+           MOVE    SPA-HOSPNUM         TO  NYUKHN-HOSPNUM
            MOVE    SYOKIKSN-IN-KHNSRYCD
                                        TO  NYUKHN-KHNSRYCD
            MOVE    SYOKIKSN-IN-SANTEISTYMD
                                        TO  NYUKHN-YUKOSTYMD
                                            NYUKHN-YUKOEDYMD
-           MOVE    SPA-HOSPNUM         TO  NYUKHN-HOSPNUM
            MOVE    NYUINKHN-REC        TO  MCPDATA-REC
-           MOVE    "NYUINKHN-KEY"      TO  WRK-DBPATH
-           PERFORM 900-TBL-SELECT-SEC
-           IF    ( FLG-DBRC    NOT =   ZERO )
+           MOVE    "tbl_nyuinkhn"      TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF    ( MCP-RC      NOT =   ZERO )
                MOVE    1               TO  FLG-ERR
            ELSE
                MOVE    MCPDATA-REC     TO  NYUINKHN-REC
            END-IF
       *
-           MOVE    "NYUINKHN-KEY"      TO  WRK-DBPATH
-           PERFORM 900-TBL-CLOSE-SEC
+           MOVE    "tbl_nyuinkhn"      TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 910-DBCLOSECURSOR-SEC
       *
            .
        210-NYUINKHN-SEL-EXT.
@@ -537,99 +535,65 @@ grpsys      COPY    "COMMON-SPA".
        5002-CALENDAR-EXT.
            EXIT.
       *****************************************************************
-      *    テーブル検索処理
+      *    ＤＢ検索処理（FHETCHも行う)
       *****************************************************************
-       900-TBL-SELECT-SEC              SECTION.
-      *
-           MOVE    ZERO            TO  FLG-DBRC
-           MOVE    WRK-DBPATH      TO  ORC-DBPATH
-           PERFORM 910-DB-SELECT-SEC
-           IF    ( MCP-RC          =   ZERO )
-               MOVE    WRK-DBPATH  TO  ORC-DBPATH
-               PERFORM 910-DB-READ-SEC
-               IF    ( MCP-RC          =   ZERO )
-                   CONTINUE
-               ELSE
-                   MOVE    1       TO  FLG-DBRC
-               END-IF
-           ELSE
-               MOVE    1           TO  FLG-DBRC
-           END-IF
-      *
-           .
-       900-TBL-SELECT-EXT.
-           EXIT.
-      *****************************************************************
-      *    テーブル読込処理
-      *****************************************************************
-       900-TBL-READ-SEC                SECTION.
-      *
-           MOVE    ZERO            TO  FLG-DBRC
-           MOVE    WRK-DBPATH      TO  ORC-DBPATH
-           PERFORM 910-DB-READ-SEC
-           IF    ( MCP-RC          =   ZERO )
-               CONTINUE
-           ELSE
-               MOVE    1           TO  FLG-DBRC
-           END-IF
-      *
-           .
-       900-TBL-READ-EXT.
-           EXIT.
-      *****************************************************************
-      *    テーブルクローズ処理
-      *****************************************************************
-       900-TBL-CLOSE-SEC               SECTION.
-      *
-           MOVE    WRK-DBPATH      TO  ORC-DBPATH
-           PERFORM 910-DB-CLOSE-SEC
-      *
-           .
-       900-TBL-CLOSE-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    ＤＢ検索処理
-      *****************************************************************
-       910-DB-SELECT-SEC               SECTION.
+       910-DBSELECT-SEC                SECTION.
       *
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           CALL    "ORCDBMAIN"             USING
+                                           MCPAREA
+                                           MCPDATA-REC
+                                           SPA-AREA
+           IF    ( MCP-RC          =   ZERO )
+               PERFORM 910-DBFETCH-SEC
+           END-IF
       *
            .
       *
-       910-DB-SELECT-EXT.
+       910-DBSELECT-EXT.
+           EXIT.
+      *****************************************************************
+      *    ＤＢ検索処理（FHETCHは行わない)
+      *****************************************************************
+       911-DBSELECT-SEC                SECTION.
+      *
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           CALL    "ORCDBMAIN"             USING
+                                           MCPAREA
+                                           MCPDATA-REC
+                                           SPA-AREA
+      *
+           .
+      *
+       911-DBSELECT-EXT.
            EXIT.
       *****************************************************************
       *    ＤＢ読み込み処理
       *****************************************************************
-       910-DB-READ-SEC                 SECTION.
+       910-DBFETCH-SEC                 SECTION.
       *
-           MOVE    "DBFETCH"       TO  MCP-FUNC
-           CALL    "ORCMCPSUB"         USING
-                                       MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           CALL    "ORCDBMAIN"             USING
+                                           MCPAREA
+                                           MCPDATA-REC
+                                           SPA-AREA
       *
            .
       *
-       910-DB-READ-EXT.
+       910-DBFETCH-EXT.
            EXIT.
       *****************************************************************
       *    ＤＢクローズ処理
       *****************************************************************
-       910-DB-CLOSE-SEC                SECTION.
+       910-DBCLOSECURSOR-SEC                 SECTION.
       *
-           MOVE    "DBCLOSECURSOR"      TO  MCP-FUNC
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
+           CALL    "ORCDBMAIN"         USING
+                                       MCPAREA
+                                       MCPDATA-REC
+                                       SPA-AREA
       *
            .
       *
-       910-DB-CLOSE-EXT.
+       910-DBCLOSECURSOR-EXT.
            EXIT.
