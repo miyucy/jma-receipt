@@ -29,6 +29,7 @@
       *  ¥×¥í¥°¥é¥à½¤ÀµÍúÎò
       * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
       *  01.00.01    NACL-ÂÀÅÄ    04.09.09  ¿·µ¬ºîÀ®
+      *  03.05.00    NACL-ÂÀÅÄ    07/05/10  ¥°¥ë¡¼¥×¿ÇÎÅÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT                         DIVISION.
@@ -42,8 +43,6 @@
       *
       *
        WORKING-STORAGE                     SECTION.
-grpsys*
-grpsys COPY    "COMMON-SPA".
       *
       *    ¥Õ¥é¥°ÎÎ°è
        01  FLG-AREA.
@@ -130,7 +129,6 @@ grpsys COPY    "COMMON-SPA".
       *    ¶¦ÄÌÎÎ°è
            COPY    "MCPAREA".
            COPY    "MCPDATA.INC".
-           COPY    "ORCA-DBPATH".
       *
       *****************************************************************
       *    Ï¢Íí¡¡ÎÎ°è
@@ -138,9 +136,11 @@ grpsys COPY    "COMMON-SPA".
        LINKAGE                             SECTION.
       *
            COPY    "CPORCSRSITUSAN.INC".
+           COPY    "COMMON-SPA".
       *
        PROCEDURE                           DIVISION    USING
-           ORCSRSITUSANAREA.
+           ORCSRSITUSANAREA
+           SPA-AREA.
       *
       *****************************************************************
       *    ¼ç¡¡¡¡½èÍý
@@ -165,7 +165,7 @@ grpsys COPY    "COMMON-SPA".
                GO  TO  000-PROC-EXT
            END-IF
       *
-           DISPLAY "I:RSITUSAN-HOSPID      = " RSITUSAN-HOSPID
+           DISPLAY "I:RSITUSAN-HOSPNUM      = " RSITUSAN-HOSPNUM
            DISPLAY "I:RSITUSAN-PTID        = " RSITUSAN-PTID
            DISPLAY "I:RSITUSAN-HKNCOMBI    = " RSITUSAN-HKNCOMBI
            DISPLAY "I:RSITUSAN-SRYYM       = " RSITUSAN-SRYYM
@@ -258,14 +258,13 @@ grpsys COPY    "COMMON-SPA".
       *
            MOVE    ZERO                    TO  FLG-NYUINACCT
            INITIALIZE                          NYUINACCT-REC
-           MOVE    RSITUSAN-HOSPID         TO  NACCT-HOSPID
+           MOVE    RSITUSAN-HOSPNUM         TO  NACCT-HOSPNUM
            MOVE    RSITUSAN-PTID           TO  NACCT-PTID
            MOVE    WRK-SRYYM               TO  NACCT-SRYYM
            MOVE    "1"                     TO  NACCT-ZAISKBKBN
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    NYUINACCT-REC           TO  MCPDATA-REC
-           MOVE    PATH-TBL-NYUINACCT-KEY17
-                                           TO  MCP-PATH
+           MOVE    "tbl_nyuinacct"         TO  MCP-TABLE
+           MOVE    "key17"                 TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF    ( MCP-RC              NOT =   ZERO )
                MOVE    1                   TO  FLG-NYUINACCT
@@ -292,8 +291,8 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                END-IF
       *
       *
-               MOVE    PATH-TBL-NYUINACCT-KEY17
-                                           TO  MCP-PATH
+               MOVE    "tbl_nyuinacct"     TO  MCP-TABLE
+               MOVE    "key17"             TO  MCP-PATHNAME
                PERFORM 910-DBFETCH-SEC
                IF    ( MCP-RC              NOT =   ZERO )
                    MOVE    1               TO  FLG-NYUINACCT
@@ -303,8 +302,8 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *
            END-PERFORM
       *
-           MOVE    PATH-TBL-NYUINACCT-KEY17
-                                           TO  MCP-PATH
+           MOVE    "tbl_nyuinacct"         TO  MCP-TABLE
+           MOVE    "key17"                 TO  MCP-PATHNAME
            PERFORM 910-DBCLOSE-SEC
       *
            .
@@ -319,14 +318,13 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *
            MOVE    ZERO                    TO  FLG-NYUINACCT
            INITIALIZE                          NYUINACCT-REC
-           MOVE    RSITUSAN-HOSPID         TO  NACCT-HOSPID
+           MOVE    RSITUSAN-HOSPNUM         TO  NACCT-HOSPNUM
            MOVE    RSITUSAN-PTID           TO  NACCT-PTID
            MOVE    WRK-SRYYM               TO  NACCT-SRYYM
            MOVE    "5"                     TO  NACCT-ZAISKBKBN
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    NYUINACCT-REC           TO  MCPDATA-REC
-           MOVE    PATH-TBL-NYUINACCT-KEY17
-                                           TO  MCP-PATH
+           MOVE    "tbl_nyuinacct"         TO  MCP-TABLE
+           MOVE    "key17"                 TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF    ( MCP-RC              NOT =   ZERO )
                MOVE    1                   TO  FLG-NYUINACCT
@@ -334,8 +332,8 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    MCPDATA-REC         TO  NYUINACCT-REC
            END-IF
       *
-           MOVE    PATH-TBL-NYUINACCT-KEY17
-                                           TO  MCP-PATH
+           MOVE    "tbl_nyuinacct"         TO  MCP-TABLE
+           MOVE    "key17"                 TO  MCP-PATHNAME
            PERFORM 910-DBCLOSE-SEC
       *
            IF    ( FLG-NYUINACCT       NOT =   ZERO )
@@ -378,14 +376,13 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *    ¿ÇÎÅ·îÆâ¤ÎÆþÂà±¡¾ðÊó
            MOVE    ZERO            TO  FLG-PTNYUINRRK
            INITIALIZE                  PTNYUINRRK-REC
-           MOVE    RSITUSAN-HOSPID TO  PTNYUINRRK-HOSPID
+           MOVE    RSITUSAN-HOSPNUM TO  PTNYUINRRK-HOSPNUM
            MOVE    RSITUSAN-PTID   TO  PTNYUINRRK-PTID
            MOVE    WRK-TUKIEDYMD   TO  PTNYUINRRK-NYUINYMD
            MOVE    WRK-TUKISTYMD   TO  PTNYUINRRK-TAIINYMD
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PTNYUINRRK-REC  TO  MCPDATA-REC
-           MOVE    PATH-TBL-PTNYUINRRK-KEY23
-                                   TO  MCP-PATH
+           MOVE    "tbl_ptnyuinrrk" TO MCP-TABLE
+           MOVE    "key23"         TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF    ( MCP-RC          NOT =   ZERO )
                MOVE    1           TO  FLG-PTNYUINRRK
@@ -417,8 +414,8 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                                        TO  FLG-SHONUMDAY (IDX-DAY)
                END-PERFORM
       *
-               MOVE    PATH-TBL-PTNYUINRRK-KEY23
-                                       TO  MCP-PATH
+               MOVE    "tbl_ptnyuinrrk" TO MCP-TABLE
+               MOVE    "key23"         TO  MCP-PATHNAME
                PERFORM 910-DBFETCH-SEC
                IF    ( MCP-RC          NOT =   ZERO )
                    MOVE    1               TO  FLG-PTNYUINRRK
@@ -427,8 +424,8 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                END-IF
            END-PERFORM
       *
-           MOVE    PATH-TBL-PTNYUINRRK-KEY23
-                                       TO  MCP-PATH
+           MOVE    "tbl_ptnyuinrrk" TO MCP-TABLE
+           MOVE    "key23"          TO  MCP-PATHNAME
            PERFORM 910-DBCLOSE-SEC
       *
            .
@@ -469,15 +466,14 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *
            MOVE    ZERO            TO  FLG-PTNYUINRRK
            INITIALIZE                  PTNYUINRRK-REC
-           MOVE    RSITUSAN-HOSPID TO  PTNYUINRRK-HOSPID
+           MOVE    RSITUSAN-HOSPNUM TO  PTNYUINRRK-HOSPNUM
            MOVE    RSITUSAN-PTID   TO  PTNYUINRRK-PTID
            MOVE    WRK-GETUMATUYMD TO  PTNYUINRRK-NYUINYMD
            MOVE    WRK-SHONUM      TO  PTNYUINRRK-SHONUM
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PTNYUINRRK-REC  TO  MCPDATA-REC
-           MOVE    PATH-TBL-PTNYUINRRK-KEY13
-                                   TO  MCP-PATH
+           MOVE    "tbl_ptnyuinrrk" TO MCP-TABLE
+           MOVE    "key13"         TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF    ( MCP-RC      NOT =   ZERO )
                MOVE    1           TO  FLG-PTNYUINRRK
@@ -495,8 +491,8 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                    END-IF
                END-IF
       *
-               MOVE    PATH-TBL-PTNYUINRRK-KEY13
-                                   TO  MCP-PATH
+               MOVE    "tbl_ptnyuinrrk" TO MCP-TABLE
+               MOVE    "key13"         TO  MCP-PATHNAME
                PERFORM 910-DBFETCH-SEC
                IF    ( MCP-RC      NOT =   ZERO )
                    MOVE    1           TO  FLG-PTNYUINRRK
@@ -506,8 +502,8 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *
            END-PERFORM
       *
-           MOVE    PATH-TBL-PTNYUINRRK-KEY13
-                                   TO  MCP-PATH
+           MOVE    "tbl_ptnyuinrrk" TO MCP-TABLE
+           MOVE    "key13"         TO  MCP-PATHNAME
            PERFORM 910-DBCLOSE-SEC
       *
            .
@@ -732,9 +728,10 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
        910-DBSELECT-SEC                    SECTION.
       *
            MOVE    "DBSELECT"      TO      MCP-FUNC
-           CALL    "MCPSUB"                USING
+           CALL    "ORCDBMAIN"             USING
                                            MCPAREA
                                            MCPDATA-REC
+                                           SPA-AREA
            IF    ( MCP-RC  =   ZERO )
                PERFORM 910-DBFETCH-SEC
            END-IF
@@ -749,9 +746,10 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
        910-DBFETCH-SEC                     SECTION.
       *
            MOVE    "DBFETCH"       TO      MCP-FUNC
-           CALL    "MCPSUB"                USING
+           CALL    "ORCDBMAIN"             USING
                                            MCPAREA
                                            MCPDATA-REC
+                                           SPA-AREA
       *
            .
       *
@@ -763,9 +761,10 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
        910-DBCLOSE-SEC                     SECTION.
       *
            MOVE    "DBCLOSECURSOR" TO      MCP-FUNC
-           CALL    "MCPSUB"                USING
+           CALL    "ORCDBMAIN"             USING
                                            MCPAREA
                                            MCPDATA-REC
+                                           SPA-AREA
       *
            .
       *
