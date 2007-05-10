@@ -27,6 +27,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  03.05.00    NACL-多々納  07/05/10  グループ診療対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -85,9 +86,12 @@
       *
       *    レセ器材再編集パラメタ
            COPY    "CPORCSRECESORT.INC".
+grpsys*
+grpsys     COPY    "COMMON-SPA".
       *
        PROCEDURE                   DIVISION    USING
            ORCSRECESORTAREA
+           SPA-AREA
            .
       *
       *****************************************************************
@@ -120,7 +124,7 @@
       *    診療会計附加情報検索
            MOVE    SPACE               TO  SRYACCTPLUS-REC
            INITIALIZE                  SRYACCTPLUS-REC
-           MOVE    ORCSRECESORT-HOSPID TO  ACCTP-HOSPID
+           MOVE    ORCSRECESORT-HOSPNUM    TO  ACCTP-HOSPNUM
            MOVE    ORCSRECESORT-NYUGAIKBN
                                        TO  ACCTP-NYUGAIKBN
            MOVE    ORCSRECESORT-PTID   TO  ACCTP-PTID
@@ -380,9 +384,9 @@
        910-DBSELECT-SEC                SECTION.
       *
            MOVE    "DBSELECT"      TO  MCP-FUNC
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
        910-DBSELECT-EXT.
@@ -393,9 +397,9 @@
        920-DBFETCH-SEC                 SECTION.
       *
            MOVE    "DBFETCH"       TO  MCP-FUNC
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
       *
@@ -408,9 +412,9 @@
        990-DBCLOSE-SEC           SECTION.
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
        990-DBCLOSE-EXT.

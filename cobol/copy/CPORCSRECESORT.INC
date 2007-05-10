@@ -27,7 +27,7 @@
       *ÆþÎÏ
            03  ORCSRECESORT-IN-AREA.
       *°åÎÅµ¡´Ø£É£Ä
-               05  ORCSRECESORT-HOSPID          PIC  X(24).
+               05  ORCSRECESORT-HOSPNUM         PIC  9(02).
       *Æþ³°¶èÊ¬
                05  ORCSRECESORT-NYUGAIKBN       PIC  X(01).
       *´µ¼Ô£É£Ä
