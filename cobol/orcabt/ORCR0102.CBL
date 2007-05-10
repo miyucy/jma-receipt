@@ -1043,7 +1043,7 @@ grpsys         PERFORM 900-DBFETCH-SEC
            MOVE    "1"                 TO  SPRT-PRTFLG
       *    
            INITIALIZE                       ORCSPTIDAREA
-grpsys     MOVE    SYS-1001-HOSPID     TO  SPTID-HOSPNUM
+grpsys     MOVE    SPA-HOSPNUM         TO  SPTID-HOSPNUM
            PERFORM VARYING IDX FROM    20  BY  -1
                    UNTIL   IDX <       1
                IF      RECE08-PTNUM (IDX:1)
