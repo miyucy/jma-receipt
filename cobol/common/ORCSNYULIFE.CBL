@@ -28,6 +28,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  03.05.00    NACL-太田    07/05/10  グループ診療対応
       *****************************************************************
       *
       *
@@ -143,14 +144,15 @@
       *****************************************************************
         LINKAGE                     SECTION.
       *
-      *    スパ領域
-           COPY    "COMMON-SPA".
       *    入院会計作成用パラメタ
            COPY    "CPORCSNYULIFE.INC".
       *
+      *    スパ領域
+           COPY    "COMMON-SPA".
+      *
        PROCEDURE                   DIVISION    USING
-      *     SPA-AREA
            ORCSNYULIFE-AREA
+           SPA-AREA
            .
       *
       *****************************************************************
@@ -194,7 +196,7 @@
       *
       *    患者マスター検索
            INITIALIZE                       PTINF-REC
-           MOVE    LNK-NYULIFE-HOSPID   TO  PTINF-HOSPID
+           MOVE    LNK-NYULIFE-HOSPNUM   TO  PTINF-HOSPNUM
            MOVE    LNK-NYULIFE-PTID     TO  PTINF-PTID
            PERFORM 900-PTINF-READ-SEC
            IF      FLG-PTINF            NOT =   ZERO
@@ -204,7 +206,7 @@
       *
       *    入院中のチェック（入院会計マスター検索）
            INITIALIZE                      NYUINACCT-REC
-           MOVE    LNK-NYULIFE-HOSPID   TO  NACCT-HOSPID
+           MOVE    LNK-NYULIFE-HOSPNUM  TO  NACCT-HOSPNUM
            MOVE    LNK-NYULIFE-PTID     TO  NACCT-PTID
            MOVE    LNK-NYULIFE-SANTEIYM TO  NACCT-SRYYM
            MOVE    "5"                  TO  NACCT-ZAISKBKBN
@@ -238,7 +240,7 @@
       *    入院時生活療養費の該当日と軽減区分２（入院料判定）を取得
            MOVE    ZERO                    TO  FLG-OK
            INITIALIZE                          NYUINACCT-REC
-           MOVE    LNK-NYULIFE-HOSPID      TO  NACCT-HOSPID
+           MOVE    LNK-NYULIFE-HOSPNUM      TO  NACCT-HOSPNUM
            MOVE    LNK-NYULIFE-PTID        TO  NACCT-PTID
            MOVE    LNK-NYULIFE-SANTEIYM    TO  NACCT-SRYYM
            MOVE    "1"                     TO  NACCT-ZAISKBKBN
@@ -311,20 +313,20 @@
       *医療機関食事情報の取得（システム管理テーブルより）
            MOVE    ZERO                TO  FLG-SYSKANRI
            INITIALIZE                      SYSKANRI-REC
+           MOVE    LNK-NYULIFE-HOSPNUM TO  SYS-HOSPNUM
            MOVE    "5000"              TO  SYS-KANRICD
            MOVE    "*"                 TO  SYS-KBNCD
            MOVE    LNK-NYULIFE-SANTEIYM
                                        TO  SYS-STYUKYMD(1:6)
            MOVE    "01"                TO  SYS-STYUKYMD(7:2)
            MOVE    SYS-STYUKYMD        TO  SYS-EDYUKYMD
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYSKANRI-REC        TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key10"             TO  MCP-PATHNAME
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"     USING   MCPAREA
+                                           MCPDATA-REC
+                                           SPA-AREA
            IF      MCP-RC              =   ZERO
                MOVE    "tbl_syskanri"  TO  MCP-TABLE
                MOVE    "key10"         TO  MCP-PATHNAME
@@ -358,7 +360,7 @@ grpsys                            SPA-AREA
       *        老人保健のチェック
                MOVE    ZERO                 TO  FLG-RJN 
                INITIALIZE                       PTKOHINF-REC
-               MOVE    LNK-NYULIFE-HOSPID   TO  PTKOH-HOSPID
+               MOVE    LNK-NYULIFE-HOSPNUM   TO  PTKOH-HOSPNUM
                MOVE    LNK-NYULIFE-PTID     TO  PTKOH-PTID
                MOVE    "027"                TO  PTKOH-KOHNUM
                MOVE    "tbl_ptkohinf"       TO  MCP-TABLE
@@ -388,7 +390,7 @@ grpsys                            SPA-AREA
       *
       *      低所得情報の取得
                INITIALIZE                          TSYRRK-REC
-               MOVE    LNK-NYULIFE-HOSPID      TO  TSYRRK-HOSPID
+               MOVE    LNK-NYULIFE-HOSPNUM      TO  TSYRRK-HOSPNUM
                MOVE    LNK-NYULIFE-PTID        TO  TSYRRK-PTID
                MOVE    "tbl_tsyrrk"            TO  MCP-TABLE
                MOVE    "key3"                  TO  MCP-PATHNAME
@@ -449,7 +451,7 @@ grpsys                            SPA-AREA
       *
       *      低年金情報の取得
                INITIALIZE                          TNKRRK-REC
-               MOVE    LNK-NYULIFE-HOSPID      TO  TNKRRK-HOSPID
+               MOVE    LNK-NYULIFE-HOSPNUM      TO  TNKRRK-HOSPNUM
                MOVE    LNK-NYULIFE-PTID        TO  TNKRRK-PTID
                MOVE    "tbl_tnkrrk"            TO  MCP-TABLE
                MOVE    "key3"                  TO  MCP-PATHNAME
@@ -671,7 +673,7 @@ grpsys                            SPA-AREA
        210-NYUINACT-GET-SEC            SECTION.
       *
            INITIALIZE                      NYUINACT-REC
-           MOVE    NACCT-HOSPID        TO  NSRY-HOSPID
+           MOVE    NACCT-HOSPNUM       TO  NSRY-HOSPNUM
            MOVE    NACCT-NYUGAIKBN     TO  NSRY-NYUGAIKBN
            MOVE    NACCT-PTID          TO  NSRY-PTID
            MOVE    NACCT-SRYYM         TO  NSRY-SRYYM
@@ -700,9 +702,9 @@ grpsys                            SPA-AREA
        910-SYSKANRI-READ-SEC         SECTION.
       *
            MOVE    "DBFETCH"           TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"     USING   MCPAREA
+                                           MCPDATA-REC
+                                           SPA-AREA
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC         TO  SYS-5000-REC
                MOVE    ZERO                TO  FLG-SYSKANRI
@@ -720,21 +722,20 @@ grpsys                            SPA-AREA
       *****************************************************************
        900-PTINF-READ-SEC         SECTION.
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PTINF-REC           TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "tbl_ptinf"         TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"     USING   MCPAREA
+                                           MCPDATA-REC
+                                           SPA-AREA
            IF      MCP-RC              =   ZERO
                MOVE    "DBFETCH"       TO  MCP-FUNC
                MOVE    "tbl_ptinf"         TO  MCP-TABLE
                MOVE    "key"               TO  MCP-PATHNAME
-grpsys         CALL "ORCDBMAIN" USING MCPAREA
-                                      MCPDATA-REC
-grpsys                                SPA-AREA
+               CALL    "ORCDBMAIN"     USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
                IF      MCP-RC          =   ZERO
                    MOVE    MCPDATA-REC TO  PTINF-REC
                    MOVE    ZERO        TO  FLG-PTINF
@@ -760,12 +761,11 @@ grpsys                                SPA-AREA
       *****************************************************************
        910-PTKOHINF-SELECT-SEC        SECTION.
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PTKOHINF-REC        TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"     USING   MCPAREA
+                                           MCPDATA-REC
+                                           SPA-AREA
            IF      MCP-RC              =   ZERO
                MOVE    ZERO               TO  FLG-PTKOHINF
            ELSE
@@ -782,9 +782,9 @@ grpsys                            SPA-AREA
        910-PTKOHINF-READ-SEC        SECTION.
       *
            MOVE    "DBFETCH"           TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"     USING   MCPAREA
+                                           MCPDATA-REC
+                                           SPA-AREA
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC        TO  PTKOHINF-REC
                MOVE    ZERO               TO  FLG-PTKOHINF
@@ -802,12 +802,11 @@ grpsys                            SPA-AREA
       *****************************************************************
        910-NYUINACCT-SELECT-SEC        SECTION.
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    NYUINACCT-REC       TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"     USING   MCPAREA
+                                           MCPDATA-REC
+                                           SPA-AREA
            IF      MCP-RC              =   ZERO
                MOVE    ZERO               TO  FLG-NYUINACCT
            ELSE
@@ -824,9 +823,9 @@ grpsys                            SPA-AREA
        910-NYUINACCT-READ-SEC        SECTION.
       *
            MOVE    "DBFETCH"           TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"     USING   MCPAREA
+                                           MCPDATA-REC
+                                           SPA-AREA
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC        TO  NYUINACCT-REC
                MOVE    ZERO               TO  FLG-NYUINACCT
@@ -844,12 +843,11 @@ grpsys                            SPA-AREA
       *****************************************************************
        910-TSYRRK-SELECT-SEC        SECTION.
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    TSYRRK-REC          TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"     USING   MCPAREA
+                                           MCPDATA-REC
+                                           SPA-AREA
            IF      MCP-RC              =   ZERO
                MOVE    ZERO               TO  FLG-TSYRRK
            ELSE
@@ -866,9 +864,9 @@ grpsys                            SPA-AREA
        910-TSYRRK-READ-SEC        SECTION.
       *
            MOVE    "DBFETCH"           TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"     USING   MCPAREA
+                                           MCPDATA-REC
+                                           SPA-AREA
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC        TO  TSYRRK-REC
                MOVE    ZERO               TO  FLG-TSYRRK
@@ -886,12 +884,11 @@ grpsys                            SPA-AREA
       *****************************************************************
        910-TNKRRK-SELECT-SEC        SECTION.
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    TNKRRK-REC          TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"     USING   MCPAREA
+                                           MCPDATA-REC
+                                           SPA-AREA
            IF      MCP-RC              =   ZERO
                MOVE    ZERO               TO  FLG-TNKRRK
            ELSE
@@ -908,9 +905,9 @@ grpsys                            SPA-AREA
        910-TNKRRK-READ-SEC        SECTION.
       *
            MOVE    "DBFETCH"           TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"     USING   MCPAREA
+                                           MCPDATA-REC
+                                           SPA-AREA
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC        TO  TNKRRK-REC
                MOVE    ZERO               TO  FLG-TNKRRK
@@ -928,12 +925,11 @@ grpsys                            SPA-AREA
       *****************************************************************
        910-NYUINACT-SELECT-SEC        SECTION.
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    NYUINACT-REC        TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"     USING   MCPAREA
+                                           MCPDATA-REC
+                                           SPA-AREA
            IF      MCP-RC              =   ZERO
                MOVE    ZERO               TO  FLG-NYUINACT
            ELSE
@@ -950,9 +946,9 @@ grpsys                            SPA-AREA
        910-NYUINACT-READ-SEC         SECTION.
       *
            MOVE    "DBFETCH"           TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"     USING   MCPAREA
+                                           MCPDATA-REC
+                                           SPA-AREA
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC         TO  NYUINACT-REC
                MOVE    ZERO                TO  FLG-NYUINACT
@@ -971,9 +967,9 @@ grpsys                            SPA-AREA
        910-DB-CLOSE-SEC                 SECTION.
       *
            MOVE    "DBCLOSECURSOR"      TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"     USING   MCPAREA
+                                           MCPDATA-REC
+                                           SPA-AREA
       *
            .
       *
