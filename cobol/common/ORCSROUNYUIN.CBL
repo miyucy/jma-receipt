@@ -2046,10 +2046,10 @@
                                        TO  SYS-HOSPNUM
            MOVE    LNK-SROUNYUIN-SANTEIYM
                                        TO  SYS-STYUKYMD(1:6)
-           MOVE    "01"                TO  SYS-STYUKYMD(7:2)
+           MOVE    "__"                TO  SYS-STYUKYMD(7:2)
            MOVE    LNK-SROUNYUIN-SANTEIYM
                                        TO  SYS-EDYUKYMD(1:6)
-           MOVE    "01"                TO  SYS-EDYUKYMD(7:2)
+           MOVE    "__"                TO  SYS-EDYUKYMD(7:2)
            MOVE    SYSKANRI-REC        TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
@@ -2091,10 +2091,10 @@
                                        TO  SYS-HOSPNUM
            MOVE    LNK-SROUNYUIN-SANTEIYM
                                        TO  SYS-STYUKYMD(1:6)
-           MOVE    "01"                TO  SYS-STYUKYMD(7:2)
+           MOVE    "__"                TO  SYS-STYUKYMD(7:2)
            MOVE    LNK-SROUNYUIN-SANTEIYM
                                        TO  SYS-EDYUKYMD(1:6)
-           MOVE    "01"                TO  SYS-EDYUKYMD(7:2)
+           MOVE    "__"                TO  SYS-EDYUKYMD(7:2)
            MOVE    SYSKANRI-REC        TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
@@ -2224,14 +2224,14 @@
            MOVE    SYS-4001-REC            TO  MCPDATA-REC
            MOVE    "DBSELECT"              TO  MCP-FUNC
            MOVE    "tbl_syskanri"          TO  MCP-TABLE
-           MOVE    "key"                   TO  MCP-PATHNAME
+           MOVE    "key10"                 TO  MCP-PATHNAME
            CALL    "ORCDBMAIN"             USING   MCPAREA
                                                    MCPDATA-REC
                                                    SPA-AREA
            IF      MCP-RC               =      ZERO
                MOVE     "DBFETCH"          TO  MCP-FUNC
                MOVE     "tbl_syskanri"     TO  MCP-TABLE
-               MOVE     "key"              TO  MCP-PATHNAME
+               MOVE     "key10"            TO  MCP-PATHNAME
                CALL     "ORCDBMAIN"        USING   MCPAREA
                                                    MCPDATA-REC
                                                    SPA-AREA
@@ -2248,7 +2248,7 @@
            END-IF
       *
            MOVE     "tbl_syskanri"         TO  MCP-TABLE
-           MOVE     "key"                  TO  MCP-PATHNAME
+           MOVE     "key10"                TO  MCP-PATHNAME
            PERFORM   910-DB-CLOSE-SEC
       *
            .
