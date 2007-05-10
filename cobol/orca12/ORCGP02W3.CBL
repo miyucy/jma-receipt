@@ -234,6 +234,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                       (IDX2                >=  999)
                ADD     1                   TO  IDX2
                MOVE    PARA-DATA-REC       TO  NC01PARA-REC(IDX2)
+               MOVE    ZERO                TO  PARA-NC01-FLG (IDX2)
       *
                MOVE    "tbl_para"          TO  MCP-TABLE
                MOVE    "key5"              TO  MCP-PATHNAME
@@ -258,7 +259,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPACE               TO  SPA-ERRCD
       *
            INITIALIZE                      DBHKNCOMBI-REC
-           MOVE    SPA-HOSPNUM          TO  DBCOMB-HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  DBCOMB-HOSPNUM
            MOVE    SPA-PTID            TO  DBCOMB-PTID
            MOVE    SPACE               TO  DBCOMB-DELKBN
            MOVE    DBHKNCOMBI-REC      TO  MCPDATA-REC
@@ -320,7 +321,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                       (PARA-NC01-REC(IDX2) =   SPACE )
              MOVE  PARA-NC01-REC (IDX2)      TO HKNCOMBI-REC
       *
-             IF  COMB-HOSPNUM                =  DBCOMB-HOSPNUM      AND
+             IF  COMB-HOSPNUM                =  DBCOMB-HOSPNUM     AND
                  COMB-PTID                   =  DBCOMB-PTID        AND
                  COMB-HKNID                  =  DBCOMB-HKNID       AND
                  COMB-HKNNUM                 =  DBCOMB-HKNNUM      AND
@@ -440,6 +441,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            IF      FLG-PARA            =   ZERO
                MOVE    DBCOMB-HKNCOMBINUM  TO  COMB-HKNCOMBINUM
+      *
                MOVE    HKNCOMBI-REC        TO  PARA-DATA-REC
       *
                MOVE    SPA-HOSPNUM         TO  PARA-HOSPNUM

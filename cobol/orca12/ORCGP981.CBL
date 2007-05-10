@@ -674,7 +674,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPA-GMN981-KBNCD (1:3)  TO  SYS-1015-KBNCD (1:3)
            MOVE    SPA-SYSYMD              TO  SYS-1015-STYUKYMD
            MOVE    SPA-SYSYMD              TO  SYS-1015-EDYUKYMD
-           MOVE    SPA-HOSPNUM         TO  SYS-1015-HOSPNUM
+           MOVE    SPA-HOSPNUM             TO  SYS-1015-HOSPNUM
            MOVE    SYS-1015-REC            TO  MCPDATA-REC
            PERFORM 900-SYSKANRI-INV-SEC
            IF      FLG-SYSKANRI            =   ZERO
@@ -698,6 +698,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SMCNDATE-YMD        TO  SYS-1015-UPYMD
            MOVE    SMCNDATE-HMS        TO  SYS-1015-UPHMS
       *
+           MOVE    SPA-HOSPNUM         TO  SYS-1015-HOSPNUM
       *
            MOVE    SYS-1015-REC        TO  MCPDATA-REC
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
