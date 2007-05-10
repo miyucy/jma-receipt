@@ -1511,7 +1511,7 @@
                        (FLG-GAIHAKU-SET =       1      )
       *
       *
-           MOVE     "NYUINACT-KEY26"   TO  WK-PATH
+           MOVE     "NYUINACCT-KEY26"  TO  WK-PATH
            PERFORM   CSR-CLOSE-SEC
       *
       *選定療養情報の取得
