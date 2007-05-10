@@ -24,7 +24,7 @@
       *****************************************************************
        01  SODR-AREA.
            03  SODR-IN.
-               05  SODR-HOSPID             PIC X(24).
+               05  SODR-HOSPNUM            PIC 9(02).
                05  SODR-KARTE-KEY          PIC X(36).
                05  SODR-ORDERNUM           PIC 9(02).
                05  SODR-NYUGAIKBN          PIC X(01).

@@ -12,6 +12,7 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *  01.00.01    MCC-藤原     03.01.28  ファイル名に診療科を追加 
+      *  03.05.00    NACL-多々納  07/05/09  グループ診療対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -34,7 +35,8 @@
            COPY    "COMMON-SPA".
       *
        01  FILE-NAME.
-           03                      PIC X(14)  VALUE  "/var/tmp/claim".   
+           03                      PIC X(14)  VALUE  "/var/tmp/claim". 
+           03  FILE-HOSPNUM        PIC 9(02).   
            03  FILE-PTID           PIC 9(10).   
            03  FILE-SRYKA          PIC X(02).   
            03                      PIC X(04)  VALUE  ".txt".   
@@ -53,7 +55,7 @@
                05  WRK-PARA-PTID    PIC  9(10).
                05  WRK-PARA-SRYKA   PIC  X(02).
                05  WRK-PARA-TIME    PIC  X(06).
-               05  WRK-PARA-HOSPID  PIC  X(24).
+               05  WRK-PARA-HOSPNUM PIC  9(02).
                05  WRK-PARA-DRCD    PIC  X(05).
                05  WRK-PARA-HKNCOMBI
                                     PIC  X(04).
@@ -118,6 +120,7 @@
       *
            INITIALIZE                  FLG-AREA
            INITIALIZE                  WRK-AREA
+           INITIALIZE                  SPA-AREA
       *
       *    システム日付セット
            ACCEPT  SYS-YMD         FROM    DATE
@@ -134,7 +137,7 @@
                                             WRK-PARA-PTID
                                             WRK-PARA-SRYKA
                                             WRK-PARA-TIME
-                                            WRK-PARA-HOSPID
+                                            WRK-PARA-HOSPNUM
                                             WRK-PARA-DRCD
                                             WRK-PARA-HKNCOMBI
                                             WRK-PARA-SINRYONAIYO
@@ -142,7 +145,7 @@
       *???
            DISPLAY "PARA " WRK-PARA "##"
       *???
-           MOVE    WRK-PARA-HOSPID     TO  SPA-HOSPID 
+           MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
            .
        100-INIT-EXT.
            EXIT.
@@ -152,19 +155,29 @@
       *****************************************************************
        200-MAIN-SEC                SECTION.
       *???
-           DISPLAY "HOSPID " SPA-HOSPID "##"
+           DISPLAY "HOSPNUM " SPA-HOSPNUM "##"
       *???
+           MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
+           MOVE    WRK-PARA-SRYKA      TO  SPA-SRYKA
+           MOVE    WRK-PARA-PTID       TO  SPA-PTID
+           MOVE    WRK-PARA-DRCD       TO  SPA-DRCD
+           MOVE    WRK-PARA-HKNCOMBI   TO  SPA-HKNCOMBINUM
       *
-           CALL    "ORCL0011"          USING   WRK-PARA-PTID
-                                               WRK-PARA-SRYKA
-                                               WRK-PARA-TIME
-                                               SPA-HOSPID
-                                               SPA-SYSYMD
-                                               WRK-PARA-DRCD
-                                               WRK-PARA-HKNCOMBI
+      ***  CALL    "ORCL0011"          USING   WRK-PARA-PTID
+      *                                        WRK-PARA-SRYKA
+      *                                        WRK-PARA-TIME
+      *                                        SPA-HOSPID
+      *                                        SPA-SYSYMD
+      *                                        WRK-PARA-DRCD
+      *                                        WRK-PARA-HKNCOMBI
+      *                                        WRK-PARA-SINRYONAIYO 
+      ***                                      WRK-LF01-REC
+           CALL    "ORCL0011"          USING   WRK-PARA-TIME
                                                WRK-PARA-SINRYONAIYO 
+                                               SPA-AREA
                                                WRK-LF01-REC
       *
+           MOVE    WRK-PARA-HOSPNUM    TO  FILE-HOSPNUM
            MOVE    WRK-PARA-PTID       TO  FILE-PTID
       *-->  01.00.01  ADD START
            MOVE    WRK-PARA-SRYKA      TO  FILE-SRYKA
@@ -198,16 +211,14 @@
        100-DBOPEN-SEC                SECTION.
       *
            MOVE    "DBOPEN"            TO  MCP-FUNC.
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC.
+           CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            MOVE    "DBSTART"           TO  MCP-FUNC.
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC.
+           CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
            .
        100-DBOPEN-EXT.
            EXIT.
@@ -218,16 +229,14 @@
        900-DBDISCONNECT-SEC            SECTION.
       *
            MOVE    "DBCOMMIT"          TO  MCP-FUNC.
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC.
+           CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            MOVE    "DBDISCONNECT"      TO  MCP-FUNC.
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC.
+           CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
            .
        900-DBCLOSE-EXT.
            EXIT.

@@ -28,6 +28,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      * 03.05.00     NACL-多々納  07/05/09  グループ診療対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -93,7 +94,7 @@
        01  LNK-PTID             PIC 9(10).
        01  LNK-SRYKA            PIC X(02).
        01  LNK-TIME             PIC X(06).
-       01  LNK-HOSPID           PIC X(24).
+       01  LNK-HOSPNUM          PIC 9(02).
        01  LNK-DRCD             PIC X(05).
        01  LNK-HKNCOMBI         PIC X(04).
        01  LNK-RC               PIC X(02).
@@ -105,7 +106,7 @@
                                        USING   LNK-PTID
                                                LNK-SRYKA
                                                LNK-TIME
-                                               LNK-HOSPID
+                                               LNK-HOSPNUM
                                                LNK-DRCD
                                                LNK-HKNCOMBI
                                                LNK-RC.
@@ -136,6 +137,11 @@
            MOVE    SYS-MM              TO  WRK-SYSMM
            MOVE    SYS-DD              TO  WRK-SYSDD
       *
+           INITIALIZE              SPA-AREA
+           MOVE    LNK-HOSPNUM         TO  SPA-HOSPNUM
+           MOVE    LNK-PTID            TO  SPA-PTID
+           MOVE    WRK-SYSYMD          TO  SPA-SYSYMD
+      *
            .
        100-INIT-EXT.
            EXIT.
@@ -147,19 +153,18 @@
       *
       *    受付テーブル読み込み
            INITIALIZE                  UKETUKE-REC
-           MOVE    LNK-HOSPID          TO  UKE-HOSPID
+           MOVE    LNK-HOSPNUM         TO  UKE-HOSPNUM
            MOVE    LNK-PTID            TO  UKE-PTID
            MOVE    WRK-SYSYMD          TO  UKE-UKEYMD
            MOVE    LNK-TIME            TO  UKE-UKETIME
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    UKETUKE-REC         TO  MCPDATA-REC
       *
            MOVE    "tbl_uketuke"       TO  MCP-TABLE
            MOVE    "key4"              TO  MCP-PATHNAME
            MOVE    "DBSELECT"          TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
            IF      MCP-RC              =   ZERO
                MOVE    "key4"              TO  MCP-PATHNAME
                PERFORM 910-UKETUKE-READ-SEC
@@ -181,15 +186,14 @@ grpsys                            SPA-AREA
       *                送信完了
                        MOVE    1                   TO  FLG-OK
                        MOVE    LNK-RC              TO  UKE-SRFLG
-grpsys*                MOVE SPA-HOSPNUM TO -HOSPNUM
                        MOVE    UKETUKE-REC         TO  MCPDATA-REC
       *
                        MOVE    "DBUPDATE"          TO  MCP-FUNC
                        MOVE    "tbl_uketuke"       TO  MCP-TABLE
                        MOVE    "key"               TO  MCP-PATHNAME
-grpsys                 CALL "ORCDBMAIN" USING MCPAREA
-                                              MCPDATA-REC
-grpsys                                        SPA-AREA
+grpsys                 CALL    "ORCDBMAIN"         USING   MCPAREA
+                                                           MCPDATA-REC
+                                                           SPA-AREA
                       IF      MCP-RC          NOT =   ZERO 
                            DISPLAY "ORCL0012 UKETUKE UPD ERR:"  MCP-RC
                                    ",KEY:" UKE-KEY
@@ -203,9 +207,9 @@ grpsys                                        SPA-AREA
            MOVE    "tbl_uketuke"       TO  MCP-TABLE
            MOVE    "key4"              TO  MCP-PATHNAME
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
            .
        200-MAIN-EXT.
            EXIT.
@@ -225,9 +229,9 @@ grpsys                            SPA-AREA
            MOVE    "tbl_uketuke"       TO  MCP-TABLE
       *
            MOVE    "DBFETCH"           TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
            IF      MCP-RC              =   ZERO
                MOVE    ZERO                TO  FLG-UKETUKE
                MOVE    MCPDATA-REC         TO  UKETUKE-REC

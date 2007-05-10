@@ -10,7 +10,7 @@
       *
            03  LF03-KEY.
       *     
-               05  LF03-HOSPID          PIC X(24).
+               05  LF03-HOSPNUM         PIC 9(02).
       *
                05  LF03-PTID            PIC 9(10).
       *

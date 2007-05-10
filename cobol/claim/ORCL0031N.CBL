@@ -39,7 +39,7 @@
       *
        WORKING-STORAGE                 SECTION.
 grpsys*
-grpsys COPY    "COMMON-SPA".
+grpsys     COPY    "COMMON-SPA".
       *
       *    フラグ領域
        01  FLG-AREA.
@@ -217,9 +217,13 @@ grpsys COPY    "COMMON-SPA".
            INITIALIZE                  FLG-AREA
            INITIALIZE                  CNT-AREA
            INITIALIZE                  IDX-AREA
+           INITIALIZE                  SPA-AREA
       *
            MOVE    ZERO            TO  FLG-END
            MOVE    ZERO            TO  WRK-ORDERNUM
+      *
+           MOVE    SCL31N-HOSPNUM  TO  SPA-HOSPNUM
+           MOVE    SCL31N-SRYYMD   TO  SPA-SRYYMD
       *
            PERFORM 1001-KARTE-KEY-CHK-SEC
            IF    ( FLG-KARTE-KEY   =   9 )
@@ -247,7 +251,7 @@ grpsys COPY    "COMMON-SPA".
            IF    ( WRK-KARTE-KEY       =   SPACE )
                PERFORM 800-KARTE-KEY-GET-SEC
                INITIALIZE                  ORDER-REC
-               MOVE    SCL31N-HOSPID   TO  ORDER-HOSPID
+               MOVE    SCL31N-HOSPNUM  TO  ORDER-HOSPNUM
                MOVE    C-UID           TO  ORDER-KARTE-KEY
                PERFORM 900-ORDER-KEY2-SEL-SEC
                IF    ( FLG-ORDER       =   ZERO )
@@ -262,13 +266,13 @@ grpsys COPY    "COMMON-SPA".
                END-IF
            ELSE
                INITIALIZE                  ORDER-REC
-               MOVE    SCL31N-HOSPID       TO  ORDER-HOSPID
+               MOVE    SCL31N-HOSPNUM      TO  ORDER-HOSPNUM
                MOVE    LF04-UID8           TO  ORDER-KARTE-KEY
                PERFORM 900-ORDER-KEY2-SEL-SEC
                IF    ( FLG-ORDER       =   ZERO )
                    PERFORM 800-KARTE-KEY-GET-SEC
                    INITIALIZE                  ORDER-REC
-                   MOVE    SCL31N-HOSPID   TO  ORDER-HOSPID
+                   MOVE    SCL31N-HOSPNUM  TO  ORDER-HOSPNUM
                    MOVE    C-UID           TO  ORDER-KARTE-KEY
                    PERFORM 900-ORDER-KEY2-SEL-SEC
                    IF    ( FLG-ORDER       =   ZERO )
@@ -295,7 +299,7 @@ grpsys COPY    "COMMON-SPA".
            INITIALIZE                  ERRCD-AREA
            MOVE    ZERO            TO  CNT-ERR
       *
-           IF    ( SCL31N-HOSPID   =   SPACE )
+           IF    ( SCL31N-HOSPNUM  =   ZERO  )
                MOVE    "0001"      TO  ERRCD-KHNERR
                PERFORM 1001-KIHON-ERRSET-SEC
            END-IF
@@ -561,7 +565,7 @@ grpsys COPY    "COMMON-SPA".
       *    引渡しオーダー情報設定処理
            PERFORM 20011-LNK-ODRITEM-SET-SEC
       *
-           MOVE   SCL31N-HOSPID        TO  SODR-HOSPID
+           MOVE   SCL31N-HOSPNUM       TO  SODR-HOSPNUM
            MOVE   WRK-KARTE-KEY        TO  SODR-KARTE-KEY
            MOVE   WRK-ORDERNUM         TO  SODR-ORDERNUM
            MOVE   WRK-ORDERID          TO  SODR-ORDERID
@@ -652,6 +656,7 @@ grpsys COPY    "COMMON-SPA".
            IF    ( WRK-PGNAME      NOT =   SPACE )
                CALL    WRK-PGNAME      USING   SODR-AREA
                                                LNK-ODRITEM-REC
+                                               SPA-AREA
                IF    ( SODR-RC     NOT =   ZERO )
                    MOVE    1           TO  FLG-END
                END-IF
@@ -726,7 +731,7 @@ grpsys COPY    "COMMON-SPA".
       *
            MOVE    LNK-ODRITEM-MAX     TO  IDX-ODR
       *
-           MOVE    SCL31N-HOSPID       TO  LNK-ODRITEM-HOSPID  (IDX-ODR)
+           MOVE    SCL31N-HOSPNUM      TO  LNK-ODRITEM-HOSPNUM (IDX-ODR)
            MOVE    WRK-KARTE-KEY      TO  LNK-ODRITEM-KARTE-KEY(IDX-ODR)
            MOVE    WRK-ORDERNUM        TO  LNK-ODRITEM-ORDERNUM(IDX-ODR)
            MOVE    IDX-ODR             TO  LNK-ODRITEM-ITEMNUM (IDX-ODR)
@@ -1117,7 +1122,7 @@ grpsys COPY    "COMMON-SPA".
            MOVE    ZERO                TO  FLG-CHRERR
       *
            INITIALIZE                      ORDER-REC
-           MOVE    SCL31N-HOSPID       TO  ORDER-HOSPID
+           MOVE    SCL31N-HOSPNUM      TO  ORDER-HOSPNUM
            MOVE    WRK-KARTE-KEY       TO  ORDER-KARTE-KEY
            MOVE    WRK-ORDERNUM        TO  ORDER-ORDERNUM
            MOVE    SCL31N-NYUGAIKBN    TO  ORDER-NYUGAIKBN
@@ -1177,7 +1182,6 @@ grpsys COPY    "COMMON-SPA".
                GO  TO  20011-ORDER-INSERT-EXT
            END-IF
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    ORDER-REC           TO  MCPDATA-REC
            MOVE    "tbl_order"         TO MCP-TABLE
            MOVE    "key"               TO MCP-PATHNAME
@@ -1202,7 +1206,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            COMPUTE WRK-ITEMNUM =   WRK-ITEMNUM +   1
       *
            INITIALIZE                      ODRITEM-REC
-           MOVE    SCL31N-HOSPID       TO  ODRITEM-HOSPID
+           MOVE    SCL31N-HOSPNUM      TO  ODRITEM-HOSPNUM
            MOVE    WRK-KARTE-KEY       TO  ODRITEM-KARTE-KEY
            MOVE    WRK-ORDERNUM        TO  ODRITEM-ORDERNUM
            MOVE    WRK-ITEMNUM         TO  ODRITEM-ITEMNUM
@@ -1241,7 +1245,6 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                GO  TO  20011-ORDER-INSERT-EXT
            END-IF
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    ODRITEM-REC           TO  MCPDATA-REC
            MOVE    "tbl_odritem"         TO MCP-TABLE
            MOVE    "key"               TO MCP-PATHNAME
@@ -1426,7 +1429,6 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *
            MOVE    ZERO                TO  FLG-ORDER
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    ORDER-REC           TO  MCPDATA-REC
            MOVE    "tbl_order"         TO MCP-TABLE
            MOVE    "key"               TO MCP-PATHNAME
@@ -1449,7 +1451,6 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *
            MOVE    ZERO                TO  FLG-ODRITEM
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    ODRITEM-REC         TO  MCPDATA-REC
            MOVE    "tbl_odritem"       TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
@@ -1472,7 +1473,6 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *
            MOVE    ZERO                TO  FLG-ORDER
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    ORDER-REC           TO  MCPDATA-REC
            MOVE    "tbl_order"         TO MCP-TABLE
            MOVE    "key2"              TO MCP-PATHNAME
@@ -1495,7 +1495,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *
            MOVE    ZERO                TO  FLG-SYSKANRI
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  SYS-HOSPNUM
            MOVE    SYSKANRI-REC        TO  MCPDATA-REC
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key2"              TO  MCP-PATHNAME
@@ -1536,9 +1536,9 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
        910-DBSELECT-SEC                SECTION.
       *
            MOVE    "DBSELECT"          TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
            IF    ( MCP-RC          =   ZERO )
                PERFORM 910-DBFETCH-SEC
            END-IF
@@ -1553,9 +1553,9 @@ grpsys                            SPA-AREA
        911-DBSELECT-SEC                SECTION.
       *
            MOVE    "DBSELECT"          TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
       *
@@ -1567,9 +1567,9 @@ grpsys                            SPA-AREA
        910-DBFETCH-SEC                 SECTION.
       *
            MOVE    "DBFETCH"           TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
       *
@@ -1581,9 +1581,9 @@ grpsys                            SPA-AREA
        910-DBCLOSECURSOR-SEC                 SECTION.
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
       *
@@ -1595,9 +1595,9 @@ grpsys                            SPA-AREA
        910-DBINSERT-SEC                SECTION.
       *
            MOVE    "DBINSERT"          TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
       *
