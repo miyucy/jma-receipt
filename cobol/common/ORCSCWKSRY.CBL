@@ -2267,10 +2267,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *    £Ä£Â¤«¤é¤ÎºîÀ®¤Ç¤Ê¤¤
            MOVE    ALL "1"             TO  WKSRY-TERMID
       *@TEST
-           MOVE    ALL "9"             TO  WKSRY-OPID
-           MOVE    ALL "9"             TO  WKSRY-CREYMD
-           MOVE    ALL "9"             TO  WKSRY-UPYMD
-           MOVE    ALL "9"             TO  WKSRY-UPHMS
            MOVE    ALL "9"             TO  WKSRY-UPHMS
            MOVE    ALL "9"             TO  WKSRYP-YOBI
       *@TEST
@@ -3233,6 +3229,8 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            COMPUTE WRK-EN              =   SPA-COM-TEN (IDX)
                                        *   SPA-COM-KAISU (IDX)
            ADD     WRK-EN              TO  SYU-RSIETC-MONEY
+      *    Ï«ºÒ¤Î±ß
+           MOVE    WRK-EN              TO  SPA-COM-RSIKIN(IDX)
       *
            .
        450112-JIBAISEKI-SET-EXT.

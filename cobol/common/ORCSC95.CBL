@@ -3827,7 +3827,7 @@
       *    前回処方かつ、分散入力がなかったとき、
       *    診療診療行為マスタより作成
            IF     (FLG-WKSYORI         =   ZERO )  AND
-                  (SPA-ZENSYOHOFLG     =   0    )  AND
+                  (SPA-ZENSYOHOFLG     =   "0"  )  AND
       *           新規の時のみ
                   (SPA-SYORIFLG        =   0    )  AND
       *           再診の時のみ
@@ -4706,6 +4706,9 @@
                        MOVE    "WKSRYACT"          TO  PARA-FILEMEI
                        ADD     1                   TO  WRK-EDABAN
                        MOVE    WRK-EDABAN          TO  PARA-EDABAN
+      *TEST
+                       MOVE    "99999"             TO  WKSRY-UPHMS
+      *TEST
                        MOVE    WKSRYACT-REC        TO  PARA-DATA-REC
       *
                        WRITE                       PARA-REC
