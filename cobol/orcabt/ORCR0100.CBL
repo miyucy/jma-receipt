@@ -1623,7 +1623,6 @@ grpsys     MOVE    RECE02X-HOSPNUM     TO  KOHSKY-HOSPNUM
            MOVE    RECE02X-SHOKUJIFTNKBN
                                        TO  KOHSKY-SHOKUJIFTNKBN
       *
-grpsys*    MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            MOVE    KOHSKY-REC          TO  MCPDATA-REC
            MOVE    "tbl_kohsky"        TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
