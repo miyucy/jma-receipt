@@ -125,6 +125,7 @@
       *  03.04.03    NACL-門脇    07/03/12  包括診療対応
       *  03.04.04    NACL-門脇    07/04/01  現物給付対応
       *  03.04.05    NACL-門脇    07/04/13  リハビリ対応
+      *  03.04.06    NACL-門脇    07/05/11  労災・自賠責単価１０円未満対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -291,6 +292,7 @@
            03  FLG-ZENSOKU-COM                         PIC 9(01).
            03  FLG-TAIGAI                              PIC 9(01).
            03  FLG-RINYAK                              PIC 9(01).
+           03  FLG-TAISYO                              PIC 9(01).
       *
       *    基本点数の非表示判定用フラグ
        01  FLG-KHNTEN-AREA.
@@ -464,6 +466,8 @@
       *
            03  WRK-FUKA-KINGAKU                PIC 9(09).
            03  WRK-FUKA-VALUE                  PIC 9(01).
+      *
+           03  WRK-ZAITENNASHI                 PIC 9(09).
       *
       *---------------------------------------------------------------
       *  回数減算用退避領域
@@ -813,6 +817,10 @@
        01  SRYACCT-REC.
            COPY    "CPSRYACCT.INC".
       *
+      *    診療会計付加情報マスタ−
+       01  SRYACCTPLUS-REC.
+           COPY    "CPSRYACCTPLUS.INC".
+      *
       *    診療行為
        01  SRYACT-REC.
            COPY    "CPSRYACT.INC".
@@ -1111,6 +1119,8 @@
       *****************************************************************
        210-HENSYU-SEC                   SECTION.
       *
+           MOVE       ZERO       TO     WRK-ZAITENNASHI
+      *
            IF      RECE41-HKNKBN   NOT  =   "3"
       *
               INITIALIZE                   FLG-KHNTEN-AREA
@@ -1178,9 +1188,19 @@
                  IF    ACCT-SRYKBN       =  "95"  OR  "96"
                    CONTINUE
                  ELSE
-                   IF   (ACCT-ZAITEN    NOT =    ZERO)    AND
-                        (ACCT-ZAIKAISU  NOT =    ZERO)    AND
-                        (ACCT-JIHOKBN       =   SPACE)
+      *
+                   MOVE     ZERO    TO    FLG-TAISYO
+                   IF   (ACCT-SRYKBN         =   "80" )
+                   AND  (ACCT-ZAITEN         =   ZERO )
+                   AND  (ACCT-ZAIKAISU   NOT =   ZERO )
+                   AND  (ACCT-JIHOKBN        =   SPACE)
+                     PERFORM  21015-SRYACCTPLUS-KENSAKU-SEC
+                   END-IF
+      *
+                   IF  ((ACCT-ZAITEN    NOT =    ZERO ) AND
+                        (ACCT-ZAIKAISU  NOT =    ZERO ) AND
+                        (ACCT-JIHOKBN       =    SPACE))
+                   OR  ( FLG-TAISYO         =      1   )
                                MOVE    ZERO    TO      WRK-TEN
                                                        WRK-MEISAI-CNT
                                                        WRK-SRYCDTOTAL
@@ -2805,8 +2825,9 @@
                      MOVE    ZERO     TO    WK-YKZTEN
                      MOVE    ZERO     TO    FLG-OSINKBN
                END-IF
-               IF   (ACCT-ZAITEN    NOT =    ZERO)    AND
-                    (ACCT-ZAIKAISU  NOT =    ZERO)
+               IF  ((ACCT-ZAITEN    NOT =    ZERO) AND
+                    (ACCT-ZAIKAISU  NOT =    ZERO))
+               OR  ( FLG-TAISYO         =     1   )
                   IF      RECE41-HKNKBN   NOT  =   "3"
                      IF   RECE41-HKNKBN   NOT  =   "4"
                         PERFORM   2101221-RECE-LEFT-SET-SEC
@@ -3363,6 +3384,11 @@
                        COMPUTE    RECE41-KINGAKU2(4)  =                 
                                   RECE41-KINGAKU2(4)  +                 
                                  (WRK-TNS-TEN(IDX3) * ACCT-ZAIKAISU)  
+                       IF   FLG-TAISYO   =   1
+                          COMPUTE WRK-ZAITENNASHI  =
+                                  WRK-ZAITENNASHI  +
+                                 (WRK-TNS-TEN(IDX3) * ACCT-ZAIKAISU)
+                       END-IF
                    ELSE               
                     IF SRY-SRYCD(IDX3)      =    CONS-SHOHOKSN2
                      COMPUTE  WRK-TOKUTEI-SKAN2 =  WRK-TOKUTEI-SKAN2 +
@@ -3750,7 +3776,12 @@
                WHEN    "80"
                    IF ( ACCT-SRYKBN          =  "80"    )  AND         
                       ( SRY-SRYCD(IDX3)(1:5) =  "09593" )              
-                       CONTINUE
+      ***              CONTINUE
+                       IF   FLG-TAISYO   =   1
+                          COMPUTE  WRK-ZAITENNASHI  =
+                                   WRK-ZAITENNASHI  +
+                                  (WRK-TNS-TEN(IDX3) * WRK-ZAIKAISU-XXX)
+                       END-IF
                    ELSE               
                     IF   SRY-SRYCD(IDX3)   =      CONS-SHOHOSEN1 OR
                                                   CONS-SHOHOSEN2 OR
@@ -5104,6 +5135,50 @@
        21014-SINRYO-CHECK-EXT.
            EXIT.
       *
+      **************************************************************
+      *    診療会計付加情報検索
+      **************************************************************
+       21015-SRYACCTPLUS-KENSAKU-SEC           SECTION.
+      *
+           INITIALIZE                      SRYACCTPLUS-REC
+           MOVE    ACCT-HOSPID        TO   ACCTP-HOSPID
+           MOVE    ACCT-NYUGAIKBN     TO   ACCTP-NYUGAIKBN
+           MOVE    ACCT-PTID          TO   ACCTP-PTID
+           MOVE    ACCT-SRYKA         TO   ACCTP-SRYKA
+           MOVE    ACCT-SRYYM         TO   ACCTP-SRYYM
+           MOVE    ACCT-ZAINUM        TO   ACCTP-ZAINUM
+           MOVE    1                  TO   ACCTP-RENNUM
+           MOVE    SRYACCTPLUS-REC    TO   MCPDATA-REC
+           MOVE    "DBSELECT"         TO   MCP-FUNC
+           MOVE    "tbl_sryacctplus"  TO   MCP-TABLE
+           MOVE    "key"              TO   MCP-PATHNAME
+           CALL    "MONFUNC"          USING  MCPAREA
+                                             MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "DBFETCH"          TO  MCP-FUNC
+               MOVE    "tbl_sryacctplus"  TO  MCP-TABLE
+               MOVE    "key"              TO  MCP-PATHNAME
+               CALL    "MONFUNC"          USING  MCPAREA
+                                                 MCPDATA-REC
+               IF      MCP-RC          =   ZERO
+                   MOVE    MCPDATA-REC    TO  SRYACCTPLUS-REC
+                   IF   ACCTP-RSIKINGAKU  NOT = ZERO
+                      MOVE    1   TO   FLG-TAISYO
+                   END-IF
+               END-IF
+           END-IF
+      *
+           MOVE    "DBCLOSECURSOR"    TO   MCP-FUNC
+           MOVE    "tbl_sryacctplus"  TO   MCP-TABLE
+           MOVE    "key"              TO   MCP-PATHNAME
+           CALL    "MONFUNC"          USING  MCPAREA
+                                             MCPDATA-REC
+      *
+           .
+      *
+       21015-SRYACCTPLUS-KENSAKU-EXT.
+           EXIT.
+      *
       *****************************************************************
       *    レセプト中間ファイルの基本点数部分のクリア処理
       *****************************************************************
@@ -5207,6 +5282,15 @@
                  IF    ACCT-SRYKBN       =  "95"  OR  "96"
                    CONTINUE
                  ELSE
+      *
+                   MOVE     ZERO    TO    FLG-TAISYO
+                   IF   (ACCT-SRYKBN         =   "80" )
+                   AND  (ACCT-ZAITEN         =   ZERO )
+                   AND  (ACCT-ZAIKAISU   NOT =   ZERO )
+                   AND  (ACCT-JIHOKBN        =   SPACE)
+                     PERFORM  21015-SRYACCTPLUS-KENSAKU-SEC
+                   END-IF
+      *
                    MOVE   RECE41-TEKSTYMD(7:2)   TO   WRK-DAY
                    IF  ACCT-DAY(1 WRK-DAY)   NOT =    ZERO
                         MOVE    1       TO   FLG-DAY
@@ -5215,9 +5299,10 @@
                    END-IF
       *
                    IF      FLG-DAY         =   1
-                           IF   (ACCT-ZAITEN    NOT =    ZERO)    AND
-                                (ACCT-ZAIKAISU  NOT =    ZERO)    AND
-                                (ACCT-JIHOKBN       =   SPACE)
+                           IF  ((ACCT-ZAITEN    NOT =    ZERO ) AND
+                                (ACCT-ZAIKAISU  NOT =    ZERO ) AND
+                                (ACCT-JIHOKBN       =    SPACE))
+                           OR  ( FLG-TAISYO         =      1   )
                                MOVE  ACCT-DAY(1 WRK-DAY)  
                                                TO    WRK-ZAIKAISU-XXX
                                MOVE    ZERO    TO    WRK-TEN
@@ -5364,6 +5449,11 @@
       *    データ更新処理
       *****************************************************************
        2105-RECE41-REWRITE-SEC                SECTION.
+      *
+           IF   RECE41-HKNKBN     NOT  =   "4"
+             COMPUTE  RECE41-TOTALKIN2  =  RECE41-TOTALKIN2
+                                        +  WRK-ZAITENNASHI
+           END-IF
       *
            IF   RECE41-HKNKBN     =   "4"                               
       *
