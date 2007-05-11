@@ -74,6 +74,7 @@
              05  PRT-PSFILE-GROUP      PIC X(14).
              05  PRT-PSFILE-SRENNUM    PIC X(04).
              05  PRT-PSFILE-PAGE       PIC X(05).
+             05  PRT-PSFILE-UUID       PIC X(36).
       *  01.01.02  ADD END
            03  PRT-PRTDATA         PIC X(20000).
       *
@@ -255,8 +256,14 @@ grpsys COPY    "COMMON-SPA".
                                                WRK-PARA-EDPAGE
                                                WRK-PARA-PRTFLG     
                                                WRK-PARA-HOSPNUM
+                                               LNK-PRTKANRI-TBL-UUID
+                                               LNK-PRTKANRI-GYOUMU-CD
            END-UNSTRING
            MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
+           IF      LNK-PRTKANRI-GYOUMU-CD NOT NUMERIC
+                   MOVE  ZERO          TO
+                                       LNK-PRTKANRI-GYOUMU-CD
+           END-IF
       *
            PERFORM 100-DBOPEN-SEC
       *
@@ -398,6 +405,7 @@ grpsys         PERFORM 900-ORCDBMAIN-SEC
            MOVE    LNK-PRTKANRI-TBL-GROUP      TO  PRT-PSFILE-GROUP 
            MOVE    PRTDATA-SHORI-RENNUM        TO  PRT-PSFILE-SRENNUM
            MOVE    PRTDATA-PAGE                TO  PRT-PSFILE-PAGE  
+           MOVE    LNK-PRTKANRI-TBL-UUID       TO  PRT-PSFILE-UUID
       *  01.01.02  END
            MOVE    PRTDATA-PRTDATA             TO  PRT-PRTDATA
            WRITE   PRT-REC
@@ -571,6 +579,7 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
            MOVE    LNK-PRTKANRI-TBL-GROUP      TO  PRVKANRI-TBL-GROUP 
            MOVE    PRTDATA-SHORI-RENNUM        TO  PRVKANRI-SHORI-RENNUM
            MOVE    PRTDATA-PAGE                TO  PRVKANRI-PAGE  
+           MOVE    LNK-PRTKANRI-TBL-UUID       TO  PRVKANRI-TBL-UUID
 grpsys     MOVE    SPA-HOSPNUM                 TO  PRVKANRI-HOSPNUM
 grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PRVKANRI-REC        TO  MCPDATA-REC
@@ -610,6 +619,8 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                                        TO  PRVKANRI-SHORI-RENNUM
            MOVE    WRK-PARA-STPAGE     TO  PRVKANRI-PAGE
 grpsys     MOVE    SPA-HOSPNUM         TO  PRVKANRI-HOSPNUM
+           MOVE    LNK-PRTKANRI-TBL-UUID
+                                       TO  PRVKANRI-TBL-UUID
            MOVE    PRVKANRI-REC        TO  MCPDATA-REC
            MOVE    "tbl_prvkanri"      TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
@@ -642,6 +653,8 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                        TO  PRVKANRI-RENNUM
            MOVE    LNK-PRTKANRI-SHORI-RENNUM
                                        TO  PRVKANRI-SHORI-RENNUM
+           MOVE    LNK-PRTKANRI-TBL-UUID
+                                       TO  PRVKANRI-TBL-UUID
            MOVE    WRK-PARA-EDPAGE     TO  PRVKANRI-PAGE
 grpsys     MOVE    SPA-HOSPNUM         TO  PRVKANRI-HOSPNUM
            MOVE    PRVKANRI-REC        TO  MCPDATA-REC
@@ -760,6 +773,8 @@ grpsys     PERFORM 900-DBFETCH-SEC
            MOVE    LNK-PRTKANRI-TBL-GROUP
                                        TO  PRTKANRI-TBL-GROUP
 grpsys     MOVE    SPA-HOSPNUM         TO  PRTKANRI-HOSPNUM
+           MOVE    LNK-PRTKANRI-TBL-UUID
+                                       TO  PRTKANRI-TBL-UUID
            MOVE    PRTKANRI-REC        TO  MCPDATA-REC
            MOVE    "tbl_prtkanri"      TO  MCP-TABLE
            MOVE    "key2"              TO  MCP-PATHNAME
@@ -822,6 +837,7 @@ grpsys     PERFORM 900-DBFETCH-SEC
            MOVE    PRTKANRI-SHORI-RENNUM
                                        TO  PRTDATA-SHORI-RENNUM
            MOVE    PRTKANRI-TBL-GROUP  TO  PRTDATA-TBL-GROUP
+           MOVE    PRTKANRI-TBL-UUID   TO  PRTDATA-TBL-UUID
            MOVE    PRTKANRI-TBL-KEY    TO  PRTDATA-TBL-KEY
            MOVE    WRK-PARA-STPAGE     TO  PRTDATAXX-STPAGE
            MOVE    WRK-PARA-EDPAGE     TO  PRTDATAXX-EDPAGE

@@ -3,7 +3,9 @@ tbl_prvkanri	{
 	TBL_KEY			char(8);
 	RENNUM			number(4);
 	TBL_GROUP		char(14);
+	TBL_UUID		char(36);
 	SHORI_RENNUM		number(4);
+	GYOUMU_CD               number(3);
 	SHELLID			varchar(20);
 	PRTID			varchar(20);
 	SRYYM			varchar(06);
@@ -35,7 +37,7 @@ tbl_prvkanri	{
 };
 
 primary	{
-	HOSPNUM,TBL_KEY,RENNUM,TBL_GROUP,SHORI_RENNUM,PAGE;
+	HOSPNUM,TBL_KEY,RENNUM,TBL_GROUP,TBL_UUID,SHORI_RENNUM,PAGE;
 };
 
 path	key		{ 	
@@ -47,6 +49,7 @@ path	key		{
                     AND   TBL_KEY	=	:TBL_KEY
                     AND     RENNUM       =   :RENNUM
                     AND     TBL_GROUP    =   :TBL_GROUP
+                    AND     TBL_UUID     =   :TBL_UUID
                     AND     SHORI_RENNUM =   :SHORI_RENNUM 
                     AND     PAGE         =   :PAGE 
 		;
@@ -74,10 +77,11 @@ path	key3		{
                     AND   TBL_KEY      =   :TBL_KEY
                     AND     RENNUM       =   :RENNUM
                     AND     TBL_GROUP    =   :TBL_GROUP
+                    AND     TBL_UUID     =   :TBL_UUID
                     AND     SHORI_RENNUM =   :SHORI_RENNUM 
                     AND     PAGE         >=  :STPAGE
                     AND     PAGE         <=  :EDPAGE
-                    ORDER BY TBL_KEY,RENNUM,TBL_GROUP,SHORI_RENNUM,PAGE    
+                    ORDER BY TBL_KEY,RENNUM,TBL_GROUP,TBL_UUID,SHORI_RENNUM,PAGE    
 		;
 	};
 };

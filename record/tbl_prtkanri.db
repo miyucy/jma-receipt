@@ -3,7 +3,9 @@ tbl_prtkanri	{
 	TBL_KEY			char(8);
 	RENNUM  		number(4);
 	TBL_GROUP		char(14);
+	TBL_UUID 		char(36);
 	SHORI_RENNUM	number(4);
+	GYOUMU_CD               number(3);
 	SHELLID			varchar(20);
 	SRYYM			varchar(06);
 	SKYYMD  		varchar(08);
@@ -14,10 +16,14 @@ tbl_prtkanri	{
 	TERMID			varchar(32);
 	OPID			varchar(16);
 	PRTNM			varchar(16);
+	CREYMD 			varchar(8);
+#-----> virtual π‡Ã‹
+	SELLIMIT		number(8),virtual;
+	SELOFFSET		number(8),virtual;
 };
 
 primary	{
-	HOSPNUM,TBL_KEY,RENNUM,TBL_GROUP,SHORI_RENNUM;
+	HOSPNUM,TBL_KEY,RENNUM,TBL_GROUP,TBL_UUID,SHORI_RENNUM;
 };
 
 path	key		{ 	
@@ -29,6 +35,7 @@ path	key		{
                     AND   TBL_KEY      =   :TBL_KEY
                     AND     RENNUM       =   :RENNUM
                     AND     TBL_GROUP    =   :TBL_GROUP
+                    AND     TBL_UUID     =   :TBL_UUID
                     AND     SHORI_RENNUM =   :SHORI_RENNUM 
 		;
 	};
@@ -42,6 +49,7 @@ path	key2		{
 		WHERE 	HOSPNUM	= :HOSPNUM
                     AND   TBL_KEY      =   :TBL_KEY
                     AND     TBL_GROUP    =   :TBL_GROUP
+                    AND     TBL_UUID     =   :TBL_UUID
                     ORDER BY  RENNUM,SHORI_RENNUM
 		;
 	};
@@ -94,6 +102,7 @@ path	del11	{
 		WHERE 	HOSPNUM	= :HOSPNUM
                     AND   TBL_KEY      =   :TBL_KEY
                     AND     TBL_GROUP    =   :TBL_GROUP
+                    AND     TBL_UUID     =   :TBL_UUID
 		;
 	};
 };
@@ -133,3 +142,78 @@ path	all	{
  		;
 	};
 };
+path	key6		{ 	
+	DBSELECT	{
+		DECLARE tbl_prtkanri_key6_csr CURSOR FOR
+		SELECT *
+		FROM tbl_prtkanri
+	    	    WHERE 	HOSPNUM	= :HOSPNUM
+                    AND      TBL_KEY    =   :TBL_KEY
+		    AND	     CREYMD	=   :CREYMD
+                    ORDER BY  TBL_GROUP desc,TBL_UUID,RENNUM,SHORI_RENNUM
+		;
+	};
+};
+
+path	key7		{ 	
+	DBSELECT	{
+		DECLARE tbl_prtkanri_key7_csr CURSOR FOR
+		SELECT *
+		FROM tbl_prtkanri
+	    	    WHERE 	HOSPNUM	= :HOSPNUM
+                    AND      TBL_KEY    =   :TBL_KEY
+		    AND	     CREYMD	=   :CREYMD
+		    AND	     GYOUMU_CD  =   :GYOUMU_CD
+                    ORDER BY  TBL_GROUP desc,TBL_UUID,RENNUM,SHORI_RENNUM
+		;
+	};
+};
+
+
+path	key8		{ 	
+	DBSELECT	{
+		DECLARE tbl_prtkanri_key8_csr CURSOR FOR
+		SELECT TBL_GROUP,TBL_UUID
+		FROM tbl_prtkanri
+	    	    WHERE 	HOSPNUM	= :HOSPNUM
+                    AND      TBL_KEY    =   :TBL_KEY
+                    AND	     CREYMD	=   :CREYMD
+                    GROUP BY  TBL_GROUP,TBL_UUID
+                    ORDER BY  TBL_GROUP desc,TBL_UUID
+                    LIMIT    :SELLIMIT
+                    OFFSET   :SELOFFSET
+		;
+	};
+};
+
+path	key9		{ 	
+	DBSELECT	{
+		DECLARE tbl_prtkanri_key9_csr CURSOR FOR
+		SELECT TBL_GROUP,TBL_UUID
+		FROM tbl_prtkanri
+	    	    WHERE 	HOSPNUM	= :HOSPNUM
+                    AND      TBL_KEY    =   :TBL_KEY
+		    AND	     CREYMD	=   :CREYMD
+		    AND	     GYOUMU_CD  =   :GYOUMU_CD
+                    GROUP BY  TBL_GROUP,TBL_UUID
+                    ORDER BY  TBL_GROUP desc,TBL_UUID
+                    LIMIT    :SELLIMIT
+                    OFFSET   :SELOFFSET
+		;
+	};
+};
+
+path	del14	{
+	DBDELETE	{
+		DELETE
+		FROM tbl_prtkanri
+		WHERE 	HOSPNUM	= :HOSPNUM
+                    AND   TBL_KEY      =   :TBL_KEY
+                    AND     TBL_GROUP    =   :TBL_GROUP
+                    AND     TBL_UUID     =   :TBL_UUID
+                    AND     RENNUM       =   :RENNUM
+                    AND     SHORI_RENNUM =   :SHORI_RENNUM 
+		;
+	};
+};
+

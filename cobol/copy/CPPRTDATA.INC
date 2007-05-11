@@ -34,9 +34,13 @@
                05  PRTDATA-RENNUM     PIC 9(04).
       *グループ
                05  PRTDATA-TBL-GROUP  PIC X(14).
+      *UUID
+               05  PRTDATA-TBL-UUID   PIC X(36).
       *処理内連番
                05  PRTDATA-SHORI-RENNUM
                                       PIC 9(04).
+      *業務コード
+               05  PRTDATA-GYOUMU-CD  PIC 9(03).
       *シェルＩＤ
            03  PRTDATA-SHELLID        PIC X(20).
       *帳票ＩＤ

@@ -72,6 +72,7 @@ shell_sources = \
 	allways/master_standard_upgrade.sh.in \
 	allways/master_license_upgrade.sh.in \
 	allways/ORCBQ02.sh.in \
+	daily/online-reprint.sh.in \
 
 ruby_scripts = \
 	daily/print-data.rb \

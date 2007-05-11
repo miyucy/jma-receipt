@@ -30,9 +30,14 @@
                05  LNK-PRTKANRI-TBL-KEY   PIC X(08).
       *    グループ
                05  LNK-PRTKANRI-TBL-GROUP PIC X(14).
+      *    UUID
+               05  LNK-PRTKANRI-TBL-UUID  PIC X(36).
       *    処理内連番
                05  LNK-PRTKANRI-SHORI-RENNUM
                                           PIC 9(04).
+      *    業務コード
+               05  LNK-PRTKANRI-GYOUMU-CD
+                                          PIC 9(03).
       *    診療年月
                05  LNK-PRTKANRI-SRYYM     PIC X(06).
       *    請求年月日

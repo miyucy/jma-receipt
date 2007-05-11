@@ -100,6 +100,9 @@ grpsys     COPY    "COMMON-SPA".
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
+           IF      SPRT-GYOUMU-CD  NOT NUMERIC
+                   MOVE  99            TO  SPRT-GYOUMU-CD
+           END-IF
       *    処理モードのチェック
            EVALUATE    SPRT-MODE
                WHEN    "INS"
@@ -155,6 +158,8 @@ grpsys     COPY    "COMMON-SPA".
            MOVE    SPRT-TBL-KEY        TO  PRTKANRI-TBL-KEY
            MOVE    SPRT-RENNUM         TO  PRTKANRI-RENNUM
            MOVE    SPRT-TBL-GROUP      TO  PRTKANRI-TBL-GROUP
+           MOVE    SPRT-TBL-UUID       TO  PRTKANRI-TBL-UUID
+           MOVE    SPRT-GYOUMU-CD      TO  PRTKANRI-GYOUMU-CD
            MOVE    SPRT-SHORI-RENNUM   TO  PRTKANRI-SHORI-RENNUM
 grpsys     MOVE    SPA-HOSPNUM         TO  PRTKANRI-HOSPNUM
            MOVE    PRTKANRI-REC        TO  MCPDATA-REC
@@ -167,6 +172,8 @@ grpsys     MOVE    SPA-HOSPNUM         TO  PRTKANRI-HOSPNUM
                MOVE    SPRT-TBL-KEY        TO  PRTKANRI-TBL-KEY
                MOVE    SPRT-RENNUM         TO  PRTKANRI-RENNUM
                MOVE    SPRT-TBL-GROUP      TO  PRTKANRI-TBL-GROUP
+               MOVE    SPRT-TBL-UUID       TO  PRTKANRI-TBL-UUID
+               MOVE    SPRT-GYOUMU-CD      TO  PRTKANRI-GYOUMU-CD
                MOVE    SPRT-SHELLID        TO  PRTKANRI-SHELLID
                MOVE    SPRT-SHORI-RENNUM   TO  PRTKANRI-SHORI-RENNUM
 grpsys         MOVE    SPA-HOSPNUM         TO  PRTKANRI-HOSPNUM
@@ -211,6 +218,8 @@ grpsys         MOVE    SPA-HOSPNUM         TO  PRTKANRI-HOSPNUM
                MOVE    SPRT-PRTNM          TO  PRTKANRI-PRTNM
            END-IF
       *
+           MOVE    SPRT-TBL-GROUP(1:8) TO  PRTKANRI-CREYMD
+      *
            MOVE    PRTKANRI-REC        TO  MCPDATA-REC
            MOVE    "tbl_prtkanri"      TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
@@ -253,6 +262,8 @@ grpsys     MOVE    SPA-HOSPNUM         TO  PRTDATA-HOSPNUM
            MOVE    SPRT-TBL-KEY        TO  PRTDATA-TBL-KEY
            MOVE    SPRT-RENNUM         TO  PRTDATA-RENNUM
            MOVE    SPRT-TBL-GROUP      TO  PRTDATA-TBL-GROUP
+           MOVE    SPRT-TBL-UUID       TO  PRTDATA-TBL-UUID
+           MOVE    SPRT-GYOUMU-CD      TO  PRTDATA-GYOUMU-CD
            MOVE    SPRT-SHELLID        TO  PRTDATA-SHELLID
            MOVE    SPRT-PRTID          TO  PRTDATA-PRTID
            MOVE    SPRT-SHORI-RENNUM   TO  PRTDATA-SHORI-RENNUM

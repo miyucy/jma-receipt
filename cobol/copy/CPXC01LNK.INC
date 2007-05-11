@@ -29,6 +29,8 @@
                05  LNK-XC01-RENNUM     PIC 9(4).
       *    グループ
                05  LNK-XC01-TBL-GROUP  PIC X(14).
+      *    UUID
+               05  LNK-XC01-TBL-UUID   PIC X(36).
       *    処理内連番
                05  LNK-XC01-SHORI-RENNUM
                                        PIC 9(4).
@@ -36,5 +38,9 @@
            03  LNK-XC01-ED-PAGE        PIC 9(5).
       *
            03  LNK-XC01-MOTOPG         PIC X(08).
+      *
+           03  LNK-XC01-GYOUMU-CD      PIC X(02).
+      *
+           03  LNK-XC01-YMD            PIC X(08).
       *
            03  LNK-XC01-MODE           PIC X(01).

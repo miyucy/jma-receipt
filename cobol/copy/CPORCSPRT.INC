@@ -36,6 +36,10 @@
            03  SPRT-TBL-KEY        PIC X(08).
       *    グループ
            03  SPRT-TBL-GROUP      PIC X(14).
+      *    UUID
+           03  SPRT-TBL-UUID       PIC X(36).
+      *    業務コード
+           03  SPRT-GYOUMU-CD      PIC 9(03).
       *    診療年月
            03  SPRT-SRYYM          PIC X(06).
       *    請求年月日

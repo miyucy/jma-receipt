@@ -3,7 +3,9 @@ tbl_prtdata	{
 	TBL_KEY			char(8);
 	RENNUM  		number(4);
 	TBL_GROUP		char(14);
+	TBL_UUID 		char(36);
 	SHORI_RENNUM		number(4);
+	GYOUMU_CD               number(3);
 	SHELLID			varchar(20);
 	PRTID   		varchar(20);
 	SRYYM			varchar(06);
@@ -21,7 +23,7 @@ tbl_prtdata	{
 };
 
 primary	{
-	HOSPNUM,TBL_KEY,RENNUM,TBL_GROUP,SHORI_RENNUM,PAGE;
+	HOSPNUM,TBL_KEY,RENNUM,TBL_GROUP,TBL_UUID,SHORI_RENNUM,PAGE;
 };
 
 path	key		{ 	
@@ -33,6 +35,7 @@ path	key		{
                     AND   TBL_KEY      =   :TBL_KEY
                     AND     RENNUM       =   :RENNUM
                     AND     TBL_GROUP    =   :TBL_GROUP
+                    AND     TBL_UUID     =   :TBL_UUID
                     AND     SHORI_RENNUM =   :SHORI_RENNUM 
                     AND     PAGE         =   :PAGE 
 		;
@@ -48,6 +51,7 @@ path	key2		{
                     AND   TBL_KEY      =   :TBL_KEY
                     AND     RENNUM       =   :RENNUM
                     AND     TBL_GROUP    =   :TBL_GROUP
+                    AND     TBL_UUID     =   :TBL_UUID
                     AND     SHORI_RENNUM =   :SHORI_RENNUM 
                     AND     PAGE         >=  :STPAGE
                     AND     PAGE         <=  :EDPAGE
@@ -63,6 +67,7 @@ path	del11	{
 		WHERE 	HOSPNUM	= :HOSPNUM
                     AND   TBL_KEY      =   :TBL_KEY
                     AND     TBL_GROUP    =   :TBL_GROUP
+                    AND     TBL_UUID     =   :TBL_UUID
 		;
 	};
 };
@@ -102,3 +107,18 @@ path	all	{
  		;
 	};
 };
+
+path	del14	{
+	DBDELETE	{
+		DELETE
+		FROM tbl_prtdata
+		WHERE 	HOSPNUM	= :HOSPNUM
+                    AND   TBL_KEY      =   :TBL_KEY
+                    AND     TBL_GROUP    =   :TBL_GROUP
+                    AND     TBL_UUID     =   :TBL_UUID
+                    AND     RENNUM       =   :RENNUM
+                    AND     SHORI_RENNUM =   :SHORI_RENNUM 
+		;
+	};
+};
+

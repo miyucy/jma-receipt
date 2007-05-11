@@ -35,6 +35,7 @@
       *                                     tbl_prtdata より設定
       *
       *  03.05.01    NACL-藤原    07/04/19  グループ診療対応
+      *  03.05.02    NACL-竹田    07/05/09  オンライン再印刷対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -83,6 +84,7 @@ grpsys COPY    "COMMON-SPA".
              05  PRT-PSFILE-GROUP      PIC X(14).
              05  PRT-PSFILE-SRENNUM    PIC X(04).
              05  PRT-PSFILE-PAGE       PIC X(05).
+             05  PRT-PSFILE-UUID       PIC X(36).
       *  01.01.02  ADD END
            03  PRT-PRTDATA         PIC X(20000).
       *
@@ -378,6 +380,8 @@ grpsys         PERFORM 900-DBFETCH-SEC
                                        TO  PRVKANRI-RECE-FLG
                MOVE    LNK-PRTKANRI-TBL-GROUP
                                        TO  PRVKANRI-TBL-GROUP
+               MOVE    LNK-PRTKANRI-TBL-UUID
+                                       TO  PRVKANRI-TBL-UUID
                MOVE    WRK-PARA-SYOKBN TO  PRVKANRI-SHORI-KBN
                MOVE    WRK-PARA-HOSPNUM
                                        TO  PRVKANRI-HOSPNUM

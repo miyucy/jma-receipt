@@ -25,17 +25,12 @@
       *****************************************************************
        01  SPA-XC01KYOUTU.
       *
-      *警告メッセージ
-           03  SPA-XCIDCD                   PIC  X(04).
-      *警告画面より
-           03  SPA-XCID1-AREA. 
-               07  SPA-XCID1-FLG            PIC  X(02).
-      *
            03  SPA-XC01-LN-AREA.
             05  SPA-XC01-LN-KEY.
                 07  SPA-XC01-LN-TBL-KEY    PIC X(8).
                 07  SPA-XC01-LN-RENNUM     PIC 9(4).
                 07  SPA-XC01-LN-TBL-GROUP  PIC X(14).
+                07  SPA-XC01-LN-TBL-UUID   PIC X(36).
                 07  SPA-XC01-LN-SHORI-RENNUM
                                            PIC 9(4).
             05  SPA-XC01-LN-ST-PAGE        PIC 9(5).
@@ -44,3 +39,9 @@
             05  SPA-XC01-LN-MOTOPG         PIC X(08).
       *
             05  SPA-XC01-LN-MODE           PIC X(01).
+      *警告メッセージ
+           03  SPA-XCIDCD                   PIC  X(04).
+      *警告画面より
+           03  SPA-XCID1-AREA. 
+               07  SPA-XCID1-FLG            PIC  X(02).
+      *

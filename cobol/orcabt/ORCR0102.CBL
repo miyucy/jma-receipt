@@ -153,6 +153,7 @@
            03  PRT-TBL-GROUP       PIC X(14).
            03  PRT-SHORI-RENNUM    PIC 9(04).
            03  PRT-PAGE            PIC 9(05).
+           03  PRT-UUID            PIC X(36).
            03  PRT-PRTDATA         PIC X(20000).
       *
       *    エラーファイル

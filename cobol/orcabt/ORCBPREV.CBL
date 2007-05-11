@@ -29,6 +29,7 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *  03.05.01    NACL-藤原    07/04/19  グループ診療対応
+      *  03.05.01    NACL-竹田    07/05/09  オンライン再印刷対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -64,6 +65,7 @@
              05  PRT-TBL-GROUP       PIC X(14).
              05  PRT-SHORI-RENNUM    PIC 9(04).
              05  PRT-PAGE            PIC 9(05).
+             05  PRT-TBL-UUID        PIC X(36).
            03  PRT-PRTDATA         PIC X(20000).
       *
 006900*    入力ＰＳ環境ファイル
@@ -116,6 +118,7 @@ grpsys COPY    "COMMON-SPA".
            03  WRK-MCP-TABLE       PIC X(64).
            03  WRK-MCP-PATHNAME    PIC X(64).
       *
+           03  WRK-MCP-PATH        PIC X(64).
       *
       *  01.01.02  ADD START
            03  WRK-FILENAME        PIC X(200).
@@ -123,6 +126,7 @@ grpsys COPY    "COMMON-SPA".
            03  SPA-NAI-ENV         PIC X(200).
            03  WRK-PRT-TBL-KEY     PIC X(08).
            03  WRK-PRT-TBL-GROUP   PIC X(14).
+           03  WRK-PRT-TBL-UUID    PIC X(36).
       *  01.01.02  ADD END
       *
          01  WRK-PARA.
@@ -267,6 +271,7 @@ grpsys COPY    "COMMON-SPA".
            MOVE    PRT-SHORI-RENNUM
                                    TO  PRTDATA-SHORI-RENNUM
            MOVE    PRT-TBL-GROUP   TO  PRTDATA-TBL-GROUP
+           MOVE    PRT-TBL-UUID    TO  PRTDATA-TBL-UUID
            MOVE    PRT-TBL-KEY     TO  PRTDATA-TBL-KEY
            MOVE    PRT-PAGE        TO  PRTDATA-PAGE
 grpsys     MOVE    SPA-HOSPNUM     TO  PRTDATA-HOSPNUM
@@ -286,6 +291,8 @@ grpsys     MOVE    SPA-HOSPNUM     TO  PRTDATA-HOSPNUM
                                            PRTKANRI-RENNUM
            MOVE    PRTDATA-TBL-GROUP   TO  PRVKANRI-TBL-GROUP
                                            PRTKANRI-TBL-GROUP
+           MOVE    PRTDATA-TBL-UUID    TO  PRVKANRI-TBL-UUID
+                                           PRTKANRI-TBL-UUID
            MOVE    PRTDATA-SHORI-RENNUM
                                        TO  PRVKANRI-SHORI-RENNUM
                                            PRTKANRI-SHORI-RENNUM
@@ -314,6 +321,7 @@ grpsys     MOVE    PRTDATA-HOSPNUM     TO  PRVKANRI-HOSPNUM
              MOVE    PRTDATA-TBL-KEY     TO  PRVKANRI-TBL-KEY
              MOVE    PRTDATA-RENNUM      TO  PRVKANRI-RENNUM
              MOVE    PRTDATA-TBL-GROUP   TO  PRVKANRI-TBL-GROUP
+             MOVE    PRTDATA-TBL-UUID    TO  PRVKANRI-TBL-UUID
              MOVE    PRTDATA-SHORI-RENNUM
                                          TO  PRVKANRI-SHORI-RENNUM
              MOVE    PRTDATA-SHELLID     TO  PRVKANRI-SHELLID
@@ -363,6 +371,7 @@ grpsys       PERFORM 900-ORCDBMAIN-SEC
            MOVE    PRTDATA-TBL-KEY     TO  PREVIEW-TBL-KEY
            MOVE    PRTDATA-RENNUM      TO  PREVIEW-RENNUM
            MOVE    PRTDATA-TBL-GROUP   TO  PREVIEW-TBL-GROUP
+           MOVE    PRTDATA-TBL-UUID    TO  PREVIEW-TBL-UUID
            MOVE    PRTDATA-SHORI-RENNUM
                                        TO  PREVIEW-SHORI-RENNUM
            MOVE    PRTDATA-SHELLID     TO  PREVIEW-SHELLID
@@ -379,11 +388,14 @@ grpsys     MOVE    PRTDATA-HOSPNUM     TO  PREVIEW-HOSPNUM
            IF      FLG-PREVIEW         =   ZERO  
                CONTINUE                   
            ELSE
-               PERFORM 900-PSFILE-READ-SEC
-               IF      ORCF-RET        NOT =   ZERO
+               IF      PRTDATA-TBL-KEY NOT =  "ONLINE"
+                 PERFORM 900-PSFILE-READ-SEC
+                 IF      ORCF-RET        NOT =   ZERO
                    DISPLAY "PS-FILE OPEN ERR=" STS-PS 
+      * Why is this line ?
                    MOVE    1               TO  FLG-END 
                    GO  TO  200-MAIN-EXT
+                 END-IF
                END-IF
       *        IF      FLG-PSFILE      =   1     
       *            DISPLAY "PS-FILE NOT DATA"
@@ -397,6 +409,7 @@ grpsys     MOVE    PRTDATA-HOSPNUM     TO  PREVIEW-HOSPNUM
                MOVE    PRTDATA-TBL-KEY     TO  PREVIEW-TBL-KEY
                MOVE    PRTDATA-RENNUM      TO  PREVIEW-RENNUM
                MOVE    PRTDATA-TBL-GROUP   TO  PREVIEW-TBL-GROUP
+               MOVE    PRTDATA-TBL-UUID    TO  PREVIEW-TBL-UUID
                MOVE    PRTDATA-SHORI-RENNUM
                                            TO  PREVIEW-SHORI-RENNUM
                MOVE    PRTDATA-SHELLID     TO  PREVIEW-SHELLID
@@ -468,12 +481,14 @@ grpsys         MOVE    PRTDATA-HOSPNUM     TO  PREVIEW-HOSPNUM
       *
       *        最新以外の帳票管理ＤＢを削除
            IF      WRK-PRT-TBL-KEY     =   "RECEPTX"
+           OR      WRK-PRT-TBL-KEY     =   "ONLINE"
                    GO    TO            900-PRV-RRKDEL-EXT
            END-IF
            MOVE    SPACE               TO  PRVKANRI-REC
            INITIALIZE                  PRVKANRI-REC
            MOVE    WRK-PRT-TBL-KEY     TO  PRVKANRI-TBL-KEY
            MOVE    WRK-PRT-TBL-GROUP   TO  PRVKANRI-TBL-GROUP
+           MOVE    WRK-PRT-TBL-UUID    TO  PRVKANRI-TBL-UUID
 grpsys     MOVE    SPA-HOSPNUM         TO  PRVKANRI-HOSPNUM
            MOVE    PRVKANRI-REC        TO  MCPDATA-REC
            MOVE    "DBDELETE"          TO  MCP-FUNC
@@ -596,6 +611,8 @@ grpsys         PERFORM 900-ORCDBMAIN-SEC
       *
            MOVE    PRT-TBL-GROUP       TO  PRVKANRI-TBL-GROUP
                                            WRK-PRT-TBL-GROUP
+           MOVE    PRT-TBL-UUID        TO  PRVKANRI-TBL-UUID
+                                           WRK-PRT-TBL-UUID
            MOVE    PRT-TBL-KEY         TO  PRVKANRI-TBL-KEY
                                            WRK-PRT-TBL-KEY
 grpsys     MOVE    SPA-HOSPNUM         TO  PRVKANRI-HOSPNUM
@@ -642,6 +659,7 @@ grpsys         PERFORM 900-DBFETCH-SEC
       *    END-READ
            MOVE    SPACE               TO  ORCF-DATA
            MOVE    PS-FILE-ID          TO  ORCF-FILE-NAME
+           DISPLAY "take file id = "    PS-FILE-ID
            MOVE    "r"                 TO  ORCF-FILE-MODE
            MOVE    SPACE               TO  PS-FILE-DATA  
            CALL    "orcfileio"     USING ST  ORCFILEGET-AREA
@@ -704,10 +722,8 @@ grpsys     PERFORM 900-DBSELECT-SEC
                MOVE    "key"               TO  MCP-PATHNAME
 grpsys         PERFORM 900-DBFETCH-SEC
                IF      MCP-RC              =   ZERO
-             DISPLAY "take fetch ok"
                    MOVE    ZERO                TO  FLG-PRVKANRI
                ELSE  
-             DISPLAY "take fetch ng"
                    MOVE    1                   TO  FLG-PRVKANRI
                END-IF 
            ELSE 
@@ -776,10 +792,8 @@ grpsys         PERFORM 900-DBFETCH-SEC
                                                MCPAREA
                                                MCPDATA-REC
                IF      MCP-RC              =   ZERO
-             DISPLAY "take fetch ok"
                    MOVE    ZERO                TO  FLG-PREVIEW
                ELSE  
-             DISPLAY "take fetch ng"
                    MOVE    1                   TO  FLG-PREVIEW
                END-IF 
            ELSE 

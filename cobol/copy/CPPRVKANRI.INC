@@ -27,7 +27,9 @@
             02  PRVKANRI-TBL-KEY    PIC X(8).
             02  PRVKANRI-RENNUM PIC S9(4).
             02  PRVKANRI-TBL-GROUP  PIC X(14).
+            02  PRVKANRI-TBL-UUID   PIC X(36).
             02  PRVKANRI-SHORI-RENNUM   PIC S9(4).
+            02  PRVKANRI-GYOUMU-CD  PIC 9(03).
             02  PRVKANRI-SHELLID    PIC X(20).
             02  PRVKANRI-PRTID  PIC X(20).
             02  PRVKANRI-SRYYM  PIC X(6).

@@ -341,6 +341,7 @@ RECORD_files = \
 	D02.rec \
 	W121.rec \
 	W32.rec \
+	XA02.rec \
 
 DEF_files = \
 	HC01.def \

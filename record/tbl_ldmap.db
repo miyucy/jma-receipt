@@ -151,6 +151,16 @@ path	key3	{
 	};
 };
 
+path	key4	{
+	DBSELECT	{
+		DECLARE tbl_ldmap_key4_csr CURSOR FOR
+		SELECT *
+		FROM tbl_ldmap
+		WHERE 	HOSPNUM	= :HOSPNUM
+			ORDER   BY        MAP_LDNAME
+		;
+	};
+};
 path	all	{
 	DBSELECT	{
 		DECLARE tbl_ldmap_all_csr CURSOR FOR

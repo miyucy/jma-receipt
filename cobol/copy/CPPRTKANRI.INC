@@ -32,9 +32,13 @@
                05  PRTKANRI-RENNUM     PIC 9(04).
       *グループ
                05  PRTKANRI-TBL-GROUP  PIC X(14).
+      *UUID
+               05  PRTKANRI-TBL-UUID   PIC X(36).
       *処理内連番
                05  PRTKANRI-SHORI-RENNUM
                                        PIC 9(04).
+      *業務コード
+               05  PRTKANRI-GYOUMU-CD  PIC 9(03).                        
       *シェルＩＤ
            03  PRTKANRI-SHELLID        PIC X(20).
       *診療年月
@@ -55,3 +59,9 @@
            03  PRTKANRI-OPID           PIC X(16).
       *プリンタ名
            03  PRTKANRI-PRTNM          PIC X(16).
+      *作成日
+           03  PRTKANRI-CREYMD         PIC X(8).
+      *LIMIT
+           03  PRTKANRI-LIMIT          PIC 9(8).
+      *OFFSET
+           03  PRTKANRI-OFFSET         PIC 9(8).

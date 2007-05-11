@@ -29,8 +29,6 @@
       * Maj/Min/Rev  修正者       日付      内容
       *  01.00.01    NACL-太田    03.07.03  タイマーイベント追加
       *  02.07.00    NACL-竹田    05/10/24  MONFUNC 対応
-      *
-      *  03.05.01    NACL-藤原    07/04/19  グループ診療対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -122,6 +120,7 @@
       *
        01  SCRAREA.
            COPY    "XA01.INC".
+           COPY    "XA02.INC".
            COPY    "XA99.INC".
            COPY    "XAERR.INC".
            COPY    "XAID1.INC".
@@ -262,7 +261,6 @@
                    CALL    "ORCSJOB"       USING
                                            ORCSJOBKANRIAREA  
                                            JOBKANRI-REC 
-                                           SPA-AREA
                    IF      SJOBKANRI-RETURN    =   ZERO
                        MOVE    JOB-JOBID       TO  XA99-RENNUM   (IDX)
                        MOVE    JOB-SHELLMSG    TO  XA99-SHORINM  (IDX)

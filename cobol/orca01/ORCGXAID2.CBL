@@ -75,6 +75,7 @@
       *
        01  SCRAREA.
            COPY    "XA01.INC".
+           COPY    "XA02.INC".
            COPY    "XA99.INC".
            COPY    "XAERR.INC".
            COPY    "XAID1.INC".

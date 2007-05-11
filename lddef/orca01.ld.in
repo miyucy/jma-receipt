@@ -5,6 +5,7 @@ textsize	400;
 
 bind	""		"OpenCOBOL"	"ORCGXA01";
 bind	"XA01"		"OpenCOBOL"	"ORCGXA01";
+bind	"XA02"		"OpenCOBOL"	"ORCGXA02";
 bind	"XA99"		"OpenCOBOL"	"ORCGXA99";
 bind	"XAERR"		"OpenCOBOL"	"ORCGXAERR";
 bind	"XAID1"		"OpenCOBOL"	"ORCGXAID1";
@@ -17,6 +18,7 @@ data	{
 	spa	orcaspa;
 	window	{
 		XA01;
+		XA02;
 		XA99;
 		XAERR;
                 XAID1;
@@ -29,6 +31,9 @@ db	{
 	tbl_jobkanri;
 	tbl_prtkanri;
 	tbl_prtdata;
+	tbl_ldmap;
+	tbl_ptinf;
+	tbl_ptnum;
 };
 
 /* #include "orcadb.inc" */

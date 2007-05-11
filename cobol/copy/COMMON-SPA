@@ -250,6 +250,10 @@
                  05  SPA-RSI-HASSYOYMD3    PIC  X(08).
       *傷病年月日＋３月（労災・自賠責用）
                  05  SPA-RSI-SHOBYOYMD3    PIC  X(08).
+      *オンライン帳票用キーエリア
+             03  SPA-PRT-GROUP             PIC X(14).
+             03  SPA-PRT-UUID              PIC X(36).
+             03  SPA-PRT-FLG               PIC X(02).
       *エラーコード
              03  SPA-ERRCD                 PIC X(04).
              03  SPA-ERRMSG                PIC X(80).
@@ -262,6 +266,7 @@
       ****** 03  SPA-WORK                  PIC X(5545).
       *****  03  SPA-WORK                  PIC X(5543).
       ****** 03  SPA-WORK                  PIC X(11741).
-             03  SPA-WORK                  PIC X(11739).
+      ****** 03  SPA-WORK                  PIC X(11739).
+             03  SPA-WORK                  PIC X(11687).
       *----(01.00.02) LINE UPD END   ----------------------------------
       *

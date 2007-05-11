@@ -28,6 +28,7 @@
                 05  PREVIEW-TBL-KEY    PIC X(8).
                 05  PREVIEW-RENNUM     PIC 9(4).
                 05  PREVIEW-TBL-GROUP  PIC X(14).
+                05  PREVIEW-TBL-UUID   PIC X(36).
                 05  PREVIEW-SHORI-RENNUM
                                        PIC 9(4).
             03  PREVIEW-SHELLID        PIC X(20).
