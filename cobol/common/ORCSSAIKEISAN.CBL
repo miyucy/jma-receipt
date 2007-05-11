@@ -41,6 +41,7 @@
       *  03.04.01    NACL-ÌçÏÆ    06/12/01  ¼«ÇåÀÕ·òÊÝ½àµòÂÐ±þ
       *  03.04.02    NACL-ÌçÏÆ    07/01/22  ¼ýÇ¼ÌÀºÙÊÔ½¸½¤Àµ
       *  03.04.03    NACL-Â¿¡¹Ç¼  07/03/06  Êñ³ç¿ÇÎÅºÞÈ½ÄêÄÉ²Ã
+      *  03.04.04    NACL-ÌçÏÆ    07/05/11  Ï«ºÒ¡¦¼«ÇåÀÕÃ±²Á£±£°±ßÌ¤ËþÂÐ±þ
       *****************************************************************
        ENVIRONMENT         DIVISION.
        CONFIGURATION       SECTION.
@@ -82,6 +83,7 @@
            03  FLG-SENIN-SYOSIN            PIC 9(01).
            03  FLG-NOGRP                   PIC 9(01).
            03  FLG-OK                      PIC 9(01).
+           03  FLG-TAISYO                  PIC 9(01).
       *
       *    ¥ï¡¼¥¯ÎÎ°è
        01  WRK-AREA.
@@ -209,6 +211,10 @@
       *    ¿ÇÎÅ²ñ·×¥Þ¥¹¥¿¡Ý
        01  SRYACCT-REC.
            COPY    "CPSRYACCT.INC".
+      *
+      *    ¿ÇÎÅ²ñ·×ÉÕ²Ã¾ðÊó¥Þ¥¹¥¿¡Ý
+       01  SRYACCTPLUS-REC.
+           COPY    "CPSRYACCTPLUS.INC".
       *
       *    ¿ÇÎÅ¹Ô°Ù¥Þ¥¹¥¿¡Ý
        01  SRYACT-REC.
@@ -1093,9 +1099,22 @@
       **************************************************************
        4401-SRYACCT-SET-SEC           SECTION.
       *
-           IF    (ACCT-ZAITEN       NOT = ZERO                  ) AND
-                 (ACCT-DAY(SAI-IDX  WRK-SAIKEISAN-DD) NOT = ZERO)
-             AND (ACCT-JIHOKBN          =   SPACE )
+           MOVE      ZERO    TO     FLG-TAISYO
+      *
+           IF    (LNK-SYU-SYUHKNNUM(IDY)  =   "971" OR "973"    )
+           AND   (ACCT-SRYKBN             =   "80"              )
+           AND   (ACCT-ZAITEN             =    ZERO             )
+           AND   (ACCT-DAY(SAI-IDX  WRK-SAIKEISAN-DD) NOT = ZERO)
+           AND   (ACCT-JIHOKBN            =    SPACE            )
+      *
+              PERFORM  44011-SRYACCTPLUS-KENSAKU-SEC
+      *
+           END-IF
+      *
+           IF   ((ACCT-ZAITEN       NOT = ZERO                  ) AND
+                 (ACCT-DAY(SAI-IDX  WRK-SAIKEISAN-DD) NOT = ZERO) AND
+                 (ACCT-JIHOKBN          = SPACE                 ))
+           OR   ( FLG-TAISYO            =   1                    )
       *
               MOVE    ACCT-SRYKBN    TO  TBL-SRYKBN(IDX1)
               MOVE    ACCT-ZAINUM    TO  TBL-ZAIBAN(IDX1)
@@ -1131,6 +1150,50 @@
            .
       *
        4401-SRYACCT-SET-EXT.
+           EXIT.
+      *
+      **************************************************************
+      *    ¿ÇÎÅ²ñ·×ÉÕ²Ã¾ðÊó¸¡º÷
+      **************************************************************
+       44011-SRYACCTPLUS-KENSAKU-SEC           SECTION.
+      *
+           INITIALIZE                      SRYACCTPLUS-REC
+           MOVE    ACCT-HOSPID        TO   ACCTP-HOSPID
+           MOVE    ACCT-NYUGAIKBN     TO   ACCTP-NYUGAIKBN
+           MOVE    ACCT-PTID          TO   ACCTP-PTID
+           MOVE    ACCT-SRYKA         TO   ACCTP-SRYKA
+           MOVE    ACCT-SRYYM         TO   ACCTP-SRYYM
+           MOVE    ACCT-ZAINUM        TO   ACCTP-ZAINUM
+           MOVE    1                  TO   ACCTP-RENNUM
+           MOVE    SRYACCTPLUS-REC    TO   MCPDATA-REC
+           MOVE    "DBSELECT"         TO   MCP-FUNC
+           MOVE    "tbl_sryacctplus"  TO   MCP-TABLE
+           MOVE    "key"              TO   MCP-PATHNAME
+           CALL    "MONFUNC"          USING  MCPAREA
+                                             MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "DBFETCH"          TO  MCP-FUNC
+               MOVE    "tbl_sryacctplus"  TO  MCP-TABLE
+               MOVE    "key"              TO  MCP-PATHNAME
+               CALL    "MONFUNC"          USING  MCPAREA
+                                                 MCPDATA-REC
+               IF      MCP-RC          =   ZERO
+                   MOVE    MCPDATA-REC    TO  SRYACCTPLUS-REC
+                   IF   ACCTP-RSIKINGAKU  NOT = ZERO
+                      MOVE    1   TO   FLG-TAISYO
+                   END-IF
+               END-IF
+           END-IF
+      *
+           MOVE    "DBCLOSECURSOR"    TO   MCP-FUNC
+           MOVE    "tbl_sryacctplus"  TO   MCP-TABLE
+           MOVE    "key"              TO   MCP-PATHNAME
+           CALL    "MONFUNC"          USING  MCPAREA
+                                             MCPDATA-REC
+      *
+           .
+      *
+       44011-SRYACCTPLUS-KENSAKU-EXT.
            EXIT.
       *
       ******************************************************************
