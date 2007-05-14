@@ -55,6 +55,8 @@
            03  FLG-CHK             PIC 9(01).
            03  FLG-ERR             PIC 9(01).
            03  FLG-ZAINUM-MATCH    PIC 9(01).
+           03  FLG-TENTEK-SET      PIC 9(01).
+           03  FLG-CHUJOU-SET      PIC 9(01).
       *
       *    藕机挝拌
        01  IDX-AREA.
@@ -279,6 +281,7 @@
                        PERFORM    VARYING   IDX1   FROM   1   BY   1
                                   UNTIL     IDX1   >   31
                            IF   ACCT-DAY(1 IDX1)    NOT =   ZERO
+                               MOVE  1     TO   FLG-TENTEK-SET
                                ADD   1     TO 
                                     LNK-ORCSTEN2-TENTEK-MEISAISU(IDX1)
                                MOVE  LNK-ORCSTEN2-TENTEK-MEISAISU(IDX1)
@@ -328,6 +331,7 @@
                        PERFORM    VARYING   IDX1   FROM   1   BY   1
                                   UNTIL     IDX1   >   31
                            IF   ACCT-DAY(1 IDX1)    NOT =   ZERO
+                               MOVE  1     TO   FLG-TENTEK-SET
                                ADD   ACCT-ZAITEN     TO 
                                     LNK-ORCSTEN2-TENTEK-ZAITEN(IDX1)
                                ADD   ACCT-SRYCDTOTAL     TO 
@@ -384,6 +388,7 @@
                        PERFORM    VARYING   IDX1   FROM   1   BY   1
                                   UNTIL     IDX1   >   31
                            IF   ACCT-DAY(1 IDX1)    NOT =   ZERO
+                               MOVE  1     TO   FLG-CHUJOU-SET
                                ADD   1     TO 
                                     LNK-ORCSTEN2-CHUJOU-MEISAISU(IDX1)
                                MOVE  LNK-ORCSTEN2-CHUJOU-MEISAISU(IDX1)
@@ -433,6 +438,7 @@
                        PERFORM    VARYING   IDX1   FROM   1   BY   1
                                   UNTIL     IDX1   >   31
                            IF   ACCT-DAY(1 IDX1)    NOT =   ZERO
+                               MOVE  1     TO   FLG-CHUJOU-SET
                                ADD   ACCT-ZAITEN     TO 
                                     LNK-ORCSTEN2-CHUJOU-ZAITEN(IDX1)
                                ADD   ACCT-SRYCDTOTAL     TO 
@@ -489,6 +495,7 @@
                        PERFORM    VARYING   IDX1   FROM   1   BY   1
                                   UNTIL     IDX1   >   31
                            IF   ACCT-DAY(1 IDX1)    NOT =   ZERO
+                               MOVE  1     TO   FLG-TENTEK-SET
                                ADD   1     TO 
                                     LNK-ORCSTEN2-TENTEK-MEISAISU(IDX1)
                                MOVE  LNK-ORCSTEN2-TENTEK-MEISAISU(IDX1)
@@ -538,6 +545,7 @@
                        PERFORM    VARYING   IDX1   FROM   1   BY   1
                                   UNTIL     IDX1   >   31
                            IF   ACCT-DAY(1 IDX1)    NOT =   ZERO
+                               MOVE  1     TO   FLG-CHUJOU-SET
                                ADD   1     TO 
                                     LNK-ORCSTEN2-CHUJOU-MEISAISU(IDX1)
                                MOVE  LNK-ORCSTEN2-CHUJOU-MEISAISU(IDX1)
@@ -587,6 +595,7 @@
                        PERFORM    VARYING   IDX1   FROM   1   BY   1
                                   UNTIL     IDX1   >   31
                            IF   ACCT-DAY(1 IDX1)    NOT =   ZERO
+                               MOVE  1     TO   FLG-TENTEK-SET
                                ADD   1     TO 
                                     LNK-ORCSTEN2-TENTEK-MEISAISU(IDX1)
                                MOVE  LNK-ORCSTEN2-TENTEK-MEISAISU(IDX1)
@@ -639,7 +648,8 @@
       *                      爬农庙纪
                              IF  LNK-ORCSTEN2-TENTEK-MEISAISU(IDX1)
                                               NOT =   ZERO
-                               ADD   1     TO 
+                               MOVE  1     TO   FLG-TENTEK-SET
+                               ADD   1     TO
                                     LNK-ORCSTEN2-TENTEK-MEISAISU(IDX1)
                                MOVE  LNK-ORCSTEN2-TENTEK-MEISAISU(IDX1)
                                         TO  WRK-MEISAISU
@@ -655,6 +665,7 @@
       *                      面看琅坍庙纪
                              IF  LNK-ORCSTEN2-CHUJOU-MEISAISU(IDX1)
                                               NOT =   ZERO
+                               MOVE  1     TO   FLG-CHUJOU-SET
                                ADD   1     TO 
                                     LNK-ORCSTEN2-CHUJOU-MEISAISU(IDX1)
                                MOVE  LNK-ORCSTEN2-CHUJOU-MEISAISU(IDX1)
@@ -708,6 +719,7 @@
       *                      爬农庙纪
                              IF  LNK-ORCSTEN2-TENTEK-MEISAISU(IDX1)
                                               NOT =   ZERO
+                               MOVE  1     TO   FLG-TENTEK-SET
                                ADD   1     TO 
                                     LNK-ORCSTEN2-TENTEK-MEISAISU(IDX1)
                                MOVE  LNK-ORCSTEN2-TENTEK-MEISAISU(IDX1)
@@ -724,6 +736,7 @@
       *                      面看琅坍庙纪
                              IF  LNK-ORCSTEN2-CHUJOU-MEISAISU(IDX1)
                                               NOT =   ZERO
+                               MOVE  1     TO   FLG-CHUJOU-SET
                                ADD   1     TO 
                                     LNK-ORCSTEN2-CHUJOU-MEISAISU(IDX1)
                                MOVE  LNK-ORCSTEN2-CHUJOU-MEISAISU(IDX1)
@@ -777,6 +790,7 @@
       *                      爬农庙纪
                              IF  LNK-ORCSTEN2-TENTEK-MEISAISU(IDX1)
                                               NOT =   ZERO
+                               MOVE  1     TO   FLG-TENTEK-SET
                                ADD   1     TO 
                                     LNK-ORCSTEN2-TENTEK-MEISAISU(IDX1)
                                MOVE  LNK-ORCSTEN2-TENTEK-MEISAISU(IDX1)
@@ -793,6 +807,7 @@
       *                      面看琅坍庙纪
                              IF  LNK-ORCSTEN2-CHUJOU-MEISAISU(IDX1)
                                               NOT =   ZERO
+                               MOVE  1     TO   FLG-CHUJOU-SET
                                ADD   1     TO 
                                     LNK-ORCSTEN2-CHUJOU-MEISAISU(IDX1)
                                MOVE  LNK-ORCSTEN2-CHUJOU-MEISAISU(IDX1)
@@ -819,6 +834,17 @@
            MOVE     "key14"          TO  MCP-PATHNAME
            PERFORM   910-DB-CLOSE-SEC
       *    
+           IF      FLG-TENTEK-SET     =    1
+               MOVE    ZERO        TO      LNK-ORCSTEN2-TENTEK-ERRCD
+           ELSE
+               MOVE    1           TO      LNK-ORCSTEN2-TENTEK-ERRCD
+           END-IF
+      *    
+           IF      FLG-CHUJOU-SET     =    1
+               MOVE    ZERO        TO      LNK-ORCSTEN2-CHUJOU-ERRCD
+           ELSE
+               MOVE    1           TO      LNK-ORCSTEN2-CHUJOU-ERRCD
+           END-IF
       *
            .
        200-MAIN-EXT.
