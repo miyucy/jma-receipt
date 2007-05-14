@@ -471,7 +471,6 @@ grpsys             07  KEY-O-HOSPNUM   PIC  9(02).
                05  WRK-SDD         PIC 9(02).
       *
            03  WRK-RECEERR         PIC X(200).
-      *??     03  WRK-PATH            PIC X(64).
            03  WRK-OPECOM-MCP-TABLE
                                    PIC X(64).
            03  WRK-OPECOM-MCP-PATHNAME
@@ -6938,7 +6937,7 @@ grpsys     MOVE    RECE08-HOSPNUM      TO  RECE07-HOSPNUM
                                        TO  RECE07-RECESYUBETU-SRT
            MOVE    RECE07-REC          TO  MCPDATA-REC
            MOVE    "tbl_recekanri"     TO  WRK-MCP-TABLE
-           MOVE    "key11"             TO  WRK-MCP-PATHNAME
+           MOVE    "key4"              TO  WRK-MCP-PATHNAME
            PERFORM 900-RECE07-READ-SEC
            IF      FLG-RECE07          =   1
                INITIALIZE                      RECE07-REC
