@@ -23,7 +23,7 @@
        01  ORCSTOTALACCT-AREA.
       *
       *°åÎÅµ¡´Ø£É£Ä
-           03  LNK-ORCSTOTALACCT-HOSPNUM               PIC  S9(9) BINARY.
+           03  LNK-ORCSTOTALACCT-HOSPNUM               PIC S9(9) BINARY.
       *Æþ³°¶èÊ¬
            03  LNK-ORCSTOTALACCT-NYUGAIKBN             PIC  X(01).
       *´µ¼Ô£É£Ä
