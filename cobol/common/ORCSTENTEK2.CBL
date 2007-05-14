@@ -57,6 +57,7 @@
            03  FLG-ZAINUM-MATCH    PIC 9(01).
            03  FLG-TENTEK-SET      PIC 9(01).
            03  FLG-CHUJOU-SET      PIC 9(01).
+           03  FLG-SEIMITSU-SET    PIC 9(01).
       *
       *    藕机挝拌
        01  IDX-AREA.
@@ -717,8 +718,10 @@
                                   UNTIL     IDX1   >   31
                            IF   ACCT-DAY(1 IDX1)    NOT =   ZERO
       *                      爬农庙纪
+                             MOVE    ZERO      TO   FLG-SEIMITSU-SET
                              IF  LNK-ORCSTEN2-TENTEK-MEISAISU(IDX1)
                                               NOT =   ZERO
+                               MOVE  1     TO   FLG-SEIMITSU-SET
                                MOVE  1     TO   FLG-TENTEK-SET
                                ADD   1     TO 
                                     LNK-ORCSTEN2-TENTEK-MEISAISU(IDX1)
@@ -736,6 +739,7 @@
       *                      面看琅坍庙纪
                              IF  LNK-ORCSTEN2-CHUJOU-MEISAISU(IDX1)
                                               NOT =   ZERO
+                               MOVE  1     TO   FLG-SEIMITSU-SET
                                MOVE  1     TO   FLG-CHUJOU-SET
                                ADD   1     TO 
                                     LNK-ORCSTEN2-CHUJOU-MEISAISU(IDX1)
@@ -749,6 +753,9 @@
                                     LNK-ORCSTEN2-CHUJOU-SRYCD
                                                   (IDX1 WRK-MEISAISU)
                                PERFORM   300-ZAINUM-SET-SEC
+                             END-IF
+                             IF      FLG-SEIMITSU-SET    =    ZERO
+                                 MOVE   5     TO    LNK-ORCSTEN2-RC
                              END-IF
                            END-IF
                        END-PERFORM
@@ -846,6 +853,10 @@
                MOVE    1           TO      LNK-ORCSTEN2-CHUJOU-ERRCD
            END-IF
       *
+           IF    LNK-ORCSTEN2-RC      =    5
+               INITIALIZE                  LNK-ORCSTEN2-OUT-AREA
+               MOVE    5           TO      LNK-ORCSTEN2-RC
+           END-IF
            .
        200-MAIN-EXT.
            EXIT.
