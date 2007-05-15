@@ -5311,6 +5311,11 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *****************************************************************
        3001-SRYKA-HKNCOMBI-SEC             SECTION.
       *
+      *    ¿ÇÎÅ²Ê¡á¡÷¡÷ Ê£¿ôÅ¸³«¤Ê¤·
+           IF      WKSRY-SRYKA     =   "@@"
+               GO  TO  3001-SRYKA-HKNCOMBI-EXT
+           END-IF
+      *
            MOVE    SPACE           TO  WRK-INPUTCD
            MOVE    "$"             TO  WRK-INPUTCD
            MOVE    WKSRY-SRYKA     TO  WRK-INPUTCD(2:2)

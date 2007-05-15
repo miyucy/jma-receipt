@@ -673,6 +673,7 @@
                ELSE
                    IF      SPA-ERRCD       NOT =   SPACE
                        MOVE    SPA-ERRCD       TO  WRK-ERRCD2
+                       MOVE    SPACE           TO  SPA-ERRCD
                    END-IF
                    IF      IDX2            <   SPA-GMN-MAX
                        MOVE    SPA-GMN-MAX         TO  IDX2
