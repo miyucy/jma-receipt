@@ -277,5 +277,6 @@ grpsys                            SPA-AREA
 grpsys     CALL "ORCDBMAIN" USING MCPAREA
                                   MCPDATA-REC
 grpsys                            SPA-AREA
+           .
        900-DBDISCONNECT-EXT.
            EXIT.
