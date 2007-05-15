@@ -44,6 +44,7 @@
       *
       *  03.04.01    NACL-藤原    06/12/01  月途中保険変更時の病名対応
       *  03.04.02    NACL-藤原    07/03/02  月途中保険変更時の病名対応中止
+      *  03.04.03    NACL-藤原    07/05/15  半角空白がある場合の変換
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -184,6 +185,9 @@
       *
       *    病名組立サブ
            COPY    "CPORCSMKBYOMEI.INC".
+      *
+      *    半角チェックサブ
+           COPY    "CPORCSKANACHK.INC".
       *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
@@ -465,6 +469,16 @@
 070200*    レセプト明細０３編集処理
 070300*****************************************************************
 070400 20011-RECE63-WRITE-SEC              SECTION.
+      *
+           IF      PTBYO-BYOMEIHENFLG  =   "1"
+               INITIALIZE                  ORCSKANACHKAREA
+               MOVE    "1"                 TO  KANACHK-SYORI 
+               MOVE    PTBYO-BYOMEI        TO  KANACHK-MAE-INPUT
+               MOVE    80                  TO  KANACHK-MAX-CNT
+               CALL    "ORCSKANACHK"       USING   ORCSKANACHKAREA
+               MOVE    KANACHK-OUT-INPUT   TO  PTBYO-BYOMEI
+               COMPUTE PTBYO-BYOMEIMOJI    =   KANACHK-MAX  /   2
+           END-IF        
       *
       *    疑いフラグより病名を編集
            IF      PTBYO-UTAGAIFLG NOT =   SPACE
