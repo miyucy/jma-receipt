@@ -27,6 +27,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  03.05.01    NACL-藤原    07/04/19  グループ診療対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -58,7 +59,7 @@
                05  WRK-PARA-PREFNUM    PIC X(02).
                05  WRK-PARA-JOBID      PIC 9(07).
                05  WRK-PARA-SHELLID    PIC X(08).
-               05  WRK-PARA-HOSPID     PIC X(24).
+               05  WRK-PARA-HOSPNUM    PIC 9(02).
       *
            03  WRK-MCP-TABLE           PIC X(64).
            03  WRK-MCP-PATHNAME        PIC X(64).
@@ -135,15 +136,17 @@
            INITIALIZE                  CNT-AREA
                                        WRK-AREA
                                        FLG-AREA
+                                       SPA-AREA
       *
            UNSTRING    COMMAND-PARAM   DELIMITED  BY  ","
                        INTO            WRK-PARA-JOBID
                                        WRK-PARA-SHELLID
-                                       WRK-PARA-HOSPID
+                                       WRK-PARA-HOSPNUM
                                        WRK-PARA-SRYYM
                                        WRK-PARA-NYUGAI
                                        WRK-PARA-PREFNUM
            END-UNSTRING 
+           MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
       *
       *    ＤＢオープン処理
            PERFORM 100-DBOPEN-SEC
@@ -151,15 +154,10 @@
       *    ステップ管理開始処理
            MOVE    "STS"           TO  SJOBKANRI-MODE
            INITIALIZE                  JOBKANRI-REC
-           MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
-           MOVE    WRK-PARA-SHELLID
-                                   TO  JOB-SHELLID
            MOVE    "ORCRSYUKA01"   TO  JOB-PGID
            MOVE    "主科設定処理"
                                    TO  JOB-SHELLMSG
-           CALL    "ORCSJOB"           USING
-                                       ORCSJOBKANRIAREA
-                                       JOBKANRI-REC
+grpsys     PERFORM 900-CALL-ORCSJOB-SEC
       *
       *    主科設定情報
            INITIALIZE                      SPA-SYUKA-INFO
@@ -170,7 +168,7 @@
            MOVE    WRK-PARA-SRYYM      TO  SYS-2009-STYUKYMD (1:6)
            MOVE    "01"                TO  SYS-2009-STYUKYMD (7:2)
            MOVE    SYS-2009-STYUKYMD   TO  SYS-2009-EDYUKYMD
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+grpsys     MOVE    SPA-HOSPNUM         TO  SYS-2009-HOSPNUM
            MOVE    SYS-2009-REC        TO  MCPDATA-REC
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key10"             TO  MCP-PATHNAME
@@ -210,22 +208,20 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *
            IF    WRK-PARA-NYUGAI       =  "2"
                INITIALIZE                      JYURRK-REC
-               MOVE    WRK-PARA-HOSPID     TO  JYURRK-HOSPID
+grpsys         MOVE    WRK-PARA-HOSPNUM    TO  JYURRK-HOSPNUM
                MOVE    WRK-PARA-SRYYM      TO  JYURRK-SRYYMD(1:6)
                MOVE    "% "                TO  JYURRK-SRYYMD(7:)
                MOVE    WRK-PARA-NYUGAI     TO  JYURRK-NYUGAIKBN
-grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    JYURRK-REC          TO  MCPDATA-REC
                MOVE    "tbl_jyurrk"        TO  WRK-MCP-TABLE
                MOVE    "key34"             TO  WRK-MCP-PATHNAME
            ELSE
                INITIALIZE                      PTNYUINRRK-REC
-               MOVE    WRK-PARA-HOSPID     TO  PTNYUINRRK-HOSPID
+grpsys         MOVE    WRK-PARA-HOSPNUM    TO  PTNYUINRRK-HOSPNUM
                MOVE    WRK-PARA-SRYYM      TO  PTNYUINRRK-TENSTUYMD(1:6)
                MOVE    "01"                TO  PTNYUINRRK-TENSTUYMD(7:)
                MOVE    WRK-PARA-SRYYM      TO  PTNYUINRRK-TENNYUYMD(1:6)
                MOVE    "31"                TO  PTNYUINRRK-TENNYUYMD(7:)
-grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    PTNYUINRRK-REC      TO  MCPDATA-REC
                MOVE    "tbl_ptnyuinrrk"    TO  WRK-MCP-TABLE
                MOVE    "key43"             TO  WRK-MCP-PATHNAME
@@ -266,7 +262,7 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    MCPDATA-REC          TO  PTNYUINRRK-REC
                MOVE    PTNYUINRRK-PTID      TO  PTINF-PTID
            END-IF
-           MOVE    WRK-PARA-HOSPID          TO  PTINF-HOSPID
+grpsys     MOVE    WRK-PARA-HOSPNUM         TO  PTINF-HOSPNUM
            PERFORM 900-PTINF-READ-SEC
       *
            IF      FLG-PTINF           =   ZERO
@@ -274,7 +270,6 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                DISPLAY "PTID=" PTINF-PTID 
       *
                INITIALIZE                      ORCSSYUACCAREA
-               MOVE    WRK-PARA-HOSPID     TO  SPA-HOSPID
                MOVE    WRK-PARA-PREFNUM    TO  SPA-PREFNUM
                MOVE    WRK-PARA-SRYYM      TO  LNK-SYUACC-I-SRYYM
                MOVE    PTINF-BIRTHDAY      TO  SPA-BIRTHDAY
@@ -302,12 +297,7 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
       *    ステップ管理終了処理
            MOVE    "STE"           TO  SJOBKANRI-MODE
            INITIALIZE                  JOBKANRI-REC
-           MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
-           MOVE    WRK-PARA-SHELLID
-                                   TO  JOB-SHELLID
-           CALL    "ORCSJOB"           USING
-                                       ORCSJOBKANRIAREA
-                                       JOBKANRI-REC
+grpsys     PERFORM 900-CALL-ORCSJOB-SEC
       *
            PERFORM 900-DBDISCONNECT-SEC
       *     
@@ -320,7 +310,6 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
       *****************************************************************
        900-PTINF-READ-SEC         SECTION.
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PTINF-REC           TO  MCPDATA-REC
            MOVE    "tbl_ptinf"         TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
@@ -348,27 +337,40 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    テーブル検索処理
+      *    ジョブ管理ＤＢ制御処理
+      *****************************************************************
+       900-CALL-ORCSJOB-SEC            SECTION.
+      *
+           MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
+           MOVE    WRK-PARA-SHELLID
+                                   TO  JOB-SHELLID
+grpsys     MOVE    SPA-HOSPNUM     TO  JOB-HOSPNUM
+           CALL    "ORCSJOB"       USING
+                                   ORCSJOBKANRIAREA 
+                                   JOBKANRI-REC
+                                   SPA-AREA
+           .
+       900-CALL-ORCSJOB-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ＤＢＳＥＬＥＣＴ処理
       *****************************************************************
        910-DBSELECT-SEC                SECTION.
       *
            MOVE    "DBSELECT"          TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     PERFORM 900-ORCDBMAIN-SEC
            .
        910-DBSELECT-EXT.
            EXIT.
       *
       *****************************************************************
-      *    テーブル検索処理
+      *    ＤＢＦＥＴＣＨ処理
       *****************************************************************
        910-DBFETCH-SEC                SECTION.
       *
            MOVE    "DBFETCH"           TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC              =   ZERO
                MOVE    ZERO                TO  FLG-READ
            ELSE
@@ -380,59 +382,62 @@ grpsys                            SPA-AREA
            EXIT.
       *
       *****************************************************************
-      *    ＤＢＣＬＯＳＥ処理
+      *    テーブルクローズ処理
       *****************************************************************
-       900-CLOSE-SEC                SECTION.
+       900-CLOSE-SEC               SECTION.
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     PERFORM 900-ORCDBMAIN-SEC
+      *
            .
        900-CLOSE-EXT.
            EXIT.
       *
       *****************************************************************
-      *    ＤＢ　オープン処理
+      *    テーブルアクセス処理
+      *****************************************************************
+       900-ORCDBMAIN-SEC               SECTION.
+      *
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
+           .
+      *
+       900-ORCDBMAIN-EXT.
+           EXIT.
+      *      
+      *****************************************************************
+      *    ＤＢオープン処理
       *****************************************************************
        100-DBOPEN-SEC                SECTION.
       *
            MOVE    LOW-VALUE           TO  MCP-TABLE
                                            MCP-PATHNAME
            MOVE    "DBOPEN"            TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     PERFORM 900-ORCDBMAIN-SEC
       *
            MOVE    LOW-VALUE           TO  MCP-TABLE
                                            MCP-PATHNAME
            MOVE    "DBSTART"           TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     PERFORM 900-ORCDBMAIN-SEC
            .
        100-DBOPEN-EXT.
            EXIT.
       *
       *****************************************************************
-      *    ＤＢ　クローズ処理
+      *    ＤＢクローズ処理
       *****************************************************************
        900-DBDISCONNECT-SEC            SECTION.
       *
            MOVE    LOW-VALUE           TO  MCP-TABLE
                                            MCP-PATHNAME
            MOVE    "DBCOMMIT"          TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     PERFORM 900-ORCDBMAIN-SEC
       *
            MOVE    LOW-VALUE           TO  MCP-TABLE
                                            MCP-PATHNAME
            MOVE    "DBDISCONNECT"      TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
-      *
+grpsys     PERFORM 900-ORCDBMAIN-SEC
            .
        900-DBDISCONNECT-EXT.
            EXIT.

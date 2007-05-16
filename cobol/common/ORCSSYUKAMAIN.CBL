@@ -26,6 +26,10 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  03.04.01    NACL-藤原    07/04/23  入院基本料カレンダー未設定時の
+      *                                     主科設定対応
+      *
+      *  03.05.01    NACL-藤原    07/04/19  グループ診療対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -274,7 +278,7 @@
        2001-ORCSSYUBETU-SEC        SECTION.
       *
            INITIALIZE              ORCSSYUBETUAREA
-           MOVE    SPA-HOSPID      TO  LNK-SYUBETU-HOSPID
+grpsys     MOVE    SPA-HOSPNUM     TO  LNK-SYUBETU-HOSPNUM
            MOVE    SPA-PREFNUM     TO  LNK-SYUBETU-PREFNUM
            MOVE    LNK-SYUACC-I-SRYYM
                                    TO  LNK-SYUBETU-SRYYM
@@ -282,6 +286,7 @@
            MOVE    SPA-PTID        TO  LNK-SYUBETU-PTID
            MOVE    SPA-BIRTHDAY    TO  LNK-SYUBETU-BIRTHDAY
            CALL    "ORCSSYUBETU"   USING   ORCSSYUBETUAREA
+                                           SPA-AREA
            IF      LNK-SYUBETU-RC  =   ZERO
                PERFORM VARYING IDY FROM    1   BY  1
                        UNTIL   IDY >       100
@@ -322,7 +327,7 @@
            END-IF
       *
            INITIALIZE                  ORCSTOTALACCT-AREA
-           MOVE    SPA-HOSPID      TO  LNK-ORCSTOTALACCT-HOSPID
+grpsys     MOVE    SPA-HOSPNUM     TO  LNK-ORCSTOTALACCT-HOSPNUM
            MOVE    SPA-NYUGAIKBN   TO  LNK-ORCSTOTALACCT-NYUGAIKBN
            MOVE    SPA-PTID        TO  LNK-ORCSTOTALACCT-PTID
            MOVE    LNK-SYUACC-I-SRYYM
@@ -336,6 +341,7 @@
                END-EVALUATE
            END-IF
            CALL    "ORCSTOTALACCT" USING   ORCSTOTALACCT-AREA
+                                           SPA-AREA
            IF      LNK-ORCSTOTALACCT-RC    =   ZERO
                CONTINUE
            ELSE
@@ -436,7 +442,7 @@
            END-IF
       *
            INITIALIZE                  ORCHCN33SUB-AREA
-           MOVE    SPA-HOSPID      TO  LNK-ORCHCN33SUB-HOSPID
+grpsys     MOVE    SPA-HOSPNUM     TO  LNK-ORCHCN33SUB-HOSPNUM
            MOVE    SPA-PTID        TO  LNK-ORCHCN33SUB-PTID
            MOVE    LNK-SYUACC-I-SRYYM
                                    TO  LNK-ORCHCN33SUB-SANTEIYM
@@ -449,10 +455,11 @@
                    MOVE    "2"         TO  LNK-ORCHCN33SUB-SHORIKBN
            END-EVALUATE
            CALL    "ORCHCN33SUB"   USING   ORCHCN33SUB-AREA
+                                           SPA-AREA
            IF      LNK-ORCHCN33SUB-RC  =   ZERO
                CONTINUE
            ELSE
-               IF      LNK-ORCHCN33SUB-RC  =   4
+               IF      LNK-ORCHCN33SUB-RC  =   4   OR  7
                    DISPLAY "ORCHCN33SUB=" LNK-ORCHCN33SUB-RC
                    GO  TO  2003-ORCHCN33SUB-EXT
                ELSE
