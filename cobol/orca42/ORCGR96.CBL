@@ -396,7 +396,7 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SYUKA-HOSPNUM
            MOVE    WRK-MCP-TABLE   TO  MCP-TABLE
            MOVE    WRK-MCP-PATHNAME
                                    TO  MCP-PATHNAME
-           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "DBSELECT"      TO  MCP-FUNC
            PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC              =   ZERO
                MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
@@ -856,6 +856,7 @@ grpsys         MOVE    SPA-HOSPNUM     TO  LNK-SYUBETU-HOSPNUM
                MOVE    SPA-NAI-R96-BIRTHDAY
                                        TO  LNK-SYUBETU-BIRTHDAY
                CALL    "ORCSSYUBETU"   USING   ORCSSYUBETUAREA
+                                               SPA-AREA
                IF      LNK-SYUBETU-RC  =   ZERO
                    PERFORM VARYING IDY FROM    1   BY  1
                            UNTIL   IDY >       100
