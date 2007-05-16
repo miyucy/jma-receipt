@@ -549,7 +549,6 @@
            MOVE    "*"                 TO  SYS-1001-KBNCD
            MOVE    WRK-SRYYMD          TO  SYS-1001-STYUKYMD
            MOVE    WRK-SRYYMD          TO  SYS-1001-EDYUKYMD
-grpsys*    MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            MOVE    SYS-1001-REC        TO  MCPDATA-REC
       *
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
@@ -568,7 +567,7 @@ grpsys*    MOVE    SPA-HOSPNUM         TO  -HOSPNUM
                MOVE    MCPDATA-REC         TO  SYS-1001-REC
       *
       *        »ÜÀßID¤«¤é³ºÅö¤Î°åÎÅµ¡´Ø¤ò·èÄê¤¹¤ë
-               IF      LF04-JGYSYASIS-ID   =   SYS-1001-HOSPID
+               IF      LF04-JGYSYASIS-ID (1)   =   SYS-1001-HOSPID
       *            °åÎÅµ¡´Ø£É£Ä
                    MOVE    SYS-1001-HOSPNUM    TO  WRK-HOSPNUM
       *            °åÎÅµ¡´Ø£É£Ä
@@ -661,6 +660,19 @@ grpsys*    MOVE    SPA-HOSPNUM         TO  -HOSPNUM
                                            TO  SPA-1009-HJNKSIRENNUMKBN
                MOVE    SYS-1009-HJNKSIRENNUMKETA
                                            TO  SPA-1009-HJNKSIRENNUMKETA
+               MOVE    SYS-1009-JIYKSIKBN
+                                           TO  SPA-1009-JIYKSIKBN
+               MOVE    SYS-1009-JIYKSIKETA
+                                           TO  SPA-1009-JIYKSIKETA
+      *³ÈÄ¥¹½À®¶èÊ¬
+               MOVE    SYS-1009-KKCKSIKBN
+                                       TO  SPA-1009-KKCKSIKBN
+               MOVE    SYS-1009-KKCKSIMAEKETA
+                                       TO  SPA-1009-KKCKSIMAEKETA
+               MOVE    SYS-1009-KKCKSIRENNUMKETA
+                                       TO  SPA-1009-KKCKSIRENNUMKETA
+               MOVE    SYS-1009-KKCKSIATOKETA
+                                       TO  SPA-1009-KKCKSIATOKETA
       *
            END-IF
       *
