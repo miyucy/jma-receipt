@@ -2958,6 +2958,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
 grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                                MCPDATA-REC
                                                SPA-AREA
-      *
+           .
        900-PUT-WINDOW-EXT.
            EXIT.
