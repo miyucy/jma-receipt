@@ -27,6 +27,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  03.05.00    NACL-太田    07.05.17  グループ診療対応
       *****************************************************************
       *
        ENVIRONMENT                     DIVISION.
@@ -67,8 +68,6 @@
            03  PRT-PRTDATA             PIC X(20000).
       *
        WORKING-STORAGE                 SECTION.
-grpsys*
-grpsys COPY    "COMMON-SPA".
       *
            COPY    "CPCOMMONPRT.INC"   REPLACING   //HC01PARA//
                                        BY          //HC03PARA//.
@@ -121,10 +120,12 @@ grpsys COPY    "COMMON-SPA".
       *
            COPY    "CPORCHCN03.INC".
            COPY    "CPCOMMONPRT.INC".
+           COPY    "COMMON-SPA".
       *
        PROCEDURE                   DIVISION    USING
            ORCHCN03AREA
            HC01PARA
+           SPA-AREA
            .
       *
       *****************************************************************
@@ -199,9 +200,10 @@ grpsys COPY    "COMMON-SPA".
                MOVE    IN01-PRTNM          TO  SPRT-PRTNM
                MOVE    IN01-PRTDATA        TO  SPRT-PRTDATA
                MOVE    IN01-SITEKBN        TO  SPRT-SITEKBN
-
+      *
                CALL    "ORCSPRT"           USING
                                        ORCSPRTAREA
+                                       SPA-AREA
                IF    ( SPRT-RETURN         =   ZERO )
                    CONTINUE
                ELSE
@@ -257,14 +259,13 @@ grpsys COPY    "COMMON-SPA".
            MOVE    MKPASS-OT-01    TO  SHELLTBL-NAME
       *
            MOVE    HC03PARA        TO  SHELLTBL-ARG1
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SHELLTBL        TO  MCPDATA-REC
            MOVE    "shell"         TO  MCP-TABLE
            MOVE    "shell"         TO  MCP-PATHNAME
            MOVE    "SHELL"         TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
        2001-ONLINE-PRINT-EXT.
@@ -293,7 +294,6 @@ grpsys                            SPA-AREA
            END-STRING
            MOVE    "99999999"          TO  SYS-1044-STYUKYMD
            MOVE    "99999999"          TO  SYS-1044-EDYUKYMD
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYS-1044-REC        TO  MCPDATA-REC
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key3"              TO  MCP-PATHNAME
@@ -340,9 +340,9 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
        910-DBSELECT-SEC                SECTION.
       *
            MOVE    "DBSELECT"          TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
            IF    ( MCP-RC          =   ZERO )
                PERFORM 910-DBFETCH-SEC
            END-IF
@@ -357,9 +357,9 @@ grpsys                            SPA-AREA
        911-DBSELECT-SEC                SECTION.
       *
            MOVE    "DBSELECT"          TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
       *
@@ -371,9 +371,9 @@ grpsys                            SPA-AREA
        910-DBFETCH-SEC                 SECTION.
       *
            MOVE    "DBFETCH"           TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
       *
@@ -385,9 +385,9 @@ grpsys                            SPA-AREA
        910-DBCLOSECURSOR-SEC                 SECTION.
       *
            MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
       *
