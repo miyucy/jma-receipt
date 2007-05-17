@@ -6740,7 +6740,7 @@
            MOVE SPA-GMN-I01-PTNUM  TO  SPA-LAST-PTNUM
       *
       *    画面を更新後の内容で再表示
-           PERFORM 4101-PTNUM-CHK-SEC
+           PERFORM 4100-PTNUM-CHK-SEC
            IF    ( SPA-ERRCD       NOT =   SPACE )
                GO  TO  4801-PTNYUINRRK-UPD-EXT
            END-IF
