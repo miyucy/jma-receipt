@@ -36,6 +36,8 @@
       *  02.07.01    NACL-藤原    06/01/25  疑いフラグからの病名の編集方
       *                                     法の変更
       *                                     MONFUNC対応
+      *
+      *  03.04.01    NACL-藤原    07/05/15  半角空白がある場合の変換
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -182,6 +184,9 @@
       *
       *    病名組立サブ
            COPY    "CPORCSMKBYOMEI.INC".
+      *
+      *    半角チェックサブ
+           COPY    "CPORCSKANACHK.INC".
       *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
@@ -430,6 +435,16 @@
       *    レセプト明細０３編集処理
       *****************************************************************
        20011-RECE83-WRITE-SEC              SECTION.
+      *
+           IF      PTBYO-BYOMEIHENFLG  =   "1"
+               INITIALIZE                  ORCSKANACHKAREA
+               MOVE    "1"                 TO  KANACHK-SYORI 
+               MOVE    PTBYO-BYOMEI        TO  KANACHK-MAE-INPUT
+               MOVE    80                  TO  KANACHK-MAX-CNT
+               CALL    "ORCSKANACHK"       USING   ORCSKANACHKAREA
+               MOVE    KANACHK-OUT-INPUT   TO  PTBYO-BYOMEI
+               COMPUTE PTBYO-BYOMEIMOJI    =   KANACHK-MAX  /   2
+           END-IF        
       *
       *    疑いフラグより病名を編集
            IF      PTBYO-UTAGAIFLG NOT =   SPACE
