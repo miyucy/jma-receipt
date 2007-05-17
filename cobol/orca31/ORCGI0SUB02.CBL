@@ -267,7 +267,7 @@
       *
                PERFORM VARYING IDX-SYU FROM    1   BY  1
                        UNTIL ( IDX-SYU >   CONST-RETSYU-MAX )
-                        OR   ( LNK-SYU-HOSPNUM (IDX-SYU)    = SPACE )
+                        OR   ( LNK-SYU-HOSPNUM (IDX-SYU)    = ZERO )
       *
                    COMPUTE WRK-NYUFTN-MAX  =   WRK-NYUFTN-MAX  +   1
       *
