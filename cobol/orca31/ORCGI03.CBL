@@ -36,6 +36,7 @@
       *  01.00.05    NACL-¾®Æ¦Âô  05.02.04  Â¾±¡ÎòºîÀ®¤Ë¤Ä¤¤¤Æ¤Ï
       *                                     ¡ÖÆþ±¡´ü´Ö¡æÄÌ»»ÂÐ¾ÝÆü¿ô¤È¤Ê¤Ã¤Æ¤¤¤ë¤³¤È¡×
       *                                     ¤Î¥Á¥§¥Ã¥¯¤ò³°¤¹
+      *  03.05.00    NACL-ÂÀÅÄ    07.05.15  ¥°¥ë¡¼¥×¿ÇÎÅÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -67,7 +68,6 @@
        01  FLG-AREA.
            03  FLG-END                     PIC 9(01).
            03  FLG-ERR                     PIC 9(01).
-           03  FLG-DBRC                    PIC 9(01).
            03  FLG-ENTRYCHK                PIC 9(01).
            03  FLG-PTNYUINRRK              PIC 9(01).
            03  FLG-SYSKANRI                PIC 9(01).
@@ -80,6 +80,7 @@
            03  IDX3                        PIC 9(05).
            03  IDX4                        PIC 9(05).
            03  IDX5                        PIC 9(05).
+           03  IDX-CMB                     PIC 9(05).
       *
       *    ¥·¥¹¥Æ¥àÎÎ°è
        01  SYS-AREA.
@@ -100,9 +101,8 @@
            03  WRK-KANACHK-MAE-INPUT       PIC X(400).
            03  WRK-KANACHK-OUT-INPUT       PIC X(400).
       *    ¥Ñ¥¹Ì¾ÎÎ°è
-           03  WRK-DBPATH                  PIC X(20).
-           03  WRK-COMBO.
-               05  WRK-CMB-CD              PIC X(05).
+           03  WRK-CMB-CD                  PIC X(05).
+           03  WRK-CMB-G.
                05  WRK-CMB-IDX             PIC 9(03).
                05  WRK-CMB-ITM             PIC X(100).
            03  WRK-STYMD                   PIC X(08).
@@ -166,7 +166,6 @@
       *
       *    £Ä£Â¸¡º÷
            COPY    "MCPDATA.INC".
-           COPY    "CPORCMCP.INC".
       *
       *****************************************************************
       *    Ï¢Íí¡¡ÎÎ°è
@@ -369,9 +368,11 @@
       *
            MOVE    2                   TO  SPA-GMN-I03-SHOKAI-CNT
       *
-           MOVE    "1 ½é²ó"            TO  SPA-GMN-I03-SHOKAI-ITM (01)
-           MOVE    "2 ·ÑÂ³"            TO  SPA-GMN-I03-SHOKAI-ITM (02)
-           
+           MOVE    "1"                 TO  SPA-GMN-I03-SHOKAIL    (01)
+           MOVE    "½é²ó"              TO  SPA-GMN-I03-SHOKAIMEIL (01)
+      *
+           MOVE    "2"                 TO  SPA-GMN-I03-SHOKAIL    (02)
+           MOVE    "·ÑÂ³"              TO  SPA-GMN-I03-SHOKAIMEIL (02)
       *
            .
        310-CMB-SHOKAI-SET-EXT.
@@ -383,9 +384,11 @@
       *
            MOVE    2                   TO  SPA-GMN-I03-RRKKBN-CNT
       *
-           MOVE    "1 ¼«±¡Îò"          TO  SPA-GMN-I03-RRKKBN-ITM (01)
-           MOVE    "2 Â¾±¡Îò"          TO  SPA-GMN-I03-RRKKBN-ITM (02)
-           
+           MOVE    "1"                 TO  SPA-GMN-I03-RRKKBNL    (01)
+           MOVE    "¼«±¡Îò"            TO  SPA-GMN-I03-RRKKBNMEIL (01)
+      *
+           MOVE    "2"                 TO  SPA-GMN-I03-RRKKBNL    (02)
+           MOVE    "Â¾±¡Îò"            TO  SPA-GMN-I03-RRKKBNMEIL (02)
       *
            .
        310-CMB-RRKKBN-SET-EXT.
@@ -397,8 +400,11 @@
       *
            MOVE    2               TO  SPA-GMN-I03-NYUINCHUKBN-CNT
       *
-           MOVE    "0 Âà±¡ºÑ"      TO  SPA-GMN-I03-NYUINCHUKBN-ITM (01)
-           MOVE    "1 Æþ±¡Ãæ"      TO  SPA-GMN-I03-NYUINCHUKBN-ITM (02)
+           MOVE    "0"             TO  SPA-GMN-I03-NYUINCHUKBNL    (01)
+           MOVE    "Âà±¡ºÑ"        TO  SPA-GMN-I03-NYUINCHUKBNMEIL (01)
+      *
+           MOVE    "1"             TO  SPA-GMN-I03-NYUINCHUKBNL    (02)
+           MOVE    "Æþ±¡Ãæ"        TO  SPA-GMN-I03-NYUINCHUKBNMEIL (02)
            
       *
            .
@@ -651,34 +657,10 @@
       *    ÆþÎÏÎÎ°è½é´ü²½
            PERFORM 4201-INPUT-AREA-CLEAR-SEC
       *
-      *    Æþ±¡ÍúÎò¸¡º÷
-           MOVE    ZERO            TO  FLG-PTNYUINRRK
-           INITIALIZE  PTNYUINRRK-REC
-      *****MOVE    SPA-HOSPID      TO  PTNYUINRRK-HOSPID
-           MOVE    SPA-I01-I03-PTID
-                                   TO  PTNYUINRRK-PTID
-           MOVE    SPA-I01-I03-PTRRKNUM
-                                   TO  PTNYUINRRK-RRKNUM
-           MOVE    1
-                                   TO  PTNYUINRRK-RRKEDANUM
-           MOVE    SPA-HOSPNUM     TO  PTNYUINRRK-HOSPNUM
-           MOVE    PTNYUINRRK-REC  TO  MCPDATA-REC
-           MOVE    "PTNYUINRRK-KEY"
-                                   TO  WRK-DBPATH
-           PERFORM 900-TBL-SELECT-SEC
-           IF    ( FLG-DBRC    NOT =   ZERO )
-               MOVE    1           TO  FLG-PTNYUINRRK
-           END-IF
-      *
-           MOVE    "PTNYUINRRK-KEY"
-                                   TO  WRK-DBPATH
-           PERFORM 900-TBL-CLOSE-SEC
-      *
+           PERFORM 900-PTNYUINRRK-KEY-SEL-SEC
            IF    ( FLG-PTNYUINRRK  NOT =   ZERO )
                GO  TO  4101-INPUT-AREA-EDIT-EXT
            END-IF
-      *
-           MOVE    MCPDATA-REC     TO  PTNYUINRRK-REC
       *
       *    ÍúÎò¶èÊ¬¡¿Æþ±¡Ãæ¶èÊ¬
            IF    ( PTNYUINRRK-JTIKBN   =   "5" )
@@ -705,7 +687,7 @@
       *    ½é²ó·ÑÂ³¶èÊ¬
            MOVE  PTNYUINRRK-SHOKAIKBN
                                    TO  WRK-CMB-CD
-           PERFORM 4103-CMB-SHOKAI-SRH-SEC
+           PERFORM 4103-CMB-SHOKAI-CHK-SEC
            MOVE    WRK-CMB-ITM     TO  SPA-GMN-I03-SHOKAI
       *
       *    ½é²óÈÖ¹æ
@@ -735,27 +717,7 @@
            MOVE    PTNYUINRRK-TAISYONISSU
                                    TO  SPA-GMN-I03-TAISYONISSU
       *
-      *    Â¾±¡ÉÕ²Ã¾ðÊó¸¡º÷½èÍý
-           MOVE    ZERO            TO  FLG-TAINFUKA
-           INITIALIZE  PTTAINFUKA-REC
-      *****MOVE    SPA-HOSPID      TO  PTTAINFUKA-HOSPID
-           MOVE    SPA-I01-I03-PTID
-                                   TO  PTTAINFUKA-PTID
-           MOVE    SPA-I01-I03-PTRRKNUM
-                                   TO  PTTAINFUKA-RRKNUM
-           MOVE    SPA-HOSPNUM     TO  PTTAINFUKA-HOSPNUM
-           MOVE    PTTAINFUKA-REC  TO  MCPDATA-REC
-           MOVE    "PTTAINFUKA-KEY"
-                                   TO  WRK-DBPATH
-           PERFORM 900-TBL-SELECT-SEC
-           IF    ( FLG-DBRC    NOT =   ZERO )
-               MOVE    1           TO  FLG-TAINFUKA
-           END-IF
-      *
-           MOVE    "PTTAINFUKA-KEY"
-                                       TO  WRK-DBPATH
-           PERFORM 900-TBL-CLOSE-SEC
-      *
+           PERFORM 900-PTTAINFUKA-KEY-SEL-SEC
            IF    ( FLG-TAINFUKA    NOT =   ZERO )
                GO  TO  4101-INPUT-AREA-EDIT-EXT
            END-IF
@@ -791,7 +753,7 @@
       *
            MOVE    SPA-GMN-I03-SHOKAI-CD
                                        TO  WRK-CMB-CD
-           PERFORM 4103-CMB-SHOKAI-SRH-SEC
+           PERFORM 4103-CMB-SHOKAI-CHK-SEC
            IF    ( WRK-CMB-ITM     NOT =   SPACE )
                MOVE    WRK-CMB-ITM TO  SPA-GMN-I03-SHOKAI
            ELSE
@@ -1062,80 +1024,70 @@
       *****************************************************************
       *    ½é²ó¥µ¡¼¥Á½èÍý
       *****************************************************************
-       4103-CMB-SHOKAI-SRH-SEC     SECTION.
+       4103-CMB-SHOKAI-CHK-SEC     SECTION.
       *
-           SET     CMB-IDX11       TO  1
-           SEARCH  SPA-GMN-I03-SHOKAI-ITM
-                   VARYING CMB-IDX11
-           AT  END
-               INITIALIZE          WRK-CMB-ITM
-                                   WRK-CMB-IDX
-           WHEN    SPA-GMN-I03-SHOKAI-ITM (CMB-IDX11) (1 : 1)
-                                   =   WRK-CMB-CD
-               SET WRK-CMB-IDX     TO  CMB-IDX11
-               MOVE    SPA-GMN-I03-SHOKAI-ITM (CMB-IDX11)
+           INITIALIZE              WRK-CMB-G
+      *
+           PERFORM VARYING IDX-CMB FROM    1   BY  1
+                   UNTIL ( IDX-CMB >   SPA-GMN-I03-SHOKAI-CNT )
+                    OR   ( WRK-CMB-ITM NOT =   SPACE )
+      *
+               IF    ( SPA-GMN-I03-SHOKAIL (IDX-CMB)
+                                   =   WRK-CMB-CD )
+                   MOVE    IDX-CMB TO  WRK-CMB-IDX
+                   MOVE    SPA-GMN-I03-SHOKAI-ITM (IDX-CMB)
                                    TO  WRK-CMB-ITM
-           WHEN    SPA-GMN-I03-SHOKAI-ITM (CMB-IDX11)
-                                   =   SPACE
-               INITIALIZE          WRK-CMB-ITM
-                                   WRK-CMB-IDX
-           END-SEARCH
+               END-IF
+      *
+           END-PERFORM
       *
            .
       *
-       4103-CMB-SHOKAI-SRH-EXT.
+       4103-CMB-SHOKAI-CHK-EXT.
            EXIT.
       *****************************************************************
       *    ¼«±¡¡¿Â¾±¡¥µ¡¼¥Á½èÍý
       *****************************************************************
-       4103-CMB-RRKKBN-SRH-SEC     SECTION.
+       4103-CMB-RRKKBN-CHK-SEC     SECTION.
       *
-           INITIALIZE              WRK-CMB-ITM
-                                   WRK-CMB-IDX
+           INITIALIZE              WRK-CMB-G
       *
-           PERFORM VARYING WRK-CMB-IDX FROM    1   BY  1
-                   UNTIL ( WRK-CMB-IDX >   2 )
-               IF    ( SPA-GMN-I03-RRKKBN-ITM (WRK-CMB-IDX) (1 : 1)
+           PERFORM VARYING IDX-CMB     FROM    1   BY  1
+                   UNTIL ( IDX-CMB >   SPA-GMN-I03-RRKKBN-CNT )
+                    OR   ( WRK-CMB-ITM NOT =   SPACE )
+               IF    ( SPA-GMN-I03-RRKKBNL (IDX-CMB)
                                    =   WRK-CMB-CD )
-                   MOVE    SPA-GMN-I03-RRKKBN-ITM (WRK-CMB-IDX)
+                   MOVE    IDX-CMB TO  WRK-CMB-IDX
+                   MOVE    SPA-GMN-I03-RRKKBN-ITM (IDX-CMB)
                                    TO  WRK-CMB-ITM
-                   MOVE    2       TO  WRK-CMB-IDX
                END-IF
            END-PERFORM
       *
-           IF    ( WRK-CMB-ITM     =   SPACE )
-               MOVE    ZERO        TO  WRK-CMB-IDX
-           END-IF
-      *
            .
       *
-       4103-CMB-RRKKBN-SRH-EXT.
+       4103-CMB-RRKKBN-CHK-EXT.
            EXIT.
       *****************************************************************
       *    Æþ±¡Ãæ¶èÊ¬¥µ¡¼¥Á½èÍý
       *****************************************************************
-       4103-CMB-NYUINCHUKBN-SRH-SEC     SECTION.
+       4103-CMB-NYUINCHUKBN-CHK-SEC     SECTION.
       *
-           INITIALIZE              WRK-CMB-ITM
-                                   WRK-CMB-IDX
+           INITIALIZE              WRK-CMB-G
       *
-           PERFORM VARYING WRK-CMB-IDX FROM    1   BY  1
-                   UNTIL ( WRK-CMB-IDX >   2 )
-               IF    ( SPA-GMN-I03-NYUINCHUKBN-ITM (WRK-CMB-IDX) (1 : 1)
+           PERFORM VARYING IDX-CMB     FROM    1   BY  1
+                   UNTIL ( IDX-CMB >   SPA-GMN-I03-NYUINCHUKBN-CNT )
+                    OR   ( WRK-CMB-ITM NOT =   SPACE )
+               IF    ( SPA-GMN-I03-NYUINCHUKBNL (IDX-CMB)
                                    =   WRK-CMB-CD )
-                   MOVE    SPA-GMN-I03-NYUINCHUKBN-ITM (WRK-CMB-IDX)
+                   MOVE    IDX-CMB TO  WRK-CMB-IDX
+                   MOVE    SPA-GMN-I03-NYUINCHUKBN-ITM (IDX-CMB)
                                    TO  WRK-CMB-ITM
-                   MOVE    2       TO  WRK-CMB-IDX
                END-IF
            END-PERFORM
       *
-           IF    ( WRK-CMB-ITM     =   SPACE )
-               MOVE    ZERO        TO  WRK-CMB-IDX
-           END-IF
-      *
            .
       *
-       4103-CMB-NYUINCHUKBN-SRH-EXT.
+       4103-CMB-NYUINCHUKBN-CHK-EXT.
            EXIT.
       *****************************************************************
       *    Ìá¤ë¡¡½èÍý
@@ -1230,25 +1182,12 @@
            END-IF
       *
       *    ´û¤ËÎò¥Ç¡¼¥¿¤¬Â¸ºß¤¹¤ë¤«¥Á¥§¥Ã¥¯¤¹¤ë
-           INITIALIZE              PTNYUINRRK-REC
-      *****MOVE    SPA-HOSPID      TO  PTNYUINRRK-HOSPID
-           MOVE    SPA-I01-I03-PTID
-                                   TO  PTNYUINRRK-PTID
-           MOVE    SPA-I01-I03-PTRRKNUM
-                                   TO  PTNYUINRRK-RRKNUM
-           MOVE    1
-                                   TO  PTNYUINRRK-RRKEDANUM
-           MOVE    SPA-HOSPNUM     TO  PTNYUINRRK-HOSPNUM
-           MOVE    PTNYUINRRK-REC  TO  MCPDATA-REC
-           MOVE    "PTNYUINRRK-KEY"
-                                   TO  WRK-DBPATH
-           PERFORM 900-TBL-SELECT-SEC
-           IF    ( FLG-DBRC        =   ZERO )
+           PERFORM 900-PTNYUINRRK-KEY-SEL-SEC
+           IF    ( FLG-PTNYUINRRK  =   ZERO )
                IF    ( SPA-I01-I03-SYORIKBN    =   "1" )
                    MOVE    "2001"  TO  SPA-ERRCD
                    GO  TO  480-TOUROKU-EXT
                END-IF
-               MOVE    MCPDATA-REC TO  PTNYUINRRK-REC
                IF    ( PTNYUINRRK-JTIKBN       =   "5" OR  "6" )
                    CONTINUE
                ELSE
@@ -1267,10 +1206,6 @@
                END-IF
                MOVE    "INS"       TO  WRK-UPDKBN
            END-IF
-      *
-           MOVE    "PTNYUINRRK-KEY"
-                                   TO  WRK-DBPATH
-           PERFORM 900-TBL-CLOSE-SEC
       *
       *    Æþ±¡ÍúÎò¥Þ¥¹¥¿¹¹¿·½èÍý
            PERFORM 4801-PTNYUINRRK-UPD-SEC
@@ -1306,28 +1241,25 @@
            EVALUATE WRK-UPDKBN
            WHEN    "INS"
       *        Æþ±¡ÍúÎò¥Þ¥¹¥¿ÄÉ²Ã
-               MOVE    "PTNYUINRRK-KEY"
-                                       TO  WRK-DBPATH
-               MOVE    SPA-HOSPNUM     TO  PTNYUINRRK-HOSPNUM
+               MOVE    "tbl_ptnyuinrrk" TO MCP-TABLE
+               MOVE    "key"           TO  MCP-PATHNAME
                MOVE    PTNYUINRRK-REC  TO  MCPDATA-REC
-               PERFORM 900-TBL-INSERT-SEC
+               PERFORM 910-DBINSERT-SEC
            WHEN    "UPD"
       *        Æþ±¡ÍúÎò¥Þ¥¹¥¿¹¹¿·
-               MOVE    "PTNYUINRRK-KEY"
-                                       TO  WRK-DBPATH
-               MOVE    SPA-HOSPNUM     TO  PTNYUINRRK-HOSPNUM
+               MOVE    "tbl_ptnyuinrrk" TO MCP-TABLE
+               MOVE    "key"           TO  MCP-PATHNAME
                MOVE    PTNYUINRRK-REC  TO  MCPDATA-REC
-               PERFORM 900-TBL-UPDATE-SEC
+               PERFORM 910-DBUPDATE-SEC
            WHEN    "DEL"
       *        Æþ±¡ÍúÎò¥Þ¥¹¥¿ºï½ü
-               MOVE    "PTNYUINRRK-DEL1"
-                                       TO  WRK-DBPATH
-               MOVE    SPA-HOSPNUM     TO  PTNYUINRRK-HOSPNUM
+               MOVE    "tbl_ptnyuinrrk" TO MCP-TABLE
+               MOVE    "del1"          TO  MCP-PATHNAME
                MOVE    PTNYUINRRK-REC  TO  MCPDATA-REC
-               PERFORM 900-TBL-DELETE-SEC
+               PERFORM 910-DBDELETE-SEC
            END-EVALUATE
       *
-           IF    ( FLG-DBRC    NOT =   ZERO )
+           IF    ( MCP-RC      NOT =   ZERO )
                MOVE    "2002"      TO  SPA-ERRCD
                GO  TO  4801-PTNYUINRRK-UPD-EXT
            END-IF
@@ -1347,7 +1279,7 @@
            INITIALIZE              PTNYUINRRK-REC
       *
       *    °åÎÅµ¡´Ø£É£Ä
-      *****MOVE    SPA-HOSPID      TO  PTNYUINRRK-HOSPID
+           MOVE    SPA-HOSPNUM      TO  PTNYUINRRK-HOSPNUM
       *
       *    ´µ¼Ô£É£Ä
            MOVE    SPA-I01-I03-PTID
@@ -1439,21 +1371,21 @@
       *        Æþ±¡ÍúÎò¥Þ¥¹¥¿¸¡º÷
                MOVE    ZERO                TO  FLG-PTNYUINRRK
                INITIALIZE  PTNYUINRRK-REC
-      *********MOVE    SPA-HOSPID          TO  PTNYUINRRK-HOSPID
-               MOVE    SPA-I01-I03-PTID
-                                           TO  PTNYUINRRK-PTID
-               MOVE    SPA-HOSPNUM         TO  PTNYUINRRK-HOSPNUM
+               MOVE    SPA-HOSPNUM          TO  PTNYUINRRK-HOSPNUM
+               MOVE    SPA-I01-I03-PTID    TO  PTNYUINRRK-PTID
                MOVE    PTNYUINRRK-REC      TO  MCPDATA-REC
-               MOVE    "PTNYUINRRK-KEY6"   TO  WRK-DBPATH
-               PERFORM 900-TBL-SELECT-SEC
-               IF    ( FLG-DBRC    =   ZERO  )
+               MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
+               MOVE    "key6"              TO  MCP-PATHNAME
+               PERFORM 910-DBSELECT-SEC
+               IF    ( MCP-RC      =   ZERO  )
                    MOVE    MCPDATA-REC     TO  PTNYUINRRK-REC
                ELSE
                    MOVE    1               TO  FLG-PTNYUINRRK
                END-IF
       *
-               MOVE    "PTNYUINRRK-KEY6"   TO  WRK-DBPATH
-               PERFORM 900-TBL-CLOSE-SEC
+               MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
+               MOVE    "key6"              TO  MCP-PATHNAME
+               PERFORM 910-DBCLOSECURSOR-SEC
       *
                IF    ( FLG-PTNYUINRRK  NOT =   ZERO )
                    COMPUTE WRK-SHONUM  =   1
@@ -1473,48 +1405,29 @@
       *****************************************************************
        4801-PTTAINFUKA-UPD-SEC     SECTION.
       *
-      *    ´û¤Ë¥Ç¡¼¥¿¤¬Â¸ºß¤¹¤ë¤«¥Á¥§¥Ã¥¯
-           INITIALIZE  PTTAINFUKA-REC
-      *****MOVE    SPA-HOSPID  TO  PTTAINFUKA-HOSPID
-           MOVE    SPA-I01-I03-PTID
-                                   TO  PTTAINFUKA-PTID
-           MOVE    SPA-I01-I03-PTRRKNUM
-                                   TO  PTTAINFUKA-RRKNUM
-           MOVE    SPA-HOSPNUM     TO  PTTAINFUKA-HOSPNUM
-           MOVE    PTTAINFUKA-REC
-                                   TO  MCPDATA-REC
-           MOVE    "PTTAINFUKA-KEY"
-                                   TO  WRK-DBPATH
-           PERFORM 900-TBL-SELECT-SEC
-           IF    ( FLG-DBRC    =   ZERO )
+           PERFORM 900-PTTAINFUKA-KEY-SEL-SEC
+           IF    ( FLG-TAINFUKA    =   ZERO )
                MOVE    "UPD"       TO  WRK-UPDKBN
-               MOVE    MCPDATA-REC
-                                   TO  PTTAINFUKA-REC
                MOVE    PTTAINFUKA-CREYMD
                                    TO  WRK-CREYMD
            ELSE
                MOVE    "INS"       TO  WRK-UPDKBN
            END-IF
       *
-           MOVE    "PTTAINFUKA-KEY"
-                                   TO  WRK-DBPATH
-           PERFORM 900-TBL-CLOSE-SEC
-      *
       *    Â¾±¡ÉÕ²Ã¾ðÊóÊÔ½¸½èÍý
            PERFORM 4801-PTTAINFUKA-EDIT-SEC
       *
-           MOVE    "PTTAINFUKA-KEY"
-                                   TO  WRK-DBPATH
-           MOVE    SPA-HOSPNUM     TO  PTTAINFUKA-HOSPNUM
+           MOVE    "tbl_pttainfuka"    TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
            MOVE    PTTAINFUKA-REC  TO  MCPDATA-REC
       *
            IF   ( WRK-UPDKBN   =   "UPD" )
-                   PERFORM 900-TBL-UPDATE-SEC
+                   PERFORM 910-DBUPDATE-SEC
            ELSE
-                   PERFORM 900-TBL-INSERT-SEC
+                   PERFORM 910-DBINSERT-SEC
            END-IF
       *
-           IF    ( FLG-DBRC    NOT =   ZERO )
+           IF    ( MCP-RC      NOT =   ZERO )
                MOVE    "2003"      TO  SPA-ERRCD
                GO  TO  4801-PTTAINFUKA-UPD-EXT
            END-IF
@@ -1531,7 +1444,7 @@
            INITIALIZE              PTTAINFUKA-REC
       *
       *    °åÎÅµ¡´Ø£É£Ä
-      *****MOVE    SPA-HOSPID      TO  PTTAINFUKA-HOSPID
+           MOVE    SPA-HOSPNUM      TO  PTTAINFUKA-HOSPNUM
       *    ´µ¼Ô£É£Ä
            MOVE    SPA-I01-I03-PTID
                                    TO  PTTAINFUKA-PTID
@@ -1572,15 +1485,15 @@
        4801-PTTAINFUKA-DEL-SEC     SECTION.
       *
            INITIALIZE  PTTAINFUKA-REC
-      *****MOVE    SPA-HOSPID      TO  PTTAINFUKA-HOSPID
+           MOVE    SPA-HOSPNUM      TO  PTTAINFUKA-HOSPNUM
            MOVE    SPA-I01-I03-PTID
                                    TO  PTTAINFUKA-PTID
            MOVE    SPA-I01-I03-PTRRKNUM
                                    TO  PTTAINFUKA-RRKNUM
-           MOVE    "PTTAINFUKA-KEY"
-                                   TO  WRK-DBPATH
-           PERFORM 900-TBL-DELETE-SEC
-           IF    ( FLG-DBRC    NOT =   ZERO )
+           MOVE    "tbl_pttainfuka"    TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 910-DBDELETE-SEC
+           IF    ( MCP-RC      NOT =   ZERO )
                MOVE    "2004"      TO  SPA-ERRCD
                GO  TO  4801-PTTAINFUKA-DEL-EXT
            END-IF
@@ -1720,7 +1633,7 @@
       *    Æþ±¡ÍúÎò¥Þ¥¹¥¿¸¡º÷
            MOVE    ZERO                TO  FLG-PTNYUINRRK
            INITIALIZE  PTNYUINRRK-REC
-      *****MOVE    SPA-HOSPID          TO  PTNYUINRRK-HOSPID
+           MOVE    SPA-HOSPNUM          TO  PTNYUINRRK-HOSPNUM
            MOVE    SPA-I01-I03-PTID
                                        TO  PTNYUINRRK-PTID
            MOVE    SPA-I01-I03-PTRRKNUM
@@ -1729,18 +1642,19 @@
                                        TO  PTNYUINRRK-NYUINYMD
            MOVE    SPA-NAI-I03-TAIINYMD
                                        TO  PTNYUINRRK-TAIINYMD
-           MOVE    SPA-HOSPNUM         TO  PTNYUINRRK-HOSPNUM
            MOVE    PTNYUINRRK-REC      TO  MCPDATA-REC
-           MOVE    "PTNYUINRRK-KEY7"   TO  WRK-DBPATH
-           PERFORM 900-TBL-SELECT-SEC
-           IF    ( FLG-DBRC    =   ZERO  )
+           MOVE    "tbl_ptnyuinrrk" TO MCP-TABLE
+           MOVE    "key7"           TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF    ( MCP-RC      =   ZERO  )
                MOVE    MCPDATA-REC     TO  PTNYUINRRK-REC
            ELSE
                MOVE    1               TO  FLG-PTNYUINRRK
            END-IF
       *
-           MOVE    "PTNYUINRRK-KEY7"   TO  WRK-DBPATH
-           PERFORM 900-TBL-CLOSE-SEC
+           MOVE    "tbl_ptnyuinrrk" TO MCP-TABLE
+           MOVE    "key7"           TO  MCP-PATHNAME
+           PERFORM 910-DBCLOSECURSOR-SEC
       *
            IF    ( FLG-PTNYUINRRK      =   ZERO )
                MOVE    "1008"          TO  SPA-ERRCD
@@ -1759,24 +1673,25 @@
       *    Æþ±¡ÍúÎò¥Þ¥¹¥¿¸¡º÷
            MOVE    ZERO                TO  FLG-PTNYUINRRK
            INITIALIZE  PTNYUINRRK-REC
-      *****MOVE    SPA-HOSPID          TO  PTNYUINRRK-HOSPID
+           MOVE    SPA-HOSPNUM          TO  PTNYUINRRK-HOSPNUM
            MOVE    SPA-I01-I03-PTID
                                        TO  PTNYUINRRK-PTID
            MOVE    SPA-NAI-I03-NYUINYMD
                                        TO  PTNYUINRRK-NYUINYMD
            MOVE    SPA-GMN-I03-SHONUM  TO  PTNYUINRRK-SHONUM
-           MOVE    SPA-HOSPNUM         TO  PTNYUINRRK-HOSPNUM
            MOVE    PTNYUINRRK-REC      TO  MCPDATA-REC
-           MOVE    "PTNYUINRRK-KEY16"  TO  WRK-DBPATH
-           PERFORM 900-TBL-SELECT-SEC
-           IF    ( FLG-DBRC    =   ZERO  )
+           MOVE    "tbl_ptnyuinrrk"    TO MCP-TABLE
+           MOVE    "key16"             TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF    ( MCP-RC      =   ZERO  )
                MOVE    MCPDATA-REC     TO  PTNYUINRRK-REC
            ELSE
                MOVE    1               TO  FLG-PTNYUINRRK
            END-IF
       *
-           MOVE    "PTNYUINRRK-KEY16"  TO  WRK-DBPATH
-           PERFORM 900-TBL-CLOSE-SEC
+           MOVE    "tbl_ptnyuinrrk"    TO MCP-TABLE
+           MOVE    "key16"             TO  MCP-PATHNAME
+           PERFORM 910-DBCLOSECURSOR-SEC
       *
            IF    ( FLG-PTNYUINRRK  NOT =   ZERO )
                GO  TO  4801-ZIIN-NYUINCHU-EXT
@@ -1800,24 +1715,25 @@
       *    Æþ±¡ÍúÎò¥Þ¥¹¥¿¸¡º÷
            MOVE    ZERO                TO  FLG-PTNYUINRRK
            INITIALIZE  PTNYUINRRK-REC
-      *****MOVE    SPA-HOSPID          TO  PTNYUINRRK-HOSPID
+           MOVE    SPA-HOSPNUM         TO  PTNYUINRRK-HOSPNUM
            MOVE    SPA-I01-I03-PTID
                                        TO  PTNYUINRRK-PTID
            MOVE    SPA-NAI-I03-TAIINYMD
                                        TO  PTNYUINRRK-NYUINYMD
            MOVE    SPA-GMN-I03-SHONUM  TO  PTNYUINRRK-SHONUM
-           MOVE    SPA-HOSPNUM         TO  PTNYUINRRK-HOSPNUM
            MOVE    PTNYUINRRK-REC      TO  MCPDATA-REC
-           MOVE    "PTNYUINRRK-KEY20"  TO  WRK-DBPATH
-           PERFORM 900-TBL-SELECT-SEC
-           IF    ( FLG-DBRC    =   ZERO  )
+           MOVE    "tbl_ptnyuinrrk"    TO MCP-TABLE
+           MOVE    "key20"             TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF    ( MCP-RC      =   ZERO  )
                MOVE    MCPDATA-REC     TO  PTNYUINRRK-REC
            ELSE
                MOVE    1               TO  FLG-PTNYUINRRK
            END-IF
       *
-           MOVE    "PTNYUINRRK-KEY20"  TO  WRK-DBPATH
-           PERFORM 900-TBL-CLOSE-SEC
+           MOVE    "tbl_ptnyuinrrk"    TO MCP-TABLE
+           MOVE    "key20"             TO  MCP-PATHNAME
+           PERFORM 910-DBCLOSECURSOR-SEC
       *
            IF    ( FLG-PTNYUINRRK  NOT =   ZERO )
                GO  TO  4801-KEIZOKU-NYUIN-CHK-EXT
@@ -2361,197 +2277,165 @@
        800-MCNDATE-EXT.
            EXIT.
       *****************************************************************
-      *    ¥Æ¡¼¥Ö¥ë¸¡º÷½èÍý
+      *    ´µ¼ÔÆþ±¡ÍúÎò¸¡º÷½èÍý
       *****************************************************************
-       900-TBL-SELECT-SEC              SECTION.
+       900-PTNYUINRRK-KEY-SEL-SEC      SECTION.
       *
-           MOVE    ZERO            TO  FLG-DBRC
-           MOVE    WRK-DBPATH      TO  ORC-DBPATH
-           PERFORM 910-DB-SELECT-SEC
+           MOVE    ZERO            TO  FLG-PTNYUINRRK
+      *
+           INITIALIZE                  PTNYUINRRK-REC
+           MOVE    SPA-HOSPNUM     TO  PTNYUINRRK-HOSPNUM
+           MOVE    SPA-I01-I03-PTID
+                                   TO  PTNYUINRRK-PTID
+           MOVE    SPA-I01-I03-PTRRKNUM
+                                   TO  PTNYUINRRK-RRKNUM
+           MOVE    1               TO  PTNYUINRRK-RRKEDANUM
+           MOVE    PTNYUINRRK-REC  TO  MCPDATA-REC
+           MOVE    "tbl_ptnyuinrrk" TO MCP-TABLE
+           MOVE    "key"           TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
            IF    ( MCP-RC          =   ZERO )
-               MOVE    WRK-DBPATH  TO  ORC-DBPATH
-               PERFORM 910-DB-READ-SEC
-               IF    ( MCP-RC          =   ZERO )
-                   CONTINUE
-               ELSE
-                   MOVE    1       TO  FLG-DBRC
-               END-IF
+               MOVE    MCPDATA-REC TO  PTNYUINRRK-REC
            ELSE
-               MOVE    1           TO  FLG-DBRC
+               MOVE    1           TO  FLG-PTNYUINRRK
            END-IF
       *
+           MOVE    "tbl_ptnyuinrrk" TO MCP-TABLE
+           MOVE    "key"           TO  MCP-PATHNAME
+           PERFORM 910-DBCLOSECURSOR-SEC
+      *
            .
-       900-TBL-SELECT-EXT.
+       900-PTNYUINRRK-KEY-SEL-EXT.
            EXIT.
       *****************************************************************
-      *    ¥Æ¡¼¥Ö¥ëÆÉ¹þ½èÍý
+      *    ´µ¼ÔÂ¾±¡ÉÕ²Ã¾ðÊó¸¡º÷½èÍý
       *****************************************************************
-       900-TBL-READ-SEC                SECTION.
+       900-PTTAINFUKA-KEY-SEL-SEC      SECTION.
       *
-           MOVE    ZERO            TO  FLG-DBRC
-           MOVE    WRK-DBPATH      TO  ORC-DBPATH
-           PERFORM 910-DB-READ-SEC
+           MOVE    ZERO                TO  FLG-TAINFUKA
+      *
+           INITIALIZE  PTTAINFUKA-REC
+           MOVE    SPA-HOSPNUM         TO  PTTAINFUKA-HOSPNUM
+           MOVE    SPA-I01-I03-PTID    TO  PTTAINFUKA-PTID
+           MOVE    SPA-I01-I03-PTRRKNUM
+                                       TO  PTTAINFUKA-RRKNUM
+           MOVE    PTTAINFUKA-REC      TO  MCPDATA-REC
+           MOVE    "tbl_pttainfuka"    TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
            IF    ( MCP-RC          =   ZERO )
-               CONTINUE
+               MOVE    MCPDATA-REC     TO  PTTAINFUKA-REC
            ELSE
-               MOVE    1           TO  FLG-DBRC
+               MOVE    1               TO  FLG-TAINFUKA
            END-IF
       *
-           .
-       900-TBL-READ-EXT.
-           EXIT.
-      *****************************************************************
-      *    ¥Æ¡¼¥Ö¥ë¹¹¿·½èÍý
-      *****************************************************************
-       900-TBL-UPDATE-SEC              SECTION.
-      *
-           MOVE    ZERO            TO  FLG-DBRC
-           MOVE    WRK-DBPATH      TO  ORC-DBPATH
-           PERFORM 910-DB-UPDATE-SEC
-           IF    ( MCP-RC          =   ZERO )
-               CONTINUE
-           ELSE
-               MOVE    1           TO  FLG-DBRC
-           END-IF
+           MOVE    "tbl_pttainfuka"    TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 910-DBCLOSECURSOR-SEC
       *
            .
-       900-TBL-UPDATE-EXT.
+       900-PTTAINFUKA-KEY-SEL-EXT.
            EXIT.
       *****************************************************************
-      *    ¥Æ¡¼¥Ö¥ëÄÉ²Ã½èÍý
+      *    £Ä£Â¸¡º÷½èÍý¡ÊFHETCH¤â¹Ô¤¦)
       *****************************************************************
-       900-TBL-INSERT-SEC              SECTION.
-      *
-           MOVE    ZERO            TO  FLG-DBRC
-           MOVE    WRK-DBPATH      TO  ORC-DBPATH
-           PERFORM 910-DB-INSERT-SEC
-           IF    ( MCP-RC          =   ZERO )
-               CONTINUE
-           ELSE
-               MOVE    1           TO  FLG-DBRC
-           END-IF
-      *
-           .
-       900-TBL-INSERT-EXT.
-           EXIT.
-      *****************************************************************
-      *    ¥Æ¡¼¥Ö¥ëºï½ü½èÍý
-      *****************************************************************
-       900-TBL-DELETE-SEC              SECTION.
-      *
-           MOVE    ZERO            TO  FLG-DBRC
-           MOVE    WRK-DBPATH      TO  ORC-DBPATH
-           PERFORM 910-DB-DELETE-SEC
-           IF    ( MCP-RC          =   ZERO )
-               CONTINUE
-           ELSE
-               MOVE    1           TO  FLG-DBRC
-           END-IF
-      *
-           .
-       900-TBL-DELETE-EXT.
-           EXIT.
-      *****************************************************************
-      *    ¥Æ¡¼¥Ö¥ë¥¯¥í¡¼¥º½èÍý
-      *****************************************************************
-       900-TBL-CLOSE-SEC               SECTION.
-      *
-           MOVE    WRK-DBPATH      TO  ORC-DBPATH
-           PERFORM 910-DB-CLOSE-SEC
-      *
-           .
-       900-TBL-CLOSE-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    £Ä£Âºï½ü½èÍý
-      *****************************************************************
-       910-DB-DELETE-SEC               SECTION.
-      *
-           MOVE    "DBDELETE"          TO  MCP-FUNC
-           CALL    "ORCMCPSUB"         USING
-                                       MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC
-      *
-           .
-      *
-       910-DB-UPDATE-EXT.
-           EXIT.
-      *****************************************************************
-      *    £Ä£Â¹¹¿·½èÍý
-      *****************************************************************
-       910-DB-UPDATE-SEC               SECTION.
-      *
-           MOVE    "DBUPDATE"          TO  MCP-FUNC
-           CALL    "ORCMCPSUB"         USING
-                                       MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC
-      *
-           .
-      *
-       910-DB-UPDATE-EXT.
-           EXIT.
-      *****************************************************************
-      *    £Ä£ÂÄÉ²Ã½èÍý
-      *****************************************************************
-       910-DB-INSERT-SEC               SECTION.
-      *
-           MOVE    "DBINSERT"          TO  MCP-FUNC
-           CALL    "ORCMCPSUB"         USING
-                                       MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC
-      *
-           .
-      *
-       910-DB-INSERT-EXT.
-           EXIT.
-      *****************************************************************
-      *    £Ä£Â¸¡º÷½èÍý
-      *****************************************************************
-       910-DB-SELECT-SEC               SECTION.
+       910-DBSELECT-SEC                SECTION.
       *
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
+           IF    ( MCP-RC          =   ZERO )
+               PERFORM 910-DBFETCH-SEC
+           END-IF
       *
            .
       *
-       910-DB-SELECT-EXT.
+       910-DBSELECT-EXT.
+           EXIT.
+      *****************************************************************
+      *    £Ä£Â¸¡º÷½èÍý¡ÊFHETCH¤Ï¹Ô¤ï¤Ê¤¤)
+      *****************************************************************
+       911-DBSELECT-SEC                SECTION.
+      *
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
+      *
+           .
+      *
+       911-DBSELECT-EXT.
            EXIT.
       *****************************************************************
       *    £Ä£ÂÆÉ¤ß¹þ¤ß½èÍý
       *****************************************************************
-       910-DB-READ-SEC                 SECTION.
+       910-DBFETCH-SEC                 SECTION.
       *
-           MOVE    "DBFETCH"       TO  MCP-FUNC
-           CALL    "ORCMCPSUB"         USING
-                                       MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
       *
-       910-DB-READ-EXT.
+       910-DBFETCH-EXT.
            EXIT.
       *****************************************************************
       *    £Ä£Â¥¯¥í¡¼¥º½èÍý
       *****************************************************************
-       910-DB-CLOSE-SEC                SECTION.
+       910-DBCLOSECURSOR-SEC                 SECTION.
       *
-           MOVE    "DBCLOSECURSOR"      TO  MCP-FUNC
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
+           CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
       *
-       910-DB-CLOSE-EXT.
+       910-DBCLOSECURSOR-EXT.
+           EXIT.
+      *****************************************************************
+      *    £Ä£Â£Ä£Å£Ì£Å£Ô£Å½èÍý
+      *****************************************************************
+       910-DBDELETE-SEC                 SECTION.
+      *
+           MOVE    "DBDELETE"          TO  MCP-FUNC
+           CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
+      *
+           .
+      *
+       910-DBDELETE-EXT.
+           EXIT.
+      *****************************************************************
+      *    £Ä£Â£É£Î£Ó£Å£Ò£Ô½èÍý
+      *****************************************************************
+       910-DBINSERT-SEC                SECTION.
+      *
+           MOVE    "DBINSERT"          TO  MCP-FUNC
+           CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
+      *
+           .
+      *
+       910-DBINSERT-EXT.
+           EXIT.
+      *****************************************************************
+      *    £Ä£Â£Õ£Ð£Ä£Á£Ô£Å½èÍý
+      *****************************************************************
+       910-DBUPDATE-SEC                SECTION.
+      *
+           MOVE    "DBUPDATE"          TO  MCP-FUNC
+           CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
+      *
+           .
+      *
+       910-DBUPDATE-EXT.
            EXIT.
       *****************************************************************
       *    £Ð£Õ£Ô¡¡½èÍý
@@ -2559,10 +2443,9 @@
        900-PUT-WINDOW              SECTION.
       *
            MOVE   "PUTWINDOW"       TO  MCP-FUNC.
-           CALL   "ORCMCPSUB"   USING
-                                MCPAREA
-                                ORCMCPAREA
-                                MCPDATA-REC.
+           CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
        900-PUT-WINDOW-EXT.

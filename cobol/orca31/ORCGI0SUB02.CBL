@@ -27,6 +27,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  03.05.00    NACL-太田    07.05.15  グループ診療対応
       *****************************************************************
        ENVIRONMENT                     DIVISION.
        CONFIGURATION                   SECTION.
@@ -244,8 +245,7 @@
                                        LNK-SYUDAY-REC-T
                                        WRK-NYUFTN-MAX
       *
-           MOVE    SPA-HOSPID      TO  LNK-S02-HOSPID
-      *****MOVE    SPA-HOSPNUM     TO  LNK-S02-HOSPNUM
+           MOVE    SPA-HOSPNUM      TO  LNK-S02-HOSPNUM
            MOVE    "1"             TO  LNK-S02-NYUGAIKBN
            MOVE    SPA-PTID        TO  LNK-S02-PTID
            MOVE    I0SUB02-NISSU   TO  LNK-S02-NYUIN-TSUSAN-NISSU
@@ -267,8 +267,7 @@
       *
                PERFORM VARYING IDX-SYU FROM    1   BY  1
                        UNTIL ( IDX-SYU >   CONST-RETSYU-MAX )
-      ******************OR   ( LNK-SYU-HOSPID (IDX-SYU)    = SPACE )
-                        OR   ( LNK-SYU-HOSPNUM (IDX-SYU)   = SPACE )
+                        OR   ( LNK-SYU-HOSPNUM (IDX-SYU)    = SPACE )
       *
                    COMPUTE WRK-NYUFTN-MAX  =   WRK-NYUFTN-MAX  +   1
       *
@@ -1065,12 +1064,11 @@
            MOVE    ZERO            TO  FLG-SYUNOU
       *
            INITIALIZE                  SYUNOU-REC
-      *****MOVE    SPA-HOSPID      TO  SYU-HOSPID
+           MOVE    SPA-HOSPNUM      TO  SYU-HOSPNUM
            MOVE    SPA-NYUGAIKBN   TO  SYU-NYUGAIKBN
            MOVE    SPA-PTID        TO  SYU-PTID
            MOVE    "1"             TO  SYU-CREATEKBN
            MOVE    I0SUB02-RRKNUM  TO  SYU-NYUIN-RRKNUM
-           MOVE    SPA-HOSPNUM     TO  SYU-HOSPNUM
            MOVE    SYUNOU-REC      TO  MCPDATA-REC
            MOVE    "tbl_syunou"    TO  MCP-TABLE
            MOVE    "key57"         TO  MCP-PATHNAME
@@ -1109,10 +1107,9 @@
        910-DBSELECT-SEC                SECTION.
       *
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           CALL    "ORCDBMAIN"         USING
-                                           MCPAREA
-                                           MCPDATA-REC
-                                           SPA-AREA
+           CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
            IF    ( MCP-RC          =   ZERO )
                PERFORM 910-DBFETCH-SEC
            END-IF
@@ -1127,10 +1124,9 @@
        911-DBSELECT-SEC                SECTION.
       *
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           CALL    "ORCDBMAIN"         USING
-                                           MCPAREA
-                                           MCPDATA-REC
-                                           SPA-AREA
+           CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
       *
@@ -1142,10 +1138,9 @@
        910-DBFETCH-SEC                 SECTION.
       *
            MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "ORCDBMAIN"         USING
-                                           MCPAREA
-                                           MCPDATA-REC
-                                           SPA-AREA
+           CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
       *
@@ -1157,10 +1152,9 @@
        910-DBCLOSECURSOR-SEC           SECTION.
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           CALL    "ORCDBMAIN"         USING
-                                           MCPAREA
-                                           MCPDATA-REC
-                                           SPA-AREA
+           CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
       *

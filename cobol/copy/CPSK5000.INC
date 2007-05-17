@@ -131,8 +131,13 @@
                05  SYS-5000-TEISUKBN       PIC  X(01).
       *£Á£Ä£ÌÆþÎÏ¶èÊ¬
                05  SYS-5000-ADLINPUTKBN    PIC  X(01).
+      *Äê´üÀÁµáº¹³Û½é´üÉ½¼¨¶èÊ¬
+               05  SYS-5000-TEIKISAGAKUACTKBN
+                                           PIC  X(01).
+      *Æþ¶â¤Î¼è°·¤¤
+               05  SYS-5000-NYKNKNRKBN     PIC  X(01).
       *Í½È÷¡Ê£²¡Ë
-               05                          PIC  X(03).
+               05                          PIC  X(01).
       *Ã¼Ëö£É£Ä
            03  SYS-5000-TERMID             PIC  X(16).
       *¥ª¥Ú¡¼¥ì¡¼¥¿£É£Ä

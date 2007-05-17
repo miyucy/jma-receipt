@@ -48,7 +48,7 @@
       *
       *    £Ó£Ã£Ò£Ó£Ð£Á¥Ç¡¼¥¿
        FD  SCRSPA-FILE.
-       01  SCRSPA-DATA-REC         PIC X(30000).
+       01  SCRSPA-DATA-REC         PIC X(50000).
       *
       *    £Ã£Ï£Í£Í£Ï£Î¥Ç¡¼¥¿
        FD  COMMON-FILE.

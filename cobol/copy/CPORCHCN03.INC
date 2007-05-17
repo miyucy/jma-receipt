@@ -27,7 +27,7 @@
       ************************************************************
       *
        01  ORCHCN03AREA.
-           03  ORCHCN03-HEAD-HOSPID        PIC X(24).
+           03  ORCHCN03-HEAD-HOSPNUM       PIC 9(02).
            03  ORCHCN03-STAFFCD            PIC X(05).
            03  ORCHCN03-SYSYMD             PIC X(08).
            03  ORCHCN03-TERMID             PIC X(64).
@@ -36,7 +36,7 @@
       *        ´ð½àÆü
                05  ORCHCN03-KJNYMD         PIC  X(08).
       *        °åÎÅµ¡´Ø£É£Ä
-               05  ORCHCN03-HOSPID         PIC  X(24).
+               05  ORCHCN03-HOSPNUM        PIC  9(02).
       *        ´µ¼Ô£É£Ä
                05  ORCHCN03-PTID           PIC  9(10).
       *        ´µ¼ÔÈÖ¹æ

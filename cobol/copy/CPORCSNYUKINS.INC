@@ -26,7 +26,7 @@
        01  ORCSNYUKINAREAS.
       *入力値
       *    医療機関ＩＤ（必須）
-           03  LNK-SCNYUKINS-HOSPID          PIC X(24).
+           03  LNK-SCNYUKINS-HOSPNUM         PIC 9(02).
       *    患者ＩＤ（必須）
            03  LNK-SCNYUKINS-PTID            PIC 9(10).
       *    入金日

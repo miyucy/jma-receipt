@@ -28,6 +28,7 @@
       *****************************************************************
       *  ¥×¥í¥°¥é¥à½¤ÀµÍúÎò
       * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      *  03.05.00    NACL-ÂÀÅÄ    07.05.15  ¥°¥ë¡¼¥×¿ÇÎÅÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -103,7 +104,6 @@
       *
       *    £Ä£Â¸¡º÷
            COPY    "MCPDATA.INC".
-           COPY    "ORCA-DBPATH".
       *
       *****************************************************************
       *    Ï¢Íí¡¡ÎÎ°è
@@ -264,14 +264,14 @@
            MOVE    ZERO            TO  FLG-SYSKANRI
       *
            INITIALIZE                  SYS-5013-REC
+           MOVE    SPA-HOSPNUM     TO  SYS-5013-HOSPNUM
            MOVE    "5013"          TO  SYS-5013-KANRICD
            MOVE    SPA-I02-I05-TAIINYMD
                                    TO  SYS-5013-STYUKYMD
                                        SYS-5013-EDYUKYMD
-           MOVE    SPA-HOSPNUM     TO  SYS-5013-HOSPNUM
            MOVE    SYS-5013-REC    TO  MCPDATA-REC
-           MOVE    PATH-TBL-SYSKANRI-KEY2
-                                   TO  MCP-PATH
+           MOVE    "tbl_syskanri"  TO  MCP-TABLE
+           MOVE    "key2"          TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF    ( MCP-RC    =   ZERO )
                MOVE    MCPDATA-REC TO  SYS-5013-REC
@@ -291,8 +291,8 @@
                MOVE    SYS-5013-NAME
                                TO  SPA-GMN-I05-TAIINCD-ITM(IDX1)(4:)
       *
-               MOVE    PATH-TBL-SYSKANRI-KEY2
-                                       TO  MCP-PATH
+               MOVE    "tbl_syskanri"  TO  MCP-TABLE
+               MOVE    "key2"          TO  MCP-PATHNAME
                PERFORM 910-DBFETCH-SEC
                IF    ( MCP-RC    =   ZERO )
                    MOVE    MCPDATA-REC TO  SYS-5013-REC
@@ -303,8 +303,8 @@
       *
            END-PERFORM
       *
-           MOVE    PATH-TBL-SYSKANRI-KEY2
-                                   TO  MCP-PATH
+           MOVE    "tbl_syskanri"  TO  MCP-TABLE
+           MOVE    "key2"          TO  MCP-PATHNAME
            PERFORM 910-DBCLOSE-SEC
       *
            .
@@ -480,7 +480,7 @@
       *
            INITIALIZE                  PTNYUINRRK-REC
       *
-      *****MOVE    SPA-HOSPID          TO  PTNYUINRRK-HOSPID
+           MOVE    SPA-HOSPNUM          TO  PTNYUINRRK-HOSPNUM
            MOVE    SPA-I02-I05-PTID    TO  PTNYUINRRK-PTID
            MOVE    SPA-I02-I05-PTRRKNUM
                                        TO  PTNYUINRRK-RRKNUM
@@ -491,10 +491,9 @@
            MOVE    SMCNDATE-YMD        TO  PTNYUINRRK-UPYMD
            MOVE    SMCNDATE-HMS        TO  PTNYUINRRK-UPHMS
       *
-           MOVE    SPA-HOSPNUM         TO  PTNYUINRRK-HOSPNUM
            MOVE    PTNYUINRRK-REC      TO  MCPDATA-REC
-           MOVE    PATH-TBL-PTNYUINRRK-UPD1
-                                       TO  MCP-PATH
+           MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
+           MOVE    "upd1"              TO  MCP-PATHNAME
            PERFORM 910-DBUPDATE-SEC
            IF    ( MCP-RC          NOT =   ZERO )
                MOVE    "2001"          TO  SPA-ERRCD
@@ -679,11 +678,11 @@
            MOVE    ZERO                TO  FLG-PTINF
       *
            INITIALIZE                      PTINF-REC
-      *****MOVE    SPA-HOSPID          TO  PTINF-HOSPID
+           MOVE    SPA-HOSPNUM          TO  PTINF-HOSPNUM
            MOVE    SPA-I02-I05-PTID    TO  PTINF-PTID
-           MOVE    SPA-HOSPNUM         TO  PTINF-HOSPNUM
            MOVE    PTINF-REC           TO  MCPDATA-REC
-           MOVE    PATH-TBL-PTINF-KEY  TO  MCP-PATH
+           MOVE    "tbl_ptinf"         TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF    ( MCP-RC          =   ZERO )
                MOVE    MCPDATA-REC     TO  PTINF-REC
@@ -692,7 +691,8 @@
                INITIALIZE                  PTINF-REC
            END-IF
       *
-           MOVE    PATH-TBL-PTINF-KEY  TO  MCP-PATH
+           MOVE    "tbl_ptinf"         TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
            PERFORM 910-DBCLOSE-SEC
       *
            .
@@ -704,9 +704,9 @@
        910-DBSELECT-SEC                SECTION.
       *
            MOVE    "DBSELECT"      TO  MCP-FUNC
-           CALL    "MCPSUB"            USING
-                                       MCPAREA
-                                       MCPDATA-REC
+           CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            IF    ( MCP-RC          =   ZERO )
                PERFORM 910-DBFETCH-SEC
@@ -721,9 +721,9 @@
        910-DBFETCH-SEC                 SECTION.
       *
            MOVE    "DBFETCH"       TO  MCP-FUNC
-           CALL    "MCPSUB"            USING
-                                       MCPAREA
-                                       MCPDATA-REC
+           CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
       *
@@ -735,9 +735,9 @@
        910-DBCLOSE-SEC                 SECTION.
       *
            MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
-           CALL    "MCPSUB"            USING
-                                       MCPAREA
-                                       MCPDATA-REC
+           CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
       *
@@ -749,9 +749,9 @@
        910-DBUPDATE-SEC                SECTION.
       *
            MOVE    "DBUPDATE"      TO  MCP-FUNC
-           CALL    "MCPSUB"            USING
-                                       MCPAREA
-                                       MCPDATA-REC
+           CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
       *
@@ -763,9 +763,9 @@
        900-PUT-WINDOW              SECTION.
       *
            MOVE   "PUTWINDOW"       TO  MCP-FUNC.
-           CALL   "MCPSUB"      USING
-                                MCPAREA
-                                MCPDATA-REC.
+           CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
        900-PUT-WINDOW-EXT.
