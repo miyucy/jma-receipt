@@ -1798,8 +1798,8 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                ELSE
                    MOVE    JYURRK-DOUJI-RENNUM
                                            TO  WRK-JYURRK-DOUJI-RENNUM
+                   ADD     1               TO  WRK-JYURRK-DOUJI-RENNUM
                    IF      JYURRK-EDANUM   =   1
-                       ADD     1           TO  WRK-JYURRK-DOUJI-RENNUM
                        ADD     1           TO  WRK-CNT-DOUJI
                    END-IF
                END-IF
