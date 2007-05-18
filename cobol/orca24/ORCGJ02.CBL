@@ -2495,7 +2495,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    ZERO                TO  WRK-IDG
       *    診療行為マスター読み込み
            INITIALIZE                      SRYACT-REC
-           MOVE    ACCT-HOSPNUM         TO  SRY-HOSPNUM
+           MOVE    ACCT-HOSPNUM        TO  SRY-HOSPNUM
            MOVE    ACCT-NYUGAIKBN      TO  SRY-NYUGAIKBN
            MOVE    ACCT-PTID           TO  SRY-PTID
            MOVE    ACCT-SRYKA          TO  SRY-SRYKA
@@ -8278,6 +8278,9 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    SPA-MAE-STRNUM  TO  SPA-STRNUM
            END-IF
       *
+      *    受診履歴編集
+           PERFORM 3103-JYURRK-HEN-SEC
+      *
       *    保存用パラメタ作成
            PERFORM 4201-SRYACCT-PARA-SEC
       *
@@ -8333,6 +8336,9 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
            ADD     1                   TO  SPA-GMN-PAGE
            MOVE    SPA-ENDNUM          TO  SPA-STRNUM
            ADD     1                   TO  SPA-STRNUM
+      *
+      *    受診履歴編集
+           PERFORM 3103-JYURRK-HEN-SEC
       *
       *    保存用パラメタ作成
            PERFORM 4201-SRYACCT-PARA-SEC
