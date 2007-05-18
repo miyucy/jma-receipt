@@ -8262,6 +8262,9 @@
                MOVE    SPA-MAE-STRNUM  TO  SPA-STRNUM
            END-IF
       *
+      *    受診履歴編集
+           PERFORM 3103-JYURRK-HEN-SEC
+      *
       *    保存用パラメタ作成
            PERFORM 4201-SRYACCT-PARA-SEC
       *
@@ -8318,9 +8321,11 @@
            MOVE    SPA-ENDNUM          TO  SPA-STRNUM
            ADD     1                   TO  SPA-STRNUM
       *
+      *    受診履歴編集
+           PERFORM 3103-JYURRK-HEN-SEC
+      *
       *    保存用パラメタ作成
            PERFORM 4201-SRYACCT-PARA-SEC
-      *
       *
       *    診療会計マスターより編集をする
            PERFORM 410181-SRYACCT-HEN-SEC
