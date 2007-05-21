@@ -36,6 +36,8 @@
       *  03.00.01    NACL-ÃÝÅÄ    06/06/07  »»ÄêÍúÎò¼è¤ê¹þ¤ßÊÑ¹¹
       *
       *  03.03.01    NACL-ÌçÏÆ    06/09/27  £²£°£°£¶Ç¯£±£°·î²þÀµÂÐ±þ
+      *
+      *  03.05.01    NACL-Æ£¸¶    07/04/19  ¥°¥ë¡¼¥×¿ÇÎÅÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -51,10 +53,8 @@
        01  LNK-TIMEOFDAY       PIC X(100).
       *
       *    ¥¨¥é¡¼¥Õ¥¡¥¤¥ë Ì¾¾ÎÎÎ°è 
-           COPY    "CPCOMMONDAT2.INC"
-                                   REPLACING  //RECE01PARA//
+           COPY    "CPERRFL.INC"   REPLACING  //ERRFLPARA//
                                    BY         //RECEERR//.
-           03  FILLER              PIC X(04)   VALUE   ".dat".
       *
       *    ¥«¥¦¥ó¥ÈÎÎ°è
        01  FLG-AREA.
@@ -113,6 +113,7 @@
                05  WRK-PARA-HKNKBN                     PIC  X(01).
                05  WRK-PARA-SHORI-KBN                  PIC  X(01).
                05  WRK-PARA-HOSPID                     PIC  X(24).
+               03  WRK-PARA-HOSPNUM                    PIC  9(02).
       *
            03  WRK-PARA0.
                05  WRK-PARA0-A1.
@@ -188,8 +189,6 @@
       *
            COPY    "MCPAREA".
       *
-           COPY    "ORCA-DBPATH".
-      *
       *****************************************************************
       *    ¥Õ¥¡¥¤¥ë¥ì¥¤¥¢¥¦¥È
       *****************************************************************
@@ -260,14 +259,13 @@
       *
       *    £Ä£Â¸¡º÷
            COPY    "MCPDATA.INC".
-           COPY    "CPORCMCP.INC".
       *
            COPY    "COMMON-SPA".
       *
       ****************************************************************
        LINKAGE                 SECTION.
        01  COMMAND-PARAM.
-           02  FILLER      PIC X(1000).
+           02  FILLER      PIC X(2000).
       ****************************************************************
        PROCEDURE           DIVISION
                USING
@@ -291,6 +289,7 @@
       *
            INITIALIZE                  WRK-AREA
                                        FLG-AREA
+                                       SPA-AREA
       *
       *    £Ä£Â¥ª¡¼¥×¥ó½èÍý
            PERFORM 100-DBOPEN-SEC
@@ -325,8 +324,10 @@
                                          WRK-PARA-NYUGAIKBN
                                          WRK-PARA-HKNKBN
                                          WRK-PARA-SHORI-KBN
-                                         WRK-PARA-HOSPID
+                                         WRK-PARA-HOSPNUM
+                                         RECEERR
            END-UNSTRING
+           MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
       *
       *
            MOVE     WRK-PARA-A1    TO  WRK-PARA0-A1
@@ -362,8 +363,8 @@
                                    TO  WRK-CONS-ARG-NYUGAIKBN 
       *
       *    ¥¨¥é¡¼¥Õ¥¡¥¤¥ëÌ¾
-           MOVE    "RECEERR"           TO  RECEERR-FILE-ID
-           MOVE    WRK-PARA-A1-2       TO  RECEERR-TERMID
+      ***  MOVE    "RECEERR"           TO  RECEERR-FILE-ID
+      ***  MOVE    WRK-PARA-A1-2       TO  RECEERR-TERMID
       *
            .
        100-INIT-EXT.
@@ -401,67 +402,57 @@
       *****************************************************************
        2001-IHO-GAIRAI-SEC                SECTION.
       *
-       DISPLAY "orcr0010 start = [" WRK-PARA0 "]"
-      **     CALL "timeofday" USING LNK-TIMEOFDAY.
-      **   DISPLAY "orcr0010 START"
-      **           " "  LNK-TIMEOFDAY(1:20).
+           MOVE     SPACE       TO WRK-ARG
+           STRING   WRK-PARA0      DELIMITED   BY  SIZE
+                    ","            DELIMITED   BY  SIZE
+                    WRK-PARA-HOSPNUM
+                                   DELIMITED   BY  SIZE
+                    ","            DELIMITED   BY  SIZE
+                    RECEERR        DELIMITED   BY  SPACE
+                                   INTO    WRK-ARG
+           END-STRING
+           DISPLAY "orcr0010 start = [" WRK-ARG "]"
            CALL    "ORCR0010"          USING
-                                   WRK-PARA0
-      **     CALL "timeofday" USING LNK-TIMEOFDAY.
-       DISPLAY "orcr0020 start = [" WRK-PARA1 "]"
-      **   DISPLAY "orcr0020 START"
-      **           " "  LNK-TIMEOFDAY(1:20).
+                                       WRK-ARG
+      *
+           MOVE     SPACE       TO WRK-ARG
+           STRING   WRK-PARA1      DELIMITED   BY  SIZE
+                    ","            DELIMITED   BY  SIZE
+                    WRK-PARA-HOSPNUM
+                                   DELIMITED   BY  SIZE
+                    ","            DELIMITED   BY  SIZE
+                    RECEERR        DELIMITED   BY  SPACE
+                                   INTO    WRK-ARG
+           END-STRING
+           DISPLAY "orcr0020 start = [" WRK-ARG "]"
            CALL    "ORCR0020"          USING
-                                   WRK-PARA1
-      **     CALL "timeofday" USING LNK-TIMEOFDAY.
-      **   DISPLAY "orcr0030 START"
-      **           " "  LNK-TIMEOFDAY(1:20).
+                                       WRK-ARG
+      *
+           MOVE     SPACE       TO WRK-ARG
+           STRING   WRK-PARA2      DELIMITED   BY  SIZE
+                    ","            DELIMITED   BY  SIZE
+                    WRK-PARA-HOSPNUM
+                                   DELIMITED   BY  SIZE
+                    ","            DELIMITED   BY  SIZE
+                    RECEERR        DELIMITED   BY  SPACE
+                                   INTO    WRK-ARG
+           END-STRING
            CALL    "ORCR0030"          USING
-                                   WRK-PARA2
-      **     CALL "timeofday" USING LNK-TIMEOFDAY.
-      **   DISPLAY "orcr0035 START"
-      **           " "  LNK-TIMEOFDAY(1:20).
+                                       WRK-ARG
            CALL    "ORCR0035"          USING
-                                   WRK-PARA2
-      *
-      **     CALL "timeofday" USING LNK-TIMEOFDAY.
-      **   DISPLAY "orcr0038 START"
-      **           " "  LNK-TIMEOFDAY(1:20).
+                                       WRK-ARG
            CALL    "ORCR0038"          USING
-                                   WRK-PARA2
-      *
-      **     CALL "timeofday" USING LNK-TIMEOFDAY.
-      **   DISPLAY "orcr0040 START"
-      **           " "  LNK-TIMEOFDAY(1:20).
+                                       WRK-ARG
            CALL    "ORCR0040"          USING
-                                   WRK-PARA2
-      *
-      *
-      **     CALL "timeofday" USING LNK-TIMEOFDAY.
-      **   DISPLAY "orcr0050 START"
-      **           " "  LNK-TIMEOFDAY(1:20).
+                                       WRK-ARG
            CALL    "ORCR0050"          USING
-                                   WRK-PARA2
-      *
-      **     CALL "timeofday" USING LNK-TIMEOFDAY.
-      **   DISPLAY "orcr0055 START"
-      **           " "  LNK-TIMEOFDAY(1:20).
+                                       WRK-ARG
            CALL    "ORCR0055"          USING
-                                   WRK-PARA2
-      *
-      *    PERFORM 900-DBDISCONNECT-SEC
-      *
-      **     CALL "timeofday" USING LNK-TIMEOFDAY.
-      **   DISPLAY "orcr0090 START"
-      **           " "  LNK-TIMEOFDAY(1:20).
+                                       WRK-ARG
            CALL    "ORCR0090"          USING
-                                   WRK-PARA2
-      *
-      **     CALL "timeofday" USING LNK-TIMEOFDAY.
-      **   DISPLAY "orcr0091 START"
-      **           " "  LNK-TIMEOFDAY(1:20).
+                                       WRK-ARG
            CALL    "ORCR0091"          USING
-                                   WRK-PARA2
+                                       WRK-ARG
       *
       ***  IF      WRK-PARA-A7 NOT =   "NOPG"
       ***      CALL    WRK-PARA-A7     USING
@@ -473,22 +464,29 @@
       *    Á°²óÊ¬ºï½ü(Â¸ºß¤¹¤ì¤Ð)
            PERFORM 200101-PRVDATA-DEL-SEC
       *
-      **     CALL "timeofday" USING LNK-TIMEOFDAY.
-      **   DISPLAY "orcr0104 START"
-      **           " "  LNK-TIMEOFDAY(1:20).
+      *
+           MOVE     SPACE       TO WRK-ARG
+           STRING   WRK-PARA3      DELIMITED   BY  SIZE
+                    ","            DELIMITED   BY  SIZE
+                    WRK-PARA-HOSPNUM
+                                   DELIMITED   BY  SIZE
+                    ","            DELIMITED   BY  SIZE
+                    RECEERR        DELIMITED   BY  SPACE
+                                   INTO    WRK-ARG
+           END-STRING
            CALL    "ORCR0104"          USING
-                                   WRK-PARA3
+                                       WRK-ARG
       *
            IF    ( WRK-PARA-A11    =   "06"     )
            AND   ( WRK-PARA-A8     <   "200601" )
                CALL    "ORCRCP060"     USING
-                                       WRK-PARA3
+                                       WRK-ARG
            END-IF
       *
            IF    ( WRK-PARA-A11    =   "40"                  )
            AND   ( WRK-PARA-A8     <=  WRK-CONS-SRYYM-200609 )
                CALL    "ORCRCP400"     USING
-                                       WRK-PARA3
+                                       WRK-ARG
            END-IF
       *
       *
@@ -515,13 +513,15 @@
                     ","         DELIMITED   BY  SIZE
                     WRK-PARA-A29  DELIMITED BY  SPACE
                     ","         DELIMITED   BY  SIZE
+                    WRK-PARA-HOSPNUM
+                                DELIMITED   BY  SIZE
+                    ","         DELIMITED   BY  SIZE
+                    RECEERR     DELIMITED   BY  SPACE
+                    ","         DELIMITED   BY  SIZE
                                 INTO    WRK-ARG
            END-STRING
-      **     CALL "timeofday" USING LNK-TIMEOFDAY.
-      **   DISPLAY "orcr0101 START"
-      **           " "  LNK-TIMEOFDAY(1:20).
            CALL    "ORCR0101"          USING
-                                   WRK-ARG
+                                       WRK-ARG
       *
       *
            MOVE     SPACE       TO WRK-ARG
@@ -567,15 +567,15 @@
       **************WRK-PARA-A29  DELIMITED BY  SPACE
       **************","         DELIMITED   BY  SIZE
                     "3"         DELIMITED   BY  SIZE
+                    ","         DELIMITED   BY  SIZE
+                    WRK-PARA-HOSPNUM
+                                DELIMITED   BY  SIZE
+                    ","         DELIMITED   BY  SIZE
+                    RECEERR     DELIMITED   BY  SPACE
                                 INTO    WRK-ARG
-      **     CALL "timeofday" USING LNK-TIMEOFDAY.
-      **     DISPLAY "orcr0102 START"
-      **             " "  LNK-TIMEOFDAY(1:20).
+           END-STRING
            CALL    "ORCR0102"          USING
                                    WRK-ARG
-      **     CALL "timeofday" USING LNK-TIMEOFDAY.
-      **     DISPLAY "orcr0102 END  "
-      **             " "  LNK-TIMEOFDAY(1:20).
            .
        2001-IHO-GAIRAI-EXT.
            EXIT.
@@ -794,25 +794,22 @@
            MOVE    "RECEPTX"           TO  PRVKANRI-TBL-KEY
            MOVE    WRK-PARA-PTID       TO  WRK-PTID-X
            MOVE    WRK-PTID            TO  PRVKANRI-TBL-GROUP
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+grpsys     MOVE    SPA-HOSPNUM         TO  PRVKANRI-HOSPNUM
            MOVE    PRVKANRI-REC        TO  MCPDATA-REC
-           MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    PATH-TBL-PRVKANRI-KEY8
-                                       TO  MCP-PATH
-           CALL    "MCPSUB"            USING
-                                       MCPAREA
-                                       MCPDATA-REC
+           MOVE    "tbl_prvkanri"      TO  MCP-TABLE
+           MOVE    "key8"              TO  MCP-PATHNAME
+grpsys     PERFORM 900-DBSELECT-SEC
            IF      MCP-RC             =   ZERO
-               MOVE    PATH-TBL-PRVKANRI-KEY8
-                                       TO  MCP-PATH
+               MOVE    "tbl_prvkanri"      TO  MCP-TABLE
+               MOVE    "key8"              TO  MCP-PATHNAME
                PERFORM 900-PRVKANRI-FET-SEC
-               MOVE    PATH-TBL-PRVKANRI-KEY8
-                                       TO  MCP-PATH
-               PERFORM 900-DBCLOSE-SEC
            ELSE
                MOVE    1               TO  FLG-PRVKANRI
            END-IF
       *
+           MOVE    "tbl_prvkanri"      TO  MCP-TABLE
+           MOVE    "key8"              TO  MCP-PATHNAME
+           PERFORM 900-CLOSE-SEC
            .
        20010-PRVDATA-DEL-EXT.
            EXIT.
@@ -830,9 +827,10 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    WRK-PARA-A8     TO  WRK-SRYYM
       *
                CALL    "ORCSPRVPSDEL"   USING
-                                        WRK-PARA-HOSPID
+grpsys                                  WRK-PARA-HOSPNUM
                                         WRK-PTID
                                         WRK-SRYYM
+grpsys                                  SPA-AREA
       *
       *
                PERFORM 900-DBCOMMIT-SEC
@@ -851,18 +849,18 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            EVALUATE    SYU-CREYMD
                WHEN    "99999999"
                    MOVE    "DBDELETE"   TO      MCP-FUNC
-                   MOVE    PATH-TBL-SYUNOU-KEY
-                                        TO      MCP-PATH
+                   MOVE    "tbl_syunou" TO      MCP-TABLE
+                   MOVE    "key"        TO      MCP-PATHNAME
       *
                WHEN    "88888888"
                    MOVE    "DBUPDATE"   TO      MCP-FUNC
-                   MOVE    PATH-TBL-SYUNOU-KEY
-                                        TO      MCP-PATH
+                   MOVE    "tbl_syunou" TO      MCP-TABLE
+                   MOVE    "key"        TO      MCP-PATHNAME
       *
                WHEN      OTHER
                    MOVE    "DBINSERT"   TO      MCP-FUNC
-                   MOVE    PATH-TBL-SYUNOU-KEY
-                                        TO      MCP-PATH
+                   MOVE    "tbl_syunou" TO      MCP-TABLE
+                   MOVE    "key"        TO      MCP-PATHNAME
            END-EVALUATE
            PERFORM  900-REALDB-INS-SEC
            .
@@ -876,18 +874,18 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            EVALUATE    SMEI-CREYMD
                WHEN    "99999999"
                    MOVE    "DBDELETE"   TO      MCP-FUNC
-                   MOVE    PATH-TBL-SYUMEI-KEY
-                                        TO      MCP-PATH
+                   MOVE    "tbl_syumei" TO      MCP-TABLE
+                   MOVE    "key"        TO      MCP-PATHNAME
       *
                WHEN    "88888888"
                    MOVE    "DBUPDATE"   TO      MCP-FUNC
-                   MOVE    PATH-TBL-SYUMEI-KEY
-                                        TO      MCP-PATH
+                   MOVE    "tbl_syumei" TO      MCP-TABLE
+                   MOVE    "key"        TO      MCP-PATHNAME
       *
                WHEN      OTHER
                    MOVE    "DBINSERT"   TO      MCP-FUNC
-                   MOVE    PATH-TBL-SYUMEI-KEY
-                                        TO      MCP-PATH
+                   MOVE    "tbl_syumei" TO      MCP-TABLE
+                   MOVE    "key"        TO      MCP-PATHNAME
            END-EVALUATE
            PERFORM  900-REALDB-INS-SEC
            .
@@ -901,18 +899,21 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            EVALUATE    SYUTTL-CREYMD
                WHEN    "99999999"
                    MOVE    "DBDELETE"   TO      MCP-FUNC
-                   MOVE    PATH-TBL-SYUTOTAL-KEY
-                                        TO      MCP-PATH
+                   MOVE    "tbl_syutotal"
+                                        TO      MCP-TABLE
+                   MOVE    "key"        TO      MCP-PATHNAME
       *
                WHEN    "88888888"
                    MOVE    "DBUPDATE"   TO      MCP-FUNC
-                   MOVE    PATH-TBL-SYUTOTAL-KEY
-                                        TO      MCP-PATH
+                   MOVE    "tbl_syutotal"
+                                        TO      MCP-TABLE
+                   MOVE    "key"        TO      MCP-PATHNAME
       *
                WHEN      OTHER
                    MOVE    "DBINSERT"   TO      MCP-FUNC
-                   MOVE    PATH-TBL-SYUTOTAL-KEY
-                                        TO      MCP-PATH
+                   MOVE    "tbl_syutotal"
+                                        TO      MCP-TABLE
+                   MOVE    "key"        TO      MCP-PATHNAME
            END-EVALUATE
            PERFORM  900-REALDB-INS-SEC
            .
@@ -926,19 +927,22 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            EVALUATE    ACCT-CREYMD
                WHEN    "99999999"
                    MOVE    "DBDELETE"   TO      MCP-FUNC
-                   MOVE    PATH-TBL-SRYACCT-KEY
-                                        TO      MCP-PATH
+                   MOVE    "tbl_sryacct"
+                                        TO      MCP-TABLE
+                   MOVE    "key"        TO      MCP-PATHNAME
       *    
                WHEN    "88888888"
                    MOVE    "DBUPDATE"   TO      MCP-FUNC
       *---> test   MOVE    "DBDELETE"   TO      MCP-FUNC
-                   MOVE    PATH-TBL-SRYACCT-KEY
-                                        TO      MCP-PATH
+                   MOVE    "tbl_sryacct"
+                                        TO      MCP-TABLE
+                   MOVE    "key"        TO      MCP-PATHNAME
       *    
                WHEN      OTHER
                    MOVE    "DBINSERT"   TO      MCP-FUNC
-                   MOVE    PATH-TBL-SRYACCT-KEY
-                                        TO      MCP-PATH
+                   MOVE    "tbl_sryacct"
+                                        TO      MCP-TABLE
+                   MOVE    "key"        TO      MCP-PATHNAME
            END-EVALUATE
            PERFORM  900-REALDB-INS-SEC
            .
@@ -952,18 +956,18 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            EVALUATE    JYURRK-CREYMD
                WHEN    "99999999"
                    MOVE    "DBDELETE"   TO      MCP-FUNC
-                   MOVE    PATH-TBL-JYURRK-KEY
-                                        TO      MCP-PATH
+                   MOVE    "tbl_jyurrk" TO      MCP-TABLE
+                   MOVE    "key"        TO      MCP-PATHNAME
       *    
                WHEN    "88888888"
                    MOVE    "DBUPDATE"   TO      MCP-FUNC
-                   MOVE    PATH-TBL-JYURRK-KEY
-                                        TO      MCP-PATH
+                   MOVE    "tbl_jyurrk" TO      MCP-TABLE
+                   MOVE    "key"        TO      MCP-PATHNAME
       *    
                WHEN      OTHER
                    MOVE    "DBINSERT"   TO      MCP-FUNC
-                   MOVE    PATH-TBL-JYURRK-KEY
-                                        TO      MCP-PATH
+                   MOVE    "tbl_jyurrk" TO      MCP-TABLE
+                   MOVE    "key"        TO      MCP-PATHNAME
            END-EVALUATE
            PERFORM  900-REALDB-INS-SEC
            .
@@ -977,23 +981,23 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            EVALUATE    PTCOM-CREYMD
                WHEN    "99999999"
                    MOVE    "DBDELETE"   TO      MCP-FUNC
-                   MOVE    PATH-TBL-PTCOM-KEY
-                                        TO      MCP-PATH
+                   MOVE    "tbl_ptcom"  TO      MCP-TABLE
+                   MOVE    "key"        TO      MCP-PATHNAME
       *    
                WHEN    "999del11"
                    MOVE    "DBDELETE"   TO      MCP-FUNC
-                   MOVE    PATH-TBL-PTCOM-DEL11
-                                        TO      MCP-PATH
+                   MOVE    "tbl_ptcom"  TO      MCP-TABLE
+                   MOVE    "key"        TO      MCP-PATHNAME
       *    
                WHEN    "88888888"
                    MOVE    "DBUPDATE"   TO      MCP-FUNC
-                   MOVE    PATH-TBL-PTCOM-KEY
-                                        TO      MCP-PATH
+                   MOVE    "tbl_ptcom"  TO      MCP-TABLE
+                   MOVE    "key"        TO      MCP-PATHNAME
       *    
                WHEN      OTHER
                    MOVE    "DBINSERT"   TO      MCP-FUNC
-                   MOVE    PATH-TBL-PTCOM-KEY
-                                        TO      MCP-PATH
+                   MOVE    "tbl_ptcom"  TO      MCP-TABLE
+                   MOVE    "key"        TO      MCP-PATHNAME
            END-EVALUATE
            PERFORM  900-REALDB-INS-SEC
            .
@@ -1008,23 +1012,20 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            CALL "timeofday" USING LNK-TIMEOFDAY
            DISPLAY "real db(jyurrk) delete st  "
                    " "  LNK-TIMEOFDAY(1:20)
-           MOVE    WRK-PARA-HOSPID      TO      JYURRK-HOSPID
+grpsys     MOVE    WRK-PARA-HOSPNUM     TO      JYURRK-HOSPNUM
            MOVE    WRK-PARA-NYUGAIKBN   TO      JYURRK-NYUGAIKBN
            MOVE    WRK-PARA-PTID        TO      WRK-PTID-X
            MOVE    WRK-PTID             TO      JYURRK-PTID
            MOVE    WRK-PARA-A8          TO      WRK-SRYYM
            MOVE    "% "                 TO      WRK-SRYDD
            MOVE    WRK-SRYYMD           TO      JYURRK-SRYYMD
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    JYURRK-REC           TO      MCPDATA-REC
            MOVE    "DBDELETE"           TO      MCP-FUNC
-           MOVE    PATH-TBL-JYURRK-DEL2
-                                        TO      MCP-PATH
+           MOVE    "tbl_jyurrk"         TO      MCP-TABLE
+           MOVE    "del2"               TO      MCP-PATHNAME
            DISPLAY "take jyurrk  del "
-                                WRK-PARA-HOSPID WRK-PTID
-           CALL    "MCPSUB"             USING
-                                        MCPAREA
-                                        MCPDATA-REC
+                                WRK-PARA-HOSPNUM WRK-PTID
+grpsys     PERFORM 900-ORCDBMAIN-SEC
            CALL "timeofday" USING LNK-TIMEOFDAY
            DISPLAY "real db(jyurrk) delete ed  "
                    " "  LNK-TIMEOFDAY(1:20)
@@ -1032,21 +1033,18 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            CALL "timeofday" USING LNK-TIMEOFDAY
            DISPLAY "real db(sryacct) delete st  "
                    " "  LNK-TIMEOFDAY(1:20)
-           MOVE    WRK-PARA-HOSPID      TO      ACCT-HOSPID
+grpsys     MOVE    WRK-PARA-HOSPNUM     TO      ACCT-HOSPNUM
            MOVE    WRK-PARA-NYUGAIKBN   TO      ACCT-NYUGAIKBN
            MOVE    WRK-PARA-PTID        TO      WRK-PTID-X
            MOVE    WRK-PTID             TO      ACCT-PTID
            MOVE    WRK-PARA-A8          TO      ACCT-SRYYM
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SRYACCT-REC          TO      MCPDATA-REC
            MOVE    "DBDELETE"           TO      MCP-FUNC
-           MOVE    PATH-TBL-SRYACCT-DEL3
-                                        TO      MCP-PATH
+           MOVE    "tbl_sryacct"        TO      MCP-TABLE
+           MOVE    "del3"               TO      MCP-PATHNAME
            DISPLAY "take acct  del "
-                                WRK-PARA-HOSPID WRK-PTID
-           CALL    "MCPSUB"             USING
-                                        MCPAREA
-                                        MCPDATA-REC
+                                WRK-PARA-HOSPNUM WRK-PTID
+grpsys     PERFORM 900-ORCDBMAIN-SEC
            CALL "timeofday" USING LNK-TIMEOFDAY
            DISPLAY "real db(sryacct) delete ed  "
                    " "  LNK-TIMEOFDAY(1:20)
@@ -1056,18 +1054,15 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                    " "  LNK-TIMEOFDAY(1:20)
       *»»ÄêÍúÎòºï½ü
            DISPLAY "real db(santei) del ed  "
-           MOVE    WRK-PARA-HOSPID      TO      SANTEI-HOSPID
+grpsys     MOVE    WRK-PARA-HOSPNUM     TO      SANTEI-HOSPNUM
            MOVE    WRK-PARA-PTID        TO      WRK-PTID-X
            MOVE    WRK-PTID             TO      SANTEI-PTID
            MOVE    WRK-PARA-A8          TO      SANTEI-SRYYM
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SANTEI-REC           TO      MCPDATA-REC
            MOVE    "tbl_santei"         TO  MCP-TABLE
            MOVE    "del2"               TO  MCP-PATHNAME
            MOVE    "DBDELETE"           TO      MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     PERFORM 900-ORCDBMAIN-SEC
            .
        20011-REAL-DB-DELETE-EXT.
            EXIT.
@@ -1075,72 +1070,42 @@ grpsys                            SPA-AREA
       *****************************************************************
       *    ¼Â£Ä£Â¹¹¿·½èÍý
       *****************************************************************
-      *¿ÇÎÅ¹Ô°Ùºï½ü(¤³¤Îºï½ü¤Ï¡¢»þ´Ö¤¬¤«¤«¤ê¤¹¤® 2¤Ë°Ü¹Ô)
-       200111-REAL-SRYACY-DB-DELETE1-SEC   SECTION.
-           MOVE    WRK-PARA-HOSPID      TO      SRY-HOSPID
-           MOVE    WRK-PARA-NYUGAIKBN   TO      SRY-NYUGAIKBN
-           MOVE    WRK-PARA-PTID         TO      WRK-PTID-X
-           MOVE    WRK-PTID             TO      SRY-PTID
-           MOVE    WRK-PARA-A8          TO      SRY-SRYYM
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
-           MOVE    SRYACT-REC           TO      MCPDATA-REC
-           MOVE    "DBDELETE"           TO      MCP-FUNC
-           MOVE    PATH-TBL-SRYACT-DEL12
-                                        TO      MCP-PATH
-           DISPLAY "take act  del "
-                                WRK-PARA-HOSPID WRK-PTID SRY-SRYYM
-           CALL    "MCPSUB"             USING
-                                        MCPAREA
-                                        MCPDATA-REC
-           .
-       200111-REAL-SRYACY-DB-DELETE1-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    ¼Â£Ä£Â¹¹¿·½èÍý
-      *****************************************************************
        200111-REAL-SRYACY-DB-DELETE2-SEC   SECTION.
-           MOVE    WRK-PARA-HOSPID      TO      SRY-HOSPID
+      *
+grpsys     MOVE    WRK-PARA-HOSPNUM     TO      SRY-HOSPNUM
            MOVE    WRK-PARA-NYUGAIKBN   TO      SRY-NYUGAIKBN
-           MOVE    WRK-PARA-PTID         TO      WRK-PTID-X
+           MOVE    WRK-PARA-PTID        TO      WRK-PTID-X
            MOVE    WRK-PTID             TO      SRY-PTID
            MOVE    WRK-PARA-A8          TO      SRY-SRYYM
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SRYACT-REC           TO      MCPDATA-REC
-           MOVE    "DBSELECT"           TO      MCP-FUNC
-           MOVE    PATH-TBL-SRYACT-KEY4
-                                        TO      MCP-PATH
+           MOVE    "tbl_sryact"         TO  MCP-TABLE
+           MOVE    "key4"               TO  MCP-PATHNAME
            DISPLAY "take real act  select "
-                                WRK-PARA-HOSPID WRK-PTID SRY-SRYYM
-           CALL    "MCPSUB"             USING
-                                        MCPAREA
-                                        MCPDATA-REC
+                                WRK-PARA-HOSPNUM WRK-PTID SRY-SRYYM
+grpsys     PERFORM 900-DBSELECT-SEC
            IF      MCP-RC               =       ZERO
            DISPLAY "take act select ok   "
-               MOVE    PATH-TBL-SRYACT-KEY4
-                                        TO      MCP-PATH
+               MOVE    "tbl_sryact"         TO  MCP-TABLE
+               MOVE    "key4"               TO  MCP-PATHNAME
                PERFORM  900-ACTPRV-READ-SEC
                PERFORM  UNTIL
                         (FLG-SRYACT         =    1)
            DISPLAY "take act delete loop   "
-grpsys*            MOVE SPA-HOSPNUM TO -HOSPNUM
                    MOVE    SRYACT-REC  TO      MCPDATA-REC
-                   MOVE    "DBDELETE"   TO      MCP-FUNC
-                   MOVE    PATH-TBL-SRYACT-KEY
-                                        TO      MCP-PATH
+                   MOVE    "DBDELETE"  TO      MCP-FUNC
+                   MOVE    "tbl_sryact"         TO  MCP-TABLE
+                   MOVE    "key"                TO  MCP-PATHNAME
                    PERFORM  900-REALDB-INS-SEC
-                   MOVE    PATH-TBL-SRYACT-KEY4
-                                        TO      MCP-PATH
+      *
+                   MOVE    "tbl_sryact"         TO  MCP-TABLE
+                   MOVE    "key4"               TO  MCP-PATHNAME
                    PERFORM  900-ACTPRV-READ-SEC
                END-PERFORM
            END-IF 
       *
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           MOVE    PATH-TBL-SRYACT-KEY4
-                                       TO  MCP-PATH
-           CALL    "MCPSUB"            USING
-                                       MCPAREA
-                                       MCPDATA-REC
+           MOVE    "tbl_sryact"         TO  MCP-TABLE
+           MOVE    "key4"               TO  MCP-PATHNAME
+           PERFORM 900-CLOSE-SEC
       *
            .
        200111-REAL-SRYACY-DB-DELETE2-EXT.
@@ -1158,7 +1123,7 @@ grpsys*            MOVE SPA-HOSPNUM TO -HOSPNUM
       *¢¨ Ã¢¤·¡¢¼ýÇ¼¶â³Û¤ò¸«¤ÆÉéÃ´¼ÔÈÖ¹æ¤Î½Ð¤·Æþ¤ì¤ò¤·¤Æ¤¤¤ë¤Î¤âÌµ»ë
       *   ¤µ¤ì¤ë¡£(¤É¤¦¤¹¤ë)
       *¼ýÇ¼¥Þ¥¹¥¿
-      **   MOVE    WRK-PARA-HOSPID      TO      SYU-HOSPID
+      **   MOVE    WRK-PARA-HOSPNUM      TO      SYU-HOSPNUM
       **   MOVE    WRK-PARA-NYUGAIKBN   TO      SYU-NYUGAIKBN
       **   MOVE    WRK-PARA-PTID         TO      WRK-PTID-X
       **   MOVE    WRK-PTID             TO      SYU-PTID
@@ -1167,7 +1132,7 @@ grpsys*            MOVE SPA-HOSPNUM TO -HOSPNUM
       **   MOVE    PATH-TBL-SYUNOU-PRV-KEY2
       **                                TO      MCP-PATH
       **   DISPLAY "take syunou read "
-      **                        WRK-PARA-HOSPID WRK-PTID
+      **                        WRK-PARA-HOSPNUM WRK-PTID
       **   CALL    "MCPSUB"             USING
       **                                MCPAREA
       **                                MCPDATA-REC
@@ -1185,12 +1150,12 @@ grpsys*            MOVE SPA-HOSPNUM TO -HOSPNUM
       **       END-PERFORM
       **   ELSE
       **                DISPLAY "take syunou read err  "
-      **                        WRK-PARA-HOSPID WRK-PTID
+      **                        WRK-PARA-HOSPNUM WRK-PTID
       **   END-IF
       *
       *--------------------------------------------------
       *¼ýÇ¼ÌÀºÙ¥Þ¥¹¥¿
-      **   MOVE    WRK-PARA-HOSPID      TO      SMEI-HOSPID
+      **   MOVE    WRK-PARA-HOSPNUM      TO      SMEI-HOSPNUM
       **   MOVE    WRK-PARA-NYUGAIKBN   TO      SMEI-NYUGAIKBN
       **   MOVE    WRK-PARA-PTID         TO      WRK-PTID-X
       **   MOVE    WRK-PTID             TO      SMEI-PTID
@@ -1199,7 +1164,7 @@ grpsys*            MOVE SPA-HOSPNUM TO -HOSPNUM
       **   MOVE    PATH-TBL-SYUMEI-PRV-KEY2
       **                                TO      MCP-PATH
       **   DISPLAY "take syumei read  "
-      **                        WRK-PARA-HOSPID WRK-PTID
+      **                        WRK-PARA-HOSPNUM WRK-PTID
       **   CALL    "MCPSUB"             USING
       **                                MCPAREA
       **                                MCPDATA-REC
@@ -1217,13 +1182,13 @@ grpsys*            MOVE SPA-HOSPNUM TO -HOSPNUM
       **       END-PERFORM
       **   ELSE
       **                DISPLAY "take syumei read err  "
-      **                        WRK-PARA-HOSPID WRK-PTID
+      **                        WRK-PARA-HOSPNUM WRK-PTID
       **   END-IF
       *
       *--------------------------------------------------
       *--------------------------------------------------
       *¼ýÇ¼¥È¡¼¥¿¥ë¥Þ¥¹¥¿
-      **   MOVE    WRK-PARA-HOSPID      TO      SYUTTL-HOSPID
+      **   MOVE    WRK-PARA-HOSPNUM      TO      SYUTTL-HOSPNUM
       **   MOVE    WRK-PARA-NYUGAIKBN   TO      SYUTTL-NYUGAIKBN
       **   MOVE    WRK-PARA-PTID         TO      WRK-PTID-X
       **   MOVE    WRK-PTID             TO      SYUTTL-PTID
@@ -1232,7 +1197,7 @@ grpsys*            MOVE SPA-HOSPNUM TO -HOSPNUM
       **   MOVE    PATH-TBL-SYUTOTAL-PRV-KEY2
       **                                TO      MCP-PATH
       **   DISPLAY "take syuttl read  "
-      **                        WRK-PARA-HOSPID WRK-PTID
+      **                        WRK-PARA-HOSPNUM WRK-PTID
       **   CALL    "MCPSUB"             USING
       **                                MCPAREA
       **                                MCPDATA-REC
@@ -1250,310 +1215,268 @@ grpsys*            MOVE SPA-HOSPNUM TO -HOSPNUM
       **       END-PERFORM
       **   ELSE
       **                DISPLAY "take syuttl read err  "
-      **                        WRK-PARA-HOSPID WRK-PTID
+      **                        WRK-PARA-HOSPNUM WRK-PTID
       **   END-IF
       *
       *--------------------------------------------------
       *²ñ·×¥Þ¥¹¥¿
-           MOVE    WRK-PARA-HOSPID      TO      ACCT-HOSPID
+grpsys     MOVE    WRK-PARA-HOSPNUM     TO      ACCT-HOSPNUM
            MOVE    WRK-PARA-NYUGAIKBN   TO      ACCT-NYUGAIKBN
            MOVE    WRK-PARA-PTID         TO      WRK-PTID-X
            MOVE    WRK-PTID             TO      ACCT-PTID
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SRYACCT-REC          TO      MCPDATA-REC
-           MOVE    "DBSELECT"           TO      MCP-FUNC
-           MOVE    PATH-TBL-SRYACCT-PRV-KEY40
-                                        TO      MCP-PATH
            DISPLAY "take acct read   "
-                                WRK-PARA-HOSPID WRK-PTID
-           CALL    "MCPSUB"             USING
-                                        MCPAREA
-                                        MCPDATA-REC
+                                WRK-PARA-HOSPNUM WRK-PTID
+           MOVE    "tbl_sryacct_prv"    TO  MCP-TABLE
+           MOVE    "key40"              TO  MCP-PATHNAME
+grpsys     PERFORM 900-DBSELECT-SEC
            IF      MCP-RC               =       ZERO
-               MOVE    PATH-TBL-SRYACCT-PRV-KEY40
-                                        TO      MCP-PATH
+               MOVE    "tbl_sryacct_prv"    TO  MCP-TABLE
+               MOVE    "key40"              TO  MCP-PATHNAME
                PERFORM  900-ACCTPRV-READ-SEC
                PERFORM  UNTIL
                         (FLG-SRYACCT         =    1)
            DISPLAY "take acct insert   "
-grpsys*            MOVE SPA-HOSPNUM TO -HOSPNUM
                    MOVE    SRYACCT-REC  TO      MCPDATA-REC
                    PERFORM 20011-SRYACCT-DB-MAKE-SEC
-                   MOVE    PATH-TBL-SRYACCT-PRV-KEY40
-                                        TO      MCP-PATH
+      * 
+                   MOVE    "tbl_sryacct_prv"    TO  MCP-TABLE
+                   MOVE    "key40"              TO  MCP-PATHNAME
                    PERFORM  900-ACCTPRV-READ-SEC
                END-PERFORM
            ELSE
                         DISPLAY "take acct read err  "
-                                WRK-PARA-HOSPID WRK-PTID
+                                WRK-PARA-HOSPNUM WRK-PTID
            END-IF
       *--------------------------------------------------
       * ¡ú DBCLOSECURSOR
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           MOVE    PATH-TBL-SRYACCT-PRV-KEY40
-                                       TO  MCP-PATH
-           CALL    "MCPSUB"            USING
-                                       MCPAREA
-                                       MCPDATA-REC
+           MOVE    "tbl_sryacct_prv"    TO  MCP-TABLE
+           MOVE    "key40"              TO  MCP-PATHNAME
+           PERFORM 900-CLOSE-SEC
       *--------------------------------------------------
       *¿ÇÎÅ¹Ô°Ù¥Þ¥¹¥¿
-           MOVE    WRK-PARA-HOSPID      TO      SRY-HOSPID
+grpsys     MOVE    WRK-PARA-HOSPNUM     TO      SRY-HOSPNUM
            MOVE    WRK-PARA-NYUGAIKBN   TO      SRY-NYUGAIKBN
            MOVE    WRK-PARA-PTID        TO      WRK-PTID-X
            MOVE    WRK-PTID             TO      SRY-PTID
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SRYACT-REC           TO      MCPDATA-REC
-           MOVE    "DBSELECT"           TO      MCP-FUNC
-           MOVE    PATH-TBL-SRYACT-PRV-KEY12
-                                        TO      MCP-PATH
            DISPLAY "take act read   "
-                                WRK-PARA-HOSPID WRK-PTID
-           CALL    "MCPSUB"             USING
-                                        MCPAREA
-                                        MCPDATA-REC
+                                WRK-PARA-HOSPNUM WRK-PTID
+           MOVE    "tbl_sryact_prv"     TO  MCP-TABLE
+           MOVE    "key12"              TO  MCP-PATHNAME
+grpsys     PERFORM 900-DBSELECT-SEC
            IF      MCP-RC               =       ZERO
-               MOVE    PATH-TBL-SRYACT-PRV-KEY12
-                                        TO      MCP-PATH
+               MOVE    "tbl_sryact_prv"     TO  MCP-TABLE
+               MOVE    "key12"              TO  MCP-PATHNAME
                PERFORM  900-ACTPRV-READ-SEC
                PERFORM  UNTIL
                         (FLG-SRYACT         =    1)
            DISPLAY "take act insert   "
-grpsys*            MOVE SPA-HOSPNUM TO -HOSPNUM
                    MOVE    SRYACT-REC  TO      MCPDATA-REC
                    MOVE    "DBINSERT"   TO      MCP-FUNC
-                   MOVE    PATH-TBL-SRYACT-KEY
-                                        TO      MCP-PATH
+                   MOVE    "tbl_sryact"         TO  MCP-TABLE
+                   MOVE    "key"                TO  MCP-PATHNAME
                    PERFORM  900-REALDB-INS-SEC
-                   MOVE    PATH-TBL-SRYACT-PRV-KEY12
-                                        TO      MCP-PATH
+      *
+                   MOVE    "tbl_sryact_prv"     TO  MCP-TABLE
+                   MOVE    "key12"              TO  MCP-PATHNAME
                    PERFORM  900-ACTPRV-READ-SEC
                END-PERFORM
            ELSE
                         DISPLAY "take act read err  "
-                                WRK-PARA-HOSPID WRK-PTID
+                                WRK-PARA-HOSPNUM WRK-PTID
            END-IF
       *--------------------------------------------------
       * ¡ú DBCLOSECURSOR
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           MOVE    PATH-TBL-SRYACT-PRV-KEY12
-                                       TO  MCP-PATH
-           CALL    "MCPSUB"            USING
-                                       MCPAREA
-                                       MCPDATA-REC
+           MOVE    "tbl_sryact_prv"     TO  MCP-TABLE
+           MOVE    "key12"              TO  MCP-PATHNAME
+           PERFORM 900-CLOSE-SEC
       *--------------------------------------------------
       *»»ÄêÍúÎò¥Þ¥¹¥¿
-           MOVE    WRK-PARA-HOSPID      TO      SANTEI-HOSPID
+grpsys     MOVE    WRK-PARA-HOSPNUM     TO      SANTEI-HOSPNUM
       *    MOVE    WRK-PARA-NYUGAIKBN   TO      SANTEI-NYUGAIKBN
            MOVE    ZERO                 TO      SANTEI-NYUGAIKBN
            MOVE    WRK-PARA-PTID        TO      WRK-PTID-X
            MOVE    WRK-PTID             TO      SANTEI-PTID
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SANTEI-REC           TO      MCPDATA-REC
-           MOVE    "DBSELECT"           TO      MCP-FUNC
-           MOVE    PATH-TBL-SANTEI-PRV-KEY2
-                                        TO      MCP-PATH
            DISPLAY "take santei read   "
-                                WRK-PARA-HOSPID WRK-PTID
-           CALL    "MCPSUB"             USING
-                                        MCPAREA
-                                        MCPDATA-REC
+                                WRK-PARA-HOSPNUM WRK-PTID
+           MOVE    "tbl_santei_prv"     TO  MCP-TABLE
+           MOVE    "key2"               TO  MCP-PATHNAME
+grpsys     PERFORM 900-DBSELECT-SEC
            IF      MCP-RC               =       ZERO
-               MOVE    PATH-TBL-SANTEI-PRV-KEY2
-                                        TO      MCP-PATH
+               MOVE    "tbl_santei_prv"     TO  MCP-TABLE
+               MOVE    "key2"               TO  MCP-PATHNAME
                PERFORM  900-SANTEIPRV-READ-SEC
                PERFORM  UNTIL
                         (FLG-SANTEI         =    1)
-grpsys*            MOVE SPA-HOSPNUM TO -HOSPNUM
                    MOVE    SANTEI-REC   TO      MCPDATA-REC
                 IF SANTEI-SRYYM         <       WRK-PARA-A8
                    CONTINUE
                 ELSE
                    MOVE    "DBINSERT"   TO      MCP-FUNC
-                   MOVE    PATH-TBL-SANTEI-KEY
-                                        TO      MCP-PATH
+                   MOVE    "tbl_santei" TO  MCP-TABLE
+                   MOVE    "key"        TO  MCP-PATHNAME
                    PERFORM  900-REALDB-INS-SEC
                    DISPLAY "take santei insert "
                 END-IF
-                   MOVE    PATH-TBL-SANTEI-PRV-KEY2
-                                        TO      MCP-PATH
-                   PERFORM  900-SANTEIPRV-READ-SEC
+      *
+                MOVE    "tbl_santei_prv"     TO  MCP-TABLE
+                MOVE    "key2"               TO  MCP-PATHNAME
+                PERFORM  900-SANTEIPRV-READ-SEC
                END-PERFORM
            ELSE
                         DISPLAY "take santei read err  "
-                                WRK-PARA-HOSPID WRK-PTID
+                                WRK-PARA-HOSPNUM WRK-PTID
            END-IF
       *--------------------------------------------------
       * ¡ú DBCLOSECURSOR
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           MOVE    PATH-TBL-SANTEI-PRV-KEY2
-                                       TO  MCP-PATH
-           CALL    "MCPSUB"            USING
-                                       MCPAREA
-                                       MCPDATA-REC
+           MOVE    "tbl_santei_prv"     TO  MCP-TABLE
+           MOVE    "key2"               TO  MCP-PATHNAME
+           PERFORM 900-CLOSE-SEC
       *--------------------------------------------------
       *¼õ¿ÇÍúÎò¥Þ¥¹¥¿
-           MOVE    WRK-PARA-HOSPID      TO      JYURRK-HOSPID
+grpsys     MOVE    WRK-PARA-HOSPNUM     TO      JYURRK-HOSPNUM
            MOVE    WRK-PARA-NYUGAIKBN   TO      JYURRK-NYUGAIKBN
            MOVE    WRK-PARA-PTID         TO      WRK-PTID-X
            MOVE    WRK-PTID             TO      JYURRK-PTID
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    JYURRK-REC           TO      MCPDATA-REC
-           MOVE    "DBSELECT"           TO      MCP-FUNC
-           MOVE    PATH-TBL-JYURRK-PRV-KEY30
-                                        TO      MCP-PATH
            DISPLAY "take jyurrk read   "
-                                WRK-PARA-HOSPID WRK-PTID
-           CALL    "MCPSUB"             USING
-                                        MCPAREA
-                                        MCPDATA-REC
+                                WRK-PARA-HOSPNUM WRK-PTID
+           MOVE    "tbl_jyurrk_prv"     TO  MCP-TABLE
+           MOVE    "key30"              TO  MCP-PATHNAME
+grpsys     PERFORM 900-DBSELECT-SEC
            IF      MCP-RC               =       ZERO
-               MOVE    PATH-TBL-JYURRK-PRV-KEY30
-                                        TO      MCP-PATH
+               MOVE    "tbl_jyurrk_prv"     TO  MCP-TABLE
+               MOVE    "key30"              TO  MCP-PATHNAME
                PERFORM  900-JYURRKPRV-READ-SEC
                PERFORM  UNTIL
                         (FLG-JYURRK         =    1)
            DISPLAY "take jyurrk insert   "
-grpsys*            MOVE SPA-HOSPNUM TO -HOSPNUM
                    MOVE    JYURRK-REC   TO      MCPDATA-REC
                    PERFORM  20011-JYURRK-DB-MAKE-SEC
-                   MOVE    PATH-TBL-JYURRK-PRV-KEY30
-                                        TO      MCP-PATH
+      *
+                   MOVE    "tbl_jyurrk_prv"     TO  MCP-TABLE
+                   MOVE    "key30"              TO  MCP-PATHNAME
                    PERFORM  900-JYURRKPRV-READ-SEC
                END-PERFORM
            ELSE
                         DISPLAY "take jyurrk read err  "
-                                WRK-PARA-HOSPID WRK-PTID
+                                WRK-PARA-HOSPNUM WRK-PTID
            END-IF
       *--------------------------------------------------
       * ¡ú DBCLOSECURSOR
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           MOVE    PATH-TBL-JYURRK-PRV-KEY30
-                                       TO  MCP-PATH
-           CALL    "MCPSUB"            USING
-                                       MCPAREA
-                                       MCPDATA-REC
+           MOVE    "tbl_jyurrk_prv"     TO  MCP-TABLE
+           MOVE    "key30"              TO  MCP-PATHNAME
+           PERFORM 900-CLOSE-SEC
       *--------------------------------------------------
       *¿ÇÎÅ²ÊÍúÎò¥Þ¥¹¥¿
-           MOVE    WRK-PARA-HOSPID      TO      KARRK-HOSPID
+grpsys     MOVE    WRK-PARA-HOSPNUM     TO      KARRK-HOSPNUM
            MOVE    WRK-PARA-PTID         TO      WRK-PTID-X
            MOVE    WRK-PTID             TO      KARRK-PTID
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SRYKARRK-REC         TO      MCPDATA-REC
-           MOVE    "DBSELECT"           TO      MCP-FUNC
-           MOVE    PATH-TBL-SRYKARRK-PRV-KEY2
-                                        TO      MCP-PATH
            DISPLAY "take srykarrk read   "
-                                WRK-PARA-HOSPID WRK-PTID
-           CALL    "MCPSUB"             USING
-                                        MCPAREA
-                                        MCPDATA-REC
+                                WRK-PARA-HOSPNUM WRK-PTID
+           MOVE    "tbl_srykarrk_prv"   TO  MCP-TABLE
+           MOVE    "key2"               TO  MCP-PATHNAME
+grpsys     PERFORM 900-DBSELECT-SEC
            IF      MCP-RC               =       ZERO
-               MOVE    PATH-TBL-SRYKARRK-PRV-KEY2
-                                        TO      MCP-PATH
+               MOVE    "tbl_srykarrk_prv"   TO  MCP-TABLE
+               MOVE    "key2"               TO  MCP-PATHNAME
                PERFORM  900-SRYKARRKPRV-READ-SEC
                PERFORM  UNTIL
                         (FLG-SRYKARRK      =    1)
 grpsys*            MOVE SPA-HOSPNUM TO -HOSPNUM
                    MOVE    SRYKARRK-REC TO      MCPDATA-REC
-               IF  KARRK-CREYMD         =       "99999999"
-                   MOVE    "DBDELETE"   TO      MCP-FUNC
-               ELSE
-                   IF  KARRK-CREYMD     =       "88888888"
-                       MOVE    "DBUPDATE"   TO      MCP-FUNC
+                   IF  KARRK-CREYMD         =       "99999999"
+                       MOVE    "DBDELETE"   TO      MCP-FUNC
                    ELSE
-                       MOVE    "DBINSERT"   TO      MCP-FUNC
+                       IF  KARRK-CREYMD     =       "88888888"
+                           MOVE    "DBUPDATE"   TO      MCP-FUNC
+                       ELSE
+                           MOVE    "DBINSERT"   TO      MCP-FUNC
+                       END-IF
                    END-IF
-               END-IF
-                   MOVE    PATH-TBL-SRYKARRK-KEY
-                                        TO      MCP-PATH
+                   MOVE    "tbl_srykarrk"       TO  MCP-TABLE
+                   MOVE    "key"                TO  MCP-PATHNAME
                    PERFORM  900-REALDB-INS-SEC
-                   MOVE    PATH-TBL-SRYKARRK-PRV-KEY2
-                                        TO      MCP-PATH
+      *
+                   MOVE    "tbl_srykarrk_prv"   TO  MCP-TABLE
+                   MOVE    "key2"               TO  MCP-PATHNAME
                    PERFORM  900-SRYKARRKPRV-READ-SEC
                END-PERFORM
            ELSE
                         DISPLAY "take srykarrk read err  "
-                                WRK-PARA-HOSPID WRK-PTID
+                                WRK-PARA-HOSPNUM WRK-PTID
            END-IF
       *--------------------------------------------------
       * ¡ú DBCLOSECURSOR
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           MOVE    PATH-TBL-SRYKARRK-PRV-KEY2
-                                       TO  MCP-PATH
-           CALL    "MCPSUB"            USING
-                                       MCPAREA
-                                       MCPDATA-REC
+           MOVE    "tbl_srykarrk_prv"   TO  MCP-TABLE
+           MOVE    "key2"               TO  MCP-PATHNAME
+           PERFORM 900-CLOSE-SEC
       *--------------------------------------------------
       *´µ¼Ô¥³¥á¥ó¥È¥Þ¥¹¥¿
-           MOVE    WRK-PARA-HOSPID      TO      PTCOM-HOSPID
-           MOVE    WRK-PARA-PTID         TO      WRK-PTID-X
+grpsys     MOVE    WRK-PARA-HOSPNUM     TO      PTCOM-HOSPNUM
+           MOVE    WRK-PARA-PTID        TO      WRK-PTID-X
            MOVE    WRK-PTID             TO      PTCOM-PTID
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PTCOM-REC            TO      MCPDATA-REC
-           MOVE    "DBSELECT"           TO      MCP-FUNC
-           MOVE    PATH-TBL-PTCOM-PRV-KEY3
-                                        TO      MCP-PATH
            DISPLAY "take ptcom read   "
-                                WRK-PARA-HOSPID WRK-PTID
-           CALL    "MCPSUB"             USING
-                                        MCPAREA
-                                        MCPDATA-REC
+                                WRK-PARA-HOSPNUM WRK-PTID
+           MOVE    "tbl_ptcom_prv"      TO  MCP-TABLE
+           MOVE    "key3"               TO  MCP-PATHNAME
+grpsys     PERFORM 900-DBSELECT-SEC
       *
            MOVE    ZERO                 TO      WRK-ZAINUM
       *
            IF      MCP-RC               =       ZERO
-               MOVE    PATH-TBL-PTCOM-PRV-KEY3
-                                        TO      MCP-PATH
+               MOVE    "tbl_ptcom_prv"      TO  MCP-TABLE
+               MOVE    "key3"               TO  MCP-PATHNAME
                PERFORM  900-PTCOMPRV-READ-SEC
                PERFORM  UNTIL
                         (FLG-PTCOM      =    1)
-               IF  WRK-ZAINUM       NOT =       PTCOM-ZAINUM
-                   DISPLAY "take ptcom org del start = "
+                   IF  WRK-ZAINUM       NOT =       PTCOM-ZAINUM
+                       DISPLAY "take ptcom org del start = "
                                                 PTCOM-ZAINUM
-                   MOVE    PTCOM-ZAINUM TO      WRK-ZAINUM
-grpsys*            MOVE SPA-HOSPNUM TO -HOSPNUM
-                   MOVE    PTCOM-REC    TO      MCPDATA-REC
-                   MOVE    "DBDELETE"   TO      MCP-FUNC
-                   MOVE    PATH-TBL-PTCOM-DEL11
-                                        TO      MCP-PATH
-                   PERFORM  900-REALDB-INS-SEC
-                   IF      MCP-RC       NOT  =  ZERO
-                       DISPLAY "take ptcom del er " PTCOM-REC(1:100)
+                       MOVE    PTCOM-ZAINUM TO      WRK-ZAINUM
+                       MOVE    PTCOM-REC    TO      MCPDATA-REC
+                       MOVE    "DBDELETE"   TO      MCP-FUNC
+                       MOVE    "tbl_ptcom"  TO  MCP-TABLE
+                       MOVE    "del11"      TO  MCP-PATHNAME
+                       PERFORM  900-REALDB-INS-SEC
+                       IF      MCP-RC       NOT  =  ZERO
+                           DISPLAY "take ptcom del er " PTCOM-REC(1:100)
+                       END-IF
                    END-IF
-               END-IF
-grpsys*            MOVE SPA-HOSPNUM TO -HOSPNUM
                    MOVE    PTCOM-REC    TO      MCPDATA-REC
-               IF  PTCOM-CREYMD         =       "99999999"
-                   MOVE    "DBDELETE"   TO      MCP-FUNC
-               ELSE
-                   IF  PTCOM-CREYMD     =       "88888888"
-                       MOVE    "DBUPDATE"   TO      MCP-FUNC
+                   IF  PTCOM-CREYMD         =       "99999999"
+                       MOVE    "DBDELETE"   TO      MCP-FUNC
                    ELSE
-                       MOVE    "DBINSERT"   TO      MCP-FUNC
+                       IF  PTCOM-CREYMD     =       "88888888"
+                           MOVE    "DBUPDATE"   TO      MCP-FUNC
+                       ELSE
+                           MOVE    "DBINSERT"   TO      MCP-FUNC
+                       END-IF
                    END-IF
-               END-IF
-                   MOVE    PATH-TBL-PTCOM-KEY
-                                        TO      MCP-PATH
+                   MOVE    "tbl_ptcom"     TO  MCP-TABLE
+                   MOVE    "key"           TO  MCP-PATHNAME
                    PERFORM  900-REALDB-INS-SEC
                    IF      MCP-RC       NOT  =  ZERO
                        DISPLAY "take ptcom ins er " PTCOM-REC(1:100)
                    END-IF
-                   MOVE    PATH-TBL-PTCOM-PRV-KEY3
-                                        TO      MCP-PATH
+      *
+                   MOVE    "tbl_ptcom_prv"      TO  MCP-TABLE
+                   MOVE    "key3"               TO  MCP-PATHNAME
                    PERFORM  900-PTCOMPRV-READ-SEC
                END-PERFORM
            ELSE
                         DISPLAY "take ptcom read err  "
-                                WRK-PARA-HOSPID WRK-PTID
+                                WRK-PARA-HOSPNUM WRK-PTID
            END-IF
       *--------------------------------------------------
       * ¡ú DBCLOSECURSOR
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           MOVE    PATH-TBL-PTCOM-PRV-KEY3
-                                       TO  MCP-PATH
-           CALL    "MCPSUB"            USING
-                                       MCPAREA
-                                       MCPDATA-REC
+           MOVE    "tbl_ptcom_prv"      TO  MCP-TABLE
+           MOVE    "key3"               TO  MCP-PATHNAME
+           PERFORM 900-CLOSE-SEC
       *--------------------------------------------------
       *
            CALL "timeofday" USING LNK-TIMEOFDAY
@@ -1568,10 +1491,7 @@ grpsys*            MOVE SPA-HOSPNUM TO -HOSPNUM
       *****************************************************************
        900-SYUNOUPRV-READ-SEC           SECTION.
       *
-           MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "MCPSUB"            USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     PERFORM 900-DBFETCH-SEC
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC     TO  SYUNOU-REC
                MOVE    ZERO            TO  FLG-SYUNOU
@@ -1589,10 +1509,7 @@ grpsys*            MOVE SPA-HOSPNUM TO -HOSPNUM
       *****************************************************************
        900-SYUMEIPRV-READ-SEC           SECTION.
       *
-           MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "MCPSUB"            USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     PERFORM 900-DBFETCH-SEC
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC     TO  SYUMEI-REC
                MOVE    ZERO            TO  FLG-SYUMEI
@@ -1610,10 +1527,7 @@ grpsys*            MOVE SPA-HOSPNUM TO -HOSPNUM
       *****************************************************************
        900-SYUTTLPRV-READ-SEC           SECTION.
       *
-           MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "MCPSUB"            USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     PERFORM 900-DBFETCH-SEC
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC     TO  SYUTTL-REC
                MOVE    ZERO            TO  FLG-SYUTTL
@@ -1631,10 +1545,7 @@ grpsys*            MOVE SPA-HOSPNUM TO -HOSPNUM
       *****************************************************************
        900-ACCTPRV-READ-SEC            SECTION.
       *
-           MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "MCPSUB"            USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     PERFORM 900-DBFETCH-SEC
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC     TO  SRYACCT-REC
                MOVE    ZERO            TO  FLG-SRYACCT
@@ -1652,10 +1563,7 @@ grpsys*            MOVE SPA-HOSPNUM TO -HOSPNUM
       *****************************************************************
        900-ACTPRV-READ-SEC             SECTION.
       *
-           MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "MCPSUB"            USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     PERFORM 900-DBFETCH-SEC
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC     TO  SRYACT-REC
                MOVE    ZERO            TO  FLG-SRYACT
@@ -1673,10 +1581,7 @@ grpsys*            MOVE SPA-HOSPNUM TO -HOSPNUM
       *****************************************************************
        900-JYURRKPRV-READ-SEC          SECTION.
       *
-           MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "MCPSUB"            USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     PERFORM 900-DBFETCH-SEC
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC     TO  JYURRK-REC
                MOVE    ZERO            TO  FLG-JYURRK
@@ -1694,10 +1599,7 @@ grpsys*            MOVE SPA-HOSPNUM TO -HOSPNUM
       *****************************************************************
        900-SANTEIPRV-READ-SEC          SECTION.
       *
-           MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "MCPSUB"            USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     PERFORM 900-DBFETCH-SEC
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC     TO  SANTEI-REC
                MOVE    ZERO            TO  FLG-SANTEI
@@ -1715,10 +1617,7 @@ grpsys*            MOVE SPA-HOSPNUM TO -HOSPNUM
       *****************************************************************
        900-SRYKARRKPRV-READ-SEC        SECTION.
       *
-           MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "MCPSUB"            USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     PERFORM 900-DBFETCH-SEC
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC     TO  SRYKARRK-REC
                MOVE    ZERO            TO  FLG-SRYKARRK
@@ -1736,10 +1635,7 @@ grpsys*            MOVE SPA-HOSPNUM TO -HOSPNUM
       *****************************************************************
        900-PTCOMPRV-READ-SEC           SECTION.
       *
-           MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "MCPSUB"            USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     PERFORM 900-DBFETCH-SEC
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC     TO  PTCOM-REC
                MOVE    ZERO            TO  FLG-PTCOM 
@@ -1757,9 +1653,7 @@ grpsys*            MOVE SPA-HOSPNUM TO -HOSPNUM
       *****************************************************************
        900-REALDB-INS-SEC            SECTION.
       *
-           CALL    "MCPSUB"            USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC         NOT  =   ZERO
                INITIALIZE                  MCPDATA-REC
                DISPLAY "INS ERR = " MCP-RC
@@ -1775,144 +1669,134 @@ grpsys*            MOVE SPA-HOSPNUM TO -HOSPNUM
        20011-TMPDB-DELETE-SEC        SECTION.
            DISPLAY "take tmp db delete st"
       *¼ýÇ¼¥Þ¥¹¥¿
-           MOVE    WRK-PARA-HOSPID      TO      SYU-HOSPID
+grpsys     MOVE    WRK-PARA-HOSPNUM     TO      SYU-HOSPNUM
            MOVE    WRK-PARA-NYUGAIKBN   TO      SYU-NYUGAIKBN
            MOVE    WRK-PARA-PTID         TO      WRK-PTID-X
            MOVE    WRK-PTID             TO      SYU-PTID
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYUNOU-REC           TO      MCPDATA-REC
            DISPLAY "take tmp db delete syunou st = " SYU-PTID "," 
-                                           SYU-HOSPID ","
+                                           SYU-HOSPNUM ","
                                            SYU-NYUGAIKBN
            MOVE    "DBDELETE"           TO      MCP-FUNC
-           MOVE    PATH-TBL-SYUNOU-PRV-DELPRV
-                                        TO      MCP-PATH
+           MOVE    "tbl_syunou_prv"     TO  MCP-TABLE
+           MOVE    "delprv"             TO  MCP-PATHNAME
            PERFORM  900-REALDB-INS-SEC
       *
       *¼ýÇ¼ÌÀºÙ¥Þ¥¹¥¿
-           MOVE    WRK-PARA-HOSPID      TO      SMEI-HOSPID
+grpsys     MOVE    WRK-PARA-HOSPNUM     TO      SMEI-HOSPNUM
            MOVE    WRK-PARA-NYUGAIKBN   TO      SMEI-NYUGAIKBN
            MOVE    WRK-PARA-PTID         TO      WRK-PTID-X
            MOVE    WRK-PTID             TO      SMEI-PTID
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYUMEI-REC           TO      MCPDATA-REC
            MOVE    "DBDELETE"           TO      MCP-FUNC
-           MOVE    PATH-TBL-SYUMEI-PRV-DELPRV
-                                        TO      MCP-PATH
+           MOVE    "tbl_syumei_prv"     TO  MCP-TABLE
+           MOVE    "delprv"             TO  MCP-PATHNAME
            DISPLAY "take tmp db delete syumei st = " SYU-PTID "," 
            PERFORM  900-REALDB-INS-SEC
       *
       *¼ýÇ¼¥È¡¼¥¿¥ë¥Þ¥¹¥¿
-           MOVE    WRK-PARA-HOSPID      TO      SYUTTL-HOSPID
+grpsys     MOVE    WRK-PARA-HOSPNUM     TO      SYUTTL-HOSPNUM
            MOVE    WRK-PARA-NYUGAIKBN   TO      SYUTTL-NYUGAIKBN
            MOVE    WRK-PARA-PTID         TO      WRK-PTID-X
            MOVE    WRK-PTID             TO      SYUTTL-PTID
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYUTTL-REC           TO      MCPDATA-REC
            MOVE    "DBDELETE"           TO      MCP-FUNC
-           DISPLAY "take tmp db delete syutotal st = " SYU-PTID "," 
-           MOVE    PATH-TBL-SYUTOTAL-PRV-DELPRV
-                                        TO      MCP-PATH
+           DISPLAY "take tmp db delete syutotal st = " SYUTTL-PTID "," 
+           MOVE    "tbl_syutotal_prv"   TO  MCP-TABLE
+           MOVE    "delprv"             TO  MCP-PATHNAME
            PERFORM  900-REALDB-INS-SEC
       *
       *²ñ·×¥Þ¥¹¥¿
-           MOVE    WRK-PARA-HOSPID      TO      ACCT-HOSPID
+grpsys     MOVE    WRK-PARA-HOSPNUM     TO      ACCT-HOSPNUM
            MOVE    WRK-PARA-NYUGAIKBN   TO      ACCT-NYUGAIKBN
            MOVE    WRK-PARA-PTID         TO      WRK-PTID-X
            MOVE    WRK-PTID             TO      ACCT-PTID
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SRYACCT-REC          TO      MCPDATA-REC
            MOVE    "DBDELETE"           TO      MCP-FUNC
-           MOVE    PATH-TBL-SRYACCT-PRV-DELPRV
-                                        TO      MCP-PATH
+           MOVE    "tbl_sryacct_prv"    TO  MCP-TABLE
+           MOVE    "delprv"             TO  MCP-PATHNAME
            DISPLAY "take tmp db delete acct st = " SYU-PTID "," 
            PERFORM  900-REALDB-INS-SEC
       *
       *¿ÇÎÅ¹Ô°Ù¥Þ¥¹¥¿
-           MOVE    WRK-PARA-HOSPID      TO      SRY-HOSPID
+grpsys     MOVE    WRK-PARA-HOSPNUM     TO      SRY-HOSPNUM
            MOVE    WRK-PARA-NYUGAIKBN   TO      SRY-NYUGAIKBN
            MOVE    WRK-PARA-PTID         TO      WRK-PTID-X
            MOVE    WRK-PTID             TO      SRY-PTID
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SRYACT-REC           TO      MCPDATA-REC
            MOVE    "DBDELETE"           TO      MCP-FUNC
-           MOVE    PATH-TBL-SRYACT-PRV-DELPRV
-                                        TO      MCP-PATH
+           MOVE    "tbl_sryact_prv"     TO  MCP-TABLE
+           MOVE    "delprv"             TO  MCP-PATHNAME
            DISPLAY "take tmp db delete act st = " SYU-PTID "," 
            PERFORM  900-REALDB-INS-SEC
       *
       *»»ÄêÍúÎò¥Þ¥¹¥¿
-           MOVE    WRK-PARA-HOSPID      TO      SANTEI-HOSPID
+grpsys     MOVE    WRK-PARA-HOSPNUM     TO      SANTEI-HOSPNUM
       *    MOVE    WRK-PARA-NYUGAIKBN   TO      SANTEI-NYUGAIKBN
            MOVE    ZERO                 TO      SANTEI-NYUGAIKBN
            MOVE    WRK-PARA-PTID         TO      WRK-PTID-X
            MOVE    WRK-PTID             TO      SANTEI-PTID
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SANTEI-REC           TO      MCPDATA-REC
            MOVE    "DBDELETE"           TO      MCP-FUNC
-           MOVE    PATH-TBL-SANTEI-PRV-DELPRV
-                                        TO      MCP-PATH
+           MOVE    "tbl_santei_prv"     TO  MCP-TABLE
+           MOVE    "delprv"             TO  MCP-PATHNAME
            DISPLAY "take tmp db delete santei st = " SYU-PTID "," 
            PERFORM  900-REALDB-INS-SEC
       *
       *¼õ¿ÇÍúÎò¥Þ¥¹¥¿
-           MOVE    WRK-PARA-HOSPID      TO      JYURRK-HOSPID
+grpsys     MOVE    WRK-PARA-HOSPNUM     TO      JYURRK-HOSPNUM
            MOVE    WRK-PARA-NYUGAIKBN   TO      JYURRK-NYUGAIKBN
            MOVE    WRK-PARA-PTID         TO      WRK-PTID-X
            MOVE    WRK-PTID             TO      JYURRK-PTID
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    JYURRK-REC           TO      MCPDATA-REC
            MOVE    "DBDELETE"           TO      MCP-FUNC
-           MOVE    PATH-TBL-JYURRK-PRV-DELPRV
-                                        TO      MCP-PATH
+           MOVE    "tbl_jyurrk_prv"     TO  MCP-TABLE
+           MOVE    "delprv"             TO  MCP-PATHNAME
            DISPLAY "take tmp db delete jyurr st = " SYU-PTID "," 
            PERFORM  900-REALDB-INS-SEC
       *
       *¿ÇÎÅ²ÊÍúÎò¥Þ¥¹¥¿
-           MOVE    WRK-PARA-HOSPID      TO      KARRK-HOSPID
+grpsys     MOVE    WRK-PARA-HOSPNUM     TO      KARRK-HOSPNUM
            MOVE    WRK-PARA-PTID         TO      WRK-PTID-X
            MOVE    WRK-PTID             TO      KARRK-PTID
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SRYKARRK-REC         TO      MCPDATA-REC
            MOVE    "DBDELETE"           TO      MCP-FUNC
-           MOVE    PATH-TBL-SRYKARRK-PRV-DELPRV
-                                        TO      MCP-PATH
+           MOVE    "tbl_srykarrk_prv"   TO  MCP-TABLE
+           MOVE    "delprv"             TO  MCP-PATHNAME
            DISPLAY "take tmp db delete srykarr st = " SYU-PTID "," 
            PERFORM  900-REALDB-INS-SEC
       *
       *´µ¼Ô¥³¥á¥ó¥È¥Þ¥¹¥¿
-           MOVE    WRK-PARA-HOSPID      TO      PTCOM-HOSPID
+grpsys     MOVE    WRK-PARA-HOSPNUM     TO      PTCOM-HOSPNUM
            MOVE    WRK-PARA-PTID         TO      WRK-PTID-X
            MOVE    WRK-PTID             TO      PTCOM-PTID
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PTCOM-REC            TO      MCPDATA-REC
            MOVE    "DBDELETE"           TO      MCP-FUNC
-           MOVE    PATH-TBL-PTCOM-PRV-DELPRV
-                                        TO      MCP-PATH
+           MOVE    "tbl_ptcom_prv"      TO  MCP-TABLE
+           MOVE    "delprv"             TO  MCP-PATHNAME
            DISPLAY "take tmp db delete ptcom st = " SYU-PTID "," 
            PERFORM  900-REALDB-INS-SEC
       *
       *´µ¼Ô¥Þ¥¹¥¿
-           MOVE    WRK-PARA-HOSPID      TO      PTINF-HOSPID
+grpsys     MOVE    WRK-PARA-HOSPNUM     TO      PTINF-HOSPNUM
            MOVE    WRK-PARA-PTID         TO      WRK-PTID-X
            MOVE    WRK-PTID             TO      PTINF-PTID
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PTINF-REC            TO      MCPDATA-REC
            MOVE    "DBDELETE"           TO      MCP-FUNC
-           MOVE    PATH-TBL-PTINF-PRV-DELPRV
-                                        TO      MCP-PATH
+           MOVE    "tbl_ptinf_prv"      TO  MCP-TABLE
+           MOVE    "delprv"             TO  MCP-PATHNAME
            DISPLAY "take tmp db delete ptinf st = " SYU-PTID "," 
            PERFORM  900-REALDB-INS-SEC
       *¿ÇÎÅ¹Ô°ÙÉÕ²Ã¾ðÊó¥Þ¥¹¥¿
-           MOVE    WRK-PARA-HOSPID      TO      ACCTP-HOSPID
+grpsys     MOVE    WRK-PARA-HOSPNUM     TO      ACCTP-HOSPNUM
            MOVE    WRK-PARA-NYUGAIKBN   TO      ACCTP-NYUGAIKBN
            MOVE    WRK-PARA-PTID         TO      WRK-PTID-X
            MOVE    WRK-PTID             TO      ACCTP-PTID
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SRYACCTPLUS-REC      TO      MCPDATA-REC
            MOVE    "DBDELETE"           TO      MCP-FUNC
-           MOVE    PATH-TBL-SRYACCTPLUS-PRV-DEL1
-                                        TO      MCP-PATH
+           MOVE    "tbl_sryacctplus_prv"
+                                        TO  MCP-TABLE
+           MOVE    "del1"               TO  MCP-PATHNAME
            DISPLAY "take tmp db delete ptinf st = " SYU-PTID "," 
            PERFORM  900-REALDB-INS-SEC
       *
@@ -1925,11 +1809,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *****************************************************************
        900-PRVKANRI-FET-SEC            SECTION.
       *
-           MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "MCPSUB"            USING
-                                       MCPAREA
-                                       MCPDATA-REC
-
+grpsys      PERFORM 900-DBFETCH-SEC
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC         TO  PRVKANRI-REC
                MOVE    ZERO                TO  FLG-PRVKANRI
@@ -1941,23 +1821,67 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    £Ä£Â¡¡¥ª¡¼¥×¥ó½èÍý
+      *    £Ä£Â£Ó£Å£Ì£Å£Ã£Ô½èÍý
+      *****************************************************************
+       900-DBSELECT-SEC                SECTION.
+      *
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+grpsys     PERFORM 900-ORCDBMAIN-SEC
+           .
+       900-DBSELECT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    £Ä£Â£Æ£Å£Ô£Ã£È½èÍý
+      *****************************************************************
+       900-DBFETCH-SEC                SECTION.
+      *
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+grpsys     PERFORM 900-ORCDBMAIN-SEC
+      *
+           .
+       900-DBFETCH-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ¥Æ¡¼¥Ö¥ë¥¯¥í¡¼¥º½èÍý
+      *****************************************************************
+       900-CLOSE-SEC               SECTION.
+      *
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
+grpsys     PERFORM 900-ORCDBMAIN-SEC
+      *
+           .
+       900-CLOSE-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ¥Æ¡¼¥Ö¥ë¥¢¥¯¥»¥¹½èÍý
+      *****************************************************************
+       900-ORCDBMAIN-SEC               SECTION.
+      *
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
+           .
+      *
+       900-ORCDBMAIN-EXT.
+           EXIT.
+      *      
+      *****************************************************************
+      *    £Ä£Â¥ª¡¼¥×¥ó½èÍý
       *****************************************************************
        100-DBOPEN-SEC                SECTION.
       *
-           MOVE    LOW-VALUE           TO  MCP-PATH.
-           MOVE    "DBOPEN"            TO  MCP-FUNC.
-           CALL    "MCPSUB"            USING
-                                       MCPAREA
-                                       MCPDATA-REC.
-           DISPLAY "DBOPEN RC= " MCP-RC
+           MOVE    LOW-VALUE           TO  MCP-TABLE
+                                           MCP-PATHNAME
+           MOVE    "DBOPEN"            TO  MCP-FUNC
+grpsys     PERFORM 900-ORCDBMAIN-SEC
       *
-           MOVE    LOW-VALUE           TO  MCP-PATH.
-           MOVE    "DBSTART"           TO  MCP-FUNC.
-           CALL    "MCPSUB"            USING
-                                       MCPAREA
-                                       MCPDATA-REC.
-           DISPLAY "DBSTART RC= " MCP-RC
+           MOVE    LOW-VALUE           TO  MCP-TABLE
+                                           MCP-PATHNAME
+           MOVE    "DBSTART"           TO  MCP-FUNC
+grpsys     PERFORM 900-ORCDBMAIN-SEC
            .
        100-DBOPEN-EXT.
            EXIT.
@@ -1967,15 +1891,15 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *****************************************************************
        900-DBCOMMIT-SEC                SECTION.
       *
-           MOVE    "DBCOMMIT"          TO  MCP-FUNC.
-           CALL    "MCPSUB"            USING
-                                       MCPAREA
-                                       MCPDATA-REC.
-       
-           MOVE    "DBDISCONNECT"      TO  MCP-FUNC.
-           CALL    "MCPSUB"            USING
-                                       MCPAREA
-                                       MCPDATA-REC.
+           MOVE    LOW-VALUE           TO  MCP-TABLE
+                                           MCP-PATHNAME
+           MOVE    "DBCOMMIT"          TO  MCP-FUNC
+grpsys     PERFORM 900-ORCDBMAIN-SEC
+      *
+           MOVE    LOW-VALUE           TO  MCP-TABLE
+                                           MCP-PATHNAME
+           MOVE    "DBDISCONNECT"      TO  MCP-FUNC
+grpsys     PERFORM 900-ORCDBMAIN-SEC
       *
            .
        900-DBCOMMIT-EXT.
@@ -1991,24 +1915,11 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *                                MCPDATA-REC.
       *    DISPLAY "rollback mcp-rc = " MCP-RC
       *
-           MOVE    "DBDISCONNECT"      TO  MCP-FUNC.
-           CALL    "MCPSUB"            USING
-                                       MCPAREA
-                                       MCPDATA-REC.
+           MOVE    LOW-VALUE           TO  MCP-TABLE
+                                           MCP-PATHNAME
+           MOVE    "DBDISCONNECT"      TO  MCP-FUNC
+grpsys     PERFORM 900-ORCDBMAIN-SEC
       *
            .
        900-DBDISCONNECT-EXT.
            EXIT.
-      *****************************************************************
-      *    £Ä£Â£Ã£Ì£Ï£Ó£Å½èÍý
-      *****************************************************************
-       900-DBCLOSE-SEC                 SECTION.
-      *
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           CALL    "MCPSUB"            USING
-                                           MCPAREA
-                                           MCPDATA-REC
-           .
-       900-DBCLOSE-EXT.
-           EXIT.
-      *
