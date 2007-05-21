@@ -170,8 +170,6 @@ grpsys     COPY    "COMMON-SPA".
            COPY    "CPORCSJOBKANRI.INC".
       *    £Ä£Â¸¡º÷
            COPY    "MCPDATA.INC".
-      *     
-           COPY    "CPORCMCP.INC".  
       *
            COPY    "MCPAREA".
       *

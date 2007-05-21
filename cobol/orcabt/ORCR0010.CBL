@@ -3081,6 +3081,12 @@ grpsys     MOVE    SPA-HOSPNUM     TO  JOB-HOSPNUM
       *
            MOVE    "DBSELECT"          TO  MCP-FUNC
 grpsys     PERFORM 900-ORCDBMAIN-SEC
+           IF      MCP-RC              =   ZERO
+               CONTINUE
+           ELSE
+               DISPLAY "SELECT ERR table=" MCP-TABLE
+                       " pathname="        MCP-PATHNAME
+           END-IF
            .
        900-DBSELECT-EXT.
            EXIT.
