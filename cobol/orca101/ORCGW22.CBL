@@ -29,6 +29,7 @@
       * Maj/Min/Rev  修正者       日付      内容
       * 01.00.01     NACL-太田    03.11.18  更新日付編集対応
       * 01.00.02     NACL-小豆沢  06.12.22  室料差額に特化した画面に変更
+      * 03.05.00     NACL-太田    07.05.18  グループ診療対応
       *****************************************************************
       *
        ENVIRONMENT                               DIVISION.
@@ -209,6 +210,7 @@
            COPY    "W11.INC".
            COPY    "W111.INC".
            COPY    "W12.INC".
+           COPY    "W121.INC".
            COPY    "W13.INC".
            COPY    "W14.INC".
            COPY    "W15.INC".
@@ -228,6 +230,7 @@
            COPY    "W29.INC".
            COPY    "W30.INC".
            COPY    "W31.INC".
+           COPY    "W32.INC".
            COPY    "W60.INC".
            COPY    "W61.INC".
            COPY    "W62.INC".
@@ -578,6 +581,7 @@
       *
            MOVE    ZERO                TO  IDX.
            INITIALIZE                      SYSKANRI-REC.
+           MOVE    SPA-HOSPNUM         TO  SYS-HOSPNUM
            MOVE    SPA-W22-KANRICD-C   TO  SYS-KANRICD.
       *     MOVE    SPA-SYSYMD          TO  ORC-DBYMD.
       *    システム管理で有効なデータのみ表示はＫＥＹ２を使用
@@ -587,7 +591,6 @@
            MOVE    "key5"              TO  MCP-PATHNAME.
            MOVE    "tbl_syskanri"      TO  WRK-TABLE.
            MOVE    "key5"              TO  WRK-PATHNAME.
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYSKANRI-REC        TO  MCPDATA-REC.
       *
            PERFORM 910-DB-SELECT-SEC.
@@ -717,13 +720,13 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    ZERO                TO  IDX.
            MOVE    ZERO                TO  FLG-KIKAN-DABURI.
            INITIALIZE                      SYSKANRI-REC.
+           MOVE    SPA-HOSPNUM         TO  SYS-HOSPNUM
            MOVE    SPA-W22-KANRICD-C   TO  SYS-KANRICD.
            MOVE    SPA-W22-KBNCD       TO  SYS-KBNCD.
            MOVE    "tbl_syskanri"      TO  MCP-TABLE.
            MOVE    "key8"              TO  MCP-PATHNAME.
            MOVE    "tbl_syskanri"      TO  WRK-TABLE.
            MOVE    "key8"              TO  WRK-PATHNAME.
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYSKANRI-REC        TO  MCPDATA-REC.
       *
            PERFORM 910-DB-SELECT-SEC.
@@ -796,7 +799,6 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                                                SYS-UPYMD
            MOVE    SMCNDATE-HMS            TO  SYS-UPHMS
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYSKANRI-REC          TO  MCPDATA-REC.
            MOVE    "tbl_syskanri"        TO  MCP-TABLE.
            MOVE    "key"                 TO  MCP-PATHNAME.
@@ -821,13 +823,13 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SPACE                   TO  WRK-CREYMD
       *
            INITIALIZE                      SYSKANRI-REC
+           MOVE    SPA-HOSPNUM             TO  SYS-HOSPNUM
            MOVE    SPA-W22-KANRICD-C       TO  SYS-KANRICD
            MOVE    SPA-W22-KBNCD           TO  SYS-KBNCD
            MOVE    SPA-W22-STYUKYMD-OLD    TO  SYS-STYUKYMD
            MOVE    SPA-W22-EDYUKYMD-OLD    TO  SYS-EDYUKYMD
            MOVE    "tbl_syskanri"          TO  MCP-TABLE
            MOVE    "key10"                 TO  MCP-PATHNAME
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYSKANRI-REC            TO  MCPDATA-REC
            PERFORM 910-DB-SELECT-SEC
            IF    ( MCP-RC              =   ZERO )
@@ -886,6 +888,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                    MOVE    SYS-5115-REC    TO  SYSKANRI-REC
            END-EVALUATE.
       *
+           MOVE    SPA-HOSPNUM           TO  SYSUP-HOSPNUM
            MOVE    SPA-W22-KANRICD-C     TO  SYSUP-KANRICD.
            MOVE    SPA-W22-KBNCD         TO  SYSUP-KBNCD.
            MOVE    SPA-W22-STYUKYMD-OLD  TO  SYSUP-STYUKYMD.
@@ -897,7 +900,6 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SMCNDATE-YMD          TO  SYS-UPYMD
            MOVE    SMCNDATE-HMS          TO  SYS-UPHMS
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYSKANRI-REC          TO  MCPDATA-REC.
       *
            MOVE    "tbl_syskanri"        TO  MCP-TABLE.
@@ -919,11 +921,11 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
        4201-DELETE-SEC                 SECTION.
       *
            INITIALIZE                        SYSKANRI-REC.
+           MOVE    SPA-HOSPNUM           TO  SYS-HOSPNUM
            MOVE    SPA-W22-KANRICD-C     TO  SYS-KANRICD.
            MOVE    SPA-W22-KBNCD         TO  SYS-KBNCD.
            MOVE    SPA-W22-STYUKYMD-OLD  TO  SYS-STYUKYMD.
            MOVE    SPA-W22-EDYUKYMD-OLD  TO  SYS-EDYUKYMD.
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYSKANRI-REC          TO  MCPDATA-REC.
            MOVE    "tbl_syskanri"        TO  MCP-TABLE.
            MOVE    "key"                 TO  MCP-PATHNAME.
@@ -946,6 +948,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            EVALUATE    SPA-W22-KANRICD-C
                WHEN    "5101"
                    INITIALIZE                      SYS-5101-REC
+                   MOVE    SPA-HOSPNUM TO  SYS-5101-HOSPNUM
                    MOVE    SPA-W22-KANRICD-C
                                        TO  SYS-5101-KANRICD
                    MOVE    SPA-W22-KBNCD
@@ -958,6 +961,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                                        TO  SYS-5101-BTU-SBT-NM
                WHEN    "5102"
                    INITIALIZE                      SYS-5102-REC
+                   MOVE    SPA-HOSPNUM TO  SYS-5102-HOSPNUM
                    MOVE    SPA-W22-KANRICD-C
                                        TO  SYS-5102-KANRICD
                    MOVE    SPA-W22-KBNCD
@@ -970,6 +974,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                                        TO  SYS-5102-BTU-HEIKINZAIKBN-NM
                WHEN    "5103"
                    INITIALIZE                      SYS-5103-REC
+                   MOVE    SPA-HOSPNUM TO  SYS-5103-HOSPNUM
                    MOVE    SPA-W22-KANRICD-C
                                        TO  SYS-5103-KANRICD
                    MOVE    SPA-W22-KBNCD
@@ -982,6 +987,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                                        TO  SYS-5103-BTU-KNGHAICHIKBN-NM
                WHEN    "5104"
                    INITIALIZE                      SYS-5104-REC
+                   MOVE    SPA-HOSPNUM TO  SYS-5104-HOSPNUM
                    MOVE    SPA-W22-KANRICD-C
                                        TO  SYS-5104-KANRICD
                    MOVE    SPA-W22-KBNCD
@@ -994,6 +1000,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                                        TO  SYS-5104-BTU-KNGHIRITUKBN-NM
                WHEN    "5105"
                    INITIALIZE                      SYS-5105-REC
+                   MOVE    SPA-HOSPNUM TO  SYS-5105-HOSPNUM
                    MOVE    SPA-W22-KANRICD-C
                                        TO  SYS-5105-KANRICD
                    MOVE    SPA-W22-KBNCD
@@ -1006,6 +1013,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                                        TO  SYS-5105-BTU-KNGHJOKSN-NM
                WHEN    "5106"
                    INITIALIZE                      SYS-5106-REC
+                   MOVE    SPA-HOSPNUM TO  SYS-5106-HOSPNUM
                    MOVE    SPA-W22-KANRICD-C
                                        TO  SYS-5106-KANRICD
                    MOVE    SPA-W22-KBNCD
@@ -1018,6 +1026,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                                        TO  SYS-5106-BTU-YAKANKNGKSN-NM
                WHEN    "5107"
                    INITIALIZE                      SYS-5107-REC
+                   MOVE    SPA-HOSPNUM TO  SYS-5107-HOSPNUM
                    MOVE    SPA-W22-KANRICD-C
                                        TO  SYS-5107-KANRICD
                    MOVE    SPA-W22-KBNCD
@@ -1030,6 +1039,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                                        TO  SYS-5107-BTU-KNGSISUKBN-NM
                WHEN    "5108"
                    INITIALIZE                      SYS-5108-REC
+                   MOVE    SPA-HOSPNUM TO  SYS-5108-HOSPNUM
                    MOVE    SPA-W22-KANRICD-C
                                        TO  SYS-5108-KANRICD
                    MOVE    SPA-W22-KBNCD
@@ -1042,6 +1052,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                                        TO  SYS-5108-BRM-SBT-NM
                WHEN    "5109"
                    INITIALIZE                      SYS-5109-REC
+                   MOVE    SPA-HOSPNUM TO  SYS-5109-HOSPNUM
                    MOVE    SPA-W22-KANRICD-C
                                        TO  SYS-5109-KANRICD
                    MOVE    SPA-W22-KBNCD
@@ -1054,6 +1065,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                                        TO  SYS-5109-BRM-SEX-NM
                WHEN    "5110"
                    INITIALIZE                      SYS-5110-REC
+                   MOVE    SPA-HOSPNUM TO  SYS-5110-HOSPNUM
                    MOVE    SPA-W22-KANRICD-C
                                        TO  SYS-5110-KANRICD
                    MOVE    SPA-W22-KBNCD
@@ -1066,6 +1078,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                                        TO  SYS-5110-BTU-TOKUTEINYUIN-NM
                WHEN    "5111"
                    INITIALIZE                      SYS-5111-REC
+                   MOVE    SPA-HOSPNUM TO  SYS-5111-HOSPNUM
                    MOVE    SPA-W22-KANRICD-C
                                        TO  SYS-5111-KANRICD
                    MOVE    SPA-W22-KBNCD
@@ -1078,6 +1091,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                                        TO  SYS-5111-BRM-TOKUTEINYUIN-NM
                WHEN    "5113"
                    INITIALIZE                      SYS-5113-REC
+                   MOVE    SPA-HOSPNUM TO  SYS-5113-HOSPNUM
                    MOVE    SPA-W22-KANRICD-C
                                        TO  SYS-5113-KANRICD
                    MOVE    SPA-W22-KBNCD
@@ -1092,6 +1106,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                                        TO  SYS-5113-BRM-SAGAKU-NM
                WHEN    "5114"
                    INITIALIZE                      SYS-5114-REC
+                   MOVE    SPA-HOSPNUM TO  SYS-5114-HOSPNUM
                    MOVE    SPA-W22-KANRICD-C
                                        TO  SYS-5114-KANRICD
                    MOVE    SPA-W22-KBNCD
@@ -1104,6 +1119,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                                        TO  SYS-5114-BTU-HIKSISUKBN-NM
                WHEN    "5115"
                    INITIALIZE                      SYS-5115-REC
+                   MOVE    SPA-HOSPNUM TO  SYS-5115-HOSPNUM
                    MOVE    SPA-W22-KANRICD-C
                                        TO  SYS-5115-KANRICD
                    MOVE    SPA-W22-KBNCD
@@ -1316,9 +1332,10 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
        910-DB-DELETE-SEC               SECTION.
       *
            MOVE    "DBDELETE"          TO  MCP-FUNC.
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"      USING      MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
+           .
       *
        910-DB-UPDATE-EXT.
            EXIT.
@@ -1328,9 +1345,10 @@ grpsys                            SPA-AREA
        910-DB-UPDATE-SEC               SECTION.
       *
            MOVE    "DBUPDATE"          TO  MCP-FUNC.
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"      USING      MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
+           .
       *
        910-DB-UPDATE-EXT.
            EXIT.
@@ -1340,9 +1358,10 @@ grpsys                            SPA-AREA
        910-DB-INSERT-SEC               SECTION.
       *
            MOVE    "DBINSERT"          TO  MCP-FUNC.
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"      USING      MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
+           .
       *
        910-DB-INSERT-EXT.
            EXIT.
@@ -1352,9 +1371,10 @@ grpsys                            SPA-AREA
        910-DB-SELECT-SEC               SECTION.
       *
            MOVE    "DBSELECT"          TO  MCP-FUNC.
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"      USING      MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
+           .
       *
        910-DB-SELECT-EXT.
            EXIT.
@@ -1364,9 +1384,10 @@ grpsys                            SPA-AREA
        910-DB-READ-SEC                 SECTION.
       *
            MOVE    "DBFETCH"       TO  MCP-FUNC.
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"      USING      MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
+           .
       *
        910-DB-READ-EXT.
            EXIT.
@@ -1376,9 +1397,10 @@ grpsys                            SPA-AREA
        910-DB-CLOSE-SEC                SECTION.
       *
            MOVE    "DBCLOSECURSOR"      TO  MCP-FUNC.
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"      USING      MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
+           .
       *
        910-DB-CLOSE-EXT.
            EXIT.
@@ -1388,9 +1410,10 @@ grpsys                            SPA-AREA
        900-PUT-WINDOW              SECTION.
       *
            MOVE   "PUTWINDOW"       TO  MCP-FUNC.
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"      USING      MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
+           .
       *
        900-PUT-WINDOW-EXT.
            EXIT.
@@ -1505,13 +1528,13 @@ grpsys                            SPA-AREA
                MOVE    ZERO                  TO  IDX
                MOVE    ZERO                  TO  FLG-ARI
                INITIALIZE                        SYSKANRI-REC
+               MOVE    SPA-HOSPNUM           TO  SYS-HOSPNUM
                MOVE    SPA-W22-KANRICD-C     TO  SYS-KANRICD
                MOVE    SPA-W22-KBNCD         TO  SYS-KBNCD
                MOVE    "tbl_syskanri"        TO  MCP-TABLE
                MOVE    "key8"                TO  MCP-PATHNAME
                MOVE    "tbl_syskanri"        TO  WRK-TABLE
                MOVE    "key8"                TO  WRK-PATHNAME
-grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    SYSKANRI-REC          TO  MCPDATA-REC
       *
                PERFORM 910-DB-SELECT-SEC

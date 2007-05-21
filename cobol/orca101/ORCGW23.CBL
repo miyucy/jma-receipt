@@ -36,6 +36,7 @@
       *  01.00.04    NACL-太田    03/11/18  更新日付編集対応
       *  01.00.05    NACL-太田    04/04/12  再処理の取り扱いを追加
       *  02.07.00    NACL-太田    06/01/16  削除区分追加
+      *  03.05.00    NACL-太田    07.05.18  グループ診療対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -214,6 +215,7 @@
            COPY    "W11.INC".
            COPY    "W111.INC".
            COPY    "W12.INC".
+           COPY    "W121.INC".
            COPY    "W13.INC".
            COPY    "W14.INC".
            COPY    "W15.INC".
@@ -233,6 +235,7 @@
            COPY    "W29.INC".
            COPY    "W30.INC".
            COPY    "W31.INC".
+           COPY    "W32.INC".
            COPY    "W60.INC".
            COPY    "W61.INC".
            COPY    "W62.INC".
@@ -901,6 +904,7 @@
                INITIALIZE                      SYS-5010-REC
            END-IF
       *
+           MOVE    SPA-HOSPNUM             TO  SYS-5010-HOSPNUM
            MOVE   "5010"                   TO  SYS-5010-KANRICD
            MOVE    "*"                     TO  SYS-5010-KBNCD
            MOVE    SPA-W01-STYUKYMD        TO  SYS-5010-STYUKYMD
@@ -922,6 +926,7 @@
                MOVE    SMCNDATE-YMD            TO  SYS-UPYMD
                MOVE    SMCNDATE-HMS            TO  SYS-UPHMS
       *
+               MOVE    SPA-HOSPNUM             TO  SYSUP-HOSPNUM
                MOVE    SYS-KANRICD             TO  SYSUP-KANRICD
                MOVE    SYS-KBNCD               TO  SYSUP-KBNCD
                MOVE    SPA-W01-SEL-STYUKYMD    TO  SYSUP-STYUKYMD
@@ -941,11 +946,10 @@
                MOVE    "DBINSERT"              TO  MCP-FUNC
            END-IF
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYSKANRI-REC            TO  MCPDATA-REC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"      USING      MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
            IF    ( MCP-RC          NOT =   ZERO )
                MOVE    "2001"              TO  SPA-ERRCD
            ELSE
@@ -1271,9 +1275,9 @@ grpsys                            SPA-AREA
        900-PUT-WINDOW              SECTION.
       *
            MOVE   "PUTWINDOW"                   TO  MCP-FUNC.
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"      USING      MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
            .
       *
        900-PUT-WINDOW-EXT.
@@ -1284,21 +1288,21 @@ grpsys                            SPA-AREA
       *****************************************************************
        900-SYSKANRI-KEY10-SEL-SEC          SECTION.
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  SYS-HOSPNUM
            MOVE    SYSKANRI-REC        TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC.
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key10"             TO  MCP-PATHNAME
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"      USING      MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
            IF  MCP-RC   =   ZERO
                MOVE    "DBFETCH"           TO  MCP-FUNC
                MOVE    "tbl_syskanri"      TO  MCP-TABLE
                MOVE    "key10"             TO  MCP-PATHNAME
-grpsys         CALL "ORCDBMAIN" USING MCPAREA
-                                      MCPDATA-REC
-grpsys                                SPA-AREA
+               CALL    "ORCDBMAIN"      USING      MCPAREA
+                                                   MCPDATA-REC
+                                                   SPA-AREA
                IF  MCP-RC   =   ZERO
                    MOVE    ZERO                TO  FLG-SYSKANRI
                    MOVE    MCPDATA-REC         TO  SYSKANRI-REC
@@ -1312,9 +1316,9 @@ grpsys                                SPA-AREA
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC.
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key10"             TO  MCP-PATHNAME
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"      USING      MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
            .
       *
        900-SYSKANRI-KEY10-SEL-EXT.

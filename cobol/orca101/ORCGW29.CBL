@@ -27,6 +27,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  03.05.00    NACL-太田    07.05.18  グループ診療対応
       *****************************************************************
       *
        ENVIRONMENT                               DIVISION.
@@ -90,7 +91,6 @@
       *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
-           COPY    "ORCA-DBPATH".
       *
       *    全角チェックパラメタ
            COPY    "CPORCSKANACHK.INC".
@@ -121,6 +121,7 @@
            COPY    "W11.INC".
            COPY    "W111.INC".
            COPY    "W12.INC".
+           COPY    "W121.INC".
            COPY    "W13.INC".
            COPY    "W14.INC".
            COPY    "W15.INC".
@@ -140,6 +141,7 @@
            COPY    "W29.INC".
            COPY    "W30.INC".
            COPY    "W31.INC".
+           COPY    "W32.INC".
            COPY    "W60.INC".
            COPY    "W61.INC".
            COPY    "W62.INC".
@@ -268,15 +270,12 @@
       *
       *    退院事由検索処理
            PERFORM 3101-SYS5013-SEL-SEC
-           DISPLAY "FLG-SYSKANRI = " FLG-SYSKANRI
            IF    ( FLG-SYSKANRI    =   ZERO )
                MOVE    SYS-5013-NAME
                                    TO  SPA-GMN-TAIIN-NAME
                MOVE    SYS-5013-TANNAME
                                    TO  SPA-GMN-TAIIN-TANNAME
            END-IF
-           DISPLAY "SPA-GMN-TAIIN-NAME = " SPA-GMN-TAIIN-NAME
-           DISPLAY "SPA-GMN-TAIIN-TANNAME = " SPA-GMN-TAIIN-TANNAME
       *
            MOVE    1               TO  SPA-GMN-CUR
       *
@@ -292,16 +291,15 @@
            MOVE    ZERO            TO  FLG-SYSKANRI
       *
            INITIALIZE                  SYS-5013-REC
+           MOVE    SPA-HOSPNUM     TO  SYS-5013-HOSPNUM
            MOVE    "5013"          TO  SYS-5013-KANRICD
            MOVE    SPA-W01-KBNCD   TO  SYS-5013-KBNCD
-           MOVE    "%"             TO  SYS-5013-KBNCD(3:1)
            MOVE    SPA-W01-STYUKYMD
                                    TO  SYS-5013-STYUKYMD
                                        SYS-5013-EDYUKYMD
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYS-5013-REC    TO  MCPDATA-REC
-           MOVE    PATH-TBL-SYSKANRI-KEY
-                                   TO  MCP-PATH
+           MOVE    "tbl_syskanri"  TO  MCP-TABLE
+           MOVE    "key10"         TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF    ( MCP-RC          =   ZERO )
                MOVE    MCPDATA-REC TO  SYS-5013-REC
@@ -309,9 +307,9 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    1           TO  FLG-SYSKANRI
            END-IF
       *
-           MOVE    PATH-TBL-SYSKANRI-KEY
-                                   TO  MCP-PATH
-           PERFORM 910-DBCLOSE-SEC
+           MOVE    "tbl_syskanri"  TO  MCP-TABLE
+           MOVE    "key10"         TO  MCP-PATHNAME
+           PERFORM 910-DBCLOSECURSOR-SEC
       *
            .
        3101-SYS5013-SEL-EXT.
@@ -528,16 +526,16 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
        4301-DEL-SEC                SECTION.
       *
            INITIALIZE                      SYS-5013-REC
+           MOVE    SPA-HOSPNUM         TO  SYS-5013-HOSPNUM
            MOVE    "5013"              TO  SYS-5013-KANRICD
            MOVE    SPA-W01-KBNCD       TO  SYS-5013-KBNCD
            MOVE    SPA-W01-SEL-STYUKYMD
                                        TO  SYS-5013-STYUKYMD
            MOVE    SPA-W01-SEL-EDYUKYMD
                                        TO  SYS-5013-EDYUKYMD
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYS-5013-REC        TO  MCPDATA-REC
-           MOVE    PATH-TBL-SYSKANRI-KEY
-                                       TO  MCP-PATH
+           MOVE    "tbl_syskanri"  TO  MCP-TABLE
+           MOVE    "key"           TO  MCP-PATHNAME
            PERFORM 910-DBDELETE-SEC
            IF    ( MCP-RC          NOT =   ZERO )
                MOVE    "2003"          TO  SPA-ERRCD
@@ -578,6 +576,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *
            INITIALIZE                  SYS-5013-REC
       *
+           MOVE    SPA-HOSPNUM         TO  SYS-5013-HOSPNUM
            MOVE    "5013"              TO  SYS-5013-KANRICD
            MOVE    SPA-W01-KBNCD       TO  SYS-5013-KBNCD
            MOVE    SPA-W01-STYUKYMD    TO  SYS-5013-STYUKYMD
@@ -594,14 +593,14 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                PERFORM 800-MCNDATE-SEC
                MOVE    SMCNDATE-YMD        TO  SYS-UPYMD
                MOVE    SMCNDATE-HMS        TO  SYS-UPHMS
+               MOVE    SYS-5013-HOSPNUM    TO  SYSUP-HOSPNUM
                MOVE    SYS-5013-KANRICD    TO  SYSUP-KANRICD
                MOVE    SYS-5013-KBNCD      TO  SYSUP-KBNCD
                MOVE    SYS-5013-STYUKYMD   TO  SYSUP-STYUKYMD
                MOVE    SYS-5013-EDYUKYMD   TO  SYSUP-EDYUKYMD
-grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    SYSKANRI-REC        TO  MCPDATA-REC
-               MOVE    PATH-TBL-SYSKANRI-UPD1
-                                           TO  MCP-PATH
+               MOVE    "tbl_syskanri"      TO  MCP-TABLE
+               MOVE    "upd1"              TO  MCP-PATHNAME
                PERFORM 910-DBUPDATE-SEC
                IF    ( MCP-RC      NOT =   ZERO )
                    MOVE    "2001"      TO  SPA-ERRCD
@@ -611,10 +610,9 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    SMCNDATE-YMD        TO  SYS-CREYMD
                                                SYS-UPYMD
                MOVE    SMCNDATE-HMS        TO  SYS-UPHMS
-grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    SYSKANRI-REC        TO  MCPDATA-REC
-               MOVE    PATH-TBL-SYSKANRI-KEY
-                                           TO  MCP-PATH
+               MOVE    "tbl_syskanri"      TO  MCP-TABLE
+               MOVE    "key"               TO  MCP-PATHNAME
                PERFORM 910-DBINSERT-SEC
                IF    ( MCP-RC      NOT =   ZERO )
                    MOVE    "2002"      TO  SPA-ERRCD
@@ -886,9 +884,9 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
        910-DBDELETE-SEC                SECTION.
       *
            MOVE    "DBDELETE"          TO  MCP-FUNC
-           CALL    "MCPSUB"            USING
-                                       MCPAREA
-                                       MCPDATA-REC
+           CALL    "ORCDBMAIN"      USING      MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
       *
@@ -900,9 +898,9 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
        910-DBUPDATE-SEC                SECTION.
       *
            MOVE    "DBUPDATE"          TO  MCP-FUNC
-           CALL    "MCPSUB"            USING
-                                       MCPAREA
-                                       MCPDATA-REC
+           CALL    "ORCDBMAIN"      USING      MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
       *
@@ -914,9 +912,9 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
        910-DBINSERT-SEC                SECTION.
       *
            MOVE    "DBINSERT"          TO  MCP-FUNC
-           CALL    "MCPSUB"            USING
-                                       MCPAREA
-                                       MCPDATA-REC
+           CALL    "ORCDBMAIN"      USING      MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
       *
@@ -928,9 +926,9 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
        910-DBSELECT-SEC                SECTION.
       *
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           CALL    "MCPSUB"            USING
-                                       MCPAREA
-                                       MCPDATA-REC
+           CALL    "ORCDBMAIN"      USING      MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            IF    ( MCP-RC          =   ZERO )
                PERFORM 910-DBFETCH-SEC
@@ -946,9 +944,9 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
        910-DBFETCH-SEC                 SECTION.
       *
            MOVE    "DBFETCH"       TO  MCP-FUNC
-           CALL    "MCPSUB"            USING
-                                       MCPAREA
-                                       MCPDATA-REC
+           CALL    "ORCDBMAIN"      USING      MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
       *
@@ -957,16 +955,16 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
       *****************************************************************
       *    ＤＢクローズ処理
       *****************************************************************
-       910-DBCLOSE-SEC                 SECTION.
+       910-DBCLOSECURSOR-SEC                 SECTION.
       *
            MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
-           CALL    "MCPSUB"            USING
-                                       MCPAREA
-                                       MCPDATA-REC
+           CALL    "ORCDBMAIN"      USING      MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
       *
-       910-DBCLOSE-EXT.
+       910-DBCLOSECURSOR-EXT.
            EXIT.
       *****************************************************************
       *    ＰＵＴ　処理
@@ -974,9 +972,9 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
        900-PUT-WINDOW              SECTION.
       *
            MOVE   "PUTWINDOW"      TO  MCP-FUNC
-           CALL   "MCPSUB"             USING
-                                       MCPAREA
-                                       MCPDATA-REC
+           CALL    "ORCDBMAIN"      USING      MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
        900-PUT-WINDOW-EXT.

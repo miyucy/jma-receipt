@@ -46,6 +46,7 @@
       *  03.02.02    NACL-小豆沢  06.09.12  定数超過対応
       *  03.04.00    NACL-多々納  06/10/26  検索画面連絡情報追加 
       *  03.04.00    NACL-太田    06/11/29  退院再計算区分追加
+      *  03.05.00    NACL-太田    07.05.18  グループ診療対応
       *****************************************************************
       *
        ENVIRONMENT                               DIVISION.
@@ -374,6 +375,7 @@
            COPY    "W11.INC".
            COPY    "W111.INC".
            COPY    "W12.INC".
+           COPY    "W121.INC".
            COPY    "W13.INC".
            COPY    "W14.INC".
            COPY    "W15.INC".
@@ -393,6 +395,7 @@
            COPY    "W29.INC".
            COPY    "W30.INC".
            COPY    "W31.INC".
+           COPY    "W32.INC".
            COPY    "W60.INC".
            COPY    "W61.INC".
            COPY    "W62.INC".
@@ -574,6 +577,9 @@
       *    退院再計算区分コンボ
            PERFORM 310-SAIKEISANKBNLST-SET-SEC
       *
+      *    入金の取扱いコンボ
+           PERFORM 310-NYKNKNRKBNLST-SET-SEC
+      *
       *    請求書発行区分コンボ
            PERFORM 310-SKYPRTKBNLST-SET-SEC
       *
@@ -610,6 +616,9 @@
       *
       *    ＡＤＬ入力区分コンボ
            PERFORM 310-ADLINPUTLST-SET-SEC
+      *
+      *    定期請求差額初期表示区分コンボ
+           PERFORM 310-TEIKISAGAKUACTLST-SET-SEC
       *
            .
        310-CMB-SYOKI-EXT.
@@ -741,7 +750,7 @@
        310-REKI-DISPKBNLST-SET-EXT.
            EXIT.
       *****************************************************************
-      *    入院歴表示コンボ
+      *    再計算区分コンボ
       *****************************************************************
        310-SAIKEISANKBNLST-SET-SEC     SECTION.
       *
@@ -757,6 +766,36 @@
       *
            .
        310-SAIKEISANKBNLST-SET-EXT.
+           EXIT.
+      *****************************************************************
+      *    入金の取扱いコンボ
+      *****************************************************************
+       310-NYKNKNRKBNLST-SET-SEC     SECTION.
+      *
+           MOVE    5               TO  SPA-GMN-W24-NYKNKNRKBN-MAX
+      *
+           MOVE    "1"             TO  SPA-GMN-W24-NYKNKNRKBNL (1)
+           MOVE    "今回請求分のみ入金"
+                                   TO  SPA-GMN-W24-NYKNKNRKBNMEIL (1)
+      *
+           MOVE    "2"             TO  SPA-GMN-W24-NYKNKNRKBNL (2)
+           MOVE    "今回分・伝票の古い未収順"
+                                   TO  SPA-GMN-W24-NYKNKNRKBNMEIL (2)
+      *
+           MOVE    "3"             TO  SPA-GMN-W24-NYKNKNRKBNL (3)
+           MOVE    "今回分・伝票の新しい未収順"
+                                   TO  SPA-GMN-W24-NYKNKNRKBNMEIL (3)
+      *
+           MOVE    "4"             TO  SPA-GMN-W24-NYKNKNRKBNL (4)
+           MOVE    "伝票の古い未収順"
+                                   TO  SPA-GMN-W24-NYKNKNRKBNMEIL (4)
+      *
+           MOVE    "5"             TO  SPA-GMN-W24-NYKNKNRKBNL (5)
+           MOVE    "伝票の新しい未収順"
+                                   TO  SPA-GMN-W24-NYKNKNRKBNMEIL (5)
+      *
+           .
+       310-NYKNKNRKBNLST-SET-EXT.
            EXIT.
       *****************************************************************
       *    請求書発行区分コンボ
@@ -960,6 +999,24 @@
        310-ADLINPUTLST-SET-EXT.
            EXIT.
       *****************************************************************
+      *    定期請求差額初期表示区分コンボ
+      *****************************************************************
+       310-TEIKISAGAKUACTLST-SET-SEC    SECTION.
+      *
+           MOVE    2               TO  SPA-GMN-W24-TEIKISAGAKUACT-MAX
+      *
+           MOVE    "0"             TO  SPA-GMN-W24-TEIKISAGAKUACTL   (1)
+           MOVE    "初期表示しない"
+                                   TO  SPA-GMN-W24-TEIKISAGAKUACTMEIL(1)
+      *
+           MOVE    "1"             TO  SPA-GMN-W24-TEIKISAGAKUACTL   (2)
+           MOVE    "初期表示する"
+                                   TO  SPA-GMN-W24-TEIKISAGAKUACTMEIL(2)
+      *
+           .
+       310-TEIKISAGAKUACTLST-SET-EXT.
+           EXIT.
+      *****************************************************************
       *    入力情報編集処理
       *****************************************************************
        310-INPUT-AREA-EDIT-SEC     SECTION.
@@ -1086,6 +1143,16 @@
                                        TO  SPA-GMN-W24-ADLINPUT-G
            END-IF
       *
+      *    定期請求差額初期表示
+           MOVE    SYS-5000-TEIKISAGAKUACTKBN  TO  WRK-CMB-CD
+           PERFORM 4200-TEIKISAGAKUACTLST-CHK-SEC
+           IF    ( WRK-CMB-ITM     NOT =   SPACE )
+               MOVE    WRK-CMB-ITM     TO  SPA-GMN-W24-TEIKISAGAKUACT-G
+           ELSE
+               MOVE    SPA-GMN-W24-TEIKISAGAKUACTLST (1)
+                                       TO  SPA-GMN-W24-TEIKISAGAKUACT-G
+           END-IF
+      *
       *    入院料加算情報
            PERFORM 3101-INPUT-AREA-KSN-SET-SEC
       *
@@ -1209,6 +1276,16 @@
            ELSE
                MOVE    SPA-GMN-W24-SAIKEISANKBNLST (1)
                                        TO  SPA-GMN-W24-SAIKEISANKBN-G
+           END-IF
+      *
+      *    入金の取扱い
+           MOVE    SYS-5000-NYKNKNRKBN   TO  WRK-CMB-CD
+           PERFORM 4200-NYKNKNRKBNLST-CHK-SEC
+           IF    ( WRK-CMB-ITM     NOT =   SPACE )
+               MOVE    WRK-CMB-ITM     TO  SPA-GMN-W24-NYKNKNRKBN-G
+           ELSE
+               MOVE    SPA-GMN-W24-NYKNKNRKBNLST (1)
+                                       TO  SPA-GMN-W24-NYKNKNRKBN-G
            END-IF
       *
       *    請求書発行発行区分
@@ -1547,6 +1624,9 @@
       *    退院再計算区分
            MOVE    W24-SAIKEISANKBN    TO  SPA-GMN-W24-SAIKEISANKBN-G
       *
+      *    入金の取扱い
+           MOVE    W24-NYKNKNRKBN      TO  SPA-GMN-W24-NYKNKNRKBN-G
+      *
       *    請求書発行区分
            MOVE    W24-SKYPRTKBN       TO  SPA-GMN-W24-SKYPRTKBN-G
       *
@@ -1570,6 +1650,9 @@
       *
       *    ＡＤＬ区分
            MOVE    W24-ADLINPUT        TO  SPA-GMN-W24-ADLINPUT-G
+      *
+      *    定期請求差額初期表示区分
+           MOVE    W24-TEIKISAGAKUACT  TO  SPA-GMN-W24-TEIKISAGAKUACT-G
       *
            .
       *
@@ -1688,6 +1771,12 @@
                GO  TO  4102-KIHON-CHK-EXT
            END-IF
       *
+      *    入金の取扱いチェック処理
+           PERFORM 4101-NYKNKNRKBN-CHK-SEC
+           IF    ( SPA-ERRCD   NOT =   SPACE )
+               GO  TO  4102-KIHON-CHK-EXT
+           END-IF
+      *
       *    請求書発行区分チェック処理
            PERFORM 4101-SKYPRTKBN-CHK-SEC
            IF    ( SPA-ERRCD   NOT =   SPACE )
@@ -1732,6 +1821,12 @@
       *
       *    ＡＤＬ入力区分チェック処理
            PERFORM 4100-ADLINPUT-CHK-SEC
+           IF    ( SPA-ERRCD   NOT =   SPACE )
+               GO  TO  4102-KIHON-CHK-EXT
+           END-IF
+      *
+      *    定期請求差額初期表示区分チェック処理
+           PERFORM 4100-TEIKISAGAKUACT-CHK-SEC
            IF    ( SPA-ERRCD   NOT =   SPACE )
                GO  TO  4102-KIHON-CHK-EXT
            END-IF
@@ -1884,11 +1979,11 @@
        431-DEL-SEC                 SECTION.
       *
            INITIALIZE                      SYS-5000-REC
+           MOVE    SPA-HOSPNUM         TO  SYS-5000-HOSPNUM
            MOVE    "5000"              TO  SYS-5000-KANRICD
            MOVE    "*"                 TO  SYS-5000-KBNCD
            MOVE    SPA-W01-STYUKYMD    TO  SYS-5000-STYUKYMD
            MOVE    SPA-W01-EDYUKYMD    TO  SYS-5000-EDYUKYMD
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYS-5000-REC        TO  MCPDATA-REC
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
@@ -1956,11 +2051,11 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    SMCNDATE-HMS        TO  SYS-5000-UPHMS
       *
                MOVE    SYS-5000-REC        TO  SYSKANRI-REC
+               MOVE    SYS-5000-HOSPNUM    TO  SYSUP-HOSPNUM
                MOVE    SYS-5000-KANRICD    TO  SYSUP-KANRICD
                MOVE    SYS-5000-KBNCD      TO  SYSUP-KBNCD
                MOVE    WRK-STYUKYMD        TO  SYSUP-STYUKYMD
                MOVE    WRK-EDYUKYMD        TO  SYSUP-EDYUKYMD
-grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    SYSKANRI-REC        TO  MCPDATA-REC
                MOVE    "tbl_syskanri"      TO  MCP-TABLE
                MOVE    "upd1"              TO  MCP-PATHNAME
@@ -1973,7 +2068,6 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                                                SYS-5000-UPYMD
                MOVE    SMCNDATE-HMS        TO  SYS-5000-UPHMS
       *
-grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    SYS-5000-REC        TO  MCPDATA-REC
                MOVE    "tbl_syskanri"      TO  MCP-TABLE
                MOVE    "key"               TO  MCP-PATHNAME
@@ -1997,6 +2091,8 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
        4811-HOSP-NYUINKHN-EDIT-SEC     SECTION.
       *
            INITIALIZE                  SYS-5000-REC
+      *
+           MOVE    SPA-HOSPNUM         TO  SYS-5000-HOSPNUM
       *
       *    管理コード
            MOVE    "5000"              TO  SYS-5000-KANRICD
@@ -2137,6 +2233,9 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
       *    退院再計算区分
            MOVE    SPA-GMN-W24-SAIKEISANKBN
                                    TO  SYS-5000-SAIKEISANKBN
+      *    入金の取扱い
+           MOVE    SPA-GMN-W24-NYKNKNRKBN
+                                   TO  SYS-5000-NYKNKNRKBN
       *
       *    請求書発行区分
            MOVE    SPA-GMN-W24-SKYPRTKBN
@@ -2169,6 +2268,10 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
       *    ＡＤＬ入力区分
            MOVE    SPA-GMN-W24-ADLINPUT
                                    TO  SYS-5000-ADLINPUTKBN
+      *
+      *    定期請求差額初期表示区分
+           MOVE    SPA-GMN-W24-TEIKISAGAKUACT
+                                   TO  SYS-5000-TEIKISAGAKUACTKBN
       *
       *    減算情報
            IF    ( SPA-W01-EDYUKYMD    >=  CONST-H180401 )
@@ -2791,6 +2894,25 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
        4101-SAIKEISANKBN-CHK-EXT.
            EXIT.
       *****************************************************************
+      *    入金の取扱いチェック処理
+      *****************************************************************
+       4101-NYKNKNRKBN-CHK-SEC         SECTION.
+      *
+           MOVE    SPA-GMN-W24-NYKNKNRKBN
+                                       TO  WRK-CMB-CD
+           PERFORM 4200-NYKNKNRKBNLST-CHK-SEC
+           IF    ( WRK-CMB-ITM         =   SPACE )
+               MOVE    SPA-GMN-W24-NYKNKNRKBNLST (1)
+                                       TO  SPA-GMN-W24-NYKNKNRKBN-G
+           ELSE
+               MOVE    WRK-CMB-ITM     TO  SPA-GMN-W24-NYKNKNRKBN-G
+           END-IF
+      *
+           .
+      *
+       4101-NYKNKNRKBN-CHK-EXT.
+           EXIT.
+      *****************************************************************
       *    請求書発行区分チェック処理
       *****************************************************************
        4101-SKYPRTKBN-CHK-SEC       SECTION.
@@ -2943,6 +3065,25 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
        4100-ADLINPUT-CHK-EXT.
            EXIT.
       *****************************************************************
+      *    定期請求差額初期表示区分チェック処理
+      *****************************************************************
+       4100-TEIKISAGAKUACT-CHK-SEC          SECTION.
+      *
+           MOVE    SPA-GMN-W24-TEIKISAGAKUACT
+                                       TO  WRK-CMB-CD
+           PERFORM 4200-TEIKISAGAKUACTLST-CHK-SEC
+           IF    ( WRK-CMB-ITM         =   SPACE )
+               MOVE    SPA-GMN-W24-TEIKISAGAKUACTLST (1)
+                                       TO  SPA-GMN-W24-TEIKISAGAKUACT-G
+           ELSE
+               MOVE    WRK-CMB-ITM     TO  SPA-GMN-W24-TEIKISAGAKUACT-G
+           END-IF
+      *
+           .
+      *
+       4100-TEIKISAGAKUACT-CHK-EXT.
+           EXIT.
+      *****************************************************************
       *    入院時食事療養コンボチェック処理
       *****************************************************************
        4200-SKJRYOYOLST-CHK-SEC    SECTION.
@@ -3061,6 +3202,30 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
            .
       *
        4200-SAIKEISANKBNLST-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    入金の取扱いコンボチェック処理
+      *****************************************************************
+       4200-NYKNKNRKBNLST-CHK-SEC   SECTION.
+      *
+           INITIALIZE                  WRK-CMB-ITM-G
+      *
+           PERFORM VARYING IDX-CMB FROM    1   BY  1
+                   UNTIL ( IDX-CMB >   SPA-GMN-W24-NYKNKNRKBN-MAX )
+                    OR   ( WRK-CMB-ITM NOT =   SPACE )
+      *
+               IF    ( SPA-GMN-W24-NYKNKNRKBNL (IDX-CMB)
+                                       =   WRK-CMB-CD )
+                   MOVE    SPA-GMN-W24-NYKNKNRKBNLST (IDX-CMB)
+                                       TO  WRK-CMB-ITM
+                   MOVE    IDX-CMB     TO  WRK-CMB-IDX
+               END-IF
+      *
+           END-PERFORM
+      *
+           .
+      *
+       4200-NYKNKNRKBNLST-CHK-EXT.
            EXIT.
       *****************************************************************
       *    請求書発行区分コンボチェック処理
@@ -3369,6 +3534,29 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
        4200-ADLINPUTLST-CHK-EXT.
            EXIT.
       *****************************************************************
+      *    定期請求差額初期表示区分コンボチェック処理
+      *****************************************************************
+       4200-TEIKISAGAKUACTLST-CHK-SEC   SECTION.
+      *
+           INITIALIZE                  WRK-CMB-ITM-G
+      *
+           PERFORM VARYING IDX-CMB FROM    1   BY  1
+                   UNTIL ( IDX-CMB >   SPA-GMN-W24-TEIKISAGAKUACT-MAX )
+                    OR   ( WRK-CMB-ITM NOT =   SPACE )
+      *
+               IF    ( SPA-GMN-W24-TEIKISAGAKUACTL (IDX-CMB)
+                                       =   WRK-CMB-CD )
+                   MOVE    SPA-GMN-W24-TEIKISAGAKUACTLST (IDX-CMB)
+                                       TO  WRK-CMB-ITM
+                   MOVE    IDX-CMB     TO  WRK-CMB-IDX
+               END-IF
+      *
+           END-PERFORM
+      *
+           .
+       4200-TEIKISAGAKUACTLST-CHK-EXT.
+           EXIT.
+      *****************************************************************
       *    入力情報領域初期化処理
       *****************************************************************
        4201-INPUT-AREA-INIT-SEC        SECTION.
@@ -3450,6 +3638,8 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                                    TO  SPA-GMN-W24-REKI-DISPKBN-G
            MOVE    SPA-GMN-W24-SAIKEISANKBNLST (1)
                                    TO  SPA-GMN-W24-SAIKEISANKBN-G
+           MOVE    SPA-GMN-W24-NYKNKNRKBNLST (1)
+                                   TO  SPA-GMN-W24-NYKNKNRKBN-G
            MOVE    SPA-GMN-W24-SKYPRTKBNLST    (2)
                                    TO  SPA-GMN-W24-SKYPRTKBN-G
            MOVE    SPA-GMN-W24-MISYUPRTKBNLST  (1)
@@ -3466,6 +3656,8 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                                    TO  SPA-GMN-W24-TEISU-G
            MOVE    SPA-GMN-W24-ADLINPUTLST (2)
                                    TO  SPA-GMN-W24-ADLINPUT-G
+           MOVE    SPA-GMN-W24-TEIKISAGAKUACTLST (1)
+                                   TO  SPA-GMN-W24-TEIKISAGAKUACT-G
       *
       *
       *    入院加算名称編集処理
@@ -3929,6 +4121,19 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
       *
            END-PERFORM
       *
+      *    入金の取扱い
+           MOVE    SPA-GMN-W24-NYKNKNRKBN-G
+                                       TO  W24-NYKNKNRKBN
+           MOVE    SPA-GMN-W24-NYKNKNRKBN-MAX
+                                       TO  W24-NYKNKNRKBN-CNT
+           PERFORM VARYING IDX0    FROM    1   BY  1
+                   UNTIL ( IDX0    >   W24-NYKNKNRKBN-CNT )
+      *
+               MOVE    SPA-GMN-W24-NYKNKNRKBNLST (IDX0)
+                                       TO  W24-NYKNKNRKBN-ITM (IDX0)
+      *
+           END-PERFORM
+      *
       *    請求書発行区分
            MOVE    SPA-GMN-W24-SKYPRTKBN-G
                                        TO  W24-SKYPRTKBN
@@ -4039,6 +4244,21 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
       *
                MOVE    SPA-GMN-W24-ADLINPUTLST (IDX0)
                                        TO  W24-ADLINPUT-ITM (IDX0)
+      *
+           END-PERFORM
+      *
+      *    定期請求差額初期表示区分
+           MOVE    SPA-GMN-W24-TEIKISAGAKUACT-G
+                                       TO  W24-TEIKISAGAKUACT
+           MOVE    SPA-GMN-W24-TEIKISAGAKUACT-MAX
+                                       TO  W24-TEIKISAGAKUACT-CNT
+      *
+           PERFORM VARYING IDX0    FROM    1   BY  1
+                   UNTIL ( IDX0    >   W24-TEIKISAGAKUACT-CNT )
+      *
+      *
+               MOVE    SPA-GMN-W24-TEIKISAGAKUACTLST (IDX0)
+                                       TO  W24-TEIKISAGAKUACT-ITM (IDX0)
       *
            END-PERFORM
       *
@@ -4204,6 +4424,8 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    "REKI_DISPKBN"  TO  MCP-WIDGET
            WHEN    056
                MOVE    "SAIKEISANKBN"  TO  MCP-WIDGET
+           WHEN    058
+               MOVE    "NYKNKNRKBN"    TO  MCP-WIDGET
            WHEN    043
                MOVE    "SKYPRTKBN"     TO  MCP-WIDGET
            WHEN    044
@@ -4233,6 +4455,8 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
            WHEN    049
                MOVE    "SENTEI_TANKARJ"
                                        TO  MCP-WIDGET
+           WHEN    057
+               MOVE    "TEIKISAGAKUACT" TO MCP-WIDGET
            WHEN    212
                MOVE    "B12"           TO  MCP-WIDGET
            END-EVALUATE
@@ -4334,6 +4558,8 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
            WHEN    "REKI_DISPKBN"
                MOVE    056             TO  SPA-GMN-W24-CUR
            WHEN    "SAIKEISANKBN"
+               MOVE    058             TO  SPA-GMN-W24-CUR
+           WHEN    "NYKNKNRKBN"
                MOVE    043             TO  SPA-GMN-W24-CUR
            WHEN    "SKYPRTKBN"
                MOVE    044             TO  SPA-GMN-W24-CUR
@@ -4344,7 +4570,7 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
            WHEN    "TAIPRTKBN"
                MOVE    052             TO  SPA-GMN-W24-CUR
            WHEN    "TAIKSIKBN"
-               MOVE    212             TO  SPA-GMN-W24-CUR
+               MOVE    057             TO  SPA-GMN-W24-CUR
            WHEN    "BRMSGK_TAX"
                MOVE    047             TO  SPA-GMN-W24-CUR
            WHEN    "NACCT_BRMSGK"
@@ -4357,6 +4583,8 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    055             TO  SPA-GMN-W24-CUR
            WHEN    "ADLINPUT"
                MOVE    008             TO  SPA-GMN-W24-CUR
+           WHEN    "TEIKISAGAKUACT"
+               MOVE    212             TO  SPA-GMN-W24-CUR
            END-EVALUATE
       *
            .
@@ -4641,11 +4869,11 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                        MOVE    SMCNDATE-YMD    TO  SYS-5000-UPYMD
                        MOVE    SMCNDATE-HMS    TO  SYS-5000-UPHMS
                        MOVE    SYS-5000-REC    TO  SYSKANRI-REC
+                       MOVE    SYS-5000-HOSPNUM    TO  SYSUP-HOSPNUM
                        MOVE    SYS-5000-KANRICD    TO  SYSUP-KANRICD
                        MOVE    SYS-5000-KBNCD      TO  SYSUP-KBNCD
                        MOVE    SYS-5000-STYUKYMD   TO  SYSUP-STYUKYMD
                        MOVE    WRK-EDYUKYMD        TO  SYSUP-EDYUKYMD
-grpsys*                MOVE SPA-HOSPNUM TO -HOSPNUM
                        MOVE    SYSKANRI-REC        TO  MCPDATA-REC
                        MOVE    "tbl_syskanri"      TO  MCP-TABLE
                        MOVE    "upd1"              TO  MCP-PATHNAME
@@ -4673,7 +4901,6 @@ grpsys*                MOVE SPA-HOSPNUM TO -HOSPNUM
                        MOVE    SMCNDATE-HMS        TO  SYS-5000-UPHMS
       *
                        MOVE    SYS-5000-REC    TO  SYSKANRI-REC
-grpsys*                MOVE SPA-HOSPNUM TO -HOSPNUM
                        MOVE    SYSKANRI-REC    TO  MCPDATA-REC
                        MOVE    "tbl_syskanri"  TO  MCP-TABLE
                        MOVE    "key"           TO  MCP-PATHNAME
@@ -4713,7 +4940,6 @@ grpsys*                MOVE SPA-HOSPNUM TO -HOSPNUM
                    MOVE    SMCNDATE-HMS    TO  SYS-5000-UPHMS
       *
                    MOVE    SYS-5000-REC    TO  SYSKANRI-REC
-grpsys*            MOVE SPA-HOSPNUM TO -HOSPNUM
                    MOVE    SYSKANRI-REC    TO  MCPDATA-REC
                    MOVE    "tbl_syskanri"  TO  MCP-TABLE
                    MOVE    "key"           TO  MCP-PATHNAME
@@ -4733,7 +4959,6 @@ grpsys*            MOVE SPA-HOSPNUM TO -HOSPNUM
                    MOVE    SMCNDATE-HMS    TO  SYS-5000-UPHMS
       *
                    MOVE    SYS-5000-REC    TO  SYSKANRI-REC
-grpsys*            MOVE SPA-HOSPNUM TO -HOSPNUM
                    MOVE    SYSKANRI-REC    TO  MCPDATA-REC
                    MOVE    "tbl_syskanri"  TO  MCP-TABLE
                    MOVE    "key"           TO  MCP-PATHNAME
@@ -4767,7 +4992,7 @@ grpsys*            MOVE SPA-HOSPNUM TO -HOSPNUM
       *
            MOVE    ZERO            TO  FLG-SYSKANRI
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM     TO  SYS-HOSPNUM
            MOVE    SYSKANRI-REC    TO  MCPDATA-REC
            MOVE    "tbl_syskanri"  TO  MCP-TABLE
            MOVE    "key2"          TO  MCP-PATHNAME
@@ -4809,7 +5034,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *
            MOVE    ZERO                TO  FLG-SYSKANRI
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  SYS-HOSPNUM
            MOVE    SYSKANRI-REC        TO  MCPDATA-REC
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key10"             TO  MCP-PATHNAME
@@ -4835,7 +5060,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *
            MOVE    ZERO                TO  FLG-SYSKANRI
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  SYS-HOSPNUM
            MOVE    SYSKANRI-REC        TO  MCPDATA-REC
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key16"             TO  MCP-PATHNAME
@@ -4863,10 +5088,10 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *
       *    点数マスタ検索
            INITIALIZE  TNS-TENSU-REC
+           MOVE    SPA-HOSPNUM         TO  TNS-HOSPNUM
            MOVE    WRK-SRYCD           TO  TNS-SRYCD
            MOVE    SPA-W01-EDYUKYMD    TO  TNS-YUKOSTYMD
                                            TNS-YUKOEDYMD
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
            MOVE    "tbl_tensu"         TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
@@ -4892,9 +5117,9 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
        910-DBSELECT-SEC          SECTION.
       *
            MOVE    "DBSELECT"      TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"      USING      MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
            IF        ( MCP-RC          =   ZERO )
                PERFORM 910-DBFETCH-SEC
            END-IF
@@ -4908,9 +5133,9 @@ grpsys                            SPA-AREA
        910-DBFETCH-SEC            SECTION.
       *
            MOVE    "DBFETCH"       TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"      USING      MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
        910-DBFETCH-EXT.
@@ -4921,9 +5146,9 @@ grpsys                            SPA-AREA
        910-DBCLOSECURSOR-SEC           SECTION.
       *
            MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"      USING      MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
        910-DBCLOSECURSOR-EXT.
@@ -4934,9 +5159,9 @@ grpsys                            SPA-AREA
        910-DBINSERT-SEC                SECTION.
       *
            MOVE    "DBINSERT"      TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"      USING      MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
        910-DBINSERT-EXT.
@@ -4947,9 +5172,9 @@ grpsys                            SPA-AREA
        910-DBUPDATE-SEC                SECTION.
       *
            MOVE    "DBUPDATE"      TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"      USING      MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
        910-DBUPDATE-EXT.
@@ -4960,9 +5185,9 @@ grpsys                            SPA-AREA
        910-DBDELETE-SEC                SECTION.
       *
            MOVE    "DBDELETE"      TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"      USING      MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
        910-DBDELETE-EXT.
@@ -4975,9 +5200,9 @@ grpsys                            SPA-AREA
            MOVE   LOW-VALUE         TO  MCP-TABLE
                                         MCP-PATHNAME
            MOVE   "PUTWINDOW"       TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"      USING      MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
        900-PUT-WINDOW-EXT.

@@ -869,6 +869,7 @@
       *
            CALL    "ORCGW20SUB01"      USING
                                        W20SUB01-LNK
+                                       SPA-AREA
            IF    ( W20SUB01-O-RC   =   ZERO )
                MOVE    W20SUB01-O-NAME
                                    TO  SPA-GMN-W20-TKHNRYO (IDX-LST)
@@ -1717,7 +1718,7 @@
            IF    ( FLG-SYSKANRI    =   ZERO )
                MOVE    "1202"      TO  SPA-ERRCD
            ELSE
-               MOVE    SPA-HOSPNUM     TO  SYS-HOSPNUM
+               MOVE    SPA-HOSPNUM     TO  SYS-5001-HOSPNUM
                MOVE    SYS-5001-REC    TO  MCPDATA-REC
                MOVE    "tbl_syskanri"  TO  MCP-TABLE
                MOVE    "key"           TO  MCP-PATHNAME
@@ -1762,6 +1763,8 @@
       *
       *    MOVE    SPACE       TO  SYS-5001-REC
       *    INITIALIZE              SYS-5001-REC
+      *
+           MOVE    SPA-HOSPNUM         TO  SYS-5001-HOSPNUM
       *
       *    管理コード
            MOVE    "5001"              TO  SYS-5001-KANRICD
@@ -2831,6 +2834,7 @@
       *
            CALL    "ORCGW20SUB01"      USING
                                        W20SUB01-LNK
+                                       SPA-AREA
            IF    ( W20SUB01-O-RC   =   ZERO )
                MOVE    W20SUB01-O-KHNSRYCD
                                    TO  WRK-CMB-CD
