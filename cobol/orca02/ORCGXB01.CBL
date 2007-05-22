@@ -29,6 +29,7 @@
       * Maj/Min/Rev  修正者       日付      内容
       *  01.00.01    NACL−太田   04/01/23  DBSTART,DBCOMMIT処理削除
       *  02.07.00    NACL-竹田    05/10/24  MONFUNC 対応
+      *  03.05.00    NACL-多々納  07/05/22  グループ診療対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -312,23 +313,23 @@
                    INITIALIZE                      JOBKANRI-REC
                    MOVE    SPA-GMN-JOBID (IDX) TO  JOB-JOBID
                    MOVE    SPA-KBN-SHELLID     TO  JOB-SHELLID
-grpsys*            MOVE SPA-HOSPNUM TO -HOSPNUM
+                   MOVE    SPA-HOSPNUM         TO  JOB-HOSPNUM
                    MOVE    JOBKANRI-REC        TO  MCPDATA-REC
                    MOVE    "DBSELECT"          TO  MCP-FUNC
                    MOVE    "tbl_jobkanri"      TO  MCP-TABLE
                    MOVE    "key"
                                                TO  MCP-PATHNAME
-grpsys             CALL "ORCDBMAIN" USING MCPAREA
-                                          MCPDATA-REC
-grpsys                                    SPA-AREA
+grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
+                                                       MCPDATA-REC
+                                                       SPA-AREA
                    IF  MCP-RC   =   ZERO
                        MOVE    "DBFETCH"       TO  MCP-FUNC
                        MOVE    "tbl_jobkanri"  TO  MCP-TABLE
                        MOVE    "key"
                                                TO  MCP-PATHNAME
-grpsys                 CALL "ORCDBMAIN" USING MCPAREA
-                                              MCPDATA-REC
-grpsys                                        SPA-AREA
+grpsys                 CALL    "ORCDBMAIN"         USING   MCPAREA
+                                                           MCPDATA-REC
+                                                           SPA-AREA
                        MOVE    MCPDATA-REC     TO  JOBKANRI-REC
                        IF  (MCP-RC         =   ZERO)   AND
                            ((JOB-ENDYMD    =   SPACE)  OR
@@ -434,15 +435,15 @@ grpsys                                        SPA-AREA
       *
            INITIALIZE                  JOBKANRI-REC.
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  JOB-HOSPNUM
            MOVE    JOBKANRI-REC        TO  MCPDATA-REC.
            MOVE    "DBSELECT"          TO  MCP-FUNC.
            MOVE    "tbl_jobkanri"      TO  MCP-TABLE
            MOVE    "all02"
                                        TO  MCP-PATHNAME
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
            IF  MCP-RC   =   ZERO
               MOVE    "tbl_jobkanri"   TO  MCP-TABLE
                MOVE    "all02"
@@ -606,23 +607,23 @@ grpsys                            SPA-AREA
                    INITIALIZE                      JOBKANRI-REC
                    MOVE    SPA-GMN-JOBID (IDX) TO  JOB-JOBID
                    MOVE    SPA-KBN-SHELLID     TO  JOB-SHELLID
-grpsys*            MOVE SPA-HOSPNUM TO -HOSPNUM
+                   MOVE    SPA-HOSPNUM         TO  JOB-HOSPNUM
                    MOVE    JOBKANRI-REC        TO  MCPDATA-REC
                    MOVE    "DBSELECT"          TO  MCP-FUNC
                    MOVE    "tbl_jobkanri"      TO  MCP-TABLE
                    MOVE    "key2"
                                                TO  MCP-PATHNAME
-grpsys             CALL "ORCDBMAIN" USING MCPAREA
-                                          MCPDATA-REC
-grpsys                                    SPA-AREA
+grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
+                                                       MCPDATA-REC
+                                                       SPA-AREA
                    IF  MCP-RC   =   ZERO
                        MOVE    "DBFETCH"       TO  MCP-FUNC
                        MOVE    "tbl_jobkanri"  TO  MCP-TABLE
                        MOVE    "key2"
                                                TO  MCP-PATHNAME
-grpsys                 CALL "ORCDBMAIN" USING MCPAREA
-                                              MCPDATA-REC
-grpsys                                        SPA-AREA
+grpsys                 CALL    "ORCDBMAIN"         USING   MCPAREA
+                                                           MCPDATA-REC
+                                                           SPA-AREA
                        MOVE    MCPDATA-REC     TO  JOBKANRI-REC
                        IF  MCP-RC   =   ZERO
                            IF  (JOB-ENDYMD    NOT =   SPACE)  AND
@@ -693,15 +694,15 @@ grpsys                                        SPA-AREA
            IF  SPA-ERRCD   NOT =   "0004"
                INITIALIZE                      JOBKANRI-REC
                MOVE    SPA-KBN-SHELLID     TO  JOB-SHELLID
-grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
+               MOVE    SPA-HOSPNUM         TO  JOB-HOSPNUM
                MOVE    JOBKANRI-REC        TO  MCPDATA-REC
                MOVE    "DBDELETE"          TO  MCP-FUNC
                MOVE    "tbl_jobkanri"      TO  MCP-TABLE
                MOVE    "del12"
                                            TO  MCP-PATHNAME
-grpsys         CALL "ORCDBMAIN" USING MCPAREA
-                                      MCPDATA-REC
-grpsys                                SPA-AREA
+grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
+                                                   MCPDATA-REC
+                                                   SPA-AREA
       *
            END-IF.
       *
@@ -909,9 +910,9 @@ grpsys                                SPA-AREA
        810-JOBKANRI-READ-SEC      SECTION.
       *
            MOVE    "DBFETCH"           TO  MCP-FUNC.
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
 
       *
            IF  MCP-RC   =   ZERO
@@ -931,9 +932,9 @@ grpsys                            SPA-AREA
        910-DBCLOSECURSOR-SEC                 SECTION.
       *
            MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
       *
@@ -945,10 +946,10 @@ grpsys                            SPA-AREA
        900-PUT-WINDOW              SECTION.
       *
            MOVE   "PUTWINDOW"                   TO  MCP-FUNC.
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
-      *
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
+           .
        900-PUT-WINDOW-EXT.
            EXIT.
       *
