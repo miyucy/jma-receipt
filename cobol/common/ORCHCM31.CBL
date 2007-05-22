@@ -683,7 +683,7 @@
                MOVE    "3"             TO  HCM31S01-PROCKBN
            END-EVALUATE
       *
-           MOVE    SYU-HOSPID      TO  HCM31S01-HOSPID
+grpsys     MOVE    SYU-HOSPNUM     TO  HCM31S01-HOSPNUM
            MOVE    SYU-NYUGAIKBN   TO  HCM31S01-NYUGAIKBN
            MOVE    SYU-PTID        TO  HCM31S01-PTID
            MOVE    SYU-DENPNUM     TO  HCM31S01-DENPNUM
@@ -1031,7 +1031,7 @@
            MOVE    "*"             TO  SYS-1001-KBNCD
            MOVE    SPA-SYSYMD      TO  SYS-1001-STYUKYMD
                                        SYS-1001-EDYUKYMD
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+grpsys     MOVE    SPA-HOSPNUM     TO  SYS-1001-HOSPNUM
            MOVE    SYS-1001-REC    TO  MCPDATA-REC
       *
            MOVE    "tbl_syskanri"  TO  MCP-TABLE
@@ -1065,7 +1065,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    "*"             TO  SYS-1002-KBNCD
            MOVE    SPA-SYSYMD      TO  SYS-1002-STYUKYMD
                                        SYS-1002-EDYUKYMD
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+grpsys     MOVE    SPA-HOSPNUM     TO  SYS-1002-HOSPNUM
            MOVE    SYS-1002-REC    TO  MCPDATA-REC
       *
            MOVE    "tbl_syskanri"  TO  MCP-TABLE
@@ -1094,9 +1094,8 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    ZERO            TO  FLG-PTNUM
       *
            INITIALIZE                  PTNUM-REC
-           MOVE    SPA-HOSPID      TO  PTNUM-HOSPID
            MOVE    SPA-PTID        TO  PTNUM-PTID
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+grpsys     MOVE    SPA-HOSPNUM     TO  PTNUM-HOSPNUM
            MOVE    PTNUM-REC       TO  MCPDATA-REC
            MOVE    "tbl_ptnum"     TO  MCP-TABLE
            MOVE    "key"           TO  MCP-PATHNAME
@@ -1124,9 +1123,8 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    ZERO            TO  FLG-PTINF
       *
            INITIALIZE                  PTINF-REC
-           MOVE    SPA-HOSPID      TO  PTINF-HOSPID
            MOVE    SPA-PTID        TO  PTINF-PTID
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+grpsys     MOVE    SPA-HOSPNUM     TO  PTINF-HOSPNUM
            MOVE    PTINF-REC       TO  MCPDATA-REC
            MOVE    "tbl_ptinf"     TO  MCP-TABLE
            MOVE    "key"           TO  MCP-PATHNAME
@@ -1156,7 +1154,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SPACE           TO  SYUNOU-REC
            INITIALIZE                  SYUNOU-REC
       *
-           MOVE    SPA-HOSPID          TO  SYU-HOSPID
+grpsys     MOVE    SPA-HOSPNUM     TO  SYU-HOSPNUM
            MOVE    ORCHCM31-PTID       TO  SYU-PTID
            MOVE    ORCHCM31-STRSRYYMD  TO  SYU-SKYSTYMD
            MOVE    ORCHCM31-ENDSRYYMD  TO  SYU-SKYEDYMD
@@ -1170,7 +1168,6 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                    MOVE    "2"         TO  SYU-NYUGAIKBN
            END-EVALUATE
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYUNOU-REC      TO  MCPDATA-REC
            MOVE    WRK-TABLE       TO  MCP-TABLE
            MOVE    WRK-PATH        TO  MCP-PATHNAME
@@ -1213,10 +1210,9 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *
            MOVE    ZERO                TO  FLG-HKNCOMBI
       *
-           INITIALIZE                  HKNCOMBI-REC
-           MOVE    SPA-HOSPID          TO  COMB-HOSPID
+           INITIALIZE                      HKNCOMBI-REC
+           MOVE    SPA-HOSPNUM         TO  COMB-HOSPNUM
            MOVE    ORCHCM31-PTID       TO  COMB-PTID
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    HKNCOMBI-REC        TO  MCPDATA-REC
            MOVE    "tbl_hkncombi"      TO  MCP-TABLE
            MOVE    "key2"              TO  MCP-PATHNAME
@@ -1252,12 +1248,12 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *****************************************************************
       *    テーブル検索処理
       *****************************************************************
-       910-DBSELECT-SEC          SECTION.
+       910-DBSELECT-SEC                SECTION.
       *
            MOVE    "DBSELECT"      TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+grpsys                                         SPA-AREA
            IF        ( MCP-RC          =   ZERO )
                PERFORM 910-DBFETCH-SEC
            END-IF
@@ -1268,12 +1264,12 @@ grpsys                            SPA-AREA
       *****************************************************************
       *    テーブル読込処理
       *****************************************************************
-       910-DBFETCH-SEC            SECTION.
+       910-DBFETCH-SEC                 SECTION.
       *
            MOVE    "DBFETCH"       TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+grpsys                                         SPA-AREA
       *
            .
        910-DBFETCH-EXT.
@@ -1284,9 +1280,9 @@ grpsys                            SPA-AREA
        910-DBCLOSECURSOR-SEC           SECTION.
       *
            MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+grpsys                                         SPA-AREA
       *
            .
        910-DBCLOSECURSOR-EXT.

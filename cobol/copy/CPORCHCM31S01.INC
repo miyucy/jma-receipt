@@ -26,7 +26,7 @@
        01  HCM31S01-AREA.
            03  HCM31S01-IN.
                05  HCM31S01-PROCKBN        PIC  X(01).
-               05  HCM31S01-HOSPID         PIC  X(24).
+               05  HCM31S01-HOSPNUM        PIC  9(02).
                05  HCM31S01-NYUGAIKBN      PIC  X(01).
                05  HCM31S01-PTID           PIC  9(10).
                05  HCM31S01-DENPNUM        PIC  9(07).
