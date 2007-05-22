@@ -60,7 +60,7 @@
                                            OCCURS  100 TIMES.
               03  XA02-PTNUM.
                 04  XA02-VALUE  PIC X(20).
-              03  XA02-PTNAME.
+              03  XA02-PTNAME-G.
                 04  XA02-PTNAME-STYLE      PIC X(20).
                 04  XA02-PTNAME-VALUE      PIC X(50).
               03  XA02-SRYYMD.

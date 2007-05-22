@@ -2304,7 +2304,7 @@ grpsys*    MOVE    SPA-HOSPNUM         TO  -HOSPNUM
                    UNTIL       IDX             >   SPA-GMN-MAX
       *
                MOVE    SPA-GMN-TNO       (IDX) TO  WRK-ZZ
-               MOVE    WRK-ZZ                  TO  XA02-TNO       (IDX)
+               MOVE    WRK-ZZ                  TO  XA02-TNO    (IDX)
                IF      SPA-GMN-TTBL-GROUP(IDX) NOT = SPACE
                MOVE    SPA-GMN-TTBL-GROUP(IDX)(1:8)
                                                TO  WRK-SYMD
@@ -2320,8 +2320,6 @@ grpsys*    MOVE    SPA-HOSPNUM         TO  -HOSPNUM
                                        TO  XA02-SAKU-TIME(IDX)(6:1)
                MOVE    SPA-GMN-TTBL-GROUP(IDX)(13:2)
                                        TO  XA02-SAKU-TIME(IDX)(7:2)
-               MOVE    ":" 
-                                       TO  XA02-SAKU-TIME(IDX)(9:1)
                END-IF
                MOVE    SPA-GMN-TRENNUM   (IDX) TO  XA02-TRENNUM   (IDX)
                MOVE    SPA-GMN-TSHORI-RENNUM(IDX)
