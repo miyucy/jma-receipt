@@ -85,6 +85,8 @@
       *  03.02.02    NACL-Æ£¸¶    06/07/31  ¹ñÊÝ¼ç²ÊÂÐ±þ
       *
       *  03.04.01    NACL-Æ£¸¶    06/12/05  Ì¤ÀÁµá¥ì¥»ÂÐ±þ
+      *
+      *  03.05.01    NACL-Æ£¸¶    07/04/19  ¥°¥ë¡¼¥×¿ÇÎÅÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -106,10 +108,8 @@
        WORKING-STORAGE             SECTION.
       *
       *    ¥¨¥é¡¼¥Õ¥¡¥¤¥ë Ì¾¾ÎÎÎ°è 
-           COPY    "CPCOMMONDAT2.INC"
-                                   REPLACING  //RECE01PARA//
+           COPY    "CPERRFL.INC"   REPLACING  //ERRFLPARA//
                                    BY         //RECEERR//.
-           03  FILLER              PIC X(04)   VALUE   ".dat".
       *
       *    ¥¹¥ÑÎÎ°è
            COPY    "COMMON-SPA".
@@ -289,6 +289,9 @@
                05  FILLER          PIC X(08)   VALUE   "0100007F". 
                05  FILLER          PIC X(56)   VALUE   ALL "Z".
       *
+      *    ¥¨¥é¡¼¥Õ¥¡¥¤¥ë£É£Ä
+           03  WRK-CONS-FILE-ID    PIC X(08)   VALUE   "OR044ERR".
+      *
       *****************************************************************
       *    ¥Õ¥¡¥¤¥ë¥ì¥¤¥¢¥¦¥È
       *****************************************************************
@@ -364,7 +367,6 @@
       *
            COPY    "MCPAREA".
            COPY    "ORCA-SPA".
-      *
            COPY    "LINKAREA".
       *
        01  SCRAREA.
@@ -386,6 +388,11 @@
       *    ¼ç¡¡¡¡½èÍý
       *****************************************************************
        000-PROC-SEC                SECTION.
+      *
+           INITIALIZE                  FLG-AREA
+           INITIALIZE                  WRK-AREA
+                                       STS-AREA
+                                       IDX-AREA
       *
            MOVE    SPA-COMMON      TO  SPA-AREA
            MOVE    SPA-FREE        TO  SPA-T01FREE
@@ -423,9 +430,6 @@
       *****************************************************************
        100-INIT-SEC                SECTION.
       *
-           INITIALIZE                  FLG-AREA
-           INITIALIZE                  WRK-AREA
-      *
       *    ¥¨¥é¡¼²èÌÌ¤è¤ê
            IF      SPA-MOTOPG          =   "TERR"
                MOVE    SPACE               TO  SPA-MOTOPG
@@ -455,10 +459,10 @@
       *
            MOVE    SPACE               TO  LINKAREA
       *
-           MOVE    SPACE               TO  MCP-PUTTYPE.
-           MOVE    "T01    "           TO  MCP-WINDOW.
+           MOVE    SPACE               TO  MCP-PUTTYPE
+           MOVE    "T01    "           TO  MCP-WINDOW
       *
-           PERFORM 900-PUT-WINDOW.
+           PERFORM 900-PUT-WINDOW
       *
            MOVE    1                   TO  FLG-END
            .
@@ -540,6 +544,7 @@
            INITIALIZE                      ORCSPRTNMGETAREA
            MOVE    SPA-SYSYMD          TO  PRTNMGET-YMD
            CALL    "ORCSPRTNMGET"      USING   ORCSPRTNMGETAREA
+grpsys                                         SPA-AREA
       *
            PERFORM VARYING IDX     FROM    1   BY  1
                    UNTIL   IDX     >       PRTNMGET-PRTNM-MAX
@@ -829,13 +834,9 @@
            MOVE    SYS-3004-STYUKYMD   TO  SYS-3004-EDYUKYMD
            MOVE    SPA-HOSPNUM         TO  SYS-3004-HOSPNUM
            MOVE    SYS-3004-REC        TO  MCPDATA-REC
-           MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key2"              TO  MCP-PATHNAME
-           CALL    "ORCDBMAIN"         USING
-                                           MCPAREA
-                                           MCPDATA-REC
-                                           SPA-AREA
+grpsys     PERFORM 900-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
                MOVE    "tbl_syskanri"      TO  MCP-TABLE
                MOVE    "key2"              TO  MCP-PATHNAME
@@ -953,12 +954,11 @@
        3101-SYUKA-CHECK-SEC            SECTION.
       *
            INITIALIZE                  SYUKA-REC
-      *****MOVE    SPA-HOSPID      TO  SYUKA-HOSPID
+grpsys     MOVE    SPA-HOSPNUM     TO  SYUKA-HOSPNUM
            MOVE    "%"             TO  SYUKA-NYUGAIKBN
            MOVE    "YYYY"          TO  SYUKA-RECESYUBETU
            MOVE    "02"            TO  SYUKA-MISEIKYU-FLG
            MOVE    SPA-NAI-SKYYM   TO  SYUKA-SRYYM
-           MOVE    SPA-HOSPNUM     TO  SYUKA-HOSPNUM
            MOVE    SYUKA-REC       TO  MCPDATA-REC
            PERFORM 900-SYUKA-READ-SEC
            IF      FLG-SYUKA       =   ZERO
@@ -1027,8 +1027,9 @@
       *****************************************************************
        3201-RECEDEN-NEXT-SEC       SECTION.
       *
-           MOVE    "RECEERR"           TO  RECEERR-FILE-ID
+           MOVE    WRK-CONS-FILE-ID    TO  RECEERR-FILE-ID
            MOVE    SPA-TERMID          TO  RECEERR-TERMID
+grpsys     MOVE    SPA-HOSPNUM         TO  RECEERR-HOSPNUM
       *
       *    ¹ñÊÝ¿ÇÎÅÊó½·ÀÁµá½ñ°õºþ¶èÊ¬
            MOVE    SPACE               TO  SYS-2005-REC 
@@ -1044,7 +1045,7 @@
            IF      FLG-SYSKANRI        =   ZERO
                MOVE    MCPDATA-REC         TO  SYS-2005-REC
            ELSE
-               INITIALIZE                   SYS-2005-REC
+               INITIALIZE                      SYS-2005-REC
            END-IF
            IF      SYS-2005-RECEDENOUT  =   SPACE
                MOVE    "/var/tmp/"      TO  SYS-2005-RECEDENOUT
@@ -1077,9 +1078,7 @@
                                        DELIMITED  BY  SIZE
                                    INTO  JOB-SHELLMSG
            END-STRING
-           CALL    "ORCSJOB"       USING
-                                   ORCSJOBKANRIAREA  
-                                   JOBKANRI-REC
+grpsys     PERFORM 900-CALL-ORCSJOB-SEC
       *             
            MOVE    SPACE           TO  SHELLTBL
            MOVE    "scripts/monthly/recept4_fd.sh"
@@ -1104,15 +1103,17 @@
            MOVE    "primary"       TO  MCP-PATHNAME
            CALL    "ORCDBMAIN"     USING
                                        MCPAREA
-                                       MCPDATA-REC
+                                       DBMETA
                                        SPA-AREA
+           MOVE    DBMETA-HOST     TO  SHELLTBL-ARG5
+           MOVE    SPA-T01-WRNO    TO  SHELLTBL-ARG6
+grpsys     MOVE    SPA-HOSPNUM     TO  SHELLTBL-ARG7
+      *
+           MOVE    SHELLTBL        TO  MCPDATA-REC
            MOVE    "SHELL"         TO  MCP-FUNC
            MOVE    "shell"         TO  MCP-TABLE
            MOVE    "shell"         TO  MCP-PATHNAME
-           CALL    "ORCDBMAIN"     USING
-                                       MCPAREA
-                                       MCPDATA-REC
-                                       SPA-AREA
+grpsys     PERFORM 900-ORCDBMAIN-SEC
       *
       *    £Ê£Ï£Â£É£Ä¹¹¿·½èÍý
       *
@@ -1135,8 +1136,9 @@
       *
            PERFORM 45011-JOBKANRI-HENSYU-SEC
       *     
-           MOVE    "RECEERR"       TO  RECEERR-FILE-ID
-           MOVE    SPA-TERMID      TO  RECEERR-TERMID
+           MOVE    WRK-CONS-FILE-ID    TO  RECEERR-FILE-ID
+           MOVE    SPA-TERMID          TO  RECEERR-TERMID
+grpsys     MOVE    SPA-HOSPNUM         TO  RECEERR-HOSPNUM
       *      
            MOVE    SPA-LNK-PRTKANRI-AREA
                                    TO  LNK-PRTKANRI-AREA
@@ -1281,8 +1283,7 @@
            INITIALIZE                  JOBKANRI-REC
            MOVE    WRK-CONS-JOB-SHELLID
                                    TO  JOB-SHELLID
-           CALL    "ORCSJOB"       USING   ORCSJOBKANRIAREA  
-                                           JOBKANRI-REC
+grpsys     PERFORM 900-CALL-ORCSJOB-SEC
            IF      SJOBKANRI-RETURN    =   ZERO
                CONTINUE
            ELSE
@@ -1301,9 +1302,10 @@
                                            WRK-PRTKANRI-RENNUM
            MOVE    SPACE               TO  WRK-CONS-PRTKANRI-TBL-GROUP                                
       *     
-           MOVE    "RECEERR"           TO  RECEERR-FILE-ID
+           MOVE    WRK-CONS-FILE-ID    TO  RECEERR-FILE-ID
       *****MOVE    SPA-TERMID          TO  RECEERR-TERMID
            MOVE    WRK-CONS-TERMID     TO  RECEERR-TERMID
+grpsys     MOVE    SPA-HOSPNUM         TO  RECEERR-HOSPNUM
       *
       *    °õºþ£Ä£Â¤Î£Ë£Å£ÙÍÑ     
            MOVE    WRK-SYSYMD          TO
@@ -1383,17 +1385,14 @@
                                            TO  SHELLTBL-ARG12
                    MOVE    WRK-CONS-JOB-SHELLID
                                            TO  SHELLTBL-ARG13         
-                   MOVE    SPA-HOSPID      TO  SHELLTBL-ARG14
+grpsys             MOVE    SPA-HOSPNUM     TO  SHELLTBL-ARG14
                    MOVE    RECEERR         TO  SHELLTBL-ARG15
                    MOVE    "1"             TO  SHELLTBL-ARG16
                    MOVE    SHELLTBL        TO  MCPDATA-REC
                    MOVE    "SHELL"         TO  MCP-FUNC
                    MOVE    "shell"         TO  MCP-TABLE
                    MOVE    "shell"         TO  MCP-PATHNAME
-                   CALL    "ORCDBMAIN"     USING
-                                               MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+grpsys             PERFORM 900-ORCDBMAIN-SEC
                END-IF
            END-PERFORM                                                    
       *
@@ -1453,14 +1452,12 @@
                                            TO  SHELLTBL-ARG14
                MOVE    WRK-STPAGE          TO  SHELLTBL-ARG15
                MOVE    WRK-EDPAGE          TO  SHELLTBL-ARG16
+grpsys         MOVE    SPA-HOSPNUM         TO  SHELLTBL-ARG17
                MOVE    SHELLTBL            TO  MCPDATA-REC
                MOVE    "SHELL"             TO  MCP-FUNC
-               MOVE    "shell"         TO  MCP-TABLE
-               MOVE    "shell"         TO  MCP-PATHNAME
-               CALL    "ORCDBMAIN"     USING
-                                           MCPAREA
-                                           MCPDATA-REC
-                                           SPA-AREA
+               MOVE    "shell"             TO  MCP-TABLE
+               MOVE    "shell"             TO  MCP-PATHNAME
+grpsys     PERFORM 900-ORCDBMAIN-SEC
            END-IF       
       *
       *    £Ê£Ï£Â£É£Ä¹¹¿·½èÍý
@@ -1762,10 +1759,9 @@
            ELSE 
                MOVE    SPACE           TO  HKNJAINF-REC
                INITIALIZE                  HKNJAINF-REC
-      *********MOVE    SPA-HOSPID      TO  HKNJA-HOSPID
+grpsys         MOVE    SPA-HOSPNUM     TO  HKNJA-HOSPNUM
                MOVE    SPA-GMN-HKNJANUM
                                        TO  HKNJA-HKNJANUM
-               MOVE    SPA-HOSPNUM     TO  HKNJA-HOSPNUM
                MOVE    HKNJAINF-REC    TO  MCPDATA-REC
                PERFORM 900-HKNJAINF-INV-SEC
                IF      FLG-HKNJAINF    =   ZERO
@@ -1899,9 +1895,7 @@
                    MOVE    IDX             TO  JOB-JOBID
                    MOVE    WRK-CONS-JOB-SHELLID
                                            TO  JOB-SHELLID
-                   CALL    "ORCSJOB"       USING
-                                           ORCSJOBKANRIAREA  
-                                           JOBKANRI-REC
+grpsys             PERFORM 900-CALL-ORCSJOB-SEC
                    IF      SJOBKANRI-RETURN
                                            =   ZERO
                        IF      JOB-ENDYMD      =   SPACE
@@ -1921,9 +1915,7 @@
                                        TO  JOB-JOBID
                MOVE    WRK-CONS-JOB-SHELLID-COLLECT
                                        TO  JOB-SHELLID
-               CALL    "ORCSJOB"       USING
-                                       ORCSJOBKANRIAREA  
-                                       JOBKANRI-REC 
+grpsys         PERFORM 900-CALL-ORCSJOB-SEC
                IF      SJOBKANRI-RETURN =   ZERO
                    IF      JOB-ENDYMD      =   SPACE
                        CONTINUE
@@ -2035,9 +2027,7 @@
                    MOVE    IDX             TO  JOB-JOBID
                    MOVE    WRK-CONS-JOB-SHELLID
                                            TO  JOB-SHELLID
-                   CALL    "ORCSJOB"       USING
-                                           ORCSJOBKANRIAREA  
-                                           JOBKANRI-REC
+grpsys             PERFORM 900-CALL-ORCSJOB-SEC
                    IF      SJOBKANRI-RETURN
                                            =   ZERO
                        IF      JOB-ENDYMD      =   SPACE
@@ -2062,9 +2052,7 @@
                                        TO  JOB-JOBID
                MOVE    WRK-CONS-JOB-SHELLID-RECEPT1
                                        TO  JOB-SHELLID
-               CALL    "ORCSJOB"       USING
-                                       ORCSJOBKANRIAREA  
-                                       JOBKANRI-REC 
+grpsys         PERFORM 900-CALL-ORCSJOB-SEC
               IF      SJOBKANRI-RETURN
                                        =   ZERO
                    IF      JOB-ENDYMD      =   SPACE
@@ -2092,8 +2080,7 @@
            INITIALIZE                  JOBKANRI-REC
            MOVE    WRK-CONS-JOB-SHELLID
                                    TO  JOB-SHELLID
-           CALL    "ORCSJOB"       USING   ORCSJOBKANRIAREA  
-                                           JOBKANRI-REC
+grpsys     PERFORM 900-CALL-ORCSJOB-SEC
            IF      SJOBKANRI-RETURN    =   ZERO
                CONTINUE
            ELSE
@@ -2112,9 +2099,10 @@
                                            WRK-PRTKANRI-RENNUM
            MOVE    SPACE               TO  WRK-CONS-PRTKANRI-TBL-GROUP                                
       *     
-           MOVE    "RECEERR"           TO  RECEERR-FILE-ID
+           MOVE    WRK-CONS-FILE-ID    TO  RECEERR-FILE-ID
       *****MOVE    SPA-TERMID          TO  RECEERR-TERMID
            MOVE    WRK-CONS-TERMID     TO  RECEERR-TERMID
+grpsys     MOVE    SPA-HOSPNUM         TO  RECEERR-HOSPNUM
       *
       *    ¹ñÊÝ¿ÇÎÅÊó½·ÀÁµá½ñ°õºþ¶èÊ¬
            MOVE    SPACE               TO  SYS-2005-REC 
@@ -2254,17 +2242,14 @@
                                            TO  SHELLTBL-ARG12
                    MOVE    WRK-CONS-JOB-SHELLID
                                            TO  SHELLTBL-ARG13         
-                   MOVE    SPA-HOSPID      TO  SHELLTBL-ARG14
+grpsys             MOVE    SPA-HOSPNUM     TO  SHELLTBL-ARG14
                    MOVE    RECEERR         TO  SHELLTBL-ARG15
                    MOVE    "0"             TO  SHELLTBL-ARG16
                    MOVE    SHELLTBL        TO  MCPDATA-REC
                    MOVE    "SHELL"         TO  MCP-FUNC
                    MOVE    "shell"         TO  MCP-TABLE
                    MOVE    "shell"         TO  MCP-PATHNAME
-                   CALL    "ORCDBMAIN"     USING
-                                               MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+grpsys             PERFORM 900-ORCDBMAIN-SEC
                  END-IF
              END-PERFORM                                                    
            END-EVALUATE
@@ -2325,14 +2310,12 @@
                                            TO  SHELLTBL-ARG14
                MOVE    WRK-STPAGE          TO  SHELLTBL-ARG15
                MOVE    WRK-EDPAGE          TO  SHELLTBL-ARG16
+grpsys         MOVE    SPA-HOSPNUM         TO  SHELLTBL-ARG17
                MOVE    SHELLTBL            TO  MCPDATA-REC
                MOVE    "SHELL"             TO  MCP-FUNC
                MOVE    "shell"             TO  MCP-TABLE
                MOVE    "shell"             TO  MCP-PATHNAME
-               CALL    "ORCDBMAIN"         USING
-                                               MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+grpsys         PERFORM 900-ORCDBMAIN-SEC
            END-IF       
       *
       *    £Ê£Ï£Â£É£Ä¹¹¿·½èÍý
@@ -2434,7 +2417,7 @@
            MOVE    WRK-SHELL-ARG1  TO  SHELLTBL-ARG12
            MOVE    WRK-SHELL-RECEKBN
                                    TO  SHELLTBL-ARG13
-           MOVE    SPA-HOSPID      TO  SHELLTBL-ARG14
+grpsys     MOVE    SPA-HOSPNUM     TO  SHELLTBL-ARG14
            IF      SYS-2005-KKHPRTKBN  =   "1"
                MOVE    "1"             TO  SHELLTBL-ARG15
            ELSE
@@ -2575,7 +2558,7 @@
            END-IF    
            MOVE    WRK-SHELL-RECEKBN
                                    TO  SHELLTBL-ARG14
-           MOVE    SPA-HOSPID      TO  SHELLTBL-ARG15
+grpsys     MOVE    SPA-HOSPNUM     TO  SHELLTBL-ARG15
            MOVE    RECEERR         TO  SHELLTBL-ARG16
            MOVE    SPA-NAI-SKYYM   TO  SHELLTBL-ARG17
            IF      SPA-3004-CHKFLG (IDX 2)
@@ -2614,10 +2597,7 @@
            MOVE    "SHELL"     TO  MCP-FUNC
            MOVE    "shell"     TO  MCP-TABLE
            MOVE    "shell"     TO  MCP-PATHNAME
-           CALL    "ORCDBMAIN" USING
-                                   MCPAREA
-                                   MCPDATA-REC
-                                   SPA-AREA
+grpsys     PERFORM 900-ORCDBMAIN-SEC
             .
        45010-KENTAN-SOKATU-SYORI-EXT.
            EXIT.
@@ -2635,9 +2615,7 @@
                                    TO  JOB-JOBID
            MOVE    WRK-CONS-JOB-SHELLID
                                    TO  JOB-SHELLID
-           CALL    "ORCSJOB"       USING
-                                   ORCSJOBKANRIAREA 
-                                   JOBKANRI-REC
+grpsys     PERFORM 900-CALL-ORCSJOB-SEC
       *
            MOVE    "JBS"           TO  SJOBKANRI-MODE
            INITIALIZE                  JOBKANRI-REC
@@ -2646,9 +2624,7 @@
            MOVE    WRK-CONS-JOB-SHELLID
                                    TO  JOB-SHELLID
            MOVE    SPA-TERMID      TO  JOB-TERMID
-           CALL    "ORCSJOB"       USING
-                                   ORCSJOBKANRIAREA 
-                                   JOBKANRI-REC
+grpsys     PERFORM 900-CALL-ORCSJOB-SEC
       *
            .
        45011-JOBKANRI-HENSYU-EXT.
@@ -2678,6 +2654,7 @@
                MOVE    WRK-CONS-3003-KBNCD TO  SYS-3003-KBNCD
                MOVE    ZERO                TO  SYS-3003-STYUKYMD
                MOVE    ALL "9"             TO  SYS-3003-EDYUKYMD
+               MOVE    SPA-HOSPNUM         TO  SYS-3003-HOSPNUM
            END-IF    
            MOVE    WRK-CONS-PRTKANRI-TBL-KEY
                                        TO  SYS-3003-TBL-KEY
@@ -2685,7 +2662,6 @@
                                        TO  SYS-3003-TBL-GROUP
            MOVE    WRK-CONS-JOB-JOBID  TO  SYS-3003-JOBID                                      
       *
-           MOVE    SPA-HOSPNUM         TO  SYS-3003-HOSPNUM
            MOVE    SYS-3003-REC        TO  MCPDATA-REC
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
@@ -2694,10 +2670,7 @@
            ELSE
                MOVE    "DBINSERT"          TO  MCP-FUNC
            END-IF         
-           CALL    "ORCDBMAIN"         USING
-                                           MCPAREA
-                                           MCPDATA-REC
-                                           SPA-AREA
+grpsys     PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC          NOT =   ZERO
                DISPLAY "SYSKANRI 3003  ERR KEY = ["
                                   MCP-RC  " " SYS-3003-KEY  "]"   
@@ -2747,14 +2720,12 @@
                                        TO  SHELLTBL-ARG14
            MOVE    WRK-STPAGE          TO  SHELLTBL-ARG15
            MOVE    WRK-EDPAGE          TO  SHELLTBL-ARG16
+grpsys     MOVE    SPA-HOSPNUM         TO  SHELLTBL-ARG17
            MOVE    SHELLTBL            TO  MCPDATA-REC
            MOVE    "SHELL"             TO  MCP-FUNC
-           MOVE    "shell"         TO  MCP-TABLE
-           MOVE    "shell"         TO  MCP-PATHNAME
-           CALL    "ORCDBMAIN"     USING
-                                       MCPAREA
-                                       MCPDATA-REC
-                                       SPA-AREA
+           MOVE    "shell"             TO  MCP-TABLE
+           MOVE    "shell"             TO  MCP-PATHNAME
+grpsys     PERFORM 900-ORCDBMAIN-SEC
            .
        45013-PRINT-SYORI-EXT.
            EXIT.
@@ -2828,16 +2799,13 @@
                                    TO  SHELLTBL-ARG12
            MOVE    WRK-CONS-JOB-SHELLID
                                    TO  SHELLTBL-ARG13
-           MOVE    SPA-HOSPID      TO  SHELLTBL-ARG14
+grpsys     MOVE    SPA-HOSPNUM     TO  SHELLTBL-ARG14
            MOVE    RECEERR         TO  SHELLTBL-ARG15
            MOVE    SHELLTBL        TO  MCPDATA-REC
            MOVE    "SHELL"         TO  MCP-FUNC
            MOVE    "shell"         TO  MCP-TABLE
            MOVE    "shell"         TO  MCP-PATHNAME
-           CALL    "ORCDBMAIN"     USING
-                                       MCPAREA
-                                       MCPDATA-REC
-                                       SPA-AREA
+grpsys     PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC          NOT =   ZERO
                DISPLAY "ERROR MCP-RC=" MCP-RC 
            END-IF
@@ -2898,8 +2866,7 @@
            INITIALIZE                  JOBKANRI-REC
            MOVE    WRK-CONS-JOB-SHELLID
                                    TO  JOB-SHELLID
-           CALL    "ORCSJOB"       USING   ORCSJOBKANRIAREA  
-                                           JOBKANRI-REC
+grpsys     PERFORM 900-CALL-ORCSJOB-SEC
            IF      SJOBKANRI-RETURN    =   ZERO
                CONTINUE
            ELSE
@@ -2916,10 +2883,7 @@
            MOVE    "DBDELETE"      TO  MCP-FUNC
            MOVE    "tbl_btpara"    TO  MCP-TABLE
            MOVE    "del1"          TO  MCP-PATHNAME
-           CALL    "ORCDBMAIN"     USING
-                                       MCPAREA
-                                       MCPDATA-REC
-                                       SPA-AREA
+grpsys     PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC          >   ZERO
                MOVE    "1001"          TO  SPA-ERRCD
                GO  TO  460-RECEDEN-EXT
@@ -2966,8 +2930,9 @@
                                            WRK-PRTKANRI-RENNUM
            MOVE    SPACE               TO  WRK-CONS-PRTKANRI-TBL-GROUP                                
       *     
-           MOVE    "RECEERR"           TO  RECEERR-FILE-ID
+           MOVE    WRK-CONS-FILE-ID    TO  RECEERR-FILE-ID
            MOVE    SPA-TERMID          TO  RECEERR-TERMID
+grpsys     MOVE    SPA-HOSPNUM         TO  RECEERR-HOSPNUM
       *
       *    ¹ñÊÝ¿ÇÎÅÊó½·ÀÁµá½ñ°õºþ¶èÊ¬
            MOVE    SPACE               TO  SYS-2005-REC 
@@ -3070,15 +3035,18 @@
            MOVE    "primary"       TO  MCP-PATHNAME
            CALL    "ORCDBMAIN"     USING
                                        MCPAREA
-                                       MCPDATA-REC
+                                       DBMETA
                                        SPA-AREA
+           MOVE    DBMETA-HOST     TO  SHELLTBL-ARG18
+           MOVE    SPA-GMN-NYUGAIKBN
+                                   TO  SHELLTBL-ARG19
+grpsys     MOVE    SPA-HOSPNUM     TO  SHELLTBL-ARG20
+      *
+           MOVE    SHELLTBL        TO  MCPDATA-REC
            MOVE    "SHELL"         TO  MCP-FUNC
            MOVE    "shell"         TO  MCP-TABLE
            MOVE    "shell"         TO  MCP-PATHNAME
-           CALL    "ORCDBMAIN"     USING
-                                       MCPAREA
-                                       MCPDATA-REC
-                                       SPA-AREA
+grpsys     PERFORM 900-ORCDBMAIN-SEC
       *
       *    £Ê£Ï£Â£É£Ä¹¹¿·½èÍý
       *
@@ -3108,9 +3076,7 @@
                                    TO  JOB-JOBID
            MOVE    WRK-CONS-JOB-SHELLID-COLLECT
                                    TO  JOB-SHELLID
-           CALL    "ORCSJOB"       USING
-                                   ORCSJOBKANRIAREA
-                                   JOBKANRI-REC
+grpsys     PERFORM 900-CALL-ORCSJOB-SEC
       *
            MOVE    "JBS"           TO  SJOBKANRI-MODE
            INITIALIZE                  JOBKANRI-REC
@@ -3119,9 +3085,7 @@
            MOVE    WRK-CONS-JOB-SHELLID-COLLECT
                                    TO  JOB-SHELLID
            MOVE    SPA-TERMID      TO  JOB-TERMID
-           CALL    "ORCSJOB"       USING
-                                   ORCSJOBKANRIAREA
-                                   JOBKANRI-REC
+grpsys     PERFORM 900-CALL-ORCSJOB-SEC
       *
       *    ¥Õ¥¡¥¤¥ë¥Ç¥¤¥ì¥¯¥È¥ê°ÌÃÖ»ØÄê
            MOVE    "scripts/monthly/collectdata1.sh"
@@ -3133,7 +3097,7 @@
            MOVE    SPACE           TO  SHELLTBL
            MOVE    MKPASS-OT-01    TO  SHELLTBL-NAME
            MOVE    SPA-TERMID      TO  SHELLTBL-ARG1
-           MOVE    SPA-HOSPID      TO  SHELLTBL-ARG2
+grpsys     MOVE    SPA-HOSPNUM     TO  SHELLTBL-ARG2
            MOVE    SPA-PREFNUM     TO  SHELLTBL-ARG3
            MOVE    SPA-NAI-SKYYM   TO  SHELLTBL-ARG4
            MOVE    SPA-BEDFLG      TO  SHELLTBL-ARG5
@@ -3146,10 +3110,7 @@
            MOVE    "SHELL"         TO  MCP-FUNC
            MOVE    "shell"         TO  MCP-TABLE
            MOVE    "shell"         TO  MCP-PATHNAME
-           CALL    "ORCDBMAIN"     USING
-                                       MCPAREA
-                                       MCPDATA-REC
-                                       SPA-AREA
+grpsys     PERFORM 900-ORCDBMAIN-SEC
       *
            .
        470-COLLECT-SYORI-EXT.
@@ -3167,10 +3128,8 @@
                                    TO  JOB-JOBID
            MOVE    WRK-CONS-JOB-SHELLID-RECEPT1
                                    TO  JOB-SHELLID
-           CALL    "ORCSJOB"       USING
-                                   ORCSJOBKANRIAREA  
-                                   JOBKANRI-REC 
-          IF      SJOBKANRI-RETURN =   ZERO
+grpsys     PERFORM 900-CALL-ORCSJOB-SEC
+           IF      SJOBKANRI-RETURN =   ZERO
                IF      JOB-ENDYMD      =   SPACE
                    MOVE    "7777"          TO  SPA-ERRCD
                    MOVE    SPACE             TO  WRK-RECEERR
@@ -3211,8 +3170,10 @@
       *****************************************************************
        480-PRINT-SEC                 SECTION.
       *     
-           MOVE    "RECEERR"           TO  RECEERR-FILE-ID
+           MOVE    WRK-CONS-FILE-ID    TO  RECEERR-FILE-ID
            MOVE    SPA-TERMID          TO  RECEERR-TERMID
+grpsys     MOVE    SPA-HOSPNUM         TO  RECEERR-HOSPNUM
+      *
            OPEN    OUTPUT   RECEERR-FILE
            CLOSE   RECEERR-FILE
       *
@@ -3224,8 +3185,7 @@
                    INITIALIZE                  JOBKANRI-REC
                    MOVE    WRK-CONS-JOB-SHELLID
                                            TO  JOB-SHELLID
-                   CALL    "ORCSJOB"       USING   ORCSJOBKANRIAREA  
-                                                   JOBKANRI-REC
+grpsys             PERFORM 900-CALL-ORCSJOB-SEC
                    IF      SJOBKANRI-RETURN    =   ZERO
                        CONTINUE
                    ELSE
@@ -3300,7 +3260,7 @@
                                            TO  SHELLTBL-ARG10      
                    MOVE    LNK-PRTKANRI-PRTNM
                                            TO  SHELLTBL-ARG11      
-                   MOVE    SPA-HOSPID      TO  SHELLTBL-ARG12
+grpsys             MOVE    SPA-HOSPNUM     TO  SHELLTBL-ARG12
                    MOVE    WRK-CONS-JOB-JOBID
                                            TO  SHELLTBL-ARG13
                    MOVE    WRK-CONS-JOB-SHELLID
@@ -3315,10 +3275,7 @@
                    MOVE    "SHELL"         TO  MCP-FUNC
                    MOVE    "shell"         TO  MCP-TABLE
                    MOVE    "shell"         TO  MCP-PATHNAME
-                   CALL    "ORCDBMAIN"     USING
-                                               MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+grpsys             PERFORM 900-ORCDBMAIN-SEC
                    IF      MCP-RC          NOT =   ZERO
                        DISPLAY "ERROR MCP-RC=" MCP-RC 
                    END-IF
@@ -3356,16 +3313,13 @@
                    MOVE    WRK-SHELL-ARG1      TO  SHELLTBL-ARG1
                    MOVE    WRK-SHELL-RECEKBN   TO  SHELLTBL-ARG2
                    MOVE    RECEERR             TO  SHELLTBL-ARG3
-                   MOVE    SPA-HOSPID          TO  SHELLTBL-ARG4
+grpsys             MOVE    SPA-HOSPNUM         TO  SHELLTBL-ARG4
                    MOVE    SPA-TERMID          TO  SHELLTBL-ARG5
                    MOVE    SHELLTBL            TO  MCPDATA-REC
                    MOVE    "SHELL"             TO  MCP-FUNC
                    MOVE    "shell"         TO  MCP-TABLE
                    MOVE    "shell"         TO  MCP-PATHNAME
-                   CALL    "ORCDBMAIN"     USING
-                                               MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+grpsys             PERFORM 900-ORCDBMAIN-SEC
            END-EVALUATE
           .
        480-PRINT-EXT.
@@ -3421,7 +3375,7 @@
            MOVE   "CHANGE"             TO  MCP-PUTTYPE
            MOVE   "XA01   "            TO  MCP-WINDOW
       *
-           PERFORM 900-PUT-WINDOW.
+           PERFORM 900-PUT-WINDOW
       *
            MOVE    1                   TO  FLG-END
       *
@@ -3453,10 +3407,7 @@
            MOVE    "DBDELETE"      TO  MCP-FUNC
            MOVE    "tbl_btpara"    TO  MCP-TABLE
            MOVE    "del1"          TO  MCP-PATHNAME
-           CALL    "ORCDBMAIN"     USING
-                                       MCPAREA
-                                       MCPDATA-REC
-                                       SPA-AREA
+grpsys     PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC          >   ZERO
                MOVE    "1001"          TO  SPA-ERRCD
            END-IF
@@ -3559,9 +3510,7 @@
                    MOVE    IDX             TO  JOB-JOBID
                    MOVE    WRK-CONS-JOB-SHELLID
                                            TO  JOB-SHELLID
-                   CALL    "ORCSJOB"       USING
-                                           ORCSJOBKANRIAREA  
-                                           JOBKANRI-REC 
+grpsys             PERFORM 900-CALL-ORCSJOB-SEC
                    IF      SJOBKANRI-RETURN    =   ZERO
                        MOVE    JOB-JOBID       TO  T99-RENNUM   (IDX)
                        MOVE    JOB-SHELLMSG    TO  T99-SHORINM  (IDX)
@@ -3737,10 +3686,10 @@
       *
            MOVE    SPACE               TO  LINKAREA
       *
-           MOVE    "CURRENT"           TO  MCP-PUTTYPE.
-           MOVE    "T01    "           TO  MCP-WINDOW.
+           MOVE    "CURRENT"           TO  MCP-PUTTYPE
+           MOVE    "T01    "           TO  MCP-WINDOW
       *
-           PERFORM 900-PUT-WINDOW.
+           PERFORM 900-PUT-WINDOW
            .
        500-SET-SCREEN-EXT.
            EXIT.
@@ -4131,13 +4080,9 @@
       *****************************************************************
        900-SYSKANRI-INV-SEC         SECTION.
       *
-           MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key10"             TO  MCP-PATHNAME
-           CALL    "ORCDBMAIN"         USING
-                                           MCPAREA
-                                           MCPDATA-REC
-                                           SPA-AREA
+grpsys     PERFORM 900-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
                MOVE    "tbl_syskanri"      TO  MCP-TABLE
                MOVE    "key10"             TO  MCP-PATHNAME
@@ -4159,11 +4104,7 @@
       *****************************************************************
        900-SYSKANRI-READ-SEC         SECTION.
       *
-           MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "ORCDBMAIN"         USING
-                                           MCPAREA
-                                           MCPDATA-REC
-                                           SPA-AREA
+grpsys     PERFORM 900-DBFETCH-SEC
            IF      MCP-RC              =   ZERO
                MOVE    ZERO            TO  FLG-SYSKANRI
            ELSE
@@ -4178,21 +4119,13 @@
       *****************************************************************
        900-HKNJAINF-INV-SEC         SECTION.
       *
-           MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "tbl_hknjainf"      TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
-           CALL    "ORCDBMAIN"         USING
-                                           MCPAREA
-                                           MCPDATA-REC
-                                           SPA-AREA
+grpsys     PERFORM 900-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
-               MOVE    "DBFETCH"           TO  MCP-FUNC
                MOVE    "tbl_hknjainf"      TO  MCP-TABLE
                MOVE    "key"               TO  MCP-PATHNAME
-               CALL    "ORCDBMAIN"         USING
-                                               MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+grpsys         PERFORM 900-DBFETCH-SEC
                IF      MCP-RC              =   ZERO
                    MOVE    ZERO                TO  FLG-HKNJAINF
                    MOVE    MCPDATA-REC         TO  HKNJAINF-REC
@@ -4216,13 +4149,9 @@
       *****************************************************************
        900-BTPARA-READ-SEC         SECTION.
       *
-           MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "tbl_btpara"        TO  MCP-TABLE
            MOVE    "key3"              TO  MCP-PATHNAME
-           CALL    "ORCDBMAIN"         USING
-                                           MCPAREA
-                                           MCPDATA-REC
-                                           SPA-AREA
+grpsys     PERFORM 900-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
                MOVE    "tbl_btpara"        TO  MCP-TABLE
                MOVE    "key3"              TO  MCP-PATHNAME
@@ -4245,11 +4174,7 @@
       *****************************************************************
        900-BTPARA-READ-N-SEC          SECTION.
       *
-           MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "ORCDBMAIN"         USING
-                                           MCPAREA
-                                           MCPDATA-REC
-                                           SPA-AREA
+grpsys     PERFORM 900-DBFETCH-SEC
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC         TO  BTPARA-REC
                MOVE    ZERO                TO  FLG-BTPARA
@@ -4267,21 +4192,13 @@
       *****************************************************************
        900-SYUKA-READ-SEC         SECTION.
       *
-           MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "tbl_syuka"         TO  MCP-TABLE
            MOVE    "key16"             TO  MCP-PATHNAME
-           CALL    "ORCDBMAIN"         USING
-                                           MCPAREA
-                                           MCPDATA-REC
-                                           SPA-AREA
+grpsys     PERFORM 900-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
                MOVE    "tbl_syuka"         TO  MCP-TABLE
                MOVE    "key16"             TO  MCP-PATHNAME
-               MOVE    "DBFETCH"           TO  MCP-FUNC
-               CALL    "ORCDBMAIN"         USING
-                                               MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+grpsys         PERFORM 900-DBFETCH-SEC
                IF      MCP-RC              =   ZERO
                    MOVE    ZERO                TO  FLG-SYUKA
                    MOVE    MCPDATA-REC         TO  SYUKA-REC
@@ -4301,18 +4218,72 @@
            EXIT.
       *
       *****************************************************************
+      *    ¥¸¥ç¥Ö´ÉÍý£Ä£ÂÀ©¸æ½èÍý
+      *****************************************************************
+       900-CALL-ORCSJOB-SEC            SECTION.
+      *
+grpsys     MOVE    SPA-HOSPNUM     TO  JOB-HOSPNUM
+           CALL    "ORCSJOB"       USING
+                                   ORCSJOBKANRIAREA 
+                                   JOBKANRI-REC
+                                   SPA-AREA
+           .
+       900-CALL-ORCSJOB-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    £Ä£Â£Ó£Å£Ì£Å£Ã£Ô½èÍý
+      *****************************************************************
+       900-DBSELECT-SEC                SECTION.
+      *
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+grpsys     PERFORM 900-ORCDBMAIN-SEC
+           IF      MCP-RC              =   ZERO
+               CONTINUE
+           ELSE
+               DISPLAY "SELECT ERR table=" MCP-TABLE
+                       " pathname="        MCP-PATHNAME
+           END-IF
+           .
+       900-DBSELECT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    £Ä£Â£Æ£Å£Ô£Ã£È½èÍý
+      *****************************************************************
+       900-DBFETCH-SEC                SECTION.
+      *
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+grpsys     PERFORM 900-ORCDBMAIN-SEC
+      *
+           .
+       900-DBFETCH-EXT.
+           EXIT.
+      *
+      *
+      *****************************************************************
       *    ¥Æ¡¼¥Ö¥ë¥¯¥í¡¼¥º½èÍý
       *****************************************************************
        900-CLOSE-SEC               SECTION.
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           CALL    "ORCDBMAIN"         USING
-                                           MCPAREA
-                                           MCPDATA-REC
-                                           SPA-AREA
+grpsys     PERFORM 900-ORCDBMAIN-SEC
       *
            .
        900-CLOSE-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ¥Æ¡¼¥Ö¥ë¥¢¥¯¥»¥¹½èÍý
+      *****************************************************************
+       900-ORCDBMAIN-SEC               SECTION.
+      *
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
+           .
+      *
+       900-ORCDBMAIN-EXT.
            EXIT.
       *
       *****************************************************************
@@ -4321,10 +4292,7 @@
        900-PUT-WINDOW              SECTION.
       *
            MOVE   "PUTWINDOW"       TO  MCP-FUNC
-           CALL   "ORCDBMAIN"       USING
-                                        MCPAREA
-                                        MCPDATA-REC
-                                        SPA-AREA
+grpsys     PERFORM 900-ORCDBMAIN-SEC
            .
        900-PUT-WINDOW-EXT.
            EXIT.
