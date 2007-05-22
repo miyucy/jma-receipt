@@ -393,6 +393,7 @@
            MOVE    PARA-SYAPRTNM       TO  MKPRT-PRTNM
            CALL    "ORCSMKPRT"         USING
                                        ORCSMKPRTAREA
+                                       SPA-AREA
       *
            .
        400-PRINT-OUT-EXT.
