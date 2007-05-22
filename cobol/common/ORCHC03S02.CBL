@@ -26,6 +26,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  03.05.00    NACL-太田    07/05/21  グループ診療対応
       *****************************************************************
       *
        ENVIRONMENT                     DIVISION.
@@ -627,6 +628,7 @@
        2001-EDIT-PARA-SEC              SECTION.
       *
            INITIALIZE                  PARA-REC
+           MOVE    ORCHC03S02-HOSPNUM  TO  PARA-HOSPNUM
            MOVE    ORCHC03S02-GYOUMUID TO  PARA-GYOUMUID
            MOVE    ORCHC03S02-TERMID   TO  PARA-TERMID
            MOVE    ORCHC03S02-FILEMEI  TO  WRK-FILEMEI
@@ -897,6 +899,7 @@
            MOVE    ZERO                TO  FLG-PARA
       *
            INITIALIZE                      PARA-REC
+           MOVE    ORCHC03S02-HOSPNUM  TO  PARA-HOSPNUM
            MOVE    ORCHC03S02-GYOUMUID TO  PARA-GYOUMUID
            MOVE    ORCHC03S02-TERMID   TO  PARA-TERMID
            MOVE    ORCHC03S02-FILEMEI  TO  PARA-FILEMEI
@@ -930,6 +933,7 @@
            MOVE    ZERO                TO  FLG-PARA
       *
            INITIALIZE                      PARA-REC
+           MOVE    ORCHC03S02-HOSPNUM  TO  PARA-HOSPNUM
            MOVE    ORCHC03S02-GYOUMUID TO  PARA-GYOUMUID
            MOVE    ORCHC03S02-TERMID   TO  PARA-TERMID
            MOVE    ORCHC03S02-FILEMEI  TO  PARA-FILEMEI

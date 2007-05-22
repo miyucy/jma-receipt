@@ -38,8 +38,6 @@
        FILE                        SECTION.
       *
        WORKING-STORAGE             SECTION.
-grpsys*
-grpsys COPY    "COMMON-SPA".
       *
       *    Åº»úÎÎ°è
        01  IDX-AREA.
@@ -102,9 +100,12 @@ grpsys COPY    "COMMON-SPA".
         LINKAGE                     SECTION.
       *
            COPY  "CPORCSMKPRT.INC".
+grpsys*
+grpsys     COPY    "COMMON-SPA".
       *
        PROCEDURE                   DIVISION    USING
-           ORCSMKPRTAREA.
+           ORCSMKPRTAREA
+           SPA-AREA.
       *
       *
       *****************************************************************

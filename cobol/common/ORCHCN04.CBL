@@ -423,6 +423,7 @@
            MOVE   SYS-1034-PRTNM(09)  TO  MKPRT-PRTNM
            CALL   "ORCSMKPRT"         USING
                                       ORCSMKPRTAREA
+                                      SPA-AREA
       *
            .
        400-PRINT-EXT.

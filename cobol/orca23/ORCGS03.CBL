@@ -53,6 +53,7 @@
       *  01.01.19    NACL-太田    04.02.09  コラムリスト編集修正
       *  01.01.20    NACL-太田    04.07.12  コラムリストに入金方法を追加
       *  01.01.21    NACL-小豆沢  05.07.15  自費１０項目の対応
+      *  03.05.00    NACL-太田    07/05/20  グループ診療対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -192,7 +193,10 @@
                        09  SPA-NAI-SKYMONEY-MOTO   PIC S9(10).
                        09  SPA-NAI-NYUKINYMD       PIC X(08).
                        09  SPA-NAI-NYUKIN-MOTO     PIC S9(10).
-                       09  SPA-NAI-DENPEDANUM      PIC X(02).
+                       09  SPA-NAI-DENPEDANUM      PIC 9(02).
+                       09  SPA-NAI-SYURRKNUM       PIC 9(09).
+                       09  SPA-NAI-SYUEDANUM       PIC 9(09).
+                       09  SPA-NAI-SYURRKUPDKBN    PIC X(1).
                        09  SPA-NAI-DENPJTIKBN      PIC X(01).
                        09  SPA-NAI-MINUS           PIC X(01).
                        09  SPA-NAI-PROC-FLG        PIC 9(01).
@@ -208,6 +212,9 @@
                        09  SPA-NAI-TMEIJOUTAIKBN   PIC X(1).
                        09  SPA-NAI-TSYORIYMD       PIC X(08).
                        09  SPA-NAI-TMAINUS         PIC X(1).
+                       09  SPA-NAI-TSYURRKNUM      PIC 9(9).
+                       09  SPA-NAI-TSYUEDANUM      PIC 9(9).
+                       09  SPA-NAI-TSYURRKUPDKBN   PIC X(1).
       *
       *    フラグ領域
        01  FLG-AREA.
@@ -317,6 +324,10 @@
        01  SYUMEI-REC.
            COPY    "CPSYUMEI.INC".
       *
+      *    収納履歴
+       01  SYURRK-REC.
+           COPY    "CPSYURRK.INC".
+      *
       *
       *
       *************************************************************
@@ -344,6 +355,9 @@
       *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
+      *
+      *    収納履歴編集サブ
+           COPY    "CPORCSS002.INC".
       *
       *
        01  LNK-SYUNOU-REC.
@@ -629,10 +643,10 @@
       *    入金方法
            MOVE    ZERO                TO  FLG-SYSKANRI
            INITIALIZE                      SYS-1041-REC
+           MOVE    SPA-HOSPNUM         TO  SYS-1041-HOSPNUM
            MOVE    "1041"              TO  SYS-1041-KANRICD
            MOVE    SPA-S01-SRYYMD      TO  SYS-1041-STYUKYMD
                                            SYS-1041-EDYUKYMD
-           MOVE    SPA-HOSPNUM         TO  SYS-1041-HOSPNUM
            MOVE    SYS-1041-REC        TO  MCPDATA-REC
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key2"              TO  MCP-PATHNAME
@@ -716,11 +730,11 @@
            IF    ( SPA-GMN-SKYPRT-G    =   SPACE )
       *        システム管理マスタ検索処理
                INITIALIZE                      SYSKANRI-REC
+               MOVE    SPA-HOSPNUM         TO  SYS-HOSPNUM
                MOVE    "1039"              TO  SYS-KANRICD
                MOVE    "*"                 TO  SYS-KBNCD
                MOVE    SPA-S01-SRYYMD      TO  SYS-STYUKYMD
                                                SYS-EDYUKYMD
-               MOVE    SPA-HOSPNUM         TO  SYS-HOSPNUM
                MOVE    SYSKANRI-REC        TO  MCPDATA-REC
                MOVE    "tbl_syskanri"      TO  MCP-TABLE
                MOVE    "key10"             TO  MCP-PATHNAME
@@ -749,11 +763,11 @@
            IF    ( SPA-GMN-SKYPRT-G    =   SPACE )
       *        システム管理マスタ検索処理
                INITIALIZE                      SYSKANRI-REC
+               MOVE    SPA-HOSPNUM         TO  SYS-HOSPNUM
                MOVE    "1001"              TO  SYS-KANRICD
                MOVE    "*"                 TO  SYS-KBNCD
                MOVE    SPA-S01-SRYYMD      TO  SYS-STYUKYMD
                                                SYS-EDYUKYMD
-               MOVE    SPA-HOSPNUM         TO  SYS-HOSPNUM
                MOVE    SYSKANRI-REC        TO  MCPDATA-REC
                MOVE    "tbl_syskanri"      TO  MCP-TABLE
                MOVE    "key10"             TO  MCP-PATHNAME
@@ -799,11 +813,11 @@
            IF    ( SPA-GMN-SRYPRT-G    =   SPACE )
       *        システム管理マスタ検索処理
                INITIALIZE                      SYSKANRI-REC
+               MOVE    SPA-HOSPNUM         TO  SYS-HOSPNUM
                MOVE    "1039"              TO  SYS-KANRICD
                MOVE    "*"                 TO  SYS-KBNCD
                MOVE    SPA-S01-SRYYMD      TO  SYS-STYUKYMD
                                                SYS-EDYUKYMD
-               MOVE    SPA-HOSPNUM         TO  SYS-HOSPNUM
                MOVE    SYSKANRI-REC        TO  MCPDATA-REC
                MOVE    "tbl_syskanri"      TO  MCP-TABLE
                MOVE    "key10"             TO  MCP-PATHNAME
@@ -1029,11 +1043,10 @@
       *    収納明細マスターを検索し内容をスパ領域にセット
            MOVE    ZERO                TO  FLG-SYUMEI
            INITIALIZE                      SYUMEI-REC
-      *****MOVE    SPA-HOSPID          TO  SMEI-HOSPID
+           MOVE    SPA-HOSPNUM         TO  SMEI-HOSPNUM
            MOVE    SPA-S01-NYUGAIKBN   TO  SMEI-NYUGAIKBN
            MOVE    SPA-S01-PTID        TO  SMEI-PTID
            MOVE    SPA-S01-DENPNUM     TO  SMEI-DENPNUM
-           MOVE    SPA-HOSPNUM         TO  SMEI-HOSPNUM
            MOVE    SYUMEI-REC          TO  MCPDATA-REC
            MOVE    "tbl_syumei"        TO  MCP-TABLE
            MOVE    "key6"              TO  MCP-PATHNAME
@@ -1053,6 +1066,9 @@
       *
       *
                MOVE    SMEI-DENPEDANUM     TO  SPA-GMN-TDENPEDANUM(IDX1)
+               MOVE    SMEI-SYURRKNUM      TO  SPA-NAI-TSYURRKNUM(IDX1)
+               MOVE    SMEI-SYUEDANUM      TO  SPA-NAI-TSYUEDANUM(IDX1)
+               MOVE    SMEI-SYURRKUPDKBN TO  SPA-NAI-TSYURRKUPDKBN(IDX1)
                MOVE    SMEI-SKYMONEY       TO  SPA-GMN-TSKYMONEY (IDX1)
                MOVE    SMEI-NYUHEN-MONEY   TO  SPA-GMN-TNYUKIN (IDX1)
                MOVE    SMEI-JOUTAIKBN      TO  SPA-NAI-TJOUTAIKBN (IDX1)
@@ -1142,10 +1158,10 @@
       *    医療機関情報−自費名称
            MOVE    ZERO                TO  FLG-SYSKANRI
            INITIALIZE                      SYS-1013-REC
+           MOVE    SPA-HOSPNUM         TO  SYS-1013-HOSPNUM
            MOVE    "1013"              TO  SYS-1013-KANRICD
            MOVE    SPA-S01-SRYYMD      TO  SYS-1013-STYUKYMD
                                            SYS-1013-EDYUKYMD
-           MOVE    SPA-HOSPNUM         TO  SYS-1013-HOSPNUM
            MOVE    SYS-1013-REC        TO  MCPDATA-REC
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key2"              TO  MCP-PATHNAME
@@ -1221,10 +1237,9 @@
       *
            MOVE    ZERO                TO  FLG-SYUNOU
            INITIALIZE                      SYUNOU-REC
-      *****MOVE    SPA-HOSPID          TO  SYU-HOSPID
+           MOVE    SPA-HOSPNUM         TO  SYU-HOSPNUM
            MOVE    WRK-NYUGAIKBN       TO  SYU-NYUGAIKBN
            MOVE    SPA-S01-PTID        TO  SYU-PTID
-           MOVE    SPA-HOSPNUM         TO  SYU-HOSPNUM
            MOVE    SYUNOU-REC          TO  MCPDATA-REC
            MOVE    "tbl_syunou"        TO  MCP-TABLE
            MOVE    "key2"              TO  MCP-PATHNAME
@@ -1276,10 +1291,9 @@
            INITIALIZE                      WRK-MISYU-G
       *
            INITIALIZE  SYUNOU-REC
-      *****MOVE    SPA-HOSPID          TO  SYU-HOSPID
+           MOVE    SPA-HOSPNUM         TO  SYU-HOSPNUM
            MOVE    WRK-NYUGAIKBN       TO  SYU-NYUGAIKBN
            MOVE    SPA-S01-PTID        TO  SYU-PTID
-           MOVE    SPA-HOSPNUM         TO  SYU-HOSPNUM
            MOVE    SYUNOU-REC          TO  MCPDATA-REC
            MOVE    "tbl_syunou"        TO  MCP-TABLE
            MOVE    "key53"             TO  MCP-PATHNAME
@@ -1298,10 +1312,9 @@
                =   SYU-SKYMONEY    -   SYU-NYUKIN-TOTAL
       *
            INITIALIZE  SYUNOU-REC
-      *****MOVE    SPA-HOSPID          TO  SYU-HOSPID
+           MOVE    SPA-HOSPNUM         TO  SYU-HOSPNUM
            MOVE    WRK-NYUGAIKBN       TO  SYU-NYUGAIKBN
            MOVE    SPA-S01-PTID        TO  SYU-PTID
-           MOVE    SPA-HOSPNUM         TO  SYU-HOSPNUM
            MOVE    SYUNOU-REC          TO  MCPDATA-REC
            MOVE    "tbl_syunou"        TO  MCP-TABLE
            MOVE    "key54"             TO  MCP-PATHNAME
@@ -2029,7 +2042,7 @@
                        PERFORM 41001-INPUT-AREA-HEN-SEC
                    END-IF
       *
-                   MOVE    8       TO  SPA-GMN-CUR
+                   MOVE    2       TO  SPA-GMN-CUR
       *
                    MOVE    SPA-GMN-SMEILIST-MAX
                                    TO  IDX2
@@ -2115,7 +2128,7 @@
            END-IF
       *
            IF    ( SPA-ERRCD       =   SPACE )
-               MOVE    8           TO  SPA-GMN-CUR
+               MOVE    2           TO  SPA-GMN-CUR
            END-IF
       *
            .
@@ -2175,6 +2188,12 @@
                                        TO  SPA-NAI-NYUKINYMD
            MOVE    SPA-GMN-TDENPEDANUM(SPA-GMN-SELNUM)
                                        TO  SPA-NAI-DENPEDANUM
+           MOVE    SPA-NAI-TSYURRKNUM (SPA-GMN-SELNUM)
+                                       TO  SPA-NAI-SYURRKNUM
+           MOVE    SPA-NAI-TSYUEDANUM (SPA-GMN-SELNUM)
+                                       TO  SPA-NAI-SYUEDANUM
+           MOVE    SPA-NAI-TSYURRKUPDKBN (SPA-GMN-SELNUM)
+                                       TO  SPA-NAI-SYURRKUPDKBN
            MOVE    SPA-NAI-TJOUTAIKBN(SPA-GMN-SELNUM)
                                        TO  SPA-NAI-DENPJTIKBN
            MOVE    SPA-NAI-TMAINUS    (SPA-GMN-SELNUM)
@@ -2471,11 +2490,10 @@
       *
            MOVE    ZERO                TO  FLG-SYUMEI
            INITIALIZE                      SYUMEI-REC
-      *****MOVE    SPA-HOSPID          TO  SMEI-HOSPID
+           MOVE    SPA-HOSPNUM          TO  SMEI-HOSPNUM
            MOVE    SPA-S01-NYUGAIKBN   TO  SMEI-NYUGAIKBN
            MOVE    SPA-S01-PTID        TO  SMEI-PTID
            MOVE    SPA-S01-DENPNUM     TO  SMEI-DENPNUM
-           MOVE    SPA-HOSPNUM         TO  SMEI-HOSPNUM
            MOVE    SYUMEI-REC          TO  MCPDATA-REC
            MOVE    "tbl_syumei"        TO  MCP-TABLE
            MOVE    "key6"              TO  MCP-PATHNAME
@@ -2930,7 +2948,18 @@
                MOVE    SMCNDATE-YMD        TO  SYU-UPYMD
                MOVE    SMCNDATE-HMS        TO  SYU-UPHMS
       *
-               MOVE    SPA-HOSPNUM         TO  SYU-HOSPNUM
+               INITIALIZE                  SS002-AREA
+               MOVE    "2"                 TO  SS002-UPDKBN
+               MOVE    SPA-NAI-SYURRKNUM   TO  SS002-IN-SYURRKNUM
+               MOVE    SPA-NAI-SYUEDANUM   TO  SS002-IN-SYUEDANUM
+               MOVE    SPA-NAI-SYURRKUPDKBN TO SS002-IN-SYURRKUPDKBN
+               CALL    "ORCSS002"  USING   SS002-AREA
+                                           SYUNOU-REC
+                                           SPA-AREA
+               IF    ( SS002-RC    NOT =   ZERO )
+                   GO  TO  49021-SYUNOU-UPD-EXT
+               END-IF
+      *
                MOVE    SYUNOU-REC          TO  MCPDATA-REC
                MOVE    "tbl_syunou"        TO  MCP-TABLE
                MOVE    "key"               TO  MCP-PATHNAME
@@ -2950,11 +2979,10 @@
       *
            MOVE    ZERO                TO  FLG-SYUMEI
            INITIALIZE                      SYUMEI-REC
-      *****MOVE    SPA-HOSPID          TO  SMEI-HOSPID
+           MOVE    SPA-HOSPNUM          TO  SMEI-HOSPNUM
            MOVE    SPA-S01-NYUGAIKBN   TO  SMEI-NYUGAIKBN
            MOVE    SPA-S01-PTID        TO  SMEI-PTID
            MOVE    SPA-S01-DENPNUM     TO  SMEI-DENPNUM
-           MOVE    SPA-HOSPNUM         TO  SMEI-HOSPNUM
            MOVE    SYUMEI-REC          TO  MCPDATA-REC
            MOVE    "tbl_syumei"        TO  MCP-TABLE
            MOVE    "key7"              TO  MCP-PATHNAME
@@ -2978,7 +3006,7 @@
       *
                INITIALIZE                  SYUMEI-REC
       *
-      *********MOVE    SPA-HOSPID          TO  SMEI-HOSPID
+               MOVE    SPA-HOSPNUM          TO  SMEI-HOSPNUM
                MOVE    SPA-S01-NYUGAIKBN   TO  SMEI-NYUGAIKBN
                MOVE    SPA-S01-PTID        TO  SMEI-PTID
       *
@@ -3044,7 +3072,6 @@
                PERFORM 800-DAILYKEY-SEC
                MOVE    SDAILYKEY-DAILYKEY  TO  SMEI-DAILYKEY
       *
-               MOVE    SPA-HOSPNUM         TO  SMEI-HOSPNUM
                MOVE    SYUMEI-REC          TO  MCPDATA-REC
                MOVE    "tbl_syumei"        TO  MCP-TABLE
                MOVE    "key"               TO  MCP-PATHNAME
@@ -3064,12 +3091,11 @@
       *
            MOVE    ZERO                TO  FLG-SYUMEI
            INITIALIZE                      SYUMEI-REC
-      *****MOVE    SPA-HOSPID          TO  SMEI-HOSPID
+           MOVE    SPA-HOSPNUM          TO  SMEI-HOSPNUM
            MOVE    SPA-S01-NYUGAIKBN   TO  SMEI-NYUGAIKBN
            MOVE    SPA-S01-PTID        TO  SMEI-PTID
            MOVE    SPA-S01-DENPNUM     TO  SMEI-DENPNUM
            MOVE    SPA-NAI-DENPEDANUM  TO  SMEI-DENPEDANUM
-           MOVE    SPA-HOSPNUM         TO  SMEI-HOSPNUM
            MOVE    SYUMEI-REC          TO  MCPDATA-REC
            MOVE    "tbl_syumei"        TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
@@ -3149,7 +3175,6 @@
                    MOVE    SDAILYKEY-DAILYKEY  TO  SMEI-DAILYKEY
                END-IF
       *
-               MOVE    SPA-HOSPNUM         TO  SMEI-HOSPNUM
                MOVE    SYUMEI-REC          TO  MCPDATA-REC
                MOVE    "tbl_syumei"        TO  MCP-TABLE
                MOVE    "key"               TO  MCP-PATHNAME
@@ -3474,6 +3499,7 @@
        800-DAILYKEY-SEC         SECTION.
       *
            CALL    "ORCSDAILYKEY"   USING   SDAILYKEYAREA
+                                            SPA-AREA
       *
            .
       *
@@ -3497,9 +3523,8 @@
       *
            MOVE    ZERO            TO  FLG-PTINF
            INITIALIZE                  PTINF-REC
-      *****MOVE    SPA-HOSPID      TO  PTINF-HOSPID
+           MOVE    SPA-HOSPNUM      TO  PTINF-HOSPNUM
            MOVE    SPA-S01-PTID    TO  PTINF-PTID
-           MOVE    SPA-HOSPNUM     TO  PTINF-HOSPNUM
            MOVE    PTINF-REC       TO  MCPDATA-REC
            MOVE    "tbl_ptinf"     TO  MCP-TABLE
            MOVE    "key"           TO  MCP-PATHNAME
@@ -3558,11 +3583,10 @@
       *
            MOVE    ZERO                TO  FLG-SYUNOU
            INITIALIZE                      SYUNOU-REC
-      *****MOVE    SPA-HOSPID          TO  SYU-HOSPID
+           MOVE    SPA-HOSPNUM          TO  SYU-HOSPNUM
            MOVE    SPA-S01-NYUGAIKBN   TO  SYU-NYUGAIKBN
            MOVE    SPA-S01-PTID        TO  SYU-PTID
            MOVE    SPA-S01-DENPNUM     TO  SYU-DENPNUM
-           MOVE    SPA-HOSPNUM         TO  SYU-HOSPNUM
            MOVE    SYUNOU-REC          TO  MCPDATA-REC
            MOVE    "tbl_syunou"        TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
@@ -3588,9 +3612,9 @@
       *
            MOVE    "DBSELECT"          TO  MCP-FUNC
            CALL    "ORCDBMAIN"         USING
-                                           MCPAREA
-                                           MCPDATA-REC
-                                           SPA-AREA
+                                       MCPAREA
+                                       MCPDATA-REC
+                                       SPA-AREA
            IF    ( MCP-RC          =   ZERO )
                PERFORM 910-DBFETCH-SEC
            END-IF
@@ -3606,9 +3630,9 @@
       *
            MOVE    "DBSELECT"          TO  MCP-FUNC
            CALL    "ORCDBMAIN"         USING
-                                           MCPAREA
-                                           MCPDATA-REC
-                                           SPA-AREA
+                                       MCPAREA
+                                       MCPDATA-REC
+                                       SPA-AREA
       *
            .
       *
@@ -3621,9 +3645,9 @@
       *
            MOVE    "DBFETCH"           TO  MCP-FUNC
            CALL    "ORCDBMAIN"         USING
-                                           MCPAREA
-                                           MCPDATA-REC
-                                           SPA-AREA
+                                       MCPAREA
+                                       MCPDATA-REC
+                                       SPA-AREA
       *
            .
       *
@@ -3636,9 +3660,9 @@
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            CALL    "ORCDBMAIN"         USING
-                                           MCPAREA
-                                           MCPDATA-REC
-                                           SPA-AREA
+                                       MCPAREA
+                                       MCPDATA-REC
+                                       SPA-AREA
       *
            .
       *
@@ -3651,9 +3675,9 @@
       *
            MOVE    "DBUPDATE"          TO  MCP-FUNC
            CALL    "ORCDBMAIN"         USING
-                                           MCPAREA
-                                           MCPDATA-REC
-                                           SPA-AREA
+                                       MCPAREA
+                                       MCPDATA-REC
+                                       SPA-AREA
       *
            .
       *
@@ -3666,9 +3690,9 @@
       *
            MOVE    "DBINSERT"          TO  MCP-FUNC
            CALL    "ORCDBMAIN"         USING
-                                           MCPAREA
-                                           MCPDATA-REC
-                                           SPA-AREA
+                                       MCPAREA
+                                       MCPDATA-REC
+                                       SPA-AREA
       *
            .
       *
@@ -3677,9 +3701,10 @@
       *************************************************************
       *    ＰＵＴ　処理
       *************************************************************
-       900-PUT-WINDOW              SECTION.
+       900-PUT-WINDOW                  SECTION.
       *
-           CALL    "ORCDBMAIN"     USING
+           MOVE   "PUTWINDOW"          TO  MCP-FUNC.
+           CALL    "ORCDBMAIN"         USING
                                        MCPAREA
                                        MCPDATA-REC
                                        SPA-AREA

@@ -494,6 +494,7 @@
            MOVE   SYS-1031-PRTNM(1)   TO  MKPRT-PRTNM
            CALL   "ORCSMKPRT"         USING
                                       ORCSMKPRTAREA
+                                      SPA-AREA
       *
            .
        20031-HC01-ONL-EXT.

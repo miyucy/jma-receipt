@@ -412,6 +412,7 @@
             MOVE   SYS-1031-PRTNM(3)   TO  MKPRT-PRTNM
             CALL   "ORCSMKPRT"         USING
                                        ORCSMKPRTAREA
+                                       SPA-AREA
       *
       *   印刷用スクリプト処理
       *★   ETC-EXEC SHELL   SHELL-AREA 10

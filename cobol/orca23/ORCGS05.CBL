@@ -27,6 +27,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      * 03.05.00     NACL-太田    07/05/20  グループ診療対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -363,13 +364,12 @@
            MOVE    ZERO                    TO  FLG-SYUNOU
            INITIALIZE                          SYUNOU-REC
       *
-      *****MOVE    SPA-HOSPID              TO  SYU-HOSPID
+           MOVE    SPA-HOSPNUM             TO  SYU-HOSPNUM
            MOVE    SPA-S01-PTID            TO  SYU-PTID
       *
            MOVE    SPA-NAI-NYUHENYMD       TO  WRK-SADDSIGN-STR
            PERFORM 800-ORCSADDSIGN-SEC
            MOVE    WRK-SADDSIGN-STR        TO  SYU-SRYYMD
-           MOVE    SPA-HOSPNUM             TO  SYU-HOSPNUM
            MOVE    SYUNOU-REC              TO  MCPDATA-REC
            MOVE    "tbl_syunou"            TO  MCP-TABLE
            MOVE    WRK-PATHNAME            TO  MCP-PATHNAME
@@ -426,8 +426,8 @@
            INITIALIZE  SYS-1005-REC
            MOVE    ZERO                TO  FLG-SYSKANRI
       *
-           MOVE    "1005"              TO  SYS-1005-KANRICD
            MOVE    SPA-HOSPNUM         TO  SYS-1005-HOSPNUM
+           MOVE    "1005"              TO  SYS-1005-KANRICD
            MOVE    SYS-1005-REC        TO  MCPDATA-REC
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key5"              TO  MCP-PATHNAME
@@ -1381,9 +1381,9 @@
       *
            MOVE    "DBSELECT"          TO  MCP-FUNC
            CALL    "ORCDBMAIN"         USING
-                                           MCPAREA
-                                           MCPDATA-REC
-                                           SPA-AREA
+                                       MCPAREA
+                                       MCPDATA-REC
+                                       SPA-AREA
            IF    ( MCP-RC          =   ZERO )
                PERFORM 910-DBFETCH-SEC
            END-IF
@@ -1399,9 +1399,9 @@
       *
            MOVE    "DBFETCH"           TO  MCP-FUNC
            CALL    "ORCDBMAIN"         USING
-                                           MCPAREA
-                                           MCPDATA-REC
-                                           SPA-AREA
+                                       MCPAREA
+                                       MCPDATA-REC
+                                       SPA-AREA
       *
            .
       *
@@ -1414,9 +1414,9 @@
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            CALL    "ORCDBMAIN"         USING
-                                           MCPAREA
-                                           MCPDATA-REC
-                                           SPA-AREA
+                                       MCPAREA
+                                       MCPDATA-REC
+                                       SPA-AREA
       *
            .
       *
@@ -1428,10 +1428,10 @@
        900-PUT-WINDOW              SECTION.
       *
            MOVE   "PUTWINDOW"       TO  MCP-FUNC.
-           CALL   "ORCDBMAIN"       USING
-                                        MCPAREA
-                                        MCPDATA-REC
-                                        SPA-AREA
+           CALL    "ORCDBMAIN"         USING
+                                       MCPAREA
+                                       MCPDATA-REC
+                                       SPA-AREA
       *
            .
        900-PUT-WINDOW-EXT.

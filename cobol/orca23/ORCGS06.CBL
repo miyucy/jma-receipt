@@ -27,6 +27,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      * 03.05.00     NACL-太田    07/05/20  グループ診療対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -607,11 +608,11 @@
            INITIALIZE  SYS-1039-REC
            MOVE    ZERO                TO  FLG-SYSKANRI
       *
+           MOVE    SPA-HOSPNUM         TO  SYS-1039-HOSPNUM
            MOVE    "1039"              TO  SYS-1039-KANRICD
            MOVE    "*"                 TO  SYS-1039-KBNCD
            MOVE    SPA-SYSYMD          TO  SYS-1039-STYUKYMD
                                            SYS-1039-EDYUKYMD
-           MOVE    SPA-HOSPNUM         TO  SYS-1039-HOSPNUM
            MOVE    SYS-1039-REC        TO  MCPDATA-REC
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key10"             TO  MCP-PATHNAME
@@ -647,9 +648,8 @@
            MOVE    ZERO                    TO  FLG-SYUNOU
            INITIALIZE                          SYUNOU-REC
       *
-      *****MOVE    SPA-HOSPID              TO  SYU-HOSPID
+           MOVE    SPA-HOSPNUM              TO  SYU-HOSPNUM
            MOVE    SPA-S01-PTID            TO  SYU-PTID
-           MOVE    SPA-HOSPNUM             TO  SYU-HOSPNUM
            MOVE    SYUNOU-REC              TO  MCPDATA-REC
            MOVE    "tbl_syunou"            TO  MCP-TABLE
            MOVE    "key24"                 TO  MCP-PATHNAME
@@ -694,8 +694,8 @@
            INITIALIZE  SYS-1005-REC
            MOVE    ZERO                TO  FLG-SYSKANRI
       *
-           MOVE    "1005"              TO  SYS-1005-KANRICD
            MOVE    SPA-HOSPNUM         TO  SYS-1005-HOSPNUM
+           MOVE    "1005"              TO  SYS-1005-KANRICD
            MOVE    SYS-1005-REC        TO  MCPDATA-REC
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key5"              TO  MCP-PATHNAME
@@ -1021,10 +1021,10 @@
       *    入金方法
            MOVE    ZERO                TO  FLG-SYSKANRI
            INITIALIZE                      SYS-1041-REC
+           MOVE    SPA-HOSPNUM         TO  SYS-1041-HOSPNUM
            MOVE    "1041"              TO  SYS-1041-KANRICD
            MOVE    SPA-SYSYMD          TO  SYS-1041-STYUKYMD
                                            SYS-1041-EDYUKYMD
-           MOVE    SPA-HOSPNUM         TO  SYS-1041-HOSPNUM
            MOVE    SYS-1041-REC        TO  MCPDATA-REC
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key2"              TO  MCP-PATHNAME
@@ -2134,7 +2134,7 @@
        4801-ORCSNYUKINS-CALL-SEC   SECTION.
       *
            INITIALIZE                      ORCSNYUKINAREAS
-           MOVE    SPA-HOSPID          TO  LNK-SCNYUKINS-HOSPID
+           MOVE    SPA-HOSPNUM          TO  LNK-SCNYUKINS-HOSPNUM
            MOVE    SPA-GMN-PTID        TO  LNK-SCNYUKINS-PTID
            MOVE    SPA-NAI-NYUKINYMD   TO  LNK-SCNYUKINS-NYUKIN-YMD
            MOVE    SPA-GMN-NYKNHOHO    TO  LNK-SCNYUKINS-NYUKIN-HOHO
@@ -2206,6 +2206,7 @@
            END-PERFORM
       *
            CALL    "ORCSNYUKINS"   USING   ORCSNYUKINAREAS
+                                           SPA-AREA
            IF    ( LNK-SCNYUKINS-RC    NOT =   ZERO )
                MOVE    "4001"          TO  SPA-ERRCD
                GO  TO  4801-ORCSNYUKINS-CALL-EXT
@@ -2330,13 +2331,13 @@
       *
            IF    ( SPA-ERRCD           =   SPACE )
                INITIALIZE                  PARA-REC
+               MOVE    SPA-HOSPNUM     TO  PARA-HOSPNUM
                MOVE    "S02"           TO  PARA-GYOUMUID
                MOVE    SPA-TERMID      TO  PARA-TERMID
                MOVE    "00101"         TO  WRK-FILEMEI-CD
                MOVE    WRK-FILEMEI     TO  PARA-FILEMEI
                MOVE    1               TO  PARA-EDANUM
                MOVE    SYUPARA01-AREA  TO  PARA-DATA-REC
-               MOVE    SPA-HOSPNUM     TO  PARA-HOSPNUM
                MOVE    PARA-REC        TO  MCPDATA-REC
                MOVE    "tbl_para"      TO  MCP-TABLE
                MOVE    "key"           TO  MCP-PATHNAME
@@ -2362,7 +2363,6 @@
                                        TO  SYUPARA02-NYUKIN
                    MOVE    SYUPARA02-AREA
                                        TO  PARA-DATA-REC
-                   MOVE    SPA-HOSPNUM TO  PARA-HOSPNUM
                    MOVE    PARA-REC    TO  MCPDATA-REC
                    MOVE    "tbl_para"      TO  MCP-TABLE
                    MOVE    "key"           TO  MCP-PATHNAME
@@ -2376,6 +2376,7 @@
       *
            IF    ( SPA-ERRCD           =       SPACE )
                INITIALIZE                      ORCHC03S02AREA
+               MOVE    SPA-HOSPNUM     TO      ORCHC03S02-HOSPNUM
                MOVE    "S02"           TO      ORCHC03S02-GYOUMUID
                MOVE    SPA-TERMID      TO      ORCHC03S02-TERMID
                MOVE    "00101"         TO      WRK-FILEMEI-CD
@@ -2450,7 +2451,7 @@
            PERFORM 4801-NYU-PRINT-PG-SEC
       *
            INITIALIZE                      ORCHCN03AREA
-           MOVE    WRK-SPA-HOSPID      TO  ORCHCN03-HEAD-HOSPID
+           MOVE    WRK-SPA-HOSPNUM      TO  ORCHCN03-HEAD-HOSPNUM
            MOVE    WRK-SPA-STAFFCD     TO  ORCHCN03-STAFFCD
            MOVE    WRK-SPA-SYSYMD      TO  ORCHCN03-SYSYMD
            MOVE    WRK-SPA-TERMID      TO  ORCHCN03-TERMID
@@ -2479,7 +2480,7 @@
                                            TO  WRK-SPA-RSI-HKNKBN
       *
       *
-                   MOVE    WRK-SPA-HOSPID  TO  ORCHCN03-HOSPID
+                   MOVE    WRK-SPA-HOSPNUM  TO  ORCHCN03-HOSPNUM
                                                          (ORCHCN03-CNT)
                    MOVE    WRK-SPA-PTID    TO  ORCHCN03-PTID
                                                          (ORCHCN03-CNT)
@@ -2511,6 +2512,7 @@
            END-PERFORM
       *
            CALL    WRK-NYU-SEIKYU-PG   USING   ORCHCN03AREA
+                                               SPA-AREA
       *
            .
        4801-NYU-SKYPRT-EXT.
@@ -2521,10 +2523,10 @@
        4801-DELETE-PARA-SEC            SECTION.
       *
            INITIALIZE                  PARA-REC
+           MOVE    SPA-HOSPNUM         TO  PARA-HOSPNUM
            MOVE    "S02"               TO  PARA-GYOUMUID
            MOVE    SPA-TERMID          TO  PARA-TERMID
            MOVE    WRK-FILEMEI         TO  PARA-FILEMEI
-           MOVE    SPA-HOSPNUM         TO  PARA-HOSPNUM
            MOVE    PARA-REC            TO  MCPDATA-REC
            MOVE    "tbl_para"          TO  MCP-TABLE
            MOVE    "del11"             TO  MCP-PATHNAME
@@ -3039,11 +3041,10 @@
            MOVE    ZERO                TO  FLG-SYUNOU
       *
            INITIALIZE                      SYUNOU-REC
-      *****MOVE    WRK-SPA-HOSPID      TO  SYU-HOSPID
+           MOVE    WRK-SPA-HOSPNUM      TO  SYU-HOSPNUM
            MOVE    WRK-SPA-NYUGAIKBN   TO  SYU-NYUGAIKBN
            MOVE    WRK-SPA-PTID        TO  SYU-PTID
            MOVE    WRK-SYU-DENPNUM     TO  SYU-DENPNUM
-           MOVE    SPA-HOSPNUM         TO  SYU-HOSPNUM
            MOVE    SYUNOU-REC          TO  MCPDATA-REC
            MOVE    "tbl_syunou"        TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
@@ -3070,9 +3071,9 @@
       *
            MOVE    "DBSELECT"          TO  MCP-FUNC
            CALL    "ORCDBMAIN"         USING
-                                           MCPAREA
-                                           MCPDATA-REC
-                                           SPA-AREA
+                                       MCPAREA
+                                       MCPDATA-REC
+                                       SPA-AREA
            IF    ( MCP-RC          =   ZERO )
                PERFORM 910-DBFETCH-SEC
            END-IF
@@ -3088,9 +3089,9 @@
       *
            MOVE    "DBFETCH"           TO  MCP-FUNC
            CALL    "ORCDBMAIN"         USING
-                                           MCPAREA
-                                           MCPDATA-REC
-                                           SPA-AREA
+                                       MCPAREA
+                                       MCPDATA-REC
+                                       SPA-AREA
       *
            .
       *
@@ -3103,9 +3104,9 @@
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            CALL    "ORCDBMAIN"         USING
-                                           MCPAREA
-                                           MCPDATA-REC
-                                           SPA-AREA
+                                       MCPAREA
+                                       MCPDATA-REC
+                                       SPA-AREA
       *
            .
       *
@@ -3118,9 +3119,9 @@
       *
            MOVE    "DBINSERT"          TO  MCP-FUNC
            CALL    "ORCDBMAIN"         USING
-                                           MCPAREA
-                                           MCPDATA-REC
-                                           SPA-AREA
+                                       MCPAREA
+                                       MCPDATA-REC
+                                       SPA-AREA
       *
            .
       *
@@ -3133,9 +3134,9 @@
       *
            MOVE    "DBUPDATE"          TO  MCP-FUNC
            CALL    "ORCDBMAIN"         USING
-                                           MCPAREA
-                                           MCPDATA-REC
-                                           SPA-AREA
+                                       MCPAREA
+                                       MCPDATA-REC
+                                       SPA-AREA
       *
            .
       *
@@ -3148,9 +3149,9 @@
       *
            MOVE    "DBDELETE"          TO  MCP-FUNC
            CALL    "ORCDBMAIN"         USING
-                                           MCPAREA
-                                           MCPDATA-REC
-                                           SPA-AREA
+                                       MCPAREA
+                                       MCPDATA-REC
+                                       SPA-AREA
       *
            .
       *
@@ -3162,10 +3163,10 @@
        900-PUT-WINDOW              SECTION.
       *
            MOVE   "PUTWINDOW"       TO  MCP-FUNC.
-           CALL   "ORCDBMAIN"       USING
-                                        MCPAREA
-                                        MCPDATA-REC
-                                        SPA-AREA
+           CALL    "ORCDBMAIN"         USING
+                                       MCPAREA
+                                       MCPDATA-REC
+                                       SPA-AREA
       *
            .
        900-PUT-WINDOW-EXT.

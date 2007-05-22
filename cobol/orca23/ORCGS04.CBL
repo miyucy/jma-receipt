@@ -29,6 +29,7 @@
       * 01.01.01     NACL-森脇    04/11/15  設定画面変更
       * 03.04.00     NACL-森脇    06/12/15  画面変更
       * 03.04.01     NACL-森脇    06/12/19  プレビュー表示
+      * 03.05.00     NACL-太田    07/05/20  グループ診療対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -229,7 +230,6 @@
       *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
-           COPY    "ORCA-DBPATH".
       *
       *
       *****************************************************************
@@ -1204,11 +1204,11 @@
       *
            MOVE    SPACE               TO  SYS-3003-REC
            INITIALIZE                      SYS-3003-REC
+           MOVE    SPA-HOSPNUM         TO  SYS-3003-HOSPNUM
            MOVE    "3003"              TO  SYS-3003-KANRICD
            MOVE    CONST-3003-KBNCD    TO  SYS-3003-KBNCD
            MOVE    SPA-SYSYMD          TO  SYS-3003-STYUKYMD
                                            SYS-3003-EDYUKYMD
-           MOVE    SPA-HOSPNUM         TO  SYS-3003-HOSPNUM
            MOVE    SYS-3003-REC        TO  MCPDATA-REC
            PERFORM 900-SYSKANRI-KEY10-SEL-SEC
            IF    ( FLG-SYSKANRI        =   ZERO )
@@ -1224,6 +1224,7 @@
                    CALL    "ORCSJOB"       USING
                                            ORCSJOBKANRIAREA
                                            JOBKANRI-REC
+                                           SPA-AREA
                    IF    ( SJOBKANRI-RETURN    =   ZERO )
                        IF    ( JOB-ENDYMD      =   SPACE )
                            MOVE    "7777"      TO  SPA-ERRCD
@@ -1619,7 +1620,7 @@
            MOVE    "DBSELECT"      TO  MCP-FUNC
            MOVE    "tbl_syskanri"  TO  MCP-TABLE
            MOVE    "key10"         TO  MCP-PATHNAME
-           CALL    "ORCDBMAIN"     USING
+           CALL    "ORCDBMAIN"         USING
                                        MCPAREA
                                        MCPDATA-REC
                                        SPA-AREA
@@ -1627,7 +1628,7 @@
                MOVE    "DBFETCH"       TO  MCP-FUNC
                MOVE    "tbl_syskanri"  TO  MCP-TABLE
                MOVE    "key10"         TO  MCP-PATHNAME
-               CALL    "ORCDBMAIN"     USING
+               CALL    "ORCDBMAIN"         USING
                                            MCPAREA
                                            MCPDATA-REC
                                            SPA-AREA
@@ -1643,7 +1644,7 @@
            MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
            MOVE    "tbl_syskanri"  TO  MCP-TABLE
            MOVE    "key10"         TO  MCP-PATHNAME
-           CALL    "ORCDBMAIN"     USING
+           CALL    "ORCDBMAIN"         USING
                                        MCPAREA
                                        MCPDATA-REC
                                        SPA-AREA
@@ -1659,7 +1660,7 @@
        900-PUT-WINDOW              SECTION.
       *
            MOVE    "PUTWINDOW"     TO  MCP-FUNC.
-           CALL    "ORCDBMAIN"     USING
+           CALL    "ORCDBMAIN"         USING
                                        MCPAREA
                                        MCPDATA-REC
                                        SPA-AREA

@@ -27,6 +27,7 @@
       *****************************************************************
       *  ¥×¥í¥°¥é¥à½¤ÀµÍúÎò
       * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      *  03.05.00    NACL-ÂÀÅÄ    07/05/20  ¥°¥ë¡¼¥×¿ÇÎÅÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT                               DIVISION.
@@ -60,8 +61,6 @@
       *
       *    £Ä£Â¸¡º÷
            COPY    "MCPDATA.INC".
-      *     
-           COPY    "CPORCMCP.INC".  
       *
       *****************************************************************
       *    Ï¢Íí¡¡ÎÎ°è
@@ -170,10 +169,11 @@
        900-PUT-WINDOW                            SECTION.
       *
            MOVE   "PUTWINDOW"                    TO  MCP-FUNC.
-           CALL   "ORCMCPSUB"                     USING
-                                                  MCPAREA
-                                                  ORCMCPAREA
-                                                  MCPDATA-REC.
+           CALL    "ORCDBMAIN"         USING
+                                       MCPAREA
+                                       MCPDATA-REC
+                                       SPA-AREA
+           .
       *
        900-PUT-WINDOW-EXT.
            EXIT.
