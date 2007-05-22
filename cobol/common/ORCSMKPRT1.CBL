@@ -176,6 +176,9 @@
                    MOVE    50              TO  IDX
                END-IF
            END-PERFORM
+      *TEST
+           DISPLAY "WRK-DIA = " WRK-DIA
+      *TEST
            EVALUATE    WRK-DIA(1:3)
                WHEN    "dia"
       *            £ä£á£é
@@ -296,11 +299,12 @@ grpsys*    MOVE    SPA-HOSPNUM         TO  -HOSPNUM
 grpsys*    MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            MOVE    SHELLTBL            TO  MCPDATA-REC
            MOVE    "SHELL"             TO  MCP-FUNC
-           MOVE    PATH-SHELL-SHELL    TO  MCP-PATH
-           CALL    "MCPSUB"            USING
-                   MCPAREA
-                   MCPDATA-REC
-      *
+      *****MOVE    PATH-SHELL-SHELL    TO  MCP-PATH
+           MOVE    "shell"             TO  MCP-TABLE
+           MOVE    "shell"             TO  MCP-PATHNAME
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
        200-MON-PRINT-EXT.
@@ -454,12 +458,11 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
 grpsys*    MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            MOVE    SHELLTBL        TO  MCPDATA-REC
            MOVE    "SHELL"         TO  MCP-FUNC
-           MOVE    PATH-SHELL-SHELL
-                                   TO  MCP-PATH
-           CALL    "MCPSUB"        USING
-                                   MCPAREA
-                                   MCPDATA-REC
-
+           MOVE    "shell"             TO  MCP-TABLE
+           MOVE    "shell"             TO  MCP-PATHNAME
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
        300-REPRINT-EXT.
