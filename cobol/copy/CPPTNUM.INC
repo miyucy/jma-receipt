@@ -26,7 +26,7 @@
       *
            03  PTNUM-KEY.
       *°åÎÅµ¡´Ø£É£Ä
-               05  PTNUM-HOSPNUM              PIC  S9(9) BINARY.
+               05  PTNUM-HOSPNUM              PIC 9(2).
       *´µ¼Ô£É£Ä
                05  PTNUM-PTID                PIC  9(10).
       *´µ¼ÔÈÖ¹æ

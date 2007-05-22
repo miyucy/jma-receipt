@@ -1,5 +1,5 @@
 tbl_seikyu	{
-HOSPNUM				integer;
+HOSPNUM				number(2,0);
 SRYYM				number(6);
 NYUGAIKBN			char(1);
 PTID				number(10);

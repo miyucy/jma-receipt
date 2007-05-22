@@ -1,5 +1,5 @@
 tbl_userbyomei {
-	HOSPNUM				integer;
+	HOSPNUM				number(2,0);
 	CDSYU				char(1);
 	BYOMEIINPUTCD		varchar(20);
 	BUNRUICD            char(3);

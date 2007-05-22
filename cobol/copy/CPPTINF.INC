@@ -27,7 +27,7 @@
       *¥­¡¼
            03  PTINF-KEY.
       *°åÎÅµ¡´Ø£É£Ä
-               05  PTINF-HOSPNUM              PIC  S9(9) BINARY.
+               05  PTINF-HOSPNUM              PIC 9(2).
       *´µ¼Ô£É£Ä
                05  PTINF-PTID                PIC  9(10).
       *¥«¥Ê»áÌ¾

@@ -1,5 +1,5 @@
 view_bd001 {
-	HOSPNUM			integer;
+	HOSPNUM			number(2,0);
 	PTID			number(10,0);
 	PTNUM		    char(20);
 	NAME 			varchar(100);

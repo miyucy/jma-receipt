@@ -91,7 +91,7 @@
       *01  RECE02-REC.
            03  RECE02-KEY.
       *°åÎÅµ¡´Ø£É£Ä
-               05  RECE02-HOSPNUM         PIC  9(02).
+               05  RECE02-HOSPNUM         PIC 9(2).
       *¿ÇÎÅÇ¯·î
                05  RECE02-SRYYM           PIC  9(06).
       *Æþ³°¶èÊ¬

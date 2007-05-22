@@ -50,7 +50,7 @@
       *01  RECE01-REC.
            03  RECE01-KEY.
       *°åÎÅµ¡´Ø£É£Ä
-               05  RECE01-HOSPNUM         PIC  9(02).
+               05  RECE01-HOSPNUM         PIC 9(2).
       *¿ÇÎÅÇ¯·î
                05  RECE01-SRYYM           PIC  9(06).
       *Æþ³°¶èÊ¬

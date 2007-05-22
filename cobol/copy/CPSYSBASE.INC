@@ -27,7 +27,7 @@
       *    グループ番号
                05  SYSBASE-GRPNUM      PIC  S9(09)  BINARY.
       *    医療機関識別番号
-           03  SYSBASE-HOSPNUM         PIC  S9(09)  BINARY.
+           03  SYSBASE-HOSPNUM         PIC 9(2).
       *    医療機関名称
            03  SYSBASE-HOSPNAME        PIC  X(120).
       *    運用期限

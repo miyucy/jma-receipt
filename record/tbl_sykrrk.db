@@ -1,5 +1,5 @@
 tbl_sykrrk {
-	HOSPNUM				integer;
+	HOSPNUM				number(2,0);
 	PTID     			number(10,0);
 	SYKKBN   			char(1);
 	SYKYMD  			char(8);

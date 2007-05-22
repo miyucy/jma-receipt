@@ -1,5 +1,5 @@
 tbl_lock	{
-	HOSPNUM				integer;
+	HOSPNUM				number(2,0);
 #--> Ã¼Ëö£É£Ä
 	LOCK_TERMID		char(64);
 	LOCK_OPID		varchar(16);

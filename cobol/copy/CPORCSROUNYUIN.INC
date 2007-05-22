@@ -31,7 +31,7 @@
        01  ORCSROUNYUIN-AREA.
       *
       *°åÎÅµ¡´Ø£É£Ä
-           03  LNK-SROUNYUIN-HOSPNUM                 PIC  S9(9) BINARY.
+           03  LNK-SROUNYUIN-HOSPNUM                 PIC 9(2).
       *´µ¼Ô£É£Ä
            03  LNK-SROUNYUIN-PTID                    PIC  9(10).
       *»»ÄêÇ¯·î

@@ -1,5 +1,5 @@
 tbl_kohplus	{
-HOSPNUM		integer;
+HOSPNUM		number(2,0);
 PREFNUM		char(2);
 CITYNUM		char(3);
 KOHNUM		char(3);
@@ -16,7 +16,7 @@ CREYMD		char(8);
 UPYMD		char(8);
 UPHMS		char(6);
 #----以下更新用項目
-UPHOSPNUM	integer,virtual;
+UPHOSPNUM	number(2,0),virtual;
 UPPREFNUM	char(2),virtual;
 UPCITYNUM	char(3),virtual;
 UPKOHNUM	char(3),virtual;

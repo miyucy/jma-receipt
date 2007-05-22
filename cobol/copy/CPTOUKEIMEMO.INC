@@ -26,7 +26,7 @@
       *
       *キー
            03  TKIMEMO-KEY.
-               05  TKIMEMO-HOSPNUM           PIC S9(9) BINARY.
+               05  TKIMEMO-HOSPNUM           PIC 9(2).
       *プログラムＩＤ
                05  TKIMEMO-PGID            PIC  X(20).
       *管理コード

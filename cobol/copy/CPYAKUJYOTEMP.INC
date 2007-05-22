@@ -24,7 +24,7 @@
       ************************************************************
        01  TEMP-REC.
            03  TEMP-KEY.
-               05  TEMP-HOSPNUM         PIC S9(9) BINARY.
+               05  TEMP-HOSPNUM         PIC 9(2).
       *Ã¼Ëö£É£Ä
                05  TEMP-TERMID          PIC X(64).
       *°åÌôÉÊ¥³¡¼¥É

@@ -26,7 +26,7 @@
       *¥­¡¼
            03  PTRSI-KEY.
       *°åÎÅµ¡´Ø£É£Ä
-               05  PTRSI-HOSPNUM            PIC  S9(9) BINARY.
+               05  PTRSI-HOSPNUM            PIC 9(2).
       *´µ¼Ô£É£Ä
                05  PTRSI-PTID              PIC  9(10).
       *ÊÝ¸±£É£Ä

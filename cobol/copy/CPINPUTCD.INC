@@ -27,7 +27,7 @@
       *01  INPUTCD-REC.
            03  ICD-KEY.
       *医療機関ＩＤ
-               05  ICD-HOSPNUM          PIC  S9(9) BINARY.
+               05  ICD-HOSPNUM          PIC 9(2).
       *コード種別
                05  ICD-CDSYU           PIC  X(01).
       *入力コード

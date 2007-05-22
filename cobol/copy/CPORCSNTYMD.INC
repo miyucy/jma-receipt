@@ -26,7 +26,7 @@
        01  ORCSNTYMDAREA.
            03  SNTYMD-IN.
       *        医療機関ＩＤ
-               05  SNTYMD-HOSPNUM          PIC 9(02).
+               05  SNTYMD-HOSPNUM          PIC 9(2).
                05  SNTYMD-PTID             PIC 9(10).
       *        処理区分 1...全ての歴を取得
       *                 2...他院歴を除く

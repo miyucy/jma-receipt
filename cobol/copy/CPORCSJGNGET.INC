@@ -27,7 +27,7 @@
        01  LNK-ORCSJGNGET-REC.
       *
       *°åÎÅµ¡´Ø£É£Ä
-           03  LNK-ORCSJGNGET-HOSPNUM       PIC  S9(9) BINARY.
+           03  LNK-ORCSJGNGET-HOSPNUM       PIC 9(2).
       *Æþ³°¶èÊ¬
            03  LNK-ORCSJGNGET-NYUGAIKBN     PIC  X(01).
       *´µ¼Ô£É£Ä

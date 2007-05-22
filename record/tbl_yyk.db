@@ -1,5 +1,5 @@
 tbl_yyk {
-	HOSPNUM				integer;
+	HOSPNUM				number(2,0);
 	SRYNAIYO			char(2);
 	DRCD    			char(5);
 	YYKYMD  			char(8);

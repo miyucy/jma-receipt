@@ -27,7 +27,7 @@
       *01  PRTDATA-REC.
       *
            03  PRTDATA-KEY.
-               05  PRTDATA-HOSPNUM   PIC S9(9) BINARY.
+               05  PRTDATA-HOSPNUM   PIC 9(2).
       *£À£≈£Ÿ
                05  PRTDATA-TBL-KEY    PIC X(08).
       *œ¢»÷

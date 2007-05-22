@@ -1,5 +1,5 @@
 tbl_ptnum {
-	HOSPNUM		    integer;
+	HOSPNUM		    number(2,0);
 	PTID		    number(10);
 	PTNUM		    char(20);
 	HKNID		    number(10);

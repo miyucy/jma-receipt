@@ -29,7 +29,7 @@
       *01  USERBYOMEI-REC.
            03  USBYO-KEY.
       *医療機関ＩＤ
-               05  USBYO-HOSPNUM        PIC S9(9) BINARY.
+               05  USBYO-HOSPNUM        PIC 9(2).
       *コード種別
                05  USBYO-CDSYU         PIC X(01).
       *病名入力コード

@@ -1,5 +1,5 @@
 tbl_syurrk {
-	HOSPNUM						integer;
+	HOSPNUM						number(2,0);
 	PTID							number(10,0);
 	NYUGAIKBN					char(1);
 	DENPNUM						integer;

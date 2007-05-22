@@ -1,5 +1,5 @@
 tbl_toukeimemo {
-	HOSPNUM				integer;
+	HOSPNUM				number(2,0);
 	PGID		            char(20);
 	KANRICD		            char(4);
 	KBNCD                   char(8);

@@ -1,5 +1,5 @@
 tbl_opecom {
-	HOSPNUM  			integer;
+	HOSPNUM  			number(2,0);
 	PTID    			number(10);
 	SRYYMD  			char(8);
 	SRYCD   			char(9);

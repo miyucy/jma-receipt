@@ -35,7 +35,7 @@
       *
            03  LNK-SYUBETU-IN.
       *        ∞ÂŒ≈µ°¥ÿ£…£ƒ
-               05  LNK-SYUBETU-HOSPNUM     PIC S9(9) BINARY.
+               05  LNK-SYUBETU-HOSPNUM     PIC 9(2).
       *        ∏©»÷πÊ
                05  LNK-SYUBETU-PREFNUM     PIC 9(02).
       *        ø«Œ≈«Ø∑Ó

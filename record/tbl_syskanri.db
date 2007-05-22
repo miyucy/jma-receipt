@@ -1,5 +1,5 @@
 tbl_syskanri	{
-	HOSPNUM				integer;
+	HOSPNUM				number(2,0);
 	KANRICD		char(4);
 	KBNCD		char(8);
 	STYUKYMD	char(8);
@@ -11,7 +11,7 @@ tbl_syskanri	{
 	UPYMD		char(8);
 	UPHMS		char(6);
 #-----> 主キー更新用項目
-	UPHOSPNUM	integer,virtual;
+	UPHOSPNUM	number(2,0),virtual;
 	UPKANRICD	char(4),virtual;
 	UPKBNCD	char(8),virtual;
 	UPSTYUKYMD	char(8),virtual;

@@ -1,5 +1,5 @@
 tbl_syuka {
-    HOSPNUM              integer;
+    HOSPNUM              number(2,0);
     NYUGAIKBN           char(1);
     PTID                number(10,0);
 # ---> 入院基本料と診療分をわける

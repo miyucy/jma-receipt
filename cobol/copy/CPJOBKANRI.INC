@@ -28,7 +28,7 @@
       *01  JOBKANRI-REC.
       *キー
            03  JOB-KEY.
-               05  JOB-HOSPNUM           PIC S9(9) BINARY.
+               05  JOB-HOSPNUM           PIC 9(2).
       *ジョブ管理コード
                05  JOB-JOBID            PIC  9(07).
       *シェルＩＤ

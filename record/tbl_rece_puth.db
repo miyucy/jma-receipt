@@ -1,5 +1,5 @@
 tbl_rece_puth {
-	HOSPNUM				integer;
+	HOSPNUM				number(2,0);
 	PREFKBN_PRTJYUN 		char(1);
 	HKNJANUM_PRTJYUN		char(1);
 	HKNJANUM			char(8);

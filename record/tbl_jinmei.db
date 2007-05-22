@@ -1,5 +1,5 @@
 tbl_jinmei {
-	HOSPNUM				integer;
+	HOSPNUM				number(2,0);
 	KANJI    			varchar(50);
 	KANA    			varchar(50);
 	UPYMD   			varchar(8);

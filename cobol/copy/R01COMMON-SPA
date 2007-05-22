@@ -68,7 +68,7 @@
       *     
       *£Ë£Å£Ù¡ÊÂÐ¾Ý¤Î¥Õ¥¡¥¤¥ë¡Ë
            05  SPA-R01-RECE07-KEY.
-               07  SPA-R01-RECE07-HOSPNUM  PIC S9(9) BINARY.
+               07  SPA-R01-RECE07-HOSPNUM  PIC 9(2).
       *Ä¢É¼£É£Ä
                07  SPA-R01-RECE07-PRTID    PIC  X(04).
       *½èÍý¶èÊ¬¡Ê£±¡§°ì³ç¡¢£²¡§¸ÄÊÌ¡Ë

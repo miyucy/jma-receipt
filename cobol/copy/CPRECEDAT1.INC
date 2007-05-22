@@ -25,7 +25,7 @@
       *****************************************************************
        01  RECEDAT1PARA.
            03  FILLER                  PIC X(05)   VALUE   "/tmp/".
-           03  RECEDAT1PARA-HOSPNUM    PIC 9(02).
+           03  RECEDAT1PARA-HOSPNUM    PIC 9(2).
            03  RECEDAT1PARA-SYOKBN     PIC 9(01)   VALUE   0.
            03  RECEDAT1PARA-RECEKBN    PIC 9(01)   VALUE   0.
            03  RECEDAT1PARA-FILE-ID    PIC X(07).

@@ -24,7 +24,7 @@
       *****************************************************************
       *01  CHKSND-REC.
            03  CHKSND-KEY.
-               05  CHKSND-HOSPNUM        PIC S9(9) BINARY.
+               05  CHKSND-HOSPNUM        PIC 9(2).
       *チェック区分
                05  CHKSND-CHKKBN         PIC  X(01).
       *診療コード

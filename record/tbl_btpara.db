@@ -1,5 +1,5 @@
 tbl_btpara {
-	HOSPNUM				integer;
+	HOSPNUM				number(2,0);
 	SHELLID 		char(8);
 	RUN_OPID		char(16);
 	DSP_RENNUM		number(3,0);

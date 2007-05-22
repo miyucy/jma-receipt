@@ -25,7 +25,7 @@
       *01  SRYACCT-REC.
            03  ACCT-KEY.
       *°åÎÅµ¡´Ø£É£Ä
-               05  ACCT-HOSPNUM          PIC  S9(9) BINARY.
+               05  ACCT-HOSPNUM          PIC 9(2).
       *Æþ³°¶èÊ¬
                05  ACCT-NYUGAIKBN       PIC  X(01).
       *´µ¼Ô£É£Ä

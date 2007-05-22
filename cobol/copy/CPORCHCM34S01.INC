@@ -31,7 +31,7 @@
        01  HCM34S01-AREA.
       *
       *∞ÂŒ≈µ°¥ÿ»÷πÊ
-           03  HCM34S01-HOSPNUM                PIC 9(02).
+           03  HCM34S01-HOSPNUM                PIC 9(2).
       *¥µº‘£…£ƒ
            03  HCM34S01-PTID                   PIC 9(10).
       *ªªƒÍ«Ø∑Ó

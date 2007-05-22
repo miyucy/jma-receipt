@@ -1,5 +1,5 @@
 tbl_orderprt {
-	HOSPNUM				integer;
+	HOSPNUM				number(2,0);
 	PTID 				number(10,0);
 	PTNUM 				char(20);
         NYUGAIKBN                       char(1);

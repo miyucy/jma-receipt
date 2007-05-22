@@ -25,7 +25,7 @@
        01  CHK004-REC.
       *キー
            03  CHK004-KEY.
-               05  CHK004-HOSPNUM          PIC  S9(9)  BINARY.
+               05  CHK004-HOSPNUM          PIC 9(2).
       *管理コード
                05  CHK004-KANRICD          PIC  X(04).
       *区分コード
@@ -50,7 +50,7 @@
            03  CHK004-UPHMS                PIC  X(06).
       *　　主キー更新用項目
            03  CHK004-UPDKEY.
-               05  CHK004-UPHOSPNUM        PIC  S9(9)  BINARY.
+               05  CHK004-UPHOSPNUM        PIC 9(2).
                05  CHK004-UPKANRICD        PIC X(04).
                05  CHK004-UPKBNCD          PIC X(08).
                05  CHK004-UPSTYUKYMD       PIC X(08).

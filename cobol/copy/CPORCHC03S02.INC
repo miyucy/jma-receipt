@@ -25,7 +25,7 @@
       ************************************************************
        01  ORCHC03S02AREA.
            03  ORCHC03S02-KEY.
-               05  ORCHC03S02-HOSPNUM      PIC 9(02).
+               05  ORCHC03S02-HOSPNUM      PIC 9(2).
                05  ORCHC03S02-GYOUMUID     PIC X(03).
                05  ORCHC03S02-TERMID       PIC X(64).
                05  ORCHC03S02-FILEMEI.

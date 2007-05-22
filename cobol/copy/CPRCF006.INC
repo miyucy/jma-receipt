@@ -33,7 +33,7 @@
       *01  RECE06-REC.
            03  RECE06-KEY.
       *°åÎÅµ¡´Ø£É£Ä
-               05  RECE06-HOSPNUM         PIC  9(02).
+               05  RECE06-HOSPNUM         PIC 9(2).
       *¿ÇÎÅÇ¯·î
                05  RECE06-SRYYM           PIC  9(06).
       *Æþ³°¶èÊ¬

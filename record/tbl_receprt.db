@@ -1,5 +1,5 @@
 tbl_receprt	{
-	HOSPNUM				integer;
+	HOSPNUM				number(2,0);
         PRTID               char(4);
         RECEYM              char(6);
         CREYMD              char(8);

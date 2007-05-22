@@ -91,7 +91,7 @@
       *先プログラム
              03  SPA-SAKIPG            PIC X(08).
       *医療機関識別番号
-             03  SPA-HOSPNUM           PIC 9(02).
+             03  SPA-HOSPNUM           PIC 9(2).
       *医療機関ＩＤ
              03  SPA-HOSPID            PIC X(24).
       *病院種別

@@ -41,7 +41,7 @@
       *
       *入力値
       *    医療機関ＩＤ
-           03  LNK-KOREIFTNCHK-HOSPNUM      PIC S9(9) BINARY.
+           03  LNK-KOREIFTNCHK-HOSPNUM      PIC 9(2).
       *    患者ＩＤ
            03  LNK-KOREIFTNCHK-PTID         PIC 9(10).
       *    入外区分

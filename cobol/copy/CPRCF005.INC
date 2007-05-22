@@ -48,7 +48,7 @@
       *01  RECE05-REC.
            03  RECE05-KEY.
       *°åÎÅµ¡´Ø£É£Ä
-               05  RECE05-HOSPNUM         PIC S9(9) BINARY.
+               05  RECE05-HOSPNUM         PIC 9(2).
       *¿ÇÎÅÇ¯·î
                05  RECE05-SRYYM           PIC  9(06).
       *Æþ³°¶èÊ¬

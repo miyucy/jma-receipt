@@ -1,5 +1,5 @@
 tbl_ptteikirrk {
-       HOSPNUM          integer;
+       HOSPNUM          number(2,0);
        PTID            number(10);
        SRYYM           char(6);
        SAKKBN          char(1);

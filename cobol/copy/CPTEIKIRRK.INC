@@ -23,7 +23,7 @@
       * Maj/Min/Rev  修正者       日付      内容
       ************************************************************
       *01  TEIKIRRK-REC.
-           03  TEIKIRRK-HOSPNUM             PIC S9(9) BINARY.
+           03  TEIKIRRK-HOSPNUM             PIC 9(2).
       *診療年月
            03  TEIKIRRK-SRYYM              PIC  X(06).
       *期別

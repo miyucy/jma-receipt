@@ -24,7 +24,7 @@
       ************************************************************
        01  ORCSRSITUSANAREA.
       *    °åÎÅµ¡´Ø¥³¡¼¥É
-           03  RSITUSAN-HOSPNUM            PIC  9(2).
+           03  RSITUSAN-HOSPNUM            PIC 9(2).
       *    ´µ¼Ô£É£Ä
            03  RSITUSAN-PTID               PIC  9(10).
       *    ÊÝ¸±ÁÈ¹ç¤»

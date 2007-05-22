@@ -1,5 +1,5 @@
 tbl_ptkohinf {
-	HOSPNUM				integer;
+	HOSPNUM				number(2,0);
 	PTID 				number(10);
 	KOHID				number(10);
 	KOHNUM				char(3);

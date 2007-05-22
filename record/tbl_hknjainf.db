@@ -1,5 +1,5 @@
 tbl_hknjainf {
-	HOSPNUM				integer;
+	HOSPNUM				number(2,0);
 	HKNJANUM			char(8);
 	HKNJANAME			varchar(200);
 	HKNJANAME_TAN1		varchar(100);

@@ -24,7 +24,7 @@
       *****************************************************************
       *01  ODRITEM-REC.
            03  ODRITEM-KEY.
-               05  ODRITEM-HOSPNUM        PIC S9(9) BINARY.
+               05  ODRITEM-HOSPNUM        PIC 9(2).
                05  ODRITEM-KARTE-KEY     PIC X(36).
                05  ODRITEM-ORDERNUM      PIC 9(02).
                05  ODRITEM-ITEMNUM       PIC 9(02).

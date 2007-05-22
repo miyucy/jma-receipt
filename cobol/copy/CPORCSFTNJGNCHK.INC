@@ -27,7 +27,7 @@
        01  ORCSFTNJGNCHKAREA.
       *ÆþÎÏÃÍ
       *    °åÎÅµ¡´Ø£É£Ä
-           03  LNK-FTNJGNCHK-HOSPNUM         PIC S9(9) BINARY.
+           03  LNK-FTNJGNCHK-HOSPNUM         PIC 9(2).
       *    ´µ¼Ô£É£Ä
            03  LNK-FTNJGNCHK-PTID            PIC 9(10).
       *    Æþ³°¶èÊ¬

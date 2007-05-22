@@ -1,5 +1,5 @@
 tbl_inputcd {
-	HOSPNUM				integer;
+	HOSPNUM				number(2,0);
 	CDSYU   			char(1);
 	INPUTCD 			char(20);
 	SRYKBN				char(2);

@@ -1,5 +1,5 @@
 tbl_srykarrk {
-	HOSPNUM				integer;
+	HOSPNUM				number(2,0);
 	PTID 				number(10);
 	SRYKA				char(2);
 	SYOSINYMD1			char(8);

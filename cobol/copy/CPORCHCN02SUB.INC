@@ -31,7 +31,7 @@
        01  ORCHCN02SUB-AREA.
       *
       *°åÎÅµ¡´Ø£É£Ä
-           03  LNK-ORCHCN02SUB-HOSPNUM                PIC  9(02).
+           03  LNK-ORCHCN02SUB-HOSPNUM                PIC 9(2).
       *´µ¼Ô£É£Ä
            03  LNK-ORCHCN02SUB-PTID                   PIC  9(10).
       *Æþ±¡Æü

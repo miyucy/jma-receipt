@@ -1,5 +1,5 @@
 tbl_santei {
-	HOSPNUM			    integer;
+	HOSPNUM			    number(2,0);
 	PTID				number(10,0);
 	SRYYM				char(6);
 	SRYCD				char(9);

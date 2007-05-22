@@ -32,7 +32,7 @@
        01  ORCSAGECHKAREA.
       *入力値
       *    医療機関ＩＤ（必須）
-           03  AGECHK-HOSPNUM          PIC S9(9) BINARY.
+           03  AGECHK-HOSPNUM          PIC 9(2).
       *    患者ＩＤ（必須）
            03  AGECHK-PTID             PIC 9(10).
       *    診療日（必須）

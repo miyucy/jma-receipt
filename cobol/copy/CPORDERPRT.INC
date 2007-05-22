@@ -25,7 +25,7 @@
       *01  ORDERPRT-REC.
            03  ORDERPRT-KEY.
       *  °åÎÅµ¡´Ø£É£Ä
-               05  ORDERPRT-HOSPNUM        PIC  S9(9) BINARY.
+               05  ORDERPRT-HOSPNUM        PIC 9(2).
       *  ´µ¼Ô£É£Ä
                05  ORDERPRT-PTID          PIC  9(10).
       *  ´µ¼ÔÈÖ¹æ

@@ -1,5 +1,5 @@
 tbl_ptnyuinrrk	{
-	HOSPNUM			integer;
+	HOSPNUM			number(2,0);
 	PTID			number(10,0);
 	RRKNUM			number(3,0);
 	RRKEDANUM		number(3,0);

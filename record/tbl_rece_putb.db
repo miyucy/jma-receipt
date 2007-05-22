@@ -1,5 +1,5 @@
 tbl_rece_putb {
-	HOSPNUM				integer;
+	HOSPNUM				number(2,0);
 	PREFKBN				char(1);
 	SYUBETU_SRT1			integer;
 	GRP_NO1				char(3);

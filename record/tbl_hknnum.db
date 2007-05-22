@@ -1,5 +1,5 @@
 tbl_hknnum {
-	HOSPNUM				integer;
+	HOSPNUM				number(2,0);
 	HKNNUM				char(3);
 	TEKSTYMD			char(8);
 	PAYKBN 				char(2);

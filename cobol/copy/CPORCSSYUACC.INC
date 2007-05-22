@@ -96,7 +96,7 @@
              05  LNK-SYUACC-IO2-OCC               OCCURS  100.
                07  LNK-IO2-SYU-KEY.
       *°åÎÅµ¡´Ø£É£Ä
-                 09  LNK-IO2-SYU-HOSPNUM       PIC S9(9) BINARY.
+                 09  LNK-IO2-SYU-HOSPNUM       PIC 9(2).
       *Æþ³°¶èÊ¬
                  09  LNK-IO2-SYU-NYUGAIKBN     PIC X(01).
       *´µ¼Ô£É£Ä

@@ -24,7 +24,7 @@
       ************************************************************
         01  PREVIEW-REC.
             03  PREVIEW-KEY.
-                05  PREVIEW-HOSPNUM   PIC S9(9) BINARY.
+                05  PREVIEW-HOSPNUM   PIC 9(2).
                 05  PREVIEW-TBL-KEY    PIC X(8).
                 05  PREVIEW-RENNUM     PIC 9(4).
                 05  PREVIEW-TBL-GROUP  PIC X(14).

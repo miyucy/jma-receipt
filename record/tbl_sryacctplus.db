@@ -1,5 +1,5 @@
 tbl_sryacctplus {
-	HOSPNUM				integer;
+	HOSPNUM				number(2,0);
 	NYUGAIKBN			char(1);
 	PTID				number(10,0);
 	SRYKA				char(2);

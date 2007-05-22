@@ -1,5 +1,5 @@
 tbl_ptkohftn {
-	HOSPNUM			integer;
+	HOSPNUM			number(2,0);
 	PTID			number(10);
 	KOHID			number(10);
 	RENNUM			number(3);
@@ -15,7 +15,7 @@ tbl_ptkohftn {
 	UPYMD			char(8);
 	UPHMS			char(6);
 #-----> 主キー更新用項目
-	UPHOSPNUM			integer,virtual;
+	UPHOSPNUM			number(2,0),virtual;
 	UPPTID 				number(10,0),virtual;
 	UPKOHID				number(10,0),virtual;
 	UPTEKSTYMD			char(8),virtual;

@@ -26,7 +26,7 @@
       *¥­¡¼
            03  SYK-KEY.
       *°åÎÅµ¡´Ø£É£Ä
-               05  SYK-HOSPNUM              PIC  S9(9) BINARY.
+               05  SYK-HOSPNUM              PIC 9(2).
       *´µ¼Ô£É£Ä
                05  SYK-PTID                PIC  9(10).
       *¾Ò²ð¶èÊ¬

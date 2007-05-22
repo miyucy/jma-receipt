@@ -1,5 +1,5 @@
 tbl_help {
-	HOSPNUM				integer;
+	HOSPNUM				number(2,0);
 	HELPKBN				char(1);
 	KEY_OPID			varchar(16);
 	LDNAME				varchar(20);

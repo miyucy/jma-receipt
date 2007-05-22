@@ -27,7 +27,7 @@
       *キー
            03  UKE-KEY.
       *医療機関ＩＤ
-               05  UKE-HOSPNUM          PIC  S9(9) BINARY.
+               05  UKE-HOSPNUM          PIC 9(2).
       *受付年月日
                05  UKE-UKEYMD          PIC  X(08).
       *受付ＩＤ

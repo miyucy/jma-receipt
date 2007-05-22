@@ -34,7 +34,7 @@
       *01  RECE11-REC.
            03  RECE11-KEY.
       *°åÎÅµ¡´Ø£É£Ä
-               05  RECE11-HOSPNUM         PIC  9(02).
+               05  RECE11-HOSPNUM         PIC 9(2).
       *¿ÇÎÅÇ¯·î
                05  RECE11-SRYYM           PIC  9(06).
       *Æþ³°¶èÊ¬

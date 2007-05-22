@@ -1,5 +1,5 @@
 tbl_teikirrk {
-	HOSPNUM				integer;
+	HOSPNUM				number(2,0);
        SRYYM           char(6);
        KBT             char(1);
        TERMID          varchar(16);

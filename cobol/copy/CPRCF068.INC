@@ -27,7 +27,7 @@
       *01  RECE68-REC.
            03  RECE68-KEY.
       *°åÎÅµ¡´Ø£É£Ä
-               05  RECE68-HOSPNUM         PIC  9(02).
+               05  RECE68-HOSPNUM         PIC 9(2).
       *¿ÇÎÅÇ¯·î
                05  RECE68-SRYYM           PIC  9(06).
       *Æþ³°¶èÊ¬

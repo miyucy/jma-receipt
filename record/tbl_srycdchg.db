@@ -1,5 +1,5 @@
 tbl_srycdchg {
-	HOSPNUM				integer;
+	HOSPNUM				number(2,0);
 	IPNSRYCD   		char(9);
 	RJNSRYCD  		char(9);
 	TERMID  		varchar(16);

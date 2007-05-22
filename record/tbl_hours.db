@@ -1,5 +1,5 @@
 tbl_hours {
-	HOSPNUM				integer;
+	HOSPNUM				number(2,0);
 	SRYYMD				char(8);
 	TIME				char(4);
 	ID					char(12);

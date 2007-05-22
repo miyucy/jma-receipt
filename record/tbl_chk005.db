@@ -1,5 +1,5 @@
 tbl_chk005	{
-	HOSPNUM			integer;
+	HOSPNUM			number(2,0);
 	CHKKBN			char(1);
 	ID			integer;
 	YUKOSTYMD	  	char(8);
@@ -20,7 +20,7 @@ tbl_chk005	{
 	UPYMD   		char(8);
 	UPHMS			char(6);
 #-----> 主キー更新用項目
-	UPHOSPNUM		integer,virtual;
+	UPHOSPNUM		number(2,0),virtual;
 	UPCHKKBN		char(1),virtual;
 	UPID			integer,virtual;
 	UPRENNUM		integer,virtual;

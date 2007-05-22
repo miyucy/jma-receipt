@@ -25,7 +25,7 @@
       *01  SYUDAY-REC.
            03  SDAY-KEY.
       *°åÎÅµ¡´Ø£É£Ä
-               05  SDAY-HOSPNUM              PIC  S9(9) BINARY.
+               05  SDAY-HOSPNUM              PIC 9(2).
       *Æþ³°¶èÊ¬
                05  SDAY-NYUGAIKBN           PIC  X(01).
       *´µ¼Ô£É£Ä

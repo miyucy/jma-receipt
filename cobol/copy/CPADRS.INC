@@ -24,7 +24,7 @@
       *****************************************************************
       *01  ADRS-REC.
            03  ADRS-KEY.
-               05  ADRS-HOSPNUM        PIC S9(9) BINARY.
+               05  ADRS-HOSPNUM        PIC 9(2).
       *地方公共団体コード
                05  ADRS-LPUBCD         PIC X(05).
       *郵便番号

@@ -25,7 +25,7 @@
       *01  YYK-REC.
            03  YYK-KEY.
       *医療機関ＩＤ
-               05  YYK-HOSPNUM          PIC S9(9) BINARY.
+               05  YYK-HOSPNUM          PIC 9(2).
       *診療内容
                05  YYK-SRYNAIYO        PIC X(02).
       *ドクターコード

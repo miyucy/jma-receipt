@@ -1,5 +1,5 @@
 query_ptinf {
-	HOSPNUM				integer;
+	HOSPNUM				number(2,0);
 	PTID						number(10,0);
 	KANANAME			varchar(100);
 	NAME 						varchar(100);

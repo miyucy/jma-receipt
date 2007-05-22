@@ -1,5 +1,5 @@
 tbl_uketuke {
-	HOSPNUM				integer;
+	HOSPNUM				number(2,0);
 	UKEYMD  			char(8);
 	UKEID    			number(5,0);
 	UKETIME 			char(6);

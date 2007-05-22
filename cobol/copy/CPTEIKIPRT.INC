@@ -28,7 +28,7 @@
       *≈¡…º»÷πÊ
            03  TEIKIPRT-DENPNUM        PIC  9(07).
       *∞ÂŒ≈µ°¥ÿ£…£ƒ
-           03  TEIKIPRT-HOSPNUM         PIC  S9(9) BINARY.
+           03  TEIKIPRT-HOSPNUM         PIC 9(2).
       *¥µº‘£…£ƒ
            03  TEIKIPRT-PTID           PIC  9(10).
       *¥µº‘»÷πÊ

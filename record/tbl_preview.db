@@ -1,5 +1,5 @@
 tbl_preview	{
-	HOSPNUM				integer;
+	HOSPNUM				number(2,0);
 	TBL_KEY			char(8);
 	RENNUM			number(4);
 	TBL_GROUP		char(14);

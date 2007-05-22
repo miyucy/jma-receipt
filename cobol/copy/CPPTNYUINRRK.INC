@@ -26,7 +26,7 @@
       *¥­¡¼
            03  PTNYUINRRK-KEY.
       *°åÎÅµ¡´Ø£É£Ä
-               05  PTNYUINRRK-HOSPNUM              PIC  S9(9) BINARY.
+               05  PTNYUINRRK-HOSPNUM              PIC 9(2).
       *´µ¼Ô£É£Ä
                05  PTNYUINRRK-PTID                PIC  9(10).
       *Æþ±¡ÍúÎòÈÖ¹æ¡ÊÆþ±¡£±²ó¤Ç¡Ü£±¤º¤ÄºÎÈÖ¡Ë

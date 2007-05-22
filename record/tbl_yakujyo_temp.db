@@ -1,5 +1,5 @@
 tbl_yakujyo_temp	{
-	HOSPNUM				integer;
+	HOSPNUM				number(2,0);
 	termid  		char(64);
 	srycd			char(9);
 	yjcd			char(12);

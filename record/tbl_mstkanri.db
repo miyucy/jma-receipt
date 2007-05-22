@@ -1,5 +1,5 @@
 tbl_mstkanri {
-	HOSPNUM				integer;
+	HOSPNUM				number(2,0);
 	KANRICD				char(8);
 	DBRVERSION1     		varchar(64);
 	DBRVERSION2     		varchar(64);

@@ -1,5 +1,5 @@
 tbl_tensuplus2 {
-	HOSPNUM				integer;
+	HOSPNUM				number(2,0);
 	SRYCD				char(9);
 	CHOKINISSU 			number(3,0);
 	CHOKIKIGEN			char(8);

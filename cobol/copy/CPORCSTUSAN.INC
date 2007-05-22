@@ -24,7 +24,7 @@
       ************************************************************
        01  ORCSTUSANAREA.
       *  医療機関コード
-           03  STUSAN-HOSPNUM              PIC  9(02).
+           03  STUSAN-HOSPNUM              PIC 9(2).
       *  患者ＩＤ
            03  STUSAN-PTID                 PIC  9(10).
       *    基準日

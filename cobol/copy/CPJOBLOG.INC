@@ -23,7 +23,7 @@
       * Maj/Min/Rev  修正者       日付      内容
       ************************************************************
       *  01  TBL-JOBLOG.
-            02  JOBLOG-HOSPNUM         PIC S9(9) BINARY.
+            02  JOBLOG-HOSPNUM         PIC 9(2).
             02  JOBLOG-LOGYMD          PIC X(8).
             02  JOBLOG-LOGTIME         PIC X(6).
             02  JOBLOG-PROGNAME        PIC X(20).

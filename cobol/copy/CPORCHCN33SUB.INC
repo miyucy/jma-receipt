@@ -31,7 +31,7 @@
        01  ORCHCN33SUB-AREA.
       *
       *°åÎÅµ¡´Ø£É£Ä
-           03  LNK-ORCHCN33SUB-HOSPNUM               PIC  S9(9) BINARY.
+           03  LNK-ORCHCN33SUB-HOSPNUM               PIC 9(2).
       *´µ¼Ô£É£Ä
            03  LNK-ORCHCN33SUB-PTID                  PIC  9(10).
       *»»ÄêÇ¯·î

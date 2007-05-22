@@ -1,5 +1,5 @@
 tbl_para {
-	HOSPNUM				integer;
+	HOSPNUM				number(2,0);
 	GYOUMUID			char(3);
 	TERMID				char(64);
 	FILEMEI 			char(20);

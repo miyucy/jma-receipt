@@ -21,7 +21,7 @@
       *01  SRYACT-REC.
            03  SRY-KEY.
       *°åÎÅµ¡´Ø£É£Ä
-               05  SRY-HOSPNUM          PIC  S9(9) BINARY.
+               05  SRY-HOSPNUM          PIC 9(2).
       *Æþ³°¶èÊ¬
                05  SRY-NYUGAIKBN       PIC  X(01).
       *´µ¼Ô£É£Ä

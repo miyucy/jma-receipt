@@ -26,7 +26,7 @@
       *キー
            03  TSYRRK-KEY.
       *医療機関ＩＤ
-               05  TSYRRK-HOSPNUM           PIC  S9(9) BINARY.
+               05  TSYRRK-HOSPNUM           PIC 9(2).
       *患者ＩＤ
                05  TSYRRK-PTID             PIC  9(10).
       *認定開始年月日
@@ -47,6 +47,6 @@
            03  TSYRRK-UPHMS                PIC  X(06).
       *　　主キー更新用項目
            03  TSYRRK-KEY-O.
-               05  TSYRRK-HOSPNUM-O           PIC  S9(9) BINARY.
+               05  TSYRRK-HOSPNUM-O           PIC 9(2).
                05  TSYRRK-PTID-O             PIC  9(10).
                05  TSYRRK-NINSTYMD-O         PIC  X(08).

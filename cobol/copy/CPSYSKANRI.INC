@@ -25,7 +25,7 @@
        01  SYSKANRI-REC.
       *キー
            03  SYS-KEY.
-               05  SYS-HOSPNUM         PIC S9(9) BINARY.
+               05  SYS-HOSPNUM         PIC 9(2).
       *管理コード
                05  SYS-KANRICD          PIC  X(04).
       *区分コード
@@ -48,7 +48,7 @@
            03  SYS-UPHMS                PIC  X(06).
       *　　主キー更新用項目
            03  SYSUPD-KEY.
-               05  SYSUP-HOSPNUM          PIC S9(9) BINARY.
+               05  SYSUP-HOSPNUM          PIC 9(2).
                05  SYSUP-KANRICD          PIC X(04).
                05  SYSUP-KBNCD            PIC X(08).
                05  SYSUP-STYUKYMD         PIC X(08).

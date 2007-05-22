@@ -25,7 +25,7 @@
       *01  NYUIN-SRYACCT-REC.
            03  NACCT-KEY.
       *°åÎÅµ¡´Ø£É£Ä
-               05  NACCT-HOSPNUM          PIC  S9(9) BINARY.
+               05  NACCT-HOSPNUM          PIC 9(2).
       *Æþ³°¶èÊ¬
                05  NACCT-NYUGAIKBN       PIC  X(01).
       *´µ¼Ô£É£Ä

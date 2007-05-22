@@ -25,7 +25,7 @@
       *****************************************************************
       *01  CHK-REC.
            03  CHK-KEY.
-               05  CHK-HOSPNUM         PIC S9(9) BINARY.
+               05  CHK-HOSPNUM         PIC 9(2).
       *チェック区分
                05  CHK-CHKKBN          PIC  X(01).
       *診療コード

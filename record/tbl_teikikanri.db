@@ -1,5 +1,5 @@
 tbl_teikikanri	{
-	HOSPNUM				integer;
+	HOSPNUM				number(2,0);
         BTUNUM              char(2);
         SYOKBN              char(1);
         CREYMD              char(8);

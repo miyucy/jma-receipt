@@ -26,7 +26,7 @@
       *¥­¡¼
            03  PTTAINFUKA-KEY.
       *°åÎÅµ¡´Ø£É£Ä
-               05  PTTAINFUKA-HOSPNUM              PIC  S9(9) BINARY.
+               05  PTTAINFUKA-HOSPNUM              PIC 9(2).
       *´µ¼Ô£É£Ä
                05  PTTAINFUKA-PTID                PIC  9(10).
       *Æþ±¡ÍúÎòÈÖ¹æ¡ÊÆþ±¡£±²ó¤Ç¡Ü£±¤º¤ÄºÎÈÖ¡Ë

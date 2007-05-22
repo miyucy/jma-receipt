@@ -27,7 +27,7 @@
       *キー
            03  QRCDHKN-KEY.
       *医療機関ＩＤ
-               05  QRCDHKN-HOSPNUM         PIC S9(9) BINARY.
+               05  QRCDHKN-HOSPNUM         PIC 9(2).
       *受付年月日
                05  QRCDHKN-REGISTYMD       PIC X(08).
       *受付ＩＤ

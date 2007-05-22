@@ -1,5 +1,5 @@
 tbl_jobkanri	{
-	HOSPNUM				integer;
+	HOSPNUM				number(2,0);
 #--> ¥¸¥ç¥Ö£É£Ä
 	JOBID			number(7,0);
 #--> ¥·¥§¥ë£É£Ä

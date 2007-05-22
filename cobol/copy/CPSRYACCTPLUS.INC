@@ -22,7 +22,7 @@
       *01  SRYACCTPLUS-REC.
            03  ACCTP-KEY.
       *°åÎÅµ¡´Ø£É£Ä
-               05  ACCTP-HOSPNUM         PIC  S9(9) BINARY.
+               05  ACCTP-HOSPNUM         PIC 9(2).
       *Æþ³°¶èÊ¬
                05  ACCTP-NYUGAIKBN      PIC  X(01).
       *´µ¼Ô£É£Ä

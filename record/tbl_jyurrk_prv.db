@@ -1,5 +1,5 @@
 tbl_jyurrk_prv {
-	HOSPNUM				integer;
+	HOSPNUM				number(2,0);
 	PTID 				number(10);
 	NYUGAIKBN			char(1);
 	SRYKA				char(2);
@@ -47,7 +47,7 @@ tbl_jyurrk_prv {
 	UPYMD    			char(8);
 	UPHMS				char(6);
 #-----> 主キー更新用項目
-	UPHOSPNUM			integer,virtual;
+	UPHOSPNUM			number(2,0),virtual;
 	UPPTID 				number(10),virtual;
         UPNYUGAIKBN                     char(1),virtual;
 	UPSRYKA				char(2),virtual;

@@ -23,7 +23,7 @@
       * Maj/Min/Rev  修正者       日付      内容
       ************************************************************
       *01  TEIKIKANRI-REC.
-           03  TEIKIKANRI-HOSPNUM          PIC S9(9) BINARY.
+           03  TEIKIKANRI-HOSPNUM          PIC 9(2).
       *病棟番号
            03  TEIKIKANRI-BTUNUM           PIC  X(02).
       *処理区分（１：一括、２：個別）

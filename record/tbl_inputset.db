@@ -1,5 +1,5 @@
 tbl_inputset {
-	HOSPNUM				integer;
+	HOSPNUM				number(2,0);
 	SETCD   			char(6);
 	YUKOSTYMD  			char(8);
 	YUKOEDYMD	  		char(8);

@@ -29,7 +29,7 @@
       *01  RECECOM-REC.
            03  RECECOM-KEY.
       *°åÎÅµ¡´Ø£É£Ä
-               05  RECECOM-HOSPNUM        PIC S9(9) BINARY.
+               05  RECECOM-HOSPNUM        PIC 9(2).
       *´µ¼Ô£É£Ä
                05  RECECOM-PTID          PIC 9(10).
       *Æþ³°¶èÊ¬

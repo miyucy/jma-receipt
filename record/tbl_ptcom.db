@@ -1,5 +1,5 @@
 tbl_ptcom {
-	HOSPNUM				integer;
+	HOSPNUM				number(2,0);
 	PTID				number(10);
 	ZAINUM  			number(8);
 	SRYCD  				char(9) ;

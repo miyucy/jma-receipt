@@ -1,5 +1,5 @@
 view_Q001 {
-	HOSPNUM					integer;
+	HOSPNUM					number(2,0);
 	PTID						number(10,0);
 	HKNCOMBINUM			number(4,0);
 	NYUGAIKBN			char(1);

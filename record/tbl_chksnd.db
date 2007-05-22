@@ -1,5 +1,5 @@
 tbl_chksnd	{
-	HOSPNUM				integer;
+	HOSPNUM				number(2,0);
 	CHKKBN			char(1);
 	SRYCD   		char(9);
 	YUKOSTYMD  		char(8);

@@ -1,5 +1,5 @@
 tbl_tnkrrk {
-	HOSPNUM				integer;
+	HOSPNUM				number(2,0);
 	PTID				number(10,0);
 	STYMD	    			char(8);
 	EDYMD				char(8);
@@ -10,7 +10,7 @@ tbl_tnkrrk {
 	UPYMD    			char(8);
 	UPHMS				char(6);
 #-----> 主キー更新用項目
-	UPHOSPNUM			integer,virtual;
+	UPHOSPNUM			number(2,0),virtual;
 	UPPTID 				number(10,0),virtual;
 	UPSTYMD			    char(8),virtual;
 };

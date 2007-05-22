@@ -1,5 +1,5 @@
 tbl_adrs {
-	HOSPNUM				integer;
+	HOSPNUM				number(2,0);
 	LPUBCD				char(5);
 	POST				char(7);
 	RENNUM				number(2);

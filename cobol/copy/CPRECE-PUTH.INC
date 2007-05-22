@@ -25,7 +25,7 @@
       ************************************************************
       *01  RECE-PUTH-REC.
       *°åÎÅµ¡´Ø£É£Ä
-            02  RECE-PUTH-HOSPNUM      PIC S9(9)   BINARY.
+            02  RECE-PUTH-HOSPNUM      PIC 9(2).
       *°õºþ½ç»ØÄê¡Ê¸©Æâ¸©³°¡Ë
             02  RECE-PUTH-PREFKBN-PRTJYUN
                                        PIC X(1).

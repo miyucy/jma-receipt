@@ -37,7 +37,7 @@
       *01  RECE61-REC.
            03  RECE61-KEY.
       *°åÎÅµ¡´Ø£É£Ä
-               05  RECE61-HOSPNUM         PIC  9(02).
+               05  RECE61-HOSPNUM         PIC 9(2).
       *¿ÇÎÅÇ¯·î
                05  RECE61-SRYYM           PIC  9(06).
       *Æþ³°¶èÊ¬

@@ -26,7 +26,7 @@
       ************************************************************
       *01  PARA-REC.
            03  PARA-KEY.
-               05  PARA-HOSPNUM         PIC S9(9) BINARY.
+               05  PARA-HOSPNUM         PIC 9(2).
       *¶ÈÌ³£É£Ä
                05  PARA-GYOUMUID          PIC X(03).
       *Ã¼Ëö£É£Ä

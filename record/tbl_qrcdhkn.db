@@ -1,5 +1,5 @@
 tbl_qrcdhkn {
-	HOSPNUM				integer;
+	HOSPNUM				number(2,0);
 	REGISTYMD  			char(8);
 	REGISTID    			number(5,0);
 	REGISTTIME 			char(6);

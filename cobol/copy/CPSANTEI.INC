@@ -25,7 +25,7 @@
       *01  SANTEI-REC.
            03  SANTEI-KEY.
       *°åÎÅµ¡´Ø£É£Ä
-               05  SANTEI-HOSPNUM          PIC  S9(9) BINARY.
+               05  SANTEI-HOSPNUM          PIC 9(2).
       *´µ¼Ô£É£Ä
                05  SANTEI-PTID            PIC  9(10).
       *¿ÇÎÅÇ¯·î

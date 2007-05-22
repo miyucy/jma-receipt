@@ -25,7 +25,7 @@
       *01  MSTKANRI-REC.
       *キー
            03  MSTKANRI-KEY.
-               05  MSTKANRI-HOSPNUM        PIC  S9(9)  BINARY.
+               05  MSTKANRI-HOSPNUM        PIC 9(2).
       *管理コード
                05  MSTKANRI-KANRICD        PIC  X(08).
       *ＤＢレコードバージョン１

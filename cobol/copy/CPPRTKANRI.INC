@@ -25,7 +25,7 @@
       *01  PRTKANRI-REC.
       *
            03  PRTKANRI-KEY.
-               05  PRTKANRI-HOSPNUM   PIC S9(9) BINARY.
+               05  PRTKANRI-HOSPNUM   PIC 9(2).
       *£À£≈£Ÿ
                05  PRTKANRI-TBL-KEY    PIC X(08).
       *œ¢»÷

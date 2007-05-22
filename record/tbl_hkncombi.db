@@ -1,5 +1,5 @@
 tbl_hkncombi {
-	HOSPNUM				integer;
+	HOSPNUM				number(2,0);
 	PTID				number(10);
 	HKNCOMBINUM			number(4,0);
 	HKNID				number(10);

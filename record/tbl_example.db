@@ -1,5 +1,5 @@
 tbl_example {
-	HOSPNUM				integer;
+	HOSPNUM				number(2,0);
 	KUBUN				char(1);
 	RENNUM       		number(3);
 	COMMENT        		varchar(800);

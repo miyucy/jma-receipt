@@ -1,5 +1,5 @@
 tbl_teikiprt	{
-        HOSPNUM              integer;
+        HOSPNUM              number(2,0);
         BTUNUM              char(2);
         DENPNUM             number(7);
         PTID                number(10);

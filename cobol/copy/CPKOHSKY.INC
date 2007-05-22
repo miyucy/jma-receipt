@@ -25,7 +25,7 @@
        01  KOHSKY-REC.
            03  KOHSKY-KEY.
       *°åÎÅµ¡´Ø£É£Ä
-               05  KOHSKY-HOSPNUM          PIC  S9(9) BINARY.
+               05  KOHSKY-HOSPNUM          PIC 9(2).
       *¿ÇÎÅÇ¯·î
                05  KOHSKY-SRYYM           PIC  9(06).
       *Æþ³°¶èÊ¬

@@ -25,7 +25,7 @@
       *01  EXAMPLE-REC.
            03  EXAMPLE-KEY.
       *医療機関ＩＤ
-               05  EXAMPLE-HOSPNUM        PIC S9(9) BINARY.
+               05  EXAMPLE-HOSPNUM        PIC 9(2).
       *区分（１：文例雛形）
                05  EXAMPLE-KUBUN         PIC X(01).
       *連番

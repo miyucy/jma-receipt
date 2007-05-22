@@ -23,7 +23,7 @@
       * Maj/Min/Rev  修正者       日付     内容
       ************************************************************
        01  SCL31N-LNK.
-           03  SCL31N-HOSPNUM         PIC 9(02).
+           03  SCL31N-HOSPNUM         PIC 9(2).
            03  SCL31N-SRYKA           PIC X(02).
            03  SCL31N-DRCD            PIC X(05).
            03  SCL31N-PTNUM           PIC X(20).

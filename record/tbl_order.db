@@ -1,5 +1,5 @@
 tbl_order {
-	HOSPNUM			 	integer;
+	HOSPNUM			 	number(2,0);
 	KARTE_KEY			varchar(36);
 	ORDERNUM			number(2,0);
 	NYUGAIKBN			char(1);
