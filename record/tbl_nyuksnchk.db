@@ -1,5 +1,4 @@
 tbl_nyuksnchk	{
-	HOSPNUM				integer;
 	NYUINKBN		char(3);
 	KSNKBN  		char(3);
 	YUKOSTYMD  		char(8);
@@ -18,7 +17,7 @@ tbl_nyuksnchk	{
 };
 
 primary	{
-	HOSPNUM,NYUINKBN,KSNKBN,YUKOSTYMD,YUKOEDYMD;
+	NYUINKBN,KSNKBN,YUKOSTYMD,YUKOEDYMD;
 };
 
 path	key		{ 	
@@ -26,8 +25,7 @@ path	key		{
 		DECLARE tbl_nyuksnchk_key_csr	CURSOR FOR
 		SELECT *
 		FROM tbl_nyuksnchk
-		WHERE 	HOSPNUM	= :HOSPNUM
-			AND NYUINKBN    =   :NYUINKBN
+			WHERE NYUINKBN    =   :NYUINKBN
 			AND   KSNKBN      =   :KSNKBN
 			AND   YUKOSTYMD  <=   :YUKOSTYMD
 			AND   YUKOEDYMD  >=   :YUKOEDYMD
@@ -40,7 +38,6 @@ path	all		{
 		DECLARE tbl_nyuksnchk_all_csr	CURSOR FOR
 		SELECT *
 		FROM tbl_nyuksnchk
-		WHERE 	HOSPNUM	= :HOSPNUM
 		;
 	};
 };

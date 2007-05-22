@@ -24,7 +24,6 @@
       ************************************************************
       *01  NYURYAKUSHO-REC.
            03  NYUKHN-KEY.
-               05  NYURYAKUSHO-HOSPNUM  PIC S9(9) BINARY.
       *基本点数診療コード
                05  NYURYAKUSHO-SRYCD   PIC  X(09).
       *有効開始年月日
