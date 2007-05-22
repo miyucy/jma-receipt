@@ -9,7 +9,7 @@
 -- TBL_MSTKANRI ∫Ó¿Æ		--
 
 CREATE TABLE tbl_mstkanri (
-	hospnum		integer	NOT NULL,
+	hospnum		numeric(2,0) NOT NULL,
 	kanricd		character(8) NOT NULL,
 	dbrversion1	character varying(64),
 	dbrversion2	character varying(64),
