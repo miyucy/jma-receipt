@@ -362,9 +362,6 @@
            MOVE    SYSKANRI-REC        TO  SYS-1002-REC
       *
       *    出力先プリンタ名割り当て情報編集
-           MOVE    SPACE               TO  SPA-AREA
-           INITIALIZE                      SPA-AREA
-      *
            MOVE    ORCHCN03-HEAD-HOSPNUM
                                        TO  SPA-HOSPNUM
            MOVE    ORCHCN03-STAFFCD    TO  SPA-STAFFCD
@@ -1374,6 +1371,7 @@
       *
            MOVE    ZERO                TO  FLG-SYSKANRI
       *
+           MOVE    SPA-HOSPNUM         TO  SYS-HOSPNUM
            MOVE    SYSKANRI-REC        TO  MCPDATA-REC
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key10"             TO  MCP-PATHNAME
@@ -1502,6 +1500,7 @@
       *
            MOVE    ZERO                TO  FLG-SYSKANRI
       *
+           MOVE    SPA-HOSPNUM         TO  SYS-HOSPNUM
            MOVE    SYSKANRI-REC        TO  MCPDATA-REC
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key2"              TO  MCP-PATHNAME

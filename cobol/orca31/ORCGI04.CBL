@@ -4201,6 +4201,7 @@
            END-IF
       *
            PERFORM 900-PTNYUINRRK-KEY-SEL-SEC
+           MOVE    PTNYUINRRK-REC  TO  WKPTNYUINRRK-REC
       *
       *    Ä¢É¼½ÐÎÏ½èÍý
            PERFORM 451-PRTOUT-SEC
@@ -5183,7 +5184,7 @@
       *
            IF    ( ORCHCN03-CNT        >   ZERO )
                CALL    WRK-PRINT-PG    USING   ORCHCN03AREA
-                                               SPA-AREA
+                                               WRK-SPA-AREA
            END-IF
       *
            .
