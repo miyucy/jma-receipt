@@ -58,6 +58,7 @@
       * 03.04.01     NACL-森脇    07/01/17  医療機関名称、住所セット変更
       * 03.04.02     NACL-多々納  07/02/28  包括分保険同時入力対応
       * 03.05.00     NACL-多々納  07/04/XX  グループ診療対応
+      * 03.05.00     NACL-多々納  07/05/22  再印刷処理追加
       *****************************************************************
       *
       *
@@ -557,10 +558,10 @@
             MOVE   SPACE               TO  MKPRT-DEF
             MOVE   HC01PARA            TO  MKPRT-DAT
             MOVE   SYS-1031-PRTNM(2)   TO  MKPRT-PRTNM
-            CALL   "ORCSMKPRT"         USING
+            MOVE   "処方せん"          TO  MKPRT-INFO
+            CALL   "ORCSMKPRT1"        USING
                                        ORCSMKPRTAREA
                                        SPA-AREA
-      *
       *
            .
        400-PRINT-EXT.

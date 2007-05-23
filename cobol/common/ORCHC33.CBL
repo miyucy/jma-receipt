@@ -1998,6 +1998,7 @@
            END-IF
            CALL   "ORCSMKPRT"          USING
                                        ORCSMKPRTAREA
+                                       SPA-AREA
       *
            .
        2004-HC331-PRINT-EXT.

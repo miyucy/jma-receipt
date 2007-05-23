@@ -5311,8 +5311,8 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *****************************************************************
        3001-SRYKA-HKNCOMBI-SEC             SECTION.
       *
-      *    ¿ÇÎÅ²Ê¡á¡÷¡÷ Ê£¿ôÅ¸³«¤Ê¤·
-           IF      WKSRY-SRYKA     =   "@@"
+      *    ¿ÇÎÅ²Ê¡á£¹£¹ Ê£¿ôÅ¸³«¤Ê¤·
+           IF      WKSRY-SRYKA     =   "99"
                GO  TO  3001-SRYKA-HKNCOMBI-EXT
            END-IF
       *

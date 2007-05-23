@@ -35,6 +35,7 @@
       *  03.03.00    NACL-多々納  06/10/02  返金対応追加
       *  03.04.01    NACL-森脇    07/01/17  医療機関名称、住所セット変更
       *  03.05.00    NACL-多々納  07/04/XX  グループ診療対応
+      *  03.05.00    NACL-多々納  07/05/22  再印刷処理追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -393,7 +394,8 @@
             MOVE   SPACE               TO  MKPRT-DEF
             MOVE   HC01PARA            TO  MKPRT-DAT
             MOVE   SYS-1031-PRTNM(3)   TO  MKPRT-PRTNM
-            CALL   "ORCSMKPRT"         USING
+            MOVE   "請求書兼領収書"    TO  MKPRT-INFO
+            CALL   "ORCSMKPRT1"        USING
                                        ORCSMKPRTAREA
                                        SPA-AREA
       *

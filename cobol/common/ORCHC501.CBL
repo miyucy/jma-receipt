@@ -31,6 +31,7 @@
       * 01.00.02     NACL-多々納  06/01/25  用量コード判定追加
       * 01.00.03     NACL-多々納  06/01/25  MONFUNCへ変更
       * 03.05.00     NACL-多々納  07/04/XX  グループ診療対応
+      * 03.05.00     NACL-多々納  07/05/22  再印刷処理追加
       *****************************************************************
       *
       *
@@ -1416,8 +1417,10 @@
             MOVE   SPACE               TO  MKPRT-DEF
             MOVE   HC01PARA            TO  MKPRT-DAT
             MOVE   SYS-1034-PRTNM(6)   TO  MKPRT-PRTNM
-            CALL   "ORCSMKPRT"         USING
+            MOVE   "入院処方箋"        TO  MKPRT-INFO
+            CALL   "ORCSMKPRT1"        USING
                                        ORCSMKPRTAREA
+                                       SPA-AREA
       *
            .
        400-PRINT-EXT.

@@ -54,6 +54,7 @@
       *  03.03.00    NACL-多々納  06/09/27  返金対応追加
       *  03.04.01    NACL-森脇    07/01/17  医療機関名称、住所セット変更
       *  03.05.00    NACL-多々納  07/04/XX  グループ診療対応
+      *  03.05.00    NACL-多々納  07/05/22  再印刷処理追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -402,15 +403,25 @@
       ***** MOVE   SYS-1031-PRTNM(3)   TO  SHELL-PRTNM 
             CLOSE                       PRT-FILE
       *
-            INITIALIZE                 ORCSMKPRTAREA
-            MOVE   "HC01.sh"           TO  MKPRT-ID
+      *DD   INITIALIZE                 ORCSMKPRTAREA
+      *     MOVE   "HC01.sh"           TO  MKPRT-ID
       ***** MOVE   "HC03.dia"          TO  MKPRT-DIA
       ***** MOVE   "HC03.def"          TO  MKPRT-DEF
+      *     MOVE   "HCM03.red"         TO  MKPRT-DIA
+      *     MOVE   SPACE               TO  MKPRT-DEF
+      *     MOVE   HC01PARA            TO  MKPRT-DAT
+      *     MOVE   SYS-1031-PRTNM(3)   TO  MKPRT-PRTNM
+      *     CALL   "ORCSMKPRT"         USING
+      *DD                              ORCSMKPRTAREA
+      *
+            INITIALIZE                 ORCSMKPRTAREA
+            MOVE   "HC01.sh"           TO  MKPRT-ID
             MOVE   "HCM03.red"         TO  MKPRT-DIA
             MOVE   SPACE               TO  MKPRT-DEF
             MOVE   HC01PARA            TO  MKPRT-DAT
             MOVE   SYS-1031-PRTNM(3)   TO  MKPRT-PRTNM
-            CALL   "ORCSMKPRT"         USING
+            MOVE   "請求書兼領収書"    TO  MKPRT-INFO
+            CALL   "ORCSMKPRT1"        USING
                                        ORCSMKPRTAREA
                                        SPA-AREA
       *

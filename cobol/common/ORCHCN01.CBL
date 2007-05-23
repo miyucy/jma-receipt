@@ -551,6 +551,7 @@
             MOVE   SYS-1034-PRTNM(1)   TO  MKPRT-PRTNM
             CALL   "ORCSMKPRT"         USING
                                        ORCSMKPRTAREA
+                                       SPA-AREA
       *
            .
        2005-HCN011-PRINT-EXT.

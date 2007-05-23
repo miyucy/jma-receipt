@@ -30,6 +30,7 @@
       * Maj/Min/Rev  修正者       日付      内容
       *  01.00.01    NACL−多々納 05/05/18  処方せんコメント追加
       *  01.00.02    NACL-多々納  06/01/25  MONFUNCへ変更
+      *  03.05.00    NACL-多々納  07/05/23  グループ診療対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -59,6 +60,7 @@
        01  FILE-NAME2.
            03  FILLER              PIC X(09)   VALUE   "/var/tmp/".
            03  FILLER              PIC X(07)   VALUE   "K01PARA".
+           03  FILE-HOSPNUM2       PIC 9(02)   VALUE   ZERO.
            03  FILE-TERMID2        PIC X(64)   VALUE   SPACE.
            03  FILLER              PIC X(06)   VALUE   ".TXT".
       *
@@ -240,14 +242,13 @@
       *
            MOVE    SPACE               TO  WKSRYACT-REC
            INITIALIZE                  WKSRYACT-REC
-           MOVE    SPA-HOSPNUM          TO  WKSRY-HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  WKSRY-HOSPNUM
            MOVE    SPA-NYUGAIKBN       TO  WKSRY-NYUGAIKBN
            MOVE    SPA-PTID            TO  WKSRY-PTID
            MOVE    SPA-SRYKA           TO  WKSRY-SRYKA
            MOVE    SPA-SRYYMD          TO  WKSRY-SRYYMD
            MOVE    SPA-HKNCOMBINUM     TO  WKSRY-HKNCOMBI
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    WKSRYACT-REC        TO  MCPDATA-REC
            MOVE    "tbl_wksryact"      TO  MCP-TABLE
            MOVE    "key2"              TO  MCP-PATHNAME
@@ -652,7 +653,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            ADD     1                   TO  WRK-RENNUM
       *
            INITIALIZE                  ORDERPRT-REC
-           MOVE    SPA-HOSPNUM          TO  ORDERPRT-HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  ORDERPRT-HOSPNUM
            MOVE    SPA-PTID            TO  ORDERPRT-PTID
            MOVE    SPA-PTNUM           TO  ORDERPRT-PTNUM
            MOVE    SPA-NYUGAIKBN       TO  ORDERPRT-NYUGAIKBN
@@ -711,14 +712,13 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *    発行時間
            MOVE    SMCNDATE-HMS        TO  ORDERPRT-UPHMS
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    ORDERPRT-REC        TO  MCPDATA-REC
            MOVE    "DBINSERT"          TO  MCP-FUNC
            MOVE    "tbl_orderprt"      TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
            IF      MCP-RC          NOT =   ZERO
                MOVE    2                   TO  LNK-ORDERPRT-RCD
                DISPLAY "ORDERPRT INS ERR:" MCP-RC 
@@ -926,6 +926,7 @@ grpsys                            SPA-AREA
            MOVE    SPACE               TO  LNK-WKSRYACT-AREA
       *
            MOVE    SPA-TERMID          TO  FILE-TERMID2
+           MOVE    SPA-HOSPNUM         TO  FILE-HOSPNUM2
            OPEN    INPUT               PARA-FILE
       *
            IF      STS-PARA           =  ZERO
@@ -975,7 +976,7 @@ grpsys                            SPA-AREA
        300-COMMENT-DELETE-SEC         SECTION.
       *    入院帳票オーダー検索
            INITIALIZE                  ORDERPRT-REC
-           MOVE    SPA-HOSPNUM          TO  ORDERPRT-HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  ORDERPRT-HOSPNUM
            MOVE    SPA-PTID            TO  ORDERPRT-PTID
            MOVE    SPA-PTNUM           TO  ORDERPRT-PTNUM
            MOVE    SPA-NYUGAIKBN       TO  ORDERPRT-NYUGAIKBN
@@ -990,14 +991,13 @@ grpsys                            SPA-AREA
       *    帳票区分
            MOVE    "1"                 TO  ORDERPRT-PRTKBN
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    ORDERPRT-REC        TO  MCPDATA-REC
            MOVE    "tbl_orderprt"      TO  MCP-TABLE
            MOVE    "del1"              TO  MCP-PATHNAME
            MOVE    "DBDELETE"          TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
            IF      MCP-RC          NOT =   ZERO
                DISPLAY "ORCSORCERPRT DEL ERR:"  MCP-RC
                        ",KEY:" ORDERPRT-KEY
@@ -1014,7 +1014,7 @@ grpsys                            SPA-AREA
            MOVE    WRK-SRYYMD          TO  TNS-YUKOSTYMD
                                            TNS-YUKOEDYMD
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  TNS-HOSPNUM
            MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
            MOVE    "tbl_tensu"         TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
@@ -1042,9 +1042,9 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    ZERO            TO  MCP-RC
       *
            MOVE    "DBSELECT"      TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            IF    ( MCP-RC          =   ZERO )
                PERFORM 920-DBFETCH-SEC
@@ -1059,9 +1059,9 @@ grpsys                            SPA-AREA
        920-DBFETCH-SEC                 SECTION.
       *
            MOVE    "DBFETCH"       TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
       *
@@ -1074,9 +1074,9 @@ grpsys                            SPA-AREA
        990-DBCLOSE-SEC           SECTION.
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
        990-DBCLOSE-EXT.

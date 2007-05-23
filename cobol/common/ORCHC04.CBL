@@ -414,8 +414,9 @@
            MOVE   "HCM04.red"         TO  MKPRT-DIA
            MOVE   SPACE               TO  MKPRT-DEF
            MOVE   HC01PARA            TO  MKPRT-DAT
-           MOVE   SYS-1031-PRTNM(14)   TO  MKPRT-PRTNM
-           CALL   "ORCSMKPRT"         USING
+           MOVE   SYS-1031-PRTNM(14)  TO  MKPRT-PRTNM
+           MOVE   "ø«Œ≈»ÒÃ¿∫ŸΩÒ"      TO  MKPRT-INFO
+           CALL   "ORCSMKPRT1"        USING
                                       ORCSMKPRTAREA
                                       SPA-AREA
       *

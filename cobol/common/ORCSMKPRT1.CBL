@@ -176,9 +176,6 @@
                    MOVE    50              TO  IDX
                END-IF
            END-PERFORM
-      *TEST
-           DISPLAY "WRK-DIA = " WRK-DIA
-      *TEST
            EVALUATE    WRK-DIA(1:3)
                WHEN    "dia"
       *            £ä£á£é
@@ -190,7 +187,12 @@
                    MOVE    99              TO  MKPRT-RC
            END-EVALUATE
       *
-           PERFORM 300-REPRINT-SEC
+      *    ºÆ°õºþ½ñ¤­½Ð¤·¤ÎÈ½Äê
+           IF      SPA-PRT-FLG     =   SPACE
+               CONTINUE
+           ELSE
+               PERFORM 300-REPRINT-SEC
+           END-IF
       *
            .
        000-PROC-EXT.
