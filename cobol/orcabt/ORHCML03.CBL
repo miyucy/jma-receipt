@@ -262,12 +262,12 @@
       *               
       *    °åÎÅµ¡´ØÌ¾¾ÎÊÔ½¸
            MOVE    SPACE               TO  SYS-1001-REC
-           INITIALIZE                  SYS-1001-REC
+           INITIALIZE                      SYS-1001-REC
            MOVE    "1001"              TO  SYS-1001-KANRICD
-           MOVE    "*%"                TO  SYS-1001-KBNCD
+           MOVE    "*"                 TO  SYS-1001-KBNCD
            MOVE    WRK-PARA-MSTYMD     TO  SYS-1001-STYUKYMD
                                            SYS-1001-EDYUKYMD
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+grpsys     MOVE    SPA-HOSPNUM         TO  SYS-1001-HOSPNUM
            MOVE    SYS-1001-REC        TO  MCPDATA-REC
            PERFORM 800-SYSKANRI-READ-SEC
            IF      FLG-SYSKANRI        =   ZERO
@@ -597,14 +597,14 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                    END-EVALUATE 
            END-EVALUATE               
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+grpsys     MOVE    SPA-HOSPNUM     TO  TNS-HOSPNUM
            MOVE    TNS-TENSU-REC   TO  MCPDATA-REC
            MOVE    "DBSELECT"      TO  MCP-FUNC
            MOVE    "tbl_tensu"     TO  MCP-TABLE
            MOVE    WRK-PATH        TO  MCP-PATHNAME
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     CALL    "ORCDBMAIN"     USING   MCPAREA
+                                           MCPDATA-REC
+grpsys                                     SPA-AREA
            IF      MCP-RC              =   ZERO
                PERFORM 900-DBFETCH-SEC
            ELSE
@@ -619,13 +619,12 @@ grpsys                            SPA-AREA
       *****************************************************************
        900-DBFETCH-SEC             SECTION.
       *
-           
            MOVE    "DBFETCH"       TO  MCP-FUNC
            MOVE    "tbl_tensu"     TO  MCP-TABLE
            MOVE    WRK-PATH        TO  MCP-PATHNAME
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     CALL    "ORCDBMAIN"     USING   MCPAREA
+                                           MCPDATA-REC
+grpsys                                     SPA-AREA
            IF      MCP-RC              =   ZERO
                MOVE    ZERO            TO  FLG-END
                MOVE    MCPDATA-REC     TO  TNS-TENSU-REC
@@ -644,9 +643,9 @@ grpsys                            SPA-AREA
            MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
            MOVE    "tbl_tensu"     TO  MCP-TABLE
            MOVE    WRK-PATH        TO  MCP-PATHNAME
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     CALL    "ORCDBMAIN"     USING   MCPAREA
+                                           MCPDATA-REC
+grpsys                                     SPA-AREA
            .
        900-DBCLOSE-EXT.
            EXIT.
@@ -658,17 +657,17 @@ grpsys                            SPA-AREA
       *
            MOVE    "DBSELECT"      TO  MCP-FUNC
            MOVE    "tbl_syskanri"  TO  MCP-TABLE
-           MOVE    "key"           TO  MCP-PATHNAME
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           MOVE    "key10"         TO  MCP-PATHNAME
+grpsys     CALL    "ORCDBMAIN"     USING   MCPAREA
+                                           MCPDATA-REC
+grpsys                                     SPA-AREA
            IF      MCP-RC              =   ZERO
                MOVE    "DBFETCH"           TO  MCP-FUNC
                MOVE    "tbl_syskanri"  TO  MCP-TABLE
-               MOVE    "key"           TO  MCP-PATHNAME
-grpsys         CALL "ORCDBMAIN" USING MCPAREA
-                                      MCPDATA-REC
-grpsys                                SPA-AREA
+               MOVE    "key10"         TO  MCP-PATHNAME
+grpsys         CALL    "ORCDBMAIN"     USING   MCPAREA
+                                               MCPDATA-REC
+grpsys                                         SPA-AREA
                IF      MCP-RC              =   ZERO
                    MOVE    ZERO            TO  FLG-SYSKANRI
                ELSE
@@ -680,10 +679,10 @@ grpsys                                SPA-AREA
       *
            MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
            MOVE    "tbl_syskanri"  TO  MCP-TABLE
-           MOVE    "key"           TO  MCP-PATHNAME
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           MOVE    "key10"         TO  MCP-PATHNAME
+grpsys     CALL    "ORCDBMAIN"     USING   MCPAREA
+                                           MCPDATA-REC
+grpsys                                     SPA-AREA
       *
            .
        800-SYSKANRI-READ-EXT.
@@ -697,16 +696,16 @@ grpsys                            SPA-AREA
            MOVE    "DBOPEN"        TO  MCP-FUNC.
            MOVE    LOW-VALUE       TO  MCP-TABLE.
            MOVE    LOW-VALUE       TO  MCP-PATHNAME.
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     CALL    "ORCDBMAIN"     USING   MCPAREA
+                                           MCPDATA-REC
+grpsys                                     SPA-AREA
       *
            MOVE    "DBSTART"       TO  MCP-FUNC.
            MOVE    LOW-VALUE       TO  MCP-TABLE.
            MOVE    LOW-VALUE       TO  MCP-PATHNAME.
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     CALL    "ORCDBMAIN"     USING   MCPAREA
+                                           MCPDATA-REC
+grpsys                                     SPA-AREA
            .
        100-DBOPEN-EXT.
            EXIT.
@@ -719,16 +718,16 @@ grpsys                            SPA-AREA
            MOVE    "DBCOMMIT"      TO  MCP-FUNC.
            MOVE    LOW-VALUE       TO  MCP-TABLE.
            MOVE    LOW-VALUE       TO  MCP-PATHNAME.
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     CALL    "ORCDBMAIN"     USING   MCPAREA
+                                           MCPDATA-REC
+grpsys                                     SPA-AREA
       *
            MOVE    "DBDISCONNECT"  TO  MCP-FUNC.
            MOVE    LOW-VALUE       TO  MCP-TABLE.
            MOVE    LOW-VALUE       TO  MCP-PATHNAME.
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     CALL    "ORCDBMAIN"     USING   MCPAREA
+                                           MCPDATA-REC
+grpsys                                     SPA-AREA
            .
        900-DBCLOSE-EXT.
            EXIT.
