@@ -28,7 +28,18 @@
       *****************************************************************
       *  ¥×¥í¥°¥é¥à½¤ÀµÍúÎò
       * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      *  03.03.01    NACL-Æ£¸¶    07/02/10  Æ±°ìÃÏÊý¸øÈñ¤Î¤Þ¤È¤á½¸·×
+      *                                     ²¬»³ÂÐ±þ
+      *
       *  03.04.01    NACL-¿¹ÏÆ    07/01/16  °åÎÅµ¡Ì¾¾Î¡¢½»½êÊÔ½¸
+      *  03.04.02    NACL-Æ£¸¶    07/03/13  È÷¹ÍÍó¤Î¸øÈñÌ¾¾Î¤òº¹¤·¹þ¤ß¹à
+      *                                     ÌÜ¤È¤¹¤ë
+      *                                     HCM2TV02.red ¢ª  HCM2TV03.red
+      *  03.04.03    NACL-Æ£¸¶    07/04/13  £²£°£°£·¡¥£´²þÀµÂÐ±þ
+      *                                     £±£°¡Ê·ë£³£´¡Ë¢ª£±£°¡Ê´¶£³£·¤Î£²¡Ë
+      *                                     £±£±¡Ê·ë£³£µ¡Ë¢ª£±£±¡Ê·ë³ËÆþ±¡¡Ë
+      *
+      *  03.05.01    NACL-Æ£¸¶    07/04/19  ¥°¥ë¡¼¥×¿ÇÎÅÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -48,18 +59,10 @@
        01  RECEERR-REC             PIC X(200). 
       *
        WORKING-STORAGE             SECTION.
-grpsys*
-grpsys COPY    "COMMON-SPA".
-      *
-      *    ¥¨¥é¡¼¥Õ¥¡¥¤¥ë Ì¾¾ÎÎÎ°è 
-           COPY    "CPCOMMONDAT2.INC"
-                                   REPLACING  //RECE01PARA//
-                                   BY         //RECEERR//.
-           03  FILLER              PIC X(04)   VALUE   ".dat".
       *
            COPY    "HCM2SV02.INC"  REPLACING  //HCM2SV02//
                                    BY         //HCM2S//.
-           COPY    "HCM2TV02.INC"  REPLACING  //HCM2TV02//
+           COPY    "HCM2TV03.INC"  REPLACING  //HCM2TV03//
                                    BY         //HCM2T//.
       *
       *    ¥¹¥ÑÎÎ°è
@@ -120,8 +123,23 @@ grpsys COPY    "COMMON-SPA".
            03  WRK-KOHKBN.
                05  WRK-KOHNUM        PIC X(04).
                05  WRK-HKNNAME       PIC X(40). 
+      *----(03.04.01)--ADD-START---
+           03  WRK-HOSPNAME            PIC X(100).
+           03  WRK-HOSPNAME-R          REDEFINES   WRK-HOSPNAME.
+               05  WRK-HOSPNAME1       PIC X(50).
+               05  WRK-HOSPNAME2       PIC X(50).
+           03  WRK-HOSPADRS            PIC X(100).
+           03  WRK-HOSPADRS-R          REDEFINES   WRK-HOSPADRS.
+               05  WRK-HOSPADRS1       PIC X(50).
+               05  WRK-HOSPADRS2       PIC X(50).
+      *----(03.04.01)--ADD-END-----
       *
            COPY    "CPSHELLTBL.INC".
+      *
+      *    ¸ÇÄê¹àÌÜ
+       01  WRK-CONS-AREA.
+      *    £²£°£°£·Ç¯£´·î²þÀµ
+           03  WRK-CONS-SRYYM-200704   PIC X(06)   VALUE   "200704".
       *
       *****************************************************************
       *    ¥Õ¥¡¥¤¥ë¥ì¥¤¥¢¥¦¥È
@@ -251,9 +269,9 @@ grpsys COPY    "COMMON-SPA".
       *         
        01  WRK-PARA.
            COPY    "CPORCSPRTLNK.INC".
-           03  WRK-PARA-HOSPID     PIC X(24).
            03  WRK-PARA-JOBID      PIC 9(07).
            03  WRK-PARA-SHELLID    PIC X(08).
+           03  WRK-PARA-HOSPNUM    PIC 9(02).
            03  WRK-PARA-PAGE       PIC 9(10).
            03  WRK-PARA-NYUGAIKBN  PIC X(01).
            03  WRK-PARA-SYOKBN     PIC X(01).
@@ -264,6 +282,12 @@ grpsys COPY    "COMMON-SPA".
        01  WRK-SYOKBN              PIC X(01).
       *
        01  WRK-PRTFLG              PIC 9(01).
+grpsys*
+grpsys     COPY    "COMMON-SPA".
+      *
+      *    ¥¨¥é¡¼¥Õ¥¡¥¤¥ë Ì¾¾ÎÎÎ°è 
+           COPY    "CPERRFL.INC"   REPLACING  //ERRFLPARA//
+                                   BY         //RECEERR//.
       *
       ******************************************************************
       *
@@ -273,6 +297,8 @@ grpsys COPY    "COMMON-SPA".
                                                WRK-NYUGAIKBN
                                                WRK-SYOKBN
                                                WRK-PRTFLG
+                                               SPA-AREA
+                                               RECEERR
            .
       *
       *****************************************************************
@@ -308,9 +334,6 @@ grpsys COPY    "COMMON-SPA".
            PERFORM 31012-SEIWA-HEN-SEC
            MOVE    WRK-HENYMDG(1:16)   TO  WRK-SRYYMWH 
       *
-           MOVE    "RECEERR"           TO  RECEERR-FILE-ID
-           MOVE    LNK-PRTKANRI-TERMID TO  RECEERR-TERMID
-      *
       *    ¥·¥¹¥Æ¥à´ÉÍý¥Þ¥¹¥¿¡Ê°åÎÅµ¡´Ø¾ðÊó¡Ë
            PERFORM 120-HOSPINF-GET-SEC
       *
@@ -341,7 +364,7 @@ grpsys COPY    "COMMON-SPA".
            MOVE    LNK-PRTKANRI-SRYYM  TO  SYS-1001-STYUKYMD (1:6)
            MOVE    "01"                TO  SYS-1001-STYUKYMD (7:2)
            MOVE    SYS-1001-STYUKYMD   TO  SYS-1001-EDYUKYMD 
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+grpsys     MOVE    SPA-HOSPNUM         TO  SYS-1001-HOSPNUM
            MOVE    SYS-1001-REC        TO  MCPDATA-REC
            PERFORM 800-SYSKANRI-READ-SEC
            IF      FLG-SYSKANRI        =   ZERO
@@ -366,7 +389,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    LNK-PRTKANRI-SRYYM  TO  SYS-1002-STYUKYMD (1:6)
            MOVE    "01"                TO  SYS-1002-STYUKYMD (7:2)
            MOVE    SYS-1002-STYUKYMD   TO  SYS-1002-EDYUKYMD 
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+grpsys     MOVE    SPA-HOSPNUM         TO  SYS-1002-HOSPNUM
            MOVE    SYS-1002-REC        TO  MCPDATA-REC
            PERFORM 800-SYSKANRI-READ-SEC
            IF      FLG-SYSKANRI        =   ZERO
@@ -382,12 +405,10 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            END-IF 
       *
       *----(03.04.01)--ADD-START---
+           MOVE    SYS-1001-HOSPNAME   TO  WRK-HOSPNAME
+           MOVE    SYS-1002-ADRS       TO  WRK-HOSPADRS
       *    °åÎÅµ¡´ØÊÔ½¸¾ðÊó
            PERFORM 900-1900-READ-SEC
-      *    °åÎÅµ¡´ØÌ¾¾ÎÊÔ½¸¾ðÊó
-           PERFORM 900-1901-READ-SEC
-      *    °åÎÅµ¡´Ø½»½êÊÔ½¸¾ðÊó
-           PERFORM 900-1902-READ-SEC
       *----(03.04.01)--ADD-END-----
            .
        120-HOSPINF-GET-EXT.
@@ -425,9 +446,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                        MOVE    "01"            TO SYS-1005-STYUKYMD(7:2)
                        MOVE    SYS-1005-STYUKYMD
                                                TO  SYS-1005-EDYUKYMD 
-grpsys*                MOVE SPA-HOSPNUM TO -HOSPNUM
-                       MOVE    SYS-1005-REC    TO  MCPDATA-REC
-grpsys*                MOVE SPA-HOSPNUM TO -HOSPNUM
+grpsys                 MOVE    SPA-HOSPNUM     TO  SYS-1005-HOSPNUM
                        MOVE    SYS-1005-REC    TO  MCPDATA-REC
                        PERFORM 800-SYSKANRI-READ-SEC
                        IF      FLG-SYSKANRI    =   ZERO
@@ -476,20 +495,13 @@ grpsys*                MOVE SPA-HOSPNUM TO -HOSPNUM
       *
       *----(03.04.01)--UPD-START---
       *    °åÎÅµ¡´Ø½»½ê
-           IF      SYS-1902-ADRS1      NOT =   SPACE
-               MOVE    SYS-1902-ADRS1      TO  HCM2S-ADRS(1:50)
-               MOVE    SYS-1902-ADRS2      TO  HCM2S-ADRS(51:50)
-           ELSE
-               MOVE    SYS-1002-ADRS       TO  HCM2S-ADRS
-           END-IF
-      *
+      *    MOVE    SYS-1002-ADRS       TO  HCM2S-ADRS
       *    °åÎÅµ¡´ØÌ¾
-           IF      SYS-1901-HOSPNAME1  NOT =   SPACE
-               MOVE    SYS-1901-HOSPNAME1  TO  HCM2S-HOSPNAME(1:50)
-               MOVE    SYS-1901-HOSPNAME2  TO  HCM2S-HOSPNAME(51:50)
-           ELSE
-               MOVE    SYS-1001-HOSPNAME   TO  HCM2S-HOSPNAME
-           END-IF
+      *    MOVE    SYS-1001-HOSPNAME   TO  HCM2S-HOSPNAME
+      *    °åÎÅµ¡´Ø½»½ê
+           MOVE    WRK-HOSPADRS        TO  HCM2S-ADRS
+      *    °åÎÅµ¡´ØÌ¾
+           MOVE    WRK-HOSPNAME        TO  HCM2S-HOSPNAME
       *----(03.04.01)--UPD-END-----
       *
       *    ³«Àß¼ÔÌ¾
@@ -591,6 +603,22 @@ grpsys*                MOVE SPA-HOSPNUM TO -HOSPNUM
            END-EVALUATE           
       *
            MOVE    SYS-1005-SRYKANAME    TO  HCM2T-SRYKA
+      *
+           MOVE    "£´£³¡ÊÏ·¿ÍÈïÇú¡Ë"    TO  HCM2T-BKO-KOHKBN (1)
+           IF      LNK-PRTKANRI-SRYYM    <   WRK-CONS-SRYYM-200704
+               MOVE    "£±£°¡Ê·ë£³£´¡Ë"      TO  HCM2T-BKO-KOHKBN (2)
+               MOVE    "£±£±¡Ê·ë£³£µ¡Ë"      TO  HCM2T-BKO-KOHKBN (3)
+           ELSE
+               MOVE    "£±£°¡Ê´¶37¤Î2¡Ë "    TO  HCM2T-BKO-KOHKBN (2)
+               MOVE    "£±£±¡Ê·ë³ËÆþ±¡¡Ë"    TO  HCM2T-BKO-KOHKBN (3)
+           END-IF
+           MOVE    "£±£²¡ÊÀ¸ÊÝ¡Ë"        TO  HCM2T-BKO-KOHKBN (4)
+           MOVE    "£±£µ¡Ê¹¹À¸¡Ë"        TO  HCM2T-BKO-KOHKBN (5)
+           MOVE    "£²£°¡ÊÀº£²£¹¡Ë"      TO  HCM2T-BKO-KOHKBN (6)
+           MOVE    "£²£±¡ÊÀº¿ÀÄÌ±¡¡Ë"    TO  HCM2T-BKO-KOHKBN (7)
+           MOVE    "£²£²¡ÊËãÌô¡Ë"        TO  HCM2T-BKO-KOHKBN (8)
+           MOVE    "£²£¸¡Ê´¶À÷¾É¡Ë"      TO  HCM2T-BKO-KOHKBN (9)
+           MOVE    "£µ£±¡ÊÆÃ¼À¡Ë"        TO  HCM2T-BKO-KOHKBN (10)
       *
            .
        310-HEAD-HEN-02-EXT.
@@ -1009,17 +1037,13 @@ grpsys*                MOVE SPA-HOSPNUM TO -HOSPNUM
       *
       *    ÊÝ¸±ÈÖ¹æÆÉ¹þ¤ß  
            INITIALIZE                      HKNNUM-REC
-           MOVE   SYS-1001-HOSPID      TO    HKN-HOSPID
+grpsys     MOVE    SPA-HOSPNUM         TO  HKN-HOSPNUM
            MOVE   SUM-KOH-KOHNUM (IDX3 IDX1 IDX IDX2)
                                        TO    HKN-HKNNUM
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE   HKNNUM-REC           TO    MCPDATA-REC
-           MOVE   "DBSELECT"           TO    MCP-FUNC
            MOVE    "tbl_hknnum"        TO  MCP-TABLE
            MOVE    "key2"              TO  MCP-PATHNAME
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     PERFORM 900-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
                MOVE    "tbl_hknnum"        TO  MCP-TABLE
                MOVE    "key2"              TO  MCP-PATHNAME
@@ -1084,6 +1108,20 @@ grpsys                            SPA-AREA
            MOVE    "key2"              TO  MCP-PATHNAME
            PERFORM 900-CLOSE-SEC
       *
+      *    ²¬»³¸©¤ÎÃÏÊý¸øÈñ¤Î¤Þ¤È¤á
+           IF      SYS-1001-PREFNUM    =   "33"
+               EVALUATE    SUM-KOH-KOHNUM (IDX3 IDX1 IDX IDX2)
+                   WHEN    "141"
+                       MOVE    "¡ÊÎà»÷¡Ë"      TO   WRK-HKNNAME
+                   WHEN    "185"
+                       MOVE    "¡ÊÆýÍÄ»ù¡Ë"    TO   WRK-HKNNAME
+                   WHEN    "180"
+                       MOVE    "¡Ê¿´¿È¡Ë"      TO   WRK-HKNNAME
+                   WHEN    "186"
+                       MOVE    "¡Ê¤Ò¤È¤ê¿Æ¡Ë"  TO   WRK-HKNNAME
+               END-EVALUATE
+           END-IF
+      *
            MOVE    WRK-KOHKBN          TO  HCM2T-KOHKBN (IDX IDY)
            .
        3202-HKNNUM-HENSYU-EXT.
@@ -1147,7 +1185,8 @@ grpsys                            SPA-AREA
       *********MOVE    "HCM2JV04.red"      TO  SPRT-PRTID
       *********MOVE    "HCM2T.red"         TO  SPRT-PRTID
       *********MOVE    "HCM2TV01.red"      TO  SPRT-PRTID
-               MOVE    "HCM2TV02.red"      TO  SPRT-PRTID
+      *********MOVE    "HCM2TV02.red"      TO  SPRT-PRTID
+               MOVE    "HCM2TV03.red"      TO  SPRT-PRTID
                MOVE    HCM2T               TO  SPRT-PRTDATA
            END-IF    
            IF      WRK-PARA-MARUCHO    =   "2"
@@ -1203,6 +1242,7 @@ grpsys                            SPA-AREA
            MOVE    "1"                 TO  SPRT-SITEKBN
            CALL    "ORCSPRT"           USING
                                        ORCSPRTAREA
+grpsys                                 SPA-AREA
            IF      SPRT-RETURN         =   ZERO
                CONTINUE
            ELSE
@@ -1249,14 +1289,9 @@ grpsys                            SPA-AREA
       *        ¥¸¥ç¥Ö´ÉÍý³«»Ï½èÍý
                MOVE    "JBE"           TO  SJOBKANRI-MODE
                INITIALIZE                  JOBKANRI-REC
-               MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
-               MOVE    WRK-PARA-SHELLID
-                                       TO  JOB-SHELLID
                MOVE    WRK-RECEERR     TO  JOB-YOBI
                MOVE    "9999"          TO  JOB-ERRCD
-               CALL    "ORCSJOB"       USING
-                                       ORCSJOBKANRIAREA  
-                                       JOBKANRI-REC
+grpsys         PERFORM 900-CALL-ORCSJOB-SEC
            END-IF
       *
            MOVE    1                   TO  FLG-END     
@@ -1294,11 +1329,17 @@ grpsys                            SPA-AREA
            MOVE    "01"            TO  SYS-1900-STYUKYMD (7:2)
            MOVE    SYS-1900-STYUKYMD
                                    TO  SYS-1900-EDYUKYMD
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+grpsys     MOVE    SPA-HOSPNUM     TO  SYS-1900-HOSPNUM
            MOVE    SYS-1900-REC    TO  MCPDATA-REC
            PERFORM 800-SYSKANRI-READ-SEC
            IF      FLG-SYSKANRI        =   ZERO
                MOVE    MCPDATA-REC     TO  SYS-1900-REC
+               IF      SYS-1900-PRTKBN(7)  NOT =   SPACE
+      *            °åÎÅµ¡´ØÌ¾¾ÎÊÔ½¸¾ðÊó
+                   PERFORM 900-1901-READ-SEC
+      *            °åÎÅµ¡´Ø½»½êÊÔ½¸¾ðÊó
+                   PERFORM 900-1902-READ-SEC
+               END-IF
            ELSE
                INITIALIZE                  SYS-1900-REC
            END-IF
@@ -1312,11 +1353,6 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *****************************************************************
        900-1901-READ-SEC           SECTION.
       *
-           IF      SYS-1900-PRTKBN(7)  =   SPACE
-               MOVE    SPACE           TO  SYS-1901-REC
-               GO  TO  900-1901-READ-EXT
-           END-IF
-      *
       *    °åÎÅµ¡´ØÌ¾¾ÎÊÔ½¸¾ðÊóÆÉ¤ß¹þ¤ß
            MOVE    SPACE           TO  SYS-1901-REC
            INITIALIZE                  SYS-1901-REC
@@ -1328,11 +1364,13 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    "01"            TO  SYS-1901-STYUKYMD (7:2)
            MOVE    SYS-1901-STYUKYMD
                                    TO  SYS-1901-EDYUKYMD
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+grpsys     MOVE    SPA-HOSPNUM     TO  SYS-1901-HOSPNUM
            MOVE    SYS-1901-REC    TO  MCPDATA-REC
            PERFORM 800-SYSKANRI-READ-SEC
            IF      FLG-SYSKANRI        =   ZERO
                MOVE    MCPDATA-REC     TO  SYS-1901-REC
+               MOVE    SYS-1901-HOSPNAME1  TO  WRK-HOSPNAME1
+               MOVE    SYS-1901-HOSPNAME2  TO  WRK-HOSPNAME2
            ELSE
                INITIALIZE                  SYS-1901-REC
            END-IF
@@ -1346,11 +1384,6 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *****************************************************************
        900-1902-READ-SEC           SECTION.
       *
-           IF      SYS-1900-PRTKBN(7)  =   SPACE
-               MOVE    SPACE           TO  SYS-1902-REC
-               GO  TO  900-1902-READ-EXT
-           END-IF
-      *
       *    °åÎÅµ¡´Ø½»½êÊÔ½¸¾ðÊóÆÉ¤ß¹þ¤ß
            MOVE    SPACE           TO  SYS-1902-REC
            INITIALIZE                  SYS-1902-REC
@@ -1362,11 +1395,13 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    "01"            TO  SYS-1902-STYUKYMD (7:2)
            MOVE    SYS-1902-STYUKYMD
                                    TO  SYS-1902-EDYUKYMD
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+grpsys     MOVE    SPA-HOSPNUM     TO  SYS-1902-HOSPNUM
            MOVE    SYS-1902-REC    TO  MCPDATA-REC
            PERFORM 800-SYSKANRI-READ-SEC
            IF      FLG-SYSKANRI        =   ZERO
                MOVE    MCPDATA-REC     TO  SYS-1902-REC
+               MOVE    SYS-1902-ADRS1  TO  WRK-HOSPADRS1
+               MOVE    SYS-1902-ADRS2  TO  WRK-HOSPADRS2
            ELSE
                INITIALIZE                  SYS-1902-REC
            END-IF
@@ -1381,19 +1416,13 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *****************************************************************
        800-SYSKANRI-READ-SEC           SECTION.
       *
-           MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key10"             TO  MCP-PATHNAME
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     PERFORM 900-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
-               MOVE    "DBFETCH"           TO  MCP-FUNC
                MOVE    "tbl_syskanri"      TO  MCP-TABLE
                MOVE    "key10"             TO  MCP-PATHNAME
-grpsys         CALL "ORCDBMAIN" USING MCPAREA
-                                      MCPDATA-REC
-grpsys                                SPA-AREA
+grpsys         PERFORM 900-DBFETCH-SEC
                IF      MCP-RC              =   ZERO
                    MOVE    ZERO                TO  FLG-SYSKANRI
                ELSE
@@ -1416,10 +1445,7 @@ grpsys                                SPA-AREA
       *****************************************************************
        900-HKNNUM-READ-SEC         SECTION.
       *
-           MOVE    "DBFETCH"           TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     PERFORM 900-DBFETCH-SEC
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC     TO  HKNNUM-REC
                MOVE    ZERO            TO  FLG-HKNNUM
@@ -1432,17 +1458,74 @@ grpsys                            SPA-AREA
        900-HKNNUM-READ-EXT.
            EXIT.
       *
+      *****************************************************************
+      *    ¥¸¥ç¥Ö´ÉÍý£Ä£ÂÀ©¸æ½èÍý
+      *****************************************************************
+       900-CALL-ORCSJOB-SEC            SECTION.
+      *
+           MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
+           MOVE    WRK-PARA-SHELLID
+                                   TO  JOB-SHELLID
+grpsys     MOVE    SPA-HOSPNUM     TO  JOB-HOSPNUM
+           CALL    "ORCSJOB"       USING
+                                   ORCSJOBKANRIAREA 
+                                   JOBKANRI-REC
+                                   SPA-AREA
+           .
+       900-CALL-ORCSJOB-EXT.
+           EXIT.
       *
       *****************************************************************
-      *    ¥¯¥í¡¼¥º½èÍý
+      *    £Ä£Â£Ó£Å£Ì£Å£Ã£Ô½èÍý
       *****************************************************************
-       900-CLOSE-SEC                  SECTION.
+       900-DBSELECT-SEC                SECTION.
+      *
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+grpsys     PERFORM 900-ORCDBMAIN-SEC
+           IF      MCP-RC              =   ZERO
+               CONTINUE
+           ELSE
+               DISPLAY "SELECT ERR table=" MCP-TABLE
+                       " pathname="        MCP-PATHNAME
+           END-IF
+           .
+       900-DBSELECT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    £Ä£Â£Æ£Å£Ô£Ã£È½èÍý
+      *****************************************************************
+       900-DBFETCH-SEC                SECTION.
+      *
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+grpsys     PERFORM 900-ORCDBMAIN-SEC
+      *
+           .
+       900-DBFETCH-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ¥Æ¡¼¥Ö¥ë¥¯¥í¡¼¥º½èÍý
+      *****************************************************************
+       900-CLOSE-SEC               SECTION.
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     PERFORM 900-ORCDBMAIN-SEC
       *
            .
        900-CLOSE-EXT.
            EXIT.
+      *
+      *****************************************************************
+      *    ¥Æ¡¼¥Ö¥ë¥¢¥¯¥»¥¹½èÍý
+      *****************************************************************
+       900-ORCDBMAIN-SEC               SECTION.
+      *
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
+           .
+      *
+       900-ORCDBMAIN-EXT.
+           EXIT.
+      *      

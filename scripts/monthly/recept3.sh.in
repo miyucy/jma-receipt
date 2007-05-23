@@ -17,7 +17,7 @@ RENNUM=0
 #        ${12} SRYYM TERID SYSYMD
 #        ${13} RECEKBN(総括表の種類)
 #           1:社保　2:国保
-#        ${14} 医療機関ＩＤ 
+#        ${14} HOSPNUM
 #        ${15} 国保診療報酬請求書印刷区分
 #        ${16} ジョブＩＤ
 #        ${17} シェルＩＤ
@@ -38,9 +38,12 @@ RENNUM=0
         if  [ -e ${18} ]; then
             rm  ${18}
         fi 
-        if  [ -e /home/orca/recept3${13}.log ]; then
-            rm  /home/orca/recept3${13}.log
-        fi 
+
+        rm  -f /home/orca/recept31.log
+        rm  -f /home/orca/recept32.log
+
+        LOG_FILE="/home/orca/${14}recept3${13}.log"
+        rm -f $LOG_FILE 
 
         
 ##      総括表（社保）
@@ -50,7 +53,7 @@ RENNUM=0
 ##                 返戻分
                    if  [ ${22} -eq '0' ] || [ ${22} -eq '2' ]; then
                        RENNUM=$(expr $RENNUM + 1) 
-                       $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBM022 -parameter $1,$2,$3,$RENNUM,$5,$6,$7,$8,$9,${10},${11},${14},${16},${17},${20},2,0 >> /home/orca/recept3${13}.log
+                       $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBM022 -parameter $1,$2,$3,$RENNUM,$5,$6,$7,$8,$9,${10},${11},${14},${16},${17},${20},2,0,${18} >> $LOG_FILE 2>&1
                        if  [ -e ${18} ]; then
                           exit
                        fi
@@ -58,7 +61,7 @@ RENNUM=0
 ##                 当月・月遅れ分
                    if  [ ${22} -eq '0' ] || [ ${22} -eq '1' ]; then
                        RENNUM=$(expr $RENNUM + 1) 
-                       $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBM022 -parameter $1,$2,$3,$RENNUM,$5,$6,$7,$8,$9,${10},${11},${14},${16},${17},${20},1,0 >> /home/orca/recept3${13}.log
+                       $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBM022 -parameter $1,$2,$3,$RENNUM,$5,$6,$7,$8,$9,${10},${11},${14},${16},${17},${20},1,0,${18} >> $LOG_FILE 2>&1
                        if  [ -e ${18} ]; then
                           exit
                        fi
@@ -67,7 +70,7 @@ RENNUM=0
 ##                 返戻分（マル長以外）
                    if  [ ${22} -eq '0' ] || [ ${22} -eq '2' ]; then
                        RENNUM=$(expr $RENNUM + 1) 
-                       $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBM022 -parameter $1,$2,$3,$RENNUM,$5,$6,$7,$8,$9,${10},${11},${14},${16},${17},${20},2,1 >> /home/orca/recept3${13}.log
+                       $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBM022 -parameter $1,$2,$3,$RENNUM,$5,$6,$7,$8,$9,${10},${11},${14},${16},${17},${20},2,1,${18} >> $LOG_FILE 2>&1
                        if  [ -e ${18} ]; then
                           exit
                        fi
@@ -75,7 +78,7 @@ RENNUM=0
 ##                 当月・月遅れ分（マル長以外）
                    if  [ ${22} -eq '0' ] || [ ${22} -eq '1' ]; then
                        RENNUM=$(expr $RENNUM + 1) 
-                       $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBM022 -parameter $1,$2,$3,$RENNUM,$5,$6,$7,$8,$9,${10},${11},${14},${16},${17},${20},1,1 >> /home/orca/recept3${13}.log
+                       $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBM022 -parameter $1,$2,$3,$RENNUM,$5,$6,$7,$8,$9,${10},${11},${14},${16},${17},${20},1,1,${18} >> $LOG_FILE 2>&1
                        if  [ -e ${18} ]; then
                           exit
                        fi
@@ -83,7 +86,7 @@ RENNUM=0
 ##                 返戻分（マル長）
                    if  [ ${22} -eq '0' ] || [ ${22} -eq '2' ]; then
                        RENNUM=$(expr $RENNUM + 1) 
-                       $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBM022 -parameter $1,$2,$3,$RENNUM,$5,$6,$7,$8,$9,${10},${11},${14},${16},${17},${20},2,2 >> /home/orca/recept3${13}.log
+                       $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBM022 -parameter $1,$2,$3,$RENNUM,$5,$6,$7,$8,$9,${10},${11},${14},${16},${17},${20},2,2,${18} >> $LOG_FILE 2>&1
                        if  [ -e ${18} ]; then
                           exit
                        fi
@@ -91,7 +94,7 @@ RENNUM=0
 ##                 当月・月遅れ分（マル長）
                    if  [ ${22} -eq '0' ] || [ ${22} -eq '1' ]; then
                        RENNUM=$(expr $RENNUM + 1) 
-                       $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBM022 -parameter $1,$2,$3,$RENNUM,$5,$6,$7,$8,$9,${10},${11},${14},${16},${17},${20},1,2 >> /home/orca/recept3${13}.log
+                       $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBM022 -parameter $1,$2,$3,$RENNUM,$5,$6,$7,$8,$9,${10},${11},${14},${16},${17},${20},1,2,${18} >> $LOG_FILE 2>&1
                        if  [ -e ${18} ]; then
                           exit
                        fi
@@ -107,9 +110,9 @@ RENNUM=0
                if  [ ${23} -eq '0' ] || [ ${23} -eq '2' ]; then
                    RENNUM=$(expr $RENNUM + 1) 
                    if  [ ${15} = 1 ]; then
-                       $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBM030 -parameter $1,$2,$3,$RENNUM,$5,$6,$7,$8,$9,${10},${11},${14},${16},${17},${20},${21},2,1 >> /home/orca/recept3${13}.log
+                       $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBM030 -parameter $1,$2,$3,$RENNUM,$5,$6,$7,$8,$9,${10},${11},${14},${16},${17},${20},${21},2,1,${18} >> $LOG_FILE 2>&1
                    else
-                       $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBM029 -parameter $1,$2,$3,$RENNUM,$5,$6,$7,$8,$9,${10},${11},${14},${16},${17},${20},${21},2,1 >> /home/orca/recept3${13}.log
+                       $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBM029 -parameter $1,$2,$3,$RENNUM,$5,$6,$7,$8,$9,${10},${11},${14},${16},${17},${20},${21},2,1,${18} >> $LOG_FILE 2>&1
                    fi
                    if  [ -e ${18} ]; then
                        exit
@@ -119,9 +122,9 @@ RENNUM=0
                if  [ ${23} -eq '0' ] || [ ${23} -eq '1' ]; then
                    RENNUM=$(expr $RENNUM + 1) 
                    if  [ ${15} = 1 ]; then
-                       $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBM030 -parameter $1,$2,$3,$RENNUM,$5,$6,$7,$8,$9,${10},${11},${14},${16},${17},${20},${21},1,1 >> /home/orca/recept3${13}.log
+                       $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBM030 -parameter $1,$2,$3,$RENNUM,$5,$6,$7,$8,$9,${10},${11},${14},${16},${17},${20},${21},1,1,${18} >> $LOG_FILE 2>&1
                    else
-                       $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBM029 -parameter $1,$2,$3,$RENNUM,$5,$6,$7,$8,$9,${10},${11},${14},${16},${17},${20},${21},1,1 >> /home/orca/recept3${13}.log
+                       $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBM029 -parameter $1,$2,$3,$RENNUM,$5,$6,$7,$8,$9,${10},${11},${14},${16},${17},${20},${21},1,1,${18} >> $LOG_FILE 2>&1
                    fi
                    if  [ -e ${18} ]; then
                        exit
@@ -132,9 +135,9 @@ RENNUM=0
                if  [ ${23} -eq '0' ] || [ ${23} -eq '2' ]; then
                    RENNUM=$(expr $RENNUM + 1) 
                    if  [ ${15} = 1 ]; then
-                       $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBM030 -parameter $1,$2,$3,$RENNUM,$5,$6,$7,$8,$9,${10},${11},${14},${16},${17},${20},${21},2,2 >> /home/orca/recept3${13}.log
+                       $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBM030 -parameter $1,$2,$3,$RENNUM,$5,$6,$7,$8,$9,${10},${11},${14},${16},${17},${20},${21},2,2,${18} >> $LOG_FILE 2>&1
                    else
-                       $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBM029 -parameter $1,$2,$3,$RENNUM,$5,$6,$7,$8,$9,${10},${11},${14},${16},${17},${20},${21},2,2 >> /home/orca/recept3${13}.log
+                       $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBM029 -parameter $1,$2,$3,$RENNUM,$5,$6,$7,$8,$9,${10},${11},${14},${16},${17},${20},${21},2,2,${18} >> $LOG_FILE 2>&1
                    fi
                    if  [ -e ${18} ]; then
                        exit
@@ -144,9 +147,9 @@ RENNUM=0
                if  [ ${23} -eq '0' ] || [ ${23} -eq '1' ]; then
                    RENNUM=$(expr $RENNUM + 1) 
                    if  [ ${15} = 1 ]; then
-                       $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBM030 -parameter $1,$2,$3,$RENNUM,$5,$6,$7,$8,$9,${10},${11},${14},${16},${17},${20},${21},1,2 >> /home/orca/recept3${13}.log
+                       $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBM030 -parameter $1,$2,$3,$RENNUM,$5,$6,$7,$8,$9,${10},${11},${14},${16},${17},${20},${21},1,2,${18} >> $LOG_FILE 2>&1
                    else
-                       $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBM029 -parameter $1,$2,$3,$RENNUM,$5,$6,$7,$8,$9,${10},${11},${14},${16},${17},${20},${21},1,2 >> /home/orca/recept3${13}.log
+                       $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBM029 -parameter $1,$2,$3,$RENNUM,$5,$6,$7,$8,$9,${10},${11},${14},${16},${17},${20},${21},1,2,${18} >> $LOG_FILE 2>&1
                    fi 
                    if  [ -e ${18} ]; then
                        exit
@@ -156,6 +159,6 @@ RENNUM=0
             fi    
        fi
        
-       $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE${16}${17} >> /home/orca/recept3${13}.log
+       $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE${16}${17},${14} >> $LOG_FILE 2>&1
 
         exit 
