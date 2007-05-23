@@ -5965,7 +5965,6 @@
            INITIALIZE                  SENTEICDCHG-REC
            MOVE    LNK-SCNYUACCT-NYUKHN-SRYCD(1)
                                        TO  SENCHG-IPNSRYCD
-           MOVE    SPA-HOSPNUM         TO  SENCHG-HOSPNUM
            MOVE    SENTEICDCHG-REC     TO  MCPDATA-REC
            MOVE    "tbl_senteicdchg"   TO  MCP-TABLE
            MOVE    "key2"              TO  MCP-PATHNAME
@@ -6511,7 +6510,6 @@
            MOVE    SYOKIKSN-IN-SANTEISTYMD TO  NYUKSNCHK-YUKOSTYMD
            MOVE    SYOKIKSN-IN-SANTEISTYMD TO  NYUKSNCHK-YUKOEDYMD
       *
-           MOVE    SPA-HOSPNUM         TO  NYUKSNCHK-HOSPNUM
            MOVE    NYUKSNCHK-REC       TO  MCPDATA-REC
            MOVE    "tbl_nyuksnchk"     TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
