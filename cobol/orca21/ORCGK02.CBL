@@ -77,6 +77,7 @@
       *  03.04.02    NACL-多々納  07/01/30  排他中処理追加
       *  03.04.03    NACL-多々納  07/02/XX  包括診療処理追加
       *  03.05.00    NACL-多々納  07/04/XX  グループ診療対応
+      *  03.05.00    NACL-多々納  07/05/22  再印刷処理追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -3575,6 +3576,8 @@
                       (SPA-COM-KZMFLG2(IDX)    NOT =   SPACE )
       *            約束セット
                    IF     (SPA-GMN-INPUTCD(IDX)(1:1)   =   "." )
+                      OR  (SPA-GMN-INPUTCD(IDX)(1:1)   =   "#" )
+                      OR  (SPA-GMN-INPUTCD(IDX)(1:1)   =   "$" )
       *?              OR  (SPA-GMN-INPUTCD(IDX)(1:1)   =   "S" )
                       CONTINUE
                    ELSE
@@ -9949,7 +9952,6 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            END-IF
       *
       *    帳票プログラム取得
-      *
       *    処方せん
            INITIALIZE                      ORCSPRTNMAREA
            MOVE    "1"                 TO  ORCSPRTNM-KBN
@@ -9966,11 +9968,14 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    ORCSPRTNM-PRTPG     TO  WRK-SYOHOU-PG
       *
       *    処方箋印刷（Ａ５）
+      *    再印刷
+           MOVE    "01"                TO  SPA-PRT-FLG
            INITIALIZE                  ORCHC19AREA
            EVALUATE    FLG-SYOHOU
                WHEN    1
       *            頭書
                    MOVE    "2"                 TO  ORCHC19-KBN
+                   MOVE    SPACE               TO  SPA-PRT-FLG
                WHEN    3
       *            中途終了時（院外）
                    MOVE    "4"                 TO  ORCHC19-KBN
@@ -9982,7 +9987,6 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE    "1"                 TO  ORCHC19-KBN
            END-EVALUATE
       *
-      *****CALL    "ORCHC19"           USING   SPA-AREA
            CALL    WRK-SYOHOU-PG       USING   SPA-AREA
                                                ORCHC19AREA
       *
@@ -10930,10 +10934,10 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *            診療室入力の時、訂正はできないこととする
                    IF      SPA-BUNSAN          =   "1"
                        MOVE    "1026"          TO  SPA-ERRCD
-                       GO      TO      4101-TEISEI-EXT
+                   ELSE
+                       MOVE    "T"             TO  SPA-GMN-TEISEI
+                       MOVE    1               TO  SPA-NAI-SYORI
                    END-IF
-                   MOVE    "T"             TO  SPA-GMN-TEISEI
-                   MOVE    1               TO  SPA-NAI-SYORI
            END-EVALUATE
       *
            .
@@ -11557,6 +11561,9 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                END-IF
            END-PERFORM
       *
+      *    印刷制御情報取得サブ
+           CALL    "ORCSONPRTSET"      USING   SPA-AREA
+      *
       *    中途終了時、処方せんの有無
            EVALUATE    SPA-KID2-FLG
       *        処方せん発行
@@ -11590,6 +11597,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *
       *    患者ＩＤを初期化する
            INITIALIZE                  SPA-KYOTUKEY
+           MOVE    SPACE               TO  SPA-PRT-FLG
       *
            INITIALIZE                  SPA-K02
            INITIALIZE                  SPA-SCR-REC
@@ -11641,6 +11649,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *        院内分
                MOVE    "3"                 TO  ORCSCH30-KBN
            END-IF
+           MOVE    "02"                TO  SPA-PRT-FLG
            CALL    "ORCSCH30"          USING   SPA-AREA
                                                ORCSCH30AREA
       *

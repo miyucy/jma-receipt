@@ -51,6 +51,7 @@
       *  03.04.00    NACL-多々納  06/11/14  検査正式名称表示追加他
       *  03.04.01    NACL-多々納  07/02/XX  包括診療処理追加
       *  03.05.00    NACL-多々納  07/04/XX  グループ診療対応
+      *  03.05.00    NACL-多々納  07/05/22  再印刷処理追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -63,12 +64,11 @@
                                    ORGANIZATION    IS  LINE SEQUENTIAL
                                    FILE    STATUS  IS  STS-PARA.
       *
-      *TEST
       *    パラメタデータ
            SELECT  PARA-FILE02     ASSIGN  FILE-NAME02
                                    ORGANIZATION    IS  LINE SEQUENTIAL
                                    FILE    STATUS  IS  STS-PARA02.
-      *TEST
+      *
       *    パラメタデータ（プレビュー）
            SELECT  PARA-PREVIEW     ASSIGN  FILE-PREVIEW
                                    ORGANIZATION    IS  LINE SEQUENTIAL
@@ -84,7 +84,7 @@
                05  PARA-FILEMEI         PIC X(08).
                05  PARA-EDANUM          PIC 9(03).
            03  PARA-DATA-REC            PIC X(60000).
-      *TEST
+      *
       *    パラメタデータ
        FD  PARA-FILE02.
        01  PARA-REC02.
@@ -92,7 +92,7 @@
                05  PARA-FILEMEI02         PIC X(08).
                05  PARA-EDANUM02          PIC 9(03).
            03  PARA-DATA-REC02            PIC X(60000).
-      *TEST
+      *
       *    パラメタデータ（プレビュー）
        FD  PARA-PREVIEW.
        01  PARA-RECPRV.
@@ -465,7 +465,7 @@
            03  WRK-SYOHOU-PG           PIC X(20).
            03  WRK-CHUSYA-PG           PIC X(20).
            03  WRK-SIJISEN-PG          PIC X(20).
-      *TEST
+      *
            03  WRK-EDANUM            PIC 9(03).
            03  FLG-FUKU              PIC 9(01).
       *
@@ -588,7 +588,7 @@
            03  LNK-WKSRYACTPLUS-REC.
            COPY    "CPWKSRYACTPLUS.INC"  REPLACING
                                      //WKSRYP-// BY //LNK-WKSRYP-//.
-      *TEST
+      *
            03  LNK-SORT-SRYKBN        PIC X(02).
        01  LNK-WKSRYACT-MAX           PIC 9(04).
       *
@@ -601,9 +601,9 @@
            03  HZN-WKSRYACTPLUS-REC.
            COPY    "CPWKSRYACTPLUS.INC"  REPLACING
                                      //WKSRYP-// BY //HZN-WKSRYP-//.
-      *TEST
+      *
            03  HZN-SORT-SRYKBN        PIC X(02).
-      *TEST
+      *
        01  HZN-WKSRYACT-MAX           PIC 9(04).
       *
       *    診療行為マスタワーク
@@ -1154,12 +1154,11 @@
       *    パラメタファイルより、診療会計マスターを編集
            MOVE    ZERO                TO  IDX
            MOVE    ZERO                TO  IDG
-      *TEST
+      *
            MOVE    SPA-TERMID          TO  FILE-TERMID02
            MOVE    SPA-HOSPNUM         TO  FILE-HOSPNUM02
            OPEN    OUTPUT              PARA-FILE02
            MOVE    ZERO                TO  WRK-EDANUM
-      *TEST
       *
            MOVE    ZERO                TO  FLG-PARA
            MOVE    SPACE               TO  SRT-WKSRYACT-AREA
@@ -1250,9 +1249,7 @@
                    PERFORM 31013-WKSRYACT-HENSYORI-SEC
                END-PERFORM
            END-PERFORM
-      *TEST
            CLOSE                       PARA-FILE02
-      *TEST
       *
             .
        3101-WKSRYACT-SORT-EXT.
@@ -1406,7 +1403,6 @@
                MOVE    SRT-WKSRYACT-REC (IDX2)
                                            TO  LNK-WKSRYACT-REC
                                                             (IDX-KOUI)
-      *TEST
       *        画面表示順に登録する
                MOVE    SPACE               TO  PARA-REC02
                INITIALIZE                      PARA-REC02
@@ -1415,10 +1411,10 @@
                MOVE    WRK-EDANUM          TO  PARA-EDANUM02
       *@TEST
                MOVE    SRT-WKSRYACT-REC (IDX2) TO  WRK-WKSRYACT-REC
-               MOVE    ALL "9"             TO  WRK-WKSRYP-YOBI
+      *D       MOVE    ALL "9"             TO  WRK-WKSRYP-YOBI
                MOVE    WRK-WKSRYACT-REC    TO  PARA-DATA-REC02
                WRITE   PARA-REC02
-      *TEST
+      *
            END-PERFORM
       *    剤毎に処理を行う
            IF      IDX-KOUI        >   ZERO
@@ -3537,7 +3533,7 @@
                    MOVE    IDX2                TO  PARA-EDANUM
       *@TEST
                    MOVE    LNK-WKSRYACT-REC (IDX) TO  WRK-WKSRYACT-REC
-                   MOVE    ALL "9"             TO  WRK-WKSRYP-YOBI
+      *D           MOVE    ALL "9"             TO  WRK-WKSRYP-YOBI
                    MOVE    WRK-WKSRYACT-REC    TO  PARA-DATA-REC
                    WRITE                       PARA-REC
                ELSE
@@ -5135,6 +5131,9 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *
       *    帳票プログラム取得
            PERFORM 459001-PRTNUM-HEN-SEC
+      *
+      *    印刷制御情報取得サブ
+           CALL    "ORCSONPRTSET"      USING   SPA-AREA
       *    入院処方箋印刷
            IF     (SPA-ERRCD           =   SPACE  )  AND
                   (SPA-K081GMN-SYOHOU  =   "1"    )
@@ -5152,6 +5151,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                        MOVE    1               TO  ORCHC501-CHKPRT(IDX)
                    END-IF
                END-PERFORM
+               MOVE    "01"                TO  SPA-PRT-FLG
                CALL    WRK-SYOHOU-PG       USING
                                            SPA-AREA
                                            ORCHC501AREA
@@ -5176,6 +5176,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                        MOVE    1               TO  ORCHC502-CHKPRT(IDX)
                    END-IF
                END-PERFORM
+               MOVE    "02"                TO  SPA-PRT-FLG
                CALL    WRK-CHUSYA-PG       USING
                                            SPA-AREA
                                            ORCHC502AREA
@@ -5200,6 +5201,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                        MOVE    1               TO  ORCHC503-CHKPRT(IDX)
                    END-IF
                END-PERFORM
+               MOVE    "03"                TO  SPA-PRT-FLG
                CALL    WRK-SIJISEN-PG      USING
                                            SPA-AREA
                                            ORCHC503AREA
@@ -5207,6 +5209,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE    "1201"          TO  SPA-ERRCD
                END-IF
            END-IF
+           MOVE    SPACE               TO  SPA-PRT-FLG
       *
            .
        45900-SIJISEN-SYORI-EXT.
@@ -5460,7 +5463,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *                                        TO  PARA-DATA-RECPRV
       *@TEST
                    MOVE    LNK-WKSRYACT-REC (IDX) TO  WRK-WKSRYACT-REC
-                   MOVE    ALL "9"             TO  WRK-WKSRYP-YOBI
+      *D           MOVE    ALL "9"             TO  WRK-WKSRYP-YOBI
                    MOVE    WRK-WKSRYACT-REC    TO  PARA-DATA-RECPRV
                    WRITE                       PARA-RECPRV
                ELSE

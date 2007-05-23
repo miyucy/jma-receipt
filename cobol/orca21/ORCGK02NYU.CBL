@@ -47,6 +47,7 @@
       * 03.04.01     NACL-多々納  06/12/14  薬剤附加チェック追加
       * 03.04.02     NACL-多々納  07/01/30  排他中処理追加
       * 03.05.00     NACL-多々納  07/04/XX  グループ診療対応
+      * 03.05.00     NACL-多々納  07/05/22  再印刷処理追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -9670,6 +9671,8 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *    帳票プログラム取得
            PERFORM 459001-PRTNUM-HEN-SEC
       *
+      *    印刷制御情報取得サブ
+           CALL    "ORCSONPRTSET"      USING   SPA-AREA
       *    入院処方箋印刷
            IF     (SPA-ERRCD           =   SPACE  )  AND
                   (SPA-K081GMN-SYOHOU  =   "1"    )
@@ -9687,6 +9690,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                        MOVE    1               TO  ORCHC501-CHKPRT(IDX)
                    END-IF
                END-PERFORM
+               MOVE    "01"                TO  SPA-PRT-FLG
                CALL    WRK-SYOHOU-PG       USING
                                            SPA-AREA
                                            ORCHC501AREA
@@ -9711,6 +9715,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                        MOVE    1               TO  ORCHC502-CHKPRT(IDX)
                    END-IF
                END-PERFORM
+               MOVE    "02"                TO  SPA-PRT-FLG
                CALL    WRK-CHUSYA-PG       USING
                                            SPA-AREA
                                            ORCHC502AREA
@@ -9735,6 +9740,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                        MOVE    1               TO  ORCHC503-CHKPRT(IDX)
                    END-IF
                END-PERFORM
+               MOVE    "03"                TO  SPA-PRT-FLG
                CALL    WRK-SIJISEN-PG      USING
                                            SPA-AREA
                                            ORCHC503AREA
@@ -9742,6 +9748,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE    "1201"          TO  SPA-ERRCD
                END-IF
            END-IF
+           MOVE    SPACE               TO  SPA-PRT-FLG
            .
        45900-SIJISEN-SYORI-EXT.
            EXIT.

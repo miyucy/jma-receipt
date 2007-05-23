@@ -61,6 +61,7 @@
       *  03.04.00    NACL-多々納  07/02/06  処方せん等の訂正時印刷無し追加
       *  03.04.01    NACL-多々納  07/02/27  複数保険に包括保険追加
       *  03.05.00    NACL-多々納  07/04/XX  グループ診療対応
+      *  03.05.00    NACL-多々納  07/05/22  再印刷処理追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -5428,6 +5429,9 @@
       *    帳票プログラム取得
            PERFORM 4901-PRINT-PG-SEC
       *
+      *    印刷制御情報取得サブ
+           CALL    "ORCSONPRTSET"      USING   SPA-AREA
+      *
       *    主たる伝票番号
            MOVE    SPA-SYUNOU-REC(1)   TO  SYUNOU-REC
            MOVE    SYU-DENPNUM         TO  WRK-DENPNUM
@@ -5445,6 +5449,7 @@
            MOVE    WRK-DENPNUM         TO  ORCHC19-DENPNUM
       *
            IF      SPA-GMN-SYOHOPRTFLG =   "1"  OR  "2"
+               MOVE    "01"                TO  SPA-PRT-FLG
                CALL    WRK-SYOHOU-PG       USING   SPA-AREA
                                                    ORCHC19AREA
            END-IF
@@ -5547,6 +5552,7 @@
            END-IF
       *
            IF      SPA-GMN-HAKFLG  NOT =   ZERO
+               MOVE    "02"                TO  SPA-PRT-FLG
                CALL    WRK-SEIKYU-PG       USING
                                            SPA-AREA
                                            ORCHC03AREA
@@ -5557,6 +5563,7 @@
                INITIALIZE                      ORCSCH30AREA
                MOVE    WRK-DENPNUM         TO  ORCSCH30-DENPNUM
                MOVE    SPA-GMN-YAKJYOFLG   TO  ORCSCH30-KBN
+               MOVE    "03"                TO  SPA-PRT-FLG
                CALL    "ORCSCH30"          USING   SPA-AREA
                                                    ORCSCH30AREA
            END-IF
@@ -5578,6 +5585,7 @@
                MOVE    ZERO                TO  ORCHC04-HAKHOUFLG
            END-IF
            IF      SPA-GMN-MEIPRTFLG   NOT =   ZERO
+               MOVE    "04"                TO  SPA-PRT-FLG
                CALL    WRK-MEISAI-PG       USING
                                            SPA-AREA
                                            ORCHC04AREA

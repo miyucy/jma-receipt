@@ -411,11 +411,6 @@
       *　　印刷用データ出力
             WRITE  HCPOM
       *
-      ****  MOVE   "HC01.sh"           TO  SHELL-ID
-      *     MOVE   "HCPO.dia"          TO  SHELL-DIA
-      *     MOVE   "HCPO.def"          TO  SHELL-DEF
-      *     MOVE   HC01PARA            TO  SHELL-DAT
-      ***** MOVE   SYS-1031-PRTNM(6)   TO  SHELL-PRTNM
             CLOSE                       PRT-FILE
       *
             INITIALIZE                 ORCSMKPRTAREA
@@ -426,21 +421,7 @@
             MOVE   SYS-1031-PRTNM(6)   TO  MKPRT-PRTNM
             CALL   "ORCSMKPRT"         USING
                                        ORCSMKPRTAREA
-      *
-      *   印刷用スクリプト処理
-      *★   ETC-EXEC SHELL   SHELL-AREA 10
-      *    MOVE    SHELL-NAME          TO  SHELLTBL-NAME
-      *    MOVE    SHELL-ARG1          TO  SHELLTBL-ARG1
-      *    MOVE    SHELL-ARG2          TO  SHELLTBL-ARG2
-      *    MOVE    SHELL-ARG3          TO  SHELLTBL-ARG3
-      *    MOVE    SHELL-ARG4          TO  SHELLTBL-ARG4
-      *    MOVE    SHELL-ARG5          TO  SHELLTBL-ARG5
-      *    MOVE    SHELLTBL            TO  MCPDATA-REC
-      *    MOVE    "SHELL"             TO  MCP-FUNC
-      *    MOVE    PATH-SHELL-SHELL    TO  MCP-PATH
-      *    CALL    "MCPSUB"            USING
-      *            MCPAREA
-      ************ MCPDATA-REC
+                                       SPA-AREA
       *
            .
        400-PRINT-EXT.
@@ -461,36 +442,6 @@
                                            ORCSPRTNMAREA
                                            SPA-AREA
                                            SYS-1031-REC
-      *
-      **** 出力先プリンタ名割り当て情報編集
-      *    MOVE    SPACE               TO  SYS-1031-REC
-      *    INITIALIZE                  SYS-1031-REC
-      *    MOVE    "1031"              TO  SYS-1031-KANRICD
-      *    MOVE    "*"                 TO  SYS-1031-KBNCD
-      *    MOVE    SYS-1031-REC        TO  MCPDATA-REC
-      *    MOVE    "DBSELECT"          TO  MCP-FUNC
-      *    MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
-      *    MOVE    SPA-SRYYMD          TO  ORC-DBYMD
-      *    CALL    "ORCMCPSUB"          USING
-      *                                 MCPAREA
-      *                                 ORCMCPAREA
-      *                                 MCPDATA-REC
-      *    IF      MCP-RC              =   ZERO
-      *        MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
-      *        PERFORM 900-KANRIMST-READ-SEC
-      *        IF      MCP-RC              =   ZERO
-      *            MOVE    MCPDATA-REC     TO  SYS-1031-REC
-      *        END-IF
-      *    ELSE
-      *        INITIALIZE                  SYS-1031-REC
-      *        MOVE    1               TO  FLG-SYSKANRI
-      *    END-IF
-      *    MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-      *    MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
-      *    CALL    "ORCMCPSUB"          USING
-      *                                 MCPAREA
-      *                                 ORCMCPAREA
-      *********                         MCPDATA-REC
       *
       *    入力セット検索
            INITIALIZE                      INPUTSET-REC
