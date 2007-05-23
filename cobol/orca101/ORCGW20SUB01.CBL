@@ -131,7 +131,6 @@
                MOVE    1                   TO  W20SUB01-O-RC
            END-EVALUATE 
       *
-           MOVE    SPA-HOSPNUM         TO  NYUKHN-HOSPNUM
            PERFORM 800-NYUKHN-SEL-SEC
            IF    ( FLG-NYUKHN      =   ZERO )
       *
@@ -184,7 +183,6 @@
       *
            IF    ( WRK-CHG-SRYCD   NOT =   SPACE )
                INITIALIZE  NYUINKHN-REC
-               MOVE    SPA-HOSPNUM     TO  NYUKHN-HOSPNUM
                MOVE    WRK-CHG-SRYCD   TO  NYUKHN-KHNSRYCD
                MOVE    W20SUB01-I-KJNYMD
                                        TO  NYUKHN-YUKOSTYMD

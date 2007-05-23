@@ -3861,7 +3861,6 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *
            MOVE    ORC-DBYMD           TO  NYUKSNCHK-YUKOSTYMD
                                            NYUKSNCHK-YUKOEDYMD
-           MOVE    SPA-HOSPNUM         TO  NYUKSNCHK-HOSPNUM
            MOVE    NYUKSNCHK-REC       TO  MCPDATA-REC
            .
        2001-SEL-NYUKSNCHK-EXT.
@@ -3884,7 +3883,6 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *
            MOVE    ORC-DBYMD           TO  NYURYAKUSHO-YUKOSTYMD
                                            NYURYAKUSHO-YUKOEDYMD
-           MOVE    SPA-HOSPNUM         TO  NYURYAKUSHO-HOSPNUM
            MOVE    NYURYAKUSHO-REC     TO  MCPDATA-REC
            .
        2001-SEL-NYUINRYAKUSHO-EXT.

@@ -9739,8 +9739,6 @@
            MOVE    SYOKIKSN-IN-SANTEISTYMD    TO  NYUKSNCHK-YUKOSTYMD
                                                   NYUKSNCHK-YUKOEDYMD
       *
-           MOVE    SPA-HOSPNUM     TO  NYUKSNCHK-HOSPNUM
-      *
            MOVE    "tbl_nyuksnchk" TO  MCP-TABLE
            MOVE    "key"           TO  MCP-PATHNAME
            MOVE    NYUKSNCHK-REC   TO  MCPDATA-REC
@@ -13613,7 +13611,6 @@
        4801-SENTEI-SET-SEC         SECTION.
       *
            INITIALIZE  SENTEICDCHG-REC
-           MOVE    SPA-HOSPNUM     TO  SENCHG-HOSPNUM
            MOVE    LNK-SCNYUACCT-NYUKHN-SRYCD(1)
                                    TO  SENCHG-IPNSRYCD
            MOVE    SENTEICDCHG-REC TO  MCPDATA-REC

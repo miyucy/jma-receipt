@@ -667,7 +667,6 @@
       *
            ELSE
                INITIALIZE  SENTEICDCHG-REC
-               MOVE    TNS-HOSPNUM     TO  SENCHG-HOSPNUM
                MOVE    TNS-SRYCD       TO  SENCHG-IPNSRYCD
                MOVE    SENTEICDCHG-REC TO  MCPDATA-REC
                MOVE    "tbl_senteicdchg"   TO MCP-TABLE

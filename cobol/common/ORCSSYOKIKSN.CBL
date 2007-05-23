@@ -425,7 +425,6 @@
        210-NYUINKHN-SEL-SEC            SECTION.
       *
            INITIALIZE  NYUINKHN-REC
-           MOVE    SPA-HOSPNUM         TO  NYUKHN-HOSPNUM
            MOVE    SYOKIKSN-IN-KHNSRYCD
                                        TO  NYUKHN-KHNSRYCD
            MOVE    SYOKIKSN-IN-SANTEISTYMD

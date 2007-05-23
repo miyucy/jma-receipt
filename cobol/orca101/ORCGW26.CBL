@@ -1965,7 +1965,6 @@
            MOVE    ZERO                TO  FLG-NYUKSNCHK
       *
            INITIALIZE                      NYUKSNCHK-REC
-           MOVE    SPA-HOSPNUM         TO  NYUKSNCHK-HOSPNUM
            MOVE    WRK-BTU-NYUKSNKBN   TO  NYUKSNCHK-NYUINKBN
            MOVE    WRK-KSN-NYUKSNKBN   TO  NYUKSNCHK-KSNKBN
            MOVE    WRK-STYUKYMD        TO  NYUKSNCHK-YUKOSTYMD

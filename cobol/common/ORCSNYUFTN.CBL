@@ -2526,7 +2526,6 @@ grpsys                            SPA-AREA
            IF        FLG-SENTEI-SET    =    1
                MOVE    ZERO            TO  FLG-SENTEICDCHG
                INITIALIZE  SENTEICDCHG-REC
-               MOVE    LNK-S02-HOSPNUM TO    SENCHG-HOSPNUM
                MOVE    NSRY-SRYCD(SENTEI-IDX)
                                        TO  SENCHG-IPNSRYCD
                MOVE    SENTEICDCHG-REC TO  MCPDATA-REC

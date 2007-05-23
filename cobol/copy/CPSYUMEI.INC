@@ -63,9 +63,9 @@
       *日報キー
            03  SMEI-DAILYKEY            PIC  X(12).
       *収納履歴番号
-           03  SMEI-SYURRKNUM           PIC S9(9)   BINARY.
+           03  SMEI-SYURRKNUM           PIC 9(2).
       *収納履歴枝番号
-           03  SMEI-SYUEDANUM           PIC S9(9)   BINARY.
+           03  SMEI-SYUEDANUM           PIC 9(2).
       *収納履歴更新区分
            03  SMEI-SYURRKUPDKBN        PIC X(01).
       *端末ＩＤ

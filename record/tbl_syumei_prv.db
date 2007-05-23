@@ -18,8 +18,8 @@ tbl_syumei_prv {
 	NYUKIN_HOHO			char(2);
 	JOUTAIKBN			char(1);
 	DAILYKEY			char(12);
-	SYURRKNUM			integer;
-	SYUEDANUM			integer;
+	SYURRKNUM			number(2,0);
+	SYUEDANUM			number(2,0);
 	SYURRKUPDKBN			char(1);
 	TERMID  			varchar(16);
 	OPID    			varchar(16);

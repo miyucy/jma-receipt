@@ -2540,7 +2540,6 @@
            MOVE    ZERO                TO  FLG-NYUKSNCHK
       *
            INITIALIZE                      NYUKSNCHK-REC
-           MOVE    SPA-HOSPNUM             TO  NYUKSNCHK-HOSPNUM
            IF    ( WRK-BRM-NYUKSNKBN   NOT =   SPACE )
                MOVE    WRK-BRM-NYUKSNKBN   TO  NYUKSNCHK-NYUINKBN
            ELSE
