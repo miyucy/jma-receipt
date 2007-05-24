@@ -2267,10 +2267,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    WRK-PARAEDABAN      TO  PARA-EDANUM
       *    ＤＢからの作成でない
            MOVE    ALL "1"             TO  WKSRY-TERMID
-      *@TEST
-           MOVE    ALL "9"             TO  WKSRY-UPHMS
-           MOVE    ALL "9"             TO  WKSRYP-YOBI
-      *@TEST
       *
            MOVE    WKSRYACT-REC        TO  PARA-WKSRYACT-REC
            MOVE    WKSRYACTPLUS-REC    TO  PARA-WKSRYACTPLUS-REC
@@ -2789,15 +2785,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    "SYUNOU"            TO  PARA-FILEMEI
            ADD     1                   TO  WRK-PARAEDABAN
            MOVE    WRK-PARAEDABAN      TO  PARA-EDANUM
-      *@TEST
-      *    TXTデータの為
-           MOVE    ALL "9"             TO  SYU-TERMID
-           MOVE    ALL "9"             TO  SYU-OPID
-           MOVE    ALL "9"             TO  SYU-CREYMD
-           MOVE    ALL "9"             TO  SYU-UPYMD
-           MOVE    ALL "9"             TO  SYU-UPHMS
-           MOVE    ALL "9"             TO  SYU-UPSRYYMD
-      *@TEST
            MOVE    SYUNOU-REC          TO  PARA-DATA-REC
            WRITE   PARA-REC
       *

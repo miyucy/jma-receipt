@@ -1411,7 +1411,6 @@
                MOVE    WRK-EDANUM          TO  PARA-EDANUM02
       *@TEST
                MOVE    SRT-WKSRYACT-REC (IDX2) TO  WRK-WKSRYACT-REC
-      *D       MOVE    ALL "9"             TO  WRK-WKSRYP-YOBI
                MOVE    WRK-WKSRYACT-REC    TO  PARA-DATA-REC02
                WRITE   PARA-REC02
       *
@@ -3531,9 +3530,7 @@
                    ADD     1                   TO  IDX2
                    MOVE    "WKSRYACT"          TO  PARA-FILEMEI
                    MOVE    IDX2                TO  PARA-EDANUM
-      *@TEST
                    MOVE    LNK-WKSRYACT-REC (IDX) TO  WRK-WKSRYACT-REC
-      *D           MOVE    ALL "9"             TO  WRK-WKSRYP-YOBI
                    MOVE    WRK-WKSRYACT-REC    TO  PARA-DATA-REC
                    WRITE                       PARA-REC
                ELSE
@@ -5459,11 +5456,8 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                    ADD     1                   TO  IDX2
                    MOVE    "WKSRYACT"          TO  PARA-FILEMEIPRV
                    MOVE    IDX2                TO  PARA-EDANUMPRV
-      *            MOVE    LNK-WKSRYACT-REC (IDX)
-      *                                        TO  PARA-DATA-RECPRV
-      *@TEST
-                   MOVE    LNK-WKSRYACT-REC (IDX) TO  WRK-WKSRYACT-REC
-      *D           MOVE    ALL "9"             TO  WRK-WKSRYP-YOBI
+                   MOVE    LNK-WKSRYACT-REC (IDX)
+                                               TO  PARA-DATA-RECPRV
                    MOVE    WRK-WKSRYACT-REC    TO  PARA-DATA-RECPRV
                    WRITE                       PARA-RECPRV
                ELSE
