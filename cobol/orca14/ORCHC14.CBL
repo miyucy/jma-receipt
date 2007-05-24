@@ -308,6 +308,7 @@
        400-SYOKI-PRINT-SEC             SECTION.
       *
       *    ¥Õ¥¡¥¤¥ë£Ï£Ð£Å£Î
+           MOVE    SPA-HOSPNUM         TO  HC01PARA-HOSPNUM
            MOVE    "HC14"              TO  HC01PARA-FORM-ID
            MOVE    SPA-TERMID          TO  HC01PARA-TERMID
            MOVE    SYS-TIME            TO  HC01PARA-SYOHMS
@@ -334,12 +335,13 @@
       *
             INITIALIZE                 ORCSMKPRTAREA
             MOVE   "HC01.sh"           TO  MKPRT-ID
-            MOVE   "HC14.dia"          TO  MKPRT-DIA
-            MOVE   "HC14.def"          TO  MKPRT-DEF
+            MOVE   "HC14.red"          TO  MKPRT-DIA
+            MOVE   SPACE               TO  MKPRT-DEF
             MOVE   HC01PARA            TO  MKPRT-DAT
             MOVE   SYS-1031-PRTNM(7)   TO  MKPRT-PRTNM
             CALL   "ORCSMKPRT"         USING
                                        ORCSMKPRTAREA
+                                       SPA-AREA
       *
            .
        400-PRINT-EXT.
