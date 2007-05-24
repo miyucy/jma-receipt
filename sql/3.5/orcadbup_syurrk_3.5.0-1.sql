@@ -141,16 +141,10 @@ create	table	tbl_syurrk	(
 	OPID	varchar(16),
 	CREYMD	char(8),
 	UPYMD	char(8),
-	UPHMS	char(6),
-	primary	key(
-		HOSPNUM,
-		PTID,
-		NYUGAIKBN,
-		DENPNUM,
-		SYURRKNUM,
-		SYUEDANUM
-	)
+	UPHMS	char(6)
 );
+
+alter table tbl_syurrk add constraint tbl_syurrk_primary_key primary key (hospnum, ptid, nyugaikbn, denpnum, syurrknum, syuedanum);
 
 insert into tbl_syurrk 
 ( 
