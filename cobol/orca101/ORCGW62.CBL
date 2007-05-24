@@ -330,8 +330,21 @@
                MOVE    "primary"       TO  MCP-PATHNAME
                MOVE    MKPASS-OT-01    TO  ORCA-BLOB-FILE
 grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
-                                                   MCPDATA-REC
+                                                   ORCA-BLOB
                                                    SPA-AREA
+               MOVE    ORCA-BLOB-OBJECT    TO  SPA-W62-OBJECT
+           END-IF
+      *
+           MOVE    ZERO            TO  SPA-W62-PRTNUM-MAX
+      *
+      *    外来プリンタセット
+           MOVE    SPACE               TO  SYSKANRI-REC
+           INITIALIZE                      SYSKANRI-REC
+           MOVE    SPA-HOSPNUM         TO  SYS-HOSPNUM
+           MOVE    "1031"              TO  SYS-KANRICD
+           MOVE    SPA-W01-STYUKYMD    TO  SYS-STYUKYMD
+                                           SYS-EDYUKYMD
+           MOVE    SYSKANRI-REC        TO  MCPDATA-REC
            PERFORM 900-SYSKANRI-SELECT-SEC
            PERFORM UNTIL   FLG-SYSKANRI    NOT =   ZERO
                MOVE    MCPDATA-REC     TO  SYS-1031-REC
@@ -686,6 +699,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *    ジョブ管理削除処理
            MOVE    "ALL"           TO  SJOBKANRI-MODE
            INITIALIZE                  JOBKANRI-REC
+           MOVE    SPA-HOSPNUM     TO  JOB-HOSPNUM
            MOVE    WRK-CONS-JOB-SHELLID
                                    TO  JOB-SHELLID
            CALL    "ORCSJOB"           USING
@@ -839,6 +853,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            MOVE    "DEL"           TO  SJOBKANRI-MODE
            INITIALIZE                  JOBKANRI-REC
+           MOVE    SPA-HOSPNUM     TO  JOB-HOSPNUM
            MOVE    WRK-CONS-JOB-JOBID
                                    TO  JOB-JOBID
            MOVE    WRK-CONS-JOB-SHELLID
@@ -849,6 +864,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            MOVE    "JBS"           TO  SJOBKANRI-MODE
            INITIALIZE                  JOBKANRI-REC
+           MOVE    SPA-HOSPNUM     TO  JOB-HOSPNUM
            MOVE    WRK-CONS-JOB-JOBID
                                    TO  JOB-JOBID
            MOVE    WRK-CONS-JOB-SHELLID
