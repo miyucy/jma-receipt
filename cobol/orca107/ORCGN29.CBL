@@ -265,10 +265,12 @@
                        MOVE    IDX             TO  JOB-JOBID
                        MOVE    WRK-CONS-JOB-SHELLID
                                                TO  JOB-SHELLID
+                       MOVE    SPA-HOSPNUM     TO  JOB-HOSPNUM
                        CALL    "ORCSJOB"       USING
                                                ORCSJOBKANRIAREA  
                                                JOBKANRI-REC 
-                       IF      SJOBKANRI-RETURN    =   ZERO
+                                               SPA-AREA
+                      IF      SJOBKANRI-RETURN    =   ZERO
                            PERFORM 4901-KAKUNIN-HYOUJI-SEC
                        END-IF
                    END-PERFORM
@@ -281,9 +283,11 @@
                                        TO  JOB-JOBID
                MOVE    WRK-CONS-JOB-SHELLID
                                        TO  JOB-SHELLID
+               MOVE    SPA-HOSPNUM     TO  JOB-HOSPNUM
                CALL    "ORCSJOB"       USING
                                            ORCSJOBKANRIAREA  
                                            JOBKANRI-REC
+                                           SPA-AREA
                MOVE    1               TO  IDX 
                IF      SJOBKANRI-RETURN    =   ZERO
                    PERFORM 4901-KAKUNIN-HYOUJI-SEC
