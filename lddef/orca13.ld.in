@@ -46,7 +46,6 @@ db	{
 	tbl_userbyomei;
 	tbl_jobkanri;
 	query_ptinf;
-	query_ptinf_cnt;
 	tbl_ptnyuinrrk;
 };
 
