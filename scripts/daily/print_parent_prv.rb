@@ -300,6 +300,15 @@ end
 	ls_w1 = ''	# 一時用文字列領域
 	ls_w1 = d2[0, 30].strip	# ファイル名を後ろの空白を除いて取得
 	site_flag = d2[60, 1].strip		# site固有判定フラグの取得
+#   diaファイルを強制的にredに変更 by  take siteも見る必要がある
+	if site_flag == '1'
+#		if ls_w1 == 'HC06V01' || 'HC06V02'
+		if ls_w1 == 'HC06V01'
+			ls_w1 = ls_w1 + '.red'
+   			puts 'dia hit!!'
+		end
+	end
+#   diaファイルを強制的にredに変更
 	if ls_w1 =~ /.red$/
 		# .redファイルである
 
