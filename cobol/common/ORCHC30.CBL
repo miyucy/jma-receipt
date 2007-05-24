@@ -1275,6 +1275,7 @@
        270-PRT-WRITE-SEC           SECTION.
       *
       *    印刷用ファイル作成
+           MOVE    SPA-HOSPNUM     TO  HC01PARA-HOSPNUM
            MOVE    "HC30"          TO  HC01PARA-FORM-ID
            MOVE    SPA-TERMID      TO  HC01PARA-TERMID
            MOVE    SYS-TIME        TO  HC01PARA-SYOHMS

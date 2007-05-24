@@ -1621,6 +1621,7 @@
        20031-HCN33-ONL-SEC                SECTION.
       *
       *    ¥Õ¥¡¥¤¥ë£Ï£Ð£Å£Î
+           MOVE    SPA-HOSPNUM         TO  HC01PARA-HOSPNUM
            MOVE    "HC01"              TO  HC01PARA-FORM-ID
            MOVE    SPA-TERMID          TO  HC01PARA-TERMID
            MOVE    SYS-TIME            TO  HC01PARA-SYOHMS
@@ -1779,6 +1780,7 @@
       *
       *    ¥ª¥ó¥é¥¤¥ó¤Î¤ß
       *    ¥Õ¥¡¥¤¥ë£Ï£Ð£Å£Î
+           MOVE    SPA-HOSPNUM         TO  HC01PARA-HOSPNUM
            MOVE    "HC01"              TO  HC01PARA-FORM-ID
            MOVE    SPA-TERMID          TO  HC01PARA-TERMID
            MOVE    SYS-TIME            TO  HC01PARA-SYOHMS

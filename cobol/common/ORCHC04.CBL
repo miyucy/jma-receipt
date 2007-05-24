@@ -31,6 +31,7 @@
       *  03.04.01    NACL-森脇    07/01/17  医療機関名称、住所セット変更
       *  03.04.02    NACL-多々納  07/02/28  包括分対象外追加
       *  03.05.00    NACL-多々納  07/04/XX  グループ診療対応
+      *  03.05.00    NACL-多々納  07/05/22  再印刷処理追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -387,6 +388,7 @@
        400-SYOKI-PRINT-SEC             SECTION.
       *
       *    ファイルＯＰＥＮ
+           MOVE    SPA-HOSPNUM         TO  HC01PARA-HOSPNUM
            MOVE    "HC04"              TO  HC01PARA-FORM-ID
            MOVE    SPA-TERMID          TO  HC01PARA-TERMID
            MOVE    SYS-TIME            TO  HC01PARA-SYOHMS

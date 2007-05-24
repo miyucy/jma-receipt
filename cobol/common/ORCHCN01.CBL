@@ -479,6 +479,7 @@
        2003-HCN01-PRINT-SEC                SECTION.
       *
       *    ¥Õ¥¡¥¤¥ë£Ï£Ð£Å£Î
+           MOVE    SPA-HOSPNUM         TO  HC01PARA-HOSPNUM
            MOVE    "HC01"              TO  HC01PARA-FORM-ID
            MOVE    SPA-TERMID          TO  HC01PARA-TERMID
            MOVE    SYS-TIME            TO  HC01PARA-SYOHMS
@@ -531,6 +532,7 @@
        2005-HCN011-PRINT-SEC                SECTION.
       *
       *    ¥Õ¥¡¥¤¥ë£Ï£Ð£Å£Î
+           MOVE    SPA-HOSPNUM         TO  HC01PARA-HOSPNUM
            MOVE    "HC01"              TO  HC01PARA-FORM-ID
            MOVE    SPA-TERMID          TO  HC01PARA-TERMID
            MOVE    SYS-TIME            TO  HC01PARA-SYOHMS
