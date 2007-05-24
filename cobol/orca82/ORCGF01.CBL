@@ -248,6 +248,7 @@
                    MOVE    1                   TO  JOB-JOBID
                    MOVE    "ORCBSF1"           TO  JOB-SHELLID
                    MOVE    ALL "*"             TO  JOB-TERMID
+                   MOVE    SPA-HOSPNUM         TO  JOB-HOSPNUM
                    CALL    "ORCSJOB"           USING
                                                WRK-JOBKANRI-AREA  
                                                JOBKANRI-REC
@@ -258,6 +259,7 @@
                        MOVE    1                   TO  JOB-JOBID
                        MOVE    "ORCBSF1"           TO  JOB-SHELLID
                        MOVE    ALL "*"             TO  JOB-TERMID
+                       MOVE    SPA-HOSPNUM         TO  JOB-HOSPNUM
                        CALL    "ORCSJOB"           USING
                                                    WRK-JOBKANRI-AREA
                                                    JOBKANRI-REC
@@ -269,6 +271,7 @@
                    MOVE    "ORCBSF1"           TO  JOB-SHELLID
                    MOVE    ALL "*"             TO  JOB-TERMID
                    MOVE    "ÇÞÂÎÊÑ´¹"          TO  JOB-SHELLMSG
+                   MOVE    SPA-HOSPNUM         TO  JOB-HOSPNUM
                    CALL    "ORCSJOB"           USING
                                                WRK-JOBKANRI-AREA
                                                JOBKANRI-REC
@@ -545,6 +548,7 @@
            MOVE    1                  TO  JOB-JOBID.
            MOVE    "ORCBSF1"          TO  JOB-SHELLID.
            MOVE    ALL "*"            TO  JOB-TERMID.
+           MOVE    SPA-HOSPNUM         TO  JOB-HOSPNUM.
            CALL    "ORCSJOB"          USING
                                       WRK-JOBKANRI-AREA  
                                       JOBKANRI-REC.
