@@ -17,7 +17,7 @@
       ********************************************************************
        01  QSUB03-LNK.
            03  QSUB03-IN-AREA.
-               05  QSUB03-HOSPID       PIC X(24).
+               05  QSUB03-HOSPNUM      PIC 9(02).
                05  QSUB03-PTID         PIC 9(10).
                05  QSUB03-KJNYMD       PIC X(08).
            03  QSUB03-OT-AREA.

@@ -20,4 +20,4 @@
            03  QSUB01-TERMID           PIC X(64).
            03  QSUB01-SPA-AREA.
                05  QSUB01-SPA-OCC      OCCURS  10.
-                   07  QSUB01-SPA      PIC X(30000).
+                   07  QSUB01-SPA      PIC X(50000).

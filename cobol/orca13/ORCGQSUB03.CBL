@@ -27,6 +27,7 @@
       *****************************************************************
       *  ¥×¥í¥°¥é¥à½¤ÀµÍúÎò
       * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      * 03.05.00     NACL-ÂÀÅÄ    07.05.23  ¥°¥ë¡¼¥×¿ÇÎÅÂÐ±þ
       *****************************************************************
        ENVIRONMENT                 DIVISION.
        CONFIGURATION               SECTION.
@@ -38,8 +39,6 @@
       *
       *
        WORKING-STORAGE             SECTION.
-      *
-       COPY    "COMMON-SPA".
       *
       *    ¥Õ¥é¥°ÎÎ°è
        01  FLG-AREA.
@@ -102,9 +101,11 @@
        LINKAGE                     SECTION.
       *
            COPY    "CPQSUB03.INC".
+           COPY    "COMMON-SPA".
       *
        PROCEDURE                   DIVISION    USING
-           QSUB03-LNK.
+           QSUB03-LNK
+           SPA-AREA.
       *****************************************************************
       *    ¼ç¡¡¡¡½èÍý
       *****************************************************************
@@ -160,12 +161,11 @@
       *
       *    Æþ±¡ÍúÎòÈ½Äê
            INITIALIZE                      PTNYUINRRK-REC
-      *****MOVE    QSUB03-HOSPID       TO  PTNYUINRRK-HOSPID
+           MOVE    QSUB03-HOSPNUM       TO  PTNYUINRRK-HOSPNUM
            MOVE    QSUB03-PTID         TO  PTNYUINRRK-PTID
            MOVE    QSUB03-KJNYMD       TO  PTNYUINRRK-NYUINYMD
            MOVE    QSUB03-KJNYMD       TO  PTNYUINRRK-TAIINYMD
       *
-           MOVE    SPA-HOSPNUM         TO  PTNYUINRRK-HOSPNUM
            MOVE    PTNYUINRRK-REC      TO  MCPDATA-REC
            MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
            MOVE    "key11"             TO  MCP-PATHNAME
@@ -224,12 +224,11 @@
            MOVE    ZERO                TO  FLG-JYURRK
       *
            INITIALIZE                      JYURRK-REC
-      *****MOVE    QSUB03-HOSPID       TO  JYURRK-HOSPID
+           MOVE    QSUB03-HOSPNUM       TO  JYURRK-HOSPNUM
            MOVE    "2"                 TO  JYURRK-NYUGAIKBN
            MOVE    QSUB03-PTID         TO  JYURRK-PTID
            MOVE    QSUB03-KJNYMD       TO  JYURRK-SRYYMD
       *
-           MOVE    SPA-HOSPNUM         TO  JYURRK-HOSPNUM
            MOVE    JYURRK-REC          TO  MCPDATA-REC
            MOVE    "tbl_jyurrk"        TO  MCP-TABLE
            MOVE    "key10"             TO  MCP-PATHNAME
@@ -265,10 +264,9 @@
       *
       *    ¿ÇÎÅ²ÊÎò¤ò¸¡º÷
            INITIALIZE                      SRYKARRK-REC
-      *****MOVE    QSUB03-HOSPID       TO  KARRK-HOSPID
+           MOVE    QSUB03-HOSPNUM       TO  KARRK-HOSPNUM
            MOVE    QSUB03-PTID         TO  KARRK-PTID
       *
-           MOVE    SPA-HOSPNUM         TO  KARRK-HOSPNUM
            MOVE    SRYKARRK-REC        TO  MCPDATA-REC
            MOVE    "tbl_srykarrk"      TO  MCP-TABLE
            MOVE    "key2"              TO  MCP-PATHNAME
@@ -335,11 +333,10 @@
        20011-HKNCOMBI-CHK1-SEC         SECTION.
       *
            INITIALIZE                      HKNCOMBI-REC
-      *****MOVE    QSUB03-HOSPID       TO  COMB-HOSPID
+           MOVE    QSUB03-HOSPNUM       TO  COMB-HOSPNUM
            MOVE    QSUB03-PTID         TO  COMB-PTID
            MOVE    WRK-HKNCOMBI        TO  COMB-HKNCOMBINUM
       *
-           MOVE    SPA-HOSPNUM         TO  COMB-HOSPNUM
            MOVE    HKNCOMBI-REC        TO  MCPDATA-REC
            MOVE    "tbl_hkncombi"      TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
@@ -370,10 +367,9 @@
            MOVE    ZERO                TO  FLG-HKNCOMBI
       *
            INITIALIZE                      HKNCOMBI-REC
-      *****MOVE    QSUB03-HOSPID       TO  COMB-HOSPID
+           MOVE    QSUB03-HOSPNUM       TO  COMB-HOSPNUM
            MOVE    QSUB03-PTID         TO  COMB-PTID
       *
-           MOVE    SPA-HOSPNUM         TO  COMB-HOSPNUM
            MOVE    HKNCOMBI-REC        TO  MCPDATA-REC
            MOVE    "tbl_hkncombi"      TO  MCP-TABLE
            MOVE    "key2"              TO  MCP-PATHNAME
@@ -452,10 +448,9 @@
        910-DBSELECT-SEC                SECTION.
       *
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           CALL    "ORCDBMAIN"         USING
-                                           MCPAREA
-                                           MCPDATA-REC
-                                           SPA-AREA
+           CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
            IF    ( MCP-RC          =   ZERO )
                PERFORM 910-DBFETCH-SEC
            END-IF
@@ -470,10 +465,9 @@
        911-DBSELECT-SEC                SECTION.
       *
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           CALL    "ORCDBMAIN"         USING
-                                           MCPAREA
-                                           MCPDATA-REC
-                                           SPA-AREA
+           CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
       *
@@ -485,10 +479,9 @@
        910-DBFETCH-SEC                 SECTION.
       *
            MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "ORCDBMAIN"         USING
-                                           MCPAREA
-                                           MCPDATA-REC
-                                           SPA-AREA
+           CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
       *
@@ -500,10 +493,9 @@
        910-DBCLOSECURSOR-SEC           SECTION.
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           CALL    "ORCDBMAIN"         USING
-                                           MCPAREA
-                                           MCPDATA-REC
-                                           SPA-AREA
+           CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
       *

@@ -402,7 +402,6 @@ DEF_files = \
 
 DB_files = \
 	query_ptinf.db \
-	query_ptinf_cnt.db \
 	shell.db \
 	tbl_adrs.db \
 	tbl_byomei.db \

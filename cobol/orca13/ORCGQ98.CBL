@@ -31,6 +31,7 @@
       *                                     ²èÌÌ£Ñ£É£Ä£±¤ò
       *                                     £Ñ£±£°£°¤ËÌ¾¾ÎÊÑ¹¹
       *                                     ¿·¤¿¤Ë£Ñ£É£Ä£±¤òÄÉ²Ã
+      * 03.05.00     NACL-ÂÀÅÄ    07.05.23  ¥°¥ë¡¼¥×¿ÇÎÅÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT                     DIVISION.
@@ -473,6 +474,7 @@
       *
       *    ½»½ê¥Þ¥¹¥¿¸¡º÷
            INITIALIZE                            ADRS-REC
+           MOVE  SPA-HOSPNUM                 TO  ADRS-HOSPNUM
            MOVE  SPA-GMN-Q98-TLPUBCD(IDX1)   TO  ADRS-LPUBCD
            MOVE  SPA-GMN-Q98-TPOST  (IDX1)   TO  ADRS-POST
            MOVE  SPA-GMN-Q98-TRENNUM(IDX1)   TO  ADRS-EDANUM
@@ -704,9 +706,9 @@
        900-SYSKANRI-KEY2-SEL-SEC       SECTION.
       *
            MOVE    ZERO                TO  FLG-SYSKANRI
+           MOVE    SPA-HOSPNUM         TO  SYS-1015-HOSPNUM
            MOVE    SPA-SYSYMD          TO  SYS-1015-STYUKYMD
                                            SYS-1015-EDYUKYMD
-           MOVE    SPA-HOSPNUM         TO  SYS-1015-HOSPNUM
            MOVE    SYS-1015-REC        TO  MCPDATA-REC
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key2"              TO  MCP-PATHNAME
@@ -762,7 +764,6 @@
        900-ADRS-KEY-SEL-SEC             SECTION.
       *
            MOVE    ZERO                TO  FLG-ADRS
-           MOVE    SPA-HOSPNUM         TO  ADRS-HOSPNUM
            MOVE    ADRS-REC            TO  MCPDATA-REC
            MOVE    "tbl_adrs"          TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
@@ -786,10 +787,9 @@
        910-DBSELECT-SEC               SECTION.
       *
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           CALL    "ORCDBMAIN"         USING
-                                           MCPAREA
-                                           MCPDATA-REC
-                                           SPA-AREA
+           CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
            IF    ( MCP-RC          =   ZERO )
                PERFORM 910-DBFETCH-SEC
            END-IF
@@ -804,10 +804,9 @@
        910-DBFETCH-SEC                 SECTION.
       *
            MOVE    "DBFETCH"       TO  MCP-FUNC
-           CALL    "ORCDBMAIN"     USING
-                                       MCPAREA
-                                       MCPDATA-REC
-                                       SPA-AREA
+           CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
       *
@@ -819,10 +818,9 @@
        910-DBCLOSECURSOR-SEC           SECTION.
       *
            MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
-           CALL    "ORCDBMAIN"     USING
-                                       MCPAREA
-                                       MCPDATA-REC
-                                       SPA-AREA
+           CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
       *
@@ -834,10 +832,9 @@
        900-PUT-WINDOW              SECTION.
       *
            MOVE    "PUTWINDOW"     TO  MCP-FUNC.
-           CALL    "ORCDBMAIN"     USING
-                                       MCPAREA
-                                       MCPDATA-REC
-                                       SPA-AREA
+           CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
        900-PUT-WINDOW-EXT.

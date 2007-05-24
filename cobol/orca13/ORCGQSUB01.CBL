@@ -27,6 +27,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  03.05.00    NACL-太田    07.05.23  グループ診療対応
       *****************************************************************
        ENVIRONMENT                 DIVISION.
        CONFIGURATION               SECTION.
@@ -43,13 +44,13 @@
       *
       *    ＳＰＡパラメタデータ
        FD  SPA-FILE.
-       01  SPA-DATA-REC            PIC X(30000).
+       01  SPA-DATA-REC            PIC X(50000).
       *
        WORKING-STORAGE             SECTION.
       *
       * ＳＰＡデータ
        01  FILE-NAME1.
-           03  FILLER              PIC X(09)   VALUE   "/var/tmp/".
+           03  FILLER              PIC X(05)   VALUE   "/tmp/".
            03  FILLER              PIC X(06)   VALUE   "Q02SPA".
            03  FILE-TERMID1        PIC X(64)   VALUE   SPACE.
            03  FILLER              PIC X(04)   VALUE   ".TXT".

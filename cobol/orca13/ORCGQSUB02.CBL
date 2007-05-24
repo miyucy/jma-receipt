@@ -28,6 +28,7 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       * 01.00.01     NACL-太田    04/06/21  最終受診日検索条件修正
+      * 03.05.00     NACL-太田    07.05.23  グループ診療対応
       *****************************************************************
        ENVIRONMENT                 DIVISION.
        CONFIGURATION               SECTION.
@@ -520,7 +521,7 @@
       *
       *    最終受診日
            IF  ( SPA-Q01-GTBL (3)  =   "1" )
-               STRING  ",(SELECT HOSPID,PTID FROM "
+               STRING  ",(SELECT HOSPNUM,PTID FROM "
                                                    DELIMITED  BY  SIZE
                        "TBL_SRYKARRK "             DELIMITED  BY  SIZE
                INTO    WRK-SQL
@@ -536,7 +537,7 @@
                    END-STRING
                END-IF
       *
-               STRING  "GROUP BY HOSPID,PTID  "    DELIMITED  BY  SIZE
+               STRING  "GROUP BY HOSPNUM,PTID  "   DELIMITED  BY  SIZE
                        "HAVING MAX(LASTYMD) BETWEEN '"
                                                    DELIMITED  BY  SIZE
                        WRK-STLASTYMD               DELIMITED  BY  SPACE
@@ -600,8 +601,8 @@
       *****************************************************************
        1001-WHERE-EDIT-SEC             SECTION.
       *
-           STRING  " WHERE A.HOSPID='"         DELIMITED  BY   SIZE
-                   SPA-HOSPID                   DELIMITED  BY  SIZE
+           STRING  " WHERE A.HOSPNUM='"         DELIMITED  BY  SIZE
+                   SPA-HOSPNUM                  DELIMITED  BY  SIZE
                    "' AND "                     DELIMITED  BY  SIZE
            INTO    WRK-SQL
            WITH    POINTER WRK-SQL-PNT
@@ -737,9 +738,9 @@
                WITH    POINTER WRK-SQL-PNT
                END-STRING
            WHEN    "3"
-               STRING  ",(SELECT HOSPID,PTID,STYMD,EDYMD"
+               STRING  ",(SELECT HOSPNUM,PTID,STYMD,EDYMD"
                                                    DELIMITED  BY  SIZE
-                       " FROM TBL_TNKRRK UNION ALL SELECT HOSPID,PTID,"
+                       " FROM TBL_TNKRRK UNION ALL SELECT HOSPNUM,PTID,"
                                                    DELIMITED  BY  SIZE
                        "NINSTYMD AS STYMD,NINEDYMD AS EDYMD"
                                                    DELIMITED  BY  SIZE
@@ -2134,8 +2135,8 @@
                END-STRING
            END-IF
       *
-           STRING  "((H.HOSPID='"              DELIMITED   BY  SIZE
-                   SPA-HOSPID                  DELIMITED   BY  SIZE
+           STRING  "((H.HOSPNUM='"             DELIMITED   BY  SIZE
+                   SPA-HOSPNUM                 DELIMITED   BY  SIZE
                    "')AND("                    DELIMITED   BY  SIZE
                    "H.PTID=A.PTID) "           DELIMITED   BY  SIZE
            INTO    WRK-SQL
@@ -2802,6 +2803,17 @@
            WITH    POINTER WRK-SQL-PNT
            END-STRING
       *
+           IF    ( QSUB02-LIMITCONTROL     =   1 )
+      *
+               STRING  " LIMIT "                   DELIMITED   BY  SIZE
+                       QSUB02-LIMIT                DELIMITED   BY  SIZE
+                       " OFFSET "                  DELIMITED   BY  SIZE
+                       QSUB02-OFFSET               DELIMITED   BY  SIZE
+               INTO    WRK-SQL
+               WITH    POINTER WRK-SQL-PNT
+               END-STRING
+           END-IF
+      *
            .
       *
        1001-ORDER-EDIT-EXT.
@@ -2820,8 +2832,8 @@
       *
            STRING  "(("                        DELIMITED   BY  SIZE
                    WRK-SQL-TBL-NAME            DELIMITED   BY  SPACE
-                   ".HOSPID='"                 DELIMITED   BY  SIZE
-                   SPA-HOSPID                  DELIMITED   BY  SIZE
+                   ".HOSPNUM='"                DELIMITED   BY  SIZE
+                   SPA-HOSPNUM                 DELIMITED   BY  SIZE
                    "')AND("                    DELIMITED   BY  SIZE
                    WRK-SQL-TBL-NAME            DELIMITED   BY  SPACE
                    ".PTID=A.PTID) "            DELIMITED   BY  SIZE
@@ -2967,8 +2979,8 @@
       *
            STRING  "(("                        DELIMITED   BY  SIZE
                    WRK-SQL-TBL-NAME            DELIMITED   BY  SPACE
-                   ".HOSPID='"                 DELIMITED   BY  SIZE
-                   SPA-HOSPID                  DELIMITED   BY  SIZE
+                   ".HOSPNUM='"                DELIMITED   BY  SIZE
+                   SPA-HOSPNUM                 DELIMITED   BY  SIZE
                    "')AND("                    DELIMITED   BY  SIZE
                    WRK-SQL-TBL-NAME            DELIMITED   BY  SPACE
                    ".PTID=A.PTID) "            DELIMITED   BY  SIZE

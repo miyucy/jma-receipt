@@ -15,7 +15,7 @@ fi
 #        $2  TERMID
 #        $3  SYSYMD
 #        $4  SYSDATE
-#        $5  HOSPID
+#        $5  HOSPNUM
 #        $6  OPID
 #        $7  エラーファイル
 #        $8  ジョブＩＤ
@@ -39,6 +39,6 @@ fi
             rm  $1
         fi
 
-       $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE$8$9
+       $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter "JBE$8$9,$5"
 
         exit

@@ -27,6 +27,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  03.05.00    NACL-太田    07.05.23  グループ診療対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -251,9 +252,11 @@
            MOVE    WRK-JOBID       TO  JOB-JOBID
            MOVE    CONST-JOB-SHELLID
                                    TO  JOB-SHELLID
+           MOVE    SPA-HOSPNUM     TO  JOB-HOSPNUM
            CALL    "ORCSJOB"       USING
                                    ORCSJOBKANRIAREA
                                    JOBKANRI-REC 
+                                   SPA-AREA
            IF    ( SJOBKANRI-RETURN    =   ZERO )
       *
                COMPUTE IDX-LST     =   IDX-LST +   1
@@ -370,10 +373,9 @@
        900-PUT-WINDOW              SECTION.
       *
            MOVE   "PUTWINDOW"       TO  MCP-FUNC.
-           CALL   "ORCDBMAIN"       USING
-                                        MCPAREA
-                                        MCPDATA-REC
-                                        SPA-AREA
+           CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
        900-PUT-WINDOW-EXT.

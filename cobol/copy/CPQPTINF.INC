@@ -26,8 +26,8 @@
       *01  QUERY-PTINF-REC.
       *¥­¡¼
            03  QUERY-PTINF-KEY.
-      *°åÎÅµ¡´Ø£É£Ä
-               05  QUERY-PTINF-HOSPID          PIC  X(24).
+      *°åÎÅµ¡´ØÈÖ¹æ
+               05  QUERY-PTINF-HOSPNUM         PIC  9(02).
       *´µ¼Ô£É£Ä
                05  QUERY-PTINF-PTID            PIC  9(10).
       *¥«¥Ê»áÌ¾
@@ -50,6 +50,8 @@
            03  QUERY-PTINF-TSTPTNUMKBN         PIC  X(1).
       *´µ¼ÔÈÖ¹æ
            03  QUERY-PTINF-PTNUM               PIC  X(20).
+      *·ï¿ô
+           03  QUERY-PTINF-TOTAL               PIC  9(10).
       *
       *¥Õ¥ê¡¼£Ó£Ñ£ÌÊ¸¡ÊWHERE¶ç¡Ë
            03  QUERY-PTINF-SQL                 PIC  X(15000).

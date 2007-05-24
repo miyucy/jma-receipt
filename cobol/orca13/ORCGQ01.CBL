@@ -62,6 +62,7 @@
       *                                    |条件AND,ORの選択を可とする
       * 01.00.07     NACL-太田    03/09/10 +状態を追加
       * 01.00.08     NACL-太田    03/09/24 +診療科を追加
+      * 03.05.00     NACL-太田    07.05.23  グループ診療対応
       *****************************************************************
       *
        ENVIRONMENT                     DIVISION.
@@ -1170,7 +1171,7 @@
       *        xxx 存在しなかった場合 xxx
       *        自院病名マスタ−読込処理２（データ存在チェック）
                INITIALIZE              USERBYOMEI-REC
-      *********MOVE    SPA-HOSPID  TO  USBYO-HOSPID
+               MOVE    SPA-HOSPNUM  TO  USBYO-HOSPNUM
                PERFORM 900-USERBYOMEI-KEY3-SEL-SEC
       *
       *        分類コードが設定されていないデータが存在したかチェック
@@ -3344,7 +3345,7 @@
        4118-USERBYOMEI-LST-EDIT-SEC        SECTION.
       *
            INITIALIZE                      USERBYOMEI-REC
-      *****MOVE    SPA-HOSPID          TO  USBYO-HOSPID
+           MOVE    SPA-HOSPNUM          TO  USBYO-HOSPNUM
       *
            MOVE    SPA-GMN-Q01-BYOMEISEL
                                        TO  WRK-SELWORD
@@ -3650,7 +3651,7 @@
            END-IF
       *
            INITIALIZE                  USERBYOMEI-REC
-      *****MOVE    SPA-HOSPID          TO  USBYO-HOSPID
+           MOVE    SPA-HOSPNUM          TO  USBYO-HOSPNUM
            MOVE    WRK-CDSYUBETU       TO  USBYO-CDSYU
            MOVE    SPA-GMN-Q01-BYOMEICD(IDX1)
                                        TO  USBYO-BYOMEIINPUTCD
@@ -4002,7 +4003,7 @@
            END-IF
       *
            INITIALIZE              INPUTCD-REC
-      *****MOVE    SPA-HOSPID      TO  ICD-HOSPID
+           MOVE    SPA-HOSPNUM      TO  ICD-HOSPNUM
            MOVE    WRK-CDSYUBETU   TO  ICD-CDSYU
            MOVE    WRK-SRYCD       TO  ICD-INPUTCD
       *
@@ -7059,11 +7060,11 @@
            MOVE    ZERO                TO  FLG-ADRS
       *
            INITIALIZE                  ORCSADDSIGNAREA
+           MOVE    SPA-HOSPNUM         TO  ADRS-HOSPNUM
            MOVE    ADRS-POST           TO  SADDSIGN-STR
            CALL    "ORCSADDSIGN"       USING   ORCSADDSIGNAREA
            MOVE    SADDSIGN-STR        TO  ADRS-POST
       *
-           MOVE    SPA-HOSPNUM         TO  ADRS-HOSPNUM
            MOVE    ADRS-REC            TO  MCPDATA-REC
            MOVE    "tbl_adrs"          TO  MCP-TABLE
            MOVE    "key4"              TO  MCP-PATHNAME
@@ -7103,7 +7104,6 @@
       *
            MOVE    ZERO                TO  FLG-USERBYOMEI
       *
-           MOVE    SPA-HOSPNUM         TO  USBYO-HOSPNUM
            MOVE    USERBYOMEI-REC      TO  MCPDATA-REC
            MOVE    "tbl_userbyomei"    TO  MCP-TABLE
            MOVE    "key8"              TO  MCP-PATHNAME
@@ -7204,10 +7204,10 @@
       *
            MOVE    ZERO                TO  FLG-TENSU
       *
+           MOVE    SPA-HOSPNUM         TO  TNS-HOSPNUM
            MOVE    SPA-SYSYMD          TO  TNS-YUKOSTYMD
                                            TNS-YUKOEDYMD
       *
-           MOVE    SPA-HOSPNUM         TO  TNS-HOSPNUM
            MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
            MOVE    "tbl_tensu"         TO  MCP-TABLE
            MOVE    "key72"             TO  MCP-PATHNAME
@@ -7246,7 +7246,6 @@
        900-INPUTCD-KEY-SEL-SEC         SECTION.
       *
            MOVE    ZERO                TO  FLG-INPUTCD
-           MOVE    SPA-HOSPNUM         TO  ICD-HOSPNUM
            MOVE    INPUTCD-REC         TO  MCPDATA-REC
            MOVE    "tbl_inputcd"       TO  MCP-TABLE
            MOVE    "key2"              TO  MCP-PATHNAME
@@ -7272,7 +7271,9 @@
        900-TENSU-KEY-SEL-SEC            SECTION.
       *
            MOVE    ZERO                TO  FLG-TENSU
+      *
            MOVE    SPA-HOSPNUM         TO  TNS-HOSPNUM
+      *
            MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
            MOVE    "tbl_tensu"         TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
@@ -7308,7 +7309,9 @@
        900-SYSKANRI-KEY2-SEL-SEC       SECTION.
       *
            MOVE    ZERO                TO  FLG-SYSKANRI
-           MOVE    SPA-HOSPNUM         TO  SYS-1026-HOSPNUM
+      *
+           MOVE    SPA-HOSPNUM         TO  SYS-HOSPNUM
+      *
            MOVE    SYSKANRI-REC        TO  MCPDATA-REC
       *
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
@@ -7347,10 +7350,9 @@
       *
            MOVE    ZERO                TO  FLG-HKNNUM
            INITIALIZE                  HKNNUM-REC
-      *****MOVE    SPA-HOSPID          TO  HKN-HOSPID
+           MOVE    SPA-HOSPNUM          TO  HKN-HOSPNUM
            MOVE    SPA-SYSYMD          TO  HKN-TEKSTYMD
            MOVE    SPA-SYSYMD          TO  HKN-TEKEDYMD
-           MOVE    SPA-HOSPNUM         TO  HKN-HOSPNUM
            MOVE    HKNNUM-REC          TO  MCPDATA-REC
            MOVE    "tbl_hknnum"        TO  MCP-TABLE
            MOVE    "key3"              TO  MCP-PATHNAME
@@ -7388,8 +7390,7 @@
       *
            MOVE    ZERO                TO  FLG-USERBYOMEI
            INITIALIZE                  USERBYOMEI-REC
-      *****MOVE    SPA-HOSPID          TO  USBYO-HOSPID
-           MOVE    SPA-HOSPNUM         TO  USBYO-HOSPNUM
+           MOVE    SPA-HOSPNUM          TO  USBYO-HOSPNUM
            MOVE    USERBYOMEI-REC      TO  MCPDATA-REC
            MOVE    "tbl_userbyomei"    TO  MCP-TABLE
            MOVE    "key4"              TO  MCP-PATHNAME
@@ -7426,7 +7427,6 @@
        900-USERBYOMEI-KEY3-SEL-SEC     SECTION.
       *
            MOVE    ZERO                TO  FLG-USERBYOMEI
-           MOVE    SPA-HOSPNUM         TO  USBYO-HOSPNUM
            MOVE    USERBYOMEI-REC      TO  MCPDATA-REC
            MOVE    "tbl_userbyomei"    TO  MCP-TABLE
            MOVE    "key3"              TO  MCP-PATHNAME
@@ -7452,7 +7452,6 @@
        910-USERBYOMEI-KEY-SEL-SEC      SECTION.
       *
            MOVE    ZERO                TO  FLG-USERBYOMEI
-           MOVE    SPA-HOSPNUM         TO  USBYO-HOSPNUM
            MOVE    USERBYOMEI-REC      TO  MCPDATA-REC
            MOVE    "tbl_userbyomei"    TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
@@ -7477,10 +7476,9 @@
        910-DBSELECT-SEC               SECTION.
       *
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           CALL    "ORCDBMAIN"         USING
-                                           MCPAREA
-                                           MCPDATA-REC
-                                           SPA-AREA
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
            IF    ( MCP-RC          =   ZERO )
                PERFORM 910-DBFETCH-SEC
            END-IF
@@ -7495,10 +7493,9 @@
        910-DBFETCH-SEC                 SECTION.
       *
            MOVE    "DBFETCH"       TO  MCP-FUNC
-           CALL    "ORCDBMAIN"     USING
-                                       MCPAREA
-                                       MCPDATA-REC
-                                       SPA-AREA
+           CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
       *
@@ -7510,10 +7507,9 @@
        910-DBCLOSECURSOR-SEC           SECTION.
       *
            MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
-           CALL    "ORCDBMAIN"     USING
-                                       MCPAREA
-                                       MCPDATA-REC
-                                       SPA-AREA
+           CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
       *
@@ -7525,10 +7521,9 @@
        900-PUT-WINDOW              SECTION.
       *
            MOVE   "PUTWINDOW"       TO  MCP-FUNC.
-           CALL   "ORCDBMAIN"       USING
-                                        MCPAREA
-                                        MCPDATA-REC
-                                        SPA-AREA
+           CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
        900-PUT-WINDOW-EXT.

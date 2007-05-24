@@ -31,6 +31,7 @@
       *                                     ²èÌÌ£Ñ£É£Ä£±¤ò
       *                                     £Ñ£±£°£°¤ËÌ¾¾ÎÊÑ¹¹
       *                                     ¿·¤¿¤Ë£Ñ£É£Ä£±¤òÄÉ²Ã
+      * 03.05.00     NACL-ÂÀÅÄ    07.05.23  ¥°¥ë¡¼¥×¿ÇÎÅÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -147,10 +148,9 @@
        900-PUT-WINDOW              SECTION.
       *
            MOVE   "PUTWINDOW"       TO  MCP-FUNC.
-           CALL   "ORCDBMAIN"       USING
-                                        MCPAREA
-                                        MCPDATA-REC
-                                        SPA-AREA
+           CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
        900-PUT-WINDOW-EXT.

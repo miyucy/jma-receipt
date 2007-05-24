@@ -59,6 +59,7 @@
       * 01.00.06     NACL-太田    03/09/11+コラムリストに郵便番号を追加
       * 01.00.07     NACL-太田    04/02/09+コラムリスト編集修正
       * 01.00.08     NACL-太田    04/08/05+保険を追加
+      * 03.05.00     NACL-太田    07.05.23 グループ診療対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -90,14 +91,16 @@
       *
       *    パラメータファイル名
        01  PRFNAME.
-           03  FILLER              PIC X(09)   VALUE   "/var/tmp/".
+           03  FILLER              PIC X(05)   VALUE   "/tmp/".
+           03  PRFNAME-HOSPNUM     PIC 9(02).
            03  FILLER              PIC X(07)   VALUE   "ORCBQ01".
            03  PRFNAME-TERMID      PIC X(64).
            03  PRFNAME-SYSYMD      PIC X(08).
            03  PRFNAME-SYSTIME     PIC 9(08).
            03  FILLER              PIC X(04)   VALUE   ".TXT".
        01  ERRFNAME.
-           03  FILLER              PIC X(09)   VALUE   "/var/tmp/".
+           03  FILLER              PIC X(05)   VALUE   "/tmp/".
+           03  ERRFNAME-HOSPNUM    PIC 9(02).
            03  FILLER              PIC X(08)   VALUE   "ORCBQERR".
            03  ERRFNAME-TERMID     PIC X(64).
            03  ERRFNAME-SYSYMD     PIC X(08).
@@ -239,6 +242,7 @@
            03  CONST-JOB-SHELLID                   PIC X(08)
                VALUE   "ORCBQ01".
            03  CONST-RECE-MAX      PIC 9(05)   VALUE 500.
+           03  CONST-LINE-MAX      PIC 9(05)   VALUE 200.
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -247,9 +251,6 @@
       *    患者マスタ（照会用コピー句）
        01  QUERY-PTINF-REC.
            COPY    "CPQPTINF.INC".
-      *    患者マスタ件数取得用（照会用コピー句）
-       01  QUERY-PTINF-CNT-REC.
-           COPY    "CPQPTINF-CNT.INC".
       *
       *    シェルテーブル
            COPY    "CPSHELLTBL.INC".
@@ -499,6 +500,7 @@
                GO  TO  3001-Q100SPASET-EXT
            END-IF
       *
+           MOVE    SPA-HOSPNUM         TO  PRFNAME-HOSPNUM
            MOVE    SPA-TERMID          TO  PRFNAME-TERMID
            MOVE    SPA-SYSYMD          TO  PRFNAME-SYSYMD
            ACCEPT  PRFNAME-SYSTIME     FROM    TIME
@@ -529,6 +531,7 @@
            END-IF
       *
       *     PERFORM 3101-SQL-EDIT-SEC
+           INITIALIZE  QSUB02-LNK
            CALL    "ORCGQSUB02"    USING
                                    SPA-AREA
                                    SPA-Q01FREE
@@ -560,7 +563,7 @@
            MOVE    PRFNAME-TERMID  TO  SHELLTBL-ARG4
            MOVE    PRFNAME-SYSYMD  TO  SHELLTBL-ARG5
            MOVE    PRFNAME-SYSTIME TO  SHELLTBL-ARG6
-           MOVE    SPA-HOSPID      TO  SHELLTBL-ARG7
+           MOVE    SPA-HOSPNUM     TO  SHELLTBL-ARG7
            MOVE    SPA-STAFFCD     TO  SHELLTBL-ARG8
            MOVE    CONST-JOBID     TO  SHELLTBL-ARG9
            MOVE    CONST-JOB-SHELLID
@@ -570,10 +573,9 @@
            MOVE    "SHELL"         TO  MCP-FUNC
            MOVE    "shell"         TO  MCP-TABLE
            MOVE    "shell"         TO  MCP-PATHNAME
-           CALL    "ORCDBMAIN"     USING
-                                       MCPAREA
-                                       MCPDATA-REC
-                                       SPA-AREA
+           CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            PERFORM 490-KAKUNIN-SEC
       *
@@ -589,10 +591,12 @@
                GO  TO  3001-Q03SPASET-EXT
            END-IF
       *
+           MOVE    SPA-HOSPNUM         TO  PRFNAME-HOSPNUM
            MOVE    SPA-TERMID          TO  PRFNAME-TERMID
            MOVE    SPA-SYSYMD          TO  PRFNAME-SYSYMD
            ACCEPT  PRFNAME-SYSTIME     FROM    TIME
       *
+           MOVE    PRFNAME-HOSPNUM     TO  ERRFNAME-HOSPNUM
            MOVE    PRFNAME-TERMID      TO  ERRFNAME-TERMID
            MOVE    PRFNAME-SYSYMD      TO  ERRFNAME-SYSYMD
            MOVE    PRFNAME-SYSTIME     TO  ERRFNAME-SYSTIME
@@ -609,6 +613,7 @@
            MOVE    SPA-Q02-Q03-NYUGAIKBN TO BQ01-NYUGAIKBN
       *
       *     PERFORM 3101-SQL-EDIT-SEC
+           INITIALIZE  QSUB02-LNK
            CALL    "ORCGQSUB02"    USING
                                    SPA-AREA
                                    SPA-Q01FREE
@@ -636,7 +641,7 @@
            MOVE    PRFNAME-TERMID  TO  SHELLTBL-ARG2
            MOVE    PRFNAME-SYSYMD  TO  SHELLTBL-ARG3
            MOVE    PRFNAME-SYSTIME TO  SHELLTBL-ARG4
-           MOVE    SPA-HOSPID      TO  SHELLTBL-ARG5
+           MOVE    SPA-HOSPNUM     TO  SHELLTBL-ARG5
            MOVE    SPA-OPID        TO  SHELLTBL-ARG6
            MOVE    ERRFNAME        TO  SHELLTBL-ARG7
            MOVE    CONST-JOBID2    TO  SHELLTBL-ARG8
@@ -648,10 +653,9 @@
            MOVE    "SHELL"         TO  MCP-FUNC
            MOVE    "shell"         TO  MCP-TABLE
            MOVE    "shell"         TO  MCP-PATHNAME
-           CALL    "ORCDBMAIN"     USING
-                                       MCPAREA
-                                       MCPDATA-REC
-                                       SPA-AREA
+           CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            PERFORM 490-KAKUNIN-SEC
       *
@@ -701,6 +705,12 @@
       *
       *    ＳＱＬ文編集処理
       *    PERFORM 3101-SQL-EDIT-SEC
+           INITIALIZE              QSUB02-LNK
+           MOVE    1               TO  QSUB02-LIMITCONTROL
+           COMPUTE QSUB02-OFFSET
+               =   SPA-GMN-Q02-SKIP-KNS
+           COMPUTE QSUB02-LIMIT
+               =   CONST-LINE-MAX  +   1
            CALL    "ORCGQSUB02"    USING
                                    SPA-AREA
                                    SPA-Q01FREE
@@ -727,11 +737,8 @@
       *    患者マスタ検索処理
            PERFORM 900-QUERY-PTINF-KEY-SEL-SEC
       *
-      *    患者マスタ読み飛ばし処理
-           PERFORM 900-QUERY-PTINF-KEY-SKIP-SEC
-      *
            PERFORM VARYING IDX-GMN FROM    1   BY  1
-               UNTIL   (   IDX-GMN     >   200 )
+               UNTIL   (   IDX-GMN     >   CONST-LINE-MAX )
                 OR     (   FLG-PTINF   =   1   )
       *
       *        番号
@@ -762,6 +769,7 @@
       *
       *        誕生日
                INITIALIZE              ORCSGDAYAREA
+      *
                MOVE    QUERY-PTINF-BIRTHDAY
                                    TO  SGDAY-INDAY
                CALL    "ORCSGDAY"      USING
@@ -809,10 +817,11 @@
                                                                (IDX-GMN)
       *
       *        保険組合せ
-               MOVE    SPA-HOSPID          TO  QSUB03-HOSPID
+               MOVE    SPA-HOSPNUM         TO  QSUB03-HOSPNUM
                MOVE    QUERY-PTINF-PTID    TO  QSUB03-PTID
                MOVE    SPA-SYSYMD          TO  QSUB03-KJNYMD
                CALL    "ORCGQSUB03"        USING QSUB03-LNK
+                                                 SPA-AREA
                MOVE    QSUB03-HKNCOMBIMEI  TO  SPA-GMN-Q02-KEKKALST-HKN
                                                                (IDX-GMN)
       *
@@ -916,6 +925,11 @@
       *
            END-PERFORM
       *
+      *    患者マスタクローズ処理
+           MOVE    "query_ptinf"       TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           PERFORM 910-DBCLOSECURSOR-SEC
+      *
       *    総件数編集
            IF  ( SPA-GMN-Q02-TOTAL-GET-FLG =   ZERO )
                MOVE    1              TO   SPA-GMN-Q02-TOTAL-GET-FLG
@@ -935,11 +949,6 @@
            ELSE
                MOVE    WIDGET-INSENSITIVE  TO  SPA-GMN-Q02-B07-STATE
            END-IF
-      *
-      *    患者マスタクローズ処理
-           MOVE    "query_ptinf"       TO  MCP-TABLE
-           MOVE    "key2"              TO  MCP-PATHNAME
-           PERFORM 910-DBCLOSECURSOR-SEC
       *
            IF    ( SPA-GMN-Q02-SKIP-KNS     =   ZERO )
             AND  ( SPA-GMN-Q02-KEKKA-MAX    =   ZERO )
@@ -1047,19 +1056,19 @@
            ELSE
       *        検索結果件数を取得
       *        INITIALIZE                  MCPAREA
-               MOVE    "query_ptinf_cnt"   TO  MCP-TABLE
-               MOVE    "key2"              TO  MCP-PATHNAME
-               MOVE    SPACE               TO  QUERY-PTINF-CNT-REC
-               MOVE    WRK-SQL-COUNT       TO  QUERY-PTINF-CNT-SQL
-               MOVE    QUERY-PTINF-CNT-REC TO  MCPDATA-REC
+               MOVE    "query_ptinf"       TO  MCP-TABLE
+               MOVE    "key3"              TO  MCP-PATHNAME
+               MOVE    SPACE               TO  QUERY-PTINF-REC
+               MOVE    WRK-SQL-COUNT       TO  QUERY-PTINF-SQL
+               MOVE    QUERY-PTINF-REC     TO  MCPDATA-REC
                PERFORM 911-DBSELECT-SEC
                IF  (   MCP-RC          NOT =   ZERO    )
                    MOVE    SPACE       TO  SPA-GMN-Q02-TOTAL
                    GO  TO  3101-TOTAL-KNS-EDIT-EXT
                END-IF
       *
-               MOVE    MCPDATA-REC     TO  QUERY-PTINF-CNT-REC
-               MOVE    QUERY-PTINF-CNT-TOTAL
+               MOVE    MCPDATA-REC     TO  QUERY-PTINF-REC
+               MOVE    QUERY-PTINF-TOTAL
                                        TO  WRK-TOTAL
                                            SPA-GMN-Q02-TOTAL-NUM
            END-IF
@@ -1315,13 +1324,13 @@
            PERFORM 4101-GMN-SPA-SET-SEC
       *
            PERFORM VARYING     IDX1    FROM    1   BY  1
-                   UNTIL     ( IDX1    >       200 )
+                   UNTIL     ( IDX1    >       CONST-LINE-MAX )
                IF      (  Q02-KEKKALST-SELECT (IDX1)  =   "T"  )
                    COMPUTE SPA-GMN-Q02-SELNUM
                                    =   IDX1
                                    +   SPA-GMN-Q02-SKIP-KNS
                    MOVE    IDX1            TO  SPA-GMN-Q02-KEKKA-SEL
-                   MOVE    200             TO  IDX1
+                   MOVE    CONST-LINE-MAX  TO  IDX1
                END-IF
            END-PERFORM
       *
@@ -1381,7 +1390,7 @@
       *
            IF  ( SPA-GMN-Q02-SKIP-KNS      >   0 )
                COMPUTE SPA-GMN-Q02-SKIP-KNS    =   SPA-GMN-Q02-SKIP-KNS
-                                               -   200
+                                               -   CONST-LINE-MAX
                PERFORM 310-Q02-GMN-EDIT-SEC
                MOVE    ZERO            TO  SPA-GMN-Q02-SELNUM
            END-IF
@@ -1399,7 +1408,7 @@
       *
            IF  ( SPA-GMN-Q02-FLG-PTINF     =   0 )
                COMPUTE SPA-GMN-Q02-SKIP-KNS    =   SPA-GMN-Q02-SKIP-KNS
-                                               +   200
+                                               +   CONST-LINE-MAX
                PERFORM 310-Q02-GMN-EDIT-SEC
                MOVE    ZERO            TO  SPA-GMN-Q02-SELNUM
            END-IF
@@ -2237,32 +2246,14 @@
        900-QUERY-PTINF-KEY-FET-EXT.
            EXIT.
       *****************************************************************
-      *    患者マスタ読み飛ばし処理
-      *****************************************************************
-       900-QUERY-PTINF-KEY-SKIP-SEC    SECTION.
-      *
-           PERFORM VARYING IDX1    FROM    1   BY  1
-               UNTIL     ( IDX1        >       SPA-GMN-Q02-SKIP-KNS )
-                 OR      ( FLG-PTINF   =       1 )
-      *
-      *        患者マスタ読込処理
-               PERFORM 900-QUERY-PTINF-KEY-FET-SEC
-      *
-           END-PERFORM
-      *
-           .
-       900-QUERY-PTINF-KEY-SKIP-EXT.
-           EXIT.
-      *****************************************************************
       *    ＤＢ検索処理
       *****************************************************************
        910-DBSELECT-SEC               SECTION.
       *
            MOVE    "DBSELECT"      TO  MCP-FUNC
-           CALL    "ORCDBMAIN"     USING
-                                       MCPAREA
-                                       MCPDATA-REC
-                                       SPA-AREA
+           CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
            IF    ( MCP-RC          =   ZERO )
                PERFORM 910-DBFETCH-SEC
            END-IF
@@ -2277,10 +2268,9 @@
        911-DBSELECT-SEC               SECTION.
       *
            MOVE    "DBSELECT"      TO  MCP-FUNC
-           CALL    "ORCDBMAIN"     USING
-                                       MCPAREA
-                                       MCPDATA-REC
-                                       SPA-AREA
+           CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
       *
@@ -2292,10 +2282,9 @@
        910-DBFETCH-SEC                 SECTION.
       *
            MOVE    "DBFETCH"       TO  MCP-FUNC
-           CALL    "ORCDBMAIN"     USING
-                                       MCPAREA
-                                       MCPDATA-REC
-                                       SPA-AREA
+           CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
       *
@@ -2307,10 +2296,9 @@
        910-DBCLOSECURSOR-SEC                SECTION.
       *
            MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
-           CALL    "ORCDBMAIN"     USING
-                                       MCPAREA
-                                       MCPDATA-REC
-                                       SPA-AREA
+           CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
       *
@@ -2326,18 +2314,22 @@
            MOVE    CONST-JOBID     TO  JOB-JOBID
            MOVE    CONST-JOB-SHELLID
                                    TO  JOB-SHELLID
+           MOVE    SPA-HOSPNUM     TO  JOB-HOSPNUM
            CALL    "ORCSJOB"       USING
                                    ORCSJOBKANRIAREA 
                                    JOBKANRI-REC
+                                   SPA-AREA
       *
            MOVE    "DEL"           TO  SJOBKANRI-MODE
            INITIALIZE                  JOBKANRI-REC
            MOVE    CONST-JOBID2     TO  JOB-JOBID
            MOVE    CONST-JOB-SHELLID
                                    TO  JOB-SHELLID
+           MOVE    SPA-HOSPNUM     TO  JOB-HOSPNUM
            CALL    "ORCSJOB"       USING
                                    ORCSJOBKANRIAREA 
                                    JOBKANRI-REC
+                                   SPA-AREA
       *
            MOVE    "JBS"           TO  SJOBKANRI-MODE
            INITIALIZE                  JOBKANRI-REC
@@ -2345,9 +2337,11 @@
            MOVE    CONST-JOB-SHELLID
                                    TO  JOB-SHELLID
            MOVE    SPA-TERMID      TO  JOB-TERMID
+           MOVE    SPA-HOSPNUM     TO  JOB-HOSPNUM
            CALL    "ORCSJOB"       USING
                                    ORCSJOBKANRIAREA 
                                    JOBKANRI-REC
+                                   SPA-AREA
       *
            .
        900-JOBKANRI-HENSYU-EXT.
@@ -2365,9 +2359,11 @@
            MOVE    CONST-JOBID     TO  JOB-JOBID
            MOVE    CONST-JOB-SHELLID
                                    TO  JOB-SHELLID
+           MOVE    SPA-HOSPNUM     TO  JOB-HOSPNUM
            CALL    "ORCSJOB"       USING
                                        ORCSJOBKANRIAREA
                                        JOBKANRI-REC
+                                       SPA-AREA
            IF    ( SJOBKANRI-RETURN    =   ZERO )
                IF    ( JOB-ENDYMD      =   SPACE )
                    MOVE    ZERO        TO  FLG-JOBEND
@@ -2387,9 +2383,11 @@
                MOVE    CONST-JOBID2    TO  JOB-JOBID
                MOVE    CONST-JOB-SHELLID
                                        TO  JOB-SHELLID
+               MOVE    SPA-HOSPNUM     TO  JOB-HOSPNUM
                CALL    "ORCSJOB"       USING
                                            ORCSJOBKANRIAREA
                                            JOBKANRI-REC
+                                           SPA-AREA
                IF    ( SJOBKANRI-RETURN    =   ZERO )
                    IF    ( JOB-ENDYMD      =   SPACE )
                        MOVE    ZERO    TO  FLG-JOBEND
@@ -2410,10 +2408,9 @@
        900-PUT-WINDOW              SECTION.
       *
            MOVE    "PUTWINDOW"     TO  MCP-FUNC.
-           CALL    "ORCDBMAIN"     USING
-                                       MCPAREA
-                                       MCPDATA-REC
-                                       SPA-AREA
+           CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
        900-PUT-WINDOW-EXT.

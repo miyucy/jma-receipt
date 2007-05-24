@@ -11,6 +11,7 @@ query_ptinf {
 	HOME_TEL1 			varchar(15);
 	TSTPTNUMKBN 			char(1);
 	PTNUM		 				char(20);
+  TOTAL						number(10,0);
   SQL		          dbcode(15000),virtual;
 };
 
@@ -41,6 +42,13 @@ path	key2		{
 	DBSELECT	{
 		DECLARE query_ptinf_key2_csr CURSOR FOR
 		:SQL
+		;
+	};
+};
+
+path	key3		{ 	
+	DBSELECT	{
+		:SQL INTO :TOTAL
 		;
 	};
 };

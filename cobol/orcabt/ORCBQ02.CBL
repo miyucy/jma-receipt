@@ -27,6 +27,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付       内容
+      *  03.05.00    NACL-太田    07.05.23 グループ診療対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -107,7 +108,7 @@
                05  WRK-PARA-TERMID     PIC X(64).
                05  WRK-PARA-SYSYMD     PIC X(08).
                05  WRK-PARA-SYSTIME    PIC X(08).
-               05  WRK-PARA-HOSPID     PIC X(24).
+               05  WRK-PARA-HOSPNUM    PIC 9(02).
                05  WRK-PARA-OPID       PIC X(16).
                05  WRK-PARA-ERRFNAME   PIC X(200).
                05  WRK-PARA-JOBID      PIC 9(07).
@@ -216,7 +217,7 @@
                                                WRK-PARA-TERMID
                                                WRK-PARA-SYSYMD
                                                WRK-PARA-SYSTIME
-                                               WRK-PARA-HOSPID
+                                               WRK-PARA-HOSPNUM
                                                WRK-PARA-OPID
                                                WRK-PARA-ERRFNAME
                                                WRK-PARA-JOBID
@@ -240,9 +241,9 @@
            CLOSE   BQ01-FILE
       *
            INITIALIZE                  BTPARA-REC
+           MOVE    WRK-PARA-HOSPNUM    TO  BTPARA-HOSPNUM
            MOVE    CONST-SHELLID       TO  BTPARA-SHELLID
            MOVE    CONST-JOBID         TO  BTPARA-JOBID
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    BTPARA-REC          TO  MCPDATA-REC
            MOVE    "tbl_btpara"        TO  MCP-TABLE
            MOVE    "del3"              TO  MCP-PATHNAME
@@ -310,10 +311,11 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    QUERY-PTINF-TSTPTNUMKBN TO  QTORS-TSTPTNUMKBN
       *
            INITIALIZE                  SS001-AREA
-           MOVE    WRK-PARA-HOSPID     TO  SS001-HOSPID
+           MOVE    WRK-PARA-HOSPNUM    TO  SS001-HOSPNUM
            MOVE    QUERY-PTINF-PTID    TO  SS001-PTID
            MOVE    WKBQ01-SRYYM        TO  SS001-SRYYM
            CALL    "ORCSS001"          USING   SS001-AREA
+                                               SPA-AREA
       *
            MOVE    SS001-GIHO-FLG  TO  QTORS-GIHO-FLG
            MOVE    SS001-GRSI-FLG  TO  QTORS-GRSI-FLG
@@ -351,7 +353,6 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    2                   TO  BTPARA-DSP-RENNUM
            MOVE    CNT-PTINF           TO  BTPARA-RENNUM
            MOVE    QTORSUB-AREA        TO  BTPARA-INFO-PARA
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    BTPARA-REC          TO  MCPDATA-REC
            MOVE    "tbl_btpara"        TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
@@ -370,6 +371,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
        200111-BTPARA-COMMON-SEC        SECTION.
       *
            INITIALIZE                  BTPARA-REC
+           MOVE    WRK-PARA-HOSPNUM    TO  BTPARA-HOSPNUM
            MOVE    CONST-SHELLID       TO  BTPARA-SHELLID
            MOVE    WRK-PARA-OPID       TO  BTPARA-RUN-OPID
            MOVE    CONST-JOBID         TO  BTPARA-JOBID
@@ -406,7 +408,6 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    1                   TO  BTPARA-DSP-RENNUM
            MOVE    1                   TO  BTPARA-RENNUM
            MOVE    QTORMAIN-AREA       TO  BTPARA-INFO-PARA
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    BTPARA-REC          TO  MCPDATA-REC
            MOVE    "tbl_btpara"        TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
@@ -423,7 +424,6 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    1                   TO  BTPARA-DSP-RENNUM
                MOVE    2                   TO  BTPARA-RENNUM
                MOVE    BQ01-HYODAI         TO  BTPARA-INFO-PARA
-grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    BTPARA-REC          TO  MCPDATA-REC
                MOVE    "tbl_btpara"        TO  MCP-TABLE
                MOVE    "key"               TO  MCP-PATHNAME
@@ -441,7 +441,6 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    1                   TO  BTPARA-DSP-RENNUM
                MOVE    3                   TO  BTPARA-RENNUM
                MOVE    BQ01-JYOKEN1        TO  BTPARA-INFO-PARA
-grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    BTPARA-REC          TO  MCPDATA-REC
                MOVE    "tbl_btpara"        TO  MCP-TABLE
                MOVE    "key"               TO  MCP-PATHNAME
@@ -459,7 +458,6 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    1                   TO  BTPARA-DSP-RENNUM
                MOVE    4                   TO  BTPARA-RENNUM
                MOVE    BQ01-JYOKEN2        TO  BTPARA-INFO-PARA
-grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    BTPARA-REC          TO  MCPDATA-REC
                MOVE    "tbl_btpara"        TO  MCP-TABLE
                MOVE    "key"               TO  MCP-PATHNAME
@@ -492,6 +490,7 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
       *        ジョブ管理開始処理
                MOVE    "JBE"           TO  SJOBKANRI-MODE
                INITIALIZE                  JOBKANRI-REC
+               MOVE    WRK-PARA-HOSPNUM TO JOB-HOSPNUM
                MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
                MOVE    WRK-PARA-SHELLID
                                        TO  JOB-SHELLID
@@ -542,7 +541,6 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
       *
            INITIALIZE                      QUERY-PTINF-REC
            MOVE    WKBQ01-SQL          TO  QUERY-PTINF-SQL
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    QUERY-PTINF-REC     TO  MCPDATA-REC
            MOVE    "query_ptinf"       TO  MCP-TABLE
            MOVE    "key2"              TO  MCP-PATHNAME
@@ -584,6 +582,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *
            MOVE    "STS"           TO  SJOBKANRI-MODE
            INITIALIZE                  JOBKANRI-REC
+           MOVE    WRK-PARA-HOSPNUM TO JOB-HOSPNUM
            MOVE    CONST-JOBID     TO  JOB-JOBID
            MOVE    CONST-SHELLID   TO  JOB-SHELLID
            MOVE    "明細書連携データ作成"
@@ -604,6 +603,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *    ステップ管理終了処理
            MOVE    "STE"           TO  SJOBKANRI-MODE
            INITIALIZE                  JOBKANRI-REC
+           MOVE    WRK-PARA-HOSPNUM TO JOB-HOSPNUM
            MOVE    CONST-JOBID     TO  JOB-JOBID
            MOVE    CONST-SHELLID   TO  JOB-SHELLID
            MOVE    CNT-PTINF       TO  JOB-UPDCNT
@@ -623,16 +623,16 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    LOW-VALUE       TO  MCP-TABLE
                                        MCP-PATHNAME
            MOVE    "DBOPEN"            TO  MCP-FUNC.
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            MOVE    LOW-VALUE       TO  MCP-TABLE
                                        MCP-PATHNAME
            MOVE    "DBSTART"       TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
            .
        120-DBOPEN-EXT.
            EXIT.
@@ -644,16 +644,16 @@ grpsys                            SPA-AREA
            MOVE    LOW-VALUE       TO  MCP-TABLE
                                        MCP-PATHNAME
            MOVE    "DBCOMMIT"      TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            MOVE    LOW-VALUE       TO  MCP-TABLE
                                        MCP-PATHNAME
            MOVE    "DBDISCONNECT"      TO  MCP-FUNC.
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
        900-DBDISCONNECT-EXT.
@@ -665,9 +665,9 @@ grpsys                            SPA-AREA
        910-DBSELECT-SEC                SECTION.
       *
            MOVE    "DBSELECT"          TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
            IF    ( MCP-RC          =   ZERO )
                PERFORM 910-DBFETCH-SEC
            END-IF
@@ -682,9 +682,9 @@ grpsys                            SPA-AREA
        911-DBSELECT-SEC                SECTION.
       *
            MOVE    "DBSELECT"          TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
       *
@@ -696,9 +696,9 @@ grpsys                            SPA-AREA
        910-DBFETCH-SEC                 SECTION.
       *
            MOVE    "DBFETCH"           TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
       *
@@ -710,9 +710,9 @@ grpsys                            SPA-AREA
        910-DBCLOSECURSOR-SEC           SECTION.
       *
            MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
       *
@@ -724,9 +724,9 @@ grpsys                            SPA-AREA
        910-DBDELETE-SEC                 SECTION.
       *
            MOVE    "DBDELETE"          TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
       *
@@ -738,9 +738,9 @@ grpsys                            SPA-AREA
        910-DBINSERT-SEC                SECTION.
       *
            MOVE    "DBINSERT"          TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
       *
@@ -752,9 +752,9 @@ grpsys                            SPA-AREA
        910-DBUPDATE-SEC                SECTION.
       *
            MOVE    "DBUPDATE"          TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
       *

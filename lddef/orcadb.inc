@@ -46,7 +46,6 @@ db	{
 	tbl_prtkanri;
 	tbl_prtdata;
 	query_ptinf;
-	query_ptinf_cnt;
 	tbl_interact;
 	tbl_sskijyo;
 	tbl_jinmei;

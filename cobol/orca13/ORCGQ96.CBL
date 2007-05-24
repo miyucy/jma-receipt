@@ -29,6 +29,7 @@
       * Maj/Min/Rev  修正者       日付      内容
       *  02.08.00    NACL-太田    06/03/24  Z98から流用
       *  03.04.00    NACL-多々納  06/11/14  検査正式名称表示追加
+      *  03.05.00    NACL-太田    07.05.23  グループ診療対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -804,7 +805,7 @@
            END-PERFORM
       *
            MOVE    SPACE               TO  INPUTCD-REC
-      *****MOVE    SPA-HOSPID          TO  ICD-HOSPID
+           MOVE    SPA-HOSPNUM         TO  ICD-HOSPNUM
            MOVE    SPA-Q01-Q96-CDSYUBETU   TO  ICD-CDSYU
            MOVE    SPA-Q96-GMN-INPUT   TO  ICD-INPUTCD
            IF      WRK-KETA            =   20
@@ -815,7 +816,6 @@
                MOVE    "key"               TO  WRK-PATH
            END-IF
       *
-           MOVE    SPA-HOSPNUM         TO  ICD-HOSPNUM
            MOVE    INPUTCD-REC         TO  MCPDATA-REC
            MOVE    "tbl_inputcd"       TO  MCP-TABLE
            MOVE    WRK-PATH            TO  MCP-PATHNAME
@@ -3260,10 +3260,9 @@
        910-DBSELECT-SEC                SECTION.
       *
            MOVE    "DBSELECT"      TO  MCP-FUNC
-           CALL    "ORCDBMAIN"     USING
-                                       MCPAREA
-                                       MCPDATA-REC
-                                       SPA-AREA
+           CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
        910-DBSELECT-EXT.
@@ -3274,10 +3273,9 @@
        920-DBFETCH-SEC                 SECTION.
       *
            MOVE    "DBFETCH"       TO  MCP-FUNC
-           CALL    "ORCDBMAIN"     USING
-                                       MCPAREA
-                                       MCPDATA-REC
-                                       SPA-AREA
+           CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
       *
@@ -3290,10 +3288,9 @@
        990-DBCLOSE-SEC         SECTION.
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           CALL    "ORCDBMAIN"         USING
-                                           MCPAREA
-                                           MCPDATA-REC
-                                           SPA-AREA
+           CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
        990-DBCLOSE-EXT.
@@ -3305,10 +3302,9 @@
        900-PUT-WINDOW              SECTION.
       *
            MOVE   "PUTWINDOW"       TO  MCP-FUNC.
-           CALL   "ORCDBMAIN"       USING
-                                        MCPAREA
-                                        MCPDATA-REC
-                                        SPA-AREA
+           CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
        900-PUT-WINDOW-EXT.
