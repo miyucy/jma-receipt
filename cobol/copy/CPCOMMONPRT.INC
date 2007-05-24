@@ -26,9 +26,11 @@
       *                                     連番X(03)から9(06)に変更
       *  01.00.02    MCC-藤原     02/03/18  端末ＩＤ
       *                                     X(16)からX(32)に変更
+      *  03.05.00    NACL-太田    07/05/24  グループ診療対応
       *****************************************************************
        01  HC01PARA.
-           03  FILLER                  PIC  X(09) VALUE "/var/tmp/".
+           03  FILLER                  PIC  X(05) VALUE "/tmp/".
+           03  HC01PARA-HOSPNUM        PIC  9(02).
            03  HC01PARA-FORM-ID        PIC  X(04).
            03  FILLER                  PIC  X(01) VALUE ".".
       *****03  HC01PARA-TERMID         PIC  X(16).
