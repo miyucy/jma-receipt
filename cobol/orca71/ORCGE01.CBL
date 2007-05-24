@@ -584,6 +584,7 @@
            MOVE    1                  TO  JOB-JOBID.
            MOVE    "ORCBSE1"          TO  JOB-SHELLID.
            MOVE    ALL "*"            TO  JOB-TERMID.
+           MOVE    SPA-HOSPNUM         TO  JOB-HOSPNUM.
            CALL    "ORCSJOB"          USING
                                       WRK-JOBKANRI-AREA  
                                       JOBKANRI-REC.
