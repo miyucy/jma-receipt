@@ -87,6 +87,7 @@
       *  03.04.03    NACL-門脇    07/03/22  埼玉県地方公費対応
       *                                     （川口・春日部市）
       *  03.04.04    NACL-門脇    07/05/02  高齢者の計算修正
+      *  03.04.05    NACL-門脇    07/05/22  初診料算定時の条件追加
       *  03.05.00    NACL-太田    07/05/09  グループ診療対応
       *****************************************************************
        ENVIRONMENT         DIVISION.
@@ -332,11 +333,13 @@
            03  FILLER          PIC X(09)   VALUE    "111000110".
       *    初診料（老人　病院）
            03  FILLER          PIC X(09)   VALUE    "111700110".
+      *    初診料（ＤＵＭＭＹ）
+           03  FILLER          PIC X(09)   VALUE    "099110001".
       *
        01  TBL-SYOSIN-R        REDEFINES   TBL-SYOSIN-AREA.
-           03  TBL-SYOSIN      PIC X(09)   OCCURS    4.
+           03  TBL-SYOSIN      PIC X(09)   OCCURS    5.
       *
-       01  TBL-SYOSIN-MAX      PIC 9(02)   VALUE     4.
+       01  TBL-SYOSIN-MAX      PIC 9(02)   VALUE     5.
       *
       *    初診料算定フラグ用テーブル（福岡用）
        01  TBL-SYOSIN2-AREA.
