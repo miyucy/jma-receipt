@@ -32,6 +32,7 @@
       * Maj/Min/Rev  修正者       日付      内容
       *  01.00.01    NACL-森脇    05/07/13  エラーメッセージ、コミット
       *  01.00.02    NACL-森脇    05/09/28  構造変更
+      *  03.05.00    NACL-多々納  07/05/16  グループ診療対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -132,6 +133,7 @@
        01  PARA-SAVE.
            03  PARA-09-5               PIC X(06).
            03  PARA-11-5               PIC X(06).
+           03  PARA-HOSPNUM            PIC X(02).
       *
       *    一時領域
        01  WRK-AREA.
@@ -283,6 +285,15 @@
                GO  TO  100-INIT-EXT
            END-IF
       *
+      *    医療機関番号
+           IF      PARA-HOSPNUM    NUMERIC
+               MOVE    PARA-HOSPNUM    TO  SPA-HOSPNUM
+           ELSE
+               MOVE    1               TO  FLG-CSV
+               DISPLAY "*(ORCVTINPUTCD)* HOSPNUM ERR [" PARA-HOSPNUM"]"
+               GO  TO  100-INIT-EXT
+           END-IF
+      *
            ACCEPT  WRK-SYMD2       FROM    DATE
            MOVE    WRK-SYMD2       TO  WRK-SYSYMD (3:)
            ADD     2000            TO  WRK-SYSYY
@@ -380,6 +391,8 @@
                    MOVE  PARA-DATA     TO  PARA-09-5
                WHEN    "11-5"
                    MOVE  PARA-DATA     TO  PARA-11-5
+               WHEN    "HN"
+                   MOVE    PARA-DATA     TO  PARA-HOSPNUM
            END-EVALUATE
       *
            .
@@ -394,14 +407,13 @@
            MOVE    ZERO            TO  FLG-SYSKANRI
            MOVE    SPACE           TO  SYS-1001-REC
            MOVE    "1001"          TO  SYS-1001-KANRICD
+           MOVE    WRK-SYMD        TO  SYS-1001-STYUKYMD
+                                       SYS-1001-EDYUKYMD
+           MOVE    SPA-HOSPNUM     TO  SYS-1001-HOSPNUM
            MOVE    SYS-1001-REC    TO  MCPDATA-REC
-           MOVE    "DBSELECT"      TO  MCP-FUNC
-           MOVE    "SYSKANRI-KEY2" TO  ORC-DBPATH
-           MOVE    WRK-SYSYMD      TO  ORC-DBYMD
-           CALL    "ORCMCPSUB"         USING
-                                       MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC
+           MOVE    "tbl_syskanri"  TO  MCP-TABLE
+           MOVE    "key2"          TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
       *
            IF      MCP-RC              =   ZERO
                MOVE    "SYSKANRI-KEY2" TO  ORC-DBPATH
@@ -418,12 +430,9 @@
                MOVE    SYS-1001-ROUPAYKBN  TO  SPA-ROUPAYKBN
            END-IF
       *
-           MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
-           MOVE    "SYSKANRI-KEY2" TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"         USING
-                                       MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC
+           MOVE    "tbl_syskanri"  TO  MCP-TABLE
+           MOVE    "key2"          TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
       *
            .
        110-CP1001-KENSAKU-EXT.
@@ -745,30 +754,25 @@
            MOVE    ZERO        TO  FLG-INPUTCD
            MOVE    SPACE       TO  INPUTCD-REC
            INITIALIZE              INPUTCD-REC
-           MOVE    SPA-HOSPID  TO  ICD-HOSPID
-           MOVE    WRK-SRYCD   TO  ICD-SRYCD
+           MOVE    SPA-HOSPNUM     TO  ICD-HOSPNUM
+           MOVE    WRK-SRYCD       TO  ICD-SRYCD
            MOVE    INPUTCD-REC     TO  MCPDATA-REC
-           MOVE    "DBSELECT"      TO  MCP-FUNC
-           MOVE    "INPUTCD-KEY4"  TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"         USING
-                                       MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC
+           MOVE    "tbl_inputcd"   TO  MCP-TABLE
+           MOVE    "key4"          TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
       *
            IF      MCP-RC          =   ZERO
-               MOVE    "INPUTCD-KEY4"  TO  ORC-DBPATH
+               MOVE    "tbl_inputcd"   TO  MCP-TABLE
+               MOVE    "key4"          TO  MCP-PATHNAME
                PERFORM 940-INPUTCD-NEXT-SEC
                        UNTIL   FLG-INPUTCD   =   1
            END-IF
       *
            ADD     1               TO  WRK-DSPSEQ
       *
-           MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
-           MOVE    "INPUTCD-KEY4"  TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"         USING
-                                       MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC
+           MOVE    "tbl_inputcd"   TO  MCP-TABLE
+           MOVE    "key4"          TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
            IF      FLG-ERR         NOT =   ZERO
                GO  TO  250-INPUTCD-INSERT-EXT
            END-IF
@@ -781,7 +785,7 @@
       *    入力コード作成
            MOVE    SPACE       TO  INPUTCD-REC
            INITIALIZE              INPUTCD-REC
-           MOVE    SPA-HOSPID      TO  ICD-HOSPID
+           MOVE    SPA-HOSPNUM     TO  ICD-HOSPNUM
            MOVE    WRK-CDSYU       TO  ICD-CDSYU
            MOVE    WRK-INPUTCD     TO  ICD-INPUTCD
            MOVE    SPACE           TO  ICD-SRYKBN
@@ -796,11 +800,11 @@
       *
            MOVE    INPUTCD-REC     TO  MCPDATA-REC
            MOVE    "DBINSERT"      TO  MCP-FUNC
-           MOVE    "INPUTCD-KEY"   TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"         USING
-                                       MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC
+           MOVE    "tbl_inputcd"   TO  MCP-TABLE
+           MOVE    "key"           TO  MCP-PATHNAME
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
            IF      MCP-RC          NOT =   ZERO
                 MOVE    6              TO  FLG-ERR
                 GO  TO  250-INPUTCD-INSERT-EXT
@@ -1050,11 +1054,7 @@
       *****************************************************************
        900-SYSTEM-NEXT-SEC         SECTION.
       *
-           MOVE    "DBFETCH"       TO  MCP-FUNC
-           CALL    "ORCMCPSUB"         USING
-                                       MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC
+           PERFORM 920-DBFETCH-SEC
            IF      MCP-RC              =   ZERO
                MOVE    ZERO            TO  FLG-SYSKANRI
            ELSE
@@ -1070,11 +1070,7 @@
       *****************************************************************
        940-INPUTCD-NEXT-SEC        SECTION.
       *
-           MOVE    "DBFETCH"       TO  MCP-FUNC
-           CALL    "ORCMCPSUB"         USING
-                                       MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC
+           PERFORM 920-DBFETCH-SEC
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC     TO  INPUTCD-REC
                IF      ICD-INPUTCD     =   WRK-INPUTCD
@@ -1101,22 +1097,18 @@
       *
            INITIALIZE                  TNS-TENSU-REC
            MOVE    WRK-SRYCD       TO  TNS-SRYCD
+           MOVE    SPA-SYSYMD      TO  TNS-YUKOSTYMD
+           MOVE    SPA-SYSYMD      TO  TNS-YUKOEDYMD
+           MOVE    SPA-HOSPNUM     TO  TNS-HOSPNUM
       *
-           MOVE    TNS-TENSU-REC   TO  MCPDATA-REC
-           MOVE    "DBSELECT"      TO  MCP-FUNC
-           MOVE    "TENSU-KEY"     TO  ORC-DBPATH
-           MOVE    SPA-SYSYMD      TO  ORC-DBYMD
-           CALL    "ORCMCPSUB"         USING
-                                       MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC
+           MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
+           MOVE    "tbl_tensu"         TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
-               MOVE    "TENSU-KEY"     TO  ORC-DBPATH
-               MOVE    "DBFETCH"       TO  MCP-FUNC
-               CALL    "ORCMCPSUB"         USING
-                                           MCPAREA
-                                           ORCMCPAREA
-                                           MCPDATA-REC
+               MOVE    "tbl_tensu"         TO  MCP-TABLE
+               MOVE    "key"               TO  MCP-PATHNAME
+               PERFORM 920-DBFETCH-SEC
                IF      MCP-RC              =   ZERO
                    MOVE    ZERO            TO  FLG-TENSU
                ELSE
@@ -1127,15 +1119,51 @@
                MOVE    1               TO  FLG-TENSU
            END-IF
       *
-           MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
-           MOVE    "TESNSU-KEY"    TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"         USING
-                                       MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC
+           MOVE    "tbl_tensu"         TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
       *
            .
        900-TENSU-READ-EXT.
+           EXIT.
+      *****************************************************************
+      *    テーブル検索処理
+      *****************************************************************
+       910-DBSELECT-SEC                SECTION.
+      *
+           MOVE    "DBSELECT"      TO  MCP-FUNC
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
+      *
+           .
+       910-DBSELECT-EXT.
+           EXIT.
+      *****************************************************************
+      *    ＤＢ読み込み処理
+      *****************************************************************
+       920-DBFETCH-SEC                 SECTION.
+      *
+           MOVE    "DBFETCH"       TO  MCP-FUNC
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
+      *
+           .
+      *
+       920-DBFETCH-EXT.
+           EXIT.
+      *****************************************************************
+      *   ＤＢクローズ処理
+      *****************************************************************
+       990-DBCLOSE-SEC                 SECTION.
+      *
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
+           .
+       990-DBCLOSE-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1182,19 +1210,21 @@
        100-DBOPEN-SEC              SECTION.
       *
            MOVE    "DBOPEN"        TO  MCP-FUNC
-           CALL    "ORCMCPSUB"         USING
-                                       MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC
+           MOVE    LOW-VALUE       TO  MCP-TABLE
+           MOVE    LOW-VALUE       TO  MCP-PATHNAME
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
            IF      MCP-RC      NOT =   ZERO
                DISPLAY "DBOPEN ERROR"
            END-IF
       *
            MOVE    "DBSTART"       TO  MCP-FUNC
-           CALL    "ORCMCPSUB"         USING
-                                       MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC
+           MOVE    LOW-VALUE       TO  MCP-TABLE
+           MOVE    LOW-VALUE       TO  MCP-PATHNAME
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
            IF      MCP-RC      NOT =   ZERO
                DISPLAY "DBSTART ERROR"
            END-IF
@@ -1208,16 +1238,18 @@
        900-DBCOMMIT-SEC            SECTION.
       *
            MOVE    "DBCOMMIT"      TO  MCP-FUNC
-           CALL    "ORCMCPSUB"         USING
-                                       MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC
+           MOVE    LOW-VALUE       TO  MCP-TABLE
+           MOVE    LOW-VALUE       TO  MCP-PATHNAME
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            MOVE    "DBSTART"       TO  MCP-FUNC
-           CALL    "ORCMCPSUB"         USING
-                                       MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC
+           MOVE    LOW-VALUE       TO  MCP-TABLE
+           MOVE    LOW-VALUE       TO  MCP-PATHNAME
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
            .
        900-DBCOMMIT-EXT.
            EXIT.
@@ -1228,23 +1260,25 @@
        900-DBDISCONNECT-SEC        SECTION.
       *
            MOVE    "DBCOMMIT"      TO  MCP-FUNC
-           CALL    "ORCMCPSUB"         USING
-                                       MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC
+           MOVE    LOW-VALUE       TO  MCP-TABLE
+           MOVE    LOW-VALUE       TO  MCP-PATHNAME
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
            IF      MCP-RC      NOT =   ZERO
                DISPLAY "DBCOMMIT ERROR"
            END-IF
       *
            MOVE    "DBDISCONNECT"  TO  MCP-FUNC
-           CALL    "ORCMCPSUB"         USING
-                                       MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC
+           MOVE    LOW-VALUE       TO  MCP-TABLE
+           MOVE    LOW-VALUE       TO  MCP-PATHNAME
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
            IF      MCP-RC      NOT =   ZERO
                DISPLAY "DBDISCONNECT ERROR"
            END-IF
            .
-       900-DBCLOSE-EXT.
+       900-DBDISCONNECT-EXT.
            EXIT.
       *

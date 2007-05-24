@@ -40,6 +40,7 @@
       *  01.00.09    NACL-Â¿¡¹Ç¼  06/01/12  Êä½õ¶èÊ¬È½Äê¡¢¥á¥Ã¥»¡¼¥¸½¤Àµ
       *  01.00.10    NACL-Â¿¡¹Ç¼  06/06/30  ¸©ÈÖ¹æÀßÄêÄÉ²Ã¡ÊËÌ³¤Æ»ÍÑ¡Ë
       *  02.00.01    NACL-Â¿¡¹Ç¼  06/07/27  MONFUNC ÂÐ±þ
+      *  03.05.00    NACL-Â¿¡¹Ç¼  07/05/16  ¥°¥ë¡¼¥×¿ÇÎÅÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -154,6 +155,7 @@
        01  PARA-SAVE.
            03  PARA-09-4               PIC X(06).
            03  PARA-11-4               PIC X(06).
+           03  PARA-HN-HOSPNUM         PIC X(02).
       *
       *    Åº»úÎÎ°è
        01  IDX-AREA.
@@ -354,6 +356,15 @@
                MOVE    1           TO  FLG-PTINF
                GO  TO  100-INIT-EXT
            END-IF
+      *    °åÎÅµ¡´ØÈÖ¹æ
+           IF      PARA-HN-HOSPNUM    NUMERIC
+               MOVE    PARA-HN-HOSPNUM     TO  SPA-HOSPNUM
+           ELSE
+               MOVE    1                   TO  FLG-PTINF
+               DISPLAY "*(ORCVTHKNCOMBI)* HOSPNUM ERR ["
+                                                 PARA-HN-HOSPNUM"]"
+               GO  TO  100-INIT-EXT
+           END-IF
       *
            ACCEPT  WRK-SYMD2       FROM    DATE
            MOVE    WRK-SYMD2       TO  WRK-SYSYMD (3:)
@@ -444,6 +455,8 @@
                  MOVE  PARM-DATA   TO  PARA-09-4
              WHEN  "11-4"
                  MOVE  PARM-DATA   TO  PARA-11-4
+             WHEN    "HN"
+                 MOVE  PARM-DATA   TO  PARA-HN-HOSPNUM
            END-EVALUATE
       *
            .
@@ -460,6 +473,7 @@
            MOVE    "1001"          TO  SYS-1001-KANRICD
            MOVE    WRK-SYSYMD      TO  SYS-1001-STYUKYMD
            MOVE    WRK-SYSYMD      TO  SYS-1001-EDYUKYMD
+           MOVE    SPA-HOSPNUM     TO  SYS-1001-HOSPNUM
            MOVE    SYS-1001-REC    TO  MCPDATA-REC
            MOVE    "tbl_syskanri"  TO  MCP-TABLE
            MOVE    "key2"          TO  MCP-PATHNAME
@@ -533,7 +547,7 @@
            MOVE    ZERO            TO  FLG-PTINF
            MOVE    SPACE           TO  PTINF-REC
            INITIALIZE                  PTINF-REC
-           MOVE    SPA-HOSPID      TO  PTINF-HOSPID
+           MOVE    SPA-HOSPNUM     TO  PTINF-HOSPNUM
            MOVE    PTINF-REC       TO  MCPDATA-REC
            MOVE    "tbl_ptinf"     TO  MCP-TABLE
            MOVE    "key4"          TO  MCP-PATHNAME
@@ -667,13 +681,14 @@
            MOVE    "P02"           TO  PARA-GYOUMUID
            MOVE    SPA-TERMID      TO  PARA-TERMID
       *
+           MOVE    SPA-HOSPNUM     TO  PARA-HOSPNUM
            MOVE    PARA-REC        TO  MCPDATA-REC
            MOVE    "DBDELETE"      TO  MCP-FUNC
            MOVE    "tbl_para"      TO  MCP-TABLE
            MOVE    "del2"          TO  MCP-PATHNAME
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
        210-PARA-OPEN-EXT.
@@ -687,7 +702,7 @@
            MOVE    ZERO            TO  FLG-PTHKNINF
            MOVE    SPACE           TO  PTHKNINF-REC
            INITIALIZE                  PTHKNINF-REC
-           MOVE    SPA-HOSPID      TO  PTHKN-HOSPID
+           MOVE    SPA-HOSPNUM     TO  PTHKN-HOSPNUM
            MOVE    SPA-PTID        TO  PTHKN-PTID
            MOVE    PTHKNINF-REC    TO  MCPDATA-REC
            MOVE    "tbl_pthkninf"  TO  MCP-TABLE
@@ -770,9 +785,9 @@
                MOVE    "DBUPDATE"      TO  MCP-FUNC
                MOVE    "tbl_pthkninf"  TO  MCP-TABLE
                MOVE    "key"           TO  MCP-PATHNAME
-               CALL    "MONFUNC"           USING
-                                           MCPAREA
-                                           MCPDATA-REC
+grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
+                                                   MCPDATA-REC
+                                                   SPA-AREA
                IF      MCP-RC          NOT =   ZERO
                    DISPLAY "*(ORCVTHKNCOMBI)*  PTHKNINF UPD ERR:" MCP-RC
                            ",KEY:" PTHKN-KEY
@@ -887,7 +902,7 @@
            MOVE    ZERO            TO  FLG-PTKOHINF
            MOVE    SPACE           TO  PTKOHINF-REC
            INITIALIZE                  PTKOHINF-REC
-           MOVE    SPA-HOSPID      TO  PTKOH-HOSPID
+           MOVE    SPA-HOSPNUM     TO  PTKOH-HOSPNUM
            MOVE    SPA-PTID        TO  PTKOH-PTID
            MOVE    PTKOHINF-REC    TO  MCPDATA-REC
            MOVE    "tbl_ptkohinf"  TO  MCP-TABLE
@@ -950,7 +965,7 @@
            MOVE    ZERO            TO  FLG-HKNNUM
            MOVE    SPACE           TO  HKNNUM-REC
            INITIALIZE                  HKNNUM-REC
-           MOVE    SPA-HOSPID      TO  HKN-HOSPID
+           MOVE    SPA-HOSPNUM     TO  HKN-HOSPNUM
            MOVE    WRK-KEN-HKNNUM  TO  HKN-HKNNUM
            IF      WRK-KEN-PAYKBN      =   SPACE
                MOVE    ZERO            TO  WRK-KEN-PAYKBN
@@ -1020,7 +1035,7 @@
                (FLG-RJN                =   1  )
                MOVE    ZERO            TO  FLG-HKNNUM
                MOVE    SPACE           TO  HKNNUM-REC
-               MOVE    SPA-HOSPID      TO  HKN-HOSPID
+               MOVE    SPA-HOSPNUM     TO  HKN-HOSPNUM
                MOVE    WRK-KEN-HKNNUM  TO  HKN-HKNNUM
                MOVE    HKNNUM-REC      TO  MCPDATA-REC
                MOVE    "tbl_hknnum"        TO  MCP-TABLE
@@ -1161,9 +1176,9 @@
            MOVE    "DBUPDATE"      TO  MCP-FUNC
            MOVE    "tbl_pthkninf"  TO  MCP-TABLE
            MOVE    "key"           TO  MCP-PATHNAME
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
            IF      MCP-RC          NOT =   ZERO
                MOVE    "6"             TO  WRK-KEN-ERFLG
                DISPLAY "*(ORCVTHKNCOMBI)*  PTHKNINF UPD ERR:" MCP-RC
@@ -1226,9 +1241,9 @@
                MOVE    "DBINSERT"      TO  MCP-FUNC
                MOVE    "tbl_pthkninf"  TO  MCP-TABLE
                MOVE    "key"           TO  MCP-PATHNAME
-               CALL    "MONFUNC"           USING
-                                           MCPAREA
-                                           MCPDATA-REC
+grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
+                                                   MCPDATA-REC
+                                                   SPA-AREA
                IF      MCP-RC          NOT =   ZERO
                    MOVE    "6"             TO  WRK-KEN-ERFLG
                    DISPLAY "*(ORCVTHKNCOMBI)*  PTHKNINF INS ERR:" MCP-RC
@@ -1280,9 +1295,9 @@
                MOVE    "DBUPDATE"      TO  MCP-FUNC
                MOVE    "tbl_ptnum"     TO  MCP-TABLE
                MOVE    "key"           TO  MCP-PATHNAME
-               CALL    "MONFUNC"           USING
-                                           MCPAREA
-                                           MCPDATA-REC
+grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
+                                                   MCPDATA-REC
+                                                   SPA-AREA
                IF      MCP-RC          NOT =   ZERO
                    DISPLAY "*(ORCVTHKNCOMBI)*  PTNUM UPD ERR:" MCP-RC
                            ",KEY:"  PTNUM-KEY
@@ -1347,9 +1362,9 @@
            MOVE    "DBUPDATE"      TO  MCP-FUNC
            MOVE    "tbl_ptkohinf"  TO  MCP-TABLE
            MOVE    "key"           TO  MCP-PATHNAME
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
            IF      MCP-RC          NOT =   ZERO
                MOVE    "7"             TO  WRK-KEN-ERFLG
                DISPLAY "*(ORCVTHKNCOMBI)*  PTKOHINF UPD ERR:" MCP-RC
@@ -1404,9 +1419,9 @@
                MOVE    "DBINSERT"          TO  MCP-FUNC
                MOVE    "tbl_ptkohinf"      TO  MCP-TABLE
                MOVE    "key"               TO  MCP-PATHNAME
-               CALL    "MONFUNC"           USING
-                                           MCPAREA
-                                           MCPDATA-REC
+grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
+                                                   MCPDATA-REC
+                                                   SPA-AREA
                IF      MCP-RC          NOT =   ZERO
                    MOVE    "7"             TO  WRK-KEN-ERFLG
                    DISPLAY "*(ORCVTHKNCOMBI)*  PTKOHINF INS ERR:" MCP-RC
@@ -1442,6 +1457,7 @@
       *    ¥Ñ¥é¥á¥¿ÅÐÏ¿
            MOVE    "P02"           TO  PARA-GYOUMUID
            MOVE    SPA-TERMID      TO  PARA-TERMID
+           MOVE    SPA-HOSPNUM     TO  PARA-HOSPNUM
       *
            MOVE    PARA-REC        TO  WRK-PARA-REC
       *
@@ -1464,9 +1480,9 @@
                MOVE    "DBINSERT"      TO  MCP-FUNC
                MOVE    "tbl_para"      TO  MCP-TABLE
                MOVE    "key"           TO  MCP-PATHNAME
-               CALL    "MONFUNC"           USING
-                                           MCPAREA
-                                           MCPDATA-REC
+grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
+                                                   MCPDATA-REC
+                                                   SPA-AREA
                IF      MCP-RC          NOT =   ZERO
                    DISPLAY "*(ORCVTHKNCOMBI)*  PARA INSERT ERR:" MCP-RC
                            ",KEY2:" PARA-KEY
@@ -1477,9 +1493,9 @@
                MOVE    "DBUPDATE"      TO  MCP-FUNC
                MOVE    "tbl_para"      TO  MCP-TABLE
                MOVE    "key"           TO  MCP-PATHNAME
-               CALL    "MONFUNC"           USING
-                                           MCPAREA
-                                           MCPDATA-REC
+grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
+                                                   MCPDATA-REC
+                                                   SPA-AREA
                IF      MCP-RC          NOT =   ZERO
                    DISPLAY "*(ORCVTHKNCOMBI)*  PARA UPDATE ERR:" MCP-RC
                            ",KEY2:" PARA-KEY
@@ -1614,6 +1630,7 @@
            MOVE    SPA-TERMID      TO  PARA-TERMID
            MOVE    "NC01PARA"      TO  PARA-FILEMEI
       *
+           MOVE    SPA-HOSPNUM     TO  PARA-HOSPNUM
            MOVE    PARA-REC        TO  MCPDATA-REC
            MOVE    "tbl_para"      TO  MCP-TABLE
            MOVE    "key5"          TO  MCP-PATHNAME
@@ -1655,13 +1672,14 @@
            ADD     1               TO  IDZ
            MOVE    IDZ             TO  COMB-HKNCOMBINUM
       *
+           MOVE    SPA-HOSPNUM     TO  COMB-HOSPNUM
            MOVE    HKNCOMBI-REC    TO  MCPDATA-REC
            MOVE    "DBINSERT"      TO  MCP-FUNC
            MOVE    "tbl_hkncombi"  TO  MCP-TABLE
            MOVE    "key"           TO  MCP-PATHNAME
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
            IF      MCP-RC          NOT =   ZERO
                DISPLAY "*(ORCVTHKNCOMBI)* HKNCOMBI INS-ERR[" MCP-RC "]"
                MOVE    "8"            TO  WRK-KEN-ERFLG
@@ -1699,9 +1717,9 @@
                MOVE    "DBUPDATE"      TO  MCP-FUNC
                MOVE    "tbl_ptnum"     TO  MCP-TABLE
                MOVE    "key"           TO  MCP-PATHNAME
-               CALL    "MONFUNC"           USING
-                                           MCPAREA
-                                           MCPDATA-REC
+grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
+                                                   MCPDATA-REC
+                                                   SPA-AREA
                IF      MCP-RC      NOT =   ZERO
                    DISPLAY "*(ORCVTHKNCOMBI)* PTNUM UPD-ERR PTID["
                            SPA-PTID "]MCP-RC[" MCP-RC "]"
@@ -1853,7 +1871,7 @@
            MOVE    ZERO            TO  FLG-PTNUM
            MOVE    SPACE           TO  PTNUM-REC
            INITIALIZE                  PTNUM-REC
-           MOVE    SPA-HOSPID      TO  PTNUM-HOSPID
+           MOVE    SPA-HOSPNUM     TO  PTNUM-HOSPNUM
            MOVE    SPA-PTID        TO  PTNUM-PTID
            MOVE    PTNUM-REC       TO  MCPDATA-REC
            MOVE    "tbl_ptnum"     TO  MCP-TABLE
@@ -1920,9 +1938,9 @@
        910-DBSELECT-SEC                SECTION.
       *
            MOVE    "DBSELECT"      TO  MCP-FUNC
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
        910-DBSELECT-EXT.
@@ -1933,9 +1951,9 @@
        920-DBFETCH-SEC                 SECTION.
       *
            MOVE    "DBFETCH"       TO  MCP-FUNC
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
       *
@@ -1948,9 +1966,9 @@
        990-DBCLOSE-SEC         SECTION.
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
        990-DBCLOSE-EXT.
@@ -1961,18 +1979,20 @@
       *****************************************************************
        100-DBOPEN-SEC              SECTION.
       *
+           MOVE    LOW-VALUE       TO  MCP-TABLE
+           MOVE    LOW-VALUE       TO  MCP-PATHNAME
            MOVE    "DBOPEN"        TO  MCP-FUNC
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
            IF      MCP-RC      NOT =   ZERO
                DISPLAY "DBOPEN ERROR"
            END-IF
       *
            MOVE    "DBSTART"       TO  MCP-FUNC
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
            IF      MCP-RC      NOT =   ZERO
                DISPLAY "DBSTART ERROR"
            END-IF
@@ -1985,15 +2005,19 @@
       *****************************************************************
        900-DBCOMMIT-SEC            SECTION.
       *
+           MOVE    LOW-VALUE       TO  MCP-TABLE
+           MOVE    LOW-VALUE       TO  MCP-PATHNAME
            MOVE    "DBCOMMIT"      TO  MCP-FUNC
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
+           MOVE    LOW-VALUE       TO  MCP-TABLE
+           MOVE    LOW-VALUE       TO  MCP-PATHNAME
            MOVE    "DBSTART"       TO  MCP-FUNC
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
            .
        900-DBCOMMIT-EXT.
            EXIT.
@@ -2003,18 +2027,22 @@
       *****************************************************************
        900-DBDISCONNECT-SEC        SECTION.
       *
+           MOVE    LOW-VALUE       TO  MCP-TABLE
+           MOVE    LOW-VALUE       TO  MCP-PATHNAME
            MOVE    "DBCOMMIT"      TO  MCP-FUNC
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
            IF      MCP-RC      NOT =   ZERO
                DISPLAY "DBCOMMIT ERROR"
            END-IF
       *
+           MOVE    LOW-VALUE       TO  MCP-TABLE
+           MOVE    LOW-VALUE       TO  MCP-PATHNAME
            MOVE    "DBDISCONNECT"  TO  MCP-FUNC
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
            IF      MCP-RC      NOT =   ZERO
                DISPLAY "DBDISCONNECT ERROR"
            END-IF

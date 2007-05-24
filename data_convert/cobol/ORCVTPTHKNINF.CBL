@@ -45,6 +45,7 @@
       *  01.00.11    NACL-森脇     05/09/26  構造変更
       *  01.00.12    NACL-多々納   06/01/12  補助区分編集修正
       *  01.00.13    NACL-森脇     06/07/26  MONFUNC対応
+      *  03.05.00    NACL-多々納  07/05/16  グループ診療対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -193,6 +194,7 @@
            03  PARA-00-2               PIC X(01).
            03  PARA-09-2               PIC X(06).
            03  PARA-11-2               PIC X(06).
+           03  PARA-HOSPNUM            PIC X(02).
       *
       *    一時領域
        01  WRK-AREA.
@@ -393,6 +395,14 @@
                MOVE    1           TO  FLG-CSV
                GO  TO  100-INIT-EXT
            END-IF
+      *    医療機関番号
+           IF      PARA-HOSPNUM    NUMERIC
+               MOVE    PARA-HOSPNUM    TO  SPA-HOSPNUM
+           ELSE
+               MOVE    1               TO  FLG-CSV
+               DISPLAY "*(ORCVTPTHKNINF)* HOSPNUM ERR [" PARA-HOSPNUM"]"
+               GO  TO  100-INIT-EXT
+           END-IF
       *
            ACCEPT  WRK-SYMD2       FROM    DATE
            MOVE    WRK-SYMD2       TO  WRK-SYSYMD (3:)
@@ -513,6 +523,8 @@
                    MOVE    PARA-DATA   TO  PARA-00-2
                WHEN    "11-2"
                    MOVE    PARA-DATA   TO  PARA-11-2
+               WHEN    "HN"
+                   MOVE    PARA-DATA     TO  PARA-HOSPNUM
            END-EVALUATE
       *
            .
@@ -529,13 +541,11 @@
            MOVE    "1001"          TO  SYS-1001-KANRICD
            MOVE    WRK-SYSYMD      TO  SYS-1001-STYUKYMD
                                        SYS-1001-EDYUKYMD
+           MOVE    SPA-HOSPNUM     TO  SYS-1001-HOSPNUM
            MOVE    SYS-1001-REC    TO  MCPDATA-REC
-           MOVE    "DBSELECT"      TO  MCP-FUNC
            MOVE    "tbl_syskanri"  TO  MCP-TABLE
            MOVE    "key2"          TO  MCP-PATHNAME
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+           PERFORM 910-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
                MOVE    "tbl_syskanri"  TO  MCP-TABLE
                MOVE    "key2"          TO  MCP-PATHNAME
@@ -551,12 +561,9 @@
                MOVE    SYS-1001-HOSPSBT    TO  SPA-HOSPSBT
                MOVE    SYS-1001-ROUPAYKBN  TO  SPA-ROUPAYKBN
            END-IF
-           MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
            MOVE    "tbl_syskanri"  TO  MCP-TABLE
            MOVE    "key2"          TO  MCP-PATHNAME
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+           PERFORM 990-DBCLOSE-SEC
       *
            .
        120-CP1001-KENSAKU-EXT.
@@ -570,19 +577,18 @@
            MOVE    ZERO            TO  FLG-SYSKANRI
            MOVE    SPACE           TO  SYS-1009-REC
            MOVE    "1009"          TO  SYS-1009-KANRICD
-           MOVE    "*%"            TO  SYS-1009-KBNCD
+           MOVE    "*"             TO  SYS-1009-KBNCD
            MOVE    WRK-SYSYMD      TO  SYS-1009-STYUKYMD
                                        SYS-1009-EDYUKYMD
+           MOVE    SPA-HOSPNUM     TO  SYS-1009-HOSPNUM
            MOVE    SYS-1009-REC    TO  MCPDATA-REC
            MOVE    "DBSELECT"      TO  MCP-FUNC
            MOVE    "tbl_syskanri"  TO  MCP-TABLE
-           MOVE    "key"           TO  MCP-PATHNAME
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+           MOVE    "key10"         TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
            IF      MCP-RC          =   ZERO
                MOVE    "tbl_syskanri"  TO  MCP-TABLE
-               MOVE    "key"           TO  MCP-PATHNAME
+               MOVE    "key10"         TO  MCP-PATHNAME
                PERFORM 900-SYSTEM-NEXT-SEC
            ELSE
                MOVE    1               TO  FLG-SYSKANRI
@@ -592,12 +598,9 @@
            ELSE
                MOVE    MCPDATA-REC     TO  SYS-1009-REC
            END-IF
-           MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
            MOVE    "tbl_syskanri"  TO  MCP-TABLE
-           MOVE    "key"           TO  MCP-PATHNAME
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+           MOVE    "key10"         TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
       *
            .
        120-CP1009-KENSAKU-EXT.
@@ -1175,7 +1178,6 @@
       *        誤入力
                WHEN    OTHER
                    MOVE    3           TO  FLG-ERR
-                   GO  TO  2410-HONKZKKBN-SET-EXT
            END-EVALUATE
       *
            .
@@ -1212,7 +1214,6 @@
       *                誤入力
                        WHEN    OTHER
                            MOVE    3       TO  FLG-ERR
-                           GO  TO  2410-HOJOKBN-SET-EXT
                    END-EVALUATE
       *        国保
                WHEN    "060"
@@ -1224,7 +1225,6 @@
       *                誤入力
                        WHEN    OTHER
                            MOVE    3       TO  FLG-ERR
-                           GO  TO  2410-HOJOKBN-SET-EXT
                    END-EVALUATE
       *        自費
                WHEN    "980"
@@ -1237,7 +1237,6 @@
       *                誤入力
                        WHEN    OTHER
                            MOVE    3       TO  FLG-ERR
-                           GO  TO  2410-HOJOKBN-SET-EXT
                    END-EVALUATE
       *        共済
                WHEN    "031"    THRU    "034"
@@ -1250,7 +1249,6 @@
       *                誤入力
                        WHEN    OTHER
                            MOVE    3       TO  FLG-ERR
-                           GO  TO  2410-HOJOKBN-SET-EXT
                    END-EVALUATE
       *        船員・国保・自費以外
                WHEN    OTHER
@@ -1260,7 +1258,6 @@
       *                誤入力
                        WHEN    OTHER
                            MOVE    3       TO  FLG-ERR
-                           GO  TO  2410-HOJOKBN-SET-EXT
                    END-EVALUATE
            END-EVALUATE
       *
@@ -1296,7 +1293,6 @@
       *        誤入力
                WHEN    OTHER
                    MOVE    3           TO  FLG-ERR
-                   GO  TO  2410-CONTKBN-SET-EXT
            END-EVALUATE
       *
            .
@@ -1324,38 +1320,47 @@
                GO  TO  2410-KIGO-SET-EXT
            END-IF
       *
-      *    記号セット
-           IF      WRK-MO-CNT          >  ZERO
-               COMPUTE IDZ             =  WRK-MO-ST
-                                       +  WRK-MO-CNT
-                                       -  2
-               IF      CSV-REC (IDZ:2) = "．"
-                   COMPUTE WRK-MO-CNT  =  WRK-MO-CNT
-                                       -  2
-               END-IF
-           END-IF
-           IF      WRK-MO-CNT    >  ZERO
-               MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
-                                       TO  WRK-DATA
-               PERFORM 2401-SPACE-HENSYU-SEC
+           MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
+                                   TO  WRK-DATA
+           MOVE    80              TO  WRK-CNT
+           PERFORM 2402-ZENKAKU-HEN-SEC
+           IF      FLG-ERR         =   ZERO
                MOVE    WRK-DATA (1:WRK-LEN)
-                                       TO  PTHKN-KIGO
-               IF      PTHKN-KIGO(1:2) = X"8080"
-                   MOVE "・"           TO  PTHKN-KIGO(1:2)
-               END-IF
-               PERFORM VARYING IDZ     FROM    1   BY      2
-                       UNTIL   IDZ     >   WRK-LEN
-                   IF  PTHKN-KIGO(IDZ:2) =   X"8080"
-                       MOVE "・"         TO  PTHKN-KIGO(1:2)
-                       MOVE  WRK-LEN     TO  IDZ
-                   END-IF
-               END-PERFORM
+                                   TO  PTHKN-KIGO
            END-IF
+      *
+      *全角変換を追加した為、以下は削除(VER.3.5)
+      *    記号セット
+      *    IF      WRK-MO-CNT          >  ZERO
+      *        COMPUTE IDZ             =  WRK-MO-ST
+      *                                +  WRK-MO-CNT
+      *                                -  2
+      *        IF      CSV-REC (IDZ:2) = "．"
+      *            COMPUTE WRK-MO-CNT  =  WRK-MO-CNT
+      *                                -  2
+      *        END-IF
+      *    END-IF
+      *    IF      WRK-MO-CNT    >  ZERO
+      *        MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
+      *                                TO  WRK-DATA
+      *        PERFORM 2401-SPACE-HENSYU-SEC
+      *        MOVE    WRK-DATA (1:WRK-LEN)
+      *                                TO  PTHKN-KIGO
+      *        IF      PTHKN-KIGO(1:2) = X"8080"
+      *            MOVE "・"           TO  PTHKN-KIGO(1:2)
+      *        END-IF
+      *        PERFORM VARYING IDZ     FROM    1   BY      2
+      *                UNTIL   IDZ     >   WRK-LEN
+      *            IF  PTHKN-KIGO(IDZ:2) =   X"8080"
+      *                MOVE "・"         TO  PTHKN-KIGO(1:2)
+      *                MOVE  WRK-LEN     TO  IDZ
+      *            END-IF
+      *        END-PERFORM
+      **** END-IF
       *
            .
        2410-KIGO-SET-EXT.
            EXIT.
-      *
       *****************************************************************
       *    項目１０：番号　処理
       *****************************************************************
@@ -1380,9 +1385,12 @@
       *    番号セット
            MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
                                    TO  WRK-DATA
-           PERFORM 2401-SPACE-HENSYU-SEC
-           MOVE    WRK-DATA(1:WRK-LEN)
+           MOVE    80              TO  WRK-CNT
+           PERFORM 2402-ZENKAKU-HEN-SEC
+           IF      FLG-ERR         =   ZERO
+               MOVE    WRK-DATA (1:WRK-LEN)
                                    TO  PTHKN-NUM
+           END-IF
       *
            .
        2410-NUM-SET-EXT.
@@ -1683,27 +1691,26 @@
                MOVE    PTHKN-HKNID     TO  WRK-HKNID
            END-IF
       *
-           MOVE    SPA-HOSPID      TO  PTHKN-HOSPID
+           MOVE    SPA-HOSPNUM     TO  PTHKN-HOSPNUM
            MOVE    PTNUM-PTID      TO  PTHKN-PTID
            MOVE    SPA-TERMID      TO  PTHKN-TERMID
       *    前期高齢者チェック
-           PERFORM 250-OLDFTNKBN-HEN-SEC
-           IF  FLG-ERR             NOT =   ZERO
-               GO  TO  250-PTHKNINF-SET-EXT
+           IF  FLG-ERR                 =   ZERO
+               PERFORM 250-OLDFTNKBN-HEN-SEC
            END-IF
       *
       *    補助区分再セット
-           PERFORM 250-HOJYOKBN-HEN-SEC
+           IF  FLG-ERR                 =   ZERO
+               PERFORM 250-HOJYOKBN-HEN-SEC
+           END-IF
       *
       *    患者番号変換マスタ更新処理
-           PERFORM 260-PTNUM-UPDATE-SEC
-           IF  FLG-ERR             NOT =   ZERO
-               GO  TO  250-PTHKNINF-SET-EXT
+           IF  FLG-ERR                 =   ZERO
+               PERFORM 260-PTNUM-UPDATE-SEC
            END-IF
       *    患者保険マスタ　更新処理
-           PERFORM 260-PTHKNINF-INSERT-SEC
-           IF  FLG-ERR             NOT =   ZERO
-               GO  TO  250-PTHKNINF-SET-EXT
+           IF  FLG-ERR                 =   ZERO
+               PERFORM 260-PTHKNINF-INSERT-SEC
            END-IF
       *
            .
@@ -1726,40 +1733,43 @@
       *
       *    ISAMファイルがなくなるまで
            PERFORM UNTIL ( FLG-ISAM    =   1 )
+                      OR ( FLG-ERR     NOT =   ZERO )
       *        患者が変わったら最大連番取得
                IF      WRK-PTID        NOT =   ISAM-PTID
                    MOVE    ISAM-PTID       TO  WRK-PTID
                    MOVE    ZERO            TO  WRK-HKNID
                    INITIALIZE                  PTHKN-REC
-                   MOVE    SPA-HOSPID      TO  PTHKN-HOSPID
+                   MOVE    SPA-HOSPNUM     TO  PTHKN-HOSPNUM
                    MOVE    ISAM-PTID       TO  PTHKN-PTID
+      *
                    MOVE    PTHKN-REC       TO  MCPDATA-REC
-                   MOVE    "tbl_pthkninf"  TO  WRK-TABLE
-                   MOVE    "key2"          TO  WRK-DBPATH
-                   PERFORM 900-PTHKNINF-SELECT-SEC
+                   MOVE    "tbl_pthkninf"  TO  MCP-TABLE
+                   MOVE    "key2"          TO  MCP-PATHNAME
+                   PERFORM 910-DBSELECT-SEC
+                   IF          MCP-RC          =   ZERO
+                       PERFORM 900-PTHKNINF-FETCH-SEC
+                   ELSE
+                       MOVE    1               TO  FLG-PTHKNINF
+                   END-IF
                    PERFORM UNTIL (FLG-PTHKNINF   =   1)
                        MOVE    MCPDATA-REC     TO  PTHKN-REC
-      *               レコード番号が大きかったら最大値をセット
+      *                レコード番号が大きかったら最大値をセット
                        IF      WRK-HKNID       <   PTHKN-HKNID
                            MOVE    PTHKN-HKNID     TO  WRK-HKNID
                        END-IF
                        PERFORM 900-PTHKNINF-FETCH-SEC
                    END-PERFORM
-                   PERFORM 900-PTHKNINF-CLOSE-SEC
+                   MOVE    "tbl_pthkninf"  TO  MCP-TABLE
+                   MOVE    "key2"          TO  MCP-PATHNAME
+                   PERFORM 990-DBCLOSE-SEC
                END-IF
       *
       *        患者保険情報に再セット
                INITIALIZE                  PTHKN-REC
-               MOVE    SPA-HOSPID      TO  PTHKN-HOSPID
+               MOVE    SPA-HOSPNUM     TO  PTHKN-HOSPNUM
                MOVE    ISAM-PTID       TO  PTHKN-PTID
                ADD     1               TO  WRK-HKNID
-               IF      WRK-HKNID   <   10
-                   MOVE    WRK-HKNID       TO  WRK-NUM1
-                   MOVE    WRK-NUM1        TO  PTHKN-HKNID
-               ELSE
-                   MOVE    WRK-HKNID       TO  WRK-NUM2
-                   MOVE    WRK-NUM2        TO  PTHKN-HKNID
-               END-IF
+               MOVE    WRK-HKNID       TO  PTHKN-HKNID
                MOVE    ISAM-HKNNUM     TO  PTHKN-HKNNUM
                MOVE    ISAM-FTNKBN     TO  WRK-HEN-FTNKBN
                MOVE    ISAM-HKNJANUM   TO  PTHKN-HKNJANUM
@@ -1783,16 +1793,16 @@
                MOVE    1               TO  FLG-ROUJIN
                PERFORM 250-HOJYOKBN-HEN-SEC
       *        患者番号変換マスタ更新処理
-               PERFORM 260-PTNUM-UPDATE-SEC
-               IF  FLG-ERR             NOT =   ZERO
-                   GO  TO  250-PTHKNINF-BUNKATU-SET-EXT
+               IF  FLG-ERR             =   ZERO
+                   PERFORM 260-PTNUM-UPDATE-SEC
                END-IF
       *        患者保険マスタ　更新処理
-               PERFORM 260-PTHKNINF-INSERT-SEC
-               IF  FLG-ERR             NOT =   ZERO
-                   GO  TO  250-PTHKNINF-BUNKATU-SET-EXT
+               IF  FLG-ERR             =   ZERO
+                   PERFORM 260-PTHKNINF-INSERT-SEC
                END-IF
-               PERFORM 900-ISAM-NEXT-SEC
+               IF  FLG-ERR             =   ZERO
+                   PERFORM 900-ISAM-NEXT-SEC
+               END-IF
            END-PERFORM
       *
            CLOSE                       ISAM-FILE
@@ -2039,16 +2049,16 @@
            IF  PTNUM-HKNID         <   PTHKN-HKNID
                MOVE    PTHKN-HKNID     TO  PTNUM-HKNID
                MOVE    SPA-SYSYMD      TO  PTNUM-UPYMD
+      *
                MOVE    PTNUM-REC       TO  MCPDATA-REC
                MOVE    "DBUPDATE"      TO  MCP-FUNC
                MOVE    "tbl_ptnum"     TO  MCP-TABLE
                MOVE    "key"           TO  MCP-PATHNAME
-               CALL    "MONFUNC"           USING
-                                           MCPAREA
-                                           MCPDATA-REC
+grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
+                                                   MCPDATA-REC
+                                                   SPA-AREA
                IF          MCP-RC      NOT =   ZERO
                    MOVE    7               TO  FLG-ERR
-                   GO  TO  260-PTNUM-UPDATE-EXT
                END-IF
            END-IF
       *
@@ -2072,9 +2082,9 @@
            MOVE    "DBINSERT"      TO  MCP-FUNC
            MOVE    "tbl_pthkninf"  TO  MCP-TABLE
            MOVE    "key"           TO  MCP-PATHNAME
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
            IF           MCP-RC     NOT =   ZERO
                MOVE    8              TO  FLG-ERR
                GO  TO  260-PTHKNINF-INSERT-EXT
@@ -2368,9 +2378,9 @@
        900-SYSTEM-NEXT-SEC         SECTION.
       *
            MOVE    "DBFETCH"       TO  MCP-FUNC
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
            IF          MCP-RC          =   ZERO
                MOVE    ZERO            TO  FLG-SYSKANRI
            ELSE
@@ -2389,24 +2399,18 @@
            MOVE    ZERO            TO  FLG-PTNUM
            MOVE    SPACE           TO  PTNUM-REC
            INITIALIZE                  PTNUM-REC
-           MOVE    SPA-HOSPID      TO  PTNUM-HOSPID
+           MOVE    SPA-HOSPNUM     TO  PTNUM-HOSPNUM
            MOVE    SPA-PTNUM       TO  PTNUM-PTNUM
       *
            MOVE    PTNUM-REC       TO  MCPDATA-REC
-           MOVE    "DBSELECT"      TO  MCP-FUNC
            MOVE    "tbl_ptnum"     TO  MCP-TABLE
            MOVE    "key4"          TO  MCP-PATHNAME
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+           PERFORM 910-DBSELECT-SEC
       *
            IF          MCP-RC          =   ZERO
                MOVE    "tbl_ptnum"     TO  MCP-TABLE
                MOVE    "key4"          TO  MCP-PATHNAME
-               MOVE    "DBFETCH"       TO  MCP-FUNC
-               CALL    "MONFUNC"           USING
-                                           MCPAREA
-                                           MCPDATA-REC
+               PERFORM 920-DBFETCH-SEC
                IF          MCP-RC          =   ZERO
                    MOVE    MCPDATA-REC     TO  PTNUM-REC
                    MOVE    ZERO            TO  FLG-PTNUM
@@ -2418,12 +2422,9 @@
                MOVE    1               TO  FLG-PTNUM
            END-IF
       *
-           MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
            MOVE    "tbl_ptnum"     TO  MCP-TABLE
            MOVE    "key4"          TO  MCP-PATHNAME
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+           PERFORM 990-DBCLOSE-SEC
       *
            .
        900-PTNUM-READ-EXT.
@@ -2436,22 +2437,17 @@
       *
            MOVE    SPACE           TO  PTINF-REC
            INITIALIZE                  PTINF-REC
-           MOVE    SPA-HOSPID      TO  PTINF-HOSPID
+           MOVE    SPA-HOSPNUM     TO  PTINF-HOSPNUM
            MOVE    PTNUM-PTID      TO  PTINF-PTID
+      *
            MOVE    PTINF-REC       TO  MCPDATA-REC
-           MOVE    "DBSELECT"      TO  MCP-FUNC
            MOVE    "tbl_ptinf"     TO  MCP-TABLE
            MOVE    "key"           TO  MCP-PATHNAME
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+           PERFORM 910-DBSELECT-SEC
            IF          MCP-RC          =   ZERO
-               MOVE    "DBFETCH"       TO  MCP-FUNC
                MOVE    "tbl_ptinf"     TO  MCP-TABLE
                MOVE    "key"           TO  MCP-PATHNAME
-               CALL    "MONFUNC"           USING
-                                           MCPAREA
-                                           MCPDATA-REC
+               PERFORM 920-DBFETCH-SEC
                IF          MCP-RC          =   ZERO
                    MOVE    ZERO            TO  FLG-PTINF
                    MOVE    MCPDATA-REC     TO  PTINF-REC
@@ -2464,12 +2460,9 @@
                INITIALIZE                  PTINF-REC
            END-IF
       *
-           MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
            MOVE    "tbl_ptinf"     TO  MCP-TABLE
            MOVE    "key"           TO  MCP-PATHNAME
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+           PERFORM 990-DBCLOSE-SEC
       *
            .
        900-PTINF-READ-EXT.
@@ -2481,10 +2474,19 @@
        900-PTHKNINF-READ-SEC       SECTION.
       *
            MOVE    PTHKN-REC       TO  MCPDATA-REC
-           MOVE    "tbl_pthkninf"  TO  WRK-TABLE
-           MOVE    "key"           TO  WRK-DBPATH
-           PERFORM 900-PTHKNINF-SELECT-SEC
-           PERFORM 900-PTHKNINF-CLOSE-SEC
+           MOVE    "tbl_pthkninf"  TO  MCP-TABLE
+           MOVE    "key"           TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC          =   ZERO
+               MOVE    "tbl_pthkninf"  TO  MCP-TABLE
+               MOVE    "key"           TO  MCP-PATHNAME
+               PERFORM 900-PTHKNINF-FETCH-SEC
+           ELSE
+               MOVE    1               TO  FLG-PTHKNINF
+           END-IF
+           MOVE    "tbl_pthkninf"  TO  MCP-TABLE
+           MOVE    "key"           TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
       *
            .
        900-PTHKNINF-READ-EXT.
@@ -2493,35 +2495,9 @@
       *****************************************************************
       *    患者保険マスタ読込
       *****************************************************************
-       900-PTHKNINF-SELECT-SEC     SECTION.
-      *
-           MOVE    "DBSELECT"      TO  MCP-FUNC
-           MOVE    WRK-TABLE       TO  MCP-TABLE
-           MOVE    WRK-DBPATH      TO  MCP-PATHNAME
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
-           IF          MCP-RC          =   ZERO
-               PERFORM 900-PTHKNINF-FETCH-SEC
-           ELSE
-               MOVE    1               TO  FLG-PTHKNINF
-           END-IF
-      *
-           .
-       900-PTHKNINF-SELECT-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    患者保険マスタ読込
-      *****************************************************************
        900-PTHKNINF-FETCH-SEC      SECTION.
       *
-           MOVE    "DBFETCH"       TO  MCP-FUNC
-           MOVE    WRK-TABLE       TO  MCP-TABLE
-           MOVE    WRK-DBPATH      TO  MCP-PATHNAME
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+           PERFORM 920-DBFETCH-SEC
            IF          MCP-RC          =   ZERO
                MOVE    ZERO            TO  FLG-PTHKNINF
            ELSE
@@ -2531,21 +2507,46 @@
            .
        900-PTHKNINF-FETCH-EXT.
            EXIT.
-      *
       *****************************************************************
-      *    患者保険マスタ読込
+      *    テーブル検索処理
       *****************************************************************
-       900-PTHKNINF-CLOSE-SEC      SECTION.
+       910-DBSELECT-SEC                SECTION.
       *
-           MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
-           MOVE    WRK-TABLE       TO  MCP-TABLE
-           MOVE    WRK-DBPATH      TO  MCP-PATHNAME
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+           MOVE    "DBSELECT"      TO  MCP-FUNC
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
-       900-PTHKNINF-CLOSE-EXT.
+       910-DBSELECT-EXT.
+           EXIT.
+      *****************************************************************
+      *    ＤＢ読み込み処理
+      *****************************************************************
+       920-DBFETCH-SEC                 SECTION.
+      *
+           MOVE    "DBFETCH"       TO  MCP-FUNC
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
+      *
+           .
+      *
+       920-DBFETCH-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ＤＢクローズ処理
+      *****************************************************************
+       990-DBCLOSE-SEC         SECTION.
+      *
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
+      *
+           .
+       990-DBCLOSE-EXT.
            EXIT.
       *
       *****************************************************************
@@ -2594,16 +2595,16 @@
            MOVE    "DBOPEN"        TO  MCP-FUNC.
            MOVE    LOW-VALUE       TO  MCP-TABLE.
            MOVE    LOW-VALUE       TO  MCP-PATHNAME.
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC.
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            MOVE    "DBSTART"       TO  MCP-FUNC.
            MOVE    LOW-VALUE       TO  MCP-TABLE.
            MOVE    LOW-VALUE       TO  MCP-PATHNAME.
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC.
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
            .
        100-DBOPEN-EXT.
            EXIT.
@@ -2646,16 +2647,16 @@
            MOVE    "DBCOMMIT"      TO  MCP-FUNC.
            MOVE    LOW-VALUE       TO  MCP-TABLE.
            MOVE    LOW-VALUE       TO  MCP-PATHNAME.
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC.
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            MOVE    "DBSTART"       TO  MCP-FUNC.
            MOVE    LOW-VALUE       TO  MCP-TABLE.
            MOVE    LOW-VALUE       TO  MCP-PATHNAME.
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC.
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
            .
        900-DBCOMMIT-EXT.
            EXIT.
@@ -2668,16 +2669,16 @@
            MOVE    "DBCOMMIT"      TO  MCP-FUNC.
            MOVE    LOW-VALUE       TO  MCP-TABLE.
            MOVE    LOW-VALUE       TO  MCP-PATHNAME.
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC.
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            MOVE    "DBDISCONNECT"  TO  MCP-FUNC.
            MOVE    LOW-VALUE       TO  MCP-TABLE.
            MOVE    LOW-VALUE       TO  MCP-PATHNAME.
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC.
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
            .
        900-DBCLOSE-EXT.
            EXIT.

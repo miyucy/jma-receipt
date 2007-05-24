@@ -33,6 +33,7 @@
       *  01.00.02    NACL-森脇    05/07/13  エラーメッセージ、コミット
       *  01.00.03    NACL-森脇    05/09/28  構造変更
       *  01.00.04    NACL-多々納  06/04/26  チェック追加
+      *  03.05.00    NACL-多々納  07/05/16  グループ診療対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -135,6 +136,7 @@
        01  PARA-SAVE.
            03  PARA-09-5               PIC X(06).
            03  PARA-11-5               PIC X(06).
+           03  PARA-HOSPNUM            PIC X(02).
       *
       *    一時領域
        01  WRK-AREA.
@@ -288,6 +290,14 @@
                MOVE    1               TO  FLG-CSV
                GO  TO  100-INIT-EXT
            END-IF
+      *    医療機関番号
+           IF      PARA-HOSPNUM    NUMERIC
+               MOVE    PARA-HOSPNUM    TO  SPA-HOSPNUM
+           ELSE
+               MOVE    1               TO  FLG-CSV
+               DISPLAY "*(ORCVTINPUTCD)* HOSPNUM ERR [" PARA-HOSPNUM"]"
+               GO  TO  100-INIT-EXT
+           END-IF
       *
            ACCEPT  WRK-SYMD2       FROM    DATE
            MOVE    WRK-SYMD2       TO  WRK-SYSYMD (3:)
@@ -387,6 +397,8 @@
                    MOVE  PARA-DATA     TO  PARA-09-5
                WHEN  "11-5"
                    MOVE  PARA-DATA     TO  PARA-11-5
+               WHEN    "HN"
+                   MOVE    PARA-DATA     TO  PARA-HOSPNUM
            END-EVALUATE
       *
            .
@@ -403,6 +415,7 @@
            MOVE    "1001"          TO  SYS-1001-KANRICD
            MOVE    WRK-SYSYMD      TO  SYS-1001-STYUKYMD
            MOVE    WRK-SYSYMD      TO  SYS-1001-EDYUKYMD
+           MOVE    SPA-HOSPNUM     TO  SYS-1001-HOSPNUM
            MOVE    SYS-1001-REC    TO  MCPDATA-REC
       *
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
@@ -792,7 +805,7 @@
       *    連番検索
            MOVE    SPACE               TO  INPUTCD-REC
            INITIALIZE                      INPUTCD-REC
-           MOVE    SPA-HOSPID          TO  ICD-HOSPID
+           MOVE    SPA-HOSPNUM         TO  ICD-HOSPNUM
            MOVE    WRK-SRYCD           TO  ICD-SRYCD
            MOVE    INPUTCD-REC         TO  MCPDATA-REC
            MOVE    "tbl_inputcd"       TO  MCP-TABLE
@@ -834,7 +847,7 @@
       *    入力コード作成
            MOVE    SPACE       TO  INPUTCD-REC
            INITIALIZE              INPUTCD-REC
-           MOVE    SPA-HOSPID      TO  ICD-HOSPID
+           MOVE    SPA-HOSPNUM     TO  ICD-HOSPNUM
            MOVE    WRK-CDSYU       TO  ICD-CDSYU
            MOVE    WRK-INPUTCD     TO  ICD-INPUTCD
            MOVE    SPACE           TO  ICD-SRYKBN
@@ -851,9 +864,9 @@
            MOVE    "DBINSERT"          TO  MCP-FUNC
            MOVE    "tbl_inputcd"       TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
            IF      MCP-RC          NOT =   ZERO
                 MOVE    6              TO  FLG-ERR
                 GO  TO  250-INPUTCD-INSERT-EXT
@@ -947,7 +960,7 @@
       *
            MOVE    SPACE               TO  INPUTCD-REC
            INITIALIZE                      INPUTCD-REC
-           MOVE    SPA-HOSPID          TO  ICD-HOSPID
+           MOVE    SPA-HOSPNUM         TO  ICD-HOSPNUM
            MOVE    WRK-CDSYU           TO  ICD-CDSYU
            IF      WRK-INPUTCD(20:1)   =   SPACE
                STRING    WRK-INPUTCD       DELIMITED  BY  SPACE
@@ -1215,6 +1228,7 @@
            MOVE    SPA-SYSYMD      TO  TNS-YUKOSTYMD
            MOVE    SPA-SYSYMD      TO  TNS-YUKOEDYMD
       *
+           MOVE    SPA-HOSPNUM         TO  TNS-HOSPNUM
            MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
            MOVE    "tbl_tensu"         TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
@@ -1246,9 +1260,9 @@
        910-DBSELECT-SEC                SECTION.
       *
            MOVE    "DBSELECT"      TO  MCP-FUNC
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
        910-DBSELECT-EXT.
@@ -1259,9 +1273,9 @@
        920-DBFETCH-SEC                 SECTION.
       *
            MOVE    "DBFETCH"       TO  MCP-FUNC
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
       *
@@ -1273,9 +1287,9 @@
        990-DBCLOSE-SEC                 SECTION.
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
            .
        990-DBCLOSE-EXT.
            EXIT.
@@ -1324,17 +1338,17 @@
        100-DBOPEN-SEC              SECTION.
       *
            MOVE    "DBOPEN"        TO  MCP-FUNC
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
            IF      MCP-RC      NOT =   ZERO
                DISPLAY "DBOPEN ERROR"
            END-IF
       *
            MOVE    "DBSTART"       TO  MCP-FUNC
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
            IF      MCP-RC      NOT =   ZERO
                DISPLAY "DBSTART ERROR"
            END-IF
@@ -1348,14 +1362,14 @@
        900-DBCOMMIT-SEC            SECTION.
       *
            MOVE    "DBCOMMIT"      TO  MCP-FUNC
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            MOVE    "DBSTART"       TO  MCP-FUNC
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
            .
        900-DBCOMMIT-EXT.
            EXIT.
@@ -1366,17 +1380,17 @@
        900-DBDISCONNECT-SEC        SECTION.
       *
            MOVE    "DBCOMMIT"      TO  MCP-FUNC
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
            IF      MCP-RC      NOT =   ZERO
                DISPLAY "DBCOMMIT ERROR"
            END-IF
       *
            MOVE    "DBDISCONNECT"  TO  MCP-FUNC
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
            IF      MCP-RC      NOT =   ZERO
                DISPLAY "DBDISCONNECT ERROR"
            END-IF
