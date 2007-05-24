@@ -980,9 +980,11 @@
                    MOVE    IDX             TO  JOB-JOBID
                    MOVE    WRK-CONS-JOB-SHELLID
                                            TO  JOB-SHELLID
+                   MOVE    SPA-HOSPNUM     TO  JOB-HOSPNUM
                    CALL    "ORCSJOB"       USING
                                            ORCSJOBKANRIAREA  
                                            JOBKANRI-REC
+                                           SPA-AREA
                    IF      SJOBKANRI-RETURN
                                            =   ZERO
                        IF      JOB-ENDYMD      =   SPACE
@@ -1249,9 +1251,11 @@
                    MOVE    IDX             TO  JOB-JOBID
                    MOVE    WRK-CONS-JOB-SHELLID
                                            TO  JOB-SHELLID
+                   MOVE    SPA-HOSPNUM     TO  JOB-HOSPNUM
                    CALL    "ORCSJOB"       USING
                                            ORCSJOBKANRIAREA  
                                            JOBKANRI-REC
+                                           SPA-AREA
                    IF      SJOBKANRI-RETURN
                                            =   ZERO
                        IF      JOB-ENDYMD      =   SPACE
@@ -1365,8 +1369,10 @@
            INITIALIZE                  JOBKANRI-REC
            MOVE    WRK-CONS-JOB-SHELLID
                                    TO  JOB-SHELLID
+           MOVE    SPA-HOSPNUM     TO  JOB-HOSPNUM
            CALL    "ORCSJOB"       USING   ORCSJOBKANRIAREA  
                                            JOBKANRI-REC
+                                           SPA-AREA
            IF      SJOBKANRI-RETURN    =   ZERO
                CONTINUE
            ELSE
@@ -1830,9 +1836,11 @@
                                    TO  JOB-JOBID
            MOVE    WRK-CONS-JOB-SHELLID
                                    TO  JOB-SHELLID
+           MOVE    SPA-HOSPNUM     TO  JOB-HOSPNUM
            CALL    "ORCSJOB"       USING
                                    ORCSJOBKANRIAREA 
                                    JOBKANRI-REC
+                                   SPA-AREA
       *
            MOVE    "JBS"           TO  SJOBKANRI-MODE
            INITIALIZE                  JOBKANRI-REC
@@ -1841,9 +1849,11 @@
            MOVE    WRK-CONS-JOB-SHELLID
                                    TO  JOB-SHELLID
            MOVE    SPA-TERMID      TO  JOB-TERMID
+           MOVE    SPA-HOSPNUM     TO  JOB-HOSPNUM
            CALL    "ORCSJOB"       USING
                                    ORCSJOBKANRIAREA 
                                    JOBKANRI-REC
+                                   SPA-AREA
       *
            .
        45011-JOBKANRI-HENSYU-EXT.
@@ -1930,9 +1940,11 @@
                    MOVE    IDX             TO  JOB-JOBID
                    MOVE    WRK-CONS-JOB-SHELLID
                                            TO  JOB-SHELLID
-                   CALL    "ORCSJOB"       USING
+                   MOVE    SPA-HOSPNUM     TO  JOB-HOSPNUM
+                  CALL    "ORCSJOB"       USING
                                            ORCSJOBKANRIAREA  
                                            JOBKANRI-REC 
+                                           SPA-AREA
                    IF      SJOBKANRI-RETURN    =   ZERO
                        MOVE    JOB-JOBID       TO  Z97-RENNUM   (IDX)
                        MOVE    JOB-SHELLMSG    TO  Z97-SHORINM  (IDX)
