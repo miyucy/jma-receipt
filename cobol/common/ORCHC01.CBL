@@ -1162,6 +1162,7 @@
                                        TO  SPRT-TITLE
            CALL    "ORCSPRT"           USING
                                        ORCSPRTAREA
+                                       SPA-AREA
            IF      SPRT-RETURN         =   ZERO
                ADD     1               TO  ORCHC01-CNT
            ELSE
@@ -1185,6 +1186,7 @@
                                        TO  SPRT-TITLE
            CALL    "ORCSPRT"           USING
                                        ORCSPRTAREA
+                                       SPA-AREA
            IF      SPRT-RETURN         =   ZERO
                ADD     1               TO  ORCHC01-CNT
            ELSE
