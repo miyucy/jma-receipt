@@ -234,7 +234,7 @@
            CALL    "ORCDBMAIN"         USING
                                            MCPAREA
                                            MCPDATA-REC
-                                           SPA-AREA
+                                           SPA-AREA.
       *
        000-DBOPEN-EXT.
            EXIT.
@@ -258,7 +258,7 @@
            CALL    "ORCDBMAIN"         USING
                                            MCPAREA
                                            MCPDATA-REC
-                                           SPA-AREA
+                                           SPA-AREA.
       *
        000-DBCLOSE-EXT.
            EXIT.
@@ -347,7 +347,7 @@
            CALL    "ORCDBMAIN"     USING
                                        MCPAREA
                                        MCPDATA-REC
-                                       SPA-AREA
+                                       SPA-AREA.
       *½¤Àµ/*½ªÎ»*03.06.05*********************************************
       *
        T-000-CHEKCHEK-EXT.
@@ -435,8 +435,9 @@
                CLOSE                       EIE01-FILE
                OPEN    OUTPUT              EIECS-FILE
       *
-               MOVE    SPA-HOSPNUM     TO  WK-HOSPNUM
+      *         MOVE    SPA-HOSPNUM     TO  WK-HOSPNUM
                MOVE    SPACE           TO  MCPDATA-REC
+               MOVE    SPA-HOSPNUM     TO  MCPDATA-REC(1:2)
                IF  WK-SRYYM   NOT =   SPACE
                    PERFORM T-001-SRYYMSET-01-SEC
                END-IF
@@ -483,56 +484,56 @@
            EVALUATE    WK-TBL-MSG (IDX2)(1:10)
                WHEN    "JYURRK    "
                    MOVE    "all2"          TO  WK-PATHNAME
-                   MOVE    SPA-HOSPNUM     TO  WK-HOSPNUM
+      *             MOVE    SPA-HOSPNUM     TO  WK-HOSPNUM
                    MOVE    WK-SRYYM        TO  MCPDATA-REC(WK-SRYYM-S:6)
 grpsys*            MOVE SPA-HOSPNUM TO -HOSPNUM
                    MOVE    "%"             TO  MCPDATA-REC(WK-SRYYM-L:1)
                WHEN    "PTBYOMEI  "
                    MOVE    "all2"          TO  WK-PATHNAME
-                   MOVE    SPA-HOSPNUM     TO  WK-HOSPNUM
+      *             MOVE    SPA-HOSPNUM     TO  WK-HOSPNUM
                    MOVE    WK-SRYYM        TO  MCPDATA-REC(WK-SRYYM-S:6)
 grpsys*            MOVE SPA-HOSPNUM TO -HOSPNUM
                    MOVE    "%"             TO  MCPDATA-REC(WK-SRYYM-L:1)
                WHEN    "SRYACCT   "
                    MOVE    "all2"          TO  WK-PATHNAME
-                   MOVE    SPA-HOSPNUM     TO  WK-HOSPNUM
+      *             MOVE    SPA-HOSPNUM     TO  WK-HOSPNUM
                    MOVE    WK-SRYYM        TO  MCPDATA-REC(WK-SRYYM-S:6)
                WHEN    "SRYACT    "
                    MOVE    "all2"          TO  WK-PATHNAME
-                   MOVE    SPA-HOSPNUM     TO  WK-HOSPNUM
+      *             MOVE    SPA-HOSPNUM     TO  WK-HOSPNUM
                    MOVE    WK-SRYYM        TO  MCPDATA-REC(WK-SRYYM-S:6)
                WHEN    "WKSRYACT  "
                    MOVE    "all2"          TO  WK-PATHNAME
-                   MOVE    SPA-HOSPNUM     TO  WK-HOSPNUM
+      *             MOVE    SPA-HOSPNUM     TO  WK-HOSPNUM
                    MOVE    WK-SRYYM        TO  MCPDATA-REC(WK-SRYYM-S:6)
 grpsys*            MOVE SPA-HOSPNUM TO -HOSPNUM
                    MOVE    "%"             TO  MCPDATA-REC(WK-SRYYM-L:1)
                WHEN    "SANTEI    "
                    MOVE    "all2"          TO  WK-PATHNAME
-                   MOVE    SPA-HOSPNUM     TO  WK-HOSPNUM
+      *             MOVE    SPA-HOSPNUM     TO  WK-HOSPNUM
                    MOVE    WK-SRYYM        TO  MCPDATA-REC(WK-SRYYM-S:6)
                WHEN    "SEIKYU    "
                    MOVE    "all2"          TO  WK-PATHNAME
-                   MOVE    SPA-HOSPNUM     TO  WK-HOSPNUM
+      *             MOVE    SPA-HOSPNUM     TO  WK-HOSPNUM
                    MOVE    WK-SRYYM        TO  MCPDATA-REC(WK-SRYYM-S:6)
                WHEN    "BD002     "
                    MOVE    "all2"          TO  WK-PATHNAME
-                   MOVE    SPA-HOSPNUM     TO  W-HOSPNUM
+      *             MOVE    SPA-HOSPNUM     TO  W-HOSPNUM
                    MOVE    WK-SRYYM        TO  MCPDATA-REC(WK-SRYYM-S:6)
 grpsys*            MOVE SPA-HOSPNUM TO -HOSPNUM
                    MOVE    "%"             TO  MCPDATA-REC(53:1)
       *½¤Àµ/*³«»Ï*03.05.12*********************************************
                WHEN    "NYUINACCT "
                    MOVE    "all2"          TO  WK-PATHNAME
-                   MOVE    SPA-HOSPNUM     TO  WK-HOSPNUM
+      *             MOVE    SPA-HOSPNUM     TO  WK-HOSPNUM
                    MOVE    WK-SRYYM        TO  MCPDATA-REC(WK-SRYYM-S:6)
                WHEN    "NYUINACT  "
                    MOVE    "all2"          TO  WK-PATHNAME
-                   MOVE    SPA-HOSPNUM     TO  WK-HOSPNUM
+      *             MOVE    SPA-HOSPNUM     TO  WK-HOSPNUM
                    MOVE    WK-SRYYM        TO  MCPDATA-REC(WK-SRYYM-S:6)
                WHEN    "PTTEIKIRRK"
                    MOVE    "all2"          TO  WK-PATHNAME
-                   MOVE    SPA-HOSPNUM     TO  WK-HOSPNUM
+      *             MOVE    SPA-HOSPNUM     TO  WK-HOSPNUM
                    MOVE    WK-SRYYM        TO  MCPDATA-REC(WK-SRYYM-S:6)
       *½¤Àµ/*½ªÎ»*03.05.12*********************************************
            END-EVALUATE.
@@ -681,13 +682,15 @@ grpsys*            MOVE SPA-HOSPNUM TO -HOSPNUM
                END-EVALUATE
       *
                INITIALIZE                  PTNUM-REC
-               IF  ((MCPDATA-REC(WK-HOSPID-S:WK-HOSPID-L)
-                                              NOT =   PTNUM-HOSPID)  OR
-                    (MCPDATA-REC(WK-PTID-S:WK-PTID-L)
-                                              NOT =   PTNUM-PTID))  AND
+      *         IF  ((MCPDATA-REC(WK-HOSPID-S:WK-HOSPID-L)
+      *                                        NOT =   PTNUM-HOSPID)  OR
+      *              (MCPDATA-REC(WK-PTID-S:WK-PTID-L)
+      *                                        NOT =   PTNUM-PTID))  AND
+               IF   (MCPDATA-REC(WK-PTID-S:WK-PTID-L)
+                                               NOT =   PTNUM-PTID)  AND
                    (MCPDATA-REC(WK-PTID-S:WK-PTID-SL)    =   ZERO)
-                   MOVE    MCPDATA-REC(WK-HOSPID-S:WK-HOSPID-L)
-                                               TO  PTNUM-HOSPID
+      *             MOVE    MCPDATA-REC(WK-HOSPID-S:WK-HOSPID-L)
+      *                                         TO  PTNUM-HOSPID
                    MOVE    MCPDATA-REC(WK-PTID-S:WK-PTID-L)
                                                TO  PTNUM-PTID
       *

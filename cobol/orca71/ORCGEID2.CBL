@@ -150,7 +150,7 @@
            CALL   "ORCDBMAIN"                    USING
                                                      MCPAREA
                                                      MCPDATA-REC
-                                                     SPA-AREA
+                                                     SPA-AREA.
       *
        900-PUT-WINDOW-EXT.
            EXIT.
