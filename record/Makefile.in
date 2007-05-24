@@ -524,6 +524,7 @@ DB_files = \
 	tbl_rece_putb.db \
 	tbl_hktsantei.db \
 	tbl_hktsrycd.db \
+	tbl_clm_uid.db \
 
 all:   
 
