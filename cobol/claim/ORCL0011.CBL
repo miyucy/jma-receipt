@@ -45,6 +45,7 @@
       *                                     公費の追加
       * 03.03.02     NACL-藤原    06/10/31  療養介護医療２４の追加
       * 03.05.00     NACL-多々納  07/05/09  グループ診療対応
+      * 03.05.00     NACL-多々納  07/05/25  UIDテーブル対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -52,24 +53,24 @@
        INPUT-OUTPUT                SECTION.
        FILE-CONTROL.
       *    
-           SELECT  LF03-FILE       ASSIGN  "/var/tmp/LF03V01"
-                                   ORGANIZATION    IS  INDEXED
-                                   ACCESS  MODE    IS  DYNAMIC
-                                   RECORD  KEY     IS  LF03-KEY
-                                   FILE    STATUS  IS  STS-LF03.
+      **** SELECT  LF03-FILE       ASSIGN  "/var/tmp/LF03V01"
+      *                            ORGANIZATION    IS  INDEXED
+      *                            ACCESS  MODE    IS  DYNAMIC
+      *                            RECORD  KEY     IS  LF03-KEY
+      ***                          FILE    STATUS  IS  STS-LF03.
       *
        DATA                        DIVISION.
        FILE                        SECTION.
       *
-       FD  LF03-FILE.
-       01  LF03-REC. 
-           COPY    "CPRLF003.INC".
+      *FD  LF03-FILE.
+      *01  LF03-REC. 
+      *    COPY    "CPRLF003.INC".
       *
        WORKING-STORAGE             SECTION.
       *        
 018000*    フラグ領域
-       01  STS-AREA.
-           03  STS-LF03            PIC X(02).
+      *01  STS-AREA.
+      *    03  STS-LF03            PIC X(02).
       *
 018000*    フラグ領域
 018100 01  FLG-AREA.
@@ -81,7 +82,8 @@
            03  FLG-SRYKARRK        PIC 9(01).
            03  FLG-SYSKANRI        PIC 9(01).
            03  FLG-TENSU           PIC 9(01).
-           03  FLG-LF03            PIC 9(01).
+      ***  03  FLG-LF03            PIC 9(01).
+           03  FLG-CLMUID          PIC 9(01).
            03  FLG-JYURRK          PIC 9(01).
            03  FLG-SRYACT          PIC 9(01).
            03  FLG-HKNNUM          PIC 9(01).
@@ -508,6 +510,10 @@
        01  HKNNUM-REC.
            COPY    "CPHKNNUM.INC".
       *
+      *    ＵＩＤテーブル
+      *01  CLMUID-REC.
+           COPY    "CPCLMUID.INC".
+      *
       *****************************************************************
       *    サブプロ用　領域
       *****************************************************************
@@ -529,6 +535,9 @@
       *
       *    保険年齢・負担割合算定サブ
            COPY    "CPORCSAGECHK.INC".
+      *
+      *    マシン日付取得サブ
+           COPY    "CPORCSMCNDATE.INC".
       *
        01  HZN-LF01-REC. 
            COPY    "CPRLF001.INC"    REPLACING  //LF01-//
@@ -661,23 +670,40 @@
                PERFORM 1001-RECDEN-SRYKA-SEC
            END-IF
       *
-           OPEN    I-O     LF03-FILE
+      *    OPEN    I-O     LF03-FILE
       *
-           INITIALIZE                  FLG-AREA
-           MOVE    SPA-HOSPNUM     TO  LF03-HOSPNUM
-           MOVE    SPA-PTID        TO  LF03-PTID
-           MOVE    WRK-SRYKA       TO  LF03-SRYKA
+      *    INITIALIZE                  FLG-AREA
+      *    MOVE    SPA-HOSPNUM     TO  LF03-HOSPNUM
+      *    MOVE    SPA-PTID        TO  LF03-PTID
+      *    MOVE    WRK-SRYKA       TO  LF03-SRYKA
       *
-           DISPLAY "LD03 READ START WRK-SRYKA:"  WRK-SRYKA
+      *    DISPLAY "LD03 READ START WRK-SRYKA:"  WRK-SRYKA
       *
-           PERFORM 900-LF03-READ-SEC
-           IF      FLG-LF03        =   1
-               DISPLAY "SPA-HOSPNUM INVALID"
-               MOVE    SPACE           TO  LF03-REC
-               INITIALIZE                  LF03-REC
-               MOVE    SPA-HOSPNUM     TO  LF03-HOSPNUM
-               MOVE    SPA-PTID        TO  LF03-PTID
-               MOVE    WRK-SRYKA       TO  LF03-SRYKA
+      *    PERFORM 900-LF03-READ-SEC
+      *    IF      FLG-LF03        =   1
+      *        DISPLAY "SPA-HOSPNUM INVALID"
+      *        MOVE    SPACE           TO  LF03-REC
+      *        INITIALIZE                  LF03-REC
+      *        MOVE    SPA-HOSPNUM     TO  LF03-HOSPNUM
+      *        MOVE    SPA-PTID        TO  LF03-PTID
+      *        MOVE    WRK-SRYKA       TO  LF03-SRYKA
+      *****END-IF
+      *
+      *    更新日取得
+           INITIALIZE                  ORCSMCNDATEAREA
+           CALL    "ORCSMCNDATE"       USING
+                                       ORCSMCNDATEAREA
+      *    UID検索
+           INITIALIZE                      CLMUID-REC
+           MOVE    SPA-HOSPNUM         TO  CLMUID-HOSPNUM
+           MOVE    SPA-PTID            TO  CLMUID-PTID
+           MOVE    WRK-SRYKA           TO  CLMUID-SRYKA
+           PERFORM 903-CLMUID-READ-SEC
+           IF      FLG-CLMUID          =   1
+               INITIALIZE                      CLMUID-REC
+               MOVE    SPA-HOSPNUM         TO  CLMUID-HOSPNUM
+               MOVE    SPA-PTID            TO  CLMUID-PTID
+               MOVE    WRK-SRYKA           TO  CLMUID-SRYKA
            END-IF
            .
        100-INIT-EXT.
@@ -740,7 +766,7 @@
            PERFORM 500-UUID-SET-SEC
            DISPLAY "C-UID" C-UID 
            MOVE    C-UID           TO  WRK-LF01-UID1
-                                       LF03-UID-NEW
+                                       CLMUID-UID-NEW
            PERFORM 500-UUID-SET-SEC
            MOVE    C-UID           TO  WRK-LF01-UID3
       *
@@ -949,13 +975,13 @@
                                                WRK-LF01-OUTRATIO (IDX)
       *
                        MOVE    COMB-HKNCOMBINUM    TO
-                                               LF03-HKNCOMBINUM (IDX)
+                                               CLMUID-HKNCOMBI (IDX)
       *                 
                        INITIALIZE              UIDIO-AREA
                        PERFORM 500-UUID-SET-SEC
                        MOVE    C-UID               TO
                                                WRK-LF01-UID2    (IDX)
-                                               LF03-UID         (IDX)
+                                               CLMUID-UID       (IDX)
       *
                        IF      SPA-HKNCOMBINUM     =   COMB-HKNCOMBINUM
                            MOVE    C-UID           TO  WRK-C-UID
@@ -1020,13 +1046,13 @@
                    ELSE
       *                主保険なし
                        MOVE    COMB-HKNCOMBINUM    TO
-                                               LF03-HKNCOMBINUM (IDX)
+                                               CLMUID-HKNCOMBI (IDX)
       *                 
                        INITIALIZE              UIDIO-AREA
                        PERFORM 500-UUID-SET-SEC
                        MOVE    C-UID               TO
                                                WRK-LF01-UID2    (IDX)
-                                               LF03-UID         (IDX)
+                                               CLMUID-UID       (IDX)
       *
                        IF      SPA-HKNCOMBINUM     =   COMB-HKNCOMBINUM
                            MOVE    C-UID           TO  WRK-C-UID
@@ -2080,13 +2106,41 @@
       *****************************************************************
        300-END-SEC                 SECTION.
       *
-           IF      FLG-LF03        =   ZERO
-               REWRITE   LF03-REC
+           IF      FLG-CLMUID          =   ZERO
+      *        UID更新処理
+               MOVE    SMCNDATE-YMD        TO  CLMUID-UPYMD
+               MOVE    SMCNDATE-HMS        TO  CLMUID-UPHMS
+      *
+               MOVE    CLMUID-REC          TO  MCPDATA-REC
+               MOVE    "DBUPDATE"          TO  MCP-FUNC
+               MOVE    "tbl_clm_uid"       TO  MCP-TABLE
+               MOVE    "key"               TO  MCP-PATHNAME
+               CALL    "ORCDBMAIN"         USING
+                                               MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
+               IF      MCP-RC          NOT =   ZERO 
+                   DISPLAY "ORCL0011 UPD CLMUID-KEY =>" CLMUID-KEY  "."
+               END-IF
            ELSE
-               WRITE LF03-REC       
+      *        UID登録処理
+               MOVE    SMCNDATE-YMD        TO  CLMUID-CREYMD
+               MOVE    SMCNDATE-YMD        TO  CLMUID-UPYMD
+               MOVE    SMCNDATE-HMS        TO  CLMUID-UPHMS
+      *
+               MOVE    CLMUID-REC          TO  MCPDATA-REC
+               MOVE    "DBINSERT"          TO  MCP-FUNC
+               MOVE    "tbl_clm_uid"       TO  MCP-TABLE
+               MOVE    "key"               TO  MCP-PATHNAME
+               CALL    "ORCDBMAIN"         USING
+                                               MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
+               IF      MCP-RC          NOT =   ZERO 
+                   DISPLAY "ORCL0011 INS CLMUID-KEY =>" CLMUID-KEY  "."
+               END-IF
            END-IF
       *
-           CLOSE   LF03-FILE                              
            .
        300-END-EXT.
            EXIT.
@@ -2182,6 +2236,38 @@
       *
            .
        910-PTKOHINF-INV-EXT.
+           EXIT.
+      *****************************************************************
+      *    ＵＩＤデータ読込処理
+      *****************************************************************
+       903-CLMUID-READ-SEC         SECTION.
+      *
+           MOVE    CLMUID-REC          TO  MCPDATA-REC
+           MOVE    "tbl_clm_uid"       TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_clm_uid"       TO  MCP-TABLE
+               MOVE    "key"               TO  MCP-PATHNAME
+               PERFORM 920-DBFETCH-SEC
+               IF      MCP-RC              =   ZERO
+                   MOVE    MCPDATA-REC         TO  CLMUID-REC
+                   MOVE    ZERO                TO  FLG-CLMUID
+               ELSE
+                   MOVE    1                   TO  FLG-CLMUID
+                   INITIALIZE                  CLMUID-REC
+               END-IF
+           ELSE
+               MOVE    1                   TO  FLG-CLMUID
+               INITIALIZE                  CLMUID-REC
+           END-IF
+      *
+           MOVE    "tbl_clm_uid"       TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+      *
+           .
+       903-CLMUID-READ-EXT.
            EXIT.
       *
       *****************************************************************
@@ -2351,20 +2437,6 @@
        980-HKNNUM-READ-EXT.
            EXIT.
       *
-      *****************************************************************
-      *    レセプト明細書読込
-      *****************************************************************
-       900-LF03-READ-SEC             SECTION.
-      *
-           READ    LF03-FILE
-               INVALID
-                   MOVE    1           TO  FLG-LF03
-               NOT INVALID
-                   MOVE    ZERO        TO  FLG-LF03
-           END-READ
-           .
-       900-LF03-READ-EXT.
-           EXIT.
       *****************************************************************
       *    テーブル検索処理
       *****************************************************************

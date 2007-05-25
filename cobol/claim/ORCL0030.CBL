@@ -33,6 +33,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      * 03.05.00     NACL-多々納  07/05/10  グループ診療対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -54,7 +55,8 @@
            COPY    "COMMON-SPA".
       *
        01  FILE-NAME.
-      *    03                      PIC X(14)  VALUE  "/var/tmp/claim".   
+      *    03                      PIC X(14)  VALUE  "/var/tmp/claim". 
+           03  FILE-HOSPNUM        PIC 9(02).   
            03  FILE-PTID           PIC X(80).   
       *    03                      PIC X(06)  VALUE  ".txt".
       *
@@ -87,7 +89,7 @@
                05  WRK-PARA-SRYYMD  PIC  X(08).
                05  WRK-PARA-HKNCOMBINUM
                                     PIC  X(04). 
-               05  WRK-PARA-HOSPID  PIC  X(24).
+               05  WRK-PARA-HOSPNUM PIC  9(02).
       *
            03  WRK-IN               PIC X(01).
       *
@@ -149,6 +151,7 @@
       *
            INITIALIZE                  FLG-AREA
            INITIALIZE                  WRK-AREA
+           INITIALIZE                  SPA-AREA
            MOVE    SPACE               TO  WRK-DATA-REC 
                                            WRK-LF04-REC
       *
@@ -166,7 +169,7 @@
       *???
            DISPLAY "PARA " WRK-PARA "##"
       *???
-           MOVE    WRK-PARA-HOSPID     TO  SPA-HOSPID 
+           MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM 
            MOVE    WRK-PARA-SRYYMD     TO  SPA-SRYYMD
            MOVE    WRK-PARA-HKNCOMBINUM
                                        TO  SPA-HKNCOMBINUM 
@@ -245,16 +248,14 @@
        100-DBOPEN-SEC                SECTION.
       *
            MOVE    "DBOPEN"            TO  MCP-FUNC.
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC.
+           CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            MOVE    "DBSTART"           TO  MCP-FUNC.
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC.
+           CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
            .
        100-DBOPEN-EXT.
            EXIT.
@@ -265,17 +266,15 @@
        900-DBDISCONNECT-SEC            SECTION.
       *
            MOVE    "DBCOMMIT"          TO  MCP-FUNC.
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC.
+           CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            MOVE    "DBDISCONNECT"      TO  MCP-FUNC.
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC.
+           CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
            .
-       900-DBCLOSE-EXT.
+       900-DBDISCONNECT-EXT.
            EXIT.
       *

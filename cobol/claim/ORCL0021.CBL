@@ -36,25 +36,26 @@
       *  01.00.02    NACL-多々納  06/08/08  収納変更対応
       *  03.03.00    NACL-多々納  06/10/23  返金対応追加
       *  03.05.00    NACL-多々納  07/05/09  グループ診療対応
+      *  03.05.00    NACL-多々納  07/05/25  UIDテーブル対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
        CONFIGURATION               SECTION.
        INPUT-OUTPUT                SECTION.
        FILE-CONTROL.
-      *    
-           SELECT  LF03-FILE       ASSIGN  "/var/tmp/LF03V01"
-                                   ORGANIZATION    IS  INDEXED
-                                   ACCESS  MODE    IS  DYNAMIC
-                                   RECORD  KEY     IS  LF03-KEY
-                                   FILE    STATUS  IS  STS-LF03.
+      *
+      **** SELECT  LF03-FILE       ASSIGN  "/var/tmp/LF03V01"
+      *                            ORGANIZATION    IS  INDEXED
+      *                            ACCESS  MODE    IS  DYNAMIC
+      *                            RECORD  KEY     IS  LF03-KEY
+      ****                         FILE    STATUS  IS  STS-LF03.
       *
        DATA                        DIVISION.
        FILE                        SECTION.
       *
-       FD  LF03-FILE.
-       01  LF03-REC. 
-           COPY    "CPRLF003.INC".
+      *FD  LF03-FILE.
+      *01  LF03-REC. 
+      ***  COPY    "CPRLF003.INC".
       *
        WORKING-STORAGE             SECTION.
       *
@@ -67,8 +68,8 @@
            COPY    "CPCLAIM006.INC".
       *
       *    フラグ領域
-       01  STS-AREA.
-           03  STS-LF03            PIC X(02).
+      *01  STS-AREA.
+      *    03  STS-LF03            PIC X(02).
       *
       *    フラグ領域
        01  FLG-AREA.
@@ -88,7 +89,8 @@
            03  FLG-PTCOM           PIC 9(01).
            03  FLG-SYUNOU          PIC 9(01).
            03  FLG-SYUMEI          PIC 9(01).
-           03  FLG-LF03            PIC 9(01).
+      ***  03  FLG-LF03            PIC 9(01).
+           03  FLG-CLMUID          PIC 9(01).
       *
            03  FLG-KAISU           PIC 9(01).
            03  FLG-SP              PIC 9(01).
@@ -322,6 +324,10 @@
       *
            COPY    "CPSK1013.INC".
       *
+      *    ＵＩＤテーブル
+      *01  CLMUID-REC.
+           COPY    "CPCLMUID.INC".
+      *
       *    システム領域
        01  SYS-AREA.
            03  SYS-YMD.
@@ -412,14 +418,25 @@
       *****************************************************************
        100-INIT-SEC                SECTION.
       *
-           OPEN    I-O     LF03-FILE
+      ***  OPEN    I-O     LF03-FILE
       *
-           MOVE    LNK-HOSPNUM     TO  LF03-HOSPNUM
-           MOVE    LNK-PTID        TO  LF03-PTID
-           MOVE    LNK-SRYKA       TO  LF03-SRYKA
-           PERFORM 900-LF03-READ-SEC
-           IF      FLG-LF03        =   1
-               DISPLAY "*** ORCL0021 LF03 INVALID ***"
+      *    MOVE    LNK-HOSPNUM     TO  LF03-HOSPNUM
+      *    MOVE    LNK-PTID        TO  LF03-PTID
+      *    MOVE    LNK-SRYKA       TO  LF03-SRYKA
+      *    PERFORM 900-LF03-READ-SEC
+      *    IF      FLG-LF03        =   1
+      *        DISPLAY "*** ORCL0021 LF03 INVALID ***"
+      *        MOVE    1               TO  FLG-END
+      *****END-IF
+      *
+      *    UID検索
+           INITIALIZE                      CLMUID-REC
+           MOVE    LNK-HOSPNUM         TO  CLMUID-HOSPNUM
+           MOVE    LNK-PTID            TO  CLMUID-PTID
+           MOVE    LNK-SRYKA           TO  CLMUID-SRYKA
+           PERFORM 903-CLMUID-READ-SEC
+           IF      FLG-CLMUID          =   1
+               DISPLAY "*** ORCL0021 CLMUID INVALID ***"
                MOVE    1               TO  FLG-END
            END-IF
            .
@@ -470,10 +487,10 @@
       *
            PERFORM VARYING IDX FROM    1   BY  1
                    UNTIL   IDX     >       20
-                   OR      LF03-HKNCOMBINUM (IDX)  =   ZERO
-               IF      LNK-HKNCOMBINUM     =   LF03-HKNCOMBINUM (IDX)
-      *            MOVE    LF03-UID (IDX)      TO  WRK-LF02-UID1
-                   MOVE    LF03-UID (IDX)      TO  WRK-LF02-HOKEN-UID
+                   OR      CLMUID-HKNCOMBI (IDX)  =   ZERO
+               IF      LNK-HKNCOMBINUM     =   CLMUID-HKNCOMBI (IDX)
+      *            MOVE    CLMUID-UID (IDX)    TO  WRK-LF02-UID1
+                   MOVE    CLMUID-UID (IDX)    TO  WRK-LF02-HOKEN-UID
       *            MOVE    IDX                 TO  WRK-LF02-UID1
                    MOVE    20                  TO  IDX 
                END-IF
@@ -2508,7 +2525,7 @@
            IF      WRK-LF02-IJICD(18 1)   =  SPACE
                 DISPLAY "L0021 SPACE = " 
            END-IF
-           CLOSE    LF03-FILE     
+      *****CLOSE    LF03-FILE     
            .
        300-END-EXT.
            EXIT.
@@ -2759,6 +2776,38 @@
            .
        910-HKNCOMBI-READ-EXT.
            EXIT.
+      *****************************************************************
+      *    ＵＩＤデータ読込処理
+      *****************************************************************
+       903-CLMUID-READ-SEC         SECTION.
+      *
+           MOVE    CLMUID-REC          TO  MCPDATA-REC
+           MOVE    "tbl_clm_uid"       TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_clm_uid"       TO  MCP-TABLE
+               MOVE    "key"               TO  MCP-PATHNAME
+               PERFORM 920-DBFETCH-SEC
+               IF      MCP-RC              =   ZERO
+                   MOVE    MCPDATA-REC         TO  CLMUID-REC
+                   MOVE    ZERO                TO  FLG-CLMUID
+               ELSE
+                   MOVE    1                   TO  FLG-CLMUID
+                   INITIALIZE                  CLMUID-REC
+               END-IF
+           ELSE
+               MOVE    1                   TO  FLG-CLMUID
+               INITIALIZE                  CLMUID-REC
+           END-IF
+      *
+           MOVE    "tbl_clm_uid"       TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+      *
+           .
+       903-CLMUID-READ-EXT.
+           EXIT.
       *
       *****************************************************************
       *    テーブル検索処理
@@ -2802,18 +2851,3 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        990-DBCLOSE-EXT.
            EXIT.
       *
-      *****************************************************************
-      *    レセプト明細書読込
-      *****************************************************************
-       900-LF03-READ-SEC             SECTION.
-      *
-           READ    LF03-FILE
-               INVALID
-                   MOVE    1           TO  FLG-LF03
-                   INITIALIZE          LF03-REC
-               NOT INVALID
-                   MOVE    ZERO        TO  FLG-LF03
-           END-READ
-           .
-       900-LF03-READ-EXT.
-           EXIT.

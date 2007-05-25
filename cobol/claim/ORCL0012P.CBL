@@ -107,6 +107,7 @@
       *
            INITIALIZE                  FLG-AREA
            INITIALIZE                  WRK-AREA
+           INITIALIZE                  SPA-AREA
       *
       *    システム日付セット
            ACCEPT  SYS-YMD         FROM    DATE
