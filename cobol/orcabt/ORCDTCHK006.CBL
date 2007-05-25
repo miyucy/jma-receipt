@@ -111,6 +111,7 @@
            03  FLG-PTNYUINRRK              PIC 9(01).
            03  FLG-GENZAN                  PIC 9(01).
            03  FLG-DTCHK002                PIC 9(01).
+           03  FLG-LOOP-END                PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -408,7 +409,7 @@
       *
            PERFORM UNTIL ( FLG-DTCHK002    NOT =   ZERO )
       *
-               PERFORM 900-NYUINACCT-KEY17-SEL-SEC
+               PERFORM 900-NYUINACCT-KEY14-SEL-SEC
       *
                PERFORM UNTIL ( FLG-NYUINACCT   NOT =   ZERO )
       *
@@ -420,12 +421,12 @@
                        PERFORM 2001-NACCT-EDIT-SEC
                    END-IF
       *
-                   PERFORM 900-NYUINACCT-KEY17-FET-SEC
+                   PERFORM 900-NYUINACCT-KEY14-FET-SEC
       *
                END-PERFORM
       *
                MOVE    "tbl_nyuinacct"     TO  MCP-TABLE
-               MOVE    "key17"             TO  MCP-PATHNAME
+               MOVE    "key14"             TO  MCP-PATHNAME
                PERFORM 910-DBCLOSECURSOR-SEC
       *
                PERFORM 900-DTCHK002-READ-SEC
@@ -992,9 +993,9 @@
        900-NYUINACCT-KEY27-FET-EXT.
            EXIT.
       *****************************************************************
-      *    入院会計検索処理(KEY17)
+      *    入院会計検索処理(KEY14)
       *****************************************************************
-       900-NYUINACCT-KEY17-SEL-SEC     SECTION.
+       900-NYUINACCT-KEY14-SEL-SEC     SECTION.
       *
            MOVE    ZERO                TO  FLG-NYUINACCT
            INITIALIZE                  NYUINACCT-REC
@@ -1006,37 +1007,48 @@
            MOVE    "5"                 TO  NACCT-ZAISKBKBN
            MOVE    NYUINACCT-REC       TO  MCPDATA-REC
            MOVE    "tbl_nyuinacct"     TO  MCP-TABLE
-           MOVE    "key17"             TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
+           MOVE    "key14"             TO  MCP-PATHNAME
+           PERFORM 911-DBSELECT-SEC
            IF    ( MCP-RC          =   ZERO )
-               MOVE    MCPDATA-REC     TO  NYUINACCT-REC
+               PERFORM 900-NYUINACCT-KEY14-FET-SEC
            ELSE
                MOVE    1               TO  FLG-NYUINACCT
                INITIALIZE                  NYUINACCT-REC
            END-IF
       *
            .
-       900-NYUINACCT-KEY17-SEL-EXT.
+       900-NYUINACCT-KEY14-SEL-EXT.
            EXIT.
       *****************************************************************
-      *    入院会計FETCH処理(KEY17)
+      *    入院会計FETCH処理(KEY14)
       *****************************************************************
-       900-NYUINACCT-KEY17-FET-SEC     SECTION.
+       900-NYUINACCT-KEY14-FET-SEC     SECTION.
       *
            MOVE    ZERO            TO  FLG-NYUINACCT
+           MOVE    ZERO            TO  FLG-LOOP-END
       *
-           MOVE    "tbl_nyuinacct"     TO  MCP-TABLE
-           MOVE    "key17"             TO  MCP-PATHNAME
-           PERFORM 910-DBFETCH-SEC
-           IF    ( MCP-RC          =   ZERO )
-               MOVE    MCPDATA-REC     TO  NYUINACCT-REC
-           ELSE
-               MOVE    1               TO  FLG-NYUINACCT
-               INITIALIZE                  NYUINACCT-REC
-           END-IF
+           PERFORM UNTIL ( FLG-NYUINACCT   NOT =   ZERO )
+                    OR   ( FLG-LOOP-END    NOT =   ZERO )
+      *
+               MOVE    "tbl_nyuinacct"     TO  MCP-TABLE
+               MOVE    "key14"             TO  MCP-PATHNAME
+               PERFORM 910-DBFETCH-SEC
+               IF    ( MCP-RC          =   ZERO )
+                   MOVE    MCPDATA-REC     TO  NYUINACCT-REC
+      *
+                   IF    ( NACCT-ZAISKBKBN =   "5" )
+                       MOVE    1   TO  FLG-LOOP-END
+                   END-IF
+      *
+               ELSE
+                   MOVE    1               TO  FLG-NYUINACCT
+                   INITIALIZE                  NYUINACCT-REC
+               END-IF
+      *
+           END-PERFORM
       *
            .
-       900-NYUINACCT-KEY17-FET-EXT.
+       900-NYUINACCT-KEY14-FET-EXT.
            EXIT.
       *****************************************************************
       *    保険組合せ取得処理
