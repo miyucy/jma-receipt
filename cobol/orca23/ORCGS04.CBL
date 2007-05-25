@@ -1219,6 +1219,7 @@
       *            ジョブ管理チェック処理
                    MOVE    "CHK"               TO  SJOBKANRI-MODE
                    INITIALIZE                      JOBKANRI-REC
+                   MOVE    SPA-HOSPNUM         TO  JOB-HOSPNUM
                    MOVE    IDX                 TO  JOB-JOBID
                    MOVE    CONST-JOB-SHELLID   TO  JOB-SHELLID
                    CALL    "ORCSJOB"       USING

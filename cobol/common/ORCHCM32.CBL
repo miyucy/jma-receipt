@@ -32,6 +32,8 @@
       *  02.01.01    NACL-森脇    03/12/10  出力条件修正
       *  02.01.02    NACL-森脇    04/10/25  CLOSE追加
       *  02.01.03    NACL-森脇    04/11/09  パラメタ変更,バッチ処理に変更
+      *  03.04.01    NACL-森脇    07/01/30  自費消費税H19年4月対応
+      *  03.05.00    NACL-太田    07/05/24  グループ診療対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -154,6 +156,9 @@
            03  CONST-HEN-MAX       PIC 9(05)   VALUE   12.
            03  CONST-LINE-MAX      PIC 9(05)   VALUE   12.
            03  CONST-SRH-COMB-MAX  PIC 9(03)   VALUE   100.
+      *----(03.04.01)--ADD-START---
+           03  CONST-H190401       PIC X(08)   VALUE   "20070401".
+      *----(03.04.01)--ADD-END-----
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -197,7 +202,6 @@
       *    ＤＢ検索
            COPY    "MCPAREA".
            COPY    "MCPDATA.INC".
-           COPY    "ORCA-DBPATH".
       *
       *    シェル用領域
            COPY    "CPSHELLTBL.INC".
@@ -483,13 +487,16 @@
                                        +   SYU-TOTAL-TGMONEY-TAX
                                        +   SYU-JIHI-TOTAL
                                        +   SYU-JIHI-TOTAL-TAX
-                                       +   SYU-JIHI-TAX
+      *----(03.04.01)--UPD-START---
+               IF      SYU-SRYYMD  <   CONST-H190401
+                   COMPUTE WRK-JIHIMONEY   =   WRK-JIHIMONEY
+                                           +   SYU-JIHI-TAX
                    IF    ( WRK-HOJOKBN     =   "1" )
-                       COMPUTE WRK-JIHIMONEY
-                           =   WRK-JIHIMONEY
-                           +   SYU-SKYMONEY-TAX-SAI
+                       COMPUTE WRK-JIHIMONEY   =   WRK-JIHIMONEY
+                                               +   SYU-SKYMONEY-TAX-SAI
                    END-IF
-      *
+               END-IF
+      *----(03.04.01)--UPD-END-----
            ELSE
       *        保険点数
                COMPUTE WRK-HKNTEN      =   SYU-TOTAL-HKNTEN
@@ -512,7 +519,11 @@
                                        +   SYU-TOTAL-TGMONEY-TAX
                                        +   SYU-JIHI-TOTAL
                                        +   SYU-JIHI-TOTAL-TAX
-                                       +   SYU-JIHI-TAX
+      *----(03.04.01)--UPD-START---
+               IF      SYU-SRYYMD  <   CONST-H190401
+                   COMPUTE WRK-JIHIMONEY   =   WRK-JIHIMONEY
+                                           +   SYU-JIHI-TAX
+               END-IF
            END-IF
       *
       *    入金編集処理
@@ -680,7 +691,7 @@
                MOVE    "3"             TO  HCM31S01-PROCKBN
            END-EVALUATE
       *
-grpsys     MOVE    SYU-HOSPNUM     TO  HCM31S01-HOSPNUM
+           MOVE    SYU-HOSPNUM      TO  HCM31S01-HOSPNUM
            MOVE    SYU-NYUGAIKBN   TO  HCM31S01-NYUGAIKBN
            MOVE    SYU-PTID        TO  HCM31S01-PTID
            MOVE    SYU-DENPNUM     TO  HCM31S01-DENPNUM
@@ -692,6 +703,7 @@ grpsys     MOVE    SYU-HOSPNUM     TO  HCM31S01-HOSPNUM
       *    支払い金額サブプロ呼び出し
            CALL    "ORCHCM31S01"       USING
                                        HCM31S01-AREA
+                                       SPA-AREA
       *
            .
        220-NYUKIN-HENSYU-EXT.
@@ -922,6 +934,7 @@ grpsys     MOVE    SYU-HOSPNUM     TO  HCM31S01-HOSPNUM
            MOVE    "1"                 TO  SPRT-SITEKBN
            CALL    "ORCSPRT"           USING
                                        ORCSPRTAREA
+                                       SPA-AREA
            IF    ( SPRT-RETURN         =   ZERO )
                COMPUTE CNT-OUT =   CNT-OUT +   1
            ELSE
@@ -1021,11 +1034,11 @@ grpsys     MOVE    SYU-HOSPNUM     TO  HCM31S01-HOSPNUM
       *
            MOVE    SPACE           TO  SYS-1001-REC
            INITIALIZE                  SYS-1001-REC
+           MOVE    SPA-HOSPNUM     TO  SYS-1001-HOSPNUM
            MOVE    "1001"          TO  SYS-1001-KANRICD
            MOVE    "*"             TO  SYS-1001-KBNCD
            MOVE    SPA-SYSYMD      TO  SYS-1001-STYUKYMD
                                        SYS-1001-EDYUKYMD
-grpsys     MOVE    SPA-HOSPNUM     TO  SYS-1001-HOSPNUM
            MOVE    SYS-1001-REC    TO  MCPDATA-REC
       *
            MOVE    "tbl_syskanri"  TO  MCP-TABLE
@@ -1055,11 +1068,11 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SYS-1001-HOSPNUM
       *
            MOVE    SPACE           TO  SYS-1002-REC
            INITIALIZE                  SYS-1002-REC
+           MOVE    SPA-HOSPNUM     TO  SYS-1002-HOSPNUM
            MOVE    "1002"          TO  SYS-1002-KANRICD
            MOVE    "*"             TO  SYS-1002-KBNCD
            MOVE    SPA-SYSYMD      TO  SYS-1002-STYUKYMD
                                        SYS-1002-EDYUKYMD
-grpsys     MOVE    SPA-HOSPNUM     TO  SYS-1002-HOSPNUM
            MOVE    SYS-1002-REC    TO  MCPDATA-REC
       *
            MOVE    "tbl_syskanri"  TO  MCP-TABLE
@@ -1088,8 +1101,8 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SYS-1002-HOSPNUM
            MOVE    ZERO            TO  FLG-PTNUM
       *
            INITIALIZE                  PTNUM-REC
+           MOVE    SPA-HOSPNUM      TO  PTNUM-HOSPNUM
            MOVE    SPA-PTID        TO  PTNUM-PTID
-grpsys     MOVE    SPA-HOSPNUM     TO  PTNUM-HOSPNUM
            MOVE    PTNUM-REC       TO  MCPDATA-REC
            MOVE    "tbl_ptnum"     TO  MCP-TABLE
            MOVE    "key"           TO  MCP-PATHNAME
@@ -1117,8 +1130,8 @@ grpsys     MOVE    SPA-HOSPNUM     TO  PTNUM-HOSPNUM
            MOVE    ZERO            TO  FLG-PTINF
       *
            INITIALIZE                  PTINF-REC
+           MOVE    SPA-HOSPNUM      TO  PTINF-HOSPNUM
            MOVE    SPA-PTID        TO  PTINF-PTID
-grpsys     MOVE    SPA-HOSPNUM     TO  PTINF-HOSPNUM
            MOVE    PTINF-REC       TO  MCPDATA-REC
            MOVE    "tbl_ptinf"     TO  MCP-TABLE
            MOVE    "key"           TO  MCP-PATHNAME
@@ -1148,7 +1161,7 @@ grpsys     MOVE    SPA-HOSPNUM     TO  PTINF-HOSPNUM
            MOVE    SPACE           TO  SYUNOU-REC
            INITIALIZE                  SYUNOU-REC
       *
-grpsys     MOVE    SPA-HOSPNUM     TO  SYU-HOSPNUM
+           MOVE    SPA-HOSPNUM          TO  SYU-HOSPNUM
            MOVE    ORCHCM31-PTID       TO  SYU-PTID
            MOVE    ORCHCM31-STRSRYYMD  TO  SYU-SKYSTYMD
            MOVE    ORCHCM31-ENDSRYYMD  TO  SYU-SKYEDYMD
@@ -1205,8 +1218,8 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SYU-HOSPNUM
            MOVE    ZERO                TO  FLG-HKNCOMBI
       *
            INITIALIZE                  HKNCOMBI-REC
+           MOVE    SPA-HOSPNUM          TO  COMB-HOSPNUM
            MOVE    ORCHCM31-PTID       TO  COMB-PTID
-grpsys     MOVE    SPA-HOSPNUM         TO  COMB-HOSPNUM
            MOVE    HKNCOMBI-REC        TO  MCPDATA-REC
            MOVE    "tbl_hkncombi"      TO  MCP-TABLE
            MOVE    "key2"              TO  MCP-PATHNAME
@@ -1245,9 +1258,10 @@ grpsys     MOVE    SPA-HOSPNUM         TO  COMB-HOSPNUM
        910-DBSELECT-SEC          SECTION.
       *
            MOVE    "DBSELECT"      TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"         USING
+                                       MCPAREA
+                                       MCPDATA-REC
+                                       SPA-AREA
            IF        ( MCP-RC          =   ZERO )
                PERFORM 910-DBFETCH-SEC
            END-IF
@@ -1261,9 +1275,10 @@ grpsys                            SPA-AREA
        910-DBFETCH-SEC            SECTION.
       *
            MOVE    "DBFETCH"       TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"         USING
+                                       MCPAREA
+                                       MCPDATA-REC
+                                       SPA-AREA
       *
            .
        910-DBFETCH-EXT.
@@ -1274,9 +1289,10 @@ grpsys                            SPA-AREA
        910-DBCLOSECURSOR-SEC           SECTION.
       *
            MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"         USING
+                                       MCPAREA
+                                       MCPDATA-REC
+                                       SPA-AREA
       *
            .
        910-DBCLOSECURSOR-EXT.

@@ -416,6 +416,7 @@
       *----(03.04.01)--ADD-END-----
       *
       *    ¥Õ¥¡¥¤¥ë£Ï£Ð£Å£Î
+           MOVE    SPA-HOSPNUM         TO  HC01PARA-HOSPNUM
            MOVE    "HCN3"              TO  HC01PARA-FORM-ID
            MOVE    ORCHCN03-TERMID     TO  HC01PARA-TERMID
            MOVE    SYS-TIME            TO  HC01PARA-SYOHMS

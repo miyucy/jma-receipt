@@ -269,6 +269,7 @@
       *                ジョブ管理チェック処理
                        MOVE    "CHK"           TO  SJOBKANRI-MODE
                        INITIALIZE                  JOBKANRI-REC
+                       MOVE    SPA-HOSPNUM     TO  JOB-HOSPNUM
                        MOVE    IDX             TO  JOB-JOBID
                        MOVE    WRK-CONS-JOB-SHELLID
                                                TO  JOB-SHELLID
@@ -285,6 +286,7 @@
       *        ジョブ管理チェック処理
                MOVE    "CHK"           TO  SJOBKANRI-MODE
                INITIALIZE                  JOBKANRI-REC
+               MOVE    SPA-HOSPNUM     TO  JOB-HOSPNUM
                MOVE    WRK-CONS-JOB-JOBID
                                        TO  JOB-JOBID
                MOVE    WRK-CONS-JOB-SHELLID

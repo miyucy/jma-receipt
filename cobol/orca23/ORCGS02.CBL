@@ -336,7 +336,6 @@
                05  WRK-GAI-MISYU-M PIC S9(10).
            03  WRK-NYU-MISYU       PIC S9(10).
            03  WRK-GAI-ZENMISYU    PIC S9(10).
-           03  WRK-HOSPNUM         PIC 9(02).
       *
        01  WRK-ROW.
            05  WRK-SYULIST-ROW     PIC S9(9)   BINARY.
@@ -1357,6 +1356,7 @@
       *    ジョブ管理削除処理
            MOVE    "ALL"               TO  SJOBKANRI-MODE
            INITIALIZE                      JOBKANRI-REC
+           MOVE    SPA-HOSPNUM         TO  JOB-HOSPNUM
            MOVE    CONST-JOB-SHELLID
                                        TO  JOB-SHELLID
            CALL    "ORCSJOB"       USING   ORCSJOBKANRIAREA
@@ -1612,8 +1612,7 @@
            MOVE    CONST-JOB-SHELLID
                                    TO  SHELLTBL-ARG13
            MOVE    ORCBS01ERR      TO  SHELLTBL-ARG14
-           MOVE    SPA-HOSPNUM     TO  WRK-HOSPNUM
-           MOVE    WRK-HOSPNUM     TO  SHELLTBL-ARG15
+           MOVE    SPA-HOSPNUM     TO  SHELLTBL-ARG15
            MOVE    WRK-PGTYPE (IDX2)
                                    TO  SHELLTBL-ARG16
            MOVE    WRK-PGNAME (IDX2)
@@ -1660,6 +1659,7 @@
       *
            MOVE    "DEL"           TO  SJOBKANRI-MODE
            INITIALIZE                  JOBKANRI-REC
+           MOVE    SPA-HOSPNUM     TO  JOB-HOSPNUM
            MOVE    CNT-JOBID       TO  JOB-JOBID
            MOVE    CONST-JOB-SHELLID
                                    TO  JOB-SHELLID
@@ -1670,6 +1670,7 @@
       *
            MOVE    "JBS"           TO  SJOBKANRI-MODE
            INITIALIZE                  JOBKANRI-REC
+           MOVE    SPA-HOSPNUM     TO  JOB-HOSPNUM
            MOVE    CNT-JOBID       TO  JOB-JOBID
            MOVE    CONST-JOB-SHELLID
                                    TO  JOB-SHELLID
@@ -2133,6 +2134,7 @@
       *            ジョブ管理チェック処理
                    MOVE    "CHK"           TO  SJOBKANRI-MODE
                    INITIALIZE                  JOBKANRI-REC
+                   MOVE    SPA-HOSPNUM     TO  JOB-HOSPNUM
                    MOVE    IDX2            TO  JOB-JOBID
                    MOVE    CONST-JOB-SHELLID
                                            TO  JOB-SHELLID

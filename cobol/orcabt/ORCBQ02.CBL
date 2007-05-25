@@ -60,9 +60,6 @@
       *    ╔╧╔янн╟Х
            COPY    "COMMON-SPA".
       *
-      *    ╟У╨Чмя╔г║╪╔© л╬╬ннн╟Х 
-           COPY    "CPCOMMONPRT.INC".
-      *
       *    ╔╥╔╖╔Кмянн╟Х
       *    COPY    "CPCOMMONSHELL.INC".
            COPY    "CPSHELLTBL.INC".

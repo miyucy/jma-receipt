@@ -192,6 +192,7 @@
       *
            MOVE    "CHK"               TO  SJOBKANRI-MODE
            INITIALIZE                      JOBKANRI-REC
+           MOVE    SPA-HOSPNUM         TO  JOB-HOSPNUM
            MOVE    WRK-JOBID           TO  JOB-JOBID
            MOVE    WRK-SHELLID         TO  JOB-SHELLID
            CALL    "ORCSJOB"           USING

@@ -315,6 +315,7 @@
       *
            ELSE
       *        印刷用ファイルオープン
+               MOVE    WRK-PARA-HOSPNUM TO HC01PARA-HOSPNUM
                MOVE    "HC99"          TO  HC01PARA-FORM-ID
                MOVE    WRK-PARA-TERMID
                                        TO  HC01PARA-TERMID
