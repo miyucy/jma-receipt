@@ -246,6 +246,7 @@
       *
            MOVE    "ML09ERR"       TO  ML09ERR-FILE-ID
            MOVE    WRK-PARA-TERMID TO  ML09ERR-TERMID
+           MOVE    SPA-HOSPNUM     TO  ML09ERR-HOSPNUM
       *
       *    パラメタ編集処理
            PERFORM 110-PARA-HENSYU-SEC

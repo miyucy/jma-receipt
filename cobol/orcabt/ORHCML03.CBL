@@ -243,6 +243,7 @@
            MOVE    "TENSERR"        TO  TENSUERR-FILE-ID
            MOVE    LNK-PRTKANRI-TERMID
                                     TO  TENSUERR-TERMID
+           MOVE    SPA-HOSPNUM      TO  TENSUERR-HOSPNUM
       *
       *    パラメタ編集処理
            PERFORM 110-PARA-HENSYU-SEC
