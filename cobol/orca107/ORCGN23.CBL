@@ -1136,7 +1136,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                                    TO  SHELLTBL-ARG12
            MOVE    WRK-CONS-JOB-SHELLID
                                    TO  SHELLTBL-ARG13
-           MOVE    SPA-HOSPID      TO  SHELLTBL-ARG14
+           MOVE    SPA-HOSPNUM     TO  SHELLTBL-ARG14
            MOVE    WRK-JYO         TO  SHELLTBL-ARG15
            MOVE    WRK-KBN         TO  SHELLTBL-ARG16
            MOVE    WRK-IYK         TO  SHELLTBL-ARG17
@@ -1146,7 +1146,6 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    WRK-INPUTCD     TO  SHELLTBL-ARG21
            MOVE    YKJMERR         TO  SHELLTBL-ARG22
       *
-grpsys*    MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            MOVE    SHELLTBL        TO  MCPDATA-REC
            MOVE    "SHELL"         TO  MCP-FUNC
            MOVE    "shell"         TO  MCP-TABLE
