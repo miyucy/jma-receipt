@@ -36,6 +36,7 @@
       *  01.00.05    NACL-伊藤    06/02/22  MONFUNC 対応
       *  01.00.06    NACL-伊藤    06/07/12  ライセンスマスタ対応
       *  03.04.01    NACL-森脇    07/01/24  タイマーイベント追加
+      *  03.05.00    NACL-多々納  07/05/25  グループ診療対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -689,9 +690,11 @@ grpsys*    MOVE    SPA-HOSPNUM         TO  -HOSPNUM
                INITIALIZE                  JOBKANRI-REC
                MOVE    1                   TO  JOB-JOBID
                MOVE    "MSTMNT"            TO  JOB-SHELLID
+               MOVE    SPA-HOSPNUM         TO  JOB-HOSPNUM
                CALL    "ORCSJOB"           USING
                                            ORCSJOBKANRIAREA
                                            JOBKANRI-REC
+                                           SPA-AREA
            END-IF
       *
       *    ジョブ管理作成
@@ -699,9 +702,11 @@ grpsys*    MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            INITIALIZE                  JOBKANRI-REC
            MOVE    1                   TO  JOB-JOBID
            MOVE    "MSTMNT"            TO  JOB-SHELLID
+           MOVE    SPA-HOSPNUM         TO  JOB-HOSPNUM
            CALL    "ORCSJOB"           USING
                                        ORCSJOBKANRIAREA
                                        JOBKANRI-REC
+                                       SPA-AREA
       *    ライセンスマスタ
            IF      FLG-SJOBKANRI1      =   ZERO
       *        ジョブ管理削除
@@ -709,9 +714,11 @@ grpsys*    MOVE    SPA-HOSPNUM         TO  -HOSPNUM
                INITIALIZE                  JOBKANRI1-REC
                MOVE    1                   TO  JOB1-JOBID
                MOVE    "MSTMLI"            TO  JOB1-SHELLID
+               MOVE    SPA-HOSPNUM         TO  JOB-HOSPNUM
                CALL    "ORCSJOB"           USING
                                            ORCSJOBKANRIAREA
                                            JOBKANRI1-REC
+                                           SPA-AREA
            END-IF
       *
       *    ジョブ管理作成
@@ -719,9 +726,11 @@ grpsys*    MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            INITIALIZE                  JOBKANRI1-REC
            MOVE    1                   TO  JOB1-JOBID
            MOVE    "MSTMLI"            TO  JOB1-SHELLID
+           MOVE    SPA-HOSPNUM         TO  JOB-HOSPNUM
            CALL    "ORCSJOB"           USING
                                        ORCSJOBKANRIAREA
                                        JOBKANRI1-REC
+                                       SPA-AREA
       *
       *    最新情報編集
            MOVE    ZERO                TO  FLG-INIT
@@ -763,9 +772,11 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                    INITIALIZE             JOBKANRI-REC
                    MOVE    1              TO  JOB-JOBID
                    MOVE    "MSTMNT"       TO  JOB-SHELLID
+                   MOVE    SPA-HOSPNUM         TO  JOB-HOSPNUM
                    CALL    "ORCSJOB"      USING
                                           ORCSJOBKANRIAREA
                                           JOBKANRI-REC
+                                          SPA-AREA
                    INITIALIZE             SPA-GMN-TBLG2
                    MOVE    SPACE          TO  SPA-GMN-MSG1
                ELSE
@@ -779,10 +790,12 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                    INITIALIZE             JOBKANRI1-REC
                    MOVE    1              TO  JOB1-JOBID
                    MOVE    "MSTMLI"       TO  JOB1-SHELLID
+                   MOVE    SPA-HOSPNUM         TO  JOB-HOSPNUM
                    CALL    "ORCSJOB"      USING
                                           ORCSJOBKANRIAREA
                                           JOBKANRI1-REC
-                   MOVE    SPACE          TO  SPA-GMN-MSG2
+                                          SPA-AREA
+                  MOVE    SPACE          TO  SPA-GMN-MSG2
            END-IF
       *
            .
@@ -1064,9 +1077,11 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    1                   TO  JOB-JOBID
            MOVE    "MSTMNT"            TO  JOB-SHELLID
       *
+           MOVE    SPA-HOSPNUM         TO  JOB-HOSPNUM
            CALL    "ORCSJOB"           USING
                                        ORCSJOBKANRIAREA
                                        JOBKANRI-REC
+                                       SPA-AREA
            IF      SJOBKANRI-RETURN    NOT =   ZERO
                MOVE    1               TO  FLG-SJOBKANRI
                INITIALIZE                  JOBKANRI-REC
@@ -1090,10 +1105,12 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            INITIALIZE                  JOBKANRI1-REC
            MOVE    1                   TO  JOB1-JOBID
            MOVE    "MSTMLI"            TO  JOB1-SHELLID
+           MOVE    SPA-HOSPNUM         TO  JOB-HOSPNUM
       *
            CALL    "ORCSJOB"           USING
                                        ORCSJOBKANRIAREA
                                        JOBKANRI1-REC
+                                       SPA-AREA
            IF      SJOBKANRI-RETURN    NOT =   ZERO
                MOVE    1               TO  FLG-SJOBKANRI1
                INITIALIZE                  JOBKANRI1-REC

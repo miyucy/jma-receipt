@@ -48,6 +48,7 @@
       *  01.02.09    NACL-伊藤    04/02/05  M97の追加
       *  01.02.10    NACL-伊藤    02/02/22  MONFUNC 対応
       *  03.04.00    NACL-多々納  06/11/13  検査正式名称表示フラグ追加
+      *  03.05.00    NACL-多々納  07/05/25  グループ診療対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -332,9 +333,11 @@
                    INITIALIZE                  JOBKANRI-REC
                    MOVE    1                   TO  JOB-JOBID
                    MOVE    "MSTMNT"            TO  JOB-SHELLID
+                   MOVE    SPA-HOSPNUM         TO  JOB-HOSPNUM
                    CALL    "ORCSJOB"           USING
                                                WRK-JOBKANRI-AREA
                                                JOBKANRI-REC
+                                               SPA-AREA
       *
                    MOVE    1               TO  SPA-GMN-CUR
                    MOVE    SPACE           TO  SPA-MID1-FLG
@@ -348,9 +351,11 @@
                    INITIALIZE                  JOBKANRI-REC
                    MOVE    1                   TO  JOB-JOBID
                    MOVE    "MSTMNT"            TO  JOB-SHELLID
+                   MOVE    SPA-HOSPNUM         TO  JOB-HOSPNUM
                    CALL    "ORCSJOB"           USING
                                                WRK-JOBKANRI-AREA
                                                JOBKANRI-REC
+                                               SPA-AREA
       *
                    MOVE    1               TO  SPA-GMN-CUR
                    MOVE    SPACE           TO  SPA-MID1-FLG
@@ -371,18 +376,22 @@
            INITIALIZE                  JOBKANRI-REC
            MOVE    1                   TO  JOB-JOBID
            MOVE    "MSTMNT"            TO  JOB-SHELLID
+           MOVE    SPA-HOSPNUM         TO  JOB-HOSPNUM
            CALL    "ORCSJOB"           USING
                                        WRK-JOBKANRI-AREA
                                        JOBKANRI-REC
+                                       SPA-AREA
       *
       *    ジョブ管理作成
            MOVE    "JBS"               TO  WRK-JOBKANRI-MODE
            INITIALIZE                  JOBKANRI-REC
            MOVE    1                   TO  JOB-JOBID
            MOVE    "MSTMNT"            TO  JOB-SHELLID
+           MOVE    SPA-HOSPNUM         TO  JOB-HOSPNUM
            CALL    "ORCSJOB"           USING
                                        WRK-JOBKANRI-AREA
                                        JOBKANRI-REC
+                                       SPA-AREA
       *
       *    マスタ更新処理
            MOVE    "master_upgrade.sh" TO  SHELL-SHELL
@@ -868,9 +877,11 @@
            INITIALIZE                  JOBKANRI-REC
            MOVE    1               TO  JOB-JOBID
            MOVE    "MSTMNT"        TO  JOB-SHELLID
+           MOVE    SPA-HOSPNUM         TO  JOB-HOSPNUM
            CALL    "ORCSJOB"       USING
                                    WRK-JOBKANRI-AREA
                                    JOBKANRI-REC 
+                                   SPA-AREA
            IF      WRK-JOBKANRI-RETURN
                                        =   ZERO
       *        バッチ処理中にエラーの時
