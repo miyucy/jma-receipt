@@ -4324,12 +4324,12 @@ grpsys         MOVE    WRK-PARA-HOSPNUM    TO  SYS-2002-HOSPNUM
                MOVE    ZERO                TO  SYS-STYUKYMD
                MOVE    ZERO                TO  SYS-EDYUKYMD
                MOVE    SYS-2002-REC        TO  MCPDATA-REC
-               MOVE    "tbl_syskanri"      TO  WRK-MCP-TABLE
-               MOVE    "key2"              TO  WRK-MCP-PATHNAME
+               MOVE    "tbl_syskanri"      TO  MCP-TABLE
+               MOVE    "key2"              TO  MCP-PATHNAME
 grpsys         PERFORM 900-DBSELECT-SEC
                IF      MCP-RC              =   ZERO
-                   MOVE    "tbl_syskanri"      TO  WRK-MCP-TABLE
-                   MOVE    "key2"              TO  WRK-MCP-PATHNAME
+                   MOVE    "tbl_syskanri"      TO  MCP-TABLE
+                   MOVE    "key2"              TO  MCP-PATHNAME
                    PERFORM 900-KANRIMST-NEXT-SEC
                ELSE
                    MOVE    1                   TO  FLG-KANRIMST
@@ -4400,13 +4400,13 @@ grpsys             PERFORM 900-ORCDBMAIN-SEC
                        GO  TO  5001-DB-DELETE-EXT
                    END-IF
       *
-                   MOVE    "tbl_syskanri"      TO  WRK-MCP-TABLE
-                   MOVE    "key2"              TO  WRK-MCP-PATHNAME
+                   MOVE    "tbl_syskanri"      TO  MCP-TABLE
+                   MOVE    "key2"              TO  MCP-PATHNAME
                    PERFORM 900-KANRIMST-NEXT-SEC
                END-PERFORM 
       *
-               MOVE    "tbl_syskanri"      TO  WRK-MCP-TABLE
-               MOVE    "key2"              TO  WRK-MCP-PATHNAME
+               MOVE    "tbl_syskanri"      TO  MCP-TABLE
+               MOVE    "key2"              TO  MCP-PATHNAME
                PERFORM 900-CLOSE-SEC
            END-IF
            .
