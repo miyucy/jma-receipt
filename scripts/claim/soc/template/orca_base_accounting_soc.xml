@@ -290,7 +290,7 @@
 
 
 <!-- 診療括りセクション[01-20] (繰り返しの際に、@@BUNDLE@@に01〜20の数字が入って置換される) -->
-$Repeat, 20, @@BUNDLE@@, 2
+$Repeat, 30, @@BUNDLE@@, 2
 
 					<!-- 診療括りセクション   その@@BUNDLE@@ -->
 					<claimA:bundle%A_@@BUNDLE@@_01%%A_@@BUNDLE@@_02%>
@@ -328,7 +328,7 @@ $Repeat, 20, @@BUNDLE@@, 2
 						</claimA:ppsClass>
 
 <!-- 診療項目セクション[01-20] (繰り返しの際に、@@ITEM@@に01〜20の数字が入って置換される) -->
-$Repeat, 20, @@ITEM@@, 2
+$Repeat, 30, @@ITEM@@, 2
 						<!-- 診療項目セクション   その@@ITEM@@ -->
 						<claimA:item%A_@@BUNDLE@@_@@ITEM@@_01%%A_@@BUNDLE@@_@@ITEM@@_02%%A_@@BUNDLE@@_@@ITEM@@_03%%A_@@BUNDLE@@_@@ITEM@@_04%%A_@@BUNDLE@@_@@ITEM@@_05%%A_@@BUNDLE@@_@@ITEM@@_06%>
 							<!-- 医事請求名称 -->

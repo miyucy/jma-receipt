@@ -189,7 +189,7 @@ $nowdate, %M_RH_CD1%, %Y-%m-%dT%H:%M:%S
 %A_D3%,   7, mmlHi:tableId  	# 健康保険種別コードテーブル名
 
 
-$Repeat, 20, @@BUNDLE@@, 2
+$Repeat, 30, @@BUNDLE@@, 2
 
 	# 診療括りセクション   その@@BUNDLE@@
 	%A_@@BUNDLE@@_01%,   3, claimA:classCode  	# 診療行為区分コード
@@ -210,7 +210,7 @@ $Repeat, 20, @@BUNDLE@@, 2
 	%A_@@BUNDLE@@_14%,   5                    	# 包括区分包括フラグ
 
 
-	$Repeat, 20, @@ITEM@@, 2
+	$Repeat, 30, @@ITEM@@, 2
 
 		# 診療項目セクション   その@@ITEM@@
 		%A_@@BUNDLE@@_@@ITEM@@_01%,   1, claimA:subclassCode  	# 診療種別区分コード
@@ -220,7 +220,7 @@ $Repeat, 20, @@BUNDLE@@, 2
 		%A_@@BUNDLE@@_@@ITEM@@_05%,  10, claimA:aliasCode     	# 第２医事請求コード
 		%A_@@BUNDLE@@_@@ITEM@@_06%,  20, claimA:aliasTableId  	# 第２医事請求コード体系名
 
-		%A_@@BUNDLE@@_@@ITEM@@_07%,  40                       	# 医事請求名称
+		%A_@@BUNDLE@@_@@ITEM@@_07%,  80                       	# 医事請求名称
 		%A_@@BUNDLE@@_@@ITEM@@_08%,  12                       	# 数量
 		%A_@@BUNDLE@@_@@ITEM@@_09%,   2, claimA:numberCode    	# 数量コード
 		%A_@@BUNDLE@@_@@ITEM@@_10%,   8, claimA:numberCodeId  	# 数量コードテーブル (Claim004)
