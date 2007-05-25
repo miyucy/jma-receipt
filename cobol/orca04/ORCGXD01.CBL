@@ -292,8 +292,8 @@
            MOVE    "1005"              TO  SYS-1005-KANRICD
            MOVE    SPA-SRYYMD          TO  SYS-1005-STYUKYMD
            MOVE    SPA-SRYYMD          TO  SYS-1005-EDYUKYMD
-      *
            MOVE    SPA-HOSPNUM         TO  SYS-1005-HOSPNUM
+      *
            MOVE    SYS-1005-REC        TO  MCPDATA-REC
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key2"              TO  MCP-PATHNAME
@@ -337,7 +337,6 @@
        30011-PTINF-HEN-SEC          SECTION.
       *
       *    ´µ¼Ô¾ðÊó¸¡º÷
-      *****MOVE    SPA-HOSPID          TO  PTINF-HOSPID
            MOVE    SPA-HOSPNUM         TO  PTINF-HOSPNUM
            MOVE    SPA-PTID            TO  PTINF-PTID
            PERFORM 900-PTINF-READ-SEC
@@ -1308,6 +1307,7 @@
       *
            CALL    "ORCSUSERPG"        USING
                                        ORCSUSERPGAREA
+                                       SPA-AREA
       *
            .
        41201-SHELL-CALL-EXT.
@@ -1596,7 +1596,6 @@
       *****************************************************************
        900-PTINF-READ-SEC         SECTION.
       *
-           MOVE    SPA-HOSPNUM         TO  PTINF-HOSPNUM
            MOVE    PTINF-REC           TO  MCPDATA-REC
            MOVE    "tbl_ptinf"         TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
