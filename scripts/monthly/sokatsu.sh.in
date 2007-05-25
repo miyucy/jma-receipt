@@ -15,7 +15,7 @@ fi
 #        $2 RECEKBN(総括表の種類)
 #           1:社保　2:国保
 #        $3 エラーファイル名 
-#        $4 医療機関ＩＤ 
+#        $4 HOSPNUM
 #        $5 端末ＩＤ　Ｘ（３２） 
 #-------------------------------------------#
 ##      エラーファイル削除
@@ -24,13 +24,15 @@ fi
         if  [ -e $3 ]; then
             rm  $3
         fi
+
+        LOG_FILE="/home/orca/${4}sokatsu${2}.log"
         
 ##      決定通知書（社保）
         if  [ $2 = '1' ]; then
-       	    $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBM020 -parameter $1$5
+       	    $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBM020 -parameter $1$5,${4},${3} > $LOG_FILE 2>&1
        	fi    
 
 ##      決定通知書（国保）
         if  [ $2 = '2' ]; then
-       	    $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBM021 -parameter $1$5
+       	    $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBM021 -parameter $1$5,${4},${3} > $LOG_FILE 2>&1
        	fi    

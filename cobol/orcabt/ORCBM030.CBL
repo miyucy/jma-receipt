@@ -1145,7 +1145,6 @@ grpsys     MOVE    SPA-HOSPNUM         TO  HKNJA-HOSPNUM
       *****************************************************************
       *    ¸øÈñÊÝ¸±¶èÊ¬ÊÔ½¸½èÍý
       *****************************************************************
-      *    
        2002311-HKNNUM-HENSYU-SEC         SECTION.
       *
            MOVE    SPACE               TO  WRK-KOHKBN
@@ -1464,7 +1463,6 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE10-HOSPNUM
                    " SRYYM=" RECE10-SRYYM "-" RECE10-XXSRYYM 
       *###
       *
-grpsys*    MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            MOVE    RECE10-REC          TO  MCPDATA-REC
            MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
            MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
