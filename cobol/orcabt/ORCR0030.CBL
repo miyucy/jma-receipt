@@ -290,6 +290,7 @@
       *  03.04.10    NACL-門脇    07/03/28  特定器材種別１、酸素等区分の編集
       *  03.04.11    NACL-門脇    07/04/01  現物給付対応
       *  03.04.12    NACL-門脇    07/04/13  リハビリ対応
+      *  03.04.13    NACL-門脇    07/05/22  京都府５１＋４１対応
       *
       *  03.05.01    NACL-藤原    07/04/19  グループ診療対応
       *****************************************************************
@@ -7202,6 +7203,20 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                RECE02-TOTALTEN(2)
                    END-IF
       *
+               END-IF
+      *
+      *      京都府５１＋４１
+      *
+             WHEN    "26"
+      *
+               IF  ( RECE02-HKNNUM       NOT = SPACE    )
+               AND ( RECE02-KOHNUM(1)        = "051"    )
+               AND ( RECE02-KOHHBTNUM(2)     = "41"     )
+               AND ( RECE02-TOTALTEN(1)  NOT =
+                                      RECE02-TOTALTEN(2))
+                  COMPUTE  RECE02-TOTALTEN(3) =
+                           RECE02-TOTALTEN(1) -
+                           RECE02-TOTALTEN(2)
                END-IF
       *
            END-EVALUATE
