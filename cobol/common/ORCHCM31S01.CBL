@@ -83,6 +83,7 @@
         LINKAGE                        SECTION.
       *
            COPY    "CPORCHCM31S01.INC".
+           COPY    "COMMON-SPA".
       *
        PROCEDURE                       DIVISION    USING
            HCM31S01-AREA
