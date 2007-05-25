@@ -431,7 +431,7 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
       *        レセプト通し番号情報処理
                PERFORM 110-SYSKANRI-HENSYU-SEC
       *     
-      *??      MOVE    SPA-HOSPNUM         TO  HC01PARA-HOSPNUM
+grpsys         MOVE    WRK-PARA-HOSPNUM    TO  HC01PARA-HOSPNUM
                MOVE    "HC06"              TO  HC01PARA-FORM-ID
                MOVE    LNK-PRTKANRI-TERMID TO  HC01PARA-TERMID
                MOVE    SYS-TIME            TO  HC01PARA-SYOHMS

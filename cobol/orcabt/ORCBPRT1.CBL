@@ -300,6 +300,8 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
       *
       *    印刷用ファイル作成  
            MOVE    "HC99"          TO  HC01PARA-FORM-ID
+grpsys     MOVE    WRK-PARA-HOSPNUM
+                                   TO  HC01PARA-HOSPNUM
            MOVE    LNK-PRTKANRI-TERMID
                                    TO  HC01PARA-TERMID
            MOVE    SYS-TIME        TO  HC01PARA-SYOHMS
