@@ -17,6 +17,7 @@ fi
 #        ${4} エラーファイル名 
 #        ${5} 端末ｉｐアドレス
 #        ${6} ファイルNO
+#        ${7} HOSPNUM
 #-------------------------------------------#
 
     rennum=0
@@ -27,31 +28,35 @@ fi
     if  [ -e ${4} ]; then
         rm ${4}
     fi
-        echo "arg1 = [" ${1} "]"  >/home/orca/recept4_fd.log
-        echo "arg5 = [" ${5} "]" >>/home/orca/recept4_fd.log
-        echo "hostname =  [" `hostname`  "]" >>/home/orca/recept4_fd.log
+
+        rm -r /home/orca/recept4_fd.log
+        LOG_FILE="/home/orca/${7}recept4_fd.log"
+
+        echo "arg1 = [" ${1} "]"  >$LOG_FILE
+        echo "arg5 = [" ${5} "]" >>$LOG_FILE
+        echo "hostname =  [" `hostname`  "]" >>$LOG_FILE
 
     if  [ -e ${1}RECEIPTC${6}.UKE ]; then
-        echo "--- RECEIPTC.UKE exist ---" >>/home/orca/recept4_fd.log
+        echo "--- RECEIPTC.UKE exist ---" >>$LOG_FILE
     fi
     FDDHOST=`echo ${5}|tr \[\] "  "`
     echo "FDDHOST = " $FDDHOST
 ##
 		    echo "２番目以降のファイルの処理(fdw処理)" ${1}RECEIPTC${6}.UKE
-##    $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE${2}${3} >> /home/orca/recept4_fd.log
+##    $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE${2}${3},${7} >> /home/orca/recept4_fd.log
 ##    exit 
 ##
-        echo "--- fdw-> fd start ---" >>/home/orca/recept4_fd.log
+        echo "--- fdw-> fd start ---" >>$LOG_FILE
 	$FDW -host $FDDHOST -command fd-write.sh ${1}RECEIPTC${6}.UKE RECEIPTC.UKE
 	RC=$?
-        echo "--- fdw-> fd end   ---[" $RC  "]" >>/home/orca/recept4_fd.log
+        echo "--- fdw-> fd end   ---[" $RC  "]" >>$LOG_FILE
 	if  [ $RC -ne '0' ]; then
 	    ERRCD='0000'$RC
-	    $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE${2}${3}'  '${ERRCD:${#ERRCD}-4:4} >> /home/orca/recept4_fd.log
+	    $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE${2}${3}'  '${ERRCD:${#ERRCD}-4:4},${7} >> $LOG_FILE 2>&1
         echo "--- fdw-> fd err   ---" >>/home/orca/recept4_fd.log
             exit
     fi
 
-    $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE${2}${3} >> /home/orca/recept4_fd.log
+    $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE${2}${3},${7} >> $LOG_FILE 2>&1
 
     exit 
