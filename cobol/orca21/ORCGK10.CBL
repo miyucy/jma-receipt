@@ -454,6 +454,7 @@
            MOVE    SPTID-PTNUM         TO  SPA-K10-PTNUM  (IDX)
       *
       *    診療科
+           MOVE    ZERO                TO  FLG-OK
            PERFORM VARYING     IDY     FROM    1  BY  1
                    UNTIL       IDY     >   SPA-SRYKA-MAX
                IF      WKSRY-SRYKA         =   SPA-GMN-SRYKAL (IDY)
@@ -461,8 +462,14 @@
                                            TO  SPA-K10-GMN-SRYKA
                                                                (IDX)
                    MOVE    SPA-SRYKA-MAX   TO  IDY
+                   MOVE    1               TO  FLG-OK
                END-IF
            END-PERFORM
+           IF     (FLG-OK              =   ZERO )
+             AND  (WKSRY-SRYKA     NOT =   "99" )
+               MOVE    WKSRY-SRYKA         TO  SPA-K10-GMN-SRYKA
+                                                               (IDX)
+           END-IF
       *
       *    診察日
            MOVE    WKSRY-SRYYMD        TO  SPA-K10-SRYYMD(IDX)
@@ -679,6 +686,10 @@
                MOVE    "0001"              TO  SPA-ERRCD
            ELSE
                MOVE    2                   TO  SPA-K10GMN-CUR
+      *        追加へ
+               IF     (SPA-K10-SRYKA (SPA-K10-SELNUM)  =   "99" )
+                   MOVE    3               TO  SPA-K10GMN-CUR
+               END-IF
            END-IF
       *
            .
@@ -714,6 +725,10 @@
                MOVE    SPA-K10-SELNUM      TO  WRK-ZZ
                MOVE    WRK-ZZ              TO  SPA-K10-GMN-SELNUM
                MOVE    2                   TO  SPA-K10GMN-CUR
+      *        追加へ
+               IF     (SPA-K10-SRYKA (SPA-K10-SELNUM)  =   "99" )
+                   MOVE    3                   TO  SPA-K10GMN-CUR
+               END-IF
            END-IF
       *
            .
@@ -804,10 +819,22 @@
                    MOVE    1               TO  FLG-OK
                END-IF
            END-PERFORM
+      *    診療科判断
+           IF     (SPA-K10-SRYKA (SPA-K10-SELNUM)  =   "99" )
+               IF      SPA-GMN-PTID        =   ZERO
+                   MOVE    "0011"              TO  SPA-ERRCD
+                   MOVE    1                   TO  SPA-K10GMN-CUR
+               ELSE
+                   MOVE    "0010"              TO  SPA-ERRCD
+                   MOVE    3                   TO  SPA-K10GMN-CUR
+               END-IF
+           END-IF
       *
-           IF      SPA-PTID        NOT =   ZERO
-               IF      FLG-OK              =   1
-                   MOVE    "0102"          TO  SPA-KIDCD
+           IF      SPA-ERRCD           =   SPACE
+               IF      SPA-PTID        NOT =   ZERO
+                   IF      FLG-OK              =   1
+                       MOVE    "0102"          TO  SPA-KIDCD
+                   END-IF
                END-IF
            END-IF
            .
@@ -899,6 +926,11 @@
       *    ６５歳以上で老人公費のある時
            IF     (SPA-NAI-ROUJIN2     =   1 )  AND
                   (SPA-ERRCD           =   SPACE )
+             IF    (SPA-K10-HKNCOMBI(SPA-K10-SELNUM)
+                                         =   "9999"  OR
+                                             "0000"  )
+               CONTINUE
+             ELSE
                INITIALIZE                  ORCSAGECHKAREA
                MOVE    SPA-HOSPNUM         TO  AGECHK-HOSPNUM
                MOVE    SPA-PTID            TO  AGECHK-PTID
@@ -914,6 +946,7 @@
                    MOVE    "0007"          TO  SPA-ERRCD
                    MOVE    2               TO  SPA-K10GMN-CUR
                END-IF
+             END-IF
            END-IF
       *    選択中でないこと
            IF     (SPA-ERRCD           =   SPACE  )  AND
@@ -1135,6 +1168,8 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE    "SELNUM"          TO  MCP-WIDGET
                WHEN    02
                    MOVE    "B12"             TO  MCP-WIDGET
+               WHEN    03
+                   MOVE    "B10"             TO  MCP-WIDGET
            END-EVALUATE
       *
            .
@@ -1184,6 +1219,18 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN    "0005"
                    MOVE    "入院です。追加はできません。"
                                                TO  SPA-ERRMSG
+               WHEN    "0010"
+                   STRING  "診療科がありません。" 
+                           "追加をして下さい。"
+                                               DELIMITED  BY  SIZE
+                                               INTO    SPA-ERRMSG
+                   END-STRING
+               WHEN    "0011"
+                   STRING  "診療科がありません。" 
+                           "患者を選択後、追加をして下さい。"
+                                               DELIMITED  BY  SIZE
+                                               INTO    SPA-ERRMSG
+                   END-STRING
       *
                WHEN    "9999"
                    MOVE    "他端末で使用中です。"
