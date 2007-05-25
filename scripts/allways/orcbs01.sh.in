@@ -16,7 +16,7 @@ RENNUM=0
 #        ${12} ジョブＩＤ
 #        ${13} シェルＩＤ
 #        ${14} エラーファイル名 
-#        ${15} 医療機関ＩＤ 
+#        ${15} 医療機関番号
 #        ${16} 帳票種別
 #        ${17} プログラム名
 #        ${18} STAFFCD
@@ -44,5 +44,5 @@ RENNUM=0
             exit
         fi
        
-       $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE${12}${13}
+       $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter "JBE${12}${13},${15}"
         exit 
