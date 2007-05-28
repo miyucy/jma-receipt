@@ -37,6 +37,8 @@
       *  03.03.00    NACL-多々納  06/10/23  返金対応追加
       *  03.05.00    NACL-多々納  07/05/09  グループ診療対応
       *  03.05.00    NACL-多々納  07/05/25  UIDテーブル対応
+      *                                     明細数３０へ
+      *                                     自費コード、画像診断対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -193,7 +195,7 @@
       *
       *    集計用テーブル
        01  TBL-AREA.
-           03  TBL-REC-01              OCCURS   20.
+           03  TBL-REC-01              OCCURS   30.
                05  TBL-SRYCD            PIC X(03).
                05  TBL-SRYNAME          PIC X(40).
                05  TBL-TENNSUALL        PIC S9(07).
@@ -214,7 +216,7 @@
       *包括区分包括フラグ(true OR false)
                05  TBL-PPSFLG           PIC  X(05).
       *明細テーブル
-               05  TBL-SRYTBL           OCCURS  20.
+               05  TBL-SRYTBL           OCCURS  30.
       *診療種別区分コード(0:手技、1:材料,2:薬剤)
                    07  TBL-SRYSYUBETSU
                                        PIC  X(01).
@@ -926,7 +928,8 @@
                    MOVE    IDX-SINSATU         TO  IDX-LF
                    MOVE    ZERO                TO  IDX-IJ
                    PERFORM VARYING     IDXS    FROM    1   BY  1
-                           UNTIL       IDXS    >   20
+      *@                   UNTIL       IDXS    >   20
+                           UNTIL       IDXS    >   30
                        IF      TBL-IJICD (IDX-LF IDXS)
                                                 NOT =   SPACE
                            MOVE    IDXS            TO  IDX-IJ
@@ -962,10 +965,12 @@
            PERFORM 990-DBCLOSE-SEC
       *
            ADD     1                   TO  IDX-LF2
-      *    ２０剤以上の時エラー
-           IF      IDX-LF2             >   20
-               DISPLAY "ZAI 20 OVER ???"
-               MOVE    20              TO  IDX-LF2
+      *@   ２０剤以上の時エラー
+      *@   IF      IDX-LF2             >   20
+      *    ３０剤以上の時エラー
+           IF      IDX-LF2             >   30
+               DISPLAY "ZAI 30 OVER ???"
+               MOVE    30              TO  IDX-LF2
            END-IF
       *
            MOVE    IDX-LF2             TO  IDX-LF
@@ -1095,7 +1100,10 @@
                    PERFORM 20022-SRYACT-SYORI-SEC
       *        画像診断
                WHEN    "70"
-                   PERFORM 20024-SRYKBN-70-SEC
+      *@@@@@@@@@@  PERFORM 20024-SRYKBN-70-SEC
+      *            部位・フィルムをコメント・器材とする
+                   ADD     1               TO  IDX-IJ
+                   PERFORM 20022-SRYACT-SYORI-SEC
       *        検査
                WHEN    "80"
                    ADD     1               TO  IDX-IJ
@@ -1311,38 +1319,39 @@
       *****************************************************************
        20022-SRYACT-SYORI-SEC         SECTION.
       *
-      *    １剤で２０行以上の時
-           IF      IDX-IJ              >   20
+      *    １剤で３０行以上の時
+      *@   IF      IDX-IJ              >   20
+           IF      IDX-IJ              >   30
                DISPLAY "*** ORCL0021 INDEX OVER ****"
                GO      TO  20022-SRYACT-SYORI-EXT
            END-IF
       *
       *     フィルム
-           IF      (SRY-SRYCD (IDXA)(1:1)   =  "7"    )  AND
-                   (SRY-SRYKBN              =   "70"  )
-               ADD     1                   TO  WRK-FILMCNT
-               IF      WRK-FILMCNT         <=  WRK-FILMMAX
-                   MOVE    SRY-SRYSURYO(IDXA)  TO  TBL-FILMNUM
-                                            (IDX-LF  IDX-IJ WRK-FILMCNT)
+      *@@  IF      (SRY-SRYCD (IDXA)(1:1)   =  "7"    )  AND
+      *            (SRY-SRYKBN              =   "70"  )
+      *        ADD     1                   TO  WRK-FILMCNT
+      *        IF      WRK-FILMCNT         <=  WRK-FILMMAX
+      *            MOVE    SRY-SRYSURYO(IDXA)  TO  TBL-FILMNUM
+      *                                     (IDX-LF  IDX-IJ WRK-FILMCNT)
       *            フィルム分割
-                   MOVE    SRY-SRYKAISU(IDXA)  TO  TBL-FILMDEV
-                                            (IDX-LF  IDX-IJ WRK-FILMCNT)
-                   PERFORM VARYING IDZ FROM    1   BY  1
-                           UNTIL   IDZ >       7
-                       IF      SRY-SRYCD(IDXA) =
-                                               CLAIM005-ORCA (IDZ)
-                           MOVE    CLAIM005-CLAIM (IDZ)
-                                               TO  TBL-FILMSIZECD
-                                            (IDX-LF  IDX-IJ WRK-FILMCNT)
-                           MOVE    CLAIM005-NAME  (IDZ)
-                                               TO  TBL-FILMSIZE
-                                            (IDX-LF  IDX-IJ WRK-FILMCNT)
-                           MOVE    7                      TO  IDZ
-                        END-IF
-                   END-PERFORM
-               END-IF
-               GO      TO      20022-SRYACT-SYORI-EXT
-           END-IF
+      *            MOVE    SRY-SRYKAISU(IDXA)  TO  TBL-FILMDEV
+      *                                     (IDX-LF  IDX-IJ WRK-FILMCNT)
+      *            PERFORM VARYING IDZ FROM    1   BY  1
+      *                    UNTIL   IDZ >       7
+      *                IF      SRY-SRYCD(IDXA) =
+      *                                        CLAIM005-ORCA (IDZ)
+      *                    MOVE    CLAIM005-CLAIM (IDZ)
+      *                                        TO  TBL-FILMSIZECD
+      *                                     (IDX-LF  IDX-IJ WRK-FILMCNT)
+      *                    MOVE    CLAIM005-NAME  (IDZ)
+      *                                        TO  TBL-FILMSIZE
+      *                                     (IDX-LF  IDX-IJ WRK-FILMCNT)
+      *                    MOVE    7                      TO  IDZ
+      *                 END-IF
+      *            END-PERFORM
+      *        END-IF
+      *        GO      TO      20022-SRYACT-SYORI-EXT
+      *@@  END-IF
       *
            EVALUATE    SRY-SRYCD (IDXA)(1:1)
       *        薬剤／器剤
@@ -1516,13 +1525,17 @@
                    END-IF
       *        その他
                WHEN    "0"
-      *            部位
-                   IF      SRY-SRYCD(IDXA)(1:3)    =   "002"
-                       MOVE    TNS-NAME            TO  TBL-LOCATION
-                                                   (IDX-LF IDX-IJ)
-                   END-IF
+      ***          部位
+      *            IF      SRY-SRYCD(IDXA)(1:3)    =   "002"
+      *                MOVE    TNS-NAME            TO  TBL-LOCATION
+      *                                            (IDX-LF IDX-IJ)
+      ****         END-IF
       *            コメント
-                   IF      SRY-SRYCD(IDXA)(1:3)    =   "008"
+      ************ IF      SRY-SRYCD(IDXA)(1:3)    =   "008"
+                   IF      SRY-SRYCD(IDXA)(1:3)    =   "099"
+                       CONTINUE
+                   ELSE
+      *                システム予約コード以外は対象とする
                        MOVE    "0"                 TO  TBL-SRYSYUBETSU
                                                       (IDX-LF IDX-IJ)
                        MOVE    SRY-SRYCD(IDXA)     TO  TBL-IJICD
@@ -1694,7 +1707,8 @@
                                                              (IDX-LF)
       *
                    PERFORM VARYING     IDX-S  FROM    1   BY  1
-                           UNTIL       IDX-S  >   20
+      *@                   UNTIL       IDX-S  >   20
+                           UNTIL       IDX-S  >   30
                        IF      TBL-IJICD (IDX-LF IDX-S)   NOT =   SPACE
                            PERFORM 20031-MEISAI-SET-SEC
                        END-IF
@@ -1856,8 +1870,9 @@
       *    請求点数
            ADD     1                   TO  IDX-LF2
       *    ２０剤以上の時エラー
-           IF      IDX-LF2             >   20
-               DISPLAY "ZAI 20 OVER ???"
+      *@   IF      IDX-LF2             >   20
+           IF      IDX-LF2             >   30
+               DISPLAY "ZAI 30 OVER ???"
            ELSE
                MOVE    IDX-LF2             TO  IDX-LF
                PERFORM 20051-SEIKYU-TEN-SEC
@@ -1868,8 +1883,9 @@
            IF     (SYU-TOTAL-TGMONEY   >   ZERO )  OR
                   (SYU-JIHI-TOTAL      >   ZERO )
                ADD     1                   TO  IDX-LF2
-               IF      IDX-LF2             >   20
-                   DISPLAY "ZAI 20 OVER ???"
+      *@       IF      IDX-LF2             >   20
+               IF      IDX-LF2             >   30
+                   DISPLAY "ZAI 30 OVER ???"
                ELSE
                    MOVE    IDX-LF2             TO  IDX-LF
                    PERFORM 20052-JIHI-TEN-SEC
@@ -1880,8 +1896,9 @@
            IF     (SYU-TOTAL-TGMONEY-TAX   >   ZERO )  OR
                   (SYU-JIHI-TOTAL-TAX      >   ZERO )
                ADD     1                   TO  IDX-LF2
-               IF      IDX-LF2             >   20
-                   DISPLAY "ZAI 20 OVER ???"
+      *@       IF      IDX-LF2             >   20
+               IF      IDX-LF2             >   30
+                   DISPLAY "ZAI 30 OVER ???"
                ELSE
                    MOVE    IDX-LF2             TO  IDX-LF
                    PERFORM 20053-JIHITEX-TEN-SEC
@@ -2031,7 +2048,8 @@
       *    請求金額
            ADD     1                   TO  IDX-IJ
            ADD     1                   TO  IDX-IJ2
-           IF      IDX-IJ              >   20
+      *@   IF      IDX-IJ              >   20
+           IF      IDX-IJ              >   30
                PERFORM 200531-IDX-CNT-SEC
                IF      FLG-ERR            =   1
                    GO      TO      2005-SYUNOU-SET-EXT
@@ -2316,7 +2334,8 @@
                        OR (FLG-ERR     =   1   )
                IF      SYU-JIHI-TAXNASI (IDX)  NOT =   ZERO
                    ADD     1               TO  IDX-IJ
-                   IF      IDX-IJ              >   20
+      *@           IF      IDX-IJ              >   20
+                   IF      IDX-IJ              >   30
                        PERFORM 200531-IDX-CNT-SEC
                    END-IF
                    IF      FLG-ERR            =   ZERO
@@ -2344,8 +2363,9 @@
       *
            MOVE    ZERO                TO  FLG-ERR
            ADD     1                   TO  IDX-LF2
-           IF      IDX-LF2             >   20
-               DISPLAY "ZAI 20 OVER ???"
+      *@   IF      IDX-LF2             >   20
+           IF      IDX-LF2             >   30
+               DISPLAY "ZAI 30 OVER ???"
                MOVE    1                   TO  FLG-ERR
                GO      TO      200531-IDX-CNT-EXT
            END-IF
@@ -2465,7 +2485,8 @@
                        OR (FLG-ERR     =   1   )
                IF      SYU-JIHI-TAXARI (IDX)   NOT =   ZERO
                    ADD     1               TO  IDX-IJ
-                   IF      IDX-IJ              >   20
+      *@           IF      IDX-IJ              >   20
+                   IF      IDX-IJ              >   30
                        PERFORM 200531-IDX-CNT-SEC
                    END-IF
                    IF      FLG-ERR            =   ZERO
@@ -2485,7 +2506,8 @@
            END-PERFORM
            IF      SYU-JIHI-TAX    NOT =   ZERO
                ADD     1               TO  IDX-IJ
-               IF      IDX-IJ              >   20
+      *@       IF      IDX-IJ              >   20
+               IF      IDX-IJ              >   30
                    PERFORM 200531-IDX-CNT-SEC
                END-IF
                IF      FLG-ERR            =   ZERO
@@ -2510,8 +2532,117 @@
       *****************************************************************
        20020-JIHI-SYORI-SEC                 SECTION.
       *
+           IF      SRY-RENNUM          =   1
+               PERFORM 200201-JIHI-ACCT-SEC
+           END-IF
+      *
+           PERFORM VARYING     IDXA    FROM    1   BY  1
+                   UNTIL       IDXA    >   5
+               IF      SRY-SRYCD (IDXA)    NOT =   SPACE
+                    PERFORM 200202-JIHI-HENSYU-SEC
+               END-IF
+           END-PERFORM
+      *
            .
        20020-JIHI-SYORI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    自費編集処理
+      *****************************************************************
+       200201-JIHI-ACCT-SEC                 SECTION.
+      *
+      *    診療会計マスター読み込み
+           INITIALIZE                      SRYACCT-REC
+           MOVE    SPA-HOSPNUM         TO  ACCT-HOSPNUM
+           MOVE    LNK-NYUGAIKBN       TO  ACCT-NYUGAIKBN
+           MOVE    LNK-PTID            TO  ACCT-PTID
+           MOVE    LNK-SRYKA           TO  ACCT-SRYKA
+           MOVE    SRY-SRYYM           TO  ACCT-SRYYM
+           MOVE    SRY-SRYKBN          TO  ACCT-SRYKBN
+           MOVE    SRY-ZAINUM          TO  ACCT-ZAINUM
+      *
+           MOVE    SRYACCT-REC         TO  MCPDATA-REC
+           MOVE    "tbl_sryacct"       TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_sryacct"       TO  MCP-TABLE
+               MOVE    "key"               TO  MCP-PATHNAME
+               PERFORM 930-SRYACCT-NEXT-SEC
+           ELSE
+               MOVE    1                   TO  FLG-SRYACCT
+           END-IF
+           MOVE    "tbl_sryacct"       TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+      *
+           ADD     1                   TO  IDX-LF2
+      *@   ２０剤以上の時エラー
+      *@   IF      IDX-LF2             >   20
+      *    ３０剤以上の時エラー
+           IF      IDX-LF2             >   30
+               DISPLAY "ZAI 30 OVER ???"
+               MOVE    30              TO  IDX-LF2
+           END-IF
+      *
+           MOVE    IDX-LF2             TO  IDX-LF
+      *
+      *    回数
+           MOVE    LNK-SRYYMD(7:2)     TO  IDX-ACT
+           MOVE    ACCT-DAY (IDX-REN IDX-ACT)
+                                       TO  TBL-KAISU (IDX-LF)
+      *    診療行為区分コード
+           IF      WRK-SRYKBN          =   "95"
+               MOVE    "J95"               TO  TBL-SRYCD    (IDX-LF)
+               MOVE    "保険外（消費税なし）"
+                                           TO  TBL-SRYNAME (IDX-LF)
+           ELSE
+               MOVE    "J96"               TO  TBL-SRYCD    (IDX-LF)
+               MOVE    "保険外（消費税あり）"
+                                           TO  TBL-SRYNAME (IDX-LF)
+           END-IF
+      *    請求点数
+           MOVE    ZERO                TO  TBL-TENNSUALL (IDX-LF)
+           MOVE    ZERO                TO  TBL-SYUGI (IDX-LF)
+           MOVE    ZERO                TO  TBL-ZAIRYOU (IDX-LF)
+           MOVE    ZERO                TO  TBL-YAKUZAI (IDX-LF)
+      *    請求金額
+           MOVE    ZERO                TO  TBL-GINGAKUALL(IDX-LF)
+      *
+           .
+       200201-JIHI-ACCT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    自費編集処理
+      *****************************************************************
+       200202-JIHI-HENSYU-SEC                 SECTION.
+      *
+      *    点数検索
+           MOVE    SRY-SRYCD (IDXA)    TO  TNS-SRYCD
+           PERFORM 910-TENSU-READ-SEC
+      *
+           ADD     1               TO  IDX-IJ
+      *    １剤で３０行以上の時
+      *@   IF      IDX-IJ              >   20
+           IF      IDX-IJ              >   30
+               DISPLAY "*** ORCL0021 INDEX OVER ****"
+               GO      TO  200202-JIHI-HENSYU-EXT
+           END-IF
+      *
+           MOVE    "0"                 TO  TBL-SRYSYUBETSU
+                                                      (IDX-LF IDX-IJ)
+           MOVE    SRY-SRYCD(IDXA)     TO  TBL-IJICD  (IDX-LF IDX-IJ)
+           MOVE    TNS-NAME            TO  TBL-ALSNAME
+                                                      (IDX-LF IDX-IJ)
+           MOVE    SRY-JIHIMONEY(IDXA) TO  TBL-MEISAITANKA
+                                                      (IDX-LF IDX-IJ)
+           MOVE    1                   TO  TBL-SURYO  (IDX-LF IDX-IJ)
+      *    自費合計
+           ADD     SRY-JIHIMONEY(IDXA) TO  TBL-GINGAKUALL(IDX-LF)
+           .
+       200202-JIHI-HENSYU-EXT.
            EXIT.
       *
       *****************************************************************
