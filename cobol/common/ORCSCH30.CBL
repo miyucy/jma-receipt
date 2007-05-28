@@ -222,18 +222,18 @@
            END-EVALUATE
       *
       *TEST
-           DISPLAY "ORCSCH30-KBN:" ORCSCH30-KBN
-           DISPLAY "ORCHC30-MAX:" ORCHC30-MAX
-           PERFORM VARYING    IDX   FROM    1  BY  1
-                   UNTIL      IDX   >  ORCHC30-MAX
-             DISPLAY "ORCHC30-SRYCD:" ORCHC30-SRYCD (IDX)
-                     ",ORCHC30-YSRYCD:" ORCHC30-YSRYCD (IDX)
-                     ",ORCHC30-YOURYOU 1:" ORCHC30-YOURYOU (IDX 1)
-                     ",2:" ORCHC30-YOURYOU (IDX 2)
-                     ",3:" ORCHC30-YOURYOU (IDX 3)
-                     ",4:" ORCHC30-YOURYOU (IDX 4)
-                     ",ORCHC30-SRYKAISU:" ORCHC30-SRYKAISU (IDX)
-           END-PERFORM 
+      *    DISPLAY "ORCSCH30-KBN:" ORCSCH30-KBN
+      *    DISPLAY "ORCHC30-MAX:" ORCHC30-MAX
+      *    PERFORM VARYING    IDX   FROM    1  BY  1
+      *            UNTIL      IDX   >  ORCHC30-MAX
+      *      DISPLAY "ORCHC30-SRYCD:" ORCHC30-SRYCD (IDX)
+      *              ",ORCHC30-YSRYCD:" ORCHC30-YSRYCD (IDX)
+      *              ",ORCHC30-YOURYOU 1:" ORCHC30-YOURYOU (IDX 1)
+      *              ",2:" ORCHC30-YOURYOU (IDX 2)
+      *              ",3:" ORCHC30-YOURYOU (IDX 3)
+      *              ",4:" ORCHC30-YOURYOU (IDX 4)
+      *              ",ORCHC30-SRYKAISU:" ORCHC30-SRYKAISU (IDX)
+      *    END-PERFORM 
       *TEST
       *
       *    °õºþ½èÍý¤Ø
@@ -344,12 +344,11 @@
       *    ¼õ¿ÇÍúÎò¸¡º÷
            MOVE    SPACE               TO  JYURRK-REC
            INITIALIZE                      JYURRK-REC
-           MOVE    SPA-HOSPNUM          TO  JYURRK-HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  JYURRK-HOSPNUM
            MOVE    SPA-PTID            TO  JYURRK-PTID
            MOVE    SPA-SRYKA           TO  JYURRK-SRYKA
            MOVE    SPA-NYUGAIKBN       TO  JYURRK-NYUGAIKBN
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    JYURRK-REC          TO  MCPDATA-REC
            MOVE    "tbl_jyurrk"        TO  MCP-TABLE
            MOVE    "key7"              TO  MCP-PATHNAME
@@ -372,6 +371,10 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                    IF      SPA-HKNCOMBINUM     =   JYURRK-HKNCOMBINUM
                        MOVE    1               TO  FLG-SYORI
                    END-IF
+               END-IF
+      *        Êñ³çÊÝ¸±ÂÐ¾Ý³°
+               IF     (WRK-HKNCOMBINUM     =   "9999")
+                   MOVE    ZERO                TO  FLG-SYORI
                END-IF
       *        ÊÔ½¸
                IF      FLG-SYORI           =   1
@@ -402,12 +405,11 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *    ¼õ¿ÇÍúÎò¸¡º÷
            MOVE    SPACE               TO  JYURRK-REC
            INITIALIZE                      JYURRK-REC
-           MOVE    SPA-HOSPNUM          TO  JYURRK-HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  JYURRK-HOSPNUM
            MOVE    SPA-PTID            TO  JYURRK-PTID
            MOVE    SPA-NYUGAIKBN       TO  JYURRK-NYUGAIKBN
            MOVE    WRK-DENPNUM         TO  JYURRK-DENPNUM
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    JYURRK-REC          TO  MCPDATA-REC
            MOVE    "tbl_jyurrk"        TO  MCP-TABLE
            MOVE    "key6"              TO  MCP-PATHNAME
@@ -437,8 +439,12 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *
            PERFORM
                    UNTIL       FLG-JYURRK      =   1
-      *
-               PERFORM 100211-JYURRK-CHK-SEC
+      *        Êñ³çÊÝ¸±ÂÐ¾Ý³°
+               IF     (JYURRK-HKNCOMBINUM      =   "9999")
+                   CONTINUE
+               ELSE
+                   PERFORM 100211-JYURRK-CHK-SEC
+               END-IF
       *
                MOVE    "key6"              TO  MCP-PATHNAME
                PERFORM 970-JYURRK-NEXT-SEC
@@ -461,7 +467,6 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            PERFORM 990-DBCLOSE-SEC
       *
       *    ¼õ¿ÇÍúÎò¸¡º÷
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    JYURRK-REC          TO  MCPDATA-REC
            MOVE    "tbl_jyurrk"        TO  MCP-TABLE
            MOVE    "key26"             TO  MCP-PATHNAME
@@ -477,7 +482,12 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            PERFORM
                    UNTIL       FLG-JYURRK      =   1
       *
-               PERFORM 100211-JYURRK-CHK-SEC
+      *        Êñ³çÊÝ¸±ÂÐ¾Ý³°
+               IF     (JYURRK-HKNCOMBINUM      =   "9999")
+                   CONTINUE
+               ELSE
+                   PERFORM 100211-JYURRK-CHK-SEC
+               END-IF
       *
                MOVE    "key26"             TO  MCP-PATHNAME
                PERFORM 970-JYURRK-NEXT-SEC
@@ -518,14 +528,13 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
        2002-SRYACT-SYORI-SEC      SECTION.
       *
            INITIALIZE                  SRYACT-REC
-           MOVE    SPA-HOSPNUM          TO  SRY-HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  SRY-HOSPNUM
            MOVE    SPA-NYUGAIKBN       TO  SRY-NYUGAIKBN
            MOVE    SPA-PTID            TO  SRY-PTID
            MOVE    JYURRK-SRYKA        TO  SRY-SRYKA
            MOVE    WRK-SRYYMD(1:6)     TO  SRY-SRYYM
            MOVE    WRK-ZAINUM          TO  SRY-ZAINUM
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SRYACT-REC          TO  MCPDATA-REC
            MOVE    "tbl_sryact"        TO  MCP-TABLE
            MOVE    "key2"              TO  MCP-PATHNAME
@@ -746,7 +755,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *
       *    ¿ÇÎÅ²ñ·×¥Þ¥¹¥¿¡¼ÆÉ¤ß¹þ¤ß
            INITIALIZE                      SRYACCT-REC
-           MOVE    SPA-HOSPNUM          TO  ACCT-HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  ACCT-HOSPNUM
            MOVE    SPA-NYUGAIKBN       TO  ACCT-NYUGAIKBN
            MOVE    SPA-PTID            TO  ACCT-PTID
            MOVE    SRY-SRYKA           TO  ACCT-SRYKA
@@ -754,7 +763,6 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SRY-SRYKBN          TO  ACCT-SRYKBN
            MOVE    SRY-ZAINUM          TO  ACCT-ZAINUM
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SRYACCT-REC         TO  MCPDATA-REC
            MOVE    "tbl_sryacct"       TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
@@ -783,14 +791,13 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *
            MOVE    SPACE               TO  WKSRYACT-REC
            INITIALIZE                  WKSRYACT-REC
-           MOVE    SPA-HOSPNUM          TO  WKSRY-HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  WKSRY-HOSPNUM
            MOVE    SPA-NYUGAIKBN       TO  WKSRY-NYUGAIKBN
            MOVE    SPA-PTID            TO  WKSRY-PTID
            MOVE    SPA-SRYKA           TO  WKSRY-SRYKA
            MOVE    SPA-SRYYMD          TO  WKSRY-SRYYMD
            MOVE    SPA-HKNCOMBINUM     TO  WKSRY-HKNCOMBI
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    WKSRYACT-REC        TO  MCPDATA-REC
            MOVE    "tbl_wksryact"      TO  MCP-TABLE
            MOVE    "key2"              TO  MCP-PATHNAME
@@ -814,6 +821,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SPACE               TO  WRK-SRYSYUKBN
            MOVE    ZERO                TO  WRK-ZAITENKEI
            MOVE    SPACE               TO  WRK-YOHOU-G
+           MOVE    SPACE               TO  WRK-HKNCOMBINUM
            PERFORM
                UNTIL   FLG-WKSRYACT    =   1
                IF      WKSRY-RENNUM        =   1
@@ -866,10 +874,15 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                    MOVE    ZERO                TO  WRK-ZAITENKEI
                END-IF
       *
+               IF     (WKSRY-INPUTCD(1)(1:1)   =   "#" )
+                   MOVE    WKSRY-INPUTCD(1)(2:4)   TO  WRK-HKNCOMBINUM
+               END-IF
       *        ÅêÌô¤òÂÐ¾Ý¤È¤¹¤ë
-               IF      WKSRY-SRYKBN        =   "21"  OR
+               IF     (WKSRY-SRYKBN        =   "21"  OR
                                                "22"  OR
-                                               "23"
+                                               "23"    )
+      *            Êñ³çÊÝ¸±¤ÏÂÐ¾Ý³°
+                 AND  (WRK-HKNCOMBINUM NOT =   "9999"  )
                    MOVE    WKSRY-ZAITENKEI         TO  WRK-ZAITENKEI
                    PERFORM 20031-WKSRYACT-HEN-SEC
                END-IF
@@ -1122,9 +1135,8 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *
            MOVE    SPA-SRYYMD          TO  TNS-YUKOSTYMD
            MOVE    SPA-SRYYMD          TO  TNS-YUKOEDYMD
-grpsys     MOVE    SPA-HOSPNUM         TO  TNS-HOSPNUM
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  TNS-HOSPNUM
            MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
            MOVE    "tbl_tensu"         TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
@@ -1250,9 +1262,9 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
        910-DBSELECT-SEC                SECTION.
       *
            MOVE    "DBSELECT"      TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
        910-DBSELECT-EXT.
@@ -1263,9 +1275,9 @@ grpsys                            SPA-AREA
        920-DBFETCH-SEC                 SECTION.
       *
            MOVE    "DBFETCH"       TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
       *
@@ -1278,9 +1290,9 @@ grpsys                            SPA-AREA
        990-DBCLOSE-SEC           SECTION.
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
        990-DBCLOSE-EXT.
