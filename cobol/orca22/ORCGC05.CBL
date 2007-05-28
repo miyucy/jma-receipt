@@ -54,6 +54,8 @@
       *  03.00.01    NACL-Æ£¸¶    06/06/19   C06,C07,C08 ºï½ü
       *
       *  03.04.01    NACL-Æ£¸¶    06/11/27   £Ó£Ð£Á¥Ç¡¼¥¿¤Îºï½ü
+      *
+      *  03.05.01    NACL-Æ£¸¶    07/04/19  ¥°¥ë¡¼¥×¿ÇÎÅÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1107,6 +1109,7 @@
                                       TO  LNK-BYO-TBYOMEICD (IDX)
            END-PERFORM
            CALL    "ORCSBYOMEI"     USING    ORCSBYOMEIAREA
+grpsys                                       SPA-AREA
       *
       *    ÉÂÌ¾ÊÔ½¸
            MOVE    LNK-BYO-BYOMEI      TO  SPA-GMN-C05-HENBYO

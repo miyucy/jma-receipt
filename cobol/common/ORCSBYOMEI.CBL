@@ -38,6 +38,8 @@
       *  02.07.01    NACL-藤原    05/10/31  MONFUNC対応
       *  02.07.01    NACL-藤原    06/01/25  疑いフラグからの病名の編集方
       *                                     法の変更
+      *
+      *  03.05.01    NACL-藤原    07/04/19  グループ診療対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -48,8 +50,6 @@
        DATA                        DIVISION.
       *
        WORKING-STORAGE             SECTION.
-grpsys*
-grpsys COPY    "COMMON-SPA".
       *
       *    フラグ領域
        01  FLG-AREA.
@@ -177,10 +177,13 @@ grpsys COPY    "COMMON-SPA".
        LINKAGE                     SECTION.
       *
            COPY    "CPORCSBYOMEI.INC".
+grpsys*
+grpsys     COPY    "COMMON-SPA".
       *****************************************************************
      *
        PROCEDURE                    DIVISION    USING
-                                    ORCSBYOMEIAREA.
+                                    ORCSBYOMEIAREA
+                                    SPA-AREA.
      *
       *****************************************************************
       *    主処理
@@ -1121,7 +1124,6 @@ grpsys                            SPA-AREA
       *****************************************************************
        900-BYOMEI-READ-SEC         SECTION.
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    BYOMEI-REC          TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    WRK-MCP-TABLE       TO  MCP-TABLE

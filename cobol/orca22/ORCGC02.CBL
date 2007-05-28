@@ -209,6 +209,10 @@
       *                                     入外区分、処理区分変更時の入力
       *                                     項目のクリア
       *  03.04.03    NACL-藤原    06/12/01  月途中保険変更時の病名対応
+      *  03.04.05    NACL-藤原    07/04/03  カルテ病名の表示の修正
+      *  03.04.06    NACL-藤原    07/05/14  カナチェック後の編集の修正
+      *
+      *  03.05.01    NACL-藤原    07/04/19  グループ診療対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1209,9 +1213,8 @@
            MOVE    ZERO                TO  IDY
                                            IDX
       *     
-      *****MOVE    SPA-HOSPID          TO  COMB-HOSPID
+grpsys     MOVE    SPA-HOSPNUM         TO  COMB-HOSPNUM
            MOVE    SPA-NAI-C02-PTID    TO  COMB-PTID
-           MOVE    SPA-HOSPNUM         TO  COMB-HOSPNUM
            MOVE    HKNCOMBI-REC        TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "tbl_hkncombi"      TO  MCP-TABLE
@@ -1551,10 +1554,9 @@
       *
       *        患者保険情報検索
                INITIALIZE                      PTRSIINF-REC
-      *********MOVE    SPA-HOSPID          TO  PTRSI-HOSPID
+grpsys         MOVE    SPA-HOSPNUM         TO  PTRSI-HOSPNUM
                MOVE    SPA-NAI-C02-PTID    TO  PTRSI-PTID
                MOVE    COMB-HKNID          TO  PTRSI-HKNID
-               MOVE    SPA-HOSPNUM         TO  PTRSI-HOSPNUM
                MOVE    PTRSIINF-REC        TO  MCPDATA-REC
                MOVE    "DBSELECT"          TO  MCP-FUNC
                MOVE    "tbl_ptrsiinf"      TO  MCP-TABLE
@@ -2118,13 +2120,12 @@
            MOVE    ZERO                TO  WRK-RENNUM
       *
            INITIALIZE                  PTBYOMEI-REC
-      *****MOVE    SPA-HOSPID          TO  PTBYO-HOSPID
+grpsys     MOVE    SPA-HOSPNUM         TO  PTBYO-HOSPNUM
            MOVE    SPA-NAI-C02-PTID    TO  PTBYO-PTID
            MOVE    WRK-PTBYO-COPY-SRYKA
                                        TO  PTBYO-SRYKA
            MOVE    WRK-PTBYO-COPY-SRYYMD
                                        TO  PTBYO-SRYYMD
-           MOVE    SPA-HOSPNUM         TO  PTBYO-HOSPNUM
            MOVE    PTBYOMEI-REC        TO  MCPDATA-REC
            MOVE    "tbl_ptbyomei"      TO  WRK-MCP-TABLE
            MOVE    "key7"              TO  WRK-MCP-PATHNAME
@@ -2491,7 +2492,7 @@
                    MOVE    SPA-GMN-C02-PTNUM TO  SPA-LAST-PTNUM 
       *            年齢計算
                    INITIALIZE                ORCSAGECHKAREA
-      *************MOVE    SPA-HOSPID        TO  AGECHK-HOSPID
+grpsys             MOVE    SPA-HOSPNUM       TO  AGECHK-HOSPNUM
                    MOVE    SPA-NAI-C02-PTID  TO  AGECHK-PTID
                    MOVE    SPA-NAI-C02-SYSYMD
                                              TO  AGECHK-SRYYMD
@@ -2499,6 +2500,7 @@
                                              TO  AGECHK-BIRTHDAY
                    CALL    "ORCSAGECHK"        USING
                                                ORCSAGECHKAREA
+grpsys                                         SPA-AREA
                    MOVE    SPACE             TO  WRK-NENREI-G
                    IF      AGECHK-NENREI2-YY   =   ZERO
                        MOVE    AGECHK-NENREI2-MM   TO  WRK-NENREI-ZN
@@ -3181,7 +3183,7 @@
       *
       *    マスタとのチェック
            INITIALIZE                      PTBYOMEI-REC
-      *****MOVE    SPA-HOSPID          TO  PTBYO-HOSPID
+grpsys     MOVE    SPA-HOSPNUM         TO  PTBYO-HOSPNUM
            MOVE    SPA-NAI-C02-PTID    TO  PTBYO-PTID
            MOVE    SPA-NAI-C02-TSRYKA  (IDX)
                                        TO  PTBYO-SRYKA
@@ -3207,7 +3209,6 @@
                MOVE    "key21"             TO  WRK-MCP-PATHNAME
            END-IF    
       *
-           MOVE    SPA-HOSPNUM         TO  PTBYO-HOSPNUM
            MOVE    PTBYOMEI-REC        TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
@@ -3553,12 +3554,11 @@
                                            SPA-NAI-C02-SRYKA-OLD
       *
            INITIALIZE                  PTBYOMEI-REC
-      *****MOVE    SPA-HOSPID          TO  PTBYO-HOSPID
+grpsys     MOVE    SPA-HOSPNUM         TO  PTBYO-HOSPNUM
            MOVE    SPA-NAI-C02-PTID    TO  PTBYO-PTID
            MOVE    SPA-GMN-C02-BSRYKA  TO  PTBYO-SRYKA
            MOVE    SPA-NAI-C02-SRYYMD  TO  PTBYO-SRYYMD
            MOVE    SPA-NAI-C02-RENNUM  TO  PTBYO-RENNUM
-           MOVE    SPA-HOSPNUM         TO  PTBYO-HOSPNUM
            MOVE    PTBYOMEI-REC        TO  MCPDATA-REC
            MOVE    "tbl_ptbyomei"      TO  WRK-MCP-TABLE
            MOVE    "key"               TO  WRK-MCP-PATHNAME
@@ -4991,13 +4991,12 @@
       *
       *    検索対象の病名があるか
            INITIALIZE                  USERBYOMEI-REC
-      *****MOVE    SPA-HOSPID          TO  USBYO-HOSPID
-           STRING  SPA-NAI-C02-BYOMEICD(IDZ)
+           MOVE    SPA-HOSPNUM         TO  USBYO-HOSPNUM
+grpsys     STRING  SPA-NAI-C02-BYOMEICD(IDZ)
                                        DELIMITED   BY  SPACE
                    "%"                 DELIMITED   BY  SIZE
                                        INTO    USBYO-BYOMEIINPUTCD
            END-STRING
-           MOVE    SPA-HOSPNUM         TO  USBYO-HOSPNUM
            MOVE    USERBYOMEI-REC      TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "key11"             TO  MCP-PATHNAME
@@ -5601,9 +5600,9 @@
            MOVE    SPA-GMN-C02-BYOMEI  TO  KANACHK-MAE-INPUT
            MOVE    80                  TO  KANACHK-MAX-CNT
            CALL    "ORCSKANACHK"       USING   ORCSKANACHKAREA
-           MOVE    KANACHK-MAE-INPUT   TO  SPA-GMN-C02-BYOMEI
            IF      KANACHK-RC          =   ZERO
            AND     KANACHK-SYUBETU     =   2
+               MOVE    KANACHK-OUT-INPUT   TO  SPA-GMN-C02-BYOMEI
       *        病名文字数
                IF      KANACHK-MAX     >   80
                    MOVE    "0007"              TO  SPA-ERRCD
@@ -5635,6 +5634,7 @@
                                        TO  LNK-BYO-SYUBYOFLG 
            END-IF
            CALL    "ORCSBYOMEI"     USING    ORCSBYOMEIAREA
+grpsys                                       SPA-AREA
       * 
            INITIALIZE               SPA-NAI-C02-BYOMEI-TBL
            MOVE    ZERO         TO  IDZ
@@ -5845,9 +5845,9 @@
                                        TO  KANACHK-MAE-INPUT
            MOVE    80                  TO  KANACHK-MAX-CNT
            CALL    "ORCSKANACHK"       USING   ORCSKANACHKAREA
-           MOVE    KANACHK-MAE-INPUT   TO  SPA-GMN-C02-BYOMEI
            IF      KANACHK-RC          =   ZERO
            AND     KANACHK-SYUBETU     =   "2"
+               MOVE    KANACHK-OUT-INPUT   TO  SPA-GMN-C02-CHARTBYOMEI
       *        病名文字数
                IF      KANACHK-MAX     >   80
                    MOVE    "0033"          TO  SPA-ERRCD
@@ -6588,7 +6588,7 @@
                        OR      SPA-CIDCD           NOT =   SPACE
                        OR      WRK-PTBYO-BYOMEI (IDXX) =   SPACE
                    INITIALIZE                      PTBYOMEI-REC
-      *************MOVE    SPA-HOSPID          TO  PTBYO-HOSPID
+grpsys             MOVE    SPA-HOSPNUM         TO  PTBYO-HOSPNUM
                    MOVE    SPA-NAI-C02-PTID    TO  PTBYO-PTID
                    MOVE    SPA-GMN-C02-BSRYKA  TO  PTBYO-SRYKA
                    MOVE    WRK-PTBYO-BYOMEI (IDXX)
@@ -6603,7 +6603,6 @@
                        MOVE    "key28"             TO  WRK-MCP-PATHNAME
                    END-IF
       *
-                   MOVE    SPA-HOSPNUM         TO  PTBYO-HOSPNUM
                    MOVE    PTBYOMEI-REC        TO  MCPDATA-REC
                    MOVE    "DBSELECT"          TO  MCP-FUNC
                    MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
@@ -6703,10 +6702,9 @@
                ELSE
                    IF      SPA-C02-1042-MSG1-DSPKBN    =   ZERO
                        INITIALIZE                  PTBYOMEI-REC
-      *****************MOVE    SPA-HOSPID          TO  PTBYO-HOSPID
+grpsys                 MOVE    SPA-HOSPNUM         TO  PTBYO-HOSPNUM
                        MOVE    SPA-NAI-C02-PTID    TO  PTBYO-PTID
                        MOVE    SPA-GMN-C02-BSRYKA  TO  PTBYO-SRYKA
-                       MOVE    SPA-HOSPNUM         TO  PTBYO-HOSPNUM
                        MOVE    PTBYOMEI-REC        TO  MCPDATA-REC
                        IF      SPA-C02-1001-HOSPSBT1   =   "1"
                            MOVE    "tbl_ptbyomei"  TO  WRK-MCP-TABLE
@@ -7039,7 +7037,7 @@
       *
       *    マスタとの重複チェック
            INITIALIZE                      PTBYOMEI-REC
-      *****MOVE    SPA-HOSPID          TO  PTBYO-HOSPID
+grpsys     MOVE    SPA-HOSPNUM         TO  PTBYO-HOSPNUM
            MOVE    SPA-NAI-C02-PTID    TO  PTBYO-PTID
            MOVE    SPA-GMN-C02-BSRYKA  TO  PTBYO-SRYKA
            MOVE    WRK-PTBYO-BYOMEI (IDXX)
@@ -7054,7 +7052,6 @@
                MOVE    "key21"                 TO  WRK-MCP-PATHNAME
            END-IF
       *
-           MOVE    SPA-HOSPNUM         TO  PTBYO-HOSPNUM
            MOVE    PTBYOMEI-REC        TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
@@ -7153,20 +7150,18 @@
       *
            IF      WRK-CHK-HKNCOMBI1
                                    NOT =   ZERO
-      *********MOVE    SPA-HOSPID          TO  COMB-HOSPID
+grpsys         MOVE    SPA-HOSPNUM         TO  COMB-HOSPNUM
                MOVE    SPA-NAI-C02-PTID    TO  COMB-PTID
                MOVE    WRK-CHK-HKNCOMBI1   TO  COMB-HKNCOMBINUM
-               MOVE    SPA-HOSPNUM         TO  COMB-HOSPNUM
                MOVE    HKNCOMBI-REC        TO  MCPDATA-REC
                PERFORM 900-COMB-INV-SEC
                MOVE    HKNCOMBI-REC        TO  WRK-CHK-HKNCOMBI-REC (1)
            END-IF    
            IF      WRK-CHK-HKNCOMBI2
                                    NOT =   ZERO
-      *********MOVE    SPA-HOSPID          TO  COMB-HOSPID
+grpsys         MOVE    SPA-HOSPNUM         TO  COMB-HOSPNUM
                MOVE    SPA-NAI-C02-PTID    TO  COMB-PTID
                MOVE    WRK-CHK-HKNCOMBI2   TO  COMB-HKNCOMBINUM
-               MOVE    SPA-HOSPNUM         TO  COMB-HOSPNUM
                MOVE    HKNCOMBI-REC        TO  MCPDATA-REC
                PERFORM 900-COMB-INV-SEC
                MOVE    HKNCOMBI-REC        TO  WRK-CHK-HKNCOMBI-REC (2)
@@ -7237,7 +7232,7 @@
       *
       *    患者マスタ更新（転帰区分＝２）のとき
            IF      SPA-GMN-C02-TENKIKBN    =   "2"
-      *********MOVE    SPA-HOSPID          TO  PTINF-HOSPID
+grpsys         MOVE    SPA-HOSPNUM         TO  PTINF-HOSPNUM
                MOVE    SPA-NAI-C02-PTID    TO  PTINF-PTID
                PERFORM 900-PTINF-READ-SEC
                IF      FLG-PTINF               =   ZERO
@@ -7246,7 +7241,6 @@
       *
                    MOVE    SMCNDATE-YMD        TO  PTINF-UPYMD
                    MOVE    SMCNDATE-HMS        TO  PTINF-UPHMS
-                   MOVE    SPA-HOSPNUM         TO  PTINF-HOSPNUM
                    MOVE    PTINF-REC           TO  MCPDATA-REC
                    MOVE    "DBUPDATE"          TO  MCP-FUNC
                    MOVE    "tbl_ptinf"         TO  MCP-TABLE
@@ -7323,11 +7317,10 @@
       *            患者病名マスター追加
                    MOVE    ZERO                TO  WRK-RENNUM
                    INITIALIZE                  PTBYO-KEY
-      *************MOVE    SPA-HOSPID          TO  PTBYO-HOSPID
+grpsys             MOVE    SPA-HOSPNUM         TO  PTBYO-HOSPNUM
                    MOVE    SPA-NAI-C02-PTID    TO  PTBYO-PTID
                    MOVE    SPA-GMN-C02-BSRYKA  TO  PTBYO-SRYKA
                    MOVE    SPA-NAI-C02-SRYYMD  TO  PTBYO-SRYYMD
-                   MOVE    SPA-HOSPNUM         TO  PTBYO-HOSPNUM
                    MOVE    PTBYOMEI-REC        TO  MCPDATA-REC
                    MOVE    "tbl_ptbyomei"      TO  WRK-MCP-TABLE
                    MOVE    "key7"              TO  WRK-MCP-PATHNAME
@@ -7339,7 +7332,7 @@
       *
                    MOVE    WRK-PTBYOMEI-REC (IDXX)
                                                TO  PTBYOMEI-REC 
-      *************MOVE    SPA-HOSPID          TO  PTBYO-HOSPID
+grpsys             MOVE    SPA-HOSPNUM         TO  PTBYO-HOSPNUM
                    MOVE    SPA-NAI-C02-PTID    TO  PTBYO-PTID
                    MOVE    SPA-GMN-C02-BSRYKA  TO  PTBYO-SRYKA
                    MOVE    SPA-NAI-C02-SRYYMD  TO  PTBYO-SRYYMD
@@ -7357,12 +7350,11 @@
                                        SPA-NAI-C02-SRYYMD-OLD )
       *                患者病名マスター更新（診療科変更のとき）
                        INITIALIZE                      PTBYO-KEY
-      *****************MOVE    SPA-HOSPID              TO  PTBYO-HOSPID
+grpsys                 MOVE    SPA-HOSPNUM             TO  PTBYO-HOSPNUM
                        MOVE    SPA-NAI-C02-PTID        TO  PTBYO-PTID
                        MOVE    SPA-NAI-C02-SRYKA-OLD   TO  PTBYO-SRYKA
                        MOVE    SPA-NAI-C02-SRYYMD-OLD  TO  PTBYO-SRYYMD
                        MOVE    SPA-NAI-C02-RENNUM      TO  PTBYO-RENNUM 
-                       MOVE    SPA-HOSPNUM             TO  PTBYO-HOSPNUM
                        MOVE    PTBYOMEI-REC            TO  MCPDATA-REC
                        MOVE    "DBDELETE"              TO  MCP-FUNC
                        MOVE    "tbl_ptbyomei"          TO  MCP-TABLE
@@ -7379,11 +7371,10 @@
       *
                        MOVE    ZERO                TO  WRK-RENNUM
                        INITIALIZE                  PTBYO-KEY
-      *****************MOVE    SPA-HOSPID          TO  PTBYO-HOSPID
+grpsys                 MOVE    SPA-HOSPNUM         TO  PTBYO-HOSPNUM
                        MOVE    SPA-NAI-C02-PTID    TO  PTBYO-PTID
                        MOVE    SPA-GMN-C02-BSRYKA  TO  PTBYO-SRYKA
                        MOVE    SPA-NAI-C02-SRYYMD  TO  PTBYO-SRYYMD
-                       MOVE    SPA-HOSPNUM         TO  PTBYO-HOSPNUM
                        MOVE    PTBYOMEI-REC        TO  MCPDATA-REC
                        MOVE    "tbl_ptbyomei"      TO  WRK-MCP-TABLE
                        MOVE    "key7"              TO  WRK-MCP-PATHNAME
@@ -7394,7 +7385,7 @@
                        ADD     1                   TO  WRK-RENNUM
                        MOVE    WRK-PTBYOMEI-REC (IDXX)
                                                    TO  PTBYOMEI-REC
-      *****************MOVE    SPA-HOSPID          TO  PTBYO-HOSPID
+grpsys                 MOVE    SPA-HOSPNUM         TO  PTBYO-HOSPNUM
                        MOVE    SPA-NAI-C02-PTID    TO  PTBYO-PTID
                        MOVE    SPA-GMN-C02-BSRYKA  TO  PTBYO-SRYKA
                        MOVE    SPA-NAI-C02-SRYYMD  TO  PTBYO-SRYYMD
@@ -7408,7 +7399,7 @@
                    ELSE
       *                患者病名マスター更新（診療科変更なし）
                        INITIALIZE                  PTBYO-KEY
-      *****************MOVE    SPA-HOSPID          TO  PTBYO-HOSPID
+grpsys                 MOVE    SPA-HOSPNUM         TO  PTBYO-HOSPNUM
                        MOVE    SPA-NAI-C02-PTID    TO  PTBYO-PTID
                        MOVE    SPA-GMN-C02-BSRYKA  TO  PTBYO-SRYKA
                        MOVE    SPA-NAI-C02-SRYYMD  TO  PTBYO-SRYYMD
@@ -7463,11 +7454,12 @@
       *
            INITIALIZE                      ORCSRECEUPDAREA
            MOVE    "1"                 TO  LNK-UPD-SYORI
-      *****MOVE    SPA-HOSPID          TO  LNK-UPD-HOSPID
+grpsys     MOVE    SPA-HOSPNUM         TO  LNK-UPD-HOSPNUM
            MOVE    SPA-NAI-C02-PTID    TO  LNK-UPD-PTID
            MOVE    SPA-TERMID          TO  LNK-UPD-TERMID
            MOVE    SPA-OPID            TO  LNK-UPD-OPID
            CALL    "ORCSRECEUPD"       USING    ORCSRECEUPDAREA
+grpsys                                          SPA-AREA
            IF      LNK-UPD-RC      NOT =   ZERO
                MOVE    "1006"              TO  SPA-ERRCD
                DISPLAY "LNK-UPD-RC =>" LNK-UPD-RC
@@ -9708,18 +9700,51 @@
            EXIT.
       *
       *****************************************************************
+      *    ＤＢＳＥＬＥＣＴ処理
+      *****************************************************************
+       900-DBSELECT-SEC                SECTION.
+      *
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+grpsys     PERFORM 900-ORCDBMAIN-SEC
+           .
+       900-DBSELECT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ＤＢＦＥＴＣＨ処理
+      *****************************************************************
+       900-DBFETCH-SEC                SECTION.
+      *
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+grpsys     PERFORM 900-ORCDBMAIN-SEC
+      *
+           .
+       900-DBFETCH-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    テーブルクローズ処理
       *****************************************************************
        900-CLOSE-SEC               SECTION.
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           CALL    "ORCDBMAIN"         USING
-                                           MCPAREA
-                                           MCPDATA-REC
-                                           SPA-AREA
+grpsys     PERFORM 900-ORCDBMAIN-SEC
       *
            .
        900-CLOSE-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    テーブルアクセス処理
+      *****************************************************************
+       900-ORCDBMAIN-SEC               SECTION.
+      *
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
+           .
+      *
+       900-ORCDBMAIN-EXT.
            EXIT.
       *
       *****************************************************************
@@ -9727,14 +9752,9 @@
       *****************************************************************
        900-PUT-WINDOW              SECTION.
       *
-           MOVE   "PUTWINDOW"       TO  MCP-FUNC
-           CALL   "ORCDBMAIN"       USING
-                                        MCPAREA
-                                        MCPDATA-REC
-                                        SPA-AREA
-      *
+           MOVE   "PUTWINDOW"          TO  MCP-FUNC
+           PERFORM 900-ORCDBMAIN-SEC
            .
+      *
        900-PUT-WINDOW-EXT.
            EXIT.
-      *
-      *

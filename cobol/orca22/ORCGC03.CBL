@@ -95,6 +95,8 @@
       *  03.01.04    NACL-森脇    06/08/31  ジョブ管理削除、確認ボタン追加
       *
       *  03.04.01    NACL-藤原    06/11/27   ＳＰＡデータの削除
+      *
+      *  03.05.01    NACL-藤原    07/04/19  グループ診療対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -459,10 +461,9 @@
       *            分類名の削除の確認
                    IF      SPA-CID1-FLG        =   "OK"
                        INITIALIZE                  USBYO-KEY
-      *****************MOVE    SPA-HOSPID          TO  USBYO-HOSPID
+                       MOVE    SPA-HOSPNUM         TO  USBYO-HOSPNUM
                        MOVE    SPA-GMN-C03-BUNRUICD    TO
                                                    USBYO-BYOMEIINPUTCD
-                       MOVE    SPA-HOSPNUM         TO  USBYO-HOSPNUM
                        MOVE    USERBYOMEI-REC      TO  MCPDATA-REC
                        MOVE    "DBDELETE"          TO  MCP-FUNC
                        MOVE    "tbl_userbyomei"    TO  MCP-TABLE
@@ -2253,6 +2254,7 @@
            MOVE    "1"                 TO  LNK-BYO-SYORI
            MOVE    SPA-GMN-C03-BYOMEI      TO  LNK-BYO-BYOMEI
            CALL    "ORCSBYOMEI"        USING   ORCSBYOMEIAREA
+grpsys                                         SPA-AREA
       *
       *    半角チェックエラーのとき
            IF      LNK-BYO-KANACHK-ERR =   1 
@@ -3314,7 +3316,7 @@
            MOVE    MKPASS-OT-01    TO  SHELLTBL-NAME
            MOVE    SPA-TERMID      TO  SHELLTBL-ARG1
            MOVE    SPA-SYSYMD      TO  SHELLTBL-ARG2
-           MOVE    SPA-HOSPID      TO  SHELLTBL-ARG3
+grpsys     MOVE    SPA-HOSPNUM     TO  SHELLTBL-ARG3
       *
            EVALUATE    SPA-CID5-FLG
                WHEN    "OK"
@@ -4185,43 +4187,18 @@
            EXIT.
       *
       *****************************************************************
-      *    テーブルクローズ処理
-      *****************************************************************
-       900-CLOSE-SEC               SECTION.
-      *
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           CALL    "ORCDBMAIN"         USING
-                                           MCPAREA
-                                           MCPDATA-REC
-                                           SPA-AREA
-      *
-           .
-       900-CLOSE-EXT.
-           EXIT.
-      *
-      *****************************************************************
       *    ジョブ開始セット処理
       *****************************************************************
        900-JOBKANRI-HENSYU-SEC         SECTION.
       *
            MOVE    "DEL"           TO  SJOBKANRI-MODE
            INITIALIZE                  JOBKANRI-REC
-           MOVE    CONST-JOBID     TO  JOB-JOBID
-           MOVE    CONST-JOB-SHELLID
-                                   TO  JOB-SHELLID
-           CALL    "ORCSJOB"       USING
-                                   ORCSJOBKANRIAREA 
-                                   JOBKANRI-REC
+grpsys     PERFORM 900-CALL-ORCSJOB-SEC
       *
            MOVE    "JBS"           TO  SJOBKANRI-MODE
            INITIALIZE                  JOBKANRI-REC
-           MOVE    CONST-JOBID     TO  JOB-JOBID
-           MOVE    CONST-JOB-SHELLID
-                                   TO  JOB-SHELLID
            MOVE    SPA-TERMID      TO  JOB-TERMID
-           CALL    "ORCSJOB"       USING
-                                   ORCSJOBKANRIAREA 
-                                   JOBKANRI-REC
+grpsys     PERFORM 900-CALL-ORCSJOB-SEC
       *
            .
        900-JOBKANRI-HENSYU-EXT.
@@ -4236,12 +4213,7 @@
       *    ジョブ管理チェック処理
            MOVE    "CHK"           TO  SJOBKANRI-MODE
            INITIALIZE                  JOBKANRI-REC
-           MOVE    CONST-JOBID     TO  JOB-JOBID
-           MOVE    CONST-JOB-SHELLID
-                                   TO  JOB-SHELLID
-           CALL    "ORCSJOB"       USING
-                                       ORCSJOBKANRIAREA
-                                       JOBKANRI-REC
+grpsys     PERFORM 900-CALL-ORCSJOB-SEC
            IF    ( SJOBKANRI-RETURN    =   ZERO )
                IF    ( JOB-ENDYMD      =   SPACE )
                    CONTINUE
@@ -4256,19 +4228,80 @@
            .
        900-JOBKANRI-CHK-EXT.
            EXIT.
+      *
+      *****************************************************************
+      *    ジョブ管理ＤＢ制御処理
+      *****************************************************************
+       900-CALL-ORCSJOB-SEC            SECTION.
+      *
+           MOVE    CONST-JOBID     TO  JOB-JOBID
+           MOVE    CONST-JOB-SHELLID
+                                   TO  JOB-SHELLID
+grpsys     MOVE    SPA-HOSPNUM     TO  JOB-HOSPNUM
+           CALL    "ORCSJOB"       USING
+                                   ORCSJOBKANRIAREA 
+                                   JOBKANRI-REC
+                                   SPA-AREA
+           .
+       900-CALL-ORCSJOB-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ＤＢＳＥＬＥＣＴ処理
+      *****************************************************************
+       900-DBSELECT-SEC                SECTION.
+      *
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+grpsys     PERFORM 900-ORCDBMAIN-SEC
+           .
+       900-DBSELECT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ＤＢＦＥＴＣＨ処理
+      *****************************************************************
+       900-DBFETCH-SEC                SECTION.
+      *
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+grpsys     PERFORM 900-ORCDBMAIN-SEC
+      *
+           .
+       900-DBFETCH-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    テーブルクローズ処理
+      *****************************************************************
+       900-CLOSE-SEC               SECTION.
+      *
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
+grpsys     PERFORM 900-ORCDBMAIN-SEC
+      *
+           .
+       900-CLOSE-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    テーブルアクセス処理
+      *****************************************************************
+       900-ORCDBMAIN-SEC               SECTION.
+      *
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
+           .
+      *
+       900-ORCDBMAIN-EXT.
+           EXIT.
+      *
       *****************************************************************
       *    ＰＵＴ　処理
       *****************************************************************
        900-PUT-WINDOW              SECTION.
       *
-           MOVE   "PUTWINDOW"      TO  MCP-FUNC
-           CALL   "ORCDBMAIN"      USING
-                                       MCPAREA
-                                       MCPDATA-REC
-                                       SPA-AREA
-      *
+           MOVE   "PUTWINDOW"          TO  MCP-FUNC
+           PERFORM 900-ORCDBMAIN-SEC
            .
+      *
        900-PUT-WINDOW-EXT.
            EXIT.
-      *
-      *

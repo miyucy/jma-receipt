@@ -34,6 +34,8 @@
       *  02.07.02    NACL-Æ£¸¶    06/01/16  Ç¯ÎðÉ½¼¨¤òÄÉ²Ã
       *
       *  03.00.01    NACL-Æ£¸¶    06/06/19   C06,C07,C08 ºï½ü
+      *
+      *  03.05.01    NACL-Æ£¸¶    07/04/19  ¥°¥ë¡¼¥×¿ÇÎÅÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -1099,7 +1101,7 @@
                    MOVE    WRK-HENYMDG         TO  SPA-GMN-C11-BIRTHDAY
       *            Ç¯Îð·×»»
                    INITIALIZE                ORCSAGECHKAREA
-      *************MOVE    SPA-HOSPID        TO  AGECHK-HOSPID
+grpsys             MOVE    SPA-HOSPNUM       TO  AGECHK-HOSPNUM
                    MOVE    SPA-HOSPNUM       TO  AGECHK-HOSPNUM
                    MOVE    SPA-NAI-C11-PTID  TO  AGECHK-PTID
                    MOVE    SPA-NAI-C02-SYSYMD
@@ -1107,6 +1109,7 @@
                    MOVE    PTINF-BIRTHDAY    TO  AGECHK-BIRTHDAY
                    CALL    "ORCSAGECHK"        USING
                                                ORCSAGECHKAREA
+grpsys                                         SPA-AREA
                    MOVE    SPACE             TO  WRK-NENREI-G
                    IF      AGECHK-NENREI2-YY   =   ZERO
                        MOVE    AGECHK-NENREI2-MM   TO  WRK-NENREI-ZN
@@ -1961,6 +1964,7 @@
            MOVE    SPA-TERMID          TO  LNK-UPD-TERMID
            MOVE    SPA-OPID            TO  LNK-UPD-OPID
            CALL    "ORCSRECEUPD"       USING    ORCSRECEUPDAREA
+grpsys                                          SPA-AREA
            IF      LNK-UPD-RC      NOT =   ZERO
                MOVE    "1006"              TO  SPA-ERRCD
                DISPLAY "LNK-UPD-RC =>" LNK-UPD-RC

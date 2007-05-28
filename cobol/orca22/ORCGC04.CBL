@@ -697,7 +697,6 @@
       *
       *    分類コード ’Ｃ’のもの
            INITIALIZE                  USERBYOMEI-REC
-      *****MOVE    SPA-HOSPID          TO  USBYO-HOSPID
            MOVE    SPA-HOSPNUM         TO  USBYO-HOSPNUM
            MOVE    USERBYOMEI-REC      TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
