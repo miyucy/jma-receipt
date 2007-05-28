@@ -42,6 +42,7 @@
       *  02.00.01    NACL-森脇    04/01/06  マイナスを考慮
       *  02.00.02    NACL-門脇    05/01/12  自費欄集計修正（端数処理）
       *  02.00.03    NACL-太田    06/07/08  編集はORCBD008で行うよう修正
+      *  03.05.00    NACL-太田    07/05/28  グループ診療対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -54,9 +55,10 @@
       *    パラメタ領域
        01  WRK-PARA.
            COPY    "CPORCSPRTLNK.INC".
-           03  WRK-PARA-JOBID      PIC 9(07).
-           03  WRK-PARA-SHELLID    PIC X(08).
-           03  WRK-PARA-HOSPID     PIC X(24).
+           03  WRK-PARA-JOBID                      PIC 9(07).
+           03  WRK-PARA-SHELLID                    PIC X(08).
+           03  WRK-PARA-HOSPNUM                    PIC 9(02).
+           03  RECEERR                             PIC X(100).
       *
        01  WRK-PARA-ATAI.
            03  WRK-PARA-SYORIYMD   PIC X(08).
@@ -113,7 +115,8 @@
                                        LNK-PRTKANRI-PRTNM
                                        WRK-PARA-JOBID
                                        WRK-PARA-SHELLID
-                                       WRK-PARA-HOSPID
+                                       WRK-PARA-HOSPNUM
+                                       RECEERR
                                        WRK-PARA-SYORIYMD
                                        WRK-PARA-SORTKBN
       *

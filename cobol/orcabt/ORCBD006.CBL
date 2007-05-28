@@ -27,6 +27,7 @@
       *****************************************************************
       *  プログラム修正履歴
       *  Maj/Min/Rev  修正者       日付      内容
+      *  03.05.00     NACL-太田    07/05/28  グループ診療対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -39,9 +40,10 @@
       *    パラメタ領域
        01  WRK-PARA.
            COPY    "CPORCSPRTLNK.INC".
-           03  WRK-PARA-JOBID      PIC 9(07).
-           03  WRK-PARA-SHELLID    PIC X(08).
-           03  WRK-PARA-HOSPID     PIC X(24).
+           03  WRK-PARA-JOBID                      PIC 9(07).
+           03  WRK-PARA-SHELLID                    PIC X(08).
+           03  WRK-PARA-HOSPNUM                    PIC 9(02).
+           03  RECEERR                             PIC X(100).
       *
        01  WRK-PARA-ATAI.
            03  WRK-PARA-SYORIYMD   PIC X(08).
@@ -99,7 +101,8 @@
                                        LNK-PRTKANRI-PRTNM
                                        WRK-PARA-JOBID
                                        WRK-PARA-SHELLID
-                                       WRK-PARA-HOSPID
+                                       WRK-PARA-HOSPNUM
+                                       RECEERR
                                        WRK-PARA-SYORIYMD
                                        WRK-PARA-NYUGAIKBN
                                        WRK-PARA-SORTKBN

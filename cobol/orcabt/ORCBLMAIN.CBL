@@ -88,7 +88,6 @@ grpsys COPY    "COMMON-SPA".
       *****************************************************************
       *    £Ä£Â¸¡º÷
            COPY    "MCPDATA.INC".
-           COPY    "CPORCMCP.INC".
       *****************************************************************
       *    Ï¢Íí¡¡ÎÎ°è
       *****************************************************************
@@ -135,7 +134,6 @@ grpsys COPY    "COMMON-SPA".
            MOVE    COMMAND-PARAM (WRK-POINT : )
                                    TO  WRK-PARAMETER
       *
-      *    PERFORM 100-DBOPEN-SEC
       *
            .
        100-INIT-EXT.
@@ -158,48 +156,8 @@ grpsys COPY    "COMMON-SPA".
       *****************************************************************
        300-TERM-SEC                SECTION.
       *
-      *    PERFORM 900-DBDISCONNECT-SEC
       *
            .
        300-TERM-EXT.
            EXIT.
       *
-      *****************************************************************
-      *    £Ä£Â¡¡¥ª¡¼¥×¥ó½èÍý
-      *****************************************************************
-       100-DBOPEN-SEC                SECTION.
-      *
-           MOVE    "DBOPEN"            TO  MCP-FUNC.
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC.
-      *
-           MOVE    "DBSTART"           TO  MCP-FUNC.
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC.
-           .
-       100-DBOPEN-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    £Ä£Â¡¡¥¯¥í¡¼¥º½èÍý
-      *****************************************************************
-       900-DBDISCONNECT-SEC            SECTION.
-      *
-           MOVE    "DBCOMMIT"          TO  MCP-FUNC.
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC.
-      *
-           MOVE    "DBDISCONNECT"      TO  MCP-FUNC.
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC.
-           .
-       900-DBDISCONNECT-EXT.
-           EXIT.

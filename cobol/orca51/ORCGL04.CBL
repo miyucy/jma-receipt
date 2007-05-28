@@ -26,6 +26,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  03.05.00    NACL-太田    07.05.15  グループ診療対応
       *****************************************************************
       *
        ENVIRONMENT                     DIVISION.
@@ -283,6 +284,7 @@
            INITIALIZE                  SPA-L04-AREA
       *
            INITIALIZE                      SYSKANRI-REC
+           MOVE    SPA-HOSPNUM         TO  SYS-HOSPNUM
            MOVE    "1039"              TO  SYS-KANRICD
            MOVE    "*"                 TO  SYS-KBNCD
            MOVE    SPA-SYSYMD          TO  SYS-STYUKYMD
@@ -356,6 +358,7 @@
            INITIALIZE                  SPA-GMN-L04-MES-AREA
       *
            INITIALIZE                      SYSKANRI-REC
+           MOVE    SPA-HOSPNUM         TO  SYS-HOSPNUM
            MOVE    "3005"              TO  SYS-KANRICD
            MOVE    "*"                 TO  SYS-KBNCD
            MOVE    "00000000"          TO  SYS-STYUKYMD
@@ -476,6 +479,7 @@
       *
            INITIALIZE                  HOURS-REC
       *
+           MOVE    SPA-HOSPNUM         TO  HOURS-HOSPNUM
            MOVE    "2"                 TO  WRK-ZOGENPTN
            MOVE    CONST-GOBACK-MONTH  TO  WRK-ZOGEN
            MOVE    SMCNDATE-YMD        TO  WRK-SYMD
@@ -521,6 +525,7 @@
       *
            INITIALIZE                  HOURS-REC
       *
+           MOVE    SPA-HOSPNUM         TO  HOURS-HOSPNUM
            MOVE    "2"                 TO  WRK-ZOGENPTN
            MOVE    CONST-GOBACK-MONTH  TO  WRK-ZOGEN
            MOVE    SMCNDATE-YMD        TO  WRK-SYMD
@@ -1263,6 +1268,7 @@
       *
            INITIALIZE                  HOURS-REC
       *
+           MOVE    SPA-HOSPNUM         TO  HOURS-HOSPNUM
            MOVE    "1"                 TO  WRK-ZOGENPTN
            MOVE    CONST-GOBACK-DAYS   TO  WRK-ZOGEN
            MOVE    SMCNDATE-YMD        TO  WRK-SYMD
@@ -1905,6 +1911,7 @@
        2121-HOURS-INS-SEC              SECTION.
       *
            INITIALIZE                  HOURS-REC
+           MOVE    SPA-HOSPNUM             TO  HOURS-HOSPNUM
            MOVE    SPA-NAI-L04-EDSRYYMD    TO  HOURS-SRYYMD
            MOVE    SPA-GMN-L04-EDTIME      TO  HOURS-TIME
            MOVE    SPA-NAI-L04-EDSRYYMD    TO  HOURS-ID (1:8)
@@ -1925,7 +1932,6 @@
            MOVE    SMCNDATE-YMD        TO  HOURS-CREYMD
                                            HOURS-UPYMD
            MOVE    SMCNDATE-HMS        TO  HOURS-UPHMS
-           MOVE    SPA-HOSPNUM         TO  HOURS-HOSPNUM
            MOVE    HOURS-REC           TO  MCPDATA-REC
            MOVE    "tbl_hours"         TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
@@ -1943,10 +1949,10 @@
        2121-HOURS-DEL-SEC              SECTION.
       *
            INITIALIZE                  HOURS-REC
+           MOVE    SPA-HOSPNUM             TO  HOURS-HOSPNUM
            MOVE    SPA-NAI-L04-EDSRYYMD    TO  HOURS-SRYYMD
            MOVE    SPA-GMN-L04-EDTIME      TO  HOURS-TIME
       *
-           MOVE    SPA-HOSPNUM         TO  HOURS-HOSPNUM
            MOVE    HOURS-REC           TO  MCPDATA-REC
            MOVE    "tbl_hours"         TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
@@ -1966,6 +1972,7 @@
            PERFORM 800-MCNDATE-SEC
       *
            INITIALIZE                      SYS-3005-REC
+           MOVE    SPA-HOSPNUM         TO  SYS-3005-HOSPNUM
            MOVE    "3005"              TO  SYS-3005-KANRICD
            MOVE    "*"                 TO  SYS-3005-KBNCD
            MOVE    "00000000"          TO  SYS-3005-STYUKYMD
@@ -1983,7 +1990,6 @@
                MOVE    SMCNDATE-YMD    TO  SYS-UPYMD
                MOVE    SMCNDATE-HMS    TO  SYS-UPHMS
       *
-               MOVE    SPA-HOSPNUM     TO  SYS-3005-HOSPNUM
                MOVE    SYSKANRI-REC    TO  MCPDATA-REC
                MOVE    "tbl_syskanri"  TO  MCP-TABLE
                MOVE    "key"           TO  MCP-PATHNAME
@@ -1998,7 +2004,6 @@
                                            SYS-UPYMD
                MOVE    SMCNDATE-HMS    TO  SYS-UPHMS
       *
-               MOVE    SPA-HOSPNUM     TO  SYS-3005-HOSPNUM
                MOVE    SYSKANRI-REC    TO  MCPDATA-REC
                MOVE    "tbl_syskanri"  TO  MCP-TABLE
                MOVE    "key"           TO  MCP-PATHNAME
@@ -2520,7 +2525,7 @@
       *
            MOVE    ZERO                TO  FLG-SYSKANRI
       *
-           MOVE    SPA-HOSPNUM         TO  SYS-3005-HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  SYS-HOSPNUM
            MOVE    SYSKANRI-REC        TO  MCPDATA-REC
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key10"             TO  MCP-PATHNAME
@@ -2587,9 +2592,9 @@
            MOVE    ZERO                TO  FLG-HOURS
       *
            INITIALIZE                  HOURS-REC
+           MOVE    SPA-HOSPNUM             TO  HOURS-HOSPNUM
            MOVE    SPA-NAI-L04-EDSRYYMD    TO  HOURS-SRYYMD
            MOVE    SPA-GMN-L04-EDTIME      TO  HOURS-TIME
-           MOVE    SPA-HOSPNUM         TO  HOURS-HOSPNUM
            MOVE    HOURS-REC           TO  MCPDATA-REC
            MOVE    "tbl_hours"         TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
@@ -2616,10 +2621,10 @@
            MOVE    ZERO                TO  FLG-HOURS
       *
            INITIALIZE                  HOURS-REC
+           MOVE    SPA-HOSPNUM         TO  HOURS-HOSPNUM
            MOVE    SPA-NAI-L04-EDSRYYMD    TO  HOURS-SRYYMD
            MOVE    SPA-GMN-L04-EDTIME      TO  HOURS-TIME
       *
-           MOVE    SPA-HOSPNUM         TO  HOURS-HOSPNUM
            MOVE    HOURS-REC           TO  MCPDATA-REC
            MOVE    "tbl_hours"         TO  MCP-TABLE
            MOVE    "key2"              TO  MCP-PATHNAME
@@ -2710,7 +2715,7 @@
        910-DBSELECT-SEC          SECTION.
       *
            MOVE    "DBSELECT"      TO  MCP-FUNC
-           CALL    "ORCDBMAIN"     USING
+           CALL    "ORCDBMAIN"         USING
                                        MCPAREA
                                        MCPDATA-REC
                                        SPA-AREA
@@ -2727,7 +2732,7 @@
        910-DBFETCH-SEC            SECTION.
       *
            MOVE    "DBFETCH"       TO  MCP-FUNC
-           CALL    "ORCDBMAIN"     USING
+           CALL    "ORCDBMAIN"         USING
                                        MCPAREA
                                        MCPDATA-REC
                                        SPA-AREA
@@ -2741,7 +2746,7 @@
        910-DBCLOSE-SEC           SECTION.
       *
            MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
-           CALL    "ORCDBMAIN"     USING
+           CALL    "ORCDBMAIN"         USING
                                        MCPAREA
                                        MCPDATA-REC
                                        SPA-AREA
@@ -2755,7 +2760,7 @@
        910-DBINSERT-SEC                SECTION.
       *
            MOVE    "DBINSERT"      TO  MCP-FUNC
-           CALL    "ORCDBMAIN"     USING
+           CALL    "ORCDBMAIN"         USING
                                        MCPAREA
                                        MCPDATA-REC
                                        SPA-AREA
@@ -2769,7 +2774,7 @@
        910-DBUPDATE-SEC                SECTION.
       *
            MOVE    "DBUPDATE"      TO  MCP-FUNC
-           CALL    "ORCDBMAIN"     USING
+           CALL    "ORCDBMAIN"         USING
                                        MCPAREA
                                        MCPDATA-REC
                                        SPA-AREA
@@ -2783,7 +2788,7 @@
        910-DBDELETE-SEC                SECTION.
       *
            MOVE    "DBDELETE"      TO  MCP-FUNC
-           CALL    "ORCDBMAIN"     USING
+           CALL    "ORCDBMAIN"         USING
                                        MCPAREA
                                        MCPDATA-REC
                                        SPA-AREA
@@ -2797,10 +2802,10 @@
        900-PUT-WINDOW              SECTION.
       *
            MOVE   "PUTWINDOW"          TO  MCP-FUNC.
-           CALL   "ORCDBMAIN"          USING
-                                           MCPAREA
-                                           MCPDATA-REC
-                                           SPA-AREA
+           CALL    "ORCDBMAIN"         USING
+                                       MCPAREA
+                                       MCPDATA-REC
+                                       SPA-AREA
       *
            .
        900-PUT-WINDOW-EXT.

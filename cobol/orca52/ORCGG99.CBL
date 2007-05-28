@@ -31,6 +31,7 @@
       *  01.00.15    NACL-藤原    03/11/12  統計データ作成画面の追加
       *  01.00.05    NACL-伊藤    04.02.17  レセ電ファイルの転送エラー
       *                                     メッセージの追加
+      *  03.05.00    NACL-太田    07.05.28  グループ診療対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -241,11 +242,11 @@
            IF      SPA-MOTOPG          =   "G01"        
                MOVE    SPACE               TO  SYS-3003-REC 
                INITIALIZE                      SYS-3003-REC
+               MOVE    SPA-HOSPNUM         TO  SYS-3003-HOSPNUM
                MOVE    "3003"              TO  SYS-3003-KANRICD
                MOVE    WRK-CONS-3003-KBNCD TO  SYS-3003-KBNCD
                MOVE    SPA-SYSYMD          TO  SYS-3003-STYUKYMD
                                                SYS-3003-EDYUKYMD
-               MOVE    SPA-HOSPNUM         TO  SYS-3003-HOSPNUM
                MOVE    SYS-3003-REC        TO  MCPDATA-REC
                PERFORM 900-SYSKANRI-INV-SEC
                IF      FLG-SYSKANRI        =   ZERO
@@ -255,12 +256,14 @@
       *                ジョブ管理チェック処理
                        MOVE    "CHK"           TO  SJOBKANRI-MODE
                        INITIALIZE                  JOBKANRI-REC
+                       MOVE    SPA-HOSPNUM     TO  JOB-HOSPNUM
                        MOVE    IDX             TO  JOB-JOBID
                        MOVE    WRK-CONS-JOB-SHELLID
                                                TO  JOB-SHELLID
                        CALL    "ORCSJOB"       USING
                                                ORCSJOBKANRIAREA  
                                                JOBKANRI-REC 
+                                               SPA-AREA
                        IF      SJOBKANRI-RETURN    =   ZERO
                            PERFORM 4901-KAKUNIN-HYOUJI-SEC
                        END-IF
@@ -270,6 +273,7 @@
       *       ジョブ管理チェック処理
                MOVE    "CHK"           TO  SJOBKANRI-MODE
                INITIALIZE                  JOBKANRI-REC
+               MOVE    SPA-HOSPNUM     TO  JOB-HOSPNUM
                MOVE    WRK-CONS-JOB-JOBID1
                                        TO  JOB-JOBID
                MOVE    WRK-CONS-JOB-SHELLID1
@@ -277,6 +281,7 @@
                CALL    "ORCSJOB"       USING
                                            ORCSJOBKANRIAREA  
                                            JOBKANRI-REC
+                                           SPA-AREA
                MOVE    1               TO  IDX 
                IF      SJOBKANRI-RETURN    =   ZERO
                    PERFORM 4901-KAKUNIN-HYOUJI-SEC
@@ -404,17 +409,17 @@
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key10"             TO  MCP-PATHNAME
            CALL    "ORCDBMAIN"         USING
-                                           MCPAREA
-                                           MCPDATA-REC
-                                           SPA-AREA
+                                       MCPAREA
+                                       MCPDATA-REC
+                                       SPA-AREA
            IF      MCP-RC              =   ZERO
                MOVE    "DBFETCH"           TO  MCP-FUNC
                MOVE    "tbl_syskanri"      TO  MCP-TABLE
                MOVE    "key10"             TO  MCP-PATHNAME
                CALL    "ORCDBMAIN"         USING
-                                               MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+                                           MCPAREA
+                                           MCPDATA-REC
+                                           SPA-AREA
                IF      MCP-RC              =   ZERO
                    MOVE    ZERO                TO  FLG-SYSKANRI
                ELSE
@@ -428,9 +433,9 @@
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key10"             TO  MCP-PATHNAME
            CALL    "ORCDBMAIN"         USING
-                                           MCPAREA
-                                           MCPDATA-REC
-                                           SPA-AREA
+                                       MCPAREA
+                                       MCPDATA-REC
+                                       SPA-AREA
       *
            .
        900-SYSKANRI-INV-EXT.
@@ -442,10 +447,10 @@
        900-PUT-WINDOW              SECTION.
       *
            MOVE   "PUTWINDOW"       TO  MCP-FUNC.
-           CALL   "ORCDBMAIN"       USING
-                                        MCPAREA
-                                        MCPDATA-REC
-                                        SPA-AREA
+           CALL    "ORCDBMAIN"         USING
+                                       MCPAREA
+                                       MCPDATA-REC
+                                       SPA-AREA
       *
            .
        900-PUT-WINDOW-EXT.

@@ -37,6 +37,7 @@
       *  01.00.07    NACL-ÌçÏÆ    06.06.23  Ç§ÃÎµ¡Ç½¾ã³²²Ã»»¤ÎÊÔ½¸ÂÐ±þ
       *  01.00.08    NACL-¾®Æ¦Âô  06.07.04  Ï«ºÒÆþ±¡ÎÁ¤Ë´Þ¤á¤ë²Ã»»¤¬¥³¥á¥ó¥È
       *                                     ¤ÈÆ±»þÆþÎÏ¤µ¤ì¤¿¾ì¹ç¤ÎÂÐ±þ
+      *  03.05.00    NACL-ÂÀÅÄ    07/05/28  ¥°¥ë¡¼¥×¿ÇÎÅÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -177,6 +178,7 @@
            03  CNT-SRYACT-LINE                     PIC 9(05).
            03  CNT-YKZINGAI                        PIC 9(05).
            03  CNT-YKZHKT                          PIC 9(05).
+           03  CNT-ZAIHKT                          PIC 9(05).
            03  CNT-SPACE                           PIC 9(05).
            03  CNT-STR                             PIC 9(05).
            03  CNT-BYOMEIMOJI                      PIC 9(05).
@@ -243,6 +245,7 @@
            03  IDX-RRK                             PIC 9(05).
            03  IDX-RJ                              PIC 9(05).
            03  IDX-DAY                             PIC 9(05).
+           03  IDX-PNT                             PIC 9(05).
       *
       *    Æ±°ì¥»¥¯¥·¥ç¥óÆâ¤Î¤ß»ÈÍÑ
            03  IDX0                                PIC 9(05).
@@ -483,6 +486,7 @@
                        09 SRT-SRYACCT-PRIORITY     PIC 9(03).
                        09 SRT-SRYACCT-PRIORITY2    PIC 9(03).
                        09 SRT-SRYACCT-PRIORITY3    PIC 9(03).
+                       09 SRT-SRYACCT-ZAIHKTKBN    PIC 9(01).
                        09 SRT-SRYACCT-YKZHKTKBN    PIC 9(01).
                        09 SRT-SRYACCT-YKZINGAIKBN  PIC 9(01).
                        09 SRT-SRYACCT-KNSJISKBN    PIC 9(01).
@@ -533,6 +537,7 @@
                05  RSIJBI-NAME                     PIC X(200).
       *
        01  CONST-AREA.
+           03  CONST-H190401           PIC X(08)   VALUE "20070401".
            03  CONST-H141001           PIC X(08)   VALUE "20021001".
            03  CONST-H181001           PIC X(08)   VALUE "20061001".
       *    Ï«ºÒ¼«ÇåÊÔ½¸ÎÎ°èºÇÂç¹Ô
@@ -883,9 +888,11 @@
       *
            MOVE    ORCHCM34-PRTAREA    TO  ORCSPRTAREA
       *
+           MOVE    SPA-HOSPNUM         TO  HCM34F01-HOSPNUM
            MOVE    "HCM3401"           TO  HCM34F01-FILE-ID
            MOVE     SPRT-TERMID        TO  HCM34F01-TERMID
       *
+           MOVE    SPA-HOSPNUM         TO  HCM34F02-HOSPNUM
            MOVE    "HCM3402"           TO  HCM34F02-FILE-ID
            MOVE    SPRT-TERMID         TO  HCM34F02-TERMID
       *
@@ -897,6 +904,7 @@
            MOVE    ZERO                TO  CNT-SRYACT-LINE
            MOVE    ZERO                TO  CNT-YKZINGAI
            MOVE    ZERO                TO  CNT-YKZHKT
+           MOVE    ZERO                TO  CNT-ZAIHKT
            MOVE    LOW-VALUE           TO  WRK-KEY-HKNCOMBI
            MOVE    ZERO                TO  WRK-TTL-JIHI
            MOVE    ZERO                TO  WRK-TTL-JIHI-TAX
@@ -914,12 +922,12 @@
       *    °åÎÅµ¡´Ø£É£ÄÊÔ½¸
            MOVE    ZERO                TO  FLG-SYSKANRI
            INITIALIZE                      SYS-1001-REC
+           MOVE    SPA-HOSPNUM         TO  SYS-1001-HOSPNUM
            MOVE    "1001"              TO  SYS-1001-KANRICD
            MOVE    "*"                 TO  SYS-1001-KBNCD
            MOVE    ORCHCM34-SRYYM      TO  SYS-1001-STYUKYMD(1:6)
            MOVE    "01"                TO  SYS-1001-STYUKYMD(7:2)
            MOVE    SYS-1001-STYUKYMD   TO  SYS-1001-EDYUKYMD
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYS-1001-REC        TO  MCPDATA-REC
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key10"             TO  MCP-PATHNAME
@@ -949,12 +957,12 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *
            MOVE    ZERO                TO  FLG-SYSKANRI
            INITIALIZE                      SYS-5000-REC
+           MOVE    SPA-HOSPNUM         TO  SYS-5000-HOSPNUM
            MOVE    "5000"              TO  SYS-5000-KANRICD
            MOVE    "*"                 TO  SYS-5000-KBNCD
            MOVE    ORCHCM34-SRYYM      TO  SYS-5000-STYUKYMD(1:6)
            MOVE    "01"                TO  SYS-5000-STYUKYMD(7:2)
            MOVE    SYS-5000-STYUKYMD   TO  SYS-5000-EDYUKYMD
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYS-5000-REC        TO  MCPDATA-REC
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key10"             TO  MCP-PATHNAME
@@ -984,12 +992,12 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *    °åÎÅµ¡´Ø£É£ÄÊÔ½¸
            MOVE    ZERO                TO  FLG-SYSKANRI
            INITIALIZE                      SYS-4001-REC
+           MOVE    SPA-HOSPNUM         TO  SYS-4001-HOSPNUM
            MOVE    "4001"              TO  SYS-4001-KANRICD
            MOVE    "*"                 TO  SYS-4001-KBNCD
            MOVE    ORCHCM34-SRYYM      TO  SYS-4001-STYUKYMD(1:6)
            MOVE    "01"                TO  SYS-4001-STYUKYMD(7:2)
            MOVE    SYS-4001-STYUKYMD   TO  SYS-4001-EDYUKYMD
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYS-4001-REC        TO  MCPDATA-REC
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key10"             TO  MCP-PATHNAME
@@ -1019,12 +1027,12 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *    °åÎÅµ¡´Ø£É£ÄÊÔ½¸
            MOVE    ZERO                TO  FLG-SYSKANRI
            INITIALIZE                      SYS-4003-REC
+           MOVE    SPA-HOSPNUM         TO  SYS-4003-HOSPNUM
            MOVE    "4003"              TO  SYS-4003-KANRICD
            MOVE    "*"                 TO  SYS-4003-KBNCD
            MOVE    ORCHCM34-SRYYM      TO  SYS-4003-STYUKYMD(1:6)
            MOVE    "01"                TO  SYS-4003-STYUKYMD(7:2)
            MOVE    SYS-4003-STYUKYMD   TO  SYS-4003-EDYUKYMD
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYS-4003-REC        TO  MCPDATA-REC
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key10"             TO  MCP-PATHNAME
@@ -1066,9 +1074,8 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *
       *    ´µ¼ÔÈÖ¹æ
            INITIALIZE                      PTNUM-REC
-           MOVE    SPA-HOSPID          TO  PTNUM-HOSPID
+           MOVE    SPA-HOSPNUM          TO  PTNUM-HOSPNUM
            MOVE    SPA-PTID            TO  PTNUM-PTID
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PTNUM-REC           TO  MCPDATA-REC
            MOVE    "tbl_ptnum"         TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
@@ -1090,9 +1097,8 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *
       *    ´µ¼Ô¾ðÊó¼èÆÀ
            INITIALIZE  PTINF-REC
-           MOVE    SPA-HOSPID          TO  PTINF-HOSPID
+           MOVE    SPA-HOSPNUM          TO  PTINF-HOSPNUM
            MOVE    SPA-PTID            TO  PTINF-PTID
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PTINF-REC           TO  MCPDATA-REC
            MOVE    "tbl_ptinf"         TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
@@ -1128,10 +1134,11 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *    ÆþÂà±¡Îò¼èÆÀ
            IF    ( ORCHCM34-NYUGAIKBN  =   "1" )
                INITIALIZE                  ORCSNTYMDAREA
-               MOVE    PTINF-HOSPID        TO  SNTYMD-HOSPID
+               MOVE    PTINF-HOSPNUM        TO  SNTYMD-HOSPNUM
                MOVE    PTINF-PTID          TO  SNTYMD-PTID
                MOVE    "2"                 TO  SNTYMD-KBN
                CALL    "ORCSNTYMD" USING   ORCSNTYMDAREA
+                                           SPA-AREA
            END-IF
       *
            EVALUATE    ORCHCM34-NYUGAIKBN
@@ -1174,14 +1181,13 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *
            MOVE    ZERO                TO  FLG-PTNYUINRRK
            INITIALIZE                      PTNYUINRRK-REC
-           MOVE    SPA-HOSPID          TO  PTNYUINRRK-HOSPID
+           MOVE    SPA-HOSPNUM          TO  PTNYUINRRK-HOSPNUM
            MOVE    SPA-PTID            TO  PTNYUINRRK-PTID
            MOVE    ORCHCM34-SRYYM      TO  WRK-SYMD
            PERFORM 800-GETUMATU-SEC
            MOVE    WRK-SYMD            TO  PTNYUINRRK-NYUINYMD
            MOVE    ORCHCM34-SRYYM      TO  PTNYUINRRK-TAIINYMD
            MOVE    "01"                TO  PTNYUINRRK-TAIINYMD (7:2)
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PTNYUINRRK-REC      TO  MCPDATA-REC
            MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
            MOVE    "key11"             TO  MCP-PATHNAME
@@ -1235,12 +1241,12 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *    ÉÂÅïÌ¾¾Î
            MOVE    ZERO                TO  FLG-SYSKANRI
            INITIALIZE                      SYS-5001-REC
+           MOVE    SPA-HOSPNUM         TO  SYS-5001-HOSPNUM
            MOVE    "5001"              TO  SYS-5001-KANRICD
            MOVE    PTNYUINRRK-BTUNUM   TO  SYS-5001-KBNCD
            MOVE    PTNYUINRRK-TENNYUYMD
                                        TO  SYS-5001-STYUKYMD
            MOVE    SYS-5001-STYUKYMD   TO  SYS-5001-EDYUKYMD
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYS-5001-REC        TO  MCPDATA-REC
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key10"             TO  MCP-PATHNAME
@@ -1275,12 +1281,11 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *
            MOVE    ZERO                TO  FLG-SRYACCT
            INITIALIZE                      SRYACCT-REC
-           MOVE    SPA-HOSPID          TO  ACCT-HOSPID
+           MOVE    SPA-HOSPNUM          TO  ACCT-HOSPNUM
            MOVE    ORCHCM34-NYUGAIKBN  TO  ACCT-NYUGAIKBN
            MOVE    SPA-PTID            TO  ACCT-PTID
            MOVE    ORCHCM34-SRYYM      TO  ACCT-SRYYM
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SRYACCT-REC         TO  MCPDATA-REC
            MOVE    "tbl_sryacct"       TO  MCP-TABLE
            MOVE    "key23"             TO  MCP-PATHNAME
@@ -1392,10 +1397,9 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *    ÊÝ¸±ÈÖ¹æ¸¡º÷
            MOVE    ZERO                TO  FLG-HKNNUM
            INITIALIZE                  HKNNUM-REC
-           MOVE    SPA-HOSPID          TO  HKN-HOSPID
+           MOVE    SPA-HOSPNUM          TO  HKN-HOSPNUM
            MOVE    SPA-SYSYMD          TO  HKN-TEKSTYMD
            MOVE    SPA-SYSYMD          TO  HKN-TEKEDYMD
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    HKNNUM-REC          TO  MCPDATA-REC
            MOVE    "tbl_hknnum"        TO  MCP-TABLE
            MOVE    "key3"              TO  MCP-PATHNAME
@@ -1529,11 +1533,11 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *
       *    ¥·¥¹¥Æ¥à´ÉÍý¥Þ¥¹¥¿¸¡º÷½èÍý
            INITIALIZE                      SYSKANRI-REC
+           MOVE    SPA-HOSPNUM         TO  SYS-HOSPNUM
            MOVE    "1005"              TO  SYS-KANRICD
            MOVE    ORCHCM34-SRYYM      TO  SYS-STYUKYMD(1:6)
            MOVE    "01"                TO  SYS-STYUKYMD(7:2)
            MOVE    SYS-STYUKYMD        TO  SYS-EDYUKYMD
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYSKANRI-REC        TO  MCPDATA-REC
       *
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
@@ -1607,7 +1611,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            INITIALIZE                  ORCSHKNSETAREA
            INITIALIZE                  WRK-SPA-AREA
       *
-           MOVE    PTINF-HOSPID    TO  WRK-SPA-HOSPID
+           MOVE    PTINF-HOSPNUM    TO  WRK-SPA-HOSPNUM
            MOVE    PTINF-PTID      TO  WRK-SPA-PTID
            MOVE    PTINF-BIRTHDAY  TO  WRK-SPA-BIRTHDAY
            MOVE    ORCHCM34-SRYYM  TO  WRK-SPA-SRYYMD (1:6)
@@ -1727,12 +1731,11 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *
            MOVE    ZERO                TO  FLG-SRYACCT
            INITIALIZE                      SRYACCT-REC
-           MOVE    SPA-HOSPID          TO  ACCT-HOSPID
+           MOVE    SPA-HOSPNUM          TO  ACCT-HOSPNUM
            MOVE    SPA-PTID            TO  ACCT-PTID
            MOVE    ORCHCM34-NYUGAIKBN  TO  ACCT-NYUGAIKBN
            MOVE    ORCHCM34-SRYYM      TO  ACCT-SRYYM
            MOVE    9999                TO  ACCT-HKNCOMBI
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SRYACCT-REC         TO  MCPDATA-REC
            MOVE    "tbl_sryacct"       TO  MCP-TABLE
            MOVE    "key22"             TO  MCP-PATHNAME
@@ -1819,10 +1822,9 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *    ´µ¼ÔÊÝ¸±¥Þ¥¹¥¿¸¡º÷
            MOVE    ZERO                TO  FLG-PTHKNINF
            INITIALIZE                  PTHKNINF-REC
-           MOVE    PTINF-HOSPID        TO  PTHKN-HOSPID
+           MOVE    PTINF-HOSPNUM        TO  PTHKN-HOSPNUM
            MOVE    PTINF-PTID          TO  PTHKN-PTID
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PTHKNINF-REC        TO  MCPDATA-REC
            MOVE    "tbl_pthkninf"      TO  MCP-TABLE
            MOVE    "key6"              TO  MCP-PATHNAME
@@ -2137,10 +2139,9 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *    ´µ¼Ô¸øÈñ¥Þ¥¹¥¿¸¡º÷
            MOVE    ZERO                TO  FLG-PTKOHINF
            INITIALIZE                  PTKOHINF-REC
-           MOVE    PTINF-HOSPID        TO  PTKOH-HOSPID
+           MOVE    PTINF-HOSPNUM        TO  PTKOH-HOSPNUM
            MOVE    PTINF-PTID          TO  PTKOH-PTID
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PTKOHINF-REC        TO  MCPDATA-REC
            MOVE    "tbl_ptkohinf"      TO  MCP-TABLE
            MOVE    "key2"              TO  MCP-PATHNAME
@@ -2258,7 +2259,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *    ´µ¼ÔÉÂÌ¾¥Þ¥¹¥¿¸¡º÷
            MOVE    ZERO                TO  FLG-PTBYOMEI
            INITIALIZE                  PTBYOMEI-REC
-           MOVE    PTINF-HOSPID        TO  PTBYO-HOSPID
+           MOVE    PTINF-HOSPNUM        TO  PTBYO-HOSPNUM
            MOVE    PTINF-PTID          TO  PTBYO-PTID
            IF    ( ORCHCM34-SRYKAKBN   =   "1" )
                MOVE    ORCHCM34-SRYKA  TO  PTBYO-SRYKA
@@ -2277,7 +2278,6 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    WRK-SYMD            TO  PTBYO-SRYYMD
            MOVE    SPACE               TO  PTBYO-TENKIKBN
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PTBYOMEI-REC        TO  MCPDATA-REC
            MOVE    "tbl_ptbyomei"      TO  MCP-TABLE
            MOVE    "key30"             TO  MCP-PATHNAME
@@ -2665,12 +2665,12 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *
                    MOVE    ZERO        TO  FLG-ZAIMATOME
       *
-           WHEN    WKACCT-HOSPID (WKSRYACCT-IDX)
+           WHEN    WKACCT-HOSPNUM (WKSRYACCT-IDX)
                                        =   SPACE
       *
                    MOVE    ZERO        TO  FLG-ZAIMATOME
       *
-           WHEN    ACCT-HOSPID         =   WKACCT-HOSPID
+           WHEN    ACCT-HOSPNUM         =   WKACCT-HOSPNUM
                                                        (WKSRYACCT-IDX)
             AND    ACCT-NYUGAIKBN      =   WKACCT-NYUGAIKBN
                                                        (WKSRYACCT-IDX)
@@ -2689,6 +2689,8 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
             AND    ACCT-SURYOUTOTAL    =   WKACCT-SURYOUTOTAL
                                                        (WKSRYACCT-IDX)
             AND    ACCT-MEISAISU       =   WKACCT-MEISAISU
+                                                       (WKSRYACCT-IDX)
+            AND    ACCT-JIHOKBN        =   WKACCT-JIHOKBN
                                                        (WKSRYACCT-IDX)
             AND    HCM34ACCT-RUIKEITOTAL
                                        =   WKACCT-RUIKEITOTAL
@@ -2793,11 +2795,10 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    ZERO                TO  FLG-PTCOM
       *
            INITIALIZE                      PTCOM-REC
-           MOVE    SPA-HOSPID          TO  PTCOM-HOSPID
+           MOVE    SPA-HOSPNUM          TO  PTCOM-HOSPNUM
            MOVE    SPA-PTID            TO  PTCOM-PTID
            MOVE    COMMENT-ZAINUM (COMMENT-IDX)
                                        TO  PTCOM-ZAINUM
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PTCOM-REC           TO  MCPDATA-REC
            MOVE    "tbl_ptcom"         TO  MCP-TABLE
            MOVE    "key2"              TO  MCP-PATHNAME
@@ -2961,6 +2962,11 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                        END-IF
                    END-IF
       *
+               END-IF
+      *
+               IF    ( ACCT-JIHOKBN    =  "1" )
+                   MOVE    1       TO  SRT-SRYACCT-ZAIHKTKBN
+                                                          (SRT-IDX1)
                END-IF
       *
                IF    ( WRK-SRYSYUKBN   =  "213" OR "223" OR "233" )
@@ -3566,19 +3572,25 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            END-IF
       *
       *    ¿ÇÎÅ¶èÊ¬
-           IF    ( ACCT-ZAITEN         =   ZERO )
-            AND  ( FLG-SRYSTATUS       =   1 )
-               IF    ( SRY-SRYSYUKBN       =   "213" OR "223" OR "233" )
-                        MOVE    "¡û"   TO  WRK-SRYACT-MARK
-                        COMPUTE CNT-YKZHKT
-                            =   CNT-YKZHKT  +   1
-               ELSE
-                   IF    ( ACCT-SRYKBN     =   "21" OR "22" OR "23" )
+           MOVE    SPACE               TO  WRK-SRYACT-MARK
+           IF    ( ACCT-JIHOKBN    =   "1" )
+               MOVE    "¡ý"   TO  WRK-SRYACT-MARK
+               COMPUTE CNT-ZAIHKT
+                   =   CNT-ZAIHKT  +   1
+           ELSE
+               IF    ( ACCT-ZAITEN         =   ZERO )
+                AND  ( FLG-SRYSTATUS       =   1 )
+                   EVALUATE    TRUE
+                   WHEN  ( SRY-SRYSYUKBN   =   "213" OR "223" OR "233" )
+                            MOVE    "¡û"   TO  WRK-SRYACT-MARK
+                            COMPUTE CNT-YKZHKT
+                                =   CNT-YKZHKT  +   1
+                   WHEN  ( ACCT-SRYKBN     =   "21" OR "22" OR "23" )
                     OR   ( SRY-SRYSYUKBN   =  "148" )
-                        MOVE    "¡ù"   TO  WRK-SRYACT-MARK
-                        COMPUTE CNT-YKZINGAI
-                            =   CNT-YKZINGAI    +   1
-                   END-IF
+                            MOVE    "¡ù"   TO  WRK-SRYACT-MARK
+                            COMPUTE CNT-YKZINGAI
+                                =   CNT-YKZINGAI    +   1
+                   END-EVALUATE
                END-IF
            END-IF
       *
@@ -3706,12 +3718,11 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                 AND  ( RSIJBI-INPUTNUM(IDX19)  NOT =   ZERO )
       *
                    INITIALIZE                          PTCOM-REC
-                   MOVE    ACCT-HOSPID             TO  PTCOM-HOSPID
+                   MOVE    ACCT-HOSPNUM             TO  PTCOM-HOSPNUM
                    MOVE    ACCT-PTID               TO  PTCOM-PTID
                    MOVE    ACCT-ZAINUM             TO  PTCOM-ZAINUM
                    MOVE    RSIJBI-SRYCD   (IDX19)  TO  PTCOM-SRYCD
                    MOVE    RSIJBI-INPUTNUM(IDX19)  TO  PTCOM-RENNUM
-grpsys*            MOVE SPA-HOSPNUM TO -HOSPNUM
                    MOVE    PTCOM-REC               TO  MCPDATA-REC
                    MOVE    "tbl_ptcom"             TO  MCP-TABLE
                    MOVE    "key"                   TO  MCP-PATHNAME
@@ -4093,15 +4104,31 @@ grpsys*            MOVE SPA-HOSPNUM TO -HOSPNUM
       *
       *        ¾ÃÈñÀÇÊ¬¤¬¤¢¤ë¾ì¹ç¤Ï¾ÃÈñÀÇ³Û¤òÊÔ½¸
                IF    ( WRK-TTL-JIHI-TAX    >   ZERO )
-                   MOVE    "¡¡¡¡¡¡¡¡¡¡¼«Èñ¾ÃÈñÀÇ³Û"
+                   IF    ( ORCHCM34-SRYYM  >=   CONST-H190401 (1:6))
+                       MOVE    "¡¡¡¡¡¡¡¡¡¡¼«Èñ¾ÃÈñÀÇ³Û¡ÊºÆ·Ç¡Ë"
                                            TO  WRK-KINGAKKU-LBL
-                   IF   ( SYS-1001-TAX-HASU-KBN =   "1" )
-                       COMPUTE  WRK-KINGAKKU
-                            = ( WRK-TTL-JIHI-TAX   *  0.05 )
-                            +  0.5
                    ELSE
-                       COMPUTE  WRK-KINGAKKU
-                            = ( WRK-TTL-JIHI-TAX   *  0.05 )
+                       MOVE    "¡¡¡¡¡¡¡¡¡¡¼«Èñ¾ÃÈñÀÇ³Û"
+                                           TO  WRK-KINGAKKU-LBL
+                   END-IF
+                   IF   ( SYS-1001-TAX-HASU-KBN =   "1" )
+                       IF    ( ORCHCM34-SRYYM  >=   CONST-H190401 (1:6))
+                           COMPUTE  WRK-KINGAKKU
+                                = ( WRK-TTL-JIHI-TAX   *  5 / 105)
+                                +  0.5
+                       ELSE
+                           COMPUTE  WRK-KINGAKKU
+                                = ( WRK-TTL-JIHI-TAX   *  0.05 )
+                                +  0.5
+                       END-IF
+                   ELSE
+                       IF    ( ORCHCM34-SRYYM  >=   CONST-H190401 (1:6))
+                           COMPUTE  WRK-KINGAKKU
+                                = ( WRK-TTL-JIHI-TAX   *  5 / 105)
+                       ELSE
+                           COMPUTE  WRK-KINGAKKU
+                                = ( WRK-TTL-JIHI-TAX   *  0.05 )
+                       END-IF
                    END-IF
                    PERFORM 2001111-KINGAKU-HEN-SEC
                END-IF
@@ -4179,12 +4206,11 @@ grpsys*            MOVE SPA-HOSPNUM TO -HOSPNUM
        2001111-PTCOM-SET-SEC               SECTION.
       *
            INITIALIZE                      PTCOM-REC
-           MOVE    SRY-HOSPID          TO  PTCOM-HOSPID
+           MOVE    SRY-HOSPNUM          TO  PTCOM-HOSPNUM
            MOVE    SRY-PTID            TO  PTCOM-PTID
            MOVE    SRY-ZAINUM          TO  PTCOM-ZAINUM
            MOVE    SRY-SRYCD   (IDX9)  TO  PTCOM-SRYCD
            MOVE    SRY-INPUTNUM(IDX9)  TO  PTCOM-RENNUM
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PTCOM-REC           TO  MCPDATA-REC
            MOVE    "tbl_ptcom"         TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
@@ -4676,14 +4702,13 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *
            MOVE    ZERO                TO  FLG-PTNYUINRRK
            INITIALIZE                      PTNYUINRRK-REC
-           MOVE    SPA-HOSPID          TO  PTNYUINRRK-HOSPID
+           MOVE    SPA-HOSPNUM          TO  PTNYUINRRK-HOSPNUM
            MOVE    SPA-PTID            TO  PTNYUINRRK-PTID
            MOVE    ORCHCM34-SRYYM      TO  WRK-SYMD
            PERFORM 800-GETUMATU-SEC
            MOVE    WRK-SYMD            TO  PTNYUINRRK-NYUINYMD
            MOVE    ORCHCM34-SRYYM      TO  PTNYUINRRK-TAIINYMD
            MOVE    "01"                TO  PTNYUINRRK-TAIINYMD (7:2)
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PTNYUINRRK-REC      TO  MCPDATA-REC
            MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
            MOVE    "key24"             TO  MCP-PATHNAME
@@ -4941,8 +4966,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                PERFORM 900-HKNCOMBI-KEY-SEL-SEC
       *
                INITIALIZE                  HCM34S01-AREA
-                                           WRK-SPA-AREA
-               MOVE    NACCT-HOSPID        TO  HCM34S01-HOSPID
+               MOVE    NACCT-HOSPNUM        TO  HCM34S01-HOSPNUM
                MOVE    NACCT-PTID          TO  HCM34S01-PTID
                MOVE    NACCT-SRYYM         TO  HCM34S01-SANTEIYM
                MOVE    COMB-HKNCOMBINUM    TO  HCM34S01-HKNCOMBI
@@ -4954,11 +4978,11 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                IF    ( COMB-HKNNUM         =     "971" OR "973" )
       *
                    CALL    "ORCHCM34S02"       USING HCM34S01-AREA
-                                                     WRK-SPA-AREA
+                                                     SPA-AREA
                ELSE
       *
                    CALL    "ORCHCM34S01"       USING HCM34S01-AREA
-                                                     WRK-SPA-AREA
+                                                     SPA-AREA
                END-IF
       *
                MOVE    HCM34S01-SENTEI-PTFTN
@@ -5020,7 +5044,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            INITIALIZE                      HCM34ACCT-REC
                                            SRYACCT-REC
       *
-           MOVE    NACCT-HOSPID        TO  ACCT-HOSPID
+           MOVE    NACCT-HOSPNUM        TO  ACCT-HOSPNUM
            MOVE    NACCT-NYUGAIKBN     TO  ACCT-NYUGAIKBN
            MOVE    NACCT-PTID          TO  ACCT-PTID
            MOVE    WRK-HBTSRYKA    (IDX29)
@@ -5098,7 +5122,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                    MOVE    NACCT-PTID      TO  HCM34SRY-ISM-PTID
                    MOVE    WRK-ZAINUM      TO  HCM34SRY-ISM-ZAINUM
                    MOVE    CNT-RENNUM      TO  HCM34SRY-ISM-RENNUM
-                   MOVE    NACCT-HOSPID    TO  SRY-HOSPID
+                   MOVE    NACCT-HOSPNUM    TO  SRY-HOSPNUM
                    MOVE    NACCT-NYUGAIKBN TO  SRY-NYUGAIKBN
                    MOVE    NACCT-PTID      TO  SRY-PTID
                    MOVE    WRK-ZAINUM      TO  SRY-ZAINUM
@@ -5231,11 +5255,23 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *
       *        ¾ÃÈñÀÇÉ½¼¨ÊÔ½¸È½Äê
                IF    ( SYS-5000-BRMSGK-TAXKBN  =   "1" )
-                   COMPUTE    WRK-TTL-BRMSAGAKU-TAX
-                       =    ( WRK-TTL-BRMSAGAKU    *   0.05 )
+      *
+                   IF    ( ORCHCM34-SRYYM  >=   CONST-H190401 (1:6))
+                       COMPUTE  WRK-TTL-BRMSAGAKU-TAX
+                            = ( WRK-TTL-BRMSAGAKU  *  5 / 105)
+                   ELSE
+                       COMPUTE  WRK-TTL-BRMSAGAKU-TAX
+                            = ( WRK-TTL-BRMSAGAKU  *  0.05 )
+                   END-IF
+      *
                    IF    ( WRK-TTL-BRMSAGAKU-TAX   >   ZERO )
-                       MOVE    "¡¡¡¡¡¡¡¡¡¡¼¼ÎÁº¹³Û¾ÃÈñÀÇ³Û"
+                       IF    ( ORCHCM34-SRYYM  >=   CONST-H190401 (1:6))
+                           MOVE    "¡¡¡¡¡¡¡¡¡¡¼¼ÎÁº¹³Û¾ÃÈñÀÇ³Û¡ÊºÆ·Ç¡Ë"
                                            TO  WRK-KINGAKKU-LBL
+                       ELSE
+                           MOVE    "¡¡¡¡¡¡¡¡¡¡¼¼ÎÁº¹³Û¾ÃÈñÀÇ³Û"
+                                           TO  WRK-KINGAKKU-LBL
+                       END-IF
                        MOVE    WRK-TTL-BRMSAGAKU-TAX
                                            TO  WRK-KINGAKKU
                        PERFORM 2001111-KINGAKU-HEN-SEC
@@ -5820,6 +5856,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    ZERO        TO  CNT-SRYACT-LINE
                MOVE    ZERO        TO  CNT-YKZINGAI
                MOVE    ZERO        TO  CNT-YKZHKT
+               MOVE    ZERO        TO  CNT-ZAIHKT
            END-IF
       *
            .
@@ -5883,6 +5920,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE   SYS-1031-PRTNM(1)   TO  MKPRT-PRTNM
            CALL   "ORCSMKPRT"         USING
                                       ORCSMKPRTAREA
+                                      SPA-AREA
       *
            .
        2901-HCM341-ONL-PRINT-EXT.
@@ -5917,6 +5955,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE   SYS-1031-PRTNM(1)   TO  MKPRT-PRTNM
            CALL   "ORCSMKPRT"         USING
                                       ORCSMKPRTAREA
+                                      SPA-AREA
            .
        2901-HCM342-ONL-PRINT-EXT.
            EXIT.
@@ -5937,6 +5976,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    "1"                 TO  SPRT-SITEKBN
            CALL    "ORCSPRT"           USING
                                        ORCSPRTAREA
+                                       SPA-AREA
            IF    ( SPRT-RETURN         =   ZERO )
                CONTINUE
            ELSE
@@ -5964,6 +6004,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    "1"                 TO  SPRT-SITEKBN
            CALL    "ORCSPRT"           USING
                                        ORCSPRTAREA
+                                       SPA-AREA
            IF    ( SPRT-RETURN         =   ZERO )
                CONTINUE
            ELSE
@@ -6006,17 +6047,30 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    CNT-PAGE                TO  WRK-ZZ9
            MOVE    WRK-ZZ9                 TO  HCM341-PAGE
       *
-           EVALUATE    TRUE
-           WHEN      ( CNT-YKZINGAI    >   ZERO )
-                 AND ( CNT-YKZHKT      >   ZERO )
-               MOVE  "¡ù¡§±¡³°½èÊý¤ÎÌôºÞ¡¡¡û¡§±¡Æâ½èÊý¡ÊÊñ³ç¡ËÊ¬¤ÎÌôºÞ"
-                                           TO  HCM341-COMMENT
-           WHEN      ( CNT-YKZINGAI    >   ZERO )
-               MOVE  "¡ù¡§±¡³°½èÊý¤ÎÌôºÞ"  TO  HCM341-COMMENT
-           WHEN      ( CNT-YKZHKT      >   ZERO )
-               MOVE  "¡û¡§±¡Æâ½èÊý¡ÊÊñ³ç¡ËÊ¬¤ÎÌôºÞ"
-                                           TO  HCM341-COMMENT
-           END-EVALUATE
+           MOVE    1                       TO  IDX-PNT
+           MOVE    SPACE                   TO  HCM341-COMMENT
+      *
+           IF    ( CNT-ZAIHKT     >       ZERO )
+               STRING  "¡ý¡§Êñ³çÂÐ¾ÝÊ¬¡¡"  DELIMITED   BY  SIZE
+               INTO    HCM341-COMMENT
+               WITH    POINTER     IDX-PNT
+               END-STRING
+           END-IF
+      *
+           IF    ( CNT-YKZINGAI    >       ZERO )
+               STRING  "¡ù¡§±¡³°½èÊý¤ÎÌôºÞ¡¡"  DELIMITED   BY  SIZE
+               INTO    HCM341-COMMENT
+               WITH    POINTER     IDX-PNT
+               END-STRING
+           END-IF
+      *
+           IF    ( CNT-YKZHKT      >       ZERO )
+               STRING  "¡û¡§±¡Æâ½èÊý¡ÊÊñ³ç¡ËÊ¬¤ÎÌôºÞ¡¡"
+                                               DELIMITED   BY  SIZE
+               INTO    HCM341-COMMENT
+               WITH    POINTER     IDX-PNT
+               END-STRING
+           END-IF
       *
            .
        29011-HCM341-HEADER-HEN-EXT.
@@ -6053,17 +6107,31 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    CNT-PAGE                TO  WRK-ZZ9
            MOVE    WRK-ZZ9                 TO  HCM342-PAGE
       *
-           EVALUATE    TRUE
-           WHEN      ( CNT-YKZINGAI    >   ZERO )
-                 AND ( CNT-YKZHKT      >   ZERO )
-               MOVE  "¡ù¡§±¡³°½èÊý¤ÎÌôºÞ¡¡¡û¡§±¡Æâ½èÊý¡ÊÊñ³ç¡ËÊ¬¤ÎÌôºÞ"
-                                           TO  HCM342-COMMENT
-           WHEN      ( CNT-YKZINGAI    >   ZERO )
-               MOVE  "¡ù¡§±¡³°½èÊý¤ÎÌôºÞ"  TO  HCM342-COMMENT
-           WHEN      ( CNT-YKZHKT      >   ZERO )
-               MOVE  "¡û¡§±¡Æâ½èÊý¡ÊÊñ³ç¡ËÊ¬¤ÎÌôºÞ"
-                                           TO  HCM342-COMMENT
-           END-EVALUATE
+      *
+           MOVE    1                       TO  IDX-PNT
+           MOVE    SPACE                   TO  HCM342-COMMENT
+      *
+           IF    ( CNT-ZAIHKT     >       ZERO )
+               STRING  "¡ý¡§Êñ³çÂÐ¾ÝÊ¬¡¡"  DELIMITED   BY  SIZE
+               INTO    HCM342-COMMENT
+               WITH    POINTER     IDX-PNT
+               END-STRING
+           END-IF
+      *
+           IF    ( CNT-YKZINGAI    >       ZERO )
+               STRING  "¡ù¡§±¡³°½èÊý¤ÎÌôºÞ¡¡"  DELIMITED   BY  SIZE
+               INTO    HCM342-COMMENT
+               WITH    POINTER     IDX-PNT
+               END-STRING
+           END-IF
+      *
+           IF    ( CNT-YKZHKT      >       ZERO )
+               STRING  "¡û¡§±¡Æâ½èÊý¡ÊÊñ³ç¡ËÊ¬¤ÎÌôºÞ¡¡"
+                                               DELIMITED   BY  SIZE
+               INTO    HCM342-COMMENT
+               WITH    POINTER     IDX-PNT
+               END-STRING
+           END-IF
       *
            .
        29011-HCM342-HEADER-HEN-EXT.
@@ -6227,10 +6295,10 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            IF    ( TTNS-FLG            =   ZERO )
       *
                INITIALIZE                      TNS-TENSU-REC
+               MOVE    SPA-HOSPNUM         TO  TNS-HOSPNUM
                MOVE    TTNS-CHK-SRYCD      TO  TNS-SRYCD
                MOVE    TTNS-CHK-YMD        TO  TNS-YUKOSTYMD
                                                TNS-YUKOEDYMD
-grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
                MOVE    "tbl_tensu"         TO  MCP-TABLE
                MOVE    "key"               TO  MCP-PATHNAME
@@ -6308,11 +6376,10 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE   ZERO                 TO  FLG-SRYACT
       *
            INITIALIZE                  SRYACT-REC
-           MOVE    SPA-HOSPID          TO  SRY-HOSPID
+           MOVE    SPA-HOSPNUM          TO  SRY-HOSPNUM
            MOVE    ORCHCM34-NYUGAIKBN  TO  SRY-NYUGAIKBN
            MOVE    SPA-PTID            TO  SRY-PTID
            MOVE    ORCHCM34-SRYYM      TO  SRY-SRYYM
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SRYACT-REC          TO  MCPDATA-REC
            MOVE    "tbl_sryact"        TO  MCP-TABLE
            MOVE    "key4"              TO  MCP-PATHNAME
@@ -6368,12 +6435,11 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *
            MOVE    ZERO                TO  FLG-SRYACCT
            INITIALIZE                      SRYACCT-REC 
-           MOVE    SPA-HOSPID          TO  ACCT-HOSPID
+           MOVE    SPA-HOSPNUM          TO  ACCT-HOSPNUM
            MOVE    ORCHCM34-NYUGAIKBN  TO  ACCT-NYUGAIKBN
            MOVE    SPA-PTID            TO  ACCT-PTID
            MOVE    ORCHCM34-SRYYM      TO  ACCT-SRYYM
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SRYACCT-REC         TO  MCPDATA-REC
            MOVE    "tbl_sryacct"       TO  MCP-TABLE
            MOVE    "key20"             TO  MCP-PATHNAME
@@ -6426,12 +6492,11 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    ZERO                TO  FLG-NYUINACCT
            INITIALIZE                  NYUINACCT-REC
       *
-           MOVE    SPA-HOSPID          TO  NACCT-HOSPID
+           MOVE    SPA-HOSPNUM          TO  NACCT-HOSPNUM
            MOVE    SPA-PTID            TO  NACCT-PTID
            MOVE    ORCHCM34-SRYYM      TO  NACCT-SRYYM
            MOVE    "1"                 TO  NACCT-NYUGAIKBN
            MOVE    "5"                 TO  NACCT-ZAISKBKBN
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    NYUINACCT-REC       TO  MCPDATA-REC
            MOVE    "tbl_nyuinacct"     TO  MCP-TABLE
            MOVE    "key17"             TO  MCP-PATHNAME
@@ -6532,13 +6597,12 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    ZERO                TO  FLG-PTNYUINRRK
            INITIALIZE                  PTNYUINRRK-REC
       *
-           MOVE    SPA-HOSPID          TO  PTNYUINRRK-HOSPID
+           MOVE    SPA-HOSPNUM          TO  PTNYUINRRK-HOSPNUM
            MOVE    NACCT-PTID          TO  PTNYUINRRK-PTID
            MOVE    NACCT-SRYYM         TO  PTNYUINRRK-TENNYUYMD
            MOVE    "31"                TO  PTNYUINRRK-TENNYUYMD
            MOVE    NACCT-SRYYM         TO  PTNYUINRRK-TENSTUYMD
            MOVE    "01"                TO  PTNYUINRRK-TENSTUYMD
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PTNYUINRRK-REC      TO  MCPDATA-REC
            MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
            MOVE    "key41"             TO  MCP-PATHNAME
@@ -6579,10 +6643,9 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    ZERO                    TO  FLG-HKNCOMBI
       *
            INITIALIZE                          HKNCOMBI-REC
-           MOVE    SPA-HOSPID              TO  COMB-HOSPID
+           MOVE    SPA-HOSPNUM              TO  COMB-HOSPNUM
            MOVE    SPA-PTID                TO  COMB-PTID
            MOVE    WRK-HKNCOMBINUM         TO  COMB-HKNCOMBINUM
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    HKNCOMBI-REC            TO  MCPDATA-REC
            MOVE    "tbl_hkncombi"          TO  MCP-TABLE
            MOVE    "key"                   TO  MCP-PATHNAME
@@ -6607,9 +6670,10 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
        910-DBSELECT-SEC                SECTION.
       *
            MOVE    "DBSELECT"      TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"         USING
+                                       MCPAREA
+                                       MCPDATA-REC
+                                       SPA-AREA
            IF    ( MCP-RC          =   ZERO )
                PERFORM 910-DBFETCH-SEC
            END-IF
@@ -6623,9 +6687,10 @@ grpsys                            SPA-AREA
        911-DBSELECT-SEC                SECTION.
       *
            MOVE    "DBSELECT"      TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"         USING
+                                       MCPAREA
+                                       MCPDATA-REC
+                                       SPA-AREA
       *
            .
        911-DBSELECT-EXT.
@@ -6636,9 +6701,10 @@ grpsys                            SPA-AREA
        910-DBFETCH-SEC                SECTION.
       *
            MOVE    "DBFETCH"       TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"         USING
+                                       MCPAREA
+                                       MCPDATA-REC
+                                       SPA-AREA
       *
            .
        910-DBFETCH-EXT.
@@ -6649,9 +6715,10 @@ grpsys                            SPA-AREA
        910-DBCLOSECURSOR-SEC               SECTION.
       *
            MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"         USING
+                                       MCPAREA
+                                       MCPDATA-REC
+                                       SPA-AREA
       *
            .
        910-DBCLOSECURSOR-EXT.

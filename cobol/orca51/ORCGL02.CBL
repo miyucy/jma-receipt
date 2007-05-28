@@ -28,32 +28,23 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
-      *  02.07.00    NACL−太田   05.10.26  クリアボタン追加
+      *  02.07.00    NACL-太田    05.10.26  クリアボタン追加
+      *  03.05.00    NACL-太田    07.05.15  グループ診療対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
        CONFIGURATION               SECTION.
        INPUT-OUTPUT                SECTION.
        FILE-CONTROL.
-      *    エラーファイル
-           SELECT  TOUKEIERR-FILE    ASSIGN  TOUKEIERR
-                                     FILE    STATUS  IS  STS-TOUKEIERR.
       *
        DATA                    DIVISION.
        FILE                        SECTION.
       *
-      *    エラーファイル
-       FD  TOUKEIERR-FILE.
-       01  TOUKEIERR-REC             PIC X(200). 
       *
        WORKING-STORAGE             SECTION.
       *
-      *
-      *    エラーファイル 名称領域 
-           COPY    "CPCOMMONDAT5.INC"
-                                   REPLACING  //TEIKI01PARA//
-                                   BY         //TOUKEIERR//.
-           03  FILLER              PIC X(04)   VALUE   ".dat".
+      *    エラーファイル 名称領域
+           COPY    "CPERRFL.INC".
       *
       *    スパ領域
            COPY    "COMMON-SPA".
@@ -725,13 +716,12 @@
       *    ジョブ管理チェック処理
            MOVE    "CHK"           TO  SJOBKANRI-MODE
            INITIALIZE                  JOBKANRI-REC
+           MOVE    SPA-HOSPNUM     TO  JOB-HOSPNUM
            MOVE    WRK-CONS-JOB-JOBID
                                    TO  JOB-JOBID
            MOVE    WRK-CONS-JOB-SHELLID
                                    TO  JOB-SHELLID
-           CALL    "ORCSJOB"       USING
-                                   ORCSJOBKANRIAREA  
-                                   JOBKANRI-REC 
+           PERFORM 800-ORCSJOB-SEC
            IF      SJOBKANRI-RETURN
                                    =   ZERO
                IF      JOB-ENDYMD      =   SPACE
@@ -826,13 +816,12 @@
       *    ジョブ管理チェック処理
            MOVE    "CHK"           TO  SJOBKANRI-MODE
            INITIALIZE                  JOBKANRI-REC
+           MOVE    SPA-HOSPNUM     TO  JOB-HOSPNUM
            MOVE    WRK-CONS-JOB-JOBID
                                    TO  JOB-JOBID
            MOVE    WRK-CONS-JOB-SHELLID
                                    TO  JOB-SHELLID
-           CALL    "ORCSJOB"       USING
-                                   ORCSJOBKANRIAREA  
-                                   JOBKANRI-REC 
+           PERFORM 800-ORCSJOB-SEC
            IF      SJOBKANRI-RETURN
                                    =   ZERO
                IF      JOB-ENDYMD      =   SPACE
@@ -861,35 +850,35 @@
       *    ジョブ開始セット
            MOVE    "DEL"           TO  SJOBKANRI-MODE
            INITIALIZE                  JOBKANRI-REC
+           MOVE    SPA-HOSPNUM     TO  JOB-HOSPNUM
            MOVE    WRK-CONS-JOB-JOBID
                                    TO  JOB-JOBID
            MOVE    WRK-CONS-JOB-SHELLID
                                    TO  JOB-SHELLID
-           CALL    "ORCSJOB"       USING
-                                   ORCSJOBKANRIAREA 
-                                   JOBKANRI-REC
+           PERFORM 800-ORCSJOB-SEC
       *
            MOVE    "JBS"           TO  SJOBKANRI-MODE
            INITIALIZE                  JOBKANRI-REC
+           MOVE    SPA-HOSPNUM     TO  JOB-HOSPNUM
            MOVE    WRK-CONS-JOB-JOBID
                                    TO  JOB-JOBID
            MOVE    WRK-CONS-JOB-SHELLID
                                    TO  JOB-SHELLID
            MOVE    SPA-TERMID      TO  JOB-TERMID                        
-           CALL    "ORCSJOB"       USING
-                                   ORCSJOBKANRIAREA 
-                                   JOBKANRI-REC
+           PERFORM 800-ORCSJOB-SEC
       *     
-           MOVE    "TOUKEIER"      TO  TOUKEIERR-FILE-ID
-           MOVE    SPA-TERMID      TO  TOUKEIERR-TERMID
+           MOVE    SPA-HOSPNUM         TO  ERRFLPARA-HOSPNUM
+           MOVE    "OR051ERR"          TO  ERRFLPARA-FILE-ID
+           MOVE    2                   TO  ERRFLPARA-SYOKBN1
+           MOVE    ERRFLPARA-TERMID    TO  ERRFLPARA-TERMID
       *
       *    医療機関情報の取得
            INITIALIZE                  SYS-1001-REC
+           MOVE    SPA-HOSPNUM     TO  SYS-1001-HOSPNUM
            MOVE    "1001"          TO  SYS-1001-KANRICD
            MOVE    "*"             TO  SYS-1001-KBNCD
            MOVE    SPA-SYSYMD      TO  SYS-1001-STYUKYMD
                                        SYS-1001-EDYUKYMD
-           MOVE    SPA-HOSPNUM     TO  SYS-1001-HOSPNUM
            MOVE    SYS-1001-REC    TO  MCPDATA-REC
            PERFORM 900-SYSKANRI-INV-SEC
            IF      FLG-SYSKANRI    =   ZERO
@@ -905,7 +894,7 @@
            MOVE    MKPASS-OT-01    TO  SHELLTBL-NAME
       *     
            MOVE    SPA-TERMID      TO  SHELLTBL-ARG1
-           MOVE    SPA-HOSPID      TO  SHELLTBL-ARG2
+           MOVE    SPA-HOSPNUM     TO  SHELLTBL-ARG2
            MOVE     SYS-1001-HOSPCD
                                    TO  SHELLTBL-ARG3
            MOVE    SYS-1001-PREFNUM
@@ -930,21 +919,24 @@
                                    TO  SHELLTBL-ARG13
            MOVE    WRK-CONS-JOB-SHELLID
                                    TO  SHELLTBL-ARG14
-           MOVE    TOUKEIERR       TO  SHELLTBL-ARG15
+           MOVE    ERRFLPARA       TO  SHELLTBL-ARG15
            MOVE    SPA-GMN-FILE1   TO  SHELLTBL-ARG16
       *****MOVE    SPA-GMN-FILE2   TO  SHELLTBL-ARG17
       *    ipアドレス取得
            MOVE    "DBFETCH"       TO  MCP-FUNC
            MOVE    "metadb"        TO  MCP-TABLE
            MOVE    "primary"       TO  MCP-PATHNAME
-           CALL    "ORCDBMAIN"     USING
+           CALL    "ORCDBMAIN"         USING
                                        MCPAREA
-                                       MCPDATA-REC
+                                       DBMETA
                                        SPA-AREA
+           MOVE    DBMETA-HOST     TO  SHELLTBL-ARG18
+      *
+           MOVE    SHELLTBL        TO  MCPDATA-REC
            MOVE    "SHELL"         TO  MCP-FUNC
            MOVE    "shell"         TO  MCP-TABLE
            MOVE    "shell"         TO  MCP-PATHNAME
-           CALL    "ORCDBMAIN"     USING
+           CALL    "ORCDBMAIN"         USING
                                        MCPAREA
                                        MCPDATA-REC
                                        SPA-AREA
@@ -968,13 +960,12 @@
       *    ジョブ管理チェック処理
            MOVE    "CHK"           TO  SJOBKANRI-MODE
            INITIALIZE                  JOBKANRI-REC
+           MOVE    SPA-HOSPNUM     TO  JOB-HOSPNUM
            MOVE    WRK-CONS-JOB-JOBID
                                    TO  JOB-JOBID
            MOVE    WRK-CONS-JOB-SHELLID
                                    TO  JOB-SHELLID
-           CALL    "ORCSJOB"       USING
-                                   ORCSJOBKANRIAREA 
-                                   JOBKANRI-REC 
+           PERFORM 800-ORCSJOB-SEC
            IF      SJOBKANRI-RETURN
                                    =   ZERO
                MOVE    1               TO  IDX                     
@@ -1334,6 +1325,20 @@
            EXIT.
       *
       *****************************************************************
+      *    ジョブ管理チェック処理
+      *****************************************************************
+       800-ORCSJOB-SEC                 SECTION.
+      *
+           MOVE    SPA-HOSPNUM     TO  JOB-HOSPNUM
+           CALL    "ORCSJOB"           USING
+                                       ORCSJOBKANRIAREA
+                                       JOBKANRI-REC
+                                       SPA-AREA
+      *
+           .
+       800-ORCSJOB-EXT.
+           EXIT.
+      *****************************************************************
       *    管理マスター読込（キー）
       *****************************************************************
        900-SYSKANRI-INV-SEC         SECTION.
@@ -1342,14 +1347,14 @@
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key10"             TO  MCP-PATHNAME
            CALL    "ORCDBMAIN"         USING
-                                           MCPAREA
-                                           MCPDATA-REC
-                                           SPA-AREA
+                                       MCPAREA
+                                       MCPDATA-REC
+                                       SPA-AREA
            IF      MCP-RC              =   ZERO
                MOVE    "DBFETCH"       TO  MCP-FUNC
                MOVE    "tbl_syskanri"  TO  MCP-TABLE
                MOVE    "key10"         TO  MCP-PATHNAME
-               CALL    "ORCDBMAIN"     USING
+               CALL    "ORCDBMAIN"         USING
                                            MCPAREA
                                            MCPDATA-REC
                                            SPA-AREA
@@ -1366,9 +1371,9 @@
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key10"             TO  MCP-PATHNAME
            CALL    "ORCDBMAIN"         USING
-                                           MCPAREA
-                                           MCPDATA-REC
-                                           SPA-AREA
+                                       MCPAREA
+                                       MCPDATA-REC
+                                       SPA-AREA
       *
            .
        900-SYSKANRI-INV-EXT.
@@ -1380,10 +1385,10 @@
        900-PUT-WINDOW              SECTION.
       *
            MOVE   "PUTWINDOW"       TO  MCP-FUNC.
-           CALL   "ORCDBMAIN"       USING
-                                        MCPAREA
-                                        MCPDATA-REC
-                                        SPA-AREA
+           CALL    "ORCDBMAIN"         USING
+                                       MCPAREA
+                                       MCPDATA-REC
+                                       SPA-AREA
       *
            .
        900-PUT-WINDOW-EXT.

@@ -26,6 +26,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  03.05.00    NACL-太田    07.05.15  グループ診療対応
       *****************************************************************
       *
        ENVIRONMENT                     DIVISION.
@@ -323,25 +324,25 @@
        3101-TOKEIMEMO-SEL-SEC          SECTION.
       *
            INITIALIZE                      TOUKEIMEMO-REC
+           MOVE    SPA-HOSPNUM         TO  TKIMEMO-HOSPNUM
            MOVE    SPA-GMN-L03-PRGNAME TO  TKIMEMO-PGID
            MOVE    "3001"              TO  TKIMEMO-KANRICD
            MOVE    WRK-KBNCD-G         TO  TKIMEMO-KBNCD
            MOVE    SPA-SYSYMD          TO  TKIMEMO-STYUKYMD
                                            TKIMEMO-EDYUKYMD
-           MOVE    SPA-HOSPNUM         TO  TKIMEMO-HOSPNUM
            MOVE    TOUKEIMEMO-REC      TO  MCPDATA-REC
            MOVE    "tbl_toukeimemo"    TO  WRK-MCP-TABLE
            MOVE    "key2"              TO  WRK-MCP-PATHNAME
            PERFORM 900-TOUKEIMEMO-SEL-SEC
            IF    ( FLG-TOUKEIMEMO  NOT =   ZERO )
                INITIALIZE                  TOUKEIMEMO-REC
+               MOVE    SPA-HOSPNUM     TO  TKIMEMO-HOSPNUM
                MOVE    SPA-GMN-L03-PRGNAME
                                        TO  TKIMEMO-PGID
                MOVE    "0000"          TO  TKIMEMO-KANRICD
                MOVE    "000"           TO  TKIMEMO-KBNCD
                MOVE    "00000000"      TO  TKIMEMO-STYUKYMD
                MOVE    "99999999"      TO  TKIMEMO-EDYUKYMD
-               MOVE    SPA-HOSPNUM     TO  TKIMEMO-HOSPNUM
                MOVE    TOUKEIMEMO-REC  TO  MCPDATA-REC
                MOVE    "tbl_toukeimemo"    TO  WRK-MCP-TABLE
                MOVE    "key"               TO  WRK-MCP-PATHNAME
@@ -1026,17 +1027,17 @@
            MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
            MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
            CALL    "ORCDBMAIN"         USING
-                                           MCPAREA
-                                           MCPDATA-REC
-                                           SPA-AREA
+                                       MCPAREA
+                                       MCPDATA-REC
+                                       SPA-AREA
            IF    ( MCP-RC              =   ZERO )
                MOVE    "DBFETCH"       TO  MCP-FUNC
                MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
                MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
                CALL    "ORCDBMAIN"         USING
-                                               MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+                                           MCPAREA
+                                           MCPDATA-REC
+                                           SPA-AREA
                IF    ( MCP-RC          =   ZERO )
                    MOVE    ZERO        TO  FLG-TOUKEIMEMO
                    MOVE    MCPDATA-REC TO  TOUKEIMEMO-REC
@@ -1053,9 +1054,9 @@
            MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
            MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
            CALL    "ORCDBMAIN"         USING
-                                           MCPAREA
-                                           MCPDATA-REC
-                                           SPA-AREA
+                                       MCPAREA
+                                       MCPDATA-REC
+                                       SPA-AREA
       *
            .
        900-TOUKEIMEMO-SEL-EXT.
@@ -1066,10 +1067,10 @@
        900-PUT-WINDOW              SECTION.
       *
            MOVE   "PUTWINDOW"          TO  MCP-FUNC.
-           CALL   "ORCDBMAIN"          USING
-                                           MCPAREA
-                                           MCPDATA-REC
-                                           SPA-AREA
+           CALL    "ORCDBMAIN"         USING
+                                       MCPAREA
+                                       MCPDATA-REC
+                                       SPA-AREA
            .
       *
            .
