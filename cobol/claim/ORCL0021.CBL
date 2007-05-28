@@ -229,7 +229,8 @@
       *医事請求コード体系名
                    07  TBL-ALSTBLID   PIC  X(20).
       *医事請求コード名称
-                   07  TBL-ALSNAME    PIC  X(40).
+      *@@@@        07  TBL-ALSNAME    PIC  X(40).
+                   07  TBL-ALSNAME    PIC  X(80).
       *数量(Z編集)
                    07  TBL-SURYO      PIC  S9(07)V999.
       *数量コード
