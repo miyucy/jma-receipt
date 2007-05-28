@@ -29,6 +29,8 @@
       * Maj/Min/Rev  修正者       日付      内容
       *  01.01.01    NACL-伊藤    04/12/02  画面表示明細数を超えた場合の処置
       *  01.01.02    NACL-伊藤    06/02/22  MONFUNC 対応
+      *  03.04.01    NACL-森脇    07/01/24  タイマーイベント追加
+      *  03.05.00    NACL-多々納  07/05/28  グループ診療対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -76,6 +78,10 @@
                    07  SPA-GMN-MESSEGE.
                        09  SPA-GMN-MSG-STYLE  PIC X(20).
                        09  SPA-GMN-MSG        PIC X(122).
+      *
+      *----(03.04.01)--ADD-START---
+                   07  SPA-GMN-DURATION       PIC 9(01).
+      *----(03.04.01)--ADD-END-----
       *
                05  SPA-GMN-OFFNAIYO-AREA.
                    07  SPA-GMN-OFFLIST        OCCURS  2.
@@ -255,6 +261,9 @@
       *        情報
       ***         WHEN    "CLICKED"   ALSO    "B09"
       ***             PERFORM 400-JYOUHOU-SEC
+      *----(03.04.01)---ADD-START---
+               WHEN    "CLICKED"   ALSO    "pandatimer1"
+      *----(03.04.01)---ADD-END-----
       *        状況
                WHEN    "CLICKED"   ALSO    "B11"
                    PERFORM 400-JYOKYO-SET-SEC
@@ -358,10 +367,12 @@
       *
            PERFORM 400-JYOKYO-SET-SEC
       *
-           IF      SPA-GMN-NAIYOLIST-MAX   =  ZERO
-               MOVE    SPACE           TO  SPA-GMN-MSG
-               MOVE    SPACE           TO  SPA-GMN-MSG-STYLE
-           END-IF
+      *----(03.04.01)--UPD-START---
+      *     IF      SPA-GMN-NAIYOLIST-MAX   =  ZERO
+      *         MOVE    SPACE           TO  SPA-GMN-MSG
+      *         MOVE    SPACE           TO  SPA-GMN-MSG-STYLE
+      *     END-IF
+      *----(03.04.01)--UPD-END-----
       *
            .
        310-SPASET-EXT.
@@ -431,15 +442,15 @@
            CALL    "ORCSMKPASS"        USING
                                        ORCSMKPASSAREA
            MOVE    MKPASS-OT-01    TO  SHELLTBL-NAME
+grpsys*    MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            MOVE    SHELLTBL        TO  MCPDATA-REC
       *
            MOVE    "SHELL"         TO  MCP-FUNC
            MOVE    "shell"         TO  MCP-TABLE
            MOVE    "shell"         TO  MCP-PATHNAME
-           CALL    "ORCDBMAIN"     USING
-                                       MCPAREA
-                                       MCPDATA-REC
-                                       SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
        400-JYOUHOU-SEC-EXT.
@@ -531,6 +542,19 @@
                MOVE    SPACE           TO  SPA-GMN-MSG
                MOVE    SPACE           TO  SPA-GMN-MSG-STYLE
            END-IF
+      *
+      *----(03.04.01)--ADD-START---
+           MOVE    0           TO  SPA-GMN-DURATION
+      *
+           IF    ( SJOBKANRI-RETURN    =   ZERO )  AND
+                 ( JOB-ERRCD(1:2)  NOT =   "99" )  AND
+                 ( JOB-ERRCD(1:2)  NOT =   "01" )
+               IF    ( JOB-ENDTIME     =   SPACE)  OR
+                     ( JOB-ENDYMD      =   SPACE)
+                   MOVE    5           TO  SPA-GMN-DURATION
+               END-IF
+           END-IF
+      *----(03.04.01)--ADD-END-----
            .
        400-JYOKYO-SET-EXT.
            EXIT.
@@ -652,15 +676,15 @@
            CALL    "ORCSMKPASS"        USING
                                        ORCSMKPASSAREA
            MOVE    MKPASS-OT-01    TO  SHELLTBL-NAME
+grpsys*    MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            MOVE    SHELLTBL        TO  MCPDATA-REC
       *
            MOVE    "SHELL"         TO  MCP-FUNC
            MOVE    "shell"         TO  MCP-TABLE
            MOVE    "shell"         TO  MCP-PATHNAME
-           CALL    "ORCDBMAIN"     USING
-                                       MCPAREA
-                                       MCPDATA-REC
-                                       SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
            DISPLAY "420-KOUSHIN-END"
            .
       *
@@ -756,6 +780,10 @@
            MOVE    SPA-GMN-MSG         TO  M97-MSG-NAIYO
            MOVE    SPA-GMN-MSG-STYLE   TO  M97-MSG-STYLE
       *
+      *----(03.04.01)--ADD-START---
+           MOVE   SPA-GMN-DURATION     TO  M97-DURATION
+      *----(03.04.01)--ADD-END-----
+      *
            PERFORM 5001-MAPCUR-SEC
            .
       *
@@ -800,6 +828,10 @@
                WHEN    OTHER
                    MOVE    SPACE            TO  SPA-ERRMSG
            END-EVALUATE
+      *
+      *----(03.04.01)--ADD-START---
+           MOVE    ZERO            TO  M97-DURATION
+      *----(03.04.01)--ADD-END-----
       *
            MOVE    SPACE           TO  MERR
            MOVE    SPA-ERRCD       TO  MERR-ERRCODE
@@ -849,9 +881,11 @@
            INITIALIZE                  JOBKANRI-REC
            MOVE    1               TO  JOB-JOBID
            MOVE    "PRGMNT"        TO  JOB-SHELLID
+           MOVE    SPA-HOSPNUM     TO  JOB-HOSPNUM
            CALL    "ORCSJOB"           USING
                                        ORCSJOBKANRIAREA
                                        JOBKANRI-REC
+                                       SPA-AREA
            .
       *
        820-JOBKANRI-READ1-EXT.
@@ -866,9 +900,11 @@
            INITIALIZE                  JOBKANRI-REC
            MOVE    1               TO  JOB-JOBID
            MOVE    "PRGMNT"        TO  JOB-SHELLID
+           MOVE    SPA-HOSPNUM     TO  JOB-HOSPNUM
            CALL    "ORCSJOB"           USING
                                        ORCSJOBKANRIAREA
                                        JOBKANRI-REC
+                                       SPA-AREA
       *
            IF      SJOBKANRI-RETURN    =   ZERO
                IF      JOB-ERRCD(1:2)      =   "99"
@@ -908,9 +944,11 @@
                    INITIALIZE                  JOBKANRI-REC
                    MOVE    1               TO  JOB-JOBID
                    MOVE    "PRGMNT"        TO  JOB-SHELLID
+                   MOVE    SPA-HOSPNUM         TO  JOB-HOSPNUM
                    CALL    "ORCSJOB"           USING
                                                ORCSJOBKANRIAREA
                                                JOBKANRI-REC
+                                               SPA-AREA
       *         ELSE
       *             MOVE    "0004"          TO  SPA-ERRCD
       *         END-IF
@@ -929,9 +967,11 @@
            INITIALIZE                  JOBKANRI-REC
            MOVE    1               TO  JOB-JOBID
            MOVE    "PRGMNT"        TO  JOB-SHELLID
+           MOVE    SPA-HOSPNUM         TO  JOB-HOSPNUM
            CALL    "ORCSJOB"           USING
                                        ORCSJOBKANRIAREA
                                        JOBKANRI-REC
+                                       SPA-AREA
            .
       *
        820-JOBKANRI-JBS-EXT.
@@ -1002,10 +1042,9 @@
            MOVE    "DBSELECT"      TO  MCP-FUNC
            MOVE    "tbl_pgkanri"   TO  MCP-TABLE
            MOVE    "all"           TO  MCP-PATHNAME
-           CALL    "ORCDBMAIN"     USING
-                                       MCPAREA
-                                       MCPDATA-REC
-                                       SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
            IF      MCP-RC          =   ZERO
                MOVE    ZERO        TO  FLG-PGKANRI
                PERFORM 900-PGKANRI-FETCH-SEC
@@ -1025,10 +1064,9 @@
            MOVE    "DBFETCH"       TO  MCP-FUNC
            MOVE    "tbl_pgkanri"   TO  MCP-TABLE
            MOVE    "all"           TO  MCP-PATHNAME
-           CALL    "ORCDBMAIN"     USING
-                                       MCPAREA
-                                       MCPDATA-REC
-                                       SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            IF      MCP-RC          =   ZERO
                MOVE    ZERO            TO  FLG-PGKANRI
@@ -1049,10 +1087,9 @@
            MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
            MOVE    "tbl_pgkanri"   TO  MCP-TABLE
            MOVE    "all"           TO  MCP-PATHNAME
-           CALL    "ORCDBMAIN"     USING
-                                       MCPAREA
-                                       MCPDATA-REC
-                                       SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
            .
       *
        900-PGKANRI-CLOSE-EXT.
@@ -1063,11 +1100,10 @@
       *****************************************************************
        900-PUT-WINDOW              SECTION.
       *
-           MOVE    "PUTWINDOW"         TO  MCP-FUNC
-           CALL    "ORCDBMAIN"         USING
-                                           MCPAREA
-                                           MCPDATA-REC
-                                           SPA-AREA
+           MOVE   "PUTWINDOW"      TO  MCP-FUNC
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
            .
       *
        900-PUT-WINDOW-EXT.
