@@ -9,7 +9,7 @@
 
 create	table	tbl_sysbase	(
 	GRPNUM		int,
-	HOSPNUM		int,
+	HOSPNUM 	numeric(2,0);
 	HOSPNAME	varchar(120),
 	KIGEN		char(8),
 	HONBUNGRP	int,

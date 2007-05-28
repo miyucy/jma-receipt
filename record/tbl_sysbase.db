@@ -1,6 +1,6 @@
 tbl_sysbase {
 	GRPNUM		int;
-	HOSPNUM		int;
+	HOSPNUM		number(2,0);
 	HOSPNAME	char(120);
 	KIGEN		char(8);
 	HONBUNGRP	int;
