@@ -518,9 +518,11 @@
                    MOVE    IDX             TO  JOB-JOBID
                    MOVE    WRK-CONS-JOB-SHELLID
                                            TO  JOB-SHELLID
+                   MOVE    SPA-HOSPNUM     TO  JOB-HOSPNUM
                    CALL    "ORCSJOB"       USING
                                            ORCSJOBKANRIAREA  
                                            JOBKANRI-REC
+                                           SPA-AREA
                    IF      SJOBKANRI-RETURN
                                            =   ZERO
                        IF      JOB-ENDYMD      =   SPACE
@@ -614,9 +616,11 @@
                    MOVE    IDX             TO  JOB-JOBID
                    MOVE    WRK-CONS-JOB-SHELLID
                                            TO  JOB-SHELLID
+                   MOVE    SPA-HOSPNUM     TO  JOB-HOSPNUM
                    CALL    "ORCSJOB"       USING
                                            ORCSJOBKANRIAREA  
                                            JOBKANRI-REC
+                                           SPA-AREA
                    IF      SJOBKANRI-RETURN
                                            =   ZERO
                        IF      JOB-ENDYMD      =   SPACE
@@ -624,7 +628,7 @@
                            MOVE    SPACE           TO  WRK-RECEERR
                            STRING  "½èÍýÃæ¤Ç¤¹¡Ú"  DELIMITED  BY  SIZE
                                    JOB-SHELLMSG    DELIMITED  BY  SPACE
-                                   "¡Û"            DELIMITED  BY  SIZE      
+                                   "¡Û"            DELIMITED  BY  SIZE 
                                                    INTO  WRK-RECEERR
                            MOVE    SYS-3003-JOBID  TO  IDX
                        END-IF
@@ -692,8 +696,10 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
            INITIALIZE                  JOBKANRI-REC
            MOVE    WRK-CONS-JOB-SHELLID
                                    TO  JOB-SHELLID
+           MOVE    SPA-HOSPNUM     TO  JOB-HOSPNUM
            CALL    "ORCSJOB"       USING   ORCSJOBKANRIAREA  
                                            JOBKANRI-REC
+                                           SPA-AREA
            IF      SJOBKANRI-RETURN    =   ZERO
                CONTINUE
            ELSE
@@ -750,9 +756,11 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                                    TO  JOB-JOBID
            MOVE    WRK-CONS-JOB-SHELLID
                                    TO  JOB-SHELLID
+           MOVE    SPA-HOSPNUM     TO  JOB-HOSPNUM
            CALL    "ORCSJOB"       USING
                                    ORCSJOBKANRIAREA 
                                    JOBKANRI-REC
+                                    SPA-AREA
       *
            MOVE    "JBS"           TO  SJOBKANRI-MODE
            INITIALIZE                  JOBKANRI-REC
@@ -760,10 +768,12 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                                    TO  JOB-JOBID
            MOVE    WRK-CONS-JOB-SHELLID
                                    TO  JOB-SHELLID
-           MOVE    SPA-TERMID      TO  JOB-TERMID                        
+           MOVE    SPA-TERMID      TO  JOB-TERMID 
+           MOVE    SPA-HOSPNUM     TO  JOB-HOSPNUM
            CALL    "ORCSJOB"       USING
                                    ORCSJOBKANRIAREA 
                                    JOBKANRI-REC
+                                   SPA-AREA
       *
            .
        45011-JOBKANRI-HENSYU-EXT.
@@ -797,9 +807,11 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                    MOVE    IDX             TO  JOB-JOBID
                    MOVE    WRK-CONS-JOB-SHELLID
                                            TO  JOB-SHELLID
+                   MOVE    SPA-HOSPNUM     TO  JOB-HOSPNUM
                    CALL    "ORCSJOB"       USING
                                            ORCSJOBKANRIAREA  
                                            JOBKANRI-REC 
+                                           SPA-AREA
                    IF      SJOBKANRI-RETURN    =   ZERO
                        MOVE    JOB-STARTTIME(1:2)
                                                TO  WRK-HH
