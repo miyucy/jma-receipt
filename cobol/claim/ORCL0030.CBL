@@ -56,7 +56,7 @@
       *
        01  FILE-NAME.
       *    03                      PIC X(14)  VALUE  "/var/tmp/claim". 
-           03  FILE-HOSPNUM        PIC 9(02).   
+      *    03  FILE-HOSPNUM        PIC 9(02).   
            03  FILE-PTID           PIC X(80).   
       *    03                      PIC X(06)  VALUE  ".txt".
       *

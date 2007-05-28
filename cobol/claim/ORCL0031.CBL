@@ -572,7 +572,7 @@
                MOVE    MCPDATA-REC         TO  SYS-1001-REC
       *
       *        施設IDから該当の医療機関を決定する
-               IF      LF04-JGYSYASIS-ID (1)   =   SYS-1001-HOSPID
+               IF      LF04-CRE001-FACILITYID  =   SYS-1001-HOSPID
       *            医療機関ＩＤ
                    MOVE    SYS-1001-HOSPNUM    TO  WRK-HOSPNUM
       *            医療機関ＩＤ
