@@ -1731,6 +1731,9 @@
       *****************************************************************
        3002-KAID1-SET-SEC          SECTION.
       *
+      *    印刷制御情報取得サブ
+           CALL    "ORCSONPRTSET"      USING   SPA-AREA
+      *
            EVALUATE    SPA-KAID1CD
       *        前回処方
                WHEN    "0201"
@@ -1792,6 +1795,8 @@
       *    確認画面（ＫＡＩＤ２）ＯＫ処理
       *****************************************************************
        3003-KAID2-SET-SEC          SECTION.
+      *    印刷制御情報取得サブ
+           CALL    "ORCSONPRTSET"      USING   SPA-AREA
       *
            EVALUATE    SPA-KAID2CD
                WHEN    "0101"
@@ -2915,6 +2920,7 @@
                    PERFORM 41021-ORCHC19-HENSYU-SEC
            END-EVALUATE
       *
+           MOVE    SPACE               TO  SPA-PRT-FLG
            CALL    WRK-SYOHOU-PG       USING   SPA-AREA
                                                ORCHC19AREA
            MOVE    HZN-SPA-AREA         TO  SPA-AREA
@@ -3023,7 +3029,8 @@
            END-EVALUATE
       *
            IF      SPA-ERRCD           =   SPACE
-               CALL    "ORCSCH30"          USING   SPA-AREA
+              MOVE    SPACE               TO  SPA-PRT-FLG
+              CALL    "ORCSCH30"          USING   SPA-AREA
                                                    ORCSCH30AREA
            END-IF
       *
