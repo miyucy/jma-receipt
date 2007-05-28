@@ -120,5 +120,5 @@ db	{
 	tbl_hktsrycd;
 	tbl_sysbase;
 	tbl_mstkanri;
-	tbl_clm_uid.db;
+	tbl_clm_uid;
 };
