@@ -5,6 +5,8 @@
       ************************************************************
       *  コピー句修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      * 03.05.00     NACL-多々納  07/05/28  診療、明細テーブル 20 → 30
+      *                                     医事請求コード名称 X(80)
       ************************************************************
       *01  LF02-REC.
       * [MMLヘッダ]
@@ -172,7 +174,7 @@
       * 健康保険種別コードテーブル名
            03  LF02-HKNSBTTBL           PIC X(7).
       *
-           03  LF02-SRYTBL             OCCURS  20.
+           03  LF02-SRYTBL             OCCURS  30.
       *診療行為区分コード (claimA:classCode)
                05  LF02-SRYCD          PIC  X(03).
       * 診療行為区分コードのテーブル名 (claimA:classCodeId)
@@ -203,7 +205,7 @@
       *包括区分包括フラグ(true OR false)
                05  LF02-PPSFLG         PIC  X(05).
       *明細テーブル
-               05  LF02-SRYTBL       OCCURS  20.
+               05  LF02-SRYTBL       OCCURS  30.
       *診療種別区分コード(0:手技、1:材料,2:薬剤)
                    07  LF02-SRYSYUBETSU
                                        PIC  X(01).
@@ -219,7 +221,8 @@
       *医事請求コード体系名
                    07  LF02-ALSTBLID   PIC  X(20).
       *医事請求コード名称
-                   07  LF02-ALSNAME    PIC  X(40).
+      *@@@@@       07  LF02-ALSNAME    PIC  X(40).
+                   07  LF02-ALSNAME    PIC  X(80).
       *数量(Z編集)
                    07  LF02-SURYO      PIC  X(12).
       *数量コード
