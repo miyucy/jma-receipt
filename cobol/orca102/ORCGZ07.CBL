@@ -407,28 +407,7 @@
            MOVE    SPACE               TO  WRK-MAE-SRYCD
            PERFORM UNTIL    (FLG-TENSU     =   1  )  OR
                             (IDX           >=  200)
-      *        MOVE    ZERO                TO  FLG-OK
-      *        MOVE    TNS-YUKOSTYMD       TO  WRK-TNS-YUKOSTYMD
-      *
-      *        MOVE    SPA-NAI-YUKOYMD     TO  TNS-YUKOSTYMD
-      *
-      *        MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
-      *        MOVE    "DBSELECT"          TO  MCP-FUNC
-      *        MOVE    "TENSU-KEY21"       TO  ORC-DBPATH
-      *        CALL    "ORCMCPSUB"         USING
-      *                                    MCPAREA
-      *                                    ORCMCPAREA
-      *                                    MCPDATA-REC
-      *        IF      MCP-RC              =   ZERO
-      *            MOVE    "TENSU-KEY21"       TO  ORC-DBPATH
-      *            PERFORM 910-TENSU-NEXT-SEC
-      *        ELSE
-      *            MOVE    1                   TO  FLG-TENSU
-      *        END-IF
-      *        判定
-      *        IF      FLG-TENSU           =   1
-                   MOVE    1               TO  FLG-OK
-      *        END-IF
+               MOVE    1               TO  FLG-OK
                IF      FLG-OK              =   1
       *
       *        テーブル編集
@@ -481,10 +460,9 @@
                    UNTIL       IDX     >   SPA-TENSU-MAX
       *        入力コード検索
                MOVE    SPACE               TO  INPUTCD-REC
-      *********MOVE    SPA-HOSPID          TO  ICD-HOSPID
+               MOVE    SPA-HOSPNUM         TO  ICD-HOSPNUM
                MOVE    SPA-GMN-TSRYCD(IDX) TO  ICD-SRYCD
       *
-               MOVE    SPA-HOSPNUM         TO  ICD-HOSPNUM
                MOVE    INPUTCD-REC         TO  MCPDATA-REC
                MOVE    "tbl_inputcd"       TO  MCP-TABLE
                MOVE    "key4"               TO  MCP-PATHNAME
@@ -604,7 +582,6 @@
                GO      TO      4001-YUKOYMD-CHK-EXT
            END-IF
       *
-      *
            MOVE    1                   TO  SPA-GMN-PAGE
            PERFORM 3101-TENSU-HENSYU-SEC
       *
@@ -648,10 +625,9 @@
       *
            MOVE    SPACE               TO  INPUTCD-REC
            INITIALIZE                      INPUTCD-REC
-      *****MOVE    SPA-HOSPID          TO  ICD-HOSPID
+           MOVE    SPA-HOSPNUM         TO  ICD-HOSPNUM
            MOVE    SPA-GMN-OLD-SRYCD   TO  ICD-SRYCD
       *
-           MOVE    SPA-HOSPNUM         TO  ICD-HOSPNUM
            MOVE    INPUTCD-REC         TO  MCPDATA-REC
            MOVE    "tbl_inputcd"       TO  MCP-TABLE
            MOVE    "key4"               TO  MCP-PATHNAME
@@ -838,10 +814,9 @@
       *
       *    入力コードチェック
            MOVE    SPACE               TO  INPUTCD-REC
-      *****MOVE    SPA-HOSPID          TO  ICD-HOSPID
+           MOVE    SPA-HOSPNUM         TO  ICD-HOSPNUM
            MOVE    SPA-GMN-SRYCD       TO  ICD-SRYCD
       *
-           MOVE    SPA-HOSPNUM         TO  ICD-HOSPNUM
            MOVE    INPUTCD-REC         TO  MCPDATA-REC
            MOVE    "tbl_inputcd"       TO  MCP-TABLE
            MOVE    "key4"               TO  MCP-PATHNAME
@@ -1075,7 +1050,7 @@
       *
       *    入力コード使用チェック
            INITIALIZE                  INPUTCD-REC
-      *****MOVE    SPA-HOSPID          TO  ICD-HOSPID
+           MOVE    SPA-HOSPNUM         TO  ICD-HOSPNUM
            MOVE    SPA-GMN-INPUTCD(IDX)
                                        TO  ICD-INPUTCD
            IF      FLG-KANJI           =   1
@@ -1101,7 +1076,6 @@
       *
            MOVE    ICD-CDSYU           TO  SPA-GMN-CDSYU (IDX)
       *
-           MOVE    SPA-HOSPNUM         TO  ICD-HOSPNUM
            MOVE    INPUTCD-REC         TO  MCPDATA-REC
            MOVE    "tbl_inputcd"       TO  MCP-TABLE
            MOVE    "key2"              TO  MCP-PATHNAME
@@ -1391,13 +1365,12 @@
                               (SPA-GMN-INPUTCD (IDX)   =   SPACE)
       *        入力コード検索
                MOVE    SPACE               TO  INPUTCD-REC
-      *********MOVE    SPA-HOSPID          TO  ICD-HOSPID
+               MOVE    SPA-HOSPNUM         TO  ICD-HOSPNUM
                MOVE    SPA-GMN-INPUTCD (IDX)
                                            TO  ICD-INPUTCD
                MOVE    SPA-GMN-CDSYU   (IDX)
                                            TO  ICD-CDSYU
       *
-               MOVE    SPA-HOSPNUM         TO  ICD-HOSPNUM
                MOVE    INPUTCD-REC         TO  MCPDATA-REC
                MOVE    "DBSELECT"          TO  MCP-FUNC
                MOVE    "tbl_inputcd"       TO  MCP-TABLE
@@ -1423,7 +1396,6 @@
                    MOVE    SMCNDATE-YMD        TO  ICD-UPYMD
                    MOVE    SMCNDATE-HMS        TO  ICD-UPHMS
       *
-                   MOVE    SPA-HOSPNUM         TO  ICD-HOSPNUM
                    MOVE    INPUTCD-REC         TO  MCPDATA-REC
                    MOVE    "DBUPDATE"          TO  MCP-FUNC
                    MOVE    "tbl_inputcd"       TO  MCP-TABLE
@@ -1445,7 +1417,7 @@
       *        入力コード追加
                IF       FLG-INPUTCD        =   1
                    MOVE    SPACE               TO  INPUTCD-REC
-      *************MOVE    SPA-HOSPID          TO  ICD-HOSPID
+                   MOVE    SPA-HOSPNUM         TO  ICD-HOSPNUM
                    MOVE    SPA-GMN-INPUTCD (IDX)
                                                TO  ICD-INPUTCD
                    MOVE    SPA-GMN-CDSYU   (IDX)
@@ -1457,7 +1429,6 @@
                    MOVE    SMCNDATE-YMD        TO  ICD-UPYMD
                    MOVE    SMCNDATE-HMS        TO  ICD-UPHMS
       *
-                   MOVE    SPA-HOSPNUM         TO  ICD-HOSPNUM
                    MOVE    INPUTCD-REC         TO  MCPDATA-REC
                    MOVE    "DBINSERT"          TO  MCP-FUNC
                    MOVE    "tbl_inputcd"       TO  MCP-TABLE
@@ -1489,10 +1460,9 @@
       *
            MOVE    SPACE               TO  INPUTCD-REC
            INITIALIZE                      INPUTCD-REC
-      *****MOVE    SPA-HOSPID          TO  ICD-HOSPID
+           MOVE    SPA-HOSPNUM         TO  ICD-HOSPNUM
            MOVE    SPA-GMN-OLD-SRYCD   TO  ICD-SRYCD
       *
-           MOVE    SPA-HOSPNUM         TO  ICD-HOSPNUM
            MOVE    INPUTCD-REC         TO  MCPDATA-REC
            MOVE    "tbl_inputcd"       TO  MCP-TABLE
            MOVE    "key4"              TO  MCP-PATHNAME
@@ -1513,7 +1483,6 @@
                MOVE    SMCNDATE-YMD        TO  ICD-UPYMD
                MOVE    SMCNDATE-HMS        TO  ICD-UPHMS
       *
-               MOVE    SPA-HOSPNUM         TO  ICD-HOSPNUM
                MOVE    INPUTCD-REC         TO  MCPDATA-REC
                MOVE    "DBUPDATE"          TO  MCP-FUNC
                MOVE    "tbl_inputcd"       TO  MCP-TABLE
