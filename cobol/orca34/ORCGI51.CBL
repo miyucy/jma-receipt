@@ -35,6 +35,7 @@
       *                                     入院の保険適用外金額欄追加
       *  01.00.06    NACL-太田    03.04.02  負担金計算サブ引数修正
       *  01.00.07    NACL-太田    04.01.23  日別収納マスタ対応
+      *  03.05.00    NACL-太田    07.05.29  グループ診療対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -88,7 +89,6 @@
            03  FLG-SYOSIN-DUMMY    PIC 9(01).
       *
            03  FLG-TOKTEI          PIC 9(01).
-           03  FLG-DBRC            PIC 9(01).
            03  FLG-PTNYUINRRK      PIC 9(01).
            03  FLG-HKNCOMBI        PIC 9(01).
            03  FLG-ENTRYCHK        PIC 9(01).
@@ -130,8 +130,6 @@
            03  WRK-MCP-WIDGET              PIC X(64).
            03  WRK-MOTOPG                  PIC X(08).
            03  WRK-KANACHK-MAE-INPUT       PIC X(400).
-      *    パス名
-           03  WRK-DBPATH                  PIC X(20).
            03  WRK-CALC-YMD1.
                05  WRK-CALC-YY1            PIC 9(04).
                05  WRK-CALC-MM1            PIC 9(02).
@@ -312,7 +310,6 @@
       *    ＤＢ検索
       *01  MCPDATA-REC                 PIC X(5000).
            COPY    "MCPDATA.INC".
-           COPY    "CPORCMCP.INC".
       *
       *****************************************************************
       *    連絡　領域
@@ -496,40 +493,15 @@
            MOVE    WRK-SPA-PTID        TO  SPA-NAI-I51-PTID
            MOVE    WRK-SPA-PTNUM       TO  SPA-GMN-I51-PTNUM
       *
-           PERFORM 3001-PTINF-SELECT-SEC
+           PERFORM 900-PTINF-KEY-SEL-SEC
+           IF    ( FLG-PTINF       =   ZERO )
+               PERFORM 4101-PTINF-SET-SEC
+           END-IF
       *
            .
        3001-P97-SET-EXT.
            EXIT.
       *
-      *****************************************************************
-      *    患者情報検索処理
-      *****************************************************************
-       3001-PTINF-SELECT-SEC              SECTION.
-      *
-      *    患者マスタ検索
-           INITIALIZE  PTINF-REC
-      *****MOVE    SPA-HOSPID          TO  PTINF-HOSPID
-           MOVE    SPA-NAI-I51-PTID    TO  PTINF-PTID
-           MOVE    SPA-HOSPNUM         TO  PTINF-HOSPNUM
-           MOVE    PTINF-REC           TO  MCPDATA-REC
-      *
-           MOVE    "PTINF-KEY"         TO  WRK-DBPATH
-           PERFORM 900-TBL-SELECT-SEC
-           IF    ( FLG-DBRC        =   ZERO )
-      *
-      *        患者情報設定
-               PERFORM 4101-PTINF-SET-SEC
-           END-IF
-      *
-      *    患者マスタクローズ
-           MOVE    "PTINF-KEY"         TO  WRK-DBPATH
-           PERFORM 900-TBL-CLOSE-SEC
-      *
-      *
-           .
-       3001-PTINF-SELECT-EXT.
-           EXIT.
       *****************************************************************
       *    画面編集処理
       *****************************************************************
@@ -1129,17 +1101,8 @@
                    GO  TO  4100-PTNUM-CHK-EXT
            END-EVALUATE
       *
-      *    患者マスタ検索
-           INITIALIZE  PTINF-REC
-      *****MOVE    SPA-HOSPID      TO  PTINF-HOSPID
-           MOVE    SPA-NAI-I51-PTID
-                                   TO  PTINF-PTID
-           MOVE    SPA-HOSPNUM     TO  PTINF-HOSPNUM
-           MOVE    PTINF-REC       TO  MCPDATA-REC
-      *
-           MOVE    "PTINF-KEY"     TO  WRK-DBPATH
-           PERFORM 900-TBL-SELECT-SEC
-           IF    ( FLG-DBRC        =   ZERO )
+           PERFORM 900-PTINF-KEY-SEL-SEC
+           IF    ( FLG-PTINF       =   ZERO )
       *
       *        患者情報設定
                PERFORM 4101-PTINF-SET-SEC
@@ -1148,10 +1111,6 @@
                MOVE    "0002"      TO  SPA-ERRCD
                                        SPA-NAI-I51-PTNUM-ERR
            END-IF
-      *
-      *    患者マスタクローズ
-           MOVE    "PTINF-KEY"     TO  WRK-DBPATH
-           PERFORM 900-TBL-CLOSE-SEC
       *
            IF    ( SPA-ERRCD   NOT =   SPACE )
                GO  TO  4100-PTNUM-CHK-EXT
@@ -1167,7 +1126,6 @@
       *****************************************************************
        4101-PTINF-SET-SEC              SECTION.
       *
-           MOVE    MCPDATA-REC     TO  PTINF-REC
       *    患者ＩＤ
            MOVE    PTINF-PTID      TO  SPA-NAI-I51-PTID
       *    患者氏名
@@ -1195,24 +1153,23 @@
       *    入院履歴マスタより患者の入院情報を取得
            MOVE    ZERO            TO  FLG-PTNYUINRRK
            INITIALIZE  PTNYUINRRK-REC
-      *****MOVE    SPA-HOSPID      TO  PTNYUINRRK-HOSPID
+           MOVE    SPA-HOSPNUM      TO  PTNYUINRRK-HOSPNUM
            MOVE    SPA-NAI-I51-PTID
                                    TO  PTNYUINRRK-PTID
       *
-           MOVE    SPA-HOSPNUM     TO  PTNYUINRRK-HOSPNUM
            MOVE    PTNYUINRRK-REC  TO  MCPDATA-REC
-           MOVE    "PTNYUINRRK-KEY29"
-                                   TO  WRK-DBPATH
-           PERFORM 900-TBL-SELECT-SEC
-           IF    ( FLG-DBRC    NOT =   ZERO )
+           MOVE    "tbl_ptnyuinrrk" TO MCP-TABLE
+           MOVE    "key29"         TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF    ( MCP-RC      NOT =   ZERO )
                MOVE    1           TO  FLG-PTNYUINRRK
            ELSE
                MOVE    MCPDATA-REC TO  PTNYUINRRK-REC
            END-IF
       *
-           MOVE    "PTNYUINRRK-KEY29"
-                                   TO  WRK-DBPATH
-           PERFORM 900-TBL-CLOSE-SEC
+           MOVE    "tbl_ptnyuinrrk" TO MCP-TABLE
+           MOVE    "key29"         TO  MCP-PATHNAME
+           PERFORM 910-DBCLOSECURSOR-SEC
       *
       *    存在しない場合はエラー
            IF    ( FLG-PTNYUINRRK  NOT =   ZERO )
@@ -1378,21 +1335,22 @@
            INITIALIZE  PTTEIKIRRK-REC
       *
            INITIALIZE                      PTTEIKIRRK-REC
-      *****MOVE    SPA-HOSPID          TO  PTTEIKIRRK-HOSPID
+           MOVE    SPA-HOSPNUM          TO  PTTEIKIRRK-HOSPNUM
            MOVE    PTNYUINRRK-PTID     TO  PTTEIKIRRK-PTID
            MOVE    PTNYUINRRK-RRKNUM   TO  PTTEIKIRRK-RRKNUM
-           MOVE    SPA-HOSPNUM         TO  PTTEIKIRRK-HOSPNUM
            MOVE    PTTEIKIRRK-REC      TO  MCPDATA-REC
-           MOVE    "PTTEIKIRRK-KEY7"   TO  WRK-DBPATH
-           PERFORM 900-TBL-SELECT-SEC
-           IF    ( FLG-DBRC            =   ZERO )
+           MOVE    "tbl_ptteikirrk"    TO  MCP-TABLE
+           MOVE    "key7"              TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF    ( MCP-RC              =   ZERO )
                MOVE    MCPDATA-REC     TO  PTTEIKIRRK-REC
                MOVE    PTTEIKIRRK-SKYEDYMD
                                        TO  WRK-MAE-SKYEDYMD
            END-IF
       *
-           MOVE    "PTTEIKIRRK-KEY7"   TO  WRK-DBPATH
-           PERFORM 900-TBL-CLOSE-SEC
+           MOVE    "tbl_ptteikirrk"    TO  MCP-TABLE
+           MOVE    "key7"              TO  MCP-PATHNAME
+           PERFORM 910-DBCLOSECURSOR-SEC
       *
            .
       *
@@ -1406,23 +1364,24 @@
            INITIALIZE              SYSKANRI-REC
            MOVE    ZERO            TO  FLG-SYSKANRI
       *
+           MOVE    SPA-HOSPNUM     TO  SYS-HOSPNUM
            MOVE    WRK-KANRICD     TO  SYS-KANRICD
            MOVE    WRK-KBNCD       TO  SYS-KBNCD
-           MOVE    WRK-KJNYMD      TO  ORC-DBYMD
-           MOVE    SPA-HOSPNUM     TO  SYS-HOSPNUM
+           MOVE    WRK-KJNYMD      TO  SYS-STYUKYMD
+                                       SYS-EDYUKYMD
            MOVE    SYSKANRI-REC    TO  MCPDATA-REC
-           MOVE    "SYSKANRI-KEY10"
-                                   TO  WRK-DBPATH
-           PERFORM 900-TBL-SELECT-SEC
-           IF    ( FLG-DBRC    =   ZERO )
+           MOVE    "tbl_syskanri"  TO  MCP-TABLE
+           MOVE    "key10"         TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF    ( MCP-RC      =   ZERO )
                CONTINUE
            ELSE
                MOVE    1          TO  FLG-SYSKANRI
            END-IF
       *
-           MOVE    "SYSKANRI-KEY10"
-                                   TO  WRK-DBPATH
-           PERFORM 900-TBL-CLOSE-SEC
+           MOVE    "tbl_syskanri"  TO  MCP-TABLE
+           MOVE    "key10"         TO  MCP-PATHNAME
+           PERFORM 910-DBCLOSECURSOR-SEC
       *
            .
        4101-SYSKANRI-SEL-EXT.
@@ -1630,7 +1589,10 @@
            IF    ( SPA-LAST-PTNUM  NOT =   SPACE )
                MOVE    SPA-LAST-PTID   TO  SPA-NAI-I51-PTID
                MOVE    SPA-LAST-PTNUM  TO  SPA-GMN-I51-PTNUM
-               PERFORM 4101-PTINF-SELECT-SEC 
+               PERFORM 900-PTINF-KEY-SEL-SEC
+               IF    ( FLG-PTINF       =   ZERO )
+                   PERFORM 4101-PTINF-SET-SEC
+               END-IF
            END-IF
       *
            .
@@ -1638,34 +1600,6 @@
        420-MAEPTINF-SET-EXT.
            EXIT.
       *
-      *****************************************************************
-      *    患者情報検索処理
-      *****************************************************************
-       4101-PTINF-SELECT-SEC              SECTION.
-      *
-      *    患者マスタ検索
-           INITIALIZE  PTINF-REC
-      *****MOVE    SPA-HOSPID          TO  PTINF-HOSPID
-           MOVE    SPA-NAI-I51-PTID    TO  PTINF-PTID
-           MOVE    SPA-HOSPNUM         TO  PTINF-HOSPNUM
-           MOVE    PTINF-REC           TO  MCPDATA-REC
-      *
-           MOVE    "PTINF-KEY"         TO  WRK-DBPATH
-           PERFORM 900-TBL-SELECT-SEC
-           IF    ( FLG-DBRC        =   ZERO )
-      *
-      *        患者情報設定
-               PERFORM 4101-PTINF-SET-SEC
-           END-IF
-      *
-      *    患者マスタクローズ
-           MOVE    "PTINF-KEY"         TO  WRK-DBPATH
-           PERFORM 900-TBL-CLOSE-SEC
-      *
-      *
-           .
-       4101-PTINF-SELECT-EXT.
-           EXIT.
       *****************************************************************
       *    仮計算　処理
       *****************************************************************
@@ -1754,8 +1688,7 @@
                                        LNK-SYUNOU-REC-T
                                        LNK-SYUDAY-REC-T
       *
-           MOVE    SPA-HOSPID      TO  LNK-S02-HOSPID
-      *****MOVE    SPA-HOSPNUM     TO  LNK-S02-HOSPNUM
+           MOVE    SPA-HOSPNUM      TO  LNK-S02-HOSPNUM
            MOVE    "1"             TO  LNK-S02-NYUGAIKBN
            MOVE    SPA-NAI-I51-PTID
                                    TO  LNK-S02-PTID
@@ -1767,8 +1700,7 @@
                                    TO  LNK-S02-SKYEDYMD
            MOVE    SPA-SYSYMD      TO  LNK-S02-SYSYMD
            MOVE    "1"             TO  LNK-S02-SYORI-KBN
-           DISPLAY "LNK-S02-HOSPID             = " LNK-S02-HOSPID
-      *****DISPLAY "LNK-S02-HOSPNUM            = " LNK-S02-HOSPNUM
+           DISPLAY "LNK-S02-HOSPNUM             = " LNK-S02-HOSPNUM
            DISPLAY "LNK-S02-NYUGAIKBN          = " LNK-S02-NYUGAIKBN
            DISPLAY "LNK-S02-PTID               = " LNK-S02-PTID
            DISPLAY "LNK-S02-NYUIN-TSUSAN-NISSU = "
@@ -2308,63 +2240,55 @@
                                             SPA-GMN-I51-ZENMISYU-GAI
       *    入院分未収集計
            INITIALIZE                       SYUNOU-REC
-      *****MOVE    SPA-HOSPID          TO   SYU-HOSPID
+           MOVE    SPA-HOSPNUM          TO   SYU-HOSPNUM
            MOVE    "1"                 TO   SYU-NYUGAIKBN
            MOVE    SPA-NAI-I51-PTID    TO   SYU-PTID
-           MOVE    SPA-HOSPNUM         TO   SYU-HOSPNUM
            MOVE    SYUNOU-REC          TO   MCPDATA-REC
-           MOVE    "SYUNOU-KEY2"       TO   ORC-DBPATH
-           PERFORM  910-DB-SELECT-SEC
-           IF      MCP-RC              =    ZERO
-               MOVE    "SYUNOU-KEY2"   TO   ORC-DBPATH
-               PERFORM   910-DB-READ-SEC
-               PERFORM   UNTIL  MCP-RC  NOT =  ZERO
-                      MOVE    MCPDATA-REC     TO  SYUNOU-REC
-                      IF      SYU-SKYMONEY     >   SYU-NYUKIN-TOTAL
-                              COMPUTE   SPA-GMN-I51-ZENMISYU-NYU   =
-                                        SPA-GMN-I51-ZENMISYU-NYU   +
-                                        (SYU-SKYMONEY   -
-                                         SYU-NYUKIN-TOTAL)
-                      END-IF
-                      MOVE    "SYUNOU-KEY2"   TO   ORC-DBPATH
-                      PERFORM   910-DB-READ-SEC
-               END-PERFORM
-           ELSE
-               MOVE    ZERO            TO   SPA-GMN-I51-ZENMISYU-NYU
-           END-IF
+           MOVE    "tbl_syunou"        TO   MCP-TABLE
+           MOVE    "key2"              TO   MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           PERFORM UNTIL  MCP-RC  NOT =  ZERO
+               MOVE    MCPDATA-REC     TO  SYUNOU-REC
+               IF      SYU-SKYMONEY     >   SYU-NYUKIN-TOTAL
+                       COMPUTE   SPA-GMN-I51-ZENMISYU-NYU   =
+                                 SPA-GMN-I51-ZENMISYU-NYU   +
+                                (SYU-SKYMONEY   -
+                                 SYU-NYUKIN-TOTAL)
+               END-IF
+               MOVE    "tbl_syunou"        TO   MCP-TABLE
+               MOVE    "key2"              TO   MCP-PATHNAME
+               PERFORM   910-DBFETCH-SEC
+           END-PERFORM
       *
-           MOVE    "SYUNOU-KEY2"  TO  WRK-DBPATH
-           PERFORM 900-TBL-CLOSE-SEC
+           MOVE    "tbl_syunou"        TO   MCP-TABLE
+           MOVE    "key2"              TO   MCP-PATHNAME
+           PERFORM 910-DBCLOSECURSOR-SEC
       *
       *    外来分未収集計
            INITIALIZE                       SYUNOU-REC
-      *****MOVE    SPA-HOSPID          TO   SYU-HOSPID
+           MOVE    SPA-HOSPNUM          TO   SYU-HOSPNUM
            MOVE    "2"                 TO   SYU-NYUGAIKBN
            MOVE    SPA-NAI-I51-PTID    TO   SYU-PTID
-           MOVE    SPA-HOSPNUM         TO   SYU-HOSPNUM
            MOVE    SYUNOU-REC          TO   MCPDATA-REC
-           MOVE    "SYUNOU-KEY2"       TO   ORC-DBPATH
-           PERFORM  910-DB-SELECT-SEC
-           IF      MCP-RC              =    ZERO
-               MOVE    "SYUNOU-KEY2"   TO   ORC-DBPATH
-               PERFORM   910-DB-READ-SEC
-               PERFORM   UNTIL  MCP-RC  NOT =  ZERO
-                      MOVE    MCPDATA-REC     TO  SYUNOU-REC
-                      IF      SYU-SKYMONEY     >   SYU-NYUKIN-TOTAL
-                              COMPUTE   SPA-GMN-I51-ZENMISYU-GAI   =
-                                        SPA-GMN-I51-ZENMISYU-GAI   +
-                                        (SYU-SKYMONEY   -
-                                         SYU-NYUKIN-TOTAL)
-                      END-IF
-                      MOVE    "SYUNOU-KEY2"   TO   ORC-DBPATH
-                      PERFORM   910-DB-READ-SEC
-               END-PERFORM
-           ELSE
-               MOVE    ZERO            TO   SPA-GMN-I51-ZENMISYU-GAI
-           END-IF
+           MOVE    "tbl_syunou"        TO   MCP-TABLE
+           MOVE    "key2"              TO   MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           PERFORM UNTIL  MCP-RC  NOT =  ZERO
+               MOVE    MCPDATA-REC     TO  SYUNOU-REC
+               IF      SYU-SKYMONEY     >   SYU-NYUKIN-TOTAL
+                   COMPUTE   SPA-GMN-I51-ZENMISYU-GAI   =
+                             SPA-GMN-I51-ZENMISYU-GAI   +
+                            (SYU-SKYMONEY   -
+                             SYU-NYUKIN-TOTAL)
+               END-IF
+               MOVE    "tbl_syunou"        TO   MCP-TABLE
+               MOVE    "key2"              TO   MCP-PATHNAME
+               PERFORM   910-DBFETCH-SEC
+           END-PERFORM
       *
-           MOVE    "SYUNOU-KEY2"  TO  WRK-DBPATH
-           PERFORM 900-TBL-CLOSE-SEC
+           MOVE    "tbl_syunou"        TO   MCP-TABLE
+           MOVE    "key2"              TO   MCP-PATHNAME
+           PERFORM 910-DBCLOSECURSOR-SEC
       *
             .
        3100-MISYU-DAT-EDIT-EXT.
@@ -2476,18 +2400,17 @@
       *
       *    医療機関情報−所在地、連絡先
            MOVE    SPACE               TO  SYS-1013-REC
-           MOVE    "1013"              TO  SYS-1013-KANRICD
-           MOVE    ZERO                TO  SYS-1013-STYUKYMD
-           MOVE    ALL "9"             TO  SYS-1013-EDYUKYMD
-           MOVE    SPA-SYSYMD
-                                       TO  ORC-DBYMD
-      *    システム管理検索
            MOVE    SPA-HOSPNUM         TO  SYS-1013-HOSPNUM
+           MOVE    "1013"              TO  SYS-1013-KANRICD
+           MOVE    SPA-SYSYMD          TO  SYS-1013-STYUKYMD
+                                           SYS-1013-EDYUKYMD
+      *    システム管理検索
            MOVE    SYS-1013-REC        TO  MCPDATA-REC
-           MOVE    "SYSKANRI-KEY2"     TO  WRK-DBPATH
-           PERFORM 900-TBL-SELECT-SEC
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
       *
-           PERFORM UNTIL ( FLG-DBRC    NOT =   ZERO )
+           PERFORM UNTIL ( MCP-RC      NOT =   ZERO )
       *
                MOVE    MCPDATA-REC     TO  SYS-1013-REC
       *
@@ -2526,12 +2449,14 @@
                    END-EVALUATE
                END-IF
       *
-               MOVE    "SYSKANRI-KEY2"      TO  WRK-DBPATH
-               PERFORM 900-TBL-READ-SEC
+               MOVE    "tbl_syskanri"      TO  MCP-TABLE
+               MOVE    "key2"              TO  MCP-PATHNAME
+               PERFORM 910-DBFETCH-SEC
            END-PERFORM
       *
-           MOVE    "SYSKANRI-KEY2"     TO  WRK-DBPATH
-           PERFORM 900-TBL-CLOSE-SEC
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           PERFORM 910-DBCLOSECURSOR-SEC
       *
            .
        3100-JIHIMSG-HEN-EXT.
@@ -2867,208 +2792,122 @@
        800-ENRTRY-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    テーブル検索処理
+      *    患者情報検索処理
       *****************************************************************
-       900-TBL-SELECT-SEC              SECTION.
+       900-PTINF-KEY-SEL-SEC           SECTION.
       *
-           MOVE    ZERO            TO  FLG-DBRC
-           MOVE    WRK-DBPATH      TO  ORC-DBPATH
-           PERFORM 910-DB-SELECT-SEC
+           MOVE    ZERO                TO  FLG-PTINF
+      *
+           INITIALIZE  PTINF-REC
+           MOVE    SPA-HOSPNUM         TO  PTINF-HOSPNUM
+           MOVE    SPA-NAI-I51-PTID    TO  PTINF-PTID
+           MOVE    PTINF-REC           TO  MCPDATA-REC
+      *
+           MOVE    "tbl_ptinf"         TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
            IF    ( MCP-RC          =   ZERO )
-               MOVE    WRK-DBPATH  TO  ORC-DBPATH
-               PERFORM 910-DB-READ-SEC
-               IF    ( MCP-RC          =   ZERO )
-                   CONTINUE
-               ELSE
-                   MOVE    1       TO  FLG-DBRC
-               END-IF
+               MOVE    MCPDATA-REC     TO  PTINF-REC
            ELSE
-               MOVE    1           TO  FLG-DBRC
+               MOVE    1               TO  FLG-PTINF
            END-IF
       *
-           .
-       900-TBL-SELECT-EXT.
-           EXIT.
-      *****************************************************************
-      *    テーブル読込処理
-      *****************************************************************
-       900-TBL-READ-SEC                SECTION.
-      *
-           MOVE    ZERO            TO  FLG-DBRC
-           MOVE    WRK-DBPATH      TO  ORC-DBPATH
-           PERFORM 910-DB-READ-SEC
-           IF    ( MCP-RC          =   ZERO )
-               CONTINUE
-           ELSE
-               MOVE    1           TO  FLG-DBRC
-           END-IF
+      *    患者マスタクローズ
+           MOVE    "tbl_ptinf"         TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 910-DBCLOSECURSOR-SEC
       *
            .
-       900-TBL-READ-EXT.
-           EXIT.
-      *****************************************************************
-      *    テーブル更新処理
-      *****************************************************************
-       900-TBL-UPDATE-SEC              SECTION.
-      *
-           MOVE    ZERO            TO  FLG-DBRC
-           MOVE    WRK-DBPATH      TO  ORC-DBPATH
-           PERFORM 910-DB-UPDATE-SEC
-           IF    ( MCP-RC          =   ZERO )
-               CONTINUE
-           ELSE
-               MOVE    1           TO  FLG-DBRC
-           END-IF
-      *
-           .
-       900-TBL-UPDATE-EXT.
-           EXIT.
-      *****************************************************************
-      *    テーブル追加処理
-      *****************************************************************
-       900-TBL-INSERT-SEC              SECTION.
-      *
-           MOVE    ZERO            TO  FLG-DBRC
-           MOVE    WRK-DBPATH      TO  ORC-DBPATH
-           PERFORM 910-DB-INSERT-SEC
-           IF    ( MCP-RC          =   ZERO )
-               CONTINUE
-           ELSE
-               MOVE    1           TO  FLG-DBRC
-           END-IF
-      *
-           .
-       900-TBL-INSERT-EXT.
-           EXIT.
-      *****************************************************************
-      *    テーブル削除処理
-      *****************************************************************
-       900-TBL-DELETE-SEC              SECTION.
-      *
-           MOVE    ZERO            TO  FLG-DBRC
-           MOVE    WRK-DBPATH      TO  ORC-DBPATH
-           PERFORM 910-DB-DELETE-SEC
-           IF    ( MCP-RC          =   ZERO )
-               CONTINUE
-           ELSE
-               MOVE    1           TO  FLG-DBRC
-           END-IF
-      *
-           .
-       900-TBL-DELETE-EXT.
-           EXIT.
-      *****************************************************************
-      *    テーブルクローズ処理
-      *****************************************************************
-       900-TBL-CLOSE-SEC               SECTION.
-      *
-           MOVE    WRK-DBPATH      TO  ORC-DBPATH
-           PERFORM 910-DB-CLOSE-SEC
-      *
-           .
-       900-TBL-CLOSE-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    ＤＢ削除処理
-      *****************************************************************
-       910-DB-DELETE-SEC               SECTION.
-      *
-           MOVE    "DBDELETE"          TO  MCP-FUNC
-           CALL    "ORCMCPSUB"         USING
-                                       MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC
-      *
-           .
-      *
-       910-DB-UPDATE-EXT.
-           EXIT.
-      *****************************************************************
-      *    ＤＢ更新処理
-      *****************************************************************
-       910-DB-UPDATE-SEC               SECTION.
-      *
-           MOVE    "DBUPDATE"          TO  MCP-FUNC
-           CALL    "ORCMCPSUB"         USING
-                                       MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC
-      *
-           .
-      *
-       910-DB-UPDATE-EXT.
-           EXIT.
-      *****************************************************************
-      *    ＤＢ追加処理
-      *****************************************************************
-       910-DB-INSERT-SEC               SECTION.
-      *
-           MOVE    "DBINSERT"          TO  MCP-FUNC
-           CALL    "ORCMCPSUB"         USING
-                                       MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC
-      *
-           .
-      *
-       910-DB-INSERT-EXT.
+       900-PTINF-KEY-SEL-EXT.
            EXIT.
       *****************************************************************
       *    ＤＢ検索処理
       *****************************************************************
-       910-DB-SELECT-SEC               SECTION.
+       910-DBSELECT-SEC               SECTION.
       *
-           MOVE    "DBSELECT"          TO  MCP-FUNC
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           MOVE    "DBSELECT"      TO  MCP-FUNC
+           CALL    "ORCDBMAIN"         USING
+                                       MCPAREA
+                                       MCPDATA-REC
+                                       SPA-AREA
+           IF    ( MCP-RC          =   ZERO )
+               PERFORM 910-DBFETCH-SEC
+           END-IF
       *
            .
       *
-       910-DB-SELECT-EXT.
+       910-DBSELECT-EXT.
+           EXIT.
+      *****************************************************************
+      *    ＤＢ検索処理
+      *****************************************************************
+       911-DBSELECT-SEC               SECTION.
+      *
+           MOVE    "DBSELECT"      TO  MCP-FUNC
+           CALL    "ORCDBMAIN"         USING
+                                       MCPAREA
+                                       MCPDATA-REC
+                                       SPA-AREA
+      *
+           .
+      *
+       911-DBSELECT-EXT.
            EXIT.
       *****************************************************************
       *    ＤＢ読み込み処理
       *****************************************************************
-       910-DB-READ-SEC                 SECTION.
+       910-DBFETCH-SEC                 SECTION.
       *
            MOVE    "DBFETCH"       TO  MCP-FUNC
-           CALL    "ORCMCPSUB"         USING
+           CALL    "ORCDBMAIN"         USING
                                        MCPAREA
-                                       ORCMCPAREA
                                        MCPDATA-REC
+                                       SPA-AREA
       *
            .
       *
-       910-DB-READ-EXT.
+       910-DBFETCH-EXT.
            EXIT.
       *****************************************************************
       *    ＤＢクローズ処理
       *****************************************************************
-       910-DB-CLOSE-SEC                SECTION.
+       910-DBCLOSECURSOR-SEC                SECTION.
       *
-           MOVE    "DBCLOSECURSOR"      TO  MCP-FUNC
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
+           CALL    "ORCDBMAIN"         USING
+                                       MCPAREA
+                                       MCPDATA-REC
+                                       SPA-AREA
       *
            .
       *
-       910-DB-CLOSE-EXT.
+       910-DBCLOSECURSOR-EXT.
+           EXIT.
+      *****************************************************************
+      *    DBUPDATE処理
+      *****************************************************************
+       910-DBUPDATE-SEC                 SECTION.
+      *
+           MOVE    "DBUPDATE"      TO  MCP-FUNC
+           CALL    "ORCDBMAIN"         USING
+                                       MCPAREA
+                                       MCPDATA-REC
+                                       SPA-AREA
+      *
+           .
+      *
+       910-DBUPDATE-EXT.
            EXIT.
       *****************************************************************
       *    ＰＵＴ　処理
       *****************************************************************
        900-PUT-WINDOW              SECTION.
       *
-           MOVE   "PUTWINDOW"       TO  MCP-FUNC.
-           CALL   "ORCMCPSUB"   USING
-                                MCPAREA
-                                ORCMCPAREA
-                                MCPDATA-REC.
+           MOVE   "PUTWINDOW"          TO  MCP-FUNC.
+           CALL    "ORCDBMAIN"         USING
+                                       MCPAREA
+                                       MCPDATA-REC
+                                       SPA-AREA
       *
            .
        900-PUT-WINDOW-EXT.

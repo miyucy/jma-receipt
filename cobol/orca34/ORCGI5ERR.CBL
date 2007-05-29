@@ -27,6 +27,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  03.05.00    NACL-太田    07.05.29  グループ診療対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -57,8 +58,6 @@
       *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
-      *
-           COPY    "CPORCMCP.INC".     
       *
       *****************************************************************
       *    連絡　領域
@@ -132,10 +131,11 @@
        900-PUT-WINDOW              SECTION.
       *
            MOVE   "PUTWINDOW"       TO  MCP-FUNC.
-           CALL   "ORCMCPSUB"       USING
-                                    MCPAREA
-                                    ORCMCPAREA
-                                    MCPDATA-REC.
+           CALL    "ORCDBMAIN"         USING
+                                       MCPAREA
+                                       MCPDATA-REC
+                                       SPA-AREA
+           .
       *
        900-PUT-WINDOW-EXT.
            EXIT.
