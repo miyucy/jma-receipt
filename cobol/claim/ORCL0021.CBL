@@ -665,7 +665,8 @@
                        WRK-LF02-CRE001-ADRFULLNAME
                        WRK-LF02-CRE401-ADRFULLNAME
                PERFORM VARYING IDX FROM    1   BY  1
-                               UNTIL   IDX >       20
+      *D                       UNTIL   IDX >       20
+                               UNTIL   IDX >       30
                  IF    WRK-LF02-SRYCD(IDX) NOT =   SPACE 
                        MOVE  "ORCA"      
                              TO  WRK-LF02-ADMINCODETBL(IDX)
@@ -674,7 +675,8 @@
                        MOVE  "Claim007"      
                              TO  WRK-LF02-SRYCDTBL(IDX)
                     PERFORM VARYING IDY FROM    1   BY  1
-                                 UNTIL   IDY >       20
+      *@                         UNTIL   IDY >       20
+                                 UNTIL   IDY >       30
                       IF    WRK-LF02-SRYSYUBETSU(IDX IDY) 
                             NOT =   SPACE 
                             MOVE  "Claim003"      
@@ -1640,7 +1642,8 @@
       *
       *
            PERFORM VARYING     IDX-LF   FROM   1   BY  1
-                   UNTIL       IDX-LF   >      20
+      *D           UNTIL       IDX-LF   >      20
+                   UNTIL       IDX-LF   >      30
                IF      TBL-SRYCD (IDX-LF)     NOT =   SPACE
       *
                    MOVE    TBL-SRYCD (IDX-LF)      TO  WRK-LF02-SRYCD
