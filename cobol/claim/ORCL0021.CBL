@@ -39,6 +39,7 @@
       *  03.05.00    NACL-多々納  07/05/25  UIDテーブル対応
       *                                     明細数３０へ
       *                                     自費コード、画像診断対応
+      *                                     新規・訂正追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -383,6 +384,7 @@
        01  LNK-HKNCOMBINUM      PIC X(04).
        01  LNK-DRCD             PIC X(05).
        01  LNK-DENPNUM          PIC 9(07).
+       01  LNK-SYORIFLG         PIC X(01).
       *
        01  WRK-LF02-REC. 
            COPY    "CPRLF002.INC"    REPLACING  //LF02//
@@ -401,6 +403,7 @@
                                                LNK-HKNCOMBINUM
                                                LNK-DRCD
                                                LNK-DENPNUM
+                                               LNK-SYORIFLG
                                                WRK-LF02-REC.
       *
       *****************************************************************
@@ -695,6 +698,15 @@
                PERFORM 2001-DRCD-NAME-SEC
                MOVE    SYS-1010-NAME   TO  WRK-LF02-CRE401-FULLNAME
                MOVE    LNK-DRCD        TO  WRK-LF02-CRE401-PERSONALID
+           END-IF
+      *    処理内容
+           MOVE    ALL "?"             TO  WRK-LF02-CRE001-PHONEAREA
+           MOVE    ALL "?"             TO  WRK-LF02-CRE001-PHONECITY
+           MOVE    ALL "?"             TO  WRK-LF02-CRE001-PHONENUM
+           IF      LNK-SYORIFLG        =   "1"
+               MOVE    "Mod"           TO  WRK-LF02-CRE001-PHONEMEMO
+           ELSE
+               MOVE    "New"           TO  WRK-LF02-CRE001-PHONEMEMO
            END-IF
       *
            .

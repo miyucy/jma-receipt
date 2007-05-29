@@ -73,6 +73,8 @@
                05  WRK-PARA-DRCD    PIC  X(05).
                05  WRK-PARA-DENPNUM
                                     PIC  X(07).
+               05  WRK-PARA-SYORIFLG
+                                    PIC  X(01).
       *
            03  WRK-IN               PIC X(01).
       *
@@ -155,6 +157,7 @@
                                             WRK-PARA-HOSPNUM
                                             WRK-PARA-DRCD
                                             WRK-PARA-DENPNUM
+                                            WRK-PARA-SYORIFLG
       *
       *
       *???
@@ -187,6 +190,7 @@
                                                SPA-HKNCOMBINUM
                                                WRK-PARA-DRCD
                                                WRK-PARA-DENPNUM
+                                               WRK-PARA-SYORIFLG
                                                WRK-LF02-REC
       *
            MOVE    WRK-LF02-REC        TO  LF02-REC
