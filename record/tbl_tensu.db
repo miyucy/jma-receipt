@@ -1098,8 +1098,8 @@ path	key20   	{
 			AND   a.YUKOEDYMD  =
                            (SELECT MAX(YUKOEDYMD)
                                    FROM tbl_tensu
-				WHERE	a.HOSPNUM =  :HOSPNUM
-				AND	a.SRYCD   =  :SRYCD)
+				WHERE	a.HOSPNUM =  HOSPNUM
+				AND	a.SRYCD   =  SRYCD)
 			AND   a.YUKOEDYMD  =  :YUKOEDYMD
 			ORDER  BY  a.SRYCD
 		;
