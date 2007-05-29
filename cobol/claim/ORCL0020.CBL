@@ -26,7 +26,9 @@
        FILE                        SECTION.
       *
        FD  LF02-FILE.
-       01  OUT-LF02-REC            PIC X(30000).
+      *01  OUT-LF02-REC            PIC X(30000).
+       01  LF02-REC.        
+           COPY    "CPRLF002.INC".
       *
        WORKING-STORAGE             SECTION.
       *
@@ -42,8 +44,8 @@
            03  WRK-DATA            PIC X(30000)
                                    OCCURS  10.
       *
-       01  LF02-REC.        
-           COPY    "CPRLF002.INC".
+      *01  LF02-REC.        
+      ***  COPY    "CPRLF002.INC".
       *     
 018000*    ¥Õ¥é¥°ÎÎ°è
        01  STS-AREA.
@@ -193,17 +195,22 @@
            MOVE    WRK-PARA-PTID       TO  FILE-PTID
            OPEN    OUTPUT    LF02-FILE
       *     
-           MOVE    LF02-REC            TO  WRK-DATA-REC 
-           PERFORM VARYING     IDX     FROM   1   BY  1
-                   UNTIL       IDX     >      7
+           MOVE    WRK-LF02-REC        TO  LF02-REC
+           WRITE                           LF02-REC
+           IF      STS-LF02        NOT =   ZERO
+               DISPLAY "*** ORCL0020  ERR="   STS-LF02
+           END-IF
+      **** MOVE    LF02-REC            TO  WRK-DATA-REC 
+      *    PERFORM VARYING     IDX     FROM   1   BY  1
+      *            UNTIL       IDX     >      7
       *
-               MOVE    WRK-DATA (IDX)      TO  OUT-LF02-REC
-               WRITE                       OUT-LF02-REC
-               IF      STS-LF02        NOT =   ZERO
-                   DISPLAY "*** ORCL0020  ERR="   STS-LF02
-                   MOVE    10             TO  IDX
-               END-IF
-           END-PERFORM
+      *        MOVE    WRK-DATA (IDX)      TO  OUT-LF02-REC
+      *        WRITE                       OUT-LF02-REC
+      *        IF      STS-LF02        NOT =   ZERO
+      *            DISPLAY "*** ORCL0020  ERR="   STS-LF02
+      *            MOVE    10             TO  IDX
+      *        END-IF
+      *****END-PERFORM
            CLOSE   LF02-FILE
       *
            MOVE    1                   TO  FLG-END
