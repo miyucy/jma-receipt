@@ -54,8 +54,8 @@
       *
       *----(02.00.06)--ADD-START---
 006900*    エラーファイル
-           SELECT  RECEERR-FILE    ASSIGN  RECEERR
-                                   FILE    STATUS  IS  STS-RECEERR.
+           SELECT  TENSUERR-FILE   ASSIGN  TENSUERR
+                                   FILE    STATUS  IS  STS-TENSUERR.
       *----(02.00.06)--ADD-END-----
       *
        DATA                    DIVISION.
@@ -63,8 +63,8 @@
       *
       *----(02.00.06)--ADD-START---
 006900*    エラーファイル
-       FD  RECEERR-FILE.
-       01  RECEERR-REC                 PIC X(200).
+       FD  TENSUERR-FILE.
+       01  TENSUERR-REC                 PIC X(200).
       *----(02.00.06)--ADD-END-----
       *
        WORKING-STORAGE             SECTION.
@@ -72,7 +72,7 @@
       *    エラーファイル 名称領域 
            COPY    "CPCOMMONDAT2.INC"
                                    REPLACING  //RECE01PARA//
-                                   BY         //RECEERR//.
+                                   BY         //TENSUERR//.
            03  FILLER              PIC X(04)   VALUE   ".dat".
       *
       *    画面活性非活性
@@ -155,7 +155,7 @@
       *
       *    フラグ領域
        01  STS-AREA.
-           03  STS-RECEERR                     PIC X(02).
+           03  STS-TENSUERR           PIC X(02).
       *
       *    添字領域
        01  IDX-AREA.
@@ -177,7 +177,7 @@
       *
            03  WRK-LNKYMD          PIC X(10).
       *
-           03  WRK-RECEERR         PIC X(200).
+           03  WRK-TENSUERR        PIC X(200).
       *  
            03  WRK-STPAGE          PIC 9(05).
            03  WRK-EDPAGE          PIC 9(05).
@@ -1390,8 +1390,9 @@
                                            WRK-PRTKANRI-RENNUM
            MOVE    SPACE               TO  WRK-CONS-PRTKANRI-TBL-GROUP
       *
-           MOVE    "RECEERR"           TO  RECEERR-FILE-ID
-           MOVE    SPA-TERMID          TO  RECEERR-TERMID
+           MOVE    "TENSUERR"          TO  TENSUERR-FILE-ID
+           MOVE    SPA-TERMID          TO  TENSUERR-TERMID
+           MOVE    SPA-HOSPNUM         TO  TENSUERR-HOSPNUM
       *
       *    出力先プリンタ名割り当て情報編集
            INITIALIZE                      SYS-1031-REC
@@ -1547,8 +1548,9 @@
            MOVE    SYS-TIME            TO
                                        WRK-CONS-PRTKANRI-TBL-GROUP (9:)
       *
-           MOVE    "RECEERR"           TO  RECEERR-FILE-ID
-           MOVE    SPA-TERMID          TO  RECEERR-TERMID
+           MOVE    "TENSUERR"          TO  TENSUERR-FILE-ID
+           MOVE    SPA-TERMID          TO  TENSUERR-TERMID
+           MOVE    SPA-HOSPNUM         TO  TENSUERR-HOSPNUM
       *   
            IF      SPA-GMN-KEI(1)        =   "T"
                IF      SHELL-SRYCHK          =   1
@@ -1709,7 +1711,7 @@
                MOVE    LNK-PRTKANRI-OPID   TO  SHELLTBL-ARG10
                MOVE    LNK-PRTKANRI-PRTNM  TO  SHELLTBL-ARG11
       *                 
-               MOVE    RECEERR            TO  SHELLTBL-ARG12
+               MOVE    TENSUERR            TO  SHELLTBL-ARG12
                MOVE    WRK-CONS-JOB-JOBID  TO  SHELLTBL-ARG13
                MOVE    WRK-CONS-JOB-SHELLID
                                            TO  SHELLTBL-ARG14
@@ -1723,6 +1725,9 @@
                WHEN    "OK"
                    MOVE    "2"             TO  SHELLTBL-ARG17
                END-EVALUATE
+               MOVE    SPA-HOSPNUM         TO  SHELLTBL-ARG18
+               MOVE    SPACE               TO  SHELLTBL-ARG19
+               MOVE    SPACE               TO  SHELLTBL-ARG20
                MOVE    SHELLTBL            TO  MCPDATA-REC
                MOVE    "SHELL"             TO  MCP-FUNC
                MOVE    "shell"             TO  MCP-TABLE
@@ -1806,7 +1811,8 @@
                                    TO  SHELLTBL-ARG13
            MOVE    WRK-PGID        TO  SHELLTBL-ARG14
            MOVE    SHELL-AREA      TO  SHELLTBL-ARG15
-           MOVE    RECEERR        TO  SHELLTBL-ARG16
+           MOVE    TENSUERR        TO  SHELLTBL-ARG16
+           MOVE    SPA-HOSPNUM     TO  SHELLTBL-ARG17
       *             
            MOVE    SHELLTBL        TO  MCPDATA-REC
            MOVE    "SHELL"         TO  MCP-FUNC
