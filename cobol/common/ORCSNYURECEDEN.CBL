@@ -2762,7 +2762,7 @@
       *
       *低年金情報の取得
            INITIALIZE                          TNKRRK-REC
-           MOVE    LNK-NYURECEDEN-HOSPNUM  TO  TNKRRK-HOSPNNUM
+           MOVE    LNK-NYURECEDEN-HOSPNUM  TO  TNKRRK-HOSPNUM
            MOVE    LNK-NYURECEDEN-PTID     TO  TNKRRK-PTID
            MOVE    "tbl_tnkrrk"            TO  MCP-TABLE
            MOVE    "key3"                  TO  MCP-PATHNAME
