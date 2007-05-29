@@ -55,11 +55,15 @@
            COPY    "CPCOMMONSHELL.INC".
            COPY    "CPSHELLTBL.INC".
            COPY    "ORCA-DBPATH".
+      *----(03.05.01)--UPD-END-----
       *    エラーファイル 名称領域 
-           COPY    "CPCOMMONDAT2.INC"
-                                   REPLACING  //RECE01PARA//
+      *     COPY    "CPCOMMONDAT2.INC"
+      *                             REPLACING  //RECE01PARA//
+      *                             BY         //TENSUERR//.
+      *     03  FILLER              PIC X(04)   VALUE   ".dat".
+           COPY    "CPERRFL.INC"   REPLACING  //ERRFLPARA//
                                    BY         //TENSUERR//.
-           03  FILLER              PIC X(04)   VALUE   ".dat".
+      *----(03.05.01)--UPD-END-----
       *     
       *----(01.01.02)--UPD-START---
       *     COPY    "HCML03.INC".
@@ -241,12 +245,13 @@
                                                LNK-PRTKANRI-TERMID
                                                LNK-PRTKANRI-OPID    
                                                LNK-PRTKANRI-PRTNM
-      *----(03.05.01)--ADD-START---
-                                               WRK-PARA-HOSPNUM
-      *----(03.05.01)--ADD-END-----
                                                WRK-PARA-JOBID
                                                WRK-PARA-SHELLID
                                                WRK-PARA-AREA
+      *----(03.05.01)--ADD-START---
+                                               WRK-PARA-HOSPNUM
+                                               TENSUERR
+      *----(03.05.01)--ADD-END-----
       *
       *    ステップ管理開始処理
            MOVE    "STS"           TO  SJOBKANRI-MODE
@@ -275,12 +280,12 @@
            PERFORM 800-HENKAN-SEC
            MOVE    WRK-OUT-INPUT    TO  WRK-MSTYMDH
       *----(01.01.02)--UPD-END-----
-      *     
-           MOVE    "TENSERR"        TO  TENSUERR-FILE-ID
-           MOVE    LNK-PRTKANRI-TERMID
-                                    TO  TENSUERR-TERMID
+      *
       *----(03.05.01)--UPD-START---
-           MOVE    WRK-PARA-HOSPNUM    TO  TENSUERR-HOSPNUM
+      *     MOVE    "TENSERR"        TO  TENSUERR-FILE-ID
+      *     MOVE    LNK-PRTKANRI-TERMID
+      *                              TO  TENSUERR-TERMID
+      *     MOVE    WRK-PARA-HOSPNUM    TO  TENSUERR-HOSPNUM
       *----(03.05.01)--UPD-END-----
       *
       *    パラメタ編集処理

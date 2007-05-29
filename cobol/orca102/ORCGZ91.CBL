@@ -45,6 +45,7 @@
       *  02.00.05    NACL-多々納  05/12/12  MONFUNC対応 他
       *  02.00.06    NACL-森脇    06/03/20  プレビュー表示
       *  02.00.07    NACL-森脇    06/07/27  抽出データと出力順に自院採用を追加
+      *  03.05.01    NACL-森脇    07/05/29  グループ診療対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -69,11 +70,15 @@
       *
        WORKING-STORAGE             SECTION.
       *
+      *----(03.05.01)--UPD-START---
       *    エラーファイル 名称領域 
-           COPY    "CPCOMMONDAT2.INC"
-                                   REPLACING  //RECE01PARA//
+      *     COPY    "CPCOMMONDAT2.INC"
+      *                             REPLACING  //RECE01PARA//
+      *                             BY         //TENSUERR//.
+      *     03  FILLER              PIC X(04)   VALUE   ".dat".
+           COPY    "CPERRFL.INC"   REPLACING  //ERRFLPARA//
                                    BY         //TENSUERR//.
-           03  FILLER              PIC X(04)   VALUE   ".dat".
+      *----(03.05.01)--UPD-END-----
       *
       *    画面活性非活性
            COPY    "ENUM-VALUE".
