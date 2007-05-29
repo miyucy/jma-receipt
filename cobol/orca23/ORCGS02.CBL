@@ -115,11 +115,9 @@
       *
        WORKING-STORAGE             SECTION.
       *
+      *
       *    エラーファイル 名称領域
-           COPY    "CPCOMMONDAT2.INC"
-                                   REPLACING  //RECE01PARA//
-                                   BY         //ORCBS01ERR//.
-           03  FILLER              PIC X(04)   VALUE   ".dat".
+           COPY    "CPERRFL.INC".
       *
       *    スパ領域
            COPY    "COMMON-SPA".
@@ -1378,8 +1376,10 @@
            MOVE    SMCNDATE-YMD    TO  CONST-PRTKANRI-TBL-GROUP (1:8)
            MOVE    SMCNDATE-HMS    TO  CONST-PRTKANRI-TBL-GROUP (9:)
       *
-           MOVE    "BS01ERR"           TO  ORCBS01ERR-FILE-ID
-           MOVE    SPA-TERMID          TO  ORCBS01ERR-TERMID
+           MOVE    SPA-HOSPNUM         TO  ERRFLPARA-HOSPNUM
+           MOVE    "OR023ERR"          TO  ERRFLPARA-FILE-ID
+           MOVE    1                   TO  ERRFLPARA-SYOKBN1
+           MOVE    SPA-TERMID          TO  ERRFLPARA-TERMID
       *
       *    出力先プリンタ名割り当て情報編集
            INITIALIZE                      SYS-1031-REC
@@ -1456,7 +1456,7 @@
                MOVE    LNK-PRTKANRI-OPID   TO  SHELLTBL-ARG10
                MOVE    LNK-PRTKANRI-PRTNM  TO  SHELLTBL-ARG11
       *
-               MOVE    ORCBS01ERR          TO  SHELLTBL-ARG12
+               MOVE    ERRFLPARA           TO  SHELLTBL-ARG12
                MOVE    CNT-JOBID           TO  SHELLTBL-ARG13
                MOVE    CONST-JOB-SHELLID   TO  SHELLTBL-ARG14
                MOVE    WRK-STPAGE          TO  SHELLTBL-ARG15
@@ -1467,6 +1467,7 @@
                WHEN    "OK"
                    MOVE    "2"             TO  SHELLTBL-ARG17
                END-EVALUATE
+               MOVE    SPA-HOSPNUM         TO  SHELLTBL-ARG18
                MOVE    SHELLTBL            TO  MCPDATA-REC
                MOVE    "SHELL"             TO  MCP-FUNC
                MOVE    "shell"             TO  MCP-TABLE
@@ -1611,7 +1612,7 @@
            MOVE    CNT-JOBID       TO  SHELLTBL-ARG12
            MOVE    CONST-JOB-SHELLID
                                    TO  SHELLTBL-ARG13
-           MOVE    ORCBS01ERR      TO  SHELLTBL-ARG14
+           MOVE    ERRFLPARA       TO  SHELLTBL-ARG14
            MOVE    SPA-HOSPNUM     TO  SHELLTBL-ARG15
            MOVE    WRK-PGTYPE (IDX2)
                                    TO  SHELLTBL-ARG16
@@ -1675,6 +1676,7 @@
            MOVE    CONST-JOB-SHELLID
                                    TO  JOB-SHELLID
            MOVE    SPA-TERMID      TO  JOB-TERMID
+      *
            CALL    "ORCSJOB"       USING
                                    ORCSJOBKANRIAREA
                                    JOBKANRI-REC
@@ -1700,6 +1702,7 @@
            PERFORM 900-SYSKANRI-KEY10-SEL-SEC
       *
            INITIALIZE                      SYS-3003-REC
+           MOVE    SPA-HOSPNUM         TO  SYS-3003-HOSPNUM
            MOVE    "3003"              TO  SYS-3003-KANRICD
            MOVE    CONST-3003-KBNCD    TO  SYS-3003-KBNCD
            MOVE    ZERO                TO  SYS-3003-STYUKYMD

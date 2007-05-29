@@ -1415,7 +1415,7 @@
            MOVE    SPA-HOSPNUM         TO  ERRFLPARA-HOSPNUM
            MOVE    "OR052ERR"          TO  ERRFLPARA-FILE-ID
            MOVE    1                   TO  ERRFLPARA-SYOKBN1
-           MOVE    ERRFLPARA-TERMID    TO  ERRFLPARA-TERMID
+           MOVE    SPA-TERMID          TO  ERRFLPARA-TERMID
       *
       *    出力先プリンタ名割り当て情報編集
            INITIALIZE                      SYS-1031-REC

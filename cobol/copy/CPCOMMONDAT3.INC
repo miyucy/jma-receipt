@@ -17,18 +17,18 @@
       ********************************************************************
       *****************************************************************
       *
-      *     データチェックファイル 名称領域      CPCOMMONDAT3.INC
+      *     一時ファイル 名称領域      CPCOMMONDAT3.INC
       *
       *****************************************************************
       *  コピー句修正履歴
       * Maj/Min/Rev  修正者       日付      内容
-      *  01.00.01    ひさなが     03/03/11  ターミナルＩＤ変更
-      *
+      * 
       *****************************************************************
-       01  ORCGDPARA.
-           03  FILLER                  PIC  X(05) VALUE "/tmp/".
-           03  ORCGDPARA-FILE-ID       PIC  X(06).
-           03  FILLER                  PIC  X(01) VALUE ".".
-      *     03  ORCGDPARA-TERMID        PIC  X(32).
-           03  ORCGDPARA-TERMID        PIC  X(64).
-           03  FILLER                  PIC  X(04) VALUE ".dat".
+       01  TMPFLID.
+           03  FILLER                  PIC X(05)   VALUE   "/tmp/".
+           03  TMPFLID-HOSPNUM         PIC 9(2).
+           03  TMPFLID-SYOKBN1         PIC 9(01)   VALUE   0.
+           03  TMPFLID-SYOKBN2         PIC 9(01)   VALUE   0.
+           03  TMPFLID-FILE-ID         PIC X(08).
+           03  TMPFLID-TERMID          PIC X(64).
+           03  FILLER                  PIC X(04)   VALUE   ".dat".

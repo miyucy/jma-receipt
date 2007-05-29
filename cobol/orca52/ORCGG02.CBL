@@ -1052,7 +1052,7 @@
            MOVE    SPA-HOSPNUM         TO  ERRFLPARA-HOSPNUM
            MOVE    "OR052ERR"          TO  ERRFLPARA-FILE-ID
            MOVE    2                   TO  ERRFLPARA-SYOKBN1
-           MOVE    ERRFLPARA-TERMID    TO  ERRFLPARA-TERMID
+           MOVE    SPA-TERMID          TO  ERRFLPARA-TERMID
       *
       *    医療機関情報の取得
            INITIALIZE                  SYS-1001-REC

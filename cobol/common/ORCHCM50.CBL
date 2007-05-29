@@ -27,6 +27,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      * 03.05.00     NACL-太田    07.05.29 グループ診療対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -35,7 +36,7 @@
        FILE-CONTROL.
       *
       *    診療行為ファイル
-           SELECT  HCM50SRY-FILE   ASSIGN   HCM50F01PARA
+           SELECT  HCM50SRY-FILE   ASSIGN   HCM50F01
                                    ORGANIZATION    IS  INDEXED
                                    ACCESS  MODE    IS  DYNAMIC
                                    RECORD  KEY     IS  HCM50SRY-ISM-KEY
@@ -54,10 +55,9 @@
            COPY    "HCM50.INC".
       *
       *    処理対象患者ファイル
-           COPY    "CPCOMMONDAT6.INC"
-                                           REPLACING   //DTCHK//
+           COPY    "CPCOMMONDAT3.INC"
+                                           REPLACING   //TMPFLID//
                                            BY          //HCM50F01//.
-           03  FILLER                      PIC X(04)   VALUE   ".dat".
       *
       *    フラグ領域
        01  STS-AREA.
@@ -205,8 +205,10 @@
       *    患者番号読み込み
            PERFORM 900-PTNUM-KEY-SEL-SEC
       *
-           MOVE    "HCM5001"           TO  HCM50F01-FILE-ID
-           MOVE     SPRT-TERMID        TO  HCM50F01-TERMID
+           MOVE    SPA-HOSPNUM         TO  HCM50F01-HOSPNUM
+           MOVE    "HCM50F01"          TO  HCM50F01-FILE-ID
+           MOVE    1                   TO  HCM50F01-SYOKBN1
+           MOVE    SPA-TERMID          TO  HCM50F01-TERMID
       *
            OPEN    OUTPUT  HCM50SRY-FILE
            CLOSE   HCM50SRY-FILE
@@ -263,15 +265,16 @@
        2001-ORCHCM50S01-CALL-SEC   SECTION.
       *
            INITIALIZE                  HCM50S01-AREA
-           MOVE    SPA-HOSPID          TO  HCM50S01-HOSPID
+           MOVE    SPA-HOSPNUM         TO  HCM50S01-HOSPNUM
            MOVE    ORCHCM50-NYUGAI     TO  HCM50S01-NYUGAIKBN
            MOVE    SPA-PTID            TO  HCM50S01-PTID
            MOVE    ORCHCM50-SUMKBN     TO  HCM50S01-SUMKBN
            MOVE    SPA-SYSYMD          TO  HCM50S01-SRYYMD
            MOVE    ORCHCM50-STRSRYYMD  TO  HCM50S01-STYMD
            MOVE    ORCHCM50-ENDSRYYMD  TO  HCM50S01-EDYMD
-           MOVE    HCM50F01PARA        TO  HCM50S01-HCM50F01
+           MOVE    HCM50F01            TO  HCM50S01-HCM50F01
            CALL    "ORCHCM50S01"       USING   HCM50S01-AREA
+                                               SPA-AREA
       *
            .
        2001-ORCHCM50S01-CALL-EXT.
@@ -421,6 +424,7 @@
            MOVE    "1"             TO  SPRT-SITEKBN
            CALL    "ORCSPRT"           USING
                                        ORCSPRTAREA
+                                       SPA-AREA
            IF    ( SPRT-RETURN         =   ZERO )
                COMPUTE CNT-OUT =   CNT-OUT +   1
            ELSE
@@ -439,7 +443,7 @@
       *
       *    ファイル削除
            MOVE    ZERO        TO  IF-RESULT
-           MOVE    HCM50F01PARA TO IF-FILENAME
+           MOVE    HCM50F01    TO IF-FILENAME
            CALL    "orcfiledel"    USING
                                        ORCSFDELAREA
       *
@@ -475,9 +479,8 @@
            MOVE    ZERO            TO  FLG-PTNUM
       *
            INITIALIZE                  PTNUM-REC
-           MOVE    SPA-HOSPID      TO  PTNUM-HOSPID
+           MOVE    SPA-HOSPNUM      TO  PTNUM-HOSPNUM
            MOVE    SPA-PTID        TO  PTNUM-PTID
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PTNUM-REC       TO  MCPDATA-REC
            MOVE    "tbl_ptnum"     TO  MCP-TABLE
            MOVE    "key"           TO  MCP-PATHNAME
@@ -505,9 +508,8 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    ZERO            TO  FLG-PTINF
       *
            INITIALIZE                  PTINF-REC
-           MOVE    SPA-HOSPID      TO  PTINF-HOSPID
+           MOVE    SPA-HOSPNUM     TO  PTINF-HOSPNUM
            MOVE    SPA-PTID        TO  PTINF-PTID
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PTINF-REC       TO  MCPDATA-REC
            MOVE    "tbl_ptinf"     TO  MCP-TABLE
            MOVE    "key"           TO  MCP-PATHNAME
@@ -536,12 +538,12 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *
            INITIALIZE                      SYSKANRI-REC
       *
+           MOVE    SPA-HOSPNUM         TO  SYS-HOSPNUM
            MOVE    WRK-KANRICD         TO  SYS-KANRICD
            MOVE    WRK-KBNCD           TO  SYS-KBNCD
            MOVE    SPA-SYSYMD          TO  SYS-STYUKYMD
                                            SYS-EDYUKYMD
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYSKANRI-REC        TO  MCPDATA-REC
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key10"             TO  MCP-PATHNAME
@@ -581,9 +583,10 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
        910-DBSELECT-SEC          SECTION.
       *
            MOVE    "DBSELECT"      TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"         USING
+                                       MCPAREA
+                                       MCPDATA-REC
+                                       SPA-AREA
            IF        ( MCP-RC          =   ZERO )
                PERFORM 910-DBFETCH-SEC
            END-IF
@@ -597,9 +600,10 @@ grpsys                            SPA-AREA
        910-DBFETCH-SEC            SECTION.
       *
            MOVE    "DBFETCH"       TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"         USING
+                                       MCPAREA
+                                       MCPDATA-REC
+                                       SPA-AREA
       *
            .
        910-DBFETCH-EXT.
@@ -610,9 +614,10 @@ grpsys                            SPA-AREA
        910-DBCLOSECURSOR-SEC           SECTION.
       *
            MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"         USING
+                                       MCPAREA
+                                       MCPDATA-REC
+                                       SPA-AREA
       *
            .
        910-DBCLOSECURSOR-EXT.

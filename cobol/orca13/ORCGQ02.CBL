@@ -90,22 +90,13 @@
            COPY    "ENUM-VALUE".
       *
       *    パラメータファイル名
-       01  PRFNAME.
-           03  FILLER              PIC X(05)   VALUE   "/tmp/".
-           03  PRFNAME-HOSPNUM     PIC 9(02).
-           03  FILLER              PIC X(07)   VALUE   "ORCBQ01".
-           03  PRFNAME-TERMID      PIC X(64).
-           03  PRFNAME-SYSYMD      PIC X(08).
-           03  PRFNAME-SYSTIME     PIC 9(08).
-           03  FILLER              PIC X(04)   VALUE   ".TXT".
-       01  ERRFNAME.
-           03  FILLER              PIC X(05)   VALUE   "/tmp/".
-           03  ERRFNAME-HOSPNUM    PIC 9(02).
-           03  FILLER              PIC X(08)   VALUE   "ORCBQERR".
-           03  ERRFNAME-TERMID     PIC X(64).
-           03  ERRFNAME-SYSYMD     PIC X(08).
-           03  ERRFNAME-SYSTIME    PIC 9(08).
-           03  FILLER              PIC X(04)   VALUE   ".TXT".
+           COPY    "CPCOMMONDAT3.INC"
+                                   REPLACING  //TMPFLID//
+                                   BY         //PRFNAME//.
+      *
+      *    エラーファイル 名称領域
+           COPY    "CPERRFL.INC".
+      *
       *    フラグ領域
        01  FLG-AREA.
            03  FLG-END                             PIC 9(01).
@@ -288,6 +279,9 @@
       *
       *    フィアルデイレクトリ位置指定サブ
            COPY  "CPMKPASS.INC".
+      *
+      *    マシン日付取得サブ
+           COPY    "CPORCSMCNDATE.INC".
       *
       *****************************************************************
       *    連絡領域
@@ -501,9 +495,11 @@
            END-IF
       *
            MOVE    SPA-HOSPNUM         TO  PRFNAME-HOSPNUM
+           MOVE    "ORC13001"          TO  PRFNAME-FILE-ID
+           MOVE    1                   TO  PRFNAME-SYOKBN1
            MOVE    SPA-TERMID          TO  PRFNAME-TERMID
-           MOVE    SPA-SYSYMD          TO  PRFNAME-SYSYMD
-           ACCEPT  PRFNAME-SYSTIME     FROM    TIME
+      *
+           PERFORM 800-MCNDATE-SEC
       *
            OPEN    OUTPUT              BQ01-FILE
       *
@@ -560,9 +556,9 @@
            MOVE    SPA-Q02-Q100-FILENAME
                                    TO  SHELLTBL-ARG2
            MOVE    PRFNAME         TO  SHELLTBL-ARG3
-           MOVE    PRFNAME-TERMID  TO  SHELLTBL-ARG4
-           MOVE    PRFNAME-SYSYMD  TO  SHELLTBL-ARG5
-           MOVE    PRFNAME-SYSTIME TO  SHELLTBL-ARG6
+           MOVE    SPA-TERMID      TO  SHELLTBL-ARG4
+           MOVE    SPA-SYSYMD      TO  SHELLTBL-ARG5
+           MOVE    SMCNDATE-HMS    TO  SHELLTBL-ARG6
            MOVE    SPA-HOSPNUM     TO  SHELLTBL-ARG7
            MOVE    SPA-STAFFCD     TO  SHELLTBL-ARG8
            MOVE    CONST-JOBID     TO  SHELLTBL-ARG9
@@ -592,14 +588,17 @@
            END-IF
       *
            MOVE    SPA-HOSPNUM         TO  PRFNAME-HOSPNUM
+           MOVE    "OR013002"          TO  PRFNAME-FILE-ID
+           MOVE    2                   TO  PRFNAME-SYOKBN1
            MOVE    SPA-TERMID          TO  PRFNAME-TERMID
-           MOVE    SPA-SYSYMD          TO  PRFNAME-SYSYMD
-           ACCEPT  PRFNAME-SYSTIME     FROM    TIME
       *
-           MOVE    PRFNAME-HOSPNUM     TO  ERRFNAME-HOSPNUM
-           MOVE    PRFNAME-TERMID      TO  ERRFNAME-TERMID
-           MOVE    PRFNAME-SYSYMD      TO  ERRFNAME-SYSYMD
-           MOVE    PRFNAME-SYSTIME     TO  ERRFNAME-SYSTIME
+           PERFORM 800-MCNDATE-SEC
+      *
+           MOVE    SPA-HOSPNUM         TO  ERRFLPARA-HOSPNUM
+           MOVE    "OR013ERR"          TO  ERRFLPARA-FILE-ID
+           MOVE    2                   TO  ERRFLPARA-SYOKBN1
+           MOVE    SPA-TERMID          TO  ERRFLPARA-TERMID
+      *
            OPEN    OUTPUT              BQ01-FILE
       *
            INITIALIZE                  BQ01
@@ -638,12 +637,12 @@
            MOVE    MKPASS-OT-01    TO  SHELLTBL-NAME
       *
            MOVE    PRFNAME         TO  SHELLTBL-ARG1
-           MOVE    PRFNAME-TERMID  TO  SHELLTBL-ARG2
-           MOVE    PRFNAME-SYSYMD  TO  SHELLTBL-ARG3
-           MOVE    PRFNAME-SYSTIME TO  SHELLTBL-ARG4
+           MOVE    SPA-TERMID      TO  SHELLTBL-ARG2
+           MOVE    SPA-SYSYMD      TO  SHELLTBL-ARG3
+           MOVE    SMCNDATE-HMS    TO  SHELLTBL-ARG4
            MOVE    SPA-HOSPNUM     TO  SHELLTBL-ARG5
            MOVE    SPA-OPID        TO  SHELLTBL-ARG6
-           MOVE    ERRFNAME        TO  SHELLTBL-ARG7
+           MOVE    ERRFLPARA       TO  SHELLTBL-ARG7
            MOVE    CONST-JOBID2    TO  SHELLTBL-ARG8
       *    IDは検索結果印刷に併せる
            MOVE    CONST-JOB-SHELLID
@@ -2186,6 +2185,17 @@
       *
            .
        800-ENRTRY-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    マシン日付取得サブ
+      *****************************************************************
+       800-MCNDATE-SEC         SECTION.
+      *
+           CALL    "ORCSMCNDATE"   USING   ORCSMCNDATEAREA
+      *
+           .
+      *
+       800-MCNDATE-EXT.
            EXIT.
       *****************************************************************
       *    文字列長取得処理

@@ -270,6 +270,7 @@
            CALL    "ORCSJOB"           USING
                                        ORCSJOBKANRIAREA
                                        JOBKANRI-REC
+                                       SPA-AREA
       *
            .
        100-INIT-EXT.
@@ -286,6 +287,7 @@
            MOVE    ORCHCM31-PTID       TO  SPA-PTID
            MOVE    WRK-PARA-STAFFCD    TO  SPA-STAFFCD
            MOVE    LNK-PRTKANRI-SKYYMD TO  SPA-SYSYMD
+           MOVE    LNK-PRTKANRI-TERMID TO  SPA-TERMID
       *
            .
        1001-SPA-AREA-SET-EXT.
@@ -376,6 +378,7 @@
                CALL    "ORCSJOB"           USING
                                            ORCSJOBKANRIAREA
                                            JOBKANRI-REC
+                                           SPA-AREA
            END-IF
       *
            MOVE    1                   TO  FLG-END
@@ -405,6 +408,7 @@
            CALL    "ORCSJOB"           USING
                                        ORCSJOBKANRIAREA
                                        JOBKANRI-REC
+                                       SPA-AREA
       *
            PERFORM 900-DBDISCONNECT-SEC
       *
