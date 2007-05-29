@@ -22,8 +22,10 @@
       *****************************************************************
       *  コピー句修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  03.05.01    NACL-藤原    07/04/19  グループ診療対応
       *****************************************************************
        01  TEIKI01PARA.
-           03  FILLER                  PIC  X(09) VALUE "/var/tmp/".
+           03  FILLER                  PIC  X(05) VALUE "/tmp/".
+           03  TEIKI01PARA-HOSPNUM     PIC  9(02).
            03  TEIKI01PARA-FILE-ID     PIC  X(08).
            03  TEIKI01PARA-TERMID      PIC  X(32).
