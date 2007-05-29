@@ -31,7 +31,7 @@
        01  ORCSNYURECEDEN-AREA.
       *
       *°åÎÅµ¡´Ø£É£Ä
-           03  LNK-NYURECEDEN-HOSPID                 PIC  X(24).
+           03  LNK-NYURECEDEN-HOSPNUM                PIC  9(02).
       *´µ¼Ô£É£Ä
            03  LNK-NYURECEDEN-PTID                   PIC  9(10).
       *»»ÄêÇ¯·î

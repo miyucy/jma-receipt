@@ -31,7 +31,7 @@
        01  ORCSRYOCOM-AREA.
       *
       *°åÎÅµ¡´Ø£É£Ä
-           03  LNK-RYOCOM-HOSPID                 PIC  X(24).
+           03  LNK-RYOCOM-HOSPNUM                PIC  9(02).
       *´µ¼Ô£É£Ä
            03  LNK-RYOCOM-PTID                   PIC  9(10).
       *»»ÄêÇ¯·î
