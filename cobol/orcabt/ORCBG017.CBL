@@ -196,7 +196,7 @@
       *
        01  TPTINF-AREA.
         02 TPTINF-MAX                      PIC 9(05).
-        02 TPTINF-CHK-HOSPNUM               PIC X(24).
+        02 TPTINF-CHK-HOSPNUM              PIC 9(02).
         02 TPTINF-CHK-PTID                 PIC 9(10).
         02 TPTINF-FLG                      PIC 9(01).
         02 TPTINF-IDX                      PIC 9(05).
