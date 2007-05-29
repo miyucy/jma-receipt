@@ -5843,7 +5843,8 @@
                    END-IF
                    MOVE    SYU-DENPNUM         TO  SHELLTBL-ARG10
       *            œ¢»÷
-                   MOVE    WRK-RENNUM          TO  SHELLTBL-ARG11 (1:2)
+      *D           MOVE    WRK-RENNUM          TO  SHELLTBL-ARG11 (1:2)
+                   MOVE    SPA-SYORIFLG        TO  SHELLTBL-ARG11
                    MOVE    SHELLTBL            TO  MCPDATA-REC
                    MOVE    "SHELL"             TO  MCP-FUNC
                    MOVE    "shell"             TO  MCP-TABLE
