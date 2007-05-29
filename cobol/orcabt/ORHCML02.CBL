@@ -37,6 +37,7 @@
       *  02.00.01    NACL-¿¹ÏÆ    03/12/25  ¤½¤ÎÂ¾ºàÎÁÄÉ²Ã
       *  02.00.02    NACL-¿¹ÏÆ    04/03/16  ÅÀ¿ô¤Î·å½¤Àµ
       *  02.00.03    NACL-¿¹ÏÆ    06/07/27  ¥Õ¥é¥°ÄÉ²Ã¡¢MONFUNCÂÐ±þ
+      *  03.05.01    NACL-¿¹ÏÆ    07/05/29  ¥°¥ë¡¼¥×¿ÇÎÅÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -85,6 +86,9 @@
       *    ¥Ñ¥é¥á¥¿ÎÎ°è
        01  WRK-PARA.
            COPY    "CPORCSPRTLNK.INC".
+      *----(03.05.01)--ADD-START---
+           03  WRK-PARA-HOSPNUM    PIC 9(02).
+      *----(03.05.01)--ADD-END-----
            03  WRK-PARA-JOBID      PIC 9(07).
            03  WRK-PARA-SHELLID    PIC X(08).
            COPY    "CPHCMLSHELL.INC"
@@ -212,6 +216,9 @@
                                                LNK-PRTKANRI-TERMID
                                                LNK-PRTKANRI-OPID    
                                                LNK-PRTKANRI-PRTNM
+      *----(03.05.01)--ADD-START---
+                                               WRK-PARA-HOSPNUM
+      *----(03.05.01)--ADD-END-----
                                                WRK-PARA-JOBID
                                                WRK-PARA-SHELLID
                                                WRK-PARA-AREA
@@ -222,6 +229,10 @@
            MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
            MOVE    WRK-PARA-SHELLID
                                    TO  JOB-SHELLID
+      *----(03.05.01)--ADD-START---
+           MOVE    WRK-PARA-HOSPNUM
+                                   TO  JOB-HOSPNUM
+      *----(03.05.01)--ADD-END-----
            MOVE    "ORHCML02"      TO  JOB-PGID
       *----(02.00.01)--UPD-START---
            EVALUATE    WRK-PARA-KBN
@@ -236,6 +247,7 @@
            CALL    "ORCSJOB"       USING
                                    ORCSJOBKANRIAREA  
                                    JOBKANRI-REC
+                                   SPA-AREA
       *                             
            MOVE    LNK-PRTKANRI-SKYYMD
                                     TO  WRK-LNKYMD
@@ -245,7 +257,9 @@
            MOVE    "TENSERR"        TO  TENSUERR-FILE-ID
            MOVE    LNK-PRTKANRI-TERMID
                                     TO  TENSUERR-TERMID
-           MOVE    SPA-HOSPNUM      TO  TENSUERR-HOSPNUM
+      *----(03.05.01)--UPD-START---
+           MOVE    WRK-PARA-HOSPNUM    TO  TENSUERR-HOSPNUM
+      *----(03.05.01)--UPD-END-----
       *
       *    ¥Ñ¥é¥á¥¿ÊÔ½¸½èÍý
            PERFORM 110-PARA-HENSYU-SEC
@@ -271,7 +285,9 @@
            MOVE    "*"                 TO  SYS-1001-KBNCD
            MOVE    WRK-PARA-MSTYMD     TO  SYS-1001-STYUKYMD
                                            SYS-1001-EDYUKYMD
-grpsys     MOVE    SPA-HOSPNUM         TO  SYS-1001-HOSPNUM
+      *----(03.05.01)--UPD-START---
+           MOVE    WRK-PARA-HOSPNUM    TO  SYS-1001-HOSPNUM
+      *----(03.05.01)--UPD-END-----
            MOVE    SYS-1001-REC        TO  MCPDATA-REC
            PERFORM 800-SYSKANRI-READ-SEC
            IF      FLG-SYSKANRI        =   ZERO
@@ -482,6 +498,7 @@ grpsys     MOVE    SPA-HOSPNUM         TO  SYS-1001-HOSPNUM
            MOVE    "1"                 TO  SPRT-SITEKBN
            CALL    "ORCSPRT"           USING
                                        ORCSPRTAREA
+                                       SPA-AREA
            IF      SPRT-RETURN         =   ZERO
                CONTINUE
            ELSE
@@ -515,11 +532,16 @@ grpsys     MOVE    SPA-HOSPNUM         TO  SYS-1001-HOSPNUM
                MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
                MOVE    WRK-PARA-SHELLID
                                        TO  JOB-SHELLID
-               MOVE    WRK-TENSUERR     TO  JOB-YOBI
+      *----(03.05.01)--ADD-START---
+               MOVE    WRK-PARA-HOSPNUM
+                                       TO  JOB-HOSPNUM
+      *----(03.05.01)--ADD-END-----
+               MOVE    WRK-TENSUERR    TO  JOB-YOBI
                MOVE    "9999"          TO  JOB-ERRCD
                CALL    "ORCSJOB"       USING
                                        ORCSJOBKANRIAREA  
                                        JOBKANRI-REC
+                                       SPA-AREA
            END-IF
       *
            CLOSE   TENSUERR-FILE
@@ -543,9 +565,14 @@ grpsys     MOVE    SPA-HOSPNUM         TO  SYS-1001-HOSPNUM
            MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
            MOVE    WRK-PARA-SHELLID
                                    TO  JOB-SHELLID
+      *----(03.05.01)--ADD-START---
+           MOVE    WRK-PARA-HOSPNUM
+                                   TO  JOB-HOSPNUM
+      *----(03.05.01)--ADD-END-----
            CALL    "ORCSJOB"       USING
                                    ORCSJOBKANRIAREA  
                                    JOBKANRI-REC
+                                   SPA-AREA
       *                              
            PERFORM 900-DBDISCONNECT-SEC
            .
@@ -615,7 +642,9 @@ grpsys     MOVE    SPA-HOSPNUM         TO  SYS-1001-HOSPNUM
                    END-EVALUATE 
            END-EVALUATE
       *
-grpsys     MOVE    SPA-HOSPNUM     TO  TNS-HOSPNUM
+      *----(03.05.01)--UPD-START---
+           MOVE    WRK-PARA-HOSPNUM    TO  TNS-HOSPNUM
+      *----(03.05.01)--UPD-END-----
            MOVE    TNS-TENSU-REC   TO  MCPDATA-REC
            MOVE    "DBSELECT"      TO  MCP-FUNC
            MOVE    "tbl_tensu"     TO  MCP-TABLE
