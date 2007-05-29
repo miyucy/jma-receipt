@@ -48,12 +48,6 @@
       *
        WORKING-STORAGE             SECTION.
       *
-      *    エラーファイル 名称領域 
-           COPY    "CPCOMMONDAT2.INC"
-                                   REPLACING  //RECE01PARA//
-                                   BY         //RECEERR//.
-           03  FILLER              PIC X(04)   VALUE   ".dat".
-      *
       *    スパ領域
        01  STS-AREA.
            03  STS-RECEERR             PIC X(02).
@@ -89,6 +83,7 @@
            03  WRK-PARA-JOBID          PIC 9(07).
            03  WRK-PARA-SHELLID        PIC X(08).
            03  WRK-PARA-HOSPNUM        PIC X(02).
+           03  RECEERR                 PIC X(100).
            03  WRK-PARA-SRYYM          PIC X(06).
            03  WRK-PARA-SRYKA          PIC X(02).
            03  WRK-PARA-BYOMEIFLG      PIC X(01).
@@ -225,8 +220,6 @@
            INITIALIZE                  SPA-AREA
            MOVE    ZERO            TO  CNT-AREA
       *
-           PERFORM 100-DBOPEN-SEC
-      *
            UNSTRING    COMMAND-PARAM   DELIMITED  BY  ","
                        INTO            LNK-PRTKANRI-RENNUM
                                        LNK-PRTKANRI-TBL-KEY
@@ -242,11 +235,14 @@
                                        WRK-PARA-JOBID
                                        WRK-PARA-SHELLID
                                        WRK-PARA-HOSPNUM
+                                       RECEERR
                                        WRK-PARA-SRYYM
                                        WRK-PARA-SRYKA
                                        WRK-PARA-BYOMEIFLG
       *    ＳＰＡ設定
            MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
+      *
+           PERFORM 100-DBOPEN-SEC
       *
       *    ステップ管理開始処理
            MOVE    "STS"               TO  SJOBKANRI-MODE
@@ -261,11 +257,6 @@
                                            ORCSJOBKANRIAREA
                                            JOBKANRI-REC
                                            SPA-AREA
-      *
-           MOVE    "RECEERR"       TO  RECEERR-FILE-ID
-           MOVE    LNK-PRTKANRI-TERMID
-                                   TO  RECEERR-TERMID
-           MOVE    SPA-HOSPNUM     TO  RECEERR-HOSPNUM
       *
       *    初期値セット
            PERFORM 110-SYOKI-SET-SEC
@@ -303,9 +294,6 @@
                                        STS-AREA-DAY
                                        LNK-DAY2-AREA
            MOVE    LNK-DAY2-EDTYMD3    TO  WRK-HENYMDG
-      *
-      *    ＳＰＡ設定
-           MOVE    WRK-PARA-HOSPNUM     TO  SPA-HOSPNUM
       *
       *    患者番号構成管理情報編集
            MOVE    SPACE               TO  SYS-1009-REC
@@ -419,11 +407,6 @@
            END-IF
            MOVE    ZERO                TO  WRK-PTID
            PERFORM UNTIL   FLG-JYURRK  =   1
-      *TEST
-             DISPLAY "JYURRK-PTID:" JYURRK-PTID
-               ",SRYYMD;" JYURRK-SRYYMD
-               ",HKNCOMBI;" JYURRK-HKNCOMBINUM
-      *TEST
       *        １患者で１枚のカルテを発行する
                IF      JYURRK-PTID     NOT = WRK-PTID
                    PERFORM 2001-SYORI-SEC

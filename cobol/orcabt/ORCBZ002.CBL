@@ -49,11 +49,11 @@
       *
        WORKING-STORAGE             SECTION.
       *
-      *    エラーファイル 名称領域 
-           COPY    "CPCOMMONDAT2.INC"
-                                   REPLACING  //RECE01PARA//
-                                   BY         //RECEERR//.
-           03  FILLER              PIC X(04)   VALUE   ".dat".
+      *D   エラーファイル 名称領域 
+      *    COPY    "CPCOMMONDAT2.INC"
+      *                            REPLACING  //RECE01PARA//
+      *                            BY         //RECEERR//.
+      *D   03  FILLER              PIC X(04)   VALUE   ".dat".
       *
            COPY    "HCM33.INC".
       *
@@ -90,6 +90,7 @@
            03  WRK-PARA-JOBID          PIC 9(07).
            03  WRK-PARA-SHELLID        PIC X(08).
            03  WRK-PARA-HOSPNUM        PIC X(02).
+           03  RECEERR                 PIC X(100).
            03  WRK-PARA-SRYYM          PIC X(06).
            03  WRK-PARA-SRYYM-END      PIC X(06).
            03  WRK-PARA-SRYKA          PIC X(02).
@@ -206,8 +207,6 @@
            INITIALIZE                  SPA-AREA
            MOVE    ZERO            TO  CNT-AREA
       *
-           PERFORM 100-DBOPEN-SEC
-      *
            UNSTRING    COMMAND-PARAM   DELIMITED  BY  ","
                        INTO            LNK-PRTKANRI-RENNUM
                                        LNK-PRTKANRI-TBL-KEY
@@ -223,14 +222,16 @@
                                        WRK-PARA-JOBID
                                        WRK-PARA-SHELLID
                                        WRK-PARA-HOSPNUM
+                                       RECEERR
                                        WRK-PARA-SRYYM
                                        WRK-PARA-SRYYM-END
                                        WRK-PARA-SRYKA
                                        WRK-PARA-NYUGAIKBN
       *
       *    ＳＰＡ設定
-           INITIALIZE                  SPA-AREA
            MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
+      *
+           PERFORM 100-DBOPEN-SEC
       *
       *    ステップ管理開始処理
            MOVE    "STS"               TO  SJOBKANRI-MODE
@@ -246,10 +247,10 @@
                                            JOBKANRI-REC
                                            SPA-AREA
       *
-           MOVE    "RECEERR"       TO  RECEERR-FILE-ID
-           MOVE    LNK-PRTKANRI-TERMID
-                                   TO  RECEERR-TERMID
-           MOVE    SPA-HOSPNUM     TO  RECEERR-HOSPNUM
+      *DDD MOVE    "RECEERR"       TO  RECEERR-FILE-ID
+      *    MOVE    LNK-PRTKANRI-TERMID
+      *                            TO  RECEERR-TERMID
+      *DDD MOVE    SPA-HOSPNUM     TO  RECEERR-HOSPNUM
       *
       *    初期値セット
            PERFORM 110-SYOKI-SET-SEC
