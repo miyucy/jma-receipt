@@ -27,6 +27,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  03.05.00    NACL-太田    07/05/28  グループ診療対応
       *****************************************************************
       *
        ENVIRONMENT                     DIVISION.
@@ -90,9 +91,6 @@
            03  CONST-SRYCD-MAX             PIC 9(05) VALUE 20.
            03  CONST-TCOMBI-MAX            PIC 9(05) VALUE 50.
       *
-      *    スパ領域
-           COPY    "COMMON-SPA".
-      *
       *****************************************************************
       *    ファイルレイアウト
       *****************************************************************
@@ -127,11 +125,13 @@
            COPY    "CPNYUINACCT.INC"
                                    REPLACING   //NACCT//
                                    BY          //LNKNACCT//.
+           COPY    "COMMON-SPA".
       ****************************************************************
        PROCEDURE                       DIVISION
                USING
            HCG016S02-AREA
            LNKNACCT-REC
+           SPA-AREA
            .
       *
       *****************************************************************
@@ -323,8 +323,7 @@
                PERFORM 900-HKNCOMBI-KEY-SEL-SEC
       *
                INITIALIZE                  HCM34S01-AREA
-                                           SPA-AREA
-               MOVE    NACCT-HOSPID        TO  HCM34S01-HOSPID
+               MOVE    NACCT-HOSPNUM        TO  HCM34S01-HOSPNUM
                MOVE    NACCT-PTID          TO  HCM34S01-PTID
                MOVE    NACCT-SRYYM         TO  HCM34S01-SANTEIYM
                MOVE    COMB-HKNCOMBINUM    TO  HCM34S01-HKNCOMBI
@@ -480,13 +479,12 @@
            MOVE    ZERO                TO  FLG-PTNYUINRRK
            INITIALIZE                  PTNYUINRRK-REC
       *
-           MOVE    NACCT-HOSPID        TO  PTNYUINRRK-HOSPID
+           MOVE    NACCT-HOSPNUM        TO  PTNYUINRRK-HOSPNUM
            MOVE    NACCT-PTID          TO  PTNYUINRRK-PTID
            MOVE    NACCT-SRYYM         TO  PTNYUINRRK-TENNYUYMD
            MOVE    "31"                TO  PTNYUINRRK-TENNYUYMD
            MOVE    NACCT-SRYYM         TO  PTNYUINRRK-TENSTUYMD
            MOVE    "01"                TO  PTNYUINRRK-TENSTUYMD
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PTNYUINRRK-REC      TO  MCPDATA-REC
            MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
            MOVE    "key41"             TO  MCP-PATHNAME
@@ -527,10 +525,9 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    ZERO                    TO  FLG-HKNCOMBI
       *
            INITIALIZE                          HKNCOMBI-REC
-           MOVE    NACCT-HOSPID            TO  COMB-HOSPID
+           MOVE    NACCT-HOSPNUM           TO  COMB-HOSPNUM
            MOVE    NACCT-PTID              TO  COMB-PTID
            MOVE    WRK-COMB-HKNCOMBINUM    TO  COMB-HKNCOMBINUM
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    HKNCOMBI-REC            TO  MCPDATA-REC
            MOVE    "tbl_hkncombi"          TO  MCP-TABLE
            MOVE    "key"                   TO  MCP-PATHNAME
@@ -555,9 +552,10 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
        910-DBSELECT-SEC                SECTION.
       *
            MOVE    "DBSELECT"          TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"         USING
+                                       MCPAREA
+                                       MCPDATA-REC
+                                       SPA-AREA
            IF    ( MCP-RC          =   ZERO )
                PERFORM 910-DBFETCH-SEC
            END-IF
@@ -572,9 +570,10 @@ grpsys                            SPA-AREA
        911-DBSELECT-SEC                SECTION.
       *
            MOVE    "DBSELECT"          TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"         USING
+                                       MCPAREA
+                                       MCPDATA-REC
+                                       SPA-AREA
       *
            .
       *
@@ -586,9 +585,10 @@ grpsys                            SPA-AREA
        910-DBFETCH-SEC                 SECTION.
       *
            MOVE    "DBFETCH"           TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"         USING
+                                       MCPAREA
+                                       MCPDATA-REC
+                                       SPA-AREA
       *
            .
       *
@@ -600,9 +600,10 @@ grpsys                            SPA-AREA
        910-DBCLOSECURSOR-SEC                 SECTION.
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"         USING
+                                       MCPAREA
+                                       MCPDATA-REC
+                                       SPA-AREA
       *
            .
       *
