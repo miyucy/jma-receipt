@@ -50,6 +50,9 @@
       *
       *  03.04.01    NACL-藤原    06/11/01  病名一括削除機能対応
       *  03.04.02    NACL-藤原    06/11/27   ＳＰＡデータの削除
+      *  03.04.03    NACL-藤原    07/03/02  月途中保険変更時の病名対応中止
+      *
+      *  03.05.01    NACL-藤原    07/04/19  グループ診療対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -360,11 +363,9 @@
            MOVE    "死亡"          TO  SPA-GMN-C10-TENKIKBNMEIL     (3)
            MOVE    "3"             TO  SPA-GMN-C10-TENKIKBNL        (4)
            MOVE    "中止"          TO  SPA-GMN-C10-TENKIKBNMEIL     (4)
-           MOVE    "7"             TO  SPA-GMN-C10-TENKIKBNL        (5)
-           MOVE    "保険変更"      TO  SPA-GMN-C10-TENKIKBNMEIL     (5)
-           MOVE    "8"             TO  SPA-GMN-C10-TENKIKBNL        (6)
-           MOVE    "移行"          TO  SPA-GMN-C10-TENKIKBNMEIL     (6)
-           MOVE    6               TO  SPA-GMN-C10-TENKIKBN-MAX
+           MOVE    "8"             TO  SPA-GMN-C10-TENKIKBNL        (5)
+           MOVE    "移行"          TO  SPA-GMN-C10-TENKIKBNMEIL     (5)
+           MOVE    5               TO  SPA-GMN-C10-TENKIKBN-MAX
       *
            MOVE    "-"             TO  SPA-GMN-C10-UTAGAIFLGL       (1)
            MOVE    "取消"          TO  SPA-GMN-C10-UTAGAIFLGMEIL    (1)
@@ -1158,7 +1159,7 @@
       *
       *    マスタとのチェック
            INITIALIZE                      PTBYOMEI-REC
-      *****MOVE    SPA-HOSPID          TO  PTBYO-HOSPID
+grpsys     MOVE    SPA-HOSPNUM         TO  PTBYO-HOSPNUM
            MOVE    SPA-NAI-C02-PTID    TO  PTBYO-PTID
            MOVE    SPA-NAI-C02-TSRYKA  (IDX)
                                        TO  PTBYO-SRYKA
@@ -1373,20 +1374,18 @@
       *
            IF      WRK-CHK-HKNCOMBI1
                                    NOT =   ZERO
-      *********MOVE    SPA-HOSPID          TO  COMB-HOSPID
+grpsys         MOVE    SPA-HOSPNUM         TO  COMB-HOSPNUM
                MOVE    SPA-NAI-C02-PTID    TO  COMB-PTID
                MOVE    WRK-CHK-HKNCOMBI1   TO  COMB-HKNCOMBINUM
-               MOVE    SPA-HOSPNUM         TO  COMB-HOSPNUM
                MOVE    HKNCOMBI-REC        TO  MCPDATA-REC
                PERFORM 900-COMB-INV-SEC
                MOVE    HKNCOMBI-REC        TO  WRK-CHK-HKNCOMBI-REC (1)
            END-IF    
            IF      WRK-CHK-HKNCOMBI2
                                    NOT =   ZERO
-      *********MOVE    SPA-HOSPID          TO  COMB-HOSPID
+grpsys         MOVE    SPA-HOSPNUM         TO  COMB-HOSPNUM
                MOVE    SPA-NAI-C02-PTID    TO  COMB-PTID
                MOVE    WRK-CHK-HKNCOMBI2   TO  COMB-HKNCOMBINUM
-               MOVE    SPA-HOSPNUM         TO  COMB-HOSPNUM
                MOVE    HKNCOMBI-REC        TO  MCPDATA-REC
                PERFORM 900-COMB-INV-SEC
                MOVE    HKNCOMBI-REC        TO  WRK-CHK-HKNCOMBI-REC (2)
@@ -1464,7 +1463,7 @@
       *
       *    マスタとのチェック
            INITIALIZE                  PTBYOMEI-REC
-      *****MOVE    SPA-HOSPID          TO  PTBYO-HOSPID
+grpsys     MOVE    SPA-HOSPNUM         TO  PTBYO-HOSPNUM
            MOVE    SPA-NAI-C02-PTID    TO  PTBYO-PTID
            MOVE    SPA-NAI-C02-TSRYKA  (IDX)
                                        TO  PTBYO-SRYKA
@@ -1651,7 +1650,7 @@
                        END-IF     
       *
                        INITIALIZE                      PTBYOMEI-REC
-      *****************MOVE    SPA-HOSPID          TO  PTBYO-HOSPID
+grpsys                 MOVE    SPA-HOSPNUM         TO  PTBYO-HOSPNUM
                        MOVE    SPA-NAI-C02-PTID    TO  PTBYO-PTID
                        MOVE    SPA-NAI-C02-TSRYKA  (IDX)
                                                    TO  PTBYO-SRYKA
@@ -2433,15 +2432,10 @@
       *****************************************************************
        900-PTBYO-INV-SEC         SECTION.
       *
-           MOVE    SPA-HOSPNUM         TO  PTBYO-HOSPNUM
            MOVE    PTBYOMEI-REC        TO  MCPDATA-REC
-           MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
            MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
-           CALL    "ORCDBMAIN"         USING
-                                           MCPAREA
-                                           MCPDATA-REC
-                                           SPA-AREA
+grpsys     PERFORM 900-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
                MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
                MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
@@ -2460,11 +2454,7 @@
       *****************************************************************
        900-PTBYO-READ-SEC           SECTION.
       *
-           MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "ORCDBMAIN"         USING
-                                           MCPAREA
-                                           MCPDATA-REC
-                                           SPA-AREA
+grpsys     PERFORM 900-DBFETCH-SEC
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC     TO  PTBYOMEI-REC
                MOVE    ZERO            TO  FLG-PTBYOMEI
@@ -2482,13 +2472,9 @@
       *****************************************************************
        900-COMB-INV-SEC                SECTION.
       *
-           MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "tbl_hkncombi"      TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
-           CALL    "ORCDBMAIN"         USING
-                                           MCPAREA
-                                           MCPDATA-REC
-                                           SPA-AREA
+grpsys     PERFORM 900-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
                MOVE    "tbl_hkncombi"      TO  MCP-TABLE
                MOVE    "key"               TO  MCP-PATHNAME
@@ -2511,11 +2497,7 @@
       *****************************************************************
        900-COMB-READ-SEC         SECTION.
       *
-           MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "ORCDBMAIN"         USING
-                                           MCPAREA
-                                           MCPDATA-REC
-                                           SPA-AREA
+grpsys     PERFORM 900-DBFETCH-SEC
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC     TO  HKNCOMBI-REC
                MOVE    ZERO            TO  FLG-HKNCOMBI
@@ -2529,18 +2511,51 @@
            EXIT.
       *
       *****************************************************************
+      *    ＤＢＳＥＬＥＣＴ処理
+      *****************************************************************
+       900-DBSELECT-SEC                SECTION.
+      *
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+grpsys     PERFORM 900-ORCDBMAIN-SEC
+           .
+       900-DBSELECT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ＤＢＦＥＴＣＨ処理
+      *****************************************************************
+       900-DBFETCH-SEC                SECTION.
+      *
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+grpsys     PERFORM 900-ORCDBMAIN-SEC
+      *
+           .
+       900-DBFETCH-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    テーブルクローズ処理
       *****************************************************************
        900-CLOSE-SEC               SECTION.
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           CALL    "ORCDBMAIN"         USING
-                                           MCPAREA
-                                           MCPDATA-REC
-                                           SPA-AREA
+grpsys     PERFORM 900-ORCDBMAIN-SEC
       *
            .
        900-CLOSE-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    テーブルアクセス処理
+      *****************************************************************
+       900-ORCDBMAIN-SEC               SECTION.
+      *
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
+           .
+      *
+       900-ORCDBMAIN-EXT.
            EXIT.
       *
       *****************************************************************
@@ -2548,14 +2563,9 @@
       *****************************************************************
        900-PUT-WINDOW              SECTION.
       *
-           MOVE   "PUTWINDOW"       TO  MCP-FUNC
-           CALL   "ORCDBMAIN"       USING
-                                        MCPAREA
-                                        MCPDATA-REC
-                                        SPA-AREA
-      *
+           MOVE   "PUTWINDOW"          TO  MCP-FUNC
+           PERFORM 900-ORCDBMAIN-SEC
            .
+      *
        900-PUT-WINDOW-EXT.
            EXIT.
-      *
-      *
