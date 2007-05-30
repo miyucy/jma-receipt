@@ -669,7 +669,7 @@ grpsys         MOVE  SPA-HOSPNUM       TO  LOCK-HOSPNUM
       *    自端末レコード存在チェック
       *    MOVE    MCP-TERM(5:)            TO  LOCK-TERMID
            MOVE    MCP-TERM                TO  LOCK-TERMID
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+grpsys     MOVE    SPA-HOSPNUM             TO  LOCK-HOSPNUM
            MOVE    TBL-LOCK            TO  MCPDATA-REC
            PERFORM 910-LOCK-INV-SEC
            IF      FLG-LOCK       NOT  =  ZERO
@@ -718,7 +718,7 @@ grpsys         MOVE  SPA-HOSPNUM       TO  LOCK-HOSPNUM
        160-STE-SEC                 SECTION.
       *
       *    レコード存在チェック
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+grpsys     MOVE    SPA-HOSPNUM     TO  LOCK-HOSPNUM
            MOVE    TBL-LOCK        TO  MCPDATA-REC
            PERFORM 910-LOCK-INV2-SEC
            IF       FLG-LOCK       NOT  =  ZERO
@@ -753,7 +753,7 @@ grpsys                            SPA-AREA
        140-DEL-SEC                 SECTION.
       *
       *    レコード存在チェック
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+grpsys     MOVE    SPA-HOSPNUM     TO  LOCK-HOSPNUM
            MOVE    TBL-LOCK        TO  MCPDATA-REC
            PERFORM 910-LOCK-INV2-SEC
            IF       FLG-LOCK       NOT  =  ZERO
@@ -788,7 +788,7 @@ grpsys                            SPA-AREA
        170-DELALL-SEC                 SECTION.
       *
       *    レコード存在チェック
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+grpsys     MOVE SPA-HOSPNUM        TO  LOCK-HOSPNUM
            MOVE    TBL-LOCK        TO  MCPDATA-REC
            PERFORM 910-LOCK-INV-SEC
            IF       FLG-LOCK       NOT  =  ZERO
@@ -797,7 +797,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            END-IF
       *
       *    レコード更新
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+grpsys     MOVE    SPA-HOSPNUM     TO  LOCK-HOSPNUM
            MOVE    TBL-LOCK        TO  MCPDATA-REC
            MOVE    "DBDELETE"          TO  MCP-FUNC
            MOVE    "tbl_lock"          TO  MCP-TABLE
