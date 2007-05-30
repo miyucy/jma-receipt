@@ -1395,7 +1395,7 @@
                                            WRK-PRTKANRI-RENNUM
            MOVE    SPACE               TO  WRK-CONS-PRTKANRI-TBL-GROUP
       *
-           MOVE    "TENSUERR"          TO  TENSUERR-FILE-ID
+           MOVE    "OR102ERR"          TO  TENSUERR-FILE-ID
            MOVE    SPA-TERMID          TO  TENSUERR-TERMID
            MOVE    SPA-HOSPNUM         TO  TENSUERR-HOSPNUM
       *
@@ -1552,10 +1552,6 @@
                                        WRK-CONS-PRTKANRI-TBL-GROUP (1:8)
            MOVE    SYS-TIME            TO
                                        WRK-CONS-PRTKANRI-TBL-GROUP (9:)
-      *
-           MOVE    "TENSUERR"          TO  TENSUERR-FILE-ID
-           MOVE    SPA-TERMID          TO  TENSUERR-TERMID
-           MOVE    SPA-HOSPNUM         TO  TENSUERR-HOSPNUM
       *   
            IF      SPA-GMN-KEI(1)        =   "T"
                IF      SHELL-SRYCHK          =   1
