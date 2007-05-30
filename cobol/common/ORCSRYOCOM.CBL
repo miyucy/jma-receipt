@@ -198,7 +198,7 @@
            COPY    "CPORCSRYOCOM.INC".
       *
        PROCEDURE                   DIVISION    USING
-      *     SPA-AREA
+           SPA-AREA
            ORCSRYOCOM-AREA
            .
       *
