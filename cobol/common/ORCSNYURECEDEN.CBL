@@ -491,7 +491,7 @@
            COPY    "CPORCSNYURECEDEN.INC".
       *
        PROCEDURE                   DIVISION    USING
-      *     SPA-AREA
+           SPA-AREA
            ORCSNYURECEDEN-AREA
            .
       *
