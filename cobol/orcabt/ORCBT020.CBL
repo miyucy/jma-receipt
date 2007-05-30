@@ -32,6 +32,8 @@
       *  03.03.01    NACL-藤原    06/10/10  主保険がない場合、精神入院は
       *                                     公費単独のレセプトとする
       *  03.03.02    NACL-藤原    06/12/15  入院の包括のデータ作成の修正
+      *
+      *  03.05.01    NACL-藤原    07/04/19  グループ診療対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -40,39 +42,39 @@
        FILE-CONTROL.
       *
       *    月次統計データ（基本情報）
-           SELECT  TOUKEI01-FILE   ASSIGN  TOUKEI01
+           SELECT  TOUKEI01-FILE   ASSIGN  TOUKEI01PARA
                                    ORGANIZATION    IS  INDEXED
                                    ACCESS  MODE    IS  DYNAMIC
                                    RECORD  KEY     IS  TOUKEI01-KEY
                                    FILE    STATUS  IS  STS-TOUKEI01.
       *
       *    月次統計データ（診療情報）
-           SELECT  TOUKEI02-FILE   ASSIGN  TOUKEI02
+           SELECT  TOUKEI02-FILE   ASSIGN  TOUKEI02PARA
                                    ORGANIZATION    IS  INDEXED
                                    ACCESS  MODE    IS  DYNAMIC
                                    RECORD  KEY     IS  TOUKEI02-KEY
                                    FILE    STATUS  IS  STS-TOUKEI02.
       *
       *    月次統計データ（病名情報）
-           SELECT  TOUKEI03-FILE   ASSIGN  TOUKEI03
+           SELECT  TOUKEI03-FILE   ASSIGN  TOUKEI03PARA
                                    ORGANIZATION    IS  INDEXED
                                    ACCESS  MODE    IS  DYNAMIC
                                    RECORD  KEY     IS  TOUKEI03-KEY
                                    FILE    STATUS  IS  STS-TOUKEI03.
       *
       *    ＣＳＶデータ（診療情報） 
-           SELECT  TOUKEI04-FILE   ASSIGN  "/var/tmp/toukei01.dat"
+           SELECT  TOUKEI04-FILE   ASSIGN  TOUKEI04PARA
                                    ORGANIZATION    IS  LINE
                                                        SEQUENTIAL
                                    FILE    STATUS  IS  STS-TOUKEI04.
       *
       *    ＣＳＶデータ（病名情報）
-           SELECT  TOUKEI05-FILE   ASSIGN  "/var/tmp/toukei02.dat"
+           SELECT  TOUKEI05-FILE   ASSIGN  TOUKEI05PARA
                                    ORGANIZATION    IS  LINE
                                                        SEQUENTIAL
                                    FILE    STATUS  IS  STS-TOUKEI05.
       *    エラーファイル
-           SELECT  TOUKEIERR-FILE  ASSIGN  WRK-PARA-ERRFILENM
+           SELECT  TOUKEIERR-FILE  ASSIGN  TOUKEIERR
                                    FILE    STATUS  IS  STS-TOUKEIERR.
       *
        DATA                        DIVISION.
@@ -110,17 +112,32 @@
       *    月次統計データ（基本情報）
            COPY    "CPCOMMONDAT5.INC"
                                    REPLACING  //TEIKI01PARA//
-                                   BY         //TOUKEI01//.
+                                   BY         //TOUKEI01PARA//.
       *
       *    月次統計データ（診療情報）
            COPY    "CPCOMMONDAT5.INC"
                                    REPLACING  //TEIKI01PARA//
-                                   BY         //TOUKEI02//.
+                                   BY         //TOUKEI02PARA//.
       *
       *    月次統計データ（病名情報）
            COPY    "CPCOMMONDAT5.INC"
                                    REPLACING  //TEIKI01PARA//
-                                   BY         //TOUKEI03//.
+                                   BY         //TOUKEI03PARA//.
+      *
+      *    ＣＳＶデータ（診療情報）
+       01  TOUKEI04PARA.
+           03  FILLER                  PIC  X(05) VALUE "/tmp/".
+           03  TOUKEI04PARA-HOSPNUM    PIC  9(02).
+           03  TOUKEI04PARA-FILE-ID    PIC  X(12) VALUE "toukei01.dat".
+      *
+      *    ＣＳＶデータ（病名情報）
+       01  TOUKEI05PARA.
+           03  FILLER                  PIC  X(05) VALUE "/tmp/".
+           03  TOUKEI05PARA-HOSPNUM    PIC  9(02).
+           03  TOUKEI05PARA-FILE-ID    PIC  X(12) VALUE "toukei02.dat".
+      *
+           COPY    "CPERRFL.INC"   REPLACING  //ERRFLPARA//
+                                   BY         //TOUKEIERR//.
       *
       *    フラグ領域
        01  STS-AREA.
@@ -157,12 +174,12 @@
            03  WRK-PARA.
                05  WRK-PARA-HOSPCD             PIC X(07).
                05  WRK-PARA-SRYYM              PIC X(06).
-               05  WRK-PARA-TERMID             PIC X(16).
+               05  WRK-PARA-TERMID             PIC X(32).
                05  WRK-PARA-DATAKBN            PIC X(01).
                05  WRK-PARA-KOJINKBN           PIC X(01).
                05  WRK-PARA-JOBID              PIC 9(07).
                05  WRK-PARA-SHELLID            PIC X(08).
-               05  WRK-PARA-ERRFILENM          PIC X(100).
+               05  WRK-PARA-HOSPNUM            PIC 9(02).
       *
            03  WRK-TOUKEIERR               PIC X(200). 
       * 
@@ -275,7 +292,6 @@
       *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
-           COPY    "CPORCMCP.INC".
       *
            COPY    "COMMON-SPA".
       *
@@ -309,6 +325,7 @@
            INITIALIZE                  CNT-AREA
                                        WRK-AREA
                                        FLG-AREA
+                                       SPA-AREA
       *
            UNSTRING    COMMAND-PARAM   DELIMITED  BY  ","
                                        INTO    WRK-PARA-HOSPCD
@@ -318,32 +335,35 @@
                                                WRK-PARA-KOJINKBN
                                                WRK-PARA-JOBID
                                                WRK-PARA-SHELLID
-                                               WRK-PARA-ERRFILENM
-           END-UNSTRING 
+                                               WRK-PARA-HOSPNUM
+                                               TOUKEIERR
+           END-UNSTRING
+           MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
+      *
+           MOVE    SPA-HOSPNUM         TO  TOUKEI04PARA-HOSPNUM
+                                           TOUKEI05PARA-HOSPNUM
       *
            PERFORM 100-DBOPEN-SEC
       *
       *    ステップ管理開始処理
            MOVE    "STS"           TO  SJOBKANRI-MODE
            INITIALIZE                  JOBKANRI-REC
-           MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
-           MOVE    WRK-PARA-SHELLID
-                                   TO  JOB-SHELLID
            MOVE    "ORCBT020"      TO  JOB-PGID
            MOVE    "ＣＳＶデータ作成"
                                    TO  JOB-SHELLMSG
-           CALL    "ORCSJOB"       USING
-                                   ORCSJOBKANRIAREA  
-                                   JOBKANRI-REC
+grpsys     PERFORM 900-CALL-ORCSJOB-SEC
       *
-           MOVE    "TOKEI010"          TO  TOUKEI01-FILE-ID
-           MOVE    WRK-PARA-TERMID     TO  TOUKEI01-TERMID
+           MOVE    "TOKEI010"          TO  TOUKEI01PARA-FILE-ID
+           MOVE    WRK-PARA-TERMID     TO  TOUKEI01PARA-TERMID
+grpsys     MOVE    WRK-PARA-HOSPNUM    TO  TOUKEI01PARA-HOSPNUM
       *
-           MOVE    "TOKEI020"          TO  TOUKEI02-FILE-ID
-           MOVE    WRK-PARA-TERMID     TO  TOUKEI02-TERMID
+           MOVE    "TOKEI020"          TO  TOUKEI02PARA-FILE-ID
+           MOVE    WRK-PARA-TERMID     TO  TOUKEI02PARA-TERMID
+grpsys     MOVE    WRK-PARA-HOSPNUM    TO  TOUKEI02PARA-HOSPNUM
       *
-           MOVE    "TOKEI030"          TO  TOUKEI03-FILE-ID
-           MOVE    WRK-PARA-TERMID     TO  TOUKEI03-TERMID
+           MOVE    "TOKEI030"          TO  TOUKEI03PARA-FILE-ID
+           MOVE    WRK-PARA-TERMID     TO  TOUKEI03PARA-TERMID
+grpsys     MOVE    WRK-PARA-HOSPNUM    TO  TOUKEI03PARA-HOSPNUM
       *
            OPEN    I-O                 TOUKEI01-FILE
                                        TOUKEI02-FILE
@@ -388,7 +408,7 @@
                MOVE    "2"                 TO  WRK-SYOKBN
       *
                INITIALIZE                      TOUKEI03-REC
-               MOVE    TOUKEI01-HOSPID     TO  TOUKEI03-HOSPID
+               MOVE    TOUKEI01-HOSPNUM    TO  TOUKEI03-HOSPNUM
                MOVE    TOUKEI01-SRYYM      TO  TOUKEI03-SRYYM
                MOVE    TOUKEI01-NYUGAIKBN  TO  TOUKEI03-NYUGAIKBN
                MOVE    TOUKEI01-PTID       TO  TOUKEI03-PTID
@@ -403,8 +423,8 @@
                END-START
       *     
                PERFORM UNTIL   FLG-TOUKEI03    =   1
-                       OR      TOUKEI01-KEY (1:43)
-                                           NOT =   TOUKEI03-KEY (1:43)
+                       OR      TOUKEI01-KEY (1:21)
+                                           NOT =   TOUKEI03-KEY (1:21)
                    PERFORM 2002-FILE-HENSYU-SEC
                    PERFORM 900-TOUKEI03-READ-SEC
                END-PERFORM
@@ -425,7 +445,7 @@
            MOVE    SPACE               TO  WRK-REC
            MOVE    ZERO                TO  WRK-REC-LENGTH
       *    医療機関ＩＤ      
-           MOVE    TOUKEI01-HOSPID     TO  WRK-DATA
+      *??  MOVE    TOUKEI01-HOSPID     TO  WRK-DATA
            MOVE    24                  TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC    
       *    医療機関コード
@@ -913,7 +933,7 @@
            MOVE    SPACE               TO  WRK-REC
            MOVE    ZERO                TO  WRK-REC-LENGTH
       *    医療機関ＩＤ      
-           MOVE    TOUKEI01-HOSPID     TO  WRK-DATA
+      *??  MOVE    TOUKEI01-HOSPID     TO  WRK-DATA
            MOVE    24                  TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC    
       *    医療機関コード
@@ -1236,14 +1256,9 @@
       *        ジョブ管理開始処理
                MOVE    "JBE"           TO  SJOBKANRI-MODE
                INITIALIZE                  JOBKANRI-REC
-               MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
-               MOVE    WRK-PARA-SHELLID
-                                       TO  JOB-SHELLID
                MOVE    WRK-TOUKEIERR     TO  JOB-YOBI
                MOVE    "9999"          TO  JOB-ERRCD
-               CALL    "ORCSJOB"       USING
-                                       ORCSJOBKANRIAREA  
-                                       JOBKANRI-REC
+grpsys         PERFORM 900-CALL-ORCSJOB-SEC
            END-IF
       *                             
            MOVE    1                   TO  FLG-END
@@ -1269,12 +1284,7 @@
       *    ステップ管理終了処理
            MOVE    "STE"           TO  SJOBKANRI-MODE
            INITIALIZE                  JOBKANRI-REC
-           MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
-           MOVE    WRK-PARA-SHELLID
-                                   TO  JOB-SHELLID
-           CALL    "ORCSJOB"       USING
-                                   ORCSJOBKANRIAREA  
-                                   JOBKANRI-REC
+grpsys     PERFORM 900-CALL-ORCSJOB-SEC
       *
            PERFORM 900-DBDISCONNECT-SEC
       *     
@@ -1330,43 +1340,69 @@
            .
        900-TOUKEI03-READ-EXT.
            EXIT.
+      *
+      *****************************************************************
+      *    ジョブ管理ＤＢ制御処理
+      *****************************************************************
+       900-CALL-ORCSJOB-SEC            SECTION.
+      *
+           MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
+           MOVE    WRK-PARA-SHELLID
+                                   TO  JOB-SHELLID
+grpsys     MOVE    SPA-HOSPNUM     TO  JOB-HOSPNUM
+           CALL    "ORCSJOB"       USING
+                                   ORCSJOBKANRIAREA 
+                                   JOBKANRI-REC
+                                   SPA-AREA
+           .
+       900-CALL-ORCSJOB-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    テーブルアクセス処理
+      *****************************************************************
+       900-ORCDBMAIN-SEC               SECTION.
+      *
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
+           .
+      *
+       900-ORCDBMAIN-EXT.
+           EXIT.
       *      
       *****************************************************************
-      *    ＤＢ　オープン処理
+      *    ＤＢオープン処理
       *****************************************************************
        100-DBOPEN-SEC                SECTION.
       *
-           MOVE    "DBOPEN"            TO  MCP-FUNC.
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC.
+           MOVE    LOW-VALUE           TO  MCP-TABLE
+                                           MCP-PATHNAME
+           MOVE    "DBOPEN"            TO  MCP-FUNC
+grpsys     PERFORM 900-ORCDBMAIN-SEC
       *
-           MOVE    "DBSTART"           TO  MCP-FUNC.
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC.
+           MOVE    LOW-VALUE           TO  MCP-TABLE
+                                           MCP-PATHNAME
+           MOVE    "DBSTART"           TO  MCP-FUNC
+grpsys     PERFORM 900-ORCDBMAIN-SEC
            .
        100-DBOPEN-EXT.
            EXIT.
       *
       *****************************************************************
-      *    ＤＢ　クローズ処理
+      *    ＤＢクローズ処理
       *****************************************************************
        900-DBDISCONNECT-SEC            SECTION.
       *
-           MOVE    "DBCOMMIT"          TO  MCP-FUNC.
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC.
+           MOVE    LOW-VALUE           TO  MCP-TABLE
+                                           MCP-PATHNAME
+           MOVE    "DBCOMMIT"          TO  MCP-FUNC
+grpsys     PERFORM 900-ORCDBMAIN-SEC
       *
-           MOVE    "DBDISCONNECT"      TO  MCP-FUNC.
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC.
+           MOVE    LOW-VALUE           TO  MCP-TABLE
+                                           MCP-PATHNAME
+           MOVE    "DBDISCONNECT"      TO  MCP-FUNC
+grpsys     PERFORM 900-ORCDBMAIN-SEC
            .
-       900-DBCLOSE-EXT.
+       900-DBDISCONNECT-EXT.
            EXIT.

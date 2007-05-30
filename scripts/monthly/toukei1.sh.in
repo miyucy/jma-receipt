@@ -29,21 +29,36 @@ fi
 #        ${16} ファイル出力先区分（診療）
 #        ${17} ファイル出力先区分（病名）
 #        ${18} 端末ｉｐアドレス
+#        ${19} HOSPNUM
 #-------------------------------------------#
 ##      エラーファイル削除
 	echo $#
         if  [ -e ${15} ]; then
             rm  ${15}
         fi
+
+        LOG_FILE="/home/orca/${19}toukei1.log"
         
-        rm  /var/tmp/TOKEI0*
+        rm  -f /var/tmp/TOKEI0*
+        rm  -f /var/tmp/toukei01.dat
+        rm  -f /var/tmp/toukei02.dat
+
+        rm  -f /tmp/${19}TOKEI0*
+
+        echo "arg7  = [" ${7}  "]" >$LOG_FILE
+        echo "arg8  = [" ${8}  "]" >>$LOG_FILE
+        echo "arg12 = [" ${12} "]" >>$LOG_FILE
+        echo "arg16 = [" ${16} "]" >>$LOG_FILE
+        echo "arg17 = [" ${17} "]" >>$LOG_FILE
+        echo "arg18 = [" ${18} "]" >>$LOG_FILE
+
         
-	    $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBT010 -parameter $1,$2,$4,$5,$6,$9,${10},${13},${14},${15} > /home/orca/toukei1.log
+	    $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBT010 -parameter $1,$2,$4,$5,$6,$9,${10},${13},${14},${19},${15} >> $LOG_FILE 2>&1
         
         if  [ -e ${15} ]; then
             exit 
         else
-	        $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBT020 -parameter $3,$5,$1,$9,${11},${13},${14},${15} >> /home/orca/toukei1.log
+	        $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBT020 -parameter $3,$5,$1,$9,${11},${13},${14},${19},${15} >> $LOG_FILE 2>&1
 	fi
 
         if  [ -e ${15} ]; then
@@ -54,17 +69,17 @@ fi
 
         if  [ ${12} -eq '2' ]; then
             if   [ ${9} != '2' ]; then
-                nkf -s /var/tmp/toukei01.dat > /tmp/$7
+                nkf -s /tmp/${19}toukei01.dat > /tmp/$7
             fi 
             if   [ ${9} != '1' ]; then
-                nkf -s /var/tmp/toukei02.dat > /tmp/$8
+                nkf -s /tmp/${19}toukei02.dat > /tmp/$8
             fi 
         else
             if   [ ${9} != '2' ]; then
-                cp  /var/tmp/toukei01.dat /tmp/$7
+                cp  /tmp/${19}toukei01.dat /tmp/$7
             fi 
             if   [ ${9} != '1' ]; then
-                cp  /var/tmp/toukei02.dat /tmp/$8
+                cp  /tmp/${19}toukei02.dat /tmp/$8
             fi
         fi
 #
@@ -89,7 +104,7 @@ fi
              esac
 	     if  [ $RC -ne '0' ]; then
 		ERRCD='0000'$RC
-        	$DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE${13}${14}${ERRCD:${#ERRCD}-4:4} >> /home/orca/toukei1.log
+        	$DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE${13}${14}${ERRCD:${#ERRCD}-4:4},${19} >> $LOG_FILE 2>&1
 		exit
 	     fi
         fi         
@@ -113,11 +128,11 @@ fi
              esac
 	     if  [ $RC -ne '0' ]; then
 		ERRCD='0000'$RC
-        	$DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE${13}${14}${ERRCD:${#ERRCD}-4:4} >> /home/orca/toukei1.log
+        	$DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE${13}${14}${ERRCD:${#ERRCD}-4:4},${19} >> $LOG_FILE 2>&1
 		exit
 	     fi
         fi         
 
-        $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE${13}${14} >> /home/orca/toukei1.log
+        $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE${13}${14},${19} >> $LOG_FILE 2>&1
 
         exit 

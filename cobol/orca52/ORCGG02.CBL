@@ -1128,6 +1128,7 @@
                                        DBMETA
                                        SPA-AREA
            MOVE    DBMETA-HOST     TO  SHELLTBL-ARG18
+           MOVE    SPA-HOSPNUM     TO  SHELLTBL-ARG19
       *
            MOVE    SHELLTBL        TO  MCPDATA-REC
            MOVE    "SHELL"         TO  MCP-FUNC
