@@ -26,6 +26,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者        日付      内容
+      *  03.05.01    NACL-森脇     07/05/30  グループ診療対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -46,11 +47,15 @@
       *
        WORKING-STORAGE             SECTION.
       *
+      *----(03.05.01)--UPD-START---
       *    エラーファイル 名称領域 
-           COPY    "CPCOMMONDAT2.INC"
-                                   REPLACING  //RECE01PARA//
+      *     COPY    "CPCOMMONDAT2.INC"
+      *                             REPLACING  //RECE01PARA//
+      *                             BY         //YKJMERR//.
+      *     03  FILLER              PIC X(04)   VALUE   ".dat".
+           COPY    "CPERRFL.INC"   REPLACING  //ERRFLPARA//
                                    BY         //YKJMERR//.
-           03  FILLER              PIC X(04)   VALUE   ".dat".
+      *----(03.05.01)--UPD-END-----
       *
       *    画面活性非活性
            COPY    "ENUM-VALUE".
@@ -974,8 +979,9 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SYS-TIME            TO
                                        WRK-CONS-PRTKANRI-TBL-GROUP (9:)
       *
-           MOVE    "YKJMERR"           TO  YKJMERR-FILE-ID
+           MOVE    "OR107ERR"          TO  YKJMERR-FILE-ID
            MOVE    SPA-TERMID          TO  YKJMERR-TERMID
+           MOVE    SPA-HOSPNUM         TO  YKJMERR-HOSPNUM
       *
       *    出力先プリンタ名割り当て情報編集
            INITIALIZE                      SYS-1031-REC
@@ -1058,7 +1064,11 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN    "OK"
                    MOVE    "2"             TO  SHELLTBL-ARG17
                END-EVALUATE
-grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
+      *----(03.05.01)--ADD-START---
+grpsys         MOVE    SPA-HOSPNUM         TO  SHELLTBL-ARG18
+               MOVE    SPACE               TO  SHELLTBL-ARG19
+               MOVE    SPACE               TO  SHELLTBL-ARG20
+      *----(03.05.01)--ADD-END-----
                MOVE    SHELLTBL            TO  MCPDATA-REC
                MOVE    "shell"             TO  MCP-TABLE
                MOVE    "shell"             TO  MCP-PATHNAME

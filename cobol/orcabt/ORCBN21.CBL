@@ -28,6 +28,7 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *  00.00.01    NACL-森脇    06/09/28  条件なしの処理
+      *  03.05.01    NACL-森脇    07/05/30  グループ診療対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -52,10 +53,14 @@
            COPY    "CPCOMMONSHELL.INC".
            COPY    "CPSHELLTBL.INC".
            COPY    "ORCA-DBPATH".
+      *----(03.05.01)--UPD-START---
       *    エラーファイル 名称領域 
-           COPY    "CPCOMMONDAT2.INC"  REPLACING  //RECE01PARA//
-                                       BY         //YKJMERR//.
-           03  FILLER                  PIC X(04)   VALUE   ".dat".
+      *     COPY    "CPCOMMONDAT2.INC"  REPLACING  //RECE01PARA//
+      *                                 BY         //YKJMERR//.
+      *     03  FILLER                  PIC X(04)   VALUE   ".dat".
+           COPY    "CPERRFL.INC"   REPLACING  //ERRFLPARA//
+                                   BY         //YKJMERR//.
+      *----(03.05.01)--UPD-END-----
       *
            COPY    "HCM47.INC".
       *
@@ -281,12 +286,18 @@
                                        WRK-PARA-NAME
                                        WRK-PARA-SRYCD
                                        WRK-PARA-INPUTCD
+      *----(03.05.01)--ADD-START---
+                                       YKJMERR
+      *----(03.05.01)--ADD-END-----
       *
       *    ステップ管理開始処理
            MOVE    "STS"               TO  SJOBKANRI-MODE
            INITIALIZE                      JOBKANRI-REC
            MOVE    WRK-PARA-JOBID      TO  JOB-JOBID
            MOVE    WRK-PARA-SHELLID    TO  JOB-SHELLID
+      *----(03.05.01)--ADD-START---
+           MOVE    WRK-PARA-HOSPNUM    TO  JOB-HOSPNUM
+      *----(03.05.01)--ADD-END-----
            MOVE    "ORCBN21"           TO  JOB-PGID
            MOVE    "薬剤情報マスタ一覧"
                                        TO  JOB-SHELLMSG
@@ -294,11 +305,16 @@
            CALL    "ORCSJOB"               USING
                                            ORCSJOBKANRIAREA
                                            JOBKANRI-REC
+      *----(03.05.01)--ADD-START---
+                                           SPA-AREA
+      *----(03.05.01)--ADD-END-----
       *
-           MOVE    "YKJMERR"       TO  YKJMERR-FILE-ID
-           MOVE    LNK-PRTKANRI-TERMID
-                                   TO  YKJMERR-TERMID
-           MOVE    WRK-PARA-HOSPNUM    TO  YKJMERR-HOSPNUM
+      *----(03.05.01)--UPD-START---
+      *     MOVE    "YKJMERR"       TO  YKJMERR-FILE-ID
+      *     MOVE    LNK-PRTKANRI-TERMID
+      *                             TO  YKJMERR-TERMID
+      *     MOVE    WRK-PARA-HOSPNUM    TO  YKJMERR-HOSPNUM
+      *----(03.05.01)--UPD-END-----
       *
       *    ファイルデイレクトリ位置指定
            INITIALIZE                  ORCSMKPASSAREA
@@ -774,11 +790,17 @@
                MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
                MOVE    WRK-PARA-SHELLID
                                        TO  JOB-SHELLID
+      *----(03.05.01)--ADD-START---
+               MOVE    WRK-PARA-HOSPNUM    TO  JOB-HOSPNUM
+      *----(03.05.01)--ADD-END-----
                MOVE    WRK-YKJMERR     TO  JOB-YOBI
                MOVE    "9999"          TO  JOB-ERRCD
                CALL    "ORCSJOB"           USING
                                            ORCSJOBKANRIAREA
                                            JOBKANRI-REC
+      *----(03.05.01)--ADD-START---
+                                           SPA-AREA
+      *----(03.05.01)--ADD-END-----
            END-IF
       *
            CLOSE   YKJMERR-FILE
@@ -799,10 +821,16 @@
            MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
            MOVE    WRK-PARA-SHELLID
                                    TO  JOB-SHELLID
+      *----(03.05.01)--ADD-START---
+           MOVE    WRK-PARA-HOSPNUM    TO  JOB-HOSPNUM
+      *----(03.05.01)--ADD-END-----
            MOVE    CNT-PAGE        TO  JOB-UPDCNT
            CALL    "ORCSJOB"           USING
                                        ORCSJOBKANRIAREA
                                        JOBKANRI-REC
+      *----(03.05.01)--ADD-START---
+                                       SPA-AREA
+      *----(03.05.01)--ADD-END-----
       *
            PERFORM 900-DBDISCONNECT-SEC
            .

@@ -15,7 +15,7 @@ RENNUM=0
 #        $1-${11} °õºþ£Ä£ÂÍÑ¸ÇÄê°ú¿ô
 #        ${12} ¥¸¥ç¥Ö£É£Ä
 #        ${13} ¥·¥§¥ë£É£Ä
-#        ${14} °åÎÅµ¡´Ø£Ã£Ä
+#        ${14} °åÎÅµ¡´Ø£Î£Õ£Í
 #        ${15} ¾ò·ïÍ­Ìµ
 #        ${16} ¾ò·ï¶èÊ¬
 #        ${17} ÌôºÞ¶èÊ¬
@@ -38,5 +38,5 @@ RENNUM=0
         if  [ -e ${22} ]; then
             exit
         fi
-        $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE${12}${13}
+        $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE${12}${13},${14}
         exit 
