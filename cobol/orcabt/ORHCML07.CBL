@@ -223,6 +223,8 @@
       *----(03.05.01)--ADD-START---
                                                WRK-PARA-HOSPNUM
                                                TENSUERR
+           END-UNSTRING
+           MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
       *----(03.05.01)--ADD-END-----
       *
       *    ステップ管理開始処理

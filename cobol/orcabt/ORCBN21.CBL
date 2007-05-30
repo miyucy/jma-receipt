@@ -288,6 +288,8 @@
                                        WRK-PARA-INPUTCD
       *----(03.05.01)--ADD-START---
                                        YKJMERR
+           END-UNSTRING
+           MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
       *----(03.05.01)--ADD-END-----
       *
       *    ステップ管理開始処理
@@ -758,6 +760,9 @@
            MOVE    "1"                 TO  SPRT-SITEKBN
            CALL    "ORCSPRT"           USING
                                        ORCSPRTAREA
+      *----(03.05.01)--ADD-START---
+                                       SPA-AREA
+      *----(03.05.01)--ADD-END-----
            IF      SPRT-RETURN         =   ZERO
                CONTINUE
            ELSE
