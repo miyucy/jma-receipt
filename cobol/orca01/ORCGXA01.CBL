@@ -1386,7 +1386,7 @@
            MOVE    SPACE               TO  WRK-CONS-PRTKANRI-TBL-GROUP                                
       *     
            MOVE    SPA-HOSPNUM         TO  RECEERR-HOSPNUM
-           MOVE    "ORC01ERR"          TO  RECEERR-FILE-ID
+           MOVE    "OR001ERR"          TO  RECEERR-FILE-ID
            MOVE    SPA-TERMID          TO  RECEERR-TERMID
            MOVE    1                   TO  RECEERR-SYOKBN1
       *
