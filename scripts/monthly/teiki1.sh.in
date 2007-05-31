@@ -23,7 +23,7 @@ fi
 #        $6 伝票発行日
 #        $7 JOBID 
 #        $8 SHELLID
-#        $9 HOSPID
+#        $9 HOSPNUM
 #        ${10} エラーファイル
 #        ${11}処理対象の期別
 #        ${12}処理日
@@ -62,10 +62,10 @@ ERR_FILE=${10}
 ##   -- ORCT0040 START --  
         $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCT0040 -parameter "$1,$2,$3,$4,$5,$6,$7,$8,$9,${10},${11},${12},${13}"
         if  [ -e $ERR_FILE ]; then
-            $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCT0050 -parameter "$7,$8,${10}"
+            $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCT0050 -parameter "$9,$7,$8,${10}"
             exit  
         fi 
 
-        $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE$7$8
+        $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE$7$8,$9
 
         exit

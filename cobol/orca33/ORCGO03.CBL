@@ -30,29 +30,22 @@
       * Maj/Min/Rev  修正者       日付      内容
       *  01.00.01    NACL-太田    03.07.01  出力先プリンタサブ追加
       *  01.00.01    NACL-太田    03.07.10  印刷処理時処理確認画面へ遷移
+      *  03.05.00    NACL-太田    07/05/30  グループ診療対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
        CONFIGURATION               SECTION.
        INPUT-OUTPUT                SECTION.
        FILE-CONTROL.
-006900*    エラーファイル
-           SELECT  TEIKIERR-FILE   ASSIGN  TEIKIERR
-                                   FILE    STATUS  IS  STS-TEIKIERR.
       *
        DATA                    DIVISION.
        FILE                        SECTION.
-006900*    エラーファイル
-       FD  TEIKIERR-FILE.
-       01  TEIKIERR-REC            PIC X(200). 
       *
        WORKING-STORAGE             SECTION.
       *
       *    エラーファイル 名称領域 
-           COPY    "CPCOMMONDAT5.INC"
-                                   REPLACING  //TEIKI01PARA//
+           COPY    "CPERRFL.INC"   REPLACING  //ERRFLPARA//
                                    BY         //TEIKIERR//.
-           03  FILLER              PIC X(04)   VALUE   ".dat".
       *
       *    スパ領域
            COPY    "COMMON-SPA".
@@ -1252,11 +1245,13 @@
       *    ジョブ管理チェック処理
            MOVE    "CHK"           TO  SJOBKANRI-MODE
            INITIALIZE                  JOBKANRI-REC
+           MOVE    SPA-HOSPNUM     TO  JOB-HOSPNUM
            MOVE    CONST-JOBID     TO  JOB-JOBID
            MOVE    CONST-SHELLID   TO  JOB-SHELLID
            CALL    "ORCSJOB"       USING
                                    ORCSJOBKANRIAREA  
-                                   JOBKANRI-REC 
+                                   JOBKANRI-REC
+                                   SPA-AREA
            IF    ( SJOBKANRI-RETURN    =   ZERO )
                IF    ( JOB-ENDYMD      =   SPACE )
                    MOVE    "7777"  TO  SPA-ERRCD
@@ -1304,8 +1299,10 @@
            MOVE    SPA-TERMID          TO  LNK-PRTKANRI-TERMID
            MOVE    SPA-OPID            TO  LNK-PRTKANRI-OPID
       *
-           MOVE    "TEIKIERR"          TO  TEIKIERR-FILE-ID
+           MOVE    SPA-HOSPNUM         TO  TEIKIERR-HOSPNUM
+           MOVE    "OR033ERR"          TO  TEIKIERR-FILE-ID
            MOVE    SPA-TERMID          TO  TEIKIERR-TERMID
+           MOVE    3                   TO  TEIKIERR-SYOKBN1
       *
            MOVE    SPACE               TO  SHELLTBL
            MOVE    "teiki2.sh"         TO  WRK-SHELL-SHELL
@@ -1343,7 +1340,7 @@
            MOVE    SPA-TERMID          TO  SHELLTBL-ARG14
            MOVE    CONST-JOBID         TO  SHELLTBL-ARG15
            MOVE    CONST-SHELLID       TO  SHELLTBL-ARG16
-           MOVE    SPA-HOSPID          TO  SHELLTBL-ARG17
+           MOVE    SPA-HOSPNUM         TO  SHELLTBL-ARG17
            MOVE    SPA-STAFFCD         TO  SHELLTBL-ARG18
            MOVE    TEIKIERR            TO  SHELLTBL-ARG19
            MOVE    SPA-GMN-O03-SKYPRTKBN
@@ -1363,9 +1360,9 @@
            MOVE    "shell"             TO  MCP-PATHNAME
            MOVE    "SHELL"             TO  MCP-FUNC
            CALL    "ORCDBMAIN"         USING
-                                           MCPAREA
-                                           MCPDATA-REC
-                                           SPA-AREA
+                                       MCPAREA
+                                       MCPDATA-REC
+                                       SPA-AREA
       *
            MOVE    LNK-PRTKANRI-TBL-GROUP
                                        TO  SPA-O01-TBL-GROUP
@@ -1382,8 +1379,8 @@
        4501-BTPARA-DEL-SEC            SECTION.
       *
            INITIALIZE                      BTPARA-REC
-           MOVE    CONST-SHELLID       TO  BTPARA-SHELLID
            MOVE    SPA-HOSPNUM         TO  BTPARA-HOSPNUM
+           MOVE    CONST-SHELLID       TO  BTPARA-SHELLID
            MOVE    BTPARA-REC          TO  MCPDATA-REC
            MOVE    "tbl_btpara"        TO  MCP-TABLE
            MOVE    "del1"              TO  MCP-PATHNAME
@@ -1398,6 +1395,7 @@
        4501-BTPARA-INS-SEC            SECTION.
       *
            INITIALIZE              BTPARA-REC
+           MOVE    SPA-HOSPNUM     TO  BTPARA-HOSPNUM
            MOVE    CONST-SHELLID   TO  BTPARA-SHELLID
            MOVE    ZERO            TO  BTPARA-RENNUM
            MOVE    CONST-JOBID     TO  BTPARA-JOBID
@@ -1426,7 +1424,6 @@
                                                TO  TEIKI2BT-BRMNUM
                        MOVE    TEIKI2BTPARA    TO  BTPARA-INFO-PARA
       *
-                       MOVE    SPA-HOSPNUM     TO  BTPARA-HOSPNUM
                        MOVE    BTPARA-REC      TO  MCPDATA-REC
                        MOVE    "tbl_btpara"    TO  MCP-TABLE
                        MOVE    "key"           TO  MCP-PATHNAME
@@ -2047,12 +2044,14 @@
        800-ORCSJOB-SEC                 SECTION.
       *
            INITIALIZE                      JOBKANRI-REC
+           MOVE    SPA-HOSPNUM         TO  JOB-HOSPNUM
            MOVE    CONST-JOBID         TO  JOB-JOBID
            MOVE    CONST-SHELLID       TO  JOB-SHELLID
            MOVE    SPA-TERMID          TO  JOB-TERMID
            CALL    "ORCSJOB"           USING
                                        ORCSJOBKANRIAREA
                                        JOBKANRI-REC 
+                                       SPA-AREA
       *
            .
       *
@@ -2152,7 +2151,7 @@
                    MOVE    "%"         TO  QTEIKI-SELTAIINYMD(1)
                                            QTEIKI-SELTAIINYMD(2)
            END-IF
-      *****MOVE    SPA-HOSPNUM     TO  QTEIKI-HOSPNUM
+           MOVE    SPA-HOSPNUM     TO  QTEIKI-HOSPNUM
            MOVE    QTEIKI-REC      TO  MCPDATA-REC
            PERFORM 9001-EDIT-QTEIKI-KEY-SEC
            MOVE    "query_teiki"   TO  MCP-TABLE
@@ -2235,10 +2234,10 @@
            MOVE   LOW-VALUE         TO  MCP-TABLE
                                         MCP-PATHNAME
            MOVE   "PUTWINDOW"       TO  MCP-FUNC
-           CALL   "ORCDBMAIN"       USING
-                                        MCPAREA
-                                        MCPDATA-REC
-                                        SPA-AREA
+           CALL    "ORCDBMAIN"         USING
+                                       MCPAREA
+                                       MCPDATA-REC
+                                       SPA-AREA
       *
            .
        900-PUT-WINDOW-EXT.
@@ -2251,7 +2250,7 @@
        910-DBSELECT-SEC          SECTION.
       *
            MOVE    "DBSELECT"      TO  MCP-FUNC
-           CALL    "ORCDBMAIN"     USING
+           CALL    "ORCDBMAIN"         USING
                                        MCPAREA
                                        MCPDATA-REC
                                        SPA-AREA
@@ -2268,7 +2267,7 @@
        910-DBFETCH-SEC            SECTION.
       *
            MOVE    "DBFETCH"       TO  MCP-FUNC
-           CALL    "ORCDBMAIN"     USING
+           CALL    "ORCDBMAIN"         USING
                                        MCPAREA
                                        MCPDATA-REC
                                        SPA-AREA
@@ -2282,7 +2281,7 @@
        910-DBCLOSECURSOR-SEC           SECTION.
       *
            MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
-           CALL    "ORCDBMAIN"     USING
+           CALL    "ORCDBMAIN"         USING
                                        MCPAREA
                                        MCPDATA-REC
                                        SPA-AREA
@@ -2296,7 +2295,7 @@
        910-DBINSERT-SEC                SECTION.
       *
            MOVE    "DBINSERT"      TO  MCP-FUNC
-           CALL    "ORCDBMAIN"     USING
+           CALL    "ORCDBMAIN"         USING
                                        MCPAREA
                                        MCPDATA-REC
                                        SPA-AREA
@@ -2310,7 +2309,7 @@
        910-DBUPDATE-SEC                SECTION.
       *
            MOVE    "DBUPDATE"      TO  MCP-FUNC
-           CALL    "ORCDBMAIN"     USING
+           CALL    "ORCDBMAIN"         USING
                                        MCPAREA
                                        MCPDATA-REC
                                        SPA-AREA
@@ -2324,7 +2323,7 @@
        910-DBDELETE-SEC                SECTION.
       *
            MOVE    "DBDELETE"      TO  MCP-FUNC
-           CALL    "ORCDBMAIN"     USING
+           CALL    "ORCDBMAIN"         USING
                                        MCPAREA
                                        MCPDATA-REC
                                        SPA-AREA

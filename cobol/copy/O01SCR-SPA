@@ -225,6 +225,9 @@
                    07  SPA-NAI-O04-INPUT-AREA.
                        09  SPA-NAI-O04-SKYMONEY-MOTO   PIC S9(10).
                        09  SPA-NAI-O04-MEISAIJOUTAIKBN PIC X(01).
+                       09  SPA-NAI-O04-SYURRKNUM       PIC 9(09).
+                       09  SPA-NAI-O04-SYUEDANUM       PIC 9(09).
+                       09  SPA-NAI-O04-SYURRKUPDKBN    PIC X(1).
                        09  SPA-NAI-O04-NYUKINYMD       PIC X(08).
                        09  SPA-NAI-O04-NYUKIN-MOTO     PIC S9(10).
                        09  SPA-NAI-O04-DENPEDANUM      PIC X(02).
@@ -243,6 +246,9 @@
                                                        PIC X(01).
                        09  SPA-NAI-O04-TNYKN-HOHO      PIC X(02).
                        09  SPA-NAI-O04-TJOUTAIKBN      PIC X(1).
+                       09  SPA-NAI-O04-TSYURRKNUM      PIC 9(09).
+                       09  SPA-NAI-O04-TSYUEDANUM      PIC 9(09).
+                       09  SPA-NAI-O04-TSYURRKUPDKBN   PIC X(1).
                        09  SPA-NAI-O04-TSYORIYMD       PIC X(08).
       *
                05  SPA-NAI-O04-SKYTBL-AREA.

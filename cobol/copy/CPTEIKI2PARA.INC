@@ -30,7 +30,7 @@
            03  TEIKI2P-TERMID              PIC X(64).
            03  TEIKI2P-JOBID               PIC 9(07).
            03  TEIKI2P-SHELLID             PIC X(08).
-           03  TEIKI2P-HOSPID              PIC X(24).
+           03  TEIKI2P-HOSPNUM             PIC 9(02).
            03  TEIKI2P-STAFFCD             PIC X(05).
            03  TEIKI2P-ERRFILE             PIC X(200).
            03  TEIKI2P-SKYPRT              PIC X(01).

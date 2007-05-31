@@ -25,7 +25,7 @@
       ************************************************************
        01  TEIKI3PARA-AREA.
            03  TEIKI3P-ERRFILE             PIC X(200).
-           03  TEIKI3P-HOSPID              PIC X(24).
+           03  TEIKI3P-HOSPNUM             PIC 9(02).
            03  TEIKI3P-TERMID              PIC X(64).
            03  TEIKI3P-OPID                PIC X(16).
            03  TEIKI3P-SYSYMD              PIC X(08).

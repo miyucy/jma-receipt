@@ -18,7 +18,7 @@ fi
 #		${14}		端末ＩＤ
 #		${15}		ジョブＩＤ
 #		${16}		シェルＩＤ
-#		${17}		医療機関ＩＤ
+#		${17}		医療機関番号
 #		${18}		スタッフコード
 #		${19}		エラーファイル名
 #		${20}		請求書出力区分（最新分／期間指定）
@@ -47,7 +47,7 @@ ERR_FILE=${19}
             exit  
         fi 
 
-	$DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE${15}${16}
+	$DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE${15}${16},${17}
 	
         exit
 

@@ -25,7 +25,7 @@
       ************************************************************
       *01  TEIKI01-REC.
            03  TEIKI01-KEY.
-               05  TEIKI01-HOSPID          PIC X(24).
+               05  TEIKI01-HOSPNUM         PIC 9(02).
                05  TEIKI01-PTID            PIC 9(10).
                05  TEIKI01-SKYSTYMD        PIC X(08).
                05  TEIKI01-SKYEDYMD        PIC X(08).

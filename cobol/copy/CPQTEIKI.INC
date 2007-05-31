@@ -23,6 +23,7 @@
       * Maj/Min/Rev  修正者       日付      内容
       ************************************************************
       *01  QTEIKI-REC.
+           03  QTEIKI-HOSPNUM          PIC 9(02).
            03  QTEIKI-SRYYM            PIC X(6).
            03  QTEIKI-KBT              PIC X(1).
            03  QTEIKI-BTUNUM           PIC X(2).

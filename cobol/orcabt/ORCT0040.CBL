@@ -31,6 +31,7 @@
       *                                     氏名をカナ氏名に修正
       * 01.00.02     NACL-太田    03.11.12  更新日付編集対応
       * 01.00.03     NACL-太田    04.03.30  訂正更新処理追加
+      *  03.05.00    NACL-太田    07/05/31  グループ診療対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -104,25 +105,24 @@
       *
       *
       *    定期請求収納ファイル名称領域 
-           COPY    "CPCOMMONDAT5.INC"  REPLACING  //TEIKI01//
-                                       BY         //TEIKI06//.
+           COPY    "CPCOMMONDAT3.INC"  REPLACING  //TMPFLID//
+                                       BY         //TEIKI06PARA//.
       *
       *    請求取消対象収納ファイル名称領域 
-           COPY    "CPCOMMONDAT5.INC"  REPLACING  //TEIKI01//
-                                       BY         //TEIKI07//.
+           COPY    "CPCOMMONDAT3.INC"  REPLACING  //TMPFLID//
+                                       BY         //TEIKI07PARA//.
       *
       *    単独更新用日別収納ファイル(IN)
-           COPY    "CPCOMMONDAT5.INC"  REPLACING  //TEIKI01//
-                                       BY         //TEIKI08//.
+           COPY    "CPCOMMONDAT3.INC"  REPLACING  //TMPFLID//
+                                       BY         //TEIKI08PARA//.
       *
       *    定期請求収納ファイル(OT) <-- 訂正更新用
-           COPY    "CPCOMMONDAT5.INC"  REPLACING  //TEIKI01//
-                                       BY         //TEIKI09//.
+           COPY    "CPCOMMONDAT3.INC"  REPLACING  //TMPFLID//
+                                       BY         //TEIKI09PARA//.
       *
       *    エラーファイル 名称領域 
-           COPY    "CPCOMMONDAT5.INC"  REPLACING  //TEIKI01PARA//
-                                       BY         //TEIKIERR//.
-           03  FILLER                  PIC X(04)  VALUE   ".dat".
+           COPY    "CPERRFL.INC"   REPLACING  //ERRFLPARA//
+                                   BY         //TEIKIERR//.
       *
       *    フラグ領域
        01  STS-AREA.
@@ -411,6 +411,9 @@
       *    マシン日付取得サブ
            COPY    "CPORCSMCNDATE.INC".
       *
+      *    収納更新差額取得
+           COPY  "CPORCSS002.INC".
+      *
       ****************************************************************
        LINKAGE                 SECTION.
       *
@@ -460,11 +463,13 @@
                                                TEIKI1P-DENPPRTYMD
                                                TEIKI1P-JOBID
                                                TEIKI1P-SHELLID
-                                               TEIKI1P-HOSPID
+                                               TEIKI1P-HOSPNUM
                                                TEIKI1P-ERRFILE
                                                TEIKI1P-KBT
                                                TEIKI1P-JOBYMD
                                                TEIKI1P-JOBHMS
+      *
+           MOVE    TEIKI1P-HOSPNUM     TO  SPA-HOSPNUM
       *
            PERFORM 100-DBOPEN-SEC
       *
@@ -473,6 +478,7 @@
       *    ステップ管理開始処理
            MOVE    "STS"               TO  SJOBKANRI-MODE
            INITIALIZE                      JOBKANRI-REC
+           MOVE    TEIKI1P-HOSPNUM         TO  JOB-HOSPNUM
            MOVE    TEIKI1P-JOBID       TO  JOB-JOBID
            MOVE    TEIKI1P-SHELLID     TO  JOB-SHELLID
            MOVE    "ORCT0040"          TO  JOB-PGID
@@ -480,6 +486,7 @@
            CALL    "ORCSJOB"           USING
                                        ORCSJOBKANRIAREA
                                        JOBKANRI-REC
+                                       SPA-AREA
       *
            MOVE    TEIKI1P-ERRFILE TO  TEIKIERR
       *
@@ -487,6 +494,7 @@
            MOVE    TEIKI1P-JOBID   TO  STEIKI01-JOBID
            MOVE    TEIKI1P-SHELLID TO  STEIKI01-SHELLID
            CALL    "ORCSTEIKI01"   USING   ORCSTEIKI01AREA
+                                           SPA-AREA
            IF    ( STEIKI01-STOP   =   1 )
                MOVE    "8888"      TO  ERR-ERRCD
                PERFORM 500-ERR-HENSYU-SEC
@@ -495,15 +503,19 @@
            MOVE    ZERO                TO  FLG-END
                                            FLG-ERR
       *
+           MOVE    TEIKI1P-HOSPNUM     TO  TEIKI06PARA-HOSPNUM
            MOVE    "TEIKI006"          TO  TEIKI06PARA-FILE-ID
            MOVE    TEIKI1P-TERMID      TO  TEIKI06PARA-TERMID
       *
+           MOVE    TEIKI1P-HOSPNUM     TO  TEIKI07PARA-HOSPNUM
            MOVE    "TEIKI007"          TO  TEIKI07PARA-FILE-ID
            MOVE    TEIKI1P-TERMID      TO  TEIKI07PARA-TERMID
       *
+           MOVE    TEIKI1P-HOSPNUM     TO  TEIKI08PARA-HOSPNUM
            MOVE    "TEIKI008"          TO  TEIKI08PARA-FILE-ID
            MOVE    TEIKI1P-TERMID      TO  TEIKI08PARA-TERMID
       *
+           MOVE    TEIKI1P-HOSPNUM     TO  TEIKI09PARA-HOSPNUM
            MOVE    "TEIKI009"          TO  TEIKI09PARA-FILE-ID
            MOVE    TEIKI1P-TERMID      TO  TEIKI09PARA-TERMID
       *
@@ -518,11 +530,10 @@
            MOVE    "*"                 TO  SYS-5010-KBNCD
            MOVE    TEIKI1P-SYSYMD      TO  SYS-5010-STYUKYMD
                                            SYS-5010-EDYUKYMD
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
-           MOVE    SYS-5010-REC        TO  MCPDATA-REC
+           MOVE    SYS-5010-REC        TO  SYSKANRI-REC
            PERFORM 900-SYSKANRI-KEY10-SEL-SEC
            IF    ( FLG-SYSKANRI        =   ZERO )
-               MOVE    MCPDATA-REC     TO  SYS-5010-REC
+               MOVE    SYSKANRI-REC    TO  SYS-5010-REC
            ELSE
                MOVE    "0001"          TO  ERR-ERRCD
                PERFORM 500-ERR-HENSYU-SEC
@@ -578,11 +589,10 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    "1041"          TO  SYS-1041-KANRICD
            MOVE    TEIKI1P-SYSYMD  TO  SYS-1041-STYUKYMD
                                        SYS-1041-EDYUKYMD
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
-           MOVE    SYS-1041-REC    TO  MCPDATA-REC
+           MOVE    SYS-1041-REC    TO  SYSKANRI-REC
            PERFORM 900-SYSKANRI-KEY2-SEL-SEC
            IF    ( FLG-SYSKANRI        =   ZERO )
-               MOVE    MCPDATA-REC TO  SYS-1041-REC
+               MOVE    SYSKANRI-REC TO  SYS-1041-REC
            END-IF
       *
            PERFORM UNTIL ( FLG-SYSKANRI    NOT =   ZERO )
@@ -605,7 +615,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *
                PERFORM 900-SYSKANRI-KEY2-FET-SEC
                IF    ( FLG-SYSKANRI        =   ZERO )
-                   MOVE    MCPDATA-REC TO  SYS-1041-REC
+                   MOVE    SYSKANRI-REC TO  SYS-1041-REC
                END-IF
       *
            END-PERFORM
@@ -703,18 +713,19 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *
            MOVE    TEIKI07-REC         TO  SYUNOU-REC
       *
-      *    収納明細作成処理
-           PERFORM 20021-SYUMEI-SAKUSEI-SEC
+           COMPUTE WRK-SKYMONEY    =   SYU-SKYMONEY    *   -1
       *
       *    請求取消として収納マスターを更新
            MOVE    ZERO                TO  SYU-SKYMONEY
       *                                    SYU-NYUKIN-TOTAL
            MOVE    "3"                 TO  SYU-DENPJTIKBN
       *
+      *    収納明細作成処理
+           PERFORM 20021-SYUMEI-SAKUSEI-SEC
+      *
            MOVE    TEIKI1P-JOBYMD      TO  SYU-UPYMD
            MOVE    TEIKI1P-JOBHMS      TO  SYU-UPHMS
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYUNOU-REC          TO  MCPDATA-REC
            MOVE    "tbl_syunou"        TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
@@ -733,7 +744,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *****************************************************************
        20021-SYUMEI-SAKUSEI-SEC        SECTION.
       *
-           COMPUTE WRK-SKYMONEY    =   SYU-SKYMONEY    *   -1
+           PERFORM 800-SS002-SEC
       *
            PERFORM 900-SYUMEI-KEY7-SEL-SEC
       *
@@ -741,7 +752,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *
            MOVE    SPACE               TO  SYUMEI-REC
            INITIALIZE                      SYUMEI-REC
-           MOVE    SYU-HOSPID          TO  SMEI-HOSPID
+           MOVE    SYU-HOSPNUM          TO  SMEI-HOSPNUM
            MOVE    SYU-NYUGAIKBN       TO  SMEI-NYUGAIKBN
            MOVE    SYU-PTID            TO  SMEI-PTID
       *    伝票番号
@@ -796,7 +807,8 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            PERFORM 800-DAILYKEY-SEC
            MOVE    SDAILYKEY-DAILYKEY  TO  SMEI-DAILYKEY
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           PERFORM 800-SET-SS002-SMEI-SEC
+      *
            MOVE    SYUMEI-REC          TO  MCPDATA-REC
            MOVE    "tbl_syumei"        TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
@@ -816,7 +828,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
        20021-PTTEIKIRRK-KOUSIN-SEC     SECTION.
       *
            INITIALIZE                      PTTEIKIRRK-REC
-           MOVE    TEIKI07-HOSPID      TO  PTTEIKIRRK-HOSPID
+           MOVE    TEIKI07-HOSPNUM      TO  PTTEIKIRRK-HOSPNUM
            MOVE    TEIKI07-PTID        TO  PTTEIKIRRK-PTID
            MOVE    TEIKI07-DENPNUM     TO  PTTEIKIRRK-DENPNUM
       *
@@ -824,7 +836,6 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    TEIKI1P-JOBHMS      TO  PTTEIKIRRK-UPHMS
       *
       *    患者定期請求履歴を更新
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PTTEIKIRRK-REC      TO  MCPDATA-REC
            MOVE    "tbl_ptteikirrk"    TO  MCP-TABLE
            MOVE    "upd4"              TO  MCP-PATHNAME
@@ -858,7 +869,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *
       *        患者情報読み込み
                INITIALIZE              PTINF-REC
-               MOVE    SYU-HOSPID      TO  PTINF-HOSPID
+               MOVE    SYU-HOSPNUM      TO  PTINF-HOSPNUM
                MOVE    SYU-PTID        TO  PTINF-PTID
                PERFORM 900-PTINF-KEY-SEL-SEC
                IF    ( FLG-PTINF       NOT =   ZERO )
@@ -883,7 +894,8 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                                            SYU-UPYMD
                MOVE    TEIKI1P-JOBHMS  TO  SYU-UPHMS
       *
-grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
+               PERFORM 800-SS002-SEC
+      *
                MOVE    SYUNOU-REC      TO  MCPDATA-REC
                MOVE    "tbl_syunou"    TO  MCP-TABLE
                MOVE    "key"           TO  MCP-PATHNAME
@@ -935,11 +947,10 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    "*"                 TO  SYS-0042-KBNCD
            MOVE    TEIKI1P-SYSYMD      TO  SYS-0042-STYUKYMD
                                            SYS-0042-EDYUKYMD
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
-           MOVE    SYS-0042-REC        TO  MCPDATA-REC
+           MOVE    SYS-0042-REC        TO  SYSKANRI-REC
            PERFORM 900-SYSKANRI-KEY10-SEL-SEC
            IF    ( FLG-SYSKANRI        =   ZERO )
-               MOVE    MCPDATA-REC     TO  SYS-0042-REC
+               MOVE    SYSKANRI-REC    TO  SYS-0042-REC
                MOVE    SYS-0042-DENPNUMMAX-NYU
                                        TO  WRK-DENPNUM-X
                IF    ( WRK-DENPNUM-X   =   SPACE )
@@ -958,7 +969,6 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    TEIKI1P-JOBYMD  TO  SYS-0042-UPYMD
                MOVE    TEIKI1P-JOBHMS  TO  SYS-0042-UPHMS
       *
-grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    SYS-0042-REC    TO  MCPDATA-REC
                MOVE    "tbl_syskanri"  TO  MCP-TABLE
                MOVE    "key"           TO  MCP-PATHNAME
@@ -984,7 +994,7 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
        20031-PTTEIKIRRK-KOUSIN-SEC     SECTION.
       *
            INITIALIZE                      PTTEIKIRRK-REC
-           MOVE    SYU-HOSPID          TO  PTTEIKIRRK-HOSPID
+           MOVE    SYU-HOSPNUM          TO  PTTEIKIRRK-HOSPNUM
            MOVE    SYU-PTID            TO  PTTEIKIRRK-PTID
            MOVE    SYU-SRYYMD (1:6)    TO  PTTEIKIRRK-SRYYM
            MOVE    TEIKI06-SAKKBN      TO  PTTEIKIRRK-SAKKBN
@@ -1016,7 +1026,6 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                PERFORM 500-ERR-HENSYU-SEC
            END-IF
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PTTEIKIRRK-REC      TO  MCPDATA-REC
            MOVE    "tbl_ptteikirrk"    TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
@@ -1053,7 +1062,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *
            INITIALIZE                  WKSYUDAY-REC
       *
-           MOVE    SYU-HOSPID      TO  WKSDAY-HOSPID
+           MOVE    SYU-HOSPNUM      TO  WKSDAY-HOSPNUM
            MOVE    SYU-NYUGAIKBN   TO  WKSDAY-NYUGAIKBN
            MOVE    SYU-PTID        TO  WKSDAY-PTID
            MOVE    SYU-DENPNUM     TO  WKSDAY-DENPNUM
@@ -1071,7 +1080,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *
            MOVE    SPACE               TO  SYUMEI-REC
            INITIALIZE                      SYUMEI-REC
-           MOVE    SYU-HOSPID          TO  SMEI-HOSPID
+           MOVE    SYU-HOSPNUM          TO  SMEI-HOSPNUM
            MOVE    SYU-NYUGAIKBN       TO  SMEI-NYUGAIKBN
            MOVE    SYU-PTID            TO  SMEI-PTID
       *
@@ -1148,7 +1157,8 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            PERFORM 800-DAILYKEY-SEC
            MOVE    SDAILYKEY-DAILYKEY  TO  SMEI-DAILYKEY
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           PERFORM 800-SET-SS002-SMEI-SEC
+      *
            MOVE    SYUMEI-REC          TO  MCPDATA-REC
            MOVE    "tbl_syumei"        TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
@@ -1214,7 +1224,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *
       *    最新の入院履歴情報より病棟番号を取得
            INITIALIZE  PTNYUINRRK-REC
-           MOVE    PTINF-HOSPID        TO  PTNYUINRRK-HOSPID
+           MOVE    PTINF-HOSPNUM        TO  PTNYUINRRK-HOSPNUM
            MOVE    PTINF-PTID          TO  PTNYUINRRK-PTID
            MOVE    PTINF-RRKNUM        TO  PTNYUINRRK-RRKNUM
            MOVE    PTINF-RRKEDANUM     TO  PTNYUINRRK-RRKEDANUM
@@ -1252,7 +1262,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *
            INITIALIZE  TEIKIPRT-REC
            MOVE    PTNYUINRRK-BTUNUM   TO  TEIKIPRT-BTUNUM
-           MOVE    PTINF-HOSPID        TO  TEIKIPRT-HOSPID
+           MOVE    PTINF-HOSPNUM       TO  TEIKIPRT-HOSPNUM
            MOVE    PTINF-PTID          TO  TEIKIPRT-PTID
       *
       *    患者番号を取得
@@ -1277,7 +1287,6 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            END-IF
       *
       *    定期請求印刷データ作成
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    TEIKIPRT-REC        TO  MCPDATA-REC
            MOVE    "tbl_teikiprt"      TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
@@ -1307,7 +1316,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *
       *        患者情報読み込み
                INITIALIZE              PTINF-REC
-               MOVE    SYU-HOSPID      TO  PTINF-HOSPID
+               MOVE    SYU-HOSPNUM      TO  PTINF-HOSPNUM
                MOVE    SYU-PTID        TO  PTINF-PTID
                PERFORM 900-PTINF-KEY-SEL-SEC
                IF    ( FLG-PTINF       NOT =   ZERO )
@@ -1331,7 +1340,8 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    TEIKI1P-JOBYMD      TO  SYU-UPYMD
                MOVE    TEIKI1P-JOBHMS      TO  SYU-UPHMS
       *
-grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
+               PERFORM 800-SS002-SEC
+      *
                MOVE    SYUNOU-REC          TO  MCPDATA-REC
                MOVE    "tbl_syunou"        TO  MCP-TABLE
                MOVE    "key"               TO  MCP-PATHNAME
@@ -1423,7 +1433,7 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
       *
            INITIALIZE                  WKSYUDAY-REC
       *
-           MOVE    SYU-HOSPID      TO  WKSDAY-HOSPID
+           MOVE    SYU-HOSPNUM      TO  WKSDAY-HOSPNUM
            MOVE    SYU-NYUGAIKBN   TO  WKSDAY-NYUGAIKBN
            MOVE    SYU-PTID        TO  WKSDAY-PTID
            MOVE    SYU-DENPNUM     TO  WKSDAY-DENPNUM
@@ -1440,7 +1450,7 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
        20071-PTTEIKIRRK-KOUSIN-SEC     SECTION.
       *
            INITIALIZE                      PTTEIKIRRK-REC
-           MOVE    SYU-HOSPID          TO  PTTEIKIRRK-HOSPID
+           MOVE    SYU-HOSPNUM          TO  PTTEIKIRRK-HOSPNUM
            MOVE    SYU-PTID            TO  PTTEIKIRRK-PTID
            MOVE    SYU-DENPNUM         TO  PTTEIKIRRK-DENPNUM
       *
@@ -1454,7 +1464,6 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
            END-IF
       *
       *    患者定期請求履歴削除処理
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PTTEIKIRRK-REC      TO  MCPDATA-REC
            MOVE    "tbl_ptteikirrk"    TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
@@ -1468,7 +1477,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PTTEIKIRRK-CREYMD    TO  WRK-CREYMD
       *
            INITIALIZE                      PTTEIKIRRK-REC
-           MOVE    SYU-HOSPID          TO  PTTEIKIRRK-HOSPID
+           MOVE    SYU-HOSPNUM          TO  PTTEIKIRRK-HOSPNUM
            MOVE    SYU-PTID            TO  PTTEIKIRRK-PTID
            MOVE    SYU-SRYYMD (1:6)    TO  PTTEIKIRRK-SRYYM
            MOVE    TEIKI09-SAKKBN      TO  PTTEIKIRRK-SAKKBN
@@ -1500,7 +1509,6 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    TEIKI1P-JOBHMS      TO  PTTEIKIRRK-UPHMS
       *
       *    患者定期請求データ作成
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PTTEIKIRRK-REC      TO  MCPDATA-REC
            MOVE    "tbl_ptteikirrk"    TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
@@ -1542,7 +1550,6 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                    MOVE    TEIKI1P-JOBYMD      TO  SMEI-UPYMD
                    MOVE    TEIKI1P-JOBHMS      TO  SMEI-UPHMS
       *
-grpsys*            MOVE SPA-HOSPNUM TO -HOSPNUM
                    MOVE    SYUMEI-REC          TO  MCPDATA-REC
                    MOVE    "tbl_syumei"        TO  MCP-TABLE
                    MOVE    "key"               TO  MCP-PATHNAME
@@ -1564,7 +1571,7 @@ grpsys*            MOVE SPA-HOSPNUM TO -HOSPNUM
       *
            INITIALIZE                      SYUMEI-REC
       *
-           MOVE    SYU-HOSPID          TO  SMEI-HOSPID
+           MOVE    SYU-HOSPNUM          TO  SMEI-HOSPNUM
            MOVE    SYU-NYUGAIKBN       TO  SMEI-NYUGAIKBN
            MOVE    SYU-PTID            TO  SMEI-PTID
            MOVE    SYU-DENPNUM         TO  SMEI-DENPNUM
@@ -1630,7 +1637,8 @@ grpsys*            MOVE SPA-HOSPNUM TO -HOSPNUM
            PERFORM 800-DAILYKEY-SEC
            MOVE    SDAILYKEY-DAILYKEY  TO  SMEI-DAILYKEY
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           PERFORM 800-SET-SS002-SMEI-SEC
+      *
            MOVE    SYUMEI-REC      TO  MCPDATA-REC
            MOVE    "tbl_syumei"    TO  MCP-TABLE
            MOVE    "key"           TO  MCP-PATHNAME
@@ -1654,6 +1662,8 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *
                INITIALIZE  TEIKIKANRI-REC
       *
+               MOVE    TEIKI1P-HOSPNUM
+                                   TO  TEIKIKANRI-HOSPNUM
                MOVE    SUMTEIKIKANRI-BTUNUM (IDX1)
                                    TO  TEIKIKANRI-BTUNUM
       *
@@ -1668,9 +1678,9 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                        =   TEIKIKANRI-KENSU
                        +   SUMTEIKIKANRI-KENSU (IDX1)
       *
+                   MOVE    TEIKI1P-HOSPNUM     TO  TEIKIKANRI-HOSPNUM
       *
       *            定期請求管理データ作成
-grpsys*            MOVE SPA-HOSPNUM TO -HOSPNUM
                    MOVE    TEIKIKANRI-REC      TO  MCPDATA-REC
                    MOVE    "tbl_teikikanri"    TO  MCP-TABLE
                    MOVE    "key"               TO  MCP-PATHNAME
@@ -1703,9 +1713,9 @@ grpsys*            MOVE SPA-HOSPNUM TO -HOSPNUM
                                                TEIKIKANRI-KENSU
                    MOVE    TEIKI1P-TERMID  TO  TEIKIKANRI-TERMID
       *
+                   MOVE    TEIKI1P-HOSPNUM TO  TEIKIKANRI-HOSPNUM
       *
       *            定期請求管理データ作成
-grpsys*            MOVE SPA-HOSPNUM TO -HOSPNUM
                    MOVE    TEIKIKANRI-REC      TO  MCPDATA-REC
                    MOVE    "tbl_teikikanri"    TO  MCP-TABLE
                    MOVE    "key"               TO  MCP-PATHNAME
@@ -1734,6 +1744,7 @@ grpsys*            MOVE SPA-HOSPNUM TO -HOSPNUM
                 AND  ( TEIKI1P-KBT =      IDX4 )
       *
                    INITIALIZE                  TEIKIRRK-REC
+                   MOVE    TEIKI1P-HOSPNUM TO  TEIKIRRK-HOSPNUM
                    MOVE    TEIKI1P-SRYYM   TO  TEIKIRRK-SRYYM
                    MOVE    IDX4            TO  WRK-KBT-9
                    MOVE    WRK-KBT         TO  TEIKIRRK-KBT
@@ -1750,6 +1761,7 @@ grpsys*            MOVE SPA-HOSPNUM TO -HOSPNUM
                        END-IF
                    ELSE
                        INITIALIZE                  TEIKIRRK-REC
+                       MOVE    TEIKI1P-HOSPNUM TO  TEIKIRRK-HOSPNUM
                        MOVE    TEIKI1P-SRYYM   TO  TEIKIRRK-SRYYM
                        MOVE    IDX4            TO  WRK-KBT-9
                        MOVE    WRK-KBT         TO  TEIKIRRK-KBT
@@ -1791,7 +1803,7 @@ grpsys*            MOVE SPA-HOSPNUM TO -HOSPNUM
                    PERFORM 900-SYUDAY-UPD-SEC
       *
                    INITIALIZE  SYUNOU-REC
-                   MOVE    WKSDAY-HOSPID       TO  SYU-HOSPID
+                   MOVE    WKSDAY-HOSPNUM       TO  SYU-HOSPNUM
                    MOVE    WKSDAY-NYUGAIKBN    TO  SYU-NYUGAIKBN
                    MOVE    WKSDAY-PTID         TO  SYU-PTID
                    MOVE    WKSDAY-DENPNUM      TO  SYU-DENPNUM
@@ -1803,7 +1815,6 @@ grpsys*            MOVE SPA-HOSPNUM TO -HOSPNUM
                    END-IF
       *
                    MOVE    "1"             TO  SYU-DAYINFFLG
-grpsys*            MOVE SPA-HOSPNUM TO -HOSPNUM
                    MOVE    SYUNOU-REC      TO  MCPDATA-REC
                    MOVE    "tbl_syunou"    TO  MCP-TABLE
                    MOVE    "key"           TO  MCP-PATHNAME
@@ -1819,7 +1830,7 @@ grpsys*            MOVE SPA-HOSPNUM TO -HOSPNUM
                    PERFORM 900-SYUDAY-DEL-SEC
       *
                    INITIALIZE  SYUNOU-REC
-                   MOVE    WKSDAY-HOSPID       TO  SYU-HOSPID
+                   MOVE    WKSDAY-HOSPNUM       TO  SYU-HOSPNUM
                    MOVE    WKSDAY-NYUGAIKBN    TO  SYU-NYUGAIKBN
                    MOVE    WKSDAY-PTID         TO  SYU-PTID
                    MOVE    WKSDAY-DENPNUM      TO  SYU-DENPNUM
@@ -1831,7 +1842,6 @@ grpsys*            MOVE SPA-HOSPNUM TO -HOSPNUM
                    END-IF
       *
                    MOVE    SPACE           TO  SYU-DAYINFFLG
-grpsys*            MOVE SPA-HOSPNUM TO -HOSPNUM
                    MOVE    SYUNOU-REC      TO  MCPDATA-REC
                    MOVE    "tbl_syunou"    TO  MCP-TABLE
                    MOVE    "key"           TO  MCP-PATHNAME
@@ -1899,14 +1909,18 @@ grpsys*            MOVE SPA-HOSPNUM TO -HOSPNUM
            END-IF
       *
            MOVE    "STM"           TO  SJOBKANRI-MODE
+           MOVE    TEIKI1P-HOSPNUM     TO  JOB-HOSPNUM
            CALL    "ORCSJOB"       USING
                                    ORCSJOBKANRIAREA  
                                    JOBKANRI-REC
+                                   SPA-AREA
       *
            MOVE    "STE"           TO  SJOBKANRI-MODE
+           MOVE    TEIKI1P-HOSPNUM     TO  JOB-HOSPNUM
            CALL    "ORCSJOB"       USING
                                    ORCSJOBKANRIAREA  
                                    JOBKANRI-REC
+                                   SPA-AREA
       *
            PERFORM 900-DBDISCONNECT-SEC
       *
@@ -1953,7 +1967,6 @@ grpsys*            MOVE SPA-HOSPNUM TO -HOSPNUM
       *
            MOVE    ZERO            TO  FLG-SYUNOU
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYUNOU-REC      TO  MCPDATA-REC
            MOVE    "tbl_syunou"    TO  MCP-TABLE
            MOVE    "key"           TO  MCP-PATHNAME
@@ -1977,7 +1990,6 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *    追加対象のデータが既に存在しないかチェック
            MOVE    ZERO                TO  FLG-SYUMEI
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYUMEI-REC          TO  MCPDATA-REC
            MOVE    "tbl_syumei"        TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
@@ -1999,7 +2011,6 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
        400-PTTEIKIRRK-CHK-SEC          SECTION.
       *
            MOVE   ZERO                 TO  FLG-PTTEIKIRRK
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PTTEIKIRRK-REC      TO  MCPDATA-REC
            MOVE    "tbl_ptteikirrk"    TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
@@ -2022,7 +2033,6 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *
            MOVE    ZERO                TO  FLG-SYUDAY
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYUDAY-REC          TO  MCPDATA-REC
            MOVE    "tbl_syuday"        TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
@@ -2045,7 +2055,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *
            MOVE    ZERO                TO  FLG-TEIKIPRT
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    TEIKI1P-HOSPNUM     TO  TEIKIPRT-HOSPNUM
            MOVE    TEIKIPRT-REC        TO  MCPDATA-REC
            MOVE    "tbl_teikiprt"      TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
@@ -2068,7 +2078,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *
            MOVE    ZERO                TO  FLG-TEIKIKANRI
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    TEIKI1P-HOSPNUM     TO  TEIKIKANRI-HOSPNUM
            MOVE    TEIKIKANRI-REC      TO  MCPDATA-REC
            MOVE    "tbl_teikikanri"    TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
@@ -2279,6 +2289,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
        800-DAILYKEY-SEC         SECTION.
       *
            CALL    "ORCSDAILYKEY"   USING   SDAILYKEYAREA
+                                            SPA-AREA
       *
            .
       *
@@ -2296,16 +2307,47 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
        800-MCNDATE-EXT.
            EXIT.
       *****************************************************************
+      *    収納更新差額取得サブ
+      *****************************************************************
+       800-SS002-SEC           SECTION.
+      *
+           INITIALIZE                      SS002-AREA
+           CALL    "ORCSS002"      USING   SS002-AREA
+                                           SYUNOU-REC
+                                           SPA-AREA
+      *
+           .
+      *
+       800-SS002-EXT.
+           EXIT.
+      *****************************************************************
+      *    収納明細更新差額設定処理
+      *****************************************************************
+       800-SET-SS002-SMEI-SEC      SECTION.
+      *
+           MOVE    SS002-SYURRKNUM     TO  SMEI-SYURRKNUM
+           MOVE    SS002-SYUEDANUM     TO  SMEI-SYUEDANUM
+           MOVE    SS002-SYURRKUPDKBN  TO  SMEI-SYURRKUPDKBN
+      *
+           .
+      *
+       800-SET-SS002-SMEI-EXT.
+           EXIT.
+      *****************************************************************
       *    システム管理マスタ読込
       *****************************************************************
        900-SYSKANRI-KEY10-SEL-SEC      SECTION.
       *
            MOVE    ZERO                TO  FLG-SYSKANRI
       *
+           MOVE    TEIKI1P-HOSPNUM         TO  SYS-HOSPNUM
+           MOVE    SYSKANRI-REC        TO  MCPDATA-REC
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key10"             TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
-           IF    ( MCP-RC          NOT =   ZERO )
+           IF    ( MCP-RC              =   ZERO )
+               MOVE    MCPDATA-REC     TO  SYSKANRI-REC
+           ELSE
                MOVE    1               TO  FLG-SYSKANRI
            END-IF
       *
@@ -2323,10 +2365,14 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *
            MOVE    ZERO                TO  FLG-SYSKANRI
       *
+           MOVE    TEIKI1P-HOSPNUM     TO  SYS-HOSPNUM
+           MOVE    SYSKANRI-REC        TO  MCPDATA-REC
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key2"              TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
-           IF    ( MCP-RC          NOT =   ZERO )
+           IF    ( MCP-RC              =   ZERO )
+               MOVE    MCPDATA-REC     TO  SYSKANRI-REC
+           ELSE
                MOVE    1               TO  FLG-SYSKANRI
            END-IF
       *
@@ -2343,7 +2389,9 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key2"              TO  MCP-PATHNAME
            PERFORM 910-DBFETCH-SEC
-           IF    ( MCP-RC          NOT =   ZERO )
+           IF    ( MCP-RC              =   ZERO )
+               MOVE    MCPDATA-REC     TO  SYSKANRI-REC
+           ELSE
                MOVE    1               TO  FLG-SYSKANRI
            END-IF
       *
@@ -2420,8 +2468,8 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *****************************************************************
        900-TEIKIKANRI-DEL-SEC          SECTION.
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
-           MOVE    SPACE               TO  MCPDATA-REC
+           MOVE    TEIKI1P-HOSPNUM     TO  TEIKIKANRI-HOSPNUM
+           MOVE    TEIKIKANRI-REC      TO  MCPDATA-REC
            MOVE    "tbl_teikikanri"    TO  MCP-TABLE
            MOVE    "del1"              TO  MCP-PATHNAME
            PERFORM 910-DBDELETE-SEC
@@ -2438,8 +2486,8 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *****************************************************************
        900-TEIKIPRT-DEL-SEC            SECTION.
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
-           MOVE    SPACE               TO  MCPDATA-REC
+           MOVE    TEIKI1P-HOSPNUM     TO  TEIKIPRT-HOSPNUM
+           MOVE    TEIKIPRT-REC        TO  MCPDATA-REC
            MOVE    "tbl_teikiprt"      TO  MCP-TABLE
            MOVE    "del1"              TO  MCP-PATHNAME
            PERFORM 910-DBDELETE-SEC
@@ -2458,7 +2506,6 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *
            MOVE    ZERO                TO  FLG-PTINF
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PTINF-REC           TO  MCPDATA-REC
            MOVE    "tbl_ptinf"         TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
@@ -2485,7 +2532,6 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *
            MOVE    ZERO                TO  FLG-PTNYUINRRK
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PTNYUINRRK-REC      TO  MCPDATA-REC
            MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
@@ -2510,7 +2556,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *
            MOVE    ZERO                TO  FLG-TEIKIRRK
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    TEIKI1P-HOSPNUM     TO  TEIKIRRK-HOSPNUM
            MOVE    TEIKIRRK-REC        TO  MCPDATA-REC
            MOVE    "tbl_teikirrk"      TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
@@ -2536,7 +2582,6 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *
            MOVE    ZERO                TO  FLG-PTTEIKIRRK
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PTTEIKIRRK-REC      TO  MCPDATA-REC
            MOVE    "tbl_ptteikirrk"    TO  MCP-TABLE
            MOVE    "key6"              TO  MCP-PATHNAME
@@ -2564,11 +2609,10 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *
       *    伝票番号枝番を求める
            INITIALIZE                      SYUMEI-REC
-           MOVE    SYU-HOSPID          TO  SMEI-HOSPID
+           MOVE    SYU-HOSPNUM          TO  SMEI-HOSPNUM
            MOVE    SYU-NYUGAIKBN       TO  SMEI-NYUGAIKBN
            MOVE    SYU-PTID            TO  SMEI-PTID
            MOVE    SYU-DENPNUM         TO  SMEI-DENPNUM
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYUMEI-REC          TO  MCPDATA-REC
            MOVE    "tbl_syumei"        TO  MCP-TABLE
            MOVE    "key7"              TO  MCP-PATHNAME
@@ -2595,12 +2639,11 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    ZERO                TO  FLG-SYUMEI
       *
            INITIALIZE                      SYUMEI-REC
-           MOVE    SYU-HOSPID          TO  SMEI-HOSPID
+           MOVE    SYU-HOSPNUM          TO  SMEI-HOSPNUM
            MOVE    SYU-NYUGAIKBN       TO  SMEI-NYUGAIKBN
            MOVE    SYU-PTID            TO  SMEI-PTID
            MOVE    SYU-DENPNUM         TO  SMEI-DENPNUM
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYUMEI-REC          TO  MCPDATA-REC
            MOVE    "tbl_syumei"        TO  MCP-TABLE
            MOVE    "key2"              TO  MCP-PATHNAME
@@ -2649,7 +2692,6 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    WRK-CREYMD      TO  SDAY-CREYMD
                MOVE    TEIKI1P-JOBYMD  TO  SDAY-UPYMD
                MOVE    TEIKI1P-JOBHMS  TO  SDAY-UPHMS
-grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    SYUDAY-REC      TO  MCPDATA-REC
                MOVE    "tbl_syuday"    TO  MCP-TABLE
                MOVE    "key"           TO  MCP-PATHNAME
@@ -2666,7 +2708,6 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    TEIKI1P-JOBYMD  TO  SDAY-UPYMD
                                            SDAY-CREYMD
                MOVE    TEIKI1P-JOBHMS  TO  SDAY-UPHMS
-grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    SYUDAY-REC      TO  MCPDATA-REC
                MOVE    "tbl_syuday"    TO  MCP-TABLE
                MOVE    "key"           TO  MCP-PATHNAME
@@ -2685,7 +2726,6 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
       *****************************************************************
        900-SYUDAY-DEL-SEC              SECTION.
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    WKSYUDAY-REC    TO  MCPDATA-REC
            MOVE    "tbl_syuday"    TO  MCP-TABLE
            MOVE    "key"           TO  MCP-PATHNAME
@@ -2706,9 +2746,8 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    ZERO                TO  FLG-PTNUM
       *
            INITIALIZE                  PTNUM-REC
-           MOVE    TEIKI1P-HOSPID      TO  PTNUM-HOSPID
+           MOVE    TEIKI1P-HOSPNUM     TO  PTNUM-HOSPNUM
            MOVE    WRK-PTID            TO  PTNUM-PTID
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PTNUM-REC           TO  MCPDATA-REC
            MOVE    "tbl_ptnum"         TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
@@ -2735,9 +2774,9 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    ZERO                TO  FLG-TEIKIKANRI
       *
            INITIALIZE                      TEIKIKANRI-REC
+           MOVE    TEIKI1P-HOSPNUM     TO  TEIKIKANRI-HOSPNUM
            MOVE    TEIKI1P-JOBYMD      TO  TEIKIKANRI-CREYMD
            MOVE    TEIKI1P-JOBHMS      TO  TEIKIKANRI-CREHMS
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    TEIKIKANRI-REC      TO  MCPDATA-REC
            MOVE    "tbl_teikikanri"    TO  MCP-TABLE
            MOVE    "key2"              TO  MCP-PATHNAME
@@ -2763,7 +2802,6 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *
            MOVE    ZERO            TO  FLG-SYUNOU
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYUNOU-REC      TO  MCPDATA-REC
            MOVE    "tbl_syunou"    TO  MCP-TABLE
            MOVE    "key"           TO  MCP-PATHNAME
@@ -2788,9 +2826,10 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
        910-DBSELECT-SEC                SECTION.
       *
            MOVE    "DBSELECT"          TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"         USING
+                                       MCPAREA
+                                       MCPDATA-REC
+                                       SPA-AREA
            IF    ( MCP-RC          =   ZERO )
                PERFORM 910-DBFETCH-SEC
            END-IF
@@ -2805,9 +2844,10 @@ grpsys                            SPA-AREA
        911-DBSELECT-SEC                SECTION.
       *
            MOVE    "DBSELECT"          TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"         USING
+                                       MCPAREA
+                                       MCPDATA-REC
+                                       SPA-AREA
       *
            .
       *
@@ -2819,9 +2859,10 @@ grpsys                            SPA-AREA
        910-DBFETCH-SEC                 SECTION.
       *
            MOVE    "DBFETCH"           TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"         USING
+                                       MCPAREA
+                                       MCPDATA-REC
+                                       SPA-AREA
       *
            .
       *
@@ -2833,9 +2874,10 @@ grpsys                            SPA-AREA
        910-DBCLOSECURSOR-SEC                 SECTION.
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"         USING
+                                       MCPAREA
+                                       MCPDATA-REC
+                                       SPA-AREA
       *
            .
       *
@@ -2847,9 +2889,10 @@ grpsys                            SPA-AREA
        910-DBUPDATE-SEC                SECTION.
       *
            MOVE    "DBUPDATE"          TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"         USING
+                                       MCPAREA
+                                       MCPDATA-REC
+                                       SPA-AREA
       *
            .
       *
@@ -2861,9 +2904,10 @@ grpsys                            SPA-AREA
        910-DBINSERT-SEC                SECTION.
       *
            MOVE    "DBINSERT"          TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"         USING
+                                       MCPAREA
+                                       MCPDATA-REC
+                                       SPA-AREA
       *
            .
       *
@@ -2875,9 +2919,10 @@ grpsys                            SPA-AREA
        910-DBDELETE-SEC                SECTION.
       *
            MOVE    "DBDELETE"          TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"         USING
+                                       MCPAREA
+                                       MCPDATA-REC
+                                       SPA-AREA
       *
            .
       *
@@ -2891,16 +2936,18 @@ grpsys                            SPA-AREA
            MOVE   LOW-VALUE            TO  MCP-TABLE
                                            MCP-PATHNAME
            MOVE    "DBOPEN"            TO  MCP-FUNC.
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"         USING
+                                       MCPAREA
+                                       MCPDATA-REC
+                                       SPA-AREA
       *
            MOVE   LOW-VALUE            TO  MCP-TABLE
                                            MCP-PATHNAME
            MOVE    "DBSTART"           TO  MCP-FUNC.
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"         USING
+                                       MCPAREA
+                                       MCPDATA-REC
+                                       SPA-AREA
            .
        100-DBOPEN-EXT.
            EXIT.
@@ -2915,17 +2962,19 @@ grpsys                            SPA-AREA
                MOVE   LOW-VALUE        TO  MCP-TABLE
                                            MCP-PATHNAME
                MOVE    "DBCOMMIT"      TO  MCP-FUNC
-grpsys         CALL "ORCDBMAIN" USING MCPAREA
-                                      MCPDATA-REC
-grpsys                                SPA-AREA
+               CALL    "ORCDBMAIN"         USING
+                                           MCPAREA
+                                           MCPDATA-REC
+                                           SPA-AREA
            END-IF
       *
            MOVE   LOW-VALUE            TO  MCP-TABLE
                                            MCP-PATHNAME
            MOVE    "DBDISCONNECT"      TO  MCP-FUNC.
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"         USING
+                                       MCPAREA
+                                       MCPDATA-REC
+                                       SPA-AREA
       *
            .
        900-DBDISCONNECT-EXT.

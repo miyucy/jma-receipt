@@ -27,6 +27,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  03.05.00    NACL-太田    07/05/30  グループ診療対応
       *****************************************************************
       *
        ENVIRONMENT                     DIVISION.
@@ -71,9 +72,11 @@
         LINKAGE                        SECTION.
       *
            COPY    "CPORCSTEIKI01.INC".
+           COPY    "COMMON-SPA".
       *
        PROCEDURE                       DIVISION    USING
            ORCSTEIKI01AREA
+           SPA-AREA
            .
       *
       *****************************************************************
@@ -134,9 +137,6 @@
            COMPUTE WRK-JOBID   =   STEIKI01-JOBID  -   1
       *
            PERFORM 800-CHK-ORCSJOB-SEC
-           DISPLAY "SJOBKANRI-RETURN = " SJOBKANRI-RETURN
-           DISPLAY "JOB-STOPFLG = " JOB-STOPFLG
-           DISPLAY "JOB-STEPCNT = " JOB-STEPCNT
            IF    ( SJOBKANRI-RETURN    =   ZERO )
             AND  ( JOB-STOPFLG         =   2    )
                MOVE    1                   TO  STEIKI01-STOP
@@ -178,10 +178,12 @@
       *
            MOVE    "CHK"               TO  SJOBKANRI-MODE
            INITIALIZE                      JOBKANRI-REC
+           MOVE    SPA-HOSPNUM         TO  JOB-HOSPNUM
            MOVE    WRK-JOBID           TO  JOB-JOBID
            MOVE    STEIKI01-SHELLID    TO  JOB-SHELLID
            CALL    "ORCSJOB"       USING   ORCSJOBKANRIAREA
                                            JOBKANRI-REC
+                                           SPA-AREA
            .
       *
        800-CHK-ORCSJOB-EXT.

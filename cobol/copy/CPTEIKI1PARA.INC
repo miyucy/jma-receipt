@@ -36,7 +36,7 @@
            03  TEIKI1P-DENPPRTYMD          PIC  X(08).
            03  TEIKI1P-JOBID               PIC  9(07).
            03  TEIKI1P-SHELLID             PIC  X(08).
-           03  TEIKI1P-HOSPID              PIC  X(24).
+           03  TEIKI1P-HOSPNUM             PIC  9(02).
            03  TEIKI1P-ERRFILE             PIC  X(200).
            03  TEIKI1P-KBT                 PIC  9(01).
            03  TEIKI1P-JOBYMD              PIC  X(08).

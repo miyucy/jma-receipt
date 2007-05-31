@@ -28,6 +28,7 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *  01.00.01    NACL-太田    03.07.10  印刷指示画面からの遷移を考慮
+      *  03.05.00    NACL-太田    07/05/30  グループ診療対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -304,6 +305,7 @@
            MOVE    "CHK"               TO  SJOBKANRI-MODE
       *
            INITIALIZE                      JOBKANRI-REC
+           MOVE    SPA-HOSPNUM         TO  JOB-HOSPNUM
            EVALUATE    SPA-MOTOPG
            WHEN    "O03"
                MOVE    CONST-JOBID2    TO  JOB-JOBID
@@ -320,7 +322,8 @@
       *
            CALL    "ORCSJOB"       USING
                                    ORCSJOBKANRIAREA 
-                                   JOBKANRI-REC 
+                                   JOBKANRI-REC
+                                   SPA-AREA
            IF      SJOBKANRI-RETURN
                                    =   ZERO
                MOVE    1               TO  IDX                    
@@ -475,6 +478,7 @@
                    END-IF
       *
                    INITIALIZE                  JOBKANRI-REC
+                   MOVE    SPA-HOSPNUM     TO  JOB-HOSPNUM
       *            ジョブ管理チェック処理
                    MOVE    "CHK"           TO  SJOBKANRI-MODE
                    MOVE    IDX4            TO  JOB-JOBID
@@ -482,7 +486,8 @@
       *
                    CALL    "ORCSJOB"       USING
                                            ORCSJOBKANRIAREA 
-                                           JOBKANRI-REC 
+                                           JOBKANRI-REC
+                                           SPA-AREA
                    IF    ( SJOBKANRI-RETURN    =   ZERO )
                        MOVE    JOB-JOBID       TO  O99-RENNUM   (IDX4)
                        MOVE    JOB-SHELLMSG    TO  O99-SHORINM  (IDX4)
@@ -657,7 +662,7 @@
       *
            MOVE    ZERO                TO  FLG-SYSKANRI
       *
-           MOVE    SPA-HOSPNUM         TO  SYS-3003-HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  SYS-HOSPNUM
            MOVE    SYSKANRI-REC        TO  MCPDATA-REC
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key10"             TO  MCP-PATHNAME
@@ -683,9 +688,9 @@
       *
            MOVE    ZERO                TO  FLG-BTPARA
       *
+           MOVE    SPA-HOSPNUM         TO  BTPARA-HOSPNUM
            MOVE    CONST-SHELLID       TO  BTPARA-SHELLID
            MOVE    WRK-JOBID           TO  BTPARA-JOBID
-           MOVE    SPA-HOSPNUM         TO  BTPARA-HOSPNUM
            MOVE    BTPARA-REC          TO  MCPDATA-REC
            MOVE    "tbl_btpara"        TO  MCP-TABLE
            MOVE    "key5"              TO  MCP-PATHNAME
@@ -737,7 +742,7 @@
        910-DBSELECT-SEC          SECTION.
       *
            MOVE    "DBSELECT"      TO  MCP-FUNC
-           CALL    "ORCDBMAIN"     USING
+           CALL    "ORCDBMAIN"         USING
                                        MCPAREA
                                        MCPDATA-REC
                                        SPA-AREA
@@ -754,7 +759,7 @@
        910-DBFETCH-SEC            SECTION.
       *
            MOVE    "DBFETCH"       TO  MCP-FUNC
-           CALL    "ORCDBMAIN"     USING
+           CALL    "ORCDBMAIN"         USING
                                        MCPAREA
                                        MCPDATA-REC
                                        SPA-AREA
@@ -768,7 +773,7 @@
        910-DBCLOSECURSOR-SEC           SECTION.
       *
            MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
-           CALL    "ORCDBMAIN"     USING
+           CALL    "ORCDBMAIN"         USING
                                        MCPAREA
                                        MCPDATA-REC
                                        SPA-AREA
@@ -784,7 +789,7 @@
            MOVE   LOW-VALUE        TO  MCP-TABLE
                                        MCP-PATHNAME
            MOVE   "PUTWINDOW"      TO  MCP-FUNC.
-           CALL   "ORCDBMAIN"      USING
+           CALL    "ORCDBMAIN"         USING
                                        MCPAREA
                                        MCPDATA-REC
                                        SPA-AREA

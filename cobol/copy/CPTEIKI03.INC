@@ -24,7 +24,7 @@
       * Maj/Min/Rev  修正者       日付      内容
       ************************************************************
        01  TEIKI03-REC.
-           03  TEIKI03-HOSPID          PIC X(24).
+           03  TEIKI03-HOSPNUM         PIC 9(02).
            03  TEIKI03-PTID            PIC 9(10).
            03  TEIKI03-SKYSTYMD        PIC X(08).
            03  TEIKI03-SKYEDYMD        PIC X(08).
