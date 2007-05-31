@@ -256,6 +256,7 @@
       *
        01  WRK-PSFILE-AREA.
              05  WRK-PSFILE-FOLDER     PIC X(165).
+             05  WRK-PSFILE-HOSPNUM    PIC X(02).
              05  WRK-PSFILE-TBL-KEY    PIC X(08).
              05  WRK-PSFILE-RENNUM     PIC X(04).
              05  WRK-PSFILE-GROUP      PIC X(14).
@@ -738,6 +739,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SPA-NAI-FILENAME (IDY)
                                        TO  WRK-PSFILE-AREA
            STRING  SPA-NAI-ENV         DELIMITED  BY  SPACE
+                   WRK-PSFILE-HOSPNUM  DELIMITED  BY  SPACE
                    WRK-PSFILE-TBL-KEY  DELIMITED  BY  SPACE
                    WRK-PSFILE-RENNUM   DELIMITED  BY  SPACE
                    WRK-PSFILE-GROUP    DELIMITED  BY  SPACE
@@ -1634,6 +1636,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                                            SPA-NAI-MEMO (IDX)
                    MOVE    PRVKANRI-FILENAME   TO  WRK-PSFILE-AREA
                    STRING  SPA-NAI-ENV         DELIMITED  BY  SPACE
+                          WRK-PSFILE-HOSPNUM   DELIMITED  BY  SPACE
                           WRK-PSFILE-TBL-KEY   DELIMITED  BY  SPACE
                           WRK-PSFILE-RENNUM    DELIMITED  BY  SPACE
                           WRK-PSFILE-GROUP     DELIMITED  BY  SPACE
@@ -1721,6 +1724,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *
       *    MOVE   PRVKANRI-FILENAME    TO  WRK-PSFILE-AREA
       *
+           MOVE   SPA-HOSPNUM              TO  WRK-PSFILE-HOSPNUM
            MOVE   SPA-NAI-TBL-KEY (IDX)    TO  WRK-PSFILE-TBL-KEY
            MOVE   SPA-NAI-RENNUM    (IDX)  TO  WRK-PSFILE-RENNUM
            MOVE   SPA-NAI-TBL-GROUP (IDX)  TO  WRK-PSFILE-GROUP
@@ -1731,6 +1735,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *
            MOVE    SPACE               TO  ORCF-FILE-NAME
            STRING  SPA-NAI-ENV         DELIMITED  BY  SPACE
+                   WRK-PSFILE-HOSPNUM  DELIMITED  BY  SPACE
                    WRK-PSFILE-TBL-KEY  DELIMITED  BY  SPACE
                    WRK-PSFILE-RENNUM   DELIMITED  BY  SPACE
                    WRK-PSFILE-GROUP    DELIMITED  BY  SPACE
@@ -1762,6 +1767,7 @@ grpsys                                       SPA-AREA
       *   rin ed  ----------------------------------------------
            MOVE   SPACE                TO  ORCF-FILE-NAME
            STRING  "/var/tmp/.orca_ps/" DELIMITED  BY  SPACE
+                  WRK-PSFILE-HOSPNUM   DELIMITED  BY  SPACE
                   WRK-PSFILE-TBL-KEY   DELIMITED  BY  SPACE
                   WRK-PSFILE-RENNUM    DELIMITED  BY  SPACE
                   WRK-PSFILE-GROUP     DELIMITED  BY  SPACE
@@ -1782,6 +1788,7 @@ grpsys                                       SPA-AREA
       *
                    MOVE    SPACE        TO  ORCF-FILE-NAME
                    STRING  SPA-NAI-ENV  DELIMITED  BY  SPACE
+                        WRK-PSFILE-HOSPNUM   DELIMITED  BY  SPACE
                         WRK-PSFILE-TBL-KEY DELIMITED  BY  SPACE
                         WRK-PSFILE-RENNUM  DELIMITED  BY  SPACE
                         WRK-PSFILE-GROUP   DELIMITED  BY  SPACE
@@ -1827,6 +1834,8 @@ grpsys*                    MOVE SPA-HOSPNUM TO -HOSPNUM
       *
                            IF      MCP-RC  =   ZERO
                              MOVE    ZERO  TO  IF-RESULT
+                             MOVE   SPA-HOSPNUM
+                                           TO  WRK-PSFILE-HOSPNUM
                              MOVE   SPA-NAI-TBL-KEY (IDX)
                                            TO  WRK-PSFILE-TBL-KEY
                              MOVE   SPA-NAI-RENNUM    (IDX)
@@ -1843,6 +1852,8 @@ grpsys*                    MOVE SPA-HOSPNUM TO -HOSPNUM
                                            TO  WRK-PSFILE-UUID
                              MOVE   SPACE  TO  ORCF-FILE-NAME
                              STRING  "/var/tmp/.orca_ps/"
+                                                 DELIMITED  BY  SPACE
+                               WRK-PSFILE-HOSPNUM
                                                  DELIMITED  BY  SPACE
                                WRK-PSFILE-TBL-KEY
                                                  DELIMITED  BY  SPACE

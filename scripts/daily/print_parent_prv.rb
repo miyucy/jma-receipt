@@ -15,6 +15,7 @@
 # postscript出力対応 (2003/03/03)
 # (2004/12/05 ) 印刷出力停止機能追加
 # (2007/05/09 ) オンライン再印刷処理追加(UUID)
+# (2007/05/31 ) グループ診療対応(hospnum追加)
 #
 
 # ※複数のプロセスの実行はできない
@@ -170,6 +171,13 @@ def add_slash(str)
 	end
 end
 
+# ファイル名から医療機関番号を取得する
+def get_hospnum(str)
+  b = str.split(/\//)
+  return b[b.size-1][0,2].strip
+#  return str.scan(/\/\S\S/).last.sub(/\//, "")
+end
+
 
 
 # ============================================================
@@ -182,6 +190,10 @@ data_file = filename_change(data_file)
 #---- (2003/07/03 ) add start
 exec_file_prv = filename_change(exec_file_prv)
 #---- (2003/07/03 ) add end  
+#---- (2007/05/30 ) add start
+hospnum = get_hospnum(data_file)
+puts "医療機関番号   = [" + hospnum + "]"
+#---- (2007/05/30 ) add end
 
 
 # 逆に、間に空白がある文字列に、「"」を追加したものを用意
@@ -329,7 +341,7 @@ end
 		prt_flg = d2[61, 1].strip                       	# 出力フラグのセット
 		psfile_name_folder = d2[62, 165].strip	                # PSファイル格納フォルダのセット
 		psfile_name_folder = add_slash(psfile_name_folder) 	#/を付加
-		psfile_name = psfile_name_folder.strip + d2[227, 8].strip + d2[235, 4].strip \
+		psfile_name = psfile_name_folder.strip + hospnum + d2[227, 8].strip + d2[235, 4].strip \
 		+ d2[239, 14].strip + d2[253, 4].strip + d2[257, 5].strip + d2[262,36].strip
 									# PSファイル名のセット
 #		word3 = d2[51, (d2_len - 51)]				# 一時ファイルへ出力する内容のセット
