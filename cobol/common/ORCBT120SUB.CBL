@@ -152,7 +152,6 @@
       *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
-           COPY    "CPORCMCP.INC".
       *
            COPY    "MCPAREA".
       *
@@ -246,13 +245,15 @@
            MOVE    LNK-ORCBT120SUB-SANTEIYMD(1:6)
                                            TO  NACCT-SRYYM
            MOVE    "5"                     TO  NACCT-ZAISKBKBN
-           MOVE    "NYUINACCT-KEY17"       TO  ORC-DBPATH
+           MOVE    "tbl_nyuinacct"         TO  MCP-TABLE
+           MOVE    "key17"                 TO  MCP-PATHNAME
            PERFORM 910-NYUINACCT-SELECT-SEC
            IF      FLG-NYUINACCT           NOT =   ZERO
                MOVE    4               TO  LNK-ORCBT120SUB-RC
                GO  TO  100-PRM-CHK-EXT
            ELSE
-               MOVE    "NYUINACCT-KEY17"   TO  ORC-DBPATH
+               MOVE    "tbl_nyuinacct"     TO  MCP-TABLE
+               MOVE    "key17"             TO  MCP-PATHNAME
                PERFORM 910-NYUINACCT-READ-SEC
                IF   FLG-NYUINACCT          NOT =   ZERO
                     MOVE    4              TO  LNK-ORCBT120SUB-RC
@@ -267,7 +268,8 @@
            END-IF
       *
       *    入院会計クローズ
-           MOVE    "NYUINACCT-KEY17"           TO  ORC-DBPATH
+           MOVE    "tbl_nyuinacct"         TO  MCP-TABLE
+           MOVE    "key17"                 TO  MCP-PATHNAME
            PERFORM   910-DB-CLOSE-SEC
            .
        100-PRM-CHK-EXT.
@@ -283,10 +285,12 @@
            INITIALIZE                           PTNYUINRRK-REC
            MOVE    LNK-ORCBT120SUB-HOSPNUM  TO  PTNYUINRRK-HOSPNUM
            MOVE    LNK-ORCBT120SUB-PTID     TO  PTNYUINRRK-PTID
-           MOVE    "PTNYUINRRK-KEY3"        TO  ORC-DBPATH
+           MOVE    "tbl_ptnyuinrrk"         TO  MCP-TABLE
+           MOVE    "key3"                   TO  MCP-PATHNAME
            PERFORM 910-PTNYUINRRK-SELECT-SEC
            IF      FLG-PTNYUINRRK            =   ZERO
-               MOVE     "PTNYUINRRK-KEY3"   TO  ORC-DBPATH
+               MOVE    "tbl_ptnyuinrrk"     TO  MCP-TABLE
+               MOVE    "key3"               TO  MCP-PATHNAME
                PERFORM   910-PTNYUINRRK-READ-SEC
                PERFORM   UNTIL   (FLG-PTNYUINRRK    =   1)  OR
                                  (FLG-NYUIN-HIT1    =   1)
@@ -325,14 +329,16 @@
                                          TO  LNK-ORCBT120SUB-DRCD
                        END-IF
                    END-IF
-                   MOVE    "PTNYUINRRK-KEY3"   TO  ORC-DBPATH
+                   MOVE    "tbl_ptnyuinrrk"     TO  MCP-TABLE
+                   MOVE    "key3"               TO  MCP-PATHNAME
                    PERFORM 910-PTNYUINRRK-READ-SEC
                END-PERFORM
            ELSE
                MOVE     5      TO      LNK-ORCBT120SUB-RC
            END-IF
       *    患者入院履歴クローズ
-           MOVE    "PTNYUINRRK-KEY3"           TO  ORC-DBPATH
+           MOVE    "tbl_ptnyuinrrk"         TO  MCP-TABLE
+           MOVE    "key3"                   TO  MCP-PATHNAME
            PERFORM   910-DB-CLOSE-SEC
       *
       *前日入院科／前日病棟番号／前日病室番号の取得
@@ -350,10 +356,12 @@
            INITIALIZE                           PTNYUINRRK-REC
            MOVE    LNK-ORCBT120SUB-HOSPNUM  TO  PTNYUINRRK-HOSPNUM
            MOVE    LNK-ORCBT120SUB-PTID     TO  PTNYUINRRK-PTID
-           MOVE    "PTNYUINRRK-KEY3"        TO  ORC-DBPATH
+           MOVE    "tbl_ptnyuinrrk"         TO  MCP-TABLE
+           MOVE    "key3"                   TO  MCP-PATHNAME
            PERFORM 910-PTNYUINRRK-SELECT-SEC
            IF      FLG-PTNYUINRRK            =   ZERO
-               MOVE     "PTNYUINRRK-KEY3"   TO  ORC-DBPATH
+               MOVE    "tbl_ptnyuinrrk"     TO  MCP-TABLE
+               MOVE    "key3"               TO  MCP-PATHNAME
                PERFORM   910-PTNYUINRRK-READ-SEC
                PERFORM   UNTIL   (FLG-PTNYUINRRK    =   1)
                    IF   PTNYUINRRK-JTIKBN    =    "5" OR "6"
@@ -374,14 +382,16 @@
                                        TO  LNK-ORCBT120SUB-MAE-BRMNUM
                        END-IF
                    END-IF
-                   MOVE    "PTNYUINRRK-KEY3"       TO  ORC-DBPATH
+                   MOVE    "tbl_ptnyuinrrk"      TO  MCP-TABLE
+                   MOVE    "key3"                TO  MCP-PATHNAME
                    PERFORM 910-PTNYUINRRK-READ-SEC
                END-PERFORM
            ELSE
                MOVE     5      TO      LNK-ORCBT120SUB-RC
            END-IF
       *    患者入院履歴クローズ
-           MOVE    "PTNYUINRRK-KEY3"           TO  ORC-DBPATH
+           MOVE    "tbl_ptnyuinrrk"         TO  MCP-TABLE
+           MOVE    "key3"                   TO  MCP-PATHNAME
            PERFORM   910-DB-CLOSE-SEC
       *
       *    レセ電入院科の取得(算定日）
@@ -391,14 +401,17 @@
            MOVE    LNK-ORCBT120SUB-NYUINKA
                                        TO  SYS-1005-KBNCD
            MOVE    LNK-ORCBT120SUB-SANTEIYMD
-                                       TO  ORC-DBYMD
+                                       TO  SYS-1005-STYUKYMD
+                                           SYS-1005-EDYUKYMD
            MOVE SPA-HOSPNUM            TO  SYS-1005-HOSPNUM
            MOVE    SYS-1005-REC        TO  MCPDATA-REC
       *
-           MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key10"             TO  MCP-PATHNAME
            PERFORM   900-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
-               MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+               MOVE    "tbl_syskanri"     TO  MCP-TABLE
+               MOVE    "key10"            TO  MCP-PATHNAME
                PERFORM   900-DBFETCH-SEC
                IF      MCP-RC              =   ZERO
                    MOVE    ZERO                TO  FLG-SYSKANRI
@@ -413,6 +426,10 @@
                    END-IF
                END-IF
            END-IF
+      *    システム管理クローズ
+           MOVE    "tbl_syskanri"           TO  MCP-TABLE
+           MOVE    "key10"                  TO  MCP-PATHNAME
+           PERFORM   910-DB-CLOSE-SEC
       *
       *    レセ電入院科の取得(前算定日）
            MOVE    SPACE               TO  SYS-1005-REC
@@ -421,14 +438,17 @@
            MOVE    LNK-ORCBT120SUB-MAE-NYUINKA
                                        TO  SYS-1005-KBNCD
            MOVE    LNK-ORCBT120SUB-SANTEIYMD
-                                       TO  ORC-DBYMD
+                                       TO  SYS-1005-STYUKYMD
+                                           SYS-1005-EDYUKYMD
            MOVE    SPA-HOSPNUM         TO  SYS-1005-HOSPNUM
            MOVE    SYS-1005-REC        TO  MCPDATA-REC
       *
-           MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key10"             TO  MCP-PATHNAME
            PERFORM   900-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
-               MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+               MOVE    "tbl_syskanri"  TO  MCP-TABLE
+               MOVE    "key10"         TO  MCP-PATHNAME
                PERFORM   900-DBFETCH-SEC
                IF      MCP-RC              =   ZERO
                    MOVE    ZERO                TO  FLG-SYSKANRI
@@ -443,6 +463,10 @@
                    END-IF
                END-IF
            END-IF
+      *   システム管理クローズ
+           MOVE    "tbl_syskanri"           TO  MCP-TABLE
+           MOVE    "key10"                  TO  MCP-PATHNAME
+           PERFORM   910-DB-CLOSE-SEC
       *
       *入院時の外泊取得
            INITIALIZE                          NYUINACCT-REC
@@ -451,16 +475,19 @@
            MOVE    LNK-ORCBT120SUB-SANTEIYMD(1:6)
                                            TO  NACCT-SRYYM
            MOVE    "2"                     TO  NACCT-ZAISKBKBN
-           MOVE    "NYUINACCT-KEY17"       TO  ORC-DBPATH
+           MOVE    "tbl_nyuinacct"         TO  MCP-TABLE
+           MOVE    "key17"                 TO  MCP-PATHNAME
            PERFORM 910-NYUINACCT-SELECT-SEC
            IF      FLG-NYUINACCT           =   ZERO
-               MOVE     "NYUINACCT-KEY17"  TO  ORC-DBPATH
+               MOVE    "tbl_nyuinacct"     TO  MCP-TABLE
+               MOVE    "key17"             TO  MCP-PATHNAME
                PERFORM   910-NYUINACCT-READ-SEC
                MOVE    NACCT-DAY(WRK-SANTEIDD)
                                  TO  LNK-ORCBT120SUB-GAIHAKU-KBN
            END-IF
       *    入院会計クローズ
-           MOVE    "NYUINACCT-KEY17"       TO  ORC-DBPATH
+           MOVE    "tbl_nyuinacct"         TO  MCP-TABLE
+           MOVE    "key17"                 TO  MCP-PATHNAME
            PERFORM   910-DB-CLOSE-SEC
       *
       *食事情報の取得（入院会計）
@@ -472,16 +499,19 @@
                MOVE    LNK-ORCBT120SUB-PTID    TO  NACCT-PTID
                MOVE    LNK-ORCBT120SUB-SANTEIYMD(1:6)
                                                TO  NACCT-SRYYM
-               MOVE    "NYUINACCT-KEY28"       TO  ORC-DBPATH
+               MOVE    "tbl_nyuinacct"         TO  MCP-TABLE
+               MOVE    "key28"                 TO  MCP-PATHNAME
                PERFORM 910-NYUINACCT-SELECT-SEC
                IF      FLG-NYUINACCT           =   ZERO
-                   MOVE     "NYUINACCT-KEY28"  TO  ORC-DBPATH
+                   MOVE    "tbl_nyuinacct"     TO  MCP-TABLE
+                   MOVE    "key28"             TO  MCP-PATHNAME
                    PERFORM   910-NYUINACCT-READ-SEC
                    MOVE    NACCT-DAY(WRK-SANTEIDD)
                                      TO  LNK-ORCBT120SUB-SKJ-KBN
                END-IF
       *       入院会計クローズ
-               MOVE    "NYUINACCT-KEY28"       TO  ORC-DBPATH
+               MOVE    "tbl_nyuinacct"         TO  MCP-TABLE
+               MOVE    "key28"                 TO  MCP-PATHNAME
                PERFORM   910-DB-CLOSE-SEC
            END-IF
       *
@@ -491,10 +521,12 @@
            MOVE    LNK-ORCBT120SUB-HOSPNUM  TO  SYU-HOSPNUM
            MOVE    "1"                      TO  SYU-NYUGAIKBN
            MOVE    LNK-ORCBT120SUB-PTID     TO  SYU-PTID
-           MOVE    "SYUNOU-KEY2"            TO  ORC-DBPATH
+           MOVE    "tbl_syunou"             TO  MCP-TABLE
+           MOVE    "key2"                   TO  MCP-PATHNAME
            PERFORM 910-SYUNOU-SELECT-SEC
            IF      FLG-SYUNOU                =  ZERO
-               MOVE     "SYUNOU-KEY2"       TO  ORC-DBPATH
+               MOVE    "tbl_syunou"         TO  MCP-TABLE
+               MOVE    "key2"               TO  MCP-PATHNAME
                PERFORM   910-SYUNOU-READ-SEC
                PERFORM   UNTIL   (FLG-SYUNOU    =   1)   OR
                                  (SYU-IDX       >=  10)
@@ -505,12 +537,14 @@
                            PERFORM   210-SYUNOU-SET-SEC
                        END-IF
                    END-IF
-                   MOVE    "SYUNOU-KEY2"       TO  ORC-DBPATH
+                   MOVE    "tbl_syunou"       TO  MCP-TABLE
+                   MOVE    "key2"             TO  MCP-PATHNAME
                    PERFORM 910-SYUNOU-READ-SEC
                END-PERFORM
            END-IF
       *    収納クローズ
-           MOVE    "SYUNOU-KEY2"           TO  ORC-DBPATH
+           MOVE    "tbl_syunou"             TO  MCP-TABLE
+           MOVE    "key2"                   TO  MCP-PATHNAME
            PERFORM   910-DB-CLOSE-SEC
       *
       *    保険組合せ番号の取得（収納が無い場合に入院会計から取得）
@@ -521,16 +555,19 @@
                MOVE    LNK-ORCBT120SUB-SANTEIYMD(1:6)
                                                TO  NACCT-SRYYM
                MOVE    "5"                     TO  NACCT-ZAISKBKBN
-               MOVE    "NYUINACCT-KEY17"       TO  ORC-DBPATH
+               MOVE    "tbl_nyuinacct"         TO  MCP-TABLE
+               MOVE    "key17"                 TO  MCP-PATHNAME
                PERFORM 910-NYUINACCT-SELECT-SEC
                IF      FLG-NYUINACCT           =   ZERO
-                   MOVE     "NYUINACCT-KEY17"  TO  ORC-DBPATH
+                   MOVE    "tbl_nyuinacct"         TO  MCP-TABLE
+                   MOVE    "key17"                 TO  MCP-PATHNAME
                    PERFORM   910-NYUINACCT-READ-SEC
                    MOVE    NACCT-DAY(WRK-SANTEIDD)
                                TO  LNK-ORCBT120SUB-HKNCOMBINUM(1)
                END-IF
       *        入院会計クローズ
-               MOVE    "NYUINACCT-KEY17"       TO  ORC-DBPATH
+               MOVE    "tbl_nyuinacct"         TO  MCP-TABLE
+               MOVE    "key17"                 TO  MCP-PATHNAME
                PERFORM   910-DB-CLOSE-SEC
            END-IF
       *
@@ -546,10 +583,12 @@
                                         TO      COMB-PTID
                MOVE    LNK-ORCBT120SUB-HKNCOMBINUM(SYU-IDX)
                                         TO      COMB-HKNCOMBINUM
-               MOVE    "HKNCOMBI-KEY"   TO      ORC-DBPATH
+               MOVE    "tbl_hkncombi"   TO  MCP-TABLE
+               MOVE    "key"            TO  MCP-PATHNAME
                PERFORM 910-HKNCOMBI-SELECT-SEC
                IF    FLG-HKNCOMBI       =       ZERO
-                   MOVE    "HKNCOMBI-KEY"   TO      ORC-DBPATH
+                   MOVE    "tbl_hkncombi"   TO  MCP-TABLE
+                   MOVE    "key"            TO  MCP-PATHNAME
                    PERFORM 910-HKNCOMBI-READ-SEC
                    IF    FLG-HKNCOMBI   =       ZERO
                        MOVE   COMB-HKNNUM
@@ -581,6 +620,10 @@
                        END-PERFORM
                    END-IF
                END-IF
+      *        保険組合せクローズ
+               MOVE    "tbl_hkncombi"   TO  MCP-TABLE
+               MOVE    "key"            TO  MCP-PATHNAME
+               PERFORM   910-DB-CLOSE-SEC
            END-PERFORM
       *
       *    レセプト種別の取得
@@ -680,10 +723,12 @@
            MOVE    LNK-ORCBT120SUB-PTID
                                     TO     PTHKN-PTID
            MOVE    COMB-HKNID       TO     PTHKN-HKNID
-           MOVE    "PTHKNINF-KEY"   TO     ORC-DBPATH
+           MOVE    "tbl_pthkninf"   TO  MCP-TABLE
+           MOVE    "key"            TO  MCP-PATHNAME
            PERFORM 910-PTHKNINF-SELECT-SEC
            IF    FLG-PTHKNINF       =       ZERO
-               MOVE    "PTHKNINF-KEY"   TO      ORC-DBPATH
+               MOVE    "tbl_pthkninf"   TO  MCP-TABLE
+               MOVE    "key"            TO  MCP-PATHNAME
                PERFORM 910-PTHKNINF-READ-SEC
                IF    FLG-PTHKNINF   =       ZERO
                    MOVE   PTHKN-HKNJANUM
@@ -691,7 +736,8 @@
                END-IF
            END-IF
       *    患者保険情報クローズ
-           MOVE    "PTHKNINF-KEY"           TO  ORC-DBPATH
+           MOVE    "tbl_pthkninf"   TO  MCP-TABLE
+           MOVE    "key"            TO  MCP-PATHNAME
            PERFORM   910-DB-CLOSE-SEC
       *
            .
@@ -709,10 +755,12 @@
            MOVE    LNK-ORCBT120SUB-PTID
                                     TO     PTRSI-PTID
            MOVE    COMB-HKNID       TO     PTRSI-HKNID
-           MOVE    "PTRSIINF-KEY"   TO     ORC-DBPATH
+           MOVE    "tbl_ptrsiinf"   TO  MCP-TABLE
+           MOVE    "key"            TO  MCP-PATHNAME
            PERFORM 910-PTRSIINF-SELECT-SEC
            IF    FLG-PTRSIINF       =       ZERO
-               MOVE    "PTRSIINF-KEY"   TO      ORC-DBPATH
+               MOVE    "tbl_ptrsiinf"   TO  MCP-TABLE
+               MOVE    "key"            TO  MCP-PATHNAME
                PERFORM 910-PTRSIINF-READ-SEC
                IF    FLG-PTRSIINF   =       ZERO
                    MOVE   PTRSI-HKNKBN
@@ -724,7 +772,8 @@
                END-IF
            END-IF
       *    患者労災保険情報クローズ
-           MOVE    "PTRSIINF-KEY"           TO  ORC-DBPATH
+           MOVE    "tbl_ptrsiinf"   TO  MCP-TABLE
+           MOVE    "key"            TO  MCP-PATHNAME
            PERFORM   910-DB-CLOSE-SEC
       *
            .
@@ -1455,10 +1504,12 @@
        900-PTINF-READ-SEC         SECTION.
       *
            MOVE    PTINF-REC           TO  MCPDATA-REC
-           MOVE    "PTINF-KEY"         TO  ORC-DBPATH
+           MOVE    "tbl_ptinf"         TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
            PERFORM   900-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
-               MOVE    "PTINF-KEY"         TO  ORC-DBPATH
+               MOVE    "tbl_ptinf"     TO  MCP-TABLE
+               MOVE    "key"           TO  MCP-PATHNAME
                PERFORM   900-DBFETCH-SEC
                IF      MCP-RC          =   ZERO
                    MOVE    MCPDATA-REC TO  PTINF-REC
@@ -1472,7 +1523,8 @@
                MOVE    1              TO  FLG-PTINF
            END-IF
       *
-           MOVE    "PTINF-KEY"        TO  ORC-DBPATH
+           MOVE    "tbl_ptinf"         TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
            PERFORM   910-DB-CLOSE-SEC
       *
            .
