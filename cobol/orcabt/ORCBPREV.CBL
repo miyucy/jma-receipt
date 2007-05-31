@@ -251,6 +251,7 @@ grpsys COPY    "COMMON-SPA".
            MOVE    SPACE           TO  PS-FILE-ID
       * 
            STRING  PRT-OUT         DELIMITED  BY  SPACE
+                   SPA-HOSPNUM     DELIMITED  BY  SPACE
                    PRT-TBL-KEY     DELIMITED  BY  SPACE
                    PRT-RENNUM      DELIMITED  BY  SPACE
                    PRT-TBL-GROUP   DELIMITED  BY  SPACE
@@ -659,7 +660,6 @@ grpsys         PERFORM 900-DBFETCH-SEC
       *    END-READ
            MOVE    SPACE               TO  ORCF-DATA
            MOVE    PS-FILE-ID          TO  ORCF-FILE-NAME
-           DISPLAY "take file id = "    PS-FILE-ID
            MOVE    "r"                 TO  ORCF-FILE-MODE
            MOVE    SPACE               TO  PS-FILE-DATA  
            CALL    "orcfileio"     USING ST  ORCFILEGET-AREA
