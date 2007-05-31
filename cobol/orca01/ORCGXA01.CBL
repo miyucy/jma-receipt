@@ -43,27 +43,16 @@
        INPUT-OUTPUT                SECTION.
        FILE-CONTROL.
       *
-      *    エラーファイル
-           SELECT  RECEERR-FILE    ASSIGN  RECEERR
-                                   FILE    STATUS  IS  STS-RECEERR.
       *
        DATA                    DIVISION.
        FILE                        SECTION.
       *
-      *    エラーファイル
-       FD  RECEERR-FILE.
-       01  RECEERR-REC             PIC X(200). 
-      *
        WORKING-STORAGE             SECTION.
       *
-      *     レセプト明細ファイル シェル領域 
-      **** COPY    "CPCOMMONSHELL1.INC".
-      *
       *    エラーファイル 名称領域 
-           COPY    "CPCOMMONDAT2.INC"
-                                   REPLACING  //RECE01PARA//
+           COPY    "CPERRFL.INC"   REPLACING  //ERRFLPARA//
                                    BY         //RECEERR//.
-           03  FILLER              PIC X(04)   VALUE   ".dat".
+      *
       *
       *    スパ領域
            COPY    "COMMON-SPA".
@@ -1396,8 +1385,10 @@
                                            WRK-PRTKANRI-RENNUM
            MOVE    SPACE               TO  WRK-CONS-PRTKANRI-TBL-GROUP                                
       *     
-           MOVE    "RECEERR"           TO  RECEERR-FILE-ID
+           MOVE    SPA-HOSPNUM         TO  RECEERR-HOSPNUM
+           MOVE    "ORC01ERR"          TO  RECEERR-FILE-ID
            MOVE    SPA-TERMID          TO  RECEERR-TERMID
+           MOVE    1                   TO  RECEERR-SYOKBN1
       *
       *    印刷処理
       *

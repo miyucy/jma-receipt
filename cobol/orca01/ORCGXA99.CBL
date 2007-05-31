@@ -261,6 +261,7 @@
                    CALL    "ORCSJOB"       USING
                                            ORCSJOBKANRIAREA  
                                            JOBKANRI-REC 
+                                           SPA-AREA
                    IF      SJOBKANRI-RETURN    =   ZERO
                        MOVE    JOB-JOBID       TO  XA99-RENNUM   (IDX)
                        MOVE    JOB-SHELLMSG    TO  XA99-SHORINM  (IDX)

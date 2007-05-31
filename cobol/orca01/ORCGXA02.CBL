@@ -34,27 +34,19 @@
        INPUT-OUTPUT                SECTION.
        FILE-CONTROL.
       *
-      *    エラーファイル
-           SELECT  RECEERR-FILE    ASSIGN  RECEERR
-                                   FILE    STATUS  IS  STS-RECEERR.
       *
        DATA                    DIVISION.
        FILE                        SECTION.
       *
-      *    エラーファイル
-       FD  RECEERR-FILE.
-       01  RECEERR-REC             PIC X(200). 
-      *
        WORKING-STORAGE             SECTION.
+      *
+      *    エラーファイル 名称領域 
+           COPY    "CPERRFL.INC"   REPLACING  //ERRFLPARA//
+                                   BY         //RECEERR//.
       *
       *     レセプト明細ファイル シェル領域 
       **** COPY    "CPCOMMONSHELL1.INC".
       *
-      *    エラーファイル 名称領域 
-           COPY    "CPCOMMONDAT2.INC"
-                                   REPLACING  //RECE01PARA//
-                                   BY         //RECEERR//.
-           03  FILLER              PIC X(04)   VALUE   ".dat".
       *
       *    スパ領域
            COPY    "COMMON-SPA".
@@ -1380,6 +1372,7 @@ grpsys*    MOVE    SPA-HOSPNUM         TO  -HOSPNUM
                    CALL    "ORCSJOB"       USING
                                            ORCSJOBKANRIAREA  
                                            JOBKANRI-REC
+                                           SPA-AREA
                    IF      SJOBKANRI-RETURN
                                            =   ZERO
                        IF      JOB-ENDYMD      =   SPACE
@@ -1762,6 +1755,7 @@ grpsys*    MOVE    SPA-HOSPNUM         TO  -HOSPNUM
                    CALL    "ORCSJOB"       USING
                                            ORCSJOBKANRIAREA  
                                            JOBKANRI-REC
+                                           SPA-AREA
                    IF      SJOBKANRI-RETURN
                                            =   ZERO
                        IF      JOB-ENDYMD      =   SPACE
@@ -1911,6 +1905,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPA-HOSPNUM     TO  JOB-HOSPNUM
            CALL    "ORCSJOB"       USING   ORCSJOBKANRIAREA  
                                            JOBKANRI-REC
+                                           SPA-AREA
            IF      SJOBKANRI-RETURN    =   ZERO
                CONTINUE
            ELSE
@@ -1928,8 +1923,10 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                                            WRK-PRTKANRI-RENNUM
            MOVE    SPACE               TO  WRK-CONS-PRTKANRI-TBL-GROUP                                
       *     
-           MOVE    "RECEERR"           TO  RECEERR-FILE-ID
+           MOVE    SPA-HOSPNUM         TO  RECEERR-HOSPNUM
+           MOVE    "ORC01ERR"          TO  RECEERR-FILE-ID
            MOVE    SPA-TERMID          TO  RECEERR-TERMID
+           MOVE    2                   TO  RECEERR-SYOKBN1
       *
       *    印刷処理
       *
@@ -2039,6 +2036,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            CALL    "ORCSJOB"       USING
                                    ORCSJOBKANRIAREA 
                                    JOBKANRI-REC
+                                   SPA-AREA
       *
            MOVE    "JBS"           TO  SJOBKANRI-MODE
            INITIALIZE                  JOBKANRI-REC
@@ -2051,6 +2049,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            CALL    "ORCSJOB"       USING
                                    ORCSJOBKANRIAREA 
                                    JOBKANRI-REC
+                                   SPA-AREA
       *
            .
        45011-JOBKANRI-HENSYU-EXT.
@@ -2147,6 +2146,7 @@ grpsys*    MOVE    SPA-HOSPNUM         TO  -HOSPNUM
                    CALL    "ORCSJOB"       USING
                                            ORCSJOBKANRIAREA  
                                            JOBKANRI-REC 
+                                           SPA-AREA
                    IF      SJOBKANRI-RETURN    =   ZERO
                        MOVE    JOB-JOBID       TO  XA99-RENNUM   (IDX)
                        MOVE    JOB-SHELLMSG    TO  XA99-SHORINM  (IDX)
