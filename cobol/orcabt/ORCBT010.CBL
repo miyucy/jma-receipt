@@ -962,7 +962,6 @@ grpsys     PERFORM 900-DBSELECT-SEC
                    MOVE    WRK-PARA-HOSPNUM    TO  COMB-HOSPNUM
                    MOVE    PTINF-PTID          TO  COMB-PTID
                    MOVE    KEY-N-HKNCOMBI      TO  COMB-HKNCOMBINUM 
-grpsys*            MOVE    SPA-HOSPNUM         TO  -HOSPNUM
                    MOVE    HKNCOMBI-REC        TO  MCPDATA-REC
                    PERFORM 910-HKNCOMBI-INV-SEC
       *

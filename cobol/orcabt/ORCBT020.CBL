@@ -172,6 +172,7 @@
       *
        01  WRK-AREA.
            03  WRK-PARA.
+               05  WRK-PARA-HOSPID             PIC X(24).
                05  WRK-PARA-HOSPCD             PIC X(07).
                05  WRK-PARA-SRYYM              PIC X(06).
                05  WRK-PARA-TERMID             PIC X(32).
@@ -328,7 +329,8 @@
                                        SPA-AREA
       *
            UNSTRING    COMMAND-PARAM   DELIMITED  BY  ","
-                                       INTO    WRK-PARA-HOSPCD
+                                       INTO    WRK-PARA-HOSPID
+                                               WRK-PARA-HOSPCD
                                                WRK-PARA-SRYYM
                                                WRK-PARA-TERMID
                                                WRK-PARA-DATAKBN
@@ -445,7 +447,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  TOUKEI03PARA-HOSPNUM
            MOVE    SPACE               TO  WRK-REC
            MOVE    ZERO                TO  WRK-REC-LENGTH
       *    °åÎÅµ¡´Ø£É£Ä      
-      *??  MOVE    TOUKEI01-HOSPID     TO  WRK-DATA
+           MOVE    WRK-PARA-HOSPID     TO  WRK-DATA
            MOVE    24                  TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC    
       *    °åÎÅµ¡´Ø¥³¡¼¥É
@@ -933,7 +935,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  TOUKEI03PARA-HOSPNUM
            MOVE    SPACE               TO  WRK-REC
            MOVE    ZERO                TO  WRK-REC-LENGTH
       *    °åÎÅµ¡´Ø£É£Ä      
-      *??  MOVE    TOUKEI01-HOSPID     TO  WRK-DATA
+           MOVE    WRK-PARA-HOSPID     TO  WRK-DATA
            MOVE    24                  TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC    
       *    °åÎÅµ¡´Ø¥³¡¼¥É

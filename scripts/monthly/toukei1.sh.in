@@ -58,7 +58,7 @@ fi
         if  [ -e ${15} ]; then
             exit 
         else
-	        $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBT020 -parameter $3,$5,$1,$9,${11},${13},${14},${19},${15} >> $LOG_FILE 2>&1
+	        $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBT020 -parameter $2,$3,$5,$1,$9,${11},${13},${14},${19},${15} >> $LOG_FILE 2>&1
 	fi
 
         if  [ -e ${15} ]; then
