@@ -250,6 +250,10 @@
            PERFORM 910-NYUINACCT-SELECT-SEC
            IF      FLG-NYUINACCT           NOT =   ZERO
                MOVE    4               TO  LNK-ORCBT120SUB-RC
+      *        入院会計クローズ
+               MOVE    "tbl_nyuinacct"         TO  MCP-TABLE
+               MOVE    "key17"                 TO  MCP-PATHNAME
+               PERFORM   910-DB-CLOSE-SEC
                GO  TO  100-PRM-CHK-EXT
            ELSE
                MOVE    "tbl_nyuinacct"     TO  MCP-TABLE
@@ -257,6 +261,10 @@
                PERFORM 910-NYUINACCT-READ-SEC
                IF   FLG-NYUINACCT          NOT =   ZERO
                     MOVE    4              TO  LNK-ORCBT120SUB-RC
+      *            入院会計クローズ
+                    MOVE    "tbl_nyuinacct"         TO  MCP-TABLE
+                    MOVE    "key17"                 TO  MCP-PATHNAME
+                    PERFORM   910-DB-CLOSE-SEC
                     GO  TO  100-PRM-CHK-EXT
                ELSE
                     MOVE       LNK-ORCBT120SUB-SANTEIYMD
