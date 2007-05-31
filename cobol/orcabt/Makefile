@@ -1,15 +1,6 @@
 SRCS = ORCBD001.CBL \
        ORCBD002.CBL \
-       ORCBM001.CBL \
-       ORCBM002.CBL \
-       ORCBM003.CBL \
-       ORCBM004.CBL \
        ORCBM006.CBL \
-       ORCBM007.CBL \
-       ORCBM008.CBL \
-       ORCBM009.CBL \
-       ORCBM010.CBL \
-       ORCBM011.CBL \
        ORCR0010.CBL \
        ORCR0020.CBL \
        ORCR0030.CBL \
@@ -37,7 +28,6 @@ SRCS = ORCBD001.CBL \
        ORCBM020.CBL \
        ORCBM021.CBL \
        ORCMUP0021.CBL \
-       ORCBM012.CBL \
        ORCMUP0041.CBL \
        ORCR0030_200203.CBL \
        ORCR0090_200203.CBL \
