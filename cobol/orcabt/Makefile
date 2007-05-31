@@ -1,9 +1,20 @@
-SRCS = ORCR0010.CBL \
+SRCS = ORCBD001.CBL \
+       ORCBD002.CBL \
+       ORCBM001.CBL \
+       ORCBM002.CBL \
+       ORCBM003.CBL \
+       ORCBM004.CBL \
+       ORCBM006.CBL \
+       ORCBM007.CBL \
+       ORCBM008.CBL \
+       ORCBM009.CBL \
+       ORCBM010.CBL \
+       ORCBM011.CBL \
+       ORCR0010.CBL \
        ORCR0020.CBL \
        ORCR0030.CBL \
        ORCR0035.CBL \
        ORCR0038.CBL \
-       ORCR0040.CBL \
        ORCR0050.CBL \
        ORCR0055.CBL \
        ORCR0090.CBL \
@@ -11,24 +22,220 @@ SRCS = ORCR0010.CBL \
        ORCR0100.CBL \
        ORCR0101.CBL \
        ORCR0102.CBL \
-       ORCR0103.CBL \
-       ORCR0104.CBL \
-       ORCBPREV1.CBL \
-       ORCBPREV.CBL \
-       ORCBPRT1.CBL \
-       ORCBPRT.CBL \
+       ORCMUP0000.CBL \
+       ORCMUP0001.CBL \
+       ORCMUP0011.CBL \
+       ORCXRMST1.CBL \
+       ORCXRMST2.CBL \
        ORCR0200.CBL \
        ORCR0210.CBL \
+       ORCR0250.CBL \
+       ORCR0260.CBL \
        ORCR0300.CBL \
+       ORCR0350.CBL \
+       ORCBM005.CBL \
+       ORCBM020.CBL \
+       ORCBM021.CBL \
+       ORCMUP0021.CBL \
+       ORCBM012.CBL \
+       ORCMUP0041.CBL \
+       ORCR0030_200203.CBL \
+       ORCR0090_200203.CBL \
+       ORCR0100_200203.CBL \
+       ORCBPRT.CBL \
+       ORCR0040.CBL \
+       ORHCML01.CBL \
+       ORHCML02.CBL \
+       ORHCML03.CBL \
+       ORHCML06.CBL \
+       ORHCML07.CBL \
+       ORHCML08.CBL \
+       ORHCML09.CBL \
+       ORHCML10.CBL \
+       ORHCML11.CBL \
+       ORCBQ01.CBL \
+       ORCR0400.CBL \
+       ORCR0410.CBL \
+       ORCR0420.CBL \
+       ORCR0425.CBL \
+       ORCR0428.CBL \
+       ORCR0430.CBL \
+       ORCR0435.CBL \
+       ORCR0440.CBL \
+       ORCR0450.CBL \
+       ORCR0460.CBL \
+       ORCR0465.CBL \
+       ORCR0470.CBL \
+       ORCR0480.CBL \
+       ORCR0481.CBL \
+       ORCR0490.CBL \
+       ORCR0500.CBL \
+       ORCR0466.CBL \
+       ORCR0482.CBL \
+       ORCBD003.CBL \
+       ORCR0467.CBL \
+       ORCR0485.CBL \
+       ORCR0103.CBL \
+       ORCBM022.CBL \
+       ORCBM023.CBL \
+       ORCBM025.CBL \
+       ORCMUP0051.CBL \
+       ORCMUP0101.CBL \
+       ORHCML04.CBL \
+       ORHCML05.CBL \
+       ORCR0600.CBL \
+       ORCR0610.CBL \
+       ORCR0620.CBL \
+       ORCR0630.CBL \
+       ORCR0640.CBL \
+       ORCR0650.CBL \
+       ORCR0655.CBL \
+       ORCR0660.CBL \
+       ORCR0670.CBL \
+       ORCR0680.CBL \
+       ORCR0690.CBL \
+       ORCR0700.CBL \
+       ORCR0710.CBL \
+       ORCR0720.CBL \
+       ORCR0800.CBL \
+       ORCR0810.CBL \
+       ORCR0820.CBL \
+       ORCR0830.CBL \
+       ORCR0840.CBL \
+       ORCR0850.CBL \
+       ORCR0860.CBL \
+       ORCR0870.CBL \
+       ORCR0880.CBL \
+       ORCR0890.CBL \
+       ORCR0900.CBL \
+       ORCR0910.CBL \
+       ORCR0920.CBL \
+       ORCR0930.CBL \
+       ORCR0935.CBL \
+       ORCR0940.CBL \
+       ORCR0950.CBL \
+       ORCR0951.CBL \
+       ORCR0960.CBL \
+       ORCR0961.CBL \
+       ORCR0955.CBL \
        ORCRCP060.CBL \
+       ORCBM026.CBL \
+       ORCBDXXX.CBL \
+       ORCT0010.CBL \
+       ORCT0020.CBL \
+       ORCT0030.CBL \
+       ORCT0040.CBL \
+       ORCT0050.CBL \
+       ORCT0060.CBL \
+       ORCMUP0031.CBL \
+       ORCBG001.CBL \
+       ORCBG002.CBL \
+       ORCBG003.CBL \
+       ORCBG004.CBL \
+       ORCMUP0061.CBL \
+       ORCMUP0071.CBL \
+       ORCMUP0081.CBL \
+       ORCBD004.CBL \
+       ORCBM024.CBL \
+       ORCBD005.CBL \
+       ORCBLMAIN.CBL \
+       ORCR0104.CBL \
+       ORCBM027.CBL \
+       ORCBM028.CBL \
+       ORCBM029.CBL \
+       ORCBM030.CBL \
+       ORCBG005.CBL \
+       ORCMUP0091.CBL \
+       ORCBZ001.CBL \
+       ORCBZ002.CBL \
+       ORCBG008.CBL \
+       ORCBG009.CBL \
+       ORCBG007.CBL \
+       ORCBM500.CBL \
+       ORCBM510.CBL \
+       ORHCML12.CBL \
+       ORCBHXLST.CBL \
+       ORCBPREV.CBL \
+       ORCBPREV1.CBL \
+       ORCBPRT1.CBL \
+       ORCBPRVPRT.CBL \
+       ORCBM031.CBL \
+       ORCBPREV.CBL \
+       ORCBPREV1.CBL \
+       ORCBPRT1.CBL \
+       ORCBPRVPRT.CBL \
+       ORCBG010.CBL \
+       ORCBG011.CBL \
        ORCRCP400.CBL \
-       ORCRSYUKA01.CBL \
+       ORCRCP401.CBL \
+       ORCBI201.CBL \
        ORCBT010.CBL \
        ORCBT020.CBL \
+       ORCDTCHK001.CBL \
+       ORCDTCHK002.CBL \
+       ORCDTCHK003.CBL \
+       ORCBD006.CBL \
+       ORCBD007.CBL \
+       ORCBD008.CBL \
+       ORCXPMNT1.CBL \
+       ORCXPMNT2.CBL \
+       ORCXPMNT3.CBL \
+       ORCBX01.CBL \
+       ORCBREV200404.CBL \
+       ORCBG006.CBL \
+       ORCBCRENYUACCT.CBL \
+       ORCBS01.CBL \
+       ORCBG012.CBL \
+       ORCBG013.CBL \
+       ORCBCHKSND.CBL \
+       ORCBCHKSND2.CBL \
        ORCBT110.CBL \
        ORCBT120.CBL \
        ORCBT130.CBL \
+       ORCDTCHK000.CBL \
+       ORCDTCHK004.CBL \
+       ORCDTCHK005.CBL \
+       ORCDTCHK006.CBL \
+       ORCDTCHK007.CBL \
+       ORCBJINMEI.CBL \
+       ORCRRECEMAIN.CBL \
+       ORCBG013V02.CBL \
+       ORCBD004V02.CBL \
+       ORCBD005V02.CBL \
+       ORCR0468.CBL \
+       ORCR0486.CBL \
+       ORCR0936.CBL \
+       ORCR0956.CBL \
+       ORCDTCHK008.CBL \
+       ORCBG014.CBL \
+       ORCBD009S.CBL \
+       ORCBD009.CBL \
+       ORCT0070.CBL \
+       ORCBZ003.CBL \
+       ORCBG015.CBL \
+       ORCRSYUKA01.CBL \
+       ORCBREV200604.CBL \
+       ORCBN21.CBL \
+       ORCBG016.CBL \
+       ORCBG017.CBL \
+       ORCBCHKYAK1.CBL \
+       ORCBCHKKNS1.CBL \
+       ORCMUP0111.CBL \
+       ORCR0487.CBL \
+       ORCR0957.CBL \
+       ORCBHYOUKETU.CBL \
+       ORCXRMST3.CBL \
+       ORCXRMST4.CBL \
+       ORCBC010.CBL \
+       ORCBC020.CBL \
+       ORCDTCHK009.CBL \
+       ORCBM032.CBL \
+       ORCBM033.CBL \
+       ORCMUP0092.CBL \
+       ORCBQ02.CBL \
+       ORCBONPRT.CBL \
 
+EXEC_SRCS =  ORCXSMST1.CBL
 
 top_builddir = ../..
 include $(top_builddir)/cobol/Makefile.global
