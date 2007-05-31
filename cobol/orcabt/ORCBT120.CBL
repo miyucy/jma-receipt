@@ -435,6 +435,9 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  TOUKEI04PARA-HOSPNUM
            MOVE    PTNYUINRRK-PTID     TO  PTINF-PTID
            PERFORM 900-PTINF-READ-SEC
       *
+           DISPLAY "PTNYUINRRK PTID=" PTNYUINRRK-PTID 
+                   " TSTPTNUMKBN=" PTINF-TSTPTNUMKBN
+      *
       *    テスト患者の時読み飛ばし
            IF     FLG-PTINF           =   ZERO
                IF   PTINF-TSTPTNUMKBN   =   "1"
