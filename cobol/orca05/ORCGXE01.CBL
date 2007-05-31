@@ -426,9 +426,9 @@
                MOVE    "DBINSERT"          TO  MCP-FUNC
                MOVE    "tbl_qrcdhkn"       TO  MCP-TABLE
                MOVE    "key"               TO  MCP-PATHNAME
-               CALL    "MONFUNC"           USING
-                                           MCPAREA
-                                           MCPDATA-REC
+grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
+                                                   MCPDATA-REC
+                                                   SPA-AREA
                IF      MCP-RC          NOT =   ZERO
                    MOVE    "1000"          TO  SPA-ERRCD
                    DISPLAY "XE01 QRCDHKN INS ERR:" MCP-RC
@@ -460,6 +460,7 @@
            MOVE    "*"                 TO  SYS-1001-KBNCD
            MOVE    SPA-SYSYMD          TO  SYS-1001-STYUKYMD
            MOVE    SPA-SYSYMD          TO  SYS-1001-EDYUKYMD
+           MOVE    SPA-HOSPNUM         TO  SYS-1001-HOSPNUM
            MOVE    SYS-1001-REC        TO  MCPDATA-REC
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key10"             TO  MCP-PATHNAME
@@ -478,7 +479,7 @@
            PERFORM 990-DBCLOSE-SEC
       *    最大連番
            INITIALIZE                      QRCDHKN-REC
-           MOVE    SPA-HOSPID          TO  QRCDHKN-HOSPID
+           MOVE    SPA-HOSPNUM         TO  QRCDHKN-HOSPNUM
            MOVE    SPA-SYSYMD          TO  QRCDHKN-REGISTYMD
            MOVE    QRCDHKN-REC         TO  MCPDATA-REC
            MOVE    "tbl_qrcdhkn"       TO  MCP-TABLE
@@ -500,7 +501,7 @@
       *
            MOVE    SPACE               TO  QRCDHKN-REC
            INITIALIZE                      QRCDHKN-REC
-           MOVE    SPA-HOSPID          TO  QRCDHKN-HOSPID
+           MOVE    SPA-HOSPNUM         TO  QRCDHKN-HOSPNUM
            MOVE    SPA-SYSYMD          TO  QRCDHKN-REGISTYMD
       *    受付ＩＤ
            IF      WRK-REGISTID       =   99999
@@ -576,16 +577,20 @@
            IF     (KANACHK-RC          =   ZERO  )  AND
                   (KANACHK-SYUBETU     =   1     )
                EVALUATE    KANACHK-MAX
-                   WHEN    6
-      *            政管
-                       MOVE    SPA-GMN-HKNNUM(3:4) TO  QRCDHKN-HKNJANUM
                    WHEN    8
-                       IF      SPA-GMN-HKNNUM(1:2) =   "00"
-      *            国保
-                           MOVE    SPA-GMN-HKNNUM(3:)
+                       IF      SPA-GMN-HKNNUM(1:4) =   "0100"
+      *                    政管
+                           MOVE    SPA-GMN-HKNNUM(5:4)
                                                    TO  QRCDHKN-HKNJANUM
                        ELSE
-                           MOVE    SPA-GMN-HKNNUM  TO  QRCDHKN-HKNJANUM
+                           IF      SPA-GMN-HKNNUM(1:2) =   "00"
+      *                        国保
+                               MOVE    SPA-GMN-HKNNUM(3:)
+                                                   TO  QRCDHKN-HKNJANUM
+                           ELSE
+                               MOVE    SPA-GMN-HKNNUM
+                                                   TO  QRCDHKN-HKNJANUM
+                           END-IF
                        END-IF
                    WHEN    OTHER
                        MOVE    SPA-GMN-HKNNUM    TO  QRCDHKN-HKNJANUM
@@ -621,68 +626,48 @@
            CALL    "ORCSKANACHK"       USING
                                        ORCSKANACHKAREA
            MOVE    KANACHK-MAE-INPUT   TO  WRK-KIGONUM-MAE
-      *    半角空白までを記号とする
+      *    全角空白までを記号とする
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   KANACHK-MAX
-               IF      WRK-KIGONUM-MAE(IDX:1)  =   SPACE
-                   COMPUTE IDX2        =   IDX     +   1
-                   MOVE    WRK-KIGONUM-MAE(IDX2:)  TO  WRK-NUM-H
+               IF      WRK-KIGONUM-MAE(IDX:2)  =   "　"
+                   COMPUTE IDX2        =   IDX     +   2
+                   MOVE    WRK-KIGONUM-MAE(IDX2:)  TO  WRK-NUM
                    MOVE    KANACHK-MAX     TO  IDX
                ELSE
                    MOVE    WRK-KIGONUM-MAE(IDX:1)  TO  WRK-KIGO(IDX:1)
                END-IF
            END-PERFORM
-      *    前のゼロを削除する
-           MOVE    SPACE               TO  WRK-KIGO-H
-           PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL      (IDX     >   80  )   OR
-                              (WRK-KIGO(IDX:1) =   SPACE)
-               IF      WRK-KIGO(IDX:1)     =   "0"
-                   CONTINUE
-               ELSE
-                   MOVE    WRK-KIGO(IDX:)  TO  WRK-KIGO-H
-                   MOVE    80              TO  IDX
-               END-IF
-           END-PERFORM
-           IF      WRK-KIGO-H          =   SPACE
-               MOVE    1               TO  FLG-ERR
-               MOVE    SPACE           TO  WRK-KIGO
+           IF      WRK-KIGO            =   SPACE
+               CONTINUE
            ELSE
                INITIALIZE                  ORCSKANACHKAREA
-               MOVE    "1"                 TO  KANACHK-SYORI
-               MOVE    WRK-KIGO-H          TO  KANACHK-MAE-INPUT
+               MOVE    "2"                 TO  KANACHK-SYORI
+               MOVE    WRK-KIGO            TO  KANACHK-MAE-INPUT
                CALL    "ORCSKANACHK"       USING
                                            ORCSKANACHKAREA
-               IF     (KANACHK-RC          =   ZERO  )  AND
-                      (KANACHK-SYUBETU     =   2     )
-      *            全角のみ
-                   MOVE    WRK-KIGO-H          TO  WRK-KIGO
+               MOVE    KANACHK-MAE-INPUT   TO  WRK-KIGO
+               IF     (KANACHK-RC          =   ZERO  )
+                   MOVE    KANACHK-OUT-INPUT   TO  WRK-KIGO
                ELSE
-      *            全角変換
-                   INITIALIZE                  ORCSKANACHKAREA
-                   MOVE    "2"                 TO  KANACHK-SYORI
-                   MOVE    WRK-KIGO-H          TO  KANACHK-MAE-INPUT
-                   CALL    "ORCSKANACHK"       USING
-                                               ORCSKANACHKAREA
-                   IF     (KANACHK-RC          =   ZERO  )
-                       MOVE    KANACHK-OUT-INPUT   TO  WRK-KIGO
-                   ELSE
-                       MOVE    1                   TO  FLG-ERR
-                   END-IF
+                   MOVE    1                   TO  FLG-ERR
                END-IF
            END-IF
       *
       *    番号 全角変換
-           MOVE    SPACE               TO  WRK-NUM
-           INITIALIZE                  ORCSKANACHKAREA
-           MOVE    "2"                 TO  KANACHK-SYORI
-           MOVE    WRK-NUM-H           TO  KANACHK-MAE-INPUT
-           CALL    "ORCSKANACHK"       USING
-                                       ORCSKANACHKAREA
-           IF      KANACHK-RC          =   ZERO
-               MOVE    KANACHK-OUT-INPUT   TO  WRK-NUM
+           IF      WRK-NUM             =   SPACE
+               CONTINUE
            ELSE
-               MOVE    1                   TO  FLG-ERR
+               INITIALIZE                  ORCSKANACHKAREA
+               MOVE    "2"                 TO  KANACHK-SYORI
+               MOVE    WRK-NUM             TO  KANACHK-MAE-INPUT
+               CALL    "ORCSKANACHK"       USING
+                                           ORCSKANACHKAREA
+               MOVE    KANACHK-MAE-INPUT   TO  WRK-NUM
+               IF      KANACHK-RC          =   ZERO
+                   MOVE    KANACHK-OUT-INPUT   TO  WRK-NUM
+               ELSE
+                   MOVE    1                   TO  FLG-ERR
+               END-IF
            END-IF
       *    データ編集
            MOVE    WRK-KIGONUM-MAE   TO  QRCDHKN-KIGONUM
@@ -893,7 +878,7 @@
       *    カナ氏名、性別、生年月日から患者情報の検索
            MOVE    SPACE               TO  PTINF-REC
            INITIALIZE                      PTINF-REC
-           MOVE    SPA-HOSPID          TO  PTINF-HOSPID
+           MOVE    SPA-HOSPNUM         TO  PTINF-HOSPNUM
            MOVE    QRCDHKN-BIRTHDAYS   TO  PTINF-BIRTHDAY
            MOVE    QRCDHKN-SEX         TO  PTINF-SEX
            IF      QRCDHKN-KANANAME    =   SPACE
@@ -1001,7 +986,7 @@
       *
            MOVE    SPACE               TO  PTHKNINF-REC
            INITIALIZE                      PTHKNINF-REC
-           MOVE    PTINF-HOSPID        TO  PTHKN-HOSPID
+           MOVE    PTINF-HOSPNUM       TO  PTHKN-HOSPNUM
            MOVE    PTINF-PTID          TO  PTHKN-PTID
            MOVE    QRCDHKN-HKNJANUM    TO  PTHKN-HKNJANUM
       *
@@ -1040,7 +1025,7 @@
                     (QRCDHKN-KANANAME    =   SPACE )
                MOVE    SPACE               TO  PTHKNINF-REC
                INITIALIZE                      PTHKNINF-REC
-               MOVE    PTINF-HOSPID        TO  PTHKN-HOSPID
+               MOVE    PTINF-HOSPNUM       TO  PTHKN-HOSPNUM
                MOVE    PTINF-PTID          TO  PTHKN-PTID
                MOVE    QRCDHKN-HKNJANUM    TO  PTHKN-HKNJANUM
                MOVE    QRCDHKN-HONKZKKBN   TO  PTHKN-HONKZKKBN
@@ -1113,8 +1098,8 @@
       *
            MOVE    SPA-GMN-SIDO-KBN    TO  XE01-SEIDO-KBN
            MOVE    SPA-GMN-HKNNUM      TO  XE01-HKNNUM
-           MOVE    SPA-GMN-KIGONUM      TO  XE01-KIGONUM
-           MOVE    SPA-GMN-HONKZKKBN    TO  XE01-HONKZKKBN
+           MOVE    SPA-GMN-KIGONUM     TO  XE01-KIGONUM
+           MOVE    SPA-GMN-HONKZKKBN   TO  XE01-HONKZKKBN
            MOVE    SPA-GMN-KANANAME    TO  XE01-KANANAME
            MOVE    SPA-GMN-SEX         TO  XE01-SEX
            MOVE    SPA-GMN-BIRTHDAY    TO  XE01-BIRTHDAY
@@ -1277,9 +1262,9 @@
        910-DBSELECT-SEC                SECTION.
       *
            MOVE    "DBSELECT"      TO  MCP-FUNC
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
        910-DBSELECT-EXT.
@@ -1290,9 +1275,9 @@
        920-DBFETCH-SEC                 SECTION.
       *
            MOVE    "DBFETCH"       TO  MCP-FUNC
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
       *
@@ -1305,9 +1290,9 @@
        990-DBCLOSE-SEC           SECTION.
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
        990-DBCLOSE-EXT.
@@ -1319,9 +1304,9 @@
        900-PUT-WINDOW              SECTION.
       *
            MOVE   "PUTWINDOW"       TO  MCP-FUNC.
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
        900-PUT-WINDOW-EXT.
