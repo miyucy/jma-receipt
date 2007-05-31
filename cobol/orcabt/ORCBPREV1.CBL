@@ -213,7 +213,6 @@ grpsys COPY    "COMMON-SPA".
        000-PROC-SEC                SECTION.
       *
            PERFORM 100-INIT-SEC
-           DISPLAY "take prv1 flg = "  FLG-END
       *
            PERFORM 200-MAIN-SEC
                    UNTIL       FLG-END     =   1
@@ -261,8 +260,6 @@ grpsys COPY    "COMMON-SPA".
       *
            PERFORM 100-DBOPEN-SEC
       *
-           DISPLAY "take prv1 hosp = "    WRK-PARA-HOSPNUM 
-           DISPLAY "take prv1 err = "    RECEERR
       *    ステップ管理開始処理
            MOVE    "STS"               TO  SJOBKANRI-MODE
            INITIALIZE                  JOBKANRI-REC
@@ -273,15 +270,10 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
       *
       *    処理中止設定処理
            PERFORM 500-CANCEL-HENSYU-SEC
-      * For Debug st
-           DISPLAY "take can flg = "  FLG-END
-      *    MOVE ZERO TO      FLG-END
-      * For Debug ed
       *
            IF      FLG-END         =   ZERO
       *        印刷管理ＤＢ読み込み処理
                PERFORM 900-PRTKANRI-SELECT-SEC
-           DISPLAY "take no1 flg = "  FLG-END
       *
       *        プレビュー用前処理
                MOVE    ZERO            TO  WRK-MOJISU
@@ -295,14 +287,12 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
                            MOVE    1       TO  IDX
                        END-IF
                    END-PERFORM
-                   DISPLAY "delete cancel"
       *            PERFORM 900-PRVKANRI-DELETE-SEC
                  END-IF
                END-IF
       *
       *        プレビューDB履歴更新処理
                PERFORM 120-PRVKANRI-RRKUPD-SEC
-           DISPLAY "take no2 flg = "  FLG-END
            END-IF
       * For Debug st
       *    MOVE ZERO TO      FLG-END
@@ -397,7 +387,6 @@ grpsys         PERFORM 900-ORCDBMAIN-SEC
                                        OR      FLG-END      =   1   
       *        印刷ＤＢ編集処理
                PERFORM 900-PRTDATA-SELECT-SEC
-	   DISPLAY "take prtdata flg = "  FLG-END
                PERFORM                     UNTIL   FLG-PRTDATA  =   1
                                            OR      FLG-END      =   1
                    PERFORM 2001-PRTDATA-PRINT-SEC
@@ -463,7 +452,6 @@ grpsys         PERFORM 900-ORCDBMAIN-SEC
       *
       *  01.01.02  SATRT
            IF   WRK-PARA-PRTFLG        =   "2"  OR  "3"  OR  "4"
-             DISPLAY "takeda PRVKANRI-INS"
                 PERFORM 2004-PRVKANRI-INS-SEC
            END-IF
       *  01.01.02  END
@@ -536,7 +524,6 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
        900-PRVKANRI-DELETE-SEC        SECTION.
       *
       *    TBLキーセット
-           DISPLAY "BPRT DELETE KEY= " LNK-PRTKANRI-TBL-KEY
            MOVE    LNK-PRTKANRI-TBL-KEY
                                        TO  PRVKANRI-TBL-KEY
            MOVE    WRK-PARA-HOSPNUM    TO  PRVKANRI-HOSPNUM
@@ -614,7 +601,6 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
                GO  TO                  2004-PRVKANRI-INS-EXT
            END-IF
            MOVE    PRVKANRI-REC        TO  MCPDATA-REC
-           DISPLAY "take priority i = [" PRVKANRI-RECE-FLG "]"
            MOVE    "DBINSERT"          TO  MCP-FUNC
            MOVE    "tbl_prvkanri"      TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
@@ -709,6 +695,9 @@ grpsys                 PERFORM 900-CALL-ORCSJOB-SEC
       *****************************************************************
        300-END-SEC                 SECTION.
       *     
+      *    古い履歴の削除     
+           PERFORM 900-PRV-RRKDEL-SEC
+      *     
       *    ステップ管理終了処理
            MOVE    "STE"           TO  SJOBKANRI-MODE
            INITIALIZE                  JOBKANRI-REC
@@ -721,6 +710,101 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
            DISPLAY "*** ORCBPREV1 OUT "  CNT-OUT
            .
        300-END-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *   プレビュー管理DBの履歴削除 
+      *****************************************************************
+       900-PRV-RRKDEL-SEC              SECTION.
+      *
+      *        最新以外の帳票管理ＤＢを削除 LNK-PRTKANRI-TBL-KEY
+           IF      LNK-PRTKANRI-TBL-KEY     =   "RECEPTX"
+           OR      LNK-PRTKANRI-TBL-KEY     =   "ONLINE"
+                   GO    TO            900-PRV-RRKDEL-EXT
+           END-IF
+           MOVE    SPACE               TO  PRVKANRI-REC
+           INITIALIZE                  PRVKANRI-REC
+           MOVE    LNK-PRTKANRI-TBL-KEY     TO  PRVKANRI-TBL-KEY
+           MOVE    LNK-PRTKANRI-TBL-GROUP   TO  PRVKANRI-TBL-GROUP
+           MOVE    LNK-PRTKANRI-TBL-UUID    TO  PRVKANRI-TBL-UUID
+grpsys     MOVE    SPA-HOSPNUM         TO  PRVKANRI-HOSPNUM
+           MOVE    PRVKANRI-REC        TO  MCPDATA-REC
+           MOVE    "DBDELETE"          TO  MCP-FUNC
+           MOVE    "tbl_prvkanri"  TO  MCP-TABLE
+           MOVE    "del12"         TO  MCP-PATHNAME
+grpsys     PERFORM 900-ORCDBMAIN-SEC
+      *
+           OPEN    INPUT      PREVIEW-FILE
+           IF      STS-PREVIEW         =   ZERO
+                   PERFORM 900-IN-READ-SEC
+                   CLOSE   PREVIEW-FILE
+           ELSE
+                   MOVE    1              TO  FLG-IN
+           END-IF
+           MOVE    SPACE               TO  SPA-NAI-ENV
+           IF      FLG-IN      =   ZERO
+                   STRING  PREVIEW-ENV         DELIMITED  BY  SPACE
+                           "/"                 DELIMITED  BY  SPACE
+                                       INTO    SPA-NAI-ENV
+                   END-STRING
+           ELSE
+                   MOVE "/tmp/"
+                               TO  SPA-NAI-ENV
+           END-IF
+           MOVE "/tmp/"                TO  SPA-NAI-ENV
+      *
+           PERFORM VARYING     IDY     FROM    1   BY  1
+                       UNTIL       IDY     >       10
+      *      PERFORM VARYING   IDZ     FROM    1   BY  1
+      *                UNTIL       IDZ     >        5
+              IF  (WK-TBL-G(5)       NOT  =  SPACE)
+               IF (WK-TBL-G(5)       NOT  =  LNK-PRTKANRI-TBL-GROUP)
+                   MOVE  SPACE         TO  WRK-FILENAME
+                   STRING
+                      "/var/tmp/.orca_ps/" DELIMITED  BY  SPACE
+                      SPA-HOSPNUM         DELIMITED  BY  SPACE
+                      LNK-PRTKANRI-TBL-KEY
+                                          DELIMITED  BY  SPACE
+                      IDY                 DELIMITED  BY  SPACE
+                      WK-TBL-G(5)         DELIMITED  BY  SPACE
+                      "*"                 DELIMITED  BY  SPACE
+                                          INTO   WRK-FILENAME
+                   END-STRING
+                   MOVE    ZERO            TO  IF-RESULT
+                   MOVE    WRK-FILENAME
+                                           TO  IF-FILENAME
+                   MOVE  SPACE         TO  WRK-FILENAME1
+                   STRING
+                      SPA-NAI-ENV         DELIMITED  BY  SPACE
+                      SPA-HOSPNUM         DELIMITED  BY  SPACE
+                      LNK-PRTKANRI-TBL-KEY
+                                          DELIMITED  BY  SPACE
+                      IDY                 DELIMITED  BY  SPACE
+                      WK-TBL-G(5)         DELIMITED  BY  SPACE
+                      "*"                 DELIMITED  BY  SPACE
+                                          INTO   WRK-FILENAME1
+                   END-STRING
+               MOVE    SPACE           TO  SHELLTBL
+      *        ファイルデイレクトリ位置指定
+               INITIALIZE              ORCSMKPASSAREA
+               MOVE    "scripts/allways/orc_file_del.sh"
+                                       TO  MKPASS-IN-01
+               CALL    "ORCSMKPASS"    USING   ORCSMKPASSAREA
+               MOVE    MKPASS-OT-01    TO  SHELLTBL-NAME
+      *
+               MOVE    WRK-FILENAME    TO  SHELLTBL-ARG1
+               MOVE    WRK-FILENAME1   TO  SHELLTBL-ARG2
+               MOVE    SHELLTBL        TO  MCPDATA-REC
+               MOVE    "SHELL"         TO  MCP-FUNC
+               MOVE    "shell"         TO  MCP-TABLE
+               MOVE    "shell"         TO  MCP-PATHNAME
+grpsys         PERFORM 900-ORCDBMAIN-SEC
+               END-IF
+              END-IF
+      *      END-PERFORM
+           END-PERFORM
+           .
+       900-PRV-RRKDEL-EXT.
            EXIT.
       *
       *****************************************************************
@@ -750,11 +834,6 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
            MOVE    LNK-PRTKANRI-TBL-GROUP
                                        TO  PRTKANRI-TBL-GROUP
            MOVE    WRK-PARA-HOSPNUM    TO  PRTKANRI-HOSPNUM
-      *
-      *
-           DISPLAY "take tbl_key = "    LNK-PRTKANRI-TBL-KEY
-           DISPLAY "take tbl_group = "  LNK-PRTKANRI-TBL-GROUP
-           DISPLAY "take hospnum   = "  PRTKANRI-HOSPNUM
       *
       *
            MOVE    PRTKANRI-REC        TO  MCPDATA-REC
@@ -787,10 +866,8 @@ grpsys     PERFORM 900-DBSELECT-SEC
                MOVE    "key"               TO  MCP-PATHNAME
 grpsys         PERFORM 900-DBFETCH-SEC
                IF      MCP-RC              =   ZERO
-             DISPLAY "take fetch ok"
                    MOVE    ZERO                TO  FLG-PREVIEW
                ELSE  
-             DISPLAY "take fetch ng"
                    MOVE    1                   TO  FLG-PREVIEW
                END-IF 
            ELSE 
