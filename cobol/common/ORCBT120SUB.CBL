@@ -27,6 +27,7 @@
       *****************************************************************
       *  ¥×¥í¥°¥é¥à½¤ÀµÍúÎò
       * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      *  03.05.01    NACL-¾®Æ¦Âô  07/05/31  ¥°¥ë¡¼¥×¿ÇÎÅÂÐ±þ
       *****************************************************************
       *
       *
@@ -178,6 +179,7 @@
       *
        PROCEDURE                   DIVISION    USING
             ORCBT120SUB-AREA
+            SPA-AREA
            .
       *
       *****************************************************************
@@ -221,7 +223,7 @@
       *
       *    ´µ¼Ô¥Þ¥¹¥¿¡¼¸¡º÷
            INITIALIZE                      PTINF-REC
-           MOVE    LNK-ORCBT120SUB-HOSPID   TO  PTINF-HOSPID
+           MOVE    LNK-ORCBT120SUB-HOSPNUM  TO  PTINF-HOSPNUM
            MOVE    LNK-ORCBT120SUB-PTID     TO  PTINF-PTID
            PERFORM 900-PTINF-READ-SEC
            IF      FLG-PTINF           NOT =   ZERO
@@ -239,7 +241,7 @@
       *
       *    Æþ±¡Ãæ¤Î¥Á¥§¥Ã¥¯¡ÊÆþ±¡²ñ·×¥Þ¥¹¥¿¡¼¸¡º÷¡Ë
            INITIALIZE                      NYUINACCT-REC
-           MOVE    LNK-ORCBT120SUB-HOSPID  TO  NACCT-HOSPID
+           MOVE    LNK-ORCBT120SUB-HOSPNUM TO  NACCT-HOSPNUM
            MOVE    LNK-ORCBT120SUB-PTID    TO  NACCT-PTID
            MOVE    LNK-ORCBT120SUB-SANTEIYMD(1:6)
                                            TO  NACCT-SRYYM
@@ -279,7 +281,7 @@
       *Æþ±¡²Ê¡¿ÆþÂà±¡¶èÊ¬¡¿ÉÂÅïÈÖ¹æ¡¿ÉÂ¼¼ÈÖ¹æ¡¿Âà±¡»öÍ³¡¿¥É¥¯¥¿¡¼¤Î¼èÆÀ
            MOVE    ZERO                     TO  FLG-NYUIN-HIT1
            INITIALIZE                           PTNYUINRRK-REC
-           MOVE    LNK-ORCBT120SUB-HOSPID   TO  PTNYUINRRK-HOSPID
+           MOVE    LNK-ORCBT120SUB-HOSPNUM  TO  PTNYUINRRK-HOSPNUM
            MOVE    LNK-ORCBT120SUB-PTID     TO  PTNYUINRRK-PTID
            MOVE    "PTNYUINRRK-KEY3"        TO  ORC-DBPATH
            PERFORM 910-PTNYUINRRK-SELECT-SEC
@@ -346,7 +348,7 @@
            MOVE    LNK-DAY6-KEISAN          TO  WRK-MAE-SANTEIYMD
       *    Æþ±¡ÍúÎò¤Î¸¡º÷
            INITIALIZE                           PTNYUINRRK-REC
-           MOVE    LNK-ORCBT120SUB-HOSPID   TO  PTNYUINRRK-HOSPID
+           MOVE    LNK-ORCBT120SUB-HOSPNUM  TO  PTNYUINRRK-HOSPNUM
            MOVE    LNK-ORCBT120SUB-PTID     TO  PTNYUINRRK-PTID
            MOVE    "PTNYUINRRK-KEY3"        TO  ORC-DBPATH
            PERFORM 910-PTNYUINRRK-SELECT-SEC
@@ -390,22 +392,14 @@
                                        TO  SYS-1005-KBNCD
            MOVE    LNK-ORCBT120SUB-SANTEIYMD
                                        TO  ORC-DBYMD
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE SPA-HOSPNUM            TO  SYS-1005-HOSPNUM
            MOVE    SYS-1005-REC        TO  MCPDATA-REC
       *
-           MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"         USING
-                                       MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC
+           PERFORM   900-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
-               MOVE    "DBFETCH"           TO  MCP-FUNC
                MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
-               CALL    "ORCMCPSUB"         USING
-                                           MCPAREA
-                                           ORCMCPAREA
-                                           MCPDATA-REC
+               PERFORM   900-DBFETCH-SEC
                IF      MCP-RC              =   ZERO
                    MOVE    ZERO                TO  FLG-SYSKANRI
                    MOVE    MCPDATA-REC         TO  SYS-1005-REC
@@ -428,22 +422,14 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                                        TO  SYS-1005-KBNCD
            MOVE    LNK-ORCBT120SUB-SANTEIYMD
                                        TO  ORC-DBYMD
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  SYS-1005-HOSPNUM
            MOVE    SYS-1005-REC        TO  MCPDATA-REC
       *
-           MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"         USING
-                                       MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC
+           PERFORM   900-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
-               MOVE    "DBFETCH"           TO  MCP-FUNC
                MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
-               CALL    "ORCMCPSUB"         USING
-                                           MCPAREA
-                                           ORCMCPAREA
-                                           MCPDATA-REC
+               PERFORM   900-DBFETCH-SEC
                IF      MCP-RC              =   ZERO
                    MOVE    ZERO                TO  FLG-SYSKANRI
                    MOVE    MCPDATA-REC         TO  SYS-1005-REC
@@ -460,7 +446,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *
       *Æþ±¡»þ¤Î³°Çñ¼èÆÀ
            INITIALIZE                          NYUINACCT-REC
-           MOVE    LNK-ORCBT120SUB-HOSPID  TO  NACCT-HOSPID
+           MOVE    LNK-ORCBT120SUB-HOSPNUM TO  NACCT-HOSPNUM
            MOVE    LNK-ORCBT120SUB-PTID    TO  NACCT-PTID
            MOVE    LNK-ORCBT120SUB-SANTEIYMD(1:6)
                                            TO  NACCT-SRYYM
@@ -482,7 +468,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                CONTINUE
            ELSE
                INITIALIZE                          NYUINACCT-REC
-               MOVE    LNK-ORCBT120SUB-HOSPID  TO  NACCT-HOSPID
+               MOVE    LNK-ORCBT120SUB-HOSPNUM TO  NACCT-HOSPNUM
                MOVE    LNK-ORCBT120SUB-PTID    TO  NACCT-PTID
                MOVE    LNK-ORCBT120SUB-SANTEIYMD(1:6)
                                                TO  NACCT-SRYYM
@@ -502,7 +488,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *    ¼ýÇ¼¾ðÊó¤Î¼èÆÀ
            MOVE    ZERO                     TO  SYU-IDX
            INITIALIZE                           SYUNOU-REC
-           MOVE    LNK-ORCBT120SUB-HOSPID   TO  SYU-HOSPID
+           MOVE    LNK-ORCBT120SUB-HOSPNUM  TO  SYU-HOSPNUM
            MOVE    "1"                      TO  SYU-NYUGAIKBN
            MOVE    LNK-ORCBT120SUB-PTID     TO  SYU-PTID
            MOVE    "SYUNOU-KEY2"            TO  ORC-DBPATH
@@ -530,7 +516,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *    ÊÝ¸±ÁÈ¹ç¤»ÈÖ¹æ¤Î¼èÆÀ¡Ê¼ýÇ¼¤¬Ìµ¤¤¾ì¹ç¤ËÆþ±¡²ñ·×¤«¤é¼èÆÀ¡Ë
            IF    LNK-ORCBT120SUB-HKNCOMBINUM(1)    =   ZERO
                INITIALIZE                          NYUINACCT-REC
-               MOVE    LNK-ORCBT120SUB-HOSPID  TO  NACCT-HOSPID
+               MOVE    LNK-ORCBT120SUB-HOSPNUM TO  NACCT-HOSPNUM
                MOVE    LNK-ORCBT120SUB-PTID    TO  NACCT-PTID
                MOVE    LNK-ORCBT120SUB-SANTEIYMD(1:6)
                                                TO  NACCT-SRYYM
@@ -554,8 +540,8 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
              UNTIL   (LNK-ORCBT120SUB-HKNCOMBINUM(SYU-IDX) = ZERO) OR
                      (SYU-IDX     >     10)
                INITIALIZE                      HKNCOMBI-REC
-               MOVE    LNK-ORCBT120SUB-HOSPID
-                                        TO     COMB-HOSPID
+               MOVE    LNK-ORCBT120SUB-HOSPNUM
+                                        TO     COMB-HOSPNUM
                MOVE    LNK-ORCBT120SUB-PTID
                                         TO      COMB-PTID
                MOVE    LNK-ORCBT120SUB-HKNCOMBINUM(SYU-IDX)
@@ -689,8 +675,8 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
        220-HKNJANUM-SET-SEC         SECTION.
       *
            INITIALIZE                      PTHKNINF-REC
-           MOVE    LNK-ORCBT120SUB-HOSPID
-                                    TO     PTHKN-HOSPID
+           MOVE    LNK-ORCBT120SUB-HOSPNUM
+                                    TO     PTHKN-HOSPNUM
            MOVE    LNK-ORCBT120SUB-PTID
                                     TO     PTHKN-PTID
            MOVE    COMB-HKNID       TO     PTHKN-HKNID
@@ -718,8 +704,8 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
        230-PTRSIINF-SET-SEC         SECTION.
       *
            INITIALIZE                      PTRSIINF-REC
-           MOVE    LNK-ORCBT120SUB-HOSPID
-                                    TO     PTRSI-HOSPID
+           MOVE    LNK-ORCBT120SUB-HOSPNUM
+                                    TO     PTRSI-HOSPNUM
            MOVE    LNK-ORCBT120SUB-PTID
                                     TO     PTRSI-PTID
            MOVE    COMB-HKNID       TO     PTRSI-HKNID
@@ -794,14 +780,14 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            END-IF
       *    Ç¯Îð·×»»
            INITIALIZE                      PTINF-REC
-           MOVE    LNK-ORCBT120SUB-HOSPID
-                                       TO  PTINF-HOSPID
+           MOVE    LNK-ORCBT120SUB-HOSPNUM
+                                       TO  PTINF-HOSPNUM
            MOVE    LNK-ORCBT120SUB-PTID
                                        TO  PTINF-PTID
            PERFORM    900-PTINF-READ-SEC
            INITIALIZE                  ORCSAGECHKAREA
-           MOVE    LNK-ORCBT120SUB-HOSPID
-                                       TO  AGECHK-HOSPID
+           MOVE    LNK-ORCBT120SUB-HOSPNUM
+                                       TO  AGECHK-HOSPNUM
            MOVE    LNK-ORCBT120SUB-PTID
                                        TO  AGECHK-PTID
            MOVE    LNK-ORCBT120SUB-SANTEIYMD
@@ -1450,11 +1436,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *****************************************************************
        910-SYSKANRI-READ-SEC         SECTION.
       *
-           MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           PERFORM   900-DBFETCH-SEC
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC         TO  SYS-5000-REC
                MOVE    ZERO                TO  FLG-SYSKANRI
@@ -1472,21 +1454,12 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *****************************************************************
        900-PTINF-READ-SEC         SECTION.
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PTINF-REC           TO  MCPDATA-REC
-           MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "PTINF-KEY"         TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"             USING
-                                           MCPAREA
-                                           ORCMCPAREA
-                                           MCPDATA-REC
+           PERFORM   900-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
-               MOVE    "DBFETCH"       TO  MCP-FUNC
                MOVE    "PTINF-KEY"         TO  ORC-DBPATH
-               CALL    "ORCMCPSUB"         USING
-                                           MCPAREA
-                                           ORCMCPAREA
-                                           MCPDATA-REC
+               PERFORM   900-DBFETCH-SEC
                IF      MCP-RC          =   ZERO
                    MOVE    MCPDATA-REC TO  PTINF-REC
                    MOVE    ZERO        TO  FLG-PTINF
@@ -1511,13 +1484,8 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *****************************************************************
        910-NYUINACCT-SELECT-SEC        SECTION.
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    NYUINACCT-REC       TO  MCPDATA-REC
-           MOVE    "DBSELECT"          TO  MCP-FUNC
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           PERFORM   900-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
                MOVE    ZERO               TO  FLG-NYUINACCT
            ELSE
@@ -1533,11 +1501,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *****************************************************************
        910-NYUINACCT-READ-SEC        SECTION.
       *
-           MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           PERFORM   900-DBFETCH-SEC
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC        TO  NYUINACCT-REC
                MOVE    ZERO               TO  FLG-NYUINACCT
@@ -1551,61 +1515,12 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    Æþ±¡¿ÇÎÅ¹Ô°Ù¥Þ¥¹¥¿¡¼¸¡º÷
-      *****************************************************************
-       910-NYUINACT-SELECT-SEC        SECTION.
-      *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
-           MOVE    NYUINACT-REC        TO  MCPDATA-REC
-           MOVE    "DBSELECT"          TO  MCP-FUNC
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
-           IF      MCP-RC              =   ZERO
-               MOVE    ZERO               TO  FLG-NYUINACT
-           ELSE
-               MOVE    1                  TO  FLG-NYUINACT
-           END-IF
-      *
-           .
-       910-NYUINACT-SELECT-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    Æþ±¡¿ÇÎÅ¹Ô°Ù¥Þ¥¹¥¿¡¼ÆÉ¹þ
-      *****************************************************************
-       910-NYUINACT-READ-SEC         SECTION.
-      *
-           MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
-           IF      MCP-RC              =   ZERO
-               MOVE    MCPDATA-REC         TO  NYUINACT-REC
-               MOVE    ZERO                TO  FLG-NYUINACT
-           ELSE
-               INITIALIZE                      NYUINACT-REC
-               MOVE    1                   TO  FLG-NYUINACT
-           END-IF
-      *
-           .
-       910-NYUINACT-READ-EXT.
-           EXIT.
-      *
-      *****************************************************************
       *    ÊÝ¸±ÁÈ¹ç¤»¥Þ¥¹¥¿¡¼¸¡º÷
       *****************************************************************
        910-HKNCOMBI-SELECT-SEC        SECTION.
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    HKNCOMBI-REC        TO  MCPDATA-REC
-           MOVE    "DBSELECT"          TO  MCP-FUNC
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           PERFORM   900-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
                MOVE    ZERO               TO  FLG-HKNCOMBI
            ELSE
@@ -1621,11 +1536,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *****************************************************************
        910-HKNCOMBI-READ-SEC         SECTION.
       *
-           MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           PERFORM   900-DBFETCH-SEC
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC         TO  HKNCOMBI-REC
                MOVE    ZERO                TO  FLG-HKNCOMBI
@@ -1643,13 +1554,8 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *****************************************************************
        910-PTNYUINRRK-SELECT-SEC        SECTION.
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PTNYUINRRK-REC      TO  MCPDATA-REC
-           MOVE    "DBSELECT"          TO  MCP-FUNC
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           PERFORM   900-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
                MOVE    ZERO               TO  FLG-PTNYUINRRK
            ELSE
@@ -1665,11 +1571,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *****************************************************************
        910-PTNYUINRRK-READ-SEC        SECTION.
       *
-           MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           PERFORM   900-DBFETCH-SEC
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC        TO  PTNYUINRRK-REC
                MOVE    ZERO               TO  FLG-PTNYUINRRK
@@ -1687,13 +1589,8 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *****************************************************************
        910-SYUNOU-SELECT-SEC        SECTION.
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYUNOU-REC          TO  MCPDATA-REC
-           MOVE    "DBSELECT"          TO  MCP-FUNC
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           PERFORM   900-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
                MOVE    ZERO               TO  FLG-SYUNOU
            ELSE
@@ -1709,11 +1606,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *****************************************************************
        910-SYUNOU-READ-SEC        SECTION.
       *
-           MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           PERFORM   900-DBFETCH-SEC
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC        TO  SYUNOU-REC
                MOVE    ZERO               TO  FLG-SYUNOU
@@ -1731,13 +1624,8 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *****************************************************************
        910-PTHKNINF-SELECT-SEC        SECTION.
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PTHKNINF-REC        TO  MCPDATA-REC
-           MOVE    "DBSELECT"          TO  MCP-FUNC
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           PERFORM   900-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
                MOVE    ZERO               TO  FLG-PTHKNINF
            ELSE
@@ -1753,11 +1641,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *****************************************************************
        910-PTHKNINF-READ-SEC        SECTION.
       *
-           MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           PERFORM   900-DBFETCH-SEC
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC        TO  PTHKNINF-REC
                MOVE    ZERO               TO  FLG-PTHKNINF
@@ -1775,13 +1659,8 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *****************************************************************
        910-PTRSIINF-SELECT-SEC        SECTION.
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PTRSIINF-REC        TO  MCPDATA-REC
-           MOVE    "DBSELECT"          TO  MCP-FUNC
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           PERFORM   900-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
                MOVE    ZERO               TO  FLG-PTRSIINF
            ELSE
@@ -1797,11 +1676,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *****************************************************************
        910-PTRSIINF-READ-SEC        SECTION.
       *
-           MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           PERFORM   900-DBFETCH-SEC
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC        TO  PTRSIINF-REC
                MOVE    ZERO               TO  FLG-PTRSIINF
@@ -1813,6 +1688,48 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            .
        910-PTRSIINF-READ-EXT.
            EXIT.
+      *****************************************************************
+      *    £Ä£Â£Ó£Å£Ì£Å£Ã£Ô½èÍý
+      *****************************************************************
+       900-DBSELECT-SEC                SECTION.
+      *
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           PERFORM 900-ORCDBMAIN-SEC
+           IF      MCP-RC              =   ZERO
+               CONTINUE
+           ELSE
+               DISPLAY "SELECT ERR table=" MCP-TABLE
+                       " pathname="        MCP-PATHNAME
+           END-IF
+           .
+       900-DBSELECT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    £Ä£Â£Æ£Å£Ô£Ã£È½èÍý
+      *****************************************************************
+       900-DBFETCH-SEC                SECTION.
+      *
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           PERFORM 900-ORCDBMAIN-SEC
+      *
+           .
+       900-DBFETCH-EXT.
+           EXIT.
+      *
+      *
+      *****************************************************************
+      *    ¥Æ¡¼¥Ö¥ë¥¢¥¯¥»¥¹½èÍý
+      *****************************************************************
+       900-ORCDBMAIN-SEC               SECTION.
+      *
+           CALL    "ORCDBMAIN"     USING   MCPAREA
+                                           MCPDATA-REC
+                                           SPA-AREA
+           .
+      *
+       900-ORCDBMAIN-EXT.
+           EXIT.
       *
       *****************************************************************
       *    £Ä£Â¥¯¥í¡¼¥º½èÍý
@@ -1820,10 +1737,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
        910-DB-CLOSE-SEC                 SECTION.
       *
            MOVE    "DBCLOSECURSOR"      TO  MCP-FUNC
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           PERFORM    900-ORCDBMAIN-SEC
       *
            .
       *
