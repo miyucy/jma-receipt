@@ -36,6 +36,7 @@
       *  02.09.01    NACL-ÌçÏÆ    06/04/13  £²£°£°£¶Ç¯£´·î²þÀµÂÐ±þ
       *  02.09.02    NACL-ÌçÏÆ    06/04/26  µßµÞ°åÎÅ´ÉÍý²Ã»»¥³¥á¥ó¥ÈÊÔ½¸½¤Àµ
       *  03.04.01    NACL-ÌçÏÆ    06/12/01  ¼«ÇåÀÕ·òÊÝ½àµòÂÐ±þ
+      *  03.05.01    NACL-ÌçÏÆ    07/05/25  ¥°¥ë¡¼¥×¿ÇÎÅÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -129,33 +130,30 @@
        01  RECEERR-REC             PIC X(200). 
       *
        WORKING-STORAGE             SECTION.
-      *
       *     ¥ì¥»¥×¥ÈÌÀºÙ¥Õ¥¡¥¤¥ë Ì¾¾ÎÎÎ°è 
-           COPY    "CPCOMMONDAT2.INC"
-                                   REPLACING  //RECE01//
+           COPY    "CPRECEDAT1.INC"
+                                   REPLACING  //RECEDAT1//
                                    BY         //RECE41//.
       *
-           COPY    "CPCOMMONDAT2.INC"
-                                   REPLACING  //RECE01//
+           COPY    "CPRECEDAT1.INC"
+                                   REPLACING  //RECEDAT1//
                                    BY         //RECE44//.
       *
-           COPY    "CPCOMMONDAT2.INC"
-                                   REPLACING  //RECE01//
+           COPY    "CPRECEDAT1.INC"
+                                   REPLACING  //RECEDAT1//
                                    BY         //RECE45//.
       *
-           COPY    "CPCOMMONDAT2.INC"
-                                   REPLACING  //RECE01//
+           COPY    "CPRECEDAT1.INC"
+                                   REPLACING  //RECEDAT1//
                                    BY         //RECE441//.
       *
-           COPY    "CPCOMMONDAT2.INC"
-                                   REPLACING  //RECE01//
+           COPY    "CPRECEDAT1.INC"
+                                   REPLACING  //RECEDAT1//
                                    BY         //RECE451//.
       *
       *    ¥¨¥é¡¼¥Õ¥¡¥¤¥ë Ì¾¾ÎÎÎ°è 
-           COPY    "CPCOMMONDAT2.INC"
-                                   REPLACING  //RECE01PARA//
+           COPY    "CPERRFL.INC"   REPLACING  //ERRFLPARA//
                                    BY         //RECEERR//.
-           03  FILLER              PIC X(04)   VALUE   ".dat".
       *
       *    ¥Õ¥é¥°ÎÎ°è
        01  STS-AREA.
@@ -199,6 +197,7 @@
                05  WRK-PARA-RECEKBN            PIC  X(01).
                05  WRK-PARA-JOBID              PIC  9(07).
                05  WRK-PARA-SHELLID            PIC  X(08).
+           03  WRK-PARA-HOSPNUM                PIC  9(02).
       *
            03  WRK-RECEERR         PIC X(200).
            03  WRK-RENNUM          PIC 9(02).
@@ -309,7 +308,6 @@
       *
       *    £Ä£Â¸¡º÷
            COPY    "MCPDATA.INC".
-           COPY    "CPORCMCP.INC".
       *
       ****************************************************************
        LINKAGE                 SECTION.
@@ -343,6 +341,7 @@
            INITIALIZE                  STS-AREA
            INITIALIZE                  WRK-AREA
            INITIALIZE                  CNT-AREA
+           INITIALIZE                  SPA-AREA
       *
       *    ¥Õ¥¡¥¤¥ë£Ï£Ð£Å£Î½èÍý
       *
@@ -352,15 +351,10 @@
       *    ¥¹¥Æ¥Ã¥×´ÉÍý³«»Ï½èÍý
            MOVE    "STS"           TO  SJOBKANRI-MODE
            INITIALIZE                  JOBKANRI-REC
-           MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
-           MOVE    WRK-PARA-SHELLID
-                                   TO  JOB-SHELLID
            MOVE    "ORCR0435"      TO  JOB-PGID
            MOVE    "¥³¥á¥ó¥ÈÊÔ½¸£²¡ÊÏ«ºÒ¡¦¼«ÇåÀÕ¡Ë"
-                                   TO  JOB-SHELLMSG   
-           CALL    "ORCSJOB"       USING
-                                   ORCSJOBKANRIAREA  
-                                   JOBKANRI-REC
+                                   TO  JOB-SHELLMSG
+grpsys     PERFORM 900-CALL-ORCSJOB-SEC
       *    ½èÍýÃæ»ßÀßÄê½èÍý
            PERFORM 500-CANCEL-HENSYU-SEC
       *
@@ -374,25 +368,32 @@
       *****************************************************************
        110-FILE-OPEN-SEC          SECTION.
       *
-           MOVE    COMMAND-PARAM       TO  WRK-PARA
+           UNSTRING    COMMAND-PARAM   DELIMITED  BY  ","
+                                       INTO    WRK-PARA
+                                               WRK-PARA-HOSPNUM
+                                               RECEERR
+           END-UNSTRING
+           MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
       *
            MOVE    "RECE410"           TO  RECE41PARA-FILE-ID
            MOVE    WRK-PARA-TERMID     TO  RECE41PARA-TERMID
+grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE41PARA-HOSPNUM
       *
            MOVE    "RECE44X"           TO  RECE44PARA-FILE-ID
            MOVE    WRK-PARA-TERMID     TO  RECE44PARA-TERMID
+grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE44PARA-HOSPNUM
       *
            MOVE    "RECE451"           TO  RECE45PARA-FILE-ID
            MOVE    WRK-PARA-TERMID     TO  RECE45PARA-TERMID
+grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE45PARA-HOSPNUM
       *
            MOVE    "RECE44B"           TO  RECE441PARA-FILE-ID
            MOVE    WRK-PARA-TERMID     TO  RECE441PARA-TERMID
+grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE441PARA-HOSPNUM
       *
            MOVE    "RECE45B"           TO  RECE451PARA-FILE-ID
            MOVE    WRK-PARA-TERMID     TO  RECE451PARA-TERMID
-      *
-           MOVE    "RECEERR"           TO  RECEERR-FILE-ID
-           MOVE    WRK-PARA-TERMID     TO  RECEERR-TERMID
+grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE451PARA-HOSPNUM
       *
            OPEN    INPUT               RECE41-FILE
       *
@@ -420,7 +421,7 @@
        200-MAIN-SEC                SECTION.
       *
            INITIALIZE                      RECE44-REC
-           MOVE    RECE41-HOSPID       TO  RECE44-HOSPID
+           MOVE    RECE41-HOSPNUM      TO  RECE44-HOSPNUM
            MOVE    RECE41-SRYYM        TO  RECE44-SRYYM
            MOVE    RECE41-NYUGAIKBN    TO  RECE44-NYUGAIKBN
            MOVE    RECE41-PTID         TO  RECE44-PTID
@@ -439,7 +440,7 @@
            PERFORM
                UNTIL  ( FLG-END              =   1                   )
                OR     ( FLG-RECE44           =   1                   )
-               OR     ( RECE41-HOSPID    NOT =   RECE44-HOSPID       )
+               OR     ( RECE41-HOSPNUM   NOT =   RECE44-HOSPNUM      )
                OR     ( RECE41-SRYYM     NOT =   RECE44-SRYYM        )
                OR     ( RECE41-NYUGAIKBN NOT =   RECE44-NYUGAIKBN    )
                OR     ( RECE41-PTID      NOT =   RECE44-PTID         )
@@ -553,7 +554,7 @@
            ADD        1             TO   CNT-RECE44
       *
            INITIALIZE                      RECE45-REC
-           MOVE    RECE44-HOSPID       TO  RECE45-HOSPID
+           MOVE    RECE44-HOSPNUM      TO  RECE45-HOSPNUM
            MOVE    RECE44-SRYYM        TO  RECE45-SRYYM
            MOVE    RECE44-NYUGAIKBN    TO  RECE45-NYUGAIKBN
            MOVE    RECE44-PTID         TO  RECE45-PTID
@@ -617,31 +618,26 @@
              MOVE    "1005"              TO  SYS-1005-KANRICD
              MOVE    RECE44-SYODOU-SRYKA(IDX)
                                          TO  SYS-1005-KBNCD
-             MOVE    RECE41-SRYYM        TO  ORC-DBYMD(1:6)
-             MOVE    "01"                TO  ORC-DBYMD(7:2)
-grpsys*      MOVE SPA-HOSPNUM TO -HOSPNUM
+             MOVE    RECE41-SRYYM        TO  SYS-1005-STYUKYMD(1:6)
+             MOVE    "01"                TO  SYS-1005-STYUKYMD(7:2)
+             MOVE    SYS-1005-STYUKYMD   TO  SYS-1005-EDYUKYMD
+grpsys       MOVE    SPA-HOSPNUM         TO  SYS-1005-HOSPNUM
              MOVE    SYS-1005-REC        TO  MCPDATA-REC
-             MOVE    "DBSELECT"          TO  MCP-FUNC
-             MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
-             CALL    "ORCMCPSUB"         USING   MCPAREA
-                                                 ORCMCPAREA
-                                                 MCPDATA-REC
+             MOVE    "tbl_syskanri"      TO  MCP-TABLE
+             MOVE    "key10"             TO  MCP-PATHNAME
+grpsys       PERFORM 900-DBSELECT-SEC
              IF      MCP-RC              =   ZERO
-               MOVE    "SYSKANRI-KEY"    TO  ORC-DBPATH
+               MOVE    "tbl_syskanri"    TO  MCP-TABLE
+               MOVE    "key10"           TO  MCP-PATHNAME
                PERFORM  900-SYSKANRI-READ-SEC
                IF      FLG-SYSKANRI      =   ZERO
                   MOVE  SYS-1005-SRYKANAME(1:40)
                                          TO  WK-FREE-NAME2(IDZ)(17:40)
                END-IF
              END-IF
-      *
-             INITIALIZE                        MCPAREA
-             MOVE    "DBCLOSECURSOR"   TO      MCP-FUNC
-             MOVE    "SYSKANRI-KEY"    TO      ORC-DBPATH
-             CALL    "ORCMCPSUB"       USING
-                                       MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC
+             MOVE    "tbl_syskanri"      TO  MCP-TABLE
+             MOVE    "key10"             TO  MCP-PATHNAME
+             PERFORM 900-CLOSE-SEC
       *
              PERFORM   VARYING   IDW   FROM   200   BY  -1
                         UNTIL    IDW   <   1
@@ -654,7 +650,7 @@ grpsys*      MOVE SPA-HOSPNUM TO -HOSPNUM
            END-PERFORM
       *
            INITIALIZE                      RECE45-REC
-           MOVE    RECE44-HOSPID       TO  RECE45-HOSPID
+           MOVE    RECE44-HOSPNUM      TO  RECE45-HOSPNUM
            MOVE    RECE44-SRYYM        TO  RECE45-SRYYM
            MOVE    RECE44-NYUGAIKBN    TO  RECE45-NYUGAIKBN
            MOVE    RECE44-PTID         TO  RECE45-PTID
@@ -694,7 +690,7 @@ grpsys*      MOVE SPA-HOSPNUM TO -HOSPNUM
       *
            PERFORM
              UNTIL  ( FLG-RECE45           =   1                   )
-             OR     ( RECE44-HOSPID    NOT =   RECE45-HOSPID       )
+             OR     ( RECE44-HOSPNUM   NOT =   RECE45-HOSPNUM      )
              OR     ( RECE44-SRYYM     NOT =   RECE45-SRYYM        )
              OR     ( RECE44-NYUGAIKBN NOT =   RECE45-NYUGAIKBN    )
              OR     ( RECE44-PTID      NOT =   RECE45-PTID         )
@@ -769,7 +765,7 @@ grpsys*      MOVE SPA-HOSPNUM TO -HOSPNUM
        2002-RECE45-TENSOU-SEC     SECTION.
       *
            INITIALIZE                      RECE45-REC
-           MOVE    RECE44-HOSPID       TO  RECE45-HOSPID
+           MOVE    RECE44-HOSPNUM      TO  RECE45-HOSPNUM
            MOVE    RECE44-SRYYM        TO  RECE45-SRYYM
            MOVE    RECE44-NYUGAIKBN    TO  RECE45-NYUGAIKBN
            MOVE    RECE44-PTID         TO  RECE45-PTID
@@ -786,7 +782,7 @@ grpsys*      MOVE SPA-HOSPNUM TO -HOSPNUM
            END-START
            PERFORM
                UNTIL  ( FLG-RECE45           =   1                   )
-               OR     ( RECE44-HOSPID    NOT =   RECE45-HOSPID       )
+               OR     ( RECE44-HOSPNUM   NOT =   RECE45-HOSPNUM      )
                OR     ( RECE44-SRYYM     NOT =   RECE45-SRYYM        )
                OR     ( RECE44-NYUGAIKBN NOT =   RECE45-NYUGAIKBN    )
                OR     ( RECE44-PTID      NOT =   RECE45-PTID         )
@@ -818,12 +814,7 @@ grpsys*      MOVE SPA-HOSPNUM TO -HOSPNUM
       *    ¥¹¥Æ¥Ã¥×´ÉÍý½ªÎ»½èÍý
            MOVE    "STE"           TO  SJOBKANRI-MODE
            INITIALIZE                  JOBKANRI-REC
-           MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
-           MOVE    WRK-PARA-SHELLID
-                                   TO  JOB-SHELLID
-           CALL    "ORCSJOB"       USING
-                                   ORCSJOBKANRIAREA  
-                                   JOBKANRI-REC
+grpsys     PERFORM 900-CALL-ORCSJOB-SEC
       *
            PERFORM 900-DBDISCONNECT-SEC
       *
@@ -847,8 +838,8 @@ grpsys*      MOVE SPA-HOSPNUM TO -HOSPNUM
       *
            CLOSE                       RECE45-FILE
       *
-           CLOSE                       RECE441-FILE     
-           CLOSE                       RECE451-FILE     
+           CLOSE                       RECE441-FILE
+           CLOSE                       RECE451-FILE
       *
            .
        310-FILE-CLOSE-EXT.
@@ -872,14 +863,9 @@ grpsys*      MOVE SPA-HOSPNUM TO -HOSPNUM
       *        ¥¸¥ç¥Ö´ÉÍý³«»Ï½èÍý
                MOVE    "JBE"           TO  SJOBKANRI-MODE
                INITIALIZE                  JOBKANRI-REC
-               MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
-               MOVE    WRK-PARA-SHELLID
-                                       TO  JOB-SHELLID
                MOVE    WRK-RECEERR     TO  JOB-YOBI
                MOVE    "9999"          TO  JOB-ERRCD
-               CALL    "ORCSJOB"       USING
-                                       ORCSJOBKANRIAREA  
-                                       JOBKANRI-REC
+grpsys         PERFORM 900-CALL-ORCSJOB-SEC
            END-IF
       *                             
            MOVE    1                   TO  FLG-END
@@ -895,12 +881,7 @@ grpsys*      MOVE SPA-HOSPNUM TO -HOSPNUM
       *
            MOVE    "CHK"           TO  SJOBKANRI-MODE
            INITIALIZE                  JOBKANRI-REC
-           MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
-           MOVE    WRK-PARA-SHELLID
-                                   TO  JOB-SHELLID
-           CALL    "ORCSJOB"       USING
-                                   ORCSJOBKANRIAREA  
-                                   JOBKANRI-REC
+grpsys     PERFORM 900-CALL-ORCSJOB-SEC
            IF    ( SJOBKANRI-RETURN
                                    =   ZERO )
            AND   ( JOB-STOPFLG     =   1    )
@@ -920,15 +901,10 @@ grpsys*      MOVE SPA-HOSPNUM TO -HOSPNUM
       *            ¥¸¥ç¥Ö´ÉÍý½ªÎ»½èÍý
                    MOVE    "CAN"           TO  SJOBKANRI-MODE
                    INITIALIZE                  JOBKANRI-REC
-                   MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
-                   MOVE    WRK-PARA-SHELLID
-                                           TO  JOB-SHELLID
                    MOVE    WRK-RECEERR     TO  JOB-YOBI
                    MOVE    "8888"          TO  JOB-ERRCD
                    MOVE    2               TO  JOB-STOPFLG
-                   CALL    "ORCSJOB"       USING
-                                           ORCSJOBKANRIAREA  
-                                           JOBKANRI-REC
+grpsys             PERFORM 900-CALL-ORCSJOB-SEC
                END-IF
       *                             
                MOVE    1                   TO  FLG-END
@@ -995,11 +971,7 @@ grpsys*      MOVE SPA-HOSPNUM TO -HOSPNUM
       *****************************************************************
        900-SYSKANRI-READ-SEC         SECTION.
       *
-           MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+grpsys     PERFORM 900-DBFETCH-SEC
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC     TO  SYS-1005-REC
                MOVE    ZERO            TO  FLG-SYSKANRI
@@ -1013,21 +985,90 @@ grpsys*      MOVE SPA-HOSPNUM TO -HOSPNUM
            EXIT.
       *
       *****************************************************************
+      *    ¥¸¥ç¥Ö´ÉÍý£Ä£ÂÀ©¸æ½èÍý
+      *****************************************************************
+       900-CALL-ORCSJOB-SEC            SECTION.
+      *
+           MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
+           MOVE    WRK-PARA-SHELLID
+                                   TO  JOB-SHELLID
+grpsys     MOVE    SPA-HOSPNUM     TO  JOB-HOSPNUM
+           CALL    "ORCSJOB"       USING
+                                   ORCSJOBKANRIAREA 
+                                   JOBKANRI-REC
+                                   SPA-AREA
+           .
+       900-CALL-ORCSJOB-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    £Ä£Â£Ó£Å£Ì£Å£Ã£Ô½èÍý
+      *****************************************************************
+       900-DBSELECT-SEC                SECTION.
+      *
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+grpsys     PERFORM 900-ORCDBMAIN-SEC
+           IF      MCP-RC              =   ZERO
+               CONTINUE
+           ELSE
+               DISPLAY "SELECT ERR table=" MCP-TABLE
+                       " pathname="        MCP-PATHNAME
+           END-IF
+           .
+       900-DBSELECT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    £Ä£Â£Æ£Å£Ô£Ã£È½èÍý
+      *****************************************************************
+       900-DBFETCH-SEC                SECTION.
+      *
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+grpsys     PERFORM 900-ORCDBMAIN-SEC
+      *
+           .
+       900-DBFETCH-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ¥¯¥í¡¼¥º½èÍý
+      *****************************************************************
+       900-CLOSE-SEC                  SECTION.
+      *
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
+grpsys     PERFORM 900-ORCDBMAIN-SEC
+      *
+           .
+       900-CLOSE-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ¥Æ¡¼¥Ö¥ë¥¢¥¯¥»¥¹½èÍý
+      *****************************************************************
+       900-ORCDBMAIN-SEC               SECTION.
+      *
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
+           .
+      *
+       900-ORCDBMAIN-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    £Ä£Â¡¡¥ª¡¼¥×¥ó½èÍý
       *****************************************************************
        120-DBOPEN-SEC                SECTION.
       *
-           MOVE    "DBOPEN"            TO  MCP-FUNC.
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC.
+           MOVE    LOW-VALUE           TO  MCP-TABLE
+                                           MCP-PATHNAME
+           MOVE    "DBOPEN"            TO  MCP-FUNC
+grpsys     PERFORM 900-ORCDBMAIN-SEC
       *
-           MOVE    "DBSTART"           TO  MCP-FUNC.
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC.
+           MOVE    LOW-VALUE           TO  MCP-TABLE
+                                           MCP-PATHNAME
+           MOVE    "DBSTART"           TO  MCP-FUNC
+grpsys     PERFORM 900-ORCDBMAIN-SEC
            .
        120-DBOPEN-EXT.
            EXIT.
@@ -1037,18 +1078,15 @@ grpsys*      MOVE SPA-HOSPNUM TO -HOSPNUM
       *****************************************************************
        900-DBDISCONNECT-SEC            SECTION.
       *
-           MOVE    "DBCOMMIT"          TO  MCP-FUNC.
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC.
+           MOVE    LOW-VALUE           TO  MCP-TABLE
+                                           MCP-PATHNAME
+           MOVE    "DBCOMMIT"          TO  MCP-FUNC
+grpsys     PERFORM 900-ORCDBMAIN-SEC
       *
-           MOVE    "DBDISCONNECT"      TO  MCP-FUNC.
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC.
-      *
+           MOVE    LOW-VALUE           TO  MCP-TABLE
+                                           MCP-PATHNAME
+           MOVE    "DBDISCONNECT"      TO  MCP-FUNC
+grpsys     PERFORM 900-ORCDBMAIN-SEC
            .
        900-DBDISCONNECT-EXT.
            EXIT.
