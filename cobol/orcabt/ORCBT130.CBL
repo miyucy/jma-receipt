@@ -218,6 +218,8 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
            MOVE    WRK-PARA-TERMID     TO  TOUKEI04PARA-TERMID
 grpsys     MOVE    WRK-PARA-HOSPNUM    TO  TOUKEI04PARA-HOSPNUM
       *
+grpsys     MOVE    WRK-PARA-HOSPNUM    TO  TOUKEI05PARA-HOSPNUM
+      *
            OPEN    INPUT               TOUKEI04-FILE
                    OUTPUT              TOUKEI05-FILE
       *
