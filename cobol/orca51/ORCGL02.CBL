@@ -894,7 +894,7 @@
            MOVE    MKPASS-OT-01    TO  SHELLTBL-NAME
       *     
            MOVE    SPA-TERMID      TO  SHELLTBL-ARG1
-           MOVE    SPA-HOSPNUM     TO  SHELLTBL-ARG2
+           MOVE    SPA-HOSPID      TO  SHELLTBL-ARG2
            MOVE     SYS-1001-HOSPCD
                                    TO  SHELLTBL-ARG3
            MOVE    SYS-1001-PREFNUM
@@ -931,6 +931,7 @@
                                        DBMETA
                                        SPA-AREA
            MOVE    DBMETA-HOST     TO  SHELLTBL-ARG18
+           MOVE    SPA-HOSPNUM     TO  SHELLTBL-ARG19
       *
            MOVE    SHELLTBL        TO  MCPDATA-REC
            MOVE    "SHELL"         TO  MCP-FUNC
