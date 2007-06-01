@@ -1600,6 +1600,7 @@ grpsys     MOVE    SPA-HOSPNUM         TO  RECEERR-HOSPNUM
       *****        MOVE    "2"             TO  SHELLTBL-ARG23
       *****END-EVALUATE
            MOVE    "2"             TO  SHELLTBL-ARG23
+           MOVE    SPA-HOSPNUM     TO  SHELLTBL-ARG25
       *     
            MOVE    SHELLTBL        TO  MCPDATA-REC
            MOVE    "SHELL"         TO  MCP-FUNC
@@ -1708,17 +1709,9 @@ grpsys     MOVE    SPA-HOSPNUM         TO  RECEERR-HOSPNUM
            END-IF
       *
       *¡¡¡¡¡Ê£Ï£Ò£Ã£Ò£°£±£°£±¡Ë¡¡
-      *****MOVE    "recept7.sh"        TO  SHELL-SHELL
-      *    MOVE    WRK-SHELL-NAME      TO  SHELL-NAME
-      *    MOVE    SPA-TERMID          TO  SHELL-TERMID
-      *    MOVE    SPA-R01-RECE07-SRYYM
-      *                                TO  SHELL-SRYYM    
-      *    MOVE    SPA-SYSYMD          TO  SHELL-SYSYMD
-      *    MOVE    "1"                 TO  SHELL-SYOKBN
-      *****MOVE    "0"                 TO  SHELL-RECEKBN
-           MOVE    "OR42ERR"           TO  RECEERR-FILE-ID
+           MOVE    WRK-CONS-FILE-ID    TO  RECEERR-FILE-ID
            MOVE    SPA-TERMID          TO  RECEERR-TERMID
-      *****MOVE    RECEERR             TO  SHELL-ERRFILE
+grpsys     MOVE    SPA-HOSPNUM         TO  RECEERR-HOSPNUM
       *
            OPEN    OUTPUT   RECEERR-FILE
            CLOSE   RECEERR-FILE
@@ -1777,6 +1770,7 @@ grpsys     MOVE    SPA-HOSPNUM         TO  RECEERR-HOSPNUM
                                                TO  SHELLTBL-ARG24
                END-EVALUATE
            END-IF
+           MOVE    SPA-HOSPNUM     TO  SHELLTBL-ARG25
            MOVE    SHELLTBL        TO  MCPDATA-REC
            MOVE    "SHELL"         TO  MCP-FUNC
            MOVE    "shell"         TO  MCP-TABLE
