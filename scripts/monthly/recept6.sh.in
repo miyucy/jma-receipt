@@ -35,7 +35,9 @@ fi
         rm  -f /home/orca/recept6.log
         
         rm  -f  /var/tmp/RECE4*
-        rm  -f /tmp/${16}00RECE4*
+        rm  -f  /var/tmp/RECEYMD*
+        rm  -f  /tmp/${16}00RECE4*
+        rm  -f  /tmp/${16}RECEYMD*
 
         if [ ${2} -eq  '1' ]; then
            LOG_FILE="/home/orca/${16}recept6a.log"
