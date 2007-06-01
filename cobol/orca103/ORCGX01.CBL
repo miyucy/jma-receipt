@@ -435,6 +435,8 @@
       ******** MOVE    SPA-X98-SRYCD       TO  X01-SRYCD
                MOVE    SPA-X98-SRYCD (1)   TO  SPA-GMN-SRYCD
                PERFORM 4104-SRYCD-CHK-SEC
+           ELSE
+               MOVE    2                   TO  SPA-GMN-CUR
            END-IF  
            .
        320-X98SPASET-EXT.
@@ -1527,6 +1529,7 @@
            MOVE    "1"                 TO  LNK-BYO-SYORI
            MOVE    SPA-GMN-NAME        TO  LNK-BYO-BYOMEI
            CALL    "ORCSBYOMEI"    USING   ORCSBYOMEIAREA
+                                           SPA-AREA
       *
            PERFORM VARYING IDX0    FROM    1   BY  1
                    UNTIL ( IDX0    >       LNK-BYO-BYOMEI-MAX )

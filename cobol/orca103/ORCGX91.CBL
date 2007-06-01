@@ -37,28 +37,18 @@
        INPUT-OUTPUT                SECTION.
        FILE-CONTROL.
       *
-      *----(02.00.06)--ADD-START---
-006900*    エラーファイル
-           SELECT  CHKMERR-FILE    ASSIGN  CHKMERR
-                                   FILE    STATUS  IS  STS-CHKMERR.
-      *----(02.00.06)--ADD-END-----
       *
        DATA                    DIVISION.
        FILE                        SECTION.
       *
-      *----(02.00.06)--ADD-START---
-006900*    エラーファイル
-       FD  CHKMERR-FILE.
-       01  CHKMERR-REC                 PIC X(200).
-      *----(02.00.06)--ADD-END-----
       *
        WORKING-STORAGE             SECTION.
       *
       *    エラーファイル 名称領域 
-           COPY    "CPCOMMONDAT2.INC"
-                                   REPLACING  //RECE01PARA//
+      *
+      *    エラーファイル 名称領域 
+           COPY    "CPERRFL.INC"   REPLACING  //ERRFLPARA//
                                    BY         //CHKMERR//.
-           03  FILLER              PIC X(04)   VALUE   ".dat".
       *
       *    画面活性非活性
            COPY    "ENUM-VALUE".
@@ -1092,9 +1082,8 @@
                    MOVE    IDX0        TO  JOB-JOBID
                    MOVE    WRK-CONS-JOB-SHELLID
                                        TO  JOB-SHELLID
-                   CALL    "ORCSJOB"       USING
-                                           ORCSJOBKANRIAREA
-                                           JOBKANRI-REC
+                   MOVE    SPA-HOSPNUM TO  JOB-HOSPNUM
+                   PERFORM 800-ORCSJOB-SEC
                    IF    ( SJOBKANRI-RETURN
                                            =   ZERO )
                        IF    ( JOB-ENDYMD      =   SPACE )
@@ -1310,9 +1299,8 @@
                    MOVE    IDX0        TO  JOB-JOBID
                    MOVE    WRK-CONS-JOB-SHELLID
                                        TO  JOB-SHELLID
-                   CALL    "ORCSJOB"       USING
-                                           ORCSJOBKANRIAREA
-                                           JOBKANRI-REC
+                   MOVE    SPA-HOSPNUM TO  JOB-HOSPNUM
+                   PERFORM 800-ORCSJOB-SEC
                    IF    ( SJOBKANRI-RETURN
                                            =   ZERO )
                        IF    ( JOB-ENDYMD  =   SPACE )
@@ -1405,8 +1393,8 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            INITIALIZE                      JOBKANRI-REC
            MOVE    WRK-CONS-JOB-SHELLID
                                        TO  JOB-SHELLID
-           CALL    "ORCSJOB"       USING   ORCSJOBKANRIAREA
-                                           JOBKANRI-REC
+           MOVE    SPA-HOSPNUM TO  JOB-HOSPNUM
+           PERFORM 800-ORCSJOB-SEC
            IF    ( SJOBKANRI-RETURN    =   ZERO )
                CONTINUE
            ELSE
@@ -1429,7 +1417,8 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SYS-TIME            TO
                                        WRK-CONS-PRTKANRI-TBL-GROUP (9:)
       *
-           MOVE    "CHKMERR"           TO  CHKMERR-FILE-ID
+           MOVE    SPA-HOSPNUM         TO  CHKMERR-HOSPNUM
+           MOVE    "OR103ERR"          TO  CHKMERR-FILE-ID
            MOVE    SPA-TERMID          TO  CHKMERR-TERMID
       *
       *    出力先プリンタ名割り当て情報編集
@@ -1535,7 +1524,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN    "OK"
                    MOVE    "2"             TO  SHELLTBL-ARG17
                END-EVALUATE
-grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
+               MOVE    SPA-HOSPNUM         TO  SHELLTBL-ARG18
                MOVE    SHELLTBL            TO  MCPDATA-REC
                MOVE    "shell"             TO  MCP-TABLE
                MOVE    "shell"             TO  MCP-PATHNAME
@@ -1649,9 +1638,8 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                    TO  JOB-JOBID
            MOVE    WRK-CONS-JOB-SHELLID
                                    TO  JOB-SHELLID
-           CALL    "ORCSJOB"       USING
-                                   ORCSJOBKANRIAREA 
-                                   JOBKANRI-REC
+           MOVE    SPA-HOSPNUM TO  JOB-HOSPNUM
+           PERFORM 800-ORCSJOB-SEC
       *
            MOVE    "JBS"           TO  SJOBKANRI-MODE
            INITIALIZE                  JOBKANRI-REC
@@ -1660,9 +1648,8 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    WRK-CONS-JOB-SHELLID
                                    TO  JOB-SHELLID
            MOVE    SPA-TERMID      TO  JOB-TERMID
-           CALL    "ORCSJOB"       USING
-                                   ORCSJOBKANRIAREA 
-                                   JOBKANRI-REC
+           MOVE    SPA-HOSPNUM TO  JOB-HOSPNUM
+           PERFORM 800-ORCSJOB-SEC
       *
            .
        45011-JOBKANRI-HENSYU-EXT.
@@ -1749,9 +1736,8 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE    IDX0            TO  JOB-JOBID
                    MOVE    WRK-CONS-JOB-SHELLID
                                            TO  JOB-SHELLID
-                   CALL    "ORCSJOB"       USING
-                                           ORCSJOBKANRIAREA
-                                           JOBKANRI-REC
+                   MOVE    SPA-HOSPNUM TO  JOB-HOSPNUM
+                   PERFORM 800-ORCSJOB-SEC
       *
                    IF    ( SJOBKANRI-RETURN    =   ZERO )
       *
@@ -2143,6 +2129,20 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            .
        540-XID2SET-EXT.
+           EXIT.
+      *****************************************************************
+      *    ジョブ管理制御サブ呼び出し
+      *****************************************************************
+       800-ORCSJOB-SEC                 SECTION.
+      *
+           MOVE    SPA-HOSPNUM         TO  JOB-HOSPNUM
+           CALL    "ORCSJOB"               USING
+                                           ORCSJOBKANRIAREA
+                                           JOBKANRI-REC
+                                           SPA-AREA
+      *
+           .
+       800-ORCSJOB-EXT.
            EXIT.
       *****************************************************************
       *    文字列長チェック（先頭から半角空白があらわれるまで）

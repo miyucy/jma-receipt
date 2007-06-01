@@ -28,6 +28,7 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *  01.00.03    NACL-太田    04/05/28  DBOPEN,DBDISCONNECT削除
+      *  03.05.00    NACL-太田    07/06/01  グループ診療対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -77,7 +78,7 @@
            COPY    "CPORCSPRTLNK.INC".
            03  WRK-PARA-JOBID                      PIC 9(07).
            03  WRK-PARA-SHELLID                    PIC X(08).
-           03  WRK-PARA-HOSPID                     PIC X(24).
+           03  WRK-PARA-HOSPNUM                    PIC 9(02).
            03  WRK-PARA-CHKKBN                     PIC X(01).
            03  WRK-PARA-SRTKBN                     PIC X(01).
            03  WRK-PARA-STSRYCD                    PIC X(09).
@@ -193,12 +194,15 @@
                                        LNK-PRTKANRI-PRTNM
                                        WRK-PARA-JOBID
                                        WRK-PARA-SHELLID
-                                       WRK-PARA-HOSPID
+                                       WRK-PARA-HOSPNUM
                                        WRK-PARA-CHKKBN
                                        WRK-PARA-SRTKBN
                                        WRK-PARA-STSRYCD
                                        WRK-PARA-EDSRYCD
                                        WRK-PARA-CHKMERR
+      *
+      *    ＳＰＡエリアセット処理
+           PERFORM 110-SPA-SET-SEC
       *
            MOVE    SPACE               TO  WRK-TITLE
       *
@@ -221,6 +225,12 @@
            WHEN    "7"
                MOVE    "診療行為どうしの算定漏れ一覧表"
                                        TO  WRK-TITLE
+           WHEN    "8"
+               MOVE    "病名と薬剤"
+                                       TO  WRK-TITLE
+           WHEN    "9"
+               MOVE    "病名と診療行為"
+                                       TO  WRK-TITLE
            END-EVALUATE
       *
       *    ステップ管理開始処理
@@ -230,13 +240,11 @@
            MOVE    WRK-PARA-SHELLID    TO  JOB-SHELLID
            MOVE    "ORCBX01"           TO  JOB-PGID
            MOVE    WRK-TITLE           TO  JOB-SHELLMSG
-      *
+           MOVE    WRK-PARA-HOSPNUM    TO  JOB-HOSPNUM
            CALL    "ORCSJOB"               USING
                                            ORCSJOBKANRIAREA
                                            JOBKANRI-REC
-      *
-      *    ＳＰＡエリアセット処理
-           PERFORM 110-SPA-SET-SEC
+                                           SPA-AREA
       *
       *    印刷パラメタエリアセット処理
            PERFORM 110-ORCSPRTAREA-SET-SEC
@@ -254,7 +262,7 @@
            INITIALIZE                      SPA-AREA
            MOVE    LNK-PRTKANRI-SKYYMD
                                        TO  SPA-SYSYMD
-           MOVE    WRK-PARA-HOSPID     TO  SPA-HOSPID
+           MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
       *
            MOVE    LNK-PRTKANRI-TERMID TO  SPA-TERMID
       *
@@ -339,9 +347,11 @@
                                        TO  JOB-SHELLID
                MOVE    WRK-CHKMERR     TO  JOB-YOBI
                MOVE    "9999"          TO  JOB-ERRCD
+               MOVE    WRK-PARA-HOSPNUM TO JOB-HOSPNUM
                CALL    "ORCSJOB"           USING
                                            ORCSJOBKANRIAREA
                                            JOBKANRI-REC
+                                           SPA-AREA
            END-IF
       *
            MOVE    1                   TO  FLG-END
@@ -368,9 +378,11 @@
            MOVE    WRK-PARA-SHELLID
                                    TO  JOB-SHELLID
            MOVE    CNT-JOB-UPDCNT  TO  JOB-UPDCNT
+           MOVE    WRK-PARA-HOSPNUM TO JOB-HOSPNUM
            CALL    "ORCSJOB"           USING
                                        ORCSJOBKANRIAREA
                                        JOBKANRI-REC
+                                       SPA-AREA
       *
            PERFORM 900-DBDISCONNECT-SEC
       *
@@ -386,16 +398,18 @@
            MOVE    LOW-VALUE       TO  MCP-TABLE
                                        MCP-PATHNAME
            MOVE    "DBOPEN"        TO  MCP-FUNC.
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"         USING
+                                       MCPAREA
+                                       MCPDATA-REC
+                                       SPA-AREA
       *
            MOVE    LOW-VALUE       TO  MCP-TABLE
                                        MCP-PATHNAME
            MOVE    "DBSTART"       TO  MCP-FUNC.
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"         USING
+                                       MCPAREA
+                                       MCPDATA-REC
+                                       SPA-AREA
            .
        100-DBOPEN-EXT.
            EXIT.
@@ -408,16 +422,18 @@ grpsys                            SPA-AREA
            MOVE    LOW-VALUE       TO  MCP-TABLE
                                        MCP-PATHNAME
            MOVE    "DBCOMMIT"      TO  MCP-FUNC.
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"         USING
+                                       MCPAREA
+                                       MCPDATA-REC
+                                       SPA-AREA
       *
            MOVE    LOW-VALUE       TO  MCP-TABLE
                                        MCP-PATHNAME
            MOVE    "DBDISCONNECT"  TO  MCP-FUNC.
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"         USING
+                                       MCPAREA
+                                       MCPDATA-REC
+                                       SPA-AREA
            .
        900-DBDISCONNECT-EXT.
            EXIT.
@@ -429,9 +445,10 @@ grpsys                            SPA-AREA
            MOVE    LOW-VALUE       TO  MCP-TABLE
                                        MCP-PATHNAME
            MOVE    "DBCOMMIT"      TO  MCP-FUNC.
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"         USING
+                                       MCPAREA
+                                       MCPDATA-REC
+                                       SPA-AREA
       *
            .
        900-DBCOMMIT-EXT.
@@ -445,9 +462,10 @@ grpsys                            SPA-AREA
            MOVE    LOW-VALUE       TO  MCP-TABLE
                                        MCP-PATHNAME
            MOVE    "DBSTART"       TO  MCP-FUNC.
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"         USING
+                                       MCPAREA
+                                       MCPDATA-REC
+                                       SPA-AREA
            .
        900-DBSTART-EXT.
            EXIT.

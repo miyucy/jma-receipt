@@ -1,4 +1,3 @@
-
       *******************************************************************
       * Project code name "ORCA"
       * 日医標準レセプトソフト（JMA standard receipt software）
@@ -29,6 +28,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  03.05.00    NACL-太田    07/06/01  グループ診療対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -459,6 +459,7 @@
        31011-EDIT-CKHPTDATA-SEC         SECTION.
       *
            INITIALIZE                  CHK004-REC
+           MOVE    SPA-HOSPNUM     TO  CHK004-HOSPNUM
            MOVE    "2001"          TO  CHK004-KANRICD
            MOVE    "2%"            TO  CHK004-KBNCD
            MOVE    SPA-SYSYMD      TO  CHK004-STYUKYMD
@@ -505,6 +506,7 @@
                                        SPA-NAI-CHKLST-AREA
       *
            INITIALIZE                  CHK004-REC
+           MOVE    SPA-HOSPNUM     TO  CHK004-HOSPNUM
            MOVE    "2001"          TO  CHK004-KANRICD
            MOVE    "3%"            TO  CHK004-KBNCD
            MOVE    SPA-SYSYMD      TO  CHK004-STYUKYMD
@@ -762,6 +764,7 @@
                    END-EVALUATE
       *
                    INITIALIZE                  CHK004-REC
+                   MOVE    SPA-HOSPNUM     TO  CHK004-HOSPNUM
                    MOVE    "2000"          TO  CHK004-KANRICD
                    MOVE    WRK-SELKBNCD    TO  CHK004-KBNCD
                    MOVE    SPA-SYSYMD      TO  CHK004-STYUKYMD
@@ -827,6 +830,7 @@
                    INITIALIZE              WRK-KBNCD-G
       *
                    INITIALIZE              CHK004-REC
+                   MOVE    SPA-HOSPNUM TO  CHK004-HOSPNUM
                    MOVE    "2001"      TO  CHK004-KANRICD
                    MOVE    "3%"        TO  CHK004-KBNCD
                    MOVE    SPA-SYSYMD  TO  CHK004-STYUKYMD
@@ -843,6 +847,7 @@
                        =   WRK-KBNCD-SEQ   +   1
       *
                    INITIALIZE              CHK004-REC
+                   MOVE    SPA-HOSPNUM TO  CHK004-HOSPNUM
                    MOVE    "2001"      TO  CHK004-KANRICD
                    MOVE    WRK-KBNCD-G TO  CHK004-KBNCD
                    MOVE    "00000000"  TO  CHK004-STYUKYMD
@@ -872,6 +877,7 @@
                                        TO  IDX-LST
       *
                    INITIALIZE              CHK004-REC
+                   MOVE    SPA-HOSPNUM TO  CHK004-HOSPNUM
                    MOVE    "2001"      TO  CHK004-KANRICD
                    MOVE    SPA-NAI-TKBNCD (IDX-LST)
                                        TO  CHK004-KBNCD
@@ -1012,10 +1018,11 @@
                MOVE    PTINF-NAME      TO  SPA-GMN-NAME
       *
                INITIALIZE                  SS001-AREA
-               MOVE    SPA-HOSPID      TO  SS001-HOSPID
+               MOVE    SPA-HOSPNUM      TO  SS001-HOSPNUM
                MOVE    SPA-NAI-PTID    TO  SS001-PTID
                MOVE    SPA-NAI-SRYYM   TO  SS001-SRYYM
                CALL    "ORCSS001"          USING   SS001-AREA
+                                                   SPA-AREA
                IF    ( SPA-NAI-NYUGAIKBN   =   "1" )
                    IF    ( SS001-NIHO-FLG  =   1 )
                     OR   ( SS001-NRSI-FLG  =   1 )
@@ -1039,6 +1046,7 @@
       *
            IF    ( SPA-ERRCD       =   SPACE )
                INITIALIZE              CHK004-REC
+               MOVE    SPA-HOSPNUM TO  CHK004-HOSPNUM
                MOVE    "2001"      TO  CHK004-KANRICD
                MOVE    "3%"        TO  CHK004-KBNCD
                IF    ( SPA-GMN-CHKLST-SEL  =   ZERO )
@@ -1117,6 +1125,7 @@
        410011-DEL-CK2001-SEC            SECTION.
       *
            INITIALIZE                  CHK004-REC
+           MOVE    SPA-HOSPNUM     TO  CHK004-HOSPNUM
            MOVE    "2001"          TO  CHK004-KANRICD
            MOVE    WRK-DELKBNCD    TO  CHK004-KBNCD
            MOVE    SPA-SYSYMD      TO  CHK004-STYUKYMD
@@ -1139,6 +1148,7 @@
        410011-EDIT-PTDATA-SEC          SECTION.
       *
            INITIALIZE                  CHK004-REC
+           MOVE    SPA-HOSPNUM     TO  CHK004-HOSPNUM
            MOVE    "2000"          TO  CHK004-KANRICD
            MOVE    WRK-SELKBNCD    TO  CHK004-KBNCD
            MOVE    SPA-SYSYMD      TO  CHK004-STYUKYMD
@@ -1180,6 +1190,7 @@
            PERFORM 3101-EDIT-LBLCHKLST-SEC
       *
            INITIALIZE                  CHK004-REC
+           MOVE    SPA-HOSPNUM     TO  CHK004-HOSPNUM
            MOVE    "2001"          TO  CHK004-KANRICD
            MOVE    WRK-SELKBNCD    TO  CHK004-KBNCD
            MOVE    "%"             TO  CHK004-KBNCD (2:1)
@@ -1274,6 +1285,7 @@
                                    TO  IDX-LST
       *
                INITIALIZE          CHK004-REC
+               MOVE    SPA-HOSPNUM TO  CHK004-HOSPNUM
                MOVE    "2001"      TO  CHK004-KANRICD
                MOVE    SPA-NAI-TKBNCD (IDX-LST)
                                    TO  CHK004-KBNCD
@@ -1404,6 +1416,7 @@
            INITIALIZE              SPA-D01-INF-AREA
       *
            INITIALIZE                  CHK004-REC
+           MOVE    SPA-HOSPNUM     TO  CHK004-HOSPNUM
            MOVE    "2001"          TO  CHK004-KANRICD
            MOVE    "2%"            TO  CHK004-KBNCD
            MOVE    SPA-SYSYMD      TO  CHK004-STYUKYMD
@@ -1440,6 +1453,7 @@
            MOVE    ZERO            TO  CNT-2001
       *
            INITIALIZE                  CHK004-REC
+           MOVE    SPA-HOSPNUM     TO  CHK004-HOSPNUM
            MOVE    "2001"          TO  CHK004-KANRICD
            MOVE    "3%"            TO  CHK004-KBNCD
            MOVE    SPA-SYSYMD      TO  CHK004-STYUKYMD
@@ -1844,7 +1858,7 @@
            MOVE    ZERO            TO  FLG-PTINF
       *
            INITIALIZE                  PTINF-REC
-           MOVE    SPA-HOSPID      TO  PTINF-HOSPID
+           MOVE    SPA-HOSPNUM      TO  PTINF-HOSPNUM
            MOVE    WRK-PTID        TO  PTINF-PTID
            MOVE    PTINF-REC       TO  MCPDATA-REC
            MOVE    "tbl_ptinf"     TO  MCP-TABLE
@@ -1872,7 +1886,7 @@
            MOVE    ZERO                TO  FLG-PTNUM
       *
            INITIALIZE                  PTNUM-REC
-           MOVE    SPA-HOSPID          TO  PTNUM-HOSPID
+           MOVE    SPA-HOSPNUM          TO  PTNUM-HOSPNUM
            MOVE    WRK-PTID            TO  PTNUM-PTID
            MOVE    PTNUM-REC           TO  MCPDATA-REC
            MOVE    "tbl_ptnum"         TO  MCP-TABLE
@@ -1899,6 +1913,7 @@
       *
            MOVE    ZERO            TO  FLG-CHK004
       *
+           MOVE    SPA-HOSPNUM     TO  CHK004-HOSPNUM
            MOVE    CHK004-REC      TO  MCPDATA-REC
            MOVE    "tbl_chk004"    TO  MCP-TABLE
            MOVE    "key"           TO  MCP-PATHNAME
@@ -1924,6 +1939,7 @@
       *
            MOVE    ZERO            TO  FLG-CHK004
       *
+           MOVE    SPA-HOSPNUM     TO  CHK004-HOSPNUM
            MOVE    CHK004-REC      TO  MCPDATA-REC
            MOVE    "tbl_chk004"    TO  MCP-TABLE
            MOVE    "key7"          TO  MCP-PATHNAME
@@ -1965,6 +1981,7 @@
       *
            MOVE    ZERO            TO  FLG-CHK004
       *
+           MOVE    SPA-HOSPNUM     TO  CHK004-HOSPNUM
            MOVE    CHK004-REC      TO  MCPDATA-REC
            MOVE    "tbl_chk004"    TO  MCP-TABLE
            MOVE    "key4"          TO  MCP-PATHNAME
@@ -2006,6 +2023,7 @@
       *
            MOVE    ZERO            TO  FLG-CHK004
       *
+           MOVE    SPA-HOSPNUM     TO  CHK004-HOSPNUM
            MOVE    CHK004-REC      TO  MCPDATA-REC
            MOVE    "tbl_chk004"    TO  MCP-TABLE
            MOVE    "key5"          TO  MCP-PATHNAME
@@ -2031,6 +2049,7 @@
       *
            MOVE    ZERO            TO  FLG-CHK004
       *
+           MOVE    SPA-HOSPNUM     TO  CHK004-HOSPNUM
            MOVE    CHK004-REC      TO  MCPDATA-REC
            MOVE    "tbl_chk004"    TO  MCP-TABLE
            MOVE    "key6"          TO  MCP-PATHNAME
@@ -2055,9 +2074,10 @@
        910-DBSELECT-SEC                SECTION.
       *
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           CALL    "MONFUNC"           USING
+           CALL    "ORCDBMAIN"         USING
                                        MCPAREA
                                        MCPDATA-REC
+                                       SPA-AREA
            IF    ( MCP-RC          =   ZERO )
                PERFORM 910-DBFETCH-SEC
            END-IF
@@ -2072,9 +2092,10 @@
        910-DBFETCH-SEC                 SECTION.
       *
            MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "MONFUNC"           USING
+           CALL    "ORCDBMAIN"         USING
                                        MCPAREA
                                        MCPDATA-REC
+                                       SPA-AREA
       *
            .
       *
@@ -2086,9 +2107,10 @@
        910-DBCLOSECURSOR-SEC           SECTION.
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           CALL    "MONFUNC"           USING
+           CALL    "ORCDBMAIN"         USING
                                        MCPAREA
                                        MCPDATA-REC
+                                       SPA-AREA
       *
            .
       *
@@ -2100,9 +2122,10 @@
        910-DBDELETE-SEC                SECTION.
       *
            MOVE    "DBDELETE"      TO  MCP-FUNC
-           CALL    "MONFUNC"           USING
+           CALL    "ORCDBMAIN"         USING
                                        MCPAREA
                                        MCPDATA-REC
+                                       SPA-AREA
       *
            .
       *
@@ -2114,9 +2137,10 @@
        910-DBINSERT-SEC                SECTION.
       *
            MOVE    "DBINSERT"      TO  MCP-FUNC
-           CALL    "MONFUNC"           USING
+           CALL    "ORCDBMAIN"         USING
                                        MCPAREA
                                        MCPDATA-REC
+                                       SPA-AREA
       *
            .
       *
@@ -2128,9 +2152,10 @@
        910-DBUPDATE-SEC                SECTION.
       *
            MOVE    "DBUPDATE"      TO  MCP-FUNC
-           CALL    "MONFUNC"           USING
+           CALL    "ORCDBMAIN"         USING
                                        MCPAREA
                                        MCPDATA-REC
+                                       SPA-AREA
       *
            .
       *
@@ -2142,9 +2167,10 @@
        900-PUT-WINDOW              SECTION.
       *
            MOVE   "PUTWINDOW"          TO  MCP-FUNC.
-           CALL   "MONFUNC"            USING
+           CALL    "ORCDBMAIN"         USING
                                        MCPAREA
                                        MCPDATA-REC
+                                       SPA-AREA
       *
            .
        900-PUT-WINDOW-EXT.

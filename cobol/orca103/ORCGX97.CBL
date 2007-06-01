@@ -271,12 +271,14 @@
       *                ジョブ管理チェック処理
                        MOVE    "CHK"           TO  SJOBKANRI-MODE
                        INITIALIZE                  JOBKANRI-REC
+                       MOVE    SPA-HOSPNUM     TO  JOB-HOSPNUM
                        MOVE    IDX             TO  JOB-JOBID
                        MOVE    WRK-CONS-JOB-SHELLID
                                                TO  JOB-SHELLID
                        CALL    "ORCSJOB"       USING
                                                ORCSJOBKANRIAREA  
-                                               JOBKANRI-REC 
+                                               JOBKANRI-REC
+                                               SPA-AREA
                        IF      SJOBKANRI-RETURN    =   ZERO
                            PERFORM 4901-KAKUNIN-HYOUJI-SEC
                        END-IF
@@ -286,6 +288,7 @@
       *        ジョブ管理チェック処理
                MOVE    "CHK"           TO  SJOBKANRI-MODE
                INITIALIZE                  JOBKANRI-REC
+               MOVE    SPA-HOSPNUM     TO  JOB-HOSPNUM
                MOVE    WRK-CONS-JOB-JOBID
                                        TO  JOB-JOBID
                MOVE    WRK-CONS-JOB-SHELLID
@@ -293,6 +296,7 @@
                CALL    "ORCSJOB"       USING
                                        ORCSJOBKANRIAREA
                                        JOBKANRI-REC
+                                       SPA-AREA
                MOVE    1               TO  IDX 
                IF      SJOBKANRI-RETURN    =   ZERO
                    PERFORM 4901-KAKUNIN-HYOUJI-SEC
@@ -300,6 +304,7 @@
            END-IF
       *
            MOVE    "B01"                TO  MCP-WIDGET
+      *
            IF    ( X97-MSG              =   SPACE )
                IF    ( X97-COUNT        >   ZERO  )
                    MOVE    "処理は正常に終了しました"

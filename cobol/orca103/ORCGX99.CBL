@@ -835,6 +835,7 @@
                                    TO  LNK-BYO-TBYOMEICD (1)
       *
                    CALL    "ORCSBYOMEI"    USING   ORCSBYOMEIAREA
+                                                   SPA-AREA
                    MOVE    LNK-BYO-BYOMEIHENFLG
                                    TO  SPA-X99-BYOSTATUS
                ELSE
@@ -850,6 +851,7 @@
                MOVE    SPA-X99-BYOMEI      TO  LNK-BYO-BYOMEI
       *
                CALL    "ORCSBYOMEI"    USING   ORCSBYOMEIAREA
+                                               SPA-AREA
       *
                PERFORM VARYING IDX0    FROM    1   BY  1
                            UNTIL ( IDX0    >       LNK-BYO-BYOMEI-MAX )

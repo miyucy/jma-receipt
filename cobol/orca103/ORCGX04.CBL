@@ -1321,6 +1321,7 @@
            MOVE    "1"                 TO  LNK-BYO-SYORI
            MOVE    SPA-GMN-BYOMEI      TO  LNK-BYO-BYOMEI
            CALL    "ORCSBYOMEI"    USING   ORCSBYOMEIAREA
+                                           SPA-AREA
       *
            PERFORM VARYING IDX0    FROM    1   BY  1
                    UNTIL ( IDX0    >       LNK-BYO-BYOMEI-MAX )
@@ -2499,6 +2500,7 @@ grpsys*                    MOVE    SPA-HOSPNUM         TO  -HOSPNUM
                                    TO  LNK-BYO-TBYOMEICD (1)
       *
                    CALL    "ORCSBYOMEI"    USING   ORCSBYOMEIAREA
+                                                   SPA-AREA
                    MOVE    LNK-BYO-BYOMEIHENFLG
                                    TO  SPA-NAI-TBYOSTATUS (IDX-MAX)
                ELSE
@@ -2515,6 +2517,7 @@ grpsys*                    MOVE    SPA-HOSPNUM         TO  -HOSPNUM
                                            TO  LNK-BYO-BYOMEI
       *
                CALL    "ORCSBYOMEI"    USING   ORCSBYOMEIAREA
+                                               SPA-AREA
       *
                PERFORM VARYING IDX0    FROM    1   BY  1
                            UNTIL ( IDX0    >       LNK-BYO-BYOMEI-MAX )

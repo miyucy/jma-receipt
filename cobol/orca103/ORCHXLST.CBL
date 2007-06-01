@@ -1513,6 +1513,7 @@
            MOVE    "1"                 TO  SPRT-SITEKBN
            CALL    "ORCSPRT"           USING
                                        ORCSPRTAREA
+                                       SPA-AREA
            IF      SPRT-RETURN         =   ZERO
       *        CONTINUE
                COMPUTE CNT-OUT         =   CNT-OUT     +   1

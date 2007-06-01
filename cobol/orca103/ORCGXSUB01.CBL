@@ -415,6 +415,7 @@
                                        TO  LNK-BYO-TBYOMEICD (IDX5)
                END-PERFORM
                CALL    "ORCSBYOMEI"    USING   ORCSBYOMEIAREA
+                                               SPA-AREA
                MOVE    LNK-BYO-BYOMEIHENFLG
                                        TO  XSUB01-O-BYOSTATUS
       *
