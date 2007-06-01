@@ -518,33 +518,31 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
       *
            PERFORM VARYING     IDY     FROM    1   BY  1
                        UNTIL       IDY     >       10
-             PERFORM VARYING   IDZ     FROM    1   BY  1
-                       UNTIL       IDZ     >        5
-              IF  (WK-TBL-G(IDZ)       NOT  =  SPACE)
-               IF (WK-TBL-G(IDZ)       NOT  =  WRK-PRT-TBL-GROUP)
-              DISPLAY  "wk-tbl-g (1) " WK-TBL-G(IDZ) 
+              IF  (WK-TBL-G(5)         NOT  =  SPACE)
+               IF (WK-TBL-G(5)         NOT  =  WRK-PRT-TBL-GROUP)
+              DISPLAY  "wk-tbl-g (1) " WK-TBL-G(5) 
                    MOVE  SPACE         TO  WRK-FILENAME
                    STRING
                       "/var/tmp/.orca_ps/" DELIMITED  BY  SPACE
+                      SPA-HOSPNUM         DELIMITED  BY  SPACE
                       WRK-PRT-TBL-KEY
                                           DELIMITED  BY  SPACE
                       IDY                 DELIMITED  BY  SPACE
-                      WK-TBL-G(IDZ)       DELIMITED  BY  SPACE
+                      WK-TBL-G(5)         DELIMITED  BY  SPACE
                       "*"                 DELIMITED  BY  SPACE
                                           INTO   WRK-FILENAME
                    END-STRING
                    MOVE    ZERO            TO  IF-RESULT
                    MOVE    WRK-FILENAME
                                            TO  IF-FILENAME
-      *            CALL    "orcfiledel"    USING
-      *                                    ORCSFDELAREA
                    MOVE  SPACE         TO  WRK-FILENAME1
                    STRING
                       SPA-NAI-ENV         DELIMITED  BY  SPACE
+                      SPA-HOSPNUM         DELIMITED  BY  SPACE
                       WRK-PRT-TBL-KEY
                                           DELIMITED  BY  SPACE
                       IDY                 DELIMITED  BY  SPACE
-                      WK-TBL-G(IDZ)       DELIMITED  BY  SPACE
+                      WK-TBL-G(5)         DELIMITED  BY  SPACE
                       "*"                 DELIMITED  BY  SPACE
                                           INTO   WRK-FILENAME1
                    END-STRING
@@ -565,7 +563,6 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
 grpsys         PERFORM 900-ORCDBMAIN-SEC
                END-IF
               END-IF
-             END-PERFORM
            END-PERFORM
            .
        900-PRV-RRKDEL-EXT.
