@@ -887,14 +887,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE459PARA-HOSPNUM
       *
            IF   RECE41-COMCNTFLG   =   "1"
       *
-             INITIALIZE                      RECE44-REC
-             MOVE    RECE41-HOSPNUM      TO  RECE44-HOSPNUM
-             MOVE    RECE41-SRYYM        TO  RECE44-SRYYM
-             MOVE    RECE41-NYUGAIKBN    TO  RECE44-NYUGAIKBN
-             MOVE    RECE41-PTID         TO  RECE44-PTID
-             MOVE    RECE41-RECEKA       TO  RECE44-RECEKA
-             MOVE    RECE41-HKNID        TO  RECE44-HKNID
-             MOVE    RECE41-TEKSTYMD     TO  RECE44-TEKSTYMD
+             PERFORM 800-RECE41-SET44-SEC
              MOVE    ZERO                TO  RECE44-ZAINUM
       *
              START   RECE44-FILE
@@ -1152,14 +1145,7 @@ grpsys       PERFORM 900-DBSELECT-SEC
            END-IF
       *
       *    パラメータ０４ファイルより編集
-           INITIALIZE                      RECE44-REC
-           MOVE    RECE41-HOSPNUM      TO  RECE44-HOSPNUM
-           MOVE    RECE41-SRYYM        TO  RECE44-SRYYM
-           MOVE    RECE41-NYUGAIKBN    TO  RECE44-NYUGAIKBN
-           MOVE    RECE41-PTID         TO  RECE44-PTID
-           MOVE    RECE41-RECEKA       TO  RECE44-RECEKA
-           MOVE    RECE41-HKNID        TO  RECE44-HKNID
-           MOVE    RECE41-TEKSTYMD     TO  RECE44-TEKSTYMD
+           PERFORM 800-RECE41-SET44-SEC
            MOVE    ZERO                TO  RECE44-ZAINUM
       *
            START   RECE44-FILE
@@ -1689,14 +1675,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
            MOVE       ZERO             TO      WRK-RENNUM
            MOVE       ZERO             TO      WRK-CNT-MEISAI
            PERFORM    UNTIL     FLG-WRKRECE45  =    1
-                INITIALIZE                      RECE459-REC
-                MOVE    RECE41-HOSPNUM      TO  RECE459-HOSPNUM
-                MOVE    RECE41-SRYYM        TO  RECE459-SRYYM
-                MOVE    RECE41-NYUGAIKBN    TO  RECE459-NYUGAIKBN
-                MOVE    RECE41-PTID         TO  RECE459-PTID
-                MOVE    RECE41-RECEKA       TO  RECE459-RECEKA
-                MOVE    RECE41-HKNID        TO  RECE459-HKNID
-                MOVE    RECE41-TEKSTYMD     TO  RECE459-TEKSTYMD
+                PERFORM 800-RECE41-SET459-SEC
       *         MOVE    ZERO                TO  RECE459-ZAINUM
                 MOVE    99999999            TO  RECE459-ZAINUM
                 MOVE    "99"                TO  RECE459-SRYKBN
@@ -1721,14 +1700,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
            END-PERFORM     
       *
       *
-           INITIALIZE                      RECE449-REC
-           MOVE    RECE41-HOSPNUM      TO  RECE449-HOSPNUM
-           MOVE    RECE41-SRYYM        TO  RECE449-SRYYM
-           MOVE    RECE41-NYUGAIKBN    TO  RECE449-NYUGAIKBN
-           MOVE    RECE41-PTID         TO  RECE449-PTID
-           MOVE    RECE41-RECEKA       TO  RECE449-RECEKA
-           MOVE    RECE41-HKNID        TO  RECE449-HKNID
-           MOVE    RECE41-TEKSTYMD     TO  RECE449-TEKSTYMD
+           PERFORM 800-RECE41-SET449-SEC
       *    MOVE    ZERO                TO  RECE449-ZAINUM
            MOVE    99999999            TO  RECE449-ZAINUM
            MOVE    "99"                TO  RECE449-SRYKBN
@@ -1747,14 +1719,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *****************************************************************
        2001-DENWA-DOUJITU-COMMENT-SEC          SECTION.
       *
-           INITIALIZE                      RECE449-REC
-           MOVE    RECE41-HOSPNUM      TO  RECE449-HOSPNUM
-           MOVE    RECE41-SRYYM        TO  RECE449-SRYYM
-           MOVE    RECE41-NYUGAIKBN    TO  RECE449-NYUGAIKBN
-           MOVE    RECE41-PTID         TO  RECE449-PTID
-           MOVE    RECE41-RECEKA       TO  RECE449-RECEKA
-           MOVE    RECE41-HKNID        TO  RECE449-HKNID
-           MOVE    RECE41-TEKSTYMD     TO  RECE449-TEKSTYMD
+           PERFORM 800-RECE41-SET449-SEC
            MOVE    99999991            TO  RECE449-ZAINUM
            MOVE    "99"                TO  RECE449-SRYKBN
            MOVE    2                   TO  RECE449-MEISAISU
@@ -1762,14 +1727,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
            WRITE   RECE449-REC
            ADD     1                   TO  CNT-RECE449
       *
-           INITIALIZE                      RECE459-REC
-           MOVE    RECE41-HOSPNUM      TO  RECE459-HOSPNUM
-           MOVE    RECE41-SRYYM        TO  RECE459-SRYYM
-           MOVE    RECE41-NYUGAIKBN    TO  RECE459-NYUGAIKBN
-           MOVE    RECE41-PTID         TO  RECE459-PTID
-           MOVE    RECE41-RECEKA       TO  RECE459-RECEKA
-           MOVE    RECE41-HKNID        TO  RECE459-HKNID
-           MOVE    RECE41-TEKSTYMD     TO  RECE459-TEKSTYMD
+           PERFORM 800-RECE41-SET459-SEC
            MOVE    99999991            TO  RECE459-ZAINUM
            MOVE    "99"                TO  RECE459-SRYKBN
       *    電話再診のコメントの挿入
@@ -1814,14 +1772,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *****************************************************************
        2001-DENWA-COMMENT-SEC          SECTION.
       *
-           INITIALIZE                      RECE449-REC
-           MOVE    RECE41-HOSPNUM      TO  RECE449-HOSPNUM
-           MOVE    RECE41-SRYYM        TO  RECE449-SRYYM
-           MOVE    RECE41-NYUGAIKBN    TO  RECE449-NYUGAIKBN
-           MOVE    RECE41-PTID         TO  RECE449-PTID
-           MOVE    RECE41-RECEKA       TO  RECE449-RECEKA
-           MOVE    RECE41-HKNID        TO  RECE449-HKNID
-           MOVE    RECE41-TEKSTYMD     TO  RECE449-TEKSTYMD
+           PERFORM 800-RECE41-SET449-SEC
            MOVE    99999991            TO  RECE449-ZAINUM
            MOVE    "99"                TO  RECE449-SRYKBN
            MOVE    1                   TO  RECE449-MEISAISU
@@ -1829,14 +1780,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
            WRITE   RECE449-REC
            ADD     1                   TO  CNT-RECE449
       *
-           INITIALIZE                      RECE459-REC
-           MOVE    RECE41-HOSPNUM      TO  RECE459-HOSPNUM
-           MOVE    RECE41-SRYYM        TO  RECE459-SRYYM
-           MOVE    RECE41-NYUGAIKBN    TO  RECE459-NYUGAIKBN
-           MOVE    RECE41-PTID         TO  RECE459-PTID
-           MOVE    RECE41-RECEKA       TO  RECE459-RECEKA
-           MOVE    RECE41-HKNID        TO  RECE459-HKNID
-           MOVE    RECE41-TEKSTYMD     TO  RECE459-TEKSTYMD
+           PERFORM 800-RECE41-SET459-SEC
            MOVE    99999991            TO  RECE459-ZAINUM
            MOVE    "99"                TO  RECE459-SRYKBN
       *    電話再診のコメントの挿入
@@ -1866,14 +1810,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *****************************************************************
        2001-DOUJITU-COMMENT-SEC          SECTION.
       *
-           INITIALIZE                      RECE449-REC
-           MOVE    RECE41-HOSPNUM      TO  RECE449-HOSPNUM
-           MOVE    RECE41-SRYYM        TO  RECE449-SRYYM
-           MOVE    RECE41-NYUGAIKBN    TO  RECE449-NYUGAIKBN
-           MOVE    RECE41-PTID         TO  RECE449-PTID
-           MOVE    RECE41-RECEKA       TO  RECE449-RECEKA
-           MOVE    RECE41-HKNID        TO  RECE449-HKNID
-           MOVE    RECE41-TEKSTYMD     TO  RECE449-TEKSTYMD
+           PERFORM 800-RECE41-SET449-SEC
            MOVE    99999991            TO  RECE449-ZAINUM
            MOVE    "99"                TO  RECE449-SRYKBN
            MOVE    1                   TO  RECE449-MEISAISU
@@ -1881,14 +1818,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
            WRITE   RECE449-REC
            ADD     1                   TO  CNT-RECE449
       *
-           INITIALIZE                      RECE459-REC
-           MOVE    RECE41-HOSPNUM      TO  RECE459-HOSPNUM
-           MOVE    RECE41-SRYYM        TO  RECE459-SRYYM
-           MOVE    RECE41-NYUGAIKBN    TO  RECE459-NYUGAIKBN
-           MOVE    RECE41-PTID         TO  RECE459-PTID
-           MOVE    RECE41-RECEKA       TO  RECE459-RECEKA
-           MOVE    RECE41-HKNID        TO  RECE459-HKNID
-           MOVE    RECE41-TEKSTYMD     TO  RECE459-TEKSTYMD
+           PERFORM 800-RECE41-SET459-SEC
            MOVE    99999991            TO  RECE459-ZAINUM
            MOVE    "99"                TO  RECE459-SRYKBN
       *    同日複数再診のコメントの挿入
@@ -2309,14 +2239,7 @@ grpsys        PERFORM  900-DBSELECT-SEC
            MOVE       ZERO             TO      WRK-RENNUM
            MOVE       ZERO             TO      WRK-CNT-MEISAI
            PERFORM    UNTIL     FLG-WRKRECE45  =    1
-                INITIALIZE                      RECE459-REC
-                MOVE    RECE41-HOSPNUM      TO  RECE459-HOSPNUM
-                MOVE    RECE41-SRYYM        TO  RECE459-SRYYM
-                MOVE    RECE41-NYUGAIKBN    TO  RECE459-NYUGAIKBN
-                MOVE    RECE41-PTID         TO  RECE459-PTID
-                MOVE    RECE41-RECEKA       TO  RECE459-RECEKA
-                MOVE    RECE41-HKNID        TO  RECE459-HKNID
-                MOVE    RECE41-TEKSTYMD     TO  RECE459-TEKSTYMD
+                PERFORM 800-RECE41-SET459-SEC
                 MOVE    99999996            TO  RECE459-ZAINUM
                 MOVE    "99"                TO  RECE459-SRYKBN
                 ADD     1                   TO  WRK-RENNUM
@@ -2340,14 +2263,7 @@ grpsys        PERFORM  900-DBSELECT-SEC
            END-PERFORM
       *
       *
-           INITIALIZE                      RECE449-REC
-           MOVE    RECE41-HOSPNUM      TO  RECE449-HOSPNUM
-           MOVE    RECE41-SRYYM        TO  RECE449-SRYYM
-           MOVE    RECE41-NYUGAIKBN    TO  RECE449-NYUGAIKBN
-           MOVE    RECE41-PTID         TO  RECE449-PTID
-           MOVE    RECE41-RECEKA       TO  RECE449-RECEKA
-           MOVE    RECE41-HKNID        TO  RECE449-HKNID
-           MOVE    RECE41-TEKSTYMD     TO  RECE449-TEKSTYMD
+           PERFORM 800-RECE41-SET449-SEC
            MOVE    99999996            TO  RECE449-ZAINUM
            MOVE    "99"                TO  RECE449-SRYKBN
       *
@@ -2638,14 +2554,7 @@ grpsys        PERFORM  900-DBSELECT-SEC
            MOVE       ZERO             TO      WRK-RENNUM
            MOVE       ZERO             TO      WRK-CNT-MEISAI
            PERFORM    UNTIL     FLG-WRKRECE45  =    1
-                INITIALIZE                      RECE459-REC
-                MOVE    RECE41-HOSPNUM      TO  RECE459-HOSPNUM
-                MOVE    RECE41-SRYYM        TO  RECE459-SRYYM
-                MOVE    RECE41-NYUGAIKBN    TO  RECE459-NYUGAIKBN
-                MOVE    RECE41-PTID         TO  RECE459-PTID
-                MOVE    RECE41-RECEKA       TO  RECE459-RECEKA
-                MOVE    RECE41-HKNID        TO  RECE459-HKNID
-                MOVE    RECE41-TEKSTYMD     TO  RECE459-TEKSTYMD
+                PERFORM 800-RECE41-SET459-SEC
                 MOVE    WRK-ZAINUM          TO  RECE459-ZAINUM
                 MOVE    WRK-SRYKBN          TO  RECE459-SRYKBN
                 ADD     1                   TO  WRK-RENNUM
@@ -2669,14 +2578,7 @@ grpsys        PERFORM  900-DBSELECT-SEC
            END-PERFORM
       *
       *
-           INITIALIZE                      RECE449-REC
-           MOVE    RECE41-HOSPNUM      TO  RECE449-HOSPNUM
-           MOVE    RECE41-SRYYM        TO  RECE449-SRYYM
-           MOVE    RECE41-NYUGAIKBN    TO  RECE449-NYUGAIKBN
-           MOVE    RECE41-PTID         TO  RECE449-PTID
-           MOVE    RECE41-RECEKA       TO  RECE449-RECEKA
-           MOVE    RECE41-HKNID        TO  RECE449-HKNID
-           MOVE    RECE41-TEKSTYMD     TO  RECE449-TEKSTYMD
+           PERFORM 800-RECE41-SET449-SEC
            MOVE    WRK-ZAINUM          TO  RECE449-ZAINUM
            MOVE    WRK-SRYKBN          TO  RECE449-SRYKBN
            MOVE    WRK-OKIKAEFLG       TO  RECE449-OKIKAEFLG
@@ -2894,14 +2796,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *****************************************************************
        2001-KASANRITU-COMMENT-SEC          SECTION.
       *
-           INITIALIZE                      RECE449-REC
-           MOVE    RECE41-HOSPNUM      TO  RECE449-HOSPNUM
-           MOVE    RECE41-SRYYM        TO  RECE449-SRYYM
-           MOVE    RECE41-NYUGAIKBN    TO  RECE449-NYUGAIKBN
-           MOVE    RECE41-PTID         TO  RECE449-PTID
-           MOVE    RECE41-RECEKA       TO  RECE449-RECEKA
-           MOVE    RECE41-HKNID        TO  RECE449-HKNID
-           MOVE    RECE41-TEKSTYMD     TO  RECE449-TEKSTYMD
+           PERFORM 800-RECE41-SET449-SEC
            MOVE    99999998            TO  RECE449-ZAINUM
            MOVE    "99"                TO  RECE449-SRYKBN
            MOVE    1                   TO  RECE449-MEISAISU
@@ -2909,14 +2804,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
            WRITE   RECE449-REC
            ADD     1                   TO  CNT-RECE449
       *
-           INITIALIZE                      RECE459-REC
-           MOVE    RECE41-HOSPNUM      TO  RECE459-HOSPNUM
-           MOVE    RECE41-SRYYM        TO  RECE459-SRYYM
-           MOVE    RECE41-NYUGAIKBN    TO  RECE459-NYUGAIKBN
-           MOVE    RECE41-PTID         TO  RECE459-PTID
-           MOVE    RECE41-RECEKA       TO  RECE459-RECEKA
-           MOVE    RECE41-HKNID        TO  RECE459-HKNID
-           MOVE    RECE41-TEKSTYMD     TO  RECE459-TEKSTYMD
+           PERFORM 800-RECE41-SET459-SEC
            MOVE    99999998            TO  RECE459-ZAINUM
            MOVE    "99"                TO  RECE459-SRYKBN
       *    加算率のコメントの挿入
@@ -2976,14 +2864,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *****************************************************************
        2001-YKZTENTANKA-COMMENT-SEC          SECTION.
       *
-           INITIALIZE                      RECE449-REC
-           MOVE    RECE41-HOSPNUM      TO  RECE449-HOSPNUM
-           MOVE    RECE41-SRYYM        TO  RECE449-SRYYM
-           MOVE    RECE41-NYUGAIKBN    TO  RECE449-NYUGAIKBN
-           MOVE    RECE41-PTID         TO  RECE449-PTID
-           MOVE    RECE41-RECEKA       TO  RECE449-RECEKA
-           MOVE    RECE41-HKNID        TO  RECE449-HKNID
-           MOVE    RECE41-TEKSTYMD     TO  RECE449-TEKSTYMD
+           PERFORM 800-RECE41-SET449-SEC
            MOVE    99999998            TO  RECE449-ZAINUM
            MOVE    "99"                TO  RECE449-SRYKBN
            MOVE    1                   TO  RECE449-MEISAISU
@@ -2991,14 +2872,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
            WRITE   RECE449-REC
            ADD     1                   TO  CNT-RECE449
       *
-           INITIALIZE                      RECE459-REC
-           MOVE    RECE41-HOSPNUM      TO  RECE459-HOSPNUM
-           MOVE    RECE41-SRYYM        TO  RECE459-SRYYM
-           MOVE    RECE41-NYUGAIKBN    TO  RECE459-NYUGAIKBN
-           MOVE    RECE41-PTID         TO  RECE459-PTID
-           MOVE    RECE41-RECEKA       TO  RECE459-RECEKA
-           MOVE    RECE41-HKNID        TO  RECE459-HKNID
-           MOVE    RECE41-TEKSTYMD     TO  RECE459-TEKSTYMD
+           PERFORM 800-RECE41-SET459-SEC
            MOVE    99999998            TO  RECE459-ZAINUM
            MOVE    "99"                TO  RECE459-SRYKBN
       *    薬剤等点単価のコメントの挿入
@@ -3035,14 +2909,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *****************************************************************
        2001-NYUYOJI-COMMENT-SEC          SECTION.
       *
-           INITIALIZE                      RECE449-REC
-           MOVE    RECE41-HOSPNUM      TO  RECE449-HOSPNUM
-           MOVE    RECE41-SRYYM        TO  RECE449-SRYYM
-           MOVE    RECE41-NYUGAIKBN    TO  RECE449-NYUGAIKBN
-           MOVE    RECE41-PTID         TO  RECE449-PTID
-           MOVE    RECE41-RECEKA       TO  RECE449-RECEKA
-           MOVE    RECE41-HKNID        TO  RECE449-HKNID
-           MOVE    RECE41-TEKSTYMD     TO  RECE449-TEKSTYMD
+           PERFORM 800-RECE41-SET449-SEC
            MOVE    99999990            TO  RECE449-ZAINUM
            MOVE    "99"                TO  RECE449-SRYKBN
            MOVE    1                   TO  RECE449-MEISAISU
@@ -3050,14 +2917,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
            WRITE   RECE449-REC
            ADD     1                   TO  CNT-RECE449
       *
-           INITIALIZE                      RECE459-REC
-           MOVE    RECE41-HOSPNUM      TO  RECE459-HOSPNUM
-           MOVE    RECE41-SRYYM        TO  RECE459-SRYYM
-           MOVE    RECE41-NYUGAIKBN    TO  RECE459-NYUGAIKBN
-           MOVE    RECE41-PTID         TO  RECE459-PTID
-           MOVE    RECE41-RECEKA       TO  RECE459-RECEKA
-           MOVE    RECE41-HKNID        TO  RECE459-HKNID
-           MOVE    RECE41-TEKSTYMD     TO  RECE459-TEKSTYMD
+           PERFORM 800-RECE41-SET459-SEC
            MOVE    99999990            TO  RECE459-ZAINUM
            MOVE    "99"                TO  RECE459-SRYKBN
       *    乳幼児・幼児のコメントの挿入
@@ -3091,14 +2951,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *****************************************************************
        2001-ZAISIEN-COMMENT-SEC          SECTION.
       *
-           INITIALIZE                      RECE449-REC
-           MOVE    RECE41-HOSPNUM      TO  RECE449-HOSPNUM
-           MOVE    RECE41-SRYYM        TO  RECE449-SRYYM
-           MOVE    RECE41-NYUGAIKBN    TO  RECE449-NYUGAIKBN
-           MOVE    RECE41-PTID         TO  RECE449-PTID
-           MOVE    RECE41-RECEKA       TO  RECE449-RECEKA
-           MOVE    RECE41-HKNID        TO  RECE449-HKNID
-           MOVE    RECE41-TEKSTYMD     TO  RECE449-TEKSTYMD
+           PERFORM 800-RECE41-SET449-SEC
            MOVE    99999965            TO  RECE449-ZAINUM
            MOVE    WRK-RECE44-SRYKBN   TO  RECE449-SRYKBN
            MOVE    1                   TO  RECE449-MEISAISU
@@ -3106,14 +2959,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
            WRITE   RECE449-REC
            ADD     1                   TO  CNT-RECE449
       *
-           INITIALIZE                      RECE459-REC
-           MOVE    RECE41-HOSPNUM      TO  RECE459-HOSPNUM
-           MOVE    RECE41-SRYYM        TO  RECE459-SRYYM
-           MOVE    RECE41-NYUGAIKBN    TO  RECE459-NYUGAIKBN
-           MOVE    RECE41-PTID         TO  RECE459-PTID
-           MOVE    RECE41-RECEKA       TO  RECE459-RECEKA
-           MOVE    RECE41-HKNID        TO  RECE459-HKNID
-           MOVE    RECE41-TEKSTYMD     TO  RECE459-TEKSTYMD
+           PERFORM 800-RECE41-SET459-SEC
            MOVE    99999965            TO  RECE459-ZAINUM
            MOVE    WRK-RECE44-SRYKBN   TO  RECE459-SRYKBN
       *    在支援コメントの挿入
@@ -3293,14 +3139,7 @@ grpsys       PERFORM  900-DBSELECT-SEC
            WRITE      RECE449-REC
            ADD        1             TO   CNT-RECE449
       *
-           INITIALIZE                      RECE45-REC
-           MOVE    RECE44-HOSPNUM      TO  RECE45-HOSPNUM
-           MOVE    RECE44-SRYYM        TO  RECE45-SRYYM
-           MOVE    RECE44-NYUGAIKBN    TO  RECE45-NYUGAIKBN
-           MOVE    RECE44-PTID         TO  RECE45-PTID
-           MOVE    RECE44-RECEKA       TO  RECE45-RECEKA
-           MOVE    RECE44-HKNID        TO  RECE45-HKNID
-           MOVE    RECE44-TEKSTYMD     TO  RECE45-TEKSTYMD
+           PERFORM 800-RECE44-SET45-SEC
            MOVE    RECE44-ZAINUM       TO  RECE45-ZAINUM
            START   RECE45-FILE
                  KEY IS    >=   RECE45-KEY
@@ -4445,14 +4284,7 @@ grpsys       PERFORM 900-DBSELECT-SEC
       *****************************************************************
        20991-RECE45-TENSOU-SEC     SECTION.
       *
-           INITIALIZE                      RECE45-REC
-           MOVE    RECE44-HOSPNUM      TO  RECE45-HOSPNUM
-           MOVE    RECE44-SRYYM        TO  RECE45-SRYYM
-           MOVE    RECE44-NYUGAIKBN    TO  RECE45-NYUGAIKBN
-           MOVE    RECE44-PTID         TO  RECE45-PTID
-           MOVE    RECE44-RECEKA       TO  RECE45-RECEKA
-           MOVE    RECE44-HKNID        TO  RECE45-HKNID
-           MOVE    RECE44-TEKSTYMD     TO  RECE45-TEKSTYMD
+           PERFORM 800-RECE44-SET45-SEC
            MOVE    RECE44-ZAINUM       TO  RECE45-ZAINUM
            START   RECE45-FILE
                KEY IS    >=   RECE45-KEY
@@ -4490,14 +4322,7 @@ grpsys       PERFORM 900-DBSELECT-SEC
       *****************************************************************
        200111-RECE45-TAIHI-SEC     SECTION.
       *
-           INITIALIZE                      RECE45-REC
-           MOVE    RECE44-HOSPNUM      TO  RECE45-HOSPNUM
-           MOVE    RECE44-SRYYM        TO  RECE45-SRYYM
-           MOVE    RECE44-NYUGAIKBN    TO  RECE45-NYUGAIKBN
-           MOVE    RECE44-PTID         TO  RECE45-PTID
-           MOVE    RECE44-RECEKA       TO  RECE45-RECEKA
-           MOVE    RECE44-HKNID        TO  RECE45-HKNID
-           MOVE    RECE44-TEKSTYMD     TO  RECE45-TEKSTYMD
+           PERFORM 800-RECE44-SET45-SEC
            MOVE    RECE44-ZAINUM       TO  RECE45-ZAINUM
            START   RECE45-FILE
                  KEY IS    >=   RECE45-KEY
@@ -4919,14 +4744,7 @@ grpsys       PERFORM 900-DBSELECT-SEC
       *****************************************************************
        24021-YAKUTEI-RECE45-TENSOU-SEC          SECTION.
       *
-           INITIALIZE                       RECE45-REC
-           MOVE    RECE449-HOSPNUM      TO  RECE45-HOSPNUM
-           MOVE    RECE449-SRYYM        TO  RECE45-SRYYM
-           MOVE    RECE449-NYUGAIKBN    TO  RECE45-NYUGAIKBN
-           MOVE    RECE449-PTID         TO  RECE45-PTID
-           MOVE    RECE449-RECEKA       TO  RECE45-RECEKA
-           MOVE    RECE449-HKNID        TO  RECE45-HKNID
-           MOVE    RECE449-TEKSTYMD     TO  RECE45-TEKSTYMD
+           PERFORM 800-RECE449-SET45-SEC
            MOVE    WRK-YAKUTEI-ZAINUM   TO  RECE45-ZAINUM
            START   RECE45-FILE
                KEY IS    >=   RECE45-KEY
@@ -4965,14 +4783,7 @@ grpsys       PERFORM 900-DBSELECT-SEC
        250-SASHIKOMI2-SEC     SECTION.
       *
       *    パラメータ４４９ファイルより編集
-           INITIALIZE                      RECE449-REC
-           MOVE    RECE41-HOSPNUM      TO  RECE449-HOSPNUM
-           MOVE    RECE41-SRYYM        TO  RECE449-SRYYM
-           MOVE    RECE41-NYUGAIKBN    TO  RECE449-NYUGAIKBN
-           MOVE    RECE41-PTID         TO  RECE449-PTID
-           MOVE    RECE41-RECEKA       TO  RECE449-RECEKA
-           MOVE    RECE41-HKNID        TO  RECE449-HKNID
-           MOVE    RECE41-TEKSTYMD     TO  RECE449-TEKSTYMD
+           PERFORM 800-RECE41-SET449-SEC
            MOVE    ZERO                TO  RECE449-ZAINUM
       *
            START   RECE449-FILE
@@ -5035,14 +4846,7 @@ grpsys       PERFORM 900-DBSELECT-SEC
            MOVE       ZERO    TO     IDX4
            INITIALIZE                TBL-SANSO-INF
       *
-           INITIALIZE                       RECE459-REC
-           MOVE    RECE449-HOSPNUM      TO  RECE459-HOSPNUM
-           MOVE    RECE449-SRYYM        TO  RECE459-SRYYM
-           MOVE    RECE449-NYUGAIKBN    TO  RECE459-NYUGAIKBN
-           MOVE    RECE449-PTID         TO  RECE459-PTID
-           MOVE    RECE449-RECEKA       TO  RECE459-RECEKA
-           MOVE    RECE449-HKNID        TO  RECE459-HKNID
-           MOVE    RECE449-TEKSTYMD     TO  RECE459-TEKSTYMD
+           PERFORM 800-RECE449-SET459-SEC
            MOVE    RECE449-ZAINUM       TO  RECE459-ZAINUM
            START   RECE459-FILE
                KEY IS    >=   RECE459-KEY
@@ -5346,14 +5150,7 @@ grpsys       PERFORM 900-DBSELECT-SEC
       *****************************************************************
        250111-RECE459-TAIHI-SEC     SECTION.
       *
-           INITIALIZE                       RECE459-REC
-           MOVE    RECE449-HOSPNUM      TO  RECE459-HOSPNUM
-           MOVE    RECE449-SRYYM        TO  RECE459-SRYYM
-           MOVE    RECE449-NYUGAIKBN    TO  RECE459-NYUGAIKBN
-           MOVE    RECE449-PTID         TO  RECE459-PTID
-           MOVE    RECE449-RECEKA       TO  RECE459-RECEKA
-           MOVE    RECE449-HKNID        TO  RECE459-HKNID
-           MOVE    RECE449-TEKSTYMD     TO  RECE459-TEKSTYMD
+           PERFORM 800-RECE449-SET459-SEC
            MOVE    RECE449-ZAINUM       TO  RECE459-ZAINUM
            START   RECE459-FILE
                  KEY IS    >=   RECE459-KEY
@@ -5510,14 +5307,7 @@ grpsys       PERFORM 900-DBSELECT-SEC
       *****************************************************************
        25991-RECE459-TENSOU-SEC     SECTION.
       *
-           INITIALIZE                       RECE459-REC
-           MOVE    RECE449-HOSPNUM      TO  RECE459-HOSPNUM
-           MOVE    RECE449-SRYYM        TO  RECE459-SRYYM
-           MOVE    RECE449-NYUGAIKBN    TO  RECE459-NYUGAIKBN
-           MOVE    RECE449-PTID         TO  RECE459-PTID
-           MOVE    RECE449-RECEKA       TO  RECE459-RECEKA
-           MOVE    RECE449-HKNID        TO  RECE459-HKNID
-           MOVE    RECE449-TEKSTYMD     TO  RECE459-TEKSTYMD
+           PERFORM 800-RECE449-SET459-SEC
            MOVE    RECE449-ZAINUM       TO  RECE459-ZAINUM
            START   RECE459-FILE
                KEY IS    >=   RECE459-KEY
@@ -5662,6 +5452,114 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
       *
            .
        310-FILE-CLOSE-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    レセプト４１データ編集処理（４４）
+      *****************************************************************
+       800-RECE41-SET44-SEC           SECTION.
+      *
+           INITIALIZE                      RECE44-REC
+           MOVE    RECE41-HOSPNUM      TO  RECE44-HOSPNUM
+           MOVE    RECE41-SRYYM        TO  RECE44-SRYYM
+           MOVE    RECE41-NYUGAIKBN    TO  RECE44-NYUGAIKBN
+           MOVE    RECE41-PTID         TO  RECE44-PTID
+           MOVE    RECE41-RECEKA       TO  RECE44-RECEKA
+           MOVE    RECE41-HKNID        TO  RECE44-HKNID
+           MOVE    RECE41-TEKSTYMD     TO  RECE44-TEKSTYMD
+      *
+           .
+       800-RECE41-SET44-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    レセプト４１データ編集処理（４４９）
+      *****************************************************************
+       800-RECE41-SET449-SEC           SECTION.
+      *
+           INITIALIZE                      RECE449-REC
+           MOVE    RECE41-HOSPNUM      TO  RECE449-HOSPNUM
+           MOVE    RECE41-SRYYM        TO  RECE449-SRYYM
+           MOVE    RECE41-NYUGAIKBN    TO  RECE449-NYUGAIKBN
+           MOVE    RECE41-PTID         TO  RECE449-PTID
+           MOVE    RECE41-RECEKA       TO  RECE449-RECEKA
+           MOVE    RECE41-HKNID        TO  RECE449-HKNID
+           MOVE    RECE41-TEKSTYMD     TO  RECE449-TEKSTYMD
+      *
+           .
+       800-RECE41-SET449-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    レセプト４１データ編集処理（４５９）
+      *****************************************************************
+       800-RECE41-SET459-SEC           SECTION.
+      *
+           INITIALIZE                      RECE459-REC
+           MOVE    RECE41-HOSPNUM      TO  RECE459-HOSPNUM
+           MOVE    RECE41-SRYYM        TO  RECE459-SRYYM
+           MOVE    RECE41-NYUGAIKBN    TO  RECE459-NYUGAIKBN
+           MOVE    RECE41-PTID         TO  RECE459-PTID
+           MOVE    RECE41-RECEKA       TO  RECE459-RECEKA
+           MOVE    RECE41-HKNID        TO  RECE459-HKNID
+           MOVE    RECE41-TEKSTYMD     TO  RECE459-TEKSTYMD
+      *
+           .
+       800-RECE41-SET459-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    レセプト４４データ編集処理（４５）
+      *****************************************************************
+       800-RECE44-SET45-SEC           SECTION.
+      *
+           INITIALIZE                      RECE45-REC
+           MOVE    RECE44-HOSPNUM      TO  RECE45-HOSPNUM
+           MOVE    RECE44-SRYYM        TO  RECE45-SRYYM
+           MOVE    RECE44-NYUGAIKBN    TO  RECE45-NYUGAIKBN
+           MOVE    RECE44-PTID         TO  RECE45-PTID
+           MOVE    RECE44-RECEKA       TO  RECE45-RECEKA
+           MOVE    RECE44-HKNID        TO  RECE45-HKNID
+           MOVE    RECE44-TEKSTYMD     TO  RECE45-TEKSTYMD
+      *
+           .
+       800-RECE44-SET45-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    レセプト４４９データ編集処理（４５）
+      *****************************************************************
+       800-RECE449-SET45-SEC           SECTION.
+      *
+           INITIALIZE                       RECE45-REC
+           MOVE    RECE449-HOSPNUM      TO  RECE45-HOSPNUM
+           MOVE    RECE449-SRYYM        TO  RECE45-SRYYM
+           MOVE    RECE449-NYUGAIKBN    TO  RECE45-NYUGAIKBN
+           MOVE    RECE449-PTID         TO  RECE45-PTID
+           MOVE    RECE449-RECEKA       TO  RECE45-RECEKA
+           MOVE    RECE449-HKNID        TO  RECE45-HKNID
+           MOVE    RECE449-TEKSTYMD     TO  RECE45-TEKSTYMD
+      *
+           .
+       800-RECE449-SET45-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    レセプト４４９データ編集処理（４５９）
+      *****************************************************************
+       800-RECE449-SET459-SEC           SECTION.
+      *
+           INITIALIZE                       RECE459-REC
+           MOVE    RECE449-HOSPNUM      TO  RECE459-HOSPNUM
+           MOVE    RECE449-SRYYM        TO  RECE459-SRYYM
+           MOVE    RECE449-NYUGAIKBN    TO  RECE459-NYUGAIKBN
+           MOVE    RECE449-PTID         TO  RECE459-PTID
+           MOVE    RECE449-RECEKA       TO  RECE459-RECEKA
+           MOVE    RECE449-HKNID        TO  RECE459-HKNID
+           MOVE    RECE449-TEKSTYMD     TO  RECE459-TEKSTYMD
+      *
+           .
+       800-RECE449-SET459-EXT.
            EXIT.
       *
       *****************************************************************
