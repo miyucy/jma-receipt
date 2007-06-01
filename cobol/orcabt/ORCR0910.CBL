@@ -68,6 +68,10 @@
       *  03.01.03    NACL-門脇    06/07/14  診療区分置き換えフラグの編集
       *  03.03.01    NACL-門脇    06/10/19  療養病棟レセコメント記載対応
       *  03.04.01    NACL-門脇    06/12/01  自賠責健保準拠対応
+      *  03.04.02    NACL-門脇    07/03/08  点滴（種別３４０）の記載編集修正
+      *  03.04.03    NACL-門脇    07/03/23  月途中医療機関コード変更時対応
+      *  03.04.04    NACL-門脇    07/05/15  点滴の記載編集修正
+      *  03.05.01    NACL-門脇    07/06/01  グループ診療対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -133,26 +137,21 @@
       *
        WORKING-STORAGE             SECTION.
       *
-      *     レセプト明細ファイル 名称領域 
-           COPY    "CPCOMMONDAT2.INC".
-      *
-           COPY    "CPCOMMONDAT2.INC"
-                                   REPLACING  //RECE01//
+           COPY    "CPRECEDAT1.INC"
+                                   REPLACING  //RECEDAT1//
+                                   BY         //RECE01//.
+           COPY    "CPRECEDAT1.INC"
+                                   REPLACING  //RECEDAT1//
                                    BY         //RECE84//.
-      *
-           COPY    "CPCOMMONDAT2.INC"
-                                   REPLACING  //RECE01//
+           COPY    "CPRECEDAT1.INC"
+                                   REPLACING  //RECEDAT1//
                                    BY         //RECE85//.
-      *
-           COPY    "CPCOMMONDAT2.INC"
-                                   REPLACING  //RECE01//
+           COPY    "CPRECEDAT1.INC"
+                                   REPLACING  //RECEDAT1//
                                    BY         //RECE86//.
-      *
       *    エラーファイル 名称領域 
-           COPY    "CPCOMMONDAT2.INC"
-                                   REPLACING  //RECE01PARA//
+           COPY    "CPERRFL.INC"   REPLACING  //ERRFLPARA//
                                    BY         //RECEERR//.
-           03  FILLER              PIC X(04)   VALUE   ".dat".
       *
       *    フラグ領域
        01  STS-AREA.
@@ -170,7 +169,6 @@
            03  FLG-RECE85          PIC 9(01).
            03  FLG-SP              PIC 9(01).
            03  FLG-NOPRT           PIC 9(01).
-      ***  03  FLG-TENSU           PIC 9(01).
            03  FLG-TEIGEN          PIC 9(01).
            03  FLG-COMMENT         PIC 9(01).
            03  FLG-COMMENT2        PIC 9(01).
@@ -210,12 +208,13 @@
       *    一時領域
        01  WRK-AREA.
            03  WRK-PARA.
-               05  WRK-PARA-SRYYM              PIC  X(06).
-               05  WRK-PARA-TERMID             PIC  X(16).
-               05  WRK-PARA-SYSYMD             PIC  X(08).
-               05  WRK-PARA-RECEKBN            PIC  X(01).
-               05  WRK-PARA-JOBID              PIC  9(07).
-               05  WRK-PARA-SHELLID            PIC  X(08).
+               05  WRK-PARA-SRYYM      PIC  X(06).
+               05  WRK-PARA-TERMID     PIC  X(16).
+               05  WRK-PARA-SYSYMD     PIC  X(08).
+               05  WRK-PARA-RECEKBN    PIC  X(01).
+               05  WRK-PARA-JOBID      PIC  9(07).
+               05  WRK-PARA-SHELLID    PIC  X(08).
+           03  WRK-PARA-HOSPNUM        PIC  9(02).
       *
            03  WRK-RECEERR         PIC X(200).
       *
@@ -543,10 +542,12 @@
            03  FILLER          PIC X(09)   VALUE   "111000110".
       *    育児栄養指導加算（ＤＵＭＭＹ）
            03  FILLER          PIC X(09)   VALUE   "099114001".
+      *    在医総・在医総管（ＤＵＭＭＹ）
+           03  FILLER          PIC X(09)   VALUE   "099140003".
        01  TBL-NOSRYCD-R       REDEFINES   TBL-NOSRYCD-AREA.
-            03  TBL-NOSRYCD     PIC X(09)   OCCURS  18.       
+            03  TBL-NOSRYCD     PIC X(09)   OCCURS  19.       
       *
-       01  TBL-NOSRYCD-MAX     PIC 9(02)   VALUE  18.         
+       01  TBL-NOSRYCD-MAX     PIC 9(02)   VALUE  19.         
       *
       *    固定値
        01  CONST-AREA.
@@ -712,9 +713,6 @@
            03  WRK-CONS-SANSO2         PIC X(09)   VALUE 
                                                    "770030070".
       *
-      *    パス名領域
-       01  WRK-PATH                        PIC X(64).
-      *
            COPY    "MCPAREA".
       *
            COPY    "COMMON-SPA".
@@ -727,9 +725,6 @@
        01  JOBKANRI-REC.
            COPY    "CPJOBKANRI.INC".
       *
-      *    点数
-      ***  COPY    "CPTENSU.INC".
-      *
       *****************************************************************
       *    サブプロ用領域
       *****************************************************************
@@ -741,7 +736,6 @@
       *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
-           COPY    "CPORCMCP.INC".
       *
       ****************************************************************
        LINKAGE                 SECTION.
@@ -787,15 +781,10 @@
       *    ステップ管理開始処理
            MOVE    "STS"           TO  SJOBKANRI-MODE
            INITIALIZE                  JOBKANRI-REC
-           MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
-           MOVE    WRK-PARA-SHELLID
-                                   TO  JOB-SHELLID
            MOVE    "ORCR0910"      TO  JOB-PGID
            MOVE    "点数摘要欄編集（労災・自賠責）"
                                    TO  JOB-SHELLMSG
-           CALL    "ORCSJOB"       USING
-                                   ORCSJOBKANRIAREA  
-                                   JOBKANRI-REC
+grpsys     PERFORM 900-CALL-ORCSJOB-SEC
       *
       *    処理中止設定処理
            PERFORM 500-CANCEL-HENSYU-SEC
@@ -812,22 +801,28 @@
       *****************************************************************
        110-FILE-OPEN-SEC          SECTION.
       *
-           MOVE    COMMAND-PARAM       TO  WRK-PARA
+           UNSTRING    COMMAND-PARAM   DELIMITED  BY  ","
+                                       INTO    WRK-PARA
+                                               WRK-PARA-HOSPNUM
+                                               RECEERR
+           END-UNSTRING
+           MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
       *
            MOVE    "RECE820"           TO  RECE01PARA-FILE-ID
            MOVE    WRK-PARA-TERMID     TO  RECE01PARA-TERMID
+grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE01PARA-HOSPNUM
       *
            MOVE    "RECE84A"           TO  RECE84PARA-FILE-ID
            MOVE    WRK-PARA-TERMID     TO  RECE84PARA-TERMID
+grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE84PARA-HOSPNUM
       *
            MOVE    "RECE85A"           TO  RECE85PARA-FILE-ID
            MOVE    WRK-PARA-TERMID     TO  RECE85PARA-TERMID
+grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE85PARA-HOSPNUM
       *
            MOVE    "RECE860"           TO  RECE86PARA-FILE-ID
            MOVE    WRK-PARA-TERMID     TO  RECE86PARA-TERMID
-      *
-           MOVE    "RECEERR"           TO  RECEERR-FILE-ID
-           MOVE    WRK-PARA-TERMID     TO  RECEERR-TERMID
+grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE86PARA-HOSPNUM
       *
            OPEN    I-O                 RECE82-FILE
       *
@@ -872,7 +867,7 @@
       *
       *    パラメータ０４ファイルより編集
            INITIALIZE                      RECE84-REC
-           MOVE    RECE82-HOSPID       TO  RECE84-HOSPID
+           MOVE    RECE82-HOSPNUM      TO  RECE84-HOSPNUM
            MOVE    RECE82-SRYYM        TO  RECE84-SRYYM
            MOVE    RECE82-NYUGAIKBN    TO  RECE84-NYUGAIKBN
            MOVE    RECE82-PTID         TO  RECE84-PTID
@@ -891,7 +886,7 @@
            PERFORM
                UNTIL  ( SPA-STS              =   2                   )
                OR     ( FLG-RECE84           =   1                   )
-               OR     ( RECE82-HOSPID    NOT =   RECE84-HOSPID       )
+               OR     ( RECE82-HOSPNUM   NOT =   RECE84-HOSPNUM      )
                OR     ( RECE82-SRYYM     NOT =   RECE84-SRYYM        )
                OR     ( RECE82-NYUGAIKBN NOT =   RECE84-NYUGAIKBN    )
                OR     ( RECE82-PTID      NOT =   RECE84-PTID         )
@@ -1004,7 +999,7 @@
       *
       *    パラメータ０５ファイルより編集
            INITIALIZE                      RECE85-REC
-           MOVE    RECE84-HOSPID       TO  RECE85-HOSPID
+           MOVE    RECE84-HOSPNUM      TO  RECE85-HOSPNUM
            MOVE    RECE84-SRYYM        TO  RECE85-SRYYM
            MOVE    RECE84-NYUGAIKBN    TO  RECE85-NYUGAIKBN
            MOVE    RECE84-PTID         TO  RECE85-PTID
@@ -1022,7 +1017,7 @@
            PERFORM
                UNTIL  ( SPA-STS              =   2                   )
                OR     ( FLG-RECE85           =   1                   )
-               OR     ( RECE84-HOSPID    NOT =   RECE85-HOSPID       )
+               OR     ( RECE84-HOSPNUM   NOT =   RECE85-HOSPNUM      )
                OR     ( RECE84-SRYYM     NOT =   RECE85-SRYYM        )
                OR     ( RECE84-NYUGAIKBN NOT =   RECE85-NYUGAIKBN    )
                OR     ( RECE84-PTID      NOT =   RECE85-PTID         )
@@ -1046,7 +1041,7 @@
                    END-IF
       *
                    IF      RECE84-SRYKBN     <   "31"
-                   OR      RECE84-SRYKBN     =   "33"                   
+      **>          OR      RECE84-SRYKBN     =   "33"                   
                        MOVE    1             TO  IDY
                    ELSE                          
       *              療養病棟レセコメントがある剤
@@ -1463,8 +1458,8 @@
            END-IF
       *
            IF  WRK-TBLMAX           >   ZERO
-      ******** IF      RECE84-SRYKBN      >=  "33"                      
-               IF      RECE84-SRYKBN      >   "33"                      
+               IF      RECE84-SRYKBN      >=  "33"                      
+      **>      IF      RECE84-SRYKBN      >   "33"                      
                    CONTINUE
                ELSE        
                    MOVE    WRK-TBLMAX       TO  IDY
@@ -1543,12 +1538,6 @@
            MOVE    1                 TO  IDX
                
            PERFORM UNTIL   IDX     >       WRK-KENSA-MAX
-      ***      MOVE    TBL-SRYCD(IDX)       TO      TNS-SRYCD
-      ***      MOVE    TNS-TENSU-REC        TO      MCPDATA-REC
-      ***      MOVE    RECE84-SRYYM         TO      ORC-DBYMD(1:6)
-      ***      MOVE    "01"                 TO      ORC-DBYMD(7:2)
-      ***      PERFORM 900-TENSU-INV-SEC
-      ***      IF      TNS-HOUKNSKBN        =   ZERO
                IF      TBL-HOUKNSKBN(IDX)   =   ZERO
                    ADD     1                        TO  WRK-ZAIWMAX (3)
                    MOVE    WRK-ZAIWMAX (3)          TO  IDZ
@@ -1579,7 +1568,6 @@
                    ADD     1                   TO  IDX                     
                ELSE
                    IF      IDX             =   1
-      ***              MOVE    TNS-HOUKNSKBN
                        MOVE    TBL-HOUKNSKBN(IDX)
                                            TO  WRK-TNS-HOUKNSKBN         
                    END-IF                                
@@ -1853,8 +1841,8 @@
       *        点数・回数セット処理（診療行為）
                IF      IDX1              =   3
                AND     WRK-ZAIWMAX(IDX1) >   ZERO
-      ***********  IF      RECE84-SRYKBN     >=  "33"                   
-                   IF      RECE84-SRYKBN     >   "33"                   
+                   IF      RECE84-SRYKBN     >=  "33"                   
+      **>          IF      RECE84-SRYKBN     >   "33"                   
                        MOVE    RECE84-SYUTEN1    TO  WRK-ZAITENX
                        MOVE    RECE84-ZAIKAISU   TO  WRK-ZAIKAISUX
                        PERFORM 810-TENSUKAI-HEN-SEC
@@ -1867,8 +1855,8 @@
                IF      IDX1              =   4
                AND     WRK-ZAIWMAX(IDX1) >   ZERO
                AND     RECE84-KIZAITEN   >   ZERO
-      ***********  IF      RECE84-SRYKBN     >=  "33"                   
-                   IF      RECE84-SRYKBN     >   "33"                   
+                   IF      RECE84-SRYKBN     >=  "33"                   
+      **>          IF      RECE84-SRYKBN     >   "33"                   
                        MOVE    RECE84-KIZAITEN   TO  WRK-ZAITENX
                        MOVE    RECE84-ZAIKAISU   TO  WRK-ZAIKAISUX
                        PERFORM 810-TENSUKAI-HEN-SEC
@@ -1890,8 +1878,8 @@
       **                               TBL-ZAI (WRK-TBLMAX)(1:2)
       *****************END-IF     
       *                点数・回数セット
-      ***********      IF      RECE84-SRYKBN     >=  "33"               
-                       IF      RECE84-SRYKBN     >   "33"               
+                       IF      RECE84-SRYKBN     >=  "33"               
+      **>              IF      RECE84-SRYKBN     >   "33"               
                            MOVE    RECE84-YKZTEN     TO  WRK-ZAITENX
                            MOVE    RECE84-ZAIKAISU   TO  WRK-ZAIKAISUX
                            PERFORM 810-TENSUKAI-HEN-SEC
@@ -1911,13 +1899,6 @@
                                               OR  WRK-CONS-SAIKETSU3 
                    CONTINUE
                ELSE
-      ***          MOVE    TBL-ZAIW-SRYCD (3 1)
-      ***                                    TO  TNS-SRYCD
-      ***          MOVE    TNS-TENSU-REC     TO  MCPDATA-REC
-      ***          MOVE    RECE84-SRYYM      TO  ORC-DBYMD(1:6)
-      ***          MOVE    "01"              TO  ORC-DBYMD(7:2)
-      ***          PERFORM 900-TENSU-INV-SEC
-      ***          IF      TNS-KNSJISKBN     =   "2"
                    IF      TBL-ZAIW-KNSJISKBN  =  "2"
                        CONTINUE
                    ELSE 
@@ -2111,8 +2092,6 @@
            MOVE    RECE84-REC      TO  WRK-RECE84-REC (WRK-RECE84-MAX)
            MOVE    RECE84-DAY-AREA TO  WRK-RECE84-DAY-AREA
                                                       (WRK-RECE84-MAX)
-      ***  MOVE    TNS-HOUKNSKBN   TO  WRK-RECE84-HOUKNSKBN
-      ***                                             (WRK-RECE84-MAX)
            MOVE    TBL-ZAIW-HOUKNSKBN(3 1) TO  WRK-RECE84-HOUKNSKBN
                                                       (WRK-RECE84-MAX)
            IF      FLG-GAIJINKEN   =   0                    
@@ -2345,7 +2324,7 @@
        2009-KENTAIKASAN-KAKUNIN-SEC      SECTION.
       *
            INITIALIZE                      RECE84-REC
-           MOVE    RECE82-HOSPID       TO  RECE84-HOSPID
+           MOVE    RECE82-HOSPNUM      TO  RECE84-HOSPNUM
            MOVE    RECE82-SRYYM        TO  RECE84-SRYYM
            MOVE    RECE82-NYUGAIKBN    TO  RECE84-NYUGAIKBN
            MOVE    RECE82-PTID         TO  RECE84-PTID
@@ -2364,7 +2343,7 @@
            PERFORM
                UNTIL  ( SPA-STS              =   2                   )
                OR     ( FLG-RECE84           =   1                   )
-               OR     ( RECE82-HOSPID    NOT =   RECE84-HOSPID       )
+               OR     ( RECE82-HOSPNUM   NOT =   RECE84-HOSPNUM      )
                OR     ( RECE82-SRYYM     NOT =   RECE84-SRYYM        )
                OR     ( RECE82-NYUGAIKBN NOT =   RECE84-NYUGAIKBN    )
                OR     ( RECE82-PTID      NOT =   RECE84-PTID         )
@@ -2905,115 +2884,167 @@
                IF      RECE84-SRYKBN      =  "33"
       *
                 IF   (WRK-SRYSYUKBN      =  "330")
-      *         AND  (TBL-ZAI-IDX(IDY)   =   1   )
-                AND  (TBL-ZAI-SRYCD(IDY) =  "130003710" OR "130009470"
-                                         OR "130003810" OR "130700310"
-                                         OR "130700410" OR "130702910"
-                                         OR "130701010" OR "130702810")
+                AND  (TBL-ZAI-SRYCD(1)   =  "130003710" OR "130003810"
+                                         OR "130700310" OR "130700410"
+                                         OR "130702910" OR "130701010"
+                                         OR "130702810")
                          MOVE   1              TO  RECE86-TENTEKIKBN
                          MOVE   RECE84-ZAINUM  TO  RECE86-TENTEKIBAN
                 END-IF
-      *
-                IF   (WRK-SRYSYUKBN      =  "340")
-                AND  (WRK-TBLMAX         =   1   )
-      *         AND  (TBL-ZAI-IDX(IDY)   =   1   )
-                AND  (TBL-ZAI-SRYCD(IDY) =  "130004410" OR "130008510"
-                                         OR "130011210"               )
-                         MOVE   2              TO  RECE86-TENTEKIKBN
-                         MOVE   RECE84-ZAINUM  TO  RECE86-TENTEKIBAN
-                END-IF
-                IF   (WRK-SRYSYUKBN      =  "340")
-                AND  (WRK-TBLMAX         =   2   )
-      *         AND  (TBL-ZAI-IDX(IDY)   =   1   )
-                   IF ((IDY = 1                           ) AND
-                       (TBL-ZAI-SRYCD(IDY) =  "130004410"
-                                           OR "130008510"
-                                           OR "130011210" ) AND
-                       (TBL-ZAI-SRYCD(2)   =  "130011170" ))
-                   OR ((IDY = 2                           ) AND
-                       (TBL-ZAI-SRYCD(IDY) =  "130011170" ) AND
-                       (TBL-ZAI-SRYCD(1)   =  "130004410"
-                                           OR "130008510"
-                                           OR "130011210" ))
-                         MOVE   2              TO  RECE86-TENTEKIKBN
-                         MOVE   RECE84-ZAINUM  TO  RECE86-TENTEKIBAN
-                   END-IF
-                END-IF
-      *
-                IF   (WRK-SRYSYUKBN      =  "330" OR "340")
-                AND  (WRK-TBLMAX         =   1 OR 2       )
-      *         AND  (TBL-ZAI-IDX(IDY)   =   1            )
-                AND  (TBL-ZAI-SRYCD(IDY) =  "130000110" OR "130000210"
+                IF   (WRK-SRYSYUKBN      =  "330")
+                AND  (TBL-ZAI-SRYCD(1)   =  "130000110" OR "130000210"
                                          OR "130000310" OR "130008270"
                                          OR "130701270" OR "130004570"
                                          OR "130009670" OR "130701370"
                                          OR "130010570" OR "130702670"
                                          OR "130010670" OR "130702770"
                                          OR "130011070"               )
-                         MOVE   3              TO  RECE86-TENTEKIKBN
+                AND  (RECE86-TENTEKIKBN  =   ZERO)
+                         MOVE   2              TO  RECE86-TENTEKIKBN
                          MOVE   RECE84-ZAINUM  TO  RECE86-TENTEKIBAN
                 END-IF
       *
-                IF   (WRK-SRYSYUKBN           =  "330")
-      *         AND  (TBL-ZAI-IDX(IDY)        =   1   )
-                AND  (TBL-ZAI-SRYCD(IDY)(1:1) =  "6"   
-                   OR TBL-ZAI-SRYCD(IDY)      =  "099309901")
+                IF   (WRK-SRYSYUKBN      =  "340")
+                AND  (WRK-TBLMAX         =   1   )
+                AND  (TBL-ZAI-SRYCD(1)   =  "130004410" OR "130008510"
+                                         OR "130004670"               )
+                         MOVE   3              TO  RECE86-TENTEKIKBN
+                         MOVE   RECE84-ZAINUM  TO  RECE86-TENTEKIBAN
+                END-IF
+                IF   (WRK-SRYSYUKBN      =  "340"       )
+                AND  (WRK-TBLMAX         =   2          )
+                AND  (TBL-ZAI-SRYCD(1)   =  "130004410" OR "130008510"
+                                         OR "130004670"               )
+                AND  (RECE86-TENTEKIKBN  =   ZERO       )
+                   IF ((TBL-ZAI-SRYCD(2)(1:1) =  "8"   ) OR
+                       (TBL-ZAI-SRYCD(2)(1:3) =  "008" ))
+                   OR ((TBL-ZAI-SRYCD(2)(1:1) =  "7"   ) OR
+                       (TBL-ZAI-SRYCD(2)(1:3) =  "059" ))
+                   OR ((TBL-ZAI-SRYCD(2)(1:1) =  "6"   ) OR
+                       (TBL-ZAI-SRYCD(2) =  "099309901"))
+                         CONTINUE
+                   ELSE
+                         MOVE   3              TO  RECE86-TENTEKIKBN
+                         MOVE   RECE84-ZAINUM  TO  RECE86-TENTEKIBAN
+                   END-IF
+                END-IF
+                IF   (WRK-SRYSYUKBN      =  "340"       )
+                AND  (WRK-TBLMAX         =   3          )
+                AND  (TBL-ZAI-SRYCD(1)   =  "130004410" OR "130008510"
+                                         OR "130004670"               )
+                AND  (RECE86-TENTEKIKBN  =   ZERO       )
+                   IF ((TBL-ZAI-SRYCD(2)(1:1) =  "8"   ) OR
+                       (TBL-ZAI-SRYCD(2)(1:3) =  "008" ))
+                   OR ((TBL-ZAI-SRYCD(2)(1:1) =  "7"   ) OR
+                       (TBL-ZAI-SRYCD(2)(1:3) =  "059" ))
+                   OR ((TBL-ZAI-SRYCD(2)(1:1) =  "6"   ) OR
+                       (TBL-ZAI-SRYCD(2) =  "099309901"))
+                   OR ((TBL-ZAI-SRYCD(3)(1:1) =  "8"   ) OR
+                       (TBL-ZAI-SRYCD(3)(1:3) =  "008" ))
+                   OR ((TBL-ZAI-SRYCD(3)(1:1) =  "7"   ) OR
+                       (TBL-ZAI-SRYCD(3)(1:3) =  "059" ))
+                   OR ((TBL-ZAI-SRYCD(3)(1:1) =  "6"   ) OR
+                       (TBL-ZAI-SRYCD(3) =  "099309901"))
+                         CONTINUE
+                   ELSE
+                         MOVE   3              TO  RECE86-TENTEKIKBN
+                         MOVE   RECE84-ZAINUM  TO  RECE86-TENTEKIBAN
+                   END-IF
+                END-IF
+                IF   (WRK-SRYSYUKBN      =  "340"       )
+                AND  (WRK-TBLMAX         =   4          )
+                AND  (TBL-ZAI-SRYCD(1)   =  "130004410" OR "130008510"
+                                         OR "130004670"               )
+                AND  (RECE86-TENTEKIKBN  =   ZERO       )
+                   IF ((TBL-ZAI-SRYCD(2)(1:1) =  "8"   ) OR
+                       (TBL-ZAI-SRYCD(2)(1:3) =  "008" ))
+                   OR ((TBL-ZAI-SRYCD(2)(1:1) =  "7"   ) OR
+                       (TBL-ZAI-SRYCD(2)(1:3) =  "059" ))
+                   OR ((TBL-ZAI-SRYCD(2)(1:1) =  "6"   ) OR
+                       (TBL-ZAI-SRYCD(2) =  "099309901"))
+                   OR ((TBL-ZAI-SRYCD(3)(1:1) =  "8"   ) OR
+                       (TBL-ZAI-SRYCD(3)(1:3) =  "008" ))
+                   OR ((TBL-ZAI-SRYCD(3)(1:1) =  "7"   ) OR
+                       (TBL-ZAI-SRYCD(3)(1:3) =  "059" ))
+                   OR ((TBL-ZAI-SRYCD(3)(1:1) =  "6"   ) OR
+                       (TBL-ZAI-SRYCD(3) =  "099309901"))
+                   OR ((TBL-ZAI-SRYCD(4)(1:1) =  "8"   ) OR
+                       (TBL-ZAI-SRYCD(4)(1:3) =  "008" ))
+                   OR ((TBL-ZAI-SRYCD(4)(1:1) =  "7"   ) OR
+                       (TBL-ZAI-SRYCD(4)(1:3) =  "059" ))
+                   OR ((TBL-ZAI-SRYCD(4)(1:1) =  "6"   ) OR
+                       (TBL-ZAI-SRYCD(4) =  "099309901"))
+                         CONTINUE
+                   ELSE
+                         MOVE   3              TO  RECE86-TENTEKIKBN
+                         MOVE   RECE84-ZAINUM  TO  RECE86-TENTEKIBAN
+                   END-IF
+                END-IF
+                IF   (WRK-SRYSYUKBN      =  "340")
+                AND  (TBL-ZAI-SRYCD(1)   =  "130000110" OR "130000210"
+                                         OR "130000310" OR "130008270"
+                                         OR "130701270" OR "130004570"
+                                         OR "130009670" OR "130701370"
+                                         OR "130010570" OR "130702670"
+                                         OR "130010670" OR "130702770"
+                                         OR "130011070"               )
+                AND  (RECE86-TENTEKIKBN  =   ZERO)
                          MOVE   4              TO  RECE86-TENTEKIKBN
                          MOVE   RECE84-ZAINUM  TO  RECE86-TENTEKIBAN
                 END-IF
       *
                 IF   (WRK-SRYSYUKBN           =  "330")
-      *         AND  (TBL-ZAI-IDX(IDY)        =   1   )
-                AND  (TBL-ZAI-SRYCD(IDY)(1:1) =  "7"   
-                   OR TBL-ZAI-SRYCD(IDY)(1:3) =  "059")
+                AND  (TBL-ZAI-SRYCD(IDY)(1:1) =  "6"   
+                   OR TBL-ZAI-SRYCD(IDY)      =  "099309901")
                          MOVE   5              TO  RECE86-TENTEKIKBN
                          MOVE   RECE84-ZAINUM  TO  RECE86-TENTEKIBAN
                 END-IF
       *
-                IF   WRK-SRYSYUKBN                =  "340"
-      *         AND  TBL-ZAI-IDX(IDY)             =   1
-                AND  RECE86-TENTEKIKBN            =   ZERO
+                IF   (WRK-SRYSYUKBN           =  "330")
+                AND  (TBL-ZAI-SRYCD(IDY)(1:1) =  "7"   
+                   OR TBL-ZAI-SRYCD(IDY)(1:3) =  "059")
                          MOVE   6              TO  RECE86-TENTEKIKBN
                          MOVE   RECE84-ZAINUM  TO  RECE86-TENTEKIBAN
                 END-IF
       *
-                IF  ( WRK-SRYSYUKBN           =  "330"  )
-      *         AND ( TBL-ZAI-IDX(IDY)        =   1     )
-                AND ((TBL-ZAI-SRYCD(IDY)(1:1) =  "8"   ) OR
-                     (TBL-ZAI-SRYCD(IDY)(1:3) =  "008" ))
+                IF   WRK-SRYSYUKBN                =  "340"
+                AND  RECE86-TENTEKIKBN            =   ZERO
                          MOVE   7              TO  RECE86-TENTEKIKBN
                          MOVE   RECE84-ZAINUM  TO  RECE86-TENTEKIBAN
                 END-IF
       *
-                IF  ( WRK-SRYSYUKBN           =  "331"  )
-      *         AND ( TBL-ZAI-IDX(IDY)        =   1     )
+                IF  ( WRK-SRYSYUKBN           =  "330"  )
                 AND ((TBL-ZAI-SRYCD(IDY)(1:1) =  "8"   ) OR
                      (TBL-ZAI-SRYCD(IDY)(1:3) =  "008" ))
                          MOVE   8              TO  RECE86-TENTEKIKBN
                          MOVE   RECE84-ZAINUM  TO  RECE86-TENTEKIBAN
                 END-IF
       *
-                IF  ( WRK-SRYSYUKBN           =  "332"  )
-      *         AND ( TBL-ZAI-IDX(IDY)        =   1     )
+                IF  ( WRK-SRYSYUKBN           =  "331"  )
                 AND ((TBL-ZAI-SRYCD(IDY)(1:1) =  "8"   ) OR
                      (TBL-ZAI-SRYCD(IDY)(1:3) =  "008" ))
                          MOVE   9              TO  RECE86-TENTEKIKBN
                          MOVE   RECE84-ZAINUM  TO  RECE86-TENTEKIBAN
                 END-IF
       *
-                IF  ( WRK-SRYSYUKBN           =  "350"  )
-      *         AND ( TBL-ZAI-IDX(IDY)        =   1     )
+                IF  ( WRK-SRYSYUKBN           =  "332"  )
                 AND ((TBL-ZAI-SRYCD(IDY)(1:1) =  "8"   ) OR
                      (TBL-ZAI-SRYCD(IDY)(1:3) =  "008" ))
                          MOVE   10             TO  RECE86-TENTEKIKBN
                          MOVE   RECE84-ZAINUM  TO  RECE86-TENTEKIBAN
                 END-IF
       *
-                IF  ( WRK-SRYSYUKBN           =  "352"  )
-      *         AND ( TBL-ZAI-IDX(IDY)        =   1     )
+                IF  ( WRK-SRYSYUKBN           =  "350"  )
                 AND ((TBL-ZAI-SRYCD(IDY)(1:1) =  "8"   ) OR
                      (TBL-ZAI-SRYCD(IDY)(1:3) =  "008" ))
                          MOVE   11             TO  RECE86-TENTEKIKBN
+                         MOVE   RECE84-ZAINUM  TO  RECE86-TENTEKIBAN
+                END-IF
+      *
+                IF  ( WRK-SRYSYUKBN           =  "352"  )
+                AND ((TBL-ZAI-SRYCD(IDY)(1:1) =  "8"   ) OR
+                     (TBL-ZAI-SRYCD(IDY)(1:3) =  "008" ))
+                         MOVE   12             TO  RECE86-TENTEKIKBN
                          MOVE   RECE84-ZAINUM  TO  RECE86-TENTEKIBAN
                 END-IF
       *
@@ -3123,14 +3154,9 @@
       *        ジョブ管理開始処理
                MOVE    "JBE"           TO  SJOBKANRI-MODE
                INITIALIZE                  JOBKANRI-REC
-               MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
-               MOVE    WRK-PARA-SHELLID
-                                       TO  JOB-SHELLID
                MOVE    WRK-RECEERR     TO  JOB-YOBI
                MOVE    "9999"          TO  JOB-ERRCD
-               CALL    "ORCSJOB"       USING
-                                       ORCSJOBKANRIAREA  
-                                       JOBKANRI-REC
+grpsys         PERFORM 900-CALL-ORCSJOB-SEC
            END-IF
       *                             
            MOVE    1                   TO  FLG-END
@@ -3147,12 +3173,7 @@
       *
            MOVE    "CHK"           TO  SJOBKANRI-MODE
            INITIALIZE                  JOBKANRI-REC
-           MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
-           MOVE    WRK-PARA-SHELLID
-                                   TO  JOB-SHELLID
-           CALL    "ORCSJOB"       USING
-                                   ORCSJOBKANRIAREA  
-                                   JOBKANRI-REC
+grpsys     PERFORM 900-CALL-ORCSJOB-SEC
            IF    ( SJOBKANRI-RETURN
                                    =   ZERO )
            AND   ( JOB-STOPFLG     =   1    )
@@ -3172,15 +3193,10 @@
       *            ジョブ管理終了処理
                    MOVE    "CAN"           TO  SJOBKANRI-MODE
                    INITIALIZE                  JOBKANRI-REC
-                   MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
-                   MOVE    WRK-PARA-SHELLID
-                                           TO  JOB-SHELLID
                    MOVE    WRK-RECEERR     TO  JOB-YOBI
                    MOVE    "8888"          TO  JOB-ERRCD
                    MOVE    2               TO  JOB-STOPFLG
-                   CALL    "ORCSJOB"       USING
-                                           ORCSJOBKANRIAREA  
-                                           JOBKANRI-REC
+grpsys             PERFORM 900-CALL-ORCSJOB-SEC
                END-IF
       *                             
                MOVE    1                   TO  FLG-END
@@ -3204,12 +3220,7 @@
       *    ステップ管理終了処理
            MOVE    "STE"           TO  SJOBKANRI-MODE
            INITIALIZE                  JOBKANRI-REC
-           MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
-           MOVE    WRK-PARA-SHELLID
-                                   TO  JOB-SHELLID
-           CALL    "ORCSJOB"       USING
-                                   ORCSJOBKANRIAREA  
-                                   JOBKANRI-REC
+grpsys     PERFORM 900-CALL-ORCSJOB-SEC
       *
            PERFORM 900-DBDISCONNECT-SEC
       *
@@ -3363,78 +3374,49 @@
            EXIT.
       *
       *****************************************************************
-      *    点数マスター読込（キー）
+      *    ジョブ管理ＤＢ制御処理
       *****************************************************************
-      * 900-TENSU-INV-SEC         SECTION.
+       900-CALL-ORCSJOB-SEC            SECTION.
       *
-      *     MOVE    "DBSELECT"          TO  MCP-FUNC
-      *     MOVE    "TENSU-KEY"         TO  ORC-DBPATH
-      *     CALL    "ORCMCPSUB"          USING
-      *                                  MCPAREA
-      *                                  ORCMCPAREA
-      *                                  MCPDATA-REC
-      *     IF      MCP-RC              =   ZERO
-      *         MOVE    "DBFETCH"           TO  MCP-FUNC
-      *         MOVE    "TENSU-KEY"         TO  ORC-DBPATH
-      *         CALL    "ORCMCPSUB"          USING
-      *                                      MCPAREA
-      *                                      ORCMCPAREA
-      *                                      MCPDATA-REC
-      *         IF      MCP-RC              =   ZERO
-      *             MOVE    ZERO                TO  FLG-TENSU
-      *             MOVE    MCPDATA-REC         TO  TNS-TENSU-REC
-      *         ELSE
-      *             INITIALIZE                  TNS-TENSU-REC
-      *             MOVE    1                   TO  FLG-TENSU
-      *         END-IF
-      *     ELSE
-      *         INITIALIZE                  TNS-TENSU-REC
-      *         MOVE    1                   TO  FLG-TENSU
-      *     END-IF
-      *
-      *     MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-      *     MOVE    "TENSU-KEY"         TO  ORC-DBPATH
-      *     CALL    "ORCMCPSUB"          USING
-      *                                  MCPAREA
-      *                                  ORCMCPAREA
-      *                                  MCPDATA-REC
-      *
-      *     .
-      * 900-TENSU-INV-EXT.
-      *     EXIT.
-      *
-      *****************************************************************
-      *    カーソルクローズ処理
-      *****************************************************************
-       CSR-CLOSE-SEC            SECTION.
-      *
-           INITIALIZE                  MCPAREA
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           MOVE    WRK-PATH            TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
+           MOVE    WRK-PARA-SHELLID
+                                   TO  JOB-SHELLID
+grpsys     MOVE    SPA-HOSPNUM     TO  JOB-HOSPNUM
+           CALL    "ORCSJOB"       USING
+                                   ORCSJOBKANRIAREA 
+                                   JOBKANRI-REC
+                                   SPA-AREA
            .
-       CSR-CLOSE-EXT.
+       900-CALL-ORCSJOB-EXT.
            EXIT.
-      *      
+      *
+      *****************************************************************
+      *    テーブルアクセス処理
+      *****************************************************************
+       900-ORCDBMAIN-SEC               SECTION.
+      *
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
+           .
+      *
+       900-ORCDBMAIN-EXT.
+           EXIT.
+      *
       *****************************************************************
       *    ＤＢ　オープン処理
       *****************************************************************
        120-DBOPEN-SEC                SECTION.
       *
-           MOVE    "DBOPEN"            TO  MCP-FUNC.
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC.
+           MOVE    LOW-VALUE           TO  MCP-TABLE
+                                           MCP-PATHNAME
+           MOVE    "DBOPEN"            TO  MCP-FUNC
+grpsys     PERFORM 900-ORCDBMAIN-SEC
       *
-           MOVE    "DBSTART"           TO  MCP-FUNC.
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC.
+           MOVE    LOW-VALUE           TO  MCP-TABLE
+                                           MCP-PATHNAME
+           MOVE    "DBSTART"           TO  MCP-FUNC
+grpsys     PERFORM 900-ORCDBMAIN-SEC
            .
        120-DBOPEN-EXT.
            EXIT.
@@ -3444,18 +3426,15 @@
       *****************************************************************
        900-DBDISCONNECT-SEC            SECTION.
       *
-           MOVE    "DBCOMMIT"          TO  MCP-FUNC.
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC.
+           MOVE    LOW-VALUE           TO  MCP-TABLE
+                                           MCP-PATHNAME
+           MOVE    "DBCOMMIT"          TO  MCP-FUNC
+grpsys     PERFORM 900-ORCDBMAIN-SEC
       *
-           MOVE    "DBDISCONNECT"      TO  MCP-FUNC.
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC.
-      *
+           MOVE    LOW-VALUE           TO  MCP-TABLE
+                                           MCP-PATHNAME
+           MOVE    "DBDISCONNECT"      TO  MCP-FUNC
+grpsys     PERFORM 900-ORCDBMAIN-SEC
            .
        900-DBDISCONNECT-EXT.
            EXIT.

@@ -35,6 +35,7 @@
       *  01.01.02    NACL-門脇    05.09.06  自賠責従来様式対応
       *  01.01.03    NACL-門脇    05/11/11  コメントを含む場合の編集修正
       *  02.09.01    NACL-門脇    06/04/13  ２００６年４月改正対応
+      *  03.05.01    NACL-門脇    07/06/01  グループ診療対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -120,34 +121,25 @@
        01  RECEERR-REC             PIC X(200). 
       *
        WORKING-STORAGE             SECTION.
-grpsys*
-grpsys COPY    "COMMON-SPA".
       *
-           COPY    "CPCOMMONDAT2.INC"
-                                   REPLACING  //RECE01//
+           COPY    "CPRECEDAT1.INC"
+                                   REPLACING  //RECEDAT1//
                                    BY         //RECE82//.
-      *
-           COPY    "CPCOMMONDAT2.INC"
-                                   REPLACING  //RECE01//
+           COPY    "CPRECEDAT1.INC"
+                                   REPLACING  //RECEDAT1//
                                    BY         //RECE84//.
-      *
-           COPY    "CPCOMMONDAT2.INC"
-                                   REPLACING  //RECE01//
+           COPY    "CPRECEDAT1.INC"
+                                   REPLACING  //RECEDAT1//
                                    BY         //RECE85//.
-      *
-           COPY    "CPCOMMONDAT2.INC"
-                                   REPLACING  //RECE01//
+           COPY    "CPRECEDAT1.INC"
+                                   REPLACING  //RECEDAT1//
                                    BY         //RECE843//.
-      *
-           COPY    "CPCOMMONDAT2.INC"
-                                   REPLACING  //RECE01//
+           COPY    "CPRECEDAT1.INC"
+                                   REPLACING  //RECEDAT1//
                                    BY         //RECE84X//.
-      *
       *    エラーファイル 名称領域 
-           COPY    "CPCOMMONDAT2.INC"
-                                   REPLACING  //RECE01PARA//
+           COPY    "CPERRFL.INC"   REPLACING  //ERRFLPARA//
                                    BY         //RECEERR//.
-           03  FILLER              PIC X(04)   VALUE   ".dat".
       *
       *    フラグ領域
        01  STS-AREA.
@@ -194,6 +186,7 @@ grpsys COPY    "COMMON-SPA".
                05  WRK-PARA-RECEKBN                    PIC  X(01).
                05  WRK-PARA-JOBID                      PIC  9(07).
                05  WRK-PARA-SHELLID                    PIC  X(08).
+           03  WRK-PARA-HOSPNUM                        PIC  9(02).
       *
            03  WRK-COMRENNUM           PIC 9(05).
       *    剤番号の退避
@@ -227,10 +220,10 @@ grpsys COPY    "COMMON-SPA".
            COPY    "CPORCSJOBKANRI.INC".
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
-      *     
-           COPY    "CPORCMCP.INC".  
       *
            COPY    "MCPAREA".
+      *
+           COPY    "COMMON-SPA".
       *
       ****************************************************************
        LINKAGE                 SECTION.
@@ -262,43 +255,46 @@ grpsys COPY    "COMMON-SPA".
            INITIALIZE                  CNT-AREA
                                        WRK-AREA
                                        FLG-AREA
+                                       SPA-AREA
       *
            MOVE    ZERO                TO  FLG-END
       *
-           MOVE    COMMAND-PARAM       TO  WRK-PARA
+           UNSTRING    COMMAND-PARAM   DELIMITED  BY  ","
+                                       INTO    WRK-PARA
+                                               WRK-PARA-HOSPNUM
+                                               RECEERR
+           END-UNSTRING
+           MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
       *
            MOVE    "RECE820"           TO  RECE82PARA-FILE-ID
            MOVE    WRK-PARA-TERMID     TO  RECE82PARA-TERMID
+grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE82PARA-HOSPNUM
       *
            MOVE    "RECE841"           TO  RECE84PARA-FILE-ID
            MOVE    WRK-PARA-TERMID     TO  RECE84PARA-TERMID
+grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE84PARA-HOSPNUM
       *
            MOVE    "RECE851"           TO  RECE85PARA-FILE-ID
            MOVE    WRK-PARA-TERMID     TO  RECE85PARA-TERMID
+grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE85PARA-HOSPNUM
       *
            MOVE    "RECE843"           TO  RECE843PARA-FILE-ID
            MOVE    WRK-PARA-TERMID     TO  RECE843PARA-TERMID
+grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE843PARA-HOSPNUM
       *
            MOVE    "RECE84X"           TO  RECE84XPARA-FILE-ID
            MOVE    WRK-PARA-TERMID     TO  RECE84XPARA-TERMID
-      *
-           MOVE    "RECEERR"           TO  RECEERR-FILE-ID
-           MOVE    WRK-PARA-TERMID     TO  RECEERR-TERMID
+grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE84XPARA-HOSPNUM
       *
            PERFORM 100-DBOPEN-SEC
       *
       *    ステップ管理開始処理
            MOVE    "STS"           TO  SJOBKANRI-MODE
            INITIALIZE                  JOBKANRI-REC
-           MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
-           MOVE    WRK-PARA-SHELLID
-                                   TO  JOB-SHELLID
            MOVE    "ORCR0860"      TO  JOB-PGID
            MOVE    "同一剤のまとめ２（労災・自賠責）"
                                    TO  JOB-SHELLMSG
-           CALL    "ORCSJOB"       USING
-                                   ORCSJOBKANRIAREA  
-                                   JOBKANRI-REC
+grpsys     PERFORM 900-CALL-ORCSJOB-SEC
       *
       *    処理中止設定処理
            PERFORM 500-CANCEL-HENSYU-SEC
@@ -358,7 +354,7 @@ grpsys COPY    "COMMON-SPA".
            MOVE    ZERO                TO  WRK-COMRENNUM
       *
            INITIALIZE                      RECE84-REC
-           MOVE    RECE82-HOSPID       TO  RECE84-HOSPID
+           MOVE    RECE82-HOSPNUM      TO  RECE84-HOSPNUM
            MOVE    RECE82-SRYYM        TO  RECE84-SRYYM
            MOVE    RECE82-NYUGAIKBN    TO  RECE84-NYUGAIKBN
            MOVE    RECE82-PTID         TO  RECE84-PTID
@@ -377,7 +373,7 @@ grpsys COPY    "COMMON-SPA".
            PERFORM
                UNTIL  ( FLG-END              =   1                   )
                OR     ( FLG-RECE84           =   1                   )
-               OR     ( RECE82-HOSPID    NOT =   RECE84-HOSPID       )
+               OR     ( RECE82-HOSPNUM   NOT =   RECE84-HOSPNUM      )
                OR     ( RECE82-SRYYM     NOT =   RECE84-SRYYM        )
                OR     ( RECE82-NYUGAIKBN NOT =   RECE84-NYUGAIKBN    )
                OR     ( RECE82-PTID      NOT =   RECE84-PTID         )
@@ -394,7 +390,7 @@ grpsys COPY    "COMMON-SPA".
       *
                MOVE    SPACE               TO  RECE843-REC
                INITIALIZE                      RECE843-REC
-               MOVE    RECE84-HOSPID       TO  RECE843-HOSPID
+               MOVE    RECE84-HOSPNUM      TO  RECE843-HOSPNUM
                MOVE    RECE84-SRYYM        TO  RECE843-SRYYM
                MOVE    RECE84-NYUGAIKBN    TO  RECE843-NYUGAIKBN
                MOVE    RECE84-PTID         TO  RECE843-PTID
@@ -520,7 +516,7 @@ grpsys COPY    "COMMON-SPA".
            MOVE    ZERO                 TO      IDZ2
       *
            INITIALIZE                           RECE85-REC
-           MOVE    RECE82-HOSPID        TO      RECE85-HOSPID
+           MOVE    RECE82-HOSPNUM       TO      RECE85-HOSPNUM
            MOVE    RECE82-SRYYM         TO      RECE85-SRYYM
            MOVE    RECE82-NYUGAIKBN     TO      RECE85-NYUGAIKBN
            MOVE    RECE82-PTID          TO      RECE85-PTID
@@ -536,7 +532,7 @@ grpsys COPY    "COMMON-SPA".
                    PERFORM  900-RECE85-READ-SEC
            END-START
            PERFORM   UNTIL
-                  (RECE82-HOSPID        NOT =  RECE85-HOSPID)    OR
+                  (RECE82-HOSPNUM       NOT =  RECE85-HOSPNUM)   OR
                   (RECE82-SRYYM         NOT =  RECE85-SRYYM)     OR
                   (RECE82-NYUGAIKBN     NOT =  RECE85-NYUGAIKBN) OR
                   (RECE82-PTID          NOT =  RECE85-PTID)      OR
@@ -614,14 +610,9 @@ grpsys COPY    "COMMON-SPA".
       *        ジョブ管理開始処理
                MOVE    "JBE"           TO  SJOBKANRI-MODE
                INITIALIZE                  JOBKANRI-REC
-               MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
-               MOVE    WRK-PARA-SHELLID
-                                       TO  JOB-SHELLID
                MOVE    WRK-RECEERR     TO  JOB-YOBI
                MOVE    "9999"          TO  JOB-ERRCD
-               CALL    "ORCSJOB"       USING
-                                       ORCSJOBKANRIAREA  
-                                       JOBKANRI-REC
+grpsys         PERFORM 900-CALL-ORCSJOB-SEC
            END-IF
       *                             
            MOVE    1                   TO  FLG-END
@@ -637,12 +628,7 @@ grpsys COPY    "COMMON-SPA".
       *
            MOVE    "CHK"           TO  SJOBKANRI-MODE
            INITIALIZE                  JOBKANRI-REC
-           MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
-           MOVE    WRK-PARA-SHELLID
-                                   TO  JOB-SHELLID
-           CALL    "ORCSJOB"       USING
-                                   ORCSJOBKANRIAREA  
-                                   JOBKANRI-REC
+grpsys     PERFORM 900-CALL-ORCSJOB-SEC
            IF    ( SJOBKANRI-RETURN
                                    =   ZERO )
            AND   ( JOB-STOPFLG     =   1    )
@@ -662,15 +648,10 @@ grpsys COPY    "COMMON-SPA".
       *            ジョブ管理終了処理
                    MOVE    "CAN"           TO  SJOBKANRI-MODE
                    INITIALIZE                  JOBKANRI-REC
-                   MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
-                   MOVE    WRK-PARA-SHELLID
-                                           TO  JOB-SHELLID
                    MOVE    WRK-RECEERR     TO  JOB-YOBI
                    MOVE    "8888"          TO  JOB-ERRCD
                    MOVE    2               TO  JOB-STOPFLG
-                   CALL    "ORCSJOB"       USING
-                                           ORCSJOBKANRIAREA  
-                                           JOBKANRI-REC
+grpsys             PERFORM 900-CALL-ORCSJOB-SEC
                END-IF
       *                             
                MOVE    1                   TO  FLG-END
@@ -687,12 +668,7 @@ grpsys COPY    "COMMON-SPA".
       *    ステップ管理終了処理
            MOVE    "STE"           TO  SJOBKANRI-MODE
            INITIALIZE                  JOBKANRI-REC
-           MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
-           MOVE    WRK-PARA-SHELLID
-                                   TO  JOB-SHELLID
-           CALL    "ORCSJOB"       USING
-                                   ORCSJOBKANRIAREA  
-                                   JOBKANRI-REC
+grpsys     PERFORM 900-CALL-ORCSJOB-SEC
       *
            PERFORM 900-DBDISCONNECT-SEC
       *
@@ -793,7 +769,7 @@ grpsys COPY    "COMMON-SPA".
            MOVE    ZERO                TO  FLG-MATOME
       *
            INITIALIZE                      RECE843-REC
-           MOVE    RECE84-HOSPID       TO  RECE843-HOSPID
+           MOVE    RECE84-HOSPNUM      TO  RECE843-HOSPNUM
            MOVE    RECE84-SRYYM        TO  RECE843-SRYYM
            MOVE    RECE84-NYUGAIKBN    TO  RECE843-NYUGAIKBN
            MOVE    RECE84-PTID         TO  RECE843-PTID
@@ -815,7 +791,7 @@ grpsys COPY    "COMMON-SPA".
                    PERFORM  900-RECE843-READ-SEC
            END-START
            PERFORM   UNTIL
-                  (RECE84-HOSPID       NOT =  RECE843-HOSPID)       OR
+                  (RECE84-HOSPNUM      NOT =  RECE843-HOSPNUM)      OR
                   (RECE84-SRYYM        NOT =  RECE843-SRYYM)        OR
                   (RECE84-NYUGAIKBN    NOT =  RECE843-NYUGAIKBN)    OR
                   (RECE84-PTID         NOT =  RECE843-PTID)         OR
@@ -884,42 +860,68 @@ grpsys COPY    "COMMON-SPA".
            EXIT.
       *
       *****************************************************************
-      *    ＤＢ　オープン処理
+      *    ジョブ管理ＤＢ制御処理
+      *****************************************************************
+       900-CALL-ORCSJOB-SEC            SECTION.
+      *
+           MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
+           MOVE    WRK-PARA-SHELLID
+                                   TO  JOB-SHELLID
+grpsys     MOVE    SPA-HOSPNUM     TO  JOB-HOSPNUM
+           CALL    "ORCSJOB"       USING
+                                   ORCSJOBKANRIAREA 
+                                   JOBKANRI-REC
+                                   SPA-AREA
+           .
+       900-CALL-ORCSJOB-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    テーブルアクセス処理
+      *****************************************************************
+       900-ORCDBMAIN-SEC               SECTION.
+      *
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
+           .
+      *
+       900-ORCDBMAIN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ＤＢオープン処理
       *****************************************************************
        100-DBOPEN-SEC                SECTION.
       *
-           MOVE    "DBOPEN"            TO  MCP-FUNC.
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC.
+           MOVE    LOW-VALUE           TO  MCP-TABLE
+                                           MCP-PATHNAME
+           MOVE    "DBOPEN"            TO  MCP-FUNC
+grpsys     PERFORM 900-ORCDBMAIN-SEC
       *
-           MOVE    "DBSTART"           TO  MCP-FUNC.
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC.
+           MOVE    LOW-VALUE           TO  MCP-TABLE
+                                           MCP-PATHNAME
+           MOVE    "DBSTART"           TO  MCP-FUNC
+grpsys     PERFORM 900-ORCDBMAIN-SEC
            .
        100-DBOPEN-EXT.
            EXIT.
       *
       *****************************************************************
-      *    ＤＢ　クローズ処理
+      *    ＤＢクローズ処理
       *****************************************************************
        900-DBDISCONNECT-SEC            SECTION.
       *
-           MOVE    "DBCOMMIT"          TO  MCP-FUNC.
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC.
+           MOVE    LOW-VALUE           TO  MCP-TABLE
+                                           MCP-PATHNAME
+           MOVE    "DBCOMMIT"          TO  MCP-FUNC
+grpsys     PERFORM 900-ORCDBMAIN-SEC
       *
-           MOVE    "DBDISCONNECT"      TO  MCP-FUNC.
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC.
-      *
+           MOVE    LOW-VALUE           TO  MCP-TABLE
+                                           MCP-PATHNAME
+           MOVE    "DBDISCONNECT"      TO  MCP-FUNC
+grpsys     PERFORM 900-ORCDBMAIN-SEC
            .
        900-DBDISCONNECT-EXT.
            EXIT.
+      *
