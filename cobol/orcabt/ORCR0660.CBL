@@ -734,6 +734,7 @@
            INITIALIZE                  STS-AREA
            INITIALIZE                  WRK-AREA
            INITIALIZE                  CNT-AREA
+           INITIALIZE                  SPA-AREA
       *
       *    ¥Õ¥¡¥¤¥ë£Ï£Ð£Å£Î½èÍý
       *

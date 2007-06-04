@@ -268,6 +268,7 @@
            INITIALIZE                  CNT-AREA
                                        WRK-AREA
                                        FLG-AREA
+                                       SPA-AREA
       *
            MOVE    ZERO                TO  FLG-END
       *

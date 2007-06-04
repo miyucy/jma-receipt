@@ -203,6 +203,7 @@
            INITIALIZE                  CNT-AREA
                                        WRK-AREA
                                        FLG-AREA
+                                       SPA-AREA
       *
            UNSTRING    COMMAND-PARAM   DELIMITED  BY  ","
                                        INTO    WRK-PARA

@@ -415,6 +415,7 @@
       *
            INITIALIZE                  CNT-AREA
                                        WRK-AREA
+                                       SPA-AREA
       *
            MOVE    ZERO                TO  FLG-END
       *
