@@ -271,8 +271,13 @@
        3001-SPA-SET-SEC             SECTION.
       *
            INITIALIZE                 SPA-XE01
-           MOVE    1               TO  SPA-GMN-CUR
-           DISPLAY "spa-set"
+           MOVE    1                  TO  SPA-GMN-CUR
+      *    医療機関識別番号セット SPA-HOSPNUM
+           CALL    "ORCSHOSPNUM"   USING
+                                       MCPAREA
+                                       SPA-AREA
+      *
+           DISPLAY "spa-set"  " SPA-HOSPNUM:" SPA-HOSPNUM
            .
        3001-SPA-SET-EXT.
            EXIT.
