@@ -1044,11 +1044,17 @@
       *****************************************************************
        100-DBOPEN-SEC                SECTION.
       *
+           MOVE    LOW-VALUE           TO  MCP-TABLE
+                                           MCP-PATHNAME
+      *
            MOVE    "DBOPEN"            TO  MCP-FUNC.
            CALL    "ORCDBMAIN"         USING
                                        MCPAREA
                                        MCPDATA-REC
                                        SPA-AREA
+      *
+           MOVE    LOW-VALUE           TO  MCP-TABLE
+                                           MCP-PATHNAME
       *
            MOVE    "DBSTART"           TO  MCP-FUNC.
            CALL    "ORCDBMAIN"         USING
