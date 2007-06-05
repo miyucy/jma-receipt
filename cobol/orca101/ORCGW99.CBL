@@ -1418,6 +1418,7 @@
                MOVE    "DBINSERT"              TO  MCP-FUNC
            END-IF
            MOVE    SPA-HOSPNUM             TO  SYS-HOSPNUM
+                                               SYSUP-HOSPNUM
            MOVE    SYSKANRI-REC            TO  MCPDATA-REC
 grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                                MCPDATA-REC
