@@ -37,7 +37,7 @@ fi
             rm  ${15}
         fi
 
-        LOG_FILE="/home/orca/${19}toukei2.log"
+        LOG_FILE="/var/log/jma-receipt/${19}toukei2.log"
         
         rm  -f /var/tmp/TOKEI1*
         rm  -f /var/tmp/toukei11.dat

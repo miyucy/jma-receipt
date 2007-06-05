@@ -54,9 +54,9 @@ fi
         rm  -f /tmp/${16}00RECE12*
 
         if [ ${2} -eq  '1' ]; then
-           LOG_FILE="/home/orca/${16}recept1a.log"
+           LOG_FILE="/var/log/jma-receipt/${16}recept1a.log"
         else
-           LOG_FILE="/home/orca/${16}recept1b.log"
+           LOG_FILE="/var/log/jma-receipt/${16}recept1b.log"
         fi
 
         

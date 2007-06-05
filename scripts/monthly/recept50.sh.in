@@ -22,7 +22,7 @@ fi
 
 	echo $#
 
-        LOG_FILE="/home/orca/${3}recept50.log"
+        LOG_FILE="/var/log/jma-receipt/${3}recept50.log"
 
 #   主科情報一括取得
 

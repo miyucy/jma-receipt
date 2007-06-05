@@ -48,7 +48,7 @@ fi
            fi
         fi
 
-        LOG_FILE="/home/orca/${30}recept2.log"
+        LOG_FILE="/var/log/jma-receipt/${30}recept2.log"
 
         if [ $4 -eq  '0' ] && [ ${10} -eq  '01' ]; then
            rm $LOG_FILE

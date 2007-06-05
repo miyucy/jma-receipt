@@ -35,7 +35,7 @@ fi
     fi
 
         rm -r /home/orca/recept4.log
-        LOG_FILE="/home/orca/${20}recept4.log"
+        LOG_FILE="/var/log/jma-receipt/${20}recept4.log"
 
         echo "arg13 = [" ${13} "]"  >$LOG_FILE
         echo "arg18 = [" ${18} "]" >>$LOG_FILE

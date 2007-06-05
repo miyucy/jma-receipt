@@ -40,9 +40,9 @@ fi
         rm  -f  /tmp/${16}RECEYMD*
 
         if [ ${2} -eq  '1' ]; then
-           LOG_FILE="/home/orca/${16}recept6a.log"
+           LOG_FILE="/var/log/jma-receipt/${16}recept6a.log"
         else
-           LOG_FILE="/home/orca/${16}recept6b.log"
+           LOG_FILE="/var/log/jma-receipt/${16}recept6b.log"
         fi
         
 	$DBSTUB -dir $LDDIRECTORY -bd orcabt ORCR0400 -parameter $1$2$3$5$6,${16},${4}    > $LOG_FILE 2>&1

@@ -28,7 +28,7 @@ RENNUM=0
         fi
 
         rm -f /home/orca/recept5.log
-        LOG_FILE="/home/orca/${12}recept5.log"
+        LOG_FILE="/var/log/jma-receipt/${12}recept5.log"
 
 ##      Ì¤ÀÁµá°ìÍ÷
         RENNUM=$(expr $RENNUM + 1) 

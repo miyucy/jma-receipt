@@ -42,7 +42,7 @@ RENNUM=0
         rm  -f /home/orca/recept31.log
         rm  -f /home/orca/recept32.log
 
-        LOG_FILE="/home/orca/${14}recept3${13}.log"
+        LOG_FILE="/var/log/jma-receipt/${14}recept3${13}.log"
         rm -f $LOG_FILE 
 
         

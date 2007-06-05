@@ -25,7 +25,7 @@ fi
             rm  $3
         fi
 
-        LOG_FILE="/home/orca/${4}sokatsu${2}.log"
+        LOG_FILE="/var/log/jma-receipt/${4}sokatsu${2}.log"
         
 ##      決定通知書（社保）
         if  [ $2 = '1' ]; then
