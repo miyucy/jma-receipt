@@ -306,9 +306,6 @@
       *   患者番号変換サブ
            COPY    "CPORCSPTID.INC".
       *
-      *   画面日付変換サブ
-          COPY    "CPORCSGDAY.INC".
-      *
       *    マシン日付取得サブ
            COPY    "CPORCSMCNDATE.INC".
       *
