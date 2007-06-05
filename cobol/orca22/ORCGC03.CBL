@@ -960,18 +960,18 @@
                END-IF
       *
                MOVE    IDX             TO  SPA-GMN-C03-MAX
-           END-IF
       *
       *    病名種別
-           PERFORM VARYING     IDY     FROM    1   BY  1
-                   UNTIL       IDY     >   SPA-GMN-C03-BYOMEISBT-MAX
-               IF      SPA-GMN-C03-BYOMEISBTL (IDY)
+               PERFORM VARYING     IDY     FROM    1   BY  1
+                       UNTIL       IDY     >   SPA-GMN-C03-BYOMEISBT-MAX
+                   IF      SPA-GMN-C03-BYOMEISBTL (IDY)
                                            =   USBYO-BYOMEISBT
-                   MOVE    SPA-GMN-C03-BYOMEISBTMEIL(IDY)
-                                   TO  SPA-GMN-C03-TBYOMEISBT (IDX)
-                   MOVE    SPA-GMN-C03-BYOMEISBT-MAX   TO  IDY
-               END-IF
-           END-PERFORM
+                       MOVE    SPA-GMN-C03-BYOMEISBTMEIL(IDY)
+                                       TO  SPA-GMN-C03-TBYOMEISBT (IDX)
+                       MOVE    SPA-GMN-C03-BYOMEISBT-MAX   TO  IDY
+                   END-IF
+               END-PERFORM
+           END-IF
       *
            .
        31011-USERBYOMEI-SPA-EXT.
