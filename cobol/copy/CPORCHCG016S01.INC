@@ -25,7 +25,7 @@
       ************************************************************
        01  HCG016S01-AREA.
            03  HCG016S01-IN-AREA.
-               05  HCG016S01-HOSPID        PIC X(24).
+               05  HCG016S01-HOSPNUM       PIC 9(02).
                05  HCG016S01-PTID          PIC 9(10).
                05  HCG016S01-KJNYMD        PIC X(08).
            03  HCG016S01-OT-AREA.

@@ -25,7 +25,7 @@
         01  SS003-AREA.
             03  SS003-IN.
                 05  SS003-SYORIKBN         PIC X(01).
-                05  SS003-HOSPID           PIC X(24).
+                05  SS003-HOSPNUM          PIC 9(02).
                 05  SS003-PTID             PIC 9(10).
                 05  SS003-NYUGAIKBN        PIC X(01).
                 05  SS003-DENPNUM          PIC 9(07).

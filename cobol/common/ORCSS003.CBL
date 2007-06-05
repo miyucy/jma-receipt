@@ -27,6 +27,7 @@
       *****************************************************************
       *  ¥×¥í¥°¥é¥à½¤ÀµÍúÎò
       * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      *  03.05.00    NACL-ÂÀÅÄ    07/06/05  ¥°¥ë¡¼¥×¿ÇÎÅÂÐ±þ
       *****************************************************************
       *
       *
@@ -105,9 +106,11 @@
       *
       *    ½é¿Ç¡¿ºÆ¿Ç¥«¥¦¥ó¥È¥µ¥Ö
            COPY    "CPORCSS003.INC".
+           COPY    "COMMON-SPA".
       *
        PROCEDURE                       DIVISION    USING
            SS003-AREA
+           SPA-AREA
            .
       *
       *****************************************************************
@@ -172,7 +175,7 @@
       *    ¼õ¿ÇÍúÎò¸¡º÷½èÍý
            MOVE    ZERO                TO  FLG-JYURRK
            INITIALIZE                      JYURRK-REC
-           MOVE    SS003-HOSPID        TO  JYURRK-HOSPID
+           MOVE    SS003-HOSPNUM        TO  JYURRK-HOSPNUM
            MOVE    SS003-PTID          TO  JYURRK-PTID
            MOVE    SS003-NYUGAIKBN     TO  JYURRK-NYUGAIKBN
            MOVE    SS003-DENPNUM       TO  JYURRK-DENPNUM
@@ -227,7 +230,7 @@
       *    ¿ÇÎÅ²ñ·×¸¡º÷
            MOVE    ZERO                TO  FLG-SRYACCT
            INITIALIZE                      SRYACCT-REC
-           MOVE    JYURRK-HOSPID       TO  ACCT-HOSPID
+           MOVE    JYURRK-HOSPNUM       TO  ACCT-HOSPNUM
            MOVE    JYURRK-NYUGAIKBN    TO  ACCT-NYUGAIKBN
            MOVE    JYURRK-PTID         TO  ACCT-PTID
            MOVE    JYURRK-SRYKA        TO  ACCT-SRYKA
@@ -278,7 +281,7 @@
       *    ¿ÇÎÅ¹Ô°Ù¸¡º÷
            MOVE    ZERO                TO  FLG-SRYACT
            INITIALIZE                      SRYACT-REC
-           MOVE    ACCT-HOSPID         TO  SRY-HOSPID
+           MOVE    ACCT-HOSPNUM         TO  SRY-HOSPNUM
            MOVE    ACCT-NYUGAIKBN      TO  SRY-NYUGAIKBN
            MOVE    ACCT-PTID           TO  SRY-PTID
            MOVE    ACCT-SRYKA          TO  SRY-SRYKA
@@ -405,6 +408,7 @@
                MOVE    TTNS-CHK-SRYCD      TO  TNS-SRYCD
                MOVE    TTNS-CHK-YMD        TO  TNS-YUKOSTYMD
                                                TNS-YUKOEDYMD
+               MOVE    SPA-HOSPNUM         TO  TNS-HOSPNUM
                MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
                MOVE    "tbl_tensu"         TO  MCP-TABLE
                MOVE    "key"               TO  MCP-PATHNAME
@@ -480,9 +484,10 @@
        910-DBSELECT-SEC                SECTION.
       *
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           CALL    "MONFUNC"           USING
+           CALL    "ORCDBMAIN"         USING
                                        MCPAREA
                                        MCPDATA-REC
+                                       SPA-AREA
            IF    ( MCP-RC          =   ZERO )
                PERFORM 910-DBFETCH-SEC
            END-IF
@@ -497,9 +502,10 @@
        911-DBSELECT-SEC                SECTION.
       *
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           CALL    "MONFUNC"           USING
+           CALL    "ORCDBMAIN"         USING
                                        MCPAREA
                                        MCPDATA-REC
+                                       SPA-AREA
       *
            .
       *
@@ -511,9 +517,10 @@
        910-DBFETCH-SEC                 SECTION.
       *
            MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "MONFUNC"           USING
+           CALL    "ORCDBMAIN"         USING
                                        MCPAREA
                                        MCPDATA-REC
+                                       SPA-AREA
       *
            .
       *
@@ -525,9 +532,10 @@
        910-DBCLOSECURSOR-SEC           SECTION.
       *
            MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
-           CALL    "MONFUNC"           USING
+           CALL    "ORCDBMAIN"         USING
                                        MCPAREA
                                        MCPDATA-REC
+                                       SPA-AREA
       *
            .
       *
