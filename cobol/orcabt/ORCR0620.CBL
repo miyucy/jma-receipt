@@ -2340,7 +2340,7 @@
                MOVE    RECE61-SRYYM    TO  PTNYUINRRK-NYUINYMD (1:6)
                MOVE    "31"            TO  PTNYUINRRK-NYUINYMD (7:2)
                MOVE    PTNYUINRRK-REC  TO  MCPDATA-REC
-               MOVE    "tbl_pthkninf"      TO  MCP-TABLE
+               MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
                MOVE    "key22"             TO  MCP-PATHNAME
                PERFORM   900-DBSELECT-SEC
                IF      MCP-RC              =   ZERO
