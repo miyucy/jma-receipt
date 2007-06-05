@@ -82,6 +82,7 @@
       *    統計ファイル
            COPY    "CPCOMMONDAT2.INC"  REPLACING  //RECE01//
                                        BY         //TOKEI//.
+grpsys     03  FILLER                  PIC X(04)   VALUE   ".dat".
       *    エラーファイル 名称領域 
 grpsys*DD  COPY    "CPCOMMONDAT2.INC"  REPLACING  //RECE01PARA//
 grpsys*DD                              BY         //RECEERR//.
@@ -667,7 +668,6 @@ grpsys         MOVE    SPA-HOSPNUM         TO  ACCT-HOSPNUM
        220-MAIN-ACCT-SEC           SECTION.
       *
       *    対象診療年月で検索
-grpsys     MOVE    SPA-HOSPNUM         TO  ACCT-HOSPNUM
            MOVE    SRYACCT-REC         TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
 grpsys     MOVE    "tbl_sryacct"   TO  MCP-TABLE
