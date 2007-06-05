@@ -845,7 +845,7 @@
            MOVE    SPACE               TO  CONST-PRTKANRI-TBL-GROUP
       *
            MOVE    SPA-HOSPNUM         TO  DTCHKERR-HOSPNUM
-           MOVE    "ORC044ERR"         TO  DTCHKERR-FILE-ID
+           MOVE    "OR044ERR"          TO  DTCHKERR-FILE-ID
            MOVE    SPA-TERMID          TO  DTCHKERR-TERMID
       *
       *    出力先プリンタ名割り当て情報編集
