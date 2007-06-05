@@ -32,6 +32,7 @@
       * 02.01.02     NACL-¿¹ÏÆ    04/08/31  ¾ò·ï½¤Àµ
       * 02.01.03     NACL-¿¹ÏÆ    04/10/22  CLOSE½èÍý
       * 02.01.04     NACL-¿¹ÏÆ    05/01/26  ¹âÂ®²½¤Ë¤è¤ëÊÑ¹¹
+      * 03.05.01     NACL-¿¹ÏÆ    07/06/05  ¥°¥ë¡¼¥×¿ÇÎÅÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -79,11 +80,14 @@
       *
            COPY    "CPCOMMONDAT2.INC"  REPLACING  //RECE01//
                                        BY         //TOKEI//.
+grpsys     03  FILLER                  PIC X(04)   VALUE   ".dat".
       *
       *    ¥¨¥é¡¼¥Õ¥¡¥¤¥ë Ì¾¾ÎÎÎ°è 
-           COPY    "CPCOMMONDAT2.INC"  REPLACING  //RECE01PARA//
-                                       BY         //RECEERR//.
-           03  FILLER                  PIC X(04)   VALUE   ".dat".
+grpsys*DD  COPY    "CPCOMMONDAT2.INC"  REPLACING  //RECE01PARA//
+grpsys*DD                              BY         //RECEERR//.
+grpsys*DD  03  FILLER                  PIC X(04)   VALUE   ".dat".
+grpsys     COPY    "CPERRFL.INC"   REPLACING  //ERRFLPARA//
+grpsys                             BY         //RECEERR//.
       *
            COPY    "HCMG001.INC".
       *
@@ -136,7 +140,9 @@
            COPY    "CPORCSPRTLNK.INC".
            03  WRK-PARA-JOBID          PIC 9(07).
            03  WRK-PARA-SHELLID        PIC X(08).
-           03  WRK-PARA-HOSPID         PIC X(24).
+grpsys*DD  03  WRK-PARA-HOSPID         PIC X(24).
+grpsys     03  WRK-PARA-HOSPNUM        PIC 9(02).
+grpsys     03  RECEERR                 PIC X(100).
            03  WRK-PARA-DENPPRTYM      PIC X(06).
            03  WRK-PARA-YKZKBN         PIC 9(01).
       *----(02.01.01)--ADD-START---
@@ -240,7 +246,7 @@
       *
       *    ¥­¡¼ÎÎ°è
        01  KEY-AREA.
-           03  KEY-HOSPID          PIC X(24).
+grpsys*DD  03  KEY-HOSPID          PIC X(24).
            03  KEY-NYUGAIKBN       PIC X(01).
            03  KEY-PTID            PIC 9(10).
            03  KEY-SRYKA           PIC X(02).
@@ -363,12 +369,15 @@
                                        LNK-PRTKANRI-PRTNM
                                        WRK-PARA-JOBID
                                        WRK-PARA-SHELLID
-                                       WRK-PARA-HOSPID
+grpsys*DD                              WRK-PARA-HOSPID
+grpsys                                 WRK-PARA-HOSPNUM
+grpsys                                 RECEERR
                                        WRK-PARA-DENPPRTYM
                                        WRK-PARA-YKZKBN
       *----(02.01.01)--ADD-START---
                                        WRK-PARA-INGAIKBN
       *----(02.01.01)--ADD-END-----
+grpsys     MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
       *
       *    ¥¹¥Æ¥Ã¥×´ÉÍý³«»Ï½èÍý
            MOVE    "STS"           TO  SJOBKANRI-MODE
@@ -376,20 +385,23 @@
            MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
            MOVE    WRK-PARA-SHELLID
                                    TO  JOB-SHELLID
+grpsys     MOVE    SPA-HOSPNUM     TO  JOB-HOSPNUM
            MOVE    "ORCBG001"      TO  JOB-PGID
            MOVE    "¿ÇÎÅ²ÊÊÌ°åÌôÉÊ»ÈÍÑÎÌÅý·×¡Ê·îÊó¡Ë"
                                    TO  JOB-SHELLMSG
            CALL    "ORCSJOB"           USING
                                        ORCSJOBKANRIAREA
                                        JOBKANRI-REC
+grpsys                                 SPA-HOSPNUM
       *
-           MOVE    "TOKEIZZ"       TO  TOKEIPARA-FILE-ID
+grpsys     MOVE    "ORCBG001"      TO  TOKEIPARA-FILE-ID
            MOVE    LNK-PRTKANRI-TERMID
                                    TO  TOKEIPARA-TERMID
+grpsys     MOVE    SPA-HOSPNUM     TO  TOKEIPARA-HOSPNUM
       *
-           MOVE    "RECEERR"       TO  RECEERR-FILE-ID
-           MOVE    LNK-PRTKANRI-TERMID
-                                   TO  RECEERR-TERMID
+grpsys*DD  MOVE    "RECEERR"       TO  RECEERR-FILE-ID
+grpsys*DD  MOVE    LNK-PRTKANRI-TERMID
+grpsys*DD                          TO  RECEERR-TERMID
       *
       *    ¥Ñ¥é¥á¥¿ÊÔ½¸½èÍý
            PERFORM 110-PARA-HENSYU-SEC
@@ -526,19 +538,26 @@
        220-MAIN-SRY-SEC            SECTION.
       *
       *    ÂÐ¾Ý¿ÇÎÅÇ¯·î¤Ç¸¡º÷
-           INITIALIZE                  SRYACCT-REC
-           MOVE    WRK-PARA-HOSPID     TO  SRY-HOSPID
+           INITIALIZE                  SRYACT-REC
+grpsys*DD  MOVE    WRK-PARA-HOSPID     TO  SRY-HOSPID
+grpsys     MOVE    SPA-HOSPNUM         TO  SRY-HOSPNUM
            MOVE    WRK-PARA-DENPPRTYM  TO  SRY-SRYYM
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SRYACT-REC          TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "SRYACT-KEY11"      TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"         USING
-                                       MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC
+grpsys     MOVE    "tbl_sryact"        TO  MCP-TABLE
+grpsys     MOVE    "key11"             TO  MCP-PATHNAME
+grpsys     CALL    "ORCDBMAIN"     USING   MCPAREA
+grpsys                                     MCPDATA-REC
+grpsys                                     SPA-AREA
+grpsys*DD  MOVE    "SRYACT-KEY11"      TO  ORC-DBPATH
+grpsys*DD  CALL    "ORCMCPSUB"         USING
+grpsys*DD                              MCPAREA
+grpsys*DD                              ORCMCPAREA
+grpsys*DD                              MCPDATA-REC
            IF      MCP-RC              =   ZERO
-               MOVE    "SRYACT-KEY11"      TO  ORC-DBPATH
+grpsys         MOVE    "tbl_sryact"        TO  MCP-TABLE
+grpsys         MOVE    "key11"             TO  MCP-PATHNAME
+grpsys*DD      MOVE    "SRYACT-KEY11"      TO  ORC-DBPATH
                PERFORM 900-SRY-DBFETCH-SEC
            ELSE
                INITIALIZE                  SRYACT-REC
@@ -549,12 +568,16 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *        ¿ÇÎÅ²ñ·×½¸·×½èÍý
                PERFORM 230-MAIN-ACCT-SEC
 
-               MOVE    "SRYACT-KEY11"      TO  ORC-DBPATH
+grpsys         MOVE    "tbl_sryact"        TO  MCP-TABLE
+grpsys         MOVE    "key11"             TO  MCP-PATHNAME
+grpsys*DD      MOVE    "SRYACT-KEY11"      TO  ORC-DBPATH
                PERFORM 900-SRY-DBFETCH-SEC
       *
            END-PERFORM
       *
-           MOVE    "SRYACT-KEY11"   TO  ORC-DBPATH
+grpsys     MOVE    "tbl_sryact"        TO  MCP-TABLE
+grpsys     MOVE    "key11"             TO  MCP-PATHNAME
+grpsys*DD  MOVE    "SRYACT-KEY11"   TO  ORC-DBPATH
            PERFORM 900-SRY-DBCLOSE-SEC
             .
        220-MAIN-SRY-EXT.
@@ -565,8 +588,9 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *****************************************************************
        230-MAIN-ACCT-SEC           SECTION.
       *
-           IF        ( SRY-HOSPID      NOT =   KEY-HOSPID )
-               OR    ( SRY-NYUGAIKBN   NOT =   KEY-NYUGAIKBN )
+grpsys*DD  IF        ( SRY-HOSPID      NOT =   KEY-HOSPID )
+grpsys*DD      OR    ( SRY-NYUGAIKBN   NOT =   KEY-NYUGAIKBN )
+grpsys     IF        ( SRY-NYUGAIKBN   NOT =   KEY-NYUGAIKBN )
                OR    ( SRY-PTID        NOT =   KEY-PTID )
                OR    ( SRY-SRYKA       NOT =   KEY-SRYKA )
                OR    ( SRY-SRYYM       NOT =   KEY-SRYYM )
@@ -575,34 +599,43 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *
       *        ³ºÅö¤Î¿ÇÎÅ²ñ·×¥Ç¡¼¥¿¤ò¸¡º÷
                INITIALIZE                  SRYACCT-REC
-               MOVE    SRY-HOSPID          TO  ACCT-HOSPID
+grpsys*DD      MOVE    SRY-HOSPID          TO  ACCT-HOSPID
+grpsys         MOVE    SPA-HOSPNUM         TO  ACCT-HOSPNUM
                MOVE    SRY-NYUGAIKBN       TO  ACCT-NYUGAIKBN
                MOVE    SRY-PTID            TO  ACCT-PTID
                MOVE    SRY-SRYKA           TO  ACCT-SRYKA
                MOVE    SRY-SRYYM           TO  ACCT-SRYYM
                MOVE    SRY-SRYKBN          TO  ACCT-SRYKBN
                MOVE    SRY-ZAINUM          TO  ACCT-ZAINUM
-grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    SRYACCT-REC         TO  MCPDATA-REC
                MOVE    "DBSELECT"          TO  MCP-FUNC
-               MOVE    "SRYACCT-KEY"       TO  ORC-DBPATH
-               CALL    "ORCMCPSUB"         USING
-                                           MCPAREA
-                                           ORCMCPAREA
-                                           MCPDATA-REC
+grpsys         MOVE    "tbl_sryacct"       TO  MCP-TABLE
+grpsys         MOVE    "key"               TO  MCP-PATHNAME
+grpsys         CALL    "ORCDBMAIN"     USING   MCPAREA
+grpsys                                         MCPDATA-REC
+grpsys                                         SPA-AREA
+grpsys*DD      MOVE    "SRYACCT-KEY"       TO  ORC-DBPATH
+grpsys*DD      CALL    "ORCMCPSUB"         USING
+grpsys*DD                                  MCPAREA
+grpsys*DD                                  ORCMCPAREA
+grpsys*DD                                  MCPDATA-REC
       *
                IF      MCP-RC              =   ZERO
-                   MOVE    "SRYACCT-KEY"       TO  ORC-DBPATH
+grpsys             MOVE    "tbl_sryacct"       TO  MCP-TABLE
+grpsys             MOVE    "key"               TO  MCP-PATHNAME
+grpsys*DD          MOVE    "SRYACCT-KEY"       TO  ORC-DBPATH
                    PERFORM 900-ACCT-DBFETCH-SEC
                ELSE
                    INITIALIZE                  SRYACCT-REC
                    MOVE    1               TO  FLG-SRYACCT
                END-IF
       *
-               MOVE    "SRYACCT-KEY"       TO  ORC-DBPATH
+grpsys         MOVE    "tbl_sryacct"       TO  MCP-TABLE
+grpsys         MOVE    "key"               TO  MCP-PATHNAME
+grpsys*DD      MOVE    "SRYACCT-KEY"       TO  ORC-DBPATH
                PERFORM 900-ACCT-DBCLOSE-SEC
       *
-               MOVE    SRY-HOSPID       TO  KEY-HOSPID
+grpsys*DD      MOVE    SRY-HOSPID       TO  KEY-HOSPID
                MOVE    SRY-NYUGAIKBN    TO  KEY-NYUGAIKBN
                MOVE    SRY-PTID         TO  KEY-PTID
                MOVE    SRY-SRYKA        TO  KEY-SRYKA
@@ -1271,6 +1304,7 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    "1"                 TO  SPRT-SITEKBN
            CALL    "ORCSPRT"           USING
                                        ORCSPRTAREA
+grpsys                                 SPA-AREA
            IF      SPRT-RETURN         =   ZERO
                CONTINUE
            ELSE
@@ -1301,11 +1335,13 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
                MOVE    WRK-PARA-SHELLID
                                        TO  JOB-SHELLID
+grpsys         MOVE    SPA-HOSPNUM     TO  JOB-HOSPNUM
                MOVE    WRK-RECEERR     TO  JOB-YOBI
                MOVE    "9999"          TO  JOB-ERRCD
                CALL    "ORCSJOB"           USING
                                            ORCSJOBKANRIAREA
                                            JOBKANRI-REC
+grpsys                                     SPA-AREA
            END-IF
       *
            MOVE    1                   TO  FLG-END
@@ -1335,10 +1371,12 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
            MOVE    WRK-PARA-SHELLID
                                    TO  JOB-SHELLID
+grpsys     MOVE    SPA-HOSPNUM     TO  JOB-HOSPNUM
            MOVE    CNT-GPAGE       TO  JOB-UPDCNT
            CALL    "ORCSJOB"           USING
                                        ORCSJOBKANRIAREA
                                        JOBKANRI-REC
+grpsys                                 SPA-HOSPNUM
       *
            PERFORM 900-DBDISCONNECT-SEC
            .
@@ -1351,10 +1389,13 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
        900-ACCT-DBFETCH-SEC        SECTION.
       *
            MOVE    "DBFETCH"       TO  MCP-FUNC
-           CALL    "ORCMCPSUB"         USING
-                                       MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC
+grpsys     CALL    "ORCDBMAIN"     USING   MCPAREA
+grpsys                                     MCPDATA-REC
+grpsys                                     SPA-AREA
+grpsys*DD  CALL    "ORCMCPSUB"         USING
+grpsys*DD                              MCPAREA
+grpsys*DD                              ORCMCPAREA
+grpsys*DD                              MCPDATA-REC
            IF        ( MCP-RC          =   ZERO )
                MOVE    ZERO            TO  FLG-SRYACCT
                MOVE    MCPDATA-REC     TO  SRYACCT-REC
@@ -1371,10 +1412,13 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
        900-ACCT-DBCLOSE-SEC        SECTION.
       *
            MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
-           CALL    "ORCMCPSUB"         USING
-                                       MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC
+grpsys     CALL    "ORCDBMAIN"     USING   MCPAREA
+grpsys                                     MCPDATA-REC
+grpsys                                     SPA-AREA
+grpsys*DD  CALL    "ORCMCPSUB"         USING
+grpsys*DD                              MCPAREA
+grpsys*DD                              ORCMCPAREA
+grpsys*DD                              MCPDATA-REC
            .
        900-ACCT-DBCLOSE-EXT.
            EXIT.
@@ -1385,10 +1429,13 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
        900-SRY-DBFETCH-SEC         SECTION.
       *
            MOVE    "DBFETCH"       TO  MCP-FUNC
-           CALL    "ORCMCPSUB"         USING
-                                       MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC
+grpsys     CALL    "ORCDBMAIN"     USING   MCPAREA
+grpsys                                     MCPDATA-REC
+grpsys                                     SPA-AREA
+grpsys*DD  CALL    "ORCMCPSUB"         USING
+grpsys*DD                              MCPAREA
+grpsys*DD                              ORCMCPAREA
+grpsys*DD                              MCPDATA-REC
            IF        ( MCP-RC          =   ZERO )
                MOVE    ZERO            TO  FLG-SRYACT
                MOVE    MCPDATA-REC     TO  SRYACT-REC
@@ -1405,10 +1452,13 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
        900-SRY-DBCLOSE-SEC         SECTION.
       *
            MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
-           CALL    "ORCMCPSUB"         USING
-                                       MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC
+grpsys     CALL    "ORCDBMAIN"     USING   MCPAREA
+grpsys                                     MCPDATA-REC
+grpsys                                     SPA-AREA
+grpsys*DD  CALL    "ORCMCPSUB"         USING
+grpsys*DD                              MCPAREA
+grpsys*DD                              ORCMCPAREA
+grpsys*DD                              MCPDATA-REC
            .
        900-SRY-DBCLOSE-EXT.
            EXIT.
@@ -1465,22 +1515,34 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
            IF    ( TTNS-FLG            =   ZERO )
                INITIALIZE                      TNS-TENSU-REC
                MOVE    TTNS-CHK-SRYCD      TO  TNS-SRYCD
-               MOVE    TTNS-CHK-YMD        TO  ORC-DBYMD
-grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
+grpsys*DD      MOVE    TTNS-CHK-YMD        TO  ORC-DBYMD
+grpsys         MOVE    TTNS-CHK-YMD        TO  TNS-YUKOSTYMD
+grpsys                                         TNS-YUKOEDYMD
+grpsys         MOVE    SPA-HOSPNUM         TO  TNS-HOSPNUM
                MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
                MOVE    "DBSELECT"          TO  MCP-FUNC
-               MOVE    "TENSU-KEY"         TO  ORC-DBPATH
-               CALL    "ORCMCPSUB"         USING
-                                               MCPAREA
-                                               ORCMCPAREA
-                                               MCPDATA-REC
+grpsys         MOVE    "tbl_tensu"         TO  MCP-TABLE
+grpsys         MOVE    "key"               TO  MCP-PATHNAME
+grpsys         CALL    "ORCDBMAIN"     USING   MCPAREA
+grpsys                                         MCPDATA-REC
+grpsys                                         SPA-AREA
+grpsys*DD      MOVE    "TENSU-KEY"         TO  ORC-DBPATH
+grpsys*DD      CALL    "ORCMCPSUB"         USING
+grpsys*DD                                      MCPAREA
+grpsys*DD                                      ORCMCPAREA
+grpsys*DD                                      MCPDATA-REC
                IF      MCP-RC              =   ZERO
                    MOVE    "DBFETCH"           TO  MCP-FUNC
-                   MOVE    "TENSU-KEY"         TO  ORC-DBPATH
-                   CALL    "ORCMCPSUB"         USING
-                                               MCPAREA
-                                               ORCMCPAREA
-                                               MCPDATA-REC
+grpsys             MOVE    "tbl_tensu"         TO  MCP-TABLE
+grpsys             MOVE    "key"               TO  MCP-PATHNAME
+grpsys             CALL    "ORCDBMAIN"     USING   MCPAREA
+grpsys                                             MCPDATA-REC
+grpsys                                             SPA-AREA
+grpsys*DD          MOVE    "TENSU-KEY"         TO  ORC-DBPATH
+grpsys*DD          CALL    "ORCMCPSUB"         USING
+grpsys*DD                                      MCPAREA
+grpsys*DD                                      ORCMCPAREA
+grpsys*DD                                      MCPDATA-REC
                    IF      MCP-RC              =   ZERO
                        MOVE    MCPDATA-REC     TO  TNS-TENSU-REC
                        MOVE    ZERO            TO  FLG-TENSU
@@ -1497,11 +1559,16 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                END-IF
       *
                MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-               MOVE    "TENSU-KEY"         TO  ORC-DBPATH
-               CALL    "ORCMCPSUB"          USING
-                                           MCPAREA
-                                           ORCMCPAREA
-                                           MCPDATA-REC
+grpsys         MOVE    "tbl_tensu"         TO  MCP-TABLE
+grpsys         MOVE    "key"               TO  MCP-PATHNAME
+grpsys         CALL    "ORCDBMAIN"     USING   MCPAREA
+grpsys                                         MCPDATA-REC
+grpsys                                         SPA-AREA
+grpsys*DD      MOVE    "TENSU-KEY"         TO  ORC-DBPATH
+grpsys*DD      CALL    "ORCMCPSUB"         USING
+grpsys*DD                                  MCPAREA
+grpsys*DD                                  ORCMCPAREA
+grpsys*DD                                  MCPDATA-REC
            END-IF
       *
            .
@@ -1563,17 +1630,24 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
       *
            INITIALIZE                  SYS-1005-REC
            MOVE    "1005"          TO  SYS-1005-KANRICD
-           MOVE    ZERO            TO  SYS-1005-STYUKYMD
-           MOVE    ALL "9"         TO  SYS-1005-EDYUKYMD
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+grpsys*DD  MOVE    ZERO            TO  SYS-1005-STYUKYMD
+grpsys*DD  MOVE    ALL "9"         TO  SYS-1005-EDYUKYMD
+grpsys     MOVE    WRK-SYSYMD      TO  SYS-1005-STYUKYMD
+grpsys                                 SYS-1005-EDYUKYMD
+grpsys     MOVE    SPA-HOSPNUM     TO  SYS-1005-HOSPNUM
            MOVE    SYS-1005-REC    TO  MCPDATA-REC
            MOVE    "DBSELECT"      TO  MCP-FUNC
-           MOVE    "SYSKANRI-KEY2" TO  ORC-DBPATH
-           MOVE    WRK-SYSYMD      TO  ORC-DBYMD
-           CALL    "ORCMCPSUB"         USING
-                                       MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC
+grpsys     MOVE    "tbl_syskanri"  TO  MCP-TABLE
+grpsys     MOVE    "key2"          TO  MCP-PATHNAME
+grpsys     CALL    "ORCDBMAIN"     USING   MCPAREA
+grpsys                                     MCPDATA-REC
+grpsys                                     SPA-AREA
+grpsys*DD  MOVE    "SYSKANRI-KEY2" TO  ORC-DBPATH
+grpsys*DD  MOVE    WRK-SYSYMD      TO  ORC-DBYMD
+grpsys*DD  CALL    "ORCMCPSUB"         USING
+grpsys*DD                              MCPAREA
+grpsys*DD                              ORCMCPAREA
+grpsys*DD                              MCPDATA-REC
            IF        ( MCP-RC          =   ZERO )
                PERFORM 900-SYS1005-DBFETCH-SEC
            ELSE
@@ -1589,11 +1663,16 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
        900-SYS1005-DBFETCH-SEC    SECTION.
       *
            MOVE    "DBFETCH"       TO  MCP-FUNC
-           MOVE    "SYSKANRI-KEY2" TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"         USING
-                                       MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC
+grpsys     MOVE    "tbl_syskanri"  TO  MCP-TABLE
+grpsys     MOVE    "key2"          TO  MCP-PATHNAME
+grpsys     CALL    "ORCDBMAIN"     USING   MCPAREA
+grpsys                                     MCPDATA-REC
+grpsys                                     SPA-AREA
+grpsys*DD  MOVE    "SYSKANRI-KEY2" TO  ORC-DBPATH
+grpsys*DD  CALL    "ORCMCPSUB"         USING
+grpsys*DD                              MCPAREA
+grpsys*DD                              ORCMCPAREA
+grpsys*DD                              MCPDATA-REC
            IF        ( MCP-RC          =   ZERO )
                MOVE    ZERO            TO  FLG-SYSKANRI
                MOVE    MCPDATA-REC     TO  SYS-1005-REC
@@ -1610,11 +1689,16 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
        900-SYS1005-DBCLOSE-SEC     SECTION.
       *
            MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
-           MOVE    "SYSKANRI-KEY2" TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"         USING
-                                       MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC
+grpsys     MOVE    "tbl_syskanri"  TO  MCP-TABLE
+grpsys     MOVE    "key2"          TO  MCP-PATHNAME
+grpsys     CALL    "ORCDBMAIN"     USING   MCPAREA
+grpsys                                     MCPDATA-REC
+grpsys                                     SPA-AREA
+grpsys*DD  MOVE    "SYSKANRI-KEY2" TO  ORC-DBPATH
+grpsys*DD  CALL    "ORCMCPSUB"         USING
+grpsys*DD                              MCPAREA
+grpsys*DD                              ORCMCPAREA
+grpsys*DD                              MCPDATA-REC
            .
        900-SYS1005-DBCLOSE-EXT.
            EXIT.
@@ -1625,16 +1709,26 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
        100-DBOPEN-SEC                SECTION.
       *
            MOVE    "DBOPEN"            TO  MCP-FUNC.
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC.
+grpsys     MOVE    LOW-VALUE       TO  MCP-TABLE.
+grpsys     MOVE    LOW-VALUE       TO  MCP-PATHNAME.
+grpsys     CALL    "ORCDBMAIN"     USING   MCPAREA
+grpsys                                     MCPDATA-REC
+grpsys                                     SPA-AREA
+grpsys*DD  CALL    "ORCMCPSUB"          USING
+grpsys*DD                               MCPAREA
+grpsys*DD                               ORCMCPAREA
+grpsys*DD                               MCPDATA-REC.
       *
            MOVE    "DBSTART"           TO  MCP-FUNC.
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC.
+grpsys     MOVE    LOW-VALUE       TO  MCP-TABLE.
+grpsys     MOVE    LOW-VALUE       TO  MCP-PATHNAME.
+grpsys     CALL    "ORCDBMAIN"     USING   MCPAREA
+grpsys                                     MCPDATA-REC
+grpsys                                     SPA-AREA
+grpsys*DD  CALL    "ORCMCPSUB"          USING
+grpsys*DD                               MCPAREA
+grpsys*DD                               ORCMCPAREA
+grpsys*DD                               MCPDATA-REC.
            .
        100-DBOPEN-EXT.
            EXIT.
@@ -1645,16 +1739,26 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
        900-DBDISCONNECT-SEC            SECTION.
       *
            MOVE    "DBCOMMIT"          TO  MCP-FUNC.
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC.
+grpsys     MOVE    LOW-VALUE       TO  MCP-TABLE.
+grpsys     MOVE    LOW-VALUE       TO  MCP-PATHNAME.
+grpsys     CALL    "ORCDBMAIN"     USING   MCPAREA
+grpsys                                     MCPDATA-REC
+grpsys                                     SPA-AREA
+grpsys*DD  CALL    "ORCMCPSUB"          USING
+grpsys*DD                               MCPAREA
+grpsys*DD                               ORCMCPAREA
+grpsys*DD                               MCPDATA-REC.
       *
            MOVE    "DBDISCONNECT"      TO  MCP-FUNC.
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC.
+grpsys     MOVE    LOW-VALUE       TO  MCP-TABLE.
+grpsys     MOVE    LOW-VALUE       TO  MCP-PATHNAME.
+grpsys     CALL    "ORCDBMAIN"     USING   MCPAREA
+grpsys                                     MCPDATA-REC
+grpsys                                     SPA-AREA
+grpsys*DD  CALL    "ORCMCPSUB"          USING
+grpsys*DD                               MCPAREA
+grpsys*DD                               ORCMCPAREA
+grpsys*DD                               MCPDATA-REC.
            .
        900-DBDISCONNECT-EXT.
            EXIT.
