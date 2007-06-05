@@ -5457,7 +5457,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        41016101-ACCT-CHKSYORI-SEC      SECTION.
       *
            INITIALIZE                      SRYACCT-REC
-           MOVE    SPA-HOSPNUM          TO  ACCT-HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  ACCT-HOSPNUM
            MOVE    JYURRK-NYUGAIKBN    TO  ACCT-NYUGAIKBN
            MOVE    JYURRK-PTID         TO  ACCT-PTID
            MOVE    JYURRK-SRYKA        TO  ACCT-SRYKA
@@ -5557,12 +5557,13 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                        MOVE    SRY-SRYCD (IDZ)     TO  TNS-SRYCD
                        MOVE    SRY-SRYCD (IDZ)     TO  WRK-SRYCD
       *                算定用の診療コードへ変更
+                       PERFORM 910-TENSU-READ-SEC
                        PERFORM 45020-SANTEI-SRYCD-SEC
                        IF      SRY-SRYCD (IDZ)
                                                NOT =   WRK-SRYCD
-                           MOVE    WRK-SRYCD           TO  TNS-SRYCD
+                           MOVE    WRK-SRYCD       TO  TNS-SRYCD
+                           PERFORM 910-TENSU-READ-SEC
                        END-IF
-                       PERFORM 910-TENSU-READ-SEC
                        IF     (TNS-SANTEIRRKKBN    NOT =   ZERO ) AND
                               (TNS-JGNCNTERR       NOT =   9    )  AND
                               (TNS-JGNCNT          >   ZERO     )  AND
@@ -7060,11 +7061,12 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                        MOVE    SRY-SRYCD (IDZ)     TO  TNS-SRYCD
                        MOVE    SRY-SRYCD (IDZ)     TO  WRK-SRYCD
       *                算定用の診療コードへ変更
+                       PERFORM 910-TENSU-READ-SEC
                        PERFORM 45020-SANTEI-SRYCD-SEC
                        IF      SRY-SRYCD (IDZ) NOT =   WRK-SRYCD
-                           MOVE    WRK-SRYCD           TO  TNS-SRYCD
+                           MOVE    WRK-SRYCD       TO  TNS-SRYCD
+                           PERFORM 910-TENSU-READ-SEC
                        END-IF
-                       PERFORM 910-TENSU-READ-SEC
                        IF      TNS-SANTEIRRKKBN    NOT =   ZERO
                            PERFORM 4200111-SANTEI-DEL-SEC
                        END-IF
@@ -10419,7 +10421,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *
       *    診療行為マスター読み込み
            INITIALIZE                      SRYACT-REC
-           MOVE    ACCT-HOSPNUM         TO  SRY-HOSPNUM
+           MOVE    ACCT-HOSPNUM        TO  SRY-HOSPNUM
            MOVE    ACCT-NYUGAIKBN      TO  SRY-NYUGAIKBN
            MOVE    ACCT-PTID           TO  SRY-PTID
            MOVE    ACCT-SRYKA          TO  SRY-SRYKA
@@ -10461,12 +10463,12 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                        MOVE    SRY-SRYCD (IDZ)     TO  TNS-SRYCD
                        MOVE    SRY-SRYCD (IDZ)     TO  WRK-SRYCD
       *                算定用の診療コードへ変更
-                       PERFORM 45020-SANTEI-SRYCD-SEC
-                       IF      SRY-SRYCD (IDZ)
-                                               NOT =   WRK-SRYCD
-                           MOVE    WRK-SRYCD           TO  TNS-SRYCD
-                       END-IF
                        PERFORM 910-TENSU-READ-SEC
+                       PERFORM 45020-SANTEI-SRYCD-SEC
+                       IF      SRY-SRYCD (IDZ) NOT =   WRK-SRYCD
+                           MOVE    WRK-SRYCD       TO  TNS-SRYCD
+                           PERFORM 910-TENSU-READ-SEC
+                       END-IF
                        IF      TNS-SANTEIRRKKBN    NOT =   ZERO
                            PERFORM 49021-SANTEI-UPD-SEC
                        END-IF
