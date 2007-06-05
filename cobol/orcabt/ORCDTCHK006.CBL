@@ -88,13 +88,13 @@
                                    BY         //DTCHKERRPARA//.
       *
            COPY    "CPCOMMONDAT3.INC"
-                                   REPLACING  //TMPFLID//
+                                   REPLACING  //TMPFLPARA//
                                    BY         //DTCHK002PARA//.
            COPY    "CPCOMMONDAT3.INC"
-                                   REPLACING  //TMPFLID//
+                                   REPLACING  //TMPFLPARA//
                                    BY         //DTCHKACCTPARA//.
            COPY    "CPCOMMONDAT3.INC"
-                                   REPLACING  //TMPFLID//
+                                   REPLACING  //TMPFLPARA//
                                    BY         //DTCHKSRYPARA//.
       *
       *    ¥Õ¥é¥°ÎÎ°è

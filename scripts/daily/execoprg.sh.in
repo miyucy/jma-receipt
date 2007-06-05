@@ -37,7 +37,7 @@ if [ ${13} = 'MONTHLY' ]; then
   LD=052
 fi
 
-LOGFILE=/tmp/${HOSPNUM}_orcb${LD}.log
+LOGFILE=/var/log/jma-receipt/${HOSPNUM}orcb${LD}.log
 
 
 	echo $#

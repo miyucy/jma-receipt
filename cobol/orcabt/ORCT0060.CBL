@@ -123,27 +123,27 @@
        WORKING-STORAGE             SECTION.
       *
       *    定期請求収納ファイル名称領域(IN)
-           COPY    "CPCOMMONDAT3.INC"  REPLACING  //TMPFLID//
+           COPY    "CPCOMMONDAT3.INC"  REPLACING  //TMPFLPARA//
                                        BY         //TEIKI01PARA//.
       *
       *    請求取消対象収納ファイル名称領域 (IN)
-           COPY    "CPCOMMONDAT3.INC"  REPLACING  //TMPFLID//
+           COPY    "CPCOMMONDAT3.INC"  REPLACING  //TMPFLPARA//
                                        BY         //TEIKI04PARA//.
       *
       *    定期請求収納ファイル(OT) <-- 新規追加用
-           COPY    "CPCOMMONDAT3.INC"  REPLACING  //TMPFLID//
+           COPY    "CPCOMMONDAT3.INC"  REPLACING  //TMPFLPARA//
                                        BY         //TEIKI06PARA//.
       *
       *    定期請求収納ファイル名称領域 (OT)
-           COPY    "CPCOMMONDAT3.INC"  REPLACING  //TMPFLID//
+           COPY    "CPCOMMONDAT3.INC"  REPLACING  //TMPFLPARA//
                                        BY         //TEIKI07PARA//.
       *
       *    単独更新用日別収納ファイル(OT)
-           COPY    "CPCOMMONDAT3.INC"  REPLACING  //TMPFLID//
+           COPY    "CPCOMMONDAT3.INC"  REPLACING  //TMPFLPARA//
                                        BY         //TEIKI08PARA//.
       *
       *    定期請求収納ファイル(OT) <-- 訂正更新用
-           COPY    "CPCOMMONDAT3.INC"  REPLACING  //TMPFLID//
+           COPY    "CPCOMMONDAT3.INC"  REPLACING  //TMPFLPARA//
                                        BY         //TEIKI09PARA//.
       *
       *    エラーファイル 名称領域 

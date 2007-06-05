@@ -24,11 +24,11 @@
       * Maj/Min/Rev  修正者       日付      内容
       * 
       *****************************************************************
-       01  TMPFLID.
+       01  TMPFLPARA.
            03  FILLER                  PIC X(05)   VALUE   "/tmp/".
-           03  TMPFLID-HOSPNUM         PIC 9(2).
-           03  TMPFLID-SYOKBN1         PIC 9(01)   VALUE   0.
-           03  TMPFLID-SYOKBN2         PIC 9(01)   VALUE   0.
-           03  TMPFLID-FILE-ID         PIC X(08).
-           03  TMPFLID-TERMID          PIC X(64).
+           03  TMPFLPARA-HOSPNUM       PIC 9(2).
+           03  TMPFLPARA-SYOKBN1       PIC 9(01)   VALUE   0.
+           03  TMPFLPARA-SYOKBN2       PIC 9(01)   VALUE   0.
+           03  TMPFLPARA-FILE-ID       PIC X(08).
+           03  TMPFLPARA-TERMID        PIC X(64).
            03  FILLER                  PIC X(04)   VALUE   ".dat".

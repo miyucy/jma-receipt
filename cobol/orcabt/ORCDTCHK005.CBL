@@ -104,16 +104,16 @@
       *
       *    中間ファイルファイル名称領域 
            COPY    "CPCOMMONDAT3.INC"
-                                   REPLACING  //TMPFLID//
+                                   REPLACING  //TMPFLPARA//
                                    BY         //DTCHK002PARA//.
            COPY    "CPCOMMONDAT3.INC"
-                                   REPLACING  //TMPFLID//
+                                   REPLACING  //TMPFLPARA//
                                    BY         //DTCHK006NPARA//.
            COPY    "CPCOMMONDAT3.INC"
-                                   REPLACING  //TMPFLID//
+                                   REPLACING  //TMPFLPARA//
                                    BY         //DTCHK006GPARA//.
            COPY    "CPCOMMONDAT3.INC"
-                                   REPLACING  //TMPFLID//
+                                   REPLACING  //TMPFLPARA//
                                    BY         //DTCHKSRYPARA//.
       *
       *    フラグ領域

@@ -68,7 +68,7 @@
       *
       *    パラメータファイル名
            COPY    "CPCOMMONDAT3.INC"
-                                   REPLACING  //TMPFLID//
+                                   REPLACING  //TMPFLPARA//
                                    BY         //PRFNAME//.
       *
       *    フラグ領域

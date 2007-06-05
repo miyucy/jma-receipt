@@ -64,7 +64,7 @@
       *
       *    中間ファイルファイル名称領域 
            COPY    "CPCOMMONDAT3.INC"
-                                   REPLACING  //TMPFLID//
+                                   REPLACING  //TMPFLPARA//
                                    BY         //DTCHK002PARA//.
       *
       *    フラグ領域

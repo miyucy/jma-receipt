@@ -75,11 +75,11 @@
        WORKING-STORAGE             SECTION.
       *
       *    定期請求収納ファイル名称領域 
-           COPY    "CPCOMMONDAT3.INC"      REPLACING  //TMPFLID//
+           COPY    "CPCOMMONDAT3.INC"      REPLACING  //TMPFLPARA//
                                            BY         //TEIKI01PARA//.
       *
       *    定期請求期間情報名称領域 
-           COPY    "CPCOMMONDAT3.INC"      REPLACING  //TMPFLID//
+           COPY    "CPCOMMONDAT3.INC"      REPLACING  //TMPFLPARA//
                                            BY         //TEIKI03PARA//.
       *
       *    エラーファイル 名称領域 

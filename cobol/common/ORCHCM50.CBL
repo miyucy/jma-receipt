@@ -56,7 +56,7 @@
       *
       *    処理対象患者ファイル
            COPY    "CPCOMMONDAT3.INC"
-                                           REPLACING   //TMPFLID//
+                                           REPLACING   //TMPFLPARA//
                                            BY          //HCM50F01//.
       *
       *    フラグ領域

@@ -32,7 +32,7 @@ fi
 
 ERR_FILE=${10}
 HOSPNUM=$9
-LOGFILE=/tmp/${HOSPNUM}_orcb033.log
+LOGFILE=/var/log/jma-receipt/${HOSPNUM}orcb033.log
 echo $LOGFILE
 ##      エラーファイル削除
 	echo $#
