@@ -30,6 +30,7 @@
       *  00.00.01    NACL-多々納  06/08/29  詳記区分初期表示の追加
       *  03.04.00    NACL-多々納  07/04/12  詳記区分 ５０、５１追加
       *  03.05.00    NACL-多々納  07/05/XX  グループ診療対応
+      *  03.05.00    NACL-多々納  07/06/05  コメント内容の全角変換
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -3592,7 +3593,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    1000                TO  KANACONV-STLEN
            MOVE    0                   TO  KANACONV-CONV-FLAG
            MOVE    0                   TO  KANACONV-CHAR-TYPE
-           MOVE    SPA-GMN-COMMENT    TO  KANACONV-INDATA
+           MOVE    SPA-GMN-COMMENT     TO  KANACONV-INDATA
            CALL    "kanaconv"          USING ORCXKANACONVAREA
            IF     (KANACONV-RETURN     =   ZERO )
                MOVE    KANACONV-OUTDATA
@@ -3603,19 +3604,21 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            END-IF
       *
            INITIALIZE                  ORCSKANACHKAREA
-           MOVE    "1"                 TO  KANACHK-SYORI
+           MOVE    "2"                 TO  KANACHK-SYORI
       *    出力桁数（全角の最大桁数の指定（省略可））
            MOVE    800                 TO  KANACHK-MAX-CNT
-           MOVE    SPA-GMN-COMMENT    TO  KANACHK-MAE-INPUT
+           MOVE    SPA-GMN-COMMENT     TO  KANACHK-MAE-INPUT
            CALL    "ORCSKANACHK"       USING
                                        ORCSKANACHKAREA
-           IF     (KANACHK-RC      NOT =   ZERO  )  OR
-                  (KANACHK-SYUBETU     =   1     )
+           MOVE    KANACHK-MAE-INPUT   TO  SPA-GMN-COMMENT
+           IF     (KANACHK-RC      NOT =   ZERO  )
+      *D       OR (KANACHK-SYUBETU     =   1     )
       *        全角以外エラー
-               MOVE    "0013"          TO  SPA-ERRCD
-               IF      KANACHK-RC2         =   7
-                   MOVE    KANACHK-OUT-INPUT   TO  SPA-GMN-COMMENT
-               END-IF
+      *        MOVE    "0013"          TO  SPA-ERRCD
+      *        IF      KANACHK-RC2         =   7
+      *            MOVE    KANACHK-OUT-INPUT   TO  SPA-GMN-COMMENT
+      *D       END-IF
+               CONTINUE
            ELSE
                MOVE    KANACHK-OUT-INPUT   TO  SPA-GMN-COMMENT
            END-IF
