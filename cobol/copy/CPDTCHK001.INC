@@ -25,7 +25,7 @@
        01  DTCHK001-REC.
       *
       *°åÎÅµ¡´Ø£É£Ä
-           03  DTCHK001-HOSPID             PIC X(24).
+           03  DTCHK001-HOSPNUM            PIC 9(02).
       *´µ¼Ô£É£Ä
            03  DTCHK001-PTID               PIC 9(10).
            03  DTCHK001-MULHKNKBN          PIC  X(01).

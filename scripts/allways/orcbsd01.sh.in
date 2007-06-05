@@ -14,7 +14,7 @@ fi
 #        $1-${11} °õºþ£Ä£ÂÍÑ¸ÇÄê°ú¿ô
 #        ${12} ¥¸¥ç¥Ö£É£Ä
 #        ${13} ¥·¥§¥ë£É£Ä
-#        ${14} °åÎÅµ¡´Ø£É£Ä 
+#        ${14} °åÎÅµ¡´ØÈÖ¹æ
 #        ${15} ¥¨¥é¡¼¥Õ¥¡¥¤¥ëÌ¾ 
 #        ${16} °ì³ç¡¦¸ÄÊÌ¶èÊ¬
 #        ${17} ¿ÇÎÅÇ¯·î
@@ -32,28 +32,25 @@ fi
 #        ${29} ¿ÇÎÅÆü»ØÄê³«»ÏÆü
 #        ${30} ¿ÇÎÅÆü»ØÄê½ªÎ»Æü
 #-------------------------------------------#
+
+LOGFILE="/var/log/jma-receipt/${14}orcb041.log"
+
+
 ##      ¥¨¥é¡¼¥Õ¥¡¥¤¥ëºï½ü
         if  [ -e ${15} ]; then
             rm  ${15}
         fi
 
-	$DBSTUB -dir $LDDIRECTORY -bd orcabt ORCDTCHK000 -parameter "$1,$2,$3,$4,$5,$6,$7,$8,$9,${10},${11},${12},${13},${14},${15},${16},${17},${18},${19},${20},${21},${22},${23},${24},${25},${26},${27},${28},${29},${30},"   > /home/orca/orcbsd01.log 2>&1
+	$DBSTUB -dir $LDDIRECTORY -bd orcabt ORCDTCHK000 -parameter "$1,$2,$3,$4,$5,$6,$7,$8,$9,${10},${11},${12},${13},${14},${15},${16},${17},${18},${19},${20},${21},${22},${23},${24},${25},${26},${27},${28},${29},${30},"   > $LOGFILE 2>&1
     if  [ -e ${15} ]; then
         exit
     fi
 
-	$DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE${12}${13}
+	$DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE${12}${13},${14}
 
 ##      ºî¶È¥Õ¥¡¥¤¥ëºï½ü
-tmpf="/var/tmp/DTCHK"*"$9"
-tmpf="$tmpf /var/tmp/DCACCT"*"$9"
-tmpf="$tmpf /var/tmp/DCSRY"*"$9"
-
-for f in $tmpf
-do
-	if  [ -e $f ]; then
-		rm  $f
-	fi
-done
+rm /tmp/${14}00DTCHK*.dat
+rm /tmp/${14}00DCACCT*.dat
+rm /tmp/${14}00DCSRY*.dat
 
 exit

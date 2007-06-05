@@ -17,7 +17,7 @@
       ********************************************************************
        01  SDTCHK02AREA.
            03  SDTCHK02-IN.
-               05  SDTCHK02-HOSPID             PIC X(24).
+               05  SDTCHK02-HOSPNUM            PIC 9(02).
                05  SDTCHK02-PTID               PIC 9(10).
            03  SDTCHK02-OT.
                05  SDTCHK02-O-MAX              PIC 9(05).

@@ -18,7 +18,7 @@
       *
        01  SDTCHK05AREA.
            03  SDTCHK05-IN.
-               05  SDTCHK05-HOSPID         PIC X(24).
+               05  SDTCHK05-HOSPNUM        PIC 9(02).
                05  SDTCHK05-PTID           PIC X(100).
                05  SDTCHK05-HKNKBN         PIC X(01).
            03  SDTCHK05-OT.

@@ -25,6 +25,10 @@
       *  作成日付    作業者        記述
       *  05/02/02    NACL−太田    新規作成
       *****************************************************************
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      *  03.05.00    NACL-太田    07/06/04  グループ診療対応
+      *****************************************************************
       *
        ENVIRONMENT             DIVISION.
        CONFIGURATION           SECTION.
@@ -36,8 +40,6 @@
       *
       *
        WORKING-STORAGE             SECTION.
-grpsys*
-grpsys COPY    "COMMON-SPA".
       *
       *    フラグ領域
        01  FLG-AREA.
@@ -144,11 +146,13 @@ grpsys COPY    "COMMON-SPA".
       *
            COPY    "CPORCSDTCHK05.INC".
            COPY    "CPORCBSD01PARA.INC".
+           COPY    "COMMON-SPA".
       *
       *
        PROCEDURE                    DIVISION    USING
        SDTCHK05AREA
-       ORCBSD01PARA.
+       ORCBSD01PARA
+       SPA-AREA.
       *
       *****************************************************************
       *    主　　処理
@@ -319,10 +323,11 @@ grpsys COPY    "COMMON-SPA".
            INITIALIZE                  SDTCHK02AREA
                                        LNK-HKNCOMBI-AREA
       *
-           MOVE    SDTCHK05-HOSPID     TO  SDTCHK02-HOSPID
+           MOVE    SDTCHK05-HOSPNUM     TO  SDTCHK02-HOSPNUM
            MOVE    SDTCHK05-PTID       TO  SDTCHK02-PTID
            CALL    "ORCSDTCHK02"       USING   SDTCHK02AREA
                                                LNK-HKNCOMBI-AREA
+                                               SPA-AREA
       *
            PERFORM 21011-PTHKNINF-HEN-SEC
       *
@@ -650,9 +655,8 @@ grpsys COPY    "COMMON-SPA".
       *    患者保険マスタ検索
            MOVE    ZERO                TO  FLG-PTHKNINF
            INITIALIZE                      PTHKNINF-REC
-           MOVE    SDTCHK05-HOSPID     TO  PTHKN-HOSPID
+           MOVE    SDTCHK05-HOSPNUM     TO  PTHKN-HOSPNUM
            MOVE    SDTCHK05-PTID       TO  PTHKN-PTID
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PTHKNINF-REC        TO  MCPDATA-REC
            MOVE    "tbl_pthkninf"      TO  MCP-TABLE
            MOVE    "key6"              TO  MCP-PATHNAME
@@ -694,11 +698,10 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *
            MOVE    ZERO                TO  FLG-HKNNUM
            INITIALIZE                  HKNNUM-REC
-           MOVE    SDTCHK05-HOSPID     TO  HKN-HOSPID
+           MOVE    SDTCHK05-HOSPNUM     TO  HKN-HOSPNUM
            MOVE    ORCBSD01-SRYYM      TO  HKN-TEKSTYMD
            MOVE    "01"                TO  HKN-TEKSTYMD (7:2)
            MOVE    HKN-TEKSTYMD        TO  HKN-TEKEDYMD
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    HKNNUM-REC          TO  MCPDATA-REC
            MOVE    "tbl_hknnum"        TO  MCP-TABLE
            MOVE    "key3"              TO  MCP-PATHNAME
@@ -740,9 +743,8 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *    患者公費マスタ検索
            MOVE    ZERO                TO  FLG-PTKOHINF
            INITIALIZE                      PTKOHINF-REC
-           MOVE    SDTCHK05-HOSPID     TO  PTKOH-HOSPID
+           MOVE    SDTCHK05-HOSPNUM     TO  PTKOH-HOSPNUM
            MOVE    SDTCHK05-PTID       TO  PTKOH-PTID
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PTKOHINF-REC        TO  MCPDATA-REC
            MOVE    "tbl_ptkohinf"      TO  MCP-TABLE
            MOVE    "key2"              TO  MCP-PATHNAME
@@ -785,10 +787,9 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *    患者公費マスタ検索
            MOVE    ZERO                TO  FLG-PTRSIINF
            INITIALIZE                      PTRSIINF-REC
-           MOVE    PTHKN-HOSPID        TO  PTRSI-HOSPID
+           MOVE    PTHKN-HOSPNUM        TO  PTRSI-HOSPNUM
            MOVE    PTHKN-PTID          TO  PTRSI-PTID
            MOVE    PTHKN-HKNID         TO  PTRSI-HKNID
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PTRSIINF-REC        TO  MCPDATA-REC
            MOVE    "tbl_ptrsiinf"      TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
@@ -813,9 +814,10 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
        910-DBSELECT-SEC                SECTION.
       *
            MOVE    "DBSELECT"          TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"         USING
+                                       MCPAREA
+                                       MCPDATA-REC
+                                       SPA-AREA
            IF    ( MCP-RC          =   ZERO )
                PERFORM 910-DBFETCH-SEC
            END-IF
@@ -830,9 +832,10 @@ grpsys                            SPA-AREA
        911-DBSELECT-SEC                SECTION.
       *
            MOVE    "DBSELECT"          TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"         USING
+                                       MCPAREA
+                                       MCPDATA-REC
+                                       SPA-AREA
       *
            .
       *
@@ -844,9 +847,10 @@ grpsys                            SPA-AREA
        910-DBFETCH-SEC                 SECTION.
       *
            MOVE    "DBFETCH"           TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"         USING
+                                       MCPAREA
+                                       MCPDATA-REC
+                                       SPA-AREA
       *
            .
       *
@@ -858,9 +862,10 @@ grpsys                            SPA-AREA
        910-DBCLOSECURSOR-SEC                 SECTION.
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"         USING
+                                       MCPAREA
+                                       MCPDATA-REC
+                                       SPA-AREA
       *
            .
       *

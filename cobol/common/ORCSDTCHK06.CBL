@@ -25,6 +25,10 @@
       *  作成日付    作業者        記述
       *  05/02/02    NACL−太田    新規作成
       *****************************************************************
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      *  03.05.00    NACL-太田    07/06/04  グループ診療対応
+      *****************************************************************
       *
        ENVIRONMENT             DIVISION.
        CONFIGURATION           SECTION.
@@ -59,7 +63,7 @@
            03  WRK-SYMD                    PIC X(08).
            03  WRK-ZOGENPTN                PIC X(01).
            03  WRK-ZOGEN                   PIC S9(05).
-           03  WRK-MCP-PATHNAME            PIC X(64).
+           03  WRK-PATHNAME                PIC X(64).
            03  WRK-STR-LEN                 PIC 9(05).
            03  WRK-STR                     PIC X(500).
            03  WRK-BYOMEICD-G.
@@ -140,12 +144,14 @@
            COPY    "CPHKNCOMBI.INC"    REPLACING  //COMB-//
                                        BY         //LNK-COMB-//.
       *
+           COPY    "COMMON-SPA".
       *
        PROCEDURE                    DIVISION    USING
        SDTCHK06AREA
        SYS-1101-REC
        SDTCHK02AREA
-       LNK-HKNCOMBI-AREA.
+       LNK-HKNCOMBI-AREA
+       SPA-AREA.
       *
       *****************************************************************
       *    主　　処理
@@ -183,23 +189,23 @@
       *****************************************************************
        200-MAIN-SEC                    SECTION.
       *
-           MOVE    "key6"          TO  WRK-MCP-PATHNAME
+           MOVE    "key6"          TO  WRK-PATHNAME
            IF    ( SDTCHK06-CHKPTN (1)     =   "1" )
                IF    ( SDTCHK06-CHKPTN (2)     =   " " )
                    IF    ( SDTCHK06-CHKPTN (3) =   " " )
                      AND ( SDTCHK06-CHKPTN (4) =   " " )
                      AND ( SDTCHK06-CHKPTN (5) =   " " )
       *
-                       MOVE    "key7"  TO  WRK-MCP-PATHNAME
+                       MOVE    "key7"  TO  WRK-PATHNAME
       *
                    ELSE
-                       MOVE    "key6"  TO  WRK-MCP-PATHNAME
+                       MOVE    "key6"  TO  WRK-PATHNAME
                    END-IF
                ELSE
-                       MOVE    "key5"  TO  WRK-MCP-PATHNAME
+                       MOVE    "key5"  TO  WRK-PATHNAME
                END-IF
            ELSE
-               MOVE    "key8"          TO  WRK-MCP-PATHNAME
+               MOVE    "key8"          TO  WRK-PATHNAME
            END-IF
       *
            PERFORM 900-QDTCHK-KEY-SEL-SEC
@@ -223,7 +229,7 @@
       *
       *
            MOVE    "query_dtchk"       TO  MCP-TABLE
-           MOVE    WRK-MCP-PATHNAME    TO  MCP-PATH
+           MOVE    WRK-PATHNAME    TO  MCP-PATH
            PERFORM 910-DBCLOSECURSOR-SEC
       *
            .
@@ -595,7 +601,7 @@
       *
            INITIALIZE                      QDTCHK-REC
       *
-           MOVE    SDTCHK06-HOSPID     TO  QDTCHK-SELHOSPID
+           MOVE    SDTCHK06-HOSPNUM     TO  QDTCHK-SELHOSPNUM
            MOVE    SDTCHK06-PTID       TO  QDTCHK-SELPTID
            IF    ( SYS-1101-BYOSRYKAKBN    =   "1" OR SPACE )
                MOVE    SDTCHK06-SRYKA  TO  QDTCHK-SELSRYKA
@@ -610,7 +616,7 @@
       *
            MOVE    QDTCHK-REC          TO  MCPDATA-REC
            MOVE    "query_dtchk"       TO  MCP-TABLE
-           MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
+           MOVE    WRK-PATHNAME    TO  MCP-PATHNAME
            PERFORM 911-DBSELECT-SEC
            IF    ( MCP-RC          =   ZERO )
                MOVE    MCPDATA-REC     TO  QDTCHK-REC
@@ -633,7 +639,7 @@
                     OR   ( FLG-LOOP-END    NOT =   ZERO )
       *
                MOVE    "query_dtchk"       TO  MCP-TABLE
-               MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
+               MOVE    WRK-PATHNAME        TO  MCP-PATHNAME
                PERFORM 910-DBFETCH-SEC
                IF    ( MCP-RC          =   ZERO )
                    MOVE    MCPDATA-REC     TO  QDTCHK-REC
@@ -682,9 +688,10 @@
        910-DBSELECT-SEC                SECTION.
       *
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           CALL    "MONFUNC"           USING
+           CALL    "ORCDBMAIN"         USING
                                        MCPAREA
                                        MCPDATA-REC
+                                       SPA-AREA
            IF    ( MCP-RC          =   ZERO )
                PERFORM 910-DBFETCH-SEC
            END-IF
@@ -699,9 +706,10 @@
        911-DBSELECT-SEC                SECTION.
       *
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           CALL    "MONFUNC"           USING
+           CALL    "ORCDBMAIN"         USING
                                        MCPAREA
                                        MCPDATA-REC
+                                       SPA-AREA
       *
            .
       *
@@ -713,9 +721,10 @@
        910-DBFETCH-SEC                 SECTION.
       *
            MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "MONFUNC"           USING
+           CALL    "ORCDBMAIN"         USING
                                        MCPAREA
                                        MCPDATA-REC
+                                       SPA-AREA
       *
            .
       *
@@ -727,9 +736,10 @@
        910-DBCLOSECURSOR-SEC                 SECTION.
       *
            MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
-           CALL    "MONFUNC"           USING
+           CALL    "ORCDBMAIN"         USING
                                        MCPAREA
                                        MCPDATA-REC
+                                       SPA-AREA
       *
            .
       *

@@ -27,6 +27,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  03.05.00    NACL-太田    07/06/04  グループ診療対応
       *****************************************************************
       *
        ENVIRONMENT                     DIVISION.
@@ -38,22 +39,19 @@
        FILE                            SECTION.
       *
        WORKING-STORAGE                 SECTION.
-grpsys*
-grpsys COPY    "COMMON-SPA".
       *
        01  DTCHK-RC                    PIC S9(09).
       *
       *    エラーファイルファイル名称領域 
-           COPY    "CPCOMMONDAT6.INC"
-                                   REPLACING  //DTCHK//
-                                   BY         //DTCHKERR//.
+           COPY    "CPERRFL.INC"   REPLACING  //ERRFLPARA//
+                                   BY         //DTCHKERRPARA//.
       *
       *    パラメタ領域
        01  WRK-PARA.
            COPY    "CPORCSPRTLNK.INC".
            03  WRK-PARA-JOBID      PIC 9(07).
            03  WRK-PARA-SHELLID    PIC X(08).
-           03  WRK-PARA-HOSPID     PIC X(24).
+           03  WRK-PARA-HOSPNUM    PIC 9(02).
       *
       *    データチェック一括処理パラメータ
            COPY    "CPORCBSD01PARA.INC".
@@ -70,6 +68,7 @@ grpsys COPY    "COMMON-SPA".
        01  DCSRY-REC.
            COPY    "CPDCSRY.INC".
       *
+           COPY    "COMMON-SPA".
       *
       *****************************************************************
       *    サブプロ用領域
@@ -125,8 +124,9 @@ grpsys COPY    "COMMON-SPA".
                                                LNK-PRTKANRI-PRTNM
                                                WRK-PARA-JOBID
                                                WRK-PARA-SHELLID
-                                               WRK-PARA-HOSPID
+                                               WRK-PARA-HOSPNUM
                                                DTCHKERRPARA
+                                               ORCBSD01-IKTKBT
                                                ORCBSD01-SRYYM
                                                ORCBSD01-NYUGAIKBN
                                                ORCBSD01-CHKKBN-G
@@ -155,7 +155,8 @@ grpsys COPY    "COMMON-SPA".
            MOVE    ZERO                TO  DTCHK-RC
       *
            IF    ( DTCHK-RC            =   ZERO )
-               IF    ( ORCBSD01-SRYYMDKBN  =   "1" )
+               IF    ( ORCBSD01-IKTKBT     =   "2" )
+                OR   ( ORCBSD01-SRYYMDKBN  =   "1" )
                    PERFORM 800-MCNDATE-SEC
                    DISPLAY SMCNDATE-HMS "ST:ORCDTCHK009"
                    CALL    "ORCDTCHK009"       USING
@@ -220,6 +221,16 @@ grpsys COPY    "COMMON-SPA".
       *
            IF    ( DTCHK-RC            =   ZERO )
                    PERFORM 800-MCNDATE-SEC
+                   DISPLAY SMCNDATE-HMS "ST:ORCDTCHK010"
+                   CALL    "ORCDTCHK010"       USING
+                                               DTCHK-RC
+                                               COMMAND-PARAM
+                   PERFORM 800-MCNDATE-SEC
+                   DISPLAY SMCNDATE-HMS "ED:ORCDTCHK001"
+           END-IF
+      *
+           IF    ( DTCHK-RC            =   ZERO )
+                   PERFORM 800-MCNDATE-SEC
                    DISPLAY SMCNDATE-HMS "ST:ORCDTCHK008"
                    CALL    "ORCDTCHK008"       USING
                                                DTCHK-RC
@@ -279,11 +290,13 @@ grpsys COPY    "COMMON-SPA".
       *****************************************************************
        100-DBOPEN-SEC                SECTION.
       *
-           MOVE    LOW-VALUE           TO  MCP-PATH
-           MOVE    "DBOPEN"            TO  MCP-FUNC
-           CALL    "MCPSUB"            USING
+           MOVE    LOW-VALUE           TO  MCP-TABLE
+                                           MCP-PATHNAME
+           MOVE    "DBOPEN"            TO  MCP-FUNC.
+           CALL    "ORCDBMAIN"         USING
                                        MCPAREA
                                        MCPDATA-REC
+                                       SPA-AREA
            .
        100-DBOPEN-EXT.
            EXIT.
@@ -293,11 +306,13 @@ grpsys COPY    "COMMON-SPA".
       *****************************************************************
        900-DBDISCONNECT-SEC            SECTION.
       *
-           MOVE    LOW-VALUE           TO  MCP-PATH
+           MOVE    LOW-VALUE           TO  MCP-TABLE
+                                           MCP-PATHNAME
            MOVE    "DBDISCONNECT"      TO  MCP-FUNC
-           CALL    "MCPSUB"            USING
+           CALL    "ORCDBMAIN"         USING
                                        MCPAREA
                                        MCPDATA-REC
+                                       SPA-AREA
            .
        900-DBDISCONNECT-EXT.
            EXIT.

@@ -27,12 +27,18 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  03.05.00    NACL-太田    07/06/04  グループ診療対応
       *****************************************************************
       *
        ENVIRONMENT                     DIVISION.
        CONFIGURATION                   SECTION.
        INPUT-OUTPUT                    SECTION.
        FILE-CONTROL.
+      *
+      *    データチェック中間ファイル（受診患者）
+           SELECT  DTCHK002-FILE   ASSIGN  DTCHK002PARA
+                                   ORGANIZATION    IS  LINE SEQUENTIAL
+                                   FILE    STATUS  IS  STS-DTCHK002.
       *
       *    データチェック診療会計
            SELECT  DCACCT-FILE
@@ -57,6 +63,10 @@
        DATA                            DIVISION.
        FILE                            SECTION.
       *
+      *    データチェック中間ファイル（受診患者）
+       FD  DTCHK002-FILE.
+           COPY    "CPDTCHK002.INC".
+      *
       *    データチェック診療会計
        FD  DCACCT-FILE.
        01  DCACCT-REC.
@@ -73,20 +83,24 @@
       *
        WORKING-STORAGE                 SECTION.
       *
-      *
       *    中間ファイルファイル名称領域 
-           COPY    "CPCOMMONDAT6.INC"      REPLACING  //DTCHK//
-                                   BY                 //DTCHKERR//.
-           COPY    "CPCOMMONDAT6.INC"
-                                   REPLACING  //DTCHK//
-                                   BY         //DTCHKACCT//.
-           COPY    "CPCOMMONDAT6.INC"
-                                   REPLACING  //DTCHK//
-                                   BY         //DTCHKSRY//.
+           COPY    "CPERRFL.INC"   REPLACING  //ERRFLPARA//
+                                   BY         //DTCHKERRPARA//.
+      *
+           COPY    "CPCOMMONDAT3.INC"
+                                   REPLACING  //TMPFLID//
+                                   BY         //DTCHK002PARA//.
+           COPY    "CPCOMMONDAT3.INC"
+                                   REPLACING  //TMPFLID//
+                                   BY         //DTCHKACCTPARA//.
+           COPY    "CPCOMMONDAT3.INC"
+                                   REPLACING  //TMPFLID//
+                                   BY         //DTCHKSRYPARA//.
       *
       *    フラグ領域
        01  STS-AREA.
            03  STS-DTCHKERR                PIC X(02).
+           03  STS-DTCHK002                PIC X(02).
            03  STS-DCACCT                  PIC X(02).
            03  STS-DCSRY                   PIC X(02).
       *
@@ -97,6 +111,8 @@
            03  FLG-HKNCOMBI                PIC 9(01).
            03  FLG-PTNYUINRRK              PIC 9(01).
            03  FLG-GENZAN                  PIC 9(01).
+           03  FLG-DTCHK002                PIC 9(01).
+           03  FLG-LOOP-END                PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -134,7 +150,7 @@
            COPY    "CPORCSPRTLNK.INC".
            03  WRK-PARA-JOBID              PIC 9(07).
            03  WRK-PARA-SHELLID            PIC X(08).
-           03  WRK-PARA-HOSPID             PIC X(24).
+           03  WRK-PARA-HOSPNUM            PIC 9(02).
       *
       *    データチェック一括処理パラメータ
            COPY    "CPORCBSD01PARA.INC".
@@ -212,7 +228,6 @@
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
            COPY    "MCPAREA".
-           COPY    "ORCA-DBPATH".
       *
       ****************************************************************
        LINKAGE                         SECTION.
@@ -255,6 +270,7 @@
                                        WRK-AREA
                                        WRK-PARA
                                        ORCBSD01PARA
+                                       SPA-AREA
       *
            UNSTRING   COMMAND-PARAM    DELIMITED  BY  ","
                                        INTO    LNK-PRTKANRI-RENNUM
@@ -270,8 +286,9 @@
                                                LNK-PRTKANRI-PRTNM
                                                WRK-PARA-JOBID
                                                WRK-PARA-SHELLID
-                                               WRK-PARA-HOSPID
+                                               WRK-PARA-HOSPNUM
                                                DTCHKERRPARA
+                                               ORCBSD01-IKTKBT
                                                ORCBSD01-SRYYM
                                                ORCBSD01-NYUGAIKBN
                                                ORCBSD01-CHKKBN-G
@@ -287,6 +304,8 @@
                                                ORCBSD01-STSRYYMD
                                                ORCBSD01-EDSRYYMD
       *
+           MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
+      *
            PERFORM 900-DBSTART-SEC
       *
       *    ステップ管理開始処理
@@ -296,19 +315,24 @@
            MOVE    WRK-PARA-SHELLID    TO  JOB-SHELLID
            MOVE    "ORCDTCHK006"       TO  JOB-PGID
            MOVE    "入院会計情報抽出"  TO  JOB-SHELLMSG
-           CALL    "ORCSJOB"           USING
-                                       ORCSJOBKANRIAREA
-                                       JOBKANRI-REC
+           MOVE    WRK-PARA-HOSPNUM    TO  JOB-HOSPNUM
+           PERFORM 800-ORCSJOB-SEC
       *
            MOVE    ZERO                TO  FLG-END
                                            FLG-ERR
       *
       *    データチェック中間ファイル名
-           MOVE    "DCACCT00"          TO  DTCHKACCT-FILE-ID
-           MOVE    LNK-PRTKANRI-TERMID TO  DTCHKACCT-TERMID
+           MOVE    WRK-PARA-HOSPNUM    TO  DTCHK002PARA-HOSPNUM
+           MOVE    "DTCHK002"          TO  DTCHK002PARA-FILE-ID
+           MOVE    LNK-PRTKANRI-TERMID TO  DTCHK002PARA-TERMID
       *
-           MOVE    "DCSRY000"          TO  DTCHKSRY-FILE-ID
-           MOVE    LNK-PRTKANRI-TERMID TO  DTCHKSRY-TERMID
+           MOVE    WRK-PARA-HOSPNUM    TO  DTCHKACCTPARA-HOSPNUM
+           MOVE    "DCACCT00"          TO  DTCHKACCTPARA-FILE-ID
+           MOVE    LNK-PRTKANRI-TERMID TO  DTCHKACCTPARA-TERMID
+      *
+           MOVE    WRK-PARA-HOSPNUM    TO  DTCHKSRYPARA-HOSPNUM
+           MOVE    "DCSRY000"          TO  DTCHKSRYPARA-FILE-ID
+           MOVE    LNK-PRTKANRI-TERMID TO  DTCHKSRYPARA-TERMID
       *
       *    初期値設定処理
            PERFORM 1001-INIT-VAL-SET-SEC
@@ -331,7 +355,22 @@
       *****************************************************************
        200-MAIN-SEC                    SECTION.
       *
-           MOVE    ZERO            TO  FLG-NYUINACCT
+      *    診療会計編集処理
+           IF    ( ORCBSD01-IKTKBT     =   "2" )
+               PERFORM 2002-SRYACCT-EDIT-SEC
+           ELSE
+               PERFORM 2001-SRYACCT-EDIT-SEC
+           END-IF
+      *
+           MOVE    1               TO  FLG-END
+      *
+           .
+       200-MAIN-EXT.
+           EXIT.
+      *****************************************************************
+      *    診療会計編集処理
+      *****************************************************************
+       2001-SRYACCT-EDIT-SEC           SECTION.
       *
            OPEN    I-O     DCACCT-FILE
                            DCSRY-FILE
@@ -352,16 +391,59 @@
       *
            END-PERFORM
       *
-           MOVE    PATH-TBL-NYUINACCT-KEY27    TO  MCP-PATH
+           MOVE    "tbl_nyuinacct"     TO  MCP-TABLE
+           MOVE    "key27"             TO  MCP-PATHNAME
            PERFORM 910-DBCLOSECURSOR-SEC
       *
            CLOSE           DCACCT-FILE
                            DCSRY-FILE
       *
-           MOVE    1               TO  FLG-END
+           .
+       2001-SRYACCT-EDIT-EXT.
+           EXIT.
+      *****************************************************************
+      *    診療会計編集処理
+      *****************************************************************
+       2002-SRYACCT-EDIT-SEC           SECTION.
+      *
+           OPEN    INPUT   DTCHK002-FILE
+           OPEN    I-O     DCACCT-FILE
+                           DCSRY-FILE
+      *
+           PERFORM 900-DTCHK002-READ-SEC
+      *
+           PERFORM UNTIL ( FLG-DTCHK002    NOT =   ZERO )
+      *
+               PERFORM 900-NYUINACCT-KEY14-SEL-SEC
+      *
+               PERFORM UNTIL ( FLG-NYUINACCT   NOT =   ZERO )
+      *
+                   IF    ( NACCT-ZAIKAISU  >   ZERO )
+                       PERFORM 2001-HBTSRYKA-HEN-SEC
+      *
+                       PERFORM 2001-TCOMBI-HEN-SEC
+      *
+                       PERFORM 2001-NACCT-EDIT-SEC
+                   END-IF
+      *
+                   PERFORM 900-NYUINACCT-KEY14-FET-SEC
+      *
+               END-PERFORM
+      *
+               MOVE    "tbl_nyuinacct"     TO  MCP-TABLE
+               MOVE    "key14"             TO  MCP-PATHNAME
+               PERFORM 910-DBCLOSECURSOR-SEC
+      *
+               PERFORM 900-DTCHK002-READ-SEC
+      *
+           END-PERFORM
+      *
+           CLOSE           DTCHK002-FILE
+           CLOSE           DCACCT-FILE
+                           DCSRY-FILE
       *
            .
-       200-MAIN-EXT.
+       2002-SRYACCT-EDIT-EXT.
            EXIT.
       *****************************************************************
       *    日別診療科編集処理
@@ -398,7 +480,8 @@
       *
            END-PERFORM
       *
-           MOVE    PATH-TBL-PTNYUINRRK-KEY41   TO  MCP-PATH
+           MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
+           MOVE    "key41"             TO  MCP-PATHNAME
            PERFORM 910-DBCLOSECURSOR-SEC
       *
            PERFORM VARYING IDX-DAY FROM    1   BY  1
@@ -505,8 +588,8 @@
                PERFORM 900-HKNCOMBI-KEY-SEL-SEC
       *
                INITIALIZE                  HCM34S01-AREA
-                                           SPA-AREA
-               MOVE    WRK-PARA-HOSPID     TO  HCM34S01-HOSPID
+      *
+               MOVE    WRK-PARA-HOSPNUM     TO  HCM34S01-HOSPNUM
                MOVE    NACCT-PTID          TO  HCM34S01-PTID
                MOVE    NACCT-SRYYM         TO  HCM34S01-SANTEIYM
                MOVE    COMB-HKNCOMBINUM    TO  HCM34S01-HKNCOMBI
@@ -586,6 +669,7 @@
                                        TO  DCACCT-SRYKA
            MOVE    HCM34S01-SRYKBN (IDX4)
                                        TO  DCACCT-SRYKBN
+           MOVE    SPACE               TO  DCACCT-JIHOKBN
            MOVE    COMB-HKNCOMBINUM    TO  DCACCT-HKNCOMBI
            MOVE    HCM34S01-ZAITEN (IDX4)
                                        TO  DCACCT-ZAITEN
@@ -709,6 +793,7 @@
            MOVE    "2"                 TO  DCACCT-ACCTKBN
            MOVE    NACCT-SRYKA         TO  DCACCT-SRYKA
            MOVE    NACCT-SRYKBN        TO  DCACCT-SRYKBN
+           MOVE    SPACE               TO  DCACCT-JIHOKBN
            MOVE    NACCT-HKNCOMBI      TO  DCACCT-HKNCOMBI
            MOVE    NACCT-ZAITEN        TO  DCACCT-ZAITEN
            MOVE    NACCT-ZAIKAISU      TO  DCACCT-ZAIKAISU
@@ -757,9 +842,8 @@
                                        TO  JOB-SHELLID
                MOVE    WRK-DTCHKERR    TO  JOB-YOBI
                MOVE    "9999"          TO  JOB-ERRCD
-               CALL    "ORCSJOB"       USING
-                                       ORCSJOBKANRIAREA
-                                       JOBKANRI-REC
+               MOVE    WRK-PARA-HOSPNUM TO  JOB-HOSPNUM
+               PERFORM 800-ORCSJOB-SEC
            END-IF
       *
            MOVE    1                   TO  FLG-END
@@ -780,9 +864,8 @@
            MOVE    WRK-PARA-SHELLID
                                    TO  JOB-SHELLID
            MOVE    ZERO            TO  JOB-UPDCNT
-           CALL    "ORCSJOB"       USING
-                                   ORCSJOBKANRIAREA
-                                   JOBKANRI-REC
+           MOVE    WRK-PARA-HOSPNUM    TO  JOB-HOSPNUM
+           PERFORM 800-ORCSJOB-SEC
       *
            PERFORM 900-DBCOMMIT-SEC
       *     
@@ -803,9 +886,8 @@
            MOVE    "ORCDTCHK006"       TO  JOB-PGID
            MOVE    "入院会計情報抽出"  TO  JOB-SHELLMSG
       *
-           CALL    "ORCSJOB"               USING
-                                           ORCSJOBKANRIAREA
-                                           JOBKANRI-REC
+           MOVE    WRK-PARA-HOSPNUM    TO  JOB-HOSPNUM
+           PERFORM 800-ORCSJOB-SEC
            .
        800-ORCSJOB-STM-EXT.
            EXIT.
@@ -821,6 +903,21 @@
        800-MCNDATE-EXT.
            EXIT.
       *****************************************************************
+      *    ジョブ管理サブ
+      *****************************************************************
+       800-ORCSJOB-SEC                 SECTION.
+      *
+           MOVE    WRK-PARA-HOSPNUM    TO  JOB-HOSPNUM
+           CALL    "ORCSJOB"           USING
+                                       ORCSJOBKANRIAREA 
+                                       JOBKANRI-REC
+                                       SPA-AREA
+      *
+           .
+      *
+       800-ORCSJOB-EXT.
+           EXIT.
+      *****************************************************************
       *    入院会計検索処理(KEY41)
       *****************************************************************
        900-PTNYUINRRK-KEY41-SEL-SEC    SECTION.
@@ -828,15 +925,15 @@
            MOVE    ZERO                TO  FLG-PTNYUINRRK
            INITIALIZE                  PTNYUINRRK-REC
       *
-           MOVE    WRK-PARA-HOSPID     TO  PTNYUINRRK-HOSPID
+           MOVE    WRK-PARA-HOSPNUM     TO  PTNYUINRRK-HOSPNUM
            MOVE    NACCT-PTID          TO  PTNYUINRRK-PTID
            MOVE    ORCBSD01-SRYYM      TO  PTNYUINRRK-TENNYUYMD
            MOVE    "31"                TO  PTNYUINRRK-TENNYUYMD
            MOVE    ORCBSD01-SRYYM      TO  PTNYUINRRK-TENSTUYMD
            MOVE    "01"                TO  PTNYUINRRK-TENSTUYMD
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PTNYUINRRK-REC      TO  MCPDATA-REC
-           MOVE    PATH-TBL-PTNYUINRRK-KEY41    TO  MCP-PATH
+           MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
+           MOVE    "key41"             TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF    ( MCP-RC          =   ZERO )
                MOVE    MCPDATA-REC     TO  PTNYUINRRK-REC
@@ -853,7 +950,8 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *****************************************************************
        900-PTNYUINRRK-KEY41-FET-SEC     SECTION.
       *
-           MOVE    PATH-TBL-PTNYUINRRK-KEY41   TO  MCP-PATH
+           MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
+           MOVE    "key41"             TO  MCP-PATHNAME
            PERFORM 910-DBFETCH-SEC
            IF    ( MCP-RC          =   ZERO )
                MOVE    MCPDATA-REC     TO  PTNYUINRRK-REC
@@ -873,13 +971,13 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    ZERO                TO  FLG-NYUINACCT
            INITIALIZE                  NYUINACCT-REC
       *
-           MOVE    WRK-PARA-HOSPID     TO  NACCT-HOSPID
+           MOVE    WRK-PARA-HOSPNUM     TO  NACCT-HOSPNUM
            MOVE    ORCBSD01-SRYYM      TO  NACCT-SRYYM
            MOVE    "1"                 TO  NACCT-NYUGAIKBN
            MOVE    "5"                 TO  NACCT-ZAISKBKBN
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    NYUINACCT-REC       TO  MCPDATA-REC
-           MOVE    PATH-TBL-NYUINACCT-KEY27    TO  MCP-PATH
+           MOVE    "tbl_nyuinacct"     TO  MCP-TABLE
+           MOVE    "key27"             TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF    ( MCP-RC          =   ZERO )
                MOVE    MCPDATA-REC     TO  NYUINACCT-REC
@@ -896,7 +994,10 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *****************************************************************
        900-NYUINACCT-KEY27-FET-SEC     SECTION.
       *
-           MOVE    PATH-TBL-NYUINACCT-KEY27    TO  MCP-PATH
+           MOVE    ZERO            TO  FLG-NYUINACCT
+      *
+           MOVE    "tbl_nyuinacct"     TO  MCP-TABLE
+           MOVE    "key27"             TO  MCP-PATHNAME
            PERFORM 910-DBFETCH-SEC
            IF    ( MCP-RC          =   ZERO )
                MOVE    MCPDATA-REC     TO  NYUINACCT-REC
@@ -909,6 +1010,64 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
        900-NYUINACCT-KEY27-FET-EXT.
            EXIT.
       *****************************************************************
+      *    入院会計検索処理(KEY14)
+      *****************************************************************
+       900-NYUINACCT-KEY14-SEL-SEC     SECTION.
+      *
+           MOVE    ZERO                TO  FLG-NYUINACCT
+           INITIALIZE                  NYUINACCT-REC
+      *
+           MOVE    WRK-PARA-HOSPNUM     TO  NACCT-HOSPNUM
+           MOVE    DTCHK002-PTID       TO  NACCT-PTID
+           MOVE    ORCBSD01-SRYYM      TO  NACCT-SRYYM
+           MOVE    "1"                 TO  NACCT-NYUGAIKBN
+           MOVE    "5"                 TO  NACCT-ZAISKBKBN
+           MOVE    NYUINACCT-REC       TO  MCPDATA-REC
+           MOVE    "tbl_nyuinacct"     TO  MCP-TABLE
+           MOVE    "key14"             TO  MCP-PATHNAME
+           PERFORM 911-DBSELECT-SEC
+           IF    ( MCP-RC          =   ZERO )
+               PERFORM 900-NYUINACCT-KEY14-FET-SEC
+           ELSE
+               MOVE    1               TO  FLG-NYUINACCT
+               INITIALIZE                  NYUINACCT-REC
+           END-IF
+      *
+           .
+       900-NYUINACCT-KEY14-SEL-EXT.
+           EXIT.
+      *****************************************************************
+      *    入院会計FETCH処理(KEY14)
+      *****************************************************************
+       900-NYUINACCT-KEY14-FET-SEC     SECTION.
+      *
+           MOVE    ZERO            TO  FLG-NYUINACCT
+           MOVE    ZERO            TO  FLG-LOOP-END
+      *
+           PERFORM UNTIL ( FLG-NYUINACCT   NOT =   ZERO )
+                    OR   ( FLG-LOOP-END    NOT =   ZERO )
+      *
+               MOVE    "tbl_nyuinacct"     TO  MCP-TABLE
+               MOVE    "key14"             TO  MCP-PATHNAME
+               PERFORM 910-DBFETCH-SEC
+               IF    ( MCP-RC          =   ZERO )
+                   MOVE    MCPDATA-REC     TO  NYUINACCT-REC
+      *
+                   IF    ( NACCT-ZAISKBKBN =   "5" )
+                       MOVE    1   TO  FLG-LOOP-END
+                   END-IF
+      *
+               ELSE
+                   MOVE    1               TO  FLG-NYUINACCT
+                   INITIALIZE                  NYUINACCT-REC
+               END-IF
+      *
+           END-PERFORM
+      *
+           .
+       900-NYUINACCT-KEY14-FET-EXT.
+           EXIT.
+      *****************************************************************
       *    保険組合せ取得処理
       *****************************************************************
        900-HKNCOMBI-KEY-SEL-SEC        SECTION.
@@ -916,12 +1075,12 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    ZERO                    TO  FLG-HKNCOMBI
       *
            INITIALIZE                          HKNCOMBI-REC
-           MOVE    WRK-PARA-HOSPID         TO  COMB-HOSPID
+           MOVE    WRK-PARA-HOSPNUM        TO  COMB-HOSPNUM
            MOVE    NACCT-PTID              TO  COMB-PTID
            MOVE    WRK-COMB-HKNCOMBINUM    TO  COMB-HKNCOMBINUM
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    HKNCOMBI-REC            TO  MCPDATA-REC
-           MOVE    PATH-TBL-HKNCOMBI-KEY   TO  MCP-PATH
+           MOVE    "tbl_hkncombi"          TO  MCP-TABLE
+           MOVE    "key"                   TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF    ( MCP-RC                  =   ZERO )
                MOVE    MCPDATA-REC         TO  HKNCOMBI-REC
@@ -930,11 +1089,27 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                INITIALIZE                      HKNCOMBI-REC
            END-IF
       *
-           MOVE    PATH-TBL-HKNCOMBI-KEY   TO  MCP-PATH
+           MOVE    "tbl_hkncombi"          TO  MCP-TABLE
+           MOVE    "key"                   TO  MCP-PATHNAME
            PERFORM 910-DBCLOSECURSOR-SEC
       *
            .
        900-HKNCOMBI-KEY-SEL-EXT.
+           EXIT.
+      *****************************************************************
+      *    データチェック中間ファイル（受診患者）読込処理
+      *****************************************************************
+       900-DTCHK002-READ-SEC           SECTION.
+      *
+           MOVE    ZERO            TO  FLG-DTCHK002
+      *
+           READ    DTCHK002-FILE
+           AT  END
+               MOVE    1           TO  FLG-DTCHK002
+           END-READ
+      *
+           .
+       900-DTCHK002-READ-EXT.
            EXIT.
       *****************************************************************
       *    ＤＢ検索処理（FHETCHも行う)
@@ -942,9 +1117,10 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
        910-DBSELECT-SEC                SECTION.
       *
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           CALL    "MCPSUB"            USING
+           CALL    "ORCDBMAIN"         USING
                                        MCPAREA
                                        MCPDATA-REC
+                                       SPA-AREA
            IF    ( MCP-RC          =   ZERO )
                PERFORM 910-DBFETCH-SEC
            END-IF
@@ -959,9 +1135,10 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
        911-DBSELECT-SEC                SECTION.
       *
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           CALL    "MCPSUB"            USING
+           CALL    "ORCDBMAIN"         USING
                                        MCPAREA
                                        MCPDATA-REC
+                                       SPA-AREA
       *
            .
       *
@@ -973,9 +1150,10 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
        910-DBFETCH-SEC                 SECTION.
       *
            MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "MCPSUB"            USING
+           CALL    "ORCDBMAIN"         USING
                                        MCPAREA
                                        MCPDATA-REC
+                                       SPA-AREA
       *
            .
       *
@@ -987,9 +1165,10 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
        910-DBCLOSECURSOR-SEC                 SECTION.
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           CALL    "MCPSUB"            USING
+           CALL    "ORCDBMAIN"         USING
                                        MCPAREA
                                        MCPDATA-REC
+                                       SPA-AREA
       *
            .
       *
@@ -1001,9 +1180,10 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
        910-DBDELETE-SEC                 SECTION.
       *
            MOVE    "DBDELETE"          TO  MCP-FUNC
-           CALL    "MCPSUB"            USING
+           CALL    "ORCDBMAIN"         USING
                                        MCPAREA
                                        MCPDATA-REC
+                                       SPA-AREA
       *
            .
       *
@@ -1015,9 +1195,10 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
        910-DBINSERT-SEC                SECTION.
       *
            MOVE    "DBINSERT"          TO  MCP-FUNC
-           CALL    "MCPSUB"            USING
+           CALL    "ORCDBMAIN"         USING
                                        MCPAREA
                                        MCPDATA-REC
+                                       SPA-AREA
       *
            .
       *
@@ -1028,11 +1209,13 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *****************************************************************
        900-DBSTART-SEC                SECTION.
       *
-           MOVE    LOW-VALUE           TO  MCP-PATH
+           MOVE    LOW-VALUE           TO  MCP-TABLE
+                                           MCP-PATHNAME
            MOVE    "DBSTART"           TO  MCP-FUNC
-           CALL    "MCPSUB"            USING
+           CALL    "ORCDBMAIN"         USING
                                        MCPAREA
                                        MCPDATA-REC
+                                       SPA-AREA
            .
        900-DBSTART-EXT.
            EXIT.
@@ -1042,11 +1225,13 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *****************************************************************
        900-DBCOMMIT-SEC            SECTION.
       *
-           MOVE    LOW-VALUE           TO  MCP-PATH
+           MOVE    LOW-VALUE           TO  MCP-TABLE
+                                           MCP-PATHNAME
            MOVE    "DBCOMMIT"          TO  MCP-FUNC
-           CALL    "MCPSUB"            USING
+           CALL    "ORCDBMAIN"         USING
                                        MCPAREA
                                        MCPDATA-REC
+                                       SPA-AREA
            .
        900-DBCOMMIT-EXT.
            EXIT.

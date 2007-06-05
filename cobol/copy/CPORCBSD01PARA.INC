@@ -24,6 +24,7 @@
       * Maj/Min/Rev  修正者       日付      内容
       *****************************************************************
        01  ORCBSD01PARA.
+           03  ORCBSD01-IKTKBT         PIC  X(01).
            03  ORCBSD01-SRYYM          PIC  X(06).
            03  ORCBSD01-NYUGAIKBN      PIC  X(01).
            03  ORCBSD01-CHKKBN-G.

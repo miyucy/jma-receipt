@@ -203,7 +203,7 @@ path	key8	{
 	DBSELECT	{
 		DECLARE tbl_chksnd_key8_csr CURSOR FOR
 		SELECT A.* from tbl_chksnd A left join tbl_tensu B
-		ON    A.HOSPID    =   B.HOSPID
+		ON    A.HOSPNUM    =   B.HOSPNUM
 		AND    A.SRYCD     =   B.SRYCD
 		AND   B.YUKOSTYMD  <=   :YUKOSTYMD
 		AND   B.YUKOEDYMD  >=   :YUKOEDYMD
@@ -223,7 +223,7 @@ path	key9	{
 	DBSELECT	{
 		DECLARE tbl_chksnd_key9_csr CURSOR FOR
 		SELECT A.* from tbl_chksnd A left join tbl_tensu B
-		ON    A.HOSPID    =   B.HOSPID
+		ON    A.HOSPNUM    =   B.HOSPNUM
 		AND    A.SRYCD     =   B.SRYCD
 		AND   B.YUKOSTYMD  <=   :YUKOSTYMD
 		AND   B.YUKOEDYMD  >=   :YUKOEDYMD
@@ -244,11 +244,12 @@ path	key10	{
 	DBSELECT	{
 		DECLARE tbl_chksnd_key10_csr CURSOR FOR
 		SELECT A.* from tbl_chksnd A left join tbl_tensu B
-		ON    A.HOSPID    =   B.HOSPID
+		ON    A.HOSPNUM    =   B.HOSPNUM
 		AND    A.SRYCD     =   B.SRYCD
 		AND   B.YUKOSTYMD  <=   :YUKOSTYMD
 		AND   B.YUKOEDYMD  >=   :YUKOEDYMD
 		WHERE 	A.HOSPNUM	= :HOSPNUM
+		AND   A.CHKKBN    =   :CHKKBN
 		AND   A.SRYCD     >=  :SRYCD
 		AND   A.SRYCD     <=  :UPSRYCD
 		AND   A.CDKBN     =   :CDKBN

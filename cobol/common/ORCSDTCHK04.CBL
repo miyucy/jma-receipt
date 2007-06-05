@@ -25,6 +25,10 @@
       *  作成日付    作業者        記述
       *  05/02/02    NACL−太田    新規作成
       *****************************************************************
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      *  03.05.00    NACL-太田    07/06/04  グループ診療対応
+      *****************************************************************
       *
        ENVIRONMENT             DIVISION.
        CONFIGURATION           SECTION.
@@ -69,10 +73,12 @@
        LINKAGE                     SECTION.
       *
            COPY    "CPORCSDTCHK04.INC".
+           COPY    "COMMON-SPA".
       *
       *
        PROCEDURE                    DIVISION    USING
-       SDTCHK04AREA.
+       SDTCHK04AREA
+       SPA-AREA.
       *
       *****************************************************************
       *    主　　処理
@@ -143,14 +149,6 @@
       *****************************************************************
        300-END-SEC                     SECTION.
       *
-           DISPLAY SDTCHK04-KIGONUM (1:20) ","
-                   SDTCHK04-SUJI           ","
-                   SDTCHK04-KANJI          ","
-                   SDTCHK04-ALPHABET       ","
-                   SDTCHK04-HYPHEN         ","
-                   SDTCHK04-TYOON          ","
-                   SDTCHK04-KAKKO          ","
-                   SDTCHK04-ETC
       *
            .
        300-END-EXT.

@@ -27,6 +27,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  03.05.00    NACL-太田    07/06/04  グループ診療対応
       *****************************************************************
       *
       *
@@ -41,8 +42,6 @@
       *
       *
        WORKING-STORAGE             SECTION.
-grpsys*
-grpsys COPY    "COMMON-SPA".
       *
       *    フラグ領域
        01  FLG-AREA.
@@ -90,7 +89,6 @@ grpsys COPY    "COMMON-SPA".
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
            COPY    "MCPAREA".
-           COPY    "ORCA-DBPATH".
       *
       *****************************************************************
       *    連絡　領域
@@ -102,12 +100,12 @@ grpsys COPY    "COMMON-SPA".
              02  LNK-HKNCOMBI-OCC      OCCURS  100.
            COPY    "CPHKNCOMBI.INC"    REPLACING  //COMB-//
                                        BY         //LNK-COMB-//.
-             
+           COPY    "COMMON-SPA".
       *
        PROCEDURE                   DIVISION    USING
            SDTCHK02AREA
            LNK-HKNCOMBI-AREA
-           .
+           SPA-AREA.
       *
       *****************************************************************
       *    主　　処理
@@ -157,8 +155,9 @@ grpsys COPY    "COMMON-SPA".
       *
            END-PERFORM
       *
-           MOVE    PATH-TBL-HKNCOMBI-KEY2  TO  MCP-PATH
-           PERFORM 910-DBCLOSE-SEC
+           MOVE    "tbl_hkncombi"      TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           PERFORM 910-DBCLOSECURSOR-SEC
       *
       *    最大件数
            MOVE    IDX-MAX             TO  SDTCHK02-O-MAX
@@ -326,11 +325,11 @@ grpsys COPY    "COMMON-SPA".
            MOVE    ZERO                TO  FLG-HKNCOMBI
       *
            INITIALIZE                  HKNCOMBI-REC
-           MOVE    SDTCHK02-HOSPID     TO  COMB-HOSPID
+           MOVE    SDTCHK02-HOSPNUM     TO  COMB-HOSPNUM
            MOVE    SDTCHK02-PTID       TO  COMB-PTID
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    HKNCOMBI-REC        TO  MCPDATA-REC
-           MOVE    PATH-TBL-HKNCOMBI-KEY2  TO  MCP-PATH
+           MOVE    "tbl_hkncombi"      TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF    ( MCP-RC              =   ZERO )
                MOVE    MCPDATA-REC     TO  HKNCOMBI-REC
@@ -347,7 +346,8 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *****************************************************************
        900-HKNCOMBI-KEY2-FET-SEC       SECTION.
       *
-           MOVE    PATH-TBL-HKNCOMBI-KEY2  TO  MCP-PATH
+           MOVE    "tbl_hkncombi"      TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
            PERFORM 910-DBFETCH-SEC
            IF    ( MCP-RC              =   ZERO )
                MOVE    MCPDATA-REC     TO  HKNCOMBI-REC
@@ -367,12 +367,12 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    ZERO                TO  FLG-PTRSIINF
       *
            INITIALIZE                      PTRSIINF-REC
-           MOVE    SDTCHK02-HOSPID     TO  PTRSI-HOSPID
+           MOVE    SDTCHK02-HOSPNUM     TO  PTRSI-HOSPNUM
            MOVE    SDTCHK02-PTID       TO  PTRSI-PTID
            MOVE    COMB-HKNID          TO  PTRSI-HKNID
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PTRSIINF-REC        TO  MCPDATA-REC
-           MOVE    PATH-TBL-PTRSIINF-KEY   TO  MCP-PATH
+           MOVE    "tbl_ptrsiinf"      TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF    ( MCP-RC          =   ZERO )
                MOVE    MCPDATA-REC     TO  PTRSIINF-REC
@@ -381,8 +381,9 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                INITIALIZE                  PTRSIINF-REC
            END-IF
       *
-           MOVE    PATH-TBL-PTRSIINF-KEY   TO  MCP-PATH
-           PERFORM 910-DBCLOSE-SEC
+           MOVE    "tbl_ptrsiinf"      TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 910-DBCLOSECURSOR-SEC
       *
            .
        900-PTRSIINF-KEY-SEL-EXT.
@@ -393,9 +394,10 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
        910-DBSELECT-SEC                SECTION.
       *
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           CALL    "MCPSUB"            USING
+           CALL    "ORCDBMAIN"         USING
                                        MCPAREA
                                        MCPDATA-REC
+                                       SPA-AREA
            IF    ( MCP-RC          =   ZERO )
                PERFORM 910-DBFETCH-SEC
            END-IF
@@ -410,9 +412,10 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
        910-DBFETCH-SEC                 SECTION.
       *
            MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "MCPSUB"            USING
+           CALL    "ORCDBMAIN"         USING
                                        MCPAREA
                                        MCPDATA-REC
+                                       SPA-AREA
       *
            .
       *
@@ -421,14 +424,15 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *****************************************************************
       *    ＤＢクローズ処理
       *****************************************************************
-       910-DBCLOSE-SEC                 SECTION.
+       910-DBCLOSECURSOR-SEC                 SECTION.
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           CALL    "MCPSUB"            USING
+           CALL    "ORCDBMAIN"         USING
                                        MCPAREA
                                        MCPDATA-REC
+                                       SPA-AREA
       *
            .
       *
-       910-DBCLOSE-EXT.
+       910-DBCLOSECURSOR-EXT.
            EXIT.

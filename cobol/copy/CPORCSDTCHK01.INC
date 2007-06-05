@@ -20,7 +20,7 @@
                05  SDTCHK01-CHKPTN-OCC         OCCURS  5.
                    07  SDTCHK01-CHKPTN         PIC X(01).
            03  SDTCHK01-IN.
-               05  SDTCHK01-HOSPID             PIC X(24).
+               05  SDTCHK01-HOSPNUM            PIC 9(02).
                05  SDTCHK01-PTID               PIC 9(10).
                05  SDTCHK01-SRYKA              PIC X(02).
                05  SDTCHK01-CHKKBN             PIC X(01).

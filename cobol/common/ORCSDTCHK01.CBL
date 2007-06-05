@@ -25,7 +25,10 @@
       *  作成日付    作業者        記述
       *  05/02/02    NACL−太田    新規作成
       *****************************************************************
-      *
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      *  03.05.00    NACL-太田    07/06/04  グループ診療対応
+      *****************************************************************
        ENVIRONMENT             DIVISION.
        CONFIGURATION           SECTION.
        INPUT-OUTPUT            SECTION.
@@ -36,8 +39,6 @@
       *
       *
        WORKING-STORAGE             SECTION.
-grpsys*
-grpsys COPY    "COMMON-SPA".
       *
       *    フラグ領域
        01  FLG-AREA.
@@ -62,10 +63,7 @@ grpsys COPY    "COMMON-SPA".
            03  WRK-SYMD                    PIC X(08).
            03  WRK-ZOGENPTN                PIC X(01).
            03  WRK-ZOGEN                   PIC S9(05).
-           03  WRK-MCP-PATH.
-               05  WRK-MCP-BLOCKS          PIC S9(9)   BINARY.
-               05  WRK-MCP-RNAME           PIC S9(9)   BINARY.
-               05  WRK-MCP-PNAME           PIC S9(9)   BINARY.
+           03  WRK-PATHNAME                PIC X(64).
            03  WRK-STR-LEN                 PIC 9(05).
            03  WRK-STR                     PIC X(500).
            03  WRK-BYOMEICD-G.
@@ -132,7 +130,6 @@ grpsys COPY    "COMMON-SPA".
       *
            COPY    "MCPAREA".
            COPY    "MCPDATA.INC".
-           COPY    "ORCA-DBPATH".
       *
       *****************************************************************
       *    連絡　領域
@@ -146,13 +143,15 @@ grpsys COPY    "COMMON-SPA".
              02  LNK-HKNCOMBI-OCC      OCCURS  100.
            COPY    "CPHKNCOMBI.INC"    REPLACING  //COMB-//
                                        BY         //LNK-COMB-//.
+           COPY    "COMMON-SPA".
       *
       *
        PROCEDURE                    DIVISION    USING
        SDTCHK01AREA
        SYS-1101-REC
        SDTCHK02AREA
-       LNK-HKNCOMBI-AREA.
+       LNK-HKNCOMBI-AREA
+       SPA-AREA.
       *
       *****************************************************************
       *    主　　処理
@@ -192,27 +191,23 @@ grpsys COPY    "COMMON-SPA".
       *****************************************************************
        200-MAIN-SEC                    SECTION.
       *
-           MOVE    PATH-QUERY-DTCHK-KEY2   TO  WRK-MCP-PATH
+           MOVE    "key2"          TO  WRK-PATHNAME
            IF    ( SDTCHK01-CHKPTN (1)     =   "1" )
                IF    ( SDTCHK01-CHKPTN (2)     =   " " )
                    IF    ( SDTCHK01-CHKPTN (3) =   " " )
                      AND ( SDTCHK01-CHKPTN (4) =   " " )
                      AND ( SDTCHK01-CHKPTN (5) =   " " )
       *
-                       MOVE    PATH-QUERY-DTCHK-KEY3
-                                           TO  WRK-MCP-PATH
+                       MOVE    "key3"  TO  WRK-PATHNAME
       *
                    ELSE
-                       MOVE    PATH-QUERY-DTCHK-KEY2
-                                           TO  WRK-MCP-PATH
+                       MOVE    "key2"  TO  WRK-PATHNAME
                    END-IF
                ELSE
-                       MOVE    PATH-QUERY-DTCHK-KEY
-                                           TO  WRK-MCP-PATH
+                       MOVE    "key"   TO  WRK-PATHNAME
                END-IF
            ELSE
-               MOVE    PATH-QUERY-DTCHK-KEY4
-                                           TO  WRK-MCP-PATH
+                       MOVE    "key4"  TO  WRK-PATHNAME
            END-IF
       *
            PERFORM 900-QDTCHK-KEY-SEL-SEC
@@ -240,8 +235,9 @@ grpsys COPY    "COMMON-SPA".
            END-PERFORM
       *
       *
-           MOVE    WRK-MCP-PATH        TO  MCP-PATH
-           PERFORM 910-DBCLOSE-SEC
+           MOVE    "query_dtchk"       TO  MCP-TABLE
+           MOVE    WRK-PATHNAME        TO  MCP-PATHNAME
+           PERFORM 910-DBCLOSECURSOR-SEC
       *
            .
        200-MAIN-EXT.
@@ -669,7 +665,7 @@ grpsys COPY    "COMMON-SPA".
       *
            INITIALIZE                      QDTCHK-REC
       *
-           MOVE    SDTCHK01-HOSPID     TO  QDTCHK-SELHOSPID
+           MOVE    SDTCHK01-HOSPNUM    TO  QDTCHK-SELHOSPNUM
            MOVE    SDTCHK01-PTID       TO  QDTCHK-SELPTID
            IF    ( SYS-1101-BYOSRYKAKBN    =   "1" OR SPACE )
                MOVE    SDTCHK01-SRYKA  TO  QDTCHK-SELSRYKA
@@ -682,9 +678,9 @@ grpsys COPY    "COMMON-SPA".
                                            QDTCHK-SELYUKOEDYMD
            MOVE    SDTCHK01-CDKBN      TO  QDTCHK-SELCDKBN
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    QDTCHK-REC          TO  MCPDATA-REC
-           MOVE    WRK-MCP-PATH        TO  MCP-PATH
+           MOVE    "query_dtchk"       TO  MCP-TABLE
+           MOVE    WRK-PATHNAME        TO  MCP-PATHNAME
            PERFORM 911-DBSELECT-SEC
            IF    ( MCP-RC          =   ZERO )
                MOVE    MCPDATA-REC     TO  QDTCHK-REC
@@ -706,7 +702,8 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            PERFORM UNTIL ( FLG-QDTCHK      NOT =   ZERO )
                     OR   ( FLG-LOOP-END    NOT =   ZERO )
       *
-               MOVE    WRK-MCP-PATH        TO  MCP-PATH
+               MOVE    "query_dtchk"       TO  MCP-TABLE
+               MOVE    WRK-PATHNAME        TO  MCP-PATHNAME
                PERFORM 910-DBFETCH-SEC
                IF    ( MCP-RC          =   ZERO )
                    MOVE    MCPDATA-REC     TO  QDTCHK-REC
@@ -755,9 +752,10 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
        910-DBSELECT-SEC                SECTION.
       *
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           CALL    "MCPSUB"            USING
+           CALL    "ORCDBMAIN"         USING
                                        MCPAREA
                                        MCPDATA-REC
+                                       SPA-AREA
            IF    ( MCP-RC          =   ZERO )
                PERFORM 910-DBFETCH-SEC
            END-IF
@@ -772,9 +770,10 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
        911-DBSELECT-SEC                SECTION.
       *
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           CALL    "MCPSUB"            USING
+           CALL    "ORCDBMAIN"         USING
                                        MCPAREA
                                        MCPDATA-REC
+                                       SPA-AREA
       *
            .
       *
@@ -786,9 +785,10 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
        910-DBFETCH-SEC                 SECTION.
       *
            MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "MCPSUB"            USING
+           CALL    "ORCDBMAIN"         USING
                                        MCPAREA
                                        MCPDATA-REC
+                                       SPA-AREA
       *
            .
       *
@@ -797,14 +797,15 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *****************************************************************
       *    ＤＢクローズ処理
       *****************************************************************
-       910-DBCLOSE-SEC                 SECTION.
+       910-DBCLOSECURSOR-SEC                 SECTION.
       *
            MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
-           CALL    "MCPSUB"            USING
+           CALL    "ORCDBMAIN"         USING
                                        MCPAREA
                                        MCPDATA-REC
+                                       SPA-AREA
       *
            .
       *
-       910-DBCLOSE-EXT.
+       910-DBCLOSECURSOR-EXT.
            EXIT.

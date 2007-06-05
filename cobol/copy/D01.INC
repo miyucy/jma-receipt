@@ -16,6 +16,9 @@
       * 113-8621, Japan.
       ********************************************************************
         02  D01.
+          03  D01-B08-LABEL            PIC X(10).
+          03  D01-LBLIKTKBT-STYLE      PIC X(20).
+          03  D01-LBLIKTKBT            PIC X(20).
           03  D01-SRYYM                PIC X(07).
           03  D01-CMB-NYUGAIKBN.
             04  D01-NYUGAIKBN          PIC X(20).
