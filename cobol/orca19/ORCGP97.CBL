@@ -40,6 +40,7 @@
       *   01.00.09    NACL-多々納  04/07/22  保険の追加
       *   01.00.10    NACL-多々納  05/11/10  MONFUNCの修正
       *   03.03.00    NACL-多々納  06/10/06  名前検索の追加
+      *   03.05.00    NACL-多々納  07/06/05  前回来院日の共通化
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -165,6 +166,7 @@
            03  WRK-STR             PIC 9(04).
       *
            03  WRK-LSTYMD              PIC X(08).
+           03  WRK-LSTYMDW             PIC X(09).
            03  WRK-SRYKA               PIC X(02).
            03  WRK-BRMNUM.
                05  WRK-BRMNUM1             PIC X(02).
@@ -237,6 +239,9 @@
       *
       *    全角チェックパラメタ
            COPY    "CPORCSKANACHK.INC".
+      *
+      *    前回来院日設定パラメタ
+           COPY    "CPORCSLASTYMD.INC".
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -901,13 +906,10 @@
                MOVE    PTINF-PTID          TO  SPA-NAI-PTID  (IDX)
       *
                INITIALIZE                      ORCSPTIDAREA
-      *********MOVE    SPA-HOSPID          TO  SPTID-HOSPID
                MOVE    SPA-HOSPNUM         TO  SPTID-HOSPNUM
                MOVE    PTINF-PTID          TO  SPTID-PTID
                CALL    "ORCSPTID"      USING   ORCSPTIDAREA
-      *----(01.00.02) LINE ADD START -------------------------------
                                                SPA-AREA
-      *----(01.00.02) LINE ADD END   -------------------------------
                IF      SPTID-RC        NOT =   ZERO
                    MOVE    SPACE           TO  SPA-GMN-PTNUM  (IDX)
                ELSE
@@ -926,10 +928,11 @@
                MOVE    PTINF-BIRTHDAY      TO  WRK-SYMD
                PERFORM 700-SEIWA-HEN-SEC
                MOVE    WRK-HENYMDG         TO  SPA-GMN-BIRTH  (IDX)
-      *        最終受診日セット
-               IF      FLG-NYUIN           =   ZERO
-                   PERFORM 20121-JYURRK-HEN-SEC
-               END-IF
+      *****    最終受診日セット
+      *        IF      FLG-NYUIN           =   ZERO
+      *            PERFORM 20121-JYURRK-HEN-SEC
+      *****    END-IF
+               MOVE    WRK-LSTYMDW        TO  SPA-GMN-RRKYMD (IDX)
       *        診療科編集
                SET     SRYKA-IDX           TO  1
                SEARCH      TBL-SRYKA-OCC   VARYING   SRYKA-IDX
@@ -944,7 +947,7 @@
       *        年齢計算
                PERFORM 20122-NENREI-KEI-SEC
       *        保険表示
-               PERFORM 20123-HKNCOMBI-MEI-SEC
+      ******   PERFORM 20123-HKNCOMBI-MEI-SEC
                MOVE    WRK-HKNCOMBI-MEI    TO  SPA-GMN-HKNCOMBI (IDX)
                MOVE    WRK-HONKZKKBN-MEI   TO  SPA-GMN-HONKZKKBN (IDX)
       *
@@ -1058,6 +1061,37 @@
       *    病室編集処理
       *****************************************************************
        20111-NYUINCHK-SEC               SECTION.
+      *
+      *    前回来院日編集
+           INITIALIZE                  ORCSLASTYMDAREA
+           MOVE    PTINF-PTID          TO  ORCSLASTYMD-PTID
+           CALL    "ORCSLASTYMD"       USING
+                                       ORCSLASTYMDAREA
+                                       SPA-AREA
+           IF      ORCSLASTYMD-BRMNUM  =   SPACE
+               MOVE    ZERO                TO  FLG-NYUIN
+           ELSE
+               MOVE    1                   TO  FLG-NYUIN
+           END-IF
+           MOVE    ORCSLASTYMD-BRMNUM      TO  WRK-BRMNUM
+           MOVE    ORCSLASTYMD-SRYKA       TO  WRK-SRYKA
+           MOVE    ORCSLASTYMD-LASTYMDW    TO  WRK-LSTYMDW
+           MOVE    ORCSLASTYMD-HKNCOMBI-MEI    TO  WRK-HKNCOMBI-MEI
+           MOVE    ORCSLASTYMD-HONKZKKBN   TO  WRK-HONKZKKBN-MEI
+      *
+           EVALUATE    SPA-GMN-KNYUGAIKBN
+               WHEN    "1"
+                   IF      FLG-NYUIN       =   ZERO
+                       MOVE    ZERO            TO  FLG-OK
+                   END-IF
+               WHEN    "2"
+                   IF      FLG-NYUIN       =   1
+                       MOVE    ZERO            TO  FLG-OK
+                   END-IF
+           END-EVALUATE
+      *TEST
+      *    以下削除
+           GO      TO  20111-NYUINCHK-EXT.
       *    病室編集
            MOVE    ZERO                TO  FLG-NYUIN
       *
@@ -1718,11 +1752,7 @@
       *
            MOVE    "tbl_ptinf"         TO  MCP-TABLE
       *
-           MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "ORCDBMAIN"         USING
-                                           MCPAREA
-                                           MCPDATA-REC
-                                           SPA-AREA
+           PERFORM 920-DBFETCH-SEC
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC     TO  PTINF-REC
                MOVE    ZERO            TO  FLG-PTINF
@@ -1742,11 +1772,7 @@
       *
            MOVE    "tbl_jyurrk"        TO  MCP-TABLE
       *
-           MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "ORCDBMAIN"         USING
-                                           MCPAREA
-                                           MCPDATA-REC
-                                           SPA-AREA
+           PERFORM 920-DBFETCH-SEC
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC     TO  JYURRK-REC
                MOVE    ZERO            TO  FLG-JYURRK
@@ -1765,12 +1791,7 @@
        975-SRYKARRK-READ-SEC           SECTION.
       *
            MOVE    "tbl_srykarrk"      TO  MCP-TABLE
-      *
-           MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "ORCDBMAIN"         USING
-                                           MCPAREA
-                                           MCPDATA-REC
-                                           SPA-AREA
+           PERFORM 920-DBFETCH-SEC
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC         TO  SRYKARRK-REC
                MOVE    ZERO                TO  FLG-SRYKARRK
@@ -1790,11 +1811,7 @@
       *
            MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
       *
-           MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "ORCDBMAIN"         USING
-                                           MCPAREA
-                                           MCPDATA-REC
-                                           SPA-AREA
+           PERFORM 920-DBFETCH-SEC
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC     TO  PTNYUINRRK-REC
                MOVE    ZERO            TO  FLG-PTNYUINRRK
@@ -1814,11 +1831,7 @@
       *
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
       *
-           MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "ORCDBMAIN"         USING
-                                           MCPAREA
-                                           MCPDATA-REC
-                                           SPA-AREA
+           PERFORM 920-DBFETCH-SEC
            IF      MCP-RC              =   ZERO
                MOVE    ZERO            TO  FLG-SYSKANRI
            ELSE
@@ -1833,13 +1846,7 @@
       *****************************************************************
        910-HKNCOMBI-READ-SEC         SECTION.
       *
-           MOVE    "tbl_hkncombi"      TO  MCP-TABLE
-      *
-           MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "ORCDBMAIN"         USING
-                                           MCPAREA
-                                           MCPDATA-REC
-                                           SPA-AREA
+           PERFORM 920-DBFETCH-SEC
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC     TO  HKNCOMBI-REC
                MOVE    ZERO            TO  FLG-HKNCOMBI
@@ -1856,11 +1863,7 @@
       *****************************************************************
        970-JYURRK-READ-SEC         SECTION.
       *
-           MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "ORCDBMAIN"         USING
-                                           MCPAREA
-                                           MCPDATA-REC
-                                           SPA-AREA
+           PERFORM 920-DBFETCH-SEC
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC     TO  JYURRK-REC
                MOVE    ZERO            TO  FLG-JYURRK
@@ -1885,6 +1888,20 @@
       *
            .
        910-DBSELECT-EXT.
+           EXIT.
+      *****************************************************************
+      *    ＤＢ読み込み処理
+      *****************************************************************
+       920-DBFETCH-SEC                 SECTION.
+      *
+           MOVE    "DBFETCH"       TO  MCP-FUNC
+           CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
+      *
+           .
+      *
+       920-DBFETCH-EXT.
            EXIT.
       *
       *****************************************************************
