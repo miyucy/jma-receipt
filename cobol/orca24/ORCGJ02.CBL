@@ -5545,12 +5545,12 @@
                        MOVE    SRY-SRYCD (IDZ)     TO  TNS-SRYCD
                        MOVE    SRY-SRYCD (IDZ)     TO  WRK-SRYCD
       *                算定用の診療コードへ変更
-                       PERFORM 45020-SANTEI-SRYCD-SEC
-                       IF      SRY-SRYCD (IDZ)
-                                               NOT =   WRK-SRYCD
-                           MOVE    WRK-SRYCD           TO  TNS-SRYCD
-                       END-IF
                        PERFORM 910-TENSU-READ-SEC
+                       PERFORM 45020-SANTEI-SRYCD-SEC
+                       IF      SRY-SRYCD (IDZ) NOT =   WRK-SRYCD
+                           MOVE    WRK-SRYCD       TO  TNS-SRYCD
+                           PERFORM 910-TENSU-READ-SEC
+                       END-IF
                        IF     (TNS-SANTEIRRKKBN    NOT =   ZERO ) AND
                               (TNS-JGNCNTERR       NOT =   9    )  AND
                               (TNS-JGNCNT          >   ZERO     )  AND
@@ -7048,11 +7048,12 @@
                        MOVE    SRY-SRYCD (IDZ)     TO  TNS-SRYCD
                        MOVE    SRY-SRYCD (IDZ)     TO  WRK-SRYCD
       *                算定用の診療コードへ変更
+                       PERFORM 910-TENSU-READ-SEC
                        PERFORM 45020-SANTEI-SRYCD-SEC
                        IF      SRY-SRYCD (IDZ) NOT =   WRK-SRYCD
                            MOVE    WRK-SRYCD           TO  TNS-SRYCD
+                           PERFORM 910-TENSU-READ-SEC
                        END-IF
-                       PERFORM 910-TENSU-READ-SEC
                        IF      TNS-SANTEIRRKKBN    NOT =   ZERO
                            PERFORM 4200111-SANTEI-DEL-SEC
                        END-IF
@@ -10443,12 +10444,13 @@
                        MOVE    SRY-SRYCD (IDZ)     TO  TNS-SRYCD
                        MOVE    SRY-SRYCD (IDZ)     TO  WRK-SRYCD
       *                算定用の診療コードへ変更
+                       PERFORM 910-TENSU-READ-SEC
                        PERFORM 45020-SANTEI-SRYCD-SEC
                        IF      SRY-SRYCD (IDZ)
                                                NOT =   WRK-SRYCD
-                           MOVE    WRK-SRYCD           TO  TNS-SRYCD
+                           MOVE    WRK-SRYCD       TO  TNS-SRYCD
+                           PERFORM 910-TENSU-READ-SEC
                        END-IF
-                       PERFORM 910-TENSU-READ-SEC
                        IF      TNS-SANTEIRRKKBN    NOT =   ZERO
                            PERFORM 49021-SANTEI-UPD-SEC
                        END-IF
