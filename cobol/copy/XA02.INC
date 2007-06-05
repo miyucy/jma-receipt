@@ -20,8 +20,8 @@
               03  XA02-B07S-STATE               PIC S9(9)   BINARY.
               03  XA02-SELNUM.
                 04  XA02-VALUE  PIC S9(3).
-              03  XA02-TBL-GROUP.
-                04  XA02-VALUE  PIC X(14).
+              03  XA02-SKYYMD.
+                04  XA02-VALUE  PIC X(10).
               03  XA02-RENNUM.
                 04  XA02-VALUE  PIC S9(4).
               03  XA02-SHORI-RENNUM.
@@ -63,5 +63,7 @@
               03  XA02-PTNAME-G.
                 04  XA02-PTNAME-STYLE      PIC X(20).
                 04  XA02-PTNAME-VALUE      PIC X(50).
-              03  XA02-SRYYMD.
+              03  XA02-CREYMD.
                 04  XA02-VALUE  PIC X(10).
+              03  XA02-PRT-TITLE.
+                04  XA02-VALUE  PIC X(60).

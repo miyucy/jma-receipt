@@ -173,15 +173,12 @@ path	key7		{
 path	key8		{ 	
 	DBSELECT	{
 		DECLARE tbl_prtkanri_key8_csr CURSOR FOR
-		SELECT TBL_GROUP,TBL_UUID
+		SELECT *
 		FROM tbl_prtkanri
 	    	    WHERE 	HOSPNUM	= :HOSPNUM
                     AND      TBL_KEY    =   :TBL_KEY
                     AND	     CREYMD	=   :CREYMD
-                    GROUP BY  TBL_GROUP,TBL_UUID
-                    ORDER BY  TBL_GROUP desc,TBL_UUID
-                    LIMIT    :SELLIMIT
-                    OFFSET   :SELOFFSET
+                    ORDER BY  TBL_GROUP desc,TBL_UUID,RENNUM,SHORI_RENNUM
 		;
 	};
 };
@@ -189,16 +186,13 @@ path	key8		{
 path	key9		{ 	
 	DBSELECT	{
 		DECLARE tbl_prtkanri_key9_csr CURSOR FOR
-		SELECT TBL_GROUP,TBL_UUID
+		SELECT *
 		FROM tbl_prtkanri
 	    	    WHERE 	HOSPNUM	= :HOSPNUM
                     AND      TBL_KEY    =   :TBL_KEY
 		    AND	     CREYMD	=   :CREYMD
 		    AND	     GYOUMU_CD  =   :GYOUMU_CD
-                    GROUP BY  TBL_GROUP,TBL_UUID
-                    ORDER BY  TBL_GROUP desc,TBL_UUID
-                    LIMIT    :SELLIMIT
-                    OFFSET   :SELOFFSET
+                    ORDER BY  TBL_GROUP desc,TBL_UUID,RENNUM,SHORI_RENNUM
 		;
 	};
 };

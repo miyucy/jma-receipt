@@ -9,8 +9,8 @@ XA02	{
 		SELNUM	{
 			value	number(3);
 		};
-		TBL_GROUP	{
-			value	varchar(14);
+		SKYYMD	{
+			value	varchar(10);
 		};
 		RENNUM	{
 			value	number(4);
@@ -65,8 +65,11 @@ XA02	{
             style   varchar(20);
             value   varchar(50);
         };
-		SRYYMD	{
+		CREYMD	{
             value   varchar(10);
+		};
+		PRT_TITLE	{
+            value   varchar(60);
 		};
 	};
 };
