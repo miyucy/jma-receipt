@@ -123,8 +123,8 @@
            COPY    "CPORCHCN02SUB.INC".
       *
        PROCEDURE                   DIVISION    USING
-      *     SPA-AREA
             ORCHCN02SUB-AREA
+            SPA-AREA
            .
       *
       *****************************************************************
