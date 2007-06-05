@@ -137,7 +137,7 @@
                                    REPLACING  //RECEDAT1//
                                    BY         //RECE88//.
            COPY    "CPRECEDAT1.INC"
-                                   REPLACING  //RECEDAT1//
+                                   REPLACING  //RECEDAT1PARA//
                                    BY         //RECEYMD//.
            03  FILLER              PIC X(04)   VALUE   ".dat".
       *    エラーファイル 名称領域 
@@ -607,9 +607,9 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE871PARA-HOSPNUM
            MOVE    WRK-PARA-TERMID     TO  RECE88PARA-TERMID
 grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE88PARA-HOSPNUM
       *
-           MOVE    "RECEYMD"           TO  RECEYMDPARA-FILE-ID
-           MOVE    WRK-PARA-TERMID     TO  RECEYMDPARA-TERMID
-grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECEYMDPARA-HOSPNUM
+           MOVE    "RECEYMD"           TO  RECEYMD-FILE-ID
+           MOVE    WRK-PARA-TERMID     TO  RECEYMD-TERMID
+grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECEYMD-HOSPNUM
       *
            PERFORM 100-DBOPEN-SEC
       *

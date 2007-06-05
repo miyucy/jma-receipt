@@ -306,7 +306,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *    カーソルクロース
            MOVE    "tbl_ptbyomei"      TO  MCP-TABLE
            MOVE    "key3"              TO  MCP-PATHNAME
-           PERFORM 900-DBCLOSE-SEC
+           PERFORM 900-CLOSE-SEC
       *
            PERFORM 900-RECE82-READ-SEC      
       *
@@ -649,7 +649,7 @@ grpsys         PERFORM 900-DBFETCH-SEC
       *
            MOVE    "tbl_syskanri"  TO  MCP-TABLE
            MOVE    "key10"         TO  MCP-PATHNAME
-           PERFORM 900-DBCLOSE-SEC
+           PERFORM 900-CLOSE-SEC
       *
            .
        900-SYSKANRI-READ-EXT.
