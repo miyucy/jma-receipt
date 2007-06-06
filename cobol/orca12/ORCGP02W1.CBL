@@ -5270,6 +5270,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *
                IF      MCP-RC          NOT =   ZERO
                    DISPLAY "P02W1 PARA HKNINF INS ERR:"  MCP-RC
+                           ",PARA-KEY;" PARA-KEY "@"
                END-IF
            END-PERFORM
       *
