@@ -41,6 +41,7 @@
       *                                     検査等実施判断の追加
       *
       *  03.04.01    NACL-藤原    06/12/21  入院料加算のコメントを記録する
+      *  03.05.01    NACL-小豆沢  07/06/05  グループ診療対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -67,6 +68,14 @@
                                    ACCESS  MODE    IS  SEQUENTIAL
                                    RECORD  KEY     IS  RECE64W-KEY
                                    FILE    STATUS  IS  STS-RECE641.
+      *
+      *    レセプト６５  
+      *
+           SELECT  RECE65-FILE     ASSIGN  RECE65PARA
+                                   ORGANIZATION    IS  INDEXED
+                                   ACCESS  MODE    IS  SEQUENTIAL
+                                   RECORD  KEY     IS  RECE65-KEY
+                                   FILE    STATUS  IS  STS-RECE65.
       *    エラーファイル
            SELECT  RECEERR-FILE    ASSIGN  RECEERR
                                    FILE    STATUS  IS  STS-RECEERR.
@@ -87,39 +96,52 @@
        01  RECE64W-REC. 
            COPY    "CPRCF0641.INC"  REPLACING  //RECE641//
                                    BY          //RECE64W//.
+      *
+      *    レセプト６５  
+       FD  RECE65-FILE.
+       01  RECE65-REC. 
+           COPY    "CPRCF065.INC".
+      *
       *    エラーファイル
        FD  RECEERR-FILE.
        01  RECEERR-REC             PIC X(200). 
       *
        WORKING-STORAGE             SECTION.
-grpsys*
-grpsys COPY    "COMMON-SPA".
+      *
+           COPY    "COMMON-SPA".
       *
       *     レセプト明細ファイル 名称領域 
       *
-           COPY    "CPCOMMONDAT2.INC"
-                                   REPLACING  //RECE01//
+           COPY    "CPRECEDAT1.INC"
+                                   REPLACING  //RECEDAT1//
                                    BY         //RECE64//.
       *
-           COPY    "CPCOMMONDAT2.INC"
-                                   REPLACING  //RECE01//
+           COPY    "CPRECEDAT1.INC"
+                                   REPLACING  //RECEDAT1//
                                    BY         //RECE641//.
       *
+      *     レセプト６５ファイル 名称領域 
+      *
+           COPY    "CPRECEDAT1.INC"
+                                   REPLACING  //RECEDAT1//
+                                   BY         //RECE65//.
+      *
       *    エラーファイル 名称領域 
-           COPY    "CPCOMMONDAT2.INC"
-                                   REPLACING  //RECE01PARA//
+           COPY    "CPERRFL.INC"
+                                   REPLACING  //ERRFLPARA//
                                    BY         //RECEERR//.
-           03                      PIC X(04)   VALUE   ".dat".
       *
       *    フラグ領域
        01  STS-AREA.
            03  STS-RECE641                             PIC X(02).
            03  STS-RECE64                              PIC X(02).
+           03  STS-RECE65                              PIC X(02).
            03  STS-RECEERR                             PIC X(02).
       *
        01  FLG-AREA.
            03  FLG-END                                 PIC 9(01).
            03  FLG-READ                                PIC 9(01).
+           03  FLG-RECE65                              PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -144,6 +166,7 @@ grpsys COPY    "COMMON-SPA".
                                        PIC X(01).
                05  WRK-PARA-SYARECEKBN PIC X(01).
                05  WRK-PARA-KKHRECEKBN PIC X(01).
+           03  WRK-PARA-HOSPNUM        PIC 9(02).
       *
            03  WRK-RECEERR             PIC X(200). 
            03  WRK-KOHBUNRI            PIC 9(01).
@@ -199,6 +222,7 @@ grpsys COPY    "COMMON-SPA".
       *
            INITIALIZE                  CNT-AREA
                                        WRK-AREA
+                                       SPA-AREA
       *
            MOVE    ZERO                TO  FLG-END
       *
@@ -209,36 +233,38 @@ grpsys COPY    "COMMON-SPA".
                                                WRK-PARA-KKHRECEKBN
                                                WRK-PARA-JOBID
                                                WRK-PARA-SHELLID
+                                               WRK-PARA-HOSPNUM
+                                               RECEERR
            END-UNSTRING                                  
+           MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
       *
            PERFORM 100-DBOPEN-SEC
       *
       *    ステップ管理開始処理
            MOVE    "STS"           TO  SJOBKANRI-MODE
            INITIALIZE                  JOBKANRI-REC
-           MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
-           MOVE    WRK-PARA-SHELLID
-                                   TO  JOB-SHELLID
            MOVE    "レセ電用データ並び変え"
                                    TO  JOB-SHELLMSG
            MOVE    "ORCR0250"      TO  JOB-PGID
-           CALL    "ORCSJOB"       USING
-                                   ORCSJOBKANRIAREA  
-                                   JOBKANRI-REC
+           PERFORM   900-CALL-ORCSJOB-SEC
       *
            MOVE    "RECE641"           TO  RECE64PARA-FILE-ID
            MOVE    WRK-PARA-TERMID     TO  RECE64PARA-TERMID
+           MOVE    WRK-PARA-HOSPNUM    TO  RECE64PARA-HOSPNUM
       *
            MOVE    "RECE649"           TO  RECE641PARA-FILE-ID
            MOVE    WRK-PARA-TERMID     TO  RECE641PARA-TERMID
+           MOVE    WRK-PARA-HOSPNUM    TO  RECE641PARA-HOSPNUM
       *
-           MOVE    "RECEERR"           TO  RECEERR-FILE-ID
-           MOVE    WRK-PARA-TERMID     TO  RECEERR-TERMID
+           MOVE    "RECE651"           TO  RECE65PARA-FILE-ID
+           MOVE    WRK-PARA-TERMID     TO  RECE65PARA-TERMID
+           MOVE    WRK-PARA-HOSPNUM    TO  RECE65PARA-HOSPNUM
       *
            OPEN    OUTPUT              RECE64W-FILE
            CLOSE                       RECE64W-FILE
       *
            OPEN    INPUT               RECE64-FILE
+           OPEN    INPUT               RECE65-FILE
       *
            OPEN    I-O                 RECE641-FILE
       *
@@ -256,7 +282,7 @@ grpsys COPY    "COMMON-SPA".
        200-MAIN-SEC                SECTION.
       *
            INITIALIZE                      RECE641-REC
-           MOVE    RECE64-HOSPID       TO  RECE641-HOSPID
+           MOVE    RECE64-HOSPNUM      TO  RECE641-HOSPNUM
            MOVE    RECE64-SRYYM        TO  RECE641-SRYYM
            MOVE    RECE64-NYUGAIKBN    TO  RECE641-NYUGAIKBN
            MOVE    RECE64-PTID         TO  RECE641-PTID
@@ -266,6 +292,9 @@ grpsys COPY    "COMMON-SPA".
            MOVE    RECE64-HKNJANUM     TO  RECE641-HKNJANUM
            MOVE    RECE64-HOJOKBN      TO  RECE641-HOJOKBN
            MOVE    RECE64-TEKSTYMD     TO  RECE641-TEKSTYMD
+           IF      RECE64-SRYKBN       =   "33"
+               PERFORM   210-KBNNUM-SET-SEC
+           END-IF
            MOVE    RECE64-ZAINUM       TO  RECE641-ZAINUM
            MOVE    RECE64-KOHBUNRI     TO  RECE641-KOHBUNRI
            IF      RECE64-KEY(1:65)    NOT =   OLD-KEY
@@ -320,6 +349,98 @@ grpsys COPY    "COMMON-SPA".
            EXIT. 
       *
       *****************************************************************
+      *    表用番号−区分番号のセット
+      *****************************************************************
+       210-KBNNUM-SET-SEC                SECTION.
+      *
+           INITIALIZE                      RECE65-REC
+           MOVE    RECE64-HOSPNUM      TO  RECE65-HOSPNUM
+           MOVE    RECE64-SRYYM        TO  RECE65-SRYYM
+           MOVE    RECE64-NYUGAIKBN    TO  RECE65-NYUGAIKBN
+           MOVE    RECE64-PTID         TO  RECE65-PTID
+           MOVE    RECE64-RECEKA       TO  RECE65-RECEKA
+           MOVE    RECE64-TEISYUTUSAKI TO  RECE65-TEISYUTUSAKI
+           MOVE    RECE64-RECESYUBETU  TO  RECE65-RECESYUBETU
+           MOVE    RECE64-HKNJANUM     TO  RECE65-HKNJANUM
+           MOVE    RECE64-HOJOKBN      TO  RECE65-HOJOKBN
+           MOVE    RECE64-TEKSTYMD     TO  RECE65-TEKSTYMD
+           MOVE    RECE64-ZAINUM       TO  RECE65-ZAINUM
+           START   RECE65-FILE
+               KEY IS    >=   RECE65-KEY
+               INVALID
+                   MOVE    1           TO  FLG-RECE65
+               NOT INVALID
+                   READ    RECE65-FILE       NEXT
+                       AT  END
+                           MOVE    1         TO  FLG-RECE65
+                       NOT AT  END
+                           MOVE    ZERO      TO  FLG-RECE65
+                  END-READ
+           END-START
+           IF  ( FLG-RECE65            =   ZERO )            AND
+               ( RECE64-HOSPNUM        =   RECE65-HOSPNUM)   AND
+               ( RECE64-SRYYM          =   RECE65-SRYYM  )   AND
+               ( RECE64-NYUGAIKBN      =   RECE65-NYUGAIKBN  )  AND
+               ( RECE64-PTID           =   RECE65-PTID         )  AND
+               ( RECE64-RECEKA         =   RECE65-RECEKA       )  AND
+               ( RECE64-TEISYUTUSAKI   =   RECE65-TEISYUTUSAKI )  AND
+               ( RECE64-RECESYUBETU    =   RECE65-RECESYUBETU  )  AND
+               ( RECE64-HKNJANUM       =   RECE65-HKNJANUM     )  AND
+               ( RECE64-HOJOKBN        =   RECE65-HOJOKBN      )  AND
+               ( RECE64-TEKSTYMD       =   RECE65-TEKSTYMD     )  AND
+               ( RECE64-ZAINUM         =   RECE65-ZAINUM       )
+      *
+      *        表用−区分番号
+      *        ４:点滴
+      *        ５：中心静脈
+      *        ６：中心静脈栄養
+      *        ７以上　その他注射
+               IF     RECE65-CDKBN-KBNNUM(1)   NOT =    ZERO
+                  IF     RECE65-CDKBN-KBNNUM(1)  <=    6
+                      EVALUATE    RECE65-CDKBN-KBNNUM(1)
+                         WHEN     5
+                             MOVE   6     TO   RECE641-CDKBN-KBNNUM
+                         WHEN     6
+                             MOVE   8     TO   RECE641-CDKBN-KBNNUM
+                         WHEN  OTHER
+                             MOVE   RECE65-CDKBN-KBNNUM(1)
+                                          TO   RECE641-CDKBN-KBNNUM
+                      END-EVALUATE
+                  ELSE
+                      MOVE   RECE65-CDKBN-KBNNUM(1)
+                                       TO  RECE641-CDKBN-KBNNUM
+                      ADD    10        TO  RECE641-CDKBN-KBNNUM
+                  END-IF
+      *           点滴注射（血漿成分製剤文書）加算
+                  IF     RECE65-SRYCD(1)    =   "130010570"
+                      MOVE    5        TO  RECE641-CDKBN-KBNNUM
+                  END-IF
+      *           中心静脈注射（血漿成分製剤文書）加算
+                  IF     RECE65-SRYCD(1)    =   "130010670"
+                      MOVE    7        TO  RECE641-CDKBN-KBNNUM
+                  END-IF
+               ELSE
+      *            薬剤
+                   IF     RECE64-YKZTEN   NOT =   ZERO
+                       MOVE   9        TO  RECE641-CDKBN-KBNNUM
+                   END-IF
+      *            器材
+                   IF     RECE64-KIZAITEN   NOT =   ZERO
+                       MOVE  10        TO  RECE641-CDKBN-KBNNUM
+                   END-IF
+      *            コメント
+                   IF    (RECE65-SRYCD(1)(1:1)    =   "8")   OR
+                         (RECE65-SRYCD(1)(1:3)    =   "008")
+                       MOVE   999      TO  RECE641-CDKBN-KBNNUM
+                   END-IF
+               END-IF
+           END-IF
+      *
+           .
+       210-KBNNUM-SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    エラー出力処理
       *****************************************************************
        500-ERR-HENSYU-SEC                SECTION.
@@ -337,14 +458,9 @@ grpsys COPY    "COMMON-SPA".
       *        ジョブ管理開始処理
                MOVE    "JBE"           TO  SJOBKANRI-MODE
                INITIALIZE                  JOBKANRI-REC
-               MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
-               MOVE    WRK-PARA-SHELLID
-                                       TO  JOB-SHELLID
                MOVE    WRK-RECEERR     TO  JOB-YOBI
                MOVE    "9999"          TO  JOB-ERRCD
-               CALL    "ORCSJOB"       USING
-                                       ORCSJOBKANRIAREA  
-                                       JOBKANRI-REC
+               PERFORM   900-CALL-ORCSJOB-SEC
            END-IF
       *                             
            MOVE    1                   TO  FLG-END
@@ -360,17 +476,13 @@ grpsys COPY    "COMMON-SPA".
       *    ステップ管理終了処理
            MOVE    "STE"           TO  SJOBKANRI-MODE
            INITIALIZE                  JOBKANRI-REC
-           MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
-           MOVE    WRK-PARA-SHELLID
-                                   TO  JOB-SHELLID
-           CALL    "ORCSJOB"       USING
-                                   ORCSJOBKANRIAREA  
-                                   JOBKANRI-REC
+           PERFORM   900-CALL-ORCSJOB-SEC
       *
            PERFORM 900-DBDISCONNECT-SEC
       *
            CLOSE   RECE64-FILE
            CLOSE   RECE641-FILE
+           CLOSE   RECE65-FILE
       *
            DISPLAY "RECE64   IN  " CNT-IN
            DISPLAY "RECE641  CNT " CNT-OUT
@@ -423,6 +535,36 @@ grpsys COPY    "COMMON-SPA".
            .
        900-RECE64-READ-EXT.
            EXIT.
+      *
+      *****************************************************************
+      *    ジョブ管理ＤＢ制御処理
+      *****************************************************************
+       900-CALL-ORCSJOB-SEC            SECTION.
+      *
+           MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
+           MOVE    WRK-PARA-SHELLID
+                                   TO  JOB-SHELLID
+           MOVE    SPA-HOSPNUM     TO  JOB-HOSPNUM
+           CALL    "ORCSJOB"       USING
+                                   ORCSJOBKANRIAREA 
+                                   JOBKANRI-REC
+                                   SPA-AREA
+           .
+       900-CALL-ORCSJOB-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    テーブルアクセス処理
+      *****************************************************************
+       900-ORCDBMAIN-SEC               SECTION.
+      *
+           CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
+           .
+      *
+       900-ORCDBMAIN-EXT.
+           EXIT.
       *      
       *****************************************************************
       *    ＤＢ　オープン処理
@@ -432,16 +574,12 @@ grpsys COPY    "COMMON-SPA".
            MOVE    LOW-VALUE       TO  MCP-TABLE
                                        MCP-PATHNAME
            MOVE    "DBOPEN"        TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           PERFORM   900-ORCDBMAIN-SEC
       *
            MOVE    LOW-VALUE       TO  MCP-TABLE
                                        MCP-PATHNAME
            MOVE    "DBSTART"       TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           PERFORM   900-ORCDBMAIN-SEC
            .
        100-DBOPEN-EXT.
            EXIT.
@@ -454,16 +592,12 @@ grpsys                            SPA-AREA
            MOVE    LOW-VALUE       TO  MCP-TABLE
                                        MCP-PATHNAME
            MOVE    "DBCOMMIT"      TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           PERFORM   900-ORCDBMAIN-SEC
       *
            MOVE    LOW-VALUE       TO  MCP-TABLE
                                        MCP-PATHNAME
            MOVE    "DBDISCONNECT"  TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           PERFORM   900-ORCDBMAIN-SEC
       *
            .
        900-DBDISCONNECT-EXT.

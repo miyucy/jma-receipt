@@ -29,7 +29,7 @@
       *01  RECE641-REC.
            03  RECE641-KEY.
       *°åÎÅµ¡´Ø£É£Ä
-               05  RECE641-HOSPID          PIC  9(2).
+               05  RECE641-HOSPNUM         PIC  9(2).
       *¿ÇÎÅÇ¯·î
                05  RECE641-SRYYM           PIC  9(06).
       *Æþ³°¶èÊ¬
