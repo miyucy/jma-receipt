@@ -41,7 +41,7 @@
       *                                     検査等実施判断の追加
       *
       *  03.04.01    NACL-藤原    06/12/21  入院料加算のコメントを記録する
-      *  03.05.01    NACL-小豆沢  07/06/05  グループ診療対応
+      *  03.05.01    NACL-小豆沢  07/06/06  グループ診療対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -171,7 +171,19 @@
            03  WRK-RECEERR             PIC X(200). 
            03  WRK-KOHBUNRI            PIC 9(01).
            03  WRK-HKNCOMBI            PIC 9(04).
-           03  OLD-KEY                 PIC X(65).
+      *    03  OLD-KEY                 PIC X(65).
+           03  OLD-KEY.
+               05  OLD-RECE64-HOSPNUM     PIC  9(02).
+               05  OLD-RECE64-SRYYM       PIC  9(06).
+               05  OLD-RECE64-NYUGAIKBN   PIC  X(01).
+               05  OLD-RECE64-PTID        PIC  9(10).
+               05  OLD-RECE64-RECEKA      PIC  X(02).
+               05  OLD-RECE64-TEISYUTUSAKI
+                                          PIC  9(01).
+               05  OLD-RECE64-RECESYUBETU PIC  9(04).
+               05  OLD-RECE64-HKNJANUM    PIC  X(08).
+               05  OLD-RECE64-HOJOKBN     PIC  X(01).
+               05  OLD-RECE64-TEKSTYMD    PIC  X(08). 
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -269,7 +281,7 @@
            OPEN    I-O                 RECE641-FILE
       *
            PERFORM 900-RECE64-READ-SEC
-           MOVE    RECE64-KEY(1:65)    TO  OLD-KEY
+           MOVE    RECE64-KEY(1:43)    TO  OLD-KEY
            MOVE  9                     TO  WRK-KOHBUNRI
            MOVE  ZERO                  TO  WRK-HKNCOMBI
            .
@@ -297,10 +309,10 @@
            END-IF
            MOVE    RECE64-ZAINUM       TO  RECE641-ZAINUM
            MOVE    RECE64-KOHBUNRI     TO  RECE641-KOHBUNRI
-           IF      RECE64-KEY(1:65)    NOT =   OLD-KEY
+           IF      RECE64-KEY(1:43)    NOT =   OLD-KEY
                 MOVE  9                TO  WRK-KOHBUNRI
                 MOVE  ZERO             TO  WRK-HKNCOMBI
-                MOVE  RECE64-KEY(1:65) TO  OLD-KEY
+                MOVE  RECE64-KEY(1:43) TO  OLD-KEY
            END-IF
            IF      RECE64-KOHBUNRI     <   WRK-KOHBUNRI
                 MOVE   RECE64-KOHBUNRI TO  WRK-KOHBUNRI
