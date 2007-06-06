@@ -152,17 +152,17 @@ grpsys     COPY    "COMMON-SPA".
            03  WRK-HKNCOMBI            PIC 9(04).
       *****03  OLD-KEY                 PIC X(65).
            03  OLD-KEY.
-               05  RECE041-HOSPNUM     PIC  9(02).
-               05  RECE041-SRYYM       PIC  9(06).
-               05  RECE041-NYUGAIKBN   PIC  X(01).
-               05  RECE041-PTID        PIC  9(10).
-               05  RECE041-RECEKA      PIC  X(02).
-               05  RECE041-TEISYUTUSAKI
-                                       PIC  9(01).
-               05  RECE041-RECESYUBETU PIC  9(04).
-               05  RECE041-HKNJANUM    PIC  X(08).
-               05  RECE041-HOJOKBN     PIC  X(01).
-               05  RECE041-TEKSTYMD    PIC  X(08). 
+               05  OLD-RECE041-HOSPNUM     PIC  9(02).
+               05  OLD-RECE041-SRYYM       PIC  9(06).
+               05  OLD-RECE041-NYUGAIKBN   PIC  X(01).
+               05  OLD-RECE041-PTID        PIC  9(10).
+               05  OLD-RECE041-RECEKA      PIC  X(02).
+               05  OLD-RECE041-TEISYUTUSAKI
+                                           PIC  9(01).
+               05  OLD-RECE041-RECESYUBETU PIC  9(04).
+               05  OLD-RECE041-HKNJANUM    PIC  X(08).
+               05  OLD-RECE041-HOJOKBN     PIC  X(01).
+               05  OLD-RECE041-TEKSTYMD    PIC  X(08). 
       *
       *****************************************************************
       *    ファイルレイアウト
