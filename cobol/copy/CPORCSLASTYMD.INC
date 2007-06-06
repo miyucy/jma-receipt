@@ -48,6 +48,8 @@
                05  ORCSLASTYMD-HKNCOMBI-MEI    PIC X(20).
       *        本人家族名
                05  ORCSLASTYMD-HONKZKKBN       PIC X(02).
+      *        前回ドクター
+               05  ORCSLASTYMD-DRCD            PIC X(05).
       *        病棟（入院中）
                05  ORCSLASTYMD-BRMNUM          PIC X(09).
       *        入院日

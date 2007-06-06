@@ -120,6 +120,8 @@
                         PIC X(20)   OCCURS  2 TIMES.
               03  U02-NENREI.
                 04  U02-VALUE   PIC X(6).
+              03  U02-LASTYMD.
+                04  U02-VALUE   PIC X(16).
               03  U02-B05.
                 04  U02-B05-STATE   PIC S9(9)   BINARY.
               03  U02-B06.

@@ -63,6 +63,8 @@
                        09  SPA-GMN-SYOHO01           PIC X(01).
                        09  SPA-GMN-SYOHOMEI          PIC X(08).
       *
+                   07  SPA-GMN-LASTYMD                PIC X(16).
+      *
                    07  SPA-GMN-COMBINUM               PIC 9(04).
       *
                    07  SPA-GMN-COMBI.
@@ -155,7 +157,8 @@
                            11  SPA-GMN-NARABE          PIC X(04).
                            11  SPA-GMN-TKYYKTIME       PIC X(04).
                            11  SPA-GMN-TYYKID          PIC X(02).
-                           11  SPA-GMN-TRRKYMD         PIC X(10).
+                           11  SPA-GMN-TRRKYMD         PIC X(09).
+                           11  SPA-GMN-TNYUKBN         PIC X(01).
                            11  SPA-GMN-TSRFLG          PIC X(04).
                    07  SPA-UKE-MAX                     PIC 9(04).
       *
@@ -170,6 +173,7 @@
                    07  SPA-NAI-BIRTHDAY                PIC 9(08).
                    07  SPA-NAI-SEX                     PIC X(01).
                    07  SPA-NAI-NENREI                  PIC 9(03).
+      *
       *---- (01.00.03) LINE MOD END -----------------------------------
       *            ·Ù¹ð
                    07  SPA-NAI-KEIFLG                 PIC 9(01).
