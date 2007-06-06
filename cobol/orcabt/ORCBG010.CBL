@@ -1658,7 +1658,7 @@ grpsys     MOVE    SPA-HOSPNUM     TO  BD003-HOSPNUM
            MOVE    BD003-REC       TO  MCPDATA-REC
            MOVE    "DBSELECT"      TO  MCP-FUNC
 grpsys     MOVE    "view_bd003"    TO  MCP-TABLE
-grpsys     MOVE    "key"           TO  MCP-PATHNAME
+grpsys     MOVE    "key3"          TO  MCP-PATHNAME
 grpsys     CALL    "ORCDBMAIN"     USING   MCPAREA
 grpsys                                     MCPDATA-REC
 grpsys                                     SPA-AREA
@@ -1670,7 +1670,7 @@ grpsys*DD                              MCPDATA-REC
            IF    ( MCP-RC          =   ZERO )
                MOVE    "DBFETCH"       TO  MCP-FUNC
 grpsys         MOVE    "view_bd003"    TO  MCP-TABLE
-grpsys         MOVE    "key"           TO  MCP-PATHNAME
+grpsys         MOVE    "key3"          TO  MCP-PATHNAME
 grpsys         CALL    "ORCDBMAIN"     USING   MCPAREA
 grpsys                                         MCPDATA-REC
 grpsys                                         SPA-AREA
@@ -1692,7 +1692,7 @@ grpsys*DD                              MCPDATA-REC
       *
            MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
 grpsys     MOVE    "view_bd003"    TO  MCP-TABLE
-grpsys     MOVE    "key"           TO  MCP-PATHNAME
+grpsys     MOVE    "key3"          TO  MCP-PATHNAME
 grpsys     CALL    "ORCDBMAIN"     USING   MCPAREA
 grpsys                                     MCPDATA-REC
 grpsys                                     SPA-AREA
