@@ -75,6 +75,10 @@
       *
        WORKING-STORAGE             SECTION.
       *
+      *    エラーファイル 名称領域 
+           COPY    "CPERRFL.INC"   REPLACING  //ERRFLPARA//
+                                   BY         //RECEERR//.
+      *
       *****COPY    "HCM2K.INC".
       *****COPY    "HCM2KV01.INC"  REPLACING  //HCM2KV01//
       *****COPY    "HCM2KV02.INC"  REPLACING  //HCM2KV02//
@@ -302,7 +306,7 @@ grpsys     COPY    "COMMON-SPA".
       *
       *    エラーファイル 名称領域 
            COPY    "CPERRFL.INC"   REPLACING  //ERRFLPARA//
-                                   BY         //RECEERR//.
+                                   BY         //LNK-RECEERR//.
       *
       ******************************************************************
       *
@@ -312,7 +316,7 @@ grpsys     COPY    "COMMON-SPA".
                                                WRK-SYOKBN
                                                WRK-PRTFLG
                                                SPA-AREA
-                                               RECEERR
+                                               LNK-RECEERR
            .
       *
       *****************************************************************
@@ -341,6 +345,8 @@ grpsys     COPY    "COMMON-SPA".
            INITIALIZE                  STS-AREA
            INITIALIZE                  WRK-AREA
            INITIALIZE                  CNT-AREA
+      *
+           MOVE    LNK-RECEERR         TO  RECEERR
       *
            MOVE    LNK-PRTKANRI-SRYYM  TO  WRK-SRYYMD (1:6)
            MOVE    "01"                TO  WRK-SRYYMD (7:2)
