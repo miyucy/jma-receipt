@@ -3936,6 +3936,7 @@
            MOVE    SPA-GMN-ALLIDOLST-SEL   TO  IDX-LST
       *
            INITIALIZE                  ORDER-REC
+           MOVE    SPA-HOSPNUM             TO  ORDER-HOSPNUM
            MOVE    SPA-NAI-TALLKARTE-KEY (IDX-LST)
                                            TO  ORDER-KARTE-KEY
            MOVE    SPA-NAI-TALLORDERNUM  (IDX-LST)
