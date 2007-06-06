@@ -315,11 +315,6 @@
            COPY    "HCN063V02.INC" REPLACING  //HCN063V02//
                                    BY         //HC063//.
       *
-      *    スパ領域
-       01  SPA-AREA.
-           03  SPA-STS                 PIC 9(04).
-           03  SPA-ERRCD               PIC X(04).
-      *
       *    フラグ領域
        01  STS-AREA.
            03  STS-RECE62          PIC X(02).
@@ -364,6 +359,7 @@
            03  FLG-SYS-2008        PIC 9(01).
            03  FLG-SHOKUJI-ETC     PIC 9(01).
            03  FLG-RECECOM-SJKBN   PIC 9(01).
+           03  FLG-STS             PIC 9(04).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -1067,7 +1063,7 @@
            PERFORM 100-INIT-SEC
       *
            PERFORM 200-MAIN-SEC
-                   UNTIL       SPA-STS     =   2
+                   UNTIL       FLG-STS     =   2
       *
            PERFORM 300-END-SEC
       *
@@ -1113,12 +1109,12 @@
                PERFORM   900-CALL-ORCSJOB-SEC
       *
       *        処理中止設定処理
-               IF      SPA-STS             =   ZERO
+               IF      FLG-STS             =   ZERO
                    PERFORM 500-CANCEL-HENSYU-SEC
                END-IF
       *         
       *        ジョブ管理更新（中止フラグ非活性）処理
-               IF      SPA-STS             =   ZERO
+               IF      FLG-STS             =   ZERO
                    MOVE    "STP"           TO  SJOBKANRI-MODE
                    INITIALIZE                  JOBKANRI-REC
                    MOVE    3               TO  JOB-STOPFLG
@@ -1127,17 +1123,17 @@
            END-IF
       *
       *    システム管理マスタ（医療機関情報）
-           IF      SPA-STS             =   ZERO
+           IF      FLG-STS             =   ZERO
                PERFORM 120-HOSPINF-GET-SEC
            END-IF
       *
            IF    ( WRK-PARA-SHELLID
                                    NOT =   "RECEPTX" )
-           AND   ( SPA-STS             =   ZERO      )
+           AND   ( FLG-STS             =   ZERO      )
                PERFORM 5001-DB-DELETE-SEC
            END-IF
       *
-           IF      SPA-STS             =   ZERO
+           IF      FLG-STS             =   ZERO
               PERFORM 900-RECE62-READ-SEC
            END-IF
            .
@@ -1185,43 +1181,43 @@
            OPEN    INPUT               RECE62-FILE
            IF  STS-RECE62          NOT =   ZERO
                DISPLAY "*** ORCR0710 RECE62 OPEN ERR  ***"
-               MOVE    2               TO  SPA-STS
+               MOVE    2               TO  FLG-STS
            END-IF
       *
            OPEN    INPUT               RECE62X-FILE
            IF  STS-RECE62X         NOT =   ZERO
                DISPLAY "*** ORCR0710 RECE62X OPEN ERR  ***"
-               MOVE    2               TO  SPA-STS
+               MOVE    2               TO  FLG-STS
            END-IF
       *
            OPEN    INPUT               RECE631-FILE
            IF  STS-RECE63          NOT =   ZERO
                DISPLAY "*** ORCR0710 RECE631 OPEN ERR  ***"
-               MOVE    2               TO  SPA-STS
+               MOVE    2               TO  FLG-STS
            END-IF
       *
            OPEN    INPUT               RECE661-FILE
            IF  STS-RECE66          NOT =   ZERO
                DISPLAY "*** ORCR0710 RECE661 OPEN ERR  ***"
-               MOVE    2               TO  SPA-STS
+               MOVE    2               TO  FLG-STS
            END-IF
       *
            OPEN    INPUT               RECE69-FILE
            IF  STS-RECE69            NOT =   ZERO
                DISPLAY "*** ORCR0710 RECE69 OPEN ERR  ***" STS-RECE69
-               MOVE    2               TO  SPA-STS
+               MOVE    2               TO  FLG-STS
            END-IF
       *
            OPEN    INPUT               RECE68-FILE
            IF  STS-RECE68            NOT =   ZERO
                DISPLAY "*** ORCR0710 RECE68 OPEN ERR  ***" STS-RECE68
-               MOVE    2               TO  SPA-STS
+               MOVE    2               TO  FLG-STS
            END-IF
       *
            OPEN    INPUT               RECE67-FILE
            IF  STS-RECE67            NOT =   ZERO
                DISPLAY "*** ORCR0710 RECE67 OPEN ERR  ***" STS-RECE67
-               MOVE    2               TO  SPA-STS
+               MOVE    2               TO  FLG-STS
            END-IF
            .
        110-FILE-OPEN-EXT.
@@ -1249,7 +1245,7 @@
                   MOVE    "医療機関情報が取得できませんでした。"
                                         TO  WRK-RECEERR
                   PERFORM 500-ERR-HENSYU-SEC
-                  MOVE    2               TO  SPA-STS
+                  MOVE    2               TO  FLG-STS
                   GO  TO  120-HOSPINF-GET-EXT
               END-IF
            ELSE
@@ -1290,7 +1286,7 @@
                   MOVE    "医療機関情報が取得できませんでした。"
                                        TO  WRK-RECEERR
                   PERFORM 500-ERR-HENSYU-SEC
-                  MOVE    2            TO  SPA-STS
+                  MOVE    2            TO  FLG-STS
                   GO  TO  120-HOSPINF-GET-EXT
               END-IF
            END-IF
@@ -1312,7 +1308,7 @@
              MOVE    "医療機関情報（所在地）が取得できませんでした。"
                                        TO  WRK-RECEERR
                   PERFORM 500-ERR-HENSYU-SEC
-                  MOVE    2            TO  SPA-STS
+                  MOVE    2            TO  FLG-STS
                   GO  TO  120-HOSPINF-GET-EXT
               END-IF
            ELSE
@@ -1353,7 +1349,7 @@
                   MOVE "医療機関情報（所在地）が取得できませんでした。"
                                        TO  WRK-RECEERR
                   PERFORM 500-ERR-HENSYU-SEC
-                  MOVE    2            TO  SPA-STS
+                  MOVE    2            TO  FLG-STS
                   GO  TO  120-HOSPINF-GET-EXT
               END-IF
            END-IF
@@ -1604,7 +1600,7 @@
                    "パラメタ情報が取得できませんでした。"
                                            TO  WRK-RECEERR
                    PERFORM 500-ERR-HENSYU-SEC
-                   MOVE    2               TO  SPA-STS
+                   MOVE    2               TO  FLG-STS
                END-IF
            END-IF
            .
@@ -1617,18 +1613,18 @@
        200-MAIN-SEC                SECTION.
       *
            PERFORM         UNTIL   FLG-RECE62     =   1
-                           OR      SPA-STS        =   2 
+                           OR      FLG-STS        =   2 
       *        患者番号別保険履歴情報編集処理      
                PERFORM 2001-RIREKI-HEN-SEC 
                MOVE    KEY-NEW         TO  KEY-OLD
                PERFORM         UNTIL   FLG-RECE62     =   1
-                               OR      SPA-STS        =   2
+                               OR      FLG-STS        =   2
                                OR      KEY-NEW1   NOT =   KEY-OLD1
       *            レセプト種別別件数カウント
                    MOVE    ZERO            TO  CNT-KENSU
                    MOVE    KEY-NEW         TO  KEY-OLD
                    PERFORM         UNTIL   FLG-RECE62     =   1
-                                   OR      SPA-STS        =   2
+                                   OR      FLG-STS        =   2
                                    OR      KEY-NEW    NOT =   KEY-OLD
       *
                        ADD     1                      TO  CNT-KENSU
@@ -1641,13 +1637,13 @@
            END-PERFORM
       *
       *    公費請求書出力
-           IF      SPA-STS         =   2
+           IF      FLG-STS         =   2
                CONTINUE
            ELSE
                PERFORM 2002-KOHSKY-WRITE-SEC
            END-IF 
       *
-           MOVE    2               TO  SPA-STS
+           MOVE    2               TO  FLG-STS
       *
            .
        200-MAIN-EXT.
@@ -1707,7 +1703,7 @@
                    MOVE    "保険履歴情報がテーブルオーバーしました"
                                               TO  WRK-RECEERR
                    PERFORM 500-ERR-HENSYU-SEC
-                   MOVE    2               TO  SPA-STS
+                   MOVE    2               TO  FLG-STS
                    GO  TO  2001-RIREKI-HEN-EXT
                END-IF    
       *
@@ -1784,7 +1780,7 @@
                                "保険履歴情報がテーブルオーバーしました"
                                                    TO  WRK-RECEERR
                            PERFORM 500-ERR-HENSYU-SEC
-                           MOVE    2               TO  SPA-STS
+                           MOVE    2               TO  FLG-STS
                            GO  TO  2001-RIREKI-HEN-EXT
                        END-IF    
                        STRING  WRK-HKN-KIGO       DELIMITED  BY  SPACE
@@ -1805,7 +1801,7 @@
                        MOVE    "保険履歴情報がテーブルオーバーしました"
                                                    TO  WRK-RECEERR
                        PERFORM 500-ERR-HENSYU-SEC
-                       MOVE    2               TO  SPA-STS
+                       MOVE    2               TO  FLG-STS
                        GO  TO  2001-RIREKI-HEN-EXT
                    END-IF    
                END-IF                             
@@ -1945,7 +1941,7 @@
       *
            PERFORM             UNTIL   FLG-RECE62X =   1
                                OR      FLG-ERR     =   1
-                               OR      SPA-STS     =   2
+                               OR      FLG-STS     =   2
       * 
                INITIALIZE                     TABLE-AREA
       *
@@ -6432,7 +6428,7 @@
            END-IF
       *
            IF      FLG-ERR              =   1
-               MOVE    2                    TO  SPA-STS
+               MOVE    2                    TO  FLG-STS
            END-IF
       *
            .
@@ -7312,7 +7308,7 @@
                    END-IF
       *                             
                    MOVE    1                   TO  FLG-END
-                   MOVE    2                   TO  SPA-STS
+                   MOVE    2                   TO  FLG-STS
                END-IF
            END-IF
            .
@@ -7868,7 +7864,7 @@
                                        INTO    WRK-RECEERR
                END-STRING
                PERFORM 500-ERR-HENSYU-SEC
-               MOVE    2           TO  SPA-STS
+               MOVE    2           TO  FLG-STS
                GO  TO  900-SYSKANRI-HENSYU-EXT
            END-IF
       *
@@ -7893,7 +7889,7 @@
                                        INTO    WRK-RECEERR
                END-STRING
                PERFORM 500-ERR-HENSYU-SEC
-               MOVE    2                   TO  SPA-STS
+               MOVE    2                   TO  FLG-STS
            END-IF
       *
       *    帳票別指定医療機関編集情報
