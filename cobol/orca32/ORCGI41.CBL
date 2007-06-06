@@ -2557,8 +2557,9 @@
                IF  (FLG-PTNYUINRRK     =   ZERO)   AND
                    (PTNYUINRRK-TOKUTEI-KBN  =   SPACE)
                 IF (SPA-NAI-SRYYM      =  PTNYUINRRK-TENSTUYMD(1:6)) AND
-                   (PTNYUINRRK-TENSTUYMD(7:2)  =  "01")   AND
-                   (PTNYUINRRK-TAIINYMD(7:2)   =  "99")
+      **             (PTNYUINRRK-TENSTUYMD(7:2)  =  "01")   AND
+      **             (PTNYUINRRK-TAIINYMD(7:2)   =  "99")
+                   (PTNYUINRRK-TENSTUYMD(7:2)  =  "01")
                     CONTINUE
                 ELSE
                    INITIALIZE                      SYSKANRI-REC
