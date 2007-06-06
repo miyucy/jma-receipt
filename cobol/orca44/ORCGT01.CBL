@@ -87,6 +87,7 @@
       *  03.04.01    NACL-藤原    06/12/05  未請求レセ対応
       *
       *  03.05.01    NACL-藤原    07/04/19  グループ診療対応
+      *  03.05.02    NACL-藤原    07/05/25  印刷データ削除設定機能追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -312,6 +313,9 @@
            COPY    "CPSK3003.INC".
       *
            COPY    "CPSK3004.INC".
+      *
+      *    印刷データ削除設定情報
+           COPY    "CPSK8000.INC".
       *
        01  PRTKANRI-REC.
            COPY    "CPPRTKANRI.INC".
@@ -1406,7 +1410,7 @@ grpsys             PERFORM 900-ORCDBMAIN-SEC
                MOVE    99999               TO  WRK-EDPAGE
       *             
                MOVE    SPACE               TO  SHELLTBL
-               MOVE    "/scripts/allways/print.sh"
+               MOVE    "scripts/allways/print.sh"
                                            TO  WRK-SHELL-NAME
       *        ファイルデイレクトリ位置指定
                INITIALIZE                  ORCSMKPASSAREA
@@ -2095,6 +2099,44 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
            MOVE    SMCNDATE-YMD        TO  WRK-SYSYMD
            MOVE    SMCNDATE-HMS        TO   SYS-TIME 
       *
+      *    印刷データ削除設定情報がないときの更新処理
+           MOVE    SPACE               TO  SYS-8000-REC
+           INITIALIZE                      SYS-8000-REC
+           MOVE    "8000"              TO  SYS-8000-KANRICD
+           MOVE    "*"                 TO  SYS-8000-KBNCD
+           MOVE    SMCNDATE-YMD        TO  SYS-8000-STYUKYMD
+                                           SYS-8000-EDYUKYMD
+           MOVE    SPA-HOSPNUM         TO  SYS-8000-HOSPNUM
+           MOVE    SYS-8000-REC        TO  MCPDATA-REC
+           PERFORM 900-SYSKANRI-INV-SEC
+           IF      FLG-SYSKANRI        =   ZERO
+               CONTINUE
+           ELSE
+               MOVE    SPACE               TO  SYS-8000-REC
+               INITIALIZE                      SYS-8000-REC
+               MOVE    SPA-HOSPNUM         TO  SYS-8000-HOSPNUM
+               MOVE    "8000"              TO  SYS-8000-KANRICD
+               MOVE    "*"                 TO  SYS-8000-KBNCD
+               MOVE    "00000000"          TO  SYS-8000-STYUKYMD
+               MOVE    "99999999"          TO  SYS-8000-EDYUKYMD
+               MOVE    2                   TO  SYS-8000-DAILY
+               MOVE    36                  TO  SYS-8000-MONTHLY
+               MOVE    SYS-8000-REC        TO  SYSKANRI-REC
+               MOVE    SMCNDATE-YMD        TO  SYS-CREYMD
+                                               SYS-UPYMD
+               MOVE    SMCNDATE-HMS        TO  SYS-UPHMS
+      *
+               MOVE    "DBINSERT"          TO  MCP-FUNC
+               MOVE    "tbl_syskanri"      TO  MCP-TABLE
+               MOVE    "key"               TO  MCP-PATHNAME
+               MOVE    SYSKANRI-REC        TO  MCPDATA-REC
+grpsys         PERFORM 900-ORCDBMAIN-SEC
+               IF      MCP-RC          NOT =   ZERO 
+                   MOVE    "1006"              TO  SPA-ERRCD
+                   GO  TO  450-PRINT-EXT
+               END-IF
+           END-IF    
+      *
            MOVE    ZERO                TO  WRK-CONS-JOB-JOBID     
                                            WRK-PRTKANRI-RENNUM
            MOVE    SPACE               TO  WRK-CONS-PRTKANRI-TBL-GROUP                                
@@ -2264,7 +2306,7 @@ grpsys             PERFORM 900-ORCDBMAIN-SEC
                MOVE    99999               TO  WRK-EDPAGE
       *             
                MOVE    SPACE               TO  SHELLTBL
-               MOVE    "/scripts/allways/print.sh"
+               MOVE    "scripts/allways/print.sh"
                                            TO  WRK-SHELL-NAME
       *        ファイルデイレクトリ位置指定
                INITIALIZE                  ORCSMKPASSAREA
@@ -2321,6 +2363,10 @@ grpsys         PERFORM 900-ORCDBMAIN-SEC
       *    ＪＯＢＩＤ更新処理
       *
            PERFORM 45012-JOBID-UPD-SEC
+      *
+      *    印刷データ削除処理
+      *
+           PERFORM 45015-PRTDATA-DEL-SEC
       *     
       *    情報確認画面を表示                                                   
            PERFORM 490-KAKUNIN-SEC
@@ -2690,7 +2736,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            MOVE    99999               TO  WRK-EDPAGE
       *             
            MOVE    SPACE               TO  SHELLTBL
-           MOVE    "/scripts/allways/print.sh"
+           MOVE    "scripts/allways/print.sh"
                                        TO  WRK-SHELL-NAME
       *    ファイルデイレクトリ位置指定
            INITIALIZE                  ORCSMKPASSAREA
@@ -2812,6 +2858,33 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
       *
            .
        45014-RECEDEN-SOKATU-SYORI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    印刷データ削除処理
+      *****************************************************************
+       45015-PRTDATA-DEL-SEC           SECTION.
+      *
+      *****PERFORM 45011-JOBKANRI-HENSYU-SEC
+      *             
+           MOVE    SPACE               TO  SHELLTBL
+      *    ファイルデイレクトリ位置指定
+           INITIALIZE                  ORCSMKPASSAREA
+           MOVE    "scripts/monthly/prtdbdel.sh"
+                                       TO  MKPASS-IN-01
+           CALL    "ORCSMKPASS"        USING   ORCSMKPASSAREA
+           MOVE    MKPASS-OT-01        TO  SHELLTBL-NAME
+           MOVE    WRK-CONS-JOB-JOBID  TO  SHELLTBL-ARG1
+           MOVE    WRK-CONS-JOB-SHELLID
+                                       TO  SHELLTBL-ARG2
+           MOVE    SPA-HOSPNUM         TO  SHELLTBL-ARG3
+           MOVE    SHELLTBL            TO  MCPDATA-REC
+           MOVE    "SHELL"             TO  MCP-FUNC
+           MOVE    "shell"             TO  MCP-TABLE
+           MOVE    "shell"             TO  MCP-PATHNAME
+grpsys     PERFORM 900-ORCDBMAIN-SEC
+           .
+       45015-PRTDATA-DEL-EXT.
            EXIT.
       *
       *****************************************************************
@@ -3885,6 +3958,9 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
                WHEN    "1005"
                    MOVE
                    "システム管理ＤＢ（３００３）が削除できませんでした"
+                                                       TO  SPA-ERRMSG
+               WHEN    "1006"
+                   MOVE    "システム管理の更新処理でエラーとなりました"
                                                        TO  SPA-ERRMSG
                WHEN    "7777"
                    MOVE    WRK-RECEERR                 TO  SPA-ERRMSG

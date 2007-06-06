@@ -211,3 +211,28 @@ path	del14	{
 	};
 };
 
+path	del15	{
+	DBDELETE	{
+		DELETE
+		FROM tbl_prtkanri
+		WHERE 	HOSPNUM	= :HOSPNUM
+                    AND     TBL_KEY      <>   'DAILY'
+                    AND     TBL_KEY      <>   'ONLINE'
+                    AND     TBL_KEY      <>   'RECEPTX'
+                    AND     substring(TBL_GROUP,1,6) < :SRYYM
+		;
+	};
+};
+
+
+path	del16	{
+	DBDELETE	{
+		DELETE
+		FROM tbl_prtkanri
+		WHERE 	HOSPNUM	= :HOSPNUM
+                    AND    ( TBL_KEY     =   'DAILY'   OR
+                            TBL_KEY      =   'ONLINE'     ) 
+                    AND     substring(TBL_GROUP,1,6) < :SRYYM
+		;
+	};
+};

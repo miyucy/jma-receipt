@@ -1,5 +1,4 @@
-SRCS = ORCBD001.CBL \
-       ORCBD002.CBL \
+SRCS = ORCBPRTDBDEL.CBL \
        ORCBM006.CBL \
        ORCR0010.CBL \
        ORCR0020.CBL \
@@ -15,15 +14,11 @@ SRCS = ORCBD001.CBL \
        ORCR0102.CBL \
        ORCMUP0000.CBL \
        ORCMUP0001.CBL \
-       ORCMUP0011.CBL \
        ORCXRMST1.CBL \
        ORCXRMST2.CBL \
        ORCR0200.CBL \
        ORCR0210.CBL \
-       ORCR0250.CBL \
-       ORCR0260.CBL \
        ORCR0300.CBL \
-       ORCR0350.CBL \
        ORCBM005.CBL \
        ORCBM020.CBL \
        ORCBM021.CBL \
@@ -81,30 +76,7 @@ SRCS = ORCBD001.CBL \
        ORCR0690.CBL \
        ORCR0700.CBL \
        ORCR0710.CBL \
-       ORCR0720.CBL \
-       ORCR0800.CBL \
-       ORCR0810.CBL \
-       ORCR0820.CBL \
-       ORCR0830.CBL \
-       ORCR0840.CBL \
-       ORCR0850.CBL \
-       ORCR0860.CBL \
-       ORCR0870.CBL \
-       ORCR0880.CBL \
-       ORCR0890.CBL \
-       ORCR0900.CBL \
-       ORCR0910.CBL \
-       ORCR0920.CBL \
-       ORCR0930.CBL \
-       ORCR0935.CBL \
-       ORCR0940.CBL \
-       ORCR0950.CBL \
-       ORCR0951.CBL \
-       ORCR0960.CBL \
-       ORCR0961.CBL \
-       ORCR0955.CBL \
        ORCRCP060.CBL \
-       ORCBDXXX.CBL \
        ORCT0010.CBL \
        ORCT0020.CBL \
        ORCT0030.CBL \
@@ -113,27 +85,12 @@ SRCS = ORCBD001.CBL \
        ORCT0060.CBL \
        ORCMUP0031.CBL \
        ORCBG001.CBL \
-       ORCBG002.CBL \
-       ORCBG003.CBL \
-       ORCBG004.CBL \
-       ORCMUP0061.CBL \
-       ORCMUP0071.CBL \
-       ORCMUP0081.CBL \
-       ORCBD004.CBL \
-       ORCBD005.CBL \
        ORCBLMAIN.CBL \
        ORCR0104.CBL \
        ORCBM027.CBL \
        ORCBM028.CBL \
        ORCBM029.CBL \
        ORCBM030.CBL \
-       ORCBG005.CBL \
-       ORCMUP0091.CBL \
-       ORCBZ001.CBL \
-       ORCBZ002.CBL \
-       ORCBG008.CBL \
-       ORCBG009.CBL \
-       ORCBG007.CBL \
        ORCBM500.CBL \
        ORCBM510.CBL \
        ORHCML12.CBL \
@@ -147,11 +104,7 @@ SRCS = ORCBD001.CBL \
        ORCBPREV1.CBL \
        ORCBPRT1.CBL \
        ORCBPRVPRT.CBL \
-       ORCBG010.CBL \
-       ORCBG011.CBL \
        ORCRCP400.CBL \
-       ORCRCP401.CBL \
-       ORCBI201.CBL \
        ORCBT010.CBL \
        ORCBT020.CBL \
        ORCDTCHK001.CBL \
@@ -164,12 +117,7 @@ SRCS = ORCBD001.CBL \
        ORCXPMNT2.CBL \
        ORCXPMNT3.CBL \
        ORCBX01.CBL \
-       ORCBREV200404.CBL \
-       ORCBG006.CBL \
-       ORCBCRENYUACCT.CBL \
        ORCBS01.CBL \
-       ORCBG012.CBL \
-       ORCBG013.CBL \
        ORCBCHKSND.CBL \
        ORCBCHKSND2.CBL \
        ORCBT110.CBL \
@@ -183,40 +131,15 @@ SRCS = ORCBD001.CBL \
        ORCBJINMEI.CBL \
        ORCRRECEMAIN.CBL \
        ORCBG013V02.CBL \
-       ORCBD004V02.CBL \
-       ORCBD005V02.CBL \
        ORCR0468.CBL \
        ORCR0486.CBL \
        ORCR0936.CBL \
        ORCR0956.CBL \
-       ORCDTCHK008.CBL \
-       ORCBG014.CBL \
-       ORCBD009S.CBL \
-       ORCBD009.CBL \
-       ORCT0070.CBL \
-       ORCBZ003.CBL \
-       ORCBG015.CBL \
        ORCRSYUKA01.CBL \
-       ORCBREV200604.CBL \
-       ORCBN21.CBL \
-       ORCBG016.CBL \
-       ORCBG017.CBL \
-       ORCBCHKYAK1.CBL \
-       ORCBCHKKNS1.CBL \
-       ORCMUP0111.CBL \
        ORCR0487.CBL \
-       ORCR0957.CBL \
-       ORCBHYOUKETU.CBL \
-       ORCXRMST3.CBL \
-       ORCXRMST4.CBL \
-       ORCBC010.CBL \
-       ORCBC020.CBL \
-       ORCDTCHK009.CBL \
        ORCBM032.CBL \
        ORCBM033.CBL \
-       ORCMUP0092.CBL \
-       ORCBQ02.CBL \
-       ORCBONPRT.CBL \
+       ORCR0957.CBL \
 
 EXEC_SRCS =  ORCXSMST1.CBL
 

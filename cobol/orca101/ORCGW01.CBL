@@ -80,6 +80,7 @@
       *                                     ト・総括印刷情報を追加
       *  03.04.00    NACL-多々納  07/02/21  包括診療行為設定追加
       *  03.05.00    NACL-多々納  07/05/02  グループ診療対応
+      *  03.05.01    NACL-藤原    07/05/25  印刷データ削除設定追加
       *****************************************************************
       *
        ENVIRONMENT                               DIVISION.
@@ -299,7 +300,7 @@
                "4001 労災自賠医療機関情報".
       *
        01  TBL-KANRICD-AREAR           REDEFINES   TBL-KANRICD-AREA.
-           03  TBL-KANRICD-TBL         OCCURS   37.
+           03  TBL-KANRICD-TBL         OCCURS   38.
                05  TBL-KANRICD             PIC X(04).
                05  TBL-FILLER              PIC X(01).
                05  TBL-KANRICDMEI          PIC X(30).
@@ -308,17 +309,19 @@
       *外来のみ
        01  TBL-KANRICD-G-AREA.
            03  FILLER              PIC X(35)   VALUE
+               "8000 印刷データ削除機能情報".
+           03  FILLER              PIC X(35)   VALUE
                "9000 ＣＬＡＩＭ接続情報".
            03  FILLER              PIC X(35)   VALUE
                "9700 ユーザプログラム起動情報".
            03  FILLER              PIC X(35)   VALUE
                "9800 排他制御情報".
        01  TBL-KANRICD-G-AREAR         REDEFINES   TBL-KANRICD-G-AREA.
-           03  TBL-KANRICD-G-TBL           OCCURS   3.
+           03  TBL-KANRICD-G-TBL           OCCURS   4.
                05  TBL-KANRICD-G           PIC X(04).
                05  TBL-FILLER              PIC X(01).
                05  TBL-KANRICDMEI-G        PIC X(30).
-       01  TBL-KANRICDG-MAX                 PIC 9(04)   VALUE   3.
+       01  TBL-KANRICDG-MAX                 PIC 9(04)   VALUE   4.
       *
       *入院のみ
        01  TBL-KANRICD-N-AREA.
@@ -345,6 +348,8 @@
            03  FILLER              PIC X(35)   VALUE
                "5014 医療区分表示情報".
            03  FILLER              PIC X(35)   VALUE
+               "8000 印刷データ削除機能情報".
+           03  FILLER              PIC X(35)   VALUE
                "9000 ＣＬＡＩＭ接続情報".
            03  FILLER              PIC X(35)   VALUE
                "9700 ユーザプログラム起動情報".
@@ -352,11 +357,11 @@
                "9800 排他制御情報".
       *
        01  TBL-KANRICD-N-AREAR         REDEFINES   TBL-KANRICD-N-AREA.
-           03  TBL-KANRICD-N-TBL           OCCURS   14.
+           03  TBL-KANRICD-N-TBL           OCCURS   15.
                05  TBL-KANRICD-N           PIC X(04).
                05  TBL-FILLER              PIC X(01).
                05  TBL-KANRICDMEI-N        PIC X(30).
-       01  TBL-KANRICDN-MAX                PIC 9(04)   VALUE   14.
+       01  TBL-KANRICDN-MAX                PIC 9(04)   VALUE   15.
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -469,6 +474,7 @@
            COPY    "W30.INC".
            COPY    "W31.INC".
            COPY    "W32.INC".
+           COPY    "W33.INC".
            COPY    "W60.INC".
            COPY    "W61.INC".
            COPY    "W62.INC".
@@ -1829,6 +1835,8 @@
                    MOVE    "W29"               TO  SPA-SAKIPG
                WHEN    "5014"
                    MOVE    "W31"               TO  SPA-SAKIPG
+               WHEN    "8000"
+                   MOVE    "W33"               TO  SPA-SAKIPG
                WHEN    "9000"
                    MOVE    "W99"               TO  SPA-SAKIPG
                WHEN    "9700"

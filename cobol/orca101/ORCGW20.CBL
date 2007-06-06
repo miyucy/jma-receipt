@@ -277,6 +277,7 @@
            COPY    "W30.INC".
            COPY    "W31.INC".
            COPY    "W32.INC".
+           COPY    "W33.INC".
            COPY    "W60.INC".
            COPY    "W61.INC".
            COPY    "W62.INC".

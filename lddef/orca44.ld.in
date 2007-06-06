@@ -34,6 +34,7 @@ db	{
 	tbl_jobkanri;
 	tbl_prtdata;
 	tbl_prtkanri;
+	tbl_prvkanri;
 	tbl_ptinf;
 	tbl_ptnum;
 	tbl_syskanri;
