@@ -240,6 +240,7 @@ grpsys     03  RECEERR                 PIC X(100).
       *    ¥­¡¼ÎÎ°è
        01  KEY-AREA.
 grpsys*DD  03  KEY-HOSPID          PIC X(24).
+grpsys     03  KEY-HOSPNUM         PIC 9(02).
            03  KEY-NYUGAIKBN       PIC X(01).
            03  KEY-PTID            PIC 9(10).
            03  KEY-SRYKA           PIC X(02).
@@ -578,8 +579,8 @@ grpsys*DD  PERFORM 900-SRY-DBCLOSE-SEC
        230-MAIN-ACCT-SEC           SECTION.
       *
 grpsys*DD     IF        ( SRY-HOSPID      NOT =   KEY-HOSPID )
-grpsys*DD       OR    ( SRY-NYUGAIKBN   NOT =   KEY-NYUGAIKBN )
-grpsys     IF        ( SRY-NYUGAIKBN   NOT =   KEY-NYUGAIKBN )
+grpsys     IF        ( SRY-HOSPNUM     NOT =   KEY-HOSPNUM )
+               OR    ( SRY-NYUGAIKBN   NOT =   KEY-NYUGAIKBN )
                OR    ( SRY-PTID        NOT =   KEY-PTID )
                OR    ( SRY-SRYKA       NOT =   KEY-SRYKA )
                OR    ( SRY-SRYYM       NOT =   KEY-SRYYM )
@@ -625,6 +626,7 @@ grpsys*DD      MOVE    "SRYACCT-KEY"       TO  ORC-DBPATH
                PERFORM 900-ACCT-DBCLOSE-SEC
       *
 grpsys*DD      MOVE    SRY-HOSPID       TO  KEY-HOSPID
+grpsys*DD      MOVE    SRY-HOSPNUM      TO  KEY-HOSPNUM
                MOVE    SRY-NYUGAIKBN    TO  KEY-NYUGAIKBN
                MOVE    SRY-PTID         TO  KEY-PTID
                MOVE    SRY-SRYKA        TO  KEY-SRYKA
