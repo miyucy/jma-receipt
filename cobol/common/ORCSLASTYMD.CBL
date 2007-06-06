@@ -65,6 +65,7 @@
                05  WRK-SMM             PIC 9(02).
                05  WRK-SDD             PIC 9(02).
            03  WRK-LASTYMD             PIC X(08).
+           03  WRK-DRCD                PIC X(05).
            03  WRK-SRYKA               PIC X(02).
            03  WRK-HKNCOMBI            PIC X(04).
       *
@@ -197,6 +198,7 @@
                MOVE    WRK-HENYMDG         TO  ORCSLASTYMD-LASTYMDW
            END-IF
            MOVE    WRK-SRYKA           TO  ORCSLASTYMD-SRYKA
+           MOVE    WRK-DRCD            TO  ORCSLASTYMD-DRCD
            MOVE    WRK-BRMNUM          TO  ORCSLASTYMD-BRMNUM
            MOVE    WRK-NYUINYMD        TO  ORCSLASTYMD-NYUINYMD
       *    保険組合せ名称編集
@@ -261,6 +263,8 @@
                MOVE    PTNYUINRRK-NYUINKA      TO  WRK-SRYKA
                MOVE    PTNYUINRRK-HKNCOMBINUM  TO  WRK-HKNCOMBI
                MOVE    PTNYUINRRK-NYUINYMD     TO  WRK-NYUINYMD
+      *        前回ドクター
+               MOVE    PTNYUINRRK-DRCD1        TO  WRK-DRCD
                MOVE    1                       TO  FLG-NYUIN
       *        当日退院の時
                IF      PTNYUINRRK-TAIINYMD     =   SPA-SYSYMD
@@ -271,6 +275,7 @@
                MOVE    SPACE                   TO  WRK-SRYKA
                MOVE    SPACE                   TO  WRK-HKNCOMBI
                MOVE    SPACE                   TO  WRK-LASTYMD
+               MOVE    SPACE                   TO  WRK-DRCD
                MOVE    ZERO                    TO  FLG-NYUIN
            END-IF
       *
@@ -310,6 +315,7 @@
                MOVE    JYURRK-SRYYMD       TO  WRK-LASTYMD
                MOVE    JYURRK-SRYKA        TO  WRK-SRYKA
                MOVE    JYURRK-HKNCOMBINUM  TO  WRK-HKNCOMBI
+               MOVE    JYURRK-DRCD         TO  WRK-DRCD
            END-IF
       *
            .
