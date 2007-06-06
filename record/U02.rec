@@ -134,6 +134,9 @@ U02	{
 		NENREI	{
 			value	varchar(6);
 		};
+		LASTYMD	{
+			value	varchar(16);
+		};
 		B05	{
 	           	state	int;
 		};
