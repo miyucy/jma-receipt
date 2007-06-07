@@ -80,7 +80,6 @@
       *    £Ä£Â¸¡º÷
            COPY    "MCPDATA.INC".
            COPY    "MCPAREA".
-           COPY    "ORCA-DBPATH".
       *
       ****************************************************************
        LINKAGE                         SECTION.
@@ -109,6 +108,8 @@
       *    ½é´ü¡¡½èÍý
       *****************************************************************
        100-INIT-SEC                    SECTION.
+      *
+           INITIALIZE                  SPA-AREA
       *
            UNSTRING   COMMAND-PARAM    DELIMITED  BY  ","
                                        INTO    LNK-PRTKANRI-RENNUM
@@ -141,6 +142,8 @@
                                                ORCBSD01-SRYYMDKBN
                                                ORCBSD01-STSRYYMD
                                                ORCBSD01-EDSRYYMD
+      *
+           MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
       *
            PERFORM 100-DBOPEN-SEC
       *
