@@ -437,6 +437,7 @@
                     RECEERR        DELIMITED   BY  SPACE
                                    INTO    WRK-ARG
            END-STRING
+           DISPLAY "orcr0030 start = [" WRK-ARG "]"
            CALL    "ORCR0030"          USING
                                        WRK-ARG
            CALL    "ORCR0035"          USING
@@ -474,6 +475,7 @@
                     RECEERR        DELIMITED   BY  SPACE
                                    INTO    WRK-ARG
            END-STRING
+           DISPLAY "orcr0104 start = [" WRK-ARG "]"
            CALL    "ORCR0104"          USING
                                        WRK-ARG
       *
@@ -520,6 +522,7 @@
                     ","         DELIMITED   BY  SIZE
                                 INTO    WRK-ARG
            END-STRING
+           DISPLAY "orcr0101 start = [" WRK-ARG "]"
            CALL    "ORCR0101"          USING
                                        WRK-ARG
       *
@@ -574,6 +577,7 @@
                     RECEERR     DELIMITED   BY  SPACE
                                 INTO    WRK-ARG
            END-STRING
+           DISPLAY "orcr0102 start = [" WRK-ARG "]"
            CALL    "ORCR0102"          USING
                                    WRK-ARG
            .
@@ -598,7 +602,6 @@
            CALL    "ORCR0600"          USING
                                        WRK-ARG
       *
-           DISPLAY "orcr0610 start = [" WRK-ARG "]"
            CALL    "ORCR0610"          USING
                                        WRK-ARG
       *
@@ -615,57 +618,40 @@
            CALL    "ORCR0620"          USING
                                    WRK-ARG
       *
-      **   CALL "timeofday" USING LNK-TIMEOFDAY.
-      **   DISPLAY "orcr0630 START"
-      **           " "  LNK-TIMEOFDAY(1:20).
+           MOVE     SPACE       TO WRK-ARG
+           STRING   WRK-PARA2      DELIMITED   BY  SIZE
+                    ","            DELIMITED   BY  SIZE
+                    WRK-PARA-HOSPNUM
+                                   DELIMITED   BY  SIZE
+                    ","            DELIMITED   BY  SIZE
+                    RECEERR        DELIMITED   BY  SPACE
+                                   INTO    WRK-ARG
+           END-STRING
+           DISPLAY "orcr0630 start = [" WRK-ARG "]"
            CALL    "ORCR0630"          USING
                                    WRK-ARG
       *
-      **   CALL "timeofday" USING LNK-TIMEOFDAY.
-      **   DISPLAY "orcr0640 START"
-      **           " "  LNK-TIMEOFDAY(1:20).
            CALL    "ORCR0640"          USING
                                    WRK-ARG
       *
-      **   CALL "timeofday" USING LNK-TIMEOFDAY.
-      **   DISPLAY "orcr0650 START"
-      **           " "  LNK-TIMEOFDAY(1:20).
            CALL    "ORCR0650"          USING
                                    WRK-ARG
       *
-      **   CALL "timeofday" USING LNK-TIMEOFDAY.
-      **   DISPLAY "orcr0655 START"
-      **           " "  LNK-TIMEOFDAY(1:20).
            CALL    "ORCR0655"          USING
                                    WRK-ARG
       *
-      **   CALL "timeofday" USING LNK-TIMEOFDAY.
-      **   DISPLAY "orcr0660 START"
-      **           " "  LNK-TIMEOFDAY(1:20).
            CALL    "ORCR0660"          USING
                                    WRK-ARG
       *
-      **   CALL "timeofday" USING LNK-TIMEOFDAY.
-      **   DISPLAY "orcr0670 START"
-      **           " "  LNK-TIMEOFDAY(1:20).
            CALL    "ORCR0670"          USING
                                    WRK-ARG
       *
-      **   CALL "timeofday" USING LNK-TIMEOFDAY.
-      **   DISPLAY "orcr0680 START"
-      **           " "  LNK-TIMEOFDAY(1:20).
            CALL    "ORCR0680"          USING
                                    WRK-ARG
       *
-      **   CALL "timeofday" USING LNK-TIMEOFDAY.
-      **   DISPLAY "orcr0690 START"
-      **           " "  LNK-TIMEOFDAY(1:20).
            CALL    "ORCR0690"          USING
                                    WRK-ARG
       *
-      **   CALL "timeofday" USING LNK-TIMEOFDAY.
-      **   DISPLAY "orcr0700 START"
-      **           " "  LNK-TIMEOFDAY(1:20).
            CALL    "ORCR0700"          USING
                                    WRK-ARG
       *
@@ -679,10 +665,7 @@
            PERFORM 900-DBDISCONNECT-SEC
       *
            PERFORM 200101-PRVDATA-DEL-SEC
-      **   CALL "timeofday" USING LNK-TIMEOFDAY.
       *
-           DISPLAY "WRK-PARA-A8=" WRK-PARA-A8 "#"
-      *???
            MOVE     SPACE       TO WRK-ARG
            STRING   WRK-PARA3      DELIMITED   BY  SIZE
                     ","            DELIMITED   BY  SIZE
@@ -692,6 +675,7 @@
                     RECEERR        DELIMITED   BY  SPACE
                                    INTO    WRK-ARG
            END-STRING
+           DISPLAY "orcr0710 start = [" WRK-ARG "]"
            IF      WRK-PARA-A8     <=  WRK-CONS-SRYYM-200609     
                CALL    "ORCR0710"          USING
                                            WRK-ARG
@@ -701,8 +685,6 @@
                                            WRK-ARG
                END-IF
            ELSE    
-             DISPLAY "orcr0720 START"
-      **               " "  LNK-TIMEOFDAY(1:20).
                CALL    "ORCR0720"          USING
                                            WRK-ARG
            END-IF
@@ -738,9 +720,7 @@
                     ","         DELIMITED   BY  SIZE
                                 INTO    WRK-ARG
            END-STRING
-      **   CALL "timeofday" USING LNK-TIMEOFDAY.
-      **   DISPLAY "orcr0101 START"
-      **           " "  LNK-TIMEOFDAY(1:20).
+           DISPLAY "orcr0101 start = [" WRK-ARG "]"
            CALL    "ORCR0101"          USING
                                    WRK-ARG
       *
@@ -794,14 +774,10 @@
                     ","         DELIMITED   BY  SIZE
                     RECEERR     DELIMITED   BY  SPACE
                                 INTO    WRK-ARG
-      **     CALL "timeofday" USING LNK-TIMEOFDAY.
-      **     DISPLAY "orcr0102 START"
-      **             " "  LNK-TIMEOFDAY(1:20).
+           END-STRING
+           DISPLAY "orcr0102 start = [" WRK-ARG "]"
            CALL    "ORCR0102"          USING
                                    WRK-ARG
-      **     CALL "timeofday" USING LNK-TIMEOFDAY.
-      **     DISPLAY "orcr0102 END  "
-      **             " "  LNK-TIMEOFDAY(1:20).
       *
            .
        2002-IHO-NYUIN-EXT.
@@ -1831,7 +1807,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM     TO      ACCTP-HOSPNUM
       *****************************************************************
        900-PRVKANRI-FET-SEC            SECTION.
       *
-grpsys      PERFORM 900-DBFETCH-SEC
+grpsys     PERFORM 900-DBFETCH-SEC
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC         TO  PRVKANRI-REC
                MOVE    ZERO                TO  FLG-PRVKANRI
