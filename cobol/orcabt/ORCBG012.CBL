@@ -156,8 +156,6 @@ grpsys*DD                                  BY          //ORCBG012SRT//.
 grpsys*DD  COPY    "CPCOMMONDAT2.INC"      REPLACING  //RECE01PARA//
 grpsys*DD                                  BY         //RECEERR//.
 grpsys*DD  03  FILLER                      PIC X(04)   VALUE   ".dat".
-grpsys     COPY    "CPERRFL.INC"   REPLACING  //ERRFLPARA//
-grpsys                             BY         //RECEERR//.
       *
       *    °õºþÍÑÎÎ°è
            COPY    "HCM42.INC".
@@ -424,7 +422,7 @@ grpsys                                     SPA-AREA
       *
 grpsys*DD  MOVE    "BG012SR"           TO  ORCBG012SRTPARA-FILE-ID
 grpsys*DD  MOVE    LNK-PRTKANRI-TERMID TO  ORCBG012SRTPARA-TERMID
-grpsys     MOVE    "BG012SR"           TO  BG012SRTPARA-FILE-ID
+grpsys     MOVE    "ORCBG013"          TO  BG012SRTPARA-FILE-ID
 grpsys     MOVE    LNK-PRTKANRI-TERMID TO  BG012SRTPARA-TERMID
 grpsys     MOVE    SPA-HOSPNUM         TO  BG012SRTPARA-HOSPNUM
       *

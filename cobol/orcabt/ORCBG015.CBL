@@ -76,8 +76,6 @@
 grpsys*    COPY    "CPCOMMONDAT2.INC"  REPLACING  //RECE01PARA//
 grpsys*                                BY         //RECEERR//.
 grpsys*    03  FILLER                  PIC X(04)   VALUE   ".dat".
-grpsys     COPY    "CPERRFL.INC"   REPLACING  //ERRFLPARA//
-grpsys                             BY         //RECEERR//.
       *
            COPY    "HCM46.INC".
       *

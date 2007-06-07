@@ -74,8 +74,6 @@ grpsys*DD                                  BY          //ORCBG01301//.
 grpsys*DD  COPY    "CPCOMMONDAT2.INC"      REPLACING  //RECE01PARA//
 grpsys*DD                                  BY         //RECEERR//.
 grpsys*DD  03  FILLER                      PIC X(04)   VALUE   ".dat".
-grpsys     COPY    "CPERRFL.INC"   REPLACING  //ERRFLPARA//
-grpsys                             BY         //RECEERR//.
       *
       *    ステータス領域
        01  STS-AREA.
