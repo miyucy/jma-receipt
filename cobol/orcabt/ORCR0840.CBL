@@ -113,6 +113,7 @@
       *  03.04.04    NACL-ÌçÏÆ    07/04/13  ¥ê¥Ï¥Ó¥êÂÐ±þ
       *  03.04.05    NACL-ÌçÏÆ    07/05/11  Ï«ºÒ¡¦¼«ÇåÀÕÃ±²Á£±£°±ßÌ¤ËþÂÐ±þ
       *  03.04.06    NACL-ÌçÏÆ    07/05/15  ÅÀÅ©¤Îµ­ºÜÊÔ½¸½¤Àµ
+      *  03.04.07    NACL-ÌçÏÆ    07/06/07  Æþ±¡¼¼ÎÁ²Ã»»¤Î¥³¥á¥ó¥ÈÂÐ±þ
       *  03.05.01    NACL-ÌçÏÆ    07/06/01  ¥°¥ë¡¼¥×¿ÇÎÅÂÐ±þ
       *****************************************************************
       *
@@ -2381,6 +2382,26 @@ grpsys     PERFORM 900-DBSELECT-SEC
                           ( SRY-SRYCD(1)(1:5)      =  "09593"
                                                    OR "09594"   ) AND
                           ( SRY-SRYCD(IDX2)(1:3)   =   "008"    ))
+                      OR (( ACCT-SRYKBN     = "80"              ) AND
+                          ( SRY-SRYCD(1)    =  CONS-ROUSAI13  OR
+                                               CONS-ROUSAI14  OR
+                                               CONS-ROUSAI15  OR
+                                               CONS-ROUSAI16  OR
+                                               CONS-ROUSAI17  OR
+                                               CONS-ROUSAI18  OR
+                                               CONS-ROUSAI19  OR
+                                               CONS-ROUSAI20    ) AND
+                          ( SRY-SRYCD(IDX2)(1:3)   =   "008"    ))
+                      OR (( ACCT-SRYKBN     = "80"              ) AND
+                          ( SRY-SRYCD(1)    =  CONS-ROUSAI13  OR
+                                               CONS-ROUSAI14  OR
+                                               CONS-ROUSAI15  OR
+                                               CONS-ROUSAI16  OR
+                                               CONS-ROUSAI17  OR
+                                               CONS-ROUSAI18  OR
+                                               CONS-ROUSAI19  OR
+                                               CONS-ROUSAI20    ) AND
+                          ( SRY-SRYCD(IDX2)(1:1)   =   "8"      ))
       *
                          ADD    1      TO    WRK-MEISAI-CNT             
                          MOVE  "2"     TO    RECE85-SIKFLG(IDX4)

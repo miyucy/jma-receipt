@@ -2455,7 +2455,7 @@ grpsys         PERFORM 900-ORCDBMAIN-SEC
       *
       *        レセプト削除処理（個別分）
                INITIALIZE                  RECE08-REC
-grpsys         MOVE    WRK-RECE07-HOSPNUM  TO  RECE08-HOSPNUM
+grpsys         MOVE    WRK-PARA-HOSPNUM    TO  RECE08-HOSPNUM
                MOVE    "HC23"              TO  RECE08-PRTID
                MOVE    "2"                 TO  RECE08-NYUGAIKBN
                MOVE    RECE08-REC          TO  MCPDATA-REC
