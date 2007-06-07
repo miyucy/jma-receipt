@@ -762,7 +762,7 @@ grpsys        PERFORM 900-DBSELECT-SEC
               IF      MCP-RC              =   ZERO
                   MOVE    "tbl_syskanri"      TO  MCP-TABLE
                   MOVE    "key8"              TO  MCP-PATHNAME
-                  PERFORM  900-KANRIMST-NEXT-SE
+                  PERFORM  900-KANRIMST-NEXT-SEC
                   PERFORM  UNTIL   FLG-SYSKANRI  =    1
       *
                     MOVE    MCPDATA-REC   TO  SYS-1002-REC
@@ -771,7 +771,7 @@ grpsys        PERFORM 900-DBSELECT-SEC
       *
                     MOVE    "tbl_syskanri"    TO  MCP-TABLE
                     MOVE    "key8"            TO  MCP-PATHNAME
-                    PERFORM  900-KANRIMST-NEXT-SE
+                    PERFORM  900-KANRIMST-NEXT-SEC
                   END-PERFORM
               END-IF
               MOVE    "tbl_syskanri"      TO  MCP-TABLE
