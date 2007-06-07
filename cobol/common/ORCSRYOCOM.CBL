@@ -651,7 +651,6 @@
       *****************************************************************
        910-NYUINACT-SELECT-SEC        SECTION.
       *
-           MOVE    SPA-HOSPNUM         TO  NSRY-HOSPNUM
            MOVE    NYUINACT-REC        TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            CALL    "ORCDBMAIN"   USING MCPAREA
