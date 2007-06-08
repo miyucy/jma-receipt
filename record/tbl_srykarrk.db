@@ -73,3 +73,17 @@ path	key3 	{
 		;
 	};
 };
+
+path	key4 	{
+	DBSELECT	{
+		DECLARE tbl_srykarrk_key4_csr CURSOR FOR
+		SELECT *
+		FROM tbl_srykarrk
+			WHERE   HOSPNUM   =   :HOSPNUM
+			AND   PTID        =   :PTID
+			AND   SRYKA       <>  :SRYKA
+			ORDER   BY        LASTYMD DESC,
+                                          SRYKA
+		;
+	};
+};
