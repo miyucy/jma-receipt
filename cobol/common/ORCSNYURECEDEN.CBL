@@ -2034,6 +2034,8 @@
       *
       *    ≥∞«Ò•≥°º•… ‘Ω∏Õ—§À∆˛±°¥À‹Œ¡≤√ªª∂Ë ¨§»ø«Œ≈∂Ë ¨§Œ¬‡»Ú
            INITIALIZE                      TNS-TENSU-REC
+           MOVE    LNK-NYURECEDEN-HOSPNUM
+                                       TO  TNS-HOSPNUM
            MOVE    NSRY-SRYCD(1)       TO  TNS-SRYCD
            MOVE    LNK-NYURECEDEN-SANTEIYM
                                        TO  TNS-YUKOSTYMD(1:6)
