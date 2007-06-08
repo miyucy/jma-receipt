@@ -27,6 +27,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  03.05.01     NACL-森脇   07/06/08  グループ診療対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -48,9 +49,9 @@
        WORKING-STORAGE             SECTION.
       *
       *    エラーファイル 名称領域 
-           COPY    "CPCOMMONDAT2.INC"      REPLACING   //RECE01PARA//
-                                           BY          //RECEERR//.
-           03  FILLER                      PIC X(04)   VALUE   ".dat".
+grpsys*DD  COPY    "CPCOMMONDAT2.INC"      REPLACING   //RECE01PARA//
+grpsys*DD                                  BY          //RECEERR//.
+grpsys*DD  03  FILLER                      PIC X(04)   VALUE   ".dat".
       *    ステータス領域
       *
       *
@@ -88,7 +89,9 @@
            COPY    "CPORCSPRTLNK.INC".
            03  WRK-PARA-JOBID                      PIC 9(07).
            03  WRK-PARA-SHELLID                    PIC X(08).
-           03  WRK-PARA-HOSPID                     PIC X(24).
+grpsys*DD  03  WRK-PARA-HOSPID                     PIC X(24).
+grpsys     03  WRK-PARA-HOSPNUM                    PIC 9(02).
+grpsys     03  RECEERR                             PIC X(100).
       *     03  WRK-PARA-SRYYM                      PIC X(06).
       *
       *    一時領域
@@ -175,6 +178,7 @@
            INITIALIZE                  STS-AREA
            INITIALIZE                  WRK-AREA
            INITIALIZE                  CNT-AREA
+grpsys     INITIALIZE                  SPA-AREA
       *
            PERFORM 100-DBOPEN-SEC
       *
@@ -194,24 +198,29 @@
                                        LNK-PRTKANRI-PRTNM
                                        WRK-PARA-JOBID
                                        WRK-PARA-SHELLID
-                                       WRK-PARA-HOSPID
+grpsys*DD                              WRK-PARA-HOSPID
+grpsys                                 WRK-PARA-HOSPNUM
+grosys                                 RECEERR
       *                                 WRK-PARA-SRYYM
            END-UNSTRING
+grpsys     MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
       *
       *    ステップ管理開始処理
            MOVE    "STS"               TO  SJOBKANRI-MODE
            INITIALIZE                      JOBKANRI-REC
            MOVE    WRK-PARA-JOBID      TO  JOB-JOBID
            MOVE    WRK-PARA-SHELLID    TO  JOB-SHELLID
+grpsys     MOVE    SPA-HOSPNUM         TO  JOB-HOSPNUM
            MOVE    "ORCBJINMEI"        TO  JOB-PGID
            MOVE    "人名辞書再作成"    TO  JOB-SHELLMSG
       *
            CALL    "ORCSJOB"               USING
                                            ORCSJOBKANRIAREA
                                            JOBKANRI-REC
+grpsys                                     SPA-AREA
       *
-           MOVE    "RECEERR"           TO  RECEERR-FILE-ID
-           MOVE    LNK-PRTKANRI-TERMID TO  RECEERR-TERMID
+grpsys*DD  MOVE    "RECEERR"           TO  RECEERR-FILE-ID
+grpsys*DD  MOVE    LNK-PRTKANRI-TERMID TO  RECEERR-TERMID
       *
            .
        100-INIT-EXT.
@@ -225,19 +234,28 @@
       *    患者検索
            MOVE    ZERO                 TO      FLG-PTINF
            INITIALIZE                           PTINF-REC
-           MOVE    "PTINF-ALL"          TO      ORC-DBPATH
+grpsys     MOVE    SPA-HOSPNUM          TO  PTINF-HOSPNUM
+grpsys*DD  MOVE    "PTINF-ALL"          TO      ORC-DBPATH
+grpsys     MOVE    "tbl_ptinf"     TO  MCP-TABLE
+grpsys     MOVE    "all"           TO  MCP-PATHNAME
            PERFORM   910-PTINF-SELECT-SEC
            IF      FLG-PTINF            =       ZERO
-               MOVE    "PTINF-ALL"      TO      ORC-DBPATH
+grpsys*DD      MOVE    "PTINF-ALL"      TO      ORC-DBPATH
+grpsys         MOVE    "tbl_ptinf"     TO  MCP-TABLE
+grpsys         MOVE    "all"           TO  MCP-PATHNAME
                PERFORM  910-PTINF-READ-SEC
                PERFORM  UNTIL  FLG-PTINF    =    1
                    PERFORM  2001-JINMEI-INS-SEC
-                   MOVE    "PTINF-ALL"    TO      ORC-DBPATH
+grpsys*DD          MOVE    "PTINF-ALL"    TO      ORC-DBPATH
+grpsys             MOVE    "tbl_ptinf"     TO  MCP-TABLE
+grpsys             MOVE    "all"           TO  MCP-PATHNAME
                    PERFORM  910-PTINF-READ-SEC
                END-PERFORM
            END-IF
       *
-           MOVE     "PTINF-ALL"          TO  ORC-DBPATH
+grpsys*DD  MOVE     "PTINF-ALL"          TO  ORC-DBPATH
+grpsys     MOVE    "tbl_ptinf"     TO  MCP-TABLE
+grpsys     MOVE    "all"           TO  MCP-PATHNAME
            PERFORM   900-TBL-CLOSE-SEC
       *
            .
@@ -292,26 +310,38 @@
                    INITIALIZE                      JINMEI-REC
                    MOVE   WRK-KANA-SEI   TO  JINMEI-KANA
                    MOVE   WRK-KANJI-SEI  TO  JINMEI-KANJI
-                   MOVE    "JINMEI-KEY"    TO      ORC-DBPATH
+grpsys             MOVE   SPA-HOSPNUM    TO  JINMEI-HOSPNUM
+grpsys*DD          MOVE    "JINMEI-KEY"    TO      ORC-DBPATH
+grpsys             MOVE    "tbl_jinmei"    TO  MCP-TABLE
+grpsys             MOVE    "key"           TO  MCP-PATHNAME
                    PERFORM   910-JINMEI-SELECT-SEC
                    IF      FLG-JINMEI      =       ZERO
-                       MOVE    "JINMEI-KEY"   TO      ORC-DBPATH
+grpsys*DD              MOVE    "JINMEI-KEY"   TO      ORC-DBPATH
+grpsys                 MOVE    "tbl_jinmei"    TO  MCP-TABLE
+grpsys                 MOVE    "key"           TO  MCP-PATHNAME
                        PERFORM  910-JINMEI-READ-SEC
                        IF    FLG-JINMEI   NOT =   ZERO
                            INITIALIZE   JINMEI-REC
                            MOVE   WRK-KANA-SEI   TO  JINMEI-KANA
                            MOVE   WRK-KANJI-SEI  TO  JINMEI-KANJI
-grpsys*                    MOVE SPA-HOSPNUM TO -HOSPNUM
+grpsys                     MOVE   SPA-HOSPNUM    TO  JINMEI-HOSPNUM
                            MOVE   JINMEI-REC     TO  MCPDATA-REC
                            MOVE   "DBINSERT"     TO  MCP-FUNC
-                           MOVE   "JINMEI-KEY"   TO  ORC-DBPATH
-                           CALL   "ORCMCPSUB"    USING
-                                                 MCPAREA
-                                                 ORCMCPAREA
-                                                 MCPDATA-REC
+grpsys*DD                  MOVE   "JINMEI-KEY"   TO  ORC-DBPATH
+grpsys                     MOVE    "tbl_jinmei"    TO  MCP-TABLE
+grpsys                     MOVE    "key"           TO  MCP-PATHNAME
+grpsys                     CALL    "ORCDBMAIN"     USING   MCPAREA
+grpsys                                             MCPDATA-REC
+grpsys                                             SPA-AREA
+grpsys*DD                  CALL   "ORCMCPSUB"    USING
+grpsys*DD                                        MCPAREA
+grpsys*DD                                        ORCMCPAREA
+grpsys*DD                                        MCPDATA-REC
                        END-IF
                    END-IF
-                   MOVE     "JINMEI-KEY"          TO  ORC-DBPATH
+grpsys*DD          MOVE     "JINMEI-KEY"          TO  ORC-DBPATH
+grpsys             MOVE    "tbl_jinmei"    TO  MCP-TABLE
+grpsys             MOVE    "key"           TO  MCP-PATHNAME
                    PERFORM   900-TBL-CLOSE-SEC
                END-IF
                IF    WRK-KANA-MEI   NOT =  WRK-KANJI-MEI
@@ -319,26 +349,38 @@ grpsys*                    MOVE SPA-HOSPNUM TO -HOSPNUM
                    INITIALIZE                      JINMEI-REC
                    MOVE   WRK-KANA-MEI   TO  JINMEI-KANA
                    MOVE   WRK-KANJI-MEI  TO  JINMEI-KANJI
-                   MOVE    "JINMEI-KEY"    TO      ORC-DBPATH
+grpsys             MOVE   SPA-HOSPNUM    TO  JINMEI-HOSPNUM
+grpsys*DD          MOVE    "JINMEI-KEY"    TO      ORC-DBPATH
+grpsys             MOVE    "tbl_jinmei"    TO  MCP-TABLE
+grpsys             MOVE    "key"           TO  MCP-PATHNAME
                    PERFORM   910-JINMEI-SELECT-SEC
                    IF      FLG-JINMEI      =       ZERO
-                       MOVE    "JINMEI-KEY"   TO      ORC-DBPATH
+grpsys*DD              MOVE    "JINMEI-KEY"   TO      ORC-DBPATH
+grpsys                 MOVE    "tbl_jinmei"    TO  MCP-TABLE
+grpsys                 MOVE    "key"           TO  MCP-PATHNAME
                        PERFORM  910-JINMEI-READ-SEC
                        IF    FLG-JINMEI   NOT =   ZERO
                            INITIALIZE   JINMEI-REC
                            MOVE   WRK-KANA-MEI   TO  JINMEI-KANA
                            MOVE   WRK-KANJI-MEI  TO  JINMEI-KANJI
-grpsys*                    MOVE SPA-HOSPNUM TO -HOSPNUM
+grpsys                     MOVE   SPA-HOSPNUM    TO  JINMEI-HOSPNUM
                            MOVE   JINMEI-REC     TO  MCPDATA-REC
                            MOVE   "DBINSERT"     TO  MCP-FUNC
-                           MOVE   "JINMEI-KEY"   TO  ORC-DBPATH
-                           CALL   "ORCMCPSUB"    USING
-                                                 MCPAREA
-                                                 ORCMCPAREA
-                                                 MCPDATA-REC
+grpsys*DD                  MOVE   "JINMEI-KEY"   TO  ORC-DBPATH
+grpsys                     MOVE    "tbl_jinmei"    TO  MCP-TABLE
+grpsys                     MOVE    "key"           TO  MCP-PATHNAME
+grpsys                     CALL    "ORCDBMAIN"     USING   MCPAREA
+grpsys                                             MCPDATA-REC
+grpsys                                             SPA-AREA
+grpsys*DD                  CALL   "ORCMCPSUB"    USING
+grpsys*DD                                        MCPAREA
+grpsys*DD                                        ORCMCPAREA
+grpsys*DD                                        MCPDATA-REC
                        END-IF
                    END-IF
-                   MOVE     "JINMEI-KEY"          TO  ORC-DBPATH
+grpsys*DD          MOVE     "JINMEI-KEY"          TO  ORC-DBPATH
+grpsys             MOVE    "tbl_jinmei"    TO  MCP-TABLE
+grpsys             MOVE    "key"           TO  MCP-PATHNAME
                    PERFORM   900-TBL-CLOSE-SEC
                END-IF
            END-IF
@@ -356,10 +398,12 @@ grpsys*                    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
            MOVE    WRK-PARA-SHELLID
                                    TO  JOB-SHELLID
+grpsys     MOVE    SPA-HOSPNUM     TO  JOB-HOSPNUM
            MOVE    CNT-PAGE        TO  JOB-UPDCNT
            CALL    "ORCSJOB"           USING
                                        ORCSJOBKANRIAREA
                                        JOBKANRI-REC
+grpsys                                 SPA-AREA
       *
            PERFORM 900-DBDISCONNECT-SEC
       *
@@ -383,11 +427,13 @@ grpsys*                    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
            MOVE    WRK-PARA-SHELLID
                                    TO  JOB-SHELLID
+grpsys     MOVE    SPA-HOSPNUM     TO  JOB-HOSPNUM
            MOVE    WRK-RECEERR     TO  JOB-YOBI
            MOVE    "9999"          TO  JOB-ERRCD
            CALL    "ORCSJOB"           USING
                                        ORCSJOBKANRIAREA
                                        JOBKANRI-REC
+grpsys                                 SPA-AREA
       *
            PERFORM 900-DBDISCONNECT-SEC
       *
@@ -402,12 +448,15 @@ grpsys*                    MOVE SPA-HOSPNUM TO -HOSPNUM
       *****************************************************************
        900-TBL-CLOSE-SEC               SECTION.
       *
-           MOVE    WRK-DBPATH      TO  ORC-DBPATH
+grpsys*DD  MOVE    WRK-DBPATH      TO  ORC-DBPATH
            MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
-           CALL    "ORCMCPSUB"         USING
-                                       MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC
+grpsys     CALL    "ORCDBMAIN"     USING   MCPAREA
+grpsys                                     MCPDATA-REC
+grpsys                                     SPA-AREA.
+grpsys*DD  CALL    "ORCMCPSUB"         USING
+grpsys*DD                              MCPAREA
+grpsys*DD                              ORCMCPAREA
+grpsys*DD                              MCPDATA-REC
       *
            .
        900-TBL-CLOSE-EXT.
@@ -418,16 +467,26 @@ grpsys*                    MOVE SPA-HOSPNUM TO -HOSPNUM
        100-DBOPEN-SEC              SECTION.
       *
            MOVE    "DBOPEN"        TO  MCP-FUNC.
-           CALL    "ORCMCPSUB"         USING
-                                       MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC.
+grpsys     MOVE    LOW-VALUE       TO  MCP-TABLE.
+grpsys     MOVE    LOW-VALUE       TO  MCP-PATHNAME.
+grpsys     CALL    "ORCDBMAIN"     USING   MCPAREA
+grpsys                                     MCPDATA-REC
+grpsys                                     SPA-AREA.
+grpsys*DD  CALL    "ORCMCPSUB"         USING
+grpsys*DD                              MCPAREA
+grpsys*DD                              ORCMCPAREA
+grpsys*DD                              MCPDATA-REC.
       *
            MOVE    "DBSTART"       TO  MCP-FUNC.
-           CALL    "ORCMCPSUB"         USING
-                                       MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC.
+grpsys     MOVE    LOW-VALUE       TO  MCP-TABLE.
+grpsys     MOVE    LOW-VALUE       TO  MCP-PATHNAME.
+grpsys     CALL    "ORCDBMAIN"     USING   MCPAREA
+grpsys                                     MCPDATA-REC
+grpsys                                     SPA-AREA.
+grpsys*DD  CALL    "ORCMCPSUB"         USING
+grpsys*DD                              MCPAREA
+grpsys*DD                              ORCMCPAREA
+grpsys*DD                              MCPDATA-REC.
        100-DBOPEN-EXT.
            EXIT.
       *
@@ -437,16 +496,26 @@ grpsys*                    MOVE SPA-HOSPNUM TO -HOSPNUM
        900-DBDISCONNECT-SEC        SECTION.
       *
            MOVE    "DBCOMMIT"      TO  MCP-FUNC.
-           CALL    "ORCMCPSUB"         USING
-                                       MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC.
+grpsys     MOVE    LOW-VALUE       TO  MCP-TABLE.
+grpsys     MOVE    LOW-VALUE       TO  MCP-PATHNAME.
+grpsys     CALL    "ORCDBMAIN"     USING   MCPAREA
+grpsys                                     MCPDATA-REC
+grpsys                                     SPA-AREA.
+grpsys*DD  CALL    "ORCMCPSUB"         USING
+grpsys*DD                              MCPAREA
+grpsys*DD                              ORCMCPAREA
+grpsys*DD                              MCPDATA-REC.
       *
            MOVE    "DBDISCONNECT"  TO  MCP-FUNC.
-           CALL    "ORCMCPSUB"         USING
-                                       MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC.
+grpsys     MOVE    LOW-VALUE       TO  MCP-TABLE.
+grpsys     MOVE    LOW-VALUE       TO  MCP-PATHNAME.
+grpsys     CALL    "ORCDBMAIN"     USING   MCPAREA
+grpsys                                     MCPDATA-REC
+grpsys                                     SPA-AREA.
+grpsys*DD  CALL    "ORCMCPSUB"         USING
+grpsys*DD                              MCPAREA
+grpsys*DD                              ORCMCPAREA
+grpsys*DD                              MCPDATA-REC.
       *
        900-DBDISCONNECT-EXT.
            EXIT.
@@ -457,10 +526,13 @@ grpsys*                    MOVE SPA-HOSPNUM TO -HOSPNUM
        910-DBCLOSE-SEC                 SECTION.
       *
            MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "ORCMCPSUB"         USING
-                                       MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC
+grpsys     CALL    "ORCDBMAIN"     USING   MCPAREA
+grpsys                                     MCPDATA-REC
+grpsys                                     SPA-AREA
+grpsys*DD  CALL    "ORCMCPSUB"         USING
+grpsys*DD                              MCPAREA
+grpsys*DD                              ORCMCPAREA
+grpsys*DD                              MCPDATA-REC
       *
            .
       *
@@ -472,13 +544,15 @@ grpsys*                    MOVE SPA-HOSPNUM TO -HOSPNUM
       *****************************************************************
        910-PTINF-SELECT-SEC        SECTION.
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PTINF-REC           TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+grpsys     CALL    "ORCDBMAIN"     USING   MCPAREA
+grpsys                                     MCPDATA-REC
+grpsys                                     SPA-AREA
+grpsys*DD  CALL    "ORCMCPSUB"          USING
+grpsys*DD                               MCPAREA
+grpsys*DD                               ORCMCPAREA
+grpsys*DD                               MCPDATA-REC
            IF      MCP-RC              =   ZERO
                MOVE    ZERO            TO  FLG-PTINF
            ELSE
@@ -495,10 +569,13 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
        910-PTINF-READ-SEC        SECTION.
       *
            MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+grpsys     CALL    "ORCDBMAIN"     USING   MCPAREA
+grpsys                                     MCPDATA-REC
+grpsys                                     SPA-AREA
+grpsys*DD  CALL    "ORCMCPSUB"          USING
+grpsys*DD                               MCPAREA
+grpsys*DD                               ORCMCPAREA
+grpsys*DD                               MCPDATA-REC
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC     TO  PTINF-REC
                MOVE    ZERO            TO  FLG-PTINF
@@ -506,7 +583,6 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                INITIALIZE                  PTINF-REC
                MOVE    1               TO  FLG-PTINF
            END-IF
-           DISPLAY "FLG-PTINF = "  FLG-PTINF
       *
            .
        910-PTINF-READ-EXT.
@@ -517,13 +593,15 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *****************************************************************
        910-JINMEI-SELECT-SEC        SECTION.
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    JINMEI-REC           TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+grpsys     CALL    "ORCDBMAIN"     USING   MCPAREA
+grpsys                                     MCPDATA-REC
+grpsys                                     SPA-AREA.
+grpsys*DD  CALL    "ORCMCPSUB"          USING
+grpsys*DD                               MCPAREA
+grpsys*DD                               ORCMCPAREA
+grpsys*DD                               MCPDATA-REC
            IF      MCP-RC              =   ZERO
                MOVE    ZERO            TO  FLG-JINMEI
            ELSE
@@ -540,10 +618,13 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
        910-JINMEI-READ-SEC        SECTION.
       *
            MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+grpsys     CALL    "ORCDBMAIN"     USING   MCPAREA
+grpsys                                     MCPDATA-REC
+grpsys                                     SPA-AREA.
+grpsys*DD  CALL    "ORCMCPSUB"          USING
+grpsys*DD                               MCPAREA
+grpsys*DD                               ORCMCPAREA
+grpsys*DD                               MCPDATA-REC
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC     TO  JINMEI-REC
                MOVE    ZERO            TO  FLG-JINMEI
