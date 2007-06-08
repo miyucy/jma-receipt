@@ -249,6 +249,7 @@ grpsys     03  WRK-DBTABLE                         PIC X(100).
            INITIALIZE                  STS-AREA
            INITIALIZE                  WRK-AREA
            INITIALIZE                  CNT-AREA
+grpsys     INITIALIZE                  SPA-AREA
       *
            PERFORM 100-DBOPEN-SEC
       *
@@ -271,6 +272,7 @@ grpsys                                 WRK-PARA-HOSPNUM
 grpsys                                 RECEERR
                                        WRK-PARA-SRYYM
                                        WRK-PARA-SYORIKBN
+grpsys     END-UNSTRING
 grpsys     MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
       *
       *    ステップ管理開始処理

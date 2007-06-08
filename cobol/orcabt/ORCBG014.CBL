@@ -465,6 +465,7 @@ grpsys     03  RECEERR                 PIC X(100).
            INITIALIZE                  CNT-AREA
            INITIALIZE                  SUM-AREA
            INITIALIZE                  WRK-PARA
+grpsys     INITIALIZE                  SPA-AREA
       *
       *    ＤＢオープン処理
            PERFORM 100-DBOPEN-SEC
@@ -495,6 +496,7 @@ grpsys                                         RECEERR
                                                WRK-PARA-ZAIKBN
                                                WRK-PARA-SYUBETU-G
                                                WRK-PARA-JYUNBAN
+grpsys     END-UNSTRING
 grpsys     MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
       *
       *    ステップ管理開始処理

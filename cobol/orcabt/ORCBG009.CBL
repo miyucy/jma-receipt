@@ -326,6 +326,7 @@ grpsys     03  RECEERR                 PIC X(100).
            INITIALIZE                  IDX-AREA
            INITIALIZE                  WRK-AREA
            INITIALIZE                  KEY-AREA
+grpsys     INITIALIZE                  SPA-AREA
       *
            ACCEPT  SYS-TIME            FROM    TIME
       *
@@ -352,6 +353,7 @@ grpsys                                 RECEERR
                                        PARA-DENPPRTYM
                                        PARA-SYORIKBN
                                        PARA-NAIYO
+grpsys     END-UNSTRING
 grpsys     MOVE    PARA-HOSPNUM    TO  SPA-HOSPNUM
       *
       *    ステップ管理開始処理

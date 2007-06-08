@@ -344,6 +344,7 @@ grpsys     03  KEY-HOSPNUM         PIC 9(02).
            INITIALIZE                  TTNS-AREA
            INITIALIZE                  KEY-AREA
       *----(02.01.01)--ADD-END-----
+grpsys     INITIALIZE                  SPA-AREA
       *
            PERFORM 100-DBOPEN-SEC
       *
@@ -367,6 +368,7 @@ grpsys                                 RECEERR
                                        WRK-PARA-DENPPRTYM
                                        WRK-PARA-YKZKBN
                                        WRK-PARA-INGAIKBN
+grpsys     END-UNSTRING
 grpsys     MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
       *
       *    ステップ管理開始処理

@@ -367,6 +367,7 @@ grpsys     03  RECEERR                             PIC X(100).
            INITIALIZE                  HEAD-AREA
            INITIALIZE                  KEY-AREA
            INITIALIZE                  ERR-EDIT-AREA
+grpsys     INITIALIZE                  SPA-AREA
       *
            PERFORM 100-DBOPEN-SEC
       *
@@ -393,6 +394,7 @@ grpsys                                 RECEERR
                                        WRK-PARA-SRTKBN
                                        WRK-PARA-KAKBN
                                        WRK-PARA-NYUGAIKBN
+grpsys     END-UNSTRING
 grpsys     MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
       *
            MOVE    SPACE               TO  WRK-TITLE

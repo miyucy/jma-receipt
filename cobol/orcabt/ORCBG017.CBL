@@ -393,6 +393,7 @@
                                                WRK-PARA-SRYKBN (3)
                                                WRK-PARA-SRYKBN (4)
                                                WRK-PARA-SRYKBN (5)
+grpsys     END-UNSTRING
       *
            MOVE    WRK-PARA-HOSPNUM
                                    TO  SPA-HOSPNUM

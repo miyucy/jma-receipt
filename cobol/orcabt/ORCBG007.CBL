@@ -334,6 +334,7 @@
            INITIALIZE                  KEY-AREA
            INITIALIZE                  TTNS-AREA
            INITIALIZE                  ERR-EDIT-AREA
+grpsys     INITIALIZE                  SPA-AREA
       *
            PERFORM 100-DBOPEN-SEC
       *
@@ -360,6 +361,8 @@
                                        WRK-PARA-SRTKBN
                                        WRK-PARA-SRYKAKBN
                                        WRK-PARA-SRYKA
+grpsys     END-UNSTRING
+grpsys     MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
       *
            MOVE    SPACE               TO  WRK-TITLE
       *

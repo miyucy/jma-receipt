@@ -328,6 +328,7 @@ grpsys     03  WRK-DBTABLE                         PIC X(100).
            INITIALIZE                  CNT-AREA
            INITIALIZE                  KEY-AREA
            INITIALIZE                  ERR-EDIT-AREA
+grpsys     INITIALIZE                  SPA-AREA
       *
            PERFORM 100-DBOPEN-SEC
       *
@@ -353,6 +354,7 @@ grpsys                                 RECEERR
                                        WRK-PARA-KKNEDYM
                                        WRK-PARA-KKNPROCKBN
                                        WRK-PARA-NYUGAIKBN
+grpsys     END-UNSTRING
 grpsys     MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
       *
            MOVE    SPACE               TO  WRK-TITLE

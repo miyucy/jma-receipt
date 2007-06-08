@@ -283,6 +283,7 @@ grpsys     03  RECEERR                             PIC X(100).
            INITIALIZE                  WRK-AREA
            INITIALIZE                  CNT-AREA
            INITIALIZE                  ERR-EDIT-AREA
+grpsys     INITIALIZE                      SPA-AREA
       *
            PERFORM 100-DBOPEN-SEC
       *
@@ -308,6 +309,7 @@ grpsys                                 RECEERR
                                        WRK-PARA-PTNUM
                                        WRK-PARA-HAKYMD
                                        WRK-PARA-ZEROSKYKBN
+grpsys     END-UNSTRING
       *    ＳＰＡエリアセット処理
 grpsys     PERFORM 1001-SPA-SET-SEC
       *
@@ -390,7 +392,7 @@ grpsys     MOVE    SPA-HOSPNUM         TO  SYS-HOSPNUM
        1001-SPA-SET-SEC                SECTION.
       *
       *    システム日付セット
-           INITIALIZE                      SPA-AREA
+grpsys*DD  INITIALIZE                      SPA-AREA
            MOVE    "2"                 TO  SPA-NYUGAIKBN
            MOVE    LNK-PRTKANRI-SKYYMD
                                        TO  SPA-SYSYMD

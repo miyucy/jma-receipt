@@ -346,6 +346,7 @@ grpsys     COPY    "COMMON-SPA".
            INITIALIZE                  TSRYCD-AREA
            INITIALIZE                  TPTINF-AREA
            INITIALIZE                  TOTAL-AREA
+grpsys     INITIALIZE                  SPA-AREA
       *
            PERFORM 100-DBOPEN-SEC
       *
@@ -374,6 +375,7 @@ grpsys                                         RECEERR
                                                WRK-PARA-SRYCD (3)
                                                WRK-PARA-SRYCD (4)
                                                WRK-PARA-SRYCD (5)
+grpsys     END-UNSTRING
 grpsys     MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
       *
       *    ステップ管理開始処理

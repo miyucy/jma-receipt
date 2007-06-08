@@ -289,6 +289,7 @@ grpsys     03  RECEERR                 PIC 9(02).
            INITIALIZE                  PARA-AREA
            INITIALIZE                  WRK-AREA
            INITIALIZE                  ERR-EDIT-AREA
+grpsys     INITIALIZE                  SPA-AREA
       *
            ACCEPT  SYS-TIME            FROM    TIME
       *
@@ -316,6 +317,7 @@ grpsys                                 RECEERR
                                        PARA-YUKOSTRYM
                                        PARA-YUKOENDYM
                                        PARA-SYORIKBN
+grpsys     END-UNSTRING
 grpsys     MOVE    PARA-HOSPNUM    TO  SPA-HOSPNUM
       *
       *    ステップ管理開始処理
