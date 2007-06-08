@@ -42,6 +42,7 @@
       *  03.04.02    NACL-ÌçÏÆ    07/01/22  ¼ýÇ¼ÌÀºÙÊÔ½¸½¤Àµ
       *  03.04.03    NACL-Â¿¡¹Ç¼  07/03/06  Êñ³ç¿ÇÎÅºÞÈ½ÄêÄÉ²Ã
       *  03.04.04    NACL-ÌçÏÆ    07/05/11  Ï«ºÒ¡¦¼«ÇåÀÕÃ±²Á£±£°±ßÌ¤ËþÂÐ±þ
+      *  03.04.05    NACL-ÌçÏÆ    07/06/08  ½é¿ÇÎÁ»»Äê»þ¤Î¾ò·ïÄÉ²Ã
       *****************************************************************
        ENVIRONMENT         DIVISION.
        CONFIGURATION       SECTION.
@@ -182,11 +183,12 @@
            03  FILLER          PIC X(09)   VALUE    "111700110".
            03  FILLER          PIC X(09)   VALUE    "113003510".
            03  FILLER          PIC X(09)   VALUE    "113003710".
+           03  FILLER          PIC X(09)   VALUE    "099110001".
       *
        01  TBL-SYOSIN-R        REDEFINES   TBL-SYOSIN-AREA.
-           03  TBL-SYOSIN      PIC X(09)   OCCURS    6.
+           03  TBL-SYOSIN      PIC X(09)   OCCURS    7.
       *
-       01  TBL-SYOSIN-MAX      PIC 9(02)   VALUE     6.
+       01  TBL-SYOSIN-MAX      PIC 9(02)   VALUE     7.
       *
       *****************************************************************
       *    ¥Õ¥¡¥¤¥ë¥ì¥¤¥¢¥¦¥È
@@ -1111,6 +1113,17 @@
       *
            END-IF
       *
+           IF    (LNK-SYU-SYUHKNNUM(IDY)
+                                      NOT =   "971" AND "973"   )
+           AND   (ACCT-SRYKBN             =   "11"              )
+           AND   (ACCT-ZAITEN             =    ZERO             )
+           AND   (ACCT-DAY(SAI-IDX  WRK-SAIKEISAN-DD) NOT = ZERO)
+           AND   (ACCT-JIHOKBN            =    SPACE            )
+      *
+              PERFORM  44012-SRYACT-KENSAKU-SEC
+      *
+           END-IF
+      *
            IF   ((ACCT-ZAITEN       NOT = ZERO                  ) AND
                  (ACCT-DAY(SAI-IDX  WRK-SAIKEISAN-DD) NOT = ZERO) AND
                  (ACCT-JIHOKBN          = SPACE                 ))
@@ -1194,6 +1207,50 @@
            .
       *
        44011-SRYACCTPLUS-KENSAKU-EXT.
+           EXIT.
+      *
+      **************************************************************
+      *    ¿ÇÎÅ¹Ô°Ù¾ðÊó¸¡º÷
+      **************************************************************
+       44012-SRYACT-KENSAKU-SEC           SECTION.
+      *
+           INITIALIZE                           SRYACT-REC
+           MOVE    ACCT-HOSPID          TO      SRY-HOSPID
+           MOVE    ACCT-NYUGAIKBN       TO      SRY-NYUGAIKBN
+           MOVE    ACCT-PTID            TO      SRY-PTID
+           MOVE    ACCT-SRYYM           TO      SRY-SRYYM
+           MOVE    ACCT-ZAINUM          TO      SRY-ZAINUM
+           MOVE    "099110001"          TO      SRY-SRYCD(1)
+           MOVE    "099110001"          TO      SRY-SRYCD(2)
+           MOVE    "099110001"          TO      SRY-SRYCD(3)
+           MOVE    "099110001"          TO      SRY-SRYCD(4)
+           MOVE    "099110001"          TO      SRY-SRYCD(5)
+           MOVE    SRYACT-REC           TO      MCPDATA-REC
+           MOVE    "DBSELECT"           TO      MCP-FUNC
+           MOVE    "tbl_sryact"         TO      MCP-TABLE
+           MOVE    "key8"               TO      MCP-PATHNAME
+           CALL    "MONFUNC"            USING   MCPAREA
+                                                MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "DBFETCH"        TO      MCP-FUNC
+               MOVE    "tbl_sryact"     TO      MCP-TABLE
+               MOVE    "key8"           TO      MCP-PATHNAME
+               CALL    "MONFUNC"        USING   MCPAREA
+                                                MCPDATA-REC
+               IF      MCP-RC          =   ZERO
+                   MOVE   MCPDATA-REC   TO      SRYACT-REC
+                   MOVE   1             TO      FLG-TAISYO
+               END-IF
+           END-IF
+           MOVE    "DBCLOSECURSOR"      TO      MCP-FUNC
+           MOVE    "tbl_sryact"         TO      MCP-TABLE
+           MOVE    "key8"               TO      MCP-PATHNAME
+           CALL    "MONFUNC"            USING   MCPAREA
+                                                MCPDATA-REC
+      *
+           .
+      *
+       44012-SRYACT-KENSAKU-EXT.
            EXIT.
       *
       ******************************************************************
