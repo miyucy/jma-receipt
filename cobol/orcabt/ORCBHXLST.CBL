@@ -28,6 +28,7 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *  01.00.01    NACL−太田   05.02.08  ORCHXLSTに編集処理を移行
+      *  03.05.00    NACL-太田    07/06/04  グループ診療対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -47,12 +48,6 @@
        01  RECEERR-REC             PIC X(200). 
       *
        WORKING-STORAGE             SECTION.
-      *
-      *    エラーファイル 名称領域 
-           COPY    "CPCOMMONDAT2.INC"
-                                   REPLACING  //RECE01PARA//
-                                   BY         //RECEERR//.
-           03  FILLER              PIC X(04)   VALUE   ".dat".
       *
       *    スパ領域
        01  STS-AREA.
@@ -75,7 +70,8 @@
            COPY    "CPORCSPRTLNK.INC".
            03  WRK-PARA-JOBID          PIC 9(07).
            03  WRK-PARA-SHELLID        PIC X(08).
-           03  WRK-PARA-HOSPID         PIC X(24).
+           03  WRK-PARA-HOSPNUM         PIC 9(02).
+           03  RECEERR                 PIC X(100).
            03  WRK-PARA-CHKKBN         PIC X(01).
            03  WRK-PARA-SRYCD          PIC X(09).
            03  WRK-PARA-SRYCD-END      PIC X(09).
@@ -134,7 +130,6 @@
            COPY    "MCPAREA".
       *
            COPY    "MCPDATA.INC".
-           COPY    "CPORCMCP.INC".
       *
            COPY    "COMMON-SPA".
       *
@@ -176,8 +171,6 @@
            INITIALIZE                  IDX-AREA
            MOVE    ZERO            TO  CNT-AREA
       *
-           PERFORM 100-DBOPEN-SEC
-      *
            UNSTRING    COMMAND-PARAM   DELIMITED  BY  ","
                        INTO            LNK-PRTKANRI-RENNUM
                                        LNK-PRTKANRI-TBL-KEY
@@ -192,14 +185,16 @@
                                        LNK-PRTKANRI-PRTNM
                                        WRK-PARA-JOBID
                                        WRK-PARA-SHELLID
-                                       WRK-PARA-HOSPID
+                                       WRK-PARA-HOSPNUM
+                                       RECEERR
                                        WRK-PARA-CHKKBN
                                        WRK-PARA-SRYCD
                                        WRK-PARA-SRYCD-END
-      *TEST
-            DISPLAY " WRK-PARA-CHKKBN:"  WRK-PARA-CHKKBN
-                   ",WRK-PARA-SRYCD:" WRK-PARA-SRYCD
-                   ",WRK-PARA-SRYCD-END:" WRK-PARA-SRYCD-END
+      *
+      *    初期値セット
+           PERFORM 110-SYOKI-SET-SEC
+      *
+           PERFORM 100-DBOPEN-SEC
       *
       *    ステップ管理開始処理
            MOVE    "STS"               TO  SJOBKANRI-MODE
@@ -209,16 +204,8 @@
            MOVE    "ORCBHXLST"         TO  JOB-PGID
            MOVE    "チェックマスタ一覧一括印刷"
                                        TO  JOB-SHELLMSG
-           CALL    "ORCSJOB"               USING
-                                           ORCSJOBKANRIAREA
-                                           JOBKANRI-REC
-      *
-           MOVE    "RECEERR"       TO  RECEERR-FILE-ID
-           MOVE    LNK-PRTKANRI-TERMID
-                                   TO  RECEERR-TERMID
-      *
-      *    初期値セット
-           PERFORM 110-SYOKI-SET-SEC
+           MOVE    WRK-PARA-HOSPNUM    TO  JOB-HOSPNUM
+           PERFORM 800-ORCSJOB-SEC
       *
            .
        100-INIT-EXT.
@@ -248,7 +235,7 @@
            INITIALIZE                      SPA-AREA
            MOVE    LNK-PRTKANRI-SKYYMD
                                        TO  SPA-SYSYMD
-           MOVE    WRK-PARA-HOSPID     TO  SPA-HOSPID
+           MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
       *
            MOVE    LNK-PRTKANRI-TERMID TO  SPA-TERMID
       *
@@ -332,9 +319,8 @@
            MOVE    WRK-PARA-SHELLID
                                    TO  JOB-SHELLID
            MOVE    CNT-JOB-UPDCNT  TO  JOB-UPDCNT
-           CALL    "ORCSJOB"           USING
-                                       ORCSJOBKANRIAREA
-                                       JOBKANRI-REC
+           MOVE    WRK-PARA-HOSPNUM    TO  JOB-HOSPNUM
+           PERFORM 800-ORCSJOB-SEC
       *
            PERFORM 900-DBDISCONNECT-SEC
       *
@@ -365,9 +351,8 @@
                                        TO  JOB-SHELLID
                MOVE    WRK-RECEERR     TO  JOB-YOBI
                MOVE    "9999"          TO  JOB-ERRCD
-               CALL    "ORCSJOB"       USING
-                                       ORCSJOBKANRIAREA  
-                                       JOBKANRI-REC
+               MOVE    WRK-PARA-HOSPNUM    TO  JOB-HOSPNUM
+               PERFORM 800-ORCSJOB-SEC
            END-IF
       *
            MOVE    1                   TO  FLG-END     
@@ -377,21 +362,40 @@
            EXIT.
       *
       *****************************************************************
+      *    ジョブ管理サブ
+      *****************************************************************
+       800-ORCSJOB-SEC                 SECTION.
+      *
+           MOVE    WRK-PARA-HOSPNUM    TO  JOB-HOSPNUM
+           CALL    "ORCSJOB"           USING
+                                       ORCSJOBKANRIAREA 
+                                       JOBKANRI-REC
+                                       SPA-AREA
+      *
+           .
+      *
+       800-ORCSJOB-EXT.
+           EXIT.
+      *****************************************************************
       *    ＤＢ　オープン処理
       *****************************************************************
        100-DBOPEN-SEC                SECTION.
       *
+           MOVE    LOW-VALUE           TO  MCP-TABLE
+                                           MCP-PATHNAME
            MOVE    "DBOPEN"            TO  MCP-FUNC.
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC.
+           CALL    "ORCDBMAIN"         USING
+                                       MCPAREA
+                                       MCPDATA-REC
+                                       SPA-AREA
       *
+           MOVE    LOW-VALUE           TO  MCP-TABLE
+                                           MCP-PATHNAME
            MOVE    "DBSTART"           TO  MCP-FUNC.
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC.
+           CALL    "ORCDBMAIN"         USING
+                                       MCPAREA
+                                       MCPDATA-REC
+                                       SPA-AREA
            .
        100-DBOPEN-EXT.
            EXIT.
@@ -401,17 +405,21 @@
       *****************************************************************
        900-DBDISCONNECT-SEC            SECTION.
       *
+           MOVE    LOW-VALUE           TO  MCP-TABLE
+                                           MCP-PATHNAME
            MOVE    "DBCOMMIT"          TO  MCP-FUNC.
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC.
+           CALL    "ORCDBMAIN"         USING
+                                       MCPAREA
+                                       MCPDATA-REC
+                                       SPA-AREA
       *
+           MOVE    LOW-VALUE           TO  MCP-TABLE
+                                           MCP-PATHNAME
            MOVE    "DBDISCONNECT"      TO  MCP-FUNC.
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC.
+           CALL    "ORCDBMAIN"         USING
+                                       MCPAREA
+                                       MCPDATA-REC
+                                       SPA-AREA
            .
        900-DBDISCONNECT-EXT.
            EXIT.
