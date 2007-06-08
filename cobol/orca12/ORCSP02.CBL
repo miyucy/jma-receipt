@@ -44,6 +44,7 @@
       *                                     （老人割合変更）
       * 03.04.00     NACL-多々納  07/01/29  排他制御修正
       * 03.05.00     NACL-多々納  07/05/XX  グループ診療対応
+      * 03.05.00     NACL-多々納  07/06/08  前回来院日追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -370,6 +371,10 @@
       *
       *    ユーザプログラム起動チェックパラメタ
            COPY    "CPORCSUSERCHK.INC".
+      *
+      *    前回来院日設定パラメタ
+           COPY    "CPORCSLASTYMD.INC".
+      *
       *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
@@ -1451,8 +1456,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *****************************************************************
        1002-KYOUTU-SET-SEC          SECTION.
       *
-      *****MOVE    SPA-TERMID          TO  FILE-TERMID1
-      *****OPEN    OUTPUT              PARA-FILE
            MOVE    ZERO                TO  WRK-HKNID-MAX
            MOVE    ZERO                TO  WRK-KOHID-MAX
       *
@@ -1464,8 +1467,8 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *    患者労災情報編集
            PERFORM 10023-RSIPARA-SET-SEC
       *
-      *****CLOSE                       PARA-FILE
-      *
+      *    前回来院日編集
+           PERFORM 10024-LASTYMD-SET-SEC
            .
        1002-KYOUTU-SET-EXT.
            EXIT.
@@ -2474,6 +2477,35 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
        10023-RSIPARA-SET-EXT.
            EXIT.
       *****************************************************************
+      *    前回来院日編集処理
+      *****************************************************************
+       10024-LASTYMD-SET-SEC           SECTION.
+      *
+      *    前回来院日編集
+           INITIALIZE                  ORCSLASTYMDAREA
+           MOVE    SPA-GMN-PTID        TO  ORCSLASTYMD-PTID
+           CALL    "ORCSLASTYMD"       USING
+                                       ORCSLASTYMDAREA
+                                       SPA-AREA
+      *    入院中は病棟を表示
+           IF      ORCSLASTYMD-BRMNUM  =   SPACE
+               IF      ORCSLASTYMD-LASTYMD NOT =   SPACE
+                   STRING  "前回："
+                           ORCSLASTYMD-LASTYMDW    DELIMITED  BY  SIZE
+                                           INTO    SPA-GMN-LASTYMD
+                   END-STRING
+               END-IF
+           ELSE
+               STRING  "病棟："
+                       ORCSLASTYMD-BRMNUM      DELIMITED  BY  SIZE
+                                           INTO    SPA-GMN-LASTYMD
+               END-STRING
+           END-IF
+      *
+           .
+       10024-LASTYMD-SET-EXT.
+           EXIT.
+      *****************************************************************
       *    西暦→和暦FORMAT日付編集
       *****************************************************************
        4001-SEIWA-YMDEDIT-SEC           SECTION.
@@ -2552,6 +2584,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPA-GMN-SEXH            TO  P02-SEXH
            MOVE    SPA-GMN-BIRTHDAYH       TO  P02-BIRTHDAYH
            MOVE    SPA-GMN-KYUSEIH         TO  P02-KYUSEIH
+           MOVE    SPA-GMN-LASTYMD         TO  P02-LASTYMD
            MOVE    SPA-GMN-CONDITIONH (1)  TO  P02-P02-CONDITIONH1
            MOVE    SPA-GMN-CONDITIONH (2)  TO  P02-P02-CONDITIONH2
            MOVE    SPA-GMN-CONDITIONH (3)  TO  P02-P02-CONDITIONH3
