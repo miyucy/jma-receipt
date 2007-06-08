@@ -105,12 +105,12 @@
       <name>BIRTHDAYH</name>
       <x>464</x>
       <y>8</y>
-      <width>91</width>
+      <width>82</width>
       <height>24</height>
       <editable>False</editable>
       <text_visible>True</text_visible>
       <text_max_length>9</text_max_length>
-      <text></text>
+      <text>419.11.11</text>
       <input_mode>XIM</input_mode>
       <xim_enabled>False</xim_enabled>
     </widget>
@@ -118,14 +118,14 @@
     <widget>
       <class>GtkPandaEntry</class>
       <name>P02_CONDITIONH1</name>
-      <x>576</x>
+      <x>680</x>
       <y>8</y>
-      <width>60</width>
+      <width>40</width>
       <height>24</height>
       <editable>False</editable>
       <text_visible>True</text_visible>
       <text_max_length>6</text_max_length>
-      <text></text>
+      <text>1111</text>
       <input_mode>XIM</input_mode>
       <xim_enabled>False</xim_enabled>
     </widget>
@@ -133,9 +133,9 @@
     <widget>
       <class>GtkPandaEntry</class>
       <name>P02_CONDITIONH2</name>
-      <x>640</x>
+      <x>720</x>
       <y>8</y>
-      <width>60</width>
+      <width>40</width>
       <height>24</height>
       <editable>False</editable>
       <text_visible>True</text_visible>
@@ -148,9 +148,9 @@
     <widget>
       <class>GtkPandaEntry</class>
       <name>P02_CONDITIONH3</name>
-      <x>704</x>
+      <x>760</x>
       <y>8</y>
-      <width>60</width>
+      <width>40</width>
       <height>24</height>
       <editable>False</editable>
       <text_visible>True</text_visible>
@@ -163,9 +163,9 @@
     <widget>
       <class>GtkPandaEntry</class>
       <name>KYUSEIH</name>
-      <x>804</x>
+      <x>836</x>
       <y>8</y>
-      <width>206</width>
+      <width>180</width>
       <height>24</height>
       <editable>False</editable>
       <text_visible>True</text_visible>
@@ -8997,22 +8997,6 @@
     </widget>
 
     <widget>
-      <class>GtkLabel</class>
-      <name>label862</name>
-      <x>768</x>
-      <y>8</y>
-      <width>32</width>
-      <height>24</height>
-      <label>µìÀ«</label>
-      <justify>GTK_JUSTIFY_LEFT</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
       <class>GtkButton</class>
       <name>B10S</name>
       <x>752</x>
@@ -9056,6 +9040,38 @@
       </signal>
       <label>QRÉ½¼¨</label>
       <relief>GTK_RELIEF_NORMAL</relief>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label862</name>
+      <x>804</x>
+      <y>8</y>
+      <width>32</width>
+      <height>24</height>
+      <label>µìÀ«</label>
+      <justify>GTK_JUSTIFY_LEFT</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>LASTYMD</name>
+      <x>552</x>
+      <y>8</y>
+      <width>121</width>
+      <height>24</height>
+      <label></label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
     </widget>
   </widget>
 </widget>

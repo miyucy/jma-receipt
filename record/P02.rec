@@ -25,6 +25,9 @@ P02	{
 		KYUSEIH	{
 			value	varchar(50);
 		};
+		LASTYMD	{
+			value	varchar(16);
+		};
 		B04	{
 	           	state	int;
 		};

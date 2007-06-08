@@ -40,6 +40,8 @@
                 04  P02-VALUE   PIC X(6).
               03  P02-KYUSEIH.
                 04  P02-VALUE   PIC X(50).
+              03  P02-LASTYMD.
+                04  P02-VALUE   PIC X(16).
               03  P02-B04.
                 04  P02-B04-STATE   PIC S9(9)   BINARY.
               03  P02-B10S.
