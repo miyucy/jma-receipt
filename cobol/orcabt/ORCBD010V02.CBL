@@ -27,6 +27,7 @@
       *****************************************************************
       *  プログラム修正履歴
       *  Maj/Min/Rev  修正者       日付      内容
+      *  03.05.00    NACL-太田    07/06/04  グループ診療対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -46,6 +47,8 @@
       *****************************************************************
       *
            COPY    "CPORCBD010S.INC".
+      *
+           COPY    "COMMON-SPA".
       *
       ****************************************************************
        LINKAGE                     SECTION.
@@ -78,6 +81,8 @@
        100-INIT-SEC                SECTION.
       *
            INITIALIZE              SBD010-AREA
+                                   SPA-AREA
+      *
            UNSTRING    COMMAND-PARAM   DELIMITED  BY  ","
                                INTO    LNK-PRTKANRI-RENNUM
                                        LNK-PRTKANRI-TBL-KEY
@@ -92,13 +97,16 @@
                                        LNK-PRTKANRI-PRTNM
                                        SBD010-JOBID
                                        SBD010-SHELLID
-                                       SBD010-HOSPID
+                                       SBD010-HOSPNUM
+                                       SBD010-ERRFLPARA
                                        SBD010-NYUGAIKBN
                                        SBD010-SUMKBN
                                        SBD010-MEISAIKBN
                                        SBD010-TOTALPRTKBN
       *
            MOVE    "1"             TO  SBD010-SIMEKBN
+      *
+           MOVE    SBD010-HOSPNUM  TO  SPA-HOSPNUM
       *
            .
        100-INIT-EXT.
@@ -111,6 +119,7 @@
       *
            CALL    "ORCBD010S"     USING   WRK-PARA
                                            SBD010-AREA
+                                           SPA-AREA
       *
            .
        200-MAIN-EXT.

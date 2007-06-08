@@ -362,7 +362,9 @@ grpsys     INITIALIZE                  SPA-AREA
                                        WRK-PARA-SRYKAKBN
                                        WRK-PARA-SRYKA
 grpsys     END-UNSTRING
-grpsys     MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
+      *
+      *    ＳＰＡエリアセット処理
+           PERFORM 110-SPA-SET-SEC
       *
            MOVE    SPACE               TO  WRK-TITLE
       *
@@ -404,9 +406,6 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
            MOVE    "BG00701"           TO  ORCBG00701PARA-FILE-ID
            MOVE    LNK-PRTKANRI-TERMID TO  ORCBG00701PARA-TERMID
       *
-      *    ＳＰＡエリアセット処理
-           PERFORM 110-SPA-SET-SEC
-      *
       *    印刷パラメタエリアセット処理
            PERFORM 110-ORCSPRTAREA-SET-SEC
       *
@@ -424,7 +423,6 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
        110-SPA-SET-SEC                 SECTION.
       *
       *    システム日付セット
-           INITIALIZE                      SPA-AREA
            MOVE    LNK-PRTKANRI-SKYYMD
                                        TO  SPA-SYSYMD
            MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM

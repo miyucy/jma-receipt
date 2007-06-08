@@ -27,6 +27,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  03.05.00    NACL-太田    07/06/04  グループ診療対応
       *****************************************************************
       *
        ENVIRONMENT                     DIVISION.
@@ -38,8 +39,6 @@
        FILE                            SECTION.
       *
        WORKING-STORAGE                 SECTION.
-grpsys*
-grpsys COPY    "COMMON-SPA".
       *
       *    フラグ領域
        01  FLG-AREA.
@@ -124,12 +123,15 @@ grpsys COPY    "COMMON-SPA".
            COPY    "CPORDER.INC"       REPLACING  //ORDER-//
                                        BY         //LNK-ORDER-//.
       *
+           COPY    "COMMON-SPA".
+      *
       ******************************************************************
       *
        PROCEDURE                       DIVISION
                                        USING
                                                ORCSBD009SAREA
-                                               LNK-ORDER-REC.
+                                               LNK-ORDER-REC
+                                               SPA-AREA.
       *
       *****************************************************************
       *    主　　処理
@@ -230,11 +232,12 @@ grpsys COPY    "COMMON-SPA".
            INITIALIZE                  SODR-AREA
            INITIALIZE                  SODRITEM-REC
       *
-           MOVE    LNK-ORDER-HOSPID    TO  SODR-HOSPID
+           MOVE    LNK-ORDER-HOSPNUM   TO  SODR-HOSPNUM
            MOVE    LNK-ORDER-KARTE-KEY TO  SODR-KARTE-KEY
            MOVE    LNK-ORDER-ORDERNUM  TO  SODR-ORDERNUM
            CALL    "ORCSODRS02"        USING   SODR-AREA
                                                SODRITEM-REC
+                                               SPA-AREA
            IF    ( SODR-ERRFLG NOT =   ZERO )
       *
                MOVE    1               TO  FLG-KHNERR
@@ -368,10 +371,9 @@ grpsys COPY    "COMMON-SPA".
            MOVE    ZERO                TO  FLG-ODRITEM
       *
            INITIALIZE                      ODRITEM-REC
-           MOVE    LNK-ORDER-HOSPID    TO  ODRITEM-HOSPID
+           MOVE    LNK-ORDER-HOSPNUM   TO  ODRITEM-HOSPNUM
            MOVE    LNK-ORDER-KARTE-KEY TO  ODRITEM-KARTE-KEY
            MOVE    LNK-ORDER-ORDERNUM  TO  ODRITEM-ORDERNUM
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    ODRITEM-REC           TO  MCPDATA-REC
            MOVE    "tbl_odritem"       TO  MCP-TABLE
            MOVE    "key4"              TO  MCP-PATHNAME
@@ -410,9 +412,10 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
        910-DBSELECT-SEC                SECTION.
       *
            MOVE    "DBSELECT"          TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"         USING
+                                       MCPAREA
+                                       MCPDATA-REC
+                                       SPA-AREA
            IF    ( MCP-RC          =   ZERO )
                PERFORM 910-DBFETCH-SEC
            END-IF
@@ -427,9 +430,10 @@ grpsys                            SPA-AREA
        911-DBSELECT-SEC                SECTION.
       *
            MOVE    "DBSELECT"          TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"         USING
+                                       MCPAREA
+                                       MCPDATA-REC
+                                       SPA-AREA
       *
            .
       *
@@ -441,9 +445,10 @@ grpsys                            SPA-AREA
        910-DBFETCH-SEC                 SECTION.
       *
            MOVE    "DBFETCH"           TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"         USING
+                                       MCPAREA
+                                       MCPDATA-REC
+                                       SPA-AREA
       *
            .
       *
@@ -455,9 +460,10 @@ grpsys                            SPA-AREA
        910-DBCLOSECURSOR-SEC           SECTION.
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"         USING
+                                       MCPAREA
+                                       MCPDATA-REC
+                                       SPA-AREA
       *
            .
       *

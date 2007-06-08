@@ -22,7 +22,8 @@
        01  SBD010-AREA.
            03  SBD010-JOBID            PIC 9(07).
            03  SBD010-SHELLID          PIC X(08).
-           03  SBD010-HOSPID           PIC X(24).
+           03  SBD010-HOSPNUM          PIC 9(02).
+           03  SBD010-ERRFLPARA        PIC X(100).
            03  SBD010-SIMEKBN          PIC X(01).
            03  SBD010-SRYYMD           PIC X(08).
            03  SBD010-NYUGAIKBN        PIC X(01).
