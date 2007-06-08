@@ -1577,7 +1577,7 @@
       *
               MOVE    "tbl_syskanri"      TO  MCP-TABLE
               MOVE    "key8"              TO  MCP-PATHNAME
-              PERFORM   90-CLOSE-SEC
+              PERFORM   900-CLOSE-SEC
       *
                IF      SYSKAN-IDX          =   ZERO
                    MOVE    "医療機関情報が取得できませんでした。"
@@ -1997,6 +1997,7 @@
            MOVE    RECE62-SRYYM        TO  LNK-NYURECEDEN-SANTEIYM
            MOVE    RECE62-TEISYUTUSAKI TO  LNK-NYURECEDEN-HKNKBN
            CALL    "ORCSNYURECEDEN"    USING   ORCSNYURECEDEN-AREA
+                                               SPA-AREA
            IF      LNK-NYURECEDEN-RC   NOT =   ZERO
                DISPLAY "LNK-NYURECEDEN-RC=" LNK-NYURECEDEN-RC 
            END-IF
