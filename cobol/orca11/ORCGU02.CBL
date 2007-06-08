@@ -2834,20 +2834,18 @@ grpsys*                        CALL    "ORCDBMAIN"     USING   MCPAREA
                                        SPA-AREA
       *
       *    入院中は病棟を表示
-           IF      ORCSLASTYMD-LASTYMD =   SPACE
-               CONTINUE
-           ELSE
-               IF      ORCSLASTYMD-BRMNUM  NOT =   SPACE
-                   STRING  "病棟："
-                           ORCSLASTYMD-BRMNUM  DELIMITED  BY  SIZE
-                                       INTO    SPA-GMN-LASTYMD
-                   END-STRING
-               ELSE
+           IF      ORCSLASTYMD-BRMNUM  =   SPACE
+               IF      ORCSLASTYMD-LASTYMD NOT =   SPACE
                    STRING  "前回："
                            ORCSLASTYMD-LASTYMDW    DELIMITED  BY  SIZE
                                        INTO    SPA-GMN-LASTYMD
                    END-STRING
                END-IF
+           ELSE
+               STRING  "病棟："
+                       ORCSLASTYMD-BRMNUM  DELIMITED  BY  SIZE
+                                       INTO    SPA-GMN-LASTYMD
+               END-STRING
            END-IF
       *
            INITIALIZE                  WRK-JYURRK-AREA
