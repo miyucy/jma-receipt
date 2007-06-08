@@ -1475,6 +1475,7 @@
            MOVE    LNK-NYURECEDEN-PTID     TO  LNK-RYOCOM-PTID
            MOVE    LNK-NYURECEDEN-SANTEIYM TO  LNK-RYOCOM-SANTEIYM
            CALL    "ORCSRYOCOM"     USING  ORCSRYOCOM-AREA
+                                           SPA-AREA
            IF      LNK-RYOCOM-RC           NOT =  ZERO
                DISPLAY  "LNK-RYOCOM-RC = " LNK-RYOCOM-RC
            END-IF
@@ -2191,6 +2192,7 @@
                   MOVE    WRK-SO-SRYCD(IDX1 IDX2)
                                               TO  TNS-SRYCD
            END-IF
+           MOVE    LNK-NYURECEDEN-HOSPNUM  TO  TNS-HOSPNUM
            MOVE    LNK-NYURECEDEN-SANTEIYM TO  TNS-YUKOSTYMD(1:6)
            MOVE    "01"                    TO  TNS-YUKOSTYMD(7:2)
            MOVE    TNS-YUKOSTYMD           TO  TNS-YUKOEDYMD
