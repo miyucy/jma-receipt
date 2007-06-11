@@ -470,7 +470,7 @@ end
 #---- (2003/07/03 ) add start
 		psfile_name_folder = d2[62, 165].strip	                # PSファイル格納フォルダのセット
 		psfile_name_folder = add_slash(psfile_name_folder) 	#/を付加
-		psfile_name = psfile_name_folder.strip + d2[227, 8].strip + d2[235, 4].strip \
+		psfile_name = psfile_name_folder.strip + hospnum + d2[227, 8].strip + d2[235, 4].strip \
 		+ d2[239, 14].strip + d2[253, 4].strip + d2[257, 5].strip + d2[262,36].strip
 									# PSファイル名のセット
 #		word3 = d2[51, (d2_len - 51)]				# 一時ファイルへ出力する内容のセット
