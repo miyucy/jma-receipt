@@ -4966,7 +4966,7 @@
                MOVE    78                  TO  WRK-LEN
            END-IF
            INITIALIZE                  ORCSKANACHKAREA
-           MOVE    "1"                 TO  KANACHK-SYORI
+           MOVE    "2"                 TO  KANACHK-SYORI
            MOVE    SPA-GMN-MEISYO-G (SPA-GMN-IDX)(IDX-STR:)
                                        TO  KANACHK-MAE-INPUT
            MOVE    WRK-LEN             TO  KANACHK-MAX-CNT
