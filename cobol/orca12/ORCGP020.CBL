@@ -35,6 +35,7 @@
       *  02.00.02    NACL-多々納  02/11/26  診療科・ドクター件数修正
       *  02.00.03    NACL-多々納  05/11/11  MONFUNC 対応 他
       *  03.05.00    NACL-多々納  07/05/XX  グループ診療対応
+      *  03.05.01    NACL-多々納  07/06/11  氏名変更の予約・受付対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -1731,9 +1732,9 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            END-IF
       *
       *    受付氏名は患者氏名を編集する
-           IF      SPA-P02-UKEID   NOT =   UKE-UKEID
+      *D   IF      SPA-P02-UKEID   NOT =   UKE-UKEID
                MOVE    SPA-GMN-NAME        TO  UKE-NAME
-           END-IF
+      *D   END-IF
       *
       *    パラメタ編集済み 
            MOVE    SPACE               TO  SPA-NAI20-UKETIME(IDX)

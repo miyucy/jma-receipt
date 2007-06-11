@@ -43,6 +43,7 @@
       *  03.04.00    NACL-藤原    07/02/06  月途中の受給者番号変更に対応
       *  03.04.01    NACL-多々納  07/02/16  ＱＲデータ対応
       *  03.05.00    NACL-多々納  07/05/XX  グループ診療対応
+      *  03.05.01    NACL-多々納  07/06/11  氏名変更の予約・受付対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1082,8 +1083,17 @@ grpsys                 CALL    "ORCDBMAIN"         USING   MCPAREA
                                                            SPA-AREA
                    END-IF
                ELSE
-                   IF      YYK-RAIINZUMI   =   SPACE
+                   IF     (YYK-RAIINZUMI       =   SPACE   )
+                       OR (YYK-PTID            =   ZERO    )
+                       OR (YYK-NAME        NOT =   SPA-GMN-NAME )
                        MOVE    "1"                 TO  YYK-RAIINZUMI
+      *                患者ＩＤ
+                       IF     (YYK-PTID            =   ZERO    )
+                           MOVE    SPA-GMN-PTID        TO  YYK-PTID
+                       END-IF
+      *                氏名変更
+                       MOVE    SPA-GMN-NAME        TO  YYK-NAME
+      *
                        MOVE    YYK-REC             TO  MCPDATA-REC
                        MOVE    "DBUPDATE"          TO  MCP-FUNC
                        MOVE    "tbl_yyk"           TO  MCP-TABLE
