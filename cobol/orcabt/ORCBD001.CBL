@@ -332,10 +332,10 @@ grpsys*DD      MOVE    SYS-1001-HOSPID     TO  WRK-PARA-HOSPID
                INITIALIZE                      SYS-1005-REC
                MOVE    "1005"              TO  SYS-1005-KANRICD
                MOVE    KEY-N-SRYKA         TO  SYS-1005-KBNCD
+grpsys         MOVE    WRK-SYSYMD      TO  SYS-1005-STYUKYMD
+grpsys                                     SYS-1005-EDYUKYMD
+grpsys         MOVE    SPA-HOSPNUM     TO  SYS-1005-HOSPNUM
                MOVE    SYS-1005-REC        TO  MCPDATA-REC
-grpsys         MOVE    WRK-SYSYMD      TO  SYS-1001-STYUKYMD
-grpsys                                     SYS-1001-EDYUKYMD
-grpsys         MOVE    SPA-HOSPNUM     TO  SYS-1001-HOSPNUM
                PERFORM 800-SYSKANRI-READ-SEC
                IF      FLG-SYSKANRI        =   ZERO
                    MOVE    MCPDATA-REC         TO  SYS-1005-REC 
