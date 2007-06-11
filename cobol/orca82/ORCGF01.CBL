@@ -38,7 +38,7 @@
       *                                     人名テーブルの追加
       *                                     月代り受給者番号の追加
       * 01.00.05     ひさなが     03/05/12  入院関連テーブルの追加
-      *
+      * 03.05.01     NACL-森脇    07/06/11  グループ診療対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -252,6 +252,7 @@
                    CALL    "ORCSJOB"           USING
                                                WRK-JOBKANRI-AREA  
                                                JOBKANRI-REC
+grpsys                                         SPA-AREA
                    IF  WRK-JOBKANRI-RETURN   =   ZERO
                        INITIALIZE                      WRK-JOBKANRI-AREA
                        MOVE    "DEL"               TO  WRK-JOBKANRI-MODE
@@ -263,6 +264,7 @@
                        CALL    "ORCSJOB"           USING
                                                    WRK-JOBKANRI-AREA
                                                    JOBKANRI-REC
+grpsys                                             SPA-AREA
                    END-IF
                    INITIALIZE                      WRK-JOBKANRI-AREA
                    MOVE    "JBS"               TO  WRK-JOBKANRI-MODE
@@ -275,6 +277,7 @@
                    CALL    "ORCSJOB"           USING
                                                WRK-JOBKANRI-AREA
                                                JOBKANRI-REC
+grpsys                                         SPA-AREA
                    PERFORM T-000-READWRIT-SEC
                    PERFORM T-000-WRITABLE-SEC
                    MOVE    1                   TO  FLG-END
@@ -551,7 +554,8 @@
            MOVE    SPA-HOSPNUM         TO  JOB-HOSPNUM.
            CALL    "ORCSJOB"          USING
                                       WRK-JOBKANRI-AREA  
-                                      JOBKANRI-REC.
+                                      JOBKANRI-REC
+grpsys                                SPA-AREA.
            MOVE    SPACE              TO  FID2.
            MOVE    ZERO               TO  SPA-GMN-RUN.
            IF  WRK-JOBKANRI-RETURN   =   ZERO
@@ -715,6 +719,7 @@
                MOVE    SHELL-ARG4        TO  SHELLTBL-ARG4
                MOVE    SHELL-ARG5        TO  SHELLTBL-ARG5
                MOVE    SHELL-ARG6        TO  SHELLTBL-ARG6
+grpsys         MOVE    SPA-HOSPNUM       TO  SHELLTBL-ARG7
                MOVE    SHELLTBL          TO  MCPDATA-REC
                MOVE    "SHELL"           TO  MCP-FUNC
                MOVE    "shell"           TO  MCP-TABLE
@@ -776,6 +781,7 @@
                MOVE    SHELL-ARG4        TO  SHELLTBL-ARG4
                MOVE    SHELL-ARG5        TO  SHELLTBL-ARG5
                MOVE    SHELL-ARG6        TO  SHELLTBL-ARG6
+grpsys         MOVE    SPA-HOSPNUM       TO  SHELLTBL-ARG7
                MOVE    SHELLTBL          TO  MCPDATA-REC
                MOVE    "SHELL"           TO  MCP-FUNC
                MOVE    "shell"           TO  MCP-TABLE
