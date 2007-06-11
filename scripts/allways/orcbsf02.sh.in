@@ -15,6 +15,7 @@ fi
 #        $3   OUT-NAME-WK
 #        $4$5 OUT-NAME
 #        $6   KBEN
+#        $7   HOSPNUM
 #-------------------------------------------#
 ##
 
@@ -24,6 +25,6 @@ fi
 
         pg_dump -R $DBNAME > $4$5
 
-	$DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE0000001ORCBSF1
+	$DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE0000001ORCBSF1,${7}
 
         exit
