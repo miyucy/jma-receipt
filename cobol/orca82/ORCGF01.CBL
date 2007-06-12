@@ -72,7 +72,8 @@
       *    バックアップ条件用ファイル 名称領域 
 grpsys     COPY    "CPCOMMONDAT2.INC"
 grpsys                             REPLACING  //RECE01//
-                                   BY         //FIF00//.
+grpsys                             BY         //FIF00//.
+grpsys     03  FILLER              PIC X(04)   VALUE   ".dat".
       *
       *    バックアップ シェル領域
            COPY    "CPCOMMONSHELLUP.INC".
