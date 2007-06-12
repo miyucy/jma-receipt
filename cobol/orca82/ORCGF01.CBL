@@ -70,8 +70,8 @@
        WORKING-STORAGE             SECTION.
       *
       *    バックアップ条件用ファイル 名称領域 
-           COPY    "CPCOMMONDAT4.INC"
-                                   REPLACING  //ORCGD//
+grpsys     COPY    "CPCOMMONDAT2.INC"
+grpsys                             REPLACING  //RECE01//
                                    BY         //FIF00//.
       *
       *    バックアップ シェル領域
@@ -247,7 +247,7 @@
                    INITIALIZE                      JOBKANRI-REC
                    MOVE    1                   TO  JOB-JOBID
                    MOVE    "ORCBSF1"           TO  JOB-SHELLID
-                   MOVE    ALL "*"             TO  JOB-TERMID
+grpsys             MOVE    SPA-TERMID          TO  JOB-TERMID
                    MOVE    SPA-HOSPNUM         TO  JOB-HOSPNUM
                    CALL    "ORCSJOB"           USING
                                                WRK-JOBKANRI-AREA  
@@ -259,7 +259,7 @@ grpsys                                         SPA-AREA
                        INITIALIZE                      JOBKANRI-REC
                        MOVE    1                   TO  JOB-JOBID
                        MOVE    "ORCBSF1"           TO  JOB-SHELLID
-                       MOVE    ALL "*"             TO  JOB-TERMID
+grpsys                 MOVE    SPA-TERMID          TO  JOB-TERMID
                        MOVE    SPA-HOSPNUM         TO  JOB-HOSPNUM
                        CALL    "ORCSJOB"           USING
                                                    WRK-JOBKANRI-AREA
@@ -271,7 +271,7 @@ grpsys                                             SPA-AREA
                    INITIALIZE                      JOBKANRI-REC
                    MOVE    1                   TO  JOB-JOBID
                    MOVE    "ORCBSF1"           TO  JOB-SHELLID
-                   MOVE    ALL "*"             TO  JOB-TERMID
+grpsys             MOVE    SPA-TERMID          TO  JOB-TERMID
                    MOVE    "媒体変換"          TO  JOB-SHELLMSG
                    MOVE    SPA-HOSPNUM         TO  JOB-HOSPNUM
                    CALL    "ORCSJOB"           USING
@@ -550,7 +550,7 @@ grpsys                                         SPA-AREA
            INITIALIZE                     JOBKANRI-REC.
            MOVE    1                  TO  JOB-JOBID.
            MOVE    "ORCBSF1"          TO  JOB-SHELLID.
-           MOVE    ALL "*"            TO  JOB-TERMID.
+grpsys     MOVE    SPA-TERMID         TO  JOB-TERMID.
            MOVE    SPA-HOSPNUM         TO  JOB-HOSPNUM.
            CALL    "ORCSJOB"          USING
                                       WRK-JOBKANRI-AREA  
@@ -824,7 +824,9 @@ grpsys         MOVE    SPA-HOSPNUM       TO  SHELLTBL-ARG7
        T-000-READCHEK-SEC                SECTION.
       *
            MOVE    ZERO              TO  SPA-GMN-MAX-B.
-           MOVE    "ORCF00.CNV"      TO  FIF00PARA-FILE.
+grpsys     MOVE    "ORCGF01"         TO  FIF00PARA-FILE-ID.
+grpsys     MOVE    SPA-HOSPNUM       TO  FIF00PARA-HOSPNUM.
+grpsys     MOVE    SPA-TERMID        TO  FIF00PARA-TERMID.
            MOVE    1                 TO  SPA-GMN-CUR.
       *
            OPEN    INPUT                   FIF00-FILE.
