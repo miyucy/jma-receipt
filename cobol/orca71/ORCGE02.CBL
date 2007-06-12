@@ -76,9 +76,13 @@ grpsys                             BY         //EIE00//.
 grpsys     03  FILLER              PIC X(04)   VALUE   ".dat".
       *
       *    £Ã£Ó£ÖºîÀ®¾ò·ï£±¡Á£¹£°¥Õ¥¡¥¤¥ë Ì¾¾ÎÎÎ°è
-           COPY    "CPCOMMONDAT4.INC"
-                                   REPLACING  //ORCGD//
-                                   BY         //EIE01//.
+grpsys*DD  COPY    "CPCOMMONDAT4.INC"
+grpsys*DD                          REPLACING  //ORCGD//
+grpsys*DD                          BY         //EIE01//.
+grpsys     COPY    "CPCOMMONDAT2.INC"
+grpsys                             REPLACING  //RECE01//
+grpsys                             BY         //EIE01//.
+grpsys     03  EIE01PARA-FILE      PIC X(23).
       *
       *    Ãê½Ð¹àÌÜÍÑ¥Õ¥¡¥¤¥ë Ì¾¾ÎÎÎ°è
        01  EIE02PARA.
@@ -1312,6 +1316,9 @@ grpsys     MOVE    SPA-TERMID        TO  EIE00PARA-TERMID.
                    (EIE00-REC(22:1) =   "*")
                MOVE    IDX1                 TO    IDX2
            END-IF.
+grpsys     MOVE    "ORCGE01"         TO  EIE01PARA-FILE-ID.
+grpsys     MOVE    SPA-HOSPNUM       TO  EIE01PARA-HOSPNUM.
+grpsys     MOVE    SPA-TERMID        TO  EIE01PARA-TERMID.
            MOVE    ALL SPACE            TO  EIE01PARA-FILE.
            STRING  WK-TBL-MSG (IDX1)    DELIMITED  BY    SPACE
                    ".SLT"               DELIMITED  BY    SIZE
@@ -1528,6 +1535,9 @@ grpsys     MOVE    SPA-TERMID        TO  EIE00PARA-TERMID.
       *
            MOVE    SPACE                 TO  SPA-GMN-AREA.
            MOVE    WK-TBL-MSG (IDX2)     TO  SPA-GMN-TBLNM.
+grpsys     MOVE    "ORCGE01"         TO  EIE01PARA-FILE-ID.
+grpsys     MOVE    SPA-HOSPNUM       TO  EIE01PARA-HOSPNUM.
+grpsys     MOVE    SPA-TERMID        TO  EIE01PARA-TERMID.
            MOVE    ALL SPACE             TO  EIE01PARA-FILE.
            STRING  WK-TBL-MSG (IDX2)     DELIMITED  BY    SPACE
                    ".SLT"                DELIMITED  BY    SIZE

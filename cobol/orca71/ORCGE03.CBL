@@ -79,9 +79,13 @@ grpsys                             BY         //EIE00//.
 grpsys     03  FILLER              PIC X(04)   VALUE   ".dat".
       *
       *    £Ã£Ó£ÖºîÀ®¾ò·ï£±¡Á£¹£°¥Õ¥¡¥¤¥ë Ì¾¾ÎÎÎ°è 
-           COPY    "CPCOMMONDAT4.INC"
-                                   REPLACING  //ORCGD//
-                                   BY         //EIE01//.
+grpsys*DD  COPY    "CPCOMMONDAT4.INC"
+grpsys*DD                          REPLACING  //ORCGD//
+grpsys*DD                          BY         //EIE01//.
+grpsys     COPY    "CPCOMMONDAT2.INC"
+grpsys                             REPLACING  //RECE01//
+grpsys                             BY         //EIE01//.
+grpsys     03  EIE01PARA-FILE      PIC X(23).
       *
       *    £Ã£Ó£Ö£±¡Á£¹£°¥Õ¥¡¥¤¥ë Ì¾¾ÎÎÎ°è 
        01  EIECSPARA.
@@ -383,6 +387,9 @@ grpsys     MOVE    WRK-PARA-TERMID   TO  EIE00PARA-TERMID.
       *****************************************************************
        T-001-CSVWRITE-SEC              SECTION.
       *
+grpsys     MOVE    "ORCGE01"         TO  EIE01PARA-FILE-ID.
+grpsys     MOVE    SPA-HOSPNUM       TO  EIE01PARA-HOSPNUM.
+grpsys     MOVE    WRK-PARA-TERMID   TO  EIE01PARA-TERMID.
            MOVE    ALL SPACE           TO  EIE01PARA-FILE.
            STRING  WK-TBL-MSG (IDX2)   DELIMITED  BY    SPACE
                    ".SLT"              DELIMITED  BY    SIZE
