@@ -2492,10 +2492,10 @@
                   (P02-P02-HTEKEDYMD   =   SPA-GMN-HTEKEDYMD) AND
                   (P02-P02-HIHKNJANAME =   SPA-GMN-HIHKNJANAME) AND
                   (P02-P02-HKAKUNINYMD =   SPA-GMN-HKAKUNINYMD)
-               MOVE    ZERO            TO  FLG-IN-HKN
+               MOVE    ZERO                TO  FLG-IN-HKN
            ELSE
                MOVE    P02-P02-HKNJANUM    TO  SPA-GMN-HKNJANUM
-               MOVE    1               TO  FLG-IN-HKN
+               MOVE    1                   TO  FLG-IN-HKN
            END-IF
            .
       *
@@ -2687,27 +2687,35 @@
       *    Ï«ºÒ¤ÇÆþÎÏ¤¬¤¢¤Ã¤¿»þ¡¢¥¨¥é¡¼
            IF      FLG-IN-HKN          =   1
       *
-      *        ÄÉ²Ã¤Ï£Ï£Ë
-               IF      SPA-GMN-HKNJANUM(1:2)   =   "/A"  OR  "/a"
-                   INITIALIZE                  SPA-GMN-HKN-AREA
-                   MOVE    ZERO                TO  SPA-NAI-HKNSTR
-                   MOVE    8                   TO  SPA-GMN-CUR
-                   MOVE    1                   TO  FLG-HKN-DEL
-                   GO      TO      4101-KHNJANUM-CHK-EXT
-               END-IF
-               MOVE    "0043"          TO  SPA-ERRCD
-               MOVE    61              TO  SPA-GMN-CUR
+               EVALUATE    SPA-GMN-HKNJANUM(1:2)
+                   WHEN    "/A"
+                   WHEN    "/a"
+      *                ÄÉ²Ã¤Ï£Ï£Ë
+                       INITIALIZE                  SPA-GMN-HKN-AREA
+                       MOVE    ZERO                TO  SPA-NAI-HKNSTR
+                       MOVE    8                   TO  SPA-GMN-CUR
+                       MOVE    1                   TO  FLG-HKN-DEL
+                   WHEN    "/D"
+                   WHEN    "/d"
+      *                ºï½ü¤ÏÏ«ºÒÊÝ¸±²èÌÌ¤Ø
+                       MOVE    SPACE               TO  SPA-GMN-HKNJANUM
+                       MOVE    "0043"              TO  SPA-ERRCD
+                       MOVE    61                  TO  SPA-GMN-CUR
+                   WHEN    OTHER
+                       MOVE    "0043"              TO  SPA-ERRCD
+                       MOVE    61                  TO  SPA-GMN-CUR
+               END-EVALUATE
                GO      TO      4101-KHNJANUM-CHK-EXT
            END-IF
       *    ºï½ü¤ÎÈ½Äê
            IF      SPA-GMN-HKNJANUM(1:2)   =   "/D"  OR  "/d"
-      *        Ï«ºÒ¤Î»þ¡¢Ï«ºÒÊÝ¸±²èÌÌ¤Ø
-               IF      SPA-GMN-HKNNUM      =   "971"
-                                           OR  "973"
-                   MOVE    "0043"          TO  SPA-ERRCD
-                   MOVE    61              TO  SPA-GMN-CUR
-                   GO      TO      4101-KHNJANUM-CHK-EXT
-               END-IF
+      *D       Ï«ºÒ¤Î»þ¡¢Ï«ºÒÊÝ¸±²èÌÌ¤Ø
+      *        IF      SPA-GMN-HKNNUM      =   "971"
+      *                                    OR  "973"
+      *            MOVE    "0043"          TO  SPA-ERRCD
+      *            MOVE    61              TO  SPA-GMN-CUR
+      *            GO      TO      4101-KHNJANUM-CHK-EXT
+      *D       END-IF
       *        ¿·µ¬¤Î»þ¡¢£Ô£Â£Ì¤âºï½ü
                IF     (SPA-NAI-HKNSTR      >   ZERO      ) AND
                       (SPA-PTHKN-SINKIKBN (SPA-NAI-HKNSTR)
@@ -2740,6 +2748,24 @@
       *    ÄÉ²Ã¤ÎÈ½Äê
            IF      SPA-GMN-HKNJANUM(1:2)   =   "/A"  OR  "/a"
                INITIALIZE                  SPA-GMN-HKN-AREA
+               MOVE    ZERO                TO  SPA-NAI-HKNSTR
+               MOVE    8                   TO  SPA-GMN-CUR
+               MOVE    1                   TO  FLG-HKN-DEL
+           END-IF
+      *    Ê£¼Ì¤ÎÈ½Äê
+           IF      SPA-GMN-HKNJANUM(1:2)   =   "/C"  OR  "/c"
+      *        Êä½õ¶èÊ¬¡¢Í­¸ú´ü´Ö¤ÏÊ£¼Ì¤·¤Ê¤¤
+               MOVE    SPA-NAI-HKNSTR      TO  IDX
+               MOVE    SPA-PTHKN-HKNJANUM(IDX) TO  SPA-GMN-HKNJANUM
+               MOVE    SPACE               TO  SPA-GMN-HTEKSTYMD
+               MOVE    SPACE               TO  SPA-GMN-HTEKEDYMD
+               MOVE    SPACE               TO  SPA-GMN-HOJOKBN-G
+               MOVE    SPACE               TO  SPA-GMN-HKAKUNINYMD
+               MOVE    ZERO                TO  SPA-NAI-HKNID
+               MOVE    SPACE               TO  SPA-NAI-HTEKSTYMD
+               MOVE    SPACE               TO  SPA-NAI-HTEKEDYMD
+               MOVE    SPACE               TO  SPA-NAI-HKAKUNINYMD
+               INITIALIZE                  SPA-MAE-HKN-AREA
                MOVE    ZERO                TO  SPA-NAI-HKNSTR
                MOVE    8                   TO  SPA-GMN-CUR
                MOVE    1                   TO  FLG-HKN-DEL
