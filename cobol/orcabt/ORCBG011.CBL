@@ -388,7 +388,7 @@ grpsys     MOVE    SPA-HOSPNUM         TO  JOB-HOSPNUM
                                            JOBKANRI-REC
 grpsys                                     SPA-AREA
       *
-grpsys     MOVE    "ORCBG011"          TO  BG01101PARA-FILE-ID
+grpsys     MOVE    "BG01101"           TO  BG01101PARA-FILE-ID
 grpsys     MOVE    LNK-PRTKANRI-TERMID TO  BG01101PARA-TERMID
 grpsys     MOVE    SPA-HOSPNUM         TO  BG01101PARA-HOSPNUM
       *

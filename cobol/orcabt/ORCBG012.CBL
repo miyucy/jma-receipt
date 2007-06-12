@@ -424,7 +424,7 @@ grpsys                                     SPA-AREA
       *
 grpsys*DD  MOVE    "BG012SR"           TO  ORCBG012SRTPARA-FILE-ID
 grpsys*DD  MOVE    LNK-PRTKANRI-TERMID TO  ORCBG012SRTPARA-TERMID
-grpsys     MOVE    "ORCBG013"          TO  BG012SRTPARA-FILE-ID
+grpsys     MOVE    "BG01201"          TO  BG012SRTPARA-FILE-ID
 grpsys     MOVE    LNK-PRTKANRI-TERMID TO  BG012SRTPARA-TERMID
 grpsys     MOVE    SPA-HOSPNUM         TO  BG012SRTPARA-HOSPNUM
       *

@@ -395,7 +395,7 @@ grpsys     MOVE    SPA-HOSPNUM     TO  JOB-HOSPNUM
                                        JOBKANRI-REC
 grpsys                                 SPA-HOSPNUM
       *
-grpsys     MOVE    "ORCBG001"      TO  TOKEIPARA-FILE-ID
+grpsys     MOVE    "BG00101"       TO  TOKEIPARA-FILE-ID
            MOVE    LNK-PRTKANRI-TERMID
                                    TO  TOKEIPARA-TERMID
 grpsys     MOVE    SPA-HOSPNUM     TO  TOKEIPARA-HOSPNUM

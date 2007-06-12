@@ -514,11 +514,11 @@ grpsys     MOVE    SPA-HOSPNUM         TO  JOB-HOSPNUM
 grpsys                                     SPA-AREA
       *
       *    ファイル設定
-grpsys     MOVE    "ORCBG015"          TO  TOKEIPARA-FILE-ID
+grpsys     MOVE    "BG01401"           TO  TOKEIPARA-FILE-ID
            MOVE    LNK-PRTKANRI-TERMID TO  TOKEIPARA-TERMID
 grpsys     MOVE    SPA-HOSPNUM         TO  TOKEIPARA-HOSPNUM
       *
-grpsys     MOVE    "ORCBG015"          TO  RECECSV-FILE-ID
+grpsys     MOVE    "BG01401"           TO  RECECSV-FILE-ID
 grpsys     MOVE    SPA-HOSPNUM         TO  RECECSV-HOSPNUM
       *
 grpsys*DD  MOVE    "RECEERR"           TO  RECEERR-FILE-ID

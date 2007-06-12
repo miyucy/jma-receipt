@@ -371,7 +371,7 @@ grpsys     MOVE    SPA-HOSPNUM         TO  JOB-HOSPNUM
 grpsys                                 SPA-AREA
       *
       *    ファイル名編集
-grpsys     MOVE    "ORCBG009"          TO  TOKEIPARA-FILE-ID
+grpsys     MOVE    "BG00901"           TO  TOKEIPARA-FILE-ID
            MOVE    LNK-PRTKANRI-TERMID TO  TOKEIPARA-TERMID
            MOVE    SPA-HOSPNUM         TO  TOKEIPARA-HOSPNUM
 grpsys*DD  MOVE    "RECEERR"           TO  RECEERR-FILE-ID
