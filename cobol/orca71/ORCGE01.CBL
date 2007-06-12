@@ -64,9 +64,12 @@
        WORKING-STORAGE             SECTION.
       *
       *    £Ã£Ó£ÖºîÀ®¾ò·ïÍÑ¥Õ¥¡¥¤¥ë Ì¾¾ÎÎÎ°è
-           COPY    "CPCOMMONDAT4.INC"
-                                   REPLACING  //ORCGD//
-                                   BY         //EIE00//.
+grpsys*DD  COPY    "CPCOMMONDAT4.INC"
+grpsys*DD                          REPLACING  //ORCGD//
+grpsys     COPY    "CPCOMMONDAT2.INC"
+grpsys                             REPLACING  //RECE01//
+grpsys                             BY         //EIE00//.
+grpsys     03  FILLER              PIC X(04)   VALUE   ".dat".
       *
       *    Ãê½Ð¹àÌÜÍÑ¥Õ¥¡¥¤¥ë Ì¾¾ÎÎÎ°è
        01  EIE01PARA.
@@ -943,7 +946,10 @@ grpsys*DD                          MCPDATA-REC
       *
            MOVE    ZERO                    TO  SPA-GMN-MAX-B.
            MOVE    SPACE                   TO  FLG-SEL
-           MOVE    "ORCE00.CNV"            TO  EIE00PARA-FILE.
+grpsys*DD  MOVE    "ORCE00.CNV"            TO  EIE00PARA-FILE.
+grpsys     MOVE    "ORCGE00"         TO  EIE00PARA-FILE-ID.
+grpsys     MOVE    SPA-HOSPNUM       TO  EIE00PARA-HOSPNUM.
+grpsys     MOVE    SPA-TERMID        TO  EIE00PARA-TERMID.
            MOVE    1                       TO  IDX1.
       *½¤Àµ/*³«»Ï*03.06.05*********************************************
            MOVE    "F"                     TO  SPA-GMN-CHKBTN01.

@@ -71,9 +71,12 @@
        COPY    "COMMON-SPA".
       *
       *    £Ã£Ó£ÖºîÀ®¾ò·ïÍÑ¥Õ¥¡¥¤¥ë Ì¾¾ÎÎÎ°è 
-           COPY    "CPCOMMONDAT4.INC"
-                                   REPLACING  //ORCGD//
-                                   BY         //EIE00//.
+grpsys*DD  COPY    "CPCOMMONDAT4.INC"
+grpsys*DD                          REPLACING  //ORCGD//
+grpsys     COPY    "CPCOMMONDAT2.INC"
+grpsys                             REPLACING  //RECE01//
+grpsys                             BY         //EIE00//.
+grpsys     03  FILLER              PIC X(04)   VALUE   ".dat".
       *
       *    £Ã£Ó£ÖºîÀ®¾ò·ï£±¡Á£¹£°¥Õ¥¡¥¤¥ë Ì¾¾ÎÎÎ°è 
            COPY    "CPCOMMONDAT4.INC"
@@ -272,7 +275,10 @@ grpsys         05  WRK-PARA-HOSPNUM    PIC  9(02).
 grpsys     INITIALIZE                  SPA-AREA
            MOVE    COMMAND-PARAM   TO  WRK-PARA.
 grpsys     MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
-           MOVE    "ORCE00.CNV"    TO  EIE00PARA-FILE
+grpsys*DD  MOVE    "ORCE00.CNV"    TO  EIE00PARA-FILE
+grpsys     MOVE    "ORCGE00"         TO  EIE00PARA-FILE-ID.
+grpsys     MOVE    SPA-HOSPNUM       TO  EIE00PARA-HOSPNUM.
+grpsys     MOVE    WRK-PARA-TERMID   TO  EIE00PARA-TERMID.
       *
            MOVE    SPACE           TO  WK-TBL1.
            MOVE    1               TO  IDX1.
