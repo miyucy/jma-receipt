@@ -40,7 +40,7 @@
       * 01.00.05     ひさなが     02/09/13  ディレクトリをサブプロへ
       * 01.00.06     ひさなが     03/05/12  入院関連テーブルの追加
       * 01.00.07     ひさなが     03/06/05  患者ＩＤ置換メッセージの追加
-      *
+      * 03.05.01     NACL-森脇    07/06/11  グループ診療対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -584,10 +584,11 @@
            MOVE    1                  TO  JOB-JOBID.
            MOVE    "ORCBSE1"          TO  JOB-SHELLID.
            MOVE    ALL "*"            TO  JOB-TERMID.
-           MOVE    SPA-HOSPNUM         TO  JOB-HOSPNUM.
+grpsys     MOVE    SPA-HOSPNUM        TO  JOB-HOSPNUM
            CALL    "ORCSJOB"          USING
                                       WRK-JOBKANRI-AREA  
-                                      JOBKANRI-REC.
+grpsys                                JOBKANRI-REC
+grpsys                                SPA-AREA.
            MOVE    SPACE              TO  EID2.
            MOVE    ZERO               TO  FLG-RUN.
            IF  WRK-JOBKANRI-RETURN   =   ZERO
@@ -649,11 +650,14 @@
       *****************************************************************
        900-PUT-WINDOW              SECTION.
       *
-           MOVE   "PUTWINDOW"                   TO  MCP-FUNC.
-           CALL   "ORCDBMAIN"     USING
-                                      MCPAREA
-                                      MCPDATA-REC
-                                      SPA-AREA
+grpsys     MOVE   "PUTWINDOW"                   TO  MCP-FUNC.
+grpsys     CALL    "ORCDBMAIN"         USING
+grpsys                                 MCPAREA
+grpsys                                 MCPDATA-REC
+grpsys                                 SPA-AREA
+grpsys*DD  CALL "MONFUNC"          USING
+grpsys*DD                          MCPAREA
+grpsys*DD                          MCPDATA-REC
            .
       *
        900-PUT-WINDOW-EXT.

@@ -34,7 +34,7 @@
       * 01.00.04     ひさなが     03/05/12  入院関連テーブルの追加
       * 01.00.05     ひさなが     03/05/21  診療年月設定時の判定順変更
       * 01.00.06     ひさなが     03/06/05  患者ＩＤ置換メッセージの追加
-      *
+      * 03.05.01     NACL-森脇    07/06/11  グループ診療対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -115,6 +115,7 @@
                05  WRK-PARA-SYSYMD     PIC  X(08).
                05  WRK-PARA-SYOKBN     PIC  X(01).
                05  WRK-PARA-RECEKBN    PIC  X(01).
+grpsys         05  WRK-PARA-HOSPNUM    PIC  9(02).
            03  WK-SRYYM                PIC  X(06).
            03  WK-PATHNAME             PIC  X(64).
            03  WK-TABLE                PIC  X(64).
@@ -268,8 +269,10 @@
       *****************************************************************
        T-000-CHEKCHEK-SEC              SECTION.
       *
+grpsys     INITIALIZE                  SPA-AREA
            MOVE    COMMAND-PARAM   TO  WRK-PARA.
-           MOVE    "ORCE00.CNV"    TO  EIE00PARA-FILE.
+grpsys     MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
+           MOVE    "ORCE00.CNV"    TO  EIE00PARA-FILE
       *
            MOVE    SPACE           TO  WK-TBL1.
            MOVE    1               TO  IDX1.
@@ -417,11 +420,11 @@
                                    COMPUTE WK-SRYYM-L  =  WK-SRYYM-S
                                                                   +  6
       *修正/*開始*03.06.05*********************************************
-                               WHEN    "HOSPID**"
-                                   MOVE    EIE01-REC(71:6)
-                                                 TO  WK-HOSPID-S
-                                   MOVE    EIE01-REC(51:5)
-                                                 TO  WK-HOSPID-L(2:5)
+grpsys*DD                      WHEN    "HOSPNUM*"
+grpsys*DD                          MOVE    EIE01-REC(71:6)
+grpsys*DD                                        TO  WK-HOSPID-S
+grpsys*DD                          MOVE    EIE01-REC(51:5)
+grpsys*DD                                        TO  WK-HOSPID-L(2:5)
       *修正/*終了*03.06.05*********************************************
                                WHEN    OTHER
                                    COMPUTE IDX1  =  IDX1  +  1
@@ -484,56 +487,52 @@
            EVALUATE    WK-TBL-MSG (IDX2)(1:10)
                WHEN    "JYURRK    "
                    MOVE    "all2"          TO  WK-PATHNAME
-      *             MOVE    SPA-HOSPNUM     TO  WK-HOSPNUM
+grpsys*             MOVE    SPA-HOSPNUM     TO  WK-HOSPNUM
                    MOVE    WK-SRYYM        TO  MCPDATA-REC(WK-SRYYM-S:6)
-grpsys*            MOVE SPA-HOSPNUM TO -HOSPNUM
                    MOVE    "%"             TO  MCPDATA-REC(WK-SRYYM-L:1)
                WHEN    "PTBYOMEI  "
                    MOVE    "all2"          TO  WK-PATHNAME
-      *             MOVE    SPA-HOSPNUM     TO  WK-HOSPNUM
+grpsys*             MOVE    SPA-HOSPNUM     TO  WK-HOSPNUM
                    MOVE    WK-SRYYM        TO  MCPDATA-REC(WK-SRYYM-S:6)
-grpsys*            MOVE SPA-HOSPNUM TO -HOSPNUM
                    MOVE    "%"             TO  MCPDATA-REC(WK-SRYYM-L:1)
                WHEN    "SRYACCT   "
                    MOVE    "all2"          TO  WK-PATHNAME
-      *             MOVE    SPA-HOSPNUM     TO  WK-HOSPNUM
+grpsys*             MOVE    SPA-HOSPNUM     TO  WK-HOSPNUM
                    MOVE    WK-SRYYM        TO  MCPDATA-REC(WK-SRYYM-S:6)
                WHEN    "SRYACT    "
                    MOVE    "all2"          TO  WK-PATHNAME
-      *             MOVE    SPA-HOSPNUM     TO  WK-HOSPNUM
+grpsys*             MOVE    SPA-HOSPNUM     TO  WK-HOSPNUM
                    MOVE    WK-SRYYM        TO  MCPDATA-REC(WK-SRYYM-S:6)
                WHEN    "WKSRYACT  "
                    MOVE    "all2"          TO  WK-PATHNAME
-      *             MOVE    SPA-HOSPNUM     TO  WK-HOSPNUM
+grpsys*             MOVE    SPA-HOSPNUM     TO  WK-HOSPNUM
                    MOVE    WK-SRYYM        TO  MCPDATA-REC(WK-SRYYM-S:6)
-grpsys*            MOVE SPA-HOSPNUM TO -HOSPNUM
                    MOVE    "%"             TO  MCPDATA-REC(WK-SRYYM-L:1)
                WHEN    "SANTEI    "
                    MOVE    "all2"          TO  WK-PATHNAME
-      *             MOVE    SPA-HOSPNUM     TO  WK-HOSPNUM
+grpsys*             MOVE    SPA-HOSPNUM     TO  WK-HOSPNUM
                    MOVE    WK-SRYYM        TO  MCPDATA-REC(WK-SRYYM-S:6)
                WHEN    "SEIKYU    "
                    MOVE    "all2"          TO  WK-PATHNAME
-      *             MOVE    SPA-HOSPNUM     TO  WK-HOSPNUM
+grpsys*             MOVE    SPA-HOSPNUM     TO  WK-HOSPNUM
                    MOVE    WK-SRYYM        TO  MCPDATA-REC(WK-SRYYM-S:6)
                WHEN    "BD002     "
                    MOVE    "all2"          TO  WK-PATHNAME
-      *             MOVE    SPA-HOSPNUM     TO  W-HOSPNUM
+grpsys*             MOVE    SPA-HOSPNUM     TO  WK-HOSPNUM
                    MOVE    WK-SRYYM        TO  MCPDATA-REC(WK-SRYYM-S:6)
-grpsys*            MOVE SPA-HOSPNUM TO -HOSPNUM
                    MOVE    "%"             TO  MCPDATA-REC(53:1)
       *修正/*開始*03.05.12*********************************************
                WHEN    "NYUINACCT "
                    MOVE    "all2"          TO  WK-PATHNAME
-      *             MOVE    SPA-HOSPNUM     TO  WK-HOSPNUM
+grpsys*             MOVE    SPA-HOSPNUM     TO  WK-HOSPNUM
                    MOVE    WK-SRYYM        TO  MCPDATA-REC(WK-SRYYM-S:6)
                WHEN    "NYUINACT  "
                    MOVE    "all2"          TO  WK-PATHNAME
-      *             MOVE    SPA-HOSPNUM     TO  WK-HOSPNUM
+grpsys*             MOVE    SPA-HOSPNUM     TO  WK-HOSPNUM
                    MOVE    WK-SRYYM        TO  MCPDATA-REC(WK-SRYYM-S:6)
                WHEN    "PTTEIKIRRK"
                    MOVE    "all2"          TO  WK-PATHNAME
-      *             MOVE    SPA-HOSPNUM     TO  WK-HOSPNUM
+grpsys*             MOVE    SPA-HOSPNUM     TO  WK-HOSPNUM
                    MOVE    WK-SRYYM        TO  MCPDATA-REC(WK-SRYYM-S:6)
       *修正/*終了*03.05.12*********************************************
            END-EVALUATE.
@@ -657,10 +656,12 @@ grpsys*            MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    X"0A"                TO  WK-EIECS-REC(IDX4:1).
       *
       *修正/*開始*03.05.12*********************************************
-           IF  (WK-TBL-CHKBTN01               =   "T")   AND
-               (WK-PTID-K                     =   "*")   AND
-               (WK-HOSPID-S               NOT =   ZERO)  AND
-               (WK-HOSPID-L               NOT =   ZERO)
+grpsys*DD  IF  (WK-TBL-CHKBTN01               =   "T")   AND
+grpsys*DD      (WK-PTID-K                     =   "*")   AND
+grpsys*DD      (WK-HOSPID-S               NOT =   ZERO)  AND
+grpsys*DD      (WK-HOSPID-L               NOT =   ZERO)
+grpsys     IF  (WK-TBL-CHKBTN01               =   "T")   AND
+grpsys         (WK-PTID-K                     =   "*")
                COMPUTE       IDX9  =  WK-PTID-C  -  1
                PERFORM VARYING IDX5   FROM   1   BY   1
                        UNTIL   IDX5   >   IDX9

@@ -33,7 +33,7 @@
       * 01.00.04     ひさなが     03/04/08  診療年月チェックの修正
       * 01.00.05     ひさなが     03/05/12  入院関連テーブルの追加
       * 01.00.06     ひさなが     03/06/05  患者ＩＤ置換メッセージの追加
-      *
+      * 03.05.01     NACL-森脇    07/06/11  グループ診療対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -329,6 +329,7 @@
                    CALL    "ORCSJOB"           USING
                                                WRK-JOBKANRI-AREA  
                                                JOBKANRI-REC
+grpsys                                         SPA-AREA
                    IF  WRK-JOBKANRI-RETURN   =   ZERO
                        INITIALIZE                      WRK-JOBKANRI-AREA
                        MOVE    "DEL"               TO  WRK-JOBKANRI-MODE
@@ -340,6 +341,7 @@
                        CALL    "ORCSJOB"           USING
                                                    WRK-JOBKANRI-AREA
                                                    JOBKANRI-REC
+grpsys                                             SPA-AREA
                    END-IF
                    INITIALIZE                      WRK-JOBKANRI-AREA
                    MOVE    "JBS"               TO  WRK-JOBKANRI-MODE
@@ -352,6 +354,7 @@
                    CALL    "ORCSJOB"           USING
                                                WRK-JOBKANRI-AREA
                                                JOBKANRI-REC
+grpsys                                         SPA-AREA
                    INITIALIZE                      ORCSMKPASSAREA
                    MOVE    "scripts/allways/orcbse01.sh"
                                                TO  MKPASS-IN-01
@@ -368,6 +371,7 @@
                    MOVE    SHELL-ARG2          TO  SHELLTBL-ARG2
                    MOVE    SHELL-ARG3          TO  SHELLTBL-ARG3
                    MOVE    SHELL-ARG4          TO  SHELLTBL-ARG4
+grpsys             MOVE    SPA-HOSPNUM         TO  SHELLTBL-ARG5
                    MOVE    SHELLTBL            TO  MCPDATA-REC
                    MOVE    "SHELL"             TO  MCP-FUNC
                    MOVE    "shell"             TO  MCP-TABLE
@@ -737,7 +741,8 @@
            MOVE    SPA-HOSPNUM         TO  JOB-HOSPNUM.
            CALL    "ORCSJOB"          USING
                                       WRK-JOBKANRI-AREA  
-                                      JOBKANRI-REC.
+                                      JOBKANRI-REC
+grpsys                                SPA-AREA.
            MOVE    SPACE              TO  EID2.
            MOVE    SPACE              TO  SPA-GMN-RUN.
            IF  WRK-JOBKANRI-RETURN   =   ZERO
@@ -819,10 +824,14 @@
        900-PUT-WINDOW              SECTION.
       *
            MOVE   "PUTWINDOW"                   TO  MCP-FUNC.
-           CALL   "ORCDBMAIN"      USING
+           CALL    "ORCDBMAIN"         USING
                                        MCPAREA
                                        MCPDATA-REC
                                        SPA-AREA
+grpsys*DD  CALL   "ORCDBMAIN"      USING
+grpsys*DD                              MCPAREA
+grpsys*DD                              MCPDATA-REC
+grpsys*DD                              SPA-AREA
            .
        900-PUT-WINDOW-EXT.
            EXIT.
