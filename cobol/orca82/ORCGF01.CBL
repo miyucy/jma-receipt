@@ -58,9 +58,9 @@
        FD  FIF00-FILE.
        01  FIF00-REC.
            03  FIF00-DATA-AREA     PIC X(1001).
-           03  FIF00-OLD-DEF-RED  REDEFINES   FIF00-DATA-AREA.
-               05  FIF00-OLD-DEFINITION       PIC X(1001).
-           03  FIF00-NEW-DEF-RED  REDEFINES   FIF00-DATA-AREA.
+           03  FIF00-OLD-DEF-RED   REDEFINES   FIF00-DATA-AREA.
+               05  FIF00-OLD-DEFINITION    PIC X(1001).
+           03  FIF00-NEW-DEF-RED   REDEFINES   FIF00-DATA-AREA.
                05  FIF00-NEW-DEFINITION.
                    07  FIF00-FILE-ID       PIC X(500).
                    07  FIF00-CHK           PIC X(01) OCCURS    500.
@@ -166,7 +166,6 @@ grpsys                             REPLACING  //RECE01//
       *****************************************************************
       *    連絡　領域
       *****************************************************************
-      *
         LINKAGE                     SECTION.
       *
       *     テーブルアクセス
@@ -190,7 +189,6 @@ grpsys                             REPLACING  //RECE01//
       *****************************************************************
       *    主    処    理
       *****************************************************************
-      *
        000-PROC-SEC                SECTION.
       *
            MOVE    SPA-COMMON      TO  SPA-AREA.
@@ -824,7 +822,7 @@ grpsys         MOVE    SPA-HOSPNUM       TO  SHELLTBL-ARG7
        T-000-READCHEK-SEC                SECTION.
       *
            MOVE    ZERO              TO  SPA-GMN-MAX-B.
-grpsys     MOVE    "ORCGF01"         TO  FIF00PARA-FILE-ID.
+grpsys     MOVE    "ORCGF00"         TO  FIF00PARA-FILE-ID.
 grpsys     MOVE    SPA-HOSPNUM       TO  FIF00PARA-HOSPNUM.
 grpsys     MOVE    SPA-TERMID        TO  FIF00PARA-TERMID.
            MOVE    1                 TO  SPA-GMN-CUR.
