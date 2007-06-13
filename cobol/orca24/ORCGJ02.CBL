@@ -54,6 +54,7 @@
       *  03.04.00    NACL-多々納  06/11/13  検査正式名称表示追加
       *  03.04.01    NACL-多々納  07/02/28  包括診療追加対応
       *  03.05.00    NACL-多々納  07/05/XX  グループ診療対応
+      *  03.05.00    NACL-多々納  07/06/13  レセプレビューに労災・自賠追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -196,6 +197,7 @@
            03  FLG-NAIBUN          PIC 9(01).
       *
            03  FLG-HKN-OK          PIC 9(01).
+           03  FLG-RSIHKN-OK       PIC 9(01).
            03  FLG-RRKNUM-ARI      PIC 9(01).
       *
       *    カウント領域
@@ -503,6 +505,10 @@
       *    回数
            03  WRK-CNT-TUKI            PIC 9(03).
            03  WRK-DAYCNT              PIC 9(03).
+      *    プレビュー用
+           03  WRK-RSI-CNT             PIC 9(03).
+           03  WRK-NCNT-R              PIC 9(03).
+           03  WRK-NCNT                PIC 9(03).
       *
        01  TBL-GRP-AREA.
            03  TBL-GRP-OCC             OCCURS   10.
@@ -975,6 +981,7 @@
                    MOVE    LNK-SCRSPA      TO  SPA-J02
                    MOVE    SPA-WORK        TO  SPA-J01KYOUTU
                    MOVE    ZERO            TO  SPA-J025-SYORI
+                   MOVE    SPACE           TO  SPA-JIDCD
                END-IF
       *        予約の時、そのまま画面表示へ
                IF      WRK-MOTOPG          =   "Y01"
@@ -1054,6 +1061,12 @@
       *        収納変更確認画面
                WHEN    "J025"
                    PERFORM 3002-J025-BACK-SEC
+                   IF     (SPA-ERRCD           =   SPACE )  AND
+                          (SPA-JIDCD       NOT =   SPACE )
+                       PERFORM 500-GMNHEN-SEC
+                       PERFORM 520-JIDSET-SEC
+                       MOVE    1               TO  FLG-END
+                   END-IF
       *        その他
                WHEN    OTHER
                    PERFORM 3001-SCREEN-INIT-SEC
@@ -1446,9 +1459,18 @@
                    IF      SPA-JID1-FLG        =   "OK"
                        PERFORM 4130-PREVIEW-CHK-SEC
                    ELSE
+                       MOVE    SPACE           TO  SPA-JIDCD
                        MOVE    1                  TO  SPA-GMN-CUR
                    END-IF
-      *
+               WHEN    "0125"
+      *            プレビュー確認
+                   MOVE    SPACE           TO  SPA-JIDCD
+                   MOVE    SPACE           TO  SPA-XC01-CHK
+                   IF      SPA-JID1-FLG        =   "OK"
+                       PERFORM 4130-PREVIEW-SEC
+                   ELSE
+                       MOVE    1                  TO  SPA-GMN-CUR
+                   END-IF
            END-EVALUATE
            .
        3003-JID1-SET-EXT.
@@ -10669,7 +10691,12 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                    PERFORM 3103-JYURRK-HEN-SEC
                    MOVE    1                   TO  SPA-GMN-PAGE
       *            プレビューへ
-                   PERFORM 4130-PREVIEW-SEC
+      *            プレビュー確認
+                   IF      SPA-XC01-CHK        =   "1"
+                       MOVE    "0125"          TO  SPA-JIDCD
+                   ELSE
+                       PERFORM 4130-PREVIEW-SEC
+                   END-IF
                WHEN    OTHER
       *            登録
       *            患者が選択されてきた時は、元の画面へ
@@ -11529,46 +11556,26 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    "0009"          TO  SPA-ERRCD
            END-IF
       *
+           MOVE    SPACE               TO  SPA-XC01-HKNKBN
+           MOVE    SPACE               TO  SPA-XC01-RSI-HKNKBN
+           MOVE    SPACE               TO  SPA-XC01-CHK
       *    保険判定
            MOVE    ZERO                TO  FLG-HKN-OK
+           MOVE    ZERO                TO  FLG-RSIHKN-OK
            IF     (SPA-GMN-PTNUM   NOT =   SPACE )  AND
                   (SPA-GMN-PTID    NOT =   ZERO  )  AND
                   (SPA-ERRCD           =   SPACE )  AND
                   (SPA-GMN-HHKNCOMBI   NOT =    "9999" )
                IF      SPA-GMN-HHKNCOMBI   =   "0000"
-                   PERFORM VARYING     IDH     FROM   1   BY  1
-                           UNTIL       IDH     >   SPA-HKN-MAX
-                         IF      SPA-NAI-THKNNUM(IDH)  =   "971"
-                                                    OR  "973"
-                                                    OR  "999"
-                           CONTINUE
-                       ELSE
-                           MOVE    SPA-GMN-THKNCOMBINUM(IDH)
-                                               TO  WRK-HKNCOMBI
-                           PERFORM 40101-HKNNUM-CHK-SEC
-                           IF      FLG-JYURRK      =   ZERO
-                               MOVE    1               TO  FLG-HKN-OK
-                               MOVE    SPA-HKN-MAX     TO  IDH
-                           END-IF
-                       END-IF
-                   END-PERFORM
+                   PERFORM 40102-ALL-HKNCOMBI-CHK-SEC
                ELSE
-                   MOVE    SPA-GMN-HHKNCOMBI   TO  WRK-HKNCOMBI
-                   PERFORM 40101-HKNNUM-CHK-SEC
-                   IF      FLG-JYURRK      =   ZERO
-                       MOVE    1               TO  FLG-HKN-OK
-                   END-IF
-               END-IF
-               IF     (FLG-HKN-OK          =   ZERO )  AND
-                      (SPA-NYUGAIKBN       =  "1"   )  AND
-                      (SPA-GMN-NYUINYMD    NOT =   SPACE )
-                   MOVE    1               TO  FLG-HKN-OK
+                   PERFORM 40103-SEL-HKNCOMBI-CHK-SEC
                END-IF
            END-IF
-           IF      SPA-GMN-HHKNCOMBI   =   "971"
-                                       OR  "973"
-               MOVE    "0072"          TO  SPA-ERRCD
-           END-IF
+      *****IF      SPA-GMN-HHKNCOMBI   =   "971"
+      *                                OR  "973"
+      *        MOVE    "0072"          TO  SPA-ERRCD
+      **** END-IF
            IF     (SPA-GMN-PTNUM   NOT =   SPACE )  AND
                   (SPA-GMN-PTID    NOT =   ZERO  )  AND
                   (SPA-ERRCD           =   SPACE )
@@ -11583,11 +11590,146 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                IF      SPA-UPDFLG          =   "1"
                    MOVE    "0121"              TO  SPA-JIDCD
                ELSE
-                   PERFORM 4130-PREVIEW-SEC
+                   IF      SPA-XC01-CHK        =   "1"
+                       MOVE    "0125"          TO  SPA-JIDCD
+                   ELSE
+                       PERFORM 4130-PREVIEW-SEC
+                   END-IF
                END-IF
            END-IF
            .
        4010-PREVIEW-SYORI-EXT.
+           EXIT.
+      *****************************************************************
+      *    プレビュー対象の全保険内容チェック処理
+      *****************************************************************
+       40102-ALL-HKNCOMBI-CHK-SEC          SECTION.
+      *
+           MOVE    ZERO                TO  WRK-RSI-CNT
+           MOVE    ZERO                TO  WRK-NCNT-R
+           MOVE    ZERO                TO  WRK-NCNT
+           PERFORM VARYING     IDH     FROM   1   BY  1
+                   UNTIL      (IDH     >   SPA-HKN-MAX   )
+               IF      SPA-NAI-THKNNUM(IDH)  =   "999"
+                   CONTINUE
+               ELSE
+                   PERFORM 40102-HKNCOMBI-CHK-SEC
+               END-IF
+           END-PERFORM
+      *    医保の対象あり
+           IF      FLG-HKN-OK      NOT =   ZERO
+               MOVE    "0"                 TO  SPA-XC01-HKNKBN
+               MOVE    SPACE               TO  SPA-XC01-RSI-HKNKBN
+               IF      FLG-RSIHKN-OK   NOT =   ZERO
+                   MOVE    "1"             TO  SPA-XC01-CHK
+               END-IF
+           ELSE
+               IF      FLG-RSIHKN-OK   NOT =   ZERO
+      *            労災・自賠責が１件のみ
+                   IF      WRK-RSI-CNT         =   1
+                       MOVE    1               TO  FLG-HKN-OK
+                       MOVE    "1"             TO  SPA-XC01-HKNKBN
+                       MOVE    FLG-RSIHKN-OK   TO  SPA-XC01-RSI-HKNKBN
+                   ELSE
+                       MOVE    "0073"          TO  SPA-ERRCD
+                   END-IF
+               END-IF
+           END-IF
+      *    入院中で受診履歴がない時
+           IF     (FLG-HKN-OK          =   ZERO )  AND
+                  (SPA-ERRCD           =   SPACE)  AND
+                  (SPA-NYUGAIKBN       =  "1"   )  AND
+                  (SPA-GMN-NYUINYMD    NOT =   SPACE )
+      *        健保のみ
+               IF     (WRK-NCNT-R          =   ZERO )   AND
+                      (WRK-NCNT            >   ZERO )
+                   MOVE    1                   TO  FLG-HKN-OK
+                   MOVE    "0"                 TO  SPA-XC01-HKNKBN
+                   MOVE    SPACE               TO  SPA-XC01-RSI-HKNKBN
+               END-IF
+      *        労災・自賠責が１件のみ
+               IF     (WRK-NCNT-R          =   1    )   AND
+                      (WRK-NCNT            =   ZERO )
+                   MOVE    1                   TO  FLG-HKN-OK
+                   MOVE    "1"                 TO  SPA-XC01-HKNKBN
+                   MOVE    SPACE               TO  SPA-XC01-RSI-HKNKBN
+               END-IF
+      *
+               IF     (FLG-HKN-OK          =   ZERO )
+                   MOVE    "0074"          TO  SPA-ERRCD
+               END-IF
+           END-IF
+           .
+       40102-ALL-HKNCOMBI-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    プレビュー対象の全保険内容チェック処理
+      *****************************************************************
+       40102-HKNCOMBI-CHK-SEC          SECTION.
+      *
+           MOVE    SPA-GMN-THKNCOMBINUM(IDH)
+                                       TO  WRK-HKNCOMBI
+           PERFORM 40101-HKNNUM-CHK-SEC
+           IF      FLG-JYURRK          =   ZERO
+               IF      SPA-NAI-THKNNUM(IDH)    =   "971"
+                                               OR  "973"
+                   IF     (FLG-RSIHKN-OK   NOT =
+                                           SPA-NAI-TRSI-HKNKBN (IDH))
+                       ADD     1               TO  WRK-RSI-CNT
+                   END-IF
+                   IF      FLG-RSIHKN-OK       =   ZERO
+                        MOVE    SPA-NAI-TRSI-HKNKBN (IDH)
+                                               TO  FLG-RSIHKN-OK
+                   END-IF
+               ELSE
+                   MOVE    1               TO  FLG-HKN-OK
+               END-IF
+           ELSE
+               IF      SPA-NAI-THKNNUM(IDH)    =   "971"
+                                               OR  "973"
+                   ADD     1               TO  WRK-NCNT-R
+               ELSE
+                   ADD     1               TO  WRK-NCNT
+               END-IF
+           END-IF
+           .
+       40102-HKNCOMBI-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    プレビュー対象の選択保険処理
+      *****************************************************************
+       40103-SEL-HKNCOMBI-CHK-SEC          SECTION.
+      *
+           MOVE    SPA-GMN-HHKNCOMBI   TO  WRK-HKNCOMBI
+           PERFORM 40101-HKNNUM-CHK-SEC
+           IF      FLG-JYURRK      =   ZERO
+               MOVE    1               TO  FLG-HKN-OK
+           END-IF
+           IF     (FLG-HKN-OK          =   ZERO )  AND
+                  (SPA-NYUGAIKBN       =  "1"   )  AND
+                  (SPA-GMN-NYUINYMD    NOT =   SPACE )
+               MOVE    1               TO  FLG-HKN-OK
+           END-IF
+      *
+           IF      FLG-HKN-OK          =   1
+               PERFORM VARYING     IDH     FROM    1   BY  1
+                       UNTIL       IDH     >   SPA-HKN-MAX
+                   IF      SPA-GMN-THKNCOMBINUM (IDH)
+                                               =   SPA-GMN-HHKNCOMBI
+                       IF      SPA-NAI-THKNKBN (IDH)   =   "0"
+                           MOVE    "0"         TO  SPA-XC01-HKNKBN
+                           MOVE    SPACE       TO  SPA-XC01-RSI-HKNKBN
+                       ELSE
+                           MOVE    "1"         TO  SPA-XC01-HKNKBN
+                           MOVE    SPA-NAI-TRSI-HKNKBN (IDH)
+                                               TO  SPA-XC01-RSI-HKNKBN
+                       END-IF
+                       MOVE    SPA-HKN-MAX     TO  IDH
+                   END-IF
+               END-PERFORM
+           END-IF
+           .
+       40103-SEL-HKNCOMBI-CHK-EXT.
            EXIT.
       *****************************************************************
       *    プレビュー対象の保険処理
@@ -11633,7 +11775,12 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                       (FLG-END             =   1     )
                    MOVE    14              TO  SPA-J025-SYORI
                ELSE
-                   PERFORM 4130-PREVIEW-SEC
+      *            プレビュー確認
+                   IF      SPA-XC01-CHK        =   "1"
+                       MOVE    "0125"          TO  SPA-JIDCD
+                   ELSE
+                       PERFORM 4130-PREVIEW-SEC
+                   END-IF
                END-IF
            END-IF
            .
@@ -11645,8 +11792,11 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
        4130-PREVIEW-SEC          SECTION.
       *
            PERFORM 41301-PREVIEW-KICK-SEC
+      *TEST
+           DISPLAY "4130-PREVIEW-SEC SPA-JIDCD:" SPA-JIDCD
       *
            MOVE    SPACE               TO  LINKAREA
+           MOVE    SPA-J01KYOUTU       TO  SPA-WORK
            MOVE    SPA-KYOUTU          TO  LNK-COMMON
            MOVE    SPA-J02             TO  LNK-SCRSPA
       *
@@ -11682,13 +11832,16 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *****************************************************************
        41301-PREVIEW-KICK-SEC    SECTION.
       *
+           MOVE    SPACE               TO  SPA-XC01-CHK
            MOVE    ZERO                TO  WRK-RRK-HKNKBN
            CALL    "ORCSRECEARGMK"     USING
                                        "0"
                                        SPA-GMN-PTID
                                        SPA-NAI-SRYYM
                                        SPA-NYUGAIKBN
-                                       WRK-RRK-HKNKBN
+      *****************************    WRK-RRK-HKNKBN
+                                       SPA-XC01-HKNKBN
+                                       SPA-XC01-RSI-HKNKBN
                                        SPA-AREA
       *
            .
@@ -11963,6 +12116,18 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN    "0072"
                    MOVE    "労災・自賠責はプレビューできません。"
                                        TO  WRK-ERRMSG
+               WHEN    "0073"
+                   STRING  "労災・自賠責が複数あります。"
+                           "保険を選択して下さい。"
+                                       DELIMITED   BY  SIZE
+                                       INTO   WRK-ERRMSG
+                   END-STRING
+               WHEN    "0074"
+                   STRING  "保険が複数あります。"
+                           "入院料の保険を選択して下さい。"
+                                       DELIMITED   BY  SIZE
+                                       INTO   WRK-ERRMSG
+                   END-STRING
       *
                WHEN    "2000"
                    MOVE    "更新エラーです。"
@@ -12199,10 +12364,18 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                    END-STRING
       *
                WHEN    "0121"
-                   MOVE    "ブレビューが押下されました。"
-                                       TO  WRK-JIDMSG
-                   MOVE    "現在までの修正分を登録します。"
-                                       TO  WRK-JIDMSG(29:)
+                   STRING   "ブレビューが押下されました。"
+                            "現在までの修正分を登録します。"
+                                       DELIMITED  BY  SIZE
+                                       INTO    WRK-JIDMSG
+                   END-STRING
+      *
+               WHEN    "0125"
+                   STRING   "健保のプレビューを行います。"
+                            "労災・自賠責は保険組合せを選択して下さい。"
+                                       DELIMITED  BY  SIZE
+                                       INTO    WRK-JIDMSG
+                   END-STRING
       *
                WHEN    OTHER
                    MOVE    SPA-JIDCD
