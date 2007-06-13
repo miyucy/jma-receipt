@@ -78,6 +78,7 @@
       *  03.04.00    NACL-多々納  06/11/14  高額委任払い追加
       *  03.04.01    NACL-多々納  07/02/16  ＱＲ受付対応
       *  03.05.00    NACL-多々納  07/05/XX  グループ診療対応
+      *  03.05.00    NACL-多々納  07/06/12  保険複写機能追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -2702,6 +2703,7 @@
                        MOVE    "0043"              TO  SPA-ERRCD
                        MOVE    61                  TO  SPA-GMN-CUR
                    WHEN    OTHER
+                       MOVE    SPACE               TO  SPA-GMN-HKNJANUM
                        MOVE    "0043"              TO  SPA-ERRCD
                        MOVE    61                  TO  SPA-GMN-CUR
                END-EVALUATE
