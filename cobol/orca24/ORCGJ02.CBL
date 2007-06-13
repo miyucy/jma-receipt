@@ -11792,8 +11792,6 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
        4130-PREVIEW-SEC          SECTION.
       *
            PERFORM 41301-PREVIEW-KICK-SEC
-      *TEST
-           DISPLAY "4130-PREVIEW-SEC SPA-JIDCD:" SPA-JIDCD
       *
            MOVE    SPACE               TO  LINKAREA
            MOVE    SPA-J01KYOUTU       TO  SPA-WORK
