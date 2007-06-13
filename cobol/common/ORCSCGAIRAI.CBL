@@ -161,6 +161,8 @@
                05  WRK-WDD         PIC 9(02).
       *    初診算定日保存
            03  WRK-KARRK-SYOSINYMD2    PIC X(08).
+      *    エラー
+           03  ORCSCGAIRAI-ERRMSG      PIC X(80).
       *
       *    診療行為計算用
            03  WRK-TENSU           PIC 9(08).
@@ -491,6 +493,7 @@
            INITIALIZE                  WRK-AREA
       *
            MOVE    SPA-WORK            TO  SPA-K01KYOUTU
+           MOVE    SPACE               TO  ORCSCGAIRAI-ERRMSG
       *
       *    更新日取得
            INITIALIZE                  ORCSMCNDATEAREA
@@ -509,6 +512,10 @@
                    PERFORM 400-SYOSIN-SYORI-SEC
            END-EVALUATE
       *
+           IF     (ORCSCGAIRAI-ERRMSG  NOT =   SPACE ) AND
+                  (SPA-ERRCD           NOT =   SPACE )
+               MOVE    ORCSCGAIRAI-ERRMSG  TO  SPA-ERRMSG2
+           END-IF
            MOVE    SPA-K01KYOUTU       TO  SPA-WORK
       *
            .
@@ -622,6 +629,7 @@
                PERFORM 1009-ORCSSYUKAMAIN-SEC
            END-IF
            IF      FLG-NAIBUN          =   1
+             AND   SPA-ERRCD           =   SPACE
       *        内分泌負荷試験包括点数チェック
                INITIALIZE                  ORCSSANFUKAAREA
                INITIALIZE                  SPA-SCR-REC
@@ -689,6 +697,10 @@
                                                SPA-AREA
                    IF      SKARRK-RC       NOT =   ZERO
                        MOVE    "0005"              TO  SPA-ERRCD
+                       STRING  "ORCSKARRK ERR "
+                               SKARRK-ERRMSG   DELIMITED  BY  SIZE
+                                               INTO  ORCSCGAIRAI-ERRMSG
+                       END-STRING
                    END-IF
                END-IF
            END-IF
@@ -1048,6 +1060,10 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                                                    SPA-AREA
                IF      MCP-RC          NOT =   ZERO
                    MOVE    "0005"          TO  SPA-ERRCD
+                   STRING  "SYUNOU INS ERR KEY : "
+                           SYU-KEY         DELIMITED  BY  SIZE
+                                           INTO  ORCSCGAIRAI-ERRMSG
+                   END-STRING
                    DISPLAY "K03 SYUNOU INS ERR MCP-RC:" MCP-RC
                            ",KEY:" SYU-KEY
                END-IF
@@ -1143,6 +1159,10 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                                                        SPA-AREA
                    IF      MCP-RC          NOT =   ZERO
                        MOVE    "0005"          TO  SPA-ERRCD
+                       STRING  "SYUNOU UPD ERR KEY : "
+                               SYU-KEY         DELIMITED  BY  SIZE
+                                               INTO  ORCSCGAIRAI-ERRMSG
+                       END-STRING
                        DISPLAY "K03 SYUNOU UPD MCP-RC:" MCP-RC
                                ",KEY:" SYU-KEY
                    END-IF
@@ -1164,6 +1184,10 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                                                        SPA-AREA
                    IF      MCP-RC          NOT =   ZERO
                        MOVE    "0005"          TO  SPA-ERRCD
+                       STRING  "SYUNOU INS ERR KEY : "
+                               SYU-KEY         DELIMITED  BY  SIZE
+                                           INTO  ORCSCGAIRAI-ERRMSG
+                       END-STRING
                        DISPLAY "K03 SYUNOU INS MCP-RC:" MCP-RC
                                ",KEY:" SYU-KEY
                    END-IF
@@ -1233,6 +1257,10 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                IF      MCP-RC          NOT =   ZERO
                    DISPLAY "K03 SYUNOU UPD ERR:"  MCP-RC
                              ",KEY:" SYU-KEY
+                   STRING  "SYUNOU UPD ERR KEY : "
+                           SYU-KEY         DELIMITED  BY  SIZE
+                                           INTO  ORCSCGAIRAI-ERRMSG
+                   END-STRING
                    MOVE    "0005"          TO  SPA-ERRCD
                END-IF
       *
@@ -1292,6 +1320,10 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                    DISPLAY "K03 SYUMEI UPD ERR:"  MCP-RC
                            ",KEY:" SMEI-KEY
                    MOVE    "0005"          TO  SPA-ERRCD
+                   STRING  "SYUMEI UPD ERR KEY : "
+                           SMEI-KEY        DELIMITED  BY  SIZE
+                                           INTO  ORCSCGAIRAI-ERRMSG
+                   END-STRING
                END-IF
       *
                MOVE    "tbl_syumei"        TO  MCP-TABLE
@@ -1378,11 +1410,19 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                                                    SPA-AREA
                IF      MCP-RC         NOT  =   ZERO
                    MOVE    "0005"              TO  SPA-ERRCD
+                   STRING  "SYSKANRI UPD ERR KEY : "
+                           SYS-0041-KEY     DELIMITED  BY  SIZE
+                                           INTO  ORCSCGAIRAI-ERRMSG
+                   END-STRING
                    DISPLAY "K03 SYSKANRI UPDATE:" MCP-RC
                            ",KEY:" SYS-0041-KEY
                END-IF
            ELSE
                MOVE    "0005"              TO  SPA-ERRCD
+               STRING  " DENPNUM-SET ERR KEY : "
+                        SYS-0041-KEY     DELIMITED  BY  SIZE
+                                           INTO  ORCSCGAIRAI-ERRMSG
+               END-STRING
                DISPLAY "K03 DENPNUM-SET ERR:" MCP-RC
                            ",KEY:" SYS-0041-KEY
            END-IF
@@ -1526,6 +1566,10 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                                SPA-AREA
            IF      MCP-RC          NOT =   ZERO
                MOVE    "0005"          TO  SPA-ERRCD
+               STRING  "SYUMEI INS ERR KEY : "
+                       SMEI-KEY        DELIMITED  BY  SIZE
+                                       INTO  ORCSCGAIRAI-ERRMSG
+               END-STRING
                DISPLAY "K03 SINMEI-SYORI MCP-RC:" MCP-RC
                         ",KEY:" SMEI-KEY
            END-IF
@@ -1602,6 +1646,10 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                    IF      MCP-RC          NOT =   ZERO
                        DISPLAY "K03 SYUMEI UPD ERR:"  MCP-RC
                                ",KEY:" SMEI-KEY
+                       STRING  "SYUMEI UPD ERR KEY : "
+                                SMEI-KEY        DELIMITED  BY  SIZE
+                                       INTO  ORCSCGAIRAI-ERRMSG
+                        END-STRING
                        MOVE    "0005"          TO  SPA-ERRCD
                    END-IF
                END-IF
@@ -1701,6 +1749,10 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                                SPA-AREA
            IF      MCP-RC          NOT =   ZERO
                MOVE    "0005"          TO  SPA-ERRCD
+               STRING  "SYUMEI INS ERR KEY : "
+                        SMEI-KEY        DELIMITED  BY  SIZE
+                                        INTO  ORCSCGAIRAI-ERRMSG
+               END-STRING
                DISPLAY "K03 SINMEI-SYORI MCP-RC:" MCP-RC
                        ",KEY:" SMEI-KEY
            END-IF
@@ -1968,6 +2020,10 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                                SPA-AREA
                    IF      SKARRK-RC       NOT =   ZERO
                        MOVE    "0005"              TO  SPA-ERRCD
+                       STRING  "ORCSKARRK ERR "
+                               SKARRK-ERRMSG      DELIMITED  BY  SIZE
+                                            INTO  ORCSCGAIRAI-ERRMSG
+                       END-STRING
                    END-IF
                END-IF
            END-PERFORM
@@ -2144,6 +2200,10 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                IF      MCP-RC          NOT =   ZERO
                     DISPLAY "K03 JYURRK UPD1 ERR:" MCP-RC
                            ",KEY:" JYURRK-KEY
+                    STRING  "JYURRK UPD ERR KEY : "
+                            JYURRK-KEY        DELIMITED  BY  SIZE
+                                        INTO  ORCSCGAIRAI-ERRMSG
+                    END-STRING
                     MOVE    "0005"              TO  SPA-ERRCD
                END-IF
       *
@@ -2228,9 +2288,13 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                                                        MCPDATA-REC
                                                        SPA-AREA
                    IF      MCP-RC          NOT =   ZERO
-                        DISPLAY "K03 SRYACCT UPD ERR:" MCP-RC
+                       DISPLAY "K03 SRYACCT UPD ERR:" MCP-RC
                                 ",KEY:" ACCT-KEY
-                        MOVE    "0005"             TO  SPA-ERRCD
+                       MOVE    "0005"              TO  SPA-ERRCD
+                       STRING  "SRYACCT UPD ERR KEY : "
+                               ACCT-KEY        DELIMITED  BY  SIZE
+                                           INTO  ORCSCGAIRAI-ERRMSG
+                       END-STRING
                    END-IF
       *
                    MOVE    "tbl_sryacct"       TO  MCP-TABLE
@@ -2326,6 +2390,10 @@ grpsys                 CALL    "ORCDBMAIN"         USING   MCPAREA
                             DISPLAY "K03 SRYACCT UPD ERR:" MCP-RC
                                 ",KEY:" ACCT-KEY
                             MOVE    "0005"              TO  SPA-ERRCD
+                            STRING  "SRYACCT UPD ERR KEY : "
+                                     ACCT-KEY        DELIMITED  BY  SIZE
+                                           INTO  ORCSCGAIRAI-ERRMSG
+                           END-STRING
                        END-IF
                    END-IF
       *
@@ -2726,6 +2794,10 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    "0005"          TO  SPA-ERRCD
                DISPLAY "K03 JYURRK-SYORI3 INS ERR:" MCP-RC 
                         ",KEY:" JYURRK-KEY "."
+               STRING  "JYURRK-SYORI3 INS ERR KEY : "
+                       JYURRK-KEY      DELIMITED  BY  SIZE
+                                       INTO  ORCSCGAIRAI-ERRMSG
+               END-STRING
            END-IF
       *
            .
@@ -2817,6 +2889,10 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                IF      MCP-RC          NOT =   ZERO
                    DISPLAY "K03 SRYKARRK UPD ERR:"  MCP-RC
                            ",KEY:" KARRK-KEY  ";"
+                   STRING  "SRYKARRK UPD ERR KEY : "
+                           KARRK-KEY       DELIMITED  BY  SIZE
+                                       INTO  ORCSCGAIRAI-ERRMSG
+                   END-STRING
                    MOVE    "0005"              TO  SPA-ERRCD
                END-IF
            ELSE
@@ -2836,6 +2912,10 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                    DISPLAY "K03 SRYKARRK INS ERR:"  MCP-RC
                            ",KEY:" KARRK-KEY  ";"
                    MOVE    "0005"              TO  SPA-ERRCD
+                   STRING  "SRYKARRK INS ERR KEY : "
+                           KARRK-KEY       DELIMITED  BY  SIZE
+                                       INTO  ORCSCGAIRAI-ERRMSG
+                   END-STRING
                END-IF
            END-IF
       *
@@ -3089,6 +3169,10 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                    DISPLAY "K03 SRYACCT INS ERR:" MCP-RC
                                 ",KEY:" ACCT-KEY
                    MOVE    "0005"              TO  SPA-ERRCD
+                   STRING  "SRYACCT INS ERR KEY : "
+                           ACCT-KEY       DELIMITED  BY  SIZE
+                                       INTO  ORCSCGAIRAI-ERRMSG
+                   END-STRING
                END-IF
       *        新規のときのみ、診療行為マスターを追加する
                MOVE    1                   TO  FLG-SINKI
@@ -3110,6 +3194,10 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                    DISPLAY "SYRACCT UPDTE ERR:" MCP-RC
                                 ",KEY:" ACCT-KEY
                    MOVE    "0005"              TO  SPA-ERRCD
+                   STRING  "SRYACCT UPD ERR KEY : "
+                           ACCT-KEY       DELIMITED  BY  SIZE
+                                       INTO  ORCSCGAIRAI-ERRMSG
+                   END-STRING
                END-IF   
                MOVE    ZERO                TO  FLG-SINKI
            END-IF
@@ -3211,6 +3299,10 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            IF      FLG-PTINF           =   1
                MOVE    "0002"          TO  SPA-ERRCD
                DISPLAY "K03 ZAINUM-SET ERR:" SPA-PTID
+               STRING  "PTINF READ ERR PTID : "
+                       SPA-PTID        DELIMITED  BY  SIZE
+                                       INTO  ORCSCGAIRAI-ERRMSG
+               END-STRING
                GO      TO      45013-ZAINUM-SET-EXT
            END-IF
       *
@@ -3235,6 +3327,10 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                DISPLAY "PTINF UPDTE ERR:"   MCP-RC
                                 ",KEY:" PTINF-KEY
                MOVE    "0005"              TO  SPA-ERRCD
+               STRING  "PTINF UPDTE ERR KEY : "
+                       PTINF-KEY      DELIMITED  BY  SIZE
+                                       INTO  ORCSCGAIRAI-ERRMSG
+               END-STRING
            END-IF 
       *
            .
@@ -3390,6 +3486,10 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                    DISPLAY "K03 SRYACT INS ERR:" SRY-KEY  "."
                    DISPLAY "MCP-RC:" MCP-RC ":" 
                    MOVE    "0005"          TO  SPA-ERRCD
+                   STRING  "SRYACT INS  ERR KEY : "
+                           SRY-KEY      DELIMITED  BY  SIZE
+                                       INTO  ORCSCGAIRAI-ERRMSG
+                   END-STRING
                END-IF
            END-PERFORM
            .
@@ -3437,6 +3537,10 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            IF      MCP-RC          NOT =   ZERO
                DISPLAY "K03 PTCOM INS ERR:" PTCOM-KEY
                MOVE    "0005"          TO  SPA-ERRCD
+               STRING  "PTCOM INS  ERR KEY : "
+                       PTCOM-KEY       DELIMITED  BY  SIZE
+                                       INTO  ORCSCGAIRAI-ERRMSG
+               END-STRING
            END-IF
       *
       *    明細番号
@@ -3711,6 +3815,10 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
               DISPLAY "K03 SRYACCTPLUS INS ERR:" ACCTP-KEY  "."
               DISPLAY "MCP-RC:" MCP-RC ":" 
               MOVE    "0005"          TO  SPA-ERRCD
+              STRING  "SRYACCTPLUS INS  ERR KEY : "
+                       ACCTP-KEY       DELIMITED  BY  SIZE
+                                       INTO  ORCSCGAIRAI-ERRMSG
+              END-STRING
            END-IF
       *
            .
@@ -3952,6 +4060,10 @@ grpsys                 CALL    "ORCDBMAIN"         USING   MCPAREA
                            DISPLAY "K03 UKETUKE UPD ERR:" UKE-KEY
                                    ",MCP-RC:"  MCP-RC
                            MOVE    "0005"          TO  SPA-ERRCD
+                           STRING  "UKETUKE UPD  ERR KEY : "
+                                   UKE-KEY       DELIMITED  BY  SIZE
+                                   INTO  ORCSCGAIRAI-ERRMSG
+                           END-STRING
                        END-IF
                   END-IF
                END-IF
@@ -4161,6 +4273,10 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                    DISPLAY "K03 SYUTTL INS ERR:" SYUTTL-KEY
                        ",MCP-RC:"  MCP-RC
                    MOVE    "0005"          TO  SPA-ERRCD
+                   STRING  "SYUTTL INS  ERR KEY : "
+                           SYUTTL-KEY      DELIMITED  BY  SIZE
+                                   INTO  ORCSCGAIRAI-ERRMSG
+                   END-STRING
                END-IF
            ELSE
       *        更新（新規とする）
@@ -4178,6 +4294,10 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                IF      MCP-RC          NOT =   ZERO
                    DISPLAY "K03 SYUTTL UPD ERR:" SYUTTL-KEY
                        ",MCP-RC:"  MCP-RC
+                   STRING  "SYUTTL UPD  ERR KEY : "
+                           SYUTTL-KEY      DELIMITED  BY  SIZE
+                                   INTO  ORCSCGAIRAI-ERRMSG
+                   END-STRING
                    MOVE    "0005"          TO  SPA-ERRCD
                END-IF
            END-IF
@@ -4213,10 +4333,15 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                                            SPA-AREA
                IF      SKARRK-RC       NOT =   ZERO
                    MOVE    "0005"              TO  SPA-ERRCD
+                   STRING  "ORCSKARRK ERR "
+                           SKARRK-ERRMSG      DELIMITED  BY  SIZE
+                                   INTO  ORCSCGAIRAI-ERRMSG
+                   END-STRING
                END-IF
            END-IF
       *
            IF      FLG-NAIBUN          =   1
+              AND  SPA-ERRCD           =   SPACE
       *        内分泌負荷試験包括点数チェック
                INITIALIZE                  ORCSSANFUKAAREA
                INITIALIZE                  SPA-SCR-REC
@@ -4377,6 +4502,10 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                        DISPLAY "K03 JYURRK INS ERR:" JYURRK-KEY
                            ",MCP-RC:" MCP-RC
                        MOVE    "0005"          TO  SPA-ERRCD
+                       STRING  "JYURRK INS ERR KEY : "
+                               JYURRK-KEY    DELIMITED  BY  SIZE
+                                       INTO  ORCSCGAIRAI-ERRMSG
+                       END-STRING
                    END-IF
       *            診療会計修正
                    PERFORM 4500115-TEISEI-SRYACTUPD-SEC
@@ -4487,6 +4616,10 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                                                SPA-AREA
                    IF      SKARRK-RC       NOT =   ZERO
                        MOVE    "0005"              TO  SPA-ERRCD
+                       STRING  "ORCSKARRK ERR "
+                               SKARRK-ERRMSG   DELIMITED  BY  SIZE
+                                               INTO  ORCSCGAIRAI-ERRMSG
+                       END-STRING
                    END-IF
                END-IF
            END-PERFORM
@@ -4725,6 +4858,10 @@ grpsys                 CALL    "ORCDBMAIN"         USING   MCPAREA
                             DISPLAY "K03 SRYACCT UPD ERR:" MCP-RC
                              ",KEY:"  ACCT-KEY
                             MOVE    "0005"          TO  SPA-ERRCD
+                            STRING  "SRYACCT UPD ERR KEY : "
+                                   ACCT-KEY    DELIMITED  BY  SIZE
+                                         INTO  ORCSCGAIRAI-ERRMSG
+                            END-STRING
                        END-IF
       *
                    MOVE    "tbl_sryacct"       TO  MCP-TABLE
@@ -4846,6 +4983,10 @@ grpsys                 CALL    "ORCDBMAIN"         USING   MCPAREA
                                                 SPA-AREA
            IF      LNK-UPD-RC      NOT =   ZERO
                MOVE    "0005"              TO  SPA-ERRCD
+               STRING  "ORCSRECEUPD ERR LNK-UPD-RC : "
+                        LNK-UPD-RC   DELIMITED  BY  SIZE
+                                         INTO  ORCSCGAIRAI-ERRMSG
+               END-STRING
                DISPLAY "LNK-UPD-RC =>" LNK-UPD-RC
            END-IF
       *
