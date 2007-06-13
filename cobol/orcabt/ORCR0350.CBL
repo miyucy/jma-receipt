@@ -4887,6 +4887,7 @@
                                    ORCSRECESORT-IN-SANSOKBN (IDX)
                END-PERFORM
                CALL    "ORCSRECESORT"      USING   ORCSRECESORTAREA
+                                                   SPA-AREA
                IF      ORCSRECESORT-ERRCD  =   ZERO
                    PERFORM VARYING IDXX    FROM    1   BY  1
                            UNTIL   IDXX    >       4

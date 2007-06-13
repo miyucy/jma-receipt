@@ -1187,6 +1187,7 @@
              MOVE    RECE62-SRYYM     TO  LNK-RYOCOM-SANTEIYM
              CALL    "ORCSRYOCOM"         USING
                                           ORCSRYOCOM-AREA
+                                          SPA-AREA
              IF      LNK-RYOCOM-RC    =   ZERO
                MOVE       1           TO  FLG-RYOCOM
                PERFORM  VARYING  RYO-IDX  FROM  1  BY  1

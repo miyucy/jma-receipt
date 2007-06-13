@@ -2086,6 +2086,7 @@
       **             MOVE    "01"            TO  LNK-SKOHPLUS-SRYYMD(7:2)
       **             CALL    "ORCSKOHPLUS"   USING
       **                                     ORCSKOHPLUS-AREA
+      **                                     SPA-AREA
       *           
       **             IF    ( LNK-SKOHPLUS-RC     =   ZERO )
       **             AND   ( LNK-SKOHPLUS-FTNKBN =   "1"  )

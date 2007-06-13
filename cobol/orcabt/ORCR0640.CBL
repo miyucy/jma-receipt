@@ -2095,6 +2095,7 @@
       *
               CALL    "ORCSJGNGET"    USING
                                       LNK-ORCSJGNGET-REC
+                                      SPA-AREA
       *
               IF    LNK-ORCSJGNGET-RC   =   ZERO
                  EVALUATE   WK-GENGAKUKBN
@@ -2158,6 +2159,7 @@
       *                              TO  LNK-ORCSTEN2-HKNCOMBI
       *       CALL    "ORCSTENTEK2"  USING
       *                              ORCSTENTEK2AREA
+      *                              SPA-AREA
       *       IF      LNK-ORCSTEN2-RC  =   ZERO
       *         IF   (LNK-ORCSTEN2-TENTEK-ERRCD  = ZERO)
       *         OR   (LNK-ORCSTEN2-CHUJOU-ERRCD  = ZERO)
@@ -4834,6 +4836,7 @@
              MOVE    RECE62-SRYYM     TO  LNK-NYULIFE-SANTEIYM
              CALL    "ORCSNYULIFE"        USING
                                           ORCSNYULIFE-AREA
+                                          SPA-AREA
              IF      LNK-NYULIFE-RC   =   ZERO
                PERFORM  VARYING  SYUKEI-IDX3  FROM  1  BY  1
                          UNTIL   SYUKEI-IDX3   >   31
@@ -8931,6 +8934,7 @@
       *
                 CALL    "ORCSKOREIFTNCHK"   USING
                                             ORCSKOREIFTNCHKAREA
+                                            SPA-AREA
                 IF      LNK-KOREIFTNCHK-RC   =   ZERO
                     MOVE   LNK-KOREIFTNCHK-FTNGAKU
                                        TO  WRK-CHK-FTNGAKU
@@ -10589,6 +10593,7 @@
       *
            CALL    "ORCSJGNGET"       USING
                                       LNK-ORCSJGNGET-REC
+                                      SPA-AREA
       *
            IF     LNK-ORCSJGNGET-RC   =   ZERO
              MOVE    LNK-ORCSJGNGET-NYUJGNGAK
@@ -12122,6 +12127,7 @@
                    MOVE    "01"            TO  LNK-SKOHPLUS-SRYYMD(7:2)
                    CALL    "ORCSKOHPLUS"   USING
                                            ORCSKOHPLUS-AREA
+                                           SPA-AREA
       *           
                    IF    ( LNK-SKOHPLUS-RC     =   ZERO )
                    AND   ( LNK-SKOHPLUS-FTNKBN =   "1"  )

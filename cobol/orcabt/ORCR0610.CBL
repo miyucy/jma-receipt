@@ -1183,6 +1183,7 @@
       *
                        CALL    "ORCSFTNJGNCHK"     USING
                                                    ORCSFTNJGNCHKAREA
+                                                   SPA-AREA
                        IF     LNK-FTNJGNCHK-RC   =   1
                            MOVE       1        TO    FLG-KOHRECEDSP
                        END-IF
@@ -1212,6 +1213,7 @@
       *
                        CALL    "ORCSFTNJGNCHK"     USING
                                                    ORCSFTNJGNCHKAREA
+                                                   SPA-AREA
                        IF     LNK-FTNJGNCHK-RC   =   1
                            MOVE       1        TO    FLG-KOHRECEDSP
                        END-IF
@@ -1596,6 +1598,7 @@
       *
                        CALL    "ORCSFTNJGNCHK"     USING
                                                    ORCSFTNJGNCHKAREA
+                                                   SPA-AREA
                        IF     LNK-FTNJGNCHK-RC   =   1
                            MOVE       1        TO    FLG-KOHRECEDSP
                        END-IF
@@ -1625,6 +1628,7 @@
       *
                        CALL    "ORCSFTNJGNCHK"     USING
                                                    ORCSFTNJGNCHKAREA
+                                                   SPA-AREA
                        IF     LNK-FTNJGNCHK-RC   =   1
                            MOVE       1        TO    FLG-KOHRECEDSP
                        END-IF
@@ -1759,6 +1763,7 @@
                MOVE    "01"             TO  LNK-SKOHPLUS-SRYYMD (7:2)  
                CALL    "ORCSKOHPLUS"       USING
                                            ORCSKOHPLUS-AREA
+                                           SPA-AREA
                IF      LNK-SKOHPLUS-RC =   ZERO
                    IF      LNK-SKOHPLUS-RECESKYKBN =   "1" OR  "3"
                        MOVE    2                   TO  IDX1
@@ -3034,6 +3039,7 @@
            MOVE    PTINF-BIRTHDAY      TO  AGECHK-BIRTHDAY
            CALL    "ORCSAGECHK"            USING
                                            ORCSAGECHKAREA
+                                           SPA-AREA
            IF      AGECHK-RC           =   ZERO
                MOVE  AGECHK-NENREI         TO  WRK-NENREI
            END-IF
