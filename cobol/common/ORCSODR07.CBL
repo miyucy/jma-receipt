@@ -1203,6 +1203,7 @@
            MOVE    WRK-SYS-KBNCD       TO  SYS-KBNCD
            MOVE    SODR-SRYYMD         TO  SYS-STYUKYMD
                                            SYS-EDYUKYMD
+           MOVE    SODR-HOSPNUM        TO  SYS-HOSPNUM
       *
            MOVE    SYSKANRI-REC        TO  MCPDATA-REC
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
