@@ -5272,8 +5272,8 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *****************************************************************
        4010-PREVIEW-SYORI-SEC          SECTION.
       *
-           IF      (SPA-HKNCOMBINUM    =    "9999" )  OR
-                   (SPA-HKNKBN         =    1      )
+           IF      (SPA-HKNCOMBINUM    =    "9999" )
+      **********OR (SPA-HKNKBN         =    1      )
                MOVE    "9001"          TO  SPA-ERRCD
            ELSE
                IF      (SPA-SYORIFLG       =   ZERO)  AND
@@ -5605,6 +5605,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                                        SPA-SRYYMD(1:6)
                                        SPA-NYUGAIKBN
                                        SPA-HKNKBN
+                                       SPA-RSI-HKNKBN
                                        SPA-AREA
       *
            .
