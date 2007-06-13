@@ -301,4 +301,9 @@
                    07  SPA-J026-GMN-ENDLINE       PIC 9(02).
                    07  SPA-J026-GMN-MIDASI        PIC X(40).
       *
+      *    プレビュー用保険情報
+           03  SPA-XC01-AREA.
+               05  SPA-XC01-CHK            PIC X(01).
+               05  SPA-XC01-HKNKBN         PIC X(01).
+               05  SPA-XC01-RSI-HKNKBN     PIC X(01).
       *
