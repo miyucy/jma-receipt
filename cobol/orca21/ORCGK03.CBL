@@ -5591,6 +5591,7 @@
                                            SPA-AREA
                                            ORCHC04AREA
            END-IF
+           MOVE    SPACE               TO  SPA-PRT-FLG
            .
        45009-PRINT-EXT.
            EXIT.
