@@ -323,6 +323,7 @@
                                    TO  SHELLTBL-ARG3
            MOVE    WRK-CONS-JOB-SHELLID
                                    TO  SHELLTBL-ARG4
+grpsys     MOVE    SPA-HOSPNUM     TO  SHELLTBL-ARG8
       *
            CALL    "ORCSMKPASS"        USING
                                        ORCSMKPASSAREA
@@ -473,6 +474,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                    TO  SHELLTBL-ARG4
            MOVE    WRK-CONS-JOB-SHELLID
                                    TO  SHELLTBL-ARG5
+grpsys     MOVE    SPA-HOSPNUM     TO  SHELLTBL-ARG6
       *
            CALL    "ORCSMKPASS"        USING
                                        ORCSMKPASSAREA
