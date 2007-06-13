@@ -311,7 +311,6 @@
            INITIALIZE                  ITEM-AREA
       *
            INITIALIZE                  TRRK-REC
-           INITIALIZE                  SPA-AREA
            INITIALIZE                  SODR-OT
       *
            .
