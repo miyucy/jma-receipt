@@ -499,7 +499,8 @@ grpsys         MOVE    SPA-HOSPNUM         TO  SPTID-HOSPNUM
                MOVE    PARA-NAIYO          TO  SPTID-PTNUM
                CALL    "ORCSPTID"          USING
                                            ORCSPTIDAREA
-                                           SPA-1009-TBL
+grpsys*DD                                  SPA-1009-TBL
+grpsys                                     SPA-AREA
                IF          SPTID-RC        =   ZERO
                    MOVE    SPTID-PTID      TO  WRK-NAIYO
                ELSE

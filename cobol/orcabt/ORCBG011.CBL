@@ -933,7 +933,8 @@ grpsys*DD  MOVE    WRK-PARA-HOSPID     TO  SPTID-HOSPID
 grpsys     MOVE    SPA-HOSPNUM         TO  SPTID-HOSPNUM
            MOVE    BD003-PTID          TO  SPTID-PTID
            CALL    "ORCSPTID"      USING   ORCSPTIDAREA
-                                           SPA-1009-TBL
+grpsys*DD                                  SPA-1009-TBL
+grpsys                                     SPA-AREA
            IF    ( SPTID-RC        NOT =   ZERO )
                INITIALIZE              ERR-EDIT-AREA
                MOVE    BD003-PTID      TO  ERR-PTID
@@ -1498,7 +1499,8 @@ grpsys*DD      MOVE    WRK-PARA-HOSPID TO  SPTID-HOSPID
 grpsys         MOVE    SPA-HOSPNUM     TO  SPTID-HOSPNUM
                MOVE    ERR-PTID        TO  SPTID-PTID
                CALL    "ORCSPTID"      USING   ORCSPTIDAREA
-                                               SPA-1009-TBL
+grpsys*DD                                      SPA-1009-TBL
+grpsys                                         SPA-AREA
                IF    ( SPTID-RC            =   ZERO )
                    MOVE    SPTID-PTNUM TO  ERR-PTNUM
                ELSE
