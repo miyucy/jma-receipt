@@ -2156,6 +2156,7 @@
            MOVE    PTINF-BIRTHDAY      TO  AGECHK-BIRTHDAY
            CALL    "ORCSAGECHK"        USING
                                            ORCSAGECHKAREA
+                                           SPA-AREA
            IF    ( AGECHK-RC           =   ZERO )
                CONTINUE
            ELSE
@@ -4052,6 +4053,7 @@
            MOVE    LNK-NYURECEDEN-PTID     TO  LNK-NYULIFE-PTID
            MOVE    LNK-NYURECEDEN-SANTEIYM TO  LNK-NYULIFE-SANTEIYM
            CALL    "ORCSNYULIFE"     USING  ORCSNYULIFE-AREA
+                                            SPA-AREA
            IF      LNK-NYULIFE-RC          NOT =  ZERO
                DISPLAY  "LNK-NYULIFE-RC = " LNK-NYULIFE-RC
            END-IF

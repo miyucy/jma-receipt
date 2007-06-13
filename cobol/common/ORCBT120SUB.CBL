@@ -852,6 +852,7 @@
            MOVE    PTINF-BIRTHDAY      TO  AGECHK-BIRTHDAY
            CALL    "ORCSAGECHK"        USING
                                        ORCSAGECHKAREA
+                                       SPA-AREA
            IF      AGECHK-RC           =   ZERO
                MOVE    AGECHK-NENREI       TO  WRK-AGE
            ELSE
