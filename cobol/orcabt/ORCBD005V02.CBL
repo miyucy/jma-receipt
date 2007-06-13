@@ -620,7 +620,8 @@ grpsys*DD  MOVE    WRK-PARA-HOSPID TO  SPTID-HOSPID
 grpsys     MOVE    SPA-HOSPNUM     TO  SPTID-HOSPNUM
            MOVE    WRK-SPTID-PTID  TO  SPTID-PTID
            CALL    "ORCSPTID"      USING   ORCSPTIDAREA
-                                           SPA-1009-TBL
+grpsys*DD                                  SPA-1009-TBL
+grpsys                                     SPA-AREA
            IF    ( SPTID-RC            =   ZERO )
                MOVE    SPTID-PTNUM TO  WRK-SPTID-PTNUM
            END-IF
