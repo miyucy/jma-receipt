@@ -806,6 +806,7 @@
       *
       *    エラー画面より
            IF      SPA-MOTOPG          =   "KERR"
+                                       OR  "KERR2"
                IF     (SPA-ERRMSG2     NOT =   SPACE )  AND
                       (SPA-KEI-FLG         =   1     )
                    MOVE    "JOIN"              TO  WRK-MCP-PUTTYPE
@@ -5913,8 +5914,11 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE    "削除できません。"
                                        TO  SPA-ERRMSG(27:)
                WHEN    "0005"
-                   MOVE    "更新ができませんでした。"
-                                       TO  SPA-ERRMSG
+                   STRING  "【ＤＢ更新がエラーになりました。"
+                           "ＳＥに連絡して下さい。】"
+                                       DELIMITED  BY  SIZE
+                                       INTO  SPA-ERRMSG
+                   END-STRING
                WHEN    "0006"
                    MOVE    "１日の受診履歴が１３５剤以上になります。"
                                        TO  SPA-ERRMSG
@@ -5970,10 +5974,17 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *!
                WHEN    "K001"
                    MOVE    SPA-ERRMSG2     TO  SPA-ERRMSG
+                   MOVE    SPACE           TO  SPA-ERRMSG2
       *!
                WHEN    OTHER
                    MOVE    SPA-ERRCD   TO  SPA-ERRMSG
            END-EVALUATE
+      *
+           IF      SPA-ERRMSG2     NOT =   SPACE
+      *        エラー画面２
+               PERFORM 5101-KERR2-SET-SEC
+               GO      TO      510-ERRSET-EXT
+           END-IF
       *
            MOVE    SPACE               TO  KERR
            MOVE    SPA-ERRCD           TO  KERR-ERRCODE
@@ -5996,6 +6007,31 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *
+      *****************************************************************
+      *    エラーメッセージ表示２処理
+      *****************************************************************
+       5101-KERR2-SET-SEC              SECTION.
+      *
+           MOVE    SPACE               TO  KERR2
+           MOVE    SPA-ERRCD           TO  KERR2-ERRCODE
+           MOVE    SPA-ERRMSG          TO  KERR2-ERRMSG
+           MOVE    SPA-ERRMSG2         TO  KERR2-ERRMSG2(1:80)
+      *
+           MOVE    "B01"               TO  MCP-WIDGET
+      *
+           MOVE    "K08"               TO  SPA-MOTOPG
+           MOVE    "KERR2"             TO  SPA-SAKIPG
+      *
+           MOVE    "NEW"               TO  MCP-PUTTYPE
+           MOVE    "KERR2"             TO  MCP-WINDOW
+      *
+           PERFORM 900-PUT-WINDOW
+      *
+           MOVE    1                   TO  FLG-END
+      *
+           .
+       5101-KERR2-SET-EXT.
+           EXIT.
       *****************************************************************
       *    確認メッセージ表示理
       *****************************************************************
