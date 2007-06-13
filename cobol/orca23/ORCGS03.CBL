@@ -2470,6 +2470,8 @@
                 AND  ( SPA-GMN-SELNUM  <=  SPA-GMN-SMEILIST-MAX )
                    MOVE    SPA-GMN-TDENPEDANUM(SPA-GMN-SELNUM)
                                    TO  WRK-SKYPRT-DENPEDANUM
+      *            印刷制御情報取得サブ
+                   CALL    "ORCSONPRTSET"  USING   SPA-AREA
                    PERFORM 4101-SKYPRT-PRINT-SEC
                ELSE
                    MOVE    1       TO  SPA-GMN-CUR
@@ -2601,8 +2603,10 @@
            MOVE   3                    TO  ORCHC03-HAKKOFLG
            MOVE   WRK-SKYPRT-DENPEDANUM
                                        TO  ORCHC03-DENPEDANUM
+           MOVE  "01"                  TO  WRK-SPA-PRT-FLG
            CALL  WRK-SEIKYU-PG     USING   WRK-SPA-AREA
                                            ORCHC03AREA
+           MOVE  SPACE                 TO  WRK-SPA-PRT-FLG
       *
            .
        4101-SKYPRT-PRINT-EXT.
@@ -2649,6 +2653,9 @@
                                    TO  WRK-SRYPRT-DENPEDANUM
            END-IF
       *
+      *    印刷制御情報取得サブ
+           CALL    "ORCSONPRTSET"  USING   SPA-AREA
+      *
            PERFORM 4111-SRYPRT-PRINT-SEC
       *
            .
@@ -2672,9 +2679,11 @@
       *
            MOVE   SPA-S01-DENPNUM      TO  ORCHC04-DENPNUM
            MOVE   3                    TO  ORCHC04-HAKKOFLG
+           MOVE    "02"                TO  WRK-SPA-PRT-FLG
            CALL    WRK-MEISAI-PG           USING
                                            WRK-SPA-AREA
                                            ORCHC04AREA
+           MOVE   SPACE                TO  WRK-SPA-PRT-FLG
       *
            .
        4111-SRYPRT-PRINT-EXT.
@@ -2772,6 +2781,9 @@
            END-IF
       *
            IF    ( SPA-ERRCD       =   SPACE )
+      *
+      *        印刷制御情報取得サブ
+               CALL    "ORCSONPRTSET"  USING   SPA-AREA
       *
                IF    ( SPA-GMN-SKYPRT  =   "1" )
                    MOVE    SMEI-DENPEDANUM

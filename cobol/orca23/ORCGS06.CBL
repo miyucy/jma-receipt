@@ -2220,6 +2220,9 @@
       *************************************************************
        4801-SEIKYUSYO-OUT-SEC      SECTION.
       *
+      *    印刷制御情報取得サブ
+           CALL    "ORCSONPRTSET"  USING   SPA-AREA
+      *
            IF    ( FLG-GAI-SKYPRT      =   1 )
             AND  ( SPA-GMN-SKYPRTKBN   =   "1" )
                PERFORM 4801-GAI-SKYPRT-SEC
@@ -2420,9 +2423,11 @@
                MOVE    SPA-TERMID          TO  ORCHC03-PARA-TERMID
                MOVE    "00102"             TO  WRK-FILEMEI-CD
                MOVE    WRK-FILEMEI         TO  ORCHC03-PARA-FILEMEI
+               MOVE    "01"                TO  WRK-SPA-PRT-FLG
                CALL    WRK-GAI-SEIKYU-PG       USING
                                                WRK-SPA-AREA
                                                ORCHC03AREA
+               MOVE    SPACE               TO  WRK-SPA-PRT-FLG
       *
            END-IF
       *
@@ -2511,8 +2516,10 @@
       *
            END-PERFORM
       *
+           MOVE    "02"                    TO  WRK-SPA-PRT-FLG
            CALL    WRK-NYU-SEIKYU-PG   USING   ORCHCN03AREA
-                                               SPA-AREA
+                                               WRK-SPA-AREA
+           MOVE    SPACE                   TO  WRK-SPA-PRT-FLG
       *
            .
        4801-NYU-SKYPRT-EXT.

@@ -422,7 +422,8 @@
            MOVE   SPACE               TO  MKPRT-DEF
            MOVE   HC01PARA            TO  MKPRT-DAT
            MOVE   SYS-1034-PRTNM(09)  TO  MKPRT-PRTNM
-           CALL   "ORCSMKPRT"         USING
+           MOVE   "∆˛±°ø«Œ≈»ÒÃ¿∫ŸΩÒ"  TO  MKPRT-INFO
+           CALL   "ORCSMKPRT1"        USING
                                       ORCSMKPRTAREA
                                       SPA-AREA
       *

@@ -2964,6 +2964,9 @@
       **************************************************************
        420-SAIHAKKOU-SEC           SECTION.
       *
+      *    印刷制御情報取得サブ
+           CALL    "ORCSONPRTSET"  USING   SPA-AREA
+      *
            IF    ( SPA-NAI-TJYOTAIKBN (SPA-GMN-SELBAN)
                                        =   "3" )
                MOVE    "0010"          TO  SPA-ERRCD
@@ -3053,8 +3056,10 @@
                                        TO  ORCHCN03-NYUKIN  (1)
                MOVE    1               TO  ORCHCN03-HAKKOFLG(1)
       *
+               MOVE    "01"            TO  WRK-SPA-PRT-FLG
                CALL    WRK-SEIKYU-PG   USING   ORCHCN03AREA
                                                WRK-SPA-AREA
+               MOVE    SPACE           TO  WRK-SPA-PRT-FLG
       *
                MOVE   SPACE        TO  SPA-SRYYMD(7:2)
       *
@@ -3284,9 +3289,11 @@
            MOVE    SPA-TERMID          TO  ORCHC03-PARA-TERMID
            MOVE    "00102"             TO  WRK-FILEMEI-CD
            MOVE    WRK-FILEMEI         TO  ORCHC03-PARA-FILEMEI
+           MOVE    "02"                TO  WRK-SPA-PRT-FLG
            CALL    WRK-SEIKYU-PG           USING
                                            WRK-SPA-AREA
                                            ORCHC03AREA
+           MOVE    SPACE               TO  WRK-SPA-PRT-FLG
       *
            IF    ( SPA-ERRCD           =   SPACE )
                MOVE    "001%"          TO  WRK-FILEMEI-CD
@@ -3338,7 +3345,12 @@
            END-PERFORM
       *
            IF    ( IDX-LST         >   ZERO )
+      *
+      *        印刷制御情報取得サブ
+               CALL    "ORCSONPRTSET"  USING   SPA-AREA
+      *
                PERFORM 4901-GAI-TUKISKYPRT-SEC
+      *
            END-IF
       *
            .
@@ -3348,6 +3360,7 @@
       *    外来月まとめ請求書兼領収書発行処理
       **************************************************************
        4901-GAI-TUKISKYPRT-SEC         SECTION.
+      *
       *
            PERFORM 800-MCNDATE-SEC
       *
@@ -3481,9 +3494,11 @@
            MOVE    SPA-TERMID          TO  ORCHC03-PARA-TERMID
            MOVE    "00102"             TO  WRK-FILEMEI-CD
            MOVE    WRK-FILEMEI         TO  ORCHC03-PARA-FILEMEI
+           MOVE    "03"                TO  WRK-SPA-PRT-FLG
            CALL    WRK-SEIKYU-PG           USING
                                            WRK-SPA-AREA
                                            ORCHC03AREA
+           MOVE    SPACE               TO  WRK-SPA-PRT-FLG
       *
            IF    ( SPA-ERRCD           =   SPACE )
                MOVE    "001%"          TO  WRK-FILEMEI-CD

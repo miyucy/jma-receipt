@@ -5019,6 +5019,9 @@
       *****************************************************************
        451-PRTOUT-SEC              SECTION.
       *
+      *    印刷制御情報取得サブ
+           CALL    "ORCSONPRTSET"  USING   SPA-AREA
+      *
            PERFORM 900-PTINF-KEY-SEL-SEC
       *
            MOVE    SPA-AREA        TO  WRK-SPA-AREA
@@ -5183,8 +5186,10 @@
            END-PERFORM
       *
            IF    ( ORCHCN03-CNT        >   ZERO )
+               MOVE    "01"            TO      WRK-SPA-PRT-FLG
                CALL    WRK-PRINT-PG    USING   ORCHCN03AREA
                                                WRK-SPA-AREA
+               MOVE    SPACE           TO      WRK-SPA-PRT-FLG
            END-IF
       *
            .
@@ -5229,8 +5234,10 @@
            END-PERFORM
       *
            IF    ( IDX2            >   ZERO )
+               MOVE    "02"            TO      WRK-SPA-PRT-FLG
                CALL    WRK-PRINT-PG    USING   WRK-SPA-AREA
                                                ORCHCN04AREA
+               MOVE    SPACE           TO      WRK-SPA-PRT-FLG
            END-IF
       *
            .
@@ -5258,8 +5265,10 @@
            MOVE    WKPTNYUINRRK-REC
                                    TO  LNK-PTNYUINRRK
       *
+           MOVE    "03"            TO      WRK-SPA-PRT-FLG
            CALL    WRK-PRINT-PG    USING   WRK-SPA-AREA
                                            LNK-PTNYUINRRK
+           MOVE    SPACE           TO      WRK-SPA-PRT-FLG
       *
            .
        451-TAIPRT-OUT-EXT.

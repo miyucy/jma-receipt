@@ -422,6 +422,10 @@
             MOVE   HC01PARA            TO  MKPRT-DAT
             MOVE   SYS-1031-PRTNM(3)   TO  MKPRT-PRTNM
             MOVE   "¿¡µ·ΩÒ∑ÛŒŒº˝ΩÒ"    TO  MKPRT-INFO
+            IF    ( ORCHC03-HAKKOFLG   =   4 )
+                MOVE   "∑Ó Ã¿¡µ·ΩÒ∑ÛŒŒº˝ΩÒ"
+                                       TO  MKPRT-INFO
+            END-IF
             CALL   "ORCSMKPRT1"        USING
                                        ORCSMKPRTAREA
                                        SPA-AREA

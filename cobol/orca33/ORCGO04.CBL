@@ -440,6 +440,8 @@
       *************************************************************
        310-SPA-SET-SEC                 SECTION.
       *
+           MOVE    SPACE               TO  SPA-PRT-FLG
+      *
            MOVE    1                   TO  FLG-SMEILIST1-ROW
            MOVE    1                   TO  FLG-SKYLIST-ROW
       *
@@ -2933,7 +2935,7 @@
       *
            INITIALIZE      ORCHCN03AREA
       *
-           MOVE    WRK-SPA-HOSPNUM  TO  ORCHCN03-HEAD-HOSPNUM
+           MOVE    WRK-SPA-HOSPNUM TO  ORCHCN03-HEAD-HOSPNUM
            MOVE    WRK-SPA-STAFFCD TO  ORCHCN03-STAFFCD
            MOVE    WRK-SPA-SYSYMD  TO  ORCHCN03-SYSYMD
            MOVE    WRK-SPA-TERMID  TO  ORCHCN03-TERMID

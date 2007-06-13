@@ -48,9 +48,12 @@
       *
       *    °õºþÍÑ¥Ç¡¼¥¿
        FD  PRT-FILE.
-           COPY    "HCN02.INC".
+       01  PRT-REC                 PIC X(10000).
       *
        WORKING-STORAGE             SECTION.
+      *
+           COPY    "HCN02.INC".
+      *
       *    °õºþÍÑ¥Ç¡¼¥¿ Ì¾¾ÎÎÎ°è 
            COPY    "CPCOMMONPRT.INC".
       *
@@ -301,7 +304,8 @@
       *¡¡¡¡°õºþ¹àÌÜÊÔ½¸
             PERFORM 2001-SYORI-SEC
       *¡¡¡¡°õºþÍÑ¥Ç¡¼¥¿½ÐÎÏ
-            WRITE  HCN02
+            MOVE   HCN02               TO  PRT-REC
+            WRITE  PRT-REC
       *
             CLOSE                       PRT-FILE
       *
@@ -311,7 +315,8 @@
             MOVE   SPACE               TO  MKPRT-DEF
             MOVE   HC01PARA            TO  MKPRT-DAT
             MOVE   SYS-1034-PRTNM(2)   TO  MKPRT-PRTNM
-            CALL   "ORCSMKPRT"         USING
+            MOVE   "Âà±¡¾ÚÌÀ½ñ"        TO  MKPRT-INFO
+            CALL   "ORCSMKPRT1"        USING
                                        ORCSMKPRTAREA
                                        SPA-AREA
       *

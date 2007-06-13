@@ -93,6 +93,8 @@
            03  WRK-ASSIGN              PIC X(500).
            03  WRK-REDFILE             PIC X(20).
       *
+           COPY    "COMMON-SPA"        REPLACING   //SPA-//
+                                       BY          //WRK-SPA-//.
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -112,6 +114,8 @@
       *
       *    印刷ＤＢ制御サブ
            COPY    "CPORCSPRT.INC".
+      *
+           COPY  "CPORCSMKPRT.INC".
       *
       *****************************************************************
       *    連絡　領域
@@ -224,48 +228,51 @@
       *****************************************************************
        2001-ONLINE-PRINT-SEC           SECTION.
       *
+      *
            OPEN    INPUT   IN01-FILE
-                   OUTPUT  PRT-FILE
       *
            PERFORM 900-IN01-READ-SEC
       *
            PERFORM UNTIL ( FLG-IN01    NOT =   ZERO )
       *
-               INITIALIZE                      PRT-REC
+               COMPUTE HC03PARA-CNT    =   HC03PARA-CNT    +   1
       *
-               MOVE    IN01-PRTID          TO  PRT-PRTID
-               MOVE    IN01-PRTNM          TO  PRT-PRTNM
-               MOVE    IN01-PRTDATA        TO  PRT-PRTDATA
-               PERFORM 800-OFFSET-GET-SEC
-               MOVE    SYS-1044-OFFSET-X   TO  PRT-OFFSET-X
-               MOVE    SYS-1044-OFFSET-Y   TO  PRT-OFFSET-Y
-               MOVE    IN01-SITEKBN        TO  PRT-SITEKBN
+               OPEN    OUTPUT  PRT-FILE
+      *
+               MOVE    IN01-PRTDATA        TO  PRT-REC
       *
                WRITE   PRT-REC
+      *
+               CLOSE   PRT-FILE
+      *
+               MOVE    SPA-AREA            TO  WRK-SPA-AREA
+      *
+               MOVE    IN01-SRYYMD         TO  WRK-SPA-SRYYMD
+               MOVE    IN01-PTID           TO  WRK-SPA-PTID
+      *
+               INITIALIZE                  ORCSMKPRTAREA
+               MOVE   "HC01.sh"            TO  MKPRT-ID
+               MOVE   "入院請求書兼領収書"
+                                           TO  MKPRT-INFO
+               MOVE   IN01-PRTID           TO  MKPRT-DIA
+               MOVE   SPACE                TO  MKPRT-DEF
+               MOVE   HC03PARA             TO  MKPRT-DAT
+               MOVE   IN01-PRTNM           TO  MKPRT-PRTNM
+               IF  (  IN01-SITEKBN     =   "1" )
+                   CALL   "ORCSMKPRT1"        USING
+                                              ORCSMKPRTAREA
+                                              WRK-SPA-AREA
+               ELSE
+                   CALL   "ORCSMKPRTSITE1"     USING
+                                               ORCSMKPRTAREA
+                                               WRK-SPA-AREA
+               END-IF
       *
                PERFORM 900-IN01-READ-SEC
       *
            END-PERFORM
       *
            CLOSE   IN01-FILE
-                   PRT-FILE
-      *
-           MOVE    SPACE           TO  SHELLTBL
-      *    ファイルデイレクトリ位置指定
-           INITIALIZE              ORCSMKPASSAREA
-           MOVE    "scripts/daily/HCALL2.sh"
-                                   TO  MKPASS-IN-01
-           CALL    "ORCSMKPASS"    USING   ORCSMKPASSAREA
-           MOVE    MKPASS-OT-01    TO  SHELLTBL-NAME
-      *
-           MOVE    HC03PARA        TO  SHELLTBL-ARG1
-           MOVE    SHELLTBL        TO  MCPDATA-REC
-           MOVE    "shell"         TO  MCP-TABLE
-           MOVE    "shell"         TO  MCP-PATHNAME
-           MOVE    "SHELL"         TO  MCP-FUNC
-           CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
       *
            .
        2001-ONLINE-PRINT-EXT.
