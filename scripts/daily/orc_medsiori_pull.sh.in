@@ -24,6 +24,8 @@ MEDPHOTOTEMP="/tmp/medphoto"
 #        $5  MEDSIORISITE
 #        $6  MEDPHOTOPATH
 #        $7  MEDPHOTOTEMP
+#
+#        $8  HOSPNUM
 #-------------------------------------------#
 
 # 画像ファイル格納ディレクトリの作成
@@ -40,6 +42,6 @@ export MEDSIORIMONVER
 
 $DBSTUB -dir $LDDIRECTORY -bd orcabt OrcSioriPull -parameter ""
 	
-$DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE$3$4
+$DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE$3$4,${8}
 
 exit 

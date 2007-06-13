@@ -20,6 +20,7 @@ MEDPHOTOTEMP="/tmp/medphoto"
 #        $3  複写先フォルダ
 #        $4  JOBID 
 #        $5  SHELLID
+#        $6  HOSPNUM
 #
 #       複写元ファイルの場所は環境変数より
 #        $MEDPHOTOTEMP
@@ -31,6 +32,6 @@ if  [ -e $MEDPHOTOTEMP/$2 ]; then
     cp $MEDPHOTOTEMP/$2 $3/$1-$2
 fi
 
-$DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE$4$5
+$DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE$4$5,${6}
 	
 exit 
