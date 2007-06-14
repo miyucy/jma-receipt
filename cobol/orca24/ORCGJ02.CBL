@@ -11830,6 +11830,12 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *****************************************************************
        41301-PREVIEW-KICK-SEC    SECTION.
       *
+      *    ¼«ÇåÀÕ
+           IF     SPA-XC01-RSI-HKNKBN  =   "4"
+                                       OR  "5"
+               MOVE    "2"                 TO  SPA-XC01-HKNKBN
+           END-IF
+      *
            MOVE    SPACE               TO  SPA-XC01-CHK
            MOVE    ZERO                TO  WRK-RRK-HKNKBN
            CALL    "ORCSRECEARGMK"     USING
