@@ -5461,7 +5461,6 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE    IDX2                TO  PARA-EDANUMPRV
                    MOVE    LNK-WKSRYACT-REC (IDX)
                                                TO  PARA-DATA-RECPRV
-                   MOVE    WRK-WKSRYACT-REC    TO  PARA-DATA-RECPRV
                    WRITE                       PARA-RECPRV
                ELSE
                    MOVE    SPACE               TO  LNK-WKSRYACT-REC(IDX)
