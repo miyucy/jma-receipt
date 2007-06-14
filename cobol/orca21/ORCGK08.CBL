@@ -474,6 +474,9 @@
            03  WRK-HOUKNS-NAME         PIC X(100).
       *    包括剤の判定
            03  WRK-HKTZAI              PIC X(01).
+      *    プレビュー用
+           03  WRK-PRV-HKNKBN          PIC X(01).
+           03  WRK-PRV-RSI-HKNKBN      PIC X(01).
       *
       *    継続の時、自動発生のチェック
        01  WRK-CONTCHK-TBL.
@@ -5598,13 +5601,19 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *****************************************************************
        41301-PREVIEW-KICK-SEC    SECTION.
       *
+           MOVE    SPA-HKNKBN          TO  WRK-PRV-HKNKBN
+           MOVE    SPA-RSI-HKNKBN      TO  WRK-PRV-RSI-HKNKBN
+           IF      SPA-RSI-HKNKBN      =   "4"
+                                       OR  "5"
+               MOVE    "2"                 TO  WRK-PRV-HKNKBN
+           END-IF
            CALL    "ORCSRECEARGMK"     USING
                                        "1"
                                        SPA-PTID
                                        SPA-SRYYMD(1:6)
                                        SPA-NYUGAIKBN
-                                       SPA-HKNKBN
-                                       SPA-RSI-HKNKBN
+                                       WRK-PRV-HKNKBN
+                                       WRK-PRV-RSI-HKNKBN
                                        SPA-AREA
       *
            .
