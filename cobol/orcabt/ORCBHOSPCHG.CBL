@@ -26,6 +26,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  03.05.01    NACL-小豆沢  07/06/15  グループ診療対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -48,10 +49,10 @@
        WORKING-STORAGE             SECTION.
       *
       *    エラーファイル 名称領域 
-           COPY    "CPCOMMONDAT2.INC"
-                                   REPLACING  //RECE01PARA//
-                                   BY         //RECEERR//.
-           03  FILLER              PIC X(04)   VALUE   ".dat".
+      **     COPY    "CPCOMMONDAT2.INC"
+      **                             REPLACING  //RECE01PARA//
+      **                             BY         //RECEERR//.
+      **     03  FILLER              PIC X(04)   VALUE   ".dat".
       *
        01  STS-AREA.
            03  STS-RECEERR         PIC X(02).
@@ -85,7 +86,8 @@
            COPY    "CPORCSPRTLNK.INC".
            03  WRK-PARA-JOBID          PIC 9(07).
            03  WRK-PARA-SHELLID        PIC X(08).
-           03  WRK-PARA-HOSPID         PIC X(24).
+           03  WRK-PARA-HOSPNUM        PIC 9(02).
+           03  RECEERR                 PIC X(100).
            03  WRK-PARA-SRYYM          PIC X(06).
            03  WRK-PARA-STIDX          PIC X(02).
            03  WRK-PARA-EDIDX          PIC X(02).
@@ -173,6 +175,7 @@
            INITIALIZE                  FLG-AREA
            INITIALIZE                  WRK-AREA
            INITIALIZE                  CNT-AREA
+           INITIALIZE                  SPA-AREA
       *
            PERFORM 100-DBOPEN-SEC
       *
@@ -190,27 +193,25 @@
                                        LNK-PRTKANRI-PRTNM
                                        WRK-PARA-JOBID
                                        WRK-PARA-SHELLID
-                                       WRK-PARA-HOSPID
+                                       WRK-PARA-HOSPNUM
+                                       RECEERR
                                        WRK-PARA-SRYYM
                                        WRK-PARA-STIDX
                                        WRK-PARA-EDIDX
+           END-UNSTRING
+           MOVE    WRK-PARA-HOSPNUM    TO   SPA-HOSPNUM
       *
       *    ステップ管理開始処理
            MOVE    "STS"           TO  SJOBKANRI-MODE
            INITIALIZE                  JOBKANRI-REC
-           MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
-           MOVE    WRK-PARA-SHELLID
-                                   TO  JOB-SHELLID
-           MOVE    "ORCBMRECE"     TO  JOB-PGID
+           MOVE    "ORCBHOSPCHG"   TO  JOB-PGID
            MOVE    "会計クリア処理"
                                    TO  JOB-SHELLMSG
-           CALL    "ORCSJOB"           USING
-                                       ORCSJOBKANRIAREA
-                                       JOBKANRI-REC
+           PERFORM   900-CALL-ORCSJOB-SEC
       *
-           MOVE    "RECEERR"       TO  RECEERR-FILE-ID
-           MOVE    LNK-PRTKANRI-TERMID
-                                   TO  RECEERR-TERMID
+      **     MOVE    "RECEERR"       TO  RECEERR-FILE-ID
+      **     MOVE    LNK-PRTKANRI-TERMID
+      **                             TO  RECEERR-TERMID
       *
       *    パラメタ編集処理
            PERFORM 110-PARA-HENSYU-SEC
@@ -296,6 +297,7 @@
       *
            INITIALIZE                  SRYACCT-REC
            MOVE    WRK-PARA-SRYYM  TO  ACCT-SRYYM
+           MOVE    SPA-HOSPNUM     TO  ACCT-HOSPNUM
            MOVE    SRYACCT-REC     TO  MCPDATA-REC
            MOVE    "tbl_sryacct"   TO  MCP-TABLE
            MOVE    "all2"          TO  MCP-PATHNAME
@@ -325,9 +327,7 @@
                MOVE    "DBUPDATE"      TO  MCP-FUNC
                MOVE    "tbl_sryacct"   TO  MCP-TABLE
                MOVE    "key"           TO  MCP-PATHNAME
-               CALL    "MONFUNC"           USING
-                                           MCPAREA
-                                           MCPDATA-REC
+               PERFORM   900-ORCDBMAIN-SEC
                IF    ( MCP-RC      NOT =   ZERO )
                    DISPLAY "ORCBMRECE SRYACCT UPD ERR:"  MCP-RC
                            ",PTID:"   ACCT-PTID
@@ -352,7 +352,7 @@
       *
            MOVE    "tbl_sryacct"       TO  MCP-TABLE
            MOVE    "all2"              TO  MCP-PATHNAME
-           PERFORM 900-TBL-CLOSE-SEC
+           PERFORM 900-CLOSE-SEC
       *
            .
        201-SRYACCT-UPD-EXT.
@@ -366,6 +366,7 @@
       *
            INITIALIZE                  NYUINACCT-REC
            MOVE    WRK-PARA-SRYYM  TO  NACCT-SRYYM
+           MOVE    SPA-HOSPNUM     TO  NACCT-HOSPNUM
            MOVE    NYUINACCT-REC   TO  MCPDATA-REC
            MOVE    "tbl_nyuinacct" TO  MCP-TABLE
            MOVE    "all2"              TO  MCP-PATHNAME
@@ -392,9 +393,7 @@
                MOVE    "DBUPDATE"      TO  MCP-FUNC
                MOVE    "tbl_nyuinacct" TO  MCP-TABLE
                MOVE    "key"           TO  MCP-PATHNAME
-               CALL    "MONFUNC"           USING
-                                           MCPAREA
-                                           MCPDATA-REC
+               PERFORM   900-ORCDBMAIN-SEC
                IF    ( MCP-RC      NOT =   ZERO )
                    DISPLAY "ORCBMRECE NYUINACCT UPD ERR:"  MCP-RC
                            ",PTID:"   NACCT-PTID
@@ -419,7 +418,7 @@
       *
            MOVE    "tbl_nyuinacct"     TO  MCP-TABLE
            MOVE    "all2"              TO  MCP-PATHNAME
-           PERFORM 900-TBL-CLOSE-SEC
+           PERFORM 900-CLOSE-SEC
       *
            .
        201-NYUINACCT-UPD-EXT.
@@ -433,6 +432,7 @@
       *
            INITIALIZE                  SANTEI-REC
            MOVE    WRK-PARA-SRYYM  TO  SANTEI-SRYYM
+           MOVE    SPA-HOSPNUM     TO  SANTEI-HOSPNUM
            MOVE    SANTEI-REC      TO  MCPDATA-REC
            MOVE    "tbl_santei"    TO  MCP-TABLE
            MOVE    "all2"          TO  MCP-PATHNAME
@@ -456,9 +456,7 @@
                MOVE    "DBUPDATE"      TO  MCP-FUNC
                MOVE    "tbl_santei"    TO  MCP-TABLE
                MOVE    "key"           TO  MCP-PATHNAME
-               CALL    "MONFUNC"           USING
-                                           MCPAREA
-                                           MCPDATA-REC
+               PERFORM   900-ORCDBMAIN-SEC
                IF    ( MCP-RC      NOT =   ZERO )
                    DISPLAY "ORCBMRECE SANTEI UPD ERR:"  MCP-RC
                            ",PTID:"   SANTEI-PTID
@@ -483,7 +481,7 @@
       *
            MOVE    "tbl_santei"        TO  MCP-TABLE
            MOVE    "all2"              TO  MCP-PATHNAME
-           PERFORM 900-TBL-CLOSE-SEC
+           PERFORM 900-CLOSE-SEC
       *
            .
        201-SANTEI-UPD-EXT.
@@ -501,13 +499,8 @@
       *    ステップ管理終了処理
            MOVE    "STE"           TO  SJOBKANRI-MODE
            INITIALIZE                  JOBKANRI-REC
-           MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
-           MOVE    WRK-PARA-SHELLID
-                                   TO  JOB-SHELLID
            MOVE    CNT-SRYACCT-UPD TO  JOB-UPDCNT
-           CALL    "ORCSJOB"           USING
-                                       ORCSJOBKANRIAREA
-                                       JOBKANRI-REC
+           PERFORM   900-CALL-ORCSJOB-SEC
       *
            PERFORM 900-DBDISCONNECT-SEC
            .
@@ -532,14 +525,9 @@
       *        ジョブ管理開始処理
                MOVE    "JBE"           TO  SJOBKANRI-MODE
                INITIALIZE                  JOBKANRI-REC
-               MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
-               MOVE    WRK-PARA-SHELLID
-                                       TO  JOB-SHELLID
                MOVE    WRK-RECEERR     TO  JOB-YOBI
                MOVE    "9999"          TO  JOB-ERRCD
-               CALL    "ORCSJOB"           USING
-                                           ORCSJOBKANRIAREA
-                                           JOBKANRI-REC
+               PERFORM   900-CALL-ORCSJOB-SEC
            END-IF
       *
            MOVE    1                   TO  FLG-END
@@ -547,18 +535,34 @@
            .
        500-ERR-HENSYU-EXT.
            EXIT.
+      *
       *****************************************************************
       *    テーブルクローズ処理
       *****************************************************************
-       900-TBL-CLOSE-SEC               SECTION.
+       900-CLOSE-SEC               SECTION.
       *
-           MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
+           PERFORM 900-ORCDBMAIN-SEC
       *
            .
-       900-TBL-CLOSE-EXT.
+       900-CLOSE-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ジョブ管理ＤＢ制御処理
+      *****************************************************************
+       900-CALL-ORCSJOB-SEC            SECTION.
+      *
+           MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
+           MOVE    WRK-PARA-SHELLID
+                                   TO  JOB-SHELLID
+           MOVE    SPA-HOSPNUM     TO  JOB-HOSPNUM
+           CALL    "ORCSJOB"       USING
+                                   ORCSJOBKANRIAREA 
+                                   JOBKANRI-REC
+                                   SPA-AREA
+           .
+       900-CALL-ORCSJOB-EXT.
            EXIT.
       *
       *****************************************************************
@@ -567,9 +571,7 @@
        910-DBSELECT-SEC                SECTION.
       *
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+           PERFORM   900-ORCDBMAIN-SEC
            IF    ( MCP-RC          =   ZERO )
                PERFORM 910-DBFETCH-SEC
            END-IF
@@ -585,13 +587,24 @@
        910-DBFETCH-SEC                 SECTION.
       *
            MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+           PERFORM   900-ORCDBMAIN-SEC
       *
            .
       *
        910-DBFETCH-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    テーブルアクセス処理
+      *****************************************************************
+       900-ORCDBMAIN-SEC               SECTION.
+      *
+           CALL    "ORCDBMAIN"     USING   MCPAREA
+                                           MCPDATA-REC
+                                           SPA-AREA
+           .
+      *
+       900-ORCDBMAIN-EXT.
            EXIT.
       *
       *****************************************************************
@@ -602,16 +615,12 @@
            MOVE    LOW-VALUE           TO  MCP-TABLE
                                            MCP-PATHNAME
            MOVE    "DBOPEN"            TO  MCP-FUNC
-           CALL    "MONFUNC"               USING
-                                           MCPAREA
-                                           MCPDATA-REC
+           PERFORM 900-ORCDBMAIN-SEC
       *
            MOVE    LOW-VALUE           TO  MCP-TABLE
                                            MCP-PATHNAME
            MOVE    "DBSTART"           TO  MCP-FUNC
-           CALL    "MONFUNC"               USING
-                                           MCPAREA
-                                           MCPDATA-REC
+           PERFORM 900-ORCDBMAIN-SEC
            .
        100-DBOPEN-EXT.
            EXIT.
@@ -624,16 +633,12 @@
            MOVE    LOW-VALUE           TO  MCP-TABLE
                                            MCP-PATHNAME
            MOVE    "DBCOMMIT"          TO  MCP-FUNC
-           CALL    "MONFUNC"               USING
-                                           MCPAREA
-                                           MCPDATA-REC
+           PERFORM 900-ORCDBMAIN-SEC
       *
            MOVE    LOW-VALUE           TO  MCP-TABLE
                                            MCP-PATHNAME
            MOVE    "DBDISCONNECT"      TO  MCP-FUNC
-           CALL    "MONFUNC"               USING
-                                           MCPAREA
-                                           MCPDATA-REC
+           PERFORM 900-ORCDBMAIN-SEC
            .
        900-DBCLOSE-EXT.
            EXIT.
