@@ -5582,6 +5582,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    1                   TO  LNK-XC01-ST-PAGE
            MOVE    99999               TO  LNK-XC01-ED-PAGE
            MOVE    "1"                 TO  LNK-XC01-MODE
+           MOVE    WRK-PRV-HKNKBN      TO  LNK-XC01-HKNKBN
            MOVE    LNK-XC01-AREA       TO  SPA-WORK
       *
            MOVE    SPA-KYOUTU          TO  LNK-KYOUTU
