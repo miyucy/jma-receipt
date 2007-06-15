@@ -1200,7 +1200,10 @@
       *
       *    労災準拠のとき（新様式）
            IF      WRK-PARA-A3     =   "4"
-               PERFORM 20011-REAL-DB-MAKE-SEC
+               PERFORM 100-DBOPEN-SEC
+               IF      WRK-PARA-SHORI-KBN  NOT  =  ZERO
+                   PERFORM 20011-REAL-DB-MAKE-SEC
+               END-IF
       *
                MOVE     "5"            TO  WRK-PARA0-A3
                                            WRK-PARA1-A3

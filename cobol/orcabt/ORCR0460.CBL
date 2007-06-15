@@ -3300,9 +3300,8 @@ grpsys                 PERFORM 900-CALL-ORCSJOB-SEC
            CLOSE                       RECE45-FILE
            CLOSE                       RECE46-FILE     
       *
-      *    ステップ管理終了処理
            IF      WRK-PARA-SHELLID    NOT =   "RECEPTX"
-      *    ステップ管理終了処理
+      *        ステップ管理終了処理
                MOVE    "STE"           TO  SJOBKANRI-MODE
                INITIALIZE                  JOBKANRI-REC
 grpsys         PERFORM 900-CALL-ORCSJOB-SEC
