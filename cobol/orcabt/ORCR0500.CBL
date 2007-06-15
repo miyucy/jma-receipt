@@ -173,6 +173,9 @@ grpsys     COPY    "COMMON-SPA".
            03  CNT-IN-CANCEL       PIC 9(06).
            03  CNT-OUT             PIC 9(04).
       *
+       01  INDEX-AREA.
+           03  IDX                     PIC 9(03).
+      *
       *    一時領域
        01  WRK-AREA.
            03  WRK-RECEERR             PIC X(200). 
@@ -301,6 +304,9 @@ grpsys     COPY    "COMMON-SPA".
       *    オフセット情報
            COPY    "CPSK1044.INC".
       *
+      *    患者番号構成管理情報
+           COPY  "CPSK1009.INC".
+      *
        01  PRTKANRI-REC.
            COPY    "CPPRTKANRI.INC".
       *
@@ -325,7 +331,9 @@ grpsys     COPY    "COMMON-SPA".
            COPY    "MCPAREA".
       *
            COPY    "MCPDATA.INC".
-           COPY    "CPORCMCP.INC".
+      *
+      *    患者番号変換サブ
+           COPY    "CPORCSPTID.INC".
       *
       ****************************************************************
        LINKAGE                 SECTION.
@@ -441,6 +449,35 @@ grpsys     MOVE    SPA-HOSPNUM         TO  SYS-2005-HOSPNUM
                MOVE    MCPDATA-REC         TO  SYS-2005-REC
            ELSE    
                INITIALIZE                  SYS-2005-REC
+           END-IF
+      *
+      *    患者番号構成管理情報編集
+           MOVE    SPACE               TO  SYS-1009-REC
+           INITIALIZE                  SYS-1009-REC
+           MOVE    "1009"              TO  SYS-1009-KANRICD
+           MOVE    "*"                 TO  SYS-1009-KBNCD
+           MOVE    WRK-PARA-SRYYM      TO  SYS-1009-STYUKYMD (1:6)
+           MOVE    "01"                TO  SYS-1009-STYUKYMD (7:2)
+           MOVE    SYS-1009-STYUKYMD   TO  SYS-1009-EDYUKYMD
+grpsys     MOVE    SPA-HOSPNUM         TO  SYS-1009-HOSPNUM
+           MOVE    SYS-1009-REC        TO  MCPDATA-REC
+           PERFORM 800-SYSKANRI-READ-SEC
+           IF      FLG-SYSKANRI        =   ZERO
+               MOVE    MCPDATA-REC         TO  SYS-1009-REC
+               MOVE    SYS-1009-PTNUMKSIKBN
+                                           TO  SPA-1009-PTNUMKSIKBN
+               MOVE    SYS-1009-HJNKSIKBN  TO  SPA-1009-HJNKSIKBN
+               MOVE    SYS-1009-HJNKSINENKBN
+                                           TO  SPA-1009-HJNKSINENKBN
+               MOVE    SYS-1009-HJNKSIRENNUMKBN
+                                           TO  SPA-1009-HJNKSIRENNUMKBN
+               MOVE    SYS-1009-HJNKSIRENNUMKETA
+                                           TO  SPA-1009-HJNKSIRENNUMKETA
+           ELSE
+               MOVE    "患者番号構成管理情報が取得できませんでした"
+                                           TO  WRK-RECEERR
+               PERFORM 500-ERR-HENSYU-SEC
+               MOVE    1                   TO  FLG-END
            END-IF
            .
        110-PARA-HENSYU-EXT.
@@ -917,18 +954,28 @@ grpsys         PERFORM 900-DBFETCH-SEC
                                        TO  SPRT-TBL-KEY
            MOVE    LNK-PRTKANRI-TBL-GROUP
                                        TO  SPRT-TBL-GROUP
-           IF      WRK-PARA-SYOKBN     =   "1"
-               MOVE    LNK-PRTKANRI-SRYYM  TO  SPRT-SRYYM
-           ELSE
-               MOVE    ZERO                TO  SPRT-SRYYM
-           END-IF
+      *****IF      WRK-PARA-SYOKBN     =   "1"
+      *****    MOVE    LNK-PRTKANRI-SRYYM  TO  SPRT-SRYYM
+      *****ELSE
+      *****    MOVE    ZERO                TO  SPRT-SRYYM
+      *****END-IF
+           MOVE    RECE08-SRYYM        TO  SPRT-SRYYM
            MOVE    LNK-PRTKANRI-SKYYMD TO  SPRT-SKYYMD
            MOVE    LNK-PRTKANRI-SHELLID 
                                        TO  SPRT-SHELLID
            MOVE    LNK-PRTKANRI-SHORI-RENNUM
                                        TO  SPRT-SHORI-RENNUM
-           MOVE    LNK-PRTKANRI-PRIORITY
-                                       TO  SPRT-PRIORITY
+      **** MOVE    LNK-PRTKANRI-PRIORITY
+      ****                             TO  SPRT-PRIORITY
+           COMPUTE  SPRT-PRIORITY      =   LNK-PRTKANRI-PRIORITY
+                                       *   10
+           IF      WRK-PARA-SYOKBN     =   "1"
+               COMPUTE  SPRT-PRIORITY      =   SPRT-PRIORITY
+                                           +   1
+           ELSE
+               COMPUTE  SPRT-PRIORITY      =   SPRT-PRIORITY
+                                           +   2
+           END-IF
            MOVE    RECE08-FORMID       TO  SPRT-PRTID
            MOVE    RECE08-PRTDATA      TO  SPRT-PRTDATA
       *
@@ -1020,6 +1067,23 @@ grpsys         PERFORM 900-DBFETCH-SEC
            MOVE    RECE08-PRTNM        TO  SPRT-PRTNM
            MOVE    "1"                 TO  SPRT-SITEKBN
            MOVE    "1"                 TO  SPRT-PRTFLG
+      *
+           INITIALIZE                       ORCSPTIDAREA
+grpsys     MOVE    SPA-HOSPNUM         TO  SPTID-HOSPNUM
+           PERFORM VARYING IDX FROM    20  BY  -1
+                   UNTIL   IDX <       1
+               IF      RECE08-PTNUM (IDX:1)
+                                       NOT =   "Z"
+                   MOVE    RECE08-PTNUM (1:IDX)    TO  SPTID-PTNUM
+                   CALL    "ORCSPTID"           USING   ORCSPTIDAREA
+                                                        SPA-AREA
+                   IF      SPTID-RC            =   ZERO
+                       MOVE    SPTID-PTID          TO   SPRT-PTID
+                   END-IF
+                   MOVE    1                       TO  IDX
+               END-IF
+           END-PERFORM
+      *
            CALL    "ORCSPRT"           USING
                                        ORCSPRTAREA
                                        SPA-AREA

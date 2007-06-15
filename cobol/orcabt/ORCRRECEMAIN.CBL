@@ -1200,6 +1200,8 @@
       *
       *    労災準拠のとき（新様式）
            IF      WRK-PARA-A3     =   "4"
+               PERFORM 20011-REAL-DB-MAKE-SEC
+      *
                MOVE     "5"            TO  WRK-PARA0-A3
                                            WRK-PARA1-A3
                                            WRK-PARA3-A3
@@ -1581,6 +1583,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
 grpsys                                  WRK-PARA-HOSPNUM
                                         WRK-PTID
                                         WRK-SRYYM
+                                        WRK-PARA-HKNKBN
 grpsys                                  SPA-AREA
       *
       *

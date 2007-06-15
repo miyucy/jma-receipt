@@ -501,9 +501,9 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE43PARA-HOSPNUM
            MOVE    WRK-PARA-TERMID     TO  RECE47PARA-TERMID
 grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE47PARA-HOSPNUM
       *
-           IF      WRK-PARA-SHELLID    NOT =   "RECEPTX"
-               PERFORM 100-DBOPEN-SEC
+           PERFORM 100-DBOPEN-SEC
       *
+           IF      WRK-PARA-SHELLID    NOT =   "RECEPTX"
       *        ステップ管理開始処理
                MOVE    "STS"           TO  SJOBKANRI-MODE
                INITIALIZE                  JOBKANRI-REC
@@ -532,7 +532,9 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
                PERFORM 120-HOSPINF-GET-SEC
            END-IF
       *
-           IF      FLG-STS             =   ZERO
+           IF    ( WRK-PARA-SHELLID
+                                   NOT =   "RECEPTX" )
+           AND   ( FLG-STS             =   ZERO      )
                PERFORM 5001-DB-DELETE-SEC
            END-IF
       *
@@ -762,15 +764,16 @@ grpsys        PERFORM 900-DBSELECT-SEC
       *
       *    パラメタＤＢ読み込み
            INITIALIZE                      BTPARA-REC
-           MOVE    WRK-PARA-SHELLID    TO  BTPARA-SHELLID
-           MOVE    WRK-PARA-JOBID      TO  BTPARA-JOBID
-grpsys     MOVE    WRK-PARA-HOSPNUM    TO  BTPARA-HOSPNUM
-           PERFORM 900-BTPARA-READ-SEC
-           IF      FLG-BTPARA          =   1
-               MOVE
-                   "パラメタ情報が取得できませんでした。"
-                                           TO  WRK-RECEERR
-               PERFORM 500-ERR-HENSYU-SEC
+           IF      WRK-PARA-SHELLID    NOT =   "RECEPTX"
+               MOVE    WRK-PARA-SHELLID    TO  BTPARA-SHELLID
+               MOVE    WRK-PARA-JOBID      TO  BTPARA-JOBID
+grpsys         MOVE    WRK-PARA-HOSPNUM    TO  BTPARA-HOSPNUM
+               PERFORM 900-BTPARA-READ-SEC
+               IF      FLG-BTPARA          =   1
+                   MOVE    "パラメタ情報が取得できませんでした。"
+                                               TO  WRK-RECEERR
+                   PERFORM 500-ERR-HENSYU-SEC
+               END-IF
            END-IF
       *
            .
@@ -2031,7 +2034,8 @@ grpsys     PERFORM 900-DBSELECT-SEC
                PERFORM 3901-RECE08-INSERT-SEC
       *
       *        レセプト帳票管理ファイル出力
-               IF      FLG-ERR              =   ZERO
+               IF    ( FLG-ERR              =   ZERO     )
+               AND   ( WRK-PARA-SHELLID NOT =  "RECEPTX" )
                    PERFORM 3903-RECE07-WRITE-SEC
                END-IF
            END-PERFORM
@@ -2054,7 +2058,11 @@ grpsys     PERFORM 900-DBSELECT-SEC
            INITIALIZE                  RECE08-REC
 grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE08-HOSPNUM
            MOVE    "HC23"              TO  RECE08-PRTID
-           MOVE    WRK-PARA-SRYYM      TO  RECE08-RECEYM
+           IF      WRK-PARA-SHELLID    =   "RECEPTX"
+                   MOVE    ALL "9"         TO  RECE08-RECEYM
+           ELSE
+                   MOVE    WRK-PARA-SRYYM  TO  RECE08-RECEYM
+           END-IF
            MOVE    WRK-PARA-CREYMD     TO  RECE08-CREYMD
            MOVE    WRK-PARA-CREHMS (1:6)
                                        TO  RECE08-CREHMS
@@ -2514,9 +2522,9 @@ grpsys         PERFORM 900-ORCDBMAIN-SEC
                INITIALIZE                  JOBKANRI-REC
                MOVE    CNT-OUT         TO  JOB-UPDCNT
 grpsys         PERFORM 900-CALL-ORCSJOB-SEC
-      *
-               PERFORM 900-DBDISCONNECT-SEC
            END-IF
+      *
+           PERFORM 900-DBDISCONNECT-SEC
       *
            .
        300-END-EXT.
