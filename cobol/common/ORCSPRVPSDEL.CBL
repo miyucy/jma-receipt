@@ -28,6 +28,7 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *  03.05.01    NACL-藤原    07/04/19  グループ診療対応
+      *  03.05.02    NACL-藤原    07/06/01  労災・自賠責処理追加                                            
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -158,6 +159,7 @@
 grpsys 01  LINK-HOSPNUM                PIC 9(02).
        01  LINK-PTID                   PIC 9(10).
        01  LINK-SRYYM                  PIC X(06).
+       01  LINK-HKNKBN                 PIC X(01).
       *
 grpsys     COPY    "COMMON-SPA".
       *
@@ -167,6 +169,7 @@ grpsys     COPY    "COMMON-SPA".
                LINK-HOSPNUM
                LINK-PTID
                LINK-SRYYM
+               LINK-HKNKBN
                SPA-AREA
                .
       *
@@ -297,7 +300,18 @@ grpsys     MOVE    SPA-HOSPNUM         TO  SPTID-HOSPNUM
                END-IF
            END-PERFORM
       *
-           MOVE    "HC06"              TO  RECE08-PRTID
+      *???
+           DISPLAY "LINK-HKNKBN=" LINK-HKNKBN "#" 
+      *???
+      *
+           EVALUATE    LINK-HKNKBN
+               WHEN    "0"
+                   MOVE    "HC06"          TO  RECE08-PRTID
+               WHEN    "1"
+                   MOVE    "HC21"          TO  RECE08-PRTID
+               WHEN    "2"
+                   MOVE    "HC23"          TO  RECE08-PRTID
+           END-EVALUATE
            MOVE    "999999"            TO  RECE08-RECEYM
            MOVE    WRK-PTNUM           TO  RECE08-PTNUM
 grpsys     MOVE    SPA-HOSPNUM         TO  RECE08-HOSPNUM
