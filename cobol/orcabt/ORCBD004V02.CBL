@@ -933,10 +933,12 @@ grpsys         MOVE    SPA-HOSPNUM     TO  SYU-HOSPNUM
            END-STRING
            MOVE    WRK-PARA-JOBID      TO  JOB-JOBID
            MOVE    WRK-PARA-SHELLID    TO  JOB-SHELLID
+grpsys     MOVE    SPA-HOSPNUM         TO  JOB-HOSPNUM
       *
            CALL    "ORCSJOB"               USING
                                            ORCSJOBKANRIAREA
                                            JOBKANRI-REC
+grpsys                                     SPA-AREA
       *
            .
        3311-TOTAL-MES-HEN-EXT.
