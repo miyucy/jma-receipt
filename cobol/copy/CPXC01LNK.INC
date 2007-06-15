@@ -37,6 +37,8 @@
            03  LNK-XC01-ST-PAGE        PIC 9(5).
            03  LNK-XC01-ED-PAGE        PIC 9(5).
       *
+           03  LNK-XC01-HKNKBN         PIC X(1).
+      *
            03  LNK-XC01-MOTOPG         PIC X(08).
       *
            03  LNK-XC01-GYOUMU-CD      PIC X(02).
