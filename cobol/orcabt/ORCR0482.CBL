@@ -60,7 +60,9 @@
       *  03.01.02    NACL-門脇    06/07/18  不要ロジック削除
       *
       *  03.04.01    NACL-藤原    06/11/01  照会機能連携対応
+      *
       *  03.05.01    NACL-門脇    07/05/25  グループ診療対応
+      *  03.05.02    NACL-藤原    07/06/01  realtime preview 処理追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -470,7 +472,11 @@
       *
            PERFORM 300-END-SEC
       *
-           STOP    RUN
+           IF      WRK-PARA-SHELLID    NOT =   "RECEPTX"
+               STOP    RUN
+           ELSE
+               EXIT    PROGRAM
+           END-IF 
            .
       *****************************************************************
       *    初期　処理
@@ -512,13 +518,15 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECEYMD-HOSPNUM
       *
            PERFORM 100-DBOPEN-SEC
       *
-      *    ステップ管理開始処理
-           MOVE    "STS"           TO  SJOBKANRI-MODE
-           INITIALIZE                  JOBKANRI-REC
-           MOVE    "ORCR0482"      TO  JOB-PGID
-           MOVE    "アフターケア・印刷データ編集（労災）"
-                                   TO  JOB-SHELLMSG
-grpsys     PERFORM 900-CALL-ORCSJOB-SEC
+           IF      WRK-PARA-SHELLID    NOT =   "RECEPTX"
+      *        ステップ管理開始処理
+               MOVE    "STS"           TO  SJOBKANRI-MODE
+               INITIALIZE                  JOBKANRI-REC
+               MOVE    "ORCR0482"      TO  JOB-PGID
+               MOVE    "アフターケア・印刷データ編集（労災）"
+                                       TO  JOB-SHELLMSG
+grpsys         PERFORM 900-CALL-ORCSJOB-SEC
+           END-IF    
       *
            IF      FLG-STS             =   ZERO
                PERFORM 120-HOSPINF-GET-SEC
@@ -828,15 +836,18 @@ grpsys        PERFORM 900-DBSELECT-SEC
       *
       *    パラメタＤＢ読み込み
            INITIALIZE                      BTPARA-REC
-           MOVE    WRK-PARA-SHELLID    TO  BTPARA-SHELLID
-           MOVE    WRK-PARA-JOBID      TO  BTPARA-JOBID
-grpsys     MOVE    WRK-PARA-HOSPNUM    TO  BTPARA-HOSPNUM
-           PERFORM 900-BTPARA-READ-SEC
-           IF      FLG-BTPARA          =   1
-               MOVE
+           IF      WRK-PARA-SHELLID    NOT =   "RECEPTX"
+               MOVE    WRK-PARA-SHELLID    TO  BTPARA-SHELLID
+               MOVE    WRK-PARA-JOBID      TO  BTPARA-JOBID
+grpsys         MOVE    WRK-PARA-HOSPNUM    TO  BTPARA-HOSPNUM
+               PERFORM 900-BTPARA-READ-SEC
+               IF      FLG-BTPARA          =   1
+                   MOVE
                    "パラメタ情報が取得できませんでした。"
                                            TO  WRK-RECEERR
-               PERFORM 500-ERR-HENSYU-SEC
+                   PERFORM 500-ERR-HENSYU-SEC
+                   MOVE    2               TO  FLG-STS
+               END-IF
            END-IF
       *
            .
@@ -1513,7 +1524,8 @@ grpsys     PERFORM 900-DBSELECT-SEC
                PERFORM 3901-RECE08-INSERT-SEC
       *
       *        レセプト帳票管理ファイル出力
-               IF      FLG-ERR              =   ZERO
+               IF    ( FLG-ERR              =   ZERO     )
+               AND   ( WRK-PARA-SHELLID NOT =  "RECEPTX" )
                    PERFORM 3903-RECE07-WRITE-SEC
                END-IF
            END-PERFORM
@@ -1536,7 +1548,11 @@ grpsys     PERFORM 900-DBSELECT-SEC
            INITIALIZE                  RECE08-REC
 grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE08-HOSPNUM
            MOVE    "HC21"              TO  RECE08-PRTID
-           MOVE    WRK-PARA-SRYYM      TO  RECE08-RECEYM
+           IF      WRK-PARA-SHELLID    =   "RECEPTX"
+                   MOVE    ALL "9"         TO  RECE08-RECEYM
+           ELSE
+                   MOVE    WRK-PARA-SRYYM  TO  RECE08-RECEYM
+           END-IF
            MOVE    WRK-RECEYMD-CREYMD  TO  RECE08-CREYMD
            MOVE    WRK-RECEYMD-CREHMS  TO  RECE08-CREHMS
            MOVE    "0"                 TO  RECE08-PREFKBN
@@ -1795,12 +1811,14 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
                WRITE   RECEERR-REC
                CLOSE   RECEERR-FILE
       *         
-      *        ジョブ管理開始処理
-               MOVE    "JBE"           TO  SJOBKANRI-MODE
-               INITIALIZE                  JOBKANRI-REC
-               MOVE    WRK-RECEERR     TO  JOB-YOBI
-               MOVE    "9999"          TO  JOB-ERRCD
-grpsys         PERFORM 900-CALL-ORCSJOB-SEC
+               IF      WRK-PARA-SHELLID    NOT =   "RECEPTX"
+      *            ジョブ管理終了処理
+                   MOVE    "JBE"           TO  SJOBKANRI-MODE
+                   INITIALIZE                  JOBKANRI-REC
+                   MOVE    WRK-RECEERR     TO  JOB-YOBI
+                   MOVE    "9999"          TO  JOB-ERRCD
+grpsys             PERFORM 900-CALL-ORCSJOB-SEC
+               END-IF
            END-IF
       *                             
            MOVE    1                   TO  FLG-END
@@ -1834,11 +1852,13 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
            DISPLAY "*** ORCR0482 OUT  "  CNT-OUT
            DISPLAY "*** ORCR0482 END ***"
       *
-      *    ステップ管理終了処理
-           MOVE    "STE"           TO  SJOBKANRI-MODE
-           INITIALIZE                  JOBKANRI-REC
-           MOVE    CNT-OUT         TO  JOB-UPDCNT
-grpsys     PERFORM 900-CALL-ORCSJOB-SEC
+           IF      WRK-PARA-SHELLID    NOT =   "RECEPTX"
+      *        ステップ管理終了処理
+               MOVE    "STE"           TO  SJOBKANRI-MODE
+               INITIALIZE                  JOBKANRI-REC
+               MOVE    CNT-OUT         TO  JOB-UPDCNT
+grpsys         PERFORM 900-CALL-ORCSJOB-SEC
+           END-IF
       *
            PERFORM 900-DBDISCONNECT-SEC
       *
