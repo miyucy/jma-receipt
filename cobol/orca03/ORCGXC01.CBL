@@ -1760,6 +1760,7 @@ grpsys             CALL    "ORCDBMAIN"       USING MCPAREA
                                              ORCA-BLOB
 grpsys                                       SPA-AREA
                    MOVE    ORCA-BLOB-OBJECT    TO  SPA-NAI-OBJECT(IDX)
+                   MOVE    ORCF-FILE-NAME      TO  SPA-NAI-FILENAME(IDX)
                    GO        TO  20122-PSFILE-EXIST-EXT
            END-IF
       *   rin st  ----------------------------------------------
