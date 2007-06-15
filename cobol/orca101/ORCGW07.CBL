@@ -1164,7 +1164,8 @@
            MOVE    "80 リハビリˇその戮"
                                        TO  SPA-GMN-DOSRYKBNFLG-LST (09)
            MOVE    "90 极锐ˇその戮"   TO  SPA-GMN-DOSRYKBNFLG-LST (10)
-           MOVE    10                  TO  SPA-GMN-DOSRYKBNFLG-MAX
+           MOVE    "29 抨挑ˇ庙纪"     TO  SPA-GMN-DOSRYKBNFLG-LST (11)
+           MOVE    11                  TO  SPA-GMN-DOSRYKBNFLG-MAX
       *    面庞办枉山绩界
            MOVE    "0 吹荚戎规界"      TO  SPA-GMN-WKSRYHYOFLG-LST(1)
            MOVE    "1 判峡界"          TO  SPA-GMN-WKSRYHYOFLG-LST(2)
