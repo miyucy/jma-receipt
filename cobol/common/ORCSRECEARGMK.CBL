@@ -28,6 +28,7 @@
       *  ¥×¥í¥°¥é¥à½¤ÀµÍúÎò
       * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
       *  03.05.01    NACL-Æ£¸¶    07/04/19  ¥°¥ë¡¼¥×¿ÇÎÅÂÐ±þ
+      *  03.05.02    NACL-Æ£¸¶    07/06/01  Ï«ºÒ¡¦¼«ÇåÀÕÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -125,6 +126,8 @@
       *
            COPY    "CPSK2005.INC".
       *
+           COPY    "CPSK4001.INC".
+      *
       *    ½ÐÎÏÀè¥×¥ê¥ó¥¿Ì¾³ä¤êÅö¤Æ¾ðÊó
            COPY    "CPSK1031.INC".
       *
@@ -151,12 +154,17 @@
       *    Ï¢Íí¡¡ÎÎ°è
       *****************************************************************
       *
+      *     LINK-HKNKBN
+      *     £°¡§°åÊÝ  £±¡§Ï«ºÒ  £²¡§¼«ÇåÀÕ
+      *     LINK-PTRSI-HKNKBN
+      *     £±¡§Ï«ºÒ  £²¡§¼«ÇåÀÕ
        LINKAGE                 SECTION.
        01  LINK-SHORI-KBN              PIC X(01).
        01  LINK-PTID                   PIC 9(10).
        01  LINK-SRYYM                  PIC X(06).
        01  LINK-NYUGAIKBN              PIC X(01).
        01  LINK-HKNKBN                 PIC X(01).
+       01  LINK-PTRSI-HKNKBN           PIC X(01).
       *01  LINK-ERRCD                  PIC X(04).
            COPY    "COMMON-SPA".
       *
@@ -168,6 +176,7 @@
                LINK-SRYYM
                LINK-NYUGAIKBN
                LINK-HKNKBN
+               LINK-PTRSI-HKNKBN
       *        LINK-ERRCD
                SPA-AREA.
       *
@@ -188,7 +197,8 @@
       *****************************************************************
        100-INIT-SEC                SECTION.
       *???
-           DISPLAY "ORCSRECEARGMK ST =" LINK-NYUGAIKBN
+           DISPLAY "ORCSRECEARGMK ST =" LINK-NYUGAIKBN " " LINK-HKNKBN
+                                    " " LINK-PTRSI-HKNKBN
       *???     
            INITIALIZE                  WRK-AREA
                                        FLG-AREA
@@ -312,6 +322,54 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SYS-1031-HOSPNUM
                                            SYS-2005-KKHPRTNM-NEXT-N
                END-IF
            END-IF                                              
+      *    Ï«ºÒ°õºþÀè
+           IF      SYS-2005-ROUPRTNM   =   SPACE
+               MOVE    SYS-1031-PRTNM (4)  TO  SYS-2005-ROUPRTNM
+           END-IF                                              
+           IF      SYS-2005-ROUPRTNM-N =   SPACE
+               MOVE    SYS-1031-PRTNM (4)  TO  SYS-2005-ROUPRTNM-N
+           END-IF
+           IF      SYS-2005-ROUPRTNM-NEXT
+                                       =   SPACE
+               MOVE    SYS-1031-PRTNM (4)  TO  SYS-2005-ROUPRTNM-NEXT
+           END-IF                                              
+           IF      SYS-2005-ROUPRTNM-NEXT-N
+                                       =   SPACE
+               MOVE    SYS-1031-PRTNM (4)  TO  SYS-2005-ROUPRTNM-NEXT-N
+           END-IF
+      *    ¼«ÇåÀÕ°õºþÀè
+           IF      SYS-2005-JBAIPRTNM  =   SPACE
+               MOVE    SYS-1031-PRTNM (4)  TO  SYS-2005-JBAIPRTNM
+           END-IF                                              
+           IF      SYS-2005-JBAIPRTNM-N
+                                       =   SPACE
+               MOVE    SYS-1031-PRTNM (4)  TO  SYS-2005-JBAIPRTNM-N
+           END-IF
+           IF      SYS-2005-JBAIPRTNM-NEXT
+                                       =   SPACE
+               MOVE    SYS-1031-PRTNM (4)  TO  SYS-2005-JBAIPRTNM-NEXT
+           END-IF                                              
+           IF      SYS-2005-JBAIPRTNM-NEXT-N
+                                       =   SPACE
+               MOVE    SYS-1031-PRTNM (4)  TO  SYS-2005-JBAIPRTNM-NEXT-N  
+           END-IF
+      *
+      *    ·òÊÝ½àµò¤«Ï«ºÒ½àµò¤Î¥Á¥§¥Ã¥¯¡Ê¼«ÇåÀÕ¡Ë
+           IF      LINK-HKNKBN          =   "2"
+               INITIALIZE                  SYS-4001-REC
+               MOVE    "4001"          TO  SYS-4001-KANRICD
+               MOVE    "*"             TO  SYS-4001-KBNCD
+               MOVE    SPA-SYSYMD      TO  SYS-4001-STYUKYMD
+                                           SYS-4001-EDYUKYMD
+grpsys         MOVE    SPA-HOSPNUM     TO  SYS-4001-HOSPNUM
+               MOVE    SYS-4001-REC    TO  MCPDATA-REC
+               PERFORM 900-SYSKANRI-READ-SEC
+               IF      FLG-SYSKANRI        =   ZERO
+                   MOVE    MCPDATA-REC     TO  SYS-4001-REC
+               ELSE
+                   INITIALIZE                  SYS-4001-REC
+               END-IF
+           END-IF
       *
       *    ¥¸¥ç¥Ö´ÉÍý¥Á¥§¥Ã¥¯½èÍý
            PERFORM 1001-JOBKANRI-CHK-SEC
@@ -388,7 +446,18 @@ grpsys     MOVE    SPA-HOSPNUM     TO  RECEERR-HOSPNUM
       *------------------> recept1.sh $1 - $11
            MOVE    WRK-SHELL-ARG1  TO  SHELLTBL-ARG1
            MOVE    "2"             TO  SHELLTBL-ARG2
-           MOVE    "0"             TO  SHELLTBL-ARG3
+           EVALUATE    LINK-HKNKBN
+               WHEN    "0"
+                   MOVE    "0"             TO  SHELLTBL-ARG3
+               WHEN    "1"
+                   MOVE    "3"             TO  SHELLTBL-ARG3
+               WHEN    "2"
+                   IF      SYS-4001-JIBAIKBN   =   "2"
+                       MOVE    "5"             TO  SHELLTBL-ARG3
+                   ELSE
+                       MOVE    "4"             TO  SHELLTBL-ARG3
+                   END-IF
+           END-EVALUATE 
            MOVE    RECEERR         TO  SHELLTBL-ARG4
            MOVE    WRK-CONS-JOB-JOBID
                                    TO  SHELLTBL-ARG5
@@ -406,10 +475,12 @@ grpsys     MOVE    SPA-HOSPNUM     TO  RECEERR-HOSPNUM
            MOVE    SMCNDATE-HMS    TO  SHELLTBL-ARG10
            MOVE    SYS-1001-PREFNUM
                                    TO  SHELLTBL-ARG11
+           MOVE    LINK-PTRSI-HKNKBN
+                                   TO  SHELLTBL-ARG12
       *
       *------------------> recept2.sh $11 - $26 (#24 ¤Ï½ü¤¯)
-           EVALUATE   LINK-NYUGAIKBN
-               WHEN   "1"
+           EVALUATE   LINK-NYUGAIKBN   ALSO    LINK-HKNKBN
+               WHEN   "1"              ALSO    "0"
                    MOVE    SYS-2005-SYAPRTNM-N
                                    TO  SHELLTBL-ARG15
                    MOVE    SYS-2005-KKHPRTNM-N
@@ -418,7 +489,7 @@ grpsys     MOVE    SPA-HOSPNUM     TO  RECEERR-HOSPNUM
                                    TO  SHELLTBL-ARG28
                    MOVE    SYS-2005-KKHPRTNM-NEXT-N
                                    TO  SHELLTBL-ARG29
-               WHEN   "2"
+               WHEN   "2"              ALSO    "0"
                    MOVE    SYS-2005-SYAPRTNM
                                    TO  SHELLTBL-ARG15
                    MOVE    SYS-2005-KKHPRTNM
@@ -427,6 +498,26 @@ grpsys     MOVE    SPA-HOSPNUM     TO  RECEERR-HOSPNUM
                                    TO  SHELLTBL-ARG28
                    MOVE    SYS-2005-KKHPRTNM-NEXT
                                    TO  SHELLTBL-ARG29
+               WHEN   "1"              ALSO    "1"
+                   MOVE    SYS-2005-ROUPRTNM-N
+                                   TO  SHELLTBL-ARG15
+                   MOVE    SYS-2005-ROUPRTNM-NEXT-N
+                                   TO  SHELLTBL-ARG16
+               WHEN   "1"              ALSO    "2"
+                   MOVE    SYS-2005-JBAIPRTNM-N
+                                   TO  SHELLTBL-ARG15
+                   MOVE    SYS-2005-JBAIPRTNM-NEXT-N
+                                   TO  SHELLTBL-ARG16
+               WHEN   "2"              ALSO    "1"
+                   MOVE    SYS-2005-ROUPRTNM
+                                   TO  SHELLTBL-ARG15
+                   MOVE    SYS-2005-ROUPRTNM-NEXT
+                                   TO  SHELLTBL-ARG16
+               WHEN   "2"              ALSO    "2"
+                   MOVE    SYS-2005-JBAIPRTNM
+                                   TO  SHELLTBL-ARG15
+                   MOVE    SYS-2005-JBAIPRTNM-NEXT
+                                   TO  SHELLTBL-ARG16
            END-EVALUATE
       *                                     
            MOVE    SPACE           TO  LNK-PRTKANRI-AREA
