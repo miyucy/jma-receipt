@@ -11530,7 +11530,8 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *        ÌôºÞ¥Á¥§¥Ã¥¯
                IF     (SPA-COM-SRYKBN(IDX)     =   "21"  OR  "22"  OR
                                                    "23"   )  AND
-                      (SPA-COM-INPUTCD(IDX)(1:1)   =   "6" )
+                     ((SPA-COM-INPUTCD(IDX)(1:1)   =   "6" )  OR
+                      (SPA-COM-INPUTCD(IDX)(1:3)   =   "059" ))
                    MOVE    1                   TO  FLG-YAKUZAI-ARI
                END-IF
       *

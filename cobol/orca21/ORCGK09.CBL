@@ -33,6 +33,7 @@
       * 01.00.04     NACL-多々納  06/01/23  用量割合・包括検査数追加
       * 03.04.00     NACL-多々納  06/11/14  検査正式名称表示追加他
       * 03.05.00     NACL-多々納  07/04/XX  グループ診療対応
+      * 03.05.00     NACL-多々納  07/06/14  投薬・注射追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -735,8 +736,9 @@
            MOVE    "80 リハビリ・その他"
                                        TO  SPA-GMN-SRYKBN-LST (09)
            MOVE    "90 自費・その他"   TO  SPA-GMN-SRYKBN-LST (10)
+           MOVE    "29 投薬・注射"     TO  SPA-GMN-SRYKBN-LST (11)
       *
-           MOVE    10                  TO  SPA-SRYKBN-MAX
+           MOVE    11                  TO  SPA-SRYKBN-MAX
            MOVE    SPA-DOSRYKBNFLG     TO  SPA-GMN-SRYKBN
            MOVE    ZERO                TO  FLG-OK
            PERFORM VARYING     IDX     FROM    1   BY  1
@@ -1663,6 +1665,14 @@
                            (JYURRK-SRYKBN4     =   "01" )
                        MOVE    1                   TO  FLG-OK2
                    END-IF
+               WHEN    "29"
+      *            投薬・注射
+                   IF     ((JYURRK-SRYKBN2     =   "01" )  OR
+                           (JYURRK-SRYKBN3     =   "01" )  OR
+                           (JYURRK-SRYKBN4     =   "01" ) )  OR
+                          ( JYURRK-SRYKBN5     =   "01"   )
+                       MOVE    1                   TO  FLG-OK2
+                   END-IF
                WHEN    "30"
                    IF      (JYURRK-SRYKBN5     =   "01" )
                        MOVE    1                   TO  FLG-OK2
@@ -1756,6 +1766,14 @@
                    WHEN    "20"
                        IF     (SRY-SRYKBN(1:1)     =   "2" )  OR
                               (SRY-SRYKBN          =   "98")
+                           CONTINUE
+                       ELSE
+                           MOVE    ZERO            TO  FLG-OK
+                       END-IF
+                   WHEN    "29"
+                       IF     (SRY-SRYKBN(1:1)     =   "2" )  OR
+                              (SRY-SRYKBN          =   "98")  OR
+                              (SRY-SRYKBN(1:1)     =   "3" )
                            CONTINUE
                        ELSE
                            MOVE    ZERO            TO  FLG-OK
