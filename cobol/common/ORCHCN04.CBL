@@ -46,9 +46,11 @@
       *
       *    °õºþÍÑ¥Ç¡¼¥¿
        FD  PRT-FILE.
-           COPY    "HCN04.INC".
+       01  PRT-REC                 PIC X(10000).
       *
        WORKING-STORAGE             SECTION.
+      *
+           COPY    "HCN04.INC".
       *
       *     °õºþÍÑ¥Ç¡¼¥¿ Ì¾¾ÎÎÎ°è 
            COPY    "CPCOMMONPRT.INC".
@@ -412,7 +414,8 @@
        400-PRINT-SEC                SECTION.
       *
       *    °õºþÍÑ¥Ç¡¼¥¿½ÐÎÏ
-           WRITE  HCN04
+           MOVE   HCN04            TO  PRT-REC
+           WRITE  PRT-REC
       *
            CLOSE                       PRT-FILE
       *
