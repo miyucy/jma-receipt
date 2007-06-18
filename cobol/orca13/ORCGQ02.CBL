@@ -266,7 +266,6 @@
       *    照会用サブ
            COPY    "CPQSUB01.INC".
            COPY    "CPQSUB02.INC".
-           COPY    "CPQSUB03.INC".
       *
       *    患者一覧印刷パラメタ
            COPY    "CPORCHC28.INC".
@@ -282,6 +281,9 @@
       *
       *    マシン日付取得サブ
            COPY    "CPORCSMCNDATE.INC".
+      *
+      *    最終受診日取得
+           COPY    "CPORCSLASTYMD.INC".
       *
       *****************************************************************
       *    連絡領域
@@ -815,13 +817,14 @@
                MOVE    WRK-AGE-G           TO  SPA-GMN-Q02-KEKKALST-AGE
                                                                (IDX-GMN)
       *
-      *        保険組合せ
-               MOVE    SPA-HOSPNUM         TO  QSUB03-HOSPNUM
-               MOVE    QUERY-PTINF-PTID    TO  QSUB03-PTID
-               MOVE    SPA-SYSYMD          TO  QSUB03-KJNYMD
-               CALL    "ORCGQSUB03"        USING QSUB03-LNK
-                                                 SPA-AREA
-               MOVE    QSUB03-HKNCOMBIMEI  TO  SPA-GMN-Q02-KEKKALST-HKN
+      *        前回来院日編集
+               INITIALIZE                  ORCSLASTYMDAREA
+               MOVE    QUERY-PTINF-PTID    TO  ORCSLASTYMD-PTID
+               CALL    "ORCSLASTYMD"       USING
+                                           ORCSLASTYMDAREA
+                                           SPA-AREA
+               MOVE    ORCSLASTYMD-HKNCOMBI-MEI
+                                           TO  SPA-GMN-Q02-KEKKALST-HKN
                                                                (IDX-GMN)
       *
       *        電話番号
@@ -829,23 +832,14 @@
                                            TO  SPA-GMN-Q02-KEKKALST-TEL
                                                                (IDX-GMN)
       *        最終受診日
-               IF    ( QSUB03-BRMNUM       NOT =   SPACE )
-                   MOVE    QSUB03-BRMNUM
+               IF    ( ORCSLASTYMD-BRMNUM  NOT =   SPACE )
+                   MOVE    ORCSLASTYMD-BRMNUM
                                        TO  SPA-GMN-Q02-KEKKALST-LASTYMD
                                                                (IDX-GMN)
                ELSE
-                   MOVE    QSUB03-LASTYMD  TO  SGDAY-INDAY
-                   CALL    "ORCSGDAY"      USING
-                                           ORCSGDAYAREA
-                   IF  ( SGDAY-RC          =   ZERO )
-                       MOVE    SGDAY-OTDAY
+                   MOVE    ORCSLASTYMD-LASTYMDW
                                        TO  SPA-GMN-Q02-KEKKALST-LASTYMD
                                                                (IDX-GMN)
-                   ELSE
-                       MOVE    SPACE
-                                       TO  SPA-GMN-Q02-KEKKALST-LASTYMD
-                                                               (IDX-GMN)
-                   END-IF
                END-IF
       *
       *        郵便番号
