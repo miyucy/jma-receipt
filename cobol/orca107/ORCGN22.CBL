@@ -764,12 +764,11 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            ELSE
                MOVE    "BLOBIMPORT"    TO  MCP-FUNC
                MOVE    "blob"          TO  MCP-TABLE
-               MOVE    "primary"       TO  MCP-PATHNAME
+grpsys         MOVE    "key"       TO  MCP-PATHNAME
                MOVE    WRK-GAZOFILE    TO  ORCA-BLOB-FILE
 grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
-                                                   MCPDATA-REC
+                                                   ORCA-BLOB  
                                                    SPA-AREA
-                                           ORCA-BLOB
                MOVE    ORCA-BLOB-OBJECT
                                        TO  WRK-OBJECT
            END-IF

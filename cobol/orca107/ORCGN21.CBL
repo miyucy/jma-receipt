@@ -1296,10 +1296,10 @@
                IF      FLG-GAZO = 1
                    MOVE    "BLOBIMPORT"    TO  MCP-FUNC
                    MOVE    "blob"          TO  MCP-TABLE
-                   MOVE    "primary"       TO  MCP-PATHNAME
+grpsys             MOVE    "key"           TO  MCP-PATHNAME
                    MOVE    SPA-GMN-PHOTO   TO  ORCA-BLOB-FILE
 grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
-                                                       MCPDATA-REC
+                                                       ORCA-BLOB
                                                        SPA-AREA
                    MOVE    ORCA-BLOB-OBJECT    TO  SPA-GMN-OBJECT
                ELSE
