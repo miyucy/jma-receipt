@@ -1004,7 +1004,14 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                END-IF
            END-PERFORM
       *
-           MOVE    "HC06"              TO  RECE08-PRTID
+           EVALUATE    LNK-XC01-HKNKBN
+               WHEN    "0"
+                   MOVE    "HC06"          TO  RECE08-PRTID
+               WHEN    "1"
+                   MOVE    "HC21"          TO  RECE08-PRTID
+               WHEN    "2"
+                   MOVE    "HC23"          TO  RECE08-PRTID
+           END-EVALUATE
            MOVE    "999999"            TO  RECE08-RECEYM
            MOVE    WRK-PTNUM           TO  RECE08-PTNUM
            MOVE    SPA-HOSPNUM         TO  RECE08-HOSPNUM
