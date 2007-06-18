@@ -33,7 +33,13 @@ fi
 #        ${30} 診療日指定終了日
 #-------------------------------------------#
 
+OLDLOG=/home/orca/orcbsd01.log
 LOGFILE="/var/log/jma-receipt/${14}orcb041.log"
+
+##      旧ログファイルを削除
+        if  [ -e $OLDLOG ]; then
+            rm  $OLDLOG
+        fi
 
 
 ##      エラーファイル削除

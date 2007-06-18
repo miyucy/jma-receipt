@@ -37,8 +37,13 @@ if [ ${13} = 'MONTHLY' ]; then
   LD=052
 fi
 
+OLDLOG=/home/orca/execoprg.log
 LOGFILE=/var/log/jma-receipt/${HOSPNUM}orcb${LD}.log
 
+##      旧ログファイルを削除
+        if  [ -e $OLDLOG ]; then
+            rm  $OLDLOG
+        fi
 
 	echo $#
 ##      エラーファイル削除
