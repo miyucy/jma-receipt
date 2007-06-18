@@ -41,7 +41,8 @@
            SELECT  ML09ERR-FILE    ASSIGN  ML09ERR
                                    FILE    STATUS  IS  STS-ML09ERR.
       *    CSV用データ
-           SELECT  CSV-FILE        ASSIGN  "/tmp/userbyol.csv"
+grpsys*DD  SELECT  CSV-FILE        ASSIGN  "/tmp/userbyol.csv"
+grpsys     SELECT  CSV-FILE        ASSIGN  USERCSV
                                    ORGANIZATION    IS  LINE
                                                        SEQUENTIAL
                                    FILE    STATUS  IS  STS-CSV.
@@ -85,9 +86,16 @@
            COPY    "CPSHELLTBL.INC".
            COPY    "ORCA-DBPATH".
       *    エラーファイル 名称領域 
-           COPY    "CPCOMMONDAT2.INC"  REPLACING  //RECE01PARA//
-                                       BY         //ML09ERR//.
-           03                          PIC X(04)   VALUE   ".dat".
+           COPY    "CPERRFL.INC"   REPLACING  //ERRFLPARA//
+                                   BY         //ML09ERR//.
+grpsys*DD  COPY    "CPCOMMONDAT2.INC"  REPLACING  //RECE01PARA//
+grpsys*DD                              BY         //ML09ERR//.
+grpsys*DD  03                          PIC X(04)   VALUE   ".dat".
+grpsys 01  USERCSV.
+grpsys     03  FILLER              PIC X(09)   VALUE   "/var/tmp/".
+grpsys     03  USERCSV-HOSPNUM     PIC 9(02).
+grpsys     03  USERCSV-FILE-ID     PIC X(08).
+grpsys     03  FILLER              PIC X(04)   VALUE   ".csv".
       *
       *    スパ領域
        01  STS-AREA.
@@ -219,8 +227,10 @@
            INITIALIZE                  STS-AREA
            INITIALIZE                  WRK-AREA
            INITIALIZE                  CNT-AREA
+grpsys     INITIALIZE                  SPA-AREA
       *
            ACCEPT  SYS-TIME            FROM    TIME 
+grpsys     PERFORM 120-DBOPEN-SEC
       *
            UNSTRING   COMMAND-PARAM    DELIMITED  BY  ","
                                        INTO    WRK-PARA-TERMID
@@ -229,8 +239,9 @@
                                                WRK-PARA-SYUKBN
                                                WRK-PARA-JOBID
                                                WRK-PARA-SHELLID
+grpsys     MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
       *
-           PERFORM 120-DBOPEN-SEC
+grpsys*DD  PERFORM 120-DBOPEN-SEC
       *
       *    ステップ管理開始処理
            MOVE    "STS"           TO  SJOBKANRI-MODE
@@ -251,7 +262,10 @@
       *
            MOVE    "ML09ERR"       TO  ML09ERR-FILE-ID
            MOVE    WRK-PARA-TERMID TO  ML09ERR-TERMID
-           MOVE    WRK-PARA-HOSPNUM    TO  ML09ERR-HOSPNUM
+grpsys     MOVE    WRK-PARA-HOSPNUM    TO  ML09ERR-HOSPNUM
+
+grpsys     MOVE    "userbyol"          TO  USERCSV-FILE-ID
+grpsys     MOVE    SPA-HOSPNUM         TO  USERCSV-HOSPNUM
       *
       *    パラメタ編集処理
            PERFORM 110-PARA-HENSYU-SEC
@@ -458,10 +472,11 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  SYS-1031-HOSPNUM
            MOVE    WRK-PARA-TERMID     TO  HC01PARA-TERMID
            MOVE    SYS-TIME            TO  HC01PARA-SYOHMS
            MOVE    CNT-PAGE            TO  HC01PARA-CNT
+grpsys     MOVE    SPA-HOSPNUM         TO  HC01PARA-HOSPNUM
            OPEN    OUTPUT              PRT-FILE
            WRITE   HCML09
            CLOSE                       PRT-FILE
-      *
+      * 
            MOVE    "HC01.sh"           TO  SHELL-ID
            MOVE    "HCML09.dia"        TO  SHELL-DIA
            MOVE    "HCML09.def"        TO  SHELL-DEF
@@ -478,14 +493,13 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  SYS-1031-HOSPNUM
            MOVE    "shell"             TO  MCP-TABLE
            MOVE    "shell"             TO  MCP-PATHNAME
            MOVE    "SHELL"             TO  MCP-FUNC
-grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+           CALL    "ORCDBMAIN"         USING   MCPAREA
                                                MCPDATA-REC
                                                SPA-AREA
            .
       *
        390-PRINT-OUT-EXT.
            EXIT.
-      *
       *****************************************************************
       *    エラー出力処理
       *****************************************************************
