@@ -4814,7 +4814,8 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                END-IF
            END-IF
       *    回数がない
-           IF      FLG-K1              =   ZERO
+           IF     (FLG-K1              =   ZERO  )  AND
+                  (SPA-GMN-IKKATU  NOT =   SPACE )
                MOVE    "0061"              TO  SPA-ERRCD
            END-IF
       *
@@ -4893,12 +4894,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE    "0062"              TO  SPA-ERRCD
                END-IF
       *
-      *TEST
-               DISPLAY "IDW2:" IDW2
-                ",WRK-DAY1-9:" WRK-DAY1-9(IDW2)
-                ",WRK-DAY2-9:" WRK-DAY2-9(IDW2)
-                ",WRK-KAISU-9:" WRK-KAISU-9
-      *TEST
                PERFORM VARYING IDW3    FROM    WRK-DAY1-9(IDW2)  BY  1
                        UNTIL  (IDW3        >   WRK-DAY2-9 (IDW2))  OR
                               (IDW3        >   31         )  OR
