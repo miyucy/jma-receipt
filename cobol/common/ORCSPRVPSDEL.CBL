@@ -300,9 +300,6 @@ grpsys     MOVE    SPA-HOSPNUM         TO  SPTID-HOSPNUM
                END-IF
            END-PERFORM
       *
-      *???
-           DISPLAY "LINK-HKNKBN=" LINK-HKNKBN "#" 
-      *???
       *
            EVALUATE    LINK-HKNKBN
                WHEN    "0"
