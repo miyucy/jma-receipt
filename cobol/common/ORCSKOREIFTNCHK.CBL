@@ -34,6 +34,7 @@
       *  03.04.01    NACL-ÌçÏÆ    06/11/20  ¹â³Û£´²óÌÜ°Ê¹ßÂÐ±þ
       *  03.04.02    NACL-ÌçÏÆ    07/03/14  ÊÝ¸±Íó°ìÉôÉéÃ´¶âµ­ºÜ½¤Àµ
       *  03.04.03    NACL-ÌçÏÆ    07/04/01  ¸½ÊªµëÉÕÂÐ±þ
+      *  03.04.04    NACL-ÌçÏÆ    07/06/13  ¸½ÊªµëÉÕ¹â³Û£´²óÌÜ¸øÈñÊ»ÍÑ»þÂÐ±þ
       *
       *  03.05.01    NACL-Æ£¸¶    07/04/19  ¥°¥ë¡¼¥×¿ÇÎÅÂÐ±þ
       *****************************************************************
@@ -868,9 +869,9 @@ grpsys        MOVE    LNK-KOREIFTNCHK-HOSPNUM   TO  SYU-HOSPNUM
       *****************************************************************
        22022-NYUIN-WAKODO-HEN2-SEC               SECTION.
       *
-           IF   LNK-KOREIFTNCHK-KOHYONKAIME = 1
-              MOVE   44400   TO   WRK-KINGAKU
-           ELSE
+      ***> IF   LNK-KOREIFTNCHK-KOHYONKAIME = 1
+      ***>    MOVE   44400   TO   WRK-KINGAKU
+      ***> ELSE
               COMPUTE   LNK-KOREIFTNCHK-CHIHOUGAKU2 =
                         LNK-KOREIFTNCHK-CHIHOUGAKU2 +
                         (SYU-TOTAL-HKNTEN * 10)
@@ -882,7 +883,7 @@ grpsys        MOVE    LNK-KOREIFTNCHK-HOSPNUM   TO  SYU-HOSPNUM
               ELSE
                  MOVE    80100    TO   WRK-KINGAKU
               END-IF
-           END-IF
+      ***> END-IF
            PERFORM   260-ICHIBUFTN-KOH-SET-SEC
       *
            .
@@ -1294,9 +1295,9 @@ grpsys        MOVE    LNK-KOREIFTNCHK-HOSPNUM   TO  SYU-HOSPNUM
       *****************************************************************
        23022-GAIRAI-WAKODO-HEN2-SEC               SECTION.
       *
-           IF   LNK-KOREIFTNCHK-KOHYONKAIME = 1
-              MOVE   44400   TO   WRK-KINGAKU
-           ELSE
+      ***> IF   LNK-KOREIFTNCHK-KOHYONKAIME = 1
+      ***>    MOVE   44400   TO   WRK-KINGAKU
+      ***> ELSE
               COMPUTE   LNK-KOREIFTNCHK-CHIHOUGAKU2 =
                         LNK-KOREIFTNCHK-CHIHOUGAKU2 +
                         (SYU-TOTAL-HKNTEN * 10)
@@ -1308,7 +1309,7 @@ grpsys        MOVE    LNK-KOREIFTNCHK-HOSPNUM   TO  SYU-HOSPNUM
               ELSE
                  MOVE    80100    TO   WRK-KINGAKU
               END-IF
-           END-IF
+      ***> END-IF
            PERFORM   260-ICHIBUFTN-KOH-SET-SEC
       *
            .

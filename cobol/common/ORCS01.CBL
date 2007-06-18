@@ -219,6 +219,7 @@
       *                                     ¡ÊÀî¸ý¡¦½ÕÆüÉô»Ô¡Ë
       *  03.04.10    NACL-ÌçÏÆ    07/04/26  ¹­Åç¸©½Å¿´¡ÜÄ¹´üÂÐ±þ
       *  03.04.11    NACL-ÌçÏÆ    07/05/08  ËÌ³¤Æ»°°Àî»ÔÂÐ±þ
+      *  03.04.12    NACL-ÌçÏÆ    07/06/13  ¸½ÊªµëÉÕ¹â³Û£´²óÌÜ¸øÈñÊ»ÍÑ»þÂÐ±þ
       *  03.05.00    NACL-Â¿¡¹Ç¼  07/04/26  ¥°¥ë¡¼¥×¿ÇÎÅÂÐ±þ
       *****************************************************************
        ENVIRONMENT         DIVISION.
@@ -4344,13 +4345,13 @@
                     OR  (COMB-KOH3HKNNUM(1:1) = "0")
                     OR  (COMB-KOH4HKNNUM(1:1) = "0")
       ***             MOVE    "1"        TO   FLG-SYUHEN
-                      IF  FLG-KOHYONKAIME = 1
-                        MOVE   44400       TO   MAX-KIN-SYU-M
-                      ELSE
+      ***>            IF  FLG-KOHYONKAIME = 1
+      ***>              MOVE   44400       TO   MAX-KIN-SYU-M
+      ***>            ELSE
                         MOVE   80100       TO   MAX-KIN-SYU-M
                         MOVE   WK-ZENGAKU  TO   WK-KOUREI-IRYOHI70
                         MOVE   6           TO   FLG-IRYOHI70
-                      END-IF
+      ***>            END-IF
                     END-IF
                   END-IF
                  END-IF
@@ -10766,6 +10767,36 @@
                         MOVE    ZERO    TO   WK-ZAN-JIRITU
                       ELSE
                         COMPUTE WK-ZAN-JIRITU = WK-KOH-GENDOGAKU
+                                              - FTN-KOHI1-M3-JI
+                      END-IF
+                      IF   ZAN-KOHI13 >  WK-ZAN-JIRITU
+                        MOVE   WK-ZAN-JIRITU  TO  ZAN-KOHI13
+                      END-IF
+                   END-IF
+                   IF  ( FLG-GENBUTU70   NOT =   ZERO          )
+                   AND ( MAX-KIN-KOHI1-M  >  WK-GEN70-GENDOGAKU)
+                      IF    FTN-KOHI1-M-JI   >=   WK-GEN70-GENDOGAKU
+                        MOVE    ZERO    TO   WK-ZAN-JIRITU
+                      ELSE
+                        COMPUTE WK-ZAN-JIRITU = WK-GEN70-GENDOGAKU
+                                              - FTN-KOHI1-M-JI
+                      END-IF
+                      IF   ZAN-KOHI1  >  WK-ZAN-JIRITU
+                        MOVE   WK-ZAN-JIRITU  TO  ZAN-KOHI1
+                      END-IF
+                      IF    FTN-KOHI1-M2-JI  >=   WK-GEN70-GENDOGAKU
+                        MOVE    ZERO    TO   WK-ZAN-JIRITU
+                      ELSE
+                        COMPUTE WK-ZAN-JIRITU = WK-GEN70-GENDOGAKU
+                                              - FTN-KOHI1-M2-JI
+                      END-IF
+                      IF   ZAN-KOHI12 >  WK-ZAN-JIRITU
+                        MOVE   WK-ZAN-JIRITU  TO  ZAN-KOHI12
+                      END-IF
+                      IF    FTN-KOHI1-M3-JI  >=   WK-GEN70-GENDOGAKU
+                        MOVE    ZERO    TO   WK-ZAN-JIRITU
+                      ELSE
+                        COMPUTE WK-ZAN-JIRITU = WK-GEN70-GENDOGAKU
                                               - FTN-KOHI1-M3-JI
                       END-IF
                       IF   ZAN-KOHI13 >  WK-ZAN-JIRITU
