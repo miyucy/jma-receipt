@@ -671,6 +671,7 @@ grpsys     MOVE    PTINF-HOSPNUM           TO  SNTYMD-HOSPNUM
            MOVE    PTINF-PTID              TO  SNTYMD-PTID
            MOVE    "2"                     TO  SNTYMD-KBN
            CALL    "ORCSNTYMD" USING           ORCSNTYMDAREA
+grpsys                                         SPA-AREA
       *
            PERFORM VARYING IDX2   FROM    1   BY  1
                    UNTIL ( IDX2       >   SNTYMD-MAX )

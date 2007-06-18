@@ -801,7 +801,6 @@ grpsys     MOVE    SPA-HOSPNUM         TO  SYS-5001-HOSPNUM
            MOVE   PTNYUINRRK-BRMNUM ( 3 : )
                                        TO  SBRMNUM-IN-BRMNUM
            CALL   "ORCSBRMNUM"     USING   ORCSBRMNUMAREA
-grpsys                                     SPA-AREA
       *
            MOVE   SBRMNUM-OT-BRMNUM    TO  WRK-HCMG004-BRMNUM
       *

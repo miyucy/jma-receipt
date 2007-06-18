@@ -791,6 +791,7 @@ grpsys         MOVE    SPA-HOSPNUM     TO  SYS-HOSPNUM
                    INITIALIZE          HCG016S02-AREA
                    CALL    "ORCHCG016S02"  USING   HCG016S02-AREA
                                                    NYUINACCT-REC
+grpsys                                             SPA-AREA
                    IF    ( HCG016S02-RC    =   ZERO )
                        PERFORM  20012-NSRYACT-GET-SEC
                    ELSE
@@ -1016,6 +1017,7 @@ grpsys     MOVE    SPA-HOSPNUM         TO  HCG016S01-HOSPNUM
            MOVE    IN01-KEY-PTID       TO  HCG016S01-PTID
            MOVE    LNK-PRTKANRI-SKYYMD TO  HCG016S01-KJNYMD
            CALL    "ORCHCG016S01"      USING   HCG016S01-AREA
+grpsys                                         SPA-AREA
            IF    ( HCG016S01-BRMNUM       NOT =   SPACE )
                MOVE    HCG016S01-BRMNUM
                                        TO  HCG016-LASTYMD
