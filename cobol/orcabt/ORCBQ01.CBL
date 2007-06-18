@@ -961,6 +961,7 @@
            CALL    "ORCSJOB"       USING
                                    ORCSJOBKANRIAREA
                                    JOBKANRI-REC
+                                   SPA-AREA
       *
            .
        900-JOB-STEP-START-EXT.
@@ -989,6 +990,7 @@
            CALL    "ORCSJOB"       USING
                                    ORCSJOBKANRIAREA
                                    JOBKANRI-REC
+                                   SPA-AREA
       *
            .
        900-JOB-STEP-END-EXT.

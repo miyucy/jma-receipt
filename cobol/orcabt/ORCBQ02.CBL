@@ -497,6 +497,7 @@
                CALL    "ORCSJOB"           USING
                                            ORCSJOBKANRIAREA
                                            JOBKANRI-REC
+                                           SPA-AREA
            END-IF
       *
            MOVE    1               TO  FLG-END
@@ -588,6 +589,7 @@
            CALL    "ORCSJOB"       USING
                                    ORCSJOBKANRIAREA
                                    JOBKANRI-REC
+                                   SPA-AREA
       *
            .
        900-JOB-STEP-START-EXT.
@@ -608,6 +610,7 @@
            CALL    "ORCSJOB"       USING
                                    ORCSJOBKANRIAREA
                                    JOBKANRI-REC
+                                   SPA-AREA
       *
            .
        900-JOB-STEP-END-EXT.

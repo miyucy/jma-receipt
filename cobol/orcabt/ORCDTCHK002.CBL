@@ -4664,7 +4664,6 @@
            MOVE    PTBYO-UTAGAIFLG TO  SMKBYO-UTAGAIFLG
            MOVE    PTBYO-BYOMEI    TO  SMKBYO-BYOMEI
            CALL    "ORCSMKBYOMEI"  USING   ORCSMKBYOMEIAREA
-                                           SPA-AREA
       *
            MOVE    SMKBYO-BYOMEI   TO  WRK-HEN-PTBYOMEI
            MOVE    SMKBYO-LENGTH   TO  CNT-BYOMEIMOJI

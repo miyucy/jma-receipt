@@ -583,6 +583,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
        800-DAILYKEY-SEC         SECTION.
       *
            CALL    "ORCSDAILYKEY"   USING   SDAILYKEYAREA
+                                            SPA-AREA
       *
            .
       *

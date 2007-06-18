@@ -1494,6 +1494,7 @@
             MOVE   SYS-1031-PRTNM(6)   TO  MKPRT-PRTNM
             CALL   "ORCSMKPRT"         USING
                                        ORCSMKPRTAREA
+                                       SPA-AREA
       *
            COMPUTE CNT-OUT         =   CNT-OUT     +   1
       *
