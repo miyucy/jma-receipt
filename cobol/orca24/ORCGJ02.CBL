@@ -11814,7 +11814,8 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    ZERO                TO  WRK-NCNT
            PERFORM VARYING     IDH     FROM   1   BY  1
                    UNTIL      (IDH     >   SPA-HKN-MAX   )
-               IF      SPA-NAI-THKNNUM(IDH)  =   "999"
+               IF      SPA-GMN-THKNCOMBINUM(IDH)  =   "9999"
+                                                  OR  "0000"
                    CONTINUE
                ELSE
                    PERFORM 40102-HKNCOMBI-CHK-SEC
