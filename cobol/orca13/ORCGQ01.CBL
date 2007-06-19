@@ -115,6 +115,7 @@
            03  IDXB                                PIC 9(04).
            03  IDXC                                PIC 9(04).
            03  IDXZ                                PIC 9(04).
+           03  IDX-LEN                             PIC 9(05).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -169,6 +170,8 @@
            03  WRK-NAME2-G.
                05  WRK-NAME21           PIC X(30).
                05  WRK-NAME22           PIC X(40).
+           03  WRK-STR                  PIC X(20000).
+           03  WRK-STR-LEN              PIC 9(05).
       *
       *
        01  WRK-WIDGET-AREA.
@@ -1259,6 +1262,10 @@
       *    条件クリア
            WHEN    "CLICKED"           ALSO    "B02"
                PERFORM 480-CLEAR-SEC
+           WHEN    "CLICKED"           ALSO    "B04"
+               PERFORM 4100-SRYYMD-SET-SEC
+           WHEN    "CLICKED"           ALSO    "B16"
+               PERFORM 4100-SRYYM-SET-SEC
       *    条件クリア（全て）
            WHEN    "CLICKED"           ALSO    "B14"
                PERFORM 480-ALL-CLEAR-SEC
@@ -4180,6 +4187,45 @@
            EXIT.
       *
       *****************************************************************
+      *    診療年月日設定処理
+      *****************************************************************
+       4100-SRYYMD-SET-SEC             SECTION.
+      *
+           MOVE    SPA-SYSYMD          TO  SPA-NAI-Q01-STSRYYMD
+                                           SPA-NAI-Q01-EDSRYYMD
+      *
+           MOVE    SPA-SYSYMDWH        TO  SPA-GMN-Q01-STSRYYMD
+                                           SPA-GMN-Q01-EDSRYYMD
+      *
+           MOVE    1                   TO  SPA-GMN-Q01-CUR
+      *
+           .
+       4100-SRYYMD-SET-EXT.
+           EXIT.
+      *****************************************************************
+      *    診療年月設定処理
+      *****************************************************************
+       4100-SRYYM-SET-SEC              SECTION.
+      *
+           MOVE    SPA-SYSYMD          TO  WRK-YMD
+           MOVE    "01"                TO  WRK-YMD(7:2)
+           PERFORM 5002-HIZUKE-CHK-SEC
+           MOVE    WRK-SYMD            TO  SPA-NAI-Q01-STSRYYMD
+           MOVE    WRK-HENYMDG         TO  SPA-GMN-Q01-STSRYYMD
+      *
+           MOVE    SPA-SYSYMD          TO  WRK-YMD
+           PERFORM 800-GETUMATU-SEC
+           MOVE    WRK-SYMD            TO  WRK-YMD
+           PERFORM 5002-HIZUKE-CHK-SEC
+           MOVE    WRK-SYMD            TO  SPA-NAI-Q01-EDSRYYMD
+           MOVE    WRK-HENYMDG         TO  SPA-GMN-Q01-EDSRYYMD
+      *
+           MOVE    1                   TO  SPA-GMN-Q01-CUR
+      *
+           .
+       4100-SRYYM-SET-EXT.
+           EXIT.
+      *****************************************************************
       *    テスト患者チェックボタン編集処理
       *****************************************************************
        410-CHKTSTPT-SET-SEC              SECTION.
@@ -5231,6 +5277,10 @@
       *
                MOVE    SPA-GMN-Q01-TEL (IDXC)
                                            TO  SPA-Q01-TEL (IDXC)
+      *
+               INSPECT SPA-Q01-TEL (IDXC)
+                       REPLACING   ALL "*" BY  "%"
+      *
            END-PERFORM
       *
            MOVE    SPA-GMN-Q01-TSY         TO  SPA-Q01-TSY
@@ -5661,6 +5711,9 @@
       *    日付チェック・編集処理
       *****************************************************************
        5002-HIZUKE-CHK-SEC             SECTION.
+      *
+           MOVE    SPACE               TO  WRK-HENYMDG
+                                           WRK-SYMD
       *
       *    日付画面チェックサブ
            INITIALIZE                      ORCSGDAYAREA
@@ -7051,6 +7104,39 @@
       *
            .
        800-ZENKAKU-CHG-EXT.
+           EXIT.
+      *****************************************************************
+      *    月末日取得処理
+      *****************************************************************
+       800-GETUMATU-SEC                SECTION.
+      *
+           INITIALIZE                  STS-AREA-DAY
+           INITIALIZE                  LNK-DAY1-AREA
+           MOVE    "71"                TO   LNK-DAY7-IRAI
+           MOVE    WRK-YMD (1 : 6)     TO   LNK-DAY7-YM
+           CALL    "ORCSDAY"           USING   STS-AREA-DAY
+                                       LNK-DAY7-AREA
+           MOVE    LNK-DAY7-KOYOMI     TO  WRK-SYMD
+      *
+           .
+       800-GETUMATU-EXT.
+            EXIT.
+      *****************************************************************
+      *    文字列長取得処理
+      *****************************************************************
+       800-STR-LEN-GET-SEC                 SECTION.
+      *
+           PERFORM VARYING IDX-LEN FROM    WRK-STR-LEN BY  -1
+               UNTIL   ( IDX-LEN   <   1)
+                OR     ( WRK-STR (IDX-LEN : 1) NOT =   SPACE)
+      *
+               CONTINUE
+           END-PERFORM
+      *
+           MOVE    IDX-LEN     TO  WRK-STR-LEN
+      *
+           .
+       800-STR-LEN-GET-EXT.
            EXIT.
       *****************************************************************
       *    住所マスター検索（郵便番号）

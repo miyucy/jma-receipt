@@ -67,6 +67,7 @@
       *    ¥«¥¦¥ó¥ÈÎÎ°è
        01  CNT-AREA.
            03  CNT-JYOKEN                          PIC 9(05).
+           03  CNT-STR                             PIC 9(05).
       *
       *    °ì»þÎÎ°è
        01  WRK-AREA.
@@ -386,40 +387,32 @@
       *
            EVALUATE    SPA-Q01-STTSYSKBT
            WHEN    "2"
-               MOVE    SPA-Q01-STTSYYM TO  WRK-YMD
-               MOVE    "01"            TO  WRK-YMD (7:2)
-               PERFORM 10011-GET-ZENGETU-SEC
-               MOVE    LNK-DAY6-KEISAN TO  WRK-STTSYYMD-FROM
-               MOVE    "02"            TO  WRK-STTSYYMD-FROM(7:2)
-               MOVE    SPA-Q01-STTSYYM TO  WRK-STTSYYMD-TO
-               MOVE    "01"            TO  WRK-STTSYYMD-TO (7:2)
+               CONTINUE
            WHEN    "3"
                CONTINUE
            WHEN    OTHER
                EVALUATE    TRUE
                WHEN  ( SPA-Q01-STTSYYM     NOT =   SPACE )
                    MOVE    SPA-Q01-STTSYYM TO  WRK-STTSYYMD
-                   MOVE    "01"            TO  WRK-STTSYYMD (7:2)
+                   MOVE    "01"            TO  WRK-STTSYYMD(7:2)
                WHEN  ( SPA-Q01-STSRYYMD    NOT =   SPACE )
+      *            MOVE    SPA-Q01-STSRYYMD TO WRK-STTSYYMD
+      *            MOVE    "01"            TO  WRK-STTSYYMD(7:2)
                    MOVE    SPA-Q01-STSRYYMD TO WRK-STTSYYMD
-                   MOVE    "01"            TO  WRK-STTSYYMD (7:2)
                WHEN    OTHER
                    MOVE    ALL "0"         TO  WRK-STTSYYMD
                END-EVALUATE
       *
                EVALUATE    TRUE
                WHEN  ( SPA-Q01-EDTSYYM     NOT =   SPACE )
-      *            MOVE    SPA-Q01-EDTSYYM TO  WRK-YMD
-      *            PERFORM 10011-GET-GETUMATU-SEC
-      *            MOVE    LNK-DAY7-KOYOMI TO  WRK-EDTSYYMD
-                   MOVE    SPA-Q01-EDTSYYM TO  WRK-EDTSYYMD
-                   MOVE    "01"            TO  WRK-EDTSYYMD (7:2)
+                   MOVE    SPA-Q01-EDTSYYM TO WRK-YMD
+                   PERFORM 10011-GET-GETUMATU-SEC
+                   MOVE    LNK-DAY7-KOYOMI TO  WRK-EDTSYYMD
                WHEN  ( SPA-Q01-EDSRYYMD    NOT =   SPACE )
       *            MOVE    SPA-Q01-EDSRYYMD TO WRK-YMD
       *            PERFORM 10011-GET-GETUMATU-SEC
       *            MOVE    LNK-DAY7-KOYOMI TO  WRK-EDTSYYMD
-                   MOVE    SPA-Q01-EDSRYYMD TO  WRK-EDTSYYMD
-                   MOVE    "01"            TO  WRK-EDTSYYMD (7:2)
+                   MOVE    SPA-Q01-EDSRYYMD TO WRK-EDTSYYMD
                WHEN    OTHER
                    MOVE    ALL "9"         TO  WRK-EDTSYYMD
                END-EVALUATE
@@ -924,11 +917,9 @@
                WITH POINTER    WRK-SQL-PNT
                END-STRING
            WHEN    "2"
-               STRING  "(J.STYMD >= '"         DELIMITED   BY  SIZE
-                       WRK-STTSYYMD-FROM       DELIMITED   BY  SIZE
-                       "' AND J.STYMD <= '"    DELIMITED   BY  SIZE
-                       WRK-STTSYYMD-TO         DELIMITED   BY  SIZE
-                       "')"                    DELIMITED   BY  SIZE
+               STRING  "(J.STYMD LIKE '"       DELIMITED   BY  SIZE
+                       SPA-Q01-STTSYYM         DELIMITED   BY  SIZE
+                       "%')"                   DELIMITED   BY  SIZE
                INTO        WRK-SQL
                WITH POINTER WRK-SQL-PNT
                END-STRING
@@ -965,11 +956,9 @@
                WITH POINTER    WRK-SQL-PNT
                END-STRING
            WHEN    "2"
-               STRING  "(J.NINSTYMD >= '"      DELIMITED   BY  SIZE
-                       WRK-STTSYYMD-FROM       DELIMITED   BY  SIZE
-                       "' AND J.NINSTYMD <= '" DELIMITED   BY  SIZE
-                       WRK-STTSYYMD-TO         DELIMITED   BY  SIZE
-                       "')"                    DELIMITED   BY  SIZE
+               STRING  "(J.NINSTYMD LIKE '"    DELIMITED   BY  SIZE
+                       SPA-Q01-STTSYYM         DELIMITED   BY  SIZE
+                       "%')"                   DELIMITED   BY  SIZE
                INTO        WRK-SQL
                WITH POINTER WRK-SQL-PNT
                END-STRING
@@ -2576,6 +2565,9 @@
                    MOVE    SPA-Q01-TEL (IDX1)  TO  WRK-STR
                    PERFORM 900-STR-LEN-GET-SEC
       *
+                   INSPECT SPA-Q01-TEL (IDX1)  TALLYING
+                           CNT-STR         FOR ALL "%"
+      *
                    IF    ( SPA-Q01-TEL-TO-HOME1    =   1 )
       *
                        COMPUTE CNT-JYOKEN  =   CNT-JYOKEN  +   1
@@ -2585,10 +2577,21 @@
                        STRING  "(HOME_TEL1 LIKE '" DELIMITED   BY  SIZE
                            SPA-Q01-TEL (IDX1)(1: WRK-STR-LEN) 
                                                    DELIMITED   BY  SIZE
-                           "%')"                   DELIMITED   BY  SIZE
                        INTO    WRK-SQL
                        WITH    POINTER WRK-SQL-PNT
                        END-STRING
+      *
+                       IF    ( CNT-STR         =   ZERO )
+                           STRING  "%')"           DELIMITED   BY  SIZE
+                           INTO    WRK-SQL
+                           WITH    POINTER WRK-SQL-PNT
+                           END-STRING
+                       ELSE
+                           STRING  "')"            DELIMITED   BY  SIZE
+                           INTO    WRK-SQL
+                           WITH    POINTER WRK-SQL-PNT
+                           END-STRING
+                       END-IF
                    END-IF
       *
                    IF    ( SPA-Q01-TEL-TO-HOME2    =   1 )
@@ -2600,10 +2603,21 @@
                        STRING  "(HOME_TEL2 LIKE '" DELIMITED   BY  SIZE
                            SPA-Q01-TEL (IDX1)(1: WRK-STR-LEN) 
                                                    DELIMITED   BY  SIZE
-                           "%')"                   DELIMITED   BY  SIZE
                        INTO    WRK-SQL
                        WITH    POINTER WRK-SQL-PNT
                        END-STRING
+      *
+                       IF    ( CNT-STR         =   ZERO )
+                           STRING  "%')"           DELIMITED   BY  SIZE
+                           INTO    WRK-SQL
+                           WITH    POINTER WRK-SQL-PNT
+                           END-STRING
+                       ELSE
+                           STRING  "')"            DELIMITED   BY  SIZE
+                           INTO    WRK-SQL
+                           WITH    POINTER WRK-SQL-PNT
+                           END-STRING
+                       END-IF
                    END-IF
                END-IF
            END-PERFORM
