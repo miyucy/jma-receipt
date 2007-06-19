@@ -4706,9 +4706,12 @@
                IF    ( PTBYO-TENKIKBN      =   SPACE )
                            MOVE    1   TO  FLG-PTBYO-ERR
                ELSE
-                   IF    ( PTBYO-TENKIYMD  >=  WRK-SYOSIN-CHK-YMD )
+                   EVALUATE    TRUE
+                   WHEN   ( PTBYO-TENKIYMD >   WRK-SYOSIN-CHK-YMD )
                            MOVE    1   TO  FLG-PTBYO-ERR
-                   END-IF
+                   WHEN   ( PTBYO-TENKIYMD =   WRK-SYOSIN-CHK-YMD )
+                           MOVE    2   TO  FLG-PTBYO-ERR
+                   END-EVALUATE
                END-IF
            END-IF
       *
@@ -4724,7 +4727,12 @@
                        "Æü"                DELIMITED   BY  SIZE
                INTO    WRK-ERRMES-PLUS
                END-STRING
-               MOVE    "060002"            TO  WRK-ERRCD
+               EVALUATE    FLG-PTBYO-ERR
+               WHEN    1
+                   MOVE    "060002"        TO  WRK-ERRCD
+               WHEN    2
+                   MOVE    "060004"        TO  WRK-ERRCD
+               END-EVALUATE
                PERFORM 213-ERRMES-HEN-SEC
       *
                IF    ( ORCBSD01-CHKKBN (6) =   "1" )

@@ -237,6 +237,11 @@
            05 PIC  X(30)   VALUE   "さい                          ".
            05 PIC  X(30)   VALUE   "                              ".
       *
+           05 PIC  X(06)   VALUE   "060004".
+           05 PIC  X(30)   VALUE   "初診算定日と病名の転帰日が同じ".
+           05 PIC  X(30)   VALUE   "日付です。                    ".
+           05 PIC  X(30)   VALUE   "                              ".
+      *
       *    ** 070xxx 急性病名・疑い病名
       *                            +---------+---------+---------+.
            05 PIC  X(06)   VALUE   "070001".
@@ -433,7 +438,7 @@
            05 PIC  X(30)   VALUE   "                              ".
       *
          03  ERRMES-RED    REDEFINES   ERRMES-VAL.
-           05 ERRMES-OCC   OCCURS  73.
+           05 ERRMES-OCC   OCCURS  74.
               07  ERRMES-CD            PIC X(06).
               07  ERRMES-MESSAGE       PIC X(90).
-         03  ERRMES-MAX                PIC 9(05)   VALUE   73.
+         03  ERRMES-MAX                PIC 9(05)   VALUE   74.
