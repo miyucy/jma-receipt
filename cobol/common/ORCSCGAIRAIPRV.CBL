@@ -4759,6 +4759,7 @@ grpsys                 CALL    "ORCDBMAIN"         USING   MCPAREA
        800-DAILYKEY-SEC         SECTION.
       *
            CALL    "ORCSDAILYKEY"   USING   SDAILYKEYAREA
+                                            SPA-AREA
       *
            .
       *

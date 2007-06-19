@@ -985,6 +985,7 @@
       *   複数科・保険編集処理
       *****************************************************************
        10024-FUKU-HEN-SEC              SECTION.
+      *
       *    保険組合せ
            IF    ((LNK-WKSRY-INPUTCD (IDX IDY)(1:1) =   "#" ) AND
                   (LNK-WKSRY-INPUTCD (IDX IDY)(2:4) NUMERIC ) ) OR

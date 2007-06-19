@@ -1747,34 +1747,6 @@
            EXIT.
       *
       *****************************************************************
-      *    算定履歴チェック処理
-      *****************************************************************
-       3001-SANTEI-CHK-SEC         SECTION.
-      *
-           INITIALIZE                      ORCSC91AREA
-           MOVE    "2"                 TO  LNK-SC91-KBN
-           MOVE    LNK-ORCSC-SYORIFLG  TO  LNK-SC91-SYORIFLG
-           MOVE    WRK-COM-INPUTCD(IDX)
-                                       TO  LNK-SC91-SRYCD
-           CALL    "ORCSC91"       USING
-                                       MCPAREA
-                                       ORCSC91AREA
-                                       WRK-SCR-REC
-                                       SPA-AREA
-      *
-           IF      LNK-SC91-ERRCD      =   SPACE
-      *        追加あり
-               MOVE    ZERO            TO  FLG-ERR
-           ELSE
-      *        追加なし
-               MOVE    1               TO  FLG-ERR
-           END-IF
-      *
-           .
-       3001-SANTEI-CHK-EXT.
-           EXIT.
-      *
-      *****************************************************************
       *    システム管理マスタ読み込み処理
       *****************************************************************
        900-KANRIMST-READ-SEC         SECTION.

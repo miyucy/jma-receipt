@@ -3012,6 +3012,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    WRK-BYOMEI1         TO  LNK-BYO-BYOMEI
                MOVE    PTBYO-SYUBYOFLG     TO  LNK-BYO-SYUBYOFLG 
                CALL    "ORCSBYOMEI"        USING    ORCSBYOMEIAREA
+                                                    SPA-AREA
       *  
       *        疑いフラグ
                IF      PTBYO-UTAGAIFLG     =   "3"
@@ -3274,6 +3275,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    PTBYO-BYOMEI        TO  LNK-BYO-BYOMEI
                MOVE    PTBYO-SYUBYOFLG     TO  LNK-BYO-SYUBYOFLG 
                CALL    "ORCSBYOMEI"        USING    ORCSBYOMEIAREA
+                                                    SPA-AREA
       *  
       *        疑いフラグ
                IF      PTBYO-UTAGAIFLG     =   "3"
