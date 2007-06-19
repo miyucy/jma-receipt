@@ -32,6 +32,7 @@
       * 01.00.02     NACL-多々納  04/10/20  変更期間追加
       * 01.00.03     NACL-多々納  05/04/20  診療会計附加情報追加
       * 01.00.04     NACL-多々納  05/11/29  MONFUNC 対応
+      *  03.05.00    NACL-多々納  07/05/XX  グループ診療対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -2646,6 +2647,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    "1"                 TO  SS002-UPDKBN
            CALL    "ORCSS002"          USING    SS002-AREA
                                                 SYUNOU-REC
+                                                SPA-AREA
       *
            .
        3003131-SRYURRK-HEN-EXT.

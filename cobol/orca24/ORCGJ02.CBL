@@ -10491,6 +10491,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            INITIALIZE                  SS002-AREA
            CALL    "ORCSS002"          USING    SS002-AREA
                                                 SYUNOU-REC
+                                                SPA-AREA
       *
            IF      SMEI-JOUTAIKBN       =   "1"
                                         OR  "3"
@@ -12061,6 +12062,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
        800-DAILYKEY-SEC         SECTION.
       *
            CALL    "ORCSDAILYKEY"   USING   SDAILYKEYAREA
+                                            SPA-AREA
       *
            .
       *

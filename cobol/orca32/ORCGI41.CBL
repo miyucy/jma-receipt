@@ -1324,6 +1324,7 @@
                MOVE    PTNYUINRRK-PTID TO  STUSAN-PTID
                MOVE    SPA-SYSYMD      TO  STUSAN-KJNYMD
                CALL    "ORCSTUSAN"     USING   ORCSTUSANAREA
+                                               SPA-AREA
                MOVE    STUSAN-NISSU01  TO  SPA-GMN-NYUINNISSU
                MOVE    STUSAN-NISSU03  TO  SPA-GMN-TSUSANNISSU
            ELSE
@@ -5802,6 +5803,7 @@
                                            TO  SYOKIKSN-IN-KHNSRYCD
                    PERFORM 4801-RJNCD-CHG-SEC
                    CALL    "ORCSSYOKIKSN"  USING   ORCSSYOKIKSNAREA
+                                                   SPA-AREA
                    IF    ( SYOKIKSN-OT-RC  NOT =   ZERO )
                        MOVE    "2006"          TO  SPA-ERRCD
                        GO  TO  410191-IPNNYUACCT-SAKUSEI-EXT
