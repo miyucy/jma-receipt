@@ -360,7 +360,6 @@ grpsys*DD                          TO  RECEERR-TERMID
       *****************************************************************
        110-PARA-HENSYU-SEC         SECTION.
       *
-           DISPLAY "0000000000000000000000"
       *    システム日付セット
            MOVE    LNK-PRTKANRI-SKYYMD
                                    TO  WRK-SYSYMD
@@ -447,7 +446,6 @@ grpsys         MOVE    SPA-HOSPNUM     TO  SYS-3005-HOSPNUM
            ELSE
                MOVE    "key10"         TO  WRK-MAIN-PATHNAME
            END-IF
-           DISPLAY "11111111111111111111"
       *
            .
        110-PARA-HENSYU-EXT.
@@ -470,7 +468,6 @@ grpsys         MOVE    SPA-HOSPNUM     TO  SYS-3005-HOSPNUM
            MOVE    SMEI-PTID       TO  KEY-N-PTID
            MOVE    SMEI-DENPNUM    TO  KEY-N-DENPNUM
       *
-           DISPLAY "2222222222222"
            PERFORM UNTIL   FLG-END     =   1
       *
                MOVE    KEY-N-SRYKA     TO  KEY-O-SRYKA
@@ -488,7 +485,6 @@ grpsys         MOVE    SPA-HOSPNUM     TO  SYS-3005-HOSPNUM
 grpsys             MOVE    SPA-HOSPNUM     TO  SYS-1005-HOSPNUM
                    MOVE    SYS-1005-REC    TO  MCPDATA-REC
                    PERFORM 800-SYSKANRI-KEY10-SEL-SEC
-                   DISPLAY "FLG-SYSKANRI =" FLG-SYSKANRI
                    IF      FLG-SYSKANRI        =   ZERO
                        MOVE    MCPDATA-REC     TO  SYS-1005-REC
                        MOVE    SYS-1005-SRYKANAME
@@ -496,7 +492,6 @@ grpsys             MOVE    SPA-HOSPNUM     TO  SYS-1005-HOSPNUM
                    END-IF
                END-IF
       *
-               DISPLAY "AAAAAAAAAA"
                PERFORM UNTIL ( FLG-END         =   1 )
                        OR    ( KEY-N-SRYKA NOT =   KEY-O-SRYKA )
       *            帳票編集<見出し>処理
@@ -653,7 +648,6 @@ grpsys     MOVE    SPA-HOSPNUM     TO  PTNUM-HOSPNUM
       *****************************************************************
        3201-BODY-NAIYO-HEN-SEC     SECTION.
       *
-           DISPLAY "BBBBBBBBBBB"
       *----(00.00.03)--UPD-START---
            PERFORM UNTIL ( FLG-END             =   1 )
                    OR    ( KEY-N-SRYKA     NOT =   KEY-O-SRYKA )
@@ -1145,7 +1139,6 @@ grpsys                                     SPA-AREA
 grpsys*DD  CALL    "MONFUNC"           USING
 grpsys*DD                              MCPAREA
 grpsys*DD                              MCPDATA-REC
-           DISPLAY "MCP-RC1=" MCP-RC
            IF      MCP-RC              =   ZERO
                PERFORM 900-DBFETCH-SEC
            ELSE
@@ -1173,7 +1166,6 @@ grpsys                                     SPA-AREA
 grpsys*DD  CALL    "MONFUNC"           USING
 grpsys*DD                              MCPAREA
 grpsys*DD                              MCPDATA-REC
-           DISPLAY "MCP-RC2=" MCP-RC
            IF      MCP-RC              =   ZERO
                MOVE    ZERO            TO  FLG-SMEI
                MOVE    MCPDATA-REC     TO  SMEI-REC
@@ -1206,7 +1198,7 @@ grpsys*DD                              MCPDATA-REC
       *
            INITIALIZE                  SMEI2-REC
 grpsys*DD  MOVE    WRK-PARA-HOSPID TO  SMEI2-HOSPID
-grpsys*DD  MOVE    SPA-HOSPNUM     TO  SMEI2-HOSPNUM
+grpsys     MOVE    SPA-HOSPNUM     TO  SMEI2-HOSPNUM
            MOVE    SMEI-PTID       TO  SMEI2-PTID
            MOVE    SMEI-DENPNUM    TO  SMEI2-DENPNUM
            MOVE    SMEI-DENPEDANUM TO  SMEI2-DENPEDANUM
