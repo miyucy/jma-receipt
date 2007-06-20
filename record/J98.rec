@@ -6,19 +6,34 @@ J98	{
 		SENTAKU	{
 			value	varchar(30);
 		};
-		SELNUM1	{
+		SELNUM01	{
 			value	varchar(3);
 		};
-		SELNUM2	{
+		SELNUM02	{
 			value	varchar(3);
 		};
-		SELNUM3	{
+		SELNUM03	{
 			value	varchar(3);
 		};
-		SELNUM4	{
+		SELNUM04	{
 			value	varchar(3);
 		};
-		SELNUM5	{
+		SELNUM05	{
+			value	varchar(3);
+		};
+		SELNUM06	{
+			value	varchar(3);
+		};
+		SELNUM07	{
+			value	varchar(3);
+		};
+		SELNUM08	{
+			value	varchar(3);
+		};
+		SELNUM09	{
+			value	varchar(3);
+		};
+		SELNUM10	{
 			value	varchar(3);
 		};
 		scrolledwindow26	{
