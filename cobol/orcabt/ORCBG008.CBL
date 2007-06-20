@@ -1136,29 +1136,28 @@ grpsys                                 SPA-AREA
       *****************************************************************
        900-ACCT-DBFETCH-SEC        SECTION.
       *
-grpsys*DD  MOVE    "SRYACCT-KEY7"      TO  ORC-DBPATH
-           MOVE    "DBFETCH"           TO  MCP-FUNC
-grpsys     MOVE    "tbl_sryacct"       TO  MCP-TABLE
-grpsys     MOVE    "key7"              TO  MCP-PATHNAME
-grpsys     CALL    "ORCDBMAIN"     USING   MCPAREA
-grpsys                                     MCPDATA-REC
-grpsys                                     SPA-AREA
-grpsys*DD  CALL    "ORCMCPSUB"         USING
-grpsys*DD                              MCPAREA
-grpsys*DD                              ORCMCPAREA
-grpsys*DD                              MCPDATA-REC
-           IF          MCP-RC          =   ZERO
-               MOVE    ZERO                TO  FLG-SRYACCT
-               MOVE    MCPDATA-REC         TO  SRYACCT-REC
-      *----(01.02.01)--ADD-START---
-               IF        ( ACCT-HKNCOMBI   =   "9999" )
-                   OR    ( ACCT-JIHOKBN    =   "1" )
-                   GO  TO  900-ACCT-DBFETCH-SEC
+           MOVE    ZERO            TO  FLG-OK
+           PERFORM UNTIL   FLG-OK  =   1
+               MOVE    "DBFETCH"       TO  MCP-FUNC
+               MOVE    "tbl_sryacct"   TO  MCP-TABLE
+               MOVE    "key7"          TO  MCP-PATHNAME
+               CALL    "ORCDBMAIN"     USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
+               IF          MCP-RC          =   ZERO
+                   MOVE    ZERO                TO  FLG-SRYACCT
+                   MOVE    MCPDATA-REC         TO  SRYACCT-REC
+                   IF        ( ACCT-HKNCOMBI   =   "9999" )
+                       OR    ( ACCT-JIHOKBN    =   "1" )
+                       MOVE    ZERO            TO  FLG-OK
+                   ELSE
+                       MOVE    1               TO  FLG-OK
+                   END-IF
+               ELSE
+                   MOVE    1               TO  FLG-SRYACCT
+                   MOVE    1               TO  FLG-OK
                END-IF
-      *----(01.02.01)--ADD-END-----
-           ELSE
-               MOVE    1                   TO  FLG-SRYACCT
-           END-IF
+           END-PERFORM
            .
        900-ACCT-DBFETCH-EXT.
            EXIT.
