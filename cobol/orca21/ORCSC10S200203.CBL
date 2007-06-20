@@ -759,6 +759,7 @@
            CALL    "ORCSC94"           USING
                                        ORCSC94AREA
                                        SPA-SCR-REC
+                                       SPA-AREA
       *
            .
        3101-INPUTCD-HEN-EXT.

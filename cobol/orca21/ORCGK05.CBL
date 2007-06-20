@@ -1247,7 +1247,7 @@
            MOVE    SPA-GMN-IDX         TO  WRK-STR
       *
            PERFORM VARYING     IDX-K98 FROM    1   BY  1
-                   UNTIL      (IDX-K98             >   5   )  OR
+                   UNTIL      (IDX-K98             >   10  )  OR
                               (SPA-K98-SRYCD(IDX-K98)  =   SPACE )
       *
                IF      IDX-K98             =   1
@@ -2465,7 +2465,7 @@
            IF      SPA-K98-GMN-MAX     =   ZERO
                MOVE    "INPUT"             TO  MCP-WIDGET
            ELSE
-               MOVE    "SELNUM1"           TO  MCP-WIDGET
+               MOVE    "SELNUM01"          TO  MCP-WIDGET
            END-IF
       *
       *    ¿ÇÎÅ¹Ô°Ù°ìÍ÷¤Ø
@@ -3399,7 +3399,7 @@
            IF      SPA-K98-GMN-MAX     =   ZERO
                MOVE    "INPUT"             TO  MCP-WIDGET
            ELSE
-               MOVE    "SELNUM1"           TO  MCP-WIDGET
+               MOVE    "SELNUM01"          TO  MCP-WIDGET
            END-IF
       *
            MOVE    SPA-K01KYOUTU       TO  SPA-WORK

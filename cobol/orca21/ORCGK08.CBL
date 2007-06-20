@@ -3619,6 +3619,7 @@
                                        MCPAREA
                                        LNK-ORCS01-REC
                                        LNK-SYUNOU2-AREA
+                                       SPA-AREA
       *    º´Œ©ªŸ±Á…È√¥ —ππ∂Ë ¨
            MOVE    LNK-S01-JIRITU-FTNHEN-KBN   TO  SPA-FTNHEN-KBN
       *

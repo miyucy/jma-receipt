@@ -45,6 +45,7 @@
       *  01.00.13    NACL-多々納  05/11/17  MONFUNC 対応
       *  03.04.00    NACL-多々納  06/11/13  検査正式名称表示追加
       *  03.05.00    NACL-多々納  07/04/XX  グループ診療対応
+      *  03.05.00    NACL-多々納  07/06/20  選択数を１０に変更
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -107,9 +108,10 @@
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
            03  IDY                 PIC 9(04).
+           03  IDS                 PIC 9(04).
       *
-           03  IDX-1               PIC 9(01).
-           03  IDX-N               PIC 9(01).
+           03  IDX-1               PIC 9(04).
+           03  IDX-N               PIC 9(02).
       *
            03  IDX1                PIC 9(04).
            03  IDX2                PIC 9(04).
@@ -138,7 +140,7 @@
            03  WRK-CNT-ENT         PIC 9(04).
            03  WRK-MOJI            PIC 9(04).
            03  WRK-MAP-INDEX       PIC 9(03).
-           03  WRK-SELNO           PIC 9(04).
+           03  WRK-SELNO           PIC 9(03).
            03  WRK-GMN-SELNO       PIC 9(03).
            03  WRK-NOZ             PIC ZZZ.
            03  WRK-TENSUS-X.
@@ -154,11 +156,15 @@
            03  WRK-GRP-MEI-X       PIC X(40).
       *
            03  WRK-NAI-SELNUM-G.
-               05  WRK-NAI-SELNUM      PIC 9(03)   OCCURS   5.
+               05  WRK-NAI-SELNUM      PIC 9(03)   OCCURS   10.
            03  WRK-GMN-SELNUM-G.
-               05  WRK-GMN-SELNUM      PIC X(03)   OCCURS   5.
+               05  WRK-GMN-SELNUM      PIC X(03)   OCCURS   10.
            03  WRK-K98-SRYCD-G.
-               05  WRK-K98-SRYCD       PIC X(09)  OCCURS   5.
+               05  WRK-K98-SRYCD       PIC X(09)  OCCURS    10.
+      *
+           03  WRK-LISET-SEL-G.
+               05  WRK-LISET-SEL       OCCURS   10.
+                   07  WRK-SEL            PIC X(01).
       *
            03  WRK-PATH            PIC X(64).
            03  WRK-MCP-PATHNAME    PIC X(64).
@@ -443,8 +449,6 @@
       *****************************************************************
        100-INIT-SEC                SECTION.
       *
-      *    DISPLAY "*** ORCSNPL    START  ***"
-      *
            INITIALIZE                  FLG-AREA
            INITIALIZE                  CNT-AREA
            INITIALIZE                  WRK-AREA
@@ -511,6 +515,8 @@
            MOVE    SPACE               TO  SPA-K98-USER-G
       *
            MOVE    SPA-K98-GMN-SYORI   TO  SPA-K98-OLD-SYORI
+      *    入力項目へ
+           MOVE    21                  TO  SPA-K98-GMN-CUR
            IF      (SPA-K98-GMN-INPUT  =   SPACE )  AND
                    (SPA-K98-GMN-SYORI  =   SPACE )
                CONTINUE
@@ -570,10 +576,10 @@
       *
            IF      SPA-ERRCD           =   SPACE
                IF      SPA-K98-GMN-MAX     =   ZERO
-                   MOVE    6                   TO  SPA-GMN-CUR
+                   MOVE    21                  TO  SPA-K98-GMN-CUR
                    MOVE    "0004"              TO  SPA-ERRCD
                ELSE
-                   MOVE    1                   TO  SPA-GMN-CUR
+                   MOVE    1                   TO  SPA-K98-GMN-CUR
                    IF      FLG-MAX         NOT =   ZERO
                        MOVE    "0005"              TO  SPA-ERRCD
                    ELSE
@@ -584,7 +590,6 @@
       *T2
                END-IF
            END-IF
-      *
            .
        310-SPA-SET-EXT.
            EXIT.
@@ -693,7 +698,7 @@
        310010-KUBUNNUM-SET-SEC            SECTION.
       *
            IF      SPA-K98-GMN-INPUT(2:1)  =   SPACE
-               MOVE    6                   TO  SPA-GMN-CUR
+               MOVE    21                  TO  SPA-K98-GMN-CUR
                MOVE    "0004"              TO  SPA-ERRCD
            END-IF
       *
@@ -701,7 +706,7 @@
                                            <=  "R"
                CONTINUE
            ELSE
-               MOVE    6                   TO  SPA-GMN-CUR
+               MOVE    21                  TO  SPA-K98-GMN-CUR
                MOVE    "0004"              TO  SPA-ERRCD
            END-IF
       *
@@ -850,7 +855,7 @@
            IF      SPA-ERRCD           =   SPACE
                PERFORM 3100111-KENSA-TENHENSYU-SEC 
            ELSE
-               MOVE    6                   TO  SPA-GMN-CUR
+               MOVE    21                  TO  SPA-K98-GMN-CUR
            END-IF
       *
            .
@@ -920,6 +925,7 @@
       *     ユーザ登録分編集
       *****************************************************************
        310012-USER-TENSET-SEC            SECTION.
+      *
       *    ユーザ登録分
            EVALUATE    SPA-K98-GMN-INPUT(1:3)
                WHEN    "//Y"
@@ -932,9 +938,10 @@
                    MOVE    "U4"            TO  SPA-K98-GMN-SYORI3
                WHEN    OTHER
                    MOVE    "0011"          TO  SPA-ERRCD
-                   MOVE    6               TO  SPA-GMN-CUR
-                   GO      TO      310012-USER-TENSET-EXT
+                   MOVE    21              TO  SPA-K98-GMN-CUR
            END-EVALUATE
+      *
+           IF      SPA-ERRCD           =   SPACE
       *
            MOVE    "U"                 TO  SPA-K98-GMN-SYORI
            MOVE    "2"                 TO  SPA-K98-TYPE
@@ -950,6 +957,7 @@
       *D   MOVE    1                   TO  SPA-K98-PAGE
            PERFORM 3102-TENSU-SET-SEC
       *
+           END-IF
            .
        310012-USER-TENSET-EXT.
            EXIT.
@@ -2064,19 +2072,30 @@
                    MOVE    SPA-K98-GMN-TANI (IDX)  TO  K98-TANI (IDX)
                END-IF
       *        選択中
-               IF      (IDX                =   SPA-K98-NAI-SELNUM(1)) OR
-                       (IDX                =   SPA-K98-NAI-SELNUM(2)) OR
-                       (IDX                =   SPA-K98-NAI-SELNUM(3)) OR
-                       (IDX                =   SPA-K98-NAI-SELNUM(4)) OR
-                       (IDX                =   SPA-K98-NAI-SELNUM(5))
-                   MOVE    "*"                 TO  K98-NO  (IDX)(1:1)
-               END-IF
+      **       IF      (IDX                =   SPA-K98-NAI-SELNUM(1)) OR
+      *                (IDX                =   SPA-K98-NAI-SELNUM(2)) OR
+      *                (IDX                =   SPA-K98-NAI-SELNUM(3)) OR
+      *                (IDX                =   SPA-K98-NAI-SELNUM(4)) OR
+      *                (IDX                =   SPA-K98-NAI-SELNUM(5))
+      *            MOVE    "*"                 TO  K98-NO  (IDX)(1:1)
+      ****     END-IF
+               MOVE    "F"             TO  K98-SELECT  (IDX)
+               PERFORM VARYING     IDS     FROM    1   BY  1
+                       UNTIL       IDS     >   10
+                   IF      SPA-K98-NAI-SELNUM(IDS) NOT =   ZERO
+                       IF      SPA-K98-NAI-SELNUM(IDS) =   IDX
+     *D                    MOVE    "*"         TO  K98-NO  (IDX)(1:1)
+                           MOVE    "T"         TO  K98-SELECT  (IDX)
+                           MOVE    10          TO  IDS
+                       END-IF
+                   END-IF
+               END-PERFORM
            END-PERFORM
       *
            MOVE    SPA-K98-GMN-MAX     TO  K98-COUNT
       *
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX     >   5
+                   UNTIL       IDX     >   10
                IF      SPA-K98-NAI-SELNUM(IDX) NOT =   ZERO
                    MOVE    SPA-K98-NAI-SELNUM(IDX)     TO  WRK-NOZ
                    MOVE    WRK-NOZ                 TO  K98-SELNUM (IDX)
@@ -2193,22 +2212,32 @@
       *****************************************************************
        5001-MAPCUR-SEC             SECTION.
       *
-           EVALUATE    SPA-GMN-CUR
+           EVALUATE    SPA-K98-GMN-CUR
                WHEN    01
-                   MOVE    "SELNUM1"       TO  MCP-WIDGET
+                   MOVE    "SELNUM01"      TO  MCP-WIDGET
                WHEN    02
-                   MOVE    "SELNUM2"       TO  MCP-WIDGET
+                   MOVE    "SELNUM02"      TO  MCP-WIDGET
                WHEN    03
-                   MOVE    "SELNUM3"       TO  MCP-WIDGET
+                   MOVE    "SELNUM03"      TO  MCP-WIDGET
                WHEN    04
-                   MOVE    "SELNUM4"       TO  MCP-WIDGET
+                   MOVE    "SELNUM04"      TO  MCP-WIDGET
                WHEN    05
-                   MOVE    "SELNUM5"       TO  MCP-WIDGET
+                   MOVE    "SELNUM05"      TO  MCP-WIDGET
                WHEN    06
-                   MOVE    "INPUT"         TO  MCP-WIDGET
+                   MOVE    "SELNUM06"      TO  MCP-WIDGET
                WHEN    07
-                   MOVE    "JIIN"          TO  MCP-WIDGET
+                   MOVE    "SELNUM07"      TO  MCP-WIDGET
                WHEN    08
+                   MOVE    "SELNUM08"      TO  MCP-WIDGET
+               WHEN    09
+                   MOVE    "SELNUM09"      TO  MCP-WIDGET
+               WHEN    10
+                   MOVE    "SELNUM10"      TO  MCP-WIDGET
+               WHEN    21
+                   MOVE    "INPUT"         TO  MCP-WIDGET
+               WHEN    22
+                   MOVE    "JIIN"          TO  MCP-WIDGET
+               WHEN    23
                    MOVE    "USER"          TO  MCP-WIDGET
            END-EVALUATE
       *
@@ -2280,13 +2309,18 @@
                WHEN    "ACTIVATE"      ALSO    "INPUT"
                    PERFORM 41013-INPUT-CHK-SEC
       *        番号入力
-               WHEN    "ACTIVATE"      ALSO    "SELNUM1"
-               WHEN    "ACTIVATE"      ALSO    "SELNUM2"
-               WHEN    "ACTIVATE"      ALSO    "SELNUM3"
-               WHEN    "ACTIVATE"      ALSO    "SELNUM4"
-               WHEN    "ACTIVATE"      ALSO    "SELNUM5"
+               WHEN    "ACTIVATE"      ALSO    "SELNUM01"
+               WHEN    "ACTIVATE"      ALSO    "SELNUM02"
+               WHEN    "ACTIVATE"      ALSO    "SELNUM03"
+               WHEN    "ACTIVATE"      ALSO    "SELNUM04"
+               WHEN    "ACTIVATE"      ALSO    "SELNUM05"
+               WHEN    "ACTIVATE"      ALSO    "SELNUM06"
+               WHEN    "ACTIVATE"      ALSO    "SELNUM07"
+               WHEN    "ACTIVATE"      ALSO    "SELNUM08"
+               WHEN    "ACTIVATE"      ALSO    "SELNUM09"
+               WHEN    "ACTIVATE"      ALSO    "SELNUM10"
       ************ PERFORM 41011-SELNUM-CHK-SEC
-                   MOVE    MCP-WIDGET(7:1)     TO  IDX-N
+                   MOVE    MCP-WIDGET(7:2)     TO  IDX-N
                    MOVE    ZERO                TO  FLG-TOUROKU
                    PERFORM 41011-SELNUM-ALLCHK-SEC
       *        行選択
@@ -2309,7 +2343,7 @@
       *****************************************************************
        41013-INPUT-CHK-SEC                SECTION.
       *
-           MOVE    6               TO  SPA-GMN-CUR
+           MOVE    21              TO  SPA-K98-GMN-CUR
       *
            MOVE    K98-INPUT           TO  SPA-K98-GMN-INPUT
            MOVE    ZERO                TO  FLG-KANJI
@@ -2377,7 +2411,7 @@
                END-IF
       *----(01.00.01) LINE UPD END   ----------------------------------
            END-IF
-           MOVE    1                   TO  SPA-GMN-CUR
+           MOVE    1                   TO  SPA-K98-GMN-CUR
       *
       *    ＳＰＡセット
            MOVE    ZERO                TO  SPA-K98-NEXT
@@ -2410,13 +2444,13 @@
       *
       *
            PERFORM VARYING     IDX-1   FROM   1   BY   1
-                   UNTIL      (IDX-1       >   5  )
+                   UNTIL      (IDX-1       >   10  )
                PERFORM 410110-GMN-SPA-SEC
            END-PERFORM
       *
            MOVE    ZERO                TO  FLG-HENSYU
            PERFORM VARYING     IDX-1   FROM   1   BY   1
-                   UNTIL      (IDX-1       >   5  )  OR
+                   UNTIL      (IDX-1       >   10  )  OR
                               (FLG-HENSYU  =   1  )  OR
                               (SPA-ERRCD   NOT =   SPACE )
                PERFORM 41011-SELNUM-CHK-SEC
@@ -2450,7 +2484,7 @@
                       (SNUM-MINKBN         =   "1"   )   OR
                       (SNUM-SYOKBN         =   "1"   )
                    MOVE    "0001"          TO  SPA-ERRCD
-                   MOVE    IDX-1           TO  SPA-GMN-CUR
+                   MOVE    IDX-1           TO  SPA-K98-GMN-CUR
                ELSE
                    MOVE    SNUM-OUTNUM     TO  SPA-K98-NAI-SELNUM(IDX-1)
                    MOVE    SPA-K98-NAI-SELNUM(IDX-1)
@@ -2467,7 +2501,7 @@
       *****************************************************************
        41011-SELNUM-CHK-SEC                SECTION.
       *
-           MOVE    1                   TO  SPA-GMN-CUR
+           MOVE    1                   TO  SPA-K98-GMN-CUR
       *
       *    ＊ 入力時、全対象とする
            IF      K98-SELNUM(IDX-1)   =   "*  "  OR
@@ -2506,7 +2540,7 @@
       *           (SNUM-MINKBN         =   "1"   )   OR
       *           (SNUM-SYOKBN         =   "1"   )
       *        MOVE    "0001"              TO  SPA-ERRCD
-      *        MOVE    IDX-1               TO  SPA-GMN-CUR
+      *        MOVE    IDX-1               TO  SPA-K98-GMN-CUR
       *        GO      TO      41011-SELNUM-CHK-EXT
       *    ELSE
       *        MOVE    SNUM-OUTNUM     TO  SPA-K98-NAI-SELNUM(IDX-1)
@@ -2555,7 +2589,7 @@
       *****************************************************************
        41012-SRYCD-SEL-SEC       SECTION.
       *
-           MOVE    1                   TO  SPA-GMN-CUR
+           MOVE    1                   TO  SPA-K98-GMN-CUR
            IF     (SPA-K98-NAI-SELNUM(IDX-1)
                                        NOT =   ZERO ) AND
                   (IDX-1               NOT =   1    ) 
@@ -2577,7 +2611,7 @@
       *****************************************************************
        41013-KENSA-GRP-SEC             SECTION.
       *
-           MOVE    1                   TO  SPA-GMN-CUR
+           MOVE    1                   TO  SPA-K98-GMN-CUR
       *
            IF     (SPA-K98-NAI-SELNUM(IDX-1)
                                        NOT =   ZERO ) AND
@@ -2645,15 +2679,15 @@
            ELSE
                PERFORM 41011-SELNO-SEC
                IF      SPA-ERRCD           =  SPACE
-                   IF     (IDX-1           =   5   )  OR
+                   IF     (IDX-1           =   10   )  OR
                           (IDX-1           =   SPA-K98-GMN-MAX)
                       OR  (SPA-K98-GMN-INPUT(1:1) =   "." )
                        MOVE    1               TO  FLG-SYURYOU
                    ELSE
-                       COMPUTE SPA-GMN-CUR     =   IDX-1   +   1
+                       COMPUTE SPA-K98-GMN-CUR     =   IDX-1   +   1
                    END-IF
                ELSE
-                   MOVE    IDX-1               TO  SPA-GMN-CUR
+                   MOVE    IDX-1               TO  SPA-K98-GMN-CUR
                END-IF
            END-IF
       *
@@ -2682,7 +2716,7 @@
            INITIALIZE                  SPA-K98-SRYCD-G
       *
            PERFORM VARYING     IDX2    FROM    1   BY  1
-                   UNTIL       IDX2    >   5
+                   UNTIL       IDX2    >   10
                IF      WRK-NAI-SELNUM (IDX2)   =   ZERO
                    CONTINUE
                ELSE
@@ -2697,17 +2731,90 @@
                END-IF
            END-PERFORM
       *
-           COMPUTE SPA-GMN-CUR         =   IDX1    +   1
+           COMPUTE SPA-K98-GMN-CUR         =   IDX1    +   1
       *
            .
        410141-TBL-SAIHEN-EXT.
            EXIT.
       *
+      *選択反転無しの選択
+      *****************************************************************
+      *    行選択処理
+      *****************************************************************
+      *41012-LISTSEL-SEC       SECTION.
+      *
+      *    行選択
+      *    MOVE    ZERO                TO  WRK-SELNO
+      *    MOVE    ZERO                TO  WRK-GMN-SELNO
+      *    PERFORM VARYING     IDX     FROM    1   BY  1
+      *            UNTIL       IDX     >   200
+      *        IF      K98-SELECT (IDX)    =   "T"
+      *            MOVE    SPA-K98-GMN-NO(IDX)  TO  WRK-GMN-SELNO
+      *            MOVE    IDX                  TO  WRK-SELNO
+      *            MOVE    200             TO  IDX
+      *        END-IF
+      *    END-PERFORM
+      *
+      *    IF      WRK-SELNO           <   01  OR
+      *                                >   SPA-K98-GMN-MAX
+      *        MOVE    "0002"          TO  SPA-ERRCD
+      *        GO      TO              41012-LISTSEL-EXT
+      *    END-IF
+      *
+      *    MOVE    ZERO                TO  IDX-1
+      *    PERFORM VARYING     IDX2    FROM    1   BY  1
+      *            UNTIL       IDX2    >   10
+      *        IF      SPA-K98-NAI-SELNUM(IDX2)    =   ZERO
+      *            MOVE    IDX2                TO  IDX-1
+      *            MOVE    IDX-1               TO  IDX-N
+      *            MOVE    WRK-SELNO           TO  SPA-K98-NAI-SELNUM
+      *                                                         (IDX-1)
+      *            MOVE    WRK-GMN-SELNO       TO  WRK-NOZ
+      *            MOVE    WRK-NOZ             TO  SPA-K98-GMN-SELNUM
+      *                                                         (IDX-1)
+      *            MOVE    10                  TO  IDX2
+      *        ELSE
+      *            IF      SPA-K98-NAI-SELNUM(IDX2)    =   WRK-SELNO
+      *                MOVE    IDX2            TO  IDX-1
+      *                MOVE    SPACE           TO  SPA-K98-GMN-SELNUM
+      *                                                         (IDX-1)
+      *                MOVE    ZERO            TO  SPA-K98-NAI-SELNUM
+      *                                                         (IDX-1)
+      *                MOVE    10               TO  IDX2
+      *            END-IF
+      *        END-IF
+      *    END-PERFORM
+      *    IF      IDX-1               =  ZERO
+      *        MOVE    "0002"          TO  SPA-ERRCD
+      *        GO      TO              41012-LISTSEL-EXT
+      *    END-IF
+      *
+      *    IF      SPA-K98-GMN-SELNUM(IDX-1)   =   SPACE
+      *        PERFORM 410141-TBL-SAIHEN-SEC
+      *    ELSE
+      *    検査チェック
+      *    IF      SPA-K98-GMN-SYORI   =   "9"
+      *        IF      SPA-K98-GMN-SYORI2  =   SPACE
+      *            PERFORM 41013-KENSA-GRP-SEC
+      *        ELSE
+      *            PERFORM 41014-KENSA-SEL-SEC
+      *        END-IF
+      *    ELSE
+      *        PERFORM 41014-KENSA-SEL-SEC
+      *!!!     PERFORM 41012-SRYCD-SEL-SEC
+      *    END-IF
+      *    END-IF
+      *    .
+      *41012-LISTSEL-EXT.
+      *****EXIT.
+      *
       *****************************************************************
       *    行選択処理
       *****************************************************************
        41012-LISTSEL-SEC       SECTION.
-      *        行選択
+      *
+      *    行選択
+           INITIALIZE                      WRK-LISET-SEL-G
            MOVE    ZERO                TO  WRK-SELNO
            MOVE    ZERO                TO  WRK-GMN-SELNO
            PERFORM VARYING     IDX     FROM    1   BY  1
@@ -2715,19 +2822,67 @@
                IF      K98-SELECT (IDX)    =   "T"
                    MOVE    SPA-K98-GMN-NO(IDX)  TO  WRK-GMN-SELNO
                    MOVE    IDX                  TO  WRK-SELNO
-                   MOVE    200             TO  IDX
+                   PERFORM 410121-LISTSEL-HEN-SEC 
                END-IF
            END-PERFORM
+      *
+           MOVE    ZERO                TO  IDX-1
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   10
+               IF      SPA-K98-GMN-SELNUM(IDX)     =   SPACE
+                   CONTINUE
+               ELSE
+      *            削除
+                   IF      WRK-SEL (IDX)   =   SPACE
+                       MOVE    SPACE       TO  SPA-K98-GMN-SELNUM(IDX)
+                       MOVE    ZERO        TO  SPA-K98-NAI-SELNUM(IDX)
+                   END-IF
+      *            今回追加
+                   IF      WRK-SEL (IDX)   =   "2"
+                       MOVE    IDX                 TO  IDX-1
+                       MOVE    IDX-1               TO  IDX-N
+                       MOVE    SPA-K98-NAI-SELNUM(IDX)
+                                                   TO  WRK-SELNO
+                       MOVE    SPA-K98-GMN-SELNUM(IDX)
+                                                   TO  WRK-GMN-SELNO
+                   END-IF
+               END-IF
+           END-PERFORM
+      *    削除クリア
+           PERFORM 410141-TBL-SAIHEN-SEC
+      *    今回選択なし
+           IF      IDX-1               =   ZERO
+               CONTINUE
+           ELSE
+      *         検査チェック
+               IF      SPA-K98-GMN-SYORI   =   "9"
+                   IF      SPA-K98-GMN-SYORI2  =   SPACE
+                       PERFORM 41013-KENSA-GRP-SEC
+                   ELSE
+                       PERFORM 41014-KENSA-SEL-SEC
+                   END-IF
+               ELSE
+                   PERFORM 41014-KENSA-SEL-SEC
+               END-IF
+           END-IF
+           .
+       41012-LISTSEL-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    明細選択編集処理
+      *****************************************************************
+       410121-LISTSEL-HEN-SEC      SECTION.
       *
            IF      WRK-SELNO           <   01  OR
                                        >   SPA-K98-GMN-MAX
                MOVE    "0002"          TO  SPA-ERRCD
-               GO      TO              41012-LISTSEL-EXT
            END-IF
       *
            MOVE    ZERO                TO  IDX-1
            PERFORM VARYING     IDX2    FROM    1   BY  1
-                   UNTIL       IDX2    >   5
+                   UNTIL      (IDX2    >   10 )
+                       OR     (SPA-ERRCD   NOT =   SPACE )
                IF      SPA-K98-NAI-SELNUM(IDX2)    =   ZERO
                    MOVE    IDX2                TO  IDX-1
                    MOVE    IDX-1               TO  IDX-N
@@ -2736,40 +2891,21 @@
                    MOVE    WRK-GMN-SELNO       TO  WRK-NOZ
                    MOVE    WRK-NOZ             TO  SPA-K98-GMN-SELNUM
                                                                 (IDX-1)
-                   MOVE    5                   TO  IDX2
+                   MOVE    "2"                 TO  WRK-SEL (IDX-1)
+                   MOVE    10                  TO  IDX2
                ELSE
                    IF      SPA-K98-NAI-SELNUM(IDX2)    =   WRK-SELNO
                        MOVE    IDX2            TO  IDX-1
-                       MOVE    SPACE           TO  SPA-K98-GMN-SELNUM
-                                                                (IDX-1)
-                       MOVE    ZERO            TO  SPA-K98-NAI-SELNUM
-                                                                (IDX-1)
-                       MOVE    5               TO  IDX2
+                       MOVE    "1"             TO  WRK-SEL (IDX-1)
+                       MOVE    10              TO  IDX2
                    END-IF
                END-IF
            END-PERFORM
            IF      IDX-1               =  ZERO
                MOVE    "0002"          TO  SPA-ERRCD
-               GO      TO              41012-LISTSEL-EXT
-           END-IF
-      *
-           IF      SPA-K98-GMN-SELNUM(IDX-1)   =   SPACE
-               PERFORM 410141-TBL-SAIHEN-SEC
-           ELSE
-      *    検査チェック
-           IF      SPA-K98-GMN-SYORI   =   "9"
-               IF      SPA-K98-GMN-SYORI2  =   SPACE
-                   PERFORM 41013-KENSA-GRP-SEC
-               ELSE
-                   PERFORM 41014-KENSA-SEL-SEC
-               END-IF
-           ELSE
-               PERFORM 41014-KENSA-SEL-SEC
-      *!!!     PERFORM 41012-SRYCD-SEL-SEC
-           END-IF
            END-IF
            .
-       41012-LISTSEL-EXT.
+       410121-LISTSEL-HEN-EXT.
            EXIT.
       *
       *****************************************************************
@@ -2793,38 +2929,6 @@
            .
        41011-SELNO-EXT.
            EXIT.
-      *
-      *****************************************************************
-      *    選択診療種別チェック処理
-      *****************************************************************
-      *410111-SEL-SYUKBN-CHK-SEC       SECTION.
-      *
-      *    IF      SPA-K98-SRYKBN      =   SPACE
-      *        IF      SPA-K98-GMN-SRYCD (IDX)(1:1)    =   "1"
-      *            MOVE    SPA-K98-GMN-SRYCD (IDX)(2:2)
-      *                                    TO  SPA-K98-SRYKBN
-      *        ELSE
-      *            MOVE    SPA-K98-GMN-SRYCD (IDX)(1:1)
-      *                                    TO  SPA-K98-SRYKBN(1:1)
-      *            MOVE    SPACE           TO  SPA-K98-SRYKBN(2:1)
-      *        END-IF
-      *    ELSE
-      *        IF      SPA-K98-SRYKBN(2:1)     =   SPACE
-      *            IF      SPA-K98-GMN-SRYCD (IDX)(1:1)
-      *                                    NOT =  SPA-K98-SRYKBN(1:1)
-      *                MOVE    "0020"          TO  SPA-ERRCD
-      *            END-IF
-      *        ELSE
-      *            IF      SPA-K98-GMN-SRYCD (IDX)(2:2)
-      *                                    NOT =  SPA-K98-SRYKBN
-      *                MOVE    "0020"          TO  SPA-ERRCD
-      *            END-IF
-      *        END-IF
-      *    END-IF
-      *    .
-      *410111-SEL-SYUKBN-CHK-EXT.
-      *    EXIT.
-      *
       *****************************************************************
       *    内服薬剤選択処理
       *****************************************************************
@@ -2843,7 +2947,7 @@
            IF      SPA-K98-GMN-INPUT   =   SPACE
                INITIALIZE                  SPA-K98-GMN-TBL
                MOVE    ZERO                TO  SPA-K98-GMN-MAX
-               MOVE    6                   TO  SPA-GMN-CUR
+               MOVE    21                  TO  SPA-K98-GMN-CUR
            ELSE
       *    ＳＰＡセット
                PERFORM                     310-SPA-SET-SEC
@@ -2872,7 +2976,7 @@
            IF      SPA-K98-GMN-INPUT   =   SPACE
                INITIALIZE                  SPA-K98-GMN-TBL
                MOVE    ZERO                TO  SPA-K98-GMN-MAX
-               MOVE    6                   TO  SPA-GMN-CUR
+               MOVE    21                  TO  SPA-K98-GMN-CUR
            ELSE
       *    ＳＰＡセット
                PERFORM                     310-SPA-SET-SEC
@@ -2901,7 +3005,7 @@
            IF      SPA-K98-GMN-INPUT   =   SPACE
                INITIALIZE                  SPA-K98-GMN-TBL
                MOVE    ZERO                TO  SPA-K98-GMN-MAX
-               MOVE    6                   TO  SPA-GMN-CUR
+               MOVE    21                  TO  SPA-K98-GMN-CUR
            ELSE
                PERFORM                     310-SPA-SET-SEC
            END-IF
@@ -2930,7 +3034,7 @@
            IF     SPA-K98-GMN-INPUT    =   SPACE
                INITIALIZE                  SPA-K98-GMN-TBL
                MOVE    ZERO                TO  SPA-K98-GMN-MAX
-               MOVE    6                   TO  SPA-GMN-CUR
+               MOVE    21                  TO  SPA-K98-GMN-CUR
       *TEST(全体）
       *        自院・器材
                MOVE    "U"                  TO  SPA-K98-GMN-SYORI
@@ -2964,7 +3068,7 @@
            IF      SPA-K98-GMN-INPUT   =   SPACE
                INITIALIZE                  SPA-K98-GMN-TBL
                MOVE    ZERO                TO  SPA-K98-GMN-MAX
-               MOVE    6                   TO  SPA-GMN-CUR
+               MOVE    21                  TO  SPA-K98-GMN-CUR
            ELSE
                PERFORM                     310-SPA-SET-SEC
            END-IF
@@ -2978,7 +3082,7 @@
       *****************************************************************
        41014-JIIN-CHK-SEC              SECTION.
       *
-           MOVE    7                   TO  SPA-GMN-CUR
+           MOVE    22                  TO  SPA-K98-GMN-CUR
       *
            MOVE    K98-JIIN            TO  SPA-K98-JIIN-G
       *
@@ -3029,7 +3133,7 @@
       *****************************************************************
        41014-USER-CHK-SEC              SECTION.
       *
-           MOVE    8                   TO  SPA-GMN-CUR
+           MOVE    23                  TO  SPA-K98-GMN-CUR
       *
            MOVE    K98-USER            TO  SPA-K98-USER-G
       *
@@ -3102,7 +3206,7 @@
       *
            MOVE    25                  TO  SPA-K98-GMN-MAX
       *
-           MOVE    1                   TO  SPA-GMN-CUR
+           MOVE    1                   TO  SPA-K98-GMN-CUR
       *
           .
        290-KENSAU-EXT.
@@ -3452,10 +3556,6 @@
                                        TO  SPA-ERRMSG
                WHEN    "0013"
                    MOVE    "点数は数字９桁で入力して下さい。"
-                                       TO  SPA-ERRMSG
-               WHEN    "0020"
-                   MOVE
-                   "種別の違うデータです。選択できません。"
                                        TO  SPA-ERRMSG
            END-EVALUATE
       *
