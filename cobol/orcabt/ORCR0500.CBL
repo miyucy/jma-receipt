@@ -1022,12 +1022,22 @@ grpsys         PERFORM 900-DBFETCH-SEC
                WHEN    "HCM29V01.red"  ALSO    "2"
                WHEN    "HCM29V02.red"  ALSO    "2"
                WHEN    "HCM49.red"     ALSO    "2"
-                   MOVE    "自賠責（新様式）レセプト（入院外）"
+                   IF      WRK-PARA-SHELLID    NOT =   "RECEPTX"
+                       MOVE    "自賠責（新様式）レセプト（入院外）"
                                                        TO  SPRT-TITLE
+                   ELSE
+                       MOVE    "自賠責レセプト（入院外）"
+                                                       TO  SPRT-TITLE
+                   END-IF
                WHEN    "HCM25.red"     ALSO    "2"
                WHEN    "HCM26.red"     ALSO    "2"
-                   MOVE    "自賠責（従来様式）レセプト（入院外）"
+                   IF      WRK-PARA-SHELLID    NOT =   "RECEPTX"
+                       MOVE    "自賠責（従来様式）レセプト（入院外）"
                                                        TO  SPRT-TITLE
+                   ELSE
+                       MOVE    "自賠責レセプト（入院外）"
+                                                       TO  SPRT-TITLE
+                   END-IF
                WHEN    "HCN21.red"     ALSO    ANY
                WHEN    "HCN21V01.red"  ALSO    ANY
                WHEN    "HCN21V02.red"  ALSO    ANY
@@ -1055,12 +1065,22 @@ grpsys         PERFORM 900-DBFETCH-SEC
                WHEN    "HCM29V01.red"  ALSO    "1"
                WHEN    "HCM29V02.red"  ALSO    "1"
                WHEN    "HCM49.red"     ALSO    "1"
-                   MOVE    "自賠責（新様式）レセプト（入院）"
+                   IF      WRK-PARA-SHELLID    NOT =   "RECEPTX"
+                       MOVE    "自賠責（新様式）レセプト（入院）"
                                                        TO  SPRT-TITLE
+                   ELSE
+                       MOVE    "自賠責レセプト（入院）"
+                                                       TO  SPRT-TITLE
+                   END-IF
                WHEN    "HCN25.red"     ALSO    "1"
                WHEN    "HCM26.red"     ALSO    "1"
-                   MOVE    "自賠責（従来様式）レセプト（入院）"
+                   IF      WRK-PARA-SHELLID    NOT =   "RECEPTX"
+                       MOVE    "自賠責（従来様式）レセプト（入院）"
                                                        TO  SPRT-TITLE
+                   ELSE
+                       MOVE    "自賠責レセプト（入院）"
+                                                       TO  SPRT-TITLE
+                   END-IF
            END-EVALUATE
            MOVE    LNK-PRTKANRI-TERMID TO  SPRT-TERMID
            MOVE    LNK-PRTKANRI-OPID   TO  SPRT-OPID
