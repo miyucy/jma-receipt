@@ -149,7 +149,7 @@
       **********   07  SPA-J98-SRYCD           PIC X(09).
       ***********  07  SPA-J98-NAME            PIC X(60).
                    07  SPA-J98-SRYCD-G.
-                       09  SPA-J98-SRYCD       PIC X(09)  OCCURS  5.
+                       09  SPA-J98-SRYCD       PIC X(09)  OCCURS  10.
       *
                    07  SPA-J98-RC              PIC 9(04).
       *
