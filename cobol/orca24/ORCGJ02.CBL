@@ -200,6 +200,7 @@
       *
            03  FLG-HKN-OK          PIC 9(01).
            03  FLG-RSIHKN-OK       PIC 9(01).
+           03  FLG-RSIHKN-OK2      PIC 9(01).
            03  FLG-RRKNUM-ARI      PIC 9(01).
       *
       *    ¥«¥¦¥ó¥ÈÎÎ°è
@@ -11766,6 +11767,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *    ÊÝ¸±È½Äê
            MOVE    ZERO                TO  FLG-HKN-OK
            MOVE    ZERO                TO  FLG-RSIHKN-OK
+           MOVE    ZERO                TO  FLG-RSIHKN-OK2
            IF     (SPA-GMN-PTNUM   NOT =   SPACE )  AND
                   (SPA-GMN-PTID    NOT =   ZERO  )  AND
                   (SPA-ERRCD           =   SPACE )  AND
@@ -11857,7 +11859,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                       (WRK-NCNT            =   ZERO )
                    MOVE    1                   TO  FLG-HKN-OK
                    MOVE    "1"                 TO  SPA-XC01-HKNKBN
-                   MOVE    FLG-RSIHKN-OK       TO  SPA-XC01-RSI-HKNKBN
+                   MOVE    FLG-RSIHKN-OK2      TO  SPA-XC01-RSI-HKNKBN
                END-IF
       *
                IF     (FLG-HKN-OK          =   ZERO )
@@ -11893,6 +11895,10 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                IF      SPA-NAI-THKNNUM(IDH)    =   "971"
                                                OR  "973"
                    ADD     1               TO  WRK-NCNT-R
+                   IF      WRK-NCNT-R      =   1
+                        MOVE    SPA-NAI-TRSI-HKNKBN (IDH)
+                                               TO  FLG-RSIHKN-OK2
+                   END-IF
                ELSE
                    ADD     1               TO  WRK-NCNT
                END-IF
