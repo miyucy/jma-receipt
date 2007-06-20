@@ -419,6 +419,7 @@
       *    £Ë£¹£¸²èÌÌÍÑ
            03  SPA-K98-MOTOPG              PIC X(08).
            03  SPA-K98GMN-AREA.
+               05  SPA-K98-GMN-CUR               PIC 9(02).
                05  SPA-K98-GMN-MAX               PIC 9(03).
                05  SPA-K98-NEXT                  PIC 9(01).
                05  SPA-K98-PAGE                  PIC 9(04).
@@ -426,10 +427,10 @@
       *
                05  SPA-K98-GMN-SELNUM-G.
                    07  SPA-K98-GMN-SELNUM        PIC X(03)
-                                                 OCCURS  5.
+                                                 OCCURS  10.
                05  SPA-K98-NAI-SELNUM-G.
                    07  SPA-K98-NAI-SELNUM        PIC 9(03)
-                                                 OCCURS  5.
+                                                 OCCURS  10.
                05  SPA-K98-GMN-INPUT             PIC X(22).
                05  SPA-K98-GMN-SYORI             PIC X(01).
                05  SPA-K98-GMN-SYORI2            PIC X(01).

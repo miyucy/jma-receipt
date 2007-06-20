@@ -432,7 +432,7 @@
                    07  SPA-K98-TYPE            PIC X(01).
       *
                    07  SPA-K98-SRYCD-G.
-                       09  SPA-K98-SRYCD-OCC   OCCURS  5.
+                       09  SPA-K98-SRYCD-OCC   OCCURS  10.
                            11  SPA-K98-SRYCD       PIC X(09).
       *
       *¶Ø´÷°ìÍ÷²èÌÌ¤è¤ê¡Ê£Ë£°£²£±¡Ë

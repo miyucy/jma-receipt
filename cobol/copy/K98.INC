@@ -21,7 +21,7 @@
                 04  K98-VALUE   PIC X(22).
               03  K98-SENTAKU.
                 04  K98-VALUE   PIC X(30).
-              03  K98-SELNUM    OCCURS  5.
+              03  K98-SELNUM    OCCURS  10.
                 04  K98-VALUE   PIC X(3).
               03  K98-SCROLLEDWINDOW26.
                 04  K98-LIST.
