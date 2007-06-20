@@ -11857,7 +11857,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                       (WRK-NCNT            =   ZERO )
                    MOVE    1                   TO  FLG-HKN-OK
                    MOVE    "1"                 TO  SPA-XC01-HKNKBN
-                   MOVE    SPACE               TO  SPA-XC01-RSI-HKNKBN
+                   MOVE    FLG-RSIHKN-OK       TO  SPA-XC01-RSI-HKNKBN
                END-IF
       *
                IF     (FLG-HKN-OK          =   ZERO )
