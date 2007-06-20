@@ -1093,33 +1093,39 @@
        400-ZHEN-SURYO-SET-EXT.
            EXIT.
       *
+      *----(3.5.0)--UPD-START---
       *****************************************************************
       *     診療会計マスタ検索処理
       *****************************************************************
        900-ACCT-DBFETCH-SEC        SECTION.
       *
-           MOVE    "SRYACCT-KEY7"      TO  ORC-DBPATH
-           MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "ORCMCPSUB"         USING
-                                       MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC
-           IF          MCP-RC          =   ZERO
-               MOVE    ZERO                TO  FLG-SRYACCT
-               MOVE    MCPDATA-REC         TO  SRYACCT-REC
-      *----(01.02.01)--ADD-START---
-               IF        ( ACCT-HKNCOMBI   =   "9999" )
-                   OR    ( ACCT-JIHOKBN    =   "1" )
-                   GO  TO  900-ACCT-DBFETCH-SEC
+           MOVE    ZERO            TO  FLG-OK
+           PERFORM UNTIL   FLG-OK  =   1
+               MOVE    "SRYACCT-KEY7"  TO  ORC-DBPATH
+               MOVE    "DBFETCH"       TO  MCP-FUNC
+               CALL    "ORCMCPSUB"         USING
+                                           MCPAREA
+                                           ORCMCPAREA
+                                           MCPDATA-REC
+               IF          MCP-RC          =   ZERO
+                   MOVE    ZERO            TO  FLG-SRYACCT
+                   MOVE    MCPDATA-REC     TO  SRYACCT-REC
+                   IF        ( ACCT-HKNCOMBI   =   "9999" )
+                       OR    ( ACCT-JIHOKBN    =   "1" )
+                       MOVE    ZERO            TO  FLG-OK
+                   ELSE
+                       MOVE    1               TO  FLG-OK
+                   END-IF
+               ELSE
+                   MOVE    1               TO  FLG-SRYACCT
+                   MOVE    1               TO  FLG-OK
                END-IF
-      *----(01.02.01)--ADD-END-----
-           ELSE
-               MOVE    1                   TO  FLG-SRYACCT
-           END-IF
+           END-PERFORM
            .
        900-ACCT-DBFETCH-EXT.
            EXIT.
       *
+      *----(3.5.0)--UPD-END-----
       *****************************************************************
       *    診療会計マスタクローズ処理
       *****************************************************************
