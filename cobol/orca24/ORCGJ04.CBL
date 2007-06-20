@@ -1370,7 +1370,7 @@
            MOVE    SPA-GMN-IDX         TO  WRK-STR
       *
            PERFORM VARYING     IDX-J98 FROM    1   BY  1
-                   UNTIL      (IDX-J98             >   5   )  OR
+                   UNTIL      (IDX-J98             >   10   )  OR
                               (SPA-J98-SRYCD(IDX-J98)  =   SPACE )
       *
                MOVE    "1"                 TO  SPA-COM-IN (SPA-GMN-IDX)
@@ -3083,7 +3083,7 @@
            IF      SPA-J98-GMN-MAX     =   ZERO
                MOVE    "INPUT"             TO  MCP-WIDGET
            ELSE
-               MOVE    "SELNUM1"           TO  MCP-WIDGET
+               MOVE    "SELNUM01"          TO  MCP-WIDGET
            END-IF
       *
            MOVE    SPA-J01KYOUTU       TO  SPA-WORK
