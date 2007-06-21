@@ -22,7 +22,6 @@ fi
 #        $6 ¥¨¥é¡¼¥Õ¥¡¥¤¥ëÌ¾ 
 #        $7 °õºþÍÑ¾ò·ï¥Ñ¥é¥á¥¿ 
 #        $8 °õºþ³«»Ï 
-#        $8 Ã¼Ëö£É£ÄX(32)  ¡Ê£Ï£Ò£Ã£Ò£°£µ£°£°¤Î¤È¤­¡Ë
 #        $9 °õºþ½ªÎ»
 #        $10 Ä¢É¼¼±ÊÌÈÖ¹æ
 #        $11 ¥×¥ê¥ó¥¿Ì¾
@@ -62,8 +61,13 @@ fi
 	           $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE$1$2,${25} >> $LOG_FILE 2>&1
            else
                rennum=$(expr $rennum + 1) 
-	           $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCR0500 -parameter $1,$2,$3,$7,$8,$5,${12},${13},${14},$rennum,${16},${17},${18},${19},${20},${21},${22},${23},${25},${6} >> $LOG_FILE 2>&1
-	           $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE$1$2,${25} >> $LOG_FILE 2>&1
+	           $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCR0500 -parameter $1,$2,$3,$7,$5,${12},${13},${14},$rennum,${16},${17},${18},${19},${20},${21},${22},${23},${25},${6} >> $LOG_FILE 2>&1
+                   if  [ -e $6 ]; then
+	               $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE$1$2,${25} >> $LOG_FILE 2>&1
+                   else 
+                       $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBPREV1 -parameter ${12},${13},${14},$rennum,${16},${17},${18},${19},${20},${21},${22},$1,$2,$8,$9,${23},$5,$6,${25} >> $LOG_FILE 2>&1
+	               $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE$1$2,${25} >> $LOG_FILE 2>&1
+                   fi
            fi
         fi
 
