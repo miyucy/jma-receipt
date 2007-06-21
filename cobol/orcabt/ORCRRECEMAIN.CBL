@@ -915,9 +915,6 @@
                     WRK-CONS-ARG
                                 DELIMITED   BY  SPACE
                     ","         DELIMITED   BY  SIZE
-                    WRK-PARA-A27
-                                DELIMITED   BY  SPACE
-                    ","         DELIMITED   BY  SIZE
                     "2"         DELIMITED   BY  SPACE
                     ","         DELIMITED   BY  SIZE
                     WRK-PARA-A17 DELIMITED   BY  SPACE
@@ -1080,9 +1077,6 @@
                     WRK-PARA-A1 DELIMITED   BY  SPACE
                     ","         DELIMITED   BY  SIZE
                     WRK-CONS-ARG
-                                DELIMITED   BY  SPACE
-                    ","         DELIMITED   BY  SIZE
-                    WRK-PARA-A27
                                 DELIMITED   BY  SPACE
                     ","         DELIMITED   BY  SIZE
                     "2"         DELIMITED   BY  SPACE
@@ -1325,9 +1319,6 @@
                     WRK-CONS-ARG
                                 DELIMITED   BY  SPACE
                     ","         DELIMITED   BY  SIZE
-                    WRK-PARA-A27
-                                DELIMITED   BY  SPACE
-                    ","         DELIMITED   BY  SIZE
                     "2"         DELIMITED   BY  SPACE
                     ","         DELIMITED   BY  SIZE
                     WRK-PARA-A17 DELIMITED   BY  SPACE
@@ -1564,9 +1555,6 @@
                     WRK-PARA-A1 DELIMITED   BY  SPACE
                     ","         DELIMITED   BY  SIZE
                     WRK-CONS-ARG
-                                DELIMITED   BY  SPACE
-                    ","         DELIMITED   BY  SIZE
-                    WRK-PARA-A27
                                 DELIMITED   BY  SPACE
                     ","         DELIMITED   BY  SIZE
                     "2"         DELIMITED   BY  SPACE

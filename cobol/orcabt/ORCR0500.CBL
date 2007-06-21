@@ -213,7 +213,7 @@ grpsys     COPY    "COMMON-SPA".
                    07  WRK-PARA-RECE09-RECESYUBETU
                                                  PIC X(04).
                    07  WRK-PARA-RECE09-NYUGAIKBN PIC X(01).                              
-               05  WRK-PARA-TERMID64             PIC X(64).
+      *********05  WRK-PARA-TERMID64             PIC X(64).
                05  WRK-PARA-SYOKBN               PIC X(01).
                05  WRK-PARA-PRTNM                PIC X(16).
                05  WRK-PARA-PRTKBN               PIC X(01). 
@@ -381,7 +381,7 @@ grpsys     COPY    "COMMON-SPA".
                                              WRK-PARA-SHELLID
                                              WRK-PARA1
                                              WRK-PARA-RECE09-KEY
-                                             WRK-PARA-TERMID64
+      ***************************************WRK-PARA-TERMID64
                                              WRK-PARA-SYOKBN
       ***************************************WRK-PARA-PRTNM
                                              LNK-PRTKANRI-RENNUM
@@ -963,8 +963,18 @@ grpsys         PERFORM 900-DBFETCH-SEC
            MOVE    LNK-PRTKANRI-SKYYMD TO  SPRT-SKYYMD
            MOVE    LNK-PRTKANRI-SHELLID 
                                        TO  SPRT-SHELLID
-           MOVE    LNK-PRTKANRI-SHORI-RENNUM
-                                       TO  SPRT-SHORI-RENNUM
+           IF      WRK-PARA-SHELLID    NOT =   "RECEPTX"
+               MOVE    LNK-PRTKANRI-SHORI-RENNUM
+                                           TO  SPRT-SHORI-RENNUM
+           ELSE
+               IF      RECE08-RECENUM      <   100
+                   MOVE    LNK-PRTKANRI-SHORI-RENNUM
+                                               TO  SPRT-SHORI-RENNUM
+               ELSE
+                   COMPUTE SPRT-SHORI-RENNUM
+                           =   LNK-PRTKANRI-SHORI-RENNUM   +   1
+               END-IF 
+           END-IF
       **** MOVE    LNK-PRTKANRI-PRIORITY
       ****                             TO  SPRT-PRIORITY
            COMPUTE  SPRT-PRIORITY      =   LNK-PRTKANRI-PRIORITY
