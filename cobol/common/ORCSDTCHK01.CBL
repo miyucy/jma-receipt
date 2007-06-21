@@ -93,20 +93,20 @@
                    07  TBYOMEI-SRYYMD      PIC X(08).
       *
        01  CONST-AREA.
-           03  CONST-TBYOMEI-MAX           PIC 9(05)   VALUE   100.
-           03  CONST-STRLEN-MAX            PIC 9(05)   VALUE   200.
-           03  CONST-MICODE                PIC X(07)   VALUE "0000999".
-           03  CONST-MKCD-MAX              PIC 9(05)   VALUE   21.
-           03  CONST-SYAHO                 PIC X(01)
-                                           VALUE   "1".
-           03  CONST-KOKUHO                PIC X(01)
-                                           VALUE   "2".
-           03  CONST-ROSAI                 PIC X(01)
-                                           VALUE   "3".
-           03  CONST-JIBAI                 PIC X(01)
-                                           VALUE   "4".
-           03  CONST-JIHI                  PIC X(01)
-                                           VALUE   "5".
+           03  CONST-TBYOMEI-MAX       PIC 9(05)   VALUE   100.
+           03  CONST-STRLEN-MAX        PIC 9(05)   VALUE   200.
+           03  CONST-MICODE            PIC X(07)   VALUE   "0000999".
+           03  CONST-MKCD-MAX          PIC 9(05)   VALUE   21.
+           03  CONST-SYAHO             PIC X(01)
+                                       VALUE   "1".
+           03  CONST-KOKUHO            PIC X(01)
+                                       VALUE   "2".
+           03  CONST-ROSAI             PIC X(01)
+                                       VALUE   "3".
+           03  CONST-JIBAI             PIC X(01)
+                                       VALUE   "4".
+           03  CONST-JIHI              PIC X(01)
+                                       VALUE   "5".
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -709,6 +709,8 @@
                    MOVE    MCPDATA-REC     TO  QDTCHK-REC
       *
                    MOVE    1               TO  FLG-LOOP-END
+      *
+                   CALL    "ORCSDTCHK07"   USING   QDTCHK-REC
       *
                    IF    ( SYS-1101-YBUTAGAIKBN    =   "2" )
                        IF    ( SDTCHK01-CHKKBN     =   "1" )

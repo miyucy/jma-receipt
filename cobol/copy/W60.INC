@@ -38,6 +38,10 @@
                                        OCCURS 5.
               03  W60-CHKMTRX          PIC X(01)
                                        OCCURS 5.
+              03  W60-CMB-YBKENSAYAKUKBN.
+                04  W60-YBKENSAYAKUKBN        PIC X(32).
+                04  W60-YBKENSAYAKUKBN-COUNT  PIC S9(9)   BINARY.
+                04  W60-YBKENSAYAKUKBN-ITEM   PIC X(32)   OCCURS  5.
               03  W60-CMB-YBUTAGAIKBN.
                 04  W60-YBUTAGAIKBN        PIC X(32).
                 04  W60-YBUTAGAIKBN-COUNT  PIC S9(9)   BINARY.

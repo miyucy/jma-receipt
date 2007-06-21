@@ -573,6 +573,8 @@
       *
                MOVE    1               TO  FLG-LOOP-END
       *
+               CALL    "ORCSDTCHK07"   USING   QDTCHK-REC
+      *
                IF    ( QDTCHK-REZEFLG  =   "1" )
                    MOVE    ZERO        TO  FLG-LOOP-END
                END-IF

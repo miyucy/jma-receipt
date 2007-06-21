@@ -2393,16 +2393,6 @@
       *
            MOVE    ZERO                TO  FLG-TAISYO-SRY
       *
-      *    約束セットのコードは読み飛ばす
-           IF    ( DCSRY-SRYCD (1:1)   =   "S" )
-               GO  TO  200111-TAISO-SRY-CHK-EXT
-           END-IF
-      *
-      *    院内処方包括入力分はチェックの対象外とする
-           IF    ( DCSRY-SRYSYUKBN     =   "213" OR "223" OR "233" )
-               GO  TO  200111-TAISO-SRY-CHK-EXT
-           END-IF
-      *
       *    薬剤の場合、院外処方の処理対象チェックを行う
            IF    ( DCSRY-SRYCD (1:1)  =   "6" )
                EVALUATE    ORCBSD01-INGAIPROCKBN
@@ -2420,9 +2410,25 @@
                        MOVE    1       TO  FLG-TAISYO-SRY
                    END-IF
                END-EVALUATE
+      *
+               IF    ( SYS-1101-YBKENSAYAKUKBN =   "2" )
+                   IF    ( DCACCT-SRYKBN =   "60"  OR "70" )
+                       MOVE    ZERO    TO  FLG-TAISYO-SRY
+                   END-IF
+               END-IF
            ELSE
       *        薬剤以外の場合
                        MOVE    1       TO  FLG-TAISYO-SRY
+           END-IF
+      *
+      *    約束セットのコードは読み飛ばす
+           IF    ( DCSRY-SRYCD (1:1)   =   "S" )
+                       MOVE    ZERO    TO  FLG-TAISYO-SRY
+           END-IF
+      *
+      *    院内処方包括入力分はチェックの対象外とする
+           IF    ( DCSRY-SRYSYUKBN     =   "213" OR "223" OR "233" )
+                       MOVE    ZERO    TO  FLG-TAISYO-SRY
            END-IF
       *
            .

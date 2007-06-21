@@ -646,6 +646,8 @@
       *
                    MOVE    1               TO  FLG-LOOP-END
       *
+                   CALL    "ORCSDTCHK07"   USING   QDTCHK-REC
+      *
                    IF    ( SYS-1101-YBUTAGAIKBN    =   "2" )
                        IF    ( SDTCHK06-CHKKBN     =   "8" )
                         AND  ( QDTCHK-UTAGAIFLG    =   "1"  OR "3" )
