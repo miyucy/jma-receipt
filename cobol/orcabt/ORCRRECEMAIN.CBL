@@ -90,8 +90,8 @@
                05  WRK-PARA-A11                        PIC  X(02).
       *
                05  WRK-PARA-A12                        PIC  X(01).
-               05  WRK-PARA-A13                        PIC  X(02).
-               05  WRK-PARA-A14                        PIC  X(02).
+               05  WRK-PARA-A13                        PIC  X(01).
+               05  WRK-PARA-A14                        PIC  X(01).
       *
                05  WRK-PARA-A15                        PIC  X(16).
                05  WRK-PARA-A16                        PIC  X(16).
@@ -307,6 +307,8 @@
                                          WRK-PARA-A10
                                          WRK-PARA-A11
                                          WRK-PARA-A12
+                                         WRK-PARA-A13
+                                         WRK-PARA-A14
                                          WRK-PARA-A15
                                          WRK-PARA-A16
                                          WRK-PARA-A17
@@ -1188,9 +1190,15 @@
                     RECEERR        DELIMITED   BY  SPACE
                                    INTO    WRK-ARG
            END-STRING
-           DISPLAY "ORCR0486 start = [" WRK-ARG "]"
-           CALL    "ORCR0486"          USING
-                                       WRK-ARG
+           IF      WRK-PARA-A14        =   "0"
+               DISPLAY "ORCR0486 start = [" WRK-ARG "]"
+               CALL    "ORCR0486"          USING
+                                           WRK-ARG
+           ELSE
+               DISPLAY "ORCR0489 start = [" WRK-ARG "]"
+               CALL    "ORCR0489"          USING
+                                           WRK-ARG
+           END-IF
       *
       *    労災準拠のとき（新様式）
            IF      WRK-PARA-A3     =   "4"
@@ -1276,9 +1284,21 @@
                         RECEERR        DELIMITED   BY  SPACE
                                        INTO    WRK-ARG
                END-STRING
-               DISPLAY "ORCR0487 start = [" WRK-ARG "]"
-               CALL    "ORCR0487"          USING
-                                           WRK-ARG
+               IF      WRK-PARA-A14        =   "0"
+                   IF      WRK-PARA-A13        =   "0"
+                       DISPLAY "ORCR0485 start = [" WRK-ARG "]"
+                       CALL    "ORCR0485"          USING
+                                                   WRK-ARG
+                   ELSE
+                       DISPLAY "ORCR0487 start = [" WRK-ARG "]"
+                       CALL    "ORCR0487"          USING
+                                                   WRK-ARG
+                   END-IF
+               ELSE    
+                   DISPLAY "ORCR0488 start = [" WRK-ARG "]"
+                   CALL    "ORCR0488"          USING
+                                               WRK-ARG
+               END-IF
            END-IF
       *
            MOVE     SPACE       TO WRK-ARG
@@ -1432,9 +1452,15 @@
                     RECEERR        DELIMITED   BY  SPACE
                                    INTO    WRK-ARG
            END-STRING
-           DISPLAY "ORCR0956 start = [" WRK-ARG "]"
-           CALL    "ORCR0956"          USING
-                                       WRK-ARG
+           IF      WRK-PARA-A14        =   "0"
+               DISPLAY "ORCR0956 start = [" WRK-ARG "]"
+               CALL    "ORCR0956"          USING
+                                           WRK-ARG
+           ELSE
+               DISPLAY "ORCR0966 start = [" WRK-ARG "]"
+               CALL    "ORCR0966"          USING
+                                           WRK-ARG
+           END-IF
       *
       *    労災準拠のとき（新様式）
            IF      WRK-PARA-A3     =   "4"
@@ -1514,9 +1540,21 @@
                         RECEERR        DELIMITED   BY  SPACE
                                        INTO    WRK-ARG
                END-STRING
-               DISPLAY "ORCR0957 start = [" WRK-ARG "]"
-               CALL    "ORCR0957"          USING
-                                           WRK-ARG
+               IF      WRK-PARA-A14        =   "0"
+                   IF      WRK-PARA-A13        =   "0"
+                       DISPLAY "ORCR0955 start = [" WRK-ARG "]"
+                       CALL    "ORCR0955"          USING
+                                                   WRK-ARG
+                   ELSE
+                       DISPLAY "ORCR0957 start = [" WRK-ARG "]"
+                       CALL    "ORCR0957"          USING
+                                                   WRK-ARG
+                   END-IF
+               ELSE
+                   DISPLAY "ORCR0965 start = [" WRK-ARG "]"
+                   CALL    "ORCR0965"          USING
+                                               WRK-ARG
+               END-IF
            END-IF
       *
            MOVE     SPACE       TO WRK-ARG
