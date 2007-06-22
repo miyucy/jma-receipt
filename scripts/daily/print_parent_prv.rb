@@ -16,6 +16,7 @@
 # (2004/12/05 ) 印刷出力停止機能追加
 # (2007/05/09 ) オンライン再印刷処理追加(UUID)
 # (2007/05/31 ) グループ診療対応(hospnum追加)
+# (2007/06/19 ) 労災枠なし対応
 #
 
 # ※複数のプロセスの実行はできない
@@ -383,6 +384,70 @@ end
 
 #---- (2003/01/20 ) start
 #		w_exec = RED_EXEC + ' ' + red_file + ' ' + temp_file + ' -p ' + lp_name
+#   労災の枠なし帳票をスイッチする st
+	puts prt_flg
+	puts ls_w1
+	if prt_flg == '3' || prt_flg == '4'
+		case	ls_w1
+		when	'HCM22V04.red'
+			ls_w1 = 'HCM22V04P.red'
+			red_file = std_form + ls_w1
+   			puts 'rousai hit!!'
+		when	'HCM24V04.red'
+			ls_w1 = 'HCM24V04.red'
+			red_file = std_form + ls_w1
+   			puts 'rousai hit!!'
+		when	'HCM21V04.red'
+			ls_w1 = 'HCM21V04P.red'
+			red_file = std_form + ls_w1
+   			puts 'rousai hit!!'
+		when	'HCM24V04.red'
+			ls_w1 = 'HCM24V04.red'
+			red_file = std_form + ls_w1
+   			puts 'rousai hit!!'
+		when	'HCM18V04.red'
+			ls_w1 = 'HCM18V04.red'
+			red_file = std_form + ls_w1
+   			puts 'rousai hit!!'
+		when	'HCM20V04.red'
+			ls_w1 = 'HCM20V04.red'
+			red_file = std_form + ls_w1
+   			puts 'rousai hit!!'
+		when	'HCN22V04.red'
+			ls_w1 = 'HCN22V04.red'
+			red_file = std_form + ls_w1
+   			puts 'rousai hit!!'
+		when	'HCM24V04.red'
+			ls_w1 = 'HCM24V04.red'
+			red_file = std_form + ls_w1
+   			puts 'rousai hit!!'
+		when	'HCN21V04.red'
+			ls_w1 = 'HCN21V04.red'
+			red_file = std_form + ls_w1
+   			puts 'rousai hit!!'
+		when	'HCM24V04.red'
+			ls_w1 = 'HCM24V04.red'
+			red_file = std_form + ls_w1
+   			puts 'rousai hit!!'
+		when	'HCN50.red'
+			ls_w1 = 'HCN50.red'
+			red_file = std_form + ls_w1
+   			puts 'rousai hit!!'
+		when	'HCM24V04.red'
+			ls_w1 = 'HCM24V04.red'
+			red_file = std_form + ls_w1
+   			puts 'rousai hit!!'
+		when	'HCN51.red'
+			ls_w1 = 'HCN51.red'
+			red_file = std_form + ls_w1
+   			puts 'rousai hit!!'
+		when	'HCM24V04.red'
+			ls_w1 = 'HCM24V04.red'
+			red_file = std_form + ls_w1
+   			puts 'rousai hit!!'
+		end
+	end
+#   労災の枠なし帳票をスイッチする ed
 
 #---- (2003/07/03) start
 		case	prt_flg
