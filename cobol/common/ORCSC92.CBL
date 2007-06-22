@@ -2308,7 +2308,8 @@
                IF    ((FLG-RKAN-OK         =   1  )  OR
                       (FLG-RKAN-OK2        =   1  ))
       *            発生日より前の時、算定なしとする
-                   IF      WRK-STYMD       >   WRK-YMD
+                   IF     (WRK-STYMD   NOT =   SPACE   )  AND
+                          (WRK-STYMD       >   WRK-YMD )
                        MOVE    SPACE               TO  WRK-YMD
                    END-IF
                END-IF
@@ -2395,7 +2396,15 @@
                    END-IF
                END-IF
       *        発生日より後の時、算定なしとする
-               IF      WRK-STYMD           <=  WRK-YMD2
+      *D       IF      WRK-STYMD           <=  WRK-YMD2
+               IF     (WRK-STYMD   NOT =   SPACE   )  AND
+                      (WRK-STYMD           <=  WRK-YMD2  )
+                   MOVE    SPACE               TO  WRK-YMD
+               END-IF
+      *!
+      *        医学管理料算定より前の時、なし
+               IF     (LNK-SC92-SRYCD  =   WRK-SRYCD  )
+                  AND (WRK-YMD2        <   WRK-YMD    )
                    MOVE    SPACE               TO  WRK-YMD
                END-IF
            END-IF
