@@ -212,6 +212,8 @@
       *  03.04.04    NACL-藤原    07/03/02  月途中保険変更時の病名対応中止
       *  03.04.05    NACL-藤原    07/04/03  カルテ病名の表示の修正
       *  03.04.06    NACL-藤原    07/05/14  カナチェック後の編集の修正
+      *  03.04.07    NACL-藤原    07/06/21  処理区分、入外区分変更時の
+      *                                     診療科の表示
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -5897,6 +5899,9 @@
                                        SPA-GMN-C02-MAX
                                        SPA-PTBYOMEI-REC
            MOVE    SPA-NAI-C02-SYSYMD  TO  SPA-NAI-C02-SRYYMD
+           IF      SPA-GMN-C02-SRYKA   NOT =   ZERO
+               MOVE    SPA-GMN-C02-SRYKA-G TO  SPA-GMN-C02-BSRYKA-G
+           END-IF
       *
            MOVE    C02-SYOKBN          TO  SPA-GMN-C02-SYOKBN-G
       *
@@ -5955,6 +5960,9 @@
                                        SPA-GMN-C02-MAX
                                        SPA-PTBYOMEI-REC
            MOVE    SPA-NAI-C02-SYSYMD  TO  SPA-NAI-C02-SRYYMD
+           IF      SPA-GMN-C02-SRYKA   NOT =   ZERO
+               MOVE    SPA-GMN-C02-SRYKA-G TO  SPA-GMN-C02-BSRYKA-G
+           END-IF
       *
            MOVE    C02-HNYUGAIKBN      TO  SPA-GMN-C02-HNYUGAIKBN-G
       *
