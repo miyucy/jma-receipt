@@ -4872,7 +4872,7 @@
 	  <y>305</y>
 	  <width>126</width>
 	  <height>24</height>
-	  <label></label>
+	  <label>１：入金の取り扱い</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>0</xalign>
