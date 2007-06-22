@@ -251,6 +251,20 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SYS-2005-HOSPNUM
                                        NOT =  "S"
                MOVE  "NOPG"                TO  SYS-2005-PREFPRGID (2)
            END-IF
+           IF      SYS-2005-FRAME-JIBAIPRTKBN
+                                           =   SPACE
+               MOVE    ZERO                TO
+                                           SYS-2005-FRAME-JIBAIPRTKBN
+           END-IF
+           IF      SYS-2005-FRAME-JIBAIPRTKBN-N
+                                           =   SPACE
+               MOVE    ZERO                TO
+                                           SYS-2005-FRAME-JIBAIPRTKBN-N
+           END-IF
+      *****IF      SYS-2005-JIBAIPRTKBN     =   SPACE
+      *         MOVE    ZERO                TO
+      *                                     SYS-2005-JIBAIPRTKBN
+      *****END-IF
       *                
       *    出力先プリンタ名割り当て情報の取得
            MOVE    SPACE           TO  SYS-1031-REC
@@ -477,6 +491,17 @@ grpsys     MOVE    SPA-HOSPNUM     TO  RECEERR-HOSPNUM
                                    TO  SHELLTBL-ARG11
            MOVE    LINK-PTRSI-HKNKBN
                                    TO  SHELLTBL-ARG12
+           EVALUATE   LINK-NYUGAIKBN   ALSO    LINK-HKNKBN
+               WHEN   "1"              ALSO    "2"
+                   MOVE    SYS-2005-FRAME-JIBAIPRTKBN-N
+                                                   TO  SHELLTBL-ARG13
+               WHEN   "2"              ALSO    "2"
+                   MOVE    SYS-2005-FRAME-JIBAIPRTKBN
+                                                   TO  SHELLTBL-ARG13
+           END-EVALUATE
+      *****MOVE    SYS-2005-JIBAIPRTKBN
+           MOVE    "0"               
+                                   TO  SHELLTBL-ARG14
       *
       *------------------> recept2.sh $11 - $26 (#24 は除く)
            EVALUATE   LINK-NYUGAIKBN   ALSO    LINK-HKNKBN
