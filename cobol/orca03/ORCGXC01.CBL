@@ -939,6 +939,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                    CALL    "ORCSJOB"       USING
                                            ORCSJOBKANRIAREA  
                                            JOBKANRI-REC
+                                           SAP-AREA
                    IF      SJOBKANRI-RETURN
                                            =   ZERO
                        IF      JOB-ENDYMD      =   SPACE
@@ -1266,6 +1267,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                    CALL    "ORCSJOB"       USING
                                            ORCSJOBKANRIAREA  
                                            JOBKANRI-REC
+                                           SAP-AREA
                    IF      SJOBKANRI-RETURN
                                            =   ZERO
                        IF      JOB-ENDYMD      =   SPACE
@@ -2009,7 +2011,6 @@ grpsys*                    MOVE SPA-HOSPNUM TO -HOSPNUM
                      MOVE    "key"               TO  MCP-PATHNAME
                      MOVE    "blob"              TO  MCP-TABLE
 grpsys               CALL    "ORCDBMAIN"       USING MCPAREA
-      *              CALL   "MONFUNC"          USING
                                                MCPAREA
                                                ORCA-BLOB
                                                SPA-AREA
