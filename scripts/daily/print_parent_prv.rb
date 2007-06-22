@@ -389,6 +389,7 @@ end
 	puts ls_w1
 	if prt_flg == '3' || prt_flg == '4'
 		case	ls_w1
+#   -----------> Ï«ºÒÊ¬
 		when	'HCM22V04.red'
 			ls_w1 = 'HCM22V04P.red'
 			red_file = std_form + ls_w1
@@ -445,6 +446,15 @@ end
 			ls_w1 = 'HCM24V04.red'
 			red_file = std_form + ls_w1
    			puts 'rousai hit!!'
+#   -----------> ¼«ÇÜÊ¬
+		when	'HCM23V04.red'
+			ls_w1 = 'HCM48.red'
+			red_file = std_form + ls_w1
+   			puts 'jibai hit!!'
+		when	'HCM29V02.red'
+			ls_w1 = 'HCM49.red'
+			red_file = std_form + ls_w1
+   			puts 'jibai hit!!'
 		end
 	end
 #   Ï«ºÒ¤ÎÏÈ¤Ê¤·Ä¢É¼¤ò¥¹¥¤¥Ã¥Á¤¹¤ë ed
