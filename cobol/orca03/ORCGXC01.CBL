@@ -939,7 +939,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                    CALL    "ORCSJOB"       USING
                                            ORCSJOBKANRIAREA  
                                            JOBKANRI-REC
-                                           SAP-AREA
+                                           SPA-AREA
                    IF      SJOBKANRI-RETURN
                                            =   ZERO
                        IF      JOB-ENDYMD      =   SPACE
@@ -1267,7 +1267,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                    CALL    "ORCSJOB"       USING
                                            ORCSJOBKANRIAREA  
                                            JOBKANRI-REC
-                                           SAP-AREA
+                                           SPA-AREA
                    IF      SJOBKANRI-RETURN
                                            =   ZERO
                        IF      JOB-ENDYMD      =   SPACE
