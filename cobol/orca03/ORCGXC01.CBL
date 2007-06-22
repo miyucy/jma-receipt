@@ -37,6 +37,7 @@
       *  07/06/02    NACL−竹田            タイマーの停止処理
       *  03.05.01    NACL−竹田    07/05/09  グループ診療対応およびオンライン
       *                                      帳票対応
+      *  03.05.02    NACL−竹田    07/06/22  労災自倍対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -1333,6 +1334,9 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *****************************************************************
        450-PRINT-SEC                   SECTION.
       * 
+           PERFORM 4501-PRINT-SEC
+           GO      TO                  450-PRINT-EXT
+      * 
            MOVE    ZERO                TO  WRK-CONS-JOB-JOBID     
                                            WRK-PREVIEW-RENNUM
            MOVE    SPACE               TO  WRK-CONS-PREVIEW-TBL-GROUP                                
@@ -1441,6 +1445,87 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *    情報確認画面を表示                                                   
            .
        450-PRINT-EXT.
+           EXIT.
+      *
+      *
+      *****************************************************************
+      *    印刷編集処理
+      *****************************************************************
+       4501-PRINT-SEC                  SECTION.
+      * 
+           ACCEPT  SYS-YMD         FROM    DATE
+           COMPUTE WRK-SYSYY       =   SYS-YY      +   2000
+           MOVE    SYS-MM              TO  WRK-SYSMM
+           MOVE    SYS-DD              TO  WRK-SYSDD
+           ACCEPT  SYS-TIME            FROM    TIME
+      *
+      *    印刷処理
+      *****MOVE    RECEERR             TO  SHELL-ERRFILE
+      *
+           MOVE    SPACE               TO  SHELLTBL
+      *****MOVE    "/usr/local/orca/scripts/allways/print.sh"
+      *****                            TO  SHELLTBL-NAME
+           MOVE    "print_prv.sh"          TO  WRK-SHELL-SHELL
+      *    ファイルデイレクトリ位置指定
+           INITIALIZE                  ORCSMKPASSAREA
+           MOVE    WRK-SHELL-NAME      TO  MKPASS-IN-01
+           CALL    "ORCSMKPASS"        USING   ORCSMKPASSAREA
+           MOVE    MKPASS-OT-01        TO  SHELLTBL-NAME
+      *     
+           MOVE    SPACE               TO  LNK-PRTKANRI-AREA
+           INITIALIZE                      LNK-PRTKANRI-AREA
+           MOVE    SPA-PRTKANRI-TBL-KEY    TO  LNK-PRTKANRI-TBL-KEY  
+           MOVE    SPA-NAI-TBL-GROUP (SPA-NAI-SELNUM)
+                                       TO  LNK-PRTKANRI-TBL-GROUP
+           MOVE    SPA-NAI-TBL-UUID  (SPA-NAI-SELNUM)
+                                       TO  LNK-PRTKANRI-TBL-UUID
+           MOVE    SPA-NAI-RENNUM    (SPA-NAI-SELNUM)
+                                       TO  LNK-PRTKANRI-RENNUM
+           MOVE    SPA-NAI-SHORI-RENNUM (SPA-NAI-SELNUM)
+                                       TO  LNK-PRTKANRI-SHORI-RENNUM
+           MOVE    "print_prv.sh"      TO  LNK-PRTKANRI-SHELLID
+           MOVE    SPA-TERMID          TO  LNK-PRTKANRI-TERMID
+           MOVE    SPA-OPID            TO  LNK-PRTKANRI-OPID
+           MOVE    LNK-PRTKANRI-RENNUM TO  SHELLTBL-ARG1       
+           MOVE    LNK-PRTKANRI-TBL-KEY
+                                       TO  SHELLTBL-ARG2     
+           MOVE    LNK-PRTKANRI-TBL-GROUP
+                                       TO  SHELLTBL-ARG3       
+           MOVE    LNK-PRTKANRI-SHORI-RENNUM
+                                       TO  SHELLTBL-ARG4       
+           MOVE    LNK-PRTKANRI-SRYYM  TO  SHELLTBL-ARG5       
+           MOVE    LNK-PRTKANRI-SKYYMD TO  SHELLTBL-ARG6       
+           MOVE    LNK-PRTKANRI-SHELLID
+                                       TO  SHELLTBL-ARG7       
+           MOVE    LNK-PRTKANRI-PRIORITY
+                                       TO  SHELLTBL-ARG8      
+           MOVE    LNK-PRTKANRI-TERMID TO  SHELLTBL-ARG9       
+           MOVE    LNK-PRTKANRI-OPID   TO  SHELLTBL-ARG10      
+           MOVE    LNK-PRTKANRI-PRTNM  TO  SHELLTBL-ARG11      
+      *                 
+      *                 
+           MOVE    RECEERR             TO  SHELLTBL-ARG12
+           MOVE    WRK-CONS-JOB-JOBID  TO  SHELLTBL-ARG13
+           MOVE    WRK-CONS-JOB-SHELLID
+                                       TO  SHELLTBL-ARG14
+           MOVE    SPA-NAI-PAGE (SPA-NAI-SELNUM)
+                                       TO  SHELLTBL-ARG15
+           MOVE    SPA-NAI-PAGE (SPA-NAI-SELNUM)
+                                       TO  SHELLTBL-ARG16
+           MOVE    "2"                 TO  SHELLTBL-ARG17
+           MOVE    SPA-HOSPNUM         TO  SHELLTBL-ARG18
+           MOVE    SHELLTBL            TO  MCPDATA-REC
+           MOVE    "SHELL"             TO  MCP-FUNC
+           MOVE    "shell"             TO  MCP-TABLE
+           MOVE    "shell"
+                                       TO  MCP-PATHNAME
+           CALL    "ORCDBMAIN"         USING
+                                           MCPAREA
+                                           MCPDATA-REC
+                                           SPA-AREA
+      *
+           .
+       4501-PRINT-EXT.
            EXIT.
       *
       *****************************************************************
