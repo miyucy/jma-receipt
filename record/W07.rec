@@ -318,6 +318,13 @@ W07	{
 					count	int;
 					item	varchar(28)[2];
 				};
+				HONKZKKBN_COMBO	{
+					HONKZKKBN	{
+						value	varchar(28);
+					};
+					count	int;
+					item	varchar(28)[2];
+				};
 			};
 			TAGNAME2    {
 			    state   int;
