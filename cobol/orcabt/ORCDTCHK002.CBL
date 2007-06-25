@@ -51,6 +51,15 @@
                                    RECORD  KEY     IS  DCSRY-KEY
                                    FILE    STATUS  IS  STS-DCSRY.
       *
+      *    データチェック算定履歴
+           SELECT  DCSANTEI-FILE
+                                   ASSIGN  DTCHKSANTEIPARA
+                                   ORGANIZATION    IS  INDEXED
+                                   ACCESS  MODE    IS  DYNAMIC
+                                   RECORD  KEY     IS  DCSANTEI-KEY
+                                   FILE    STATUS  IS  STS-DCSANTEI.
+      *
+      *
       *    データチェック中間ファイル（対象患者）
            SELECT  DTCHK003-FILE   ASSIGN  DTCHK003PARA
                                    ORGANIZATION    IS  LINE SEQUENTIAL
@@ -77,7 +86,6 @@
                                    ACCESS  MODE    IS  DYNAMIC
                                    RECORD  KEY     IS  DTCHK009-KEY
                                    FILE    STATUS  IS  STS-DTCHK009.
-      *
       *    エラーファイル
            SELECT  DTCHKERR-FILE   ASSIGN  DTCHKERRPARA
                                    FILE    STATUS  IS  STS-DTCHKERR.
@@ -94,6 +102,12 @@
        FD  DCSRY-FILE.
        01  DCSRY-REC.
            COPY    "CPDCSRY.INC".
+      *
+      *    データチェック算定履歴
+       FD  DCSANTEI-FILE.
+       01  DCSANTEI-REC.
+           COPY    "CPSANTEI.INC"  REPLACING  //SANTEI-//
+                                   BY         //DCSANTEI-//.
       *
       *    データチェック中間ファイル（対象患者情報）
        FD  DTCHK003-FILE.
@@ -148,6 +162,9 @@
            COPY    "CPCOMMONDAT3.INC"
                                    REPLACING  //TMPFLPARA//
                                    BY         //DTCHKSRYPARA//.
+           COPY    "CPCOMMONDAT3.INC"
+                                   REPLACING  //TMPFLPARA//
+                                   BY         //DTCHKSANTEIPARA//.
       *
       *    フラグ領域
        01  STS-AREA.
@@ -158,6 +175,7 @@
            03  STS-DTCHKERR                            PIC X(02).
            03  STS-DCACCT                              PIC X(02).
            03  STS-DCSRY                               PIC X(02).
+           03  STS-DCSANTEI                            PIC X(02).
       *
        01  FLG-AREA.
            03  FLG-END                                 PIC 9(01).
@@ -166,6 +184,7 @@
            03  FLG-HKNNUM                              PIC 9(01).
            03  FLG-DCACCT                              PIC 9(01).
            03  FLG-DCSRY                               PIC 9(01).
+           03  FLG-DCSANTEI                            PIC 9(01).
            03  FLG-PTHKNINF                            PIC 9(01).
            03  FLG-PTKOHINF                            PIC 9(01).
            03  FLG-PTINF                               PIC 9(01).
@@ -266,6 +285,7 @@
                05  FLG-INGAI-DAY                       PIC 9(01)
                                                        OCCURS  31.
            03  FLG-DATACHECK                           PIC 9(01).
+           03  FLG-KIKANCHKCD                          PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -330,6 +350,7 @@
            03  IDX32                                   PIC 9(05). 
            03  IDX33                                   PIC 9(05). 
            03  IDX34                                   PIC 9(05). 
+           03  IDX35                                   PIC 9(05). 
            03  IDXA                                    PIC 9(05). 
            03  IDXE                                    PIC 9(05). 
            03  IDX-TSRYKA                              PIC 9(05).
@@ -345,6 +366,7 @@
            03  IDX-MAX                                 PIC 9(05).
            03  IDX-KANA                                PIC 9(05).
            03  IDX-CHK                                 PIC 9(05).
+           03  IDX-KANRIRYO                           PIC 9(05).
       *
        01  WRK-AREA.
            03  WRK-SYMD                                PIC X(08).
@@ -477,6 +499,16 @@
            03  WRK-CDKBN                               PIC X(01).
            03  WRK-PTBYOMEI                            PIC X(200).
            03  WRK-PTBYOSRYYMD                         PIC X(08).
+           03  WRK-LSRYCD                              PIC X(09).
+           03  WRK-RSRYCD                              PIC X(09).
+      *
+       01  TKANRIRYO-AREA.
+           03  TKANRIRYO-OCC                           OCCURS  9.
+               05  TKANRIRYO-NYUGAIKBN                 PIC X(01).
+               05  TKANRIRYO-FSANTEIYMD                PIC X(08).
+               05  TKANRIRYO-DAY-G.
+                   07  TKANRIRYO-DAY                   PIC 9(01)
+                                                       OCCURS  31.
       *
        01  KEY-AREA.
            03  KEY-HKNCOMBI                            PIC 9(04).
@@ -569,11 +601,16 @@
                05  TSRYCD-HKNFLG                       PIC 9(01).
                05  TSRYCD-SRYCD                        PIC X(09).
                05  TSRYCD-KAISU                        PIC 9(09).
+               05  TSRYCD-TYPE                         PIC X(02).
+               05  TSRYCD-FSANTEIYMD                   PIC X(08).
                05  TSRYCD-DAY-G.
                    07  TSRYCD-DAY                      PIC 9(01)
                                                        OCCURS  31.
                05  TSRYCD-DAY-NYUGAIKBN-G.
                    07  TSRYCD-DAY-NYUGAIKBN            PIC X(01)
+                                                       OCCURS  31.
+               05  TSRYCD-DAY-IHOKBN-G.
+                   07  TSRYCD-DAY-IHOKBN               PIC X(01)
                                                        OCCURS  31.
       *
       *    実日数退避ワーク（実日数チェック用）
@@ -861,6 +898,93 @@
            03  CONST-JIHI                          PIC X(01)
                                                    VALUE   "5".
       *
+           03  CONST-TSANTEICD-G.
+               05  CONST-TSANTEICD-MAX         PIC 9(05)
+                                               VALUE   37.
+               05  CONST-TSANTEICD-VAL.
+                   07                          PIC X(11)
+                                               VALUE   "113006510MM".
+                   07                          PIC X(11)
+                                               VALUE   "180029910RS".
+                   07                          PIC X(11)
+                                               VALUE   "180030010RS".
+                   07                          PIC X(11)
+                                               VALUE   "180030110RN".
+                   07                          PIC X(11)
+                                               VALUE   "180030210RN".
+                   07                          PIC X(11)
+                                               VALUE   "180030310RU".
+                   07                          PIC X(11)
+                                               VALUE   "180030410RU".
+                   07                          PIC X(11)
+                                               VALUE   "180030510RK".
+                   07                          PIC X(11)
+                                               VALUE   "180030610RK".
+      *
+                   07                          PIC X(11)
+                                               VALUE   "140029210CR".
+                   07                          PIC X(11)
+                                               VALUE   "140002210CM".
+                   07                          PIC X(11)
+                                               VALUE   "140002310CM".
+                   07                          PIC X(11)
+                                               VALUE   "140002450CM".
+                   07                          PIC X(11)
+                                               VALUE   "140029610CM".
+                   07                          PIC X(11)
+                                               VALUE   "140030350CM".
+                   07                          PIC X(11)
+                                               VALUE   "140040310CM".
+                   07                          PIC X(11)
+                                               VALUE   "140048010CM".
+                   07                          PIC X(11)
+                                               VALUE   "140048250CM".
+                   07                          PIC X(11)
+                                               VALUE   "140048350CM".
+                   07                          PIC X(11)
+                                               VALUE   "140048450CM".
+                   07                          PIC X(11)
+                                               VALUE   "140048550CM".
+                   07                          PIC X(11)
+                                               VALUE   "180027410CS".
+                   07                          PIC X(11)
+                                               VALUE   "180027510CS".
+                   07                          PIC X(11)
+                                               VALUE   "180029110CS".
+                   07                          PIC X(11)
+                                               VALUE   "180029210CS".
+                   07                          PIC X(11)
+                                               VALUE   "180027610CN".
+                   07                          PIC X(11)
+                                               VALUE   "180027710CN".
+                   07                          PIC X(11)
+                                               VALUE   "180029310CN".
+                   07                          PIC X(11)
+                                               VALUE   "180029410CN".
+                   07                          PIC X(11)
+                                               VALUE   "180027810CU".
+                   07                          PIC X(11)
+                                               VALUE   "180027910CU".
+                   07                          PIC X(11)
+                                               VALUE   "180029510CU".
+                   07                          PIC X(11)
+                                               VALUE   "180029610CU".
+                   07                          PIC X(11)
+                                               VALUE   "180028010CK".
+                   07                          PIC X(11)
+                                               VALUE   "180028110CK".
+                   07                          PIC X(11)
+                                               VALUE   "180029710CK".
+                   07                          PIC X(11)
+                                               VALUE   "180029810CK".
+               05  CONST-TSANTEICD-R   REDEFINES   CONST-TSANTEICD-VAL.
+                   07  CONST-TSANTEICD-OCC     OCCURS  37.
+                       09   CONST-TSANTEICD-SRYCD
+                                               PIC X(09).
+                       09   CONST-TSANTEICD-TYPE
+                                               PIC X(02).
+      *
+      *
       *    エラーメッセージ
            COPY    "CPDTCHKERRMES.INC".
       *
@@ -1102,6 +1226,10 @@
            MOVE    WRK-PARA-HOSPNUM    TO  DTCHKSRYPARA-HOSPNUM
            MOVE    "DCSRY000"          TO  DTCHKSRYPARA-FILE-ID
            MOVE    LNK-PRTKANRI-TERMID TO  DTCHKSRYPARA-TERMID
+      *
+           MOVE    WRK-PARA-HOSPNUM    TO  DTCHKSANTEIPARA-HOSPNUM
+           MOVE    "DCSANTEI"          TO  DTCHKSANTEIPARA-FILE-ID
+           MOVE    LNK-PRTKANRI-TERMID TO  DTCHKSANTEIPARA-TERMID
       *
            MOVE    WRK-PARA-HOSPNUM    TO  DTCHK003PARA-HOSPNUM
            MOVE    "DTCHK003"          TO  DTCHK003PARA-FILE-ID
@@ -1791,9 +1919,11 @@
                                        PTSRY-AREA
                                        PTZAI-AREA
       *
+      *
            PERFORM 200111-TSRYKA-AREA-INIT-SEC
       *
            PERFORM 200111-TKAISU-AREA-INIT-SEC
+      *
       *
            .
        200111-TAIHI-AREA-INIT-EXT.
@@ -2615,6 +2745,19 @@
                    MOVE    DCACCT-ZAIKAISU
                                    TO  TSRYCD-KAISU (TSRYCD-MAX)
       *
+                   PERFORM VARYING IDX-KANRIRYO FROM   1   BY  1
+                           UNTIL ( IDX-KANRIRYO > CONST-TSANTEICD-MAX )
+      *
+                       IF    ( DCSRY-SRYCD =   CONST-TSANTEICD-SRYCD
+                                                        (IDX-KANRIRYO))
+                           MOVE    CONST-TSANTEICD-TYPE (IDX-KANRIRYO)
+                                   TO  TSRYCD-TYPE (TSRYCD-MAX)
+                       END-IF
+      *
+                   END-PERFORM
+      *
+                   MOVE    "99999999"  TO  TSRYCD-FSANTEIYMD(TSRYCD-MAX)
+      *
                    MOVE    TSRYCD-MAX  TO  IDX26
       *
                END-IF
@@ -2650,9 +2793,19 @@
                                TO  TSRYCD-DAY-NYUGAIKBN (IDX26 IDX27)
                        END-IF
       *
+      *
+                       IF    ( PTZAI-HKNNUM (IDX-ZAI)
+                                               =   "971" OR "973" )
+                           CONTINUE
+                       ELSE
+                           MOVE    "1"     TO  TSRYCD-DAY-IHOKBN
+                                                          (IDX26 IDX27)
+                       END-IF
+      *
                    END-IF
       *
                END-PERFORM
+      *
            END-IF
       *
            .
@@ -2669,10 +2822,13 @@
                    MOVE    1               TO  TSRYCD-HKNFLG (IDX26)
                END-IF
            ELSE
+               MOVE    PTZAI-HKNNUM (IDX-ZAI)
+                                   TO   WRK-ZAIHKNNUM
                PERFORM 2001111-TAISYO-HKN-CHK-SEC
                IF    ( FLG-TAISYO-HKN      =   1 )
                    MOVE    1               TO  TSRYCD-HKNFLG (IDX26)
                END-IF
+      *
            END-IF
       *
            .
@@ -6118,6 +6274,8 @@
       *****************************************************************
        200112-HEI-SRY-CHK-SEC          SECTION.
       *
+           PERFORM 2001121-SET-FSANTEIYMD-SEC
+      *
            INITIALIZE                  THEIYOU-AREA
       *
            PERFORM VARYING IDX6    FROM    1   BY  1
@@ -6135,41 +6293,17 @@
                                            TO  WRK-CHK-SRYCD
                        PERFORM 900-DTCHK008-READ-SEC
                        IF    ( FLG-DTCHK008    =   1 )
-                           IF    ( TSRYCD-SRYCD (IDX6)
-                                           =   "180027410"
-                                            OR "180027510"
-                                            OR "180027610"
-                                            OR "180027710"
-                                            OR "180027810"
-                                            OR "180027910"
-                                            OR "180028010"
-                                            OR "180028110"
-                                            OR "180029110"
-                                            OR "180029210"
-                                            OR "180029310"
-                                            OR "180029410"
-                                            OR "180029510"
-                                            OR "180029610"
-                                            OR "180029710"
-                                            OR "180029810"
-                                            OR "180029910"
-                                            OR "180030010"
-                                            OR "180030110"
-                                            OR "180030210"
-                                            OR "180030310"
-                                            OR "180030410"
-                                            OR "180030510"
-                                            OR "180030610" )
-                               CONTINUE
-                           ELSE
-                               PERFORM 200112-CHKMST-HEI-SRY-CHK-SEC
-                           END-IF
+                           PERFORM 200112-CHKMST-HEI-SRY-CHK-SEC
                        END-IF
                    END-IF
       *
                END-IF
       *
            END-PERFORM
+      *
+           IF    ( FLG-CHKEND (11)     =   ZERO )
+               PERFORM 2001121-CHKMST-KNRHEI-SRY-SEC
+           END-IF
       *
       *    エラーメッセージ編集処理
            IF    ( THEIYOU-MAX         >   ZERO )
@@ -6178,6 +6312,37 @@
       *
            .
        200112-HEI-SRY-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    慢性疼痛・リハ管理料初回算定日設定処理
+      *****************************************************************
+       2001121-SET-FSANTEIYMD-SEC      SECTION.
+      *
+           OPEN    INPUT   DCSANTEI-FILE
+      *
+           PERFORM 900-DCSANTEI-START-SEC
+      *
+           PERFORM UNTIL ( FLG-DCSANTEI    NOT =   ZERO )
+      *
+               PERFORM VARYING IDX0    FROM    2   BY  1
+                       UNTIL ( IDX0    >   TSRYCD-MAX )
+      *
+                   IF    ( DCSANTEI-SRYCD  =   TSRYCD-SRYCD (IDX0))
+      *
+                       MOVE    DCSANTEI-FSANTEIYMD
+                                       TO  TSRYCD-FSANTEIYMD(IDX0)
+      *
+                   END-IF
+               END-PERFORM
+      *
+               PERFORM 900-DCSANTEI-READ-SEC
+      *
+           END-PERFORM
+      *
+           CLOSE   DCSANTEI-FILE
+      *
+           .
+       2001121-SET-FSANTEIYMD-EXT.
            EXIT.
       *****************************************************************
       *    併用算定の診療行為チェック処理（チェックマスタ）
@@ -6216,6 +6381,113 @@
       *
            .
        200112-CHKMST-HEI-SRY-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    併用算定の診療行為チェック処理（慢性疼痛・リハ管理料）
+      *****************************************************************
+       2001121-CHKMST-KNRHEI-SRY-SEC   SECTION.
+      *
+           PERFORM VARYING IDX-SRY FROM    1   BY  1
+                   UNTIL ( IDX-SRY >   TSRYCD-MAX )
+                    OR   ( FLG-CHKEND (11)     =   1 )
+      *
+               PERFORM VARYING IDX-KANRIRYO
+                       FROM    1   BY  1
+                       UNTIL ( IDX-KANRIRYO > TSRYCD-MAX)
+                        OR   ( FLG-CHKEND (11)     =   1 )
+      *
+                   INITIALIZE  WRK-NISSU-AREA
+                   EVALUATE    TRUE
+                   WHEN  ( TSRYCD-TYPE (IDX-SRY)       =   "CM"
+                                                        OR "CR" )
+                    AND  ( TSRYCD-TYPE (IDX-KANRIRYO)(1:1)
+                                                       =   "R" )
+      *
+                   WHEN  ( TSRYCD-TYPE (IDX-SRY)       =   "CS" )
+                    AND  ( TSRYCD-TYPE (IDX-KANRIRYO)  =   "RS" )
+      *
+                   WHEN  ( TSRYCD-TYPE (IDX-SRY)       =   "CN" )
+                    AND  ( TSRYCD-TYPE (IDX-KANRIRYO)  =   "RN" )
+      *
+                   WHEN  ( TSRYCD-TYPE (IDX-SRY)       =   "CU" )
+                    AND  ( TSRYCD-TYPE (IDX-KANRIRYO)  =   "RU" )
+      *
+                   WHEN  ( TSRYCD-TYPE (IDX-SRY)       =   "CK" )
+                    AND  ( TSRYCD-TYPE (IDX-KANRIRYO)  =   "RK" )
+                       PERFORM VARYING IDX-DAY FROM    1   BY  1
+                               UNTIL ( IDX-DAY >   31 )
+                           IF  ( TSRYCD-DAY-IHOKBN(IDX-SRY IDX-DAY)
+                                                   =   "1" )
+                              MOVE ORCBSD01-SRYYM TO  WRK-YMD
+                              MOVE IDX-DAY        TO  WRK-DD
+                              IF ( WRK-YMD >=  TSRYCD-FSANTEIYMD
+                                                    (IDX-KANRIRYO))
+                                  MOVE  1 TO WRK-NISSU-DAY (IDX-DAY)
+                              END-IF
+                           END-IF
+                       END-PERFORM
+                   END-EVALUATE
+      *
+                   IF    ( TSRYCD-TYPE (IDX-SRY)   =   "CM" )
+                    AND  ( TSRYCD-TYPE (IDX-KANRIRYO)
+                                                   =   "MM" )
+                       PERFORM VARYING IDX-DAY FROM    1   BY  1
+                               UNTIL ( IDX-DAY >   31 )
+                           IF  ( TSRYCD-DAY (IDX-SRY IDX-DAY)
+                                                   >   ZERO )
+                               MOVE ORCBSD01-SRYYM TO  WRK-YMD
+                               MOVE IDX-DAY        TO  WRK-DD
+                               IF ( WRK-YMD >=  TSRYCD-FSANTEIYMD
+                                                        (IDX-KANRIRYO))
+                                   MOVE  1 TO WRK-NISSU-DAY (IDX-DAY)
+                               END-IF
+                           END-IF
+                       END-PERFORM
+                   END-IF
+      *
+                   IF    ( WRK-NISSU-DAY-G     NOT =   ZERO )
+                       IF    (( TSRYCD-NYUGAIKBN(IDX-SRY)
+                                       =   ORCBSD01-NYUGAIKBN )
+                          AND ( TSRYCD-HKNFLG   (IDX-SRY)
+                                       =   1 ))
+                        OR   (( TSRYCD-NYUGAIKBN (IDX-KANRIRYO)
+                                       =   ORCBSD01-NYUGAIKBN )
+                          AND ( TSRYCD-HKNFLG   (IDX-KANRIRYO)
+                                       =   1 ))
+                           IF    ( CONST-THEIYOU-MAX   > THEIYOU-MAX )
+                               COMPUTE THEIYOU-MAX =   THEIYOU-MAX +   1
+      *
+                               MOVE    TSRYCD-NYUGAIKBN (IDX-SRY)
+                                       TO  THEIYOU-NYUGAIKBN1
+                                                         (THEIYOU-MAX)
+                               MOVE    TSRYCD-SRYCD (IDX-SRY)
+                                       TO  THEIYOU-SRYCD1(THEIYOU-MAX)
+                               MOVE    WRK-NISSU-DAY-G
+                                       TO  THEIYOU-DAY1-G (THEIYOU-MAX)
+      *
+                               MOVE    TSRYCD-NYUGAIKBN (IDX-KANRIRYO)
+                                       TO  THEIYOU-NYUGAIKBN2
+                                                         (THEIYOU-MAX)
+                               MOVE    TSRYCD-SRYCD     (IDX-KANRIRYO)
+                                       TO  THEIYOU-SRYCD2(THEIYOU-MAX)
+                               MOVE    TSRYCD-DAY-G     (IDX-KANRIRYO)
+                                       TO  THEIYOU-DAY2-G (THEIYOU-MAX)
+      *
+                           END-IF
+                       END-IF
+      *
+                       IF    ( ORCBSD01-CHKKBN (11)    =   "1" )
+                           MOVE    1   TO  FLG-CHKEND (11)
+                       END-IF
+      *
+                   END-IF
+      *
+               END-PERFORM
+      *
+           END-PERFORM
+      *
+           .
+       2001121-CHKMST-KNRHEI-SRY-EXT.
            EXIT.
       *****************************************************************
       *    併用算定の診療行為エラーメッセージ編集処理
@@ -7471,6 +7743,8 @@
       *****************************************************************
        200111-NBFUKA-CHK-SEC           SECTION.
       *
+           OPEN    INPUT DCSANTEI-FILE
+      *
            MOVE    ZERO            TO  FLG-NBFUKACD
                                        FLG-NBFUKATG
       *
@@ -7478,35 +7752,35 @@
       *
            INITIALIZE                  WRK-NISSU-AREA
       *
-           PERFORM 900-SANTEI-KEY9-SEL-SEC
+           PERFORM 900-DCSANTEI-START-SEC
       *
-           PERFORM UNTIL ( FLG-SANTEI  NOT =   ZERO )
+           PERFORM UNTIL ( FLG-DCSANTEI  NOT =   ZERO )
       *
-               IF    ( SANTEI-SRYCD    =   CONST-NBHOUKTCD )
+               IF    ( DCSANTEI-SRYCD        =   CONST-NBHOUKTCD )
+                AND  ( DCSANTEI-MSANTEIFLG   NOT =  0 )
+                AND  ( DCSANTEI-MSANTEICNT   >   0 )
                    MOVE    1       TO  FLG-NBFUKACD
-                   MOVE    SANTEI-MSANTEITEN
+                   MOVE    DCSANTEI-MSANTEITEN
                                    TO  WRK-SNT-NBFUKATEN
                    PERFORM VARYING IDX-DAY FROM    1   BY  1
                            UNTIL ( IDX-DAY >   31 )
       *
-                       IF    ( SANTEI-DAY (IDX-DAY) >   ZERO )
+                       IF    ( DCSANTEI-DAY (IDX-DAY) >   ZERO )
                            MOVE    1   TO  WRK-NISSU-DAY (IDX-DAY)
                        END-IF
       *
                    END-PERFORM
                END-IF
       *
-               IF    ( SANTEI-MSANTEITENKBN    =   "2" )
+               IF    ( DCSANTEI-MSANTEITENKBN    =   "2" )
                    MOVE    1       TO  FLG-NBFUKATG
                END-IF
       *
-               PERFORM 900-SANTEI-KEY9-FET-SEC
+               PERFORM 900-DCSANTEI-READ-SEC
       *
            END-PERFORM
       *
-           MOVE    "tbl_santei"    TO  MCP-TABLE
-           MOVE    "key9"          TO  MCP-PATHNAME
-           PERFORM 910-DBCLOSECURSOR-SEC
+           CLOSE   DCSANTEI-FILE
       *
            IF    ( FLG-NBFUKACD       =    1 )
       *
@@ -8390,17 +8664,34 @@
                             OR   ( CHK-CD (IDX28)  =  SPACE )
                             OR   ( IDX-MAX >=  CONST-TCHK-STK-CD-MAX )
       *
-                       COMPUTE IDX-MAX =   IDX-MAX +   1
+                       MOVE    ZERO            TO  FLG-KIKANCHKCD
       *
-                       IF    ( IDX-MAX     =   1 )
-                           MOVE    CHK-CHKKBN    TO  TCHK-ACT-CHKKBN
-                           MOVE    CHK-SRYCD     TO  TCHK-ACT-SRYCD
-                           MOVE    CHK-YUKOSTYMD TO  TCHK-ACT-YUKOSTYMD
-                           MOVE    CHK-YUKOEDYMD TO  TCHK-ACT-YUKOEDYMD
-                           MOVE    CHK-CDKBN     TO  TCHK-ACT-CDKBN
+                       MOVE    CHK-SRYCD       TO  WRK-LSRYCD
+                       MOVE    CHK-CD (IDX28)  TO  WRK-RSRYCD
+                       PERFORM 800-CHK-KIKANCHKCD-SEC
+                       MOVE    CHK-CD (IDX28)  TO  WRK-LSRYCD
+                       MOVE    CHK-SRYCD       TO  WRK-RSRYCD
+                       PERFORM 800-CHK-KIKANCHKCD-SEC
+                       IF    ( FLG-KIKANCHKCD      =   ZERO )
+      *
+                           COMPUTE IDX-MAX =   IDX-MAX +   1
+      *
+                           IF    ( IDX-MAX     =   1 )
+                               MOVE    CHK-CHKKBN
+                                               TO  TCHK-ACT-CHKKBN
+                               MOVE    CHK-SRYCD
+                                               TO  TCHK-ACT-SRYCD
+                               MOVE    CHK-YUKOSTYMD
+                                               TO  TCHK-ACT-YUKOSTYMD
+                               MOVE    CHK-YUKOEDYMD
+                                               TO  TCHK-ACT-YUKOEDYMD
+                               MOVE    CHK-CDKBN
+                                               TO  TCHK-ACT-CDKBN
+                           END-IF
+      *
+                           MOVE    CHK-CD (IDX28)
+                                               TO  TCHK-ACT-CD (IDX-MAX)
                        END-IF
-      *
-                       MOVE    CHK-CD (IDX28)  TO  TCHK-ACT-CD (IDX-MAX)
       *
                    END-PERFORM
       *
@@ -8960,6 +9251,52 @@
        800-ORCSJOB-EXT.
            EXIT.
       *****************************************************************
+      *    期間判定診療行為コードチェック処理
+      *****************************************************************
+       800-CHK-KIKANCHKCD-SEC          SECTION.
+      *
+           PERFORM VARYING IDX-KANRIRYO    FROM    1   BY  1
+                   UNTIL ( IDX-KANRIRYO    >   CONST-TSANTEICD-MAX )
+                    OR   ( FLG-KIKANCHKCD  =   1 )
+               PERFORM VARYING IDX35   FROM    1   BY  1
+                       UNTIL ( IDX35       >   CONST-TSANTEICD-MAX )
+                        OR   ( FLG-KIKANCHKCD  =   1 )
+      *
+                   IF    ( WRK-LSRYCD      =   CONST-TSANTEICD-SRYCD
+                                                      (IDX-KANRIRYO))
+                     AND ( CONST-TSANTEICD-TYPE (IDX-KANRIRYO)(1:1)
+                                           =       "R" )
+                     AND ( WRK-RSRYCD      =   CONST-TSANTEICD-SRYCD
+                                                      (IDX35))
+                     AND ( CONST-TSANTEICD-TYPE (IDX35)
+                                           =       "CM"
+                                                OR "CR"
+                                                OR "CS"
+                                                OR "CN"
+                                                OR "CU"
+                                                OR "CK"  )
+                       MOVE    1           TO  FLG-KIKANCHKCD
+                   END-IF
+      *
+                   IF    ( WRK-LSRYCD      =   CONST-TSANTEICD-SRYCD
+                                                      (IDX-KANRIRYO))
+                    AND  ( CONST-TSANTEICD-TYPE (IDX-KANRIRYO)
+                                           =   "MM" )
+                    AND  ( WRK-RSRYCD      =   CONST-TSANTEICD-SRYCD
+                                                      (IDX35))
+                    AND  ( CONST-TSANTEICD-TYPE (IDX35)
+                                           =   "CR" OR  "CM" )
+                           MOVE    1       TO  FLG-KIKANCHKCD
+                   END-IF
+      *
+               END-PERFORM
+           END-PERFORM
+      *
+           .
+      *
+       800-CHK-KIKANCHKCD-EXT.
+           EXIT.
+      *****************************************************************
       *    対象患者ファイル読込処理
       *****************************************************************
        900-DTCHK003-READ-SEC           SECTION.
@@ -9335,6 +9672,50 @@
        900-DCSRY-READ-EXT.
            EXIT.
       *****************************************************************
+      *    データチェック診療行為START処理
+      *****************************************************************
+       900-DCSANTEI-START-SEC         SECTION.
+      *
+           MOVE    ZERO            TO  FLG-DCSANTEI
+      *
+           INITIALIZE                  DCSANTEI-KEY
+           MOVE    DTCHK003-HOSPNUM TO DCSANTEI-HOSPNUM
+           MOVE    DTCHK003-PTID   TO  DCSANTEI-PTID
+      *
+           START   DCSANTEI-FILE
+               KEY IS  >=   DCSANTEI-KEY
+           INVALID
+               MOVE    1           TO  FLG-DCSANTEI
+           NOT INVALID
+               PERFORM 900-DCSANTEI-READ-SEC
+           END-START
+      *
+           .
+       900-DCSANTEI-START-EXT.
+           EXIT.
+      *****************************************************************
+      *    データチェック診療行為読込処理
+      *****************************************************************
+       900-DCSANTEI-READ-SEC              SECTION.
+      *
+           MOVE    ZERO            TO  FLG-DCSANTEI
+      *
+           READ    DCSANTEI-FILE   NEXT
+           AT  END
+                   MOVE    1       TO  FLG-DCSANTEI
+           NOT AT  END
+      *
+               IF    ( DTCHK003-HOSPNUM NOT =  DCSANTEI-HOSPNUM )
+                OR   ( DTCHK003-PTID   NOT =   DCSANTEI-PTID )
+                   MOVE    1       TO  FLG-DCSANTEI
+               END-IF
+           END-READ
+      *
+           .
+      *
+       900-DCSANTEI-READ-EXT.
+           EXIT.
+      *****************************************************************
       *    患者病名読込処理
       *****************************************************************
        900-PTBYOMEI-SELECT-SEC         SECTION.
@@ -9541,51 +9922,6 @@
            .
       *
        900-PTINF-KEY-SEL-EXT.
-           EXIT.
-      *****************************************************************
-      *    算定履歴検索処理(KEY9)
-      *****************************************************************
-       900-SANTEI-KEY9-SEL-SEC         SECTION.
-      *
-           MOVE    ZERO                TO  FLG-SANTEI
-      *
-           INITIALIZE                      SANTEI-REC
-           MOVE    DTCHK003-HOSPNUM     TO  SANTEI-HOSPNUM
-           MOVE    DTCHK003-PTID       TO  SANTEI-PTID
-           MOVE    ORCBSD01-SRYYM      TO  SANTEI-SRYYM
-           MOVE    SANTEI-REC          TO  MCPDATA-REC
-           MOVE    "tbl_santei"        TO  MCP-TABLE
-           MOVE    "key9"              TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
-           IF    ( MCP-RC              =   ZERO )
-               MOVE    MCPDATA-REC     TO  SANTEI-REC
-           ELSE
-               INITIALIZE                  SANTEI-REC
-               MOVE    1               TO  FLG-SANTEI
-           END-IF
-      *
-           .
-      *
-       900-SANTEI-KEY9-SEL-EXT.
-           EXIT.
-      *****************************************************************
-      *    算定履歴読込処理(KEY9)
-      *****************************************************************
-       900-SANTEI-KEY9-FET-SEC         SECTION.
-      *
-           MOVE    "tbl_santei"        TO  MCP-TABLE
-           MOVE    "key9"              TO  MCP-PATHNAME
-           PERFORM 910-DBFETCH-SEC
-           IF    ( MCP-RC              =   ZERO )
-               MOVE    MCPDATA-REC     TO  SANTEI-REC
-           ELSE
-               INITIALIZE                  SANTEI-REC
-               MOVE    1               TO  FLG-SANTEI
-           END-IF
-      *
-           .
-      *
-       900-SANTEI-KEY9-FET-EXT.
            EXIT.
       *****************************************************************
       *    算定履歴検索処理(KEY11)

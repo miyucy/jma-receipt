@@ -64,6 +64,14 @@
                                    ACCESS  MODE    IS  DYNAMIC
                                    RECORD  KEY     IS  DCSRY-KEY
                                    FILE    STATUS  IS  STS-DCSRY.
+      *
+      *    データチェック算定履歴
+           SELECT  DCSANTEI-FILE
+                                   ASSIGN  DTCHKSANTEIPARA
+                                   ORGANIZATION    IS  INDEXED
+                                   ACCESS  MODE    IS  DYNAMIC
+                                   RECORD  KEY     IS  DCSANTEI-KEY
+                                   FILE    STATUS  IS  STS-DCSANTEI.
       *    エラーファイル
            SELECT  DTCHKERR-FILE   ASSIGN  DTCHKERRPARA
                                    FILE    STATUS  IS  STS-DTCHKERR.
@@ -92,6 +100,12 @@
        01  DCSRY-REC.
            COPY    "CPDCSRY.INC".
       *
+      *    データチェック算定履歴
+       FD  DCSANTEI-FILE.
+       01  DCSANTEI-REC.
+           COPY    "CPSANTEI.INC"  REPLACING  //SANTEI-//
+                                   BY         //DCSANTEI-//.
+      *
       *    エラーファイル
        FD  DTCHKERR-FILE.
        01  DTCHKERR-REC                PIC X(200). 
@@ -115,6 +129,9 @@
            COPY    "CPCOMMONDAT3.INC"
                                    REPLACING  //TMPFLPARA//
                                    BY         //DTCHKSRYPARA//.
+           COPY    "CPCOMMONDAT3.INC"
+                                   REPLACING  //TMPFLPARA//
+                                   BY         //DTCHKSANTEIPARA//.
       *
       *    フラグ領域
        01  STS-AREA.
@@ -122,11 +139,13 @@
            03  STS-DTCHK006                            PIC X(02).
            03  STS-DTCHKERR                            PIC X(02).
            03  STS-DCSRY                               PIC X(02).
+           03  STS-DCSANTEI                            PIC X(02).
       *
        01  FLG-AREA.
            03  FLG-END                                 PIC 9(01).
            03  FLG-ERR                                 PIC 9(01).
            03  FLG-SRYACT                              PIC 9(01).
+           03  FLG-SANTEI                              PIC 9(01).
            03  FLG-DTCHK002                            PIC 9(01).
       *
       *    カウント領域
@@ -176,6 +195,10 @@
       *    診療行為
        01  SRYACT-REC.
            COPY    "CPSRYACT.INC".
+      *
+      *    算定履歴
+       01  SANTEI-REC.
+           COPY    "CPSANTEI.INC".
       *
       *****************************************************************
       *    サブプロ用領域
@@ -302,6 +325,10 @@
            MOVE    "DCSRY000"          TO  DTCHKSRYPARA-FILE-ID
            MOVE    LNK-PRTKANRI-TERMID TO  DTCHKSRYPARA-TERMID
       *
+           MOVE    WRK-PARA-HOSPNUM    TO  DTCHKSANTEIPARA-HOSPNUM
+           MOVE    "DCSANTEI"          TO  DTCHKSANTEIPARA-FILE-ID
+           MOVE    LNK-PRTKANRI-TERMID TO  DTCHKSANTEIPARA-TERMID
+      *
       *    初期値設定処理
            PERFORM 1001-INIT-VAL-SET-SEC
       *
@@ -330,8 +357,10 @@
            IF    ( ORCBSD01-IKTKBT     =   "2" )
             OR   ( ORCBSD01-SRYYMDKBN  =   "1" )
                PERFORM 2002-SRYACT-EDIT-SEC
+               PERFORM 2002-DCSANTEI-EDIT-SEC
            ELSE
                PERFORM 2001-SRYACT-EDIT-SEC
+               PERFORM 2001-DCSANTEI-EDIT-SEC
            END-IF
       *
       *    データチェック診療行為追加処理
@@ -445,6 +474,72 @@
       *
            .
        2002-SRYACT-EDIT-EXT.
+           EXIT.
+      *****************************************************************
+      *    算定履歴編集処理
+      *****************************************************************
+       2001-DCSANTEI-EDIT-SEC          SECTION.
+      *
+           PERFORM 800-MCNDATE-SEC
+      *
+           OPEN    OUTPUT  DCSANTEI-FILE
+      *
+           PERFORM 900-SANTEI-ALL2-SEL-SEC
+      *
+           PERFORM UNTIL ( FLG-SANTEI  NOT =   ZERO )
+      *
+               MOVE    SANTEI-REC  TO  DCSANTEI-REC
+               WRITE   DCSANTEI-REC
+      *
+               PERFORM 900-SANTEI-ALL2-FET-SEC
+      *
+           END-PERFORM
+      *
+           MOVE    "tbl_santei"    TO  MCP-TABLE
+           MOVE    "all2"          TO  MCP-PATHNAME
+           PERFORM 910-DBCLOSECURSOR-SEC
+      *
+           CLOSE   DCSANTEI-FILE
+      *
+           .
+       2001-DCSANTEI-EDIT-EXT.
+           EXIT.
+      *****************************************************************
+      *    算定履歴編集処理
+      *****************************************************************
+       2002-DCSANTEI-EDIT-SEC          SECTION.
+      *
+           OPEN    INPUT   DTCHK002-FILE
+           OPEN    OUTPUT  DCSANTEI-FILE
+      *
+           PERFORM 900-DTCHK002-READ-SEC
+      *
+           PERFORM UNTIL ( FLG-DTCHK002    NOT =   ZERO )
+      *
+               PERFORM 900-SANTEI-KEY10-SEL-SEC
+      *
+               PERFORM UNTIL ( FLG-SANTEI  NOT =   ZERO )
+      *
+                   MOVE    SANTEI-REC  TO  DCSANTEI-REC
+                   WRITE   DCSANTEI-REC
+      *
+                   PERFORM 900-SANTEI-KEY10-FET-SEC
+      *
+               END-PERFORM
+      *
+               MOVE    "tbl_santei"    TO  MCP-TABLE
+               MOVE    "key10"         TO  MCP-PATHNAME
+               PERFORM 910-DBCLOSECURSOR-SEC
+      *
+               PERFORM 900-DTCHK002-READ-SEC
+      *
+           END-PERFORM
+      *
+           CLOSE   DTCHK002-FILE
+                   DCSANTEI-FILE
+      *
+           .
+       2002-DCSANTEI-EDIT-EXT.
            EXIT.
       *****************************************************************
       *    データチェック診療行為テーブル追加処理
@@ -758,6 +853,95 @@
       *
            .
        900-SRYACT-KEY15-FET-EXT.
+           EXIT.
+      *****************************************************************
+      *    算定履歴検索処理
+      *****************************************************************
+       900-SANTEI-KEY10-SEL-SEC        SECTION.
+      *
+           MOVE    ZERO                TO  FLG-SANTEI
+           INITIALIZE                  SANTEI-REC
+      *
+           MOVE    WRK-PARA-HOSPNUM    TO  SANTEI-HOSPNUM
+           MOVE    ORCBSD01-SRYYM      TO  SANTEI-SRYYM
+           MOVE    DTCHK002-PTID       TO  SANTEI-PTID
+           MOVE    SANTEI-REC          TO  MCPDATA-REC
+           MOVE    "tbl_santei"        TO  MCP-TABLE
+           MOVE    "key10"             TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF    ( MCP-RC          =   ZERO )
+               MOVE    MCPDATA-REC     TO  SANTEI-REC
+           ELSE
+               MOVE    1               TO  FLG-SANTEI
+               INITIALIZE                  SANTEI-REC
+           END-IF
+      *
+           .
+       900-SANTEI-KEY10-SEL-EXT.
+           EXIT.
+      *****************************************************************
+      *    算定履歴FETCH処理
+      *****************************************************************
+       900-SANTEI-KEY10-FET-SEC        SECTION.
+      *
+           MOVE    ZERO                TO  FLG-SANTEI
+      *
+           MOVE    "tbl_santei"        TO  MCP-TABLE
+           MOVE    "key10"             TO  MCP-PATHNAME
+           PERFORM 910-DBFETCH-SEC
+           IF    ( MCP-RC          =   ZERO )
+               MOVE    MCPDATA-REC     TO  SANTEI-REC
+           ELSE
+               MOVE    1               TO  FLG-SANTEI
+               INITIALIZE                  SANTEI-REC
+           END-IF
+      *
+           .
+       900-SANTEI-KEY10-FET-EXT.
+           EXIT.
+      *****************************************************************
+      *    算定履歴検索処理
+      *****************************************************************
+       900-SANTEI-ALL2-SEL-SEC        SECTION.
+      *
+           MOVE    ZERO                TO  FLG-SANTEI
+           INITIALIZE                  SANTEI-REC
+      *
+           MOVE    WRK-PARA-HOSPNUM    TO  SANTEI-HOSPNUM
+           MOVE    ORCBSD01-SRYYM      TO  SANTEI-SRYYM
+           MOVE    SANTEI-REC          TO  MCPDATA-REC
+           MOVE    "tbl_santei"        TO  MCP-TABLE
+           MOVE    "all2"              TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF    ( MCP-RC          =   ZERO )
+               MOVE    MCPDATA-REC     TO  SANTEI-REC
+           ELSE
+               MOVE    1               TO  FLG-SANTEI
+               INITIALIZE                  SANTEI-REC
+           END-IF
+      *
+           .
+       900-SANTEI-ALL2-SEL-EXT.
+           EXIT.
+      *****************************************************************
+      *    算定履歴FETCH処理
+      *****************************************************************
+       900-SANTEI-ALL2-FET-SEC        SECTION.
+      *
+           MOVE    ZERO                TO  FLG-SANTEI
+      *
+           MOVE    "tbl_santei"        TO  MCP-TABLE
+           MOVE    "all2"              TO  MCP-PATHNAME
+           PERFORM 910-DBFETCH-SEC
+           IF    ( MCP-RC          =   ZERO )
+               MOVE    MCPDATA-REC     TO  SANTEI-REC
+           ELSE
+               MOVE    1               TO  FLG-SANTEI
+               INITIALIZE                  SANTEI-REC
+           END-IF
+      *
+           .
+       900-SANTEI-ALL2-FET-EXT.
            EXIT.
       *****************************************************************
       *    ＤＢ検索処理（FHETCHも行う)
