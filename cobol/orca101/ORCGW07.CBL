@@ -82,6 +82,7 @@
       *  03.02.00    NACL-多々納  06/08/29  レセコメント詳記区分の追加
       *  03.04.00    NACL-多々納  06/11/13  検査正式名称表示区分の追加
       *  03.05.00    NACL-多々納  07/05/02  グループ診療対応
+      *  03.05.00    NACL-多々納  07/06/22  本人・家族区分選択追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -334,6 +335,15 @@
                            11  SPA-GMN-PTNUMDEL-FLG-LIST PIC X(28)
                                                            OCCURS  2.
                        09  SPA-GMN-PTNUMDEL-MAX             PIC 9(02).
+      *                本人・家族区分選択
+                       09  SPA-GMN-HONKZKKBN-FLG-G.
+                           11  SPA-GMN-HONKZKKBN-FLG         PIC X(01).
+                           11  SPA-GMN-HONKZKKBN-F1          PIC X(01).
+                           11  SPA-GMN-HONKZKKBN-MEI         PIC X(26).
+                       09  SPA-GMN-HONKZKKBN-FLG-COMB.
+                           11  SPA-GMN-HONKZKKBN-FLG-LIST PIC X(28)
+                                                            OCCURS  2.
+                       09  SPA-GMN-HONKZKKBN-MAX             PIC 9(02).
                    07  SPA-GMN-PAGE3-AREA.
       *                入金管理情報（診療行為機能情報）
                        09  SPA-GMN-SRYNYKNKNRKBN-G.
@@ -1118,6 +1128,12 @@
                                    TO  SPA-GMN-PTNUMDEL-FLG-LIST (2)
            MOVE    2               TO  SPA-GMN-PTNUMDEL-MAX 
       *
+           MOVE    "0 初期設定あり" 
+                                   TO  SPA-GMN-HONKZKKBN-FLG-LIST (1)
+           MOVE    "1 初期設定なし" 
+                                   TO  SPA-GMN-HONKZKKBN-FLG-LIST (2)
+           MOVE    2               TO  SPA-GMN-HONKZKKBN-MAX 
+      *
            MOVE    "1 今回請求分のみ入金"
                                        TO  SPA-GMN-SRYNYKNKNRKBNLST(1)
            MOVE    "2 今回分・伝票の古い未収順に入金"
@@ -1847,6 +1863,9 @@
       *        患者情報削除機能
                MOVE    SYS-1017-PTNUMDEL-FLG
                                        TO  SPA-GMN-PTNUMDEL-FLG
+      *        本人・家族区分
+               MOVE    SYS-1017-HONKZKKBN-FLG
+                                       TO  SPA-GMN-HONKZKKBN-FLG
            END-IF
       *
       *    初期設定
@@ -1940,6 +1959,18 @@
                WHEN    OTHER
                    MOVE    SPA-GMN-PTNUMDEL-FLG-LIST(1)
                                            TO  SPA-GMN-PTNUMDEL-FLG-G
+           END-EVALUATE
+      *    本人・家族区分設定
+           EVALUATE    SPA-GMN-HONKZKKBN-FLG
+               WHEN    "0"
+                   MOVE    SPA-GMN-HONKZKKBN-FLG-LIST(1)
+                                           TO  SPA-GMN-HONKZKKBN-FLG-G
+               WHEN    "1"
+                   MOVE    SPA-GMN-HONKZKKBN-FLG-LIST(2)
+                                           TO  SPA-GMN-HONKZKKBN-FLG-G
+               WHEN    OTHER
+                   MOVE    SPA-GMN-HONKZKKBN-FLG-LIST(1)
+                                           TO  SPA-GMN-HONKZKKBN-FLG-G
            END-EVALUATE
       *
            MOVE    20                 TO  SPA-GMN-CUR
@@ -2863,6 +2894,7 @@
            MOVE    W07-JYUFUKU-CHKKBN  TO  SPA-GMN-JYUFUKU-CHKKBN-G
            MOVE    W07-KOHONLY-CHKFLG  TO  SPA-GMN-KOHONLY-CHKFLG-G
            MOVE    W07-PTNUMDEL-FLG    TO  SPA-GMN-PTNUMDEL-FLG-G
+           MOVE    W07-HONKZKKBN       TO  SPA-GMN-HONKZKKBN-FLG-G
       *
       *    診療行為機能情報
            MOVE    W07-SRYNYKNKNRKBN   TO  SPA-GMN-SRYNYKNKNRKBN-G
@@ -3040,6 +3072,10 @@
       *            患者情報削除機能
                    IF      SPA-ERRCD           =   SPACE
                        PERFORM 4107-PTNUMDEL-FLG-SEC
+                   END-IF
+      *            本人・家族区分
+                   IF      SPA-ERRCD           =   SPACE
+                       PERFORM 4107-HONKZKKBN-FLG-SEC
                    END-IF
                WHEN    "1038"
       *            ＤＯ初期表示
@@ -4149,7 +4185,7 @@
        4107-KOHONLY-CHKFLG-EXT.
            EXIT.
       *****************************************************************
-      *    地方公費単独チェック処理
+      *    患者情報削除機能チェック処理
       *****************************************************************
        4107-PTNUMDEL-FLG-SEC          SECTION.
       *
@@ -4172,6 +4208,31 @@
       *
           .
        4107-PTNUMDEL-FLG-EXT.
+           EXIT.
+      *****************************************************************
+      *    本人・家族区分チェック処理
+      *****************************************************************
+       4107-HONKZKKBN-FLG-SEC          SECTION.
+      *
+           MOVE    ZERO                TO  FLG-OK
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL      (IDX     >   SPA-GMN-HONKZKKBN-MAX) OR
+                              (FLG-OK  =   1    )
+               IF      SPA-GMN-HONKZKKBN-FLG
+                                       =   SPA-GMN-HONKZKKBN-FLG-LIST
+                                                          (IDX)(1:1)
+                   MOVE    SPA-GMN-HONKZKKBN-FLG-LIST(IDX)
+                                          TO  SPA-GMN-HONKZKKBN-FLG-G
+                   MOVE    1              TO  FLG-OK
+               END-IF
+           END-PERFORM
+           IF      FLG-OK              =   ZERO
+               MOVE    28              TO  SPA-GMN-CUR
+               MOVE    "1009"          TO  SPA-ERRCD
+           END-IF
+      *
+          .
+       4107-HONKZKKBN-FLG-EXT.
            EXIT.
       *****************************************************************
       *    入金管理区分チェック処理（診療行為機能情報）
@@ -5401,6 +5462,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPA-GMN-JYUFUKU-CHKKBN  TO  SYS-1017-JYUFUKU-CHKKBN
            MOVE    SPA-GMN-KOHONLY-CHKFLG  TO  SYS-1017-KOHONLY-CHKFLG
            MOVE    SPA-GMN-PTNUMDEL-FLG    TO  SYS-1017-PTNUMDEL-FLG
+           MOVE    SPA-GMN-HONKZKKBN-FLG   TO  SYS-1017-HONKZKKBN-FLG
       *
            MOVE    SYS-1017-REC            TO  SYSKANRI-REC
       *
@@ -6063,6 +6125,14 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                                        TO  W07-PTNUMDEL-FLG-ITEM(IDX)
            END-PERFORM
            MOVE    SPA-GMN-PTNUMDEL-MAX TO  W07-PTNUMDEL-FLG-COUNT
+      *    本人家族区分
+           MOVE    SPA-GMN-HONKZKKBN-FLG-G  TO  W07-HONKZKKBN
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-GMN-HONKZKKBN-MAX
+               MOVE    SPA-GMN-HONKZKKBN-FLG-LIST (IDX)
+                                       TO  W07-HONKZKKBN-ITEM(IDX)
+           END-PERFORM
+           MOVE    SPA-GMN-HONKZKKBN-MAX   TO  W07-HONKZKKBN-COUNT
       *
       *    入金管理区分（診療行為機能情報）
            MOVE    SPA-GMN-SRYNYKNKNRKBN-G TO  W07-SRYNYKNKNRKBN
@@ -6546,6 +6616,9 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN    "1008"
                    MOVE    "患者削除機能区分がありません。"
                                                        TO  SPA-ERRMSG
+               WHEN    "1009"
+                   MOVE    "本人・家族区分がありません。"
+                                                       TO  SPA-ERRMSG
       *        診療行為機能情報
                WHEN    "2001"
                    MOVE    "入金管理区分がありません。"
@@ -6835,6 +6908,8 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE  "KOHONLY_CHKFLG"  TO   MCP-WIDGET
                WHEN    27
                    MOVE  "PTNUMDEL_FLG"    TO   MCP-WIDGET
+               WHEN    28
+                   MOVE  "HONKZKKBN"       TO   MCP-WIDGET
       *
                WHEN    30
                    MOVE  "SRYNYKNKNRKBN"   TO   MCP-WIDGET
@@ -7089,6 +7164,9 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN    "KOHONLY_CHKFLG"
                    MOVE    27              TO  SPA-GMN-CUR
                WHEN    "PTNUMDEL_FLG"
+      *********    MOVE    99              TO  SPA-GMN-CUR
+                   MOVE    28              TO  SPA-GMN-CUR
+               WHEN    "HONKZKKBN"
                    MOVE    99              TO  SPA-GMN-CUR
       *
                WHEN    "DOSRYKBN_FLG"

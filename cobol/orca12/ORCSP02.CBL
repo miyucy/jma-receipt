@@ -858,11 +858,15 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *        削除機能
                MOVE    SYS-1017-PTNUMDEL-FLG TO
                                                SPA-NAI-PTNUMDEL-FLG
+      *        本人家族選択区分
+               MOVE    SYS-1017-HONKZKKBN-FLG TO
+                                               SPA-NAI-HONKZKKBN-FLG
            ELSE
       *        未登録の時、ゼロとする
                MOVE    ZERO                    TO  SPA-NAI-JINMEI-USE
                MOVE    ZERO                    TO  SPA-NAI-KARUTE-HAKKO
                MOVE    ZERO                    TO  SPA-NAI-JIHIHKN-TAX
+               MOVE    ZERO                    TO  SPA-NAI-HONKZKKBN-FLG
            END-IF
            IF      SPA-NAI-DOUMEI-CHKFLG   =   SPACE
                MOVE    ZERO                TO  SPA-NAI-DOUMEI-CHKFLG
@@ -876,6 +880,10 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *    地方公費単独チェックはチェックするを初期とする
            IF      SPA-NAI-KOHONLY-CHKFLG  =   SPACE
                MOVE    "1"                 TO  SPA-NAI-KOHONLY-CHKFLG
+           END-IF
+      *
+           IF      SPA-NAI-HONKZKKBN-FLG   =   SPACE
+               MOVE    "0"                 TO  SPA-NAI-HONKZKKBN-FLG
            END-IF
       *
            .

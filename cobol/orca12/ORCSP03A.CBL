@@ -766,13 +766,17 @@
        31011-HKN-HEN-SEC      SECTION.
       *
       *    本人家族
-           IF      SPA-GMN-HONKZKKBN-G     =   SPACE
+           IF      SPA-NAI-HONKZKKBN-FLG   =   "1"
+               CONTINUE
+           ELSE
+             IF      SPA-GMN-HONKZKKBN-G     =   SPACE
       *        １５歳未満の時、家族とする
                IF      SPA-NAI-NENREI-YY   <=  15
                    MOVE    WRK-HONKA-REC (2)   TO  SPA-GMN-HONKZKKBN-G
                ELSE
                    MOVE    WRK-HONKA-REC (1)   TO  SPA-GMN-HONKZKKBN-G
                END-IF
+             END-IF
            END-IF
       *    自費の時、本人
            IF      SPA-GMN-HKNNUM (1:2)    =   "98"
@@ -793,6 +797,11 @@
                END-IF
       *        自官は本人のみ
                IF      SPA-GMN-HKNNUM      =   "007"
+                   IF      SPA-GMN-HONKZKKBN-G     =   SPACE
+      *                空白の時、本人を設定
+                       MOVE    SPA-GMN-HONKZKKBNL (IDT)
+                                               TO  SPA-GMN-HONKZKKBN-G
+                   END-IF
                    MOVE    2               TO  IDT
                END-IF
            END-PERFORM
