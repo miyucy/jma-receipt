@@ -342,6 +342,15 @@ FORM_files = \
               HCM2TV03.red \
               HCM2YV03.red \
 	      HC06V01.red \
+	      HCM18V04P.red \
+	      HCM20V04P.red \
+	      HCM21V04P.red \
+	      HCM22V04P.red \
+	      HCM24V04P.red \
+	      HCN21V04P.red \
+	      HCN22V04P.red \
+	      HCN50P.red \
+	      HCN51P.red \
 
 all:   
 
