@@ -127,8 +127,9 @@
                05  WRK-PARA-RECEKBN                    PIC X(01).
                05  WRK-PARA-JOBID                      PIC 9(07).
                05  WRK-PARA-SHELLID                    PIC X(08).
-               05  WRK-PARA-PTID                       PIC  X(10).
-               05  WRK-PARA-SRYYM-O                    PIC  X(06).
+               05  WRK-PARA-PTID                       PIC X(10).
+               05  WRK-PARA-SRYYM-O                    PIC X(06).
+           03  WRK-PARA-JIBAIPRTKBN                    PIC X(01).
            03  WRK-PARA-HOSPNUM                        PIC 9(02).
       *
            03  WRK-SYS-SRYYMD                          PIC X(08).
@@ -274,6 +275,7 @@
       *
            UNSTRING    COMMAND-PARAM   DELIMITED  BY  ","
                                        INTO    WRK-PARA
+                                               WRK-PARA-JIBAIPRTKBN
                                                WRK-PARA-HOSPNUM
                                                RECEERR
            END-UNSTRING

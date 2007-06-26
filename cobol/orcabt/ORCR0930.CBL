@@ -156,6 +156,7 @@
                05  WRK-PARA-RECEKBN            PIC  X(01).
                05  WRK-PARA-JOBID              PIC  9(07).
                05  WRK-PARA-SHELLID            PIC  X(08).
+           03  WRK-PARA-JIBAIPRTKBN            PIC  X(01).
            03  WRK-PARA-HOSPNUM                PIC  9(02).
       *
            03  WRK-RECEERR         PIC X(200).
@@ -370,6 +371,7 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
       *
            UNSTRING    COMMAND-PARAM   DELIMITED  BY  ","
                                        INTO    WRK-PARA
+                                               WRK-PARA-JIBAIPRTKBN
                                                WRK-PARA-HOSPNUM
                                                RECEERR
            END-UNSTRING
