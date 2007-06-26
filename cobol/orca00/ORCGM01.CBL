@@ -584,6 +584,9 @@
       *        システム日付設定
                WHEN    "CLICKED"       ALSO    "B06"
                    PERFORM 460-M95-SEC
+      *    オンライン再印刷
+               WHEN    "CLICKED"       ALSO    "B05"
+                   PERFORM 470-REPRINT-SEC
       *    各業務移動へ
                WHEN    "CLICKED"       ALSO    ANY
                    PERFORM 400-GYOMU-SEL-SEC
@@ -1037,6 +1040,31 @@
       *
            .
        460-M95-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    再印刷画面へ
+      *****************************************************************
+       470-REPRINT-SEC             SECTION.
+      *
+      *    画面移行用のパラメタ変更
+           MOVE    "M01"              TO  SPA-MOTOPG
+           MOVE    "XA02"               TO  SPA-SAKIPG
+      *
+           INITIALIZE                  SPA-KYOTUKEY
+           MOVE    "ONLINE"
+                                       TO  SPA-PRTKANRI-TBL-KEY
+           MOVE    SPA-KYOUTU          TO  LNK-KYOUTU
+      *
+           MOVE   "CHANGE"             TO  MCP-PUTTYPE.
+           MOVE   "XA02    "           TO  MCP-WINDOW.
+      *
+           PERFORM 900-PUT-WINDOW.
+      *
+           MOVE    1                   TO  FLG-END
+      *
+           .
+       470-REPRINT-EXT.
            EXIT.
       *
       *****************************************************************
