@@ -90,6 +90,8 @@
       *  03.04.03    NACL-藤原    07/03/01  国保レセプト編綴順詳細設定対応
       *
       *  03.05.01    NACL-藤原    07/04/19  グループ診療対応
+      *  03.05.02    NACL-藤原    07/06/19  自賠責の様式選択対応
+      *                                     （平成１９年４月改正様式）
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -2065,6 +2067,15 @@ grpsys             MOVE    SPA-HOSPNUM     TO  SYS-2005-HOSPNUM
                        MOVE    ZERO            TO
                                            SYS-2005-FRAME-JIBAIPRTKBN-N
                    END-IF
+                   IF      SYS-2005-JIBAIPRTKBN
+                                               =   SPACE
+                       MOVE    ZERO            TO  SYS-2005-JIBAIPRTKBN
+                   END-IF
+                   IF      SYS-2005-JIBAIPRTKBN-N
+                                               =   SPACE
+                       MOVE    ZERO            TO
+                                               SYS-2005-JIBAIPRTKBN-N
+                   END-IF
       *
       *            作成日・時間の設定
                    ACCEPT  SYS-YMD         FROM    DATE
@@ -2166,6 +2177,17 @@ grpsys             MOVE    SPA-HOSPNUM     TO  SYS-2005-HOSPNUM
                            END-IF
                    END-EVALUATE
 grpsys             MOVE    SPA-HOSPNUM     TO  SHELLTBL-ARG16
+                   EVALUATE    SPA-R01-RECEKBN
+                       WHEN    "4"
+                       WHEN    "5"
+                           IF      SPA-GMN-NYUGAIKBN   =   "1"
+                               MOVE    SYS-2005-JIBAIPRTKBN-N
+                                                   TO  SHELLTBL-ARG17
+                           ELSE
+                               MOVE    SYS-2005-JIBAIPRTKBN
+                                                   TO  SHELLTBL-ARG17
+                           END-IF
+                   END-EVALUATE
                    MOVE    SHELLTBL        TO  MCPDATA-REC
                    MOVE    "SHELL"         TO  MCP-FUNC
                    MOVE    "shell"         TO  MCP-TABLE
