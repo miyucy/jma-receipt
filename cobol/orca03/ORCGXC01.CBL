@@ -1336,8 +1336,10 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *****************************************************************
        450-PRINT-SEC                   SECTION.
       * 
-           PERFORM 4501-PRINT-SEC
-           GO      TO                  450-PRINT-EXT
+           IF      SPA-PRTKANRI-TBL-KEY(1:6) = "RECEPT"  
+                   PERFORM 4501-PRINT-SEC
+                   GO      TO          450-PRINT-EXT
+           END-IF
       * 
            MOVE    ZERO                TO  WRK-CONS-JOB-JOBID     
                                            WRK-PREVIEW-RENNUM
