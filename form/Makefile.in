@@ -351,6 +351,8 @@ FORM_files = \
 	      HCN22V04P.red \
 	      HCN50P.red \
 	      HCN51P.red \
+	      HCM53.red \
+	      HCM54.red \
 
 all:   
 
