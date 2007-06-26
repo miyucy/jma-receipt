@@ -395,7 +395,7 @@ end
 			red_file = std_form + ls_w1
    			puts 'rousai hit!!'
 		when	'HCM24V04.red'
-			ls_w1 = 'HCM24V04.red'
+			ls_w1 = 'HCM24V04P.red'
 			red_file = std_form + ls_w1
    			puts 'rousai hit!!'
 		when	'HCM21V04.red'
@@ -407,15 +407,15 @@ end
 			red_file = std_form + ls_w1
    			puts 'rousai hit!!'
 		when	'HCM18V04.red'
-			ls_w1 = 'HCM18V04.red'
+			ls_w1 = 'HCM18V04P.red'
 			red_file = std_form + ls_w1
    			puts 'rousai hit!!'
 		when	'HCM20V04.red'
-			ls_w1 = 'HCM20V04.red'
+			ls_w1 = 'HCM20V04P.red'
 			red_file = std_form + ls_w1
    			puts 'rousai hit!!'
 		when	'HCN22V04.red'
-			ls_w1 = 'HCN22V04.red'
+			ls_w1 = 'HCN22V04P.red'
 			red_file = std_form + ls_w1
    			puts 'rousai hit!!'
 		when	'HCM24V04.red'
@@ -423,7 +423,7 @@ end
 			red_file = std_form + ls_w1
    			puts 'rousai hit!!'
 		when	'HCN21V04.red'
-			ls_w1 = 'HCN21V04.red'
+			ls_w1 = 'HCN21V04P.red'
 			red_file = std_form + ls_w1
    			puts 'rousai hit!!'
 		when	'HCM24V04.red'
@@ -431,7 +431,7 @@ end
 			red_file = std_form + ls_w1
    			puts 'rousai hit!!'
 		when	'HCN50.red'
-			ls_w1 = 'HCN50.red'
+			ls_w1 = 'HCN50P.red'
 			red_file = std_form + ls_w1
    			puts 'rousai hit!!'
 		when	'HCM24V04.red'
@@ -439,7 +439,7 @@ end
 			red_file = std_form + ls_w1
    			puts 'rousai hit!!'
 		when	'HCN51.red'
-			ls_w1 = 'HCN51.red'
+			ls_w1 = 'HCN51P.red'
 			red_file = std_form + ls_w1
    			puts 'rousai hit!!'
 		when	'HCM24V04.red'
