@@ -52,7 +52,7 @@
             02  HCM54-MEISAISYOSUU  PIC X(3).
             02  HCM54-SHINDANSYOMONEY   PIC X(7).
             02  HCM54-MEISAISYOMONEY    PIC X(7).
-            02  HCM54-SRYOKBN
+            02  HCM54-SRYKBN
                     PIC X(2)    OCCURS  28 TIMES.
             02  HCM54-TEKIYO2
                     PIC X(52)   OCCURS  28 TIMES.

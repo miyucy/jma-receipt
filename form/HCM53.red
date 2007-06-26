@@ -199,7 +199,7 @@
         <embed object="string" length="7"/>
       </appinfo>
     </element>
-    <element name="SRYOKBN" occurs="28">
+    <element name="SRYKBN" occurs="28">
       <appinfo>
         <embed object="string" length="2"/>
       </appinfo>
@@ -8553,7 +8553,7 @@
         <rectangle val="11.0122,10.6748;11.4,10.9948"/>
       </attribute>
       <attribute name="dnode_path">
-        <string>#SRYOKBN[0]#</string>
+        <string>#SRYKBN[0]#</string>
       </attribute>
       <attribute name="embed_text_string">
         <enum val="1"/>
@@ -8637,7 +8637,7 @@
         <rectangle val="11.0122,11.0998;11.4,11.4198"/>
       </attribute>
       <attribute name="dnode_path">
-        <string>#SRYOKBN[1]#</string>
+        <string>#SRYKBN[1]#</string>
       </attribute>
       <attribute name="embed_text_string">
         <enum val="1"/>
@@ -8721,7 +8721,7 @@
         <rectangle val="11.0122,11.5248;11.4,11.8448"/>
       </attribute>
       <attribute name="dnode_path">
-        <string>#SRYOKBN[2]#</string>
+        <string>#SRYKBN[2]#</string>
       </attribute>
       <attribute name="embed_text_string">
         <enum val="1"/>
@@ -8805,7 +8805,7 @@
         <rectangle val="11.0122,11.9498;11.4,12.2698"/>
       </attribute>
       <attribute name="dnode_path">
-        <string>#SRYOKBN[3]#</string>
+        <string>#SRYKBN[3]#</string>
       </attribute>
       <attribute name="embed_text_string">
         <enum val="1"/>
@@ -8889,7 +8889,7 @@
         <rectangle val="11.0122,12.3748;11.4,12.6948"/>
       </attribute>
       <attribute name="dnode_path">
-        <string>#SRYOKBN[4]#</string>
+        <string>#SRYKBN[4]#</string>
       </attribute>
       <attribute name="embed_text_string">
         <enum val="1"/>
@@ -8973,7 +8973,7 @@
         <rectangle val="11.0122,12.7998;11.4,13.1198"/>
       </attribute>
       <attribute name="dnode_path">
-        <string>#SRYOKBN[5]#</string>
+        <string>#SRYKBN[5]#</string>
       </attribute>
       <attribute name="embed_text_string">
         <enum val="1"/>
@@ -9057,7 +9057,7 @@
         <rectangle val="11.0122,13.2248;11.4,13.5448"/>
       </attribute>
       <attribute name="dnode_path">
-        <string>#SRYOKBN[6]#</string>
+        <string>#SRYKBN[6]#</string>
       </attribute>
       <attribute name="embed_text_string">
         <enum val="1"/>
@@ -9141,7 +9141,7 @@
         <rectangle val="11.0122,13.6498;11.4,13.9698"/>
       </attribute>
       <attribute name="dnode_path">
-        <string>#SRYOKBN[7]#</string>
+        <string>#SRYKBN[7]#</string>
       </attribute>
       <attribute name="embed_text_string">
         <enum val="1"/>
@@ -9225,7 +9225,7 @@
         <rectangle val="11.0122,14.0748;11.4,14.3948"/>
       </attribute>
       <attribute name="dnode_path">
-        <string>#SRYOKBN[8]#</string>
+        <string>#SRYKBN[8]#</string>
       </attribute>
       <attribute name="embed_text_string">
         <enum val="1"/>
@@ -9309,7 +9309,7 @@
         <rectangle val="11.0122,14.4998;11.4,14.8198"/>
       </attribute>
       <attribute name="dnode_path">
-        <string>#SRYOKBN[9]#</string>
+        <string>#SRYKBN[9]#</string>
       </attribute>
       <attribute name="embed_text_string">
         <enum val="1"/>
@@ -9393,7 +9393,7 @@
         <rectangle val="11.0122,14.9248;11.4,15.2448"/>
       </attribute>
       <attribute name="dnode_path">
-        <string>#SRYOKBN[10]#</string>
+        <string>#SRYKBN[10]#</string>
       </attribute>
       <attribute name="embed_text_string">
         <enum val="1"/>
@@ -9477,7 +9477,7 @@
         <rectangle val="11.0122,15.3498;11.4,15.6698"/>
       </attribute>
       <attribute name="dnode_path">
-        <string>#SRYOKBN[11]#</string>
+        <string>#SRYKBN[11]#</string>
       </attribute>
       <attribute name="embed_text_string">
         <enum val="1"/>
@@ -9561,7 +9561,7 @@
         <rectangle val="11.0122,15.7748;11.4,16.0948"/>
       </attribute>
       <attribute name="dnode_path">
-        <string>#SRYOKBN[12]#</string>
+        <string>#SRYKBN[12]#</string>
       </attribute>
       <attribute name="embed_text_string">
         <enum val="1"/>
@@ -9645,7 +9645,7 @@
         <rectangle val="11.0122,16.1998;11.4,16.5198"/>
       </attribute>
       <attribute name="dnode_path">
-        <string>#SRYOKBN[13]#</string>
+        <string>#SRYKBN[13]#</string>
       </attribute>
       <attribute name="embed_text_string">
         <enum val="1"/>
@@ -9729,7 +9729,7 @@
         <rectangle val="11.0122,16.6248;11.4,16.9448"/>
       </attribute>
       <attribute name="dnode_path">
-        <string>#SRYOKBN[14]#</string>
+        <string>#SRYKBN[14]#</string>
       </attribute>
       <attribute name="embed_text_string">
         <enum val="1"/>
@@ -9813,7 +9813,7 @@
         <rectangle val="11.0122,17.0498;11.4,17.3698"/>
       </attribute>
       <attribute name="dnode_path">
-        <string>#SRYOKBN[15]#</string>
+        <string>#SRYKBN[15]#</string>
       </attribute>
       <attribute name="embed_text_string">
         <enum val="1"/>
@@ -9897,7 +9897,7 @@
         <rectangle val="11.0122,17.4748;11.4,17.7948"/>
       </attribute>
       <attribute name="dnode_path">
-        <string>#SRYOKBN[16]#</string>
+        <string>#SRYKBN[16]#</string>
       </attribute>
       <attribute name="embed_text_string">
         <enum val="1"/>
@@ -9981,7 +9981,7 @@
         <rectangle val="11.0122,17.8998;11.4,18.2198"/>
       </attribute>
       <attribute name="dnode_path">
-        <string>#SRYOKBN[17]#</string>
+        <string>#SRYKBN[17]#</string>
       </attribute>
       <attribute name="embed_text_string">
         <enum val="1"/>
@@ -10065,7 +10065,7 @@
         <rectangle val="11.0122,18.3248;11.4,18.6448"/>
       </attribute>
       <attribute name="dnode_path">
-        <string>#SRYOKBN[18]#</string>
+        <string>#SRYKBN[18]#</string>
       </attribute>
       <attribute name="embed_text_string">
         <enum val="1"/>
@@ -10149,7 +10149,7 @@
         <rectangle val="11.0122,18.7498;11.4,19.0698"/>
       </attribute>
       <attribute name="dnode_path">
-        <string>#SRYOKBN[19]#</string>
+        <string>#SRYKBN[19]#</string>
       </attribute>
       <attribute name="embed_text_string">
         <enum val="1"/>
@@ -10233,7 +10233,7 @@
         <rectangle val="11.0122,19.1748;11.4,19.4948"/>
       </attribute>
       <attribute name="dnode_path">
-        <string>#SRYOKBN[20]#</string>
+        <string>#SRYKBN[20]#</string>
       </attribute>
       <attribute name="embed_text_string">
         <enum val="1"/>
@@ -10317,7 +10317,7 @@
         <rectangle val="11.0122,19.5998;11.4,19.9198"/>
       </attribute>
       <attribute name="dnode_path">
-        <string>#SRYOKBN[21]#</string>
+        <string>#SRYKBN[21]#</string>
       </attribute>
       <attribute name="embed_text_string">
         <enum val="1"/>
@@ -10401,7 +10401,7 @@
         <rectangle val="11.0122,20.0248;11.4,20.3448"/>
       </attribute>
       <attribute name="dnode_path">
-        <string>#SRYOKBN[22]#</string>
+        <string>#SRYKBN[22]#</string>
       </attribute>
       <attribute name="embed_text_string">
         <enum val="1"/>
@@ -10485,7 +10485,7 @@
         <rectangle val="11.0122,20.4498;11.4,20.7698"/>
       </attribute>
       <attribute name="dnode_path">
-        <string>#SRYOKBN[23]#</string>
+        <string>#SRYKBN[23]#</string>
       </attribute>
       <attribute name="embed_text_string">
         <enum val="1"/>
@@ -10569,7 +10569,7 @@
         <rectangle val="11.0122,20.8748;11.4,21.1948"/>
       </attribute>
       <attribute name="dnode_path">
-        <string>#SRYOKBN[24]#</string>
+        <string>#SRYKBN[24]#</string>
       </attribute>
       <attribute name="embed_text_string">
         <enum val="1"/>
@@ -10653,7 +10653,7 @@
         <rectangle val="11.0122,21.2998;11.4,21.6198"/>
       </attribute>
       <attribute name="dnode_path">
-        <string>#SRYOKBN[25]#</string>
+        <string>#SRYKBN[25]#</string>
       </attribute>
       <attribute name="embed_text_string">
         <enum val="1"/>
@@ -10737,7 +10737,7 @@
         <rectangle val="11.0122,21.7248;11.4,22.0448"/>
       </attribute>
       <attribute name="dnode_path">
-        <string>#SRYOKBN[26]#</string>
+        <string>#SRYKBN[26]#</string>
       </attribute>
       <attribute name="embed_text_string">
         <enum val="1"/>
@@ -10821,7 +10821,7 @@
         <rectangle val="11.0122,22.1498;11.4,22.4698"/>
       </attribute>
       <attribute name="dnode_path">
-        <string>#SRYOKBN[27]#</string>
+        <string>#SRYKBN[27]#</string>
       </attribute>
       <attribute name="embed_text_string">
         <enum val="1"/>
