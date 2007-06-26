@@ -1,6 +1,6 @@
         01  HCM53.
-            02  HCM53-HAKKOYY   PIC X(2).
-            02  HCM53-HAKKOMM   PIC X(2).
+            02  HCM53-HAKKOUYY  PIC X(2).
+            02  HCM53-HAKKOUMM  PIC X(2).
             02  HCM53-PTNUM PIC X(20).
             02  HCM53-NAME  PIC X(50).
             02  HCM53-TANJYOG

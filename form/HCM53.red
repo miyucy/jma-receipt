@@ -1,12 +1,12 @@
 <?xml version="1.0"?>
 <diagram xmlns:dia="http://www.lysator.liu.se/~alla/dia/">
   <dictionarydata>
-    <element name="HAKKOYY" occurs="1">
+    <element name="HAKKOUYY" occurs="1">
       <appinfo>
         <embed object="string" length="2"/>
       </appinfo>
     </element>
-    <element name="HAKKOMM" occurs="1">
+    <element name="HAKKOUMM" occurs="1">
       <appinfo>
         <embed object="string" length="2"/>
       </appinfo>
@@ -359,7 +359,7 @@
         <rectangle val="3.8152,1.71227;4.3,2.11227"/>
       </attribute>
       <attribute name="dnode_path">
-        <string>#HAKKOYY#</string>
+        <string>#HAKKOUYY#</string>
       </attribute>
       <attribute name="embed_text_string">
         <enum val="1"/>
@@ -401,7 +401,7 @@
         <rectangle val="5.6152,1.71227;6.1,2.11227"/>
       </attribute>
       <attribute name="dnode_path">
-        <string>#HAKKOMM#</string>
+        <string>#HAKKOUMM#</string>
       </attribute>
       <attribute name="embed_text_string">
         <enum val="1"/>
