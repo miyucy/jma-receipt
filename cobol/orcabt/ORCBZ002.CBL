@@ -29,6 +29,7 @@
       * Maj/Min/Rev  修正者       日付      内容
       * 01.00.01     NACL-多々納  04/12/15  入院印刷追加
       * 03.05.00     NACL-多々納  07/05/24  グループ診療対応
+      * 03.05.00     NACL-多々納  07/06/26  外来カルテ印刷内容選択追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -115,6 +116,8 @@
       *
       *    医療機関情報
            COPY    "CPSK1009.INC".
+      *    帳票編集区分情報
+           COPY    "CPSK1030.INC".
       *
       *    患者マスタ
        01  PTINF-REC.
@@ -337,6 +340,24 @@
                MOVE    "2"             TO  WRK-PARA-NYUGAIKBN
            END-IF
       *
+      *    帳票編集区分
+           MOVE    SPACE               TO  SYS-1030-REC
+           MOVE    "1030"              TO  SYS-1030-KANRICD
+           MOVE    "*"                 TO  SYS-1030-KBNCD
+           MOVE    SPA-SYSYMD          TO  SYS-1030-STYUKYMD
+           MOVE    SPA-SYSYMD          TO  SYS-1030-EDYUKYMD
+           MOVE    SPA-HOSPNUM         TO  SYS-1030-HOSPNUM
+           MOVE    SYS-1030-REC        TO  MCPDATA-REC
+           PERFORM 800-SYSKANRI-READ-SEC
+           IF      FLG-SYSKANRI        =   ZERO
+               MOVE    MCPDATA-REC         TO  SYS-1030-REC
+           ELSE
+               INITIALIZE                  SYS-1030-REC
+           END-IF
+           IF      SYS-1030-KARUTE3KBN     =   SPACE
+               MOVE    ZERO                TO  SYS-1030-KARUTE3KBN
+           END-IF
+      *
            .
        110-SYOKI-SET-EXT.
            EXIT.
@@ -428,6 +449,9 @@
                MOVE    WRK-PARA-NYUGAIKBN  TO  ORCHC33-NYUGAIKBN
       *        一括パラメタ
                MOVE    ORCSPRTAREA         TO  ORCHC33-PRTAREA
+      *        カルテ３号紙（外来）内容
+               MOVE    SYS-1030-KARUTE3KBN
+                                           TO  ORCHC33-KARUTE3KBN
       *        外来
                CALL    "ORCHC33"           USING
                                            SPA-AREA
