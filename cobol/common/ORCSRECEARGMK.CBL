@@ -29,6 +29,8 @@
       * Maj/Min/Rev  修正者       日付      内容
       *  03.05.01    NACL-藤原    07/04/19  グループ診療対応
       *  03.05.02    NACL-藤原    07/06/01  労災・自賠責対応
+      *  03.05.03    NACL-藤原    07/06/19  自賠責の様式選択対応
+      *                                     （平成１９年４月改正様式）
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -261,10 +263,12 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SYS-2005-HOSPNUM
                MOVE    ZERO                TO
                                            SYS-2005-FRAME-JIBAIPRTKBN-N
            END-IF
-      *****IF      SYS-2005-JIBAIPRTKBN     =   SPACE
-      *         MOVE    ZERO                TO
-      *                                     SYS-2005-JIBAIPRTKBN
-      *****END-IF
+           IF      SYS-2005-JIBAIPRTKBN    =   SPACE
+               MOVE    ZERO                TO  SYS-2005-JIBAIPRTKBN
+           END-IF
+           IF      SYS-2005-JIBAIPRTKBN-N  =   SPACE
+               MOVE    ZERO                TO  SYS-2005-JIBAIPRTKBN-N
+           END-IF
       *                
       *    出力先プリンタ名割り当て情報の取得
            MOVE    SPACE           TO  SYS-1031-REC
@@ -499,9 +503,14 @@ grpsys     MOVE    SPA-HOSPNUM     TO  RECEERR-HOSPNUM
                    MOVE    SYS-2005-FRAME-JIBAIPRTKBN
                                                    TO  SHELLTBL-ARG13
            END-EVALUATE
-      *****MOVE    SYS-2005-JIBAIPRTKBN
-           MOVE    "0"               
-                                   TO  SHELLTBL-ARG14
+           EVALUATE   LINK-NYUGAIKBN   ALSO    LINK-HKNKBN
+               WHEN   "1"              ALSO    "2"
+                   MOVE    SYS-2005-FRAME-JIBAIPRTKBN-N
+                                                   TO  SHELLTBL-ARG14
+               WHEN   "2"              ALSO    "2"
+                   MOVE    SYS-2005-FRAME-JIBAIPRTKBN
+                                                   TO  SHELLTBL-ARG14
+           END-EVALUATE
       *
       *------------------> recept2.sh $11 - $26 (#24 は除く)
            EVALUATE   LINK-NYUGAIKBN   ALSO    LINK-HKNKBN
