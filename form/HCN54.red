@@ -295,11 +295,6 @@
         <embed object="string" length="7"/>
       </appinfo>
     </element>
-    <element name="SYOKJN-KHN" occurs="1">
-      <appinfo>
-        <embed object="string" length="10"/>
-      </appinfo>
-    </element>
     <element name="TEKIYO1" occurs="8">
       <appinfo>
         <embed object="string" length="24"/>
@@ -18228,10 +18223,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O496">
       <attribute name="obj_pos">
-        <point val="11.45,10.9653"/>
+        <point val="11.45,10.8"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="11.45,10.7855;11.9146,11.0155"/>
+        <rectangle val="11.45,10.6202;11.9146,10.8502"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#SYOKJN[0]#</string>
@@ -18251,7 +18246,7 @@
             <real val="0.23"/>
           </attribute>
           <attribute name="pos">
-            <point val="11.45,10.9653"/>
+            <point val="11.45,10.8"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -18270,10 +18265,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O497">
       <attribute name="obj_pos">
-        <point val="11.45,11.3903"/>
+        <point val="11.45,11.1333"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="11.45,11.2105;11.9146,11.4405"/>
+        <rectangle val="11.45,10.9535;11.9146,11.1835"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#SYOKJN[1]#</string>
@@ -18293,7 +18288,7 @@
             <real val="0.23"/>
           </attribute>
           <attribute name="pos">
-            <point val="11.45,11.3903"/>
+            <point val="11.45,11.1333"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -18312,10 +18307,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O498">
       <attribute name="obj_pos">
-        <point val="11.45,11.8153"/>
+        <point val="11.45,11.4667"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="11.45,11.6355;11.9146,11.8655"/>
+        <rectangle val="11.45,11.2868;11.9146,11.5168"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#SYOKJN[2]#</string>
@@ -18335,7 +18330,7 @@
             <real val="0.23"/>
           </attribute>
           <attribute name="pos">
-            <point val="11.45,11.8153"/>
+            <point val="11.45,11.4667"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -22104,13 +22099,13 @@
     </object>
     <object type="Embed - Text" version="0" id="O588">
       <attribute name="obj_pos">
-        <point val="11.9,10.5"/>
+        <point val="11.45,11.8"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="11.9,10.3202;12.1323,10.5502"/>
+        <rectangle val="11.45,11.6202;11.9146,11.8502"/>
       </attribute>
       <attribute name="dnode_path">
-        <string>#SYOKJN-KHN#</string>
+        <string>#SYOKJN[3]#</string>
       </attribute>
       <attribute name="embed_text_string">
         <enum val="0"/>
@@ -22118,7 +22113,7 @@
       <attribute name="text">
         <composite type="text">
           <attribute name="string">
-            <string>#&#164;&#162;#</string>
+            <string>#&#164;&#162;&#164;&#164;#</string>
           </attribute>
           <attribute name="font">
             <font name="Courier"/>
@@ -22127,7 +22122,7 @@
             <real val="0.23"/>
           </attribute>
           <attribute name="pos">
-            <point val="11.9,10.5"/>
+            <point val="11.45,11.8"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>

@@ -87,7 +87,6 @@
             02  HCN54-SYOKAISU
                     PIC X(3)    OCCURS  4 TIMES.
             02  HCN54-SYOKINGAKU    PIC X(7).
-            02  HCN54-SYOKJN-KHN    PIC X(10).
             02  HCN54-TEKIYO1
                     PIC X(24)   OCCURS  8 TIMES.
             02  HCN54-BIKOU
