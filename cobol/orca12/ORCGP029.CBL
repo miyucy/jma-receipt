@@ -538,6 +538,8 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *
                MOVE    SMCNDATE-HMS        TO  PTINF-UPHMS
       *
+               MOVE    SPA-OPID            TO  PTINF-OPID
+      *
                MOVE    PTINF-REC           TO  MCPDATA-REC
                MOVE    "DBINSERT"          TO  MCP-FUNC
                MOVE    "tbl_ptinf"         TO  MCP-TABLE
@@ -558,6 +560,8 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    SMCNDATE-YMD        TO  PTINF-UPYMD
       *
                MOVE    SMCNDATE-HMS        TO  PTINF-UPHMS
+      *
+               MOVE    SPA-OPID            TO  PTINF-OPID
       *
                MOVE    PTINF-REC           TO  MCPDATA-REC
                MOVE    "DBUPDATE"          TO  MCP-FUNC
@@ -661,6 +665,8 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    SMCNDATE-YMD        TO  PTHKN-UPYMD
                MOVE    SMCNDATE-HMS        TO  PTHKN-UPHMS
       *
+               MOVE    SPA-OPID            TO  PTHKN-OPID
+      *
                MOVE    PTHKNINF-REC        TO  MCPDATA-REC
                MOVE    "DBINSERT"          TO  MCP-FUNC
                MOVE    "tbl_pthkninf"      TO  MCP-TABLE
@@ -680,6 +686,8 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    HZN-PTHKN-CREYMD    TO  PTHKN-CREYMD
                MOVE    SMCNDATE-YMD        TO  PTHKN-UPYMD
                MOVE    SMCNDATE-HMS        TO  PTHKN-UPHMS
+      *
+               MOVE    SPA-OPID            TO  PTHKN-OPID
       *
                MOVE    PTHKNINF-REC        TO  MCPDATA-REC
                MOVE    "DBUPDATE"          TO  MCP-FUNC
@@ -716,6 +724,8 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    SMCNDATE-YMD        TO  PTKOH-UPYMD
                MOVE    SMCNDATE-HMS        TO  PTKOH-UPHMS
       *
+               MOVE    SPA-OPID            TO  PTKOH-OPID
+      *
                MOVE    PTKOHINF-REC        TO  MCPDATA-REC
                MOVE    "DBINSERT"          TO  MCP-FUNC
                MOVE    "tbl_ptkohinf"      TO  MCP-TABLE
@@ -734,6 +744,8 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    HZN-PTKOH-CREYMD    TO  PTKOH-CREYMD
                MOVE    SMCNDATE-YMD        TO  PTKOH-UPYMD
                MOVE    SMCNDATE-HMS        TO  PTKOH-UPHMS
+      *
+               MOVE    SPA-OPID            TO  PTKOH-OPID
       *
                MOVE    PTKOHINF-REC        TO  MCPDATA-REC
                MOVE    "DBUPDATE"          TO  MCP-FUNC
@@ -808,6 +820,8 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                        MOVE    SMCNDATE-YMD        TO  MONTHLYNUM-UPYMD
                        MOVE    SMCNDATE-HMS        TO  MONTHLYNUM-UPHMS
       *
+                       MOVE    SPA-OPID            TO  MONTHLYNUM-OPID
+      *
                        MOVE    MONTHLYNUM-REC      TO  MCPDATA-REC
                        MOVE    "DBUPDATE"          TO  MCP-FUNC
                        MOVE    "tbl_monthlynum"    TO  MCP-TABLE
@@ -843,6 +857,8 @@ grpsys                 CALL    "ORCDBMAIN"         USING   MCPAREA
                            MOVE    SMCNDATE-YMD    TO  MONTHLYNUM-UPYMD
                            MOVE    SMCNDATE-HMS    TO  MONTHLYNUM-UPHMS
       *
+                           MOVE    SPA-OPID        TO  MONTHLYNUM-OPID
+      *
                            MOVE    MONTHLYNUM-REC  TO  MCPDATA-REC
                            MOVE    "DBUPDATE"      TO  MCP-FUNC
                            MOVE    "tbl_monthlynum"
@@ -876,6 +892,8 @@ grpsys                     CALL    "ORCDBMAIN"     USING   MCPAREA
                        MOVE    SMCNDATE-YMD    TO  MONTHLYNUM-CREYMD
                        MOVE    SMCNDATE-YMD    TO  MONTHLYNUM-UPYMD
                        MOVE    SMCNDATE-HMS    TO  MONTHLYNUM-UPHMS
+      *
+                       MOVE    SPA-OPID        TO  MONTHLYNUM-OPID
       *
                        MOVE    MONTHLYNUM-REC  TO  MCPDATA-REC
                        MOVE    "DBINSERT"      TO  MCP-FUNC
@@ -934,6 +952,8 @@ grpsys                 CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE    SMCNDATE-YMD        TO  UKE-UPYMD
                    MOVE    SMCNDATE-HMS        TO  UKE-UPHMS
       *
+                   MOVE    SPA-OPID            TO  UKE-OPID
+      *
                    MOVE    UKETUKE-REC         TO  MCPDATA-REC
                    MOVE    "DBUPDATE"          TO  MCP-FUNC
                    MOVE    "tbl_uketuke"       TO  MCP-TABLE
@@ -958,6 +978,8 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE    SMCNDATE-YMD        TO  UKE-UPYMD
                    MOVE    SMCNDATE-HMS        TO  UKE-UPHMS
       *
+                   MOVE    SPA-OPID            TO  UKE-OPID
+      *
                    MOVE    UKETUKE-REC         TO  MCPDATA-REC
                    MOVE    "DBINSERT"          TO  MCP-FUNC
                    MOVE    "tbl_uketuke"       TO  MCP-TABLE
@@ -979,6 +1001,8 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    SMCNDATE-YMD        TO  UKE-CREYMD
                MOVE    SMCNDATE-YMD        TO  UKE-UPYMD
                MOVE    SMCNDATE-HMS        TO  UKE-UPHMS
+      *
+               MOVE    SPA-OPID            TO  UKE-OPID
       *
                MOVE    UKETUKE-REC         TO  MCPDATA-REC
                MOVE    "DBINSERT"          TO  MCP-FUNC
@@ -1013,6 +1037,8 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
       *
                    MOVE    SMCNDATE-YMD        TO  UKE-UPYMD
                    MOVE    SMCNDATE-HMS        TO  UKE-UPHMS
+      *
+                   MOVE    SPA-OPID            TO  UKE-OPID
       *
       *            更新
                    MOVE    UKETUKE-REC         TO  MCPDATA-REC
@@ -1070,6 +1096,8 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
       *
                MOVE    SMCNDATE-YMD        TO  YYK-UPYMD
                MOVE    SMCNDATE-HMS        TO  YYK-UPHMS
+      *
+               MOVE    SPA-OPID            TO  YYK-OPID
       *
                IF      UKE-UPYMD       =   ALL "9"
                    IF      YYK-RAIINZUMI   =   "1"
@@ -1135,6 +1163,8 @@ grpsys                 CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    SMCNDATE-YMD        TO  COMB-UPYMD
                MOVE    SMCNDATE-HMS        TO  COMB-UPHMS
       *
+               MOVE    SPA-OPID            TO  COMB-OPID
+      *
                MOVE    HKNCOMBI-REC        TO  MCPDATA-REC
                MOVE    "DBINSERT"          TO  MCP-FUNC
                MOVE    "tbl_hkncombi"      TO  MCP-TABLE
@@ -1152,6 +1182,8 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    HZN-COMB-CREYMD     TO  COMB-CREYMD
                MOVE    SMCNDATE-YMD        TO  COMB-UPYMD
                MOVE    SMCNDATE-HMS        TO  COMB-UPHMS
+      *
+               MOVE    SPA-OPID            TO  COMB-OPID
       *
                MOVE    HKNCOMBI-REC        TO  MCPDATA-REC
                MOVE    "DBUPDATE"          TO  MCP-FUNC
@@ -1301,6 +1333,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                        MOVE    SMCNDATE-HMS        TO  KYUSEI-UPHMS
                    END-IF
       *
+                   MOVE    SPA-OPID            TO  KYUSEI-OPID
       *
                    MOVE    "DBINSERT"          TO  MCP-FUNC
                    MOVE    KYUSEIRRK-REC       TO  MCPDATA-REC
@@ -1435,6 +1468,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    SMCNDATE-YMD        TO  PTNUM-UPYMD
                MOVE    SMCNDATE-HMS        TO  PTNUM-UPHMS
       *
+               MOVE    SPA-OPID            TO  PTNUM-OPID
       *
                MOVE    PTNUM-REC           TO  MCPDATA-REC
                MOVE    "DBINSERT"          TO  MCP-FUNC
@@ -1463,6 +1497,8 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *
                MOVE    SMCNDATE-YMD        TO  PTNUM-UPYMD
                MOVE    SMCNDATE-HMS        TO  PTNUM-UPHMS
+      *
+               MOVE    SPA-OPID            TO  PTNUM-OPID
       *
                MOVE    PTNUM-REC           TO  MCPDATA-REC
                MOVE    "DBUPDATE"          TO  MCP-FUNC
@@ -1510,6 +1546,8 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    SMCNDATE-YMD        TO  TSYRRK-UPYMD
                MOVE    SMCNDATE-HMS        TO  TSYRRK-UPHMS
       *
+               MOVE    SPA-OPID            TO  TSYRRK-OPID
+      *
                MOVE    TSYRRK-REC      TO  MCPDATA-REC
                MOVE    "DBUPDATE"      TO  MCP-FUNC
                MOVE    "tbl_tsyrrk"        TO  MCP-TABLE
@@ -1529,6 +1567,8 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    SMCNDATE-YMD        TO  TSYRRK-CREYMD
                MOVE    SMCNDATE-YMD        TO  TSYRRK-UPYMD
                MOVE    SMCNDATE-HMS        TO  TSYRRK-UPHMS
+      *
+               MOVE    SPA-OPID            TO  TSYRRK-OPID
       *
                MOVE    TSYRRK-REC          TO  MCPDATA-REC
                MOVE    "DBINSERT"          TO  MCP-FUNC
@@ -1577,6 +1617,8 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    SMCNDATE-YMD        TO  TNKRRK-UPYMD
                MOVE    SMCNDATE-HMS        TO  TNKRRK-UPHMS
       *
+               MOVE    SPA-OPID            TO  TNKRRK-OPID
+      *
                MOVE    TNKRRK-REC          TO  MCPDATA-REC
                MOVE    "DBUPDATE"          TO  MCP-FUNC
                MOVE    "tbl_tnkrrk"        TO  MCP-TABLE
@@ -1596,6 +1638,8 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    SMCNDATE-YMD        TO  TNKRRK-CREYMD
                MOVE    SMCNDATE-YMD        TO  TNKRRK-UPYMD
                MOVE    SMCNDATE-HMS        TO  TNKRRK-UPHMS
+      *
+               MOVE    SPA-OPID            TO  TNKRRK-OPID
       *
                MOVE    TNKRRK-REC          TO  MCPDATA-REC
                MOVE    "DBINSERT"          TO  MCP-FUNC
@@ -1631,6 +1675,8 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    SMCNDATE-YMD        TO  PTRSI-UPYMD
                MOVE    SMCNDATE-HMS        TO  PTRSI-UPHMS
       *
+               MOVE    SPA-OPID            TO  PTRSI-OPID
+      *
                MOVE    PTRSIINF-REC        TO  MCPDATA-REC
                MOVE    "DBINSERT"          TO  MCP-FUNC
                MOVE    "tbl_ptrsiinf"      TO  MCP-TABLE
@@ -1649,6 +1695,8 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    HZN-PTRSI-CREYMD    TO  PTRSI-CREYMD
                MOVE    SMCNDATE-YMD        TO  PTRSI-UPYMD
                MOVE    SMCNDATE-HMS        TO  PTRSI-UPHMS
+      *
+               MOVE    SPA-OPID            TO  PTRSI-OPID
       *
                MOVE    PTRSIINF-REC        TO  MCPDATA-REC
                MOVE    "DBUPDATE"          TO  MCP-FUNC
@@ -1697,6 +1745,8 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    SMCNDATE-YMD        TO  PTKOHFTN-UPYMD
                MOVE    SMCNDATE-HMS        TO  PTKOHFTN-UPHMS
       *
+               MOVE    SPA-OPID            TO  PTKOHFTN-OPID
+      *
       *        新規
                MOVE    SPA-GMN-PTID        TO  PTKOHFTN-PTID
                MOVE    PTKOHFTN-REC        TO  MCPDATA-REC
@@ -1716,6 +1766,8 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *
                MOVE    SMCNDATE-YMD        TO  PTKOHFTN-UPYMD
                MOVE    SMCNDATE-HMS        TO  PTKOHFTN-UPHMS
+      *
+               MOVE    SPA-OPID            TO  PTKOHFTN-OPID
       *
       *        更新
                MOVE    PTKOHFTN-REC        TO  MCPDATA-REC
@@ -1790,6 +1842,8 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    1                   TO  QRCDHKN-MOD-FLG
                MOVE    SMCNDATE-YMD        TO  QRCDHKN-UPYMD
                MOVE    SMCNDATE-HMS        TO  QRCDHKN-UPHMS
+      *
+               MOVE    SPA-OPID            TO  QRCDHKN-OPID
       *
                MOVE    QRCDHKN-REC         TO  MCPDATA-REC
                MOVE    "DBUPDATE"          TO  MCP-FUNC
