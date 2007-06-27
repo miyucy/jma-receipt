@@ -360,8 +360,8 @@
                            11  SPA-NAI-Q01-KJYNYMD     PIC X(08).
                            11  SPA-NAI-Q01-STLASTYMD   PIC X(08).
                            11  SPA-NAI-Q01-EDLASTYMD   PIC X(08).
-                           11  SPA-NAI-Q01-STTSYYM     PIC X(06).
-                           11  SPA-NAI-Q01-EDTSYYM     PIC X(06).
+                           11  SPA-NAI-Q01-STTSYYM     PIC X(08).
+                           11  SPA-NAI-Q01-EDTSYYM     PIC X(08).
       *                瘦副　给锐
                        09  SPA-NAI-Q01-HOKEN-AREA.
                            11  SPA-NAI-Q01-HOKEN-DMY   PIC X(01).
@@ -782,9 +782,9 @@
                                                        OCCURS  5.
                        09  SPA-Q01-TSY-G.
                            11  SPA-Q01-TSY             PIC X(01).
-                           11  SPA-Q01-STTSYYM         PIC X(06).
+                           11  SPA-Q01-STTSYYM         PIC X(08).
                            11  SPA-Q01-STTSYSKBT       PIC X(01).
-                           11  SPA-Q01-EDTSYYM         PIC X(06).
+                           11  SPA-Q01-EDTSYYM         PIC X(08).
       *            瘦副　给锐
                    07  SPA-Q01-HOKEN-AREA.
                        09  SPA-Q01-HONKZKKBN           PIC X(01).
