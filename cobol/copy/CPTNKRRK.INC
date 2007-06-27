@@ -33,8 +33,12 @@
                05  TNKRRK-STYMD            PIC  X(08).
       *終了年月日
            03  TNKRRK-EDYMD                PIC  X(08).
+      *食事標準負担額減額開始日
+           03  TNKRRK-SKJNINSTYMD          PIC  X(08).
       *老齢福祉年金受給者証区分（０：なし　１：あり）
            03  TNKRRK-RRI-FUKUSHI-KBN      PIC  X(01).
+      *保険適用区分（０：主保険＋公費　１：主保険のみ　２：公費のみ）
+           03  TNKRRK-HKNTEKKBN            PIC  X(01).
       *端末ＩＤ
            03  TNKRRK-TERMID               PIC  X(16).
       *オペーレータＩＤ

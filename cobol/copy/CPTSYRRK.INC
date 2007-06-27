@@ -34,7 +34,11 @@
       *認定終了年月日
            03  TSYRRK-NINEDYMD             PIC  X(08).
       *食事標準負担額減額開始日
+           03  TSYRRK-SKJNINSTYMD          PIC  X(08).
+      *長期入院食事減額開始日
            03  TSYRRK-SKJGNSTYMD           PIC  X(08).
+      *保険適用区分（０：主保険＋公費　１：主保険のみ　２：公費のみ）
+           03  TSYRRK-HKNTEKKBN            PIC  X(01).
       *端末ＩＤ
            03  TSYRRK-TERMID               PIC  X(16).
       *オペーレータＩＤ
