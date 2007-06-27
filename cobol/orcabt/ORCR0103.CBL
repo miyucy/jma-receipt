@@ -4221,8 +4221,8 @@ grpsys         PERFORM 900-ORCDBMAIN-SEC
                        INITIALIZE                      SYS-2002-REC
                        MOVE    "2002"              TO  SYS-2002-KANRICD
 grpsys                 MOVE    WRK-PARA-HOSPNUM    TO  SYS-2002-HOSPNUM
-                       MOVE    ZERO                TO  SYS-STYUKYMD
-                       MOVE    ZERO                TO  SYS-EDYUKYMD
+                       MOVE    ZERO                TO  SYS-2002-STYUKYMD
+                       MOVE    ZERO                TO  SYS-2002-EDYUKYMD
                        MOVE    SYS-2002-REC        TO  MCPDATA-REC
                        MOVE    "tbl_syskanri"      TO  MCP-TABLE
                        MOVE    "key2"              TO  MCP-PATHNAME
