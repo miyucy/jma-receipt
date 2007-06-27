@@ -916,23 +916,23 @@
            WHEN    "1"
            WHEN    "4"
                STRING  "(J.STYMD <= '"         DELIMITED   BY  SIZE
-                       WRK-EDTSYYMD            DELIMITED   BY  SIZE
+                       WRK-EDTSYYMD            DELIMITED   BY  SPACE
                        "' AND J.EDYMD >= '"    DELIMITED   BY  SIZE
-                       WRK-STTSYYMD            DELIMITED   BY  SIZE
+                       WRK-STTSYYMD            DELIMITED   BY  SPACE
                        "')"                    DELIMITED   BY  SIZE
                INTO        WRK-SQL
                WITH POINTER    WRK-SQL-PNT
                END-STRING
            WHEN    "2"
                STRING  "(J.STYMD LIKE '"       DELIMITED   BY  SIZE
-                       SPA-Q01-STTSYYM         DELIMITED   BY  SIZE
+                       SPA-Q01-STTSYYM         DELIMITED   BY  SPACE
                        "%')"                   DELIMITED   BY  SIZE
                INTO        WRK-SQL
                WITH POINTER WRK-SQL-PNT
                END-STRING
            WHEN    "3"
                STRING  "(J.EDYMD LIKE '"       DELIMITED   BY  SIZE
-                       SPA-Q01-STTSYYM         DELIMITED   BY  SIZE
+                       SPA-Q01-STTSYYM         DELIMITED   BY  SPACE
                        "%')"                   DELIMITED   BY  SIZE
                INTO        WRK-SQL
                WITH POINTER WRK-SQL-PNT
@@ -956,23 +956,23 @@
            WHEN    "1"
            WHEN    "4"
                STRING  "(J.NINSTYMD <= '"      DELIMITED   BY  SIZE
-                       WRK-EDTSYYMD            DELIMITED   BY  SIZE
+                       WRK-EDTSYYMD            DELIMITED   BY  SPACE
                        "' AND J.NINEDYMD >= '" DELIMITED   BY  SIZE
-                       WRK-STTSYYMD            DELIMITED   BY  SIZE
+                       WRK-STTSYYMD            DELIMITED   BY  SPACE
                        "')"                    DELIMITED   BY  SIZE
                INTO        WRK-SQL
                WITH POINTER    WRK-SQL-PNT
                END-STRING
            WHEN    "2"
                STRING  "(J.NINSTYMD LIKE '"    DELIMITED   BY  SIZE
-                       SPA-Q01-STTSYYM         DELIMITED   BY  SIZE
+                       SPA-Q01-STTSYYM         DELIMITED   BY  SPACE
                        "%')"                   DELIMITED   BY  SIZE
                INTO        WRK-SQL
                WITH POINTER WRK-SQL-PNT
                END-STRING
            WHEN    "3"
                STRING  "(J.NINEDYMD LIKE '"    DELIMITED   BY  SIZE
-                       SPA-Q01-STTSYYM         DELIMITED   BY  SIZE
+                       SPA-Q01-STTSYYM         DELIMITED   BY  SPACE
                        "%')"                   DELIMITED   BY  SIZE
                INTO        WRK-SQL
                WITH POINTER WRK-SQL-PNT
