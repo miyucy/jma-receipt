@@ -1079,6 +1079,10 @@
                                                                  (IDY)
                        MOVE    SPA-TERMID      TO  LNK-TSY-TERMID (IDY)
                        MOVE    SPA-SYSYMD      TO  LNK-TSY-CREYMD (IDY)
+      *                ¿©»öÉ¸½àÉéÃ´³Û¸º³Û³«»ÏÆü
+                       MOVE    LNK-TSY-NINSTYMD (IDY)
+                                               TO  LNK-TSY-SKJNINSTYMD
+                                                                  (IDY)
       *                ÊÝ¸±Å¬ÍÑ¶èÊ¬
                        MOVE    "0"             TO  LNK-TSY-HKNTEKKBN
                                                                   (IDY)
@@ -1228,6 +1232,10 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                                                                   (IDY)
                        MOVE    SPA-TERMID      TO  LNK-TNK-TERMID (IDY)
                        MOVE    SPA-SYSYMD      TO  LNK-TNK-CREYMD (IDY)
+      *                ¿©»öÉ¸½àÉéÃ´³Û¸º³Û³«»ÏÆü
+                       MOVE    LNK-TNK-STYMD (IDY)
+                                               TO  LNK-TNK-SKJNINSTYMD
+                                                                  (IDY)
       *                ÊÝ¸±Å¬ÍÑ¶èÊ¬
                        MOVE    "0"             TO  LNK-TNK-HKNTEKKBN
                                                                   (IDY)
