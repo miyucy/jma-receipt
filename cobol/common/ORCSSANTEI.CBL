@@ -449,6 +449,8 @@
                MOVE    SMCNDATE-YMD        TO  SANTEI-UPYMD
                MOVE    SMCNDATE-HMS        TO  SANTEI-UPHMS
       *
+               MOVE    SPA-OPID            TO  SANTEI-OPID
+      *
                IF      HZN-SANTEI-KEY      =   SANTEI-KEY
                    MOVE    SANTEI-REC          TO  HZN-SANTEI-REC
                END-IF
@@ -1723,6 +1725,8 @@
            MOVE    SMCNDATE-YMD        TO  SANTEI-CREYMD
            MOVE    SMCNDATE-YMD        TO  SANTEI-UPYMD
            MOVE    SMCNDATE-HMS        TO  SANTEI-UPHMS
+      *
+           MOVE    SPA-OPID            TO  SANTEI-OPID
       *    ¿·µ¬
            MOVE    SANTEI-REC          TO  MCPDATA-REC
            MOVE    "DBINSERT"          TO  MCP-FUNC
@@ -1748,6 +1752,8 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            MOVE    SMCNDATE-YMD        TO  SANTEI-UPYMD
            MOVE    SMCNDATE-HMS        TO  SANTEI-UPHMS
+      *
+           MOVE    SPA-OPID            TO  SANTEI-OPID
       *
            MOVE    SANTEI-REC          TO  MCPDATA-REC
            MOVE    "DBUPDATE"          TO  MCP-FUNC
