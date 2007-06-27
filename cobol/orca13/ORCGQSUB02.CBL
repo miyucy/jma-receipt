@@ -394,7 +394,9 @@
                EVALUATE    TRUE
                WHEN  ( SPA-Q01-STTSYYM     NOT =   SPACE )
                    MOVE    SPA-Q01-STTSYYM TO  WRK-STTSYYMD
-                   MOVE    "01"            TO  WRK-STTSYYMD(7:2)
+                   IF    ( SPA-Q01-STTSYSKBT   =   "1" )
+                       MOVE    "01"        TO  WRK-STTSYYMD(7:2)
+                   END-IF
                WHEN  ( SPA-Q01-STSRYYMD    NOT =   SPACE )
       *            MOVE    SPA-Q01-STSRYYMD TO WRK-STTSYYMD
       *            MOVE    "01"            TO  WRK-STTSYYMD(7:2)
@@ -405,9 +407,13 @@
       *
                EVALUATE    TRUE
                WHEN  ( SPA-Q01-EDTSYYM     NOT =   SPACE )
-                   MOVE    SPA-Q01-EDTSYYM TO WRK-YMD
-                   PERFORM 10011-GET-GETUMATU-SEC
-                   MOVE    LNK-DAY7-KOYOMI TO  WRK-EDTSYYMD
+                   IF    ( SPA-Q01-STTSYSKBT   =   "1" )
+                       MOVE    SPA-Q01-EDTSYYM TO  WRK-YMD
+                       PERFORM 10011-GET-GETUMATU-SEC
+                       MOVE    LNK-DAY7-KOYOMI TO  WRK-EDTSYYMD
+                   ELSE
+                       MOVE    SPA-Q01-EDTSYYM TO  WRK-EDTSYYMD
+                   END-IF
                WHEN  ( SPA-Q01-EDSRYYMD    NOT =   SPACE )
       *            MOVE    SPA-Q01-EDSRYYMD TO WRK-YMD
       *            PERFORM 10011-GET-GETUMATU-SEC
@@ -908,6 +914,7 @@
       *
            EVALUATE    SPA-Q01-STTSYSKBT
            WHEN    "1"
+           WHEN    "4"
                STRING  "(J.STYMD <= '"         DELIMITED   BY  SIZE
                        WRK-EDTSYYMD            DELIMITED   BY  SIZE
                        "' AND J.EDYMD >= '"    DELIMITED   BY  SIZE
@@ -947,6 +954,7 @@
       *
            EVALUATE    SPA-Q01-STTSYSKBT
            WHEN    "1"
+           WHEN    "4"
                STRING  "(J.NINSTYMD <= '"      DELIMITED   BY  SIZE
                        WRK-EDTSYYMD            DELIMITED   BY  SIZE
                        "' AND J.NINEDYMD >= '" DELIMITED   BY  SIZE

@@ -914,7 +914,7 @@
       *
            INITIALIZE                      SPA-GMN-Q01-STTSYSKBTLST-G
       *
-           MOVE    3                   TO  SPA-GMN-Q01-STTSYSKBTLST-MAX
+           MOVE    4                   TO  SPA-GMN-Q01-STTSYSKBTLST-MAX
       *
            MOVE    "1"                 TO  SPA-GMN-Q01-STTSYSKBTL    (1)
            MOVE    "有効月"            TO  SPA-GMN-Q01-STTSYSKBTMEIL (1)
@@ -922,6 +922,8 @@
            MOVE    "開始月"            TO  SPA-GMN-Q01-STTSYSKBTMEIL (2)
            MOVE    "3"                 TO  SPA-GMN-Q01-STTSYSKBTL    (3)
            MOVE    "終了月"            TO  SPA-GMN-Q01-STTSYSKBTMEIL (3)
+           MOVE    "4"                 TO  SPA-GMN-Q01-STTSYSKBTL    (4)
+           MOVE    "有効日"            TO  SPA-GMN-Q01-STTSYSKBTMEIL (4)
       *
            .
        3101-STTSYSKBT-CMB-SYOKI-EXT.
@@ -3009,26 +3011,52 @@
       *    日付妥当性チェック＆編集処理
            IF  ( SPA-GMN-Q01-STTSYYM NOT =   SPACE )
       *
-               INITIALIZE                      ORCSGDAYAREA
-               MOVE    SPA-GMN-Q01-STTSYYM     TO  SGDAY-INDAY
-               MOVE    "1"                     TO  SGDAY-INTYPE
-               CALL    "ORCSGDAY"         USING
-                                          ORCSGDAYAREA
-               IF    ( SGDAY-RC           =   ZERO )
-                   MOVE    SGDAY-OTDAY (1:6)   TO  SPA-GMN-Q01-STTSYYM
-                   MOVE    SGDAY-SDAY          TO  SPA-NAI-Q01-STTSYYM
+               IF    ( SPA-GMN-Q01-STTSYSKBT   =   "1" OR "2" OR "3" )
+                   INITIALIZE                      ORCSGDAYAREA
+                   MOVE    SPA-GMN-Q01-STTSYYM     TO  SGDAY-INDAY
+                   MOVE    "1"                     TO  SGDAY-INTYPE
+                   CALL    "ORCSGDAY"         USING
+                                              ORCSGDAYAREA
+                   IF    ( SGDAY-RC           =   ZERO )
+                       MOVE    SGDAY-OTDAY (1:6)
+                                              TO  SPA-GMN-Q01-STTSYYM
+                       MOVE    SGDAY-SDAY     TO  SPA-NAI-Q01-STTSYYM
+                   ELSE
+                       MOVE    SPA-GMN-Q01-STTSYYM
+                                               TO  WRK-YMD
+                       PERFORM 5002-HIZUKE-CHK-SEC
+                       IF  ( SPA-ERRCD         =   SPACE )
+                           MOVE    WRK-SYMD    TO  SPA-NAI-Q01-STTSYYM
+                           MOVE    WRK-HENYMDG (1:6)
+                                               TO  SPA-GMN-Q01-STTSYYM
+                       ELSE
+                           MOVE    "0125"              TO  SPA-ERRCD
+                           MOVE    154             TO  SPA-GMN-Q01-CUR
+                           GO  TO  4117-STTSYYM-CHK-EXT
+                       END-IF
+                   END-IF
                ELSE
                    MOVE    SPA-GMN-Q01-STTSYYM
-                                           TO  WRK-YMD
+                                               TO  WRK-YMD
                    PERFORM 5002-HIZUKE-CHK-SEC
                    IF  ( SPA-ERRCD         =   SPACE )
                        MOVE    WRK-SYMD    TO  SPA-NAI-Q01-STTSYYM
-                       MOVE    WRK-HENYMDG (1:6)
-                                           TO  SPA-GMN-Q01-STTSYYM
+                       MOVE    WRK-HENYMDG TO  SPA-GMN-Q01-STTSYYM
                    ELSE
-                       MOVE    "0125"              TO  SPA-ERRCD
-                       MOVE    154             TO  SPA-GMN-Q01-CUR
-                       GO  TO  4117-STTSYYM-CHK-EXT
+                       MOVE    SPACE       TO  SPA-ERRCD
+                       INITIALIZE                      ORCSGDAYAREA
+                       MOVE    SPA-GMN-Q01-STTSYYM TO  SGDAY-INDAY
+                       MOVE    "1"                 TO  SGDAY-INTYPE
+                       CALL    "ORCSGDAY"         USING
+                                                  ORCSGDAYAREA
+                       IF    ( SGDAY-RC           =   ZERO )
+                           MOVE    SGDAY-OTDAY TO  SPA-GMN-Q01-STTSYYM
+                           MOVE    SGDAY-SDAY  TO  SPA-NAI-Q01-STTSYYM
+                       ELSE
+                           MOVE    "0125"              TO  SPA-ERRCD
+                           MOVE    154             TO  SPA-GMN-Q01-CUR
+                           GO  TO  4117-STTSYYM-CHK-EXT
+                       END-IF
                    END-IF
                END-IF
            END-IF
@@ -3046,26 +3074,57 @@
       *    日付妥当性チェック＆編集処理
            IF  ( SPA-GMN-Q01-EDTSYYM NOT =   SPACE )
       *
-               INITIALIZE                      ORCSGDAYAREA
-               MOVE    SPA-GMN-Q01-EDTSYYM     TO  SGDAY-INDAY
-               MOVE    "1"                     TO  SGDAY-INTYPE
-               CALL    "ORCSGDAY"         USING
-                                          ORCSGDAYAREA
-               IF    ( SGDAY-RC           =   ZERO )
-                   MOVE    SGDAY-OTDAY (1:6)   TO  SPA-GMN-Q01-EDTSYYM
-                   MOVE    SGDAY-SDAY          TO  SPA-NAI-Q01-EDTSYYM
+               IF    ( SPA-GMN-Q01-STTSYSKBT   =   "1" OR "2" OR "3" )
+                   INITIALIZE                  ORCSGDAYAREA
+                   MOVE    SPA-GMN-Q01-EDTSYYM TO  SGDAY-INDAY
+                   MOVE    "1"                 TO  SGDAY-INTYPE
+                   CALL    "ORCSGDAY"          USING
+                                               ORCSGDAYAREA
+                   IF    ( SGDAY-RC            =   ZERO )
+                       MOVE    SGDAY-OTDAY (1:6)
+                                               TO  SPA-GMN-Q01-EDTSYYM
+                       MOVE    SGDAY-SDAY      TO  SPA-NAI-Q01-EDTSYYM
+                   ELSE
+                       MOVE    SPA-GMN-Q01-EDTSYYM
+                                               TO  WRK-YMD
+                       PERFORM 5002-HIZUKE-CHK-SEC
+                       IF  ( SPA-ERRCD         =   SPACE )
+                           MOVE    WRK-SYMD    TO  SPA-NAI-Q01-EDTSYYM
+                           MOVE    WRK-HENYMDG (1:6)
+                                               TO  SPA-GMN-Q01-EDTSYYM
+                       ELSE
+                           MOVE    "0127"              TO  SPA-ERRCD
+                           MOVE    155             TO  SPA-GMN-Q01-CUR
+                           GO  TO  4117-EDTSYYM-CHK-EXT
+                       END-IF
+                   END-IF
                ELSE
                    MOVE    SPA-GMN-Q01-EDTSYYM
-                                           TO  WRK-YMD
+                                               TO  WRK-YMD
                    PERFORM 5002-HIZUKE-CHK-SEC
                    IF  ( SPA-ERRCD         =   SPACE )
                        MOVE    WRK-SYMD    TO  SPA-NAI-Q01-EDTSYYM
-                       MOVE    WRK-HENYMDG (1:6)
-                                           TO  SPA-GMN-Q01-EDTSYYM
+                       MOVE    WRK-HENYMDG TO  SPA-GMN-Q01-EDTSYYM
                    ELSE
-                       MOVE    "0127"              TO  SPA-ERRCD
-                       MOVE    155             TO  SPA-GMN-Q01-CUR
-                       GO  TO  4117-EDTSYYM-CHK-EXT
+                       MOVE    SPACE       TO  SPA-ERRCD
+                       INITIALIZE              ORCSGDAYAREA
+                       MOVE    SPA-GMN-Q01-EDTSYYM
+                                               TO  SGDAY-INDAY
+                       MOVE    "1"             TO  SGDAY-INTYPE
+                       CALL    "ORCSGDAY"      USING
+                                               ORCSGDAYAREA
+                       IF    ( SGDAY-RC        =   ZERO )
+                           MOVE    SGDAY-SDAY  TO  WRK-YMD
+                           PERFORM 800-GETUMATU-SEC
+                           MOVE    WRK-SYMD    TO  WRK-YMD
+                           PERFORM 5002-HIZUKE-CHK-SEC
+                           MOVE    WRK-SYMD    TO  SPA-NAI-Q01-EDTSYYM
+                           MOVE    WRK-HENYMDG TO  SPA-GMN-Q01-EDTSYYM
+                       ELSE
+                           MOVE    "0127"      TO  SPA-ERRCD
+                           MOVE    155         TO  SPA-GMN-Q01-CUR
+                           GO  TO  4117-EDTSYYM-CHK-EXT
+                       END-IF
                    END-IF
                END-IF
            END-IF
@@ -6866,13 +6925,13 @@
                MOVE    "低所得１・２入力エラー"
                                        TO  SPA-ERRMSG
            WHEN    "0125"
-               MOVE    "低所得開始月入力エラー"
+               MOVE    "低所得期間開始入力エラー"
                                        TO  SPA-ERRMSG
            WHEN    "0126"
                MOVE    "低所得開始月識別入力エラー"
                                        TO  SPA-ERRMSG
            WHEN    "0127"
-               MOVE    "低所得終了月入力エラー"
+               MOVE    "低所得期間終了入力エラー"
                                        TO  SPA-ERRMSG
            WHEN    "1001"
                MOVE    "開始診療年月日＞終了診療年月日となっています"
