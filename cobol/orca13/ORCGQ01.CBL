@@ -3020,7 +3020,8 @@
                    IF    ( SGDAY-RC           =   ZERO )
                        MOVE    SGDAY-OTDAY (1:6)
                                               TO  SPA-GMN-Q01-STTSYYM
-                       MOVE    SGDAY-SDAY     TO  SPA-NAI-Q01-STTSYYM
+                       MOVE    SGDAY-SDAY  (1:6) 
+                                              TO  SPA-NAI-Q01-STTSYYM
                    ELSE
                        MOVE    SPA-GMN-Q01-STTSYYM
                                                TO  WRK-YMD
@@ -3083,7 +3084,8 @@
                    IF    ( SGDAY-RC            =   ZERO )
                        MOVE    SGDAY-OTDAY (1:6)
                                                TO  SPA-GMN-Q01-EDTSYYM
-                       MOVE    SGDAY-SDAY      TO  SPA-NAI-Q01-EDTSYYM
+                       MOVE    SGDAY-SDAY  (1:6)
+                                               TO  SPA-NAI-Q01-EDTSYYM
                    ELSE
                        MOVE    SPA-GMN-Q01-EDTSYYM
                                                TO  WRK-YMD
