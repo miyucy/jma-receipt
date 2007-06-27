@@ -239,7 +239,7 @@
       *
            05 PIC  X(06)   VALUE   "060004".
            05 PIC  X(30)   VALUE   "初診算定日と病名の転帰日が同じ".
-           05 PIC  X(30)   VALUE   "日付です。                    ".
+           05 PIC  X(30)   VALUE   "日付です                      ".
            05 PIC  X(30)   VALUE   "                              ".
       *
       *    ** 070xxx 急性病名・疑い病名
