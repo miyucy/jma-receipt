@@ -2521,23 +2521,25 @@
       *****************************************************************
        200111-TAISO-SRY-CHK-SEC        SECTION.
       *
-           MOVE    ZERO                TO  FLG-TAISYO-SRY
+           MOVE    1               TO  FLG-TAISYO-SRY
       *
       *    薬剤の場合、院外処方の処理対象チェックを行う
            IF    ( DCSRY-SRYCD (1:1)  =   "6" )
                EVALUATE    ORCBSD01-INGAIPROCKBN
       *        院外処方を含まない
                WHEN    ZERO
-                   IF    ( DCACCT-ZAITEN NOT =   ZERO )
-                       MOVE    1       TO  FLG-TAISYO-SRY
+                   IF    ( DCACCT-SRYKBN(1:1)    =   "2"  )
+                    AND  ( DCACCT-ZAITEN         =   ZERO )
+                       MOVE    ZERO    TO  FLG-TAISYO-SRY
                    END-IF
       *        院外処方を含む
                WHEN    "1"
-                       MOVE    1       TO  FLG-TAISYO-SRY
+                       CONTINUE
       *        院外処方のみ
                WHEN    "2"
-                   IF    ( DCACCT-ZAITEN =   ZERO )
-                       MOVE    1       TO  FLG-TAISYO-SRY
+                   IF    ( DCACCT-SRYKBN(1:1)    =   "2"  )
+                    AND  ( DCACCT-ZAITEN     NOT =   ZERO )
+                       MOVE    ZERO    TO  FLG-TAISYO-SRY
                    END-IF
                END-EVALUATE
       *
@@ -2547,9 +2549,10 @@
                    END-IF
                END-IF
            ELSE
-      *        薬剤以外の場合
-                       MOVE    1       TO  FLG-TAISYO-SRY
+                       CONTINUE
            END-IF
+      *
+           DISPLAY "FLG-TAISYO-SRY = " FLG-TAISYO-SRY
       *
       *    約束セットのコードは読み飛ばす
            IF    ( DCSRY-SRYCD (1:1)   =   "S" )
