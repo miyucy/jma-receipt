@@ -403,6 +403,9 @@
            CALL    "ORCSHOSPNUM"   USING
                                        MCPAREA
                                        SPA-AREA
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO  TO  310-SPASET-EXT
+           END-IF
       *
       *    ∞ÂŒ≈µ°¥ÿ£…£ƒ ‘Ω∏
            MOVE    SPACE               TO  SYS-1001-REC

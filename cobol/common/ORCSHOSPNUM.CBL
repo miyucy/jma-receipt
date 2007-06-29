@@ -42,6 +42,7 @@
        01  FLG-AREA.
            03  FLG-OK              PIC 9(01).
            03  FLG-SYSBASE         PIC 9(01).
+           03  FLG-SYSUSER         PIC 9(01).
       *
       *    一時領域
        01  WRK-AREA.
@@ -55,6 +56,10 @@
       *    システム基本
        01  SYSBASE-REC.
            COPY    "CPSYSBASE.INC".
+      *
+      *    システムユーザー
+       01  SYSUSER-REC.
+           COPY    "CPSYSUSER.INC".
       *
       *****************************************************************
       *    サブプロ用　領域
@@ -79,20 +84,53 @@
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
-           MOVE    MCP-USER            TO  WRK-USER
-           IF      WRK-USERHOSPNUM     NOT NUMERIC
-                   MOVE    1           TO  SPA-HOSPNUM
-           ELSE
-                   MOVE    WRK-USERHOSPNUM
-                                       TO  SPA-HOSPNUM
+      *    医療機関識別番号設定
+           PERFORM 100-HOSPNUM-SET-SEC
+      *
+      *    システム基本チェック処理
+           IF      SPA-ERRCD           =   SPACE
+               PERFORM 100-SYSBASE-CHECK-SEC
            END-IF
-           PERFORM 100-SYSBASE-CHECK-SEC
            IF      FLG-OK              =   ZERO
-                   MOVE    ZERO        TO  SPA-HOSPNUM
+               MOVE    ZERO                TO  SPA-HOSPNUM
+               MOVE    "1002"              TO  SPA-ERRCD
            END-IF
            .
            EXIT    PROGRAM
            .
+      *****************************************************************
+      *    医療機関識別番号設定処理
+      *****************************************************************
+       100-HOSPNUM-SET-SEC       SECTION.
+      *
+           MOVE    ZERO                TO  SPA-HOSPNUM
+      *
+           INITIALIZE                      SYSUSER-REC
+           MOVE    MCP-USER            TO  SYSUSER-USERID
+           MOVE    SYSUSER-REC         TO  MCPDATA-REC
+           MOVE    "tbl_sysuser"       TO  MCP-TABLE 
+           MOVE    "key"               TO  MCP-PATHNAME 
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_sysuser"   TO  MCP-TABLE 
+               MOVE    "key"           TO  MCP-PATHNAME 
+               PERFORM 900-SYSUSER-READ-SEC
+           ELSE
+               INITIALIZE                  SYSUSER-REC
+               MOVE    1               TO  FLG-SYSUSER
+           END-IF
+           MOVE    "tbl_sysuser"       TO  MCP-TABLE 
+           MOVE    "key"               TO  MCP-PATHNAME 
+           PERFORM 990-DBCLOSE-SEC
+           IF      FLG-SYSUSER         =   ZERO
+      *        医療機関識別番号
+               MOVE    SYSUSER-HOSPNUM     TO  SPA-HOSPNUM
+           ELSE
+               MOVE    "1002"              TO  SPA-ERRCD
+           END-IF
+           .
+       100-HOSPNUM-SET-EXT.
+           EXIT.
       *****************************************************************
       *    システム基本チェック処理
       *****************************************************************
@@ -108,7 +146,7 @@
            IF      MCP-RC              =   ZERO
                MOVE    "tbl_sysbase"   TO  MCP-TABLE 
                MOVE    "all"           TO  MCP-PATHNAME 
-               PERFORM 910-DBFETCH-SEC
+               PERFORM 900-SYSBASE-READ-SEC
            ELSE
                INITIALIZE                  SYSBASE-REC
                MOVE    1               TO  FLG-SYSBASE
@@ -121,7 +159,7 @@
                IF  FLG-SYSBASE         =   ZERO
                    MOVE    "tbl_sysbase"   TO  MCP-TABLE 
                    MOVE    "all"           TO  MCP-PATHNAME 
-                   PERFORM 910-DBFETCH-SEC
+                   PERFORM 900-SYSBASE-READ-SEC
                END-IF
            END-PERFORM
            MOVE    "tbl_sysbase"       TO  MCP-TABLE 
@@ -129,6 +167,36 @@
            PERFORM 990-DBCLOSE-SEC
            .
        100-SYSBASE-CHECK-EXT.
+           EXIT.
+      *****************************************************************
+      *    システム基本読込処理
+      *****************************************************************
+       900-SYSBASE-READ-SEC            SECTION.
+      *
+           PERFORM 910-DBFETCH-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC     TO  SYSBASE-REC
+               MOVE    ZERO            TO  FLG-SYSBASE
+           ELSE
+               MOVE    1               TO  FLG-SYSBASE
+           END-IF
+           .
+       900-SYSBASE-READ-EXT.
+           EXIT.
+      *****************************************************************
+      *    システム基本読込処理
+      *****************************************************************
+       900-SYSUSER-READ-SEC            SECTION.
+      *
+           PERFORM 910-DBFETCH-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC     TO  SYSUSER-REC
+               MOVE    ZERO            TO  FLG-SYSUSER
+           ELSE
+               MOVE    1               TO  FLG-SYSUSER
+           END-IF
+           .
+       900-SYSUSER-READ-EXT.
            EXIT.
       *
       *****************************************************************
@@ -155,11 +223,6 @@
                                            MCPAREA
                                            MCPDATA-REC
                                            SPA-AREA
-           IF      MCP-RC              =   ZERO
-               MOVE    MCPDATA-REC     TO  SYSBASE-REC
-           ELSE
-               MOVE    1               TO  FLG-SYSBASE
-           END-IF
            .
        910-DBFETCH-EXT.
            EXIT.
