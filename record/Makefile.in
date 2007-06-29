@@ -526,6 +526,7 @@ DB_files = \
 	tbl_hktsantei.db \
 	tbl_hktsrycd.db \
 	tbl_clm_uid.db \
+	tbl_sysuser.db \
 
 all:   
 

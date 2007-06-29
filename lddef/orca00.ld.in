@@ -46,6 +46,7 @@ db	{
 	tbl_joblog;
 	tbl_sysbase;
 	tbl_mstkanri;
+	tbl_sysuser;
 };
 
 /* #include "orcadb.inc" */
