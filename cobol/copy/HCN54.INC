@@ -43,9 +43,9 @@
             02  HCN54-YKZTENSU
                     PIC X(7)    OCCURS  23 TIMES.
             02  HCN54-NYUYMD.
-              03  HCN54-NYUYY PIC X(2).
-              03  HCN54-NYUMM PIC X(2).
-              03  HCN54-NYUDD PIC X(2).
+              03  HCN54-NYUY  PIC X(2).
+              03  HCN54-NYUM  PIC X(2).
+              03  HCN54-NYUD  PIC X(2).
             02  HCN54-HOSPSBT
                     PIC X(2)    OCCURS  3 TIMES.
             02  HCN54-NYUINSYUBETU
@@ -76,9 +76,9 @@
             02  HCN54-SONOTAKAISU   PIC X(2).
             02  HCN54-SONOTA
                     PIC X(16)   OCCURS  2 TIMES.
-            02  HCN54-KINGAK
+            02  HCN54-KINGAKU
                     PIC X(7)    OCCURS  8 TIMES.
-            02  HCN54-SYOKJN
+            02  HCN54-KIJYUN
                     PIC X(4)    OCCURS  4 TIMES.
             02  HCN54-SYOKAKERU PIC X(4).
             02  HCN54-SYONICHI  PIC X(4).
