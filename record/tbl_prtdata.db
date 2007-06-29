@@ -17,6 +17,7 @@ tbl_prtdata	{
 	SITEKBN			char(1);
 	PRTNM			char(16);
 	PRTDATA			varchar(20000);
+	CREYMD 			varchar(8);
 #-----> ธกบ๗อันเฬÜ
 	STPAGE			number(5),virtual;
 	EDPAGE			number(5),virtual;
