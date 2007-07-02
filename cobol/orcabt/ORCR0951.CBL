@@ -2483,7 +2483,9 @@ grpsys     PERFORM 900-DBSELECT-SEC
                    UNTIL   IDXY    >       TBL-RECE-MAX
                    OR      FLG-ERR >       ZERO
       *
-               ADD     1                    TO  WRK-RECENUM
+               IF      WRK-PARA-SHELLID    NOT =   "RECEPTX"
+                   ADD     1                   TO  WRK-RECENUM
+               END-IF
       * 
       *        レセプト明細管理ＤＢ
                PERFORM 3901-RECE08-INSERT-SEC
@@ -2543,7 +2545,12 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE08-HOSPNUM
            MOVE    RECE82-SRYYM        TO  RECE08-SRYYM
            MOVE    TBL-RECE-RENNUM (IDXY)
                                        TO  RECE08-RENNUM
-           MOVE    WRK-RECENUM         TO  RECE08-RECENUM
+           IF      WRK-PARA-SHELLID    NOT =   "RECEPTX"
+               MOVE    WRK-RECENUM         TO  RECE08-RECENUM
+           ELSE
+               COMPUTE RECE08-RECENUM      =   WRK-RECENUM
+                                           +   TBL-RECE-RENNUM (IDXY)
+           END-IF
       *
            MOVE    "00"                TO  RECE08-SRYKA
            MOVE    "99999999"          TO  RECE08-HKNJANUM-S
