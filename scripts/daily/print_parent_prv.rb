@@ -426,7 +426,7 @@ end
 			ls_w1 = 'HCN51P.red'
 			red_file = std_form + ls_w1
    			puts 'rousai hit!!'
-#   -----------> 自倍分
+#   -----------> 自賠分
 		when	'HCM23V04.red'
 			ls_w1 = 'HCM48.red'
 			red_file = std_form + ls_w1
