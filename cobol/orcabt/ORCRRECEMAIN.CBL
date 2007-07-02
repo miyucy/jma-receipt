@@ -1195,31 +1195,20 @@
       *    前回分削除(存在すれば)
            PERFORM 200101-PRVDATA-DEL-SEC
       *
+           MOVE     SPACE       TO WRK-ARG
+           STRING   WRK-PARA3      DELIMITED   BY  SIZE
+                    ","            DELIMITED   BY  SIZE
+                    WRK-PARA-HOSPNUM
+                                   DELIMITED   BY  SIZE
+                    ","            DELIMITED   BY  SIZE
+                    RECEERR        DELIMITED   BY  SPACE
+                                   INTO    WRK-ARG
+           END-STRING
            IF      WRK-PARA-A14        =   "0"
-               MOVE     SPACE       TO WRK-ARG
-               STRING   WRK-PARA3      DELIMITED   BY  SIZE
-                        ","            DELIMITED   BY  SIZE
-                        WRK-PARA-HOSPNUM
-                                       DELIMITED   BY  SIZE
-                        ","            DELIMITED   BY  SIZE
-                        RECEERR        DELIMITED   BY  SPACE
-                                       INTO    WRK-ARG
-               END-STRING
                DISPLAY "ORCR0486 start = [" WRK-ARG "]"
                CALL    "ORCR0486"          USING
                                            WRK-ARG
            ELSE
-               MOVE     SPACE       TO WRK-ARG
-               STRING   WRK-PARA3      DELIMITED   BY  SIZE
-                        ","            DELIMITED   BY  SIZE
-                        WRK-PARA-A13   DELIMITED   BY  SIZE
-                        ","            DELIMITED   BY  SIZE
-                        WRK-PARA-HOSPNUM
-                                       DELIMITED   BY  SIZE
-                        ","            DELIMITED   BY  SIZE
-                        RECEERR        DELIMITED   BY  SPACE
-                                       INTO    WRK-ARG
-               END-STRING
                DISPLAY "ORCR0489 start = [" WRK-ARG "]"
                CALL    "ORCR0489"          USING
                                            WRK-ARG
@@ -1489,31 +1478,20 @@
            PERFORM 200101-PRVDATA-DEL-SEC
       *
       *
+           MOVE     SPACE       TO WRK-ARG
+           STRING   WRK-PARA3      DELIMITED   BY  SIZE
+                    ","            DELIMITED   BY  SIZE
+                    WRK-PARA-HOSPNUM
+                                   DELIMITED   BY  SIZE
+                    ","            DELIMITED   BY  SIZE
+                    RECEERR        DELIMITED   BY  SPACE
+                                   INTO    WRK-ARG
+           END-STRING
            IF      WRK-PARA-A14        =   "0"
-               MOVE     SPACE       TO WRK-ARG
-               STRING   WRK-PARA3      DELIMITED   BY  SIZE
-                        ","            DELIMITED   BY  SIZE
-                        WRK-PARA-HOSPNUM
-                                       DELIMITED   BY  SIZE
-                        ","            DELIMITED   BY  SIZE
-                        RECEERR        DELIMITED   BY  SPACE
-                                       INTO    WRK-ARG
-               END-STRING
                DISPLAY "ORCR0956 start = [" WRK-ARG "]"
                CALL    "ORCR0956"          USING
                                            WRK-ARG
            ELSE
-               MOVE     SPACE       TO WRK-ARG
-               STRING   WRK-PARA3      DELIMITED   BY  SIZE
-                        ","            DELIMITED   BY  SIZE
-                        WRK-PARA-A13   DELIMITED   BY  SIZE
-                        ","            DELIMITED   BY  SIZE
-                        WRK-PARA-HOSPNUM
-                                       DELIMITED   BY  SIZE
-                        ","            DELIMITED   BY  SIZE
-                        RECEERR        DELIMITED   BY  SPACE
-                                       INTO    WRK-ARG
-               END-STRING
                DISPLAY "ORCR0966 start = [" WRK-ARG "]"
                CALL    "ORCR0966"          USING
                                            WRK-ARG
