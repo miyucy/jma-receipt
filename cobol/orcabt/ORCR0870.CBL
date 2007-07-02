@@ -65,6 +65,7 @@
       *
       *  03.05.01    NACL-ÌçÏÆ    07/06/01  ¥°¥ë¡¼¥×¿ÇÎÅÂÐ±þ
       *  03.05.02    NACL-Æ£¸¶    07/06/01  realtime preview ½èÍýÄÉ²Ã
+      *  03.05.03    NACL-ÌçÏÆ    07/06/26  ¼«ÇåÀÕÊ¿À®£±£¹Ç¯£´·î²þÀµÍÍ¼°ÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -851,6 +852,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE859PARA-HOSPNUM
                ELSE                                                     
                   EVALUATE      RECE84-SRYKBN
                       WHEN      "40"
+                      WHEN      "80"
       *               ¡Ê²ðÃ£¸£°ú¤¢¤ê¡Ë
                          IF  RECE84-KAITATU-COMMENT      =  "1"
                             MOVE   1   TO  TBL-HASSYO-KAITATU-COMMENT
@@ -877,7 +879,6 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE859PARA-HOSPNUM
                          IF  RECE84-SESSYOKU-COMMENT     =  "1"
                             MOVE   1   TO  TBL-HASSYO-SESSYOKU-COMMENT
                          END-IF
-                      WHEN      "80"
       *               ¡Êºß»Ù±ç¤Ë´Ø¤¹¤ë¿ÇÎÅ¤Î¥«¥¦¥ó¥È¡Ë
                          IF  RECE84-FLG-ZAISIEN-COMMENT  =  "1"
                             MOVE  RECE84-REC  TO  WRK-RECE84-REC
@@ -1103,6 +1104,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE859PARA-HOSPNUM
                         PERFORM    2099-RECE84-WRITE-SEC
                       END-IF
                    WHEN      "40"          
+                   WHEN      "80"
                       MOVE   ZERO   TO  FLG-COMMENT
       *            ¡ÊÀº¿À²ÊÂà±¡Á°Ë¬Ìä»ØÆ³ÎÁ»»ÄêÆü¤Î¥»¥Ã¥È¡Ë
                       IF   FLG-COMMENT  =  ZERO
@@ -1124,6 +1126,21 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE859PARA-HOSPNUM
                       IF   FLG-COMMENT  =  ZERO
                         PERFORM       2001-RIHASEN-HANTEI-SEC
                       END-IF
+      *
+      *            ¡ÊË¬Ìä´Ç¸î»Ø¼¨ÎÁ»»ÄêÆü¤Î¥»¥Ã¥È¡Ë
+                      IF   FLG-COMMENT  =  ZERO
+                        PERFORM       2001-HOUSIJI-HANTEI-SEC
+                      END-IF
+      *            ¡ÊºßÂð·ì±ÕÆ©ÀÏÉÑ²ó»ØÆ³´ÉÍýÎÁ»»Äê»þ¤Î
+      *              ºßÂð·ì±ÕÆ©ÀÏ»ØÆ³´ÉÍýÎÁ»»ÄêÆü¤Î¥»¥Ã¥È¡Ë
+                      IF   FLG-COMMENT  =  ZERO
+                        PERFORM       2001-HINKAI-HANTEI-SEC
+                      END-IF
+      *            ¡Ê±ý¿Ç¡¦ÆÃÊÌ±ý¿Ç»»ÄêÆü¤Î¥»¥Ã¥È¡Ë
+                      IF   FLG-COMMENT  =  ZERO
+                        PERFORM       2001-OSIN-HANTEI-SEC
+                      END-IF
+      *
                       IF   FLG-COMMENT  =  ZERO
                         PERFORM       2099-RECE84-WRITE-SEC
                       END-IF
@@ -1136,24 +1153,6 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE859PARA-HOSPNUM
                    WHEN      "70"
       *            ¡Ê£Ã£Ô¡¦£Í£Ò£É¼Â»ÜÆü¤Î¥»¥Ã¥È¡Ë
                       PERFORM    2001-CTMRI-HANTEI-SEC
-                   WHEN      "80"
-                      MOVE   ZERO   TO  FLG-COMMENT
-      *            ¡ÊË¬Ìä´Ç¸î»Ø¼¨ÎÁ»»ÄêÆü¤Î¥»¥Ã¥È¡Ë
-                      IF   FLG-COMMENT  =  ZERO
-                        PERFORM    2001-HOUSIJI-HANTEI-SEC
-                      END-IF
-      *            ¡ÊºßÂð·ì±ÕÆ©ÀÏÉÑ²ó»ØÆ³´ÉÍýÎÁ»»Äê»þ¤Î
-      *              ºßÂð·ì±ÕÆ©ÀÏ»ØÆ³´ÉÍýÎÁ»»ÄêÆü¤Î¥»¥Ã¥È¡Ë
-                      IF   FLG-COMMENT  =  ZERO
-                        PERFORM    2001-HINKAI-HANTEI-SEC
-                      END-IF
-      *            ¡Ê±ý¿Ç¡¦ÆÃÊÌ±ý¿Ç»»ÄêÆü¤Î¥»¥Ã¥È¡Ë
-                      IF   FLG-COMMENT  =  ZERO
-                        PERFORM    2001-OSIN-HANTEI-SEC
-                      END-IF
-                      IF   FLG-COMMENT  =  ZERO
-                        PERFORM    2099-RECE84-WRITE-SEC
-                      END-IF
                    WHEN      "90"                                       
                    WHEN      "92"
                       EVALUATE    RECE84-ZAISKBKBN
@@ -1749,8 +1748,13 @@ grpsys        PERFORM  900-DBSELECT-SEC
                IF   RECE82-HKNKBN    NOT  =  "4"
                     MOVE    "80" TO  WRK-SRYKBN
                ELSE
+                 EVALUATE  WRK-PARA-JIBAIPRTKBN
+                  WHEN     "0"
                     MOVE    "40" TO  WRK-SRYKBN
                     MOVE    "1"  TO  WRK-OKIKAEFLG
+                  WHEN     "1"
+                    MOVE    "80" TO  WRK-SRYKBN
+                 END-EVALUATE
                END-IF
              WHEN       CONS-NOUKE
                EVALUATE   FLG-COMOKIKAE2
@@ -1794,8 +1798,13 @@ grpsys        PERFORM  900-DBSELECT-SEC
                IF   RECE82-HKNKBN    NOT  =  "4"
                     MOVE    "80" TO  WRK-SRYKBN
                ELSE
+                 EVALUATE  WRK-PARA-JIBAIPRTKBN
+                  WHEN     "0"
                     MOVE    "40" TO  WRK-SRYKBN
                     MOVE    "1"  TO  WRK-OKIKAEFLG
+                  WHEN     "1"
+                    MOVE    "80" TO  WRK-SRYKBN
+                 END-EVALUATE
                END-IF
              WHEN       CONS-UNDOKI
                EVALUATE   FLG-COMOKIKAE2
@@ -1839,8 +1848,13 @@ grpsys        PERFORM  900-DBSELECT-SEC
                IF   RECE82-HKNKBN    NOT  =  "4"
                     MOVE    "80" TO  WRK-SRYKBN
                ELSE
+                 EVALUATE  WRK-PARA-JIBAIPRTKBN
+                  WHEN     "0"
                     MOVE    "40" TO  WRK-SRYKBN
                     MOVE    "1"  TO  WRK-OKIKAEFLG
+                  WHEN     "1"
+                    MOVE    "80" TO  WRK-SRYKBN
+                 END-EVALUATE
                END-IF
              WHEN       CONS-KOKYUKI
                MOVE    17   TO  WRK-RECE85XX-YUKOKETA(IDX-RECE85 1)
@@ -1861,8 +1875,13 @@ grpsys        PERFORM  900-DBSELECT-SEC
                IF   RECE82-HKNKBN    NOT  =  "4"
                     MOVE    "80" TO  WRK-SRYKBN
                ELSE
+                 EVALUATE  WRK-PARA-JIBAIPRTKBN
+                  WHEN     "0"
                     MOVE    "40" TO  WRK-SRYKBN
                     MOVE    "1"  TO  WRK-OKIKAEFLG
+                  WHEN     "1"
+                    MOVE    "80" TO  WRK-SRYKBN
+                 END-EVALUATE
                END-IF
              WHEN       CONS-SESSYOKU
                MOVE    18   TO  WRK-RECE85XX-YUKOKETA(IDX-RECE85 1)
@@ -1883,8 +1902,13 @@ grpsys        PERFORM  900-DBSELECT-SEC
                IF   RECE82-HKNKBN    NOT  =  "4"
                     MOVE    "80" TO  WRK-SRYKBN
                ELSE
+                 EVALUATE  WRK-PARA-JIBAIPRTKBN
+                  WHEN     "0"
                     MOVE    "40" TO  WRK-SRYKBN
                     MOVE    "1"  TO  WRK-OKIKAEFLG
+                  WHEN     "1"
+                    MOVE    "80" TO  WRK-SRYKBN
+                 END-EVALUATE
                END-IF
              WHEN       CONS-NANBYO
                EVALUATE   FLG-COMOKIKAE2
@@ -1928,8 +1952,13 @@ grpsys        PERFORM  900-DBSELECT-SEC
                IF   RECE82-HKNKBN    NOT  =  "4"
                     MOVE    "80" TO  WRK-SRYKBN
                ELSE
+                 EVALUATE  WRK-PARA-JIBAIPRTKBN
+                  WHEN     "0"
                     MOVE    "40" TO  WRK-SRYKBN
                     MOVE    "1"  TO  WRK-OKIKAEFLG
+                  WHEN     "1"
+                    MOVE    "80" TO  WRK-SRYKBN
+                 END-EVALUATE
                END-IF
              WHEN       CONS-SYOGAI
                MOVE    18   TO  WRK-RECE85XX-YUKOKETA(IDX-RECE85 1)
@@ -1950,8 +1979,13 @@ grpsys        PERFORM  900-DBSELECT-SEC
                IF   RECE82-HKNKBN    NOT  =  "4"
                     MOVE    "80" TO  WRK-SRYKBN
                ELSE
+                 EVALUATE  WRK-PARA-JIBAIPRTKBN
+                  WHEN     "0"
                     MOVE    "40" TO  WRK-SRYKBN
                     MOVE    "1"  TO  WRK-OKIKAEFLG
+                  WHEN     "1"
+                    MOVE    "80" TO  WRK-SRYKBN
+                 END-EVALUATE
                END-IF
            END-EVALUATE
       *

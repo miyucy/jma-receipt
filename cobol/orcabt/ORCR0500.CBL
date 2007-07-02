@@ -99,6 +99,10 @@
       *
       *  03.05.01    NACL-藤原    07/04/19  グループ診療対応
       *  03.05.02    NACL-藤原    07/06/01  realtime preview 処理追加
+      *  03.05.03    NACL-門脇    07/06/26  自賠責平成１９年４月改正様式対応
+      *                                     HCM53.red  HCN53.red
+      *                                     HCM54.red  HCN54.red
+      *                                     HCM55.red  HCN55.red
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -274,6 +278,9 @@ grpsys     COPY    "COMMON-SPA".
            COPY    "HCM26.INC".
            COPY    "HCM48.INC".
            COPY    "HCM49.INC".
+           COPY    "HCM53.INC".
+      *    COPY    "HCM54.INC".
+           COPY    "HCM55.INC".
       *
            COPY    "HCN23.INC".
            COPY    "HCN23V01.INC".
@@ -282,6 +289,9 @@ grpsys     COPY    "COMMON-SPA".
            COPY    "HCN23V04.INC".
            COPY    "HCN25.INC".
            COPY    "HCN48.INC".
+           COPY    "HCN53.INC".
+      *    COPY    "HCN54.INC".
+           COPY    "HCN55.INC".
       *
       *    ファイルデイレクトリ位置指定サブ
            COPY  "CPMKPASS.INC".
@@ -888,6 +898,32 @@ grpsys         PERFORM 900-ORCDBMAIN-SEC
                        MOVE    RECE08-PRTDATA      TO  HCN51
                        MOVE    WRK-HEN-RENNUM-AREA TO  HCN51-RENNUM
                        MOVE    HCN51               TO  RECE08-PRTDATA
+                   WHEN    "HCM53.red"
+                   WHEN    "HCM54.red"
+                       MOVE    RECE08-PRTDATA      TO  HCM53
+                       MOVE    WRK-HEN-RENNUM-AREA TO  HCM53-RENNUM
+                       MOVE    HCM53               TO  RECE08-PRTDATA
+      ***          WHEN    "HCM54.red"
+      ***              MOVE    RECE08-PRTDATA      TO  HCM54
+      ***              MOVE    WRK-HEN-RENNUM-AREA TO  HCM54-RENNUM
+      ***              MOVE    HCM54               TO  RECE08-PRTDATA
+                   WHEN    "HCM55.red"
+                       MOVE    RECE08-PRTDATA      TO  HCM55
+                       MOVE    WRK-HEN-RENNUM-AREA TO  HCM55-RENNUM
+                       MOVE    HCM55               TO  RECE08-PRTDATA
+                   WHEN    "HCN53.red"
+                   WHEN    "HCN54.red"
+                       MOVE    RECE08-PRTDATA      TO  HCN53
+                       MOVE    WRK-HEN-RENNUM-AREA TO  HCN53-RENNUM
+                       MOVE    HCN53               TO  RECE08-PRTDATA
+      ***          WHEN    "HCN54.red"
+      ***              MOVE    RECE08-PRTDATA      TO  HCN54
+      ***              MOVE    WRK-HEN-RENNUM-AREA TO  HCN54-RENNUM
+      ***              MOVE    HCN54               TO  RECE08-PRTDATA
+                   WHEN    "HCN55.red"
+                       MOVE    RECE08-PRTDATA      TO  HCN55
+                       MOVE    WRK-HEN-RENNUM-AREA TO  HCN55-RENNUM
+                       MOVE    HCN55               TO  RECE08-PRTDATA
                END-EVALUATE
            END-IF            
            MOVE    RECE08-PRTDATA      TO  PRT-PRTDATA
@@ -1042,6 +1078,8 @@ grpsys         PERFORM 900-DBFETCH-SEC
                WHEN    "HCM23V03.red"  ALSO    ANY
                WHEN    "HCM23V04.red"  ALSO    ANY
                WHEN    "HCM48.red"     ALSO    ANY
+               WHEN    "HCM53.red"     ALSO    ANY
+               WHEN    "HCM54.red"     ALSO    ANY
                WHEN    "HCM29.red"     ALSO    "2"
                WHEN    "HCM29V01.red"  ALSO    "2"
                WHEN    "HCM29V02.red"  ALSO    "2"
@@ -1053,6 +1091,7 @@ grpsys         PERFORM 900-DBFETCH-SEC
                        MOVE    "自賠（新）レセプト（入院外）"
                                                        TO  SPRT-TITLE
                    END-IF
+               WHEN    "HCM55.red"     ALSO    ANY
                WHEN    "HCM25.red"     ALSO    "2"
                WHEN    "HCM26.red"     ALSO    "2"
                    IF      WRK-PARA-SHELLID    NOT =   "RECEPTX"
@@ -1085,6 +1124,8 @@ grpsys         PERFORM 900-DBFETCH-SEC
                WHEN    "HCN23V03.red"  ALSO    ANY
                WHEN    "HCN23V04.red"  ALSO    ANY
                WHEN    "HCN48.red"     ALSO    ANY
+               WHEN    "HCN53.red"     ALSO    ANY
+               WHEN    "HCN54.red"     ALSO    ANY
                WHEN    "HCM29.red"     ALSO    "1"
                WHEN    "HCM29V01.red"  ALSO    "1"
                WHEN    "HCM29V02.red"  ALSO    "1"
@@ -1096,6 +1137,7 @@ grpsys         PERFORM 900-DBFETCH-SEC
                        MOVE    "自賠（新）レセプト（入院）"
                                                        TO  SPRT-TITLE
                    END-IF
+               WHEN    "HCN55.red"     ALSO    ANY
                WHEN    "HCN25.red"     ALSO    "1"
                WHEN    "HCM26.red"     ALSO    "1"
                    IF      WRK-PARA-SHELLID    NOT =   "RECEPTX"

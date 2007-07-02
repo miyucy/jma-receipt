@@ -36,6 +36,7 @@
       *
       *  03.05.01    NACL-門脇    07/05/25  グループ診療対応
       *  03.05.02    NACL-藤原    07/06/01  realtime preview 処理追加
+      *  03.05.03    NACL-門脇    07/06/26  不要項目削除
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -262,17 +263,12 @@
        01  CONST-AREA.
       *         
       *    適用欄最大文字数（金額欄）
-      ***  03  CONS-TEKIYOU1-LEN           PIC 9(02)   VALUE   28.      
            03  CONS-TEKIYOU1-LEN           PIC 9(02)   VALUE   24.      
       *     
       *    適用欄最大文字数（点数欄）
            03  CONS-TEKIYOU2-LEN           PIC 9(02)   VALUE   52.
       *
-      *    適用欄最大行数（点数欄）
-           03  CONS-TEKIYOU2-LINE-MAX      PIC  9(03)  VALUE   100.   
-      *            
       *    適用欄最大行数（金額欄）
-      ***  03  CONS-TEKIYOU1-LINE-MAX      PIC  9(03)  VALUE   9.       
            03  CONS-TEKIYOU1-LINE-MAX      PIC  9(03)  VALUE   6.       
       *
            COPY    "MCPAREA".

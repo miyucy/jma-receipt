@@ -205,6 +205,10 @@ bind	"ORCBJOBLOG"	"OpenCOBOL";
 bind	"ORCBQ02"	"OpenCOBOL";
 bind	"ORCBONPRT"	"OpenCOBOL";
 bind	"ORCBPRTDBDEL"	"OpenCOBOL";
+bind	"ORCR0488"	"OpenCOBOL";
+bind	"ORCR0489"	"OpenCOBOL";
+bind	"ORCR0965"	"OpenCOBOL";
+bind	"ORCR0966"	"OpenCOBOL";
 
 #include "orcadb.inc"
 db "shell" {

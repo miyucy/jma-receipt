@@ -36,6 +36,7 @@
       *  03.03.01   NACL-門脇     06.10.10  入院時生活療養費食事対応
       *  03.04.01   NACL-門脇     06.12.01  自賠責健保準拠対応
       *  03.05.01   NACL-門脇     07.06.01  グループ診療対応
+      *  03.05.02   NACL-門脇     07.06.26  自賠責平成１９年４月改正様式対応
       ************************************************************
       *01  RECE82-REC.
            03  RECE82-KEY.
@@ -230,6 +231,17 @@
                05  RECE82-SHOKUJIKHNRYO   PIC  9(09).
       *食事日数
                05  RECE82-SHOKUJIKHNNISSU PIC  9(02).
+      *
+      *食事種別情報‐基本（生活）
+           03  RECE82-SHOKUJISYUBETU-KHNSEI   PIC  X(02).
+      *
+      *食事基本料情報（生活）
+           03  RECE82-SHOKUJIKHNINF-SEI   OCCURS   2.
+      *食事基本料
+               05  RECE82-SHOKUJIKHNRYO-SEI   PIC  9(09).
+      *食事日数
+               05  RECE82-SHOKUJIKHNNISSU-SEI PIC  9(02).
+      *
       *食事基本料情報（その他）
            03  RECE82-SHOKUJIKHNINF-ETC       OCCURS   3.
       *食事基本料

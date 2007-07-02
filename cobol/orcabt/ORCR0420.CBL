@@ -129,6 +129,7 @@
       *
       *  03.05.01    NACL-門脇    07/05/25  グループ診療対応
       *  03.05.02    NACL-藤原    07/06/01  realtime preview 処理追加
+      *  03.05.03    NACL-門脇    07/06/26  自賠責平成１９年４月改正様式対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -310,6 +311,11 @@
       *
       *    基本点数の非表示判定用フラグ（自賠責用：従来様式用）
        01  FLG-KHNTEN-JI2-AREA.                                          
+           03  FLG-KHNTEN2-JI2                         PIC 9(01).
+           03  FLG-KHNTEN3-JI2                         PIC 9(01).
+           03  FLG-KHNTEN4-JI2                         PIC 9(01).
+           03  FLG-KHNTEN5-JI2                         PIC 9(01).
+           03  FLG-KHNTEN6-JI2                         PIC 9(01).
            03  FLG-KHNTEN11-JI2                        PIC 9(01).       
            03  FLG-KHNTEN14-JI2                        PIC 9(01).       
            03  FLG-KHNTEN15-JI2                        PIC 9(01).       
@@ -1737,9 +1743,10 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                                 RECE45-SRYKBN
                          END-IF
                      END-IF
-                     IF (( RECE44-SRYKBN     =  "80" ) AND
-                         ( RECE44-OKIKAEFLG  =  SPACE))
-                     OR (  RECE44-OKIKAEFLG  =  "1"   )
+                     IF  WRK-PARA-JIBAIPRTKBN =  "0"
+                      IF (( RECE44-SRYKBN     =  "80" ) AND
+                          ( RECE44-OKIKAEFLG  =  SPACE))
+                      OR (  RECE44-OKIKAEFLG  =  "1"   )
                        IF   SRY-SRYCD(IDX2)   =     CONS-SHOHOSEN1 OR   
                                                     CONS-SHOHOSEN2 OR   
                                                     CONS-SHOHOSEN3 OR   
@@ -1753,6 +1760,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                               MOVE   "40"   TO  RECE44-SRYKBN
                                                 RECE45-SRYKBN
                        END-IF                                           
+                      END-IF
                      END-IF
                    END-IF                                               
                   END-IF                                                
@@ -2293,9 +2301,9 @@ grpsys     PERFORM 900-DBSELECT-SEC
            END-IF
       *
            IF     (RECE41-HKNKBN    NOT  =  "4"    AND
-                   RECE44-SRYKBN         =  "80"       )
+                   RECE44-SRYKBN         =  "80"        )
            OR     (RECE41-HKNKBN         =  "4"    AND
-                   RECE44-SRYKBN         =  "40"       )
+                   RECE44-SRYKBN         =  "40" OR "80")
       *       リハビリ
               IF   SRY-SRYCD(IDX2)    =     "180706910"   OR
                                             "180022210"   OR
@@ -4235,17 +4243,31 @@ grpsys        MOVE    SPA-HOSPNUM         TO  SYS-4003-HOSPNUM
                                       RECE41-TENSU(6)  +
                                      (WRK-TNS-TEN(IDX3) * ACCT-ZAIKAISU)
                           ELSE  
-                            IF    WK-SYUTEN       NOT =   ZERO
+                            EVALUATE  WRK-PARA-JIBAIPRTKBN
+                             WHEN      "0"
+                              IF    WK-SYUTEN       NOT =   ZERO
                                 ADD  WK-ZAIKAISU  TO  RECE41-KAISU(25)
-                            END-IF
-                            COMPUTE   RECE41-TENSU(25)  =
-                                      RECE41-TENSU(25)  +
-                                     (WK-SYUTEN   *   ACCT-ZAIKAISU)
+                              END-IF
+                              COMPUTE   RECE41-TENSU(25)  =
+                                        RECE41-TENSU(25)  +
+                                       (WK-SYUTEN   *   ACCT-ZAIKAISU)
+                             WHEN      "1"
+                              COMPUTE   RECE41-TENSU(34)  =
+                                        RECE41-TENSU(34)  +
+                                       (WK-SYUTEN   *   ACCT-ZAIKAISU)
+                            END-EVALUATE
                           END-IF
                       END-IF
-                      COMPUTE   RECE41-TENSU-YAK(26)  =
-                                RECE41-TENSU-YAK(26)  +
-                               (WK-YKZTEN   *   WK-ZAIKAISU)
+                      EVALUATE  WRK-PARA-JIBAIPRTKBN
+                       WHEN      "0"
+                          COMPUTE   RECE41-TENSU-YAK(26)  =
+                                    RECE41-TENSU-YAK(26)  +
+                                   (WK-YKZTEN   *   WK-ZAIKAISU)
+                       WHEN      "1"
+                          COMPUTE   RECE41-TENSU-YAK(35)  =
+                                    RECE41-TENSU-YAK(35)  +
+                                   (WK-YKZTEN   *   WK-ZAIKAISU)
+                      END-EVALUATE
                      END-IF
                     END-IF                                              
                    END-IF
@@ -4367,6 +4389,16 @@ grpsys        MOVE    SPA-HOSPNUM         TO  SYS-4003-HOSPNUM
                          ELSE
                              ADD   WK-ZAIKAISU  TO   RECE41-KAISU(2)
                          END-IF
+                         IF  WRK-PARA-JIBAIPRTKBN = "1"
+                          IF    RECE41-KHNTEN(2)   =   ZERO
+                            MOVE WRK-TNS-TEN(IDX3) TO RECE41-KHNTEN(2)
+                          ELSE
+                            IF RECE41-KHNTEN(2) NOT = WRK-TNS-TEN(IDX3)
+                              MOVE   ZERO    TO    RECE41-KHNTEN(2)
+                              MOVE   1       TO    FLG-KHNTEN2-JI2
+                            END-IF
+                          END-IF
+                         END-IF
                          COMPUTE    RECE41-TENSU(2)   =
                                     RECE41-TENSU(2)   +
                                    (WRK-TNS-TEN(IDX3) * ACCT-ZAIKAISU)
@@ -4376,6 +4408,16 @@ grpsys        MOVE    SPA-HOSPNUM         TO  SYS-4003-HOSPNUM
                      END-IF
       *      （外来管理加算）
                     WHEN  122
+                        IF  WRK-PARA-JIBAIPRTKBN = "1"
+                          IF    RECE41-KHNTEN(3)   =   ZERO
+                            MOVE WRK-TNS-TEN(IDX3) TO RECE41-KHNTEN(3)
+                          ELSE
+                            IF RECE41-KHNTEN(3) NOT = WRK-TNS-TEN(IDX3)
+                              MOVE   ZERO    TO    RECE41-KHNTEN(3)
+                              MOVE   1       TO    FLG-KHNTEN3-JI2
+                            END-IF
+                          END-IF
+                        END-IF
                         ADD    WK-ZAIKAISU   TO   RECE41-KAISU(3)
                         COMPUTE  RECE41-TENSU(3)   =
                                  RECE41-TENSU(3)   +
@@ -4385,6 +4427,16 @@ grpsys        MOVE    SPA-HOSPNUM         TO  SYS-4003-HOSPNUM
                                 (WRK-TNS-TEN(IDX3) * ACCT-ZAIKAISU)
       *      （時間外）
                     WHEN  123
+                        IF  WRK-PARA-JIBAIPRTKBN = "1"
+                          IF    RECE41-KHNTEN(4)   =   ZERO
+                            MOVE WRK-TNS-TEN(IDX3) TO RECE41-KHNTEN(4)
+                          ELSE
+                            IF RECE41-KHNTEN(4) NOT = WRK-TNS-TEN(IDX3)
+                              MOVE   ZERO    TO    RECE41-KHNTEN(4)
+                              MOVE   1       TO    FLG-KHNTEN4-JI2
+                            END-IF
+                          END-IF
+                        END-IF
                         ADD    WK-ZAIKAISU   TO   RECE41-KAISU(4)
                         COMPUTE  RECE41-TENSU(4)   =
                                  RECE41-TENSU(4)   +
@@ -4394,6 +4446,16 @@ grpsys        MOVE    SPA-HOSPNUM         TO  SYS-4003-HOSPNUM
                                 (WRK-TNS-TEN(IDX3) * ACCT-ZAIKAISU)
       *      （休日）
                     WHEN  124
+                        IF  WRK-PARA-JIBAIPRTKBN = "1"
+                          IF    RECE41-KHNTEN(5)   =   ZERO
+                            MOVE WRK-TNS-TEN(IDX3) TO RECE41-KHNTEN(5)
+                          ELSE
+                            IF RECE41-KHNTEN(5) NOT = WRK-TNS-TEN(IDX3)
+                              MOVE   ZERO    TO    RECE41-KHNTEN(5)
+                              MOVE   1       TO    FLG-KHNTEN5-JI2
+                            END-IF
+                          END-IF
+                        END-IF
                         ADD    WK-ZAIKAISU   TO   RECE41-KAISU(5)
                         COMPUTE  RECE41-TENSU(5)   =
                                  RECE41-TENSU(5)   +
@@ -4403,6 +4465,16 @@ grpsys        MOVE    SPA-HOSPNUM         TO  SYS-4003-HOSPNUM
                                 (WRK-TNS-TEN(IDX3) * ACCT-ZAIKAISU)
       *      （深夜）
                     WHEN  125
+                        IF  WRK-PARA-JIBAIPRTKBN = "1"
+                          IF    RECE41-KHNTEN(6)   =   ZERO
+                            MOVE WRK-TNS-TEN(IDX3) TO RECE41-KHNTEN(6)
+                          ELSE
+                            IF RECE41-KHNTEN(6) NOT = WRK-TNS-TEN(IDX3)
+                              MOVE   ZERO    TO    RECE41-KHNTEN(6)
+                              MOVE   1       TO    FLG-KHNTEN6-JI2
+                            END-IF
+                          END-IF
+                        END-IF
                         ADD    WK-ZAIKAISU   TO   RECE41-KAISU(6)
                         COMPUTE  RECE41-TENSU(6)   =
                                  RECE41-TENSU(6)   +
@@ -4439,6 +4511,16 @@ grpsys        MOVE    SPA-HOSPNUM         TO  SYS-4003-HOSPNUM
                         ELSE
                             ADD   WK-ZAIKAISU  TO   RECE41-KAISU(2)
                         END-IF
+                        IF  WRK-PARA-JIBAIPRTKBN = "1"
+                          IF    RECE41-KHNTEN(2)   =   ZERO
+                            MOVE WRK-TNS-TEN(IDX3) TO RECE41-KHNTEN(2)
+                          ELSE
+                            IF RECE41-KHNTEN(2) NOT = WRK-TNS-TEN(IDX3)
+                              MOVE   ZERO    TO    RECE41-KHNTEN(2)
+                              MOVE   1       TO    FLG-KHNTEN2-JI2
+                            END-IF
+                          END-IF
+                        END-IF
                         COMPUTE    RECE41-TENSU(2)   =
                                    RECE41-TENSU(2)   +
                                   (WRK-TNS-TEN(IDX3) * ACCT-ZAIKAISU)
@@ -4447,6 +4529,16 @@ grpsys        MOVE    SPA-HOSPNUM         TO  SYS-4003-HOSPNUM
                                   (WRK-TNS-TEN(IDX3) * ACCT-ZAIKAISU)
       *      （外来管理加算）
                     WHEN  122
+                        IF  WRK-PARA-JIBAIPRTKBN = "1"
+                          IF    RECE41-KHNTEN(3)   =   ZERO
+                            MOVE WRK-TNS-TEN(IDX3) TO RECE41-KHNTEN(3)
+                          ELSE
+                            IF RECE41-KHNTEN(3) NOT = WRK-TNS-TEN(IDX3)
+                              MOVE   ZERO    TO    RECE41-KHNTEN(3)
+                              MOVE   1       TO    FLG-KHNTEN3-JI2
+                            END-IF
+                          END-IF
+                        END-IF
                         ADD    WK-ZAIKAISU   TO   RECE41-KAISU(3)
                         COMPUTE  RECE41-TENSU(3)   =
                                  RECE41-TENSU(3)   +
@@ -4457,6 +4549,16 @@ grpsys        MOVE    SPA-HOSPNUM         TO  SYS-4003-HOSPNUM
       *      （時間外）
                     WHEN  123
                         PERFORM   2101225-NYUYOJI-COUNT-SEC
+                        IF  WRK-PARA-JIBAIPRTKBN = "1"
+                          IF    RECE41-KHNTEN(4)   =   ZERO
+                            MOVE WRK-TNS-TEN(IDX3) TO RECE41-KHNTEN(4)
+                          ELSE
+                            IF RECE41-KHNTEN(4) NOT = WRK-TNS-TEN(IDX3)
+                              MOVE   ZERO    TO    RECE41-KHNTEN(4)
+                              MOVE   1       TO    FLG-KHNTEN4-JI2
+                            END-IF
+                          END-IF
+                        END-IF
                         ADD    WK-ZAIKAISU   TO   RECE41-KAISU(4)
                         COMPUTE  RECE41-TENSU(4)   =
                                  RECE41-TENSU(4)   +
@@ -4467,6 +4569,16 @@ grpsys        MOVE    SPA-HOSPNUM         TO  SYS-4003-HOSPNUM
       *      （休日）
                     WHEN  124
                         PERFORM   2101225-NYUYOJI-COUNT-SEC
+                        IF  WRK-PARA-JIBAIPRTKBN = "1"
+                          IF    RECE41-KHNTEN(5)   =   ZERO
+                            MOVE WRK-TNS-TEN(IDX3) TO RECE41-KHNTEN(5)
+                          ELSE
+                            IF RECE41-KHNTEN(5) NOT = WRK-TNS-TEN(IDX3)
+                              MOVE   ZERO    TO    RECE41-KHNTEN(5)
+                              MOVE   1       TO    FLG-KHNTEN5-JI2
+                            END-IF
+                          END-IF
+                        END-IF
                         ADD    WK-ZAIKAISU   TO   RECE41-KAISU(5)
                         COMPUTE  RECE41-TENSU(5)   =
                                  RECE41-TENSU(5)   +
@@ -4477,6 +4589,16 @@ grpsys        MOVE    SPA-HOSPNUM         TO  SYS-4003-HOSPNUM
       *      （深夜）
                     WHEN  125
                         PERFORM   2101225-NYUYOJI-COUNT-SEC
+                        IF  WRK-PARA-JIBAIPRTKBN = "1"
+                          IF    RECE41-KHNTEN(6)   =   ZERO
+                            MOVE WRK-TNS-TEN(IDX3) TO RECE41-KHNTEN(6)
+                          ELSE
+                            IF RECE41-KHNTEN(6) NOT = WRK-TNS-TEN(IDX3)
+                              MOVE   ZERO    TO    RECE41-KHNTEN(6)
+                              MOVE   1       TO    FLG-KHNTEN6-JI2
+                            END-IF
+                          END-IF
+                        END-IF
                         ADD    WK-ZAIKAISU   TO   RECE41-KAISU(6)
                         COMPUTE  RECE41-TENSU(6)   =
                                  RECE41-TENSU(6)   +
@@ -4919,23 +5041,43 @@ grpsys        MOVE    SPA-HOSPNUM         TO  SYS-4003-HOSPNUM
                                       TBL-SYUTEN-JI(7)  +
                                      (WRK-TNS-TEN(IDX3) * ACCT-ZAIKAISU)
                           ELSE  
-                            IF    WK-SYUTEN       NOT =   ZERO
+                           EVALUATE  WRK-PARA-JIBAIPRTKBN
+                            WHEN      "0"
+                              IF    WK-SYUTEN       NOT =   ZERO
                                 ADD  WK-ZAIKAISU  TO  RECE41-KAISU(23)
-                            END-IF
-                            COMPUTE   RECE41-TENSU(23)   =
-                                      RECE41-TENSU(23)   +
-                                     (WK-SYUTEN   *   ACCT-ZAIKAISU)
-                            COMPUTE   TBL-SYUTEN-JI(23)  =
-                                      TBL-SYUTEN-JI(23)  +
-                                     (WK-SYUTEN   *   ACCT-ZAIKAISU)
+                              END-IF
+                              COMPUTE   RECE41-TENSU(23)   =
+                                        RECE41-TENSU(23)   +
+                                       (WK-SYUTEN   *   ACCT-ZAIKAISU)
+                              COMPUTE   TBL-SYUTEN-JI(23)  =
+                                        TBL-SYUTEN-JI(23)  +
+                                       (WK-SYUTEN   *   ACCT-ZAIKAISU)
+                            WHEN      "1"
+                              COMPUTE   RECE41-TENSU(36)   =
+                                        RECE41-TENSU(36)   +
+                                       (WK-SYUTEN   *   ACCT-ZAIKAISU)
+                              COMPUTE   TBL-SYUTEN-JI(36)  =
+                                        TBL-SYUTEN-JI(36)  +
+                                       (WK-SYUTEN   *   ACCT-ZAIKAISU)
+                           END-EVALUATE
                           END-IF
                       END-IF
-                      COMPUTE   RECE41-TENSU(24)   =
-                                RECE41-TENSU(24)   +
-                               (WK-YKZTEN   *   WK-ZAIKAISU)
-                      COMPUTE   TBL-YKZTEN-JI(24)  =
-                                TBL-YKZTEN-JI(24)  +
-                               (WK-YKZTEN   *   WK-ZAIKAISU)
+                      EVALUATE  WRK-PARA-JIBAIPRTKBN
+                       WHEN      "0"
+                         COMPUTE   RECE41-TENSU(24)   =
+                                   RECE41-TENSU(24)   +
+                                  (WK-YKZTEN   *   WK-ZAIKAISU)
+                         COMPUTE   TBL-YKZTEN-JI(24)  =
+                                   TBL-YKZTEN-JI(24)  +
+                                  (WK-YKZTEN   *   WK-ZAIKAISU)
+                       WHEN      "1"
+                         COMPUTE   RECE41-TENSU(37)   =
+                                   RECE41-TENSU(37)   +
+                                  (WK-YKZTEN   *   WK-ZAIKAISU)
+                         COMPUTE   TBL-YKZTEN-JI(37)  =
+                                   TBL-YKZTEN-JI(37)  +
+                                  (WK-YKZTEN   *   WK-ZAIKAISU)
+                      END-EVALUATE
                      END-IF
                     END-IF                                              
                    END-IF
@@ -5224,6 +5366,21 @@ grpsys     PERFORM 900-DBSELECT-SEC
                 END-IF
               WHEN      "5"
       **********（従来様式）
+                IF        FLG-KHNTEN2-JI2  =    1
+                  MOVE    ZERO             TO   RECE41-KHNTEN(2)
+                END-IF
+                IF        FLG-KHNTEN3-JI2  =    1
+                  MOVE    ZERO             TO   RECE41-KHNTEN(3)
+                END-IF
+                IF        FLG-KHNTEN4-JI2  =    1
+                  MOVE    ZERO             TO   RECE41-KHNTEN(4)
+                END-IF
+                IF        FLG-KHNTEN5-JI2  =    1
+                  MOVE    ZERO             TO   RECE41-KHNTEN(5)
+                END-IF
+                IF        FLG-KHNTEN6-JI2  =    1
+                  MOVE    ZERO             TO   RECE41-KHNTEN(6)
+                END-IF
                 IF        FLG-KHNTEN11-JI2   =    1
                   MOVE    ZERO             TO   RECE41-KHNTEN(11)
                 END-IF

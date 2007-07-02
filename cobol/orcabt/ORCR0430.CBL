@@ -84,6 +84,7 @@
       *
       *  03.05.01    NACL-門脇    07/05/25  グループ診療対応
       *  03.05.02    NACL-藤原    07/06/01  realtime preview 処理追加
+      *  03.05.03    NACL-門脇    07/06/26  自賠責平成１９年４月改正様式対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1008,6 +1009,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE459PARA-HOSPNUM
                             MOVE  1           TO  FLG-OSIN-HENSYU
                          END-IF
                       WHEN      "40"
+                      WHEN      "80"
       *               （介達牽引あり）
                          IF  RECE44-KAITATU-COMMENT      =  "1"
                             MOVE   1   TO  TBL-HASSYO-KAITATU-COMMENT
@@ -1345,6 +1347,7 @@ grpsys       PERFORM 900-DBSELECT-SEC
       *            （ＣＴ・ＭＲＩ実施日のセット）
                       PERFORM    2001-CTMRI-HANTEI-SEC
                    WHEN      "40"          
+                   WHEN      "80"
                       MOVE   ZERO   TO  FLG-COMMENT
       *            （リハビリのセット）
                       IF   FLG-COMMENT  =  ZERO
@@ -2336,8 +2339,13 @@ grpsys        PERFORM  900-DBSELECT-SEC
                IF   RECE41-HKNKBN    NOT  =  "4"
                     MOVE    "80" TO  WRK-SRYKBN
                ELSE
+                 EVALUATE  WRK-PARA-JIBAIPRTKBN
+                  WHEN     "0"
                     MOVE    "40" TO  WRK-SRYKBN
                     MOVE    "1"  TO  WRK-OKIKAEFLG
+                  WHEN     "1"
+                    MOVE    "80" TO  WRK-SRYKBN
+                 END-EVALUATE
                END-IF
              WHEN       CONS-NOUKE
                EVALUATE   FLG-COMOKIKAE2
@@ -2381,8 +2389,13 @@ grpsys        PERFORM  900-DBSELECT-SEC
                IF   RECE41-HKNKBN    NOT  =  "4"
                     MOVE    "80" TO  WRK-SRYKBN
                ELSE
+                 EVALUATE  WRK-PARA-JIBAIPRTKBN
+                  WHEN     "0"
                     MOVE    "40" TO  WRK-SRYKBN
                     MOVE    "1"  TO  WRK-OKIKAEFLG
+                  WHEN     "1"
+                    MOVE    "80" TO  WRK-SRYKBN
+                 END-EVALUATE
                END-IF
              WHEN       CONS-UNDOKI
                EVALUATE   FLG-COMOKIKAE2
@@ -2426,8 +2439,13 @@ grpsys        PERFORM  900-DBSELECT-SEC
                IF   RECE41-HKNKBN    NOT  =  "4"
                     MOVE    "80" TO  WRK-SRYKBN
                ELSE
+                 EVALUATE  WRK-PARA-JIBAIPRTKBN
+                  WHEN     "0"
                     MOVE    "40" TO  WRK-SRYKBN
                     MOVE    "1"  TO  WRK-OKIKAEFLG
+                  WHEN     "1"
+                    MOVE    "80" TO  WRK-SRYKBN
+                 END-EVALUATE
                END-IF
              WHEN       CONS-KOKYUKI
                MOVE    17   TO  WRK-RECE45XX-YUKOKETA(IDX-RECE45 1)
@@ -2448,8 +2466,13 @@ grpsys        PERFORM  900-DBSELECT-SEC
                IF   RECE41-HKNKBN    NOT  =  "4"
                     MOVE    "80" TO  WRK-SRYKBN
                ELSE
+                 EVALUATE  WRK-PARA-JIBAIPRTKBN
+                  WHEN     "0"
                     MOVE    "40" TO  WRK-SRYKBN
                     MOVE    "1"  TO  WRK-OKIKAEFLG
+                  WHEN     "1"
+                    MOVE    "80" TO  WRK-SRYKBN
+                 END-EVALUATE
                END-IF
              WHEN       CONS-SESSYOKU
                MOVE    18   TO  WRK-RECE45XX-YUKOKETA(IDX-RECE45 1)
@@ -2470,8 +2493,13 @@ grpsys        PERFORM  900-DBSELECT-SEC
                IF   RECE41-HKNKBN    NOT  =  "4"
                     MOVE    "80" TO  WRK-SRYKBN
                ELSE
+                 EVALUATE  WRK-PARA-JIBAIPRTKBN
+                  WHEN     "0"
                     MOVE    "40" TO  WRK-SRYKBN
                     MOVE    "1"  TO  WRK-OKIKAEFLG
+                  WHEN     "1"
+                    MOVE    "80" TO  WRK-SRYKBN
+                 END-EVALUATE
                END-IF
              WHEN       CONS-NANBYO
                EVALUATE   FLG-COMOKIKAE2
@@ -2515,8 +2543,13 @@ grpsys        PERFORM  900-DBSELECT-SEC
                IF   RECE41-HKNKBN    NOT  =  "4"
                     MOVE    "80" TO  WRK-SRYKBN
                ELSE
+                 EVALUATE  WRK-PARA-JIBAIPRTKBN
+                  WHEN     "0"
                     MOVE    "40" TO  WRK-SRYKBN
                     MOVE    "1"  TO  WRK-OKIKAEFLG
+                  WHEN     "1"
+                    MOVE    "80" TO  WRK-SRYKBN
+                 END-EVALUATE
                END-IF
              WHEN       CONS-SYOGAI
                MOVE    18   TO  WRK-RECE45XX-YUKOKETA(IDX-RECE45 1)
@@ -2537,8 +2570,13 @@ grpsys        PERFORM  900-DBSELECT-SEC
                IF   RECE41-HKNKBN    NOT  =  "4"
                     MOVE    "80" TO  WRK-SRYKBN
                ELSE
+                 EVALUATE  WRK-PARA-JIBAIPRTKBN
+                  WHEN     "0"
                     MOVE    "40" TO  WRK-SRYKBN
                     MOVE    "1"  TO  WRK-OKIKAEFLG
+                  WHEN     "1"
+                    MOVE    "80" TO  WRK-SRYKBN
+                 END-EVALUATE
                END-IF
            END-EVALUATE
       *
