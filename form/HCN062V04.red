@@ -177,9 +177,9 @@
         <embed object="string" length="10"/>
       </appinfo>
     </element>
-    <element name="BTNUM" occurs="1">
+    <element name="BTUNUM" occurs="1">
       <appinfo>
-        <embed object="string" length="8"/>
+        <embed object="string" length="9"/>
       </appinfo>
     </element>
   </dictionarydata>
@@ -14120,13 +14120,13 @@
     </object>
     <object type="Embed - Text" version="0" id="O354">
       <attribute name="obj_pos">
-        <point val="6.3,1.4"/>
+        <point val="6.1,1.4"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="6.3,1.12636;7.9968,1.47636"/>
+        <rectangle val="6.1,1.12636;8.0089,1.47636"/>
       </attribute>
       <attribute name="dnode_path">
-        <string>#BTNUM#</string>
+        <string>#BTUNUM#</string>
       </attribute>
       <attribute name="embed_text_string">
         <enum val="1"/>
@@ -14134,7 +14134,7 @@
       <attribute name="text">
         <composite type="text">
           <attribute name="string">
-            <string>#12345678#</string>
+            <string>#123456789#</string>
           </attribute>
           <attribute name="font">
             <font name="Courier"/>
@@ -14143,7 +14143,7 @@
             <real val="0.35"/>
           </attribute>
           <attribute name="pos">
-            <point val="6.3,1.4"/>
+            <point val="6.1,1.4"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>

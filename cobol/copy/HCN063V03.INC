@@ -46,4 +46,4 @@
             02  HCN063V03-PAGE  PIC X(5).
             02  HCN063V03-MOJI1 PIC X(10).
             02  HCN063V03-MOJI2 PIC X(10).
-            02  HCN063V03-BTNUM PIC X(8).
+            02  HCN063V03-BTUNUM    PIC X(9).

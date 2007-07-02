@@ -166,4 +166,4 @@
             02  HCN08V02-GENMEN PIC X(10).
             02  HCN08V02-GENMENKIN  PIC X(7).
             02  HCN08V02-GENMEN2    PIC X(2).
-            02  HCN08V02-BTNUM  PIC X(8).
+            02  HCN08V02-BTUNUM PIC X(9).
