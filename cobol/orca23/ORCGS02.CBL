@@ -177,6 +177,7 @@
                            11  SPA-GMN-TSKYEDYMD   PIC X(06).
                            11  SPA-GMN-THAKYMD     PIC X(09).
                            11  SPA-GMN-TSEIKYU     PIC 9(10).
+                           11  SPA-GMN-TNYUKIN     PIC S9(10).
                            11  SPA-GMN-TMISYU      PIC S9(10).
                            11  SPA-GMN-TJYOTAI     PIC X(16).
                            11  SPA-GMN-FTNHENFLG   PIC 9(02).
@@ -296,6 +297,7 @@
       *
            03  WRK-TBANGO-W        PIC ZZZ.
            03  WRK-TSEIKYU-W       PIC ZZ,ZZZ,ZZZ.
+           03  WRK-TNYUKIN-W       PIC --,---,---.
            03  WRK-TMISYU-W        PIC --,---,---.
            03  WRK-SELBAN-W        PIC ZZZZ.  
       *    ÀÁµá½ñ£Ð£ÇÌ¾
@@ -2020,6 +2022,8 @@
            MOVE    WRK-HENYMDG         TO  SPA-GMN-THAKYMD (IDX1)
       *    ÀÁµá¶â³Û
            MOVE    SYU-SKYMONEY        TO  SPA-GMN-TSEIKYU (IDX1)
+      *    Æþ¶â³Û
+           MOVE    SYU-NYUKIN-TOTAL    TO  SPA-GMN-TNYUKIN (IDX1)
       *    Ì¤¼ý¶â³Û
            COMPUTE SPA-GMN-TMISYU(IDX1) =   SYU-SKYMONEY
                                         -   SYU-NYUKIN-TOTAL
@@ -2370,6 +2374,8 @@
                MOVE    SPA-GMN-TSRYYMD (IDX1)  TO  S02-TSRYYMD    (IDX1)
                MOVE    SPA-GMN-TSEIKYU(IDX1)   TO  WRK-TSEIKYU-W
                MOVE    WRK-TSEIKYU-W           TO  S02-TSKYMONEY  (IDX1)
+               MOVE    SPA-GMN-TNYUKIN (IDX1) TO  WRK-TNYUKIN-W
+               MOVE    WRK-TNYUKIN-W          TO  S02-TNYUKINMONEY(IDX1)
                MOVE    SPA-GMN-TMISYU (IDX1)   TO  WRK-TMISYU-W
                MOVE    WRK-TMISYU-W            TO  S02-TMISYUMONEY(IDX1)
                MOVE    SPA-GMN-TJYOTAI (IDX1)  TO  S02-TDENPJTI   (IDX1)

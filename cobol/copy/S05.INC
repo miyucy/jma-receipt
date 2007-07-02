@@ -48,6 +48,7 @@
                     06  S05-TSKYSTYMD   PIC X(11).
                     06  S05-TSRYYMD     PIC X(15).
                     06  S05-TSKYMONEY   PIC X(11).
+                    06  S05-TNYUKINMONEY   PIC X(11).
                     06  S05-TMISYUMONEY PIC X(11).
                     06  S05-TDENPJTI    PIC X(16).
                   05  S05-SYULIST-SELECT   PIC X

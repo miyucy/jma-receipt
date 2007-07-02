@@ -48,7 +48,8 @@ S05	{
 					value7	varchar(15);
 					value8	varchar(11);
 					value9	varchar(11);
-					value10	varchar(16);
+					value10	varchar(11);
+					value11	varchar(16);
 				}	[200];
 				select	bool[200];
 			};

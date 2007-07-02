@@ -55,6 +55,7 @@
                     06  S02-TSKYSTYMD   PIC X(11).
                     06  S02-TSRYYMD     PIC X(15).
                     06  S02-TSKYMONEY   PIC X(11).
+                    06  S02-TNYUKINMONEY   PIC X(11).
                     06  S02-TMISYUMONEY PIC X(11).
                     06  S02-TDENPJTI    PIC X(16).
                   05  S02-SYULIST-SELECT   PIC X
