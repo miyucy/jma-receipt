@@ -1516,7 +1516,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                                        TO  SHELLTBL-ARG15
            MOVE    SPA-NAI-PAGE (SPA-NAI-SELNUM)
                                        TO  SHELLTBL-ARG16
-           MOVE    "2"                 TO  SHELLTBL-ARG17
+           MOVE    "1"                 TO  SHELLTBL-ARG17
            MOVE    SPA-HOSPNUM         TO  SHELLTBL-ARG18
            MOVE    SHELLTBL            TO  MCPDATA-REC
            MOVE    "SHELL"             TO  MCP-FUNC
