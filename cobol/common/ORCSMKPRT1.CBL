@@ -225,8 +225,6 @@
            END-STRING
            CALL    "ORCSMKPASS"        USING   ORCSMKPASSAREA
       *
-           PERFORM 201-OFFSET-GET-SEC
-      *
       *    SHELL
            MOVE    SPACE               TO  SHELLTBL
            INITIALIZE                      SHELLTBL
@@ -242,13 +240,11 @@
            MOVE    MKPRT-DAT           TO  SHELLTBL-ARG4
       *    印刷位置
            MOVE    MKPRT-PRTNM         TO  SHELLTBL-ARG5
-      *    オフセット
-           MOVE    SYS-1044-OFFSET-X   TO  SHELLTBL-ARG6
-           MOVE    SYS-1044-OFFSET-Y   TO  SHELLTBL-ARG7
       *
 grpsys*    MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            MOVE    SHELLTBL            TO  MCPDATA-REC
            MOVE    "SHELL"             TO  MCP-FUNC
+           MOVE    "shell"             TO  MCP-TABLE
            MOVE    "shell"             TO  MCP-PATHNAME
            CALL    "ORCDBMAIN"         USING
                                        MCPAREA
@@ -282,6 +278,8 @@ grpsys*    MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            END-STRING
            CALL    "ORCSMKPASS"        USING   ORCSMKPASSAREA
       *
+           PERFORM 201-OFFSET-GET-SEC
+      *
       *    SHELL
            MOVE    SPACE               TO  SHELLTBL
            INITIALIZE                      SHELLTBL
@@ -297,6 +295,9 @@ grpsys*    MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            MOVE    MKPRT-DAT           TO  SHELLTBL-ARG4
       *    印刷位置
            MOVE    MKPRT-PRTNM         TO  SHELLTBL-ARG5
+      *    オフセット
+           MOVE    SYS-1044-OFFSET-X   TO  SHELLTBL-ARG6
+           MOVE    SYS-1044-OFFSET-Y   TO  SHELLTBL-ARG7
       *
 grpsys*    MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            MOVE    SHELLTBL            TO  MCPDATA-REC
