@@ -510,7 +510,9 @@
            03  WRK-DAYCNT              PIC 9(03).
       *    ¥×¥ì¥Ó¥å¡¼ÍÑ
            03  WRK-RSI-CNT             PIC 9(03).
+           03  WRK-JIB-CNT             PIC 9(03).
            03  WRK-NCNT-R              PIC 9(03).
+           03  WRK-NCNT-J              PIC 9(03).
            03  WRK-NCNT                PIC 9(03).
       *
        01  TBL-GRP-AREA.
@@ -3850,9 +3852,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                INITIALIZE                  SYS-1041-REC
                MOVE    1               TO  FLG-SYSKANRI
            END-IF
-           MOVE    "tbl_syskanri"      TO  MCP-TABLE
-           MOVE    "key10"             TO  MCP-PATHNAME
-           PERFORM 990-DBCLOSE-SEC
            IF      FLG-SYSKANRI        =   ZERO
                MOVE    MCPDATA-REC         TO  SYS-1041-REC
                MOVE    SYS-1041-NYKN-JYOTAI
@@ -3860,6 +3859,9 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            ELSE
                MOVE    "1"                 TO  SPA-NYUKIN-JYOTAI
            END-IF
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key10"             TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
       *
            .
        410109-JYOTAI-SET-EXT.
@@ -11812,7 +11814,9 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
        40102-ALL-HKNCOMBI-CHK-SEC          SECTION.
       *
            MOVE    ZERO                TO  WRK-RSI-CNT
+           MOVE    ZERO                TO  WRK-JIB-CNT
            MOVE    ZERO                TO  WRK-NCNT-R
+           MOVE    ZERO                TO  WRK-NCNT-J
            MOVE    ZERO                TO  WRK-NCNT
            PERFORM VARYING     IDH     FROM   1   BY  1
                    UNTIL      (IDH     >   SPA-HKN-MAX   )
@@ -11831,15 +11835,23 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE    "1"             TO  SPA-XC01-CHK
                END-IF
            ELSE
-               IF      FLG-RSIHKN-OK   NOT =   ZERO
-      *            Ï«ºÒ¡¦¼«ÇåÀÕ¤¬£±·ï¤Î¤ß
-                   IF      WRK-RSI-CNT         =   1
-                       MOVE    1               TO  FLG-HKN-OK
-                       MOVE    "1"             TO  SPA-XC01-HKNKBN
-                       MOVE    FLG-RSIHKN-OK   TO  SPA-XC01-RSI-HKNKBN
-                   ELSE
-                       MOVE    "0073"          TO  SPA-ERRCD
-                   END-IF
+               IF     (WRK-RSI-CNT    NOT =   ZERO )
+                  AND (WRK-JIB-CNT        =   ZERO )
+      *            Ï«ºÒ¤Î¤ß
+                   MOVE    1               TO  FLG-HKN-OK
+                   MOVE    "1"             TO  SPA-XC01-HKNKBN
+                   MOVE    FLG-RSIHKN-OK   TO  SPA-XC01-RSI-HKNKBN
+               END-IF
+               IF     (WRK-RSI-CNT        =   ZERO )
+                  AND (WRK-JIB-CNT    NOT =   ZERO )
+      *            ¼«ÇåÀÕ
+                   MOVE    1               TO  FLG-HKN-OK
+                   MOVE    "2"             TO  SPA-XC01-HKNKBN
+                   MOVE    FLG-RSIHKN-OK   TO  SPA-XC01-RSI-HKNKBN
+               END-IF
+               IF     (WRK-RSI-CNT    NOT =   ZERO )
+                  AND (WRK-JIB-CNT    NOT =   ZERO )
+                   MOVE    "0073"          TO  SPA-ERRCD
                END-IF
            END-IF
       *    Æþ±¡Ãæ¤Ç¼õ¿ÇÍúÎò¤¬¤Ê¤¤»þ
@@ -11849,16 +11861,26 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                   (SPA-GMN-NYUINYMD    NOT =   SPACE )
       *        ·òÊÝ¤Î¤ß
                IF     (WRK-NCNT-R          =   ZERO )   AND
+                      (WRK-NCNT-J          =   ZERO )   AND
                       (WRK-NCNT            >   ZERO )
                    MOVE    1                   TO  FLG-HKN-OK
                    MOVE    "0"                 TO  SPA-XC01-HKNKBN
                    MOVE    SPACE               TO  SPA-XC01-RSI-HKNKBN
                END-IF
-      *        Ï«ºÒ¡¦¼«ÇåÀÕ¤¬£±·ï¤Î¤ß
-               IF     (WRK-NCNT-R          =   1    )   AND
+      *        Ï«ºÒ¤Î¤ß
+               IF     (WRK-NCNT-R          >   ZERO )   AND
+                      (WRK-NCNT-J          =   ZERO )   AND
                       (WRK-NCNT            =   ZERO )
                    MOVE    1                   TO  FLG-HKN-OK
                    MOVE    "1"                 TO  SPA-XC01-HKNKBN
+                   MOVE    FLG-RSIHKN-OK2      TO  SPA-XC01-RSI-HKNKBN
+               END-IF
+      *        ¼«ÇåÀÕ¤Î¤ß
+               IF     (WRK-NCNT-R          =   ZERO )   AND
+                      (WRK-NCNT-J          >   ZERO )   AND
+                      (WRK-NCNT            =   ZERO )
+                   MOVE    1                   TO  FLG-HKN-OK
+                   MOVE    "2"                 TO  SPA-XC01-HKNKBN
                    MOVE    FLG-RSIHKN-OK2      TO  SPA-XC01-RSI-HKNKBN
                END-IF
       *
@@ -11880,9 +11902,10 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            IF      FLG-JYURRK          =   ZERO
                IF      SPA-NAI-THKNNUM(IDH)    =   "971"
                                                OR  "973"
-                   IF     (FLG-RSIHKN-OK   NOT =
-                                           SPA-NAI-TRSI-HKNKBN (IDH))
+                   IF      SPA-NAI-THKNNUM(IDH)    =   "971"
                        ADD     1               TO  WRK-RSI-CNT
+                   ELSE
+                       ADD     1               TO  WRK-JIB-CNT
                    END-IF
                    IF      FLG-RSIHKN-OK       =   ZERO
                         MOVE    SPA-NAI-TRSI-HKNKBN (IDH)
@@ -11894,8 +11917,12 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            ELSE
                IF      SPA-NAI-THKNNUM(IDH)    =   "971"
                                                OR  "973"
-                   ADD     1               TO  WRK-NCNT-R
-                   IF      WRK-NCNT-R      =   1
+                   IF      SPA-NAI-THKNNUM(IDH)    =   "971"
+                       ADD     1               TO  WRK-NCNT-R
+                   ELSE
+                       ADD     1               TO  WRK-NCNT-J
+                   END-IF
+                   IF      FLG-RSIHKN-OK2  =   ZERO
                         MOVE    SPA-NAI-TRSI-HKNKBN (IDH)
                                                TO  FLG-RSIHKN-OK2
                    END-IF
