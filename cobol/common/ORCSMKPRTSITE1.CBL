@@ -20,11 +20,11 @@
       *****************************************************************
       *  システム名        : ＯＲＣＡ
       *  サブシステム名    : 共通
-      *  コンポーネント名  : オンライン帳票印刷サブ（サイト用）
+      *  コンポーネント名  : オンライン帳票印刷サブ
       *                    : (再印刷用DB書き込み追加)
       *  管理者            : 
       *  作成日付    作業者        記述
-      *  02/10/02    NACL-竹田     新規作成
+      *  02/09/12    NACL-竹田     新規作成
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
@@ -41,9 +41,9 @@
            SELECT  PRT-OUT-FILE    ASSIGN  PRTOUTPARA
                                    FILE    STATUS  IS  STS-OUT.
       *
-      *
        DATA                    DIVISION.
        FILE                        SECTION.
+      *
       *    印刷用データ
        FD  PRT-IN-FILE.
        01  PRT-IN-REC.
@@ -53,7 +53,6 @@
            03  PRT-OUT-PRTDATA     PIC X(10000).
       *
        WORKING-STORAGE             SECTION.
-      *
        01  PRTOUTPARA.
            03  FILLER                  PIC  X(09) VALUE "/var/tmp/".
            03  PRTOUTPARA-FORM-ID      PIC  X(04).
@@ -86,9 +85,8 @@
       *
       *    一時領域
        01  WRK-AREA.
-           03  WRK-DIA             PIC X(10).
            03  WRK-SHELLTBL-NAME   PIC X(200).
-           03  WRK-SHELLTBL-ARG1   PIC X(200).
+           03  WRK-DIA             PIC X(10).
            03  WRK-SHORI-RENNUM    PIC 9(02).
            03  SGYOUMU-CODE        PIC 9(03).
       *
@@ -117,7 +115,6 @@
        01  SHELL-ONLINE.
            03  FILLER              PIC X(40)   VALUE
                "scripts/daily/online-reprint.sh".
-      *
       *****************************************************************
       *    サブプロ用　領域
       *****************************************************************
@@ -161,7 +158,7 @@
            CALL "ORCSGYOUMUGET"        USING
                                        SPA-AREA
                                        SGYOUMU-CODE
-      *
+           DISPLAY "take gyomu_cd = " SGYOUMU-CODE
       *    帳票名からＤＩＡかＭＯＮＰＥを設定する
            MOVE    SPACE               TO  WRK-DIA
            MOVE    ZERO                TO  FLG-OK
@@ -215,14 +212,12 @@
                    MKPRT-ID            DELIMITED  BY  SPACE
                                        INTO    MKPASS-IN-01
            END-STRING
-      *    帳票名
-           MOVE    SHELL-DIA           TO  MKPASS-IN-02
+      *
            CALL    "ORCSMKPASS"        USING   ORCSMKPASSAREA
            MOVE    MKPASS-OT-01        TO  WRK-SHELLTBL-NAME
-           MOVE    MKPASS-OT-02        TO  WRK-SHELLTBL-ARG1
       *
-      *    フィアルデイレクトリ位置指定
-           INITIALIZE                  ORCSMKPASSAREA
+      *    帳票名
+           MOVE    SHELL-DIA           TO  MKPASS-IN-02
       *    ＦＯＲＭ
            STRING  SHELL-FORM          DELIMITED  BY  SPACE
                    MKPRT-DIA           DELIMITED  BY  SPACE
@@ -233,7 +228,7 @@
                    MKPRT-DEF           DELIMITED  BY  SPACE
                                        INTO    MKPASS-IN-04
            END-STRING
-           CALL    "ORCSMKPASSSITE"     USING   ORCSMKPASSAREA
+           CALL    "ORCSMKPASSSITE"    USING   ORCSMKPASSAREA
       *
       *    SHELL
            MOVE    SPACE               TO  SHELLTBL
@@ -241,7 +236,7 @@
       *
            MOVE    WRK-SHELLTBL-NAME   TO  SHELLTBL-NAME
       *    DIA
-           MOVE    WRK-SHELLTBL-ARG1   TO  SHELLTBL-ARG1
+           MOVE    MKPASS-OT-02        TO  SHELLTBL-ARG1
       *    FORM
            MOVE    MKPASS-OT-03        TO  SHELLTBL-ARG2
       *    DEF
@@ -256,9 +251,10 @@ grpsys*    MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            MOVE    "SHELL"             TO  MCP-FUNC
            MOVE    "shell"             TO  MCP-TABLE
            MOVE    "shell"             TO  MCP-PATHNAME
-grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+           CALL    "ORCDBMAIN"         USING
+                                       MCPAREA
+                                       MCPDATA-REC
+                                       SPA-AREA
       *
            .
        100-DIA-PRINT-EXT.
@@ -277,9 +273,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            END-STRING
            CALL    "ORCSMKPASS"        USING   ORCSMKPASSAREA
            MOVE    MKPASS-OT-01        TO  WRK-SHELLTBL-NAME
-      *
-      *    フィアルデイレクトリ位置指定
-           INITIALIZE                  ORCSMKPASSAREA
       *    ＦＯＲＭ
            STRING  SHELL-FORM          DELIMITED  BY  SPACE
                    MKPRT-DIA           DELIMITED  BY  SPACE
@@ -316,6 +309,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
 grpsys*    MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            MOVE    SHELLTBL            TO  MCPDATA-REC
            MOVE    "SHELL"             TO  MCP-FUNC
+      *****MOVE    PATH-SHELL-SHELL    TO  MCP-PATH
            MOVE    "shell"             TO  MCP-TABLE
            MOVE    "shell"             TO  MCP-PATHNAME
 grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
@@ -468,18 +462,17 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    MKPRT-PRTNM     TO  SHELLTBL-ARG20
       *    データ内容
            MOVE    PRTOUTPARA      TO  SHELLTBL-ARG21
-      *    MOVE    MKPRT-INFO      TO  SHELLTBL-ARG22
+           MOVE    SPA-HOSPNUM     TO  SHELLTBL-ARG22
 
       *
 grpsys*    MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            MOVE    SHELLTBL        TO  MCPDATA-REC
            MOVE    "SHELL"         TO  MCP-FUNC
-           MOVE    PATH-SHELL-SHELL
-                                   TO  MCP-PATH
-           CALL    "MCPSUB"        USING
-                                   MCPAREA
-                                   MCPDATA-REC
-
+           MOVE    "shell"             TO  MCP-TABLE
+           MOVE    "shell"             TO  MCP-PATHNAME
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
        300-REPRINT-EXT.
