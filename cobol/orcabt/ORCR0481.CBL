@@ -2248,6 +2248,8 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *
                IF      WRK-PARA-SHELLID    NOT =   "RECEPTX"
                    ADD     1                   TO  WRK-RECENUM
+               ELSE
+                   ADD     100                 TO  WRK-RECENUM
                END-IF
       * 
       *        レセプト明細管理ＤＢ
@@ -2591,7 +2593,7 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
            IF      WRK-PARA-SHELLID    NOT =   "RECEPTX"
                MOVE    WRK-RECENUM         TO  WRK-RECEYMD-RECENUM
            ELSE
-               MOVE    200                 TO  WRK-RECEYMD-RECENUM
+               MOVE    2000                TO  WRK-RECEYMD-RECENUM
            END-IF
            MOVE    WRK-RECEYMD-REC     TO  RECEYMD-REC
            WRITE   RECEYMD-REC

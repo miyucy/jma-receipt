@@ -2536,6 +2536,8 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *
                IF      WRK-PARA-SHELLID    NOT =   "RECEPTX"
                    ADD     1                   TO  WRK-RECENUM
+               ELSE
+                   ADD     100                 TO  WRK-RECENUM
                END-IF
       * 
       *        レセプト明細管理ＤＢ
