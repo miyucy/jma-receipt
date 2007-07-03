@@ -8,12 +8,12 @@
 -- TBL_SYSBASE ºîÀ®                   --
 
 create	table	tbl_sysbase	(
-	GRPNUM		int,
-	HOSPNUM 	numeric(2,0),
+	GRPNUM		numeric(2,0) not null,
+	HOSPNUM 	numeric(2,0) not null,
 	HOSPNAME	varchar(120),
-	KIGEN		char(8),
-	HONBUNGRP	int,
-	HONBUNKBN 	int,
+	KIGEN		char(8) default '99999999',
+	HONBUNGRP	numeric(2,0) default 0,
+	HONBUNKBN 	char(1) default '0',
 	CREYMD		char(8),
 	UPYMD		char(8),
 	UPHMS		char(6),
@@ -22,4 +22,4 @@ create	table	tbl_sysbase	(
 	)
 );
 
-insert into tbl_sysbase values (1, 1, '¡ö', '99999999', 0, 0, to_char(now(),'yyyymmdd'), '', to_char(now(),'hh24miss'));
+insert into tbl_sysbase values (1, 1, '¡ö', '99999999', 0, '0', to_char(now(),'yyyymmdd'), '', to_char(now(),'hh24miss'));

@@ -1,10 +1,10 @@
 tbl_sysbase {
-	GRPNUM		int;
+	GRPNUM		number(2,0);
 	HOSPNUM		number(2,0);
 	HOSPNAME	char(120);
 	KIGEN		char(8);
-	HONBUNGRP	int;
-	HONBUNKBN	int;
+	HONBUNGRP	number(2,0);
+	HONBUNKBN	char(1);
 	CREYMD		char(8);
 	UPYMD		char(8);
 	UPHMS		char(6);

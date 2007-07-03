@@ -25,17 +25,17 @@
       *01  SYSBASE-REC.
            03  SYSBASE-KEY.
       *    グループ番号
-               05  SYSBASE-GRPNUM      PIC  S9(09)  BINARY.
+               05  SYSBASE-GRPNUM      PIC  9(02).
       *    医療機関識別番号
-           03  SYSBASE-HOSPNUM         PIC 9(2).
+           03  SYSBASE-HOSPNUM         PIC  9(02).
       *    医療機関名称
            03  SYSBASE-HOSPNAME        PIC  X(120).
       *    運用期限
            03  SYSBASE-KIGEN           PIC  X(08).
       *    本院分院グループ
-           03  SYSBASE-HONBUNGRP       PIC  S9(09)  BINARY.
+           03  SYSBASE-HONBUNGRP       PIC  9(02).
       *    本院分院区分
-           03  SYSBASE-HONBUNKBN       PIC  S9(09)  BINARY.
+           03  SYSBASE-HONBUNKBN       PIC  X(01).
       *
            03  SYSBASE-CREYMD          PIC  X(08).
            03  SYSBASE-UPYMD           PIC  X(08).
