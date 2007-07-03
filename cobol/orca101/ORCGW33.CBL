@@ -314,7 +314,7 @@ grpsys     MOVE    SPA-HOSPNUM         TO  SYS-8000-HOSPNUM
                MOVE    SYS-8000-DAILY      TO  SPA-GMN-DAILY
                MOVE    SYS-8000-MONTHLY    TO  SPA-GMN-MONTHLY
            ELSE
-               MOVE    2                   TO  SPA-GMN-DAILY
+               MOVE    1                   TO  SPA-GMN-DAILY
                MOVE    36                  TO  SPA-GMN-MONTHLY
            END-IF     
       *
