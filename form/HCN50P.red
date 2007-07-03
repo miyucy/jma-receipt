@@ -5861,10 +5861,10 @@
     </object>
     <object type="Standard - Text" version="0" id="O224">
       <attribute name="obj_pos">
-        <point val="1.95,2.975"/>
+        <point val="1.9,2.975"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="1.47631,2.28514;1.95,2.98514"/>
+        <rectangle val="1.42631,2.28514;1.9,2.98514"/>
       </attribute>
       <attribute name="text">
         <composite type="text">
@@ -5878,7 +5878,7 @@
             <real val="0.7"/>
           </attribute>
           <attribute name="pos">
-            <point val="1.95,2.975"/>
+            <point val="1.9,2.975"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -5897,10 +5897,10 @@
     </object>
     <object type="Standard - Text" version="0" id="O225">
       <attribute name="obj_pos">
-        <point val="2.55,2.975"/>
+        <point val="2.5,2.975"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="2.07631,2.28514;2.55,2.98514"/>
+        <rectangle val="2.02631,2.28514;2.5,2.98514"/>
       </attribute>
       <attribute name="text">
         <composite type="text">
@@ -5914,7 +5914,7 @@
             <real val="0.7"/>
           </attribute>
           <attribute name="pos">
-            <point val="2.55,2.975"/>
+            <point val="2.5,2.975"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -5933,10 +5933,10 @@
     </object>
     <object type="Standard - Text" version="0" id="O226">
       <attribute name="obj_pos">
-        <point val="3.15,2.975"/>
+        <point val="3.1,2.975"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="2.67631,2.28514;3.15,2.98514"/>
+        <rectangle val="2.62631,2.28514;3.1,2.98514"/>
       </attribute>
       <attribute name="text">
         <composite type="text">
@@ -5950,7 +5950,7 @@
             <real val="0.7"/>
           </attribute>
           <attribute name="pos">
-            <point val="3.15,2.975"/>
+            <point val="3.1,2.975"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -5969,10 +5969,10 @@
     </object>
     <object type="Standard - Text" version="0" id="O227">
       <attribute name="obj_pos">
-        <point val="3.75,2.975"/>
+        <point val="3.7,2.975"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="3.27631,2.28514;3.75,2.98514"/>
+        <rectangle val="3.22631,2.28514;3.7,2.98514"/>
       </attribute>
       <attribute name="text">
         <composite type="text">
@@ -5986,7 +5986,7 @@
             <real val="0.7"/>
           </attribute>
           <attribute name="pos">
-            <point val="3.75,2.975"/>
+            <point val="3.7,2.975"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -6005,10 +6005,10 @@
     </object>
     <object type="Standard - Text" version="0" id="O228">
       <attribute name="obj_pos">
-        <point val="4.35,2.975"/>
+        <point val="4.3,2.975"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="3.87631,2.28514;4.35,2.98514"/>
+        <rectangle val="3.82631,2.28514;4.3,2.98514"/>
       </attribute>
       <attribute name="text">
         <composite type="text">
@@ -6022,7 +6022,7 @@
             <real val="0.7"/>
           </attribute>
           <attribute name="pos">
-            <point val="4.35,2.975"/>
+            <point val="4.3,2.975"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -6450,7 +6450,7 @@
         <point val="8.98661,2.28839"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="8.98661,2.09293;9.13811,2.34293"/>
+        <rectangle val="8.98661,2.09294;9.13811,2.34294"/>
       </attribute>
       <attribute name="text">
         <composite type="text">
@@ -6512,7 +6512,7 @@
         <point val="10.3366,2.28839"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="10.3366,2.09293;10.4881,2.34293"/>
+        <rectangle val="10.3366,2.09294;10.4881,2.34294"/>
       </attribute>
       <attribute name="text">
         <composite type="text">
@@ -6574,7 +6574,7 @@
         <point val="12.0866,2.28839"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="12.0866,2.09293;12.2381,2.34293"/>
+        <rectangle val="12.0866,2.09294;12.2381,2.34294"/>
       </attribute>
       <attribute name="text">
         <composite type="text">
@@ -6636,7 +6636,7 @@
         <point val="1.68661,3.53839"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="1.68661,3.34293;1.83811,3.59293"/>
+        <rectangle val="1.68661,3.34294;1.83811,3.59294"/>
       </attribute>
       <attribute name="text">
         <composite type="text">
@@ -6698,7 +6698,7 @@
         <point val="11.2866,3.53839"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="11.2866,3.34293;11.4381,3.59293"/>
+        <rectangle val="11.2866,3.34294;11.4381,3.59294"/>
       </attribute>
       <attribute name="text">
         <composite type="text">
@@ -6760,7 +6760,7 @@
         <point val="2.03661,4.83839"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="2.03661,4.64293;2.18811,4.89293"/>
+        <rectangle val="2.03661,4.64294;2.18811,4.89294"/>
       </attribute>
       <attribute name="text">
         <composite type="text">
@@ -6822,7 +6822,7 @@
         <point val="6.83661,4.83839"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="6.83661,4.64293;6.98811,4.89293"/>
+        <rectangle val="6.83661,4.64294;6.98811,4.89294"/>
       </attribute>
       <attribute name="text">
         <composite type="text">
@@ -6884,7 +6884,7 @@
         <point val="10.7866,4.83839"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="10.7866,4.64293;10.9381,4.89293"/>
+        <rectangle val="10.7866,4.64294;10.9381,4.89294"/>
       </attribute>
       <attribute name="text">
         <composite type="text">
@@ -6946,7 +6946,7 @@
         <point val="12.7366,4.83839"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="12.7366,4.64293;12.8881,4.89293"/>
+        <rectangle val="12.7366,4.64294;12.8881,4.89294"/>
       </attribute>
       <attribute name="text">
         <composite type="text">
@@ -7437,7 +7437,7 @@
         <point val="1.33661,7.93839"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="1.33661,7.78202;1.53861,7.98202"/>
+        <rectangle val="1.33661,7.78203;1.53861,7.98203"/>
       </attribute>
       <attribute name="text">
         <composite type="text">
@@ -7499,7 +7499,7 @@
         <point val="1.73661,7.93839"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="1.73661,7.78202;1.93861,7.98202"/>
+        <rectangle val="1.73661,7.78203;1.93861,7.98203"/>
       </attribute>
       <attribute name="text">
         <composite type="text">
@@ -7538,7 +7538,7 @@
         <point val="1.51339,7.93839"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="1.51339,7.78202;1.71539,7.98202"/>
+        <rectangle val="1.51339,7.78203;1.71539,7.98203"/>
       </attribute>
       <attribute name="text">
         <composite type="text">
@@ -13730,7 +13730,7 @@
         <point val="1.525,8.2"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="1.525,8.04363;1.727,8.24363"/>
+        <rectangle val="1.525,8.04364;1.727,8.24364"/>
       </attribute>
       <attribute name="text">
         <composite type="text">
