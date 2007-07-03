@@ -319,15 +319,17 @@
       *****************************************************************
        100-DBOPEN-SEC                SECTION.
       *
-           MOVE    "DBOPEN"            TO  MCP-FUNC.
-           CALL    "MCPSUB"             USING
+           MOVE    "DBOPEN"            TO  MCP-FUNC
+           CALL    "ORCDBMAIN"          USING
                                         MCPAREA
-                                        MCPDATA-REC.
+                                        MCPDATA-REC
+                                        SPA-AREA
       *
-           MOVE    "DBSTART"           TO  MCP-FUNC.
-           CALL    "MCPSUB"             USING
-                                        MCPAREA
-                                        MCPDATA-REC.
+           MOVE    "DBSTART"           TO  MCP-FUNC
+           CALL    "ORCDBMAIN"         USING
+                                       MCPAREA
+                                       MCPDATA-REC
+                                       SPA-AREA
            .
        100-DBOPEN-EXT.
            EXIT.
@@ -337,15 +339,17 @@
       *****************************************************************
        900-DBDISCONNECT-SEC            SECTION.
       *
-           MOVE    "DBCOMMIT"          TO  MCP-FUNC.
-           CALL    "MCPSUB"             USING
+           MOVE    "DBCOMMIT"          TO  MCP-FUNC
+           CALL    "ORCDBMAIN"         USING
                                         MCPAREA
-                                        MCPDATA-REC.
+                                        MCPDATA-REC
+                                        SPA-AREA
       *
-           MOVE    "DBDISCONNECT"      TO  MCP-FUNC.
-           CALL    "MCPSUB"             USING
+           MOVE    "DBDISCONNECT"      TO  MCP-FUNC
+           CALL    "ORCDBMAIN"          USING
                                         MCPAREA
-                                        MCPDATA-REC.
+                                        MCPDATA-REC
+                                        SPA-AREA
       *
            .
        900-DBDISCONNECT-EXT.

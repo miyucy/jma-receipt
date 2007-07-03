@@ -785,9 +785,10 @@ grpsys         PERFORM 900-DBFETCH-SEC
                MOVE    "DBFETCH"           TO  MCP-FUNC
       *        MOVE    PATH-TBL-PREVIEW-KEY
       *                                    TO  MCP-PATH
-               CALL    "MCPSUB"            USING
+               CALL    "ORCDBMAIN"         USING
                                                MCPAREA
                                                MCPDATA-REC
+                                               SPA-AREA
                IF      MCP-RC              =   ZERO
                    MOVE    ZERO                TO  FLG-PREVIEW
                ELSE  
