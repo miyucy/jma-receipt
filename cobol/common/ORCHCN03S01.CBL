@@ -59,13 +59,7 @@
       *
       *    °õºþÍÑ¥Ç¡¼¥¿
        FD  PRT-FILE.
-       01  PRT-REC.
-           03  PRT-PRTID               PIC X(30).
-           03  PRT-PRTNM               PIC X(20).
-           03  PRT-OFFSET-X            PIC X(05).
-           03  PRT-OFFSET-Y            PIC X(05).
-           03  PRT-SITEKBN             PIC X(01).
-           03  PRT-PRTDATA             PIC X(20000).
+       01  PRT-REC                     PIC X(20000).
       *
        WORKING-STORAGE                 SECTION.
       *
