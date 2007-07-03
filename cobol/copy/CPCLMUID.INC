@@ -24,12 +24,12 @@
       ************************************************************
         01  CLMUID-REC.
             03  CLMUID-KEY.
-              05  CLMUID-HOSPNUM       PIC S9(2).
-              05  CLMUID-PTID          PIC S9(10).
+              05  CLMUID-HOSPNUM       PIC 9(2).
+              05  CLMUID-PTID          PIC 9(10).
               05  CLMUID-SRYKA         PIC X(2).
             03  CLMUID-UID-NEW         PIC X(36).
             03  CLMUID-HKNCOMBINUM-TBL     OCCURS  20.
-              05  CLMUID-HKNCOMBI      PIC S9(4).
+              05  CLMUID-HKNCOMBI      PIC 9(4).
               05  CLMUID-UID           PIC X(36).
             03  CLMUID-CREYMD   PIC X(8).
             03  CLMUID-UPYMD    PIC X(8).
