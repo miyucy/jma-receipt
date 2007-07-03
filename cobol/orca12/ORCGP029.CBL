@@ -171,6 +171,8 @@
            03  WRK-MCP-TABLE       PIC X(64).
            03  WRK-MCP-PATHNAME    PIC X(64).
       *
+           03  WRK-CREYMD              PIC X(08).
+      *
       *    カルテＰＧ名
            03  WRK-KARUTE-PG           PIC X(20).
       *    処方せんＰＧ名
@@ -535,7 +537,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    SMCNDATE-YMD        TO  PTINF-CREYMD
       *        更新年月日
                MOVE    SMCNDATE-YMD        TO  PTINF-UPYMD
-      *
                MOVE    SMCNDATE-HMS        TO  PTINF-UPHMS
       *
                MOVE    SPA-OPID            TO  PTINF-OPID
@@ -558,9 +559,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                PERFORM 2101-PTINF-HENSYU-SEC
       *        更新年月日
                MOVE    SMCNDATE-YMD        TO  PTINF-UPYMD
-      *
                MOVE    SMCNDATE-HMS        TO  PTINF-UPHMS
-      *
                MOVE    SPA-OPID            TO  PTINF-OPID
       *
                MOVE    PTINF-REC           TO  MCPDATA-REC
@@ -682,7 +681,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                END-IF
            ELSE
       *        更新情報
-               MOVE    MCPDATA-REC         TO  HZN-PTHKNINF-REC
+      *D       MOVE    MCPDATA-REC         TO  HZN-PTHKNINF-REC
                MOVE    HZN-PTHKN-CREYMD    TO  PTHKN-CREYMD
                MOVE    SMCNDATE-YMD        TO  PTHKN-UPYMD
                MOVE    SMCNDATE-HMS        TO  PTHKN-UPHMS
@@ -740,7 +739,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                END-IF
            ELSE
       *        更新情報
-               MOVE    MCPDATA-REC         TO  HZN-PTKOHINF-REC
+      *D       MOVE    MCPDATA-REC         TO  HZN-PTKOHINF-REC
                MOVE    HZN-PTKOH-CREYMD    TO  PTKOH-CREYMD
                MOVE    SMCNDATE-YMD        TO  PTKOH-UPYMD
                MOVE    SMCNDATE-HMS        TO  PTKOH-UPHMS
@@ -1149,7 +1148,7 @@ grpsys                 CALL    "ORCDBMAIN"         USING   MCPAREA
            PERFORM 940-HKNCOMBI-READ-SEC
       *    保険変更による受診履歴修正の有無チェック
            IF      FLG-HKNCOMBI        =   ZERO
-               MOVE    MCPDATA-REC         TO  HZN-HKNCOMBI-REC
+      *D       MOVE    MCPDATA-REC         TO  HZN-HKNCOMBI-REC
                IF     (HZN-COMB-TEKSTYMD   NOT =   COMB-TEKSTYMD) OR
                       (HZN-COMB-TEKEDYMD   NOT =   COMB-TEKEDYMD) OR
                       (HZN-COMB-DELKBN     NOT =   COMB-DELKBN  )
@@ -1396,15 +1395,16 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE    "tbl_syskanri"      TO  MCP-TABLE
                    MOVE    "key10"             TO  MCP-PATHNAME
                    PERFORM 960-SYSKANRI-READ-SEC
+                   IF      FLG-SYSKANRI        =   ZERO
+                       MOVE    MCPDATA-REC         TO  SYS-1009-REC
+                   END-IF
                ELSE
                    MOVE    1               TO  FLG-SYSKANRI
                END-IF
                MOVE    "tbl_syskanri"      TO  MCP-TABLE
                MOVE    "key10"             TO  MCP-PATHNAME
                PERFORM 990-DBCLOSE-SEC
-               IF      FLG-SYSKANRI        =   ZERO
-                   MOVE    MCPDATA-REC         TO  SYS-1009-REC
-               ELSE
+               IF      FLG-SYSKANRI        =   1
                    MOVE    "1011"          TO  SPA-ERRCD
                    DISPLAY "P29 SYS1009(PTGETNUM)ERR:" MCP-RC  "."
                    GO      TO      280-PTNUM-SYORI-EXT
@@ -1541,8 +1541,8 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *    変更
            WHEN    ( TSYRRK-NINSTYMD-O     NOT =   SPACE )
       *
-               MOVE    MCPDATA-REC         TO  HZN-TSYRRK-REC
-               MOVE    HZN-TSYRRK-CREYMD   TO  TSYRRK-CREYMD
+      *DD      MOVE    MCPDATA-REC         TO  HZN-TSYRRK-REC
+      *DD      MOVE    HZN-TSYRRK-CREYMD   TO  TSYRRK-CREYMD
                MOVE    SMCNDATE-YMD        TO  TSYRRK-UPYMD
                MOVE    SMCNDATE-HMS        TO  TSYRRK-UPHMS
       *
@@ -1612,8 +1612,8 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *    変更
            WHEN    ( TNKRRK-STYMD-O    NOT =   SPACE )
       *
-               MOVE    MCPDATA-REC         TO  HZN-TNKRRK-REC
-               MOVE    HZN-TNKRRK-CREYMD   TO  TNKRRK-CREYMD
+      *DD      MOVE    MCPDATA-REC         TO  HZN-TNKRRK-REC
+      *DD      MOVE    HZN-TNKRRK-CREYMD   TO  TNKRRK-CREYMD
                MOVE    SMCNDATE-YMD        TO  TNKRRK-UPYMD
                MOVE    SMCNDATE-HMS        TO  TNKRRK-UPHMS
       *
@@ -1633,7 +1633,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                END-IF
       *    追加
            WHEN    OTHER
-               MOVE    SPA-GMN-PTID    TO  TNKRRK-PTID
+               MOVE    SPA-GMN-PTID        TO  TNKRRK-PTID
       *
                MOVE    SMCNDATE-YMD        TO  TNKRRK-CREYMD
                MOVE    SMCNDATE-YMD        TO  TNKRRK-UPYMD
@@ -1691,7 +1691,6 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                END-IF
            ELSE
       *
-               MOVE    MCPDATA-REC         TO  HZN-PTRSIINF-REC
                MOVE    HZN-PTRSI-CREYMD    TO  PTRSI-CREYMD
                MOVE    SMCNDATE-YMD        TO  PTRSI-UPYMD
                MOVE    SMCNDATE-HMS        TO  PTRSI-UPHMS
@@ -1762,8 +1761,10 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE    "9000"              TO  SPA-ERRCD
                END-IF
            ELSE
+               MOVE    PTKOHFTN-CREYMD     TO  WRK-CREYMD
                MOVE    PARA-DATA-REC       TO  PTKOHFTN-REC
       *
+               MOVE    WRK-CREYMD          TO  PTKOHFTN-CREYMD
                MOVE    SMCNDATE-YMD        TO  PTKOHFTN-UPYMD
                MOVE    SMCNDATE-HMS        TO  PTKOHFTN-UPHMS
       *
@@ -1818,7 +1819,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
        2120-QRCDHKN-UPD-SEC         SECTION.
       *
            INITIALIZE                      QRCDHKN-REC
-           MOVE    SPA-HOSPNUM          TO  QRCDHKN-HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  QRCDHKN-HOSPNUM
            MOVE    SPA-QR-REGISTYMD    TO  QRCDHKN-REGISTYMD
            MOVE    SPA-QR-REGISTID     TO  QRCDHKN-REGISTID
            MOVE    QRCDHKN-REC         TO  MCPDATA-REC
@@ -1936,68 +1937,10 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                                            SYS-1032-REC
            MOVE    ORCSPRTNM-PRTPG     TO  WRK-SYOHOU-PG
       *
-      **** INITIALIZE                      SYS-1032-REC
-      *    MOVE    "1032"              TO  SYS-1032-KANRICD
-      *    MOVE    "00000001"          TO  SYS-1032-KBNCD
-      *
-      *    MOVE    SYS-1032-REC        TO  MCPDATA-REC
-      *    MOVE    "DBSELECT"          TO  MCP-FUNC
-      *    MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
-      *    MOVE    SPA-SYSYMD          TO  ORC-DBYMD
-      *    CALL    "ORCMCPSUB"          USING
-      *                                 MCPAREA
-      *                                 ORCMCPAREA
-      *                                 MCPDATA-REC
-      *    IF      MCP-RC              =   ZERO
-      *        MOVE    "SYSKANRI-KEY"  TO  ORC-DBPATH
-      *        PERFORM 960-SYSKANRI-READ-SEC
-      *    ELSE
-      *        MOVE    1               TO  FLG-SYSKANRI
-      *    END-IF
-      *    IF      FLG-SYSKANRI        =   ZERO
-      *        MOVE    MCPDATA-REC         TO  SYS-1032-REC
-      *        独自開発分
-      *        IF      SYS-1032-ORCACSTCHK     =   "T"
-      *            MOVE    SYS-1032-ORCACSTNM  TO  WRK-KARUTE-PG
-      *        ELSE
-      *        ＯＲＣＡ標準分
-      *            MOVE    SYS-1032-ORCAORGNM  TO  WRK-KARUTE-PG
-      *        END-IF
-      *****END-IF
            IF      WRK-KARUTE-PG       =   SPACE
                MOVE    "ORCHC01"           TO  WRK-KARUTE-PG
            END-IF
       *
-      *****処方せん
-      *    MOVE    SPACE               TO  WRK-SYOHOU-PG
-      *    INITIALIZE                      SYS-1032-REC
-      *    MOVE    "1032"              TO  SYS-1032-KANRICD
-      *    MOVE    "00000002"          TO  SYS-1032-KBNCD
-      *
-      *    MOVE    SYS-1032-REC        TO  MCPDATA-REC
-      *    MOVE    "DBSELECT"          TO  MCP-FUNC
-      *    MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
-      *    MOVE    SPA-SYSYMD          TO  ORC-DBYMD
-      *    CALL    "ORCMCPSUB"          USING
-      *                                 MCPAREA
-      *                                 ORCMCPAREA
-      *                                 MCPDATA-REC
-      *    IF      MCP-RC              =   ZERO
-      *        MOVE    "SYSKANRI-KEY"  TO  ORC-DBPATH
-      *        PERFORM 960-SYSKANRI-READ-SEC
-      *    ELSE
-      *        MOVE    1               TO  FLG-SYSKANRI
-      *    END-IF
-      *    IF      FLG-SYSKANRI        =   ZERO
-      *        MOVE    MCPDATA-REC         TO  SYS-1032-REC
-      *        独自開発分
-      *        IF      SYS-1032-ORCACSTCHK     =   "T"
-      *            MOVE    SYS-1032-ORCACSTNM  TO  WRK-SYOHOU-PG
-      *        ELSE
-      *        ＯＲＣＡ標準分
-      *            MOVE    SYS-1032-ORCAORGNM  TO  WRK-SYOHOU-PG
-      *        END-IF
-      *****END-IF
            IF      WRK-SYOHOU-PG       =   SPACE
                MOVE    "ORCHCM19"          TO  WRK-SYOHOU-PG
            END-IF
@@ -2046,7 +1989,6 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPA-GMN20-TKARUTE (IDX2)
                                      TO  ORCHC01-SYORIKBN
       *
-      *****CALL    "ORCHC01"         USING  SPA-AREA
            CALL    WRK-KARUTE-PG     USING  SPA-AREA
                                             ORCHC01AREA
       *
@@ -2058,14 +2000,6 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *****************************************************************
        21001-HC02-CALL-SEC           SECTION.
       *
-      *    MOVE    ZERO              TO  ORCHC02-RENNUM
-      *    MOVE    "1"               TO  ORCHC02-KBN
-      *
-      *----(01.00.01) LINE MOD START --------------------------------
-      *     MOVE    SPA-GMN20-TSRYKA  (IDX2)(1:2)  TO  SPA-SRYKA
-      *     MOVE    SPA-GMN20-TSRYKA  (IDX2)(4:)   TO  SPA-SRYKAMEI
-      *     MOVE    "1"                            TO  SPA-DRCD (1:1)
-      *     MOVE    SPA-GMN20-TDRCD   (IDX2)(1:4)  TO  SPA-DRCD (2:)
            MOVE    SPA-GMN-PTID        TO  SPA-PTID
            MOVE    SPA-GMN-PTNUM       TO  SPA-PTNUM
            MOVE    SPA-GMN-NAME        TO  SPA-NAME
@@ -2078,13 +2012,9 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPA-NAI20-DRCD    (IDX2)       TO  SPA-DRCD (2:)
       *----(01.00.01) LINE MOD END   --------------------------------
            MOVE    SPA-GMN20-THKNCOMBI(IDX2)       TO  SPA-HKNCOMBINUM
-      **** CALL    "ORCHC02"         USING   MCPAREA
-      *                                      SPA-AREA
-      *********                              ORCHC02AREA
-      *    Ａ５を印刷
+      *    印刷
            MOVE    ZERO              TO  ORCHC19-RENNUM
            MOVE    "1"               TO  ORCHC19-KBN
-      *****CALL    "ORCHC19"         USING   MCPAREA
            CALL    WRK-SYOHOU-PG     USING   SPA-AREA
                                              ORCHC19AREA
       *
@@ -2106,6 +2036,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                PERFORM 920-DBFETCH-SEC
                IF      MCP-RC              =   ZERO
                    MOVE    ZERO            TO  FLG-PTINF
+                   MOVE    MCPDATA-REC     TO  PTINF-REC
                ELSE
                    MOVE    1               TO  FLG-PTINF
                END-IF
@@ -2133,6 +2064,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    "key"               TO  MCP-PATHNAME
                PERFORM 920-DBFETCH-SEC
                IF      MCP-RC              =   ZERO
+                   MOVE    MCPDATA-REC     TO  HZN-PTHKNINF-REC
                    MOVE    ZERO            TO  FLG-PTHKNINF
                ELSE
                    MOVE    1               TO  FLG-PTHKNINF
@@ -2162,6 +2094,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    "key"               TO  MCP-PATHNAME
                PERFORM 920-DBFETCH-SEC
                IF      MCP-RC              =   ZERO
+                   MOVE    MCPDATA-REC     TO  HZN-PTKOHINF-REC
                    MOVE    ZERO            TO  FLG-PTKOHINF
                ELSE
                    MOVE    1               TO  FLG-PTKOHINF
@@ -2221,9 +2154,10 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    "key"               TO  MCP-PATHNAME
                PERFORM 920-DBFETCH-SEC
                IF      MCP-RC              =   ZERO
-                   MOVE    ZERO            TO  FLG-PTRSIINF
+                   MOVE    MCPDATA-REC         TO  HZN-PTRSIINF-REC
+                   MOVE    ZERO                TO  FLG-PTRSIINF
                ELSE
-                   MOVE    1               TO  FLG-PTRSIINF
+                   MOVE    1                   TO  FLG-PTRSIINF
                END-IF
            ELSE
                MOVE    1               TO  FLG-PTRSIINF
@@ -2250,7 +2184,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                PERFORM 920-DBFETCH-SEC
                IF      MCP-RC              =   ZERO
                    MOVE    MCPDATA-REC         TO  UKETUKE-REC
-                   MOVE    ZERO            TO  FLG-UKETUKE
+                   MOVE    ZERO                TO  FLG-UKETUKE
                ELSE
                    MOVE    1               TO  FLG-UKETUKE
                END-IF
@@ -2308,8 +2242,10 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    "key"               TO  MCP-PATHNAME
                PERFORM 920-DBFETCH-SEC
                IF      MCP-RC              =   ZERO
+                   MOVE    MCPDATA-REC     TO  HZN-HKNCOMBI-REC
                    MOVE    ZERO            TO  FLG-HKNCOMBI
                ELSE
+                   INITIALIZE                  HZN-HKNCOMBI-REC
                    MOVE    1               TO  FLG-HKNCOMBI
                END-IF
            ELSE
