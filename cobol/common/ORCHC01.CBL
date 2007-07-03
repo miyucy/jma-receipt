@@ -276,6 +276,8 @@
       *
       *    患者登録機能制御情報
            COPY  "CPSK1017.INC".
+      *    システム管理マスタ
+           COPY    "CPSYSKANRI.INC".
       *
       *****************************************************************
       *    サブプロ用　領域
@@ -421,7 +423,7 @@
            MOVE    SYS-1017-REC        TO  MCPDATA-REC
            PERFORM 800-SYSKANRI-READ-SEC
            IF      FLG-SYSKANRI        =   ZERO
-               MOVE    MCPDATA-REC         TO  SYS-1017-REC
+               MOVE    SYSKANRI-REC        TO  SYS-1017-REC
            ELSE
                INITIALIZE                  SYS-1017-REC
            END-IF
@@ -1449,6 +1451,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                                                    SPA-AREA
                IF      MCP-RC              =   ZERO
                    MOVE    ZERO            TO  FLG-SYSKANRI
+                   MOVE    MCPDATA-REC     TO  SYSKANRI-REC
                ELSE
                    MOVE    1               TO  FLG-SYSKANRI
                END-IF
