@@ -1801,7 +1801,8 @@
                                    TO  SPA-Q02-Q100-EDNUM
            ELSE
                COMPUTE SPA-Q02-Q100-EDNUM
-                   =   SPA-GMN-Q02-TOTAL-NUM   /   CONST-LINE  +   0.99
+                   = ( SPA-GMN-Q02-TOTAL-NUM   +   CONST-LINE  -   1 )
+                   /   CONST-LINE
            END-IF
       *
            MOVE    SPACE           TO  SPA-MOTOPG
