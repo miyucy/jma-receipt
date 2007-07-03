@@ -2119,7 +2119,7 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
                MOVE    "*"                 TO  SYS-8000-KBNCD
                MOVE    "00000000"          TO  SYS-8000-STYUKYMD
                MOVE    "99999999"          TO  SYS-8000-EDYUKYMD
-               MOVE    2                   TO  SYS-8000-DAILY
+               MOVE    1                   TO  SYS-8000-DAILY
                MOVE    36                  TO  SYS-8000-MONTHLY
                MOVE    SYS-8000-REC        TO  SYSKANRI-REC
                MOVE    SMCNDATE-YMD        TO  SYS-CREYMD
