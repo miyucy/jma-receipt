@@ -191,7 +191,12 @@
                    MOVE    99              TO  MKPRT-RC
            END-EVALUATE
       *
-           PERFORM 300-REPRINT-SEC
+      *    再印刷書き出しの判定
+           IF      SPA-PRT-FLG     =   SPACE
+               CONTINUE
+           ELSE
+               PERFORM 300-REPRINT-SEC
+           END-IF
       *
            .
        000-PROC-EXT.
