@@ -3022,7 +3022,11 @@ grpsys         PERFORM 900-ORCDBMAIN-SEC
        300-END-SEC                 SECTION.
       *
            MOVE    SPACE               TO  RECEYMD-REC
-           MOVE    WRK-RECENUM         TO  RECEYMD-RECENUM
+           IF      WRK-PARA-SHELLID    NOT =   "RECEPTX"
+               MOVE    WRK-RECENUM         TO  RECEYMD-RECENUM
+           ELSE
+               MOVE    100                 TO  RECEYMD-RECENUM
+           END-IF
            WRITE   RECEYMD-REC
       *          
       *    ¥Õ¥¡¥¤¥ë£Ã£Ì£Ï£Ó£Å½èÍý

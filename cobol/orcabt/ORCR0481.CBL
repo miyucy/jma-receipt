@@ -2588,7 +2588,11 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
        300-END-SEC                 SECTION.
       *
            OPEN    OUTPUT              RECEYMD-FILE 
-           MOVE    WRK-RECENUM         TO  WRK-RECEYMD-RECENUM
+           IF      WRK-PARA-SHELLID    NOT =   "RECEPTX"
+               MOVE    WRK-RECENUM         TO  WRK-RECEYMD-RECENUM
+           ELSE
+               MOVE    200                 TO  WRK-RECEYMD-RECENUM
+           END-IF
            MOVE    WRK-RECEYMD-REC     TO  RECEYMD-REC
            WRITE   RECEYMD-REC
            CLOSE   RECEYMD-FILE

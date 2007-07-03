@@ -159,6 +159,18 @@
                05  WRK-PARA3-A5                        PIC  9(07).
                05  WRK-PARA3-A6                        PIC  X(08).
       *
+           03  WRK-PARA4.
+               05  WRK-PARA4-A9                        PIC  X(08).
+               05  WRK-PARA4-A10                       PIC  X(08).
+               05  WRK-PARA4-A1.
+                   07  WRK-PARA4-A1-1                  PIC  X(06).
+                   07  WRK-PARA4-A1-2                  PIC  X(16).
+                   07  WRK-PARA4-A1-3                  PIC  X(08).
+               05  WRK-PARA4-A3                        PIC  X(01).
+               05  WRK-PARA4-A8                        PIC  X(06).
+               05  WRK-PARA4-A5                        PIC  9(07).
+               05  WRK-PARA4-A6                        PIC  X(08).
+      *
            03  WRK-ARG                 PIC X(512).
       *
            03  WRK-PTID-X.
@@ -354,13 +366,21 @@
            MOVE     WRK-PARA-A6    TO  WRK-PARA2-A6
       *
            MOVE     WRK-PARA-A1    TO  WRK-PARA3-A1
-           MOVE     WRK-PARA-A2    TO  WRK-PARA0-A2
+           MOVE     WRK-PARA-A2    TO  WRK-PARA3-A2
            MOVE     WRK-PARA-A3    TO  WRK-PARA3-A3
            MOVE     WRK-PARA-A5    TO  WRK-PARA3-A5
            MOVE     WRK-PARA-A6    TO  WRK-PARA3-A6
            MOVE     WRK-PARA-A8    TO  WRK-PARA3-A8
            MOVE     WRK-PARA-A9    TO  WRK-PARA3-A9
            MOVE     WRK-PARA-A10   TO  WRK-PARA3-A10
+      *
+           MOVE     WRK-PARA-A1    TO  WRK-PARA4-A1
+           MOVE     WRK-PARA-A3    TO  WRK-PARA4-A3
+           MOVE     WRK-PARA-A5    TO  WRK-PARA4-A5
+           MOVE     WRK-PARA-A6    TO  WRK-PARA4-A6
+           MOVE     WRK-PARA-A8    TO  WRK-PARA4-A8
+           MOVE     WRK-PARA-A9    TO  WRK-PARA4-A9
+           MOVE     WRK-PARA-A10   TO  WRK-PARA4-A10
       *
       *    作成日・時間の設定
            MOVE    WRK-PARA-A9     TO  WRK-CONS-ARG-CREYMD
@@ -1031,24 +1051,54 @@
            PERFORM 200101-PRVDATA-DEL-SEC
       *
       *
-           MOVE     SPACE       TO WRK-ARG
-           STRING   WRK-PARA3      DELIMITED   BY  SIZE
-                    ","            DELIMITED   BY  SIZE
-                    WRK-PARA-HOSPNUM
-                                   DELIMITED   BY  SIZE
-                    ","            DELIMITED   BY  SIZE
-                    RECEERR        DELIMITED   BY  SPACE
-                                   INTO    WRK-ARG
-           END-STRING
-           DISPLAY "ORCR0950 start = [" WRK-ARG "]"
            IF      WRK-PARA-A8     <=  WRK-CONS-SRYYM-200609     
+               MOVE     SPACE       TO WRK-ARG
+               STRING   WRK-PARA3      DELIMITED   BY  SIZE
+                        ","            DELIMITED   BY  SIZE
+                        WRK-PARA-HOSPNUM
+                                       DELIMITED   BY  SIZE
+                        ","            DELIMITED   BY  SIZE
+                        RECEERR        DELIMITED   BY  SPACE
+                                       INTO    WRK-ARG
+               END-STRING
+               DISPLAY "ORCR0950 start = [" WRK-ARG "]"
                CALL    "ORCR0950"          USING
                                            WRK-ARG
+               MOVE     SPACE       TO WRK-ARG
+               STRING   WRK-PARA4      DELIMITED   BY  SIZE
+                        ","            DELIMITED   BY  SIZE
+                        WRK-PARA-HOSPNUM
+                                       DELIMITED   BY  SIZE
+                        ","            DELIMITED   BY  SIZE
+                        RECEERR        DELIMITED   BY  SPACE
+                                       INTO    WRK-ARG
+               END-STRING
+               DISPLAY "ORCR0951 start = [" WRK-ARG "]"
                CALL    "ORCR0951"          USING
                                            WRK-ARG
            ELSE
+               MOVE     SPACE       TO WRK-ARG
+               STRING   WRK-PARA3      DELIMITED   BY  SIZE
+                        ","            DELIMITED   BY  SIZE
+                        WRK-PARA-HOSPNUM
+                                       DELIMITED   BY  SIZE
+                        ","            DELIMITED   BY  SIZE
+                        RECEERR        DELIMITED   BY  SPACE
+                                   INTO    WRK-ARG
+               END-STRING
+               DISPLAY "ORCR0960 start = [" WRK-ARG "]"
                CALL    "ORCR0960"          USING
                                            WRK-ARG
+               MOVE     SPACE       TO WRK-ARG
+               STRING   WRK-PARA4      DELIMITED   BY  SIZE
+                        ","            DELIMITED   BY  SIZE
+                        WRK-PARA-HOSPNUM
+                                       DELIMITED   BY  SIZE
+                        ","            DELIMITED   BY  SIZE
+                        RECEERR        DELIMITED   BY  SPACE
+                                       INTO    WRK-ARG
+               END-STRING
+               DISPLAY "ORCR0961 start = [" WRK-ARG "]"
                CALL    "ORCR0961"          USING
                                            WRK-ARG
            END-IF
