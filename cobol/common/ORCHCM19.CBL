@@ -354,6 +354,8 @@
       *    ファイルレイアウト
       *****************************************************************
       *
+      *    システム管理マスタ
+           COPY    "CPSYSKANRI.INC".
       *    医療機関情報−基本情報 
            COPY    "CPSK1001.INC".
       *    医療機関情報−所在地、連絡先 
@@ -3493,7 +3495,7 @@
            MOVE    SYS-1900-REC    TO  MCPDATA-REC
            PERFORM 900-SYSKANRI-KEY10-SEC
            IF      FLG-SYSKANRI        =   ZERO
-               MOVE    MCPDATA-REC     TO  SYS-1900-REC
+               MOVE    SYSKANRI-REC        TO  SYS-1900-REC
                IF      SYS-1900-PRTKBN(9)  NOT =   SPACE
       *            医療機関名称編集情報
                    PERFORM 900-SYS1901-READ-SEC
@@ -3525,7 +3527,7 @@
            MOVE    SYS-1901-REC    TO  MCPDATA-REC
            PERFORM 900-SYSKANRI-KEY10-SEC
            IF      FLG-SYSKANRI        =   ZERO
-               MOVE    MCPDATA-REC     TO  SYS-1901-REC
+               MOVE    SYSKANRI-REC        TO  SYS-1901-REC
                MOVE    SYS-1901-HOSPNAME1  TO  WRK-HOSPNAME1
                MOVE    SYS-1901-HOSPNAME2  TO  WRK-HOSPNAME2
            ELSE
@@ -3553,10 +3555,10 @@
            MOVE    SYS-1902-REC    TO  MCPDATA-REC
            PERFORM 900-SYSKANRI-KEY10-SEC
            IF      FLG-SYSKANRI        =   ZERO
-               MOVE    MCPDATA-REC     TO  SYS-1902-REC
-               MOVE    SYS-1902-ADRS1  TO  WRK-HOSPADRS1
-               MOVE    SYS-1902-ADRS2  TO  WRK-HOSPADRS2
-               MOVE    SYS-1902-TEL    TO  WRK-HOSPTEL
+               MOVE    SYSKANRI-REC        TO  SYS-1902-REC
+               MOVE    SYS-1902-ADRS1      TO  WRK-HOSPADRS1
+               MOVE    SYS-1902-ADRS2      TO  WRK-HOSPADRS2
+               MOVE    SYS-1902-TEL        TO  WRK-HOSPTEL
            ELSE
                INITIALIZE                  SYS-1902-REC
            END-IF
@@ -3577,6 +3579,9 @@
                MOVE    "tbl_syskanri"      TO  MCP-TABLE
                MOVE    "key10"             TO  MCP-PATHNAME
                PERFORM 900-KANRIMST-READ-SEC
+               IF      MCP-RC              =   ZERO
+                   MOVE    MCPDATA-REC     TO  SYSKANRI-REC
+               END-IF
            ELSE
                MOVE    1               TO  FLG-SYSKANRI
            END-IF

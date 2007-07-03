@@ -195,6 +195,8 @@
            COPY  "CPSK1010.INC".
       *    ¿ÇÎÅ²Ê
            COPY  "CPSK1005.INC".
+      *    ¥·¥¹¥Æ¥à´ÉÍý¥Þ¥¹¥¿
+           COPY    "CPSYSKANRI.INC".
       *
       *    °õºþ¥Ñ¥é¥á¥¿
            COPY    "CPORCSMKPRT.INC".
@@ -351,7 +353,7 @@
                MOVE    SYS-1005-REC        TO  MCPDATA-REC
                PERFORM 900-SYSKANRI-READ-SEC
                IF      FLG-SYSKANRI        =   ZERO
-                   MOVE    MCPDATA-REC         TO  SYS-1005-REC
+                   MOVE    SYSKANRI-REC        TO  SYS-1005-REC
                    MOVE    SYS-1005-SRYKANAME1
                                                TO  WRK-SRYKA-MEI
                ELSE
@@ -374,7 +376,7 @@
                    MOVE    SYS-1010-REC        TO  MCPDATA-REC
                    PERFORM 900-SYSKANRI-READ-SEC
                    IF      FLG-SYSKANRI        =   ZERO
-                       MOVE    MCPDATA-REC         TO  SYS-1010-REC
+                       MOVE    SYSKANRI-REC        TO  SYS-1010-REC
                        MOVE    SYS-1010-NAME       TO  WRK-DRCD-MEI
                                                                 (IDX)
                    END-IF
@@ -1217,6 +1219,7 @@
                MOVE    "key10"             TO  MCP-PATHNAME
                PERFORM 920-DBFETCH-SEC
                IF      MCP-RC              =   ZERO
+                   MOVE    MCPDATA-REC     TO  SYSKANRI-REC
                    MOVE    ZERO            TO  FLG-SYSKANRI
                ELSE
                    MOVE    1               TO  FLG-SYSKANRI
