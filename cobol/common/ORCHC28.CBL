@@ -144,6 +144,8 @@
       *   患者番号変換サブ
            COPY    "CPORCSPTID.INC".
       *
+      *    印刷パラメタ
+           COPY    "CPORCSMKPRT.INC".
       *----(00.00.01)--ADD-START---
       *    オンライン帳票名・出力先プリンタ名取得パラ
            COPY    "CPORCSPRTNM.INC".
@@ -367,6 +369,7 @@
       *
       *    ファイルＯＰＥＮ
            MOVE    "HC28"              TO  HC01PARA-FORM-ID
+grpsys     MOVE    SPA-HOSPNUM         TO  HC01PARA-HOSPNUM
            MOVE    SPA-TERMID          TO  HC01PARA-TERMID
            MOVE    SYS-TIME            TO  HC01PARA-SYOHMS
            MOVE    CNT-PAGE            TO  HC01PARA-CNT
@@ -374,25 +377,35 @@
            WRITE   HC28
            CLOSE                       PRT-FILE
       *
-           MOVE   "HC01.sh"            TO  SHELL-ID
-           MOVE   "HC28.dia"           TO  SHELL-DIA
-           MOVE   "HC28.def"           TO  SHELL-DEF
-           MOVE   HC01PARA             TO  SHELL-DAT
-           MOVE   SYS-1031-PRTNM(6)    TO  SHELL-PRTNM 
+grpsys     INITIALIZE                 ORCSMKPRTAREA
+grpsys     MOVE   "HC01.sh"           TO  MKPRT-ID
+grpsys     MOVE   "HC28.red"          TO  MKPRT-DIA
+grpsys     MOVE   "HC28"              TO  MKPRT-DEF
+grpsys     MOVE   HC01PARA            TO  MKPRT-DAT
+grpsys     MOVE   SYS-1031-PRTNM(6)   TO  MKPRT-PRTNM
+grpsys     CALL   "ORCSMKPRT"         USING
+grpsys                                ORCSMKPRTAREA
+grpsys                                SPA-AREA
+      *
+      *     MOVE   "HC01.sh"            TO  SHELL-ID
+      *     MOVE   "HC28.dia"           TO  SHELL-DIA
+      *     MOVE   "HC28.def"           TO  SHELL-DEF
+      *     MOVE   HC01PARA             TO  SHELL-DAT
+      *     MOVE   SYS-1031-PRTNM(6)    TO  SHELL-PRTNM 
       *   印刷用スクリプト処理
-           MOVE  SHELL-NAME            TO  SHELLTBL-NAME
-           MOVE  SHELL-ARG1            TO  SHELLTBL-ARG1
-           MOVE  SHELL-ARG2            TO  SHELLTBL-ARG2
-           MOVE  SHELL-ARG3            TO  SHELLTBL-ARG3
-           MOVE  SHELL-ARG4            TO  SHELLTBL-ARG4
-           MOVE  SHELL-ARG5            TO  SHELLTBL-ARG5
+      *     MOVE  SHELL-NAME            TO  SHELLTBL-NAME
+      *     MOVE  SHELL-ARG1            TO  SHELLTBL-ARG1
+      *     MOVE  SHELL-ARG2            TO  SHELLTBL-ARG2
+      *     MOVE  SHELL-ARG3            TO  SHELLTBL-ARG3
+      *     MOVE  SHELL-ARG4            TO  SHELLTBL-ARG4
+      *     MOVE  SHELL-ARG5            TO  SHELLTBL-ARG5
 grpsys*    MOVE    SPA-HOSPNUM         TO  -HOSPNUM
-           MOVE  SHELLTBL              TO  MCPDATA-REC
-           MOVE    "SHELL"             TO  MCP-FUNC
-           MOVE    PATH-SHELL-SHELL    TO  MCP-PATH
-           CALL    "MCPSUB"            USING
-                                       MCPAREA
-                                       MCPDATA-REC                        
+      *     MOVE  SHELLTBL              TO  MCPDATA-REC
+      *     MOVE    "SHELL"             TO  MCP-FUNC
+      *     MOVE    PATH-SHELL-SHELL    TO  MCP-PATH
+      *     CALL    "MCPSUB"            USING
+      *                                 MCPAREA
+      *                                 MCPDATA-REC
            .
       *
        390-PRINT-OUT-EXT.
@@ -460,18 +473,30 @@ grpsys*    MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            MOVE    ORCHC28-PTID(CNT-DAT)  TO  PTINF-PTID
            MOVE    PTINF-REC              TO  MCPDATA-REC
            MOVE    "DBSELECT"             TO  MCP-FUNC
-           MOVE    "PTINF-KEY"            TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"            USING
-                                          MCPAREA
-                                          ORCMCPAREA
-                                          MCPDATA-REC
+grpsys     MOVE    "tbl_ptinf"            TO  MCP-TABLE
+grpsys     MOVE    "key"                  TO  MCP-PATHNAME
+grpsys     CALL    "ORCDBMAIN"                USING
+grpsys                                        MCPAREA
+grpsys                                        MCPDATA-REC
+grpsys                                        SPA-AREA
+      *     MOVE    "PTINF-KEY"            TO  ORC-DBPATH
+      *     CALL    "ORCMCPSUB"            USING
+      *                                    MCPAREA
+      *                                    ORCMCPAREA
+      *                                    MCPDATA-REC
            IF  MCP-RC  =  ZERO
                MOVE    "DBFETCH"          TO  MCP-FUNC
-               MOVE    "PTINF-KEY"        TO  ORC-DBPATH
-               CALL    "ORCMCPSUB"        USING
-                                          MCPAREA
-                                          ORCMCPAREA
-                                          MCPDATA-REC
+grpsys         MOVE    "tbl_ptinf"        TO  MCP-TABLE
+grpsys         MOVE    "key"              TO  MCP-PATHNAME
+grpsys         CALL    "ORCDBMAIN"            USING
+grpsys                                        MCPAREA
+grpsys                                        MCPDATA-REC
+grpsys                                        SPA-AREA
+      *         MOVE    "PTINF-KEY"        TO  ORC-DBPATH
+      *         CALL    "ORCMCPSUB"        USING
+      *                                    MCPAREA
+      *                                    ORCMCPAREA
+      *                                    MCPDATA-REC
                IF  MCP-RC  =  ZERO
                    MOVE    ZERO            TO  FLG-PTINF
                    MOVE    MCPDATA-REC     TO  PTINF-REC
@@ -483,11 +508,17 @@ grpsys*    MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            END-IF        
       *
            MOVE    "DBCLOSECURSOR"         TO  MCP-FUNC
-           MOVE    "PTINF-KEY"             TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"             USING
-                                           MCPAREA
-                                           ORCMCPAREA
-                                           MCPDATA-REC
+grpsys     MOVE    "tbl_ptinf"         TO  MCP-TABLE
+grpsys     MOVE    "key"               TO  MCP-PATHNAME
+grpsys     CALL    "ORCDBMAIN"             USING
+grpsys                                     MCPAREA
+grpsys                                     MCPDATA-REC
+grpsys                                     SPA-AREA
+      *    MOVE    "PTINF-KEY"             TO  ORC-DBPATH
+      *    CALL    "ORCMCPSUB"             USING
+      *                                    MCPAREA
+      *                                     ORCMCPAREA
+      *                                     MCPDATA-REC
            .
        900-DBREAD-EXT.
            EXIT.
