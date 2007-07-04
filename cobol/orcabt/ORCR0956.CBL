@@ -2384,6 +2384,10 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *
            MOVE    ZERO                 TO  FLG-ERR
       *
+           IF      WRK-PARA-SHELLID    =   "RECEPTX"
+               ADD     10                  TO  WRK-RECENUM
+           END-IF
+      *
            PERFORM VARYING IDXY    FROM    1   BY  1
                    UNTIL   IDXY    >       TBL-RECE-MAX
                    OR      FLG-ERR >       ZERO
