@@ -969,6 +969,8 @@
                     ","         DELIMITED   BY  SIZE
                     "3"         DELIMITED   BY  SIZE
                     ","         DELIMITED   BY  SIZE
+                    "3"         DELIMITED   BY  SIZE
+                    ","         DELIMITED   BY  SIZE
                     WRK-PARA-HOSPNUM
                                 DELIMITED   BY  SIZE
                     ","         DELIMITED   BY  SIZE
@@ -1164,6 +1166,8 @@
                     WRK-PARA-A26 DELIMITED   BY  SPACE
                     ","         DELIMITED   BY  SIZE
                     WRK-PARA-A27  DELIMITED BY  SPACE
+                    ","         DELIMITED   BY  SIZE
+                    "3"         DELIMITED   BY  SIZE
                     ","         DELIMITED   BY  SIZE
                     "3"         DELIMITED   BY  SIZE
                     ","         DELIMITED   BY  SIZE
@@ -1446,6 +1450,8 @@
                     ","         DELIMITED   BY  SIZE
                     "3"         DELIMITED   BY  SIZE
                     ","         DELIMITED   BY  SIZE
+                    "4"         DELIMITED   BY  SIZE
+                    ","         DELIMITED   BY  SIZE
                     WRK-PARA-HOSPNUM
                                 DELIMITED   BY  SIZE
                     ","         DELIMITED   BY  SIZE
@@ -1720,6 +1726,8 @@
                     WRK-PARA-A27  DELIMITED BY  SPACE
                     ","         DELIMITED   BY  SIZE
                     "3"         DELIMITED   BY  SIZE
+                    ","         DELIMITED   BY  SIZE
+                    "4"         DELIMITED   BY  SIZE
                     ","         DELIMITED   BY  SIZE
                     WRK-PARA-HOSPNUM
                                 DELIMITED   BY  SIZE

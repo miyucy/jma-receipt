@@ -221,6 +221,7 @@ grpsys     COPY    "COMMON-SPA".
                05  WRK-PARA-SYOKBN               PIC X(01).
                05  WRK-PARA-PRTNM                PIC X(16).
                05  WRK-PARA-PRTKBN               PIC X(01). 
+               05  WRK-PARA-RECEKBN              PIC X(01). 
                05  WRK-PARA-HOSPNUM              PIC  9(02).
       *
            COPY    "CPORCSPRTLNK.INC".
@@ -406,6 +407,7 @@ grpsys     COPY    "COMMON-SPA".
                                              LNK-PRTKANRI-OPID    
                                              LNK-PRTKANRI-PRTNM
                                              WRK-PARA-PRTKBN
+                                             WRK-PARA-RECEKBN
                                              WRK-PARA-HOSPNUM
                                              RECEERR
            END-UNSTRING                                  
@@ -650,19 +652,33 @@ grpsys         PERFORM 900-ORCDBMAIN-SEC
                MOVE    LNK-PRTKANRI-SHORI-RENNUM
                                            TO  PRT-SHORI-RENNUM
            ELSE
-               IF      RECE08-RECENUM      <   100
+               IF      WRK-PARA-RECEKBN    =   "3" 
                    MOVE    LNK-PRTKANRI-SHORI-RENNUM
                                                TO  PRT-SHORI-RENNUM
                ELSE
-                   COMPUTE PRT-SHORI-RENNUM
-                           =   LNK-PRTKANRI-SHORI-RENNUM   +   1
-               END-IF 
+                   IF     RECE08-RECENUM   <   100
+                       MOVE    LNK-PRTKANRI-SHORI-RENNUM
+                                              TO  PRT-SHORI-RENNUM
+                   ELSE
+                       IF     RECE08-RECENUM   <   200
+                           COMPUTE PRT-SHORI-RENNUM
+                               =   LNK-PRTKANRI-SHORI-RENNUM   +   1
+                       ELSE
+                           COMPUTE PRT-SHORI-RENNUM
+                               =   LNK-PRTKANRI-SHORI-RENNUM   +   2
+                       END-IF
+                   END-IF
+               END-IF     
            END-IF
            ADD     1                   TO  WRK-RENNUM
            IF      WRK-PARA-SHELLID    NOT =   "RECEPTX"
                MOVE    WRK-RENNUM          TO  PRT-PAGE
            ELSE
-               MOVE    RECE08-RENNUM       TO  PRT-PAGE
+               IF      WRK-PARA-RECEKBN    =   "3" 
+                   MOVE    WRK-RENNUM          TO  PRT-PAGE
+               ELSE
+                   MOVE    RECE08-RENNUM       TO  PRT-PAGE
+               END-IF
            END-IF
       *
       *    通し番号印刷のときのみ編集
@@ -1017,13 +1033,23 @@ grpsys         PERFORM 900-DBFETCH-SEC
                MOVE    LNK-PRTKANRI-SHORI-RENNUM
                                            TO  SPRT-SHORI-RENNUM
            ELSE
-               IF      RECE08-RECENUM      <   100
+               IF      WRK-PARA-RECEKBN    =   "3" 
                    MOVE    LNK-PRTKANRI-SHORI-RENNUM
                                                TO  SPRT-SHORI-RENNUM
                ELSE
-                   COMPUTE SPRT-SHORI-RENNUM
-                           =   LNK-PRTKANRI-SHORI-RENNUM   +   1
-               END-IF 
+                   IF      RECE08-RECENUM      <   100
+                       MOVE    LNK-PRTKANRI-SHORI-RENNUM
+                                               TO  SPRT-SHORI-RENNUM
+                   ELSE
+                       IF      RECE08-RECENUM      <   200
+                           COMPUTE SPRT-SHORI-RENNUM
+                               =   LNK-PRTKANRI-SHORI-RENNUM   +   1
+                       ELSE
+                           COMPUTE SPRT-SHORI-RENNUM
+                               =   LNK-PRTKANRI-SHORI-RENNUM   +   2
+                       END-IF
+                   END-IF
+               END-IF     
            END-IF
       **** MOVE    LNK-PRTKANRI-PRIORITY
       ****                             TO  SPRT-PRIORITY

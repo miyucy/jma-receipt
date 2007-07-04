@@ -665,6 +665,12 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
            END-READ
            CLOSE    RECEYMD-FILE
       *
+           IF      WRK-PARA-SHELLID    NOT =   "RECEPTX"
+               MOVE    ZERO                TO  WRK-RECENUM
+           ELSE
+               MOVE    100                 TO  WRK-RECENUM
+           END-IF
+      *
            IF      FLG-STS             =   ZERO
               PERFORM 990-RECE41-READ-SEC
            END-IF
@@ -2242,14 +2248,16 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *
            MOVE    ZERO                 TO  FLG-ERR
       *
+           IF      WRK-PARA-SHELLID    =   "RECEPTX"
+               ADD     10                  TO  WRK-RECENUM
+           END-IF
+      *
            PERFORM VARYING IDXY    FROM    1   BY  1
                    UNTIL   IDXY    >       TBL-RECE-MAX
                    OR      FLG-ERR >       ZERO
       *
                IF      WRK-PARA-SHELLID    NOT =   "RECEPTX"
                    ADD     1                   TO  WRK-RECENUM
-               ELSE
-                   ADD     100                 TO  WRK-RECENUM
                END-IF
       * 
       *        レセプト明細管理ＤＢ
@@ -2590,11 +2598,7 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
        300-END-SEC                 SECTION.
       *
            OPEN    OUTPUT              RECEYMD-FILE 
-           IF      WRK-PARA-SHELLID    NOT =   "RECEPTX"
-               MOVE    WRK-RECENUM         TO  WRK-RECEYMD-RECENUM
-           ELSE
-               MOVE    2000                TO  WRK-RECEYMD-RECENUM
-           END-IF
+           MOVE    WRK-RECENUM         TO  WRK-RECEYMD-RECENUM
            MOVE    WRK-RECEYMD-REC     TO  RECEYMD-REC
            WRITE   RECEYMD-REC
            CLOSE   RECEYMD-FILE

@@ -2551,14 +2551,16 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *
            MOVE    ZERO                 TO  FLG-ERR
       *
+           IF      WRK-PARA-SHELLID    =   "RECEPTX"
+               ADD     10                  TO  WRK-RECENUM
+           END-IF
+      *
            PERFORM VARYING IDXY    FROM    1   BY  1
                    UNTIL   IDXY    >       TBL-RECE-MAX
                    OR      FLG-ERR >       ZERO
       *
                IF      WRK-PARA-SHELLID    NOT =   "RECEPTX"
                    ADD     1                   TO  WRK-RECENUM
-               ELSE
-                   ADD     100                 TO  WRK-RECENUM
                END-IF
       * 
       *        ¥ì¥»¥×¥ÈÌÀºÙ´ÉÍý£Ä£Â
@@ -3024,11 +3026,7 @@ grpsys         PERFORM 900-ORCDBMAIN-SEC
        300-END-SEC                 SECTION.
       *
            MOVE    SPACE               TO  RECEYMD-REC
-           IF      WRK-PARA-SHELLID    NOT =   "RECEPTX"
-               MOVE    WRK-RECENUM         TO  RECEYMD-RECENUM
-           ELSE
-               MOVE    1000                TO  RECEYMD-RECENUM
-           END-IF
+           MOVE    WRK-RECENUM         TO  RECEYMD-RECENUM
            WRITE   RECEYMD-REC
       *          
       *    ¥Õ¥¡¥¤¥ë£Ã£Ì£Ï£Ó£Å½èÍý
