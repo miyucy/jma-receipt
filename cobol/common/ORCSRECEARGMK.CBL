@@ -505,11 +505,10 @@ grpsys     MOVE    SPA-HOSPNUM     TO  RECEERR-HOSPNUM
            END-EVALUATE
            EVALUATE   LINK-NYUGAIKBN   ALSO    LINK-HKNKBN
                WHEN   "1"              ALSO    "2"
-                   MOVE    SYS-2005-FRAME-JIBAIPRTKBN-N
+                   MOVE    SYS-2005-JIBAIPRTKBN-N
                                                    TO  SHELLTBL-ARG14
                WHEN   "2"              ALSO    "2"
-                   MOVE    SYS-2005-FRAME-JIBAIPRTKBN
-                                                   TO  SHELLTBL-ARG14
+                   MOVE    SYS-2005-JIBAIPRTKBN    TO  SHELLTBL-ARG14
            END-EVALUATE
       *
       *------------------> recept2.sh $11 - $26 (#24 ¤Ï½ü¤¯)
