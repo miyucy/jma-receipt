@@ -79,7 +79,7 @@
       *
        WORKING-STORAGE             SECTION.
 grpsys*
-grpsys COPY    "COMMON-SPA".
+grpsys     COPY    "COMMON-SPA".
       *
            COPY    "CPHKNNUMWK.INC".
       *
@@ -255,7 +255,7 @@ grpsys COPY    "COMMON-SPA".
            MOVE    "*"                 TO  SYS-1001-KBNCD
            MOVE    ZERO                TO  SYS-1001-STYUKYMD
                                            SYS-1001-EDYUKYMD
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+grpsys     MOVE    SPA-HOSPNUM         TO  SYS-1001-HOSPNUM
            MOVE    SYS-1001-REC        TO  MCPDATA-REC
            PERFORM 800-SYSKANRI-READ-SEC
            IF      FLG-SYSKANRI        =   ZERO
@@ -355,19 +355,18 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
        2010-INSERT-SYORI-SEC               SECTION.
       *
            INITIALIZE                  HKNNUM-REC
-           MOVE    SYS-1001-HOSPID     TO  HKN-HOSPID
+           MOVE    SPA-HOSPNUM         TO  HKN-HOSPNUM
            MOVE    HKNWK-HKNNUM        TO  HKN-HKNNUM
            MOVE    HKNWK-PAYKBN        TO  HKN-PAYKBN
            MOVE    HKNWK-TEKSTYMD      TO  HKN-TEKSTYMD
                                            HKN-TEKEDYMD
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    HKNNUM-REC          TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "tbl_hknnum"        TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING MCPAREA
+                                             MCPDATA-REC
+grpsys                                       SPA-AREA
            IF      MCP-RC              =   ZERO
                MOVE    "tbl_hknnum"        TO  MCP-TABLE
                MOVE    "key"               TO  MCP-PATHNAME
@@ -432,19 +431,21 @@ grpsys                            SPA-AREA
        20101-HKNNUM-INS-SEC           SECTION.
       *
            INITIALIZE                  HKNNUM-REC
-           MOVE    HKNWK-KEY           TO  HKN-KEY
-           MOVE    SYS-1001-HOSPID     TO  HKN-HOSPID
+      *****MOVE    HKNWK-KEY           TO  HKN-KEY
+           MOVE    SPA-HOSPNUM         TO  HKN-HOSPNUM
+           MOVE    HKNWK-HKNNUM        TO  HKN-HKNNUM
+           MOVE    HKNWK-TEKSTYMD      TO  HKN-TEKSTYMD
+           MOVE    HKNWK-PAYKBN        TO  HKN-PAYKBN
            MOVE    HKNWK-TEKEDYMD      TO  HKN-TEKEDYMD
-           MOVE    HKNWK-REC (55:)     TO  HKNNUM-REC(46:)
+           MOVE    HKNWK-REC (55:)     TO  HKNNUM-REC(24:)
       *    保険番号マスタの確認
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    HKNNUM-REC          TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "tbl_hknnum"        TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING MCPAREA
+                                             MCPDATA-REC
+grpsys                                       SPA-AREA
            IF      MCP-RC              =   ZERO
                MOVE    "tbl_hknnum"    TO  MCP-TABLE
                MOVE    "key"           TO  MCP-PATHNAME
@@ -465,18 +466,20 @@ grpsys                            SPA-AREA
       *
       *    保険番号マスタ追加
            INITIALIZE                  HKNNUM-REC
-           MOVE    HKNWK-KEY           TO  HKN-KEY
-           MOVE    SYS-1001-HOSPID     TO  HKN-HOSPID
+      *****MOVE    HKNWK-KEY           TO  HKN-KEY
+           MOVE    SPA-HOSPNUM         TO  HKN-HOSPNUM
+           MOVE    HKNWK-HKNNUM        TO  HKN-HKNNUM
+           MOVE    HKNWK-TEKSTYMD      TO  HKN-TEKSTYMD
+           MOVE    HKNWK-PAYKBN        TO  HKN-PAYKBN
            MOVE    HKNWK-TEKEDYMD      TO  HKN-TEKEDYMD
-           MOVE    HKNWK-REC(55:)      TO  HKNNUM-REC(46:)
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    HKNWK-REC(55:)      TO  HKNNUM-REC(24:)
            MOVE    HKNNUM-REC          TO  MCPDATA-REC
            MOVE    "DBINSERT"          TO  MCP-FUNC
            MOVE    "tbl_hknnum"        TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING MCPAREA
+                                             MCPDATA-REC
+grpsys                                       SPA-AREA
            IF      MCP-RC          NOT =   ZERO
                MOVE    1               TO  WRK-ERRCD
                PERFORM 2040-ERR-SYORI-SEC
@@ -492,14 +495,13 @@ grpsys                            SPA-AREA
       *****************************************************************
        20102-HKNNUM-UPD-SEC           SECTION.
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    HKNNUM-REC          TO  MCPDATA-REC
            MOVE    "DBUPDATE"          TO  MCP-FUNC
            MOVE    "tbl_hknnum"        TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING MCPAREA
+                                             MCPDATA-REC
+grpsys                                       SPA-AREA
            IF      MCP-RC          NOT =   ZERO
                MOVE    2               TO  WRK-ERRCD
                PERFORM 2040-ERR-SYORI-SEC
@@ -516,18 +518,17 @@ grpsys                            SPA-AREA
            MOVE    ZERO                TO  FLG-SYORI
       *
            INITIALIZE                  HKNNUM-REC
-           MOVE    SYS-1001-HOSPID     TO  HKN-HOSPID
+           MOVE    SPA-HOSPNUM         TO  HKN-HOSPNUM
            MOVE    HKNWK-HKNNUM        TO  HKN-HKNNUM
            MOVE    HKNWK-PAYKBN        TO  HKN-PAYKBN    
            MOVE    HKNWK-TEKSTYMD      TO  HKN-TEKSTYMD
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    HKNNUM-REC          TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "tbl_hknnum"        TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING MCPAREA
+                                             MCPDATA-REC
+grpsys                                       SPA-AREA
            IF      MCP-RC              =   ZERO
                MOVE    "tbl_hknnum"        TO  MCP-TABLE
                MOVE    "key"               TO  MCP-PATHNAME
@@ -543,10 +544,13 @@ grpsys                            SPA-AREA
                    IF     (HKN-TEKSTYMD   <=  HKNWK-TEKSTYMD ) AND
                           (HKN-TEKEDYMD   >=  HKNWK-TEKSTYMD )
       *                更新
-                       MOVE    HKNWK-KEY           TO  HKN-KEY
-                       MOVE    SYS-1001-HOSPID     TO  HKN-HOSPID
+      *****************MOVE    HKNWK-KEY           TO  HKN-KEY
+                       MOVE    SPA-HOSPNUM         TO  HKN-HOSPNUM
+                       MOVE    HKNWK-HKNNUM        TO  HKN-HKNNUM
+                       MOVE    HKNWK-TEKSTYMD      TO  HKN-TEKSTYMD
+                       MOVE    HKNWK-PAYKBN        TO  HKN-PAYKBN    
                        MOVE    HKNWK-TEKEDYMD      TO  HKN-TEKEDYMD
-                       MOVE    HKNWK-REC(55:)      TO  HKNNUM-REC(46:)
+                       MOVE    HKNWK-REC(55:)      TO  HKNNUM-REC(24:)
                        PERFORM 20102-HKNNUM-UPD-SEC
                        ADD     1                   TO  CNT-UPD
       *
@@ -1056,9 +1060,9 @@ grpsys                            SPA-AREA
        910-HKNNUM-READ-SEC         SECTION.
       *
            MOVE    "DBFETCH"           TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING MCPAREA
+                                             MCPDATA-REC
+grpsys                                       SPA-AREA
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC         TO  HKNNUM-REC
                MOVE    ZERO                TO  FLG-HKNNUM
@@ -1079,16 +1083,16 @@ grpsys                            SPA-AREA
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key10"             TO  MCP-PATHNAME
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING MCPAREA
+                                             MCPDATA-REC
+grpsys                                       SPA-AREA
            IF      MCP-RC              =   ZERO
                MOVE    "DBFETCH"           TO  MCP-FUNC
                MOVE    "tbl_syskanri"      TO  MCP-TABLE
                MOVE    "key10"             TO  MCP-PATHNAME
-grpsys         CALL "ORCDBMAIN" USING MCPAREA
-                                      MCPDATA-REC
-grpsys                                SPA-AREA
+grpsys         CALL    "ORCDBMAIN"         USING MCPAREA
+                                                 MCPDATA-REC
+grpsys                                           SPA-AREA
                IF      MCP-RC              =   ZERO
                    MOVE    ZERO            TO  FLG-SYSKANRI
                ELSE
@@ -1112,9 +1116,9 @@ grpsys                                SPA-AREA
        900-CLOSE-SEC               SECTION.
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING MCPAREA
+                                             MCPDATA-REC
+grpsys                                       SPA-AREA
            .
       *
        900-CLOSE-EXT.
@@ -1128,16 +1132,16 @@ grpsys                            SPA-AREA
            MOVE    LOW-VALUE       TO  MCP-TABLE
                                        MCP-PATHNAME
            MOVE    "DBOPEN"        TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     CALL    "ORCDBMAIN"     USING MCPAREA
+                                         MCPDATA-REC
+grpsys                                   SPA-AREA
       *
            MOVE    LOW-VALUE       TO  MCP-TABLE
                                        MCP-PATHNAME
            MOVE    "DBSTART"       TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     CALL    "ORCDBMAIN"     USING MCPAREA
+                                         MCPDATA-REC
+grpsys                                   SPA-AREA
            .
        100-DBOPEN-EXT.
            EXIT.
@@ -1150,16 +1154,16 @@ grpsys                            SPA-AREA
            MOVE    LOW-VALUE       TO  MCP-TABLE
                                        MCP-PATHNAME
            MOVE    "DBCOMMIT"      TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     CALL    "ORCDBMAIN"     USING MCPAREA
+                                         MCPDATA-REC
+grpsys                                   SPA-AREA
       *
            MOVE    LOW-VALUE       TO  MCP-TABLE
                                        MCP-PATHNAME
            MOVE    "DBDISCONNECT"  TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     CALL    "ORCDBMAIN"     USING MCPAREA
+                                         MCPDATA-REC
+grpsys                                   SPA-AREA
            .
        900-DBDISCONNECT-EXT.
            EXIT.
