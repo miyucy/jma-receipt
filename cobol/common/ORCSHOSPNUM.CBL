@@ -125,6 +125,8 @@
            IF      FLG-SYSUSER         =   ZERO
       *        医療機関識別番号
                MOVE    SYSUSER-HOSPNUM     TO  SPA-HOSPNUM
+      *        スーパーバイザー
+               MOVE    SYSUSER-SUPERVISOR  TO  SPA-SUPERVISOR
            ELSE
                MOVE    "1002"              TO  SPA-ERRCD
            END-IF
