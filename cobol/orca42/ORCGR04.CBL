@@ -1664,6 +1664,8 @@ grpsys     MOVE    SPA-HOSPNUM         TO  RECEERR-HOSPNUM
                    MOVE    "2"             TO  SHELLTBL-ARG23
            END-EVALUATE
            MOVE    SPA-HOSPNUM     TO  SHELLTBL-ARG25
+           MOVE    SPA-R01-RECE07-RECEKBN
+                                   TO  SHELLTBL-ARG26
       *     
            MOVE    SHELLTBL        TO  MCPDATA-REC
            MOVE    "SHELL"         TO  MCP-FUNC

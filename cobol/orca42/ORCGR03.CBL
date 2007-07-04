@@ -1766,6 +1766,14 @@ grpsys     MOVE    SPA-HOSPNUM         TO  RECE07-HOSPNUM
            MOVE    RECE07-REC          TO  MCPDATA-REC
            PERFORM 900-RECE07-INV-SEC
            IF      FLG-RECE07          =   ZERO
+      *        自賠責で個別作成時に選択した様式と違う場合エラーとする
+               IF    ( SPA-R01-FILEKBN         =   "2"         )
+               AND   ( SPA-R01-RECEKBN         =   "4" OR  "5" )
+                   IF      SPA-R01-RECEKBN     NOT =   RECE07-RECEKBN
+                       GO  TO   4501-REPRINT-EXT
+                   END-IF
+               END-IF
+      * 
                MOVE    RECE07-REC          TO  SPA-RECE07-REC
                MOVE    "99999999"          TO  SPA-RECE07-HKNJANUM 
                MOVE    "00"                TO  SPA-RECE07-SRYKA 
