@@ -680,6 +680,11 @@ grpsys         PERFORM 900-ORCDBMAIN-SEC
                    MOVE    RECE08-RENNUM       TO  PRT-PAGE
                END-IF
            END-IF
+      **
+           MOVE    LNK-PRTKANRI-SHORI-RENNUM
+                                       TO  PRT-SHORI-RENNUM
+           MOVE    WRK-RENNUM          TO  PRT-PAGE
+      **
       *
       *    通し番号印刷のときのみ編集
            IF      SYS-2005-RENNUMHENKBN   =   "1"
@@ -1051,6 +1056,10 @@ grpsys         PERFORM 900-DBFETCH-SEC
                    END-IF
                END-IF     
            END-IF
+      ****
+           MOVE    LNK-PRTKANRI-SHORI-RENNUM
+                                           TO  SPRT-SHORI-RENNUM
+      ****
       **** MOVE    LNK-PRTKANRI-PRIORITY
       ****                             TO  SPRT-PRIORITY
            COMPUTE  SPRT-PRIORITY      =   LNK-PRTKANRI-PRIORITY
