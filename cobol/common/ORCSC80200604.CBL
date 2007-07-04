@@ -1099,9 +1099,10 @@
                                                    "09593"  OR
                                                    "09594"  )  AND
                   (WRK-COM-KISOTEN (IDX-Z)     >   ZERO     )
-               IF      WRK-COM-SURYO(IDX-Z)    >   1
-                   MOVE    "1002"             TO  WRK-ERRCD
-                   MOVE    "1"                TO  WRK-COM-CUR (IDX-Z)
+      *D       IF      WRK-COM-SURYO(IDX-Z)    >   1
+               IF      WRK-COM-SURYO(IDX-Z)    NOT =   1
+                   MOVE    "1002"              TO  WRK-ERRCD
+                   MOVE    "1"                 TO  WRK-COM-CUR (IDX-Z)
                END-IF
            END-IF
       *
