@@ -1,4 +1,5 @@
 tbl_dbkanri {
+	KANRICD				char(8);
 	VERSION				varchar(64);
 	DBSVERSION1     		varchar(64);
 	DBSVERSION2     		varchar(64);
@@ -14,6 +15,7 @@ path	key		{
 		DECLARE tbl_dbkanri_key_csr CURSOR FOR
 		SELECT *
 		FROM tbl_dbkanri
+			WHERE	KANRICD	=	:KANRICD
                 ;
 	};
 };

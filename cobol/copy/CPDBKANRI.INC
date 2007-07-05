@@ -33,10 +33,6 @@
            03  DBKANRI-DBSVERSION1         PIC  X(64).
       *ＤＢ構造バージョン２
            03  DBKANRI-DBSVERSION2         PIC  X(64).
-      *ＤＢレコードバージョン１
-           03  DBKANRI-DBRVERSION1         PIC  X(64).
-      *ＤＢレコードバージョン２
-           03  DBKANRI-DBRVERSION2         PIC  X(64).
       *端末ＩＤ
            03  DBKANRI-TERMID              PIC  X(32).
       *オペーレータＩＤ
