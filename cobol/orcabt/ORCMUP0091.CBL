@@ -150,15 +150,20 @@ grpsys     COPY    "COMMON-SPA".
                05  FILLER              PIC X(02) VALUE SPACE.
                05  MES-TITLE1-HOSPNUM  PIC 9(02).
       *
-           01  WRK-MSG-AREA.
-               03  WRK-MSG-01          PIC X(30).
-               03  FILLER              PIC X(01)   VALUE   SPACE.
-               03  WRK-SYORIKBN        PIC X(01).
-               03  FILLER              PIC X(01)   VALUE   ",".
-               03  WRK-HOSPNUM         PIC 9(02).
-               03  FILLER              PIC X(01)   VALUE   ",".
-               03  WRK-HKNJANUM        PIC X(08).
+       01  WRK-MSG-AREA.
+           03  WRK-MSG-01              PIC X(30).
+           03  FILLER                  PIC X(01)   VALUE   SPACE.
+           03  WRK-SYORIKBN            PIC X(01).
+           03  FILLER                  PIC X(01)   VALUE   ",".
+           03  WRK-HOSPNUM             PIC 9(02).
+           03  FILLER                  PIC X(01)   VALUE   ",".
+           03  WRK-HKNJANUM            PIC X(08).
       *
+       01  WRK-HOMEDIR.
+           03  FILLER                  PIC X(28)  VALUE
+               "/var/lib/jma-receipt/master/".
+           03  WRK-HOMEDIR-HOSPNUM     PIC 9(02).
+           03  FILLER                  PIC X(01)  VALUE "/".
       *****************************************************************
       *    ファイル定義
       *****************************************************************
@@ -274,9 +279,11 @@ grpsys     MOVE    SPA-HOSPNUM         TO  SYS-1001-HOSPNUM
       *****************************************************************
        101-ASSIN-GET-SEC                SECTION.
       *
+           MOVE    SPA-HOSPNUM         TO  WRK-HOMEDIR-HOSPNUM
+      *
       *    入力ファイル
            MOVE    SPACE               TO  ASS-IN
-           STRING  "/home/orca/"       DELIMITED  BY  SIZE
+           STRING  WRK-HOMEDIR         DELIMITED  BY  SPACE
                    PARA-DBFILE         DELIMITED  BY  SPACE
                    "/"                 DELIMITED  BY  SIZE
                    PARA-UPFILE         DELIMITED  BY  SPACE
@@ -285,7 +292,7 @@ grpsys     MOVE    SPA-HOSPNUM         TO  SYS-1001-HOSPNUM
       *
       *    エラーファイル
            MOVE    SPACE               TO  ASS-ERR
-           STRING  "/home/orca/"       DELIMITED  BY  SIZE
+           STRING  WRK-HOMEDIR         DELIMITED  BY  SPACE
                    "orca-mstlog/"      DELIMITED  BY  SIZE
                    PARA-UPFILE         DELIMITED  BY  SPACE
                    ".ERR"              DELIMITED  BY  SIZE
@@ -294,10 +301,10 @@ grpsys     MOVE    SPA-HOSPNUM         TO  SYS-1001-HOSPNUM
       *
       *    プルーフファイル
            MOVE    SPACE               TO  ASS-PLF
-           STRING  "/home/orca/"       DELIMITED  BY  SIZE
+           STRING  WRK-HOMEDIR         DELIMITED  BY  SPACE
                    "orca-mstlog/"      DELIMITED  BY  SIZE
                    PARA-UPFILE         DELIMITED  BY  SPACE
-                   ".PLF"              DELIMITED  BY  SIZE
+                   ".PRF"              DELIMITED  BY  SIZE
                                        INTO    ASS-PLF
            END-STRING
       *

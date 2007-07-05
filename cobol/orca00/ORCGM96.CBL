@@ -735,7 +735,7 @@ grpsys     MOVE    SPA-HOSPNUM         TO  MSTKANRI-HOSPNUM
                INITIALIZE                  JOBKANRI1-REC
                MOVE    1                   TO  JOB1-JOBID
                MOVE    "MSTMLI"            TO  JOB1-SHELLID
-               MOVE    SPA-HOSPNUM         TO  JOB-HOSPNUM
+               MOVE    SPA-HOSPNUM         TO  JOB1-HOSPNUM
                CALL    "ORCSJOB"           USING
                                            ORCSJOBKANRIAREA
                                            JOBKANRI1-REC
@@ -747,7 +747,7 @@ grpsys     MOVE    SPA-HOSPNUM         TO  MSTKANRI-HOSPNUM
            INITIALIZE                  JOBKANRI1-REC
            MOVE    1                   TO  JOB1-JOBID
            MOVE    "MSTMLI"            TO  JOB1-SHELLID
-           MOVE    SPA-HOSPNUM         TO  JOB-HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  JOB1-HOSPNUM
            CALL    "ORCSJOB"           USING
                                        ORCSJOBKANRIAREA
                                        JOBKANRI1-REC
@@ -1127,7 +1127,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            INITIALIZE                  JOBKANRI1-REC
            MOVE    1                   TO  JOB1-JOBID
            MOVE    "MSTMLI"            TO  JOB1-SHELLID
-           MOVE    SPA-HOSPNUM         TO  JOB-HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  JOB1-HOSPNUM
       *
            CALL    "ORCSJOB"           USING
                                        ORCSJOBKANRIAREA

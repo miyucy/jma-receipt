@@ -217,14 +217,14 @@ grpsys     COPY    "COMMON-SPA".
       *
       *    入力ファイル
            MOVE    SPACE               TO  ASS-IN
-           STRING  WRK-HOMEDIR         DELIMITED  BY  SIZE
+           STRING  WRK-HOMEDIR         DELIMITED  BY  SPACE
                    "/ORCADBR-LI.DAT"   DELIMITED  BY  SIZE
                                        INTO    ASS-IN
            END-STRING
       *
       *    出力ーファイル
            MOVE    SPACE               TO  ASS-OUT
-           STRING  WRK-HOMEDIR         DELIMITED  BY  SIZE
+           STRING  WRK-HOMEDIR         DELIMITED  BY  SPACE
                    "/ORCADBR.OUT"      DELIMITED  BY  SIZE
                                        INTO    ASS-OUT
            END-STRING
