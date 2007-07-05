@@ -511,6 +511,8 @@ grpsys     MOVE    SPA-HOSPNUM     TO  RECEERR-HOSPNUM
                                                    TO  SHELLTBL-ARG14
                WHEN   "2"              ALSO    "2"
                    MOVE    SYS-2005-JIBAIPRTKBN    TO  SHELLTBL-ARG14
+               WHEN   OTHER
+                   MOVE    "0"                     TO  SHELLTBL-ARG14
            END-EVALUATE
       *
       *------------------> recept2.sh $11 - $26 (#24 ¤Ï½ü¤¯)
