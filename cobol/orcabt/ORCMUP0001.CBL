@@ -40,13 +40,7 @@
        INPUT-OUTPUT                SECTION.
        FILE-CONTROL.
       *
-      *    入力：パラメータファイル
-      *    SELECT  PARA-FILE       ASSIGN
-      *                            "ORCMUP00.PARA"
-      *                            ORGANIZATION    IS  LINE SEQUENTIAL
-      *                            FILE    STATUS  IS  STS-PARA.
-      *
-      *    入力：点数マスタファイル
+      *    入力：点数マスタ更新ファイル
            SELECT  IN-FILE         ASSIGN
                                    ASS-IN
                                    ORGANIZATION    IS  LINE SEQUENTIAL
@@ -65,15 +59,7 @@
        DATA                        DIVISION.
        FILE                        SECTION.
       *
-      *    パラメータファイル
-      *FD  PARA-FILE.
-      *01  PARA-REC.
-      *    03  PARA-RECKBN             PIC X(01).
-      *    03  PARA-DATKBN             PIC X(04).
-      *    03  FILLER                  PIC X(01).
-      *    03  PARA-DATA               PIC X(100).
-      *
-      *    入力：医薬品ファイル（新）
+      *    入力：点数マスタ更新ファイル
        FD  IN-FILE.
       *---(01.00.01) LINE UPD START -------------------------------------
       *    COPY    "CPTENSUWK.INC".
@@ -91,7 +77,7 @@
       *
        WORKING-STORAGE             SECTION.
 grpsys*
-grpsys COPY    "COMMON-SPA".
+grpsys     COPY    "COMMON-SPA".
       *
       *    ファイル指定領域
        01  ASS-AREA.
@@ -148,6 +134,7 @@ grpsys COPY    "COMMON-SPA".
                05  WRK-SDD2            PIC 9(02).
       *　　主キー更新用項目
            03  WRK-TNSUP-KEY.
+               05  WRK-TNSUP-HOSPNUM       PIC  9(02).
                05  WRK-TNSUP-SRYCD         PIC  X(09).
                05  WRK-TNSUP-YUKOSTYMD     PIC  X(08).
                05  WRK-TNSUP-YUKOEDYMD     PIC  X(08).
@@ -169,6 +156,8 @@ grpsys COPY    "COMMON-SPA".
                05  MES-TITLE1-MM       PIC X(02) VALUE SPACE.
                05  FILLER              PIC X(01) VALUE ".".
                05  MES-TITLE1-DD       PIC X(02) VALUE SPACE.
+               05  FILLER              PIC X(02) VALUE SPACE.
+               05  MES-TITLE1-HOSPNUM  PIC 9(02).
       *
            01  WRK-MSG-AREA.
                03  WRK-MSG-01          PIC X(30).
@@ -231,8 +220,6 @@ grpsys COPY    "COMMON-SPA".
       *
       *    共通パラメタ
            COPY    "MCPAREA".
-      *
-      *01  MCPDATA-REC                 PIC X(5000).
            COPY    "MCPDATA.INC".
       *
       *****************************************************************
@@ -245,6 +232,7 @@ grpsys COPY    "COMMON-SPA".
       *---(01.00.01) LINE ADD START -------------------------------------
            03  LNK-DBRVERSION            PIC X(21).
       *---(01.00.01) LINE ADD END   -------------------------------------
+           03  LNK-HOSPNUM               PIC 9(02).
       *
        PROCEDURE                       DIVISION
            USING
@@ -276,6 +264,9 @@ grpsys COPY    "COMMON-SPA".
            MOVE    ZERO            TO  CNT-AREA
            MOVE    ZERO            TO  IDX-AREA
            INITIALIZE                  WRK-AREA
+                                       SPA-AREA
+      *
+           MOVE    LNK-HOSPNUM     TO  SPA-HOSPNUM
       *
       *    DB OPEN
            PERFORM 100-DBOPEN-SEC
@@ -283,8 +274,6 @@ grpsys COPY    "COMMON-SPA".
                DISPLAY "DBOPEN ERR"
            END-IF.
       *
-      *    パラメータ情報取得
-      *****PERFORM 101-PARA-GET-SEC
       *    ファイル情報
            PERFORM 101-ASSIN-GET-SEC
       *
@@ -381,16 +370,14 @@ grpsys COPY    "COMMON-SPA".
        2010-INSERT-SYORI-SEC               SECTION.
       *
            INITIALIZE                  TNS-TENSU-REC
+grpsys     MOVE    SPA-HOSPNUM         TO  TNS-HOSPNUM
            MOVE    TNSWK-SRYCD         TO  TNS-SRYCD
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "tbl_tensu"         TO  MCP-TABLE
            MOVE    "key4"              TO  MCP-PATHNAME
-      *     MOVE    TNSWK-YUKOSTYMD     TO  ORC-DBYMD
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+      *****MOVE    TNSWK-YUKOSTYMD     TO  ORC-DBYMD
+grpsys     PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC              =   ZERO
                MOVE    "tbl_tensu"     TO  MCP-TABLE
                MOVE    "key4"          TO  MCP-PATHNAME
@@ -478,21 +465,21 @@ grpsys                            SPA-AREA
       *****************************************************************
        20101-TENSU-INS-SEC           SECTION.
       *
-           INITIALIZE                  TNS-TENSU-REC
-           MOVE    TNSWK-KEY           TO  TNS-KEY
-           MOVE    TNSWK-TENSU-REC(35:)
-                                       TO  TNS-TENSU-REC(26:)
       *    点数マスタの確認
+           INITIALIZE                  TNS-TENSU-REC
+      *****MOVE    TNSWK-KEY           TO  TNS-KEY
+grpsys     MOVE    SPA-HOSPNUM         TO  TNS-HOSPNUM
+           MOVE    TNSWK-SRYCD         TO  TNS-SRYCD
+           MOVE    TNSWK-YUKOSTYMD     TO  TNS-YUKOSTYMD
+           MOVE    TNSWK-TENSU-REC(35:)
+                                       TO  TNS-TENSU-REC(28:)
            MOVE    TNS-YUKOSTYMD       TO  TNS-YUKOEDYMD
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "tbl_tensu"         TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
-      *     MOVE    TNS-YUKOSTYMD       TO  ORC-DBYMD
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+      *****MOVE    TNS-YUKOSTYMD       TO  ORC-DBYMD
+grpsys     PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC              =   ZERO
                MOVE    "tbl_tensu"         TO  MCP-TABLE
                MOVE    "key"               TO  MCP-PATHNAME
@@ -514,17 +501,18 @@ grpsys                            SPA-AREA
       *
       *    点数マスタ追加
            INITIALIZE                  TNS-TENSU-REC
-           MOVE    TNSWK-KEY           TO  TNS-KEY
+      *****MOVE    TNSWK-KEY           TO  TNS-KEY
+grpsys     MOVE    SPA-HOSPNUM         TO  TNS-HOSPNUM
+           MOVE    TNSWK-SRYCD         TO  TNS-SRYCD
+           MOVE    TNSWK-YUKOSTYMD     TO  TNS-YUKOSTYMD
+           MOVE    TNSWK-YUKOEDYMD     TO  TNS-YUKOEDYMD
            MOVE    TNSWK-TENSU-REC(35:)
-                                       TO  TNS-TENSU-REC(26:)
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+                                       TO  TNS-TENSU-REC(28:)
            MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
            MOVE    "DBINSERT"          TO  MCP-FUNC
            MOVE    "tbl_tensu"         TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC          NOT =   ZERO
                MOVE    1               TO  WRK-ERRCD
                PERFORM 2040-ERR-SYORI-SEC
@@ -540,14 +528,11 @@ grpsys                            SPA-AREA
       *****************************************************************
        20102-TENSU-UPD-SEC           SECTION.
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
            MOVE    "DBUPDATE"          TO  MCP-FUNC
            MOVE    "tbl_tensu"         TO  MCP-TABLE
            MOVE    "upd1"              TO  MCP-PATHNAME
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC          NOT =   ZERO
                MOVE    2               TO  WRK-ERRCD
                PERFORM 2040-ERR-SYORI-SEC
@@ -566,18 +551,16 @@ grpsys                            SPA-AREA
       *
            MOVE    SPACE               TO  TENSUPLUS-REC
            INITIALIZE                      TENSUPLUS-REC
+           MOVE    TNSUP-HOSPNUM       TO  TNSP-HOSPNUM
            MOVE    TNSUP-SRYCD         TO  TNSP-SRYCD
            MOVE    TNSUP-YUKOSTYMD     TO  TNSP-YUKOSTYMD
            MOVE    TNSUP-YUKOEDYMD     TO  TNSP-YUKOEDYMD
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    TENSUPLUS-REC       TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "tbl_tensuplus"     TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC              =   ZERO
                MOVE    "tbl_tensuplus"     TO  MCP-TABLE
                MOVE    "key"               TO  MCP-PATHNAME
@@ -597,14 +580,11 @@ grpsys                            SPA-AREA
                MOVE    TNSP-KEY            TO  TNSP-UP-KEY
                MOVE    TNS-KEY             TO  TNSP-KEY
       *
-grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    TENSUPLUS-REC       TO  MCPDATA-REC
                MOVE    "DBUPDATE"          TO  MCP-FUNC
                MOVE    "tbl_tensuplus"     TO  MCP-TABLE
                MOVE    "upd1"              TO  MCP-PATHNAME
-grpsys         CALL "ORCDBMAIN" USING MCPAREA
-                                      MCPDATA-REC
-grpsys                                SPA-AREA
+grpsys         PERFORM 900-ORCDBMAIN-SEC
                IF      MCP-RC          NOT =   ZERO
                    MOVE    4               TO  WRK-ERRCD
                    PERFORM 2040-ERR-SYORI-SEC
@@ -624,14 +604,11 @@ grpsys                                SPA-AREA
       *
            MOVE    TNS-KEY             TO  TNSP-KEY
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    TENSUPLUS-REC       TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "tbl_tensuplus"     TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC              =   ZERO
                MOVE    "tbl_tensuplus" TO  MCP-TABLE
                MOVE    "key"           TO  MCP-PATHNAME
@@ -652,14 +629,11 @@ grpsys                            SPA-AREA
            MOVE    WRK-TENSUPLUS-REC   TO  TENSUPLUS-REC
            MOVE    TNS-KEY             TO  TNSP-KEY
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    TENSUPLUS-REC       TO  MCPDATA-REC
            MOVE    "DBINSERT"          TO  MCP-FUNC
            MOVE    "tbl_tensuplus"     TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC          NOT =   ZERO
                MOVE    7               TO  WRK-ERRCD
                PERFORM 2040-ERR-SYORI-SEC
@@ -674,14 +648,11 @@ grpsys                            SPA-AREA
       *****************************************************************
        20105-TENSU-DEL-SEC           SECTION.
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
            MOVE    "DBDELETE"          TO  MCP-FUNC
            MOVE    "tbl_tensu"         TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC          NOT =   ZERO
                MOVE    8               TO  WRK-ERRCD
                PERFORM 2040-ERR-SYORI-SEC
@@ -698,18 +669,16 @@ grpsys                            SPA-AREA
            MOVE    ZERO                TO  FLG-SYORI
       *
            INITIALIZE                  TNS-TENSU-REC
+grpsys     MOVE    SPA-HOSPNUM         TO  TNS-HOSPNUM
            MOVE    TNSWK-SRYCD         TO  TNS-SRYCD
            MOVE    TNSWK-YUKOSTYMD     TO  TNS-YUKOSTYMD
            MOVE    TNSWK-YUKOSTYMD     TO  TNS-YUKOEDYMD
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "tbl_tensu"         TO  MCP-TABLE
            MOVE    "key4"               TO  MCP-PATHNAME
-      *     MOVE    TNSWK-YUKOSTYMD     TO  ORC-DBYMD
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+      *****MOVE    TNSWK-YUKOSTYMD     TO  ORC-DBYMD
+grpsys     PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC              =   ZERO
                MOVE    "tbl_tensu"     TO  MCP-TABLE
                MOVE    "key4"          TO  MCP-PATHNAME
@@ -733,9 +702,13 @@ grpsys                            SPA-AREA
       *
       *            更新
                    MOVE    TNS-KEY             TO  WRK-TNSUP-KEY
-                   MOVE    TNSWK-KEY           TO  TNS-KEY
+      *************MOVE    TNSWK-KEY           TO  TNS-KEY
+grpsys             MOVE    SPA-HOSPNUM         TO  TNS-HOSPNUM
+                   MOVE    TNSWK-SRYCD         TO  TNS-SRYCD
+                   MOVE    TNSWK-YUKOSTYMD     TO  TNS-YUKOSTYMD
+                   MOVE    TNSWK-YUKOEDYMD     TO  TNS-YUKOEDYMD
                    MOVE    TNSWK-TENSU-REC(35:)
-                                               TO  TNS-TENSU-REC(26:)
+                                               TO  TNS-TENSU-REC(28:)
       *            点数の入れ替え
                    MOVE    WRK-HZN-TEN         TO  TNS-TEN
                    MOVE    WRK-HZN-OLDTEN      TO  TNS-OLDTEN
@@ -772,15 +745,13 @@ grpsys                            SPA-AREA
            MOVE    ZERO                TO  FLG-SYORI
       *
            INITIALIZE                  TNS-TENSU-REC
+grpsys     MOVE    SPA-HOSPNUM         TO  TNS-HOSPNUM
            MOVE    TNSWK-SRYCD         TO  TNS-SRYCD
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "tbl_tensu"         TO  MCP-TABLE
            MOVE    "key4"              TO  MCP-PATHNAME
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC              =   ZERO
                MOVE    "tbl_tensu"     TO  MCP-TABLE
                MOVE    "key4"          TO  MCP-PATHNAME
@@ -790,7 +761,11 @@ grpsys                            SPA-AREA
            END-IF
            PERFORM UNTIL   (FLG-TENSU      =   1  )  OR
                            (FLG-SYORI      =   1  )
-               IF     (TNS-KEY          =  TNSWK-KEY )
+      *********IF     (TNS-KEY          =  TNSWK-KEY )
+               IF     (TNS-HOSPNUM      =  SPA-HOSPNUM)
+                 AND  (TNS-SRYCD        =  TNSWK-SRYCD)
+                 AND  (TNS-YUKOSTYMD    =  TNSWK-YUKOSTYMD)
+                 AND  (TNS-YUKOEDYMD    =  TNSWK-YUKOEDYMD)
       *            削除
                    PERFORM 20105-TENSU-DEL-SEC
                    ADD     1                   TO  CNT-DEL
@@ -897,9 +872,9 @@ grpsys                            SPA-AREA
            MOVE    WRK-SYY             TO  MES-TITLE1-YY
            MOVE    SYS-MM              TO  MES-TITLE1-MM
            MOVE    SYS-DD              TO  MES-TITLE1-DD
+           MOVE    SPA-HOSPNUM         TO  MES-TITLE1-HOSPNUM
            MOVE    MES-TITLE1          TO  PLF-REC
            WRITE   PLF-REC
-      *
       *
            .
        2700-OUTLST-INIT-EXT.
@@ -982,11 +957,11 @@ grpsys                            SPA-AREA
            MOVE    IN-REC              TO  TNSWK-TENSU-REC-V01
       *
            MOVE    TNSWK-V01-AREA-01   TO  TNSWK-TENSU-REC (1    : 962)
-      *     MOVE    ZERO                TO  TNSWK-KIJUNTEIGENKBN
-      *     MOVE    ZERO                TO  TNSWK-KIJUNTEIGENCD
+      *****MOVE    ZERO                TO  TNSWK-KIJUNTEIGENKBN
+      *****MOVE    ZERO                TO  TNSWK-KIJUNTEIGENCD
            MOVE    ZERO                TO  TNSWK-TENSU-REC (963  : 4)
            MOVE    TNSWK-V01-AREA-02   TO  TNSWK-TENSU-REC (967  : 136)
-      *    MOVE    ZERO                TO  TNSWK-KOUHATUKBN
+      *****MOVE    ZERO                TO  TNSWK-KOUHATUKBN
            MOVE    ZERO                TO  TNSWK-TENSU-REC (1103 : 1  )
            MOVE    TNSWK-V01-AREA-03   TO  TNSWK-TENSU-REC (1104 : 192)
       *
@@ -1004,7 +979,7 @@ grpsys                            SPA-AREA
            MOVE    IN-REC              TO  TNSWK-TENSU-REC-V02
       *
            MOVE    TNSWK-V02-AREA-01   TO  TNSWK-TENSU-REC (1    : 969)
-      *     MOVE    ZERO                TO  TNSWK-DONORKBN
+      *****MOVE    ZERO                TO  TNSWK-DONORKBN
            MOVE    ZERO                TO  TNSWK-TENSU-REC (970  : 1)
            MOVE    TNSWK-V02-AREA-02   TO  TNSWK-TENSU-REC (971  : 300)
       *
@@ -1019,9 +994,7 @@ grpsys                            SPA-AREA
        910-TENSU-READ-SEC         SECTION.
       *
            MOVE    "DBFETCH"           TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC         TO  TNS-TENSU-REC
                MOVE    ZERO                TO  FLG-TENSU
@@ -1041,9 +1014,7 @@ grpsys                            SPA-AREA
        980-TENSUPLUS-READ-SEC          SECTION.
       *
            MOVE    "DBFETCH"           TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC     TO  TENSUPLUS-REC
                MOVE    ZERO            TO  FLG-TENSUPLUS
@@ -1062,14 +1033,11 @@ grpsys                            SPA-AREA
        990-DBCLOSE-SEC               SECTION.
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     PERFORM 900-ORCDBMAIN-SEC
            .
       *
        990-DBCLOSE-EXT.
            EXIT.
-      *
       *
       *****************************************************************
       *    ＤＢ　オープン処理
@@ -1079,16 +1047,12 @@ grpsys                            SPA-AREA
            MOVE    LOW-VALUE       TO  MCP-TABLE
                                        MCP-PATHNAME
            MOVE    "DBOPEN"        TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     PERFORM 900-ORCDBMAIN-SEC
       *
            MOVE    LOW-VALUE       TO  MCP-TABLE
                                        MCP-PATHNAME
            MOVE    "DBSTART"       TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     PERFORM 900-ORCDBMAIN-SEC
            .
        100-DBOPEN-EXT.
            EXIT.
@@ -1101,17 +1065,26 @@ grpsys                            SPA-AREA
            MOVE    LOW-VALUE       TO  MCP-TABLE
                                        MCP-PATHNAME
            MOVE    "DBCOMMIT"      TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     PERFORM 900-ORCDBMAIN-SEC
       *
            MOVE    LOW-VALUE       TO  MCP-TABLE
                                        MCP-PATHNAME
            MOVE    "DBDISCONNECT"  TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     PERFORM 900-ORCDBMAIN-SEC
            .
        900-DBDISCONNECT-EXT.
            EXIT.
       *
+      *****************************************************************
+      *    テーブルアクセス処理
+      *****************************************************************
+       900-ORCDBMAIN-SEC               SECTION.
+      *
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
+           .
+      *
+       900-ORCDBMAIN-EXT.
+           EXIT.
+      *      

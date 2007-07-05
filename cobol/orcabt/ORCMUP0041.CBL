@@ -73,7 +73,7 @@
       *
        WORKING-STORAGE             SECTION.
 grpsys*
-grpsys COPY    "COMMON-SPA".
+grpsys     COPY    "COMMON-SPA".
       *
       *    ファイル指定領域
        01  ASS-AREA.
@@ -129,6 +129,7 @@ grpsys COPY    "COMMON-SPA".
                05  WRK-SDD2            PIC 9(02).
       *　　主キー更新用項目
            03  WRK-CHKUP-KEY.
+               05  WRK-CHKUP-HOSPNUM       PIC  9(02).
                05  WRK-CHKUP-CHKKBN        PIC  X(01).
                05  WRK-CHKUP-SRYCD         PIC  X(09).
                05  WRK-CHKUP-YUKOSTYMD     PIC  X(08).
@@ -151,6 +152,8 @@ grpsys COPY    "COMMON-SPA".
                05  MES-TITLE1-MM       PIC X(02) VALUE SPACE.
                05  FILLER              PIC X(01) VALUE ".".
                05  MES-TITLE1-DD       PIC X(02) VALUE SPACE.
+               05  FILLER              PIC X(02) VALUE SPACE.
+               05  MES-TITLE1-HOSPNUM  PIC 9(02).
       *
            01  WRK-MSG-AREA.
                03  WRK-MSG-01          PIC X(30).
@@ -202,6 +205,8 @@ grpsys COPY    "COMMON-SPA".
        01  PARA-REC.
            03  PARA-DBFILE               PIC X(13).
            03  PARA-UPFILE               PIC X(100).
+           03  LNK-DBRVERSION            PIC X(21).
+           03  LNK-HOSPNUM               PIC 9(02).
       *
        PROCEDURE                       DIVISION
            USING
@@ -232,6 +237,9 @@ grpsys COPY    "COMMON-SPA".
            MOVE    ZERO            TO  CNT-AREA
            MOVE    ZERO            TO  IDX-AREA
            INITIALIZE                  WRK-AREA
+                                       SPA-AREA
+      *
+           MOVE    LNK-HOSPNUM     TO  SPA-HOSPNUM
       *
       *    DB OPEN
            PERFORM 100-DBOPEN-SEC
@@ -337,17 +345,19 @@ grpsys COPY    "COMMON-SPA".
        2010-INSERT-SYORI-SEC               SECTION.
       *
            INITIALIZE                  CHK-REC
-           MOVE    CHKWK-KEY           TO  CHK-KEY
+      *****MOVE    CHKWK-KEY           TO  CHK-KEY
+grpsys     MOVE    SPA-HOSPNUM         TO  CHK-HOSPNUM
+           MOVE    CHKWK-CHKKBN        TO  CHK-CHKKBN
+           MOVE    CHKWK-SRYCD         TO  CHK-SRYCD
            MOVE    CHKWK-YUKOSTYMD     TO  CHK-YUKOSTYMD
                                            CHK-YUKOEDYMD
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    CHKWK-CDKBN         TO  CHK-CDKBN
+           MOVE    CHKWK-RENNUM        TO  CHK-RENNUM
            MOVE    CHK-REC             TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "tbl_chk"           TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC              =   ZERO
                MOVE    "tbl_chk"           TO  MCP-TABLE
                MOVE    "key"               TO  MCP-PATHNAME
@@ -359,9 +369,7 @@ grpsys                            SPA-AREA
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "tbl_chk"           TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     PERFORM 900-ORCDBMAIN-SEC
       *
       *
       *    単純追加
@@ -404,17 +412,19 @@ grpsys                            SPA-AREA
       *
       *
            INITIALIZE                  CHK-REC
-           MOVE    CHKWK-KEY           TO  CHK-KEY
+      *****MOVE    CHKWK-KEY           TO  CHK-KEY
+grpsys     MOVE    SPA-HOSPNUM         TO  CHK-HOSPNUM
+           MOVE    CHKWK-CHKKBN        TO  CHK-CHKKBN
+           MOVE    CHKWK-SRYCD         TO  CHK-SRYCD
            MOVE    CHKWK-YUKOSTYMD     TO  CHK-YUKOSTYMD
                                            CHK-YUKOEDYMD
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    CHKWK-CDKBN         TO  CHK-CDKBN
+           MOVE    CHKWK-RENNUM        TO  CHK-RENNUM
            MOVE    CHK-REC             TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "tbl_chk"           TO  MCP-TABLE
            MOVE    "key2"              TO  MCP-PATHNAME
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC              =   ZERO
                MOVE    "tbl_chk"           TO  MCP-TABLE
                MOVE    "key2"              TO  MCP-PATHNAME
@@ -440,9 +450,7 @@ grpsys                            SPA-AREA
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "tbl_chk"           TO  MCP-TABLE
            MOVE    "key2"              TO  MCP-PATHNAME
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     PERFORM 900-ORCDBMAIN-SEC
       *
            .
        20102-CHK-DELUPDS-EXT.
@@ -454,17 +462,19 @@ grpsys                            SPA-AREA
        20101-CHK-INS-SEC           SECTION.
       *
            INITIALIZE                  CHK-REC
-           MOVE    CHKWK-KEY           TO  CHK-KEY
+      *****MOVE    CHKWK-KEY           TO  CHK-KEY
+grpsys     MOVE    SPA-HOSPNUM         TO  CHK-HOSPNUM
+           MOVE    CHKWK-CHKKBN        TO  CHK-CHKKBN
+           MOVE    CHKWK-SRYCD         TO  CHK-SRYCD
            MOVE    CHKWK-YUKOSTYMD     TO  CHK-YUKOSTYMD
                                            CHK-YUKOEDYMD
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    CHKWK-CDKBN         TO  CHK-CDKBN
+           MOVE    CHKWK-RENNUM        TO  CHK-RENNUM
            MOVE    CHK-REC             TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "tbl_chk"           TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC              =   ZERO
                MOVE    "tbl_chk"           TO  MCP-TABLE
                MOVE    "key"               TO  MCP-PATHNAME
@@ -480,32 +490,31 @@ grpsys                            SPA-AREA
                MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
                MOVE    "tbl_chk"           TO  MCP-TABLE
                MOVE    "key"               TO  MCP-PATHNAME
-grpsys         CALL "ORCDBMAIN" USING MCPAREA
-                                      MCPDATA-REC
-grpsys                                SPA-AREA
+grpsys         PERFORM 900-ORCDBMAIN-SEC
                GO      TO      20101-CHK-INS-EXT
            END-IF
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "tbl_chk"           TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     PERFORM 900-ORCDBMAIN-SEC
       *
            INITIALIZE                  CHK-REC
-           MOVE    CHKWK-KEY           TO  CHK-KEY
-           MOVE    CHKWK-REC(39:)
-                                       TO  CHK-REC(30:)
+      *****MOVE    CHKWK-KEY           TO  CHK-KEY
+grpsys     MOVE    SPA-HOSPNUM         TO  CHK-HOSPNUM
+           MOVE    CHKWK-CHKKBN        TO  CHK-CHKKBN
+           MOVE    CHKWK-SRYCD         TO  CHK-SRYCD
+           MOVE    CHKWK-YUKOSTYMD     TO  CHK-YUKOSTYMD
+           MOVE    CHKWK-YUKOEDYMD     TO  CHK-YUKOEDYMD
+           MOVE    CHKWK-CDKBN         TO  CHK-CDKBN
+           MOVE    CHKWK-RENNUM        TO  CHK-RENNUM
+           MOVE    CHKWK-REC(39:)      TO  CHK-REC(32:)
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    CHK-REC             TO  MCPDATA-REC
            MOVE    "DBINSERT"          TO  MCP-FUNC
            MOVE    "tbl_chk"           TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC          NOT =   ZERO
                MOVE    1               TO  WRK-ERRCD
                PERFORM 2040-ERR-SYORI-SEC
@@ -521,14 +530,11 @@ grpsys                            SPA-AREA
       *****************************************************************
        20102-CHK-UPD-SEC           SECTION.
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    CHK-REC             TO  MCPDATA-REC
            MOVE    "DBUPDATE"          TO  MCP-FUNC
            MOVE    "tbl_chk"           TO  MCP-TABLE
            MOVE    "upd1"              TO  MCP-PATHNAME
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC          NOT =   ZERO
                MOVE    2               TO  WRK-ERRCD
                PERFORM 2040-ERR-SYORI-SEC
@@ -546,17 +552,19 @@ grpsys                            SPA-AREA
            MOVE    ZERO                TO  FLG-CHK
       *
            INITIALIZE                  CHK-REC
-           MOVE    CHKWK-KEY           TO  CHK-KEY
+      *****MOVE    CHKWK-KEY           TO  CHK-KEY
+grpsys     MOVE    SPA-HOSPNUM         TO  CHK-HOSPNUM
+           MOVE    CHKWK-CHKKBN        TO  CHK-CHKKBN
+           MOVE    CHKWK-SRYCD         TO  CHK-SRYCD
            MOVE    CHKWK-YUKOSTYMD     TO  CHK-YUKOSTYMD
                                            CHK-YUKOEDYMD
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    CHKWK-CDKBN         TO  CHK-CDKBN
+           MOVE    CHKWK-RENNUM        TO  CHK-RENNUM
            MOVE    CHK-REC             TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "tbl_chk"           TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC              =   ZERO
                MOVE    "tbl_chk"           TO  MCP-TABLE
                MOVE    "key"               TO  MCP-PATHNAME
@@ -568,9 +576,7 @@ grpsys                            SPA-AREA
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "tbl_chk"           TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     PERFORM 900-ORCDBMAIN-SEC
       *
       *    連番が１の時、対象のデータをすべて削除する
            IF      CHKWK-RENNUM        =   01
@@ -609,17 +615,19 @@ grpsys                            SPA-AREA
            MOVE    ZERO                TO  FLG-CHK
       *
            INITIALIZE                  CHK-REC
-           MOVE    CHKWK-KEY           TO  CHK-KEY
+      *****MOVE    CHKWK-KEY           TO  CHK-KEY
+grpsys     MOVE    SPA-HOSPNUM         TO  CHK-HOSPNUM
+           MOVE    CHKWK-CHKKBN        TO  CHK-CHKKBN
+           MOVE    CHKWK-SRYCD         TO  CHK-SRYCD
            MOVE    CHKWK-YUKOSTYMD     TO  CHK-YUKOSTYMD
                                            CHK-YUKOEDYMD
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    CHKWK-CDKBN         TO  CHK-CDKBN
+           MOVE    CHKWK-RENNUM        TO  CHK-RENNUM
            MOVE    CHK-REC             TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "tbl_chk"           TO  MCP-TABLE
            MOVE    "key2"              TO  MCP-PATHNAME
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC              =   ZERO
                MOVE    "tbl_chk"           TO  MCP-TABLE
                MOVE    "key2"              TO  MCP-PATHNAME
@@ -631,9 +639,7 @@ grpsys                            SPA-AREA
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "tbl_chk"           TO  MCP-TABLE
            MOVE    "key2"              TO  MCP-PATHNAME
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     PERFORM 900-ORCDBMAIN-SEC
       *
       *    削除エラー
            IF      FLG-CHK          NOT =   ZERO
@@ -655,16 +661,19 @@ grpsys                            SPA-AREA
        20101-CHK-DEL-SEC           SECTION.
       *
            INITIALIZE                  CHK-REC
-           MOVE    CHKWK-KEY           TO  CHK-KEY
-      *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+      *****MOVE    CHKWK-KEY           TO  CHK-KEY
+grpsys     MOVE    SPA-HOSPNUM         TO  CHK-HOSPNUM
+           MOVE    CHKWK-CHKKBN        TO  CHK-CHKKBN
+           MOVE    CHKWK-SRYCD         TO  CHK-SRYCD
+           MOVE    CHKWK-YUKOSTYMD     TO  CHK-YUKOSTYMD
+           MOVE    CHKWK-YUKOEDYMD     TO  CHK-YUKOEDYMD
+           MOVE    CHKWK-CDKBN         TO  CHK-CDKBN
+           MOVE    CHKWK-RENNUM        TO  CHK-RENNUM
            MOVE    CHK-REC             TO  MCPDATA-REC
            MOVE    "DBDELETE"          TO  MCP-FUNC
            MOVE    "tbl_chk"           TO  MCP-TABLE
            MOVE    "del11"             TO  MCP-PATHNAME
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC          NOT =   ZERO
                MOVE    4               TO  WRK-ERRCD
                PERFORM 2040-ERR-SYORI-SEC
@@ -748,6 +757,7 @@ grpsys                            SPA-AREA
            MOVE    WRK-SYY             TO  MES-TITLE1-YY
            MOVE    SYS-MM              TO  MES-TITLE1-MM
            MOVE    SYS-DD              TO  MES-TITLE1-DD
+           MOVE    SPA-HOSPNUM         TO  MES-TITLE1-HOSPNUM
            MOVE    MES-TITLE1          TO  PLF-REC
            WRITE   PLF-REC
       *
@@ -804,9 +814,7 @@ grpsys                            SPA-AREA
        910-CHK-READ-SEC         SECTION.
       *
            MOVE    "DBFETCH"           TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC         TO  CHK-REC
                MOVE    ZERO                TO  FLG-CHK
@@ -827,16 +835,12 @@ grpsys                            SPA-AREA
            MOVE    LOW-VALUE       TO  MCP-TABLE
                                        MCP-PATHNAME
            MOVE    "DBOPEN"        TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     PERFORM 900-ORCDBMAIN-SEC
       *
            MOVE    LOW-VALUE       TO  MCP-TABLE
                                        MCP-PATHNAME
            MOVE    "DBSTART"       TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     PERFORM 900-ORCDBMAIN-SEC
            .
        100-DBOPEN-EXT.
            EXIT.
@@ -849,17 +853,25 @@ grpsys                            SPA-AREA
            MOVE    LOW-VALUE       TO  MCP-TABLE
                                        MCP-PATHNAME
            MOVE    "DBCOMMIT"      TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     PERFORM 900-ORCDBMAIN-SEC
       *
            MOVE    LOW-VALUE       TO  MCP-TABLE
                                        MCP-PATHNAME
            MOVE    "DBDISCONNECT"  TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     PERFORM 900-ORCDBMAIN-SEC
            .
        900-DBDISCONNECT-EXT.
            EXIT.
       *
+      *****************************************************************
+      *    テーブルアクセス処理
+      *****************************************************************
+       900-ORCDBMAIN-SEC               SECTION.
+      *
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
+           .
+      *
+       900-ORCDBMAIN-EXT.
+           EXIT.

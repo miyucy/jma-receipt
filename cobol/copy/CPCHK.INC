@@ -68,6 +68,7 @@
            03  CHK-UPHMS               PIC  X(06).
       *主キー更新用項目
            03  CHKUP-KEY.
+               05  CHKUP-HOSPNUM       PIC  9(02).
                05  CHKUP-CHKKBN        PIC  X(01).
                05  CHKUP-SRYCD         PIC  X(09).
                05  CHKUP-YUKOSTYMD     PIC  X(08).

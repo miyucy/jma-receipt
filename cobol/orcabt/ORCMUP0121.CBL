@@ -70,6 +70,8 @@
        01  PLF-REC                     PIC X(1000).
       *
        WORKING-STORAGE             SECTION.
+grpsys*
+grpsys     COPY    "COMMON-SPA".
       *
       *    ファイル指定領域
        01  ASS-AREA.
@@ -127,6 +129,8 @@
                05  MES-TITLE1-MM       PIC X(02) VALUE SPACE.
                05  FILLER              PIC X(01) VALUE ".".
                05  MES-TITLE1-DD       PIC X(02) VALUE SPACE.
+               05  FILLER              PIC X(02) VALUE SPACE.
+               05  MES-TITLE1-HOSPNUM  PIC 9(02).
       *
            01  WRK-MSG-AREA.
                03  WRK-MSG-01          PIC X(30).
@@ -154,6 +158,8 @@
        01  PARA-REC.
            03  PARA-DBFILE               PIC X(13).
            03  PARA-UPFILE               PIC X(100).
+           03  LNK-DBRVERSION            PIC X(21).
+           03  LNK-HOSPNUM               PIC 9(02).
       *
        PROCEDURE                   DIVISION
            USING
@@ -182,6 +188,9 @@
            MOVE    ZERO                TO  FLG-AREA
            MOVE    ZERO                TO  CNT-AREA
            INITIALIZE                      WRK-AREA
+                                           SPA-AREA
+      *
+           MOVE    LNK-HOSPNUM         TO  SPA-HOSPNUM
       *
            ACCEPT  SYS-DATE            FROM    DATE
            COMPUTE WRK-SYY             =   SYS-YY    +   2000
@@ -287,9 +296,7 @@
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "tbl_genericname"   TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC              =   ZERO
                MOVE    "tbl_genericname"   TO  MCP-TABLE
                MOVE    "key"               TO  MCP-PATHNAME
@@ -330,9 +337,7 @@
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "tbl_genericname"   TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC              =   ZERO
                MOVE    "tbl_genericname"   TO  MCP-TABLE
                MOVE    "key"               TO  MCP-PATHNAME
@@ -373,9 +378,7 @@
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "tbl_genericname"   TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC              =   ZERO
                MOVE    "tbl_genericname"   TO  MCP-TABLE
                MOVE    "key"               TO  MCP-PATHNAME
@@ -419,9 +422,7 @@
            MOVE    "DBINSERT"          TO  MCP-FUNC
            MOVE    "tbl_genericname"   TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC          NOT =   ZERO
                MOVE    2               TO  WRK-ERRCD
                PERFORM 2040-ERR-SYORI-SEC
@@ -444,9 +445,7 @@
            MOVE    "DBUPDATE"          TO  MCP-FUNC
            MOVE    "tbl_genericname"   TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC          NOT =   ZERO
                MOVE    3               TO  WRK-ERRCD
                PERFORM 2040-ERR-SYORI-SEC
@@ -467,9 +466,7 @@
            MOVE    "DBDELETE"          TO  MCP-FUNC
            MOVE    "tbl_genericname"   TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC          NOT =   ZERO
                MOVE    4               TO  WRK-ERRCD
                PERFORM 2040-ERR-SYORI-SEC
@@ -540,6 +537,7 @@
            MOVE    WRK-SYY             TO  MES-TITLE1-YY
            MOVE    SYS-MM              TO  MES-TITLE1-MM
            MOVE    SYS-DD              TO  MES-TITLE1-DD
+           MOVE    SPA-HOSPNUM         TO  MES-TITLE1-HOSPNUM
            MOVE    MES-TITLE1          TO  PLF-REC
            WRITE   PLF-REC
            .
@@ -592,9 +590,7 @@
        910-GENERICNAME-READ-SEC   SECTION.
       *
            MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC         TO  GENERICNAME-REC
                MOVE    ZERO                TO  FLG-GENERICNAME
@@ -614,16 +610,12 @@
            MOVE    LOW-VALUE       TO  MCP-TABLE
                                        MCP-PATHNAME
            MOVE    "DBOPEN"        TO  MCP-FUNC
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     PERFORM 900-ORCDBMAIN-SEC
       *
            MOVE    LOW-VALUE       TO  MCP-TABLE
                                        MCP-PATHNAME
            MOVE    "DBSTART"       TO  MCP-FUNC
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     PERFORM 900-ORCDBMAIN-SEC
            .
        100-DBOPEN-EXT.
            EXIT.
@@ -636,16 +628,12 @@
            MOVE    LOW-VALUE       TO  MCP-TABLE
                                        MCP-PATHNAME
            MOVE    "DBCOMMIT"      TO  MCP-FUNC
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     PERFORM 900-ORCDBMAIN-SEC
       *
            MOVE    LOW-VALUE       TO  MCP-TABLE
                                        MCP-PATHNAME
            MOVE    "DBDISCONNECT"  TO  MCP-FUNC
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     PERFORM 900-ORCDBMAIN-SEC
            .
        900-DBDISCONNECT-EXT.
            EXIT.
@@ -656,9 +644,20 @@
        900-TBL-CLOSE-SEC               SECTION.
       *
            MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     PERFORM 900-ORCDBMAIN-SEC
            .
        900-TBL-CLOSE-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    テーブルアクセス処理
+      *****************************************************************
+       900-ORCDBMAIN-SEC               SECTION.
+      *
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
+           .
+      *
+       900-ORCDBMAIN-EXT.
            EXIT.

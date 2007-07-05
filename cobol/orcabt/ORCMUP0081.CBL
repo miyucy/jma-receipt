@@ -73,7 +73,7 @@
       *
        WORKING-STORAGE             SECTION.
 grpsys*
-grpsys COPY    "COMMON-SPA".
+grpsys     COPY    "COMMON-SPA".
       *
       *    ファイル指定領域
        01  ASS-AREA.
@@ -152,6 +152,8 @@ grpsys COPY    "COMMON-SPA".
                05  MES-TITLE1-MM       PIC X(02) VALUE SPACE.
                05  FILLER              PIC X(01) VALUE ".".
                05  MES-TITLE1-DD       PIC X(02) VALUE SPACE.
+               05  FILLER              PIC X(02) VALUE SPACE.
+               05  MES-TITLE1-HOSPNUM  PIC 9(02).
       *
            01  WRK-MSG-AREA.
                03  WRK-MSG-01          PIC X(30).
@@ -177,8 +179,6 @@ grpsys COPY    "COMMON-SPA".
       *
       *    共通パラメタ
            COPY    "MCPAREA".
-      *
-      *01  MCPDATA-REC                 PIC X(5000).
            COPY    "MCPDATA.INC".
       *
       *****************************************************************
@@ -188,6 +188,8 @@ grpsys COPY    "COMMON-SPA".
        01  PARA-REC.
            03  PARA-DBFILE               PIC X(13).
            03  PARA-UPFILE               PIC X(100).
+           03  LNK-DBRVERSION            PIC X(21).
+           03  LNK-HOSPNUM               PIC 9(02).
       *
        PROCEDURE                       DIVISION
            USING
@@ -218,6 +220,9 @@ grpsys COPY    "COMMON-SPA".
            MOVE    ZERO            TO  CNT-AREA
            MOVE    ZERO            TO  IDX-AREA
            INITIALIZE                  WRK-AREA
+                                       SPA-AREA
+      *
+           MOVE    LNK-HOSPNUM     TO  SPA-HOSPNUM
       *
       *    DB OPEN
            PERFORM 100-DBOPEN-SEC
@@ -319,14 +324,11 @@ grpsys COPY    "COMMON-SPA".
       *
            INITIALIZE                  SSKIJYO-REC
            MOVE    IN-KEY              TO  SSKIJYO-KEY
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SSKIJYO-REC         TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "tbl_sskijyo"       TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC              =   ZERO
                MOVE    "tbl_sskijyo"       TO  MCP-TABLE
                MOVE    "key"               TO  MCP-PATHNAME
@@ -363,14 +365,11 @@ grpsys                            SPA-AREA
            INITIALIZE                  SSKIJYO-REC
            MOVE    IN-REC(2:)          TO  SSKIJYO-REC
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SSKIJYO-REC         TO  MCPDATA-REC
            MOVE    "DBINSERT"          TO  MCP-FUNC
            MOVE    "tbl_sskijyo"       TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC          NOT =   ZERO
                MOVE    2               TO  WRK-ERRCD
                PERFORM 2040-ERR-SYORI-SEC
@@ -387,14 +386,11 @@ grpsys                            SPA-AREA
       *
            INITIALIZE                  SSKIJYO-REC
            MOVE    IN-KEY              TO  SSKIJYO-KEY
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SSKIJYO-REC         TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "tbl_sskijyo"       TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC              =   ZERO
                MOVE    "tbl_sskijyo"       TO  MCP-TABLE
                MOVE    "key"               TO  MCP-PATHNAME
@@ -431,14 +427,11 @@ grpsys                            SPA-AREA
            INITIALIZE                  SSKIJYO-REC
            MOVE    IN-REC(2:)          TO  SSKIJYO-REC
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SSKIJYO-REC         TO  MCPDATA-REC
            MOVE    "DBUPDATE"          TO  MCP-FUNC
            MOVE    "tbl_sskijyo"       TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC          NOT =   ZERO
                MOVE    5               TO  WRK-ERRCD
                PERFORM 2040-ERR-SYORI-SEC
@@ -457,14 +450,11 @@ grpsys                            SPA-AREA
       *
            INITIALIZE                  SSKIJYO-REC
            MOVE    IN-KEY              TO  SSKIJYO-KEY
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SSKIJYO-REC         TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "tbl_sskijyo"       TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC              =   ZERO
                MOVE    "tbl_sskijyo"       TO  MCP-TABLE
                MOVE    "key"               TO  MCP-PATHNAME
@@ -495,14 +485,11 @@ grpsys                            SPA-AREA
       *****************************************************************
        20101-SSKIJYO-DEL-SEC           SECTION.
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SSKIJYO-REC         TO  MCPDATA-REC
            MOVE    "DBDELETE"          TO  MCP-FUNC
            MOVE    "tbl_sskijyo"       TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC          NOT =   ZERO
                MOVE    6               TO  WRK-ERRCD
                PERFORM 2040-ERR-SYORI-SEC
@@ -589,6 +576,7 @@ grpsys                            SPA-AREA
            MOVE    WRK-SYY             TO  MES-TITLE1-YY
            MOVE    SYS-MM              TO  MES-TITLE1-MM
            MOVE    SYS-DD              TO  MES-TITLE1-DD
+           MOVE    SPA-HOSPNUM         TO  MES-TITLE1-HOSPNUM
            MOVE    MES-TITLE1          TO  PLF-REC
            WRITE   PLF-REC
       *
@@ -721,9 +709,7 @@ grpsys                            SPA-AREA
        910-SSKIJYO-READ-SEC            SECTION.
       *
            MOVE    "DBFETCH"           TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC         TO  SSKIJYO-REC
                MOVE    ZERO                TO  FLG-SSKIJYO
@@ -741,9 +727,7 @@ grpsys                            SPA-AREA
        990-DBCLOSE-SEC               SECTION.
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     PERFORM 900-ORCDBMAIN-SEC
            .
        990-DBCLOSE-EXT.
            EXIT.
@@ -756,16 +740,12 @@ grpsys                            SPA-AREA
            MOVE    LOW-VALUE       TO  MCP-TABLE
                                        MCP-PATHNAME
            MOVE    "DBOPEN"        TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     PERFORM 900-ORCDBMAIN-SEC
       *
            MOVE    LOW-VALUE       TO  MCP-TABLE
                                        MCP-PATHNAME
            MOVE    "DBSTART"       TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     PERFORM 900-ORCDBMAIN-SEC
            .
        100-DBOPEN-EXT.
            EXIT.
@@ -778,17 +758,25 @@ grpsys                            SPA-AREA
            MOVE    LOW-VALUE       TO  MCP-TABLE
                                        MCP-PATHNAME
            MOVE    "DBCOMMIT"      TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     PERFORM 900-ORCDBMAIN-SEC
       *
            MOVE    LOW-VALUE       TO  MCP-TABLE
                                        MCP-PATHNAME
            MOVE    "DBDISCONNECT"  TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     PERFORM 900-ORCDBMAIN-SEC
            .
        900-DBDISCONNECT-EXT.
            EXIT.
       *
+      *****************************************************************
+      *    テーブルアクセス処理
+      *****************************************************************
+       900-ORCDBMAIN-SEC               SECTION.
+      *
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
+           .
+      *
+       900-ORCDBMAIN-EXT.
+           EXIT.

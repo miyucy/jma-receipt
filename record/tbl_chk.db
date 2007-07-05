@@ -23,6 +23,7 @@ tbl_chk	{
 	UPYMD   		char(8);
 	UPHMS			char(6);
 #-----> 主キー更新用項目
+	UPHOSPNUM		number(2,0),virtual;
 	UPCHKKBN		char(1),virtual;
 	UPSRYCD   		char(9),virtual;
 	UPYUKOSTYMD 	char(8),virtual;
@@ -145,7 +146,7 @@ path	upd1	{
 	CREYMD		=	:CREYMD,
 	UPYMD		=	:UPYMD,
 	UPHMS		=	:UPHMS
-			WHERE 	HOSPNUM	= :HOSPNUM
+			WHERE 	HOSPNUM	= :UPHOSPNUM
 			AND	CHKKBN		=	:UPCHKKBN
 			AND		SRYCD		=	:UPSRYCD
 			AND		YUKOSTYMD	=	:UPYUKOSTYMD
@@ -325,7 +326,7 @@ path	upd2	{
 	DBUPDATE		{
 		UPDATE	tbl_chk
 		SET	TEKCDNUM	=	:TEKCDNUM
-		WHERE 	HOSPNUM	= :HOSPNUM
+		WHERE 	HOSPNUM	= :UPHOSPNUM
 			AND	CHKKBN		=	:UPCHKKBN
 			AND		SRYCD		=	:UPSRYCD
 			AND		YUKOSTYMD	=	:UPYUKOSTYMD
