@@ -41,7 +41,7 @@
             02  HCM53-KOUTENG   PIC X(7).
             02  HCM53-YKZTENSU
                     PIC X(7)    OCCURS  35 TIMES.
-            02  HCM53-YKZTENSUG PIC X(10).
+            02  HCM53-YKZTENSUG PIC X(7).
             02  HCM53-SAISINKAISU   PIC X(3).
             02  HCM53-SHIDOKAISU    PIC X(2).
             02  HCM53-KINGAKU
