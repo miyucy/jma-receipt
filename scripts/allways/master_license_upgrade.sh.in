@@ -9,7 +9,14 @@ fi
 
 . $JMARECEIPT_ENV
 
-HOME=/home/orca
+#------------------------------------
+# $1 : 医療機関識別番号(HOSPNUM)
+# $2 : スーパーバイザー
+#------------------------------------
+
+HOSPNUM=$1
+
+HOME=/var/lib/jma-receipt/master
 MSTDIR=lics-$(date +%Y%m%d)
 WGETRCFL=/tmp/.wgetrc.license-master
 LIUPWD=$1
@@ -17,7 +24,7 @@ LIUPWD=$1
 KANRIFILE=ORCADBR-LI.DAT
 UPDKANRIFILE=info/$KANRIFILE
 
-UPDFILE=/home/orca/$MSTDIR/ORCADBR.OUT
+UPDFILE=$HOME/$HOSPNUM/$MSTDIR/ORCADBR.OUT
 LEN=100
 
 function orcawget () {
@@ -92,15 +99,19 @@ fi
 
 echo $MSTDIR
 echo $UPDFILE
-if ! [	-d	$HOME/$MSTDIR	];	then 
+if ! [	-d	$HOME/$HOSPNUM	];	then 
 	cd $HOME
+	mkdir $HOSPNUM
+fi
+if ! [	-d	$HOME/$HOSPNUM/$MSTDIR	];	then 
+	cd $HOME/$HOSPNUM
 	mkdir $MSTDIR
 fi
-if ! [	-d	$HOME/orca-mstlog	];	then 
-	cd $HOME
+if ! [	-d	$HOME/$HOSPNUM/orca-mstlog	];	then 
+	cd $HOME/$HOSPNUM
 	mkdir orca-mstlog 
 fi
-cd $HOME/$MSTDIR
+cd $HOME/$HOSPNUM/$MSTDIR
 rm -f *.*
 if  [ $OFFLINE = "offline" ]; then
     if  [ -e $OFFLINEPATH/$UPDKANRIFILE ]; then
@@ -108,7 +119,7 @@ if  [ $OFFLINE = "offline" ]; then
 	echo "DBレコード管理情報を複写しました"
     else
 	echo "DBレコード管理情報がありませんでした"
-	$DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE0000001MSTMLI99
+	$DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE0000001MSTMLI99,$HOSPNUM
 	exit 99
     fi
 else
@@ -117,26 +128,26 @@ else
 	echo "センタからのDBレコード管理情報のダウンロードが終了しました"
     else
 	echo "センタからのDBレコード管理情報のダウンロードに失敗しました"
-	rm -r $HOME/$MSTDIR
-	$DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE0000001MSTMLI98
+	rm -r $HOME/$HOSPNUM/$MSTDIR
+	$DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE0000001MSTMLI98,$HOSPNUM
         exit 99
     fi
-    if  [  -s	$HOME/$MSTDIR/$KANRIFILE	]
+    if  [  -s	$HOME/$HOSPNUM/$MSTDIR/$KANRIFILE	]
     then
 	echo "センタからのDBレコード管理情報は正常でした"
     else
 	echo "センタからのDBレコード管理情報は空でした"
-	rm -r $HOME/$MSTDIR
-	$DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE0000001MSTMLI01
+	rm -r $HOME/$HOSPNUM/$MSTDIR
+	$DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE0000001MSTMLI01,$HOSPNUM
         exit 99
     fi
 fi
 
 #ダウンロードファイル生成
-	$DBSTUB  -dir $LDDIRECTORY -bd orcabt ORCXRMST3 -parameter $MSTDIR
+	$DBSTUB  -dir $LDDIRECTORY -bd orcabt ORCXRMST3 -parameter $HOSPNUM$2$MSTDIR
 	if [ $? -ne 0 ]	;	then 
 		echo "ダウンロードファイル生成に失敗しました"
-		$DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE0000001MSTMLI99
+		$DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE0000001MSTMLI99,$HOSPNUM
 		exit 99
 	fi
 #更新用ダウンロードファイル受信
@@ -146,8 +157,8 @@ fi
 		echo "更新用ダウンロードファイルの作成が終了しました"
 	else
 		echo "更新用ダウンロードファイルの作成に失敗しました"
-		$DBSTUB  -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE0000001MSTMLI01
-		rm -r $HOME/$MSTDIR
+		$DBSTUB  -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE0000001MSTMLI01,$HOSPNUM
+		rm -r $HOME/$HOSPNUM/$MSTDIR
 		exit 99
 	fi
 
@@ -162,7 +173,7 @@ do
 		echo ${UPD:34:$LEN} "複写が終了しました"
 	    else
 		echo ${UPD:34:$LEN} "複写に失敗しました"
-		$DBSTUB  -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE0000001MSTMLI99
+		$DBSTUB  -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE0000001MSTMLI99,$HOSPNUM
 	        exit 99
 	    fi
 	else
@@ -170,7 +181,7 @@ do
 		echo ${UPD:34:$LEN} "ダウンロードが終了しました"
 	    else
 		echo ${UPD:34:$LEN} "ダウンロードに失敗しました"
-		$DBSTUB  -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE0000001MSTMLI99
+		$DBSTUB  -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE0000001MSTMLI99,$HOSPNUM
 	        exit 99
 	    fi
 	fi
@@ -182,7 +193,7 @@ do
 	if	orcatar $UPD ;	then
 		echo $UPD "解凍処理が終了しました"
 	else
-		$DBSTUB  -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE0000001MSTMLI99
+		$DBSTUB  -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE0000001MSTMLI99,$HOSPNUM
 		echo $UPD "解凍処理に失敗しました"
 	        exit 99
 	fi
@@ -193,15 +204,15 @@ do
 	UPD1=`echo $UPD | awk '{gsub(/.tar.gz/,".dat"); print} ' `
 	echo $UPD1 "DB更新"
 #ダウンロードファイル生成
-	$DBSTUB  -dir $LDDIRECTORY -bd orcabt ORCXRMST4 -parameter $MSTDIR$UPD1*****************************************************
+	$DBSTUB  -dir $LDDIRECTORY -bd orcabt ORCXRMST4 -parameter $HOSPNUM$MSTDIR$UPD1*****************************************************
 	echo $?
 	if [ $? -ne 0 ]	;	then 
 		echo $UDP1 "更新処理に失敗しました"
-		$DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE0000001MSTMLI99
+		$DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE0000001MSTMLI99,$HOSPNUM
 		exit 99
 	fi
 done
 
 echo  "全ての処理が完了しました"
-rm -r $HOME/$MSTDIR
-	$DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE0000001MSTMLI00
+rm -r $HOME/$HOSPNUM/$MSTDIR
+	$DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE0000001MSTMLI00,$HOSPNUM

@@ -51,7 +51,7 @@
       *
        WORKING-STORAGE             SECTION.
 grpsys*
-grpsys COPY    "COMMON-SPA".
+grpsys     COPY    "COMMON-SPA".
       *
        01  PGEXIST01                   PIC X(256).
       *
@@ -62,7 +62,7 @@ grpsys COPY    "COMMON-SPA".
       *    フラグ領域
        01  FLG-AREA.
            03  FLG-END                 PIC 9(01).
-           03  FLG-DBKANRI             PIC 9(01).
+           03  FLG-MSTKANRI            PIC 9(01).
            03  FLG-CHECK               PIC 9(01).
       *
       *    添字領域
@@ -79,14 +79,15 @@ grpsys COPY    "COMMON-SPA".
            03  LNK-DBFILE              PIC X(13).
            03  LNK-UPFILE              PIC X(100).
            03  LNK-DBRVERSION          PIC X(21).
+           03  LNK-HOSPNUM             PIC 9(02).
       *
       *****************************************************************
       *    ファイル定義
       *****************************************************************
       *
-      *    ＤＢ管理情報
-       01  DBKANRI-REC.
-           COPY    "CPDBKANRI.INC".
+      *    マスタ管理情報
+       01  MSTKANRI-REC.
+           COPY    "CPMSTKANRI.INC".
       *
       *    共通パラメタ
            COPY    "MCPAREA".
@@ -99,6 +100,7 @@ grpsys COPY    "COMMON-SPA".
       *****************************************************************
        LINKAGE                     SECTION.
        01  PARA-REC.
+           03  PARA-HOSPNUM              PIC 9(02).
            03  PARA-DBFILE               PIC X(13).
            03  PARA-MASTER-KBN           PIC X(02).
            03  PARA-SEPARATE             PIC X(01).
@@ -133,6 +135,9 @@ grpsys COPY    "COMMON-SPA".
            MOVE    ZERO                TO  FLG-AREA
            MOVE    ZERO                TO  IDX-AREA
            INITIALIZE                      WRK-AREA
+                                           SPA-AREA
+      *
+           MOVE    PARA-HOSPNUM        TO  SPA-HOSPNUM
       *
       *    DB OPEN
       *****PERFORM 100-DBOPEN-SEC
@@ -180,6 +185,7 @@ grpsys COPY    "COMMON-SPA".
            MOVE    PARA-DBFILE         TO  LNK-DBFILE
            MOVE    WRK-UPFILE2         TO  LNK-UPFILE
            MOVE    PARA-DBRVERVION     TO  LNK-DBRVERSION
+           MOVE    PARA-HOSPNUM        TO  LNK-HOSPNUM
       *
       *    更新プログラム存在チェック
            PERFORM 2001-PGEXIST-CHECK
@@ -194,20 +200,17 @@ grpsys COPY    "COMMON-SPA".
                                        LNK-AREA
       *
            PERFORM 100-DBOPEN-SEC
-      *    ＤＢ管理マスタ検索
-           PERFORM 910-DBKANRI-SELECT-SEC
+      *    マスタ管理マスタ検索
+           PERFORM 910-MSTKANRI-SELECT-SEC
       *
-      *    ＤＢ管理マスタ更新
-           IF      FLG-DBKANRI         =   ZERO
-               MOVE    PARA-DBRVERVION TO  DBKANRI-DBRVERSION1
-grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
-               MOVE    DBKANRI-REC     TO  MCPDATA-REC
+      *    マスタ管理マスタ更新
+           IF      FLG-MSTKANRI        =   ZERO
+               MOVE    PARA-DBRVERVION TO  MSTKANRI-DBRVERSION1
+               MOVE    MSTKANRI-REC    TO  MCPDATA-REC
                MOVE    "DBUPDATE"      TO  MCP-FUNC
-               MOVE    "tbl_dbkanri"   TO  MCP-TABLE
+               MOVE    "tbl_mstkanri"  TO  MCP-TABLE
                MOVE    "key"           TO  MCP-PATHNAME
-grpsys         CALL "ORCDBMAIN" USING MCPAREA
-                                      MCPDATA-REC
-grpsys                                SPA-AREA
+grpsys         PERFORM 900-ORCDBMAIN-SEC
                IF      MCP-RC          NOT =   ZERO
                     DISPLAY "*(ORCXRMST4)* DBUPDATE ERR:" MCP-RC
                END-IF
@@ -249,56 +252,50 @@ grpsys                                SPA-AREA
            EXIT.
       *
       *****************************************************************
-      *    ＤＢ管理ファイル抽出
+      *    マスタ管理ファイル抽出
       *****************************************************************
-       910-DBKANRI-SELECT-SEC          SECTION.
+       910-MSTKANRI-SELECT-SEC         SECTION.
       *
-           INITIALIZE                  DBKANRI-REC
-           MOVE    "ORCADB"            TO  DBKANRI-KANRICD
-           MOVE    PARA-MASTER-KBN     TO  DBKANRI-KANRICD(7:2)
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
-           MOVE    DBKANRI-REC         TO  MCPDATA-REC
+           INITIALIZE                  MSTKANRI-REC
+grpsys     MOVE    SPA-HOSPNUM         TO  MSTKANRI-HOSPNUM
+           MOVE    "ORCADB"            TO  MSTKANRI-KANRICD
+           MOVE    PARA-MASTER-KBN     TO  MSTKANRI-KANRICD(7:2)
+           MOVE    MSTKANRI-REC        TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "tbl_dbkanri"       TO  MCP-TABLE
+           MOVE    "tbl_mstkanri"      TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC              =   ZERO
-               MOVE    "tbl_dbkanri"   TO  MCP-TABLE
+               MOVE    "tbl_mstkanri"  TO  MCP-TABLE
                MOVE    "key"           TO  MCP-PATHNAME
-               PERFORM                     910-DBKANRI-READ-SEC
+               PERFORM                     910-MSTKANRI-READ-SEC
            ELSE
-               MOVE    1               TO  FLG-DBKANRI
+               MOVE    1               TO  FLG-MSTKANRI
            END-IF
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           MOVE    "tbl_dbkanri"       TO  MCP-TABLE
+           MOVE    "tbl_mstkanri"      TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     PERFORM 900-ORCDBMAIN-SEC
            .
-       910-DBKANRI-SELECT-EXT.
+       910-MSTKANRI-SELECT-EXT.
            EXIT.
       *
       *****************************************************************
-      *    ＤＢ管理ファイル読込
+      *    マスタ管理ファイル読込
       *****************************************************************
-       910-DBKANRI-READ-SEC            SECTION.
+       910-MSTKANRI-READ-SEC           SECTION.
       *
            MOVE    "DBFETCH"           TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC              =   ZERO
-               MOVE    MCPDATA-REC     TO  DBKANRI-REC
-               MOVE    ZERO            TO  FLG-DBKANRI
+               MOVE    MCPDATA-REC     TO  MSTKANRI-REC
+               MOVE    ZERO            TO  FLG-MSTKANRI
            ELSE
-               INITIALIZE                  DBKANRI-REC
-               MOVE    1               TO  FLG-DBKANRI
+               INITIALIZE                  MSTKANRI-REC
+               MOVE    1               TO  FLG-MSTKANRI
            END-IF
            .
-       910-DBKANRI-READ-EXT.
+       910-MSTKANRI-READ-EXT.
            EXIT.
       *
       *****************************************************************
@@ -309,16 +306,12 @@ grpsys                            SPA-AREA
            MOVE    LOW-VALUE           TO  MCP-TABLE
                                            MCP-PATHNAME
            MOVE    "DBOPEN"            TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     PERFORM 900-ORCDBMAIN-SEC
       *
            MOVE    LOW-VALUE           TO  MCP-TABLE
                                            MCP-PATHNAME
            MOVE    "DBSTART"           TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     PERFORM 900-ORCDBMAIN-SEC
            .
        100-DBOPEN-EXT.
            EXIT.
@@ -331,17 +324,26 @@ grpsys                            SPA-AREA
            MOVE    LOW-VALUE           TO  MCP-TABLE
                                            MCP-PATHNAME
            MOVE    "DBCOMMIT"          TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     PERFORM 900-ORCDBMAIN-SEC
       *
            MOVE    LOW-VALUE           TO  MCP-TABLE
                                            MCP-PATHNAME
            MOVE    "DBDISCONNECT"      TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     PERFORM 900-ORCDBMAIN-SEC
            .
        900-DBCLOSE-EXT.
            EXIT.
       *
+      *****************************************************************
+      *    テーブルアクセス処理
+      *****************************************************************
+       900-ORCDBMAIN-SEC               SECTION.
+      *
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
+           .
+      *
+       900-ORCDBMAIN-EXT.
+           EXIT.
+      *      

@@ -293,12 +293,6 @@
       *ＤＢ構造バージョン２
                WHEN    4
                    MOVE    WRK-IN          TO   DBKANRI-DBSVERSION2
-      *ＤＢレコードバージョン１
-               WHEN    5
-                   MOVE    WRK-IN          TO   DBKANRI-DBRVERSION1
-      *ＤＢレコードバージョン２
-               WHEN    6
-                   MOVE    WRK-IN          TO   DBKANRI-DBRVERSION2
       *端末ＩＤ
                WHEN    7
                    MOVE    WRK-IN          TO   DBKANRI-TERMID

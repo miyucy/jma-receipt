@@ -61,6 +61,7 @@
        01  FLG-AREA.
            03  FLG-END             PIC 9(01).
            03  FLG-DBKANRI         PIC 9(01).
+           03  FLG-MSTKANRI        PIC 9(01).
            03  FLG-JOBKANRI        PIC 9(01).
            03  FLG-ERR             PIC 9(01).
            03  FLG-INIT            PIC 9(01).
@@ -112,6 +113,9 @@
       *    ＤＢ管理
        01  DBKANRI-REC.
            COPY    "CPDBKANRI.INC".
+      *
+       01  MSTKANRI-REC.
+           COPY    "CPMSTKANRI.INC".
       *
       *    ジョブ管理
        01  JOBKANRI-REC.
@@ -308,33 +312,50 @@
            INITIALIZE                  SPA-GMN-TBLG3
       *    ＤＢ管理検索処理
            INITIALIZE                  DBKANRI-REC
-grpsys*    MOVE    SPA-HOSPNUM         TO  -HOSPNUM
+           MOVE    "ORCADB00"          TO  DBKANRI-KANRICD
            MOVE    DBKANRI-REC         TO  MCPDATA-REC
            MOVE    "tbl_dbkanri"       TO  MCP-TABLE 
-           MOVE    "all"               TO  MCP-PATHNAME 
+           MOVE    "key"               TO  MCP-PATHNAME 
            PERFORM 910-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
                MOVE    "tbl_dbkanri"   TO  MCP-TABLE 
-               MOVE    "all"           TO  MCP-PATHNAME 
+               MOVE    "key"           TO  MCP-PATHNAME 
                PERFORM 900-DBKANRI-READ-SEC
            ELSE
                INITIALIZE                      DBKANRI-REC
                MOVE    1                   TO  FLG-DBKANRI
            END-IF
-           PERFORM UNTIL   FLG-DBKANRI     =   1
+           IF      FLG-DBKANRI         =   ZERO
+               PERFORM 3101-LIST1-HENSYU-SEC
+           END-IF
+           MOVE    "tbl_dbkanri"       TO  MCP-TABLE 
+           MOVE    "key"               TO  MCP-PATHNAME 
+           PERFORM 990-DBCLOSE-SEC
       *
-               EVALUATE    DBKANRI-KANRICD
-                   WHEN    "ORCADB00"
-                       PERFORM 3101-LIST1-HENSYU-SEC
-               END-EVALUATE
-               IF      DBKANRI-KANRICD(7:2)    NUMERIC
+      *    マスタ管理検索処理
+           INITIALIZE                  MSTKANRI-REC
+grpsys     MOVE    SPA-HOSPNUM         TO  MSTKANRI-HOSPNUM
+           MOVE    MSTKANRI-REC        TO  MCPDATA-REC
+           MOVE    "tbl_mstkanri"      TO  MCP-TABLE 
+           MOVE    "all"               TO  MCP-PATHNAME 
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_mstkanri"  TO  MCP-TABLE 
+               MOVE    "all"           TO  MCP-PATHNAME 
+               PERFORM 900-MSTKANRI-READ-SEC
+           ELSE
+               INITIALIZE                      MSTKANRI-REC
+               MOVE    1                   TO  FLG-MSTKANRI
+           END-IF
+           PERFORM UNTIL   FLG-MSTKANRI    =   1
+               IF      MSTKANRI-KANRICD(7:2)    NUMERIC
                    PERFORM 3102-LIST3-HENSYU-SEC
                END-IF
-               MOVE    "tbl_dbkanri"   TO  MCP-TABLE 
+               MOVE    "tbl_mstkanri"  TO  MCP-TABLE 
                MOVE    "all"           TO  MCP-PATHNAME 
-               PERFORM 900-DBKANRI-READ-SEC
+               PERFORM 900-MSTKANRI-READ-SEC
            END-PERFORM
-           MOVE    "tbl_dbkanri"       TO  MCP-TABLE 
+           MOVE    "tbl_mstkanri"      TO  MCP-TABLE 
            MOVE    "all"               TO  MCP-PATHNAME 
            PERFORM 990-DBCLOSE-SEC
       *
@@ -462,14 +483,14 @@ grpsys*    MOVE    SPA-HOSPNUM         TO  -HOSPNUM
       *****************************************************************
        3102-LIST3-HENSYU-SEC         SECTION.
       *
-           MOVE    DBKANRI-KANRICD(7:2)    TO  IDX2
+           MOVE    MSTKANRI-KANRICD(7:2)   TO  IDX2
            ADD     1                       TO  IDX2
       *
-           ADD     1                   TO  SPA-GMN-MAX3
-           MOVE    DBKANRI-DBRVERSION1 TO  SPA-GMN-DBRVERSION1 (IDX2)
-           MOVE    DBKANRI-DBRVERSION2 TO  SPA-GMN-DBRVERSION2 (IDX2)
+           ADD     1                    TO  SPA-GMN-MAX3
+           MOVE    MSTKANRI-DBRVERSION1 TO  SPA-GMN-DBRVERSION1 (IDX2)
+           MOVE    MSTKANRI-DBRVERSION2 TO  SPA-GMN-DBRVERSION2 (IDX2)
       *
-           EVALUATE    DBKANRI-KANRICD
+           EVALUATE    MSTKANRI-KANRICD
                WHEN    "ORCADB00"
                    MOVE    "点数マスタ"
                                           TO  SPA-GMN-MASTNAME(IDX2)
@@ -516,7 +537,7 @@ grpsys*    MOVE    SPA-HOSPNUM         TO  -HOSPNUM
                    MOVE    "包括診療コードマスタ"
                                           TO  SPA-GMN-MASTNAME(IDX2)
                WHEN    OTHER
-                   MOVE    DBKANRI-KANRICD
+                   MOVE    MSTKANRI-KANRICD
                                           TO  SPA-GMN-MASTNAME(IDX2)
            END-EVALUATE
            .
@@ -742,8 +763,9 @@ grpsys*    MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            MOVE    SHELL-NAME           TO  MKPASS-IN-01
            CALL    "ORCSMKPASS"         USING  ORCSMKPASSAREA
            MOVE    MKPASS-OT-01         TO  SHELLTBL-NAME
-           MOVE    SPA-HOSPID           TO  SHELLTBL-ARG1
-grpsys*    MOVE    SPA-HOSPNUM         TO  -HOSPNUM
+      *****MOVE    SPA-HOSPID           TO  SHELLTBL-ARG1
+           MOVE    SPA-HOSPNUM          TO  SHELLTBL-ARG1
+           MOVE    SPA-SUPERVISOR       TO  SHELLTBL-ARG2
            MOVE    SHELLTBL             TO  MCPDATA-REC
       *
            MOVE    "SHELL"              TO  MCP-FUNC
@@ -1153,6 +1175,28 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            .
        900-DBKANRI-READ-EXT.
            EXIT.
+      *
+      *****************************************************************
+      *    マスタ管理読込み処理
+      *****************************************************************
+       900-MSTKANRI-READ-SEC        SECTION.
+      *
+           MOVE    "DBFETCH"       TO  MCP-FUNC
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC     TO  MSTKANRI-REC
+               MOVE    ZERO            TO  FLG-MSTKANRI
+           ELSE
+               INITIALIZE                  MSTKANRI-REC
+               MOVE    1               TO  FLG-MSTKANRI
+           END-IF
+      *
+           .
+       900-DBKANRI-READ-EXT.
+           EXIT.
+      *
       *****************************************************************
       *    テーブル検索処理
       *****************************************************************

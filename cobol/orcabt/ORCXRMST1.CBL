@@ -73,7 +73,7 @@
       *
        WORKING-STORAGE             SECTION.
 grpsys*
-grpsys COPY    "COMMON-SPA".
+grpsys     COPY    "COMMON-SPA".
       *
       *    ファイル指定領域
        01  ASS-AREA.
@@ -91,6 +91,7 @@ grpsys COPY    "COMMON-SPA".
        01  FLG-AREA.
            03  FLG-IN                  PIC 9(01).
            03  FLG-DBKANRI             PIC 9(01).
+           03  FLG-MSTKANRI            PIC 9(01).
       *
            03  FLG-SYORI               PIC 9(01).
       *
@@ -127,6 +128,13 @@ grpsys COPY    "COMMON-SPA".
                05  WRK-TBL-MASTER-KBN  PIC X(02).
                05  WRK-TBL-DBRVERSION1 PIC X(64).
                05  WRK-TBL-UPDATE-FLG  PIC X(01).
+      *
+       01  WRK-HOMEDIR.
+           03  FILLER                  PIC X(28)  VALUE
+               "/var/lib/jma-receipt/master/".
+           03  WRK-HOMEDIR-HOSPNUM     PIC 9(02).
+           03  FILLER                  PIC X(01)  VALUE "/".
+           03  WRK-HOMEDIR-DBFILE      PIC X(13).
       *****************************************************************
       *    ファイル定義
       *****************************************************************
@@ -135,6 +143,8 @@ grpsys COPY    "COMMON-SPA".
        01  DBKANRI-REC.
            COPY    "CPDBKANRI.INC".
       *
+       01  MSTKANRI-REC.
+           COPY    "CPMSTKANRI.INC".
       *
       *    共通パラメタ
            COPY    "MCPAREA".
@@ -145,6 +155,8 @@ grpsys COPY    "COMMON-SPA".
       *****************************************************************
        LINKAGE                     SECTION.
        01  PARA-REC.
+           03  PARA-HOSPNUM            PIC 9(02).
+           03  PARA-SUPERVISOR         PIC X(01).
            03  PARA-DBFILE             PIC X(13).
       *
        PROCEDURE                       DIVISION
@@ -175,6 +187,10 @@ grpsys COPY    "COMMON-SPA".
            MOVE    ZERO            TO  CNT-AREA
            MOVE    ZERO            TO  IDX-AREA
            INITIALIZE                  WRK-AREA
+                                       SPA-AREA
+      *
+           MOVE    PARA-HOSPNUM    TO  SPA-HOSPNUM
+           MOVE    PARA-SUPERVISOR TO  SPA-SUPERVISOR
       *
       *    DB OPEN
            PERFORM 100-DBOPEN-SEC
@@ -200,7 +216,8 @@ grpsys COPY    "COMMON-SPA".
                                        STS-OUT "]"
            END-IF
       *
-      *    DBKANRI レコードバージョンのテーブル溜め込み
+           PERFORM 101-VERSION-GET-SEC
+      *    MSTKANRI レコードバージョンのテーブル溜め込み
            PERFORM 101-DBR-TBL-SET-SEC
       *
            .
@@ -212,10 +229,12 @@ grpsys COPY    "COMMON-SPA".
       *****************************************************************
        101-ASSIN-GET-SEC                SECTION.
       *
+           MOVE    PARA-HOSPNUM        TO  WRK-HOMEDIR-HOSPNUM
+           MOVE    PARA-DBFILE         TO  WRK-HOMEDIR-DBFILE
+      *
       *    入力ファイル
            MOVE    SPACE               TO  ASS-IN
-           STRING  "/home/orca/"       DELIMITED  BY  SIZE
-                   PARA-DBFILE         DELIMITED  BY  SPACE
+           STRING  WRK-HOMEDIR         DELIMITED  BY  SIZE
       ************ "/ORCADBR.DAT"      DELIMITED  BY  SIZE
       * 2.5.0del * "/ORCADBR-1.DAT"    DELIMITED  BY  SIZE
                    "/ORCADBR-2.DAT"    DELIMITED  BY  SIZE
@@ -224,8 +243,7 @@ grpsys COPY    "COMMON-SPA".
       *
       *    出力ーファイル
            MOVE    SPACE               TO  ASS-OUT
-           STRING  "/home/orca/"       DELIMITED  BY  SIZE
-                   PARA-DBFILE         DELIMITED  BY  SPACE
+           STRING  WRK-HOMEDIR         DELIMITED  BY  SIZE
                    "/ORCADBR.OUT"      DELIMITED  BY  SIZE
                                        INTO    ASS-OUT
            END-STRING
@@ -235,20 +253,20 @@ grpsys COPY    "COMMON-SPA".
            EXIT.
       *
       *****************************************************************
-      *    DBKANRI レコードバージョンのテーブル溜め込み処理
+      *    DBKANRI バージョン取得処理
       *****************************************************************
-       101-DBR-TBL-SET-SEC              SECTION.
+       101-VERSION-GET-SEC             SECTION.
       *
       *    ＤＢ管理マスタ検索
            INITIALIZE                  DBKANRI-REC
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    "ORCADB00"          TO  DBKANRI-KANRICD
            MOVE    DBKANRI-REC         TO  MCPDATA-REC
            MOVE    "tbl_dbkanri"       TO  MCP-TABLE
-           MOVE    "all"               TO  MCP-PATHNAME
+           MOVE    "key"               TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
                MOVE    "tbl_dbkanri"   TO  MCP-TABLE
-               MOVE    "all"           TO  MCP-PATHNAME
+               MOVE    "key"           TO  MCP-PATHNAME
                PERFORM 910-DBKANRI-READ-SEC
            ELSE
                INITIALIZE                      DBKANRI-REC
@@ -256,34 +274,64 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            END-IF
       *
            MOVE    SPACE               TO  WRK-DBKANRI-VERSION
-           MOVE    ZERO                TO  IDX
            MOVE    ZERO                TO  IDY
            MOVE    ZERO                TO  IDZ
-           PERFORM UNTIL   FLG-DBKANRI     =   1
-               IF      DBKANRI-KANRICD(7:2)    NUMERIC
-                   ADD   1             TO  IDX
-                   MOVE DBKANRI-KANRICD(7:2)
-                                       TO  WRK-TBL-MASTER-KBN (IDX)
-                   MOVE DBKANRI-DBRVERSION1
-                                       TO  WRK-TBL-DBRVERSION1(IDX)
-                   MOVE SPACE          TO  WRK-TBL-UPDATE-FLG (IDX)
-               END-IF
-               IF      DBKANRI-KANRICD(1:8) =  "ORCADB00"
-                   PERFORM VARYING     IDZ     FROM    1   BY  1
+           IF      DBKANRI-KANRICD(1:8) =  "ORCADB00"
+               PERFORM VARYING     IDZ     FROM    1   BY  1
                        UNTIL       IDZ     >   64
-                     IF    (DBKANRI-VERSION(IDZ:1)   NOT =   SPACE)
+                   IF   (DBKANRI-VERSION(IDZ:1)   NOT =   SPACE)
                          ADD   1       TO  IDY
                          MOVE  DBKANRI-VERSION(IDZ:1)
                                        TO  WRK-DBKANRI-VERSION(IDY:1)
-                     END-IF
-                   END-PERFORM
-               END-IF
-               MOVE    "tbl_dbkanri"   TO  MCP-TABLE
-               MOVE    "all"           TO  MCP-PATHNAME
-               PERFORM 910-DBKANRI-READ-SEC
-           END-PERFORM
+                   END-IF
+               END-PERFORM
+           END-IF
       *
            MOVE    "tbl_dbkanri"       TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 910-CLOSE-SEC
+      *
+           .
+       101-VERSION-GET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    MSTKANRI レコードバージョンのテーブル溜め込み処理
+      *****************************************************************
+       101-DBR-TBL-SET-SEC              SECTION.
+      *
+      *    マスタ管理マスタ検索
+           INITIALIZE                  MSTKANRI-REC
+grpsys     MOVE    SPA-HOSPNUM         TO  MSTKANRI-HOSPNUM
+           MOVE    MSTKANRI-REC        TO  MCPDATA-REC
+           MOVE    "tbl_mstkanri"      TO  MCP-TABLE
+           MOVE    "all"               TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_mstkanri"  TO  MCP-TABLE
+               MOVE    "all"           TO  MCP-PATHNAME
+               PERFORM 910-MSTKANRI-READ-SEC
+           ELSE
+               INITIALIZE                      MSTKANRI-REC
+               MOVE    1                   TO  FLG-MSTKANRI
+           END-IF
+      *
+           MOVE    ZERO                TO  IDX
+           PERFORM UNTIL   FLG-MSTKANRI    =   1
+               IF      MSTKANRI-KANRICD(7:2)    NUMERIC
+                   ADD   1             TO  IDX
+                   MOVE MSTKANRI-KANRICD(7:2)
+                                       TO  WRK-TBL-MASTER-KBN (IDX)
+                   MOVE MSTKANRI-DBRVERSION1
+                                       TO  WRK-TBL-DBRVERSION1(IDX)
+                   MOVE SPACE          TO  WRK-TBL-UPDATE-FLG (IDX)
+               END-IF
+               MOVE    "tbl_mstkanri"  TO  MCP-TABLE
+               MOVE    "all"           TO  MCP-PATHNAME
+               PERFORM 910-MSTKANRI-READ-SEC
+           END-PERFORM
+      *
+           MOVE    "tbl_mstkanri"      TO  MCP-TABLE
            MOVE    "all"               TO  MCP-PATHNAME
            PERFORM 910-CLOSE-SEC
       *
@@ -332,45 +380,42 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                PERFORM 900-IN-READ-SEC
            END-PERFORM
       *
-      *    ＤＢ管理マスタ更新
+      *    マスタ管理マスタ更新
            PERFORM     VARYING  IDX
                        FROM     1     BY   1
                        UNTIL    IDX   =    100   OR
                                 WRK-TBL-MASTER-KBN(IDX) = SPACE
              IF      WRK-TBL-UPDATE-FLG(IDX)  =  "1"
-               INITIALIZE              DBKANRI-REC
-               MOVE    "ORCADB"        TO  DBKANRI-KANRICD
+               INITIALIZE              MSTKANRI-REC
+grpsys         MOVE    SPA-HOSPNUM     TO  MSTKANRI-HOSPNUM
+               MOVE    "ORCADB"        TO  MSTKANRI-KANRICD
                MOVE    WRK-TBL-MASTER-KBN(IDX)
-                                       TO  DBKANRI-KANRICD(7:2)
-grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
-               MOVE    DBKANRI-REC     TO  MCPDATA-REC
-               MOVE    "tbl_dbkanri"   TO  MCP-TABLE
+                                       TO  MSTKANRI-KANRICD(7:2)
+               MOVE    MSTKANRI-REC    TO  MCPDATA-REC
+               MOVE    "tbl_mstkanri"  TO  MCP-TABLE
                MOVE    "key"           TO  MCP-PATHNAME
                PERFORM 910-DBSELECT-SEC
                IF      MCP-RC           =  ZERO
-                   PERFORM 910-DBKANRI-READ-SEC
+                   PERFORM 910-MSTKANRI-READ-SEC
                ELSE
-                   INITIALIZE              DBKANRI-REC
-                   MOVE    1           TO  FLG-DBKANRI
+                   INITIALIZE              MSTKANRI-REC
+                   MOVE    1           TO  FLG-MSTKANRI
                END-IF
       *
-               IF      FLG-DBKANRI      =  ZERO
+               IF      FLG-MSTKANRI     =  ZERO
                    MOVE    WRK-TBL-DBRVERSION1(IDX)
-                                       TO  DBKANRI-DBRVERSION2
-grpsys*            MOVE SPA-HOSPNUM TO -HOSPNUM
-                   MOVE    DBKANRI-REC TO  MCPDATA-REC
+                                       TO  MSTKANRI-DBRVERSION2
+                   MOVE    MSTKANRI-REC TO  MCPDATA-REC
                    MOVE    "DBUPDATE"  TO  MCP-FUNC
-                   MOVE    "tbl_dbkanri"
+                   MOVE    "tbl_mstkanri"
                                        TO  MCP-TABLE
                    MOVE    "key"       TO  MCP-PATHNAME
-grpsys             CALL "ORCDBMAIN" USING MCPAREA
-                                          MCPDATA-REC
-grpsys                                    SPA-AREA
+grpsys             PERFORM 900-ORCDBMAIN-SEC
                    IF      MCP-RC      NOT =  ZERO
-                     DISPLAY "ORCXRMST1 DBKANRI UPD ERR:" MCP-RC
+                     DISPLAY "ORCXRMST1 MSTKANRI UPD ERR:" MCP-RC
                    END-IF
                END-IF
-               MOVE    "tbl_dbkanri"   TO  MCP-TABLE
+               MOVE    "tbl_mstkanri"  TO  MCP-TABLE
                MOVE    "key"           TO  MCP-PATHNAME
                PERFORM 910-CLOSE-SEC
              END-IF
@@ -434,15 +479,33 @@ grpsys                                    SPA-AREA
           .
        900-IN-READ-EXT.
           EXIT.
+      *
+      *****************************************************************
+      *    マスタ管理ファイル読込
+      *****************************************************************
+       910-MSTKANRI-READ-SEC           SECTION.
+      *
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+grpsys     PERFORM 900-ORCDBMAIN-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC     TO  MSTKANRI-REC
+               MOVE    ZERO            TO  FLG-MSTKANRI
+           ELSE
+               INITIALIZE                  MSTKANRI-REC
+               MOVE    1               TO  FLG-MSTKANRI
+           END-IF
+      *
+           .
+       910-MSTKANRI-READ-EXT.
+           EXIT.
+      *
       *****************************************************************
       *    ＤＢ管理ファイル読込
       *****************************************************************
        910-DBKANRI-READ-SEC            SECTION.
       *
            MOVE    "DBFETCH"           TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC     TO  DBKANRI-REC
                MOVE    ZERO            TO  FLG-DBKANRI
@@ -463,9 +526,7 @@ grpsys                            SPA-AREA
            MOVE    ZERO                TO  MCP-RC
       *
            MOVE    "DBSELECT"          TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     PERFORM 900-ORCDBMAIN-SEC
       *
            .
        910-DBSELECT-EXT.
@@ -477,9 +538,7 @@ grpsys                            SPA-AREA
        910-CLOSE-SEC                   SECTION.
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     PERFORM 900-ORCDBMAIN-SEC
            .
       *
        910-CLOSE-EXT.
@@ -493,16 +552,12 @@ grpsys                            SPA-AREA
            MOVE    LOW-VALUE           TO  MCP-TABLE
                                            MCP-PATHNAME
            MOVE    "DBOPEN"            TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     PERFORM 900-ORCDBMAIN-SEC
       *
            MOVE    LOW-VALUE           TO  MCP-TABLE
                                            MCP-PATHNAME
            MOVE    "DBSTART"           TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     PERFORM 900-ORCDBMAIN-SEC
            .
        100-DBOPEN-EXT.
            EXIT.
@@ -515,17 +570,26 @@ grpsys                            SPA-AREA
            MOVE    LOW-VALUE           TO  MCP-TABLE
                                            MCP-PATHNAME
            MOVE    "DBCOMMIT"          TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     PERFORM 900-ORCDBMAIN-SEC
       *
            MOVE    LOW-VALUE           TO  MCP-TABLE
                                            MCP-PATHNAME
            MOVE    "DBDISCONNECT"      TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     PERFORM 900-ORCDBMAIN-SEC
            .
        900-DBCLOSE-EXT.
            EXIT.
       *
+      *****************************************************************
+      *    テーブルアクセス処理
+      *****************************************************************
+       900-ORCDBMAIN-SEC               SECTION.
+      *
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
+           .
+      *
+       900-ORCDBMAIN-EXT.
+           EXIT.
+      *      
