@@ -1136,7 +1136,6 @@ grpsys         PERFORM 900-DBFETCH-SEC
                                                        TO  SPRT-TITLE
                    ELSE
                        MOVE    "自賠（新）レセプト（入院外）"
-      *****************MOVE    "自賠責レセプト（入院外）"
                                                        TO  SPRT-TITLE
                    END-IF
                WHEN    "HCM55.red"     ALSO    ANY
@@ -1147,7 +1146,6 @@ grpsys         PERFORM 900-DBFETCH-SEC
                                                        TO  SPRT-TITLE
                    ELSE
                        MOVE    "自賠（従）レセプト（入院外）"
-      *****************MOVE    "自賠責レセプト（入院外）"
                                                        TO  SPRT-TITLE
                    END-IF
                WHEN    "HCN21.red"     ALSO    ANY
@@ -1183,8 +1181,7 @@ grpsys         PERFORM 900-DBFETCH-SEC
                        MOVE    "自賠責（新様式）レセプト（入院）"
                                                        TO  SPRT-TITLE
                    ELSE
-      *****************MOVE    "自賠（新）レセプト（入院）"
-                       MOVE    "自賠責レセプト（入院）"
+                       MOVE    "自賠（新）レセプト（入院）"
                                                        TO  SPRT-TITLE
                    END-IF
                WHEN    "HCN55.red"     ALSO    ANY
@@ -1194,8 +1191,7 @@ grpsys         PERFORM 900-DBFETCH-SEC
                        MOVE    "自賠責（従来様式）レセプト（入院）"
                                                        TO  SPRT-TITLE
                    ELSE
-      *****************MOVE    "自賠（従）レセプト（入院）"
-                       MOVE    "自賠責レセプト（入院）"
+                       MOVE    "自賠（従）レセプト（入院）"
                                                        TO  SPRT-TITLE
                    END-IF
            END-EVALUATE

@@ -2604,13 +2604,13 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE08-HOSPNUM
            MOVE    RECE82-SRYYM        TO  RECE08-SRYYM
            MOVE    TBL-RECE-RENNUM (IDXY)
                                        TO  RECE08-RENNUM
-           IF      WRK-PARA-SHELLID    NOT =   "RECEPTX"
-               MOVE    WRK-RECENUM         TO  RECE08-RECENUM
-           ELSE
-               COMPUTE RECE08-RECENUM      =   WRK-RECENUM
-                                           +   TBL-RECE-RENNUM (IDXY)
-           END-IF
-           MOVE    RECE08-REC          TO  MCPDATA-REC
+      *****IF      WRK-PARA-SHELLID    NOT =   "RECEPTX"
+      *****    MOVE    WRK-RECENUM         TO  RECE08-RECENUM
+      *****ELSE
+      *****    COMPUTE RECE08-RECENUM      =   WRK-RECENUM
+      *****                                +   TBL-RECE-RENNUM (IDXY)
+      *****END-IF
+           MOVE    WRK-RECENUM         TO  RECE08-RECENUM
       *
            MOVE    "00"                TO  RECE08-SRYKA
            MOVE    "99999999"          TO  RECE08-HKNJANUM-S
@@ -2620,6 +2620,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE08-HOSPNUM
                                            RECE08-ZAITAKU
                                            RECE08-CHOUKI
       *
+           MOVE    RECE08-REC          TO  MCPDATA-REC
            PERFORM 900-RECE08-READ-SEC
            IF      FLG-RECE08          =   ZERO
                DISPLAY "ORCR0965 MCP-RC=" MCP-RC " " RECE08-KEY 
