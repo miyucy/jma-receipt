@@ -360,7 +360,7 @@ grpsys*    PERFORM 200-MAIN-SEC
                *   CONST-CHK-MAX
                +   CNT-CD
       *
-           MOVE    WRK-PARA-HOSPNUM    TO  CHK-HOSPNUM
+           MOVE    WRK-PARA-HOSPNUM    TO  CHKUP-HOSPNUM
            MOVE    CHK-REC             TO  MCPDATA-REC
            MOVE    "tbl_chk"           TO  MCP-TABLE
            MOVE    "upd2"              TO  MCP-PATHNAME
