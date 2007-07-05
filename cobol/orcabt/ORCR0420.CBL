@@ -2300,10 +2300,10 @@ grpsys     PERFORM 900-DBSELECT-SEC
               END-IF
            END-IF
       *
-           IF     (RECE41-HKNKBN    NOT  =  "4"    AND
-                   RECE44-SRYKBN         =  "80"        )
-           OR     (RECE41-HKNKBN         =  "4"    AND
-                   RECE44-SRYKBN         =  "40" OR "80")
+           IF    ((RECE41-HKNKBN    NOT  =  "4"         ) AND
+                  (RECE44-SRYKBN         =  "80"        ))
+           OR    ((RECE41-HKNKBN         =  "4"         ) AND
+                  (RECE44-SRYKBN         =  "40" OR "80"))
       *       リハビリ
               IF   SRY-SRYCD(IDX2)    =     "180706910"   OR
                                             "180022210"   OR
@@ -3461,7 +3461,11 @@ grpsys        MOVE    SPA-HOSPNUM         TO  SYS-4003-HOSPNUM
                          WHEN    4
                              MOVE  "3"     TO   RECE41-SHOSHINTIME
                      END-EVALUATE
-                     ADD   WK-ZAIKAISU     TO   RECE41-KAISU(1)
+                     IF   SRY-SRYCD(IDX3) = "111012370"
+                       CONTINUE
+                     ELSE
+                       ADD   WK-ZAIKAISU   TO   RECE41-KAISU(1)
+                     END-IF
                      COMPUTE    RECE41-TENSU(1)  =
                                 RECE41-TENSU(1)  +
                                 (WRK-TNS-TEN(IDX3) * WRK-ZAIKAISU-XXX)

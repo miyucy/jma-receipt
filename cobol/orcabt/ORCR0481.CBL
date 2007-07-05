@@ -1644,7 +1644,7 @@ grpsys         MOVE    WRK-PARA-HOSPNUM    TO  BTPARA-HOSPNUM
            END-IF
       *
       *
-           PERFORM   VARYING   IDX   FROM    2   BY  1
+           PERFORM   VARYING   IDX   FROM    1   BY  1
                      UNTIL     IDX       >   35
       *        <Ã±²Á>
                EVALUATE    IDX

@@ -304,6 +304,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE47PARA-HOSPNUM
                MOVE    1                   TO  RECE46-ZAILAST
                INITIALIZE                      TBL-ZAI-AREA
                MOVE    RECE41-GAITOKU-TEN1 TO  WRK-ZAITENX
+                                               WRK-KINGAKU
                MOVE    RECE41-GAITOKU-KAISU1
                                            TO  WRK-ZAIKAISUX
                PERFORM 2001-TENSUKAI-HEN-SEC
@@ -329,6 +330,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE47PARA-HOSPNUM
                MOVE    1                   TO  RECE46-ZAILAST
                INITIALIZE                      TBL-ZAI-AREA
                MOVE    RECE41-GAITOKU-TEN2 TO  WRK-ZAITENX
+                                               WRK-KINGAKU
                MOVE    RECE41-GAITOKU-KAISU2
                                            TO  WRK-ZAIKAISUX
                PERFORM 2001-TENSUKAI-HEN-SEC

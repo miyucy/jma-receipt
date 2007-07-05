@@ -2509,10 +2509,10 @@ grpsys     PERFORM 900-DBSELECT-SEC
               END-IF
            END-IF
       *
-           IF     (RECE82-HKNKBN    NOT  =  "4"    AND
-                   RECE84-SRYKBN         =  "80"        )
-           OR     (RECE82-HKNKBN         =  "4"    AND
-                   RECE84-SRYKBN         =  "40" OR "80")
+           IF    ((RECE82-HKNKBN    NOT  =  "4"         ) AND
+                  (RECE84-SRYKBN         =  "80"        ))
+           OR    ((RECE82-HKNKBN         =  "4"         ) AND
+                  (RECE84-SRYKBN         =  "40" OR "80"))
       *       リハビリ
               IF   SRY-SRYCD(IDX2)    =     "180706910"   OR
                                             "180022210"   OR
@@ -2751,10 +2751,10 @@ grpsys     PERFORM 900-DBSELECT-SEC
               END-IF
            END-IF
       *
-           IF     (RECE82-HKNKBN    NOT  =  "4"    AND
-                   RECE84-SRYKBN         =  "80"        )
-           OR     (RECE82-HKNKBN         =  "4"    AND
-                   RECE84-SRYKBN         =  "40" OR "80")
+           IF    ((RECE82-HKNKBN    NOT  =  "4"         ) AND
+                  (RECE84-SRYKBN         =  "80"        ))
+           OR    ((RECE82-HKNKBN         =  "4"         ) AND
+                  (RECE84-SRYKBN         =  "40" OR "80"))
               IF   SRY-SRYCD(IDX2)    =     CONS-HOUSEI-COMMENT
                    MOVE   "1"   TO    RECE84-FLG-HOUSEI-COMMENT
               END-IF
