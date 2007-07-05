@@ -629,6 +629,18 @@ grpsys         PERFORM 900-ORCDBMAIN-SEC
       *    帳票印刷処理
       *****************************************************************
        2001-RECEPRT-PRINT-SEC          SECTION.
+      *
+      *    リアルタイムプレビュー時の自賠責のときの連番の初期化
+           IF      WRK-PARA-SHELLID    =   "RECEPTX"
+               IF      WRK-PARA-RECEKBN    =   "3" 
+                   CONTINUE
+               ELSE
+                   IF   ( RECE08-RECENUM   =   110 )
+                   AND  ( RECE08-RENNUM    =   1   )
+                       MOVE    ZERO            TO  WRK-RENNUM
+                   END-IF
+               END-IF     
+           END-IF
       * 
            MOVE    SPACE               TO  PRT-REC 
            MOVE    RECE08-FORMID       TO  PRT-PRTID
@@ -681,8 +693,8 @@ grpsys         PERFORM 900-ORCDBMAIN-SEC
                END-IF
            END-IF
       **
-           MOVE    LNK-PRTKANRI-SHORI-RENNUM
-                                       TO  PRT-SHORI-RENNUM
+      *??     MOVE    LNK-PRTKANRI-SHORI-RENNUM
+      *??                                 TO  PRT-SHORI-RENNUM
            MOVE    WRK-RENNUM          TO  PRT-PAGE
       **
       *
@@ -1057,8 +1069,8 @@ grpsys         PERFORM 900-DBFETCH-SEC
                END-IF     
            END-IF
       ****
-           MOVE    LNK-PRTKANRI-SHORI-RENNUM
-                                           TO  SPRT-SHORI-RENNUM
+      *??     MOVE    LNK-PRTKANRI-SHORI-RENNUM
+      *??                                     TO  SPRT-SHORI-RENNUM
       ****
       **** MOVE    LNK-PRTKANRI-PRIORITY
       ****                             TO  SPRT-PRIORITY
@@ -1123,8 +1135,8 @@ grpsys         PERFORM 900-DBFETCH-SEC
                        MOVE    "自賠責（新様式）レセプト（入院外）"
                                                        TO  SPRT-TITLE
                    ELSE
-      *****************MOVE    "自賠（新）レセプト（入院外）"
-                       MOVE    "自賠責レセプト（入院外）"
+                       MOVE    "自賠（新）レセプト（入院外）"
+      *****************MOVE    "自賠責レセプト（入院外）"
                                                        TO  SPRT-TITLE
                    END-IF
                WHEN    "HCM55.red"     ALSO    ANY
@@ -1134,8 +1146,8 @@ grpsys         PERFORM 900-DBFETCH-SEC
                        MOVE    "自賠責（従来様式）レセプト（入院外）"
                                                        TO  SPRT-TITLE
                    ELSE
-      *****************MOVE    "自賠（従）レセプト（入院外）"
-                       MOVE    "自賠責レセプト（入院外）"
+                       MOVE    "自賠（従）レセプト（入院外）"
+      *****************MOVE    "自賠責レセプト（入院外）"
                                                        TO  SPRT-TITLE
                    END-IF
                WHEN    "HCN21.red"     ALSO    ANY
