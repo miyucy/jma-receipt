@@ -1189,6 +1189,14 @@
       *****************************************************************
        2005-JIBAI-GAIRAI-SEC                SECTION.
       *
+      *???
+           DISPLAY "JIBAI="
+                   WRK-PARA-A3 " " WRK-PARA-A13 " " WRK-PARA-A14
+      *???
+           MOVE    "5"             TO  WRK-PARA0-A3
+                                       WRK-PARA1-A3
+                                       WRK-PARA3-A3
+      *
            MOVE     SPACE       TO WRK-ARG
            STRING   WRK-PARA0      DELIMITED   BY  SIZE
                     ","            DELIMITED   BY  SIZE
@@ -1269,13 +1277,13 @@
            END-IF
       *
       *    労災準拠のとき（新様式）
-           IF      WRK-PARA-A3     =   "4"
+           IF      WRK-PARA-A3     =   "1"
                PERFORM 100-DBOPEN-SEC
                IF      WRK-PARA-SHORI-KBN  NOT  =  ZERO
                    PERFORM 20011-REAL-DB-MAKE-SEC
                END-IF
       *
-               MOVE     "5"            TO  WRK-PARA0-A3
+               MOVE     "4"            TO  WRK-PARA0-A3
                                            WRK-PARA1-A3
                                            WRK-PARA3-A3
       *
@@ -1469,6 +1477,13 @@
       *    自賠責（入院）処理
       *****************************************************************
        2006-JIBAI-NYUIN-SEC                SECTION.
+      *???
+           DISPLAY "JIBAI="
+                   WRK-PARA-A3 " " WRK-PARA-A13 " " WRK-PARA-A14
+      *???
+           MOVE    "5"             TO  WRK-PARA0-A3
+                                       WRK-PARA1-A3
+                                       WRK-PARA3-A3
       *
            MOVE     SPACE       TO WRK-ARG
            STRING   WRK-PARA0      DELIMITED   BY  SIZE
@@ -1554,13 +1569,13 @@
            END-IF
       *
       *    労災準拠のとき（新様式）
-           IF      WRK-PARA-A3     =   "4"
+           IF      WRK-PARA-A3     =   "1"
                PERFORM 100-DBOPEN-SEC
                IF      WRK-PARA-SHORI-KBN  NOT  =  ZERO
                    PERFORM 20011-REAL-DB-MAKE-SEC
                END-IF
       *
-               MOVE     "5"            TO  WRK-PARA0-A3
+               MOVE     "4"            TO  WRK-PARA0-A3
                                            WRK-PARA1-A3
                                            WRK-PARA3-A3
       *

@@ -377,8 +377,10 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SYS-1031-HOSPNUM
                INITIALIZE                  SYS-4001-REC
                MOVE    "4001"          TO  SYS-4001-KANRICD
                MOVE    "*"             TO  SYS-4001-KBNCD
-               MOVE    SPA-SYSYMD      TO  SYS-4001-STYUKYMD
-                                           SYS-4001-EDYUKYMD
+               MOVE    LINK-SRYYM      TO  SYS-4001-STYUKYMD (1:6)
+               MOVE    "01"            TO  SYS-4001-STYUKYMD (7:2)
+               MOVE    SYS-4001-STYUKYMD
+                                       TO  SYS-4001-EDYUKYMD
 grpsys         MOVE    SPA-HOSPNUM     TO  SYS-4001-HOSPNUM
                MOVE    SYS-4001-REC    TO  MCPDATA-REC
                PERFORM 900-SYSKANRI-READ-SEC
@@ -386,6 +388,9 @@ grpsys         MOVE    SPA-HOSPNUM     TO  SYS-4001-HOSPNUM
                    MOVE    MCPDATA-REC     TO  SYS-4001-REC
                ELSE
                    INITIALIZE                  SYS-4001-REC
+               END-IF
+               IF      SYS-4001-JIBAIKBN   =    SPACE
+                   MOVE    "1"                  TO  SYS-4001-JIBAIKBN
                END-IF
            END-IF
       *
@@ -470,11 +475,8 @@ grpsys     MOVE    SPA-HOSPNUM     TO  RECEERR-HOSPNUM
                WHEN    "1"
                    MOVE    "3"             TO  SHELLTBL-ARG3
                WHEN    "2"
-                   IF      SYS-4001-JIBAIKBN   =   "2"
-                       MOVE    "5"             TO  SHELLTBL-ARG3
-                   ELSE
-                       MOVE    "4"             TO  SHELLTBL-ARG3
-                   END-IF
+                   MOVE    SYS-4001-JIBAIKBN
+                                           TO  SHELLTBL-ARG3
            END-EVALUATE 
            MOVE    RECEERR         TO  SHELLTBL-ARG4
            MOVE    WRK-CONS-JOB-JOBID
