@@ -1,0 +1,60 @@
+--
+-- PostgreSQL database dump
+--
+
+SET client_encoding = 'EUC_JP';
+SET check_function_bodies = false;
+
+SET search_path = public, pg_catalog;
+
+--
+-- TOC entry 3 (OID 6594124)
+-- Name: tbl_mstkanri; Type: TABLE; Schema: public; Owner: orca
+--
+
+CREATE TABLE tbl_mstkanri (
+    hospnum numeric(2,0) NOT NULL,
+    kanricd character(8) NOT NULL,
+    dbrversion1 character varying(64),
+    dbrversion2 character varying(64),
+    termid character varying(32),
+    opid character varying(16),
+    creymd character(8),
+    upymd character(8),
+    uphms character(6)
+);
+
+
+--
+-- Data for TOC entry 5 (OID 6594124)
+-- Name: tbl_mstkanri; Type: TABLE DATA; Schema: public; Owner: orca
+--
+
+COPY tbl_mstkanri (hospnum, kanricd, dbrversion1, dbrversion2, termid, opid, creymd, upymd, uphms) FROM stdin;
+1	ORCADB07	R-020200-3-20060217-3	R-020200-3-20060217-3			        	        	      
+1	ORCADB08	R-020200-3-20060217-4	R-020200-3-20060217-4			        	        	      
+1	ORCADB09	R-020200-3-20041025-1	R-020200-3-20041025-1			        	        	      
+1	ORCADB02	R-020800-2-20060816-1	R-020800-2-20060816-1			        	        	      
+1	ORCADB11	R-030100-1-20070130-5	R-030100-1-20070130-5			        	        	      
+1	ORCADB05	R-020800-2-20070313-2	R-020800-2-20070313-2			        	        	      
+1	ORCADB01	R-030300-1-20070419-1	R-030300-1-20070419-1			        	        	      
+1	ORCADB04	R-020800-2-20070420-2	R-020800-2-20070420-2			        	        	      
+1	ORCADB06	R-020800-2-20070608-2	R-020800-2-20070608-2			        	        	      
+1	ORCADB03	R-020800-2-20070614-2	R-020800-2-20070614-2			        	        	      
+1	ORCADB10	R-020800-2-20070614-3	R-020800-2-20070614-3			        	        	      
+1	ORCADB12	R-030400-1-20070320-1	R-030400-1-20070320-1			        	        	      
+1	ORCADB13	R-030400-1-20070320-1	R-030400-1-20070320-1			        	        	      
+1	ORCADB14	R-030400-1-20070320-1	R-030400-1-20070320-1			        	        	      
+1	ORCADB00	R-020800-2-20070706-1	R-020800-2-20070706-1			20050710	        	      
+\.
+
+
+--
+-- TOC entry 4 (OID 6594126)
+-- Name: tbl_mstkanri_primary_key; Type: CONSTRAINT; Schema: public; Owner: orca
+--
+
+ALTER TABLE ONLY tbl_mstkanri
+    ADD CONSTRAINT tbl_mstkanri_primary_key PRIMARY KEY (hospnum, kanricd);
+
+
