@@ -142,8 +142,8 @@ grpsys*
            MOVE    ORCSUSERPG-HKNCOMBI TO  SHELLTBL-ARG9
            MOVE    ORCSUSERPG-SYORINM  TO  SHELLTBL-ARG10
            MOVE    ORCSUSERPG-PRTNM    TO  SHELLTBL-ARG11
+           MOVE    SPA-HOSPNUM         TO  SHELLTBL-ARG12
       *
-grpsys*    MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            MOVE    SHELLTBL            TO  MCPDATA-REC
            MOVE    "SHELL"             TO  MCP-FUNC
            MOVE    "shell"             TO  MCP-TABLE
