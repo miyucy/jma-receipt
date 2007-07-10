@@ -21,13 +21,14 @@
       ************************************************************
       *  コピー句修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  03.05.01    NACL-藤原    07/07/10  器材点数追加
       ************************************************************
        01  ORCSRECESORTAREA.
       *
       *入力
            03  ORCSRECESORT-IN-AREA.
       *医療機関ＩＤ
-               05  ORCSRECESORT-HOSPNUM         PIC 9(2).
+               05  ORCSRECESORT-HOSPNUM         PIC  9(02).
       *入外区分
                05  ORCSRECESORT-NYUGAIKBN       PIC  X(01).
       *患者ＩＤ
@@ -38,6 +39,8 @@
                05  ORCSRECESORT-SRYKBN          PIC  X(02).
       *剤番号
                05  ORCSRECESORT-ZAINUM          PIC  9(08).
+      *器材点数
+               05  ORCSRECESORT-KIZAITEN        PIC  9(07).
       *剤内容
                05  ORCSRECESORT-IN-TBL.
                    07  ORCSRECESORT-IN-SRYCD-G  OCCURS   50.
@@ -89,7 +92,6 @@
                        09  ORCSRECESORT-TEN         PIC  9(09)V9(02).
       *                漢字名称
                        09  ORCSRECESORT-NAME        PIC  X(200).
-                                             
       *エラーコード（１：剤なし）
            03  ORCSRECESORT-ERRCD           PIC 9(01).
       *
