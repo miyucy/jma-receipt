@@ -527,6 +527,8 @@ DB_files = \
 	tbl_hktsrycd.db \
 	tbl_clm_uid.db \
 	tbl_sysuser.db \
+	tbl_sysbase.db \
+	tbl_mstkanri.db \
 
 all:   
 
