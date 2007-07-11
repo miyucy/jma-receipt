@@ -2,6 +2,7 @@ CSRCS = \
 	orcfiledel.c \
 	orcfileio.c \
 	cobabort.c \
+	coblog.c \
 	kanaconv.c
 
 top_builddir = ../..
