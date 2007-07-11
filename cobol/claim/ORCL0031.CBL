@@ -547,6 +547,8 @@
            MOVE    WRK-SYSYMD          TO  SPA-SYSYMD
            MOVE    WRK-SYSYMD          TO  SPA-SRYYMD
       *
+           MOVE    "1"                 TO  SPA-NOCHK-HOSPNUM
+      *
       *    システム管理検索（医療機関情報）
            MOVE    SPACE               TO  SYS-1001-REC
            INITIALIZE                  SYS-1001-REC
@@ -593,6 +595,8 @@
            PERFORM 990-DBCLOSE-SEC
       *
            MOVE    WRK-HOSPNUM         TO  SPA-HOSPNUM
+      *
+           MOVE    SPACE               TO  SPA-NOCHK-HOSPNUM
       *
       *    システム管理検索（ＣＬＡＩＭ接続情報）
            MOVE    SPACE               TO  SYS-9000-REC
