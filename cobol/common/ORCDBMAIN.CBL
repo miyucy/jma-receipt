@@ -42,13 +42,18 @@
       *    フラグ領域
        01  FLG-AREA.
            03  FLG-END             PIC 9(01).
+           03  FLG-ERR             PIC 9(01).
       *    添字領域
        01  IDX-AREA.
-           03  IDX                 PIC 9(04).
+           03  IDX                 PIC 9(05).
       *
       *    一時領域
        01  WRK-AREA.
            03  WRK-SYSYMD              PIC X(08).
+           03  WRK-MCP-RC              PIC ---9.
+           03  WRK-STR                 PIC X(500).
+           03  WRK-ERRMSG              PIC X(500).
+      *
       *****************************************************************
       *    ファイルレイアウト
       *****************************************************************
@@ -80,16 +85,104 @@
            INITIALIZE                  WRK-AREA
            INITIALIZE                  FLG-AREA
       *
+           PERFORM 100-INIT-SEC
+      *
+           IF    ( MCP-TABLE           =   "tbl_sysuser"
+                                        OR "metadb"
+                                        OR "blob" )
+               CONTINUE
+           ELSE
+      *
+               EVALUATE    MCP-FUNC
+               WHEN    "DBOPEN"
+               WHEN    "DBDISCONNECT"
+               WHEN    "DBSTART"
+               WHEN    "DBCOMMIT"
+                   MOVE    LOW-VALUE       TO  MCP-TABLE
+                                               MCP-PATHNAME
+               WHEN    "PUTWINDOW"
+                   CONTINUE
+               WHEN    OTHER
+                   IF    ( SPA-NOCHK-HOSPNUM   =   "1" )
+                       CONTINUE
+                   ELSE
+                       IF    ( SPA-HOSPNUM     =   ZERO )
+                        OR   ( SPA-HOSPNUM     IS  NOT NUMERIC )
+      *
+                           MOVE   1            TO  FLG-ERR
+                       END-IF
+                   END-IF
+               END-EVALUATE
+           END-IF
+      *
+           IF    ( FLG-ERR         =   ZERO )
+               CALL    "MONFUNC"           USING
+                                           MCPAREA
+                                           MCPDATA-REC
+      *
+               IF    ( MCP-RC      =   ZERO OR 1)
+                   CONTINUE
+               ELSE
+                   PERFORM 800-EDIT-ERRMSG-SEC
+               END-IF
+      *
+           ELSE
+               MOVE    51          TO  MCP-RC
+               PERFORM 800-EDIT-ERRMSG-SEC
+           END-IF
+      *
+           .
+      *
+           EXIT PROGRAM
+           .
+      *****************************************************************
+      *    初期　処理
+      *****************************************************************
+       100-INIT-SEC                    SECTION.
+      *
       *    更新日取得
            INITIALIZE                  ORCSMCNDATEAREA
            CALL    "ORCSMCNDATE"       USING
                                        ORCSMCNDATEAREA
       *
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
            .
       *
-           EXIT PROGRAM
-           .
+       100-INIT-EXT.
+           EXIT.
+      *****************************************************************
+      *    エラーメッセージ編集処理
+      *****************************************************************
+       800-EDIT-ERRMSG-SEC             SECTION.
       *
+           MOVE   SPACE            TO  WRK-ERRMSG
+           MOVE   MCP-RC           TO  WRK-MCP-RC
+      *
+           STRING "ORCDBMAIN ERROR RC[" DELIMITED   BY  SIZE
+                  WRK-MCP-RC           DELIMITED   BY  SIZE
+                  "] HOSPNUM["         DELIMITED   BY  SIZE
+                  SPA-HOSPNUM          DELIMITED   BY  SIZE
+                  "] FUNC["            DELIMITED   BY  SIZE
+                  MCP-FUNC             DELIMITED   BY  SPACE
+                  "] TABLE["           DELIMITED   BY  SIZE
+                  MCP-TABLE            DELIMITED   BY  SPACE
+                  "] PATHNAME["        DELIMITED   BY  SIZE
+                  MCP-PATHNAME         DELIMITED   BY  SPACE
+                  "] SPA["             DELIMITED   BY  SIZE
+                  SPA-STAFFCD          DELIMITED   BY  SIZE
+                  SPA-SYSYMD           DELIMITED   BY  SIZE
+                  SPA-SYSYMDW          DELIMITED   BY  SIZE
+                  SPA-SYSYMDWH         DELIMITED   BY  SIZE
+                  SPA-SYSYMD-YOBI      DELIMITED   BY  SIZE
+                  SPA-MACHIPG          DELIMITED   BY  SIZE
+                  SPA-MOTOPG           DELIMITED   BY  SIZE
+                  SPA-MOTOPG2          DELIMITED   BY  SIZE
+                  "]"                  DELIMITED   BY  SIZE
+                  LOW-VALUE            DELIMITED   BY  SIZE
+           INTO   WRK-ERRMSG
+           END-STRING
+      *
+           CALL    "coblog"    USING   WRK-ERRMSG
+      *
+           .
+       800-EDIT-ERRMSG-EXT.
+           EXIT.
