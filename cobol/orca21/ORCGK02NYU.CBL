@@ -1127,6 +1127,9 @@
                    MOVE    SPA-WORK        TO  SPA-K01KYOUTU
                    MOVE    1               TO  SPA-GMN-CUR
                END-IF
+      *!
+               CALL    "ORCSSPACHK"        USING    SPA-AREA
+      *!
       *        予約の時、そのまま画面表示へ
                IF      WRK-MOTOPG(1:3)     =   "Y01"
                    IF      SPA-PTID            =   ZERO
@@ -1144,6 +1147,9 @@
                END-IF
            END-IF
       *
+      *!
+           CALL    "ORCSSPACHK"        USING    SPA-AREA
+      *!
            MOVE    "1"                 TO  SPA-NYUGAIKBN
       *
       *    内部画面より

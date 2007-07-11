@@ -1200,6 +1200,9 @@
            IF      LINKAREA        NOT =   SPACE
                MOVE    LNK-KYOUTU          TO  SPA-KYOUTU
       *
+      *!
+               CALL    "ORCSSPACHK"        USING    SPA-AREA
+      *!
       *        画面ＳＰＡ読み込み
                PERFORM 1002-K02SPA-SET-SEC
       *        元画面へ戻す
@@ -1229,6 +1232,9 @@
                    GO      TO      300-SCREEN-EXT
                END-IF
            END-IF
+      *!
+           CALL    "ORCSSPACHK"        USING    SPA-AREA
+      *!
       *
            MOVE    "2"                 TO  SPA-NYUGAIKBN
       *
