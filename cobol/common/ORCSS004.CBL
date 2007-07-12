@@ -179,7 +179,7 @@
                                        ST
                                        UIDIO-AREA
            MOVE    SPA-HOSPNUM         TO  SS00401PARA-HOSPNUM
-           MOVE    "SS00401"           TO  SS00401PARA-FILE-ID
+           MOVE    "SS004001"          TO  SS00401PARA-FILE-ID
            MOVE    C-UID               TO  SS00401PARA-TERMID
       *
            INITIALIZE                  UIDIO-AREA
@@ -187,7 +187,7 @@
                                        ST
                                        UIDIO-AREA
            MOVE    SPA-HOSPNUM         TO  SS00402PARA-HOSPNUM
-           MOVE    "SS004OT"           TO  SS00402PARA-FILE-ID
+           MOVE    "SS004TNS"          TO  SS00402PARA-FILE-ID
            MOVE    C-UID               TO  SS00402PARA-TERMID
       *
            OPEN    OUTPUT              SS00401-FILE
