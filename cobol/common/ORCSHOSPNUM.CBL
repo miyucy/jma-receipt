@@ -105,6 +105,8 @@
       *
            MOVE    ZERO                TO  SPA-HOSPNUM
       *
+           MOVE    "1"                 TO  SPA-NOCHK-HOSPNUM
+      *
            INITIALIZE                      SYSUSER-REC
            MOVE    MCP-USER            TO  SYSUSER-USERID
            MOVE    SYSUSER-REC         TO  MCPDATA-REC
@@ -130,6 +132,9 @@
            ELSE
                MOVE    "1002"              TO  SPA-ERRCD
            END-IF
+      *
+           MOVE    SPACE               TO  SPA-NOCHK-HOSPNUM
+      *
            .
        100-HOSPNUM-SET-EXT.
            EXIT.
