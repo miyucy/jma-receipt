@@ -87,8 +87,7 @@
       *
            PERFORM 100-INIT-SEC
       *
-           IF    ( MCP-TABLE           =   "tbl_sysuser"
-                                        OR "metadb"
+           IF    ( MCP-TABLE           =   "metadb"
                                         OR "blob" )
                CONTINUE
            ELSE
