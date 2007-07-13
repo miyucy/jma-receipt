@@ -162,6 +162,7 @@ grpsys     COPY    "COMMON-SPA".
            03  WRK-PRTFLG          PIC 9(01).
       *
            03  WRK-RECEERR         PIC X(200). 
+           03  WRK-ERRMSG          PIC X(300). 
       *
            03  WRK-MCP-TABLE       PIC X(64).
            03  WRK-MCP-PATHNAME    PIC X(64).
@@ -990,6 +991,13 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  SYS-2009-HOSPNUM
                                            INTO    WRK-RECEERR
                END-STRING                                
                PERFORM 500-ERR-HENSYU-SEC
+               MOVE    SPACE               TO  WRK-ERRMSG
+               STRING  "ORCBM022 "         DELIMITED  BY  SIZE
+                       WRK-RECEERR         DELIMITED  BY  SIZE
+                       LOW-VALUE           DELIMITED  BY  SIZE
+                                           INTO    WRK-ERRMSG
+               END-STRING   
+               CALL    "cobabort"          USING   WRK-ERRMSG
            END-IF 
            .
        2001-SYUKEI-EXT.
