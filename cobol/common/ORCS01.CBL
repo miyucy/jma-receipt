@@ -221,6 +221,7 @@
       *  03.04.11    NACL-ÌçÏÆ    07/05/08  ËÌ³¤Æ»°°Àî»ÔÂÐ±þ
       *  03.04.12    NACL-ÌçÏÆ    07/06/13  ¸½ÊªµëÉÕ¹â³Û£´²óÌÜ¸øÈñÊ»ÍÑ»þÂÐ±þ
       *  03.05.00    NACL-Â¿¡¹Ç¼  07/04/26  ¥°¥ë¡¼¥×¿ÇÎÅÂÐ±þ
+      *  03.05.01    NACL-ÌçÏÆ    07/07/13  ËÌ³¤Æ»ÃÏÊý¸øÈñÂÐ±þ
       *****************************************************************
        ENVIRONMENT         DIVISION.
        CONFIGURATION       SECTION.
@@ -12870,21 +12871,16 @@
                END-IF
            END-IF.
       *
-           IF     (WK-1001-PREFNUM              =  34     )  AND
-                  (COMB-KOHHKNNUM(KOH-IDX)      = "390"   )  AND
-                  (LNK-SYU-SRYYMD(1:6)         >= "200410")
-               IF    LNK-S01-SYOSINFLG  =  SPACE
-                    MOVE    SPACE   TO   COMB-KOH-GAIJGNKBN(KOH-IDX)
-                    MOVE    ZERO    TO   WK-GAIKFTNRATE
-                    MOVE    "0"     TO   WK-GAIYKZFTNKBN
-                    MOVE    ZERO    TO   WK-GAIKKOTGAK
-               END-IF
-           END-IF.
-      *
-           IF     (WK-1001-PREFNUM         =  01           ) AND
+           IF    ((WK-1001-PREFNUM         =  34           )  AND
+                  (COMB-KOHHKNNUM(KOH-IDX) = "390"         )  AND
+                  (LNK-SYU-SRYYMD(1:6)    >= "200410"      ))
+           OR    ((WK-1001-PREFNUM         =  01           ) AND
                   (COMB-KOHHKNNUM(KOH-IDX) = "142" OR "143"
                                                    OR "144") AND
-                  (LNK-SYU-SRYYMD(1:6)    >= "200410"      )
+                  (LNK-SYU-SRYYMD(1:6)    >= "200410"      ))
+           OR    ((WK-1001-PREFNUM         =  01           ) AND
+                  (COMB-KOHHKNNUM(KOH-IDX) = "190" OR "291") AND
+                  (LNK-SYU-SRYYMD(1:6)    >= "200708"      ))
                IF    LNK-S01-SYOSINFLG  =  SPACE
                     MOVE    SPACE   TO   COMB-KOH-GAIJGNKBN(KOH-IDX)
                     MOVE    ZERO    TO   WK-GAIKFTNRATE
