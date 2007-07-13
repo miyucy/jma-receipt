@@ -212,8 +212,11 @@
       *  03.04.04    NACL-藤原    07/03/02  月途中保険変更時の病名対応中止
       *  03.04.05    NACL-藤原    07/04/03  カルテ病名の表示の修正
       *  03.04.06    NACL-藤原    07/05/14  カナチェック後の編集の修正
+      *  03.04.07    NACL-藤原    07/06/21  処理区分、入外区分変更時の
+      *                                     診療科の表示
       *
       *  03.05.01    NACL-藤原    07/04/19  グループ診療対応
+      *  03.05.02    NACL-藤原    07/06/25  複数病名登録時のレセプト表示期間対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -5371,11 +5374,11 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *
            MOVE    24                  TO  SPA-GMN-C02-CUR
       *
-           IF      SPA-NAI-C02-BYOMEICD-MAX    >   1
-               MOVE    "0060"              TO  SPA-ERRCD
-               MOVE    2                   TO  SPA-GMN-C02-CUR
-               GO  TO  41010-REZEMM-CHK-EXT
-           END-IF
+      *****IF      SPA-NAI-C02-BYOMEICD-MAX    >   1
+      *****    MOVE    "0060"              TO  SPA-ERRCD
+      *****    MOVE    2                   TO  SPA-GMN-C02-CUR
+      *****    GO  TO  41010-REZEMM-CHK-EXT
+      ***** END-IF
       *
            MOVE    C02-REZEMM          TO  SPA-GMN-C02-REZEMM
       *
@@ -5881,6 +5884,9 @@ grpsys                                       SPA-AREA
                                        SPA-GMN-C02-MAX
                                        SPA-PTBYOMEI-REC
            MOVE    SPA-NAI-C02-SYSYMD  TO  SPA-NAI-C02-SRYYMD
+           IF      SPA-GMN-C02-SRYKA   NOT =   ZERO
+               MOVE    SPA-GMN-C02-SRYKA-G TO  SPA-GMN-C02-BSRYKA-G
+           END-IF
       *
            MOVE    C02-SYOKBN          TO  SPA-GMN-C02-SYOKBN-G
       *
@@ -5939,6 +5945,9 @@ grpsys     MOVE    SPA-HOSPNUM         TO  PTBYO-HOSPNUM
                                        SPA-GMN-C02-MAX
                                        SPA-PTBYOMEI-REC
            MOVE    SPA-NAI-C02-SYSYMD  TO  SPA-NAI-C02-SRYYMD
+           IF      SPA-GMN-C02-SRYKA   NOT =   ZERO
+               MOVE    SPA-GMN-C02-SRYKA-G TO  SPA-GMN-C02-BSRYKA-G
+           END-IF
       *
            MOVE    C02-HNYUGAIKBN      TO  SPA-GMN-C02-HNYUGAIKBN-G
       *
@@ -6844,10 +6853,6 @@ grpsys                 MOVE    SPA-HOSPNUM         TO  PTBYO-HOSPNUM
                    MOVE    SPA-GMN-C02-HKNCOMBI
                                        TO  WRK-PTBYO-HKNCOMBI  (IDXX)
                END-IF                     
-               MOVE    SPA-GMN-C02-REZEFLG
-                                       TO  WRK-PTBYO-REZEFLG   (IDXX)
-               MOVE    SPA-GMN-C02-REZEMM
-                                       TO  WRK-PTBYO-REZEMM    (IDXX)
                MOVE    SPA-GMN-C02-BYOMEI
                                        TO  WRK-PTBYO-BYOMEI    (IDXX)
                MOVE    SPA-NAI-C02-BYOMEIMOJI
@@ -6861,6 +6866,8 @@ grpsys                 MOVE    SPA-HOSPNUM         TO  PTBYO-HOSPNUM
                                        TO  WRK-PTBYO-BYOMEIHENFLG(IDXX)
                MOVE    SPA-GMN-C02-HKNBYOMEIFLG
                                        TO  WRK-PTBYO-HKNBYOMEIFLG(IDXX)
+               MOVE    SPA-GMN-C02-REZEFLG
+                                       TO  WRK-PTBYO-REZEFLG   (IDXX)
       *********MOVE    SPA-GMN-C02-HKNNUM
       *********                        TO  WRK-PTBYO-HKNNUM (IDXX)
            ELSE
@@ -6942,6 +6949,9 @@ grpsys                 MOVE    SPA-HOSPNUM         TO  PTBYO-HOSPNUM
            PERFORM 5001-RECEDENFLG-HENSYU-SEC
            MOVE    WRK-PTBYO-CHK-RECEDENFLG
                                        TO  WRK-PTBYO-RECEDENFLG (IDXX)
+      *    レセプト表示期間
+           MOVE    SPA-GMN-C02-REZEMM
+                                       TO  WRK-PTBYO-REZEMM    (IDXX)
       *
       *****MOVE    SPA-GMN-C02-HKNNUM  TO  WRK-PTBYO-HKNNUM (IDXX)
            .
