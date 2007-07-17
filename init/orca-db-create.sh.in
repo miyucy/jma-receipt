@@ -9,9 +9,25 @@ fi
 
 . $JMARECEIPT_ENV
 
+ORCAUSER=orca
+ORCAGROUP=orca
+LOGDIR=/var/log/jma-receipt
+
 DBUSER="orca"
 USERCHECKSQL="SELECT usename FROM pg_user WHERE usename = '${DBUSER}';"
 DBCHECKSQL="SELECT datname FROM pg_database WHERE datname = '${DBNAME}';"
+
+INSTALLLOG="$LOGDIR"/orca-db-install.log
+
+if [ ! -d "$LOGDIR" ]
+then
+  mkdir "$LOGDIR"
+  chown "$ORCAUSER":"$ORCAGROUP" "$LOGDIR"
+fi
+
+if [ ! -e "$INSTALLLOG" ]; then
+  su - orca -c "touch $INSTALLLOG" 
+fi
 
 if [ -z `su - postgres -c "psql template1 -t -c \"${USERCHECKSQL}\""` ]
 then
@@ -21,9 +37,9 @@ fi
 if [ -z `su - postgres -c "psql template1 -t -c \"${DBCHECKSQL}\""` ]
 then
     su - ${DBUSER} -c "createdb -EEUC_JP \"${DBNAME}\"" 
-    su - ${DBUSER} -c "psql -e ${DBNAME} < ${INITDIR}/orca_dbkanri_orig.dump"
-    su - ${DBUSER} -c "psql -e ${DBNAME} < ${INITDIR}/orca_mstkanri_orig.dump"
+    su - ${DBUSER} -c "psql -e ${DBNAME} < ${INITDIR}/orca_dbkanri_orig.dump 2>&1 | tee -a $INSTALLLOG"
+    su - ${DBUSER} -c "psql -e ${DBNAME} < ${INITDIR}/orca_mstkanri_orig.dump 2>&1 | tee -a $INSTALLLOG"
 else
-    echo "Database exist."
+    echo "Database exist." 2>&1 | tee -a $INSTALLLOG
 fi
 echo "Done."
