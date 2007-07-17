@@ -73,6 +73,7 @@
       *  03.02.01    NACL-ÌçÏÆ    06/08/04  £¹£°Æþ±¡Íó¤ÎÆü¿ôÊÔ½¸½¤Àµ
       *  03.05.01    NACL-¾®Æ¦Âô  07/06/01  ¥°¥ë¡¼¥×¿ÇÎÅÂÐ±þ
       *  03.05.02    NACL-ÌçÏÆ    07/06/27  ¼ÂÆü¿ô¥Æ¡¼¥Ö¥ëÊÔ½¸½¤Àµ
+      *  03.05.03    NACL-ÌçÏÆ    07/07/17  ¸ÄÊÌ»þ¤Î¥·¥¹¥Æ¥à´ÉÍýÊÔ½¸½¤Àµ
       *****************************************************************
       *
       *
@@ -306,12 +307,12 @@
       *
       *    °åÎÅµ¡´Ø¡Ê´ðËÜ¾ðÊó¡ËÂàÈòÍÑÎÎ°è
        01  TBL-SYS1001-T.
-           03  TBL-SYS1001-OCC     OCCURS  10.
+           03  TBL-SYS1001-OCC     OCCURS  100.
                05  TBL-SYS1001                         PIC X(610).
       *
       *    °åÎÅµ¡´Ø¡ÊÆþ±¡´ðËÜ¡ËÂàÈòÍÑÎÎ°è
        01  TBL-SYS5000-T.
-           03  TBL-SYS5000-OCC     OCCURS  10.
+           03  TBL-SYS5000-OCC     OCCURS  100.
                05  TBL-SYS5000                         PIC X(610).
       *
       *
@@ -507,7 +508,8 @@
                   MOVE    "tbl_syskanri"  TO  MCP-TABLE
                   MOVE    "key8"          TO  MCP-PATHNAME
                   PERFORM  900-SYSKANRI-READ-SEC
-                  PERFORM  UNTIL   FLG-SYSKANRI  =    1
+                  PERFORM  UNTIL  (FLG-SYSKANRI  =    1)
+                            OR    (SYSKAN-IDX   >=  100)
       *
                     ADD     1             TO  SYSKAN-IDX
                     MOVE    SYS-1001-REC  TO  TBL-SYS1001(SYSKAN-IDX)
@@ -601,6 +603,7 @@
                  MOVE    "key8"          TO  MCP-PATHNAME
                  PERFORM  900-SYSKANRI-READ-SEC
                  PERFORM  UNTIL  (FLG-SYSKANRI  =    1)
+                           OR    (SYSKAN-IDX   >=  100)
                    ADD     1            TO  SYSKAN-IDX
                    MOVE   SYS-5000-REC  TO  TBL-SYS5000(SYSKAN-IDX)
       *
@@ -4030,7 +4033,7 @@
                MOVE  RECE62-SRYYM   TO  WRK-SYS-SRYYMD(1:6)
                MOVE  "01"           TO  WRK-SYS-SRYYMD(7:2)
                PERFORM  VARYING  SYSKAN-IDX  FROM  1  BY  1
-                     UNTIL  ( SYSKAN-IDX              >  10   )
+                     UNTIL  ( SYSKAN-IDX              >  100  )
                       OR    ( TBL-SYS1001(SYSKAN-IDX) = SPACE )
                       OR    ( FLG-SET                 =   1   )
       *
@@ -4071,7 +4074,7 @@
                MOVE  RECE62-SRYYM TO  WRK-SYS-SRYYMD(1:6)
                MOVE  "01"         TO  WRK-SYS-SRYYMD(7:2)
                PERFORM  VARYING  SYSKAN-IDX  FROM  1  BY  1
-                    UNTIL  ( SYSKAN-IDX              >  10   )
+                    UNTIL  ( SYSKAN-IDX              >  100  )
                      OR    ( TBL-SYS5000(SYSKAN-IDX) = SPACE )
                      OR    ( FLG-SET                 =   1   )
       *

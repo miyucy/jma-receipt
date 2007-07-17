@@ -121,6 +121,7 @@
       *                                     ¤Î¥»¥Ã¥È
       *  03.04.05    NACL-ÌçÏÆ    07/04/01  ¸½ÊªµëÉÕÂÐ±þ
       *  03.05.01    NACL-¾®Æ¦Âô  07/05/30  ¥°¥ë¡¼¥×¿ÇÎÅÂÐ±þ
+      *  03.05.02    NACL-ÌçÏÆ    07/07/17  ¸ÄÊÌ»þ¤Î¥·¥¹¥Æ¥à´ÉÍýÊÔ½¸½¤Àµ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -305,13 +306,13 @@
       *
       *    °åÎÅµ¡´Ø¡Ê´ðËÜ¾ðÊó¡ËÂàÈòÍÑÎÎ°è
        01  TBL-SYS1001-T.
-           03  TBL-SYS1001-OCC                         OCCURS  10.
+           03  TBL-SYS1001-OCC                         OCCURS  100.
                05  TBL-SYS1001                         PIC X(610).
       *
       *    ´µ¼ÔÅÐÏ¿µ¡Ç½À©¸æ¾ðÊóÂàÈòÍÑÎÎ°è
-       01  TBL-SYS1017-T.
-           03  TBL-SYS1017-OCC                         OCCURS  10.
-               05  TBL-SYS1017                         PIC X(610).
+      *01  TBL-SYS1017-T.
+      *    03  TBL-SYS1017-OCC                         OCCURS  10.
+      *        05  TBL-SYS1017                         PIC X(610).
       *
       *    ¥Ñ¥¹Ì¾ÎÎ°è
        01  WK-PATH                                     PIC X(20).
@@ -604,7 +605,8 @@
                        MOVE    "tbl_syskanri"      TO  MCP-TABLE
                        MOVE    "key8"              TO  MCP-PATHNAME
                        PERFORM 900-SYSKANRI-READ-SEC
-                       PERFORM  UNTIL   FLG-SYSKANRI  =    1
+                       PERFORM  UNTIL  (FLG-SYSKANRI  =    1)
+                                 OR    (SYSKAN-IDX   >=  100)
       *
                            MOVE    MCPDATA-REC   TO  SYS-1001-REC
                            ADD     1             TO  SYSKAN-IDX
@@ -2941,7 +2943,7 @@
            MOVE    ZERO                TO  FLG-SET
       *
            PERFORM VARYING SYSKAN-IDX  FROM    1   BY  1
-                   UNTIL ( SYSKAN-IDX              >  10   )
+                   UNTIL ( SYSKAN-IDX              >  100  )
                    OR    ( TBL-SYS1001(SYSKAN-IDX) = SPACE )
                    OR    ( FLG-SET                 =   1   )
                MOVE    TBL-SYS1001(SYSKAN-IDX) TO  SYS-1001-REC

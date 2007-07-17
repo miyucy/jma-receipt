@@ -43,6 +43,7 @@
       *
       *  03.05.01    NACL-門脇    07/06/01  グループ診療対応
       *  03.05.02    NACL-藤原    07/06/01  realtime preview 処理追加
+      *  03.05.03    NACL-門脇    07/07/17  個別時のシステム管理編集修正
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -108,7 +109,7 @@
       *
       *    医療機関（基本情報）退避用領域
        01  TBL-SYS1001-T.
-           03  TBL-SYS1001-OCC                         OCCURS  10.
+           03  TBL-SYS1001-OCC                         OCCURS  100.
                05  TBL-SYS1001                         PIC X(610).
       *
       *    エラーメッセージ編集領域
@@ -345,7 +346,8 @@ grpsys            PERFORM 900-DBSELECT-SEC
                       MOVE    "tbl_syskanri"      TO  MCP-TABLE
                       MOVE    "key8"              TO  MCP-PATHNAME
                       PERFORM 900-SYSKANRI-READ-SEC
-                      PERFORM  UNTIL   FLG-SYSKANRI  =    1
+                      PERFORM  UNTIL  (FLG-SYSKANRI  =    1)
+                                OR    (SYSKAN-IDX   >=  100)
       *
                           MOVE    MCPDATA-REC   TO  SYS-1001-REC
                           ADD     1             TO  SYSKAN-IDX
@@ -1158,7 +1160,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
            MOVE  SYS-2002-SRYYM TO  WRK-SYS-SRYYMD(1:6)
            MOVE  "01"           TO  WRK-SYS-SRYYMD(7:2)
            PERFORM  VARYING  SYSKAN-IDX  FROM  1  BY  1
-                    UNTIL  ( SYSKAN-IDX              >  10   )
+                    UNTIL  ( SYSKAN-IDX              >  100  )
                      OR    ( TBL-SYS1001(SYSKAN-IDX) = SPACE )
                      OR    ( FLG-SET                 =   1   )
                 MOVE  TBL-SYS1001(SYSKAN-IDX)  TO  SYS-1001-REC
@@ -1275,7 +1277,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
            MOVE  SYS-2002-SRYYM TO  WRK-SYS-SRYYMD(1:6)
            MOVE  "01"           TO  WRK-SYS-SRYYMD(7:2)
            PERFORM  VARYING  SYSKAN-IDX  FROM  1  BY  1
-                    UNTIL  ( SYSKAN-IDX              >  10   )
+                    UNTIL  ( SYSKAN-IDX              >  100  )
                      OR    ( TBL-SYS1001(SYSKAN-IDX) = SPACE )
                      OR    ( FLG-SET                 =   1   )
       *

@@ -118,6 +118,7 @@
       *  03.05.01    NACL-ÌçÏÆ    07/06/01  ¥°¥ë¡¼¥×¿ÇÎÅÂÐ±þ
       *  03.05.02    NACL-Æ£¸¶    07/06/01  realtime preview ½èÍýÄÉ²Ã
       *  03.05.03    NACL-ÌçÏÆ    07/06/26  ¼«ÇåÀÕÊ¿À®£±£¹Ç¯£´·î²þÀµÍÍ¼°ÂÐ±þ
+      *  03.05.04    NACL-ÌçÏÆ    07/07/17  ¸ÄÊÌ»þ¤Î¥·¥¹¥Æ¥à´ÉÍýÊÔ½¸½¤Àµ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -453,15 +454,15 @@
       *
       *    °åÎÅµ¡´Ø¡ÊÆþ±¡´ðËÜ¡ËÂàÈòÍÑÎÎ°è
        01  TBL-SYS5000-T.
-           03  TBL-SYS5000-OCC     OCCURS  10.
+           03  TBL-SYS5000-OCC     OCCURS  100.
                05  TBL-SYS5000                         PIC X(610).
       *    °åÎÅµ¡´Ø¡Ê´ðËÜ¾ðÊó¡ËÂàÈòÍÑÎÎ°è
        01  TBL-SYS1001-T.
-           03  TBL-SYS1001-OCC     OCCURS  10.
+           03  TBL-SYS1001-OCC     OCCURS  100.
                05  TBL-SYS1001                         PIC X(610).
       *    »ÜÀß´ð½à¾ðÊóÂàÈòÍÑÎÎ°è
        01  TBL-SYS1006-T.
-           03  TBL-SYS1006-OCC                         OCCURS  10.
+           03  TBL-SYS1006-OCC                         OCCURS  100.
                05  TBL-SYS10061                        PIC X(610).
                05  TBL-SYS10062                        PIC X(610).
       *
@@ -1083,6 +1084,7 @@ grpsys        PERFORM 900-DBSELECT-SEC
                   MOVE    "key8"          TO  MCP-PATHNAME
                   PERFORM 900-SYSKANRI-READ-SEC
                   PERFORM  UNTIL  (FLG-SYSKANRI  =    1)
+                            OR    (SYSKAN-IDX   >=  100)
       *
                     MOVE    MCPDATA-REC   TO  SYS-1001-REC
                     ADD     1             TO  SYSKAN-IDX
@@ -1102,13 +1104,12 @@ grpsys        PERFORM 900-DBSELECT-SEC
               MOVE    "key8"              TO  MCP-PATHNAME
               PERFORM 900-CLOSE-SEC
       *
-              MOVE     ZERO               TO  SYSKAN-IDX
-                                              SYSKAN-IDX2
               MOVE     SPACE              TO  TBL-SYS1006-T
               INITIALIZE                      TBL-SYS1006-T
       *
               PERFORM  VARYING  IDXA   FROM   1   BY  1
                         UNTIL   IDXA     >    2
+                 MOVE     ZERO            TO  SYSKAN-IDX2
                  INITIALIZE                   SYSKANRI-REC
                  MOVE    "1006"           TO  SYS-KANRICD
                  MOVE    IDXA             TO  SYS-KBNCD
@@ -1121,14 +1122,15 @@ grpsys           PERFORM 900-DBSELECT-SEC
                      MOVE    "tbl_syskanri"   TO  MCP-TABLE
                      MOVE    "key8"           TO  MCP-PATHNAME
                      PERFORM  900-SYSKANRI-READ-SEC
-                     PERFORM  UNTIL   FLG-SYSKANRI  =    1
+                     PERFORM  UNTIL  (FLG-SYSKANRI  =    1)
+                               OR    (SYSKAN-IDX2  >=  100)
       *
                        MOVE   MCPDATA-REC     TO  SYS-1006-REC
                        EVALUATE  IDXA
                          WHEN     1
-                           ADD     1      TO  SYSKAN-IDX
+                           ADD     1      TO  SYSKAN-IDX2
                            MOVE    SYS-1006-REC
-                                          TO  TBL-SYS10061(SYSKAN-IDX)
+                                          TO  TBL-SYS10061(SYSKAN-IDX2)
                          WHEN     2
                            ADD     1      TO  SYSKAN-IDX2
                            MOVE    SYS-1006-REC
@@ -1197,6 +1199,7 @@ grpsys       PERFORM 900-DBSELECT-SEC
                  MOVE    "key8"          TO  MCP-PATHNAME
                  PERFORM 900-SYSKANRI-READ-SEC
                  PERFORM  UNTIL  (FLG-SYSKANRI  =    1)
+                           OR    (SYSKAN-IDX   >=  100)
       *
                    MOVE    MCPDATA-REC  TO  SYS-5000-REC
                    ADD     1            TO  SYSKAN-IDX
@@ -8088,7 +8091,7 @@ grpsys                 PERFORM 900-CALL-ORCSJOB-SEC
                MOVE  RECE82-SRYYM TO  WRK-SYS-SRYYMD(1:6)
                MOVE  "01"         TO  WRK-SYS-SRYYMD(7:2)
                PERFORM  VARYING  SYSKAN-IDX  FROM  1  BY  1
-                    UNTIL  ( SYSKAN-IDX              >  10   )
+                    UNTIL  ( SYSKAN-IDX              >  100  )
                      OR    ( TBL-SYS1001(SYSKAN-IDX) = SPACE )
                      OR    ( FLG-SET                 =   1   )
       *
@@ -8116,7 +8119,7 @@ grpsys                 PERFORM 900-CALL-ORCSJOB-SEC
       *        »ÜÀß´ð½à¾ðÊó
                MOVE    ZERO         TO  FLG-SET
                PERFORM  VARYING  SYSKAN-IDX2  FROM  1   BY  1
-                         UNTIL ( SYSKAN-IDX2               >  10   )
+                         UNTIL ( SYSKAN-IDX2               >  100  )
                           OR   ( TBL-SYS10062(SYSKAN-IDX2) = SPACE )
                           OR   ( FLG-SET                   =   1   )
                    MOVE    TBL-SYS10062(SYSKAN-IDX2)  TO  SYS-1006-REC
@@ -8142,7 +8145,7 @@ grpsys                 PERFORM 900-CALL-ORCSJOB-SEC
                MOVE  RECE82-SRYYM TO  WRK-SYS-SRYYMD(1:6)
                MOVE  "01"         TO  WRK-SYS-SRYYMD(7:2)
                PERFORM  VARYING  SYSKAN-IDX  FROM  1  BY  1
-                    UNTIL  ( SYSKAN-IDX              >  10   )
+                    UNTIL  ( SYSKAN-IDX              >  100  )
                      OR    ( TBL-SYS5000(SYSKAN-IDX) = SPACE )
                      OR    ( FLG-SET                 =   1   )
       *

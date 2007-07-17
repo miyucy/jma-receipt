@@ -51,6 +51,7 @@
       *
       *  03.05.01    NACL-ÌçÏÆ    07/05/25  ¥°¥ë¡¼¥×¿ÇÎÅÂÐ±þ
       *  03.05.02    NACL-Æ£¸¶    07/06/01  realtime preview ½èÍýÄÉ²Ã
+      *  03.05.03    NACL-ÌçÏÆ    07/07/17  ¸ÄÊÌ»þ¤Î¥·¥¹¥Æ¥à´ÉÍýÊÔ½¸½¤Àµ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -145,7 +146,7 @@
       *
       *    °åÎÅµ¡´Ø¡Ê´ðËÜ¾ðÊó¡ËÂàÈòÍÑÎÎ°è
        01  TBL-SYS1001-T.
-           03  TBL-SYS1001-OCC                         OCCURS  10.
+           03  TBL-SYS1001-OCC                         OCCURS  100.
                05  TBL-SYS1001                         PIC X(610).
       *
       *    °ì»þÎÎ°è
@@ -366,7 +367,8 @@ grpsys        PERFORM 900-DBSELECT-SEC
                   MOVE    "tbl_syskanri"      TO  MCP-TABLE
                   MOVE    "key8"              TO  MCP-PATHNAME
                   PERFORM 900-SYSKANRI-READ-SEC
-                  PERFORM  UNTIL   FLG-SYSKANRI  =    1
+                  PERFORM  UNTIL  (FLG-SYSKANRI  =    1)
+                            OR    (SYSKAN-IDX   >=  100)
       *
                     MOVE    MCPDATA-REC   TO  SYS-1001-REC
                     ADD     1             TO  SYSKAN-IDX
@@ -807,7 +809,7 @@ grpsys             PERFORM 900-DBSELECT-SEC
                                                TO  WRK-SYS-SRYYMD(1:6)
                    MOVE  "01"                  TO  WRK-SYS-SRYYMD(7:2)
                    PERFORM  VARYING  SYSKAN-IDX  FROM  1  BY  1
-                            UNTIL  ( SYSKAN-IDX              >  10   )
+                            UNTIL ( SYSKAN-IDX              >  100  )
                             OR    ( TBL-SYS1001(SYSKAN-IDX) = SPACE )
                             OR    ( FLG-SET                 =   1   )
                        MOVE  TBL-SYS1001(SYSKAN-IDX)  TO  SYS-1001-REC
@@ -879,7 +881,7 @@ grpsys                 MOVE    SPA-HOSPNUM         TO  PTINF-HOSPNUM
                    MOVE  BTPARA-INFO-PARA(1:6) TO  WRK-SYS-SRYYMD(1:6)
                    MOVE  "01"                  TO  WRK-SYS-SRYYMD(7:2)
                    PERFORM  VARYING  SYSKAN-IDX  FROM  1  BY  1
-                            UNTIL  ( SYSKAN-IDX              >  10   )
+                            UNTIL ( SYSKAN-IDX              >  100  )
                             OR    ( TBL-SYS1001(SYSKAN-IDX) = SPACE )
                             OR    ( FLG-SET                 =   1   )
                        MOVE  TBL-SYS1001(SYSKAN-IDX)  TO  SYS-1001-REC
@@ -962,7 +964,7 @@ grpsys                 MOVE    SPA-HOSPNUM         TO  PTINF-HOSPNUM
            MOVE  SYS-2002-SRYYM TO  WRK-SYS-SRYYMD(1:6)
            MOVE  "01"           TO  WRK-SYS-SRYYMD(7:2)
            PERFORM  VARYING  SYSKAN-IDX  FROM  1  BY  1
-                    UNTIL  ( SYSKAN-IDX              >  10   )
+                    UNTIL  ( SYSKAN-IDX              >  100  )
                      OR    ( TBL-SYS1001(SYSKAN-IDX) = SPACE )
                      OR    ( FLG-SET                 =   1   )
                 MOVE  TBL-SYS1001(SYSKAN-IDX)  TO  SYS-1001-REC
@@ -1050,7 +1052,7 @@ grpsys         PERFORM 900-DBSELECT-SEC
            MOVE  SYS-2002-SRYYM TO  WRK-SYS-SRYYMD(1:6)
            MOVE  "01"           TO  WRK-SYS-SRYYMD(7:2)
            PERFORM  VARYING  SYSKAN-IDX  FROM  1  BY  1
-                    UNTIL  ( SYSKAN-IDX              >  10   )
+                    UNTIL  ( SYSKAN-IDX              >  100  )
                      OR    ( TBL-SYS1001(SYSKAN-IDX) = SPACE )
                      OR    ( FLG-SET                 =   1   )
                 MOVE  TBL-SYS1001(SYSKAN-IDX)  TO  SYS-1001-REC
