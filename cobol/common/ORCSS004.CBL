@@ -200,7 +200,7 @@
                MOVE    SPA-SYSYMD (1:6) TO WRK-STSRYYM
                MOVE    SPA-SYSYMD      TO  WRK-YMD
                MOVE    "2"             TO  WRK-ZOGENPTN
-               COMPUTE WRK-ZOGEN   =   SS004-KIKAN      -   1
+               COMPUTE WRK-ZOGEN   = ( SS004-KIKAN      -   1 )  *   -1
                PERFORM 800-CALENDAR-SEC
                MOVE    WRK-YMD (1:6)   TO WRK-EDSRYYM
            END-IF
