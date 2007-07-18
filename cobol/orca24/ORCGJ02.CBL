@@ -5641,14 +5641,17 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                            PERFORM 910-TENSU-READ-SEC
                        END-IF
                        IF     (TNS-SANTEIRRKKBN    NOT =   ZERO ) AND
-                              (TNS-JGNCNTERR       NOT =   9    )  AND
-                              (TNS-JGNCNT          >   ZERO     )  AND
-                              (TNS-JGNCNT          <   WRK-CNT-TUKI)
+                              (TNS-JGNCNTERR       NOT =   9    )
+                           IF    ((TNS-JGNCNT      >   ZERO     )  AND
+                                (TNS-JGNCNT        <   WRK-CNT-TUKI))
+                             OR ((TNS-JGNCNTETC    >   ZERO     )  AND
+                                 (TNS-JGNCNTETC    <   WRK-CNT-TUKI))
       *                    ÆâÊ¬ÈçÉé²Ù»î¸³È½Äê
-                           IF      TNS-HOUKNSKBN       =   08
-                               MOVE    "1008"          TO  SPA-ERRCD
-                           ELSE
-                               MOVE    "0119"          TO  SPA-JIDCD
+                               IF      TNS-HOUKNSKBN       =   08
+                                   MOVE    "1008"          TO  SPA-ERRCD
+                               ELSE
+                                   MOVE    "0119"          TO  SPA-JIDCD
+                               END-IF
                            END-IF
                        END-IF
                    END-IF
@@ -8731,9 +8734,12 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
       *
       *    ·î¾å¸Â
            ADD     SPA-GMN-DAY (IDX)   TO  WRK-CNT-TUKI
-           IF     (SPA-NAI-JGNCNT (IDX-C)  >   ZERO  )  AND
+           IF    ((SPA-NAI-JGNCNT (IDX-C)  >   ZERO  )  AND
                   (SPA-NAI-JGNCNTERR (IDX-C)   NOT =   9 )  AND
-                  (SPA-NAI-JGNCNT (IDX-C)  <   WRK-CNT-TUKI)
+                  (SPA-NAI-JGNCNT (IDX-C)  <   WRK-CNT-TUKI))  OR
+                 ((SPA-NAI-JGNCNTETC (IDX-C)   >   ZERO  )  AND
+                  (SPA-NAI-JGNCNTERR (IDX-C)   NOT =   9 )  AND
+                  (SPA-NAI-JGNCNTETC (IDX-C)   <   WRK-CNT-TUKI))
       *        ÆâÊ¬ÈçÉé²Ù»î¸³¤Ï¥¨¥é¡¼
                IF      SPA-NAI-HOUKNSKBN (IDX-C)  =   08
                    MOVE    "1007"              TO  SPA-ERRCD
@@ -12808,6 +12814,9 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    TNSP-JGNCNT         TO  TNS-JGNCNT
                MOVE    TNSP-JGNCNT1D       TO  TNS-JGNCNT1D
                MOVE    TNSP-JGNCNTERR      TO  TNS-JGNCNTERR
+      *
+               MOVE    TNSP-JGNCNTETCM     TO  TNS-JGNCNTETCM
+               MOVE    TNSP-JGNCNTETC      TO  TNS-JGNCNTETC
            END-IF
       *
            .
