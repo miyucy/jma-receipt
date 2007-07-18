@@ -1,4 +1,6 @@
         01  HCM47.
+            02  HCM47-TITLE PIC X(28).
+            02  HCM47-KIKAN PIC X(20).
             02  HCM47-SYORIBI   PIC X(22).
             02  HCM47-PAGE  PIC X(4).
             02  HCM47-TBL       OCCURS  5 TIMES.
