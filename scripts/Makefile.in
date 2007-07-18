@@ -74,6 +74,7 @@ shell_sources = \
 	allways/ORCBQ02.sh.in \
 	daily/online-reprint.sh.in \
         monthly/prtdbdel.sh.in \
+        allways/ykjchk.sh.in \
 
 ruby_scripts = \
 	daily/print-data.rb \
