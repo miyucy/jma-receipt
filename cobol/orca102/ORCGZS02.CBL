@@ -482,6 +482,10 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                                            TO  TNSP-IPN-KANZANTANINAME
       *    一般名記載換算値
            MOVE    LNK-TNSP-IPN-KANZANCHI  TO  TNSP-IPN-KANZANCHI
+      *    他月数
+           MOVE    LNK-TNSP-JGNCNTETCM     TO  TNSP-JGNCNTETCM
+      *    他回数
+           MOVE    LNK-TNSP-JGNCNTETC      TO  TNSP-JGNCNTETC
       *
            .
        2001-TENSUPLUS-HEN-EXT.
@@ -492,10 +496,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *****************************************************************
        990-TENSUPLUS-READ-SEC          SECTION.
       *
-           MOVE    "DBFETCH"           TO  MCP-FUNC
-grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+           PERFORM 920-DBFETCH-SEC
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC     TO  TENSUPLUS-REC
                MOVE    ZERO            TO  FLG-TENSUPLUS

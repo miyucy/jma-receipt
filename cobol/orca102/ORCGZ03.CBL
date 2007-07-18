@@ -47,6 +47,7 @@
       *  02.00.03    NACL-多々納  06/03/23  Ｈ１８／４改正対応
       *  03.04.00    NACL-多々納  06/12/05  ユーザ設定 上限回数追加
       *  03.05.00    NACL-多々納  07/05/07  グループ診療対応
+      *  03.05.01    NACL-多々納  07/07/XX  ユーザ設定 他月情報追加
       *****************************************************************
       *
        ENVIRONMENT                               DIVISION.
@@ -213,6 +214,8 @@
            03  FILLER          PIC X(32)  VALUE   "1 PLUS_SANTEIRRK".
            03  FILLER          PIC X(32)  VALUE   "1 PLUS_JGNCNT".
            03  FILLER          PIC X(32)  VALUE   "1 PLUS_JGNCNT1D".
+           03  FILLER          PIC X(32)  VALUE   "1 PLUS_JGNCNTETCM".
+           03  FILLER          PIC X(32)  VALUE   "1 PLUS_JGNCNTETC".
            03  FILLER          PIC X(32)  VALUE   "1 PLUS_JGNCNTERR".
            03  FILLER          PIC X(32)  VALUE   "1 KZMCOMPSIKIBETU".
            03  FILLER          PIC X(32)  VALUE   "1 KZMKGN".
@@ -296,13 +299,13 @@
        01  TBL-GMN-JUN-R       REDEFINES   TBL-GMN-JUN.
       *****03  TBL-GMN-OCC                 OCCURS  107
       **** 03  TBL-GMN-OCC                 OCCURS  109
-           03  TBL-GMN-OCC                 OCCURS  113
+           03  TBL-GMN-OCC                 OCCURS  115
                                            INDEXED  IDX-GMN.
                05  TBL-PAGE                PIC 9(01).
                05  TBL-YOBI1               PIC X(01).
                05  TBL-WIDGET              PIC X(30).
       *
-       01  TBL-GMN-MAX                     PIC 9(04)   VALUE   113.
+       01  TBL-GMN-MAX                     PIC 9(04)   VALUE   115.
       *
       *    単位の項目順テーブル
            COPY    "CMTANICD.INC".
@@ -943,6 +946,10 @@
            MOVE    TNSP-JGNCNT         TO  SPA-GMN-PLUS-JGNCNT
       *    日上限回数
            MOVE    TNSP-JGNCNT1D       TO  SPA-GMN-PLUS-JGNCNT1D
+      *    他月数
+           MOVE    TNSP-JGNCNTETCM     TO  SPA-GMN-PLUS-JGNCNTETCM
+      *    他回数
+           MOVE    TNSP-JGNCNTETC      TO  SPA-GMN-PLUS-JGNCNTETC
       *    エラー処理
            MOVE    TNSP-JGNCNTERR      TO  SPA-GMN-PLUS-JGNCNTERR
            .
@@ -1584,6 +1591,8 @@
            MOVE    Z03-PLUS-SANTEIRRK  TO  SPA-GMN-PLUS-SANTEIRRK-G
            MOVE    Z03-PLUS-JGNCNT     TO  SPA-GMN-PLUS-JGNCNT
            MOVE    Z03-PLUS-JGNCNT1D   TO  SPA-GMN-PLUS-JGNCNT1D
+           MOVE    Z03-PLUS-JGNCNTETCM TO  SPA-GMN-PLUS-JGNCNTETCM
+           MOVE    Z03-PLUS-JGNCNTETC  TO  SPA-GMN-PLUS-JGNCNTETC
            MOVE    Z03-PLUS-JGNCNTERR  TO  SPA-GMN-PLUS-JGNCNTERR
       *
            MOVE    Z03-KZMCOMPSIKIBETU TO  SPA-GMN-KZMCOMPSIKIBETU
@@ -1840,6 +1849,8 @@
       *        ユーザ設定 上限回数
                WHEN    "PLUS_JGNCNT"
                WHEN    "PLUS_JGNCNT1D"
+               WHEN    "PLUS_JGNCNTETCM"
+               WHEN    "PLUS_JGNCNTETC"
                    CONTINUE
       *        ユーザ設定エラー処理
                WHEN    "PLUS_JGNCNTERR"
@@ -2672,7 +2683,9 @@
                        MOVE    "0016"              TO  SPA-ERRCD
                    ELSE
                        IF   (SPA-GMN-PLUS-JGNCNT   =   ZERO )  AND
-                            (SPA-GMN-PLUS-JGNCNT1D =   ZERO )
+                            (SPA-GMN-PLUS-JGNCNT1D =   ZERO )  AND
+                            (SPA-GMN-PLUS-JGNCNTETCM   =   ZERO ) AND
+                            (SPA-GMN-PLUS-JGNCNTETC    =   ZERO )
                            MOVE    "0017"              TO  SPA-ERRCD
                        END-IF
                    END-IF
@@ -3288,6 +3301,7 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                ELSE
                    IF    (SPA-GMN-JGNCNT   NOT =   ZERO )  AND
                          (SPA-GMN-PLUS-JGNCNT  =   ZERO )
+                     AND (SPA-GMN-PLUS-JGNCNTETC    =   ZERO )
                        MOVE    "0018"              TO  SPA-ERRCD
                        MOVE    "PLUS_JGNCNT"       TO  WRK-MCP-WIDGET
                    END-IF
@@ -3788,8 +3802,18 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                        TO  TNSP-JGNCNT
            MOVE    SPA-GMN-PLUS-JGNCNT1D
                                        TO  TNSP-JGNCNT1D
+           MOVE    SPA-GMN-PLUS-JGNCNTETCM
+                                       TO  TNSP-JGNCNTETCM
+           MOVE    SPA-GMN-PLUS-JGNCNTETC
+                                       TO  TNSP-JGNCNTETC
            MOVE    SPA-GMN-PLUS-JGNCNTERR
                                        TO  TNSP-JGNCNTERR
+      *    他月数
+           MOVE    SPA-GMN-PLUS-JGNCNTETCM
+                                       TO  TNSP-JGNCNTETCM
+      *    他回数
+           MOVE    SPA-GMN-PLUS-JGNCNTETC
+                                       TO  TNSP-JGNCNTETC
       *
       *    入力コード更新
            CALL    "ORCGZS02"          USING
@@ -4099,6 +4123,8 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE  SPA-PLUS-SANTEI-MAX       TO  Z03-PLUS-SANTEI-COUNT
            MOVE  SPA-GMN-PLUS-JGNCNT           TO  Z03-PLUS-JGNCNT
            MOVE  SPA-GMN-PLUS-JGNCNT1D         TO  Z03-PLUS-JGNCNT1D
+           MOVE  SPA-GMN-PLUS-JGNCNTETCM       TO  Z03-PLUS-JGNCNTETCM
+           MOVE  SPA-GMN-PLUS-JGNCNTETC        TO  Z03-PLUS-JGNCNTETC
            MOVE  SPA-GMN-PLUS-JGNCNTERR        TO  Z03-PLUS-JGNCNTERR 
       *
            MOVE  SPA-GMN-KZMCOMPSIKIBETU       TO  Z03-KZMCOMPSIKIBETU

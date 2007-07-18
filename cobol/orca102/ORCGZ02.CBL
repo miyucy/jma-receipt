@@ -984,11 +984,15 @@
                END-IF
            END-IF
       *
-           IF     (SPA-GMN-NAME        =   SPACE  )  AND
-                  (SPA-Z01-SRYCD   NOT =  "810000001" )
-               MOVE    "1014"              TO  SPA-ERRCD
-               MOVE    4                   TO  SPA-GMN-CUR
-               GO      TO      4109-TOUROKU-CHK-EXT
+           IF     (SPA-GMN-NAME        =   SPACE  )
+               IF     (SPA-Z01-SRYCD       =  "810000001"
+                                           OR "008500000" )
+                   CONTINUE
+               ELSE
+                   MOVE    "1014"              TO  SPA-ERRCD
+                   MOVE    4                   TO  SPA-GMN-CUR
+                   GO      TO      4109-TOUROKU-CHK-EXT
+               END-IF
            END-IF
       *    自費コードの時、コードチェック
            IF      SPA-Z01-SRYCD(1:3)  =  "095"  OR  "096"
@@ -1241,7 +1245,8 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                                                    OR  "096" )  OR
                               (SPA-Z01-SRYCD(1:4)  =   "0082"
                                                    OR  "0083"
-                                                   OR  "0084" )
+                                                   OR  "0084"
+                                                   OR  "0085" )
                            CONTINUE
                        ELSE
                            MOVE    "K002"          TO  SPA-ERRCD
