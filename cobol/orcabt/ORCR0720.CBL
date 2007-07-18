@@ -44,8 +44,10 @@
       *  03.04.09    NACL-藤原    07/04/13  症状詳記区分コード追加に伴う対応
       *  03.04.10    NACL-藤原    07/04/23  「区分」欄の記載の変更
       *  03.04.11    NACL-門脇    07/05/07  第２公費一部負担金記載条件修正
+      *
       *  03.05.01    NACL-小豆沢  07/06/05  グループ診療対応
       *  03.05.02    NACL-門脇    07/07/17  個別時のシステム管理編集修正
+      *  03.05.03    NACL-藤原    07/06/19  病棟番号記載対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -186,13 +188,17 @@
                                    BY         //RECEERR//.
       *       
       ***  COPY    "HCN08.INC"     REPLACING  //HCN08//
-           COPY    "HCN08V01.INC"  REPLACING  //HCN08V01//
+      ***  COPY    "HCN08V01.INC"  REPLACING  //HCN08V01//
+           COPY    "HCN08V02.INC"  REPLACING  //HCN08V02//
                                    BY         //HC06//.
-           COPY    "HCN061V03.INC" REPLACING  //HCN061V03//
+      ***  COPY    "HCN061V03.INC" REPLACING  //HCN061V03//
+           COPY    "HCN061V04.INC" REPLACING  //HCN061V04//
                                    BY         //HC061//.
-           COPY    "HCN062V03.INC" REPLACING  //HCN062V03//
+      ***  COPY    "HCN062V03.INC" REPLACING  //HCN062V03//
+           COPY    "HCN062V04.INC" REPLACING  //HCN062V04//
                                    BY         //HC062//.
-           COPY    "HCN063V02.INC" REPLACING  //HCN063V02//
+      ***  COPY    "HCN063V02.INC" REPLACING  //HCN063V02//
+           COPY    "HCN063V03.INC" REPLACING  //HCN063V03//
                                    BY         //HC063//.
       *
       *    フラグ領域
@@ -1447,6 +1453,10 @@
                MOVE    ZERO             TO
                                         SYS-2005-RECESYUBETU-KISAIKBN
            END-IF
+           IF      SYS-2005-BTUNUM-KSIKBN
+                                        =   SPACE
+               MOVE    "0"             TO  SYS-2005-BTUNUM-KSIKBN
+           END-IF
       *         
       *    レセプト編綴順情報
            MOVE    SPACE            TO  SYSKANRI-REC
@@ -2563,6 +2573,18 @@
                END-IF
            END-IF
       *
+      *    病棟番号・病室番号
+           EVALUATE    SYS-2005-BTUNUM-KSIKBN
+               WHEN    "1"
+                   MOVE    RECE62-LASTBTUNUM   TO  HC06-BTUNUM
+               WHEN    "2"
+                   STRING  RECE62-LASTBTUNUM   DELIMITED  BY  SIZE
+                           "-"                 DELIMITED  BY  SIZE 
+                           RECE62-LASTBRMNUM (3:6)
+                           "-"                 DELIMITED  BY  SIZE 
+                                               INTO  HC06-BTUNUM
+                   END-STRING
+           END-EVALUATE
       *    ＯＣＲ
            IF      CNT-PAGE                =   1
                IF ( ( RECE62-TEISYUTUSAKI   =   1           ) AND
@@ -2851,6 +2873,9 @@
       *            特別療養費の場合の「特別療養費」文字記載
                    MOVE    HC06-MOJI1          TO  HC061-MOJI1
                    MOVE    HC06-MOJI2          TO  HC061-MOJI2
+      *
+      *           病棟番号・病室番号
+                   MOVE    HC06-BTUNUM         TO  HC061-BTUNUM
                WHEN    "1"
                    INITIALIZE                      HC062
                    MOVE    SPACE               TO  HC062
@@ -2932,6 +2957,9 @@
       *            特別療養費の場合の「特別療養費」文字記載
                    MOVE    HC06-MOJI1          TO  HC062-MOJI1
                    MOVE    HC06-MOJI2          TO  HC062-MOJI2
+      *
+      *           病棟番号・病室番号
+                   MOVE    HC06-BTUNUM         TO  HC062-BTUNUM
                WHEN    "2"
                    INITIALIZE                      HC063
                    MOVE    SPACE               TO  HC063
@@ -3013,6 +3041,9 @@
       *            特別療養費の場合の「特別療養費」文字記載
                    MOVE    HC06-MOJI1          TO  HC063-MOJI1
                    MOVE    HC06-MOJI2          TO  HC063-MOJI2
+      *
+      *           病棟番号・病室番号
+                   MOVE    HC06-BTUNUM         TO  HC063-BTUNUM
            END-EVALUATE
            .
        310-HCN061-HEAD-HEN-EXT.
@@ -6605,24 +6636,28 @@
            MOVE    CNT-PAGE            TO  TBL-RECE-RENNUM(TBL-RECE-MAX)
            IF      CNT-PAGE            =   1
       *********MOVE    "HCN08.red"         TO
-               MOVE    "HCN08V01.red"      TO
+      *********MOVE    "HCN08V01.red"      TO
+               MOVE    "HCN08V02.red"      TO
                                        TBL-RECE-FORMID  (TBL-RECE-MAX)
                MOVE    HC06                TO
                                        TBL-RECE-PRTDATA (TBL-RECE-MAX)
            ELSE
                EVALUATE    SYS-2005-NEXTPRTKBN
                    WHEN    ZERO
-                       MOVE    "HCN061V03.red" TO
+      *****************MOVE    "HCN061V03.red" TO
+                       MOVE    "HCN061V04.red" TO
                                        TBL-RECE-FORMID  (TBL-RECE-MAX)
                        MOVE    HC061           TO
                                        TBL-RECE-PRTDATA (TBL-RECE-MAX)
                    WHEN    "1"   
-                       MOVE    "HCN062V03.red" TO
+      *****************MOVE    "HCN062V03.red" TO
+                       MOVE    "HCN062V04.red" TO
                                        TBL-RECE-FORMID  (TBL-RECE-MAX)
                        MOVE    HC062           TO
                                        TBL-RECE-PRTDATA (TBL-RECE-MAX)
                    WHEN    "2"   
-                       MOVE    "HCN063V02.red" TO
+      *****************MOVE    "HCN063V02.red" TO
+                       MOVE    "HCN063V03.red" TO
                                        TBL-RECE-FORMID  (TBL-RECE-MAX)
                        MOVE    HC063           TO
                                        TBL-RECE-PRTDATA (TBL-RECE-MAX)

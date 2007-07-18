@@ -343,6 +343,7 @@ RECORD_files = \
 	W32.rec \
 	XA02.rec \
 	W33.rec \
+	XC02.rec \
 
 DEF_files = \
 	HC01.def \

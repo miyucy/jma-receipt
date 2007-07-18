@@ -24,6 +24,8 @@
       * Maj/Min/Rev  修正者       日付      内容
       *  03.04.01    NACL-藤原    07/01/16  プリンタ一括設定機能
       *  03.04.02    NACL-藤原    07/03/01  国保レセプト編綴順詳細設定対応
+      *
+      *  03.05.01    NACL-藤原    07/06/30  印刷後のチェック解除機能対応
       *****************************************************************
       *
        01  SPA-R02.
@@ -133,6 +135,7 @@
                    07  SPA-NAI-2005-KKHPRTNM-N     PIC X(16).
                    07  SPA-NAI-2005-SYAPRTNM-NEXT-N  PIC X(16).
                    07  SPA-NAI-2005-KKHPRTNM-NEXT-N  PIC X(16).
+                   07  SPA-NAI-2005-PRT-CHECKKBN   PIC X(01).
                    07  SPA-NAI-2008-HYOUJI         PIC 9(01).
       *
                    07  SPA-NAI-2003-TABLE.

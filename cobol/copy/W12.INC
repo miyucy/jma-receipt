@@ -60,6 +60,12 @@
                     06  W12-SRYKAHENKBN-COUNT   PIC S9(9)   BINARY.
                     06  W12-SRYKAHENKBNLST
                             PIC X(20)   OCCURS  2 TIMES.
+                  05  W12-BTUNUM-KSIKBN-COMBO.
+                    06  W12-BTUNUM-KSIKBN.
+                      07  W12-VALUE   PIC X(26).
+                    06  W12-BTUNUM-KSIKBN-COUNT   PIC S9(9)   BINARY.
+                    06  W12-BTUNUM-KSIKBNLST
+                            PIC X(26)   OCCURS  5 TIMES.
                   05  W12-RJNGNBKKBN-COMBO.
                     06  W12-RJNGNBKKBN.
                       07  W12-VALUE   PIC X(24).
@@ -110,6 +116,12 @@
                     06  W12-AUTODSPKBN-COUNT   PIC S9(9)   BINARY.
                     06  W12-AUTODSPKBNLST
                             PIC X(20)   OCCURS  2 TIMES.
+                  05  W12-PRT-CHECKKBN-COMBO.
+                    06  W12-PRT-CHECKKBN.
+                      07  W12-VALUE   PIC X(22).
+                    06  W12-PRT-CHECKKBN-COUNT   PIC S9(9)   BINARY.
+                    06  W12-PRT-CHECKKBNLST
+                            PIC X(22)   OCCURS  2 TIMES.
                   05  W12-PRTJYUNKBN4-COMBO.
                     06  W12-PRTJYUNKBN4.
                       07  W12-VALUE   PIC X(31).
@@ -147,6 +159,18 @@
                     06  W12-FRAME-JIBAI-N-COUNT   PIC S9(9)   BINARY.
                     06  W12-FRAME-JIBAI-NLST
                             PIC X(22)   OCCURS  2 TIMES.
+                  05  W12-JIBAIPRTKBN-COMBO.
+                    06  W12-JIBAIPRTKBN.
+                      07  W12-VALUE   PIC X(24).
+                    06  W12-JIBAIPRTKBN-COUNT   PIC S9(9)   BINARY.
+                    06  W12-JIBAIPRTKBNLST
+                            PIC X(24)   OCCURS  2 TIMES.
+                  05  W12-JIBAIPRTKBN-N-COMBO.
+                    06  W12-JIBAIPRTKBN-N.
+                      07  W12-VALUE   PIC X(24).
+                    06  W12-JIBAIPRTKBN-N-COUNT   PIC S9(9)   BINARY.
+                    06  W12-JIBAIPRTKBN-NLST
+                            PIC X(24)   OCCURS  2 TIMES.
                   05  W12-ROUPRTNM.
                     06  W12-VALUE   PIC X(16).
                   05  W12-ROUPRTNM-NEXT.

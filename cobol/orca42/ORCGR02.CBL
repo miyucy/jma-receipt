@@ -110,6 +110,7 @@
       *  03.04.06    NACL-藤原    07/03/01  国保レセプト編綴順詳細設定対応
       *
       *  03.05.01    NACL-藤原    07/04/19  グループ診療対応
+      *  03.05.02    NACL-藤原    07/06/30  印刷後のチェック解除機能対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -950,9 +951,15 @@ grpsys     MOVE    SPA-HOSPNUM      TO  SYS-2005-HOSPNUM
            MOVE    SYS-2005-SYAPRTNM-N  TO  SPA-NAI-2005-SYAPRTNM-N
            MOVE    SYS-2005-KKHPRTNM-N  TO  SPA-NAI-2005-KKHPRTNM-N
            MOVE    SYS-2005-SYAPRTNM-NEXT-N
-                                       TO SPA-NAI-2005-SYAPRTNM-NEXT-N
+                                       TO  SPA-NAI-2005-SYAPRTNM-NEXT-N
            MOVE    SYS-2005-KKHPRTNM-NEXT-N
-                                       TO SPA-NAI-2005-KKHPRTNM-NEXT-N
+                                       TO  SPA-NAI-2005-KKHPRTNM-NEXT-N
+      *
+           IF      SYS-2005-PRT-CHECKKBN =   SPACE
+               MOVE   "0"                TO  SYS-2005-PRT-CHECKKBN
+           END-IF
+           MOVE    SYS-2005-PRT-CHECKKBN
+                                       TO  SPA-NAI-2005-PRT-CHECKKBN
       *    
       *    出力順（一括作成）
            IF      SPA-R01-FILEKBN       =   "1" 
@@ -2125,7 +2132,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                PERFORM 4501-NEXT-GMN-SEC
            END-IF    
       *
-      *    印刷済フラグの設定
+      *    印刷済フラグの設定、印刷チェックの解除
            IF      SPA-R99-CANCEL  =   SPACE
                IF    ( SPA-GMN-SYOKBN  =   "F"         )
                AND   ( SPA-GMN-PRTKBN  =   "1"         )
@@ -2146,6 +2153,11 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                                            =   SPACE )
                                    MOVE    "1"     TO
                                                SPA-GMN-TPRTFLG (IDW IDX)
+                                   IF      SPA-NAI-2005-PRT-CHECKKBN
+                                                               =   "1"
+                                       MOVE    "F"             TO
+                                           SPA-GMN-TCHK-VALUE (IDW IDX)
+                                   END-IF
                                END-IF
                            END-IF 
                        END-PERFORM
@@ -2157,10 +2169,6 @@ grpsys     PERFORM 900-DBSELECT-SEC
            MOVE    SPACE           TO  SPA-RIDCD
            MOVE    SPACE           TO  SPA-RIDCD2      
            MOVE    SPACE           TO  SPA-RIDCD3
-      *****MOVE    ZERO            TO  SPA-R01-JOBCNT       
-      *****                            SPA-R01-STOPFLG    
-      *****MOVE    SPACE           TO  SPA-RID1-FLG
-      *****                            SPA-R99-CANCEL
            .
        340-R99-SET-EXT.
            EXIT.

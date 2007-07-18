@@ -52,7 +52,8 @@
       *  03.04.02    NACL-藤原    07/04/13  医療機関情報取得の条件を修正
       *
       *  03.05.01    NACL-藤原    07/04/19  グループ診療対応
-      *****************************************************************
+      *  03.05.02    NACL-藤原    07/07/17  強制終了処理対応
+     *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
        CONFIGURATION               SECTION.
@@ -1296,6 +1297,13 @@ grpsys                                 SPA-AREA
                MOVE    "印刷ＤＢに更新できませんでした"
                                           TO  WRK-RECEERR
                PERFORM 500-ERR-HENSYU-SEC                           
+               MOVE    SPACE               TO  WRK-ERRMSG
+               STRING  "ORCBM030 "         DELIMITED  BY  SIZE
+                       WRK-RECEERR         DELIMITED  BY  SIZE
+                       LOW-VALUE           DELIMITED  BY  SIZE
+                                           INTO    WRK-ERRMSG
+               END-STRING   
+               CALL    "cobabort"          USING   WRK-ERRMSG
            END-IF                                                              
            .
        20024-PRINT-OUT-EXT.

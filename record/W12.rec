@@ -72,6 +72,13 @@ W12	{
 					count	int;
 					item	varchar(20)[2];
 				};
+				BTUNUM_KSIKBN_COMBO	{
+					BTUNUM_KSIKBN	{
+						value	varchar(26);
+					};
+					count	int;
+					item	varchar(26)[5];
+				};
 				RJNGNBKKBN_COMBO	{
 					RJNGNBKKBN	{
 						value	varchar(24);
@@ -138,6 +145,13 @@ W12	{
 					count	int;
 					item	varchar(20)[2];
 				};
+				PRT_CHECKKBN_COMBO	{
+					PRT_CHECKKBN	{
+						value	varchar(22);
+					};
+					count	int;
+					item	varchar(22)[2];
+				};
 				PRTJYUNKBN4_COMBO	{
 					PRTJYUNKBN4	{
 						value	varchar(31);
@@ -181,6 +195,20 @@ W12	{
 					};
 					count	int;
 					item	varchar(22)[2];
+				};
+				JIBAIPRTKBN_COMBO	{
+					JIBAIPRTKBN	{
+						value	varchar(24);
+					};
+					count	int;
+					item	varchar(24)[2];
+				};
+				JIBAIPRTKBN_N_COMBO	{
+					JIBAIPRTKBN_N	{
+						value	varchar(24);
+					};
+					count	int;
+					item	varchar(24)[2];
 				};
 				ROUPRTNM	{
 					value	varchar(16);

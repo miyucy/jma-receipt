@@ -97,6 +97,8 @@
                05  SPA-GMN-CUR         PIC 9(02).
                05  SPA-GMN-NEXT        PIC 9(01).
       *
+               05  SPA-XC01-HYOUJI     PIC 9(01).
+      *
                05  SPA-GMN-AREA.
                    07  SPA-GMN-TITLE               PIC X(40).
                    07  SPA-GMN-TITLE1              PIC X(08).
@@ -367,6 +369,7 @@
       *
        01  SCRAREA.
            COPY    "XC01.INC".
+           COPY    "XC02.INC".
            COPY    "XC99.INC".
            COPY    "XCERR.INC".
            COPY    "XCID1.INC".
@@ -425,7 +428,7 @@
            INITIALIZE                  WRK-AREA
       *
       *    エラー画面より
-           IF      SPA-MOTOPG          =   "XCERR"
+           IF      SPA-MOTOPG          =   "XCERR"  OR  "XC02"
                MOVE    SPACE               TO  SPA-MOTOPG
                PERFORM 5001-MAPCUR-SEC
            ELSE
@@ -442,12 +445,15 @@
                END-IF
            END-IF
       *
-      **** MOVE    SPACE               TO  LINKAREA
-      *
            MOVE    SPACE               TO  MCP-PUTTYPE
-           MOVE    "XC01"              TO  MCP-WINDOW
+           EVALUATE    SPA-XC01-HYOUJI
+               WHEN    1
+                   MOVE    "XC01"              TO  MCP-WINDOW
+               WHEN    2
+                   MOVE    "XC02"              TO  MCP-WINDOW
+           END-EVALUATE
       *
-           PERFORM 900-PUT-WINDOW.
+           PERFORM 900-PUT-WINDOW
       *
            MOVE    1                   TO  FLG-END
            .
@@ -535,6 +541,8 @@
            PERFORM 2011-PRVKANRI-HEN-SEC
            MOVE    1                      TO  SPA-GMN-CUR
       *
+           MOVE    ZERO                   TO  SPA-XC01-HYOUJI
+      *
            .
        310-SPASET-EXT.
            EXIT.
@@ -569,6 +577,11 @@
       *****************************************************************
        200-GMNSENI                   SECTION.
       *
+           EVALUATE    SPA-XC01-HYOUJI
+               WHEN    2
+                   MOVE    XC02        TO  XC01
+           END-EVALUATE
+      *
            EVALUATE    MCP-EVENT       ALSO    MCP-WIDGET
       *     終了
                WHEN    "CLICKED"       ALSO    "B01"
@@ -590,6 +603,23 @@
                         MOVE    ZERO            TO  SPA-GMN-MAX
                  END-IF
                    PERFORM 2011-PRVKANRI-HEN-SEC
+      *     表示切替
+               WHEN    "CLICKED"       ALSO    "B03"
+                   EVALUATE    SPA-XC01-HYOUJI
+                       WHEN    0
+                       WHEN    1
+                           MOVE    2           TO  SPA-XC01-HYOUJI
+                           MOVE    "XC02"      TO  MCP-WINDOW
+                       WHEN    2
+                           MOVE    1           TO  SPA-XC01-HYOUJI
+                           MOVE    "XC01"      TO  MCP-WINDOW
+                   END-EVALUATE
+      *
+                   PERFORM 500-GMNHEN-SEC
+                   MOVE    "CHANGE"            TO  MCP-PUTTYPE
+                   MOVE    "XC02"              TO  SPA-MOTOPG
+                   PERFORM 900-PUT-WINDOW
+                   MOVE    1                   TO  FLG-END
       *     訂正
                WHEN    "CLICKED"       ALSO    "B04"
                    PERFORM 440-MAKE-UPD-SEC
@@ -620,6 +650,11 @@
       *    会話　処理
       *****************************************************************
        200-ENTRY                   SECTION.
+      *
+           EVALUATE    SPA-XC01-HYOUJI
+               WHEN    2
+                   MOVE    XC02        TO  XC01
+           END-EVALUATE
       *
            EVALUATE    MCP-EVENT       ALSO    MCP-WIDGET
       *
@@ -768,6 +803,8 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    ZERO             TO  SPA-NAI-MEMO-FLG
                MOVE    1                TO  SPA-GMN-CUR 
            END-IF
+      *
+           MOVE    IDY              TO  XC01-ROW         
            .
        2011-SELECT-HENSYU-EXT.
            EXIT.
@@ -962,8 +999,6 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                END-IF    
            END-PERFORM
       *
-    5 *  10        20        30        40        50
-----+-*--+----+----+----+----+----+----+----+----+----+----+----+----+
       *    リアルタイムプレビュー時は、中間ファイル削除
            IF      SPA-PRTKANRI-TBL-KEY    =  "RECEPTX" OR "ONLINE"
                PERFORM 2101-FILE-DEL-SEC         
@@ -1747,6 +1782,8 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                    IF      SPA-NAI-UPDFLG (IDX) =  "1"
                      MOVE  "○"                TO  SPA-GMN-TUPDFLG (IDX)
                    END-IF
+      *??
+                    DISPLAY "IDX=" IDX "#" SPA-NAI-FILENAME (IDX) "#"
       *
                    INITIALIZE                      ORCSPTIDAREA
       *            MOVE    SPA-HOSPID          TO  SPTID-HOSPID
@@ -2012,7 +2049,7 @@ grpsys*                    MOVE SPA-HOSPNUM TO -HOSPNUM
                                                TO  ORCA-BLOB-FILE
                      MOVE    "key"               TO  MCP-PATHNAME
                      MOVE    "blob"              TO  MCP-TABLE
-grpsys               CALL    "ORCDBMAIN"       USING MCPAREA
+grpsys               CALL    "ORCDBMAIN"       USING
                                                MCPAREA
                                                ORCA-BLOB
                                                SPA-AREA
@@ -2154,10 +2191,16 @@ grpsys*     MOVE SPA-HOSPNUM TO -HOSPNUM
       *
       *****MOVE    SPACE               TO  LINKAREA
       *
-           MOVE    "CURRENT"           TO  MCP-PUTTYPE.
-           MOVE    "XC01    "          TO  MCP-WINDOW.
+           MOVE    "CURRENT"           TO  MCP-PUTTYPE
+           EVALUATE    SPA-XC01-HYOUJI
+               WHEN    0
+               WHEN    1
+                   MOVE    "XC01"              TO  MCP-WINDOW
+               WHEN    2
+                   MOVE    "XC02"              TO  MCP-WINDOW
+           END-EVALUATE
       *
-           PERFORM 900-PUT-WINDOW.
+           PERFORM 900-PUT-WINDOW
            .
        500-SET-SCREEN-EXT.
            EXIT.
@@ -2167,7 +2210,7 @@ grpsys*     MOVE SPA-HOSPNUM TO -HOSPNUM
       *****************************************************************
        500-GMNHEN-SEC              SECTION.
       *
-           MOVE    XC01-ROW            TO  WRK-ROW
+           MOVE    SPA-NAI-SELNUM      TO  WRK-ROW
       *
            MOVE    SPACE               TO  XC01
       *
@@ -2254,6 +2297,8 @@ grpsys*     MOVE SPA-HOSPNUM TO -HOSPNUM
            ELSE
                MOVE    2                   TO  XC01-DURATION
            END-IF
+      *
+           MOVE    XC01                TO  XC02
       *
            PERFORM 5001-MAPCUR-SEC
       *

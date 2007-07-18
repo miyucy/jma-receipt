@@ -118,6 +118,11 @@
       *  03.04.01    NACL-門脇    07/02/16  帳票レイアウト変更による修正
       *
       *  03.05.01    NACL-藤原    07/04/19  グループ診療対応
+      *  03.05.02    NACL-藤原    07/06/19  病棟番号記載対応
+      *                                     HCN08V02.red
+      *                                     HCN061V04.red
+      *                                     HCN062V04.red
+      *                                     HCN063V03.red
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -256,13 +261,16 @@
            COPY    "HCN061V01.INC".
            COPY    "HCN061V02.INC".
            COPY    "HCN061V03.INC".
+           COPY    "HCN061V04.INC".
            COPY    "HCN062.INC".
            COPY    "HCN062V01.INC".
            COPY    "HCN062V02.INC".
            COPY    "HCN062V03.INC".
+           COPY    "HCN062V04.INC".
            COPY    "HCN063.INC".
            COPY    "HCN063V01.INC".
            COPY    "HCN063V02.INC".
+           COPY    "HCN063V03.INC".
            COPY    "HCM09.INC".
            COPY    "HCM09V01.INC".
            COPY    "HCM09V02.INC".
@@ -284,6 +292,7 @@
            COPY    "HCN07.INC".
            COPY    "HCN08.INC".
            COPY    "HCN08V01.INC".
+           COPY    "HCN08V02.INC".
            COPY    "HCRCP402.INC".
            COPY    "HCRCP403.INC".
       *
@@ -732,6 +741,10 @@ grpsys         PERFORM 900-ORCDBMAIN-SEC
                        MOVE    RECE08-PRTDATA      TO  HCN061V03
                        MOVE    WRK-HEN-RENNUM-AREA TO  HCN061V03-RENNUM
                        MOVE    HCN061V03           TO  RECE08-PRTDATA
+                   WHEN    "HCN061V04.red"                  
+                       MOVE    RECE08-PRTDATA      TO  HCN061V04
+                       MOVE    WRK-HEN-RENNUM-AREA TO  HCN061V04-RENNUM
+                       MOVE    HCN061V04           TO  RECE08-PRTDATA
                    WHEN    "HCN062.red"                  
                        MOVE    RECE08-PRTDATA      TO  HCN062
                        MOVE    WRK-HEN-RENNUM-AREA TO  HCN062-RENNUM
@@ -748,6 +761,10 @@ grpsys         PERFORM 900-ORCDBMAIN-SEC
                        MOVE    RECE08-PRTDATA      TO  HCN062V03
                        MOVE    WRK-HEN-RENNUM-AREA TO  HCN062V03-RENNUM
                        MOVE    HCN062V03           TO  RECE08-PRTDATA
+                   WHEN    "HCN062V04.red"                  
+                       MOVE    RECE08-PRTDATA      TO  HCN062V04
+                       MOVE    WRK-HEN-RENNUM-AREA TO  HCN062V04-RENNUM
+                       MOVE    HCN062V04           TO  RECE08-PRTDATA
                    WHEN    "HCN063.red"                  
                        MOVE    RECE08-PRTDATA      TO  HCN063
                        MOVE    WRK-HEN-RENNUM-AREA TO  HCN063-RENNUM
@@ -760,6 +777,10 @@ grpsys         PERFORM 900-ORCDBMAIN-SEC
                        MOVE    RECE08-PRTDATA      TO  HCN063V02
                        MOVE    WRK-HEN-RENNUM-AREA TO  HCN063V02-RENNUM
                        MOVE    HCN063V02           TO  RECE08-PRTDATA
+                   WHEN    "HCN063V03.red"                  
+                       MOVE    RECE08-PRTDATA      TO  HCN063V03
+                       MOVE    WRK-HEN-RENNUM-AREA TO  HCN063V03-RENNUM
+                       MOVE    HCN063V03           TO  RECE08-PRTDATA
                    WHEN    "HCM09.red"                  
                        MOVE    RECE08-PRTDATA      TO  HCM09
                        MOVE    WRK-HEN-RENNUM-AREA TO  HCM09-RENNUM
@@ -851,6 +872,10 @@ grpsys         PERFORM 900-ORCDBMAIN-SEC
                        MOVE    RECE08-PRTDATA      TO  HCN08V01
                        MOVE    WRK-HEN-RENNUM-AREA TO  HCN08V01-RENNUM
                        MOVE    HCN08V01            TO  RECE08-PRTDATA
+                   WHEN    "HCN08V02.red"                  
+                       MOVE    RECE08-PRTDATA      TO  HCN08V02
+                       MOVE    WRK-HEN-RENNUM-AREA TO  HCN08V02-RENNUM
+                       MOVE    HCN08V02            TO  RECE08-PRTDATA
                    WHEN    "HCRCP402.red"                  
                        MOVE    RECE08-PRTDATA      TO  HCRCP402
                        MOVE    WRK-HEN-RENNUM-AREA TO  HCRCP402-RENNUM
@@ -1007,19 +1032,23 @@ grpsys         PERFORM 900-DBFETCH-SEC
                WHEN    "HCN061V01.red" ALSO    "1"              
                WHEN    "HCN061V02.red" ALSO    "1"              
                WHEN    "HCN061V03.red" ALSO    "1"              
+               WHEN    "HCN061V04.red" ALSO    "1"              
                WHEN    "HCN062.red"    ALSO    "1"              
                WHEN    "HCN062V01.red" ALSO    "1"              
                WHEN    "HCN062V02.red" ALSO    "1"              
                WHEN    "HCN062V03.red" ALSO    "1"              
+               WHEN    "HCN062V04.red" ALSO    "1"              
                WHEN    "HCN063.red"    ALSO    "1"              
                WHEN    "HCN063V01.red" ALSO    "1"              
                WHEN    "HCN063V02.red" ALSO    "1"              
+               WHEN    "HCN063V03.red" ALSO    "1"              
                WHEN    "HCRCP401.red"  ALSO    ANY                
                WHEN    "HCRCP401V01.red"
                                        ALSO    ANY                
                WHEN    "HCN07.red"     ALSO    ANY               
                WHEN    "HCN08.red"     ALSO    ANY               
                WHEN    "HCN08V01.red"  ALSO    ANY               
+               WHEN    "HCN08V02.red"  ALSO    ANY               
                WHEN    "HCRCP403.red"  ALSO    ANY                
                    MOVE    "医科レセプト（入院）"      TO  SPRT-TITLE
                END-EVALUATE

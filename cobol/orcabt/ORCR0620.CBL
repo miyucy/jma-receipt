@@ -120,8 +120,10 @@
       *  03.04.04    NACL-門脇    07/02/19  公費−本人−入院−回−負担割合
       *                                     のセット
       *  03.04.05    NACL-門脇    07/04/01  現物給付対応
+      *
       *  03.05.01    NACL-小豆沢  07/05/30  グループ診療対応
       *  03.05.02    NACL-門脇    07/07/17  個別時のシステム管理編集修正
+      *  03.05.03    NACL-藤原    07/06/19  病棟番号記載対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -327,7 +329,6 @@
       *
       *    一時領域
        01  WRK-AREA.
-           03  WRK-PATH                                PIC X(64).
            03  WRK-PARA.
                05  WRK-PARA-SRYYM                      PIC  X(06).
                05  WRK-PARA-TERMID                     PIC  X(16).
@@ -2325,7 +2326,9 @@
            IF      RECE62-LASTSRYKA    =   SPACE
                MOVE    PTNYUINRRK-NYUINYMD TO  RECE62-NYUINYMD
                MOVE    PTNYUINRRK-NYUINKA  TO  RECE62-LASTSRYKA
-               MOVE    PTNYUINRRK-SHONUM   TO  WRK-SHONUM  
+               MOVE    PTNYUINRRK-BTUNUM   TO  RECE62-LASTBTUNUM
+               MOVE    PTNYUINRRK-BRMNUM   TO  RECE62-LASTBRMNUM
+               MOVE    PTNYUINRRK-SHONUM   TO  WRK-SHONUM
            END-IF
       *
       *    入退院履歴情報

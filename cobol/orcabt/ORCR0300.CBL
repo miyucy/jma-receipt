@@ -243,6 +243,8 @@
       *
       *  03.05.01    NACL-藤原    07/04/19  グループ診療対応
       *  03.05.02    NACL-門脇    07/07/17  個別時のシステム管理編集修正
+      *  03.05.03    NACL-藤原    07/06/28  空のコメントコードの記載をやめる
+      *  03.05.04    NACL-藤原    07/07/10  特定器材再編集用の器材点数追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -3017,15 +3019,34 @@ grpsys         OR     ( RECE041-HOSPNUM    NOT =   RECE05-HOSPNUM      )
                    EVALUATE    RECE05-SRYCD (IDX) (1:1)
                        WHEN    "0"
                        WHEN    "8"
-      *                    検査（判断料）の場合の退避
-                           IF      RECE041-KNSJISKBN   =   2
-                               PERFORM 20013-KENSA-HANDANRYO-TAIHI-SEC
+      *                    空白または全角スペースのみのフリーコメントは記載しない
+                           MOVE    ZERO                TO  WRK-SJ-CHK
+                           IF      RECE05-SRYCD (IDX)  =   "810000001"
+                               IF      RECE05-NAME  (IDX)  =   SPACE
+                                   CONTINUE
+                               ELSE
+                                   PERFORM VARYING IDY FROM    1   BY  2
+                                           UNTIL   IDY >       200
+                                           OR  RECE05-NAME(IDX) (IDY:2)
+                                                           =   SPACE
+                                           OR  WRK-SJ-CHK  =   1
+                                       IF       RECE05-NAME(IDX) (IDY:2)
+                                                       NOT =   "　"
+                                           MOVE    1   TO  WRK-SJ-CHK
+                                       END-IF
+                                   END-PERFORM
+                               END-IF
                            ELSE
-      *************************IF    ( RECE02-KENTAIKASANFLG  =   "1"  )
-      *************************AND   ( RECE041-KNSJISGRPKBN   >   ZERO )
-      *************************外来迅速検体検査加算がある場合の検査退避
-      *************************    PERFORM 20012-KENSA-TAIHI-SEC
-      *************************ELSE
+                               MOVE    1               TO  WRK-SJ-CHK
+                           END-IF
+                           IF      WRK-SJ-CHK          =   ZERO
+                               CONTINUE
+                           ELSE                      
+      *                        検査（判断料）の場合の退避
+                               IF      RECE041-KNSJISKBN   =   2
+                                   PERFORM
+                                       20013-KENSA-HANDANRYO-TAIHI-SEC
+                               ELSE
                                    IF      RECE041-SRYKBN  =   "13"   OR
                                                                "14"   OR
                                                                "70"
@@ -3034,27 +3055,15 @@ grpsys         OR     ( RECE041-HOSPNUM    NOT =   RECE05-HOSPNUM      )
                                    ELSE
                                      PERFORM 200711-COMMENT-TAIHI-SEC
                                    END-IF
-      *************************END-IF
+                               END-IF
                            END-IF
                        WHEN    "1"
-      *********************IF    ( RECE02-KENTAIKASANFLG   =   "1"  )
-      *********************AND   ( RECE041-KNSJISGRPKBN    >   ZERO )
-      *********************AND   ( RECE05-KNSJISKBN (IDX)
-      *********************                            NOT =   2    )
-      *****                AND  (( RECE05-KNSJISKBN (IDX)  =   1    ) OR
-      *****                      ( RECE05-SRYCD (IDX)      =
-      *****                                            WRK-CONS-SRYCD ))
-      *********************    外来迅速検体検査加算がある場合の検査退避
-      *********************    PERFORM 20012-KENSA-TAIHI-SEC
-      *********************ELSE
-      *                        検査（判断料）の場合の退避
-                               IF     ( RECE041-KNSJISKBN   =   2 )
-                                   PERFORM
-                                       20013-KENSA-HANDANRYO-TAIHI-SEC
-                               ELSE
-                                   PERFORM 200711-KOUI-TAIHI-SEC
-                               END-IF
-      *********************END-IF
+      *                    検査（判断料）の場合の退避
+                           IF     ( RECE041-KNSJISKBN   =   2 )
+                               PERFORM 20013-KENSA-HANDANRYO-TAIHI-SEC
+                           ELSE
+                               PERFORM 200711-KOUI-TAIHI-SEC
+                           END-IF
                        WHEN    "6"
                            PERFORM 200711-YKZ-TAIHI-SEC
                        WHEN    "7"
@@ -4256,6 +4265,8 @@ grpsys         MOVE    RECE02-HOSPNUM      TO  ORCSRECESORT-HOSPNUM
                MOVE    RECE02-SRYYM        TO  ORCSRECESORT-SRYYM
                MOVE    RECE041-SRYKBN      TO  ORCSRECESORT-SRYKBN
                MOVE    RECE041-ZAINUM      TO  ORCSRECESORT-ZAINUM
+               MOVE    RECE041-ZAITEN      TO  ORCSRECESORT-ZAITEN
+               MOVE    RECE041-KIZAITEN    TO  ORCSRECESORT-KIZAITEN
                PERFORM VARYING IDX FROM    1   BY  1
                        UNTIL   IDX >       WRK-TBLMAX7-SRT
                    MOVE    TBL-ZAIW-SRYCD         (3 IDX)  TO
