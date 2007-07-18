@@ -161,7 +161,9 @@
       *    °ì»þÎÎ°è
        01  WRK-AREA.
            03  WRK-BG01DAT-FILE    PIC X(1024).
-           03  WRK-RECEERR         PIC X(200).
+           03  WRK-RECEERR-G.
+               05  WRK-RECEERR     PIC X(200).
+               05  WRK-RECEERR-END PIC X(1).
            03  WRK-SRYYMD          PIC X(08).
            03  WRK-SYMD            PIC X(08).
            03  WRK-EDTYMD1         PIC X(10).
@@ -1287,6 +1289,9 @@ grpsys     END-UNSTRING
            END-IF
       *
            MOVE    1               TO  FLG-END
+      *
+           MOVE    LOW-VALUE       TO      WRK-RECEERR-END
+           CALL    "cobabort"      USING   WRK-RECEERR-G
       *
            .
        500-ERR-HENSYU-EXT.
