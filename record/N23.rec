@@ -1,10 +1,17 @@
 N23	{
 	fixed2	{
-		JYO1	{
+		CHK1	{
 			value	bool;
 		};
-		JYO2	{
+		CHK2	{
 			value	bool;
+		};
+		CHK3	{
+			value	bool;
+		};
+		JYO	{
+			value	bool;
+			state   int;
 		};
 		KBN1	{
 			value	bool;
@@ -43,6 +50,22 @@ N23	{
 			state   int;
 		};
 		IYK3	{
+			value	bool;
+			state   int;
+		};
+		KIKANCOMBO	{
+			KIKAN	{
+				value	varchar(8);
+			};
+			count	int;
+			item	varchar(8)[3];
+			state   int;
+		};
+		CYU	{
+			value	bool;
+			state   int;
+		};
+		PRT	{
 			value	bool;
 			state   int;
 		};

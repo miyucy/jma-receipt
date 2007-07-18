@@ -128,10 +128,24 @@
            03  SPA-N23-AREA.
                05  SPA-N23-MAX     PIC 9(05).
                05  SPA-N23-CUR     PIC 9(02).
-               05  SPA-N23-JYO     PIC X     OCCURS  2.
+               05  SPA-N23-CHK     PIC X     OCCURS  3.
+               05  SPA-N23-JYO     PIC X.
                05  SPA-N23-KBN     PIC X     OCCURS  4.
                05  SPA-N23-NAME    PIC X(30).
                05  SPA-N23-SRYCD   PIC X(9).
                05  SPA-N23-INPUTCD PIC X(10).
                05  SPA-N23-IYK     PIC X     OCCURS  3.
-               05  SPA-N23-SYU     PIC X     OCCURS  3.
+               05  SPA-N23-KIANCOMBO.
+                 07  SPA-N23-KIKANLST        OCCURS  3.
+                   09  SPA-N23-KIKANL        PIC X(01).
+                   09  SPA-N23-F1L           PIC X(01).
+                   09  SPA-N23-KIKANMEIL     PIC X(06).
+                 07  SPA-N23-KIKAN-MAX       PIC 9(02).
+      *
+                 07  SPA-N23-KIKAN-G.
+                   09  SPA-N23-KIKAN         PIC X(01).
+                   09  SPA-N23-F1            PIC X(01).
+                   09  SPA-N23-KIKANMEI      PIC X(06).
+               05  SPA-N23-CYU     PIC X.
+               05  SPA-N23-PRT     PIC X.
+               05  SPA-N23-SYU     PIC X     OCCURS  2.

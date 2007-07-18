@@ -692,6 +692,10 @@
            PERFORM 31012-SEIWA-HEN-SEC
            MOVE    WRK-HENYMDG     TO  HCM47-SYORIBI
       *
+           MOVE    "薬剤情報マスタ一覧"
+                                   TO  HCM47-TITLE
+           MOVE    SPACE           TO  HCM47-KIKAN
+      *
       *    明細セット
            PERFORM VARYING IDX     FROM    1   BY  1
                    UNTIL   IDX     >       5
@@ -1020,7 +1024,9 @@ grpsys                                         SPA-AREA
                        MOVE    1               TO  FLG-OK
                    ELSE
                        EVALUATE    WRK-PARA-IYK    ALSO    TNS-YKZKBN
-                           WHEN    "0"     ALSO    ANY
+                           WHEN    "0"     ALSO    "1"
+                           WHEN    "0"     ALSO    "6"
+                           WHEN    "0"     ALSO    "4"
                            WHEN    "1"     ALSO    "1"
                            WHEN    "1"     ALSO    "6"
                            WHEN    "2"     ALSO    "1"

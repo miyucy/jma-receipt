@@ -17,7 +17,10 @@
       ********************************************************************
           03  N23.
                 04  N23-FIXED2.
-                    05  N23-JYO                PIC X       OCCURS  2.
+                    05  N23-CHK                PIC X       OCCURS  3.
+                    05  N23-JYO-G.
+                        07  N23-JYO            PIC X.
+                        07  N23-JYO-STATE      PIC S9(9)   BINARY.
                     05  N23-KBN-G                          OCCURS  4.
                         07  N23-KBN            PIC X.
                         07  N23-KBN-STATE      PIC S9(9)   BINARY.
@@ -33,4 +36,15 @@
                     05  N23-IYK-G                          OCCURS  3.
                         07  N23-IYK            PIC X.
                         07  N23-IYK-STATE      PIC S9(9)   BINARY.
+                    05  N22-KIKANCOMBO.
+                        07  N23-KIKAN          PIC X(8).
+                        07  N23-KIKAN-COUNT    PIC S9(9)   BINARY.
+                        07  N23-KIKANLST       PIC X(8)    OCCURS  3.
+                        07  N23-KIKAN-STATE    PIC S9(9)   BINARY.
+                    05  N23-CYU-G.
+                        07  N23-CYU            PIC X.
+                        07  N23-CYU-STATE      PIC S9(9)   BINARY.
+                    05  N23-PRT-G.
+                        07  N23-PRT            PIC X.
+                        07  N23-PRT-STATE      PIC S9(9)   BINARY.
                     05  N23-SYU                PIC X       OCCURS  2.

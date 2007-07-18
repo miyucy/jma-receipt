@@ -27,6 +27,7 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者        日付      内容
       *  03.05.01    NACL-森脇     07/05/30  グループ診療対応
+      *  03.05.02    NACL-森脇     07/07/03  確認リスト追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -34,28 +35,22 @@
        INPUT-OUTPUT                SECTION.
        FILE-CONTROL.
       *
-006900*    エラーファイル
+      *    エラーファイル
            SELECT  YKJMERR-FILE    ASSIGN  YKJMERR
                                    FILE    STATUS  IS  STS-YKJMERR.
       *
        DATA                    DIVISION.
        FILE                        SECTION.
       *
-006900*    エラーファイル
+      *    エラーファイル
        FD  YKJMERR-FILE.
        01  YKJMERR-REC             PIC X(200).
       *
        WORKING-STORAGE             SECTION.
       *
-      *----(03.05.01)--UPD-START---
       *    エラーファイル 名称領域 
-      *     COPY    "CPCOMMONDAT2.INC"
-      *                             REPLACING  //RECE01PARA//
-      *                             BY         //YKJMERR//.
-      *     03  FILLER              PIC X(04)   VALUE   ".dat".
            COPY    "CPERRFL.INC"   REPLACING  //ERRFLPARA//
                                    BY         //YKJMERR//.
-      *----(03.05.01)--UPD-END-----
       *
       *    画面活性非活性
            COPY    "ENUM-VALUE".
@@ -82,6 +77,7 @@
        01  IDX-AREA.
            03  IDX0                PIC 9(05).
            03  IDX1                PIC 9(05).
+           03  IDX                 PIC 9(05).
       *
       *    ファイルデイレクトリ位置指定サブ
            COPY  "CPMKPASS.INC".
@@ -122,12 +118,16 @@
            03  WRK-PRT-PAGE        PIC 9(10).
            03  WRK-YKJMERR         PIC X(200).
        01  WRK-JYOKEN-AREA.
+           03  WRK-CHK             PIC X(01).
            03  WRK-JYO             PIC X(01).
            03  WRK-KBN             PIC X(01).
            03  WRK-NAME            PIC X(30).
            03  WRK-SRYCD           PIC X(09).
            03  WRK-INPUTCD         PIC X(10).
            03  WRK-IYK             PIC X(01).
+           03  WRK-KIKAN           PIC X(01).
+           03  WRK-PRT             PIC X(01).
+           03  WRK-CYU             PIC X(01).
            03  WRK-SYU             PIC X(01).
       *
        01  WRK-LNK-AREA.
@@ -344,8 +344,7 @@
       *
            INITIALIZE                  SPA-N23-AREA
       *
-           MOVE    "T"             TO  SPA-N23-JYO(1)
-           MOVE    "F"             TO  SPA-N23-JYO(2)
+           MOVE    "F"             TO  SPA-N23-JYO
       *
            MOVE    "T"             TO  SPA-N23-KBN(1)
            MOVE    "F"             TO  SPA-N23-KBN(2)
@@ -358,6 +357,20 @@
       *
            MOVE    "T"             TO  SPA-N23-SYU(1)
            MOVE    "F"             TO  SPA-N23-SYU(2)
+      *----(03.05.02)--ADD-START---
+           MOVE    "F"             TO  SPA-N23-CHK(1)
+           MOVE    "F"             TO  SPA-N23-CHK(2)
+           MOVE    "F"             TO  SPA-N23-CHK(3)
+           MOVE    "F"             TO  SPA-N23-PRT
+           MOVE    "F"             TO  SPA-N23-CYU
+      *
+      *    期間コンボ
+           MOVE    "1 なし"        TO  SPA-N23-KIKANLST(1)
+           MOVE    "2 ２ヶ月"      TO  SPA-N23-KIKANLST(2)
+           MOVE    "3 ６ヶ月"      TO  SPA-N23-KIKANLST(3)
+           MOVE    3               TO  SPA-N23-KIKAN-MAX
+      *
+      *----(03.05.02)--ADD-END-----
       *
            MOVE    1               TO  SPA-N23-CUR
            .
@@ -503,19 +516,25 @@
            WHEN    "CLICKED"       ALSO    "B13"
                PERFORM 490-KAKUNIN-SEC
       *
+      *----(03.05.02)--UPD-START---
+      *    リスト選択
+           WHEN    "CLICKED"       ALSO    "CHK1"
+               IF      SPA-N23-CHK(1)  =   "F"
+                   MOVE    "T"         TO  SPA-N23-CHK(1)
+                   MOVE    2           TO  SPA-N23-CUR
+               ELSE
+                   MOVE    "F"         TO  SPA-N23-CHK(1)
+                   MOVE    13          TO  SPA-N23-CUR
+               END-IF
       *    条件指定ありなしチェックボタン
-           WHEN    "CLICKED"       ALSO    "JYO1"
-               IF      SPA-N23-JYO(1)  =   "F"
-                   MOVE    "T"         TO  SPA-N23-JYO(1)
-                   MOVE    "F"         TO  SPA-N23-JYO(2)
+           WHEN    "CLICKED"       ALSO    "JYO"
+               IF      SPA-N23-JYO      =   "F"
+                   MOVE    "T"         TO  SPA-N23-JYO
+                   MOVE    3           TO  SPA-N23-CUR
+               ELSE
+                   MOVE    "F"         TO  SPA-N23-JYO
+                   MOVE    13          TO  SPA-N23-CUR
                END-IF
-               MOVE    13          TO  SPA-N23-CUR
-           WHEN    "CLICKED"       ALSO    "JYO2"
-               IF      SPA-N23-JYO(2)  =   "F"
-                   MOVE    "F"         TO  SPA-N23-JYO(1)
-                   MOVE    "T"         TO  SPA-N23-JYO(2)
-               END-IF
-               MOVE    3           TO  SPA-N23-CUR
       *    条件種類チェックボタン
            WHEN    "CLICKED"       ALSO    "KBN1"
                IF      SPA-N23-KBN(1)  =   "F"
@@ -523,32 +542,40 @@
                    MOVE    "F"         TO  SPA-N23-KBN(2)
                    MOVE    "F"         TO  SPA-N23-KBN(3)
                    MOVE    "F"         TO  SPA-N23-KBN(4)
+                   MOVE    7           TO  SPA-N23-CUR
+               ELSE
+                   MOVE    4           TO  SPA-N23-CUR
                END-IF
-               MOVE    7           TO  SPA-N23-CUR
            WHEN    "CLICKED"       ALSO    "KBN2"
                IF      SPA-N23-KBN(2)  =   "F"
                    MOVE    "F"         TO  SPA-N23-KBN(1)
                    MOVE    "T"         TO  SPA-N23-KBN(2)
                    MOVE    "F"         TO  SPA-N23-KBN(3)
                    MOVE    "F"         TO  SPA-N23-KBN(4)
+                   MOVE    8           TO  SPA-N23-CUR
+               ELSE
+                   MOVE    5           TO  SPA-N23-CUR
                END-IF
-               MOVE    8           TO  SPA-N23-CUR
            WHEN    "CLICKED"       ALSO    "KBN3"
                IF      SPA-N23-KBN(3)  =   "F"
                    MOVE    "F"         TO  SPA-N23-KBN(1)
                    MOVE    "F"         TO  SPA-N23-KBN(2)
                    MOVE    "T"         TO  SPA-N23-KBN(3)
                    MOVE    "F"         TO  SPA-N23-KBN(4)
+                   MOVE    9           TO  SPA-N23-CUR
+               ELSE
+                   MOVE    6           TO  SPA-N23-CUR
                END-IF
-               MOVE    9           TO  SPA-N23-CUR
            WHEN    "CLICKED"       ALSO    "KBN4"
                IF      SPA-N23-KBN(4)  =   "F"
                    MOVE    "F"         TO  SPA-N23-KBN(1)
                    MOVE    "F"         TO  SPA-N23-KBN(2)
                    MOVE    "F"         TO  SPA-N23-KBN(3)
                    MOVE    "T"         TO  SPA-N23-KBN(4)
+                   MOVE    10          TO  SPA-N23-CUR
+               ELSE
+                   MOVE    13          TO  SPA-N23-CUR
                END-IF
-               MOVE    10          TO  SPA-N23-CUR
       *    薬剤区分チェックボタン
            WHEN    "CLICKED"       ALSO    "IYK1"
                IF      SPA-N23-IYK(1)  =   "F"
@@ -571,20 +598,59 @@
                    MOVE    "F"         TO  SPA-N23-IYK(3)
                END-IF
                MOVE    12          TO  SPA-N23-CUR
+      *    確認リスト選択
+           WHEN    "CLICKED"       ALSO    "CHK2"
+               IF      SPA-N23-CHK(2)  =   "F"
+                   MOVE    "T"         TO  SPA-N23-CHK(2)
+                   MOVE    14          TO  SPA-N23-CUR
+               ELSE
+                   MOVE    "F"         TO  SPA-N23-CHK(2)
+                   MOVE    17          TO  SPA-N23-CUR
+               END-IF
+      *    注射薬含めるか
+           WHEN    "CLICKED"       ALSO    "CYU"
+               IF      SPA-N23-CYU     =   "F"
+                   MOVE    "T"         TO  SPA-N23-CYU
+               ELSE
+                   MOVE    "F"         TO  SPA-N23-CYU
+               END-IF
+               MOVE    16          TO  SPA-N23-CUR
+      *    出力形式指定
+           WHEN    "CLICKED"       ALSO    "PRT"
+               IF      SPA-N23-PRT     =   "F"
+                   MOVE    "T"         TO  SPA-N23-PRT
+               ELSE
+                   MOVE    "F"         TO  SPA-N23-PRT
+               END-IF
+               MOVE    17          TO  SPA-N23-CUR
+      *    確認リスト選択
+           WHEN    "CLICKED"       ALSO    "CHK3"
+               IF      SPA-N23-CHK(3)  =   "F"
+                   MOVE    "T"         TO  SPA-N23-CHK(3)
+               ELSE
+                   MOVE    "F"         TO  SPA-N23-CHK(3)
+               END-IF
+               MOVE    18          TO  SPA-N23-CUR
       *    出力順指定
            WHEN    "CLICKED"       ALSO    "SYU1"
                IF      SPA-N23-SYU(1)  =   "F"
                    MOVE    "T"         TO  SPA-N23-SYU(1)
                    MOVE    "F"         TO  SPA-N23-SYU(2)
                END-IF
-               MOVE    99          TO  SPA-N23-CUR
+               MOVE    19          TO  SPA-N23-CUR
            WHEN    "CLICKED"       ALSO    "SYU2"
                IF      SPA-N23-SYU(2)  =   "F"
                    MOVE    "F"         TO  SPA-N23-SYU(1)
                    MOVE    "T"         TO  SPA-N23-SYU(2)
                END-IF
                MOVE    99          TO  SPA-N23-CUR
+      *----(03.05.02)--UPD-END-----
            END-EVALUATE
+      *
+           MOVE    N23-NAME         TO  SPA-N23-NAME
+           MOVE    N23-SRYCD        TO  SPA-N23-SRYCD
+           MOVE    N23-INPUTCD      TO  SPA-N23-INPUTCD
+           MOVE    N23-KIKAN        TO  SPA-N23-KIKAN-G
       *
            .
        200-GMNSENI-EXT.
@@ -606,6 +672,19 @@
           WHEN    "ACTIVATE"      ALSO     "INPUTCD"
               MOVE    N23-INPUTCD      TO  SPA-N23-INPUTCD
               MOVE    13               TO  SPA-N23-CUR
+      *----(03.05.02)--ADD-START---
+          WHEN    "ACTIVATE"      ALSO     "KIKAN"
+              MOVE    N23-KIKAN        TO  SPA-N23-KIKAN
+              PERFORM VARYING IDX     FROM    1   BY  1
+                      UNTIL   IDX     >   SPA-N23-KIKAN-MAX
+                  IF       SPA-N23-KIKANL(IDX)   =  SPA-N23-KIKAN
+                    MOVE    SPA-N23-KIKANLST(IDX)
+                                           TO  SPA-N23-KIKAN-G
+                    MOVE    SPA-N23-KIKAN-MAX TO  IDX
+                  END-IF
+              END-PERFORM
+              MOVE    15               TO  SPA-N23-CUR
+      *----(03.05.02)--ADD-END-----
           END-EVALUATE
            .
        200-ENTRY-EXT.
@@ -787,7 +866,7 @@
            END-IF
       *
            .
-       4501-JOBKANRI-CHK--EXT.
+       4501-JOBKANRI-CHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -796,58 +875,92 @@
        410-INPUT-CHK-SEC           SECTION.
       *
            MOVE    SPACE           TO  WRK-JYOKEN-AREA
-      *    条件有無指定
-           IF      SPA-N23-JYO(1)      =   "T"
-               MOVE    "1"         TO  WRK-JYO
-           ELSE
-               IF      SPA-N23-JYO(2)      =   "T"
+      *
+      *    確認リスト指定
+           IF      SPA-N23-CHK(1)      =   "T"
+      *        条件有無指定
+               IF      SPA-N23-JYO     =   "F"
+                   MOVE    "1"         TO  WRK-JYO
+               ELSE
                    MOVE    "2"         TO  WRK-JYO
                END-IF
-           END-IF
-      *    条件区分指定
-           IF      SPA-N23-KBN(1)  =   "T"
-               MOVE    "1"         TO  WRK-KBN
-           ELSE
-               IF      SPA-N23-KBN(2)  =   "T"
-                   MOVE    "2"         TO  WRK-KBN
+      *
+      *        条件区分指定
+               IF      SPA-N23-KBN(1)  =   "T"
+                   MOVE    "1"         TO  WRK-KBN
                ELSE
-                   IF      SPA-N23-KBN(3)  =   "T"
-                       MOVE    "3"         TO  WRK-KBN
+                   IF      SPA-N23-KBN(2)  =   "T"
+                       MOVE    "2"         TO  WRK-KBN
                    ELSE
-                       IF      SPA-N23-KBN(4)  =   "T"
-                           MOVE    "4"         TO  WRK-KBN
+                       IF      SPA-N23-KBN(3)  =   "T"
+                           MOVE    "3"         TO  WRK-KBN
+                       ELSE
+                           IF      SPA-N23-KBN(4)  =   "T"
+                               MOVE    "4"         TO  WRK-KBN
+                           END-IF
                        END-IF
                    END-IF
                END-IF
-           END-IF
-      *    薬剤区分指定
-           IF      SPA-N23-IYK(1)      =   "T"
-               IF      SPA-N23-IYK(2)      =   "T"
-                   IF      SPA-N23-IYK(3)      =   "T"
-                       MOVE    "0"         TO  WRK-IYK
+      *
+      *        薬剤区分指定
+               IF      SPA-N23-IYK(1)      =   "T"
+                   IF      SPA-N23-IYK(2)      =   "T"
+                       IF      SPA-N23-IYK(3)      =   "T"
+                           MOVE    "0"         TO  WRK-IYK
+                       ELSE
+                           MOVE    "1"         TO  WRK-IYK
+                       END-IF
                    ELSE
-                       MOVE    "1"         TO  WRK-IYK
+                       IF      SPA-N23-IYK(3)      =   "T"
+                           MOVE    "2"         TO  WRK-IYK
+                       ELSE
+                           MOVE    "3"         TO  WRK-IYK
+                       END-IF
                    END-IF
                ELSE
-                   IF      SPA-N23-IYK(3)      =   "T"
-                       MOVE    "2"         TO  WRK-IYK
+                   IF      SPA-N23-IYK(2)      =   "T"
+                       IF      SPA-N23-IYK(3)      =   "T"
+                           MOVE    "4"         TO  WRK-IYK
+                       ELSE
+                           MOVE    "5"         TO  WRK-IYK
+                       END-IF
                    ELSE
-                       MOVE    "3"         TO  WRK-IYK
+                       IF      SPA-N23-IYK(3)      =   "T"
+                           MOVE    "6"         TO  WRK-IYK
+                       END-IF
                    END-IF
                END-IF
-           ELSE
-               IF      SPA-N23-IYK(2)      =   "T"
-                   IF      SPA-N23-IYK(3)      =   "T"
-                       MOVE    "4"         TO  WRK-IYK
-                   ELSE
-                       MOVE    "5"         TO  WRK-IYK
-                   END-IF
-               ELSE
-                   IF      SPA-N23-IYK(3)      =   "T"
-                       MOVE    "6"         TO  WRK-IYK
-                   END-IF
-               END-IF
+      *
+               EVALUATE    WRK-JYO  ALSO    WRK-KBN
+                   WHEN    "2"      ALSO    "1"
+                       IF      SPA-N23-NAME     =   SPACE
+                           MOVE    "0001"           TO  SPA-ERRCD
+                           MOVE    7           TO  SPA-N23-CUR
+                       ELSE
+                           MOVE    SPA-N23-NAME     TO  WRK-NAME
+                       END-IF
+                   WHEN    "2"      ALSO    "2"
+                       IF      SPA-N23-SRYCD    =   SPACE
+                           MOVE    "0002"           TO  SPA-ERRCD
+                           MOVE    8           TO  SPA-N23-CUR
+                       ELSE
+                           MOVE    SPA-N23-SRYCD    TO  WRK-SRYCD
+                       END-IF
+                   WHEN    "2"      ALSO    "3"
+                       IF      SPA-N23-INPUTCD  =   SPACE
+                           MOVE    "0003"           TO  SPA-ERRCD
+                           MOVE    9            TO  SPA-N23-CUR
+                       ELSE
+                           MOVE    SPA-N23-INPUTCD  TO  WRK-INPUTCD
+                       END-IF
+                   WHEN    "2"      ALSO    "4"
+                       IF      WRK-IYK          =   SPACE
+                           MOVE    "0004"           TO  SPA-ERRCD
+                           MOVE    10           TO  SPA-N23-CUR
+                       END-IF
+               END-EVALUATE
            END-IF
+      *
       *    出力順指定
            IF      SPA-N23-SYU(1)      =   "T"
                MOVE    "1"         TO  WRK-SYU
@@ -856,34 +969,6 @@
                    MOVE    "2"         TO  WRK-SYU
                END-IF
            END-IF
-           EVALUATE    WRK-JYO  ALSO    WRK-KBN
-               WHEN    "2"      ALSO    "1"
-                   IF      SPA-N23-NAME     =   SPACE
-                       MOVE    "0001"           TO  SPA-ERRCD
-                       MOVE    7           TO  SPA-N23-CUR
-                   ELSE
-                       MOVE    SPA-N23-NAME     TO  WRK-NAME
-                   END-IF
-               WHEN    "2"      ALSO    "2"
-                   IF      SPA-N23-SRYCD    =   SPACE
-                       MOVE    "0002"           TO  SPA-ERRCD
-                       MOVE    8           TO  SPA-N23-CUR
-                   ELSE
-                       MOVE    SPA-N23-SRYCD    TO  WRK-SRYCD
-                   END-IF
-               WHEN    "2"      ALSO    "3"
-                   IF      SPA-N23-INPUTCD  =   SPACE
-                       MOVE    "0003"           TO  SPA-ERRCD
-                       MOVE    9            TO  SPA-N23-CUR
-                   ELSE
-                       MOVE    SPA-N23-INPUTCD  TO  WRK-INPUTCD
-                   END-IF
-               WHEN    "2"      ALSO    "4"
-                   IF      WRK-IYK          =   SPACE
-                       MOVE    "0004"           TO  SPA-ERRCD
-                       MOVE    10           TO  SPA-N23-CUR
-                   END-IF
-           END-EVALUATE
       *
            .
        410-INPUT-CHK-EXT.
@@ -997,7 +1082,44 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                INITIALIZE                  SYS-1031-REC
            END-IF 
       *
-           PERFORM 4901-PRINT-SYORI-SEC
+           IF      SPA-N23-CHK(1)   =  "T"
+               PERFORM 4901-PRINT-SYORI-SEC
+           END-IF
+      *
+           IF      SPA-N23-CHK(2)   =  "T"
+               MOVE    "1"          TO  WRK-CHK
+               MOVE    "0"          TO  WRK-KIKAN
+               MOVE    "0"          TO  WRK-CYU
+               MOVE    "0"          TO  WRK-PRT
+      *        期間指定
+               EVALUATE    SPA-N23-KIKAN
+                   WHEN    "1"
+                       MOVE    "0"         TO  WRK-KIKAN
+                   WHEN    "2"
+                       MOVE    "2"         TO  WRK-KIKAN
+                   WHEN    "3"
+                       MOVE    "6"         TO  WRK-KIKAN
+                   WHEN    OTHER
+                       MOVE    "0"         TO  WRK-KIKAN
+               END-EVALUATE
+      *        注射を条件に含めるか指定
+               IF      SPA-N23-CYU         =   "T"
+                   MOVE    "1"         TO  WRK-CYU
+               END-IF
+      *        出力形式指定
+               IF      SPA-N23-PRT         =   "T"
+                   MOVE    "1"         TO  WRK-PRT
+               END-IF
+               PERFORM 4901-PRINT-SYORI2-SEC
+           END-IF
+      *
+           IF      SPA-N23-CHK(3)   =  "T"
+               MOVE    "2"          TO  WRK-CHK
+               MOVE    "0"          TO  WRK-KIKAN
+               MOVE    "0"          TO  WRK-CYU
+               MOVE    "0"          TO  WRK-PRT
+               PERFORM 4901-PRINT-SYORI2-SEC
+           END-IF
       *
       *    印刷処理
            IF      SPA-N21ID1-FLG        =   "OK"  OR "PV"
@@ -1171,6 +1293,89 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        4501-PRINT-EXT.
            EXIT.
       *
+      *----(03.05.02)--ADD-START---
+      *****************************************************************
+      *    印刷編集処理
+      *****************************************************************
+       4901-PRINT-SYORI2-SEC           SECTION.
+      *
+           PERFORM 45011-JOBKANRI-HENSYU-SEC
+      *
+      *    ファイルデイレクトリ位置指定
+           MOVE    SPACE           TO  LNK-PRTKANRI-AREA
+           INITIALIZE                  LNK-PRTKANRI-AREA
+           ADD     1               TO  WRK-PRTKANRI-RENNUM
+           MOVE    WRK-PRTKANRI-RENNUM
+                                   TO  LNK-PRTKANRI-RENNUM
+           MOVE    WRK-CONS-PRTKANRI-TBL-KEY
+                                   TO  LNK-PRTKANRI-TBL-KEY 
+           MOVE    WRK-CONS-PRTKANRI-TBL-GROUP
+                                   TO  LNK-PRTKANRI-TBL-GROUP
+           MOVE    "000000"        TO  LNK-PRTKANRI-SRYYM
+           MOVE    SPA-SYSYMD      TO  LNK-PRTKANRI-SKYYMD
+           MOVE    "ykjchk.sh"     TO  LNK-PRTKANRI-SHELLID
+           MOVE    ZERO            TO  LNK-PRTKANRI-PRIORITY
+           MOVE    SPA-TERMID      TO  LNK-PRTKANRI-TERMID
+           MOVE    SPA-OPID        TO  LNK-PRTKANRI-OPID
+           MOVE    SYS-1031-PRTNM (6)
+                                   TO  LNK-PRTKANRI-PRTNM
+      *
+           MOVE    SPACE           TO  SHELLTBL 
+           INITIALIZE              ORCSMKPASSAREA
+           MOVE    "scripts/allways/ykjchk.sh"
+                                   TO  MKPASS-IN-01
+           CALL    "ORCSMKPASS"    USING   ORCSMKPASSAREA
+           MOVE    MKPASS-OT-01    TO  SHELLTBL-NAME
+           MOVE    LNK-PRTKANRI-RENNUM
+                                   TO  SHELLTBL-ARG1
+           MOVE    LNK-PRTKANRI-TBL-KEY
+                                   TO  SHELLTBL-ARG2
+           MOVE    LNK-PRTKANRI-TBL-GROUP
+                                   TO  SHELLTBL-ARG3
+           MOVE    LNK-PRTKANRI-SHORI-RENNUM
+                                   TO  SHELLTBL-ARG4
+           MOVE    LNK-PRTKANRI-SRYYM
+                                   TO  SHELLTBL-ARG5
+           MOVE    LNK-PRTKANRI-SKYYMD
+                                   TO  SHELLTBL-ARG6
+           MOVE    LNK-PRTKANRI-SHELLID
+                                   TO  SHELLTBL-ARG7
+           MOVE    LNK-PRTKANRI-PRIORITY
+                                   TO  SHELLTBL-ARG8
+           MOVE    LNK-PRTKANRI-TERMID
+                                   TO  SHELLTBL-ARG9
+           MOVE    LNK-PRTKANRI-OPID
+                                   TO  SHELLTBL-ARG10
+           MOVE    LNK-PRTKANRI-PRTNM
+                                   TO  SHELLTBL-ARG11
+      *
+           MOVE    WRK-CONS-JOB-JOBID
+                                   TO  SHELLTBL-ARG12
+           MOVE    WRK-CONS-JOB-SHELLID
+                                   TO  SHELLTBL-ARG13
+           MOVE    SPA-HOSPNUM     TO  SHELLTBL-ARG14
+           MOVE    WRK-CHK         TO  SHELLTBL-ARG15
+           MOVE    WRK-KIKAN       TO  SHELLTBL-ARG16
+           MOVE    WRK-CYU         TO  SHELLTBL-ARG17
+           MOVE    WRK-PRT         TO  SHELLTBL-ARG18
+           MOVE    WRK-SYU         TO  SHELLTBL-ARG19
+           MOVE    YKJMERR         TO  SHELLTBL-ARG20
+      *
+           MOVE    SHELLTBL        TO  MCPDATA-REC
+           MOVE    "SHELL"         TO  MCP-FUNC
+           MOVE    "shell"         TO  MCP-TABLE
+           MOVE    "shell"         TO  MCP-PATHNAME
+           CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
+           IF      MCP-RC          NOT =   ZERO
+               DISPLAY "ERROR MCP-RC=" MCP-RC 
+           END-IF
+           .
+      *
+       4501-PRINT2-EXT.
+           EXIT.
+      *----(03.05.02)--ADD-END-----
       *****************************************************************
       *    ジョブ開始セット処理
       *****************************************************************
@@ -1408,7 +1613,30 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            INITIALIZE                  N23
       *
-           IF      SPA-N23-JYO(1)  =   "T"
+      *----(03.05.02)--ADD-START---
+           IF      SPA-N23-CHK(1)  =   "F"
+               MOVE    "F"             TO  SPA-N23-JYO
+               MOVE    WIDGET-INSENSITIVE
+                                       TO  N23-JYO-STATE
+           ELSE
+               MOVE     WIDGET-NORMAL  TO  N23-JYO-STATE
+           END-IF
+           IF      SPA-N23-CHK(2)  =   "F"
+               MOVE    SPACE           TO  SPA-N23-KIKAN-G
+               MOVE    "F"             TO  SPA-N23-CYU
+               MOVE    "F"             TO  SPA-N23-PRT
+               MOVE    WIDGET-INSENSITIVE
+                                       TO  N23-KIKAN-STATE
+                                           N23-CYU-STATE
+                                           N23-PRT-STATE
+           ELSE
+               MOVE     WIDGET-NORMAL  TO  N23-KIKAN-STATE
+                                           N23-CYU-STATE
+                                           N23-PRT-STATE
+           END-IF
+      *----(03.05.02)--ADD-END-----
+      *----(03.05.02)--UPD-START---
+           IF      SPA-N23-JYO     =   "F"
                MOVE    WIDGET-INSENSITIVE
                                        TO  N23-KBN-STATE(1)
                                            N23-KBN-STATE(2)
@@ -1487,8 +1715,10 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                END-IF
            END-IF
       *
-           MOVE    SPA-N23-JYO(1)  TO  N23-JYO(1)
-           MOVE    SPA-N23-JYO(2)  TO  N23-JYO(2)
+           MOVE    SPA-N23-CHK(1)  TO  N23-CHK(1)
+           MOVE    SPA-N23-CHK(2)  TO  N23-CHK(2)
+           MOVE    SPA-N23-CHK(3)  TO  N23-CHK(3)
+           MOVE    SPA-N23-JYO     TO  N23-JYO 
            MOVE    SPA-N23-KBN(1)  TO  N23-KBN(1)
            MOVE    SPA-N23-KBN(2)  TO  N23-KBN(2)
            MOVE    SPA-N23-KBN(3)  TO  N23-KBN(3)
@@ -1499,8 +1729,19 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPA-N23-IYK(1)  TO  N23-IYK(1)
            MOVE    SPA-N23-IYK(2)  TO  N23-IYK(2)
            MOVE    SPA-N23-IYK(3)  TO  N23-IYK(3)
+           MOVE    SPA-N23-CYU     TO  N23-CYU
+           MOVE    SPA-N23-PRT     TO  N23-PRT
            MOVE    SPA-N23-SYU(1)  TO  N23-SYU(1)
            MOVE    SPA-N23-SYU(2)  TO  N23-SYU(2)
+      *
+           MOVE    SPA-N23-KIKAN-G     TO  N23-KIKAN
+           PERFORM VARYING IDX     FROM    1       BY  1
+                   UNTIL   IDX     >   SPA-N23-KIKAN-MAX
+               MOVE    SPA-N23-KIKANLST(IDX)
+                                       TO  N23-KIKANLST(IDX)
+           END-PERFORM
+           MOVE    SPA-N23-KIKAN-MAX   TO  N23-KIKAN-COUNT
+      *----(03.05.02)--UPD-END-----
       *
       *    カーソル位置
            PERFORM 5001-MAPCUR-SEC
@@ -1518,11 +1759,12 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                PERFORM 5011-INPUT-CUR-SEC
            END-IF
       *
+      *----(03.05.02)--UPD-START---
            EVALUATE    SPA-N23-CUR
            WHEN    1
-               MOVE    "JYO1"          TO  MCP-WIDGET
+               MOVE    "CHK1"          TO  MCP-WIDGET
            WHEN    2
-               MOVE    "JYO2"          TO  MCP-WIDGET
+               MOVE    "JYO"           TO  MCP-WIDGET
            WHEN    3
                MOVE    "KBN1"          TO  MCP-WIDGET
            WHEN    4
@@ -1544,12 +1786,23 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            WHEN    12
                MOVE    "IYK3"          TO  MCP-WIDGET
            WHEN    13
-               MOVE    "SYU1"          TO  MCP-WIDGET
+               MOVE    "CHK2"          TO  MCP-WIDGET
            WHEN    14
+               MOVE    "KIKAN"         TO  MCP-WIDGET
+           WHEN    15
+               MOVE    "CYU"           TO  MCP-WIDGET
+           WHEN    16
+               MOVE    "PRT"           TO  MCP-WIDGET
+           WHEN    17
+               MOVE    "CHK3"          TO  MCP-WIDGET
+           WHEN    18
+               MOVE    "SYU1"          TO  MCP-WIDGET
+           WHEN    19
                MOVE    "SYU2"          TO  MCP-WIDGET
            WHEN    99
                MOVE    "B12"           TO  MCP-WIDGET
            END-EVALUATE
+      *----(03.05.02)--UPD-END-----
       *
            .
        5001-MAPCUR-EXT.
@@ -1560,10 +1813,11 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *****************************************************************
        5011-INPUT-CUR-SEC          SECTION.
       *
+      *----(03.05.02)--UPD-START---
            EVALUATE    WRK-MCP-WIDGET
-           WHEN    "JYO1"
+           WHEN    "CHK1"
                MOVE    2               TO  SPA-N23-CUR
-           WHEN    "JYO2"
+           WHEN    "JYO"
                MOVE    3               TO  SPA-N23-CUR
            WHEN    "KBN1"
                MOVE    4               TO  SPA-N23-CUR
@@ -1585,11 +1839,22 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    12              TO  SPA-N23-CUR
            WHEN    "IYK3"
                MOVE    13              TO  SPA-N23-CUR
-           WHEN    "SYU1"
+           WHEN    "CHK2"
                MOVE    14              TO  SPA-N23-CUR
+           WHEN    "KIKAN"
+               MOVE    15              TO  SPA-N23-CUR
+           WHEN    "CYU"
+               MOVE    16              TO  SPA-N23-CUR
+           WHEN    "PRT"
+               MOVE    17              TO  SPA-N23-CUR
+           WHEN    "CHK3"
+               MOVE    18              TO  SPA-N23-CUR
+           WHEN    "SYU1"
+               MOVE    19              TO  SPA-N23-CUR
            WHEN    "SYU2"
                MOVE    99              TO  SPA-N23-CUR
            END-EVALUATE
+      *----(03.05.02)--UPD-END-----
       *
            .
       *
