@@ -83,6 +83,8 @@
       *  03.04.00    NACL-多々納  06/11/13  検査正式名称表示区分の追加
       *  03.05.00    NACL-多々納  07/05/02  グループ診療対応
       *  03.05.00    NACL-多々納  07/06/22  本人・家族区分選択追加
+      *  03.05.01    NACL-多々納  07/07/XX  同日再診・訂正追加
+      *                                     皮下筋肉注射料変換区分追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -408,6 +410,24 @@
                            11  SPA-GMN-FORMALFLG-LST   PIC X(40)
                                                        OCCURS  5.
                            11  SPA-GMN-FORMALFLG-MAX   PIC 9(03).
+      *                同日再診・訂正選択
+                       09  SPA-GMN-TEISEIFLG-G.
+                           11  SPA-GMN-TEISEIFLG       PIC X(01).
+                           11  SPA-GMN-TEISEIFLG-F1    PIC X(01).
+                           11  SPA-GMN-TEISEIFLG-MEI   PIC X(38).
+                       09  SPA-GMN-TEISEIFLGLST-G.
+                           11  SPA-GMN-TEISEIFLG-LST   PIC X(40)
+                                                       OCCURS  2.
+                           11  SPA-GMN-TEISEIFLG-MAX   PIC 9(03).
+      *                皮下筋肉注射料変換選択
+                       09  SPA-GMN-CHG310FLG-G.
+                           11  SPA-GMN-CHG310FLG       PIC X(01).
+                           11  SPA-GMN-CHG310FLG-F1    PIC X(01).
+                           11  SPA-GMN-CHG310FLG-MEI   PIC X(38).
+                       09  SPA-GMN-CHG310FLGLST-G.
+                           11  SPA-GMN-CHG310FLG-LST   PIC X(40)
+                                                       OCCURS  2.
+                           11  SPA-GMN-CHG310FLG-MAX   PIC 9(03).
                    07  SPA-GMN-PAGE4-AREA.
       *                入金管理情報（収納機能情報）
                        09  SPA-GMN-SYUNYKNKNRKBN-G.
@@ -1190,6 +1210,14 @@
            MOVE    "0 使用しない"      TO  SPA-GMN-FORMALFLG-LST(1)
            MOVE    "1 使用する"        TO  SPA-GMN-FORMALFLG-LST(2)
            MOVE    2                   TO  SPA-GMN-FORMALFLG-MAX
+      *    同日再診・訂正選択
+           MOVE    "0 選択しない"      TO  SPA-GMN-TEISEIFLG-LST(1)
+           MOVE    "1 選択する"        TO  SPA-GMN-TEISEIFLG-LST(2)
+           MOVE    2                   TO  SPA-GMN-TEISEIFLG-MAX
+      *    皮下筋肉注射料変換選択
+           MOVE    "0 変換する"        TO  SPA-GMN-CHG310FLG-LST(1)
+           MOVE    "1 変換しない"      TO  SPA-GMN-CHG310FLG-LST(2)
+           MOVE    2                   TO  SPA-GMN-CHG310FLG-MAX
       *
            MOVE    "0 発行しない"      TO  SPA-GMN-SYUSKYPRTGLST(1)
            MOVE    "1 発行する"        TO  SPA-GMN-SYUSKYPRTGLST(2)
@@ -2007,6 +2035,10 @@
            MOVE    SYS-1038-WKSRYHYOFLG    TO  SPA-GMN-WKSRYHYOFLG
       *    検査正式名称表示
            MOVE    SYS-1038-FORMALFLG      TO  SPA-GMN-FORMALFLG
+      *    同日再診・訂正選択
+           MOVE    SYS-1038-TEISEIFLG      TO  SPA-GMN-TEISEIFLG
+      *    皮下筋肉注射料変換選択
+           MOVE    SYS-1038-CHG310FLG      TO  SPA-GMN-CHG310FLG
       *
       *    入金管理区分
            MOVE    ZERO                TO  FLG-OK
@@ -2112,6 +2144,40 @@
            IF      FLG-OK              =   ZERO
                MOVE    SPA-GMN-FORMALFLG-LST (1)
                                        TO  SPA-GMN-FORMALFLG-G
+           END-IF
+      *    同日再診・訂正選択
+           MOVE    ZERO                TO  FLG-OK
+           PERFORM VARYING IDY         FROM    1   BY  1
+                   UNTIL  (IDY         >   SPA-GMN-TEISEIFLG-MAX )
+                       OR (FLG-OK      =   1       )
+               IF      SPA-GMN-TEISEIFLG
+                                       =   SPA-GMN-TEISEIFLG-LST (IDY)
+                                                             (1:1)
+                   MOVE    SPA-GMN-TEISEIFLG-LST (IDY)
+                                       TO  SPA-GMN-TEISEIFLG-G
+                   MOVE    1           TO  FLG-OK
+               END-IF
+           END-PERFORM
+           IF      FLG-OK              =   ZERO
+               MOVE    SPA-GMN-TEISEIFLG-LST (1)
+                                       TO  SPA-GMN-TEISEIFLG-G
+           END-IF
+      *    皮下筋肉注射料変換選択
+           MOVE    ZERO                TO  FLG-OK
+           PERFORM VARYING IDY         FROM    1   BY  1
+                   UNTIL  (IDY         >   SPA-GMN-CHG310FLG-MAX )
+                       OR (FLG-OK      =   1       )
+               IF      SPA-GMN-CHG310FLG
+                                       =   SPA-GMN-CHG310FLG-LST (IDY)
+                                                             (1:1)
+                   MOVE    SPA-GMN-CHG310FLG-LST (IDY)
+                                       TO  SPA-GMN-CHG310FLG-G
+                   MOVE    1           TO  FLG-OK
+               END-IF
+           END-PERFORM
+           IF      FLG-OK              =   ZERO
+               MOVE    SPA-GMN-CHG310FLG-LST (1)
+                                       TO  SPA-GMN-CHG310FLG-G
            END-IF
       *
            MOVE    33                  TO  SPA-GMN-CUR
@@ -2903,6 +2969,8 @@
            MOVE    W07-DOSRYKBN-FLG    TO  SPA-GMN-DOSRYKBNFLG-G
            MOVE    W07-WKSRYHYO-FLG    TO  SPA-GMN-WKSRYHYOFLG-G
            MOVE    W07-FORMAL-FLG      TO  SPA-GMN-FORMALFLG-G
+           MOVE    W07-TEISEIFLG       TO  SPA-GMN-TEISEIFLG-G
+           MOVE    W07-CHG310FLG       TO  SPA-GMN-CHG310FLG-G
       *
       *    収納機能情報
            MOVE    W07-SYUNYKNKNRKBN   TO  SPA-GMN-SYUNYKNKNRKBN-G
@@ -3089,6 +3157,14 @@
       *            検査正式名称表示
                    IF      SPA-ERRCD           =   SPACE
                        PERFORM 4108-FORMALFLG-CHK-SEC
+                   END-IF
+      *            同日再診・訂正選択
+                   IF      SPA-ERRCD           =   SPACE
+                       PERFORM 4108-TEISEIFLG-CHK-SEC
+                   END-IF
+      *            皮下筋肉注射料変換選択
+                   IF      SPA-ERRCD           =   SPACE
+                       PERFORM 4108-CHG310FLG-CHK-SEC
                    END-IF
       *            入金管理区分チェック
                    IF      SPA-ERRCD           =   SPACE
@@ -4378,6 +4454,56 @@
        4108-FORMALFLG-CHK-EXT.
            EXIT.
       *****************************************************************
+      *    同日再診・訂正選択チェック処理（診療行為機能情報）
+      *****************************************************************
+       4108-TEISEIFLG-CHK-SEC      SECTION.
+      *
+           MOVE    ZERO                TO  FLG-OK
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL      (IDX     >   SPA-GMN-TEISEIFLG-MAX)
+                       OR     (FLG-OK  =   1    ) 
+               IF      SPA-GMN-TEISEIFLG
+                                       =   SPA-GMN-TEISEIFLG-LST (IDX)
+                                                          (1:1)
+                   MOVE    SPA-GMN-TEISEIFLG-LST(IDX)
+                                          TO  SPA-GMN-TEISEIFLG-G
+                   MOVE    1              TO  FLG-OK
+               END-IF
+           END-PERFORM
+           IF      FLG-OK              =   ZERO
+               MOVE    36              TO  SPA-GMN-CUR
+               MOVE    "2007"          TO  SPA-ERRCD
+           END-IF
+      *
+           .
+       4108-TEISEIFLG-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    皮下筋肉注射料変換チェック処理（診療行為機能情報）
+      *****************************************************************
+       4108-CHG310FLG-CHK-SEC      SECTION.
+      *
+           MOVE    ZERO                TO  FLG-OK
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL      (IDX     >   SPA-GMN-CHG310FLG-MAX)
+                       OR     (FLG-OK  =   1    ) 
+               IF      SPA-GMN-CHG310FLG
+                                       =   SPA-GMN-CHG310FLG-LST (IDX)
+                                                          (1:1)
+                   MOVE    SPA-GMN-CHG310FLG-LST(IDX)
+                                          TO  SPA-GMN-CHG310FLG-G
+                   MOVE    1              TO  FLG-OK
+               END-IF
+           END-PERFORM
+           IF      FLG-OK              =   ZERO
+               MOVE    37              TO  SPA-GMN-CUR
+               MOVE    "2008"          TO  SPA-ERRCD
+           END-IF
+      *
+           .
+       4108-CHG310FLG-CHK-EXT.
+           EXIT.
+      *****************************************************************
       *    入金管理区分チェック処理（収納行為機能情報）
       *****************************************************************
        4109-SYUNYKNKNRKBN-CHK-SEC      SECTION.
@@ -5508,6 +5634,8 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPA-GMN-DOSRYKBNFLG     TO  SYS-1038-DOSRYKBNFLG
            MOVE    SPA-GMN-WKSRYHYOFLG     TO  SYS-1038-WKSRYHYOFLG
            MOVE    SPA-GMN-FORMALFLG       TO  SYS-1038-FORMALFLG
+           MOVE    SPA-GMN-TEISEIFLG       TO  SYS-1038-TEISEIFLG
+           MOVE    SPA-GMN-CHG310FLG       TO  SYS-1038-CHG310FLG
       *
            MOVE    SYS-1038-REC            TO  SYSKANRI-REC
       *
@@ -6180,6 +6308,24 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            END-PERFORM
            MOVE    SPA-GMN-FORMALFLG-MAX
                                        TO  W07-FORMAL-FLG-COUNT
+      *    同日再診・訂正選択（診療行為機能情報）
+           MOVE    SPA-GMN-TEISEIFLG-G   TO  W07-TEISEIFLG
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-GMN-TEISEIFLG-MAX
+               MOVE    SPA-GMN-TEISEIFLG-LST (IDX)
+                                       TO  W07-TEISEIFLG-ITEM(IDX)
+           END-PERFORM
+           MOVE    SPA-GMN-TEISEIFLG-MAX
+                                       TO  W07-TEISEIFLG-COUNT
+      *    皮下筋肉注射料変換選択（診療行為機能情報）
+           MOVE    SPA-GMN-CHG310FLG-G   TO  W07-CHG310FLG
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-GMN-CHG310FLG-MAX
+               MOVE    SPA-GMN-CHG310FLG-LST (IDX)
+                                       TO  W07-CHG310FLG-ITEM(IDX)
+           END-PERFORM
+           MOVE    SPA-GMN-CHG310FLG-MAX
+                                       TO  W07-CHG310FLG-COUNT
       *
       *    複数科まとめ（診療行為機能情報）
            MOVE    SPA-GMN-KAGRPFLG-G  TO  W07-KAGRPFLG
@@ -6638,6 +6784,12 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN    "2006"
                    MOVE    "検査正式名称表示区分がありません。"
                                                        TO  SPA-ERRMSG
+               WHEN    "2007"
+                   MOVE    "同日再診・訂正選択区分がありません。"
+                                                       TO  SPA-ERRMSG
+               WHEN    "2008"
+                   MOVE    "皮下筋肉注射料自動変換区分がありません。"
+                                                       TO  SPA-ERRMSG
       *
                WHEN    "3001"
                    MOVE    "請求書兼領収書発行区分がありません。"
@@ -6923,6 +7075,10 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE  "WKSRYHYO_FLG"    TO   MCP-WIDGET
                WHEN    35
                    MOVE  "FORMAL_FLG"      TO   MCP-WIDGET
+               WHEN    36
+                   MOVE  "TEISEIFLG"       TO   MCP-WIDGET
+               WHEN    37
+                   MOVE  "CHG310FLG"       TO   MCP-WIDGET
       *
                WHEN    40
                    MOVE  "SYUSKYPRTG"      TO   MCP-WIDGET
@@ -7174,6 +7330,11 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN    "WKSRYHYO_FLG"
                    MOVE    35              TO  SPA-GMN-CUR
                WHEN    "FORMAL_FLG"
+      *******      MOVE    30              TO  SPA-GMN-CUR
+                   MOVE    36              TO  SPA-GMN-CUR
+               WHEN    "TEISEIFLG"
+                   MOVE    37              TO  SPA-GMN-CUR
+               WHEN    "CHG310FLG"
                    MOVE    30              TO  SPA-GMN-CUR
                WHEN    "SRYNYKNKNRKBN"
                    MOVE    31              TO  SPA-GMN-CUR

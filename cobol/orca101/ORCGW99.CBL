@@ -34,6 +34,7 @@
       *  01.00.02    NACL−太田   04/03/03  患者登録送信ボタン等追加
       *  02.07.00    NACL−太田   06/02/15  入院オーダー取込ボタン追加
       *  03.05.00    NACL-多々納  07/05/02  グループ診療対応
+      *  03.05.01    NACL-多々納  07/07/17  外来診察料展開追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -51,7 +52,6 @@
       *    システム管理情報設定用共通パラメタ
            COPY    "W01COMMON-SPA".
       *
-
       *    画面用ＳＰＡ
        01  SPA-W99.
            03  SPA-W99-AREA.
@@ -123,7 +123,6 @@
                        09  SPA-GMN-MULTIHOST  PIC X(01) OCCURS 2.
                    07  SPA-GMN-RESEND-G.
                        09  SPA-GMN-RESEND     PIC X(01) OCCURS 2.
-
                    07  SPA-GMN-TBL.            
                        09  SPA-GMN-TBL-G      OCCURS  20.
                            11  SPA-GMN-TADDRESS-G.
@@ -135,6 +134,15 @@
                                               PIC X(05).
                                13  SPA-GMN-SMEMO
                                               PIC X(40).
+      *            外来診察料展開追加
+                   07  SPA-GMN-SINSATU-FLG-G.
+                       09  SPA-GMN-SINSATU-FLG     PIC X(01).
+                       09  SPA-GMN-SINSATU-F1      PIC X(01).
+                       09  SPA-GMN-SINSATU-MEI     PIC X(28).
+                   07  SPA-GMN-SINSATU-LST-G.
+                       09  SPA-GMN-SINSATU-LST     PIC X(30) 
+                                                   OCCURS   5.
+                   07  SPA-GMN-SINSATU-MAX         PIC 9(04).
       *
                05  SPA-NAIB-AREA.
                    07  SPA-NAI-STYUKYMD       PIC 9(08).
@@ -160,6 +168,8 @@
        01  FLG-AREA.
            03  FLG-END             PIC 9(01).
            03  FLG-SYSKANRI        PIC 9(01).
+      *
+           03  FLG-OK              PIC 9(01).
       *
       *    カウント領域
       *
@@ -455,6 +465,11 @@
       * 
            MOVE    SPA-GMN-SETUZOKULST (1)
                                        TO  SPA-GMN-SETUZOKU-G
+      *    外来診察料展開
+           MOVE    "0 標準変換（再診料のみ）"
+                                       TO  SPA-GMN-SINSATU-LST (1)
+           MOVE    "1 診察料変換"      TO  SPA-GMN-SINSATU-LST (2)
+           MOVE    2                   TO  SPA-GMN-SINSATU-MAX
       * 
            MOVE    SPACE               TO  SYS-9000-REC
            INITIALIZE                      SYS-9000-REC
@@ -468,7 +483,7 @@
            MOVE    "key10"             TO  MCP-PATHNAME
            PERFORM 900-SYSKANRI-INV-SEC
            IF      FLG-SYSKANRI        =   ZERO
-               MOVE    MCPDATA-REC         TO  SYS-9000-REC
+               MOVE    SYSKANRI-REC        TO  SYS-9000-REC
                MOVE    SYS-9000-SETUZOKU   TO  SPA-GMN-SETUZOKU 
       *
                PERFORM VARYING IDY FROM    1   BY  1
@@ -562,7 +577,8 @@
                    MOVE    "T"         TO  SPA-GMN-RESEND (1)
                    MOVE    "F"         TO  SPA-GMN-RESEND (2)
                END-IF
-      *
+      *        外来診察料展開
+               MOVE    SYS-9000-SINSATU-FLG    TO  SPA-GMN-SINSATU-FLG
            ELSE
                MOVE    "T" 
                                        TO  SPA-GMN-UKEBUTTON (1)  
@@ -593,6 +609,15 @@
                MOVE    "F"             TO  SPA-GMN-RESEND (2)
       *
            END-IF             
+      *    外来診察料展開
+           EVALUATE    SPA-GMN-SINSATU-FLG
+               WHEN    "1"
+                   MOVE    SPA-GMN-SINSATU-LST(2)
+                                           TO  SPA-GMN-SINSATU-FLG-G
+               WHEN    OTHER
+                   MOVE    SPA-GMN-SINSATU-LST(1)
+                                           TO  SPA-GMN-SINSATU-FLG-G
+           END-EVALUATE
       *
            MOVE    SPACE               TO  SYS-9001-REC
            INITIALIZE                      SYS-9001-REC
@@ -755,10 +780,10 @@
       *
       *    基本チェック処理
            PERFORM 4102-KIHON-CHK-SEC
-           IF    ( SPA-ERRCD   NOT =   SPACE )
-             OR  ( FLG-END     NOT =   ZERO  )
-               GO  TO  410-INPUT-CHK-EXT
-           END-IF
+      ***  IF    ( SPA-ERRCD   NOT =   SPACE )
+      *      OR  ( FLG-END     NOT =   ZERO  )
+      *        GO  TO  410-INPUT-CHK-EXT
+      ***  END-IF
       *
            .
       *
@@ -775,6 +800,8 @@
       *
       *    送信用コード
            MOVE    W99-SCODE               TO  SPA-GMN-SCODE-G  
+      *    外来診察料
+           MOVE    W99-SINSATU-FLG         TO  SPA-GMN-SINSATU-FLG-G
       *
            PERFORM VARYING IDXA    FROM    1   BY  1
                    UNTIL ( IDXA    >       WRK-CONS-GMN-LINE-MAX )
@@ -805,51 +832,47 @@
       *
       *    ＣＬＡＩＭ接続区分チェック
            PERFORM 4100-SETUZOKU-CHK-SEC
-           IF    ( SPA-ERRCD   NOT =   SPACE )
-               GO  TO  4102-KIHON-CHK-EXT
-           END-IF
       *
            IF    ( SPA-GMN-SETUZOKU    =   "1" )
       *        送信用コードチェック
-               PERFORM 4101-CODE-CHK-SEC
-               IF    ( SPA-ERRCD   NOT =   SPACE )
-                   GO  TO  4102-KIHON-CHK-EXT
+               IF      SPA-ERRCD           =   SPACE
+                   PERFORM 4101-CODE-CHK-SEC
                END-IF
            END-IF
       *
            PERFORM VARYING IDXA    FROM    1   BY  1
                    UNTIL ( IDXA    >   WRK-CONS-GMN-LINE-MAX )
+                     OR  ( SPA-ERRCD   NOT =   SPACE )
       *
                COMPUTE IDX     = ( SPA-GMN-PAGE -  1 )
                                *   WRK-CONS-GMN-LINE-MAX
                                +   IDXA
       *
       *        ＩＰアドレス入力チェック処理 
-               PERFORM 4102-ADDRESS-CHK-SEC
-               IF    ( SPA-ERRCD   NOT =   SPACE )
-                   GO  TO  4102-KIHON-CHK-EXT
+               IF    ( SPA-ERRCD       =   SPACE )
+                   PERFORM 4102-ADDRESS-CHK-SEC
                END-IF
       *
       *        ポート１入力チェック処理
-               PERFORM 4103-PORT1-CHK-SEC
-               IF    ( SPA-ERRCD   NOT =   SPACE )
-                   GO  TO  4102-KIHON-CHK-EXT
+               IF    ( SPA-ERRCD       =   SPACE )
+                   PERFORM 4103-PORT1-CHK-SEC
                END-IF
       *
       *        ポート２入力チェック処理
-               PERFORM 4104-PORT2-CHK-SEC
-               IF    ( SPA-ERRCD   NOT =   SPACE )
-                   GO  TO  4102-KIHON-CHK-EXT
+               IF    ( SPA-ERRCD       =   SPACE )
+                   PERFORM 4104-PORT2-CHK-SEC
                END-IF
       *
       *        メモ入力チェック処理
-               PERFORM 4105-MEMO-CHK-SEC
-               IF    ( SPA-ERRCD   NOT =   SPACE )
-                   GO  TO  4102-KIHON-CHK-EXT
+               IF    ( SPA-ERRCD       =   SPACE )
+                   PERFORM 4105-MEMO-CHK-SEC
                END-IF
-      *
            END-PERFORM
       *
+      *    外来診察料展開
+           IF    ( SPA-ERRCD       =   SPACE )
+               PERFORM 4106-SINSATU-CHK-SEC
+           END-IF
            .
       *
        4102-KIHON-CHK-EXT.
@@ -899,7 +922,8 @@
            MOVE    W99-SYNBUTTON1         TO  SPA-GMN-SYNBUTTON (1) 
            MOVE    W99-SYNBUTTON2         TO  SPA-GMN-SYNBUTTON (2) 
       *
-           MOVE    9                      TO  SPA-GMN-CUR
+      *D   MOVE    9                      TO  SPA-GMN-CUR
+           MOVE    50                     TO  SPA-GMN-CUR
       *
            .
        450-SYNBUTTON-SEC-EXT.
@@ -1040,7 +1064,6 @@
                ELSE
                    MOVE    "0004"          TO  SPA-ERRCD
                    MOVE    WRK-GMN-CUR     TO  SPA-GMN-CUR
-                   GO  TO  4102-ADDRESS-CHK-EXT
                END-IF
            ELSE
                IF    ( MCP-WIDGET (1:8)    =   "SADDRESS" )
@@ -1077,7 +1100,6 @@
                ELSE
                    MOVE    "0004"          TO  SPA-ERRCD
                    MOVE    WRK-GMN-CUR     TO  SPA-GMN-CUR
-                   GO  TO  4103-PORT1-CHK-EXT
                END-IF
            END-IF    
       *
@@ -1106,7 +1128,6 @@
                ELSE
                    MOVE    "0004"              TO  SPA-ERRCD
                    MOVE    WRK-GMN-CUR     TO  SPA-GMN-CUR
-                   GO  TO  4104-PORT2-CHK-EXT
                END-IF
            END-IF    
       *
@@ -1134,12 +1155,36 @@
                ELSE
                    MOVE    "0005"              TO  SPA-ERRCD
                    MOVE    WRK-GMN-CUR     TO  SPA-GMN-CUR
-                   GO  TO  4105-MEMO-CHK-EXT
                END-IF
            END-IF    
       *
            .
        4105-MEMO-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    外来診察料展開区分チェック
+      *****************************************************************
+       4106-SINSATU-CHK-SEC       SECTION.
+      *
+           MOVE    ZERO                TO  FLG-OK
+           PERFORM VARYING IDY     FROM    1   BY  1
+                   UNTIL ( IDY     >   SPA-GMN-SINSATU-MAX )
+                    OR   ( FLG-OK      =   1    )
+               IF     ( SPA-GMN-SINSATU-LST (IDY)(1:1)
+                                           =    SPA-GMN-SINSATU-FLG )
+                   MOVE    SPA-GMN-SINSATU-LST (IDY)
+                                           TO  SPA-GMN-SINSATU-FLG-G
+                   MOVE    1               TO  FLG-OK
+               END-IF
+           END-PERFORM
+      *
+           IF     (FLG-OK              =   ZERO)
+               MOVE    "0010"              TO  SPA-ERRCD
+               MOVE    50                  TO  SPA-GMN-CUR
+           END-IF    
+           .
+       4106-SINSATU-CHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1157,7 +1202,6 @@
            IF     ( IDY >       SPA-GMN-SETUZOKU-MAX )
                MOVE    "0001"              TO  SPA-ERRCD
                MOVE    1                   TO  SPA-GMN-CUR
-               GO  TO  4100-SETUZOKU-CHK-EXT
            ELSE
                MOVE    SPA-GMN-SETUZOKULST (IDY)
                                            TO  SPA-GMN-SETUZOKU-G
@@ -1174,25 +1218,23 @@
            IF    ( SPA-GMN-SCODE-G     =   SPACE )
                MOVE    SPA-GMN-SCODELST (1)
                                    TO  SPA-GMN-SCODE-G
-               GO  TO  4101-CODE-CHK-EXT
            END-IF
       *
+           MOVE    ZERO                TO  FLG-OK
            PERFORM VARYING IDY FROM    1   BY  1
                    UNTIL ( IDY >       SPA-GMN-SCODE-MAX )
-                    OR   ( SPA-GMN-SCODE-G(1:1)
-                                   =   SPA-GMN-SCODEL (IDY) )
-      *
-               CONTINUE
-      *
+                    OR   ( FLG-OK      =   1    )
+               IF     ( SPA-GMN-SCODE-G(1:1)
+                                       =   SPA-GMN-SCODEL (IDY) )
+                   MOVE    SPA-GMN-SCODELST (IDY)
+                                           TO  SPA-GMN-SCODE-G
+                   MOVE    1               TO  FLG-OK
+               END-IF
            END-PERFORM
       *
-           IF     ( IDY >       SPA-GMN-SCODE-MAX )
+           IF     (FLG-OK              =   ZERO)
                MOVE    "0002"              TO  SPA-ERRCD
                MOVE    2                   TO  SPA-GMN-CUR
-               GO  TO  4101-CODE-CHK-EXT
-           ELSE
-               MOVE    SPA-GMN-SCODELST (IDY)
-                                           TO  SPA-GMN-SCODE-G
            END-IF    
            .
        4101-CODE-CHK-EXT.
@@ -1255,16 +1297,16 @@
            IF    ( SPA-GMN-PAGE    >   1 )
       *
                PERFORM 410-INPUT-CHK-SEC
-               IF    ( SPA-ERRCD   NOT =   SPACE )
-                   GO  TO  460-MAEPAGE-EXT
+      *
+               IF      SPA-ERRCD       =   SPACE
+                   COMPUTE SPA-GMN-PAGE    =   SPA-GMN-PAGE    -   1
+                   PERFORM 4200-LBLNO-HEN-SEC
                END-IF
-      *
-               COMPUTE SPA-GMN-PAGE    =   SPA-GMN-PAGE    -   1
-               PERFORM 4200-LBLNO-HEN-SEC
-      *
            END-IF
       *
-           MOVE    9               TO  SPA-GMN-CUR
+           IF      SPA-ERRCD           =   SPACE
+               MOVE    9               TO  SPA-GMN-CUR
+           END-IF
       *
            .
        460-MAEPAGE-EXT.
@@ -1277,16 +1319,16 @@
            IF    ( SPA-GMN-PAGE    <   WRK-CONS-PAGE-MAX )
       *
                PERFORM 410-INPUT-CHK-SEC
-               IF    ( SPA-ERRCD   NOT =   SPACE )
-                   GO  TO  470-TUGIPAGE-EXT
+      *
+               IF      SPA-ERRCD       =   SPACE
+                   COMPUTE SPA-GMN-PAGE    =   SPA-GMN-PAGE    +   1
+                   PERFORM 4200-LBLNO-HEN-SEC
                END-IF
-      *
-               COMPUTE SPA-GMN-PAGE    =   SPA-GMN-PAGE    +   1
-               PERFORM 4200-LBLNO-HEN-SEC
-      *
            END-IF
       *
-           MOVE    9               TO  SPA-GMN-CUR
+           IF      SPA-ERRCD           =   SPACE
+               MOVE    9               TO  SPA-GMN-CUR
+           END-IF
       *
            .
        470-TUGIPAGE-EXT.
@@ -1299,17 +1341,15 @@
       *
       *    基本チェック
            PERFORM 410-INPUT-CHK-SEC
-           IF    ( SPA-ERRCD   NOT =   SPACE )
-               GO  TO  490-TOUROKU-EXT
-           END-IF
       *
       *    関連チェック
-           PERFORM 4900-KANRENCHK-SEC
-           IF    ( SPA-ERRCD   NOT =   SPACE )
-               GO  TO  490-TOUROKU-EXT
+           IF      SPA-ERRCD           =   SPACE
+               PERFORM 4900-KANRENCHK-SEC
            END-IF
       *
-           MOVE    "1001"          TO  SPA-WIDCD
+           IF      SPA-ERRCD           =   SPACE
+               MOVE    "1001"          TO  SPA-WIDCD
+           END-IF
       *
            .
        490-TOUROKU-EXT.
@@ -1334,7 +1374,7 @@
            MOVE    "key10"             TO  MCP-PATHNAME
            PERFORM 900-SYSKANRI-INV-SEC
            IF      FLG-SYSKANRI            =   ZERO
-               MOVE    MCPDATA-REC             TO  SYS-9000-REC
+               MOVE    SYSKANRI-REC            TO  SYS-9000-REC
            ELSE
                MOVE    SPACE                   TO  SYS-9000-REC
                INITIALIZE                      SYS-9000-REC
@@ -1349,6 +1389,8 @@
            MOVE    SPA-GMN-UKEBUTTON-G     TO  SYS-9000-UKEBUTTON-G
            MOVE    SPA-GMN-KANBUTTON-G     TO  SYS-9000-KANBUTTON-G
            MOVE    SPA-GMN-SYNBUTTON-G     TO  SYS-9000-SYNBUTTON-G
+      *    外来診察料展開 
+           MOVE    SPA-GMN-SINSATU-FLG     TO  SYS-9000-SINSATU-FLG
       *     
            IF    ( SPA-GMN-PTINF-SEND (2)      =   "T" )
                MOVE    "1"                 TO  SYS-9000-PT-FLG
@@ -1462,7 +1504,8 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *
       *    ＣＬＡＩＭ接続設定登録処理
            PERFORM VARYING IDX FROM    1   BY  1
-                   UNTIL   IDX >       WRK-CONS-LINE-MAX
+                   UNTIL  (IDX >       WRK-CONS-LINE-MAX )
+                       OR (SPA-ERRCD   NOT =   SPACE     )
                IF      SPA-GMN-SADDRESS (IDX)
                                        NOT  =   SPACE   
                    INITIALIZE                  SYS-9001-REC
@@ -1498,7 +1541,6 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                    IF      MCP-RC          NOT =   ZERO 
                        MOVE    "1002"              TO  SPA-ERRCD
                        DISPLAY "2002 SYSKANRI-KEY =>" SYS-9001-KEY 
-                       GO  TO  490-KOUSHIN-EXT
                    END-IF
                END-IF    
            END-PERFORM
@@ -1620,6 +1662,14 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPA-GMN-MULTIHOST (2)       TO   W99-MULTIHOST2
            MOVE    SPA-GMN-RESEND (1)          TO   W99-RESEND1
            MOVE    SPA-GMN-RESEND (2)          TO   W99-RESEND2
+      *    外来診察料展開
+           MOVE    SPA-GMN-SINSATU-FLG-G   TO  W99-SINSATU-FLG
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-GMN-SINSATU-MAX
+               MOVE    SPA-GMN-SINSATU-LST (IDX)
+                                       TO  W99-SINSATU-FLG-ITEM (IDX)
+           END-PERFORM
+           MOVE    SPA-GMN-SINSATU-MAX TO  W99-SINSATU-FLG-COUNT
       *
            PERFORM 5001-MAPCUR-SEC
       *
@@ -1673,7 +1723,7 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN    "0007"
                    MOVE    "数字で入力して下さい"        TO  SPA-ERRMSG
                WHEN    "0010"
-                   MOVE    "損傷区分をこれ以上追加できません"
+                   MOVE    "外来診察料展開区分がありません"
                                                          TO  SPA-ERRMSG
                WHEN    "0099"
                    MOVE    "未入力の項目があります"
@@ -1847,6 +1897,9 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
            WHEN    49
                MOVE  "B12"             TO   MCP-WIDGET
       *
+           WHEN    50
+               MOVE  "SINSATU_FLG"     TO   MCP-WIDGET
+      *
            WHEN    101
                MOVE  "PTINF_SEND1"     TO   MCP-WIDGET
            WHEN    102
@@ -1901,6 +1954,9 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
            WHEN    "SYNBUTTON1"
                MOVE  7                 TO   SPA-GMN-CUR
            WHEN    "SYNBUTTON2"
+      *D       MOVE  8                 TO   SPA-GMN-CUR
+               MOVE  49                TO   SPA-GMN-CUR
+           WHEN    "SINSATU_FLG"
                MOVE  8                 TO   SPA-GMN-CUR
            WHEN    "SADDRESS01"
                MOVE  9                 TO   SPA-GMN-CUR
@@ -2072,6 +2128,7 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
            IF      MCP-RC              =   ZERO
                PERFORM 920-DBFETCH-SEC
                IF      MCP-RC              =   ZERO
+                   MOVE    MCPDATA-REC         TO  SYSKANRI-REC
                    MOVE    ZERO                TO  FLG-SYSKANRI
                ELSE
                    MOVE    1                   TO  FLG-SYSKANRI
