@@ -64,6 +64,8 @@
                05  SPA-CHOKITOFLG          PIC  9(01).
       *外用の入力回数（剤判定の場合に使用）
                05  SPA-CHOKIKAISU          PIC  9(05).
+      *皮下筋肉注射料変換選択
+               05  SPA-CHG310FLG           PIC  X(01).
       *        警告済み
                05  SPA-KEI-FLG             PIC 9(01).
       *        保険組合せ

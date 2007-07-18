@@ -1492,12 +1492,22 @@
                MOVE    SYS-1038-DOSRYKBNFLG    TO  SPA-DOSRYKBNFLG
       *        中途表示一覧
                MOVE    SYS-1038-WKSRYHYOFLG    TO  SPA-WKSRYHYOFLG
+      *        同日再診・訂正選択
+               MOVE    SYS-1038-TEISEIFLG      TO  SPA-TEISEIFLG
+      *        皮下筋肉注射料変換選択
+               MOVE    SYS-1038-CHG310FLG      TO  SPA-CHG310FLG
            END-IF
            IF      SPA-DOSRYKBNFLG     =   SPACE
                MOVE    "00"                TO  SPA-DOSRYKBNFLG
            END-IF
            IF      SPA-WKSRYHYOFLG        =   SPACE
                MOVE    "0"                TO  SPA-WKSRYHYOFLG
+           END-IF
+           IF      SPA-TEISEIFLG       =   SPACE
+               MOVE    "0"                 TO  SPA-TEISEIFLG
+           END-IF
+           IF      SPA-CHG310FLG       =   SPACE
+               MOVE    "0"                 TO  SPA-CHG310FLG
            END-IF
       *
            MOVE    "tbl_syskanri"      TO  MCP-TABLE

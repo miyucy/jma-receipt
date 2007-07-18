@@ -575,7 +575,9 @@
       *    他のＬＤより
            IF      LINKAREA            NOT =   SPACE
                MOVE    LNK-KYOUTU          TO  SPA-KYOUTU
-      *
+      *!
+               CALL    "ORCSSPACHK"        USING    SPA-AREA
+      *!
       *        元の画面へ戻す
                MOVE    SPA-MOTOPG          TO  WRK-MOTOPG
                IF      WRK-MOTOPG(1:3)     =   "Y01"  OR  "U01"  OR
@@ -598,6 +600,9 @@
                    MOVE    SPA-MOTOPG      TO  SPA-MOTOPG2
                END-IF
            END-IF
+      *!
+           CALL    "ORCSSPACHK"        USING    SPA-AREA
+      *!
       *
            MOVE    SPA-WORK                TO  SPA-P02KYOUTU
            MOVE    ZERO                    TO  SPA-FLG-END

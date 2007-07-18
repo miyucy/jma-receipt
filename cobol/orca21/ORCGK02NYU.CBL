@@ -1050,6 +1050,9 @@
                    MOVE    SPA-WORK        TO  SPA-K01KYOUTU
                    MOVE    1               TO  SPA-GMN-CUR
                END-IF
+      *!
+               CALL    "ORCSSPACHK"        USING    SPA-AREA
+      *!
       *        Í½Ìó¤Î»þ¡¢¤½¤Î¤Þ¤Þ²èÌÌÉ½¼¨¤Ø
                IF      WRK-MOTOPG(1:3)     =   "Y01"
                    IF      SPA-PTID            =   ZERO
@@ -1066,6 +1069,9 @@
                    GO      TO      300-SCREEN-EXT
                END-IF
            END-IF
+      *!
+           CALL    "ORCSSPACHK"        USING    SPA-AREA
+      *!
       *
            MOVE    "1"                 TO  SPA-NYUGAIKBN
       *
@@ -5971,6 +5977,8 @@
            IF      SPA-K02N-KENSAFLG   =   "T"
                MOVE    1                   TO  LNK-ORCSC-KENSAFLG
            END-IF
+      *    Èé²¼¶ÚÆùÃí¼ÍÎÁÊÑ´¹ÁªÂò
+           MOVE    SPA-CHG310FLG       TO  LNK-ORCSC-CHG310FLG
       *
            MOVE    SPA-SRYYMD          TO  WRK-SPA-SRYYMD
       *    Æþ±¡Æü¤ÎºÇ¸å¤ÎÆü¤ò¿ÇÎÅÆü¤È¤¹¤ë
@@ -6985,6 +6993,8 @@
            IF      SPA-K02N-KENSAFLG   =   "T"
                MOVE    1                   TO  LNK-ORCSC-KENSAFLG
            END-IF
+      *    Èé²¼¶ÚÆùÃí¼ÍÎÁÊÑ´¹ÁªÂò
+           MOVE    SPA-CHG310FLG       TO  LNK-ORCSC-CHG310FLG
       *
       *            ¿ÇÎÅ
            IF      SPA-SRYKBN-CNT (01) >   ZERO

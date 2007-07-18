@@ -43,6 +43,7 @@
       * 03.04.01     NACL-多々納  06/12/14  薬剤附加チェック追加
       * 03.04.02     NACL-多々納  07/02/28  包括診療追加対応
       * 03.05.00     NACL-多々納  07/05/XX  グループ診療対応
+      * 03.05.01     NACL-多々納  07/07/18  皮下筋肉注射変換なし対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -617,6 +618,8 @@
            COPY    "CPSK1010.INC".
       *
            COPY    "CPSK1008.INC".
+      *
+           COPY    "CPSK1038.INC".
       *
       *    点数マスタ−
       *01  TENSU-REC.
@@ -1198,6 +1201,40 @@
                MOVE    ZERO                TO  SPA-JIKANTOKU-NYU
                MOVE    ZERO                TO  SPA-SURYOZERO-FLG
            END-IF
+      *
+      *    システム管理検索（診療行為一括入金管理情報）
+           MOVE    SPACE               TO  SYS-1038-REC
+           INITIALIZE                  SYS-1038-REC
+           MOVE    "1038"              TO  SYS-1038-KANRICD
+           MOVE    "*"                 TO  SYS-1038-KBNCD
+           MOVE    SPA-SRYYMD          TO  SYS-1038-STYUKYMD
+           MOVE    SPA-SRYYMD          TO  SYS-1038-EDYUKYMD
+           MOVE    SPA-HOSPNUM         TO  SYS-1038-HOSPNUM
+           MOVE    SYS-1038-REC        TO  MCPDATA-REC
+      *
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key10"             TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_syskanri"      TO  MCP-TABLE
+               MOVE    "key10"             TO  MCP-PATHNAME
+               PERFORM 900-KANRIMST-READ-SEC
+           ELSE
+               MOVE    SPACE               TO  SYS-1038-REC
+               INITIALIZE                  SYS-1038-REC
+               MOVE    1               TO  FLG-SYSKANRI
+           END-IF
+           IF      FLG-SYSKANRI        =   ZERO
+               MOVE    MCPDATA-REC         TO  SYS-1038-REC
+      *        皮下筋肉注射料変換選択
+               MOVE    SYS-1038-CHG310FLG      TO  SPA-CHG310FLG
+           END-IF
+           IF      SPA-CHG310FLG       =   SPACE
+               MOVE    "0"                 TO  SPA-CHG310FLG
+           END-IF
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key10"             TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
       *
       *
            MOVE    ZERO                TO  SPA-GMN-MAX
@@ -3694,6 +3731,8 @@
       *    ２４時間連携体制加算は自動発生しない
            MOVE    1                   TO  LNK-ORCSC-NETAKIRI-ARI3
       *
+      *    皮下筋肉注射料変換選択
+           MOVE    SPA-CHG310FLG       TO  LNK-ORCSC-CHG310FLG
       *
            EVALUATE    WRK-COM-SRYKBN (01)
       *            診療

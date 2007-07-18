@@ -4625,6 +4625,8 @@
            MOVE    FLG-TOROKU          TO  LNK-ORCSC-TOROKU
       *    »þ´Ö³°ÆÃÎã¶èÊ¬
            MOVE    SPA-JIKANTOKU       TO  LNK-ORCSC-JIKANTOKU
+      *    Èé²¼¶ÚÆùÃí¼ÍÎÁÊÑ´¹ÁªÂò
+           MOVE    SPA-CHG310FLG       TO  LNK-ORCSC-CHG310FLG
       *
            EVALUATE    WRK-COM-SRYKBN (01)
       *        ¿ÇÎÅ
@@ -5271,6 +5273,8 @@
            MOVE    SPA-NAI-ROUJIN      TO  LNK-ORCSC-ROUJIN 
            MOVE    SPA-NENREI          TO  LNK-ORCSC-NENREI 
            MOVE    FLG-TOROKU          TO  LNK-ORCSC-TOROKU
+      *    Èé²¼¶ÚÆùÃí¼ÍÎÁÊÑ´¹ÁªÂò
+           MOVE    SPA-CHG310FLG       TO  LNK-ORCSC-CHG310FLG
       *    ¸¡ºº¤Î½ÅÊ£¥Á¥§¥Ã¥¯¤Î¤ß¹Ô¤¦
            IF      SPA-SRYKBN-CNT (07) >   ZERO
                CALL    "ORCSC60"       USING

@@ -1159,6 +1159,9 @@
                    MOVE    SPA-WORK        TO  SPA-K01KYOUTU
                    MOVE    1               TO  SPA-GMN-CUR
                END-IF
+      *!
+               CALL    "ORCSSPACHK"        USING    SPA-AREA
+      *!
       *        Í½Ìó¤Î»þ¡¢¤½¤Î¤Þ¤Þ²èÌÌÉ½¼¨¤Ø
                IF      WRK-MOTOPG          =   "Y01"
                                            OR  "KA01"
@@ -1176,6 +1179,9 @@
                    GO      TO      300-SCREEN-EXT
                END-IF
            END-IF
+      *!
+           CALL    "ORCSSPACHK"        USING    SPA-AREA
+      *!
       *
            MOVE    "2"                 TO  SPA-NYUGAIKBN
       *
@@ -7861,6 +7867,8 @@
            MOVE    WRK-SINSATU-ARI     TO  LNK-ORCSC-SINSATU-ARI
       *    Æ±Æü½é¿Ç¤Î¿ÇÎÅ²Ê
            MOVE    SPA-DOUSYOSIN-AREA  TO  LNK-ORCSC-DOUSYOSIN-AREA
+      *    Èé²¼¶ÚÆùÃí¼ÍÎÁÊÑ´¹ÁªÂò
+           MOVE    SPA-CHG310FLG       TO  LNK-ORCSC-CHG310FLG
       *
            EVALUATE    WRK-COM-SRYKBN (01)
       *            ¿ÇÎÅ
@@ -8832,6 +8840,8 @@
            MOVE    SPA-DOUSYOSIN-AREA  TO  LNK-ORCSC-DOUSYOSIN-AREA
       *    ¥ê¥Ï¥Ó¥êÄþ¸º³ÎÇ§
            MOVE    SPA-RIGAKU-NCNT-AREA    TO  LNK-RIGAKU-NCNT-AREA
+      *    Èé²¼¶ÚÆùÃí¼ÍÎÁÊÑ´¹ÁªÂò
+           MOVE    SPA-CHG310FLG       TO  LNK-ORCSC-CHG310FLG
       *
            MOVE    ZERO                TO  LNK-ORCSC-JIKANERR-FLG
            MOVE    SPACE               TO  SPA-GMN-JIKANMSG

@@ -138,6 +138,9 @@
       *    ファイルレイアウト
       *****************************************************************
       *
+      *    システム管理マスタ
+           COPY    "CPSYSKANRI.INC".
+      *
       *    出力先プリンタ名割り当て情報
            COPY  "CPSK1031.INC".
       *
@@ -426,7 +429,7 @@
            MOVE    SYS-1010-REC        TO  MCPDATA-REC
            PERFORM 900-SYSKANRI-READ-SEC
            IF      FLG-SYSKANRI        =   ZERO
-               MOVE    MCPDATA-REC         TO  SYS-1010-REC
+               MOVE    SYSKANRI-REC        TO  SYS-1010-REC
                MOVE    SYS-1010-NAME       TO  HC14-DRNAME (IDX)
            END-IF
       *
@@ -440,7 +443,7 @@
            MOVE    SYS-1005-REC        TO  MCPDATA-REC
            PERFORM 900-SYSKANRI-READ-SEC
            IF      FLG-SYSKANRI        =   ZERO
-               MOVE    MCPDATA-REC        TO  SYS-1005-REC
+               MOVE    SYSKANRI-REC            TO  SYS-1005-REC
                MOVE    SYS-1005-SRYKANAME2     TO  HC14-SRYKA  (IDX)
            END-IF
       *
@@ -454,7 +457,7 @@
            MOVE    SYS-1012-REC        TO  MCPDATA-REC
            PERFORM 900-SYSKANRI-READ-SEC
            IF      FLG-SYSKANRI        =   ZERO
-               MOVE    MCPDATA-REC         TO  SYS-1012-REC
+               MOVE    SYSKANRI-REC            TO  SYS-1012-REC
                MOVE    SYS-1012-SRYNAIYODSP    TO  HC14-SRYNAIYO  (IDX)
            END-IF
       *
@@ -468,7 +471,7 @@
            MOVE    SYS-0051-REC        TO  MCPDATA-REC
            PERFORM 900-SYSKANRI-READ-SEC
            IF      FLG-SYSKANRI        =   ZERO
-               MOVE    MCPDATA-REC         TO  SYS-0051-REC
+               MOVE    SYSKANRI-REC        TO  SYS-0051-REC
                MOVE    SYS-0051-YYKKAKNAME TO  HC14-RENRAKU  (IDX)
            END-IF
       *    来院済み
@@ -541,6 +544,9 @@
                MOVE    "tbl_syskanri"      TO  MCP-TABLE
                MOVE    "key10"             TO  MCP-PATHNAME
                PERFORM 901-KANRIMST-READ-SEC
+               IF      MCP-RC              =   ZERO
+                   MOVE    MCPDATA-REC     TO  SYSKANRI-REC
+               END-IF
            ELSE
                MOVE    1              TO  FLG-SYSKANRI
            END-IF
