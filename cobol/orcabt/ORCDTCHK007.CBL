@@ -61,8 +61,8 @@
       *
        WORKING-STORAGE                 SECTION.
       *
-           COPY    "HCM402V01.INC"
-                                   REPLACING  //HCM402V01//
+           COPY    "HCM402V02.INC"
+                                   REPLACING  //HCM402V02//
                                    BY         //HCM402//.
       *
       *    エラーファイルファイル名称領域 
@@ -158,6 +158,9 @@
            03  WRK-MESG                                PIC X(1000).
            03  WRK-MESG-ORG                            PIC X(1000).
            03  WRK-FIL                                 PIC X(02).
+           03  WRK-CHKKOMOKU-LEN-MAX                   PIC 9(05).
+           03  WRK-CNT-LINE                            PIC 9(05).
+           03  WRK-IDX-MESG                            PIC 9(05).
       *
        01  KEY-AREA.
            03  KEY-NEW.
@@ -176,6 +179,9 @@
       *
       *    データチェック一括処理パラメータ
            COPY    "CPORCBSD01PARA.INC".
+      *
+      *    データチェック確認項目
+           COPY    "CPDTCHKKOMOKU.INC".
       *
       *    固定値領域
        01  CONST-AREA.
@@ -575,12 +581,64 @@
                MOVE    WRK-OUT-INPUT   TO  HCM402-NENREI
            END-IF
       *
+           PERFORM 2101-CHKKOMOKU-HEN-SEC
+      *
            IF    ( CNT-PAGE2           =   1 )
                PERFORM 2101-PTHKN-HEN-SEC
            END-IF
       *
            .
        210-HEAD-HEN-EXT.
+           EXIT.
+      *****************************************************************
+      *    確認項目編集処理
+      *****************************************************************
+       2101-CHKKOMOKU-HEN-SEC          SECTION.
+      *
+           MOVE    ZERO        TO  HCM402-CHKKOMOKU   (1)
+           MOVE    HCM402-CHKKOMOKU   (1)
+                               TO  WRK-MAE-INPUT
+           PERFORM 800-LENGTH-CHK-SEC
+           MOVE    WRK-OUT-MAX TO  WRK-CHKKOMOKU-LEN-MAX
+           MOVE    SPACE       TO  HCM402-CHKKOMOKU   (1)
+      *
+           MOVE    1               TO  IDX-MESG
+      *
+           PERFORM VARYING IDX0    FROM    1   BY  1
+                   UNTIL ( IDX0    >   DTCHKKOMOKU-MAX )
+      *
+               IF    ( ORCBSD01-CHKKBN (IDX0)  =   "1" OR "2" )
+                   MOVE    DTCHKKOMOKU-CHKKOMOKU (IDX0)
+                                       TO  WRK-MAE-INPUT
+                   PERFORM 800-ZENKAKU-HEN-SEC
+                   IF    ( IDX-MESG    +   WRK-OUT-MAX +   1
+                           >=  WRK-CHKKOMOKU-LEN-MAX )
+                       MOVE    HCM402-CHKKOMOKU   (1)
+                                           TO  HCM402-CHKKOMOKU   (2)
+                       MOVE    SPACE       TO  HCM402-CHKKOMOKU   (1)
+                       MOVE    1           TO  IDX-MESG
+                   ELSE
+                       IF    ( IDX-MESG    =   1   )
+                           CONTINUE
+                       ELSE
+                           STRING  "、"    DELIMITED   BY  SIZE
+                           INTO    HCM402-CHKKOMOKU   (1)
+                           WITH    POINTER IDX-MESG
+                           END-STRING
+                       END-IF
+                   END-IF
+      *
+                   STRING  DTCHKKOMOKU-CHKKOMOKU (IDX0)
+                                       DELIMITED   BY  SPACE
+                   INTO    HCM402-CHKKOMOKU (1)
+                   WITH    POINTER IDX-MESG
+                   END-STRING
+               END-IF
+      *
+           END-PERFORM
+      *
+           .
+       2101-CHKKOMOKU-HEN-EXT.
            EXIT.
       *****************************************************************
       *    患者保険情報編集処理
@@ -821,7 +879,7 @@
            MOVE    WRK-SHORI-RENNUM    TO  SPRT-SHORI-RENNUM
            MOVE    LNK-PRTKANRI-PRIORITY
                                        TO  SPRT-PRIORITY
-           MOVE   "HCM402V01.red"      TO  SPRT-PRTID
+           MOVE   "HCM402V02.red"      TO  SPRT-PRTID
            IF    ( WRK-HKNMES      NOT =   SPACE )
                STRING  WRK-SPRT-TITLE      DELIMITED   BY  SPACE
                        "（"                DELIMITED   BY  SIZE
@@ -923,7 +981,8 @@
            MOVE    SPACE           TO  WRK-OUT-INPUT
       *
            INITIALIZE                  ORCSKANACHKAREA
-           MOVE    "2"             TO  KANACHK-SYORI
+           MOVE   "2"              TO  KANACHK-SYORI
+           MOVE  500               TO  KANACHK-MAX-CNT
            MOVE  WRK-MAE-INPUT     TO  KANACHK-MAE-INPUT
            CALL    "ORCSKANACHK"   USING   ORCSKANACHKAREA
            IF    ( KANACHK-RC      =   ZERO )
@@ -934,6 +993,22 @@
       *
            .
        800-ZENKAKU-HEN-EXT.
+           EXIT.
+      *****************************************************************
+      *    文字列長チェック
+      *****************************************************************
+       800-LENGTH-CHK-SEC              SECTION.
+      *
+           MOVE    SPACE           TO  ORCSKANACHKAREA
+           INITIALIZE                  ORCSKANACHKAREA
+           MOVE  500               TO  KANACHK-MAX-CNT
+           MOVE    "1"             TO  KANACHK-SYORI
+           MOVE    WRK-MAE-INPUT   TO  KANACHK-MAE-INPUT
+           CALL    "ORCSKANACHK"   USING   ORCSKANACHKAREA
+           MOVE    KANACHK-MAX     TO  WRK-OUT-MAX
+      *
+           .
+       800-LENGTH-CHK-EXT.
            EXIT.
       *****************************************************************
       *    西暦日本語変換処理

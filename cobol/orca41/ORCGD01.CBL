@@ -203,46 +203,6 @@
        01  CONST-AREA.
            03  CONST-LINE                  PIC X(40)   VALUE
                "＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿".
-           03  CONST-CHKKBN-MAX            PIC 9(03)   VALUE   18.
-           03  CONST-CHKMSG-VAL.
-               05                          PIC X(40)   VALUE
-               "保険者番号".
-               05                          PIC X(40)   VALUE
-               "被保険者記号・番号".
-               05                          PIC X(40)   VALUE
-               "公費負担者番号・受給者番号".
-               05                          PIC X(40)   VALUE
-               "保険適応年齢".
-               05                          PIC X(40)   VALUE
-               "患者病名".
-               05                          PIC X(40)   VALUE
-               "診療開始日".
-               05                          PIC X(40)   VALUE
-               "疑い病名・急性病名".
-               05                          PIC X(40)   VALUE
-               "薬剤と病名".
-               05                          PIC X(40)   VALUE
-               "診療行為と病名".
-               05                          PIC X(40)   VALUE
-               "薬剤と併用禁忌".
-               05                          PIC X(40)   VALUE
-               "診療行為の併用算定".
-               05                          PIC X(40)   VALUE
-               "実日数".
-               05                          PIC X(40)   VALUE
-               "患者氏名".
-               05                          PIC X(40)   VALUE
-               "保険組合せ有効期間".
-               05                          PIC X(40)   VALUE
-               "投与禁忌薬剤と病名".
-               05                          PIC X(40)   VALUE
-               "診療行為どうしの算定漏れ".
-               05                          PIC X(40)   VALUE
-               "病名と薬剤".
-               05                          PIC X(40)   VALUE
-               "病名と診療行為".
-           03  CONST-CHKMSG-R              REDEFINES   CONST-CHKMSG-VAL.
-               05  CONST-CHKMSG            PIC X(40)   OCCURS  18.
            03  CONST-INGAIPROCMSG          PIC X(40)   VALUE
                "院外処方の処理".
       *
@@ -261,6 +221,9 @@
       *
       *    データチェック一括処理パラメータ
            COPY    "CPORCBSD01PARA.INC".
+      *
+      *    データチェック確認項目
+           COPY    "CPDTCHKKOMOKU.INC".
       *
        01  SHELL-AREA.
            03  SHELL-NAME                  PIC X(50)   VALUE
@@ -565,13 +528,14 @@
        3101-CHKMSG-HEN-SEC             SECTION.
       *
            PERFORM VARYING IDX0    FROM    1   BY  1
-                   UNTIL ( IDX0    >   CONST-CHKKBN-MAX )
+                   UNTIL ( IDX0    >   DTCHKKOMOKU-MAX )
       *
                MOVE    IDX0            TO  WRK-Z9
                MOVE    CONST-LINE      TO  SPA-GMN-D01-CHKMSG (IDX0)
                STRING  WRK-Z9              DELIMITED   BY  SIZE
                        ". "                DELIMITED   BY  SIZE
-                       CONST-CHKMSG (IDX0) DELIMITED   BY  SPACE
+                       DTCHKKOMOKU-CHKKOMOKU (IDX0)
+                                           DELIMITED   BY  SPACE
                INTO    SPA-GMN-D01-CHKMSG (IDX0)
                END-STRING
       *
@@ -724,7 +688,7 @@
            MOVE    SPA-D01-NYUGAIKBN   TO  SPA-GMN-D01-NYUGAIKBN
       *
            PERFORM VARYING IDX0    FROM    1   BY  1
-                   UNTIL ( IDX0    >   CONST-CHKKBN-MAX )
+                   UNTIL ( IDX0    >   DTCHKKOMOKU-MAX )
       *
                IF    ( SPA-D01-CHKKBN (IDX0)   =   ZERO )
                    MOVE    SPACE       TO  SPA-GMN-D01-CHKKBN (IDX0)
@@ -1100,7 +1064,7 @@
            MOVE    SPA-GMN-D01-NYUGAIKBN
                                    TO  ORCBSD01-NYUGAIKBN
            PERFORM VARYING IDX0    FROM    1   BY  1
-                   UNTIL ( IDX0    >   CONST-CHKKBN-MAX )
+                   UNTIL ( IDX0    >   DTCHKKOMOKU-MAX )
       *
                IF    ( SPA-GMN-D01-CHKKBN (IDX0)   =   SPACE )
                    MOVE    ZERO    TO  ORCBSD01-CHKKBN (IDX0)
@@ -1483,7 +1447,7 @@
       *
       *    チェック項目
            PERFORM VARYING IDX0    FROM    1   BY  1
-                   UNTIL ( IDX0    >   CONST-CHKKBN-MAX )
+                   UNTIL ( IDX0    >   DTCHKKOMOKU-MAX )
       *
                MOVE    D01-CHKKBN (IDX0)
                                        TO  SPA-GMN-D01-CHKKBN-G (IDX0)
@@ -1530,7 +1494,7 @@
       *
       *    チェック項目チェック
            PERFORM VARYING IDXA    FROM    1   BY  1
-                       UNTIL ( IDXA    >   CONST-CHKKBN-MAX )
+                       UNTIL ( IDXA    >   DTCHKKOMOKU-MAX )
       *
                IF    ( SPA-ERRCD   =   SPACE )
                    PERFORM 4101-CHKKBN-CHK-SEC
@@ -1868,7 +1832,7 @@
            PERFORM 4200-CHKKBNLST-CHK-SEC
       *
            PERFORM VARYING IDX0    FROM    1   BY  1
-                   UNTIL ( IDX0    >   CONST-CHKKBN-MAX )
+                   UNTIL ( IDX0    >   DTCHKKOMOKU-MAX )
       *
                MOVE    WRK-CMB-ITM     TO  SPA-GMN-D01-CHKKBN-G (IDX0)
       *
@@ -1887,7 +1851,7 @@
            PERFORM 4200-CHKKBNLST-CHK-SEC
       *
            PERFORM VARYING IDX0    FROM    1   BY  1
-                   UNTIL ( IDX0    >   CONST-CHKKBN-MAX )
+                   UNTIL ( IDX0    >   DTCHKKOMOKU-MAX )
       *
                MOVE    WRK-CMB-ITM     TO  SPA-GMN-D01-CHKKBN-G (IDX0)
       *
@@ -1959,7 +1923,7 @@
            MOVE    ORCBSD01-SRYYM          TO  SPA-D01-SRYYM
            MOVE    ORCBSD01-NYUGAIKBN      TO  SPA-D01-NYUGAIKBN
            PERFORM VARYING IDX0    FROM    1   BY  1
-                   UNTIL ( IDX0    >   CONST-CHKKBN-MAX )
+                   UNTIL ( IDX0    >   DTCHKKOMOKU-MAX )
                MOVE    ORCBSD01-CHKKBN (IDX0)
                                            TO  SPA-D01-CHKKBN (IDX0)
       *
@@ -2259,13 +2223,13 @@
       *
       *    確認項目がいずれか一つは入力されていること
            PERFORM VARYING IDX0    FROM    1   BY  1
-                   UNTIL ( IDX0        >   CONST-CHKKBN-MAX )
+                   UNTIL ( IDX0        >   DTCHKKOMOKU-MAX )
                     OR   ( SPA-GMN-D01-CHKKBN (IDX0)
                                    NOT =   SPACE )
                 CONTINUE
            END-PERFORM
       *
-           IF    ( IDX0    >   CONST-CHKKBN-MAX )
+           IF    ( IDX0    >   DTCHKKOMOKU-MAX )
                MOVE    "1002"          TO  SPA-ERRCD
                GO  TO  4900-KANRENCHK-EXT
            END-IF
@@ -2444,7 +2408,7 @@
            MOVE    SPA-GMN-D01-EDSRYYMD    TO  D01-EDSRYYMD
       *
            PERFORM VARYING IDXA    FROM    1   BY  1
-                   UNTIL ( IDXA    >   CONST-CHKKBN-MAX )
+                   UNTIL ( IDXA    >   DTCHKKOMOKU-MAX )
       *
       *        チェック項目名
                MOVE    SPA-GMN-D01-CHKMSG (IDXA)
