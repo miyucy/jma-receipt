@@ -42,6 +42,20 @@ AC_PROG_CC
 AC_PROG_INSTALL
 AC_PROG_MAKE_SET
 
+AC_ARG_ENABLE(jconv,
+	    [  --enable-jconv  Enable jconv extention [default=yes]],
+    	    [if test "$enableval" = "yes"
+		    then
+		    	have_jconv=yes
+		    else
+			have_jconv=no
+		    fi])
+
+AC_CHECK_HEADERS(jconv.h)
+AC_CHECK_LIB(jconv,convert_kanji_strict, [have_jconv=yes JCONV_LIB="-ljconv"], have_jconv=no)
+AC_SUBST(have_jconv)
+AC_SUBST(JCONV_LIB)
+
 AC_ARG_WITH(patchdir,
 	    [  --with-patchdir=DIR      patch libraries in DIR [PREFIX]],
             [patchdir=$withval],
@@ -172,7 +186,6 @@ fi
 AC_SUBST(DBSTUB)
 AC_SUBST(COPYGEN)
 AC_SUBST(FDW)
-
 dnl Checks for libraries.
 
 dnl Checks for header files.
