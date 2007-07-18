@@ -142,8 +142,6 @@
            03  FLG-CHK             PIC 9(01).
            03  FLG-GMN             PIC 9(01).
            03  FLG-KINKI           PIC 9(01).
-           03  FLG-KINKI-ARI       PIC 9(01).
-           03  FLG-KINKI-ARI2      PIC 9(01).
            03  FLG-ALLFLG          PIC 9(01).
            03  FLG-TOROKU          PIC X(01).
            03  FLG-SYORI           PIC X(01).
@@ -168,27 +166,15 @@
            03  FLG-ZAIEND          PIC 9(01).
       *----(01.00.01) LINE ADD START ----------------------------------
       *    セット処理有無
-           03  FLG-SETSYORI        PIC 9(01).
-           03  FLG-SET             PIC 9(01).
            03  FLG-SET-HEN         PIC 9(01).
-           03  FLG-YAKUSOKU        PIC 9(01).
-           03  FLG-MAE             PIC 9(01).
       *    剤チェック対象外
            03  FLG-TAISYO          PIC 9(01).
       *    回数入力なし
            03  FLG-KAISU          PIC 9(01).
-      *    自費入力
-           03  FLG-JIHI           PIC 9(01).
-      *
-      *    処方せんフラグ
-      *    03  FLG-SYOHOU         PIC 9(01).
-      *    03  FLG-SYOHOU-ARI     PIC 9(01).
       *
            03  FLG-PARASET         PIC 9(01).
       *    検索種別
            03  FLG-KOUI            PIC 9(01).
-      *    治癒有無
-           03  FLG-KEIZOKU         PIC 9(01).
       *
            03  FLG-ERR             PIC 9(01).
            03  FLG-INS             PIC 9(01).
@@ -207,8 +193,6 @@
            03  FLG-HEN-CHK         PIC 9(01).
       *
            03  FLG-IN1             PIC 9(01).
-      *
-           03  FLG-FIRUMU           PIC 9(01).
       *
            03  FLG-SONOTA           PIC 9(01).
            03  FLG-NAIFUTAN         PIC 9(01).
@@ -273,7 +257,6 @@
            03  IDX-Y2              PIC 9(02).
            03  IDX-Y3              PIC 9(02).
       *
-           03  IDX-YAKUSOKU        PIC 9(04).
            03  IDX-YAK             PIC 9(04).
       *
            03  IDX-K98             PIC 9(04).
@@ -350,18 +333,10 @@
            03  WRK-KAISU           PIC 9(04).
            03  WRK-KAISU-GOK       PIC 9(04).
            03  WRK-GMN-IDX         PIC 9(04).
-      *    診療会計用集計
-           03  WRK-WKSRY-AREA.
-               05  WRK-SYUTEN1             PIC  9(07).
-               05  WRK-SYUTEN2             PIC  9(07).
-               05  WRK-YKZTEN              PIC  9(07).
-               05  WRK-KIZAITEN            PIC  9(07).
       *
            03  WRK-DOSELNUM            PIC 9(03).
            03  WRK-DOSELNUM2           PIC 9(03).
       *
-           03  WRK-KINGAK          PIC 9(08).
-           03  WRK-KAISUKEI        PIC 9(08).
            03  WRK-INPUTCD         PIC X(10).
            03  WRK-SURYO           PIC 9(07)V9(03).
            03  WRK-SURYO-R         REDEFINES   WRK-SURYO.
@@ -389,16 +364,10 @@
            03  IDX-S               PIC 9(04).
       *    時間外フラグ
            03  WRK-TIMEFLG         PIC X(01).
-      *    入力セット処理
-           03  WRK-SETCD           PIC X(06).
       *    算定回数
            03  WRK-SANTEI-CNT          PIC 9(04).
       *    入力位置
            03  WRK-FLG-IN              PIC X(01).
-      *
-      *    診療行為チェック用編集
-           03  WRK-TDD                 PIC 9(02).
-           03  FLG-ACCTSYORI           PIC 9(01).
       *
            03  FLG-TUIKA               PIC 9(01).
       *
@@ -413,25 +382,12 @@
       *    訂正時の点数判定
            03  WRK-MAE-TENSU           PIC 9(08).
       *
-      *    自費用
-           03  WRK-TENTTLKBN           PIC 9(03).
-           03  WRK-HOZ-KEI             PIC 9(08).
-      *
            03  WRK-KEI-ERRCD           PIC X(04).
            03  WRK-KEI-ERRMSG2         PIC X(80).
            03  WRK-ERR-ERRCD           PIC X(04).
            03  WRK-ERR-ERRMSG2         PIC X(80).
       *
            03  WRK-KEI-IDX             PIC 9(04).
-      *
-      *    約束セット用
-           03  WRK-IDX-YAKUSOKU.
-               05  WRK-IDX-YAK         PIC 9(04)    OCCURS  20.
-      *
-      *    老人慢性疾病診察料回数
-           03  WRK-ROUMANSEI       PIC 9(04).
-           03  WRK-ROUMANSEI2      PIC 9(04).
-           03  WRK-GAIRAI-IDX      PIC 9(04).
       *    老人年齢計算領域
            03  WRK-NENREI.
                05  WRK-NENREI-YY         PIC 9(03).
@@ -441,17 +397,12 @@
            03  WRK-ROUJIN              PIC 9(01).
       *
       *    入力時表示用
-           03  IDX-INCNT               PIC 9(04).
            03  FLG-NYURYOKU            PIC 9(01).
            03  WRK-HEN-INPUTCD         PIC X(22).
            03  FLG-IN-ATAI             PIC 9(01).
       *
       *    院内、院外判定用
            03  WRK-CHK-SRYSYUKBN   PIC X(03).
-      *    算定年月
-           03  WRK-SANTEI-YM       PIC X(06).
-           03  WRK-SANTEI-ARI      PIC X(06).
-           03  WRK-SANTEI-NASI     PIC X(06).
       *
       *    入力位置判定用
            03  WRK-IN-SURYO        PIC 9(02).
@@ -460,16 +411,6 @@
            03  WRK-MAX-IDX         PIC 9(04).
       *
            03  WRK-WKSRY-HKNCOMBI      PIC 9(04).
-      *
-      *    院外、院内変更
-           03  WRK-IDX-IN          PIC 9(04).
-      *
-      *    来院回数
-           03  WRK-SINSATU-CNT     PIC 9(04).
-      *    ワーク処理フラグ
-           03  WRK-SYORIFLG        PIC 9(01).
-      *    ワークカーソル位置（Ｂ０６Ｓ）
-           03  WRK-SPA-MAP-IDX     PIC 9(04).
       *
            03  WRK-ERRCD           PIC X(04).
            03  WRK-ERRCD1          PIC X(04).
@@ -485,8 +426,6 @@
            03  WRK-ZZ              PIC ZZZ.
       *    保険名称編集
            03  WRK-HKNCOMBI        PIC X(50).
-      *    保険名称編集
-           03  WRK-MAE-GMN-MAX     PIC 9(04).
       *    保険組合せ保存
            03  WRK-MAE-HKNCOMBI    PIC X(04).
       *
@@ -498,13 +437,8 @@
            03  WRK-MEISYO-G.
                05  WRK-MEIH                PIC X(02).
                05  WRK-MEISYO              PIC X(78).
-           03  WRK-MEISYO-GHZN.
-               05  WRK-MEIHHZN             PIC X(02).
-               05  WRK-MEISYOHZN           PIC X(78).
            03  IDX-MEI                 PIC 9(04).
            03  WRK-LEN                 PIC 9(04).
-      *    禁忌期間
-           03  WRK-KIKAN               PIC 9(02).
       *    入力値の入力判定用
            03  WRK-HZN-ATAI-AREA.
                05  WRK-HZN-ATAI1           PIC X(10).
@@ -513,9 +447,6 @@
                05  WRK-HZN-ATAI4           PIC X(10).
       *    老人年齢
            03  WRK-ROU-NEN             PIC 9(02).
-      *    算定回数
-           03  WRK-CNT                 PIC 9(03).
-           03  FLG-AUTO-OK             PIC 9(01).
       *    入院日
            03  WRK-STDD                PIC 9(02).
            03  WRK-EDDD                PIC 9(02).
@@ -551,6 +482,9 @@
            03  WRK-KYUSEI-END          PIC X(08).
       *
            03  WRK-SYOKAI-YMD          PIC X(08).
+      *    P97検索名
+           03  WRK-P97-NAME            PIC X(22).
+           03  WRK-GMN-PTID            PIC 9(10).
       *@
       *    今回リハビリ発生日
            03  WRK-KYUSEI-INP-G.
@@ -611,9 +545,9 @@
                05  WRK-HDD         PIC 9(02).
       *
        01  WRK-MOJI-AREA.
-           03  FLG-SP              PIC 9(02).
-           03  FLG-AST             PIC 9(02).
-           03  WRK-IDX-FT          PIC 9(02).
+      *    03  FLG-SP              PIC 9(02).
+      ***  03  FLG-AST             PIC 9(02).
+      ***  03  WRK-IDX-FT          PIC 9(02).
            03  WRK-CD-MCNT         PIC 9(02).
            03  WRK-ACCT-MCNT       PIC 9(02).
            03  WRK-SUR-MCNT        PIC 9(02).
@@ -622,25 +556,14 @@
            03  WRK-MCNT3           PIC 9(02).
            03  WRK-MCNT4           PIC 9(02).
            03  WRK-CD              PIC X(22).
-           03  WRK-KAI             PIC X(20).
-           03  WRK-SUR             PIC X(20).
+     ***   03  WRK-KAI             PIC X(20).
+     ***   03  WRK-SUR             PIC X(20).
            03  WRK-MOJI1           PIC X(10).
            03  WRK-MOJI2           PIC X(10).
            03  WRK-MOJI3           PIC X(10).
            03  WRK-MOJI4           PIC X(10).
-           03  IDM                 PIC 9(04).
-           03  IDMS                PIC 9(04).
            03  WRK-HENKAN-MAE      PIC X(20).
            03  WRK-HENKAN-ATO      PIC X(20).
-           03  IDH1                PIC 9(04).
-           03  IDH2                PIC 9(04).
-           03  IDX-D               PIC 9(04).
-      *
-           03  WRK-SANTEI-SYORI    PIC X(01).
-      *
-      *    継続の時、自動発生のチェック
-       01  WRK-CONTCHK-TBL.
-           03  WRK-IDX-Y               PIC 9(04).
       *
       *    自動加算テーブル
        01  WRK-KASAN-AREA.
@@ -1127,9 +1050,6 @@
                    MOVE    SPA-WORK        TO  SPA-K01KYOUTU
                    MOVE    1               TO  SPA-GMN-CUR
                END-IF
-      *!
-               CALL    "ORCSSPACHK"        USING    SPA-AREA
-      *!
       *        予約の時、そのまま画面表示へ
                IF      WRK-MOTOPG(1:3)     =   "Y01"
                    IF      SPA-PTID            =   ZERO
@@ -1147,9 +1067,6 @@
                END-IF
            END-IF
       *
-      *!
-           CALL    "ORCSSPACHK"        USING    SPA-AREA
-      *!
            MOVE    "1"                 TO  SPA-NYUGAIKBN
       *
       *    内部画面より
@@ -2946,7 +2863,8 @@
                    PERFORM 4101-TEISEI-SEC
       *        氏名検索（Ｐ９７）
                WHEN    "CLICKED"       ALSO    "B09"
-                   PERFORM 470-SIMEIKEN-SEC
+                   MOVE    SPACE               TO  WRK-P97-NAME
+                   PERFORM 470-P97-SIMEIKEN-SEC
       *        予約登録へ（Ｙ０１）
                WHEN    "CLICKED"       ALSO    "B10"
                    PERFORM 480-YOYAKU-SEC
@@ -3089,9 +3007,11 @@
       *****************************************************************
        41010-PTNUM-SYORI-SEC           SECTION.
       *
+           MOVE    ZERO                TO  WRK-GMN-PTID
            IF      SPA-PTID        NOT =   ZERO
       *        ワーク診療行為クリア
                PERFORM 4900-WKSRYACT-CLEAR-SEC
+               MOVE    SPA-PTID        TO  WRK-GMN-PTID
            END-IF
            MOVE    ZERO                TO  SPA-GMN-CUR
            MOVE    1                   TO  FLG-GMN-INIT
@@ -3122,37 +3042,64 @@
                GO  TO                  41010-PTNUM-SYORI-EXT
            END-IF
       *
+           EVALUATE    TRUE
+               WHEN   (SPA-GMN-PTNUM(1:1)  =   "G" OR "g")  AND
+                      (SPA-GMN-PTNUM(2:)   =   SPACE     )
+      *        ’Ｇ’で外来へ移動する
+                   INITIALIZE                  SPA-KYOTUKEY
+                   MOVE    SPACE               TO  WRK-PUTTYPE
+                   PERFORM 410109-K02IDOU-SEC
+               WHEN   (SPA-GMN-PTNUM           =   SPACE)
+                   MOVE    WRK-GMN-PTID        TO  SPA-GMN-PTID
+      *        空白は患者取消と同様
+                   PERFORM 2221-PTNUMCLEAR-SYORI-SEC
+               WHEN    OTHER
+      *        患者決定処理
+                   PERFORM 410101-PTNUM-IN-SYORI-SEC
+           END-EVALUATE
+      *
+           .
+       41010-PTNUM-SYORI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    患者番号検索処理
+      *****************************************************************
+       410101-PTNUM-IN-SYORI-SEC         SECTION.
+      *
            INITIALIZE                      ORCSPTNUMAREA
            MOVE    SPA-GMN-PTNUM       TO  SPTNUM-PTNUM
            CALL    "ORCSPTNUM"         USING   ORCSPTNUMAREA
                                                SPA-AREA
+           EVALUATE    SPTNUM-RC
+               WHEN    10
+               WHEN    99
+      *            患者番号なし
+                   MOVE    SPTNUM-PTNUM        TO  SPA-GMN-PTNUM
+                   MOVE    "1003"              TO  SPA-ERRCD
+               WHEN    20
+      *            氏名検索へ
+                   MOVE    SPTNUM-PTNUM        TO  SPA-GMN-PTNUM
+                   MOVE    SPTNUM-PTNUM        TO  WRK-P97-NAME
+                   PERFORM 470-P97-SIMEIKEN-SEC
+               WHEN    OTHER
+      *            患者番号決定
+                   MOVE    SPTNUM-PTID         TO  SPA-PTID
+                   MOVE    SPTNUM-PTNUM        TO  SPA-PTNUM
+                   MOVE    SPA-PTID            TO  SPA-GMN-PTID
+                   MOVE    SPA-PTNUM           TO  SPA-GMN-PTNUM
+                   PERFORM 410101-PTNUM-SYOKI-SEC
+           END-EVALUATE
+           .
       *
-      *    該当患者なし
-           IF      SPTNUM-RC           =   10  OR  99
-               MOVE    SPTNUM-PTNUM        TO  SPA-GMN-PTNUM
-               MOVE    "1003"              TO  SPA-ERRCD
-               GO  TO                  41010-PTNUM-SYORI-EXT
-           END-IF
-      *    氏名検索へ
-           IF      SPTNUM-RC           =   20
+       410101-PTNUM-IN-SYORI-EXT.
+           EXIT.
       *
-               MOVE    SPTNUM-PTNUM        TO  SPA-GMN-PTNUM
-               MOVE    SPACE               TO  LINKAREA
-               MOVE    SPA-KYOUTU          TO  LNK-COMMON
-               MOVE    SPA-K02             TO  LNK-SCRSPA
-      *        画面移行用のパラメタ変更
-               MOVE    "K02N"              TO  SPA-MOTOPG
-               MOVE    "P97"               TO  SPA-SAKIPG
-      *        氏名編集
-               MOVE    SPA-GMN-PTNUM       TO  SPA-NAME
-               MOVE    SPA-KYOUTU          TO  LNK-KYOUTU
-               MOVE    "CHANGE"            TO  MCP-PUTTYPE
-               MOVE    "P97"               TO  MCP-WINDOW
+      *****************************************************************
+      *   患者番号決定初期処理
+      *****************************************************************
+       410101-PTNUM-SYOKI-SEC         SECTION.
       *
-               PERFORM 900-PUT-WINDOW
-               MOVE    1                   TO  FLG-END
-               GO  TO                  41010-PTNUM-SYORI-EXT
-           END-IF
       *    患者番号決定
            MOVE    SPTNUM-PTID         TO  SPA-PTID
            MOVE    SPTNUM-PTNUM        TO  SPA-PTNUM
@@ -3165,13 +3112,12 @@
            PERFORM 900-PTINF-READ-SEC
            IF      FLG-PTINF       NOT =   ZERO
                MOVE    "1003"              TO  SPA-ERRCD
-               GO      TO      41010-PTNUM-SYORI-EXT
+           ELSE
+      *        排他制御処理
+               PERFORM 990-LOCK-IN-SEC
            END-IF
-      *
-      *    排他制御処理
-           PERFORM 990-LOCK-IN-SEC
            IF      SPA-ERRCD       NOT =   SPACE
-               GO      TO      41010-PTNUM-SYORI-EXT
+               GO      TO      410101-PTNUM-SYOKI-EXT
            END-IF
       *
       *    入院が存在するかのチェック
@@ -3185,12 +3131,12 @@
                INITIALIZE                  SPA-K02
                MOVE    SPACE               TO  WRK-PUTTYPE
                PERFORM 410109-K02IDOU-SEC
-               GO      TO      41010-PTNUM-SYORI-EXT
+               GO      TO      410101-PTNUM-SYOKI-EXT
            END-IF
-           IF     (SPA-KIDCD       NOT =   SPACE ) OR
-                  (SPA-ERRCD       NOT =   SPACE )
-               GO      TO      41010-PTNUM-SYORI-EXT
-           END-IF
+      ***  IF     (SPA-KIDCD       NOT =   SPACE ) OR
+      *           (SPA-ERRCD       NOT =   SPACE )
+      *        GO      TO      410101-PTNUM-SYOKI-EXT
+      **** END-IF
       *    受付一覧からの時、診療科を編集する
            IF      WRK-MOTOPG          =   "U01"
                MOVE    WRK-SPA-SRYKA   TO  SPA-SRYKA
@@ -3228,34 +3174,34 @@
       *
       *    スパ共通編集処理
            PERFORM                     310-SPA-SET-SEC
-           IF      SPA-ERRCD       NOT =   SPACE
-                GO      TO      41010-PTNUM-SYORI-EXT
-           END-IF
       *
       *    チェック用月内診療行為セット
-           PERFORM                 320-SPA-CHKSET-SEC
-      *
+           IF      SPA-ERRCD           =   SPACE
+               PERFORM 320-SPA-CHKSET-SEC
+           END-IF
       *    保険番号が未確定の時、エラー
-           IF     (SPA-HKNCOMBINUM     =   SPACE )  OR
-                  (SPA-GMN-HKNCOMBINUM =   SPACE )
-               MOVE    "1006"          TO  SPA-ERRCD
-               MOVE    3               TO  SPA-HKN-ERR
-               GO      TO      41010-PTNUM-SYORI-EXT
+           IF      SPA-ERRCD           =   SPACE
+               IF     (SPA-HKNCOMBINUM     =   SPACE )  OR
+                      (SPA-GMN-HKNCOMBINUM =   SPACE )
+                   MOVE    "1006"          TO  SPA-ERRCD
+                   MOVE    3               TO  SPA-HKN-ERR
+               END-IF
            END-IF
       *
       *    パラメタファイルより表示
-           MOVE    3               TO  FLG-PARASET
-           PERFORM                 3002-PARA-SET-SEC
-      *    画面用スパ編集処理
-           MOVE    ZERO            TO  FLG-TEISEI
-           PERFORM                 310-SPA-GMNSET-SEC
+           IF      SPA-ERRCD           =   SPACE
+               MOVE    3               TO  FLG-PARASET
+               PERFORM                 3002-PARA-SET-SEC
+      *        画面用スパ編集処理
+               MOVE    ZERO            TO  FLG-TEISEI
+               PERFORM                 310-SPA-GMNSET-SEC
       *
-           MOVE    1               TO  SPA-GMN-PAGE
-           MOVE    1               TO  SPA-GMN-CUR
-           MOVE    1               TO  SPA-MAP-IDX
-      *
+               MOVE    1               TO  SPA-GMN-PAGE
+               MOVE    1               TO  SPA-GMN-CUR
+               MOVE    1               TO  SPA-MAP-IDX
+           END-IF
            .
-       41010-PTNUM-SYORI-EXT.
+       410101-PTNUM-SYOKI-EXT.
            EXIT.
       *
       *****************************************************************
@@ -5157,8 +5103,6 @@
       *
            MOVE    SPACE               TO  WRK-ERRCD
       *
-           MOVE    ZERO                TO  WRK-IDX-YAKUSOKU
-           MOVE    ZERO                TO  IDX-YAKUSOKU
            PERFORM 4101191-INPUTSET-SYORI-SEC
       *
            IF      SPA-ERRCD           =   SPACE
@@ -8641,7 +8585,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *****************************************************************
       *    氏名検索へ
       *****************************************************************
-       470-SIMEIKEN-SEC             SECTION.
+       470-P97-SIMEIKEN-SEC             SECTION.
       *
            MOVE    SPACE               TO  LINKAREA
            MOVE    SPA-KYOUTU          TO  LNK-COMMON
@@ -8651,11 +8595,10 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    "P97"               TO  SPA-SAKIPG
       *
       *    氏名をクリアする
-           MOVE    SPACE               TO  SPA-NAME
+           MOVE    WRK-P97-NAME        TO  SPA-NAME
            MOVE    SPA-KYOUTU          TO  LNK-KYOUTU
       *
            MOVE    "CHANGE"            TO  MCP-PUTTYPE
-      *****MOVE    "JOIN"              TO  MCP-PUTTYPE.
            MOVE    "P97"               TO  MCP-WINDOW
       *
            PERFORM 900-PUT-WINDOW
@@ -8663,7 +8606,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    1                   TO  FLG-END
       *
            .
-       470-SIMEIKEN-EXT.
+       470-P97-SIMEIKEN-EXT.
            EXIT.
       *
       *****************************************************************

@@ -5140,6 +5140,9 @@ grpsys                 CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    TNSP-JGNCNT         TO  TNS-JGNCNT
                MOVE    TNSP-JGNCNT1D       TO  TNS-JGNCNT1D
                MOVE    TNSP-JGNCNTERR      TO  TNS-JGNCNTERR
+      *
+               MOVE    TNSP-JGNCNTETCM     TO  TNS-JGNCNTETCM
+               MOVE    TNSP-JGNCNTETC      TO  TNS-JGNCNTETC
            END-IF
       *
            .
@@ -5309,28 +5312,6 @@ grpsys                 CALL    "ORCDBMAIN"         USING   MCPAREA
            .
        981-SYUTTL-READ-EXT.
            EXIT.
-      *
-      *****************************************************************
-      *    算定歴マスタ読み込み
-      *****************************************************************
-      *920-SANTEI-READ-SEC         SECTION.
-      *
-      *    MOVE    "DBFETCH"           TO  MCP-FUNC
-      *    CALL    "ORCMCPSUB"          USING
-      *                                 MCPAREA
-      *                                 ORCMCPAREA
-      *                                 MCPDATA-REC
-      *    IF      MCP-RC              =   ZERO
-      *        MOVE    MCPDATA-REC         TO  SANTEI-REC
-      *        MOVE    ZERO                TO  FLG-SANTEI
-      *    ELSE
-      *        INITIALIZE                      SANTEI-REC
-      *        MOVE    1                   TO  FLG-SANTEI
-      *    END-IF
-      *
-      *    .
-      *920-SANTEI-READ-EXT.
-      *    EXIT.
       *
       *****************************************************************
       *    ワーク診療行為データ読込

@@ -310,6 +310,8 @@
            COPY    "CPSK1030.INC".
       *
            COPY    "CPSK1014.INC".
+      *    £Ã£Ì£Á£É£ÍÀÜÂ³¾ðÊó 
+           COPY    "CPSK9000.INC".
       *
       *    ´µ¼Ô¥Þ¥¹¥¿¡Ý
        01  PTINF-REC.
@@ -892,6 +894,10 @@
                MOVE    SYS-1038-DOSRYKBNFLG    TO  SPA-DOSRYKBNFLG
       *        ÃæÅÓÉ½¼¨°ìÍ÷
                MOVE    SYS-1038-WKSRYHYOFLG    TO  SPA-WKSRYHYOFLG
+      *        Æ±ÆüºÆ¿Ç¡¦ÄûÀµÁªÂò
+               MOVE    SYS-1038-TEISEIFLG      TO  SPA-TEISEIFLG
+      *        Èé²¼¶ÚÆùÃí¼ÍÎÁÊÑ´¹ÁªÂò
+               MOVE    SYS-1038-CHG310FLG      TO  SPA-CHG310FLG
            END-IF
            IF      SPA-KAGRPFLG        =   SPACE
                MOVE    "0"                 TO  SPA-KAGRPFLG
@@ -899,8 +905,14 @@
            IF      SPA-DOSRYKBNFLG     =   SPACE
                MOVE    "00"                TO  SPA-DOSRYKBNFLG
            END-IF
-           IF      SPA-WKSRYHYOFLG        =   SPACE
-               MOVE    "0"                TO  SPA-WKSRYHYOFLG
+           IF      SPA-WKSRYHYOFLG     =   SPACE
+               MOVE    "0"                 TO  SPA-WKSRYHYOFLG
+           END-IF
+           IF      SPA-TEISEIFLG       =   SPACE
+               MOVE    "0"                 TO  SPA-TEISEIFLG
+           END-IF
+           IF      SPA-CHG310FLG       =   SPACE
+               MOVE    "0"                 TO  SPA-CHG310FLG
            END-IF
       *
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
@@ -942,6 +954,39 @@
       *    Êñ³ç¿ÇÎÅ¹Ô°Ù»»Äê
            PERFORM 10010-HKTSANTEI-SEC
       *
+      *    £Ã£Ì£Á£É£ÍÅ¸³«¤Î¿Ç»¡ÎÁÊÑ´¹
+           MOVE    SPACE               TO  SYS-9000-REC
+           INITIALIZE                  SYS-9000-REC
+           MOVE    "9000"              TO  SYS-9000-KANRICD
+           MOVE    "*"                 TO  SYS-9000-KBNCD
+           MOVE    SPA-SRYYMD          TO  SYS-9000-STYUKYMD
+           MOVE    SPA-SRYYMD          TO  SYS-9000-EDYUKYMD
+           MOVE    SPA-HOSPNUM         TO  SYS-9000-HOSPNUM
+           MOVE    SYS-9000-REC        TO  MCPDATA-REC
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key10"             TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_syskanri"      TO  MCP-TABLE
+               MOVE    "key10"             TO  MCP-PATHNAME
+               PERFORM 900-SYSKANRI-READ-SEC
+           ELSE
+               MOVE    SPACE               TO  SYS-9000-REC
+               INITIALIZE                  SYS-9000-REC
+               MOVE    1               TO  FLG-SYSKANRI
+           END-IF
+           IF      FLG-SYSKANRI        =   ZERO
+               MOVE    MCPDATA-REC         TO  SYS-9000-REC
+      *        ³°Íè¿Ç»¡ÎÁÅ¸³«
+               MOVE   SYS-9000-SINSATU-FLG TO  SPA-SINSATU-FLG
+           END-IF
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key10"             TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+      *
+           IF      SPA-SINSATU-FLG     =   SPACE
+               MOVE    "0"             TO  SPA-SINSATU-FLG
+           END-IF
            .
        100-K01KYOUTU-EXT.
            EXIT.
@@ -1471,6 +1516,8 @@
        200-GAIRAI-SPASET-SEC           SECTION.
       *
            INITIALIZE                  SPA-K02
+      *    ¼õÉÕÍ­Ìµ
+           MOVE    ZERO                TO  SPA-UKETUKE-ARI
            IF      LNK-SC95-PG         =   "K01"  OR  "K10"
                CONTINUE
                MOVE    1                   TO  FLG-UKETUKE-ARI
@@ -1862,7 +1909,9 @@
                        MOVE    1                   TO  FLG-UKETUKE
                    END-IF
                  ELSE
-                   IF     (SPA-GMN-SRYKA   NOT =   SPACE  )  AND
+      *              ¼õÉÕ¤¢¤ê
+                     MOVE    1                    TO  SPA-UKETUKE-ARI
+                  IF     (SPA-GMN-SRYKA   NOT =   SPACE  )  AND
                           (SPA-GMN-SRYKA       =   UKE-SRYKA )
                        MOVE    UKE-SRYKA           TO  SPA-SRYKA
                        MOVE    UKE-DRCD            TO  SPA-DRCD
@@ -5795,6 +5844,9 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    TNSP-JGNCNT         TO  TNS-JGNCNT
                MOVE    TNSP-JGNCNT1D       TO  TNS-JGNCNT1D
                MOVE    TNSP-JGNCNTERR      TO  TNS-JGNCNTERR
+      *
+               MOVE    TNSP-JGNCNTETCM     TO  TNS-JGNCNTETCM
+               MOVE    TNSP-JGNCNTETC      TO  TNS-JGNCNTETC
            END-IF
            .
        9101-TENSUPLUS-SYORI-EXT.
