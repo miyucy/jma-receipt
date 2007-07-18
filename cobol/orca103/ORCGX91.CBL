@@ -96,14 +96,6 @@
                        09  SPA-GMN-MOREKIKAN       PIC X(01).
                        09  SPA-GMN-MOREKIKANFL     PIC X(01).
                        09  SPA-GMN-MOREKIKANMEI    PIC X(18).
-                   07  SPA-GMN-MOREKENSA-G.
-                       09  SPA-GMN-MOREKENSA       PIC X(01).
-                       09  SPA-GMN-MOREKENSAFL     PIC X(01).
-                       09  SPA-GMN-MOREKENSAMEI    PIC X(18).
-                   07  SPA-GMN-MOREBUI-G.
-                       09  SPA-GMN-MOREBUI         PIC X(01).
-                       09  SPA-GMN-MOREBUIFL       PIC X(01).
-                       09  SPA-GMN-MOREBUIMEI      PIC X(18).
                    07  SPA-GMN-MORESORT-G.
                        09  SPA-GMN-MORESORT        PIC X(01).
                        09  SPA-GMN-MORESORTFL      PIC X(01).
@@ -495,8 +487,9 @@
       *
            MOVE    "F"             TO  SPA-GMN-CHKSRYRANGE
       *
-           MOVE    "F"             TO  SPA-GMN-MOREKENSA
-           MOVE    "F"             TO  SPA-GMN-MOREBUI
+           MOVE    "F"             TO  SPA-GMN-CHKMOREYKZBYO
+           MOVE    "F"             TO  SPA-GMN-CHKMOREKENSA
+           MOVE    "F"             TO  SPA-GMN-CHKMOREBUI
       *
            MOVE    SPA-GMN-SORTLST (1)
                                    TO  SPA-GMN-SORT-G
@@ -537,7 +530,7 @@
            MOVE    "壳闻乖百コ〖ド界"  TO  SPA-GMN-SORTMEIL   (1)
       *
            MOVE    "2"                 TO  SPA-GMN-SORTL      (2)
-           MOVE    "カナ会叹界"        TO  SPA-GMN-SORTMEIL   (2)
+           MOVE    "カナ叹疚界"        TO  SPA-GMN-SORTMEIL   (2)
       *
            MOVE    "3"                 TO  SPA-GMN-SORTL      (3)
            MOVE    "惰尸戎规界"        TO  SPA-GMN-SORTMEIL   (3)
@@ -575,7 +568,7 @@
            MOVE    "壳闻乖百コ〖ド界"  TO  SPA-GMN-MORESORTMEIL   (1)
       *
            MOVE    "2"                 TO  SPA-GMN-MORESORTL      (2)
-           MOVE    "カナ会叹界"        TO  SPA-GMN-MORESORTMEIL   (2)
+           MOVE    "カナ叹疚界"        TO  SPA-GMN-MORESORTMEIL   (2)
       *
            MOVE    "3"                 TO  SPA-GMN-MORESORTL      (3)
            MOVE    "惰尸戎规界"        TO  SPA-GMN-MORESORTMEIL   (3)
