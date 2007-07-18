@@ -75,6 +75,7 @@ shell_sources = \
 	daily/online-reprint.sh.in \
         monthly/prtdbdel.sh.in \
         allways/ykjchk.sh.in \
+	allways/chkmst2.sh.in \
 
 ruby_scripts = \
 	daily/print-data.rb \

@@ -34,20 +34,41 @@ X91	{
 			value	varchar(9);
 			state	int;
 		};
-		SYU1	{
-			value	bool;
-		};
-		SYU2	{
-			value	bool;
-		};
-		SYU3	{
-			value	bool;
+		CMB_SORT	{
+			SORT	{
+				value	varchar(30);
+			};
+			count	int;
+			item	varchar(30)[05];
 		};
 		CHKBYOYKZ	{
 			value	bool;
 		};
 		CHKBYOSRY	{
 			value	bool;
+		};
+		CMB_MOREKIKAN	{
+			MOREKIKAN	{
+				value	varchar(20);
+			};
+			count	int;
+			item	varchar(20)[5];
+		};
+		CHKMOREYKZBYO	{
+			value	bool;
+		};
+		CHKMOREKENSA	{
+			value	bool;
+		};
+		CHKMOREBUI	{
+			value	bool;
+		};
+		CMB_MORESORT	{
+			MORESORT	{
+				value	varchar(30);
+			};
+			count	int;
+			item	varchar(30)[5];
 		};
 	};
 };

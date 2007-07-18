@@ -85,9 +85,48 @@
                    07  SPA-GMN-STSRYCD         PIC X(09).
                    07  SPA-GMN-STSRYNAME       PIC X(100).
                    07  SPA-GMN-EDSRYCD         PIC X(09).
-                   07  SPA-GMN-SYU1        PIC X(01).
-                   07  SPA-GMN-SYU2        PIC X(01).
-                   07  SPA-GMN-SYU3        PIC X(01).
+                   07  SPA-GMN-SORT-G.
+                       09  SPA-GMN-SORT            PIC X(01).
+                       09  SPA-GMN-SORTFL          PIC X(01).
+                       09  SPA-GMN-SORTMEI         PIC X(28).
+                   07  SPA-GMN-CHKMOREYKZBYO       PIC X(01).
+                   07  SPA-GMN-CHKMOREKENSA        PIC X(01).
+                   07  SPA-GMN-CHKMOREBUI          PIC X(01).
+                   07  SPA-GMN-MOREKIKAN-G.
+                       09  SPA-GMN-MOREKIKAN       PIC X(01).
+                       09  SPA-GMN-MOREKIKANFL     PIC X(01).
+                       09  SPA-GMN-MOREKIKANMEI    PIC X(18).
+                   07  SPA-GMN-MOREKENSA-G.
+                       09  SPA-GMN-MOREKENSA       PIC X(01).
+                       09  SPA-GMN-MOREKENSAFL     PIC X(01).
+                       09  SPA-GMN-MOREKENSAMEI    PIC X(18).
+                   07  SPA-GMN-MOREBUI-G.
+                       09  SPA-GMN-MOREBUI         PIC X(01).
+                       09  SPA-GMN-MOREBUIFL       PIC X(01).
+                       09  SPA-GMN-MOREBUIMEI      PIC X(18).
+                   07  SPA-GMN-MORESORT-G.
+                       09  SPA-GMN-MORESORT        PIC X(01).
+                       09  SPA-GMN-MORESORTFL      PIC X(01).
+                       09  SPA-GMN-MORESORTMEI     PIC X(28).
+               05  SPA-GMN-CMB-AREA.
+                   07  SPA-GMN-SORTLST-G.
+                       09  SPA-GMN-SORT-MAX        PIC 9(05).
+                       09  SPA-GMN-SORTLST         OCCURS  5.
+                           11  SPA-GMN-SORTL       PIC X(01).
+                           11  SPA-GMN-SORTFLL     PIC X(01).
+                           11  SPA-GMN-SORTMEIL    PIC X(28).
+                   07  SPA-GMN-MOREKIKANLST-G.
+                       09  SPA-GMN-MOREKIKAN-MAX       PIC 9(05).
+                       09  SPA-GMN-MOREKIKANLST        OCCURS  5.
+                           11  SPA-GMN-MOREKIKANL      PIC X(01).
+                           11  SPA-GMN-MOREKIKANFLL    PIC X(01).
+                           11  SPA-GMN-MOREKIKANMEIL   PIC X(18).
+                   07  SPA-GMN-MORESORTLST-G.
+                       09  SPA-GMN-MORESORT-MAX        PIC 9(05).
+                       09  SPA-GMN-MORESORTLST         OCCURS  5.
+                           11  SPA-GMN-MORESORTL       PIC X(01).
+                           11  SPA-GMN-MORESORTFLL     PIC X(01).
+                           11  SPA-GMN-MORESORTMEIL    PIC X(28).
                05  SPA-NAI-AREA.
                    07  SPA-NAI-SRYCD-EXSIT-FLG
                                                PIC 9(01).
@@ -109,6 +148,7 @@
        01  IDX-AREA.
            03  IDX0                    PIC 9(05).
            03  IDX1                    PIC 9(05).
+           03  IDX-CMB                 PIC 9(05).
       *
       *----(02.00.06)--ADD-START---
       *    ファイルデイレクトリ位置指定サブ
@@ -129,6 +169,9 @@
       *
        01  WRK-AREA.
            03  WRK-MCP-WIDGET          PIC X(64).
+           03  WRK-CMB-CD                  PIC X(10).
+           03  WRK-CMB-ITM-G.
+               05  WRK-CMB-ITM         PIC X(200).
            03  WRK-MOTOPG              PIC X(08).
            03  WRK-PRTKANRI-RENNUM     PIC 9(04).
            03  WRK-SHORIERR            PIC X(200).
@@ -149,12 +192,17 @@
                05  FILLER              PIC X(01)   VALUE   ".".
                05  WRK-SS              PIC X(02).
            03  WRK-CHKKBN              PIC X(01).
+           03  WRK-CHKMORE             PIC X(01).
+           03  WRK-MORERANGE-G.
+               05  WRK-MOREKENSA       PIC X(01).
+               05  WRK-MOREBUI         PIC X(01).
            03  WRK-SRTKBN              PIC X(01).
            03  WRK-INPUTCD             PIC X(09).
            03  WRK-CD-MCNT             PIC 9(02).
            03  WRK-STR-IN              PIC X(500).
            03  WRK-STR-OUT             PIC X(500).
            03  WRK-STR-LEN             PIC 9(8).
+           03  WRK-KIKAN               PIC 9(05).
       *----(02.00.06)--ADD-START---
            03  WRK-CHKMERR         PIC X(200).
            03  WRK-PRT-PAGE        PIC 9(10).
@@ -432,6 +480,8 @@
       *
            INITIALIZE                  SPA-X91
       *
+           PERFORM 3101-CMB-SYOKI-SEC
+      *
            MOVE    "F"             TO  SPA-GMN-CHKYKZBYO
            MOVE    "F"             TO  SPA-GMN-CHKSRYBYO
            MOVE    "F"             TO  SPA-GMN-CHKYKZHEI
@@ -445,16 +495,96 @@
       *
            MOVE    "F"             TO  SPA-GMN-CHKSRYRANGE
       *
-           MOVE    "T"             TO  SPA-GMN-SYU1
+           MOVE    "F"             TO  SPA-GMN-MOREKENSA
+           MOVE    "F"             TO  SPA-GMN-MOREBUI
       *
-           MOVE    "F"             TO  SPA-GMN-SYU2
-           MOVE    "F"             TO  SPA-GMN-SYU3
+           MOVE    SPA-GMN-SORTLST (1)
+                                   TO  SPA-GMN-SORT-G
       *
-           MOVE   1                TO  SPA-GMN-CUR 
+           MOVE    SPA-GMN-MOREKIKANLST (1)
+                                   TO  SPA-GMN-MOREKIKAN-G
+      *
+           MOVE    SPA-GMN-MORESORTLST (1)
+                                   TO  SPA-GMN-MORESORT-G
+      *
+           MOVE    1               TO  SPA-GMN-CUR 
            .
        310-SPASET-EXT.
            EXIT.
       *
+      *****************************************************************
+      *    コンボボックス初期処理
+      *****************************************************************
+       3101-CMB-SYOKI-SEC              SECTION.
+      *
+           INITIALIZE  SPA-GMN-CMB-AREA
+      *
+           PERFORM 3101-SORTLST-SET-SEC
+      *
+           PERFORM 3101-MOREKIKANLST-SET-SEC
+      *
+           PERFORM 3101-MORESORTLST-SET-SEC
+      *
+           .
+       3101-CMB-SYOKI-EXT.
+           EXIT.
+      *****************************************************************
+      *    出力順コンボボックス初期処理
+      *****************************************************************
+       3101-SORTLST-SET-SEC            SECTION.
+      *
+           MOVE    "1"                 TO  SPA-GMN-SORTL      (1)
+           MOVE    "診療行為コード順"  TO  SPA-GMN-SORTMEIL   (1)
+      *
+           MOVE    "2"                 TO  SPA-GMN-SORTL      (2)
+           MOVE    "カナ氏名順"        TO  SPA-GMN-SORTMEIL   (2)
+      *
+           MOVE    "3"                 TO  SPA-GMN-SORTL      (3)
+           MOVE    "区分番号順"        TO  SPA-GMN-SORTMEIL   (3)
+      *
+           MOVE    3                   TO  SPA-GMN-SORT-MAX
+      *
+           .
+       3101-SORTLST-SET-EXT.
+           EXIT.
+      *****************************************************************
+      *    登録漏れ確認リスト期間コンボボックス初期処理
+      *****************************************************************
+       3101-MOREKIKANLST-SET-SEC       SECTION.
+      *
+           MOVE    "1"                 TO  SPA-GMN-MOREKIKANL      (1)
+           MOVE    "なし"              TO  SPA-GMN-MOREKIKANMEIL   (1)
+      *
+           MOVE    "2"                 TO  SPA-GMN-MOREKIKANL      (2)
+           MOVE    "２ヶ月"            TO  SPA-GMN-MOREKIKANMEIL   (2)
+      *
+           MOVE    "3"                 TO  SPA-GMN-MOREKIKANL      (3)
+           MOVE    "６ヶ月"            TO  SPA-GMN-MOREKIKANMEIL   (3)
+      *
+           MOVE    3                   TO  SPA-GMN-MOREKIKAN-MAX
+      *
+           .
+       3101-MOREKIKANLST-SET-EXT.
+           EXIT.
+      *****************************************************************
+      *    登録漏れ確認リスト並び順コンボボックス初期処理
+      *****************************************************************
+       3101-MORESORTLST-SET-SEC         SECTION.
+      *
+           MOVE    "1"                 TO  SPA-GMN-MORESORTL      (1)
+           MOVE    "診療行為コード順"  TO  SPA-GMN-MORESORTMEIL   (1)
+      *
+           MOVE    "2"                 TO  SPA-GMN-MORESORTL      (2)
+           MOVE    "カナ氏名順"        TO  SPA-GMN-MORESORTMEIL   (2)
+      *
+           MOVE    "3"                 TO  SPA-GMN-MORESORTL      (3)
+           MOVE    "区分番号順"        TO  SPA-GMN-MORESORTMEIL   (3)
+      *
+           MOVE    3                   TO  SPA-GMN-MORESORT-MAX
+      *
+           .
+       3101-MORESORTLST-SET-EXT.
+           EXIT.
       *****************************************************************
       *    診療行為コードセット処理
       *****************************************************************
@@ -670,17 +800,22 @@
            WHEN    "CLICKED"       ALSO    "CHKSRYRANGE"
                PERFORM 4101-CHKSRYRANGE-CHK-SEC
       *
-      *    出力順指定
-           WHEN    "CLICKED"       ALSO    "SYU1"
-           WHEN    "CLICKED"       ALSO    "SYU2"
-           WHEN    "CLICKED"       ALSO    "SYU3"
+      *    登録漏れ確認リスト−薬剤と病名
+           WHEN    "CLICKED"       ALSO    "CHKMOREYKZBYO"
                PERFORM 4101-GMN-SPA-SET-SEC
-               MOVE    X91-SYU1        TO  SPA-GMN-SYU1
-               MOVE    X91-SYU2        TO  SPA-GMN-SYU2
-               MOVE    X91-SYU3        TO  SPA-GMN-SYU3
-      *----(03.04.01)--UPD-START---
-               MOVE    13              TO  SPA-GMN-CUR
-      *----(03.04.01)--UPD-END-----
+               MOVE    X91-CHKMOREYKZBYO
+                                       TO  SPA-GMN-CHKMOREYKZBYO
+               MOVE    ZERO            TO  SPA-GMN-CUR
+      *    登録漏れ確認リスト−診療行為と病名（検査）
+           WHEN    "CLICKED"       ALSO    "CHKMOREKENSA"
+               PERFORM 4101-GMN-SPA-SET-SEC
+               MOVE    X91-CHKMOREKENSA TO SPA-GMN-CHKMOREKENSA
+               MOVE    ZERO            TO  SPA-GMN-CUR
+      *    登録漏れ確認リスト−診療行為と病名（部位）
+           WHEN    "CLICKED"       ALSO    "CHKMOREBUI"
+               PERFORM 4101-GMN-SPA-SET-SEC
+               MOVE    X91-CHKMOREBUI  TO  SPA-GMN-CHKMOREBUI
+               MOVE    ZERO            TO  SPA-GMN-CUR
            END-EVALUATE
       *
            .
@@ -733,6 +868,9 @@
       *
            MOVE    X91-STSRYCD     TO  SPA-GMN-STSRYCD
            MOVE    X91-EDSRYCD     TO  SPA-GMN-EDSRYCD
+           MOVE    X91-SORT        TO  SPA-GMN-SORT-G
+           MOVE    X91-MOREKIKAN   TO  SPA-GMN-MOREKIKAN-G
+           MOVE    X91-MORESORT    TO  SPA-GMN-MORESORT-G
       *
            .
        4101-GMN-SPA-SET-EXT.
@@ -742,18 +880,34 @@
       *****************************************************************
        4102-KIHON-CHK-SEC              SECTION.
       *
-      *    開始診療行為コードチェック
-           PERFORM 4101-STSRYCD-CHK-SEC
-           IF    ( SPA-ERRCD   NOT =   SPACE )
-            OR   ( FLG-END         =   1 )
-               GO  TO  4102-KIHON-CHK-EXT
+           IF    ( SPA-ERRCD       =   SPACE )
+            AND  ( FLG-END         =   ZERO )
+      *        開始診療行為コードチェック
+               PERFORM 4101-STSRYCD-CHK-SEC
            END-IF
       *
-      *    終了診療行為コードチェック
-           PERFORM 4101-EDSRYCD-CHK-SEC
-           IF    ( SPA-ERRCD   NOT =   SPACE )
-            OR   ( FLG-END         =   1 )
-               GO  TO  4102-KIHON-CHK-EXT
+           IF    ( SPA-ERRCD       =   SPACE )
+            AND  ( FLG-END         =   ZERO )
+      *        終了診療行為コードチェック
+               PERFORM 4101-EDSRYCD-CHK-SEC
+           END-IF
+      *
+           IF    ( SPA-ERRCD       =   SPACE )
+            AND  ( FLG-END         =   ZERO )
+      *        一覧リスト並び順チェック
+               PERFORM 4101-SORT-CHK-SEC
+           END-IF
+      *
+           IF    ( SPA-ERRCD       =   SPACE )
+            AND  ( FLG-END         =   ZERO )
+      *        登録漏れ確認リスト
+               PERFORM 4101-MOREKIKAN-CHK-SEC
+           END-IF
+      *
+           IF    ( SPA-ERRCD       =   SPACE )
+            AND  ( FLG-END         =   ZERO )
+      *        登録漏れ確認リスト並び順チェック
+               PERFORM 4101-MORESORT-CHK-SEC
            END-IF
       *
            .
@@ -971,6 +1125,57 @@
        4101-EDSRYCD-CHK-EXT.
            EXIT.
       *****************************************************************
+      *    一覧リスト並び順チェック
+      *****************************************************************
+       4101-SORT-CHK-SEC               SECTION.
+      *
+           MOVE    SPA-GMN-SORT    TO  WRK-CMB-CD
+           PERFORM 4200-SORTLST-CHK-SEC
+           IF    ( WRK-CMB-ITM     =   SPACE )
+               MOVE    SPA-GMN-SORTLST (1)
+                                   TO  SPA-GMN-SORT-G
+           ELSE
+               MOVE    WRK-CMB-ITM TO  SPA-GMN-SORT-G
+           END-IF
+      *
+           .
+       4101-SORT-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    登録漏れ確認リスト
+      *****************************************************************
+       4101-MOREKIKAN-CHK-SEC          SECTION.
+      *
+           MOVE    SPA-GMN-MOREKIKAN   TO  WRK-CMB-CD
+           PERFORM 4200-MOREKIKANLST-CHK-SEC
+           IF    ( WRK-CMB-ITM     =   SPACE )
+               MOVE    SPA-GMN-MOREKIKANLST (1)
+                                   TO  SPA-GMN-MOREKIKAN-G
+           ELSE
+               MOVE    WRK-CMB-ITM TO  SPA-GMN-MOREKIKAN-G
+           END-IF
+      *
+           .
+       4101-MOREKIKAN-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    登録漏れ確認リスト並び順チェック
+      *****************************************************************
+       4101-MORESORT-CHK-SEC           SECTION.
+      *
+           MOVE    SPA-GMN-MORESORT    TO  WRK-CMB-CD
+           PERFORM 4200-MORESORTLST-CHK-SEC
+           IF    ( WRK-CMB-ITM     =   SPACE )
+               MOVE    SPA-GMN-MORESORTLST (1)
+                                   TO  SPA-GMN-MORESORT-G
+           ELSE
+               MOVE    WRK-CMB-ITM TO  SPA-GMN-MORESORT-G
+           END-IF
+      *
+           .
+       4101-MORESORT-CHK-EXT.
+           EXIT.
+      *****************************************************************
       *    関連チェック処理
       *****************************************************************
        4101-KANREN-CHK-SEC             SECTION.
@@ -985,6 +1190,9 @@
             AND  ( SPA-GMN-CHKBYOYKZ   =   "F")
             AND  ( SPA-GMN-CHKBYOSRY   =   "F")
       *----(03.04.01)--ADD-END-----
+            AND  ( SPA-GMN-CHKMOREYKZBYO   =   "F")
+            AND  ( SPA-GMN-CHKMOREKENSA    =   "F")
+            AND  ( SPA-GMN-CHKMOREBUI      =   "F")
                MOVE    "0100"          TO  SPA-ERRCD
                MOVE    1               TO  SPA-GMN-CUR
                GO  TO  4101-KANREN-CHK-EXT
@@ -1056,6 +1264,66 @@
       *
            .
        4101-CHKSRYRANGE-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    出力順コンボチェック処理
+      *****************************************************************
+       4200-SORTLST-CHK-SEC            SECTION.
+      *
+           INITIALIZE                  WRK-CMB-ITM-G
+           PERFORM VARYING IDX-CMB FROM    1   BY  1
+                   UNTIL ( IDX-CMB         >   SPA-GMN-SORT-MAX )
+                    OR   ( WRK-CMB-ITM NOT =   SPACE )
+      *
+               IF    ( SPA-GMN-SORTL (IDX-CMB) =   WRK-CMB-CD )
+                   MOVE    SPA-GMN-SORTLST (IDX-CMB)
+                                       TO  WRK-CMB-ITM
+               END-IF
+      *
+           END-PERFORM
+      *
+           .
+       4200-SORTLST-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    登録漏れ確認リスト期間コンボチェック処理
+      *****************************************************************
+       4200-MOREKIKANLST-CHK-SEC       SECTION.
+      *
+           INITIALIZE                  WRK-CMB-ITM-G
+           PERFORM VARYING IDX-CMB FROM    1   BY  1
+                   UNTIL ( IDX-CMB         >   SPA-GMN-MOREKIKAN-MAX )
+                    OR   ( WRK-CMB-ITM NOT =   SPACE )
+      *
+               IF    ( SPA-GMN-MOREKIKANL (IDX-CMB) =   WRK-CMB-CD )
+                   MOVE    SPA-GMN-MOREKIKANLST (IDX-CMB)
+                                       TO  WRK-CMB-ITM
+               END-IF
+      *
+           END-PERFORM
+      *
+           .
+       4200-MOREKIKANLST-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    登録漏れ確認リスト並び順コンボチェック処理
+      *****************************************************************
+       4200-MORESORTLST-CHK-SEC        SECTION.
+      *
+           INITIALIZE                  WRK-CMB-ITM-G
+           PERFORM VARYING IDX-CMB FROM    1   BY  1
+                   UNTIL ( IDX-CMB         >   SPA-GMN-MORESORT-MAX )
+                    OR   ( WRK-CMB-ITM NOT =   SPACE )
+      *
+               IF    ( SPA-GMN-MORESORTL (IDX-CMB) =   WRK-CMB-CD )
+                   MOVE    SPA-GMN-MORESORTLST (IDX-CMB)
+                                       TO  WRK-CMB-ITM
+               END-IF
+      *
+           END-PERFORM
+      *
+           .
+       4200-MORESORTLST-CHK-EXT.
            EXIT.
       *****************************************************************
       *    戻る　処理
@@ -1435,16 +1703,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                INITIALIZE                  SYS-1031-REC
            END-IF 
       *
-           MOVE    SPACE               TO  WRK-SRTKBN
-      *
-           EVALUATE    TRUE
-           WHEN  ( SPA-GMN-SYU1        =   "T" )
-               MOVE    "1"             TO  WRK-SRTKBN
-           WHEN  ( SPA-GMN-SYU2        =   "T" )
-               MOVE    "2"             TO  WRK-SRTKBN
-           WHEN  ( SPA-GMN-SYU3        =   "T" )
-               MOVE    "3"             TO  WRK-SRTKBN
-           END-EVALUATE
+           MOVE    SPA-GMN-SORT        TO  WRK-SRTKBN
       *
            PERFORM VARYING IDX0    FROM    1   BY  1
                    UNTIL ( IDX0    >   WRK-CONS-CHKKBN-MAX )
@@ -1457,81 +1716,41 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            END-PERFORM
       *
+           MOVE    SPA-GMN-MORESORT    TO  WRK-SRTKBN
+      *
+           MOVE    ZERO                TO  WRK-KIKAN
+           EVALUATE    SPA-GMN-MOREKIKAN
+           WHEN    "2"
+               MOVE    2               TO  WRK-KIKAN
+           WHEN    "3"
+               MOVE    6               TO  WRK-KIKAN
+           END-EVALUATE
+      *
+           IF    ( SPA-GMN-CHKMOREYKZBYO   =   "T" )
+               MOVE    "1"             TO  WRK-CHKMORE
+               MOVE    SPACE           TO  WRK-MORERANGE-G
+               PERFORM 4902-PRINT-SYORI-SEC
+           END-IF
+      *
+           IF    ( SPA-GMN-CHKMOREKENSA    =   "T" )
+            OR   ( SPA-GMN-CHKMOREBUI      =   "T" )
+               MOVE    "2"             TO  WRK-CHKMORE
+               IF    ( SPA-GMN-CHKMOREKENSA    =   "T" )
+                   MOVE    "1"         TO  WRK-MOREKENSA
+               ELSE
+                   MOVE    "0"         TO  WRK-MOREKENSA
+               END-IF
+               IF    ( SPA-GMN-CHKMOREBUI      =   "T" )
+                   MOVE    "1"         TO  WRK-MOREBUI
+               ELSE
+                   MOVE    "0"         TO  WRK-MOREBUI
+               END-IF
+               PERFORM 4902-PRINT-SYORI-SEC
+           END-IF
+      *
       *    印刷処理
-      *----(02.00.06)--UPD-START---
            IF      SPA-XID1-FLG        =   "OK"  OR "PV"
-      *----(02.00.06)--UPD-END-----
-               PERFORM 45011-JOBKANRI-HENSYU-SEC
-      *
-               MOVE    WRK-CONS-PRTKANRI-TBL-GROUP
-                                           TO  SPA-X91-TBL-GROUP
-               MOVE    WRK-CONS-JOB-JOBID
-                                           TO  SPA-X91-JOB-JOBID
-      *
-               MOVE    0                   TO  WRK-STPAGE
-               MOVE    99999               TO  WRK-EDPAGE
-      *
-               MOVE    SPACE               TO  SHELLTBL
-      *
-      *        ファイルデイレクトリ位置指定
-               INITIALIZE                  ORCSMKPASSAREA
-               MOVE    "scripts/allways/print_prv.sh"
-                                           TO  MKPASS-IN-01
-               CALL    "ORCSMKPASS"        USING   ORCSMKPASSAREA
-               MOVE    MKPASS-OT-01        TO  SHELLTBL-NAME
-               MOVE    SPACE               TO  LNK-PRTKANRI-AREA
-               INITIALIZE                      LNK-PRTKANRI-AREA
-               MOVE    WRK-CONS-PRTKANRI-TBL-KEY
-                                           TO  LNK-PRTKANRI-TBL-KEY
-               MOVE    WRK-CONS-PRTKANRI-TBL-GROUP
-                                           TO  LNK-PRTKANRI-TBL-GROUP
-               MOVE    ZERO                TO  LNK-PRTKANRI-RENNUM
-               MOVE    ZERO                TO  LNK-PRTKANRI-SHORI-RENNUM
-               MOVE    SPA-SYSYMD(1:6)     TO  LNK-PRTKANRI-SRYYM
-               MOVE    SPA-SYSYMD          TO  LNK-PRTKANRI-SKYYMD
-               MOVE    "print_prv.sh"      TO  LNK-PRTKANRI-SHELLID
-               MOVE    ZERO                TO  LNK-PRTKANRI-PRIORITY
-               MOVE    SPA-TERMID          TO  LNK-PRTKANRI-TERMID
-               MOVE    SPA-OPID            TO  LNK-PRTKANRI-OPID
-               MOVE    LNK-PRTKANRI-RENNUM TO  SHELLTBL-ARG1
-               MOVE    LNK-PRTKANRI-TBL-KEY
-                                           TO  SHELLTBL-ARG2
-               MOVE    LNK-PRTKANRI-TBL-GROUP
-                                           TO  SHELLTBL-ARG3
-               MOVE    LNK-PRTKANRI-SHORI-RENNUM
-                                           TO  SHELLTBL-ARG4
-               MOVE    LNK-PRTKANRI-SRYYM  TO  SHELLTBL-ARG5
-               MOVE    LNK-PRTKANRI-SKYYMD TO  SHELLTBL-ARG6
-               MOVE    LNK-PRTKANRI-SHELLID
-                                           TO  SHELLTBL-ARG7
-               MOVE    LNK-PRTKANRI-PRIORITY
-                                           TO  SHELLTBL-ARG8
-               MOVE    LNK-PRTKANRI-TERMID TO  SHELLTBL-ARG9
-               MOVE    LNK-PRTKANRI-OPID   TO  SHELLTBL-ARG10
-               MOVE    LNK-PRTKANRI-PRTNM  TO  SHELLTBL-ARG11
-      *
-               MOVE    CHKMERR             TO  SHELLTBL-ARG12
-               MOVE    WRK-CONS-JOB-JOBID  TO  SHELLTBL-ARG13
-               MOVE    WRK-CONS-JOB-SHELLID
-                                           TO  SHELLTBL-ARG14
-               MOVE    WRK-STPAGE          TO  SHELLTBL-ARG15
-               MOVE    WRK-EDPAGE          TO  SHELLTBL-ARG16
-               EVALUATE    SPA-XID1-FLG
-               WHEN    "PV"
-                   MOVE    "3"             TO  SHELLTBL-ARG17
-      *         WHEN    "NO"
-      *             MOVE    "3"             TO  SHELLTBL-ARG17
-               WHEN    "OK"
-                   MOVE    "2"             TO  SHELLTBL-ARG17
-               END-EVALUATE
-               MOVE    SPA-HOSPNUM         TO  SHELLTBL-ARG18
-               MOVE    SHELLTBL            TO  MCPDATA-REC
-               MOVE    "shell"             TO  MCP-TABLE
-               MOVE    "shell"             TO  MCP-PATHNAME
-               MOVE    "SHELL"             TO  MCP-FUNC
-grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
-                                                   MCPDATA-REC
-                                                   SPA-AREA
+               PERFORM 4903-PRINT-SYORI-SEC
            END-IF
       *
       *    ＪＯＢＩＤ更新処理
@@ -1622,9 +1841,171 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            END-IF
            .
       *
-       4501-PRINT-EXT.
+       4901-PRINT-SYORI-EXT.
            EXIT.
       *
+      *****************************************************************
+      *    印刷編集処理
+      *****************************************************************
+       4902-PRINT-SYORI-SEC            SECTION.
+      *
+           PERFORM 45011-JOBKANRI-HENSYU-SEC
+      *
+      *    ファイルデイレクトリ位置指定
+           MOVE    SPACE           TO  LNK-PRTKANRI-AREA
+           INITIALIZE                  LNK-PRTKANRI-AREA
+           ADD     1               TO  WRK-PRTKANRI-RENNUM
+           MOVE    WRK-PRTKANRI-RENNUM
+                                   TO  LNK-PRTKANRI-RENNUM
+           MOVE    WRK-CONS-PRTKANRI-TBL-KEY
+                                   TO  LNK-PRTKANRI-TBL-KEY 
+           MOVE    WRK-CONS-PRTKANRI-TBL-GROUP
+                                   TO  LNK-PRTKANRI-TBL-GROUP
+           MOVE    "000000"        TO  LNK-PRTKANRI-SRYYM
+           MOVE    SPA-SYSYMD      TO  LNK-PRTKANRI-SKYYMD
+           MOVE    "chkmst2.sh"    TO  LNK-PRTKANRI-SHELLID
+           MOVE    ZERO            TO  LNK-PRTKANRI-PRIORITY
+           MOVE    SPA-TERMID      TO  LNK-PRTKANRI-TERMID
+           MOVE    SPA-OPID        TO  LNK-PRTKANRI-OPID
+           MOVE    SYS-1031-PRTNM (6)
+                                   TO  LNK-PRTKANRI-PRTNM
+      *
+           MOVE    SPACE           TO  SHELLTBL 
+           INITIALIZE              ORCSMKPASSAREA
+           MOVE    "scripts/allways/chkmst2.sh"
+                                   TO  MKPASS-IN-01
+           CALL    "ORCSMKPASS"    USING   ORCSMKPASSAREA
+           MOVE    MKPASS-OT-01    TO  SHELLTBL-NAME
+           MOVE    LNK-PRTKANRI-RENNUM
+                                   TO  SHELLTBL-ARG1
+           MOVE    LNK-PRTKANRI-TBL-KEY
+                                   TO  SHELLTBL-ARG2
+           MOVE    LNK-PRTKANRI-TBL-GROUP
+                                   TO  SHELLTBL-ARG3
+           MOVE    LNK-PRTKANRI-SHORI-RENNUM
+                                   TO  SHELLTBL-ARG4
+           MOVE    LNK-PRTKANRI-SRYYM
+                                   TO  SHELLTBL-ARG5
+           MOVE    LNK-PRTKANRI-SKYYMD
+                                   TO  SHELLTBL-ARG6
+           MOVE    LNK-PRTKANRI-SHELLID
+                                   TO  SHELLTBL-ARG7
+           MOVE    LNK-PRTKANRI-PRIORITY
+                                   TO  SHELLTBL-ARG8
+           MOVE    LNK-PRTKANRI-TERMID
+                                   TO  SHELLTBL-ARG9
+           MOVE    LNK-PRTKANRI-OPID
+                                   TO  SHELLTBL-ARG10
+           MOVE    LNK-PRTKANRI-PRTNM
+                                   TO  SHELLTBL-ARG11
+      *
+           MOVE    WRK-CONS-JOB-JOBID
+                                   TO  SHELLTBL-ARG12
+           MOVE    WRK-CONS-JOB-SHELLID
+                                   TO  SHELLTBL-ARG13
+           MOVE    SPA-HOSPNUM     TO  SHELLTBL-ARG14
+           MOVE    WRK-CHKMORE     TO  SHELLTBL-ARG15
+           MOVE    WRK-KIKAN       TO  SHELLTBL-ARG16
+           MOVE    WRK-MORERANGE-G TO  SHELLTBL-ARG17
+           MOVE    WRK-SRTKBN      TO  SHELLTBL-ARG18
+           MOVE    CHKMERR         TO  SHELLTBL-ARG19
+      *
+grpsys*    MOVE    SPA-HOSPNUM         TO  -HOSPNUM
+           MOVE    SHELLTBL        TO  MCPDATA-REC
+           MOVE    "SHELL"         TO  MCP-FUNC
+           MOVE    "shell"         TO  MCP-TABLE
+           MOVE    "shell"         TO  MCP-PATHNAME
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
+           IF      MCP-RC          NOT =   ZERO
+               DISPLAY "ERROR MCP-RC=" MCP-RC 
+           END-IF
+      *
+           .
+      *
+       4902-PRINT-SYORI-EXT.
+           EXIT.
+      *****************************************************************
+      *    印刷編集処理
+      *****************************************************************
+       4903-PRINT-SYORI-SEC            SECTION.
+      *
+           PERFORM 45011-JOBKANRI-HENSYU-SEC
+      *
+           MOVE    WRK-CONS-PRTKANRI-TBL-GROUP
+                                       TO  SPA-X91-TBL-GROUP
+           MOVE    WRK-CONS-JOB-JOBID
+                                       TO  SPA-X91-JOB-JOBID
+      *
+           MOVE    0                   TO  WRK-STPAGE
+           MOVE    99999               TO  WRK-EDPAGE
+      *
+           MOVE    SPACE               TO  SHELLTBL
+      *
+      *    ファイルデイレクトリ位置指定
+           INITIALIZE                  ORCSMKPASSAREA
+           MOVE    "scripts/allways/print_prv.sh"
+                                       TO  MKPASS-IN-01
+           CALL    "ORCSMKPASS"        USING   ORCSMKPASSAREA
+           MOVE    MKPASS-OT-01        TO  SHELLTBL-NAME
+           MOVE    SPACE               TO  LNK-PRTKANRI-AREA
+           INITIALIZE                      LNK-PRTKANRI-AREA
+           MOVE    WRK-CONS-PRTKANRI-TBL-KEY
+                                       TO  LNK-PRTKANRI-TBL-KEY
+           MOVE    WRK-CONS-PRTKANRI-TBL-GROUP
+                                       TO  LNK-PRTKANRI-TBL-GROUP
+           MOVE    ZERO                TO  LNK-PRTKANRI-RENNUM
+           MOVE    ZERO                TO  LNK-PRTKANRI-SHORI-RENNUM
+           MOVE    SPA-SYSYMD(1:6)     TO  LNK-PRTKANRI-SRYYM
+           MOVE    SPA-SYSYMD          TO  LNK-PRTKANRI-SKYYMD
+           MOVE    "print_prv.sh"      TO  LNK-PRTKANRI-SHELLID
+           MOVE    ZERO                TO  LNK-PRTKANRI-PRIORITY
+           MOVE    SPA-TERMID          TO  LNK-PRTKANRI-TERMID
+           MOVE    SPA-OPID            TO  LNK-PRTKANRI-OPID
+           MOVE    LNK-PRTKANRI-RENNUM TO  SHELLTBL-ARG1
+           MOVE    LNK-PRTKANRI-TBL-KEY
+                                       TO  SHELLTBL-ARG2
+           MOVE    LNK-PRTKANRI-TBL-GROUP
+                                       TO  SHELLTBL-ARG3
+           MOVE    LNK-PRTKANRI-SHORI-RENNUM
+                                       TO  SHELLTBL-ARG4
+           MOVE    LNK-PRTKANRI-SRYYM  TO  SHELLTBL-ARG5
+           MOVE    LNK-PRTKANRI-SKYYMD TO  SHELLTBL-ARG6
+           MOVE    LNK-PRTKANRI-SHELLID
+                                       TO  SHELLTBL-ARG7
+           MOVE    LNK-PRTKANRI-PRIORITY
+                                       TO  SHELLTBL-ARG8
+           MOVE    LNK-PRTKANRI-TERMID TO  SHELLTBL-ARG9
+           MOVE    LNK-PRTKANRI-OPID   TO  SHELLTBL-ARG10
+           MOVE    LNK-PRTKANRI-PRTNM  TO  SHELLTBL-ARG11
+           MOVE    CHKMERR             TO  SHELLTBL-ARG12
+           MOVE    WRK-CONS-JOB-JOBID  TO  SHELLTBL-ARG13
+           MOVE    WRK-CONS-JOB-SHELLID
+                                       TO  SHELLTBL-ARG14
+           MOVE    WRK-STPAGE          TO  SHELLTBL-ARG15
+           MOVE    WRK-EDPAGE          TO  SHELLTBL-ARG16
+           EVALUATE    SPA-XID1-FLG
+           WHEN    "PV"
+               MOVE    "3"             TO  SHELLTBL-ARG17
+      *     WHEN    "NO"
+      *         MOVE    "3"             TO  SHELLTBL-ARG17
+           WHEN    "OK"
+               MOVE    "2"             TO  SHELLTBL-ARG17
+           END-EVALUATE
+           MOVE    SPA-HOSPNUM         TO  SHELLTBL-ARG18
+           MOVE    SHELLTBL            TO  MCPDATA-REC
+           MOVE    "shell"             TO  MCP-TABLE
+           MOVE    "shell"             TO  MCP-PATHNAME
+           MOVE    "SHELL"             TO  MCP-FUNC
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
+      *
+           .
+      *
+       4903-PRINT-SYORI-EXT.
+           EXIT.
       *****************************************************************
       *    ジョブ開始セット処理
       *****************************************************************
@@ -1871,9 +2252,39 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPA-GMN-STSRYCD     TO  X91-STSRYCD
            MOVE    SPA-GMN-STSRYNAME   TO  X91-STSRYNAME
            MOVE    SPA-GMN-EDSRYCD     TO  X91-EDSRYCD
-           MOVE    SPA-GMN-SYU1        TO  X91-SYU1
-           MOVE    SPA-GMN-SYU2        TO  X91-SYU2
-           MOVE    SPA-GMN-SYU3        TO  X91-SYU3
+           MOVE    SPA-GMN-CHKMOREYKZBYO TO X91-CHKMOREYKZBYO
+           MOVE    SPA-GMN-CHKMOREKENSA TO X91-CHKMOREKENSA
+           MOVE    SPA-GMN-CHKMOREBUI  TO X91-CHKMOREBUI
+      *
+           MOVE    SPA-GMN-SORT-G TO  X91-SORT
+           MOVE    SPA-GMN-SORT-MAX TO X91-SORT-COUNT
+           PERFORM VARYING IDX-CMB FROM    1   BY  1
+                   UNTIL ( IDX-CMB >   SPA-GMN-SORT-MAX )
+      *
+               MOVE    SPA-GMN-SORTLST (IDX-CMB)
+                                       TO  X91-SORT-ITEM (IDX-CMB)
+      *
+           END-PERFORM
+      *
+           MOVE    SPA-GMN-MOREKIKAN-G TO  X91-MOREKIKAN
+           MOVE    SPA-GMN-MOREKIKAN-MAX TO X91-MOREKIKAN-COUNT
+           PERFORM VARYING IDX-CMB FROM    1   BY  1
+                   UNTIL ( IDX-CMB >   SPA-GMN-MOREKIKAN-MAX )
+      *
+               MOVE    SPA-GMN-MOREKIKANLST (IDX-CMB)
+                                       TO  X91-MOREKIKAN-ITEM (IDX-CMB)
+      *
+           END-PERFORM
+      *
+           MOVE    SPA-GMN-MORESORT-G TO  X91-MORESORT
+           MOVE    SPA-GMN-MORESORT-MAX TO X91-MORESORT-COUNT
+           PERFORM VARYING IDX-CMB FROM    1   BY  1
+                   UNTIL ( IDX-CMB >   SPA-GMN-MORESORT-MAX )
+      *
+               MOVE    SPA-GMN-MORESORTLST (IDX-CMB)
+                                       TO  X91-MORESORT-ITEM (IDX-CMB)
+      *
+           END-PERFORM
       *
            MOVE    "black"             TO  X91-STSRYNAME-STYLE
            IF    ( SPA-NAI-SRYCD-EXSIT-FLG
@@ -1926,11 +2337,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            WHEN    07
                MOVE    "EDSRYCD"       TO  MCP-WIDGET
            WHEN    08
-               MOVE    "SYU1"          TO  MCP-WIDGET
-           WHEN    09
-               MOVE    "SYU2"          TO  MCP-WIDGET
-           WHEN    10
-               MOVE    "SYU3"          TO  MCP-WIDGET
+               MOVE    "SORT"          TO  MCP-WIDGET
            WHEN    11
                MOVE    "CHKYKZKNKBYO"  TO  MCP-WIDGET
       *----(03.04.01)--ADD-START---
@@ -1941,6 +2348,16 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            WHEN    14
                MOVE    "CHKBYOSRY"     TO  MCP-WIDGET
       *----(03.04.01)--ADD-END-----
+           WHEN    15
+               MOVE    "MOREKIKAN"     TO  MCP-WIDGET
+           WHEN    16
+               MOVE    "CHKMOREYKZBYO" TO  MCP-WIDGET
+           WHEN    17
+               MOVE    "CHKMOREKENSA"  TO  MCP-WIDGET
+           WHEN    18
+               MOVE    "CHKMOREBUI"    TO  MCP-WIDGET
+           WHEN    19
+               MOVE    "MORESORT"      TO  MCP-WIDGET
            WHEN    212
                MOVE    "B12"           TO  MCP-WIDGET
            END-EVALUATE
@@ -1974,17 +2391,23 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    07              TO  SPA-GMN-CUR
            WHEN    "EDSRYCD"
                MOVE    08              TO  SPA-GMN-CUR
-           WHEN    "SYU1"
-               MOVE    13              TO  SPA-GMN-CUR
-           WHEN    "SYU2"
-               MOVE    13              TO  SPA-GMN-CUR
-           WHEN    "SYU3"
+           WHEN    "SORT"
                MOVE    13              TO  SPA-GMN-CUR
            WHEN    "CHKBYOYKZ"
                MOVE    14              TO  SPA-GMN-CUR
            WHEN    "CHKBYOSRY"
-               MOVE    212             TO  SPA-GMN-CUR
+               MOVE    15              TO  SPA-GMN-CUR
       *----(03.04.01)--UPD-END-----
+           WHEN    "MOREKIKAN"
+               MOVE    16              TO  SPA-GMN-CUR
+           WHEN    "CHKMOREYKZBYO"
+               MOVE    17              TO  SPA-GMN-CUR
+           WHEN    "CHKMOREKENSA"
+               MOVE    18              TO  SPA-GMN-CUR
+           WHEN    "CHKMOREBUI"
+               MOVE    19              TO  SPA-GMN-CUR
+           WHEN    "MORESORT"
+               MOVE    212             TO  SPA-GMN-CUR
            END-EVALUATE
       *
            .
