@@ -66,3 +66,10 @@
                     06  W99-VALUE   PIC X.
                   05  W99-RESEND2.
                     06  W99-VALUE   PIC X.
+              03  W99-SINSATU-FLG-COMBO.
+                04  W99-SINSATU-FLG.
+                  05  W99-VALUE   PIC X(30).
+                04  W99-SINSATU-FLG-COUNT   PIC S9(9)   BINARY.
+                04  W99-SINSATU-FLG-ITEM
+                        PIC X(30)   OCCURS  5 TIMES.
+

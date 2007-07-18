@@ -273,6 +273,18 @@
                     06  W07-FORMAL-FLG-COUNT   PIC S9(9)   BINARY.
                     06  W07-FORMAL-FLG-ITEM
                             PIC X(40)   OCCURS  5 TIMES.
+                  05  W07-TEISEIFLG-COMB.
+                    06  W07-TEISEIFLG.
+                      07  W07-VALUE   PIC X(40).
+                    06  W07-TEISEIFLG-COUNT   PIC S9(9)   BINARY.
+                    06  W07-TEISEIFLG-ITEM
+                            PIC X(40)   OCCURS  2 TIMES.
+                  05  W07-CHG310FLG-COMB.
+                    06  W07-CHG310FLG.
+                      07  W07-VALUE   PIC X(40).
+                    06  W07-CHG310FLG-COUNT   PIC S9(9)   BINARY.
+                    06  W07-CHG310FLG-ITEM
+                            PIC X(40)   OCCURS  2 TIMES.
                 04  W07-TAGNAME3.
                   05  W07-TAGNAME3-STATE   PIC S9(9)   BINARY.
                 04  W07-TAG4.

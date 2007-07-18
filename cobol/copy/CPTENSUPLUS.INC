@@ -55,6 +55,10 @@
            03  TNSP-JGNCNT1D            PIC  9(03).
       *    エラー処理
            03  TNSP-JGNCNTERR           PIC  9(01).
+      *    他月数
+           03  TNSP-JGNCNTETCM          PIC  9(02).
+      *    他月上限回数
+           03  TNSP-JGNCNTETC           PIC  9(03).
       *
       *    総量編集区分
            03  TNSP-SOURYOHENKBN           PIC  9(01).

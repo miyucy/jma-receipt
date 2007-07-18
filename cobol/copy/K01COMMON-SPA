@@ -115,6 +115,13 @@
       *中途表示一覧
                05  SPA-WKSRYHYOFLG         PIC  X(01).
       *!
+      *同日再診・訂正選択
+               05  SPA-TEISEIFLG           PIC  X(01).
+      *皮下筋肉注射料変換選択
+               05  SPA-CHG310FLG           PIC  X(01).
+      *ＣＬＡＩＭ展開選択
+               05  SPA-SINSATU-FLG         PIC  X(01).
+      *!
       *後発医薬品変更可
                05  SPA-KOUHATUKA           PIC  X(01).
       *患者取消確認チェック
@@ -383,8 +390,12 @@
       *
       *他保険受診有無
                05  SPA-TAHOKEN-FLG         PIC  9(01).
+      *他科同日再診
+               05  SPA-TAKADOU-FLG         PIC  9(01).
       *訂正初期表示
                05  SPA-SINSATU-SAI         PIC  9(01).
+      *受付有無
+               05  SPA-UKETUKE-ARI         PIC  9(01).
       *
       *内服薬剤７種類以上確認
                05  SPA-NAIFUKU-CHK         PIC  9(01).

@@ -41,19 +41,23 @@
       *管理テーブル
            03  SYS-1038-TBL.
       *入金管理区分
-               05  SYS-1038-NYKNKNRKBN  PIC  X(01).
+               05  SYS-1038-NYKNKNRKBN     PIC  X(01).
       *複数科まとめ集計
-               05  SYS-1038-KAGRPFLG    PIC  X(01).
+               05  SYS-1038-KAGRPFLG       PIC  X(01).
       *請求書発行方法
-               05  SYS-1038-HAKHOUFLG   PIC  X(01).
+               05  SYS-1038-HAKHOUFLG      PIC  X(01).
       *ＤＯ初期表示
                05  SYS-1038-DOSRYKBNFLG    PIC  X(02).
       *中途表示一覧
                05  SYS-1038-WKSRYHYOFLG    PIC  X(01).
       *検査正式名称表示
                05  SYS-1038-FORMALFLG      PIC  X(01).
+      *同日再診・訂正選択
+               05  SYS-1038-TEISEIFLG      PIC  X(01).
+      *皮下筋肉注射料変換選択
+               05  SYS-1038-CHG310FLG      PIC  X(01).
       *予備
-               05                       PIC  X(493).
+               05                          PIC  X(491).
       *端末ＩＤ
            03  SYS-1038-TERMID          PIC  X(16).
       *オペーレータＩＤ

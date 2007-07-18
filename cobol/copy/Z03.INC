@@ -203,6 +203,10 @@
                     06  Z03-PLUS-SANTEI-COUNT   PIC S9(9)   BINARY.
                     06  Z03-PLUS-SANTEI-ITEM
                             PIC X(30)   OCCURS  3 TIMES.
+                  05  Z03-PLUS-JGNCNTETCM.
+                    06  Z03-VALUE   PIC S9(2).
+                  05  Z03-PLUS-JGNCNTETC.
+                    06  Z03-VALUE   PIC S9(3).
                 04  Z03-FIXED11.
                   05  Z03-TUSOKUGAIKBN.
                     06  Z03-VALUE   PIC S9(1).
