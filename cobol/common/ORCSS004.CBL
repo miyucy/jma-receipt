@@ -291,6 +291,7 @@
       *
            IF  ( SS004-SRYCDKBN        =   CONST-KENSA )
                IF  ( WRK-SRYCD(1:2)    =  "16" )
+                OR ( WRK-SRYCD(1:3)    =  "002" )
                    MOVE    1       TO  FLG-TARGET
                END-IF
            ELSE
@@ -299,8 +300,11 @@
                END-IF
            END-IF
       *
+           DISPLAY "FLG-TARGET =" FLG-TARGET
+           DISPLAY "WRK-SRYCD  =" WRK-SRYCD
            IF    ( FLG-TARGET          =   1 )
                PERFORM 900-SS00401-READ-DYN-SEC
+               DISPLAY "FLG-SS00401 =" FLG-SS00401
                IF    ( FLG-SS00401 =   1 )
                    INITIALIZE              SS00401-REC
                    MOVE    WRK-SRYCD   TO  SS00401-SRYCD
@@ -453,7 +457,7 @@
            MOVE    WRK-STSRYYM         TO  SRY-SRYYM
            MOVE    WRK-EDSRYYM         TO  SRY-CREYMD
            IF   (  SS004-SRYCDKBN      =   CONST-KENSA )
-               MOVE    "160000000"     TO  SRY-SRYCD (1)
+               MOVE    "002000000"     TO  SRY-SRYCD (1)
                MOVE    "169999999"     TO  SRY-SRYCD (2)
            ELSE
                MOVE    "600000000"     TO  SRY-SRYCD (1)
