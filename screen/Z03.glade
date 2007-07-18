@@ -1744,7 +1744,7 @@
 	  <class>GtkNumberEntry</class>
 	  <name>KZMCOMPSIKIBETU</name>
 	  <x>136</x>
-	  <y>392</y>
+	  <y>412</y>
 	  <width>40</width>
 	  <height>24</height>
 	  <can_focus>True</can_focus>
@@ -1768,7 +1768,7 @@
 	  <class>GtkNumberEntry</class>
 	  <name>KZMERR</name>
 	  <x>136</x>
-	  <y>552</y>
+	  <y>572</y>
 	  <width>40</width>
 	  <height>24</height>
 	  <can_focus>True</can_focus>
@@ -2493,22 +2493,6 @@
 	</widget>
 
 	<widget>
-	  <class>GtkLabel</class>
-	  <name>label199</name>
-	  <x>192</x>
-	  <y>136</y>
-	  <width>84</width>
-	  <height>18</height>
-	  <label>他</label>
-	  <justify>GTK_JUSTIFY_RIGHT</justify>
-	  <wrap>True</wrap>
-	  <xalign>0.5</xalign>
-	  <yalign>0.5</yalign>
-	  <xpad>0</xpad>
-	  <ypad>0</ypad>
-	</widget>
-
-	<widget>
 	  <class>GtkNumberEntry</class>
 	  <name>JGNCNTETCM</name>
 	  <x>136</x>
@@ -2560,7 +2544,7 @@
 	  <class>GtkNumberEntry</class>
 	  <name>KZMTEN</name>
 	  <x>136</x>
-	  <y>520</y>
+	  <y>540</y>
 	  <width>143</width>
 	  <height>24</height>
 	  <can_focus>True</can_focus>
@@ -2584,7 +2568,7 @@
 	  <class>GtkNumberEntry</class>
 	  <name>KZMKGN</name>
 	  <x>136</x>
-	  <y>424</y>
+	  <y>444</y>
 	  <width>143</width>
 	  <height>24</height>
 	  <can_focus>True</can_focus>
@@ -2608,7 +2592,7 @@
 	  <class>GtkNumberEntry</class>
 	  <name>KZMJGN</name>
 	  <x>136</x>
-	  <y>456</y>
+	  <y>476</y>
 	  <width>143</width>
 	  <height>24</height>
 	  <can_focus>True</can_focus>
@@ -2632,7 +2616,7 @@
 	  <class>GtkNumberEntry</class>
 	  <name>KZM</name>
 	  <x>136</x>
-	  <y>488</y>
+	  <y>508</y>
 	  <width>143</width>
 	  <height>24</height>
 	  <can_focus>True</can_focus>
@@ -2650,22 +2634,6 @@
 	  </signal>
 	  <editable>True</editable>
 	  <format>ZZZZZZZ9</format>
-	</widget>
-
-	<widget>
-	  <class>GtkLabel</class>
-	  <name>label197</name>
-	  <x>264</x>
-	  <y>104</y>
-	  <width>66</width>
-	  <height>16</height>
-	  <label>１週</label>
-	  <justify>GTK_JUSTIFY_RIGHT</justify>
-	  <wrap>True</wrap>
-	  <xalign>0.5</xalign>
-	  <yalign>0.5</yalign>
-	  <xpad>0</xpad>
-	  <ypad>0</ypad>
 	</widget>
 
 	<widget>
@@ -2697,7 +2665,7 @@
 	  <class>GtkNumberEntry</class>
 	  <name>PLUS_JGNCNT</name>
 	  <x>136</x>
-	  <y>280</y>
+	  <y>276</y>
 	  <width>40</width>
 	  <height>24</height>
 	  <can_focus>True</can_focus>
@@ -2720,8 +2688,8 @@
 	<widget>
 	  <class>GtkNumberEntry</class>
 	  <name>PLUS_JGNCNT1D</name>
-	  <x>224</x>
-	  <y>280</y>
+	  <x>216</x>
+	  <y>276</y>
 	  <width>40</width>
 	  <height>24</height>
 	  <can_focus>True</can_focus>
@@ -2742,26 +2710,10 @@
 	</widget>
 
 	<widget>
-	  <class>GtkLabel</class>
-	  <name>label196</name>
-	  <x>184</x>
-	  <y>104</y>
-	  <width>84</width>
-	  <height>18</height>
-	  <label>１日</label>
-	  <justify>GTK_JUSTIFY_RIGHT</justify>
-	  <wrap>True</wrap>
-	  <xalign>0.5</xalign>
-	  <yalign>0.5</yalign>
-	  <xpad>0</xpad>
-	  <ypad>0</ypad>
-	</widget>
-
-	<widget>
 	  <class>GtkNumberEntry</class>
 	  <name>PLUS_JGNCNTERR</name>
 	  <x>136</x>
-	  <y>312</y>
+	  <y>336</y>
 	  <width>40</width>
 	  <height>24</height>
 	  <can_focus>True</can_focus>
@@ -2779,247 +2731,6 @@
 	  </signal>
 	  <editable>True</editable>
 	  <format>9</format>
-	</widget>
-
-	<widget>
-	  <class>GtkLabel</class>
-	  <name>label114</name>
-	  <x>8</x>
-	  <y>368</y>
-	  <width>84</width>
-	  <height>18</height>
-	  <label>きざみ値</label>
-	  <justify>GTK_JUSTIFY_RIGHT</justify>
-	  <wrap>True</wrap>
-	  <xalign>0.5</xalign>
-	  <yalign>0.5</yalign>
-	  <xpad>0</xpad>
-	  <ypad>0</ypad>
-	</widget>
-
-	<widget>
-	  <class>GtkLabel</class>
-	  <name>label195</name>
-	  <x>28</x>
-	  <y>104</y>
-	  <width>84</width>
-	  <height>18</height>
-	  <label>回数</label>
-	  <justify>GTK_JUSTIFY_RIGHT</justify>
-	  <wrap>True</wrap>
-	  <xalign>0.5</xalign>
-	  <yalign>0.5</yalign>
-	  <xpad>0</xpad>
-	  <ypad>0</ypad>
-	</widget>
-
-	<widget>
-	  <class>GtkLabel</class>
-	  <name>label198</name>
-	  <x>28</x>
-	  <y>136</y>
-	  <width>84</width>
-	  <height>18</height>
-	  <label>他月数</label>
-	  <justify>GTK_JUSTIFY_RIGHT</justify>
-	  <wrap>True</wrap>
-	  <xalign>0.5</xalign>
-	  <yalign>0.5</yalign>
-	  <xpad>0</xpad>
-	  <ypad>0</ypad>
-	</widget>
-
-	<widget>
-	  <class>GtkLabel</class>
-	  <name>label122</name>
-	  <x>28</x>
-	  <y>168</y>
-	  <width>80</width>
-	  <height>24</height>
-	  <label>エラー処理</label>
-	  <justify>GTK_JUSTIFY_RIGHT</justify>
-	  <wrap>True</wrap>
-	  <xalign>0.5</xalign>
-	  <yalign>0.5</yalign>
-	  <xpad>0</xpad>
-	  <ypad>0</ypad>
-	</widget>
-
-	<widget>
-	  <class>GtkLabel</class>
-	  <name>label231</name>
-	  <x>112</x>
-	  <y>104</y>
-	  <width>84</width>
-	  <height>18</height>
-	  <label>月</label>
-	  <justify>GTK_JUSTIFY_RIGHT</justify>
-	  <wrap>True</wrap>
-	  <xalign>0.5</xalign>
-	  <yalign>0.5</yalign>
-	  <xpad>0</xpad>
-	  <ypad>0</ypad>
-	</widget>
-
-	<widget>
-	  <class>GtkLabel</class>
-	  <name>label270</name>
-	  <x>112</x>
-	  <y>280</y>
-	  <width>24</width>
-	  <height>24</height>
-	  <label>月</label>
-	  <justify>GTK_JUSTIFY_RIGHT</justify>
-	  <wrap>True</wrap>
-	  <xalign>0.5</xalign>
-	  <yalign>0.5</yalign>
-	  <xpad>0</xpad>
-	  <ypad>0</ypad>
-	</widget>
-
-	<widget>
-	  <class>GtkLabel</class>
-	  <name>label271</name>
-	  <x>184</x>
-	  <y>280</y>
-	  <width>40</width>
-	  <height>24</height>
-	  <label>１日</label>
-	  <justify>GTK_JUSTIFY_RIGHT</justify>
-	  <wrap>True</wrap>
-	  <xalign>0.5</xalign>
-	  <yalign>0.5</yalign>
-	  <xpad>0</xpad>
-	  <ypad>0</ypad>
-	</widget>
-
-	<widget>
-	  <class>GtkLabel</class>
-	  <name>label115</name>
-	  <x>28</x>
-	  <y>396</y>
-	  <width>84</width>
-	  <height>18</height>
-	  <label>識別</label>
-	  <justify>GTK_JUSTIFY_RIGHT</justify>
-	  <wrap>True</wrap>
-	  <xalign>0.5</xalign>
-	  <yalign>0.5</yalign>
-	  <xpad>0</xpad>
-	  <ypad>0</ypad>
-	</widget>
-
-	<widget>
-	  <class>GtkLabel</class>
-	  <name>label117</name>
-	  <x>28</x>
-	  <y>428</y>
-	  <width>84</width>
-	  <height>18</height>
-	  <label>下限値</label>
-	  <justify>GTK_JUSTIFY_RIGHT</justify>
-	  <wrap>True</wrap>
-	  <xalign>0.5</xalign>
-	  <yalign>0.5</yalign>
-	  <xpad>0</xpad>
-	  <ypad>0</ypad>
-	</widget>
-
-	<widget>
-	  <class>GtkLabel</class>
-	  <name>label116</name>
-	  <x>28</x>
-	  <y>460</y>
-	  <width>84</width>
-	  <height>18</height>
-	  <label>上限値</label>
-	  <justify>GTK_JUSTIFY_RIGHT</justify>
-	  <wrap>True</wrap>
-	  <xalign>0.5</xalign>
-	  <yalign>0.5</yalign>
-	  <xpad>0</xpad>
-	  <ypad>0</ypad>
-	</widget>
-
-	<widget>
-	  <class>GtkLabel</class>
-	  <name>label118</name>
-	  <x>28</x>
-	  <y>492</y>
-	  <width>84</width>
-	  <height>18</height>
-	  <label>きざみ値</label>
-	  <justify>GTK_JUSTIFY_RIGHT</justify>
-	  <wrap>True</wrap>
-	  <xalign>0.5</xalign>
-	  <yalign>0.5</yalign>
-	  <xpad>0</xpad>
-	  <ypad>0</ypad>
-	</widget>
-
-	<widget>
-	  <class>GtkLabel</class>
-	  <name>label119</name>
-	  <x>32</x>
-	  <y>524</y>
-	  <width>84</width>
-	  <height>18</height>
-	  <label>きざみ点数</label>
-	  <justify>GTK_JUSTIFY_RIGHT</justify>
-	  <wrap>True</wrap>
-	  <xalign>0.5</xalign>
-	  <yalign>0.5</yalign>
-	  <xpad>0</xpad>
-	  <ypad>0</ypad>
-	</widget>
-
-	<widget>
-	  <class>GtkLabel</class>
-	  <name>label120</name>
-	  <x>32</x>
-	  <y>552</y>
-	  <width>84</width>
-	  <height>33</height>
-	  <label>上下限
-エラー処理</label>
-	  <justify>GTK_JUSTIFY_RIGHT</justify>
-	  <wrap>True</wrap>
-	  <xalign>0.5</xalign>
-	  <yalign>0.5</yalign>
-	  <xpad>0</xpad>
-	  <ypad>0</ypad>
-	</widget>
-
-	<widget>
-	  <class>GtkLabel</class>
-	  <name>label269</name>
-	  <x>28</x>
-	  <y>284</y>
-	  <width>48</width>
-	  <height>20</height>
-	  <label>回数</label>
-	  <justify>GTK_JUSTIFY_RIGHT</justify>
-	  <wrap>True</wrap>
-	  <xalign>0.5</xalign>
-	  <yalign>0.5</yalign>
-	  <xpad>0</xpad>
-	  <ypad>0</ypad>
-	</widget>
-
-	<widget>
-	  <class>GtkLabel</class>
-	  <name>label272</name>
-	  <x>28</x>
-	  <y>316</y>
-	  <width>80</width>
-	  <height>20</height>
-	  <label>エラー処理</label>
-	  <justify>GTK_JUSTIFY_RIGHT</justify>
-	  <wrap>True</wrap>
-	  <xalign>0.5</xalign>
-	  <yalign>0.5</yalign>
-	  <xpad>0</xpad>
-	  <ypad>0</ypad>
 	</widget>
 
 	<widget>
@@ -3063,15 +2774,6 @@
 	</widget>
 
 	<widget>
-	  <class>GtkHSeparator</class>
-	  <name>hseparator11</name>
-	  <x>0</x>
-	  <y>344</y>
-	  <width>344</width>
-	  <height>16</height>
-	</widget>
-
-	<widget>
 	  <class>GtkLabel</class>
 	  <name>label267</name>
 	  <x>8</x>
@@ -3079,6 +2781,258 @@
 	  <width>200</width>
 	  <height>24</height>
 	  <label>ユーザ設定  上限回数</label>
+	  <justify>GTK_JUSTIFY_RIGHT</justify>
+	  <wrap>True</wrap>
+	  <xalign>0.5</xalign>
+	  <yalign>0.5</yalign>
+	  <xpad>0</xpad>
+	  <ypad>0</ypad>
+	</widget>
+
+	<widget>
+	  <class>GtkHSeparator</class>
+	  <name>hseparator10</name>
+	  <x>344</x>
+	  <y>64</y>
+	  <width>640</width>
+	  <height>16</height>
+	</widget>
+
+	<widget>
+	  <class>GtkVSeparator</class>
+	  <name>vseparator2</name>
+	  <x>336</x>
+	  <y>0</y>
+	  <width>16</width>
+	  <height>612</height>
+	</widget>
+
+	<widget>
+	  <class>GtkLabel</class>
+	  <name>label120</name>
+	  <x>32</x>
+	  <y>568</y>
+	  <width>84</width>
+	  <height>33</height>
+	  <label>上下限
+エラー処理</label>
+	  <justify>GTK_JUSTIFY_RIGHT</justify>
+	  <wrap>True</wrap>
+	  <xalign>0.5</xalign>
+	  <yalign>0.5</yalign>
+	  <xpad>0</xpad>
+	  <ypad>0</ypad>
+	</widget>
+
+	<widget>
+	  <class>GtkLabel</class>
+	  <name>label114</name>
+	  <x>8</x>
+	  <y>384</y>
+	  <width>84</width>
+	  <height>24</height>
+	  <label>きざみ値</label>
+	  <justify>GTK_JUSTIFY_RIGHT</justify>
+	  <wrap>True</wrap>
+	  <xalign>0.5</xalign>
+	  <yalign>0.5</yalign>
+	  <xpad>0</xpad>
+	  <ypad>0</ypad>
+	</widget>
+
+	<widget>
+	  <class>GtkHSeparator</class>
+	  <name>hseparator11</name>
+	  <x>0</x>
+	  <y>368</y>
+	  <width>344</width>
+	  <height>16</height>
+	</widget>
+
+	<widget>
+	  <class>GtkNumberEntry</class>
+	  <name>PLUS_JGNCNTETCM</name>
+	  <x>136</x>
+	  <y>304</y>
+	  <width>40</width>
+	  <height>24</height>
+	  <can_focus>True</can_focus>
+	  <signal>
+	    <name>activate</name>
+	    <handler>send_event</handler>
+	    <data>ACTIVATE</data>
+	    <last_modification_time>Sat, 03 Feb 2001 07:22:00 GMT</last_modification_time>
+	  </signal>
+	  <signal>
+	    <name>changed</name>
+	    <handler>entry_changed</handler>
+	    <data>CHANGED</data>
+	    <last_modification_time>Sat, 03 Feb 2001 07:22:27 GMT</last_modification_time>
+	  </signal>
+	  <editable>True</editable>
+	  <format>Z9</format>
+	</widget>
+
+	<widget>
+	  <class>GtkNumberEntry</class>
+	  <name>PLUS_JGNCNTETC</name>
+	  <x>216</x>
+	  <y>304</y>
+	  <width>40</width>
+	  <height>24</height>
+	  <can_focus>True</can_focus>
+	  <signal>
+	    <name>activate</name>
+	    <handler>send_event</handler>
+	    <data>ACTIVATE</data>
+	    <last_modification_time>Sat, 03 Feb 2001 07:22:00 GMT</last_modification_time>
+	  </signal>
+	  <signal>
+	    <name>changed</name>
+	    <handler>entry_changed</handler>
+	    <data>CHANGED</data>
+	    <last_modification_time>Sat, 03 Feb 2001 07:22:27 GMT</last_modification_time>
+	  </signal>
+	  <editable>True</editable>
+	  <format>ZZ9</format>
+	</widget>
+
+	<widget>
+	  <class>GtkLabel</class>
+	  <name>label196</name>
+	  <x>184</x>
+	  <y>104</y>
+	  <width>34</width>
+	  <height>24</height>
+	  <label>１日</label>
+	  <justify>GTK_JUSTIFY_RIGHT</justify>
+	  <wrap>True</wrap>
+	  <xalign>0.5</xalign>
+	  <yalign>0.5</yalign>
+	  <xpad>0</xpad>
+	  <ypad>0</ypad>
+	</widget>
+
+	<widget>
+	  <class>GtkLabel</class>
+	  <name>label197</name>
+	  <x>264</x>
+	  <y>104</y>
+	  <width>34</width>
+	  <height>24</height>
+	  <label>１週</label>
+	  <justify>GTK_JUSTIFY_RIGHT</justify>
+	  <wrap>True</wrap>
+	  <xalign>0.5</xalign>
+	  <yalign>0.5</yalign>
+	  <xpad>0</xpad>
+	  <ypad>0</ypad>
+	</widget>
+
+	<widget>
+	  <class>GtkLabel</class>
+	  <name>label231</name>
+	  <x>112</x>
+	  <y>104</y>
+	  <width>34</width>
+	  <height>24</height>
+	  <label>月</label>
+	  <justify>GTK_JUSTIFY_RIGHT</justify>
+	  <wrap>True</wrap>
+	  <xalign>0.5</xalign>
+	  <yalign>0.5</yalign>
+	  <xpad>0</xpad>
+	  <ypad>0</ypad>
+	</widget>
+
+	<widget>
+	  <class>GtkLabel</class>
+	  <name>label270</name>
+	  <x>112</x>
+	  <y>276</y>
+	  <width>24</width>
+	  <height>24</height>
+	  <label>月</label>
+	  <justify>GTK_JUSTIFY_RIGHT</justify>
+	  <wrap>True</wrap>
+	  <xalign>0.5</xalign>
+	  <yalign>0.5</yalign>
+	  <xpad>0</xpad>
+	  <ypad>0</ypad>
+	</widget>
+
+	<widget>
+	  <class>GtkLabel</class>
+	  <name>label274</name>
+	  <x>184</x>
+	  <y>304</y>
+	  <width>34</width>
+	  <height>24</height>
+	  <label>他</label>
+	  <justify>GTK_JUSTIFY_CENTER</justify>
+	  <wrap>True</wrap>
+	  <xalign>0.5</xalign>
+	  <yalign>0.5</yalign>
+	  <xpad>0</xpad>
+	  <ypad>0</ypad>
+	</widget>
+
+	<widget>
+	  <class>GtkLabel</class>
+	  <name>label271</name>
+	  <x>180</x>
+	  <y>276</y>
+	  <width>40</width>
+	  <height>24</height>
+	  <label>１日</label>
+	  <justify>GTK_JUSTIFY_RIGHT</justify>
+	  <wrap>True</wrap>
+	  <xalign>0.5</xalign>
+	  <yalign>0.5</yalign>
+	  <xpad>0</xpad>
+	  <ypad>0</ypad>
+	</widget>
+
+	<widget>
+	  <class>GtkLabel</class>
+	  <name>label199</name>
+	  <x>184</x>
+	  <y>136</y>
+	  <width>34</width>
+	  <height>24</height>
+	  <label>他</label>
+	  <justify>GTK_JUSTIFY_CENTER</justify>
+	  <wrap>True</wrap>
+	  <xalign>0.5</xalign>
+	  <yalign>0.5</yalign>
+	  <xpad>0</xpad>
+	  <ypad>0</ypad>
+	</widget>
+
+	<widget>
+	  <class>GtkLabel</class>
+	  <name>label198</name>
+	  <x>28</x>
+	  <y>136</y>
+	  <width>84</width>
+	  <height>24</height>
+	  <label>他月数</label>
+	  <justify>GTK_JUSTIFY_RIGHT</justify>
+	  <wrap>True</wrap>
+	  <xalign>0.5</xalign>
+	  <yalign>0.5</yalign>
+	  <xpad>0</xpad>
+	  <ypad>0</ypad>
+	</widget>
+
+	<widget>
+	  <class>GtkLabel</class>
+	  <name>label122</name>
+	  <x>28</x>
+	  <y>168</y>
+	  <width>80</width>
+	  <height>24</height>
+	  <label>エラー処理</label>
 	  <justify>GTK_JUSTIFY_RIGHT</justify>
 	  <wrap>True</wrap>
 	  <xalign>0.5</xalign>
@@ -3104,21 +3058,147 @@
 	</widget>
 
 	<widget>
-	  <class>GtkHSeparator</class>
-	  <name>hseparator10</name>
-	  <x>344</x>
-	  <y>64</y>
-	  <width>640</width>
-	  <height>16</height>
+	  <class>GtkLabel</class>
+	  <name>label269</name>
+	  <x>28</x>
+	  <y>276</y>
+	  <width>48</width>
+	  <height>24</height>
+	  <label>回数</label>
+	  <justify>GTK_JUSTIFY_RIGHT</justify>
+	  <wrap>True</wrap>
+	  <xalign>0.5</xalign>
+	  <yalign>0.5</yalign>
+	  <xpad>0</xpad>
+	  <ypad>0</ypad>
 	</widget>
 
 	<widget>
-	  <class>GtkVSeparator</class>
-	  <name>vseparator2</name>
-	  <x>336</x>
-	  <y>0</y>
-	  <width>16</width>
-	  <height>612</height>
+	  <class>GtkLabel</class>
+	  <name>label273</name>
+	  <x>28</x>
+	  <y>308</y>
+	  <width>84</width>
+	  <height>24</height>
+	  <label>他月数</label>
+	  <justify>GTK_JUSTIFY_RIGHT</justify>
+	  <wrap>True</wrap>
+	  <xalign>0.5</xalign>
+	  <yalign>0.5</yalign>
+	  <xpad>0</xpad>
+	  <ypad>0</ypad>
+	</widget>
+
+	<widget>
+	  <class>GtkLabel</class>
+	  <name>label195</name>
+	  <x>28</x>
+	  <y>104</y>
+	  <width>84</width>
+	  <height>24</height>
+	  <label>回数</label>
+	  <justify>GTK_JUSTIFY_RIGHT</justify>
+	  <wrap>True</wrap>
+	  <xalign>0.5</xalign>
+	  <yalign>0.5</yalign>
+	  <xpad>0</xpad>
+	  <ypad>0</ypad>
+	</widget>
+
+	<widget>
+	  <class>GtkLabel</class>
+	  <name>label272</name>
+	  <x>28</x>
+	  <y>336</y>
+	  <width>80</width>
+	  <height>24</height>
+	  <label>エラー処理</label>
+	  <justify>GTK_JUSTIFY_RIGHT</justify>
+	  <wrap>True</wrap>
+	  <xalign>0.5</xalign>
+	  <yalign>0.5</yalign>
+	  <xpad>0</xpad>
+	  <ypad>0</ypad>
+	</widget>
+
+	<widget>
+	  <class>GtkLabel</class>
+	  <name>label115</name>
+	  <x>32</x>
+	  <y>416</y>
+	  <width>84</width>
+	  <height>18</height>
+	  <label>識別</label>
+	  <justify>GTK_JUSTIFY_RIGHT</justify>
+	  <wrap>True</wrap>
+	  <xalign>0.5</xalign>
+	  <yalign>0.5</yalign>
+	  <xpad>0</xpad>
+	  <ypad>0</ypad>
+	</widget>
+
+	<widget>
+	  <class>GtkLabel</class>
+	  <name>label118</name>
+	  <x>32</x>
+	  <y>510</y>
+	  <width>84</width>
+	  <height>20</height>
+	  <label>きざみ値</label>
+	  <justify>GTK_JUSTIFY_RIGHT</justify>
+	  <wrap>True</wrap>
+	  <xalign>0.5</xalign>
+	  <yalign>0.5</yalign>
+	  <xpad>0</xpad>
+	  <ypad>0</ypad>
+	</widget>
+
+	<widget>
+	  <class>GtkLabel</class>
+	  <name>label119</name>
+	  <x>32</x>
+	  <y>540</y>
+	  <width>84</width>
+	  <height>24</height>
+	  <label>きざみ点数</label>
+	  <justify>GTK_JUSTIFY_RIGHT</justify>
+	  <wrap>True</wrap>
+	  <xalign>0.5</xalign>
+	  <yalign>0.5</yalign>
+	  <xpad>0</xpad>
+	  <ypad>0</ypad>
+	</widget>
+
+	<widget>
+	  <class>GtkLabel</class>
+	  <name>label116</name>
+	  <x>32</x>
+	  <y>480</y>
+	  <width>84</width>
+	  <height>18</height>
+	  <label>上限値</label>
+	  <justify>GTK_JUSTIFY_RIGHT</justify>
+	  <wrap>True</wrap>
+	  <xalign>0.5</xalign>
+	  <yalign>0.5</yalign>
+	  <xpad>0</xpad>
+	  <ypad>0</ypad>
+	</widget>
+
+	<widget>
+	  <class>GtkLabel</class>
+	  <name>label117</name>
+	  <x>32</x>
+	  <y>448</y>
+	  <width>84</width>
+	  <height>20</height>
+	  <label>下限値</label>
+	  <justify>GTK_JUSTIFY_RIGHT</justify>
+	  <wrap>True</wrap>
+	  <xalign>0.5</xalign>
+	  <yalign>0.5</yalign>
+	  <xpad>0</xpad>
+	  <ypad>0</ypad>
 	</widget>
       </widget>
 
