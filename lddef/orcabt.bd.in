@@ -209,6 +209,7 @@ bind	"ORCR0488"	"OpenCOBOL";
 bind	"ORCR0489"	"OpenCOBOL";
 bind	"ORCR0965"	"OpenCOBOL";
 bind	"ORCR0966"	"OpenCOBOL";
+bind	"ORCBN22"	"OpenCOBOL";
 
 #include "orcadb.inc"
 db "shell" {
