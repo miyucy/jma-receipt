@@ -267,6 +267,12 @@ Z03	{
 					count	int;
 					item	varchar(30)[3];
 				};
+				PLUS_JGNCNTETCM	{
+					value	number(2);
+				};
+				PLUS_JGNCNTETC	{
+					value	number(3);
+				};
 			};
 			fixed11	{
 				TUSOKUGAIKBN	{

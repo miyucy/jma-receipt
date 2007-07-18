@@ -372,6 +372,20 @@ W07	{
 					count	int;
 					item	varchar(40)[5];
 				};
+				TEISEIFLG_COMB	{
+					TEISEIFLG	{
+						value	varchar(40);
+					};
+					count	int;
+					item	varchar(40)[2];
+				};
+				CHG310FLG_COMB	{
+					CHG310FLG	{
+						value	varchar(40);
+					};
+					count	int;
+					item	varchar(40)[2];
+				};
 			};
 			TAGNAME3    {
 			  	state   int;

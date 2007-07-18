@@ -240,5 +240,12 @@ W99	{
 				};
 			};
 		};
+		SINSATU_FLG_COMBO	{
+			SINSATU_FLG	{
+				value	varchar(30);
+			};
+			count	int;
+			item	varchar(30)[5];
+		};
 	};
 };
