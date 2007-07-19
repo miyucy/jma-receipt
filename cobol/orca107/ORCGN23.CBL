@@ -101,6 +101,7 @@
            03  WRK-SHORIERR        PIC X(200).
            03  WRK-N21IDMSG        PIC X(70).
            03  WRK-PAGE            PIC ZZZZZZZZZ9.
+           03  WRK-HENFLG          PIC 9(01).
       *
            03  WRK-STPAGE          PIC 9(05).
            03  WRK-EDPAGE          PIC 9(05).
@@ -662,30 +663,37 @@
       *
            MOVE    MCP-WIDGET          TO  WRK-MCP-WIDGET
       *
-          EVALUATE    MCP-EVENT   ALSO     MCP-WIDGET
-          WHEN    "ACTIVATE"      ALSO     "NAME"
-              MOVE    N23-NAME         TO  SPA-N23-NAME
-              MOVE    13               TO  SPA-N23-CUR
-          WHEN    "ACTIVATE"      ALSO     "SRYCD"
-              MOVE    N23-SRYCD        TO  SPA-N23-SRYCD
-              MOVE    13               TO  SPA-N23-CUR
-          WHEN    "ACTIVATE"      ALSO     "INPUTCD"
-              MOVE    N23-INPUTCD      TO  SPA-N23-INPUTCD
-              MOVE    13               TO  SPA-N23-CUR
+           EVALUATE    MCP-EVENT   ALSO    MCP-WIDGET
+           WHEN    "ACTIVATE"      ALSO    "NAME"
+               MOVE    N23-NAME        TO  SPA-N23-NAME
+               MOVE    13              TO  SPA-N23-CUR
+           WHEN    "ACTIVATE"      ALSO    "SRYCD"
+               MOVE    N23-SRYCD       TO  SPA-N23-SRYCD
+               MOVE    13              TO  SPA-N23-CUR
+           WHEN    "ACTIVATE"      ALSO    "INPUTCD"
+               MOVE    N23-INPUTCD     TO  SPA-N23-INPUTCD
+               MOVE    13              TO  SPA-N23-CUR
       *----(03.05.02)--ADD-START---
-          WHEN    "ACTIVATE"      ALSO     "KIKAN"
-              MOVE    N23-KIKAN        TO  SPA-N23-KIKAN
-              PERFORM VARYING IDX     FROM    1   BY  1
-                      UNTIL   IDX     >   SPA-N23-KIKAN-MAX
-                  IF       SPA-N23-KIKANL(IDX)   =  SPA-N23-KIKAN
-                    MOVE    SPA-N23-KIKANLST(IDX)
+           WHEN    "ACTIVATE"      ALSO    "KIKAN"
+               MOVE    N23-KIKAN       TO  SPA-N23-KIKAN-G
+               MOVE    ZERO            TO  WRK-HENFLG
+               PERFORM VARYING IDX     FROM    1   BY  1
+                       UNTIL  (IDX     >   SPA-N23-KIKAN-MAX)
+                       OR     (WRK-HENFLG      =   1)
+                   IF       SPA-N23-KIKANL(IDX)   =  SPA-N23-KIKAN
+                       MOVE    SPA-N23-KIKANLST(IDX)
                                            TO  SPA-N23-KIKAN-G
-                    MOVE    SPA-N23-KIKAN-MAX TO  IDX
-                  END-IF
-              END-PERFORM
-              MOVE    15               TO  SPA-N23-CUR
+                       MOVE    1           TO  WRK-HENFLG
+                   END-IF
+               END-PERFORM
+               IF      WRK-HENFLG          =   ZERO
+                   MOVE    "0005"      TO  SPA-ERRCD
+                   MOVE    14          TO  SPA-N23-CUR
+               ELSE
+                   MOVE    15              TO  SPA-N23-CUR
+               END-IF
       *----(03.05.02)--ADD-END-----
-          END-EVALUATE
+           END-EVALUATE
            .
        200-ENTRY-EXT.
            EXIT.
@@ -970,6 +978,29 @@
                END-IF
            END-IF
       *
+           IF      SPA-N23-CHK(2)   =   "T"
+      *        期間指定
+               EVALUATE    SPA-N23-KIKAN
+                   WHEN    "1"
+                       MOVE    "0"         TO  WRK-KIKAN
+                   WHEN    "2"
+                       MOVE    "2"         TO  WRK-KIKAN
+                   WHEN    "3"
+                       MOVE    "6"         TO  WRK-KIKAN
+                   WHEN    OTHER
+                       MOVE    "0005"      TO  SPA-ERRCD
+                       MOVE    14          TO  SPA-N23-CUR
+               END-EVALUATE
+      *        注射を条件に含めるか指定
+               IF      SPA-N23-CYU         =   "T"
+                   MOVE    "1"         TO  WRK-CYU
+               END-IF
+      *        出力形式指定
+               IF      SPA-N23-PRT         =   "T"
+                   MOVE    "1"         TO  WRK-PRT
+               END-IF
+           END-IF
+      *
            .
        410-INPUT-CHK-EXT.
            EXIT.
@@ -1088,28 +1119,6 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            IF      SPA-N23-CHK(2)   =  "T"
                MOVE    "1"          TO  WRK-CHK
-               MOVE    "0"          TO  WRK-KIKAN
-               MOVE    "0"          TO  WRK-CYU
-               MOVE    "0"          TO  WRK-PRT
-      *        期間指定
-               EVALUATE    SPA-N23-KIKAN
-                   WHEN    "1"
-                       MOVE    "0"         TO  WRK-KIKAN
-                   WHEN    "2"
-                       MOVE    "2"         TO  WRK-KIKAN
-                   WHEN    "3"
-                       MOVE    "6"         TO  WRK-KIKAN
-                   WHEN    OTHER
-                       MOVE    "0"         TO  WRK-KIKAN
-               END-EVALUATE
-      *        注射を条件に含めるか指定
-               IF      SPA-N23-CYU         =   "T"
-                   MOVE    "1"         TO  WRK-CYU
-               END-IF
-      *        出力形式指定
-               IF      SPA-N23-PRT         =   "T"
-                   MOVE    "1"         TO  WRK-PRT
-               END-IF
                PERFORM 4901-PRINT-SYORI2-SEC
            END-IF
       *
@@ -1879,6 +1888,9 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                        TO  SPA-ERRMSG
            WHEN    "0004"
                MOVE    "薬剤区分を選択してください"
+                                       TO  SPA-ERRMSG
+           WHEN    "0005"
+               MOVE    "対象期間を選択してください"
                                        TO  SPA-ERRMSG
            WHEN    "1004"
                MOVE    "ジョブ管理ＤＢが削除できませんでした"
