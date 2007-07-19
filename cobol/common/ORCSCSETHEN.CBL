@@ -478,6 +478,7 @@
                                    TO  SPA-COM-KAISU2(SPA-GMN-IDX)
       *
            IF      ISET-INPUTCD        =   "810000001"
+                                       OR  "008500000"
                MOVE    ISET-COMMENT    TO  SPA-GMN-MEISYO-G
                                                       (SPA-GMN-IDX)
                MOVE    "1"             TO  SPA-COM-MEIFLG
@@ -487,6 +488,7 @@
                                                           (SPA-GMN-IDX)
                IF     (ISET-INPUTCD(1:2)   =   "83" )  OR
                       (ISET-INPUTCD(1:4)   =   "0083")
+                  OR  (ISET-INPUTCD(1:4)   =   "0085")
                    MOVE    "1"         TO  SPA-COM-MEIFLG
                                                           (SPA-GMN-IDX)
                END-IF

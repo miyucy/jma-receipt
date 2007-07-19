@@ -1325,7 +1325,8 @@
                    IF     (SPA-COM-INPUTCD (IDX)(1:4)
                                            NOT =   "0082"
                                                AND "0083"
-                                               AND "0084" )  OR
+                                               AND "0084"
+                                               AND "0085" )  OR
                          ((IDX                 =   1   )  OR
                           (SPA-COM-KAIFLG (IDX - 1 )   =   "1")
                        OR (SPA-GMN-INPUTCD(IDX - 1 )(1:1)

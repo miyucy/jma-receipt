@@ -44,6 +44,7 @@
       * 03.04.02     NACL-多々納  07/02/28  包括診療追加対応
       * 03.05.00     NACL-多々納  07/05/XX  グループ診療対応
       * 03.05.01     NACL-多々納  07/07/18  皮下筋肉注射変換なし対応
+      *                                     "0085XXXXX"コメント対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -460,6 +461,7 @@
                05  WRK-MEIHHZN             PIC X(02).
                05  WRK-MEISYOHZN           PIC X(78).
            03  IDX-MEI                 PIC 9(04).
+           03  WRK-LEN                 PIC 9(04).
       *
       *    診療種別
            03  WRK-MAE-SRYSYUKBN          PIC X(03).
@@ -1705,6 +1707,7 @@
                IF      FLG-PTCOM           =   ZERO
                    IF      PTCOM-INPUTCOMENT   NOT =   SPACE
                        IF      SRY-SRYCD (IDS)         =   "810000001"
+                                                       OR  "008500000"
                            MOVE    PTCOM-INPUTCOMENT
                                                TO  SPA-GMN-MEISYO-G
                                                                  (IDX2)
@@ -2683,6 +2686,8 @@
                                            =   "81"  OR  "83") OR
                       (SPA-COM-INPUTCD (SPA-GMN-IDX)(1:4)
                                            =   "0083"  )
+                  OR  (SPA-COM-INPUTCD (SPA-GMN-IDX)(1:4)
+                                           =   "0085"  )
                    MOVE    "3"             TO  SPA-COM-IN2 (SPA-GMN-IDX)
                END-IF
            END-IF
@@ -2914,12 +2919,8 @@
       *****************************************************************
        40113-MEISYOU-CHK-SEC        SECTION.
       *
-      *    IF      SPA-GMN-MEISYO-G (SPA-GMN-IDX)
-      *                                =   SPACE
-      *        GO      TO      40113-MEISYOU-CHK-EXT
-      *    END-IF
-      *
-           IF      SPA-COM-INPUTCD (SPA-GMN-IDX)(1:2)  =  "81"
+           IF     (SPA-COM-INPUTCD (SPA-GMN-IDX)(1:2)  =  "81" )
+               OR (SPA-COM-INPUTCD (SPA-GMN-IDX)       =  "008500000" )
                MOVE    WRK-MEISYO-G        TO  SPA-GMN-MEISYO-G
                                                          (SPA-GMN-IDX)
                MOVE    "1"                 TO  SPA-COM-MEIFLG
@@ -2929,12 +2930,15 @@
                                                          "84")  OR
                   (SPA-COM-INPUTCD (SPA-GMN-IDX)(1:4)  = "0083" OR
                                                          "0084")
+             OR   (SPA-COM-INPUTCD (SPA-GMN-IDX)(1:4)  = "0085")
                IF     (LNK-SC97-NYURYOKU   =   ZERO )  AND
                       (FLG-IN-ATAI         =   ZERO )  AND
                      ((SPA-COM-INPUTCD (SPA-GMN-IDX)(1:2)
                                            =   "83"   )  OR
                       (SPA-COM-INPUTCD (SPA-GMN-IDX)(1:4)
-                                           =   "0083" ))
+                                           =   "0083" )
+                  OR  (SPA-COM-INPUTCD (SPA-GMN-IDX)(1:4)
+                                           =   "0085" ))
                    MOVE    WRK-MEISYO-G        TO  SPA-GMN-MEISYO-G
                                                          (SPA-GMN-IDX)
                END-IF
@@ -2945,22 +2949,35 @@
                                                        OR "83"
                                                        OR "84") OR
                   (SPA-COM-INPUTCD (SPA-GMN-IDX)(1:4)  =  "0083"
-                                                       OR "0084")) AND
+                                                       OR "0084"
+                                                       OR "0085")) AND
                   (SPA-GMN-MEISYO-G(SPA-GMN-IDX) NOT =   SPACE)
-               CONTINUE
-           ELSE
-               GO      TO      40113-MEISYOU-CHK-EXT
+      *        半角の空白を全角に置きかえる
+               PERFORM 401131-MEISYO-HENKAN-SEC
            END-IF
+      *
+           .
+       40113-MEISYOU-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    名称チェック・全角置換処理
+      *****************************************************************
+       401131-MEISYO-HENKAN-SEC        SECTION.
       *
       *    半角の空白を全角に置きかえる
       *    フリーコメントは１桁目から
            IF      SPA-COM-INPUTCD(SPA-GMN-IDX)   =   "810000001"
+                                                  OR  "008500000"
                MOVE    1                   TO  IDX-STR
+               MOVE    80                  TO  WRK-LEN
            ELSE
                MOVE    3                   TO  IDX-STR
+               MOVE    78                  TO  WRK-LEN
            END-IF
            INITIALIZE                  ORCSKANACHKAREA
-           MOVE    "1"                 TO  KANACHK-SYORI
+           MOVE    "2"                 TO  KANACHK-SYORI
+           MOVE    WRK-LEN             TO  KANACHK-MAX-CNT
            MOVE    SPA-GMN-MEISYO-G (SPA-GMN-IDX)(IDX-STR:)
                                        TO  KANACHK-MAE-INPUT
            CALL    "ORCSKANACHK"       USING
@@ -2980,9 +2997,8 @@
            END-IF
       *
            .
-       40113-MEISYOU-CHK-EXT.
+       401131-MEISYO-HENKAN-EXT.
            EXIT.
-      *
       *
       *****************************************************************
       *    Ｐ入力画面へ移行
@@ -5025,16 +5041,13 @@
                    END-IF
       *            入力コメント
                    IF      SPA-COM-MEIFLG (IDX1)    =   "1"
-                       IF     (SPA-COM-INPUTCD (IDX1)(1:2)
-                                                       =   "83" OR "84")
-                         OR   (SPA-COM-INPUTCD (IDX1)(1:4)
-                                                       =   "0083"
-                                                       OR  "0084" )
-                           MOVE    SPA-GMN-MEISYO   (IDX1)
+                       IF      SPA-COM-INPUTCD(IDX)    =   "810000001"
+                                                       OR  "008500000"
+                           MOVE    SPA-GMN-MEISYO-G (IDX1)
                                            TO  ORCSCZAICHK-INPUTCOMENT
                                                              (IDX-ATO)
                        ELSE
-                           MOVE    SPA-GMN-MEISYO-G (IDX1)
+                           MOVE    SPA-GMN-MEISYO   (IDX1)
                                            TO  ORCSCZAICHK-INPUTCOMENT
                                                              (IDX-ATO)
                        END-IF
@@ -5180,7 +5193,7 @@
       *
       *    患者コメントをクリアする
            INITIALIZE                  PTCOM-REC
-           MOVE    SPA-HOSPNUM          TO  PTCOM-HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  PTCOM-HOSPNUM
            MOVE    SPA-GMN-PTID        TO  PTCOM-PTID
            MOVE    SPA-ZAINUM          TO  PTCOM-ZAINUM
       *
@@ -5197,7 +5210,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *
       *    診療行為データ削除
            INITIALIZE                      SRYACT-REC
-           MOVE    SPA-HOSPNUM          TO  SRY-HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  SRY-HOSPNUM
            MOVE    SPA-NYUGAIKBN       TO  SRY-NYUGAIKBN
            MOVE    SPA-GMN-PTID        TO  SRY-PTID
            MOVE    SPA-J01-SRYKA       TO  SRY-SRYKA
@@ -5395,11 +5408,23 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                 PERFORM 45022-JIKANGAI-SET-SEC
            END-IF
       *    入力コメント番号
-           IF     (SPA-COM-INPUTCD(IDX)(1:1)   =   "8" )  OR
-                  (SPA-COM-INPUTCD(IDX)(1:3)   =   "008")
-               PERFORM 450111-KNJCOM-SYROI-SEC
-      *******  MOVE    WRK-MEINUM          TO  SRY-INPUTNUM (IDS)
+           IF     (SPA-COM-MEIFLG (IDX)    =   "1"     )  OR
+                  (SPA-COM-INPUTCD(IDX)(1:2)   =   "83"
+                                               OR  "84" )  OR
+                  (SPA-COM-INPUTCD(IDX)(1:4)   =   "0083"
+                                               OR  "0084" )
+               IF      (SPA-COM-INPUTCD(IDX)(1:4)  =   "0085") AND
+                       (SPA-GMN-MEISYO (IDX)   =   SPA-COM-NAME (IDX))
+                   CONTINUE
+               ELSE
+                   PERFORM 450111-KNJCOM-SYROI-SEC
+               END-IF
            END-IF
+      ***  IF     (SPA-COM-INPUTCD(IDX)(1:1)   =   "8" )  OR
+      *           (SPA-COM-INPUTCD(IDX)(1:3)   =   "008")
+      *        PERFORM 450111-KNJCOM-SYROI-SEC
+      *******  MOVE    WRK-MEINUM          TO  SRY-INPUTNUM (IDS)
+      **** END-IF
       *    自費
       *****IF      SPA-COM-SRYKBN (IDX)    =   "95" OR "96"
            IF      SPA-COM-KEIFLG (IDX)    =   "1"  OR  "2"
@@ -5484,36 +5509,22 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            INITIALIZE                  PTCOM-REC
       *医療機関ＩＤ
-           MOVE    SPA-HOSPNUM          TO  PTCOM-HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  PTCOM-HOSPNUM
       *患者ＩＤ
-           MOVE    SPA-GMN-PTID            TO  PTCOM-PTID
+           MOVE    SPA-GMN-PTID        TO  PTCOM-PTID
       *剤番号
       *****MOVE    SPA-ZAINUM          TO  PTCOM-ZAINUM
            MOVE    WRK-ZAINUM          TO  PTCOM-ZAINUM
       *診療コード
            MOVE    SRY-SRYCD   (IDS)   TO  PTCOM-SRYCD
       *入力コメント
-           IF      SPA-COM-MEIFLG (IDX)    =   "1"
-               IF     (SPA-COM-INPUTCD(IDX)(1:2) =   "83"
-                                                 OR  "84" )  OR
-                      (SPA-COM-INPUTCD(IDX)(1:4) =   "0083"
-                                                 OR  "0084" )
-                   MOVE    SPA-GMN-MEISYO (IDX)
-                                       TO  PTCOM-INPUTCOMENT
-               ELSE
-                   MOVE    SPA-GMN-MEISYO-G (IDX)
-                                       TO  PTCOM-INPUTCOMENT
-               END-IF
+           IF      SPA-COM-INPUTCD(IDX)    =   "810000001"
+                                           OR  "008500000"
+               MOVE    SPA-GMN-MEISYO-G (IDX)
+                                           TO  PTCOM-INPUTCOMENT
            ELSE
-               IF     (SPA-COM-INPUTCD(IDX)(1:1)   =   "8"  ) OR
-                      (SPA-COM-INPUTCD(IDX)(1:4)   =   "0083"
-                                                   OR  "0084")
-                    MOVE    SPA-GMN-MEISYO (IDX)
-                                               TO  PTCOM-INPUTCOMENT
-               ELSE
-      *             作成しない
-                    GO      TO      450111-KNJCOM-SYROI-EXT
-               END-IF
+               MOVE    SPA-GMN-MEISYO   (IDX)
+                                           TO  PTCOM-INPUTCOMENT
            END-IF
       *入力値
            MOVE    SPA-COM-INPUTCHI-G (IDX)

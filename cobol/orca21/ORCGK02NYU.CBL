@@ -48,6 +48,7 @@
       * 03.04.02     NACL-多々納  07/01/30  排他中処理追加
       * 03.05.00     NACL-多々納  07/04/XX  グループ診療対応
       * 03.05.00     NACL-多々納  07/05/22  再印刷処理追加
+      * 03.05.01     NACL-多々納  07/07/19  "0085XXXXX"コメント対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -4051,11 +4052,14 @@
                IF     (SPA-ERRCD           =   SPACE )
                    IF    ((SPA-COM-INPUTCD(SPA-GMN-IDX)
                                            =   "810000001" ) OR
+                          (SPA-COM-INPUTCD(SPA-GMN-IDX)
+                                           =   "008500000" ) OR
                           (SPA-COM-INPUTCD(SPA-GMN-IDX)(1:2)
                                            =   "83" OR "84") OR
                           (SPA-COM-INPUTCD(SPA-GMN-IDX)(1:4)
                                            =   "0083" 
-                                           OR  "0084"    ))  AND
+                                           OR  "0084"
+                                           OR  "0085"    ))  AND
                           (SPA-GMN-MEISYO-G(SPA-GMN-IDX) 
                                        NOT =   SPACE  )
                        PERFORM 401131-MEISYO-HENKAN-SEC
@@ -4601,10 +4605,14 @@
            IF      WRK-IN-IDX          >   ZERO
                IF     (SPA-COM-INPUTCD (SPA-GMN-IDX)
                                            =   "810000001" ) OR
+                      (SPA-COM-INPUTCD (SPA-GMN-IDX)
+                                           =   "008500000" ) OR
                       (SPA-COM-INPUTCD (SPA-GMN-IDX)(1:2)
                                            =   "83") OR
                       (SPA-COM-INPUTCD (SPA-GMN-IDX)(1:4)
                                            =   "0083") 
+                  OR  (SPA-COM-INPUTCD (SPA-GMN-IDX)(1:4)
+                                           =   "0085") 
                    MOVE    "3"             TO  SPA-COM-IN2 (SPA-GMN-IDX)
                END-IF
            END-IF
@@ -6519,7 +6527,8 @@
       *        GO      TO      40113-MEISYOU-CHK-EXT
       *    END-IF
       *
-           IF     (SPA-COM-INPUTCD (SPA-GMN-IDX)   =  "810000001")
+           IF     (SPA-COM-INPUTCD (SPA-GMN-IDX)   =  "810000001" )
+              OR  (SPA-COM-INPUTCD (SPA-GMN-IDX)   =  "008500000" )
                MOVE    WRK-MEISYO-G        TO  SPA-GMN-MEISYO-G
                                                          (SPA-GMN-IDX)
                MOVE    "1"                 TO  SPA-COM-MEIFLG
@@ -6529,12 +6538,15 @@
                                                          "84")  OR
                   (SPA-COM-INPUTCD (SPA-GMN-IDX)(1:4)  = "0083" OR
                                                          "0084")
+              OR  (SPA-COM-INPUTCD (SPA-GMN-IDX)(1:4)  = "0085")
                IF     (LNK-SC97-NYURYOKU   =   ZERO )  AND
                       (FLG-IN-ATAI         =   ZERO )  AND
                      ((SPA-COM-INPUTCD (SPA-GMN-IDX)(1:2)
                                            = "83"   ) OR
                       (SPA-COM-INPUTCD (SPA-GMN-IDX)(1:4)
-                                           = "0083"  ))
+                                           = "0083"  )
+                  OR  (SPA-COM-INPUTCD (SPA-GMN-IDX)(1:4)
+                                           = "0085"  ))
                    MOVE    WRK-MEISYO-G        TO  SPA-GMN-MEISYO-G
                                                          (SPA-GMN-IDX)
                END-IF
@@ -6545,7 +6557,8 @@
                                                        OR "83"
                                                        OR "84") OR
                   (SPA-COM-INPUTCD (SPA-GMN-IDX)(1:4)  =  "0083"
-                                                       OR "0084")) AND
+                                                       OR "0084"
+                                                       OR "0085")) AND
                   (SPA-GMN-MEISYO-G(SPA-GMN-IDX) NOT =   SPACE)
                CONTINUE
            ELSE
@@ -6566,6 +6579,7 @@
       *
       *    フリーコメントは１桁目から
            IF      SPA-COM-INPUTCD(SPA-GMN-IDX)   =   "810000001"
+                                                   OR "008500000"
                MOVE    1                   TO  IDX-STR
                MOVE    80                  TO  WRK-LEN
            ELSE
