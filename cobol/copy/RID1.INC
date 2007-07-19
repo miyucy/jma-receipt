@@ -18,8 +18,8 @@
         02  RID1.
             03  RID1-FIXED1.
               04  RID1-ID1CODE.
-                05  RID1-VALUE  PIC X(11).
+                05  RID1-VALUE  PIC X(10).
               04  RID1-B01.
                 05  RID1-B01-LABEL  PIC X(4).
               04  RID1-ID1MSG.
-                05  RID1-VALUE  PIC X(71).
+                05  RID1-VALUE  PIC X(90).
