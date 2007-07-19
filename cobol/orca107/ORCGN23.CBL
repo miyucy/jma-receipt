@@ -604,6 +604,8 @@
                IF      SPA-N23-CHK(2)  =   "F"
                    MOVE    "T"         TO  SPA-N23-CHK(2)
                    MOVE    14          TO  SPA-N23-CUR
+                   MOVE    SPA-N23-KIKANLST(1)
+                                       TO  SPA-N23-KIKAN-G
                ELSE
                    MOVE    "F"         TO  SPA-N23-CHK(2)
                    MOVE    17          TO  SPA-N23-CUR
@@ -651,7 +653,6 @@
            MOVE    N23-NAME         TO  SPA-N23-NAME
            MOVE    N23-SRYCD        TO  SPA-N23-SRYCD
            MOVE    N23-INPUTCD      TO  SPA-N23-INPUTCD
-           MOVE    N23-KIKAN        TO  SPA-N23-KIKAN-G
       *
            .
        200-GMNSENI-EXT.
