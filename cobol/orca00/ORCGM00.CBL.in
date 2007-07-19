@@ -753,7 +753,7 @@
       *
            MOVE    ZERO                TO  FLG-DBKANRI
            INITIALIZE                      DBKANRI-REC
-      **** MOVE    "ORCADB00"          TO  DBKANRI-KANRICD
+           MOVE    "ORCADB00"          TO  DBKANRI-KANRICD
            MOVE    DBKANRI-REC         TO  MCPDATA-REC
            MOVE    "tbl_dbkanri"       TO  MCP-TABLE 
            MOVE    "key"               TO  MCP-PATHNAME 
