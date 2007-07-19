@@ -5,6 +5,8 @@ INSTALL = @INSTALL@
 INSTALL_DATA = @INSTALL_DATA@
 CC = @CC@
 HOSP = @HOSP@
+have_jconv = @have_jconv@
+JCONV_LIB = @JCONV_LIB@
 
 COBCOPYS = -I$(srcdir)/../../cobol/copy
 
@@ -15,10 +17,17 @@ DEPDIR = .deps
 OBJS = ${SRCS:.CBL=.so}
 EXEC = ${EXEC_SRCS:.CBL=}
 COBJS = ${CSRCS:.c=.so}
+CJOBJS = ${CJSRCS:.c=.so}  
 
 define postprocess-depend
 @if test ! -d $(DEPDIR); then mkdir $(DEPDIR); fi
 endef
+
+ifeq ($(have_jconv), yes)
+  COBJS += $(CJOBJS)
+  orcsjistoeuc.so: orcsjistoeuc.c
+	$(CC) $(JCONV_LIB) -fPIC -shared $< -o $@
+endif
 
 %.so: %.c
 	$(CC) -fPIC -shared $< -o $@
