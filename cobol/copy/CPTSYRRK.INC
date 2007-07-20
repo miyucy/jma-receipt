@@ -38,7 +38,7 @@
       *長期入院食事減額開始日
            03  TSYRRK-SKJGNSTYMD           PIC  X(08).
       *保険適用区分（０：全て対象　１：地方公費は対象外
-                     ２：地方公費のみ対象）
+      *              ２：地方公費のみ対象）
            03  TSYRRK-HKNTEKKBN            PIC  X(01).
       *端末ＩＤ
            03  TSYRRK-TERMID               PIC  X(16).

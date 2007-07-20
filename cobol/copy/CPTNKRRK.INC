@@ -38,7 +38,7 @@
       *老齢福祉年金受給者証区分（０：なし　１：あり）
            03  TNKRRK-RRI-FUKUSHI-KBN      PIC  X(01).
       *保険適用区分（０：全て対象　１：地方公費は対象外
-                     ２：地方公費のみ対象）
+      *              ２：地方公費のみ対象）
            03  TNKRRK-HKNTEKKBN            PIC  X(01).
       *端末ＩＤ
            03  TNKRRK-TERMID               PIC  X(16).
