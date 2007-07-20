@@ -761,15 +761,12 @@
            MOVE    ZERO            TO  FLG-CHKSND
       *
            INITIALIZE                  CHKSND-REC
+           MOVE    WRK-PARA-HOSPNUM TO CHKSND-HOSPNUM
            MOVE    WRK-PARA-CHKMORE TO CHKSND-CHKKBN
            MOVE    TNS-SRYCD       TO  CHKSND-SRYCD
            MOVE    SPA-SYSYMD      TO  CHKSND-YUKOSTYMD
                                        CHKSND-YUKOEDYMD
-           IF    ( WRK-PARA-CHKMORE    =   "1" )
-               MOVE    "1"         TO  CHKSND-CDKBN
-           ELSE
-               MOVE    "2"         TO  CHKSND-CDKBN
-           END-IF
+           MOVE    "1"             TO  CHKSND-CDKBN
            MOVE    1               TO  CHKSND-RENNUM
            MOVE    CHKSND-REC      TO  MCPDATA-REC
            MOVE    "tbl_chksnd"    TO  MCP-TABLE
