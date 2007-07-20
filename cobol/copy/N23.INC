@@ -37,9 +37,9 @@
                         07  N23-IYK            PIC X.
                         07  N23-IYK-STATE      PIC S9(9)   BINARY.
                     05  N22-KIKANCOMBO.
-                        07  N23-KIKAN          PIC X(8).
+                        07  N23-KIKAN          PIC X(10).
                         07  N23-KIKAN-COUNT    PIC S9(9)   BINARY.
-                        07  N23-KIKANLST       PIC X(8)    OCCURS  3.
+                        07  N23-KIKANLST       PIC X(10)    OCCURS  3.
                         07  N23-KIKAN-STATE    PIC S9(9)   BINARY.
                     05  N23-CYU-G.
                         07  N23-CYU            PIC X.

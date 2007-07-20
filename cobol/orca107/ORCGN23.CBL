@@ -367,8 +367,8 @@
       *
       *    ´ü´Ö¥³¥ó¥Ü
            MOVE    "1 ¤Ê¤·"        TO  SPA-N23-KIKANLST(1)
-           MOVE    "2 £²¥ö·î"      TO  SPA-N23-KIKANLST(2)
-           MOVE    "3 £¶¥ö·î"      TO  SPA-N23-KIKANLST(3)
+           MOVE    "2 £²¥ö·îÊ¬"    TO  SPA-N23-KIKANLST(2)
+           MOVE    "3 £¶¥ö·îÊ¬"    TO  SPA-N23-KIKANLST(3)
            MOVE    3               TO  SPA-N23-KIKAN-MAX
       *
       *----(03.05.02)--ADD-END-----

@@ -55,10 +55,10 @@ N23	{
 		};
 		KIKANCOMBO	{
 			KIKAN	{
-				value	varchar(8);
+				value	varchar(10);
 			};
 			count	int;
-			item	varchar(8)[3];
+			item	varchar(10)[3];
 			state   int;
 		};
 		CYU	{

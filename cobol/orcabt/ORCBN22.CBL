@@ -161,9 +161,10 @@
        01  WRK-PRT-AREA.
            03  WRK-PRT-LINE1.
                05  WRK-PRT-TITLE       PIC X(28)   VALUE   SPACE.
+               05  FILLER              PIC X(02)   VALUE   "　".
                05  WRK-PRT-KIKAN       PIC X(20)   VALUE   SPACE.
-               05  FILLER              PIC X(20)   VALUE
-                                           "　　　　　　　　　　".
+               05  FILLER              PIC X(18)   VALUE
+                                           "　　　　　　　　　".
                05  FILLER              PIC X(08)   VALUE   "発行日：".
                05  WRK-PRT-PRTYMD      PIC X(22)   VALUE   SPACE.
                05  FILLER              PIC X(05)   VALUE   "　　P".
@@ -369,11 +370,13 @@
                                    TO  WRK-TITLE
            EVALUATE    WRK-PARA-KIKAN
            WHEN    "0"
-               MOVE    "（期間指定：なし）　"  TO  WRK-KIKAN
+               MOVE    "診療年月指定なし　　"  TO  WRK-KIKAN
            WHEN    "2"
-               MOVE    "（期間指定：２ヶ月）"  TO  WRK-KIKAN
+               MOVE    "診療年月指定２ヶ月分"  TO  WRK-KIKAN
            WHEN    "6"
-               MOVE    "（期間指定：６ヶ月）"  TO  WRK-KIKAN
+               MOVE    "診療年月指定６ヶ月分"  TO  WRK-KIKAN
+           WHEN    OTHER
+               MOVE    "　　　　　　　　　　"  TO  WRK-KIKAN
            END-EVALUATE
       *
       *    ファイルデイレクトリ位置指定

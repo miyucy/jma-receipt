@@ -373,22 +373,6 @@
     </widget>
 
     <widget>
-      <class>GtkLabel</class>
-      <name>label176</name>
-      <x>320</x>
-      <y>384</y>
-      <width>64</width>
-      <height>24</height>
-      <label>期間指定</label>
-      <justify>GTK_JUSTIFY_LEFT</justify>
-      <wrap>True</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
       <class>GtkHSeparator</class>
       <name>hseparator37</name>
       <x>88</x>
@@ -477,6 +461,38 @@
     </widget>
 
     <widget>
+      <class>GtkLabel</class>
+      <name>label176</name>
+      <x>296</x>
+      <y>384</y>
+      <width>88</width>
+      <height>24</height>
+      <label>診療年月指定</label>
+      <justify>GTK_JUSTIFY_LEFT</justify>
+      <wrap>True</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label177</name>
+      <x>512</x>
+      <y>384</y>
+      <width>320</width>
+      <height>24</height>
+      <label>※入力コードのある薬剤はすべて対象とします。</label>
+      <justify>GTK_JUSTIFY_LEFT</justify>
+      <wrap>True</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
       <class>GtkCheckButton</class>
       <name>CHK1</name>
       <x>104</x>
@@ -505,7 +521,7 @@
       <name>CHK2</name>
       <x>104</x>
       <y>384</y>
-      <width>208</width>
+      <width>176</width>
       <height>24</height>
       <can_focus>True</can_focus>
       <signal>
@@ -553,7 +569,7 @@
       <name>JYO</name>
       <x>104</x>
       <y>136</y>
-      <width>144</width>
+      <width>112</width>
       <height>24</height>
       <can_focus>True</can_focus>
       <signal>
@@ -833,7 +849,7 @@
       <name>KIKANCOMBO</name>
       <x>384</x>
       <y>384</y>
-      <width>88</width>
+      <width>120</width>
       <height>24</height>
       <value_in_list>False</value_in_list>
       <ok_if_empty>True</ok_if_empty>
@@ -861,8 +877,8 @@
 	</signal>
 	<editable>True</editable>
 	<text_visible>True</text_visible>
-	<text_max_length>8</text_max_length>
-	<text>1 ６ヵ月</text>
+	<text_max_length>10</text_max_length>
+	<text>1 ６ヵ月分</text>
 	<input_mode>XIM</input_mode>
 	<xim_enabled>False</xim_enabled>
       </widget>
@@ -871,7 +887,7 @@
     <widget>
       <class>GtkCheckButton</class>
       <name>CYU</name>
-      <x>176</x>
+      <x>152</x>
       <y>416</y>
       <width>136</width>
       <height>24</height>
@@ -895,7 +911,7 @@
     <widget>
       <class>GtkCheckButton</class>
       <name>PRT</name>
-      <x>176</x>
+      <x>152</x>
       <y>448</y>
       <width>192</width>
       <height>24</height>
