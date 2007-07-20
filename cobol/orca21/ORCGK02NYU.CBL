@@ -3140,10 +3140,10 @@
                PERFORM 410109-K02IDOU-SEC
                GO      TO      410101-PTNUM-SYOKI-EXT
            END-IF
-      ***  IF     (SPA-KIDCD       NOT =   SPACE ) OR
-      *           (SPA-ERRCD       NOT =   SPACE )
-      *        GO      TO      410101-PTNUM-SYOKI-EXT
-      **** END-IF
+           IF     (SPA-KIDCD       NOT =   SPACE ) OR
+                  (SPA-ERRCD       NOT =   SPACE )
+               GO      TO      410101-PTNUM-SYOKI-EXT
+           END-IF
       *    受付一覧からの時、診療科を編集する
            IF      WRK-MOTOPG          =   "U01"
                MOVE    WRK-SPA-SRYKA   TO  SPA-SRYKA
