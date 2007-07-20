@@ -583,22 +583,6 @@
     </widget>
 
     <widget>
-      <class>GtkLabel</class>
-      <name>label167</name>
-      <x>324</x>
-      <y>480</y>
-      <width>68</width>
-      <height>24</height>
-      <label>期間指定</label>
-      <justify>GTK_JUSTIFY_LEFT</justify>
-      <wrap>True</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
       <class>GtkHSeparator</class>
       <name>hseparator47</name>
       <x>88</x>
@@ -756,46 +740,6 @@
 	<editable>True</editable>
 	<text_visible>True</text_visible>
 	<text_max_length>30</text_max_length>
-	<text></text>
-	<input_mode>XIM</input_mode>
-	<xim_enabled>False</xim_enabled>
-      </widget>
-    </widget>
-
-    <widget>
-      <class>GtkPandaCombo</class>
-      <name>CMB_MOREKIKAN</name>
-      <x>392</x>
-      <y>480</y>
-      <width>104</width>
-      <height>24</height>
-      <value_in_list>False</value_in_list>
-      <ok_if_empty>True</ok_if_empty>
-      <case_sensitive>False</case_sensitive>
-      <use_arrows>True</use_arrows>
-      <use_arrows_always>False</use_arrows_always>
-      <items></items>
-
-      <widget>
-	<class>GtkPandaEntry</class>
-	<child_name>GtkPandaCombo:entry</child_name>
-	<name>MOREKIKAN</name>
-	<can_focus>True</can_focus>
-	<signal>
-	  <name>activate</name>
-	  <handler>send_event</handler>
-	  <data>ACTIVATE</data>
-	  <last_modification_time>Mon, 01 Mar 2004 09:29:40 GMT</last_modification_time>
-	</signal>
-	<signal>
-	  <name>changed</name>
-	  <handler>entry_changed</handler>
-	  <data>CHANGED</data>
-	  <last_modification_time>Mon, 01 Mar 2004 09:29:49 GMT</last_modification_time>
-	</signal>
-	<editable>True</editable>
-	<text_visible>True</text_visible>
-	<text_max_length>20</text_max_length>
 	<text></text>
 	<input_mode>XIM</input_mode>
 	<xim_enabled>False</xim_enabled>
@@ -998,6 +942,78 @@
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>True</wrap>
       <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkPandaCombo</class>
+      <name>CMB_MOREKIKAN</name>
+      <x>436</x>
+      <y>480</y>
+      <width>120</width>
+      <height>24</height>
+      <value_in_list>False</value_in_list>
+      <ok_if_empty>True</ok_if_empty>
+      <case_sensitive>False</case_sensitive>
+      <use_arrows>True</use_arrows>
+      <use_arrows_always>False</use_arrows_always>
+      <items></items>
+
+      <widget>
+	<class>GtkPandaEntry</class>
+	<child_name>GtkPandaCombo:entry</child_name>
+	<name>MOREKIKAN</name>
+	<can_focus>True</can_focus>
+	<signal>
+	  <name>activate</name>
+	  <handler>send_event</handler>
+	  <data>ACTIVATE</data>
+	  <last_modification_time>Mon, 01 Mar 2004 09:29:40 GMT</last_modification_time>
+	</signal>
+	<signal>
+	  <name>changed</name>
+	  <handler>entry_changed</handler>
+	  <data>CHANGED</data>
+	  <last_modification_time>Mon, 01 Mar 2004 09:29:49 GMT</last_modification_time>
+	</signal>
+	<editable>True</editable>
+	<text_visible>True</text_visible>
+	<text_max_length>20</text_max_length>
+	<text></text>
+	<input_mode>XIM</input_mode>
+	<xim_enabled>False</xim_enabled>
+      </widget>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label167</name>
+      <x>336</x>
+      <y>480</y>
+      <width>96</width>
+      <height>24</height>
+      <label>診療年月指定</label>
+      <justify>GTK_JUSTIFY_LEFT</justify>
+      <wrap>True</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label172</name>
+      <x>564</x>
+      <y>480</y>
+      <width>320</width>
+      <height>24</height>
+      <label>＊入力コードのある薬剤はすべて対象とします。</label>
+      <justify>GTK_JUSTIFY_LEFT</justify>
+      <wrap>True</wrap>
+      <xalign>0</xalign>
       <yalign>0.5</yalign>
       <xpad>0</xpad>
       <ypad>0</ypad>

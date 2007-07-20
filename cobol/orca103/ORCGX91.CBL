@@ -549,10 +549,10 @@
            MOVE    "¤Ê¤·"              TO  SPA-GMN-MOREKIKANMEIL   (1)
       *
            MOVE    "2"                 TO  SPA-GMN-MOREKIKANL      (2)
-           MOVE    "£²¥ö·î"            TO  SPA-GMN-MOREKIKANMEIL   (2)
+           MOVE    "£²¥ö·îÊ¬"          TO  SPA-GMN-MOREKIKANMEIL   (2)
       *
            MOVE    "3"                 TO  SPA-GMN-MOREKIKANL      (3)
-           MOVE    "£¶¥ö·î"            TO  SPA-GMN-MOREKIKANMEIL   (3)
+           MOVE    "£¶¥ö·îÊ¬"          TO  SPA-GMN-MOREKIKANMEIL   (3)
       *
            MOVE    3                   TO  SPA-GMN-MOREKIKAN-MAX
       *

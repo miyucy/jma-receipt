@@ -157,7 +157,8 @@
                05  FRM-HEAD1-FL5       PIC X(04)   VALUE   "  P-".
                05  FRM-HEAD1-PCNT      PIC ZZ9.
            03  FRM-HEAD2.
-               05  FRM-HEAD2-FL1       PIC X(10)   VALUE   "期間指定：".
+               05  FRM-HEAD2-FL1       PIC X(14)
+                                       VALUE   "診療年月指定：".
                05  FRM-HEAD2-KIKAN     PIC X(10).
                05  FRM-HEAD2-FL2       PIC X(04)   VALUE   SPACE.
                05  FRM-HEAD2-RANGE     PIC X(20).
@@ -459,11 +460,11 @@
            MOVE    CNT-PAGE            TO FRM-HEAD1-PCNT
       *
            IF    ( WRK-PARA-MOREKIKAN  =  ZERO )
-               MOVE    "指定なし"      TO FRM-HEAD2-KIKAN
+               MOVE    "なし"          TO FRM-HEAD2-KIKAN
            ELSE
                MOVE    WRK-PARA-MOREKIKAN
                                        TO WRK-KIKAN
-               MOVE    "ヶ月"          TO WRK-KIKANMES
+               MOVE    "ヶ月分"        TO WRK-KIKANMES
                MOVE    WRK-KIKAN-G     TO WRK-KANA-STR
                PERFORM 800-ZENKAKU-SEC
                MOVE    WRK-KANA-STR    TO FRM-HEAD2-KIKAN
