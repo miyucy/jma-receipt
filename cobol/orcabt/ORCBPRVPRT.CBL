@@ -435,7 +435,7 @@ grpsys     MOVE    SPA-HOSPNUM         TO  SYS-1009-HOSPNUM
                MOVE    SPA-HOSPNUM         TO  SPTID-HOSPNUM
                MOVE    PRVKANRI-PTID       TO  SPTID-PTID
                CALL    "ORCSPTID"          USING   ORCSPTIDAREA
-                                                   SPA-1009-TBL
+                                                   SPA-AREA
                MOVE    SPTID-PTNUM         TO  MEISAI-PTNUM
       * 
                INITIALIZE                          PTINF-REC
@@ -692,11 +692,12 @@ grpsys     MOVE    SPA-HOSPNUM         TO  PRVKANRI-HOSPNUM
        900-PRVKANRI-FETCH-SEC          SECTION.
       *
            MOVE    "DBFETCH"           TO  MCP-FUNC
-           MOVE    PATH-TBL-PRVKANRI-KEY5
-                                       TO  MCP-PATH
-           CALL    "MCPSUB"            USING
+           MOVE    "tbl_prvkanri"      TO  MCP-TABLE
+           MOVE    "key5"              TO  MCP-PATHNAME
+           CALL    "ORCDBMAIN"         USING
                                        MCPAREA
                                        MCPDATA-REC
+                                       SPA-AREA
            IF      MCP-RC              =   ZERO
                    MOVE    MCPDATA-REC     TO  PRVKANRI-REC
                    MOVE    ZERO            TO  FLG-END
@@ -713,17 +714,18 @@ grpsys     MOVE    SPA-HOSPNUM         TO  PRVKANRI-HOSPNUM
        900-PTINF-READ-SEC           SECTION.
       *       
            MOVE    "DBSELECT"          TO      MCP-FUNC
-           MOVE    "PTINF-KEY"         TO      ORC-DBPATH
-           CALL    "ORCMCPSUB"         USING   MCPAREA
-                                               ORCMCPAREA
+           MOVE    "tbl_ptinf"         TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           CALL    "ORCDBMAIN"         USING   MCPAREA
                                                MCPDATA-REC
+                                               SPA-AREA
            IF      MCP-RC              =       ZERO
-               MOVE    "PTINF-KEY"     TO      ORC-DBPATH
                MOVE    "DBFETCH"           TO  MCP-FUNC
-               CALL    "ORCMCPSUB"          USING
-                                            MCPAREA
-                                            ORCMCPAREA
-                                            MCPDATA-REC
+               MOVE    "tbl_ptinf"         TO  MCP-TABLE
+               MOVE    "key"               TO  MCP-PATHNAME
+               CALL    "ORCDBMAIN"         USING   MCPAREA
+                                           MCPDATA-REC
+                                           SPA-AREA
                IF      MCP-RC              =   ZERO
                    MOVE    MCPDATA-REC     TO  PTINF-REC
                    MOVE    ZERO            TO  FLG-PTINF
@@ -735,11 +737,11 @@ grpsys     MOVE    SPA-HOSPNUM         TO  PRVKANRI-HOSPNUM
            END-IF
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           MOVE    "PTINF-KEY"         TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           MOVE    "tbl_ptinf"         TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
        900-PTINF-READ-EXT.
@@ -751,10 +753,9 @@ grpsys     MOVE    SPA-HOSPNUM         TO  PRVKANRI-HOSPNUM
        100-DBOPEN-SEC              SECTION.
       *
            MOVE    "DBOPEN"             TO  MCP-FUNC.
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC.
+           CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            PERFORM 1001-DBSTART-SEC
            .
@@ -767,10 +768,9 @@ grpsys     MOVE    SPA-HOSPNUM         TO  PRVKANRI-HOSPNUM
        1001-DBSTART-SEC        SECTION.
       *
            MOVE    "DBSTART"       TO  MCP-FUNC.
-           CALL    "ORCMCPSUB"         USING
-                                       MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC.
+           CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
            .
        1001-DBSTART-EXT.
            EXIT.
@@ -781,10 +781,9 @@ grpsys     MOVE    SPA-HOSPNUM         TO  PRVKANRI-HOSPNUM
        9001-DBDBCOMMIT-SEC        SECTION.
       *
            MOVE    "DBCOMMIT"      TO  MCP-FUNC
-           CALL    "ORCMCPSUB"         USING
-                                       MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC.
+           CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
            .
        9001-DBDBCOMMIT-EXT.
            EXIT.
@@ -796,16 +795,15 @@ grpsys     MOVE    SPA-HOSPNUM         TO  PRVKANRI-HOSPNUM
       *
            IF      FLG-ERR         =   ZERO
                MOVE    "DBCOMMIT"      TO  MCP-FUNC
-               CALL    "ORCMCPSUB"         USING
-                                           MCPAREA
-                                           ORCMCPAREA
+               CALL    "ORCDBMAIN"         USING   MCPAREA
                                            MCPDATA-REC
+                                           SPA-AREA
            END-IF.
       *
            MOVE    "DBDISCONNECT"       TO  MCP-FUNC.
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC.
+           CALL    "ORCDBMAIN"         USING   MCPAREA
+                                       MCPDATA-REC
+                                       SPA-AREA
+           .
        900-DBDISCONNECT-EXT.
            EXIT.
