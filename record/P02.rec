@@ -777,10 +777,12 @@ P02	{
 						row	int;
 						rowattr	int;
 						item	{
-							value1	varchar(3);
+							value0	varchar(3);
+							value1	varchar(10);
 							value2	varchar(10);
-							value3	varchar(10);
+							value3	varchar(12);
 							value4	varchar(10);
+							value5	varchar(10);
 						}	[20];
 						select	bool[20];
 					};
@@ -794,7 +796,9 @@ P02	{
 							value0	varchar(3);
 							value1	varchar(10);
 							value2	varchar(10);
-							value3	varchar(10);
+							value3	varchar(12);
+							value4	varchar(10);
+							value5	varchar(10);
 						}	[20];
 						select	bool[20];
 					};
@@ -805,6 +809,26 @@ P02	{
 					};
 					count	int;
 					item	varchar(10)[2];
+				};
+				P024_TSYNINSTYMD	{
+					value	varchar(10);
+				};
+				P024_TSYTEKK_COB	{
+					P024_TSYTEKK	{
+						value	varchar(20);
+					};
+					count	int;
+					item	varchar(20)[5];
+				};
+				P024_TNKNINSTYMD	{
+					value	varchar(10);
+				};
+				P024_TNKTEKK_COB	{
+					P024_TNKTEKK	{
+						value	varchar(20);
+					};
+					count	int;
+					item	varchar(20)[5];
 				};
 				P024_FTNTEKSTYMD	{
 					value	varchar(10);

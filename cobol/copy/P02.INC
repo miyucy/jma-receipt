@@ -540,6 +540,8 @@
                         08  P02-P024-TSYLNUM   PIC X(3).
                         08  P02-P024-TSYLSTYMD PIC X(10).
                         08  P02-P024-TSYLEDYMD PIC X(10).
+                        08  P02-P024-TSYLHKNKBN PIC X(12).
+                        08  P02-P024-TSYLNINYMD PIC X(10).
                         08  P02-P024-TSYLSKJGNSTYMD PIC X(10).
                       07  P02-P024-TSYLIST-SELECT PIC X
                                                 OCCURS  20 TIMES.
@@ -552,6 +554,8 @@
                         08  P02-P024-TNKLNUM   PIC X(3).
                         08  P02-P024-TNKLSTYMD PIC X(10).
                         08  P02-P024-TNKLEDYMD PIC X(10).
+                        08  P02-P024-TNKLHKNKBN PIC X(12).
+                        08  P02-P024-TNKLNINYMD PIC X(10).
                         08  P02-P024-TNKLFUKUSHI PIC X(10).
                       07  P02-P024-TNKLIST-SELECT PIC X
                                                OCCURS  20 TIMES.
@@ -561,6 +565,22 @@
                     06  P02-P024-FUKUSHI-COUNT   PIC S9(9)   BINARY.
                     06  P02-P024-FUKUSHI-ITEM
                             PIC X(10)   OCCURS  2 TIMES.
+                  05  P02-P024-TSYNINSTYMD.
+                    06  P02-VALUE   PIC X(10).
+                  05  P02-P024-TSYTEKK-COB.
+                    06  P02-P024-TSYTEKK.
+                      07  P02-VALUE   PIC X(20).
+                    06  P02-P024-TSYTEKK-COUNT   PIC S9(9)   BINARY.
+                    06  P02-P024-TSYTEKK-ITEM
+                            PIC X(20)   OCCURS  5 TIMES.
+                  05  P02-P024-TNKNINSTYMD.
+                    06  P02-VALUE   PIC X(10).
+                  05  P02-P024-TNKTEKK-COB.
+                    06  P02-P024-TNKTEKK.
+                      07  P02-VALUE   PIC X(20).
+                    06  P02-P024-TNKTEKK-COUNT   PIC S9(9)   BINARY.
+                    06  P02-P024-TNKTEKK-ITEM
+                            PIC X(20)   OCCURS  5 TIMES.
                   05  P02-P024-FTNTEKSTYMD.
                     06  P02-VALUE   PIC X(10).
                   05  P02-P024-FTNTEKEDYMD.

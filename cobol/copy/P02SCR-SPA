@@ -761,11 +761,16 @@
                        09  SPA-GMN24-TSYTBLO            OCCURS  20.
                            11  SPA-GMN24-TSYDPSTYMDW    PIC X(10).
                            11  SPA-GMN24-TSYDPEDYMDW    PIC X(10).
+                           11  SPA-GMN24-TSYLHKNKBN     PIC X(12).
+                           11  SPA-GMN24-TSYLNINYMD     PIC X(10).
                            11  SPA-GMN24-TSYLSKJGNSTYMDW    PIC X(10).
+      *
                            11  SPA-GMN24-TSYDPSTYMD     PIC X(08).
                            11  SPA-GMN24-TSYDPEDYMD     PIC X(08).
                            11  SPA-GMN24-TSYLSKJGNSTYMD PIC X(08).
                            11  SPA-GMN24-TSYDELKBN      PIC X(01).
+                           11  SPA-NAI24-TSYLHKNKBN     PIC X(01).
+                           11  SPA-NAI24-TSYLNINYMD     PIC X(08).
                        09  SPA-TSY-MAX                  PIC 9(03).
       *
                    07  SPA-GMN24-TSYS-AREA.
@@ -777,6 +782,13 @@
                        09  SPA-GMN24-TSYEDYMD               PIC X(08).
                        09  SPA-GMN24-TSYSKJGNSTYMD          PIC X(08).
       *
+                       09  SPA-GMN24-TSYNINSTYMD            PIC X(10).
+                       09  SPA-NAI24-TSYNINSTYMD            PIC X(08).
+                       09  SPA-GMN24-TSYTEKKBN-G.
+                           11  SPA-GMN24-TSYTEKKBN          PIC X(01).
+                           11  SPA-GMN24-TSYTEKKBN-F        PIC X(01).
+                           11  SPA-GMN24-TSYTEKKBN-MEI      PIC X(18).
+      *
                        09  SPA-NAI24-TSYSELNUM              PIC 9(04).
                        09  SPA-MAE24-TSYSELNUM              PIC X(04).
       *
@@ -785,11 +797,15 @@
                        09  SPA-GMN24-TNKTBLO            OCCURS  20.
                            11  SPA-GMN24-TNKDPSTYMDW    PIC X(10).
                            11  SPA-GMN24-TNKDPEDYMDW    PIC X(10).
+                           11  SPA-GMN24-TNKLHKNKBN     PIC X(12).
+                           11  SPA-GMN24-TNKLNINYMD     PIC X(10).
                            11  SPA-GMN24-TFUKUSHI-MEI   PIC X(04).
                            11  SPA-GMN24-TNKDPSTYMD     PIC X(08).
                            11  SPA-GMN24-TNKDPEDYMD     PIC X(08).
                            11  SPA-GMN24-TNKDELKBN      PIC X(01).
                            11  SPA-GMN24-TFUKUSHI-KBN   PIC X(01).
+                           11  SPA-NAI24-TNKLHKNKBN     PIC X(01).
+                           11  SPA-NAI24-TNKLNINYMD     PIC X(08).
                        09  SPA-TNK-MAX                  PIC 9(03).
                    07  SPA-GMN24-TNK-AREA.
                        09  SPA-GMN24-TNKSELNUM              PIC X(04).
@@ -805,6 +821,13 @@
       *
                        09  SPA-NAI24-TNKSELNUM              PIC 9(04).
                        09  SPA-MAE24-TNKSELNUM              PIC X(04).
+      *
+                       09  SPA-GMN24-TNKNINSTYMD            PIC X(10).
+                       09  SPA-NAI24-TNKNINSTYMD            PIC X(08).
+                       09  SPA-GMN24-TNKTEKKBN-G.
+                           11  SPA-GMN24-TNKTEKKBN          PIC X(01).
+                           11  SPA-GMN24-TNKTEKKBN-F        PIC X(01).
+                           11  SPA-GMN24-TNKTEKKBN-MEI      PIC X(18).
       *            ∏¯»Ò…È√¥
                    07  SPA-GMN24-KOHFTNTBL.
                        09  SPA-GMN24-FTNTBLO            OCCURS  40.
@@ -866,6 +889,16 @@
                        09  SPA-GMN24-FUKUSHI-LST       PIC X(10)
                                                        OCCURS   2.
                        09  SPA-GMN24-FUKUSHI-MAX       PIC 9(02).
+      *                «ßƒÍ»œ∞œ
+                       09  SPA-GMN24-TSYTEKKBN-LST-G.
+                           11  SPA-GMN24-TSYTEKKBN-LST   PIC X(20)
+                                                         OCCURS   5.
+                           11  SPA-GMN24-TSYTEKKBN-MAX   PIC 9(04).
+      *                «ßƒÍ»œ∞œ
+                       09  SPA-GMN24-TNKTEKKBN-LST-G.
+                           11  SPA-GMN24-TNKTEKKBN-LST   PIC X(20)
+                                                         OCCURS   5.
+                           11  SPA-GMN24-TNKTEKKBN-MAX   PIC 9(04).
       *
       *    P025(≥∆ºÔÕ˙ŒÚ°À
            03  SPA-P025-AREA.
