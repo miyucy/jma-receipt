@@ -78,6 +78,7 @@
        01  SCRAREA.
            COPY    "D01.INC".
            COPY    "D02.INC".
+           COPY    "D03.INC".
            COPY    "D99.INC".
            COPY    "LERR.INC".
            COPY    "DID1.INC".

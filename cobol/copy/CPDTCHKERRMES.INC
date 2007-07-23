@@ -242,6 +242,11 @@
            05 PIC  X(30)   VALUE   "日付です                      ".
            05 PIC  X(30)   VALUE   "                              ".
       *
+           05 PIC  X(06)   VALUE   "060005".
+           05 PIC  X(30)   VALUE   "当月開始病名のみの入力です。初".
+           05 PIC  X(30)   VALUE   "診料が算定可能か確認してくださ".
+           05 PIC  X(30)   VALUE   "い                            ".
+      *
       *    ** 070xxx 急性病名・疑い病名
       *                            +---------+---------+---------+.
            05 PIC  X(06)   VALUE   "070001".
@@ -438,7 +443,7 @@
            05 PIC  X(30)   VALUE   "                              ".
       *
          03  ERRMES-RED    REDEFINES   ERRMES-VAL.
-           05 ERRMES-OCC   OCCURS  74.
+           05 ERRMES-OCC   OCCURS  75.
               07  ERRMES-CD            PIC X(06).
               07  ERRMES-MESSAGE       PIC X(90).
-         03  ERRMES-MAX                PIC 9(05)   VALUE   74.
+         03  ERRMES-MAX                PIC 9(05)   VALUE   75.

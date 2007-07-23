@@ -1,5 +1,14 @@
 D01	{
 	fixed6	{
+		B05S	{
+			state	int;
+		};
+		B06S	{
+			state	int;
+		};
+		B07S	{
+			state	int;
+		};
 		B08	{
 			label	varchar(10);
 		};
@@ -47,6 +56,13 @@ D01	{
 		EDSRYYMD	{
 	        state	int;
 			value	number(2);
+		};
+		CMB_USRCHKKBN	{
+			USRCHKKBN	{
+				value	varchar(33);
+			};
+			count	int;
+			item	varchar(33)[10];
 		};
 		CHKMSG1	{
 			value	varchar(40);

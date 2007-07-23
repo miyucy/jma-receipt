@@ -501,6 +501,8 @@
            03  WRK-PTBYOSRYYMD                         PIC X(08).
            03  WRK-LSRYCD                              PIC X(09).
            03  WRK-RSRYCD                              PIC X(09).
+           03  WRK-TIYU-CHUSHI                         PIC 9(01).
+           03  WRK-SAISHIN-ERRCD                       PIC X(06).
       *
        01  TKANRIRYO-AREA.
            03  TKANRIRYO-OCC                           OCCURS  9.
@@ -4270,6 +4272,15 @@
       *
       *        診療開始日チェック（３）処理
                IF    ( FLG-CHKEND (6)  =   ZERO )
+                   MOVE    ZERO        TO  WRK-TIYU-CHUSHI
+                   MOVE    "060005"    TO  WRK-SAISHIN-ERRCD
+                   PERFORM 200112-PTBYO-SAISIN-CHK-SEC
+               END-IF
+      *
+      *        診療開始日チェック（３）処理
+               IF    ( FLG-CHKEND (6)  =   ZERO )
+                   MOVE    1           TO  WRK-TIYU-CHUSHI
+                   MOVE    "060003"    TO  WRK-SAISHIN-ERRCD
                    PERFORM 200112-PTBYO-SAISIN-CHK-SEC
                END-IF
       *
@@ -5196,7 +5207,8 @@
       *
                IF    ( TSRYKA-SYOSAIYMD-SAISINYMD (IDX4 IDX0)
                                    NOT =   ZERO )
-                AND  ( TSRYKA-TIYU-CHUSHI (IDX4 IDX0)  =   1 )
+                AND  ( TSRYKA-TIYU-CHUSHI (IDX4 IDX0)
+                                       =   WRK-TIYU-CHUSHI )
                 AND  ( TSRYKA-BYO-KAISHI  (IDX4 IDX0)  =   1 )
                 AND  ( TSRYKA-BYO-KEIZOKU (IDX4 IDX0)  =   ZERO )
                    MOVE    TSRYKA-SYOSAIYMD-SAISINYMD (IDX4 IDX0)
@@ -5221,7 +5233,8 @@
                                    TO  SRH-1005-SRYKA
                MOVE    WRK-NISSU-MES
                                    TO  WRK-ERRMES-PLUS
-               MOVE    "060003"    TO  WRK-ERRCD
+               MOVE    WRK-SAISHIN-ERRCD
+                                   TO  WRK-ERRCD
                PERFORM 213-ERRMES-HEN-SEC
       *
                IF    ( ORCBSD01-CHKKBN (6) =   "1" )

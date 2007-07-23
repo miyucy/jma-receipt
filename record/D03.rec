@@ -1,0 +1,7 @@
+D03	{
+	fixed4	{
+		NAME	{
+			value	varchar(30);
+		};
+	};
+};

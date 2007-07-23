@@ -16,6 +16,9 @@
       * 113-8621, Japan.
       ********************************************************************
         02  D01.
+          03  D01-B05S-STATE           PIC S9(9)   BINARY.
+          03  D01-B06S-STATE           PIC S9(9)   BINARY.
+          03  D01-B07S-STATE           PIC S9(9)   BINARY.
           03  D01-B08-LABEL            PIC X(10).
           03  D01-LBLIKTKBT-STYLE      PIC X(20).
           03  D01-LBLIKTKBT            PIC X(20).
@@ -38,6 +41,10 @@
           03  D01-STSRYYMD             PIC S9(2).
           03  D01-EDSRYYMD-STATE       PIC S9(9)   BINARY.
           03  D01-EDSRYYMD             PIC S9(2).
+          03  D01-CMB-USRCHKKBN.
+            04  D01-USRCHKKBN          PIC X(33).
+            04  D01-USRCHKKBN-COUNT    PIC S9(9)   BINARY.
+            04  D01-USRCHKKBN-ITEM     PIC X(33)   OCCURS 10 TIMES.
           03  D01-CHKMSG-G.
             04  D01-CHKMSG             PIC X(40)   OCCURS 19 TIMES.
           03  D01-INGAIPROCMSG         PIC X(40).

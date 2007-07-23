@@ -342,6 +342,7 @@ SCREEN_screen = \
 	XA02.glade \
 	W33.glade \
 	XC02.glade \
+ 	D03.glade \
 
 SCREEN_objs = $(SCREEN_sources:.glade.in=.glade)
 

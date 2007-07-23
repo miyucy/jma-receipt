@@ -20,7 +20,7 @@
        PROGRAM-ID.                 ORCGD01.
       *****************************************************************
       *  システム名        : ＯＲＣＡ
-      *  サブシステム名    : データチェックサブ
+      *  サブシステム名    : データチェック
       *  コンポーネント名  : データチェック条件入力
       *  管理者            : 
       *  作成日付    作業者        記述
@@ -92,6 +92,10 @@
                            11  SPA-GMN-D01-NYUGAIKBN       PIC X(01).
                            11                              PIC X(01).
                            11  SPA-GMN-D01-NYUGAIKBNMEI    PIC X(18).
+                       09  SPA-GMN-D01-USRCHKKBN-G.
+                           11  SPA-GMN-D01-USRCHKKBN       PIC X(02).
+                           11                              PIC X(01).
+                           11  SPA-GMN-D01-USRCHKKBNMEI    PIC X(30).
                        09  SPA-GMN-D01-CHKKBN-OCC          OCCURS  18.
                            11  SPA-GMN-D01-CHKKBN-G.
                                13  SPA-GMN-D01-CHKKBN      PIC X(01).
@@ -116,6 +120,13 @@
                            11  SPA-GMN-D01-PRTSRTKBNL      PIC X(01).
                            11                              PIC X(01).
                            11  SPA-GMN-D01-PRTSRTKBNMEIL   PIC X(20).
+                   07  SPA-GMN-D01-USRCHKKBNLST-G.
+                       09  SPA-GMN-D01-USRCHKKBN-MAX       PIC 9(03).
+                       09  SPA-GMN-D01-USRCHKKBNLST        OCCURS  10.
+                           11  SPA-GMN-D01-USRCHKKBNL      PIC X(02).
+                           11                              PIC X(01).
+                           11  SPA-GMN-D01-USRCHKKBNMEIL
+                                                           PIC X(30).
                    07  SPA-GMN-D01-CHKKBNLST-G.
                        09  SPA-GMN-D01-CHKKBN-MAX          PIC 9(03).
                        09  SPA-GMN-D01-CHKKBNLST           OCCURS  5.
@@ -135,6 +146,16 @@
                        09  SPA-NAI-D01-SRYYM               PIC X(06).
                        09  SPA-NAI-D01-STSRYYMD-BF         PIC 9(02).
                        09  SPA-NAI-D01-IKTKBT              PIC X(01).
+                   07  SPA-NAI-D01-USRCHKKBN-SEL           PIC 9(03).
+               05  SPA-NAIB-CMB-AREA.
+                       09  SPA-NAI-D01-USRCHKKBNLST-G.
+                           11  SPA-NAI-D01-USRCHKKBNLST    OCCURS  10.
+                               13  SPA-NAI-D01-USRCHKKBN-G.
+                                   15  SPA-NAI-D01-USRCHKKBN
+                                                           PIC X(01)
+                                                           OCCURS  50.
+                               13  SPA-NAI-D01-USRINGAIPROCKBN
+                                                           PIC X(01).
       *
       *    フラグ領域
        01  FLG-AREA.
@@ -162,6 +183,7 @@
            03  WRK-PRTKANRI-RENNUM         PIC 9(04).
            03  WRK-CMB-CD                  PIC X(10).
            03  WRK-CMB-ITM-G.
+               07  WRK-CMB-IDX             PIC 9(03).
                07  WRK-CMB-ITM             PIC X(200).
            03  WRK-MCP-WIDGET              PIC X(64).
            03  WRK-ERR-CUR                 PIC 9(03).
@@ -197,10 +219,11 @@
            03  WRK-DELKANRICD              PIC X(04).
            03  WRK-DELKBNCD                PIC X(08).
            03  WRK-KBNCD-G.
-               05  WRK-KBNCD-KBN           PIC X(01).
-               05  WRK-KBNCD-SEQ           PIC 9(07).
+               05  WRK-KBNCD-NUM           PIC 9(02).
+               05  WRK-KBNCD-FL            PIC X(06).
       *
        01  CONST-AREA.
+           03  CONST-USRCHKKBN-MAX         PIC 9(03)   VALUE   10.
            03  CONST-LINE                  PIC X(40)   VALUE
                "＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿".
            03  CONST-INGAIPROCMSG          PIC X(40)   VALUE
@@ -237,6 +260,7 @@
            COPY    "CPCHK004.INC".
            COPY    "CPCK2000.INC".
            COPY    "CPCK2001.INC".
+           COPY    "CPCK2002.INC".
       *
       *    システム管理
            COPY    "CPSK1101.INC".
@@ -299,6 +323,7 @@
        01  SCRAREA.
            COPY    "D01.INC".
            COPY    "D02.INC".
+           COPY    "D03.INC".
            COPY    "D99.INC".
            COPY    "DERR.INC".
            COPY    "DID1.INC".
@@ -424,6 +449,10 @@
            WHEN    "D02"
                PERFORM 340-D02-SET-SEC
                GO  TO  300-SCREEN-EXT
+      *    確認項目保存画面
+           WHEN    "D03"
+               PERFORM 340-D03-SET-SEC
+               GO  TO  300-SCREEN-EXT
            END-EVALUATE
       *
            PERFORM 310-SPASET-SEC.
@@ -458,6 +487,9 @@
       *
       *    印刷順コンボ編集
            PERFORM 3101-PRTSRTKBNLST-HEN-SEC
+      *
+      *    ユーザー確認項目コンボ編集処理
+           PERFORM 3101-USRCHKKBNLST-HEN-SEC
       *
       *    チェック項目名編集
            PERFORM 3101-CHKMSG-HEN-SEC
@@ -563,6 +595,68 @@
       *****************************************************************
       *    院外処方の処理項目コンボ編集処理
       *****************************************************************
+       3101-USRCHKKBNLST-HEN-SEC    SECTION.
+      *
+           INITIALIZE                  SPA-GMN-D01-USRCHKKBNLST-G
+                                       SPA-NAI-D01-USRCHKKBNLST-G
+      *
+           INITIALIZE                  CHK004-REC
+           MOVE    SPA-HOSPNUM     TO  CHK004-HOSPNUM
+           MOVE    "2002"          TO  CHK004-KANRICD
+           MOVE    "%"             TO  CHK004-KBNCD
+           MOVE    SPA-SYSYMD      TO  CHK004-STYUKYMD
+                                       CHK004-EDYUKYMD
+           PERFORM 900-CHK004-KEY7-SEL-SEC
+           MOVE    CHK004-REC      TO  CK4-2002-REC
+      *
+           PERFORM UNTIL ( FLG-CHK004  NOT =   ZERO )
+                    OR   ( SPA-GMN-D01-USRCHKKBN-MAX
+                                          >=   CONST-USRCHKKBN-MAX )
+      *
+               COMPUTE SPA-GMN-D01-USRCHKKBN-MAX
+                   =   SPA-GMN-D01-USRCHKKBN-MAX   +   1
+      *
+               MOVE    SPA-GMN-D01-USRCHKKBN-MAX
+                                   TO  IDX-CMB
+      *
+               MOVE    CK4-2002-KBNCD
+                                   TO  SPA-GMN-D01-USRCHKKBNL (IDX-CMB)
+      *
+               MOVE    CK4-2002-NAME
+                                   TO  SPA-GMN-D01-USRCHKKBNMEIL
+                                                              (IDX-CMB)
+      *
+               PERFORM VARYING IDX0    FROM    1   BY  1
+                       UNTIL ( IDX0    >   DTCHKKOMOKU-MAX )
+                   IF    ( CK4-2002-CHKKBN (IDX0)  =   ZERO )
+                       MOVE    SPACE   TO  SPA-NAI-D01-USRCHKKBN
+                                                         (IDX-CMB IDX0)
+                   ELSE
+                       MOVE    CK4-2002-CHKKBN (IDX0)
+                                       TO  SPA-NAI-D01-USRCHKKBN
+                                                         (IDX-CMB IDX0)
+                   END-IF
+               END-PERFORM
+      *
+               MOVE    CK4-2002-INGAIPROCKBN
+                                   TO  SPA-NAI-D01-USRINGAIPROCKBN
+                                                              (IDX-CMB)
+      *
+               PERFORM 900-CHK004-KEY7-FET-SEC
+               MOVE    CHK004-REC  TO  CK4-2002-REC
+      *
+           END-PERFORM
+      *
+           MOVE    "tbl_chk004"    TO  MCP-TABLE
+           MOVE    "key7"          TO  MCP-PATHNAME
+           PERFORM 910-DBCLOSECURSOR-SEC
+      *
+           .
+       3101-USRCHKKBNLST-HEN-EXT.
+           EXIT.
+      *****************************************************************
+      *    院外処方の処理項目コンボ編集処理
+      *****************************************************************
        3101-INGAIPROCKBNLST-HEN-SEC    SECTION.
       *
            INITIALIZE                  SPA-GMN-D01-INGAIPROCKBNLST-G
@@ -580,6 +674,62 @@
        3101-INGAIPROCKBNLST-HEN-EXT.
            EXIT.
       *****************************************************************
+      *    スパ初期編集処理（子画面より戻り時）
+      *****************************************************************
+       312-SPASET-SEC                 SECTION.
+      *
+           MOVE    SPA-D01-IKTKBT  TO  SPA-NAI-D01-IKTKBT
+      *
+           MOVE    SPA-D01-SRYYM   TO  SPA-GMN-D01-SRYYM
+           IF    ( SPA-D01-SYAHOPROCKBN    =   "1" )
+               MOVE    "T"         TO  SPA-GMN-D01-CHK-SYAHO
+           END-IF
+           IF    ( SPA-D01-KOKUHOPROCKBN   =   "1" )
+               MOVE    "T"         TO  SPA-GMN-D01-CHK-KOKUHO
+           END-IF
+           IF    ( SPA-D01-RSIPROCKBN      =   "1" )
+             OR  ( SPA-D01-JBIPROCKBN      =   "1" )
+               MOVE    "T"         TO  SPA-GMN-D01-CHK-RSIJBI
+           END-IF
+           IF    ( SPA-D01-JIHIPROCKBN     =   "1" )
+               MOVE    "T"         TO  SPA-GMN-D01-CHK-JIHI
+           END-IF
+           IF    ( SPA-D01-SRYYMDKBN       =   "1" )
+               MOVE    "T"         TO  SPA-GMN-D01-CHK-SRYYMD
+           END-IF
+           MOVE    SPA-D01-STSRYYMD    TO  SPA-GMN-D01-STSRYYMD
+                                           SPA-NAI-D01-STSRYYMD-BF
+           MOVE    SPA-D01-EDSRYYMD    TO  SPA-GMN-D01-EDSRYYMD
+           MOVE    SPA-D01-PRTSRTKBN   TO  SPA-GMN-D01-PRTSRTKBN
+           MOVE    SPA-D01-NYUGAIKBN   TO  SPA-GMN-D01-NYUGAIKBN
+      *
+           MOVE    SPA-D01-USRCHKKBN   TO  SPA-GMN-D01-USRCHKKBN
+      *
+           PERFORM VARYING IDX0    FROM    1   BY  1
+                   UNTIL ( IDX0    >   DTCHKKOMOKU-MAX )
+      *
+               IF    ( SPA-D01-CHKKBN (IDX0)   =   ZERO )
+                   MOVE    SPACE       TO  SPA-GMN-D01-CHKKBN (IDX0)
+               ELSE
+                   MOVE    SPA-D01-CHKKBN (IDX0)
+                                       TO  SPA-GMN-D01-CHKKBN (IDX0)
+               END-IF
+      *
+           END-PERFORM
+      *
+           MOVE    SPA-D01-KBTUSER     TO  SPA-NAI-D01-KBTUSER
+      *
+           IF    ( SPA-D01-INGAIPROCKBN    =   ZERO )
+               MOVE    SPACE   TO  SPA-GMN-D01-INGAIPROCKBN
+           ELSE
+               MOVE    SPA-D01-INGAIPROCKBN
+                               TO  SPA-GMN-D01-INGAIPROCKBN
+           END-IF
+      *
+           .
+       312-SPASET-EXT.
+           EXIT.
+      *****************************************************************
       *    確認画面（ＤＩＤ１）ＯＫ処理
       *****************************************************************
        330-DID1-SET-SEC            SECTION.
@@ -589,6 +739,10 @@
                WHEN    "6666"
                    MOVE    "JOIN"      TO  MCP-PUTTYPE
                    PERFORM 210-BACK-SYORI-SEC
+               WHEN    "3002"
+                   PERFORM 4501-USRCHKKBN-DEL-SEC
+               WHEN    "3001"
+                   PERFORM 4601-USRCHKKBN-UPD-SEC
                WHEN    OTHER
       *----(01.00.11)--UPD-START---
       *            ジョブ管理チェック
@@ -662,62 +816,36 @@
       *
            PERFORM 311-SPASET-SEC
       *
-           MOVE    SPA-D01-IKTKBT  TO  SPA-NAI-D01-IKTKBT
+           PERFORM 312-SPASET-SEC
       *
-           MOVE    SPA-D01-SRYYM   TO  SPA-GMN-D01-SRYYM
-           IF    ( SPA-D01-SYAHOPROCKBN    =   "1" )
-               MOVE    "T"         TO  SPA-GMN-D01-CHK-SYAHO
-           END-IF
-           IF    ( SPA-D01-KOKUHOPROCKBN   =   "1" )
-               MOVE    "T"         TO  SPA-GMN-D01-CHK-KOKUHO
-           END-IF
-           IF    ( SPA-D01-RSIPROCKBN      =   "1" )
-             OR  ( SPA-D01-JBIPROCKBN      =   "1" )
-               MOVE    "T"         TO  SPA-GMN-D01-CHK-RSIJBI
-           END-IF
-           IF    ( SPA-D01-JIHIPROCKBN     =   "1" )
-               MOVE    "T"         TO  SPA-GMN-D01-CHK-JIHI
-           END-IF
-           IF    ( SPA-D01-SRYYMDKBN       =   "1" )
-               MOVE    "T"         TO  SPA-GMN-D01-CHK-SRYYMD
-           END-IF
-           MOVE    SPA-D01-STSRYYMD    TO  SPA-GMN-D01-STSRYYMD
-                                           SPA-NAI-D01-STSRYYMD-BF
-           MOVE    SPA-D01-EDSRYYMD    TO  SPA-GMN-D01-EDSRYYMD
-           MOVE    SPA-D01-PRTSRTKBN   TO  SPA-GMN-D01-PRTSRTKBN
-           MOVE    SPA-D01-NYUGAIKBN   TO  SPA-GMN-D01-NYUGAIKBN
-      *
-           PERFORM VARYING IDX0    FROM    1   BY  1
-                   UNTIL ( IDX0    >   DTCHKKOMOKU-MAX )
-      *
-               IF    ( SPA-D01-CHKKBN (IDX0)   =   ZERO )
-                   MOVE    SPACE       TO  SPA-GMN-D01-CHKKBN (IDX0)
-               ELSE
-                   MOVE    SPA-D01-CHKKBN (IDX0)
-                                       TO  SPA-GMN-D01-CHKKBN (IDX0)
-               END-IF
-      *
-           END-PERFORM
-      *
-           MOVE    SPA-D01-KBTUSER     TO  SPA-NAI-D01-KBTUSER
            IF    ( SPA-NAI-D01-KBTUSER =   ZERO )
       *
       *        排他制御解除処理
                PERFORM 990-LOCK-OUT-SEC
            END-IF
       *
-           IF    ( SPA-D01-INGAIPROCKBN    =   ZERO )
-               MOVE    SPACE   TO  SPA-GMN-D01-INGAIPROCKBN
-           ELSE
-               MOVE    SPA-D01-INGAIPROCKBN
-                               TO  SPA-GMN-D01-INGAIPROCKBN
-           END-IF
-      *
-      *
            PERFORM 4102-KIHON-CHK-SEC
       *
            .
        340-D02-SET-EXT.
+           EXIT.
+      *****************************************************************
+      *    確認項目内容保存画面戻り処理
+      *****************************************************************
+       340-D03-SET-SEC             SECTION.
+      *
+           MOVE    SPACE           TO  SPA-DID1-FLG
+      *
+           PERFORM 311-SPASET-SEC
+      *
+           PERFORM 312-SPASET-SEC
+      *
+           MOVE    SPA-D01-CUR     TO  SPA-GMN-D01-CUR
+      *
+           PERFORM 4102-KIHON-CHK-SEC
+      *
+           .
+       340-D03-SET-EXT.
            EXIT.
       *****************************************************************
       *    プレビュー処理
@@ -1063,6 +1191,7 @@
                                    TO  ORCBSD01-SRYYM
            MOVE    SPA-GMN-D01-NYUGAIKBN
                                    TO  ORCBSD01-NYUGAIKBN
+      *
            PERFORM VARYING IDX0    FROM    1   BY  1
                    UNTIL ( IDX0    >   DTCHKKOMOKU-MAX )
       *
@@ -1130,6 +1259,40 @@
       *
            .
        4901-SET-ORCBSD01PARA-EXT.
+           EXIT.
+      *****************************************************************
+      *    子画面遷移時基本情報設定処理
+      *****************************************************************
+       4901-SET-D01-INF-SEC            SECTION.
+      *
+           INITIALIZE                          SPA-D01-INF-AREA
+           MOVE    SPA-NAI-D01-KBTUSER     TO  SPA-D01-KBTUSER
+           MOVE    ORCBSD01-IKTKBT         TO  SPA-D01-IKTKBT
+           MOVE    ORCBSD01-SRYYM          TO  SPA-D01-SRYYM
+           MOVE    ORCBSD01-NYUGAIKBN      TO  SPA-D01-NYUGAIKBN
+           MOVE    SPA-GMN-D01-USRCHKKBN   TO  SPA-D01-USRCHKKBN
+           PERFORM VARYING IDX0    FROM    1   BY  1
+                   UNTIL ( IDX0    >   DTCHKKOMOKU-MAX )
+               MOVE    ORCBSD01-CHKKBN (IDX0)
+                                           TO  SPA-D01-CHKKBN (IDX0)
+      *
+           END-PERFORM
+      *
+           MOVE    ORCBSD01-SYAHOPROCKBN   TO  SPA-D01-SYAHOPROCKBN
+           MOVE    ORCBSD01-KOKUHOPROCKBN  TO  SPA-D01-KOKUHOPROCKBN
+           MOVE    ORCBSD01-RSIPROCKBN     TO  SPA-D01-RSIPROCKBN
+           MOVE    ORCBSD01-JBIPROCKBN     TO  SPA-D01-JBIPROCKBN
+           MOVE    ORCBSD01-JIHIPROCKBN    TO  SPA-D01-JIHIPROCKBN
+           MOVE    ORCBSD01-INGAIPROCKBN   TO  SPA-D01-INGAIPROCKBN
+           MOVE    ORCBSD01-PRTSRTKBN      TO  SPA-D01-PRTSRTKBN
+           MOVE    ORCBSD01-SRYYMDKBN      TO  SPA-D01-SRYYMDKBN
+           MOVE    ORCBSD01-STSRYYMD       TO  SPA-D01-STSRYYMD
+           MOVE    ORCBSD01-EDSRYYMD       TO  SPA-D01-EDSRYYMD
+      *
+           MOVE    SPA-GMN-D01-CUR         TO  SPA-D01-CUR
+      *
+           .
+       4901-SET-D01-INF-EXT.
            EXIT.
       *****************************************************************
       *    個別患者基本情報設定処理
@@ -1339,6 +1502,15 @@
            WHEN    "CLICKED"       ALSO    "B04"
       *        確認全印刷
                PERFORM 440-KAKUNIN-ALL-SEC
+           WHEN    "CLICKED"       ALSO    "B05S"
+      *        確認項目保存内容削除
+               PERFORM 450-USRCHKKBN-DEL-SEC
+           WHEN    "CLICKED"       ALSO    "B06S"
+      *        確認項目保存内容変更
+               PERFORM 460-USRCHKKBN-UPD-SEC
+           WHEN    "CLICKED"       ALSO    "B07S"
+      *        確認項目保存画面遷移
+               PERFORM 440-D03-SENI-SEC
            WHEN    "CLICKED"       ALSO    "B05"
       *        再印刷
                PERFORM 450-REPRINT-SEC
@@ -1445,6 +1617,8 @@
            MOVE    D01-STSRYYMD        TO  SPA-GMN-D01-STSRYYMD
            MOVE    D01-EDSRYYMD        TO  SPA-GMN-D01-EDSRYYMD
       *
+           MOVE    D01-USRCHKKBN       TO  SPA-GMN-D01-USRCHKKBN-G
+      *
       *    チェック項目
            PERFORM VARYING IDX0    FROM    1   BY  1
                    UNTIL ( IDX0    >   DTCHKKOMOKU-MAX )
@@ -1490,6 +1664,11 @@
       *    診療日指定終了日チェック
            IF    ( SPA-ERRCD   =   SPACE )
                PERFORM 4101-EDSRYYMD-CHK-SEC
+           END-IF
+      *
+      *    ユーザー確認項目チェック
+           IF    ( SPA-ERRCD   =   SPACE )
+               PERFORM 4101-USRCHKKBN-CHK-SEC
            END-IF
       *
       *    チェック項目チェック
@@ -1653,6 +1832,36 @@
        4101-EDSRYYMD-CHK-EXT.
            EXIT.
       *****************************************************************
+      *    ユーザー確認項目チェック処理
+      *****************************************************************
+       4101-USRCHKKBN-CHK-SEC        SECTION.
+      *
+           MOVE    ZERO                TO  SPA-NAI-D01-USRCHKKBN-SEL
+      *
+           MOVE    SPA-GMN-D01-USRCHKKBN
+                                       TO  WRK-CMB-CD
+           PERFORM 4200-USRCHKKBNLST-CHK-SEC
+           MOVE    WRK-CMB-ITM         TO  SPA-GMN-D01-USRCHKKBN-G
+           MOVE    WRK-CMB-IDX         TO  SPA-NAI-D01-USRCHKKBN-SEL
+                                           IDX-CMB
+      *
+           IF    ( WRK-MCP-WIDGET      =   "USRCHKKBN" )
+             AND ( IDX-CMB            >    ZERO )
+               PERFORM VARYING IDX0    FROM    1   BY  1
+                       UNTIL ( IDX0    >   DTCHKKOMOKU-MAX )
+                   MOVE    SPA-NAI-D01-USRCHKKBN (IDX-CMB IDX0)
+                                       TO  SPA-GMN-D01-CHKKBN (IDX0)
+               END-PERFORM
+      *
+               MOVE    SPA-NAI-D01-USRINGAIPROCKBN(IDX-CMB)
+                                       TO  SPA-GMN-D01-INGAIPROCKBN
+      *
+           END-IF
+      *
+           .
+       4101-USRCHKKBN-CHK-EXT.
+           EXIT.
+      *****************************************************************
       *    チェック項目チェック
       *****************************************************************
        4101-CHKKBN-CHK-SEC             SECTION.
@@ -1666,12 +1875,6 @@
            MOVE    SPA-GMN-D01-CHKKBN (IDXA)
                                        TO  WRK-CMB-CD
            PERFORM 4200-CHKKBNLST-CHK-SEC
-           IF    ( WRK-CMB-ITM         =   SPACE )
-               MOVE    WRK-ERR-CUR     TO  SPA-GMN-D01-CUR
-               MOVE    "0002"          TO  SPA-ERRCD
-               GO  TO  4101-CHKKBN-CHK-EXT
-           END-IF
-      *
            MOVE    WRK-CMB-ITM         TO  SPA-GMN-D01-CHKKBN-G (IDXA)
       *
            .
@@ -1862,6 +2065,156 @@
        440-KAKUNIN-ALL-EXT.
            EXIT.
       *****************************************************************
+      *    ユーザー確認項目削除処理
+      *****************************************************************
+       450-USRCHKKBN-DEL-SEC           SECTION.
+      *
+      *    入力チェック
+           PERFORM 410-INPUT-CHK-SEC
+           IF    ( SPA-ERRCD       NOT =   SPACE )
+               GO  TO  450-USRCHKKBN-DEL-EXT
+           END-IF
+      *
+           MOVE    "3002"          TO  SPA-DIDCD
+      *
+           .
+       450-USRCHKKBN-DEL-EXT.
+           EXIT.
+      *****************************************************************
+      *    ユーザー確認項目削除処理
+      *****************************************************************
+       4501-USRCHKKBN-DEL-SEC          SECTION.
+      *
+           INITIALIZE                      CHK004-REC
+           MOVE    SPA-HOSPNUM         TO  CHK004-HOSPNUM
+           MOVE    "2002"              TO  CHK004-KANRICD
+           MOVE    SPA-GMN-D01-USRCHKKBN
+                                       TO  CHK004-KBNCD
+           MOVE    "00000000"          TO  CHK004-STYUKYMD
+           MOVE    "99999999"          TO  CHK004-EDYUKYMD
+           MOVE    CHK004-REC          TO  MCPDATA-REC
+           MOVE    "tbl_chk004"        TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 910-DBDELETE-SEC
+           IF    ( MCP-RC          NOT =   ZERO )
+                   MOVE    "4009"      TO  SPA-ERRCD
+           END-IF
+      *
+           INITIALIZE                  WRK-KBNCD-G
+      *
+           PERFORM 800-MCNDATE-SEC
+      *
+           INITIALIZE                  CHK004-REC
+           MOVE    SPA-HOSPNUM     TO  CHK004-HOSPNUM
+           MOVE    "2002"          TO  CHK004-KANRICD
+           MOVE    "%"             TO  CHK004-KBNCD
+           MOVE    SPA-SYSYMD      TO  CHK004-STYUKYMD
+                                       CHK004-EDYUKYMD
+           PERFORM 900-CHK004-KEY7-SEL-SEC
+      *
+           PERFORM UNTIL ( FLG-CHK004  NOT =   ZERO )
+                    OR   ( SPA-ERRCD   NOT =   SPACE )
+      *
+               COMPUTE WRK-KBNCD-NUM   =   WRK-KBNCD-NUM  +   1
+      *
+               IF    ( CHK004-KBNCD    NOT =   WRK-KBNCD-G )
+                   MOVE    CHK004-KEY      TO  CHK004-UPDKEY
+                   MOVE    WRK-KBNCD-G     TO  CHK004-KBNCD
+                   MOVE    SMCNDATE-YMD    TO  CK4-2002-UPYMD
+                   MOVE    SMCNDATE-HMS    TO  CK4-2002-UPHMS
+      *
+                   MOVE    CHK004-REC      TO  MCPDATA-REC
+                   MOVE    "tbl_chk004"    TO  MCP-TABLE
+                   MOVE    "upd1"          TO  MCP-PATHNAME
+                   PERFORM 910-DBUPDATE-SEC
+                   IF    ( MCP-RC          NOT =   ZERO )
+                       MOVE    "4010"      TO  SPA-ERRCD
+                   END-IF
+               END-IF
+      *
+               PERFORM 900-CHK004-KEY7-FET-SEC
+      *
+           END-PERFORM
+      *
+           MOVE    "tbl_chk004"    TO  MCP-TABLE
+           MOVE    "key7"          TO  MCP-PATHNAME
+           PERFORM 910-DBCLOSECURSOR-SEC
+      *
+           IF    ( SPA-ERRCD           =   SPACE )
+               PERFORM 3101-USRCHKKBNLST-HEN-SEC
+               MOVE    SPACE       TO  SPA-GMN-D01-USRCHKKBN-G
+           END-IF
+      *
+           .
+       4501-USRCHKKBN-DEL-EXT.
+           EXIT.
+      *****************************************************************
+      *    ユーザー確認項目変更処理
+      *****************************************************************
+       460-USRCHKKBN-UPD-SEC           SECTION.
+      *
+      *    入力チェック
+           PERFORM 410-INPUT-CHK-SEC
+           IF    ( SPA-ERRCD       NOT =   SPACE )
+               GO  TO  460-USRCHKKBN-UPD-EXT
+           END-IF
+      *
+           MOVE    "3001"          TO  SPA-DIDCD
+      *
+           .
+       460-USRCHKKBN-UPD-EXT.
+           EXIT.
+      *****************************************************************
+      *    ユーザー確認項目変更処理
+      *****************************************************************
+       4601-USRCHKKBN-UPD-SEC          SECTION.
+      *
+           PERFORM 4901-SET-ORCBSD01PARA-SEC
+      *
+           INITIALIZE                      CHK004-REC
+           MOVE    SPA-HOSPNUM         TO  CHK004-HOSPNUM
+           MOVE    "2002"              TO  CHK004-KANRICD
+           MOVE    SPA-GMN-D01-USRCHKKBN
+                                       TO  CHK004-KBNCD
+           MOVE    SPA-SYSYMD          TO  CHK004-STYUKYMD
+                                           CHK004-EDYUKYMD
+      *
+           PERFORM 900-CHK004-KEY-SEL-SEC
+           IF    ( FLG-CHK004          =   ZERO )
+               CONTINUE
+           ELSE
+               MOVE    "4007"          TO  SPA-ERRCD
+           END-IF
+      *
+           IF    ( SPA-ERRCD           =   SPACE )
+      *
+               MOVE    CHK004-REC          TO  CK4-2002-REC
+      *
+               MOVE    ORCBSD01-CHKKBN-G   TO  CK4-2002-CHKKBN-G
+               MOVE    ORCBSD01-INGAIPROCKBN
+                                           TO  CK4-2002-INGAIPROCKBN
+      *
+               PERFORM 800-MCNDATE-SEC
+               MOVE    SMCNDATE-YMD        TO  CK4-2002-UPYMD
+               MOVE    SMCNDATE-HMS        TO  CK4-2002-UPHMS
+      *
+               MOVE    CK4-2002-REC        TO  MCPDATA-REC
+               MOVE    "tbl_chk004"        TO  MCP-TABLE
+               MOVE    "key"               TO  MCP-PATHNAME
+               PERFORM 910-DBUPDATE-SEC
+               IF    ( MCP-RC          NOT =   ZERO )
+                   MOVE    "4008"          TO  SPA-ERRCD
+               END-IF
+           END-IF
+      *
+           IF    ( SPA-ERRCD           =   SPACE )
+               PERFORM 3101-USRCHKKBNLST-HEN-SEC
+           END-IF
+      *
+           .
+       4601-USRCHKKBN-UPD-EXT.
+           EXIT.
+      *****************************************************************
       *    再印刷処理
       *****************************************************************
        450-REPRINT-SEC                 SECTION.
@@ -1894,6 +2247,54 @@
        450-REPRINT-EXT.
            EXIT.
       *****************************************************************
+      *    確認項目保存画面遷移処理
+      *****************************************************************
+       440-D03-SENI-SEC                SECTION.
+      *
+      *    入力チェック
+           PERFORM 410-INPUT-CHK-SEC
+           IF    ( SPA-ERRCD       NOT =   SPACE )
+               GO  TO  460-D02-SENI-EXT
+           END-IF
+      *
+           PERFORM 4901-SET-ORCBSD01PARA-SEC
+      *
+           PERFORM 4901-SET-D01-INF-SEC
+      *
+           MOVE    SPA-D01KYOUTU       TO  SPA-WORK
+           MOVE    SPA-AREA            TO  SPA-COMMON
+           MOVE    SPA-D01             TO  SPA-FREE
+      *
+           MOVE    "LINK"          TO  MCP-STATUS
+           MOVE    SPACE           TO  MCP-EVENT
+      *
+           CALL    "ORCGD03"       USING
+                                       MCPAREA
+                                       SPAAREA
+                                       LINKAREA
+                                       SCRAREA
+      *
+           MOVE    SPA-COMMON          TO  SPA-AREA.
+           MOVE    SPA-WORK            TO  SPA-D01KYOUTU
+           MOVE    SPA-FREE            TO  SPA-D01
+      *
+           MOVE    "NAME"              TO  MCP-WIDGET
+      *
+           MOVE    "D01"                   TO  SPA-MOTOPG
+           MOVE    "D03"                   TO  SPA-SAKIPG
+      *
+           MOVE    "NEW"                   TO  MCP-PUTTYPE.
+           MOVE    "D03    "               TO  MCP-WINDOW.
+      *
+           PERFORM 900-PUT-WINDOW.
+      *
+           MOVE    1                   TO  FLG-END
+      *
+           .
+      *
+       440-D03-SENI-EXT.
+           EXIT.
+      *****************************************************************
       *    患者選択処理
       *****************************************************************
        460-D02-SENI-SEC                SECTION.
@@ -1917,28 +2318,7 @@
       *
            PERFORM 4901-SET-ORCBSD01PARA-SEC
       *
-           INITIALIZE                          SPA-D01-INF-AREA
-           MOVE    SPA-NAI-D01-KBTUSER     TO  SPA-D01-KBTUSER
-           MOVE    ORCBSD01-IKTKBT         TO  SPA-D01-IKTKBT
-           MOVE    ORCBSD01-SRYYM          TO  SPA-D01-SRYYM
-           MOVE    ORCBSD01-NYUGAIKBN      TO  SPA-D01-NYUGAIKBN
-           PERFORM VARYING IDX0    FROM    1   BY  1
-                   UNTIL ( IDX0    >   DTCHKKOMOKU-MAX )
-               MOVE    ORCBSD01-CHKKBN (IDX0)
-                                           TO  SPA-D01-CHKKBN (IDX0)
-      *
-           END-PERFORM
-      *
-           MOVE    ORCBSD01-SYAHOPROCKBN   TO  SPA-D01-SYAHOPROCKBN
-           MOVE    ORCBSD01-KOKUHOPROCKBN  TO  SPA-D01-KOKUHOPROCKBN
-           MOVE    ORCBSD01-RSIPROCKBN     TO  SPA-D01-RSIPROCKBN
-           MOVE    ORCBSD01-JBIPROCKBN     TO  SPA-D01-JBIPROCKBN
-           MOVE    ORCBSD01-JIHIPROCKBN    TO  SPA-D01-JIHIPROCKBN
-           MOVE    ORCBSD01-INGAIPROCKBN   TO  SPA-D01-INGAIPROCKBN
-           MOVE    ORCBSD01-PRTSRTKBN      TO  SPA-D01-PRTSRTKBN
-           MOVE    ORCBSD01-SRYYMDKBN      TO  SPA-D01-SRYYMDKBN
-           MOVE    ORCBSD01-STSRYYMD       TO  SPA-D01-STSRYYMD
-           MOVE    ORCBSD01-EDSRYYMD       TO  SPA-D01-EDSRYYMD
+           PERFORM 4901-SET-D01-INF-SEC
       *
            MOVE    "D01"                   TO  SPA-MOTOPG
            MOVE    "D02"                   TO  SPA-SAKIPG
@@ -2255,6 +2635,7 @@
            IF    ( IDX-CMB     <=  SPA-GMN-D01-NYUGAIKBN-MAX )
                MOVE    SPA-GMN-D01-NYUGAIKBNLST (IDX-CMB)
                                        TO  WRK-CMB-ITM
+               MOVE    IDX-CMB         TO  WRK-CMB-IDX
            END-IF
       *
            .
@@ -2276,6 +2657,7 @@
       *
                    MOVE    SPA-GMN-D01-PRTSRTKBNLST (IDX-CMB)
                                    TO  WRK-CMB-ITM
+                   MOVE    IDX-CMB TO  WRK-CMB-IDX
       *
                END-IF
       *
@@ -2302,10 +2684,36 @@
            IF    ( IDX-CMB     <=  SPA-GMN-D01-CHKKBN-MAX )
                MOVE    SPA-GMN-D01-CHKKBNLST (IDX-CMB)
                                        TO  WRK-CMB-ITM
+               MOVE    IDX-CMB         TO  WRK-CMB-IDX
            END-IF
       *
            .
        4200-CHKKBNLST-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    ユーザー確認項目コンボチェック処理
+      *****************************************************************
+       4200-USRCHKKBNLST-CHK-SEC       SECTION.
+      *
+           INITIALIZE                  WRK-CMB-ITM-G
+      *
+           PERFORM VARYING IDX-CMB FROM    1   BY  1
+                   UNTIL ( IDX-CMB     >   SPA-GMN-D01-USRCHKKBN-MAX )
+                    OR   ( WRK-CMB-ITM NOT =   SPACE )
+      *
+               IF    ( SPA-GMN-D01-USRCHKKBNL (IDX-CMB)
+                                   =   WRK-CMB-CD )
+      *
+                   MOVE    SPA-GMN-D01-USRCHKKBNLST (IDX-CMB)
+                                   TO  WRK-CMB-ITM
+                   MOVE    IDX-CMB TO  WRK-CMB-IDX
+      *
+               END-IF
+      *
+           END-PERFORM
+      *
+           .
+       4200-USRCHKKBNLST-CHK-EXT.
            EXIT.
       *****************************************************************
       *    院外処方の処理項目コンボチェック処理
@@ -2326,6 +2734,7 @@
            IF    ( IDX-CMB     <=  SPA-GMN-D01-INGAIPROCKBN-MAX )
                MOVE    SPA-GMN-D01-INGAIPROCKBNLST (IDX-CMB)
                                        TO  WRK-CMB-ITM
+               MOVE    IDX-CMB         TO  WRK-CMB-IDX
            END-IF
       *
            .
@@ -2407,6 +2816,22 @@
            MOVE    SPA-GMN-D01-STSRYYMD    TO  D01-STSRYYMD
            MOVE    SPA-GMN-D01-EDSRYYMD    TO  D01-EDSRYYMD
       *
+      *    ユーザー確認項目
+           MOVE    SPA-GMN-D01-USRCHKKBN-G
+                                           TO  D01-USRCHKKBN
+      *
+      *    ユーザー確認項目コンボ
+           MOVE    SPA-GMN-D01-USRCHKKBN-MAX
+                                           TO  D01-USRCHKKBN-COUNT
+      *
+           PERFORM VARYING IDXA    FROM    1   BY  1
+                   UNTIL ( IDXA    >   SPA-GMN-D01-USRCHKKBN-MAX )
+      *
+               MOVE    SPA-GMN-D01-USRCHKKBNLST (IDXA)
+                                           TO  D01-USRCHKKBN-ITEM (IDXA)
+      *
+           END-PERFORM
+      *
            PERFORM VARYING IDXA    FROM    1   BY  1
                    UNTIL ( IDXA    >   DTCHKKOMOKU-MAX )
       *
@@ -2484,7 +2909,10 @@
       *****************************************************************
        500-GMNHEN-STATE-EDIT-SEC       SECTION.
       *
-           MOVE    WIDGET-NORMAL       TO  D01-CHK-SRYYMD-STATE
+           MOVE    WIDGET-NORMAL       TO  D01-B05S-STATE
+                                           D01-B06S-STATE
+                                           D01-B07S-STATE
+                                           D01-CHK-SRYYMD-STATE
                                            D01-STSRYYMD-STATE
                                            D01-EDSRYYMD-STATE
       *
@@ -2497,6 +2925,11 @@
            IF    ( SPA-GMN-D01-CHK-SRYYMD  =   "F" )
                MOVE    WIDGET-INSENSITIVE  TO  D01-STSRYYMD-STATE
                                                D01-EDSRYYMD-STATE
+           END-IF
+      *
+           IF    ( SPA-NAI-D01-USRCHKKBN-SEL   =    ZERO )
+               MOVE    WIDGET-INSENSITIVE  TO  D01-B05S-STATE
+                                               D01-B06S-STATE
            END-IF
       *
            .
@@ -2575,6 +3008,8 @@
                MOVE    "STSRYYMD"      TO  MCP-WIDGET
            WHEN    108
                MOVE    "EDSRYYMD"      TO  MCP-WIDGET
+           WHEN    109
+               MOVE    "USRCHKKBN"     TO  MCP-WIDGET
            WHEN    212
                MOVE    "B12"           TO  MCP-WIDGET
            END-EVALUATE
@@ -2592,7 +3027,7 @@
            WHEN    "SRYYM"
                MOVE    02              TO  SPA-GMN-D01-CUR
            WHEN    "NYUGAIKBN"
-               MOVE    101             TO  SPA-GMN-D01-CUR
+               MOVE    109             TO  SPA-GMN-D01-CUR
            WHEN    "CHKKBN01"
                MOVE    04              TO  SPA-GMN-D01-CUR
            WHEN    "CHKKBN02"
@@ -2637,17 +3072,19 @@
            WHEN    "CHK_RSIJBI"
                MOVE    104             TO  SPA-GMN-D01-CUR
            WHEN    "CHK_JIHI"
-               MOVE    003             TO  SPA-GMN-D01-CUR
+               MOVE    106             TO  SPA-GMN-D01-CUR
            WHEN    "INGAIPROCKBN"
                MOVE    212             TO  SPA-GMN-D01-CUR
            WHEN    "PRTSRTKBN"
-               MOVE    106             TO  SPA-GMN-D01-CUR
+               MOVE    003             TO  SPA-GMN-D01-CUR
            WHEN    "CHK_SRYYMD"
                MOVE    107             TO  SPA-GMN-D01-CUR
            WHEN    "STSRYYMD"
                MOVE    108             TO  SPA-GMN-D01-CUR
            WHEN    "EDSRYYMD"
-               MOVE    003             TO  SPA-GMN-D01-CUR
+               MOVE    105             TO  SPA-GMN-D01-CUR
+           WHEN    "USRCHKKBN"
+               MOVE    101             TO  SPA-GMN-D01-CUR
            END-EVALUATE
       *
            .
@@ -2674,7 +3111,7 @@
       *
            IF    ( SPA-GMN-D01-CUR     =   108 )
                IF    ( D01-EDSRYYMD-STATE      =   WIDGET-INSENSITIVE )
-                   MOVE    003         TO  SPA-GMN-D01-CUR
+                   MOVE    105         TO  SPA-GMN-D01-CUR
                END-IF
            END-IF
       *
@@ -2755,6 +3192,12 @@
            MOVE    SPACE               TO  WRK-DIDMSG
       *
            EVALUATE    SPA-DIDCD
+           WHEN    "3001"
+               MOVE    "登録されている確認項目の設定を変更します"
+                                       TO  WRK-DIDMSG
+           WHEN    "3002"
+               MOVE    "登録されている確認項目の設定を削除します"
+                                       TO  WRK-DIDMSG
            WHEN    "6666"
                MOVE    "処理中です"    TO  WRK-DIDMSG
            END-EVALUATE
@@ -2996,6 +3439,31 @@
       *****************************************************************
       *    チェックマスタ４検索処理
       *****************************************************************
+       900-CHK004-KEY-SEL-SEC          SECTION.
+      *
+           MOVE    ZERO            TO  FLG-CHK004
+      *
+           MOVE    CHK004-REC      TO  MCPDATA-REC
+           MOVE    "tbl_chk004"    TO  MCP-TABLE
+           MOVE    "key"           TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF    ( MCP-RC          =   ZERO )
+               MOVE    MCPDATA-REC TO  CHK004-REC
+           ELSE
+               INITIALIZE              CHK004-REC
+               MOVE    1           TO  FLG-CHK004
+           END-IF
+      *
+           MOVE    "tbl_chk004"    TO  MCP-TABLE
+           MOVE    "key"           TO  MCP-PATHNAME
+           PERFORM 910-DBCLOSECURSOR-SEC
+      *
+           .
+       900-CHK004-KEY-SEL-EXT.
+           EXIT.
+      *****************************************************************
+      *    チェックマスタ４検索処理
+      *****************************************************************
        900-CHK004-KEY7-SEL-SEC         SECTION.
       *
            MOVE    ZERO            TO  FLG-CHK004
@@ -3111,6 +3579,21 @@
            .
       *
        910-DBINSERT-EXT.
+           EXIT.
+      *****************************************************************
+      *    ＤＢＵＰＤＡＴＥ処理
+      *****************************************************************
+       910-DBUPDATE-SEC                SECTION.
+      *
+           MOVE    "DBUPDATE"      TO  MCP-FUNC
+           CALL    "ORCDBMAIN"         USING
+                                       MCPAREA
+                                       MCPDATA-REC
+                                       SPA-AREA
+      *
+           .
+      *
+       910-DBUPDATE-EXT.
            EXIT.
       *****************************************************************
       *    排他制御処理
