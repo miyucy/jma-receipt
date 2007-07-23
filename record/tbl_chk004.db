@@ -167,3 +167,31 @@ path	key7		{
 	};
 };
 
+path	key8		{ 	
+	DBSELECT	{
+		DECLARE tbl_chk004_key8_csr CURSOR FOR
+		SELECT *
+		FROM tbl_chk004
+			WHERE   HOSPNUM  =   :HOSPNUM 
+			AND	KANRICD      =   :KANRICD
+			AND	STYUKYMD     <=  :STYUKYMD
+			AND	EDYUKYMD     >=  :EDYUKYMD
+			ORDER	BY UPYMD DESC,UPHMS DESC
+		;
+	};
+};
+
+path	key9		{ 	
+	DBSELECT	{
+		DECLARE tbl_chk004_key9_csr CURSOR FOR
+		SELECT *
+		FROM tbl_chk004
+			WHERE   HOSPNUM      =   :HOSPNUM 
+			AND	KANRICD      =   :KANRICD 
+			AND KBNCD				LIKE :KBNCD
+			AND	STYUKYMD     <=  :STYUKYMD
+			AND	EDYUKYMD     >=  :EDYUKYMD
+			ORDER	BY KBNCD DESC
+		;
+	};
+};
