@@ -4465,6 +4465,44 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN    "2416"
                    MOVE    "老齢福祉年金受給者証区分入力エラー"
                                                TO  SPA-ERRMSG
+               WHEN    "2417"
+                   STRING  "低所得者２ 認定範囲入力エラー"
+                                               DELIMITED  BY  SIZE
+                                               INTO  SPA-ERRMSG
+                   END-STRING
+               WHEN    "2418"
+                   STRING  "低所得者２ 標準負担額減額開始日エラー"
+                                               DELIMITED  BY  SIZE
+                                               INTO  SPA-ERRMSG
+                   END-STRING
+               WHEN    "2419"
+                   STRING  "標準負担額減額開始日は低所得２の"
+                           "範囲内で入力して下さい"
+                                               DELIMITED  BY  SIZE
+                                               INTO  SPA-ERRMSG
+                   END-STRING
+               WHEN    "2420"
+                   STRING  "低所得者１ 認定範囲入力エラー"
+                                               DELIMITED  BY  SIZE
+                                               INTO  SPA-ERRMSG
+                   END-STRING
+               WHEN    "2421"
+                   STRING  "低所得者１ 標準負担額減額開始日エラー"
+                                               DELIMITED  BY  SIZE
+                                               INTO  SPA-ERRMSG
+                   END-STRING
+               WHEN    "2422"
+                   STRING  "標準負担額減額開始日は低所得２の"
+                           "範囲内で入力して下さい"
+                                               DELIMITED  BY  SIZE
+                                               INTO  SPA-ERRMSG
+                   END-STRING
+               WHEN    "2423"
+                   STRING  "標準負担額減額開始日≦長期入院該当年月日で"
+                           "入力して下さい。"
+                                               DELIMITED  BY  SIZE
+                                               INTO  SPA-ERRMSG
+                   END-STRING
       *
                WHEN    "2430"
                    MOVE    "公費負担選択番号入力エラー"

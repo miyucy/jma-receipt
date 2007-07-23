@@ -1283,6 +1283,23 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    "0 痰し"            TO  SPA-GMN24-FUKUSHI-LST (1)
            MOVE    "1 铜り"            TO  SPA-GMN24-FUKUSHI-LST (2)
            MOVE    2                   TO  SPA-GMN24-FUKUSHI-MAX
+      *
+      *    疥评荚２∈千年认跋∷
+           MOVE    "0 すべて滦据"
+                                       TO  SPA-GMN24-TSYTEKKBN-LST (1)
+           MOVE    "1 孟数给锐は滦据嘲"
+                                       TO  SPA-GMN24-TSYTEKKBN-LST (2)
+           MOVE    "2 孟数给锐のみ滦据"
+                                       TO  SPA-GMN24-TSYTEKKBN-LST (3)
+           MOVE    3                   TO  SPA-GMN24-TSYTEKKBN-MAX
+      *    疥评荚１∈千年认跋∷
+           MOVE    "0 すべて滦据"
+                                       TO  SPA-GMN24-TNKTEKKBN-LST (1)
+           MOVE    "1 孟数给锐は滦据嘲"
+                                       TO  SPA-GMN24-TNKTEKKBN-LST (2)
+           MOVE    "2 孟数给锐のみ滦据"
+                                       TO  SPA-GMN24-TNKTEKKBN-LST (3)
+           MOVE    3                   TO  SPA-GMN24-TNKTEKKBN-MAX
            .
        1005-COMB-SET-EXT.
            EXIT.
@@ -3478,6 +3495,10 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                  MOVE    SPA-GMN24-TFUKUSHI-MEI (IDX)
                                            TO  P02-P024-TNKLFUKUSHI
                                                            (IDY)
+                 MOVE    SPA-GMN24-TNKLNINYMD (IDX)
+                                           TO  P02-P024-TNKLNINYMD(IDY)
+                 MOVE    SPA-GMN24-TNKLHKNKBN (IDX)
+                                           TO  P02-P024-TNKLHKNKBN(IDY)
       *
                  IF      IDX           =   SPA-NAI24-TNKSELNUM
                      MOVE    "T"           TO  P02-P024-TNKLIST-SELECT
@@ -3492,6 +3513,16 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPA-GMN24-TNKSELNUM TO  P02-P024-TNKSELNUM
            MOVE    SPA-GMN24-TNKSTYMDW TO  P02-P024-TNKSTYMD
            MOVE    SPA-GMN24-TNKEDYMDW TO  P02-P024-TNKEDYMD
+      *
+           MOVE    SPA-GMN24-TNKNINSTYMD   TO  P02-P024-TNKNINSTYMD
+           MOVE    SPA-GMN24-TNKTEKKBN-G   TO  P02-P024-TNKTEKK
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                    UNTIL      IDX     >   SPA-GMN24-TNKTEKKBN-MAX
+               MOVE    SPA-GMN24-TNKTEKKBN-LST (IDX)
+                                           TO  P02-P024-TNKTEKK-ITEM
+                                                                   (IDX)
+           END-PERFORM
+           MOVE    SPA-GMN24-TNKTEKKBN-MAX   TO  P02-P024-TNKTEKK-COUNT
       *
            MOVE    SPA-GMN24-FUKUSHI-G TO  P02-P024-FUKUSHI
            PERFORM VARYING     IDX     FROM    1   BY  1
@@ -3519,6 +3550,10 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                  MOVE    SPA-GMN24-TSYLSKJGNSTYMDW (IDX)
                                            TO  P02-P024-TSYLSKJGNSTYMD
                                                            (IDY)
+                 MOVE    SPA-GMN24-TSYLNINYMD (IDX)
+                                           TO  P02-P024-TSYLNINYMD(IDY)
+                 MOVE    SPA-GMN24-TSYLHKNKBN (IDX)
+                                           TO  P02-P024-TSYLHKNKBN(IDY)
       *
                  IF      IDX           =   SPA-NAI24-TSYSELNUM
                      MOVE    "T"           TO  P02-P024-TSYLIST-SELECT
@@ -3535,6 +3570,16 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPA-GMN24-TSYEDYMDW TO  P02-P024-TSYEDYMD
            MOVE    SPA-GMN24-TSYSKJGNSTYMDW
                                        TO  P02-P024-TSYSKJGNSTYMD
+      *
+           MOVE    SPA-GMN24-TSYNINSTYMD   TO  P02-P024-TSYNINSTYMD
+           MOVE    SPA-GMN24-TSYTEKKBN-G   TO  P02-P024-TSYTEKK
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                    UNTIL      IDX     >   SPA-GMN24-TSYTEKKBN-MAX
+               MOVE    SPA-GMN24-TSYTEKKBN-LST (IDX)
+                                           TO  P02-P024-TSYTEKK-ITEM
+                                                                   (IDX)
+           END-PERFORM
+           MOVE    SPA-GMN24-TSYTEKKBN-MAX   TO  P02-P024-TSYTEKK-COUNT
       *
       *    给锐砷么
            MOVE    ZERO                TO  IDY

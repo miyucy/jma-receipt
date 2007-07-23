@@ -40,6 +40,7 @@
       *  02.00.06    NACL-Â¿¡¹Ç¼  06/03/10  Àº¿ÀÄÌ±¡¡¢Ì¾¾ÎÊÑ¹¹ÂÐ±þ
       *  03.02.00    NACL-Â¿¡¹Ç¼  06/09/07  Ï·ÎðÊ¡»ãÇ¯¶â¼õµë¾ÚÄÉ²Ã
       *  03.05.00    NACL-Â¿¡¹Ç¼  07/05/XX  ¥°¥ë¡¼¥×¿ÇÎÅÂÐ±þ
+      *  03.05.01    NACL-Â¿¡¹Ç¼  07/07/20  Ç§Äê¾ðÊóÄÉ²ÃÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -142,6 +143,19 @@
            03  WRK-FTN1-IDX            PIC 9(04).
       *
            03  WRK-FILEMEI             PIC X(20).
+      *
+      *    Ç§ÄêÈÏ°Ï¶èÊ¬ÊÔ½¸½èÍý
+           03  WRK-HKNTEKKBN-MEI       PIC X(12).
+           03  WRK-HKNTEKKBN           PIC X(01).
+           03  IDX-TEK                 PIC 9(04).
+      *
+      *    Ç§ÄêÈÏ°Ï°ìÍ÷É½¼¨
+       01  TBL-HKNTEKKBN-AREA.
+           03  FILLER              PIC X(14)   VALUE   "0 Á´ÂÐ¾Ý".
+           03  FILLER              PIC X(14)   VALUE   "1 ÃÏÂÐ¾Ý³°".
+           03  FILLER              PIC X(14)   VALUE   "2 ÃÏ¤Î¤ßÂÐ¾Ý".
+       01  TBL-HKNTEKKBN-AREAR     REDEFINES   TBL-HKNTEKKBN-AREA.
+           03  TBL-HKNTEKKBN-G     PIC X(14)   OCCURS   3.
       *
        01  WRK-HENSYU-AREA.
            03  WRK-HENYMD.
@@ -449,6 +463,29 @@
                    MOVE    WRK-HENYMD    TO  SPA-GMN24-TSYLSKJGNSTYMDW
                                                                 (IDX)
                END-IF
+      *        É¸½àÉéÃ´³Û¸º³Û³«»ÏÆü
+               MOVE    LNK-TSY-SKJNINSTYMD (IDX)
+                                          TO  SPA-NAI24-TSYLNINYMD
+                                                                  (IDX)
+               MOVE    LNK-TSY-SKJNINSTYMD (IDX) TO  WRK-SYMD
+               IF      WRK-SYMD            =   SPACE
+                   MOVE    SPACE           TO  SPA-GMN24-TSYLNINYMD
+                                                           (IDX)(1:7)
+               ELSE
+                   PERFORM 410112-SE-WAFORMAT-YMDEDIT-SEC
+                   MOVE    WRK-HENYMD      TO  SPA-GMN24-TSYLNINYMD
+                                                                (IDX)
+               END-IF
+      *        Ç§ÄêÈÏ°Ï¶èÊ¬
+               IF      LNK-TSY-HKNTEKKBN (IDX) =   SPACE
+                   MOVE    "0"             TO  LNK-TSY-HKNTEKKBN (IDX)
+               END-IF
+               MOVE    LNK-TSY-HKNTEKKBN (IDX) TO  SPA-NAI24-TSYLHKNKBN
+                                                                (IDX)
+               MOVE    SPA-NAI24-TSYLHKNKBN(IDX)   TO  WRK-HKNTEKKBN
+               PERFORM 41002-HKNTEKKBN-HEN-SEC
+               MOVE    WRK-HKNTEKKBN-MEI       TO  SPA-GMN24-TSYLHKNKBN
+                                                                (IDX)
            END-PERFORM
       *
       *    Ç¯¶âÊÔ½¸
@@ -483,6 +520,29 @@
                                         TO  SPA-GMN24-TFUKUSHI-MEI(IDX)
                    END-IF
                END-PERFORM
+      *        É¸½àÉéÃ´³Û¸º³Û³«»ÏÆü
+               MOVE    LNK-TNK-SKJNINSTYMD (IDX)
+                                          TO  SPA-NAI24-TNKLNINYMD
+                                                                  (IDX)
+               MOVE    LNK-TNK-SKJNINSTYMD (IDX) TO  WRK-SYMD
+               IF      WRK-SYMD            =   SPACE
+                   MOVE    SPACE           TO  SPA-GMN24-TNKLNINYMD
+                                                           (IDX)(1:7)
+               ELSE
+                   PERFORM 410112-SE-WAFORMAT-YMDEDIT-SEC
+                   MOVE    WRK-HENYMD      TO  SPA-GMN24-TNKLNINYMD
+                                                                (IDX)
+               END-IF
+      *        Ç§ÄêÈÏ°Ï¶èÊ¬
+               IF      LNK-TNK-HKNTEKKBN (IDX) =   SPACE
+                   MOVE    "0"             TO  LNK-TNK-HKNTEKKBN (IDX)
+               END-IF
+               MOVE    LNK-TNK-HKNTEKKBN (IDX) TO  SPA-NAI24-TNKLHKNKBN
+                                                                (IDX)
+               MOVE    SPA-NAI24-TNKLHKNKBN(IDX)   TO  WRK-HKNTEKKBN
+               PERFORM 41002-HKNTEKKBN-HEN-SEC
+               MOVE    WRK-HKNTEKKBN-MEI       TO  SPA-GMN24-TNKLHKNKBN
+                                                                (IDX)
            END-PERFORM
       *
       *TEST
@@ -537,6 +597,24 @@
       *TEST
            .
        31O-SPASET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    Ç§ÄêÈÏ°Ï¶èÊ¬ÊÔ½¸½èÍý
+      *****************************************************************
+       41002-HKNTEKKBN-HEN-SEC              SECTION.
+      *
+           MOVE    SPACE               TO  WRK-HKNTEKKBN-MEI
+           PERFORM VARYING     IDX-TEK     FROM    1   BY  1
+                   UNTIL       IDX-TEK     >   3
+               IF      WRK-HKNTEKKBN       =   TBL-HKNTEKKBN-G(IDX-TEK)
+                                                              (1:1)
+                   MOVE    TBL-HKNTEKKBN-G (IDX-TEK)
+                                           TO  WRK-HKNTEKKBN-MEI
+               END-IF
+           END-PERFORM
+           .
+       41002-HKNTEKKBN-HEN-EXT.
            EXIT.
       *
       *****************************************************************
@@ -665,6 +743,10 @@
                    MOVE    "P024_TSYEDYMD"      TO  MCP-WIDGET
                WHEN    04
                    MOVE    "P024_TSYSKJGNSTYMD"      TO  MCP-WIDGET
+               WHEN    05
+                   MOVE    "P024_TSYTEKK"      TO  MCP-WIDGET
+               WHEN    06
+                   MOVE    "P024_TSYNINSTYMD"   TO  MCP-WIDGET
                WHEN    08
                    MOVE    "BT1"                TO  MCP-WIDGET
                WHEN    09
@@ -678,6 +760,10 @@
                    MOVE    "P024_TNKEDYMD"      TO  MCP-WIDGET
                WHEN    13
                    MOVE    "P024_FUKUSHI"       TO  MCP-WIDGET
+               WHEN    14
+                   MOVE    "P024_TNKTEKK"      TO  MCP-WIDGET
+               WHEN    15
+                   MOVE    "P024_TNKNINSTYMD"   TO  MCP-WIDGET
                WHEN    18
                    MOVE    "BN1"                TO  MCP-WIDGET
                WHEN    19
@@ -717,9 +803,14 @@
                WHEN    "P024_TSYSTYMD"
                    MOVE    3           TO  SPA-GMN24-CUR
                WHEN    "P024_TSYEDYMD"
-                   MOVE    4           TO  SPA-GMN24-CUR
+      *D           MOVE    4           TO  SPA-GMN24-CUR
+                   MOVE    5           TO  SPA-GMN24-CUR
                WHEN    "P024_TSYSKJGNSTYMD"
                    MOVE    8            TO  SPA-GMN24-CUR
+               WHEN    "P024_TSYTEKK"
+                   MOVE    6           TO  SPA-GMN24-CUR
+               WHEN    "P024_TSYNINSTYMD"
+                   MOVE    4           TO  SPA-GMN24-CUR
       *
                WHEN    "P024_TNKLIST"
                    MOVE    11          TO  SPA-GMN24-CUR
@@ -728,9 +819,14 @@
                WHEN    "P024_TNKSTYMD"
                    MOVE    12          TO  SPA-GMN24-CUR
                WHEN    "P024_TNKEDYMD"
-                   MOVE    13          TO  SPA-GMN24-CUR
+      *D           MOVE    13          TO  SPA-GMN24-CUR
+                   MOVE    14          TO  SPA-GMN24-CUR
                WHEN    "P024_FUKUSHI"
                    MOVE    18          TO  SPA-GMN24-CUR
+               WHEN    "P024_TNKTEKK"
+                   MOVE    15          TO  SPA-GMN24-CUR
+               WHEN    "P024_TNKNINSTYMD"
+                   MOVE    13          TO  SPA-GMN24-CUR
       *        ¸øÈñÉéÃ´
                WHEN    "P024_FTNSELNUM"
                    MOVE    31          TO  SPA-GMN24-CUR
@@ -828,6 +924,16 @@
                                        TO  SPA-GMN24-TSYLSKJGNSTYMD
                                                                 (IDX)
       *
+           MOVE    SPA-GMN24-TSYNINSTYMD
+                                       TO  SPA-GMN24-TSYLNINYMD (IDX)
+           MOVE    SPA-NAI24-TSYNINSTYMD
+                                       TO  SPA-NAI24-TSYLNINYMD (IDX)
+           MOVE    SPA-GMN24-TSYTEKKBN
+                                       TO  SPA-NAI24-TSYLHKNKBN (IDX)
+           MOVE    SPA-GMN24-TSYTEKKBN TO  WRK-HKNTEKKBN
+           PERFORM 41002-HKNTEKKBN-HEN-SEC
+           MOVE    WRK-HKNTEKKBN-MEI   TO  SPA-GMN24-TSYLHKNKBN (IDX)
+      *
            INITIALIZE                  SPA-GMN24-TSYS-AREA
       *
            MOVE    1                   TO  SPA-GMN24-CUR
@@ -885,9 +991,7 @@
                ADD     1               TO  SPA-TNK-MAX
                IF  SPA-TNK-MAX         >   20
                    MOVE   "0008"       TO  SPA-ERRCD
-      *----(01.00.01) LINE ADD START --------------------------------
                    MOVE    10          TO  SPA-GMN24-CUR
-      *----(01.00.01) LINE ADD END   --------------------------------
                    COMPUTE SPA-TNK-MAX =   SPA-TNK-MAX   -   1
                    GO     TO           413-TNKRRK-KOUSIN-EXT
                END-IF
@@ -903,6 +1007,16 @@
                                                                 (IDX)
            MOVE    SPA-GMN24-FUKUSHI-MEI   TO  SPA-GMN24-TFUKUSHI-MEI
                                                                 (IDX)
+      *
+           MOVE    SPA-GMN24-TNKNINSTYMD
+                                       TO  SPA-GMN24-TNKLNINYMD (IDX)
+           MOVE    SPA-NAI24-TNKNINSTYMD
+                                       TO  SPA-NAI24-TNKLNINYMD (IDX)
+           MOVE    SPA-GMN24-TNKTEKKBN
+                                       TO  SPA-NAI24-TNKLHKNKBN (IDX)
+           MOVE    SPA-GMN24-TNKTEKKBN TO  WRK-HKNTEKKBN
+           PERFORM 41002-HKNTEKKBN-HEN-SEC
+           MOVE    WRK-HKNTEKKBN-MEI   TO  SPA-GMN24-TNKLHKNKBN (IDX)
       *
            INITIALIZE                  SPA-GMN24-TNK-AREA
       *
@@ -926,7 +1040,7 @@
            PERFORM 4501-NAIBU-IDX-GET-SEC
            IF  WRK-N-IDX               =   ZERO
                MOVE    "2406"          TO  SPA-ERRCD
-               MOVE    6               TO  SPA-GMN24-CUR
+               MOVE    10              TO  SPA-GMN24-CUR
                GO      TO              414-TNKRRK-DELETE-EXT
            END-IF
            MOVE    "1"                 TO  SPA-GMN24-TNKDELKBN
@@ -1051,6 +1165,10 @@
                                    NOT =   LNK-TSY-NINEDYMD(IDX)) OR
                            ( SPA-GMN24-TSYLSKJGNSTYMD(IDX)
                                    NOT =   LNK-TSY-SKJGNSTYMD(IDX))
+                       OR  ( SPA-NAI24-TSYLNINYMD(IDX)
+                                   NOT =   LNK-TSY-SKJNINSTYMD(IDX))
+                       OR  ( SPA-NAI24-TSYLHKNKBN(IDX)
+                                   NOT =   LNK-TSY-HKNTEKKBN(IDX))
                            MOVE    SPA-SYSYMD  TO  LNK-TSY-UPYMD  (IDX)
                            MOVE    SPA-GMN24-TSYDPSTYMD (IDX)
                                            TO  LNK-TSY-NINSTYMD   (IDX)
@@ -1058,6 +1176,12 @@
                                            TO  LNK-TSY-NINEDYMD   (IDX)
                            MOVE    SPA-GMN24-TSYLSKJGNSTYMD (IDX)
                                            TO  LNK-TSY-SKJGNSTYMD (IDX)
+      *                    ¿©»öÉ¸½àÉéÃ´³Û¸º³Û³«»ÏÆü
+                           MOVE    SPA-NAI24-TSYLNINYMD (IDX)
+                                           TO  LNK-TSY-SKJNINSTYMD (IDX)
+      *                    ÊÝ¸±Å¬ÍÑ¶èÊ¬
+                           MOVE    SPA-NAI24-TSYLHKNKBN (IDX)
+                                           TO  LNK-TSY-HKNTEKKBN   (IDX)
                        END-IF
                    END-IF
                    MOVE    IDX             TO  IDY
@@ -1080,11 +1204,12 @@
                        MOVE    SPA-TERMID      TO  LNK-TSY-TERMID (IDY)
                        MOVE    SPA-SYSYMD      TO  LNK-TSY-CREYMD (IDY)
       *                ¿©»öÉ¸½àÉéÃ´³Û¸º³Û³«»ÏÆü
-                       MOVE    LNK-TSY-NINSTYMD (IDY)
+                       MOVE    SPA-NAI24-TSYLNINYMD (IDY)
                                                TO  LNK-TSY-SKJNINSTYMD
                                                                   (IDY)
       *                ÊÝ¸±Å¬ÍÑ¶èÊ¬
-                       MOVE    "0"             TO  LNK-TSY-HKNTEKKBN
+                       MOVE    SPA-NAI24-TSYLHKNKBN (IDY)
+                                               TO  LNK-TSY-HKNTEKKBN
                                                                   (IDY)
                        PERFORM 510-PARA-TSYRRK-OUT-SEC
                    END-IF
@@ -1199,11 +1324,21 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                                    NOT =   LNK-TNK-STYMD(IDX))  OR
                            (SPA-GMN24-TNKDPEDYMD(IDX)
                                    NOT =   LNK-TNK-EDYMD(IDX))
+                       OR  ( SPA-NAI24-TNKLNINYMD(IDX)
+                                   NOT =   LNK-TNK-SKJNINSTYMD(IDX))
+                       OR  ( SPA-NAI24-TNKLHKNKBN(IDX)
+                                   NOT =   LNK-TNK-HKNTEKKBN(IDX))
                          MOVE    SPA-SYSYMD  TO  LNK-TNK-UPYMD (IDX)
                          MOVE    SPA-GMN24-TNKDPSTYMD (IDX)
                                            TO  LNK-TNK-STYMD   (IDX)
                          MOVE    SPA-GMN24-TNKDPEDYMD (IDX)
                                            TO  LNK-TNK-EDYMD   (IDX)
+      *
+                         MOVE    SPA-NAI24-TNKLNINYMD (IDX)
+                                           TO  LNK-TNK-SKJNINSTYMD(IDX)
+                         MOVE    SPA-NAI24-TNKLHKNKBN (IDX)
+                                           TO  LNK-TNK-HKNTEKKBN  (IDX)
+      *
                        END-IF
       *                ¹âÎð¼ÔÊ¡»ã
                        IF  (SPA-GMN24-TFUKUSHI-KBN(IDX)
@@ -1233,11 +1368,12 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                        MOVE    SPA-TERMID      TO  LNK-TNK-TERMID (IDY)
                        MOVE    SPA-SYSYMD      TO  LNK-TNK-CREYMD (IDY)
       *                ¿©»öÉ¸½àÉéÃ´³Û¸º³Û³«»ÏÆü
-                       MOVE    LNK-TNK-STYMD (IDY)
+                       MOVE    SPA-NAI24-TNKLNINYMD (IDY)
                                                TO  LNK-TNK-SKJNINSTYMD
                                                                   (IDY)
       *                ÊÝ¸±Å¬ÍÑ¶èÊ¬
-                       MOVE    "0"             TO  LNK-TNK-HKNTEKKBN
+                       MOVE    SPA-NAI24-TNKLHKNKBN (IDY)
+                                               TO  LNK-TNK-HKNTEKKBN
                                                                   (IDY)
                        PERFORM 510-PARA-TNKRRK-OUT-SEC
                    END-IF
@@ -1967,6 +2103,8 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    P02-P024-TSYSTYMD   TO  SPA-GMN24-TSYSTYMDW
            MOVE    P02-P024-TSYEDYMD   TO  SPA-GMN24-TSYEDYMDW
            MOVE    P02-P024-TSYSKJGNSTYMD  TO  SPA-GMN24-TSYSKJGNSTYMDW
+           MOVE    P02-P024-TSYNINSTYMD    TO  SPA-GMN24-TSYNINSTYMD
+           MOVE    P02-P024-TSYTEKK        TO  SPA-GMN24-TSYTEKKBN-G
       *
       *    ÄãÇ¯¶â¡¡ÁªÂòÈÖ¹æ
            IF      P02-P024-TNKSELNUM  =   SPA-MAE24-TNKSELNUM
@@ -1978,6 +2116,8 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    P02-P024-TNKSTYMD   TO  SPA-GMN24-TNKSTYMDW
            MOVE    P02-P024-TNKEDYMD   TO  SPA-GMN24-TNKEDYMDW
            MOVE    P02-P024-FUKUSHI    TO  SPA-GMN24-FUKUSHI-G
+           MOVE    P02-P024-TNKNINSTYMD    TO  SPA-GMN24-TNKNINSTYMD
+           MOVE    P02-P024-TNKTEKK        TO  SPA-GMN24-TNKTEKKBN-G
       *
       *    ¸øÈñÉéÃ´¶â¡¡ÁªÂòÈÖ¹æ
       *****MOVE    P02-P024-FTNSELNUM2 TO  SPA-GMN24-FTNSELNUM2
@@ -2005,6 +2145,14 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            IF      SPA-ERRCD           =   SPACE
                PERFORM 41012-TSYEDYMD-SEC
            END-IF
+      *    Äã½êÆÀÇ§ÄêÈÏ°Ï
+           IF      SPA-ERRCD           =   SPACE
+               PERFORM 41012-TSYKEKKBN-SEC
+           END-IF
+      *    Äã½êÆÀ¸º³Û³«»ÏÆü
+           IF      SPA-ERRCD           =   SPACE
+               PERFORM 41012-TSYNINYMD-SEC
+           END-IF
       *    ¿©»öÉ¸½àÉéÃ´¸º³Û³«»ÏÆü
            IF      SPA-ERRCD           =   SPACE
                PERFORM 41012-TSYSKJGNSTYMD-SEC
@@ -2020,6 +2168,14 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *    ÄãÇ¯¶â½ªÎ»Ç¯·îÆü
            IF      SPA-ERRCD           =   SPACE
                PERFORM 41012-TNKEDYMD-SEC
+           END-IF
+      *    ÄãÇ¯¶âÇ§ÄêÈÏ°Ï
+           IF      SPA-ERRCD           =   SPACE
+               PERFORM 41012-TNKKEKKBN-SEC
+           END-IF
+      *    ÄãÇ¯¶â¸º³Û³«»ÏÆü
+           IF      SPA-ERRCD           =   SPACE
+               PERFORM 41012-TNKNINYMD-SEC
            END-IF
       *    ÄãÇ¯¶â¹âÎðÊ¡»ãÇ¯¶â
            IF      SPA-ERRCD           =   SPACE
@@ -2055,6 +2211,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            IF      SPA-GMN24-TSYSELNUM =   SPACE
                MOVE    SPA-GMN24-TSYSELNUM TO  SPA-MAE24-TSYSELNUM
                MOVE    ZERO                TO  SPA-NAI24-TSYSELNUM
+               MOVE    SPA-GMN24-TSYSELNUM     TO  SPA-MAE24-TSYSELNUM
                GO      TO               41012-TSYSELNUM-EXT
            END-IF
       *
@@ -2074,7 +2231,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    WRK-RENNUMZ         TO  SPA-GMN24-TSYSELNUM
            END-IF
       *
-           MOVE    SPA-GMN24-TSYSELNUM     TO  SPA-MAE24-TSYSELNUM
+      **** MOVE    SPA-GMN24-TSYSELNUM     TO  SPA-MAE24-TSYSELNUM
            IF      FLG-IN-TSYSELNUM    =   ZERO
                GO      TO      41012-TSYSELNUM-EXT
            END-IF
@@ -2092,7 +2249,11 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    SPACE            TO  SPA-GMN24-TSYEDYMD
                MOVE    SPACE            TO  SPA-GMN24-TSYSKJGNSTYMDW
                MOVE    SPACE            TO  SPA-GMN24-TSYSKJGNSTYMD
+               MOVE    SPACE            TO  SPA-GMN24-TSYNINSTYMD
+               MOVE    SPACE            TO  SPA-GMN24-TSYTEKKBN-G
            ELSE
+               MOVE    SPA-GMN24-TSYSELNUM     TO  SPA-MAE24-TSYSELNUM
+      *
                MOVE  SPA-GMN24-TSYDPSTYMDW (WRK-N-IDX)
                                         TO  SPA-GMN24-TSYSTYMDW
                MOVE  SPA-GMN24-TSYDPEDYMDW (WRK-N-IDX)
@@ -2105,6 +2266,11 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                         TO  SPA-GMN24-TSYSKJGNSTYMDW
                MOVE  SPA-GMN24-TSYLSKJGNSTYMD (WRK-N-IDX)
                                         TO  SPA-GMN24-TSYSKJGNSTYMD
+               MOVE  SPA-GMN24-TSYLNINYMD    (WRK-N-IDX)
+                                        TO  SPA-GMN24-TSYNINSTYMD
+               MOVE    SPACE            TO  SPA-GMN24-TSYTEKKBN-G
+               MOVE    SPA-NAI24-TSYLHKNKBN (WRK-N-IDX)
+                                        TO  SPA-GMN24-TSYTEKKBN
            END-IF
            .
        41012-TSYSELNUM-EXT.
@@ -2182,36 +2348,115 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    Äã½êÆÀ¼Ô¡¿¿©»öÉ¸½àÉéÃ´¸º³Û³«»ÏÆü
+      *    Äã½êÆÀ¼Ô¡¿Ç§ÄêÈÏ°Ï
+      *****************************************************************
+       41012-TSYKEKKBN-SEC           SECTION.
+      *
+           MOVE    ZERO                TO  FLG-OK
+           PERFORM VARYING     IDF     FROM    1   BY  1
+                   UNTIL       IDF     >   SPA-GMN24-TSYTEKKBN-MAX
+               IF      SPA-GMN24-TSYTEKKBN
+                                       =   SPA-GMN24-TSYTEKKBN-LST(IDF)
+                                                              (1:1)
+                   MOVE    SPA-GMN24-TSYTEKKBN-LST(IDF)
+                                            TO  SPA-GMN24-TSYTEKKBN-G
+                   MOVE    1                TO  FLG-OK
+                   MOVE    SPA-GMN24-TSYTEKKBN-MAX   TO  IDF
+               END-IF
+           END-PERFORM
+      *
+           IF      SPA-GMN24-TSYTEKKBN =   SPACE
+               CONTINUE
+           ELSE
+               IF      FLG-OK              =   ZERO
+                   MOVE    "2417"              TO  SPA-ERRCD
+                   MOVE    5                   TO  SPA-GMN24-CUR
+               END-IF
+           END-IF
+      *
+           .
+       41012-TSYKEKKBN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    Äã½êÆÀ¼Ô¡¿¸º³Û³«»ÏÆü
+      *****************************************************************
+       41012-TSYNINYMD-SEC           SECTION.
+      *
+           IF      SPA-GMN24-TSYNINSTYMD   =   SPACE
+               MOVE    SPACE               TO  SPA-NAI24-TSYNINSTYMD
+           ELSE
+      *        ÆüÉÕ²èÌÌ¥Á¥§¥Ã¥¯¥µ¥Ö
+               INITIALIZE                      ORCSGDAYAREA
+               MOVE    SPA-GMN24-TSYNINSTYMD   TO  SGDAY-INDAY
+               CALL    "ORCSGDAY"          USING
+                                           ORCSGDAYAREA
+               IF      SGDAY-RC            =   ZERO
+                   MOVE    SGDAY-OTDAY         TO  SPA-GMN24-TSYNINSTYMD
+                   MOVE    SGDAY-SDAY          TO  SPA-NAI24-TSYNINSTYMD
+               ELSE
+                   MOVE    "2418"              TO  SPA-ERRCD
+                   MOVE    6                   TO  SPA-GMN24-CUR
+               END-IF
+           END-IF
+      *
+           IF     (SPA-ERRCD               =   SPACE  )  AND
+                  (SPA-GMN24-TSYNINSTYMD   NOT =   SPACE )
+               IF     (SPA-GMN24-TSYSTYMD  <=  SPA-NAI24-TSYNINSTYMD)
+                 AND  (SPA-GMN24-TSYEDYMD  >=  SPA-NAI24-TSYNINSTYMD)
+                   CONTINUE
+               ELSE
+                   MOVE    "2419"              TO  SPA-ERRCD
+                   MOVE    6                   TO  SPA-GMN24-CUR
+               END-IF
+           END-IF
+      *
+           .
+       41012-TSYNINYMD-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    Äã½êÆÀ¼Ô¡¿Ä¹´üÆþ±¡¿©»ö¸º³Û³«»ÏÆü
       *****************************************************************
        41012-TSYSKJGNSTYMD-SEC           SECTION.
       *
            IF      SPA-GMN24-TSYSKJGNSTYMDW    =   SPACE
                MOVE    SPACE               TO  SPA-GMN24-TSYSKJGNSTYMD
-               GO      TO      41012-TSYSKJGNSTYMD-EXT
+           ELSE
+      *
+      *        ÆüÉÕ²èÌÌ¥Á¥§¥Ã¥¯¥µ¥Ö
+               INITIALIZE                      ORCSGDAYAREA
+               MOVE    SPA-GMN24-TSYSKJGNSTYMDW
+                                           TO  SGDAY-INDAY
+               CALL    "ORCSGDAY"          USING
+                                           ORCSGDAYAREA
+               IF      SGDAY-RC            =   ZERO
+                   MOVE    SGDAY-OTDAY     TO  SPA-GMN24-TSYSKJGNSTYMDW
+                   MOVE    SGDAY-SDAY      TO  SPA-GMN24-TSYSKJGNSTYMD
+               ELSE
+                   MOVE    "2413"              TO  SPA-ERRCD
+                   MOVE    4                   TO  SPA-GMN24-CUR
+               END-IF
            END-IF
       *
-      *    ÆüÉÕ²èÌÌ¥Á¥§¥Ã¥¯¥µ¥Ö
-           INITIALIZE                      ORCSGDAYAREA
-           MOVE    SPA-GMN24-TSYSKJGNSTYMDW
-                                       TO  SGDAY-INDAY
-           CALL    "ORCSGDAY"          USING
-                                       ORCSGDAYAREA
-           IF      SGDAY-RC            =   ZERO
-               MOVE    SGDAY-OTDAY         TO  SPA-GMN24-TSYSKJGNSTYMDW
-               MOVE    SGDAY-SDAY          TO  SPA-GMN24-TSYSKJGNSTYMD
-           ELSE
-               MOVE    "2413"              TO  SPA-ERRCD
-               MOVE    4                   TO  SPA-GMN24-CUR
-               GO  TO                   41012-TSYSKJGNSTYMD-EXT
+           IF     (SPA-ERRCD           =   SPACE )  AND
+                  (SPA-GMN24-TSYSKJGNSTYMD NOT =   SPACE )
+               IF     (SPA-GMN24-TSYSTYMD  <=  SPA-GMN24-TSYSKJGNSTYMD)
+                 AND  (SPA-GMN24-TSYEDYMD  >=  SPA-GMN24-TSYSKJGNSTYMD)
+                   CONTINUE
+               ELSE
+                   MOVE    "2414"              TO  SPA-ERRCD
+                   MOVE    4                   TO  SPA-GMN24-CUR
+               END-IF
            END-IF
-      *
-           IF     (SPA-GMN24-TSYSTYMD  <=  SPA-GMN24-TSYSKJGNSTYMD) AND
-                  (SPA-GMN24-TSYEDYMD  >=  SPA-GMN24-TSYSKJGNSTYMD)
-               CONTINUE
-           ELSE
-               MOVE    "2414"              TO  SPA-ERRCD
-               MOVE    4                   TO  SPA-GMN24-CUR
+           IF     (SPA-ERRCD           =   SPACE )  AND
+                  (SPA-GMN24-TSYSKJGNSTYMD NOT =   SPACE )
+      *        Ä¹´üÆþ±¡³ºÅöÆü¡ã¸º³Û³«»ÏÆü¤Ï¥¨¥é¡¼
+               IF     (SPA-NAI24-TSYNINSTYMD   =   SPACE )  OR
+                      (SPA-GMN24-TSYSKJGNSTYMD <  SPA-NAI24-TSYNINSTYMD)
+                   MOVE    "2423"          TO  SPA-ERRCD
+                   MOVE     4              TO  SPA-GMN24-CUR
+               END-IF
            END-IF
       *
            .
@@ -2225,6 +2470,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            IF  SPA-GMN24-TNKSELNUM     =   SPACE
                MOVE    SPA-GMN24-TNKSELNUM TO  SPA-MAE24-TNKSELNUM
                MOVE    ZERO                TO  SPA-NAI24-TNKSELNUM
+               MOVE    SPA-GMN24-TNKSELNUM TO  SPA-MAE24-TNKSELNUM
                GO      TO               41012-NENINSELNUM-EXT
            END-IF
       *
@@ -2244,7 +2490,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    WRK-RENNUMZ      TO  SPA-GMN24-TNKSELNUM
            END-IF
       *
-           MOVE    SPA-GMN24-TNKSELNUM TO  SPA-MAE24-TNKSELNUM
+      **** MOVE    SPA-GMN24-TNKSELNUM TO  SPA-MAE24-TNKSELNUM
            IF      FLG-IN-TNKSELNUM    =   ZERO
                GO      TO               41012-NENINSELNUM-EXT
            END-IF
@@ -2256,13 +2502,16 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            PERFORM 4501-NAIBU-IDX-GET-SEC
            IF  WRK-N-IDX                =   ZERO
                MOVE    "2406"           TO  SPA-ERRCD
-               MOVE    6                TO  SPA-GMN24-CUR
+               MOVE    10               TO  SPA-GMN24-CUR
                MOVE    SPACE            TO  SPA-GMN24-TNKSTYMDW
                MOVE    SPACE            TO  SPA-GMN24-TNKEDYMDW
                MOVE    SPACE            TO  SPA-GMN24-TNKSTYMD
                MOVE    SPACE            TO  SPA-GMN24-TNKEDYMD
                MOVE    SPACE            TO  SPA-GMN24-FUKUSHI-G
+               MOVE    SPACE            TO  SPA-GMN24-TNKNINSTYMD
+               MOVE    SPACE            TO  SPA-GMN24-TNKTEKKBN-G
            ELSE
+               MOVE    SPA-GMN24-TNKSELNUM TO  SPA-MAE24-TNKSELNUM
                MOVE  SPA-GMN24-TNKDPSTYMDW (WRK-N-IDX)
                                         TO  SPA-GMN24-TNKSTYMDW
                MOVE  SPA-GMN24-TNKDPEDYMDW (WRK-N-IDX)
@@ -2275,6 +2524,11 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                         TO  SPA-GMN24-FUKUSHI-KBN
                MOVE  SPA-GMN24-TFUKUSHI-MEI  (WRK-N-IDX)
                                         TO  SPA-GMN24-FUKUSHI-MEI
+               MOVE  SPA-GMN24-TNKLNINYMD    (WRK-N-IDX)
+                                        TO  SPA-GMN24-TNKNINSTYMD
+               MOVE    SPACE            TO  SPA-GMN24-TNKTEKKBN-G
+               MOVE  SPA-NAI24-TNKLHKNKBN (WRK-N-IDX)
+                                        TO  SPA-GMN24-TNKTEKKBN
            END-IF
            .
        41012-NENINSELNUM-EXT.
@@ -2377,6 +2631,74 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            .
        41012-FUKUSHI-EXT.
            EXIT.
+      *****************************************************************
+      *    Ç¯¶â¡¿Ç§ÄêÈÏ°Ï
+      *****************************************************************
+       41012-TNKKEKKBN-SEC             SECTION.
+      *
+           MOVE    ZERO                TO  FLG-OK
+           PERFORM VARYING     IDF     FROM    1   BY  1
+                   UNTIL       IDF     >   SPA-GMN24-TNKTEKKBN-MAX
+               IF      SPA-GMN24-TNKTEKKBN
+                                       =   SPA-GMN24-TNKTEKKBN-LST(IDF)
+                                                              (1:1)
+                   MOVE    SPA-GMN24-TNKTEKKBN-LST(IDF)
+                                            TO  SPA-GMN24-TNKTEKKBN-G
+                   MOVE    1                TO  FLG-OK
+                   MOVE    SPA-GMN24-TNKTEKKBN-MAX   TO  IDF
+               END-IF
+           END-PERFORM
+      *
+           IF      SPA-GMN24-TNKTEKKBN =   SPACE
+               CONTINUE
+           ELSE
+               IF      FLG-OK              =   ZERO
+                   MOVE    "2420"              TO  SPA-ERRCD
+                   MOVE    14                  TO  SPA-GMN24-CUR
+               END-IF
+           END-IF
+      *
+           .
+       41012-TNKKEKKBN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    Ç¯¶â¡¿¸º³Û³«»ÏÆü
+      *****************************************************************
+       41012-TNKNINYMD-SEC           SECTION.
+      *
+           IF      SPA-GMN24-TNKNINSTYMD   =   SPACE
+               MOVE    ZERO                TO  SPA-NAI24-TNKNINSTYMD
+           ELSE
+      *        ÆüÉÕ²èÌÌ¥Á¥§¥Ã¥¯¥µ¥Ö
+               INITIALIZE                      ORCSGDAYAREA
+               MOVE    SPA-GMN24-TNKNINSTYMD   TO  SGDAY-INDAY
+               CALL    "ORCSGDAY"          USING
+                                           ORCSGDAYAREA
+               IF      SGDAY-RC            =   ZERO
+                   MOVE    SGDAY-OTDAY         TO  SPA-GMN24-TNKNINSTYMD
+                   MOVE    SGDAY-SDAY          TO  SPA-NAI24-TNKNINSTYMD
+               ELSE
+                   MOVE    "2421"              TO  SPA-ERRCD
+                   MOVE    15                  TO  SPA-GMN24-CUR
+               END-IF
+           END-IF
+      *
+           IF     (SPA-ERRCD               =   SPACE  )  AND
+                  (SPA-GMN24-TNKNINSTYMD   NOT =   SPACE )
+               IF     (SPA-GMN24-TNKSTYMD  <=  SPA-NAI24-TNKNINSTYMD)
+                 AND  (SPA-GMN24-TNKEDYMD  >=  SPA-NAI24-TNKNINSTYMD)
+                   CONTINUE
+               ELSE
+                   MOVE    "2422"              TO  SPA-ERRCD
+                   MOVE    15                  TO  SPA-GMN24-CUR
+               END-IF
+           END-IF
+      *
+           .
+       41012-TNKNINYMD-EXT.
+           EXIT.
+      *
       *****************************************************************
       *    ¸øÈñÉéÃ´¡¿³«»ÏÇ¯·îÆü
       *****************************************************************
@@ -2589,6 +2911,19 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE     2              TO  SPA-GMN24-CUR
                GO      TO      41091-SYOTOKU-CHK-EXT
            END-IF
+      *    Ä¹´üÆþ±¡³ºÅöÆü¡ã¸º³Û³«»ÏÆü¤Ï¥¨¥é¡¼
+           IF     (SPA-GMN24-TSYSKJGNSTYMD  NOT =   SPACE ) AND
+                 ((SPA-NAI24-TSYNINSTYMD    =   SPACE )  OR
+                  (SPA-GMN24-TSYSKJGNSTYMD  <   SPA-NAI24-TSYNINSTYMD))
+               MOVE    "2423"          TO  SPA-ERRCD
+               MOVE     4              TO  SPA-GMN24-CUR
+               GO      TO      41091-SYOTOKU-CHK-EXT
+           END-IF
+           IF      SPA-GMN24-TSYTEKKBN  =   SPACE
+               MOVE    "2417"              TO  SPA-ERRCD
+               MOVE    5                   TO  SPA-GMN24-CUR
+               GO      TO      41091-SYOTOKU-CHK-EXT
+           END-IF
       *
            INITIALIZE                  WRK-NAIBU-IDX-AREA
            MOVE    SPA-NAI24-TSYSELNUM TO  WRK-G-IDX
@@ -2625,6 +2960,11 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                   (SPA-GMN24-TNKEDYMD  =   SPACE )
                MOVE    "2412"          TO  SPA-ERRCD
                MOVE    10              TO  SPA-GMN24-CUR
+               GO      TO      41092-RFUKUSI-CHK-EXT
+           END-IF
+           IF      SPA-GMN24-TNKTEKKBN  =   SPACE
+               MOVE    "2420"              TO  SPA-ERRCD
+               MOVE    14                  TO  SPA-GMN24-CUR
                GO      TO      41092-RFUKUSI-CHK-EXT
            END-IF
       *
