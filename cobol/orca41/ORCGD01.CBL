@@ -3193,10 +3193,10 @@
       *
            EVALUATE    SPA-DIDCD
            WHEN    "3001"
-               MOVE    "登録されている確認項目の設定を変更します"
+               MOVE    "選択中の確認項目設定を変更します"
                                        TO  WRK-DIDMSG
            WHEN    "3002"
-               MOVE    "登録されている確認項目の設定を削除します"
+               MOVE    "選択中の確認項目設定を削除します"
                                        TO  WRK-DIDMSG
            WHEN    "6666"
                MOVE    "処理中です"    TO  WRK-DIDMSG
