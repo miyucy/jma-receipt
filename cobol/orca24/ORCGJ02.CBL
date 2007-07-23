@@ -4765,6 +4765,10 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                            MOVE    SPACE          TO  WRK-HZNSU
                            MOVE    ZERO           TO  IDW9
                            MOVE    ZERO           TO  IDW2
+                       ELSE
+                           IF      IDW1            =   ZERO
+                               ADD     1               TO  IDW1
+                           END-IF
                        END-IF
                    WHEN    ","
                    WHEN    "."
@@ -4807,6 +4811,9 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            END-PERFORM
       *
            IF      IDW9            >   ZERO
+               IF      IDW1            =   ZERO
+                   ADD     1               TO  IDW1
+               END-IF
                IF      FLG-K2          =   1
       *        ½ªÎ»Æü
                    MOVE    WRK-HZNSU       TO  WRK-DAY2(IDW1 IDW2)
