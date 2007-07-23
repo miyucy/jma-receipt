@@ -578,9 +578,16 @@
                                            TO  HCM401-CHKKOMOKU   (2)
                        MOVE    SPACE       TO  HCM401-CHKKOMOKU   (1)
                        MOVE    1           TO  IDX-MESG
+                       STRING  "　　　　　"    DELIMITED   BY  SIZE
+                       INTO    HCM401-CHKKOMOKU   (1)
+                       WITH    POINTER IDX-MESG
+                       END-STRING
                    ELSE
                        IF    ( IDX-MESG    =   1   )
-                           CONTINUE
+                           STRING  "確認項目："    DELIMITED   BY  SIZE
+                           INTO    HCM401-CHKKOMOKU   (1)
+                           WITH    POINTER IDX-MESG
+                           END-STRING
                        ELSE
                            STRING  "、"    DELIMITED   BY  SIZE
                            INTO    HCM401-CHKKOMOKU   (1)
