@@ -29,6 +29,8 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *  03.05.00    NACL-太田    07/05/10  グループ診療対応
+      *              NACL-小豆沢  07/07/12  患者所得情報の取得をサブ
+      *                                     ルーチンに変更
       *****************************************************************
       *
       *
@@ -139,6 +141,9 @@
       *    保険算定用年齢・割合計算サブ
            COPY    "CPORCSAGECHK.INC".
       *
+      *    患者所得情報編集サブ
+           COPY    "CPORCSSYOTOKU.INC".
+      *
       *****************************************************************
       *    連絡　領域
       *****************************************************************
@@ -196,7 +201,7 @@
       *
       *    患者マスター検索
            INITIALIZE                       PTINF-REC
-           MOVE    LNK-NYULIFE-HOSPNUM   TO  PTINF-HOSPNUM
+           MOVE    LNK-NYULIFE-HOSPNUM  TO  PTINF-HOSPNUM
            MOVE    LNK-NYULIFE-PTID     TO  PTINF-PTID
            PERFORM 900-PTINF-READ-SEC
            IF      FLG-PTINF            NOT =   ZERO
@@ -240,7 +245,7 @@
       *    入院時生活療養費の該当日と軽減区分２（入院料判定）を取得
            MOVE    ZERO                    TO  FLG-OK
            INITIALIZE                          NYUINACCT-REC
-           MOVE    LNK-NYULIFE-HOSPNUM      TO  NACCT-HOSPNUM
+           MOVE    LNK-NYULIFE-HOSPNUM     TO  NACCT-HOSPNUM
            MOVE    LNK-NYULIFE-PTID        TO  NACCT-PTID
            MOVE    LNK-NYULIFE-SANTEIYM    TO  NACCT-SRYYM
            MOVE    "1"                     TO  NACCT-ZAISKBKBN
@@ -360,7 +365,7 @@
       *        老人保健のチェック
                MOVE    ZERO                 TO  FLG-RJN 
                INITIALIZE                       PTKOHINF-REC
-               MOVE    LNK-NYULIFE-HOSPNUM   TO  PTKOH-HOSPNUM
+               MOVE    LNK-NYULIFE-HOSPNUM  TO  PTKOH-HOSPNUM
                MOVE    LNK-NYULIFE-PTID     TO  PTKOH-PTID
                MOVE    "027"                TO  PTKOH-KOHNUM
                MOVE    "tbl_ptkohinf"       TO  MCP-TABLE
@@ -384,118 +389,32 @@
                MOVE    "key4"               TO  MCP-PATHNAME
                PERFORM   910-DB-CLOSE-SEC
       *
-      *−−−−所得情報の取得ここから−−−−−−−−−−−−−−−
-      *
-      *      軽減区分１（所得判定）を取得
-      *
-      *      低所得情報の取得
-               INITIALIZE                          TSYRRK-REC
-               MOVE    LNK-NYULIFE-HOSPNUM      TO  TSYRRK-HOSPNUM
-               MOVE    LNK-NYULIFE-PTID        TO  TSYRRK-PTID
-               MOVE    "tbl_tsyrrk"            TO  MCP-TABLE
-               MOVE    "key3"                  TO  MCP-PATHNAME
-               PERFORM 910-TSYRRK-SELECT-SEC
-               IF      FLG-TSYRRK              =   ZERO
-                   MOVE    "tbl_tsyrrk"        TO  MCP-TABLE
-                   MOVE    "key3"              TO  MCP-PATHNAME
-                   PERFORM 910-TSYRRK-READ-SEC
-                   PERFORM  UNTIL  
-                      ( FLG-TSYRRK          =   1                ) OR
-                     (( TSYRRK-NINSTYMD(1:6) <= LNK-NYULIFE-SANTEIYM AND
-                        LNK-NYULIFE-SANTEIYM <= TSYRRK-NINEDYMD(1:6) ))
-      *
-                       MOVE    "tbl_tsyrrk"     TO  MCP-TABLE
-                       MOVE    "key3"           TO  MCP-PATHNAME
-                       PERFORM 910-TSYRRK-READ-SEC
-      *
-                   END-PERFORM
-               END-IF
-               IF      FLG-TSYRRK              =   ZERO
-                  IF  (LNK-NYULIFE-SANTEIYM   =  TSYRRK-NINSTYMD(1:6))
-                  AND (TSYRRK-NINSTYMD(7:2)      NOT =  "01")
-                    CONTINUE
-                  ELSE
+      *−−−−サブルーチンでの患者所得情報の取得ここから−−−−−
+               INITIALIZE                          ORCSSYOTOKUAREA
+               MOVE    LNK-NYULIFE-HOSPNUM     TO  LNK-SYOTOKU-HOSPNUM
+               MOVE    LNK-NYULIFE-PTID        TO  LNK-SYOTOKU-PTID
+               MOVE    LNK-NYULIFE-SANTEIYM    TO  LNK-SYOTOKU-SRYYM
+               CALL   "ORCSSYOTOKU"    USING    ORCSSYOTOKUAREA
+                                                SPA-AREA
+               IF    LNK-SYOTOKU-RC    =        ZERO
                     PERFORM   VARYING   IDX1   FROM   1  BY  1
                               UNTIL     IDX1   >    31
-                        IF   LNK-NYULIFE-KBN(IDX1)   =   "1"
-                            MOVE   "1"    TO  LNK-NYULIFE-FTNKBN1(IDX1)
-                        END-IF
+                        EVALUATE   LNK-SYOTOKU-SKJKBN(IDX1)
+                            WHEN  "1"
+                                MOVE  "3"  TO  LNK-NYULIFE-FTNKBN1(IDX1)
+                            WHEN  "2"
+                                MOVE  "1"  TO  LNK-NYULIFE-FTNKBN1(IDX1)
+                            WHEN  "3"
+                                MOVE  "2"  TO  LNK-NYULIFE-FTNKBN1(IDX1)
+                            WHEN  "4"
+                                MOVE  "4"  TO  LNK-NYULIFE-FTNKBN1(IDX1)
+                        END-EVALUATE
                     END-PERFORM
-                  END-IF
+               ELSE
+                    DISPLAY "ORCSSYTOKU RC = " LNK-SYOTOKU-RC
                END-IF
+      *−−−−サブルーチンでの患者所得情報の取得ここまで−−−−−
       *
-               MOVE     "tbl_tsyrrk"        TO  MCP-TABLE
-               MOVE     "key3"              TO  MCP-PATHNAME
-               PERFORM   910-DB-CLOSE-SEC
-      *
-      *      ９０日越え（低所得情報）
-               IF  (TSYRRK-SKJGNSTYMD(1:6)  <= LNK-NYULIFE-SANTEIYM) AND
-                   (TSYRRK-SKJGNSTYMD       NOT = SPACE)
-                 IF (LNK-NYULIFE-SANTEIYM  = TSYRRK-SKJGNSTYMD(1:6)) AND
-                    (TSYRRK-SKJGNSTYMD(7:2)   NOT = "01")
-                   CONTINUE
-                 ELSE
-                   IF  TSYRRK-SKJGNSTYMD(1:6)  <  LNK-NYULIFE-SANTEIYM
-                       MOVE   1             TO   TSY90-IDX
-                   ELSE
-                       MOVE   TSYRRK-SKJGNSTYMD(7:2)   TO  TSY90-IDX
-                   END-IF
-                   PERFORM   VARYING   IDX1   FROM   TSY90-IDX  BY  1
-                             UNTIL     IDX1   >    31
-                        IF   LNK-NYULIFE-KBN(IDX1)   =   "1"
-                            MOVE   "2"    TO  LNK-NYULIFE-FTNKBN1(IDX1)
-                        END-IF
-                   END-PERFORM
-                 END-IF
-               END-IF
-      *
-      *      低年金情報の取得
-               INITIALIZE                          TNKRRK-REC
-               MOVE    LNK-NYULIFE-HOSPNUM      TO  TNKRRK-HOSPNUM
-               MOVE    LNK-NYULIFE-PTID        TO  TNKRRK-PTID
-               MOVE    "tbl_tnkrrk"            TO  MCP-TABLE
-               MOVE    "key3"                  TO  MCP-PATHNAME
-               PERFORM 910-TNKRRK-SELECT-SEC
-               IF      FLG-TNKRRK              =   ZERO
-                   MOVE    "tbl_tnkrrk"        TO  MCP-TABLE
-                   MOVE    "key3"              TO  MCP-PATHNAME
-                   PERFORM 910-TNKRRK-READ-SEC
-                   PERFORM  UNTIL  
-                      ( FLG-TNKRRK          =   1                ) OR
-                     (( TNKRRK-STYMD(1:6) <= LNK-NYULIFE-SANTEIYM AND
-                        LNK-NYULIFE-SANTEIYM <= TNKRRK-EDYMD(1:6) ))
-      *
-                       MOVE    "tbl_tnkrrk"       TO  MCP-TABLE
-                       MOVE    "key3"             TO  MCP-PATHNAME
-                       PERFORM 910-TNKRRK-READ-SEC
-      *
-                   END-PERFORM
-               END-IF
-               IF      FLG-TNKRRK              =   ZERO
-                  IF  (LNK-NYULIFE-SANTEIYM   =  TNKRRK-STYMD(1:6))
-                  AND (TNKRRK-STYMD(7:2)     NOT =  "01")
-                    CONTINUE
-                  ELSE
-                    PERFORM   VARYING   IDX1   FROM   1  BY  1
-                              UNTIL     IDX1   >    31
-                        IF    LNK-NYULIFE-KBN(IDX1)   =   "1"
-                            IF  TNKRRK-RRI-FUKUSHI-KBN = SPACE OR "0"
-                                MOVE  "3"   TO
-                                            LNK-NYULIFE-FTNKBN1(IDX1)
-                            ELSE
-                                MOVE  "4"   TO
-                                            LNK-NYULIFE-FTNKBN1(IDX1)
-                            END-IF
-                        END-IF
-                    END-PERFORM
-                  END-IF
-               END-IF
-      *
-               MOVE     "tbl_tnkrrk"        TO  MCP-TABLE
-               MOVE     "key3"              TO  MCP-PATHNAME
-               PERFORM   910-DB-CLOSE-SEC
-      *
-      *−−−−所得情報の取得ここまで−−−−−−−−−−−−−−−
       *
       *−−−−食事療養、環境療養コード、単価設定ここから−−−−−
              PERFORM   VARYING   IDX1   FROM   1  BY  1
