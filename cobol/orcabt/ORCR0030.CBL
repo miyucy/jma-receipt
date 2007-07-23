@@ -296,6 +296,7 @@
       *
       *  03.05.01    NACL-Æ£¸¶    07/04/19  ¥°¥ë¡¼¥×¿ÇÎÅÂÐ±þ
       *  03.05.02    NACL-ÌçÏÆ    07/07/17  ¸ÄÊÌ»þ¤Î¥·¥¹¥Æ¥à´ÉÍýÊÔ½¸½¤Àµ
+      *  03.05.03    NACL-ÌçÏÆ    07/07/20  ËÌ³¤Æ»£´£±Ï·¿Í¸½ÊªµëÉÕÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -6041,7 +6042,37 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *****************************************************************
        2105213-ICHIBUFTN-KOH-HEN2-SEC               SECTION.
       *
-           EVALUATE     FLG-GENBUTU70
+           IF   (SYS-1001-PREFNUM   =  01           )
+           AND  (SYU-KOH-HKNNUM(1)  = "141" OR "241")
+            IF  FLG-KOHYONKAIME = 1
+               MOVE   44400   TO   WRK-KINGAKU
+            ELSE
+              IF  FLG-KEISAN  =  1
+               IF   WRK-CHIHOU-KIN9 >  267000
+                  COMPUTE  WRK-KINGAKU2 =
+                        (( WRK-CHIHOU-KIN9 -  267000 ) * 0.01 )
+                                                       + 0.5
+                  COMPUTE  WRK-KINGAKU  =  80100  +  WRK-KINGAKU2
+               ELSE
+                  MOVE     80100  TO   WRK-KINGAKU
+               END-IF
+              ELSE
+               COMPUTE   WRK-CHIHOU-KIN  =  WRK-CHIHOU-KIN
+                                         + (SYU-TOTAL-HKNTEN * 10)
+               IF   WRK-CHIHOU-KIN  >  267000
+                  COMPUTE  WRK-KINGAKU2 =
+                        (( WRK-CHIHOU-KIN -  267000 ) * 0.01 )
+                                                      + 0.5
+                  COMPUTE  WRK-KINGAKU  =  80100  +  WRK-KINGAKU2
+               ELSE
+                  MOVE     80100  TO   WRK-KINGAKU
+               END-IF
+              END-IF
+            END-IF
+            MOVE      WRK-KINGAKU TO   WRK-KINGAKU-GENBUTU
+            PERFORM   2105211-ICHIBUFTN-KOH-SET-SEC
+           ELSE
+            EVALUATE     FLG-GENBUTU70
              WHEN           1
                IF  FLG-KOHYONKAIME = 1
                   MOVE   83400   TO   WRK-KINGAKU
@@ -6106,7 +6137,8 @@ grpsys     PERFORM 900-DBSELECT-SEC
                END-IF
                MOVE      WRK-KINGAKU TO   WRK-KINGAKU-GENBUTU
                PERFORM   2105211-ICHIBUFTN-KOH-SET-SEC
-           END-EVALUATE
+            END-EVALUATE
+           END-IF
       *
            .
        2105213-ICHIBUFTN-KOH-HEN2-EXT.
@@ -7289,6 +7321,16 @@ grpsys     PERFORM 900-DBSELECT-SEC
                      MOVE  "1"  TO
                              RECE02-ZEROKISAIFLG(KOHFTN-IDX + 1)
                  END-IF
+               END-IF
+             END-IF
+      *
+             IF    RECE02-SRYYM     >=  "200704"
+               IF  (SYS-1001-PREFNUM =   01           ) AND
+                   (KOHFTN-IDX       =   1            ) AND
+                   (RECE02-KOHNUM(KOHFTN-IDX)
+                                     =  "141" OR "241")
+                     MOVE  "1"  TO
+                                 RECE02-KISAIFLG(KOHFTN-IDX + 1)
                END-IF
              END-IF
       *
