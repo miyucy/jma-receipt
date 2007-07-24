@@ -1010,7 +1010,7 @@
       <y>480</y>
       <width>464</width>
       <height>24</height>
-      <label>＊入力コードの登録がある場合、期間指定に関係なく対象となります。</label>
+      <label>＊入力コードがある場合は期間指定に関係なく対象となります。</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>True</wrap>
       <xalign>0</xalign>
