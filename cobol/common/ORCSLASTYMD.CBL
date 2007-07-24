@@ -65,6 +65,7 @@
                05  WRK-SMM             PIC 9(02).
                05  WRK-SDD             PIC 9(02).
            03  WRK-LASTYMD             PIC X(08).
+           03  WRK-TAIINYMD            PIC X(08).
            03  WRK-DRCD                PIC X(05).
            03  WRK-SRYKA               PIC X(02).
            03  WRK-HKNCOMBI            PIC X(04).
@@ -181,9 +182,9 @@
                PERFORM 2001-NYUIN-CHK-SEC
            END-IF
       *    Æþ±¡Ãæ°Ê³°
-           IF      FLG-NYUIN           =   ZERO
+      *    IF      FLG-NYUIN           =   ZERO
                PERFORM 2002-JYURRK-CHK-SEC
-           END-IF
+      *    END-IF
       *    ¿ÇÎÅ²ÊÍúÎò
            IF     (FLG-NYUIN           =   ZERO ) AND
                   (WRK-LASTYMD         =   SPACE)
@@ -201,6 +202,7 @@
            MOVE    WRK-DRCD            TO  ORCSLASTYMD-DRCD
            MOVE    WRK-BRMNUM          TO  ORCSLASTYMD-BRMNUM
            MOVE    WRK-NYUINYMD        TO  ORCSLASTYMD-NYUINYMD
+           MOVE    WRK-TAIINYMD        TO  ORCSLASTYMD-TAIINYMD
       *    ÊÝ¸±ÁÈ¹ç¤»Ì¾¾ÎÊÔ½¸
            PERFORM 2004-HKNCOMBI-HEN-SEC
       *    ¿ÇÎÅ²ÊÌ¾¾Î
@@ -217,6 +219,14 @@
       *****************************************************************
        2001-NYUIN-CHK-SEC                SECTION.
       *
+           MOVE    SPACE                   TO  WRK-BRMNUM
+           MOVE    SPACE                   TO  WRK-SRYKA
+           MOVE    SPACE                   TO  WRK-HKNCOMBI
+           MOVE    SPACE                   TO  WRK-LASTYMD
+           MOVE    SPACE                   TO  WRK-TAIINYMD
+           MOVE    SPACE                   TO  WRK-DRCD
+           MOVE    ZERO                    TO  FLG-NYUIN
+      *
       *    Æþ±¡ÍúÎòÈ½Äê
            MOVE    SPACE               TO  PTNYUINRRK-REC
            INITIALIZE                  PTNYUINRRK-REC
@@ -227,60 +237,83 @@
       *
            MOVE    PTNYUINRRK-REC      TO  MCPDATA-REC
            MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
-           MOVE    "key11"             TO  MCP-PATHNAME
+           MOVE    "key29"             TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
                MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
-               MOVE    "key11"             TO  MCP-PATHNAME
+               MOVE    "key29"             TO  MCP-PATHNAME
                PERFORM 910-PTNYUINRRK-READ-SEC
            ELSE
                MOVE    1               TO  FLG-PTNYUINRRK
                INITIALIZE                  PTNYUINRRK-REC
            END-IF
-           MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
-           MOVE    "key11"             TO  MCP-PATHNAME
-           PERFORM 990-DBCLOSE-SEC
-      *    ºÇ½é¤Î£±·ïÌÜ¤òÂÐ¾Ý¤È¤¹¤ë
-           IF      FLG-PTNYUINRRK      =   ZERO
-               MOVE    SPACE               TO  WRK-BRMNUM
-               MOVE    PTNYUINRRK-BRMNUM(1:2)      TO  WRK-BRMNUM1
-               MOVE    "-"                         TO  WRK-BRMNUM-H
-               IF      PTNYUINRRK-BRMNUM(3:6)  NUMERIC
-                   MOVE    PTNYUINRRK-BRMNUM(3:6)  TO  WRK-BRMNUM-9
-                   MOVE    WRK-BRMNUM-9            TO  WRK-Z6
-                   MOVE    ZERO                    TO  IDX2
-                   PERFORM VARYING     IDX     FROM    1   BY  1
-                           UNTIL       IDX     >   6
-                       IF      WRK-Z6-X(IDX:1)     NOT =   SPACE
-                           ADD     1               TO  IDX2
-                           MOVE    WRK-Z6-X(IDX:1) TO  WRK-BRMNUM2
-                                                              (IDX2:1)
-                       END-IF
-                   END-PERFORM
+           PERFORM UNTIL    FLG-PTNYUINRRK =   1
+      *
+               IF     (PTNYUINRRK-NYUINYMD <=  SPA-SYSYMD) AND
+                      (PTNYUINRRK-TAIINYMD >=  SPA-SYSYMD)
+                   PERFORM 20011-NYUIN-HENSYU-SEC
+                   MOVE    1                   TO  FLG-PTNYUINRRK
                ELSE
-                   MOVE    PTNYUINRRK-BRMNUM(3:6)  TO  WRK-BRMNUM2
+      *            ºÇ½ªÆþ±¡Æü¡¦Âà±¡Æü
+                   IF      WRK-NYUINYMD        =   SPACE
+                       MOVE    PTNYUINRRK-TAIINYMD TO  WRK-TAIINYMD
+                       MOVE    PTNYUINRRK-NYUINYMD TO  WRK-NYUINYMD
+                   END-IF
                END-IF
-               MOVE    PTNYUINRRK-NYUINKA      TO  WRK-SRYKA
-               MOVE    PTNYUINRRK-HKNCOMBINUM  TO  WRK-HKNCOMBI
-               MOVE    PTNYUINRRK-NYUINYMD     TO  WRK-NYUINYMD
-      *        Á°²ó¥É¥¯¥¿¡¼
-               MOVE    PTNYUINRRK-DRCD1        TO  WRK-DRCD
-               MOVE    1                       TO  FLG-NYUIN
-      *        ÅöÆüÂà±¡¤Î»þ
-               IF      PTNYUINRRK-TAIINYMD     =   SPA-SYSYMD
-                   MOVE    PTNYUINRRK-TAIINYMD     TO  WRK-LASTYMD
+      *        ¥·¥¹¥Æ¥àÆü°ÊÁ°¤ËÂà±¡
+               IF     (PTNYUINRRK-TAIINYMD <   SPA-SYSYMD)
+                   MOVE    1                   TO  FLG-PTNYUINRRK
                END-IF
+               IF      FLG-PTNYUINRRK          =   ZERO
+                   MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
+                   MOVE    "key29"             TO  MCP-PATHNAME
+                   PERFORM 910-PTNYUINRRK-READ-SEC
+               END-IF
+           END-PERFORM
+           MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
+           MOVE    "key29"             TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+           .
+       2001-NYUIN-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ¼õ¿ÇÍúÎòÊÔ½¸½èÍý
+      *****************************************************************
+       20011-NYUIN-HENSYU-SEC            SECTION.
+      *
+           MOVE    SPACE               TO  WRK-BRMNUM
+           MOVE    PTNYUINRRK-BRMNUM(1:2)      TO  WRK-BRMNUM1
+           MOVE    "-"                         TO  WRK-BRMNUM-H
+           IF      PTNYUINRRK-BRMNUM(3:6)  NUMERIC
+               MOVE    PTNYUINRRK-BRMNUM(3:6)  TO  WRK-BRMNUM-9
+               MOVE    WRK-BRMNUM-9            TO  WRK-Z6
+               MOVE    ZERO                    TO  IDX2
+               PERFORM VARYING     IDX     FROM    1   BY  1
+                       UNTIL       IDX     >   6
+                   IF      WRK-Z6-X(IDX:1)     NOT =   SPACE
+                       ADD     1               TO  IDX2
+                       MOVE    WRK-Z6-X(IDX:1) TO  WRK-BRMNUM2
+                                                            (IDX2:1)
+                   END-IF
+               END-PERFORM
            ELSE
-               MOVE    SPACE                   TO  WRK-BRMNUM
-               MOVE    SPACE                   TO  WRK-SRYKA
-               MOVE    SPACE                   TO  WRK-HKNCOMBI
-               MOVE    SPACE                   TO  WRK-LASTYMD
-               MOVE    SPACE                   TO  WRK-DRCD
-               MOVE    ZERO                    TO  FLG-NYUIN
+               MOVE    PTNYUINRRK-BRMNUM(3:6)  TO  WRK-BRMNUM2
+           END-IF
+           MOVE    PTNYUINRRK-NYUINKA      TO  WRK-SRYKA
+           MOVE    PTNYUINRRK-HKNCOMBINUM  TO  WRK-HKNCOMBI
+           MOVE    PTNYUINRRK-NYUINYMD     TO  WRK-NYUINYMD
+      *    Á°²ó¥É¥¯¥¿¡¼
+           MOVE    PTNYUINRRK-DRCD1        TO  WRK-DRCD
+           MOVE    1                       TO  FLG-NYUIN
+      *    ÅöÆüÂà±¡¤Î»þ
+           MOVE    SPACE                   TO  WRK-TAIINYMD
+           IF      PTNYUINRRK-TAIINYMD     =   SPA-SYSYMD
+               MOVE    PTNYUINRRK-TAIINYMD     TO  WRK-LASTYMD
            END-IF
       *
            .
-       2001-NYUIN-CHK-EXT.
+       20011-NYUIN-HENSYU-EXT.
            EXIT.
       *
       *****************************************************************
@@ -291,9 +324,9 @@
            MOVE    SPACE               TO  JYURRK-REC
            INITIALIZE                  JYURRK-KEY
            MOVE    SPA-HOSPNUM         TO  JYURRK-HOSPNUM
-           MOVE    "2"                 TO  JYURRK-NYUGAIKBN
            MOVE    ORCSLASTYMD-PTID    TO  JYURRK-PTID
-           MOVE    SPA-SYSYMD          TO  JYURRK-SRYYMD
+      **** MOVE    SPA-SYSYMD          TO  JYURRK-SRYYMD
+           MOVE    "99999999"          TO  JYURRK-SRYYMD
       *
            MOVE    JYURRK-REC          TO  MCPDATA-REC
            MOVE    "tbl_jyurrk"        TO  MCP-TABLE
@@ -312,10 +345,28 @@
            MOVE    "key10"             TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
            IF      FLG-JYURRK          =   ZERO
-               MOVE    JYURRK-SRYYMD       TO  WRK-LASTYMD
-               MOVE    JYURRK-SRYKA        TO  WRK-SRYKA
-               MOVE    JYURRK-HKNCOMBINUM  TO  WRK-HKNCOMBI
-               MOVE    JYURRK-DRCD         TO  WRK-DRCD
+               IF      FLG-NYUIN           =   ZERO
+                   MOVE    JYURRK-SRYYMD       TO  WRK-LASTYMD
+                   MOVE    JYURRK-SRYKA        TO  WRK-SRYKA
+                   MOVE    JYURRK-HKNCOMBINUM  TO  WRK-HKNCOMBI
+                   MOVE    JYURRK-DRCD         TO  WRK-DRCD
+               ELSE
+                   IF      WRK-LASTYMD         =   SPACE
+                       IF     (JYURRK-NYUGAIKBN    =   "2" ) AND
+                              (JYURRK-SRYYMD       >   SPA-SYSYMD)
+                           MOVE    JYURRK-SRYYMD       TO  WRK-LASTYMD
+                       END-IF
+                   END-IF
+               END-IF
+           END-IF
+      *
+      *    Âà±¡Æü¡ä¼õ¿ÇÍúÎòºÇ½ªÆü¤Ï¡¢Âà±¡Æü
+           IF      (FLG-NYUIN          =   ZERO  )  AND
+                   (WRK-LASTYMD    NOT =   SPACE )  AND
+                   (WRK-TAIINYMD   NOT =   SPACE )
+               IF      WRK-LASTYMD     <   WRK-TAIINYMD
+                   MOVE    WRK-TAIINYMD    TO  WRK-LASTYMD
+               END-IF
            END-IF
       *
            .
