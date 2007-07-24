@@ -182,9 +182,7 @@
                PERFORM 2001-NYUIN-CHK-SEC
            END-IF
       *    ェ情醱動陸
-      *    IF      FLG-NYUIN           =   ZERO
-               PERFORM 2002-JYURRK-CHK-SEC
-      *    END-IF
+           PERFORM 2002-JYURRK-CHK-SEC
       *    褲恓粗咺昳
            IF     (FLG-NYUIN           =   ZERO ) AND
                   (WRK-LASTYMD         =   SPACE)
@@ -309,7 +307,8 @@
       *    癲ゥ轉情及凜
            MOVE    SPACE                   TO  WRK-TAIINYMD
            IF      PTNYUINRRK-TAIINYMD     =   SPA-SYSYMD
-               MOVE    PTNYUINRRK-TAIINYMD     TO  WRK-LASTYMD
+               MOVE    PTNYUINRRK-TAIINYMD TO  WRK-LASTYMD
+               MOVE    "1"                 TO  ORCSLASTYMD-TAIKBN
            END-IF
       *
            .
@@ -366,7 +365,8 @@
                    (WRK-TAIINYMD   NOT =   SPACE )
                IF      WRK-LASTYMD     <   WRK-TAIINYMD
                    MOVE    WRK-TAIINYMD    TO  WRK-LASTYMD
-               END-IF
+                   MOVE    "1"             TO  ORCSLASTYMD-TAIKBN
+              END-IF
            END-IF
       *
            .
