@@ -948,9 +948,25 @@
     </widget>
 
     <widget>
+      <class>GtkLabel</class>
+      <name>label167</name>
+      <x>320</x>
+      <y>480</y>
+      <width>96</width>
+      <height>24</height>
+      <label>診療年月指定</label>
+      <justify>GTK_JUSTIFY_LEFT</justify>
+      <wrap>True</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
       <class>GtkPandaCombo</class>
       <name>CMB_MOREKIKAN</name>
-      <x>436</x>
+      <x>412</x>
       <y>480</y>
       <width>120</width>
       <height>24</height>
@@ -989,28 +1005,12 @@
 
     <widget>
       <class>GtkLabel</class>
-      <name>label167</name>
-      <x>336</x>
-      <y>480</y>
-      <width>96</width>
-      <height>24</height>
-      <label>診療年月指定</label>
-      <justify>GTK_JUSTIFY_LEFT</justify>
-      <wrap>True</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
       <name>label172</name>
-      <x>564</x>
+      <x>540</x>
       <y>480</y>
-      <width>320</width>
+      <width>464</width>
       <height>24</height>
-      <label>＊入力コードのある薬剤はすべて対象とします。</label>
+      <label>＊入力コードの登録がある場合、期間指定に関係なく対象となります。</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>True</wrap>
       <xalign>0</xalign>
