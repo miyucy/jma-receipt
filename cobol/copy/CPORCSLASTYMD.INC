@@ -50,8 +50,10 @@
                05  ORCSLASTYMD-HONKZKKBN       PIC X(02).
       *        前回ドクター
                05  ORCSLASTYMD-DRCD            PIC X(05).
-      *        病棟（入院中）
+      *        病棟（システム日で入院中）
                05  ORCSLASTYMD-BRMNUM          PIC X(09).
-      *        入院日
+      *        最終入院日
                05  ORCSLASTYMD-NYUINYMD        PIC X(08).
+      *        最終退院日
+               05  ORCSLASTYMD-TAIINYMD        PIC X(08).
       *
