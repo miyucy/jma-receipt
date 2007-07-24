@@ -557,8 +557,13 @@
            MOVE    LNK-PRTKANRI-PRIORITY
                                    TO  SPRT-PRIORITY
            MOVE   "HCMSL55.red"    TO  SPRT-PRTID
-           MOVE    "チェックマスタ登録漏れ確認リスト"
+           IF    ( WRK-PARA-CHKMORE    =   "1" )
+               MOVE    "薬剤と病名登録漏れ確認リスト"
                                    TO  SPRT-TITLE
+           ELSE
+               MOVE    "診療行為と病名登録漏れ確認リスト"
+                                   TO  SPRT-TITLE
+           END-IF
            MOVE    HCMSL55         TO  SPRT-PRTDATA
            MOVE    LNK-PRTKANRI-TERMID
                                    TO  SPRT-TERMID
