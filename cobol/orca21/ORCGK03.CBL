@@ -2546,6 +2546,19 @@
       *    闻蛙么碰
            MOVE    SPA-GMN-TGMONEY (15) TO  WRK-Z9
            MOVE    WRK-Z9              TO  K03-RYOTGMONEY
+      *    斧叫し
+           IF     (SPA-GMN-HKNRYO (14) =   ZERO )  AND
+                  (SPA-GMN-TGMONEY(14) =   ZERO )
+               CONTINUE
+           ELSE
+               MOVE    "掐薄瘟霹"          TO  K03-SRYMEI14
+           END-IF
+           IF     (SPA-GMN-HKNRYO (15) =   ZERO )  AND
+                  (SPA-GMN-TGMONEY(15) =   ZERO )
+               CONTINUE
+           ELSE
+               MOVE    "闻蛙么碰缄碰"      TO  K03-SRYMEI15
+           END-IF
       *
       *    极锐
            MOVE    SPA-GMN-JIHI (1)    TO  WRK-Z9

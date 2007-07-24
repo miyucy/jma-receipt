@@ -385,5 +385,11 @@ K03	{
 		TEISEIMSG	{
 			value	varchar(30);
 		};
+		SRYMEI14	{
+			value	varchar(10);
+		};
+		SRYMEI15	{
+			value	varchar(12);
+		};
 	};
 };

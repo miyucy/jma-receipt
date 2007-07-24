@@ -5812,8 +5812,14 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                        MOVE    WRK-Z9-X          TO  K08-HOUHKNTEN
                    WHEN    14
                        MOVE    WRK-Z9-X          TO  K08-NYUHKNTEN
+                       IF      SPA-GMN-HKNTEN  (IDX) NOT =   ZERO
+                           MOVE    "Æþ±¡ÎÁÅù"        TO  K08-SRYMEI14
+                       END-IF
                    WHEN    15
                        MOVE    WRK-Z9-X          TO  K08-RYOHKNTEN
+                       IF      SPA-GMN-HKNTEN  (IDX) NOT =   ZERO
+                           MOVE    "ÎÅÍÜÃ´Åö"        TO  K08-SRYMEI15
+                       END-IF
                END-EVALUATE
            END-PERFORM
       *    ÁªÂò

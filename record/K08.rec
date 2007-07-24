@@ -143,6 +143,12 @@ K08	{
 		    style   varchar(20);
 			value	varchar(60);
 		};
+		SRYMEI15	{
+			value	varchar(8);
+		};
+		SRYMEI14	{
+			value	varchar(8);
+		};
 		B10	{
 	           	state	int;
 			label	varchar(10);

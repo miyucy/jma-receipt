@@ -274,3 +274,8 @@
                 04  K03-JYOGENMSG-VALUE   PIC X(30).
               03  K03-TEISEIMSG.
                 04  K03-VALUE   PIC X(30).
+              03  K03-SRYMEI14.
+                04  K03-VALUE   PIC X(10).
+              03  K03-SRYMEI15.
+                04  K03-VALUE   PIC X(12).
+
