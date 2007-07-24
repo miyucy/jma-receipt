@@ -450,7 +450,7 @@
                                        TO  CK4-2002-CHKKBN (IDX0)
            END-PERFORM
       *
-           MOVE    CK4-2002-INGAIPROCKBN
+           MOVE    SPA-D01-INGAIPROCKBN
                                        TO  CK4-2002-INGAIPROCKBN
       *
            PERFORM 800-MCNDATE-SEC
