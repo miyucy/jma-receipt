@@ -308,7 +308,6 @@
            MOVE    SPACE                   TO  WRK-TAIINYMD
            IF      PTNYUINRRK-TAIINYMD     =   SPA-SYSYMD
                MOVE    PTNYUINRRK-TAIINYMD TO  WRK-LASTYMD
-               MOVE    "1"                 TO  ORCSLASTYMD-TAIKBN
            END-IF
       *
            .
@@ -349,6 +348,11 @@
                    MOVE    JYURRK-SRYKA        TO  WRK-SRYKA
                    MOVE    JYURRK-HKNCOMBINUM  TO  WRK-HKNCOMBI
                    MOVE    JYURRK-DRCD         TO  WRK-DRCD
+                   IF     (JYURRK-NYUGAIKBN    =   "2"       ) AND
+                          (WRK-TAIINYMD    NOT =   SPACE     )  AND
+                          (WRK-TAIINYMD        <   JYURRK-SRYYMD)
+                       MOVE    "1"             TO  ORCSLASTYMD-GAIRAIKBN
+                   END-IF
                ELSE
                    IF      WRK-LASTYMD         =   SPACE
                        IF     (JYURRK-NYUGAIKBN    =   "2" ) AND
@@ -365,7 +369,6 @@
                    (WRK-TAIINYMD   NOT =   SPACE )
                IF      WRK-LASTYMD     <   WRK-TAIINYMD
                    MOVE    WRK-TAIINYMD    TO  WRK-LASTYMD
-                   MOVE    "1"             TO  ORCSLASTYMD-TAIKBN
               END-IF
            END-IF
       *

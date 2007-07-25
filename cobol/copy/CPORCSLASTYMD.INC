@@ -56,6 +56,6 @@
                05  ORCSLASTYMD-NYUINYMD        PIC X(08).
       *        瘉蔽轉情ゥ
                05  ORCSLASTYMD-TAIINYMD        PIC X(08).
-      *        轉情ゥ嗉坌
-               05  ORCSLASTYMD-TAIKBN          PIC X(01).
+      *        轉情詨陸侳嗉坌
+               05  ORCSLASTYMD-GAIRAIKBN       PIC X(01).
       *
