@@ -50,6 +50,9 @@
       *  03.05.01    NACL-小豆沢  07/06/19  以下入院料加算の記録順修正
       *                                     複数医師及び看護配置適合加算
       *                                     看護配置適合加算
+      *  03.05.02    NACL-小豆沢  07/07/20  平成１８年４月以降の食事情報
+      *                                     編集の患者所得情報取得をサブ
+      *                                     ルーチンに変更
       *****************************************************************
       *
       *
@@ -425,6 +428,9 @@
        01  TBL-DAY-AREA-R          REDEFINES   TBL-DAY-AREA.
            03  TBL-DAY             PIC X(04)   OCCURS   31.
       *
+      *    患者所得情報の退避領域
+       01  WRK-SYOTOKU-SKJKBN-AREA.
+           03  WRK-SYOTOKU-SKJKBN       PIC X(01)   OCCURS  93.
       *****************************************************************
       *    ファイルレイアウト
       *****************************************************************
@@ -494,6 +500,9 @@
       *
       *    入院時生活療養費負担額取得サブ
            COPY    "CPORCSNYULIFE.INC".
+      *
+      *    患者所得情報編集サブ
+           COPY    "CPORCSSYOTOKU.INC".
       *
       *****************************************************************
       *    連絡　領域
@@ -4058,119 +4067,53 @@
            MOVE    "key32"                     TO  MCP-PATHNAME
            PERFORM   910-DB-CLOSE-SEC
       *
-      *低所得情報の取得
-           INITIALIZE                          TSYRRK-REC
-           MOVE    LNK-NYURECEDEN-HOSPNUM  TO  TSYRRK-HOSPNUM
-           MOVE    LNK-NYURECEDEN-PTID     TO  TSYRRK-PTID
-           MOVE    "tbl_tsyrrk"            TO  MCP-TABLE
-           MOVE    "key3"                  TO  MCP-PATHNAME
-           PERFORM 910-TSYRRK-SELECT-SEC
-           IF      FLG-TSYRRK              =   ZERO
-               MOVE    "tbl_tsyrrk"        TO  MCP-TABLE
-               MOVE    "key3"              TO  MCP-PATHNAME
-               PERFORM 910-TSYRRK-READ-SEC
-               PERFORM  UNTIL  
-                  ( FLG-TSYRRK          =   1                ) OR
-                 (( TSYRRK-NINSTYMD(1:6) <= LNK-NYURECEDEN-SANTEIYM AND
-                    LNK-NYURECEDEN-SANTEIYM <= TSYRRK-NINEDYMD(1:6) ))
-      *
-                   MOVE    "tbl_tsyrrk"     TO  MCP-TABLE
-                   MOVE    "key3"           TO  MCP-PATHNAME
-                   PERFORM 910-TSYRRK-READ-SEC
-      *
-               END-PERFORM
-           END-IF
-           IF      FLG-TSYRRK              =   ZERO
-              IF  (LNK-NYURECEDEN-SANTEIYM   =  TSYRRK-NINSTYMD(1:6))
-              AND (TSYRRK-NINSTYMD(7:2)      NOT =  "01")
-                CONTINUE
-              ELSE
-                PERFORM   VARYING   IDX1   FROM   1  BY  1
-                          UNTIL     IDX1   >    93
-                    IF    WRK-SKJ4-RYOYO(IDX1)  NOT =  SPACE
-                        MOVE   "197000910"
-                                        TO  WRK-SKJFTN2-SRYCD(IDX1)
-                    END-IF
+      *−−−−サブルーチンでの患者所得情報の取得ここから−−−−−
+           INITIALIZE                          WRK-SYOTOKU-SKJKBN-AREA
+           INITIALIZE                          ORCSSYOTOKUAREA
+           MOVE    LNK-NYURECEDEN-HOSPNUM  TO  LNK-SYOTOKU-HOSPNUM
+           MOVE    LNK-NYURECEDEN-PTID     TO  LNK-SYOTOKU-PTID
+           MOVE    LNK-NYURECEDEN-SANTEIYM TO  LNK-SYOTOKU-SRYYM
+           CALL    "ORCSSYOTOKU"    USING      ORCSSYOTOKUAREA
+                                               SPA-AREA
+           IF    LNK-SYOTOKU-RC      =         ZERO
+                PERFORM    VARYING   IDX1   FROM   1   BY  1
+                  UNTIL   (IDX1      >     31)
+                      MOVE    LNK-SYOTOKU-SKJKBN(IDX1)
+                                    TO  WRK-SYOTOKU-SKJKBN (IDX1)
+                      COMPUTE    IDX2   =   IDX1   +   31
+                      MOVE    LNK-SYOTOKU-SKJKBN(IDX1)
+                                    TO  WRK-SYOTOKU-SKJKBN (IDX2)
+                      COMPUTE    IDX2   =   IDX1   +   62
+                      MOVE    LNK-SYOTOKU-SKJKBN(IDX1)
+                                    TO  WRK-SYOTOKU-SKJKBN (IDX2)
                 END-PERFORM
-              END-IF
+           ELSE
+                DISPLAY "ORCSSYTOKU RC = " LNK-SYOTOKU-RC
            END-IF
+      *−−−−サブルーチンでの患者所得情報の取得ここまで−−−−−
       *
-           MOVE     "tbl_tsyrrk"        TO  MCP-TABLE
-           MOVE     "key3"              TO  MCP-PATHNAME
-           PERFORM   910-DB-CLOSE-SEC
-      *
-      *９０日越え（低所得情報）
-           IF  (TSYRRK-SKJGNSTYMD(1:6)  <= LNK-NYURECEDEN-SANTEIYM) AND
-               (TSYRRK-SKJGNSTYMD       NOT = SPACE)
-             IF (LNK-NYURECEDEN-SANTEIYM  = TSYRRK-SKJGNSTYMD(1:6)) AND
-                (TSYRRK-SKJGNSTYMD(7:2)   NOT = "01")
-               CONTINUE
-             ELSE
-               IF  TSYRRK-SKJGNSTYMD(1:6)  <  LNK-NYURECEDEN-SANTEIYM
-                   MOVE   1             TO   TSY90-IDX
-               ELSE
-                   MOVE   TSYRRK-SKJGNSTYMD(7:2)   TO  TSY90-IDX
+      *所得情報のセット
+           PERFORM   VARYING   IDX1   FROM   1  BY  1
+                     UNTIL     IDX1   >    93
+               IF    WRK-SKJ4-RYOYO(IDX1)  NOT =  SPACE
+                   EVALUATE    WRK-SYOTOKU-SKJKBN (IDX1)
+      *                低所得２
+                       WHEN    "2"
+                           MOVE   "197000910"
+                                         TO  WRK-SKJFTN2-SRYCD(IDX1)
+      *                低所得２（９０日越え）
+                       WHEN    "3"
+                           MOVE   "197001010"
+                                         TO  WRK-SKJFTN2-SRYCD(IDX1)
+      *                低所得１
+                       WHEN    "1"
+                       WHEN    "4"
+                           MOVE   "197001110"
+                                         TO  WRK-SKJFTN2-SRYCD(IDX1)
+                   END-EVALUATE
                END-IF
-               PERFORM   VARYING   IDX1   FROM   TSY90-IDX  BY  1
-                          UNTIL     IDX1   >    31
-                    IF    WRK-SKJ4-RYOYO(IDX1)  NOT =  SPACE
-                        MOVE   "197001010"
-                                        TO  WRK-SKJFTN2-SRYCD(IDX1)
-                    END-IF
-                    COMPUTE   IDX-TSY90  =  IDX1  +  31
-                    IF    WRK-SKJ4-RYOYO(IDX-TSY90)  NOT =  SPACE
-                        MOVE   "197001010"
-                                        TO  WRK-SKJFTN2-SRYCD(IDX-TSY90)
-                    END-IF
-                    COMPUTE   IDX-TSY90  =  IDX1  +  62
-                    IF    WRK-SKJ4-RYOYO(IDX-TSY90)  NOT =  SPACE
-                        MOVE   "197001010"
-                                        TO  WRK-SKJFTN2-SRYCD(IDX-TSY90)
-                    END-IF
-               END-PERFORM
-             END-IF
-           END-IF
+           END-PERFORM
       *
-      *低年金情報の取得
-           INITIALIZE                          TNKRRK-REC
-           MOVE    LNK-NYURECEDEN-HOSPNUM  TO  TNKRRK-HOSPNUM
-           MOVE    LNK-NYURECEDEN-PTID     TO  TNKRRK-PTID
-           MOVE    "tbl_tnkrrk"            TO  MCP-TABLE
-           MOVE    "key3"                  TO  MCP-PATHNAME
-           PERFORM 910-TNKRRK-SELECT-SEC
-           IF      FLG-TNKRRK              =   ZERO
-               MOVE    "tbl_tnkrrk"        TO  MCP-TABLE
-               MOVE    "key3"              TO  MCP-PATHNAME
-               PERFORM 910-TNKRRK-READ-SEC
-               PERFORM  UNTIL  
-                  ( FLG-TNKRRK          =   1                ) OR
-                 (( TNKRRK-STYMD(1:6) <= LNK-NYURECEDEN-SANTEIYM AND
-                    LNK-NYURECEDEN-SANTEIYM <= TNKRRK-EDYMD(1:6) ))
-      *
-                   MOVE    "tbl_tnkrrk"       TO  MCP-TABLE
-                   MOVE    "key3"             TO  MCP-PATHNAME
-                   PERFORM 910-TNKRRK-READ-SEC
-      *
-               END-PERFORM
-           END-IF
-           IF      FLG-TNKRRK              =   ZERO
-              IF  (LNK-NYURECEDEN-SANTEIYM   =  TNKRRK-STYMD(1:6))
-              AND (TNKRRK-STYMD(7:2)     NOT =  "01")
-                CONTINUE
-              ELSE
-                PERFORM   VARYING   IDX1   FROM   1  BY  1
-                          UNTIL     IDX1   >    93
-                    IF    WRK-SKJ4-RYOYO(IDX1)  NOT =  SPACE
-                        MOVE   "197001110"
-                                        TO  WRK-SKJFTN2-SRYCD(IDX1)
-                    END-IF
-                END-PERFORM
-              END-IF
-           END-IF
-      *
-           MOVE     "tbl_tnkrrk"        TO  MCP-TABLE
-           MOVE     "key3"              TO  MCP-PATHNAME
-           PERFORM   910-DB-CLOSE-SEC
       *
       *
       *    入院時生活療養費の情報取得
