@@ -208,6 +208,11 @@
                   (ORCSLASTYMD-SRYKAFLG    =   "1" )
                PERFORM 2005-SRYKAMEI-HEN-SEC
            END-IF
+      *TEST
+           DISPLAY "NYUINYMD:" ORCSLASTYMD-NYUINYMD
+                    ",TAIINYMD:" ORCSLASTYMD-TAIINYMD
+                    ",LASTYMD:" ORCSLASTYMD-LASTYMD
+                    ",BRMNUM:" ORCSLASTYMD-BRMNUM
            .
        200-MAIN-EXT.
            EXIT.
@@ -348,18 +353,6 @@
                    MOVE    JYURRK-SRYKA        TO  WRK-SRYKA
                    MOVE    JYURRK-HKNCOMBINUM  TO  WRK-HKNCOMBI
                    MOVE    JYURRK-DRCD         TO  WRK-DRCD
-                   IF     (JYURRK-NYUGAIKBN    =   "2"       ) AND
-                          (WRK-TAIINYMD    NOT =   SPACE     )  AND
-                          (WRK-TAIINYMD        <   JYURRK-SRYYMD)
-                       MOVE    "1"             TO  ORCSLASTYMD-GAIRAIKBN
-                   END-IF
-               ELSE
-                   IF      WRK-LASTYMD         =   SPACE
-                       IF     (JYURRK-NYUGAIKBN    =   "2" ) AND
-                              (JYURRK-SRYYMD       >   SPA-SYSYMD)
-                           MOVE    JYURRK-SRYYMD       TO  WRK-LASTYMD
-                       END-IF
-                   END-IF
                END-IF
            END-IF
       *
