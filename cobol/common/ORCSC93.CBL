@@ -1099,8 +1099,9 @@
            IF      LNK-SC93-PG         =   "J04"
                IF      FLG-SYORI           =   2
       *            検体検査コメントの判定
-                   IF     (SPA-COM-KENTAICOMMENT (IDX) =   1) AND
-                          (IDX                 <   SPA-GMN-MAX)
+                   IF    ((SPA-COM-KENTAICOMMENT (IDX) =   1) AND
+                          (IDX                 <   SPA-GMN-MAX))
+                      OR ( IDX                 =   1          )
                        CONTINUE
                    ELSE
                        IF     (SPA-COM-SRYKBN (IDX - 1)
