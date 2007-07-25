@@ -143,6 +143,19 @@
                    07  SPA-NAI-R01-BTPARA-HYOUJI-FLG
                                                    PIC 9(01).
       *
+                   07  SPA-NAI-R01-2002-TBL.
+                       09  SPA-NAI-R01-2002-TBL-G      OCCURS   500.
+                           11  SPA-NAI-R01-2002-TPTID  PIC 9(10).
+                           11  SPA-NAI-R01-2002-TSRYYM PIC 9(06).
+                           11  SPA-NAI-R01-2002-TDELETE
+                                                       PIC 9(01).
+                           11  SPA-NAI-R01-2002-TTAISYO
+                                                       PIC 9(01).
+                           11  SPA-NAI-R01-2002-TPTNUM PIC X(20).
+
+                       09  SPA-NAI-R01-2002-MAX        PIC 9(03).
+                       09  SPA-NAI-R01-2002-INDEX      PIC 9(03).
+      *
       *    Ã§¿¡µ·¿ﬂƒÍ≤ËÃÃ
            03  SPA-R96-AREA.
                05  SPA-GMN-R96-MAX                     PIC 9(04).
