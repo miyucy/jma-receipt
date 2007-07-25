@@ -26,21 +26,21 @@
        01  SHELL-AREA.
            03  SHELL-NAME.
                05  FILLER             PIC  X(@dailyscripts_len@) VALUE
-                       "@dailyscripts@".
+           "@dailyscripts@".
                05  SHELL-ID           PIC  X(10).
                05  FILLER             PIC  X(60) VALUE SPACE.
            03  SHELL-ARG1.
                05  FILLER             PIC  X(@printscripts_len@) VALUE 
-                       "@printscripts@".
+           "@printscripts@".
                05  FILLER             PIC  X(57) VALUE SPACE.
            03  SHELL-ARG2.
                05  FILLER             PIC  X(@formdir_len@) VALUE
-                       "@formdir@".
+           "@formdir@".
                05  SHELL-DIA          PIC  X(50).
                05  FILLER             PIC  X(29) VALUE SPACE.
            03  SHELL-ARG3.
                05  FILLER             PIC  X(@recorddir_len@) VALUE
-                       "@recorddir@".
+           "@recorddir@".
                05  SHELL-DEF          PIC  X(50).
                05  FILLER             PIC  X(27) VALUE SPACE.
            03  SHELL-ARG4.

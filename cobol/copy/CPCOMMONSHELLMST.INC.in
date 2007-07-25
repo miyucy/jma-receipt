@@ -32,7 +32,7 @@
        01  SHELL-AREA.
            03  SHELL-NAME.
                05  FILLER             PIC  X(@allwaysscripts_len@) VALUE
-                         "@allwaysscripts@".
+           "@allwaysscripts@".
                05  SHELL-SHELL        PIC  X(17).
                05  FILLER             PIC  X(51) VALUE SPACE.
            03  SHELL-ARG1.
