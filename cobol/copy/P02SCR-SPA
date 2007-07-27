@@ -489,7 +489,7 @@
       *
       *        ∏¯»Ò ›∏±æ Û° ∫«¬Á£¥£∞∑Ô§»§π§Î°À∂¶ƒÃ§«ª»Õ—
                05  SPA-PTKOHINF-AREA.
-                   07  SPA-PTKOHINF-TBL        OCCURS   40.
+                   07  SPA-PTKOHINF-TBL        OCCURS   60.
                        09  SPA-PTKOH-KOHID         PIC 9(10).
                        09  SPA-PTKOH-KOHNUM        PIC X(03).
       *                ªŸ ß∂Ë ¨ƒ…≤√
@@ -830,7 +830,7 @@
                            11  SPA-GMN24-TNKTEKKBN-MEI      PIC X(18).
       *            ∏¯»Ò…È√¥
                    07  SPA-GMN24-KOHFTNTBL.
-                       09  SPA-GMN24-FTNTBLO            OCCURS  40.
+                       09  SPA-GMN24-FTNTBLO            OCCURS  60.
                            11  SPA-GMN24-TGMNNUM         PIC 9(03).
                            11  SPA-GMN24-TFTNKOHMEI      PIC X(10).
                            11  SPA-GMN24-TKOHSTYMD       PIC X(10).
