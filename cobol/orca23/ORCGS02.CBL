@@ -919,6 +919,7 @@
            MOVE    "01"                TO  SYS-STYUKYMD (7 : 2)
                                            SYS-EDYUKYMD (7 : 2)
            PERFORM 900-SYSKANRI-KEY2-SEL-SEC
+           MOVE    SYSKANRI-REC        TO  SYS-1005-REC
       *
            PERFORM VARYING     IDX1   FROM    2    BY  1
                    UNTIL     ( IDX1           >    99   )
@@ -934,6 +935,7 @@
                                              SPA-GMN-SRYKA-MAX
       *
                PERFORM 900-SYSKANRI-KEY2-FET-SEC
+               MOVE    SYSKANRI-REC    TO  SYS-1005-REC
            END-PERFORM
       *
       *    カーソルクロース
