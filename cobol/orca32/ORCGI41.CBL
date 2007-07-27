@@ -2747,8 +2747,13 @@
       *    ¿ÇÎÅ²ó¿ô
            PERFORM   VARYING   IDX     FROM    1   BY  1
                      UNTIL     IDX     >   31
-               MOVE    SPA-GMN-DAY-41 (IDX)    TO  WRK-ZZ
-               MOVE    WRK-ZZ-X                TO  I41-DAY (IDX)
+               IF      SPA-GMN-DAY-41 (IDX)    >=  100
+                   MOVE    SPA-GMN-DAY-41 (IDX)    TO  WRK-ZZZZ
+                   MOVE    WRK-ZZZZ-X              TO  I41-DAY (IDX)
+               ELSE
+                   MOVE    SPA-GMN-DAY-41 (IDX)    TO  WRK-ZZ
+                   MOVE    WRK-ZZ-X              TO  I41-DAY (IDX)
+               END-IF
            END-PERFORM
       *    °ì³ç½¤Àµ
            MOVE    SPA-GMN-KOMENTO-41  TO  I41-KOMENTO.
