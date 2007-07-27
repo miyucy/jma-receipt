@@ -1020,6 +1020,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                            WRK-SPA-AREA
       *
            MOVE    WRK-PARA-HOSPNUM    TO  HCM34S01-HOSPNUM
+                                           WRK-SPA-HOSPNUM
            MOVE    PTINF-PTID          TO  HCM34S01-PTID
            MOVE    WRK-PARA-SRYYM      TO  HCM34S01-SANTEIYM
            MOVE    COMB-HKNCOMBINUM    TO  HCM34S01-HKNCOMBI
