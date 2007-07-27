@@ -823,7 +823,7 @@
                CALL    "ORCSJOB"           USING
                                            ORCSJOBKANRIAREA
                                            JOBKANRI-REC
-                                           SPA-HOSPNUM
+                                           SPA-AREA
            END-IF
       *
            MOVE    1               TO  FLG-END
