@@ -344,44 +344,12 @@
 
     <widget>
       <class>GtkLabel</class>
-      <name>ERRMSG</name>
-      <x>10</x>
-      <y>624</y>
-      <width>400</width>
-      <height>16</height>
-      <label></label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
       <name>TITLE</name>
       <x>45</x>
       <y>16</y>
       <width>300</width>
       <height>16</height>
       <label></label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>label499</name>
-      <x>32</x>
-      <y>648</y>
-      <width>64</width>
-      <height>24</height>
-      <label>ÁªÂòÈÖ¹æ</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -510,8 +478,8 @@
 	  <data>SELECT</data>
 	  <last_modification_time>Wed, 22 Jan 2003 05:15:06 GMT</last_modification_time>
 	</signal>
-	<columns>6</columns>
-	<column_widths>35,80,90,70,20,20</column_widths>
+	<columns>7</columns>
+	<column_widths>35,80,90,70,20,20,140</column_widths>
 	<selection_mode>GTK_SELECTION_SINGLE</selection_mode>
 	<show_titles>False</show_titles>
 	<shadow_type>GTK_SHADOW_IN</shadow_type>
@@ -593,6 +561,19 @@
 	  <xpad>0</xpad>
 	  <ypad>0</ypad>
 	</widget>
+
+	<widget>
+	  <class>GtkLabel</class>
+	  <child_name>CList:title</child_name>
+	  <name>label510</name>
+	  <label>Ä¢É¼£É£Ä</label>
+	  <justify>GTK_JUSTIFY_CENTER</justify>
+	  <wrap>False</wrap>
+	  <xalign>0.5</xalign>
+	  <yalign>0.5</yalign>
+	  <xpad>0</xpad>
+	  <ypad>0</ypad>
+	</widget>
       </widget>
     </widget>
 
@@ -603,6 +584,22 @@
       <y>100</y>
       <width>992</width>
       <height>600</height>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>ERRMSG</name>
+      <x>520</x>
+      <y>10</y>
+      <width>400</width>
+      <height>24</height>
+      <label></label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
     </widget>
   </widget>
 </widget>

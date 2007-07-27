@@ -74,6 +74,7 @@
            03 WRK-TITLE         PIC X(40).
            03 WRK-PTNUM         PIC X(20).
            03 WRK-SRYYM         PIC X(10).
+           03 WRK-PRTID         PIC X(20).
       *
       *     レセプト明細ファイル シェル領域 
            COPY    "CPCOMMONSHELL1.INC".
@@ -122,6 +123,7 @@
                            11  SPA-GMN-PTNUM       PIC X(20).
                            11  SPA-GMN-TPRFLG      PIC X(01).
                            11  SPA-GMN-TUPDFLG     PIC X(02).
+                           11  SPA-GMN-TPRTID      PIC X(20).
                    07  SPA-GMN-BODY.        
                        09  SPA-GMN-SELNUM          PIC 9(05).
                        09  SPA-GMN-MEMO            PIC X(100).      
@@ -1782,6 +1784,8 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                    IF      SPA-NAI-UPDFLG (IDX) =  "1"
                      MOVE  "○"                TO  SPA-GMN-TUPDFLG (IDX)
                    END-IF
+                   MOVE    PRVKANRI-PRTID      TO
+                                           SPA-GMN-TPRTID (IDX)
       *??
                     DISPLAY "IDX=" IDX "#" SPA-NAI-FILENAME (IDX) "#"
       *
@@ -2250,6 +2254,7 @@ grpsys*     MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SPACE               TO  WRK-TITLE
            MOVE    SPACE               TO  WRK-PTNUM
            MOVE    SPACE               TO  WRK-SRYYM
+           MOVE    SPACE               TO  WRK-PRTID
            IF     (SPA-NAI-MEMO-FLG    =   1)
            AND    (SPA-PRTKANRI-TBL-KEY
                                        =   "RECEPT2")
@@ -2279,6 +2284,10 @@ grpsys*     MOVE SPA-HOSPNUM TO -HOSPNUM
                IF      SPA-GMN-PTNUM(IDX)      NOT = WRK-PTNUM
                  MOVE  SPA-GMN-PTNUM(IDX)      TO  WRK-PTNUM
                  MOVE  SPA-GMN-PTNUM(IDX)      TO  XC01-PTNUM(IDX)
+               END-IF
+               IF      SPA-GMN-TPRTID(IDX)     NOT = WRK-PRTID
+                 MOVE  SPA-GMN-TPRTID(IDX)     TO  WRK-PRTID
+                 MOVE  SPA-GMN-TPRTID(IDX)     TO  XC01-PRTID(IDX)
                END-IF
                MOVE    SPA-GMN-TPRFLG    (IDX) TO  XC01-OKFLG(IDX)
                MOVE    SPA-GMN-TUPDFLG   (IDX) TO  XC01-UPDFLG(IDX)

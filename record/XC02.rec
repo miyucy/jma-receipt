@@ -29,6 +29,7 @@ XC02	{
 					value4	varchar(10);
 					value5	varchar(01);
 					value6	varchar(02);
+					value7	varchar(20);
 				}	[100];
 				select	bool[100];
 			};

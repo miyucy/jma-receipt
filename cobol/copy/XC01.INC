@@ -21,6 +21,7 @@
                         08  XC01-TSRYYM PIC X(10).
                         08  XC01-OKFLG  PIC X(01).
                         08  XC01-UPDFLG  PIC X(02).
+                        08  XC01-PRTID   PIC X(20).
                       07  XC01-SELECT PIC X       OCCURS  100 TIMES.
                   05  XC01-MEMO-STATE   PIC S9(09) BINARY.
                   05  XC01-MEMO          PIC X(100).
