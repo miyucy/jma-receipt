@@ -41,6 +41,8 @@
       * 01.00.13     NACL-多々納  06/08/18  標欠対応追加
       * 01.00.14     NACL-多々納  06/09/13  定数超過追加
       * 03.05.00     NACL-多々納  07/04/XX  グループ診療対応
+      * 03.05.00     NACL-小豆沢  07.07.27  療養病棟（病床）入院会計
+      *                                     表示区分対応
       *****************************************************************
       *
       *
@@ -81,6 +83,9 @@
            03  FLG-DEL                 PIC 9(01).
       *
            03  FLG-RYOYOU              PIC 9(01).
+      *
+      *    療養入院の判定用
+           03  FLG-RYOYO-NYUIN         PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -202,6 +207,8 @@
                        09  WRK-ZEN-YY           PIC 9(04).
                        09  WRK-ZEN-MM           PIC 9(02).
                    07  WRK-ZEN-DD               PIC 9(02).
+      *    療養病棟コード退避
+           03  WRK-RYOYO-SRYCD                  PIC X(09).
       *    標欠・超過テーブル
        01  WRK-HYOU-TEISU-TBL.
            03  WRK-HYOU-TEISU-OCC      OCCURS  2.
@@ -259,6 +266,7 @@
       *
       *    システム管理（自動算定情報・チェック機能）
            COPY    "CPSK1007.INC".
+           COPY    "CPSK5000.INC".
       *
       *    主科情報アクセス用パラメタ
        01  ORCSSYUACCAREA.
@@ -484,6 +492,110 @@
            MOVE    WRK-EDYMD           TO  WRK-KHN-EDYMD
            MOVE    WRK-STYMD           TO  WRK-ENDYMD
       *
+      *    システム管理検索（療養入院の区分取得）
+           MOVE    SPACE               TO  SYS-5000-REC
+           INITIALIZE                      SYS-5000-REC
+           MOVE    "5000"              TO  SYS-5000-KANRICD
+           MOVE    "*"                 TO  SYS-5000-KBNCD
+           MOVE    LNK-SCNYUACCT-STSRYYMD(1:6)
+                                       TO  SYS-5000-STYUKYMD(1:6)
+           MOVE    "01"                TO  SYS-5000-STYUKYMD(7:2)
+           MOVE    SYS-5000-STYUKYMD   TO  SYS-5000-EDYUKYMD
+           MOVE    SPA-HOSPNUM         TO  SYS-5000-HOSPNUM
+           MOVE    SYS-5000-REC        TO  MCPDATA-REC
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key10"             TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_syskanri"      TO  MCP-TABLE
+               MOVE    "key10"             TO  MCP-PATHNAME
+               PERFORM 920-DBFETCH-SEC
+               IF      MCP-RC              =   ZERO
+                   MOVE    ZERO                TO  FLG-SYSKANRI
+                   MOVE    MCPDATA-REC         TO  SYS-5000-REC
+               ELSE
+                   MOVE    1                   TO  FLG-SYSKANRI
+               END-IF
+           ELSE
+               MOVE    SPACE               TO  SYS-5000-REC
+               INITIALIZE                  SYS-5000-REC
+               MOVE    1               TO  FLG-SYSKANRI
+           END-IF
+           IF      FLG-SYSKANRI        =   ZERO
+      *
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key10"             TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+      *
+      *    療養病棟（病床）入院料の会計表示対応
+           IF    SYS-5000-RYOYODSPKBN    =    "1"
+             MOVE  SPACE                 TO  WRK-RYOYO-SRYCD
+             MOVE  ZERO                  TO  FLG-RYOYO-NYUIN
+             EVALUATE     LNK-SCNYUACCT-NYUKHN-SRYCD (1)
+                WHEN      "190121310"
+                WHEN      "190121410"
+                WHEN      "190121510"
+                WHEN      "190121610"
+                WHEN      "190121710"
+                   MOVE    1           TO  FLG-RYOYO-NYUIN
+                   MOVE   "190121310"  TO  LNK-SCNYUACCT-KAGEN-SRYCD (1)
+                   MOVE   "190121410"  TO  LNK-SCNYUACCT-KAGEN-SRYCD (2)
+                   MOVE   "190121510"  TO  LNK-SCNYUACCT-KAGEN-SRYCD (3)
+                   MOVE   "190121610"  TO  LNK-SCNYUACCT-KAGEN-SRYCD (4)
+                   MOVE   "190121710"  TO  LNK-SCNYUACCT-KAGEN-SRYCD (5)
+                WHEN      "190123710"
+                WHEN      "190123810"
+                WHEN      "190123910"
+                WHEN      "190124010"
+                WHEN      "190124110"
+                   MOVE    1           TO  FLG-RYOYO-NYUIN
+                   MOVE   "190123710"  TO  LNK-SCNYUACCT-KAGEN-SRYCD (1)
+                   MOVE   "190123810"  TO  LNK-SCNYUACCT-KAGEN-SRYCD (2)
+                   MOVE   "190123910"  TO  LNK-SCNYUACCT-KAGEN-SRYCD (3)
+                   MOVE   "190124010"  TO  LNK-SCNYUACCT-KAGEN-SRYCD (4)
+                   MOVE   "190124110"  TO  LNK-SCNYUACCT-KAGEN-SRYCD (5)
+                WHEN      "190122010"
+                WHEN      "190122110"
+                WHEN      "190122210"
+                WHEN      "190122310"
+                WHEN      "190122410"
+                   MOVE    1           TO  FLG-RYOYO-NYUIN
+                   MOVE   "190122010"  TO  LNK-SCNYUACCT-KAGEN-SRYCD (1)
+                   MOVE   "190122110"  TO  LNK-SCNYUACCT-KAGEN-SRYCD (2)
+                   MOVE   "190122210"  TO  LNK-SCNYUACCT-KAGEN-SRYCD (3)
+                   MOVE   "190122310"  TO  LNK-SCNYUACCT-KAGEN-SRYCD (4)
+                   MOVE   "190122410"  TO  LNK-SCNYUACCT-KAGEN-SRYCD (5)
+                WHEN      "190124310"
+                WHEN      "190124410"
+                WHEN      "190124510"
+                WHEN      "190124610"
+                WHEN      "190124710"
+                   MOVE    1           TO  FLG-RYOYO-NYUIN
+                   MOVE   "190124310"  TO  LNK-SCNYUACCT-KAGEN-SRYCD (1)
+                   MOVE   "190124410"  TO  LNK-SCNYUACCT-KAGEN-SRYCD (2)
+                   MOVE   "190124510"  TO  LNK-SCNYUACCT-KAGEN-SRYCD (3)
+                   MOVE   "190124610"  TO  LNK-SCNYUACCT-KAGEN-SRYCD (4)
+                   MOVE   "190124710"  TO  LNK-SCNYUACCT-KAGEN-SRYCD (5)
+             END-EVALUATE
+      *    
+             IF     FLG-RYOYO-NYUIN     =   1
+                 MOVE   LNK-SCNYUACCT-NYUKHN-SRYCD (1) 
+                                   TO  WRK-RYOYO-SRYCD
+                 MOVE   SPACE      TO  LNK-SCNYUACCT-NYUKHN-SRYCD(1)
+                 MOVE   LNK-SCNYUACCT-STSRYYMD
+                                   TO  LNK-SCNYUACCT-KAGEN-STYUKYMD (1)
+                                       LNK-SCNYUACCT-KAGEN-STYUKYMD (2)
+                                       LNK-SCNYUACCT-KAGEN-STYUKYMD (3)
+                                       LNK-SCNYUACCT-KAGEN-STYUKYMD (4)
+                                       LNK-SCNYUACCT-KAGEN-STYUKYMD (5)
+                 MOVE   "99999999"
+                                   TO  LNK-SCNYUACCT-KAGEN-EDYUKYMD (1)
+                                       LNK-SCNYUACCT-KAGEN-EDYUKYMD (2)
+                                       LNK-SCNYUACCT-KAGEN-EDYUKYMD (3)
+                                       LNK-SCNYUACCT-KAGEN-EDYUKYMD (4)
+                                       LNK-SCNYUACCT-KAGEN-EDYUKYMD (5)
+             END-IF
+           END-IF
       *    加算により剤を決定する
            PERFORM VARYING     IDX-K   FROM    1   BY  1
                    UNTIL       IDX-K   >   7
@@ -1782,6 +1894,18 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    WRK-ACT-DAY         TO  NACCT-DAY (IDX-D)
            END-PERFORM
       *
+      *    TEST
+           IF   (NACCT-ZAISKBKBN     =     "1")    AND
+                (FLG-RYOYO-NYUIN     =      1 )
+                IF  WRK-RYOYO-SRYCD    NOT =   NACCT-SRYCDTOTAL(6:9)
+                    MOVE    WRK-ACT-STYMD(7:2)  TO  IDX1
+                    MOVE    WRK-ACT-EDYMD(7:2)  TO  IDX2
+                    PERFORM VARYING     IDX-D   FROM    IDX1   BY  1
+                          UNTIL       IDX-D   >   IDX2
+                      MOVE    ZERO       TO  NACCT-DAY (IDX-D)
+                    END-PERFORM
+                END-IF
+           END-IF
       *    剤回数
            MOVE    ZERO                TO  NACCT-ZAIKAISU
            PERFORM VARYING     IDX-D   FROM    1      BY  1
