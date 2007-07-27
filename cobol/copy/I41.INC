@@ -53,7 +53,7 @@
           03  I41-KOMENTO.
             04  I41-VALUE       PIC X(50).
           03  I41-DAY           OCCURS 31.
-            04  I41-VALUE       PIC X(2).
+            04  I41-VALUE       PIC X(3).
           03  I41-NYUINKACOMB.
             04  I41-NYUINKA.
               05  I41-VALUE            PIC X(16).
