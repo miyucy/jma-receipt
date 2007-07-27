@@ -297,6 +297,7 @@
       *  03.05.01    NACL-藤原    07/04/19  グループ診療対応
       *  03.05.02    NACL-門脇    07/07/17  個別時のシステム管理編集修正
       *  03.05.03    NACL-門脇    07/07/20  北海道４１老人現物給付対応
+      *  03.05.04    NACL-門脇    07/07/26  レセに記載しないコメント対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -442,6 +443,8 @@
            03  FLG-KEISAN                              PIC 9(01).
            03  FLG-GENBUTU70                           PIC 9(01).
            03  FLG-KOHYONKAIME                         PIC 9(01).
+           03  FLG-WRITE05                             PIC 9(01).
+           03  FLG-WRITE05X                            PIC 9(01).
       *
       *    基本点数の非表示判定用フラグ
        01  FLG-KHNTEN-AREA.
@@ -2175,10 +2178,13 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *
                                MOVE  ZERO  TO   WRK-FILMTEN
       *
+                               MOVE  ZERO  TO   FLG-WRITE05
                                PERFORM 21042-RECE02-TOTALTEN-HENSYU-SEC     
                                PERFORM 21043-RECE04-TENSOU-SEC
                                PERFORM 21044-RECE05-HENSYU-SEC
-                               PERFORM RECE04-WRITE-SEC
+                               IF    FLG-WRITE05  =   1
+                                 PERFORM RECE04-WRITE-SEC
+                               END-IF
                            ELSE
                              IF   ACCT-ZAIKAISU  NOT =    ZERO
                                IF   ACCT-SRYKBN  =  "11"  OR  "12" 
@@ -2224,9 +2230,12 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *
                                       MOVE  ZERO  TO   WRK-FILMTEN
       *
+                                      MOVE  ZERO  TO   FLG-WRITE05
                                       PERFORM   21043-RECE04-TENSOU-SEC
                                       PERFORM   21044-RECE05-HENSYU-SEC
-                                      PERFORM   RECE04-WRITE-SEC
+                                      IF    FLG-WRITE05  =   1
+                                        PERFORM RECE04-WRITE-SEC
+                                      END-IF
                                  END-IF
                                ELSE
                                  PERFORM   21046-SINRYO-CHECK-SEC
@@ -2251,9 +2260,12 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *
                                     MOVE  ZERO  TO   WRK-FILMTEN
       *
+                                    MOVE  ZERO  TO   FLG-WRITE05
                                     PERFORM   21043-RECE04-TENSOU-SEC
                                     PERFORM   21044-RECE05-HENSYU-SEC
-                                    PERFORM   RECE04-WRITE-SEC
+                                    IF    FLG-WRITE05  =   1
+                                      PERFORM RECE04-WRITE-SEC
+                                    END-IF
                                  END-IF
                                END-IF
                              END-IF
@@ -2492,9 +2504,13 @@ grpsys     PERFORM 900-DBSELECT-SEC
                PERFORM  UNTIL  FLG-SRYACT    =    1
                    MOVE   ZERO   TO  FLG-ZANHAIKI
                    MOVE   ZERO   TO  WRK-RENNUM
+                   MOVE   ZERO   TO  FLG-WRITE05X
                    PERFORM   210441-RECE05-TENSOU-SEC
                    PERFORM   210442-RECE02-HENSYU-SEC
-                   PERFORM   RECE05-WRITE-SEC
+                   IF  FLG-WRITE05X  =  1
+                      PERFORM  RECE05-WRITE-SEC
+                      MOVE  1    TO  FLG-WRITE05
+                   END-IF
                    IF  FLG-ZANHAIKI  =  1
                       PERFORM  RECE05-REWRITE-SEC
                    END-IF
@@ -2577,6 +2593,7 @@ grpsys     MOVE    RECE02-HOSPNUM       TO      RECE05-HOSPNUM
                      (TNS-TEN               =  ZERO )       )
              OR     ( SRY-SRYCD(IDX2)(1:7)  =  "0992000"    )
              OR     ( SRY-SRYCD(IDX2)       =  "099209903"  )
+             OR     ( SRY-SRYCD(IDX2)(1:4)  =  "0085"       )
                   COMPUTE   RECE04-MEISAISU    =  RECE04-MEISAISU
                                                -  1
                   MOVE      SRY-SRYCD(IDX2)   TO  WRK-SRYCD
@@ -2648,6 +2665,7 @@ grpsys     MOVE    RECE02-HOSPNUM       TO      RECE05-HOSPNUM
                       (TNS-TEN               =  ZERO )       )
               OR     ( SRY-SRYCD(IDX2)(1:7)  =  "0992000"    )
               OR     ( SRY-SRYCD(IDX2)       =  "099209903"  )
+              OR     ( SRY-SRYCD(IDX2)(1:4)  =  "0085"       )
       *
                CONTINUE
       *
@@ -3144,6 +3162,10 @@ grpsys             MOVE    SRY-HOSPNUM          TO  PTCOM-HOSPNUM
               END-IF
              END-IF  
            END-PERFORM
+      *
+           IF    IDX4    NOT =   ZERO
+               MOVE    1     TO    FLG-WRITE05X
+           END-IF
       *
            .
        210441-RECE05-TENSOU-EXT.

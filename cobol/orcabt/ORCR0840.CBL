@@ -119,6 +119,7 @@
       *  03.05.02    NACL-藤原    07/06/01  realtime preview 処理追加
       *  03.05.03    NACL-門脇    07/06/26  自賠責平成１９年４月改正様式対応
       *  03.05.04    NACL-門脇    07/07/17  個別時のシステム管理編集修正
+      *  03.05.05    NACL-門脇    07/07/26  レセに記載しないコメント対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -269,6 +270,7 @@
            03  FLG-DAY24                               PIC 9(01).
            03  FLG-TENTEKI                             PIC 9(01).
            03  FLG-WRITE85                             PIC 9(01).
+           03  FLG-WRITE85X                            PIC 9(01).
            03  FLG-SIKIBETU                            PIC 9(01).
            03  FLG-ZANHAIKI                            PIC 9(01).
            03  FLG-RECE85-ZAN                          PIC 9(01).
@@ -1547,6 +1549,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                           FLG-OSIN-COM
       *
                        MOVE   ZERO   TO   FLG-WRITE85
+                       MOVE   ZERO   TO   FLG-TENTEKI
                        PERFORM   2201-RECE84-TENSOU-SEC
                        PERFORM   2202-RECE85-HENSYU-SEC
                        IF    FLG-WRITE85  =   1
@@ -1600,6 +1603,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                                     FLG-OSIN-COM
       *
                                  MOVE   ZERO   TO   FLG-WRITE85
+                                 MOVE   ZERO   TO   FLG-TENTEKI
                                  PERFORM   2201-RECE84-TENSOU-SEC
                                  PERFORM   2202-RECE85-HENSYU-SEC
                                  IF    FLG-WRITE85  =   1
@@ -1631,6 +1635,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                                     FLG-OSIN-COM
       *
                                  MOVE   ZERO   TO   FLG-WRITE85
+                                 MOVE   ZERO   TO   FLG-TENTEKI
                                  PERFORM   2201-RECE84-TENSOU-SEC
                                  PERFORM   2202-RECE85-HENSYU-SEC
                                  IF    FLG-WRITE85  =   1
@@ -1778,9 +1783,10 @@ grpsys     PERFORM 900-DBSELECT-SEC
                  PERFORM  UNTIL  FLG-SRYACT    =    1
                    MOVE    ZERO         TO   FLG-ZANHAIKI
                    MOVE    ZERO         TO   WRK-RENNUM
-                   MOVE    ZERO         TO   FLG-TENTEKI
+                   MOVE    ZERO         TO   FLG-WRITE85X
                    PERFORM   22021-RECE85-TENSOU-SEC
                    IF   FLG-TENTEKI  =  ZERO
+                   AND  FLG-WRITE85X =   1
                      PERFORM 22022-RECE82-HENSYU-SEC
                      PERFORM 900-RECE85-WRITE-SEC
                      MOVE  1            TO   FLG-WRITE85
@@ -1915,6 +1921,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                     (TNS-TEN               =  ZERO )       )
             OR     ( SRY-SRYCD(IDX2)(1:7)  =  "0992000"    )
             OR     ( SRY-SRYCD(IDX2)       =  "099209903"  )
+            OR     ( SRY-SRYCD(IDX2)(1:4)  =  "0085"       )
             OR     ((SRY-SRYSYUKBN  = "330" OR "331" OR
                                       "332" OR "350" OR
                                       "352"               ) AND
@@ -1970,6 +1977,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                       (TNS-TEN               =  ZERO )       )
               OR     ( SRY-SRYCD(IDX2)(1:7)  =  "0992000"    )
               OR     ( SRY-SRYCD(IDX2)       =  "099209903"  )
+              OR     ( SRY-SRYCD(IDX2)(1:4)  =  "0085"       )
               OR     ((SRY-SRYSYUKBN  = "330" OR "331" OR
                                         "332" OR "350" OR
                                         "352"               ) AND
@@ -2474,8 +2482,8 @@ grpsys     PERFORM 900-DBSELECT-SEC
             END-IF  
            END-PERFORM
       *
-           IF    IDX4   =   ZERO
-               MOVE    1     TO    FLG-TENTEKI
+           IF    IDX4    NOT =   ZERO
+               MOVE    1     TO    FLG-WRITE85X
            END-IF
       *
            .

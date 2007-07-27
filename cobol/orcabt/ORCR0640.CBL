@@ -250,6 +250,7 @@
       *  03.05.01    NACL-小豆沢  07/06/04  グループ診療対応
       *  03.05.02    NACL-門脇    07/07/17  個別時のシステム管理編集修正
       *  03.05.03    NACL-門脇    07/07/20  北海道４１老人現物給付対応
+      *  03.05.04    NACL-門脇    07/07/26  レセに記載しないコメント対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -380,6 +381,7 @@
            03  FLG-MIJISI2                             PIC 9(01).
            03  FLG-TENTEKI                             PIC 9(01).
            03  FLG-WRITE65                             PIC 9(01).
+           03  FLG-WRITE65X                            PIC 9(01).
            03  FLG-SIKIBETU                            PIC 9(01).
            03  FLG-SENTEICDCHG                         PIC 9(01).
            03  FLG-ZANHAIKI                            PIC 9(01).
@@ -2239,6 +2241,7 @@
                                MOVE   ZERO   TO   WRK-FILMTEN
       *
                                MOVE   ZERO   TO   FLG-WRITE65
+                               MOVE   ZERO   TO   FLG-TENTEKI
                                PERFORM   21011-RECE64-TENSOU-SEC
                                PERFORM   21012-RECE65-HENSYU-SEC
                                IF    FLG-WRITE65  =   1
@@ -2286,6 +2289,7 @@
                                       MOVE   ZERO   TO   WRK-FILMTEN
       *
                                       MOVE   ZERO   TO   FLG-WRITE65
+                                      MOVE   ZERO   TO   FLG-TENTEKI
                                       PERFORM   21011-RECE64-TENSOU-SEC
                                       PERFORM   21012-RECE65-HENSYU-SEC
                                       IF    FLG-WRITE65  =   1
@@ -2310,6 +2314,7 @@
                                       MOVE   ZERO   TO   WRK-FILMTEN
       *
                                       MOVE   ZERO   TO   FLG-WRITE65
+                                      MOVE   ZERO   TO   FLG-TENTEKI
                                       PERFORM   21011-RECE64-TENSOU-SEC
                                       PERFORM   21012-RECE65-HENSYU-SEC
                                       IF    FLG-WRITE65  =   1
@@ -2443,9 +2448,10 @@
                PERFORM  UNTIL  FLG-SRYACT    =    1
                    MOVE    ZERO         TO      FLG-ZANHAIKI
                    MOVE    ZERO         TO      WRK-RENNUM
-                   MOVE    ZERO         TO      FLG-TENTEKI
+                   MOVE    ZERO         TO      FLG-WRITE65X
                    PERFORM   210121-RECE65-TENSOU-SEC
                    IF   FLG-TENTEKI  =  ZERO
+                   AND  FLG-WRITE65X =   1
                      PERFORM 210122-RECE62-HENSYU-SEC
                      PERFORM RECE65-WRITE-SEC
                      MOVE  1            TO      FLG-WRITE65
@@ -2569,6 +2575,7 @@
                     (TNS-TEN               =  ZERO )       )
             OR     ( SRY-SRYCD(IDX2)(1:7)  =  "0992000"    )
             OR     ( SRY-SRYCD(IDX2)       =  "099209903"  )
+            OR     ( SRY-SRYCD(IDX2)(1:4)  =  "0085"       )
             OR     ((SRY-SRYSYUKBN  = "330" OR "331" OR
                                       "332" OR "350" OR
                                       "352"               ) AND
@@ -2659,6 +2666,7 @@
                       (TNS-TEN               =  ZERO )       )
               OR     ( SRY-SRYCD(IDX2)(1:7)  =  "0992000"    )
               OR     ( SRY-SRYCD(IDX2)       =  "099209903"  )
+              OR     ( SRY-SRYCD(IDX2)(1:4)  =  "0085"       )
               OR     ((SRY-SRYSYUKBN  = "330" OR "331" OR
                                         "332" OR "350" OR
                                         "352"               ) AND
@@ -2985,8 +2993,8 @@
             END-IF  
            END-PERFORM
       *
-           IF    IDX4   =   ZERO
-               MOVE    1     TO    FLG-TENTEKI
+           IF    IDX4    NOT =   ZERO
+               MOVE    1     TO    FLG-WRITE65X
            END-IF
       *
            .

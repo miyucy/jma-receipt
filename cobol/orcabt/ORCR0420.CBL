@@ -131,6 +131,7 @@
       *  03.05.02    NACL-藤原    07/06/01  realtime preview 処理追加
       *  03.05.03    NACL-門脇    07/06/26  自賠責平成１９年４月改正様式対応
       *  03.05.04    NACL-門脇    07/07/17  個別時のシステム管理編集修正
+      *  03.05.05    NACL-門脇    07/07/26  レセに記載しないコメント対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -292,6 +293,8 @@
            03  FLG-RINYAK                              PIC 9(01).
            03  FLG-TAISYO                              PIC 9(01).
            03  FLG-SRYACCTPLUS                         PIC 9(01).
+           03  FLG-WRITE45                             PIC 9(01).
+           03  FLG-WRITE45X                            PIC 9(01).
       *
       *    基本点数の非表示判定用フラグ
        01  FLG-KHNTEN-AREA.
@@ -1233,9 +1236,12 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *
                                MOVE    SPACE   TO      WRK-KYUGYOFLG
       *
+                               MOVE    ZERO    TO      FLG-WRITE45
                                PERFORM   21011-RECE44-TENSOU-SEC
                                PERFORM   21012-RECE45-HENSYU-SEC
-                               PERFORM   21013-RECE44-WRITE-SEC
+                               IF    FLG-WRITE45  =   1
+                                 PERFORM 21013-RECE44-WRITE-SEC
+                               END-IF
                    ELSE
                              IF   ACCT-ZAIKAISU  NOT =    ZERO
                                IF   ACCT-SRYKBN  =  "11"  OR  "12" 
@@ -1287,9 +1293,12 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *
                                       MOVE  SPACE TO  WRK-KYUGYOFLG
       *
+                                      MOVE  ZERO  TO  FLG-WRITE45
                                       PERFORM   21011-RECE44-TENSOU-SEC
                                       PERFORM   21012-RECE45-HENSYU-SEC
-                                      PERFORM   21013-RECE44-WRITE-SEC
+                                      IF    FLG-WRITE45  =   1
+                                        PERFORM 21013-RECE44-WRITE-SEC
+                                      END-IF
                                  END-IF
                                ELSE
                                  PERFORM   21014-SINRYO-CHECK-SEC
@@ -1321,9 +1330,12 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *
                                       MOVE  SPACE TO  WRK-KYUGYOFLG
       *
+                                      MOVE  ZERO  TO  FLG-WRITE45
                                       PERFORM   21011-RECE44-TENSOU-SEC
                                       PERFORM   21012-RECE45-HENSYU-SEC
-                                      PERFORM   21013-RECE44-WRITE-SEC
+                                      IF    FLG-WRITE45  =   1
+                                        PERFORM 21013-RECE44-WRITE-SEC
+                                      END-IF
                                  END-IF
                                END-IF
                              END-IF
@@ -1445,9 +1457,13 @@ grpsys     PERFORM 900-DBSELECT-SEC
                PERFORM  UNTIL  FLG-SRYACT    =    1
                    MOVE   ZERO   TO  FLG-ZANHAIKI
                    MOVE   ZERO   TO  WRK-RENNUM
+                   MOVE   ZERO   TO  FLG-WRITE45X
                    PERFORM   210121-RECE45-TENSOU-SEC
                    PERFORM   210122-RECE41-HENSYU-SEC
-                   PERFORM   210123-RECE45-WRITE-SEC
+                   IF  FLG-WRITE45X  =  1
+                      PERFORM  210123-RECE45-WRITE-SEC
+                      MOVE  1    TO  FLG-WRITE45
+                   END-IF
                    IF  FLG-ZANHAIKI  =  1
                       PERFORM  210124-RECE45-REWRITE-SEC
                    END-IF
@@ -1545,6 +1561,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                      (TNS-TEN               =  ZERO )       )
              OR     ( SRY-SRYCD(IDX2)(1:7)  =  "0992000"    )
              OR     ( SRY-SRYCD(IDX2)       =  "099209903"  )
+             OR     ( SRY-SRYCD(IDX2)(1:4)  =  "0085"       )
                   COMPUTE   RECE44-MEISAISU    =  RECE44-MEISAISU
                                                -  1
                   MOVE      SRY-SRYCD(IDX2)   TO  WRK-SRYCD
@@ -1581,6 +1598,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                       (TNS-TEN               =  ZERO )       )
               OR     ( SRY-SRYCD(IDX2)(1:7)  =  "0992000"    )
               OR     ( SRY-SRYCD(IDX2)       =  "099209903"  )
+              OR     ( SRY-SRYCD(IDX2)(1:4)  =  "0085"       )
       *
                CONTINUE
       *
@@ -2171,6 +2189,10 @@ grpsys     PERFORM 900-DBSELECT-SEC
               END-IF
              END-IF  
            END-PERFORM
+      *
+           IF    IDX4    NOT =   ZERO
+               MOVE    1     TO    FLG-WRITE45X
+           END-IF
       *
            .
        210121-RECE45-TENSOU-EXT.
@@ -5486,9 +5508,12 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *
                                MOVE    SPACE   TO    WRK-KYUGYOFLG
       *
+                               MOVE    ZERO    TO    FLG-WRITE45
                                PERFORM   21011-RECE44-TENSOU-SEC
                                PERFORM   21012-RECE45-HENSYU-SEC
-                               PERFORM   21013-RECE44-WRITE-SEC
+                               IF    FLG-WRITE45  =   1
+                                 PERFORM 21013-RECE44-WRITE-SEC
+                               END-IF
                            ELSE
                              IF   ACCT-ZAIKAISU  NOT =    ZERO
                                IF   ACCT-SRYKBN  =  "11"  OR  "12" 
@@ -5542,9 +5567,12 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *
                                       MOVE  SPACE TO  WRK-KYUGYOFLG
       *
+                                      MOVE  ZERO  TO  FLG-WRITE45
                                       PERFORM   21011-RECE44-TENSOU-SEC
                                       PERFORM   21012-RECE45-HENSYU-SEC
-                                      PERFORM   21013-RECE44-WRITE-SEC
+                                      IF    FLG-WRITE45  =   1
+                                        PERFORM 21013-RECE44-WRITE-SEC
+                                      END-IF
                                  END-IF
                                ELSE
                                  PERFORM   21014-SINRYO-CHECK-SEC
@@ -5578,9 +5606,12 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *
                                       MOVE  SPACE TO  WRK-KYUGYOFLG
       *
+                                      MOVE  ZERO  TO  FLG-WRITE45
                                       PERFORM   21011-RECE44-TENSOU-SEC
                                       PERFORM   21012-RECE45-HENSYU-SEC
-                                      PERFORM   21013-RECE44-WRITE-SEC
+                                      IF    FLG-WRITE45  =   1
+                                        PERFORM 21013-RECE44-WRITE-SEC
+                                      END-IF
                                  END-IF
                                END-IF
                              END-IF
