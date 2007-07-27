@@ -466,7 +466,7 @@
       *    保険組合マスター編集
            MOVE    SPACE               TO  HKNCOMBI-REC
            INITIALIZE                  HKNCOMBI-REC
-           MOVE    SPA-HOSPNUM          TO  COMB-HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  COMB-HOSPNUM
            MOVE    SPA-GMN-PTID        TO  COMB-PTID
       *
            MOVE    HKNCOMBI-REC        TO  MCPDATA-REC
@@ -483,6 +483,7 @@
            END-IF
            PERFORM
                    UNTIL      (FLG-HKNCOMBI        =   1      )
+                          OR  (SPA-J021-MAX        >=   40     )
       *
       *        対象の保険組合せのみ編集
                MOVE    ZERO                TO  FLG-HKNCOMBICHK
@@ -502,6 +503,7 @@
       *
                IF      FLG-HKNCOMBICHK    =    1
                    ADD     1                   TO  SPA-J021-MAX
+      *
                    MOVE    COMB-HKNCOMBINUM    TO  SPA-J021-THKNCOMBI
                                                     (SPA-J021-MAX)
                    MOVE    COMB-TEKSTYMD       TO  SPA-NAI-TEKSTYMD
