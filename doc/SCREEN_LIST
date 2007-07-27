@@ -22,6 +22,7 @@ XBER.glade	orca02	(XBER)エラー情報
 XBID.glade	orca02	(XBID)確認画面
 
 XC01.glade	orca03	(XC01)プレビュー選択画面
+XC02.glade	orca03	(XC02)プレビュー選択画面（横）			VER3.5.0
 XC99.glade	orca03	(XC99)処理結果
 XCERR.glade	orca03	(XCERR)エラー情報
 XCID1.glade	orca03	(XCID1)確認画面
@@ -204,6 +205,7 @@ I2ID1.glade	orca36	(I2ID1)確認画面
 
 D01.glade	orca41	(D01)レセプトチェック指示
 D02.glade	orca41	(D02)データチェック-個別指示			VER3.5.0
+D03.glade	orca41	(D03)ユーザー確認項目登録			VER3.5.0
 D99.glade	orca41	(D99)処理結果
 DERR.glade	orca41	(DERR)エラー情報
 DID1.glade	orca41	(DID1)確認画面
