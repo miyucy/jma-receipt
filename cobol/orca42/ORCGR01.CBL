@@ -2916,6 +2916,8 @@ grpsys     PERFORM 900-DBSELECT-SEC
                IF      SPA-RIDCD       NOT =   SPACE
                    GO  TO  480-ZENKAI-HYOUJI-EXT
                END-IF
+           ELSE
+               MOVE    SPACE               TO  SPA-RIDCD
            END-IF
       *
       *    前回データ対象編集処理
