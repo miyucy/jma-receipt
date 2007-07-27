@@ -655,6 +655,9 @@
       *        確認メッセージ
                WHEN    "PID1"
                    PERFORM 3001-PID1-SYORI-SEC
+                   IF      SPA-ERRCD       NOT =   SPACE
+                       PERFORM 510-ERRSET-SEC
+                   END-IF
       *        拡張患者番号設定
                WHEN    "P014"
                    MOVE    "P02"           TO  SPA-P02-GAMEN
@@ -4269,6 +4272,18 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                                TO  SPA-ERRMSG
                    MOVE    "公費を作成して下さい。"
                                                TO  SPA-ERRMSG(31:)
+               WHEN    "0106"
+                   STRING   "公費の登録は６０件までです。"
+                            "これ以上追加できません。"
+                                               DELIMITED  BY  SIZE
+                                               INTO  SPA-ERRMSG
+                   END-STRING
+               WHEN    "0107"
+                   STRING   "保険の登録は４０件までです。"
+                            "これ以上追加できません。"
+                                               DELIMITED  BY  SIZE
+                                               INTO  SPA-ERRMSG
+                   END-STRING
       *    キーエラー
                WHEN    "0110"
                    MOVE    "この画面では選択できません。"

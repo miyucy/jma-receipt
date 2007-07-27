@@ -360,6 +360,8 @@
       *    Á´³Ñ¥Á¥§¥Ã¥¯·å¿ô
            03  WRK-LEN                 PIC 9(04).
       *
+           03  WRK-EDANUM              PIC 9(04).
+      *
       *    ¸øÈñ£Ó£Ï£Ò£ÔÍÑ¡Ê£Ó£Ð£Á¤ÈÆ±¤¸ÎÎ°è¡Ë
        01  WRK-KOUHI-AREA.
       *    ¸øÈñ¾ðÊó
@@ -554,7 +556,9 @@
                    07  WRK-RATE-TANI   PIC X(04).
                05  WRK-RATE-EDIT-R  REDEFINES    WRK-RATE-EDIT.
                    07  WRK-RATE-EDITR  PIC X(11).
-      *----(01.00.12) LINE ADD START ---------------------------------
+      *
+           03  TBL-MAX-KOH             PIC 9(02)  VALUE    60.
+           03  TBL-MAX-HKN             PIC 9(02)  VALUE    40.
       *
        01  WRK-NENREI-AREA.
            03  WRK-YMDS1.
@@ -631,7 +635,6 @@
            03  PTKOH-GENHKNNUM1   PIC X(03).
            03  PTKOH-GENHKNNUM2   PIC X(03).
            03  PTKOH-GENHKNNUM3   PIC X(03).
-      *
       *    ´µ¼Ô¾ðÊó  *
        01  PTINF-REC.
            COPY "CPPTINF.INC".
@@ -893,13 +896,20 @@
                                                        SPA-P02KYOUTU
                WHEN    "0111"
       *            Ï·¿Í¸øÈñ£²³ä¤ò£³³ä¤Ø
+               IF      (SPA-PTKOH-MAX      >=  TBL-MAX-KOH )
+                   MOVE    "0106"          TO  SPA-ERRCD
+               ELSE
                    MOVE    ZERO                TO  SPA-KOH-ADD
                    CALL    "ORCSP03B"          USING   SPA-AREA
                                                        SPA-P02SCRAREA
                                                        SPA-P02KYOUTU
+               END-IF
                WHEN    "0106"
                WHEN    "0107"
       *            ¸øÈñ½ÅÊ£½èÍý
+               IF      (SPA-PTKOH-MAX      >=  TBL-MAX-KOH )
+                   MOVE    "0106"          TO  SPA-ERRCD
+               ELSE
                    MOVE    ZERO                TO  SPA-KOH-ADD
                    CALL    "ORCSP03B"          USING   SPA-AREA
                                                        SPA-P02SCRAREA
@@ -914,6 +924,7 @@
                                                        SPA-P02SCRAREA
                                                        SPA-P02KYOUTU
                    END-IF
+               END-IF
       *        ÊÝ¸±½ªÎ»½èÍý
                WHEN    "0201"
                WHEN    "0203"
@@ -2860,7 +2871,7 @@
                    WHEN    2
                        MOVE    26          TO  SPA-GMN-CUR
                    WHEN    3
-                        MOVE    32          TO  SPA-GMN-CUR
+                       MOVE    32          TO  SPA-GMN-CUR
                END-EVALUATE
            END-IF
            .
@@ -3977,6 +3988,9 @@
            ELSE
                MOVE    SPA-NAI-HKNSTR      TO  IDX
            END-IF
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      41031-HKN-SPA-TBL-SET-EXT
+           END-IF
            PERFORM 410312-HKN-SPATBL-SET-SEC
       *
       *    ¶õÇò¹Ôºï½ü
@@ -4023,6 +4037,10 @@
       ****************************************************************
        410311-HKNTBL-INS-SEC           SECTION.
       *
+           IF      (SPA-PTHKN-MAX       >=  TBL-MAX-HKN )
+               MOVE    "0107"          TO  SPA-ERRCD
+           ELSE
+      *
       *    £±¹Ô³«¤±¤ë
            MOVE    ZERO                TO  IDX
            PERFORM VARYING     IDX     FROM    SPA-PTHKN-MAX BY -1
@@ -4032,6 +4050,8 @@
            END-PERFORM
            INITIALIZE                  SPA-PTHKNINF-TBL (01)
            ADD     1                   TO  SPA-PTHKN-MAX
+      *
+           END-IF
            .
        410311-HKNTBL-INS-EXT.
            EXIT.
@@ -4112,7 +4132,7 @@
                        MOVE    1               TO  IDY
                    ELSE
                        ADD     1               TO  SPA-PTKOH-MAX
-                       MOVE    SPA-PTKOH-MAX       TO  IDY
+                       MOVE    SPA-PTKOH-MAX   TO  IDY
                    END-IF
                    PERFORM 3102-KOH-SPATBL-HEN-SEC
               END-IF
@@ -4509,6 +4529,9 @@
                        COMPUTE SPA-KOH-GMN2   =   SPA-KOH-MAX
                                               +   1
                    END-IF
+      *
+                   IF      SPA-ERRCD           =   SPACE
+      *
                    MOVE    ZERO                TO  SPA-KOH-GMN1
                    MOVE    ZERO                TO  FLG-KOH27
                    PERFORM VARYING     IDX-K   FROM    1   BY  1
@@ -4521,6 +4544,9 @@
                    END-PERFORM
                    MOVE    "0111"              TO  SPA-PIDCD
                    MOVE    21                  TO  SPA-GMN-CUR
+      *
+               END-IF
+      *
                END-IF
            END-IF
       *
@@ -4587,6 +4613,9 @@
                        COMPUTE SPA-KOH-GMN2   =   SPA-KOH-MAX
                                               +   1
                    END-IF
+      *
+                   IF      SPA-ERRCD           =   SPACE
+      *
                    MOVE    ZERO                TO  SPA-KOH-GMN1
                    MOVE    ZERO                TO  FLG-KOH27
                    PERFORM VARYING     IDX-K   FROM    1   BY  1
@@ -4600,6 +4629,9 @@
                    MOVE    "0111"              TO  SPA-PIDCD
                    MOVE    21                  TO  SPA-GMN-CUR
                END-IF
+      *
+               END-IF
+      *
            END-IF
            .
        410332-RJN27-CHK-EXT.
@@ -4653,6 +4685,12 @@
            IF      SPA-HKNKOH-FLG  NOT =   1
       *        ¸øÈñ²èÌÌ¤ÎÆâÍÆ¤ò£Ô£Â£Ì¤ØÊÔ½¸¤¹¤ë
                PERFORM 41032-KOH-SPA-TBL-SET-SEC
+           END-IF
+      *    ¥Æ¡¼¥Ö¥ë·ï¿ô
+           IF     (SPA-ERRCD           =   SPACE )  AND
+                  (SPA-PTKOH-MAX       >=  TBL-MAX-KOH )
+               MOVE    "0106"          TO  SPA-ERRCD
+               GO      TO      4104-KOH-ADD-EXT
            END-IF
       *
       *    ºÇ½é¤Î£±¹Ô¤ò³«¤±¤ë
@@ -5355,16 +5393,19 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                                MCPDATA-REC
                                                SPA-AREA
       *
+           MOVE    ZERO                TO  WRK-EDANUM
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   SPA-PTKOH-MAX
+      *
                PERFORM 45021-KOH-SPA-PARA-SEC
       *
+               ADD     1                   TO  WRK-EDANUM
       *        ÄÉ²Ã
                INITIALIZE                      PARA-REC
                MOVE    "P02"               TO  PARA-GYOUMUID
                MOVE    SPA-TERMID          TO  PARA-TERMID
                MOVE    "PTKOHINF"          TO  PARA-FILEMEI
-               MOVE    IDX                 TO  PARA-EDANUM
+               MOVE    WRK-EDANUM          TO  PARA-EDANUM
                MOVE    PTKOHINF-REC        TO  PARA-DATA-REC
       *
                MOVE    SPA-HOSPNUM         TO  PARA-HOSPNUM
@@ -5393,7 +5434,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPACE               TO  PTKOHINF-REC
            INITIALIZE                      PTKOHINF-REC
       *
-           MOVE    SPA-HOSPNUM          TO  PTKOH-HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  PTKOH-HOSPNUM
            MOVE    SPA-GMN-PTID        TO  PTKOH-PTID
            MOVE    SPA-PTKOH-KOHID     (IDX)   TO  PTKOH-KOHID
            MOVE    SPA-PTKOH-KOHNUM    (IDX)   TO  PTKOH-KOHNUM
@@ -5478,7 +5519,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                    END-PERFORM
                    IF      IDY             =   ZERO
                        COMPUTE IDY         =   SPA-FTN1-MAX     +  1
-                       IF      IDY         >   40
+                       IF      IDY         >   60
                            MOVE    "0097"          TO  SPA-ERRCD
                        ELSE
                            MOVE    IDY         TO  SPA-FTN1-MAX
@@ -5601,6 +5642,12 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            IF      FLG-KOH-ADD         =   ZERO
                MOVE    "0090"          TO  SPA-ERRCD
+           END-IF
+      *    ¥Æ¡¼¥Ö¥ë·ï¿ô
+           IF     (SPA-ERRCD           =   SPACE )  AND
+                  (SPA-PTKOH-MAX       >=  TBL-MAX-KOH )
+               MOVE    "0106"          TO  SPA-ERRCD
+               GO      TO      470-KOH-TUIKA-EXT
            END-IF
       *
            EVALUATE    TRUE
@@ -6678,33 +6725,29 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *****************************************************************
        410112-SE-WAFORMAT-YMDEDIT-SEC  SECTION.
       *
-           IF      WRK-SYMD            =   SPACE
-               MOVE    SPACE           TO  WRK-HENYMD
-               GO      TO      410112-SE-WAFORMAT-YMDEDIT-EXT
-           END-IF
-           IF      WRK-SYMD            =   ZERO
-               MOVE    "0000000"       TO  WRK-HENYMD
-               GO      TO      410112-SE-WAFORMAT-YMDEDIT-EXT
-           ELSE
-               IF      WRK-SYMD            =   ALL "9"
+           EVALUATE    WRK-SYMD
+               WHEN    SPACE
+                   MOVE    SPACE           TO  WRK-HENYMD
+               WHEN    ZERO
+                   MOVE    "0000000"       TO  WRK-HENYMD
+               WHEN    "99999999"
                    MOVE    "9999999"       TO  WRK-HENYMD
-                   GO      TO      410112-SE-WAFORMAT-YMDEDIT-EXT
-               END-IF
-           END-IF
+               WHEN    OTHER
       *
-           MOVE    SPACE               TO  STS-AREA-DAY
-           INITIALIZE                      STS-AREA-DAY
-           MOVE    SPACE               TO  LNK-DAY2-AREA
-           MOVE    "21"                TO  LNK-DAY2-IRAI
-           MOVE    WRK-SYMD            TO  LNK-DAY2-YMD
-           CALL    "ORCSDAY"           USING
-                                       STS-AREA-DAY
-                                       LNK-DAY2-AREA
-           IF      STS-DAY-RC1         =   ZERO
-               MOVE    LNK-DAY2-EDTYMD1    TO  WRK-HENYMD
-           ELSE
-               MOVE    SPACE               TO  WRK-HENYMD
-           END-IF
+                   MOVE    SPACE               TO  STS-AREA-DAY
+                   INITIALIZE                      STS-AREA-DAY
+                   MOVE    SPACE               TO  LNK-DAY2-AREA
+                   MOVE    "21"                TO  LNK-DAY2-IRAI
+                   MOVE    WRK-SYMD            TO  LNK-DAY2-YMD
+                   CALL    "ORCSDAY"           USING
+                                               STS-AREA-DAY
+                                               LNK-DAY2-AREA
+                   IF      STS-DAY-RC1         =   ZERO
+                       MOVE    LNK-DAY2-EDTYMD1    TO  WRK-HENYMD
+                   ELSE
+                       MOVE    SPACE               TO  WRK-HENYMD
+                   END-IF
+           END-EVALUATE
            .
        410112-SE-WAFORMAT-YMDEDIT-EXT.
            EXIT.

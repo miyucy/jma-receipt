@@ -580,6 +580,7 @@
       *----(01.00.01) LINE MOD END   ---------------------------------
       *    保険番号マスタより制度名取得
            PERFORM 4410-HKNKOH-KAKUNIN-SEC
+      *
            IF  WRK-KEN-ERFLG    NOT =   SPACE
                MOVE    "0065"       TO  SPA-ERRCD
            ELSE

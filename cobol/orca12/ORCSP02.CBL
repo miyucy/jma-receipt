@@ -1877,9 +1877,8 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE    IDX                 TO  PARA-EDANUM
                    MOVE    PTKOHINF-REC        TO  PARA-DATA-REC
                    PERFORM 400-PARA-INSERT-SEC
-      ************ WRITE   PARA-REC
       *            £Ó£Ð£Á¤Ë¤âÊÔ½¸¤¹¤ë
-                   IF      IDX               >  40
+                   IF      IDX               >  60
                        CONTINUE
                    ELSE
                        PERFORM 100222-PTKOHINF-SPA-SEC
