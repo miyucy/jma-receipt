@@ -191,4 +191,14 @@
                                                BINARY.
                 05  W24-TEIKISAGAKUACT-ITM     PIC X(20)
                                                OCCURS  5.
+              04  W24-CMB-RYOYODSP.
+                05  W24-RYOYODSP               PIC X(20).
+                05  W24-RYOYODSP-STATE         PIC S9(9)
+                                               BINARY.
+                05  W24-RYOYODSP-CNT           PIC S9(9)
+                                               BINARY.
+                05  W24-RYOYODSP-ITM           PIC X(20)
+                                               OCCURS  5.
+                05  W24-RYOYODSP-ITM-STATE     PIC S9(9)
+                                               BINARY.
 

@@ -93,6 +93,11 @@
                    13  SPA-GMN-W24-TEIKISAGAKUACT      PIC X(01).
                    13                                  PIC X(01).
                    13  SPA-GMN-W24-TEIKISAGAKUACTMEI   PIC X(18).
+      *          Œ≈Õ‹∆˛±°…Ωº®∂Ë ¨
+                 11  SPA-GMN-W24-RYOYODSP-G.
+                   13  SPA-GMN-W24-RYOYODSP            PIC X(01).
+                   13                                  PIC X(01).
+                   13  SPA-GMN-W24-RYOYODSPMEI         PIC X(18).
       *          ∆˛±°≤√ªªæ Û
                  11  SPA-GMN-W24-FRAME3.
                    13  SPA-GMN-W24-NYUKSN-G.
@@ -331,6 +336,14 @@
                        15  SPA-GMN-W24-TEIKISAGAKUACTL     PIC X(01).
                        15                                  PIC X(01).
                        15  SPA-GMN-W24-TEIKISAGAKUACTMEIL  PIC X(18).
+      *
+      *          Œ≈Õ‹∆˛±°…Ωº®∂Ë ¨
+                 11  SPA-GMN-W24-RYOYODSPLST-G.
+                   13  SPA-GMN-W24-RYOYODSP-MAX        PIC 9(03).
+                   13  SPA-GMN-W24-RYOYODSPLST         OCCURS  5.
+                       15  SPA-GMN-W24-RYOYODSPL       PIC X(01).
+                       15                              PIC X(01).
+                       15  SPA-GMN-W24-RYOYODSPMEIL    PIC X(18).
       *
              07  SPA-NAI-W24-AREA.
                09  SPA-NAI-W24-SKJSRY-SRYCD-G.

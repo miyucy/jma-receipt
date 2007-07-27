@@ -47,6 +47,8 @@
       *  03.04.00    NACL-Â¿¡¹Ç¼  06/10/26  ¸¡º÷²èÌÌÏ¢Íí¾ðÊóÄÉ²Ã 
       *  03.04.00    NACL-ÂÀÅÄ    06/11/29  Âà±¡ºÆ·×»»¶èÊ¬ÄÉ²Ã
       *  03.05.00    NACL-ÂÀÅÄ    07.05.18  ¥°¥ë¡¼¥×¿ÇÎÅÂÐ±þ
+      *  03.05.00    NACL-¾®Æ¦Âô  07.07.27  ÎÅÍÜÉÂÅï¡ÊÉÂ¾²¡ËÆþ±¡²ñ·×
+      *                                     É½¼¨¶èÊ¬ÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT                               DIVISION.
@@ -621,6 +623,9 @@
       *    Äê´üÀÁµáº¹³Û½é´üÉ½¼¨¶èÊ¬¥³¥ó¥Ü
            PERFORM 310-TEIKISAGAKUACTLST-SET-SEC
       *
+      *    ÎÅÍÜÆþ±¡É½¼¨¶èÊ¬¥³¥ó¥Ü
+           PERFORM 310-RYOYODSPLST-SET-SEC
+      *
            .
        310-CMB-SYOKI-EXT.
            EXIT.
@@ -1018,6 +1023,24 @@
        310-TEIKISAGAKUACTLST-SET-EXT.
            EXIT.
       *****************************************************************
+      *    ÎÅÍÜÆþ±¡É½¼¨¶èÊ¬¥³¥ó¥Ü
+      *****************************************************************
+       310-RYOYODSPLST-SET-SEC    SECTION.
+      *
+           MOVE    2               TO  SPA-GMN-W24-RYOYODSP-MAX
+      *
+           MOVE    "0"             TO  SPA-GMN-W24-RYOYODSPL    (1)
+           MOVE    "»»ÄêÆþ±¡ÎÁ¤Î¤ßÉ½¼¨"
+                                   TO  SPA-GMN-W24-RYOYODSPMEIL (1)
+      *
+           MOVE    "1"             TO  SPA-GMN-W24-RYOYODSPL    (2)
+           MOVE    "Æþ±¡ÎÁ£Á¡Á£Å¤òÉ½¼¨"
+                                   TO  SPA-GMN-W24-RYOYODSPMEIL (2)
+      *
+           .
+       310-RYOYODSPLST-SET-EXT.
+           EXIT.
+      *****************************************************************
       *    ÆþÎÏ¾ðÊóÊÔ½¸½èÍý
       *****************************************************************
        310-INPUT-AREA-EDIT-SEC     SECTION.
@@ -1152,6 +1175,16 @@
            ELSE
                MOVE    SPA-GMN-W24-TEIKISAGAKUACTLST (1)
                                        TO  SPA-GMN-W24-TEIKISAGAKUACT-G
+           END-IF
+      *
+      *    ÎÅÍÜÆþ±¡É½¼¨¶èÊ¬
+           MOVE    SYS-5000-RYOYODSPKBN  TO  WRK-CMB-CD
+           PERFORM 4200-RYOYODSPLST-CHK-SEC
+           IF    ( WRK-CMB-ITM     NOT =   SPACE )
+               MOVE    WRK-CMB-ITM     TO  SPA-GMN-W24-RYOYODSP-G
+           ELSE
+               MOVE    SPA-GMN-W24-RYOYODSPLST (1)
+                                       TO  SPA-GMN-W24-RYOYODSP-G
            END-IF
       *
       *    Æþ±¡ÎÁ²Ã»»¾ðÊó
@@ -1655,6 +1688,9 @@
       *    Äê´üÀÁµáº¹³Û½é´üÉ½¼¨¶èÊ¬
            MOVE    W24-TEIKISAGAKUACT  TO  SPA-GMN-W24-TEIKISAGAKUACT-G
       *
+      *    ÎÅÍÜÆþ±¡É½¼¨¶èÊ¬
+           MOVE    W24-RYOYODSP        TO  SPA-GMN-W24-RYOYODSP-G
+      *
            .
       *
        4101-GMN-SPA-SET-EXT.
@@ -1828,6 +1864,12 @@
       *
       *    Äê´üÀÁµáº¹³Û½é´üÉ½¼¨¶èÊ¬¥Á¥§¥Ã¥¯½èÍý
            PERFORM 4100-TEIKISAGAKUACT-CHK-SEC
+           IF    ( SPA-ERRCD   NOT =   SPACE )
+               GO  TO  4102-KIHON-CHK-EXT
+           END-IF
+      *
+      *    ÎÅÍÜÆþ±¡É½¼¨¶èÊ¬¥Á¥§¥Ã¥¯½èÍý
+           PERFORM 4100-RYOYODSP-CHK-SEC
            IF    ( SPA-ERRCD   NOT =   SPACE )
                GO  TO  4102-KIHON-CHK-EXT
            END-IF
@@ -2273,6 +2315,10 @@
       *    Äê´üÀÁµáº¹³Û½é´üÉ½¼¨¶èÊ¬
            MOVE    SPA-GMN-W24-TEIKISAGAKUACT
                                    TO  SYS-5000-TEIKISAGAKUACTKBN
+      *
+      *    ÎÅÍÜÆþ±¡É½¼¨¶èÊ¬
+           MOVE    SPA-GMN-W24-RYOYODSP
+                                   TO  SYS-5000-RYOYODSPKBN
       *
       *    ¸º»»¾ðÊó
            IF    ( SPA-W01-EDYUKYMD    >=  CONST-H180401 )
@@ -3085,6 +3131,25 @@
        4100-TEIKISAGAKUACT-CHK-EXT.
            EXIT.
       *****************************************************************
+      *    ÎÅÍÜÆþ±¡É½¼¨¶èÊ¬¥Á¥§¥Ã¥¯½èÍý
+      *****************************************************************
+       4100-RYOYODSP-CHK-SEC          SECTION.
+      *
+           MOVE    SPA-GMN-W24-RYOYODSP
+                                       TO  WRK-CMB-CD
+           PERFORM 4200-RYOYODSPLST-CHK-SEC
+           IF    ( WRK-CMB-ITM         =   SPACE )
+               MOVE    SPA-GMN-W24-RYOYODSPLST (1)
+                                       TO  SPA-GMN-W24-RYOYODSP-G
+           ELSE
+               MOVE    WRK-CMB-ITM     TO  SPA-GMN-W24-RYOYODSP-G
+           END-IF
+      *
+           .
+      *
+       4100-RYOYODSP-CHK-EXT.
+           EXIT.
+      *****************************************************************
       *    Æþ±¡»þ¿©»öÎÅÍÜ¥³¥ó¥Ü¥Á¥§¥Ã¥¯½èÍý
       *****************************************************************
        4200-SKJRYOYOLST-CHK-SEC    SECTION.
@@ -3558,6 +3623,29 @@
        4200-TEIKISAGAKUACTLST-CHK-EXT.
            EXIT.
       *****************************************************************
+      *    ÎÅÍÜÆþ±¡É½¼¨¶èÊ¬¥³¥ó¥Ü¥Á¥§¥Ã¥¯½èÍý
+      *****************************************************************
+       4200-RYOYODSPLST-CHK-SEC   SECTION.
+      *
+           INITIALIZE                  WRK-CMB-ITM-G
+      *
+           PERFORM VARYING IDX-CMB FROM    1   BY  1
+                   UNTIL ( IDX-CMB >   SPA-GMN-W24-RYOYODSP-MAX )
+                    OR   ( WRK-CMB-ITM NOT =   SPACE )
+      *
+               IF    ( SPA-GMN-W24-RYOYODSPL (IDX-CMB)
+                                       =   WRK-CMB-CD )
+                   MOVE    SPA-GMN-W24-RYOYODSPLST (IDX-CMB)
+                                       TO  WRK-CMB-ITM
+                   MOVE    IDX-CMB     TO  WRK-CMB-IDX
+               END-IF
+      *
+           END-PERFORM
+      *
+           .
+       4200-RYOYODSPLST-CHK-EXT.
+           EXIT.
+      *****************************************************************
       *    ÆþÎÏ¾ðÊóÎÎ°è½é´ü²½½èÍý
       *****************************************************************
        4201-INPUT-AREA-INIT-SEC        SECTION.
@@ -3659,6 +3747,8 @@
                                    TO  SPA-GMN-W24-ADLINPUT-G
            MOVE    SPA-GMN-W24-TEIKISAGAKUACTLST (1)
                                    TO  SPA-GMN-W24-TEIKISAGAKUACT-G
+           MOVE    SPA-GMN-W24-RYOYODSPLST (1)
+                                   TO  SPA-GMN-W24-RYOYODSP-G
       *
       *
       *    Æþ±¡²Ã»»Ì¾¾ÎÊÔ½¸½èÍý
@@ -4263,6 +4353,21 @@
       *
            END-PERFORM
       *
+      *    ÎÅÍÜÆþ±¡É½¼¨¶èÊ¬
+           MOVE    SPA-GMN-W24-RYOYODSP-G
+                                       TO  W24-RYOYODSP
+           MOVE    SPA-GMN-W24-RYOYODSP-MAX
+                                       TO  W24-RYOYODSP-CNT
+      *
+           PERFORM VARYING IDX0    FROM    1   BY  1
+                   UNTIL ( IDX0    >   W24-RYOYODSP-CNT )
+      *
+      *
+               MOVE    SPA-GMN-W24-RYOYODSPLST (IDX0)
+                                       TO  W24-RYOYODSP-ITM (IDX0)
+      *
+           END-PERFORM
+      *
            IF    ( SPA-W01-EDYUKYMD    >=  CONST-H180401 )
                MOVE    "Æþ±¡²Ã»»¾ðÊó"          TO  W24-FRAME3-LABEL
            ELSE
@@ -4458,6 +4563,8 @@
                                        TO  MCP-WIDGET
            WHEN    057
                MOVE    "TEIKISAGAKUACT" TO MCP-WIDGET
+           WHEN    059
+               MOVE    "RYOYODSP"      TO MCP-WIDGET
            WHEN    212
                MOVE    "B12"           TO  MCP-WIDGET
            END-EVALUATE
@@ -4583,9 +4690,11 @@
            WHEN    "TEISU"
                MOVE    055             TO  SPA-GMN-W24-CUR
            WHEN    "ADLINPUT"
-               MOVE    008             TO  SPA-GMN-W24-CUR
+               MOVE    059             TO  SPA-GMN-W24-CUR
            WHEN    "TEIKISAGAKUACT"
                MOVE    212             TO  SPA-GMN-W24-CUR
+           WHEN    "RYOYODSP"
+               MOVE    008             TO  SPA-GMN-W24-CUR
            END-EVALUATE
       *
            .

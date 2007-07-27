@@ -136,8 +136,8 @@
                                            PIC  X(01).
       *入金の取扱い
                05  SYS-5000-NYKNKNRKBN     PIC  X(01).
-      *予備（２）
-               05                          PIC  X(01).
+      *療養病棟（病床）会計表示区分
+               05  SYS-5000-RYOYODSPKBN    PIC  X(01).
       *端末ＩＤ
            03  SYS-5000-TERMID             PIC  X(16).
       *オペーレータＩＤ
