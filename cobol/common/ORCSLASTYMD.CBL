@@ -208,11 +208,6 @@
                   (ORCSLASTYMD-SRYKAFLG    =   "1" )
                PERFORM 2005-SRYKAMEI-HEN-SEC
            END-IF
-      *TEST
-           DISPLAY "NYUINYMD:" ORCSLASTYMD-NYUINYMD
-                    ",TAIINYMD:" ORCSLASTYMD-TAIINYMD
-                    ",LASTYMD:" ORCSLASTYMD-LASTYMD
-                    ",BRMNUM:" ORCSLASTYMD-BRMNUM
            .
        200-MAIN-EXT.
            EXIT.
