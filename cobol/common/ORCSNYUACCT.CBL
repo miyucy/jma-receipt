@@ -521,7 +521,6 @@
                INITIALIZE                  SYS-5000-REC
                MOVE    1               TO  FLG-SYSKANRI
            END-IF
-           IF      FLG-SYSKANRI        =   ZERO
       *
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key10"             TO  MCP-PATHNAME
