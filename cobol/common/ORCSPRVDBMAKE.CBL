@@ -461,18 +461,16 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            INITIALIZE                      SANTEI-REC
            MOVE    SPA-HOSPNUM         TO  SANTEI-HOSPNUM
            MOVE    SPA-PTID            TO  SANTEI-PTID
-      *    MOVE    SPA-NYUGAIKBN       TO  SANTEI-NYUGAIKBN
-           MOVE    SPA-SRYYMD(1:6)     TO  SANTEI-SRYYM
            MOVE    SANTEI-REC          TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "tbl_santei"        TO  MCP-TABLE
-           MOVE    "key10"             TO  MCP-PATHNAME
+           MOVE    "key13"             TO  MCP-PATHNAME
 grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                                MCPDATA-REC
                                                SPA-AREA
            IF      MCP-RC              =   ZERO
                MOVE    "tbl_santei"        TO  MCP-TABLE
-               MOVE    "key10"             TO  MCP-PATHNAME
+               MOVE    "key13"             TO  MCP-PATHNAME
                PERFORM 915-SANTEI-NEXT2-SEC
            ELSE
                MOVE    "0002"          TO  SPA-ERRCD
@@ -488,57 +486,14 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                                                    MCPDATA-REC
                                                    SPA-AREA
                MOVE    "tbl_santei"        TO  MCP-TABLE
-               MOVE    "key10"             TO  MCP-PATHNAME
+               MOVE    "key13"             TO  MCP-PATHNAME
                PERFORM 915-SANTEI-NEXT2-SEC
            END-PERFORM
       *
            MOVE    "tbl_santei"        TO  MCP-TABLE
-           MOVE    "key10"             TO  MCP-PATHNAME
+           MOVE    "key13"             TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE2-SEC
            INITIALIZE                      SANTEI-REC
-           MOVE    SPA-HOSPNUM         TO  SANTEI-HOSPNUM
-           MOVE    SPA-PTID            TO  SANTEI-PTID
-      *    MOVE    SPA-NYUGAIKBN       TO  SANTEI-NYUGAIKBN
-           MOVE    SPA-SRYYMD(1:6)     TO  SANTEI-SRYYM
-      *    MOVE    SPA-HKNCOMBINUM     TO  SANTEI-HKNCOMBINUM
-           MOVE    ZERO                TO  SANTEI-HKNCOMBINUM
-           MOVE   "113006510"          TO  SANTEI-SRYCD
-           MOVE    SANTEI-REC          TO  MCPDATA-REC
-           MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "tbl_santei"        TO  MCP-TABLE
-           MOVE    "key8"              TO  MCP-PATHNAME
-grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
-           IF      MCP-RC              =   ZERO
-               MOVE    "tbl_santei"        TO  MCP-TABLE
-               MOVE    "key8"              TO  MCP-PATHNAME
-               PERFORM 915-SANTEI-NEXT2-SEC
-           ELSE
-               MOVE    "0002"          TO  SPA-ERRCD
-               MOVE    1               TO  FLG-SANTEI
-           END-IF
-           PERFORM
-                   UNTIL       FLG-SANTEI     =   1
-               MOVE    SANTEI-REC          TO  MCPDATA-REC
-            IF SPA-SRYYMD(1:6)     =   SANTEI-SRYYM
-               CONTINUE
-            ELSE
-               MOVE    "DBINSERT"          TO  MCP-FUNC
-               MOVE    "tbl_santei_prv"    TO  MCP-TABLE
-               MOVE    "key"               TO  MCP-PATHNAME
-grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
-                                                   MCPDATA-REC
-                                                   SPA-AREA
-            END-IF
-               MOVE    "tbl_santei"        TO  MCP-TABLE
-               MOVE    "key8"              TO  MCP-PATHNAME
-               PERFORM 915-SANTEI-NEXT2-SEC
-           END-PERFORM
-      *
-           MOVE    "tbl_santei"        TO  MCP-TABLE
-           MOVE    "key8"              TO  MCP-PATHNAME
-           PERFORM 990-DBCLOSE2-SEC
            .
       *
        100-SANTEIPRV-INS-EXT.
