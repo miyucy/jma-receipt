@@ -164,6 +164,7 @@
       *  03.04.05    NACL-ÃÁœ∆    07/04/01  ∏Ω ™µÎ…’¬–±˛
       *
       *  03.05.01    NACL-∆£∏∂    07/04/19  •∞•Î°º•◊ø«Œ≈¬–±˛
+      *  03.05.02    NACL-ÃÁœ∆    07/07/31  £∑£∞∫–Ã§À˛∏Ω ™µÎ…’ ›∏±º‘ÀË§«∑◊ªª
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -323,6 +324,7 @@
            03  FLG-SET                                 PIC 9(01).
            03  FLG-ROUJINHOKEN                         PIC 9(01).
            03  FLG-GENBUTU70                           PIC 9(01).
+           03  FLG-TAISYO                              PIC 9(01).
       *
       *    •´•¶•Û•»ŒŒ∞Ë
        01  CNT-AREA.
@@ -1174,6 +1176,27 @@ grpsys           PERFORM 900-DBSELECT-SEC
                        MOVE    4           TO  IDY2
                    END-IF
                END-PERFORM
+      *
+               MOVE    ZERO     TO   FLG-TAISYO
+               PERFORM VARYING IDY2    FROM    1   BY  1
+                       UNTIL   IDY2    >       4
+                   IF   RECE01-KOHNUMHC (IDX IDY2) NOT = SPACE
+                     IF RECE01-KOHNUMHC (IDX IDY2) = "972" OR "974"
+                        IF   FLG-TAISYO  =  ZERO
+                           MOVE   1     TO   FLG-TAISYO
+                        END-IF
+                     ELSE
+                        MOVE      9     TO   FLG-TAISYO
+                     END-IF
+                   END-IF
+               END-PERFORM
+               IF   FLG-TAISYO  =  1
+                   IF  RECE02-HKNCOMBIFLG(IDX)  =  1
+                        MOVE      2     TO   RECE02-HKNCOMBIFLG(IDX)
+                   ELSE
+                        MOVE      3     TO   RECE02-HKNCOMBIFLG(IDX)
+                   END-IF
+               END-IF
       *        ¡»πÁ§ª∏¯»Ò ›∏±»÷πÊæ Û§Œ•ª•√•»
                PERFORM   KOHNUMHC-SET-SEC
            END-PERFORM
