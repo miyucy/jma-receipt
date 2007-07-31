@@ -437,7 +437,8 @@
       *
       *    UID¸¡º÷
            INITIALIZE                      CLMUID-REC
-           MOVE    LNK-HOSPNUM         TO  CLMUID-HOSPNUM
+           MOVE    LNK-HOSPNUM         TO  SPA-HOSPNUM
+                                           CLMUID-HOSPNUM
            MOVE    LNK-PTID            TO  CLMUID-PTID
            MOVE    LNK-SRYKA           TO  CLMUID-SRYKA
            PERFORM 903-CLMUID-READ-SEC
