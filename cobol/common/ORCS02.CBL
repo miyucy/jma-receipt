@@ -183,6 +183,9 @@
       *  03.05.01    NACL-ÌçÏÆ    07/07/13  ËÌ³¤Æ»ÃÏÊý¸øÈñÂÐ±þ
       *  03.05.02    NACL-ÌçÏÆ    07/07/20  ËÌ³¤Æ»£´£±Ï·¿Í¸½ÊªµëÉÕÂÐ±þ
       *  03.05.03    NACL-ÌçÏÆ    07/07/31  £·£°ºÐÌ¤Ëþ¸½ÊªµëÉÕÊÝ¸±¼ÔËè¤Ç·×»»
+      *  03.05.04    NACL-ÌçÏÆ    07/08/01  ½êÆÀ¾ðÊó¼è°·¤¤µ¡Ç½¶¯²½ÂÐ±þ
+      *  03.05.05    NACL-ÌçÏÆ    07/08/01  É¸½àÉéÃ´³Û¸º³ÛÇ§Äê¾ÚÀßÄêÂÐ±þ
+      *  03.05.06    NACL-ÌçÏÆ    07/08/01  ·îÅÓÃæ¤Î½êÆÀ¾ðÊóÊÑ¹¹ÂÐ±þ
       ****************************************************************
        ENVIRONMENT         DIVISION.
        CONFIGURATION       SECTION.
@@ -246,8 +249,6 @@
            03  WK-GENBUTU-HKNKIN3      PIC 9(10).
        01  FLG-AREA.
            03  FLG-SYUNOU              PIC 9(01).
-           03  FLG-TNKRRK              PIC 9(01).
-           03  FLG-TSYRRK              PIC 9(01).
            03  FLG-HKNNUM              PIC 9(01).
            03  FLG-HKNCOMBI            PIC 9(01).
            03  FLG-SYSKANRI            PIC 9(01).
@@ -296,23 +297,12 @@
            03  WK-1001-JIHIPOSITION    PIC X(01).
            03  WK-1001-CHIHOUNUMKBN    PIC X(01).
       *
-      *    Äã½êÆÀ£±¤ÎÄ¹´üÆþ±¡Ç§ÄêÇ¯·îÆü
-           03  WRK-SKJGNSTYMD-S        PIC X(08).
-           03  WRK-SKJGNSTYMD-E        PIC X(08).
-           03  WRK-SKJGNSTYMD2.
-               05  WRK-SKJGNSTYYMM2    PIC 9(06).
-               05  WRK-SKJGNSTDD2      PIC 9(02).
-      *
            03  WK-NYUJGNKBN            PIC X(01).
            03  WK-NYUJGNGAK            PIC 9(07).
       *
            03  WK-DAYTAIHI-FTNMONEY    PIC 9(07).
            03  WK-DAYTAIHI-COMPFTN     PIC 9(07).
            03  WK-DAYTAIHI-COMPFTNWK   PIC 9(07).
-      *
-           03  WK-TEISYOTOKU-YMD.
-               05  WK-TEISYOTOKU-YM    PIC 9(06).
-               05  WK-TEISYOTOKU-DD    PIC 9(02).
       *
       *    ÊÝ¸±¶èÊ¬¡Ê¶õÇò¡§°åÊÝ¡¡£±¡§Ï«ºÒ¡¦¼«Çå¡Ë
            03  WK-HKNKBN               PIC X(01).
@@ -465,6 +455,9 @@
       *
            03  WK-HKNJANUM                 PIC  X(08).
            03  WK-HKNJANUM2                PIC  X(08).
+      *
+           03  WK-SYOTOKU-SKJKBN-TBL.
+               05  WK-SYOTOKU-SKJKBN       PIC  X(01)  OCCURS  31.
       *
       *    ¸øÈñ¤Î´µ¼ÔÉéÃ´¾å¸Â¶â³Û¤ÎÂàÈòÍÑ¥¨¥ê¥¢
        01  HOKEN-MAX-AREA.
@@ -705,6 +698,7 @@
            03  KIRIKAE-IDX             PIC  9(02).
            03  NYULIFE-IDX             PIC  9(02).
            03  GEN-IDX                 PIC  9(02).
+           03  SYOTOKU-IDX             PIC  9(02).
       *
       *    ¹âÎð¼Ô¤ÎÉéÃ´¾å¸Â»»Äê¥¨¥ê¥¢
        01  WK-SYUHKN-TAIHI-AREA.
@@ -730,7 +724,6 @@
            03  FLG-KOUGAKUCYO-GEN70    PIC 9(01).
            03  FLG-KOUGAKUCYO-GEN70K   PIC 9(01).
            03  FLG-KOUGAKUCYO-OITA     PIC 9(01).
-           03  FLG-SKJ                 PIC 9(01).
            03  WK-SYU-SYUCOMPFTN       PIC 9(08).
            03  WK-KOUREI-IRYOHI        PIC 9(08).
            03  WK-KOUREI-IRYOHI2       PIC 9(08).
@@ -878,14 +871,6 @@
        01  SYU-SYUDAY-REC.
            COPY    "CPSYUDAY.INC".
       *
-      *    Äã½êÆÀ¼ÔÍúÎò
-       01  TSYRRK-REC.
-           COPY    "CPTSYRRK.INC".
-      *
-      *    Ç¯¶âÍúÎò
-       01  TNKRRK-REC.
-           COPY    "CPTNKRRK.INC".
-      *
       *    ÊÝ¸±ÁÈ¤ß¹ç¤ï¤»
        01  HKNCOMBI-REC.
            COPY    "CPHKNCOMBI.INC".
@@ -950,6 +935,8 @@
            COPY    "CPORCSKOHPLUS.INC".
       *    Æþ±¡»þÀ¸³èÎÅÍÜÈñÉéÃ´³Û¼èÆÀ¥µ¥Ö
            COPY    "CPORCSNYULIFE.INC".
+      *    ´µ¼Ô½êÆÀ¾ðÊóÊÔ½¸¥µ¥Ö
+           COPY    "CPORCSSYOTOKU.INC".
       *
       *    £Ä£Â¸¡º÷
            COPY    "MCPDATA.INC".
@@ -2191,121 +2178,76 @@
       ******************************************************************
        100-KAKUTEI-SEC          SECTION.
       *
-           MOVE    SPACE                TO      FLG-SANSHOU2.
-           MOVE    SPACE                TO      FLG-SANSHOU3.     
-           MOVE    SPACE                TO      WRK-SKJGNSTYMD-S
-           MOVE    SPACE                TO      WRK-SKJGNSTYMD-E
+           MOVE    SPACE              TO  FLG-SANSHOU2
+           MOVE    SPACE              TO  FLG-SANSHOU3
+           INITIALIZE                     WK-SYOTOKU-SKJKBN-TBL
       *
-           MOVE    LNK-SYU-SRYYMD       TO      WK-TEISYOTOKU-YMD.
-           MOVE    01                   TO      WK-TEISYOTOKU-DD.
+           INITIALIZE                     ORCSSYOTOKUAREA
+           MOVE  LNK-SYU-HOSPNUM      TO  LNK-SYOTOKU-HOSPNUM
+           MOVE  LNK-SYU-PTID         TO  LNK-SYOTOKU-PTID
+           MOVE  LNK-SYU-SRYYMD(1:6)  TO  LNK-SYOTOKU-SRYYM
       *
-           INITIALIZE                           TNKRRK-REC.
-           MOVE    LNK-SYU-HOSPNUM      TO      TNKRRK-HOSPNUM.
-           MOVE    LNK-SYU-PTID         TO      TNKRRK-PTID.
-           MOVE    TNKRRK-REC           TO      MCPDATA-REC.
-           MOVE    "DBSELECT"           TO      MCP-FUNC.
-           MOVE    "tbl_tnkrrk"         TO      MCP-TABLE.
-           MOVE    "key2"               TO      MCP-PATHNAME.
-           CALL    "ORCDBMAIN"          USING   MCPAREA
-                                                MCPDATA-REC
-                                                SPA-AREA.
-           IF      MCP-RC               =       ZERO
-               MOVE    "tbl_tnkrrk"     TO      MCP-TABLE
-               MOVE    "key2"           TO      MCP-PATHNAME
-               PERFORM  TNKRRK-READ-SEC
-               PERFORM  UNTIL
-                       (FLG-TNKRRK         =                   1) OR
-                      ((TNKRRK-STYMD      <=   WK-TEISYOTOKU-YMD) AND
-                       (WK-TEISYOTOKU-YMD <=   TNKRRK-EDYMD     ))
-                   MOVE    "tbl_tnkrrk" TO      MCP-TABLE
-                   MOVE    "key2"       TO      MCP-PATHNAME
-                   PERFORM  TNKRRK-READ-SEC
-               END-PERFORM
-           ELSE
-               MOVE    1                TO      FLG-TNKRRK
-           END-IF.
+           CALL    "ORCSSYOTOKU"      USING  ORCSSYOTOKUAREA
+                                             SPA-AREA
       *
-           MOVE    "tbl_tnkrrk"         TO       MCP-TABLE.
-           MOVE    "key2"               TO       MCP-PATHNAME.
-           PERFORM  DB-CLOSE-SEC.
+           IF    LNK-SYOTOKU-RC    =   ZERO
+                IF    LNK-SYU-SRYYMD(1:6)   >=  "200604"
+                  MOVE   LNK-SYU-SRYYMD(7:2)  TO  SYOTOKU-IDX
+                ELSE
+                  MOVE   1                    TO  SYOTOKU-IDX
+                END-IF
+      *       ¡Ê¼çÊÝ¸±¡¦Á´¹ñ¸øÈñ¡Ë
+                MOVE   LNK-SYOTOKU-SYUKBN(SYOTOKU-IDX)
+                                              TO  FLG-SANSHOU3
+      *       ¡ÊÃÏÊý¸øÈñ¡Ë
+                MOVE   LNK-SYOTOKU-CHIKBN(SYOTOKU-IDX)
+                                              TO  FLG-SANSHOU2
+      *       ¡Ê¿©»ö¡Ë
+                PERFORM   VARYING   SYOTOKU-IDX    FROM   1   BY   1
+                           UNTIL    SYOTOKU-IDX     >    31
+                   MOVE   LNK-SYOTOKU-SKJKBN(SYOTOKU-IDX)
+                                    TO  WK-SYOTOKU-SKJKBN(SYOTOKU-IDX)
+                   IF (LNK-SYU-SYUHKNNUM = "971" OR "973" OR
+                                           "068" OR "069"    )
+                   OR (LNK-SYU-SYUHKNNUM(1:2) = "98"         )
+                       MOVE  SPACE  TO  WK-SYOTOKU-SKJKBN(SYOTOKU-IDX)
+                   END-IF
+                END-PERFORM
+           END-IF
       *
-           INITIALIZE                           TSYRRK-REC.
-           MOVE    LNK-SYU-HOSPNUM      TO      TSYRRK-HOSPNUM.
-           MOVE    LNK-SYU-PTID         TO      TSYRRK-PTID.
-           MOVE    TSYRRK-REC           TO      MCPDATA-REC.
-           MOVE    "DBSELECT"           TO      MCP-FUNC.
-           MOVE    "tbl_tsyrrk"         TO      MCP-TABLE.
-           MOVE    "key2"               TO      MCP-PATHNAME.
-           CALL    "ORCDBMAIN"          USING   MCPAREA
-                                                MCPDATA-REC
-                                                SPA-AREA.
-           IF      MCP-RC               =       ZERO
-               MOVE    "tbl_tsyrrk"     TO      MCP-TABLE
-               MOVE    "key2"           TO      MCP-PATHNAME
-               PERFORM  TSYRRK-READ-SEC
-               PERFORM  UNTIL
-                       (FLG-TSYRRK         =                   1) OR
-                      ((TSYRRK-NINSTYMD   <=   WK-TEISYOTOKU-YMD) AND
-                       (WK-TEISYOTOKU-YMD <=   TSYRRK-NINEDYMD  ))
-                   MOVE    "tbl_tsyrrk" TO      MCP-TABLE
-                   MOVE    "key2"       TO      MCP-PATHNAME
-                   PERFORM  TSYRRK-READ-SEC
-               END-PERFORM
-           ELSE
-               MOVE    1                TO      FLG-TSYRRK
-           END-IF.
-      *
-           MOVE    "tbl_tsyrrk"         TO       MCP-TABLE.
-           MOVE    "key2"               TO       MCP-PATHNAME.
-           PERFORM  DB-CLOSE-SEC.
-      *
-      *    ¸øÈñÉéÃ´ÉôÊ¬¸¡º÷ÍÑ¤Î»²¾ÈÉôÊ¬¥»¥Ã¥È
-      *
-           EVALUATE   FLG-TSYRRK        ALSO     FLG-TNKRRK
-               WHEN    1                ALSO     1
-                       MOVE     "1"     TO       FLG-SANSHOU2
-               WHEN    0                ALSO     1
-                       MOVE     "2"     TO       FLG-SANSHOU2
-               WHEN    0                ALSO     0
-               WHEN    1                ALSO     0
-                       MOVE     "3"     TO       FLG-SANSHOU2
-           END-EVALUATE.
-      *
-      *
-           EVALUATE    FLG-TSYRRK       ALSO     FLG-TNKRRK        
-               WHEN    1                ALSO     1                 
-                       MOVE    SPACE    TO       FLG-SANSHOU3      
-               WHEN    0                ALSO     1                 
-                       MOVE     "2"     TO       FLG-SANSHOU3      
-      *
-                       MOVE     TSYRRK-SKJGNSTYMD
-                                        TO       WRK-SKJGNSTYMD-S
-                       MOVE     TSYRRK-NINEDYMD
-                                        TO       WRK-SKJGNSTYMD-E
-      *
-               WHEN    0                ALSO     0                 
-               WHEN    1                ALSO     0
-                       MOVE     "1"     TO       FLG-SANSHOU3      
-           END-EVALUATE.                                    
+           EVALUATE   FLG-SANSHOU2
+               WHEN     SPACE
+                    MOVE     "1"      TO  FLG-SANSHOU2
+               WHEN     "2"
+               WHEN     "3"
+                    MOVE     "2"      TO  FLG-SANSHOU2
+               WHEN     "1"
+               WHEN     "4"
+                    MOVE     "3"      TO  FLG-SANSHOU2
+           END-EVALUATE
       *
       *    ¸øÈñÉéÃ´¸ÂÅÙ³Û¤Î¥»¥Ã¥È
            IF   LNK-SYU-SRYYMD(1:6)   >= "200610"
                   MOVE   44400     TO  WK-KOH-GENDOGAKU
-                  EVALUATE  FLG-SANSHOU2
+                  EVALUATE  FLG-SANSHOU3
                     WHEN       "2"
-                      MOVE  24600  TO  WK-KOH-GENDOGAKU
                     WHEN       "3"
+                      MOVE  24600  TO  WK-KOH-GENDOGAKU
+                    WHEN       "1"
+                    WHEN       "4"
                       MOVE  15000  TO  WK-KOH-GENDOGAKU
                   END-EVALUATE
            ELSE
                   MOVE   40200     TO  WK-KOH-GENDOGAKU
-                  EVALUATE  FLG-SANSHOU2
+                  EVALUATE  FLG-SANSHOU3
                     WHEN       "2"
-                      MOVE  24600  TO  WK-KOH-GENDOGAKU
                     WHEN       "3"
+                      MOVE  24600  TO  WK-KOH-GENDOGAKU
+                    WHEN       "1"
+                    WHEN       "4"
                       MOVE  15000  TO  WK-KOH-GENDOGAKU
                   END-EVALUATE
-           END-IF.
+           END-IF
       *
            IF   ( COMB-KOH1HKNNUM  =   "972" )
            OR   ( COMB-KOH2HKNNUM  =   "972" )
@@ -2314,7 +2256,7 @@
               IF   WK-KOH-GENDOGAKU > 10000
                  MOVE   10000   TO  WK-KOH-GENDOGAKU
               END-IF
-           END-IF.
+           END-IF
       *
            IF   ( COMB-KOH1HKNNUM  =   "974" )
            OR   ( COMB-KOH2HKNNUM  =   "974" )
@@ -2323,7 +2265,9 @@
               IF   WK-KOH-GENDOGAKU > 20000
                  MOVE   20000   TO  WK-KOH-GENDOGAKU
               END-IF
-           END-IF.
+           END-IF
+      *
+           .
       *
        100-KAKUTEI-EXT.
            EXIT.
@@ -3850,7 +3794,7 @@
                            IF  FLG-SANSHOU3     =   SPACE               
                                MOVE   44400   TO   MAX-KIN-KOHI1-M
                            ELSE
-                             IF  FLG-SANSHOU3     =   "1"
+                             IF  FLG-SANSHOU3     =   "1" OR "4"
                                MOVE   15000   TO   MAX-KIN-KOHI1-M
                              ELSE
                                MOVE   24600   TO   MAX-KIN-KOHI1-M
@@ -3861,7 +3805,7 @@
                            IF  FLG-SANSHOU3     =   SPACE               
                                MOVE   40200   TO   MAX-KIN-KOHI1-M
                            ELSE
-                             IF  FLG-SANSHOU3     =   "1"
+                             IF  FLG-SANSHOU3     =   "1" OR "4"
                                MOVE   15000   TO   MAX-KIN-KOHI1-M
                              ELSE
                                MOVE   24600   TO   MAX-KIN-KOHI1-M
@@ -3933,7 +3877,7 @@
                            IF  FLG-SANSHOU3      =   SPACE              
                                MOVE   44400   TO   MAX-KIN-SYU-M
                            ELSE
-                             IF  FLG-SANSHOU3     =   "1"
+                             IF  FLG-SANSHOU3     =   "1" OR "4"
                                MOVE   15000   TO   MAX-KIN-SYU-M
                              ELSE
                                MOVE   24600   TO   MAX-KIN-SYU-M
@@ -3943,7 +3887,7 @@
                            IF  FLG-SANSHOU3      =   SPACE              
                                MOVE   40200   TO   MAX-KIN-SYU-M
                            ELSE
-                             IF  FLG-SANSHOU3     =   "1"
+                             IF  FLG-SANSHOU3     =   "1" OR "4"
                                MOVE   15000   TO   MAX-KIN-SYU-M
                              ELSE
                                MOVE   24600   TO   MAX-KIN-SYU-M
@@ -4312,29 +4256,6 @@
       *
       *    £´£±Ï·¿Í¾å¸Â³ÛÊÔ½¸½èÍýÅù
            PERFORM    2108-ROUJIN41-JYOGEN-HENSYU-SEC.
-      *
-           IF  ( FLG-SANSHOU3        =   SPACE          )
-           OR  ( LNK-SYU-SYUHKNNUM   =   "971" OR "973" OR
-                                         "068" OR "069" )
-           OR  ( LNK-SYU-SYUHKNNUM(1:2)
-                                     =   "98"           )
-                 CONTINUE
-           ELSE
-                 IF  FLG-SANSHOU3     =   "1"
-                      MOVE   1       TO   FLG-SKJ
-                 ELSE
-                      MOVE   2       TO   FLG-SKJ
-                      IF    WRK-SKJGNSTYMD-S   NOT  =   SPACE
-                         MOVE   LNK-SYU-SRYYMD(1:6)
-                                           TO  WRK-SKJGNSTYYMM2
-                         MOVE   01         TO  WRK-SKJGNSTDD2
-                         IF   WRK-SKJGNSTYMD-S  <=  WRK-SKJGNSTYMD2
-                         AND  WRK-SKJGNSTYMD-E  >=  WRK-SKJGNSTYMD2
-                             MOVE    3     TO  FLG-SKJ
-                         END-IF
-                      END-IF
-                 END-IF
-           END-IF.
       *
        210-HOKEN-KAISU-EXT.
            EXIT.
@@ -11012,8 +10933,8 @@
                                                 "068"  OR  "069")
                 ADD   WK-SHOKUJI-JIHI    TO   WK-SHOKUJI-FTN
               ELSE
-                EVALUATE   FLG-SKJ
-                  WHEN  0
+                EVALUATE   WK-SYOTOKU-SKJKBN(1)
+                  WHEN  SPACE
       *                   É¸½àÉéÃ´³Û¡Ê°ìÈÌ¡Ë
                           MOVE  "197000810"    TO   WK-SRYCD
                           PERFORM    TENSU-TBL-SEC
@@ -11021,7 +10942,8 @@
                              ADD     TNS-TEN   TO   WK-SHOKUJI-FTN
                              MOVE    TNS-TEN   TO   WK-DAY-SKJFTN(IDY)
                           END-IF
-                  WHEN  1
+                  WHEN  "1"
+                  WHEN  "4"
       *                   É¸½àÉéÃ´³Û¡ÊÄã£±¡Ë
                           MOVE  "197001110"    TO   WK-SRYCD
                           PERFORM    TENSU-TBL-SEC
@@ -11029,7 +10951,7 @@
                              ADD     TNS-TEN   TO   WK-SHOKUJI-FTN
                              MOVE    TNS-TEN   TO   WK-DAY-SKJFTN(IDY)
                           END-IF
-                  WHEN  2
+                  WHEN  "2"
       *                   É¸½àÉéÃ´³Û¡ÊÄã£²¡¦£¹£°Æü°Ê²¼¡Ë
                           MOVE  "197000910"    TO   WK-SRYCD
                           PERFORM    TENSU-TBL-SEC
@@ -11037,7 +10959,7 @@
                              ADD     TNS-TEN   TO   WK-SHOKUJI-FTN
                              MOVE    TNS-TEN   TO   WK-DAY-SKJFTN(IDY)
                           END-IF
-                  WHEN  3
+                  WHEN  "3"
       *                   É¸½àÉéÃ´³Û¡ÊÄã£²¡¦£¹£°ÆüÄ¶¡Ë
                           MOVE  "197001010"    TO   WK-SRYCD
                           PERFORM    TENSU-TBL-SEC
@@ -11732,8 +11654,8 @@
                 ADD   WK-SHOKUJI-JIHI    TO   WK-SHOKUJI-FTN
                                               WK-SHOKUJI-FTNS
                ELSE
-                EVALUATE   FLG-SKJ
-                  WHEN       0
+                EVALUATE   WK-SYOTOKU-SKJKBN(IDY)
+                  WHEN       SPACE
       *              É¸½àÉéÃ´³Û¡Ê°ìÈÌ¡Ë
                      COMPUTE WK-KEISAN-XX =  WK-SHOKUJI-HYOJYUNFTN(1)
                                           *  WK-SHOKUJI-NYUINJI(IDY)
@@ -11744,7 +11666,8 @@
                      MOVE    WK-SHOKUJI-NYUINJI(IDY)
                                           TO WK-DAY-KAISU(IDY)
                                              WK-DAY-KAISUS(IDY)
-                  WHEN       1
+                  WHEN       "1"
+                  WHEN       "4"
       *              É¸½àÉéÃ´³Û¡ÊÄã£±¡Ë
                      COMPUTE WK-KEISAN-XX =  WK-SHOKUJI-HYOJYUNFTN(2)
                                           *  WK-SHOKUJI-NYUINJI(IDY)
@@ -11755,7 +11678,7 @@
                      MOVE    WK-SHOKUJI-NYUINJI(IDY)
                                           TO WK-DAY-KAISU(IDY)
                                              WK-DAY-KAISUS(IDY)
-                  WHEN       2
+                  WHEN       "2"
       *              É¸½àÉéÃ´³Û¡ÊÄã£²¡¦£¹£°Æü°Ê²¼¡Ë
                      COMPUTE WK-KEISAN-XX =  WK-SHOKUJI-HYOJYUNFTN(3)
                                           *  WK-SHOKUJI-NYUINJI(IDY)
@@ -11766,7 +11689,7 @@
                      MOVE    WK-SHOKUJI-NYUINJI(IDY)
                                           TO WK-DAY-KAISU(IDY)
                                              WK-DAY-KAISUS(IDY)
-                  WHEN       3
+                  WHEN       "3"
       *              É¸½àÉéÃ´³Û¡ÊÄã£²¡¦£¹£°ÆüÄ¶¡Ë
                      COMPUTE WK-KEISAN-XX =  WK-SHOKUJI-HYOJYUNFTN(4)
                                           *  WK-SHOKUJI-NYUINJI(IDY)
@@ -13006,14 +12929,15 @@
                                            OR "183" OR "185") AND
                  (LNK-SYU-SRYYMD(1:6)    >= "200511"
                                      AND <= "200703"        ))
-                 EVALUATE   FLG-SKJ
-                     WHEN      0
+                 EVALUATE   WK-SYOTOKU-SKJKBN(1)
+                     WHEN      SPACE
                        MOVE    390    TO   WK-NYUSKJJYOGAK
-                     WHEN      1
+                     WHEN      "1"
+                     WHEN      "4"
                        MOVE    150    TO   WK-NYUSKJJYOGAK
-                     WHEN      2
+                     WHEN      "2"
                        MOVE    325    TO   WK-NYUSKJJYOGAK
-                     WHEN      3
+                     WHEN      "3"
                        MOVE    250    TO   WK-NYUSKJJYOGAK
                  END-EVALUATE
              END-IF
@@ -18470,48 +18394,6 @@
            .
       *
        23096-GENBUTU-TAISYODATA-HENSYU-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    Ç¯¶âÍúÎòÆÉ¹þ
-      *****************************************************************
-       TNKRRK-READ-SEC           SECTION.
-      *
-           MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
-           IF      MCP-RC              =   ZERO
-               MOVE    MCPDATA-REC     TO  TNKRRK-REC
-               MOVE    ZERO            TO  FLG-TNKRRK
-           ELSE
-               INITIALIZE                  TNKRRK-REC
-               MOVE    1               TO  FLG-TNKRRK
-           END-IF
-      *
-           .
-       TNKRRK-READ-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    Äã½êÆÀ¼ÔÍúÎòÆÉ¹þ
-      *****************************************************************
-       TSYRRK-READ-SEC          SECTION.
-      *
-           MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
-           IF      MCP-RC              =   ZERO
-               MOVE    MCPDATA-REC     TO  TSYRRK-REC
-               MOVE    ZERO            TO  FLG-TSYRRK
-           ELSE
-               INITIALIZE                  TSYRRK-REC
-               MOVE    1               TO  FLG-TSYRRK
-           END-IF
-      *
-           .
-       TSYRRK-READ-EXT.
            EXIT.
       *
       *****************************************************************
