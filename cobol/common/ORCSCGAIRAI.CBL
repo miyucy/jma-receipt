@@ -254,6 +254,13 @@
            03  WRK-SRYKA               PIC X(02).
            03  WRK-HKNCOMBI            PIC X(04).
            03  WRK-DOUJI-RENNUM        PIC 9(01).
+      *
+      *    ¼ýÇ¼¤ÎÆþ¶â³Û
+           03  WRK-SYUTTL-G.
+               05  WRK-TTL-NYUKIN-TOTAL    PIC 9(07)
+                                           OCCURS   15.
+      *    Æþ¶â¹ç·×³Û
+           03  WRK-SUM-NYUKIN          PIC  9(07).
       *    ¼õ¿Ç»þ´Ö
            03  WRK-TIME1.
                05  WRK-TIME11      PIC 9(08).
@@ -548,6 +555,7 @@
                 END-IF
            END-PERFORM
       *
+           INITIALIZE                  WRK-SYUTTL-G
       *    ²ÊËè¤ÎÊÝ¸±¿ô¤òÀßÄê¤¹¤ë
            INITIALIZE                  TBL-SRYKA-AREA
            PERFORM VARYING     IDH     FROM    1   BY  1
@@ -1203,6 +1211,9 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                    END-IF
                END-IF
            END-IF
+      *    ¼ýÇ¼¤ÎÆþ¶â³Û¹ç·×
+           MOVE    SYU-NYUKIN-TOTAL    TO  WRK-TTL-NYUKIN-TOTAL
+                                                        (IDH-GAI)
       *
            MOVE    WRK-SYUNOU-REC      TO  SYUNOU-REC
       *
@@ -4150,14 +4161,24 @@ grpsys                 CALL    "ORCDBMAIN"         USING   MCPAREA
        1004-DBKOUSIN-SYUTTL-SEC        SECTION.
       *
            MOVE    ZERO                TO  FLG-OK
+           MOVE    ZERO                TO  WRK-SUM-NYUKIN
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL      (IDX     >   ORCSCGAIRAI-SYUNOU-MAX) OR
-                              (FLG-OK  =   1    )
-               MOVE    ORCSCGAIRAI-SYUNOU-REC(IDX) TO  SYUNOU-REC
-               IF     (SYU-SRYKA       =   WRK-SRYKA )  AND
-                      (SYU-HKNCOMBINUM =   WRK-HKNCOMBI)
-                   MOVE    1               TO  FLG-OK
-                   MOVE    IDX             TO  IDH-GAI
+                   UNTIL      (IDX     >   ORCSCGAIRAI-SYUNOU-MAX)
+      **************      OR  (FLG-OK  =   1    )
+               IF      FLG-OK          =   ZERO
+                   MOVE    ORCSCGAIRAI-SYUNOU-REC(IDX) TO  SYUNOU-REC
+                   IF     (SYU-SRYKA       =   WRK-SRYKA )  AND
+                          (SYU-HKNCOMBINUM =   WRK-HKNCOMBI)
+                       MOVE    1               TO  FLG-OK
+                       MOVE    IDX             TO  IDH-GAI
+                   END-IF
+               END-IF
+               MOVE    ORCSCGAIRAI-SYUNOU-REC(IDX) TO  WRK-SYUNOU-REC
+               IF     (WRK-SYU-SRYKA   NOT =   WRK-SRYKA )  AND
+                      (WRK-SYU-HKNCOMBINUM =   WRK-HKNCOMBI)
+      *            ¼ýÇ¼Æþ¶â³Û¹ç·×½¸·×
+                   ADD     WRK-TTL-NYUKIN-TOTAL(IDX)
+                                           TO  WRK-SUM-NYUKIN
                 END-IF
            END-PERFORM
            IF      FLG-OK              =   1
@@ -4281,7 +4302,9 @@ grpsys                 CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SYU-SKYMONEY        TO  SYUTTL-SKYMONEY
            COMPUTE SYUTTL-SKYMONEY     =   SYUTTL-SKYMONEY
                                        +   SYUTTL-CHOSEI
-           MOVE    SYU-NYUKIN-TOTAL    TO  SYUTTL-NYUKIN-TOTAL
+      *    Æþ¶â³Û¤Ï¼ýÇ¼¤Î¹ç·×
+      **** MOVE    SYU-NYUKIN-TOTAL    TO  SYUTTL-NYUKIN-TOTAL
+           MOVE    WRK-SUM-NYUKIN      TO  SYUTTL-NYUKIN-TOTAL
            MOVE    SYU-NYUKIN-KAISU    TO  SYUTTL-NYUKIN-KAISU
       *Ì¤¼ýÍýÍ³
            MOVE    SYU-MISYURIYU       TO  SYUTTL-MISYURIYU
