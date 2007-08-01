@@ -110,6 +110,7 @@
            03  PARA-YUKOSTRYM          PIC X(06).
            03  PARA-YUKOENDYM          PIC X(06).
            03  PARA-SYORIKBN           PIC X(01).
+           03  PARA-MISYUKBN           PIC X(01).
       *
       *    作業領域
        01  WRK-AREA.
@@ -299,6 +300,7 @@
                                        PARA-YUKOSTRYM
                                        PARA-YUKOENDYM
                                        PARA-SYORIKBN
+                                       PARA-MISYUKBN
            END-UNSTRING
            MOVE    PARA-HOSPNUM    TO  SPA-HOSPNUM
            MOVE    LNK-PRTKANRI-SKYYMD
@@ -639,23 +641,13 @@
       *    未収金一覧用収納明細情報セット
            PERFORM UNTIL   FLG-BD003   =   1
       *
-      *        患者番号取得
-               PERFORM 20011-PTNUM-GET-SEC
-               IF    ( FLG-END     NOT =   ZERO )
-                   GO  TO  210-TOKEI-SET-SEIKYU-EXT
+               IF    ( PARA-MISYUKBN   =   "1" )
+                   IF    ( BD003-SKYMONEY  >   BD003-NYUHEN-MONEY )
+                       PERFORM 2101-TOKEI-SET-SEIKYU-SEC
+                   END-IF
+               ELSE
+                   PERFORM 2101-TOKEI-SET-SEIKYU-SEC
                END-IF
-      *
-      *        統計データ作成
-               INITIALIZE                  TOKEI-REC
-               MOVE    BD003-PTID      TO  TOKEI-PTID
-               MOVE    SPTID-PTNUM     TO  TOKEI-PTNUM
-               COMPUTE WRK-SURYO       =   BD003-SKYMONEY
-                                       -   BD003-NYUHEN-MONEY
-               MOVE    WRK-SURYO       TO  TOKEI-MISYU
-               WRITE   TOKEI-REC
-      *
-      *        統計データカウント
-               ADD     1               TO  CNT-TOKEI
       *
       *        未収金一覧用収納明細情報読み込み
                PERFORM 900-BD003-FETCH-SEC
@@ -668,6 +660,32 @@
        210-TOKEI-SET-SEIKYU-EXT.
            EXIT.
       *
+      *****************************************************************
+      *    統計ファイルセット
+      *****************************************************************
+       2101-TOKEI-SET-SEIKYU-SEC    SECTION.
+      *
+      *    患者番号取得
+           PERFORM 20011-PTNUM-GET-SEC
+           IF    ( FLG-END     NOT =   ZERO )
+               GO  TO  2101-TOKEI-SET-SEIKYU-EXT
+           END-IF
+      *
+      *    統計データ作成
+           INITIALIZE                  TOKEI-REC
+           MOVE    BD003-PTID      TO  TOKEI-PTID
+           MOVE    SPTID-PTNUM     TO  TOKEI-PTNUM
+           COMPUTE WRK-SURYO       =   BD003-SKYMONEY
+                                   -   BD003-NYUHEN-MONEY
+           MOVE    WRK-SURYO       TO  TOKEI-MISYU
+           WRITE   TOKEI-REC
+      *
+      *    統計データカウント
+           ADD     1               TO  CNT-TOKEI
+      *
+           .
+       2101-TOKEI-SET-SEIKYU-EXT.
+           EXIT.
       *****************************************************************
       *    帳票編集<ヘッダー部>処理
       *****************************************************************
