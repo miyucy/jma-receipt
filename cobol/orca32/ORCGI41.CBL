@@ -75,6 +75,8 @@
       *                                     を表示
       *  03.04.03    NACL-小豆沢  07/03/07  病棟設定と算定入院料不一致警告
       *  03.05.00    NACL-多々納  07/05/09  グループ診療対応
+      *  03.05.00    NACL-小豆沢  07.08.02  療養病棟（病床）入院会計
+      *                                     表示区分対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -1781,11 +1783,11 @@
       *
            MOVE    NYUINACCT-REC       TO  MCPDATA-REC.
            MOVE    "tbl_nyuinacct"     TO  MCP-TABLE
-           MOVE    "key16"             TO  MCP-PATHNAME
+           MOVE    "key36"             TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
                MOVE    "tbl_nyuinacct"     TO  MCP-TABLE
-               MOVE    "key16"             TO  MCP-PATHNAME
+               MOVE    "key36"             TO  MCP-PATHNAME
                PERFORM 900-NYUINACCT-READ-SEC
            ELSE
                INITIALIZE                  NYUINACCT-REC
@@ -1838,12 +1840,12 @@
                END-EVALUATE
       *
                MOVE    "tbl_nyuinacct"     TO  MCP-TABLE
-               MOVE    "key16"             TO  MCP-PATHNAME
+               MOVE    "key36"             TO  MCP-PATHNAME
                PERFORM 900-NYUINACCT-READ-SEC
            END-PERFORM
       *
            MOVE    "tbl_nyuinacct"     TO  MCP-TABLE
-           MOVE    "key16"             TO  MCP-PATHNAME
+           MOVE    "key36"             TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC.
       *
            .
