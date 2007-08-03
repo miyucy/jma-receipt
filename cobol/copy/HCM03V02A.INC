@@ -8,8 +8,7 @@
             02  HCM03V02A-HAKYMD    PIC X(22).
             02  HCM03V02A-HOKEN PIC X(20).
             02  HCM03V02A-FUTAN PIC X(3).
-            02  HCM03V02A-LBLTUKISRYKA  PIC X(10).
-            02  HCM03V02A-TUKISRYKA PIC X(80).
+            02  HCM03V02A-TUKISRYKA PIC X(100).
             02  HCM03V02A-MEISAI
                     PIC X(20)   OCCURS  15 TIMES.
             02  HCM03V02A-HKNRYO1   PIC X(18).

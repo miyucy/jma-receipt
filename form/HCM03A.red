@@ -46,14 +46,9 @@
         <embed object="string" length="3"/>
       </appinfo>
     </element>
-    <element name="LBLTUKISRYKA" occurs="1">
-      <appinfo>
-        <embed object="string" length="10"/>
-      </appinfo>
-    </element>
     <element name="TUKISRYKA" occurs="1">
       <appinfo>
-        <embed object="string" length="80"/>
+        <embed object="string" length="100"/>
       </appinfo>
     </element>
     <element name="MEISAI" occurs="15">
@@ -6412,10 +6407,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O179">
       <attribute name="obj_pos">
-        <point val="3,2.9"/>
+        <point val="1.4,2.9"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="3,2.62636;12.4738,2.97636"/>
+        <rectangle val="1.4,2.62636;10.8738,2.97636"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#TUKISRYKA#</string>
@@ -6427,48 +6422,6 @@
         <composite type="text">
           <attribute name="string">
             <string>#&#198;&#226;&#178;&#202;&#161;&#162;&#179;&#176;&#178;&#202;&#161;&#162;&#165;&#162;&#165;&#236;&#165;&#235;&#161;&#162;&#200;&#231;&#199;&#162;&#180;&#239;&#161;&#162;&#192;&#176;&#183;&#193;&#161;&#162;&#192;&#186;&#191;&#192;&#161;&#202;&#188;&#194;&#198;&#252;&#191;&#244;  8&#198;&#252;&#161;&#203;#</string>
-          </attribute>
-          <attribute name="font">
-            <font name="Courier"/>
-          </attribute>
-          <attribute name="height">
-            <real val="0.35"/>
-          </attribute>
-          <attribute name="pos">
-            <point val="3,2.9"/>
-          </attribute>
-          <attribute name="color">
-            <color val="#000000"/>
-          </attribute>
-          <attribute name="alignment">
-            <enum val="0"/>
-          </attribute>
-          <attribute name="single">
-            <real val="0.2121"/>
-          </attribute>
-          <attribute name="multi">
-            <real val="0.17675"/>
-          </attribute>
-        </composite>
-      </attribute>
-    </object>
-    <object type="Embed - Text" version="0" id="O180">
-      <attribute name="obj_pos">
-        <point val="1.4,2.9"/>
-      </attribute>
-      <attribute name="obj_bb">
-        <rectangle val="1.4,2.62636;2.4605,2.97636"/>
-      </attribute>
-      <attribute name="dnode_path">
-        <string>#LBLTUKISRYKA#</string>
-      </attribute>
-      <attribute name="embed_text_string">
-        <enum val="0"/>
-      </attribute>
-      <attribute name="text">
-        <composite type="text">
-          <attribute name="string">
-            <string>#&#191;&#199;&#206;&#197;&#178;&#202;#</string>
           </attribute>
           <attribute name="font">
             <font name="Courier"/>
