@@ -72,7 +72,7 @@
       *    °õºþÍÑ¥Ç¡¼¥¿
        FD  PRT-FILE.
       *****COPY    "HC03.INC".
-           COPY    "HCM03.INC"     REPLACING   //HCM03//
+           COPY    "HCM03A.INC"     REPLACING   //HCM03A//
                                    BY          //HC03//.
       *
        WORKING-STORAGE             SECTION.
@@ -200,6 +200,7 @@
            03  WRK-SRYYMDG             PIC X(50).
            03  WRK-STSRYYMDG           PIC X(22).
            03  WRK-EDSRYYMDG           PIC X(22).
+           03  WRK-JNISSU              PIC ZZ9.
       *
       *----(03.04.01)--ADD-START---
            03  WRK-HOSPNAME            PIC X(100).
@@ -410,7 +411,7 @@
       *     MOVE   "HC01.sh"           TO  MKPRT-ID
       ***** MOVE   "HC03.dia"          TO  MKPRT-DIA
       ***** MOVE   "HC03.def"          TO  MKPRT-DEF
-      *     MOVE   "HCM03.red"         TO  MKPRT-DIA
+      *     MOVE   "HCM03A.red"         TO  MKPRT-DIA
       *     MOVE   SPACE               TO  MKPRT-DEF
       *     MOVE   HC01PARA            TO  MKPRT-DAT
       *     MOVE   SYS-1031-PRTNM(3)   TO  MKPRT-PRTNM
@@ -419,7 +420,7 @@
       *
             INITIALIZE                 ORCSMKPRTAREA
             MOVE   "HC01.sh"           TO  MKPRT-ID
-            MOVE   "HCM03.red"         TO  MKPRT-DIA
+            MOVE   "HCM03A.red"         TO  MKPRT-DIA
             MOVE   SPACE               TO  MKPRT-DEF
             MOVE   HC01PARA            TO  MKPRT-DAT
             MOVE   SYS-1031-PRTNM(3)   TO  MKPRT-PRTNM
@@ -454,7 +455,7 @@
       *
            MOVE    ORCHC03-PRTAREA     TO  ORCSPRTAREA
       *
-           MOVE    "HCM03.red"         TO  SPRT-PRTID
+           MOVE    "HCM03A.red"         TO  SPRT-PRTID
            MOVE    HC03                TO  SPRT-PRTDATA
       *-----------------------------------------------------------------
            MOVE    "1"                 TO  SPRT-SITEKBN
@@ -1099,6 +1100,10 @@
                    MOVE    "¡ÊÄûÀµ¡Ë"      TO  HC03-MIDASHI
            END-EVALUATE
       *
+           IF    ( ORCHC03-HAKKOFLG        =   4 )
+               PERFORM 3001-TUKIBETU-HEN-SEC
+           END-IF
+      *
            .
        300-HC03-HEN-EXT.
            EXIT.
@@ -1146,6 +1151,23 @@
       *
            .
        3001-MEISAI-HEN-EXT.
+           EXIT.
+      *****************************************************************
+      *    ·îÊÌÀÁµá½ñ·óÎÎ¼ý½ñÊÔ½¸½èÍý
+      *****************************************************************
+       3001-TUKIBETU-HEN-SEC           SECTION.
+      *
+            MOVE   "¿ÇÎÅ²Ê"            TO  HC03-LBLTUKISRYKA
+            MOVE    SYUPARA03-JNISSU   TO  WRK-JNISSU
+            STRING  SYUPARA03-SRYKAMEI DELIMITED   BY  SPACE
+                    "¡Ê¼ÂÆü¿ô"         DELIMITED   BY  SIZE
+                    WRK-JNISSU         DELIMITED   BY  SIZE
+                    "Æü¡Ë"             DELIMITED   BY  SIZE
+            INTO    HC03-TUKISRYKA
+            END-STRING
+      *
+           .
+       3001-TUKIBETU-HEN-EXT.
            EXIT.
       *****************************************************************
       *   Ê£¿ô²Ê¡¦ÊÝ¸±ÆþÎÏ¤Î°õºþ½èÍý
@@ -1275,7 +1297,12 @@
                MOVE    SYUPARA03-SEIKYU    TO  WRK-SKYMONEY
                MOVE    SYUPARA03-NYUKIN    TO  WRK-NYUKIN
                MOVE    SYUPARA03-MISYU     TO  WRK-MISYUMONEY
-               MOVE    SYUPARA03-SRYKAMEI  TO  WRK-SRYKA-MEI
+               IF    ( ORCHC03-HAKKOFLG    =   4 )
+                   MOVE    SPACE           TO  WRK-SRYKA-MEI
+               ELSE
+                   MOVE    SYUPARA03-SRYKAMEI
+                                           TO  WRK-SRYKA-MEI
+               END-IF
       *
                INITIALIZE                      HKNCOMBI-REC
                                                PTRSIINF-REC

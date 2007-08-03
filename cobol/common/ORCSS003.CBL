@@ -58,6 +58,7 @@
       *    °ì»þÎÎ°è
        01  WRK-AREA.
            03  WRK-SYOSAISIN-KBN               PIC X(01).
+           03  WRK-JNISSUGEN-KBN               PIC X(01).
       *
       *
        01  CONST-AREA.
@@ -144,6 +145,7 @@
        100-INIT-SEC                    SECTION.
       *
            INITIALIZE                  WRK-SYOSAISIN-KBN
+                                       WRK-JNISSUGEN-KBN
       *
            MOVE    ZERO            TO  FLG-END
       *
@@ -161,6 +163,8 @@
                PERFORM 2001-JYURRK-CHK-SEC
                MOVE    WRK-SYOSAISIN-KBN
                                    TO  SS003-SYOSAISIN-KBN
+               MOVE    WRK-JNISSUGEN-KBN
+                                   TO  SS003-JNISSUGEN-KBN
            END-IF
       *
            .
@@ -375,8 +379,8 @@
                MOVE    "2"                 TO  WRK-SYOSAISIN-KBN
            END-IF
       *
-           IF    ( WRK-SYOSAISIN-KBN   NOT =   SPACE )
-               MOVE    1                   TO  FLG-END
+           IF    ( SRY-SRYCD (IDX-SRYCD)   =  "099409903" )
+                   MOVE    "1"             TO  WRK-JNISSUGEN-KBN
            END-IF
       *
            .

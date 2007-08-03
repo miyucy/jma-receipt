@@ -48,6 +48,7 @@
            03  FLG-HKNCOMBI            PIC 9(01).
            03  FLG-PTRSIINF            PIC 9(01).
            03  FLG-SYSKANRI            PIC 9(01).
+           03  FLG-SRYKA-OVER          PIC 9(01).
       *
        01  IDX-AREA.
            03  IDX0                    PIC 9(05).
@@ -57,6 +58,7 @@
            03  IDX4                    PIC 9(05).
            03  IDX5                    PIC 9(05).
            03  IDX-SYU                 PIC 9(05).
+           03  IDX-DAY                 PIC 9(02).
       *
        01  WRK-AREA.
            03  WRK-RSIJBIFLG           PIC 9(01).
@@ -66,11 +68,13 @@
            03  WRK-SRYYM               PIC X(06).
            03  WRK-MAX                 PIC 9(05).
            03  WRK-NYUKIN-BF           PIC S9(10).
-           03  WRK-SRYKAMEI            PIC X(20).
+           03  WRK-SRYKAMEI            PIC X(62).
            03  WRK-HKNCOMBIMEI         PIC X(40).
            03  WRK-SRYKA-MAX           PIC 9(05).
            03  WRK-SRYKA-PNT           PIC 9(05).
            03  WRK-SRYYMD              PIC X(08).
+           03  WRK-STR                 PIC X(100).
+           03  WRK-STR-PNT             PIC 9(05).
            03  WRK-FILEMEI  .
                05  WRK-FILEMEI-YMD PIC X(08).
                05  WRK-FILEMEI-HMS PIC X(06).
@@ -110,6 +114,10 @@
                                        PIC 9(01).
                05  SRT-KBT-SEIKYU      PIC S9(10).
                05  SRT-KBT-NYUKIN      PIC S9(10).
+               05  SRT-KBT-JNISSU-DAY-G.
+                   07  SRT-KBT-JNISSU-DAY
+                                       PIC 9(1)
+                                       OCCURS  31.
       *
        01  CONST-AREA.
            03  CONST-SRT-MAX           PIC 9(05)   VALUE   1000.
@@ -153,6 +161,9 @@
       *****************************************************************
       *    サブプロ用　領域
       *****************************************************************
+      *
+      *    初再診カウントサブ
+           COPY    "CPORCSS003.INC".
       *
            COPY    "MCPDATA.INC".
            COPY    "MCPAREA".
@@ -202,6 +213,12 @@
       *
            MOVE    ZERO            TO  ORCHC03S02-CNT
                                        ORCHC03S02-RC
+      *
+      *    初診／再診判定サブ初期処理
+           INITIALIZE                      SS003-AREA
+           MOVE    ZERO            TO      SS003-SYORIKBN
+           CALL    "ORCSS003"      USING   SS003-AREA
+                                           SPA-AREA
       *
            .
        100-INIT-EXT.
@@ -381,6 +398,10 @@
            PERFORM 20011-KBT-SRYYMD-HEN-SEC
       *
            PERFORM 20011-KBT-SEIKYU-HEN-SEC
+      *
+           IF    ( SYUPARA01-HAKKOFLG  =   4 )
+               PERFORM 20011-KBT-JNISSU-HEN-SEC
+           END-IF
       *
            .
        20011-SYUNOU-GRP-EXT.
@@ -588,6 +609,37 @@
        20011-KBT-SEIKYU-HEN-EXT.
            EXIT.
       *****************************************************************
+      *    実日数情報退避処理
+      *****************************************************************
+       20011-KBT-JNISSU-HEN-SEC        SECTION.
+      *
+           MOVE    SYU-SRYYMD(7:2)     TO      IDX-DAY
+      *
+           INITIALIZE                          SS003-AREA
+           MOVE    "1"                 TO      SS003-SYORIKBN
+           MOVE    SYU-HOSPNUM         TO      SS003-HOSPNUM
+           MOVE    SYU-NYUGAIKBN       TO      SS003-NYUGAIKBN
+           MOVE    SYU-PTID            TO      SS003-PTID
+           MOVE    SYU-DENPNUM         TO      SS003-DENPNUM
+           CALL    "ORCSS003"          USING   SS003-AREA
+                                               SPA-AREA
+      *
+           IF    ( SS003-SYOSAISIN-KBN =       "1" OR "2" )
+               IF    ( SRT-KBT-JNISSU-DAY  =   ZERO )
+                   MOVE    1           TO  SRT-KBT-JNISSU-DAY
+                                               (IDX-SYU IDX-DAY)
+               END-IF
+           END-IF
+      *
+           IF    ( SS003-JNISSUGEN-KBN =       "1" )
+               MOVE    9               TO  SRT-KBT-JNISSU-DAY
+                                               (IDX-SYU IDX-DAY)
+           END-IF
+      *
+           .
+       20011-KBT-JNISSU-HEN-EXT.
+           EXIT.
+      *****************************************************************
       *    収納並べ替え処理
       *****************************************************************
        2001-SYUSRT-SEC                 SECTION.
@@ -698,16 +750,30 @@
            MOVE    SRT-KBT-STSRYYMD(IDX4)  TO  SYUPARA03-STSRYYMD
            MOVE    SRT-KBT-EDSRYYMD(IDX4)  TO  SYUPARA03-EDSRYYMD
       *
+           PERFORM VARYING IDX-DAY FROM    1   BY  1
+                   UNTIL ( IDX-DAY >   31 )
+      *
+               IF    ( SRT-KBT-JNISSU-DAY (IDX4 IDX-DAY)
+                                           =   1 )
+                   COMPUTE SYUPARA03-JNISSU
+                       =   SYUPARA03-JNISSU
+                       +   1
+               END-IF
+      *
+           END-PERFORM
+      *
            MOVE    SRT-KBT-SRYKA-MAX (IDX4)
                            TO  SYUPARA03-SRYKA-MAX
       *
            MOVE    1       TO  WRK-SRYKA-PNT
            MOVE    SPACE   TO  WRK-SRYKAMEI
+           MOVE    ZERO    TO  FLG-SRYKA-OVER
       *
            MOVE    SRT-KBT-SRYKA-MAX (IDX4)
                            TO  WRK-MAX
            PERFORM VARYING IDX5    FROM    1   BY  1
                    UNTIL ( IDX5    >   WRK-MAX )
+                    OR   ( FLG-SRYKA-OVER  NOT =   ZERO )
       *
                MOVE    SRT-KBT-SRYKA (IDX4 IDX5)
                            TO  SYUPARA03-SRYKA (IDX5)
@@ -858,15 +924,43 @@
            IF    ( FLG-SYSKANRI        =   ZERO )
       *
                MOVE    MCPDATA-REC     TO  SYS-1005-REC
-               IF    ( WRK-SRYKAMEI   =   SPACE )
+               IF    ( WRK-SRYKAMEI    =   SPACE )
                    STRING  SYS-1005-SRYKANAME2
                                                DELIMITED  BY  SPACE
                    INTO            WRK-SRYKAMEI
                    WITH    POINTER WRK-SRYKA-PNT
                    END-STRING
                ELSE
-                   IF    ( WRK-SRYKAMEI(19:2) NOT =   SPACE )
-                       CONTINUE
+                   IF    ( SYUPARA01-HAKKOFLG  =   4 )
+                       MOVE    1       TO  WRK-STR-PNT
+                       MOVE    SPACE   TO  WRK-STR
+                       STRING  SYS-1005-SRYKANAME2
+                                               DELIMITED  BY  SPACE
+                       INTO            WRK-STR
+                       WITH    POINTER WRK-STR-PNT
+                       END-STRING
+      *
+                       COMPUTE WRK-STR-PNT
+                           =   WRK-STR-PNT
+                           +   WRK-SRYKA-PNT
+      *
+                       IF    ( WRK-STR-PNT     >   60 )
+      *
+                           MOVE    1           TO  FLG-SRYKA-OVER
+      *
+                           STRING  "他"            DELIMITED  BY  SIZE
+                           INTO            WRK-SRYKAMEI
+                           WITH    POINTER WRK-SRYKA-PNT
+                           END-STRING
+                       ELSE
+                           STRING  "、"            DELIMITED  BY  SIZE
+                                   SYS-1005-SRYKANAME2
+                                                   DELIMITED  BY  SPACE
+                           INTO            WRK-SRYKAMEI
+                           WITH    POINTER WRK-SRYKA-PNT
+                           END-STRING
+                       END-IF
+      *
                    ELSE
                        STRING  "、"            DELIMITED  BY  SIZE
                                SYS-1005-SRYKANAME2
@@ -874,6 +968,12 @@
                        INTO            WRK-SRYKAMEI
                        WITH    POINTER WRK-SRYKA-PNT
                        END-STRING
+      *
+                       IF    ( WRK-SRYKAMEI  (19:2)    NOT =   SPACE )
+                           MOVE    SPACE       TO  WRK-SRYKAMEI  (21:)
+                           MOVE    1           TO  FLG-SRYKA-OVER
+                       END-IF
+      *
                    END-IF
                END-IF
            END-IF

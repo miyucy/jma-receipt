@@ -31,8 +31,9 @@
            03  SYUPARA03-NYUKIN            PIC S9(10).
            03  SYUPARA03-STSRYYMD          PIC X(08).
            03  SYUPARA03-EDSRYYMD          PIC X(08).
+           03  SYUPARA03-JNISSU            PIC 9(02).
            03  SYUPARA03-HKNCOMBIMEI       PIC X(40).
-           03  SYUPARA03-SRYKAMEI          PIC X(20).
+           03  SYUPARA03-SRYKAMEI          PIC X(62).
            03  SYUPARA03-SRYKA-G.
                05  SYUPARA03-SRYKA-MAX     PIC 9(03).
                05  SYUPARA03-SRYKA         PIC X(02)
