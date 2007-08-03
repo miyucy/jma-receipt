@@ -1125,12 +1125,12 @@
       *****************************************************************
        3001-TUKIBETU-HEN-SEC           SECTION.
       *
-            MOVE   "診療科"            TO  HC03-LBLTUKISRYKA
             MOVE    SYUPARA03-JNISSU   TO  WRK-JNISSU
-            STRING  SYUPARA03-SRYKAMEI DELIMITED   BY  SPACE
-                    "（実日数"         DELIMITED   BY  SIZE
+            STRING  "実日数"           DELIMITED   BY  SIZE
                     WRK-JNISSU         DELIMITED   BY  SIZE
-                    "日）"             DELIMITED   BY  SIZE
+                    "日（診療科："     DELIMITED   BY  SIZE
+                    SYUPARA03-SRYKAMEI DELIMITED   BY  SPACE
+                    "）"               DELIMITED   BY  SIZE
             INTO    HC03-TUKISRYKA
             END-STRING
       *
