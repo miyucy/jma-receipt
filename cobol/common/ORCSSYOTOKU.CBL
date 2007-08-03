@@ -274,13 +274,21 @@
                  WHEN    SPACE              ALSO    "4"
                        MOVE   "4"     TO    LNK-SYOTOKU-SKJKBN(IDX)
                  WHEN    "2"                ALSO    SPACE
+                    IF   LNK-SYOTOKU-SYUKBN(IDX) = "1" OR "4"
+                       MOVE   SPACE   TO    LNK-SYOTOKU-SKJKBN(IDX)
+                    ELSE
                        MOVE   "2"     TO    LNK-SYOTOKU-SKJKBN(IDX)
+                    END-IF
                  WHEN    "2"                ALSO    "1"
                        MOVE   "1"     TO    LNK-SYOTOKU-SKJKBN(IDX)
                  WHEN    "2"                ALSO    "4"
                        MOVE   "4"     TO    LNK-SYOTOKU-SKJKBN(IDX)
                  WHEN    "3"                ALSO    SPACE
+                    IF   LNK-SYOTOKU-SYUKBN(IDX) = "1" OR "4"
+                       MOVE   SPACE   TO    LNK-SYOTOKU-SKJKBN(IDX)
+                    ELSE
                        MOVE   "3"     TO    LNK-SYOTOKU-SKJKBN(IDX)
+                    END-IF
                  WHEN    "3"                ALSO    "1"
                        MOVE   "1"     TO    LNK-SYOTOKU-SKJKBN(IDX)
                  WHEN    "3"                ALSO    "4"
