@@ -36,6 +36,7 @@
       *  03.04.01    NACL-森脇    07/01/17  医療機関名称、住所セット変更
       *  03.05.00    NACL-多々納  07/04/XX  グループ診療対応
       *  03.05.00    NACL-多々納  07/05/22  再印刷処理追加
+      *  03.05.00    NACL-太田    07/08/03  月別発行実日数記載追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -53,7 +54,7 @@
       *    印刷用データ
        FD  PRT-FILE.
       *****COPY    "HC03.INC".
-           COPY    "HCM03V03.INC"  REPLACING   //HCM03V03//
+           COPY    "HCM03V03A.INC"  REPLACING   //HCM03V03A//
                                    BY          //HC03//.
       *
        WORKING-STORAGE             SECTION.
@@ -183,6 +184,7 @@
            03  WRK-SRYYMDG             PIC X(50).
            03  WRK-STSRYYMDG           PIC X(22).
            03  WRK-EDSRYYMDG           PIC X(22).
+           03  WRK-JNISSU              PIC ZZ9.
       *
       *----(03.04.01)--ADD-START---
            03  WRK-HOSPNAME            PIC X(100).
@@ -393,7 +395,7 @@
             MOVE   "HC01.sh"           TO  MKPRT-ID
       ***** MOVE   "HC03.dia"          TO  MKPRT-DIA
       ***** MOVE   "HC03.def"          TO  MKPRT-DEF
-            MOVE   "HCM03V03.red"      TO  MKPRT-DIA
+            MOVE   "HCM03V03A.red"      TO  MKPRT-DIA
             MOVE   SPACE               TO  MKPRT-DEF
             MOVE   HC01PARA            TO  MKPRT-DAT
             MOVE   SYS-1031-PRTNM(3)   TO  MKPRT-PRTNM
@@ -429,7 +431,7 @@
       *
            MOVE    ORCHC03-PRTAREA     TO  ORCSPRTAREA
       *
-           MOVE    "HCM03V03.red"      TO  SPRT-PRTID
+           MOVE    "HCM03V03A.red"     TO  SPRT-PRTID
            MOVE    HC03                TO  SPRT-PRTDATA
       *-----------------------------------------------------------------
            MOVE    "1"                 TO  SPRT-SITEKBN
@@ -1098,6 +1100,10 @@
                    MOVE    "（訂正）"      TO  HC03-MIDASHI
            END-EVALUATE
       *
+           IF    ( ORCHC03-HAKKOFLG        =   4 )
+               PERFORM 3001-TUKIBETU-HEN-SEC
+           END-IF
+      *
            .
        300-HC03-HEN-EXT.
            EXIT.
@@ -1149,6 +1155,23 @@
        3001-MEISAI-HEN-EXT.
            EXIT.
       *
+      *****************************************************************
+      *    月別請求書兼領収書編集処理
+      *****************************************************************
+       3001-TUKIBETU-HEN-SEC           SECTION.
+      *
+            MOVE   "診療科"            TO  HC03-LBLTUKISRYKA
+            MOVE    SYUPARA03-JNISSU   TO  WRK-JNISSU
+            STRING  SYUPARA03-SRYKAMEI DELIMITED   BY  SPACE
+                    "（実日数"         DELIMITED   BY  SIZE
+                    WRK-JNISSU         DELIMITED   BY  SIZE
+                    "日）"             DELIMITED   BY  SIZE
+            INTO    HC03-TUKISRYKA
+            END-STRING
+      *
+           .
+       3001-TUKIBETU-HEN-EXT.
+           EXIT.
       *****************************************************************
       *   複数科・保険入力の印刷処理
       *****************************************************************
@@ -1281,7 +1304,12 @@
                                            TO  WRK-SKYMONEY-TAX-SAI
                MOVE    SYUPARA03-NYUKIN    TO  WRK-NYUKIN
                MOVE    SYUPARA03-MISYU     TO  WRK-MISYUMONEY
-               MOVE    SYUPARA03-SRYKAMEI  TO  WRK-SRYKA-MEI
+               IF    ( ORCHC03-HAKKOFLG    =   4 )
+                   MOVE    SPACE           TO  WRK-SRYKA-MEI
+               ELSE
+                   MOVE    SYUPARA03-SRYKAMEI
+                                           TO  WRK-SRYKA-MEI
+               END-IF
       *
                INITIALIZE                      HKNCOMBI-REC
                                                PTRSIINF-REC
