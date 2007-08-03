@@ -1773,7 +1773,7 @@
       *****************************************************************
        31011-NYUINACCT-HENSYU-SEC              SECTION.
       *
-      *    入院会計マスターを編集
+      *    入院会計マスターを編集（入院基本料）
            INITIALIZE                      NYUINACCT-REC.
            MOVE    SPA-HOSPNUM         TO  NACCT-HOSPNUM
            MOVE    SPA-NYUGAIKBN       TO  NACCT-NYUGAIKBN.
@@ -1804,6 +1804,82 @@
       *            入院料
                    WHEN    "1"
                        MOVE   1                TO   FLG-NYUINKHNRYO
+               END-EVALUATE
+      *
+               MOVE    "tbl_nyuinacct"     TO  MCP-TABLE
+               MOVE    "key36"             TO  MCP-PATHNAME
+               PERFORM 900-NYUINACCT-READ-SEC
+           END-PERFORM
+      *
+           MOVE    "tbl_nyuinacct"     TO  MCP-TABLE
+           MOVE    "key36"             TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC.
+      *
+      *    入院会計マスターを編集（選定入院料）
+           INITIALIZE                      NYUINACCT-REC.
+           MOVE    SPA-HOSPNUM         TO  NACCT-HOSPNUM
+           MOVE    SPA-NYUGAIKBN       TO  NACCT-NYUGAIKBN.
+           MOVE    SPA-GMN-PTID        TO  NACCT-PTID
+           MOVE    "00"                TO  NACCT-SRYKA
+           MOVE    SPA-NAI-SRYYM       TO  NACCT-SRYYM
+      *
+           MOVE    NYUINACCT-REC       TO  MCPDATA-REC.
+           MOVE    "tbl_nyuinacct"     TO  MCP-TABLE
+           MOVE    "key37"             TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_nyuinacct"     TO  MCP-TABLE
+               MOVE    "key37"             TO  MCP-PATHNAME
+               PERFORM 900-NYUINACCT-READ-SEC
+           ELSE
+               INITIALIZE                  NYUINACCT-REC
+               MOVE    1               TO  FLG-NYUINACCT
+           END-IF
+      *
+           PERFORM UNTIL      (FLG-NYUINACCT     =   1)
+      *
+               ADD     1                   TO  IDX
+      *        ＳＰＡ編集
+               PERFORM 3101-NYUINACCT-SPA-SEC
+      *
+               MOVE    "tbl_nyuinacct"     TO  MCP-TABLE
+               MOVE    "key37"             TO  MCP-PATHNAME
+               PERFORM 900-NYUINACCT-READ-SEC
+           END-PERFORM
+      *
+           MOVE    "tbl_nyuinacct"     TO  MCP-TABLE
+           MOVE    "key37"             TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC.
+      *
+      *
+      *    入院会計マスターを編集（入院料以外）
+           INITIALIZE                      NYUINACCT-REC.
+           MOVE    SPA-HOSPNUM         TO  NACCT-HOSPNUM
+           MOVE    SPA-NYUGAIKBN       TO  NACCT-NYUGAIKBN.
+           MOVE    SPA-GMN-PTID        TO  NACCT-PTID
+           MOVE    "00"                TO  NACCT-SRYKA
+           MOVE    SPA-NAI-SRYYM       TO  NACCT-SRYYM
+      *
+           MOVE    NYUINACCT-REC       TO  MCPDATA-REC.
+           MOVE    "tbl_nyuinacct"     TO  MCP-TABLE
+           MOVE    "key38"             TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_nyuinacct"     TO  MCP-TABLE
+               MOVE    "key38"             TO  MCP-PATHNAME
+               PERFORM 900-NYUINACCT-READ-SEC
+           ELSE
+               INITIALIZE                  NYUINACCT-REC
+               MOVE    1               TO  FLG-NYUINACCT
+           END-IF
+      *
+           PERFORM UNTIL      (FLG-NYUINACCT     =   1)
+      *
+               ADD     1                   TO  IDX
+      *        ＳＰＡ編集
+               PERFORM 3101-NYUINACCT-SPA-SEC
+      *
+               EVALUATE    NACCT-ZAISKBKBN
       *            最終日の食事を退避（次月会計の作成用）
                    WHEN    "4"
                        IF      NACCT-ZAITEN    =    ZERO
@@ -1840,12 +1916,12 @@
                END-EVALUATE
       *
                MOVE    "tbl_nyuinacct"     TO  MCP-TABLE
-               MOVE    "key36"             TO  MCP-PATHNAME
+               MOVE    "key38"             TO  MCP-PATHNAME
                PERFORM 900-NYUINACCT-READ-SEC
            END-PERFORM
       *
            MOVE    "tbl_nyuinacct"     TO  MCP-TABLE
-           MOVE    "key36"             TO  MCP-PATHNAME
+           MOVE    "key38"             TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC.
       *
            .

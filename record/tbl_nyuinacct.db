@@ -746,6 +746,39 @@ path	key36 	{
 			AND   NYUGAIKBN   =   '1'
 			AND   PTID        =   :PTID
 			AND   SRYYM       =   :SRYYM
+                        AND   ZAISKBKBN   =   '1'
+                        AND   SRYCDTOTAL  <>  99999916
+			ORDER  BY   SRYCDTOTAL
+		;
+	};
+};
+
+path	key37 	{
+	DBSELECT	{
+		DECLARE tbl_nyuinacct_key37_csr CURSOR FOR
+		SELECT *
+		FROM tbl_nyuinacct
+			WHERE   HOSPNUM    =   :HOSPNUM
+			AND   NYUGAIKBN   =   '1'
+			AND   PTID        =   :PTID
+			AND   SRYYM       =   :SRYYM
+                        AND   ZAISKBKBN   =   '1'
+                        AND   ZAISKBKBN   =   '1'
+                        AND   SRYCDTOTAL  =   99999916
+		;
+	};
+};
+
+path	key38 	{
+	DBSELECT	{
+		DECLARE tbl_nyuinacct_key38_csr CURSOR FOR
+		SELECT *
+		FROM tbl_nyuinacct
+			WHERE   HOSPNUM    =   :HOSPNUM
+			AND   NYUGAIKBN   =   '1'
+			AND   PTID        =   :PTID
+			AND   SRYYM       =   :SRYYM
+                        AND   ZAISKBKBN   <>   '1'
 			ORDER  BY   ZAISKBKBN,
                                     SRYCDTOTAL
 		;
