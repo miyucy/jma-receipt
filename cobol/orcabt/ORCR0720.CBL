@@ -48,6 +48,7 @@
       *  03.05.01    NACL-¾®Æ¦Âô  07/06/05  ¥°¥ë¡¼¥×¿ÇÎÅÂÐ±þ
       *  03.05.02    NACL-ÌçÏÆ    07/07/17  ¸ÄÊÌ»þ¤Î¥·¥¹¥Æ¥à´ÉÍýÊÔ½¸½¤Àµ
       *  03.05.03    NACL-Æ£¸¶    07/06/19  ÉÂÅïÈÖ¹æµ­ºÜÂÐ±þ
+      *  03.05.04    NACL-Æ£¸¶    07/07/18  ÀÁµá´ÉÍý¤ËÆÃµ­»ö¹à¤òÄÉ²Ã
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -391,6 +392,9 @@
            03  WRK-HC06-HEAD4-G    PIC X(128).
       *
            03  WRK-SUM-TENSU       PIC S9(08).
+      *
+           03  WRK-TOKKI           PIC X(02).
+           03  WRK-TOKKI-X         PIC X(04).
       *
            03  WRK-1033-TABLE.
                05  WRK-1033-TBL    OCCURS  5.
@@ -811,6 +815,33 @@
                05  OCR3-CHKDGT4                        PIC 9(01).
                05  OCR3-CHKDGT5                        PIC 9(01).
            03  OCR3-YOBI                               PIC X(28).
+      *
+      *    Á´³ÑÊÑ´¹ÎÎ°è
+       01  TBL-SUUJI-AREA.
+           03  FILLER              PIC X(02)   VALUE   "£±".
+           03  FILLER              PIC X(01)   VALUE   "1".
+           03  FILLER              PIC X(02)   VALUE   "£²".
+           03  FILLER              PIC X(01)   VALUE   "2".
+           03  FILLER              PIC X(02)   VALUE   "£³".
+           03  FILLER              PIC X(01)   VALUE   "3".
+           03  FILLER              PIC X(02)   VALUE   "£´".
+           03  FILLER              PIC X(01)   VALUE   "4".
+           03  FILLER              PIC X(02)   VALUE   "£µ".
+           03  FILLER              PIC X(01)   VALUE   "5".
+           03  FILLER              PIC X(02)   VALUE   "£¶".
+           03  FILLER              PIC X(01)   VALUE   "6".
+           03  FILLER              PIC X(02)   VALUE   "£·".
+           03  FILLER              PIC X(01)   VALUE   "7".
+           03  FILLER              PIC X(02)   VALUE   "£¸".
+           03  FILLER              PIC X(01)   VALUE   "8".
+           03  FILLER              PIC X(02)   VALUE   "£¹".
+           03  FILLER              PIC X(01)   VALUE   "9".
+           03  FILLER              PIC X(02)   VALUE   "£°".
+           03  FILLER              PIC X(01)   VALUE   "0".
+       01  TBL-SUUJI-AREA-R        REDEFINES   TBL-SUUJI-AREA.
+           03  TBL-SUUJI-G         OCCURS  10.   
+               05  TBL-SUUJI-X     PIC X(02).
+               05  TBL-SUUJI-9     PIC X(01).
       *
        01  WRK-ERR-MSG-AREA.
            03  WRK-ERR-MSG-1.
@@ -7739,6 +7770,56 @@
            MOVE    RECE62-SHOKUJIFTNKBN
                                        TO  RECE10-SHOKUJIFTNKBN
       *
+      *    ÆÃµ­»ö¹à
+           PERFORM VARYING IDX     FROM    1   BY  1
+                   UNTIL ( IDX                 >   5     )
+                   OR    ( RECE62-TOKKI (IDX)  =   SPACE )
+               MOVE    SPACE               TO  WRK-TOKKI-X
+               MOVE    RECE62-TOKKI (IDX)  TO  WRK-TOKKI
+               PERFORM 39041-RECE10-TOKKI-HENSYU-SEC
+           END-PERFORM
+      *
+      *    ÆÃµ­»ö¹à¡Ê¥ì¥»¥×¥ÈÆÃµ­»ö¹àÊÔ½¸¾ðÊó¡Ë
+           IF      RECE62-2006-TOKKIINF    NOT =   SPACE
+               PERFORM VARYING IDX     FROM    1   BY  1
+                       UNTIL   IDX     >       4
+                   IF      RECE62-2006-TOKKI (IDX)
+                                           NOT =   SPACE
+                       MOVE    RECE62-2006-TOKKI (IDX) 
+                                                   TO  WRK-TOKKI-X
+                       MOVE    SPACE               TO  WRK-TOKKI
+                       PERFORM 39041-RECE10-TOKKI-HENSYU-SEC
+                   END-IF
+               END-PERFORM
+           END-IF
+           IF      RECE62-2006-RECEDEN-TOKKIINF
+                                           NOT =   SPACE
+               PERFORM VARYING IDX     FROM    1   BY  1
+                       UNTIL   IDX     >       5
+                   IF      RECE62-2006-RECEDEN-TOKKI (IDX)
+                                           NOT =   SPACE
+                       MOVE    SPACE               TO  WRK-TOKKI-X
+                       MOVE    RECE62-2006-RECEDEN-TOKKI (IDX) 
+                                                   TO  WRK-TOKKI
+                       PERFORM 39041-RECE10-TOKKI-HENSYU-SEC
+                   END-IF
+               END-PERFORM
+           END-IF
+      *
+      *    ÆÃµ­»ö¹à¡Ê¸©Ã±ÍÑ¹àÌÜ¡Ë
+           IF      FLG-RECE67           =   ZERO
+               PERFORM VARYING IDX     FROM    1   BY  1
+                       UNTIL   IDX     >       4
+                   IF      RECE67-HC06-TOKKI (IDX)
+                                           NOT =   SPACE
+                       MOVE    RECE67-HC06-TOKKI (IDX)
+                                                   TO  WRK-TOKKI-X
+                       MOVE    SPACE               TO  WRK-TOKKI
+                       PERFORM 39041-RECE10-TOKKI-HENSYU-SEC
+                   END-IF
+               END-PERFORM
+           END-IF
+      *
            MOVE    RECE10-REC          TO  MCPDATA-REC
            MOVE    "tbl_seikyu"        TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
@@ -7765,6 +7846,53 @@
            END-IF
            .
        3904-RECE10-HENSYU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ÆÃµ­»ö¹à¡ÊÀÁµá´ÉÍý¡ËÊÔ½¸½èÍý
+      *****************************************************************
+       39041-RECE10-TOKKI-HENSYU-SEC        SECTION.
+      *
+      *    Á´³Ñ¿ô»ú¤Î¤È¤­È¾³Ñ¿ô»ú¤ËÊÑ´¹ 
+           IF      WRK-TOKKI-X     NOT =   SPACE    
+               MOVE    ZERO                TO  IDXY
+               INITIALIZE                      ORCSKANACHKAREA
+               MOVE    "1"                 TO  KANACHK-SYORI
+               MOVE    WRK-TOKKI-X         TO  KANACHK-MAE-INPUT
+               CALL    "ORCSKANACHK"       USING   ORCSKANACHKAREA
+               IF    ( KANACHK-RC          =   ZERO )
+               AND   ( KANACHK-SYUBETU     =   "2"  )
+                   PERFORM VARYING IDY     FROM    1   BY  2
+                           UNTIL   IDY     >       4
+                           OR      WRK-TOKKI-X (IDY:2)
+                                           =   SPACE
+                       PERFORM VARYING IDXX    FROM    1   BY  1
+                               UNTIL   IDXX    >       10
+                           IF      WRK-TOKKI-X (IDY:2)
+                                               =   TBL-SUUJI-X(IDXX)
+                               ADD     1               TO  IDXY
+                               MOVE    TBL-SUUJI-9(IDXX)
+                                                   TO  WRK-TOKKI(IDXY:1)
+                           END-IF
+                       END-PERFORM
+                   END-PERFORM
+               END-IF
+           END-IF
+      *    
+           IF      WRK-TOKKI        NOT =   SPACE
+               PERFORM VARYING IDY     FROM    1   BY  1
+                       UNTIL   IDY     >       5
+                   IF      RECE10-TOKKI (IDY)
+                                       =   SPACE
+                       MOVE    WRK-TOKKI   TO  RECE10-TOKKI (IDY)
+                   END-IF
+                   IF      WRK-TOKKI   =   RECE10-TOKKI (IDY)
+                       MOVE    5           TO  IDY
+                   END-IF
+               END-PERFORM      
+           END-IF    
+           .
+       39041-RECE10-TOKKI-HENSYU-EXT.
            EXIT.
       *
       *****************************************************************
