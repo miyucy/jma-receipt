@@ -536,7 +536,7 @@
                CONTINUE
            ELSE
                MOVE    SPACE           TO  WRK-RECEERR
-               STRING  "期間処理区分が誤りです［"
+               STRING  "処理区分が誤りです［"
                                                    DELIMITED   BY  SIZE
                        WRK-PARA-KKNPROCKBN         DELIMITED   BY  SIZE
                        "］"                        DELIMITED   BY  SIZE
