@@ -2668,7 +2668,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        41012-TNKNINYMD-SEC           SECTION.
       *
            IF      SPA-GMN24-TNKNINSTYMD   =   SPACE
-               MOVE    ZERO                TO  SPA-NAI24-TNKNINSTYMD
+               MOVE    SPACE               TO  SPA-NAI24-TNKNINSTYMD
            ELSE
       *        日付画面チェックサブ
                INITIALIZE                      ORCSGDAYAREA
