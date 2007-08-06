@@ -527,8 +527,6 @@ $Repeat, 20, @@HIMOD@@, 2
 					<mmlHi:paymentInRatio>%I_@@HIMOD@@_INRATIO%</mmlHi:paymentInRatio>
 					<!-- ³°Íè»þ¤ÎÉéÃ´Î¨ -->
 					<mmlHi:paymentOutRatio>%I_@@HIMOD@@_OUTRATIO%</mmlHi:paymentOutRatio>
-					<!-- ÉéÃ´¶â¤Þ¤¿¤ÏÉéÃ´Î¨ -->
-					<mmlHi:paymentRatio>%I_@@HIMOD@@_RATIO%</mmlHi:paymentRatio>
 					<!-- ÊÝ¸±¼Ô¾ðÊó -->
 					<!-- ÈïÊÝ¸±¼Ô¤Î½êÂ°¤¹¤ë»ö¶È½ê¾ðÊó -->
 					<!-- ¸øÈñÉéÃ´°åÎÅ¾ðÊó -->
@@ -539,10 +537,13 @@ $Repeat, 6, @@PIITEM@@, 0
 
 						<!-- ¸øÈñÉéÃ´°åÎÅ¾ðÊó(@@PIITEM@@) -->
 						<mmlHi:publicInsuranceItem mmlHi:priority="%I_@@HIMOD@@_F@@PIITEM@@1%">
-							<mmlHi:provider>%I_@@HIMOD@@_F@@PIITEM@@2%</mmlHi:provider>
-							<mmlHi:recipient>%I_@@HIMOD@@_F@@PIITEM@@3%</mmlHi:recipient>
-							<mmlHi:startDate>%I_@@HIMOD@@_F@@PIITEM@@4%</mmlHi:startDate>
-							<mmlHi:expiredDate>%I_@@HIMOD@@_F@@PIITEM@@5%</mmlHi:expiredDate>
+							<mmlHi:providerName>%I_@@HIMOD@@_F@@PIITEM@@2%</mmlHi:providerName>
+							<mmlHi:provider>%I_@@HIMOD@@_F@@PIITEM@@3%</mmlHi:provider>
+							<mmlHi:recipient>%I_@@HIMOD@@_F@@PIITEM@@4%</mmlHi:recipient>
+							<mmlHi:startDate>%I_@@HIMOD@@_F@@PIITEM@@5%</mmlHi:startDate>
+							<mmlHi:expiredDate>%I_@@HIMOD@@_F@@PIITEM@@6%</mmlHi:expiredDate>
+							<!-- ÉéÃ´¶â¤Þ¤¿¤ÏÉéÃ´Î¨ -->
+							<mmlHi:paymentRatio%I_@@HIMOD@@_F@@PIITEM@@7%>%I_@@HIMOD@@_F@@PIITEM@@8%</mmlHi:paymentRatio>
 						</mmlHi:publicInsuranceItem>
 
 $EndRepeat
@@ -732,6 +733,10 @@ $EndRepeat
 							<!-- °å»öÀÁµáÌ¾¾Î -->
 							<claim:name>%C_E4%</claim:name>
 						</claim:item>
+							<!-- ¼õÉÕ¥á¥â -->
+						<claim:memo>
+							%C_F1%
+						</claim:memo>
 					</claim:bundle>
 				</claim:ClaimModule>
 			</content>

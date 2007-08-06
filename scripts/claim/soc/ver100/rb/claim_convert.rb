@@ -428,7 +428,7 @@ def def_conversion_proc_a(in_data)
 						w_data2.push w_data1[lcnt1]
 					else
 						# 一番最後の引数である
-						w_data2.push (w_data1[lcnt1].gsub /\s*?\#[\S\s]*?$/, '')
+						w_data2.push((w_data1[lcnt1].gsub /\s*?\#[\S\s]*?$/, ''))
 					end
 				end
 			# --------------------

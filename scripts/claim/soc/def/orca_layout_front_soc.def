@@ -213,7 +213,7 @@ $Repeat, 20, @@HIMOD@@, 2
 	# ----------------------------------------
 
 
-	$ifdef,  or, %I_@@HIMOD@@_B1%, %I_@@HIMOD@@_C1%, %I_@@HIMOD@@_C2%, %I_@@HIMOD@@_D1%, %I_@@HIMOD@@_E1%, %I_@@HIMOD@@_E2%, %I_@@HIMOD@@_F12%, %I_@@HIMOD@@_F13%, %I_@@HIMOD@@_F14%, %I_@@HIMOD@@_F15%, %I_@@HIMOD@@_F22%, %I_@@HIMOD@@_F23%, %I_@@HIMOD@@_F24%, %I_@@HIMOD@@_F25%, %I_@@HIMOD@@_F32%, %I_@@HIMOD@@_F33%, %I_@@HIMOD@@_F34%, %I_@@HIMOD@@_F35%, %I_@@HIMOD@@_F42%, %I_@@HIMOD@@_F43%, %I_@@HIMOD@@_F44%, %I_@@HIMOD@@_F45%, %I_@@HIMOD@@_F52%, %I_@@HIMOD@@_F53%, %I_@@HIMOD@@_F54%, %I_@@HIMOD@@_F55%, %I_@@HIMOD@@_F62%, %I_@@HIMOD@@_F63%, %I_@@HIMOD@@_F64%, %I_@@HIMOD@@_F65%
+	$ifdef,  or, %I_@@HIMOD@@_B1%, %I_@@HIMOD@@_C1%, %I_@@HIMOD@@_C2%, %I_@@HIMOD@@_D1%, %I_@@HIMOD@@_E1%, %I_@@HIMOD@@_E2%
 	# 健康保険番号・被保険者記号・被保険者番号・本人家族区分
 	# 開始日（交付年月日）・有効期限
 	# 公費負担医療情報(01)[負担者番号, 受給者番号, 開始日, 有効期限]
@@ -310,16 +310,18 @@ $Repeat, 20, @@HIMOD@@, 2
 
 	%I_@@HIMOD@@_INRATIO%,   5	# 入院時の負担率
 	%I_@@HIMOD@@_OUTRATIO%,  5	# 外来時の負担率
-	%I_@@HIMOD@@_RATIO%,    10	# 負担金または負担率
 
 	# 公費負担の領域を6つ用意（増減したら、上の$ifdef文も修正すること）
 	$Repeat, 6, @@PIITEM@@, 0
 		# 公費負担医療情報(@@PIITEM@@)
 		%I_@@HIMOD@@_F@@PIITEM@@1%,   1	# 複数公費の優先順位 [必須・属性]
-		%I_@@HIMOD@@_F@@PIITEM@@2%,   8	# 負担者番号
-		%I_@@HIMOD@@_F@@PIITEM@@3%,  20	# 受給者番号
-		%I_@@HIMOD@@_F@@PIITEM@@4%,  10	# 開始日(CCYY-MM-DD)
-		%I_@@HIMOD@@_F@@PIITEM@@5%,  10	# 有効期限(CCYY-MM-DD)
+		%I_@@HIMOD@@_F@@PIITEM@@2%,  50	# 公費名称
+		%I_@@HIMOD@@_F@@PIITEM@@3%,   8	# 負担者番号
+		%I_@@HIMOD@@_F@@PIITEM@@4%,  20	# 受給者番号
+		%I_@@HIMOD@@_F@@PIITEM@@5%,  10	# 開始日(CCYY-MM-DD)
+		%I_@@HIMOD@@_F@@PIITEM@@6%,  10	# 有効期限(CCYY-MM-DD)
+		%I_@@HIMOD@@_F@@PIITEM@@7%,  10 ,mmlHi:ratioType	# 負担金
+		%I_@@HIMOD@@_F@@PIITEM@@8%,  10	# 負担金
 	$EndRepeat
 
 
@@ -439,6 +441,8 @@ $const, %C_B3%, " claim:appCodeId="Claim009""	# 予約コードテーブル(定数で「Claim
 %C_E2%,  10, claim:code     	# 医療請求コード [必須・属性]
 %C_E3%,  20, claim:tableId  	# 医事請求コード体系名 [省略可能・属性]
 %C_E4%,  40                 	# 医事請求名称
+# 受付メモ                      
+%C_F1%,  800                 	# 受付メモ
 
 
 
