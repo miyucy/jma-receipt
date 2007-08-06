@@ -105,7 +105,7 @@
            03  PARA-JOBID              PIC 9(07).
            03  PARA-SHELLID            PIC X(08).
            03  PARA-HOSPNUM            PIC 9(02).
-           03  RECEERR                 PIC 9(02).
+           03  RECEERR                 PIC X(100).
            03  PARA-SITEIKBN           PIC X(01).
            03  PARA-YUKOSTRYM          PIC X(06).
            03  PARA-YUKOENDYM          PIC X(06).
@@ -824,9 +824,11 @@
            IF          STS-RECEERR     =   ZERO
                CONTINUE
            ELSE
+      *
                OPEN    OUTPUT              RECEERR-FILE
       *
                MOVE    WRK-RECEERR     TO  RECEERR-REC
+      *
                WRITE   RECEERR-REC
                CLOSE   RECEERR-FILE
       *

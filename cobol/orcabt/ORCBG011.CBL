@@ -864,7 +864,7 @@
       *    患者番号取得
            PERFORM 20011-PTNUM-GET-SEC
            IF    ( FLG-END     NOT =   ZERO )
-               GO  TO  2001-BD003-HEN-EXT
+               GO  TO  2101-TOKEI-SET-SEIKYU-EXT
            END-IF
       *
            MOVE    SPTID-PTNUM         TO  BG01101-PTNUM
