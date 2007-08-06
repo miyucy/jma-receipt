@@ -405,6 +405,13 @@ W07	{
 					count	int;
 					item	varchar(32)[5];
 				};
+				TUKISKYMISYUPRT_COMBO	{
+					TUKISKYMISYUPRT	{
+						value	varchar(32);
+					};
+					count	int;
+					item	varchar(32)[5];
+				};
 				SYUNYKNKNRKBN_COMBO	{
 					SYUNYKNKNRKBN	{
 						value	varchar(40);
