@@ -625,7 +625,8 @@
                                                SPA-AREA
       *
            IF    ( SS003-SYOSAISIN-KBN =       "1" OR "2" )
-               IF    ( SRT-KBT-JNISSU-DAY  =   ZERO )
+               IF    ( SRT-KBT-JNISSU-DAY (IDX-SYU IDX-DAY) 
+	                               =   ZERO )
                    MOVE    1           TO  SRT-KBT-JNISSU-DAY
                                                (IDX-SYU IDX-DAY)
                END-IF
