@@ -386,6 +386,13 @@ W07	{
 					count	int;
 					item	varchar(40)[2];
 				};
+				TEIKINKBN_COMB	{
+					TEIKINKBN	{
+						value	varchar(40);
+					};
+					count	int;
+					item	varchar(40)[2];
+				};
 			};
 			TAGNAME3    {
 			  	state   int;
