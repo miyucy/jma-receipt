@@ -77,6 +77,7 @@
       *  03.05.00    NACL-多々納  07/05/09  グループ診療対応
       *  03.05.00    NACL-小豆沢  07.08.02  療養病棟（病床）入院会計
       *                                     表示区分対応
+      *  03.05.00    NACL-多々納  07/08/06  入院料重複チェック追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -337,6 +338,10 @@
                05  WRK-NYUIN-BTUDAY    PIC 9(04)   OCCURS  6.
                05  WRK-LAST-RECNO      PIC 9(01).
                05  WRK-NYUIN-BTUDAY-Z  PIC ZZZ9.
+      *    入院料重複チェック
+           03  WRK-NYUDAY-TBL.
+               05  WRK-NYUDAY-OCC      OCCURS   31.
+                   07  WRK-NYUDAY      PIC 9(01).
       *
       *    回数一括変更用
        01  WRK-DAY-AREA.
@@ -7102,6 +7107,44 @@
            EXIT.
       *
       *****************************************************************
+      *    入院料の回数重複チェック処理
+      *****************************************************************
+       49011-NYUINACCT-CHK-SEC            SECTION.
+      *
+           INITIALIZE                  WRK-NYUDAY-TBL
+      *    回数重複チェック
+           PERFORM VARYING IDX         FROM  1  BY 1
+                   UNTIL  (IDX         >   SPA-GMN-MAX-41 )
+                       OR (SPA-ERRCD   NOT =   SPACE )
+             IF     (SPA-GMN-TBLREC (IDX)(1:3) =   ALL "-" )  OR
+                    (SPA-GMN-TBANGO (IDX)      =   ZERO    )
+                   CONTINUE
+               ELSE
+                   MOVE    SPA-GMN-TBANGO (IDX) TO  IDX-N
+      *
+      *            入院基本料
+                   IF     (SPA-GMN-TZAISKBKBN-41 (IDX) =   "1"  )  AND
+                          (SPA-GMN-TSRYCD (IDX)    NOT =   W-YOYAKU)
+                       PERFORM VARYING IDK     FROM    1   BY  1
+                               UNTIL  (IDK     >   31   )
+                                   OR (SPA-ERRCD   NOT =   SPACE )
+                           IF      (SPA-NAI-DAY-41 (IDX-N IDK)
+                                                       >   ZERO )
+                               IF      WRK-NYUDAY (IDK)  =   ZERO
+                                   MOVE    1       TO  WRK-NYUDAY (IDK)
+                               ELSE
+                                   MOVE    "0051"      TO  SPA-ERRCD
+                               END-IF
+                           END-IF
+                       END-PERFORM
+                   END-IF
+               END-IF
+           END-PERFORM
+           .
+       49011-NYUINACCT-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    入院会計マスター更新処理
       *****************************************************************
        4901-NYUINACCT-UPD-SEC            SECTION.
@@ -7109,7 +7152,13 @@
       *    対象がない時、処理なし
            IF      SPA-UPDFLG-41       =   SPACE
                GO      TO      4901-NYUINACCT-UPD-EXT
-           END-IF.
+           END-IF
+      *@@
+      *    回数重複チェック
+           PERFORM 49011-NYUINACCT-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      4901-NYUINACCT-UPD-EXT
+           END-IF
       *
            MOVE    SPACE               TO  SPA-UPDFLG-41.
       *
@@ -7705,6 +7754,9 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                                        TO  WRK-ERRMSG(1:34)
                    MOVE    "）は算定できません。"
                                        TO  WRK-ERRMSG(35:20)
+               WHEN    "0051"
+                   MOVE    "入院カレンダーに重複があります。"
+                                       TO  WRK-ERRMSG
                WHEN    "1005"
                    MOVE    "受診履歴番号が存在しません。"
                                        TO  WRK-ERRMSG
