@@ -42,6 +42,7 @@
       *  03.05.00    NACL-多々納  07/04/XX  グループ診療対応
       *  03.05.00    NACL-多々納  07/05/22  再印刷処理追加
       *  03.05.00    NACL-太田    07/08/03  月別発行実日数記載追加
+      *  03.05.01    NACL-多々納  07/08/06  訂正時合計対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -505,6 +506,16 @@
                                            +   WRK-MISYUMONEY
            END-IF
       *---(03.03.00) LINE ADD  END   -----------------------------------
+      *---(03.05.01) LINE ADD  START -----------------------------------
+      *    訂正時に合計金額表示
+           IF     (ORCHC03-TEIKIN-KBN  =   1   )  AND
+                  (ORCHC03-HAKKOFLG    =   2   )
+               MOVE    SYU-SKYMONEY        TO  WRK-SKYMONEY
+               MOVE    SYU-NYUKIN-TOTAL    TO  WRK-NYUKIN
+               MOVE    SYU-SKYMONEY-TAX-SAI
+                                           TO  WRK-SKYMONEY-TAX-SAI
+           END-IF
+      *---(03.05.01) LINE ADD  END   -----------------------------------
       *
       *    帳票印刷開始処理
            PERFORM 400-SYOKI-PRINT-SEC

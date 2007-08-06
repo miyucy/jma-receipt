@@ -86,6 +86,7 @@
       *  03.05.01    NACL-多々納  07/07/XX  同日再診・訂正追加
       *                                     皮下筋肉注射料変換区分追加
       *  03.05.01    NACL-太田    07/08/03  月別請求書前回未収額印字区分追加
+      *  03.05.01    NACL-多々納  07/08/XX  訂正の請求書金額区分追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -383,6 +384,18 @@
                                13  SPA-GMN-HAKHOUFLGL  PIC X(01).
                                13                      PIC X(01).
                                13  SPA-GMN-HAKHOUFLGMEIL
+                                                       PIC X(38).
+      *                訂正の請求書金額
+                       09  SPA-GMN-TEIKINKBN-G.
+                           11  SPA-GMN-TEIKINKBN       PIC X(01).
+                           11  SPA-GMN-TEIKINKBN-F1    PIC X(01).
+                           11  SPA-GMN-TEIKINKBN-MEI   PIC X(38).
+                       09  SPA-GMN-TEIKINKBNLST-G.
+                           11  SPA-GMN-TEIKINKBN-MAX   PIC 9(03).
+                           11  SPA-GMN-TEIKINKBN-LST    OCCURS  5.
+                               13  SPA-GMN-TEIKINKBNL  PIC X(01).
+                               13                      PIC X(01).
+                               13  SPA-GMN-TEIKINKBNMEIL
                                                        PIC X(38).
       *                ＤＯ初期表示
                        09  SPA-GMN-DOSRYKBNFLG-G.
@@ -1194,6 +1207,12 @@
            MOVE    "4 全体をまとめて発行"
                                        TO  SPA-GMN-HAKHOUFLG-LST(4)
            MOVE    4                   TO  SPA-GMN-HAKHOUFLG-MAX
+      *    訂正の請求書金額
+           MOVE    "0 訂正分（差額）"
+                                       TO  SPA-GMN-TEIKINKBN-LST(1)
+           MOVE    "1 合計"
+                                       TO  SPA-GMN-TEIKINKBN-LST(2)
+           MOVE    2                   TO  SPA-GMN-TEIKINKBN-MAX
       *
            MOVE    "1 伝票の古い未収順に入金"
                                        TO  SPA-GMN-SYUNYKNKNRKBNLST(1)
@@ -2049,6 +2068,9 @@
            MOVE    SYS-1038-NYKNKNRKBN TO  SPA-GMN-SRYNYKNKNRKBN
            MOVE    SYS-1038-KAGRPFLG   TO  SPA-GMN-KAGRPFLG
            MOVE    SYS-1038-HAKHOUFLG  TO  SPA-GMN-HAKHOUFLG
+      *    訂正請求書金額選択
+           MOVE    SYS-1038-TEIKINKBN  TO  SPA-GMN-TEIKINKBN
+      *
            MOVE    SYS-1038-DOSRYKBNFLG    TO  SPA-GMN-DOSRYKBNFLG
            MOVE    SYS-1038-WKSRYHYOFLG    TO  SPA-GMN-WKSRYHYOFLG
       *    検査正式名称表示
@@ -2108,6 +2130,23 @@
            IF      FLG-OK              =   ZERO
                MOVE    SPA-GMN-HAKHOUFLG-LST (1)
                                        TO  SPA-GMN-HAKHOUFLG-G
+           END-IF
+      *    訂正請求書金額選択
+           MOVE    ZERO                TO  FLG-OK
+           PERFORM VARYING IDY         FROM    1   BY  1
+                   UNTIL   IDY         >   SPA-GMN-TEIKINKBN-MAX
+               IF      SPA-GMN-TEIKINKBN
+                                       =   SPA-GMN-TEIKINKBNL (IDY)
+                   MOVE    SPA-GMN-TEIKINKBN-LST (IDY)
+                                       TO  SPA-GMN-TEIKINKBN-G
+                   MOVE    1           TO  FLG-OK
+                   MOVE    SPA-GMN-TEIKINKBN-MAX
+                                       TO  IDY
+               END-IF
+           END-PERFORM
+           IF      FLG-OK              =   ZERO
+               MOVE    SPA-GMN-TEIKINKBN-LST (1)
+                                       TO  SPA-GMN-TEIKINKBN-G
            END-IF
       *    ＤＯ初期表示
            MOVE    ZERO                TO  FLG-OK
@@ -3014,6 +3053,7 @@
            MOVE    W07-SRYNYKNKNRKBN   TO  SPA-GMN-SRYNYKNKNRKBN-G
            MOVE    W07-KAGRPFLG        TO  SPA-GMN-KAGRPFLG-G
            MOVE    W07-HAKHOUFLG       TO  SPA-GMN-HAKHOUFLG-G
+           MOVE    W07-TEIKINKBN       TO  SPA-GMN-TEIKINKBN-G
            MOVE    W07-DOSRYKBN-FLG    TO  SPA-GMN-DOSRYKBNFLG-G
            MOVE    W07-WKSRYHYO-FLG    TO  SPA-GMN-WKSRYHYOFLG-G
            MOVE    W07-FORMAL-FLG      TO  SPA-GMN-FORMALFLG-G
@@ -3226,6 +3266,10 @@
       *            請求書発行方法チェック
                    IF      SPA-ERRCD           =   SPACE
                        PERFORM 4108-HAKHOUFLG-CHK-SEC
+                   END-IF
+      *            訂正請求書金額区分チェック
+                   IF      SPA-ERRCD           =   SPACE
+                       PERFORM 4108-TEIKINKBN-CHK-SEC
                    END-IF
                WHEN    "1039"
       *            請求書兼領収書発行区分（外来）チェック
@@ -4433,6 +4477,29 @@
       *
            .
        4108-HAKHOUFLG-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    訂正請求書金額選択チェック処理（診療行為機能情報）
+      *****************************************************************
+       4108-TEIKINKBN-CHK-SEC      SECTION.
+      *
+           MOVE    ZERO                TO  FLG-OK
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-GMN-TEIKINKBN-MAX
+               IF      SPA-GMN-TEIKINKBN
+                                       =   SPA-GMN-TEIKINKBNL (IDX)
+                   MOVE    SPA-GMN-TEIKINKBN-LST(IDX)
+                                          TO  SPA-GMN-TEIKINKBN-G
+                   MOVE    1              TO  FLG-OK
+               END-IF
+           END-PERFORM
+           IF      FLG-OK              =   ZERO
+               MOVE    38              TO  SPA-GMN-CUR
+               MOVE    "2009"          TO  SPA-ERRCD
+           END-IF
+      *
+           .
+       4108-TEIKINKBN-CHK-EXT.
            EXIT.
       *****************************************************************
       *    ＤＯ初期表示チェック処理（診療行為機能情報）
@@ -5707,6 +5774,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPA-GMN-SRYNYKNKNRKBN   TO  SYS-1038-NYKNKNRKBN
            MOVE    SPA-GMN-KAGRPFLG        TO  SYS-1038-KAGRPFLG
            MOVE    SPA-GMN-HAKHOUFLG       TO  SYS-1038-HAKHOUFLG
+           MOVE    SPA-GMN-TEIKINKBN       TO  SYS-1038-TEIKINKBN
            MOVE    SPA-GMN-DOSRYKBNFLG     TO  SYS-1038-DOSRYKBNFLG
            MOVE    SPA-GMN-WKSRYHYOFLG     TO  SYS-1038-WKSRYHYOFLG
            MOVE    SPA-GMN-FORMALFLG       TO  SYS-1038-FORMALFLG
@@ -6359,6 +6427,15 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            END-PERFORM
            MOVE    SPA-GMN-HAKHOUFLG-MAX
                                        TO  W07-HAKHOUFLG-COUNT
+      *    訂正請求書金額選択（診療行為機能情報）
+           MOVE    SPA-GMN-TEIKINKBN-G TO  W07-TEIKINKBN
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-GMN-TEIKINKBN-MAX
+               MOVE    SPA-GMN-TEIKINKBN-LST (IDX)
+                                       TO  W07-TEIKINKBN-ITEM(IDX)
+           END-PERFORM
+           MOVE    SPA-GMN-TEIKINKBN-MAX
+                                       TO  W07-TEIKINKBN-COUNT
       *    ＤＯ初期表示（診療行為機能情報）
            MOVE    SPA-GMN-DOSRYKBNFLG-G   TO  W07-DOSRYKBN-FLG
            PERFORM VARYING     IDX     FROM    1   BY  1
@@ -6878,6 +6955,9 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN    "2008"
                    MOVE    "皮下筋肉注射料自動変換区分がありません。"
                                                        TO  SPA-ERRMSG
+               WHEN    "2009"
+                   MOVE    "訂正の請求書金額区分がありません。"
+                                                       TO  SPA-ERRMSG
       *
                WHEN    "3001"
                    MOVE    "請求書兼領収書発行区分がありません。"
@@ -7167,6 +7247,8 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE  "TEISEIFLG"       TO   MCP-WIDGET
                WHEN    37
                    MOVE  "CHG310FLG"       TO   MCP-WIDGET
+               WHEN    38
+                   MOVE  "TEIKINKBN"       TO   MCP-WIDGET
       *
                WHEN    40
                    MOVE  "SYUSKYPRTG"      TO   MCP-WIDGET
@@ -7431,6 +7513,8 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN    "KAGRPFLG"
                    MOVE    32              TO  SPA-GMN-CUR
                WHEN    "HAKHOUFLG"
+                   MOVE    38              TO  SPA-GMN-CUR
+               WHEN    "TEIKINKBN"
                    MOVE    99              TO  SPA-GMN-CUR
       *
                WHEN    "S02SKYSAI"

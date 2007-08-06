@@ -29,6 +29,7 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *  03.05.00    NACL-多々納  07/04/XX  グループ診療対応
+      *  03.05.01    NACL-多々納  07/08/XX  訂正時の合計金額対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -251,6 +252,12 @@
            MOVE    SYU-SKYMONEY-TAX-SAI    TO  WRK-SKYMONEY-TAX
            MOVE    SYU-NYUKIN-TOTAL        TO  WRK-NYUKIN-TOTAL
            MOVE    ZERO                    TO  WRK-HENKIN
+      *    訂正時に合計金額表示の時、差額計算なし
+           IF     (ORCHC03-TEIKIN-KBN  =   1   )  AND
+                  (ORCHC03-HAKKOFLG    =   2   )
+               CONTINUE
+           ELSE
+      *
            PERFORM VARYING     IDY     FROM    1   BY  1
                    UNTIL      (IDY     >   15  )
       *DDD              OR    (ORCHC03-OLD-DENPNUM(IDY)    =   ZERO)
@@ -273,6 +280,8 @@
                    MOVE    15              TO  IDY
                END-IF
            END-PERFORM
+      *
+           END-IF
            .
        2001-TEISEI-SYORI-EXT.
            EXIT.
@@ -547,7 +556,7 @@
            MOVE    SYUTTL-RSISHOSHIN-MONEY
                                        TO  SYU-RSISHOSHIN-MONEY
            MOVE    SYUTTL-RSISAISHIN-MONEY
-                                        TO  SYU-RSISAISHIN-MONEY
+                                       TO  SYU-RSISAISHIN-MONEY
            MOVE    SYUTTL-RSISDO-MONEY    TO  SYU-RSISDO-MONEY
            MOVE    SYUTTL-RSIETC-MONEY    TO  SYU-RSIETC-MONEY
            MOVE    SYUTTL-RSI-TAX-SAI     TO  SYU-RSI-TAX-SAI
@@ -581,6 +590,12 @@
            MOVE    SYUTTL-SKYMONEY-TAX-SAI TO  WRK-SKYMONEY-TAX
            MOVE    SYUTTL-NYUKIN-TOTAL     TO  WRK-NYUKIN-TOTAL
            MOVE    ZERO                    TO  WRK-HENKIN
+      *    訂正時に合計金額表示の時、差額計算なし
+           IF     (ORCHC03-TEIKIN-KBN  =   1   )  AND
+                  (ORCHC03-HAKKOFLG    =   2   )
+               CONTINUE
+           ELSE
+      *
            PERFORM VARYING     IDY     FROM    1   BY  1
                    UNTIL      (IDY     >   15  )
       *D                 OR   (ORCHC03-OLD-DENPNUM(IDY)    =   ZERO)
@@ -601,6 +616,8 @@
                    MOVE    15              TO  IDY
                END-IF
            END-PERFORM
+      *
+           END-IF
       *
            MOVE    SYUNOU-REC          TO  LNK-SYUNOU-REC
                                                        (IDX-SYU)

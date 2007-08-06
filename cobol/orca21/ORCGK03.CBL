@@ -62,6 +62,7 @@
       *  03.04.01    NACL-多々納  07/02/27  複数保険に包括保険追加
       *  03.05.00    NACL-多々納  07/04/XX  グループ診療対応
       *  03.05.00    NACL-多々納  07/05/22  再印刷処理追加
+      *  03.05.01    NACL-多々納  07/08/06  訂正請求書合計印刷対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -757,7 +758,7 @@
            END-PERFORM
            CLOSE                        PARA-FILE
       *
-           PERFORM                     310-SPA-SET-SEC
+           PERFORM 310-SPA-SET-SEC
       *
            .
        3001-SCREEN-SYORI-EXT.
@@ -857,6 +858,14 @@
            MOVE    "1 発行あり"        TO  SPA-GMN-HAKFLGLST (02)
            MOVE    "2 発行あり（請求あり）"
                                        TO  SPA-GMN-HAKFLGLST (03)
+      *    訂正
+           IF      SPA-SYORIFLG        =   1
+               MOVE    "1 発行あり（訂正分）"
+                                           TO  SPA-GMN-HAKFLGLST (02)
+               MOVE    "2 発行あり（合計）"
+                                           TO  SPA-GMN-HAKFLGLST (03)
+           END-IF
+      *
            MOVE    3                   TO  SPA-HAKFLG-MAX
            MOVE    SPA-SKYPRTFLG       TO  SPA-GMN-HAKFLG
       *@
@@ -1027,7 +1036,8 @@
                                        -   SPA-OLD-SKYMONEY
       *    請求書発行フラグ
            IF     (SPA-GMN-HAKFLG      =   SPACE )  OR
-                 ((SPA-GMN-HAKFLG      =   "2"   )  AND
+      ********** ((SPA-GMN-HAKFLG      =   "2"   )  AND
+                 ((SPA-SKYPRTFLG       =   "2"   )  AND
                   (WRK-SKYMONEY        <=  ZERO  ))
                MOVE    "0"             TO  SPA-GMN-HAKFLG
            END-IF
@@ -1949,9 +1959,16 @@
                MOVE    SYS-1038-NYKNKNRKBN     TO  SPA-GMN-NYUKINKBN
       *        請求書発行方法
                MOVE    SYS-1038-HAKHOUFLG      TO  SPA-GMN-HAKHOUFLG
+      *        訂正の請求書金額
+               IF      SYS-1038-TEIKINKBN      =   SPACE
+                   MOVE    "0"                 TO  SPA-NAI-TEIKINKBN
+               ELSE
+                   MOVE    SYS-1038-TEIKINKBN  TO  SPA-NAI-TEIKINKBN
+               END-IF
            ELSE
                MOVE    "1"                     TO  SPA-GMN-NYUKINKBN
                MOVE    "1"                     TO  SPA-GMN-HAKHOUFLG
+               MOVE    "0"                     TO  SPA-NAI-TEIKINKBN
            END-IF
       *    訂正の時、入金管理区分は１のみとする
            IF      SPA-SYORIFLG        =   1
@@ -1965,6 +1982,13 @@
            END-IF
            IF      SPA-GMN-HAKHOUFLG       =   SPACE
                MOVE    "1"                 TO  SPA-GMN-HAKHOUFLG
+           END-IF
+      *    訂正で請求書合計金額の時
+           IF     (SPA-SYORIFLG        =   1   )  AND
+                  (SPA-SKYPRTFLG       =   "1" OR  "2" )
+               IF      SPA-NAI-TEIKINKBN   =   "1"
+                   MOVE    "2"             TO  SPA-GMN-HAKFLG
+               END-IF
            END-IF
       *
            PERFORM VARYING     IDX     FROM    1   BY  1
@@ -5498,7 +5522,7 @@
                COMPUTE ORCHC03-NYUKIN  =   ORCHC03-NYUKIN
                                        -   SPA-NAI-HENKIN
            END-IF
-      *TEST
+      *
       *    発行フラグ
            IF      SPA-SYORIFLG        =   1
       *        訂正分
@@ -5511,6 +5535,16 @@
            IF      SPA-SYUNOU-MAX      =   1
       *        単独の時
                MOVE    ZERO                TO  ORCHC03-HAKHOUFLG
+           END-IF
+      *    訂正で合計金額編集
+           IF      SPA-SYORIFLG        =   1
+               EVALUATE    SPA-GMN-HAKFLG
+                   WHEN    "0"
+                   WHEN    "1"
+                       MOVE    ZERO            TO  ORCHC03-TEIKIN-KBN
+                   WHEN    "2"
+                       MOVE    1               TO  ORCHC03-TEIKIN-KBN
+               END-EVALUATE
            END-IF
       *
            MOVE    ZERO                TO  WRK-HENKIN

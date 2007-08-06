@@ -56,8 +56,10 @@
                05  SYS-1038-TEISEIFLG      PIC  X(01).
       *皮下筋肉注射料変換選択
                05  SYS-1038-CHG310FLG      PIC  X(01).
+      *訂正請求書金額選択
+               05  SYS-1038-TEIKINKBN      PIC  X(01).
       *予備
-               05                          PIC  X(491).
+               05                          PIC  X(490).
       *端末ＩＤ
            03  SYS-1038-TERMID          PIC  X(16).
       *オペーレータＩＤ
