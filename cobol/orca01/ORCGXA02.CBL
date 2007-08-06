@@ -132,6 +132,8 @@
       *
       *                     
                05  SPA-WRK-TBL-KEY                 PIC X(08).
+               05  SPA-NAI-SMCNDATE-YMD            PIC 9(08).
+               05  SPA-GMN-SMCNDATE-YMD            PIC X(09).
       *            
            03  SPA-XA02-MOTOPG             PIC X(08).
       *
@@ -468,9 +470,19 @@
       *****************************************************************
        310-SPASET-SEC              SECTION.
       *
-          MOVE    SPA-SYSYMD              TO  SPA-NAI-CREYMD
+      *    更新日取得
+           INITIALIZE                  ORCSMCNDATEAREA
+           CALL    "ORCSMCNDATE"       USING
+                                       ORCSMCNDATEAREA
+      *
+          MOVE    SMCNDATE-YMD            TO  SPA-NAI-SMCNDATE-YMD
+          MOVE    SMCNDATE-YMD            TO  WRK-SYMD 
+          PERFORM 5002-HIZUKE-HEN-SEC
+          MOVE    WRK-HENYMDG             TO  SPA-GMN-SMCNDATE-YMD
+      *
+          MOVE    SPA-NAI-SMCNDATE-YMD    TO  SPA-NAI-CREYMD
                                               SPA-NAI-CREYMD-OLD
-          MOVE    SPA-SYSYMDWH            TO  SPA-GMN-CREYMD
+          MOVE    SPA-GMN-SMCNDATE-YMD    TO  SPA-GMN-CREYMD
       *
            MOVE    1                      TO  SPA-GMN-PAGE
       *
@@ -1267,8 +1279,8 @@ grpsys     MOVE    SPA-HOSPNUM         TO  PRTDATA-HOSPNUM
       *  
            MOVE    SPACE               TO  SPA-NAI-CREYMD
            IF      SPA-GMN-CREYMD      =   SPACE
-               MOVE    SPA-SRYYMD          TO  SPA-NAI-CREYMD
-               MOVE    SPA-SYSYMDWH        TO  SPA-GMN-CREYMD
+               MOVE    SPA-NAI-SMCNDATE-YMD    TO  SPA-NAI-CREYMD
+               MOVE    SPA-GMN-SMCNDATE-YMD    TO  SPA-GMN-CREYMD
            ELSE
       *        日付画面チェックサブ
                INITIALIZE                      ORCSGDAYAREA
