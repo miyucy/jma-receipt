@@ -78,10 +78,7 @@
                05  WRK-PGSRH-MAX           PIC 9(05).
                05  WRK-PGSRH-OCC           OCCURS  200.
                    07  WRK-PGSRH-PGNAME    PIC X(20).
-           03  WRK-MCP-PATH.
-               04  WRK-MCP-BLOCKS          PIC S9(9)   BINARY.
-               04  WRK-MCP-RNAME           PIC S9(9)   BINARY.
-               04  WRK-MCP-PNAME           PIC S9(9)   BINARY.
+           03  WRK-PATHNAME                PIC X(64).
       *
        01  WRK-ROW.
            05  WRK-TYOHYOLST-ROW           PIC S9(9)   BINARY.
@@ -355,9 +352,7 @@
                                            TO  SYS-STYUKYMD
                                                SYS-EDYUKYMD
       *
-               MOVE    PATH-TBL-SYSKANRI-KEY2
-                                           TO  WRK-MCP-PATH
-               MOVE    "key2"              TO  WRK-MCP-PATH
+               MOVE    "key2"              TO  WRK-PATHNAME
            ELSE
                MOVE    WRK-KANRICD         TO  SYS-KANRICD
                MOVE    SPA-W10-KBNCD(1:1)  TO  SYS-KBNCD (1:1)
@@ -366,15 +361,13 @@
                                            TO  SYS-STYUKYMD
                                                SYS-EDYUKYMD
       *
-               MOVE    PATH-TBL-SYSKANRI-KEY
-                                           TO  WRK-MCP-PATH
-               MOVE    "key10"             TO  WRK-MCP-PATH
+               MOVE    "key"               TO  WRK-PATHNAME
            END-IF
       *
            MOVE    SPA-HOSPNUM         TO  SYS-HOSPNUM
            MOVE    SYSKANRI-REC        TO  MCPDATA-REC
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
-           MOVE    WRK-MCP-PATH        TO  MCP-PATHNAME
+           MOVE    WRK-PATHNAME        TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF    ( MCP-RC              =   ZERO )
                MOVE    MCPDATA-REC     TO  SYSKANRI-REC
@@ -437,7 +430,7 @@
                END-EVALUATE
       *
                MOVE    "tbl_syskanri"      TO  MCP-TABLE
-               MOVE    WRK-MCP-PATH        TO  MCP-PATHNAME
+               MOVE    WRK-PATHNAME        TO  MCP-PATHNAME
                PERFORM 910-DBFETCH-SEC
                IF    ( MCP-RC              =   ZERO )
                    MOVE    MCPDATA-REC TO  SYSKANRI-REC
@@ -451,7 +444,7 @@
            MOVE    IDX1                TO  SPA-GMN-W19-TYOHYOLST-MAX
       *
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
-           MOVE    WRK-MCP-PATH        TO  MCP-PATHNAME
+           MOVE    WRK-PATHNAME        TO  MCP-PATHNAME
            PERFORM 910-DBCLOSE-SEC
       *
            .
