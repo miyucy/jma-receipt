@@ -43,6 +43,8 @@
       *                                     公費ＩＤの追加
       *
       *  03.05.01    NACL-藤原    07/04/19  グループ診療対応
+      *  03.05.02    NACL-藤原    07/07/18  特記事項、
+      *                                     請求区分（レセ電対象）を追加
       ************************************************************
        01  RECE10-REC.
       *ＫＥＹ
@@ -85,6 +87,8 @@
            03  RECE10-HENREIYM             PIC  X(06).
       *請求区分
            03  RECE10-SKYKBN               PIC  X(01).
+      *請求区分（レセ電対象）
+           03  RECE10-SKYKBN-RECEDEN       PIC  X(01).
       *訂正区分
            03  RECE10-TEISEIKBN            PIC  X(01).
       *主保険−保険番号
@@ -184,6 +188,10 @@
                                                PIC  9(09).
       *標準負担額
                    07  RECE10-ETC-SHOKUJIFTN   PIC  9(09).
+      *
+      *特記事項
+               05  RECE10-TOKKIINF.
+                   07  RECE10-TOKKI       PIC  X(02)   OCCURS  5.
       *(総括表用)
       *主保険−保険番号
            03  RECE10-HKNNUM-S            PIC  X(03).
