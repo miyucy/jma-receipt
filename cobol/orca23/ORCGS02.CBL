@@ -3390,6 +3390,15 @@
       *    帳票プログラム取得（外来）
            PERFORM 4201-PRINT-PG-SEC
       *
+           INITIALIZE                      SYS-1039-REC
+           MOVE    "1039"              TO  SYS-1039-KANRICD
+           MOVE    "*"                 TO  SYS-1039-KBNCD
+           MOVE    SPA-SYSYMD          TO  SYS-1039-STYUKYMD
+                                           SYS-1039-EDYUKYMD
+           MOVE    SYS-1039-REC        TO  SYSKANRI-REC
+           PERFORM 900-SYSKANRI-KEY10-SEL-SEC
+           MOVE    SYSKANRI-REC        TO  SYS-1039-REC
+      *
            MOVE    "1"                 TO  WRK-NYUGAIKBN
            PERFORM 3101-TUKIMISYU-SUM-SEC
            MOVE    WRK-MISYU           TO  WRK-NYU-MISYU
@@ -3424,6 +3433,13 @@
            MOVE    4                   TO  SYUPARA01-HAKKOFLG
            MOVE    4                   TO  SYUPARA01-SKYSUMFLG
            MOVE    SPA-SYSYMD          TO  SYUPARA01-DENPPRTYMD
+      *
+           IF    ( SYS-1039-TUKISKYMISYUPRTKBN =   "0" )
+               MOVE    ZERO            TO  SYUPARA01-NYU-MISYU
+                                           SYUPARA01-GAI-MISYU
+                                           SYUPARA01-GAI-MISYU-P
+                                           SYUPARA01-GAI-MISYU-M
+           END-IF
       *
            INITIALIZE                      PARA-REC
            MOVE    SPA-HOSPNUM         TO  PARA-HOSPNUM
@@ -3485,18 +3501,22 @@
            MOVE    "2"                 TO  WRK-NYUGAIKBN
            PERFORM 3101-MISYU-SUM-SEC
       *
-           COMPUTE ORCHC03-ZENMISYU
-               =   WRK-GAI-MISYU
-           IF    ( ORCHC03-ZENMISYU    <   ZERO )
-               MOVE    ORCHC03-ZENMISYU
+           IF    ( SYS-1039-TUKISKYMISYUPRTKBN =   "0" )
+               CONTINUE
+           ELSE
+               COMPUTE ORCHC03-ZENMISYU
+                   =   WRK-GAI-MISYU
+               IF    ( ORCHC03-ZENMISYU    <   ZERO )
+                   MOVE    ORCHC03-ZENMISYU
                                        TO  ORCHC03-HENKIN
-               MOVE    ZERO            TO  ORCHC03-ZENMISYU
+                   MOVE    ZERO        TO  ORCHC03-ZENMISYU
+               END-IF
+      *
+               MOVE    WRK-GAI-MISYU-P TO  ORCHC03-ZENMISYU-2
+      *
+               COMPUTE ORCHC03-KANYUKIN
+                   =   WRK-GAI-MISYU-M     *   -1
            END-IF
-      *
-           MOVE    WRK-GAI-MISYU-P     TO  ORCHC03-ZENMISYU-2
-      *
-           COMPUTE ORCHC03-KANYUKIN
-               =   WRK-GAI-MISYU-M     *   -1
       *
            MOVE    "S02"               TO  ORCHC03-PARA-GYOUMUID
            MOVE    SPA-TERMID          TO  ORCHC03-PARA-TERMID

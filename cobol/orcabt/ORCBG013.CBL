@@ -88,6 +88,7 @@ grpsys*DD  03  FILLER                      PIC X(04)   VALUE   ".dat".
            03  FLG-PTNUM                           PIC 9(01).
            03  FLG-PTINF                           PIC 9(01).
            03  FLG-SYSKANRI                        PIC 9(01).
+           03  FLG-LOOPEND                         PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -114,6 +115,8 @@ grpsys     03  RECEERR                             PIC X(100).
            03  WRK-PARA-PTNUM                      PIC X(20).
            03  WRK-PARA-HAKYMD                     PIC X(08).
            03  WRK-PARA-ZEROSKYKBN                 PIC X(01).
+           03  WRK-PARA-SRYKA                      PIC X(02).
+           03  WRK-PARA-ZENMISYUPRTKBN             PIC X(01).
       *
       *    一時領域
        01  WRK-AREA.
@@ -309,9 +312,15 @@ grpsys                                 RECEERR
                                        WRK-PARA-PTNUM
                                        WRK-PARA-HAKYMD
                                        WRK-PARA-ZEROSKYKBN
+                                       WRK-PARA-SRYKA
+                                       WRK-PARA-ZENMISYUPRTKBN
 grpsys     END-UNSTRING
       *    ＳＰＡエリアセット処理
 grpsys     PERFORM 1001-SPA-SET-SEC
+      *
+           IF    ( WRK-PARA-SRYKA      NOT =   SPACE )
+               MOVE    "3"             TO  WRK-PARA-HAKUHOUFLG
+           END-IF
       *
            MOVE    "外来月別請求書"    TO  WRK-TITLE
       *
@@ -747,6 +756,13 @@ grpsys                                     SPA-AREA
            MOVE    WRK-PARA-ZEROSKYKBN TO  SYUPARA01-ZEROSKYKBN
            MOVE    WRK-PARA-HAKYMD     TO  SYUPARA01-DENPPRTYMD
       *
+           IF    ( WRK-PARA-ZENMISYUPRTKBN =   "1" )
+               MOVE    ZERO            TO  SYUPARA01-NYU-MISYU
+                                           SYUPARA01-GAI-MISYU
+                                           SYUPARA01-GAI-MISYU-P
+                                           SYUPARA01-GAI-MISYU-M
+           END-IF
+      *
            INITIALIZE                      PARA-REC
            MOVE    "G01"               TO  PARA-GYOUMUID
            MOVE    SPA-TERMID          TO  PARA-TERMID
@@ -854,6 +870,7 @@ grpsys     MOVE    SPA-HOSPNUM         TO  PARA-HOSPNUM
        21011-DELETE-PARA-SEC           SECTION.
       *
            INITIALIZE                  PARA-REC
+           MOVE    SPA-HOSPNUM         TO  PARA-HOSPNUM
            MOVE    "G01"               TO  PARA-GYOUMUID
            MOVE    SPA-TERMID          TO  PARA-TERMID
            MOVE    WRK-FILEMEI         TO  PARA-FILEMEI
@@ -1425,8 +1442,7 @@ grpsys     MOVE    SPA-HOSPNUM     TO  PTINF-HOSPNUM
            MOVE    ZERO                TO  FLG-SYUNOU
       *
            INITIALIZE                      SYUNOU-REC
-grpsys*DD  MOVE    WRK-PARA-HOSPID     TO  SYU-HOSPID
-grpsys     MOVE    SPA-HOSPNUM         TO  SYU-HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  SYU-HOSPNUM
            MOVE    SPA-NYUGAIKBN       TO  SYU-NYUGAIKBN
            MOVE    SPA-PTID            TO  SYU-PTID
            MOVE    WRK-PARA-SRYYM      TO  SYU-SRYYMD
@@ -1435,9 +1451,9 @@ grpsys     MOVE    SPA-HOSPNUM         TO  SYU-HOSPNUM
            MOVE    SYUNOU-REC          TO  MCPDATA-REC
            MOVE    "tbl_syunou"        TO  MCP-TABLE
            MOVE    "key37"             TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
+           PERFORM 911-DBSELECT-SEC
            IF    ( MCP-RC              =   ZERO )
-               MOVE    MCPDATA-REC     TO  SYUNOU-REC
+               PERFORM 900-SYUNOU-KEY37-FET-SEC
            ELSE
                INITIALIZE                  SYUNOU-REC
                MOVE    1               TO  FLG-SYUNOU
@@ -1452,16 +1468,30 @@ grpsys     MOVE    SPA-HOSPNUM         TO  SYU-HOSPNUM
        900-SYUNOU-KEY37-FET-SEC        SECTION.
       *
            MOVE    ZERO                TO  FLG-SYUNOU
+           MOVE    ZERO                TO  FLG-LOOPEND
       *
-           MOVE    "tbl_syunou"        TO  MCP-TABLE
-           MOVE    "key37"             TO  MCP-PATHNAME
-           PERFORM 910-DBFETCH-SEC
-           IF    ( MCP-RC              =   ZERO )
-               MOVE    MCPDATA-REC     TO  SYUNOU-REC
-           ELSE
-               INITIALIZE                  SYUNOU-REC
-               MOVE    1               TO  FLG-SYUNOU
-           END-IF
+           PERFORM UNTIL ( FLG-SYUNOU  NOT =   ZERO )
+                    OR   ( FLG-LOOPEND NOT =   ZERO )
+      *
+               MOVE    "tbl_syunou"        TO  MCP-TABLE
+               MOVE    "key37"             TO  MCP-PATHNAME
+               PERFORM 910-DBFETCH-SEC
+               IF    ( MCP-RC              =   ZERO )
+                   MOVE    MCPDATA-REC     TO  SYUNOU-REC
+      *
+                   IF    ( WRK-PARA-SRYKA  =   SPACE )
+                           MOVE    1       TO  FLG-LOOPEND
+                   ELSE
+                       IF    ( WRK-PARA-SRYKA  =   SYU-SRYKA )
+                           MOVE    1       TO  FLG-LOOPEND
+                       END-IF
+                   END-IF
+               ELSE
+                   INITIALIZE                  SYUNOU-REC
+                   MOVE    1               TO  FLG-SYUNOU
+               END-IF
+      *
+           END-PERFORM
       *
            .
        900-SYUNOU-KEY37-FET-EXT.
@@ -1484,6 +1514,19 @@ grpsys*DD                              MCPDATA-REC
       *
            .
        910-DBSELECT-EXT.
+           EXIT.
+      *****************************************************************
+      *    テーブル検索処理
+      *****************************************************************
+       911-DBSELECT-SEC          SECTION.
+      *
+           MOVE    "DBSELECT"      TO  MCP-FUNC
+           CALL    "ORCDBMAIN"     USING   MCPAREA
+                                           MCPDATA-REC
+                                           SPA-AREA
+      *
+           .
+       911-DBSELECT-EXT.
            EXIT.
       *****************************************************************
       *    テーブル読込処理

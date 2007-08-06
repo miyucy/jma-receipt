@@ -85,6 +85,7 @@
       *  03.05.00    NACL-¬ø°π«º  07/06/22  À‹øÕ°¶≤»¬≤∂Ë ¨¡™¬Úƒ…≤√
       *  03.05.01    NACL-¬ø°π«º  07/07/XX  ∆±∆¸∫∆ø«°¶ƒ˚¿µƒ…≤√
       *                                     »È≤º∂⁄∆˘√ÌºÕŒ¡ —¥π∂Ë ¨ƒ…≤√
+      *  03.05.01    NACL-¬¿≈ƒ    07/08/03  ∑Ó Ã¿¡µ·ΩÒ¡∞≤ÛÃ§º˝≥€∞ıª˙∂Ë ¨ƒ…≤√
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -478,6 +479,10 @@
                            11  SPA-GMN-S02SKYMISYUPRT      PIC X(01).
                            11  SPA-GMN-S02SKYMISYUPRT-F1   PIC X(01).
                            11  SPA-GMN-S02SKYMISYUPRTMEI   PIC X(30).
+                       09  SPA-GMN-TUKISKYMISYUPRT-G.
+                           11  SPA-GMN-TUKISKYMISYUPRT     PIC X(01).
+                           11  SPA-GMN-TUKISKYMISYUPRT-F1  PIC X(01).
+                           11  SPA-GMN-TUKISKYMISYUPRTMEI  PIC X(30).
                        09  SPA-GMN-SYUSTIME.
                            11  SPA-GMN-SYUSTIME-HH         PIC 9(02).
                            11  SPA-GMN-SYUSTIME-MM         PIC 9(02).
@@ -568,6 +573,13 @@
                                13  SPA-GMN-S02SKYMISYUPRTL PIC X(01).
                                13                          PIC X(01).
                                13  SPA-GMN-S02SKYMISYUPRTMEIL
+                                                           PIC X(30).
+                       09  SPA-GMN-TUKISKYMISYUPRTLST-G.
+                           11  SPA-GMN-TUKISKYMISYUPRT-MAX  PIC 9(03).
+                           11  SPA-GMN-TUKISKYMISYUPRTLST   OCCURS  5.
+                               13  SPA-GMN-TUKISKYMISYUPRTL PIC X(01).
+                               13                          PIC X(01).
+                               13  SPA-GMN-TUKISKYMISYUPRTMEIL
                                                            PIC X(30).
                    07  SPA-GMN-PAGE5-AREA.
       *                …¬Ãæµ°«Ωæ Û
@@ -1266,6 +1278,12 @@
            MOVE    "1 ¡∞≤Û¿¡µ·≥€§Ú∞ıª˙§π§Î"
                                        TO  SPA-GMN-S02SKYMISYUPRTLST(2)
            MOVE    2                   TO  SPA-GMN-S02SKYMISYUPRT-MAX
+      *
+           MOVE    "0 ¡∞≤Û¿¡µ·≥€§Ú∞ıª˙§∑§ §§"
+                                       TO  SPA-GMN-TUKISKYMISYUPRTLST(1)
+           MOVE    "1 ¡∞≤Û¿¡µ·≥€§Ú∞ıª˙§π§Î"
+                                       TO  SPA-GMN-TUKISKYMISYUPRTLST(2)
+           MOVE    2                   TO  SPA-GMN-TUKISKYMISYUPRT-MAX
       *
            MOVE    "0 …Ωº®§π§Î"        TO  SPA-GMN-MSG1-DSPKBNLST(1)
            MOVE    "1 …Ωº®§∑§ §§"      TO  SPA-GMN-MSG1-DSPKBNLST(2)
@@ -2267,6 +2285,11 @@
                                        TO  SPA-GMN-S02SKYMISYUPRT
            PERFORM 3101-S02SKYMISYUPRT-SYOKI-SEC
       *
+      *    ∑Ó Ã¿¡µ·ΩÒ∑ÛŒŒº˝ΩÒ¡∞≤Û¿¡µ·≥€∞ıª˙∂Ë ¨
+           MOVE    SYS-1039-TUKISKYMISYUPRTKBN
+                                       TO  SPA-GMN-TUKISKYMISYUPRT
+           PERFORM 3101-TUKISKYMISYUPRT-SYOKI-SEC
+      *
            IF    ( SYS-1039-STIME          IS  NUMERIC )
                MOVE    SYS-1039-STIME      TO  SPA-GMN-SYUSTIME
            ELSE
@@ -2582,6 +2605,31 @@
       *
            . 
        3101-S02SKYMISYUPRT-SYOKI-EXT.
+           EXIT.
+      *****************************************************************
+      *    ∑Ó Ã¿¡µ·ΩÒ∑ÛŒŒº˝ΩÒ¡∞≤Û¿¡µ·≥€∞ıª˙∂Ë ¨ΩÈ¥¸√Õ¿ﬂƒÍΩËÕ˝
+      *****************************************************************
+       3101-TUKISKYMISYUPRT-SYOKI-SEC        SECTION.
+      *
+           MOVE    ZERO                TO  FLG-OK
+           PERFORM VARYING IDY         FROM    1   BY  1
+                   UNTIL   IDY         >   SPA-GMN-TUKISKYMISYUPRT-MAX
+               IF      SPA-GMN-TUKISKYMISYUPRT
+                                       =   SPA-GMN-TUKISKYMISYUPRTL(IDY)
+                   MOVE    SPA-GMN-TUKISKYMISYUPRTLST(IDY)
+                                       TO  SPA-GMN-TUKISKYMISYUPRT-G
+                   MOVE    1           TO  FLG-OK
+                   MOVE    SPA-GMN-TUKISKYMISYUPRT-MAX
+                                       TO  IDY
+               END-IF
+           END-PERFORM
+           IF      FLG-OK              =   ZERO
+               MOVE    SPA-GMN-TUKISKYMISYUPRTLST (2)
+                                       TO  SPA-GMN-TUKISKYMISYUPRT-G
+           END-IF
+      *
+           . 
+       3101-TUKISKYMISYUPRT-SYOKI-EXT.
            EXIT.
       *****************************************************************
       *    •π•—ΩÈ¥¸ ‘Ω∏ΩËÕ˝
@@ -2983,6 +3031,7 @@
            MOVE    W07-S06SKYSUM       TO  SPA-GMN-S06SKYSUM-G
            MOVE    W07-S02SKYSAI       TO  SPA-GMN-S02SKYSAI-G
            MOVE    W07-S02SKYMISYUPRT  TO  SPA-GMN-S02SKYMISYUPRT-G
+           MOVE    W07-TUKISKYMISYUPRT TO  SPA-GMN-TUKISKYMISYUPRT-G
            MOVE    W07-SYUSTIME-HH     TO  SPA-GMN-SYUSTIME-HH
            MOVE    W07-SYUSTIME-MM     TO  SPA-GMN-SYUSTIME-MM
       *
@@ -3218,6 +3267,10 @@
       *            ¿¡µ·ΩÒ∑ÛŒŒº˝ΩÒ¡∞≤Û¿¡µ·≥€∞ıª˙∂Ë ¨•¡•ß•√•Ø
                    IF      SPA-ERRCD           =   SPACE
                        PERFORM 4110-S02SKYMISYUPRT-CHK-SEC
+                   END-IF
+      *            ∑Ó Ã¿¡µ·ΩÒ∑ÛŒŒº˝ΩÒ¡∞≤Û¿¡µ·≥€∞ıª˙∂Ë ¨•¡•ß•√•Ø
+                   IF      SPA-ERRCD           =   SPACE
+                       PERFORM 4110-TUKISKYMISYUPRT-CHK-SEC
                    END-IF
       *            ≈–œøª˛πÔ•¡•ß•√•Ø
                    IF      SPA-ERRCD           =   SPACE
@@ -4619,6 +4672,29 @@
        4110-S02SKYMISYUPRT-CHK-EXT.
            EXIT.
       *****************************************************************
+      *    ∑Ó Ã¿¡µ·ΩÒ∑ÛŒŒº˝ΩÒ¡∞≤Û¿¡µ·≥€∞ıª˙∂Ë ¨•¡•ß•√•Ø
+      *****************************************************************
+       4110-TUKISKYMISYUPRT-CHK-SEC      SECTION.
+      *
+           MOVE    ZERO                TO  FLG-OK
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-GMN-TUKISKYMISYUPRT-MAX
+               IF      SPA-GMN-TUKISKYMISYUPRT
+                                       =   SPA-GMN-TUKISKYMISYUPRTL(IDX)
+                   MOVE    SPA-GMN-TUKISKYMISYUPRTLST(IDX)
+                                          TO  SPA-GMN-TUKISKYMISYUPRT-G
+                   MOVE    1              TO  FLG-OK
+               END-IF
+           END-PERFORM
+           IF      FLG-OK              =   ZERO
+               MOVE    SPA-GMN-TUKISKYMISYUPRTLST(2)
+                                          TO  SPA-GMN-TUKISKYMISYUPRT-G
+           END-IF
+      *
+           .
+       4110-TUKISKYMISYUPRT-CHK-EXT.
+           EXIT.
+      *****************************************************************
       *    ¿¡µ·ΩÒ∑ÛŒŒº˝ΩÒ»Øπ‘∂Ë ¨° ≥∞ÕË°À•¡•ß•√•ØΩËÕ˝° º˝«ºπ‘∞Ÿµ°«Ωæ Û°À
       *****************************************************************
        4110-SYUSKYPRTG-CHK-SEC      SECTION.
@@ -5687,6 +5763,8 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            MOVE    SPA-GMN-S02SKYMISYUPRT  TO SYS-1039-S02SKYMISYUPRTKBN
            MOVE    SPA-GMN-S03SKYMISYUPRT  TO SYS-1039-S03SKYMISYUPRTKBN
+           MOVE    SPA-GMN-TUKISKYMISYUPRT
+                                       TO SYS-1039-TUKISKYMISYUPRTKBN
       *
            PERFORM VARYING IDX1    FROM    1   BY  1
                    UNTIL ( IDX1    >   2 )
@@ -6386,6 +6464,16 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            END-PERFORM
            MOVE    SPA-GMN-S02SKYMISYUPRT-MAX
                                        TO  W07-S02SKYMISYUPRT-COUNT
+      *
+      *    ∑Ó Ã¿¡µ·ΩÒ∑ÛŒŒº˝ΩÒ¡∞≤Û¿¡µ·≥€∞ıª˙∂Ë ¨
+           MOVE    SPA-GMN-TUKISKYMISYUPRT-G TO  W07-TUKISKYMISYUPRT
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-GMN-TUKISKYMISYUPRT-MAX
+               MOVE    SPA-GMN-TUKISKYMISYUPRTLST (IDX)
+                                       TO  W07-TUKISKYMISYUPRT-ITEM(IDX)
+           END-PERFORM
+           MOVE    SPA-GMN-TUKISKYMISYUPRT-MAX
+                                       TO  W07-TUKISKYMISYUPRT-COUNT
       *
       *    ¿¡µ·ΩÒ∑ÛŒŒº˝ΩÒ»Øπ‘∂Ë ¨° ≥∞ÕË°À
            MOVE    SPA-GMN-SYUSKYPRTG-G TO  W07-SYUSKYPRTG
@@ -7101,6 +7189,8 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE  "S02SKYSAI"       TO   MCP-WIDGET
                WHEN    417
                    MOVE  "S02SKYMISYUPRT"  TO   MCP-WIDGET
+               WHEN    418
+                   MOVE  "TUKISKYMISYUPRT" TO   MCP-WIDGET
                WHEN    43
                    MOVE  "SYUSTIME_HH"     TO   MCP-WIDGET
                WHEN    44
@@ -7346,6 +7436,8 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN    "S02SKYSAI"
                    MOVE    417             TO  SPA-GMN-CUR
                WHEN    "S02SKYMISYUPRT"
+                   MOVE    418             TO  SPA-GMN-CUR
+               WHEN    "TUKISKYMISYUPRT"
                    MOVE    40              TO  SPA-GMN-CUR
                WHEN    "SYUSKYPRTG"
                    MOVE    416             TO  SPA-GMN-CUR
