@@ -77,6 +77,9 @@
       *  03.04.03    NACL-門脇    07/03/27  高齢者一部負担金再掲２追加
       *  03.05.01    NACL-小豆沢  07/05/30  グループ診療対応
       *  03.05.02    NACL-藤原    07/06/19  最終病棟・病室番号追加
+      *  03.05.03    NACL-門脇    07/08/01  所得情報取扱い機能強化対応
+      *  03.05.04    NACL-門脇    07/08/01  標準負担額減額認定証設定対応
+      *  03.05.05    NACL-門脇    07/08/01  月途中の所得情報変更対応
       ************************************************************
       *01  RECE62-REC.
            03  RECE62-KEY.
@@ -193,6 +196,10 @@
                    07  RECE62-KOHKENSU    PIC  9(03).
       *公費−レセプト請求区分
                    07  RECE62-RECESKYKBN  PIC  X(01).
+      *公費−適用開始年月日
+                   07  RECE62-KOHTEKSTYMD PIC  X(08).
+      *公費−適用終了年月日
+                   07  RECE62-KOHTEKEDYMD PIC  X(08).
       *公費−本人−入院−回−負担割合
                    07  RECE62-HON-NYUKFTNRATE
                                           PIC  9(03).
@@ -318,6 +325,10 @@
       *
       *一部負担金・食事療養費標準負担額区分
            03  RECE62-SHOKUJIFTNKBN       PIC  X(01).
+      *一部負担金・食事療養費標準負担額区分２（地方公費判定用）
+           03  RECE62-SHOKUJIFTNKBN2-INF.
+               05  RECE62-SHOKUJIFTNKBN2  PIC  X(01)
+                                          OCCURS  4.
       *
       *食事種別情報‐基本
            03  RECE62-SHOKUJISYUBETU-KHN  PIC  X(02).
@@ -433,6 +444,12 @@
                                           PIC  X(08).
       *低所得フラグ
            03  RECE62-TEISYOTOKU          PIC  X(01).
+      *低所得フラグ２（地方公費判定用）
+           03  RECE62-TEISYOTOKU2-INF.
+               05  RECE62-TEISYOTOKU2     PIC  X(01)
+                                          OCCURS  4.
+      *低所得フラグ３（食事判定用）
+           03  RECE62-TEISYOTOKU3         PIC  X(01).
       *高齢者フラグ
            03  RECE62-KOUREI              PIC  X(01).
       *高齢者一部負担金再掲

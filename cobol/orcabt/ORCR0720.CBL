@@ -49,6 +49,9 @@
       *  03.05.02    NACL-門脇    07/07/17  個別時のシステム管理編集修正
       *  03.05.03    NACL-藤原    07/06/19  病棟番号記載対応
       *  03.05.04    NACL-藤原    07/07/18  請求管理に特記事項を追加
+      *  03.05.05    NACL-門脇    07/08/01  所得情報取扱い機能強化対応
+      *  03.05.06    NACL-門脇    07/08/01  標準負担額減額認定証設定対応
+      *  03.05.07    NACL-門脇    07/08/01  月途中の所得情報変更対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -5161,20 +5164,33 @@
       *                                                                 
       *        <減、免、猶、低所得１、低所得２、３月超>            
       *                                                                
-           IF      RECE62-TEISYOTOKU   =   SPACE                       
-               CONTINUE                                                
-           ELSE                                                        
-               EVALUATE    RECE62-TEISYOTOKU                           
-                   WHEN    "1"                                         
-                   WHEN    "4"                                         
-                      MOVE    "低所得１"  TO  HC06-GENGAKUMEI          
-                   WHEN    "2"                                         
-                      MOVE    "低所得２"  TO  HC06-GENGAKUMEI          
-                   WHEN    "3"                                         
+           IF      RECE62-KOUREI   NOT = SPACE
+               EVALUATE    RECE62-TEISYOTOKU
+                   WHEN    "1"
+                   WHEN    "4"
+                      MOVE    "低所得１"  TO  HC06-GENGAKUMEI
+                   WHEN    "2"
+                      MOVE    "低所得２"  TO  HC06-GENGAKUMEI
+                      IF   RECE62-TEISYOTOKU3 = "3"
+                         MOVE "低所得２　３月超"
+                                          TO  HC06-GENGAKUMEI
+                      END-IF
+      **           WHEN    "3"
+      **              MOVE    "低所得２　３月超"
+      **                                  TO  HC06-GENGAKUMEI
+               END-EVALUATE
+           ELSE
+               EVALUATE    RECE62-TEISYOTOKU3
+                   WHEN    "1"
+                   WHEN    "4"
+                      MOVE    "低所得１"  TO  HC06-GENGAKUMEI
+                   WHEN    "2"
+                      MOVE    "低所得２"  TO  HC06-GENGAKUMEI
+                   WHEN    "3"
                       MOVE    "低所得２　３月超"
-                                          TO  HC06-GENGAKUMEI          
-               END-EVALUATE                                            
-           END-IF                                                      
+                                          TO  HC06-GENGAKUMEI
+               END-EVALUATE
+           END-IF
       *
       *        <請求点・一部負担金・食事日数・請求額・標準負担額>
       *
@@ -5602,7 +5618,7 @@
       *
            MOVE    ZERO            TO  FLG-LINE
       *
-           IF    ( RECE62-TEISYOTOKU   =   "4" )
+           IF    ( RECE62-TEISYOTOKU3  =   "4" )
            AND   ( RECE62-SEIKATURYOYO =   "1" )
       *        摘要欄に病名が表示されている場合、１行あける
                IF  WRK-LINETEK             >   ZERO

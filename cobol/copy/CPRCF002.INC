@@ -87,6 +87,8 @@
       *                                     再掲２追加
       *
       *  03.05.01    NACL-藤原    07/04/19  グループ診療対応
+      *  03.05.02    NACL-門脇    07/08/01  所得情報取扱い機能強化対応
+      *  03.05.03    NACL-門脇    07/08/01  月途中の所得情報変更対応
       ************************************************************
       *01  RECE02-REC.
            03  RECE02-KEY.
@@ -202,6 +204,10 @@
                    07  RECE02-KOHKENSU    PIC  9(03).
       *公費−レセプト請求区分
                    07  RECE02-RECESKYKBN  PIC  X(01).
+      *公費−適用開始年月日
+                   07  RECE02-KOHTEKSTYMD PIC  X(08).
+      *公費−適用終了年月日
+                   07  RECE02-KOHTEKEDYMD PIC  X(08).
       *公費−本人−外来−回−負担割合
                    07 RECE02-HON-GAIKFTNRATE
                                           PIC  9(03).
@@ -306,6 +312,10 @@
       *
       *一部負担金・食事療養費標準負担額区分
            03  RECE02-SHOKUJIFTNKBN       PIC  X(01).
+      *一部負担金・食事療養費標準負担額区分２（地方公費判定用）
+           03  RECE02-SHOKUJIFTNKBN2-INF.
+               05  RECE02-SHOKUJIFTNKBN2  PIC  X(01)
+                                          OCCURS  4.
       *
       *老人公費負担金額情報（未使用）
            03  RECE02-RJNKOHFTNINF        OCCURS  3.
@@ -374,6 +384,10 @@
            03  RECE02-AGE                 PIC  9(03).
       *低所得フラグ
            03  RECE02-TEISYOTOKU          PIC  X(01).
+      *低所得フラグ２（地方公費判定用）
+           03  RECE02-TEISYOTOKU2-INF.
+               05  RECE02-TEISYOTOKU2     PIC  X(01)
+                                          OCCURS  4.
       *在宅総合・在宅末期フラグ
            03  RECE02-ZAITAKU             PIC  X(01).
       *在宅総合・在宅末期一部負担金再掲

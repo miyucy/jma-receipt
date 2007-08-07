@@ -179,6 +179,9 @@
       *  03.05.02    NACL-門脇    07/07/17  個別時のシステム管理編集修正
       *  03.05.03    NACL-藤原    07/06/28  空のコメントコードの記載をやめる
       *  03.05.04    NACL-藤原    07/07/10  特定器材再編集用の器材点数追加
+      *  03.05.05    NACL-門脇    07/08/01  所得情報取扱い機能強化対応
+      *  03.05.06    NACL-門脇    07/08/01  標準負担額減額認定証設定対応
+      *  03.05.07    NACL-門脇    07/08/01  月途中の所得情報変更対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -2110,7 +2113,22 @@
            MOVE    8                   TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC         
       *    一部負担金・食事療養費標準負担額区分
-           EVALUATE    RECE62-TEISYOTOKU
+           IF      RECE62-KOUREI   NOT = SPACE
+             EVALUATE    RECE62-TEISYOTOKU
+               WHEN    "1"
+                   MOVE    "3"             TO  WRK-DATA
+               WHEN    "2"
+                   MOVE    "1"             TO  WRK-DATA
+                   IF   RECE62-TEISYOTOKU3 = "3"
+                     MOVE  "2"             TO  WRK-DATA
+                   END-IF
+      **       WHEN    "3"
+      **           MOVE    "2"             TO  WRK-DATA
+               WHEN    "4"
+                   MOVE    "4"             TO  WRK-DATA
+             END-EVALUATE
+           ELSE
+             EVALUATE    RECE62-TEISYOTOKU3
                WHEN    "1"
                    MOVE    "3"             TO  WRK-DATA
                WHEN    "2"
@@ -2119,7 +2137,8 @@
                    MOVE    "2"             TO  WRK-DATA
                WHEN    "4"
                    MOVE    "4"             TO  WRK-DATA
-           END-EVALUATE
+             END-EVALUATE
+           END-IF
            MOVE    1                   TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC         
       *    特記事項

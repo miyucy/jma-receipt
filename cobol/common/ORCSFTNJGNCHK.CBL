@@ -39,6 +39,8 @@
       *  03.04.03    NACL-門脇    07/06/04  長崎市地方公費対応
       *
       *  03.05.01    NACL-藤原    07/04/19  グループ診療対応
+      *  03.05.02    NACL-門脇    07/08/01  所得情報取扱い機能強化対応
+      *  03.05.03    NACL-門脇    07/08/01  月途中の所得情報変更対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -60,18 +62,18 @@
            03  FLG-HKNNUM          PIC 9(01).
            03  FLG-HKNCOMBI        PIC 9(01).
            03  FLG-SYUNOU          PIC 9(01).
-           03  FLG-TSYRRK          PIC 9(01).
-           03  FLG-TNKRRK          PIC 9(01).
            03  FLG-CHECK           PIC 9(01).
            03  FLG-OK              PIC 9(01).
            03  FLG-ARI             PIC 9(01).
            03  FLG-GENMEN          PIC 9(01).
            03  FLG-DAYCHK          PIC 9(01).
+           03  FLG-PTKOHINF        PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
            03  IDX1                PIC 9(04).
+           03  SYOTOKU-IDX         PIC 9(02).
       *
       *    一時領域
        01  WRK-AREA.
@@ -80,10 +82,6 @@
            03  WRK-KOHFTN         PIC 9(10).
            03  WRK-SEIKYU         PIC 9(10).
            03  WRK-PREFNUM        PIC 9(02).
-      *
-           03  WRK-TEISYOTOKU-YMD.
-               05  WRK-TEISYOTOKU-YM PIC 9(06).
-               05  WRK-TEISYOTOKU-DD PIC 9(02).
       *
            03  WRK-TEISYOTOKU     PIC X(01).
            03  WRK-RECEJGNDSPKBN  PIC X(01).
@@ -110,13 +108,9 @@
        01  SYUNOU-REC.
            COPY    "CPSYUNOU.INC".
       *
-      *    低所得
-       01  TSYRRK-REC.
-           COPY    "CPTSYRRK.INC".
-      *
-      *    年金
-       01  TNKRRK-REC.
-           COPY    "CPTNKRRK.INC".
+      *    患者公費情報
+       01  PTKOHINF-REC.
+           COPY    "CPPTKOHINF.INC".
       *
       *    システム管理
            COPY    "CPSK1001.INC".
@@ -130,6 +124,9 @@
       *
       *    保険算定用年齢・割合計算サブ
            COPY    "CPORCSAGECHK.INC".
+      *
+      *    患者所得情報編集サブ
+           COPY    "CPORCSSYOTOKU.INC".
       *
            COPY    "MCPDATA.INC".
       ***  COPY    "CPORCMCP.INC".
@@ -308,8 +305,10 @@
                       MOVE   HKN-HON-NYUDJGNGAK  TO  WRK-HKNMST-JGNGAK
                    END-IF
                  WHEN     "1"
+                 WHEN     "4"
                    MOVE   HKN-TNK-NYUMJGNGAK     TO  WRK-HKNMST-JGNGAK
                  WHEN     "2"
+                 WHEN     "3"
                    MOVE   HKN-TSY-NYUMJGNGAK     TO  WRK-HKNMST-JGNGAK
                END-EVALUATE
              ELSE
@@ -327,6 +326,7 @@
                       MOVE HKN-HON-GAIDJGNGAK    TO WRK-HKNMST-JGNGAK2
                    END-IF
                  WHEN     "1"
+                 WHEN     "4"
                    IF    HKN-TNK-GAIMNAIJGNGAK   NOT =    ZERO
                       MOVE HKN-TNK-GAIMNAIJGNGAK TO WRK-HKNMST-JGNGAK
                    END-IF
@@ -358,76 +358,49 @@
       *****************************************************************
        2101-SYOTOKU-HENSYU-SEC       SECTION.
       *
-           MOVE    LNK-FTNJGNCHK-SRYYM   TO  WRK-TEISYOTOKU-YM
-           MOVE    01                    TO  WRK-TEISYOTOKU-DD
+           MOVE       1       TO      SYOTOKU-IDX
       *
-      *    年金履歴より
-           INITIALIZE                        TNKRRK-REC
-           MOVE    LNK-FTNJGNCHK-HOSPNUM TO  TNKRRK-HOSPNUM
-           MOVE    LNK-FTNJGNCHK-PTID    TO  TNKRRK-PTID
-           MOVE    TNKRRK-REC            TO  MCPDATA-REC
-           MOVE    "DBSELECT"            TO  MCP-FUNC
-           MOVE    "tbl_tnkrrk"          TO  MCP-TABLE
-           MOVE    "key3"                TO  MCP-PATHNAME
-           CALL    "ORCDBMAIN"           USING   MCPAREA
-                                                 MCPDATA-REC
-                                                 SPA-AREA
-           IF      MCP-RC              =   ZERO
-              MOVE   "tbl_tnkrrk"        TO  MCP-TABLE
-              MOVE   "key3"              TO  MCP-PATHNAME
-              PERFORM 910-TNKRRK-READ-SEC
-              PERFORM  UNTIL
-                   ( FLG-TNKRRK          =   1                 ) OR
-                   ( TNKRRK-STYMD       <=  WRK-TEISYOTOKU-YMD AND
-                     WRK-TEISYOTOKU-YMD <=  TNKRRK-EDYMD       )
-                 MOVE   "tbl_tnkrrk"     TO  MCP-TABLE
-                 MOVE   "key3"           TO  MCP-PATHNAME
-                 PERFORM 910-TNKRRK-READ-SEC
-              END-PERFORM
+           IF   LNK-FTNJGNCHK-SRYYM   >=  "200604"
+      *
+              INITIALIZE                         PTKOHINF-REC
+              MOVE    LNK-FTNJGNCHK-HOSPNUM  TO  PTKOH-HOSPNUM
+              MOVE    LNK-FTNJGNCHK-PTID     TO  PTKOH-PTID
+              MOVE    LNK-FTNJGNCHK-KOHID    TO  PTKOH-KOHID
+              MOVE    PTKOHINF-REC           TO  MCPDATA-REC
+              MOVE    "DBSELECT"             TO  MCP-FUNC
+              MOVE    "tbl_ptkohinf"         TO  MCP-TABLE
+              MOVE    "key8"                 TO  MCP-PATHNAME
+              CALL    "ORCDBMAIN"            USING  MCPAREA
+                                                    MCPDATA-REC
+                                                    SPA-AREA
+              IF      MCP-RC   =    ZERO
+                MOVE    "tbl_ptkohinf"   TO  MCP-TABLE
+                MOVE    "key8"           TO  MCP-PATHNAME
+                PERFORM  910-PTKOHINF-READ-SEC
+                IF       FLG-PTKOHINF    =   ZERO
+                  IF   PTKOH-TEKSTYMD(1:6)  >=  LNK-FTNJGNCHK-SRYYM
+                      MOVE   PTKOH-TEKSTYMD(7:2)  TO   SYOTOKU-IDX
+                  END-IF
+                END-IF
+              END-IF
+              MOVE     "tbl_ptkohinf"    TO   MCP-TABLE
+              MOVE     "key8"            TO   MCP-PATHNAME
+              PERFORM   910-DB-CLOSE-SEC
+      *
            END-IF
       *
-           MOVE     "tbl_tnkrrk"     TO  MCP-TABLE
-           MOVE     "key3"           TO  MCP-PATHNAME
-           PERFORM   910-DB-CLOSE-SEC
+           INITIALIZE                       ORCSSYOTOKUAREA
+           MOVE  LNK-FTNJGNCHK-HOSPNUM  TO  LNK-SYOTOKU-HOSPNUM
+           MOVE  LNK-FTNJGNCHK-PTID     TO  LNK-SYOTOKU-PTID
+           MOVE  LNK-FTNJGNCHK-SRYYM    TO  LNK-SYOTOKU-SRYYM
       *
-      *    低所得より
-           INITIALIZE                        TSYRRK-REC
-           MOVE    LNK-FTNJGNCHK-HOSPNUM TO  TSYRRK-HOSPNUM
-           MOVE    LNK-FTNJGNCHK-PTID    TO  TSYRRK-PTID
-           MOVE    TSYRRK-REC            TO  MCPDATA-REC
-           MOVE    "DBSELECT"            TO  MCP-FUNC
-           MOVE    "tbl_tsyrrk"          TO  MCP-TABLE
-           MOVE    "key3"                TO  MCP-PATHNAME
-           CALL    "ORCDBMAIN"           USING   MCPAREA
-                                                 MCPDATA-REC
-                                                 SPA-AREA
-           IF      MCP-RC              =   ZERO
-              MOVE   "tbl_tsyrrk"        TO  MCP-TABLE
-              MOVE   "key3"              TO  MCP-PATHNAME
-              PERFORM 910-TSYRRK-READ-SEC
-              PERFORM  UNTIL
-                  (  FLG-TSYRRK          =   1                 ) OR
-                  (  TSYRRK-NINSTYMD    <=  WRK-TEISYOTOKU-YMD AND
-                     WRK-TEISYOTOKU-YMD <=  TSYRRK-NINEDYMD    )
-                 MOVE   "tbl_tsyrrk"     TO  MCP-TABLE
-                 MOVE   "key3"           TO  MCP-PATHNAME
-                 PERFORM 910-TSYRRK-READ-SEC
-              END-PERFORM
+           CALL    "ORCSSYOTOKU"   USING  ORCSSYOTOKUAREA
+                                          SPA-AREA
+      *
+           IF    LNK-SYOTOKU-RC    =   ZERO
+                 MOVE   LNK-SYOTOKU-CHIKBN(SYOTOKU-IDX)
+                                        TO  WRK-TEISYOTOKU
            END-IF
-      *
-           MOVE     "tbl_tsyrrk"     TO  MCP-TABLE
-           MOVE     "key3"           TO  MCP-PATHNAME
-           PERFORM   910-DB-CLOSE-SEC
-      *
-           EVALUATE    FLG-TSYRRK    ALSO     FLG-TNKRRK
-               WHEN    1             ALSO     1
-                     MOVE     SPACE   TO       WRK-TEISYOTOKU
-               WHEN    0             ALSO     1
-                     MOVE     "2"     TO       WRK-TEISYOTOKU
-               WHEN    0             ALSO     0
-               WHEN    1             ALSO     0
-                     MOVE     "1"     TO       WRK-TEISYOTOKU
-           END-EVALUATE
       *
            .
        2101-SYOTOKU-HENSYU-EXT.
@@ -823,48 +796,6 @@
            EXIT.
       *
       *****************************************************************
-      *    低所得マスタ読み込み
-      *****************************************************************
-       910-TSYRRK-READ-SEC        SECTION.
-      *
-           MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
-           IF      MCP-RC              =   ZERO
-               MOVE    MCPDATA-REC     TO  TSYRRK-REC
-               MOVE    ZERO            TO  FLG-TSYRRK
-           ELSE
-               INITIALIZE                  TSYRRK-REC
-               MOVE    1               TO  FLG-TSYRRK
-           END-IF
-      *
-           .
-       910-TSYRRK-READ-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    年金マスタ読み込み
-      *****************************************************************
-       910-TNKRRK-READ-SEC        SECTION.
-      *
-           MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
-           IF      MCP-RC              =   ZERO
-               MOVE    MCPDATA-REC     TO  TNKRRK-REC
-               MOVE    ZERO            TO  FLG-TNKRRK
-           ELSE
-               INITIALIZE                  TNKRRK-REC
-               MOVE    1               TO  FLG-TNKRRK
-           END-IF
-      *
-           .
-       910-TNKRRK-READ-EXT.
-           EXIT.
-      *
-      *****************************************************************
       *    保険組合せマスター検索
       *****************************************************************
        910-HKNCOMBI-SELECT-SEC        SECTION.
@@ -985,6 +916,27 @@
       *
            .
        910-HKNNUM-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    患者公費情報読込
+      *****************************************************************
+       910-PTKOHINF-READ-SEC           SECTION.
+      *
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC     TO  PTKOHINF-REC
+               MOVE    ZERO            TO  FLG-PTKOHINF
+           ELSE
+               INITIALIZE                  PTKOHINF-REC
+               MOVE    1               TO  FLG-PTKOHINF
+           END-IF
+      *
+           .
+       910-PTKOHINF-READ-EXT.
            EXIT.
       *
       *****************************************************************

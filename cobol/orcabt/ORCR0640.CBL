@@ -252,6 +252,9 @@
       *  03.05.03    NACL-ÌçÏÆ    07/07/20  ËÌ³¤Æ»£´£±Ï·¿Í¸½ÊªµëÉÕÂÐ±þ
       *  03.05.04    NACL-ÌçÏÆ    07/07/26  ¥ì¥»¤Ëµ­ºÜ¤·¤Ê¤¤¥³¥á¥ó¥ÈÂÐ±þ
       *  03.05.05    NACL-ÌçÏÆ    07/07/31  £·£°ºÐÌ¤Ëþ¸½ÊªµëÉÕÊÝ¸±¼ÔËè¤Ç·×»»
+      *  03.05.06    NACL-ÌçÏÆ    07/08/01  ½êÆÀ¾ðÊó¼è°·¤¤µ¡Ç½¶¯²½ÂÐ±þ
+      *  03.05.07    NACL-ÌçÏÆ    07/08/01  É¸½àÉéÃ´³Û¸º³ÛÇ§Äê¾ÚÀßÄêÂÐ±þ
+      *  03.05.08    NACL-ÌçÏÆ    07/08/01  ·îÅÓÃæ¤Î½êÆÀ¾ðÊóÊÑ¹¹ÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -10379,7 +10382,7 @@
                                        *  RECE62-HON-NYUKFTNRATE(2)
                                        /  100
                    IF  RECE62-HON-NYUKFTNRATE(2) = 10
-                     EVALUATE    RECE62-TEISYOTOKU
+                     EVALUATE    RECE62-TEISYOTOKU2(2)
                        WHEN    SPACE
                         IF  RECE62-SRYYM  >=  "200610"
                             MOVE   44400  TO  WRK-JYOGEN41
@@ -10591,7 +10594,22 @@
       *
       *    °ìÉôÉéÃ´¶â¡¦¿©»öÎÅÍÜÈñÉ¸½àÉéÃ´³Û¶èÊ¬¤ÎÊÔ½¸
       *
-           EVALUATE    RECE62-TEISYOTOKU
+           IF      RECE62-KOUREI   NOT = SPACE
+               EVALUATE    RECE62-TEISYOTOKU
+                   WHEN    "1"
+                       MOVE    "3"   TO   RECE62-SHOKUJIFTNKBN
+                   WHEN    "2"
+                       MOVE    "1"   TO   RECE62-SHOKUJIFTNKBN
+                       IF   RECE62-TEISYOTOKU3 = "3"
+                         MOVE  "2"   TO   RECE62-SHOKUJIFTNKBN
+                       END-IF
+      **           WHEN    "3"
+      **               MOVE    "2"   TO   RECE62-SHOKUJIFTNKBN
+                   WHEN    "4"
+                       MOVE    "4"   TO   RECE62-SHOKUJIFTNKBN
+               END-EVALUATE
+           ELSE
+               EVALUATE    RECE62-TEISYOTOKU3
                    WHEN    "1"
                        MOVE    "3"   TO   RECE62-SHOKUJIFTNKBN
                    WHEN    "2"
@@ -10600,7 +10618,21 @@
                        MOVE    "2"   TO   RECE62-SHOKUJIFTNKBN
                    WHEN    "4"
                        MOVE    "4"   TO   RECE62-SHOKUJIFTNKBN
-           END-EVALUATE
+               END-EVALUATE
+           END-IF
+           PERFORM  VARYING   KOHFTN-IDX   FROM   1   BY   1
+                     UNTIL    KOHFTN-IDX     >    4
+             EVALUATE  RECE62-TEISYOTOKU2(KOHFTN-IDX)
+               WHEN    "1"
+                 MOVE   "3"  TO   RECE62-SHOKUJIFTNKBN2(KOHFTN-IDX)
+               WHEN    "2"
+                 MOVE   "1"  TO   RECE62-SHOKUJIFTNKBN2(KOHFTN-IDX)
+      **       WHEN    "3"
+      **         MOVE   "2"  TO   RECE62-SHOKUJIFTNKBN2(KOHFTN-IDX)
+      **       WHEN    "4"
+      **         MOVE   "4"  TO   RECE62-SHOKUJIFTNKBN2(KOHFTN-IDX)
+             END-EVALUATE
+           END-PERFORM
       *
            EVALUATE   WRK-PREFNUM
       *

@@ -165,6 +165,8 @@
       *
       *  03.05.01    NACL-藤原    07/04/19  グループ診療対応
       *  03.05.02    NACL-門脇    07/07/31  ７０歳未満現物給付保険者毎で計算
+      *  03.05.03    NACL-門脇    07/08/01  所得情報取扱い機能強化対応
+      *  03.05.04    NACL-門脇    07/08/01  月途中の所得情報変更対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -311,8 +313,6 @@
            03  FLG-SYSKANRI                            PIC 9(01).
            03  FLG-CHK                                 PIC 9(01).
            03  FLG-MONTHLYNUM                          PIC 9(01).
-           03  FLG-TSYRRK                              PIC 9(01).
-           03  FLG-TNKRRK                              PIC 9(01).
            03  FLG-PTNYUINRRK                          PIC 9(01).
            03  FLG-PTNYUINRRK12                        PIC 9(01).
            03  FLG-PTNYUINRRK22                        PIC 9(01).
@@ -355,6 +355,11 @@
            03  IDZ                                     PIC 9(02).
            03  TOKKI-IDX                               PIC 9(02).
            03  SYSKAN-IDX                              PIC 9(03).
+           03  SYOTOKU-IDX                             PIC 9(02).
+           03  SYOTOKU-IDX2                            PIC 9(02)
+                                                       OCCURS 4.
+           03  SYOTOKU-IDX9                            PIC 9(02).
+           03  KOHFTN-IDX                              PIC 9(02).
       *
       *    パス名領域
        01  WK-PATH                                     PIC X(20).
@@ -401,10 +406,6 @@
            03  RJN-RATE-KBN              PIC X(01).
       *
            03  WRK-RECESKYKBN            PIC  X(01).
-      *
-           03  WRK-TEISYOTOKU-YMD.
-               05  WRK-TEISYOTOKU-YM     PIC 9(06).
-               05  WRK-TEISYOTOKU-DD     PIC 9(02).
       *
            03  WK-PTNYUINRRK-TENSTUYMD   PIC  X(08).
            03  WK-PTNYUINRRK-TENSTUYMD2  PIC  X(08).
@@ -583,14 +584,6 @@
        01  MONTHLYNUM-REC.
            COPY    "CPMONTHLYNUM.INC".
       *
-      *    低所得
-       01  TSYRRK-REC.
-           COPY    "CPTSYRRK.INC".
-      *
-      *    年金
-       01  TNKRRK-REC.
-           COPY    "CPTNKRRK.INC".
-      *
       *    診療会計
        01  SRYACCT-REC.
            COPY    "CPSRYACCT.INC".
@@ -638,6 +631,9 @@
       *
       *    レセプト種別返却サブ
            COPY    "CPORCSSYUBETUGET.INC".
+      *
+      *    患者所得情報編集サブ
+           COPY    "CPORCSSYOTOKU.INC".
       *
       ****************************************************************
        LINKAGE                 SECTION.
@@ -1254,81 +1250,8 @@ grpsys             PERFORM 900-DBSELECT-SEC
            END-IF              
       *
            IF   RECE01-SRYYM    >=  "200210"
-      *
-             MOVE    RECE01-SRYYM        TO  WRK-TEISYOTOKU-YM
-             MOVE    01                  TO  WRK-TEISYOTOKU-DD
-      *
-      *      年金履歴より
-             INITIALIZE                      TNKRRK-REC
-grpsys       MOVE    RECE01-HOSPNUM      TO  TNKRRK-HOSPNUM
-             MOVE    RECE01-PTID         TO  TNKRRK-PTID
-             MOVE    TNKRRK-REC          TO  MCPDATA-REC
-             MOVE    "tbl_tnkrrk"        TO  MCP-TABLE
-             MOVE    "key3"              TO  MCP-PATHNAME
-grpsys       PERFORM 900-DBSELECT-SEC
-             IF      MCP-RC              =   ZERO
-                 MOVE    "tbl_tnkrrk"        TO  MCP-TABLE
-                 MOVE    "key3"              TO  MCP-PATHNAME
-                 PERFORM TNKRRK-READ-SEC
-                 PERFORM  UNTIL  
-                       ( FLG-TNKRRK          =   1                ) OR
-                      (( TNKRRK-STYMD       <=  WRK-TEISYOTOKU-YMD  AND
-                         WRK-TEISYOTOKU-YMD <=  TNKRRK-EDYMD      ))  
-      *
-                        MOVE    "tbl_tnkrrk"        TO  MCP-TABLE
-                        MOVE    "key3"              TO  MCP-PATHNAME
-                        PERFORM TNKRRK-READ-SEC
-      *
-                 END-PERFORM
-             END-IF
-      *
-             MOVE    "tbl_tnkrrk"        TO  MCP-TABLE
-             MOVE    "key3"              TO  MCP-PATHNAME
-             PERFORM 900-CLOSE-SEC
-      *
-      *      低所得より
-             INITIALIZE                      TSYRRK-REC
-grpsys       MOVE    RECE01-HOSPNUM      TO  TSYRRK-HOSPNUM
-             MOVE    RECE01-PTID         TO  TSYRRK-PTID
-             MOVE    TSYRRK-REC          TO  MCPDATA-REC
-             MOVE    "tbl_tsyrrk"        TO  MCP-TABLE
-             MOVE    "key3"              TO  MCP-PATHNAME
-grpsys       PERFORM 900-DBSELECT-SEC
-             IF      MCP-RC              =   ZERO
-                 MOVE    "tbl_tsyrrk"        TO  MCP-TABLE
-                 MOVE    "key3"              TO  MCP-PATHNAME
-                 PERFORM TSYRRK-READ-SEC
-                 PERFORM  UNTIL  
-                     ( FLG-TSYRRK            =   1                ) OR
-                    (( TSYRRK-NINSTYMD      <= WRK-TEISYOTOKU-YMD   AND
-                       WRK-TEISYOTOKU-YMD   <= TSYRRK-NINEDYMD    ))  
-      *
-                        MOVE    "tbl_tsyrrk"        TO  MCP-TABLE
-                        MOVE    "key3"              TO  MCP-PATHNAME
-                        PERFORM TSYRRK-READ-SEC
-      *
-                 END-PERFORM
-             END-IF
-      *
-             MOVE    "tbl_tsyrrk"        TO  MCP-TABLE
-             MOVE    "key3"              TO  MCP-PATHNAME
-             PERFORM 900-CLOSE-SEC
-      *
-             EVALUATE    FLG-TSYRRK    ALSO     FLG-TNKRRK
-                 WHEN    1             ALSO     1
-                       MOVE     SPACE   TO       RECE02-TEISYOTOKU
-                 WHEN    0             ALSO     1
-                       MOVE     "2"     TO       RECE02-TEISYOTOKU
-                 WHEN    0             ALSO     0
-                 WHEN    1             ALSO     0
-                       MOVE     "1"     TO       RECE02-TEISYOTOKU
-                       IF  (RECE02-SRYYM     >   WRK-CONS-SRYYM-200609 )
-                       AND (TNKRRK-RRI-FUKUSHI-KBN
-                                             =   "1"                   )
-                           MOVE  "4"         TO       RECE02-TEISYOTOKU
-                       END-IF
-             END-EVALUATE
-      *
+      *        低所得情報編集
+               PERFORM   2101-TEISYOTOKU-HENSYU-SEC
            END-IF
       *
       *    在総診フラグセット
@@ -1499,6 +1422,106 @@ grpsys         MOVE    RECE02-HOSPNUM  TO  SPA-HOSPNUM
            .
        210-HENSYU-EXT.
            EXIT.
+      * 
+      *****************************************************************
+      *    低所得情報編集
+      *****************************************************************
+       2101-TEISYOTOKU-HENSYU-SEC                   SECTION.
+      *
+           MOVE     99       TO    SYOTOKU-IDX
+           MOVE     99       TO    SYOTOKU-IDX2(1)
+           MOVE     99       TO    SYOTOKU-IDX2(2)
+           MOVE     99       TO    SYOTOKU-IDX2(3)
+           MOVE     99       TO    SYOTOKU-IDX2(4)
+           MOVE     ZERO     TO    SYOTOKU-IDX9
+      *
+           IF   RECE02-SRYYM   >=  "200604"
+              IF  RECE02-HKNNUM      NOT = SPACE
+                IF   RECE02-TEKSTYMD-X(1:6)  >=  RECE02-SRYYM
+                    MOVE   RECE02-TEKSTYMD-X(7:2)  TO   SYOTOKU-IDX
+                ELSE
+                    MOVE   1                       TO   SYOTOKU-IDX
+                END-IF
+              ELSE
+                PERFORM  VARYING   KOHFTN-IDX   FROM   1   BY   1
+                          UNTIL    KOHFTN-IDX     >    4
+                  IF   (RECE02-KOHNUM(KOHFTN-IDX)  NOT = SPACE)
+                  AND  (RECE02-KOHNUM(KOHFTN-IDX)(1:1) = "0"  )
+                    IF  RECE02-KOHTEKSTYMD(KOHFTN-IDX)(1:6)
+                                           >=  RECE02-SRYYM
+                      MOVE   RECE02-KOHTEKSTYMD(KOHFTN-IDX)(7:2)
+                                  TO   SYOTOKU-IDX9
+                    ELSE
+                      MOVE   1    TO   SYOTOKU-IDX9
+                    END-IF
+                    IF    SYOTOKU-IDX9  <  SYOTOKU-IDX
+                        MOVE  SYOTOKU-IDX9  TO  SYOTOKU-IDX
+                    END-IF
+                  END-IF
+                END-PERFORM
+              END-IF
+              MOVE     SYOTOKU-IDX    TO   SYOTOKU-IDX9
+              PERFORM  VARYING   KOHFTN-IDX   FROM   1   BY   1
+                        UNTIL    KOHFTN-IDX     >    4
+                IF   (RECE02-KOHNUM(KOHFTN-IDX)  NOT = SPACE)
+                AND  (RECE02-KOHNUM(KOHFTN-IDX)(1:1)
+                                         >=  "1" AND <=  "8")
+                  IF  RECE02-KOHTEKSTYMD(KOHFTN-IDX)(1:6)
+                                         >=  RECE02-SRYYM
+                     MOVE   RECE02-KOHTEKSTYMD(KOHFTN-IDX)(7:2)
+                                    TO   SYOTOKU-IDX2(KOHFTN-IDX)
+                  ELSE
+                     MOVE   1       TO   SYOTOKU-IDX2(KOHFTN-IDX)
+                  END-IF
+                  IF   SYOTOKU-IDX9  =   99
+                     IF    SYOTOKU-IDX2(KOHFTN-IDX) <  SYOTOKU-IDX
+                        MOVE   SYOTOKU-IDX2(KOHFTN-IDX)
+                                    TO   SYOTOKU-IDX
+                     END-IF
+                  END-IF
+                END-IF
+              END-PERFORM
+              IF   SYOTOKU-IDX  =  99
+                  MOVE      1       TO   SYOTOKU-IDX
+              END-IF
+           ELSE
+              MOVE       1          TO   SYOTOKU-IDX
+              PERFORM  VARYING   KOHFTN-IDX   FROM   1   BY   1
+                        UNTIL    KOHFTN-IDX     >    4
+                  IF   (RECE02-KOHNUM(KOHFTN-IDX)  NOT = SPACE)
+                  AND  (RECE02-KOHNUM(KOHFTN-IDX)(1:1)
+                                           >=  "1" AND <=  "8")
+                     MOVE     1     TO   SYOTOKU-IDX2(KOHFTN-IDX)
+                  END-IF
+              END-PERFORM
+           END-IF
+      *
+           INITIALIZE                ORCSSYOTOKUAREA
+           MOVE  RECE02-HOSPNUM  TO  LNK-SYOTOKU-HOSPNUM
+           MOVE  RECE02-PTID     TO  LNK-SYOTOKU-PTID
+           MOVE  RECE02-SRYYM    TO  LNK-SYOTOKU-SRYYM
+      *
+           CALL    "ORCSSYOTOKU"   USING  ORCSSYOTOKUAREA
+                                          SPA-AREA
+      *
+           IF    LNK-SYOTOKU-RC    =   ZERO
+                MOVE  LNK-SYOTOKU-SYUKBN(SYOTOKU-IDX)
+                                 TO  RECE02-TEISYOTOKU
+                PERFORM  VARYING   KOHFTN-IDX   FROM   1   BY   1
+                          UNTIL    KOHFTN-IDX     >    4
+                   IF  SYOTOKU-IDX2(KOHFTN-IDX) =  99
+                     MOVE  SPACE TO  RECE02-TEISYOTOKU2(KOHFTN-IDX)
+                   ELSE
+                     MOVE  SYOTOKU-IDX2(KOHFTN-IDX)  TO  SYOTOKU-IDX9
+                     MOVE  LNK-SYOTOKU-CHIKBN(SYOTOKU-IDX9)
+                                 TO  RECE02-TEISYOTOKU2(KOHFTN-IDX)
+                   END-IF
+                END-PERFORM
+           END-IF
+      *
+           .
+       2101-TEISYOTOKU-HENSYU-EXT.
+           EXIT.
       *
       *****************************************************************
       *    公費情報のセット
@@ -1522,6 +1545,8 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *
                    MOVE   PTKOH-KOHID      TO  RECE02-KOHID       (IDX2)
                    MOVE   PTKOH-KOHNUM     TO  RECE02-KOHNUM      (IDX2)
+                   MOVE   PTKOH-TEKSTYMD   TO  RECE02-KOHTEKSTYMD (IDX2)
+                   MOVE   PTKOH-TEKEDYMD   TO  RECE02-KOHTEKEDYMD (IDX2)
                    MOVE   WRK-RECESKYKBN   TO  RECE02-RECESKYKBN  (IDX2)
                    MOVE   PTKOH-FTNJANUM   TO  RECE02-KOHFTNJANUM (IDX2)
                    MOVE   SPACE            TO
@@ -3151,42 +3176,6 @@ grpsys     PERFORM 900-DBFETCH-SEC
            EXIT.
       *
       *****************************************************************
-      *    低所得マスタ読み込み
-      *****************************************************************
-       TSYRRK-READ-SEC        SECTION.
-      *
-grpsys     PERFORM 900-DBFETCH-SEC
-           IF      MCP-RC              =   ZERO
-               MOVE    MCPDATA-REC     TO  TSYRRK-REC
-               MOVE    ZERO            TO  FLG-TSYRRK
-           ELSE
-               INITIALIZE                  TSYRRK-REC
-               MOVE    1               TO  FLG-TSYRRK
-           END-IF
-      *
-           .
-       TSYRRK-READ-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    年金マスタ読み込み
-      *****************************************************************
-       TNKRRK-READ-SEC        SECTION.
-      *
-grpsys     PERFORM 900-DBFETCH-SEC
-           IF      MCP-RC              =   ZERO
-               MOVE    MCPDATA-REC     TO  TNKRRK-REC
-               MOVE    ZERO            TO  FLG-TNKRRK
-           ELSE
-               INITIALIZE                  TNKRRK-REC
-               MOVE    1               TO  FLG-TNKRRK
-           END-IF
-      *
-           .
-       TNKRRK-READ-EXT.
-           EXIT.
-      *
-      *****************************************************************
       *    診療会計マスター読込
       *****************************************************************
        SRYACCT-READ-SEC         SECTION.
@@ -3428,7 +3417,7 @@ grpsys         PERFORM 900-DBFETCH-SEC
            END-IF
       *
            MOVE    "tbl_pthkninf"     TO  MCP-TABLE
-           MOVE    "key3 "            TO  MCP-PATHNAME
+           MOVE    "key3"             TO  MCP-PATHNAME
            PERFORM 900-CLOSE-SEC
       *
            .
