@@ -83,6 +83,7 @@
       *  03.04.05    NACL-門脇    07/03/05  酸素計算式修正
       *  03.04.06    NACL-門脇    07/04/13  リハビリ対応
       *  03.05.01    NACL-小豆沢  07/06/04  グループ診療対応
+      *  03.05.02    NACL-門脇    07/08/07  算定履歴に関わる記載修正
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -3144,7 +3145,9 @@
                     PERFORM   UNTIL  ( FLG-SANTEI         =   1 ) OR
                                      ( FLG-HINKAI-COMMENT =   1 )
       *
-                       MOVE   SANTEI-FSANTEIYMD  TO  WRK-FSANTEIYMD
+                      IF   SANTEI-SRYYM  <=  RECE64-SRYYM
+                       MOVE   SANTEI-SRYYM     TO  WRK-FSANTEIYMD(1:6)
+                       MOVE   SANTEI-MSANTEID  TO  WRK-FSANTEIYMD(7:2)
       *
                        INITIALIZE                  STS-AREA-DAY
                        INITIALIZE                  LNK-DAY6-AREA
@@ -3166,10 +3169,11 @@
                              MOVE  WRK-FSANTEIYMD
                                           TO   WRK-TOSEKIYMD
                        END-IF
+                      END-IF
       * 
-                       MOVE    "tbl_santei"        TO  MCP-TABLE
-                       MOVE    "key3"              TO  MCP-PATHNAME
-                       PERFORM        900-SANTEI-READ-SEC
+                      MOVE    "tbl_santei"     TO  MCP-TABLE
+                      MOVE    "key3"           TO  MCP-PATHNAME
+                      PERFORM        900-SANTEI-READ-SEC
                     END-PERFORM
              END-IF
       *
