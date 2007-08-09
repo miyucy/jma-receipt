@@ -34,10 +34,9 @@
       *
       *    出力領域
            03  RSITUSAN-OUT-AREA.
-      *        日数
-               05  RSITUSAN-NISSU          PIC 9(08).
-      *        算定終了日
-               05  RSITUSAN-SANTEIEDYMD    PIC X(08).
+      *        日付（1=1.3倍/2=1.01倍）
+               05  RSITUSAN-DAY            PIC X(01)
+                                           OCCURS  31.
       *
       *    リターンコード
            03  RSITUSAN-RC                 PIC 9(02).

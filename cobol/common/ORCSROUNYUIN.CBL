@@ -517,17 +517,7 @@
            END-IF
            PERFORM   VARYING   IDX1   FROM 1  BY  1
                      UNTIL     IDX1   >    31
-               IF    RSITUSAN-SANTEIEDYMD(1:6) < LNK-SROUNYUIN-SANTEIYM
-                   MOVE   "2"       TO    LNK-SROUNYUIN-JOUSU-KBN(IDX1)
-               ELSE
-                   MOVE   RSITUSAN-SANTEIEDYMD(7:2)
-                                    TO    WRK-SANTEIED-DDX
-                   IF     IDX1        <=    WRK-SANTEIED-DD9
-                       MOVE   "1"   TO    LNK-SROUNYUIN-JOUSU-KBN(IDX1)
-                   ELSE
-                       MOVE   "2"   TO    LNK-SROUNYUIN-JOUSU-KBN(IDX1)
-                   END-IF
-               END-IF
+               MOVE  RSITUSAN-DAY(IDX1) TO LNK-SROUNYUIN-JOUSU-KBN(IDX1)
            END-PERFORM
       *Ï«ºÒÆþ±¡ÎÁ¤Î¼èÆÀ
            MOVE    ZERO                    TO  FLG-OK

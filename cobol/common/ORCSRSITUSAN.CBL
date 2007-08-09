@@ -46,8 +46,6 @@
       *
       *    フラグ領域
        01  FLG-AREA.
-           03  FLG-HIT                     PIC 9(01).
-           03  FLG-TARGET                  PIC 9(01).
            03  FLG-PTNYUINRRK              PIC 9(01).
            03  FLG-NYUINACCT               PIC 9(01).
            03  FLG-NYUINRYODAY-G.
@@ -62,6 +60,7 @@
       *
       *    添字領域
        01  IDX-AREA.
+           03  IDX0                        PIC 9(05).
            03  IDX1                        PIC 9(05).
            03  IDX2                        PIC 9(05).
            03  IDX3                        PIC 9(05).
@@ -83,7 +82,6 @@
            03  WRK-NISSU                   PIC 9(05).
            03  WRK-NISSU1                  PIC 9(05).
            03  WRK-NISSU2                  PIC 9(05).
-           03  WRK-NISSU-MOT               PIC 9(05).
            03  WRK-ZOGENPTN                PIC X(01).
            03  WRK-ZOGEN                   PIC S9(05).
            03  WRK-KEISANYMD               PIC X(08).
@@ -97,8 +95,13 @@
            03  WRK-STDAY                   PIC 9(02).
            03  WRK-EDDAY                   PIC 9(02).
            03  WRK-SHONUM                  PIC 9(03).
-           03  WRK-SANTEIEDYMD             PIC X(08).
            03  WRK-GETUMATUYMD             PIC X(08).
+      *
+       01  TSHONUM-AREA.
+           03  TSHONUM-IDX                 PIC 9(03).
+           03  TSHONUM-MAX                 PIC 9(03).
+           03  TSHONUM-OCC                 OCCURS  31.
+               05  TSHONUM-SHONUM          PIC 9(03).
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -151,6 +154,7 @@
            INITIALIZE                      WRK-AREA
            INITIALIZE                      FLG-AREA
            INITIALIZE                      IDX-AREA
+           INITIALIZE                      TSHONUM-AREA
            INITIALIZE                      RSITUSAN-OUT-AREA
            INITIALIZE                      RSITUSAN-RC
       *
@@ -166,13 +170,6 @@
                GO  TO  000-PROC-EXT
            END-IF
       *
-           DISPLAY "I:RSITUSAN-HOSPNUM      = " RSITUSAN-HOSPNUM
-           DISPLAY "I:RSITUSAN-PTID        = " RSITUSAN-PTID
-           DISPLAY "I:RSITUSAN-HKNCOMBI    = " RSITUSAN-HKNCOMBI
-           DISPLAY "I:RSITUSAN-SRYYM       = " RSITUSAN-SRYYM
-           DISPLAY "-"
-           DISPLAY "O:RSITUSAN-NISSU       = " RSITUSAN-NISSU
-           DISPLAY "O:RSITUSAN-SANTEIEDYMD = " RSITUSAN-SANTEIEDYMD
       *
            PERFORM 990-EXIT-PROGRAM-SEC
       *
@@ -187,12 +184,12 @@
        100-PRM-CHK-SEC                     SECTION.
       *
            IF    ( RSITUSAN-SRYYM      =   SPACE )
-               MOVE    99              TO  RSITUSAN-RC
+               MOVE    01              TO  RSITUSAN-RC
                PERFORM 990-EXIT-PROGRAM-SEC
            END-IF
       *
            IF    ( RSITUSAN-HKNCOMBI   =   SPACE )
-               MOVE    99              TO  RSITUSAN-RC
+               MOVE    02              TO  RSITUSAN-RC
                PERFORM 990-EXIT-PROGRAM-SEC
            END-IF
       *
@@ -219,11 +216,16 @@
       *    初回番号取得処理
            PERFORM 2100-SHONUM-GET-SEC
       *
-      *    日数取得処理
-           PERFORM 2100-NISSU-GET-SEC
+           PERFORM VARYING TSHONUM-IDX FROM    1   BY  1
+                   UNTIL ( TSHONUM-IDX >   TSHONUM-MAX )
       *
-           MOVE    WRK-NISSU       TO  RSITUSAN-NISSU
-           MOVE    WRK-SANTEIEDYMD TO  RSITUSAN-SANTEIEDYMD
+               MOVE    TSHONUM-SHONUM (TSHONUM-IDX)
+                                   TO  WRK-SHONUM
+      *
+      *        日数取得処理
+               PERFORM 2100-NISSU-GET-SEC
+      *
+           END-PERFORM
       *
            .
        200-MAIN-EXT.
@@ -338,7 +340,7 @@
            PERFORM 910-DBCLOSE-SEC
       *
            IF    ( FLG-NYUINACCT       NOT =   ZERO )
-               MOVE    99                  TO  RSITUSAN-RC
+               MOVE    03                  TO  RSITUSAN-RC
                PERFORM 990-EXIT-PROGRAM-SEC
            END-IF
       *
@@ -351,7 +353,7 @@
       *
            IF    ( WRK-SRYYM               =   RSITUSAN-SRYYM )
                IF    ( FLG-HKNCOMBIDAY-G   =   ZERO )
-                   MOVE    99                  TO  RSITUSAN-RC
+                   MOVE    04                  TO  RSITUSAN-RC
                    PERFORM 990-EXIT-PROGRAM-SEC
                END-IF
            END-IF
@@ -437,12 +439,8 @@
       *****************************************************************
        2110-SHONUM-GET-SEC             SECTION.
       *
-           MOVE    ZERO            TO  FLG-HIT
-           MOVE    ZERO            TO  WRK-SHONUM
-      *
            PERFORM VARYING IDX3    FROM    1   BY  1
                    UNTIL ( IDX3    >   31 )
-                    OR   ( FLG-HIT =   1  )
       *
                IF    ( FLG-HKNCOMBIDAY (IDX3)  >   ZERO )
                 AND  ( FLG-NYUINRYODAY (IDX3)  >   ZERO )
@@ -450,7 +448,9 @@
       *
                    MOVE    FLG-SHONUMDAY (IDX3)
                                    TO  WRK-SHONUM
-                   MOVE    1       TO  FLG-HIT
+      *
+                   PERFORM 21101-SHONUM-GET-SEC
+      *
                END-IF
            END-PERFORM
       *
@@ -458,22 +458,52 @@
        2110-SHONUM-GET-EXT.
            EXIT.
       *****************************************************************
+      *    初回番号取得処理
+      *****************************************************************
+       21101-SHONUM-GET-SEC            SECTION.
+      *
+           MOVE    ZERO            TO  TSHONUM-IDX
+      *
+           PERFORM VARYING IDX0    FROM    1   BY  1
+                   UNTIL ( IDX0 >  TSHONUM-MAX )
+                    OR   ( TSHONUM-IDX NOT =   ZERO )
+      *
+               IF    ( TSHONUM-SHONUM (IDX0)   =  WRK-SHONUM )
+                   MOVE    IDX0    TO  TSHONUM-IDX
+               END-IF
+      *
+           END-PERFORM
+      *
+           IF    ( TSHONUM-IDX     =   ZERO )
+               IF    ( TSHONUM-MAX <   31 )
+      *
+                   COMPUTE TSHONUM-MAX =   TSHONUM-MAX +   1
+                   MOVE    WRK-SHONUM
+                                   TO  TSHONUM-SHONUM (TSHONUM-MAX)
+      *
+               END-IF
+           END-IF
+      *
+           .
+       21101-SHONUM-GET-EXT.
+           EXIT.
+      *****************************************************************
       *    日数取得処理
       *****************************************************************
        2100-NISSU-GET-SEC                  SECTION.
       *
            MOVE    ZERO            TO  WRK-NISSU
-           MOVE    SPACE           TO  WRK-SANTEIEDYMD
       *
            MOVE    ZERO            TO  FLG-PTNYUINRRK
            INITIALIZE                  PTNYUINRRK-REC
            MOVE    RSITUSAN-HOSPNUM TO  PTNYUINRRK-HOSPNUM
            MOVE    RSITUSAN-PTID   TO  PTNYUINRRK-PTID
            MOVE    WRK-GETUMATUYMD TO  PTNYUINRRK-NYUINYMD
+           MOVE    WRK-SHONUM      TO  PTNYUINRRK-SHONUM
       *
            MOVE    PTNYUINRRK-REC  TO  MCPDATA-REC
            MOVE    "tbl_ptnyuinrrk" TO MCP-TABLE
-           MOVE    "key25"         TO  MCP-PATHNAME
+           MOVE    "key47"         TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF    ( MCP-RC      NOT =   ZERO )
                MOVE    1           TO  FLG-PTNYUINRRK
@@ -487,14 +517,14 @@
                    IF    ( PTNYUINRRK-JTIKBN   =   "6" )
                        IF    ( PTNYUINRRK-SHONUM   =   WRK-SHONUM )
                            PERFORM 2110-JIINRRK-NISSU-HEN-SEC
-		       END-IF
+                       END-IF
                    ELSE
                        PERFORM 2110-NISSU-HEN-SEC
                    END-IF
                END-IF
       *
                MOVE    "tbl_ptnyuinrrk" TO MCP-TABLE
-               MOVE    "key25"         TO  MCP-PATHNAME
+               MOVE    "key47"          TO  MCP-PATHNAME
                PERFORM 910-DBFETCH-SEC
                IF    ( MCP-RC      NOT =   ZERO )
                    MOVE    1           TO  FLG-PTNYUINRRK
@@ -505,7 +535,7 @@
            END-PERFORM
       *
            MOVE    "tbl_ptnyuinrrk" TO MCP-TABLE
-           MOVE    "key25"         TO  MCP-PATHNAME
+           MOVE    "key47"          TO  MCP-PATHNAME
            PERFORM 910-DBCLOSE-SEC
       *
            .
@@ -516,28 +546,8 @@
       *****************************************************************
        2110-JIINRRK-NISSU-HEN-SEC          SECTION.
       *
-           MOVE    WRK-NISSU       TO  WRK-NISSU-MOT
-      *
            COMPUTE WRK-NISSU
                =   WRK-NISSU   +   PTNYUINRRK-TAISYONISSU
-      *
-           IF    ( WRK-NISSU-MOT  <    14  )
-            AND  ( WRK-NISSU      >=   14  )
-               MOVE   PTNYUINRRK-NYUINYMD
-                                   TO  WRK-YMD
-               MOVE   "1"          TO  WRK-ZOGENPTN
-               COMPUTE WRK-ZOGEN
-                   =   13  -   WRK-NISSU-MOT
-               PERFORM 800-CALENDAR-SEC
-               IF    ( WRK-KEISANYMD (1:6)
-                                   >   RSITUSAN-SRYYM )
-                   MOVE    99      TO  RSITUSAN-RC
-                   PERFORM 990-EXIT-PROGRAM-SEC
-               ELSE
-                   MOVE    WRK-KEISANYMD
-                                   TO  WRK-SANTEIEDYMD
-               END-IF
-           END-IF
       *
            .
        2110-JIINRRK-NISSU-HEN-EXT.
@@ -620,25 +630,18 @@
       *
                IF    ( FLG-NYUINRYODAY (IDX1)  >   ZERO )
       *
-                   MOVE    ZERO        TO  FLG-TARGET
                    IF   ( PTNYUINRRK-SHONUM    =   WRK-SHONUM )
-                           MOVE        1   TO  FLG-TARGET
-                   ELSE
-                       IF    ( WRK-STSRYYM     =   RSITUSAN-SRYYM )
-                        AND  ( FLG-HKNCOMBIDAY (IDX1)
-                                               =   1 )
-                           MOVE        1   TO  FLG-TARGET
-                       END-IF
-                   END-IF
-      *
-                   IF   ( FLG-TARGET       =   1 )
       *
                        COMPUTE WRK-NISSU   =   WRK-NISSU   +   1
       *
-                       IF    ( WRK-NISSU   <=  14 )
-                           MOVE    WRK-STSRYYM TO  WRK-SANTEIEDYMD
-                           MOVE    IDX1        TO  WRK-DAY-9
-                           MOVE    WRK-DAY-X   TO  WRK-SANTEIEDYMD (7:2)
+                       IF    ( RSITUSAN-SRYYM  =   WRK-STSRYYM )
+                        AND  ( FLG-HKNCOMBIDAY (IDX1)
+                                               =   1 )
+                           IF    ( WRK-NISSU   <=  14 )
+                               MOVE    "1" TO  RSITUSAN-DAY (IDX1)
+                           ELSE
+                               MOVE    "2" TO  RSITUSAN-DAY (IDX1)
+                           END-IF
                        END-IF
                    END-IF
                END-IF
@@ -684,7 +687,7 @@
                MOVE    SGDAY-OTDAY         TO  WRK-HENYMDG
                MOVE    SGDAY-SDAY          TO  WRK-SYMD
            ELSE
-               MOVE    99                  TO  RSITUSAN-RC
+               MOVE    06                  TO  RSITUSAN-RC
            END-IF
            .
        800-HIZUKE-CHK-EXT.
@@ -706,7 +709,7 @@
                                            STS-AREA-DAY
                                            LNK-DAY5-AREA
            IF    ( STS-DAY-RC1     NOT =   ZERO )
-               MOVE    99              TO  RSITUSAN-RC
+               MOVE     07             TO  RSITUSAN-RC
                GO  TO                      800-KIKAN-CALC-EXT
            END-IF
       *
@@ -788,6 +791,12 @@
       *****************************************************************
        990-EXIT-PROGRAM-SEC            SECTION.
       *
+           DISPLAY "I:RSITUSAN-HOSPNUM     = " RSITUSAN-HOSPNUM
+           DISPLAY "I:RSITUSAN-PTID        = " RSITUSAN-PTID
+           DISPLAY "I:RSITUSAN-HKNCOMBI    = " RSITUSAN-HKNCOMBI
+           DISPLAY "I:RSITUSAN-SRYYM       = " RSITUSAN-SRYYM
+           DISPLAY "-"
+           DISPLAY "O:RSITUSAN-OUT-AREA    [" RSITUSAN-OUT-AREA "]"
            DISPLAY "O:RSITUSAN-RC = " RSITUSAN-RC
       *
            EXIT PROGRAM
