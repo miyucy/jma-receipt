@@ -354,22 +354,6 @@
 
     <widget>
       <class>GtkLabel</class>
-      <name>label225</name>
-      <x>255</x>
-      <y>190</y>
-      <width>60</width>
-      <height>25</height>
-      <label>ø«Œ≈π‘∞Ÿ</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>True</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
       <name>label6</name>
       <x>816</x>
       <y>24</y>
@@ -2570,6 +2554,22 @@
 	<input_mode>XIM</input_mode>
 	<xim_enabled>False</xim_enabled>
       </widget>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label225</name>
+      <x>255</x>
+      <y>190</y>
+      <width>60</width>
+      <height>25</height>
+      <label>ºı…’</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>True</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
     </widget>
   </widget>
 </widget>
