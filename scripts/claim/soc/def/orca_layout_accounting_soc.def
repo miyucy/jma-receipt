@@ -246,7 +246,7 @@ $Repeat, 30, @@BUNDLE@@, 2
 	$EndRepeat
 
 	# 診療括りセクション最終   その@@BUNDLE@@
-	%A_@@BUNDLE@@_15%, 100                	# 診療括りメモ
+	%A_@@BUNDLE@@_15%, 800                	# 診療括りメモ
 
 $EndRepeat
 
