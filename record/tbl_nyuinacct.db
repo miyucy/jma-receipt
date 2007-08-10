@@ -763,7 +763,6 @@ path	key37 	{
 			AND   PTID        =   :PTID
 			AND   SRYYM       =   :SRYYM
                         AND   ZAISKBKBN   =   '1'
-                        AND   ZAISKBKBN   =   '1'
                         AND   SRYCDTOTAL  =   99999916
 		;
 	};
