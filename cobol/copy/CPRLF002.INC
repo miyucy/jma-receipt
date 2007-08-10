@@ -263,5 +263,5 @@
       *メモ
                    07  LF02-SRYMEMO    PIC  X(100).
       *括りメモ
-               05  LF02-MEMO           PIC  X(800).
+               05  LF02-MEMO           PIC  X(1000).
       *    03  LF02-MEMO               PIC  X(100).
