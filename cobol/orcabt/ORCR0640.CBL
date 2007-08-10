@@ -255,6 +255,7 @@
       *  03.05.06    NACL-門脇    07/08/01  所得情報取扱い機能強化対応
       *  03.05.07    NACL-門脇    07/08/01  標準負担額減額認定証設定対応
       *  03.05.08    NACL-門脇    07/08/01  月途中の所得情報変更対応
+      *  03.05.09    NACL-門脇    07/08/10  北海道４１老人現物給付対応修正
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -9598,6 +9599,7 @@
        2104424-ICHIBUFTN-KOH-HEN3-SEC               SECTION.
       *
            IF   (WRK-PREFNUM        = "01"          )
+           AND  (SYU-SYUHKNNUM NOT = "060" AND "067")
            AND  (SYU-KOH-HKNNUM(1)  = "141" OR "241")
             IF  FLG-KOHYONKAIME = 1
                MOVE   44400   TO   WRK-KINGAKU

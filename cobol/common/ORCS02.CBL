@@ -186,6 +186,7 @@
       *  03.05.04    NACL-門脇    07/08/01  所得情報取扱い機能強化対応
       *  03.05.05    NACL-門脇    07/08/01  標準負担額減額認定証設定対応
       *  03.05.06    NACL-門脇    07/08/01  月途中の所得情報変更対応
+      *  03.05.07    NACL-門脇    07/08/10  北海道４１老人現物給付対応修正
       ****************************************************************
        ENVIRONMENT         DIVISION.
        CONFIGURATION       SECTION.
@@ -4174,6 +4175,7 @@
                    ( COMB-KOH4HKNNUM        =    SPACE))
       ***          MOVE    "1"    TO   FLG-SYUHEN
                    IF  (WK-1001-PREFNUM  =  01            )
+                   AND (COMB-HKNNUM  NOT = "060" AND "067")
                    AND (COMB-KOH1HKNNUM  =  "141" OR "241")
                      MOVE     80100   TO   MAX-KIN-SYU-M
                      IF  FLG-KOHYONKAIME = 1
