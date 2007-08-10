@@ -428,6 +428,7 @@ grpsys     COPY    "COMMON-SPA".
       *
            PERFORM 20011-EDIT-SYURRK-SEC
       *
+           MOVE    WKSYU-CREYMD        TO  SYURRK-CREYMD
            MOVE    SMCNDATE-YMD        TO  SYURRK-UPYMD
            MOVE    SMCNDATE-HMS        TO  SYURRK-UPHMS
            MOVE    SYURRK-REC          TO  MCPDATA-REC
@@ -663,6 +664,7 @@ grpsys     COPY    "COMMON-SPA".
                MOVE    SYU-PTID            TO  SYURRK-PTID
                MOVE    SYU-NYUGAIKBN       TO  SYURRK-NYUGAIKBN
                MOVE    SYU-DENPNUM         TO  SYURRK-DENPNUM
+               MOVE    SYU-CREYMD          TO  SYURRK-CREYMD
                MOVE    SMCNDATE-YMD        TO  SYURRK-UPYMD
                MOVE    SMCNDATE-HMS        TO  SYURRK-UPHMS
       *
