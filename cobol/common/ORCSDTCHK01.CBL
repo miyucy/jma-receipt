@@ -575,18 +575,37 @@
                PERFORM 3001-TBYOMEI-SORT-SEC
            END-IF
       *
-           MOVE    TBYOMEI-MAX         TO  SDTCHK01-O-MAX
+           MOVE    ZERO                TO  SDTCHK01-O-MAX
+      *
            PERFORM VARYING IDX0    FROM    1   BY  1
                    UNTIL ( IDX0    >   TBYOMEI-MAX )
       *
-               MOVE    TBYOMEI-ERRFLG (IDX0)
-                                       TO  SDTCHK01-O-ERRFLG (IDX0)
-               MOVE    TBYOMEI-SRYKA  (IDX0)
-                                       TO  SDTCHK01-O-SRYKA  (IDX0)
-               MOVE    TBYOMEI-SRYYMD (IDX0)
-                                       TO  SDTCHK01-O-SRYYMD (IDX0)
-               MOVE    TBYOMEI-BYOMEI (IDX0)
-                                       TO  SDTCHK01-O-BYOMEI (IDX0)
+               MOVE    ZERO            TO  FLG-TAISYO
+               IF    ( SYS-1101-TENKITEKBYOKBN =   "2" )
+                   IF    ( TBYOMEI-ERRFLG (IDX0)   NOT =   1 )
+                       MOVE   1        TO  FLG-TAISYO
+                   END-IF
+               ELSE
+                       MOVE   1        TO  FLG-TAISYO
+               END-IF
+      *
+               IF    ( FLG-TAISYO      =   1 )
+      *
+                   COMPUTE SDTCHK01-O-MAX  =   SDTCHK01-O-MAX  +   1
+      *
+                   MOVE    TBYOMEI-ERRFLG (IDX0)
+                                       TO  SDTCHK01-O-ERRFLG
+                                                (SDTCHK01-O-MAX)
+                   MOVE    TBYOMEI-SRYKA  (IDX0)
+                                       TO  SDTCHK01-O-SRYKA
+                                                (SDTCHK01-O-MAX)
+                   MOVE    TBYOMEI-SRYYMD (IDX0)
+                                       TO  SDTCHK01-O-SRYYMD
+                                                (SDTCHK01-O-MAX)
+                   MOVE    TBYOMEI-BYOMEI (IDX0)
+                                       TO  SDTCHK01-O-BYOMEI
+                                                (SDTCHK01-O-MAX)
+               END-IF
       *
            END-PERFORM
       *

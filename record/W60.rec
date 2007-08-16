@@ -61,6 +61,13 @@ W60	{
 		CHKMTRX05	{
 			value	bool;
 		};
+		CMB_TENKITEKBYOKBN	{
+			TENKITEKBYOKBN	{
+				value	varchar(20);
+			};
+			count	int;
+			item	varchar(20)[5];
+		};
 		CMB_YBKENSAYAKUKBN	{
 			YBKENSAYAKUKBN	{
 				value	varchar(32);
