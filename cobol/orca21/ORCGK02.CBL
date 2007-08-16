@@ -80,6 +80,7 @@
       *  03.05.00    NACL-多々納  07/05/22  再印刷処理追加
       *  03.05.01    NACL-多々納  07/07/XX  同日再診・訂正選択追加他
       *  03.05.01    NACL-多々納  07/07/19  "0085XXXXX"コメント対応
+      *  03.05.01    NACL-多々納  07/08/10  メモ登録追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -170,6 +171,7 @@
            03  FLG-SYSKANRI        PIC 9(01).
            03  FLG-PTBYOMEI        PIC 9(01).
            03  FLG-PTNYUINRRK        PIC 9(01).
+           03  FLG-PTMEMOINF       PIC 9(01).
       *
       *
            03  FLG-CHK             PIC 9(01).
@@ -806,6 +808,9 @@
       *    患者入院履歴
        01  PTNYUINRRK-REC.
            COPY    "CPPTNYUINRRK.INC".
+      *    患者メモ
+       01  PTMEMOINF-REC.
+           COPY    "CPPTMEMOINF.INC".
       *
       *****************************************************************
       *    サブプロ用　領域
@@ -1155,6 +1160,7 @@
                IF      WRK-MOTOPG          =   "Y01"  OR  "U01"
                                                       OR  "P97"
                                                       OR  "KA01"
+                                                      OR  "XF01"
                    MOVE    LNK-COMMON      TO  SPA-KYOUTU
                    MOVE    LNK-SCRSPA      TO  SPA-K02
                    MOVE    SPA-WORK        TO  SPA-K01KYOUTU
@@ -1173,6 +1179,12 @@
                    END-IF
                    GO      TO      300-SCREEN-EXT
                END-IF
+               IF      WRK-MOTOPG          =   "XF01"
+      *            メモ登録有無
+                   PERFORM 41021-PTMEMOINF-SEC
+                   GO      TO      300-SCREEN-EXT
+               END-IF
+      *
       *        外部より選択がある時
                IF      WRK-MOTOPG(1:3)     =   "U01"  OR
                                                "P97"
@@ -1594,6 +1606,9 @@
                MOVE    "1"                 TO  SPA-DRCD(1:1)
                MOVE    SPA-DRCD-NAME(1:4)  TO  SPA-DRCD(2:4)
            END-IF
+      *TEST
+      *    メモ登録有無
+           PERFORM 41021-PTMEMOINF-SEC
       *
       *    排他制御処理
            PERFORM 990-LOCK-IN-SEC
@@ -1665,6 +1680,9 @@
                                        SPA-K01KYOUTU
                                        SPA-K02
       *
+      *TEST
+      *    メモ登録有無
+           PERFORM 41021-PTMEMOINF-SEC
       *    排他制御処理
            PERFORM 990-LOCK-IN2-SEC
            IF      SPA-ERRCD           =   "9999"
@@ -1792,6 +1810,9 @@
                                        SPA-K01KYOUTU
                                        SPA-K02
       *
+      *TEST
+      *    メモ登録有無
+           PERFORM 41021-PTMEMOINF-SEC
       *    排他制御処理
            PERFORM 990-LOCK-IN2-SEC
            IF      SPA-ERRCD           =   "9999"
@@ -4247,10 +4268,14 @@
       *        入力コード設定へ
                WHEN    "CLICKED"       ALSO    "B05"
                    PERFORM 4106S-INPUTCD-SYORI-SEC
-      *TEST
       *        ヘルプ
                WHEN    "CLICKED"       ALSO    "BHELP"
                    PERFORM 4199-HELP-SYORI-SEC
+      *TEST
+      *        メモ登録へ
+               WHEN    "CLICKED"       ALSO    "BC10"
+                   PERFORM 4188-MEMO-SYORI-SEC
+      *TEST
            END-EVALUATE
       *
            .
@@ -4434,6 +4459,9 @@
                    IF      SPA-ERRCD           =   SPACE
                        PERFORM 410101-PTNUM-SYOKI-SEC
                    END-IF
+      *TEST
+      *            メモ登録有無
+                   PERFORM 41021-PTMEMOINF-SEC
            END-EVALUATE
            .
       *
@@ -4518,7 +4546,6 @@
       *
       *    スパ共通編集処理
            PERFORM 310-SPA-SET-SEC
-      *
       *    誕生日以前の時、エラー
            IF     (SPA-ERRCD           =   SPACE )
               AND (SPA-KIDCD           =   SPACE )
@@ -4577,7 +4604,44 @@
            .
        4102-PTNUM-HENSYU-EXT.
            EXIT.
+      *TEST
+      *****************************************************************
+      *    メモ登録有無処理
+      *****************************************************************
+       41021-PTMEMOINF-SEC         SECTION.
       *
+           MOVE    SPACE               TO  PTMEMOINF-REC
+           INITIALIZE                  PTMEMOINF-REC
+           MOVE    SPA-HOSPNUM         TO  PTMEMOINF-HOSPNUM
+           MOVE    SPA-PTID            TO  PTMEMOINF-PTID
+      *D   MOVE    2                   TO  PTMEMOINF-MEMOKBN
+           MOVE    SPA-SYSYMD          TO  PTMEMOINF-SYSYMD
+      *
+           MOVE    PTMEMOINF-REC       TO  MCPDATA-REC
+           MOVE    "tbl_ptmemoinf"     TO  MCP-TABLE
+           MOVE    "key5"              TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_ptmemoinf"     TO  MCP-TABLE
+               MOVE    "key5"              TO  MCP-PATHNAME
+               PERFORM 910-PTMEMOINF-READ-SEC
+           ELSE
+               MOVE    1               TO  FLG-PTMEMOINF
+               INITIALIZE                  PTMEMOINF-REC
+           END-IF
+           MOVE    "tbl_ptmemoinf"     TO  MCP-TABLE
+           MOVE    "key5"              TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+      *
+           IF      FLG-PTMEMOINF       =   ZERO
+               MOVE    "1"             TO  SPA-NAI-MEMOKBN
+           ELSE
+               MOVE    SPACE           TO  SPA-NAI-MEMOKBN
+           END-IF
+      *
+           .
+       41021-PTMEMOINF-EXT.
+           EXIT.
       *****************************************************************
       *    診療日入力処理
       *****************************************************************
@@ -10844,6 +10908,51 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
        4102-UKETUKE-EXT.
            EXIT.
       *TEST
+      *****************************************************************
+      *    メモ登録処理へ
+      *****************************************************************
+       4188-MEMO-SYORI-SEC             SECTION.
+      *
+      *    患者の確定されてない時、処理をしない
+           IF     (SPA-GMN-PTNUM       =   SPACE )  OR
+                  (SPA-PTID            =   ZERO  )
+               GO      TO      4188-MEMO-SYORI-EXT
+           END-IF
+      *
+           MOVE    1                   TO  FLG-HENKOU
+      *    診療行為入力チェック
+           PERFORM 41011-KOUI-ALLHEN-SEC
+           IF     (SPA-ERRCD       NOT =   SPACE )  OR
+                  (SPA-KIDCD           =   "0180" )  OR
+                  (FLG-END             =   1     )
+               GO      TO      4188-MEMO-SYORI-EXT
+           END-IF
+      *
+      *    ワーク行為負担パラメタを作成
+           PERFORM 4410-WSINPARA-SEC
+      *
+      *    戻り時、画面を元へ戻す
+           MOVE    SPACE               TO  LINKAREA
+           MOVE    SPA-KYOUTU          TO  LNK-COMMON
+           MOVE    SPA-K02             TO  LNK-SCRSPA
+      *
+      *    画面移行用のパラメタ変更
+           MOVE    "K02"               TO  SPA-MOTOPG
+           MOVE    "XF01"              TO  SPA-SAKIPG
+      *
+      **** MOVE    SPACE               TO  SPA-KYOTUKEY
+           MOVE    SPA-KYOUTU          TO  LNK-KYOUTU
+      *
+           MOVE    "CHANGE"            TO  MCP-PUTTYPE
+           MOVE    "XF01"              TO  MCP-WINDOW.
+      *
+           PERFORM 900-PUT-WINDOW.
+      *
+           MOVE    1                   TO  FLG-END
+      *
+           .
+       4188-MEMO-SYORI-EXT.
+           EXIT.
       *
       *****************************************************************
       *    ヘルプ処理
@@ -12315,6 +12424,14 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            END-PERFORM
            MOVE    SPA-BYOMEI-MAX      TO  K02-BYOMEI-COUNT
       *
+      *    メモボタン
+           IF      SPA-NAI-MEMOKBN     =   "1"
+               MOVE    "red"               TO  K02-BC10-STYLE
+           ELSE
+               MOVE    "black"             TO  K02-BC10-STYLE
+           END-IF
+           MOVE    "メモ"              TO  K02-BC10-LABEL
+      *
       *    非活性処理
            PERFORM 510-GSRAUTH-SEC
       *
@@ -13085,6 +13202,23 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            .
        910-PTNYUINRRK-READ-EXT.
+           EXIT.
+      *****************************************************************
+      *    患者メモ読込処理
+      *****************************************************************
+       910-PTMEMOINF-READ-SEC         SECTION.
+      *
+           PERFORM 920-DBFETCH-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC         TO  PTMEMOINF-REC
+               MOVE    ZERO                TO  FLG-PTMEMOINF
+           ELSE
+               INITIALIZE                      PTMEMOINF-REC
+               MOVE    1                   TO  FLG-PTMEMOINF
+           END-IF
+      *
+           .
+       910-PTMEMOINF-READ-EXT.
            EXIT.
       *****************************************************************
       *    テーブル検索処理

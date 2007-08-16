@@ -122,6 +122,9 @@
                 04  U02-VALUE   PIC X(6).
               03  U02-LASTYMD.
                 04  U02-VALUE   PIC X(16).
+              03  U02-MEMOC.
+                04  U02-MEMOC-STYLE  PIC X(20).
+                04  U02-MEMOC-VALUE   PIC X(06).
               03  U02-B05.
                 04  U02-B05-STATE   PIC S9(9)   BINARY.
               03  U02-B06.

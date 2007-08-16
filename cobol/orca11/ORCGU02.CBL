@@ -70,6 +70,7 @@
       *  03.04.00    NACL-多々納  07/02/19  ＱＲ受付対応
       *  03.05.00    NACL-多々納  07/05/07  グループ診療対応
       *  03.05.00    NACL-多々納  07/06/07  前回来院日共通化と受付に追加
+      *  03.05.01    NACL-多々納  07/08/10  メモ登録追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -115,6 +116,7 @@
            03  FLG-PTRSIINF            PIC 9(01).
            03  FLG-SRYKARRK            PIC 9(01).
            03  FLG-QRCDHKN         PIC 9(01).
+           03  FLG-PTMEMOINF           PIC 9(01).
       *
            03  FLG-HENFLG              PIC 9(01).
            03  FLG-TOUROKU             PIC 9(01).
@@ -351,6 +353,9 @@
       *    QRコード(被保険者証)
        01  QRCDHKN-REC.
            COPY    "CPQRCDHKN.INC".
+      *    患者メモ
+       01  PTMEMOINF-REC.
+           COPY    "CPPTMEMOINF.INC".
       *
       *
       *****************************************************************
@@ -515,15 +520,19 @@
       *
                MOVE    SPA-MOTOPG          TO  WRK-MOTOPG
       *        元の画面へ戻す
-               IF      WRK-MOTOPG(1:3)     =   "Y01"  OR  "U01"  OR
+               IF      WRK-MOTOPG          =   "Y01"  OR  "U01"  OR
                                                "P97"
+                                           OR  "XF01"
                    MOVE    LNK-COMMON      TO  SPA-KYOUTU
                    MOVE    LNK-SCRSPA      TO  SPA-U02
                END-IF
       *        予約とエラー表示の時、そのまま画面表示へ
-               IF      WRK-MOTOPG(1:3)     =   "Y01"
+               IF      WRK-MOTOPG          =   "Y01"
+                                           OR  "XF01"
       *            予約，受付編集
                    PERFORM 3101-UKETU-HEN-SEC
+      *           患者メモ表示処理
+                   PERFORM 410119-PTMEMOINF-SEC
                    GO      TO      300-SCREEN-EXT
                END-IF
       *        外部より選択がある時
@@ -1497,7 +1506,9 @@ grpsys*                        CALL    "ORCDBMAIN"     USING   MCPAREA
                    PERFORM 475-DOWN-SYORI-SEC
       *    ＱＲ一覧へ
                WHEN    "CLICKED"       ALSO    "B10S"
-                   PERFORM 4105-U02Q-SYORI-SEC
+      *@@@@
+      *DDDD        PERFORM 4105-U02Q-SYORI-SEC
+                   PERFORM 4105-XF01-SYORI-SEC
       *    保険チェック
                WHEN    "CLICKED"       ALSO    "BHK1"
                WHEN    "CLICKED"       ALSO    "BHK2"
@@ -1739,6 +1750,8 @@ grpsys*                        CALL    "ORCDBMAIN"     USING   MCPAREA
            IF      SPA-GMN-SELNUM           =   ZERO
                PERFORM 410116-JYURRKSET-SEC
            END-IF
+      *    患者メモ表示処理
+           PERFORM 410119-PTMEMOINF-SEC
       *
       *    前回編集
            MOVE    SPA-GMN-PTNUM       TO  SPA-MAE-PTNUM
@@ -1828,6 +1841,8 @@ grpsys*                        CALL    "ORCDBMAIN"     USING   MCPAREA
                        PERFORM 410116-JYURRKSET-SEC
                    END-IF
       *---- (01.00.06) LINE MOD END ---------------------------------- 
+      *            患者メモ表示処理
+                   PERFORM 410119-PTMEMOINF-SEC
       *            前回患者ヘ編集
                    MOVE    SPA-GMN-PTNUM       TO  SPA-LAST-PTNUM
                    MOVE    SPA-GMN-PTID        TO  SPA-LAST-PTID
@@ -2382,6 +2397,8 @@ grpsys*                        CALL    "ORCDBMAIN"     USING   MCPAREA
                    PERFORM 410116-JYURRKSET-SEC
                END-IF
       *---- (01.00.06) LINE MOD END ----------------------------------
+      *        患者メモ表示処理
+               PERFORM 410119-PTMEMOINF-SEC
            END-IF
       *
            IF      SPA-GMN-TUKETIME(SPA-GMN-SELNUM)    =  SPACE
@@ -3063,6 +3080,43 @@ grpsys*                        CALL    "ORCDBMAIN"     USING   MCPAREA
            EXIT.
       *
       *****************************************************************
+      *    患者メモ表示処理
+      *****************************************************************
+       410119-PTMEMOINF-SEC               SECTION.
+      *
+           MOVE    SPACE               TO  PTMEMOINF-REC
+           INITIALIZE                  PTMEMOINF-REC
+           MOVE    SPA-HOSPNUM         TO  PTMEMOINF-HOSPNUM
+           MOVE    SPA-GMN-PTID        TO  PTMEMOINF-PTID
+      *D   MOVE    2                   TO  PTMEMOINF-MEMOKBN
+           MOVE    SPA-SYSYMD          TO  PTMEMOINF-SYSYMD
+      *
+           MOVE    PTMEMOINF-REC       TO  MCPDATA-REC
+           MOVE    "tbl_ptmemoinf"     TO  MCP-TABLE
+           MOVE    "key5"              TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_ptmemoinf"     TO  MCP-TABLE
+               MOVE    "key5"              TO  MCP-PATHNAME
+               PERFORM 910-PTMEMOINF-READ-SEC
+           ELSE
+               MOVE    1               TO  FLG-PTMEMOINF
+               INITIALIZE                  PTMEMOINF-REC
+           END-IF
+           MOVE    "tbl_ptmemoinf"     TO  MCP-TABLE
+           MOVE    "key5"              TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+      *
+           IF      FLG-PTMEMOINF       =   ZERO
+               MOVE    "1"             TO  SPA-GMN-MEMOKBN
+           ELSE
+               MOVE    SPACE           TO  SPA-GMN-MEMOKBN
+           END-IF
+           .
+       410119-PTMEMOINF-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    戻る　処理
       *****************************************************************
        210-BACK                        SECTION.
@@ -3320,6 +3374,49 @@ grpsys*                        CALL    "ORCDBMAIN"     USING   MCPAREA
       *
            .
        4105-U02Q-SYORI-EXT.
+           EXIT.
+      *****************************************************************
+      *    メモ登録へ
+      *****************************************************************
+       4105-XF01-SYORI-SEC             SECTION.
+      *
+           IF      SPA-GMN-PTID        =   ZERO
+               MOVE    "0030"          TO  SPA-ERRCD
+               GO  TO  4105-XF01-SYORI-EXT
+           END-IF
+      *
+           MOVE    SPACE               TO  LINKAREA
+           MOVE    "U02"               TO  SPA-MOTOPG
+           MOVE    "XF01"              TO  SPA-SAKIPG
+           MOVE    SPA-KYOUTU          TO  LNK-COMMON
+           MOVE    SPA-U02             TO  LNK-SCRSPA
+      *
+           MOVE    SPA-GMN-PTID        TO  SPA-PTID
+           MOVE    SPA-GMN-PTNUM       TO  SPA-PTNUM
+           MOVE    SPA-GMN-SRYKA       TO  SPA-SRYKA
+           MOVE    SPA-GMN-NAME        TO  SPA-NAME
+           EVALUATE    SPA-NAI-SEX
+               WHEN    "1"
+                    MOVE    "男"                TO  SPA-SEX
+                WHEN    "2"
+                    MOVE    "女"                TO  SPA-SEX
+           END-EVALUATE
+           MOVE    SPA-GMN-BIRTHDAY    TO  SPA-BIRTHDAYW
+           MOVE    SPA-NAI-BIRTHDAY    TO  SPA-BIRTHDAY
+      *
+      *    画面移行用のパラメタ変更
+           MOVE    "U02"               TO  SPA-MOTOPG
+           MOVE    "XF01"              TO  SPA-SAKIPG
+           MOVE    SPA-KYOUTU          TO  LNK-KYOUTU
+      *
+           MOVE    "CHANGE"            TO  MCP-PUTTYPE
+           MOVE    "XF01  "            TO  MCP-WINDOW
+      *
+           PERFORM 900-PUT-WINDOW
+      *
+           MOVE    1                   TO  FLG-END
+           .
+       4105-XF01-SYORI-EXT.
            EXIT.
       *****************************************************************
       *    予約画面へ
@@ -5094,6 +5191,11 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            MOVE    SPA-GMN-COMBINUM    TO  U02-HKNCOMBI
       *
+           IF      SPA-GMN-MEMOKBN     =   "1"
+               MOVE    "【Ｍ】"            TO  U02-MEMOC-VALUE
+               MOVE    "red"               TO  U02-MEMOC-STYLE
+           END-IF
+      *
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >       SPA-COMBI-MAX
                MOVE    SPA-GMN-HKNCOMBINUM      (IDX)
@@ -5476,6 +5578,12 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE
                    "警告！同じ診療科・保険組合せで受付済みです。"
                                                 TO  SPA-ERRMSG
+               WHEN    "0030"
+                   STRING  "患者番号がありません。"
+                           "メモ登録はできません。"
+                                               DELIMITED  BY  SIZE
+                                               INTO  SPA-ERRMSG
+                   END-STRING
                WHEN    "2001"
                    MOVE    "前の未確認保険はありません。"
                                                 TO  SPA-ERRMSG
@@ -5964,6 +6072,23 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            END-IF
            .
        900-QRCDHKN-READ-EXT.
+           EXIT.
+      *****************************************************************
+      *    患者メモ読込処理
+      *****************************************************************
+       910-PTMEMOINF-READ-SEC         SECTION.
+      *
+           PERFORM 920-DBFETCH-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC         TO  PTMEMOINF-REC
+               MOVE    ZERO                TO  FLG-PTMEMOINF
+           ELSE
+               INITIALIZE                      PTMEMOINF-REC
+               MOVE    1                   TO  FLG-PTMEMOINF
+           END-IF
+      *
+           .
+       910-PTMEMOINF-READ-EXT.
            EXIT.
       *****************************************************************
       *    テーブル検索処理

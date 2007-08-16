@@ -46,6 +46,7 @@
       * 03.03.02     NACL-藤原    06/10/31  療養介護医療２４の追加
       * 03.05.00     NACL-多々納  07/05/09  グループ診療対応
       * 03.05.00     NACL-多々納  07/05/25  UIDテーブル対応
+      * 03.05.01     NACL-多々納  07/08/10  受付メモ追加対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -87,6 +88,7 @@
            03  FLG-JYURRK          PIC 9(01).
            03  FLG-SRYACT          PIC 9(01).
            03  FLG-HKNNUM          PIC 9(01).
+           03  FLG-PTMEMOINF       PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -197,6 +199,16 @@
            03  WRK-ZZ9                 PIC ZZZZ9.
       *
            03  WRK-C-UID               PIC X(36).
+      *
+      *    患者メモ分解
+           03  WRK-MEMO                PIC X(1000).
+           03  WRK-MEMO-G.
+               05  WRK-MEMO-01         PIC X(1000).
+               05  WRK-MEMO-02         PIC X(1000).
+               05  WRK-MEMO-03         PIC X(1000).
+               05  WRK-MEMO-04         PIC X(1000).
+               05  WRK-MEMO-05         PIC X(1000).
+               05  WRK-MEMO-OK         PIC X(1000).
       *
        01  WRK-SRT-AREA.
            03  WRK-SRT-TABLE.
@@ -513,6 +525,10 @@
       *    ＵＩＤテーブル
       *01  CLMUID-REC.
            COPY    "CPCLMUID.INC".
+      *
+      *    患者メモ
+       01  PTMEMOINF-REC.
+           COPY    "CPPTMEMOINF.INC".
       *
       *****************************************************************
       *    サブプロ用　領域
@@ -1368,6 +1384,9 @@
            MOVE    LNK-PARA-SINRYONAIYO
                                        TO  WRK-LF01-YYKMEMO
       *
+      *    受付メモ編集
+           PERFORM 2009-PTMEMOINF-SEC
+      *
            MOVE    1                  TO  FLG-END
       *
            .
@@ -2049,8 +2068,98 @@
            .
        20201-SYONIKA-HEN-EXT.
            EXIT.
+      *****************************************************************
+      *    受付メモ編集処理
+      *****************************************************************
+        2009-PTMEMOINF-SEC        SECTION.
       *
+           MOVE    SPACE               TO  PTMEMOINF-REC
+           INITIALIZE                  PTMEMOINF-REC
+           MOVE    SPA-HOSPNUM         TO  PTMEMOINF-HOSPNUM
+           MOVE    SPA-PTID            TO  PTMEMOINF-PTID
+           MOVE    2                   TO  PTMEMOINF-MEMOKBN
+           MOVE    SPA-SYSYMD          TO  PTMEMOINF-SYSYMD
       *
+           MOVE    PTMEMOINF-REC       TO  MCPDATA-REC
+           MOVE    "tbl_ptmemoinf"     TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_ptmemoinf"     TO  MCP-TABLE
+               MOVE    "key2"              TO  MCP-PATHNAME
+               PERFORM 910-PTMEMOINF-READ-SEC
+           ELSE
+               MOVE    1               TO  FLG-PTMEMOINF
+               INITIALIZE                  PTMEMOINF-REC
+           END-IF
+           MOVE    SPACE               TO  WRK-MEMO
+           PERFORM UNTIL    FLG-PTMEMOINF  =   1
+               IF      PTMEMOINF-SRYKA     =   "00"
+                   IF      WRK-MEMO        =   SPACE
+                       MOVE    PTMEMOINF-MEMO  TO  WRK-MEMO
+                   END-IF
+               ELSE
+                   IF      PTMEMOINF-SRYKA     =   SPA-SRYKA
+                       MOVE    PTMEMOINF-MEMO  TO  WRK-MEMO
+                   END-IF
+               END-IF
+               MOVE    "tbl_ptmemoinf"     TO  MCP-TABLE
+               MOVE    "key2"              TO  MCP-PATHNAME
+               PERFORM 910-PTMEMOINF-READ-SEC
+           END-PERFORM
+           MOVE    "tbl_ptmemoinf"     TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+      *
+           MOVE    SPACE               TO  WRK-MEMO-G
+           MOVE    WRK-MEMO            TO  WRK-MEMO-OK
+           IF      WRK-MEMO        NOT =   SPACE
+      *        改行を"@"とする
+               INSPECT     WRK-MEMO    REPLACING  ALL  X"0A"  BY  " "
+               UNSTRING    WRK-MEMO    DELIMITED BY "＊＊＊＊＊"
+                     INTO  WRK-MEMO-01
+                           WRK-MEMO-02
+                           WRK-MEMO-03
+                           WRK-MEMO-04
+                           WRK-MEMO-05
+               END-UNSTRING
+               IF      WRK-MEMO-01     NOT =   SPACE
+                   MOVE    WRK-MEMO-01     TO  WRK-MEMO-OK
+               END-IF
+               IF      WRK-MEMO-02     NOT =   SPACE
+                   IF      WRK-MEMO-02(1:1)    =   SPACE
+                       MOVE    WRK-MEMO-02(2:) TO  WRK-MEMO-OK
+                   ELSE
+                       MOVE    WRK-MEMO-02     TO  WRK-MEMO-OK
+                   END-IF
+               END-IF
+               IF      WRK-MEMO-03     NOT =   SPACE
+                   IF      WRK-MEMO-03(1:1)    =   SPACE
+                       MOVE    WRK-MEMO-03(2:) TO  WRK-MEMO-OK
+                   ELSE
+                       MOVE    WRK-MEMO-03     TO  WRK-MEMO-OK
+                   END-IF
+               END-IF
+               IF      WRK-MEMO-04     NOT =   SPACE
+                   IF      WRK-MEMO-04(1:1)    =   SPACE
+                       MOVE    WRK-MEMO-04(2:) TO  WRK-MEMO-OK
+                   ELSE
+                       MOVE    WRK-MEMO-04     TO  WRK-MEMO-OK
+                   END-IF
+               END-IF
+               IF      WRK-MEMO-05     NOT =   SPACE
+                   IF      WRK-MEMO-05(1:1)    =   SPACE
+                       MOVE    WRK-MEMO-05(2:) TO  WRK-MEMO-OK
+                   ELSE
+                       MOVE    WRK-MEMO-05     TO  WRK-MEMO-OK
+                   END-IF
+               END-IF
+           END-IF
+      *    受付メモ
+           MOVE    WRK-MEMO-OK         TO  WRK-LF01-UKE-MEMO
+           .
+        2009-PTMEMOINF-EXT.
+           EXIT.
       *****************************************************************
       *    日付変換処理
       *****************************************************************
@@ -2435,6 +2544,23 @@
            END-IF
            .
        980-HKNNUM-READ-EXT.
+           EXIT.
+      *****************************************************************
+      *    患者メモ読込処理
+      *****************************************************************
+       910-PTMEMOINF-READ-SEC         SECTION.
+      *
+           PERFORM 920-DBFETCH-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC         TO  PTMEMOINF-REC
+               MOVE    ZERO                TO  FLG-PTMEMOINF
+           ELSE
+               INITIALIZE                      PTMEMOINF-REC
+               MOVE    1                   TO  FLG-PTMEMOINF
+           END-IF
+      *
+           .
+       910-PTMEMOINF-READ-EXT.
            EXIT.
       *
       *****************************************************************

@@ -65,6 +65,8 @@
       *
                    07  SPA-GMN-LASTYMD                PIC X(16).
       *
+                   07  SPA-GMN-MEMOKBN                PIC X(01).
+      *
                    07  SPA-GMN-COMBINUM               PIC 9(04).
       *
                    07  SPA-GMN-COMBI.

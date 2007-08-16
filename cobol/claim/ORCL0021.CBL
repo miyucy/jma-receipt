@@ -40,6 +40,7 @@
       *                                     明細数３０へ
       *                                     自費コード、画像診断対応
       *                                     新規・訂正追加
+      *  03.05.01    NACL-多々納  07/08/16  患者メモ追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -94,6 +95,7 @@
            03  FLG-SYUMEI          PIC 9(01).
       ***  03  FLG-LF03            PIC 9(01).
            03  FLG-CLMUID          PIC 9(01).
+           03  FLG-PTMEMOINF       PIC 9(01).
       *
            03  FLG-KAISU           PIC 9(01).
            03  FLG-SP              PIC 9(01).
@@ -190,6 +192,16 @@
       *    今回入金充当額
            03  WRK-JYUTO-MONEY     PIC S9(07).
       *
+      *    患者メモ分解
+           03  WRK-MEMO                PIC X(1000).
+           03  WRK-MEMO-G.
+               05  WRK-MEMO-01         PIC X(1000).
+               05  WRK-MEMO-02         PIC X(1000).
+               05  WRK-MEMO-03         PIC X(1000).
+               05  WRK-MEMO-04         PIC X(1000).
+               05  WRK-MEMO-05         PIC X(1000).
+               05  WRK-MEMO-OK         PIC X(1000).
+      *
       *    自費名称テーブル
        01  TBL-JIHIMSG-AREA.
            03  TBL-JIHIMSG             PIC X(20)  OCCURS   10.
@@ -260,6 +272,8 @@
                      09  TBL-FILMNUM   PIC  9(06).
       *メモ
                    07  TBL-SRYMEMO     PIC  X(100).
+      *括りメモ
+               05  TBL-MEMO            PIC  X(1000).
       *
        01  WRK-FILMMAX             PIC 9(02)   VALUE   1.     
       *  
@@ -331,6 +345,10 @@
       *    ＵＩＤテーブル
       *01  CLMUID-REC.
            COPY    "CPCLMUID.INC".
+      *
+      *    患者メモ
+       01  PTMEMOINF-REC.
+           COPY    "CPPTMEMOINF.INC".
       *
       *    システム領域
        01  SYS-AREA.
@@ -608,6 +626,9 @@
       *
       *    収納より請求書項目編集
            PERFORM 2005-SYUNOU-SET-SEC
+      *
+      *    受付メモ編集
+           PERFORM 2009-PTMEMOINF-SEC
       *
       *    ＴＢＬより再編集
            PERFORM 2003-TBL-FL02-SET-SEC
@@ -1647,6 +1668,99 @@
            .
        200221-PTCOM-SET-EXT.
            EXIT.
+      *****************************************************************
+      *    受付メモ編集処理
+      *****************************************************************
+       2009-PTMEMOINF-SEC        SECTION.
+      *
+      *    診療日のメモを対象とする
+           MOVE    SPACE               TO  PTMEMOINF-REC
+           INITIALIZE                  PTMEMOINF-REC
+           MOVE    SPA-HOSPNUM         TO  PTMEMOINF-HOSPNUM
+           MOVE    LNK-PTID            TO  PTMEMOINF-PTID
+           MOVE    2                   TO  PTMEMOINF-MEMOKBN
+           MOVE    LNK-SRYYMD          TO  PTMEMOINF-SYSYMD
+      *
+           MOVE    PTMEMOINF-REC       TO  MCPDATA-REC
+           MOVE    "tbl_ptmemoinf"     TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_ptmemoinf"     TO  MCP-TABLE
+               MOVE    "key2"              TO  MCP-PATHNAME
+               PERFORM 910-PTMEMOINF-READ-SEC
+           ELSE
+               MOVE    1               TO  FLG-PTMEMOINF
+               INITIALIZE                  PTMEMOINF-REC
+           END-IF
+           MOVE    SPACE               TO  WRK-MEMO
+           PERFORM UNTIL    FLG-PTMEMOINF  =   1
+               IF      PTMEMOINF-SRYKA     =   "00"
+                   IF      WRK-MEMO        =   SPACE
+                       MOVE    PTMEMOINF-MEMO  TO  WRK-MEMO
+                   END-IF
+               ELSE
+                   IF      PTMEMOINF-SRYKA     =   LNK-SRYKA
+                       MOVE    PTMEMOINF-MEMO  TO  WRK-MEMO
+                   END-IF
+               END-IF
+               MOVE    "tbl_ptmemoinf"     TO  MCP-TABLE
+               MOVE    "key2"              TO  MCP-PATHNAME
+               PERFORM 910-PTMEMOINF-READ-SEC
+           END-PERFORM
+           MOVE    "tbl_ptmemoinf"     TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+      *
+           MOVE    SPACE               TO  WRK-MEMO-G
+           MOVE    WRK-MEMO            TO  WRK-MEMO-OK
+           IF      WRK-MEMO        NOT =   SPACE
+      *        改行を"@"とする
+               INSPECT     WRK-MEMO    REPLACING  ALL  X"0A"  BY  " "
+               UNSTRING    WRK-MEMO    DELIMITED BY "＊＊＊＊＊"
+                     INTO  WRK-MEMO-01
+                           WRK-MEMO-02
+                           WRK-MEMO-03
+                           WRK-MEMO-04
+                           WRK-MEMO-05
+               END-UNSTRING
+               IF      WRK-MEMO-01     NOT =   SPACE
+                   MOVE    WRK-MEMO-01     TO  WRK-MEMO-OK
+               END-IF
+               IF      WRK-MEMO-02     NOT =   SPACE
+                   IF      WRK-MEMO-02(1:1)    =   SPACE
+                       MOVE    WRK-MEMO-02(2:) TO  WRK-MEMO-OK
+                   ELSE
+                       MOVE    WRK-MEMO-02     TO  WRK-MEMO-OK
+                   END-IF
+               END-IF
+               IF      WRK-MEMO-03     NOT =   SPACE
+                   IF      WRK-MEMO-03(1:1)    =   SPACE
+                       MOVE    WRK-MEMO-03(2:) TO  WRK-MEMO-OK
+                   ELSE
+                       MOVE    WRK-MEMO-03     TO  WRK-MEMO-OK
+                   END-IF
+               END-IF
+               IF      WRK-MEMO-04     NOT =   SPACE
+                   IF      WRK-MEMO-04(1:1)    =   SPACE
+                       MOVE    WRK-MEMO-04(2:) TO  WRK-MEMO-OK
+                   ELSE
+                       MOVE    WRK-MEMO-04     TO  WRK-MEMO-OK
+                   END-IF
+               END-IF
+               IF      WRK-MEMO-05     NOT =   SPACE
+                   IF      WRK-MEMO-05(1:1)    =   SPACE
+                       MOVE    WRK-MEMO-05(2:) TO  WRK-MEMO-OK
+                   ELSE
+                       MOVE    WRK-MEMO-05     TO  WRK-MEMO-OK
+                   END-IF
+               END-IF
+           END-IF
+      *    括りメモ
+           MOVE    WRK-MEMO-OK         TO  TBL-MEMO (1)
+           .
+        2009-PTMEMOINF-EXT.
+           EXIT.
       *
       *****************************************************************
       *   ＴＢＬより再編集　　処理
@@ -1730,6 +1844,9 @@
                            PERFORM 20031-MEISAI-SET-SEC
                        END-IF
                    END-PERFORM
+      *
+      *            括りメモ
+                   MOVE    TBL-MEMO (IDX-LF)   TO  WRK-LF02-MEMO(IDX-LF)
                END-IF
            END-PERFORM
       *
@@ -2955,6 +3072,23 @@
       *
            .
        903-CLMUID-READ-EXT.
+           EXIT.
+      *****************************************************************
+      *    患者メモ読込処理
+      *****************************************************************
+       910-PTMEMOINF-READ-SEC         SECTION.
+      *
+           PERFORM 920-DBFETCH-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC         TO  PTMEMOINF-REC
+               MOVE    ZERO                TO  FLG-PTMEMOINF
+           ELSE
+               INITIALIZE                      PTMEMOINF-REC
+               MOVE    1                   TO  FLG-PTMEMOINF
+           END-IF
+      *
+           .
+       910-PTMEMOINF-READ-EXT.
            EXIT.
       *
       *****************************************************************

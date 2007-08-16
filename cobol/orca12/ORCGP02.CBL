@@ -59,6 +59,8 @@
       *  03.04.00    NACL-多々納  07/02/16  ＱＲ受付対応
       *  03.04.01    NACL-多々納  07/02/20  収納履歴マスタ削除追加
       *  03.05.00    NACL-多々納  07/05/XX  グループ診療対応
+      *  03.05.01    NACL-多々納  07/08/16  患者メモ削除追加
+      *                                     ＱＲ受付削除
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -398,6 +400,10 @@
       *    QRコード(被保険者証)
        01  QRCDHKN-REC.
            COPY    "CPQRCDHKN.INC".
+      *
+      *    患者メモ
+       01  PTMEMOINF-REC.
+           COPY    "CPPTMEMOINF.INC".
       *
       *****************************************************************
       *    サブプロ用　領域
@@ -944,7 +950,7 @@
                                                SPA-P02SCRAREA
                                                P02
       *    ＱＲデータ判定
-           PERFORM 3101-QRDATA-CHK-SEC
+      *DD  PERFORM 3101-QRDATA-CHK-SEC
       *
       *    患者情報以外のセット
            IF      SPA-P02-SYORI       =   2
@@ -1297,9 +1303,9 @@
       *    登録
                WHEN    "CLICKED"       ALSO    "B12"
                    PERFORM 490-TOUROKU-SEC
-      *    ＱＲ一覧へ
-               WHEN    "CLICKED"       ALSO    "B12S"
-                   PERFORM 4902-QRSYORI-SEC
+      ***  ＱＲ一覧へ
+      *        WHEN    "CLICKED"       ALSO    "B12S"
+      ***          PERFORM 4902-QRSYORI-SEC
       *    タグ切り替え
                WHEN    "CLICKED"       ALSO    "N01"
                WHEN    "CLICKED"       ALSO    "N02"
@@ -2986,6 +2992,19 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    "tbl_syurrk"        TO  MCP-TABLE
            MOVE    "del2"              TO  MCP-PATHNAME
 grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
+      *
+      *    収納履歴マスタ
+           INITIALIZE                  PTMEMOINF-REC
+           MOVE    SPA-HOSPNUM         TO  PTMEMOINF-HOSPNUM
+           MOVE    SPA-GMN-PTID        TO  PTMEMOINF-PTID
+      *
+           MOVE    PTMEMOINF-REC       TO  MCPDATA-REC
+           MOVE    "DBDELETE"          TO  MCP-FUNC
+           MOVE    "tbl_ptmemoinf"     TO  MCP-TABLE
+           MOVE    "del1"              TO  MCP-PATHNAME
+           CALL    "ORCDBMAIN"         USING   MCPAREA
                                                MCPDATA-REC
                                                SPA-AREA
       *

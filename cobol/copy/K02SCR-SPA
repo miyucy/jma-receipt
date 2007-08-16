@@ -154,6 +154,8 @@
                        09  SPA-MAE-SRYKA       PIC X(02).
                        09  SPA-MAE-F1          PIC X(01).
                        09  SPA-MAE-SRYKAMEI    PIC X(12).
+      *            ¥á¥âÅÐÏ¿Í­Ìµ
+                   07  SPA-NAI-MEMOKBN           PIC X(01).
       *        Àè£Ð£Ç
                05  SPA-NAI-SAKIPG            PIC X(08).
       *        Ê£¿ô¿ÇÎÅ²Ê¤¢¤ê

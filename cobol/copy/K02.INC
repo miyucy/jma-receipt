@@ -131,4 +131,7 @@
                 04  K02-B12-STATE   PIC S9(9)   BINARY.
               03  K02-B12S.
                 04  K02-B12S-STATE   PIC S9(9)   BINARY.
+              03  K02-BC10.
+                04  K02-BC10-STYLE  PIC X(20).
+                04  K02-BC10-LABEL  PIC X(8).
 
