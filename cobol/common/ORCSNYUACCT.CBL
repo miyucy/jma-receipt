@@ -1145,7 +1145,11 @@
            END-IF
            IF      FLG-SYSKANRI        =   ZERO
       *        Œ≈Õ‹√¥≈ˆºÍ≈ˆ
-               MOVE    SYS-1007-SANTEI (5:1)   TO  FLG-RYOYOU
+               IF    SYS-1007-SANTEI (5:1)   NOT =   SPACE
+                   MOVE    SYS-1007-SANTEI (5:1)   TO  FLG-RYOYOU
+               ELSE
+                     MOVE    ZERO                  TO  FLG-RYOYOU
+               END-IF
            ELSE
                MOVE    ZERO                    TO  FLG-RYOYOU
            END-IF
