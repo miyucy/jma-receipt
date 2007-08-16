@@ -122,4 +122,5 @@ db	{
 	tbl_mstkanri;
 	tbl_clm_uid;
 	tbl_sysuser;
+	tbl_ptmemoinf;
 };
