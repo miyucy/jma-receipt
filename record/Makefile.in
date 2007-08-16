@@ -345,6 +345,10 @@ RECORD_files = \
 	W33.rec \
 	XC02.rec \
 	D03.rec \
+	XF01.rec \
+	XF011.rec \
+	XFERR.rec \
+	XFID1.rec \
 
 DEF_files = \
 	HC01.def \
@@ -531,6 +535,7 @@ DB_files = \
 	tbl_sysuser.db \
 	tbl_sysbase.db \
 	tbl_mstkanri.db \
+	tbl_ptmemoinf.db \
 
 all:   
 

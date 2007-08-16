@@ -137,6 +137,10 @@ U02	{
 		LASTYMD	{
 			value	varchar(16);
 		};
+		MEMOC	{
+			style	varchar(20);
+			value	varchar(6);
+		};
 		B05	{
 	           	state	int;
 		};

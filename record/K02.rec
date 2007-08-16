@@ -444,5 +444,9 @@ K02	{
 		B12S	{
 	           	state	int;
 		};
+		BC10	{
+			style	varchar(20);
+			label	varchar(8);
+		};
 	};
 };
