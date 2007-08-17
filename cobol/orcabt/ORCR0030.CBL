@@ -7385,10 +7385,10 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *
       *    °ìÉôÉéÃ´¶â¡¦¿©»öÎÅÍÜÈñÉ¸½àÉéÃ´³Û¶èÊ¬¤ÎÊÔ½¸
       *
-           IF    ( RECE02-TEISYOTOKU   =   SPACE )
-           OR    ( RECE02-ZAITAKU      =   SPACE )
-               CONTINUE
-           ELSE
+      ***> IF    ( RECE02-TEISYOTOKU   =   SPACE )
+      ***> OR    ( RECE02-ZAITAKU      =   SPACE )
+      ***>     CONTINUE
+      ***> ELSE
                EVALUATE    RECE02-TEISYOTOKU
                    WHEN    "1"
                        MOVE    "3"   TO   RECE02-SHOKUJIFTNKBN
@@ -7397,7 +7397,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                    WHEN    "4"
                        MOVE    "4"   TO   RECE02-SHOKUJIFTNKBN
                END-EVALUATE
-           END-IF
+      ***> END-IF
            PERFORM  VARYING   KOHFTN-IDX   FROM   1   BY   1
                      UNTIL    KOHFTN-IDX     >    4
              EVALUATE  RECE02-TEISYOTOKU2(KOHFTN-IDX)

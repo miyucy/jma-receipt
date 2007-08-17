@@ -10597,7 +10597,7 @@
       *
       *    °ìÉôÉéÃ´¶â¡¦¿©»öÎÅÍÜÈñÉ¸½àÉéÃ´³Û¶èÊ¬¤ÎÊÔ½¸
       *
-           IF      RECE62-KOUREI   NOT = SPACE
+      ***> IF      RECE62-KOUREI   NOT = SPACE
                EVALUATE    RECE62-TEISYOTOKU
                    WHEN    "1"
                        MOVE    "3"   TO   RECE62-SHOKUJIFTNKBN
@@ -10611,18 +10611,18 @@
                    WHEN    "4"
                        MOVE    "4"   TO   RECE62-SHOKUJIFTNKBN
                END-EVALUATE
-           ELSE
-               EVALUATE    RECE62-TEISYOTOKU3
-                   WHEN    "1"
-                       MOVE    "3"   TO   RECE62-SHOKUJIFTNKBN
-                   WHEN    "2"
-                       MOVE    "1"   TO   RECE62-SHOKUJIFTNKBN
-                   WHEN    "3"
-                       MOVE    "2"   TO   RECE62-SHOKUJIFTNKBN
-                   WHEN    "4"
-                       MOVE    "4"   TO   RECE62-SHOKUJIFTNKBN
-               END-EVALUATE
-           END-IF
+      ***> ELSE
+      ***>     EVALUATE    RECE62-TEISYOTOKU3
+      ***>         WHEN    "1"
+      ***>             MOVE    "3"   TO   RECE62-SHOKUJIFTNKBN
+      ***>         WHEN    "2"
+      ***>             MOVE    "1"   TO   RECE62-SHOKUJIFTNKBN
+      ***>         WHEN    "3"
+      ***>             MOVE    "2"   TO   RECE62-SHOKUJIFTNKBN
+      ***>         WHEN    "4"
+      ***>             MOVE    "4"   TO   RECE62-SHOKUJIFTNKBN
+      ***>     END-EVALUATE
+      ***> END-IF
            PERFORM  VARYING   KOHFTN-IDX   FROM   1   BY   1
                      UNTIL    KOHFTN-IDX     >    4
              EVALUATE  RECE62-TEISYOTOKU2(KOHFTN-IDX)
