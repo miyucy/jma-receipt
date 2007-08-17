@@ -17,9 +17,22 @@
       ********************************************************************
         02  W31.
             03  W31-FIXED6.
+              04  W31-B02-LABEL            PIC X(10).
+              04  W31-B03-LABEL            PIC X(10).
+              04  W31-B03-STATE            PIC S9(9)   BINARY.
               04  W31-STYUKYMD             PIC X(10).
               04  W31-EDYUKYMD             PIC X(10).
-              04  W31-CHK-MEDKBN-OCC       OCCURS  40.
-                05  W31-CHK-MEDKBN         PIC X(01).
-                05  W31-CHK-LBLMEDKBN      PIC X(60).
-                05  W31-CHK-MEDKBN-STATE   PIC S9(9)   BINARY.
+              04  W31-N1.
+                05  W31-PAGENO  PIC S9(9)   BINARY.
+                05  W31-FT01.
+                  06  W31-CHK-MEDKBN-OCC       OCCURS  40.
+                    07  W31-CHK-MEDKBN         PIC X(01).
+                    07  W31-CHK-LBLMEDKBN      PIC X(60).
+                    07  W31-CHK-MEDKBN-STATE   PIC S9(9)   BINARY.
+                05  W31-NB01-STATE             PIC S9(9)   BINARY.
+                05  W31-FT02.
+                  06  W31-CMB-ADLINPUTKBN.
+                    07  W31-ADLINPUTKBN        PIC X(22).
+                    07  W31-ADLINPUTKBN-CNT    PIC S9(9)   BINARY.
+                    07  W31-ADLINPUTKBN-ITM   PIC X(22)   OCCURS  2.
+                05  W31-NB02-STATE             PIC S9(9)   BINARY.

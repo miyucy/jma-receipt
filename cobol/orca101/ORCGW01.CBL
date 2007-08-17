@@ -348,6 +348,8 @@
            03  FILLER              PIC X(35)   VALUE
                "5014 医療区分表示情報".
            03  FILLER              PIC X(35)   VALUE
+               "5015 ＡＤＬ点数入力情報".
+           03  FILLER              PIC X(35)   VALUE
                "8000 印刷データ削除機能情報".
            03  FILLER              PIC X(35)   VALUE
                "9000 ＣＬＡＩＭ接続情報".
@@ -357,11 +359,11 @@
                "9800 排他制御情報".
       *
        01  TBL-KANRICD-N-AREAR         REDEFINES   TBL-KANRICD-N-AREA.
-           03  TBL-KANRICD-N-TBL           OCCURS   15.
+           03  TBL-KANRICD-N-TBL           OCCURS   16.
                05  TBL-KANRICD-N           PIC X(04).
                05  TBL-FILLER              PIC X(01).
                05  TBL-KANRICDMEI-N        PIC X(30).
-       01  TBL-KANRICDN-MAX                PIC 9(04)   VALUE   15.
+       01  TBL-KANRICDN-MAX                PIC 9(04)   VALUE   16.
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -1834,6 +1836,8 @@
                WHEN    "5013" 
                    MOVE    "W29"               TO  SPA-SAKIPG
                WHEN    "5014"
+                   MOVE    "W31"               TO  SPA-SAKIPG
+               WHEN    "5015"
                    MOVE    "W31"               TO  SPA-SAKIPG
                WHEN    "8000"
                    MOVE    "W33"               TO  SPA-SAKIPG

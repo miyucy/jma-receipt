@@ -50,6 +50,7 @@
       *    画面用ＳＰＡ
        01  SPA-I47.
            03  SPA-I47-AREA.
+               05  SPA-I47-ADLINPUTKBN             PIC X(01).
                05  SPA-I47-GETUMATU.
                    07  SPA-I47-GETUMATU-YM         PIC X(06).
                    07  SPA-I47-GETUMATU-DD         PIC 9(02).
@@ -79,6 +80,7 @@
                            11  SPA-GMN-TDAY        PIC 9(02)
                                                    OCCURS  31.
                05  SPA-NAI-RYOLIST-AREA.
+                   07  SPA-NAI-RYOLIST-ADL-STIDX   PIC 9(03).
                    07  SPA-NAI-RYOLIST-OCC         OCCURS  100.
                        09  SPA-NAI-TZAISKBKBN      PIC X(01).
                        09  SPA-NAI-TMEDKBN         PIC 9(01).
@@ -108,6 +110,7 @@
            03  FLG-MEDKBN2                 PIC 9(01).
            03  FLG-ADLKBN                  PIC 9(01).
            03  FLG-TARGET                  PIC 9(01).
+           03  FLG-RYOLIST-ROW             PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -118,6 +121,7 @@
        01  IDX-AREA.
            03  IDX0                        PIC 9(05).
            03  IDX1                        PIC 9(05).
+           03  IDX2                        PIC 9(05).
            03  IDX-LST                     PIC 9(05).
            03  IDX-DAY                     PIC 9(05).
            03  IDX-MUL                     PIC 9(05).
@@ -126,6 +130,7 @@
            03  IDX-SRY                     PIC 9(05).
            03  IDX-RYO                     PIC 9(05).
            03  IDX-MED                     PIC 9(05).
+           03  IDX-ADL                     PIC 9(05).
       *
        01  WRK-AREA.
            03  WRK-IIDCD                   PIC X(04).
@@ -263,33 +268,12 @@
            03  CONST-RYOLIST-MAX       PIC 9(04)   VALUE   100.
       *
            03  CONST-ADLKBN-G.
-               05  CONST-ADLKBN-VAL.
-                   07                      PIC 9(01)   VALUE 1.
-                   07                      PIC 9(04)   VALUE
-                       1001.
-                   07                      PIC X(100)  VALUE
-                       "　ａ　ベッドの可動性".
-                   07                      PIC 9(01)   VALUE 1.
-                   07                      PIC 9(04)   VALUE
-                       1002.
-                   07                      PIC X(100)  VALUE
-                       "　ｂ　移乗".
-                   07                      PIC 9(01)   VALUE 1.
-                   07                      PIC 9(04)   VALUE
-                       1003.
-                   07                      PIC X(100)  VALUE
-                       "　ｃ　食事".
-                   07                      PIC 9(01)   VALUE 1.
-                   07                      PIC 9(04)   VALUE
-                       1004.
-                   07                      PIC X(100)  VALUE
-                       "　ｄ　トイレの使用".
-               05  CONST-ADLKBN-R  REDEFINES   CONST-ADLKBN-VAL.
-                   07  CONST-ADLKBN-OCC    OCCURS  4.
-                       09  CONST-ADLKBN-ALLKBN PIC 9(01).
-                       09  CONST-ADLKBN-ZAINUM PIC 9(04).
-                       09  CONST-ADLKBN-NAME   PIC X(100).
-               05  CONST-ADLKBN-MAX        PIC 9(03)   VALUE   4.
+               05  CONST-ADLTEN-MAX        PIC 9(03).
+               05  CONST-ADLKBN-OCC    OCCURS  4.
+                   07  CONST-ADLKBN-ALLKBN PIC 9(01).
+                   07  CONST-ADLKBN-ZAINUM PIC 9(04).
+                   07  CONST-ADLKBN-NAME   PIC X(100).
+               05  CONST-ADLKBN-MAX        PIC 9(03).
       *
            03  CONST-MEDKBN-G.
                05  CONST-MEDKBN-VAL.
@@ -502,6 +486,8 @@
       *
            COPY    "CPSK5014.INC".
       *
+           COPY    "CPSK5015.INC".
+      *
            COPY    "CPTENSU.INC".
       *
        01  RYOCOM-REC.
@@ -657,6 +643,27 @@
       *
            INITIALIZE                  SPA-I47
       *
+           INITIALIZE                  SYS-5015-REC
+           MOVE    "5015"          TO  SYS-5015-KANRICD
+           MOVE    "*"             TO  SYS-5015-KBNCD
+           MOVE    SPA-I40-SRYYMD (1:6)
+                                   TO  SYS-5015-STYUKYMD
+           MOVE    "01"            TO  SYS-5015-STYUKYMD (7:2)
+           MOVE    SYS-5015-STYUKYMD
+                                   TO  SYS-5015-EDYUKYMD
+           MOVE    SYS-5015-REC    TO  SYSKANRI-REC
+           PERFORM 900-SYSKANRI-KEY10-SEL-SEC
+           MOVE    SYSKANRI-REC    TO  SYS-5015-REC
+      *
+           IF    ( SYS-5015-ADLINPUTKBN    =   SPACE )
+               MOVE    "1"         TO  SPA-I47-ADLINPUTKBN
+           ELSE
+               MOVE    SYS-5015-ADLINPUTKBN
+                                   TO  SPA-I47-ADLINPUTKBN
+           END-IF
+      *
+           PERFORM 3101-EDIT-CONST-ADLKBN-SEC
+      *
            MOVE    SPA-I40-SRYYMD  TO  WRK-SYMD
            PERFORM 800-GETUMATU-SEC
            MOVE    WRK-SYMD        TO  SPA-I47-GETUMATU
@@ -671,6 +678,48 @@
       *
            .
        310-SPASET-EXT.
+           EXIT.
+      *****************************************************************
+      *    ADL区分固定値設定処理
+      *****************************************************************
+       3101-EDIT-CONST-ADLKBN-SEC      SECTION.
+      *
+           INITIALIZE                      CONST-ADLKBN-G
+      *
+           IF    ( SPA-I47-ADLINPUTKBN     =   "1" )
+      *
+      *
+               MOVE    6                   TO  CONST-ADLTEN-MAX
+               MOVE    4                   TO  CONST-ADLKBN-MAX
+      *
+               MOVE    1                   TO  CONST-ADLKBN-ALLKBN (1)
+               MOVE    1001                TO  CONST-ADLKBN-ZAINUM (1)
+               MOVE    "　ａ　ベッドの可動性"
+                                           TO  CONST-ADLKBN-NAME   (1)
+      *
+               MOVE    1                   TO  CONST-ADLKBN-ALLKBN (2)
+               MOVE    1002                TO  CONST-ADLKBN-ZAINUM (2)
+               MOVE    "　ｂ　移乗"        TO  CONST-ADLKBN-NAME   (2)
+      *
+               MOVE    1                   TO  CONST-ADLKBN-ALLKBN (3)
+               MOVE    1003                TO  CONST-ADLKBN-ZAINUM (3)
+               MOVE    "　ｃ　食事"        TO  CONST-ADLKBN-NAME   (3)
+      *
+               MOVE    1                   TO  CONST-ADLKBN-ALLKBN (4)
+               MOVE    1004                TO  CONST-ADLKBN-ZAINUM (4)
+               MOVE    "　ｄ　トイレの使用" TO CONST-ADLKBN-NAME   (4)
+           ELSE
+      *
+               MOVE    24                  TO  CONST-ADLTEN-MAX
+               MOVE    1                   TO  CONST-ADLKBN-MAX
+      *
+               MOVE    1                   TO  CONST-ADLKBN-ALLKBN (1)
+               MOVE    3000                TO  CONST-ADLKBN-ZAINUM (1)
+               MOVE     "ＡＤＬ点数"       TO  CONST-ADLKBN-NAME   (1)
+           END-IF
+      *
+           .
+       3101-EDIT-CONST-ADLKBN-EXT.
            EXIT.
       *****************************************************************
       *    入院期間編集処理
@@ -881,8 +930,12 @@
       *
                COMPUTE IDX-LST =   IDX-LST +   1
       *
+               IF    ( IDX0    =   1 )
+                   MOVE    IDX-LST TO  SPA-NAI-RYOLIST-ADL-STIDX
+               END-IF
+      *
                MOVE    "1"         TO  SPA-NAI-TZAISKBKBN
-                                                       (IDX-LST)
+                                                   (IDX-LST)
       *
                MOVE    CONST-ADLKBN-ALLKBN (IDX0)
                                    TO  SPA-NAI-TALLKBN (IDX-LST)
@@ -892,7 +945,7 @@
                                    TO  SPA-GMN-TNAME   (IDX-LST)
       *
                MOVE    SPA-NAI-TZAINUM (IDX-LST)
-                                       TO  WRK-ZAINUM
+                                   TO  WRK-ZAINUM
                PERFORM 900-RYOCOM-KEY-SEL-SEC
                IF    ( FLG-RYOCOM  =   ZERO )
       *
@@ -1004,6 +1057,8 @@
                PERFORM 4100-SELNUM-CHK-SEC
            WHEN    "ACTIVATE"      ALSO    "GRPINPUT"
                PERFORM 4100-GRPINPUT-CHK-SEC
+           WHEN        ANY         ALSO    "NYULIST"
+               PERFORM 4101-NYULIST-SEL-SEC
            WHEN        ANY         ALSO    "RYOLIST"
                PERFORM 4101-RYOLIST-SEL-SEC
            WHEN    OTHER
@@ -1504,7 +1559,7 @@
             AND  ( SNUM-SYOKBN     =   SPACE ) 
                MOVE    SNUM-OUTNUM TO  WRK-TENSU
                IF    ( WRK-TENSU  >=  ZERO )
-                AND  ( WRK-TENSU  <=  6 )
+                AND  ( WRK-TENSU  <=  CONST-ADLTEN-MAX )
                    CONTINUE
                ELSE
                    MOVE    1       TO  FLG-LIMIT-ERR
@@ -1780,7 +1835,30 @@
        4100-GRPINPUT-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    一括入力チェック処理
+      *    コラムリスト選択処理
+      *****************************************************************
+       4101-NYULIST-SEL-SEC            SECTION.
+      *
+           IF    ( SPA-I47-ADLINPUTKBN     =   "1" )
+               CONTINUE
+           ELSE
+               IF    ( I47-NYULIST-SELECT (3)  =   "T" )
+      *
+                   PERFORM 220-CLEAR-SEC
+      *
+                   MOVE    2           TO  FLG-RYOLIST-ROW
+                   MOVE    1           TO  SPA-NAI-INPUT-MODE
+                   MOVE    SPA-NAI-RYOLIST-ADL-STIDX
+                                       TO  SPA-GMN-RYOLIST-SEL
+                   PERFORM 41011-EDIT-DAYAREA-SEC
+               END-IF
+           END-IF
+      *
+           .
+       4101-NYULIST-SEL-EXT.
+           EXIT.
+      *****************************************************************
+      *    コラムリスト選択処理
       *****************************************************************
        4101-RYOLIST-SEL-SEC            SECTION.
       *
@@ -2036,9 +2114,6 @@
                                            FLG-MEDKBN2
                                            FLG-ADLKBN
       *
-           MOVE    WRK-RYOLIST-ROW     TO  I47-RYOLIST-ROW
-           MOVE    WRK-NYULIST-ROW     TO  I47-NYULIST-ROW
-      *
            MOVE    SPA-GMN-PTNUM       TO  I47-PTNUM
            MOVE    SPA-GMN-KANANAME    TO  I47-KANANAME
            MOVE    SPA-GMN-NAME        TO  I47-NAME
@@ -2089,6 +2164,7 @@
                    PERFORM 5001-GMNHEN-SEC
                WHEN  ( SPA-NAI-TZAISKBKBN (IDX0)  =   "1" )
                 AND  ( FLG-ADLKBN                 =   0 )
+                AND  ( SPA-I47-ADLINPUTKBN        =   "1" )
                    MOVE    1       TO  FLG-ADLKBN
                    MOVE    "ＡＤＬ区分"
                                    TO  I47-TNAME(IDX-LST)
@@ -2101,6 +2177,16 @@
            END-PERFORM
       *
            MOVE    IDX-LST         TO  I47-RYOLIST-COUNT
+      *
+           EVALUATE    FLG-RYOLIST-ROW
+           WHEN    2
+               MOVE    I47-RYOLIST-COUNT  TO  I47-RYOLIST-ROW
+               MOVE    1                  TO  I47-RYOLIST-ROWATTR
+           WHEN    OTHER
+               MOVE    WRK-RYOLIST-ROW    TO  I47-RYOLIST-ROW
+           END-EVALUATE
+      *
+           MOVE    WRK-NYULIST-ROW     TO  I47-NYULIST-ROW
       *
            PERFORM 5001-GMNHEN-NYULIST-SEC
       *
@@ -2183,8 +2269,25 @@
            MOVE    WRK-ZZ              TO  I47-TNL-NUM (2)
            MOVE    "医療区分"          TO  I47-TNL-NAME  (2)
       *
-           MOVE    3                   TO  WRK-ZZ
-           MOVE    WRK-ZZ              TO  I47-TNL-NUM (3)
+           IF    ( SPA-I47-ADLINPUTKBN =   "1" )
+               MOVE    3               TO  WRK-ZZ
+               MOVE    WRK-ZZ          TO  I47-TNL-NUM (3)
+           ELSE
+               MOVE    SPA-NAI-RYOLIST-ADL-STIDX
+                                       TO  WRK-ZZ
+               MOVE    WRK-ZZ          TO  I47-TNL-NUM (3)
+               IF    ( SPA-NAI-INPUT-MODE  =   1 )
+                   IF    ( SPA-GMN-RYOLIST-SEL
+                                       =   SPA-NAI-RYOLIST-ADL-STIDX )
+                       MOVE    "T"     TO  I47-NYULIST-SELECT (3)
+                   END-IF
+               ELSE
+                   IF    ( SPA-NAI-SELNUM-FLG(SPA-NAI-RYOLIST-ADL-STIDX)
+                                           =   "1" )
+                       MOVE    "*"     TO  I47-TNL-MARK (3)
+                   END-IF
+               END-IF
+           END-IF
            MOVE    "ＡＤＬ点数"        TO  I47-TNL-NAME  (3)
       *
            PERFORM 50011-GMNHEN-NYULIST-NYU-SEC
@@ -2203,8 +2306,10 @@
                            +   SPA-GMN-TDAYALL (IDX-LST)
                        PERFORM VARYING IDX-DAY FROM    1   BY  1
                                UNTIL ( IDX-DAY >   31 )
-                           IF    ( SPA-I47-RYOYO-DAY (IDX-DAY) >=  1 )
-                            AND  ( SPA-I47-RYOYO-DAY (IDX-DAY) <=  6 )
+                           IF    ( SPA-I47-RYOYO-DAY (IDX-DAY)
+                                               >=  1 )
+                            AND  ( SPA-I47-RYOYO-DAY (IDX-DAY)
+                                               <=  6 )
                                COMPUTE ADLTEN-DAY (IDX-DAY)
                                    =   ADLTEN-DAY (IDX-DAY)
                                    +   SPA-GMN-TDAY  (IDX-LST IDX-DAY)
@@ -2231,8 +2336,10 @@
       *
                        PERFORM VARYING IDX-DAY FROM    1   BY  1
                                UNTIL ( IDX-DAY >   31 )
-                           IF    ( SPA-I47-RYOYO-DAY (IDX-DAY) >=  1 )
-                            AND  ( SPA-I47-RYOYO-DAY (IDX-DAY) <=  6 )
+                           IF    ( SPA-I47-RYOYO-DAY (IDX-DAY)
+                                           >=  1 )
+                            AND  ( SPA-I47-RYOYO-DAY (IDX-DAY)
+                                           <=  6 )
                             AND  ( SPA-GMN-TDAY   (IDX-LST IDX-DAY)
                                                >   ZERO )
                                MOVE    SPA-GMN-TDAY   (IDX-LST IDX-DAY)
@@ -2296,8 +2403,10 @@
            WHEN    OTHER
                PERFORM VARYING IDX-DAY FROM    1   BY  1
                        UNTIL ( IDX-DAY >   31 )
-                   IF    ( SPA-I47-RYOYO-DAY (IDX-DAY) >=  1 )
-                    AND  ( SPA-I47-RYOYO-DAY (IDX-DAY) <=  6 )
+                   IF    ( SPA-I47-RYOYO-DAY (IDX-DAY)
+                                       >=  1 )
+                    AND  ( SPA-I47-RYOYO-DAY (IDX-DAY)
+                                       <=  6 )
       *
                        EVALUATE    TRUE
                        WHEN  ( MEDKBN-DAY (1 IDX-DAY)   =  1 )

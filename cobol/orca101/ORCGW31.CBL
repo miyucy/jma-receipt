@@ -51,13 +51,24 @@
       *
       *    画面用ＳＰＡ
        01  SPA-W31.
-           03  SPA-GMN-CUR                         PIC 9(03).
+           03  SPA-GMN-CUR                        PIC 9(03).
            03  SPA-GMN-AREA.
                05  SPA-GMN-MEDKBN-G.
                    07  SPA-GMN-MEDKBN-MAX         PIC 9(03).
                    07  SPA-GMN-MEDKBN-OCC         OCCURS  40.
                        09  SPA-GMN-CHK-MEDKBN     PIC X(01).
                        09  SPA-GMN-CHK-LBLMEDKBN  PIC X(60).
+               05  SPA-GMN-ADLINPUTKBN-G.
+                   07  SPA-GMN-ADLINPUTKBN        PIC X(01).
+                   07  SPA-GMN-ADLINPUTKBNFL      PIC X(01).
+                   07  SPA-GMN-ADLINPUTKBNMEI     PIC X(20).
+           03  SPA-GMN-CMB-AREA.
+               05  SPA-GMN-ADLINPUTKBNLST-G.
+                   07  SPA-GMN-ADLINPUTKBN-MAX    PIC 9(03).
+                   07  SPA-GMN-ADLINPUTKBNLST     OCCURS  2.
+                       09  SPA-GMN-ADLINPUTKBNL   PIC X(01).
+                       09  SPA-GMN-ADLINPUTKBNFLL PIC X(01).
+                       09  SPA-GMN-ADLINPUTKBNMEIL PIC X(20).
            03  SPA-NAI-AREA.
                05  SPA-GMN-NAI-MEDKBN-G.
                    07  SPA-NAI-MEDKBN-OCC         OCCURS  40.
@@ -75,6 +86,7 @@
            03  IDX0                                PIC 9(05).
            03  IDX1                                PIC 9(05).
            03  IDX-CHK                             PIC 9(05).
+           03  IDX-CMB                             PIC 9(05).
       *
       *    一時領域
        01  WRK-AREA.
@@ -87,6 +99,9 @@
            03  WRK-WIDGET-MEDKBN-G.
                05  WRK-WIDGET-MEDKBN-LBL           PIC X(10).
                05  WRK-WIDGET-MEDKBN               PIC 9(02).
+           03  WRK-CMB-CD                          PIC X(10).
+           03  WRK-CMB-ITM-G.
+               07  WRK-CMB-ITM                     PIC X(200).
       *
       *
       *    固定値領域
@@ -221,6 +236,9 @@
       *
       *    医療区分表示情報
            COPY  "CPSK5014.INC".
+      *
+      *    ADL点数情報
+           COPY  "CPSK5015.INC".
       *
       *    点数マスタ
            COPY  "CPTENSU.INC".
@@ -403,6 +421,22 @@
       *
            INITIALIZE                  SPA-W31
       *
+           EVALUATE    SPA-W01-KANRICD
+           WHEN    "5014"
+               PERFORM 3100-SPA-5014-SET-SEC
+           WHEN    "5015"
+               PERFORM 3100-SPA-5015-SET-SEC
+           END-EVALUATE
+      *
+           .
+       310-SPASET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    スパ初期編集処理
+      *****************************************************************
+       3100-SPA-5014-SET-SEC                  SECTION.
+      *
            PERFORM VARYING IDX-CHK    FROM    1   BY  1
                    UNTIL ( IDX-CHK    >   CONST-MEDKBN-MAX )
       *
@@ -431,9 +465,49 @@
            MOVE    1               TO  SPA-GMN-CUR
       *
            .
-       310-SPASET-EXT.
+       3100-SPA-5014-SET-EXT.
            EXIT.
+      *****************************************************************
+      *    スパ初期編集処理
+      *****************************************************************
+       3100-SPA-5015-SET-SEC                  SECTION.
       *
+      *    ADL入力方法区分編集処理
+           PERFORM 3101-ADLINPUTKBNLST-SET-SEC
+      *
+           INITIALIZE                      SYSKANRI-REC
+           MOVE    SPA-HOSPNUM         TO  SYS-HOSPNUM
+           MOVE    "5015"              TO  SYS-KANRICD
+           MOVE    "*"                 TO  SYS-KBNCD
+           MOVE    SPA-W01-STYUKYMD    TO  SYS-STYUKYMD
+                                           SYS-EDYUKYMD
+           PERFORM 900-SYSKANRI-KEY10-SEL-SEC
+           IF    ( FLG-SYSKANRI        =   ZERO )
+               MOVE    SYSKANRI-REC    TO  SYS-5015-REC
+           ELSE
+               INITIALIZE                  SYSKANRI-REC
+               MOVE    SPA-HOSPNUM     TO  SYS-HOSPNUM
+               MOVE    "5015"          TO  SYS-KANRICD
+               MOVE    "*"             TO  SYS-KBNCD
+               MOVE    SPA-W01-STYUKYMD TO SYS-STYUKYMD
+               PERFORM 900-SYSKANRI-KEY16-SEL-SEC
+               MOVE    SYSKANRI-REC    TO  SYS-5015-REC
+           END-IF
+      *
+           MOVE    SYS-5015-ADLINPUTKBN TO WRK-CMB-CD
+           PERFORM 4200-ADLINPUTKBNLST-CHK-SEC
+           IF    ( WRK-CMB-ITM         =   SPACE )
+               MOVE    SPA-GMN-ADLINPUTKBNLST (1)
+                                       TO  SPA-GMN-ADLINPUTKBN-G
+           ELSE
+               MOVE    WRK-CMB-ITM     TO  SPA-GMN-ADLINPUTKBN-G
+           END-IF
+      *
+           MOVE    101                 TO  SPA-GMN-CUR
+      *
+           .
+       3100-SPA-5015-SET-EXT.
+           EXIT.
       *****************************************************************
       *    医療区分表示情報検索処理
       *****************************************************************
@@ -455,6 +529,24 @@
        3101-SYS5014-SEL-EXT.
            EXIT.
       *****************************************************************
+      *    ADL入力方法区分編集処理
+      *****************************************************************
+       3101-ADLINPUTKBNLST-SET-SEC     SECTION.
+      *
+           INITIALIZE                  SPA-GMN-ADLINPUTKBNLST-G
+      *
+           MOVE    2               TO  SPA-GMN-ADLINPUTKBN-MAX
+      *
+           MOVE    "1"             TO  SPA-GMN-ADLINPUTKBNL    (1)
+           MOVE    "区分別に入力"  TO  SPA-GMN-ADLINPUTKBNMEIL (1)
+           MOVE    "2"             TO  SPA-GMN-ADLINPUTKBNL    (2)
+           MOVE    "合計点数を直接入力"
+                                   TO  SPA-GMN-ADLINPUTKBNMEIL (2)
+      *
+           .
+       3101-ADLINPUTKBNLST-SET-EXT.
+           EXIT.
+      *****************************************************************
       *    確認画面（ＣＩＤ１）ＯＫ処理
       *****************************************************************
        330-WID1-SET-SEC            SECTION.
@@ -463,6 +555,8 @@
                EVALUATE    SPA-WIDCD
                WHEN "3001"
                    PERFORM 4801-TOUROKU-SEC
+               WHEN "3002"
+                   PERFORM 4301-DEL-SEC
                END-EVALUATE
            END-IF
       *
@@ -485,7 +579,14 @@
                PERFORM  210-BACK
       *    全選択
            WHEN    "CLICKED"       ALSO    "B02"
-               PERFORM 420-CLEAR-SEC
+               IF    ( SPA-W01-KANRICD     =   "5014" )
+                   PERFORM 420-CLEAR-SEC
+               END-IF
+      *    削除
+           WHEN    "CLICKED"       ALSO    "B03"
+               IF    ( SPA-W01-KANRICD     =   "5015" )
+                   PERFORM 430-DEL-SEC
+               END-IF
       *    医療区分
            WHEN    "CLICKED"       ALSO    "CHK_MEDKBN01"
                                      THRU  "CHK_MEDKBN40"
@@ -531,7 +632,7 @@
       *****************************************************************
       *    入力チェック処理
       *****************************************************************
-       410-INPUT-CHK-SEC          SECTION.
+       410-INPUT-CHK-SEC           SECTION.
       *
       *    画面をＳＰＡセット
            PERFORM 4101-GMN-SPA-SET-SEC
@@ -553,6 +654,7 @@
       *****************************************************************
        4101-GMN-SPA-SET-SEC            SECTION.
       *
+           MOVE    W31-ADLINPUTKBN     TO  SPA-GMN-ADLINPUTKBN-G
       *
            .
       *
@@ -564,6 +666,14 @@
       *****************************************************************
        4102-KIHON-CHK-SEC              SECTION.
       *
+           EVALUATE    SPA-W01-KANRICD
+           WHEN    "5014"
+               CONTINUE
+           WHEN    "5015"
+               IF    ( SPA-ERRCD       =   SPACE )
+                   PERFORM 4101-ADLINPUTKBN-CHK-SEC
+               END-IF
+           END-EVALUATE
       *
            .
       *
@@ -585,6 +695,43 @@
       *
            .
        4101-MEDKBN-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    ADL入力方法区分チェック処理
+      *****************************************************************
+       4101-ADLINPUTKBN-CHK-SEC            SECTION.
+      *
+           MOVE    SPA-GMN-ADLINPUTKBN TO WRK-CMB-CD
+           PERFORM 4200-ADLINPUTKBNLST-CHK-SEC
+           IF    ( WRK-CMB-ITM         =   SPACE )
+               MOVE    SPA-GMN-ADLINPUTKBNLST (1)
+                                       TO  SPA-GMN-ADLINPUTKBN-G
+           ELSE
+               MOVE    WRK-CMB-ITM     TO  SPA-GMN-ADLINPUTKBN-G
+           END-IF
+      *
+           .
+       4101-ADLINPUTKBN-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    ADL区分入力方法コンボボックスチェック処理
+      *****************************************************************
+       4200-ADLINPUTKBNLST-CHK-SEC         SECTION.
+      *
+           INITIALIZE                  WRK-CMB-ITM-G
+           PERFORM VARYING IDX-CMB FROM    1   BY  1
+                   UNTIL ( IDX-CMB         >   SPA-GMN-ADLINPUTKBN-MAX )
+                    OR   ( WRK-CMB-ITM NOT =   SPACE )
+      *
+               IF    ( SPA-GMN-ADLINPUTKBNL (IDX-CMB)  =   WRK-CMB-CD )
+                   MOVE    SPA-GMN-ADLINPUTKBNLST  (IDX-CMB)
+                                       TO  WRK-CMB-ITM
+               END-IF
+      *
+           END-PERFORM
+      *
+           .
+       4200-ADLINPUTKBNLST-CHK-EXT.
            EXIT.
       *****************************************************************
       *    戻る　処理
@@ -623,6 +770,45 @@
        420-CLEAR-EXT.
            EXIT.
       *****************************************************************
+      *    削除処理
+      *****************************************************************
+       430-DEL-SEC                     SECTION.
+      *
+           MOVE    "3002"          TO  SPA-WIDCD
+      *
+           .
+       430-DEL-EXT.
+           EXIT.
+      *****************************************************************
+      *    削除処理
+      *****************************************************************
+       4301-DEL-SEC                    SECTION.
+      *
+           EVALUATE    SPA-W01-KANRICD
+           WHEN    "5015"
+               INITIALIZE                      SYSKANRI-REC
+               MOVE    SPA-HOSPNUM         TO  SYS-HOSPNUM
+               MOVE    SPA-W01-KANRICD     TO  SYS-KANRICD
+               MOVE    "*"                 TO  SYS-KBNCD
+               MOVE    SPA-W01-SEL-STYUKYMD TO SYS-STYUKYMD
+               MOVE    SPA-W01-SEL-EDYUKYMD TO SYS-EDYUKYMD
+               MOVE    SYSKANRI-REC        TO  MCPDATA-REC
+      *
+               MOVE    "tbl_syskanri"      TO  MCP-TABLE
+               MOVE    "key"               TO  MCP-PATHNAME
+               PERFORM 910-DBDELETE-SEC
+               IF    ( MCP-RC          =   ZERO )
+                   MOVE    "JOIN"          TO  MCP-PUTTYPE
+                   PERFORM 210-BACK
+               ELSE
+                   MOVE    "4005"          TO  SPA-ERRCD
+              END-IF
+           END-EVALUATE
+      *
+           .
+       4301-DEL-EXT.
+           EXIT.
+      *****************************************************************
       *    登録処理
       *****************************************************************
        480-TOUROKU-SEC                 SECTION.
@@ -650,6 +836,26 @@
       *
            PERFORM 800-MCNDATE-SEC
       *
+           EVALUATE    SPA-W01-KANRICD
+           WHEN    "5014"
+               PERFORM  4801-SYS5014-TOUROKU-SEC
+           WHEN    "5015"
+               PERFORM  4801-SYS5015-TOUROKU-SEC
+           END-EVALUATE
+      *
+           IF    ( SPA-ERRCD           =   SPACE )
+               MOVE   "JOIN"           TO  MCP-PUTTYPE
+               PERFORM 210-BACK
+           END-IF
+      *
+           .
+       4801-TOUROKU-EXT.
+           EXIT.
+      *****************************************************************
+      *    登録処理
+      *****************************************************************
+       4801-SYS5014-TOUROKU-SEC        SECTION.
+      *
            INITIALIZE                      SYS-5014-REC
            MOVE    "5014"              TO  SYS-5014-KANRICD
            MOVE    "*"                 TO  SYS-5014-KBNCD
@@ -662,6 +868,8 @@
                MOVE    SMCNDATE-HMS    TO  SYS-5014-UPHMS
                MOVE    SPA-HOSPNUM         TO  SYS-5014-HOSPNUM
                MOVE    SYS-5014-REC    TO  MCPDATA-REC
+               MOVE    "tbl_syskanri"  TO  MCP-TABLE
+               MOVE    "key"           TO  MCP-PATHNAME
                PERFORM 910-DBUPDATE-SEC
                IF    ( MCP-RC      NOT =   ZERO )
                    MOVE    "4003"      TO  SPA-ERRCD
@@ -676,6 +884,8 @@
                MOVE    SMCNDATE-HMS    TO  SYS-5014-UPHMS
                MOVE    SPA-HOSPNUM     TO  SYS-5014-HOSPNUM
                MOVE    SYS-5014-REC    TO  MCPDATA-REC
+               MOVE    "tbl_syskanri"  TO  MCP-TABLE
+               MOVE    "key"           TO  MCP-PATHNAME
                PERFORM 910-DBINSERT-SEC
                IF    ( MCP-RC      NOT =   ZERO )
                    MOVE    "4004"      TO  SPA-ERRCD
@@ -699,6 +909,8 @@
                    MOVE    SMCNDATE-HMS    TO  SYS-5014-UPHMS
                    MOVE    SPA-HOSPNUM     TO  SYS-5014-HOSPNUM
                    MOVE    SYS-5014-REC    TO  MCPDATA-REC
+                   MOVE    "tbl_syskanri"  TO  MCP-TABLE
+                   MOVE    "key"           TO  MCP-PATHNAME
                    PERFORM 910-DBUPDATE-SEC
                    IF    ( MCP-RC      NOT =   ZERO )
                        MOVE    "4001"      TO  SPA-ERRCD
@@ -732,6 +944,8 @@
       *
                    MOVE    SPA-HOSPNUM         TO  SYS-5014-HOSPNUM
                    MOVE    SYS-5014-REC    TO  MCPDATA-REC
+                   MOVE    "tbl_syskanri"  TO  MCP-TABLE
+                   MOVE    "key"           TO  MCP-PATHNAME
                    PERFORM 910-DBINSERT-SEC
                    IF    ( MCP-RC      NOT =   ZERO )
                        MOVE    "4002"      TO  SPA-ERRCD
@@ -741,13 +955,69 @@
       *
            END-PERFORM
       *
-           IF    ( SPA-ERRCD           =   SPACE )
-               MOVE   "JOIN"           TO  MCP-PUTTYPE
-               PERFORM 210-BACK
+           .
+       4801-SYS5014-TOUROKU-EXT.
+           EXIT.
+      *****************************************************************
+      *    登録処理
+      *****************************************************************
+       4801-SYS5015-TOUROKU-SEC        SECTION.
+      *
+           INITIALIZE                      SYS-5015-REC
+           MOVE    "5015"              TO  SYS-5015-KANRICD
+           MOVE    "*"                 TO  SYS-5015-KBNCD
+           MOVE    SPA-W01-STYUKYMD    TO  SYS-5015-STYUKYMD
+                                           SYS-5015-EDYUKYMD
+           MOVE    SYS-5015-REC        TO  SYSKANRI-REC
+           PERFORM 900-SYSKANRI-KEY10-SEL-SEC
+           IF    ( FLG-SYSKANRI    =   ZERO )
+               MOVE    SYSKANRI-REC    TO  SYS-5015-REC
+           ELSE
+               INITIALIZE                  SYS-5015-REC
+           END-IF
+      *
+           MOVE    SPA-GMN-ADLINPUTKBN
+                                       TO  SYS-5015-ADLINPUTKBN
+      *
+           IF    ( FLG-SYSKANRI    =   ZERO )
+      *
+               MOVE    SYS-5015-REC        TO  SYSKANRI-REC
+      *
+               MOVE    SPA-W01-STYUKYMD    TO  SYS-STYUKYMD
+               MOVE    SPA-W01-EDYUKYMD    TO  SYS-EDYUKYMD
+               MOVE    SYS-5015-KEY        TO  SYSUPD-KEY
+      *
+               MOVE    SMCNDATE-YMD        TO  SYS-5015-UPYMD
+               MOVE    SMCNDATE-HMS        TO  SYS-5015-UPHMS
+               MOVE    SYSKANRI-REC        TO  MCPDATA-REC
+               MOVE    "tbl_syskanri"      TO  MCP-TABLE
+               MOVE    "upd1"              TO  MCP-PATHNAME
+               PERFORM 910-DBUPDATE-SEC
+               IF    ( MCP-RC      NOT =   ZERO )
+                   MOVE    "4006"      TO  SPA-ERRCD
+               END-IF
+           ELSE
+               MOVE    SPA-HOSPNUM     TO  SYS-5015-HOSPNUM
+               MOVE    "5015"          TO  SYS-5015-KANRICD
+               MOVE    "*"             TO  SYS-5015-KBNCD
+               MOVE    SPA-W01-STYUKYMD
+                                       TO  SYS-5015-STYUKYMD
+               MOVE    SPA-W01-EDYUKYMD
+                                       TO  SYS-5015-EDYUKYMD
+               MOVE    SMCNDATE-YMD    TO  SYS-5015-CREYMD
+                                           SYS-5015-UPYMD
+               MOVE    SMCNDATE-HMS    TO  SYS-5015-UPHMS
+               MOVE    SYS-5015-REC    TO  MCPDATA-REC
+               MOVE    "tbl_syskanri"  TO  MCP-TABLE
+               MOVE    "key"           TO  MCP-PATHNAME
+               PERFORM 910-DBINSERT-SEC
+               IF    ( MCP-RC      NOT =   ZERO )
+                   MOVE    "4007"      TO  SPA-ERRCD
+               END-IF
            END-IF
       *
            .
-       4801-TOUROKU-EXT.
+       4801-SYS5015-TOUROKU-EXT.
            EXIT.
       *****************************************************************
       *    共通関連チェック
@@ -809,6 +1079,27 @@
       *
            END-PERFORM
       *
+           MOVE    SPA-GMN-ADLINPUTKBN-G
+                                           TO  W31-ADLINPUTKBN
+           MOVE    SPA-GMN-ADLINPUTKBN-MAX
+                                           TO  W31-ADLINPUTKBN-CNT
+           PERFORM VARYING IDX0    FROM    1   BY  1
+                   UNTIL ( IDX0    >   SPA-GMN-ADLINPUTKBN-MAX )
+      *
+               MOVE    SPA-GMN-ADLINPUTKBNLST (IDX0)
+                                       TO  W31-ADLINPUTKBN-ITM (IDX0)
+      *
+           END-PERFORM
+      *
+           EVALUATE    SPA-W01-KANRICD
+           WHEN    "5014"
+               MOVE    "全選択"        TO  W31-B02-LABEL
+               MOVE    SPACE           TO  W31-B03-LABEL
+           WHEN    "5015"
+               MOVE    SPACE           TO  W31-B02-LABEL
+               MOVE    "削除"          TO  W31-B03-LABEL
+           END-EVALUATE
+      *
       *    項目状態編集
            PERFORM 500-GMNHEN-STATE-EDIT-SEC
       *
@@ -822,6 +1113,15 @@
       *    項目状態編集処理
       *****************************************************************
        500-GMNHEN-STATE-EDIT-SEC       SECTION.
+      *
+           MOVE    WIDGET-NORMAL   TO  W31-B03-STATE
+      *
+           IF    ( SPA-W01-KANRICD =   "5015" )
+               IF    ( SPA-W01-STYUKYMD    =   "00000000" )
+                OR   ( SPA-W01-SELNUM      =   ZERO )
+                   MOVE    WIDGET-INSENSITIVE  TO  W31-B03-STATE
+               END-IF
+           END-IF
       *
            PERFORM VARYING IDX-CHK    FROM    1   BY  1
                    UNTIL ( IDX-CHK    >   CONST-GMN-MEDKBN-MAX )
@@ -855,8 +1155,21 @@
                MOVE    "CHK_MEDKBN"        TO  WRK-WIDGET-MEDKBN-LBL
                MOVE    SPA-GMN-CUR         TO  WRK-WIDGET-MEDKBN
                MOVE    WRK-WIDGET-MEDKBN-G TO  MCP-WIDGET
+           WHEN    101
+               MOVE    "ADLINPUTKBN"       TO  MCP-WIDGET
            WHEN    212
                MOVE    "B12"               TO  MCP-WIDGET
+           END-EVALUATE
+      *
+           MOVE        WIDGET-INSENSITIVE  TO  W31-NB01-STATE
+                                               W31-NB02-STATE
+           EVALUATE    SPA-W01-KANRICD
+           WHEN    "5014"
+               MOVE    ZERO                TO  W31-PAGENO
+               MOVE    WIDGET-NORMAL       TO  W31-NB01-STATE
+           WHEN    "5015"
+               MOVE    1                   TO  W31-PAGENO
+               MOVE    WIDGET-NORMAL       TO  W31-NB02-STATE
            END-EVALUATE
       *
            .
@@ -873,6 +1186,8 @@
                MOVE    WRK-MCP-WIDGET  TO  WRK-WIDGET-MEDKBN-G
                COMPUTE SPA-GMN-CUR =   WRK-WIDGET-MEDKBN   +   1
            WHEN    "CHK_MEDKBN40"
+               MOVE    212         TO  SPA-GMN-CUR
+           WHEN    "ADLINPUTKBN"
                MOVE    212         TO  SPA-GMN-CUR
            END-EVALUATE
       *
@@ -946,6 +1261,9 @@
            WHEN    "3001"
                MOVE    "登録します。よろしいですか"
                                         TO  WRK-WIDMSG
+           WHEN    "3002"
+               MOVE    "削除します。よろしいですか"
+                                        TO  WRK-WIDMSG
            END-EVALUATE
       *
       *
@@ -1005,6 +1323,32 @@
            .
        900-SYSKANRI-KEY10-SEL-EXT.
             EXIT.
+      *****************************************************************
+      *    システム管理検索処理(KEY16)
+      *****************************************************************
+       900-SYSKANRI-KEY16-SEL-SEC       SECTION.
+      *
+           MOVE    ZERO                TO  FLG-SYSKANRI
+      *
+           MOVE    SPA-HOSPNUM         TO  SYS-HOSPNUM
+           MOVE    SYSKANRI-REC        TO  MCPDATA-REC
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key16"             TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF    ( MCP-RC              =   ZERO )
+               MOVE    MCPDATA-REC     TO  SYSKANRI-REC
+           ELSE
+               INITIALIZE                  SYSKANRI-REC
+               MOVE    1               TO  FLG-SYSKANRI
+           END-IF
+      *
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key16"             TO  MCP-PATHNAME
+           PERFORM 910-DBCLOSECURSOR-SEC
+      *
+           .
+       900-SYSKANRI-KEY16-SEL-EXT.
+           EXIT.
       *****************************************************************
       *    点数マスタ検索処理(KEY)
       *****************************************************************
