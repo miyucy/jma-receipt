@@ -559,6 +559,8 @@
            COPY    "CPRLF001.INC"    REPLACING  //LF01-//
                                      BY         //HZN-LF01-//.
       *
+      *    Á´³Ñ¥Á¥§¥Ã¥¯
+           COPY    "CPORCXKANACONV.INC".
       *
       *    £Õ£É£Ä¼èÆÀÍÑ¥¨¥ê¥¢
        01 UIDIO-AREA.
@@ -2115,7 +2117,8 @@
            MOVE    WRK-MEMO            TO  WRK-MEMO-OK
            IF      WRK-MEMO        NOT =   SPACE
       *        ²þ¹Ô¤ò"@"¤È¤¹¤ë
-               INSPECT     WRK-MEMO    REPLACING  ALL  X"0A"  BY  " "
+               INSPECT     WRK-MEMO    REPLACING  ALL  X"0A"
+                                                  BY   "=br="
                UNSTRING    WRK-MEMO    DELIMITED BY "¡ö¡ö¡ö¡ö¡ö"
                      INTO  WRK-MEMO-01
                            WRK-MEMO-02
@@ -2127,33 +2130,41 @@
                    MOVE    WRK-MEMO-01     TO  WRK-MEMO-OK
                END-IF
                IF      WRK-MEMO-02     NOT =   SPACE
-                   IF      WRK-MEMO-02(1:1)    =   SPACE
-                       MOVE    WRK-MEMO-02(2:) TO  WRK-MEMO-OK
+                   IF      WRK-MEMO-02(1:4)    =   "=br="
+                       MOVE    WRK-MEMO-02(5:) TO  WRK-MEMO-OK
                    ELSE
                        MOVE    WRK-MEMO-02     TO  WRK-MEMO-OK
                    END-IF
                END-IF
                IF      WRK-MEMO-03     NOT =   SPACE
-                   IF      WRK-MEMO-03(1:1)    =   SPACE
-                       MOVE    WRK-MEMO-03(2:) TO  WRK-MEMO-OK
+                   IF      WRK-MEMO-03(1:4)    =   "=br="
+                       MOVE    WRK-MEMO-03(5:) TO  WRK-MEMO-OK
                    ELSE
                        MOVE    WRK-MEMO-03     TO  WRK-MEMO-OK
                    END-IF
                END-IF
                IF      WRK-MEMO-04     NOT =   SPACE
-                   IF      WRK-MEMO-04(1:1)    =   SPACE
-                       MOVE    WRK-MEMO-04(2:) TO  WRK-MEMO-OK
+                   IF      WRK-MEMO-04(1:4)    =   "=br="
+                       MOVE    WRK-MEMO-04(5:) TO  WRK-MEMO-OK
                    ELSE
                        MOVE    WRK-MEMO-04     TO  WRK-MEMO-OK
                    END-IF
                END-IF
                IF      WRK-MEMO-05     NOT =   SPACE
-                   IF      WRK-MEMO-05(1:1)    =   SPACE
-                       MOVE    WRK-MEMO-05(2:) TO  WRK-MEMO-OK
+                   IF      WRK-MEMO-05(1:4)    =   "=br="
+                       MOVE    WRK-MEMO-05(5:) TO  WRK-MEMO-OK
                    ELSE
                        MOVE    WRK-MEMO-05     TO  WRK-MEMO-OK
                    END-IF
                END-IF
+               INITIALIZE                  ORCXKANACONVAREA
+               MOVE    1000                TO  KANACONV-LEN
+               MOVE    1000                TO  KANACONV-STLEN
+               MOVE    0                   TO  KANACONV-CONV-FLAG
+               MOVE    0                   TO  KANACONV-CHAR-TYPE
+               MOVE    WRK-MEMO-OK         TO  KANACONV-INDATA
+               CALL    "kanaconv"          USING ORCXKANACONVAREA
+               MOVE    KANACONV-OUTDATA    TO  WRK-MEMO-OK
            END-IF
       *    ¼õÉÕ¥á¥â
            MOVE    WRK-MEMO-OK         TO  WRK-LF01-UKE-MEMO
