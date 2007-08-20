@@ -4720,6 +4720,7 @@
                              ((SPA-COM-INPUTCD(IDX) =   SPACE ) AND
                               (SPA-GMN-INPUTCD(IDX) =   SPACE ))
       *        ¿Ç»¡ÎÁ¸¡º÷
+               MOVE    ZERO                TO  FLG-ARI
                IF      FLG-SINSATU-ARI     =   ZERO
                    SET     TBL-IDX             TO  1
                    SEARCH  TBL-SINSATU-OCC     VARYING   TBL-IDX
@@ -4735,7 +4736,7 @@
                    END-SEARCH
                END-IF
       *
-               IF      FLG-SINSATU-ARI     =   ZERO
+               IF      FLG-ARI             =   ZERO
       *            Ï«ºÒ¥³¡¼¥É¥Á¥§¥Ã¥¯¡Ê½é¿Ç¡Ë
                    SET     TBL-RSI              TO  1
                    SEARCH  TBL-RSI-SINSATU-OCC  VARYING   TBL-RSI
