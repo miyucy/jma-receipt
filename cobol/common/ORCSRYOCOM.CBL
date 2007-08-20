@@ -28,6 +28,7 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *  03.05.00    NACL-小豆沢  07/05/29  グループ診療対応
+      *  03.05.00    NACL-小豆沢  07/08/20  ＡＤＬ点数の直接入力対応
       *****************************************************************
       *
       *
@@ -50,6 +51,7 @@
            03  FLG-RYOUYOCOM               PIC 9(01).
            03  FLG-RYOYO-NYUIN             PIC 9(01).
            03  FLG-SYSKANRI                PIC 9(01).
+           03  FLG-1015-ADLINPUTKBN        PIC 9(01).
       *    添字領域
        01  IDX-AREA.
            03  IDX                         PIC 9(04).
@@ -156,6 +158,7 @@
            COPY    "CPSYSKANRI.INC".
       *
            COPY    "CPSK5000.INC".
+           COPY    "CPSK5015.INC".
       *
       *    入院診療会計マスタ−
        01  NYUINACCT-REC.
@@ -342,7 +345,7 @@
                MOVE    "key10"         TO  MCP-PATHNAME
                PERFORM  910-SYSKANRI-READ-SEC
                IF    FLG-SYSKANRI   =    ZERO
-                   IF   SYS-5000-ADLINPUTKBN   =   "0"
+                   IF   SYS-5000-ADLINPUTKBN   =   "0"  OR  SPACE
                        MOVE     5      TO  LNK-RYOCOM-RC
                    END-IF
                END-IF
@@ -402,6 +405,42 @@
       *    主取得
       *****************************************************************
        200-MAIN-SEC            SECTION.
+      *
+      *    システム管理（５０１５）からＡＤＬ点数の入力方法を取得
+           MOVE    ZERO                TO  FLG-SYSKANRI
+           INITIALIZE                      SYSKANRI-REC
+           MOVE    "5015"              TO  SYS-KANRICD
+           MOVE    "*"                 TO  SYS-KBNCD
+           MOVE    LNK-RYOCOM-SANTEIYM TO  SYS-STYUKYMD(1:6)
+           MOVE    "01"                TO  SYS-STYUKYMD(7:2)
+           MOVE    SYS-STYUKYMD        TO  SYS-EDYUKYMD
+           MOVE    LNK-RYOCOM-HOSPNUM  TO  SYS-HOSPNUM
+           MOVE    SYSKANRI-REC        TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key10"             TO  MCP-PATHNAME
+           CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+                                  SPA-AREA
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_syskanri"  TO  MCP-TABLE
+               MOVE    "key10"         TO  MCP-PATHNAME
+               PERFORM  910-SYSKANRI-READ-SEC
+               IF    FLG-SYSKANRI   =    ZERO
+                   IF   SYS-5015-ADLINPUTKBN   =   "1"  OR  SPACE
+                       MOVE     1      TO  FLG-1015-ADLINPUTKBN
+                   ELSE
+                       MOVE     2      TO  FLG-1015-ADLINPUTKBN
+                   END-IF
+               ELSE
+                   MOVE     1      TO  FLG-1015-ADLINPUTKBN
+               END-IF
+           END-IF
+      *    システム管理クローズ
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key10"             TO  MCP-PATHNAME
+           PERFORM   910-DB-CLOSE-SEC
+      *
       *
       *    療養レセプトコメントマスタの情報取得
            INITIALIZE                      RYOUYOCOM-REC
@@ -488,7 +527,8 @@
        210-RYOCOM-REC-SEC            SECTION.
       *
       *    ＡＤＬ点数集計
-           IF     (RYOCOM-ZAINUM       >=  1000)     AND
+           IF     FLG-1015-ADLINPUTKBN    =    1
+             IF   (RYOCOM-ZAINUM       >=  1000)     AND
                   (RYOCOM-ZAINUM       <=  1999)
                IF   RYOCOM-MONTH       NOT =     ZERO
                    PERFORM   VARYING  IDX   FROM  1  BY  1
@@ -508,6 +548,29 @@
                        END-IF
                    END-PERFORM
                END-IF
+             END-IF
+           ELSE
+             IF   (RYOCOM-ZAINUM       >=  3000)     AND
+                  (RYOCOM-ZAINUM       <=  3999)
+               IF   RYOCOM-MONTH       NOT =     ZERO
+                   PERFORM   VARYING  IDX   FROM  1  BY  1
+                     UNTIL   IDX      >   31
+                       IF   LNK-RYOCOM-NYUINKBN(IDX)  =  "1"
+                           ADD   RYOCOM-MONTH  TO
+                                        LNK-RYOCOM-ADL-TEN(IDX)
+                       END-IF
+                   END-PERFORM
+               ELSE
+                   PERFORM   VARYING  IDX   FROM  1  BY  1
+                     UNTIL   IDX      >   31
+                       IF   (LNK-RYOCOM-NYUINKBN(IDX)  =  "1")  AND
+                            (RYOCOM-DAY(IDX)      NOT =   ZERO)
+                           ADD  RYOCOM-DAY(IDX)   TO
+                                        LNK-RYOCOM-ADL-TEN(IDX)
+                       END-IF
+                   END-PERFORM
+               END-IF
+             END-IF
            END-IF
       *
       *    医療区分集計
@@ -595,9 +658,11 @@
                                        SPA-AREA
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC         TO  SYS-5000-REC
+                                               SYS-5015-REC
                MOVE    ZERO                TO  FLG-SYSKANRI
            ELSE
                INITIALIZE                      SYS-5000-REC
+                                               SYS-5015-REC
                MOVE    1                   TO  FLG-SYSKANRI
            END-IF
       *
