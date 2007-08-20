@@ -539,7 +539,7 @@
                IF      FLG-OK              =   1
       *            コメント追加
                    MOVE    SPACE               TO  WRK-COMMENT
-                   STRING  SPA-GMN-MEMO02      DELIMITED   BY  SPACE
+                   STRING  SPA-GMN-MEMO02      DELIMITED   BY  "  "
                            EXAMPLE-COMMENT     DELIMITED   BY  SPACE
                            INTO                WRK-COMMENT
                    END-STRING

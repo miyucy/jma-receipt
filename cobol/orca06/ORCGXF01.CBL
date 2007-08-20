@@ -969,12 +969,14 @@
       *****************************************************************
        260-MEMO1-TOROKU-SEC            SECTION.
       *
+           MOVE    1                   TO  SPA-GMN-CUR
       *    入力チェック処理
            PERFORM 4901-INPUT-CHK-SEC
       *    診療科チェック
-           MOVE    1                   TO  FLG-TOROKU
-           PERFORM 400-SRYKA01-SEC
-           MOVE    1                   TO  SPA-GMN-CUR
+           IF      SPA-ERRCD           =   SPACE
+               MOVE    1                   TO  FLG-TOROKU
+               PERFORM 400-SRYKA01-SEC
+           END-IF
       *
            IF      SPA-ERRCD           =   SPACE
                IF      SPA-NAI-SYSYMD  NOT =   SPA-SYSYMD
@@ -984,6 +986,7 @@
            IF      SPA-ERRCD           =   SPACE
                IF      SPA-GMN-MEMO01      =   SPACE
                    MOVE    "0010"              TO  SPA-ERRCD
+                   MOVE    2                   TO  SPA-GMN-CUR
                END-IF
            END-IF
            IF      SPA-ERRCD           =   SPACE
@@ -1036,15 +1039,17 @@
        260-MEMO2-DEL-EXT.
            EXIT.
       *****************************************************************
-      *    メモ１確定処理
+      *    メモ２確定処理
       *****************************************************************
        270-MEMO2-TOROKU-SEC             SECTION.
       *
+           MOVE    3                   TO  SPA-GMN-CUR
       *    入力チェック処理
            PERFORM 4901-INPUT-CHK-SEC
-           MOVE    1                   TO  FLG-TOROKU
-           PERFORM 400-SRYKA02-SEC
-           MOVE    3                   TO  SPA-GMN-CUR
+           IF      SPA-ERRCD           =   SPACE
+               MOVE    1                   TO  FLG-TOROKU
+               PERFORM 400-SRYKA02-SEC
+           END-IF
       *
            IF      SPA-NAI-SYSYMD  NOT =   SPA-SYSYMD
                MOVE    "0011"              TO  SPA-ERRCD
@@ -1052,6 +1057,7 @@
            IF      SPA-ERRCD           =   SPACE
                IF      SPA-GMN-MEMO02      =   SPACE
                    MOVE    "0010"              TO  SPA-ERRCD
+                   MOVE    4                   TO  SPA-GMN-CUR
                END-IF
            END-IF
       *
@@ -1068,9 +1074,12 @@
       *****************************************************************
        290-MEMO01-SEC                    SECTION.
       *
+           MOVE    1                   TO  SPA-GMN-CUR
       *    入力チェック処理
            PERFORM 4901-INPUT-CHK-SEC
-           MOVE    1                   TO  SPA-GMN-CUR
+           IF      SPA-ERRCD           =   SPACE
+               MOVE    1                   TO  SPA-GMN-CUR
+           END-IF
       *
            .
        290-MEMO01-EXT.
@@ -1080,9 +1089,12 @@
       *****************************************************************
        2100-MEMO02-SEC                    SECTION.
       *
+           MOVE    3                   TO  SPA-GMN-CUR
       *    入力チェック処理
            PERFORM 4901-INPUT-CHK-SEC
-           MOVE    3                   TO  SPA-GMN-CUR
+           IF      SPA-ERRCD           =   SPACE
+               MOVE    3                   TO  SPA-GMN-CUR
+           END-IF
       *
            .
        2100-MEMO02-EXT.
@@ -1493,6 +1505,18 @@
            ELSE
                MOVE    SPA-GMN-MEMO02      TO  WRK-MEMO
                PERFORM 800-MEMO-CHK-SEC
+      *        ＣＬＡＩＭ送信不可文字チェック
+               MOVE    ZERO                TO  CTR-1
+               MOVE    ZERO                TO  CTR-2
+               INSPECT WRK-MEMO    TALLYING
+                       CTR-1       FOR   ALL  "<" 
+                       CTR-2       FOR   ALL  ">" 
+               IF     (CTR-1           >   ZERO )  OR
+                      (CTR-2           >   ZERO )
+                   MOVE    "0015"          TO  SPA-ERRCD
+                   MOVE    4               TO  SPA-GMN-CUR
+               END-IF
+      *
                MOVE    WRK-MEMO            TO  SPA-GMN-MEMO02
            END-IF
       *
@@ -2125,6 +2149,12 @@
                    END-STRING
                WHEN    "0013"
                    STRING  "削除するメモがありません。"
+                                       DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
+               WHEN    "0015"
+                   STRING  "<>はＣＬＡＩＭ送信できません。"
+                           "全角文字に変更して下さい。"
                                        DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
