@@ -1967,6 +1967,7 @@
            IF      SPA-HKNCOMBINUM     =   "9999"
       *       受付あり
               OR  (SPA-UKETUKE-ARI     =   1    )
+              OR  (SPA-TEISEIFLG   NOT =   "1"  )
                CONTINUE
            ELSE
                IF     ( SPA-NYUGAIKBN      =   "2"        ) AND
