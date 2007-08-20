@@ -348,7 +348,7 @@
            03  FILLER              PIC X(35)   VALUE
                "5014 医療区分表示情報".
            03  FILLER              PIC X(35)   VALUE
-               "5015 ＡＤＬ点数入力情報".
+               "5015 医療区分・ＡＤＬ点数情報".
            03  FILLER              PIC X(35)   VALUE
                "8000 印刷データ削除機能情報".
            03  FILLER              PIC X(35)   VALUE
