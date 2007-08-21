@@ -3145,6 +3145,14 @@
                MOVE    WRK-CMB-ITM     TO  SPA-GMN-W24-RYOYODSP-G
            END-IF
       *
+           IF   SPA-GMN-W24-RYOYODSP    =   "1"
+               IF  (SPA-GMN-W24-HYOUKETU = "1" OR "2" OR "3" OR "4") OR
+                   (SPA-GMN-W24-TEISU    = "1")      
+                   MOVE    59          TO  SPA-GMN-W24-CUR
+                   MOVE    "1010"      TO  SPA-ERRCD
+               END-IF
+           END-IF
+      *
            .
       *
        4100-RYOYODSP-CHK-EXT.
@@ -4828,6 +4836,9 @@
                END-STRING
            WHEN    "1009"
                MOVE    "標欠と定数超過は同時設定できません"
+                                       TO  SPA-ERRMSG
+           WHEN    "1010"
+               MOVE    "標欠または定数超過と同時設定できません"
                                        TO  SPA-ERRMSG
            WHEN    "1201"
                MOVE    "更新できませんでした"
