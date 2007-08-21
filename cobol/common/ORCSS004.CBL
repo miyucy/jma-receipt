@@ -300,11 +300,8 @@
                END-IF
            END-IF
       *
-           DISPLAY "FLG-TARGET =" FLG-TARGET
-           DISPLAY "WRK-SRYCD  =" WRK-SRYCD
            IF    ( FLG-TARGET          =   1 )
                PERFORM 900-SS00401-READ-DYN-SEC
-               DISPLAY "FLG-SS00401 =" FLG-SS00401
                IF    ( FLG-SS00401 =   1 )
                    INITIALIZE              SS00401-REC
                    MOVE    WRK-SRYCD   TO  SS00401-SRYCD
