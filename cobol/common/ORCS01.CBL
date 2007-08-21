@@ -223,6 +223,7 @@
       *  03.04.13    NACL-門脇    07/07/13  北海道地方公費対応
       *  03.04.14    NACL-門脇    07/07/20  北海道４１老人現物給付対応
       *  03.04.15    NACL-門脇    07/07/31  ７０歳未満現物給付保険者毎で計算
+      *  03.04.16    NACL-門脇    07/08/10  北海道４１老人現物給付対応修正
       *****************************************************************
        ENVIRONMENT         DIVISION.
        CONFIGURATION       SECTION.
@@ -3133,11 +3134,9 @@
                     MOVE    "PTKOHINF-KEY4"  TO      ORC-DBPATH
                     PERFORM  PTKOHINF-READ-SEC
                     PERFORM  UNTIL   FLG-PTKOHINF    =   1
-                        IF  (PTKOH-TEKSTYMD(1:6)  <=
-                                                 LNK-SYU-SRYYMD(1:6))
-                        AND (LNK-SYU-SRYYMD(1:6)  <=
-                                                 PTKOH-TEKEDYMD(1:6))
-                        AND (PTKOH-SAKJOKBN   =  SPACE              )
+                        IF  (PTKOH-TEKSTYMD  <=  LNK-SYU-SRYYMD)
+                        AND (LNK-SYU-SRYYMD  <=  PTKOH-TEKEDYMD)
+                        AND (PTKOH-SAKJOKBN   =  SPACE         )
                            MOVE    1         TO  FLG-KOHININBARAI
                            MOVE   PTKOH-KOHID
                                              TO  WK-KOHININBARAI-KOHID
@@ -4290,6 +4289,7 @@
                    ( COMB-KOH4HKNNUM        =    SPACE))
       ***          MOVE    "1"    TO   FLG-SYUHEN
                    IF  (WK-1001-PREFNUM  =  01            )
+                   AND (COMB-HKNNUM  NOT = "060" AND "067")
                    AND (COMB-KOH1HKNNUM  =  "141" OR "241")
                      MOVE     80100   TO   MAX-KIN-SYU-M
                      IF  FLG-KOHYONKAIME = 1
@@ -6849,7 +6849,8 @@
            CALL    "ORCMCPSUB"           USING   MCPAREA
                                                  ORCMCPAREA
                                                  MCPDATA-REC.
-           IF      FLG-GENBUTU70   NOT =  ZERO
+           IF     (FLG-GENBUTU70     NOT =  ZERO)
+           OR     (FLG-KOHININBARAI      =    1 )
              MOVE   SPACE              TO    WK-HKNJANUM2
              INITIALIZE                      PTHKNINF-REC
              MOVE   WRK-COMB-HOSPID    TO    PTHKN-HOSPID
@@ -7124,6 +7125,7 @@
                         IF  (SYU-KOH2HKNNUM   =  SPACE)
                         AND (SYU-KOH3HKNNUM   =  SPACE)
                         AND (SYU-KOH4HKNNUM   =  SPACE)
+                         IF  WK-HKNJANUM2  =  WK-HKNJANUM
                           IF  LNK-SYU-SRYYMD(7:2)  =  SYU-SRYYMD(7:2)
                             ADD   WK-SYU-SYUCOMPFTN TO   FTN-KOHI1-D
                           END-IF
@@ -7135,6 +7137,7 @@
                             ADD   WK-ENTANI     TO   FTN-KOHI1-D-ENTANI
                           END-IF
                           ADD   WK-ENTANI       TO   FTN-KOHI1-M-ENTANI
+                         END-IF
                         END-IF
                        END-IF
                        MOVE  1                     TO   FLG-ZAITAKU      
@@ -7186,11 +7189,13 @@
                         AND (SYU-KOH2HKNNUM   =  SPACE)
                         AND (SYU-KOH3HKNNUM   =  SPACE)
                         AND (SYU-KOH4HKNNUM   =  SPACE)
+                         IF  WK-HKNJANUM2  =  WK-HKNJANUM
                           ADD   WK-SYU-SYUCOMPFTN TO  FTN-SYU-M
       *
                           COMPUTE WK-ENTANI =
                                   SYU-SYUCOMPFTN-ENTANI + 0.9
                           ADD   WK-ENTANI         TO  FTN-SYU-M-ENTANI
+                         END-IF
                         END-IF
                        END-IF
                        IF  FLG-GENBUTU70    NOT =  ZERO
