@@ -295,6 +295,7 @@
       *  03.04.15    NACL-ÌçÏÆ    07/06/27  ¼ÂÆü¿ô¥Æ¡¼¥Ö¥ëÊÔ½¸½¤Àµ
       *  03.04.16    NACL-ÌçÏÆ    07/07/20  ËÌ³¤Æ»£´£±Ï·¿Í¸½ÊªµëÉÕÂÐ±þ
       *  03.04.17    NACL-ÌçÏÆ    07/07/31  £·£°ºÐÌ¤Ëþ¸½ÊªµëÉÕÊÝ¸±¼ÔËè¤Ç·×»»
+      *  03.04.18    NACL-ÌçÏÆ    07/08/10  ËÌ³¤Æ»£´£±Ï·¿Í¸½ÊªµëÉÕÂÐ±þ½¤Àµ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1279,6 +1280,7 @@
            INITIALIZE                  SPA-AREA
                                        WRK-AREA
                                        TTNS-AREA
+                                       FLG-AREA
       *
            MOVE    ZERO                TO  FLG-END
       *
@@ -6065,7 +6067,8 @@
       *****************************************************************
        2105213-ICHIBUFTN-KOH-HEN2-SEC               SECTION.
       *
-           IF   (SYS-1001-PREFNUM   =  01           )
+           IF   (SYS-1001-PREFNUM   = 01            )
+           AND  (SYU-SYUHKNNUM NOT = "060" AND "067")
            AND  (SYU-KOH-HKNNUM(1)  = "141" OR "241")
             IF  FLG-KOHYONKAIME = 1
                MOVE   44400   TO   WRK-KINGAKU
@@ -7344,16 +7347,6 @@
                      MOVE  "1"  TO
                              RECE02-ZEROKISAIFLG(KOHFTN-IDX + 1)
                  END-IF
-               END-IF
-             END-IF
-      *
-             IF    RECE02-SRYYM     >=  "200704"
-               IF  (SYS-1001-PREFNUM =   01           ) AND
-                   (KOHFTN-IDX       =   1            ) AND
-                   (RECE02-KOHNUM(KOHFTN-IDX)
-                                     =  "141" OR "241")
-                     MOVE  "1"  TO
-                                 RECE02-KISAIFLG(KOHFTN-IDX + 1)
                END-IF
              END-IF
       *
