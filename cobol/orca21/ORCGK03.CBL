@@ -202,6 +202,8 @@
            03  WRK-Z99             PIC --,---,--9.
            03  WRK-Z9-G.
                05  WRK-Z9              PIC --,---,---.
+               05  WRK-Z9-9        REDEFINES  WRK-Z9
+                                       PIC --,---,--9.
            03  WRK-Z92             PIC --,---,---.
            03  WRK-Z9-1            PIC --,---,--9.
            03  WRK-Z9-2            PIC --,---,--9.
@@ -1264,20 +1266,26 @@
       *?    PERFORM 3103-NYUKIN-KEI-SEC
       *    ÄûÀµ»þ¤ÎÀÁµá³Û
            MOVE    SPACE               TO  SPA-GMN-FUKUZENMDS2
-           IF     (SPA-SYORIFLG        =   1   )  AND
-                  (SYU-DENPNUM         >   ZERO)  AND
-                  (SPA-SYUNOU-IDX      >   ZERO)  AND
-                  (SPA-IDX-KOUI        >   ZERO)
-               COMPUTE WRK-SKYMONEY        =   SPA-MAE-SKYMONEY
+           IF     (SPA-SYORIFLG        =   1   )
+      *D     AND  (SYU-DENPNUM         >   ZERO)
+      *D     AND  (SPA-SYUNOU-IDX      >   ZERO)
+             AND  (SPA-IDX-KOUI        >   ZERO)
+      *        ¹ç·×¤Ï½¸·×Ê¬¤«¤é
+               IF     (SPA-SYUNOU-IDX      >   ZERO)
+                   COMPUTE WRK-SKYMONEY    =   SPA-MAE-SKYMONEY
                                                     (SPA-SYUNOU-IDX)
                                            -   SPA-TMAE-CHOSEI
                                                     (SPA-SYUNOU-IDX)
-               MOVE    WRK-SKYMONEY        TO  WRK-Z9
+               ELSE
+                   COMPUTE WRK-SKYMONEY    =   SPA-OLD-SEIKYU
+                                           -   SPA-NAI-CHOSEI
+               END-IF
+               MOVE    WRK-SKYMONEY        TO  WRK-Z9-9
                PERFORM 31091-KINHENSYU-SEC
                MOVE    WRK-HEN             TO  WRK-HEN-1
                COMPUTE WRK-SKYMONEY2       =   SYU-SKYMONEY
                                            -   SYU-CHOSEI
-               MOVE    WRK-SKYMONEY2       TO  WRK-Z9
+               MOVE    WRK-SKYMONEY2       TO  WRK-Z9-9
                PERFORM 31091-KINHENSYU-SEC
                MOVE    WRK-HEN             TO  WRK-HEN-2
                STRING  "ÄûÀµÁ°ÀÁµá³Û¡§"    DELIMITED  BY  SIZE
@@ -1286,15 +1294,16 @@
                        WRK-HEN-2           DELIMITED  BY  SPACE
                                        INTO    SPA-GMN-FUKUZENMDS2
                END-STRING
-               IF      WRK-SKYMONEY    =   WRK-SKYMONEY2
-                   MOVE    SPACE               TO  SPA-GMN-FUKUZENMDS2
-               ELSE
+      *D       IF      WRK-SKYMONEY    =   WRK-SKYMONEY2
+      *D           MOVE    SPACE               TO  SPA-GMN-FUKUZENMDS2
+      *D       ELSE
                    INSPECT SPA-GMN-FUKUZENMDS2   REPLACING
                                                ALL "  "  BY  "¡¡"
-               END-IF
+      *D       END-IF
            ELSE
                MOVE    SPACE               TO  SPA-GMN-FUKUZENMDS2
            END-IF
+      *TEST
       *    Ê£¿ô²Ê¤Þ¤È¤áº¹³Û
            IF     (SYU-GRP-SGKMONEY    NOT =   ZERO )
              AND  (SYU-SRYKA           NOT =   ZERO )
