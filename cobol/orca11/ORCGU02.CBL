@@ -5382,12 +5382,14 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
            ELSE
                MOVE    WIDGET-INSENSITIVE  TO  U02-B09S-STATE
            END-IF
-      *    £Ñ£Ò°ìÍ÷
-           IF      SPA-QRFLG               =   ZERO
-               MOVE    WIDGET-INSENSITIVE  TO  U02-B10S-STATE
-           ELSE
-               MOVE    WIDGET-NORMAL       TO  U02-B10S-STATE
-           END-IF
+      ***  £Ñ£Ò°ìÍ÷
+      *    IF      SPA-QRFLG               =   ZERO
+      *        MOVE    WIDGET-INSENSITIVE  TO  U02-B10S-STATE
+      *    ELSE
+      *        MOVE    WIDGET-NORMAL       TO  U02-B10S-STATE
+      *****END-IF
+      *    ´µ¼Ô¥á¥â
+           MOVE    WIDGET-NORMAL       TO  U02-B10S-STATE
       *
            .
        51O-GSRAUTH-EXT.
