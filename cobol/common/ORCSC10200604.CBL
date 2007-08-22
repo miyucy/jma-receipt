@@ -58,7 +58,8 @@
       * 02.00.20     NACL-多々納  05/11/21  開放型病院共同指導料チェック追加
       *                                     MONFUNC 対応 他
       * 02.00.21     NACL-多々納  05/12/08  難病外来指導管理料等の初診算定日判定修正
-      *  03.05.00    NACL-多々納  07/04/XX  グループ診療対応
+      * 03.05.00     NACL-多々納  07/04/XX  グループ診療対応
+      * 03.05.01     NACL-多々納  07/08/22  加算順チェック追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -163,6 +164,9 @@
       *
            03  IDX-N                PIC 9(04).
            03  IDX-SINSATU2         PIC 9(04).
+      *
+           03  IDX-ERR                 PIC 9(04).
+           03  IDX-ECHK                PIC 9(04).
       *
       *    一時領域
        01  WRK-AREA.
@@ -676,6 +680,12 @@
            IF     (WRK-ERRCD           =   SPACE)   AND
                   (IDX-SANSO           >   ZERO )
                PERFORM 10011-SANSO-ADD-SEC
+           END-IF
+      *
+      *    注加算コードの順チェック
+           IF     (WRK-ERRCD           =   SPACE)   AND
+                  (IDX-SYU             >   ZERO )
+               PERFORM 10012-CHUKSNCD-CHK-SEC
            END-IF
       *
            MOVE    WRK-ERRCD           TO  SPA-ERRCD
@@ -3351,6 +3361,55 @@
       *
            .
        10012-DUMMYSYORI-EXT.
+           EXIT.
+      *****************************************************************
+      *    注加算コードの順チェック処理
+      *****************************************************************
+       10012-CHUKSNCD-CHK-SEC          SECTION.
+      *
+           PERFORM VARYING     IDX-Z   FROM    1   BY  1
+                   UNTIL      (IDX-Z       >   200     )   OR
+                              (WRK-ERRCD   NOT =   SPACE )  OR
+                             ((WRK-COM-INPUTCD (IDX-Z) =   SPACE ) AND
+                              (WRK-GMN-INPUTCD (IDX-Z) =   SPACE ))
+               IF     (WRK-COM-INPUTCD  (IDX-Z)(1:1)   =   "1"  )  AND
+                      (WRK-COM-CHUKSNCD (IDX-Z)    NOT =   ZERO )
+                   COMPUTE IDX-Z2              =   IDX-Z   +   1
+                   MOVE    ZERO                TO  IDX-ERR
+                   MOVE    ZERO                TO  IDX-ECHK
+                   PERFORM VARYING     IDX     FROM    IDX-Z2  BY  1
+                           UNTIL      (IDX         >   200  )
+                                  OR  (IDX-ERR     NOT =   ZERO )
+                       IF     (WRK-COM-INPUTCD  (IDX)(1:1)   =   "1")
+                           IF      WRK-COM-CHUKSNCD (IDX-Z)
+                                              =  WRK-COM-CHUKSNCD (IDX)
+                               IF      IDX-ECHK        NOT =   ZERO
+                                   MOVE    IDX             TO  IDX-ERR
+                               END-IF
+                           ELSE
+                               MOVE    IDX             TO  IDX-ECHK
+                           END-IF
+                       END-IF
+                   END-PERFORM
+                   IF      IDX-ERR             >   ZERO
+      *                注加算コードの違う加算が間に存在する
+                       IF     (WRK-COM-KZMFLG (IDX-ERR)
+                                                   =   SPACE )  AND
+                              (LNK-ORCSC-KEI-IDX   =   ZERO )
+                           MOVE    IDX-ERR     TO  LNK-ORCSC-KEI-IDX
+                           MOVE    "K025"      TO  WRK-ERRCD
+                           MOVE    "1"         TO  WRK-COM-CUR
+                                                             (IDX-ERR)
+                           MOVE    "1"         TO  WRK-COM-KZMFLG
+                                                             (IDX-ERR)
+                           MOVE    WRK-COM-NAME (IDX-ERR)
+                                               TO  LNK-ORCSC-ERRMSG
+                       END-IF
+                   END-IF
+               END-IF
+           END-PERFORM
+           .
+       10012-CHUKSNCD-CHKI-EXT.
            EXIT.
       *
       *****************************************************************
