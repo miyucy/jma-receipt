@@ -39,6 +39,9 @@
       *                                     £±£°¡Ê·ë£³£´¡Ë¢ª£±£°¡Ê´¶£³£·¤Î£²¡Ë
       *                                     £±£±¡Ê·ë£³£µ¡Ë¢ª£±£±¡Ê·ë³ËÆþ±¡¡Ë
       *
+      *  03.04.01    NACL-Æ£¸¶    07/08/20  Æ±°ìÃÏÊý¸øÈñ¤Î¤Þ¤È¤á½¸·×
+      *                                     ËÌ³¤Æ»ÂÐ±þ
+      *
       *  03.05.01    NACL-Æ£¸¶    07/04/19  ¥°¥ë¡¼¥×¿ÇÎÅÂÐ±þ
       *****************************************************************
       *
@@ -917,6 +920,17 @@ grpsys     PERFORM 900-DBSELECT-SEC
                        MOVE    "¡Ê¿´¿È¡Ë"      TO   WRK-HKNNAME
                    WHEN    "186"
                        MOVE    "¡Ê¤Ò¤È¤ê¿Æ¡Ë"  TO   WRK-HKNNAME
+               END-EVALUATE
+           END-IF
+      *
+      *    ËÌ³¤Æ»¤ÎÃÏÊý¸øÈñ¤Î¤Þ¤È¤á¡Ê£²£°£°£·Ç¯£¸·î°Ê¹ß¡Ë
+           IF    ( SYS-1001-PREFNUM    =   "01"     ) 
+           AND   ( LNK-PRTKANRI-SRYYM  >=  "200708" )
+               EVALUATE    SUM-KOH-KOHNUM (IDX3 IDX1 IDX IDX2)
+                   WHEN    "190"
+                   WHEN    "191"
+                   WHEN    "192"
+                       MOVE    SPACE           TO  WRK-HKNNAME
                END-EVALUATE
            END-IF
       *

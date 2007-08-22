@@ -64,6 +64,9 @@
       *                                     ²¬»³ÂÐ±þ
       *                                    ¡Ê¸øÈñÈÖ¹æ¤ÎÄÉ²Ã¤ËÈ¼¤¦¡Ë
       *
+      *  03.04.01    NACL-Æ£¸¶    07/08/20  Æ±°ìÃÏÊý¸øÈñ¤Î¤Þ¤È¤á½¸·×
+      *                                     ËÌ³¤Æ»ÂÐ±þ
+      *
       *  03.05.01    NACL-Æ£¸¶    07/04/19  ¥°¥ë¡¼¥×¿ÇÎÅÂÐ±þ
       *****************************************************************
       *
@@ -1302,6 +1305,19 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  SYS-2009-HOSPNUM
                            MOVE    "180"       TO  RECE10-KOHNUM (IDZ)
                        WHEN    "86"
                            MOVE    "186"       TO  RECE10-KOHNUM (IDZ)
+                   END-EVALUATE
+               END-IF
+      *
+      *        ËÌ³¤Æ»¤ÎÃÏÊý¸øÈñ¤Î¤Þ¤È¤á¡Ê£²£°£°£·Ç¯£¸·î°Ê¹ß¡Ë
+               IF    ( SYS-1001-PREFNUM    =   "01"     ) 
+               AND   ( LNK-PRTKANRI-SRYYM  >=  "200708" )
+                   EVALUATE    RECE10-KOHNUM (IDZ) (2:2)
+                       WHEN    "90"
+                           MOVE    "190"       TO  RECE10-KOHNUM (IDZ)
+                       WHEN    "91"
+                           MOVE    "191"       TO  RECE10-KOHNUM (IDZ)
+                       WHEN    "92"
+                           MOVE    "192"       TO  RECE10-KOHNUM (IDZ)
                    END-EVALUATE
                END-IF
       *
