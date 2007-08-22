@@ -333,6 +333,12 @@
                WHEN    "0157"
                    MOVE    "動脈注射は１日１回しか算定できません。"
                                        TO  SPA-ERRMSG
+               WHEN    "K025"
+                   STRING  "警告！！注加算コードのある加算はまとめて"
+                           "入力して下さい。レセ電エラーになります。"
+                                       DELIMITED  BY  SIZE
+                                       INTO  SPA-ERRMSG
+                   END-STRING
       *
                WHEN    "0301"
                    MOVE    "既に点滴注射・中心静脈注射が算定済みです。"
