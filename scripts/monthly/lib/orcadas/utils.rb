@@ -1,3 +1,5 @@
+#!/usr/bin/ruby
+
 module OrcaDAS
   USER_AGENT = "das-upload"
   PGVERSION = 1.0

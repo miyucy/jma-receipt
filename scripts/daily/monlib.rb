@@ -1,3 +1,5 @@
+#!/usr/bin/ruby
+
 # PANDA -- a simple transaction monitor
 # Copyright (C) 2004-2005  ogochan
 #

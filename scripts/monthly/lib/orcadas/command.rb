@@ -1,3 +1,5 @@
+#!/usr/bin/ruby
+
 require "net/https"
 require "webrick/log"
 require "orcadas/utils"
