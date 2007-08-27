@@ -868,8 +868,8 @@
                MOVE    1                   TO  SPA-USERPG-MAX
                MOVE    SPA-GMN-USERPGLST (1)   TO  SPA-GMN-USERPG-G
            END-IF
-      *    £Ñ£Ò¥Ç¡¼¥¿È½Äê
-           PERFORM 3101-QRDATA-CHK-SEC
+      *DD  £Ñ£Ò¥Ç¡¼¥¿È½Äê
+      *DD  PERFORM 3101-QRDATA-CHK-SEC
       *
            .
        310-SPASET-EXT.
