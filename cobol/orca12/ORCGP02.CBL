@@ -727,18 +727,18 @@
                        PERFORM 3009-CLAIM-SYORI-SEC
                    END-IF
       *!
-      *        £Ñ£Ò¤è¤ê
-               WHEN    "P02Q"
-                   MOVE    "P02"               TO  SPA-P02-GAMEN
-                   IF      SPA-QR-SYORI        =   SPACE
-                       IF      SPA-GMN-PTNUM       =   SPACE
-                           MOVE    0                   TO  SPA-GMN-CUR
-                       ELSE
-                           MOVE    1                   TO  SPA-GMN-CUR
-                       END-IF
-                   ELSE
-                       PERFORM 3010-QRDATA-SYORI-SEC
-                   END-IF
+      *DDDDDDD £Ñ£Ò¤è¤ê
+      *        WHEN    "P02Q"
+      *            MOVE    "P02"               TO  SPA-P02-GAMEN
+      *            IF      SPA-QR-SYORI        =   SPACE
+      *                IF      SPA-GMN-PTNUM       =   SPACE
+      *                    MOVE    0                   TO  SPA-GMN-CUR
+      *                ELSE
+      *                    MOVE    1                   TO  SPA-GMN-CUR
+      *                END-IF
+      *            ELSE
+      *                PERFORM 3010-QRDATA-SYORI-SEC
+      *DDDDDDDDDD  END-IF
       *        ³Æ²èÌÌ¤è¤ê
                WHEN    OTHER
                    MOVE    "LINK"              TO  MCP-STATUS
