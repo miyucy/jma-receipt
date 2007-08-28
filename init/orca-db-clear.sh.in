@@ -17,7 +17,7 @@ ORCAUSER=orca
 ORCAGROUP=orca
 LOGDIR=/var/log/jma-receipt
 
-INSTALLLOG="$LOGDIR"/orca-db-install.log
+INSTALLLOG="$LOGDIR"/orca-db-install-@VERSION@.log
 
 if [ ! -d "$LOGDIR" ]
 then

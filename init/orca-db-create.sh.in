@@ -17,7 +17,7 @@ DBUSER="orca"
 USERCHECKSQL="SELECT usename FROM pg_user WHERE usename = '${DBUSER}';"
 DBCHECKSQL="SELECT datname FROM pg_database WHERE datname = '${DBNAME}';"
 
-INSTALLLOG="$LOGDIR"/orca-db-install.log
+INSTALLLOG="$LOGDIR"/orca-db-install-@VERSION@.log
 
 if [ ! -d "$LOGDIR" ]
 then
