@@ -11,7 +11,7 @@ MID1.glade	orca00	(MID1)確認画面
 MVER.glade	orca00	(MVER)情報
 
 XA01.glade	orca01	(XA01)再印刷選択画面
-XA02.glade	orca01	(XA02)再印刷選択画面				VER3.5.0
+XA02.glade	orca01	(XA02)再印刷選択画面				VER4.0.0
 XA99.glade	orca01	(XA99)処理結果
 XAERR.glade	orca01	(XAERR)エラー情報
 XAID1.glade	orca01	(XAID1)確認画面
@@ -22,7 +22,7 @@ XBER.glade	orca02	(XBER)エラー情報
 XBID.glade	orca02	(XBID)確認画面
 
 XC01.glade	orca03	(XC01)プレビュー選択画面
-XC02.glade	orca03	(XC02)プレビュー選択画面（横）			VER3.5.0
+XC02.glade	orca03	(XC02)プレビュー選択画面（横）			VER4.0.0
 XC99.glade	orca03	(XC99)処理結果
 XCERR.glade	orca03	(XCERR)エラー情報
 XCID1.glade	orca03	(XCID1)確認画面
@@ -31,7 +31,12 @@ XD01.glade	orca04	(XD01)ユーザプログラム起動画面
 XDERR.glade	orca04	(XDERR)エラー情報
 XDID1.glade	orca04	(XDID1)確認画面
 
-XE01.glade	orca05	(XE01)ＱＲコードテスト画面			VER3.5.0
+XE01.glade	orca05	(XE01)ＱＲコードテスト画面			VER4.0.0
+
+XF01.glade	orca06	(XF01)メモ登録					VER4.0.0
+XF011.glade	orca06	(XF011)メモ登録-文例検索			VER4.0.0
+XFERR.glade	orca06	(XFERR)エラー情報				VER4.0.0
+XFID1.glade	orca06	(XFID1)確認画面					VER4.0.0
 
 U02.glade	orca11	(U02)受付
 U02Q.glade	orca11	(U02Q)受付登録-ＱＲ一覧
@@ -204,8 +209,8 @@ I2ERR.glade	orca36	(I2ERR)エラー情報
 I2ID1.glade	orca36	(I2ID1)確認画面
 
 D01.glade	orca41	(D01)レセプトチェック指示
-D02.glade	orca41	(D02)データチェック-個別指示			VER3.5.0
-D03.glade	orca41	(D03)ユーザー確認項目登録			VER3.5.0
+D02.glade	orca41	(D02)データチェック-個別指示			VER4.0.0
+D03.glade	orca41	(D03)ユーザー確認項目登録			VER4.0.0
 D99.glade	orca41	(D99)処理結果
 DERR.glade	orca41	(DERR)エラー情報
 DID1.glade	orca41	(DID1)確認画面
@@ -279,7 +284,7 @@ W10.glade	orca101	(W10)システム管理情報-統計帳票出力情報
 W11.glade	orca101	(W11)システム管理情報-印刷情報設定
 W111.glade	orca101	(W111)システム管理情報-帳票オフセット設定
 W12.glade	orca101	(W12)システム管理情報-レセプト印刷情報設定
-W121.glade	orca101	(W121)編綴詳細設定				VER3.5.0
+W121.glade	orca101	(W121)編綴詳細設定				VER4.0.0
 W13.glade	orca101	(W13)システム管理情報-労災自賠医療機関情報設定
 W14.glade	orca101	(W14)システム管理情報-県単独情報設定
 W15.glade	orca101	(W15)システム管理情報-県内扱い保険者情報
@@ -299,8 +304,8 @@ W28.glade	orca101	(W28)システム管理情報-病棟選定入院科情報設定
 W29.glade	orca101	(W29)システム管理情報-退院事由設定
 W30.glade	orca101	(W30)システム管理情報-入院指示せん設定
 W31.glade	orca101	(W31)システム管理情報-医療区分表示設定
-W32.glade	orca101	(W32)システム管理情報-包括診療行為設定		VER3.5.0
-W33.glade	orca101	(W33)システム管理情報-印刷情報削除設定		VER3.5.0
+W32.glade	orca101	(W32)システム管理情報-包括診療行為設定		VER4.0.0
+W33.glade	orca101	(W33)システム管理情報-印刷情報削除設定		VER4.0.0
 W60.glade	orca101	(W60)システム管理情報-データチェック機能情報２
 W61.glade	orca101	(W61)システム管理情報-レセプト特記事項編集情報設定
 W62.glade	orca101	(W62)印刷設定確認画面
