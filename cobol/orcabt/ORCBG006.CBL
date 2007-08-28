@@ -410,6 +410,7 @@ grpsys*DD                          TO  RECEERR-TERMID
       *    システム日付セット
            MOVE    LNK-PRTKANRI-SKYYMD
                                    TO  WRK-SYMD
+                                       WRK-SYSYMD
            PERFORM 400-SEIWA-HEN-SEC
            MOVE    WRK-HENYMDG     TO  WRK-SYSYMDWH
       *

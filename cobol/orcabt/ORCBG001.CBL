@@ -393,7 +393,7 @@ grpsys     MOVE    SPA-HOSPNUM     TO  JOB-HOSPNUM
            CALL    "ORCSJOB"           USING
                                        ORCSJOBKANRIAREA
                                        JOBKANRI-REC
-grpsys                                 SPA-HOSPNUM
+grpsys                                 SPA-AREA
       *
 grpsys     MOVE    "BG00101"       TO  TOKEIPARA-FILE-ID
            MOVE    LNK-PRTKANRI-TERMID
@@ -419,6 +419,7 @@ grpsys*DD                          TO  RECEERR-TERMID
       *    システム日付セット
            MOVE    LNK-PRTKANRI-SKYYMD
                                    TO  WRK-SYMD
+                                       WRK-SYSYMD
            PERFORM 400-SEIWA-HEN-SEC
            MOVE    WRK-HENYMDG     TO  WRK-SYSYMDWH
       *
@@ -1378,7 +1379,7 @@ grpsys     MOVE    SPA-HOSPNUM     TO  JOB-HOSPNUM
            CALL    "ORCSJOB"           USING
                                        ORCSJOBKANRIAREA
                                        JOBKANRI-REC
-grpsys                                 SPA-HOSPNUM
+grpsys                                 SPA-AREA
       *
            PERFORM 900-DBDISCONNECT-SEC
            .
