@@ -419,7 +419,6 @@ grpsys*DD                          TO  RECEERR-TERMID
       *    システム日付セット
            MOVE    LNK-PRTKANRI-SKYYMD
                                    TO  WRK-SYMD
-                                       WRK-SYSYMD
            PERFORM 400-SEIWA-HEN-SEC
            MOVE    WRK-HENYMDG     TO  WRK-SYSYMDWH
       *
@@ -430,6 +429,8 @@ grpsys*DD                          TO  RECEERR-TERMID
            PERFORM 400-SEIWA-HEN-SEC
            MOVE    WRK-HENYMDG(1:16)
                                    TO  WRK-DENPPRTYMWH
+           MOVE    WRK-SYMD        TO  WRK-SYSYMD
+      *
       *    表題編集
            MOVE    "診療科別医薬品使用量統計（月報）"
                                    TO  WRK-DAI-MSG1

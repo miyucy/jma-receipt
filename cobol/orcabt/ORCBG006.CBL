@@ -410,7 +410,6 @@ grpsys*DD                          TO  RECEERR-TERMID
       *    •∑•π•∆•‡∆¸…’•ª•√•»
            MOVE    LNK-PRTKANRI-SKYYMD
                                    TO  WRK-SYMD
-                                       WRK-SYSYMD
            PERFORM 400-SEIWA-HEN-SEC
            MOVE    WRK-HENYMDG     TO  WRK-SYSYMDWH
       *
@@ -421,6 +420,8 @@ grpsys*DD                          TO  RECEERR-TERMID
            PERFORM 400-SEIWA-HEN-SEC
            MOVE    WRK-HENYMDG(1:16)
                                    TO  WRK-DENPPRTYMWH
+           MOVE    WRK-SYMD        TO  WRK-SYSYMD
+      *
       *    …Ω¬Í ‘Ω∏
            MOVE    "ø«Œ≈≤  Ã∞ÂÃÙ… ª»Õ—ŒÃ≈˝∑◊° ∑Ó Û°À"
                                    TO  WRK-DAI-MSG1
@@ -494,6 +495,8 @@ grpsys*DD                          TO  RECEERR-TERMID
       *        ø«Œ≈≤ Ã‹ ‘Ω∏
                PERFORM 900-SYS1005-DBFETCH-SEC
            END-PERFORM
+      *    ø«Œ≈≤ Ã‹ ‘Ω∏
+           PERFORM 900-SYS1005-DBCLOSE-SEC
       *
            EVALUATE    CNT-SRYKA
                WHEN    1   THRU    4
