@@ -362,7 +362,8 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            END-IF
       *
       *    psファイルクリア
-           MOVE "/var/tmp/.orca_ps/"   TO  WRK-PSFILE-FOLDER
+           MOVE "/var/lib/jma-receipt/orca_ps/"   
+                                       TO  WRK-PSFILE-FOLDER
            MOVE    WRK-CONS-PRTKANRI-TBL-KEY
                                        TO  WRK-PSFILE-TBL-KEY
            MOVE    "0001"              TO  WRK-PSFILE-RENNUM

@@ -523,7 +523,8 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
               DISPLAY  "wk-tbl-g (1) " WK-TBL-G(5) 
                    MOVE  SPACE         TO  WRK-FILENAME
                    STRING
-                      "/var/tmp/.orca_ps/" DELIMITED  BY  SPACE
+                      "/var/lib/jma-receipt/orca_ps/"
+                                          DELIMITED  BY  SPACE
                       SPA-HOSPNUM         DELIMITED  BY  SPACE
                       WRK-PRT-TBL-KEY
                                           DELIMITED  BY  SPACE

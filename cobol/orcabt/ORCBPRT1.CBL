@@ -401,7 +401,8 @@ grpsys         PERFORM 900-ORCDBMAIN-SEC
       *  01.01.02  SATRT
            MOVE WRK-PARA-PRTFLG                TO  PRT-PRTKBN
            MOVE    ZERO                        TO  CNT-KETA
-           MOVE    "/var/tmp/.orca_ps/"        TO  PRT-PSFILE-FOLDER
+           MOVE    "/var/lib/jma-receipt/orca_ps/"        
+                                               TO  PRT-PSFILE-FOLDER
            MOVE    LNK-PRTKANRI-TBL-KEY        TO  PRT-PSFILE-TBL-KEY
            MOVE    PRTDATA-RENNUM              TO  PRT-PSFILE-RENNUM
            MOVE    LNK-PRTKANRI-TBL-GROUP      TO  PRT-PSFILE-GROUP 
@@ -684,7 +685,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *    プレビュー以外の時
            IF WRK-PARA-PRTFLG        =    "3"
                MOVE    SPACE          TO  ORCF-FILE-NAME
-               STRING  "/var/tmp/.orca_ps/"
+               STRING  "/var/lib/jma-receipt/orca_ps/"
                                        DELIMITED  BY  SPACE
                    PRVKANRI-TBL-KEY    DELIMITED  BY  SPACE
                    PRVKANRI-RENNUM     DELIMITED  BY  SPACE

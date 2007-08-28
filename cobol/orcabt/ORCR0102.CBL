@@ -667,7 +667,7 @@ grpsys         PERFORM 900-ORCDBMAIN-SEC
       *
            MOVE    "1"                 TO  PRT-SITEKBN
            MOVE    WRK-PARA-PRTKBN     TO  PRT-PRTKBN
-           MOVE    "/var/tmp/.orca_ps/"
+           MOVE    "/var/lib/jma-receipt/orca_ps/"
                                        TO  PRT-OUT
            MOVE    LNK-PRTKANRI-TBL-KEY
                                        TO  PRT-TBL-KEY

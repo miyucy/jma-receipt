@@ -520,7 +520,8 @@
                    MOVE "/tmp/"
                                TO  SPA-NAI-ENV
            END-IF
-           MOVE "/var/tmp/.orca_ps/"      TO  SPA-NAI-ENV
+           MOVE "/var/lib/jma-receipt/orca_ps/"      
+                                          TO  SPA-NAI-ENV
       *
            EVALUATE    SPA-PRTKANRI-TBL-KEY
                WHEN    "SOKATU"
@@ -1904,7 +1905,8 @@ grpsys                                       SPA-AREA
                    GO        TO  20122-PSFILE-EXIST-EXT
       *   rin ed  ----------------------------------------------
            MOVE   SPACE                TO  ORCF-FILE-NAME
-           STRING  "/var/tmp/.orca_ps/" DELIMITED  BY  SPACE
+           STRING  "/var/lib/jma-receipt/orca_ps/"
+                                       DELIMITED  BY  SPACE
                   WRK-PSFILE-HOSPNUM   DELIMITED  BY  SPACE
                   WRK-PSFILE-TBL-KEY   DELIMITED  BY  SPACE
                   WRK-PSFILE-RENNUM    DELIMITED  BY  SPACE
@@ -1989,7 +1991,7 @@ grpsys*                    MOVE SPA-HOSPNUM TO -HOSPNUM
                              MOVE   SPA-NAI-TBL-UUID  (IDX)
                                            TO  WRK-PSFILE-UUID
                              MOVE   SPACE  TO  ORCF-FILE-NAME
-                             STRING  "/var/tmp/.orca_ps/"
+                             STRING  "/var/lib/jma-receipt/orca_ps/"
                                                  DELIMITED  BY  SPACE
                                WRK-PSFILE-HOSPNUM
                                                  DELIMITED  BY  SPACE

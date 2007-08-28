@@ -10,9 +10,9 @@ fi
 . $JMARECEIPT_ENV
 export HOME=/home/orca
 
-if ! test -d /var/tmp/.orca_ps ; then
-    mkdir /var/tmp/.orca_ps
-fi
+#if ! test -d /var/tmp/.orca_ps ; then
+#    mkdir /var/tmp/.orca_ps
+#fi
 
 #----------------------------------------------------------------------#
 #       °ú¿ô	
