@@ -24,6 +24,7 @@ termid = para[1]
 siorisite = para[2]
 photosite = para[3]+"/"
 phototemp = para[4]+"/"
+hospnum = para[5]
 
 db = PandaDB.new
 db.execFunction("DBOPEN")
@@ -45,6 +46,7 @@ creymd = time.strftime("%Y%m%d")
 i = 0;
 
 while i < count
+    tempdb["tbl_yakujyo_temp.HOSPNUM"] = hospnum
     tempdb["tbl_yakujyo_temp.termid"] = termid
     tempdb["tbl_yakujyo_temp.srycd"] = server.getValue(sprintf("siori.siorirec.item[%d].value1",i))
     tempdb["tbl_yakujyo_temp.yjcd"] = server.getValue(sprintf("siori.siorirec.item[%d].value2",i))

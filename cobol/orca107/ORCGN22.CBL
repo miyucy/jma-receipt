@@ -1064,6 +1064,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
        900-TEMP-SELECT-SEC         SECTION.
       *
            INITIALIZE                  TEMP-REC
+grpsys     MOVE    SPA-HOSPNUM     TO  TEMP-HOSPNUM
            MOVE    SPA-TERMID      TO  TEMP-TERMID
            MOVE    SPA-N22-KENCD   TO  TEMP-SRYCD
            MOVE    TEMP-REC        TO  MCPDATA-REC

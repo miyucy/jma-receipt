@@ -36,7 +36,6 @@ path	srycd	{
 	operation	DBFETCH	{
 		FETCH FROM tbl_yakujyo_temp_srycd_csr
 			INTO
-				:HOSPNUM,
 				:termid,
 				:srycd,
 				:yjcd,
@@ -51,7 +50,8 @@ path	srycd	{
 				:photo1_filename,
 				:photo2_filename,
 				:photo3_filename,
-				:creymd
+				:creymd,
+				:HOSPNUM
 			;
 	};
 	operation	DBCLOSECURSOR	{
@@ -59,8 +59,7 @@ path	srycd	{
 	};
 	operation	DBINSERT	{
 		INSERT INTO 	tbl_yakujyo_temp
-			VALUES( :HOSPNUM,
-				:termid,
+			VALUES( :termid,
 				:srycd,
 				:yjcd,
 				:rennum,
@@ -74,7 +73,8 @@ path	srycd	{
 				:photo1_filename,
 				:photo2_filename,
 				:photo3_filename,
-				:creymd
+				:creymd,
+				:HOSPNUM
 			);
 	};
 };
