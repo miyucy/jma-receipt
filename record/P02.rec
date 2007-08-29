@@ -242,7 +242,11 @@ P02	{
 				};
 				BK1	{
 					value	bool;
-					label	varchar(03);
+					label	varchar(02);
+				};
+				CK1	{
+					value	bool;
+					label	varchar(04);
 				};
 				P02_FTNJANUM2	{
 					value	varchar(8);
@@ -270,6 +274,10 @@ P02	{
 					value	bool;
 					label	varchar(02);
 				};
+				CK2	{
+					value	bool;
+					label	varchar(04);
+				};
 				P02_FTNJANUM3	{
 					value	varchar(8);
 				};
@@ -295,6 +303,10 @@ P02	{
 				BK3	{
 					value	bool;
 					label	varchar(02);
+				};
+				CK3	{
+					value	bool;
+					label	varchar(04);
 				};
 				P02_SELNUM	{
 					value	number(4);

@@ -4459,7 +4459,6 @@
                    IF      SPA-ERRCD           =   SPACE
                        PERFORM 410101-PTNUM-SYOKI-SEC
                    END-IF
-      *TEST
       *            ¥á¥âÅÐÏ¿Í­Ìµ
                    PERFORM 41021-PTMEMOINF-SEC
            END-EVALUATE
@@ -12413,6 +12412,13 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            ELSE
                MOVE    "red"               TO  K02-JIKANMSG-STYLE
                MOVE    SPA-GMN-JIKANMSG    TO  K02-JIKANMSG-VALUE
+           END-IF
+      *    ¸øÈñ´ü¸ÂÀÚ¤ìÌ¾¾Î
+           IF      SPA-GMN-KOHMSG      =   SPACE
+               MOVE    SPACE               TO  K02-KOHMSG-VALUE
+           ELSE
+               MOVE    "red"               TO  K02-KOHMSG-STYLE
+               MOVE    SPA-GMN-KOHMSG      TO  K02-KOHMSG-VALUE
            END-IF
       *
            MOVE    SPA-DRCD-NAME       TO  K02-DRNAME

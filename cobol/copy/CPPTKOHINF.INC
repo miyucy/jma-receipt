@@ -50,6 +50,8 @@
            03  PTKOH-KAKUNINYMD            PIC  X(08).
       *削除区分
            03  PTKOH-SAKJOKBN              PIC  X(01).
+      *期限切れ区分
+           03  PTKOH-TEKEDCHKKBN           PIC  X(01).
       *端末ＩＤ
            03  PTKOH-TERMID                PIC  X(16).
       *オペーレータＩＤ

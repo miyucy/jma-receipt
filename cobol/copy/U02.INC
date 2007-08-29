@@ -125,6 +125,9 @@
               03  U02-MEMOC.
                 04  U02-MEMOC-STYLE  PIC X(20).
                 04  U02-MEMOC-VALUE   PIC X(06).
+              03  U02-KOHMSG.
+                04  U02-KOHMSG-STYLE  PIC X(20).
+                04  U02-KOHMSG-VALUE   PIC X(50).
               03  U02-B05.
                 04  U02-B05-STATE   PIC S9(9)   BINARY.
               03  U02-B06.

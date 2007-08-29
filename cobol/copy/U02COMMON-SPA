@@ -68,6 +68,8 @@
                    07  SPA-GMN-MEMOKBN                PIC X(01).
       *
                    07  SPA-GMN-COMBINUM               PIC 9(04).
+      *            ¸øÈñ´ü¸ÂÀÚ¤ìÌ¾¾Î
+                   07  SPA-GMN-KOHMSG                 PIC X(50).
       *
                    07  SPA-GMN-COMBI.
                        09  SPA-GMN-COMBI-TBL          OCCURS  15.

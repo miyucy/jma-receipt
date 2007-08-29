@@ -200,7 +200,10 @@
                     06  P02-VALUE   PIC X(10).
                   05  P02-BK1.
                     06  P02-BK1-VALUE   PIC X.
-                    06  P02-BK1-LABEL   PIC X(3).
+                    06  P02-BK1-LABEL   PIC X(2).
+                  05  P02-CK1.
+                    06  P02-CK1-VALUE   PIC X.
+                    06  P02-CK1-LABEL   PIC X(4).
                   05  P02-P02-FTNJANUM2.
                     06  P02-VALUE   PIC X(8).
                   05  P02-P02-KOHNUMCOB2.
@@ -219,6 +222,9 @@
                   05  P02-BK2.
                     06  P02-BK2-VALUE   PIC X.
                     06  P02-BK2-LABEL   PIC X(2).
+                  05  P02-CK2.
+                    06  P02-CK2-VALUE   PIC X.
+                    06  P02-CK2-LABEL   PIC X(4).
                   05  P02-P02-FTNJANUM3.
                     06  P02-VALUE   PIC X(8).
                   05  P02-P02-KOHNUMCOB3.
@@ -237,6 +243,9 @@
                   05  P02-BK3.
                     06  P02-BK3-VALUE   PIC X.
                     06  P02-BK3-LABEL   PIC X(2).
+                  05  P02-CK3.
+                    06  P02-CK3-VALUE   PIC X.
+                    06  P02-CK3-LABEL   PIC X(4).
                   05  P02-P02-SELNUM.
                     06  P02-VALUE   PIC S9(4).
                   05  P02-P02-SRYKA-COB.

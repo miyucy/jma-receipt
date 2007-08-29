@@ -71,6 +71,8 @@
       *
       *            時間外名称（H16.4以降）
                    07  SPA-GMN-JIKANMSG          PIC X(20).
+      *            公費期限切れ名称
+                   07  SPA-GMN-KOHMSG            PIC X(50).
       *
                    07  SPA-GMN-GOKEI             PIC 9(11).
                    07  SPA-GMN-LASTYMD-G.

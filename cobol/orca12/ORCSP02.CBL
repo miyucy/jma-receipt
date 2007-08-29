@@ -45,6 +45,7 @@
       * 03.04.00     NACL-多々納  07/01/29  排他制御修正
       * 03.05.00     NACL-多々納  07/05/XX  グループ診療対応
       * 03.05.00     NACL-多々納  07/06/08  前回来院日追加
+      * 03.05.01     NACL-多々納  07/08/28  公費期限切れ区分追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -2353,6 +2354,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    PTKOH-TEKEDYMD      TO  SPA-PTKOH-TEKEDYMD   (IDX)
            MOVE    PTKOH-KAKUNINYMD    TO  SPA-PTKOH-KAKUNINYMD (IDX)
            MOVE    PTKOH-SAKJOKBN      TO  SPA-PTKOH-SAKJOKBN   (IDX)
+           MOVE    PTKOH-TEKEDCHKKBN   TO  SPA-PTKOH-TEKEDCHKKBN   (IDX)
       *
            MOVE    PTKOH-TEKSTYMD      TO  WRK-SYMD
            PERFORM 4001-SEIWA-YMDEDIT-SEC
@@ -2534,27 +2536,29 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *****************************************************************
        4001-SEIWA-YMDEDIT-SEC           SECTION.
       *
-           IF      WRK-SYMD            =   ZERO
-               MOVE    WRK-SYMD            TO  WRK-HENYMD
-               GO      TO      4001-SEIWA-YMDEDIT-EXT
-           END-IF
+           EVALUATE    WRK-SYMD
+               WHEN    SPACE
+                   MOVE    SPACE           TO  WRK-HENYMD
+               WHEN    ZERO
+                   MOVE    "0000000"       TO  WRK-HENYMD
+               WHEN    "99999999"
+                   MOVE    "9999999"       TO  WRK-HENYMD
+               WHEN    OTHER
       *
-           IF      WRK-SYMD            =   SPACE   OR  ALL "9"
-               MOVE    WRK-SYMD            TO  WRK-HENYMD
-           ELSE
-               MOVE    SPACE               TO  STS-AREA-DAY
-               INITIALIZE                      STS-AREA-DAY
-               MOVE    SPACE               TO  LNK-DAY2-AREA
-               MOVE    "21"                TO  LNK-DAY2-IRAI
-               MOVE    WRK-SYMD            TO  LNK-DAY2-YMD
-               CALL    "ORCSDAY"       USING   STS-AREA-DAY
+                   MOVE    SPACE               TO  STS-AREA-DAY
+                   INITIALIZE                      STS-AREA-DAY
+                   MOVE    SPACE               TO  LNK-DAY2-AREA
+                   MOVE    "21"                TO  LNK-DAY2-IRAI
+                   MOVE    WRK-SYMD            TO  LNK-DAY2-YMD
+                   CALL    "ORCSDAY"           USING
+                                               STS-AREA-DAY
                                                LNK-DAY2-AREA
-               IF      STS-DAY-RC1             =   ZERO
-                   MOVE    LNK-DAY2-EDTYMD1    TO  WRK-HENYMD
-               ELSE
-                   MOVE    SPACE               TO  WRK-HENYMD
-               END-IF
-           END-IF
+                   IF      STS-DAY-RC1         =   ZERO
+                       MOVE    LNK-DAY2-EDTYMD1    TO  WRK-HENYMD
+                   ELSE
+                       MOVE    SPACE               TO  WRK-HENYMD
+                   END-IF
+           END-EVALUATE
            .
        4001-SEIWA-YMDEDIT-EXT.
            EXIT.
@@ -3084,6 +3088,28 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            ELSE
                MOVE    "F"                 TO  P02-BK1-VALUE
                MOVE    "未"                TO  P02-BK1-LABEL
+           END-IF
+      *    公費期限切れ区分
+           IF      SPA-NAI-TEKEDCHKKBN (1) =   "1"
+               MOVE    "T"                 TO  P02-CK1-VALUE
+               MOVE    "有"                TO  P02-CK1-LABEL
+           ELSE
+               MOVE    "F"                 TO  P02-CK1-VALUE
+               MOVE    "無"                TO  P02-CK1-LABEL
+           END-IF
+           IF      SPA-NAI-TEKEDCHKKBN (2) =   "1"
+               MOVE    "T"                 TO  P02-CK2-VALUE
+               MOVE    "有"                TO  P02-CK2-LABEL
+           ELSE
+               MOVE    "F"                 TO  P02-CK2-VALUE
+               MOVE    "無"                TO  P02-CK2-LABEL
+           END-IF
+           IF      SPA-NAI-TEKEDCHKKBN (3) =   "1"
+               MOVE    "T"                 TO  P02-CK3-VALUE
+               MOVE    "有"                TO  P02-CK3-LABEL
+           ELSE
+               MOVE    "F"                 TO  P02-CK3-VALUE
+               MOVE    "無"                TO  P02-CK3-LABEL
            END-IF
       *    公費情報２
            MOVE    SPA-GMN-KOHNUM-G (02)   TO  P02-P02-KOHNUM2

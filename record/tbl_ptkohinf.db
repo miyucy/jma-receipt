@@ -10,6 +10,7 @@ tbl_ptkohinf {
 	TEKEDYMD			char(8);
 	KAKUNINYMD			char(8);
 	SAKJOKBN			char(1);
+	TEKEDCHKKBN			char(1);
 	TERMID   			varchar(16);
 	OPID     			varchar(16);
 	CREYMD   			char(8);
@@ -154,3 +155,18 @@ path	key8 	{
 		;
 	};
 };
+
+path	key9 	{
+	DBSELECT	{
+		DECLARE tbl_ptkohinf_key9_csr CURSOR FOR
+		SELECT *
+		FROM tbl_ptkohinf
+			WHERE HOSPNUM      =   :HOSPNUM
+			AND   PTID         =   :PTID
+			AND   TEKEDYMD     >=  :TEKEDYMD
+			AND   SAKJOKBN     <>   "1"
+			ORDER   BY      KOHID
+		;
+	};
+};
+

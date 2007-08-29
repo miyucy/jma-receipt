@@ -477,22 +477,14 @@
                                            TO  SPA-GMN27-KOHSEIDO3(IDY)
                MOVE    LNK-COMB-KOH4-TANSEIDONAME(IDX)
                                            TO  SPA-GMN27-KOHSEIDO4(IDY)
-               IF      LNK-COMB-TEKSTYMD(IDX)  =   ZERO
-                   MOVE    ALL "0"         TO  SPA-GMN27-TEKSTYMD(IDY)
-                                                                (1:7)
-               ELSE
-                   MOVE    LNK-COMB-TEKSTYMD(IDX) TO  WRK-SYMD
-                   PERFORM 410112-SE-WAFORMAT-YMDEDIT-SEC
-                   MOVE    WRK-HENYMD      TO  SPA-GMN27-TEKSTYMD(IDY)
-               END-IF
+      *
+               MOVE    LNK-COMB-TEKSTYMD(IDX) TO  WRK-SYMD
+               PERFORM 410112-SE-WAFORMAT-YMDEDIT-SEC
+               MOVE    WRK-HENYMD          TO  SPA-GMN27-TEKSTYMD(IDY)
+      *
                MOVE    LNK-COMB-TEKEDYMD(IDX) TO  WRK-SYMD
-               IF      WRK-SYMD            =   ALL "9"
-                   MOVE    ALL "9"         TO  SPA-GMN27-TEKEDYMD(IDY)
-                                                                (1:7)
-               ELSE
-                   PERFORM 410112-SE-WAFORMAT-YMDEDIT-SEC
-                   MOVE    WRK-HENYMD       TO  SPA-GMN27-TEKEDYMD(IDY)
-               END-IF
+               PERFORM 410112-SE-WAFORMAT-YMDEDIT-SEC
+               MOVE    WRK-HENYMD          TO  SPA-GMN27-TEKEDYMD(IDY)
       *        Ï«ºÒ¤Î»þ¡¢Éô°Ì¤ò¸øÈñ£±¤Î¹àÌÜ¤Ø
                IF      LNK-COMB-HKNNUM (IDX)   =   "971"
                    PERFORM 3201-RSI-HENSYU-SEC
@@ -1374,17 +1366,29 @@
       *****************************************************************
        410112-SE-WAFORMAT-YMDEDIT-SEC             SECTION.
       *
-           MOVE    SPACE               TO  STS-AREA-DAY
-           INITIALIZE                      STS-AREA-DAY
-           MOVE    SPACE               TO  LNK-DAY2-AREA
-           MOVE    "21"                TO  LNK-DAY2-IRAI
-           MOVE    WRK-SYMD            TO  LNK-DAY2-YMD
-           CALL    "ORCSDAY"    USING  STS-AREA-DAY  LNK-DAY2-AREA
-           IF  STS-DAY-RC1             =   ZERO
-               MOVE    LNK-DAY2-EDTYMD1    TO  WRK-HENYMD
-           ELSE
-               MOVE    SPACE               TO  WRK-HENYMD
-           END-IF
+           EVALUATE    WRK-SYMD
+               WHEN    SPACE
+                   MOVE    SPACE           TO  WRK-HENYMD
+               WHEN    ZERO
+                   MOVE    "0000000"       TO  WRK-HENYMD
+               WHEN    "99999999"
+                   MOVE    "9999999"       TO  WRK-HENYMD
+               WHEN    OTHER
+      *
+                   MOVE    SPACE               TO  STS-AREA-DAY
+                   INITIALIZE                      STS-AREA-DAY
+                   MOVE    SPACE               TO  LNK-DAY2-AREA
+                   MOVE    "21"                TO  LNK-DAY2-IRAI
+                   MOVE    WRK-SYMD            TO  LNK-DAY2-YMD
+                   CALL    "ORCSDAY"           USING
+                                               STS-AREA-DAY
+                                               LNK-DAY2-AREA
+                   IF      STS-DAY-RC1         =   ZERO
+                       MOVE    LNK-DAY2-EDTYMD1    TO  WRK-HENYMD
+                   ELSE
+                       MOVE    SPACE               TO  WRK-HENYMD
+                   END-IF
+           END-EVALUATE
            .
        410112-SE-WAFORMAT-YMDEDIT-EXT.
            EXIT.

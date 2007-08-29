@@ -2964,31 +2964,6 @@
 
     <widget>
       <class>GtkLabel</class>
-      <name>JIKANMSG</name>
-      <x>8</x>
-      <y>64</y>
-      <width>141</width>
-      <height>20</height>
-      <label></label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkHSeparator</class>
-      <name>hseparator1</name>
-      <x>8</x>
-      <y>76</y>
-      <width>808</width>
-      <height>20</height>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
       <name>CONTKBN</name>
       <x>820</x>
       <y>40</y>
@@ -3442,6 +3417,47 @@
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkHSeparator</class>
+      <name>hseparator1</name>
+      <x>8</x>
+      <y>76</y>
+      <width>808</width>
+      <height>20</height>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>JIKANMSG</name>
+      <x>8</x>
+      <y>64</y>
+      <width>141</width>
+      <height>20</height>
+      <label></label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>KOHMSG</name>
+      <x>192</x>
+      <y>64</y>
+      <width>380</width>
+      <height>20</height>
+      <label></label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0</xalign>
       <yalign>0.5</yalign>
       <xpad>0</xpad>
       <ypad>0</ypad>

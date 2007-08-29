@@ -438,6 +438,10 @@ K02	{
 		LASTMID	{
 			value	varchar(20);
 		};
+		KOHMSG	{
+			style	varchar(20);
+			value	varchar(50);
+		};
 		B12	{
 	           	state	int;
 		};

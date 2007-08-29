@@ -277,6 +277,8 @@
                            11  SPA-NAI-KTEKSTYMD        PIC X(08).
                            11  SPA-NAI-KTEKEDYMD        PIC X(08).
                            11  SPA-NAI-KKAKUNINYMD      PIC X(08).
+      *                    期限切れ区分
+                           11  SPA-NAI-TEKEDCHKKBN      PIC X(01).
       *
                            11  SPA-NAI-PTKOH-EDANUM       PIC 9(04).
                            11  SPA-NAI-PTKOH-KOHID        PIC 9(10).
@@ -502,6 +504,8 @@
                        09  SPA-PTKOH-SAKJOKBN      PIC X(01).
       *                保険公費種別区分
                        09  SPA-PTKOH-HKN-SBTKBN        PIC X(01).
+      *                期限切れ区分
+                       09  SPA-PTKOH-TEKEDCHKKBN       PIC X(01).
       *
                        09  SPA-PTKOH-SINKIKBN          PIC X(01).
                        09  SPA-PTKOH-KOHNUM-MEI        PIC X(10).

@@ -41,6 +41,7 @@
       *  01.00.12    NACL-多々納  05/11/18  MONFUNC 対応 他
       *  03.04.00    NACL-多々納  07/02/XX  包括診療対応
       *  03.05.00    NACL-多々納  07/04/XX  グループ診療対応
+      *  03.05.01    NACL-多々納  07/08/27  公費期限切れ対応
       *****************************************************************
       *
       *
@@ -86,7 +87,7 @@
            03  FLG-PTINF           PIC 9(01).
            03  FLG-SRYACT          PIC 9(01).
            03  FLG-WKSRYACT        PIC 9(01).
-           03  FLG-HKNMST          PIC 9(01).
+           03  FLG-HKNNUM          PIC 9(01).
            03  FLG-HKNCOMBI        PIC 9(01).
            03  FLG-PTCOM           PIC 9(01).
            03  FLG-SRYACCT         PIC 9(01).
@@ -100,6 +101,7 @@
            03  FLG-TENSUPLUS       PIC 9(01).
            03  FLG-PTRSIINF        PIC 9(01).
            03  FLG-SANTEI          PIC 9(01).
+           03  FLG-PTKOHINF        PIC 9(01).
       *
            03  FLG-SYSKANRIOK      PIC 9(01).
            03  FLG-HKNCOMBICHK     PIC 9(01).
@@ -271,6 +273,23 @@
        01  WRK-TA-HKNCOMBI-AREA.
            03  WRK-TA-HKNCOMBI         PIC  9(04)
                                                OCCURS  10.
+      *    公費期限切れ表示用
+       01  WRK-KOH-AREA.
+           03  WRK-KEI-YM.
+               05  WRK-KEI-YY          PIC 9(04).
+               05  WRK-KEI-MM          PIC 9(02).
+           03  TBL-KOH-TBL1            OCCURS   40.
+               05  TBL-K1-KOHNUM       PIC X(03).
+               05  TBL-K1-PAYKBN       PIC X(02).
+               05  TBL-K1-TEKSTYMD     PIC X(08).
+               05  TBL-K1-TEKEDYMD     PIC X(08).
+           03  TBL-KOH-TBL2            OCCURS   40.
+               05  TBL-K2-KOHNUM       PIC X(03).
+               05  TBL-K2-TEKSTYMD     PIC X(08).
+               05  TBL-K2-TEKEDYMD     PIC X(08).
+           03  IDX-K1                  PIC 9(04).
+           03  IDX-K2                  PIC 9(04).
+           03  FLG-KOH                 PIC 9(01).
       *
        01  WRK-HENSYU-AREA.
            03  WRK-HENYMDG         PIC X(09).
@@ -381,6 +400,12 @@
       *    算定履歴
        01  SANTEI-REC.
            COPY    "CPSANTEI.INC".
+      *    公費マスタ
+       01  PTKOHINF-REC.
+           COPY    "CPPTKOHINF.INC".
+      *    保険番号
+       01  HKNNUM-REC.
+           COPY    "CPHKNNUM.INC".
       *
       *****************************************************************
       *    サブプロ用　領域
@@ -1554,6 +1579,8 @@
                IF      SPA-LAST-KIKAN      NOT =   ZERO
                    PERFORM 2003-LAST-KIKAN-CHK-SEC
                END-IF
+      *        公費期限切れ判定
+               PERFORM 2009-KOHENDCHK-SEC
            END-IF
       *
       *    受付マスタより、診療科、ドクターの決定
@@ -1847,6 +1874,131 @@
            END-IF
            .
        2003-LAST-KIKAN-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    公費期限切れ判定処理
+      *****************************************************************
+       2009-KOHENDCHK-SEC              SECTION.
+      *
+           MOVE    SPACE               TO  SPA-GMN-KOHMSG
+           INITIALIZE                      WRK-KOH-AREA
+      *
+      *    システム日付＋１ヵ月
+           MOVE    SPA-SYSYMD(1:6)     TO  WRK-KEI-YM (1:6)
+           IF      WRK-KEI-MM          =   12
+               COMPUTE WRK-KEI-YY      =   WRK-KEI-YY   +   1
+               MOVE    1                   TO  WRK-KEI-MM
+           ELSE
+               COMPUTE WRK-KEI-MM      =   WRK-KEI-MM   +   1
+           END-IF
+      *
+           INITIALIZE                  PTKOHINF-REC
+           MOVE    SPA-HOSPNUM         TO  PTKOH-HOSPNUM
+           MOVE    SPA-PTID            TO  PTKOH-PTID
+           MOVE    SPA-SYSYMD          TO  PTKOH-TEKEDYMD
+      *
+           MOVE    PTKOHINF-REC        TO  MCPDATA-REC
+           MOVE    "tbl_ptkohinf"      TO  MCP-TABLE
+           MOVE    "key9"              TO  MCP-PATHNAME
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_ptkohinf"      TO  MCP-TABLE
+               MOVE    "key9"              TO  MCP-PATHNAME
+               PERFORM 970-PTKOHINF-READ-SEC
+           ELSE
+               MOVE    1               TO  FLG-PTKOHINF
+           END-IF
+           PERFORM     UNTIL     FLG-PTKOHINF  =   1
+      *        期限切れ対象
+               IF     (PTKOH-TEKEDYMD(1:6)     =   WRK-KEI-YM
+                                               OR  SPA-SYSYMD(1:6))
+                  AND (PTKOH-TEKEDCHKKBN       =   "1"      )
+                   ADD     1               TO  IDX-K1
+                   MOVE    PTKOH-KOHNUM    TO  TBL-K1-KOHNUM (IDX-K1)
+                   MOVE    PTKOH-PAYKBN    TO  TBL-K1-PAYKBN (IDX-K1)
+                   MOVE    PTKOH-TEKSTYMD  TO  TBL-K1-TEKSTYMD
+                                                              (IDX-K1)
+                   MOVE    PTKOH-TEKEDYMD  TO  TBL-K1-TEKEDYMD
+                                                              (IDX-K1)
+               ELSE
+                   ADD     1               TO  IDX-K2
+                   MOVE    PTKOH-KOHNUM    TO  TBL-K2-KOHNUM (IDX-K2)
+                   MOVE    PTKOH-TEKSTYMD  TO  TBL-K2-TEKSTYMD
+                                                              (IDX-K2)
+                   MOVE    PTKOH-TEKEDYMD  TO  TBL-K2-TEKEDYMD
+                                                              (IDX-K2)
+               END-IF
+      *
+               MOVE    "tbl_ptkohinf"      TO  MCP-TABLE
+               MOVE    "key9"              TO  MCP-PATHNAME
+               PERFORM 970-PTKOHINF-READ-SEC
+           END-PERFORM
+           MOVE    "tbl_ptkohinf"      TO  MCP-TABLE
+           MOVE    "key9"              TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+      *
+           PERFORM VARYING     IDX-K1  FROM    1   BY  1
+                   UNTIL      (IDX-K1  >   40  )  OR
+                              (TBL-K1-KOHNUM (IDX-K1)  =   SPACE)
+                          OR  (SPA-GMN-KOHMSG  NOT =   SPACE )
+               MOVE    ZERO            TO  FLG-KOH
+               PERFORM VARYING     IDX-K2  FROM    1   BY  1
+                       UNTIL      (IDX-K2  >   40  )  OR
+                                  (TBL-K2-KOHNUM (IDX-K2)  =   SPACE) OR
+                                  (FLG-KOH     =   1  )
+                   IF     (TBL-K1-KOHNUM (IDX-K1)
+                                           =   TBL-K2-KOHNUM (IDX-K2))
+                      AND (TBL-K1-TEKEDYMD (IDX-K1)
+                                           <   TBL-K2-TEKSTYMD (IDX-K2))
+                       MOVE    1           TO  FLG-KOH
+                   END-IF
+               END-PERFORM
+               IF      FLG-KOH             =   ZERO
+                   PERFORM 20091-KOHNUMMEI-SEC
+                   MOVE    TBL-K1-TEKEDYMD (IDX-K1)    TO  WRK-SYMD
+                   PERFORM 800-SEIWA-HEN-SEC
+                   STRING "公費："
+                          HKN-TANSEIDONAME     DELIMITED  BY  SPACE
+                          "　有効期限："
+                           WRK-HENYMDG         DELIMITED  BY  SIZE
+                                           INTO  SPA-GMN-KOHMSG
+                   END-STRING
+               END-IF
+           END-PERFORM
+           .
+       2009-KOHENDCHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    公費名称取得処理
+      *****************************************************************
+       20091-KOHNUMMEI-SEC              SECTION.
+      *
+           INITIALIZE                  HKNNUM-REC
+           MOVE    SPA-HOSPNUM         TO  HKN-HOSPNUM
+           MOVE    TBL-K1-KOHNUM  (IDX-K1)  TO  HKN-HKNNUM
+           MOVE    TBL-K1-PAYKBN  (IDX-K1)  TO  HKN-PAYKBN
+           MOVE    TBL-K1-TEKSTYMD (IDX-K1) TO  HKN-TEKSTYMD
+           MOVE    TBL-K1-TEKEDYMD (IDX-K1) TO  HKN-TEKEDYMD
+      *
+           MOVE    HKNNUM-REC          TO  MCPDATA-REC
+           MOVE    "tbl_hknnum"        TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_hknnum"        TO  MCP-TABLE
+               MOVE    "key"               TO  MCP-PATHNAME
+               PERFORM 921-HKNNUM-READ-SEC
+           ELSE
+               INITIALIZE              HKNNUM-REC
+               MOVE    1               TO  FLG-HKNNUM
+           END-IF
+           MOVE    "tbl_hknnum"        TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+           .
+       20091-KOHNUMMEI-EXT.
            EXIT.
       *
       *****************************************************************
@@ -5881,6 +6033,40 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
        920-SANTEI-READ-EXT.
            EXIT.
       *
+      *****************************************************************
+      *    患者公費み込み処理
+      *****************************************************************
+       970-PTKOHINF-READ-SEC         SECTION.
+      *
+           PERFORM 920-DBFETCH-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC     TO  PTKOHINF-REC
+               MOVE    ZERO            TO  FLG-PTKOHINF
+           ELSE
+               INITIALIZE                  PTKOHINF-REC
+               MOVE    1               TO  FLG-PTKOHINF
+           END-IF
+      *
+           .
+       970-PTKOHINF-READ-EXT.
+           EXIT.
+      *****************************************************************
+      *    公費名称読み込み
+      *****************************************************************
+       921-HKNNUM-READ-SEC         SECTION.
+      *
+           PERFORM 920-DBFETCH-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC     TO  HKNNUM-REC
+               MOVE    ZERO            TO  FLG-HKNNUM
+           ELSE
+               INITIALIZE                  HKNNUM-REC
+               MOVE    1               TO  FLG-HKNNUM
+           END-IF
+      *
+           .
+       921-HKNNUM-READ-EXT.
+           EXIT.
       *****************************************************************
       *    パラメタデータ順読み
       *****************************************************************

@@ -141,6 +141,10 @@ U02	{
 			style	varchar(20);
 			value	varchar(6);
 		};
+		KOHMSG	{
+			style	varchar(20);
+			value	varchar(50);
+		};
 		B05	{
 	           	state	int;
 		};

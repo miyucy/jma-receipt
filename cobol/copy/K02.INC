@@ -127,6 +127,9 @@
                           PIC X       OCCURS  100 TIMES.
               03  K02-LASTMID.
                 04  K02-VALUE   PIC X(20).
+              03  K02-KOHMSG.
+                04  K02-KOHMSG-STYLE   PIC X(20).
+                04  K02-KOHMSG-VALUE   PIC X(50).
               03  K02-B12.
                 04  K02-B12-STATE   PIC S9(9)   BINARY.
               03  K02-B12S.

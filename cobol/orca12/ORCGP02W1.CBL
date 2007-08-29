@@ -79,6 +79,7 @@
       *  03.04.01    NACL-多々納  07/02/16  ＱＲ受付対応
       *  03.05.00    NACL-多々納  07/05/XX  グループ診療対応
       *  03.05.00    NACL-多々納  07/06/12  保険複写機能追加
+      *  03.05.01    NACL-多々納  07/08/28  公費期限切れ区分追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -383,6 +384,8 @@
                    07  WRK-NAI-KTEKSTYMD        PIC X(08).
                    07  WRK-NAI-KTEKEDYMD        PIC X(08).
                    07  WRK-NAI-KKAKUNINYMD      PIC X(08).
+      *            期限切れ区分
+                   07  WRK-NAI-TEKEDCHKKBN      PIC X(01).
       *
                    07  WRK-NAI-PTKOH-EDANUM       PIC 9(04).
                    07  WRK-NAI-PTKOH-KOHID        PIC 9(10).
@@ -1680,6 +1683,9 @@
                                            TO  SPA-GMN-KKAKUNINYMD (IDY)
       *
            MOVE    SPA-PTKOH-KOHID (IDX)   TO SPA-NAI-PTKOH-KOHID (IDY)
+      *    期限切れ区分
+           MOVE    SPA-PTKOH-TEKEDCHKKBN(IDX)
+                                           TO  SPA-NAI-TEKEDCHKKBN(IDY)
       *
            MOVE    SPA-PTKOH-KOHNUM(IDX)   TO  SPA-MAE-KOHNUM  (IDY)
            IF      SPA-PTKOH-PAYKBN(IDX)   NOT =   ZERO
@@ -2138,6 +2144,11 @@
                WHEN    "CLICKED"       ALSO    "BK2"
                WHEN    "CLICKED"       ALSO    "BK3"
                    PERFORM 460-KOHKAKUNINYMD-ZUMI-SEC
+      *    期限切れチェック
+               WHEN    "CLICKED"       ALSO    "CK1"
+               WHEN    "CLICKED"       ALSO    "CK2"
+               WHEN    "CLICKED"       ALSO    "CK3"
+                   PERFORM 460-TEKEDCHKKBN-CHK-SEC
       *    別画面
                WHEN    "CLICKED"       ALSO     ANY
                    PERFORM 4101-BETUGAMEN-SEC
@@ -4195,6 +4206,9 @@
       *    保険公費種別区分
            MOVE   SPA-NAI-PTKOH-SBTKBN (IDX)   TO  SPA-PTKOH-HKN-SBTKBN
                                                                  (IDY)
+      *    期限切れ区分
+           MOVE    SPA-NAI-TEKEDCHKKBN (IDX)
+                                       TO  SPA-PTKOH-TEKEDCHKKBN(IDY)
            MOVE   SPA-GMN-KOHNUMMEI (IDX)  TO  SPA-PTKOH-KOHNUM-MEI(IDY)
            MOVE   SPA-GMN-KTEKSTYMD (IDX)  TO  SPA-PTKOH-TEKSTYMDW(IDY)
            MOVE   SPA-GMN-KTEKEDYMD (IDX)  TO  SPA-PTKOH-TEKEDYMDW(IDY)
@@ -5078,6 +5092,56 @@
            .
        460-KOHKAKUNINYMD-ZUMI-EXT.
            EXIT.
+      ****************************************************************
+      *    公費期限切れチェック処理
+      *****************************************************************
+       460-TEKEDCHKKBN-CHK-SEC             SECTION.
+      *
+           EVALUATE    MCP-WIDGET
+               WHEN    "CK1"
+                   IF       SPA-GMN-KOHNUM (1) NOT =   SPACE
+                       IF     (SPA-NAI-TEKEDCHKKBN (1)
+                                                   =   "1"    )
+                           MOVE    SPACE       TO  SPA-NAI-TEKEDCHKKBN
+                                                                  (1)
+                       ELSE
+                           MOVE    "1"         TO  SPA-NAI-TEKEDCHKKBN
+                                                                  (1)
+                       END-IF
+                   END-IF
+               WHEN    "CK2"
+                   IF       SPA-GMN-KOHNUM (2) NOT =   SPACE
+                       IF     (SPA-NAI-TEKEDCHKKBN (2)
+                                                   =   "1"    )
+                           MOVE    SPACE       TO  SPA-NAI-TEKEDCHKKBN
+                                                                  (2)
+                       ELSE
+                           MOVE    "1"         TO  SPA-NAI-TEKEDCHKKBN
+                                                                  (2)
+                       END-IF
+                   END-IF
+               WHEN    "CK3"
+                   IF       SPA-GMN-KOHNUM (3) NOT =   SPACE
+                       IF     (SPA-NAI-TEKEDCHKKBN (3)
+                                                   =   "1"    )
+                           MOVE    SPACE       TO  SPA-NAI-TEKEDCHKKBN
+                                                                  (3)
+                       ELSE
+                           MOVE    "1"         TO  SPA-NAI-TEKEDCHKKBN
+                                                                  (3)
+                       END-IF
+                   END-IF
+           END-EVALUATE
+      *
+           MOVE    ZERO                TO  SPA-HKNKOH-FLG
+           MOVE    ZERO                TO  FLG-TOUROKU
+           MOVE    ZERO                TO  FLG-ERRCHK
+      *    入力チェック処理
+           PERFORM 410-INPUT-CHK-SEC
+      *
+           .
+       460-TEKEDCHKKBN-CHK-EXT.
+           EXIT.
       *
       ****************************************************************
       *    二重登録疑い画面処理
@@ -5445,6 +5509,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPA-PTKOH-TEKEDYMD  (IDX)   TO  PTKOH-TEKEDYMD
            MOVE    SPA-PTKOH-KAKUNINYMD(IDX)   TO  PTKOH-KAKUNINYMD
            MOVE    SPA-PTKOH-SAKJOKBN  (IDX)   TO  PTKOH-SAKJOKBN
+           MOVE    SPA-PTKOH-TEKEDCHKKBN (IDX) TO  PTKOH-TEKEDCHKKBN
       *
            .
        45021-KOH-SPA-PARA-EXT.
