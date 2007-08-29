@@ -728,7 +728,7 @@ path	upd1	{
                     AND     RECEYM       =   :RECEYM
                     AND     CREYMD       =   :CREYMD
                     AND     CREHMS       =   :CREHMS
-                    AND     PRTJYUN      >   0
+                    AND     PRTJYUN_SYUKA >   0
                     AND     PRTRENNUM    >   0 
                     AND     NYUGAIKBN    =   :NYUGAIKBN 
 		;
