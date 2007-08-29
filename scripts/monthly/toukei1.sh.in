@@ -30,6 +30,8 @@ fi
 #        ${17} ファイル出力先区分（病名）
 #        ${18} 端末ｉｐアドレス
 #        ${19} HOSPNUM
+#        ${20} FILENM1 FOLDER
+#        ${21} FILENM2 FOLDER
 #-------------------------------------------#
 ##      エラーファイル削除
 	echo $#
@@ -58,7 +60,7 @@ fi
         if  [ -e ${15} ]; then
             exit 
         else
-	        $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBT020 -parameter $2,$3,$5,$1,$9,${11},${13},${14},${19},${15} >> $LOG_FILE 2>&1
+	        $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBT020 -parameter $2,$3,$5,$1,$9,${11},${13},${14},${19},${15},${7},${8},${16},${17},${20},${21} >> $LOG_FILE 2>&1
 	fi
 
         if  [ -e ${15} ]; then
@@ -84,7 +86,7 @@ fi
         fi
 #
     FDDHOST=`echo ${18}|tr \[\] "  "`
-        if   [ ${9} != '2' ]; then
+        if   ( [ ${9} != '2' ] && [ ${16} != '6' ] ); then
              case ${16} in
                   1) 	$FDW -host $FDDHOST -command fd-write.sh /tmp/$7 $7
 			RC=$?
@@ -108,7 +110,7 @@ fi
 		exit
 	     fi
         fi         
-        if   [ ${9} != '1' ]; then
+        if   ( [ ${9} != '1' ] && [ ${17} != '6' ] ); then
              case ${17} in
                   1) 	$FDW -host $FDDHOST -command fd-write.sh /tmp/$8 $8
 			RC=$?

@@ -41,6 +41,7 @@ SCREEN_screen = \
 	GERR.glade \
 	GID1.glade \
 	GID2.glade \
+	GFIL.glade \
 	I01.glade \
 	I02.glade \
 	I03.glade \
@@ -170,10 +171,12 @@ SCREEN_screen = \
 	T01.glade \
 	T02.glade \
 	T03.glade \
+	T04.glade \
 	T99.glade \
 	TERR.glade \
 	TID1.glade \
 	TID2.glade \
+	TFIL.glade \
 	U01.glade \
 	U02.glade \
 	U1ERR.glade \

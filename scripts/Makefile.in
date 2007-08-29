@@ -44,6 +44,7 @@ shell_sources = \
 	monthly/recept5.sh.in \
 	monthly/recept50.sh.in \
 	monthly/recept6.sh.in \
+	monthly/recept60.sh.in \
 	monthly/recept7.sh.in \
 	monthly/recept8.sh.in \
 	monthly/recept9.sh.in \

@@ -123,4 +123,6 @@ db	{
 	tbl_clm_uid;
 	tbl_sysuser;
 	tbl_ptmemoinf;
+	tbl_file_info;
+	tbl_csv_info;
 };

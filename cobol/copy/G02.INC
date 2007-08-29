@@ -6,13 +6,13 @@
                   05  G02-VALUE    PIC X(22).
                 04  G02-FILE1-COUNT PIC S9(9)   BINARY.
                 04  G02-FILE1-ITEM
-                        PIC X(22)   OCCURS  5 TIMES.
+                        PIC X(22)   OCCURS  6 TIMES.
               03  G02-FILE2-COMBO.
                 04  G02-FILE2.
                   05  G02-VALUE    PIC X(22).
                 04  G02-FILE2-COUNT PIC S9(9)   BINARY.
                 04  G02-FILE2-ITEM
-                        PIC X(22)   OCCURS  5 TIMES.
+                        PIC X(22)   OCCURS  6 TIMES.
               03  G02-HOUKATUKBN1.
                 04  G02-VALUE   PIC X.
               03  G02-HOUKATUKBN2.

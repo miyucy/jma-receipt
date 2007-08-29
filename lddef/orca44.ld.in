@@ -7,10 +7,12 @@ bind	""		"OpenCOBOL"	"ORCGT01";
 bind	"T01"		"OpenCOBOL"	"ORCGT01";
 bind	"T02"		"OpenCOBOL"	"ORCGT02";
 bind	"T03"		"OpenCOBOL"	"ORCGT03";
+bind	"T04"		"OpenCOBOL"	"ORCGT04";
 bind	"T99"		"OpenCOBOL"	"ORCGT99";
 bind	"TERR"		"OpenCOBOL"	"ORCGTERR";
 bind	"TID1"		"OpenCOBOL"	"ORCGTID1";
 bind	"TID2"		"OpenCOBOL"	"ORCGTID2";
+bind	"TFIL"		"OpenCOBOL"	"ORCGTFIL";
 
 multiplex_group	orca44;
 
@@ -21,15 +23,19 @@ data	{
 		T01;
 		T02;
 		T03;
+		T04;
 		T99;
 		TERR;
 		TID1;
 		TID2;
+		TFIL;
 	};
 };
 
 db	{
 	tbl_btpara;
+	tbl_csv_info;
+	tbl_file_info;
 	tbl_hknjainf;
 	tbl_jobkanri;
 	tbl_prtdata;

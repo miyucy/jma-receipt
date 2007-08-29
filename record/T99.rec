@@ -22,5 +22,8 @@ T99	{
 				select	bool[30];
 			};
 		};
+		pandatimer1     {
+			duration        int;
+		};
 	};
 };

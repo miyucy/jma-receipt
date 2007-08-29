@@ -264,6 +264,7 @@
            COPY    "GERR.INC".
            COPY    "GID1.INC".
            COPY    "GID2.INC".
+           COPY    "GFIL.INC".
       *
        PROCEDURE                   DIVISION    USING
            MCPAREA
@@ -643,6 +644,7 @@
            MOVE    SPACE           TO  SPA-G99-FLG
            MOVE    SPACE           TO  SPA-GID1-FLG
            MOVE    SPACE           TO  SPA-GIDCD
+           MOVE    SPACE           TO  SPA-G99-MOTOPG
       *
            .
        340-G99-SET-EXT.
@@ -1884,10 +1886,12 @@
       *    ²èÌÌ¤ò£Ó£Ð£Á¥»¥Ã¥È
            PERFORM 4101-GMN-SPA-SET-SEC
       *
-           MOVE    SPACE               TO  G99
+           INITIALIZE                      G99
            MOVE    ZERO                TO  G99-COUNT
            MOVE    WIDGET-INSENSITIVE  TO  G99-B12-STATE
            MOVE    ZERO                TO  WRK-PRT-PAGE
+      *
+           MOVE    5                   TO  G99-DURATION
       *
            MOVE    SPACE               TO  SYS-3003-REC
            INITIALIZE                      SYS-3003-REC
@@ -1974,6 +1978,7 @@
            END-IF
       *
            MOVE    "G01"                TO  SPA-MOTOPG
+                                            SPA-G99-MOTOPG
            MOVE    "G99"                TO  SPA-SAKIPG
       *
            MOVE    "NEW"                TO  MCP-PUTTYPE

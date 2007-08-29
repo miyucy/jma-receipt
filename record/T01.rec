@@ -9,6 +9,9 @@ T01	{
 		B07	{
 			state	int;
 		};
+		B19	{
+			state	int;
+		};
 		B20	{
 			state	int;
 		};
@@ -31,7 +34,7 @@ T01	{
 				value	varchar(38);
 			};
 			count	int;
-			item	varchar(38)[4];
+			item	varchar(38)[5];
 		};
 		NYUGAIKBN_COMBO	{
 			state   int;

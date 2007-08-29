@@ -88,6 +88,7 @@
       *
       *  03.05.01    NACL-藤原    07/04/19  グループ診療対応
       *  03.05.02    NACL-藤原    07/05/25  印刷データ削除設定機能追加
+      *  03.05.03    NACL-藤原    07/08/01  クライアント保存対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -364,6 +365,12 @@
       *    プリンタ名取得サブ
            COPY  "CPORCSPRTNMGET.INC".
       *
+      *    クライアント保存ＤＢ制御サブ
+           COPY    "CPORCSFILESV.INC".
+      *
+      *    ＣＳＶ管理ＤＢ制御サブ
+           COPY    "CPORCSCSVINFO.INC".
+      *
       *****************************************************************
       *    連絡領域
       *****************************************************************
@@ -377,10 +384,12 @@
            COPY    "T01.INC".
            COPY    "T02.INC".
            COPY    "T03.INC".
+           COPY    "T04.INC".
            COPY    "T99.INC".
            COPY    "TERR.INC".
            COPY    "TID1.INC".
            COPY    "TID2.INC".
+           COPY    "TFIL.INC".
       *
        PROCEDURE                   DIVISION    USING
            MCPAREA
@@ -455,6 +464,7 @@
                        WHEN    "2001"
                        WHEN    "2003"
                        WHEN    "2007"
+                       WHEN    "2009"
                            PERFORM 520-TIDSET-SEC
                            GO  TO  100-INIT-EXT
                    END-EVALUATE
@@ -509,6 +519,9 @@
                    GO      TO      300-SCREEN-EXT
                WHEN    "T03"
                    GO      TO      300-SCREEN-EXT
+               WHEN    "T04"
+                   PERFORM 360-T04-SET-SEC
+                   GO      TO      300-SCREEN-EXT
            END-EVALUATE
       *
            PERFORM 310-SPASET-SEC
@@ -525,6 +538,7 @@
            INITIALIZE              SPA-T01-AREA
                                    SPA-T02-AREA
                                    SPA-T03-AREA
+                                   SPA-T04-AREA
       *
       *    出力先プリンタ名割り当て情報編集
            MOVE    SPACE               TO  SYS-1031-REC
@@ -570,7 +584,10 @@ grpsys                                         SPA-AREA
            MOVE    "4"             TO  SPA-GMN-DATAKBNL        (4)
            MOVE    "システム管理設定場所（ＭＯ用）"
                                    TO  SPA-GMN-DATAKBNMEIL     (4)
-           MOVE    4               TO  SPA-GMN-DATAKBN-MAX
+           MOVE    "5"             TO  SPA-GMN-DATAKBNL        (5)
+           MOVE    "クライアント保存"
+                                   TO  SPA-GMN-DATAKBNMEIL     (5)
+           MOVE    5               TO  SPA-GMN-DATAKBN-MAX
       *
            MOVE    SPA-GMN-DATAKBNLST (1)
                                    TO  SPA-GMN-DATAKBN-G
@@ -738,6 +755,24 @@ grpsys                                         SPA-AREA
            ELSE
                MOVE    WIDGET-INSENSITIVE TO  SPA-DATAKBN6-STATE
                MOVE    "F"                TO  SPA-DATAKBN6-VALUE  
+           END-IF
+      *
+      *    ファイル保存情報
+           MOVE    WIDGET-INSENSITIVE  TO  SPA-B19-STATE
+           IF      SPA-NAI-SKYYM       =   ZERO
+               CONTINUE
+           ELSE
+               INITIALIZE                  ORCSFILESVAREA
+               MOVE    "R"                 TO  SFILESV-MODE
+               MOVE    WRK-CONS-JOB-SHELLID
+                                           TO  SFILESV-TBL-KEY
+               MOVE    SPA-NAI-SKYYM       TO  SFILESV-SRYYM (1)
+               CALL    "ORCSFILESV"        USING
+                                               ORCSFILESVAREA
+                                               SPA-AREA
+               IF      SFILESV-RETURN      =   ZERO         
+                   MOVE    WIDGET-NORMAL       TO  SPA-B19-STATE
+               END-IF
            END-IF
       *
            MOVE    "T"                 TO  SPA-CHK11-VALUE
@@ -1019,6 +1054,13 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SYUKA-HOSPNUM
                END-IF
            END-IF
       *
+      *    ＣＳＶ一覧から遷移したとき再度一覧を表示する
+           IF      SPA-T99-MOTOPG  =   "T04"
+               INITIALIZE                  SPA-T01KYOUTU
+               PERFORM 480-CSV-SYORI-SEC
+               GO  TO  320-T99-SET-EXT
+           END-IF
+      *
            MOVE    1               TO  SPA-GMN-CUR
       *
            INITIALIZE                  SPA-T01KYOUTU
@@ -1190,6 +1232,13 @@ grpsys     MOVE    SPA-HOSPNUM         TO  RECEERR-HOSPNUM
                    WHEN    "2003"
                        PERFORM 3201-RECEDEN-NEXT-SEC
                        GO  TO  330-TID1-SET-EXT
+                   WHEN    "2009"
+      *                ジョブ管理チェック処理
+                       PERFORM 4501-JOBKANRI-CHK-SEC
+                       IF      SPA-ERRCD       =   SPACE
+                           PERFORM 3601-CSV-HENSYU-SEC
+                           GO  TO  330-TID1-SET-EXT
+                       END-IF
                END-EVALUATE
            ELSE        
                EVALUATE    SPA-TIDCD
@@ -1293,7 +1342,7 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
            ELSE
                MOVE    "1004"              TO  SPA-ERRCD
                GO  TO  3501-KOBETU-PRINT-EXT
-           END-IF             
+           END-IF
       *
       *    更新日取得
            INITIALIZE                  ORCSMCNDATEAREA
@@ -1322,6 +1371,30 @@ grpsys     MOVE    SPA-HOSPNUM         TO  RECEERR-HOSPNUM
                    UNTIL   IDX >       SPA-GMN-T02-SHELLID-MAX
                IF      SPA-GMN-T02-TSYORIFLG (IDX)
                                                =   "1"
+      *
+      *            クライアント保存削除処理             
+                   INITIALIZE                  ORCSFILESVAREA
+                   MOVE    "D"             TO  SFILESV-MODE
+                   MOVE    WRK-CONS-JOB-SHELLID
+                                           TO  SFILESV-TBL-KEY
+                   MOVE    SPA-NAI-SKYYM   TO  SFILESV-SRYYM   (1)
+                   MOVE    SPA-NAI-T02-TSHELLID (IDX)
+                                           TO  SFILESV-SHELLID (1)
+                   CALL    "ORCSFILESV"    USING
+                                               ORCSFILESVAREA
+                                               SPA-AREA
+      *
+                   INITIALIZE                  ORCSCSVINFOAREA
+                   MOVE    "DEL"           TO  SCSVINFO-MODE
+                   MOVE    WRK-CONS-JOB-SHELLID
+                                           TO  SCSVINFO-TBL-KEY
+                   MOVE    SPA-NAI-SKYYM   TO  SCSVINFO-SRYYM
+                   MOVE    SPA-NAI-T02-TSHELLID (IDX)
+                                           TO  SCSVINFO-SHELLID
+                   CALL    "ORCSCSVINFO"   USING
+                                               ORCSCSVINFOAREA
+                                               SPA-AREA
+      *
                    COMPUTE WRK-CONS-JOB-JOBID  =
                                SPA-NAI-T02-TJOBID (IDX)    -   1
                    PERFORM 45011-JOBKANRI-HENSYU-SEC
@@ -1474,6 +1547,119 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
        3501-KOBETU-PRINT-EXT.
            EXIT.
       *
+      *
+      *****************************************************************
+      *    ＣＳＶデータ作成処理
+      *****************************************************************
+       360-T04-SET-SEC            SECTION.
+      *
+           IF      SPA-TID1-FLG    =   "OK"
+               MOVE    "T04"                  TO  SPA-T99-MOTOPG
+      *        ジョブ管理チェック処理
+               PERFORM 4501-JOBKANRI-CHK-SEC
+               IF      SPA-ERRCD      =   SPACE
+                   IF      SPA-GMN-DATAKBN    =   "1" OR  "2"
+                       MOVE    SPACE           TO  SPA-TID1-FLG
+                       MOVE    "2009"          TO  SPA-TIDCD
+                       GO  TO  360-T04-SET-EXT
+                   ELSE
+                       PERFORM 3601-CSV-HENSYU-SEC
+                       GO  TO  360-T04-SET-EXT
+                   END-IF
+               END-IF
+           END-IF
+      *
+           MOVE    1               TO  SPA-GMN-CUR
+      *
+           INITIALIZE                  SPA-T01KYOUTU
+           .
+       360-T04-SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    クライアント保存処理
+      *****************************************************************
+       3601-CSV-HENSYU-SEC           SECTION.
+      * 
+           MOVE    ZERO            TO  SPA-T99-FILESV-CHK-FLG
+      * 
+      *    ジョブ管理削除処理
+           MOVE    "ALL"           TO  SJOBKANRI-MODE
+           INITIALIZE                  JOBKANRI-REC
+           MOVE    WRK-CONS-JOB-SHELLID
+                                   TO  JOB-SHELLID
+grpsys     PERFORM 900-CALL-ORCSJOB-SEC
+           IF      SJOBKANRI-RETURN    =   ZERO
+               CONTINUE
+           ELSE
+               MOVE    "1004"              TO  SPA-ERRCD
+               GO  TO  3601-CSV-HENSYU-EXT
+           END-IF
+      *
+           MOVE    ZERO                TO  WRK-CONS-JOB-JOBID     
+           PERFORM 45011-JOBKANRI-HENSYU-SEC
+      *
+           MOVE    WRK-CONS-FILE-ID
+                                   TO  RECEERR-FILE-ID
+           MOVE    SPA-TERMID      TO  RECEERR-TERMID
+           MOVE    SPA-HOSPNUM     TO  RECEERR-HOSPNUM
+           MOVE    SPACE           TO  SHELLTBL
+      *    ファイルデイレクトリ位置指定
+           INITIALIZE              ORCSMKPASSAREA
+           MOVE    "scripts/monthly/recept60.sh"
+                                   TO  MKPASS-IN-01
+           CALL    "ORCSMKPASS"    USING   ORCSMKPASSAREA
+           MOVE    MKPASS-OT-01    TO  SHELLTBL-NAME
+      *     
+           MOVE    SPA-HOSPNUM     TO  SHELLTBL-ARG1
+           MOVE    SPA-NAI-SKYYM   TO  SHELLTBL-ARG2
+           MOVE    SPA-NAI-T04-TSHELLID      (SPA-NAI-T04-SELNUM)
+                                   TO  SHELLTBL-ARG3
+           MOVE    SPA-NAI-T04-TSHORI-RENNUM (SPA-NAI-T04-SELNUM)
+                                   TO  SHELLTBL-ARG4
+           MOVE    SPA-NAI-T04-TRENNUM       (SPA-NAI-T04-SELNUM)
+                                   TO  SHELLTBL-ARG5
+           MOVE    SPA-GMN-DATAKBN TO  SHELLTBL-ARG6
+           MOVE    SPA-NAI-T04-TTO-FOLDER   (SPA-NAI-T04-SELNUM)
+                                   TO  SHELLTBL-ARG7
+           MOVE    SPA-NAI-T04-TTO-DATA     (SPA-NAI-T04-SELNUM)
+                                   TO  SHELLTBL-ARG8
+      *    ipアドレス取得
+           MOVE    "DBFETCH"       TO  MCP-FUNC
+           MOVE    "metadb"        TO  MCP-TABLE
+           MOVE    "primary"       TO  MCP-PATHNAME
+           CALL    "ORCDBMAIN"         USING
+                                       MCPAREA
+                                       DBMETA
+                                       SPA-AREA
+           MOVE    DBMETA-HOST     TO  SHELLTBL-ARG9
+           MOVE    WRK-CONS-JOB-JOBID
+                                   TO  SHELLTBL-ARG10
+           MOVE    WRK-CONS-JOB-SHELLID
+                                   TO  SHELLTBL-ARG11
+           MOVE    RECEERR         TO  SHELLTBL-ARG12
+      *
+           MOVE    SHELLTBL        TO  MCPDATA-REC
+           MOVE    "SHELL"         TO  MCP-FUNC
+           MOVE    "shell"         TO  MCP-TABLE
+           MOVE    "shell"         TO  MCP-PATHNAME
+           CALL    "ORCDBMAIN"         USING
+                                       MCPAREA
+                                       MCPDATA-REC
+                                       SPA-AREA
+      *
+           IF    ( SPA-GMN-DATAKBN =   "5" )
+               MOVE    "SV"            TO  SPA-TID1-FLG
+           ELSE
+               MOVE    "FI"            TO  SPA-TID1-FLG
+           END-IF
+      *
+      *    自動的に情報確認画面を表示
+           PERFORM 490-KAKUNIN-SEC      
+           .
+       3601-CSV-HENSYU-EXT.
+           EXIT.
+      *
       *****************************************************************
       *    画面遷移処理
       *****************************************************************
@@ -1508,6 +1694,10 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
       *     印刷
                WHEN    "CLICKED"       ALSO    "B12"
                    PERFORM 450-PRINT-GID-SEC
+      *     公費ＣＳＶデータ作成
+               WHEN    "CLICKED"       ALSO    "B19"
+                   MOVE    SPACE           TO  SPA-T99-MOTOPG
+                   PERFORM 480-CSV-SYORI-SEC
       *     主科未設定一覧
                WHEN    "CLICKED"       ALSO    "B20"
                    PERFORM 480-PRINT-GID-SEC
@@ -1705,6 +1895,24 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
                    MOVE    SGDAY-SDAY (1:6)    TO  SPA-NAI-SKYYM
                ELSE
                    MOVE    "0003"          TO  SPA-ERRCD
+               END-IF
+           END-IF
+      *
+      *    ファイル保存情報
+           MOVE    WIDGET-INSENSITIVE  TO  SPA-B19-STATE
+           IF      SPA-NAI-SKYYM       =   ZERO
+               CONTINUE
+           ELSE
+               INITIALIZE                  ORCSFILESVAREA
+               MOVE    "R"             TO  SFILESV-MODE
+               MOVE    WRK-CONS-JOB-SHELLID
+                                       TO  SFILESV-TBL-KEY
+               MOVE    SPA-NAI-SKYYM   TO  SFILESV-SRYYM (1)
+               CALL    "ORCSFILESV"    USING
+                                           ORCSFILESVAREA
+                                           SPA-AREA
+               IF      SFILESV-RETURN      =   ZERO         
+                   MOVE    WIDGET-NORMAL       TO  SPA-B19-STATE
                END-IF
            END-IF
       *
@@ -2091,6 +2299,27 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
                MOVE    "1004"              TO  SPA-ERRCD
                GO  TO  450-PRINT-EXT
            END-IF             
+      *
+      *    クライアント保存削除処理             
+           IF      T01-DATAKBN3-VALUE  =   "T"     
+               INITIALIZE                  ORCSFILESVAREA
+               MOVE    "D"             TO  SFILESV-MODE
+               MOVE    WRK-CONS-JOB-SHELLID
+                                       TO  SFILESV-TBL-KEY
+               MOVE    SPA-NAI-SKYYM   TO  SFILESV-SRYYM (1)
+               CALL    "ORCSFILESV"    USING
+                                           ORCSFILESVAREA
+                                           SPA-AREA
+      *
+               INITIALIZE                  ORCSCSVINFOAREA
+               MOVE    "DEL"           TO  SCSVINFO-MODE
+               MOVE    WRK-CONS-JOB-SHELLID
+                                       TO  SCSVINFO-TBL-KEY
+               MOVE    SPA-NAI-SKYYM   TO  SCSVINFO-SRYYM
+               CALL    "ORCSCSVINFO"   USING
+                                           ORCSCSVINFOAREA
+                                           SPA-AREA
+           END-IF    
       *
       *    更新日取得
            INITIALIZE                  ORCSMCNDATEAREA
@@ -3457,6 +3686,50 @@ grpsys             PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
+      *    公費ＣＳＶ作成画面
+      *****************************************************************
+       480-CSV-SYORI-SEC             SECTION.
+      *
+           IF      SPA-NAI-SKYYM       =   ZERO
+               MOVE    "0001"              TO  SPA-ERRCD
+           END-IF    
+      *
+           IF      SPA-GMN-DATAKBN     =   SPACE
+               MOVE    "0002"              TO  SPA-ERRCD
+           END-IF    
+      *
+           MOVE    SPACE               TO  SPA-MOTOPG
+           MOVE    SPA-T01KYOUTU       TO  SPA-WORK
+           MOVE    SPA-AREA            TO  SPA-COMMON
+           MOVE    SPA-T01FREE         TO  SPA-FREE
+      *
+           MOVE    "LINK"              TO  MCP-STATUS
+           MOVE    SPACE               TO  MCP-EVENT
+      *
+           CALL    "ORCGT04"           USING
+                                           MCPAREA
+                                           SPAAREA
+                                           LINKAREA
+                                           SCRAREA
+      *
+           MOVE    SPA-COMMON          TO  SPA-AREA
+           MOVE    SPA-FREE            TO  SPA-T01FREE
+           MOVE    SPA-WORK            TO  SPA-T01KYOUTU
+      *
+           MOVE    "T01"                TO  SPA-MOTOPG
+           MOVE    "T04"                TO  SPA-SAKIPG
+      *
+           MOVE    "NEW"                TO  MCP-PUTTYPE
+           MOVE    "T04"                TO  MCP-WINDOW
+      *
+           PERFORM 900-PUT-WINDOW
+      *
+           MOVE    1                    TO  FLG-END
+           .
+       480-CSV-SYORI-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    公費個別指定画面
       *****************************************************************
        490-KOBETU-SEC             SECTION.
@@ -3560,8 +3833,11 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
       *****************************************************************
        490-KAKUNIN-SEC            SECTION.
       *
-           MOVE    SPACE               TO  T99
+      *****MOVE    SPACE               TO  T99
+           INITIALIZE                      T99
            MOVE    ZERO                TO  T99-COUNT
+      *
+           MOVE    5                   TO  T99-DURATION
       *        
            MOVE    SPACE               TO  SYS-3003-REC 
            INITIALIZE                      SYS-3003-REC
@@ -3784,6 +4060,7 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
       *
            MOVE    SPA-B06-STATE       TO  T01-B06-STATE
            MOVE    SPA-B07-STATE       TO  T01-B07-STATE
+           MOVE    SPA-B19-STATE       TO  T01-B19-STATE
            MOVE    SPA-B20-STATE       TO  T01-B20-STATE
            MOVE    SPA-B21-STATE       TO  T01-B21-STATE
            MOVE    SPA-DATA-STATE      TO  T01-DATA-STATE
@@ -4002,6 +4279,7 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
                    MOVE    "集計表（国保）の印刷処理を行います"
                                        TO  WRK-TIDMSG
                WHEN    "2001"
+               WHEN    "2009"
                    MOVE    "媒体をドライブにセットして下さい"
                                        TO  WRK-TIDMSG
                WHEN    "2002"

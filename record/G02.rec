@@ -8,14 +8,14 @@ G02	{
 				value	varchar(22);
 			};
 			count	int;
-			item	varchar(22)[5];
+			item	varchar(22)[6];
 		};
 		FILE2_COMBO	{
 			FILE2	{
 				value	varchar(22);
 			};
 			count	int;
-			item	varchar(22)[5];
+			item	varchar(22)[6];
 		};
 		HOUKATUKBN1	{
 			value	bool;

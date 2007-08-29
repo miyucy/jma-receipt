@@ -37,6 +37,7 @@ RECORD_files = \
 	GERR.rec \
 	GID1.rec \
 	GID2.rec \
+	GFIL.rec \
 	H01.rec \
 	H99.rec \
 	HERR.rec \
@@ -173,10 +174,12 @@ RECORD_files = \
 	T01.rec \
 	T02.rec \
 	T03.rec \
+	T04.rec \
 	T99.rec \
 	TERR.rec \
 	TID1.rec \
 	TID2.rec \
+	TFIL.rec \
 	U01.rec \
 	U02.rec \
 	U02X.rec \
@@ -536,6 +539,9 @@ DB_files = \
 	tbl_sysbase.db \
 	tbl_mstkanri.db \
 	tbl_ptmemoinf.db \
+	tbl_file_info.db \
+	tbl_csv_info.db \
+
 
 all:   
 

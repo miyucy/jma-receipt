@@ -1,0 +1,77 @@
+#!/bin/sh
+
+if test -z "$JMARECEIPT_ENV" ; then
+    JMARECEIPT_ENV="@jma-receipt-env@"
+fi
+if ! test -f "$JMARECEIPT_ENV"; then
+    exit 0
+fi
+
+. $JMARECEIPT_ENV
+
+-------------------------------------------#
+#        ＣＳＶ＿ＩＮＦＯからのファイル作成
+#        ${1} HOSPNUM
+#        ${2} SRYYM
+#        ${3} SHELLID
+#        ${4} SHORI-RENNUM
+#        ${5} RENNUM
+#        ${6} 保存場所
+#        ${7} TO-FOLDER
+#        ${8} TO-DATA
+#        ${9} 端末ｉｐアドレス
+#        ${10} ジョブＩＤ
+#        ${11} シェルＩＤ
+#        ${12} エラーファイル名 
+#-------------------------------------------#
+#
+##      エラーファイル削除
+        rm -f ${12}
+
+        rm -f /tmp/${1}${8}
+
+        LOG_FILE="/var/log/jma-receipt/${1}recept60.log"
+        FILE_SJIS="/tmp/"${1}${8}".sjis"
+
+        rm -f $LOG_FILE
+
+        echo "file1= [" /tmp/${1}${8} "]"  > $LOG_FILE
+        echo "file2= [" $FILE_SJIS "]"      >> $LOG_FILE
+
+        $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBM600 -parameter ${1},${2},${3},${4},${5},${8},${10},${11},${12} >> $LOG_FILE 2>&1
+        if  [ -e ${12} ]; then
+            exit
+        fi
+
+
+#       漢字コード変換（ＥＵＣからシフトＪＩＳ）
+
+        nkf -s /tmp/${1}${8} > $FILE_SJIS
+         
+#
+        FDDHOST=`echo ${9}|tr \[\] "  "`
+        if   [ ${6} != '5' ]; then
+             case ${6} in
+                  1) 	$FDW -host $FDDHOST -command fd-write.sh $FILE_SJIS ${8}
+			RC=$?
+                        ;;
+                  2) 	$FDW -host $FDDHOST -command mo-write.sh $FILE_SJIS ${8}
+			RC=$?
+                        ;;
+                  3) 	$FDW -host $FDDHOST -command user1-write.sh $FILE_SJIS ${8}
+			RC=$?
+                        ;;
+                  4) 	$FDW -host $FDDHOST -command user2-write.sh $FILE_SJIS ${8}
+			RC=$?
+                        ;;
+             esac
+	     if  [ $RC -ne '0' ]; then
+		ERRCD='0000'$RC
+                $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE${10}${11}'  '${ERRCD:${#ERRCD}-4:4},${1} >> $LOG_FILE 2>&1
+		exit
+	     fi
+        fi         
+       
+        $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE${10}${11},${1} >> $LOG_FILE 2>&1
+
+        exit 

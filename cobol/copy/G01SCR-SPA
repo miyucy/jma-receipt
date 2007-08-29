@@ -86,3 +86,83 @@
                        09  SPA-NAI-G03-HISSU-KBN   PIC X(01)
                                                    OCCURS  8.
                    07  SPA-NAI-G03-STATUS          PIC 9(01).
+      *
+           03  SPA-G02-AREA.
+               05  SPA-GMN-G02-MAX                     PIC 9(04).
+               05  SPA-GMN-G02-PAGE                    PIC 9(02).
+               05  SPA-GMN-G02-CUR                     PIC 9(02).
+               05  SPA-GMN-G02-AREA.
+                   07  SPA-GMN-G02-SRYYM               PIC X(07).
+                   07  SPA-GMN-G02-FILENM1             PIC X(150).
+                   07  SPA-GMN-G02-FILENM2             PIC X(150).
+      *                         
+                   07  SPA-GMN-G02-NYUGAIKBNLST        OCCURS  2.
+                       09  SPA-GMN-G02-NYUGAIKBNL      PIC X(01).
+                       09  SPA-GMN-G02-F1L             PIC X(01).
+                       09  SPA-GMN-G02-NYUGAIKBNMEIL   PIC X(06).    
+                   07  SPA-GMN-G02-NYUGAIKBN-MAX       PIC 9(02).
+      *             
+                   07  SPA-GMN-G02-NYUGAIKBN-G.
+                       09  SPA-GMN-G02-NYUGAIKBN       PIC X(01).
+                       09  SPA-GMN-G02-F1              PIC X(01).
+                       09  SPA-GMN-G02-NYUGAIKBNMEI    PIC X(06).
+      *
+                   07  SPA-GMN-G02-FILE1LST            OCCURS  6.
+                       09  SPA-GMN-G02-FILE1L          PIC X(01).
+                       09  SPA-GMN-G02-F1L             PIC X(01).
+                       09  SPA-GMN-G02-FILE1MEIL       PIC X(20).
+                   07  SPA-GMN-G02-FILE1-MAX           PIC 9(02).    
+      *                                             
+                   07  SPA-GMN-G02-FILE1-G.
+                       09  SPA-GMN-G02-FILE1           PIC X(01).
+                       09  SPA-GMN-G02-F1              PIC X(01).
+                       09  SPA-GMN-G02-FILE1MEI        PIC X(20).
+      *                                             
+                   07  SPA-GMN-G02-FILE2LST            OCCURS  6.
+                       09  SPA-GMN-G02-FILE2L          PIC X(01).
+                       09  SPA-GMN-G02-F1L             PIC X(01).
+                       09  SPA-GMN-G02-FILE2MEIL       PIC X(20).
+                   07  SPA-GMN-G02-FILE2-MAX           PIC 9(02).    
+      *                                             
+                   07  SPA-GMN-G02-FILE2-G.
+                       09  SPA-GMN-G02-FILE2           PIC X(01).
+                       09  SPA-GMN-G02-F1              PIC X(01).
+                       09  SPA-GMN-G02-FILE2MEI        PIC X(20).
+      *
+                   07  SPA-GMN-G02-DATAKBN.         
+                       09  SPA-GMN-G02-DATAKBN1-VALUE  PIC X(01).
+                       09  SPA-GMN-G02-DATAKBN2-VALUE  PIC X(01).
+                       09  SPA-GMN-G02-DATAKBN3-VALUE  PIC X(01).
+      *
+                   07  SPA-GMN-G02-KOJINKBN.         
+                       09  SPA-GMN-G02-KOJINKBN1-VALUE PIC X(01).
+                       09  SPA-GMN-G02-KOJINKBN2-VALUE PIC X(01).
+      *
+                   07  SPA-GMN-G02-HOUKATUKBN.         
+                       09  SPA-GMN-G02-HOUKATUKBN1-VALUE
+                                                   PIC X(01).
+                       09  SPA-GMN-G02-HOUKATUKBN2-VALUE
+                                                   PIC X(01).
+      *
+                   07  SPA-GMN-G02-CDKBN.         
+                       09  SPA-GMN-G02-CDKBN1-VALUE    PIC X(01).
+                       09  SPA-GMN-G02-CDKBN2-VALUE    PIC X(01).
+      *
+               05  SPA-NAIB-G02-AREA.
+                   07  SPA-NAI-G02-SRYYM           PIC 9(06).
+                   07  SPA-NAI-G02-SRYYMH          PIC X(16).
+                   07  SPA-NAI-G02-NYUGAIKBN       PIC X(06).
+      *
+           03  SPA-G99-AREA.
+               05  SPA-SFILESV-AREA.
+                   07 SPA-SFILESV-OCC             OCCURS  100.
+                       09  SPA-SFILESV-TITLE       PIC X(100).
+                       09  SPA-SFILESV-CNT-ALL     PIC 9(07).
+                       09  SPA-SFILESV-FOR-FOLDER  PIC X(200).
+                       09  SPA-SFILESV-FOR-DATA    PIC X(200).
+                       09  SPA-SFILESV-TO-FOLDER   PIC X(200).
+                       09  SPA-SFILESV-TO-DATA     PIC X(200).
+                       09  SPA-SFILESV-CODE-TYPE   PIC X(01).
+                       09  SPA-SFILESV-DATA-TYPE   PIC X(01).
+                   07  SPA-SFILESV-IDX             PIC 9(03).
+                   07  SPA-SFILESV-MAX             PIC 9(03).

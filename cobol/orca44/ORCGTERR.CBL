@@ -73,10 +73,12 @@
            COPY    "T01.INC".
            COPY    "T02.INC".
            COPY    "T03.INC".
+           COPY    "T04.INC".
            COPY    "T99.INC".
            COPY    "TERR.INC".
            COPY    "TID1.INC".
            COPY    "TID2.INC".
+           COPY    "TFIL.INC".
       *
        PROCEDURE                   DIVISION    USING
            MCPAREA

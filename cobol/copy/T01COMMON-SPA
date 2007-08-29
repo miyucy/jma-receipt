@@ -33,6 +33,8 @@
       *警告画面より（印刷指示）
            05  SPA-RECEDEN-FLG             PIC  X(02).
       *
+           05  SPA-T99-MOTOPG              PIC X(08).
+      *
       *処理状態フラグ（１：レセ電）
            05  SPA-T01-SYORIFLG            PIC  9(01).
       *
@@ -41,3 +43,6 @@
       *
       *レセ電最終枚数
            05  SPA-T01-EDNO                PIC  9(02).
+      *
+      *    クライアント保存時のファイルセレクションチェックフラグ
+           05  SPA-T99-FILESV-CHK-FLG      PIC 9(01).

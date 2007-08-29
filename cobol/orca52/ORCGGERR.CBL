@@ -75,6 +75,7 @@
            COPY    "GERR.INC".
            COPY    "GID1.INC".
            COPY    "GID2.INC".
+           COPY    "GFIL.INC".
       *
        PROCEDURE                   DIVISION    USING
            MCPAREA

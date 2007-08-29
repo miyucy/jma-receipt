@@ -34,6 +34,7 @@
       *  03.03.02    NACL-藤原    06/12/15  入院の包括のデータ作成の修正
       *
       *  03.05.01    NACL-藤原    07/04/19  グループ診療対応
+      *  03.05.02    NACL-藤原    07/08/01  クライアント保存対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -181,7 +182,12 @@
                05  WRK-PARA-JOBID              PIC 9(07).
                05  WRK-PARA-SHELLID            PIC X(08).
                05  WRK-PARA-HOSPNUM            PIC 9(02).
-      *
+               05  WRK-PARA-FILENM1            PIC X(150).
+               05  WRK-PARA-FILENM2            PIC X(150).
+               05  WRK-PARA-FILE1              PIC X(20).
+               05  WRK-PARA-FILE2              PIC X(20).
+               05  WRK-PARA-FILENM1-FOLDER     PIC X(150).
+               05  WRK-PARA-FILENM2-FOLDER     PIC X(150).
            03  WRK-TOUKEIERR               PIC X(200). 
       * 
            03  WRK-YMD.
@@ -196,8 +202,9 @@
       *
            03  WRK-SYOKBN              PIC X(01).
            03  WRK-KOH-MAX             PIC 9(03).
+           03  WRK-RENNUM              PIC 9(03).
       *
-      *     右ずめ編集用     
+      *     右づめ編集用     
            03  WRK-HENKAN              PIC X(20).
            03  WRK-LENGTH              PIC 9(02).
            03  WRK-HENSYU              PIC X(20).
@@ -286,10 +293,15 @@
       *****************************************************************
       *    サブプロ用領域
       *****************************************************************
+      *
       *    数字変換領域
            COPY    "CPORCSNUM.INC".
+      *
       *   ジョブ管理ＤＢ制御サブ
            COPY    "CPORCSJOBKANRI.INC".
+      *
+      *    クライアント保存ＤＢ制御サブ
+           COPY    "CPORCSFILESV.INC".
       *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
@@ -339,6 +351,12 @@
                                                WRK-PARA-SHELLID
                                                WRK-PARA-HOSPNUM
                                                TOUKEIERR
+                                               WRK-PARA-FILENM1
+                                               WRK-PARA-FILENM2
+                                               WRK-PARA-FILE1
+                                               WRK-PARA-FILE2
+                                               WRK-PARA-FILENM1-FOLDER
+                                               WRK-PARA-FILENM2-FOLDER
            END-UNSTRING
            MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
       *
@@ -1281,6 +1299,9 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
                MOVE    "処理対象のデータがありませんでした"
                                            TO  WRK-TOUKEIERR
                PERFORM 500-ERR-HENSYU-SEC
+           ELSE
+      *        ファイル保存情報更新
+               PERFORM 3001-FILE-INFO-INSERT-SEC
            END-IF
       *
       *    ステップ管理終了処理
@@ -1296,6 +1317,79 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
            DISPLAY "*** ORCBT020 END ***"
            .
        300-TERM-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ファイル保存情報更新処理
+      *****************************************************************
+       3001-FILE-INFO-INSERT-SEC             SECTION.
+      *
+           MOVE    ZERO            TO  WRK-RENNUM
+      *
+           INITIALIZE                  ORCSFILESVAREA
+           MOVE    "I"             TO  SFILESV-MODE
+           MOVE    WRK-PARA-SHELLID
+                                   TO  SFILESV-TBL-KEY
+      *
+      *    月次統計データ（診療情報）
+           IF    ( WRK-PARA-DATAKBN    =   ZERO    OR  "1" )
+           AND   ( WRK-PARA-FILE1      =   "6"             )
+      *****AND   ( CNT-TOUKEI04        >   ZERO            )
+               ADD     1               TO  WRK-RENNUM
+      *
+               MOVE    "toukei1.sh"    TO  SFILESV-SHELLID  (WRK-RENNUM)
+               MOVE    1               TO  SFILESV-SHORI-RENNUM
+                                                            (WRK-RENNUM)
+               MOVE    WRK-RENNUM      TO  SFILESV-RENNUM   (WRK-RENNUM)
+               MOVE    WRK-PARA-SRYYM  TO  SFILESV-SRYYM    (WRK-RENNUM)
+               MOVE    "/tmp/"         TO  SFILESV-FOR-FOLDER
+                                                            (WRK-RENNUM)
+               MOVE    WRK-PARA-FILENM1
+                                       TO  SFILESV-FOR-DATA (WRK-RENNUM)
+      *********MOVE    WRK-PARA-FILENM1-FOLDER
+      *********                        TO  SFILESV-TO-FOLDER
+      *********                                             (WRK-RENNUM)
+               MOVE    WRK-PARA-FILENM1
+                                       TO  SFILESV-TO-DATA  (WRK-RENNUM)
+               MOVE    CNT-TOUKEI04    TO  SFILESV-CNT-ALL  (WRK-RENNUM)
+               MOVE    "月次統計データ（診療情報）"
+                                       TO  SFILESV-TITLE    (WRK-RENNUM)
+               MOVE    "1"             TO  SFILESV-DATA-TYPE(WRK-RENNUM) 
+           END-IF
+      *
+      *    月次統計データ（病名情報）
+           IF    ( WRK-PARA-DATAKBN    =   ZERO    OR  "2" )
+           AND   ( WRK-PARA-FILE2      =   "6"             )
+      *****AND   ( CNT-TOUKEI05        >   ZERO            )
+               ADD     1               TO  WRK-RENNUM
+      *
+               MOVE    "toukei1.sh"    TO  SFILESV-SHELLID  (WRK-RENNUM)
+               MOVE    1               TO  SFILESV-SHORI-RENNUM
+                                                            (WRK-RENNUM)
+               MOVE    WRK-RENNUM      TO  SFILESV-RENNUM   (WRK-RENNUM)
+               MOVE    WRK-PARA-SRYYM  TO  SFILESV-SRYYM    (WRK-RENNUM)
+               MOVE    "/tmp/"         TO  SFILESV-FOR-FOLDER
+                                                            (WRK-RENNUM)
+               MOVE    WRK-PARA-FILENM2
+                                       TO  SFILESV-FOR-DATA (WRK-RENNUM)
+      *********MOVE    WRK-PARA-FILENM2-FOLDER
+      *********                        TO  SFILESV-TO-FOLDER
+      *********                                             (WRK-RENNUM)
+               MOVE    WRK-PARA-FILENM2
+                                       TO  SFILESV-TO-DATA  (WRK-RENNUM)
+               MOVE    CNT-TOUKEI05    TO  SFILESV-CNT-ALL  (WRK-RENNUM)
+               MOVE    "月次統計データ（病名情報）"
+                                       TO  SFILESV-TITLE    (WRK-RENNUM)
+               MOVE    "1"             TO  SFILESV-DATA-TYPE(WRK-RENNUM) 
+           END-IF
+      *
+           IF      WRK-RENNUM          >   ZERO   
+               CALL    "ORCSFILESV"    USING
+                                           ORCSFILESVAREA
+                                           SPA-AREA
+           END-IF
+           .
+       3001-FILE-INFO-INSERT-EXT.
            EXIT.
       *
       *****************************************************************
