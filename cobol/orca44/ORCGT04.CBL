@@ -577,6 +577,12 @@
                MOVE    "0002"              TO  SPA-ERRCD
                MOVE    1                   TO  SPA-GMN-T04-CUR
            END-IF
+      *
+           IF      SPA-GMN-T04-TCNT-ALL (SPA-NAI-T04-SELNUM)
+                                       =   ZERO
+               MOVE    "0003"              TO  SPA-ERRCD
+               MOVE    1                   TO  SPA-GMN-T04-CUR
+           END-IF
       *       
       *    ジョブ管理チェック処理
            IF      SPA-ERRCD           =   SPACE
@@ -606,7 +612,7 @@
            MOVE    SYS-3003-STYUKYMD   TO  SYS-3003-EDYUKYMD
            MOVE    SPA-HOSPNUM         TO  SYS-3003-HOSPNUM
            MOVE    SYS-3003-REC        TO  MCPDATA-REC
-           PERFORM 900-SYSKANRI-READ-SEC
+           PERFORM 900-SYSKANRI-INV-SEC
            IF      FLG-SYSKANRI        =   ZERO
                MOVE    MCPDATA-REC         TO  SYS-3003-REC
                PERFORM VARYING IDX FROM    1   BY  1
@@ -915,6 +921,9 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
                    MOVE
                        "処理対象の処理が選択してありません"
                                                        TO  SPA-ERRMSG
+               WHEN    "0003"
+                   MOVE
+                       "処理対象のデータがありません"  TO  SPA-ERRMSG
                WHEN    "7777"
                    MOVE    WRK-RECEERR                 TO  SPA-ERRMSG
            END-EVALUATE

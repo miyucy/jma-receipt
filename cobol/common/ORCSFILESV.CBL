@@ -236,9 +236,6 @@
            END-IF
            MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
            MOVE    "tbl_file_info"     TO  MCP-TABLE
-      *???
-           DISPLAY "WRK=" MCP-TABLE "#" MCP-PATHNAME "#" 
-      *???
            PERFORM 900-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
                MOVE    "tbl_file_info"     TO  MCP-TABLE
