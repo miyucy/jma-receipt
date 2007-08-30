@@ -4692,6 +4692,7 @@
                    MOVE    ZERO                TO  SPA-NAI-ZENKIFLG
                END-IF
            END-IF
+           MOVE   SPACE                TO  SPA-KIDCD
            IF    (SPA-ERRCD            =   SPACE )  AND
                  (SPA-KIDCD            =   SPACE )
       *        変更のない時、以降の処理はそのまま
