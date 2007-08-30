@@ -16,7 +16,7 @@
       * 113-8621, Japan.
       ********************************************************************
       ************************************************************
-      *    クライアント保存管理               (CPFILE-INFO.INC)       *
+      *    ファイル情報ＤＢ              (CPFILE-INFO.INC)       *
       ************************************************************
       ************************************************************
       *  コピー句修正履歴
@@ -26,17 +26,18 @@
       *
           03  FILE-INFO-KEY.
       *
-               05  FILE-INFO-HOSPNUM       PIC 9(2).
+               05  FILE-INFO-HOSPNUM   PIC 9(2).
       *ＫＥＹ
-               05  FILE-INFO-TBL-KEY       PIC X(08).
+               05  FILE-INFO-TBL-KEY   PIC X(08).
       *シェルＩＤ
-               05  FILE-INFO-SHELLID       PIC X(20).
+               05  FILE-INFO-SHELLID   PIC X(20).
       *処理内連番
-               05  FILE-INFO-SHORI-RENNUM  PIC 9(03).
+               05  FILE-INFO-SHORI-RENNUM
+                                       PIC 9(03).
       *連番
-               05  FILE-INFO-RENNUM        PIC 9(03).
+               05  FILE-INFO-RENNUM    PIC 9(03).
       *診療年月
-           03  FILE-INFO-SRYYM         PIC X(06).
+               05  FILE-INFO-SRYYM     PIC X(06).
       *請求年月日
            03  FILE-INFO-SKYYMD        PIC X(08).
       *タイトル
@@ -51,21 +52,21 @@
            03  FILE-INFO-CNT-NYUIN     PIC 9(07).
       *件数（入院外）
            03  FILE-INFO-CNT-GAIRAI    PIC 9(07).
-      *印刷フラグ
+      *元格納場所
            03  FILE-INFO-FOR-FOLDER    PIC X(200).
-      *印刷フラグ
+      *元ファイル名
            03  FILE-INFO-FOR-DATA      PIC X(200).
-      *印刷フラグ
+      *先格納場所
            03  FILE-INFO-TO-FOLDER     PIC X(200).
-      *印刷フラグ
+      *先ファイル名
            03  FILE-INFO-TO-DATA       PIC X(200).
-      *プリンタ名
+      *コード区分（空白、１：Ｓ−ｊｉｓ ２：ＥＵＣ）
            03  FILE-INFO-CODE-TYPE     PIC X(01).
-      *プリンタ名
+      *ＣＳＶ用ＤＢ有無区分（１：ＤＢ有）
            03  FILE-INFO-DATA-TYPE     PIC X(01).
-      *プリンタ名
+      *エラーコード（１：エラー有）
            03  FILE-INFO-ERR-CODE      PIC X(01).
-      *プリンタ名
+      *エラーメッセージ
            03  FILE-INFO-ERR-MSG       PIC X(200).
       *処理日
            03  FILE-INFO-SYOYMD        PIC X(08).

@@ -272,6 +272,7 @@
                MOVE    FILE-INFO-ERR-MSG   TO  SFILESV-ERR-MSG     (IDX)
                MOVE    FILE-INFO-SYOYMD    TO  SFILESV-SYOYMD      (IDX)
                MOVE    FILE-INFO-CREYMD    TO  SFILESV-CREYMD      (IDX)
+               MOVE    FILE-INFO-CREHMS    TO  SFILESV-CREHMS      (IDX)
       *         
                MOVE    "tbl_file_info"     TO  MCP-TABLE
                MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
@@ -305,7 +306,7 @@
            MOVE    SFILESV-SHELLID (1) TO  FILE-INFO-SHELLID
            MOVE    SFILESV-SHORI-RENNUM (1)
                                        TO  FILE-INFO-SHORI-RENNUM
-           MOVE    SFILESV-RENNUM  (1)     TO  FILE-INFO-RENNUM
+           MOVE    SFILESV-RENNUM  (1) TO  FILE-INFO-RENNUM
       *
            MOVE    FILE-INFO-REC       TO  MCPDATA-REC
            MOVE    "key"               TO  MCP-PATHNAME
