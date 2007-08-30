@@ -125,4 +125,6 @@ db	{
 	tbl_ptmemoinf;
 	tbl_file_info;
 	tbl_csv_info;
+	tbl_shoukaikanri;
+	tbl_shoukaidata;
 };
