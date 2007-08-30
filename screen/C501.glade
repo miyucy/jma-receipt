@@ -42,12 +42,6 @@
   <widget>
     <class>GtkFixed</class>
     <name>fixed1</name>
-    <signal>
-      <name>selection_changed</name>
-      <handler>selection_changed</handler>
-      <data>SELECT</data>
-      <last_modification_time>Sat, 06 Jan 2001 08:51:57 GMT</last_modification_time>
-    </signal>
 
     <widget>
       <class>GtkButton</class>
