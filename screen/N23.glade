@@ -287,42 +287,6 @@
     </widget>
 
     <widget>
-      <class>GtkHSeparator</class>
-      <name>hseparator42</name>
-      <x>88</x>
-      <y>112</y>
-      <width>832</width>
-      <height>16</height>
-    </widget>
-
-    <widget>
-      <class>GtkHSeparator</class>
-      <name>hseparator25</name>
-      <x>88</x>
-      <y>312</y>
-      <width>832</width>
-      <height>16</height>
-    </widget>
-
-    <widget>
-      <class>GtkVSeparator</class>
-      <name>vseparator15</name>
-      <x>80</x>
-      <y>64</y>
-      <width>16</width>
-      <height>256</height>
-    </widget>
-
-    <widget>
-      <class>GtkVSeparator</class>
-      <name>vseparator16</name>
-      <x>912</x>
-      <y>64</y>
-      <width>16</width>
-      <height>256</height>
-    </widget>
-
-    <widget>
       <class>GtkLabel</class>
       <name>label172</name>
       <x>88</x>
@@ -352,15 +316,6 @@
       <yalign>0.5</yalign>
       <xpad>0</xpad>
       <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkHSeparator</class>
-      <name>hseparator38</name>
-      <x>88</x>
-      <y>56</y>
-      <width>832</width>
-      <height>16</height>
     </widget>
 
     <widget>
@@ -462,8 +417,24 @@
 
     <widget>
       <class>GtkLabel</class>
+      <name>label177</name>
+      <x>544</x>
+      <y>384</y>
+      <width>320</width>
+      <height>24</height>
+      <label>※入力コードのある薬剤はすべて対象とします。</label>
+      <justify>GTK_JUSTIFY_LEFT</justify>
+      <wrap>True</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
       <name>label176</name>
-      <x>296</x>
+      <x>320</x>
       <y>384</y>
       <width>88</width>
       <height>24</height>
@@ -477,19 +448,39 @@
     </widget>
 
     <widget>
-      <class>GtkLabel</class>
-      <name>label177</name>
-      <x>512</x>
-      <y>384</y>
-      <width>320</width>
-      <height>24</height>
-      <label>※入力コードのある薬剤はすべて対象とします。</label>
-      <justify>GTK_JUSTIFY_LEFT</justify>
-      <wrap>True</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
+      <class>GtkHSeparator</class>
+      <name>hseparator38</name>
+      <x>88</x>
+      <y>56</y>
+      <width>832</width>
+      <height>16</height>
+    </widget>
+
+    <widget>
+      <class>GtkHSeparator</class>
+      <name>hseparator46</name>
+      <x>88</x>
+      <y>304</y>
+      <width>832</width>
+      <height>16</height>
+    </widget>
+
+    <widget>
+      <class>GtkVSeparator</class>
+      <name>vseparator22</name>
+      <x>80</x>
+      <y>64</y>
+      <width>16</width>
+      <height>248</height>
+    </widget>
+
+    <widget>
+      <class>GtkVSeparator</class>
+      <name>vseparator16</name>
+      <x>912</x>
+      <y>64</y>
+      <width>16</width>
+      <height>248</height>
     </widget>
 
     <widget>
@@ -567,8 +558,8 @@
     <widget>
       <class>GtkCheckButton</class>
       <name>JYO</name>
-      <x>104</x>
-      <y>136</y>
+      <x>152</x>
+      <y>112</y>
       <width>112</width>
       <height>24</height>
       <can_focus>True</can_focus>
@@ -591,8 +582,8 @@
     <widget>
       <class>GtkRadioButton</class>
       <name>KBN1</name>
-      <x>248</x>
-      <y>136</y>
+      <x>280</x>
+      <y>112</y>
       <width>136</width>
       <height>24</height>
       <can_focus>True</can_focus>
@@ -616,8 +607,8 @@
     <widget>
       <class>GtkRadioButton</class>
       <name>KBN2</name>
-      <x>248</x>
-      <y>168</y>
+      <x>280</x>
+      <y>144</y>
       <width>136</width>
       <height>24</height>
       <can_focus>True</can_focus>
@@ -641,8 +632,8 @@
     <widget>
       <class>GtkRadioButton</class>
       <name>KBN3</name>
-      <x>248</x>
-      <y>200</y>
+      <x>280</x>
+      <y>176</y>
       <width>136</width>
       <height>24</height>
       <can_focus>True</can_focus>
@@ -666,8 +657,8 @@
     <widget>
       <class>GtkRadioButton</class>
       <name>KBN4</name>
-      <x>248</x>
-      <y>232</y>
+      <x>280</x>
+      <y>208</y>
       <width>136</width>
       <height>24</height>
       <can_focus>True</can_focus>
@@ -691,8 +682,8 @@
     <widget>
       <class>GtkPandaEntry</class>
       <name>NAME</name>
-      <x>384</x>
-      <y>136</y>
+      <x>416</x>
+      <y>112</y>
       <width>300</width>
       <height>24</height>
       <can_focus>True</can_focus>
@@ -719,8 +710,8 @@
     <widget>
       <class>GtkPandaEntry</class>
       <name>SRYCD</name>
-      <x>384</x>
-      <y>168</y>
+      <x>416</x>
+      <y>144</y>
       <width>120</width>
       <height>24</height>
       <can_focus>True</can_focus>
@@ -747,8 +738,8 @@
     <widget>
       <class>GtkPandaEntry</class>
       <name>INPUTCD</name>
-      <x>384</x>
-      <y>200</y>
+      <x>416</x>
+      <y>176</y>
       <width>120</width>
       <height>24</height>
       <can_focus>True</can_focus>
@@ -775,8 +766,8 @@
     <widget>
       <class>GtkCheckButton</class>
       <name>IYK1</name>
-      <x>384</x>
-      <y>232</y>
+      <x>416</x>
+      <y>208</y>
       <width>100</width>
       <height>24</height>
       <can_focus>True</can_focus>
@@ -799,8 +790,8 @@
     <widget>
       <class>GtkCheckButton</class>
       <name>IYK2</name>
-      <x>384</x>
-      <y>256</y>
+      <x>416</x>
+      <y>240</y>
       <width>100</width>
       <height>24</height>
       <can_focus>True</can_focus>
@@ -823,8 +814,8 @@
     <widget>
       <class>GtkCheckButton</class>
       <name>IYK3</name>
-      <x>384</x>
-      <y>280</y>
+      <x>416</x>
+      <y>272</y>
       <width>100</width>
       <height>24</height>
       <can_focus>True</can_focus>
@@ -847,7 +838,7 @@
     <widget>
       <class>GtkPandaCombo</class>
       <name>KIKANCOMBO</name>
-      <x>384</x>
+      <x>416</x>
       <y>384</y>
       <width>120</width>
       <height>24</height>
@@ -935,7 +926,7 @@
     <widget>
       <class>GtkRadioButton</class>
       <name>SYU1</name>
-      <x>248</x>
+      <x>280</x>
       <y>584</y>
       <width>144</width>
       <height>24</height>
@@ -960,7 +951,7 @@
     <widget>
       <class>GtkRadioButton</class>
       <name>SYU2</name>
-      <x>248</x>
+      <x>280</x>
       <y>616</y>
       <width>120</width>
       <height>24</height>
