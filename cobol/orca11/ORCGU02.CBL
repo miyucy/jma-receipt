@@ -556,7 +556,7 @@
                                            OR  "XF01"
       *            予約，受付編集
                    PERFORM 3101-UKETU-HEN-SEC
-      *           患者メモ表示処理
+      *            患者メモ表示処理
                    PERFORM 410119-PTMEMOINF-SEC
                    GO      TO      300-SCREEN-EXT
                END-IF
@@ -4534,6 +4534,9 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *    ユーザプログラム実行画面表示処理
       *****************************************************************
        49071-XD01-SYORI-SEC              SECTION.
+      *
+      *    排他制御解除処理
+           PERFORM 990-LOCK-OUT-SEC
       *
            EVALUATE    SPA-MOTOPG
       *        ＣＬＡＩＭ画面より
