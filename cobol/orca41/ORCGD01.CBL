@@ -2143,6 +2143,7 @@
            IF    ( SPA-ERRCD           =   SPACE )
                PERFORM 3101-USRCHKKBNLST-HEN-SEC
                MOVE    SPACE       TO  SPA-GMN-D01-USRCHKKBN-G
+               MOVE    ZERO        TO  SPA-NAI-D01-USRCHKKBN-SEL
            END-IF
       *
            .
@@ -2930,6 +2931,11 @@
            IF    ( SPA-NAI-D01-USRCHKKBN-SEL   =    ZERO )
                MOVE    WIDGET-INSENSITIVE  TO  D01-B05S-STATE
                                                D01-B06S-STATE
+           END-IF
+      *
+           IF    ( SPA-GMN-D01-USRCHKKBN-MAX
+                                          >=   CONST-USRCHKKBN-MAX )
+               MOVE    WIDGET-INSENSITIVE  TO  D01-B07S-STATE
            END-IF
       *
            .
