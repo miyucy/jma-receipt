@@ -7,6 +7,7 @@ bind	""		"OpenCOBOL"	"ORCGQ01";
 bind	"Q01"		"OpenCOBOL"	"ORCGQ01";
 bind	"Q02"		"OpenCOBOL"	"ORCGQ02";
 bind	"Q03"		"OpenCOBOL"	"ORCGQ03";
+bind	"Q04"		"OpenCOBOL"	"ORCGQ04";
 bind	"Q96"		"OpenCOBOL"	"ORCGQ96";
 bind	"Q97"		"OpenCOBOL"	"ORCGQ97";
 bind	"Q98"		"OpenCOBOL"	"ORCGQ98";
@@ -23,6 +24,7 @@ data	{
 		Q01;
 		Q02;
 		Q03;
+		Q04;
 		Q96;
 		Q97;
 		Q98;
@@ -47,6 +49,8 @@ db	{
 	tbl_jobkanri;
 	query_ptinf;
 	tbl_ptnyuinrrk;
+	tbl_shoukaikanri;
+	tbl_shoukaidata;
 };
 
 /* #include "orcadb.inc" */

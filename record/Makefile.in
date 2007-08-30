@@ -352,6 +352,7 @@ RECORD_files = \
 	XF011.rec \
 	XFERR.rec \
 	XFID1.rec \
+ 	Q04.rec \
 
 DEF_files = \
 	HC01.def \
@@ -541,6 +542,8 @@ DB_files = \
 	tbl_ptmemoinf.db \
 	tbl_file_info.db \
 	tbl_csv_info.db \
+	tbl_shoukaidata.db \
+	tbl_shoukaikanri.db \
 
 
 all:   

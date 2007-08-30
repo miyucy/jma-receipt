@@ -95,7 +95,14 @@
            03  FLG-USERBYOMEI                      PIC 9(01).
            03  FLG-HKNNUM                          PIC 9(01).
            03  FLG-SYSKANRI                        PIC 9(01).
+           03  FLG-SHOUKAIKANRI                    PIC 9(01).
+           03  FLG-SHOUKAIDATA                     PIC 9(01).
            03  FLG-KANJI                           PIC 9(01).
+           03  FLG-PAGENO-G.
+               05  FLG-PAGENO-00                   PIC 9(01).
+               05  FLG-PAGENO-01                   PIC 9(01).
+               05  FLG-PAGENO-02                   PIC 9(01).
+               05  FLG-PAGENO-03                   PIC 9(01).
       *
            03  FLG-OK                              PIC 9(01).
       *
@@ -116,6 +123,7 @@
            03  IDXC                                PIC 9(04).
            03  IDXZ                                PIC 9(04).
            03  IDX-LEN                             PIC 9(05).
+           03  IDX-CMB                             PIC 9(05).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -172,6 +180,18 @@
                05  WRK-NAME22           PIC X(40).
            03  WRK-STR                  PIC X(20000).
            03  WRK-STR-LEN              PIC 9(05).
+           03  WRK-SELPATTERN-G.
+               05  WRK-SELPATTERN       PIC 9(02).
+               05  WRK-SELPATTERNFL     PIC X(01).
+               05  WRK-SELPATTERNMEI    PIC X(30).
+           03  WRK-RENNUM               PIC 9(05).
+           03  WRK-UID                  PIC X(36).
+           03  WRK-CMB-CD                          PIC X(50).
+           03  WRK-CMB-ITM-G.
+               07  WRK-CMB-ITM                     PIC X(200).
+               07  WRK-CMB-ITM2                    PIC X(200).
+           03  WRK-QIDMSG                          PIC X(80).
+           03  WRK-UPDKBN               PIC X(03).
       *
       *
        01  WRK-WIDGET-AREA.
@@ -256,6 +276,10 @@
                05  CONST-KMK-ITEM                  PIC X(30)
                                                    OCCURS  10.
            03  CONST-BYOMEI-MAX                    PIC 9(05)   VALUE 80.
+           03  CONST-SELPATTERN-MAX                PIC 9(05)   VALUE 50.
+      *
+      *    画面項目ID
+           COPY    "CPSHOKAIITEMID.INC".
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -294,6 +318,14 @@
        01  INPUTCD-REC.
            COPY    "CPINPUTCD.INC".
       *
+      *    患者照会検索条件管理情報
+       01  SHOUKAIKANRI-REC.
+           COPY    "CPSHOUKAIKANRI.INC".
+      *
+      *    患者照会検索条件データ情報
+       01  SHOUKAIDATA-REC.
+           COPY    "CPSHOUKAIDATA.INC".
+      *
       *****************************************************************
       *    サブプロ用　領域
       *****************************************************************
@@ -319,6 +351,14 @@
       *    部分一致文字列編集
            COPY    "CPORCSADDSIGN.INC".
       *
+      *    マシン日付取得サブ
+           COPY    "CPORCSMCNDATE.INC".
+      *
+       01 UIDIO-AREA.
+           03  C-RET                   PIC X(2).
+           03  C-UID                   PIC X(36).
+       01  ST                          PIC 9(2).
+      *
       *****************************************************************
       *    連絡領域
       *****************************************************************
@@ -332,6 +372,7 @@
            COPY    "Q01.INC".
            COPY    "Q02.INC".
            COPY    "Q03.INC".
+           COPY    "Q04.INC".
            COPY    "Q96.INC".
            COPY    "Q97.INC".
            COPY    "Q98.INC".
@@ -449,6 +490,13 @@
            WHEN    "Q99"
                PERFORM 310-Q99SPASET-SEC
                GO      TO      300-SCREEN-EXT
+           WHEN    "Q04"
+               PERFORM 310-Q04SPASET-SEC
+               GO      TO      300-SCREEN-EXT
+      *    確認メッセージ画面
+           WHEN    "QID1"
+               PERFORM 310-QID1SPASET-SEC
+               GO  TO      300-SCREEN-EXT
            END-EVALUATE
       *
            PERFORM 310-SPASET-SEC
@@ -539,6 +587,42 @@
            EXIT.
       *
       *****************************************************************
+      *    Ｑ０４戻りスパ編集処理
+      *****************************************************************
+       310-Q04SPASET-SEC               SECTION.
+      *
+           IF  ( SPA-Q01-Q04-NAME  NOT =  SPACE )
+               MOVE    SPA-Q01-Q04-NAME   TO   WRK-SELPATTERNMEI
+               IF    ( SPA-Q01-Q04-UPDKBN =    "UPD" )
+                   PERFORM 4601-SELPATTERN-UPD-SEC
+               ELSE
+                   PERFORM 700-SELPATTERN-INS-SEC
+               END-IF
+           
+           END-IF
+      *
+           .
+       310-Q04SPASET-EXT.
+           EXIT.
+      *****************************************************************
+      *    ＱＩＤ１戻りスパ編集処理
+      *****************************************************************
+       310-QID1SPASET-SEC              SECTION.
+      *
+           IF    ( SPA-QID1-FLG    =   "OK" )
+      *
+               EVALUATE    SPA-QIDCD
+               WHEN    "3002"
+                   PERFORM 4501-SELPATTERN-DEL-SEC
+               END-EVALUATE
+           END-IF
+      *
+           INITIALIZE  SPA-Q00-QID-AREA
+           .
+      *
+       310-QID1SPASET-EXT.
+           EXIT.
+      *****************************************************************
       *    スパ初期編集処理
       *****************************************************************
        310-SPASET-SEC              SECTION.
@@ -564,6 +648,9 @@
            PERFORM 3101-SEX-CMB-SYOKI-SEC
            MOVE    SPA-GMN-Q01-SEXLST (1)
                                        TO  SPA-GMN-Q01-SEX-G
+      *
+      *    検索条件コンボ初期処理
+           PERFORM 3101-SELPATTERN-CMB-SYOKI-SEC
       *
       *    入外区分コンボ初期処理
            PERFORM 3101-NYUGAIKBN-CMB-SYOKI-SEC
@@ -634,10 +721,51 @@
            MOVE    "T"                 TO  SPA-GMN-Q01-RDSRYACT-OR
       *
       *    カーソルキー制御項目
-           MOVE   1                   TO  SPA-GMN-Q01-CUR
+           MOVE   3                    TO  SPA-GMN-Q01-CUR
       *
            .
        310-SPASET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    検索条件コンボ初期処理
+      *****************************************************************
+       3101-SELPATTERN-CMB-SYOKI-SEC   SECTION.
+      *
+           INITIALIZE                  SPA-GMN-Q01-SELPATTERNLST-G
+                                       SPA-NAI-Q01-SELPATTERNLST-G
+                                       WRK-SELPATTERN-G
+      *
+           PERFORM 900-SHOUKAIKANRI-KEY2-SEL-SEC
+      *
+           PERFORM UNTIL ( FLG-SHOUKAIKANRI    NOT =   ZERO )
+                    OR   ( SPA-GMN-Q01-SELPATTERNLST-MAX
+                                       >=  CONST-SELPATTERN-MAX )
+      *
+               COMPUTE WRK-SELPATTERN  =   WRK-SELPATTERN  +   1
+      *
+               MOVE    WRK-SELPATTERN  TO  SPA-GMN-Q01-SELPATTERNLST-MAX
+      *
+               MOVE    SHOKANRI-NAME   TO  WRK-SELPATTERNMEI
+               MOVE    WRK-SELPATTERN-G
+                                   TO SPA-GMN-Q01-SELPATTERNLST
+                                                        (WRK-SELPATTERN)
+      *
+               MOVE    SHOKANRI-UID
+                                   TO  SPA-NAI-Q01-SELPATTERN-UIDL
+                                                        (WRK-SELPATTERN)
+      *
+               PERFORM 900-SHOUKAIKANRI-KEY2-FET-SEC
+      *
+           END-PERFORM
+      *
+           MOVE    "tbl_shoukaikanri"  TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           PERFORM 910-DBCLOSECURSOR-SEC
+      *
+           .
+      *
+       3101-SELPATTERN-CMB-SYOKI-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1266,10 +1394,10 @@
                PERFORM 480-CLEAR-SEC
            WHEN    "CLICKED"           ALSO    "B04"
                PERFORM 4100-SRYYMD-SET-SEC
-           WHEN    "CLICKED"           ALSO    "B16"
+           WHEN    "CLICKED"           ALSO    "B04S"
                PERFORM 4100-SRYYM-SET-SEC
       *    条件クリア（全て）
-           WHEN    "CLICKED"           ALSO    "B14"
+           WHEN    "CLICKED"           ALSO    "B02S"
                PERFORM 480-ALL-CLEAR-SEC
       *    予約登録へ
       * xx     WHEN    "CLICKED"       ALSO    "B10"
@@ -1383,6 +1511,15 @@
                PERFORM 4101-BTSRYBUBUN-CHK-SEC
            WHEN    "CLICKED"       ALSO    "BTSRYKOHO"
                PERFORM 4101-BTSRYKOHO-CHK-SEC
+           WHEN    "CLICKED"       ALSO    "B05S"
+      *        検索条件保存内容削除
+               PERFORM 450-SELPATTERN-DEL-SEC
+           WHEN    "CLICKED"       ALSO    "B06S"
+               MOVE    "UPD"       TO  WRK-UPDKBN
+               PERFORM 470-Q04-SENI-SEC
+           WHEN    "CLICKED"       ALSO    "B07S"
+               MOVE    "INS"       TO  WRK-UPDKBN
+               PERFORM 470-Q04-SENI-SEC
            END-EVALUATE
       *
            .
@@ -1397,6 +1534,10 @@
            MOVE    MCP-WIDGET          TO  WRK-MCP-WIDGET
       *
            EVALUATE    MCP-EVENT       ALSO    MCP-WIDGET
+      *
+      *    患者照会検索条件チェック処理
+           WHEN    "ACTIVATE"      ALSO    "SELPATTERN"
+               PERFORM 4100-SELPATTERN-CHK-SEC
       *
       *    病名分類区分チェック処理
            WHEN    "ACTIVATE"      ALSO    "BYOBUN"
@@ -2237,6 +2378,8 @@
            PERFORM VARYING IDX2    FROM    1   BY  1
                    UNTIL ( IDX2    >   SPA-GMN-Q01-SEXLST-MAX )
                IF    ( SPA-GMN-Q01-SEX =   SPA-GMN-Q01-SEXL (IDX2))
+                   MOVE    SPA-GMN-Q01-SEXLST (IDX2)
+                                       TO  SPA-GMN-Q01-SEX-G
                    MOVE    1           TO  FLG-CHK
                    MOVE    SPA-GMN-Q01-SEXLST-MAX
                                        TO  IDX2
@@ -3321,6 +3464,48 @@
            EXIT.
       *
       *****************************************************************
+      *    患者照会検索条件チェック処理
+      *****************************************************************
+       4100-SELPATTERN-CHK-SEC         SECTION.
+      *
+           MOVE    Q01-SELPATTERN      TO  SPA-GMN-Q01-SELPATTERN-G
+      *
+           INITIALIZE                  SPA-NAI-Q01-SELPATTERN-G
+      *
+           MOVE    SPA-GMN-Q01-SELPATTERN  TO  WRK-CMB-CD
+           PERFORM 4200-SELPATTERNLST-CHK-SEC
+           IF    ( WRK-CMB-ITM         =   SPACE )
+               MOVE    SPACE       TO  SPA-GMN-Q01-SELPATTERN-G
+           ELSE
+      *
+               PERFORM 480-ALL-CLEAR-SEC
+      *
+               MOVE    WRK-CMB-ITM     TO  SPA-GMN-Q01-SELPATTERN-G
+               MOVE    WRK-CMB-ITM2    TO  SPA-NAI-Q01-SELPATTERN-UID
+      *
+               PERFORM 700-GMNHEN-SEC
+      *
+               EVALUATE    TRUE
+               WHEN  ( FLG-PAGENO-00   =   1 )
+                   MOVE    ZERO    TO  SPA-GMN-Q01-PAGENO
+               WHEN  ( FLG-PAGENO-01   =   1 )
+                   MOVE    1       TO  SPA-GMN-Q01-PAGENO
+               WHEN  ( FLG-PAGENO-02   =   1 )
+                   MOVE    2       TO  SPA-GMN-Q01-PAGENO
+               WHEN    OTHER
+                   MOVE    ZERO    TO  SPA-GMN-Q01-PAGENO
+               END-EVALUATE
+      *
+               PERFORM 4101-GMN-SPA-SET-SEC
+               PERFORM 4901-ALL-INPUT-CHK-SEC
+               MOVE    SPACE       TO  SPA-ERRCD
+           END-IF
+      *
+           .
+       4100-SELPATTERN-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    病名分類区分チェック処理
       *****************************************************************
        4118-BYOBUN-CHK-SEC             SECTION.
@@ -4287,6 +4472,51 @@
        4100-SRYYM-SET-EXT.
            EXIT.
       *****************************************************************
+      *    検索条件コンボボックスチェック処理
+      *****************************************************************
+       4200-SELPATTERNLST-CHK-SEC        SECTION.
+      *
+           INITIALIZE                    WRK-CMB-ITM-G.
+      *
+           PERFORM VARYING IDX-CMB FROM    1   BY  1
+                   UNTIL ( IDX-CMB >   SPA-GMN-Q01-SELPATTERNLST-MAX )
+                    OR   ( WRK-CMB-ITM NOT =   SPACE )
+      *
+               IF    ( WRK-CMB-CD  =   SPA-GMN-Q01-SELPATTERNL(IDX-CMB))
+                   MOVE    SPA-GMN-Q01-SELPATTERNLST  (IDX-CMB)
+                                       TO  WRK-CMB-ITM
+                   MOVE    SPA-NAI-Q01-SELPATTERN-UIDL(IDX-CMB)
+                                       TO  WRK-CMB-ITM2
+               END-IF
+           END-PERFORM
+      *
+           .
+       4200-SELPATTERNLST-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    検索条件コンボボックスチェック処理
+      *****************************************************************
+       4201-SELPATTERNLST-CHK-SEC        SECTION.
+      *
+           INITIALIZE                    WRK-CMB-ITM-G.
+      *
+           PERFORM VARYING IDX-CMB FROM    1   BY  1
+                   UNTIL ( IDX-CMB >   SPA-GMN-Q01-SELPATTERNLST-MAX )
+                    OR   ( WRK-CMB-ITM NOT =   SPACE )
+      *
+               IF    ( WRK-CMB-CD  =   SPA-NAI-Q01-SELPATTERN-UIDL
+                                                              (IDX-CMB))
+                   MOVE    SPA-GMN-Q01-SELPATTERNLST  (IDX-CMB)
+                                       TO  WRK-CMB-ITM
+                   MOVE    SPA-NAI-Q01-SELPATTERN-UIDL(IDX-CMB)
+                                       TO  WRK-CMB-ITM2
+               END-IF
+           END-PERFORM
+      *
+           .
+       4201-SELPATTERNLST-CHK-EXT.
+           EXIT.
+      *****************************************************************
       *    テスト患者チェックボタン編集処理
       *****************************************************************
        410-CHKTSTPT-SET-SEC              SECTION.
@@ -4509,6 +4739,175 @@
       *
            .
        450-RDIO-SET-EXT.
+           EXIT.
+      *****************************************************************
+      *    検索条件保存内容削除処理
+      *****************************************************************
+       450-SELPATTERN-DEL-SEC          SECTION.
+      *
+           MOVE    "3002"          TO  SPA-QIDCD
+      *
+           .
+       450-SELPATTERN-DEL-EXT.
+           EXIT.
+      *****************************************************************
+      *    検索条件保存内容削除処理
+      *****************************************************************
+       4501-SELPATTERN-DEL-SEC         SECTION.
+      *
+           PERFORM 45011-SHOUKAIDATA-DEL-SEC
+      *
+           IF    ( SPA-ERRCD       =   SPACE )
+               PERFORM 45011-SHOUKAIKANRI-DEL-SEC
+           END-IF
+      *
+           IF    ( SPA-ERRCD       =   SPACE )
+               PERFORM     3101-SELPATTERN-CMB-SYOKI-SEC
+               INITIALIZE              SPA-GMN-Q01-SELPATTERN-G
+                                       SPA-NAI-Q01-SELPATTERN-G
+           END-IF
+      *
+           .
+       4501-SELPATTERN-DEL-EXT.
+           EXIT.
+      *****************************************************************
+      *    患者照会検索条件データ情報削除処理
+      *****************************************************************
+       45011-SHOUKAIDATA-DEL-SEC       SECTION.
+      *
+           INITIALIZE                  SHOUKAIDATA-REC
+           MOVE    SPA-HOSPNUM         TO  SHODATA-HOSPNUM
+           MOVE    SPA-NAI-Q01-SELPATTERN-UID
+                                       TO  SHODATA-UID
+           MOVE    SHOUKAIDATA-REC     TO  MCPDATA-REC
+           MOVE    "tbl_shoukaidata"   TO  MCP-TABLE
+           MOVE    "del1"              TO  MCP-PATHNAME
+           PERFORM 910-DBDELETE-SEC
+           IF    ( MCP-RC      NOT =   ZERO )
+               MOVE    "4003"          TO  SPA-ERRCD
+           END-IF
+      *
+           .
+       45011-SHOUKAIDATA-DEL-EXT.
+           EXIT.
+      *****************************************************************
+      *    患者照会検索条件データ情報削除処理
+      *****************************************************************
+       45011-SHOUKAIKANRI-DEL-SEC      SECTION.
+      *
+           INITIALIZE                  SHOUKAIKANRI-REC
+           MOVE    SPA-HOSPNUM         TO  SHOKANRI-HOSPNUM
+           MOVE    SPA-NAI-Q01-SELPATTERN-UID
+                                       TO  SHOKANRI-UID
+           MOVE    SHOUKAIKANRI-REC    TO  MCPDATA-REC
+           MOVE    "tbl_shoukaikanri"  TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 910-DBDELETE-SEC
+           IF    ( MCP-RC      NOT =   ZERO )
+               MOVE    "4004"          TO  SPA-ERRCD
+           END-IF
+      *
+           .
+       45011-SHOUKAIKANRI-DEL-EXT.
+           EXIT.
+      *****************************************************************
+      *    検索条件保存内容削除処理
+      *****************************************************************
+       4601-SELPATTERN-UPD-SEC         SECTION.
+      *
+           INITIALIZE                      SHOUKAIKANRI-REC
+           MOVE    SPA-HOSPNUM         TO  SHOKANRI-HOSPNUM
+           MOVE    SPA-NAI-Q01-SELPATTERN-UID
+                                       TO  SHOKANRI-UID
+           MOVE    WRK-SELPATTERNMEI   TO  SHOKANRI-NAME
+           MOVE    SHOUKAIKANRI-REC    TO  MCPDATA-REC
+           MOVE    "tbl_shoukaikanri"  TO  MCP-TABLE
+           MOVE    "upd1"              TO  MCP-PATHNAME
+           PERFORM 910-DBUPDATE-SEC
+           IF    ( MCP-RC      NOT =   ZERO )
+               MOVE    "4005"          TO  SPA-ERRCD
+           END-IF
+      *
+           IF    ( SPA-ERRCD       =   SPACE )
+               PERFORM 45011-SHOUKAIDATA-DEL-SEC
+           END-IF
+      *
+           IF    ( SPA-ERRCD       =   SPACE )
+               MOVE    SPA-NAI-Q01-SELPATTERN-UID
+                                   TO  WRK-UID
+               PERFORM 7001-SHOUKAIDATA-INS-SEC
+           END-IF
+      *
+           IF    ( SPA-ERRCD       =   SPACE )
+      *
+               PERFORM 3101-SELPATTERN-CMB-SYOKI-SEC
+      *
+               MOVE    SPA-NAI-Q01-SELPATTERN-UID
+                                   TO  WRK-CMB-CD
+               PERFORM 4201-SELPATTERNLST-CHK-SEC
+               MOVE    WRK-CMB-ITM TO  SPA-GMN-Q01-SELPATTERN-G
+               MOVE    WRK-CMB-ITM2 TO SPA-NAI-Q01-SELPATTERN-UID
+           END-IF
+      *
+           .
+       4601-SELPATTERN-UPD-EXT.
+           EXIT.
+      *****************************************************************
+      *    検索条件保存画面遷移
+      *****************************************************************
+       470-Q04-SENI-SEC                SECTION.
+      *
+      *    画面ＳＰＡ編集処理
+           PERFORM 4101-GMN-SPA-SET-SEC
+      *
+           PERFORM 4901-ALL-INPUT-CHK-SEC
+      *
+           IF    ( SPA-ERRCD       =   SPACE )
+      *
+               INITIALIZE                  SPA-Q01-Q04-SENI-AREA
+               MOVE    WRK-UPDKBN      TO  SPA-Q01-Q04-UPDKBN
+      *
+               IF    ( WRK-UPDKBN      =   "UPD" )
+                   MOVE    SPA-GMN-Q01-SELPATTERNMEI
+                                       TO  SPA-Q01-Q04-NAME
+                   MOVE    SPA-NAI-Q01-SELPATTERN-UID
+                                       TO  SPA-Q01-Q04-UID
+               END-IF
+      *
+               MOVE    SPA-AREA        TO  SPA-COMMON
+               MOVE    SPA-Q01FREE     TO  SPA-FREE
+      *
+               MOVE    "LINK"          TO  MCP-STATUS
+               MOVE    SPACE           TO  MCP-EVENT
+      *
+               CALL    "ORCGQ04"           USING
+                                           MCPAREA
+                                           SPAAREA
+                                           LINKAREA
+                                           SCRAREA
+      *
+               MOVE    SPA-COMMON      TO  SPA-AREA
+               MOVE    SPA-FREE        TO  SPA-Q01FREE
+      *
+               IF    ( WRK-UPDKBN      =   "UPD" )
+                   MOVE    "B12"       TO  MCP-WIDGET
+               ELSE
+                   MOVE    "NAME"      TO  MCP-WIDGET
+               END-IF
+      *
+               MOVE    "Q01"           TO  SPA-MOTOPG
+               MOVE    "Q04"           TO  SPA-SAKIPG
+      *
+               MOVE    "NEW"           TO  MCP-PUTTYPE
+               MOVE    "Q04    "       TO  MCP-WINDOW
+      *
+               PERFORM 900-PUT-WINDOW
+      *
+               MOVE    1               TO  FLG-END
+           END-IF
+      *
+           .
+       470-Q04-SENI-EXT.
            EXIT.
       *****************************************************************
       *    病名部分検索処理
@@ -4825,6 +5224,9 @@
       *
            MOVE    SPA-GMN-Q01-PAGENO  TO  WRK-PAGENO
       *
+           INITIALIZE                  SPA-GMN-Q01-SELPATTERN-G
+                                       SPA-NAI-Q01-SELPATTERN-G
+      *
            PERFORM VARYING SPA-GMN-Q01-PAGENO  FROM    0   BY  1
                    UNTIL ( SPA-GMN-Q01-PAGENO  >   3 )
       *
@@ -4934,81 +5336,8 @@
       *    画面ＳＰＡ編集処理
            PERFORM 4101-GMN-SPA-SET-SEC
       *
-      *    開始診療年月基本チェック
-           PERFORM 4100-STSRYYMD-CHK-SEC
-           IF    ( SPA-ERRCD   NOT =   SPACE )
-               GO  TO  490-KENSAKU-EXT
-           END-IF
-      *
-      *    終了診療年月基本チェック
-           PERFORM 4101-EDSRYYMD-CHK-SEC
-           IF    ( SPA-ERRCD   NOT =   SPACE )
-               GO  TO  490-KENSAKU-EXT
-           END-IF
-      *
-      *    診療年月日関連チェック
-           PERFORM 4900-SRYYMDCHK-SEC
+           PERFORM 4901-ALL-INPUT-CHK-SEC
            IF    ( SPA-ERRCD       NOT =   SPACE )
-               GO  TO  490-KENSAKU-EXT
-           END-IF
-      *
-      *    -- 基本 --
-      *    基本チェック
-           PERFORM 4101-KHN-INPUT-CHK-SEC
-           IF    ( SPA-ERRCD       NOT =   SPACE )
-               MOVE    ZERO        TO  SPA-GMN-Q01-PAGENO
-               GO  TO  490-KENSAKU-EXT
-           END-IF
-      *
-      *    関連チェック
-           PERFORM 4901-TAB1-CHK-SEC
-           IF    ( SPA-ERRCD       NOT =   SPACE )
-               MOVE    ZERO        TO  SPA-GMN-Q01-PAGENO
-               GO  TO  490-KENSAKU-EXT
-           END-IF
-      *
-      *    -- 保険　公費 --
-      *    基本チェック
-           PERFORM 4101-HKN-INPUT-CHK-SEC
-           IF    ( SPA-ERRCD       NOT =   SPACE )
-               MOVE    1           TO  SPA-GMN-Q01-PAGENO
-               GO  TO  490-KENSAKU-EXT
-           END-IF
-      *
-      *    関連チェック
-           PERFORM 4901-TAB2-CHK-SEC
-           IF    ( SPA-ERRCD       NOT =   SPACE )
-               MOVE    1           TO  SPA-GMN-Q01-PAGENO
-               GO  TO  490-KENSAKU-EXT
-           END-IF
-      *
-      *    -- 病名　診療行為 --
-      *    基本チェック
-           PERFORM 4101-BYOSRY-INPUT-CHK-SEC
-           IF    ( SPA-ERRCD       NOT =   SPACE )
-               MOVE    2           TO  SPA-GMN-Q01-PAGENO
-               GO  TO  490-KENSAKU-EXT
-           END-IF
-      *
-      *    関連チェック
-           PERFORM 4901-TAB3-CHK-SEC
-           IF    ( SPA-ERRCD       NOT =   SPACE )
-               MOVE    2           TO  SPA-GMN-Q01-PAGENO
-               GO  TO  490-KENSAKU-EXT
-           END-IF
-      *
-      *    -- 並び順 --
-      *    基本チェック
-           PERFORM 4101-SRT-INPUT-CHK-SEC
-           IF    ( SPA-ERRCD       NOT =   SPACE )
-               MOVE    3           TO  SPA-GMN-Q01-PAGENO
-               GO  TO  490-KENSAKU-EXT
-           END-IF
-      *
-      *    関連チェック
-           PERFORM 4901-TAB4-CHK-SEC
-           IF    ( SPA-ERRCD       NOT =   SPACE )
-               MOVE    3           TO  SPA-GMN-Q01-PAGENO
                GO  TO  490-KENSAKU-EXT
            END-IF
       *
@@ -5036,6 +5365,97 @@
        490-KENSAKU-EXT.
            EXIT.
       *
+      *****************************************************************
+      *    全入力項目チェック
+      *****************************************************************
+       4901-ALL-INPUT-CHK-SEC          SECTION.
+      *
+           IF    ( SPA-ERRCD   =   SPACE )
+      *        開始診療年月基本チェック
+               PERFORM 4100-STSRYYMD-CHK-SEC
+           END-IF
+      *
+           IF    ( SPA-ERRCD   =   SPACE )
+      *        終了診療年月基本チェック
+               PERFORM 4101-EDSRYYMD-CHK-SEC
+           END-IF
+      *
+           IF    ( SPA-ERRCD   =   SPACE )
+      *        診療年月日関連チェック
+               PERFORM 4900-SRYYMDCHK-SEC
+           END-IF
+      *
+      *    -- 基本 --
+           IF    ( SPA-ERRCD   =   SPACE )
+      *        基本チェック
+               PERFORM 4101-KHN-INPUT-CHK-SEC
+               IF    ( SPA-ERRCD   NOT =   SPACE )
+                   MOVE    ZERO        TO  SPA-GMN-Q01-PAGENO
+               END-IF
+           END-IF
+      *
+           IF    ( SPA-ERRCD   =   SPACE )
+      *        関連チェック
+               PERFORM 4901-TAB1-CHK-SEC
+               IF    ( SPA-ERRCD   NOT =   SPACE )
+                   MOVE    ZERO    TO  SPA-GMN-Q01-PAGENO
+               END-IF
+           END-IF
+      *
+      *    -- 保険　公費 --
+           IF    ( SPA-ERRCD   =   SPACE )
+      *        基本チェック
+               PERFORM 4101-HKN-INPUT-CHK-SEC
+               IF    ( SPA-ERRCD   NOT =   SPACE )
+                   MOVE    1       TO  SPA-GMN-Q01-PAGENO
+               END-IF
+           END-IF
+      *
+           IF    ( SPA-ERRCD   =   SPACE )
+      *        関連チェック
+               PERFORM 4901-TAB2-CHK-SEC
+               IF    ( SPA-ERRCD   NOT =   SPACE )
+                   MOVE    1       TO  SPA-GMN-Q01-PAGENO
+               END-IF
+           END-IF
+      *
+      *    -- 病名　診療行為 --
+           IF    ( SPA-ERRCD   =   SPACE )
+      *        基本チェック
+               PERFORM 4101-BYOSRY-INPUT-CHK-SEC
+               IF    ( SPA-ERRCD   NOT =   SPACE )
+                   MOVE    2       TO  SPA-GMN-Q01-PAGENO
+               END-IF
+           END-IF
+      *
+           IF    ( SPA-ERRCD   =   SPACE )
+      *        関連チェック
+               PERFORM 4901-TAB3-CHK-SEC
+               IF    ( SPA-ERRCD   NOT =   SPACE )
+                   MOVE    2       TO  SPA-GMN-Q01-PAGENO
+               END-IF
+           END-IF
+      *
+      *    -- 並び順 --
+           IF    ( SPA-ERRCD   =   SPACE )
+      *        基本チェック
+               PERFORM 4101-SRT-INPUT-CHK-SEC
+               IF    ( SPA-ERRCD   NOT =   SPACE )
+                   MOVE    3       TO  SPA-GMN-Q01-PAGENO
+               END-IF
+           END-IF
+      *
+           IF    ( SPA-ERRCD   =   SPACE )
+      *        関連チェック
+               PERFORM 4901-TAB4-CHK-SEC
+               IF    ( SPA-ERRCD   NOT =   SPACE )
+                   MOVE    3       TO  SPA-GMN-Q01-PAGENO
+               END-IF
+           END-IF
+      *
+           .
+       4901-ALL-INPUT-CHK-EXT.
+           EXIT.
       *****************************************************************
       *       診療年月日チェック処理
       *****************************************************************
@@ -5819,8 +6239,13 @@
       *
            PERFORM 500-GMNHEN-SEC
       *
-           IF      SPA-ERRCD       NOT =   SPACE
+           IF    ( SPA-ERRCD       NOT =   SPACE )
                PERFORM 510-ERRSET-SEC
+               GO  TO  500-SET-SCREEN-EXT
+           END-IF
+      *
+           IF    ( SPA-QIDCD       NOT =   SPACE )
+               PERFORM 520-QIDSET-SEC
                GO  TO  500-SET-SCREEN-EXT
            END-IF
       *
@@ -5843,6 +6268,19 @@
       *
       *    タブページ番号
            MOVE    SPA-GMN-Q01-PAGENO      TO  Q01-PAGENO
+      *
+      *    入外区分
+           MOVE    SPA-GMN-Q01-SELPATTERN-G TO  Q01-SELPATTERN
+           MOVE    SPA-GMN-Q01-SELPATTERNLST-MAX
+                                           TO  Q01-CMB-SELPATTERN-COUNT
+           PERFORM VARYING IDX1    FROM    1   BY  1
+               UNTIL     ( IDX1    >   SPA-GMN-Q01-SELPATTERNLST-MAX )
+      *
+               MOVE    SPA-GMN-Q01-SELPATTERNLST (IDX1)
+                           TO  Q01-CMB-SELPATTERN-ITEM (IDX1)
+      *
+           END-PERFORM
+      *
       *    開始診療年月日
            MOVE    SPA-GMN-Q01-STSRYYMD    TO  Q01-STSRYYMD
       *    終了診療年月日
@@ -6247,8 +6685,20 @@
            MOVE    SPA-GMN-Q01-RDSRYACT-AND    TO  Q01-RDSRYACT-AND
            MOVE    SPA-GMN-Q01-RDSRYACT-OR     TO  Q01-RDSRYACT-OR
       *
-           MOVE    WIDGET-NORMAL               TO  Q01-STTENKIYMD-STATE
+           MOVE    WIDGET-NORMAL               TO  Q01-B05S-STATE
+                                                   Q01-B06S-STATE
+                                                   Q01-B07S-STATE
+                                                   Q01-STTENKIYMD-STATE
                                                    Q01-EDTENKIYMD-STATE
+      *
+           IF  ( SPA-NAI-Q01-SELPATTERN-UID    =   SPACE )
+               MOVE    WIDGET-INSENSITIVE      TO  Q01-B05S-STATE
+                                                   Q01-B06S-STATE
+           END-IF
+      *
+           IF  ( SPA-GMN-Q01-SELPATTERNLST-MAX >=  CONST-SELPATTERN-MAX)
+               MOVE    WIDGET-INSENSITIVE      TO  Q01-B07S-STATE
+           END-IF
       *
            IF  ( SPA-GMN-Q01-TENKIKBN  =   "1"
                                         OR "2"
@@ -6290,6 +6740,10 @@
                MOVE  "STSRYYMD"    TO  MCP-WIDGET
            WHEN   002
                MOVE  "EDSRYYMD"    TO  MCP-WIDGET
+      *
+      *    検索条件
+           WHEN   003
+               MOVE  "SELPATTERN"  TO  MCP-WIDGET
       *
       *    基本情報タブ
            WHEN   101
@@ -6532,6 +6986,9 @@
        5011-INPUT-CUR-SEC          SECTION.
       *
            EVALUATE    WRK-MCP-WIDGET
+      *    検索条件
+           WHEN   "SELPATTERN"
+               MOVE  001           TO  SPA-GMN-Q01-CUR
       *
       *    診療年月日
            WHEN   "STSRYYMD"
@@ -6971,6 +7428,9 @@
            WHEN    "1012"
                MOVE    "低所得の終了月を入力してください"
                                        TO  SPA-ERRMSG
+           WHEN    "4001"      THRU    "4999"
+               MOVE    "更新処理に失敗しました"
+                                       TO  SPA-ERRMSG
            END-EVALUATE
       *
            MOVE    SPACE                TO  QERR
@@ -6992,6 +7452,1581 @@
        510-ERRSET-EXT.
            EXIT.
       *
+      *****************************************************************
+      *    ガイドメッセージ表示
+      *****************************************************************
+       520-QIDSET-SEC                  SECTION.
+      *
+           MOVE    SPACE               TO  WRK-QIDMSG
+      *
+           EVALUATE    SPA-QIDCD
+           WHEN    "3002"
+               MOVE    "選択中の検索条件を削除します"
+                                       TO  WRK-QIDMSG
+           END-EVALUATE
+      *
+           MOVE    SPACE               TO  QID1
+           MOVE    SPA-QIDCD           TO  QID1-ID1CODE
+           MOVE    WRK-QIDMSG          TO  QID1-ID1MSG
+           MOVE    "B12"               TO  MCP-WIDGET
+      *
+           MOVE    "Q01"               TO  SPA-MOTOPG
+           MOVE    "QID1"              TO  SPA-SAKIPG
+      *
+           MOVE    "NEW"               TO  MCP-PUTTYPE
+           MOVE    "QID1"              TO  MCP-WINDOW
+      *
+           PERFORM 900-PUT-WINDOW
+      *
+           MOVE    1                   TO  FLG-END
+      *
+           .
+       520-QIDSET-EXT.
+           EXIT.
+      *****************************************************************
+      *    患者照会検索条件情報より画面編集処理
+      *****************************************************************
+       700-GMNHEN-SEC                  SECTION.
+      *
+           MOVE    ZERO            TO  FLG-PAGENO-G
+      *
+           MOVE    SPACE           TO  Q01
+           INITIALIZE                  Q01
+      *
+           PERFORM 900-SHOUKAIDATA-KEY2-SEL-SEC
+      *
+           PERFORM UNTIL ( FLG-SHOUKAIDATA NOT =   ZERO )
+      *
+               PERFORM 7001-GMNHEN-SEC
+      *
+               PERFORM 900-SHOUKAIDATA-KEY2-FET-SEC
+      *
+           END-PERFORM
+      *
+           MOVE    "tbl_shoukaidata"   TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           PERFORM 910-DBCLOSECURSOR-SEC
+      *
+           .
+       700-GMNHEN-EXT.
+           EXIT.
+      *****************************************************************
+      *    患者照会検索条件情報より画面編集処理
+      *****************************************************************
+       7001-GMNHEN-SEC                 SECTION.
+      *
+           EVALUATE    SHODATA-ITEMID
+      *
+           WHEN    SHKITEMID-STSRYYMD
+               MOVE    SHODATA-ITEM    TO  Q01-STSRYYMD
+           WHEN    SHKITEMID-EDSRYYMD
+               MOVE    SHODATA-ITEM    TO  Q01-EDSRYYMD
+           WHEN    SHKITEMID-STBIRTHDAY
+               MOVE    SHODATA-ITEM    TO  Q01-STBIRTHDAY
+               MOVE    1               TO  FLG-PAGENO-00
+           WHEN    SHKITEMID-EDBIRTHDAY
+               MOVE    SHODATA-ITEM    TO  Q01-EDBIRTHDAY
+               MOVE    1               TO  FLG-PAGENO-00
+           WHEN    SHKITEMID-STAGE
+               MOVE    SHODATA-ITEM    TO  Q01-STAGE
+               MOVE    1               TO  FLG-PAGENO-00
+           WHEN    SHKITEMID-EDAGE
+               MOVE    SHODATA-ITEM    TO  Q01-EDAGE
+               MOVE    1               TO  FLG-PAGENO-00
+           WHEN    SHKITEMID-SEX
+               MOVE    SHODATA-ITEM    TO  Q01-SEX
+               MOVE    1               TO  FLG-PAGENO-00
+           WHEN    SHKITEMID-STLASTYMD
+               MOVE    SHODATA-ITEM    TO  Q01-STLASTYMD
+               MOVE    1               TO  FLG-PAGENO-00
+           WHEN    SHKITEMID-EDLASTYMD
+               MOVE    SHODATA-ITEM    TO  Q01-EDLASTYMD
+               MOVE    1               TO  FLG-PAGENO-00
+           WHEN    SHKITEMID-NYUGAIKBN
+               MOVE    SHODATA-ITEM    TO  Q01-NYUGAIKBN
+               MOVE    1               TO  FLG-PAGENO-00
+           WHEN    SHKITEMID-SRYKA
+               MOVE    SHODATA-ITEM    TO  Q01-SRYKA
+               MOVE    1               TO  FLG-PAGENO-00
+           WHEN    SHKITEMID-STPTNUM
+               MOVE    SHODATA-ITEM    TO  Q01-STPTNUM
+               MOVE    1               TO  FLG-PAGENO-00
+           WHEN    SHKITEMID-EDPTNUM
+               MOVE    SHODATA-ITEM    TO  Q01-EDPTNUM
+               MOVE    1               TO  FLG-PAGENO-00
+           WHEN    SHKITEMID-CHKTSTPT
+               IF    ( SHODATA-ITEM        =   "1" )
+                   MOVE    "T"         TO  Q01-CHKTSTPT
+                                           SPA-GMN-Q01-CHKTSTPT
+               ELSE
+                   MOVE    "F"         TO  Q01-CHKTSTPT
+                                           SPA-GMN-Q01-CHKTSTPT
+               END-IF
+           WHEN    SHKITEMID-POST01
+               MOVE    SHODATA-ITEM    TO  Q01-POST (1)
+               MOVE    1               TO  FLG-PAGENO-00
+           WHEN    SHKITEMID-POST02
+               MOVE    SHODATA-ITEM    TO  Q01-POST (2)
+               MOVE    1               TO  FLG-PAGENO-00
+           WHEN    SHKITEMID-POST03
+               MOVE    SHODATA-ITEM    TO  Q01-POST (3)
+               MOVE    1               TO  FLG-PAGENO-00
+           WHEN    SHKITEMID-POST04
+               MOVE    SHODATA-ITEM    TO  Q01-POST (4)
+               MOVE    1               TO  FLG-PAGENO-00
+           WHEN    SHKITEMID-POST05
+               MOVE    SHODATA-ITEM    TO  Q01-POST (5)
+               MOVE    1               TO  FLG-PAGENO-00
+           WHEN    SHKITEMID-JYUSHO01
+               MOVE    SHODATA-ITEM    TO  Q01-JYUSHO (1)
+               MOVE    1               TO  FLG-PAGENO-00
+           WHEN    SHKITEMID-JYUSHO02
+               MOVE    SHODATA-ITEM    TO  Q01-JYUSHO (2)
+               MOVE    1               TO  FLG-PAGENO-00
+           WHEN    SHKITEMID-JYUSHO03
+               MOVE    1               TO  FLG-PAGENO-00
+               MOVE    SHODATA-ITEM    TO  Q01-JYUSHO (3)
+           WHEN    SHKITEMID-JYUSHO04
+               MOVE    SHODATA-ITEM    TO  Q01-JYUSHO (4)
+               MOVE    1               TO  FLG-PAGENO-00
+           WHEN    SHKITEMID-JYUSHO05
+               MOVE    SHODATA-ITEM    TO  Q01-JYUSHO (5)
+               MOVE    1               TO  FLG-PAGENO-00
+           WHEN    SHKITEMID-KANANAME01
+               MOVE    SHODATA-ITEM    TO  Q01-KANANAME (1)
+               MOVE    1               TO  FLG-PAGENO-00
+           WHEN    SHKITEMID-KANANAME02
+               MOVE    SHODATA-ITEM    TO  Q01-KANANAME (2)
+               MOVE    1               TO  FLG-PAGENO-00
+           WHEN    SHKITEMID-KANANAME03
+               MOVE    SHODATA-ITEM    TO  Q01-KANANAME (3)
+               MOVE    1               TO  FLG-PAGENO-00
+           WHEN    SHKITEMID-KANANAME04
+               MOVE    SHODATA-ITEM    TO  Q01-KANANAME (4)
+               MOVE    1               TO  FLG-PAGENO-00
+           WHEN    SHKITEMID-KANANAME05
+               MOVE    SHODATA-ITEM    TO  Q01-KANANAME (5)
+               MOVE    1               TO  FLG-PAGENO-00
+           WHEN    SHKITEMID-NAME01
+               MOVE    SHODATA-ITEM    TO  Q01-NAME (1)
+               MOVE    1               TO  FLG-PAGENO-00
+           WHEN    SHKITEMID-NAME02
+               MOVE    SHODATA-ITEM    TO  Q01-NAME (2)
+               MOVE    1               TO  FLG-PAGENO-00
+           WHEN    SHKITEMID-NAME03
+               MOVE    SHODATA-ITEM    TO  Q01-NAME (3)
+               MOVE    1               TO  FLG-PAGENO-00
+           WHEN    SHKITEMID-NAME04
+               MOVE    SHODATA-ITEM    TO  Q01-NAME (4)
+               MOVE    1               TO  FLG-PAGENO-00
+           WHEN    SHKITEMID-NAME05
+               MOVE    SHODATA-ITEM    TO  Q01-NAME (5)
+               MOVE    1               TO  FLG-PAGENO-00
+           WHEN    SHKITEMID-CONDITION101
+               MOVE    SHODATA-ITEM    TO  Q01-CONDITION1 (1)
+               MOVE    1               TO  FLG-PAGENO-00
+           WHEN    SHKITEMID-CONDITION102
+               MOVE    SHODATA-ITEM    TO  Q01-CONDITION1 (2)
+               MOVE    1               TO  FLG-PAGENO-00
+           WHEN    SHKITEMID-CONDITION103
+               MOVE    SHODATA-ITEM    TO  Q01-CONDITION1 (3)
+               MOVE    1               TO  FLG-PAGENO-00
+           WHEN    SHKITEMID-CONDITION201
+               MOVE    SHODATA-ITEM    TO  Q01-CONDITION2 (1)
+               MOVE    1               TO  FLG-PAGENO-00
+           WHEN    SHKITEMID-CONDITION202
+               MOVE    SHODATA-ITEM    TO  Q01-CONDITION2 (2)
+               MOVE    1               TO  FLG-PAGENO-00
+           WHEN    SHKITEMID-CONDITION203
+               MOVE    SHODATA-ITEM    TO  Q01-CONDITION2 (3)
+               MOVE    1               TO  FLG-PAGENO-00
+           WHEN    SHKITEMID-CONDITION301
+               MOVE    SHODATA-ITEM    TO  Q01-CONDITION3 (1)
+               MOVE    1               TO  FLG-PAGENO-00
+           WHEN    SHKITEMID-CONDITION302
+               MOVE    SHODATA-ITEM    TO  Q01-CONDITION3 (2)
+               MOVE    1               TO  FLG-PAGENO-00
+           WHEN    SHKITEMID-CONDITION303
+               MOVE    SHODATA-ITEM    TO  Q01-CONDITION3 (3)
+               MOVE    1               TO  FLG-PAGENO-00
+           WHEN    SHKITEMID-GENMEN01
+               MOVE    SHODATA-ITEM    TO  Q01-GENMEN (1)
+               MOVE    1               TO  FLG-PAGENO-00
+           WHEN    SHKITEMID-GENMEN02
+               MOVE    SHODATA-ITEM    TO  Q01-GENMEN (2)
+               MOVE    1               TO  FLG-PAGENO-00
+           WHEN    SHKITEMID-GENMEN03
+               MOVE    SHODATA-ITEM    TO  Q01-GENMEN (3)
+               MOVE    1               TO  FLG-PAGENO-00
+           WHEN    SHKITEMID-COMMENT01
+               MOVE    SHODATA-ITEM    TO  Q01-COMMENT (1)
+               MOVE    1               TO  FLG-PAGENO-00
+           WHEN    SHKITEMID-COMMENT02
+               MOVE    SHODATA-ITEM    TO  Q01-COMMENT (2)
+               MOVE    1               TO  FLG-PAGENO-00
+           WHEN    SHKITEMID-COMMENT03
+               MOVE    SHODATA-ITEM    TO  Q01-COMMENT (3)
+               MOVE    1               TO  FLG-PAGENO-00
+           WHEN    SHKITEMID-TEL-TO
+               MOVE    SHODATA-ITEM    TO  Q01-TEL-TO
+           WHEN    SHKITEMID-TEL01
+               MOVE    SHODATA-ITEM    TO  Q01-TEL (1)
+               MOVE    1               TO  FLG-PAGENO-00
+           WHEN    SHKITEMID-TEL02
+               MOVE    SHODATA-ITEM    TO  Q01-TEL (2)
+               MOVE    1               TO  FLG-PAGENO-00
+           WHEN    SHKITEMID-TEL03
+               MOVE    SHODATA-ITEM    TO  Q01-TEL (3)
+               MOVE    1               TO  FLG-PAGENO-00
+           WHEN    SHKITEMID-TSY
+               MOVE    SHODATA-ITEM    TO  Q01-TSY
+               MOVE    1               TO  FLG-PAGENO-00
+           WHEN    SHKITEMID-STTSYSKBT
+               MOVE    SHODATA-ITEM    TO  Q01-STTSYSKBT
+           WHEN    SHKITEMID-STTSYYM
+               MOVE    SHODATA-ITEM    TO  Q01-STTSYYM
+               MOVE    1               TO  FLG-PAGENO-00
+           WHEN    SHKITEMID-EDTSYYM
+               MOVE    SHODATA-ITEM    TO  Q01-EDTSYYM
+               MOVE    1               TO  FLG-PAGENO-00
+           WHEN    SHKITEMID-HONKZKKBN
+               MOVE    SHODATA-ITEM    TO  Q01-HONKZKKBN
+               MOVE    1               TO  FLG-PAGENO-01
+           WHEN    SHKITEMID-HKNJANUM01
+               MOVE    SHODATA-ITEM    TO  Q01-HKNJANUM (1)
+               MOVE    1               TO  FLG-PAGENO-01
+           WHEN    SHKITEMID-HKNJANUM02
+               MOVE    SHODATA-ITEM    TO  Q01-HKNJANUM (2)
+               MOVE    1               TO  FLG-PAGENO-01
+           WHEN    SHKITEMID-HKNJANUM03
+               MOVE    SHODATA-ITEM    TO  Q01-HKNJANUM (3)
+               MOVE    1               TO  FLG-PAGENO-01
+           WHEN    SHKITEMID-HKNJANUM04
+               MOVE    SHODATA-ITEM    TO  Q01-HKNJANUM (4)
+               MOVE    1               TO  FLG-PAGENO-01
+           WHEN    SHKITEMID-HKNJANUM05
+               MOVE    SHODATA-ITEM    TO  Q01-HKNJANUM (5)
+               MOVE    1               TO  FLG-PAGENO-01
+           WHEN    SHKITEMID-HKNNUM01
+               MOVE    SHODATA-ITEM    TO  Q01-HKNNUM (1)
+               MOVE    1               TO  FLG-PAGENO-01
+           WHEN    SHKITEMID-HKNNUM02
+               MOVE    SHODATA-ITEM    TO  Q01-HKNNUM (2)
+               MOVE    1               TO  FLG-PAGENO-01
+           WHEN    SHKITEMID-HKNNUM03
+               MOVE    SHODATA-ITEM    TO  Q01-HKNNUM (3)
+               MOVE    1               TO  FLG-PAGENO-01
+           WHEN    SHKITEMID-HKNNUM04
+               MOVE    SHODATA-ITEM    TO  Q01-HKNNUM (4)
+               MOVE    1               TO  FLG-PAGENO-01
+           WHEN    SHKITEMID-HKNNUM05
+               MOVE    SHODATA-ITEM    TO  Q01-HKNNUM (5)
+               MOVE    1               TO  FLG-PAGENO-01
+           WHEN    SHKITEMID-KIGO01
+               MOVE    SHODATA-ITEM    TO  Q01-KIGO (1)
+               MOVE    1               TO  FLG-PAGENO-01
+           WHEN    SHKITEMID-KIGO02
+               MOVE    SHODATA-ITEM    TO  Q01-KIGO (2)
+               MOVE    1               TO  FLG-PAGENO-01
+           WHEN    SHKITEMID-KIGO03
+               MOVE    SHODATA-ITEM    TO  Q01-KIGO (3)
+               MOVE    1               TO  FLG-PAGENO-01
+           WHEN    SHKITEMID-KIGO04
+               MOVE    SHODATA-ITEM    TO  Q01-KIGO (4)
+               MOVE    1               TO  FLG-PAGENO-01
+           WHEN    SHKITEMID-KIGO05
+               MOVE    SHODATA-ITEM    TO  Q01-KIGO (5)
+               MOVE    1               TO  FLG-PAGENO-01
+           WHEN    SHKITEMID-NUM01
+               MOVE    SHODATA-ITEM    TO  Q01-NUM (1)
+               MOVE    1               TO  FLG-PAGENO-01
+           WHEN    SHKITEMID-NUM02
+               MOVE    SHODATA-ITEM    TO  Q01-NUM (2)
+               MOVE    1               TO  FLG-PAGENO-01
+           WHEN    SHKITEMID-NUM03
+               MOVE    SHODATA-ITEM    TO  Q01-NUM (3)
+               MOVE    1               TO  FLG-PAGENO-01
+           WHEN    SHKITEMID-NUM04
+               MOVE    SHODATA-ITEM    TO  Q01-NUM (4)
+               MOVE    1               TO  FLG-PAGENO-01
+           WHEN    SHKITEMID-NUM05
+               MOVE    SHODATA-ITEM    TO  Q01-NUM (5)
+               MOVE    1               TO  FLG-PAGENO-01
+           WHEN    SHKITEMID-RDHKNKOH
+               IF    ( SHODATA-ITEM    =   "1" )
+                   MOVE    "T"         TO  Q01-RDHKNKOH-AND
+                                           SPA-GMN-Q01-RDHKNKOH-AND
+                   MOVE    "F"         TO  Q01-RDHKNKOH-OR
+                                           SPA-GMN-Q01-RDHKNKOH-OR
+               ELSE
+                   MOVE    "F"         TO  Q01-RDHKNKOH-AND
+                                           SPA-GMN-Q01-RDHKNKOH-AND
+                   MOVE    "T"         TO  Q01-RDHKNKOH-OR
+                                           SPA-GMN-Q01-RDHKNKOH-OR
+               END-IF
+           WHEN    SHKITEMID-RDKOHNUM
+               IF    ( SHODATA-ITEM    =   "1" )
+                   MOVE    "T"         TO  Q01-RDKOHNUM-AND
+                                           SPA-GMN-Q01-RDKOHNUM-AND
+                   MOVE    "F"         TO  Q01-RDKOHNUM-OR
+                                           SPA-GMN-Q01-RDKOHNUM-OR
+               ELSE
+                   MOVE    "F"         TO  Q01-RDKOHNUM-AND
+                                           SPA-GMN-Q01-RDKOHNUM-AND
+                   MOVE    "T"         TO  Q01-RDKOHNUM-OR
+                                           SPA-GMN-Q01-RDKOHNUM-OR
+               END-IF
+           WHEN    SHKITEMID-KOHNUM01
+               MOVE    SHODATA-ITEM    TO  Q01-KOHNUM (1)
+               MOVE    1               TO  FLG-PAGENO-01
+           WHEN    SHKITEMID-KOHNUM02
+               MOVE    SHODATA-ITEM    TO  Q01-KOHNUM (2)
+               MOVE    1               TO  FLG-PAGENO-01
+           WHEN    SHKITEMID-KOHNUM03
+               MOVE    SHODATA-ITEM    TO  Q01-KOHNUM (3)
+               MOVE    1               TO  FLG-PAGENO-01
+           WHEN    SHKITEMID-KOHNUM04
+               MOVE    SHODATA-ITEM    TO  Q01-KOHNUM (4)
+               MOVE    1               TO  FLG-PAGENO-01
+           WHEN    SHKITEMID-KOHNUM05
+               MOVE    SHODATA-ITEM    TO  Q01-KOHNUM (5)
+               MOVE    1               TO  FLG-PAGENO-01
+           WHEN    SHKITEMID-FTNJANUM01
+               MOVE    SHODATA-ITEM    TO  Q01-FTNJANUM (1)
+               MOVE    1               TO  FLG-PAGENO-01
+           WHEN    SHKITEMID-FTNJANUM02
+               MOVE    SHODATA-ITEM    TO  Q01-FTNJANUM (2)
+               MOVE    1               TO  FLG-PAGENO-01
+           WHEN    SHKITEMID-FTNJANUM03
+               MOVE    SHODATA-ITEM    TO  Q01-FTNJANUM (3)
+               MOVE    1               TO  FLG-PAGENO-01
+           WHEN    SHKITEMID-FTNJANUM04
+               MOVE    SHODATA-ITEM    TO  Q01-FTNJANUM (4)
+               MOVE    1               TO  FLG-PAGENO-01
+           WHEN    SHKITEMID-FTNJANUM05
+               MOVE    SHODATA-ITEM    TO  Q01-FTNJANUM (5)
+               MOVE    1               TO  FLG-PAGENO-01
+           WHEN    SHKITEMID-UTAGAIKBN
+               MOVE    SHODATA-ITEM    TO  Q01-UTAGAIKBN
+               MOVE    1               TO  FLG-PAGENO-02
+           WHEN    SHKITEMID-TENKIKBN
+               MOVE    SHODATA-ITEM    TO  Q01-TENKIKBN
+               MOVE    1               TO  FLG-PAGENO-02
+           WHEN    SHKITEMID-STTENKIYMD
+               MOVE    SHODATA-ITEM    TO  Q01-STTENKIYMD
+               MOVE    1               TO  FLG-PAGENO-02
+           WHEN    SHKITEMID-EDTENKIYMD
+               MOVE    SHODATA-ITEM    TO  Q01-EDTENKIYMD
+               MOVE    1               TO  FLG-PAGENO-02
+           WHEN    SHKITEMID-RDBYOMEI
+               IF    ( SHODATA-ITEM    =   "1" )
+                   MOVE    "T"         TO  Q01-RDBYOMEI-AND
+                                           SPA-GMN-Q01-RDBYOMEI-AND
+                   MOVE    "F"         TO  Q01-RDBYOMEI-OR
+                                           SPA-GMN-Q01-RDBYOMEI-OR
+               ELSE
+                   MOVE    "F"         TO  Q01-RDBYOMEI-AND
+                                           SPA-GMN-Q01-RDBYOMEI-AND
+                   MOVE    "T"         TO  Q01-RDBYOMEI-OR
+                                           SPA-GMN-Q01-RDBYOMEI-OR
+               END-IF
+           WHEN    SHKITEMID-BYOMEICD01
+               MOVE    SHODATA-ITEM    TO  Q01-BYOMEICD (1)
+               MOVE    1               TO  FLG-PAGENO-02
+           WHEN    SHKITEMID-BYOMEICD02
+               MOVE    SHODATA-ITEM    TO  Q01-BYOMEICD (2)
+               MOVE    1               TO  FLG-PAGENO-02
+           WHEN    SHKITEMID-BYOMEICD03
+               MOVE    SHODATA-ITEM    TO  Q01-BYOMEICD (3)
+               MOVE    1               TO  FLG-PAGENO-02
+           WHEN    SHKITEMID-BYOMEICD04
+               MOVE    SHODATA-ITEM    TO  Q01-BYOMEICD (4)
+               MOVE    1               TO  FLG-PAGENO-02
+           WHEN    SHKITEMID-BYOMEICD05
+               MOVE    SHODATA-ITEM    TO  Q01-BYOMEICD (5)
+               MOVE    1               TO  FLG-PAGENO-02
+           WHEN    SHKITEMID-BYOMEI01
+               MOVE    SHODATA-ITEM    TO  Q01-BYOMEI   (1)
+                                           SPA-NAI-Q01-BYOMEI-OLD 
+                                                        (1)
+
+               MOVE    1               TO  FLG-PAGENO-02
+           WHEN    SHKITEMID-BYOMEI02
+               MOVE    SHODATA-ITEM    TO  Q01-BYOMEI   (2)
+                                           SPA-NAI-Q01-BYOMEI-OLD 
+                                                        (2)
+               MOVE    1               TO  FLG-PAGENO-02
+           WHEN    SHKITEMID-BYOMEI03
+               MOVE    SHODATA-ITEM    TO  Q01-BYOMEI   (3)
+                                           SPA-NAI-Q01-BYOMEI-OLD 
+                                                        (3)
+               MOVE    1               TO  FLG-PAGENO-02
+           WHEN    SHKITEMID-BYOMEI04
+               MOVE    SHODATA-ITEM    TO  Q01-BYOMEI   (4)
+                                           SPA-NAI-Q01-BYOMEI-OLD 
+                                                        (4)
+               MOVE    1               TO  FLG-PAGENO-02
+           WHEN    SHKITEMID-BYOMEI05
+               MOVE    SHODATA-ITEM    TO  Q01-BYOMEI   (5)
+                                           SPA-NAI-Q01-BYOMEI-OLD 
+                                                        (5)
+               MOVE    1               TO  FLG-PAGENO-02
+           WHEN    SHKITEMID-RDSRYACT
+               IF    ( SHODATA-ITEM    =   "1" )
+                   MOVE    "T"         TO  Q01-RDSRYACT-AND
+                                           SPA-GMN-Q01-RDSRYACT-AND
+                   MOVE    "F"         TO  Q01-RDSRYACT-OR
+                                           SPA-GMN-Q01-RDSRYACT-OR
+               ELSE
+                   MOVE    "F"         TO  Q01-RDSRYACT-AND
+                                           SPA-GMN-Q01-RDSRYACT-AND
+                   MOVE    "T"         TO  Q01-RDSRYACT-OR
+                                           SPA-GMN-Q01-RDSRYACT-OR
+               END-IF
+           WHEN    SHKITEMID-SRYCD01
+               MOVE    SHODATA-ITEM    TO  Q01-SRYCD (1)
+               MOVE    1               TO  FLG-PAGENO-02
+           WHEN    SHKITEMID-SRYCD02
+               MOVE    SHODATA-ITEM    TO  Q01-SRYCD (2)
+               MOVE    1               TO  FLG-PAGENO-02
+           WHEN    SHKITEMID-SRYCD03
+               MOVE    SHODATA-ITEM    TO  Q01-SRYCD (3)
+               MOVE    1               TO  FLG-PAGENO-02
+           WHEN    SHKITEMID-SRYCD04
+               MOVE    SHODATA-ITEM    TO  Q01-SRYCD (4)
+               MOVE    1               TO  FLG-PAGENO-02
+           WHEN    SHKITEMID-SRYCD05
+               MOVE    SHODATA-ITEM    TO  Q01-SRYCD (5)
+               MOVE    1               TO  FLG-PAGENO-02
+           WHEN    SHKITEMID-KMK01
+               MOVE    SHODATA-ITEM    TO  Q01-CMB-KMK (1)
+           WHEN    SHKITEMID-KMK02
+               MOVE    SHODATA-ITEM    TO  Q01-CMB-KMK (2)
+           WHEN    SHKITEMID-KMK03
+               MOVE    SHODATA-ITEM    TO  Q01-CMB-KMK (3)
+           WHEN    SHKITEMID-RDIO01
+               IF    ( SHODATA-ITEM    =   "1" )
+                   MOVE    "T"         TO  Q01-RDIO1 (1)
+                                           SPA-GMN-Q01-RDIO1 (1)
+                   MOVE    "F"         TO  Q01-RDIO2 (1)
+                                           SPA-GMN-Q01-RDIO2 (1)
+               ELSE
+                   MOVE    "F"         TO  Q01-RDIO1 (1)
+                                           SPA-GMN-Q01-RDIO1 (1)
+                   MOVE    "T"         TO  Q01-RDIO2 (1)
+                                           SPA-GMN-Q01-RDIO2 (1)
+               END-IF
+           WHEN    SHKITEMID-RDIO02
+               IF    ( SHODATA-ITEM    =   "1" )
+                   MOVE    "T"         TO  Q01-RDIO1 (2)
+                                           SPA-GMN-Q01-RDIO1 (2)
+                   MOVE    "F"         TO  Q01-RDIO2 (2)
+                                           SPA-GMN-Q01-RDIO2 (2)
+               ELSE
+                   MOVE    "F"         TO  Q01-RDIO1 (2)
+                                           SPA-GMN-Q01-RDIO1 (2)
+                   MOVE    "T"         TO  Q01-RDIO2 (2)
+                                           SPA-GMN-Q01-RDIO2 (2)
+               END-IF
+           WHEN    SHKITEMID-RDIO03
+               IF    ( SHODATA-ITEM    =   "1" )
+                   MOVE    "T"         TO  Q01-RDIO1 (3)
+                                           SPA-GMN-Q01-RDIO1 (3)
+                   MOVE    "F"         TO  Q01-RDIO2 (3)
+                                           SPA-GMN-Q01-RDIO2 (3)
+               ELSE
+                   MOVE    "F"         TO  Q01-RDIO1 (3)
+                                           SPA-GMN-Q01-RDIO1 (3)
+                   MOVE    "T"         TO  Q01-RDIO2 (3)
+                                           SPA-GMN-Q01-RDIO2 (3)
+               END-IF
+      *
+           END-EVALUATE
+      *
+           .
+       7001-GMNHEN-EXT.
+           EXIT.
+      *****************************************************************
+      *    患者照会検索条件情報より画面編集処理
+      *****************************************************************
+       700-SELPATTERN-INS-SEC          SECTION.
+      *
+           INITIALIZE                  UIDIO-AREA
+           CALL    "orcuidset"         USING
+                                       ST
+                                       UIDIO-AREA
+      *
+           MOVE    C-UID           TO  WRK-UID
+      *
+           PERFORM 7001-SHOUKAIDATA-INS-SEC
+      *
+           IF    ( SPA-ERRCD       =   SPACE )
+               PERFORM 7001-SHOUKAIKANRI-INS-SEC
+           END-IF
+      *
+           IF    ( SPA-ERRCD           =   SPACE )
+      *
+               PERFORM 3101-SELPATTERN-CMB-SYOKI-SEC
+      *
+               MOVE    WRK-UID     TO  WRK-CMB-CD
+               PERFORM 4201-SELPATTERNLST-CHK-SEC
+               MOVE    WRK-CMB-ITM TO  SPA-GMN-Q01-SELPATTERN-G
+               MOVE    WRK-CMB-ITM2 TO SPA-NAI-Q01-SELPATTERN-UID
+           END-IF
+      *
+           .
+       700-SELPATTERN-INS-EXT.
+           EXIT.
+      *****************************************************************
+      *    患者照会検索条件登録処理
+      *****************************************************************
+       7001-SHOUKAIDATA-INS-SEC        SECTION.
+      *
+           PERFORM 800-MCNDATE-SEC
+      *
+           INITIALIZE                      SHOUKAIDATA-REC
+           MOVE    SPA-HOSPNUM         TO  SHODATA-HOSPNUM
+           MOVE    WRK-UID             TO  SHODATA-UID
+      *
+           IF    ( SPA-NAI-Q01-STSRYYMD    NOT =   SPACE )
+               MOVE    SHKITEMID-STSRYYMD
+                                   TO  SHODATA-ITEMID
+               MOVE    SPA-NAI-Q01-STSRYYMD
+                                   TO  SHODATA-ITEM
+               PERFORM 70011-SHOUKAIDATA-INS-SEC
+           END-IF
+      *
+           IF    ( SPA-NAI-Q01-EDSRYYMD    NOT =   SPACE )
+               MOVE    SHKITEMID-EDSRYYMD
+                                   TO  SHODATA-ITEMID
+               MOVE    SPA-NAI-Q01-EDSRYYMD
+                                   TO  SHODATA-ITEM
+               PERFORM 70011-SHOUKAIDATA-INS-SEC
+           END-IF
+      *
+           IF    ( SPA-NAI-Q01-STBIRTHDAY  NOT =   SPACE )
+               MOVE    SHKITEMID-STBIRTHDAY
+                                   TO  SHODATA-ITEMID
+               MOVE    SPA-NAI-Q01-STBIRTHDAY
+                                   TO  SHODATA-ITEM
+               PERFORM 70011-SHOUKAIDATA-INS-SEC
+           END-IF
+      *
+           IF    ( SPA-NAI-Q01-EDBIRTHDAY  NOT =   SPACE )
+               MOVE    SHKITEMID-EDBIRTHDAY
+                                   TO  SHODATA-ITEMID
+               MOVE    SPA-NAI-Q01-EDBIRTHDAY
+                                   TO  SHODATA-ITEM
+               PERFORM 70011-SHOUKAIDATA-INS-SEC
+           END-IF
+      *
+           IF    ( SPA-GMN-Q01-STAGE   NOT =   SPACE )
+               MOVE    SHKITEMID-STAGE
+                                   TO  SHODATA-ITEMID
+               MOVE    SPA-GMN-Q01-STAGE
+                                   TO  SHODATA-ITEM
+               PERFORM 70011-SHOUKAIDATA-INS-SEC
+           END-IF
+      *
+           IF    ( SPA-GMN-Q01-EDAGE   NOT =   SPACE )
+               MOVE    SHKITEMID-EDAGE
+                                   TO  SHODATA-ITEMID
+               MOVE    SPA-GMN-Q01-EDAGE
+                                   TO  SHODATA-ITEM
+               PERFORM 70011-SHOUKAIDATA-INS-SEC
+           END-IF
+      *
+           IF    ( SPA-GMN-Q01-SEX     NOT =   SPACE )
+               MOVE    SHKITEMID-SEX
+                                   TO  SHODATA-ITEMID
+               MOVE    SPA-GMN-Q01-SEX
+                                   TO  SHODATA-ITEM
+               PERFORM 70011-SHOUKAIDATA-INS-SEC
+           END-IF
+      *
+           IF    ( SPA-NAI-Q01-STLASTYMD   NOT =   SPACE )
+               MOVE    SHKITEMID-STLASTYMD
+                                   TO  SHODATA-ITEMID
+               MOVE    SPA-NAI-Q01-STLASTYMD
+                                   TO  SHODATA-ITEM
+               PERFORM 70011-SHOUKAIDATA-INS-SEC
+           END-IF
+      *
+           IF    ( SPA-NAI-Q01-EDLASTYMD   NOT =   SPACE )
+               MOVE    SHKITEMID-EDLASTYMD
+                                   TO  SHODATA-ITEMID
+               MOVE    SPA-NAI-Q01-EDLASTYMD
+                                   TO  SHODATA-ITEM
+               PERFORM 70011-SHOUKAIDATA-INS-SEC
+           END-IF
+      *
+           IF    ( SPA-GMN-Q01-NYUGAIKBN   NOT =   SPACE )
+               MOVE    SHKITEMID-NYUGAIKBN
+                                   TO  SHODATA-ITEMID
+               MOVE    SPA-GMN-Q01-NYUGAIKBN
+                                   TO  SHODATA-ITEM
+               PERFORM 70011-SHOUKAIDATA-INS-SEC
+           END-IF
+      *
+           IF    ( SPA-GMN-Q01-SRYKA       NOT =   SPACE )
+               MOVE    SHKITEMID-SRYKA
+                                   TO  SHODATA-ITEMID
+               MOVE    SPA-GMN-Q01-SRYKA
+                                   TO  SHODATA-ITEM
+               PERFORM 70011-SHOUKAIDATA-INS-SEC
+           END-IF
+      *
+           IF    ( SPA-GMN-Q01-STPTNUM     NOT =   SPACE )
+               MOVE    SHKITEMID-STPTNUM
+                                   TO  SHODATA-ITEMID
+               MOVE    SPA-GMN-Q01-STPTNUM
+                                   TO  SHODATA-ITEM
+               PERFORM 70011-SHOUKAIDATA-INS-SEC
+           END-IF
+      *
+           IF    ( SPA-GMN-Q01-EDPTNUM     NOT =   SPACE )
+               MOVE    SHKITEMID-EDPTNUM
+                                   TO  SHODATA-ITEMID
+               MOVE    SPA-GMN-Q01-EDPTNUM
+                                   TO  SHODATA-ITEM
+               PERFORM 70011-SHOUKAIDATA-INS-SEC
+           END-IF
+      *
+           IF    ( SPA-GMN-Q01-CHKTSTPT    =   "T" )
+               MOVE    SHKITEMID-CHKTSTPT
+                                   TO  SHODATA-ITEMID
+               MOVE    "1"         TO  SHODATA-ITEM
+               PERFORM 70011-SHOUKAIDATA-INS-SEC
+           ELSE
+               MOVE    SHKITEMID-CHKTSTPT
+                                   TO  SHODATA-ITEMID
+               MOVE    "0"         TO  SHODATA-ITEM
+               PERFORM 70011-SHOUKAIDATA-INS-SEC
+           END-IF
+      *
+           IF    ( SPA-GMN-Q01-POST (1)    NOT =   SPACE )
+               MOVE    SHKITEMID-POST01
+                                   TO  SHODATA-ITEMID
+               MOVE    SPA-GMN-Q01-POST (1)
+                                   TO  SHODATA-ITEM
+               PERFORM 70011-SHOUKAIDATA-INS-SEC
+           END-IF
+      *
+           IF    ( SPA-GMN-Q01-POST (2)    NOT =   SPACE )
+               MOVE    SHKITEMID-POST02
+                                   TO  SHODATA-ITEMID
+               MOVE    SPA-GMN-Q01-POST (2)
+                                   TO  SHODATA-ITEM
+               PERFORM 70011-SHOUKAIDATA-INS-SEC
+           END-IF
+      *
+           IF    ( SPA-GMN-Q01-POST (3)    NOT =   SPACE )
+               MOVE    SHKITEMID-POST03
+                                   TO  SHODATA-ITEMID
+               MOVE    SPA-GMN-Q01-POST (3)
+                                   TO  SHODATA-ITEM
+               PERFORM 70011-SHOUKAIDATA-INS-SEC
+           END-IF
+      *
+           IF    ( SPA-GMN-Q01-POST (4)    NOT =   SPACE )
+               MOVE    SHKITEMID-POST04
+                                   TO  SHODATA-ITEMID
+               MOVE    SPA-GMN-Q01-POST (4)
+                                   TO  SHODATA-ITEM
+               PERFORM 70011-SHOUKAIDATA-INS-SEC
+           END-IF
+      *
+           IF    ( SPA-GMN-Q01-POST (5)    NOT =   SPACE )
+               MOVE    SHKITEMID-POST05
+                                   TO  SHODATA-ITEMID
+               MOVE    SPA-GMN-Q01-POST (5)
+                                   TO  SHODATA-ITEM
+               PERFORM 70011-SHOUKAIDATA-INS-SEC
+           END-IF
+      *
+           IF    ( SPA-GMN-Q01-JYUSHO (1)  NOT =   SPACE )
+               MOVE    SHKITEMID-JYUSHO01
+                                   TO  SHODATA-ITEMID
+               MOVE    SPA-GMN-Q01-JYUSHO (1)
+                                   TO  SHODATA-ITEM
+               PERFORM 70011-SHOUKAIDATA-INS-SEC
+           END-IF
+      *
+           IF    ( SPA-GMN-Q01-JYUSHO (2)  NOT =   SPACE )
+               MOVE    SHKITEMID-JYUSHO02
+                                   TO  SHODATA-ITEMID
+               MOVE    SPA-GMN-Q01-JYUSHO (2)
+                                   TO  SHODATA-ITEM
+               PERFORM 70011-SHOUKAIDATA-INS-SEC
+           END-IF
+      *
+           IF    ( SPA-GMN-Q01-JYUSHO (3)  NOT =   SPACE )
+               MOVE    SHKITEMID-JYUSHO03
+                                   TO  SHODATA-ITEMID
+               MOVE    SPA-GMN-Q01-JYUSHO (3)
+                                   TO  SHODATA-ITEM
+               PERFORM 70011-SHOUKAIDATA-INS-SEC
+           END-IF
+      *
+           IF    ( SPA-GMN-Q01-JYUSHO (4)  NOT =   SPACE )
+               MOVE    SHKITEMID-JYUSHO04
+                                   TO  SHODATA-ITEMID
+               MOVE    SPA-GMN-Q01-JYUSHO (4)
+                                   TO  SHODATA-ITEM
+               PERFORM 70011-SHOUKAIDATA-INS-SEC
+           END-IF
+      *
+           IF    ( SPA-GMN-Q01-JYUSHO (5)  NOT =   SPACE )
+               MOVE    SHKITEMID-JYUSHO05
+                                   TO  SHODATA-ITEMID
+               MOVE    SPA-GMN-Q01-JYUSHO (5)
+                                   TO  SHODATA-ITEM
+               PERFORM 70011-SHOUKAIDATA-INS-SEC
+           END-IF
+      *
+           IF    ( SPA-GMN-Q01-KANANAME (1)  NOT =   SPACE )
+               MOVE    SHKITEMID-KANANAME01
+                                   TO  SHODATA-ITEMID
+               MOVE    SPA-GMN-Q01-KANANAME (1)
+                                   TO  SHODATA-ITEM
+               PERFORM 70011-SHOUKAIDATA-INS-SEC
+           END-IF
+      *
+           IF    ( SPA-GMN-Q01-KANANAME (2)  NOT =   SPACE )
+               MOVE    SHKITEMID-KANANAME02
+                                   TO  SHODATA-ITEMID
+               MOVE    SPA-GMN-Q01-KANANAME (2)
+                                   TO  SHODATA-ITEM
+               PERFORM 70011-SHOUKAIDATA-INS-SEC
+           END-IF
+      *
+           IF    ( SPA-GMN-Q01-KANANAME (3)  NOT =   SPACE )
+               MOVE    SHKITEMID-KANANAME03
+                                   TO  SHODATA-ITEMID
+               MOVE    SPA-GMN-Q01-KANANAME (3)
+                                   TO  SHODATA-ITEM
+               PERFORM 70011-SHOUKAIDATA-INS-SEC
+           END-IF
+      *
+           IF    ( SPA-GMN-Q01-KANANAME (4)  NOT =   SPACE )
+               MOVE    SHKITEMID-KANANAME04
+                                   TO  SHODATA-ITEMID
+               MOVE    SPA-GMN-Q01-KANANAME (4)
+                                   TO  SHODATA-ITEM
+               PERFORM 70011-SHOUKAIDATA-INS-SEC
+           END-IF
+      *
+           IF    ( SPA-GMN-Q01-KANANAME (5)  NOT =   SPACE )
+               MOVE    SHKITEMID-KANANAME05
+                                   TO  SHODATA-ITEMID
+               MOVE    SPA-GMN-Q01-KANANAME (5)
+                                   TO  SHODATA-ITEM
+               PERFORM 70011-SHOUKAIDATA-INS-SEC
+           END-IF
+      *
+           IF    ( SPA-GMN-Q01-NAME (1)  NOT =   SPACE )
+               MOVE    SHKITEMID-NAME01
+                                   TO  SHODATA-ITEMID
+               MOVE    SPA-GMN-Q01-NAME (1)
+                                   TO  SHODATA-ITEM
+               PERFORM 70011-SHOUKAIDATA-INS-SEC
+           END-IF
+      *
+           IF    ( SPA-GMN-Q01-NAME (2)  NOT =   SPACE )
+               MOVE    SHKITEMID-NAME02
+                                   TO  SHODATA-ITEMID
+               MOVE    SPA-GMN-Q01-NAME (2)
+                                   TO  SHODATA-ITEM
+               PERFORM 70011-SHOUKAIDATA-INS-SEC
+           END-IF
+      *
+           IF    ( SPA-GMN-Q01-NAME (3)  NOT =   SPACE )
+               MOVE    SHKITEMID-NAME03
+                                   TO  SHODATA-ITEMID
+               MOVE    SPA-GMN-Q01-NAME (3)
+                                   TO  SHODATA-ITEM
+               PERFORM 70011-SHOUKAIDATA-INS-SEC
+           END-IF
+      *
+           IF    ( SPA-GMN-Q01-NAME (4)  NOT =   SPACE )
+               MOVE    SHKITEMID-NAME04
+                                   TO  SHODATA-ITEMID
+               MOVE    SPA-GMN-Q01-NAME (4)
+                                   TO  SHODATA-ITEM
+               PERFORM 70011-SHOUKAIDATA-INS-SEC
+           END-IF
+      *
+           IF    ( SPA-GMN-Q01-NAME (5)  NOT =   SPACE )
+               MOVE    SHKITEMID-NAME05
+                                   TO  SHODATA-ITEMID
+               MOVE    SPA-GMN-Q01-NAME (5)
+                                   TO  SHODATA-ITEM
+               PERFORM 70011-SHOUKAIDATA-INS-SEC
+           END-IF
+      *
+           IF    ( SPA-GMN-Q01-CONDITION1 (1)  NOT =   SPACE )
+               MOVE    SHKITEMID-CONDITION101
+                                   TO  SHODATA-ITEMID
+               MOVE    SPA-GMN-Q01-CONDITION1 (1)
+                                   TO  SHODATA-ITEM
+               PERFORM 70011-SHOUKAIDATA-INS-SEC
+           END-IF
+      *
+           IF    ( SPA-GMN-Q01-CONDITION1 (2)  NOT =   SPACE )
+               MOVE    SHKITEMID-CONDITION102
+                                   TO  SHODATA-ITEMID
+               MOVE    SPA-GMN-Q01-CONDITION1 (2)
+                                   TO  SHODATA-ITEM
+               PERFORM 70011-SHOUKAIDATA-INS-SEC
+           END-IF
+      *
+           IF    ( SPA-GMN-Q01-CONDITION1 (3)  NOT =   SPACE )
+               MOVE    SHKITEMID-CONDITION103
+                                   TO  SHODATA-ITEMID
+               MOVE    SPA-GMN-Q01-CONDITION1 (3)
+                                   TO  SHODATA-ITEM
+               PERFORM 70011-SHOUKAIDATA-INS-SEC
+           END-IF
+      *
+           IF    ( SPA-GMN-Q01-CONDITION2 (1)  NOT =   SPACE )
+               MOVE    SHKITEMID-CONDITION201
+                                   TO  SHODATA-ITEMID
+               MOVE    SPA-GMN-Q01-CONDITION2 (1)
+                                   TO  SHODATA-ITEM
+               PERFORM 70011-SHOUKAIDATA-INS-SEC
+           END-IF
+      *
+           IF    ( SPA-GMN-Q01-CONDITION2 (2)  NOT =   SPACE )
+               MOVE    SHKITEMID-CONDITION202
+                                   TO  SHODATA-ITEMID
+               MOVE    SPA-GMN-Q01-CONDITION2 (2)
+                                   TO  SHODATA-ITEM
+               PERFORM 70011-SHOUKAIDATA-INS-SEC
+           END-IF
+      *
+           IF    ( SPA-GMN-Q01-CONDITION2 (3)  NOT =   SPACE )
+               MOVE    SHKITEMID-CONDITION203
+                                   TO  SHODATA-ITEMID
+               MOVE    SPA-GMN-Q01-CONDITION2 (3)
+                                   TO  SHODATA-ITEM
+               PERFORM 70011-SHOUKAIDATA-INS-SEC
+           END-IF
+      *
+           IF    ( SPA-GMN-Q01-CONDITION3 (1)  NOT =   SPACE )
+               MOVE    SHKITEMID-CONDITION301
+                                   TO  SHODATA-ITEMID
+               MOVE    SPA-GMN-Q01-CONDITION3 (1)
+                                   TO  SHODATA-ITEM
+               PERFORM 70011-SHOUKAIDATA-INS-SEC
+           END-IF
+      *
+           IF    ( SPA-GMN-Q01-CONDITION3 (2)  NOT =   SPACE )
+               MOVE    SHKITEMID-CONDITION302
+                                   TO  SHODATA-ITEMID
+               MOVE    SPA-GMN-Q01-CONDITION3 (2)
+                                   TO  SHODATA-ITEM
+               PERFORM 70011-SHOUKAIDATA-INS-SEC
+           END-IF
+      *
+           IF    ( SPA-GMN-Q01-CONDITION3 (3)  NOT =   SPACE )
+               MOVE    SHKITEMID-CONDITION303
+                                   TO  SHODATA-ITEMID
+               MOVE    SPA-GMN-Q01-CONDITION3 (3)
+                                   TO  SHODATA-ITEM
+               PERFORM 70011-SHOUKAIDATA-INS-SEC
+           END-IF
+      *
+           IF    ( SPA-GMN-Q01-GENMEN (1)  NOT =   SPACE )
+               MOVE    SHKITEMID-GENMEN01
+                                   TO  SHODATA-ITEMID
+               MOVE    SPA-GMN-Q01-GENMEN (1)
+                                   TO  SHODATA-ITEM
+               PERFORM 70011-SHOUKAIDATA-INS-SEC
+           END-IF
+      *
+           IF    ( SPA-GMN-Q01-GENMEN (2)  NOT =   SPACE )
+               MOVE    SHKITEMID-GENMEN02
+                                   TO  SHODATA-ITEMID
+               MOVE    SPA-GMN-Q01-GENMEN (2)
+                                   TO  SHODATA-ITEM
+               PERFORM 70011-SHOUKAIDATA-INS-SEC
+           END-IF
+      *
+           IF    ( SPA-GMN-Q01-GENMEN (3)  NOT =   SPACE )
+               MOVE    SHKITEMID-GENMEN03
+                                   TO  SHODATA-ITEMID
+               MOVE    SPA-GMN-Q01-GENMEN (3)
+                                   TO  SHODATA-ITEM
+               PERFORM 70011-SHOUKAIDATA-INS-SEC
+           END-IF
+      *
+           IF    ( SPA-GMN-Q01-COMMENT (1)  NOT =   SPACE )
+               MOVE    SHKITEMID-COMMENT01
+                                   TO  SHODATA-ITEMID
+               MOVE    SPA-GMN-Q01-COMMENT (1)
+                                   TO  SHODATA-ITEM
+               PERFORM 70011-SHOUKAIDATA-INS-SEC
+           END-IF
+      *
+           IF    ( SPA-GMN-Q01-COMMENT (2)  NOT =   SPACE )
+               MOVE    SHKITEMID-COMMENT02
+                                   TO  SHODATA-ITEMID
+               MOVE    SPA-GMN-Q01-COMMENT (2)
+                                   TO  SHODATA-ITEM
+               PERFORM 70011-SHOUKAIDATA-INS-SEC
+           END-IF
+      *
+           IF    ( SPA-GMN-Q01-COMMENT (3)  NOT =   SPACE )
+               MOVE    SHKITEMID-COMMENT03
+                                   TO  SHODATA-ITEMID
+               MOVE    SPA-GMN-Q01-COMMENT (3)
+                                   TO  SHODATA-ITEM
+               PERFORM 70011-SHOUKAIDATA-INS-SEC
+           END-IF
+      *
+           IF    ( SPA-GMN-Q01-TEL-TO      NOT =   SPACE )
+               MOVE    SHKITEMID-TEL-TO
+                                   TO  SHODATA-ITEMID
+               MOVE    SPA-GMN-Q01-TEL-TO
+                                   TO  SHODATA-ITEM
+               PERFORM 70011-SHOUKAIDATA-INS-SEC
+           END-IF
+      *
+           IF    ( SPA-GMN-Q01-TEL (1)  NOT =   SPACE )
+               MOVE    SHKITEMID-TEL01
+                                   TO  SHODATA-ITEMID
+               MOVE    SPA-GMN-Q01-TEL (1)
+                                   TO  SHODATA-ITEM
+               PERFORM 70011-SHOUKAIDATA-INS-SEC
+           END-IF
+      *
+           IF    ( SPA-GMN-Q01-TEL (2)  NOT =   SPACE )
+               MOVE    SHKITEMID-TEL02
+                                   TO  SHODATA-ITEMID
+               MOVE    SPA-GMN-Q01-TEL (2)
+                                   TO  SHODATA-ITEM
+               PERFORM 70011-SHOUKAIDATA-INS-SEC
+           END-IF
+      *
+           IF    ( SPA-GMN-Q01-TEL (3)  NOT =   SPACE )
+               MOVE    SHKITEMID-TEL03
+                                   TO  SHODATA-ITEMID
+               MOVE    SPA-GMN-Q01-TEL (3)
+                                   TO  SHODATA-ITEM
+               PERFORM 70011-SHOUKAIDATA-INS-SEC
+           END-IF
+      *
+           IF    ( SPA-GMN-Q01-TSY NOT =   SPACE )
+               MOVE    SHKITEMID-TSY
+                                   TO  SHODATA-ITEMID
+               MOVE    SPA-GMN-Q01-TSY
+                                   TO  SHODATA-ITEM
+               PERFORM 70011-SHOUKAIDATA-INS-SEC
+           END-IF
+      *
+           IF    ( SPA-GMN-Q01-STTSYSKBT   NOT =   SPACE )
+               MOVE    SHKITEMID-STTSYSKBT
+                                   TO  SHODATA-ITEMID
+               MOVE    SPA-GMN-Q01-STTSYSKBT
+                                   TO  SHODATA-ITEM
+               PERFORM 70011-SHOUKAIDATA-INS-SEC
+           END-IF
+      *
+           IF    ( SPA-NAI-Q01-STTSYYM     NOT =   SPACE )
+               MOVE    SHKITEMID-STTSYYM
+                                   TO  SHODATA-ITEMID
+               MOVE    SPA-NAI-Q01-STTSYYM
+                                   TO  SHODATA-ITEM
+               PERFORM 70011-SHOUKAIDATA-INS-SEC
+           END-IF
+      *
+           IF    ( SPA-NAI-Q01-EDTSYYM     NOT =   SPACE )
+               MOVE    SHKITEMID-EDTSYYM
+                                   TO  SHODATA-ITEMID
+               MOVE    SPA-NAI-Q01-EDTSYYM
+                                   TO  SHODATA-ITEM
+               PERFORM 70011-SHOUKAIDATA-INS-SEC
+           END-IF
+      *
+           IF    ( SPA-GMN-Q01-HONKZKKBN   NOT =   SPACE )
+               MOVE    SHKITEMID-HONKZKKBN
+                                   TO  SHODATA-ITEMID
+               MOVE    SPA-GMN-Q01-HONKZKKBN
+                                   TO  SHODATA-ITEM
+               PERFORM 70011-SHOUKAIDATA-INS-SEC
+           END-IF
+      *
+      *
+           IF    ( SPA-GMN-Q01-HKNJANUM (1)  NOT =   SPACE )
+               MOVE    SHKITEMID-HKNJANUM01
+                                   TO  SHODATA-ITEMID
+               MOVE    SPA-GMN-Q01-HKNJANUM (1)
+                                   TO  SHODATA-ITEM
+               PERFORM 70011-SHOUKAIDATA-INS-SEC
+           END-IF
+      *
+           IF    ( SPA-GMN-Q01-HKNJANUM (2)  NOT =   SPACE )
+               MOVE    SHKITEMID-HKNJANUM02
+                                   TO  SHODATA-ITEMID
+               MOVE    SPA-GMN-Q01-HKNJANUM (2)
+                                   TO  SHODATA-ITEM
+               PERFORM 70011-SHOUKAIDATA-INS-SEC
+           END-IF
+      *
+           IF    ( SPA-GMN-Q01-HKNJANUM (3)  NOT =   SPACE )
+               MOVE    SHKITEMID-HKNJANUM03
+                                   TO  SHODATA-ITEMID
+               MOVE    SPA-GMN-Q01-HKNJANUM (3)
+                                   TO  SHODATA-ITEM
+               PERFORM 70011-SHOUKAIDATA-INS-SEC
+           END-IF
+      *
+           IF    ( SPA-GMN-Q01-HKNJANUM (4)  NOT =   SPACE )
+               MOVE    SHKITEMID-HKNJANUM04
+                                   TO  SHODATA-ITEMID
+               MOVE    SPA-GMN-Q01-HKNJANUM (4)
+                                   TO  SHODATA-ITEM
+               PERFORM 70011-SHOUKAIDATA-INS-SEC
+           END-IF
+      *
+           IF    ( SPA-GMN-Q01-HKNJANUM (5)  NOT =   SPACE )
+               MOVE    SHKITEMID-HKNJANUM05
+                                   TO  SHODATA-ITEMID
+               MOVE    SPA-GMN-Q01-HKNJANUM (5)
+                                   TO  SHODATA-ITEM
+               PERFORM 70011-SHOUKAIDATA-INS-SEC
+           END-IF
+      *
+      *
+           IF    ( SPA-GMN-Q01-HKNNUM (1)  NOT =   SPACE )
+               MOVE    SHKITEMID-HKNNUM01
+                                   TO  SHODATA-ITEMID
+               MOVE    SPA-GMN-Q01-HKNNUM (1)
+                                   TO  SHODATA-ITEM
+               PERFORM 70011-SHOUKAIDATA-INS-SEC
+           END-IF
+      *
+           IF    ( SPA-GMN-Q01-HKNNUM (2)  NOT =   SPACE )
+               MOVE    SHKITEMID-HKNNUM02
+                                   TO  SHODATA-ITEMID
+               MOVE    SPA-GMN-Q01-HKNNUM (2)
+                                   TO  SHODATA-ITEM
+               PERFORM 70011-SHOUKAIDATA-INS-SEC
+           END-IF
+      *
+           IF    ( SPA-GMN-Q01-HKNNUM (3)  NOT =   SPACE )
+               MOVE    SHKITEMID-HKNNUM03
+                                   TO  SHODATA-ITEMID
+               MOVE    SPA-GMN-Q01-HKNNUM (3)
+                                   TO  SHODATA-ITEM
+               PERFORM 70011-SHOUKAIDATA-INS-SEC
+           END-IF
+      *
+           IF    ( SPA-GMN-Q01-HKNNUM (4)  NOT =   SPACE )
+               MOVE    SHKITEMID-HKNNUM04
+                                   TO  SHODATA-ITEMID
+               MOVE    SPA-GMN-Q01-HKNNUM (4)
+                                   TO  SHODATA-ITEM
+               PERFORM 70011-SHOUKAIDATA-INS-SEC
+           END-IF
+      *
+           IF    ( SPA-GMN-Q01-HKNNUM (5)  NOT =   SPACE )
+               MOVE    SHKITEMID-HKNNUM05
+                                   TO  SHODATA-ITEMID
+               MOVE    SPA-GMN-Q01-HKNNUM (5)
+                                   TO  SHODATA-ITEM
+               PERFORM 70011-SHOUKAIDATA-INS-SEC
+           END-IF
+      *
+           IF    ( SPA-GMN-Q01-KIGO (1)  NOT =   SPACE )
+               MOVE    SHKITEMID-KIGO01
+                                   TO  SHODATA-ITEMID
+               MOVE    SPA-GMN-Q01-KIGO (1)
+                                   TO  SHODATA-ITEM
+               PERFORM 70011-SHOUKAIDATA-INS-SEC
+           END-IF
+      *
+           IF    ( SPA-GMN-Q01-KIGO (2)  NOT =   SPACE )
+               MOVE    SHKITEMID-KIGO02
+                                   TO  SHODATA-ITEMID
+               MOVE    SPA-GMN-Q01-KIGO (2)
+                                   TO  SHODATA-ITEM
+               PERFORM 70011-SHOUKAIDATA-INS-SEC
+           END-IF
+      *
+           IF    ( SPA-GMN-Q01-KIGO (3)  NOT =   SPACE )
+               MOVE    SHKITEMID-KIGO03
+                                   TO  SHODATA-ITEMID
+               MOVE    SPA-GMN-Q01-KIGO (3)
+                                   TO  SHODATA-ITEM
+               PERFORM 70011-SHOUKAIDATA-INS-SEC
+           END-IF
+      *
+           IF    ( SPA-GMN-Q01-KIGO (4)  NOT =   SPACE )
+               MOVE    SHKITEMID-KIGO04
+                                   TO  SHODATA-ITEMID
+               MOVE    SPA-GMN-Q01-KIGO (4)
+                                   TO  SHODATA-ITEM
+               PERFORM 70011-SHOUKAIDATA-INS-SEC
+           END-IF
+      *
+           IF    ( SPA-GMN-Q01-KIGO (5)  NOT =   SPACE )
+               MOVE    SHKITEMID-KIGO05
+                                   TO  SHODATA-ITEMID
+               MOVE    SPA-GMN-Q01-KIGO (5)
+                                   TO  SHODATA-ITEM
+               PERFORM 70011-SHOUKAIDATA-INS-SEC
+           END-IF
+      *
+           IF    ( SPA-GMN-Q01-NUM (1)  NOT =   SPACE )
+               MOVE    SHKITEMID-NUM01
+                                   TO  SHODATA-ITEMID
+               MOVE    SPA-GMN-Q01-NUM (1)
+                                   TO  SHODATA-ITEM
+               PERFORM 70011-SHOUKAIDATA-INS-SEC
+           END-IF
+      *
+           IF    ( SPA-GMN-Q01-NUM (2)  NOT =   SPACE )
+               MOVE    SHKITEMID-NUM02
+                                   TO  SHODATA-ITEMID
+               MOVE    SPA-GMN-Q01-NUM (2)
+                                   TO  SHODATA-ITEM
+               PERFORM 70011-SHOUKAIDATA-INS-SEC
+           END-IF
+      *
+           IF    ( SPA-GMN-Q01-NUM (3)  NOT =   SPACE )
+               MOVE    SHKITEMID-NUM03
+                                   TO  SHODATA-ITEMID
+               MOVE    SPA-GMN-Q01-NUM (3)
+                                   TO  SHODATA-ITEM
+               PERFORM 70011-SHOUKAIDATA-INS-SEC
+           END-IF
+      *
+           IF    ( SPA-GMN-Q01-NUM (4)  NOT =   SPACE )
+               MOVE    SHKITEMID-NUM04
+                                   TO  SHODATA-ITEMID
+               MOVE    SPA-GMN-Q01-NUM (4)
+                                   TO  SHODATA-ITEM
+               PERFORM 70011-SHOUKAIDATA-INS-SEC
+           END-IF
+      *
+           IF    ( SPA-GMN-Q01-NUM (5)  NOT =   SPACE )
+               MOVE    SHKITEMID-NUM05
+                                   TO  SHODATA-ITEMID
+               MOVE    SPA-GMN-Q01-NUM (5)
+                                   TO  SHODATA-ITEM
+               PERFORM 70011-SHOUKAIDATA-INS-SEC
+           END-IF
+
+      *
+           IF    ( SPA-GMN-Q01-RDHKNKOH-AND  =   "T" )
+               MOVE    SHKITEMID-RDHKNKOH
+                                   TO  SHODATA-ITEMID
+               MOVE    "1"
+                                   TO  SHODATA-ITEM
+               PERFORM 70011-SHOUKAIDATA-INS-SEC
+           ELSE
+               MOVE    SHKITEMID-RDHKNKOH
+                                   TO  SHODATA-ITEMID
+               MOVE    "0"
+                                   TO  SHODATA-ITEM
+               PERFORM 70011-SHOUKAIDATA-INS-SEC
+           END-IF
+      *
+           IF    ( SPA-GMN-Q01-RDKOHNUM-AND   =   "T" )
+               MOVE    SHKITEMID-RDKOHNUM
+                                   TO  SHODATA-ITEMID
+               MOVE    "1"
+                                   TO  SHODATA-ITEM
+               PERFORM 70011-SHOUKAIDATA-INS-SEC
+           ELSE
+               MOVE    SHKITEMID-RDKOHNUM
+                                   TO  SHODATA-ITEMID
+               MOVE    "0"
+                                   TO  SHODATA-ITEM
+               PERFORM 70011-SHOUKAIDATA-INS-SEC
+           END-IF
+      *
+           IF    ( SPA-GMN-Q01-KOHNUM (1)  NOT =   SPACE )
+               MOVE    SHKITEMID-KOHNUM01
+                                   TO  SHODATA-ITEMID
+               MOVE    SPA-GMN-Q01-KOHNUM (1)
+                                   TO  SHODATA-ITEM
+               PERFORM 70011-SHOUKAIDATA-INS-SEC
+           END-IF
+      *
+           IF    ( SPA-GMN-Q01-KOHNUM (2)  NOT =   SPACE )
+               MOVE    SHKITEMID-KOHNUM02
+                                   TO  SHODATA-ITEMID
+               MOVE    SPA-GMN-Q01-KOHNUM (2)
+                                   TO  SHODATA-ITEM
+               PERFORM 70011-SHOUKAIDATA-INS-SEC
+           END-IF
+      *
+           IF    ( SPA-GMN-Q01-KOHNUM (3)  NOT =   SPACE )
+               MOVE    SHKITEMID-KOHNUM03
+                                   TO  SHODATA-ITEMID
+               MOVE    SPA-GMN-Q01-KOHNUM (3)
+                                   TO  SHODATA-ITEM
+               PERFORM 70011-SHOUKAIDATA-INS-SEC
+           END-IF
+      *
+           IF    ( SPA-GMN-Q01-KOHNUM (4)  NOT =   SPACE )
+               MOVE    SHKITEMID-KOHNUM04
+                                   TO  SHODATA-ITEMID
+               MOVE    SPA-GMN-Q01-KOHNUM (4)
+                                   TO  SHODATA-ITEM
+               PERFORM 70011-SHOUKAIDATA-INS-SEC
+           END-IF
+      *
+           IF    ( SPA-GMN-Q01-KOHNUM (5)  NOT =   SPACE )
+               MOVE    SHKITEMID-KOHNUM05
+                                   TO  SHODATA-ITEMID
+               MOVE    SPA-GMN-Q01-KOHNUM (5)
+                                   TO  SHODATA-ITEM
+               PERFORM 70011-SHOUKAIDATA-INS-SEC
+           END-IF
+      *
+           IF    ( SPA-GMN-Q01-FTNJANUM (1)  NOT =   SPACE )
+               MOVE    SHKITEMID-FTNJANUM01
+                                   TO  SHODATA-ITEMID
+               MOVE    SPA-GMN-Q01-FTNJANUM (1)
+                                   TO  SHODATA-ITEM
+               PERFORM 70011-SHOUKAIDATA-INS-SEC
+           END-IF
+      *
+           IF    ( SPA-GMN-Q01-FTNJANUM (2)  NOT =   SPACE )
+               MOVE    SHKITEMID-FTNJANUM02
+                                   TO  SHODATA-ITEMID
+               MOVE    SPA-GMN-Q01-FTNJANUM (2)
+                                   TO  SHODATA-ITEM
+               PERFORM 70011-SHOUKAIDATA-INS-SEC
+           END-IF
+      *
+           IF    ( SPA-GMN-Q01-FTNJANUM (3)  NOT =   SPACE )
+               MOVE    SHKITEMID-FTNJANUM03
+                                   TO  SHODATA-ITEMID
+               MOVE    SPA-GMN-Q01-FTNJANUM (3)
+                                   TO  SHODATA-ITEM
+               PERFORM 70011-SHOUKAIDATA-INS-SEC
+           END-IF
+      *
+           IF    ( SPA-GMN-Q01-FTNJANUM (4)  NOT =   SPACE )
+               MOVE    SHKITEMID-FTNJANUM04
+                                   TO  SHODATA-ITEMID
+               MOVE    SPA-GMN-Q01-FTNJANUM (4)
+                                   TO  SHODATA-ITEM
+               PERFORM 70011-SHOUKAIDATA-INS-SEC
+           END-IF
+      *
+           IF    ( SPA-GMN-Q01-FTNJANUM (5)  NOT =   SPACE )
+               MOVE    SHKITEMID-FTNJANUM05
+                                   TO  SHODATA-ITEMID
+               MOVE    SPA-GMN-Q01-FTNJANUM (5)
+                                   TO  SHODATA-ITEM
+               PERFORM 70011-SHOUKAIDATA-INS-SEC
+           END-IF
+      *
+           IF    ( SPA-GMN-Q01-UTAGAIKBN   NOT =   SPACE )
+               MOVE    SHKITEMID-UTAGAIKBN
+                                   TO  SHODATA-ITEMID
+               MOVE    SPA-GMN-Q01-UTAGAIKBN
+                                   TO  SHODATA-ITEM
+               PERFORM 70011-SHOUKAIDATA-INS-SEC
+           END-IF
+      *
+           IF    ( SPA-GMN-Q01-TENKIKBN    NOT =   SPACE )
+               MOVE    SHKITEMID-TENKIKBN
+                                   TO  SHODATA-ITEMID
+               MOVE    SPA-GMN-Q01-TENKIKBN
+                                   TO  SHODATA-ITEM
+               PERFORM 70011-SHOUKAIDATA-INS-SEC
+           END-IF
+      *
+           IF    ( SPA-NAI-Q01-STTENKIYMD  NOT =   SPACE )
+               MOVE    SHKITEMID-STTENKIYMD
+                                   TO  SHODATA-ITEMID
+               MOVE    SPA-NAI-Q01-STTENKIYMD
+                                   TO  SHODATA-ITEM
+               PERFORM 70011-SHOUKAIDATA-INS-SEC
+           END-IF
+      *
+           IF    ( SPA-NAI-Q01-EDTENKIYMD  NOT =   SPACE )
+               MOVE    SHKITEMID-EDTENKIYMD
+                                   TO  SHODATA-ITEMID
+               MOVE    SPA-NAI-Q01-EDTENKIYMD
+                                   TO  SHODATA-ITEM
+               PERFORM 70011-SHOUKAIDATA-INS-SEC
+           END-IF
+      *
+           IF    ( SPA-GMN-Q01-RDBYOMEI-AND    =   "T" )
+               MOVE    SHKITEMID-RDBYOMEI
+                                   TO  SHODATA-ITEMID
+               MOVE    "1"
+                                   TO  SHODATA-ITEM
+               PERFORM 70011-SHOUKAIDATA-INS-SEC
+           ELSE
+               MOVE    SHKITEMID-RDBYOMEI
+                                   TO  SHODATA-ITEMID
+               MOVE    "0"
+                                   TO  SHODATA-ITEM
+               PERFORM 70011-SHOUKAIDATA-INS-SEC
+           END-IF
+      *
+           IF    ( SPA-GMN-Q01-BYOMEICD (1)  NOT =   SPACE )
+               MOVE    SHKITEMID-BYOMEICD01
+                                   TO  SHODATA-ITEMID
+               MOVE    SPA-GMN-Q01-BYOMEICD (1)
+                                   TO  SHODATA-ITEM
+               PERFORM 70011-SHOUKAIDATA-INS-SEC
+           END-IF
+      *
+           IF    ( SPA-GMN-Q01-BYOMEICD (2)  NOT =   SPACE )
+               MOVE    SHKITEMID-BYOMEICD02
+                                   TO  SHODATA-ITEMID
+               MOVE    SPA-GMN-Q01-BYOMEICD (2)
+                                   TO  SHODATA-ITEM
+               PERFORM 70011-SHOUKAIDATA-INS-SEC
+           END-IF
+      *
+           IF    ( SPA-GMN-Q01-BYOMEICD (3)  NOT =   SPACE )
+               MOVE    SHKITEMID-BYOMEICD03
+                                   TO  SHODATA-ITEMID
+               MOVE    SPA-GMN-Q01-BYOMEICD (3)
+                                   TO  SHODATA-ITEM
+               PERFORM 70011-SHOUKAIDATA-INS-SEC
+           END-IF
+      *
+           IF    ( SPA-GMN-Q01-BYOMEICD (4)  NOT =   SPACE )
+               MOVE    SHKITEMID-BYOMEICD04
+                                   TO  SHODATA-ITEMID
+               MOVE    SPA-GMN-Q01-BYOMEICD (4)
+                                   TO  SHODATA-ITEM
+               PERFORM 70011-SHOUKAIDATA-INS-SEC
+           END-IF
+      *
+           IF    ( SPA-GMN-Q01-BYOMEICD (5)  NOT =   SPACE )
+               MOVE    SHKITEMID-BYOMEICD05
+                                   TO  SHODATA-ITEMID
+               MOVE    SPA-GMN-Q01-BYOMEICD (5)
+                                   TO  SHODATA-ITEM
+               PERFORM 70011-SHOUKAIDATA-INS-SEC
+           END-IF
+
+      *
+           IF    ( SPA-GMN-Q01-BYOMEI (1)  NOT =   SPACE )
+               MOVE    SHKITEMID-BYOMEI01
+                                   TO  SHODATA-ITEMID
+               MOVE    SPA-GMN-Q01-BYOMEI (1)
+                                   TO  SHODATA-ITEM
+               PERFORM 70011-SHOUKAIDATA-INS-SEC
+           END-IF
+      *
+           IF    ( SPA-GMN-Q01-BYOMEI (2)  NOT =   SPACE )
+               MOVE    SHKITEMID-BYOMEI02
+                                   TO  SHODATA-ITEMID
+               MOVE    SPA-GMN-Q01-BYOMEI (2)
+                                   TO  SHODATA-ITEM
+               PERFORM 70011-SHOUKAIDATA-INS-SEC
+           END-IF
+      *
+           IF    ( SPA-GMN-Q01-BYOMEI (3)  NOT =   SPACE )
+               MOVE    SHKITEMID-BYOMEI03
+                                   TO  SHODATA-ITEMID
+               MOVE    SPA-GMN-Q01-BYOMEI (3)
+                                   TO  SHODATA-ITEM
+               PERFORM 70011-SHOUKAIDATA-INS-SEC
+           END-IF
+      *
+           IF    ( SPA-GMN-Q01-BYOMEI (4)  NOT =   SPACE )
+               MOVE    SHKITEMID-BYOMEI04
+                                   TO  SHODATA-ITEMID
+               MOVE    SPA-GMN-Q01-BYOMEI (4)
+                                   TO  SHODATA-ITEM
+               PERFORM 70011-SHOUKAIDATA-INS-SEC
+           END-IF
+      *
+           IF    ( SPA-GMN-Q01-BYOMEI (5)  NOT =   SPACE )
+               MOVE    SHKITEMID-BYOMEI05
+                                   TO  SHODATA-ITEMID
+               MOVE    SPA-GMN-Q01-BYOMEI (5)
+                                   TO  SHODATA-ITEM
+               PERFORM 70011-SHOUKAIDATA-INS-SEC
+           END-IF
+      *
+           IF    ( SPA-GMN-Q01-RDSRYACT-AND    =   "T" )
+               MOVE    SHKITEMID-RDSRYACT
+                                   TO  SHODATA-ITEMID
+               MOVE    "1"
+                                   TO  SHODATA-ITEM
+               PERFORM 70011-SHOUKAIDATA-INS-SEC
+           ELSE
+               MOVE    SHKITEMID-RDSRYACT
+                                   TO  SHODATA-ITEMID
+               MOVE    "0"
+                                   TO  SHODATA-ITEM
+               PERFORM 70011-SHOUKAIDATA-INS-SEC
+           END-IF
+      *
+           IF    ( SPA-GMN-Q01-SRYCD (1)  NOT =   SPACE )
+               MOVE    SHKITEMID-SRYCD01
+                                   TO  SHODATA-ITEMID
+               MOVE    SPA-GMN-Q01-SRYCD (1)
+                                   TO  SHODATA-ITEM
+               PERFORM 70011-SHOUKAIDATA-INS-SEC
+           END-IF
+      *
+           IF    ( SPA-GMN-Q01-SRYCD (2)  NOT =   SPACE )
+               MOVE    SHKITEMID-SRYCD02
+                                   TO  SHODATA-ITEMID
+               MOVE    SPA-GMN-Q01-SRYCD (2)
+                                   TO  SHODATA-ITEM
+               PERFORM 70011-SHOUKAIDATA-INS-SEC
+           END-IF
+      *
+           IF    ( SPA-GMN-Q01-SRYCD (3)  NOT =   SPACE )
+               MOVE    SHKITEMID-SRYCD03
+                                   TO  SHODATA-ITEMID
+               MOVE    SPA-GMN-Q01-SRYCD (3)
+                                   TO  SHODATA-ITEM
+               PERFORM 70011-SHOUKAIDATA-INS-SEC
+           END-IF
+      *
+           IF    ( SPA-GMN-Q01-SRYCD (4)  NOT =   SPACE )
+               MOVE    SHKITEMID-SRYCD04
+                                   TO  SHODATA-ITEMID
+               MOVE    SPA-GMN-Q01-SRYCD (4)
+                                   TO  SHODATA-ITEM
+               PERFORM 70011-SHOUKAIDATA-INS-SEC
+           END-IF
+      *
+           IF    ( SPA-GMN-Q01-SRYCD (5)  NOT =   SPACE )
+               MOVE    SHKITEMID-SRYCD05
+                                   TO  SHODATA-ITEMID
+               MOVE    SPA-GMN-Q01-SRYCD (5)
+                                   TO  SHODATA-ITEM
+               PERFORM 70011-SHOUKAIDATA-INS-SEC
+           END-IF
+      *
+           IF    ( SPA-GMN-Q01-KMK (1)  NOT =   SPACE )
+               MOVE    SHKITEMID-KMK01
+                                   TO  SHODATA-ITEMID
+               MOVE    SPA-GMN-Q01-KMK (1)
+                                   TO  SHODATA-ITEM
+               PERFORM 70011-SHOUKAIDATA-INS-SEC
+           END-IF
+      *
+           IF    ( SPA-GMN-Q01-KMK (2)  NOT =   SPACE )
+               MOVE    SHKITEMID-KMK02
+                                   TO  SHODATA-ITEMID
+               MOVE    SPA-GMN-Q01-KMK (2)
+                                   TO  SHODATA-ITEM
+               PERFORM 70011-SHOUKAIDATA-INS-SEC
+           END-IF
+      *
+           IF    ( SPA-GMN-Q01-KMK (3)  NOT =   SPACE )
+               MOVE    SHKITEMID-KMK03
+                                   TO  SHODATA-ITEMID
+               MOVE    SPA-GMN-Q01-KMK (3)
+                                   TO  SHODATA-ITEM
+               PERFORM 70011-SHOUKAIDATA-INS-SEC
+           END-IF
+      *
+           IF    ( SPA-GMN-Q01-RDIO1 (1)    =   "T" )
+               MOVE    SHKITEMID-RDIO01
+                                   TO  SHODATA-ITEMID
+               MOVE    "1"
+                                   TO  SHODATA-ITEM
+               PERFORM 70011-SHOUKAIDATA-INS-SEC
+           ELSE
+               MOVE    SHKITEMID-RDIO01
+                                   TO  SHODATA-ITEMID
+               MOVE    "0"
+                                   TO  SHODATA-ITEM
+               PERFORM 70011-SHOUKAIDATA-INS-SEC
+           END-IF
+      *
+           IF    ( SPA-GMN-Q01-RDIO1 (2)    =   "T" )
+               MOVE    SHKITEMID-RDIO02
+                                   TO  SHODATA-ITEMID
+               MOVE    "1"
+                                   TO  SHODATA-ITEM
+               PERFORM 70011-SHOUKAIDATA-INS-SEC
+           ELSE
+               MOVE    SHKITEMID-RDIO02
+                                   TO  SHODATA-ITEMID
+               MOVE    "0"
+                                   TO  SHODATA-ITEM
+               PERFORM 70011-SHOUKAIDATA-INS-SEC
+           END-IF
+      *
+           IF    ( SPA-GMN-Q01-RDIO1 (3)    =   "T" )
+               MOVE    SHKITEMID-RDIO03
+                                   TO  SHODATA-ITEMID
+               MOVE    "1"
+                                   TO  SHODATA-ITEM
+               PERFORM 70011-SHOUKAIDATA-INS-SEC
+           ELSE
+               MOVE    SHKITEMID-RDIO03
+                                   TO  SHODATA-ITEMID
+               MOVE    "0"
+                                   TO  SHODATA-ITEM
+               PERFORM 70011-SHOUKAIDATA-INS-SEC
+           END-IF
+      *
+           .
+       7001-SHOUKAIDATA-INS-EXT.
+           EXIT.
+      *****************************************************************
+      *    患者照会検索条件登録処理
+      *****************************************************************
+       7001-SHOUKAIKANRI-INS-SEC       SECTION.
+      *
+           PERFORM 900-SHOUKAIKANRI-KEY4-SEL-SEC
+           COMPUTE WRK-RENNUM  =   SHOKANRI-RENNUM     +   1
+      *
+           INITIALIZE                  SHOUKAIKANRI-REC
+      *
+           MOVE    SPA-HOSPNUM         TO  SHOKANRI-HOSPNUM
+           MOVE    WRK-UID             TO  SHOKANRI-UID
+           MOVE    WRK-RENNUM          TO  SHOKANRI-RENNUM
+           MOVE    WRK-SELPATTERNMEI   TO  SHOKANRI-NAME
+           MOVE    "0"                 TO  SHOKANRI-NYUGAIKBN
+           MOVE    SMCNDATE-YMD        TO  SHOKANRI-CREYMD
+                                           SHOKANRI-UPYMD
+           MOVE    SMCNDATE-HMS        TO  SHOKANRI-UPHMS
+           MOVE    SHOUKAIKANRI-REC    TO  MCPDATA-REC
+           MOVE    "tbl_shoukaikanri"  TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 910-DBINSERT-SEC
+           IF    ( MCP-RC      NOT  =  ZERO )
+               MOVE    "4002"          TO  SPA-ERRCD
+           END-IF
+      *
+           .
+       7001-SHOUKAIKANRI-INS-EXT.
+           EXIT.
+      *****************************************************************
+      *    患者照会検索条件登録処理
+      *****************************************************************
+       70011-SHOUKAIDATA-INS-SEC        SECTION.
+      *
+           IF    ( SPA-ERRCD       =    SPACE )
+               MOVE    SMCNDATE-YMD        TO  SHODATA-CREYMD
+                                               SHODATA-UPYMD
+               MOVE    SMCNDATE-HMS        TO  SHODATA-UPHMS
+               MOVE    SHOUKAIDATA-REC     TO  MCPDATA-REC
+               MOVE    "tbl_shoukaidata"   TO  MCP-TABLE
+               MOVE    "key"               TO  MCP-PATHNAME
+               PERFORM 910-DBINSERT-SEC
+               IF    ( MCP-RC      NOT =   ZERO )
+                   MOVE    "4001"      TO  SPA-ERRCD
+               END-IF
+           END-IF
+      *
+           .
+       70011-SHOUKAIDATA-INS-EXT.
+           EXIT.
       *****************************************************************
       *    全角半角チェック処理
       *****************************************************************
@@ -7198,6 +9233,17 @@
       *
            .
        800-STR-LEN-GET-EXT.
+           EXIT.
+      *****************************************************************
+      *    マシン日付取得サブ
+      *****************************************************************
+       800-MCNDATE-SEC         SECTION.
+      *
+           CALL    "ORCSMCNDATE"   USING   ORCSMCNDATEAREA
+      *
+           .
+      *
+       800-MCNDATE-EXT.
            EXIT.
       *****************************************************************
       *    住所マスター検索（郵便番号）
@@ -7618,14 +9664,132 @@
        910-USERBYOMEI-KEY-SEL-EXT.
            EXIT.
       *****************************************************************
+      *    患者照会検索条件管理情報検索処理
+      *****************************************************************
+       900-SHOUKAIKANRI-KEY2-SEL-SEC       SECTION.
+      *
+           MOVE    ZERO                TO  FLG-SHOUKAIKANRI
+      *
+           INITIALIZE                      SHOUKAIKANRI-REC
+           MOVE    SPA-HOSPNUM         TO  SHOKANRI-HOSPNUM
+           MOVE    "0"                 TO  SHOKANRI-NYUGAIKBN
+           MOVE    SHOUKAIKANRI-REC    TO  MCPDATA-REC
+           MOVE    "tbl_shoukaikanri"  TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF  ( MCP-RC        =   ZERO )
+               MOVE    MCPDATA-REC     TO  SHOUKAIKANRI-REC
+           ELSE
+               MOVE    1               TO  FLG-SHOUKAIKANRI
+               INITIALIZE                  SHOUKAIKANRI-REC
+           END-IF
+           .
+      *
+       900-SHOUKAIKANRI-KEY2-SEL-EXT.
+           EXIT.
+      *****************************************************************
+      *    患者照会検索条件管理情報FETCH処理
+      *****************************************************************
+       900-SHOUKAIKANRI-KEY2-FET-SEC     SECTION.
+      *
+           MOVE    ZERO                TO  FLG-SHOUKAIKANRI
+      *
+           MOVE    "tbl_shoukaikanri"  TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           PERFORM 910-DBFETCH-SEC
+           IF  ( MCP-RC        =   ZERO )
+               MOVE    MCPDATA-REC     TO  SHOUKAIKANRI-REC
+           ELSE
+               MOVE    1               TO  FLG-SHOUKAIKANRI
+               INITIALIZE                  SHOUKAIKANRI-REC
+           END-IF
+           .
+      *
+       900-SHOUKAIKANRI-KEY2-FET-EXT.
+           EXIT.
+      *****************************************************************
+      *    患者照会検索条件管理情報検索処理
+      *****************************************************************
+       900-SHOUKAIKANRI-KEY4-SEL-SEC       SECTION.
+      *
+           MOVE    ZERO                TO  FLG-SHOUKAIKANRI
+      *
+           INITIALIZE                      SHOUKAIKANRI-REC
+           MOVE    SPA-HOSPNUM         TO  SHOKANRI-HOSPNUM
+           MOVE    "0"                 TO  SHOKANRI-NYUGAIKBN
+           MOVE    SHOUKAIKANRI-REC    TO  MCPDATA-REC
+           MOVE    "tbl_shoukaikanri"  TO  MCP-TABLE
+           MOVE    "key4"              TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF  ( MCP-RC        =   ZERO )
+               MOVE    MCPDATA-REC     TO  SHOUKAIKANRI-REC
+           ELSE
+               MOVE    1               TO  FLG-SHOUKAIKANRI
+               INITIALIZE                  SHOUKAIKANRI-REC
+           END-IF
+      *
+           MOVE    "tbl_shoukaikanri"  TO  MCP-TABLE
+           MOVE    "key4"              TO  MCP-PATHNAME
+           PERFORM 910-DBCLOSECURSOR-SEC
+      *
+           .
+      *
+       900-SHOUKAIKANRI-KEY4-SEL-EXT.
+           EXIT.
+      *****************************************************************
+      *    患者照会検索条件データ情報検索処理
+      *****************************************************************
+       900-SHOUKAIDATA-KEY2-SEL-SEC    SECTION.
+      *
+           MOVE    ZERO                TO  FLG-SHOUKAIDATA
+      *
+           INITIALIZE                      SHOUKAIDATA-REC
+           MOVE    SPA-HOSPNUM         TO  SHODATA-HOSPNUM
+           MOVE    SPA-NAI-Q01-SELPATTERN-UID
+                                       TO  SHODATA-UID
+           MOVE    SHOUKAIDATA-REC     TO  MCPDATA-REC
+           MOVE    "tbl_shoukaidata"   TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF  ( MCP-RC        =   ZERO )
+               MOVE    MCPDATA-REC     TO  SHOUKAIDATA-REC
+           ELSE
+               MOVE    1               TO  FLG-SHOUKAIDATA
+               INITIALIZE                  SHOUKAIDATA-REC
+           END-IF
+      *
+           .
+       900-SHOUKAIDATA-KEY2-SEL-EXT.
+           EXIT.
+      *****************************************************************
+      *    患者照会検索条件データ情報FETCH処理
+      *****************************************************************
+       900-SHOUKAIDATA-KEY2-FET-SEC    SECTION.
+      *
+           MOVE    ZERO                TO  FLG-SHOUKAIDATA
+      *
+           MOVE    "tbl_shoukaidata"   TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           PERFORM 910-DBFETCH-SEC
+           IF  ( MCP-RC        =   ZERO )
+               MOVE    MCPDATA-REC     TO  SHOUKAIDATA-REC
+           ELSE
+               MOVE    1               TO  FLG-SHOUKAIDATA
+               INITIALIZE                  SHOUKAIDATA-REC
+           END-IF
+      *
+           .
+       900-SHOUKAIDATA-KEY2-FET-EXT.
+           EXIT.
+      *****************************************************************
       *    ＤＢ検索処理
       *****************************************************************
        910-DBSELECT-SEC               SECTION.
       *
-           MOVE    "DBSELECT"          TO  MCP-FUNC
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+           MOVE    "DBSELECT"          TO      MCP-FUNC
+           CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
            IF    ( MCP-RC          =   ZERO )
                PERFORM 910-DBFETCH-SEC
            END-IF
@@ -7661,6 +9825,51 @@
            .
       *
        910-DBCLOSECURSOR-EXT.
+           EXIT.
+      *****************************************************************
+      *    ＤＢＩＮＳＥＲＴ処理
+      *****************************************************************
+       910-DBINSERT-SEC                SECTION.
+      *
+           MOVE    "DBINSERT"      TO  MCP-FUNC
+           CALL    "ORCDBMAIN"         USING
+                                       MCPAREA
+                                       MCPDATA-REC
+                                       SPA-AREA
+      *
+           .
+      *
+       910-DBINSERT-EXT.
+           EXIT.
+      *****************************************************************
+      *    ＤＢＵＰＤＡＴＥ処理
+      *****************************************************************
+       910-DBUPDATE-SEC                SECTION.
+      *
+           MOVE    "DBUPDATE"      TO  MCP-FUNC
+           CALL    "ORCDBMAIN"         USING
+                                       MCPAREA
+                                       MCPDATA-REC
+                                       SPA-AREA
+      *
+           .
+      *
+       910-DBUPDATE-EXT.
+           EXIT.
+      *****************************************************************
+      *    ＤＢＤＥＬＥＴＥ処理
+      *****************************************************************
+       910-DBDELETE-SEC                SECTION.
+      *
+           MOVE    "DBDELETE"      TO  MCP-FUNC
+           CALL    "ORCDBMAIN"         USING
+                                       MCPAREA
+                                       MCPDATA-REC
+                                       SPA-AREA
+      *
+           .
+      *
+       910-DBDELETE-EXT.
            EXIT.
       *****************************************************************
       *    ＰＵＴ　処理

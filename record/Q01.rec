@@ -1,5 +1,21 @@
 Q01	{
 	fixed12	{
+		B05S	{
+					state	int;
+		};
+		B06S	{
+					state	int;
+		};
+		B07S	{
+					state	int;
+		};
+		CMB_SELPATTERN	{
+			SELPATTERN	{
+				value	varchar(33);
+			};
+			count	int;
+			item	varchar(33)[50];
+		};
 		STSRYYMD	{
 			value	varchar(10);
 		};

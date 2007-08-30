@@ -17,6 +17,13 @@
       ********************************************************************
           02  Q01.
             03  Q01-FIXED12.
+              04  Q01-B05S-STATE               PIC S9(9)   BINARY.
+              04  Q01-B06S-STATE               PIC S9(9)   BINARY.
+              04  Q01-B07S-STATE               PIC S9(9)   BINARY.
+              04  Q01-CMB-SELPATTERN.
+                05  Q01-SELPATTERN             PIC X(33).
+                05  Q01-CMB-SELPATTERN-COUNT   PIC S9(9)   BINARY.
+                05  Q01-CMB-SELPATTERN-ITEM    PIC X(33)   OCCURS  50.
               04  Q01-STSRYYMD                 PIC X(10).
               04  Q01-EDSRYYMD                 PIC X(10).
               04  Q01-NOTEBOOK3.

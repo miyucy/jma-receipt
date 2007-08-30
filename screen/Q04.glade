@@ -1,0 +1,153 @@
+<?xml version="1.0"?>
+<GTK-Interface>
+
+<project>
+  <name>Q04</name>
+  <program_name>Q04</program_name>
+  <directory></directory>
+  <pixmaps_directory>pixmaps</pixmaps_directory>
+  <gnome_support>True</gnome_support>
+  <gtkpanda_support>False</gtkpanda_support>
+</project>
+
+<widget>
+  <class>GtkWindow</class>
+  <name>Q04</name>
+  <width>400</width>
+  <height>130</height>
+  <signal>
+    <name>map_event</name>
+    <handler>map_event</handler>
+    <last_modification_time>Thu, 21 Dec 2000 08:09:57 GMT</last_modification_time>
+  </signal>
+  <signal>
+    <name>set_focus</name>
+    <handler>set_focus</handler>
+    <last_modification_time>Thu, 21 Dec 2000 08:10:05 GMT</last_modification_time>
+  </signal>
+  <signal>
+    <name>delete_event</name>
+    <handler>gtk_true</handler>
+    <last_modification_time>Mon, 25 Nov 2002 06:01:39 GMT</last_modification_time>
+  </signal>
+  <title>(Q04)¸¡º÷¾ò·ïÅÐÏ¿</title>
+  <type>GTK_WINDOW_DIALOG</type>
+  <position>GTK_WIN_POS_CENTER</position>
+  <modal>True</modal>
+  <allow_shrink>False</allow_shrink>
+  <allow_grow>False</allow_grow>
+  <auto_shrink>False</auto_shrink>
+  <wmclass_class>jma-receipt.dialog</wmclass_class>
+
+  <widget>
+    <class>GtkFixed</class>
+    <name>fixed4</name>
+
+    <widget>
+      <class>GtkButton</class>
+      <name>B01</name>
+      <x>20</x>
+      <y>92</y>
+      <width>72</width>
+      <height>24</height>
+      <can_focus>True</can_focus>
+      <accelerator>
+	<modifiers>0</modifiers>
+	<key>GDK_F1</key>
+	<signal>clicked</signal>
+      </accelerator>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Thu, 21 Dec 2000 06:13:54 GMT</last_modification_time>
+      </signal>
+      <label>Ìá¤ë</label>
+      <relief>GTK_RELIEF_NORMAL</relief>
+    </widget>
+
+    <widget>
+      <class>GtkButton</class>
+      <name>B12</name>
+      <x>312</x>
+      <y>92</y>
+      <width>72</width>
+      <height>24</height>
+      <can_focus>True</can_focus>
+      <accelerator>
+	<modifiers>0</modifiers>
+	<key>GDK_F12</key>
+	<signal>clicked</signal>
+      </accelerator>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Fri, 15 Oct 2004 05:17:19 GMT</last_modification_time>
+      </signal>
+      <label>ÅÐÏ¿</label>
+      <relief>GTK_RELIEF_NORMAL</relief>
+    </widget>
+
+    <widget>
+      <class>GtkPandaEntry</class>
+      <name>NAME</name>
+      <x>88</x>
+      <y>48</y>
+      <width>224</width>
+      <height>28</height>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>activate</name>
+	<handler>send_event</handler>
+	<data>ACTIVATE</data>
+	<last_modification_time>Thu, 19 Jul 2007 08:39:43 GMT</last_modification_time>
+      </signal>
+      <signal>
+	<name>changed</name>
+	<handler>entry_changed</handler>
+	<data>CHANGED</data>
+	<last_modification_time>Fri, 13 Jul 2001 09:32:34 GMT</last_modification_time>
+      </signal>
+      <editable>True</editable>
+      <text_visible>True</text_visible>
+      <text_max_length>30</text_max_length>
+      <text>¤¢¤¢¤¢¤¢¤¢¤¢¤¢¤¢¤¢¤¢¤¢¤¢¤¢¤¢¤¢</text>
+      <input_mode>XIM</input_mode>
+      <xim_enabled>True</xim_enabled>
+    </widget>
+
+    <widget>
+      <class>GtkPandaEntry</class>
+      <name>TITLE</name>
+      <x>20</x>
+      <y>12</y>
+      <width>72</width>
+      <height>28</height>
+      <editable>False</editable>
+      <text_visible>True</text_visible>
+      <text_max_length>20</text_max_length>
+      <text>¾ò·ïÅÐÏ¿</text>
+      <input_mode>XIM</input_mode>
+      <xim_enabled>False</xim_enabled>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label105</name>
+      <x>36</x>
+      <y>48</y>
+      <width>52</width>
+      <height>28</height>
+      <label>ÅÐÏ¿Ì¾</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+  </widget>
+</widget>
+
+</GTK-Interface>
