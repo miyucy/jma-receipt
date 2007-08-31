@@ -47,14 +47,14 @@ XF01	{
 				value	varchar(20);
 			};
 			count	int;
-			item	varchar(20)[40];
+			item	varchar(20)[41];
 		};
 		SRYKA02_COMB	{
 			SRYKA02	{
 				value	varchar(20);
 			};
 			count	int;
-			item	varchar(20)[40];
+			item	varchar(20)[41];
 		};
 		SYORIMEI	{
 			style	varchar(20);
