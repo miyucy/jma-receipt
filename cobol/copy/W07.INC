@@ -291,6 +291,12 @@
                     06  W07-TEIKINKBN-COUNT   PIC S9(9)   BINARY.
                     06  W07-TEIKINKBN-ITEM
                             PIC X(40)   OCCURS  2 TIMES.
+                  05  W07-YKJCHKKBN-COMB.
+                    06  W07-YKJCHKKBN.
+                      07  W07-VALUE   PIC X(40).
+                    06  W07-YKJCHKKBN-COUNT   PIC S9(9)   BINARY.
+                    06  W07-YKJCHKKBN-ITEM
+                            PIC X(40)   OCCURS  2 TIMES.
                 04  W07-TAGNAME3.
                   05  W07-TAGNAME3-STATE   PIC S9(9)   BINARY.
                 04  W07-TAG4.

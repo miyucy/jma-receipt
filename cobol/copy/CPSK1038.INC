@@ -58,8 +58,10 @@
                05  SYS-1038-CHG310FLG      PIC  X(01).
       *訂正請求書金額選択
                05  SYS-1038-TEIKINKBN      PIC  X(01).
+      *薬剤情報提供発行
+               05  SYS-1038-YKJCHKKBN      PIC  X(01).
       *予備
-               05                          PIC  X(490).
+               05                          PIC  X(489).
       *端末ＩＤ
            03  SYS-1038-TERMID          PIC  X(16).
       *オペーレータＩＤ

@@ -3367,6 +3367,8 @@
            MOVE    ZERO                TO  IDY
            MOVE    ZERO                TO  IDG
            MOVE    ZERO                TO  FLG-SYOSIN-OK
+      *    薬剤情報提供料算定有無
+           MOVE    ZERO                TO  SPA-YAKJYO-ARI
       *
            MOVE    ZERO                TO  FLG-PARA
            MOVE    SPACE               TO  LNK-WKSRYACT-AREA
@@ -3477,7 +3479,7 @@
            MOVE    SPA-HOSPNUM         TO  FILE-HOSPNUM02
            OPEN    INPUT               PARA-FILE02
            MOVE    ZERO                TO  IDX
-           IF      STS-PARA           =  ZERO
+           IF      STS-PARA            =  ZERO
                PERFORM 980-PARA02-READ-SEC
            ELSE
                MOVE    1               TO  FLG-PARA 
@@ -3531,6 +3533,9 @@
                IF      FLG-DEL             =   ZERO
       *            初診料算定判定
                    PERFORM 450112-SYOSIN-CHK-SEC
+      *            薬剤情報提供料判定
+                   PERFORM 450113-YAKUJO-CHK-SEC
+      *
                    ADD     1                   TO  IDX2
                    MOVE    "WKSRYACT"          TO  PARA-FILEMEI
                    MOVE    IDX2                TO  PARA-EDANUM
@@ -3556,6 +3561,7 @@
                PERFORM VARYING     IDY     FROM    1   BY  1
                        UNTIL       IDY     >   5
                    EVALUATE    LNK-WKSRY-SRYCD  (IDX IDY)
+      *                初診料
                        WHEN    "111000110"
                        WHEN    "111003610"
                        WHEN    "111700110"
@@ -3571,6 +3577,27 @@
            END-IF
            .
        450112-SYOSIN-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    薬剤情報提供料判定処理
+      *****************************************************************
+       450113-YAKUJO-CHK-SEC             SECTION.
+      *
+           IF      LNK-WKSRY-SRYKBN(IDX)   =   "13"
+               PERFORM VARYING     IDY     FROM    1   BY  1
+                       UNTIL       IDY     >   5
+                   EVALUATE    LNK-WKSRY-SRYCD  (IDX IDY)
+      *                薬剤情報提供料
+                       WHEN    "120002370"
+      *                老人薬剤情報提供料（老人手帳記載あり）
+                       WHEN    "113701310"
+                           MOVE    1               TO  SPA-YAKJYO-ARI
+                   END-EVALUATE
+               END-PERFORM
+           END-IF
+           .
+       450113-YAKUJO-CHK-EXT.
            EXIT.
       *
       *****************************************************************

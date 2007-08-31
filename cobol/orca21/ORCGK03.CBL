@@ -927,6 +927,9 @@
                END-IF
            END-PERFORM
       *
+      *    入金取扱い
+           PERFORM 3105-NYUKINKBN-HEN-SEC
+      *
       *    薬剤情報発行行フラグ
            MOVE    SPA-YAKJYOPRTFLG    TO  SPA-GMN-YAKJYOFLG
            MOVE    "0 発行なし"        TO  SPA-GMN-YAKJYOLST (01)
@@ -937,6 +940,13 @@
                IF      SPA-SYORIFLG        =   ZERO
                    MOVE    "1"             TO  SPA-GMN-YAKJYOFLG
                ELSE
+                   MOVE    "0"             TO  SPA-GMN-YAKJYOFLG
+               END-IF
+           END-IF
+      *    発行ありで薬剤情報提供料と連動する場合
+           IF      SPA-GMN-YAKJYOFLG   =   "1"
+               IF      (SYS-1038-YKJCHKKBN =   "1"  )  AND
+                       (SPA-YAKJYO-ARI     =   ZERO )
                    MOVE    "0"             TO  SPA-GMN-YAKJYOFLG
                END-IF
            END-IF
@@ -965,8 +975,8 @@
                    MOVE    WRK-COM-FTNHEN      TO  SPA-GMN-FUKUMSG
            END-EVALUATE
       *
-      *    入金取扱い
-           PERFORM 3105-NYUKINKBN-HEN-SEC
+      **** 入金取扱い
+      ***  PERFORM 3105-NYUKINKBN-HEN-SEC
       *
       *    保険組合せ
            INITIALIZE                  SPA-GMN-SRYKA-LSTG

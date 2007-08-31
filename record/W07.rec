@@ -393,6 +393,13 @@ W07	{
 					count	int;
 					item	varchar(40)[2];
 				};
+				YKJCHKKBN_COMB	{
+					YKJCHKKBN	{
+						value	varchar(40);
+					};
+					count	int;
+					item	varchar(40)[2];
+				};
 			};
 			TAGNAME3    {
 			  	state   int;

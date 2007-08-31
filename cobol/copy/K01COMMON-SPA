@@ -417,6 +417,8 @@
                            11  SPA-TBL-DRCD.
                                13  SPA-TBL-DRCD1    PIC X(01).
                                13  SPA-TBL-DRCD2    PIC X(04).
+      *薬剤情報提供料算定有無
+               05  SPA-YAKJYO-ARI             PIC 9(01).
       *
            03  SPA-SONOTA-AREA.
       *確認メッセージ
