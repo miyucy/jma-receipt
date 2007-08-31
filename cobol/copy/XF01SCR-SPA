@@ -73,7 +73,7 @@
       *
       *        ©гне╡й
                05  SPA-GMN-SRYKA-LISTG.
-                   07  SPA-GMN-SRYKA-LIST      OCCURS  40.
+                   07  SPA-GMN-SRYKA-LIST      OCCURS  41.
                        09  SPA-GMN-SRYKAL          PIC X(02).
                        09  SPA-GMN-F1L             PIC X(01).
                        09  SPA-GMN-SRYKAMEIL       PIC X(12).

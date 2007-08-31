@@ -36,13 +36,13 @@
                   05  XF01-VALUE  PIC X(20).
                 04  XF01-SRYKA01-COUNT  PIC S9(9)   BINARY.
                 04  XF01-SRYKA01-ITEM
-                        PIC X(20)   OCCURS  40 TIMES.
+                        PIC X(20)   OCCURS  41 TIMES.
               03  XF01-SRYKA02-COMB.
                 04  XF01-SRYKA02.
                   05  XF01-VALUE  PIC X(20).
                 04  XF01-SRYKA02-COUNT  PIC S9(9)   BINARY.
                 04  XF01-SRYKA02-ITEM
-                        PIC X(20)   OCCURS  40 TIMES.
+                        PIC X(20)   OCCURS  41 TIMES.
               03  XF01-SYORIMEI.
                 04  XF01-SYORIMEI-STYLE  PIC X(20).
                 04  XF01-SYORIMEI-VALUE  PIC X(20).
