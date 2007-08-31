@@ -1638,6 +1638,13 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
            MOVE    WRK-CONS-JOB-SHELLID
                                    TO  SHELLTBL-ARG11
            MOVE    RECEERR         TO  SHELLTBL-ARG12
+           IF      SPA-GMN-DATAKBN  =  "1"  OR  "2"
+               MOVE    "/tmp/"     TO  SYS-2005-RECEDENOUT
+           END-IF
+           STRING  SYS-2005-RECEDENOUT DELIMITED  BY  SPACE
+                   "/"                 DELIMITED  BY  SIZE
+                               INTO    SHELLTBL-ARG13
+           END-STRING
       *
            MOVE    SHELLTBL        TO  MCPDATA-REC
            MOVE    "SHELL"         TO  MCP-FUNC
@@ -1653,6 +1660,10 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
            ELSE
                MOVE    "FI"            TO  SPA-TID1-FLG
            END-IF
+      *
+      *    ＪＯＢＩＤ更新処理
+      *
+           PERFORM 45012-JOBID-UPD-SEC
       *
       *    自動的に情報確認画面を表示
            PERFORM 490-KAKUNIN-SEC      

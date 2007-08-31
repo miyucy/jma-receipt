@@ -576,12 +576,12 @@
            IF      SPA-NAI-T04-SELNUM  =   ZERO
                MOVE    "0002"              TO  SPA-ERRCD
                MOVE    1                   TO  SPA-GMN-T04-CUR
-           END-IF
-      *
-           IF      SPA-GMN-T04-TCNT-ALL (SPA-NAI-T04-SELNUM)
-                                       =   ZERO
-               MOVE    "0003"              TO  SPA-ERRCD
-               MOVE    1                   TO  SPA-GMN-T04-CUR
+           ELSE
+               IF      SPA-GMN-T04-TCNT-ALL (SPA-NAI-T04-SELNUM)
+                                           =   ZERO
+                   MOVE    "0003"              TO  SPA-ERRCD
+                   MOVE    1                   TO  SPA-GMN-T04-CUR
+               END-IF
            END-IF
       *       
       *    ジョブ管理チェック処理
