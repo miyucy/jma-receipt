@@ -423,6 +423,7 @@
            END-IF
       *
            MOVE    SPACE               TO  W981
+           INITIALIZE                      W981
       *    コラムリストの位置指定
            MOVE    ZERO                TO  W981-MEILIST-ROW
            IF      WRK-W981-ROW    NOT =   ZERO
