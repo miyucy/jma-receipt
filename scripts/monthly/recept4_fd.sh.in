@@ -36,18 +36,18 @@ fi
         echo "arg5 = [" ${5} "]" >>$LOG_FILE
         echo "hostname =  [" `hostname`  "]" >>$LOG_FILE
 
-    if  [ -e ${1}RECEIPTC${6}.UKE ]; then
+    if  [ -e ${1}${7}RECEIPTC${6}.UKE ]; then
         echo "--- RECEIPTC.UKE exist ---" >>$LOG_FILE
     fi
     FDDHOST=`echo ${5}|tr \[\] "  "`
     echo "FDDHOST = " $FDDHOST
 ##
-		    echo "２番目以降のファイルの処理(fdw処理)" ${1}RECEIPTC${6}.UKE
+		    echo "２番目以降のファイルの処理(fdw処理)" ${1}${7}RECEIPTC${6}.UKE
 ##    $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE${2}${3},${7} >> /home/orca/recept4_fd.log
 ##    exit 
 ##
         echo "--- fdw-> fd start ---" >>$LOG_FILE
-	$FDW -host $FDDHOST -command fd-write.sh ${1}RECEIPTC${6}.UKE RECEIPTC.UKE
+	$FDW -host $FDDHOST -command fd-write.sh ${1}${7}RECEIPTC${6}.UKE RECEIPTC.UKE
 	RC=$?
         echo "--- fdw-> fd end   ---[" $RC  "]" >>$LOG_FILE
 	if  [ $RC -ne '0' ]; then

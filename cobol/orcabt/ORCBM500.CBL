@@ -85,8 +85,11 @@ grpsys*
 grpsys COPY    "COMMON-SPA".
       *    レセプト電算ファイル 名称領域 
        01  RECE30PARA.
-           03  FILLER              PIC X(12)   VALUE 
-                                               "/tmp/RECEDEN".
+           03  FILLER              PIC X(05)   VALUE 
+                                               "/tmp/".
+           03  RECE30PARA-HOSPNUM  PIC 9(02).
+           03  FILLER              PIC X(07)   VALUE 
+                                               "RECEDEN".
            03  RECE30PARA-RENNUM   PIC 9(02).
            03  FILLER              PIC X(04)   VALUE   ".txt".
       *
@@ -520,7 +523,8 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  SYS-1002-HOSPNUM
        2001-HENSYU-SEC              SECTION.
       *     
            COMPUTE WRK-FILE-RENNUM =   WRK-VOLNUM  +   1
-           MOVE    WRK-FILE-RENNUM     TO  RECE30PARA-RENNUM 
+           MOVE    WRK-FILE-RENNUM     TO  RECE30PARA-RENNUM
+           MOVE    WRK-PARA-HOSPNUM    TO  RECE30PARA-HOSPNUM
       *
            OPEN    OUTPUT              RECE30-FILE  
       *

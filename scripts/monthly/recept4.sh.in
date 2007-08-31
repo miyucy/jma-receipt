@@ -42,8 +42,8 @@ fi
         echo "hostname =  [" `hostname`  "]" >>$LOG_FILE
 
 #   該当ファイル削除
-	rm ${13}RECEIPTC*.UKE
-	rm /tmp/RECEDEN*.txt
+	rm ${13}${20}RECEIPTC*.UKE
+	rm /tmp/${20}RECEDEN*.txt
 
 #   レセ電ファイル作成
 
@@ -74,7 +74,7 @@ fi
         FILENUM='0'$NUM
     	    echo "filenum"
             echo  ${FILENUM:${#FILENUM}-2:2}
-	    if  test -s "/tmp/RECEDEN${FILENUM:${#FILENUM}-2:2}.txt"; then
+	    if  test -s "/tmp/${20}RECEDEN${FILENUM:${#FILENUM}-2:2}.txt"; then
     	    echo ${FILENUM:${#FILENUM}-2:2}
 	    else
     	    echo ${FILENUM:${#FILENUM}-2:2} "nothing"
@@ -82,28 +82,28 @@ fi
 	    fi
 	    if  test "${FILENUM:${#FILENUM}-2:2}"	=	"01"; then
 		    echo "先頭ファイルの処理(sjis変換)"
-		    nkf -s /tmp/RECEDEN${FILENUM:${#FILENUM}-2:2}.txt > ${13}RECEIPTC.UKE
+		    nkf -s /tmp/${20}RECEDEN${FILENUM:${#FILENUM}-2:2}.txt > ${13}${20}RECEIPTC.UKE
 	    else
 		    echo "２番目以降のファイルの処理(sjis変換)"
-		    nkf -s /tmp/RECEDEN${FILENUM:${#FILENUM}-2:2}.txt > ${13}RECEIPTC${FILENUM:${#FILENUM}-2:2}.UKE
+		    nkf -s /tmp/${20}RECEDEN${FILENUM:${#FILENUM}-2:2}.txt > ${13}${20}RECEIPTC${FILENUM:${#FILENUM}-2:2}.UKE
 	    fi
     done
 
 #   先頭ファイルのみ処理 
 
-    if  [ -e ${13}RECEIPTC.UKE ]; then
+    if  [ -e ${13}${20}RECEIPTC.UKE ]; then
         echo "--- RECEIPTC.UKE exist ---" >>$LOG_FILE
     fi
     FDDHOST=`echo ${18}|tr \[\] "  "`
     echo "FDDHOST = " $FDDHOST
 ##
-		    echo "先頭ファイルの処理(fdw処理)" ${13}RECEIPTC.UKE
+		    echo "先頭ファイルの処理(fdw処理)" ${13}${20}RECEIPTC.UKE
 ##    $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE${14}${15}
 ##    exit 
 ##
     if  [ ${17} -eq '1' ]; then
         echo "--- fdw-> fd start ---" >>$LOG_FILE
-	$FDW -host $FDDHOST -command fd-write.sh ${13}RECEIPTC.UKE RECEIPTC.UKE
+	$FDW -host $FDDHOST -command fd-write.sh ${13}${20}RECEIPTC.UKE RECEIPTC.UKE
 	RC=$?
         echo "--- fdw-> fd end   ---[" $RC  "]" >>$LOG_FILE
 	if  [ $RC -ne '0' ]; then
@@ -116,7 +116,7 @@ fi
 
     if  [ ${17} -eq '2' ]; then
         echo "--- fdw-> mo start ---" >>$LOG_FILE
-	$FDW -host $FDDHOST -command mo-write.sh ${13}RECEIPTC.UKE RECEIPTC.UKE
+	$FDW -host $FDDHOST -command mo-write.sh ${13}${20}RECEIPTC.UKE RECEIPTC.UKE
 	RC=$?
         echo "--- fdw-> mo end   ---[" $RC  "]" >>$LOG_FILE
 	if  [ $RC -ne '0' ]; then
