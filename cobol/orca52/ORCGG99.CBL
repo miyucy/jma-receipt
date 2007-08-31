@@ -470,6 +470,7 @@
       *****************************************************************
        3001-FILEENTRY-SEC          SECTION.
       *
+           INITIALIZE                      ORCA-BLOB
            MOVE    "BLOBIMPORT"        TO  MCP-FUNC
            MOVE    "key"               TO  MCP-PATHNAME
            MOVE    "blob"              TO  MCP-TABLE
