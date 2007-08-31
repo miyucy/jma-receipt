@@ -1497,6 +1497,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
        500-GMNHEN-SEC              SECTION.
       *
            MOVE    SPACE               TO  W32
+           INITIALIZE                      W32
       *
            MOVE    SPA-GMN-KBNCD-G     TO  W32-KBNCD
            PERFORM VARYING     IDX     FROM    1   BY  1
