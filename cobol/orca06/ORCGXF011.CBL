@@ -338,8 +338,8 @@
                MOVE    XF011-BUNREI-ROW    TO  WRK-XF011-BUNREI-ROW
            END-IF
       *
-      *
            MOVE    SPACE               TO  XF011
+           INITIALIZE                      XF011
       *
       *    コラムリストの位置指定
            MOVE    ZERO                TO  XF011-BUNREI-ROW

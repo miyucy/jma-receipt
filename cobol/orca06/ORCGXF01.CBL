@@ -701,6 +701,7 @@
            END-IF
       *
            MOVE    SPACE               TO  XF01
+           INITIALIZE                      XF01
       *
       *    コラムリストの位置指定
            MOVE    ZERO                TO  XF01-ROW
