@@ -88,6 +88,7 @@
       *  02.07.01    NACL-藤原    05/12/12  国保レセプト編綴順対応
       *
       *  03.05.01    NACL-藤原    07/04/19  グループ診療対応
+      *  03.05.02    NACL-藤原    07/09/01  照会機能連携対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -4217,6 +4218,7 @@ grpsys         PERFORM 900-ORCDBMAIN-SEC
       *
                EVALUATE    BTPARA-INFO-KBN
                    WHEN    "01"
+                   WHEN    "04"
       *                レセプト指示（個別指示）コード読み込み
                        INITIALIZE                      SYS-2002-REC
                        MOVE    "2002"              TO  SYS-2002-KANRICD
@@ -4237,6 +4239,10 @@ grpsys                 PERFORM 900-DBSELECT-SEC
       *
                        PERFORM         UNTIL       FLG-KANRIMST    =   1
                            MOVE    MCPDATA-REC     TO  SYS-2002-REC
+      *
+                           DISPLAY "DELETE PTNUM=" SYS-2002-PTNUM
+                                           " SRYYM=" SYS-2002-SRYYM
+      *
       *                    診療年月の請求管理削除処理
                            INITIALIZE                  RECE10-REC
 grpsys                     MOVE    WRK-PARA-HOSPNUM    TO
@@ -4342,6 +4348,10 @@ grpsys                 PERFORM 900-DBSELECT-SEC
                        END-IF
       *
                        PERFORM     UNTIL       FLG-PTINF       =   1
+      *
+                           DISPLAY "DELETE PTID=" PTINF-PTID
+                                       " SRYYM=" BTPARA-INFO-PARA (17:6)
+      *
       *                    診療年月の請求管理削除処理
                            INITIALIZE                  RECE10-REC
 grpsys                     MOVE    WRK-PARA-HOSPNUM
@@ -4444,6 +4454,10 @@ grpsys                 PERFORM 900-DBSELECT-SEC
                        END-IF
       *
                        PERFORM     UNTIL       FLG-PTINF       =   1
+      *
+                           DISPLAY "DELETE PTID=" PTINF-PTID
+                                       " SRYYM=" BTPARA-INFO-PARA (1:6)
+      *
       *                    診療年月の請求管理削除処理
                            INITIALIZE                  RECE10-REC
 grpsys                     MOVE    WRK-PARA-HOSPNUM
