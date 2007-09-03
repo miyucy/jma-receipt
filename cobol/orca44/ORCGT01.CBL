@@ -1061,6 +1061,24 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SYUKA-HOSPNUM
                GO  TO  320-T99-SET-EXT
            END-IF
       *
+      *    ¸øÈñ£Ã£Ó£Ö¤ÎÀßÄê
+           MOVE    WIDGET-INSENSITIVE  TO  SPA-B19-STATE
+           IF      SPA-NAI-SKYYM       =   ZERO
+               CONTINUE
+           ELSE
+               INITIALIZE                  ORCSFILESVAREA
+               MOVE    "R"             TO  SFILESV-MODE
+               MOVE    WRK-CONS-JOB-SHELLID
+                                       TO  SFILESV-TBL-KEY
+               MOVE    SPA-NAI-SKYYM   TO  SFILESV-SRYYM (1)
+               CALL    "ORCSFILESV"    USING
+                                           ORCSFILESVAREA
+                                           SPA-AREA
+               IF      SFILESV-RETURN      =   ZERO         
+                   MOVE    WIDGET-NORMAL       TO  SPA-B19-STATE
+               END-IF
+           END-IF
+      *
            MOVE    1               TO  SPA-GMN-CUR
       *
            INITIALIZE                  SPA-T01KYOUTU
