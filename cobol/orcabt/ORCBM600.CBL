@@ -58,9 +58,12 @@
       *
       *    £Ã£Ó£Ö¥Ç¡¼¥¿
        01  CSVPARA.
-           03  FILLER              PIC  X(05) VALUE "/tmp/".
-           03  CSVPARA-HOSPNUM     PIC  9(02).
-           03  CSVPARA-FILE-ID     PIC  X(200).
+           03  FILLER              PIC X(05) VALUE "/tmp/".
+           03  CSVPARA-HOSPNUM     PIC 9(02).
+           03  FILLER              PIC X(10)   VALUE 
+                                               "TIHOUKOUHI".
+           03  CSVPARA-RENNUM      PIC 9(02)   VALUE   1.
+           03  FILLER              PIC X(04)   VALUE   ".txt".
       *
            COPY    "CPERRFL.INC"   REPLACING  //ERRFLPARA//
                                    BY         //CSVERR//.
@@ -166,8 +169,6 @@
                                    TO  SPA-HOSPNUM
       *
            MOVE    SPA-HOSPNUM     TO  CSVPARA-HOSPNUM
-           MOVE    WRK-PARA-TO-DATA
-                                   TO  CSVPARA-FILE-ID
       *
            PERFORM 100-DBOPEN-SEC
       *
