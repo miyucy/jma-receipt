@@ -1061,7 +1061,7 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SYUKA-HOSPNUM
                GO  TO  320-T99-SET-EXT
            END-IF
       *
-      *    ¸øÈñ£Ã£Ó£Ö¤ÎÀßÄê
+      *    ¸øÈñ£Ã£Ó£Ö¥Ü¥¿¥ó¤Î¾õÂÖÀßÄê
            MOVE    WIDGET-INSENSITIVE  TO  SPA-B19-STATE
            IF      SPA-NAI-SKYYM       =   ZERO
                CONTINUE
@@ -1600,6 +1600,29 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
        3601-CSV-HENSYU-SEC           SECTION.
       * 
            MOVE    ZERO            TO  SPA-T99-FILESV-CHK-FLG
+      *
+      *    ¹ñÊÝ¿ÇÎÅÊó½·ÀÁµá½ñ°õºþ¶èÊ¬
+           MOVE    SPACE               TO  SYS-2005-REC 
+           INITIALIZE                      SYS-2005-REC
+           MOVE    "2005"              TO  SYS-2005-KANRICD
+           MOVE    "*"                 TO  SYS-2005-KBNCD
+           MOVE    SPA-NAI-SKYYM       TO  SYS-2005-STYUKYMD (1:6)
+           MOVE    "01"                TO  SYS-2005-STYUKYMD (7:2)
+           MOVE    SYS-2005-STYUKYMD   TO  SYS-2005-EDYUKYMD
+           MOVE    SPA-HOSPNUM         TO  SYS-2005-HOSPNUM
+           MOVE    SYS-2005-REC        TO  MCPDATA-REC
+           PERFORM 900-SYSKANRI-INV-SEC
+           IF      FLG-SYSKANRI        =   ZERO
+               MOVE    MCPDATA-REC         TO  SYS-2005-REC
+           ELSE
+               INITIALIZE                      SYS-2005-REC
+           END-IF
+           IF      SYS-2005-RECEDENOUT  =   SPACE
+               MOVE    "/var/tmp/"      TO  SYS-2005-RECEDENOUT
+           END-IF    
+           IF      SPA-GMN-DATAKBN  =  "1"  OR  "2"
+               MOVE    "/tmp/"     TO  SYS-2005-RECEDENOUT
+           END-IF
       * 
       *    ¥¸¥ç¥Ö´ÉÍýºï½ü½èÍý
            MOVE    "ALL"           TO  SJOBKANRI-MODE
@@ -1656,9 +1679,6 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
            MOVE    WRK-CONS-JOB-SHELLID
                                    TO  SHELLTBL-ARG11
            MOVE    RECEERR         TO  SHELLTBL-ARG12
-           IF      SPA-GMN-DATAKBN  =  "1"  OR  "2"
-               MOVE    "/tmp/"     TO  SYS-2005-RECEDENOUT
-           END-IF
            STRING  SYS-2005-RECEDENOUT DELIMITED  BY  SPACE
                    "/"                 DELIMITED  BY  SIZE
                                INTO    SHELLTBL-ARG13
@@ -3382,6 +3402,10 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
       *    £Ê£Ï£Â£É£Ä¹¹¿·½èÍý
       *
            PERFORM 45012-JOBID-UPD-SEC
+      *
+           IF    ( SPA-GMN-DATAKBN =   "5" )
+               MOVE    "SV"            TO  SPA-TID1-FLG
+           END-IF
       *
            MOVE    1                   TO  SPA-T01-WRNO
            MOVE    1                   TO  SPA-T01-SYORIFLG
