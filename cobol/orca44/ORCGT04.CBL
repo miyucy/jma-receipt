@@ -936,7 +936,7 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
                    MOVE    "選択番号エラー"            TO  SPA-ERRMSG
                WHEN    "0002"
                    MOVE
-                       "処理対象の処理が選択してありません"
+                       "対象となる処理が選択してありません"
                                                        TO  SPA-ERRMSG
                WHEN    "0003"
                    MOVE

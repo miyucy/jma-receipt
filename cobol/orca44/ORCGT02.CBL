@@ -1514,7 +1514,7 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
                                                        TO  SPA-ERRMSG
                WHEN    "0013"
                    MOVE
-                       "処理対象の処理が選択してありません"
+                       "対象となる処理が選択してありません"
                                                        TO  SPA-ERRMSG
                WHEN    "0014"
                    MOVE
