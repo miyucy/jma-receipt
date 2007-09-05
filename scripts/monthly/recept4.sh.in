@@ -34,7 +34,7 @@ fi
         rm ${16}
     fi
 
-        rm -r /home/orca/recept4.log
+        rm -f /home/orca/recept4.log
         LOG_FILE="/var/log/jma-receipt/${20}recept4.log"
 
         echo "arg13 = [" ${13} "]"  >$LOG_FILE
@@ -47,7 +47,7 @@ fi
 
 #   レセ電ファイル作成
 
-    $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBM500 -parameter $1,$2,$3,$rennum,$5,$6,$7,$8,$9,${10},${11},${12},${14},${15},${19},${17},$fixedsize,${20},${16} >> $LOG_FILE 2>&1
+    $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBM500 -parameter $1,$2,$3,$rennum,$5,$6,$7,$8,$9,${10},${11},${12},${13},${14},${15},${19},${17},$fixedsize,${20},${16} >> $LOG_FILE 2>&1
     if  [ -e ${16} ]; then
         echo "--- BM500 err file exist ---" >> $LOG_FILE 2>&1
         exit 

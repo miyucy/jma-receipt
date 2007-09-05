@@ -54,6 +54,7 @@
       *                                     月で取得する
       *
       *  03.05.01    NACL-藤原    07/04/19  グループ診療対応
+      *  03.05.02    NACL-藤原    07/08/01  クライアント保存対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -146,6 +147,7 @@ grpsys COPY    "COMMON-SPA".
        01  WRK-AREA.
            COPY    "CPORCSPRTLNK.INC".
            05  WRK-PARA-TEISYUTUSAKI   PIC X(01).
+           05  WRK-PARA-FOLDER         PIC X(150).
            05  WRK-PARA-NYUGAIKBN      PIC X(01).
            05  WRK-PARA-JOBID          PIC 9(07).
            05  WRK-PARA-SHELLID        PIC X(08).
@@ -269,6 +271,9 @@ grpsys COPY    "COMMON-SPA".
       *    マシン日付取得サブ
            COPY    "CPORCSMCNDATE.INC".
       *
+      *    クライアント保存ＤＢ制御サブ
+           COPY    "CPORCSFILESV.INC".
+      *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
       *
@@ -320,6 +325,7 @@ grpsys COPY    "COMMON-SPA".
                                                LNK-PRTKANRI-OPID    
                                                LNK-PRTKANRI-PRTNM   
                                                WRK-PARA-TEISYUTUSAKI
+                                               WRK-PARA-FOLDER
                                                WRK-PARA-JOBID
                                                WRK-PARA-SHELLID
                                                WRK-PARA-NYUGAIKBN
@@ -818,6 +824,11 @@ grpsys         PERFORM 900-ORCDBMAIN-SEC
                MOVE    "処理対象のデータがありませんでした"
                                            TO  WRK-RECEERR
                PERFORM 500-ERR-HENSYU-SEC
+           ELSE
+      *        ファイル保存情報更新
+               IF      WRK-PARA-DATAKBN    =   "5"
+                   PERFORM 3001-FILE-INFO-INSERT-SEC
+               END-IF
            END-IF
       *
       *    ステップ管理終了処理
@@ -832,6 +843,63 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
            DISPLAY "*** ORCBM500 END ***"
            .
        300-TERM-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ファイル保存情報更新処理
+      *****************************************************************
+       3001-FILE-INFO-INSERT-SEC             SECTION.
+      *
+           INITIALIZE                  ORCSFILESVAREA
+           MOVE    "I"             TO  SFILESV-MODE
+           MOVE    WRK-PARA-SHELLID
+                                   TO  SFILESV-TBL-KEY
+           MOVE    "recept4.sh"    TO  SFILESV-SHELLID  (1)
+           MOVE    LNK-PRTKANRI-SHORI-RENNUM
+                                   TO  SFILESV-SHORI-RENNUM
+                                                        (1)
+           MOVE    LNK-PRTKANRI-RENNUM
+                                   TO  SFILESV-RENNUM   (1)
+           MOVE    LNK-PRTKANRI-SRYYM
+                                   TO  SFILESV-SRYYM    (1)
+           MOVE    LNK-PRTKANRI-SKYYMD
+                                   TO  SFILESV-SKYYMD   (1)
+           MOVE    WRK-PARA-FOLDER TO  SFILESV-FOR-FOLDER
+                                                        (1)
+           STRING  WRK-PARA-HOSPNUM    DELIMITED  BY  SIZE
+                   "RECEIPTC.UKE"      DELIMITED  BY  SIZE
+                                       INTO  SFILESV-FOR-DATA (1)
+           END-STRING
+           MOVE    "RECEIPTC.UKE"  TO  SFILESV-TO-DATA  (1)
+           MOVE    CNT-OUT         TO  SFILESV-CNT-ALL  (1)
+           EVALUATE    WRK-PARA-TEISYUTUSAKI
+                           ALSO    WRK-PARA-NYUGAIKBN   
+               WHEN    "1" ALSO    ZERO
+                   MOVE    "レセ電ファイル作成（社保）"
+                                           TO  SFILESV-TITLE    (1)
+               WHEN    "1" ALSO    "1"
+                   MOVE    "レセ電データ（社保・入院）"
+                                           TO  SFILESV-TITLE    (1)
+               WHEN    "1" ALSO    "2"
+                   MOVE    "レセ電データ（社保・入院外）"
+                                           TO  SFILESV-TITLE    (1)
+               WHEN    "2" ALSO    ZERO
+                   MOVE    "レセ電データ（国保）"
+                                           TO  SFILESV-TITLE    (1)
+               WHEN    "2" ALSO    "1"
+                   MOVE    "レセ電データ（国保・入院）"
+                                           TO  SFILESV-TITLE    (1)
+               WHEN    "2" ALSO    "2"
+                   MOVE    "レセ電データ（国保・入院外）"
+                                           TO  SFILESV-TITLE    (1)
+           END-EVALUATE
+           MOVE    "1"             TO  SFILESV-DATA-TYPE(1)
+      *
+           CALL    "ORCSFILESV"    USING
+                                       ORCSFILESVAREA
+                                       SPA-AREA
+           .
+       3001-FILE-INFO-INSERT-EXT.
            EXIT.
       *            
       *****************************************************************

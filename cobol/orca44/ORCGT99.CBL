@@ -205,14 +205,15 @@
       *****************************************************************
        100-INIT-SEC                SECTION.
       *
-      *****IF      SPA-MOTOPG          =   "TFIL"
-      *****    ファイルエントリ処理(クライアント保存)
-      *****    IF      SPA-SFILESV-MAX     >   SPA-SFILESV-IDX
-      *****        ADD     1                   TO  SPA-SFILESV-IDX 
-      *****        PERFORM 3001-FILEENTRY-SEC
-      *****        GO  TO  100-INIT-EXT
-      *****    END-IF
-      *****END-IF
+           IF    ( SPA-MOTOPG          =   "TFIL" )
+           AND   ( SPA-T99-MOTOPG  NOT =   "T04"  )
+      *        ファイルエントリ処理(クライアント保存)
+               IF      SPA-SFILESV-MAX     >   SPA-SFILESV-IDX
+                   ADD     1                   TO  SPA-SFILESV-IDX 
+                   PERFORM 3001-FILEENTRY-SEC
+                  GO  TO  100-INIT-EXT
+               END-IF
+           END-IF
       *
            MOVE    "B01"               TO  MCP-WIDGET
            MOVE    SPACE               TO  LINKAREA
@@ -360,7 +361,11 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
                            PERFORM 4902-FILE-INFO-CHK-SEC
                        ELSE
       *                    ファイルエントリ処理(クライアント保存)
-      *****************    MOVE    1               TO  SPA-SFILESV-IDX 
+                           IF      SPA-T99-MOTOPG  =   "T04"
+                               CONTINUE
+                           ELSE
+                               MOVE    1           TO  SPA-SFILESV-IDX
+                           END-IF 
                            PERFORM 3001-FILEENTRY-SEC
                            IF      FLG-END         =   1
                                GO  TO  490-KAKUNIN-EXT
@@ -480,45 +485,50 @@ grpsys         PERFORM 900-ORCDBMAIN-SEC
       *****************************************************************
        4902-FILE-INFO-CHK-SEC          SECTION.
       *
-           MOVE    1                   TO  SPA-T99-FILESV-CHK-FLG
-           MOVE    1                   TO  T99-DURATION
-           GO  TO  4902-FILE-INFO-CHK-EXT
-      *
-           INITIALIZE                  ORCSFILESVAREA
-           MOVE    "R"             TO  SFILESV-MODE
-           MOVE    WRK-CONS-JOB-SHELLID
-                                   TO  SFILESV-TBL-KEY
-           CALL    "ORCSFILESV"    USING
-                                       ORCSFILESVAREA
-                                       SPA-AREA  
-           IF      SFILESV-RETURN  =   ZERO
-               INITIALIZE               SPA-SFILESV-AREA
-               PERFORM VARYING IDX FROM    1   BY  1
-                       UNTIL   IDX >       100
-                       OR      SFILESV-SHELLID (IDX)
-                                   =       SPACE
-                   MOVE    SFILESV-TITLE        (IDX)
-                                       TO  SPA-SFILESV-TITLE     (IDX)
-                   MOVE    SFILESV-CNT-ALL      (IDX)
-                                       TO  SPA-SFILESV-CNT-ALL   (IDX)
-                   MOVE    SFILESV-FOR-FOLDER   (IDX)
-                                       TO  SPA-SFILESV-FOR-FOLDER(IDX)
-                   MOVE    SFILESV-FOR-DATA     (IDX)
-                                       TO  SPA-SFILESV-FOR-DATA  (IDX)
-                   MOVE    SFILESV-TO-FOLDER    (IDX)
-                                       TO  SPA-SFILESV-TO-FOLDER (IDX)
-                   MOVE    SFILESV-TO-DATA      (IDX)
-                                       TO  SPA-SFILESV-TO-DATA   (IDX)
-                   MOVE    SFILESV-CODE-TYPE    (IDX)
-                                       TO  SPA-SFILESV-CODE-TYPE (IDX)
-                   MOVE    SFILESV-DATA-TYPE    (IDX)
-                                       TO  SPA-SFILESV-DATA-TYPE (IDX)
-                   ADD     1           TO  SPA-SFILESV-MAX
-               END-PERFORM
-      *
+      *    ＣＳＶ一覧から遷移したとき
+           IF      SPA-T99-MOTOPG  =   "T04"
                MOVE    1                   TO  SPA-T99-FILESV-CHK-FLG
-      *
                MOVE    1                   TO  T99-DURATION
+           ELSE
+               INITIALIZE                  ORCSFILESVAREA
+               MOVE    "R"             TO  SFILESV-MODE
+               MOVE    WRK-CONS-JOB-SHELLID
+                                       TO  SFILESV-TBL-KEY
+               MOVE    SPA-NAI-SKYYM   TO  SFILESV-SRYYM   (1)
+               MOVE    WRK-CONS-BTPARA-SCRIPTID
+                                       TO  SFILESV-SHELLID (1)
+               CALL    "ORCSFILESV"    USING
+                                           ORCSFILESVAREA
+                                           SPA-AREA
+               IF      SFILESV-RETURN  =   ZERO
+                   INITIALIZE               SPA-SFILESV-AREA
+                   PERFORM VARYING IDX FROM    1   BY  1
+                           UNTIL   IDX >       100
+                           OR      SFILESV-SHELLID (IDX)
+                                       =       SPACE
+                       MOVE    SFILESV-TITLE        (IDX)
+                                       TO  SPA-SFILESV-TITLE     (IDX)
+                       MOVE    SFILESV-CNT-ALL      (IDX)
+                                       TO  SPA-SFILESV-CNT-ALL   (IDX)
+                       MOVE    SFILESV-FOR-FOLDER   (IDX)
+                                       TO  SPA-SFILESV-FOR-FOLDER(IDX)
+                       MOVE    SFILESV-FOR-DATA     (IDX)
+                                       TO  SPA-SFILESV-FOR-DATA  (IDX)
+                       MOVE    SFILESV-TO-FOLDER    (IDX)
+                                       TO  SPA-SFILESV-TO-FOLDER (IDX)
+                       MOVE    SFILESV-TO-DATA      (IDX)
+                                       TO  SPA-SFILESV-TO-DATA   (IDX)
+                       MOVE    SFILESV-CODE-TYPE    (IDX)
+                                       TO  SPA-SFILESV-CODE-TYPE (IDX)
+                       MOVE    SFILESV-DATA-TYPE    (IDX)
+                                       TO  SPA-SFILESV-DATA-TYPE (IDX)
+                       ADD     1       TO  SPA-SFILESV-MAX
+                   END-PERFORM
+      *
+                   MOVE    1           TO  SPA-T99-FILESV-CHK-FLG
+      *
+                   MOVE    1           TO  T99-DURATION
+               END-IF
            END-IF
       *
            .
@@ -530,35 +540,65 @@ grpsys         PERFORM 900-ORCDBMAIN-SEC
       *****************************************************************
        3001-FILEENTRY-SEC          SECTION.
       *
-           INITIALIZE                      ORCA-BLOB
-           MOVE    "BLOBIMPORT"        TO  MCP-FUNC
-           MOVE    "key"               TO  MCP-PATHNAME
-           MOVE    "blob"              TO  MCP-TABLE
-           STRING  "/tmp/"             DELIMITED  BY  SIZE
-                   SPA-HOSPNUM         DELIMITED  BY  SIZE
-                   SPA-NAI-T04-TTO-DATA     (SPA-NAI-T04-SELNUM)
-                                       DELIMITED  BY  SPACE
-                   ".sjis"             DELIMITED  BY  SIZE
-                                       INTO  ORCA-BLOB-FILE
-           END-STRING
-           CALL   "ORCDBMAIN"          USING
-                                       MCPAREA
-                                       ORCA-BLOB
-                                       SPA-AREA
+      *    ＣＳＶ一覧から遷移したとき
+           IF      SPA-T99-MOTOPG  =   "T04"
+               INITIALIZE                      ORCA-BLOB
+               MOVE    "BLOBIMPORT"        TO  MCP-FUNC
+               MOVE    "key"               TO  MCP-PATHNAME
+               MOVE    "blob"              TO  MCP-TABLE
+               STRING  "/tmp/"             DELIMITED  BY  SIZE
+                       SPA-HOSPNUM         DELIMITED  BY  SIZE
+                       "TIHOUKOUHI01.txt"  DELIMITED  BY  SIZE
+                                           INTO  ORCA-BLOB-FILE
+               END-STRING
+               CALL   "ORCDBMAIN"          USING
+                                           MCPAREA
+                                           ORCA-BLOB
+                                           SPA-AREA
       *
-           INITIALIZE                      TFIL 
-           MOVE    ORCA-BLOB-OBJECT    TO  TFIL-OBJECTDATA
-           STRING  SPA-NAI-T04-TTO-FOLDER   (SPA-NAI-T04-SELNUM)
-                                       DELIMITED  BY  SPACE
-                   SPA-NAI-T04-TTO-DATA     (SPA-NAI-T04-SELNUM)
-                                       DELIMITED  BY  SPACE
-                                       INTO  TFIL-ENTRY1
-           END-STRING
-           MOVE    SPA-GMN-T04-TTITLE   (SPA-NAI-T04-SELNUM)
-                                       TO  TFIL-TITLE
-           MOVE    SPA-GMN-T04-TCNT-ALL (SPA-NAI-T04-SELNUM)
-                                       TO  WRK-KENSU-Z
-           MOVE    WRK-KENSU-Z         TO  TFIL-KENSU
+               INITIALIZE                      TFIL 
+               MOVE    ORCA-BLOB-OBJECT    TO  TFIL-OBJECTDATA
+               STRING  SPA-NAI-T04-TTO-FOLDER   (SPA-NAI-T04-SELNUM)
+                                           DELIMITED  BY  SPACE
+                       SPA-NAI-T04-TTO-DATA     (SPA-NAI-T04-SELNUM)
+                                           DELIMITED  BY  SPACE
+                                           INTO  TFIL-ENTRY1
+               END-STRING
+               MOVE    SPA-GMN-T04-TTITLE   (SPA-NAI-T04-SELNUM)
+                                           TO  TFIL-TITLE
+               MOVE    SPA-GMN-T04-TCNT-ALL (SPA-NAI-T04-SELNUM)
+                                           TO  WRK-KENSU-Z
+               MOVE    WRK-KENSU-Z         TO  TFIL-KENSU
+           ELSE
+               INITIALIZE                      ORCA-BLOB
+               MOVE    "BLOBIMPORT"        TO  MCP-FUNC
+               MOVE    "key"               TO  MCP-PATHNAME
+               MOVE    "blob"              TO  MCP-TABLE
+               STRING  SPA-SFILESV-FOR-FOLDER (SPA-SFILESV-IDX)
+                                           DELIMITED  BY  SPACE
+                       SPA-SFILESV-FOR-DATA   (SPA-SFILESV-IDX) 
+                                           DELIMITED  BY  SPACE
+                                           INTO  ORCA-BLOB-FILE
+               END-STRING
+               CALL   "ORCDBMAIN"          USING
+                                           MCPAREA
+                                           ORCA-BLOB
+                                           SPA-AREA
+      *
+               INITIALIZE                      TFIL 
+               MOVE    ORCA-BLOB-OBJECT    TO  TFIL-OBJECTDATA
+               STRING  SPA-SFILESV-TO-FOLDER (SPA-SFILESV-IDX)
+                                           DELIMITED  BY  SPACE
+                       SPA-SFILESV-TO-DATA   (SPA-SFILESV-IDX)
+                                           DELIMITED  BY  SPACE
+                                           INTO  TFIL-ENTRY1
+               END-STRING
+               MOVE    SPA-SFILESV-TITLE   (SPA-SFILESV-IDX)
+                                           TO  TFIL-TITLE
+               MOVE    SPA-SFILESV-CNT-ALL (SPA-SFILESV-IDX)
+                                           TO  WRK-KENSU-Z
+               MOVE    WRK-KENSU-Z         TO  TFIL-KENSU
+           END-IF
       *
            MOVE    ZERO                TO  T99-DURATION
       *
@@ -572,24 +612,39 @@ grpsys         PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    クライアント保存情報チェック処理
+      *    クライアント保存情報更新（処理日）処理
       *****************************************************************
        4903-FILESV-UPDATE-SEC          SECTION.
       *
-           INITIALIZE                  ORCSFILESVAREA
-           MOVE    "U"             TO  SFILESV-MODE
-           MOVE    WRK-CONS-JOB-SHELLID
-                                   TO  SFILESV-TBL-KEY
-           MOVE    SPA-NAI-SKYYM   TO  SFILESV-SRYYM   (1)
-           MOVE    SPA-NAI-T04-TSHELLID      (SPA-NAI-T04-SELNUM)
-                                   TO  SFILESV-SHELLID (1)
-           MOVE    SPA-NAI-T04-TSHORI-RENNUM (SPA-NAI-T04-SELNUM)
-                                   TO  SFILESV-SHORI-RENNUM (1)
-           MOVE    SPA-NAI-T04-TRENNUM       (SPA-NAI-T04-SELNUM)
-                                   TO  SFILESV-RENNUM  (1) 
-           CALL    "ORCSFILESV"    USING
-                                       ORCSFILESVAREA
-                                       SPA-AREA  
+           IF      SPA-T99-MOTOPG  =   "T04"
+               INITIALIZE                  ORCSFILESVAREA
+               MOVE    "U"             TO  SFILESV-MODE
+               MOVE    WRK-CONS-JOB-SHELLID
+                                       TO  SFILESV-TBL-KEY
+               MOVE    SPA-NAI-SKYYM   TO  SFILESV-SRYYM   (1)
+               MOVE    SPA-NAI-T04-TSHELLID      (SPA-NAI-T04-SELNUM)
+                                       TO  SFILESV-SHELLID (1)
+               MOVE    SPA-NAI-T04-TSHORI-RENNUM (SPA-NAI-T04-SELNUM)
+                                       TO  SFILESV-SHORI-RENNUM (1)
+               MOVE    SPA-NAI-T04-TRENNUM       (SPA-NAI-T04-SELNUM)
+                                       TO  SFILESV-RENNUM  (1) 
+               CALL    "ORCSFILESV"    USING
+                                           ORCSFILESVAREA
+                                          SPA-AREA
+           ELSE
+               INITIALIZE                  ORCSFILESVAREA
+               MOVE    "U"             TO  SFILESV-MODE
+               MOVE    WRK-CONS-JOB-SHELLID
+                                       TO  SFILESV-TBL-KEY
+               MOVE    SPA-NAI-SKYYM   TO  SFILESV-SRYYM   (1)
+               MOVE    WRK-CONS-BTPARA-SCRIPTID
+                                       TO  SFILESV-SHELLID (1)
+               MOVE    ZERO            TO  SFILESV-SHORI-RENNUM (1)
+               MOVE    1               TO  SFILESV-RENNUM  (1) 
+               CALL    "ORCSFILESV"    USING
+                                           ORCSFILESVAREA
+                                          SPA-AREA
+           END-IF
       *
            .
        4903-FILESV-UPDATE-EXT.

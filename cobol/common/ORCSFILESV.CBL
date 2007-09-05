@@ -226,13 +226,17 @@
            INITIALIZE                      FILE-INFO-REC
            MOVE    SPA-HOSPNUM         TO  FILE-INFO-HOSPNUM
            MOVE    SFILESV-TBL-KEY     TO  FILE-INFO-TBL-KEY
-           MOVE    SFILESV-SRYYM (1)   TO  FILE-INFO-SRYYM
+           MOVE    SFILESV-SRYYM   (1) TO  FILE-INFO-SRYYM
+           MOVE    SFILESV-SHELLID (1) TO  FILE-INFO-SHELLID 
       *
            MOVE    FILE-INFO-REC       TO  MCPDATA-REC
            IF      SFILESV-SRYYM (1)   =   SPACE
                MOVE    "key2"              TO  WRK-MCP-PATHNAME
            ELSE
-               MOVE    "key3"              TO  WRK-MCP-PATHNAME
+               IF      SFILESV-SHELLID (1) =   SPACE
+                   MOVE    "key3"              TO  WRK-MCP-PATHNAME
+               ELSE
+                   MOVE    "key4"              TO  WRK-MCP-PATHNAME
            END-IF
            MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
            MOVE    "tbl_file_info"     TO  MCP-TABLE

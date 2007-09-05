@@ -69,6 +69,20 @@ path	key3		{
 	};
 };
 
+path	key4		{ 	
+	DBSELECT	{
+		DECLARE tbl_file_info_key4_csr CURSOR FOR
+		SELECT *
+		FROM tbl_file_info
+		WHERE 	  HOSPNUM	=   :HOSPNUM
+                    AND   TBL_KEY	=   :TBL_KEY
+                    AND   SRYYM 	=   :SRYYM
+                    AND   SHELLID 	=   :SHELLID
+                ORDER BY SHORI_RENNUM,RENNUM          
+		;
+	};
+};
+
 path    del1    {
 	DBDELETE        {
 		DELETE

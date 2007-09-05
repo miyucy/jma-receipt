@@ -138,6 +138,12 @@
                                    PIC X(08)   VALUE   "RECEPT1".
            03  WRK-CONS-JOB-JOBID-RECEPT1
                                    PIC 9(07)   VALUE   1.
+      *     
+      *    パラメタＤＢのキー値（レセ電作成）  
+           03  WRK-CONS-BTPARA-SHELLID
+                                   PIC X(08)   VALUE   "SOKATU".
+           03  WRK-CONS-BTPARA-SCRIPTID
+                                   PIC X(10)   VALUE   "recept4.sh".
       *
       *    最大行
            03  WRK-CONS-FILE-INFOLST-MAX
@@ -358,40 +364,49 @@
                                        ORCSFILESVAREA
                                        SPA-AREA  
            IF      SFILESV-RETURN  =   ZERO
-               INITIALIZE               SPA-SFILESV-AREA
+               MOVE    ZERO            TO  IDY
+      *
+               INITIALIZE              SPA-SFILESV-AREA
                PERFORM VARYING IDX FROM    1   BY  1
                        UNTIL   IDX >       100
                        OR      SFILESV-SHELLID (IDX)
                                    =       SPACE
-                   MOVE    IDX         TO  SPA-GMN-T04-TBANGO     (IDX)
-                   MOVE    SFILESV-SYOYMD  (IDX)
-                                       TO  SPA-NAI-T04-TSYOYMD    (IDX)
+                   IF      SFILESV-SHELLID (IDX)
+                                           =   WRK-CONS-BTPARA-SCRIPTID
+                       CONTINUE
+                   ELSE
+                       ADD     1           TO  IDY
+                       MOVE    IDY         TO  SPA-GMN-T04-TBANGO  (IDY)
+                       MOVE    SFILESV-SYOYMD  (IDX)
+                                       TO  SPA-NAI-T04-TSYOYMD     (IDY)
                                            WRK-SYMD
-                   PERFORM 5002-HIZUKE-HEN-SEC
-                   MOVE    WRK-HENYMDG TO  SPA-GMN-T04-TSYOYMD    (IDX)   
-                   MOVE    SFILESV-CREYMD  (IDX)
-                                       TO  WRK-SYMD
-                   PERFORM 5002-HIZUKE-HEN-SEC
-                   MOVE    WRK-HENYMDG TO  SPA-GMN-T04-TCREYMD    (IDX)   
-                   MOVE    SFILESV-TITLE        (IDX)
-                                       TO  SPA-GMN-T04-TTITLE     (IDX)
-                   MOVE    SFILESV-CNT-ALL      (IDX)
-                                       TO  SPA-GMN-T04-TCNT-ALL   (IDX)
-                   MOVE    SFILESV-ERR-MSG     (IDX)
-                                       TO  SPA-GMN-T04-TERRMSG    (IDX)
-                   MOVE    SFILESV-TO-FOLDER  (IDX)
-                                       TO  SPA-NAI-T04-TTO-FOLDER(IDX)
-                   MOVE    SFILESV-TO-DATA     (IDX)
-                                       TO  SPA-NAI-T04-TTO-DATA  (IDX)
-                   MOVE    SFILESV-SHELLID    (IDX)
-                                       TO  SPA-NAI-T04-TSHELLID   (IDX)
-                   MOVE    SFILESV-SHORI-RENNUM    (IDX)
-                                       TO
-                                       SPA-NAI-T04-TSHORI-RENNUM  (IDX)
-                   MOVE    SFILESV-RENNUM    (IDX)
-                                       TO  SPA-NAI-T04-TRENNUM    (IDX)
-                   ADD     1           TO  SPA-GMN-T04-MAX
+                       PERFORM 5002-HIZUKE-HEN-SEC
+                       MOVE    WRK-HENYMDG TO  SPA-GMN-T04-TSYOYMD (IDY)   
+                       MOVE    SFILESV-CREYMD  (IDX)
+                                           TO  WRK-SYMD
+                       PERFORM 5002-HIZUKE-HEN-SEC
+                       MOVE    WRK-HENYMDG TO  SPA-GMN-T04-TCREYMD (IDY)
+                       MOVE    SFILESV-TITLE        (IDX)
+                                           TO  SPA-GMN-T04-TTITLE  (IDY)
+                       MOVE    SFILESV-CNT-ALL      (IDX)
+                                           TO  SPA-GMN-T04-TCNT-ALL(IDY)
+                       MOVE    SFILESV-ERR-MSG     (IDX)
+                                           TO  SPA-GMN-T04-TERRMSG (IDY)
+                       MOVE    SFILESV-TO-FOLDER  (IDX)
+                                           TO  SPA-NAI-T04-TTO-FOLDER
+                                                                   (IDY)
+                       MOVE    SFILESV-TO-DATA     (IDX)
+                                           TO  SPA-NAI-T04-TTO-DATA(IDY)
+                       MOVE    SFILESV-SHELLID    (IDX)
+                                           TO  SPA-NAI-T04-TSHELLID(IDY)
+                       MOVE    SFILESV-SHORI-RENNUM    (IDX)
+                                           TO
+                                       SPA-NAI-T04-TSHORI-RENNUM(IDY)
+                       MOVE    SFILESV-RENNUM    (IDX)
+                                           TO  SPA-NAI-T04-TRENNUM (IDY)
+                   END-IF    
                END-PERFORM
+               MOVE    IDY         TO  SPA-GMN-T04-MAX
            END-IF
       *
            MOVE    1               TO  SPA-GMN-T04-CUR

@@ -148,6 +148,7 @@
            03  IDZ                 PIC 9(04).
       *
            03  IDXX                PIC 9(04).
+           03  IDXY                PIC 9(04).
       *
       *    一時領域
        01  WRK-AREA.
@@ -757,23 +758,8 @@ grpsys                                         SPA-AREA
                MOVE    "F"                TO  SPA-DATAKBN6-VALUE  
            END-IF
       *
-      *    ファイル保存情報
-           MOVE    WIDGET-INSENSITIVE  TO  SPA-B19-STATE
-           IF      SPA-NAI-SKYYM       =   ZERO
-               CONTINUE
-           ELSE
-               INITIALIZE                  ORCSFILESVAREA
-               MOVE    "R"                 TO  SFILESV-MODE
-               MOVE    WRK-CONS-JOB-SHELLID
-                                           TO  SFILESV-TBL-KEY
-               MOVE    SPA-NAI-SKYYM       TO  SFILESV-SRYYM (1)
-               CALL    "ORCSFILESV"        USING
-                                               ORCSFILESVAREA
-                                               SPA-AREA
-               IF      SFILESV-RETURN      =   ZERO         
-                   MOVE    WIDGET-NORMAL       TO  SPA-B19-STATE
-               END-IF
-           END-IF
+      *    ファイル保存情報チェック
+           PERFORM 3102-FILE-INFO-CHECK-SEC
       *
            MOVE    "T"                 TO  SPA-CHK11-VALUE
                                            SPA-CHK12-VALUE
@@ -1012,6 +998,43 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SYUKA-HOSPNUM
            EXIT.
       *
       *****************************************************************
+      *    ファイル保存情報チェック処理
+      *****************************************************************
+       3102-FILE-INFO-CHECK-SEC            SECTION.
+      *
+           MOVE    WIDGET-INSENSITIVE  TO  SPA-B19-STATE
+           IF      SPA-NAI-SKYYM       =   ZERO
+               CONTINUE
+           ELSE
+               INITIALIZE                  ORCSFILESVAREA
+               MOVE    "R"                 TO  SFILESV-MODE
+               MOVE    WRK-CONS-JOB-SHELLID
+                                           TO  SFILESV-TBL-KEY
+               MOVE    SPA-NAI-SKYYM       TO  SFILESV-SRYYM (1)
+               CALL    "ORCSFILESV"        USING
+                                               ORCSFILESVAREA
+                                               SPA-AREA
+               IF      SFILESV-RETURN      =   ZERO         
+                   PERFORM VARYING IDXY    FROM    1   BY  1
+                           UNTIL   IDXY    >       100
+                           OR      SFILESV-SHELLID (IDXY)
+                                           =       SPACE
+                       IF      SFILESV-SHELLID (IDXY)
+                                           =   WRK-CONS-BTPARA-SCRIPTID
+                           CONTINUE
+                       ELSE
+                           MOVE    WIDGET-NORMAL   TO  SPA-B19-STATE
+                           MOVE    100             TO  IDXY
+                       END-IF
+                   END-PERFORM
+               END-IF
+           END-IF
+      *
+           .
+       3102-FILE-INFO-CHECK-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    処理結果画面（Ｔ９９）戻り処理
       *****************************************************************
        320-T99-SET-SEC            SECTION.
@@ -1062,22 +1085,7 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SYUKA-HOSPNUM
            END-IF
       *
       *    公費ＣＳＶボタンの状態設定
-           MOVE    WIDGET-INSENSITIVE  TO  SPA-B19-STATE
-           IF      SPA-NAI-SKYYM       =   ZERO
-               CONTINUE
-           ELSE
-               INITIALIZE                  ORCSFILESVAREA
-               MOVE    "R"             TO  SFILESV-MODE
-               MOVE    WRK-CONS-JOB-SHELLID
-                                       TO  SFILESV-TBL-KEY
-               MOVE    SPA-NAI-SKYYM   TO  SFILESV-SRYYM (1)
-               CALL    "ORCSFILESV"    USING
-                                           ORCSFILESVAREA
-                                           SPA-AREA
-               IF      SFILESV-RETURN      =   ZERO         
-                   MOVE    WIDGET-NORMAL       TO  SPA-B19-STATE
-               END-IF
-           END-IF
+           PERFORM 3102-FILE-INFO-CHECK-SEC
       *
            MOVE    1               TO  SPA-GMN-CUR
       *
@@ -1948,22 +1956,7 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
            END-IF
       *
       *    ファイル保存情報
-           MOVE    WIDGET-INSENSITIVE  TO  SPA-B19-STATE
-           IF      SPA-NAI-SKYYM       =   ZERO
-               CONTINUE
-           ELSE
-               INITIALIZE                  ORCSFILESVAREA
-               MOVE    "R"             TO  SFILESV-MODE
-               MOVE    WRK-CONS-JOB-SHELLID
-                                       TO  SFILESV-TBL-KEY
-               MOVE    SPA-NAI-SKYYM   TO  SFILESV-SRYYM (1)
-               CALL    "ORCSFILESV"    USING
-                                           ORCSFILESVAREA
-                                           SPA-AREA
-               IF      SFILESV-RETURN      =   ZERO         
-                   MOVE    WIDGET-NORMAL       TO  SPA-B19-STATE
-               END-IF
-           END-IF
+           PERFORM 3102-FILE-INFO-CHECK-SEC
       *
            IF      SPA-ERRCD       NOT =   SPACE
                MOVE    1               TO  SPA-GMN-CUR
@@ -3211,6 +3204,18 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
       *    レセ電出力処理
       *****************************************************************
        460-RECEDEN-SEC                SECTION.
+      *
+      *    クライアント保存削除処理             
+           INITIALIZE                  ORCSFILESVAREA
+           MOVE    "D"             TO  SFILESV-MODE
+           MOVE    WRK-CONS-JOB-SHELLID
+                                   TO  SFILESV-TBL-KEY
+           MOVE    SPA-NAI-SKYYM   TO  SFILESV-SRYYM   (1)
+           MOVE    WRK-CONS-BTPARA-SCRIPTID
+                                   TO  SFILESV-SHELLID (1)
+           CALL    "ORCSFILESV"    USING
+                                       ORCSFILESVAREA
+                                       SPA-AREA
       * 
       *    ジョブ管理削除処理
            MOVE    "ALL"           TO  SJOBKANRI-MODE
