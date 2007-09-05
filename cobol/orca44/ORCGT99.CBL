@@ -548,7 +548,8 @@ grpsys         PERFORM 900-ORCDBMAIN-SEC
                MOVE    "blob"              TO  MCP-TABLE
                STRING  "/tmp/"             DELIMITED  BY  SIZE
                        SPA-HOSPNUM         DELIMITED  BY  SIZE
-                       "TIHOUKOUHI01.txt"  DELIMITED  BY  SIZE
+                       SPA-NAI-T04-TTO-DATA     (SPA-NAI-T04-SELNUM)
+                                           DELIMITED  BY  SPACE
                                            INTO  ORCA-BLOB-FILE
                END-STRING
                CALL   "ORCDBMAIN"          USING

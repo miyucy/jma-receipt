@@ -32,6 +32,7 @@ fi
         LOG_FILE="/var/log/jma-receipt/${1}recept60.log"
         FILE_1="/tmp/"${1}"TIHOUKOUHI01.txt"
         FILE_2=${13}${1}${8}
+        FILE_3="/tmp/"${1}${8}
 
         rm -f $LOG_FILE
 
@@ -40,10 +41,12 @@ fi
         echo "hostname =  [" `hostname`  "]" >>$LOG_FILE
         echo "file1= [" $FILE_1 "]"  >> $LOG_FILE
         echo "file2= [" $FILE_2 "]"  >> $LOG_FILE
+        echo "file3= [" $FILE_3 "]"  >> $LOG_FILE
 
 #       ³ºÅö¥Õ¥¡¥¤¥ëºï½ü
 	rm -f $FILE_2
 	rm -f $FILE_1
+	rm -f $FILE_3
 
         $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBM600 -parameter ${1},${2},${3},${4},${5},${8},${10},${11},${12} >> $LOG_FILE 2>&1
         if  [ -e ${12} ]; then
@@ -53,7 +56,11 @@ fi
 
 #       ´Á»ú¥³¡¼¥ÉÊÑ´¹¡Ê£Å£Õ£Ã¤«¤é¥·¥Õ¥È£Ê£É£Ó¡Ë
 
-        nkf -s $FILE_1 > $FILE_2
+        if   [ ${6} != '5' ]; then
+             nkf -s $FILE_1 > $FILE_2
+        else
+             nkf -s $FILE_1 > $FILE_3
+        fi
          
 #
         FDDHOST=`echo ${9}|tr \[\] "  "`
