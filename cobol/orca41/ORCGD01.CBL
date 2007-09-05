@@ -582,12 +582,10 @@
        3101-CHKKBNLST-HEN-SEC          SECTION.
       *
            INITIALIZE                      SPA-GMN-D01-CHKKBNLST-G
-           MOVE    2                   TO  SPA-GMN-D01-CHKKBN-MAX
+           MOVE    1                   TO  SPA-GMN-D01-CHKKBN-MAX
       *
-           MOVE    "1"                 TO  SPA-GMN-D01-CHKKBNL    (1)
-           MOVE    "³ÎÇ§¡¡°õºþ"        TO  SPA-GMN-D01-CHKKBNMEIL (1)
-           MOVE    "2"                 TO  SPA-GMN-D01-CHKKBNL    (2)
-           MOVE    "³ÎÇ§¡¡Á´°õºþ"      TO  SPA-GMN-D01-CHKKBNMEIL (2)
+           MOVE    "2"                 TO  SPA-GMN-D01-CHKKBNL    (1)
+           MOVE    "³ÎÇ§¡¡Á´°õºþ"      TO  SPA-GMN-D01-CHKKBNMEIL (1)
       *
            .
        3101-CHKKBNLST-HEN-EXT.
@@ -1496,9 +1494,9 @@
            WHEN    "CLICKED"       ALSO    "B02"
       *        ¥¯¥ê¥¢
                PERFORM 420-CLEAR-SEC
-           WHEN    "CLICKED"       ALSO    "B03"
+      *    WHEN    "CLICKED"       ALSO    "B03"
       *        ³ÎÇ§
-               PERFORM 430-KAKUNIN-SEC
+      *        PERFORM 430-KAKUNIN-SEC
            WHEN    "CLICKED"       ALSO    "B04"
       *        ³ÎÇ§Á´°õºþ
                PERFORM 440-KAKUNIN-ALL-SEC
@@ -2025,25 +2023,6 @@
            .
       *
        420-CLEAR-EXT.
-           EXIT.
-      *****************************************************************
-      *    ³ÎÇ§
-      *****************************************************************
-       430-KAKUNIN-SEC                 SECTION.
-      *
-           MOVE    "1"                 TO  WRK-CMB-CD
-           PERFORM 4200-CHKKBNLST-CHK-SEC
-      *
-           PERFORM VARYING IDX0    FROM    1   BY  1
-                   UNTIL ( IDX0    >   DTCHKKOMOKU-MAX )
-      *
-               MOVE    WRK-CMB-ITM     TO  SPA-GMN-D01-CHKKBN-G (IDX0)
-      *
-           END-PERFORM
-      *
-           .
-      *
-       430-KAKUNIN-EXT.
            EXIT.
       *****************************************************************
       *    ³ÎÇ§Á´°õºþ
@@ -2673,6 +2652,10 @@
        4200-CHKKBNLST-CHK-SEC          SECTION.
       *
            MOVE    SPACE               TO  WRK-CMB-ITM-G
+      *
+           IF    ( WRK-CMB-CD      =   "1" )
+               MOVE    "2"             TO  WRK-CMB-CD
+           END-IF
       *
            PERFORM VARYING IDX-CMB FROM    1   BY  1
                UNTIL ( IDX-CMB     >   SPA-GMN-D01-CHKKBN-MAX )

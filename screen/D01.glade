@@ -107,7 +107,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Tue, 26 Dec 2000 00:42:11 GMT</last_modification_time>
       </signal>
-      <label>³ÎÇ§°õºþ</label>
+      <label></label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -1908,6 +1908,7 @@
       <active>False</active>
       <draw_indicator>True</draw_indicator>
     </widget>
+
     <widget>
       <class>GtkCheckButton</class>
       <name>CHK_SRYYMD</name>
@@ -1931,7 +1932,6 @@
       <active>False</active>
       <draw_indicator>True</draw_indicator>
     </widget>
-
 
     <widget>
       <class>GtkCheckButton</class>
