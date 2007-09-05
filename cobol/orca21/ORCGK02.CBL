@@ -4680,6 +4680,7 @@
                IF      SGDAY-SDAY           <   SPA-BIRTHDAY
                     MOVE    "1011"          TO  SPA-ERRCD
                END-IF
+               MOVE   SPACE                TO  SPA-KIDCD
       *        未来日は確認メッセージ
                IF      SGDAY-SDAY          >   SPA-SYSYMD
                    MOVE    "0111"              TO  SPA-KIDCD
@@ -4692,7 +4693,6 @@
                    MOVE    ZERO                TO  SPA-NAI-ZENKIFLG
                END-IF
            END-IF
-           MOVE   SPACE                TO  SPA-KIDCD
            IF    (SPA-ERRCD            =   SPACE )  AND
                  (SPA-KIDCD            =   SPACE )
       *        変更のない時、以降の処理はそのまま
