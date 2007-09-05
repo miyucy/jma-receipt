@@ -1981,11 +1981,17 @@
                           (SNUM-SYOSUU         >   3     )
                         CONTINUE
                    ELSE
-                       COMPUTE IDX-I2          =   15  -   SNUM-SEISUU
+      *                整数がゼロの時、ゼロ
+                       IF      SNUM-SEISUU     =   ZERO
+                           MOVE    "0"         TO  TBL-WKSRY-INPUTCHI
+                                                   (TBL-MAX IDX-S IDX-I)
+                       ELSE
+                           COMPUTE IDX-I2      =   15  -   SNUM-SEISUU
                                                +   1
-                       MOVE    SNUM-OUTEDT(IDX-I2:SNUM-SEISUU)
+                           MOVE    SNUM-OUTEDT(IDX-I2:SNUM-SEISUU)
                                                TO  TBL-WKSRY-INPUTCHI
                                                   (TBL-MAX IDX-S IDX-I)
+                       END-IF
                    END-IF
                END-IF
            END-PERFORM
