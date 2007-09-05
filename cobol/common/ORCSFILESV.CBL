@@ -89,6 +89,9 @@
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
+      *??
+           DISPLAY "SFILESV-MODE=" SFILESV-MODE
+      *?? 
            EVALUATE    SFILESV-MODE
                WHEN    "I"
                    PERFORM 110-INS-SEC
@@ -224,6 +227,10 @@
       *
            MOVE    SPACE               TO  FILE-INFO-REC
            INITIALIZE                      FILE-INFO-REC
+      *??
+           DISPLAY "HOSPNUM=" SPA-HOSPNUM "#" SFILESV-TBL-KEY "#"
+                   SFILESV-SRYYM   (1) "#" SFILESV-SHELLID (1) "#"
+      *??
            MOVE    SPA-HOSPNUM         TO  FILE-INFO-HOSPNUM
            MOVE    SFILESV-TBL-KEY     TO  FILE-INFO-TBL-KEY
            MOVE    SFILESV-SRYYM   (1) TO  FILE-INFO-SRYYM
@@ -237,7 +244,11 @@
                    MOVE    "key3"              TO  WRK-MCP-PATHNAME
                ELSE
                    MOVE    "key4"              TO  WRK-MCP-PATHNAME
+               END-IF
            END-IF
+      *??
+           DISPLAY "WRK-MCP-PATHNAME=" WRK-MCP-PATHNAME
+      *??
            MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
            MOVE    "tbl_file_info"     TO  MCP-TABLE
            PERFORM 900-DBSELECT-SEC
