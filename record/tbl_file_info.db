@@ -1,10 +1,10 @@
 tbl_file_info	{
 	HOSPNUM			number(2,0);
 	TBL_KEY			char(8);
-	SHELLID			varchar(20);
-	SHORI_RENNUM		number(3);
-	RENNUM  		number(3);
 	SRYYM			varchar(06);
+	SHELLID			varchar(20);
+	RENNUM  		number(3);
+	SHORI_RENNUM		number(3);
 	SKYYMD   		varchar(08);
 	TITLE			varchar(100);
 	TEISYUTUSAKI		char(1);
@@ -26,7 +26,7 @@ tbl_file_info	{
 };
 
 primary	{
-	HOSPNUM,TBL_KEY,SRYYM,SHELLID,SHORI_RENNUM,RENNUM;
+	HOSPNUM,TBL_KEY,SRYYM,SHELLID,RENNUM,SHORI_RENNUM;
 };
 
 path	key		{ 	
@@ -38,8 +38,8 @@ path	key		{
                     AND   TBL_KEY	=   :TBL_KEY
                     AND   SRYYM 	=   :SRYYM
                     AND   SHELLID	=   :SHELLID
-                    AND   SHORI_RENNUM	=   :SHORI_RENNUM 
                     AND   RENNUM	=   :RENNUM
+                    AND   SHORI_RENNUM	=   :SHORI_RENNUM 
 		;
 	};
 };
@@ -51,7 +51,7 @@ path	key2		{
 		FROM tbl_file_info
 		WHERE 	  HOSPNUM	=   :HOSPNUM
                     AND   TBL_KEY	=   :TBL_KEY
-                ORDER BY SHORI_RENNUM,RENNUM          
+                ORDER BY SRYYM,SHELLID,RENNUM,SHORI_RENNUM          
 		;
 	};
 };
@@ -64,7 +64,7 @@ path	key3		{
 		WHERE 	  HOSPNUM	=   :HOSPNUM
                     AND   TBL_KEY	=   :TBL_KEY
                     AND   SRYYM 	=   :SRYYM
-                ORDER BY SHORI_RENNUM,RENNUM          
+                ORDER BY SHELLID,RENNUM,SHORI_RENNUM          
 		;
 	};
 };
@@ -78,7 +78,7 @@ path	key4		{
                     AND   TBL_KEY	=   :TBL_KEY
                     AND   SRYYM 	=   :SRYYM
                     AND   SHELLID 	=   :SHELLID
-                ORDER BY SHORI_RENNUM,RENNUM          
+                ORDER BY RENNUM,SHORI_RENNUM          
 		;
 	};
 };

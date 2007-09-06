@@ -29,15 +29,15 @@
                05  FILE-INFO-HOSPNUM   PIC 9(2).
       *ＫＥＹ
                05  FILE-INFO-TBL-KEY   PIC X(08).
+      *診療年月
+               05  FILE-INFO-SRYYM     PIC X(06).
       *シェルＩＤ
                05  FILE-INFO-SHELLID   PIC X(20).
+      *連番
+               05  FILE-INFO-RENNUM    PIC 9(03).
       *処理内連番
                05  FILE-INFO-SHORI-RENNUM
                                        PIC 9(03).
-      *連番
-               05  FILE-INFO-RENNUM    PIC 9(03).
-      *診療年月
-               05  FILE-INFO-SRYYM     PIC X(06).
       *請求年月日
            03  FILE-INFO-SKYYMD        PIC X(08).
       *タイトル

@@ -29,18 +29,18 @@
                05  CSV-INFO-HOSPNUM        PIC 9(2).
       *ＫＥＹ
                05  CSV-INFO-TBL-KEY        PIC X(08).
+      *診療年月
+               05  CSV-INFO-SRYYM          PIC X(06).
       *シェルＩＤ
                05  CSV-INFO-SHELLID        PIC X(20).
-      *処理内連番
-               05  CSV-INFO-SHORI-RENNUM   PIC 9(03).
       *連番
                05  CSV-INFO-RENNUM         PIC 9(03).
-      *連番
+      *処理内連番
+               05  CSV-INFO-SHORI-RENNUM   PIC 9(03).
+      *出力連番
                05  CSV-INFO-SEQ-NO         PIC 9(06).
       *入外区分
            03  CSV-INFO-NYUGAIKBN          PIC X(01).
-      *診療年月
-           03  CSV-INFO-SRYYM              PIC X(06).
       *請求年月日
            03  CSV-INFO-SKYYMD             PIC X(08).
       *審査支払機関

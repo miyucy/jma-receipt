@@ -1,12 +1,12 @@
 tbl_csv_info	{
 	HOSPNUM			number(2,0);
 	TBL_KEY			char(8);
+	SRYYM			varchar(06);
 	SHELLID			varchar(20);
-	SHORI_RENNUM		number(3);
 	RENNUM  		number(3);
+	SHORI_RENNUM		number(3);
 	SEQ_NO  		number(6);
 	NYUGAIKBN		char(1);
-	SRYYM			varchar(06);
 	SKYYMD   		varchar(08);
 	TEISYUTUSAKI		number(1);
 	PTID			number(10);
@@ -16,7 +16,7 @@ tbl_csv_info	{
 };
 
 primary	{
-	HOSPNUM,TBL_KEY,SRYYM,SHELLID,SHORI_RENNUM,RENNUM,SEQ_NO;
+	HOSPNUM,TBL_KEY,SRYYM,SHELLID,RENNUM,SHORI_RENNUM,SEQ_NO;
 };
 
 path	key		{ 	
@@ -28,8 +28,8 @@ path	key		{
                     AND   TBL_KEY	=   :TBL_KEY
                     AND   SRYYM 	=   :SRYYM
                     AND   SHELLID	=   :SHELLID
-                    AND   SHORI_RENNUM	=   :SHORI_RENNUM 
                     AND   RENNUM	=   :RENNUM
+                    AND   SHORI_RENNUM	=   :SHORI_RENNUM 
                     AND   SEQ_NO	=   :SEQ_NO
 		;
 	};
@@ -44,8 +44,8 @@ path	key2		{
                     AND   TBL_KEY	=   :TBL_KEY
                     AND   SRYYM 	=   :SRYYM
                     AND   SHELLID	=   :SHELLID
-                    AND   SHORI_RENNUM	=   :SHORI_RENNUM 
                     AND   RENNUM	=   :RENNUM
+                    AND   SHORI_RENNUM	=   :SHORI_RENNUM 
                     ORDER BY SEQ_NO
 		;
 	};
