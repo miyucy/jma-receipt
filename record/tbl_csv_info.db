@@ -8,7 +8,7 @@ tbl_csv_info	{
 	SEQ_NO  		number(6);
 	NYUGAIKBN		char(1);
 	SKYYMD   		varchar(08);
-	TEISYUTUSAKI		number(1);
+	TEISYUTUSAKI		char(1);
 	PTID			number(10);
 	CSVDATA			varchar(2000);
 	CREYMD 			varchar(8);

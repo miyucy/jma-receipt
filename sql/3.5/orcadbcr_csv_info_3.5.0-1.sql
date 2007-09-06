@@ -8,7 +8,7 @@ create	table	tbl_csv_info	(
 	SEQ_NO	numeric(6,0),
 	NYUGAIKBN	char(1),
 	SKYYMD	varchar(8),
-	TEISYUTUSAKI	numeric(1,0),
+	TEISYUTUSAKI	char(1),
 	PTID	numeric(10,0),
 	CSVDATA	varchar(2000),
 	CREYMD	varchar(8),
