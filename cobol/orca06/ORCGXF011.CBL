@@ -447,6 +447,7 @@
            IF      SPA-XF011-SELNUM     =   ZERO
                GO      TO      420-SELNUM-EXT
            END-IF
+      *
            PERFORM VARYING     IDX     FROM   1   BY  1
                    UNTIL       IDX     >   SPA-XF011-BUNREIMAX
               IF      SPA-XF011-TRENNUM  (IDX)  =   SPA-XF011-SELNUM
@@ -690,7 +691,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    "CURRENT"           TO  MCP-PUTTYPE.
            MOVE    "XF011"             TO  MCP-WINDOW.
       *
-           PERFORM 900-PUT-WINDOW.
+           PERFORM 900-PUT-WINDOW
            .
        500-SET-SCREEN-EXT.
            EXIT.
@@ -725,14 +726,13 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    "B01"               TO  MCP-WIDGET
       *
            MOVE    "XF011"             TO  SPA-MOTOPG
-           MOVE    "XF01ERR"           TO  SPA-SAKIPG
+           MOVE    "XFERR"             TO  SPA-SAKIPG
       *
            MOVE    "NEW"               TO  MCP-PUTTYPE
-           MOVE    "XF01ERR"           TO  MCP-WINDOW
+           MOVE    "XFERR"             TO  MCP-WINDOW
       *
-           PERFORM 900-PUT-WINDOW.
+           PERFORM 900-PUT-WINDOW
       *
-           MOVE    1                   TO  FLG-END
            .
        510-ERRSET-EXT.
            EXIT.
@@ -743,14 +743,10 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        520-JIDSET-SEC              SECTION.
       *
            EVALUATE    SPA-XFIDCD
-               WHEN    "0104"
-                   MOVE    "選択されている文例を削除します。"
-                                       TO  WRK-XF01IDMSG
-                   MOVE    "よろしいですか？"
-                                       TO  WRK-XF01IDMSG(35:)
+               WHEN    "XXXX"
+                   MOVE    "XXXX"          TO  WRK-XF01IDMSG
                WHEN    OTHER
-                   MOVE    SPA-XFIDCD
-                                       TO  WRK-XF01IDMSG
+                   MOVE    SPA-XFIDCD      TO  WRK-XF01IDMSG
            END-EVALUATE
       *
            MOVE    SPACE               TO  SPA-XFID1-FLG
