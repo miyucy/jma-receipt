@@ -280,6 +280,9 @@
                                        WRK-AREA
                                        CNT-AREA
       *
+           MOVE    SPACE           TO  SPA-AREA
+           INITIALIZE                  SPA-AREA
+      *
            UNSTRING   COMMAND-PARAM    DELIMITED  BY  ","
                                        INTO    WRK-PARA-PAFNAME
                                                WRK-PARA-TERMID
@@ -287,6 +290,10 @@
                                                WRK-PARA-SYSTIME
                                                WRK-PARA-HOSPNUM
                                                WRK-PARA-STAFFCD
+           END-UNSTRING
+      *
+           MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
+           MOVE    WRK-PARA-STAFFCD    TO  SPA-STAFFCD
       *
       *    ＤＢオープン
            PERFORM 120-DBOPEN-SEC
@@ -336,12 +343,6 @@
       *    プリンタ名取得処理
       *****************************************************************
        110-PRTNUM-GET-SEC          SECTION.
-      *
-           MOVE    SPACE           TO  SPA-AREA
-           INITIALIZE                  SPA-AREA
-      *
-           MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
-           MOVE    WRK-PARA-STAFFCD    TO  SPA-STAFFCD
       *
       *    出力先プリンタ名割り当て情報編集
            INITIALIZE                  ORCSPRTNMAREA

@@ -206,6 +206,7 @@
                                        IDX-AREA
                                        WRK-AREA
                                        CNT-AREA
+                                       SPA-AREA
       *
            PERFORM 800-MCNDATE-SEC
       *
@@ -219,6 +220,8 @@
                                                WRK-PARA-ERRFNAME
                                                WRK-PARA-JOBID
                                                WRK-PARA-SHELLID
+      *
+           MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
       *
       *    £Ä£Â¥ª¡¼¥×¥ó
            PERFORM 120-DBOPEN-SEC
