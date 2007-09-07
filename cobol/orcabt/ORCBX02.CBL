@@ -725,7 +725,11 @@
                NOT AT  END
                    EVALUATE    WRK-PARA-CHKMORE
                    WHEN    "1"
-                       MOVE    1       TO  FLG-LOOPEND
+                       IF    ( TNS-YKZKBN              =   3 )
+                           CONTINUE
+                       ELSE
+                           MOVE    1   TO  FLG-LOOPEND
+                       END-IF
                    WHEN    "2"
                        IF    ( WRK-PARA-MOREKENSA      =   "1" )
                         AND  ( TNS-SRYCD (1:2)         =   "16" )
