@@ -12,10 +12,11 @@ fi
 #------------------------------------
 # $1 : 医療機関識別番号(HOSPNUM)
 # $2 : スーパーバイザー
+# $3 : 医療機関識別番号(HOSPID)
 #------------------------------------
 
 #標準マスタ更新
 sh $SCRIPTSDIR/allways/master_standard_upgrade.sh $1 $2
 
 #ライセンスマスタ更新
-sh $SCRIPTSDIR/allways/master_license_upgrade.sh $1 $2
+sh $SCRIPTSDIR/allways/master_license_upgrade.sh $1 $2 $3

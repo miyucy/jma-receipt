@@ -12,6 +12,7 @@ fi
 #------------------------------------
 # $1 : 医療機関識別番号(HOSPNUM)
 # $2 : スーパーバイザー
+# $3 : 医療機関識別番号(HOSPID)
 #------------------------------------
 
 HOSPNUM=$1
@@ -19,7 +20,7 @@ HOSPNUM=$1
 HOME=/var/lib/jma-receipt/master
 MSTDIR=lics-$(date +%Y%m%d)
 WGETRCFL=/tmp/.wgetrc.license-master
-LIUPWD=$1
+LIUPWD=$3
 
 KANRIFILE=ORCADBR-LI.DAT
 UPDKANRIFILE=info/$KANRIFILE

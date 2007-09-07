@@ -763,9 +763,9 @@ grpsys     MOVE    SPA-HOSPNUM         TO  MSTKANRI-HOSPNUM
            MOVE    SHELL-NAME           TO  MKPASS-IN-01
            CALL    "ORCSMKPASS"         USING  ORCSMKPASSAREA
            MOVE    MKPASS-OT-01         TO  SHELLTBL-NAME
-      *****MOVE    SPA-HOSPID           TO  SHELLTBL-ARG1
            MOVE    SPA-HOSPNUM          TO  SHELLTBL-ARG1
            MOVE    SPA-SUPERVISOR       TO  SHELLTBL-ARG2
+           MOVE    SPA-HOSPID           TO  SHELLTBL-ARG3
            MOVE    SHELLTBL             TO  MCPDATA-REC
       *
            MOVE    "SHELL"              TO  MCP-FUNC
