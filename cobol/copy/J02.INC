@@ -76,7 +76,7 @@
                 04  J02-SRYKBN-ITEM
                         PIC X(19)    OCCURS  30 TIMES.
               03  J02-NYUINKIKAN.
-                04  J02-VALUE   PIC X(30).
+                04  J02-VALUE   PIC X(36).
               03  J02-HHKNCOMBICOMB.
                 04  J02-HHKNCOMBI.
                   05  J02-VALUE   PIC X(65).

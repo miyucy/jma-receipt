@@ -217,7 +217,7 @@ J02	{
 			item	varchar(19)[30];
 		};
 		NYUINKIKAN	{
-			value	varchar(30);
+			value	varchar(36);
 		};
 		HHKNCOMBICOMB	{
 			HHKNCOMBI	{
