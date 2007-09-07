@@ -404,6 +404,12 @@
                                        SPA-NAI-T04-TSHORI-RENNUM(IDY)
                        MOVE    SFILESV-RENNUM    (IDX)
                                            TO  SPA-NAI-T04-TRENNUM (IDY)
+                       IF      SFILESV-CODE-TYPE   (IDX)   =   SPACE
+                           MOVE    "1"     TO  SFILESV-CODE-TYPE   (IDX)
+                       END-IF
+                       MOVE    SFILESV-CODE-TYPE   (IDX)
+                                           TO  SPA-NAI-T04-TCODE-TYPE
+                                                                (IDY)
                    END-IF    
                END-PERFORM
                MOVE    IDY         TO  SPA-GMN-T04-MAX

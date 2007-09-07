@@ -279,6 +279,8 @@
                            11  SPA-NAI-T04-TTO-DATA
                                                    PIC X(200).
                            11  SPA-NAI-T04-TSYOYMD PIC X(08).
+                           11  SPA-NAI-T04-TCODE-TYPE
+                                                   PIC X(01).
       *
            03  SPA-T99-AREA.
                05  SPA-SFILESV-AREA.

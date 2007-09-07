@@ -1691,6 +1691,8 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
                    "/"                 DELIMITED  BY  SIZE
                                INTO    SHELLTBL-ARG13
            END-STRING
+           MOVE    SPA-NAI-T04-TCODE-TYPE   (SPA-NAI-T04-SELNUM)
+                                   TO  SHELLTBL-ARG14
       *
            MOVE    SHELLTBL        TO  MCPDATA-REC
            MOVE    "SHELL"         TO  MCP-FUNC

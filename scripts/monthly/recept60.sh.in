@@ -24,6 +24,7 @@ fi
 #        ${11} シェルＩＤ
 #        ${12} エラーファイル名 
 #        ${13} ファイル出力先
+#        ${14} コード区分（1:S-jis 2:EUC）
 #-------------------------------------------#
 #
 ##      エラーファイル削除
@@ -38,6 +39,7 @@ fi
 
         echo "arg9  = [" ${9} "]"   >$LOG_FILE
         echo "arg13 = [" ${13} "]"  >>$LOG_FILE
+        echo "arg14 = [" ${14} "]"  >>$LOG_FILE
         echo "hostname =  [" `hostname`  "]" >>$LOG_FILE
         echo "file1= [" $FILE_1 "]"  >> $LOG_FILE
         echo "file2= [" $FILE_2 "]"  >> $LOG_FILE
@@ -54,12 +56,20 @@ fi
         fi
 
 
-#       漢字コード変換（ＥＵＣからシフトＪＩＳ）
+#       コード区分によりコード変換
 
-        if   [ ${6} != '5' ]; then
-             nkf -s $FILE_1 > $FILE_2
+        if   [ ${14} = '1' ]; then
+            if   [ ${6} != '5' ]; then
+                 nkf -s $FILE_1 > $FILE_2
+            else
+                 nkf -s $FILE_1 > $FILE_3
+            fi
         else
-             nkf -s $FILE_1 > $FILE_3
+            if   [ ${6} != '5' ]; then
+                 cp $FILE_1  $FILE_2
+            else
+                 cp $FILE_1  $FILE_3
+            fi
         fi
          
 #
