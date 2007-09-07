@@ -328,6 +328,8 @@
                05  WRK-MMS2        PIC 9(02).
                05  WRK-DDS2        PIC 9(02).
       *
+           03  WRK-TAIINYMD        PIC X(08).
+      *
            03  WRK-TENSU-X.
                05  WRK-TENSU       PIC Z(07).
                05  WRK-TENSU-2     REDEFINES   WRK-TENSU
@@ -1812,7 +1814,7 @@
       *
       *    入院期間編集
            IF     (SPA-BEDSU           >   ZERO ) AND
-                  (SPA-NYUGAIKBN       =  "1"   ) AND
+      *D          (SPA-NYUGAIKBN       =  "1"   ) AND
                   (SPA-NAI-NYUINYMD    =  SPACE )
                PERFORM 410101-NYUINRRK-CHK-SEC
                PERFORM 410102-NYUINRRK-LST-SEC
@@ -3366,6 +3368,22 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    SPA-GMN-TAIINYMD   TO  J02-NYUINKIKAN(21:9)
            ELSE
                MOVE    SPACE              TO  J02-NYUINKIKAN
+               IF     (SPA-GMN-NYUINYMD   NOT =   SPACE )  AND
+                      (SPA-GMN-TAIINYMD   NOT =   SPACE )
+                   STRING  "今月入院期間：" 
+                           SPA-GMN-NYUINYMD
+                           "-" 
+                           SPA-GMN-TAIINYMD   DELIMITED  BY  SIZE
+                                           INTO   J02-NYUINKIKAN
+                   END-STRING
+               END-IF
+               IF     (SPA-GMN-NYUINYMD       =   SPACE )  AND
+                      (SPA-GMN-TAIINYMD   NOT =   SPACE )
+                   STRING  "最終退院日：" 
+                           SPA-GMN-TAIINYMD   DELIMITED  BY  SIZE
+                                           INTO   J02-NYUINKIKAN
+                   END-STRING
+               END-IF
            END-IF
       *
            MOVE    SPA-GMN-IKKATU      TO  J02-IKKATU
@@ -3948,6 +3966,11 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                                              (IDX-D)
                        END-PERFORM
                    END-IF
+      *            最終退院日
+                   IF     (WRK-TAIINYMD        =   SPACE   )  OR
+                          (WRK-TAIINYMD        <   PTNYUINRRK-TAIINYMD)
+                       MOVE    PTNYUINRRK-TAIINYMD TO  WRK-TAIINYMD
+                   END-IF
                END-IF
       *
                MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
@@ -3977,6 +4000,13 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            ELSE
       *       外来とする
                MOVE    "2"             TO  SPA-NYUGAIKBN
+      *        最終退院日
+               IF     (WRK-TAIINYMD    NOT =   SPACE ) AND
+                      (SPA-GMN-TAIINYMD    =   SPACE )
+                   MOVE    WRK-TAIINYMD        TO  WRK-SYMD
+                   PERFORM 41012-SEIWA-HEN-SEC
+                   MOVE    WRK-HENYMDG         TO  SPA-GMN-TAIINYMD
+               END-IF
            END-IF
       *
            .
@@ -10191,7 +10221,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            MOVE    SPACE               TO  SPA-ERRCD
            INITIALIZE                  LNK-ORCSSAIKEISAN-REC
-           MOVE    SYU-HOSPNUM          TO  LNK-ORCSSKS-HOSPNUM
+           MOVE    SYU-HOSPNUM         TO  LNK-ORCSSKS-HOSPNUM
            MOVE    SYU-NYUGAIKBN       TO  LNK-ORCSSKS-NYUGAIKBN
            MOVE    SYU-PTID            TO  LNK-ORCSSKS-PTID
            MOVE    SYU-DENPNUM         TO  LNK-ORCSSKS-DENPNUM
