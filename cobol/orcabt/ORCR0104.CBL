@@ -7352,6 +7352,15 @@ grpsys     MOVE    RECE02-HOSPNUM      TO  RECE10-HOSPNUM
                        PERFORM 39041-RECE10-TOKKI-HENSYU-SEC
                    END-IF
                END-PERFORM
+               PERFORM VARYING IDX     FROM    1   BY  1
+                       UNTIL   IDX     >       5
+                   IF      RECE11-TOKKI (IDX)
+                                           NOT =   SPACE
+                       MOVE    SPACE               TO  WRK-TOKKI-X
+                       MOVE    RECE11-TOKKI (IDX)  TO  WRK-TOKKI
+                       PERFORM 39041-RECE10-TOKKI-HENSYU-SEC
+                   END-IF
+               END-PERFORM
            END-IF
       *
            MOVE    RECE10-REC          TO  MCPDATA-REC
