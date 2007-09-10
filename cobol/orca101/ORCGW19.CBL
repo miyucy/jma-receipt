@@ -27,7 +27,6 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
-      *  03.05.00    NACL-多々納  07/05/02  グループ診療対応
       *****************************************************************
       *
        ENVIRONMENT                     DIVISION.
@@ -65,7 +64,6 @@
        01  IDX-AREA.
            03  IDX0                        PIC 9(05).
            03  IDX1                        PIC 9(05).
-           03  IDXL                        PIC 9(05).
       *
       *    一時領域
        01  WRK-AREA.
@@ -79,9 +77,10 @@
                05  WRK-PGSRH-MAX           PIC 9(05).
                05  WRK-PGSRH-OCC           OCCURS  200.
                    07  WRK-PGSRH-PGNAME    PIC X(20).
-           03  WRK-PATHNAME                PIC X(64).
-           03  WRK-KBNCD-G.
-               05  WRK-KBNCD               PIC 9(03).
+           03  WRK-MCP-PATH.
+               04  WRK-MCP-BLOCKS          PIC S9(9)   BINARY.
+               04  WRK-MCP-RNAME           PIC S9(9)   BINARY.
+               04  WRK-MCP-PNAME           PIC S9(9)   BINARY.
       *
        01  WRK-ROW.
            05  WRK-TYOHYOLST-ROW           PIC S9(9)   BINARY.
@@ -112,7 +111,7 @@
       *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
-      *    COPY    "ORCA-DBPATH".
+           COPY    "ORCA-DBPATH".
       *
       *****************************************************************
       *    連絡領域
@@ -124,7 +123,48 @@
            COPY    "LINKAREA".
       *
        01  SCRAREA.
-           COPY    "ORCA101SCRAREA.INC".
+           COPY    "W01.INC".
+           COPY    "W02.INC".
+           COPY    "W03.INC".
+           COPY    "W04.INC".
+           COPY    "W05.INC".
+           COPY    "W06.INC".
+           COPY    "W07.INC".
+           COPY    "W08.INC".
+           COPY    "W09.INC".
+           COPY    "W10.INC".
+           COPY    "W11.INC".
+           COPY    "W111.INC".
+           COPY    "W12.INC".
+           COPY    "W13.INC".
+           COPY    "W14.INC".
+           COPY    "W15.INC".
+           COPY    "W16.INC".
+           COPY    "W17.INC".
+           COPY    "W18.INC".
+           COPY    "W19.INC".
+           COPY    "W20.INC".
+           COPY    "W21.INC".
+           COPY    "W22.INC".
+           COPY    "W23.INC".
+           COPY    "W24.INC".
+           COPY    "W25.INC".
+           COPY    "W26.INC".
+           COPY    "W27.INC".
+           COPY    "W28.INC".
+           COPY    "W29.INC".
+           COPY    "W30.INC".
+           COPY    "W31.INC".
+           COPY    "W60.INC".
+           COPY    "W61.INC".
+           COPY    "W62.INC".
+           COPY    "W63.INC".
+           COPY    "W98.INC".
+           COPY    "W97.INC".
+           COPY    "W99.INC".
+           COPY    "WERR.INC".
+           COPY    "WID1.INC".
+           COPY    "WID2.INC".
       *
        PROCEDURE                   DIVISION    USING
                                                MCPAREA
@@ -310,7 +350,8 @@
                                            TO  SYS-STYUKYMD
                                                SYS-EDYUKYMD
       *
-               MOVE    "key2"              TO  WRK-PATHNAME
+               MOVE    PATH-TBL-SYSKANRI-KEY2
+                                           TO  WRK-MCP-PATH
            ELSE
                MOVE    WRK-KANRICD         TO  SYS-KANRICD
                MOVE    SPA-W10-KBNCD(1:1)  TO  SYS-KBNCD (1:1)
@@ -319,13 +360,12 @@
                                            TO  SYS-STYUKYMD
                                                SYS-EDYUKYMD
       *
-               MOVE    "key"               TO  WRK-PATHNAME
+               MOVE    PATH-TBL-SYSKANRI-KEY
+                                           TO  WRK-MCP-PATH
            END-IF
       *
-           MOVE    SPA-HOSPNUM         TO  SYS-HOSPNUM
            MOVE    SYSKANRI-REC        TO  MCPDATA-REC
-           MOVE    "tbl_syskanri"      TO  MCP-TABLE
-           MOVE    WRK-PATHNAME        TO  MCP-PATHNAME
+           MOVE    WRK-MCP-PATH        TO  MCP-PATH
            PERFORM 910-DBSELECT-SEC
            IF    ( MCP-RC              =   ZERO )
                MOVE    MCPDATA-REC     TO  SYSKANRI-REC
@@ -343,7 +383,6 @@
                EVALUATE    WRK-KANRICD
                WHEN    "0043"
                    MOVE  SYSKANRI-REC    TO  SYS-0043-REC
-                   MOVE  IDX1            TO  SPA-GMN-W19-TNUM    (IDX1)
                    MOVE  SYS-0043-KANRICD
                                          TO  SPA-NAI-W19-TKANRICD(IDX1)
                    MOVE  SYS-0043-KBNCD  TO  SPA-NAI-W19-TKBNCD  (IDX1)
@@ -357,7 +396,6 @@
                    END-IF
                WHEN    "0044"
                    MOVE  SYSKANRI-REC    TO  SYS-0044-REC
-                   MOVE  IDX1            TO  SPA-GMN-W19-TNUM    (IDX1)
                    MOVE  SYS-0044-KANRICD
                                          TO  SPA-NAI-W19-TKANRICD(IDX1)
                    MOVE  SYS-0044-KBNCD  TO  SPA-NAI-W19-TKBNCD  (IDX1)
@@ -369,10 +407,23 @@
                    IF    ( FLG-ENTRY       =   1 )
                        MOVE    1         TO  SPA-GMN-W19-TSTATUS (IDX1)
                    END-IF
+                   IF    ( SYS-0044-KBNCD  =   "1027" )
+      *
+                       COMPUTE IDX1    =   IDX1    +   1
+      *
+                       MOVE  "0044"      TO  SPA-NAI-W19-TKANRICD(IDX1)
+                       MOVE  "1028"      TO  SPA-NAI-W19-TKBNCD  (IDX1)
+                       MOVE  "チェックマスタ経過措置薬剤更新リスト"
+                                         TO  SPA-GMN-W19-THCNAME (IDX1)
+                       MOVE  "ORCBG018"  TO  SPA-GMN-W19-TPRGNAME(IDX1)
+                                             WRK-PGSRH-CHK-PGNAME
+                       PERFORM 3101-ENTRYPRT-CHK-SEC
+                       IF    ( FLG-ENTRY       =   1 )
+                           MOVE    1     TO  SPA-GMN-W19-TSTATUS (IDX1)
+                       END-IF
+                   END-IF
                WHEN    "3001"
                    MOVE  SYSKANRI-REC    TO  SYS-3001-REC
-                   MOVE  SYS-3001-KBNCD  TO  WRK-KBNCD-G
-                   MOVE  WRK-KBNCD       TO  SPA-GMN-W19-TNUM    (IDX1)
                    MOVE  SYS-3001-KANRICD
                                          TO  SPA-NAI-W19-TKANRICD(IDX1)
                    MOVE  SYS-3001-KBNCD  TO  SPA-NAI-W19-TKBNCD  (IDX1)
@@ -382,8 +433,6 @@
                    MOVE    1             TO  SPA-GMN-W19-TSTATUS (IDX1)
                WHEN    "3002"
                    MOVE  SYSKANRI-REC    TO  SYS-3002-REC
-                   MOVE  SYS-3002-KBNCD  TO  WRK-KBNCD-G
-                   MOVE  WRK-KBNCD       TO  SPA-GMN-W19-TNUM    (IDX1)
                    MOVE  SYS-3002-KANRICD
                                          TO  SPA-NAI-W19-TKANRICD(IDX1)
                    MOVE  SYS-3002-KBNCD  TO  SPA-NAI-W19-TKBNCD  (IDX1)
@@ -393,8 +442,7 @@
                    MOVE    1             TO  SPA-GMN-W19-TSTATUS (IDX1)
                END-EVALUATE
       *
-               MOVE    "tbl_syskanri"      TO  MCP-TABLE
-               MOVE    WRK-PATHNAME        TO  MCP-PATHNAME
+               MOVE    WRK-MCP-PATH      TO  MCP-PATH
                PERFORM 910-DBFETCH-SEC
                IF    ( MCP-RC              =   ZERO )
                    MOVE    MCPDATA-REC TO  SYSKANRI-REC
@@ -407,8 +455,7 @@
       *
            MOVE    IDX1                TO  SPA-GMN-W19-TYOHYOLST-MAX
       *
-           MOVE    "tbl_syskanri"      TO  MCP-TABLE
-           MOVE    WRK-PATHNAME        TO  MCP-PATHNAME
+           MOVE    WRK-MCP-PATH        TO  MCP-PATH
            PERFORM 910-DBCLOSE-SEC
       *
            .
@@ -428,11 +475,10 @@
            MOVE    SPA-W01-SEL-STYUKYMD
                                        TO  SYS-STYUKYMD
                                            SYS-EDYUKYMD
-           MOVE    SPA-HOSPNUM         TO  SYS-HOSPNUM
            MOVE    SYSKANRI-REC        TO  MCPDATA-REC
       *
-           MOVE    "tbl_syskanri"      TO  MCP-TABLE
-           MOVE    "key2"              TO  MCP-PATHNAME
+           MOVE    PATH-TBL-SYSKANRI-KEY2
+                                       TO  MCP-PATH
            PERFORM 910-DBSELECT-SEC
            IF    ( MCP-RC              =   ZERO )
                MOVE    MCPDATA-REC     TO  SYSKANRI-REC
@@ -458,8 +504,8 @@
                                                          (WRK-PGSRH-MAX)
                END-IF
       *
-               MOVE    "tbl_syskanri"      TO  MCP-TABLE
-               MOVE    "key2"              TO  MCP-PATHNAME
+               MOVE    PATH-TBL-SYSKANRI-KEY2
+                                       TO  MCP-PATH
                PERFORM 910-DBFETCH-SEC
                IF    ( MCP-RC              =   ZERO )
                    MOVE    MCPDATA-REC TO  SYSKANRI-REC
@@ -470,8 +516,8 @@
       *
            END-PERFORM
       *
-           MOVE    "tbl_syskanri"      TO  MCP-TABLE
-           MOVE    "key2"              TO  MCP-PATHNAME
+           MOVE    PATH-TBL-SYSKANRI-KEY2
+                                       TO  MCP-PATH
            PERFORM 910-DBCLOSE-SEC
       *
            .
@@ -636,16 +682,16 @@
            IF    ( IDX0    >   SPA-GMN-W19-TYOHYOKBN-MAX )
                MOVE    2               TO  SPA-GMN-W19-CUR
                MOVE    "0002"          TO  SPA-ERRCD
-           ELSE
-               MOVE    SPA-GMN-W19-TYOHYOKBNLST (IDX0)
-                                       TO  SPA-GMN-W19-TYOHYOKBN-G
-      *
-               PERFORM 3101-TYOHYOLST-HEN-SEC
+               GO  TO  4100-SELNUM-CHK-EXT
            END-IF
       *
+           MOVE    SPA-GMN-W19-TYOHYOKBNLST (IDX0)
+                                       TO  SPA-GMN-W19-TYOHYOKBN-G
+      *
+           PERFORM 3101-TYOHYOLST-HEN-SEC
       *
            .
-       4100-TYOHYOKBN-CHK-EXT.
+       4100-SELNUM-CHK-EXT.
            EXIT.
       *****************************************************************
       *    帳票リストチェック処理
@@ -659,9 +705,8 @@
                    UNTIL ( IDX0    >   SPA-GMN-W19-TYOHYOLST-MAX )
       *
                IF    ( W19-LIST-SELECT (IDX0)  =   "T" )
-                   MOVE    SPA-GMN-W19-TNUM (IDX0)
-                                   TO  SPA-GMN-W19-SELNUM
-                   MOVE    IDX0    TO  SPA-GMN-W19-TYOHYOLST-SEL
+                   MOVE    IDX0    TO  SPA-GMN-W19-SELNUM
+                                       SPA-GMN-W19-TYOHYOLST-SEL
                    MOVE    SPA-NAI-W19-TKANRICD(IDX0)
                                    TO  SPA-NAI-W19-KANRICD
                    MOVE    SPA-NAI-W19-TKBNCD  (IDX0)
@@ -685,28 +730,21 @@
       *
            MOVE    ZERO                TO  SPA-GMN-W19-CUR
       *
-           MOVE    ZERO                TO  IDXL
-           PERFORM VARYING IDX0    FROM    1   BY  1
-                   UNTIL ( IDX0    >   SPA-GMN-W19-TYOHYOLST-MAX )
-                    OR   ( IDXL    >   ZERO )
-      *
-               IF    ( SPA-GMN-W19-SELNUM  =   SPA-GMN-W19-TNUM (IDX0))
-                   MOVE    IDX0        TO  IDXL
-               END-IF
-      *
-           END-PERFORM
-      *
-           IF    ( IDXL                >   ZERO )
-               MOVE    IDXL            TO  SPA-GMN-W19-TYOHYOLST-SEL
-      *
-               MOVE    SPA-NAI-W19-TKANRICD(IDXL)
-                                       TO  SPA-NAI-W19-KANRICD
-               MOVE    SPA-NAI-W19-TKBNCD  (IDXL)
-                                       TO  SPA-NAI-W19-KBNCD
+           IF    ( SPA-GMN-W19-SELNUM  >   ZERO )
+            AND  ( SPA-GMN-W19-SELNUM <=   SPA-GMN-W19-TYOHYOLST-MAX )
+               CONTINUE
            ELSE
                MOVE    1               TO  SPA-GMN-W19-CUR
                MOVE    "0001"          TO  SPA-ERRCD
+               GO  TO  4101-SELNUM-CHK-EXT
            END-IF
+      *
+           MOVE    SPA-GMN-W19-SELNUM  TO  SPA-GMN-W19-TYOHYOLST-SEL
+      *
+           MOVE    SPA-NAI-W19-TKANRICD(SPA-GMN-W19-SELNUM)
+                                       TO  SPA-NAI-W19-KANRICD
+           MOVE    SPA-NAI-W19-TKBNCD  (SPA-GMN-W19-SELNUM)
+                                       TO  SPA-NAI-W19-KBNCD
       *
            .
        4101-SELNUM-CHK-EXT.
@@ -829,8 +867,7 @@
            PERFORM VARYING IDX0    FROM    1   BY  1
                    UNTIL ( IDX0    >   SPA-GMN-W19-TYOHYOLST-MAX )
       *
-               MOVE    SPA-GMN-W19-TNUM(IDX0)
-                                       TO  WRK-ZZ9
+               MOVE    IDX0            TO  WRK-ZZ9
                MOVE    WRK-ZZ9         TO  W19-LIST-TNUM (IDX0)
       *
                MOVE    SPA-GMN-W19-THCNAME (IDX0)
@@ -950,9 +987,9 @@
        910-DBSELECT-SEC                SECTION.
       *
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+           CALL    "MCPSUB"            USING
+                                       MCPAREA
+                                       MCPDATA-REC
       *
            IF    ( MCP-RC          =   ZERO )
                PERFORM 910-DBFETCH-SEC
@@ -968,9 +1005,9 @@
        910-DBFETCH-SEC                  SECTION.
       *
            MOVE    "DBFETCH"       TO   MCP-FUNC
-           CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+           CALL    "MCPSUB"             USING
+                                        MCPAREA
+                                        MCPDATA-REC
       *
            .
       *
@@ -982,9 +1019,9 @@
        910-DBCLOSE-SEC                  SECTION.
       *
            MOVE    "DBCLOSECURSOR"      TO  MCP-FUNC
-           CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+           CALL    "MCPSUB"             USING
+                                        MCPAREA
+                                        MCPDATA-REC
       *
            .
       *
@@ -996,9 +1033,9 @@
        900-PUT-WINDOW                  SECTION.
       *
            MOVE   "PUTWINDOW"       TO  MCP-FUNC.
-           CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+           CALL   "MCPSUB"          USING
+                                    MCPAREA
+                                    MCPDATA-REC
       *
            .
        900-PUT-WINDOW-EXT.
