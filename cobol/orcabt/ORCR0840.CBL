@@ -120,6 +120,7 @@
       *  03.05.03    NACL-門脇    07/06/26  自賠責平成１９年４月改正様式対応
       *  03.05.04    NACL-門脇    07/07/17  個別時のシステム管理編集修正
       *  03.05.05    NACL-門脇    07/07/26  レセに記載しないコメント対応
+      *  03.05.06    NACL-門脇    07/09/11  点滴手技集計修正
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -6842,19 +6843,34 @@ grpsys     PERFORM 900-DBSELECT-SEC
       **************（新様式）
                     ADD   RECE84-ZAIKAISU    TO   RECE82-KAISU(12)
       *
-                    COMPUTE   RECE82-TENSU-YAK(13)  =
-                              RECE82-TENSU-YAK(13)  +
-                              (RECE84-ZAITEN  *  RECE84-ZAIKAISU)
+                    IF    FLG-SIKIBETU  =  3 OR 4
+                       COMPUTE   RECE82-TENSU(12)  =
+                                 RECE82-TENSU(12)  +
+                                 (RECE84-ZAITEN  *  RECE84-ZAIKAISU)
+                    ELSE
+                       COMPUTE   RECE82-TENSU-YAK(13)  =
+                                 RECE82-TENSU-YAK(13)  +
+                                 (RECE84-ZAITEN  *  RECE84-ZAIKAISU)
+                    END-IF
                   WHEN      "5"
       **************（従来様式）
                     ADD   RECE84-ZAIKAISU    TO   RECE82-KAISU(13)
       *
-                    COMPUTE   RECE82-TENSU(13)  =
-                              RECE82-TENSU(13)  +
-                              (RECE84-ZAITEN  *  RECE84-ZAIKAISU)
-                    COMPUTE   TBL-YKZTEN-JI(13) =
-                              TBL-YKZTEN-JI(13) +
-                              (RECE84-ZAITEN  *  RECE84-ZAIKAISU)
+                    IF    FLG-SIKIBETU  =  3 OR 4
+                       COMPUTE   RECE82-TENSU(13)  =
+                                 RECE82-TENSU(13)  +
+                                 (RECE84-ZAITEN  *  RECE84-ZAIKAISU)
+                       COMPUTE   TBL-SYUTEN-JI(13)  =
+                                 TBL-SYUTEN-JI(13)  +
+                                 (RECE84-ZAITEN  *  RECE84-ZAIKAISU)
+                    ELSE
+                       COMPUTE   RECE82-TENSU(13)  =
+                                 RECE82-TENSU(13)  +
+                                 (RECE84-ZAITEN  *  RECE84-ZAIKAISU)
+                       COMPUTE   TBL-YKZTEN-JI(13) =
+                                 TBL-YKZTEN-JI(13) +
+                                 (RECE84-ZAITEN  *  RECE84-ZAIKAISU)
+                    END-IF
                 END-EVALUATE
            END-IF
            .                                           
