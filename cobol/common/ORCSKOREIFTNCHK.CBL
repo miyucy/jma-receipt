@@ -37,6 +37,7 @@
       *  03.04.04    NACL-ÌçÏÆ    07/06/13  ¸½ÊªµëÉÕ¹â³Û£´²óÌÜ¸øÈñÊ»ÍÑ»þÂÐ±þ
       *
       *  03.05.01    NACL-Æ£¸¶    07/04/19  ¥°¥ë¡¼¥×¿ÇÎÅÂÐ±þ
+      *  03.05.02    NACL-ÌçÏÆ    07/09/03  ¸º³Û¸ºÌÈÁ´¹ñ¸øÈñÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -634,10 +635,12 @@ grpsys        MOVE    LNK-KOREIFTNCHK-HOSPNUM   TO  SYU-HOSPNUM
                 WHEN  "1"
                 WHEN  "4"
                    MOVE      15000     TO   WRK-KINGAKU
+                   PERFORM   270-ICHIBUFTN-GEN-SEC
                    PERFORM   260-ICHIBUFTN-KOH-SET-SEC
                 WHEN  "2"
                 WHEN  "3"
                    MOVE      24600     TO   WRK-KINGAKU
+                   PERFORM   270-ICHIBUFTN-GEN-SEC
                    PERFORM   260-ICHIBUFTN-KOH-SET-SEC
               END-EVALUATE
            ELSE
@@ -656,6 +659,7 @@ grpsys        MOVE    LNK-KOREIFTNCHK-HOSPNUM   TO  SYU-HOSPNUM
                    ELSE
                      MOVE    80100  TO   WRK-KINGAKU
                    END-IF
+                   PERFORM   270-ICHIBUFTN-GEN-SEC
                    PERFORM   260-ICHIBUFTN-KOH-SET-SEC
                 ELSE
                    COMPUTE LNK-KOREIFTNCHK-CHIHOUGAKU =
@@ -669,10 +673,19 @@ grpsys        MOVE    LNK-KOREIFTNCHK-HOSPNUM   TO  SYU-HOSPNUM
                    ELSE
                      MOVE    72300  TO   WRK-KINGAKU
                    END-IF
+                   PERFORM   270-ICHIBUFTN-GEN-SEC
                    PERFORM   260-ICHIBUFTN-KOH-SET-SEC
                 END-IF
               ELSE
-                PERFORM      22012-NYUIN-KOREI-HEN2-SEC
+                IF  LNK-KOREIFTNCHK-SRYYM   >=  "200610"
+                   MOVE       44400  TO   WRK-KINGAKU
+                   PERFORM    270-ICHIBUFTN-GEN-SEC
+                   PERFORM    260-ICHIBUFTN-KOH-SET-SEC
+                ELSE
+                   MOVE       40200  TO   WRK-KINGAKU
+                   PERFORM    270-ICHIBUFTN-GEN-SEC
+                   PERFORM    260-ICHIBUFTN-KOH-SET-SEC
+                END-IF
               END-IF
            END-IF
       *
@@ -833,6 +846,7 @@ grpsys        MOVE    LNK-KOREIFTNCHK-HOSPNUM   TO  SYU-HOSPNUM
                      MOVE    150000   TO   WRK-KINGAKU
                   END-IF
                END-IF
+               PERFORM   270-ICHIBUFTN-GEN-SEC
                PERFORM   260-ICHIBUFTN-KOH-SET-SEC
              WHEN           2
                IF   LNK-KOREIFTNCHK-KOHYONKAIME = 1
@@ -850,6 +864,7 @@ grpsys        MOVE    LNK-KOREIFTNCHK-HOSPNUM   TO  SYU-HOSPNUM
                      MOVE    80100    TO   WRK-KINGAKU
                   END-IF
                END-IF
+               PERFORM   270-ICHIBUFTN-GEN-SEC
                PERFORM   260-ICHIBUFTN-KOH-SET-SEC
              WHEN           3
                IF   LNK-KOREIFTNCHK-KOHYONKAIME = 1
@@ -857,6 +872,7 @@ grpsys        MOVE    LNK-KOREIFTNCHK-HOSPNUM   TO  SYU-HOSPNUM
                ELSE
                   MOVE   35400   TO   WRK-KINGAKU
                END-IF
+               PERFORM   270-ICHIBUFTN-GEN-SEC
                PERFORM   260-ICHIBUFTN-KOH-SET-SEC
            END-EVALUATE
       *
@@ -1102,19 +1118,23 @@ grpsys        MOVE    LNK-KOREIFTNCHK-HOSPNUM   TO  SYU-HOSPNUM
       *
            IF   LNK-KOREIFTNCHK-TEISYOTOKU   NOT =  SPACE
                    MOVE      8000    TO   WRK-KINGAKU
+                   PERFORM   270-ICHIBUFTN-GEN-SEC
                    PERFORM   260-ICHIBUFTN-KOH-SET-SEC
            ELSE
              IF   (  WRK-KYURATE(IDX1)          =  20 OR 30  )
              AND  (  LNK-KOREIFTNCHK-KEIKASOCHI =  SPACE     )
                IF   LNK-KOREIFTNCHK-SRYYM  >=  "200610"
                    MOVE      44400   TO   WRK-KINGAKU
+                   PERFORM   270-ICHIBUFTN-GEN-SEC
                    PERFORM   260-ICHIBUFTN-KOH-SET-SEC
                ELSE
                    MOVE      40200   TO   WRK-KINGAKU
+                   PERFORM   270-ICHIBUFTN-GEN-SEC
                    PERFORM   260-ICHIBUFTN-KOH-SET-SEC
                END-IF
              ELSE
                    MOVE      12000   TO   WRK-KINGAKU
+                   PERFORM   270-ICHIBUFTN-GEN-SEC
                    PERFORM   260-ICHIBUFTN-KOH-SET-SEC
              END-IF
            END-IF
@@ -1259,6 +1279,7 @@ grpsys        MOVE    LNK-KOREIFTNCHK-HOSPNUM   TO  SYU-HOSPNUM
                      MOVE    150000   TO   WRK-KINGAKU
                   END-IF
                END-IF
+               PERFORM   270-ICHIBUFTN-GEN-SEC
                PERFORM   260-ICHIBUFTN-KOH-SET-SEC
              WHEN           2
                IF   LNK-KOREIFTNCHK-KOHYONKAIME = 1
@@ -1276,6 +1297,7 @@ grpsys        MOVE    LNK-KOREIFTNCHK-HOSPNUM   TO  SYU-HOSPNUM
                      MOVE    80100    TO   WRK-KINGAKU
                   END-IF
                END-IF
+               PERFORM   270-ICHIBUFTN-GEN-SEC
                PERFORM   260-ICHIBUFTN-KOH-SET-SEC
              WHEN           3
                IF   LNK-KOREIFTNCHK-KOHYONKAIME = 1
@@ -1283,6 +1305,7 @@ grpsys        MOVE    LNK-KOREIFTNCHK-HOSPNUM   TO  SYU-HOSPNUM
                ELSE
                   MOVE   35400   TO   WRK-KINGAKU
                END-IF
+               PERFORM   270-ICHIBUFTN-GEN-SEC
                PERFORM   260-ICHIBUFTN-KOH-SET-SEC
            END-EVALUATE
       *
@@ -1321,6 +1344,41 @@ grpsys        MOVE    LNK-KOREIFTNCHK-HOSPNUM   TO  SYU-HOSPNUM
       *    ÊÝ¸±Íó¤Î°ìÉôÉéÃ´¶â³Û¥»¥Ã¥È¡Ê¸øÈñ´Þ¤à¾ì¹ç¡Ë
       *****************************************************************
        260-ICHIBUFTN-KOH-SET-SEC               SECTION.
+      *
+           IF  FLG-KEISAN  =  1
+             IF  WRK-FTN-KOH-XX2   >   WRK-KINGAKU
+                MOVE  WRK-KINGAKU      TO   WRK-FTN-KOH-XX2
+             END-IF
+             COMPUTE  WRK-FTN-KOH-YY2  =  WRK-KINGAKU - WRK-FTN-KOH-XX2
+             IF      WRK-FTNKEI    >   WRK-FTN-KOH-YY2
+                ADD   WRK-FTN-KOH-YY2  TO  LNK-KOREIFTNCHK-ICHIBUGAKU2
+                                           WRK-FTN-KOH-XX2
+             ELSE
+                ADD   WRK-FTNKEI       TO  LNK-KOREIFTNCHK-ICHIBUGAKU2
+                                           WRK-FTN-KOH-XX2
+             END-IF
+           ELSE
+             IF  WRK-FTN-KOH-XXX   >   WRK-KINGAKU
+                MOVE  WRK-KINGAKU      TO   WRK-FTN-KOH-XXX
+             END-IF
+             COMPUTE  WRK-FTN-KOH-YYY  =  WRK-KINGAKU - WRK-FTN-KOH-XXX
+             IF      WRK-FTNKEI    >   WRK-FTN-KOH-YYY
+                ADD   WRK-FTN-KOH-YYY  TO  LNK-KOREIFTNCHK-ICHIBUGAKU
+                                           WRK-FTN-KOH-XXX
+             ELSE
+                ADD   WRK-FTNKEI       TO  LNK-KOREIFTNCHK-ICHIBUGAKU
+                                           WRK-FTN-KOH-XXX
+             END-IF
+           END-IF
+      *
+           .
+       260-ICHIBUFTN-KOH-SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ¶â³Û¤Î¸º³Û
+      *****************************************************************
+       270-ICHIBUFTN-GEN-SEC               SECTION.
       *
            IF   LNK-KOREIFTNCHK-GENGAKUKBN   NOT =   ZERO
       *
@@ -1361,9 +1419,9 @@ grpsys        MOVE    LNK-KOREIFTNCHK-HOSPNUM   TO  SYU-HOSPNUM
                                 100 - LNK-KOREIFTNCHK-GENGAKU-RITU
                        IF    WRK-KINGAKU  NOT = ZERO
                          COMPUTE  WRK-KINGAKU         =
-                                  WRK-KINGAKU         *
+                                 (WRK-KINGAKU         *
                                   WRK-GENGAKU-RITUX   /
-                                  100
+                                  100) + 0.5
                        END-IF
                    END-IF
                  WHEN        2
@@ -1372,40 +1430,11 @@ grpsys        MOVE    LNK-KOREIFTNCHK-HOSPNUM   TO  SYU-HOSPNUM
                  WHEN        4
                        MOVE   ZERO     TO   WRK-KINGAKU
                END-EVALUATE
-               COMPUTE  WRK-KINGAKU  =  WRK-KINGAKU   +    5
-               COMPUTE  WRK-KINGAKU  =  WRK-KINGAKU   /   10
-               COMPUTE  WRK-KINGAKU  =  WRK-KINGAKU   *   10
       *
-           END-IF
-      *
-           IF  FLG-KEISAN  =  1
-             IF  WRK-FTN-KOH-XX2   >   WRK-KINGAKU
-                MOVE  WRK-KINGAKU      TO   WRK-FTN-KOH-XX2
-             END-IF
-             COMPUTE  WRK-FTN-KOH-YY2  =  WRK-KINGAKU - WRK-FTN-KOH-XX2
-             IF      WRK-FTNKEI    >   WRK-FTN-KOH-YY2
-                ADD   WRK-FTN-KOH-YY2  TO  LNK-KOREIFTNCHK-ICHIBUGAKU2
-                                           WRK-FTN-KOH-XX2
-             ELSE
-                ADD   WRK-FTNKEI       TO  LNK-KOREIFTNCHK-ICHIBUGAKU2
-                                           WRK-FTN-KOH-XX2
-             END-IF
-           ELSE
-             IF  WRK-FTN-KOH-XXX   >   WRK-KINGAKU
-                MOVE  WRK-KINGAKU      TO   WRK-FTN-KOH-XXX
-             END-IF
-             COMPUTE  WRK-FTN-KOH-YYY  =  WRK-KINGAKU - WRK-FTN-KOH-XXX
-             IF      WRK-FTNKEI    >   WRK-FTN-KOH-YYY
-                ADD   WRK-FTN-KOH-YYY  TO  LNK-KOREIFTNCHK-ICHIBUGAKU
-                                           WRK-FTN-KOH-XXX
-             ELSE
-                ADD   WRK-FTNKEI       TO  LNK-KOREIFTNCHK-ICHIBUGAKU
-                                           WRK-FTN-KOH-XXX
-             END-IF
            END-IF
       *
            .
-       260-ICHIBUFTN-KOH-SET-EXT.
+       270-ICHIBUFTN-GEN-EXT.
            EXIT.
       *
       *****************************************************************
