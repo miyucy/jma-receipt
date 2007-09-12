@@ -222,6 +222,13 @@ W07	{
 					count	int;
 					item	varchar(22)[2];
 				};
+				ZENHKNCHK_COMB	{
+					ZENHKNCHK	{
+						value	varchar(22);
+					};
+					count	int;
+					item	varchar(22)[3];
+				};
 				TEISEI_COMB	{
 					TEISEI	{
 						value	varchar(12);

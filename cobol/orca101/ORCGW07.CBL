@@ -87,6 +87,7 @@
       *                                     皮下筋肉注射料変換区分追加
       *  03.05.01    NACL-太田    07/08/03  月別請求書前回未収額印字区分追加
       *  03.05.01    NACL-多々納  07/08/XX  訂正の請求書金額区分追加
+      *  03.05.02    NACL-多々納  07/09/07  前回保険組合せ相違区分追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -245,6 +246,14 @@
                            11  SPA-GMN-YAKJYOCHK-MEI       PIC X(20).
                        09  SPA-GMN-YAKJYOCHK-COMB.
                            11  SPA-GMN-YAKJYOCHK-LIST      PIC X(22)
+                                                           OCCURS  2.
+      *                前回保険組合せ相違チェック
+                       09  SPA-GMN-ZENHKNCHK-G.
+                           11  SPA-GMN-ZENHKNCHK           PIC X(01).
+                           11  SPA-GMN-ZENHKNCHK-F1        PIC X(01).
+                           11  SPA-GMN-ZENHKNCHK-MEI       PIC X(20).
+                       09  SPA-GMN-ZENHKNCHK-COMB.
+                           11  SPA-GMN-ZENHKNCHK-LIST      PIC X(22)
                                                            OCCURS  2.
       *                病名表示区分
                        09  SPA-GMN-BYOHYOKBN-G.
@@ -1136,6 +1145,11 @@
                                        TO  SPA-GMN-YAKJYOCHK-LIST(1)
            MOVE    "1 チェックする"
                                        TO  SPA-GMN-YAKJYOCHK-LIST(2)
+      *    前回保険組合せ相違チェック
+           MOVE    "0 チェックしない"
+                                       TO  SPA-GMN-ZENHKNCHK-LIST(1)
+           MOVE    "1 チェックする"
+                                       TO  SPA-GMN-ZENHKNCHK-LIST(2)
       *    病名表示区分
            MOVE    "0 表示しない"      TO  SPA-GMN-BYOHYOKBN-LIST(1)
            MOVE    "1 表示する"        TO  SPA-GMN-BYOHYOKBN-LIST(2)
@@ -1519,6 +1533,9 @@
       *        薬剤情報提供料チェック
                MOVE    SYS-1008-YAKJYOCHK-FLG
                                        TO  SPA-GMN-YAKJYOCHK
+      *        前回保険組合せ相違チェック
+               MOVE    SYS-1008-ZENHKNCHK-FLG
+                                       TO  SPA-GMN-ZENHKNCHK
       *        最終受診日からの期間
                IF      SYS-1008-LAST-KIKAN-X =   SPACE
                    MOVE    ZERO            TO  SYS-1008-LAST-KIKAN
@@ -1852,7 +1869,22 @@
                 WHEN    OTHER
                     MOVE    SPA-GMN-YAKJYOCHK-LIST(2)
                                                TO  SPA-GMN-YAKJYOCHK-G
-            END-EVALUATE
+           END-EVALUATE
+      *    前回保険組合せ相違チェック
+           IF      SPA-GMN-ZENHKNCHK  =   SPACE
+               MOVE    "0"            TO  SPA-GMN-ZENHKNCHK
+           END-IF
+           EVALUATE    SPA-GMN-ZENHKNCHK
+                WHEN    "0"
+                    MOVE    SPA-GMN-ZENHKNCHK-LIST(1)
+                                               TO  SPA-GMN-ZENHKNCHK-G
+                WHEN    "1"
+                    MOVE    SPA-GMN-ZENHKNCHK-LIST(2)
+                                               TO  SPA-GMN-ZENHKNCHK-G
+                WHEN    OTHER
+                    MOVE    SPA-GMN-ZENHKNCHK-LIST(1)
+                                               TO  SPA-GMN-ZENHKNCHK-G
+           END-EVALUATE
       *
       *     診療科コードセット
             PERFORM 4102-SRYKACD-CHK-SEC
@@ -3069,6 +3101,7 @@
            MOVE    W07-CHOKICHK        TO  SPA-GMN-CHOKICHK-G
            MOVE    W07-CLEARCHK        TO  SPA-GMN-CLEARCHK-G
            MOVE    W07-YAKJYOCHK       TO  SPA-GMN-YAKJYOCHK-G
+           MOVE    W07-ZENHKNCHK       TO  SPA-GMN-ZENHKNCHK-G
       *
            MOVE    W07-HOUKATU         TO  SPA-GMN-HOUKATU-G
            MOVE    W07-BYOHYOKBN       TO  SPA-GMN-BYOHYOKBN-G
@@ -3222,6 +3255,10 @@
       *            薬剤情報提供料チェック
                    IF      SPA-ERRCD           =   SPACE
                        PERFORM 4103-YAKJYOCHK-CHK-SEC
+                   END-IF
+      *            前回保険組合せ相違チェック
+                   IF      SPA-ERRCD           =   SPACE
+                       PERFORM 4103-ZENHKNCHK-CHK-SEC
                    END-IF
       *            包括入力チェック
                    IF      SPA-ERRCD           =   SPACE
@@ -3838,6 +3875,30 @@
       *
           .
        4103-YAKJYOCHK-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    前回保険組合せ相違チェック処理
+      *****************************************************************
+       4103-ZENHKNCHK-CHK-SEC       SECTION.
+      *
+           MOVE    ZERO                TO  FLG-OK
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   2
+               IF      SPA-GMN-ZENHKNCHK
+                                      =   SPA-GMN-ZENHKNCHK-LIST(IDX)
+                                                                (1:1)
+                   MOVE    SPA-GMN-ZENHKNCHK-LIST(IDX)
+                                          TO  SPA-GMN-ZENHKNCHK-G
+                   MOVE    1              TO  FLG-OK
+               END-IF
+           END-PERFORM
+           IF      FLG-OK              =   ZERO
+               MOVE    85              TO  SPA-GMN-CUR
+               MOVE    "0040"          TO  SPA-ERRCD
+           END-IF
+      *
+          .
+       4103-ZENHKNCHK-CHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -5708,6 +5769,8 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPA-GMN-CLEARCHK        TO  SYS-1008-CLEARCHK-FLG
       *    薬剤情報提供料チェック
            MOVE    SPA-GMN-YAKJYOCHK       TO  SYS-1008-YAKJYOCHK-FLG
+      *    前回保険組合せ相違チェック
+           MOVE    SPA-GMN-ZENHKNCHK       TO  SYS-1008-ZENHKNCHK-FLG
       *
       *    時間外加算特例乳幼児
            MOVE    SPA-GMN-JIKANTOKU-NYU   TO
@@ -6327,6 +6390,14 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                                        TO  W07-YAKJYOCHK-ITEM(IDX)
            END-PERFORM
            MOVE    2                   TO  W07-YAKJYOCHK-COUNT
+      *    前回保険組合せ相違チェック
+           MOVE    SPA-GMN-ZENHKNCHK-G  TO  W07-ZENHKNCHK
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   2
+               MOVE    SPA-GMN-ZENHKNCHK-LIST (IDX)
+                                       TO  W07-ZENHKNCHK-ITEM(IDX)
+           END-PERFORM
+           MOVE    2                   TO  W07-ZENHKNCHK-COUNT
       *
       *    包括入力
            MOVE    SPA-GMN-HOUKATU-G       TO  W07-HOUKATU
@@ -6977,6 +7048,9 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN    "0039"
                    MOVE    "剤登録順エラー"
                                                        TO  SPA-ERRMSG
+               WHEN    "0040"
+                   MOVE    "前回保険組合せ相違チェックエラー"
+                                                       TO  SPA-ERRMSG
       *        
                WHEN    "1001"
                    MOVE    "カルテの病名対象区分がありません。"
@@ -7244,6 +7318,8 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE  "CHUTOTENKAI"     TO   MCP-WIDGET
                WHEN    69
                    MOVE  "YAKJYOCHK"       TO   MCP-WIDGET
+               WHEN    85
+                   MOVE  "ZENHKNCHK"       TO   MCP-WIDGET
                WHEN    80
                    MOVE  "TEISEI"          TO   MCP-WIDGET
                WHEN    81
@@ -7503,6 +7579,9 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       ************ MOVE    16              TO  SPA-GMN-CUR
                    MOVE    69              TO  SPA-GMN-CUR
                WHEN    "YAKJYOCHK"
+      ************ MOVE    16              TO  SPA-GMN-CUR
+                   MOVE    85              TO  SPA-GMN-CUR
+               WHEN    "ZENHKNCHK"
                    MOVE    16              TO  SPA-GMN-CUR
       *        時間外加算チェック
                WHEN    "JIKANTOKU_CHK"

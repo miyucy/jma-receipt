@@ -323,6 +323,8 @@
            COPY    "CPSK1001.INC".
       *    （診療科情報）
            COPY    "CPSK1005.INC".
+      *
+           COPY    "CPSK1008.INC".
       *　　（職員情報）
            COPY    "CPSK1010.INC".
       *　　（診療内容）
@@ -847,10 +849,43 @@
                MOVE    "key2"              TO  MCP-PATHNAME
                PERFORM 900-SYSKANRI-READ-SEC
            END-PERFORM
-      *    カーソルクロース
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
       *
            MOVE    SPA-GMN-SRYNAILST(01) TO  SPA-GMN-SRYNAIYOCD-G
+      *
+      *    前回保険組合せ相違チェック
+           MOVE    SPACE               TO  SYS-1008-REC
+           INITIALIZE                  SYS-1008-REC
+           MOVE    "1008"              TO  SYS-1008-KANRICD
+           MOVE    "*"                 TO  SYS-1008-KBNCD
+           MOVE    SPA-SYSYMD          TO  SYS-1008-STYUKYMD
+           MOVE    SPA-SYSYMD          TO  SYS-1008-EDYUKYMD
+           MOVE    SPA-HOSPNUM         TO  SYS-1008-HOSPNUM
+      *
+           MOVE    SYS-1008-REC        TO  MCPDATA-REC
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key10"             TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "key10"             TO  MCP-PATHNAME
+               PERFORM 900-SYSKANRI-READ-SEC
+               IF      FLG-SYSKANRI        =   ZERO
+                   MOVE    MCPDATA-REC         TO  SYS-1008-REC
+               END-IF
+           ELSE
+               INITIALIZE                  SYS-1008-REC
+               MOVE    1                   TO  FLG-SYSKANRI
+           END-IF
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key10"             TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+           IF      SYS-1008-ZENHKNCHK-FLG  =   SPACE
+               MOVE    "0"                 TO  SPA-ZENHKNCHK-FLG
+           ELSE
+               MOVE    SYS-1008-ZENHKNCHK-FLG  TO  SPA-ZENHKNCHK-FLG
+           END-IF
       *
       *    予約，受付編集
            PERFORM 3101-UKETU-HEN-SEC
@@ -1295,20 +1330,7 @@ grpsys*                        CALL    "ORCDBMAIN"     USING   MCPAREA
            MOVE    SPA-GMN-TPTID (IDX) TO  COMB-PTID
            MOVE    SPA-GMN-THKNCOMBI(IDX)
                                        TO  COMB-HKNCOMBINUM
-           MOVE    HKNCOMBI-REC        TO  MCPDATA-REC
-           MOVE    "tbl_hkncombi"      TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
-           IF      MCP-RC              =   ZERO
-               MOVE    "key"               TO  MCP-PATHNAME
-               PERFORM 900-COMB-READ-SEC
-           ELSE
-               INITIALIZE                  HKNCOMBI-REC
-               MOVE    1               TO  FLG-HKNCOMBI
-           END-IF
-           MOVE    "tbl_hkncombi"      TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           PERFORM 990-DBCLOSE-SEC
+           PERFORM 9001-HKNCOMBI-KEY-READ-SEC
       *
            IF      COMB-DELKBN     NOT =   SPACE
                INITIALIZE                  HKNCOMBI-REC
@@ -2535,6 +2557,8 @@ grpsys*                        CALL    "ORCDBMAIN"     USING   MCPAREA
       *
                    MOVE    COMB-HKNNUM     TO  SPA-NAI-HKNNUM  (IDX)
                    MOVE    COMB-HKNID      TO  SPA-NAI-COB-HKNID (IDX)
+                   MOVE    COMB-TEKSTYMD   TO  SPA-NAI-TEKSTYMD (IDX)
+                   MOVE    COMB-TEKEDYMD   TO  SPA-NAI-TEKEDYMD (IDX)
       *            労災の時、部位を公費１の項目へ
                    IF      COMB-HKNNUM         =   "971"  OR  "973"
                        PERFORM 4101152-RSI-HENSYU-SEC
@@ -2975,37 +2999,6 @@ grpsys*                        CALL    "ORCDBMAIN"     USING   MCPAREA
                                            TO  WRK-JRK-HKNCOMBI
            END-IF
       *
-      **** 受診履歴ＯＰＥＮ
-      *    INITIALIZE                  JYURRK-REC
-      *    MOVE    SPA-HOSPNUM         TO  JYURRK-HOSPNUM
-      *    MOVE    SPA-GMN-PTID        TO  JYURRK-PTID
-      *    MOVE    SPA-SYSYMD          TO  JYURRK-SRYYMD
-      *
-      *    MOVE    JYURRK-REC          TO  MCPDATA-REC
-      *    MOVE    "tbl_jyurrk"        TO  MCP-TABLE
-      *    MOVE    "key10"             TO  MCP-PATHNAME
-      *    PERFORM 910-DBSELECT-SEC
-      *    IF      MCP-RC              =   ZERO
-      *        MOVE    "key10"             TO  MCP-PATHNAME
-      *        PERFORM 900-JYURRK-READ-SEC
-      *    ELSE
-      *        INITIALIZE                  JYURRK-REC
-      *        MOVE    1               TO  FLG-JYURRK
-      *    END-IF
-      *
-      *    MOVE    ZERO                TO  WRK-JRK-HKNCOMBI
-      *    INITIALIZE                  WRK-JYURRK-AREA
-      *    IF      FLG-JYURRK          =   ZERO
-      *        MOVE    JYURRK-SRYKA        TO  WRK-JRK-SRYKA
-      *        MOVE    JYURRK-DRCD         TO  WRK-JRK-DRCD
-      *        保険組合番号
-      *        MOVE    JYURRK-HKNCOMBINUM  TO  WRK-JRK-HKNCOMBI
-      *    END-IF
-      *    カーソルクロース
-      *    MOVE    "tbl_jyurrk"        TO  MCP-TABLE
-      *    MOVE    "key10"             TO  MCP-PATHNAME
-      *****PERFORM 990-DBCLOSE-SEC
-      *
            IF      WRK-JRK-SRYKA  NOT  =  SPACE
                MOVE    ZERO                TO  FLG-HENFLG
                PERFORM VARYING IDY         FROM   1   BY  1
@@ -3174,9 +3167,46 @@ grpsys*                        CALL    "ORCDBMAIN"     USING   MCPAREA
            END-IF
            MOVE    SPA-GMN-HKNCOMBINUM (IDX-C)
                                        TO  SPA-GMN-COMBINUM
+      *TEST
+      *    前回の保険組合せとの判定
+           MOVE    ZERO                TO  SPA-HKNCHK-CHK
+           MOVE    ZERO                TO  SPA-HKNCHK-FLG
+           IF     (WRK-JRK-HKNCOMBI    NOT =   ZERO  )
+             AND  (SPA-ZENHKNCHK-FLG       =   "1"   )
+               PERFORM 41011611-MAE-HKNCOMBICHEK-SEC
+           END-IF
       *
            .
        4101161-HKNCOMBI-SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    前回の保険組合せとの判定処理
+      *****************************************************************
+       41011611-MAE-HKNCOMBICHEK-SEC               SECTION.
+      *
+           INITIALIZE                  HKNCOMBI-REC
+           MOVE    SPA-HOSPNUM         TO  COMB-HOSPNUM
+           MOVE    SPA-GMN-PTID        TO  COMB-PTID
+           MOVE    WRK-JRK-HKNCOMBI    TO  COMB-HKNCOMBINUM
+           PERFORM 9001-HKNCOMBI-KEY-READ-SEC
+      *
+           IF      COMB-DELKBN         =   SPACE
+               IF     (COMB-HKNNUM         =   "971"
+                                           OR  "973" )
+                   CONTINUE
+               ELSE
+                   IF     (SPA-NAI-TEKSTYMD (IDX-C)
+                                               <   COMB-TEKEDYMD)
+                       MOVE    1               TO  SPA-HKNCHK-FLG
+                   END-IF
+               END-IF
+           ELSE
+      *        前回が削除
+               MOVE    2                   TO  SPA-HKNCHK-FLG
+           END-IF
+           .
+       41011611-MAE-HKNCOMBICHEK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -5210,6 +5240,18 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            PERFORM 500-GMNHEN-SEC
       *
+      *    前回保険組合せの判定チェック
+           IF     (SPA-ERRCD           =   SPACE  )  AND
+                  (SPA-HKNCHK-FLG  NOT =   ZERO   )  AND 
+                  (SPA-HKNCHK-CHK      =   ZERO   )
+               IF      SPA-HKNCHK-FLG      =   2
+                   MOVE    "K008"             TO  SPA-ERRCD
+               ELSE
+                   MOVE    "K009"              TO  SPA-ERRCD
+               END-IF
+               MOVE    1                   TO  SPA-HKNCHK-CHK
+           END-IF
+      *
            IF      SPA-ERRCD       NOT =   SPACE
                PERFORM 510-ERRSET-SEC
                GO  TO  500-SET-SCREEN-EXT
@@ -5681,6 +5723,19 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE
                    "警告！同じ診療科・保険組合せで受付済みです。"
                                                 TO  SPA-ERRMSG
+               WHEN    "K009"
+                   STRING  "警告！！前回と保険組合せが違います。"
+                           "確認して下さい。"
+                                               DELIMITED  BY  SIZE
+                                               INTO  SPA-ERRMSG
+                   END-STRING
+               WHEN    "K008"
+                   STRING  "警告！！"
+                           "前回の保険組合せは削除になっています。"
+                           "保険組合せを確認して下さい。"
+                                               DELIMITED  BY  SIZE
+                                               INTO  SPA-ERRMSG
+                   END-STRING
                WHEN    "0030"
                    STRING  "患者番号がありません。"
                            "メモ登録はできません。"
@@ -5843,10 +5898,7 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            MOVE    "tbl_yyk"           TO  MCP-TABLE
       *
-           MOVE    "DBFETCH"           TO  MCP-FUNC
-grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+           PERFORM 920-DBFETCH-SEC
            IF      MCP-RC              =   ZERO
                MOVE    ZERO                TO  FLG-YYK
                MOVE    MCPDATA-REC         TO  YYK-REC
@@ -5889,10 +5941,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            MOVE    "tbl_uketuke"       TO  MCP-TABLE
       *
-           MOVE    "DBFETCH"           TO  MCP-FUNC
-grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+           PERFORM 920-DBFETCH-SEC
            IF      MCP-RC              =   ZERO
                MOVE    ZERO                TO  FLG-UKETUKE
                MOVE    MCPDATA-REC         TO  UKETUKE-REC
@@ -5916,10 +5965,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    "key"               TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
-               MOVE    "DBFETCH"           TO  MCP-FUNC
-grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
-                                                   MCPDATA-REC
-                                                   SPA-AREA
+               PERFORM 920-DBFETCH-SEC
                IF      MCP-RC              =   ZERO
                    MOVE    MCPDATA-REC         TO  PTINF-REC
                    MOVE    ZERO                TO  FLG-PTINF
@@ -5946,10 +5992,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
        910-PTINF-READ-SEC        SECTION.
       *
            MOVE    "tbl_ptinf"         TO  MCP-TABLE
-           MOVE    "DBFETCH"           TO  MCP-FUNC
-grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+           PERFORM 920-DBFETCH-SEC
            IF      MCP-RC              =   ZERO
                MOVE    ZERO                TO  FLG-PTINF
                MOVE    MCPDATA-REC         TO  PTINF-REC
@@ -5968,10 +6011,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
       *
-           MOVE    "DBFETCH"           TO  MCP-FUNC
-grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+           PERFORM 920-DBFETCH-SEC
            IF      MCP-RC              =   ZERO
                MOVE    ZERO            TO  FLG-SYSKANRI
            ELSE
@@ -5982,15 +6022,36 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
+      *    保険組合せ主キー検索
+      *****************************************************************
+       9001-HKNCOMBI-KEY-READ-SEC         SECTION.
+      *
+           MOVE    HKNCOMBI-REC        TO  MCPDATA-REC
+           MOVE    "tbl_hkncombi"      TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_hkncombi"      TO  MCP-TABLE
+               MOVE    "key"               TO  MCP-PATHNAME
+               PERFORM 900-COMB-READ-SEC
+           ELSE
+               INITIALIZE                  HKNCOMBI-REC
+               MOVE    1               TO  FLG-HKNCOMBI
+           END-IF
+           MOVE    "tbl_hkncombi"      TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+           .
+       9001-HKNCOMBI-KEY-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    保険組合せマスター読込
       *****************************************************************
        900-COMB-READ-SEC         SECTION.
       *
            MOVE    "tbl_hkncombi"      TO  MCP-TABLE
-           MOVE    "DBFETCH"           TO  MCP-FUNC
-grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+           PERFORM 920-DBFETCH-SEC
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC     TO  HKNCOMBI-REC
                MOVE    ZERO            TO  FLG-HKNCOMBI
@@ -6009,10 +6070,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        900-PTHKNINF-READ-SEC         SECTION.
       *
            MOVE    "tbl_pthkninf"      TO  MCP-TABLE
-           MOVE    "DBFETCH"           TO  MCP-FUNC
-grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+           PERFORM 920-DBFETCH-SEC
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC     TO  PTHKNINF-REC
                MOVE    ZERO            TO  FLG-PTHKNINF
@@ -6031,10 +6089,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        900-PTKOHINF-READ-SEC         SECTION.
       *
            MOVE    "tbl_ptkohinf"      TO  MCP-TABLE
-           MOVE    "DBFETCH"           TO  MCP-FUNC
-grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+           PERFORM 920-DBFETCH-SEC
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC     TO  PTKOHINF-REC
                MOVE    ZERO            TO  FLG-PTKOHINF
@@ -6078,10 +6133,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            MOVE    "tbl_hknnum"        TO  MCP-TABLE
       *
-           MOVE    "DBFETCH"       TO  MCP-FUNC
-grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+           PERFORM 920-DBFETCH-SEC
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC     TO  HKNNUM-REC
                MOVE    ZERO            TO  FLG-HKNNUM
@@ -6101,10 +6153,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            MOVE    "tbl_jyurrk"        TO  MCP-TABLE
       *
-           MOVE    "DBFETCH"       TO  MCP-FUNC
-grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+           PERFORM 920-DBFETCH-SEC
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC     TO  JYURRK-REC
                MOVE    ZERO            TO  FLG-JYURRK
@@ -6123,10 +6172,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        993-PTRSIINF-NEXT-SEC        SECTION.
       *
            MOVE    "tbl_ptrsiinf"      TO  MCP-TABLE
-           MOVE    "DBFETCH"           TO  MCP-FUNC
-grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+           PERFORM 920-DBFETCH-SEC
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC     TO  PTRSIINF-REC
                MOVE    ZERO            TO  FLG-PTRSIINF
@@ -6146,10 +6192,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            MOVE    "tbl_srykarrk"      TO  MCP-TABLE
       *
-           MOVE    "DBFETCH"           TO  MCP-FUNC
-grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+           PERFORM 920-DBFETCH-SEC
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC         TO  SRYKARRK-REC
                MOVE    ZERO                TO  FLG-SRYKARRK

@@ -265,6 +265,8 @@
                    07  WRK-SRYMM       PIC 9(02).
                05  WRK-SRYDD           PIC 9(02).
       *
+           03  WRK-MAE-HKNCOMBI        PIC X(04).
+      *
       *他科受診科有り
        01  WRK-TAKA-SRYKA-AREA.
            03  WRK-TAKA-SRYKA          PIC  X(02)
@@ -766,6 +768,13 @@
                    MOVE    SYS-1008-KENSAAUTO-FLG
                                            TO  SPA-KENSAAUTO-FLG
                END-IF
+      *        前回保険組合せ相違チェック
+               IF      SYS-1008-ZENHKNCHK-FLG   =   SPACE
+                   MOVE    "0"             TO  SPA-ZENHKNCHK-FLG
+               ELSE
+                   MOVE    SYS-1008-ZENHKNCHK-FLG
+                                           TO  SPA-ZENHKNCHK-FLG
+               END-IF
            ELSE
                MOVE    ZERO                TO  SPA-INTERACT-KIKAN
                MOVE    "1"                 TO  SPA-GAIKANRIKBN-CHK
@@ -789,6 +798,7 @@
                MOVE    "1"                 TO  SPA-BYOHYOKBN-FLG
       *        検体検査加算自動発生
                MOVE    "0"                 TO  SPA-KENSAAUTO-FLG
+               MOVE    "0"                 TO  SPA-ZENHKNCHK-FLG
            END-IF
       *
       *    診療科
@@ -1380,6 +1390,13 @@
                    MOVE    SYS-1008-KENSAAUTO-FLG
                                            TO  SPA-KENSAAUTO-FLG
                END-IF
+      *        検体検査加算自動発生
+               IF      SYS-1008-KENSAAUTO-FLG   =   SPACE
+                   MOVE    "0"             TO  SPA-KENSAAUTO-FLG
+               ELSE
+                   MOVE    SYS-1008-KENSAAUTO-FLG
+                                           TO  SPA-KENSAAUTO-FLG
+               END-IF
            ELSE
                MOVE    ZERO                TO  SPA-INTERACT-KIKAN
       *
@@ -1398,6 +1415,7 @@
                MOVE    "0"                 TO  SPA-TEISEITOKU-FLG
                MOVE    "1"                 TO  SPA-BYOHYOKBN-FLG
                MOVE    "0"                 TO  SPA-KENSAAUTO-FLG
+               MOVE    "0"                 TO  SPA-ZENHKNCHK-FLG
           END-IF
       *
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
@@ -1608,6 +1626,11 @@
       *
       *    中途終了分処理
            PERFORM 200-WKSRYACT-SYORI-SEC
+      *    中途終了データがある時、前回保険チェックはしない
+           IF      FLG-WKSYORI         =   1
+               MOVE    ZERO                TO  SPA-HKNCHK-FLG
+           END-IF
+      *
       *    前回患者保存
            MOVE    SPA-PTID            TO  SPA-LAST-PTID
            MOVE    SPA-PTNUM           TO  SPA-LAST-PTNUM
@@ -2491,12 +2514,9 @@
            MOVE    "key"               TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
       *
-           IF      FLG-SYUNOU      NOT =   ZERO
-              GO   TO      100111-CONTKBN-HANTEI-EXT
-           END-IF
-      *
-           IF      SPA-NAI-DOUJI-RENNUM(IDX)
-                                   NOT =   ZERO
+           IF     (FLG-SYUNOU          =   ZERO  )  AND
+                  (SPA-NAI-DOUJI-RENNUM(IDX)
+                                   NOT =   ZERO  )
       *        伝票状態区分
                IF      SYU-DENPJTIKBN      =   "7"
       *            同時診療伝票番号
@@ -2664,6 +2684,11 @@
       *****************************************************************
        10013-HKNCOMBI-SEC        SECTION.
       *
+      *TEST
+           DISPLAY "10013-HKNCOMBI-SEC"
+                    ",SPA-HKNCOMBINUM:" SPA-HKNCOMBINUM
+                    ",FLG-UKETUKE-ARI:" FLG-UKETUKE-ARI
+      *TEST
       *
            INITIALIZE                  SPA-GMN-HKNCOMBI-LISTG
       *
@@ -2684,8 +2709,7 @@
                                        TO  SPA-GMN-THKNCOMBIMEI (IDX)
                MOVE    ORCSHKN-GMN-HKNCOMBIMEI (IDX)
                                        TO  SPA-NAI-THKNCOMBIMEI (IDX)
-      *TEST
-      *    受給者番号編集
+      *        受給者番号編集
                IF      ORCSHKN-NAI-HKNJANUM (IDX) NOT =   SPACE
                    MOVE    SPACE       TO  SPA-GMN-THKNCOMBIMEI (IDX)
                    MOVE    SPACE       TO  WRK-HKNCOMBI
@@ -2706,7 +2730,6 @@
                    MOVE    KANACHK-MAE-INPUT   TO  SPA-GMN-THKNCOMBIMEI
                                                             (IDX)
                END-IF
-      *TEST
       *
                MOVE    ORCSHKN-NAI-HKNID (IDX)
                                        TO  SPA-NAI-HKNID  (IDX)
@@ -2742,20 +2765,29 @@
            END-PERFORM
       *
            IF      SPA-HKN-MAX         =   ZERO
-               GO      TO      10013-HKNCOMBI-EXT
-           END-IF
+               CONTINUE
+           ELSE
+               IF      ORCSHKN-IDX         =   ZERO
+                   MOVE    1               TO  ORCSHKN-IDX
+               END-IF
       *
-           IF      ORCSHKN-IDX         =   ZERO
-               MOVE    1               TO  ORCSHKN-IDX
-           END-IF
+      *TEST
+      *        受診履歴から自動設定した保険組合せ
+               MOVE    SPACE               TO  WRK-MAE-HKNCOMBI
+               MOVE    ZERO                TO  SPA-HKNCHK-CHK
+               IF     (SPA-HKNCOMBINUM NOT =   SPACE )  AND
+                      (FLG-UKETUKE-ARI     =   ZERO  )
+                   MOVE    SPA-HKNCOMBINUM     TO  WRK-MAE-HKNCOMBI
+               END-IF
+      *TEST
+               IF      SPA-HKNCOMBINUM     =   SPACE
+                   MOVE    SPA-GMN-THKNCOMBINUM (ORCSHKN-IDX)
+                                           TO  SPA-HKNCOMBINUM
+               END-IF
       *
-           IF      SPA-HKNCOMBINUM     =   SPACE
-               MOVE    SPA-GMN-THKNCOMBINUM (ORCSHKN-IDX)
-                                       TO  SPA-HKNCOMBINUM
+      *        保険組合せが使用できるかのチェック
+               PERFORM 100131-HKNCOMBI-CHK-SEC
            END-IF
-      *
-      *    保険組合せが使用できるかのチェック
-           PERFORM 100131-HKNCOMBI-CHK-SEC
       *
            .
        10013-HKNCOMBI-EXT.
@@ -2813,6 +2845,11 @@
       *
       *        省略時の保険組合せ決定
                PERFORM 1001311-HKNCOMBI-SET-SEC
+      *        前回の保険組合せとの判定
+               IF     (WRK-MAE-HKNCOMBI    NOT =   SPACE )
+                 AND  (SPA-ZENHKNCHK-FLG       =   "1"   )
+                   PERFORM 1001312-MAE-HKNCOMBICHEK-SEC
+               END-IF
            END-IF
       *
       *    保険算定年齢チェック等
@@ -2905,7 +2942,7 @@
      *
            MOVE    SPA-GMN-THKNCOMBINUM (WRK-IDXH)
                                        TO  SPA-HKNCOMBINUM
-      *
+     *
            MOVE    SPA-GMN-HKN-LIST (WRK-IDXH)
                                        TO  SPA-GMN-HKNCOMBI-G
            MOVE    SPA-GMN-TFTNRATEMEI (WRK-IDXH)
@@ -2925,6 +2962,49 @@
            .
        1001311-HKNCOMBI-SET-EXT.
       *
+           EXIT.
+      *
+      *****************************************************************
+      *    前回の保険組合せとの判定処理
+      *****************************************************************
+       1001312-MAE-HKNCOMBICHEK-SEC              SECTION.
+      *
+           INITIALIZE                  HKNCOMBI-REC
+           MOVE    SPA-HOSPNUM         TO  COMB-HOSPNUM
+           MOVE    SPA-PTID            TO  COMB-PTID
+           MOVE    WRK-MAE-HKNCOMBI    TO  COMB-HKNCOMBINUM
+           MOVE    HKNCOMBI-REC        TO  MCPDATA-REC
+           MOVE    "tbl_hkncombi"      TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_hkncombi"      TO  MCP-TABLE
+               MOVE    "key"               TO  MCP-PATHNAME
+               PERFORM 900-HKNCOMBI-READ-SEC
+           ELSE
+               INITIALIZE                  HKNCOMBI-REC
+               MOVE    1               TO  FLG-HKNCOMBI
+           END-IF
+           MOVE    "tbl_hkncombi"      TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+      *
+           IF      COMB-DELKBN         =   SPACE
+               IF     (COMB-HKNNUM         =   "971"
+                                           OR  "973" )
+                   CONTINUE
+               ELSE
+                   IF     (ORCSHKN-NAI-TEKSTYMD (WRK-IDXH)
+                                               <   COMB-TEKEDYMD)
+                       MOVE    1               TO  SPA-HKNCHK-FLG
+                   END-IF
+               END-IF
+           ELSE
+      *        前回が削除
+               MOVE    2                   TO  SPA-HKNCHK-FLG
+           END-IF
+           .
+       1001312-MAE-HKNCOMBICHEK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -5923,6 +6003,24 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            .
        980-PTBYOMEI-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    保険組合せマスター読込
+      *****************************************************************
+       900-HKNCOMBI-READ-SEC         SECTION.
+      *
+           PERFORM 920-DBFETCH-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC     TO  HKNCOMBI-REC
+               MOVE    ZERO            TO  FLG-HKNCOMBI
+           ELSE
+               INITIALIZE                  HKNCOMBI-REC
+               MOVE    1               TO  FLG-HKNCOMBI
+           END-IF
+      *
+           .
+       900-HKNCOMBI-READ-EXT.
            EXIT.
       *
       *****************************************************************

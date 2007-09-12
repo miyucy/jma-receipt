@@ -1198,7 +1198,6 @@
       *
            MOVE    "2"                 TO  SPA-NYUGAIKBN
       *
-      *TEST
       *    入院機能の判定
            IF     (SPA-MOTOPG(1:3)     =   "M01" )  OR
                  ((SPA-MACHIPG         =   "U02" ) AND
@@ -4587,7 +4586,7 @@
            IF     (SPA-ERRCD           =   SPACE )
               AND (SPA-KIDCD           =   SPACE )
       *
-      *    パラメタファイルより表示
+      *        パラメタファイルより表示
                MOVE    3                   TO  FLG-PARASET
                PERFORM 3002-PARA-SET-SEC
       *
@@ -4693,6 +4692,13 @@
                    MOVE    ZERO                TO  SPA-NAI-ZENKIFLG
                END-IF
            END-IF
+      *TEST
+           DISPLAY "SPA-GMN-SRYYMD:"  SPA-GMN-SRYYMD
+                    "SPA-NAI-SRYYMD:" SPA-NAI-SRYYMD
+                     ",SPA-SPA-KIDCD:" SPA-KIDCD
+                     ",SPA-ERRCD:" SPA-ERRCD
+                     ",SGDAY-SDAY:" SGDAY-SDAY
+      *TEST
            IF    (SPA-ERRCD            =   SPACE )  AND
                  (SPA-KIDCD            =   SPACE )
       *        変更のない時、以降の処理はそのまま
@@ -11923,6 +11929,19 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE    5                   TO  SPA-GMN-CUR
                    MOVE    1                   TO  SPA-NAI-ZENKIFLG-ERR
                END-IF
+           END-IF
+      *    前回保険組合せの判定チェック
+           IF     (SPA-ERRCD           =   SPACE  )  AND
+                  (SPA-HKNCHK-FLG  NOT =   ZERO   )  AND 
+                  (SPA-HKNCHK-CHK      =   ZERO   )
+               IF      SPA-HKNCHK-FLG      =   2
+                   MOVE    "K173"              TO  SPA-ERRCD
+               ELSE
+                   MOVE    "K172"              TO  SPA-ERRCD
+               END-IF
+               MOVE    5                   TO  SPA-GMN-CUR
+               MOVE    1                   TO  SPA-HKNCHK-CHK
+               MOVE    ZERO                TO  SPA-HKNCHK-FLG
            END-IF
       *
            IF      SPA-ERRCD           =   SPACE

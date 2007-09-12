@@ -1569,6 +1569,19 @@
                                        DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
+               WHEN    "K172"
+                   STRING  "警告！！前回と保険組合せが違います。"
+                           "確認して下さい。"
+                                       DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
+               WHEN    "K173"
+                   STRING  "警告！！"
+                           "前回の保険組合せは削除になっています。"
+                           "保険組合せを確認して下さい。"
+                                       DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
       *!
                WHEN    "1050"
                    MOVE    "労災・自賠責、包括分入力の"

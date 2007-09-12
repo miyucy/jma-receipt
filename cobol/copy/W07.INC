@@ -152,6 +152,12 @@
                     06  W07-YAKJYOCHK-COUNT   PIC S9(9)   BINARY.
                     06  W07-YAKJYOCHK-ITEM
                             PIC X(22)   OCCURS  2 TIMES.
+                  05  W07-ZENHKNCHK-COMB.
+                    06  W07-ZENHKNCHK.
+                      07  W07-VALUE   PIC X(22).
+                    06  W07-ZENHKNCHK-COUNT   PIC S9(9)   BINARY.
+                    06  W07-ZENHKNCHK-ITEM
+                            PIC X(22)   OCCURS  3 TIMES.
                   05  W07-TEISEI-COMB.
                     06  W07-TEISEI.
                       07  W07-VALUE   PIC X(12).
