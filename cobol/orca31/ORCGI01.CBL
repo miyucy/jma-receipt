@@ -175,6 +175,7 @@
            03  FLG-SRYACCT                 PIC 9(01).
            03  FLG-SYUARI                  PIC 9(01).
            03  FLG-RJN                     PIC 9(01).
+           03  FLG-LIFE-RJN                PIC 9(01).
            03  FLG-NYUINACCT               PIC 9(01).
            03  FLG-NYUINACCTARI            PIC 9(01).
            03  FLG-WKPTTEIKIRRK            PIC 9(01).
@@ -4388,7 +4389,7 @@
       *
                        IF    ( SYS-5001-BTU-SBT            =   "04" )
                         AND  ( SYS-5111-BRM-NYUINRYOKBN    =   "05" )
-                           IF    ( FLG-RJN     =           ZERO )
+                           IF    ( FLG-LIFE-RJN            =   ZERO )
                             OR   ( SPA-NAI-I01-RSI-HKNKBN
                                            NOT =   SPACE )
                                IF    ( SYS-5111-SEIKATU-RYOKBN
@@ -4405,7 +4406,7 @@
       *
                        IF    ( SYS-5001-BTU-SBT            =   "09" )
                         AND  ( SYS-5111-BRM-NYUINRYOKBN    =   "06" )
-                           IF    ( FLG-RJN     =           ZERO )
+                           IF    ( FLG-LIFE-RJN            =   ZERO )
                             OR   ( SPA-NAI-I01-RSI-HKNKBN
                                            NOT =   SPACE )
                                IF    ( SYS-5111-SEIKATU-RYOKBN
@@ -4798,7 +4799,7 @@
       *
            MOVE    WRK-KJNYMD  TO  WRK-AGECHK-SRYYMD
            PERFORM 4801-RJN-TAISYO-CHK-SEC
-           IF    ( FLG-RJN     =   1 )
+           IF    ( FLG-LIFE-RJN            =   ZERO )
                IF    ( SPA-NAI-I01-RSI-HKNKBN  =   SPACE )
                    PERFORM VARYING IDX10   FROM    1   BY  1
                            UNTIL ( IDX10 > CONST-TOK-LIFECD-MAX)
@@ -14306,7 +14307,8 @@
        4801-RJN-TAISYO-CHK-SEC         SECTION.
       *
            MOVE    ZERO                TO  FLG-RJN
-      *
+           MOVE    ZERO                TO  FLG-LIFE-RJN
+
       *    Æþ±¡´µ¼Ô¤ÎÏ·¿ÍÊÝ¸±È½Äê
            MOVE    ZERO                TO   FLG-HKNCOMBI
            INITIALIZE              HKNCOMBI-REC
@@ -14382,6 +14384,15 @@
            MOVE    "tbl_ptkohinf"   TO   MCP-TABLE
            MOVE    "key6"           TO   MCP-PATHNAME
            PERFORM 910-DBCLOSECURSOR-SEC
+      *
+           MOVE    FLG-RJN          TO  FLG-LIFE-RJN
+      *
+      *    Ï·¿ÍÂÐ¾Ý´µ¼ÔÈ½Äê
+           IF    ((FLG-HKNCOMBI     =   ZERO)    AND
+                  (COMB-KOH1HKNNUM  =   "027"))      OR
+                  (AGECHK-NENREI   >=    70)
+               MOVE    1            TO  FLG-LIFE-RJN
+           END-IF
       *
            .
        4801-RJN-TAISYO-CHK-EXT.
