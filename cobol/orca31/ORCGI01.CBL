@@ -4799,7 +4799,7 @@
       *
            MOVE    WRK-KJNYMD  TO  WRK-AGECHK-SRYYMD
            PERFORM 4801-RJN-TAISYO-CHK-SEC
-           IF    ( FLG-LIFE-RJN            =   ZERO )
+           IF    ( FLG-LIFE-RJN                =   1 )
                IF    ( SPA-NAI-I01-RSI-HKNKBN  =   SPACE )
                    PERFORM VARYING IDX10   FROM    1   BY  1
                            UNTIL ( IDX10 > CONST-TOK-LIFECD-MAX)
