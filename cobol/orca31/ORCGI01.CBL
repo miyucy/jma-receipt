@@ -4342,6 +4342,9 @@
                        SPA-NAI-I01-BRMKHNKBNCD
                        SPA-NAI-I01-SELNYUKHN
       *
+           MOVE    WRK-KJNYMD  TO  WRK-AGECHK-SRYYMD
+           PERFORM 4801-RJN-TAISYO-CHK-SEC
+      *
       *    病棟情報からコンボ項目を設定
            MOVE    "5001"          TO  WRK-KANRICD
            MOVE    SPA-GMN-I01-BTUNAME-CD
@@ -4385,34 +4388,34 @@
       *
                        IF    ( SYS-5001-BTU-SBT            =   "04" )
                         AND  ( SYS-5111-BRM-NYUINRYOKBN    =   "05" )
-                           IF    ( SYS-5111-SEIKATU-RYOKBN
+                           IF    ( FLG-RJN     =           ZERO )
+                            OR   ( SPA-NAI-I01-RSI-HKNKBN
+                                           NOT =   SPACE )
+                               IF    ( SYS-5111-SEIKATU-RYOKBN
                                                            =   SPACE )
-                               MOVE    1   TO  FLG-TARGET
+                                   MOVE    1   TO  FLG-TARGET
+                               END-IF
                            ELSE
-                               PERFORM 41011-PT-AGE-SEC
-                               IF    ( WRK-NENREI >=  70 )
-                                OR   ( FLG-ROUJIN  =   1 )
-                                    IF    ( SPA-NAI-I01-RSI-HKNKBN
-                                                   =   SPACE )
-                                        MOVE    1  TO  FLG-TARGET
-                                    END-IF
+                               IF    ( SYS-5111-SEIKATU-RYOKBN
+                                                       NOT =   SPACE )
+                                   MOVE    1   TO  FLG-TARGET
                                END-IF
                            END-IF
                        END-IF
       *
                        IF    ( SYS-5001-BTU-SBT            =   "09" )
                         AND  ( SYS-5111-BRM-NYUINRYOKBN    =   "06" )
-                           IF    ( SYS-5111-SEIKATU-RYOKBN
+                           IF    ( FLG-RJN     =           ZERO )
+                            OR   ( SPA-NAI-I01-RSI-HKNKBN
+                                           NOT =   SPACE )
+                               IF    ( SYS-5111-SEIKATU-RYOKBN
                                                            =   SPACE )
-                               MOVE    1   TO  FLG-TARGET
+                                   MOVE    1   TO  FLG-TARGET
+                               END-IF
                            ELSE
-                               PERFORM 41011-PT-AGE-SEC
-                               IF    ( WRK-NENREI >=  70 )
-                                OR   ( FLG-ROUJIN  =   1 )
-                                    IF    ( SPA-NAI-I01-RSI-HKNKBN
-                                                   =   SPACE )
-                                        MOVE    1  TO  FLG-TARGET
-                                    END-IF
+                               IF    ( SYS-5111-SEIKATU-RYOKBN
+                                                       NOT =   SPACE )
+                                   MOVE    1   TO  FLG-TARGET
                                END-IF
                            END-IF
                        END-IF
@@ -4793,9 +4796,9 @@
       *****************************************************************
        41011-TOKNYUIN-SYOKI-SEC        SECTION.
       *
-           PERFORM 41011-PT-AGE-SEC
-           IF    ( WRK-NENREI  >=  70 )
-            OR   ( FLG-ROUJIN  =   1 )
+           MOVE    WRK-KJNYMD  TO  WRK-AGECHK-SRYYMD
+           PERFORM 4801-RJN-TAISYO-CHK-SEC
+           IF    ( FLG-RJN     =   1 )
                IF    ( SPA-NAI-I01-RSI-HKNKBN  =   SPACE )
                    PERFORM VARYING IDX10   FROM    1   BY  1
                            UNTIL ( IDX10 > CONST-TOK-LIFECD-MAX)
