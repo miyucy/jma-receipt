@@ -265,7 +265,7 @@
            EVALUATE    LNK-SC10S-SYORI
                WHEN    "3"
                    PERFORM VARYING     IDX     FROM    1   BY  1
-                        UNTIL      (IDX     >   200    )  OR
+                        UNTIL      (IDX     >   SPA-MAX-LINE    )  OR
                                   (SPA-COM-INPUTCD(IDX) =   SPACE  AND
                                    SPA-GMN-INPUTCD(IDX) =   SPACE )
                        EVALUATE    SPA-COM-INPUTCD (IDX)
@@ -1439,7 +1439,7 @@
            MOVE    ZERO                TO  WRK-GAIRAI-IDX
       *
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL      (IDX         >   200 )  OR
+                   UNTIL      (IDX         >   SPA-MAX-LINE )  OR
                               (SPA-COM-INPUTCD (IDX)  =   SPACE AND
                                SPA-GMN-INPUTCD (IDX)  =   SPACE )
                EVALUATE    SPA-COM-INPUTCD (IDX)
@@ -1585,7 +1585,7 @@
            MOVE    ZERO                TO  SPA-TELSAI-ARI
            MOVE    ZERO                TO  SPA-FUKU-SRYKA
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL      (IDX     >   200                )  OR
+                   UNTIL      (IDX     >   SPA-MAX-LINE     )  OR
                               (SPA-COM-INPUTCD(IDX) =   SPACE  AND
                                SPA-GMN-INPUTCD(IDX) =   SPACE )
       *
@@ -1689,7 +1689,7 @@
        5019-SYONIKA-CHK-SEC                SECTION.
       *
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL      (IDX         >   200      )   OR
+                   UNTIL      (IDX         >   SPA-MAX-LINE   )   OR
                               (SPA-ERRCD           NOT =   SPACE )  OR
                               (SPA-GMN-INPUTCD (IDX)   =   SPACE )
       *        自費は対象外
@@ -1843,7 +1843,7 @@
        5020-ROUMANSEI-CHK-SEC                SECTION.
       *
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL      (IDX         >   200      )   OR
+                   UNTIL      (IDX         >   SPA-MAX-LINE    )   OR
                               (SPA-ERRCD           NOT =   SPACE )  OR
                               (SPA-GMN-INPUTCD (IDX)   =   SPACE )
       *        生活指導、検査、注射、在宅料以外であること
@@ -1904,7 +1904,7 @@
        5021-NETAKIRI-CHK-SEC                SECTION.
       *
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL      (IDX         >   200      )   OR
+                   UNTIL      (IDX         >   SPA-MAX-LINE      )   OR
                               (SPA-ERRCD           NOT =   SPACE )  OR
                               (SPA-GMN-INPUTCD (IDX)   =   SPACE )
       *        検査、投薬は算定できない

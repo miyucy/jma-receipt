@@ -260,7 +260,7 @@
            MOVE    ZERO                TO  WRK-TEI-CNT
            IF      ORCSC80CNT-SYORIFLG     =   1
                PERFORM VARYING     IDZ     FROM    1   BY  1
-                       UNTIL      (IDZ     >   100 )  OR
+                       UNTIL      (IDZ     >   SPA-MAX-LINE)  OR
                                   (LNK-ORCSC-TEI-SRYCD(IDZ)
                                            =   SPACE )
                    IF      WRK-SRYCD           =   LNK-ORCSC-TEI-SRYCD
@@ -570,7 +570,7 @@
                MOVE    ZERO                TO  WRK-TEI-CNT
                IF      ORCSC80CNT-SYORIFLG     =   1
                    PERFORM VARYING     IDZ     FROM    1   BY  1
-                           UNTIL      (IDZ     >   100 )  OR
+                           UNTIL      (IDZ     >   SPA-MAX-LINE )  OR
                                       (LNK-ORCSC-TEI-SRYCD(IDZ)
                                                =   SPACE )
                        IF      WRK-SRYCD       =   LNK-ORCSC-TEI-SRYCD

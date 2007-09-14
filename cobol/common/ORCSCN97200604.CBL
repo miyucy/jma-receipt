@@ -236,7 +236,7 @@
            INITIALIZE                  WRK-AREA
       *
            PERFORM VARYING     IDX-Z   FROM    1   BY  1
-                   UNTIL      (IDX-Z       >   200     )   OR
+                   UNTIL      (IDX-Z       >   SPA-MAX-LINE    )   OR
                               (WRK-GMN-INPUTCD (IDX-Z) =   SPACE ) OR
                               (WRK-ERRCD       NOT =   SPACE)
       *
@@ -367,7 +367,7 @@
            MOVE    ZERO                TO  FLG-ARI
            MOVE    ZERO                TO  IDX-T
            PERFORM VARYING     IDX1    FROM    1   BY  1
-                   UNTIL      (IDX1        >   200     )   OR
+                   UNTIL      (IDX1        >   SPA-MAX-LINE   )   OR
                               (FLG-ARI                 =   1    ) OR
                               (WRK-GMN-INPUTCD (IDX1)  =   SPACE )
                IF       WRK-COM-INPUTCD (IDX1) =   WRK-SRYCD
@@ -495,7 +495,7 @@
            INITIALIZE                  ORCSC90AREA
       *
            PERFORM VARYING     IDX-Z   FROM    1   BY  1
-                   UNTIL      (IDX-Z       >   200     )   OR
+                   UNTIL      (IDX-Z       >   SPA-MAX-LINE )   OR
                               (SPA-ERRCD       NOT =   SPACE )  OR
                              ((WRK-GMN-INPUTCD (IDX-Z) =   SPACE ) AND
                               (WRK-COM-INPUTCD (IDX-Z) =   SPACE ))
@@ -676,7 +676,7 @@
        200-ALL-SYORI-SEC                SECTION.
       *
            PERFORM VARYING     IDX-Z   FROM    1   BY  1
-                   UNTIL      (IDX-Z       >   200      )   OR
+                   UNTIL      (IDX-Z       >   SPA-MAX-LINE   )   OR
                               (SPA-ERRCD           NOT =   SPACE )  OR
                              ((WRK-GMN-INPUTCD (IDX-Z) =   SPACE )  AND
                               (WRK-COM-INPUTCD (IDX-Z) =   SPACE ))
@@ -701,7 +701,7 @@
            MOVE    ZERO               TO  WRK-TEI-CNT
            IF      LNK-ORCSC-SYORIFLG  =   1
                PERFORM VARYING     IDT     FROM    1   BY  1
-                       UNTIL      (IDT     >   200 )  OR
+                       UNTIL      (IDT     >   SPA-MAX-LINE )  OR
                                   (LNK-ORCSC-TEI-SRYCD(IDT)
                                            =   SPACE )
                    IF      WRK-SRYCD       =   LNK-ORCSC-TEI-SRYCD(IDT)

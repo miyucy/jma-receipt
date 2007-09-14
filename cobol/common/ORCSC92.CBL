@@ -440,7 +440,7 @@
                MOVE    1               TO  FLG-ERR
            END-IF
       *    ２００行以上エラー
-           IF      LNK-SC92-GMN-IDX    >   200
+           IF      LNK-SC92-GMN-IDX    >   SPA-MAX-LINE
                MOVE    "0007"          TO  SPA-ERRCD
                MOVE    1               TO  FLG-ERR
            END-IF
@@ -1146,7 +1146,7 @@
       *
       *    最終行判定
            MOVE    ZERO                TO  WRK-MAX
-           PERFORM VARYING     IDX     FROM    200   BY  -1
+           PERFORM VARYING     IDX     FROM    SPA-MAX-LINE   BY  -1
                    UNTIL       IDX     <   1
                IF     (SPA-GMN-INPUTCD (IDX)   NOT =   SPACE ) OR
                       (SPA-COM-INPUTCD (IDX)   NOT =   SPACE )
@@ -1787,7 +1787,7 @@
        20052-CHK-INPUT-SEC                SECTION.
       *
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL      (IDX     >   200          )  OR
+                   UNTIL      (IDX     >   SPA-MAX-LINE          )  OR
                              ((SPA-GMN-INPUTCD (IDX)   =   SPACE ) AND
                               (SPA-COM-INPUTCD (IDX)   =   SPACE )) OR
                               (FLG-KONKAI          =   1     )
@@ -1889,7 +1889,7 @@
            MOVE    ZERO                TO  FLG-MANSEI-ARI
            IF      LNK-SC92-SRYCD  NOT =   WRK-SRYCD
                PERFORM VARYING     IDX     FROM    1   BY  1
-                       UNTIL      (IDX     >   200  )  OR
+                       UNTIL      (IDX     >   SPA-MAX-LINE  )  OR
                                  ((SPA-GMN-INPUTCD (IDX)
                                                =   SPACE ) AND
                                   (SPA-COM-INPUTCD (IDX)
@@ -2035,7 +2035,7 @@
       *    訂正の時、訂正日が初回の場合
            IF      LNK-SC92-SYORIFLG   =   1
                PERFORM VARYING     IDX     FROM    1   BY  1
-                       UNTIL      (IDX     >   100 )  OR
+                       UNTIL      (IDX     >   SPA-MAX-LINE )  OR
                                   (LNK-SC92-TEI-SRYCD (IDX)  =   SPACE)
                    IF      LNK-SC92-TEI-SRYCD (IDX)    =   WRK-SRYCD
                        IF      WRK-FSANTEIYMD      =   SPA-SRYYMD
@@ -2051,7 +2051,7 @@
            MOVE    ZERO                TO  FLG-RKAN-ARI2
            IF      LNK-SC92-SRYCD  NOT =   WRK-SRYCD
                PERFORM VARYING     IDX     FROM    1   BY  1
-                       UNTIL      (IDX     >   200  )  OR
+                       UNTIL      (IDX     >   SPA-MAX-LINE  )  OR
                                  ((SPA-GMN-INPUTCD (IDX)
                                                =   SPACE ) AND
                                   (SPA-COM-INPUTCD (IDX)
@@ -2154,7 +2154,7 @@
       *    訂正の時、訂正分はカウントしない
            IF      LNK-SC92-SYORIFLG   =   1
                PERFORM VARYING IDX     FROM    1   BY  1
-                       UNTIL   (IDX     >   100 )  OR
+                       UNTIL   (IDX     >   SPA-MAX-LINE )  OR
                                (LNK-SC92-TEI-SRYCD (IDX)  =   SPACE)
                    IF      LNK-SC92-TEI-SRYCD (IDX)    =   WRK-SRYCD
                        MOVE    SPA-SRYYMD(7:2)     TO  IDX-Y2
@@ -2163,7 +2163,7 @@
                    END-IF
                END-PERFORM
                PERFORM VARYING IDX     FROM    1   BY  1
-                       UNTIL   (IDX     >   100 )  OR
+                       UNTIL   (IDX     >   SPA-MAX-LINE )  OR
                                (LNK-SC92-TEI-SRYCD (IDX)  =   SPACE)
                    IF      LNK-SC92-TEI-SRYCD (IDX)    =   WRK-SRYCD2
                        MOVE    SPA-SRYYMD(7:2)     TO  IDX-Y2
@@ -2231,7 +2231,7 @@
            END-IF
       *    画面入力
            PERFORM VARYING     IDX     FROM    1  BY  1
-                   UNTIL       IDX     >   200
+                   UNTIL       IDX     >   SPA-MAX-LINE
                IF      SPA-COM-INPUTCD (IDX)   =   WRK-SRYCD
                    MOVE    SPA-SRYYMD          TO  WRK-STYMD
                END-IF
@@ -3610,7 +3610,7 @@
       *
       *    加算行を開ける（対象行の次に追加）
            MOVE    ZERO                TO  IDX2
-           PERFORM VARYING     IDX1    FROM    200 BY  -1
+           PERFORM VARYING     IDX1    FROM    SPA-MAX-LINE  BY  -1
                    UNTIL       IDX1    <   IDX-T
                IF      SPA-GMN-INPUTCD (IDX1)  NOT =   SPACE
                    COMPUTE IDX2            =   IDX1    +   1

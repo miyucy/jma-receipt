@@ -35,6 +35,7 @@
       * 01.00.10     NACL-多々納  05/06/10  前回区分等追加
       * 01.00.11     NACL-多々納  06/03/17  処置乳幼児加算追加
       * 03.04.00     NACL-多々納  06/12/11  薬剤附加情報追加
+      * 04.00.00     NACL-多々納  07/09/XX  テーブル４００へ
       ************************************************************
       *
       *01  SPA-K02SCR-REC.
@@ -42,7 +43,7 @@
            03  SPA-GMN-MAX             PIC 9(04).
       *
            03  SPA-GMN-REC.
-               05  SPA-GMN-TBL             OCCURS   200.
+               05  SPA-GMN-TBL             OCCURS   400.
                    07  SPA-GMN-TBLREC.
                        09  SPA-GMN-SRYKBN        PIC X(02).
                        09  SPA-GMN-INPUTCD       PIC X(22).

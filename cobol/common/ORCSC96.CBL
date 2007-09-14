@@ -126,9 +126,14 @@
                    MOVE    "診療種別がありません"
                                        TO  SPA-ERRMSG
                WHEN    "0007"
-                   MOVE
-                   "２００行を超えます。これ以上挿入はできません"
-                                       TO  SPA-ERRMSG
+                   STRING  "４００行を超えます。"
+                           "これ以上挿入はできません"
+                                           DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
+      *******      MOVE
+      *            "２００行を超えます。これ以上挿入はできません"
+      *******                          TO  SPA-ERRMSG
                WHEN    "0008"
                    MOVE    "回数は１回のみです。"
                                        TO  SPA-ERRMSG
@@ -622,15 +627,17 @@
                    MOVE    "算定終了は算定できません。"
                                        TO  SPA-ERRMSG(47:)
                WHEN    "7007"
-                   MOVE    "自動算定で２００行を超えます。"
-                                       TO  SPA-ERRMSG
-                   MOVE    "分けて入力して下さい。"
-                                       TO  SPA-ERRMSG(31:)
+                   STRING  "自動算定で４００行を超えます。"
+                           "分けて入力して下さい。"
+                                           DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
                WHEN    "7001"
-                   MOVE    "２００行を超えた行です。"
-                                       TO  SPA-ERRMSG
-                   MOVE    "これ以上入力できません。"
-                                       TO  SPA-ERRMSG(31:)
+                   STRING  "４００行を超えた行です。"
+                           "これ以上入力できません。"
+                                           DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
                WHEN    "7002"
                    MOVE    "最終ページです。"
                                        TO  SPA-ERRMSG
@@ -642,15 +649,17 @@
                    MOVE    "登録時にエラーとなることがあります。"
                                        TO  SPA-ERRMSG(25:)
                WHEN    "7004"
-                   MOVE    "２００行をオーバーします。"
-                                       TO  SPA-ERRMSG
-                   MOVE    "２００行までを対象とします。"
-                                       TO  SPA-ERRMSG(27:)
+                   STRING  "４００行をオーバーします。"
+                           "４００行までを対象とします。"
+                                           DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
                WHEN    "7006"
-                   MOVE    "剤の明細数は５０明細までです。"
-                                       TO  SPA-ERRMSG
-                   MOVE    "剤を分けて下さい。"
-                                       TO  SPA-ERRMSG(31:)
+                   STRING  "剤の明細数は５０明細までです。"
+                           "剤を分けて下さい。"
+                                           DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
                WHEN    "8000"
                    MOVE    "労災保険の診療コードです。入力できません。"
                                        TO  SPA-ERRMSG
@@ -962,15 +971,15 @@
                    MOVE    "警告！内分泌負荷試験の訂正が必要です。"
                                        TO  SPA-ERRMSG
                WHEN    "K999"
-                   MOVE    "警告！！登録時と診療内容が違います。"
-                                       TO  SPA-ERRMSG
-                   MOVE    "必ず登録をして点数を変更して下さい。"
-                                       TO  SPA-ERRMSG(37:)
+                   STRING  "警告！！登録時と診療内容が違います。"
+                           "必ず登録をして点数を変更して下さい。"
+                                       DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
                WHEN    "1062"
                    STRING  "包括まとめ対象の検査に日付入力があります。"
-                                       DELIMITED  BY  SPACE
                            "検査のまとめはできません。"
-                                       DELIMITED  BY  SPACE
+                                       DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
       *        コンタクトレンズ検査

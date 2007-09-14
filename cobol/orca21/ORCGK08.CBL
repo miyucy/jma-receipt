@@ -154,7 +154,7 @@
                05  SPA-GMN-CUR                   PIC 9(02).
       *
                05  SPA-GMN-TBL.
-                   07  SPA-GMN-TBLREC-G    OCCURS  600.
+                   07  SPA-GMN-TBLREC-G    OCCURS  800.
                        09  SPA-GMN-TBANGO      PIC 9(03).
                        09  SPA-GMN-TDELFLG     PIC 9(01).
                        09  SPA-GMN-TMEISYO     PIC X(200).
@@ -209,7 +209,7 @@
       *
            03  SPA-NAI-AREA.
                05  SPA-NAI-TBL.
-                   07  SPA-NAI-TBLREC  OCCURS  600.
+                   07  SPA-NAI-TBLREC  OCCURS  800.
                        09  SPA-NAI-BANGO           PIC 9(03).
                        09  SPA-NAI-EDANUM          PIC 9(03).
                        09  SPA-NAI-ZAINUM          PIC 9(08).
@@ -478,6 +478,8 @@
            03  WRK-PRV-HKNKBN          PIC X(01).
            03  WRK-PRV-RSI-HKNKBN      PIC X(01).
       *
+           03  CNT-ZAI                 PIC 9(04).
+      *
       *    継続の時、自動発生のチェック
        01  WRK-CONTCHK-TBL.
            03  WRK-IDX-Y               PIC 9(04).
@@ -509,6 +511,11 @@
                    07  HZN-PARA-FILEMEI         PIC X(08).
                    07  HZN-PARA-EDANUM          PIC 9(03).
                05  HZN-PARA-DATA-REC            PIC X(60000).
+      *
+      *画面行ＭＡＸ
+       01  MAX-GMN                 PIC 9(04)   VALUE   800.
+      *処理テーブルＭＡＸ
+       01  MAX-LINE                PIC 9(04)   VALUE   600.
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -1060,8 +1067,8 @@
       *****END-IF
       *
       *    最大件数
-           IF      IDG                 >   600
-               MOVE    600                 TO  SPA-K08-MAX
+           IF      IDG                 >   MAX-GMN
+               MOVE    MAX-GMN             TO  SPA-K08-MAX
            ELSE
                MOVE    IDG                 TO  SPA-K08-MAX
            END-IF
@@ -1186,7 +1193,7 @@
            END-IF
            PERFORM
                    UNTIL      (FLG-PARA    =    1   )  OR
-                              (IDX         >=   600 )
+                              (IDX         >=   MAX-LINE )
       *        ワーク診療行
                IF      PARA-FILEMEI    =   "WKSRYACT"
                    ADD     1                    TO  IDX
@@ -1488,7 +1495,7 @@
       *    剤別編集
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL      (IDX     >   IDX-KOUI )
-                           OR (IDG     >   600 )
+                           OR (IDG     >   MAX-GMN  )
       *        剤点数計
                MOVE    LNK-WKSRY-ZAITENKEI(IDX)    TO  WRK-ZAITEN
       *        回数計
@@ -1503,7 +1510,7 @@
                IF      IDX                 =   1
                    MOVE    ZERO                TO  FLG-RSIFLG
                    ADD     1                   TO  IDG
-                   IF      IDG                 >   600
+                   IF      IDG                 >   MAX-GMN
                        MOVE    "1000"              TO  SPA-ERRCD
                    ELSE
                        PERFORM 31011-GYO1-HEN-SEC
@@ -1513,7 +1520,7 @@
       *        剤明細編集
                PERFORM VARYING     IDZ     FROM    1   BY  1
                        UNTIL      (IDZ         >   5   )  OR
-                                  (IDG         >   600 )  OR
+                                  (IDG         >   MAX-GMN )  OR
                                   (LNK-WKSRY-SRYCD (IDX IDZ)
                                                   =   SPACE  AND
                                    LNK-WKSRY-INPUTCD(IDX IDZ)
@@ -1617,7 +1624,7 @@
                ELSE
                    ADD    1                    TO  IDG
                END-IF
-               IF      IDG                 <=  600
+               IF      IDG                 <=  MAX-GMN
                PERFORM 31013-INPUTCD-HEN-SEC
                MOVE    WRK-ZAIKEIJ         TO  SPA-GMN-TZAIKEI (IDG)
       *
@@ -1644,7 +1651,7 @@
       *
       *    剤終了編集
            ADD     1                   TO  IDG
-           IF      IDG                 >   600
+           IF      IDG                 >   MAX-GMN
                CONTINUE
            ELSE
                MOVE    ALL "-"             TO  SPA-GMN-TMEISYO (IDG)
@@ -1686,7 +1693,7 @@
                                                         (WRK-HOUKNS-IDX)
                    ADD     1               TO  IDG
                END-IF
-               IF      WRK-HOUKNS-IDX      <=   600
+               IF      WRK-HOUKNS-IDX      <=   MAX-GMN
                    MOVE    ORCSMEIHEN-MEISYO2
                                        TO  SPA-GMN-TMEISYO2
                                                   (WRK-HOUKNS-IDX)
@@ -1718,7 +1725,7 @@
       *
       *    剤編集
            ADD     1                   TO  IDG
-           IF      IDG                 >   600
+           IF      IDG                 >   MAX-GMN
                GO      TO      31012-HKNCOMBI-HEN-EXT
            END-IF
            MOVE    ALL "#"             TO  SPA-GMN-TMEISYO (IDG)
@@ -1729,7 +1736,7 @@
            END-STRING
       *    剤終了編集
            ADD     1                   TO  IDG
-           IF      IDG                 >   600
+           IF      IDG                 >   MAX-GMN
                CONTINUE
            ELSE
                MOVE    ALL "-"             TO  SPA-GMN-TMEISYO (IDG)
@@ -1784,7 +1791,7 @@
       *
       *    剤編集
            ADD     1                   TO  IDG
-           IF      IDG                 >   600
+           IF      IDG                 >   MAX-GMN
                GO      TO      31013-SRYKA-HEN-EXT
            END-IF
            MOVE    ALL "="             TO  SPA-GMN-TMEISYO (IDG)
@@ -1797,7 +1804,7 @@
            END-STRING
       *    剤終了編集
            ADD     1                   TO  IDG
-           IF      IDG                 >   600
+           IF      IDG                 >   MAX-GMN
                GO      TO      31013-SRYKA-HEN-EXT
            END-IF
            MOVE    ALL "-"             TO  SPA-GMN-TMEISYO (IDG)
@@ -2184,7 +2191,7 @@
        31012-ZAIMEI-HEN-SEC                  SECTION.
       *
            ADD     1                   TO  IDG
-           IF      IDG                 >   600
+           IF      IDG                 >   MAX-GMN
                GO      TO      31012-ZAIMEI-HEN-EXT
            END-IF
            MOVE    WRK-BANGO           TO  SPA-GMN-NAIBANGO (IDG)
@@ -2331,7 +2338,7 @@
        31013-JIHIMEI-HEN-SEC           SECTION.
       *
            ADD     1                   TO  IDG
-           IF      IDG                 >   600
+           IF      IDG                 >   MAX-GMN
                GO      TO      31013-JIHIMEI-HEN-EXT
            END-IF
            MOVE    WRK-BANGO           TO  SPA-GMN-NAIBANGO (IDG)
@@ -2418,7 +2425,7 @@
              AND ((FLG-KAISUU-ARI2     =   ZERO )  OR
                   (FLG-KAISUU-ARI3     =   ZERO ))
                ADD     1                   TO  IDG
-               IF      IDG                 >   600
+               IF      IDG                 >   MAX-GMN
                    GO      TO      31013-JIHIMEI-HEN-EXT
                END-IF
       *        回数
@@ -2934,7 +2941,7 @@
       *    行選択
            MOVE    ZERO                TO  WRK-SELNUM
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX     >   600
+                   UNTIL       IDX     >   MAX-GMN
                IF      K08-SELECT (IDX)        =   "T"
                    MOVE    SPA-GMN-NAIBANGO (IDX)  TO  WRK-SELNUM
                END-IF
@@ -2983,12 +2990,11 @@
            PERFORM 4101-GMN-SPA-SET-SEC
       *    基本チェックと別画面処理
            PERFORM 4102-KIHON-CHK-SEC
-           IF      SPA-ERRCD       NOT =   SPACE
-               GO      TO      410-INPUT-CHK-EXT
-           END-IF
       *
       *    関連処理
-           PERFORM 4103-KANREI-SEC
+           IF      SPA-ERRCD           =   SPACE
+               PERFORM 4103-KANREI-SEC
+           END-IF
            .
       *
        410-INPUT-CHK-EXT.
@@ -3064,7 +3070,7 @@
       *
            MOVE    ZERO                TO  FLG-OK
            PERFORM VARYING     IDY     FROM    1   BY  1
-                   UNTIL      (IDY             >   600 )  OR
+                   UNTIL      (IDY             >   MAX-GMN )  OR
                               (FLG-OK          =   1     )  OR
                               (SPA-ERRCD   NOT =   SPACE )
                IF      SPA-GMN-SELNUM (IDX)    =   SPA-NAI-BANGO (IDY)
@@ -3315,6 +3321,9 @@
       *
       *    更新処理
            PERFORM 4501-KOUSIN-SYORI-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO     450-TOROKU-EXT
+           END-IF
       *
            PERFORM 210-WRKPARA-DEL-SEC
       *
@@ -3517,17 +3526,21 @@
       *****************************************************************
        45011-SRYACT-SYORI-SEC             SECTION.
       *
+           MOVE    SPACE               TO  WRK-HKNCOMBI
+           MOVE    SPACE               TO  WRK-SRYKA
+           MOVE    ZERO                TO  CNT-ZAI
+      *
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   LNK-WKSRYACT-MAX
                MOVE    ZERO                TO  FLG-DEL
                PERFORM VARYING     IDY     FROM    1   BY  1
-                       UNTIL       IDY     >   600
+                       UNTIL       IDY     >   MAX-GMN
                    IF      LNK-WKSRY-ZAINUM (IDX)  =   SPA-NAI-ZAINUM
                                                                  (IDY)
                        IF      SPA-NAI-DELFLG (IDY)    =   1
                            MOVE    1               TO  FLG-DEL
                        END-IF
-                       MOVE    600             TO  IDY
+                       MOVE    MAX-GMN             TO  IDY
                    END-IF
                END-PERFORM
                IF      FLG-DEL             =   ZERO
@@ -3535,6 +3548,9 @@
                    PERFORM 450112-SYOSIN-CHK-SEC
       *            薬剤情報提供料判定
                    PERFORM 450113-YAKUJO-CHK-SEC
+      *
+      *            剤数チェック
+                   PERFORM 450114-ZAICONUNT-SEC
       *
                    ADD     1                   TO  IDX2
                    MOVE    "WKSRYACT"          TO  PARA-FILEMEI
@@ -3552,6 +3568,47 @@
        45011-SRYACT-SYORI-EXT.
            EXIT.
       *
+      *****************************************************************
+      *    剤数チェック処理
+      *****************************************************************
+       450114-ZAICONUNT-SEC             SECTION.
+      *
+      *    入院で調剤料は対象外
+           IF     (SPA-NYUGAIKBN       =   1  )  AND
+                  (LNK-WKSRY-SRYKBN (IDX)  =   "24"
+                                           OR  "26" )
+               IF      LNK-WKSRY-AUTOKBN (IDX 1 )  =   "3"
+                   GO      TO      450114-ZAICONUNT-EXT
+               END-IF
+           END-IF
+      *
+           IF      (WRK-HKNCOMBI       =   SPACE )  AND
+                   (WRK-SRYKA          =   SPACE )
+               MOVE    LNK-WKSRY-HKNCOMBI(IDX)     TO  WRK-HKNCOMBI
+               MOVE    LNK-WKSRY-SRYKA   (IDX)     TO  WRK-SRYKA
+               MOVE    ZERO                        TO  WRK-ZAINUM
+               MOVE    ZERO                        TO  CNT-ZAI
+           END-IF
+           IF     (LNK-WKSRY-HKNCOMBI(IDX) =   WRK-HKNCOMBI )  AND
+                  (LNK-WKSRY-SRYKA   (IDX) =   WRK-SRYKA    )
+               IF      (LNK-WKSRY-ZAINUM  (IDX) =   WRK-ZAINUM   )
+                   CONTINUE
+               ELSE
+                   MOVE    LNK-WKSRY-ZAINUM  (IDX)     TO  WRK-ZAINUM
+                   ADD     1                   TO  CNT-ZAI
+                   IF      CNT-ZAI             >   135
+                       MOVE    "0006"              TO  SPA-ERRCD
+                   END-IF
+               END-IF
+           ELSE
+               MOVE    LNK-WKSRY-HKNCOMBI(IDX)     TO  WRK-HKNCOMBI
+               MOVE    LNK-WKSRY-SRYKA   (IDX)     TO  WRK-SRYKA
+               MOVE    ZERO                        TO  WRK-ZAINUM
+               MOVE    ZERO                        TO  CNT-ZAI
+           END-IF
+           .
+       450114-ZAICONUNT-EXT.
+           EXIT.
       *****************************************************************
       *    初診料算定判定処理
       *****************************************************************
@@ -3816,7 +3873,7 @@
            MOVE    ZERO                TO  SYU-SHOHOU-SAI
       *    各点数
            PERFORM VARYING     IDY     FROM    1   BY  1
-                   UNTIL       IDY     >  600
+                   UNTIL       IDY     >  MAX-GMN
                IF     (SPA-NAI-HKNCOMBI(IDY)   =   LNK-SYU-HKNCOMBINUM
                                                              (IDH)) AND
                      ((LNK-SYU-SRYKA   (IDH)   =   ZERO      )  OR
@@ -4768,6 +4825,10 @@
       *
            CLOSE                       PARA-FILE
       *
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO     4502-NYUKOUSIN-SYORI-EXT
+           END-IF
+      *
       *    入院更新処理
            INITIALIZE                  ORCSCNYUINAREA
            MOVE    "1"                 TO  ORCSCNYUIN-KBN
@@ -4980,6 +5041,9 @@
            PERFORM 45011-SRYACT-SYORI-SEC
       *
            CLOSE                       PARA-FILE
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO     4503-HOUKATU-SYORI-EXT
+           END-IF
       *
       *    外来更新処理
            INITIALIZE                  ORCSCGAIRAIAREA
@@ -5322,7 +5386,11 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *            プレビュー処理
                    PERFORM 4130-PREVIEW-SEC
                ELSE
-                   MOVE    "9003"          TO  SPA-ERRCD
+                   IF      SPA-ERRCD       =   "0006"
+                       MOVE    "9004"          TO  SPA-ERRCD
+                   ELSE
+                       MOVE    "9003"          TO  SPA-ERRCD
+                   END-IF
                END-IF
            END-IF
            .
@@ -5444,9 +5512,11 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                                                                (IDX)
            END-PERFORM
       *
-           CALL    "ORCSCGAIRAIPRV"    USING
-                                       SPA-AREA
-                                       ORCSCGAIRAIAREA
+           IF      SPA-ERRCD           =   SPACE
+               CALL    "ORCSCGAIRAIPRV"    USING
+                                           SPA-AREA
+                                           ORCSCGAIRAIAREA
+           END-IF
       *
       *    ファイル削除
            MOVE    SPA-TERMID          TO  FILE-TERMIDPRV
@@ -5474,19 +5544,22 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE    1               TO  FLG-DEL
                END-IF
                PERFORM VARYING     IDY     FROM    1   BY  1
-                       UNTIL      (IDY     >   600     )
+                       UNTIL      (IDY     >   MAX-GMN )
                                OR (FLG-DEL =   1       )
                    IF      LNK-WKSRY-ZAINUM (IDX)  =   SPA-NAI-ZAINUM
                                                                  (IDY)
                        IF      SPA-NAI-DELFLG (IDY)    =   1
                            MOVE    1               TO  FLG-DEL
                        END-IF
-                       MOVE    600             TO  IDY
+                       MOVE    MAX-GMN             TO  IDY
                    END-IF
                END-PERFORM
                IF      FLG-DEL             =   ZERO
       *            初診料算定判定
                    PERFORM 450112-SYOSIN-CHK-SEC
+      *            剤数チェック
+                   PERFORM 450114-ZAICONUNT-SEC
+      *
                    ADD     1                   TO  IDX2
                    MOVE    "WKSRYACT"          TO  PARA-FILEMEIPRV
                    MOVE    IDX2                TO  PARA-EDANUMPRV
@@ -5566,14 +5639,16 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            CLOSE                       PARA-PREVIEW
       *
+           IF      SPA-ERRCD           =   SPACE
       *    入院更新処理
-           INITIALIZE                  ORCSCNYUINAREA
-           MOVE    "1"                 TO  ORCSCNYUIN-KBN
-      *    退院日
-           MOVE    SPA-K02N-TAIINYMD   TO  ORCSCNYUIN-TAIINYMD
-           CALL    "ORCSCNYUINPRV"     USING
-                                       SPA-AREA
-                                       ORCSCNYUINAREA
+               INITIALIZE                  ORCSCNYUINAREA
+               MOVE    "1"                 TO  ORCSCNYUIN-KBN
+      *        退院日
+               MOVE    SPA-K02N-TAIINYMD   TO  ORCSCNYUIN-TAIINYMD
+               CALL    "ORCSCNYUINPRV"     USING
+                                           SPA-AREA
+                                           ORCSCNYUINAREA
+           END-IF
       *
       *    ファイル削除
            MOVE    SPA-TERMID          TO  FILE-TERMIDPRV
@@ -5964,10 +6039,11 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                                        INTO  SPA-ERRMSG
                    END-STRING
                WHEN    "0006"
-                   MOVE    "１日の受診履歴が１３５剤以上になります。"
-                                       TO  SPA-ERRMSG
-                   MOVE    "剤を減らして入力して下さい。"
-                                       TO  SPA-ERRMSG(41:)
+                   STRING  "１日の受診履歴が１３５剤以上になります。"
+                           "剤を減らして入力して下さい。"
+                                       DELIMITED  BY  SIZE
+                                       INTO  SPA-ERRMSG
+                   END-STRING
                WHEN    "1000"
                    MOVE    "６００行以上になります。"
                                        TO  SPA-ERRMSG
@@ -6010,6 +6086,12 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN    "9003"
                    MOVE    "プレビューデータ作成が失敗しました。"
                                        TO  SPA-ERRMSG
+               WHEN    "9004"
+                   STRING  "１日の受診履歴が１３５剤以上になります。"
+                           "プレビューデータ作成が失敗しました。"
+                                       DELIMITED  BY  SIZE
+                                       INTO  SPA-ERRMSG
+                   END-STRING
       *@@
                WHEN    "9009"
                    MOVE    "改正対応前です。プレビューできません。"

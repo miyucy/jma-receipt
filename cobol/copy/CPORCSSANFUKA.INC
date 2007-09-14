@@ -34,7 +34,7 @@
            03  LNK-SANFUKA-SRYYMD            PIC  X(08).
       *    訂正時の診療コード
            03  LNK-SANFUKA-TEISEI-AREA.
-               05  LNK-SANFUKA-TEISEI-OCC      OCCURS   200.
+               05  LNK-SANFUKA-TEISEI-OCC      OCCURS   400.
                    07  LNK-SANFUKA-TEI-SRYCD   PIC X(09).
                    07  LNK-SANFUKA-TEI-KAISU   PIC 9(03).
            03  LNK-SANFUKA-I-O.

@@ -56,6 +56,7 @@
       *                                     （レセ電コードの変更なし）
       * 02.00.19     NACL-多々納  05/01/27  酸素追加
       *  03.05.00    NACL-多々納  07/04/XX  グループ診療対応
+      *  04.00.00    NACL-多々納  07/09/XX  テーブル４００へ
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -574,7 +575,7 @@
            MOVE    ZERO                TO  WRK-SINSATU-KAISU
       *
            PERFORM VARYING     IDX-Z   FROM    1   BY  1
-                   UNTIL      (IDX-Z       >   200     )   OR
+                   UNTIL      (IDX-Z       >   SPA-MAX-LINE   )   OR
                               (WRK-GMN-INPUTCD (IDX-Z) =   SPACE )
       *
                ADD     1                   TO  IDX-MAX
@@ -734,7 +735,7 @@
            MOVE    "770020070"         TO  WRK-SRYCD
            MOVE    ZERO                TO  FLG-ARI
            PERFORM VARYING     IDX1    FROM    1   BY  1
-                   UNTIL      (IDX1    >   200  )  OR
+                   UNTIL      (IDX1    >   SPA-MAX-LINE )  OR
                               (WRK-COM-INPUTCD(IDX1)   =   SPACE AND
                                WRK-GMN-INPUTCD(IDX1)   =   SPACE )
                IF       WRK-COM-INPUTCD (IDX1) =   WRK-SRYCD
@@ -1521,7 +1522,7 @@
            MOVE    ZERO                TO  FLG-ARI
            MOVE    ZERO                TO  IDX-T
            PERFORM VARYING     IDX1    FROM    1   BY  1
-                   UNTIL      (IDX1        >   200     )   OR
+                   UNTIL      (IDX1        >   SPA-MAX-LINE     ) OR
                               (FLG-ARI                 =   1    ) OR
                               (WRK-GMN-INPUTCD (IDX1)  =   SPACE )
                IF     (WRK-COM-DATAKBN    (IDX1)       =   "2"  )  AND
@@ -1619,7 +1620,7 @@
            MOVE    ZERO                TO  FLG-ARI
            MOVE    ZERO                TO  IDX-T
            PERFORM VARYING     IDX1    FROM    1   BY  1
-                   UNTIL      (IDX1        >   200     )   OR
+                   UNTIL      (IDX1        >   SPA-MAX-LINE )   OR
                               (FLG-ARI                 =   1    ) OR
                               (WRK-GMN-INPUTCD (IDX1)  =   SPACE )
                IF       WRK-COM-INPUTCD (IDX1) =   WRK-SRYCD
@@ -2150,7 +2151,7 @@
       *
       *    特定薬剤治療管理加算がある時、初回とする
            PERFORM VARYING     IDX1    FROM    1   BY  1
-                   UNTIL      (IDX1        >   200     )   OR
+                   UNTIL      (IDX1        >   SPA-MAX-LINE     )  OR
                               (WRK-GMN-INPUTCD (IDX1)  =   SPACE ) OR
                               (WRK-ERRCD       NOT =   SPACE )
                EVALUATE    WRK-COM-INPUTCD (IDX1)
@@ -2637,7 +2638,7 @@
       *
            MOVE    ZERO                TO  FLG-OK
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL      (IDX         >   200     )   OR
+                   UNTIL      (IDX         >   SPA-MAX-LINE    )  OR
                               (WRK-GMN-INPUTCD (IDX)   =   SPACE  AND
                                WRK-COM-INPUTCD (IDX)   =   SPACE )
                IF      WRK-GMN-INPUTCD(IDX)    =   ".110"  OR
@@ -2743,7 +2744,7 @@
            INITIALIZE                  ORCSC90AREA
       *
            PERFORM VARYING     IDX-Z   FROM    1   BY  1
-                   UNTIL      (IDX-Z       >   200     )   OR
+                   UNTIL      (IDX-Z       >   SPA-MAX-LINE )   OR
                               (SPA-ERRCD       NOT =   SPACE )  OR
                               (WRK-GMN-INPUTCD (IDX-Z) =   SPACE )
       *
@@ -2885,7 +2886,7 @@
            MOVE    ZERO                TO  WRK-TENSUKEI-G
            MOVE    ZERO                TO  WRK-TENSUKEI-GEN
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL      (IDX         >   200     )   OR
+                   UNTIL      (IDX         >   SPA-MAX-LINE  )   OR
                               (WRK-GMN-INPUTCD (IDX)   =   SPACE )
                IF     (WRK-COM-INPUTCD(IDX)(1:1)   =   "1" )  AND
                       (WRK-COM-TENSIKIBETU(IDX)    =   5   )
@@ -3052,7 +3053,7 @@
            MOVE    ZERO                TO  LNK-ORCSC-GAIRAI-TEN
       *
            PERFORM VARYING     IDX-Z   FROM    1   BY  1
-                   UNTIL      (IDX-Z       >   200      )   OR
+                   UNTIL      (IDX-Z       >   SPA-MAX-LINE     )   OR
                               (SPA-ERRCD           NOT =   SPACE )  OR
                               (WRK-GMN-INPUTCD (IDX-Z) =   SPACE )
       *        診察料の判定
@@ -3462,7 +3463,7 @@
        2000-JYUFUKU-CHK-SEC               SECTION.
       *
            PERFORM VARYING     IDX-Z   FROM    1   BY  1
-                   UNTIL      (IDX-Z       >   200      )   OR
+                   UNTIL      (IDX-Z       >   SPA-MAX-LINE    )   OR
                               (SPA-ERRCD           NOT =   SPACE )  OR
                               (WRK-GMN-INPUTCD (IDX-Z) =   SPACE )
                MOVE    ZERO                TO  FLG-CHK
@@ -3495,7 +3496,7 @@
                    MOVE    ZERO                TO  IDX-KEI
                    COMPUTE IDX-Z3          =   IDX-Z   +   1
                    PERFORM VARYING     IDX-Z2  FROM    IDX-Z3 BY  1
-                           UNTIL      (IDX-Z2      >   200       )  OR
+                           UNTIL      (IDX-Z2      >   SPA-MAX-LINE ) OR
                                       (SPA-ERRCD   NOT =   SPACE )  OR
                                       (IDX-KEI         >   ZERO  )  OR
                                       (WRK-GMN-INPUTCD (IDX-Z2)
@@ -3945,7 +3946,7 @@
        20010-TOKUTEI-ALLCHK-SEC                SECTION.
       *
            PERFORM VARYING     IDX-Z   FROM    1   BY  1
-                   UNTIL      (IDX-Z       >   200  )  OR
+                   UNTIL      (IDX-Z       >   SPA-MAX-LINE )  OR
                               (SPA-ERRCD   NOT =   SPACE  )  OR
                               (WRK-GMN-INPUTCD(IDX-Z)  =   SPACE  AND
                                WRK-COM-INPUTCD(IDX-Z)  =   SPACE  )
@@ -4067,7 +4068,7 @@
            MOVE   99999999             TO  WRK-GAI-TEN
       *
            PERFORM VARYING     IDX-Z   FROM    1   BY  1
-                   UNTIL      (IDX-Z       >   200      )   OR
+                   UNTIL      (IDX-Z       >   SPA-MAX-LINE    )   OR
                               (SPA-ERRCD           NOT =   SPACE )  OR
                               (WRK-GMN-INPUTCD (IDX-Z) =   SPACE )
                 MOVE    ZERO                TO  WRK-COM-RSIGIRI
@@ -4104,7 +4105,7 @@
       *        外来管理加算へ読み替える
                MOVE    ZERO                TO  WRK-GAI-CNT
                PERFORM VARYING     IDX-Z   FROM    1   BY  1
-                   UNTIL      (IDX-Z       >   200      )   OR
+                   UNTIL      (IDX-Z       >   SPA-MAX-LINE   )   OR
                               (SPA-ERRCD           NOT =   SPACE )  OR
                               (WRK-GMN-INPUTCD (IDX-Z) =   SPACE )
       *
@@ -4148,8 +4149,8 @@
                    ELSE
                        MOVE    IDX-SYU2        TO  IDX-Z
                        PERFORM
-                           UNTIL   WRK-COM-SRYKBN (IDX-Z) NOT =  "12"
-                            OR     WRK-COM-ZAIEND (IDX-Z)     =  "1"
+                           UNTIL  (WRK-COM-SRYKBN (IDX-Z) NOT =  "12" )
+                            OR    (WRK-COM-ZAIEND (IDX-Z)     =  "1"  )
                            ADD     1               TO  IDX-Z
                        END-PERFORM
       *                外来管理加算コード追加処理
@@ -4171,9 +4172,9 @@
                  AND  (LNK-ORCSC-GAIKANRIKBN-CHK   NOT =   "2" )
                        MOVE    IDX-SYU2        TO  IDX-Z
                        PERFORM
-                           UNTIL   WRK-COM-SRYKBN (IDX-Z)
-                                                         NOT =  "12"
-                            OR     WRK-COM-ZAIEND (IDX-Z)    =  "1"
+                           UNTIL  (WRK-COM-SRYKBN (IDX-Z)
+                                                         NOT =  "12" )
+                            OR    (WRK-COM-ZAIEND (IDX-Z)    =  "1"  )
                            ADD     1               TO  IDX-Z
                        END-PERFORM
       *                外来管理加算コード追加処理
@@ -4230,7 +4231,7 @@
       *
            MOVE    ZERO                TO  IDX-CHU
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL      (IDX         >   200      )   OR
+                   UNTIL      (IDX         >   SPA-MAX-LINE   )   OR
                               (WRK-GMN-INPUTCD(IDX)    =   SPACE )
                IF      IDX             NOT =   IDX-Z
       *                    注加算コード、通番が同じ時エラー
@@ -4263,7 +4264,7 @@
                            MOVE    SPACE           TO  SPA-ERRCD
                        END-IF
                        IF      IDX                 >=  IDX-Z
-                           MOVE    200             TO  IDX
+                           MOVE    SPA-MAX-LINE    TO  IDX
                        END-IF
                    END-IF
                END-IF
@@ -4287,7 +4288,7 @@
            MOVE    ZERO                TO  IDX-DUMMY
       *    診察料
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL      (IDX         >   200      )   OR
+                   UNTIL      (IDX         >   SPA-MAX-LINE  )   OR
                               (WRK-GMN-INPUTCD(IDX)    =   SPACE AND
                                WRK-COM-INPUTCD(IDX)    =   SPACE )
       *        診察料のチェック
@@ -4329,7 +4330,7 @@
            MOVE    ZERO                TO  FLG-DELETE
            MOVE    ZERO                TO  IDX2
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX         >   200
+                   UNTIL       IDX         >   SPA-MAX-LINE
                IF     (HZN-GMN-INPUTCD(IDX)    =   SPACE ) AND
                       (HZN-COM-INPUTCD(IDX)    =   SPACE )
                    CONTINUE
@@ -4350,7 +4351,7 @@
       *    ＤＵＭＭＹ診察料を最初へ
            MOVE    ZERO                TO  IDX2
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX         >   200
+                   UNTIL       IDX         >   SPA-MAX-LINE
                IF     (HZN-GMN-INPUTCD(IDX)    =   SPACE ) AND
                       (HZN-COM-INPUTCD(IDX)    =   SPACE )
                    CONTINUE
@@ -4360,7 +4361,7 @@
                END-IF
            END-PERFORM
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX         >   200
+                   UNTIL       IDX         >   SPA-MAX-LINE
                IF     (HZN2-GMN-INPUTCD(IDX)   =   SPACE ) AND
                       (HZN2-COM-INPUTCD(IDX)   =   SPACE )
                    CONTINUE
@@ -4380,14 +4381,14 @@
        2912-ZAIDEL-SYORI-SEC                SECTION.
       *
            PERFORM VARYING     IDY     FROM    IDX BY  1
-                   UNTIL      (IDY         >   200      )   OR
+                   UNTIL      (IDY         >   SPA-MAX-LINE  )   OR
                               (WRK-GMN-INPUTCD(IDY)    =   SPACE  AND
                                WRK-COM-INPUTCD(IDY)    =   SPACE  )
                IF      WRK-COM-INPUTCD (IDY)   NOT =   "099110001"  AND
                                                        "099120001"
                    MOVE    SPACE               TO  WRK-GMN-INPUTCD(IDY)
                    IF      WRK-COM-ZAIEND (IDY)    =   "1"
-                       MOVE    200                 TO  IDY
+                       MOVE    SPA-MAX-LINE        TO  IDY
                    END-IF
                END-IF
            END-PERFORM

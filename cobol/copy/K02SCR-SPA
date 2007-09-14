@@ -28,6 +28,7 @@
       *  01.00.05    NACL-多々納  02/10/17  入院用追加
       *  01.00.06    NACL-多々納  03/12/09  セット画面に入外区分等追加
       *  01.00.07    NACL-多々納  06/03/02  セット期間追加
+      *  04.00.00    NACL-多々納  07/09/XX  テーブル４００へ
       ************************************************************
       *
        01  SPA-K02.
@@ -289,7 +290,7 @@
       *
       *    訂正の時、算定していた診療コード
            03  SPA-K02-TEISEI-AREA.
-               05  SPA-K02-TEISEI-OCC          OCCURS   200.
+               05  SPA-K02-TEISEI-OCC          OCCURS   400.
                    07  SPA-K02-TEI-SRYCD       PIC X(09).
                    07  SPA-K02-TEI-KAISU       PIC 9(03).
       *    初回算定日設定
@@ -474,7 +475,7 @@
       *
       *    Ｋ０２３画面用
            03  SPA-K023GMN-AREA.
-               05  SPA-K023-TBLREC         OCCURS   100.
+               05  SPA-K023-TBLREC         OCCURS   300.
                    07  SPA-K023-SRYCD      PIC X(09).
                    07  SPA-K023-SRYCDMEI   PIC X(60).
                    07  SPA-K023-INPUTCD-G      OCCURS   3.
@@ -484,7 +485,7 @@
                05  SPA-K023-MAP            PIC 9(02).
                05  SPA-K023-IDX            PIC 9(04).
                05  SPA-K023-MAX            PIC 9(04).
-               05  SPA-K023-PAGE           PIC 9(01).
+               05  SPA-K023-PAGE           PIC 9(03).
                05  SPA-K023-SYORI          PIC 9(01).
       *
       *    Ｋ９９画面用

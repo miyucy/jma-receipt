@@ -42,6 +42,7 @@
       *  03.04.00    NACL-Â¿¡¹Ç¼  07/02/XX  Êñ³ç¿ÇÎÅÂÐ±þ
       *  03.05.00    NACL-Â¿¡¹Ç¼  07/04/XX  ¥°¥ë¡¼¥×¿ÇÎÅÂÐ±þ
       *  03.05.01    NACL-Â¿¡¹Ç¼  07/08/27  ¸øÈñ´ü¸ÂÀÚ¤ìÂÐ±þ
+      *  04.00.00    NACL-Â¿¡¹Ç¼  07/09/XX  ¥Æ¡¼¥Ö¥ë£´£°£°ÂÐ±þ
       *****************************************************************
       *
       *
@@ -171,7 +172,7 @@
            03  WRK-ZAINUM-TBL.
                05  WRK-ZAINUM-G        OCCURS   50.
                    07  WRK-TZAINUM         PIC  9(08)
-                                            OCCURS 15.
+                                           OCCURS 15.
            03  WRK-RENNUM              PIC  9(01).
            03  WRK-RRK-SRYYMD          PIC  X(08).
            03  WRK-RRK-DENPNUM         PIC  9(07).
@@ -2684,12 +2685,6 @@
       *****************************************************************
        10013-HKNCOMBI-SEC        SECTION.
       *
-      *TEST
-           DISPLAY "10013-HKNCOMBI-SEC"
-                    ",SPA-HKNCOMBINUM:" SPA-HKNCOMBINUM
-                    ",FLG-UKETUKE-ARI:" FLG-UKETUKE-ARI
-      *TEST
-      *
            INITIALIZE                  SPA-GMN-HKNCOMBI-LISTG
       *
            INITIALIZE                  ORCSHKNSETAREA
@@ -3257,7 +3252,7 @@
                IF      FLG-COMMENT        =   1
       *            ºÇÂç·å¿ôÈ½Äê
                    MOVE    ZERO                TO  KANACHK-MAX
-                   PERFORM VARYING     IDK     FROM    200  BY  -1
+                   PERFORM VARYING     IDK     FROM    200 BY  -1
                            UNTIL       IDK     <   1
                        IF     KANACHK-MAE-INPUT (IDK:1)    NOT =   SPACE
                           MOVE    IDK             TO  KANACHK-MAX
@@ -5176,7 +5171,7 @@
                           (TNS-CDKBN-KBNNUM-EDA    =  00 ))
       *
                        ADD     1               TO  IDX-TEI
-                       IF      IDX-TEI         <=  200
+                       IF      IDX-TEI         <=  SPA-MAX-LINE
                            MOVE    SRY-SRYCD (IDX) TO  SPA-K02-TEI-SRYCD
                                                              (IDX-TEI)
                            MOVE    WRK-ZAIKAISU    TO  SPA-K02-TEI-KAISU
@@ -5252,7 +5247,7 @@
                IF      TNS-SANTEIRRKKBN        =   ZERO
                    ADD     1                   TO  IDX-TEI
                END-IF
-               IF      IDX-TEI             <=  200
+               IF      IDX-TEI             <=  SPA-MAX-LINE
                   MOVE    WRK-HEN-SRYCD       TO  SPA-K02-TEI-SRYCD
                                                             (IDX-TEI)
                   IF      (TNS-JGNCNT1D         >   ZERO )

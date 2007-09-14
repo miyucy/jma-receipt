@@ -28,8 +28,8 @@ K09	{
 				item	{
 					value0	varchar(3);
 					value1	varchar(90);
-				}	[400];
-				select	bool[400];
+				}	[800];
+				select	bool[800];
 			};
 		};
 		NYUGAIKBN_COMB	{

@@ -48,7 +48,7 @@
       *
       *    ＳＰＡパラメタデータ
        FD  SPASCR-FILE.
-       01  SPA-DATA-REC            PIC X(30000).
+       01  SPA-DATA-REC            PIC X(60000).
       *
       *
        WORKING-STORAGE             SECTION.
@@ -63,7 +63,7 @@
       *
       *
        01  WRK-DATA-REC.
-           03  WRK-DATA            PIC X(30000)
+           03  WRK-DATA            PIC X(60000)
                                    OCCURS  10.
       *
       *    画面色等
@@ -155,6 +155,11 @@
                05  WRK-K023-INPUTCD    PIC X(20).
                05  WRK-K023-CDSYU      PIC X(01).
       *
+      *テーブルＭＡＸ
+       01  MAX-LINE                PIC 9(04)   VALUE   300.
+      *
+       01  MAX-GMN                 PIC 9(04)   VALUE   20.
+       01  MAX-PAGE                PIC 9(04)   VALUE   15.
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -391,8 +396,8 @@
            MOVE    ZERO                TO  FLG-OK
            MOVE    ZERO                TO  SPA-K023-MAX
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL      (IDX     >   SPA-GMN-MAX  )  OR
-                              (SPA-K023-MAX    >   100 )
+                   UNTIL      (IDX             >   SPA-GMN-MAX  )  OR
+                              (SPA-K023-MAX    >   MAX-LINE )
                MOVE    ZERO                TO  FLG-OK
                IF     (SPA-GMN-INPUTCD (IDX)(1:1)  =   "." OR "S" )  OR
                       (SPA-COM-INPUTCD (IDX)       =   SPACE     )   OR
@@ -419,7 +424,7 @@
                    END-PERFORM
                    IF      FLG-K023            =   ZERO
                        ADD     1               TO  SPA-K023-MAX
-                       IF      SPA-K023-MAX    >   100
+                       IF      SPA-K023-MAX    >   MAX-LINE
                            CONTINUE
                        ELSE
                            MOVE    SPA-COM-INPUTCD (IDX)
@@ -438,6 +443,10 @@
                    END-IF
                END-IF
            END-PERFORM
+      *
+           IF      SPA-K023-MAX        >   MAX-LINE
+               MOVE    MAX-LINE            TO  SPA-K023-MAX
+           END-IF
       *
            .
        310-SPA-SET-EXT.
@@ -513,7 +522,7 @@
                    AT  END
                        MOVE   1            TO  FLG-SPASCR
                    NOT AT  END
-                       ADD    1            TO  IDX
+                       ADD    1                TO  IDX
                        MOVE   SPA-DATA-REC     TO  WRK-DATA (IDX)
                END-READ
            END-PERFORM
@@ -535,12 +544,12 @@
       *
            MOVE    ZERO                TO  IDY
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX     >   20
+                   UNTIL       IDX     >   MAX-GMN
                COMPUTE IDY             =   IDX
                                        + ((SPA-K023-PAGE   -   1 )
-                                       *   20   )
+                                       *   MAX-GMN   )
                IF      IDY             >   SPA-K023-MAX
-                   MOVE    20              TO  IDX
+                   MOVE    MAX-GMN         TO  IDX
                ELSE
                    MOVE    SPA-K023-SRYCD   (IDY)  TO  K023-SRYCD (IDX)
                    MOVE    SPA-K023-SRYCDMEI (IDY) TO  K023-SRYCDMEI
@@ -580,7 +589,7 @@
                MOVE    1               TO  SPA-K023-MAP
            END-IF
       *
-           IF      SPA-K023-MAP        >   20
+           IF      SPA-K023-MAP        >   MAX-GMN
                MOVE    5               TO  SPA-K023-CUR
            ELSE
                IF     (SPA-K023-IDX        >   SPA-K023-MAX )  OR
@@ -763,7 +772,7 @@
       *
       *    空白削除
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX             >   100
+                   UNTIL       IDX             >   MAX-LINE
                PERFORM VARYING     IDY     FROM    1   BY  1
                        UNTIL       IDY             >   3
                    IF     (SPA-K023-INPUTCD (IDX IDY)  =   SPACE) AND
@@ -785,8 +794,8 @@
       *
       *    入力コードチェック
            PERFORM VARYING     IDX-1   FROM    1   BY  1
-                   UNTIL      (IDX-1             >   100 )   OR
-                              (SPA-ERRCD     NOT =   SPACE )
+                   UNTIL      (IDX-1           >   MAX-LINE ) OR
+                              (SPA-ERRCD   NOT =   SPACE )
                COMPUTE WRK-PAGE        =  ((IDX-1    -   1 )
                                        /   20  )
                                        +   1
@@ -1148,6 +1157,7 @@
       *
            IF      SPA-K023-PAGE       =   1
                MOVE    1                   TO  SPA-K023-PAGE
+               MOVE     "0013"             TO  SPA-ERRCD
            ELSE
                COMPUTE SPA-K023-PAGE       =   SPA-K023-PAGE   -   1
            END-IF
@@ -1169,16 +1179,15 @@
                GO      TO      460-ATOGMN-EXT
            END-IF
       *
-      *
-           COMPUTE IDX                 =   SPA-K023-PAGE   *   20 
+           COMPUTE IDX                 =   SPA-K023-PAGE   *   MAX-GMN
                                        +   1
+      *
            IF      IDX                 >   SPA-K023-MAX
-               GO  TO                 460-ATOGMN-EXT
+               MOVE     "0012"             TO  SPA-ERRCD
+           ELSE
+               ADD     1                   TO  SPA-K023-PAGE
+               MOVE    1                   TO  SPA-K023-MAP
            END-IF
-      *
-           ADD     1                   TO  SPA-K023-PAGE
-      *
-           MOVE    1                   TO  SPA-K023-MAP
            MOVE    1                   TO  SPA-K023-CUR
            .
        460-ATOGMN-EXT.
@@ -1488,6 +1497,12 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                                  TO  SPA-ERRMSG
                    MOVE    "全角５文字までにして下さい。"
                                                  TO  SPA-ERRMSG(31:)
+               WHEN    "0012"
+                   MOVE    "次頁はありません。"
+                                                 TO  SPA-ERRMSG
+               WHEN    "0013"
+                   MOVE    "前頁はありません。"
+                                                 TO  SPA-ERRMSG
            END-EVALUATE
       *
       *

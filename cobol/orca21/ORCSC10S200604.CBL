@@ -57,6 +57,7 @@
       * 03.04.01     NACL-Â¿¡¹Ç¼  07/04/XX  H19.4²þÀµ
       * 03.05.00     NACL-Â¿¡¹Ç¼  07/04/XX  ¥°¥ë¡¼¥×¿ÇÎÅÂÐ±þ
       * 03.05.01     NACL-Â¿¡¹Ç¼  07/07/XX  Æ±ÆüºÆ¿Ç¤ÈÄûÀµ¤ÎÁªÂòÂÐ±þÂ¾
+      * 04.00.00     NACL-Â¿¡¹Ç¼  07/09/XX  ¥Æ¡¼¥Ö¥ë£´£°£°ÂÐ±þ
       *****************************************************************
       *
       *
@@ -661,7 +662,7 @@
       *
       *    ÄûÀµ¤Î»þ¡¢½é¿ÇÎÁ¤ò»»ÄêÃæ¤«¤ÎÈ½Äê
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL      (IDX     >   200    )  OR
+                   UNTIL      (IDX     >   SPA-MAX-LINE )  OR
                               (SPA-COM-INPUTCD(IDX) =   SPACE  AND
                                SPA-GMN-INPUTCD(IDX) =   SPACE )
                EVALUATE    SPA-COM-INPUTCD (IDX)
@@ -1161,7 +1162,7 @@
            MOVE    ZERO                TO  FLG-SYONIKA-TEI
            IF      SPA-SYORIFLG        =   1
                PERFORM VARYING    IDX-T    FROM    1   BY  1
-                       UNTIL     (IDX-T    >   100 )  OR
+                       UNTIL     (IDX-T    >   SPA-MAX-LINE )  OR
                                  (SPA-K02-TEI-SRYCD(IDX-T) =   SPACE)
                    EVALUATE    SPA-K02-TEI-SRYCD(IDX-T)
       *        ¾®»ù²Ê³°Íè¿ÇÎÅ²Ê
@@ -1170,7 +1171,7 @@
                        WHEN    "113003710"
                        WHEN    "113003810"
                            MOVE    1           TO  FLG-SYONIKA-TEI
-                           MOVE    100         TO  IDX-T
+                           MOVE    SPA-MAX-LINE    TO  IDX-T
                    END-EVALUATE
                END-PERFORM
            END-IF
@@ -1259,12 +1260,12 @@
       *        ÄûÀµ¤Î»þ¡¢»»Äê¤·¤Æ¤¤¤¿¿ÇÎÅ¥³¡¼¥É¤«¤Î¥Á¥§¥Ã¥¯
                MOVE    ZERO                TO  WRK-TEI-KAISU
                PERFORM VARYING     IDX-T   FROM    1   BY  1
-                       UNTIL      (IDX-T       >   100 )  OR
+                       UNTIL      (IDX-T       >   SPA-MAX-LINE  )  OR
                                   (SPA-K02-TEI-SRYCD(IDX-T)  =   SPACE)
                    IF      SPA-K02-TEI-SRYCD(IDX-T)    =   SANTEI-SRYCD
                        MOVE    SPA-K02-TEI-KAISU (IDX-T)
                                                    TO  WRK-TEI-KAISU
-                       MOVE    100                 TO  IDX-T
+                       MOVE    SPA-MAX-LINE            TO  IDX-T
                    END-IF
                END-PERFORM
                MOVE    SPA-SRYYMD(7:2)     TO  IDX-Y2
@@ -2908,8 +2909,8 @@
            MOVE    HZN-SCR-REC         TO  WRK-SCR-REC
       *    Å¸³«»þ¤ÎÆâÍÆ¤ÇÈ½ÃÇ¤¹¤ë
            COMPUTE WRK-GMN-MAX         =   WRK-GMN-MAX   +   1
-           IF      WRK-GMN-MAX         >   200
-               MOVE    200                TO  WRK-GMN-MAX
+           IF      WRK-GMN-MAX         >   SPA-MAX-LINE
+               MOVE    SPA-MAX-LINE            TO  WRK-GMN-MAX
            END-IF
            INITIALIZE                      WRK-GMN-TBL (WRK-GMN-MAX)
            MOVE    WRK-SRYCD           TO  WRK-COM-INPUTCD(WRK-GMN-MAX)
@@ -2917,11 +2918,11 @@
            IF      LNK-SC10S-SYORI     =   "E"
       *        ½é¿ÇÎÁ¤«¤éºÆ¿Ç¤Ø¤ÎÊÑ¹¹»þ¡¢½é¿ÇÎÁ¤òºï½ü
                PERFORM VARYING     IDX     FROM    1   BY  1
-                       UNTIL      (IDX     >   200  )
+                       UNTIL      (IDX     >   SPA-MAX-LINE )
                    IF     (WRK-COM-INPUTCD (IDX)(1:1)  =   "1" )
                       AND (WRK-COM-SRYKBN (IDX)    =   "11"    )
                        MOVE    SPACE           TO  WRK-COM-INPUTCD (IDX)
-                       MOVE    200             TO  IDX
+                       MOVE    SPA-MAX-LINE        TO  IDX
                    END-IF
                END-PERFORM
            END-IF
@@ -2945,7 +2946,7 @@
                                        SPA-AREA
       *
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL      (IDX     >   200                )  OR
+                   UNTIL      (IDX     >   SPA-MAX-LINE           )  OR
                               (SPA-ERRCD       NOT  =   SPACE )  OR
                              ((HZN-COM-INPUTCD(IDX) =   SPACE ) AND
                               (HZN-GMN-INPUTCD(IDX) =   SPACE ))
@@ -3072,7 +3073,7 @@
        330122-JYUFUKU-CHK-SEC         SECTION.
       *
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL      (IDX     >   200                )  OR
+                   UNTIL      (IDX     >   SPA-MAX-LINE          )  OR
                               (SPA-ERRCD       NOT  =   SPACE )  OR
                              ((SPA-COM-INPUTCD(IDX) =   SPACE ) AND
                               (SPA-GMN-INPUTCD(IDX) =   SPACE ))
@@ -3365,7 +3366,7 @@
       *
            MOVE    ZERO                TO  FLG-TEL-ARI
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL      (IDX     >   200  )  OR
+                   UNTIL      (IDX     >   SPA-MAX-LINE  )  OR
                              ((SPA-GMN-INPUTCD(IDX)    =   SPACE) AND
                               (SPA-COM-INPUTCD(IDX)    =   SPACE)) OR
                               (FLG-TEL-ARI     =   1   )
@@ -3411,7 +3412,7 @@
       *****MOVE    ZERO                TO  WRK-GAIRAI-IDX
       *
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL      (IDX         >   200 )  OR
+                   UNTIL      (IDX         >   SPA-MAX-LINE )  OR
                               (SPA-COM-INPUTCD (IDX)  =   SPACE AND
                                SPA-GMN-INPUTCD (IDX)  =   SPACE )
                EVALUATE    SPA-COM-INPUTCD (IDX)
@@ -3685,7 +3686,7 @@
            END-IF
       *
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL      (IDX     >   200                )  OR
+                   UNTIL      (IDX     >   SPA-MAX-LINE          )  OR
                               (SPA-COM-INPUTCD(IDX) =   SPACE  AND
                                SPA-GMN-INPUTCD(IDX) =   SPACE )
              IF      SPA-COM-HKNCOMBI (IDX)    NOT =   "9999"
@@ -3889,7 +3890,7 @@
       *
            MOVE    ZERO                TO  FLG-KBN
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL      (IDX         >   200      )   OR
+                   UNTIL      (IDX         >   SPA-MAX-LINE )   OR
                               (SPA-ERRCD           NOT =   SPACE )  OR
                               (SPA-GMN-INPUTCD (IDX)   =   SPACE )
       *      ¼«Èñ¤ÏÂÐ¾Ý³°
@@ -4161,7 +4162,7 @@
        5020-ROUMANSEI-CHK-SEC                SECTION.
       *
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL      (IDX         >   200      )   OR
+                   UNTIL      (IDX         >   SPA-MAX-LINE  )   OR
                               (SPA-ERRCD           NOT =   SPACE )  OR
                               (SPA-GMN-INPUTCD (IDX)   =   SPACE )
       *      Êñ³çÊÝ¸±
@@ -4232,7 +4233,7 @@
       *5021-NETAKIRI-CHK-SEC                SECTION.
       *
       *    PERFORM VARYING     IDX     FROM    1   BY  1
-      *            UNTIL      (IDX         >   200      )   OR
+      *            UNTIL      (IDX         >   SPA-MAX-LINE    )   OR
       *                       (SPA-ERRCD           NOT =   SPACE )  OR
       *                       (SPA-GMN-INPUTCD (IDX)   =   SPACE )
       *        ¸¡ºº¡¢ÅêÌô¤Ï»»Äê¤Ç¤­¤Ê¤¤
@@ -4294,7 +4295,7 @@
        5022-SEIKATU-CHK-SEC                SECTION.
       *
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL      (IDX         >   200      )   OR
+                   UNTIL      (IDX         >   SPA-MAX-LINE   )   OR
                               (SPA-ERRCD           NOT =   SPACE )  OR
                               (SPA-GMN-INPUTCD (IDX)   =   SPACE )
       *      Êñ³çÊÝ¸±
@@ -4364,7 +4365,7 @@
        5022-ZAIKANRI-CHK-SEC                SECTION.
       *
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL      (IDX         >   200      )   OR
+                   UNTIL      (IDX         >   SPA-MAX-LINE    )   OR
                               (SPA-ERRCD           NOT =   SPACE )  OR
                               (SPA-GMN-INPUTCD (IDX)   =   SPACE )
       *      Êñ³çÊÝ¸±
@@ -4428,7 +4429,7 @@
        5022-ZAIMATU-CHK-SEC                SECTION.
       *
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL      (IDX         >   200      )   OR
+                   UNTIL      (IDX         >   SPA-MAX-LINE    )   OR
                               (SPA-ERRCD           NOT =   SPACE )  OR
                               (SPA-GMN-INPUTCD (IDX)   =   SPACE )
       *      Êñ³çÊÝ¸±
@@ -4500,7 +4501,7 @@
       *    MOVE    ZERO                TO  IDX-SIN
       *    MOVE    ZERO                TO  IDX-GAI
       *    PERFORM VARYING     IDX     FROM    1   BY  1
-      *            UNTIL      (IDX     >   200                )  OR
+      *            UNTIL      (IDX     >   SPA-MAX-LINE        )  OR
       *                       (SPA-COM-INPUTCD(IDX) =   SPACE  AND
       *                        SPA-GMN-INPUTCD(IDX) =   SPACE )
       *
@@ -4716,7 +4717,7 @@
            MOVE    ZERO                TO  FLG-TAKA
            MOVE    ZERO                TO  FLG-ARI
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL      (IDX     >   200    )  OR
+                   UNTIL      (IDX     >   SPA-MAX-LINE    )  OR
                              ((SPA-COM-INPUTCD(IDX) =   SPACE ) AND
                               (SPA-GMN-INPUTCD(IDX) =   SPACE ))
       *        ¿Ç»¡ÎÁ¸¡º÷
@@ -4888,7 +4889,7 @@
            MOVE    ZERO                TO  FLG-FUKU
            MOVE    IDX2                TO  IDX-INT-MAX
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL      (IDX     >   200  )  OR
+                   UNTIL      (IDX     >   SPA-MAX-LINE  )  OR
                              ((HZN-COM-INPUTCD (IDX)   =   SPACE ) AND
                               (HZN-GMN-INPUTCD (IDX)   =   SPACE ))
       *
@@ -4925,7 +4926,7 @@
       *
       *        ºÞËè¤ËÂÐ¾Ý¤òÊÔ½¸¤¹¤ë
                IF     (HZN-COM-ZAIEND (IDX)    =   "1" )  OR
-                     ((IDX                     <   200  )  AND
+                     ((IDX                     <   SPA-MAX-LINE  )  AND
                       (WRK-GMN-INPUTCD(IDX + 1)(1:1)  =  "."))
                    IF     (IDX3                =   1  )  AND
                           (WRK-GMN-INPUTCD(IDX3)(1:1)  =  "." )
@@ -5163,7 +5164,7 @@
       *    ¿ÇÎÅ¹Ô°ÙÆâÍÆ¤ÎÊÔ½¸
            MOVE    ZERO                TO  FLG-CHK
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL      (IDX     >   200  )  OR
+                   UNTIL      (IDX     >   SPA-MAX-LINE  )  OR
                               (HZN-COM-INPUTCD (IDX)   =   SPACE   AND
                                HZN-GMN-INPUTCD (IDX)   =   SPACE )
                IF     (HZN-COM-SRYKBN(IDX)     =   "11"  OR  "12"
@@ -5199,7 +5200,7 @@
       *    Ê£¿ô²Ê¤¬¤¢¤ë»þ¡¢ºÆÊÔ½¸
            MOVE    ZERO                TO  FLG-FUKU-ARI
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL      (IDX     >   200    )  OR
+                   UNTIL      (IDX     >   SPA-MAX-LINE   )  OR
                              ((SPA-COM-INPUTCD(IDX) =   SPACE ) AND
                               (SPA-GMN-INPUTCD(IDX) =   SPACE ))
                IF      SPA-GMN-INPUTCD(IDX)(1:1)   =   "$"
@@ -5227,7 +5228,7 @@
            END-IF
       *
            PERFORM VARYING     IDX-A   FROM    LNK-SC10S-STRIDX   BY  1
-                   UNTIL      (IDX-A   >   200  )  OR
+                   UNTIL      (IDX-A   >   SPA-MAX-LINE  )  OR
                              ((SPA-COM-INPUTCD (IDX-A) =   SPACE ) AND
                               (SPA-GMN-INPUTCD (IDX-A) =   SPACE )) OR
                               (SPA-ERRCD           NOT =   SPACE )
@@ -5317,13 +5318,13 @@
       *
            MOVE    ZERO                TO  FLG-DOUSYOSIN
            PERFORM VARYING     IDX     FROM    IDX-A   BY  1
-                   UNTIL      (IDX         >   200 )  OR
+                   UNTIL      (IDX         >   SPA-MAX-LINE )  OR
                              ((SPA-COM-INPUTCD (IDX) =   SPACE ) AND
                               (SPA-GMN-INPUTCD (IDX) =   SPACE )) OR
                               (FLG-DOUSYOSIN           =   1   )
                IF     (IDX-A                   NOT =   IDX )  AND
                       (SPA-GMN-INPUTCD(IDX)(1:1)   =   "$" )
-                   MOVE    200                 TO  IDX
+                   MOVE    SPA-MAX-LINE                TO  IDX
                ELSE
       *            Æ±Æü½é¿Ç
                    IF      SPA-COM-INPUTCD (IDX)   =   "111011810"
@@ -5530,7 +5531,7 @@
            ELSE
                MOVE    "830000021"         TO  WRK-SRYCD
            END-IF
-           IF      IDX-A               <   200
+           IF      IDX-A               <   SPA-MAX-LINE
                IF      SPA-COM-INPUTCD(IDX-A + 1)
                                            =   "830000020"  OR
                                                "830000021"
@@ -5576,7 +5577,7 @@
       *TE      Ï«ºÒ
                MOVE   "101110040"          TO  WRK-SRYCD
            END-IF
-           IF      IDX-A               <   200
+           IF      IDX-A               <   SPA-MAX-LINE
                IF      SPA-COM-INPUTCD(IDX-A + 1)
                                            =   WRK-SRYCD
                    ADD     1               TO  IDX-A
@@ -5695,7 +5696,7 @@
            MOVE    ZERO                TO  FLG-KA-ARI
            COMPUTE IDX4                =   IDX-A   +  1
            PERFORM VARYING     IDX     FROM    IDX4    BY  1
-                   UNTIL     ( IDX         >   200     )  OR
+                   UNTIL     ( IDX         >   SPA-MAX-LINE     )  OR
                              ((SPA-GMN-INPUTCD(IDX)    =   SPACE ) AND
                               (SPA-COM-INPUTCD(IDX)    =   SPACE )) OR
                              ( FLG-CHK3    =   1       )
@@ -5845,7 +5846,7 @@
                ELSE
                    MOVE    "099999902"     TO  WRK-SRYCD
                END-IF
-               IF      IDX-A           <   200
+               IF      IDX-A           <   SPA-MAX-LINE
                    ADD     1               TO  IDX-A
                    PERFORM 1015119-GYOINSN-SEC
                    IF      SPA-ERRCD       =   SPACE
@@ -5872,7 +5873,7 @@
       *****************************************************************
        1015119-GYOINSN-SEC              SECTION.
       *
-           IF      IDX-A               >=  200
+           IF      IDX-A               >=  SPA-MAX-LINE
                MOVE    "0007"              TO  SPA-ERRCD
                GO      TO      1015119-GYOINSN-EXT
            END-IF
@@ -5881,7 +5882,7 @@
            INITIALIZE                      SPA-GMN-REC
            MOVE    ZERO                TO  IDX2
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX     >   200
+                   UNTIL       IDX     >   SPA-MAX-LINE
                IF      IDX             =   IDX-A
                    CONTINUE
                ELSE

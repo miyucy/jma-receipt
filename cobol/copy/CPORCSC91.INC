@@ -42,7 +42,7 @@
            03  LNK-SC91-SURYO          PIC 9(03).
       *    訂正時の診療コード
            03  LNK-SC91-TEISEI-AREA.
-               05  LNK-SC91-TEISEI-OCC      OCCURS   200.
+               05  LNK-SC91-TEISEI-OCC      OCCURS   400.
                    07  LNK-SC91-TEI-SRYCD   PIC X(09).
                    07  LNK-SC91-TEI-KAISU   PIC 9(03).
       *    労災のリハビリ（０：チェックあり、１：３月以内なし）

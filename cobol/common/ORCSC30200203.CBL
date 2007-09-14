@@ -256,7 +256,7 @@
            MOVE    SPACE               TO  WRK-ERRCD
       *
            PERFORM VARYING     IDX-Z   FROM    1   BY  1
-                   UNTIL      (IDX-Z       >   200     )   OR
+                   UNTIL      (IDX-Z       >   SPA-MAX-LINE  )   OR
                               (WRK-GMN-INPUTCD (IDX-Z) =   SPACE )
       *
                ADD     1                   TO  IDX-MAX
@@ -520,8 +520,8 @@
                                                             (2:3)
       *
                        PERFORM VARYING     IDX     FROM    1   BY  1
-                                UNTIL     (IDX         >   200  )  OR
-                                          (WRK-GMN-INPUTCD (IDX)
+                                UNTIL     (IDX         >   SPA-MAX-LINE)
+                                       OR (WRK-GMN-INPUTCD (IDX)
                                                       =   SPACE )
                            MOVE    WRK-COM-SRYSYUKBN(IDX-SYU)
                                                TO  WRK-COM-SRYSYUKBN
@@ -578,8 +578,8 @@
                        END-IF
       *
                        PERFORM VARYING     IDX     FROM    1   BY  1
-                                UNTIL     (IDX         >   200  )  OR
-                                          (WRK-GMN-INPUTCD (IDX)
+                                UNTIL     (IDX         >   SPA-MAX-LINE)
+                                      OR  (WRK-GMN-INPUTCD (IDX)
                                                       =   SPACE )
                            MOVE    WRK-COM-SRYSYUKBN(IDX-SYU)
                                                TO  WRK-COM-SRYSYUKBN
@@ -664,7 +664,7 @@
            MOVE    ZERO                TO  FLG-ARI
            MOVE    ZERO                TO  IDX-T
            PERFORM VARYING     IDX1    FROM    1   BY  1
-                   UNTIL      (IDX1        >   200     )   OR
+                   UNTIL      (IDX1        >   SPA-MAX-LINE   ) OR
                               (FLG-ARI                 =   1    ) OR
                               (WRK-GMN-INPUTCD (IDX1)  =   SPACE )
                IF       WRK-COM-INPUTCD (IDX1) =   WRK-SRYCD
@@ -755,7 +755,7 @@
            INITIALIZE                  ORCSC90AREA
       *
            PERFORM VARYING     IDX-Z   FROM    1   BY  1
-                   UNTIL      (IDX-Z       >   200     )   OR
+                   UNTIL      (IDX-Z       >   SPA-MAX-LINE  )  OR
                               (SPA-ERRCD       NOT =   SPACE )  OR
                               (WRK-GMN-INPUTCD (IDX-Z) =   SPACE )
       *
@@ -888,7 +888,7 @@
            MOVE    ZERO                TO  WRK-TENSUKEI-G
       *
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL      (IDX         >   200     )   OR
+                   UNTIL      (IDX         >   SPA-MAX-LINE )   OR
                               (WRK-GMN-INPUTCD (IDX)   =   SPACE )
       *        手技料の点数を所定点数とする
                IF     (WRK-COM-INPUTCD(IDX)(1:1)   =   "1" )  AND
@@ -912,7 +912,7 @@
       *    自動加算の加算（時間外、年齢）
            MOVE    ZERO                TO  WRK-TENSUKEI-G
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL      (IDX         >   200     )   OR
+                   UNTIL      (IDX         >   SPA-MAX-LINE )   OR
                               (WRK-GMN-INPUTCD (IDX)   =   SPACE )
                IF     (WRK-COM-INPUTCD(IDX)(1:1)   =   "1" )  AND
                       (WRK-COM-TENSIKIBETU(IDX)    =   5   )  AND
@@ -971,7 +971,7 @@
            MOVE    ZERO                TO  FLG-TENTEKI
       *
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL      (IDX     >   200  )  OR
+                   UNTIL      (IDX     >   SPA-MAX-LINE  )  OR
                               (WRK-GMN-INPUTCD(IDX) =   SPACE)  OR
                               (SPA-ERRCD        NOT =   SPACE)
       *        点滴は１回のみとする

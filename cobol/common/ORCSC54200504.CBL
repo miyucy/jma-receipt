@@ -278,7 +278,7 @@
            INITIALIZE                  WRK-AREA
       *
            PERFORM VARYING     IDX-Z   FROM    1   BY  1
-                   UNTIL      (IDX-Z       >   200     )   OR
+                   UNTIL      (IDX-Z       >   SPA-MAX-LINE )   OR
                               (SPA-ERRCD       NOT =   SPACE )  OR
                               (WRK-GMN-INPUTCD (IDX-Z) =   SPACE )
       *
@@ -411,7 +411,7 @@
            MOVE    "770020070"         TO  WRK-SRYCD
            MOVE    ZERO                TO  FLG-ARI
            PERFORM VARYING     IDX1    FROM    1   BY  1
-                   UNTIL      (IDX1    >   200  )  OR
+                   UNTIL      (IDX1    >   SPA-MAX-LINE  )  OR
                               (WRK-COM-INPUTCD(IDX1)   =   SPACE AND
                                WRK-GMN-INPUTCD(IDX1)   =   SPACE )
                IF       WRK-COM-INPUTCD (IDX1) =   WRK-SRYCD
@@ -486,7 +486,7 @@
            MOVE    ZERO                TO  IDX-TUS
       *
            PERFORM VARYING     IDX1    FROM    1    BY  1
-                   UNTIL      (IDX1        >   200     )   OR
+                   UNTIL      (IDX1        >   SPA-MAX-LINE   )   OR
                               (WRK-GMN-INPUTCD (IDX1)  =   SPACE  AND
                                WRK-COM-INPUTCD (IDX1)  =   SPACE )
       *        主たる手技を判定対象とする
@@ -636,7 +636,7 @@
            MOVE    ZERO                TO  FLG-ARI
            MOVE    ZERO                TO  IDX-T
            PERFORM VARYING     IDX1    FROM    1   BY  1
-                   UNTIL      (IDX1        >   200     )   OR
+                   UNTIL      (IDX1        >   SPA-MAX-LINE   )   OR
                               (FLG-ARI                 =   1    ) OR
                               (WRK-GMN-INPUTCD (IDX1)  =   SPACE )
                IF       WRK-COM-INPUTCD (IDX1) =   WRK-SRYCD
@@ -730,7 +730,7 @@
            MOVE    ZERO                TO  IDX-T
            MOVE    ZERO                TO  IDX-TUS
            PERFORM VARYING     IDX1    FROM    1   BY  1
-                   UNTIL      (IDX1        >   200     )   OR
+                   UNTIL      (IDX1        >   SPA-MAX-LINE    )   OR
       *****************       (FLG-ARI                 =   1    )  OR
                               (WRK-GMN-INPUTCD (IDX1)  =   SPACE  AND
                                WRK-COM-INPUTCD (IDX1)  =   SPACE )
@@ -906,7 +906,7 @@
            INITIALIZE                  ORCSC90AREA
       *
            PERFORM VARYING     IDX-Z   FROM    1   BY  1
-                   UNTIL      (IDX-Z       >   200     )   OR
+                   UNTIL      (IDX-Z       >   SPA-MAX-LINE  )   OR
                               (WRK-GMN-INPUTCD (IDX-Z) =   SPACE )
       *
                ADD     1                   TO  IDX-MAX
@@ -1177,7 +1177,7 @@
            INITIALIZE                  TBL-CHK-AREA
       *
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL      (IDX     >   200  )  OR
+                   UNTIL      (IDX     >   SPA-MAX-LINE  )  OR
                               (WRK-GMN-INPUTCD(IDX) =   SPACE)  OR
                               (SPA-ERRCD        NOT =   SPACE)
       *        神経ブロック判定

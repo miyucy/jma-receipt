@@ -248,7 +248,7 @@
            PERFORM UNTIL   FLG-SANTEI      =   1
                MOVE    ZERO            TO  FLG-OK
                PERFORM VARYING     IDX-T   FROM    1   BY  1
-                       UNTIL      (IDX-T   >   200  )  OR
+                       UNTIL      (IDX-T   >   SPA-MAX-LINE )  OR
                                   (FLG-OK  =   1    )  OR
                                   (LNK-SANFUKA-TEI-SRYCD(IDX-T)
                                            =   SPACE )

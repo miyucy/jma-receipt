@@ -186,7 +186,7 @@
            03  WRK-HOUKATU-ZAI         PIC 9(01).
       *
       *画面最大行
-       01  WRK-GYO-MAX                 PIC 9(04)   VALUE   200.
+      *01  WRK-GYO-MAX                 PIC 9(04)   VALUE   400.
       *
       *    小児科外来診察料テーブル
            COPY   "CMSYONIKATBL.INC".
@@ -280,7 +280,7 @@
            COPY    "ORCA-SPA".
       *
        01  LNK-WKSRYACT-AREA.
-           02  LNK-WKSRYACT-REC          OCCURS   200.
+           02  LNK-WKSRYACT-REC          OCCURS   400.
            COPY    "CPWKSRYACT.INC"  REPLACING
                                      //WKSRY-// BY //LNK-WKSRY-//.
        01  LNK-WKSRYACT-MAX           PIC 9(04).
@@ -382,8 +382,8 @@
                IF      PARA-FILEMEI        =   "WKSRYACT"
                    IF      PARA-DATA-REC   NOT =   SPACE
                        ADD     1                   TO  LNK-WKSRYACT-MAX
-                       IF      LNK-WKSRYACT-MAX    >   200
-                           DISPLAY "K02 LNK-WKSRYACT-MAX 200 OVR"
+                       IF      LNK-WKSRYACT-MAX    >   SPA-MAX-LINE
+                           DISPLAY "K02 LNK-WKSRYACT-MAX 400 OVR"
                            MOVE    "9000"          TO  SPA-ERRCD
                        ELSE
                            MOVE    PARA-DATA-REC   TO  LNK-WKSRYACT-REC
@@ -451,7 +451,7 @@
       *
            PERFORM     VARYING   IDX   FROM    1   BY  1
                        UNTIL    (IDX   >   LNK-WKSRYACT-MAX )  OR
-                                (IDX2  >   WRK-GYO-MAX      )
+                                (IDX2  >   SPA-MAX-LINE     )
       *
                MOVE    1               TO  IDX1
       *        前回再編集の時、小児科外来診療科算定の時、薬剤のみとする
@@ -574,7 +574,7 @@
       *            入力回数（入院のみ）
                    IF      LNK-WKSRY-INPUTCD(IDX IDY)(1:1) =   "*"
                        ADD     1               TO  IDX2
-                       IF      IDX2            >   WRK-GYO-MAX
+                       IF      IDX2            >   SPA-MAX-LINE
                            MOVE    "9100"          TO  WRK-ERRCD1
                        ELSE
                            MOVE    LNK-WKSRY-SRYSYUKBN (IDX)
@@ -609,11 +609,11 @@
                IF     (IDXS                >   ZERO  )  OR
                       (FLG-SET             =   1     ) 
                    IF     (IDX                 =   LNK-WKSRYACT-MAX ) OR
-                          ((IDX                <   200  ) AND
+                          ((IDX                <   SPA-MAX-LINE  ) AND
                            (LNK-WKSRY-ZAINUM (IDX + 1)
                                            NOT =   LNK-WKSRY-ZAINUM
                                                                 (IDX)))
-                       IF      IDX2            <=  WRK-GYO-MAX
+                       IF      IDX2            <=  SPA-MAX-LINE
                            MOVE    "1"             TO  SPA-COM-KAIFLG
                                                                (IDX2)
                            MOVE    "1"             TO  SPA-COM-ZAIEND
@@ -687,15 +687,15 @@
                END-IF
            END-IF
       *
-           IF      IDX2                >   WRK-GYO-MAX
-               MOVE    WRK-GYO-MAX     TO  IDX2
+           IF      IDX2                >   SPA-MAX-LINE
+               MOVE    SPA-MAX-LINE        TO  IDX2
            END-IF
            MOVE    ZERO                TO  IDX-TEI
            COMPUTE IDX-STR             =   ORCSCWKSRY-STRIDX  +  1
       *    ワーク診療行為の時、セットの展開
            IF     (FLG-WKSYORIFLG      =   1     )
                PERFORM VARYING     IDX-1 FROM    IDX-STR BY  1
-                       UNTIL      (IDX-1     >   WRK-GYO-MAX )
+                       UNTIL      (IDX-1     >   SPA-MAX-LINE )
                             OR   ((SPA-GMN-INPUTCD(IDX-1) =   SPACE )
                               AND (SPA-COM-INPUTCD(IDX-1) =   SPACE ))
                    IF      (SPA-GMN-INPUTCD(IDX-1)(1:1)   =   "P" )  OR
@@ -707,7 +707,7 @@
            END-IF
       *    約束コード以外の画面再編集
            PERFORM VARYING     IDX-1 FROM    IDX-STR BY  1
-                   UNTIL      (IDX-1     >   WRK-GYO-MAX )  OR
+                   UNTIL      (IDX-1     >   SPA-MAX-LINE )  OR
                              ((SPA-GMN-INPUTCD(IDX-1) =   SPACE )
                           AND (SPA-COM-INPUTCD(IDX-1) =   SPACE ))
                IF     (SPA-GMN-INPUTCD(IDX-1)(1:1)   =   "S" OR ".") OR
@@ -753,7 +753,7 @@
                        IF     (SPA-COM-KAISU(IDX-1)    >   1  )  OR
                               (SPA-COM-SRYKBN(IDX-1)(1:1)
                                                    =   "2"    )  OR
-                              (IDX-1               =   WRK-GYO-MAX)
+                              (IDX-1               =   SPA-MAX-LINE)
                            CONTINUE
                        ELSE
                            IF     (SPA-COM-INPUTCD(IDX-1 + 1)
@@ -824,7 +824,7 @@
                    IF     (SPA-COM-INPUTCD(IDX)    =   "114701210" OR
                                                        "114701710" )
       *                次行が自動発生の２４時間加算の時、自動としない
-                       IF      (IDX                <   WRK-GYO-MAX) AND
+                       IF      (IDX                <   SPA-MAX-LINE) AND
                                (SPA-COM-AUTOKBN (IDX + 1)  =   "2")
                            MOVE    SPACE           TO  SPA-COM-AUTOKBN
                                                            (IDX + 1)
@@ -893,7 +893,7 @@
       *    約束コードの画面用再編集
            MOVE    SPACE               TO  WRK-ERRCD
            PERFORM VARYING     IDX-1   FROM    IDX-STR   BY  1
-                   UNTIL      (IDX-1   >   WRK-GYO-MAX )  OR
+                   UNTIL      (IDX-1   >   SPA-MAX-LINE )  OR
                              ((SPA-COM-INPUTCD(IDX-1)    =   SPACE) AND
                               (SPA-GMN-INPUTCD(IDX-1)    =   SPACE))
                IF      SPA-COM-INPUTCD(IDX-1)(1:1)   =   "S"
@@ -949,7 +949,7 @@
                                             OR  "022"
                                             OR  "046" )  AND
                    (SPA-COM-SURYO(IDX-1)(6:3)  >   ZERO)
-               IF     (IDX-1               <   WRK-GYO-MAX  )  AND
+               IF     (IDX-1               <   SPA-MAX-LINE  )  AND
                       (SPA-COM-INPUTCD(IDX-1 + 1)  =   "099309901")
                    CONTINUE
                ELSE
@@ -970,7 +970,7 @@
            PERFORM VARYING   IDX       FROM    LNK-WKSRYACT-MAX  BY  -1
                    UNTIL     IDX       <       1
                IF    ( IDX             =   LNK-WKSRYACT-MAX  )  OR
-                     ((IDX             <   200  )    AND
+                     ((IDX             <   SPA-MAX-LINE  )    AND
                       (LNK-WKSRY-ZAINUM (IDX + 1)
                                        NOT =   LNK-WKSRY-ZAINUM(IDX)))
                    MOVE    LNK-WKSRY-ZAITENKEI(IDX)
@@ -995,7 +995,7 @@
       *        展開に複数科あり
                MOVE    1               TO  FLG-FUKU
                ADD     1                   TO  IDX2
-               IF      IDX2                >   WRK-GYO-MAX
+               IF      IDX2                >   SPA-MAX-LINE
                     MOVE    "9100"         TO  WRK-ERRCD1
                ELSE
                    MOVE    LNK-WKSRY-INPUTCD (IDX IDY)
@@ -1019,7 +1019,7 @@
       *    診療種別セット
            IF     (IDXS                    =   ZERO)  AND
                   (LNK-WKSRY-RENNUM (IDX)  =   1   )
-               IF      IDX2                <   WRK-GYO-MAX
+               IF      IDX2                <   SPA-MAX-LINE
                    IF      SPA-NYUGAIKBN       =   "2"
                        PERFORM 310112-SRYSYUKBN-GAI-SEC
                    ELSE
@@ -1035,7 +1035,7 @@
       *
       *    明細編集
            ADD     1                   TO  IDX2
-           IF      IDX2                >   WRK-GYO-MAX
+           IF      IDX2                >   SPA-MAX-LINE
                 MOVE    "9100"         TO  WRK-ERRCD1
                 GO      TO      10020-SPA-HEN-EXT
            END-IF
@@ -2576,7 +2576,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPA-DRCD            TO  SPA-TBL-DRCD  (IDH 1)
            MOVE    ZERO                TO  FLG-HKN999
            PERFORM VARYING     IDH1    FROM    1   BY  1
-                   UNTIL      (IDH1    >   WRK-GYO-MAX )  OR
+                   UNTIL      (IDH1    >   SPA-MAX-LINE )  OR
                              ((SPA-GMN-INPUTCD (IDH1)  =   SPACE ) AND
                               (SPA-COM-INPUTCD (IDH1)  =   SPACE ))
                IF      SPA-GMN-INPUTCD (IDH1)(1:1) =   "#"
@@ -2617,7 +2617,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                    UNTIL      (IDH     >   15   )  OR
                               (SPA-TBL-HKNCOMBI(IDH)   =   SPACE )
                PERFORM VARYING     IDH1    FROM    1   BY  1
-                       UNTIL      (IDH1    >   WRK-GYO-MAX  )  OR
+                       UNTIL      (IDH1    >   SPA-MAX-LINE  )  OR
                                  ((SPA-GMN-INPUTCD (IDH1)  =   SPACE )
                              AND  (SPA-COM-INPUTCD (IDH1)  =   SPACE ))
                  IF      SPA-GMN-INPUTCD (IDH1)(1:1) =   "#"

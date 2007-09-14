@@ -112,6 +112,9 @@
       *
            03  WRK-MAISU           PIC 9(05).
       *
+      *診療行為処理最大行
+       01  MAX-LINE                PIC 9(03)   VALUE   400.
+      *
       *    スパ領域
        01  SPA-SCR-REC.
            COPY    "CPK02SPASCR.INC".
@@ -148,7 +151,7 @@
                MOVE    LNK-SC90-IDX-STR    TO  IDX-STR
            END-IF
            IF      LNK-SC90-IDX-END    =   ZERO
-               MOVE    200                 TO  IDX-END
+               MOVE    MAX-LINE            TO  IDX-END
            ELSE
                MOVE    LNK-SC90-IDX-END    TO  IDX-END
            END-IF
@@ -263,7 +266,7 @@
       *                                    OR  "022"
       *!                                   OR  "046"  )  AND
       *    残量廃棄のあるすべての注射薬剤を対象とする
-           IF     (IDX                     <   200    )  AND
+           IF     (IDX                     <   MAX-LINE    )  AND
                   (LNK-COM-INPUTCD(IDX + 1)  =   "099309901")
                IF      LNK-COM-SURYO(IDX)(6:3) >   ZERO
                    COMPUTE WRK-SURYO-CHU9      =   LNK-COM-SURYO (IDX)
@@ -491,7 +494,7 @@
            MOVE    ZERO                TO  IDX-MAX
       *
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL      (IDX     >   200  )  OR
+                   UNTIL      (IDX     >   MAX-LINE  )  OR
                              ((LNK-COM-INPUTCD(IDX)    =   SPACE ) AND
                               (LNK-GMN-INPUTCD(IDX)    =   SPACE ))
                ADD     1                   TO  IDX-MAX

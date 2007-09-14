@@ -91,7 +91,7 @@
            03  WRK-IDX-YAKUSOKU.
                05  WRK-IDX-YAK         PIC 9(04)    OCCURS  20.
       *画面最大行
-       01  WRK-GYO-MAX                 PIC 9(04)   VALUE   200.
+      *01  WRK-GYO-MAX                 PIC 9(04)   VALUE   400.
       *
       *    診療種別名テーブル
            COPY    "CPORCSSRYSYU.INC".
@@ -255,7 +255,7 @@
            PERFORM
                    UNTIL     (FLG-INPUTSET     =   1 )  OR
                              (SPA-ERRCD    NOT =   SPACE ) OR
-                             (SPA-GMN-IDX      >   WRK-GYO-MAX )
+                             (SPA-GMN-IDX      >   SPA-MAX-LINE )
       *        セット展開
                MOVE    1               TO  FLG-SETSYORI
                MOVE    ZERO            TO  FLG-ERR
@@ -341,8 +341,8 @@
                MOVE    ZERO               TO  IDX-IP
                GO      TO    100-PSET-TENKAI-EXT
            END-IF
-           IF      SPA-GMN-IDX         >   WRK-GYO-MAX
-               MOVE    WRK-GYO-MAX         TO  SPA-GMN-IDX
+           IF      SPA-GMN-IDX         >   SPA-MAX-LINE
+               MOVE    SPA-MAX-LINE        TO  SPA-GMN-IDX
            END-IF
            MOVE    SPACE               TO  SPA-ERRCD
       *
@@ -392,7 +392,7 @@
                                                     OR  "022"
                                                     OR  "046" )  AND
                            (SPA-COM-SURYO(IDX-H)(6:3)  >   ZERO)
-                       IF     (IDX-H               <   200  )  AND
+                       IF     (IDX-H               <   SPA-MAX-LINE) AND
                               (SPA-COM-INPUTCD(IDX-H + 1)
                                                    =   "099309901")
                            CONTINUE
@@ -890,12 +890,12 @@
       *****************************************************************
        41014-GYOINSN-SEC         SECTION.
       *
-           IF      SPA-GMN-MAX         =   WRK-GYO-MAX
+           IF      SPA-GMN-MAX         =   SPA-MAX-LINE
                MOVE    "0007"              TO  SPA-ERRCD
                GO      TO      41014-GYOINSN-EXT
            END-IF
       *
-           IF      SPA-GMN-IDX         >=  WRK-GYO-MAX
+           IF      SPA-GMN-IDX         >=  SPA-MAX-LINE
                MOVE    "0007"              TO  SPA-ERRCD
                GO      TO      41014-GYOINSN-EXT
            END-IF
@@ -904,7 +904,7 @@
            INITIALIZE                      SPA-GMN-REC
            MOVE    ZERO                TO  IDY
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX     >   WRK-GYO-MAX
+                   UNTIL       IDX     >   SPA-MAX-LINE
                IF      IDX             =   SPA-GMN-IDX
                    CONTINUE
                ELSE

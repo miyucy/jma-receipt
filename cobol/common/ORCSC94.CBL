@@ -149,7 +149,7 @@
            INITIALIZE                  IDX-AREA
       *
       *    対象行チェック
-           IF      LNK-SC94-IDX    >=   1  AND  <=  200
+           IF      LNK-SC94-IDX    >=   1  AND  <=  SPA-MAX-LINE
                CONTINUE
            ELSE
                GO      TO     000-PROC-EXT
