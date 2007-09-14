@@ -639,15 +639,17 @@
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "7002"
-                   MOVE    "最終ページです。"
-                                       TO  SPA-ERRMSG
-                   MOVE    "これ以上入力できません。"
-                                       TO  SPA-ERRMSG(17:)
+                   STRING  "最終ページです。"
+                           "これ以上入力できません。"
+                                           DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
                WHEN    "7003"
-                   MOVE    "最終ページです。これ以上入力すると"
-                                       TO  SPA-ERRMSG
-                   MOVE    "登録時にエラーとなることがあります。"
-                                       TO  SPA-ERRMSG(25:)
+                   STRING  "次は最終ページです。これ以上入力すると"
+                           "登録時にエラーとなることがあります。"
+                                           DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
                WHEN    "7004"
                    STRING  "４００行をオーバーします。"
                            "４００行までを対象とします。"

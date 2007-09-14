@@ -609,8 +609,6 @@
       *
        01  WRK-SYSTIME               PIC 9(08).
       *
-      *画面最大行
-      *01  WRK-GYO-MAX                 PIC 9(04)   VALUE   400.
       *処理最大行
        01  MAX-LINE-VALUE          PIC 9(04)   VALUE   400.
       *画面最大行
@@ -8401,7 +8399,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            END-IF
       *
            ADD     1                   TO  SPA-GMN-PAGE
-           IF      SPA-GMN-PAGE        =   MAX-PAGE
+           IF      SPA-GMN-PAGE        >=   MAX-PAGE
                MOVE    "7003"              TO  SPA-ERRCD
            END-IF
       *
