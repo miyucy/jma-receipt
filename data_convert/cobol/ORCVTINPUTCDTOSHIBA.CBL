@@ -103,6 +103,7 @@
            03  FLG-SYSKANRI            PIC 9(01).
            03  FLG-TENSU               PIC 9(01).
            03  FLG-INPUTCD             PIC 9(01).
+           03  FLG-KANJI               PIC 9(01).
       *
            03  FLG-ERRARI              PIC 9(01).
            03  FLG-DATAEND             PIC 9(01).
@@ -128,6 +129,7 @@
            03  IDZ                     PIC 9(04).
            03  IDS                     PIC 9(04).
            03  IDE                     PIC 9(04).
+           03  IDX-C                   PIC 9(04).
       *
       *    パラメータ保存
        01  PARA-SAVE.
@@ -160,6 +162,7 @@
            03  WRK-DATA                PIC X(200).
            03  WRK-LEN                 PIC 9(03). 
            03  WRK-CNT                 PIC 9(04).
+           03  WRK-LEN-W               PIC 9(04).
       *
            03  WRK-COMMIT              PIC 9(06).
            03  WRK-ERR                 PIC 9(06).
@@ -623,6 +626,7 @@
       *****************************************************************
        2402-ZENKAKU-HEN-SEC        SECTION.
       *
+           MOVE    ZERO                TO  FLG-KANJI
            INITIALIZE                  ORCSKANACHKAREA
            MOVE    "1"                 TO  KANACHK-SYORI
            MOVE    WRK-DATA            TO  KANACHK-MAE-INPUT
@@ -642,13 +646,18 @@
                IF      KANACHK-RC          =   ZERO
                    MOVE    KANACHK-MAX         TO  WRK-LEN
                    MOVE    KANACHK-OUT-INPUT   TO  WRK-DATA
+                   MOVE    1                   TO  FLG-KANJI
+               ELSE
+                   MOVE    2                   TO  FLG-ERR
+               END-IF
+           ELSE
+      *        全角
+               IF      KANACHK-SYUBETU  =   2
+                   MOVE    1            TO  FLG-KANJI
                END-IF
            END-IF
-           IF      WRK-LEN             =   ZERO
-               MOVE    1                   TO  WRK-LEN
-           END-IF
       *    後ろの全角空白を削除
-           IF      WRK-LEN             >   1
+           IF      WRK-LEN             >   ZERO
                PERFORM 24021-KUHAKU-DEL-SEC
            END-IF
            .
@@ -660,23 +669,36 @@
       *****************************************************************
        24021-KUHAKU-DEL-SEC        SECTION.
       *
-           COMPUTE IDZ             =   WRK-LEN     -   1
-           IF      WRK-DATA (IDZ:2)    =   "　"
-               MOVE    1                   TO  WRK-LEN
-               PERFORM VARYING IDS     FROM    IDZ BY  -2
-                       UNTIL   IDS     <   2
-                   IF      WRK-DATA (IDS:2)    NOT =   "　"
-                       COMPUTE WRK-LEN         =   IDS     +   1
-                       MOVE    2               TO  IDS
+           MOVE    SPACE               TO  WRK-INPUTCD
+           MOVE    1                   TO  IDZ
+           MOVE    ZERO                TO  WRK-LEN-W
+           IF      FLG-KANJI           =   1
+      *        全角空白削除
+               PERFORM VARYING IDS     FROM    1   BY  2
+                       UNTIL   IDS     >   WRK-LEN
+                   IF      WRK-DATA (IDS:2)  =   "　"
+                                             OR  SPACE
+                       CONTINUE
                    ELSE
-                       IF      IDS             =   3
-                           IF      WRK-DATA (1:2)      NOT =   "　"
-                               MOVE    2               TO  WRK-LEN
-                           END-IF
-                       END-IF
+                       MOVE    WRK-DATA(IDS:2) TO  WRK-INPUTCD(IDZ:2)
+                       ADD     2               TO  IDZ
+                       ADD     2               TO  WRK-LEN-W
                    END-IF
-               END-PERFORM    
+               END-PERFORM
+           ELSE
+      *        間の空白削除
+               PERFORM VARYING IDS     FROM    1   BY  1
+                       UNTIL   IDS     >   WRK-LEN
+                   IF      WRK-DATA (IDS:1)  =   SPACE
+                       CONTINUE
+                   ELSE
+                       MOVE    WRK-DATA(IDS:1) TO  WRK-INPUTCD(IDZ:1)
+                       ADD     1               TO  IDZ
+                       ADD     1               TO  WRK-LEN-W
+                   END-IF
+               END-PERFORM
            END-IF
+           MOVE    WRK-LEN-W           TO  WRK-LEN
            .
        2402-ZENKAKU-HEN-EXT.
            EXIT.
@@ -688,11 +710,12 @@
       *
            IF  FLG-NODATA          =   1
                MOVE    1           TO  FLG-ERR
-               GO  TO  2450-INPUTCD-SET-SEC
+               GO  TO  2450-INPUTCD-SET-EXT
            END-IF
       *
            IF  WRK-MO-CNT          >   20
                MOVE    2           TO  FLG-ERR
+               GO  TO  2450-INPUTCD-SET-EXT
            END-IF
       *
       *    入力コードセット
@@ -700,9 +723,9 @@
                                    TO  WRK-DATA
            MOVE    20              TO  WRK-CNT
            PERFORM 2402-ZENKAKU-HEN-SEC
-           IF      FLG-ERR         =   ZERO
-               MOVE    WRK-DATA (1:WRK-LEN)
-                                   TO  WRK-INPUTCD
+      *
+           IF      WRK-LEN         =   ZERO
+               MOVE    2           TO  FLG-ERR
            END-IF
       *
            .
@@ -727,6 +750,12 @@
            MOVE  CSV-REC (WRK-MO-ST:WRK-MO-CNT)
                                    TO  WRK-SRYCD
       *
+      *    点数マスタ読み込み
+           PERFORM 900-TENSU-READ-SEC
+           IF  FLG-TENSU           NOT = ZERO
+               MOVE    5           TO  FLG-ERR
+           END-IF
+      *
            .
        2410-SRYCD-SET-EXT.
            EXIT.
@@ -735,13 +764,6 @@
       *    入力ＣＤ登録　処理
       *****************************************************************
        250-INPUTCD-INSERT-SEC      SECTION.
-      *
-      *    点数マスタ読み込み
-           PERFORM 900-TENSU-READ-SEC
-           IF  FLG-TENSU           NOT = ZERO
-               MOVE    5           TO  FLG-ERR
-               GO  TO  250-INPUTCD-INSERT-EXT
-           END-IF
       *
            MOVE    ZERO            TO  WRK-DSPSEQ
       *
@@ -820,75 +842,73 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *****************************************************************
        250-CDSYU-SET-SEC           SECTION.
       *
-           MOVE    ZERO            TO  WRK-NUMCNT
-           MOVE    ZERO            TO  WRK-SPCFLG
+           MOVE    SPACE           TO  WRK-CDSYU
       *
-           PERFORM VARYING    IDZ      FROM    1   BY  1
-                   UNTIL      IDZ      >=  20
-      *
-               IF  WRK-INPUTCD(IDZ:1)      NOT =     SPACE
-                   IF  WRK-SPCFLG              =   1
-                       MOVE    3           TO  FLG-ERR 
-                       GO  TO  250-CDSYU-SET-EXT
+           IF      FLG-KANJI           =   1
+      *        全角は５文字とする
+               IF      WRK-LEN             >   10
+                   MOVE    3               TO  FLG-ERR
+               END-IF
+           ELSE
+      *        半角
+               IF      WRK-INPUTCD(1:WRK-LEN)  NUMERIC
+      *            ４桁から６桁
+                   IF      WRK-LEN        <   4   OR  >  6
+                       MOVE    3               TO  FLG-ERR
                    END-IF
-                   IF  WRK-INPUTCD(IDZ:1)  =   "P"   OR
-                       WRK-INPUTCD(IDZ:1)  =   "S"
-                       MOVE    3           TO  FLG-ERR 
-                       GO  TO  250-CDSYU-SET-EXT
+               END-IF
+      *        １文字目判定
+               IF      WRK-INPUTCD(1:1)   =   "P"
+                                          OR  "S"
+                                          OR  "#"
+                                          OR  "$"
+                   MOVE    3               TO  FLG-ERR
+               END-IF
+           END-IF
+      *    記号は入力不可とする
+           IF      FLG-KANJI           =   1
+               MOVE    2                   TO  IDX-C
+           ELSE
+               MOVE    1                   TO  IDX-C
+           END-IF
+           PERFORM VARYING     IDZ     FROM    1   BY  IDX-C
+                   UNTIL      (IDZ         >   20  )  OR
+                              (FLG-ERR     NOT =   ZERO)
+               IF      IDX-C               =   1
+                   IF       WRK-INPUTCD(IDZ:1)
+                                               =   "+"   OR  "-"
+                                               OR  "/"   OR  "!"
+                                               OR  "."   OR  "*"
+                                               OR  "_"
+                       MOVE    3           TO  FLG-ERR
                    END-IF
-      *
-                   IF
-      *    全角カタカナ
-                       WRK-INPUTCD(IDZ:1)  =   X"A5" OR
-      *    全角英数字
-                       WRK-INPUTCD(IDZ:1)  =   X"A3" OR
-      *    全角記号
-                       WRK-INPUTCD(IDZ:1)  =   X"A1"
-                       MOVE    "J"         TO  WRK-CDSYU
-                       GO  TO  250-CDSYU-SET-EXT
-                   END-IF
-      *
-      *    半角英数字
-                   IF  WRK-INPUTCD(IDZ:1)  =   "0"   OR
-                       WRK-INPUTCD(IDZ:1)  =   "1"   OR
-                       WRK-INPUTCD(IDZ:1)  =   "2"   OR
-                       WRK-INPUTCD(IDZ:1)  =   "3"   OR
-                       WRK-INPUTCD(IDZ:1)  =   "4"   OR
-                       WRK-INPUTCD(IDZ:1)  =   "5"   OR
-                       WRK-INPUTCD(IDZ:1)  =   "6"   OR
-                       WRK-INPUTCD(IDZ:1)  =   "7"   OR
-                       WRK-INPUTCD(IDZ:1)  =   "8"   OR
-                       WRK-INPUTCD(IDZ:1)  =   "9"
-                       ADD 1               TO  WRK-NUMCNT
-                   ELSE
-                       MOVE    "A"         TO  WRK-CDSYU
-                       GO  TO  250-CDSYU-SET-EXT
-                   END-IF
-      *
                ELSE
-      *
-                   EVALUATE    WRK-NUMCNT
-                   WHEN 0
-                       CONTINUE
-      *    半角数字（４桁）
-                   WHEN 4
-                       MOVE    "4"         TO  WRK-CDSYU
-                       MOVE    1           TO  WRK-SPCFLG
-      *    半角数字（５桁）
-                   WHEN 5
-                       MOVE    "5"         TO  WRK-CDSYU
-                       MOVE    1           TO  WRK-SPCFLG
-      *    半角数字（６桁）
-                   WHEN 6
-                       MOVE    "6"         TO  WRK-CDSYU
-                       MOVE    1           TO  WRK-SPCFLG
-      *
-                   WHEN OTHER
-                       MOVE    2           TO  FLG-ERR 
-                       GO  TO  250-CDSYU-SET-EXT
-                   END-EVALUATE
+                   IF      WRK-INPUTCD (IDZ:2)
+                                           =   "＋"   OR  "−"
+                                           OR  "／"   OR  "！"
+                                           OR  "．"   OR  "＊"
+                       MOVE    3           TO  FLG-ERR
+                   END-IF
                END-IF
            END-PERFORM
+      *    コード種別
+           IF      FLG-KANJI           =   1
+               MOVE    "J"                 TO  WRK-CDSYU
+           ELSE
+               IF      WRK-INPUTCD(1:WRK-LEN)
+                                           NUMERIC
+                   EVALUATE    WRK-LEN
+                       WHEN    4
+                           MOVE    "4"                 TO  WRK-CDSYU
+                       WHEN    5
+                           MOVE    "5"                 TO  WRK-CDSYU
+                       WHEN    6
+                           MOVE    "6"                 TO  WRK-CDSYU
+                   END-EVALUATE
+               ELSE
+                   MOVE    "A"                 TO  WRK-CDSYU
+               END-IF
+           END-IF
            .
        250-CDSYU-SET-EXT.
            EXIT.
@@ -1142,7 +1162,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *****************************************************************
       *    ＤＢ読み込み処理
       *****************************************************************
-       920-DBFETCH-SEC                 SECTION.
+       920-DBFETCH-SEC             SECTION.
       *
            MOVE    "DBFETCH"       TO  MCP-FUNC
 grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
@@ -1156,9 +1176,9 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *****************************************************************
       *   ＤＢクローズ処理
       *****************************************************************
-       990-DBCLOSE-SEC                 SECTION.
+       990-DBCLOSE-SEC             SECTION.
       *
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
+           MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
 grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                                MCPDATA-REC
                                                SPA-AREA
