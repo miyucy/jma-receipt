@@ -3988,33 +3988,6 @@
 	</widget>
 
 	<widget>
-	  <class>GtkVSeparator</class>
-	  <name>vseparator2</name>
-	  <x>760</x>
-	  <y>68</y>
-	  <width>16</width>
-	  <height>336</height>
-	</widget>
-
-	<widget>
-	  <class>GtkHSeparator</class>
-	  <name>hseparator51</name>
-	  <x>0</x>
-	  <y>256</y>
-	  <width>768</width>
-	  <height>16</height>
-	</widget>
-
-	<widget>
-	  <class>GtkHSeparator</class>
-	  <name>hseparator52</name>
-	  <x>0</x>
-	  <y>400</y>
-	  <width>760</width>
-	  <height>16</height>
-	</widget>
-
-	<widget>
 	  <class>GtkToggleButton</class>
 	  <name>CK2</name>
 	  <x>728</x>
@@ -4094,6 +4067,33 @@
 	  <yalign>0.5</yalign>
 	  <xpad>0</xpad>
 	  <ypad>0</ypad>
+	</widget>
+
+	<widget>
+	  <class>GtkVSeparator</class>
+	  <name>vseparator2</name>
+	  <x>760</x>
+	  <y>71</y>
+	  <width>16</width>
+	  <height>336</height>
+	</widget>
+
+	<widget>
+	  <class>GtkHSeparator</class>
+	  <name>hseparator51</name>
+	  <x>0</x>
+	  <y>256</y>
+	  <width>768</width>
+	  <height>16</height>
+	</widget>
+
+	<widget>
+	  <class>GtkHSeparator</class>
+	  <name>hseparator52</name>
+	  <x>0</x>
+	  <y>400</y>
+	  <width>768</width>
+	  <height>16</height>
 	</widget>
       </widget>
 
