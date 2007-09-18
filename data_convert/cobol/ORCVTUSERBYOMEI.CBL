@@ -1046,9 +1046,11 @@
                                        TO  WKUSBYO-MANSEIKBN
            END-IF
       *
-      *    病名編集フラグ
-           MOVE    LNK-BYO-BYOMEIHENFLG
+      *    修飾語でない場合
+           IF      LNK-BYO-BYOMEICD-ERR    NOT =   1
+               MOVE    LNK-BYO-BYOMEIHENFLG
                                        TO  WKUSBYO-BYOMEIHENFLG
+           END-IF
       *
       *    病名種別
            MOVE    LNK-BYO-BYOMEISBT   TO  WKUSBYO-BYOMEISBT
