@@ -48,6 +48,7 @@
       * 03.00.03     NACL-多々納  06/04/11  診療費明細書発行追加
       * 03.04.00     NACL-多々納  06/11/13  検査正式名称表示区分の追加
       * 03.05.00     NACL-多々納  07/05/02  グループ診療対応
+      * 03.05.01     NACL-藤原    07/09/14  クライアント保存可否フラグ追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -185,6 +186,11 @@
                        09  SPA-GMN-FORMALFLG-LST   PIC X(40)
                                                    OCCURS  5. 
                    07  SPA-FORMALFLG-MAX      PIC 9(04).  
+      *            クライアント保存可否
+                   07  SPA-GMN-CLIENT-SAVE-LSTG.
+                       09  SPA-GMN-CLIENT-SAVE-LST PIC X(40)
+                                                   OCCURS  2. 
+                   07  SPA-CLIENT-SAVE-MAX    PIC 9(04).  
       *            基本情報の発行区分
                    07  SPA-1001-SKYPRTFLG      PIC  X(01).
                    07  SPA-1001-SYOHOPRTFLG    PIC  X(01).
@@ -218,6 +224,11 @@
                        09  SPA-GMN-FORMALFLG        PIC X(01).
                        09  SPA-GMN-FORMALFLG-F1     PIC X(01).
                        09  SPA-GMN-FORMALFLG-MEI    PIC X(24).
+      *            クライアント保存可否
+                   07  SPA-GMN-CLIENT-SAVE-G. 
+                       09  SPA-GMN-CLIENT-SAVE      PIC X(01).
+                       09  SPA-GMN-CLIENT-SAVE-F1   PIC X(01).
+                       09  SPA-GMN-CLIENT-SAVE-MEI  PIC X(24).
       *
                05  SPA-NAIB-AREA.
                    07  SPA-NAI-STYUKYMD       PIC X(08).
@@ -578,6 +589,10 @@
            MOVE    "0 使用しない"      TO  SPA-GMN-FORMALFLG-LST(1)
            MOVE    "1 使用する"        TO  SPA-GMN-FORMALFLG-LST(2)
            MOVE    2                   TO  SPA-FORMALFLG-MAX
+      *    クライアント保存可否
+           MOVE    "0 保存不可"        TO  SPA-GMN-CLIENT-SAVE-LST(1)
+           MOVE    "1 保存可"          TO  SPA-GMN-CLIENT-SAVE-LST(2)
+           MOVE    2                   TO  SPA-CLIENT-SAVE-MAX
       *
       *    基本情報の発行フラグ
            PERFORM 3202-KIHON-HEN-SEC
@@ -1319,6 +1334,7 @@
                MOVE    SYS-1010-SYOHOPRTFLG    TO  SPA-GMN-SYOHOPRTFLG
                MOVE    SYS-1010-YAKUJYOPRTFLG  TO  SPA-GMN-YAKUJYOFLG
                MOVE    SYS-1010-FORMALFLG      TO  SPA-GMN-FORMALFLG
+               MOVE    SYS-1010-CLIENT-SAVE    TO  SPA-GMN-CLIENT-SAVE
                PERFORM 20091-PRTFLG-HEN-SEC
            END-IF
       *
@@ -1378,6 +1394,16 @@
                    MOVE    SPA-GMN-FORMALFLG-LST (IDX)
                                            TO  SPA-GMN-FORMALFLG-G
                    MOVE    SPA-FORMALFLG-MAX   TO  IDX
+               END-IF
+           END-PERFORM
+      *
+           PERFORM VARYING IDX     FROM    1   BY  1
+                   UNTIL   IDX     >       SPA-CLIENT-SAVE-MAX
+               IF      SPA-GMN-CLIENT-SAVE =   SPA-GMN-CLIENT-SAVE-LST
+                                                      (IDX)(1:1)
+                   MOVE    SPA-GMN-CLIENT-SAVE-LST (IDX)
+                                           TO  SPA-GMN-CLIENT-SAVE-G
+                   MOVE    SPA-CLIENT-SAVE-MAX TO  IDX
                END-IF
            END-PERFORM
       *
@@ -1662,6 +1688,7 @@
            MOVE    W06-SYOHOPRTFLG     TO  SPA-GMN-SYOHOPRTFLG-G
            MOVE    W06-YAKUJYOFLG      TO  SPA-GMN-YAKUJYOFLG-G
            MOVE    W06-FORMALFLG       TO  SPA-GMN-FORMALFLG-G
+           MOVE    W06-CLIENT-SAVE     TO  SPA-GMN-CLIENT-SAVE-G
       *
            .
        4101-GMN-SPA-SET-EXT.
@@ -1745,6 +1772,10 @@
            END-IF
            IF      SPA-ERRCD           =   SPACE
                PERFORM 4121-FORMALFLG-CHK-SEC
+           END-IF
+      *
+           IF      SPA-ERRCD           =   SPACE
+               PERFORM 4121-CLIENT-SAVE-CHK-SEC
            END-IF
            .
        4102-KIHON-CHK-EXT.
@@ -2346,6 +2377,34 @@
        4121-FORMALFLG-CHK-EXT.
            EXIT.
       *****************************************************************
+      *    クライアント保存可否チェック処理
+      *****************************************************************
+       4121-CLIENT-SAVE-CHK-SEC        SECTION.
+      *
+           MOVE    ZERO                TO  FLG-CHK
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-CLIENT-SAVE-MAX
+               IF      SPA-GMN-CLIENT-SAVE =   SPA-GMN-CLIENT-SAVE-LST
+                                                       (IDX)(1:1)
+                   MOVE    SPA-GMN-CLIENT-SAVE-LST (IDX)
+                                               TO  SPA-GMN-CLIENT-SAVE-G
+                   MOVE    1                   TO  FLG-CHK
+                   MOVE    SPA-CLIENT-SAVE-MAX   TO  IDX
+               END-IF
+           END-PERFORM
+           IF     (FLG-CHK             =   ZERO )
+               IF      SPA-GMN-CLIENT-SAVE  =   SPACE
+                   MOVE    SPACE           TO  SPA-GMN-CLIENT-SAVE-G
+               ELSE
+                   MOVE    "0023"          TO  SPA-ERRCD
+                   MOVE    26              TO  SPA-GMN-CUR
+               END-IF
+           END-IF
+      *
+           .
+       4121-CLIENT-SAVE-CHK-EXT.
+           EXIT.
+      *****************************************************************
       *    タグ切替え処理
       *****************************************************************
        460-TAGUCHG-SEC           SECTION.
@@ -2637,6 +2696,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPA-GMN-YAKUJYOFLG      TO  SYS-1010-YAKUJYOPRTFLG
            MOVE    SPA-GMN-MEIPRTFLG       TO  SYS-1010-MEIPRTFLG
            MOVE    SPA-GMN-FORMALFLG       TO  SYS-1010-FORMALFLG
+           MOVE    SPA-GMN-CLIENT-SAVE     TO  SYS-1010-CLIENT-SAVE
       *
            IF     (FLG-SYSKANRI        =   ZERO ) AND
                   (SPA-GMN-SYORI       =   2    )
@@ -3108,6 +3168,14 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            END-PERFORM
            MOVE  SPA-FORMALFLG-MAX     TO  W06-FORMALFLG-COUNT
            MOVE  SPA-GMN-FORMALFLG-G   TO  W06-FORMALFLG
+      *    クライアント保存可否表示
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-CLIENT-SAVE-MAX
+               MOVE    SPA-GMN-CLIENT-SAVE-LST(IDX)
+                                       TO  W06-CLIENT-SAVE-ITEM(IDX)
+           END-PERFORM
+           MOVE  SPA-CLIENT-SAVE-MAX   TO  W06-CLIENT-SAVE-COUNT
+           MOVE  SPA-GMN-CLIENT-SAVE-G TO  W06-CLIENT-SAVE
       *
            EVALUATE    SPA-GMN-PAGENO
                WHEN    1
@@ -3225,6 +3293,9 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                                                TO  SPA-ERRMSG
                WHEN    "0022"
                    MOVE    "検査正式名称表示フラグ入力エラー"
+                                               TO  SPA-ERRMSG
+               WHEN    "0023"
+                   MOVE    "クライアント保存可否入力エラー"
                                                TO  SPA-ERRMSG
                WHEN    "0100"
                    MOVE
@@ -3365,6 +3436,8 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                     MOVE  "MEIPRTFLG"      TO   MCP-WIDGET
                 WHEN    25
                     MOVE  "FORMALFLG"      TO   MCP-WIDGET
+                WHEN    26
+                    MOVE  "CLIENT_SAVE"    TO   MCP-WIDGET
       *
                 WHEN    99
                     MOVE  "B12"            TO   MCP-WIDGET
@@ -3432,6 +3505,8 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN     "MEIPRTFLG"
                    MOVE    25              TO  SPA-GMN-CUR
                WHEN     "FORMALFLG"
+                   MOVE    26              TO  SPA-GMN-CUR
+               WHEN     "CLIENT_SAVE"
                    MOVE    99              TO  SPA-GMN-CUR
       *
                WHEN     OTHER

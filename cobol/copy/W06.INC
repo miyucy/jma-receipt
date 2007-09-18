@@ -150,6 +150,12 @@
                     06  W06-FORMALFLG-COUNT   PIC S9(9)   BINARY.
                     06  W06-FORMALFLG-ITEM
                             PIC X(40)   OCCURS  5 TIMES.
+                  05  W06-CLIENT-SAVE-COMB.
+                    06  W06-CLIENT-SAVE.
+                      07  W06-VALUE   PIC X(40).
+                    06  W06-CLIENT-SAVE-COUNT   PIC S9(9)   BINARY.
+                    06  W06-CLIENT-SAVE-ITEM
+                            PIC X(40)   OCCURS  2 TIMES.
               03  W06-STYUKYMD.
                 04  W06-VALUE   PIC X(10).
               03  W06-EDYUKYMD.

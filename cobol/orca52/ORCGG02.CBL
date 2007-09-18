@@ -213,6 +213,9 @@
       *    患者番号変換サブ
            COPY    "CPORCSPTNUM.INC".
       *
+      *    クライアント保存可否情報取得サブ
+           COPY    "CPORCSCLIENTSV.INC".
+      *
            COPY    "CPSHELLTBL.INC".
       *     
            COPY    "ORCA-DBMETA".
@@ -393,6 +396,11 @@
            MOVE    SPA-GMN-G02-NYUGAIKBNLST (1)
                                    TO  SPA-GMN-G02-NYUGAIKBN-G
       *
+      *    クライアント保存可否情報取得サブ
+           INITIALIZE                      ORCSCLIENTSVAREA
+           CALL    "ORCSCLIENTSV"      USING   ORCSCLIENTSVAREA
+                                               SPA-AREA
+      *
            MOVE    "1"             TO  SPA-GMN-G02-FILE1L        (1)
            MOVE    "フロッピィ"    TO  SPA-GMN-G02-FILE1MEIL     (1)
            MOVE    "2"             TO  SPA-GMN-G02-FILE1L        (2)
@@ -406,10 +414,14 @@
            MOVE    "5"             TO  SPA-GMN-G02-FILE1L        (5)
            MOVE    "ユーザー指定場所３"
                                    TO  SPA-GMN-G02-FILE1MEIL     (5)
-           MOVE    "6"             TO  SPA-GMN-G02-FILE1L        (6)
-           MOVE    "クライアント保存"
-                                   TO  SPA-GMN-G02-FILE1MEIL     (6)
-           MOVE    6               TO  SPA-GMN-G02-FILE1-MAX
+           MOVE    5               TO  SPA-GMN-G02-FILE1-MAX
+           IF      SCLIENTSV-CLIENT-SAVE
+                                   =   "1"
+               MOVE    "6"             TO  SPA-GMN-G02-FILE1L    (6)
+               MOVE    "クライアント保存"
+                                       TO  SPA-GMN-G02-FILE1MEIL (6)
+               MOVE    6               TO  SPA-GMN-G02-FILE1-MAX
+           END-IF
       *
            MOVE    SPA-GMN-G02-FILE1LST (1)
                                    TO  SPA-GMN-G02-FILE1-G
@@ -427,10 +439,14 @@
            MOVE    "5"             TO  SPA-GMN-G02-FILE2L        (5)
            MOVE    "ユーザー指定場所３"
                                    TO  SPA-GMN-G02-FILE2MEIL     (5)
-           MOVE    "6"             TO  SPA-GMN-G02-FILE2L        (6)
-           MOVE    "クライアント保存"
-                                   TO  SPA-GMN-G02-FILE2MEIL     (6)
-           MOVE    6               TO  SPA-GMN-G02-FILE2-MAX
+           MOVE    5               TO  SPA-GMN-G02-FILE2-MAX
+           IF      SCLIENTSV-CLIENT-SAVE
+                                   =   "1"
+               MOVE    "6"             TO  SPA-GMN-G02-FILE2L    (6)
+               MOVE    "クライアント保存"
+                                       TO  SPA-GMN-G02-FILE2MEIL (6)
+               MOVE    6               TO  SPA-GMN-G02-FILE2-MAX
+           END-IF
       *
            MOVE    SPA-GMN-G02-FILE2LST (1)
                                    TO  SPA-GMN-G02-FILE2-G

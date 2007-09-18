@@ -208,6 +208,13 @@ W06	{
 					count	int;
 					item	varchar(40)[5];
 				};
+				CLIENT_SAVE_COMB	{
+					CLIENT_SAVE	{
+						value	varchar(40);
+					};
+					count	int;
+					item	varchar(40)[2];
+				};
 			};
 		};
 		STYUKYMD	{

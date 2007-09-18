@@ -372,6 +372,9 @@
       *    ＣＳＶ管理ＤＢ制御サブ
            COPY    "CPORCSCSVINFO.INC".
       *
+      *    クライアント保存可否情報取得サブ
+           COPY    "CPORCSCLIENTSV.INC".
+      *
       *****************************************************************
       *    連絡領域
       *****************************************************************
@@ -575,6 +578,11 @@ grpsys                                         SPA-AREA
                MOVE    IDX                 TO  SPA-GMN-T03-PRTNM-MAX
            END-PERFORM
       *
+      *    クライアント保存可否情報取得サブ
+           INITIALIZE                      ORCSCLIENTSVAREA
+           CALL    "ORCSCLIENTSV"      USING   ORCSCLIENTSVAREA
+                                               SPA-AREA
+      *
            MOVE    "1"             TO  SPA-GMN-DATAKBNL        (1)
            MOVE    "フロッピィ"    TO  SPA-GMN-DATAKBNMEIL     (1)
            MOVE    "2"             TO  SPA-GMN-DATAKBNL        (2)
@@ -585,10 +593,14 @@ grpsys                                         SPA-AREA
            MOVE    "4"             TO  SPA-GMN-DATAKBNL        (4)
            MOVE    "システム管理設定場所（ＭＯ用）"
                                    TO  SPA-GMN-DATAKBNMEIL     (4)
-           MOVE    "5"             TO  SPA-GMN-DATAKBNL        (5)
-           MOVE    "クライアント保存"
-                                   TO  SPA-GMN-DATAKBNMEIL     (5)
-           MOVE    5               TO  SPA-GMN-DATAKBN-MAX
+           MOVE    4               TO  SPA-GMN-DATAKBN-MAX
+           IF      SCLIENTSV-CLIENT-SAVE
+                                   =   "1"
+               MOVE    "5"             TO  SPA-GMN-DATAKBNL        (5)
+               MOVE    "クライアント保存"
+                                       TO  SPA-GMN-DATAKBNMEIL     (5)
+               MOVE    5               TO  SPA-GMN-DATAKBN-MAX
+           END-IF
       *
            MOVE    SPA-GMN-DATAKBNLST (1)
                                    TO  SPA-GMN-DATAKBN-G
