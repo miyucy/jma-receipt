@@ -10,6 +10,10 @@ fi
 . $JMARECEIPT_ENV
 
 export HOME=/home/orca
+
+ruby -e "puts File.read(ARGV[0]).chop + ' ' * 20000" $4 > $4.tmp
+mv $4.tmp $4
+
 #
 	if	[ $1 = 'red2ps' ]	;then
 		if	[ -z $6  ]	;then
