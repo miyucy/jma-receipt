@@ -132,6 +132,9 @@
       *  03.05.03    NACL-門脇    07/06/26  自賠責平成１９年４月改正様式対応
       *  03.05.04    NACL-門脇    07/07/17  個別時のシステム管理編集修正
       *  03.05.05    NACL-門脇    07/07/26  レセに記載しないコメント対応
+      *  03.05.06    NACL-門脇    07/09/13  皮下筋肉、静脈注射の記載変更対応
+      *  03.05.07    NACL-門脇    07/09/18  画像診断の加算（データ区分：手技）
+      *                                     の記載順変更対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -774,6 +777,10 @@
            03  CONS-SEIBUTU          PIC X(09)  VALUE  "130000110".
       *    麻薬注射
            03  CONS-MAYAKU           PIC X(09)  VALUE  "130000310".
+      *    静脈内注射
+           03  CONS-JYOMYAKU         PIC X(09)  VALUE  "130003510".
+      *    静脈内注射（乳幼児）加算
+           03  CONS-JYOMYAKUKASAN    PIC X(09)  VALUE  "130003670".
       *
       *    在支援フラグ編集の為のコード
            03  CONS-ZAISIEN1         PIC X(09)  VALUE  "114001110".
@@ -1881,6 +1888,19 @@ grpsys     PERFORM 900-DBSELECT-SEC
                       MOVE   202      TO  RECE45-CDKBN-KBNNUM(IDX4)
                       MOVE   99       TO  RECE45-CDKBN-KOUBAN(IDX4)
                END-IF
+               IF     TNS-SRYCD       =  "170016010"  OR
+                                         "170020270"  OR  "170024470" OR
+                                         "170024910"  OR  "170025010" OR
+                                         "170025210"  OR  "170025310" OR
+                                         "170025410"  OR  "170025510" OR
+                                         "170025610"  OR  "170025710" OR
+                                         "170025810"  OR  "170025910" OR
+                                         "170026010"  OR  "170026110" OR
+                                         "170026210"  OR  "170026310" OR
+                                         "170026810"
+                      MOVE   203      TO  RECE45-CDKBN-KBNNUM(IDX4)
+                      MOVE   99       TO  RECE45-CDKBN-KOUBAN(IDX4)
+               END-IF
       *
                IF    ((SRY-SRYCD    (IDX2)(1:1)     =   "8"  )  OR
                       (SRY-SRYCD    (IDX2)(1:3)     =   "008"))
@@ -1938,10 +1958,12 @@ grpsys     PERFORM 900-DBSELECT-SEC
                     END-IF
                END-IF
       *
-               IF          SRY-SRYKBN       =     "31"
+               IF          SRY-SRYKBN       =     "31" OR "32"
                  IF        SRY-SRYCD(IDX2)  =    CONS-HIKAKIN
                                            OR    CONS-SEIBUTU
                                            OR    CONS-MAYAKU
+                                           OR    CONS-JYOMYAKU
+                                           OR    CONS-JYOMYAKUKASAN
                    MOVE    SPACE           TO    RECE45-NAME(IDX4)
                  END-IF
                END-IF

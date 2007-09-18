@@ -110,6 +110,7 @@
       *  03.04.03    NACL-ÌçÏÆ    07/03/23  ·îÅÓÃæ°åÎÅµ¡´Ø¥³¡¼¥ÉÊÑ¹¹»þÂÐ±þ
       *  03.04.04    NACL-ÌçÏÆ    07/05/15  ÅÀÅ©¤Îµ­ºÜÊÔ½¸½¤Àµ
       *  03.05.01    NACL-¾®Æ¦Âô  07/06/05  ¥°¥ë¡¼¥×¿ÇÎÅÂÐ±þ
+      *  03.05.02    NACL-ÌçÏÆ    07/09/13  Èé²¼¶ÚÆù¡¢ÀÅÌ®Ãí¼Í¤Îµ­ºÜÊÑ¹¹ÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1573,10 +1574,6 @@
                                                      CONS-GENZAN8      )
                            MOVE    1             TO  FLG-TEIGEN
                        END-IF
-                       IF    ( RECE64-SRYKBN     =   "31"         )
-                       AND   ( RECE65-SRYCD(IDX) =   CONS-HIKAKIN )
-                           MOVE    1             TO  FLG-HIKAKIN
-                       END-IF
                      END-IF
       *
                    END-IF
@@ -2089,18 +2086,11 @@
                       (RECE64-RYOTENKISAISU =   ZERO ))
                    CONTINUE
                ELSE    
-                   IF   (( RECE64-SRYKBN     =   "31"  AND
-                           FLG-HIKAKIN       =   1          )  OR 
-                         ( RECE64-SRYKBN     =   "32"       )     )
-                   AND  (  IDX1              =   3                )
-                       CONTINUE
-                   ELSE    
-                       IF      RECE64-SRYKBN     =   "31"  AND
-                               FLG-HIKAKIN       =   ZERO  AND
-                               WRK-ZAIWMAX (3)   >   ZERO  AND
-                               IDX1              >   3
-                           MOVE    SPACE             TO  WRK-ZAI-MK
-                       END-IF            
+                       IF   RECE64-SRYKBN     =   "31" OR "32"
+                         IF   WRK-TBLMAX      >    ZERO
+                             MOVE     SPACE      TO  WRK-ZAI-MK
+                         END-IF
+                       END-IF
                        PERFORM VARYING IDX2    FROM    1   BY  1
                                UNTIL   IDX2    >   WRK-ZAIWMAX (IDX1)  
                            MOVE    ZERO          TO  FLG-NOPRT
@@ -2112,7 +2102,6 @@
                                PERFORM 430-TBLZAI-HEN-SEC
                            END-IF    
                        END-PERFORM
-                   END-IF
                END-IF        
                IF      WRK-ZAIWMAX (IDX1)    >   ZERO        
                    MOVE    SPACE             TO  WRK-ZAI
@@ -2149,7 +2138,7 @@
                IF      IDX1              =   5
                AND     WRK-ZAIWMAX(IDX1) >   ZERO
                AND     RECE64-YKZTEN     >   ZERO
-                   IF      RECE64-SRYKBN     >=  "31"   
+      ***          IF      RECE64-SRYKBN     >=  "31"   
       *****************IF      RECE64-SRYKBN     =   "31"    OR  
       **                                             "32"    OR  "33"  
       **               AND     RECE64-YKZTEN     <=  20
@@ -2167,7 +2156,7 @@
                            PERFORM 440-TNSKAI-SET-SEC
                            MOVE    IDY               TO  WRK-TBLMAX 
                        END-IF          
-                   END-IF
+      ***          END-IF
                END-IF        
            END-PERFORM
       *             

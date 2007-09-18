@@ -74,6 +74,7 @@
       *
       *  03.05.01    NACL-ÌçÏÆ    07/06/01  ¥°¥ë¡¼¥×¿ÇÎÅÂÐ±þ
       *  03.05.02    NACL-Æ£¸¶    07/06/01  realtime preview ½èÍýÄÉ²Ã
+      *  03.05.03    NACL-ÌçÏÆ    07/09/13  Èé²¼¶ÚÆù¡¢ÀÅÌ®Ãí¼Í¤Îµ­ºÜÊÑ¹¹ÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1315,10 +1316,6 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE86PARA-HOSPNUM
       ***>                                           CONS-GENZAN8      )
       ***>                 MOVE    1             TO  FLG-TEIGEN
       ***>             END-IF
-                       IF    ( RECE84-SRYKBN     =   "31"         )
-                       AND   ( RECE85-SRYCD(IDX) =   CONS-HIKAKIN )
-                           MOVE    1             TO  FLG-HIKAKIN
-                       END-IF  
                    END-IF
       *
                    END-IF
@@ -1820,18 +1817,11 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE86PARA-HOSPNUM
                       (RECE84-RYOTENKISAISU =   ZERO ))
                    CONTINUE
                ELSE    
-                   IF   (( RECE84-SRYKBN     =   "31"  AND
-                           FLG-HIKAKIN       =   1          )  OR 
-                         ( RECE84-SRYKBN     =   "32"       )     )
-                   AND  (  IDX1              =   3                )
-                       CONTINUE
-                   ELSE    
-                       IF      RECE84-SRYKBN     =   "31"  AND
-                               FLG-HIKAKIN       =   ZERO  AND
-                               WRK-ZAIWMAX (3)   >   ZERO  AND
-                               IDX1              >   3
-                           MOVE    SPACE             TO  WRK-ZAI-MK
-                       END-IF            
+                       IF   RECE84-SRYKBN     =   "31" OR "32"
+                         IF   WRK-TBLMAX      >    ZERO
+                             MOVE     SPACE      TO  WRK-ZAI-MK
+                         END-IF
+                       END-IF
                        PERFORM VARYING IDX2    FROM    1   BY  1
                                UNTIL   IDX2    >   WRK-ZAIWMAX (IDX1)  
                            MOVE    ZERO          TO  FLG-NOPRT
@@ -1843,7 +1833,6 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE86PARA-HOSPNUM
                                PERFORM 430-TBLZAI-HEN-SEC
                            END-IF    
                        END-PERFORM
-                   END-IF
                END-IF        
                IF      WRK-ZAIWMAX (IDX1)    >   ZERO        
                    MOVE    SPACE             TO  WRK-ZAI
@@ -1880,7 +1869,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE86PARA-HOSPNUM
                IF      IDX1              =   5
                AND     WRK-ZAIWMAX(IDX1) >   ZERO
                AND     RECE84-YKZTEN     >   ZERO
-                   IF      RECE84-SRYKBN     >=  "31"   
+      ***          IF      RECE84-SRYKBN     >=  "31"   
       *****************IF      RECE84-SRYKBN     =   "31"    OR  
       **                                             "32"    OR  "33"  
       **               AND     RECE84-YKZTEN     <=  20
@@ -1898,7 +1887,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE86PARA-HOSPNUM
                            PERFORM 440-TNSKAI-SET-SEC
                            MOVE    IDY               TO  WRK-TBLMAX 
                        END-IF          
-                   END-IF
+      ***          END-IF
                END-IF        
            END-PERFORM
       *             

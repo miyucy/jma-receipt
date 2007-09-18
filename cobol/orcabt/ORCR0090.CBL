@@ -173,6 +173,8 @@
       *  03.04.02    NACL-ÌçÏÆ    07/03/23  ·îÅÓÃæ°åÎÅµ¡´Ø¥³¡¼¥ÉÊÑ¹¹»þÂÐ±þ
       *
       *  03.05.01    NACL-Æ£¸¶    07/04/19  ¥°¥ë¡¼¥×¿ÇÎÅÂÐ±þ
+      *  03.05.02    NACL-ÌçÏÆ    07/09/13  ÅÀÅ©¤Îµ­ºÜ½çÊÑ¹¹¡ÊÆüÉÕ½ç¡Ë
+      *  03.05.03    NACL-ÌçÏÆ    07/09/13  Èé²¼¶ÚÆù¡¢ÀÅÌ®Ãí¼Í¤Îµ­ºÜÊÑ¹¹ÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -929,6 +931,8 @@
       *---- (01.01.07) LINE ADD END   --------------------------------
       *Èé²¼¶ÚÆùÃí¼Í
            03  CONS-HIKAKIN    PIC X(09)   VALUE   "130000510".
+      *ÀÅÌ®ÆâÃí¼Í
+           03  CONS-JYOMYAKU   PIC X(09)   VALUE   "130003510".
       *    ¡Ê¥µ¡Ë
            03  CONS-RINYAK     PIC X(09)   VALUE   "820000046".
       *½é¿Ç²Ã»»     
@@ -1751,8 +1755,9 @@ grpsys         OR     ( RECE04-HOSPNUM   NOT =   RECE05-HOSPNUM      )
                        IF      RECE05-SRYCD(IDX) =   CONS-TEIGEN
                            MOVE    1             TO  FLG-TEIGEN
                        END-IF
-                       IF      RECE04-SRYKBN     =   "31"
-                       AND     RECE05-SRYCD(IDX) =   CONS-HIKAKIN
+                       IF     (RECE04-SRYKBN     =   "31" OR "32" )
+                       AND    (RECE05-SRYCD(IDX) =   CONS-HIKAKIN
+                                                 OR  CONS-JYOMYAKU)
                            IF  (RECE04-YKZTEN     =   ZERO)
                            AND (RECE04-KIZAITEN   =   ZERO)
                                CONTINUE
@@ -2513,18 +2518,16 @@ grpsys         OR     ( RECE04-HOSPNUM   NOT =   RECE05-HOSPNUM      )
                       AND (IDX1              =   4    ) )
                    CONTINUE
                ELSE    
-                   IF   (( RECE04-SRYKBN     =   "31"  AND
-                           FLG-HIKAKIN       =   1          )  OR 
-                         ( RECE04-SRYKBN     =   "32"       )     )
-                   AND  (  IDX1              =   3                )
+                   IF   (RECE04-SRYKBN     =   "31" OR "32")
+                   AND  (FLG-HIKAKIN       =    1          )
+                   AND  (IDX1              =    3          )
                        CONTINUE
                    ELSE    
-                       IF      RECE04-SRYKBN     =   "31"  AND
-                               FLG-HIKAKIN       =   ZERO  AND
-                               WRK-ZAIWMAX (3)   >   ZERO  AND
-                               IDX1              >   3
-                           MOVE    SPACE             TO  WRK-ZAI-MK
-                       END-IF            
+                       IF   RECE04-SRYKBN     =   "31" OR "32"
+                         IF   WRK-TBLMAX      >    ZERO
+                             MOVE     SPACE      TO  WRK-ZAI-MK
+                         END-IF
+                       END-IF
                        PERFORM VARYING IDX2    FROM    1   BY  1
                                UNTIL   IDX2    >   WRK-ZAIWMAX (IDX1)  
                            MOVE    ZERO          TO  FLG-NOPRT
@@ -2571,7 +2574,7 @@ grpsys         OR     ( RECE04-HOSPNUM   NOT =   RECE05-HOSPNUM      )
                IF      IDX1              =   5
                AND     WRK-ZAIWMAX(IDX1) >   ZERO
                AND     RECE04-YKZTEN     >   ZERO
-                   IF      RECE04-SRYKBN     >=  "31"   
+      ***          IF      RECE04-SRYKBN     >=  "31"   
       *****************IF      RECE04-SRYKBN     =   "31"    OR  
       **                                             "32"    OR  "33"  
       **               AND     RECE04-YKZTEN     <=  20
@@ -2588,7 +2591,7 @@ grpsys         OR     ( RECE04-HOSPNUM   NOT =   RECE05-HOSPNUM      )
                            PERFORM 440-TNSKAI-SET-SEC
                            MOVE    IDY               TO  WRK-TBLMAX 
                        END-IF          
-                   END-IF
+      ***          END-IF
                END-IF        
            END-PERFORM
       *             
@@ -2664,7 +2667,7 @@ grpsys         OR     ( RECE04-HOSPNUM   NOT =   RECE05-HOSPNUM      )
                END-IF
            END-PERFORM
       *
-           IF   ( RECE04-SRYKBN               = "31"  )
+           IF   ( RECE04-SRYKBN               = "31" OR "32" )
            AND  ( TBL-ZAIW-NAME (3 1)         = SPACE )
            AND  ( TBL-ZAIW-NAME (3 WRK-WIDX2) = SPACE )
            AND  ( WRK-WIDX1                   = 3     )
@@ -4177,21 +4180,28 @@ grpsys         OR     ( RECE02-HOSPNUM   NOT =   RECE04-HOSPNUM     )
       *
                MOVE    RECE04-SAFLG          TO  RECE06-SAFLG
       *
-               IF      RECE04-SRYKBN    =    "50" OR "54"
-                   MOVE   WRK-SRYSYUKBN  TO  RECE06-SRYSYUKBN
+               MOVE       SPACE          TO  RECE06-SRYSYUKBN
+               MOVE       ZERO           TO  RECE06-DAY
+               EVALUATE  RECE04-SRYKBN
+                 WHEN      "33"
                    PERFORM   VARYING   IDW3   FROM    1   BY  1
                               UNTIL    IDW3   >      31
-      *
                        IF    RECE04-KAISU(1 IDW3)    NOT =   ZERO
                           MOVE   IDW3    TO  RECE06-DAY
                           MOVE    31     TO  IDW3
                        END-IF
-      *
                    END-PERFORM
-               ELSE
-                   MOVE   SPACE          TO  RECE06-SRYSYUKBN
-                   MOVE   ZERO           TO  RECE06-DAY
-               END-IF
+                 WHEN      "50"
+                 WHEN      "54"
+                   MOVE   WRK-SRYSYUKBN  TO  RECE06-SRYSYUKBN
+                   PERFORM   VARYING   IDW3   FROM    1   BY  1
+                              UNTIL    IDW3   >      31
+                       IF    RECE04-KAISU(1 IDW3)    NOT =   ZERO
+                          MOVE   IDW3    TO  RECE06-DAY
+                          MOVE    31     TO  IDW3
+                       END-IF
+                   END-PERFORM
+               END-EVALUATE
       *
                WRITE   RECE06-REC
       *         

@@ -303,6 +303,9 @@
       *  03.05.07    NACL-ÌçÏÆ    07/08/01  ·îÅÓÃæ¤Î½êÆÀ¾ðÊóÊÑ¹¹ÂÐ±þ
       *  03.05.08    NACL-ÌçÏÆ    07/08/10  ËÌ³¤Æ»£´£±Ï·¿Í¸½ÊªµëÉÕÂÐ±þ½¤Àµ
       *  03.05.09    NACL-ÌçÏÆ    07/09/03  ¸º³Û¸ºÌÈÁ´¹ñ¸øÈñÂÐ±þ
+      *  03.05.10    NACL-ÌçÏÆ    07/09/13  Èé²¼¶ÚÆù¡¢ÀÅÌ®Ãí¼Í¤Îµ­ºÜÊÑ¹¹ÂÐ±þ
+      *  03.05.11    NACL-ÌçÏÆ    07/09/18  ²èÁü¿ÇÃÇ¤Î²Ã»»¡Ê¥Ç¡¼¥¿¶èÊ¬¡§¼êµ»¡Ë
+      *                                     ¤Îµ­ºÜ½çÊÑ¹¹ÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1116,6 +1119,10 @@
            03  CONS-SEIBUTU          PIC X(09)  VALUE  "130000110".
       *    ËãÌôÃí¼Í
            03  CONS-MAYAKU           PIC X(09)  VALUE  "130000310".
+      *    ÀÅÌ®ÆâÃí¼Í
+           03  CONS-JYOMYAKU         PIC X(09)  VALUE  "130003510".
+      *    ÀÅÌ®ÆâÃí¼Í¡ÊÆýÍÄ»ù¡Ë²Ã»»
+           03  CONS-JYOMYAKUKASAN    PIC X(09)  VALUE  "130003670".
       *
       *    ³°Íè´ÉÍý²Ã»»
            03  CONS-GAIKAN1          PIC X(09)  VALUE  "112011010".
@@ -3030,6 +3037,19 @@ grpsys     MOVE    RECE02-HOSPNUM       TO      RECE05-HOSPNUM
                       MOVE   202      TO  RECE05-CDKBN-KBNNUM(IDX4)
                       MOVE   99       TO  RECE05-CDKBN-KOUBAN(IDX4)
                END-IF
+               IF     TNS-SRYCD       =  "170016010"  OR
+                                         "170020270"  OR  "170024470" OR
+                                         "170024910"  OR  "170025010" OR
+                                         "170025210"  OR  "170025310" OR
+                                         "170025410"  OR  "170025510" OR
+                                         "170025610"  OR  "170025710" OR
+                                         "170025810"  OR  "170025910" OR
+                                         "170026010"  OR  "170026110" OR
+                                         "170026210"  OR  "170026310" OR
+                                         "170026810"
+                      MOVE   203      TO  RECE05-CDKBN-KBNNUM(IDX4)
+                      MOVE   99       TO  RECE05-CDKBN-KOUBAN(IDX4)
+               END-IF
       *
                IF    ((SRY-SRYCD    (IDX2)(1:1)     =   "8"  )  OR
                       (SRY-SRYCD    (IDX2)(1:3)     =   "008"))
@@ -3118,10 +3138,12 @@ grpsys             MOVE    SRY-HOSPNUM          TO  PTCOM-HOSPNUM
                     END-IF
                END-IF
       *
-               IF          SRY-SRYKBN       =     "31"
+               IF          SRY-SRYKBN       =     "31" OR "32"
                  IF        SRY-SRYCD(IDX2)  =    CONS-HIKAKIN
                                            OR    CONS-SEIBUTU
                                            OR    CONS-MAYAKU
+                                           OR    CONS-JYOMYAKU
+                                           OR    CONS-JYOMYAKUKASAN
                    MOVE    SPACE           TO    RECE05-NAME(IDX4)
                  END-IF
                END-IF
