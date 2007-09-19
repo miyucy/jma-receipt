@@ -111,6 +111,7 @@
       *  03.04.04    NACL-ÌçÏÆ    07/05/15  ÅÀÅ©¤Îµ­ºÜÊÔ½¸½¤Àµ
       *  03.05.01    NACL-¾®Æ¦Âô  07/06/05  ¥°¥ë¡¼¥×¿ÇÎÅÂÐ±þ
       *  03.05.02    NACL-ÌçÏÆ    07/09/13  Èé²¼¶ÚÆù¡¢ÀÅÌ®Ãí¼Í¤Îµ­ºÜÊÑ¹¹ÂÐ±þ
+      *  03.05.03    NACL-ÌçÏÆ    07/09/13  ÅÀÅ©¤Îµ­ºÜ½çÊÑ¹¹¡ÊÆüÉÕ½ç¡Ë
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -3651,7 +3652,7 @@
                                          OR "130702910" OR "130701010"
                                          OR "130702810")
                          MOVE   1              TO  RECE66-TENTEKIKBN
-                         MOVE   RECE64-ZAINUM  TO  RECE66-TENTEKIBAN
+      **                 MOVE   RECE64-ZAINUM  TO  RECE66-TENTEKIBAN
                 END-IF
                 IF   (WRK-SRYSYUKBN      =  "330")
                 AND  (TBL-ZAI-SRYCD(1)   =  "130000110" OR "130000210"
@@ -3663,7 +3664,7 @@
                                          OR "130011070"               )
                 AND  (RECE66-TENTEKIKBN  =   ZERO)
                          MOVE   2              TO  RECE66-TENTEKIKBN
-                         MOVE   RECE64-ZAINUM  TO  RECE66-TENTEKIBAN
+      **                 MOVE   RECE64-ZAINUM  TO  RECE66-TENTEKIBAN
                 END-IF
       *
                 IF   (WRK-SRYSYUKBN      =  "340")
@@ -3671,7 +3672,7 @@
                 AND  (TBL-ZAI-SRYCD(1)   =  "130004410" OR "130008510"
                                          OR "130004670"               )
                          MOVE   3              TO  RECE66-TENTEKIKBN
-                         MOVE   RECE64-ZAINUM  TO  RECE66-TENTEKIBAN
+      **                 MOVE   RECE64-ZAINUM  TO  RECE66-TENTEKIBAN
                 END-IF
                 IF   (WRK-SRYSYUKBN      =  "340"       )
                 AND  (WRK-TBLMAX         =   2          )
@@ -3687,7 +3688,7 @@
                          CONTINUE
                    ELSE
                          MOVE   3              TO  RECE66-TENTEKIKBN
-                         MOVE   RECE64-ZAINUM  TO  RECE66-TENTEKIBAN
+      **                 MOVE   RECE64-ZAINUM  TO  RECE66-TENTEKIBAN
                    END-IF
                 END-IF
                 IF   (WRK-SRYSYUKBN      =  "340"       )
@@ -3710,7 +3711,7 @@
                          CONTINUE
                    ELSE
                          MOVE   3              TO  RECE66-TENTEKIKBN
-                         MOVE   RECE64-ZAINUM  TO  RECE66-TENTEKIBAN
+      **                 MOVE   RECE64-ZAINUM  TO  RECE66-TENTEKIBAN
                    END-IF
                 END-IF
                 IF   (WRK-SRYSYUKBN      =  "340"       )
@@ -3739,7 +3740,7 @@
                          CONTINUE
                    ELSE
                          MOVE   3              TO  RECE66-TENTEKIKBN
-                         MOVE   RECE64-ZAINUM  TO  RECE66-TENTEKIBAN
+      **                 MOVE   RECE64-ZAINUM  TO  RECE66-TENTEKIBAN
                    END-IF
                 END-IF
                 IF   (WRK-SRYSYUKBN      =  "340")
@@ -3752,62 +3753,62 @@
                                          OR "130011070"               )
                 AND  (RECE66-TENTEKIKBN  =   ZERO)
                          MOVE   4              TO  RECE66-TENTEKIKBN
-                         MOVE   RECE64-ZAINUM  TO  RECE66-TENTEKIBAN
+      **                 MOVE   RECE64-ZAINUM  TO  RECE66-TENTEKIBAN
                 END-IF
       *
                 IF   (WRK-SRYSYUKBN           =  "330")
                 AND  (TBL-ZAI-SRYCD(IDY)(1:1) =  "6"   
                    OR TBL-ZAI-SRYCD(IDY)      =  "099309901")
                          MOVE   5              TO  RECE66-TENTEKIKBN
-                         MOVE   RECE64-ZAINUM  TO  RECE66-TENTEKIBAN
+      **                 MOVE   RECE64-ZAINUM  TO  RECE66-TENTEKIBAN
                 END-IF
       *
                 IF   (WRK-SRYSYUKBN           =  "330")
                 AND  (TBL-ZAI-SRYCD(IDY)(1:1) =  "7"   
                    OR TBL-ZAI-SRYCD(IDY)(1:3) =  "059")
                          MOVE   6              TO  RECE66-TENTEKIKBN
-                         MOVE   RECE64-ZAINUM  TO  RECE66-TENTEKIBAN
+      **                 MOVE   RECE64-ZAINUM  TO  RECE66-TENTEKIBAN
                 END-IF
       *
                 IF   WRK-SRYSYUKBN                =  "340"
                 AND  RECE66-TENTEKIKBN            =   ZERO
                          MOVE   7              TO  RECE66-TENTEKIKBN
-                         MOVE   RECE64-ZAINUM  TO  RECE66-TENTEKIBAN
+      **                 MOVE   RECE64-ZAINUM  TO  RECE66-TENTEKIBAN
                 END-IF
       *
                 IF  ( WRK-SRYSYUKBN           =  "330"  )
                 AND ((TBL-ZAI-SRYCD(IDY)(1:1) =  "8"   ) OR
                      (TBL-ZAI-SRYCD(IDY)(1:3) =  "008" ))
                          MOVE   8              TO  RECE66-TENTEKIKBN
-                         MOVE   RECE64-ZAINUM  TO  RECE66-TENTEKIBAN
+      **                 MOVE   RECE64-ZAINUM  TO  RECE66-TENTEKIBAN
                 END-IF
       *
                 IF  ( WRK-SRYSYUKBN           =  "331"  )
                 AND ((TBL-ZAI-SRYCD(IDY)(1:1) =  "8"   ) OR
                      (TBL-ZAI-SRYCD(IDY)(1:3) =  "008" ))
                          MOVE   9              TO  RECE66-TENTEKIKBN
-                         MOVE   RECE64-ZAINUM  TO  RECE66-TENTEKIBAN
+      **                 MOVE   RECE64-ZAINUM  TO  RECE66-TENTEKIBAN
                 END-IF
       *
                 IF  ( WRK-SRYSYUKBN           =  "332"  )
                 AND ((TBL-ZAI-SRYCD(IDY)(1:1) =  "8"   ) OR
                      (TBL-ZAI-SRYCD(IDY)(1:3) =  "008" ))
                          MOVE   10             TO  RECE66-TENTEKIKBN
-                         MOVE   RECE64-ZAINUM  TO  RECE66-TENTEKIBAN
+      **                 MOVE   RECE64-ZAINUM  TO  RECE66-TENTEKIBAN
                 END-IF
       *
                 IF  ( WRK-SRYSYUKBN           =  "350"  )
                 AND ((TBL-ZAI-SRYCD(IDY)(1:1) =  "8"   ) OR
                      (TBL-ZAI-SRYCD(IDY)(1:3) =  "008" ))
                          MOVE   11             TO  RECE66-TENTEKIKBN
-                         MOVE   RECE64-ZAINUM  TO  RECE66-TENTEKIBAN
+      **                 MOVE   RECE64-ZAINUM  TO  RECE66-TENTEKIBAN
                 END-IF
       *
                 IF  ( WRK-SRYSYUKBN           =  "352"  )
                 AND ((TBL-ZAI-SRYCD(IDY)(1:1) =  "8"   ) OR
                      (TBL-ZAI-SRYCD(IDY)(1:3) =  "008" ))
                          MOVE   12             TO  RECE66-TENTEKIKBN
-                         MOVE   RECE64-ZAINUM  TO  RECE66-TENTEKIBAN
+      **                 MOVE   RECE64-ZAINUM  TO  RECE66-TENTEKIBAN
                 END-IF
       *
                END-IF
@@ -3869,21 +3870,28 @@
       *
                MOVE    RECE64-SAFLG          TO  RECE66-SAFLG
       *
-               IF      RECE64-SRYKBN    =    "50" OR "54"
-                   MOVE   WRK-SRYSYUKBN  TO  RECE66-SRYSYUKBN
+               MOVE       SPACE          TO  RECE66-SRYSYUKBN
+               MOVE       ZERO           TO  RECE66-DAY
+               EVALUATE  RECE64-SRYKBN
+                 WHEN      "33"
                    PERFORM   VARYING   IDW3   FROM    1   BY  1
                               UNTIL    IDW3   >      31
-      *
                        IF    RECE64-KAISU(1 IDW3)    NOT =   ZERO
                           MOVE   IDW3    TO  RECE66-DAY
                           MOVE    31     TO  IDW3
                        END-IF
-      *
                    END-PERFORM
-               ELSE
-                   MOVE   SPACE          TO  RECE66-SRYSYUKBN
-                   MOVE   ZERO           TO  RECE66-DAY
-               END-IF
+                 WHEN      "50"
+                 WHEN      "54"
+                   MOVE   WRK-SRYSYUKBN  TO  RECE66-SRYSYUKBN
+                   PERFORM   VARYING   IDW3   FROM    1   BY  1
+                              UNTIL    IDW3   >      31
+                       IF    RECE64-KAISU(1 IDW3)    NOT =   ZERO
+                          MOVE   IDW3    TO  RECE66-DAY
+                          MOVE    31     TO  IDW3
+                       END-IF
+                   END-PERFORM
+               END-EVALUATE
       *
                WRITE   RECE66-REC
       *         
