@@ -74,7 +74,6 @@
            03  FLG-KOHSKY                  PIC 9(01).
            03  FLG-SEIKYU                  PIC 9(01).
            03  FLG-ORDER                   PIC 9(01).
-           03  FLG-RECEPRT                 PIC 9(01).
            03  FLG-TEIKIPRT                PIC 9(01).
            03  FLG-CHKMST                  PIC 9(01).
       *
@@ -148,9 +147,6 @@
       *    入院オーダ
        01  ORDER-REC.
            COPY    "CPORDER.INC".
-      *
-      *    レセプト明細
-           COPY    "CPRCF008.INC".
       *
       *    定期請求印刷
        01  TEIKIPRT-REC.
@@ -706,74 +702,6 @@
                    PERFORM   900-ORCDBMAIN-SEC
                    IF   MCP-RC   NOT =  ZERO
                         DISPLAY  "ORDER UPDATE MCP-RC = " MCP-RC
-                   END-IF
-                   ADD    1                TO   CNT-COMMIT
-                   IF     CNT-COMMIT       =    100
-                       MOVE    ZERO        TO   CNT-COMMIT
-                       PERFORM   900-DBCOMMIT-SEC
-                       PERFORM   900-DBSTART-SEC
-                   END-IF
-               END-IF
-               PERFORM    900-CHK-READ-SEC
-           END-PERFORM
-      *
-      *    ファイル削除
-           PERFORM 800-FILE-DEL-SEC
-      *
-      *
-      *    患者番号取り込み（レセプト明細テーブル）
-           OPEN    OUTPUT                  CHK-FILE
-           MOVE    ZERO                TO  FLG-RECEPRT
-           INITIALIZE                      RECE08-REC
-           MOVE    SYS-1001-HOSPNUM    TO  RECE08-HOSPNUM
-           MOVE    "tbl_receprt"       TO  MCP-TABLE
-           MOVE    "all"               TO  MCP-PATHNAME
-           PERFORM 910-RECEPRT-SELECT-SEC
-           IF      FLG-RECEPRT         =   ZERO
-               MOVE    "tbl_receprt"   TO  MCP-TABLE
-               MOVE    "all"           TO  MCP-PATHNAME
-               PERFORM 910-RECEPRT-READ-SEC
-               PERFORM  UNTIL  FLG-RECEPRT   =    1
-                   MOVE  RECE08-KEY    TO   CHK-KEY
-                   WRITE   CHK-REC
-                   MOVE    "tbl_receprt"      TO   MCP-TABLE
-                   MOVE    "all"              TO   MCP-PATHNAME
-                   PERFORM 910-RECEPRT-READ-SEC
-               END-PERFORM
-           END-IF
-           MOVE    "tbl_receprt"       TO  MCP-TABLE
-           MOVE    "all"               TO  MCP-PATHNAME
-           PERFORM 900-CLOSE-SEC
-           CLOSE                           CHK-FILE
-      *
-      *    レセプト明細テーブル更新
-           OPEN    INPUT                   CHK-FILE
-           DISPLAY "TBL-RECEPRT  UPDATE START"
-           PERFORM    900-CHK-READ-SEC
-           PERFORM  UNTIL  ( FLG-CHKMST  NOT =  ZERO )
-               MOVE    ZERO                TO  FLG-RECEPRT
-               INITIALIZE                      RECE08-REC
-               MOVE    CHK-KEY             TO  RECE08-KEY
-               MOVE    "tbl_receprt"       TO  MCP-TABLE
-               MOVE    "key"               TO  MCP-PATHNAME
-               PERFORM 910-RECEPRT-SELECT-SEC
-               IF      FLG-RECEPRT         =   ZERO
-                   MOVE    "tbl_receprt"   TO  MCP-TABLE
-                   MOVE    "key"           TO  MCP-PATHNAME
-                   PERFORM 910-RECEPRT-READ-SEC
-                   MOVE       "tbl_receprt" TO  MCP-TABLE
-                   MOVE       "key"        TO  MCP-PATHNAME
-                   PERFORM    900-CLOSE-SEC
-                   MOVE   RECE08-PTNUM     TO   WRK-PTNUM
-                   PERFORM    2001-PTNUM-CHG-SEC
-                   MOVE   WRK-PTNUM        TO   RECE08-PTNUM
-                   MOVE   RECE08-REC       TO   MCPDATA-REC
-                   MOVE  "tbl_receprt"     TO   MCP-TABLE
-                   MOVE  "key"             TO   MCP-PATHNAME
-                   MOVE  "DBUPDATE"        TO   MCP-FUNC
-                   PERFORM   900-ORCDBMAIN-SEC
-                   IF   MCP-RC   NOT =  ZERO
-                        DISPLAY  "RECEPRT UPDATE MCP-RC = " MCP-RC
                    END-IF
                    ADD    1                TO   CNT-COMMIT
                    IF     CNT-COMMIT       =    100
@@ -1375,41 +1303,6 @@
       *
            .
        910-ORDER-READ-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    レセプト明細検索
-      *****************************************************************
-       910-RECEPRT-SELECT-SEC        SECTION.
-      *
-           MOVE    RECE08-REC          TO  MCPDATA-REC
-           PERFORM   900-DBSELECT-SEC
-           IF      MCP-RC              =   ZERO
-               MOVE    ZERO            TO  FLG-RECEPRT
-           ELSE
-               MOVE    1               TO  FLG-RECEPRT
-           END-IF
-      *
-           .
-       910-RECEPRT-SELECT-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    レセプト明細読込
-      *****************************************************************
-       910-RECEPRT-READ-SEC        SECTION.
-      *
-           PERFORM   900-DBFETCH-SEC
-           IF      MCP-RC              =   ZERO
-               MOVE    MCPDATA-REC        TO  RECE08-REC
-               MOVE    ZERO               TO  FLG-RECEPRT
-           ELSE
-               INITIALIZE                     RECE08-REC
-               MOVE    1                  TO  FLG-RECEPRT
-           END-IF
-      *
-           .
-       910-RECEPRT-READ-EXT.
            EXIT.
       *
       *****************************************************************
