@@ -474,6 +474,7 @@
            MOVE    "tbl_ptnum"         TO  MCP-TABLE
            MOVE    "all"               TO  MCP-PATHNAME
            PERFORM 900-CLOSE-SEC
+      *
            CLOSE                           CHK-FILE
       *
       *    患者番号テーブル更新
@@ -515,9 +516,7 @@
                PERFORM    900-CHK-READ-SEC
            END-PERFORM
       *
-      *    ファイル削除
-           PERFORM 800-FILE-DEL-SEC
-      *
+           CLOSE                           CHK-FILE
       *
       *    患者番号取り込み（公費請求テーブル）
            OPEN    OUTPUT                  CHK-FILE
@@ -542,6 +541,7 @@
            MOVE    "tbl_kohsky"        TO  MCP-TABLE
            MOVE    "all"               TO  MCP-PATHNAME
            PERFORM 900-CLOSE-SEC
+      *
            CLOSE                           CHK-FILE
       *
       *    公費請求テーブル更新
@@ -583,9 +583,7 @@
                PERFORM    900-CHK-READ-SEC
            END-PERFORM
       *
-      *    ファイル削除
-           PERFORM 800-FILE-DEL-SEC
-      *
+           CLOSE                           CHK-FILE
       *
       *    患者番号取り込み（請求管理テーブル）
            OPEN    OUTPUT                  CHK-FILE
@@ -610,6 +608,7 @@
            MOVE    "tbl_seikyu"        TO  MCP-TABLE
            MOVE    "all"               TO  MCP-PATHNAME
            PERFORM 900-CLOSE-SEC
+      *
            CLOSE                           CHK-FILE
       *
       *    請求管理テーブル更新
@@ -651,9 +650,7 @@
                PERFORM    900-CHK-READ-SEC
            END-PERFORM
       *
-      *    ファイル削除
-           PERFORM 800-FILE-DEL-SEC
-      *
+           CLOSE                           CHK-FILE
       *
       *    患者番号取り込み（入院オーダテーブル）
            OPEN    OUTPUT                  CHK-FILE
@@ -678,6 +675,7 @@
            MOVE    "tbl_order"         TO  MCP-TABLE
            MOVE    "all"               TO  MCP-PATHNAME
            PERFORM 900-CLOSE-SEC
+      *
            CLOSE                           CHK-FILE
       *
       *    入院オーダテーブル更新
@@ -719,9 +717,7 @@
                PERFORM    900-CHK-READ-SEC
            END-PERFORM
       *
-      *    ファイル削除
-           PERFORM 800-FILE-DEL-SEC
-      *
+           CLOSE                           CHK-FILE
       *
       *    患者番号取り込み（レセプト明細テーブル）
            OPEN    OUTPUT                  CHK-FILE
@@ -746,6 +742,7 @@
            MOVE    "tbl_receprt"       TO  MCP-TABLE
            MOVE    "all"               TO  MCP-PATHNAME
            PERFORM 900-CLOSE-SEC
+      *
            CLOSE                           CHK-FILE
       *
       *    レセプト明細テーブル更新
@@ -767,17 +764,29 @@
                    MOVE       "tbl_receprt" TO  MCP-TABLE
                    MOVE       "key42"       TO  MCP-PATHNAME
                    PERFORM    900-CLOSE-SEC
-                   MOVE   RECE08-PTNUM     TO   WRK-PTNUM
-                   PERFORM    2001-PTNUM-CHG-SEC
-                   MOVE   WRK-PTNUM        TO   RECE08-PTNUM
-                   MOVE   RECE08-REC       TO   MCPDATA-REC
-                   MOVE  "tbl_receprt"     TO   MCP-TABLE
-                   MOVE  "key"             TO   MCP-PATHNAME
-                   MOVE  "DBUPDATE"        TO   MCP-FUNC
-                   PERFORM   900-ORCDBMAIN-SEC
-                   IF   MCP-RC   NOT =  ZERO
-                        DISPLAY  "RECEPRT UPDATE MCP-RC = " MCP-RC
+      *
+      *           (DELETE)
+                   MOVE    RECE08-REC          TO  MCPDATA-REC
+                   MOVE    "DBDELETE"          TO  MCP-FUNC
+                   MOVE    "tbl_receprt"       TO  MCP-TABLE
+                   MOVE    "del4"              TO  MCP-PATHNAME
+                   PERFORM 900-ORCDBMAIN-SEC
+                   IF      MCP-RC     NOT =   ZERO
+                        DISPLAY  "RECEPRT INSERT MCP-RC = " MCP-RC
                    END-IF
+      *           (INSERT)
+                   MOVE    "tbl_receprt"       TO  MCP-TABLE
+                   MOVE    "key"               TO  MCP-PATHNAME
+                   MOVE    "DBINSERT"          TO  MCP-FUNC
+                   MOVE     RECE08-PTNUM       TO   WRK-PTNUM
+                   PERFORM  2001-PTNUM-CHG-SEC
+                   MOVE     WRK-PTNUM           TO   RECE08-PTNUM
+                   MOVE     RECE08-REC          TO  MCPDATA-REC
+                   PERFORM  900-ORCDBMAIN-SEC
+                   IF       MCP-RC     NOT =   ZERO
+                        DISPLAY  "RECEPRT INSERT MCP-RC = " MCP-RC
+                   END-IF
+      *
                    ADD    1                TO   CNT-COMMIT
                    IF     CNT-COMMIT       =    100
                        MOVE    ZERO        TO   CNT-COMMIT
@@ -789,8 +798,7 @@
            END-PERFORM
            MOVE    ZERO                TO  FLG-RECEPRT-SET
       *
-      *    ファイル削除
-           PERFORM 800-FILE-DEL-SEC
+           CLOSE                           CHK-FILE
       *
       *
       *    患者番号取り込み（定期請求印刷情報）
@@ -816,6 +824,7 @@
            MOVE    "tbl_teikiprt"      TO  MCP-TABLE
            MOVE    "all"               TO  MCP-PATHNAME
            PERFORM 900-CLOSE-SEC
+      *
            CLOSE                           CHK-FILE
       *
       *    定期請求印刷情報更新
@@ -856,6 +865,8 @@
                END-IF
                PERFORM    900-CHK-READ-SEC
            END-PERFORM
+      *
+           CLOSE                           CHK-FILE
       *
       *    ファイル削除
            PERFORM 800-FILE-DEL-SEC

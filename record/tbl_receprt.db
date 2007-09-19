@@ -1046,14 +1046,15 @@ path	key42		{
                     AND     CREHMS       =   :CREHMS
                     AND     TEISYUTUSAKI =   :TEISYUTUSAKI
                     AND     SRYKA        =   :SRYKA
-                    AND     PREFKBN      =   :PREFKBN_SRT
-                    AND     HKNJANUM     =   :HKNJANUM_SRT 
+                    AND     PREFKBN_SRT  =   :PREFKBN_SRT
+                    AND     HKNJANUM_SRT =   :HKNJANUM_SRT 
                     AND     HKNJANUM     =   :HKNJANUM
-                    AND     RECESYUBETU  =   :RECESYUBETU
                     AND     TEKSTYMD     =   :TEKSTYMD
-                    AND     ZAITAKU      =   :ZAITAKU
-                    AND     CHOUKI       =   :CHOUKI
-                    AND     PTNUM        =   :PTNUM 
+                    AND     RECESYUBETU_SRT  =   :RECESYUBETU_SRT
+                    AND     RECESYUBETU  =   :RECESYUBETU
+                    AND     PREFKBN      =   :PREFKBN
+                    AND     PREFNUM      =   :PREFNUM
+                    AND     PTNUM        =   :PTNUM
                     AND     SRYYM        =   :SRYYM 
                     AND     RENNUM       =   :RENNUM 
                     AND     RECENUM      =   :RECENUM 
@@ -1061,3 +1062,29 @@ path	key42		{
 	};
 };
 
+path    del4    {
+        DBDELETE        {
+                DELETE
+                FROM tbl_receprt
+		WHERE 	HOSPNUM	= :HOSPNUM
+                    AND   PRTID        =   :PRTID
+                    AND     RECEYM       =   :RECEYM
+                    AND     CREYMD       =   :CREYMD
+                    AND     CREHMS       =   :CREHMS
+                    AND     TEISYUTUSAKI =   :TEISYUTUSAKI
+                    AND     SRYKA        =   :SRYKA
+                    AND     PREFKBN_SRT  =   :PREFKBN_SRT
+                    AND     HKNJANUM_SRT =   :HKNJANUM_SRT 
+                    AND     HKNJANUM     =   :HKNJANUM
+                    AND     TEKSTYMD     =   :TEKSTYMD
+                    AND     RECESYUBETU_SRT  =   :RECESYUBETU_SRT
+                    AND     RECESYUBETU  =   :RECESYUBETU
+                    AND     PREFKBN      =   :PREFKBN
+                    AND     PREFNUM      =   :PREFNUM
+                    AND     PTNUM        =   :PTNUM
+                    AND     SRYYM        =   :SRYYM 
+                    AND     RENNUM       =   :RENNUM 
+                    AND     RECENUM      =   :RECENUM 
+                ;
+        };
+};
