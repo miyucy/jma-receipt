@@ -102,7 +102,9 @@
                05  FLG-DELI1           PIC 9(01).
                05  FLG-DELI2           PIC 9(01).
                05  FLG-NODATA          PIC 9(01).
-           03  FLG-YMD                 PIC 9(01).
+      *
+           03  FLG-KONZAI              PIC 9(01).
+           03  FLG-KANJI               PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -655,6 +657,8 @@
       *****************************************************************
        2401-KONZAI-CHK-SEC         SECTION.
       *
+           MOVE    ZERO            TO  FLG-KONZAI
+           MOVE    ZERO            TO  FLG-KANJI
            INITIALIZE                  ORCSKANACHKAREA
            MOVE    "1"             TO  KANACHK-SYORI
            MOVE    WRK-DATA        TO  KANACHK-MAE-INPUT
@@ -667,8 +671,14 @@
       *
       *    混在の場合エラー
            IF      KANACHK-RC      NOT =   ZERO
-               MOVE    3           TO  FLG-ERR
+               MOVE    1           TO  FLG-KONZAI
                GO  TO  2401-KONZAI-CHK-EXT
+           END-IF
+      *     
+           IF      KANACHK-SYUBETU     =   2
+               MOVE    2           TO  FLG-KANJI
+           ELSE
+               MOVE    1           TO  FLG-KANJI
            END-IF
       *    
            IF      WRK-LEN         >   1
@@ -712,14 +722,14 @@
        2410-BYOMEIINPUTCD-SET-SEC  SECTION.
       *
       *    データがない場合エラー
-           IF      FLG-NODATA      =   1
+           IF    ( FLG-NODATA      =   1 ) OR
+                 ( WRK-MO-CNT      =   0 )
                MOVE    1           TO  FLG-ERR
                GO  TO  2410-BYOMEIINPUTCD-SET-EXT
            END-IF
       *
       *    桁チェック
-           IF    ( WRK-MO-CNT      =   0 ) OR
-                 ( WRK-MO-CNT      >   10 )
+           IF      WRK-MO-CNT      >   10
                MOVE    2           TO  FLG-ERR
                GO  TO  2410-BYOMEIINPUTCD-SET-EXT
            END-IF
@@ -729,12 +739,8 @@
                                    TO  WRK-DATA
            MOVE    10              TO  WRK-CNT
            PERFORM 2401-KONZAI-CHK-SEC
-           IF      FLG-ERR         NOT  =   ZERO
-               GO  TO  2410-BYOMEIINPUTCD-SET-EXT
-           END-IF
-      *
-      *    データがあればセットする
-           IF      WRK-LEN         NOT =   ZERO   
+           IF    ( FLG-KONZAI      =   ZERO ) AND
+                 ( WRK-LEN     NOT =   ZERO ) 
                MOVE    WRK-DATA (1:WRK-LEN)
                                    TO  WKUSBYO-BYOMEIINPUTCD
            ELSE
@@ -743,7 +749,7 @@
            END-IF
       *
       *    ＣＤ種別チェック
-           IF      KANACHK-SYUBETU     =   2 
+           IF      FLG-KANJI       =   2 
                MOVE    "J"         TO  WKUSBYO-CDSYU
            ELSE
                MOVE    "A"         TO  WKUSBYO-CDSYU
@@ -759,7 +765,8 @@
        2410-BUNRUICD-SET-SEC       SECTION.
       *
       *    データがない場合処理抜ける
-           IF      FLG-NODATA      =   1
+           IF    ( FLG-NODATA      =   1 ) OR
+                 ( WRK-MO-CNT      =   0 )
                GO  TO  2410-BUNRUICD-SET-EXT
            END-IF
       *
@@ -788,7 +795,8 @@
        2410-BUNRUIMEI-SET-SEC      SECTION.
       *
       *    データがない場合処理抜ける
-           IF      FLG-NODATA      =   1
+           IF    ( FLG-NODATA      =   1 ) OR
+                 ( WRK-MO-CNT      =   0 )
                GO  TO  2410-BUNRUIMEI-SET-EXT
            END-IF
       *
@@ -803,12 +811,8 @@
                                    TO  WRK-DATA
            MOVE    30              TO  WRK-CNT
            PERFORM 2401-KONZAI-CHK-SEC
-           IF      FLG-ERR         NOT =   ZERO
-               GO  TO  2410-BUNRUIMEI-SET-EXT
-           END-IF
-      *
-      *    全角以外はエラー
-           IF      KANACHK-SYUBETU NOT =   2 
+           IF    ( FLG-KONZAI      =   1 ) OR
+                 ( FLG-KANJI   NOT =   2 )
                MOVE    3           TO  FLG-ERR
                GO  TO  2410-BUNRUIMEI-SET-EXT
            END-IF
@@ -829,14 +833,14 @@
        2410-BYOMEI-SET-SEC         SECTION.
       *
       *    データがない場合エラー
-           IF      FLG-NODATA      =   1
+           IF    ( FLG-NODATA      =   1 ) OR
+                 ( WRK-MO-CNT      =   0 )
                MOVE    1           TO  FLG-ERR
                GO  TO  2410-BYOMEI-SET-EXT
            END-IF
       *
       *    桁チェック
-           IF    ( WRK-MO-CNT      =   0 ) OR  
-                 ( WRK-MO-CNT      >   80 )
+           IF      WRK-MO-CNT      >   80
                MOVE    2           TO  FLG-ERR
                GO  TO  2410-BYOMEI-SET-EXT
            END-IF
@@ -846,12 +850,8 @@
                                    TO  WRK-DATA
            MOVE    80              TO  WRK-CNT
            PERFORM 2401-KONZAI-CHK-SEC
-           IF      FLG-ERR         NOT =   ZERO
-               GO  TO  2410-BYOMEI-SET-EXT
-           END-IF
-      *
-      *    全角以外はエラー
-           IF      KANACHK-SYUBETU NOT =   2
+           IF    ( FLG-KONZAI      =   1 ) OR
+                 ( FLG-KANJI   NOT =   2 )
                MOVE    3           TO  FLG-ERR
                GO  TO  2410-BYOMEI-SET-EXT
            END-IF
@@ -875,7 +875,8 @@
        2410-CHARTBYOMEI-SET-SEC    SECTION.
       *
       *    データがない場合処理抜ける
-           IF      FLG-NODATA      =   1
+           IF    ( FLG-NODATA      =   1 ) OR
+                 ( WRK-MO-CNT      =   0 )
                GO  TO  2410-CHARTBYOMEI-SET-EXT
            END-IF
       *
@@ -890,12 +891,8 @@
                                    TO  WRK-DATA
            MOVE    80              TO  WRK-CNT
            PERFORM 2401-KONZAI-CHK-SEC
-           IF      FLG-ERR         NOT =   ZERO
-               GO  TO  2410-CHARTBYOMEI-SET-EXT
-           END-IF
-      *
-      *    全角以外はエラー
-           IF      KANACHK-SYUBETU NOT  =   2
+           IF    ( FLG-KONZAI      =   1 ) OR
+                 ( FLG-KANJI   NOT =   2 )
                MOVE    3           TO  FLG-ERR
                GO  TO  2410-CHARTBYOMEI-SET-EXT
            END-IF
@@ -917,7 +914,8 @@
        2410-DSPSEQ-SET-SEC         SECTION.
       *
       *    データがない場合処理抜ける
-           IF      FLG-NODATA      =   1
+           IF    ( FLG-NODATA      =   1 ) OR
+                 ( WRK-MO-CNT      =   0 )
                MOVE    50          TO  WKUSBYO-DSPSEQ
                GO  TO  2410-DSPSEQ-SET-EXT
            END-IF
@@ -947,7 +945,8 @@
        2410-MANSEIKBN-SET-SEC      SECTION.
       *
       *    データがない場合処理抜ける
-           IF      FLG-NODATA      =   1
+           IF    ( FLG-NODATA      =   1 ) OR
+                 ( WRK-MO-CNT      =   0 )
                GO  TO  2410-MANSEIKBN-SET-EXT
            END-IF
       *
@@ -979,7 +978,8 @@
        2410-HKNBYOMEIFLG-SET-SEC   SECTION.
       *
       *    データがない場合処理抜ける
-           IF      FLG-NODATA      =   1
+           IF    ( FLG-NODATA      =   1 ) OR
+                 ( WRK-MO-CNT      =   0 )
                GO  TO  2410-HKNBYOMEIFLG-SET-EXT
            END-IF
       *
@@ -1355,28 +1355,6 @@
       *
            .
        2710-ERRLST-INIT-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    日付チェック処理
-      *****************************************************************
-       31012-SEIWA-HEN-SEC         SECTION.
-      *
-           INITIALIZE                  STS-AREA-DAY
-           INITIALIZE                  LNK-DAY1-AREA
-           MOVE    "11"            TO  LNK-DAY1-IRAI
-           MOVE    WRK-SYMD        TO  LNK-DAY1-YMD
-           CALL    "ORCSDAY"           USING
-                                       STS-AREA-DAY
-                                       LNK-DAY1-AREA
-           IF      STS-DAY-RC1     =   ZERO
-               MOVE    0               TO  FLG-YMD
-           ELSE
-               MOVE    1               TO  FLG-YMD
-           END-IF
-           .
-      *
-       31012-SEIWA-HEN-EXT.
            EXIT.
       *
       *****************************************************************
