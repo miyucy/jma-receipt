@@ -68,6 +68,8 @@
       *                                     ÀÃ≥§∆ª¬–±˛
       *
       *  03.05.01    NACL-∆£∏∂    07/04/19  •∞•Î°º•◊ø«Œ≈¬–±˛
+      *  03.05.02    NACL-∆£∏∂    07/09/11  ø∑≥„∏©√Ê±€≤≠√œøÃ¬–±˛
+      *                                     £≤£∞£∞£∑«Ø£π∑Ó°¡£±£≤∑Ó¬–æ› 
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -157,6 +159,7 @@ grpsys     COPY    "COMMON-SPA".
            03  WRK-PARA-NYUGAIKBN  PIC X(01).
            03  WRK-PARA-SYOKBN     PIC X(01).
            03  WRK-PARA-MARUCHO    PIC X(01).
+           03  WRK-PARA-GENMENKBN  PIC X(01).
       *          
       *    ∞Ïª˛ŒŒ∞Ë
        01  WRK-AREA.
@@ -342,7 +345,8 @@ grpsys     COPY    "COMMON-SPA".
                                                WRK-PARA-SHELLID
                                                WRK-PARA-NYUGAIKBN
                                                WRK-PARA-SYOKBN
-                                               WRK-PARA-MARUCHO 
+                                               WRK-PARA-MARUCHO
+                                               WRK-PARA-GENMENKBN 
                                                RECEERR
            END-UNSTRING
            MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
@@ -351,8 +355,13 @@ grpsys     COPY    "COMMON-SPA".
            MOVE    "STS"           TO  SJOBKANRI-MODE
            INITIALIZE                  JOBKANRI-REC
            MOVE    "ORCBM022"      TO  JOB-PGID
-           MOVE    "º“ ›¡Ì≥Á…Ω° ≤˛¿µ»«°À"
+           IF      WRK-PARA-GENMENKBN  =   ZERO 
+               MOVE    "º“ ›¡Ì≥Á…Ω° ≤˛¿µ»«°À"
                                    TO  JOB-SHELLMSG
+           ELSE
+               MOVE    "Ã§≥ŒƒÍ ¨°¶º“ ›¡Ì≥Á…Ω° ≤˛¿µ»«°À"
+                                   TO  JOB-SHELLMSG
+           END-IF
 grpsys     PERFORM 900-CALL-ORCSJOB-SEC
       *
            MOVE    "RECEUPD"           TO  RECEUPD-FILE-ID
@@ -1569,6 +1578,18 @@ grpsys     PERFORM 900-DBFETCH-SEC
                    GO  TO  900-SEIKYU-READ-SEC
                END-IF
       *
+      *        ø∑≥„∏©√Ê±€≤≠√œøÃ¬–±˛
+               EVALUATE    WRK-PARA-GENMENKBN
+                   WHEN    ZERO
+                       IF      RECE10-ETC-YKZFTN (1)   >   ZERO
+                           GO  TO  900-SEIKYU-READ-SEC
+                       END-IF
+                   WHEN    "1"
+                       IF      RECE10-ETC-YKZFTN (1)   =   ZERO
+                           GO  TO  900-SEIKYU-READ-SEC
+                       END-IF
+               END-EVALUATE 
+      *
       *        •∆•π•»¥µº‘§Œ§»§≠§œ∆…§ﬂ»Ù§–§π
                MOVE    SPACE               TO  PTINF-REC
                INITIALIZE                      PTINF-REC
@@ -1583,7 +1604,7 @@ grpsys         MOVE    RECE10-HOSPNUM      TO  PTINF-HOSPNUM
       *         
                ADD     1                   TO  CNT-RECE10
       *         
-               DISPLAY "PTNUM=" RECE10-PTNUM 
+               DISPLAY "PTNUM=" RECE10-PTNUM " " RECE10-ETC-YKZFTN (1)
       *         
            ELSE
                MOVE    1                   TO  FLG-RECE10

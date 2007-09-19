@@ -306,6 +306,8 @@
       *  03.05.10    NACL-ÃÁœ∆    07/09/13  »È≤º∂⁄∆˘°¢¿≈ÃÆ√ÌºÕ§Œµ≠∫‹ —ππ¬–±˛
       *  03.05.11    NACL-ÃÁœ∆    07/09/18  ≤Ë¡¸ø«√«§Œ≤√ªª° •«°º•ø∂Ë ¨°ßºÍµª°À
       *                                     §Œµ≠∫‹ΩÁ —ππ¬–±˛
+      *  03.05.20    NACL-∆£∏∂    07/09/11  ø∑≥„∏©√Ê±€≤≠√œøÃ¬–±˛
+      *                                     £≤£∞£∞£∑«Ø£π∑Ó°¡£±£≤∑Ó¬–æ› 
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1743,6 +1745,40 @@ grpsys         MOVE    WRK-PARA-HOSPNUM    TO  RECE01PARA-HOSPNUM
                    PERFORM     2113-OCR1-HENSYU-SEC
                    PERFORM     2114-OCR2-HENSYU-SEC
                    PERFORM     2115-OCR3-HENSYU-SEC
+               END-IF
+           END-IF
+      *
+      *    ø∑≥„∏©√Ê±€≤≠√œøÃ¬–±˛ 
+           IF    ( IDZ                 =   1      )
+           AND   ( SYS-1001-PREFNUM    =   "15"   )
+           AND   ( RECE02-SRYYM        >=  200709 )
+           AND   ( RECE02-SRYYM        <=  200712 )
+               IF    ( RECE02-HKNNUM   NOT =   SPACE )
+               AND   ( RECE02-HKNJANUM     =   SPACE )
+                   MOVE    3           TO  RECE02-RJNGAIKOHFTN (1)
+               ELSE
+                   IF    ( RECE02-RJNHKNNUM
+                                           NOT =   SPACE )
+                   AND   ( RECE02-RJNFTNJANUM  =   SPACE )
+                       MOVE    3           TO  RECE02-RJNGAIKOHFTN (1)
+                   ELSE
+      *                ∏∫Ã»¬–æ›º‘§Œ§»§≠   
+                       IF      RECE02-GENMENKBN    >   ZERO
+                           MOVE    2       TO  RECE02-RJNGAIKOHFTN (1)
+                       END-IF
+      *                µ≠πÊ°¶»÷πÊ§¨…‘Ã¿§Œ§»§≠
+                       IF    ( RECE02-HKNNUM   NOT =   SPACE )
+                       AND   ( RECE02-KIGO         =   SPACE )
+                       AND   ( RECE02-NUM          =   SPACE )
+                           MOVE    1       TO  RECE02-RJNGAIKOHFTN (1)
+                       END-IF   
+      *                œ∑øÕ ›∑Ú§ŒºıµÎº‘»÷πÊ§¨…‘Ã¿§Œ§»§≠
+                       IF    ( RECE02-RJNHKNNUM
+                                               NOT =   SPACE )
+                       AND   ( RECE02-RJNJKYSNUM   =   SPACE )
+                           MOVE    1       TO  RECE02-RJNGAIKOHFTN (1)
+                       END-IF
+                   END-IF
                END-IF
            END-IF
       *

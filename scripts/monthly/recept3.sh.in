@@ -30,6 +30,7 @@ RENNUM=0
 #        ${23} 国保:処理対象区分
 #           0:全体  1:当月・月遅れ分  2:返戻分
 #        ${24} 1:マル長分を別総括作成
+#        ${25} 社保:新潟県中越沖地震対応 1:減免対象分
 #-------------------------------------------#
 #
 ##      エラーファイル削除
@@ -43,7 +44,9 @@ RENNUM=0
         rm  -f /home/orca/recept32.log
 
         LOG_FILE="/var/log/jma-receipt/${14}recept3${13}.log"
-        rm -f $LOG_FILE 
+        if  [ ${25} -eq '0' ]; then
+            rm -f $LOG_FILE
+        fi 
 
         
 ##      総括表（社保）
@@ -53,7 +56,7 @@ RENNUM=0
 ##                 返戻分
                    if  [ ${22} -eq '0' ] || [ ${22} -eq '2' ]; then
                        RENNUM=$(expr $RENNUM + 1) 
-                       $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBM022 -parameter $1,$2,$3,$RENNUM,$5,$6,$7,$8,$9,${10},${11},${14},${16},${17},${20},2,0,${18} >> $LOG_FILE 2>&1
+                       $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBM022 -parameter $1,$2,$3,$RENNUM,$5,$6,$7,$8,$9,${10},${11},${14},${16},${17},${20},2,0,${25},${18} >> $LOG_FILE 2>&1
                        if  [ -e ${18} ]; then
                           exit
                        fi
@@ -61,7 +64,7 @@ RENNUM=0
 ##                 当月・月遅れ分
                    if  [ ${22} -eq '0' ] || [ ${22} -eq '1' ]; then
                        RENNUM=$(expr $RENNUM + 1) 
-                       $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBM022 -parameter $1,$2,$3,$RENNUM,$5,$6,$7,$8,$9,${10},${11},${14},${16},${17},${20},1,0,${18} >> $LOG_FILE 2>&1
+                       $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBM022 -parameter $1,$2,$3,$RENNUM,$5,$6,$7,$8,$9,${10},${11},${14},${16},${17},${20},1,0,${25},${18} >> $LOG_FILE 2>&1
                        if  [ -e ${18} ]; then
                           exit
                        fi
@@ -70,7 +73,7 @@ RENNUM=0
 ##                 返戻分（マル長以外）
                    if  [ ${22} -eq '0' ] || [ ${22} -eq '2' ]; then
                        RENNUM=$(expr $RENNUM + 1) 
-                       $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBM022 -parameter $1,$2,$3,$RENNUM,$5,$6,$7,$8,$9,${10},${11},${14},${16},${17},${20},2,1,${18} >> $LOG_FILE 2>&1
+                       $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBM022 -parameter $1,$2,$3,$RENNUM,$5,$6,$7,$8,$9,${10},${11},${14},${16},${17},${20},2,1,${25},${18} >> $LOG_FILE 2>&1
                        if  [ -e ${18} ]; then
                           exit
                        fi
@@ -78,7 +81,7 @@ RENNUM=0
 ##                 当月・月遅れ分（マル長以外）
                    if  [ ${22} -eq '0' ] || [ ${22} -eq '1' ]; then
                        RENNUM=$(expr $RENNUM + 1) 
-                       $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBM022 -parameter $1,$2,$3,$RENNUM,$5,$6,$7,$8,$9,${10},${11},${14},${16},${17},${20},1,1,${18} >> $LOG_FILE 2>&1
+                       $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBM022 -parameter $1,$2,$3,$RENNUM,$5,$6,$7,$8,$9,${10},${11},${14},${16},${17},${20},1,1,${25},${18} >> $LOG_FILE 2>&1
                        if  [ -e ${18} ]; then
                           exit
                        fi
@@ -86,7 +89,7 @@ RENNUM=0
 ##                 返戻分（マル長）
                    if  [ ${22} -eq '0' ] || [ ${22} -eq '2' ]; then
                        RENNUM=$(expr $RENNUM + 1) 
-                       $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBM022 -parameter $1,$2,$3,$RENNUM,$5,$6,$7,$8,$9,${10},${11},${14},${16},${17},${20},2,2,${18} >> $LOG_FILE 2>&1
+                       $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBM022 -parameter $1,$2,$3,$RENNUM,$5,$6,$7,$8,$9,${10},${11},${14},${16},${17},${20},2,2,${25},${18} >> $LOG_FILE 2>&1
                        if  [ -e ${18} ]; then
                           exit
                        fi
@@ -94,7 +97,7 @@ RENNUM=0
 ##                 当月・月遅れ分（マル長）
                    if  [ ${22} -eq '0' ] || [ ${22} -eq '1' ]; then
                        RENNUM=$(expr $RENNUM + 1) 
-                       $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBM022 -parameter $1,$2,$3,$RENNUM,$5,$6,$7,$8,$9,${10},${11},${14},${16},${17},${20},1,2,${18} >> $LOG_FILE 2>&1
+                       $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBM022 -parameter $1,$2,$3,$RENNUM,$5,$6,$7,$8,$9,${10},${11},${14},${16},${17},${20},1,2,${25},${18} >> $LOG_FILE 2>&1
                        if  [ -e ${18} ]; then
                           exit
                        fi

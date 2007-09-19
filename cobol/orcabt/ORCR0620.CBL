@@ -128,6 +128,8 @@
       *  03.05.05    NACL-ÌçÏÆ    07/08/01  ½êÆÀ¾ðÊó¼è°·¤¤µ¡Ç½¶¯²½ÂÐ±þ
       *  03.05.06    NACL-ÌçÏÆ    07/08/01  É¸½àÉéÃ´³Û¸º³ÛÇ§Äê¾ÚÀßÄêÂÐ±þ
       *  03.05.07    NACL-ÌçÏÆ    07/08/01  ·îÅÓÃæ¤Î½êÆÀ¾ðÊóÊÑ¹¹ÂÐ±þ
+      *  03.05.08    NACL-Æ£¸¶    07/09/04  µÜºê¸©¡Ö¸øÈñ£¹£°¡×ÂÐ±þ
+      *                                     £²£°£°£·Ç¯£¹·î°Ê¹ß¤Î¤ßÂÐ¾Ý 
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -432,6 +434,8 @@
       *
            03  WRK-CONS-SRYYM-200609
                                    PIC 9(06)   VALUE   200609.      
+           03  WRK-CONS-SRYYM-200709
+                                   PIC 9(06)   VALUE   200709.      
       *
       *****************************************************************
       *    ¥Õ¥¡¥¤¥ë¥ì¥¤¥¢¥¦¥È
@@ -1651,6 +1655,19 @@
                    IF   (RECE62-KOHNUM   (4)(1:1)  =   "1" OR  "2")
                    AND  (RECE62-KOHHBTNUM(4)   NOT =   "41"       )     
                        COMPUTE  WK-KOHI-CNT  =  WK-KOHI-CNT  -  1
+                   END-IF
+               END-IF
+           END-IF
+      *
+      *    µÜºêÃÏÊý¸øÈñÂÐ±þ
+           IF    ( RECE62-PREFNUM      =   "45"                  )
+           AND   ( RECE62-SRYYM        >=  WRK-CONS-SRYYM-200709 )
+               IF  WK-KOKUHO               =   "1" OR  "2"
+                   IF    ( RECE62-KOHNUM   (1)     =   "190" )
+                   OR    ( RECE62-KOHNUM   (2)     =   "190" )
+                   OR    ( RECE62-KOHNUM   (3)     =   "190" )
+                   OR    ( RECE62-KOHNUM   (4)     =   "190" )
+                       COMPUTE WK-KOHI-CNT =   WK-KOHI-CNT -   1
                    END-IF
                END-IF
            END-IF

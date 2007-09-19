@@ -182,6 +182,10 @@
       *  03.05.05    NACL-ÌçÏÆ    07/08/01  ½êÆÀ¾ðÊó¼è°·¤¤µ¡Ç½¶¯²½ÂÐ±þ
       *  03.05.06    NACL-ÌçÏÆ    07/08/01  É¸½àÉéÃ´³Û¸º³ÛÇ§Äê¾ÚÀßÄêÂÐ±þ
       *  03.05.07    NACL-ÌçÏÆ    07/08/01  ·îÅÓÃæ¤Î½êÆÀ¾ðÊóÊÑ¹¹ÂÐ±þ
+      *  03.04.08    NACL-Æ£¸¶    07/09/11  ¿·³ã¸©Ãæ±Û²­ÃÏ¿ÌÂÐ±þ
+      *                                     £²£°£°£·Ç¯£¹·î¡Á£±£²·îÂÐ¾Ý 
+      *  03.05.09    NACL-Æ£¸¶    07/09/18  µÜºê¸©¡Ö¸øÈñ£¹£°¡×ÂÐ±þ
+      *                                     £²£°£°£·Ç¯£¹·î°Ê¹ß¤Î¤ßÂÐ¾Ý 
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1329,6 +1333,7 @@
       *
            03  WRK-CONS-SRYYM-200609   PIC 9(06)   VALUE   200609.      
            03  WRK-CONS-SRYYM-200704   PIC 9(06)   VALUE   200704.
+           03  WRK-CONS-SRYYM-200709  PIC 9(06)   VALUE    200709.      
       *
       *    ²þ¹Ô¥³¡¼¥É
        01  WRK-CONS-RETURN          PIC X(01)   VALUE   X"0A".
@@ -2675,64 +2680,112 @@
            END-IF
            PERFORM 5004-MOJI-HENSYU-SEC
       *    ¿ÇÎÅ¼ÂÆü¿ô     
-           MOVE    RECE62-JNISSU(IDX)     TO  WRK-NUM
-           MOVE    2                      TO  WRK-NAGASA
+           IF    ( RECE62-PREFNUM      =   "45"                  )
+           AND   ( RECE62-SRYYM        >=  WRK-CONS-SRYYM-200709 )
+           AND   ( RECE62-TEISYUTUSAKI =   "2"                   )
+           AND   ( RECE62-KOHNUM (IDY) =   "190"                 )
+      *        µÜºêÃÏÊý¸øÈñÂÐ±þ
+               CONTINUE
+           ELSE
+               MOVE    RECE62-JNISSU(IDX)     TO  WRK-NUM
+               MOVE    2                      TO  WRK-NAGASA
+           END-IF
            PERFORM 5005-NUM-HENSYU-SEC
       *    ¹ç·×ÅÀ¿ô     
-           MOVE    RECE62-TOTALTEN(IDX)   TO  WRK-NUM
-           MOVE    8                      TO  WRK-NAGASA
+           IF    ( RECE62-PREFNUM      =   "45"                  )
+           AND   ( RECE62-SRYYM        >=  WRK-CONS-SRYYM-200709 )
+           AND   ( RECE62-TEISYUTUSAKI =   "2"                   )
+           AND   ( RECE62-KOHNUM (IDY) =   "190"                 )
+      *        µÜºêÃÏÊý¸øÈñÂÐ±þ
+               CONTINUE
+           ELSE
+               MOVE    RECE62-TOTALTEN(IDX)   TO  WRK-NUM
+               MOVE    8                      TO  WRK-NAGASA
+           END-IF
            PERFORM 5005-NUM-HENSYU-SEC
       *    ÉéÃ´¶â³Û¡Ê¸øÈñ¡Ë
-           IF     RECE62-KOHFTNJANUM (IDY) (1:2)
-                                           =   "51"
-               IF      RECE62-KOHFTNJANUM (IDY) (5:3)
-                                               =   "602"
-                   MOVE    RECE62-FTNMONEY(IDX)   TO  WRK-NUM
-                   MOVE    8                      TO  WRK-NAGASA
-               END-IF
+           IF    ( RECE62-PREFNUM      =   "45"                  )
+           AND   ( RECE62-SRYYM        >=  WRK-CONS-SRYYM-200709 )
+           AND   ( RECE62-TEISYUTUSAKI =   "2"                   )
+           AND   ( RECE62-KOHNUM (IDY) =   "190"                 )
+      *        µÜºêÃÏÊý¸øÈñÂÐ±þ
+               CONTINUE
            ELSE
-               IF      RECE62-FTNMONEY(IDX)   >   ZERO     
-                   MOVE    RECE62-FTNMONEY(IDX)   TO  WRK-NUM
-                   MOVE    8                      TO  WRK-NAGASA
-               ELSE
-                   IF    ( RECE62-TOTALTEN (IDX)      >   ZERO )
-                   AND   ( RECE62-FTNMONEY (IDX)      =   ZERO )
-                   AND   ( RECE62-ZEROKISAIFLG (IDX)  =   "1"  )
+               IF     RECE62-KOHFTNJANUM (IDY) (1:2)
+                                               =   "51"
+                   IF      RECE62-KOHFTNJANUM (IDY) (5:3)
+                                                   =   "602"
                        MOVE    RECE62-FTNMONEY(IDX)   TO  WRK-NUM
                        MOVE    8                      TO  WRK-NAGASA
                    END-IF
-               END-IF
-           END-IF    
+               ELSE
+                   IF      RECE62-FTNMONEY(IDX)   >   ZERO     
+                       MOVE    RECE62-FTNMONEY(IDX)   TO  WRK-NUM
+                       MOVE    8                      TO  WRK-NAGASA
+                   ELSE
+                       IF    ( RECE62-TOTALTEN (IDX)      >   ZERO )
+                       AND   ( RECE62-FTNMONEY (IDX)      =   ZERO )
+                       AND   ( RECE62-ZEROKISAIFLG (IDX)  =   "1"  )
+                           MOVE    RECE62-FTNMONEY(IDX)   TO  WRK-NUM
+                           MOVE    8                      TO  WRK-NAGASA
+                       END-IF
+                   END-IF
+               END-IF    
       *
-      *    ¸©Ã±ÍÑ¹àÌÜ
-           IF      FLG-RECE67          =   ZERO
-               IF      RECE67-RECEDEN-FTNMONEY(IDX)
-                                           =   999999999
-                   MOVE    ZERO                TO  WRK-NUM
-                   MOVE    8                   TO  WRK-NAGASA
+      *        ¸©Ã±ÍÑ¹àÌÜ
+               IF      FLG-RECE67          =   ZERO
+                   IF      RECE67-RECEDEN-FTNMONEY(IDX)
+                                               =   999999999
+                       MOVE    ZERO                TO  WRK-NUM
+                       MOVE    8                   TO  WRK-NAGASA
+                   END-IF
                END-IF
            END-IF
            PERFORM 5005-NUM-HENSYU-SEC
       *    ÉéÃ´¶â³Û¡ÊÏ·¿Í¸øÈñµëÉÕÂÐ¾ÝÏ·¿Í³°Íè°ìÉôÉéÃ´¶â¡Ë
            PERFORM 5005-NUM-HENSYU-SEC
       *    ÉéÃ´¶â³Û¡ÊÏ·¿Í¸øÈñµëÉÕÂÐ¾ÝÏ·¿ÍÆþ±¡°ìÉôÉéÃ´¶â¡Ë
-           IF      RECE62-KOUREI-SAIKEI    >   ZERO
-           AND     IDY                     =   1
-               MOVE   RECE62-KOUREI-SAIKEI     TO  WRK-NUM
-               MOVE    6                       TO  WRK-NAGASA
+           IF    ( RECE62-PREFNUM      =   "45"                  )
+           AND   ( RECE62-SRYYM        >=  WRK-CONS-SRYYM-200709 )
+           AND   ( RECE62-TEISYUTUSAKI =   "2"                   )
+           AND   ( RECE62-KOHNUM (IDY) =   "190"                 )
+      *        µÜºêÃÏÊý¸øÈñÂÐ±þ
+               CONTINUE
+           ELSE
+               IF      RECE62-KOUREI-SAIKEI    >   ZERO
+               AND     IDY                     =   1
+                   MOVE   RECE62-KOUREI-SAIKEI     TO  WRK-NUM
+                   MOVE    6                       TO  WRK-NAGASA
+               END-IF
            END-IF
            PERFORM 5005-NUM-HENSYU-SEC
       *    ÌôºÞ°ìÉôÉéÃ´¶â
            PERFORM 5005-NUM-HENSYU-SEC
       *    ¿©»öÎÅÍÜÈñ¡ÊÆü¿ô¡Ë
-           MOVE    RECE62-SHOKUJINISSU(IDX)
-                                         TO  WRK-NUM
-           MOVE    2                     TO  WRK-NAGASA
+           IF    ( RECE62-PREFNUM      =   "45"                  )
+           AND   ( RECE62-SRYYM        >=  WRK-CONS-SRYYM-200709 )
+           AND   ( RECE62-TEISYUTUSAKI =   "2"                   )
+           AND   ( RECE62-KOHNUM (IDY) =   "190"                 )
+      *        µÜºêÃÏÊý¸øÈñÂÐ±þ
+               CONTINUE
+           ELSE
+               MOVE    RECE62-SHOKUJINISSU(IDX)
+                                             TO  WRK-NUM
+               MOVE    2                     TO  WRK-NAGASA
+           END-IF
            PERFORM 5005-NUM-HENSYU-SEC    
       *    ¿©»öÎÅÍÜÈñ¡Ê¹ç·×¶â³Û¡Ë
-           MOVE    RECE62-SHOKUJIRYOYOHI(IDX)
-                                         TO  WRK-NUM
-           MOVE    5                     TO  WRK-NAGASA
+           IF    ( RECE62-PREFNUM      =   "45"                  )
+           AND   ( RECE62-SRYYM        >=  WRK-CONS-SRYYM-200709 )
+           AND   ( RECE62-TEISYUTUSAKI =   "2"                   )
+           AND   ( RECE62-KOHNUM (IDY) =   "190"                 )
+      *        µÜºêÃÏÊý¸øÈñÂÐ±þ
+               CONTINUE
+           ELSE
+               MOVE    RECE62-SHOKUJIRYOYOHI(IDX)
+                                             TO  WRK-NUM
+               MOVE    5                     TO  WRK-NAGASA
+           END-IF
            MOVE    1                   TO  WRK-END 
            PERFORM 5005-NUM-HENSYU-SEC
       *
@@ -7336,7 +7389,17 @@
                                    MOVE    1           TO  FLG-READ
                                END-IF
                            ELSE
-                               MOVE    1               TO  FLG-READ
+      *                        ¿·³ã¸©Ãæ±Û²­ÃÏ¿ÌÂÐ±þ 
+                               IF    ( SYS-1001-PREFNUM    =   "15"   )
+                               AND   ( RECE62-SRYYM        >=  200709 )
+                               AND   ( RECE62-SRYYM        <=  200712 )
+                                   IF      RECE62-RJNGAIKOHFTN (1)
+                                                           =   ZERO
+                                       MOVE    1           TO  FLG-READ
+                                   END-IF
+                               ELSE
+                                   MOVE    1               TO  FLG-READ
+                               END-IF
                            END-IF
                        END-IF    
       *

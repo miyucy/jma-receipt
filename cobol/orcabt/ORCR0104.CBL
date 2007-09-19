@@ -161,6 +161,10 @@
       *  03.05.01    NACL-Æ£¸¶    07/04/19  ¥°¥ë¡¼¥×¿ÇÎÅÂÐ±þ
       *  03.05.02    NACL-ÌçÏÆ    07/07/17  ¸ÄÊÌ»þ¤Î¥·¥¹¥Æ¥à´ÉÍýÊÔ½¸½¤Àµ
       *  03.05.03    NACL-Æ£¸¶    07/07/18  ÀÁµá´ÉÍý¤ËÆÃµ­»ö¹à¤òÄÉ²Ã
+      *  03.05.04    NACL-Æ£¸¶    07/09/04  µÜºê¸©¡Ö¸øÈñ£¹£°¡×ÂÐ±þ
+      *                                     £²£°£°£·Ç¯£¹·î°Ê¹ß¤Î¤ßÂÐ¾Ý 
+      *  03.05.05    NACL-Æ£¸¶    07/09/11  ¿·³ã¸©Ãæ±Û²­ÃÏ¿ÌÂÐ±þ
+      *                                     £²£°£°£·Ç¯£¹·î¡Á£±£²·îÂÐ¾Ý 
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -1003,6 +1007,7 @@ grpsys             07  KEY-O-HOSPNUM   PIC  9(02).
            03  WRK-CONS-SRYYM-200604   PIC 9(06)   VALUE   200604. 
            03  WRK-CONS-SRYYM-200609   PIC 9(06)   VALUE   200609. 
            03  WRK-CONS-SRYYM-200703   PIC 9(06)   VALUE   200703. 
+           03  WRK-CONS-SRYYM-200709   PIC 9(06)   VALUE   200709.      
       *
            03  WRK-CONS-BODYLIST-MAX
                                    PIC 9(02)   VALUE   50.
@@ -2737,6 +2742,20 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
                END-IF
            END-IF
       *
+      *    ¿·³ã¸©Ãæ±Û²­ÃÏ¿ÌÂÐ±þ 
+           IF      CNT-PAGE            =   1
+               IF    ( RECE02-PREFNUM      =   "15"   )
+               AND   ( RECE02-SRYYM        >=  200709 )
+               AND   ( RECE02-SRYYM        <=  200712 )
+                   EVALUATE    RECE02-RJNGAIKOHFTN (1)
+                       WHEN    1
+                           MOVE    "¡ÊÉÔ¾Ü¡Ë"  TO  HC06-HEAD4 (2)(1:8)
+                       WHEN    2
+                           MOVE    "¡ÊºÒ£±¡Ë"  TO  HC06-HEAD4 (2)(1:8)
+                   END-EVALUATE
+               END-IF
+           END-IF
+      *
            .
        310-HC101-HEAD-HEN-EXT.
            EXIT.
@@ -3688,6 +3707,18 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
                                                    TO  WRK-KGK2
                        END-IF
                        MOVE    WRK-KGK2        TO  HC06-JINISSU2
+                   END-IF
+               END-IF
+      *
+      *        µÜºêÃÏÊý¸øÈñÂÐ±þ
+               IF    ( RECE02-PREFNUM      =   "45"                  )
+               AND   ( RECE02-SRYYM        >=  WRK-CONS-SRYYM-200709 )
+               AND   ( RECE02-TEISYUTUSAKI =   "2"                   )
+                   IF      RECE02-KOHNUM (IDA) =   "190"
+                       MOVE    SPACE               TO  HC06-JINISSU1
+                   END-IF
+                   IF      RECE02-KOHNUM (IDB) =   "190"
+                       MOVE    SPACE               TO  HC06-JINISSU2
                    END-IF
                END-IF
            END-IF
@@ -4679,6 +4710,20 @@ grpsys         OR     ( RECE02-HOSPNUM   NOT =   RECE031-HOSPNUM      )
                        MOVE    RECE11-FTNMONEY (IDX3)  TO  WRK-KGK7
                    END-IF
                    MOVE    WRK-KGK7                TO  HC06-FTNMONEY(3)
+               END-IF
+           END-IF
+      *
+      *    µÜºêÃÏÊý¸øÈñÂÐ±þ
+           IF    ( RECE02-PREFNUM      =   "45"                  )
+           AND   ( RECE02-SRYYM        >=  WRK-CONS-SRYYM-200709 )
+           AND   ( RECE02-TEISYUTUSAKI =   "2"                   )
+               IF      RECE02-KOHNUM (1)   =   "190"
+                   MOVE    SPACE               TO  HC06-TOTALTEN(2)
+                                                   HC06-FTNMONEY(2)
+               END-IF
+               IF      RECE02-KOHNUM (2)   =   "190"
+                   MOVE    SPACE               TO  HC06-TOTALTEN(3)
+                                                   HC06-FTNMONEY(3)
                END-IF
            END-IF
       *
@@ -7361,6 +7406,17 @@ grpsys     MOVE    RECE02-HOSPNUM      TO  RECE10-HOSPNUM
                        PERFORM 39041-RECE10-TOKKI-HENSYU-SEC
                    END-IF
                END-PERFORM
+           END-IF
+      *
+      *    ¿·³ã¸©Ãæ±Û²­ÃÏ¿ÌÂÐ±þ 
+           IF    ( RECE02-PREFNUM      =   "15"   )
+           AND   ( RECE02-SRYYM        >=  200709 )
+           AND   ( RECE02-SRYYM        <=  200712 )
+               IF      RECE02-RJNGAIKOHFTN (1)
+                                           >   ZERO
+                   MOVE    RECE02-RJNGAIKOHFTN (1)
+                                           TO  RECE10-ETC-YKZFTN (1)
+               END-IF
            END-IF
       *
            MOVE    RECE10-REC          TO  MCPDATA-REC

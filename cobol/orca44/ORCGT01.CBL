@@ -89,6 +89,8 @@
       *  03.05.01    NACL-Æ£¸¶    07/04/19  ¥°¥ë¡¼¥×¿ÇÎÅÂÐ±þ
       *  03.05.02    NACL-Æ£¸¶    07/05/25  °õºþ¥Ç¡¼¥¿ºï½üÀßÄêµ¡Ç½ÄÉ²Ã
       *  03.05.03    NACL-Æ£¸¶    07/08/01  ¥¯¥é¥¤¥¢¥ó¥ÈÊÝÂ¸ÂÐ±þ
+      *  03.05.04    NACL-Æ£¸¶    07/09/11  ¿·³ã¸©Ãæ±Û²­ÃÏ¿ÌÂÐ±þ
+      *                                     £²£°£°£·Ç¯£¹·î¡Á£±£²·îÂÐ¾Ý 
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -178,6 +180,7 @@
              05  WRK-SHELL-SYSYMD  PIC  X(08).  
       *       
            03  WRK-SHELL-RECEKBN   PIC X(01).
+           03  WRK-SHELL-SYOKBN    PIC X(01).
       *  
            03  WRK-STPAGE          PIC 9(05).
            03  WRK-EDPAGE          PIC 9(05).
@@ -2459,9 +2462,19 @@ grpsys     MOVE    SPA-HOSPNUM         TO  RECEERR-HOSPNUM
                WHEN    T01-DATAKBN4-VALUE    =   "T"
                    IF      SPA-NAI-PRTKBN1       =   SPACE  
                        MOVE    "1"                 TO  WRK-SHELL-RECEKBN
+                       MOVE    "1"                 TO  WRK-SHELL-SYOKBN
                        PERFORM 45013-SOKATU-SYORI-SEC
+      *
+      *                ¿·³ã¸©Ãæ±Û²­ÃÏ¿ÌÂÐ±þ 
+                       IF    ( SPA-PREFNUM       =   "15"   )
+                       AND   ( SPA-NAI-SKYYM     >=  200709 )
+                           MOVE    "1"             TO  WRK-SHELL-RECEKBN
+                           MOVE    "2"             TO  WRK-SHELL-SYOKBN
+                           PERFORM 45013-SOKATU-SYORI-SEC
+                       END-IF
                    END-IF     
            END-EVALUATE                                               
+           MOVE    SPACE               TO  WRK-SHELL-SYOKBN
       *     
       *    Áí³çÉ½°õºþ¡Ê¹ñÊÝ¡Ë
            EVALUATE    TRUE
@@ -2792,6 +2805,13 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SHELLTBL-ARG14
                MOVE    "1"             TO  SHELLTBL-ARG24
            ELSE
                MOVE    "0"             TO  SHELLTBL-ARG24
+           END-IF
+      *    ¿·³ã¸©Ãæ±Û²­ÃÏ¿ÌÂÐ±þ 
+           IF    ( WRK-SHELL-RECEKBN   =   "1" )
+           AND   ( WRK-SHELL-SYOKBN    =   "2" )
+               MOVE    "1"             TO  SHELLTBL-ARG25      
+           ELSE
+               MOVE    "0"             TO  SHELLTBL-ARG25
            END-IF
       *
            MOVE    SHELLTBL        TO  MCPDATA-REC

@@ -42,6 +42,8 @@
       *                                     ËÌ³¤Æ»ÂÐ±þ
       *
       *  03.05.01    NACL-Æ£¸¶    07/04/19  ¥°¥ë¡¼¥×¿ÇÎÅÂÐ±þ
+      *  03.05.02    NACL-Æ£¸¶    07/09/11  ¿·³ã¸©Ãæ±Û²­ÃÏ¿ÌÂÐ±þ
+      *                                     £²£°£°£·Ç¯£¹·î¡Á£±£²·îÂÐ¾Ý 
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -282,6 +284,7 @@
            03  WRK-PARA-NYUGAIKBN  PIC X(01).
            03  WRK-PARA-SYOKBN     PIC X(01).
            03  WRK-PARA-MARUCHO    PIC X(01).
+           03  WRK-PARA-GENMENKBN  PIC X(01).
       *
        01  WRK-NYUGAIKBN           PIC X(01).
       *
@@ -562,7 +565,16 @@ grpsys                 MOVE    SPA-HOSPNUM     TO  SYS-1005-HOSPNUM
                    MOVE    "Ä¹"          TO  HCM2S-MARUCHO (2)
            END-EVALUATE           
       *
-           MOVE    SYS-1005-SRYKANAME    TO  HCM2S-SRYKA
+      *    ¿·³ã¸©Ãæ±Û²­ÃÏ¿ÌÂÐ±þ
+           EVALUATE    WRK-PARA-GENMENKBN
+               WHEN    ZERO
+                   MOVE    SYS-1005-SRYKANAME    TO  HCM2S-SRYKA
+               WHEN    "1"
+                   STRING  "¡ÊÌ¤³ÎÄêÊ¬¡Ë"      DELIMITED   BY  SIZE
+                           SYS-1005-SRYKANAME  DELIMITED   BY  SPACE  
+                                               INTO  HCM2S-SRYKA
+                   END-STRING
+           END-EVALUATE
       *
            .
        310-HEAD-HEN-01-EXT.
@@ -610,7 +622,16 @@ grpsys                 MOVE    SPA-HOSPNUM     TO  SYS-1005-HOSPNUM
                    MOVE    "Ä¹"          TO  HCM2T-MARUCHO (2)
            END-EVALUATE           
       *
-           MOVE    SYS-1005-SRYKANAME    TO  HCM2T-SRYKA
+      *    ¿·³ã¸©Ãæ±Û²­ÃÏ¿ÌÂÐ±þ
+           EVALUATE    WRK-PARA-GENMENKBN
+               WHEN    ZERO
+                   MOVE    SYS-1005-SRYKANAME    TO  HCM2T-SRYKA
+               WHEN    "1"
+                   STRING  "¡ÊÌ¤³ÎÄêÊ¬¡Ë"      DELIMITED   BY  SIZE
+                           SYS-1005-SRYKANAME  DELIMITED   BY  SPACE  
+                                               INTO  HCM2T-SRYKA
+                   END-STRING
+           END-EVALUATE
       *
            MOVE    "£´£³¡ÊÏ·¿ÍÈïÇú¡Ë"    TO  HCM2T-BKO-KOHKBN (1)
            IF      LNK-PRTKANRI-SRYYM    <   WRK-CONS-SRYYM-200704
