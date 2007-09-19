@@ -530,6 +530,11 @@
                     (CSV-X (IDY)       =   SPACE))
                    MOVE    IDY         TO  WRK-PO-ED
                    MOVE    1           TO  FLG-COMMA
+               ELSE
+      *            カンマが足りない場合の終了位置決定
+                   IF      CSV-X (IDY) NOT =   SPACE
+                       MOVE    IDY         TO  WRK-PO-ED
+                   END-IF
                END-IF
       *        デリミタ(")存在するかどうか
                IF  CSV-X (IDY)         =   """"
@@ -724,8 +729,9 @@
            MOVE    20              TO  WRK-CNT
            PERFORM 2402-ZENKAKU-HEN-SEC
       *
-           IF      WRK-LEN         =   ZERO
-               MOVE    2           TO  FLG-ERR
+           IF    ( FLG-ERR         =   ZERO ) AND
+                 ( WRK-LEN         >   ZERO )
+               PERFORM 250-CDSYU-SET-SEC
            END-IF
       *
            .
@@ -750,12 +756,6 @@
            MOVE  CSV-REC (WRK-MO-ST:WRK-MO-CNT)
                                    TO  WRK-SRYCD
       *
-      *    点数マスタ読み込み
-           PERFORM 900-TENSU-READ-SEC
-           IF  FLG-TENSU           NOT = ZERO
-               MOVE    5           TO  FLG-ERR
-           END-IF
-      *
            .
        2410-SRYCD-SET-EXT.
            EXIT.
@@ -765,12 +765,14 @@
       *****************************************************************
        250-INPUTCD-INSERT-SEC      SECTION.
       *
-           MOVE    ZERO            TO  WRK-DSPSEQ
-      *
-           PERFORM 250-CDSYU-SET-SEC
-           IF  FLG-ERR         NOT = ZERO
+      *    点数マスタ読み込み
+           PERFORM 900-TENSU-READ-SEC
+           IF  FLG-TENSU           NOT = ZERO
+               MOVE    5           TO  FLG-ERR
                GO  TO  250-INPUTCD-INSERT-EXT
            END-IF
+      *
+           MOVE    ZERO            TO  WRK-DSPSEQ
       *
       *    重複データが無いかチェック
            MOVE    ZERO        TO  FLG-INPUTCD
