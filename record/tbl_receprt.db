@@ -1034,3 +1034,30 @@ path	key41	{
 	};
 };
 
+path	key42		{ 	
+	DBSELECT	{
+		DECLARE tbl_receprt_key42_csr CURSOR FOR
+		SELECT *
+		FROM tbl_receprt
+		WHERE 	HOSPNUM	= :HOSPNUM
+                    AND   PRTID        =   :PRTID
+                    AND     RECEYM       =   :RECEYM
+                    AND     CREYMD       =   :CREYMD
+                    AND     CREHMS       =   :CREHMS
+                    AND     TEISYUTUSAKI =   :TEISYUTUSAKI
+                    AND     SRYKA        =   :SRYKA
+                    AND     PREFKBN      =   :PREFKBN_SRT
+                    AND     HKNJANUM     =   :HKNJANUM_SRT 
+                    AND     HKNJANUM     =   :HKNJANUM
+                    AND     RECESYUBETU  =   :RECESYUBETU
+                    AND     TEKSTYMD     =   :TEKSTYMD
+                    AND     ZAITAKU      =   :ZAITAKU
+                    AND     CHOUKI       =   :CHOUKI
+                    AND     PTNUM        =   :PTNUM 
+                    AND     SRYYM        =   :SRYYM 
+                    AND     RENNUM       =   :RENNUM 
+                    AND     RECENUM      =   :RECENUM 
+		;
+	};
+};
+
