@@ -607,6 +607,11 @@
                     (CSV-X (IDY)       =   SPACE))
                    MOVE    IDY         TO  WRK-PO-ED
                    MOVE    1           TO  FLG-COMMA
+               ELSE
+      *            カンマが足りない場合の終了位置決定
+                   IF      CSV-X (IDY) NOT =   SPACE
+                       MOVE    IDY         TO  WRK-PO-ED
+                   END-IF
                END-IF
       *        デリミタ(")存在するかどうか
                IF  CSV-X (IDY)         =   """"
@@ -788,7 +793,8 @@
                GO  TO  2410-SRYKA-SET-EXT
            END-IF
       *
-           IF      WRK-MO-CNT      >   2
+           IF     (WRK-MO-CNT      >   2 )
+              OR  (CSV-REC (WRK-MO-ST:WRK-MO-CNT) NOT NUMERIC)
                MOVE    2                   TO  FLG-ERR
                GO  TO  2410-SRYKA-SET-EXT
            END-IF

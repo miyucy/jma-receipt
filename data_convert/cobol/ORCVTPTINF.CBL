@@ -221,7 +221,7 @@
            03  ERR-REC1.
                05  ERR1-LINENO         PIC X(06).
                05  FILLER              PIC X(01).
-               05  ERR1-NAIYO          PIC X(04).
+               05  ERR1-NAIYO          PIC X(03).
                05  ERR-OCCURS          OCCURS   4.
                    07  FILLER          PIC X(01).
                    07  ERR1-ERRNO      PIC X(03).
@@ -590,6 +590,11 @@
                      ( CSV-X (IDY)     =   SPACE))
                    MOVE    IDY         TO  WRK-PO-ED
                    MOVE    1           TO  FLG-COMMA
+               ELSE
+      *            カンマが足りない場合の終了位置決定
+                   IF      CSV-X (IDY) NOT =   SPACE
+                       MOVE    IDY         TO  WRK-PO-ED
+                   END-IF
                END-IF
       *        デリミタ(")存在するかどうか
                IF      CSV-X (IDY)         =   """"
@@ -1015,6 +1020,21 @@
                                        TO  SPA-PTNUM(IDZ:)
            END-IF
       *
+      *    半角チェック
+           INITIALIZE                  ORCSKANACHKAREA
+           MOVE    "1"             TO  KANACHK-SYORI
+           MOVE    SPA-PTNUM       TO  KANACHK-MAE-INPUT
+           MOVE    20              TO  KANACHK-MAX-CNT
+           CALL    "ORCSKANACHK"       USING
+                                       ORCSKANACHKAREA
+           IF     (KANACHK-RC          =   ZERO  )  AND
+                  (KANACHK-SYUBETU     =   1     )  AND
+                  (KANACHK-RC2         =   ZERO  )
+               CONTINUE
+           ELSE
+      *        半角以外はエラー
+               MOVE    3               TO  FLG-ERR
+           END-IF
            .
        2410-PTNUM-SET-EXT.
            EXIT.
@@ -2238,7 +2258,7 @@
                GO  TO  250-PTNUM-GET-EXT
            END-IF
       *
-           MOVE    MCPDATA-REC     TO  SYS-1009-REC
+      *****MOVE    MCPDATA-REC     TO  SYS-1009-REC
            EVALUATE    FLG-UPDATE
            WHEN    ZERO
       *        患者番号桁数算出処理
@@ -2292,6 +2312,9 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    "tbl_syskanri"  TO  MCP-TABLE
                MOVE    "key10"         TO  MCP-PATHNAME
                PERFORM 900-SYSTEM-NEXT-SEC
+               IF      FLG-SYSKANRI    =   ZERO
+                   MOVE    MCPDATA-REC     TO  SYS-1009-REC
+               END-IF
            ELSE
                MOVE    1               TO  FLG-SYSKANRI
            END-IF
@@ -2593,7 +2616,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    "勤務住所:"     TO  ERR1-KOMOKU(IDE)
       *    ４０：勤務先−番地方書
            WHEN    40
-               MOVE    "勤務先番地:"   TO  ERR1-KOMOKU(IDE)
+               MOVE    "勤務番地:"     TO  ERR1-KOMOKU(IDE)
       *    ４１：勤務先−電話番号
            WHEN    41
                MOVE    "勤務電話:"     TO  ERR1-KOMOKU(IDE)

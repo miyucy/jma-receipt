@@ -697,6 +697,11 @@
                       (CSV-X (IDY)     =   SPACE))
                    MOVE    IDY         TO  WRK-PO-ED
                    MOVE    1           TO  FLG-COMMA
+               ELSE
+      *            カンマが足りない場合の終了位置決定
+                   IF      CSV-X (IDY) NOT =   SPACE
+                       MOVE    IDY         TO  WRK-PO-ED
+                   END-IF
                END-IF
       *        デリミタ(")存在するかどうか
                IF      CSV-X (IDY)         =   """"
@@ -860,6 +865,23 @@
       *        後ろの全角空白を削除
                IF      WRK-LEN             >   1
                    PERFORM 24021-KUHAKU-DEL-SEC
+               END-IF
+      *        半角英数字であること
+               IF      WRK-LEN             >   1
+                   INITIALIZE                  ORCSKANACHKAREA
+                   MOVE    "1"             TO  KANACHK-SYORI
+                   MOVE    WRK-DATA        TO  KANACHK-MAE-INPUT
+                   MOVE    WRK-CNT         TO  KANACHK-MAX-CNT
+                   CALL    "ORCSKANACHK"       USING
+                                               ORCSKANACHKAREA
+                   IF     (KANACHK-RC          =   ZERO  )  AND
+                          (KANACHK-SYUBETU     =   1     )  AND
+                          (KANACHK-MAE-INPUT   =   KANACHK-OUT-INPUT)
+                       CONTINUE
+                   ELSE
+      *                全角、半角カナはエラー
+                       MOVE    3               TO  FLG-ERR
+                   END-IF
                END-IF
            END-IF
            .
@@ -1439,6 +1461,7 @@
       *
       *    項目桁数不正
            IF      WRK-MO-CNT          >   3
+            AND   (CSV-REC (WRK-MO-ST:WRK-MO-CNT) NOT NUMERIC )
                MOVE    2               TO  FLG-ERR
                GO  TO  2410-GAIFTN-SET-EXT
            END-IF
@@ -1475,6 +1498,7 @@
       *
       *    項目桁数不正
            IF      WRK-MO-CNT          >   3
+            AND   (CSV-REC (WRK-MO-ST:WRK-MO-CNT) NOT NUMERIC )
                MOVE    2               TO  FLG-ERR
                GO  TO  2410-NYUFTN-SET-EXT
            END-IF

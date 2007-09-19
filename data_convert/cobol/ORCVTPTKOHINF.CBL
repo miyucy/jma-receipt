@@ -356,6 +356,8 @@
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
            COPY    "CPORCMCP.INC".
+      *    全角チェックパラメタ
+           COPY    "CPORCSKANACHK.INC".
       *
       *    LIKE使用KEY対応
            COPY    "CPORCSADDSIGN.INC".
@@ -710,6 +712,11 @@
                     (CSV-X (IDY)       =   SPACE))
                    MOVE    IDY         TO  WRK-PO-ED
                    MOVE    1           TO  FLG-COMMA
+               ELSE
+      *            カンマが足りない場合の終了位置決定
+                   IF      CSV-X (IDY) NOT =   SPACE
+                       MOVE    IDY         TO  WRK-PO-ED
+                   END-IF
                END-IF
       *        デリミタ(")存在するかどうか
                IF      CSV-X (IDY)         =   """"
@@ -861,6 +868,22 @@
       *        後ろの全角空白を削除
                IF      WRK-LEN             >   1
                    PERFORM 24021-KUHAKU-DEL-SEC
+               END-IF
+      *        半角英数字であること
+               IF      WRK-LEN             >   1
+                   INITIALIZE                  ORCSKANACHKAREA
+                   MOVE    "1"             TO  KANACHK-SYORI
+                   MOVE    WRK-DATA        TO  KANACHK-MAE-INPUT
+                   MOVE    WRK-CNT         TO  KANACHK-MAX-CNT
+                   CALL    "ORCSKANACHK"       USING
+                                               ORCSKANACHKAREA
+                   IF     (KANACHK-RC          =   ZERO  )  AND
+                          (KANACHK-RC2     NOT =   7     )
+                       CONTINUE
+                   ELSE
+      *                全角半角混在、間の空白はエラー
+                       MOVE    3               TO  FLG-ERR
+                   END-IF
                END-IF
            END-IF
            .
@@ -1106,7 +1129,8 @@
                GO  TO  2410-HKNNUM-SET-EXT
            END-IF
       *
-           IF      WRK-MO-CNT          NOT =   3
+           IF     (WRK-MO-CNT          NOT =   3 )
+              OR  (CSV-REC (WRK-MO-ST:WRK-MO-CNT) NOT NUMERIC)
                MOVE    2               TO  FLG-ERR
                GO  TO  2410-HKNNUM-SET-EXT
            END-IF
