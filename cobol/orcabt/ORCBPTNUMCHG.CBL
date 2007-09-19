@@ -35,7 +35,7 @@
        FILE-CONTROL.
       *
       *    チェックマスタ
-           SELECT  CHK-FILE        ASSIGN   BCHKSND01PARA
+           SELECT  CHK-FILE        ASSIGN   BPTNUMCHGPARA
                    ORGANIZATION    LINE SEQUENTIAL
                                    FILE    STATUS  IS  STS-CHK.
       *
@@ -60,7 +60,7 @@
       *    チェックマスタファイル
            COPY    "CPCOMMONDAT2.INC"
                                            REPLACING   //RECE01//
-                                           BY          //BCHKSND01//.
+                                           BY          //BPTNUMCHG//.
            03  FILLER                      PIC X(04)   VALUE   ".dat".
       *
        01  STS-AREA.
@@ -276,9 +276,9 @@
       *
            PERFORM   900-CALL-ORCSJOB-SEC
       *
-           MOVE    WRK-PARA-HOSPNUM    TO  BCHKSND01PARA-HOSPNUM
-           MOVE    "BCHKS01"           TO  BCHKSND01PARA-FILE-ID
-           MOVE    LNK-PRTKANRI-TERMID TO  BCHKSND01PARA-TERMID
+           MOVE    WRK-PARA-HOSPNUM    TO  BPTNUMCHGPARA-HOSPNUM
+           MOVE    "BCHKS01"           TO  BPTNUMCHGPARA-FILE-ID
+           MOVE    LNK-PRTKANRI-TERMID TO  BPTNUMCHGPARA-TERMID
       *
       *
       **     MOVE    "RECEERR"           TO  RECEERR-FILE-ID
@@ -1168,7 +1168,7 @@
       *
       *    ファイル削除
            MOVE    ZERO            TO  IF-RESULT
-           MOVE    BCHKSND01PARA   TO  IF-FILENAME
+           MOVE    BPTNUMCHGPARA   TO  IF-FILENAME
            CALL    "orcfiledel"    USING
                                        ORCSFDELAREA
       *
