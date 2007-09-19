@@ -772,7 +772,7 @@
                    MOVE    "del4"              TO  MCP-PATHNAME
                    PERFORM 900-ORCDBMAIN-SEC
                    IF      MCP-RC     NOT =   ZERO
-                        DISPLAY  "RECEPRT INSERT MCP-RC = " MCP-RC
+                        DISPLAY  "RECEPRT DELETE MCP-RC = " MCP-RC
                    END-IF
       *           (INSERT)
                    MOVE    "tbl_receprt"       TO  MCP-TABLE
