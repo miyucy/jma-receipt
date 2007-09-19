@@ -23,12 +23,13 @@
       * Maj/Min/Rev  修正者       日付      内容
       ************************************************************
       *01  TEIKIPRT-REC.
+           03  TEIKIPRT-KEY.
       *医療機関番号
-           03  TEIKIPRT-HOSPNUM        PIC 9(2).
+               05  TEIKIPRT-HOSPNUM    PIC  9(02).
       *病棟番号
-           03  TEIKIPRT-BTUNUM         PIC  X(02).
+               05  TEIKIPRT-BTUNUM     PIC  X(02).
       *伝票番号
-           03  TEIKIPRT-DENPNUM        PIC  9(07).
+               05  TEIKIPRT-DENPNUM    PIC  9(07).
       *患者ＩＤ
            03  TEIKIPRT-PTID           PIC  9(10).
       *患者番号
