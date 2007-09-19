@@ -125,3 +125,13 @@ path	key7 	{
 		;
 	};
 };
+
+path	all	{
+	DBSELECT	{
+		DECLARE tbl_order_all_csr CURSOR FOR
+		SELECT *
+		FROM tbl_order
+		WHERE   HOSPNUM    =   :HOSPNUM
+		;
+	};
+};
