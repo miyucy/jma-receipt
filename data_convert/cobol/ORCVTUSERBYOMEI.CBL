@@ -722,8 +722,7 @@
        2410-BYOMEIINPUTCD-SET-SEC  SECTION.
       *
       *    データがない場合エラー
-           IF    ( FLG-NODATA      =   1 ) OR
-                 ( WRK-MO-CNT      =   0 )
+           IF      FLG-NODATA      =   1
                MOVE    1           TO  FLG-ERR
                GO  TO  2410-BYOMEIINPUTCD-SET-EXT
            END-IF
@@ -739,12 +738,16 @@
                                    TO  WRK-DATA
            MOVE    10              TO  WRK-CNT
            PERFORM 2401-KONZAI-CHK-SEC
-           IF    ( FLG-KONZAI      =   ZERO ) AND
-                 ( WRK-LEN     NOT =   ZERO ) 
+           IF      FLG-KONZAI      =   1
+               MOVE    3           TO  FLG-ERR
+               GO  TO  2410-BYOMEIINPUTCD-SET-EXT
+           END-IF
+      *     
+           IF      WRK-LEN     NOT =   ZERO
                MOVE    WRK-DATA (1:WRK-LEN)
                                    TO  WKUSBYO-BYOMEIINPUTCD
            ELSE
-               MOVE    3           TO  FLG-ERR
+               MOVE    2           TO  FLG-ERR
                GO  TO  2410-BYOMEIINPUTCD-SET-EXT
            END-IF
       *
@@ -765,8 +768,7 @@
        2410-BUNRUICD-SET-SEC       SECTION.
       *
       *    データがない場合処理抜ける
-           IF    ( FLG-NODATA      =   1 ) OR
-                 ( WRK-MO-CNT      =   0 )
+           IF      FLG-NODATA      =   1
                GO  TO  2410-BUNRUICD-SET-EXT
            END-IF
       *
@@ -782,7 +784,6 @@
                                    TO  WRK-BUNRUICD
            ELSE
                MOVE    3           TO  FLG-ERR
-               GO  TO  2410-BUNRUICD-SET-EXT
            END-IF
       *
            .
@@ -795,8 +796,7 @@
        2410-BUNRUIMEI-SET-SEC      SECTION.
       *
       *    データがない場合処理抜ける
-           IF    ( FLG-NODATA      =   1 ) OR
-                 ( WRK-MO-CNT      =   0 )
+           IF      FLG-NODATA      =   1
                GO  TO  2410-BUNRUIMEI-SET-EXT
            END-IF
       *
@@ -818,7 +818,7 @@
            END-IF
       *
       *    データがあればセットする      
-           IF      WRK-LEN         NOT =   ZERO 
+           IF      WRK-LEN     NOT =   ZERO 
                MOVE    WRK-DATA (1:WRK-LEN)
                                    TO  WRK-BUNRUIMEI
            END-IF
@@ -833,8 +833,7 @@
        2410-BYOMEI-SET-SEC         SECTION.
       *
       *    データがない場合エラー
-           IF    ( FLG-NODATA      =   1 ) OR
-                 ( WRK-MO-CNT      =   0 )
+           IF      FLG-NODATA      =   1
                MOVE    1           TO  FLG-ERR
                GO  TO  2410-BYOMEI-SET-EXT
            END-IF
@@ -857,12 +856,14 @@
            END-IF
       *
       *    データがあればセットする
-           IF      WRK-LEN         NOT =   ZERO
+           IF      WRK-LEN     NOT =   ZERO
                MOVE    WRK-DATA (1:WRK-LEN)
                                    TO  WKUSBYO-BYOMEI
                MOVE    WRK-LEN     TO  WKUSBYO-BYOMEIMOJI
       *        病名コードセット
                PERFORM 24101-BYOMEICD-CHECK-SEC
+           ELSE
+               MOVE    2           TO  FLG-ERR
            END-IF
       *
            .
@@ -875,8 +876,7 @@
        2410-CHARTBYOMEI-SET-SEC    SECTION.
       *
       *    データがない場合処理抜ける
-           IF    ( FLG-NODATA      =   1 ) OR
-                 ( WRK-MO-CNT      =   0 )
+           IF      FLG-NODATA      =   1
                GO  TO  2410-CHARTBYOMEI-SET-EXT
            END-IF
       *
@@ -898,7 +898,7 @@
            END-IF
       *
       *    データがあればセットする
-           IF      WRK-LEN         NOT =   ZERO
+           IF      WRK-LEN     NOT =   ZERO
                MOVE    WRK-DATA (1:WRK-LEN)
                                    TO  WKUSBYO-CHARTBYOMEI
                MOVE    WRK-LEN     TO  WKUSBYO-CHARTBYOMEIMOJI
@@ -914,8 +914,7 @@
        2410-DSPSEQ-SET-SEC         SECTION.
       *
       *    データがない場合処理抜ける
-           IF    ( FLG-NODATA      =   1 ) OR
-                 ( WRK-MO-CNT      =   0 )
+           IF      FLG-NODATA      =   1
                MOVE    50          TO  WKUSBYO-DSPSEQ
                GO  TO  2410-DSPSEQ-SET-EXT
            END-IF
@@ -932,7 +931,6 @@
                                    TO  WKUSBYO-DSPSEQ
            ELSE
                MOVE    3           TO  FLG-ERR
-               GO  TO  2410-DSPSEQ-SET-EXT
            END-IF
       *
            .
@@ -945,8 +943,7 @@
        2410-MANSEIKBN-SET-SEC      SECTION.
       *
       *    データがない場合処理抜ける
-           IF    ( FLG-NODATA      =   1 ) OR
-                 ( WRK-MO-CNT      =   0 )
+           IF      FLG-NODATA      =   1
                GO  TO  2410-MANSEIKBN-SET-EXT
            END-IF
       *
@@ -978,8 +975,7 @@
        2410-HKNBYOMEIFLG-SET-SEC   SECTION.
       *
       *    データがない場合処理抜ける
-           IF    ( FLG-NODATA      =   1 ) OR
-                 ( WRK-MO-CNT      =   0 )
+           IF      FLG-NODATA      =   1
                GO  TO  2410-HKNBYOMEIFLG-SET-EXT
            END-IF
       *
@@ -995,7 +991,6 @@
                                    TO  WKUSBYO-HKNBYOMEIFLG
            ELSE
                MOVE    3           TO  FLG-ERR
-               GO  TO  2410-HKNBYOMEIFLG-SET-EXT
            END-IF
       *
            .
