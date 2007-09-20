@@ -552,6 +552,19 @@
       *        項目別処理
                PERFORM 240-KOUMOKU-BETU-SEC
            END-PERFORM
+      *    必須項目なし
+           IF      FLG-ERRARI          =   ZERO
+               IF     (WRK-KOUMOKU-NO      >   ZERO) AND
+                      (WRK-KOUMOKU-NO      <   6   )
+                   MOVE    1               TO  FLG-ERR
+                   MOVE    1               TO  FLG-ERRARI
+                   PERFORM 290-ERRREC-EDIT-SEC
+               END-IF
+           END-IF
+      *    データなし
+           IF     (WRK-KOUMOKU-NO      =   ZERO )
+               CONTINUE
+           ELSE
       *
            IF      FLG-ERRARI          =   ZERO
       *        患者情報セット
@@ -565,6 +578,8 @@
            ELSE
       *        エラーリスト出力処理
                PERFORM 290-ERRLST-OUT-SEC
+           END-IF
+      *
            END-IF
       *
       *    患者ＣＳＶファイル　検索処理
