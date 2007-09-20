@@ -61,6 +61,7 @@
       * 03.03.01     NACL-森脇    06/10/23  画像フォルダデフォルト設定
       * 03.04.00     NACL-太田    06/12/20  自費内訳明細書追加
       * 03.05.00     NACL-多々納  07/05/02  グループ診療対応
+      * 04.00000     NACL-多々納  07/09/19  処方せんＱＲプログラム追加他
       *****************************************************************
       *
        ENVIRONMENT                               DIVISION.
@@ -92,6 +93,7 @@
            03  FLG-SAI                             PIC 9(01).
       *
            03  FLG-CHK                             PIC 9(01).
+           03  FLG-OK                              PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -447,7 +449,7 @@
            MOVE    "*"                 TO  SYS-KBNCD
            PERFORM 900-SYSKANRI-INV-SEC
            IF  (   FLG-SYSKANRI        =   ZERO )
-               MOVE    MCPDATA-REC     TO  SYS-1030-REC
+               MOVE    SYSKANRI-REC    TO  SYS-1030-REC
                MOVE    SYS-1030-SYOHOGEPRTFLG
                                        TO  SPA-GMN-SYOHOGEPRTFLG
                PERFORM VARYING IDY FROM    1   BY  1
@@ -560,6 +562,12 @@
            MOVE    "ORCHCN03V03"       TO  SPA-GMN-ORGPGNM03NMEIL(3)
            MOVE    3                   TO  SPA-GMN-ORGPGNM03N-MAX
       *
+      *    院外処方せん
+           MOVE    "ORCHCM19"          TO  SPA-GMN-ORGPGNM02-MEI(1)
+           MOVE    "ORCHC02"           TO  SPA-GMN-ORGPGNM02-MEI(2)
+           MOVE    "ORCHC02Q"          TO  SPA-GMN-ORGPGNM02-MEI(3)
+           MOVE    3                   TO  SPA-GMN-ORGPGNM02-MAX
+      *
            INITIALIZE                      SPA-GMN-USERLSTSCROLLE
            INITIALIZE                      SPA-NAI-TBL
            MOVE    ZERO                TO  SPA-GMN-USERLST-MAX
@@ -592,7 +600,7 @@
            END-IF
            PERFORM 900-SYSKANRI-INV-SEC
            IF      FLG-SYSKANRI            =   ZERO
-               MOVE    MCPDATA-REC         TO  SYS-1031-REC
+               MOVE    SYSKANRI-REC         TO  SYS-1031-REC
                PERFORM VARYING IDX         FROM    1   BY  1
                        UNTIL   IDX         >       20
                    MOVE    SYS-1031-PRTNM (IDX)
@@ -612,13 +620,18 @@
            IF    ( SPA-BEDSU           >   ZERO )
                CONTINUE
            ELSE
-               GO  TO  3101-SYS1031-SYOKI-EXT
+      *        入院帳票
+               PERFORM 31011-NYUIN-SYOKI-SEC
            END-IF
       *
-      *    -- 入院帳票 --
+           .
+       3101-SYS1031-SYOKI-EXT.
+           EXIT.
       *
-      *    帳票名初期処理
-      *****PERFORM 3101-NYU-PRTNAME-SYOKI-SEC
+      *****************************************************************
+      *    入院帳票名初期処理
+      *****************************************************************
+       31011-NYUIN-SYOKI-SEC          SECTION.
       *
            MOVE    SPACE               TO  SYSKANRI-REC
            INITIALIZE                      SYSKANRI-REC
@@ -630,7 +643,7 @@
            END-IF
            PERFORM 900-SYSKANRI-INV-SEC
            IF      FLG-SYSKANRI            =   ZERO
-               MOVE    MCPDATA-REC         TO  SYS-1034-REC
+               MOVE    SYSKANRI-REC        TO  SYS-1034-REC
                PERFORM VARYING IDX         FROM    1   BY  1
                        UNTIL   IDX         >       20
                    MOVE    SYS-1034-PRTNM (IDX)
@@ -642,7 +655,7 @@
            PERFORM 3103-NYU-PRGNAME-SYOKI-SEC
       *
            .
-       3101-SYS1031-SYOKI-EXT.
+       31011-NYUIN-SYOKI-EXT.
            EXIT.
       *
       *****************************************************************
@@ -717,10 +730,7 @@
            MOVE    "T"             TO  SPA-GMN-TORGPGCHK(8)
            MOVE    "F"             TO  SPA-GMN-TCSTPGCHK(8)
       *    カスタマイズ帳票最大
-      *     MOVE    5                   TO  SPA-GPGNM-MAX
            MOVE    8                   TO  SPA-GPGNM-MAX
-      *----(02.00.08)--UPD-END-----
-      *
       *
            .
        3101-PRTNAME-SYOKI-EXT.
@@ -1134,7 +1144,7 @@
                                            TO  SYS-KBNCD
                PERFORM 900-SYSKANRI-INV-SEC
                IF      FLG-SYSKANRI            =   ZERO
-                   MOVE    "*"         TO  SPA-GMN-UMARK(IDX3)
+                   MOVE    "*"                 TO  SPA-GMN-UMARK(IDX3)
                ELSE
                    MOVE    SPACE               TO  SYSKANRI-REC
                    INITIALIZE                      SYSKANRI-REC
@@ -1157,7 +1167,7 @@
                                                TO  SYS-KBNCD
                    PERFORM 900-SYSKANRI-INV-SEC
                    IF      FLG-SYSKANRI            =   ZERO
-                       MOVE    "*"         TO  SPA-GMN-UMARK(IDX3)
+                       MOVE    "*"             TO  SPA-GMN-UMARK(IDX3)
                    ELSE
                        MOVE    SPACE               TO  SYSKANRI-REC
                        INITIALIZE                      SYSKANRI-REC
@@ -1372,6 +1382,8 @@
            MOVE    W11-ORCACSTNM06N    TO  SPA-GMN-TCSTPGNM-N (6)
            MOVE    W11-ORCACSTNM07N    TO  SPA-GMN-TCSTPGNM-N (7)
            MOVE    W11-ORCACSTNM08N    TO  SPA-GMN-TCSTPGNM-N (8)
+      *    処方せん
+           MOVE    W11-ORCAORGNM02     TO  SPA-GMN-TORGPGNM (02)
       *
            MOVE    W11-ORCAORGNM03     TO  SPA-GMN-TORGPGNM (03)
            MOVE    W11-ORCAORGNM-N03   TO  SPA-GMN-TORGPGNM-N (03)
@@ -1465,12 +1477,6 @@
       *
            MOVE    W11-USERKBN     TO  SPA-GMN-USERKBN-G
       *
-           IF      SPA-GMN-USERKBN     =   SPACE
-               MOVE    101             TO  SPA-GMN-CUR
-               MOVE    "0011"          TO  SPA-ERRCD
-               GO  TO  4103-USERKBN-CHK-EXT
-           END-IF
-      *
            MOVE    ZERO                TO  FLG-HENFLG
            PERFORM VARYING IDY         FROM    1   BY  1
                    UNTIL  (IDY         >   SPA-GMN-USERKBN-MAX )  OR
@@ -1484,31 +1490,32 @@
            IF      FLG-HENFLG          =   ZERO
                MOVE    "0011"              TO  SPA-ERRCD
                MOVE    101                 TO  SPA-GMN-CUR
-               GO  TO  4103-USERKBN-CHK-EXT
            END-IF
       *
+           IF      SPA-ERRCD           =   SPACE
       *    外来を表示する
-           MOVE    1                   TO  SPA-GMN-PAGENO
+               MOVE    1                   TO  SPA-GMN-PAGENO
       *
-           EVALUATE    SPA-GMN-USERKBN
-           WHEN    "*"
-               MOVE    SPA-GMN-YUKOKBNL(1) TO  SPA-GMN-YUKOKBN
-               MOVE    SPA-GMN-YUKOKBNMEIL(1)
+               EVALUATE    SPA-GMN-USERKBN
+               WHEN    "*"
+                   MOVE    SPA-GMN-YUKOKBNL(1) TO  SPA-GMN-YUKOKBN
+                   MOVE    SPA-GMN-YUKOKBNMEIL(1)
                                            TO  SPA-GMN-YUKOKBNMEI
-               INITIALIZE                      SPA-GMN-USERLSTSCROLLE
-               INITIALIZE                      SPA-NAI-TBL
-               MOVE    ZERO                TO  SPA-GMN-USERLST-MAX
-               MOVE    ZERO                TO  SPA-GMN-SELNUM
-               MOVE    1                   TO  SPA-GMN-CUR
-               PERFORM 3102-HYOUJYUN-GMN-SET-SEC
-           WHEN    OTHER
-               INITIALIZE                      SPA-GMN-USERLSTSCROLLE
-               INITIALIZE                      SPA-NAI-TBL
-               MOVE    ZERO                TO  SPA-GMN-USERLST-MAX
-               MOVE    ZERO                TO  SPA-GMN-SELNUM
-               MOVE    103                 TO  SPA-GMN-CUR
-               PERFORM 3103-USERID-SYOKI-SEC
-           END-EVALUATE
+                   INITIALIZE                  SPA-GMN-USERLSTSCROLLE 
+                   INITIALIZE                  SPA-NAI-TBL
+                   MOVE    ZERO                TO  SPA-GMN-USERLST-MAX
+                   MOVE    ZERO                TO  SPA-GMN-SELNUM
+                   MOVE    1                   TO  SPA-GMN-CUR
+                   PERFORM 3102-HYOUJYUN-GMN-SET-SEC
+               WHEN    OTHER
+                   INITIALIZE                  SPA-GMN-USERLSTSCROLLE
+                   INITIALIZE                  SPA-NAI-TBL
+                   MOVE    ZERO                TO  SPA-GMN-USERLST-MAX
+                   MOVE    ZERO                TO  SPA-GMN-SELNUM
+                   MOVE    103                 TO  SPA-GMN-CUR
+                   PERFORM 3103-USERID-SYOKI-SEC
+               END-EVALUATE
+           END-IF
       *
            .
        4103-USERKBN-CHK-EXT.
@@ -1525,7 +1532,6 @@
            IF      SPA-GMN-YUKOKBN     =   SPACE
                MOVE    "0011"              TO  SPA-ERRCD
                MOVE    102                 TO  SPA-GMN-CUR
-               GO  TO  4104-YUKOKBN-CHK-EXT
            ELSE
                MOVE    ZERO               TO  FLG-HENFLG
                PERFORM VARYING IDY         FROM    1   BY  1
@@ -1540,18 +1546,20 @@
                IF      FLG-HENFLG         =   ZERO
                    MOVE    "0011"                  TO  SPA-ERRCD
                    MOVE    102                 TO  SPA-GMN-CUR
-                   GO  TO  4104-YUKOKBN-CHK-EXT
                END-IF
            END-IF
-      *    外来を表示する
-           MOVE    1                   TO  SPA-GMN-PAGENO
       *
-           INITIALIZE                      SPA-GMN-USERLSTSCROLLE
-           INITIALIZE                      SPA-NAI-TBL
-           MOVE    ZERO                TO  SPA-GMN-USERLST-MAX
-           MOVE    ZERO                TO  SPA-GMN-SELNUM
-           MOVE    103                 TO  SPA-GMN-CUR
-           PERFORM 3103-USERID-SYOKI-SEC
+           IF      SPA-ERRCD           =   SPACE
+      *    外来を表示する
+               MOVE    1                   TO  SPA-GMN-PAGENO
+      *
+               INITIALIZE                      SPA-GMN-USERLSTSCROLLE
+               INITIALIZE                      SPA-NAI-TBL
+               MOVE    ZERO                TO  SPA-GMN-USERLST-MAX
+               MOVE    ZERO                TO  SPA-GMN-SELNUM
+               MOVE    103                 TO  SPA-GMN-CUR
+               PERFORM 3103-USERID-SYOKI-SEC
+           END-IF
            .
        4104-YUKOKBN-CHK-EXT.
            EXIT.
@@ -1576,7 +1584,8 @@
                    MOVE    103                 TO  SPA-GMN-CUR
                    GO  TO  4101-SELNUM-CHK-EXT 
                END-IF
-           END-IF   
+           END-IF 
+      *
       *    外来を表示する
            MOVE    1                   TO  SPA-GMN-PAGENO
       *
@@ -1769,7 +1778,7 @@
                MOVE    SPA-GMN-TPRTNM(IDX)
                                        TO  WRK-KANACHK-MAE-INPUT
                PERFORM 800-ENRTRY-CHK-SEC
-               IF      FLG-ENTRYCHK    NOT =   1
+               IF      FLG-ENTRYCHK    NOT =   ZERO
                    MOVE    IDX             TO  SPA-GMN-CUR
                    MOVE    "0006"          TO  SPA-ERRCD
                END-IF
@@ -1798,8 +1807,22 @@
                                    TO  SPA-GMN-TORGPGNM (3)
            END-IF
       *
-           .
+      *    処方せん（外来）
+           MOVE    ZERO            TO  FLG-OK
+           PERFORM VARYING IDX4    FROM    1   BY  1
+                   UNTIL  (IDX4    >   SPA-GMN-ORGPGNM02-MAX )
+                       OR (FLG-OK  =   1   )
+               IF      SPA-GMN-TORGPGNM (2)
+                                   =   SPA-GMN-ORGPGNM02-MEI(IDX4)
+                   MOVE    1           TO  FLG-OK
+               END-IF
+           END-PERFORM
+           IF      FLG-OK              =   ZERO
+               MOVE    SPA-GMN-ORGPGNM02-MEI(1)
+                                       TO  SPA-GMN-TORGPGNM (2)
+           END-IF
       *
+           .
        4101-ORGPGNM-SET-EXT.
            EXIT.
       *****************************************************************
@@ -1827,7 +1850,7 @@
                MOVE    SPA-GMN-TPRTNM-N(IDX)
                                        TO  WRK-KANACHK-MAE-INPUT
                PERFORM 800-ENRTRY-CHK-SEC
-               IF      FLG-ENTRYCHK    NOT =   1
+               IF      FLG-ENTRYCHK    NOT =   ZERO
                    COMPUTE SPA-GMN-CUR     =   IDX     +   50
                    MOVE    "0006"          TO  SPA-ERRCD
                END-IF
@@ -2013,14 +2036,9 @@
       *
       *    入力チェック処理
            PERFORM 410-INPUT-CHK-SEC
-           IF      SPA-ERRCD        NOT  =   SPACE
-               GO  TO  410-KAKUTEI-EXT
-           END-IF
-      *
-           PERFORM 4901-KANRENCHK-SEC
-      *
-           IF      SPA-ERRCD        NOT  =   SPACE
-               GO  TO  410-KAKUTEI-EXT
+      *    関連チェック
+           IF      SPA-ERRCD           =   SPACE
+               PERFORM 4901-KANRENCHK-SEC
            END-IF
       *
            IF      SPA-ERRCD        =   SPACE
@@ -2169,21 +2187,18 @@
       *            職員毎登録
                    PERFORM 4902-SYS1031-SYOUIN-SEC
                END-IF
-               IF      SPA-ERRCD       NOT =   SPACE
-                   GO  TO  490-KOUSHIN-EXT
-               END-IF
-      *
       *        初期画面へ
-               PERFORM 310-SPASET-SEC
+               IF      SPA-ERRCD           =   SPACE
+                   PERFORM 310-SPASET-SEC
+               END-IF
       *
            WHEN    "1030"
                PERFORM 490-SYS-1030-KOUSHIN-SEC
-               IF    ( SPA-ERRCD   NOT =   SPACE )
-                   GO  TO  490-KOUSHIN-EXT
-               END-IF
       *        選択へ
-               MOVE   "JOIN"               TO  MCP-PUTTYPE
-               PERFORM 210-BACK
+               IF      SPA-ERRCD           =   SPACE
+                   MOVE   "JOIN"               TO  MCP-PUTTYPE
+                   PERFORM 210-BACK
+               END-IF
            END-EVALUATE
       *
            .
@@ -2809,14 +2824,12 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *    出力先プリンタ割り当て情報チェック
            IF      SPA-W01-KANRICD     =   "1031"
       *        必須入力チェック
-               PERFORM 4902-SYS1031-KANREN-CHK-SEC
-               IF      SPA-ERRCD       NOT =   SPACE
-                   GO  TO  4901-KANRENCHK-EXT
+               IF      SPA-ERRCD           =   SPACE
+                   PERFORM 4902-SYS1031-KANREN-CHK-SEC
                END-IF
       *        独自開発プログラム名チェック
-               PERFORM 4901-CSTPGNM-CHK-SEC
-               IF      SPA-ERRCD       NOT =   SPACE
-                   GO  TO  4901-KANRENCHK-EXT
+               IF      SPA-ERRCD           =   SPACE
+                   PERFORM 4901-CSTPGNM-CHK-SEC
                END-IF
            END-IF
       *----(02.00.03)--ADD-END-----
@@ -2833,19 +2846,21 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            IF     (SPA-GMN-USERKBN     =   SPACE )  OR
                   (SPA-GMN-YUKOKBN     =   SPACE )
                MOVE    "0003"              TO  SPA-ERRCD
-               GO  TO  4902-SYS1031-KANREN-CHK-EXT
            END-IF
       *
-           IF      SPA-GMN-USERKBN NOT =   "*"
+           IF     (SPA-GMN-USERKBN NOT =   "*" )
+              AND (SPA-ERRCD           =   SPACE )
                IF      SPA-GMN-SELNUM      =    ZERO
                    MOVE    "0007"              TO  SPA-ERRCD
-                   GO  TO  4902-SYS1031-KANREN-CHK-EXT
                END-IF
       *
-               PERFORM 3102-HYOUJYUN-SAI-SET-SEC
-               IF      FLG-SAI          =    ZERO
-                   IF      SPA-GMN-UMARK(SPA-GMN-SELNUM)   NOT =   "*"
-                       MOVE    "0008"              TO  SPA-ERRCD
+               IF      SPA-ERRCD           =   SPACE
+                   PERFORM 3102-HYOUJYUN-SAI-SET-SEC
+                   IF      FLG-SAI          =    ZERO
+                       IF      SPA-GMN-UMARK(SPA-GMN-SELNUM)
+                                            NOT =   "*"
+                           MOVE    "0008"              TO  SPA-ERRCD
+                       END-IF
                    END-IF
                END-IF
            END-IF
@@ -2924,10 +2939,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                    COMPUTE SPA-GMN-CUR =   8       +   60
                END-IF
            END-IF
-      *
-      *
            .
-      *
        4901-CSTPGNM-CHK-EXT.
            EXIT.
       *
@@ -3092,6 +3104,14 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                         TO  W11-ORCAORGNM07
            MOVE    SPA-GMN-TORGPGNM  (8)
                                         TO  W11-ORCAORGNM08
+      *    処方せん
+           PERFORM VARYING IDX2    FROM    1   BY  1
+                   UNTIL   IDX2    >       SPA-GMN-ORGPGNM02-MAX
+               MOVE    SPA-GMN-ORGPGNM02-MEI (IDX2)
+                                       TO  W11-ORCAORGNM02-ITEM (IDX2)
+           END-PERFORM
+           MOVE    SPA-GMN-ORGPGNM02-MAX
+                                       TO  W11-ORCAORGNM02-COUNT
       *
            PERFORM VARYING IDX2    FROM    1   BY  1
                    UNTIL   IDX2    >       SPA-GMN-ORGPGNM03-MAX
@@ -3633,24 +3653,23 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            MOVE    ZERO            TO  FLG-ENTRYCHK
       *
-           IF  ( WRK-KANACHK-MAE-INPUT
-                                   =   SPACE )
-               MOVE    1           TO  FLG-ENTRYCHK
-               GO  TO  800-ENRTRY-CHK-EXT
+           IF      WRK-KANACHK-MAE-INPUT   =   SPACE
+               CONTINUE
+           ELSE
+      *        半角以外エラー
+               MOVE    SPACE           TO  ORCSKANACHKAREA
+               INITIALIZE                  ORCSKANACHKAREA
+               MOVE    "1"             TO  KANACHK-SYORI
+               MOVE    WRK-KANACHK-MAE-INPUT
+                                       TO  KANACHK-MAE-INPUT
+               CALL    "ORCSKANACHK"   USING   ORCSKANACHKAREA
+               IF     (KANACHK-RC          =   ZERO )   AND
+                      (KANACHK-SYUBETU     =   1    )
+                   CONTINUE
+               ELSE
+                   MOVE    9           TO  FLG-ENTRYCHK
+               END-IF
            END-IF
-      *
-           MOVE    SPACE           TO  ORCSKANACHKAREA
-           INITIALIZE                  ORCSKANACHKAREA
-           MOVE    "1"             TO  KANACHK-SYORI
-           MOVE    WRK-KANACHK-MAE-INPUT
-                                   TO  KANACHK-MAE-INPUT
-           CALL    "ORCSKANACHK"   USING   ORCSKANACHKAREA
-           IF      ( KANACHK-RC    NOT =   ZERO )
-               MOVE    9           TO  FLG-ENTRYCHK
-               GO  TO  800-ENRTRY-CHK-EXT
-           END-IF
-      *
-           MOVE    KANACHK-SYUBETU TO  FLG-ENTRYCHK
       *
            .
        800-ENRTRY-CHK-EXT.
@@ -3674,6 +3693,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    "key10"             TO  MCP-PATHNAME
                PERFORM 920-DBFETCH-SEC
                IF      MCP-RC              =   ZERO
+                   MOVE    MCPDATA-REC         TO  SYSKANRI-REC
                    MOVE    ZERO                TO  FLG-SYSKANRI
                ELSE
                    MOVE    1                   TO  FLG-SYSKANRI
@@ -3715,6 +3735,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    "key"               TO  MCP-PATHNAME
                PERFORM 920-DBFETCH-SEC
                IF      MCP-RC              =   ZERO
+                   MOVE    MCPDATA-REC         TO  SYSKANRI-REC
                    MOVE    ZERO                TO  FLG-SYSKANRI
                ELSE
                    MOVE    1                   TO  FLG-SYSKANRI

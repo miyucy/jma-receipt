@@ -169,8 +169,12 @@ W11	{
 						ORCAORGNM01	{
 							value	varchar(20);
 						};
-						ORCAORGNM02	{
-							value	varchar(20);
+						ORGNM02_COB	{
+							ORCAORGNM02	{
+								value	varchar(20);
+							};
+							count	int;
+							item	varchar(20)[5];
 						};
 						ORGNM03CMB	{
 							ORCAORGNM03	{

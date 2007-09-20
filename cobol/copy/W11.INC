@@ -58,7 +58,12 @@
                       07  W11-PRTNM-G          OCCURS  20.
                         08  W11-PRTNM          PIC X(16).
                       07  W11-ORCAORGNM01      PIC X(20).
-                      07  W11-ORCAORGNM02      PIC X(20).
+                      07  W11-ORGNM02-COB.
+                        08  W11-ORCAORGNM02.
+                          09  W11-VALUE   PIC X(20).
+                        08  W11-ORCAORGNM02-COUNT   PIC S9(9)   BINARY.
+                        08  W11-ORCAORGNM02-ITEM
+                                PIC X(20)   OCCURS  5 TIMES.
                       07  W11-ORCAORGNM03COMBO.
                         08  W11-ORCAORGNM03    PIC X(20).
                         08  W11-ORCAORGNM03-COUNT

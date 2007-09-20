@@ -367,6 +367,8 @@ FORM_files = \
 	      HCM03A.red \
 	      HCM03V02A.red \
 	      HCM03V03A.red \
+	      HC02.red \
+	      HC02Q.red \
 
 all:   
 

@@ -116,6 +116,12 @@
                            11  SPA-GMN-ORGPGNM03N-MAX
                                                    PIC 9(04).
       *
+      *                院外処方せん
+                       09  SPA-GMN-ORGPGNM02LST-G.
+                           11  SPA-GMN-ORGPGNM02-MEI  PIC X(20)
+                                                      OCCURS  5.
+                           11  SPA-GMN-ORGPGNM02-MAX  PIC 9(04).
+      *
       *            帳票編集区分情報
                    07  SPA-GMN-1030-AREA.
                        09  SPA-GMN-SYOHOGEPRTFLG-G.
