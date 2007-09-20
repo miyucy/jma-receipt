@@ -510,6 +510,10 @@
                PERFORM 240-KOUMOKU-BETU-SEC
            END-PERFORM
       *
+      *    データなし
+           IF     (WRK-KOUMOKU-NO      =   ZERO )
+               CONTINUE
+           ELSE
       *    エラーチェック
            IF      FLG-ERRARI          =   ZERO
       *        自院病名マスタ　更新処理
@@ -523,6 +527,7 @@
            ELSE
       *        エラーリスト出力処理
                PERFORM 270-ERRLST-OUT-SEC
+           END-IF
            END-IF
       *
       *    自院病名ＣＳＶファイル　検索処理
