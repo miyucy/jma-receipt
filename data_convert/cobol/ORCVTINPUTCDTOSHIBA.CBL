@@ -494,6 +494,10 @@
                PERFORM 240-KOUMOKU-BETU-SEC
            END-PERFORM
       *
+      *    データなし
+           IF     (WRK-KOUMOKU-NO      =   ZERO )
+               CONTINUE
+           ELSE
       *    エラーチェック
            IF      FLG-ERRARI          =   ZERO
       *        入力ＣＤマスタ　更新処理
@@ -507,6 +511,7 @@
            ELSE
       *        エラーリスト出力処理
                PERFORM 2950-ERRLST-OUT-SEC
+           END-IF
            END-IF
       *
       *    ＣＳＶファイル　検索処理
