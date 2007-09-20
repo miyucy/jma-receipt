@@ -271,6 +271,9 @@
        01  PTNUM-REC.
            COPY    "CPPTNUM.INC".
       *
+      *    全角チェックパラメタ
+           COPY    "CPORCSKANACHK.INC".
+           COPY    "CPORCXKANACONV.INC".
       *    日付変換サブ
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
@@ -571,6 +574,10 @@
                PERFORM 240-KOUMOKU-BETU-SEC
            END-PERFORM
       *
+      *    データなし
+           IF     (WRK-KOUMOKU-NO      =   ZERO )
+               CONTINUE
+           ELSE
            IF  FLG-ERRARI          =   ZERO
       *        マスタ更新処理
       *         PERFORM 220-KOUMOKU-KYOTU-SEC
@@ -584,6 +591,7 @@
            ELSE
       *        エラーリスト出力処理
                PERFORM 270-ERRLST-OUT-SEC
+           END-IF
            END-IF
       *
       *    ＣＳＶファイル　検索処理
@@ -760,19 +768,44 @@
                GO  TO  2410-PTNUM-SET-EXT
            END-IF
       *
-           IF     (( SYS-1009-PTNUMKSIKBN  =   "1" ) AND
-                   ( SYS-1009-JIYKSIKBN    =   "2" ))    OR
-                  (( SYS-1009-PTNUMKSIKBN  =   "2" ) AND
-                   ( SYS-1009-HJNKSIKBN    =   "3" OR "4" ))
-               MOVE    ZERO            TO  SPA-PTNUM(1:WRK-RENKETA)
-               COMPUTE IDZ             =   WRK-RENKETA
+      *    患者番号セット
+           IF   (( SYS-1009-PTNUMKSIKBN    =   "1" ) AND
+                 ( SYS-1009-JIYKSIKBN      =   "2" ))    OR
+                (( SYS-1009-PTNUMKSIKBN    =   "2" ) AND
+                 ( SYS-1009-HJNKSIKBN      =   "3" OR "4" ))
+               MOVE    ZERO                TO  SPA-PTNUM(1:WRK-RENKETA)
+               IF      WRK-MO-CNT      >   WRK-RENKETA
+                   COMPUTE WRK-MO-ST   =   WRK-MO-ST
+                                       +  (WRK-MO-CNT  -   WRK-RENKETA)
+                   MOVE  CSV-REC (WRK-MO-ST:WRK-RENKETA)
+                                       TO  SPA-PTNUM
+               ELSE
+                   COMPUTE IDZ         =   WRK-RENKETA
                                        -   WRK-MO-CNT
                                        +   1
+                   MOVE  CSV-REC (WRK-MO-ST:WRK-MO-CNT)
+                                       TO  SPA-PTNUM(IDZ:)
+               END-IF
+           ELSE
+               MOVE    1               TO  IDZ
                MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
                                        TO  SPA-PTNUM(IDZ:)
+           END-IF
+      *
+      *    半角チェック
+           INITIALIZE                  ORCSKANACHKAREA
+           MOVE    "1"             TO  KANACHK-SYORI
+           MOVE    SPA-PTNUM       TO  KANACHK-MAE-INPUT
+           MOVE    20              TO  KANACHK-MAX-CNT
+           CALL    "ORCSKANACHK"       USING
+                                       ORCSKANACHKAREA
+           IF     (KANACHK-RC          =   ZERO  )  AND
+                  (KANACHK-SYUBETU     =   1     )  AND
+                  (KANACHK-RC2         =   ZERO  )
+               CONTINUE
            ELSE
-               MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
-                                       TO  SPA-PTNUM
+      *        半角以外はエラー
+               MOVE    3               TO  FLG-ERR
            END-IF
       *
            .
@@ -793,9 +826,13 @@
                GO  TO  2410-SRYKA-SET-EXT
            END-IF
       *
-           IF     (WRK-MO-CNT      >   2 )
-              OR  (CSV-REC (WRK-MO-ST:WRK-MO-CNT) NOT NUMERIC)
+           IF      WRK-MO-CNT      >   2
                MOVE    2                   TO  FLG-ERR
+               GO  TO  2410-SRYKA-SET-EXT
+           END-IF
+      *
+           IF      CSV-REC (WRK-MO-ST:WRK-MO-CNT) NOT NUMERIC
+               MOVE    3                   TO  FLG-ERR
                GO  TO  2410-SRYKA-SET-EXT
            END-IF
       *
