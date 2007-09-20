@@ -1212,8 +1212,13 @@
            END-IF
       *
       *    死亡区分セット
-           MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
-                                   TO  PTINF-DEATHKBN
+           EVALUATE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
+               WHEN    "0"     THRU    "1"
+                   MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
+                                       TO  PTINF-DEATHKBN
+               WHEN    OTHER
+                   MOVE    3           TO  FLG-ERR
+           END-EVALUATE
       *
            .
        2410-DEATHKBN-SET-EXT.
