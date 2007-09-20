@@ -31,6 +31,9 @@
            03  SPA-L01-TBL-GROUP           PIC  X(14).
            03  SPA-L01-JOB-JOBID           PIC  9(07).
       *
+           03  SPA-L99-FILESV-CHK-FLG      PIC 9(01).
+           03  SPA-L99-MOTOPG              PIC X(08).
+      *
       *警告メッセージ
            03  SPA-LIDCD                   PIC  X(04).
       *警告画面より

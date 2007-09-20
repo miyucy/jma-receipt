@@ -28,6 +28,7 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *  03.05.01    NACL-藤原    07/04/19  グループ診療対応
+      *  03.05.02    NACL-藤原    07/09/19  クライアント保存対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -116,8 +117,12 @@ grpsys COPY    "COMMON-SPA".
                05  WRK-PARA-JOBID              PIC 9(07).
                05  WRK-PARA-SHELLID            PIC X(08).
                05  WRK-PARA-HOSPNUM            PIC 9(02).
+               05  WRK-PARA-FILENM1            PIC X(150).
+               05  WRK-PARA-FILE1              PIC X(20).
+               05  WRK-PARA-FILENM1-FOLDER     PIC X(150).
       *
-           03  WRK-TOUKEIERR               PIC X(200). 
+           03  WRK-TOUKEIERR           PIC X(200). 
+           03  WRK-RENNUM              PIC 9(03).
       *
       *     右ずめ編集用     
            03  WRK-HENKAN              PIC X(20).
@@ -156,6 +161,9 @@ grpsys COPY    "COMMON-SPA".
       *
       *   ジョブ管理ＤＢ制御サブ
            COPY    "CPORCSJOBKANRI.INC".
+      *
+      *    クライアント保存ＤＢ制御サブ
+           COPY    "CPORCSFILESV.INC".
       *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
@@ -201,6 +209,9 @@ grpsys COPY    "COMMON-SPA".
                                                WRK-PARA-SHELLID
                                                WRK-PARA-HOSPNUM
                                                TOUKEIERR
+                                               WRK-PARA-FILENM1
+                                               WRK-PARA-FILE1
+                                               WRK-PARA-FILENM1-FOLDER
            END-UNSTRING 
            MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
       *
@@ -717,6 +728,9 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
                MOVE    "処理対象のデータがありませんでした"
                                            TO  WRK-TOUKEIERR
                PERFORM 500-ERR-HENSYU-SEC
+           ELSE
+      *        ファイル保存情報更新
+               PERFORM 3001-FILE-INFO-INSERT-SEC
            END-IF
       *
       *    ステップ管理終了処理
@@ -732,6 +746,52 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
            .
        300-TERM-EXT.
            EXIT.
+      *
+      *****************************************************************
+      *    ファイル保存情報更新処理
+      *****************************************************************
+       3001-FILE-INFO-INSERT-SEC             SECTION.
+      *
+           MOVE    ZERO            TO  WRK-RENNUM
+      *
+           INITIALIZE                  ORCSFILESVAREA
+           MOVE    "I"             TO  SFILESV-MODE
+           MOVE    WRK-PARA-SHELLID
+                                   TO  SFILESV-TBL-KEY
+      *
+           IF    ( WRK-PARA-FILE1      =   "6"             )
+      *****AND   ( CNT-TOUKEI04        >   ZERO            )
+               ADD     1               TO  WRK-RENNUM
+      *
+               MOVE    "toukei2.sh"    TO  SFILESV-SHELLID  (WRK-RENNUM)
+               MOVE    1               TO  SFILESV-SHORI-RENNUM
+                                                            (WRK-RENNUM)
+               MOVE    WRK-RENNUM      TO  SFILESV-RENNUM   (WRK-RENNUM)
+      *********MOVE    WRK-PARA-SRYYM  TO  SFILESV-SRYYM    (WRK-RENNUM)
+               MOVE    "/tmp/"         TO  SFILESV-FOR-FOLDER
+                                                            (WRK-RENNUM)
+               MOVE    WRK-PARA-FILENM1
+                                       TO  SFILESV-FOR-DATA (WRK-RENNUM)
+      *********MOVE    WRK-PARA-FILENM1-FOLDER
+      *********                        TO  SFILESV-TO-FOLDER
+      *********                                             (WRK-RENNUM)
+               MOVE    WRK-PARA-FILENM1
+                                       TO  SFILESV-TO-DATA  (WRK-RENNUM)
+               MOVE    CNT-TOUKEI04    TO  SFILESV-CNT-ALL  (WRK-RENNUM)
+               MOVE    "日次統計データ（基本情報）"
+                                       TO  SFILESV-TITLE    (WRK-RENNUM)
+               MOVE    "1"             TO  SFILESV-DATA-TYPE(WRK-RENNUM) 
+           END-IF
+      *
+           IF      WRK-RENNUM          >   ZERO   
+               CALL    "ORCSFILESV"    USING
+                                           ORCSFILESVAREA
+                                           SPA-AREA
+           END-IF
+           .
+       3001-FILE-INFO-INSERT-EXT.
+           EXIT.
+      *
       *
       *****************************************************************
       *    日次統計データ（基本情報）読込

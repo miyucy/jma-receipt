@@ -23,5 +23,8 @@ L99	{
 	       	state	int;
 			label	varchar(14);
 		};
+		pandatimer1     {
+			duration        int;
+		};
 	};
 };

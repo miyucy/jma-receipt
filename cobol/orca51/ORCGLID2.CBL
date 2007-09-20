@@ -81,6 +81,7 @@
            COPY    "LERR.INC".
            COPY    "LID1.INC".
            COPY    "LID2.INC".
+           COPY    "LFIL.INC".
       *
        PROCEDURE                   DIVISION    USING
            MCPAREA

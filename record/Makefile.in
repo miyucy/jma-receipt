@@ -104,6 +104,7 @@ RECORD_files = \
 	LERR.rec \
 	LID1.rec \
 	LID2.rec \
+	LFIL.rec \
 	M00.rec \
 	M01.rec \
 	M01N.rec \

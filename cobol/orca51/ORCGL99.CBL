@@ -29,6 +29,7 @@
       * Maj/Min/Rev  修正者       日付      内容
       *  01.00.01    NACL-太田    03.07.02  タイマーイベント追加
       *  03.05.00    NACL-太田    07.05.28  グループ診療対応
+      *  03.05.01    NACL-藤原    07/09/19  クライアント保存対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -50,20 +51,7 @@
            COPY    "ENUM-VALUE".
       *
       *    画面用ＳＰＡ
-       01  SPA-T01.
-           03  SPA-T01-AREA.
-               05  SPA-GMN-MAX                     PIC 9(04).
-               05  SPA-GMN-PAGE                    PIC 9(02).
-               05  SPA-GMN-CUR                     PIC 9(02).
-               05  SPA-GMN-AREA.
-                   07  SPA-GMN-SKYYM               PIC X(07).
-                   07  SPA-GMN-SRYYM               PIC X(20).
-                   07  SPA-GMN-SKYYMD              PIC X(10).
-      *
-               05  SPA-NAIB-T01-AREA.
-                   07  SPA-NAI-SKYYM               PIC 9(06).
-                   07  SPA-NAI-SRYYM               PIC 9(06).
-                   07  SPA-NAI-SKYYMD              PIC 9(08).
+           COPY    "L01SCR-SPA".
       *
       *    フラグ領域
        01  FLG-AREA.
@@ -77,6 +65,7 @@
        01  WRK-AREA.
            03  WRK-PAGE            PIC ZZZZZZZZZ9.
            03  WRK-PRT-PAGE        PIC 9(10).
+           03  WRK-KENSU-Z         PIC ZZZZZZ9.
       *     
        01  WRK-HEN-AREA.
            03  WRK-HENTIME.
@@ -124,6 +113,11 @@
       *   ジョブ管理ＤＢ制御サブ
            COPY    "CPORCSJOBKANRI.INC".
       *
+      *    クライアント保存ＤＢ制御サブ
+           COPY    "CPORCSFILESV.INC".
+      *
+           COPY    "ORCA-BLOB".
+      *
       *****************************************************************
       *    連絡　領域
       *****************************************************************
@@ -143,6 +137,7 @@
            COPY    "LERR.INC".
            COPY    "LID1.INC".
            COPY    "LID2.INC".
+           COPY    "LFIL.INC".
       *
        PROCEDURE                   DIVISION    USING
            MCPAREA
@@ -156,6 +151,7 @@
        000-PROC-SEC                SECTION.
       *
            MOVE    SPA-COMMON      TO  SPA-AREA
+           MOVE    SPA-FREE        TO  SPA-L01FREE
            MOVE    SPA-WORK        TO  SPA-L01KYOUTU
       * 
            EVALUATE    MCP-STATUS      ALSO    MCP-EVENT
@@ -168,6 +164,7 @@
       *
            MOVE    SPA-L01KYOUTU   TO  SPA-WORK
            MOVE    SPA-AREA        TO  SPA-COMMON
+           MOVE    SPA-L01FREE     TO  SPA-FREE
       *
            .
            EXIT    PROGRAM
@@ -176,6 +173,25 @@
       *    初期　処理
       *****************************************************************
        100-INIT-SEC                SECTION.
+      *
+           IF      SPA-MOTOPG          =   "LFIL"
+      *        ファイルエントリ処理(クライアント保存)
+               IF      SPA-SFILESV-MAX     >   SPA-SFILESV-IDX
+                   ADD     1                   TO  SPA-SFILESV-IDX 
+                   PERFORM 3001-FILEENTRY-SEC
+                   GO  TO  100-INIT-EXT
+               END-IF
+           END-IF
+      *
+           MOVE    "B01"               TO  MCP-WIDGET
+           MOVE    SPACE               TO  LINKAREA
+      *
+           MOVE    "NEW"               TO  MCP-PUTTYPE
+           MOVE    "L99    "           TO  MCP-WINDOW
+      *
+           PERFORM 900-PUT-WINDOW
+      *
+           MOVE    1                   TO  FLG-END
       * 
            .
        100-INIT-EXT.
@@ -209,7 +225,7 @@
       *
            MOVE    SPACE               TO  SPA-L99-FLG
       *
-           MOVE    SPA-MOTOPG          TO  SPA-SAKIPG
+           MOVE    SPA-L99-MOTOPG      TO  SPA-SAKIPG
            MOVE    "L99"               TO  SPA-MOTOPG
       *
            MOVE    "JOIN"              TO  MCP-PUTTYPE
@@ -248,9 +264,12 @@
       *****************************************************************
        490-KAKUNIN-SEC            SECTION.
       *     
-           MOVE    SPACE               TO  L99
+           INITIALIZE                      L99
            MOVE    ZERO                TO  L99-COUNT
            MOVE    WIDGET-INSENSITIVE  TO  L99-B12-STATE
+      *
+           MOVE    5                   TO  L99-DURATION
+      *
            MOVE    ZERO                TO  WRK-PRT-PAGE
       *
            IF      SPA-MOTOPG          =   "L01"        
@@ -323,6 +342,24 @@
                        MOVE    "B12"            TO  MCP-WIDGET
                END-IF
            END-IF
+           IF    ( SPA-LID1-FLG    =   "SV" )
+               IF      JOB-ENDYMD  NOT =   SPACE
+                   IF      JOB-ERRCD       =   "9999"
+                       CONTINUE
+                   ELSE
+                       IF      SPA-L99-FILESV-CHK-FLG  =   ZERO
+                           PERFORM 4902-FILE-INFO-CHK-SEC
+                       ELSE
+      *                    ファイルエントリ処理(クライアント保存)
+                           MOVE    1               TO  SPA-SFILESV-IDX 
+                           PERFORM 3001-FILEENTRY-SEC
+                           IF      FLG-END         =   1
+                               GO  TO  490-KAKUNIN-EXT
+                           END-IF
+                       END-IF
+                   END-IF
+               END-IF    
+           END-IF
       *
            MOVE    "CURRENT"           TO  MCP-PUTTYPE
            MOVE    "L99    "           TO  MCP-WINDOW
@@ -380,6 +417,97 @@
            END-IF
            .
        4901-KAKUNIN-HYOUJI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    クライアント保存情報チェック処理
+      *****************************************************************
+       4902-FILE-INFO-CHK-SEC          SECTION.
+      *
+           INITIALIZE                  ORCSFILESVAREA
+           MOVE    "R"             TO  SFILESV-MODE
+           MOVE    WRK-CONS-JOB-SHELLID1
+                                   TO  SFILESV-TBL-KEY
+           CALL    "ORCSFILESV"    USING
+                                       ORCSFILESVAREA
+                                       SPA-AREA  
+           IF      SFILESV-RETURN  =   ZERO
+               INITIALIZE               SPA-SFILESV-AREA
+               PERFORM VARYING IDX FROM    1   BY  1
+                       UNTIL   IDX >       100
+                       OR      SFILESV-SHELLID (IDX)
+                                   =       SPACE
+                   MOVE    SFILESV-TITLE        (IDX)
+                                       TO  SPA-SFILESV-TITLE     (IDX)
+                   MOVE    SFILESV-CNT-ALL      (IDX)
+                                       TO  SPA-SFILESV-CNT-ALL   (IDX)
+                   MOVE    SFILESV-FOR-FOLDER   (IDX)
+                                       TO  SPA-SFILESV-FOR-FOLDER(IDX)
+                   MOVE    SFILESV-FOR-DATA     (IDX)
+                                       TO  SPA-SFILESV-FOR-DATA  (IDX)
+                   MOVE    SFILESV-TO-FOLDER    (IDX)
+                                       TO  SPA-SFILESV-TO-FOLDER (IDX)
+                   MOVE    SFILESV-TO-DATA      (IDX)
+                                       TO  SPA-SFILESV-TO-DATA   (IDX)
+                   MOVE    SFILESV-CODE-TYPE    (IDX)
+                                       TO  SPA-SFILESV-CODE-TYPE (IDX)
+                   MOVE    SFILESV-DATA-TYPE    (IDX)
+                                       TO  SPA-SFILESV-DATA-TYPE (IDX)
+                   ADD     1           TO  SPA-SFILESV-MAX
+               END-PERFORM
+      *
+               MOVE    1                   TO  SPA-L99-FILESV-CHK-FLG
+      *
+               MOVE    1                   TO  L99-DURATION
+           END-IF
+      *
+           .
+       4902-FILE-INFO-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ファイルエントリ処理(クライアント保存)
+      *****************************************************************
+       3001-FILEENTRY-SEC          SECTION.
+      *
+           INITIALIZE                      ORCA-BLOB
+           MOVE    "BLOBIMPORT"        TO  MCP-FUNC
+           MOVE    "key"               TO  MCP-PATHNAME
+           MOVE    "blob"              TO  MCP-TABLE
+           STRING  SPA-SFILESV-FOR-FOLDER (SPA-SFILESV-IDX)
+                                       DELIMITED  BY  SPACE
+                   SPA-SFILESV-FOR-DATA   (SPA-SFILESV-IDX) 
+                                       DELIMITED  BY  SPACE
+                                       INTO  ORCA-BLOB-FILE
+           END-STRING
+           CALL   "ORCDBMAIN"          USING
+                                       MCPAREA
+                                       ORCA-BLOB
+                                       SPA-AREA
+      *
+           INITIALIZE                      LFIL 
+           MOVE    ORCA-BLOB-OBJECT    TO  LFIL-OBJECTDATA
+           STRING  SPA-SFILESV-TO-FOLDER (SPA-SFILESV-IDX)
+                                       DELIMITED  BY  SPACE
+                   SPA-SFILESV-TO-DATA   (SPA-SFILESV-IDX)
+                                       DELIMITED  BY  SPACE
+                                       INTO  LFIL-ENTRY1
+           END-STRING
+           MOVE    SPA-SFILESV-TITLE   (SPA-SFILESV-IDX)
+                                       TO  LFIL-TITLE
+           MOVE    SPA-SFILESV-CNT-ALL (SPA-SFILESV-IDX)
+                                       TO  WRK-KENSU-Z
+           MOVE    WRK-KENSU-Z         TO  LFIL-KENSU
+      *
+           MOVE    ZERO                TO  L99-DURATION
+      *
+           MOVE    "NEW"               TO  MCP-PUTTYPE
+           MOVE    "LFIL"              TO  MCP-WINDOW
+      *
+           PERFORM 900-PUT-WINDOW
+           MOVE    1                   TO  FLG-END
+           .
+       3001-FILEENTRY-EXT.
            EXIT.
       *
       *****************************************************************

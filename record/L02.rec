@@ -8,7 +8,7 @@ L02	{
 				value	varchar(22);
 			};
 			count	int;
-			item	varchar(22)[5];
+			item	varchar(22)[6];
 		};
 		KOJINKBN1	{
 			value	bool;

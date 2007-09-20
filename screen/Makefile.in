@@ -103,6 +103,7 @@ SCREEN_screen = \
 	LERR.glade \
 	LID1.glade \
 	LID2.glade \
+	LFIL.glade \
 	M01.glade \
 	M01N.glade \
 	M02.glade \

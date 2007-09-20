@@ -46,6 +46,7 @@
       *  01.00.15    NACL-森脇    04/07/29  直前ジョブ管理チェック追加
       *  01.00.16    NACL-藤原    05/02/10  統計データ作成画面の追加
       *  03.05.00    NACL-太田    07.05.15  グループ診療対応
+      *  03.05.01    NACL-藤原    07/09/19  クライアント保存対応
       *****************************************************************
       *
        ENVIRONMENT                     DIVISION.
@@ -266,6 +267,7 @@
            COPY    "LERR.INC".
            COPY    "LID1.INC".
            COPY    "LID2.INC".
+           COPY    "LFIL.INC".
       *
        PROCEDURE                   DIVISION    USING
            MCPAREA
@@ -645,6 +647,7 @@
            MOVE    SPACE           TO  SPA-L99-FLG
            MOVE    SPACE           TO  SPA-LID1-FLG
            MOVE    SPACE           TO  SPA-LIDCD
+           MOVE    SPACE           TO  SPA-L99-MOTOPG
       *
            .
        340-L99-SET-EXT.
@@ -1928,10 +1931,12 @@
       *    画面をＳＰＡセット
            PERFORM 4101-GMN-SPA-SET-SEC
       *
-           MOVE    SPACE               TO  L99
+           INITIALIZE                      L99
            MOVE    ZERO                TO  L99-COUNT
            MOVE    WIDGET-INSENSITIVE  TO  L99-B12-STATE
            MOVE    ZERO                TO  WRK-PRT-PAGE
+      *
+           MOVE    5                   TO  L99-DURATION
       *
            MOVE    SPACE               TO  SYS-3003-REC
            INITIALIZE                      SYS-3003-REC
@@ -2018,6 +2023,7 @@
            END-IF
       *
            MOVE    "L01"                TO  SPA-MOTOPG
+                                            SPA-L99-MOTOPG
            MOVE    "L99"                TO  SPA-SAKIPG
       *
            MOVE    "NEW"                TO  MCP-PUTTYPE

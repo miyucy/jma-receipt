@@ -16,3 +16,4 @@
                   05  L99-SELECT  PIC X       OCCURS  30 TIMES.
               03  L99-B12-STATE   PIC S9(9)   BINARY.
               03  L99-B12-LABEL   PIC X(14).
+              03  L99-DURATION   PIC S9(09) BINARY.

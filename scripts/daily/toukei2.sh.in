@@ -30,6 +30,7 @@ fi
 #        ${17} ファイル出力先区分（病名）
 #        ${18} 端末ｉｐアドレス
 #        ${19} HOSPNUM
+#        ${20} FILENM1 FOLDER
 #-------------------------------------------#
 ##      エラーファイル削除
 	echo $#
@@ -60,7 +61,7 @@ fi
         if  [ -e ${15} ]; then
             exit 
         else
-	        $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBT130 -parameter $1,${11},${13},${14},${19},${15} >> $LOG_FILE 2>&1
+	        $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBT130 -parameter $1,${11},${13},${14},${19},${15},${7},${16},${20} >> $LOG_FILE 2>&1
 	    fi
 
         if  [ -e ${15} ]; then
@@ -76,6 +77,7 @@ fi
         fi
 #
     FDDHOST=`echo ${18}|tr \[\] "  "`
+        if   [ ${16} != '6' ]; then
          case ${16} in
                   1) 	$FDW -host $FDDHOST -command fd-write.sh /tmp/$7 $7
 			RC=$?
@@ -94,9 +96,11 @@ fi
                         ;;
          esac
 	     if  [ $RC -ne '0' ]; then
-		    ERRCD='0000'$RC
+		ERRCD='0000'$RC
         	$DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE${13}${14}'  '${ERRCD:${#ERRCD}-4:4},${19} >> $LOG_FILE 2>&1
-        else
-            $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE${13}${14},${19} >> $LOG_FILE 2>&1
+		exit
+	     fi
         fi
+         
+        $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE${13}${14},${19} >> $LOG_FILE 2>&1
         exit 
