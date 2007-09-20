@@ -778,7 +778,7 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
                MOVE    WRK-PARA-FILENM1
                                        TO  SFILESV-TO-DATA  (WRK-RENNUM)
                MOVE    CNT-TOUKEI04    TO  SFILESV-CNT-ALL  (WRK-RENNUM)
-               MOVE    "日次統計データ（基本情報）"
+               MOVE    "日次統計データ"
                                        TO  SFILESV-TITLE    (WRK-RENNUM)
                MOVE    "1"             TO  SFILESV-DATA-TYPE(WRK-RENNUM) 
            END-IF
