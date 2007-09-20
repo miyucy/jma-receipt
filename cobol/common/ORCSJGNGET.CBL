@@ -239,13 +239,13 @@
            MOVE    LNK-ORCSJGNGET-KOHID    TO      PTKOHFTN-KOHID
            MOVE    PTKOHFTN-REC            TO      MCPDATA-REC
            MOVE    "DBSELECT"              TO      MCP-FUNC
-           MOVE    "tbl_ptkohinf"          TO      MCP-TABLE
+           MOVE    "tbl_ptkohftn"          TO      MCP-TABLE
            MOVE    "key5"                  TO      MCP-PATHNAME
            CALL    "ORCDBMAIN"             USING   MCPAREA
                                                    MCPDATA-REC
                                                    SPA-AREA
            IF      MCP-RC               =       ZERO
-             MOVE    "tbl_ptkohinf"        TO      MCP-TABLE
+             MOVE    "tbl_ptkohftn"        TO      MCP-TABLE
              MOVE    "key5"                TO      MCP-PATHNAME
              PERFORM  900-PTKOHFTN-READ-SEC
              PERFORM  UNTIL     FLG-PTKOHFTN      =     1
@@ -256,13 +256,13 @@
                  ADD   PTKOHFTN-NYUJGNGAK  TO  LNK-ORCSJGNGET-NYUJGNGAK
       *
                END-IF
-               MOVE    "tbl_ptkohinf"      TO      MCP-TABLE
+               MOVE    "tbl_ptkohftn"      TO      MCP-TABLE
                MOVE    "key5"              TO      MCP-PATHNAME
                PERFORM   900-PTKOHFTN-READ-SEC
              END-PERFORM
            END-IF
       *
-           MOVE    "tbl_ptkohinf"          TO      MCP-TABLE
+           MOVE    "tbl_ptkohftn"          TO      MCP-TABLE
            MOVE    "key5"                  TO      MCP-PATHNAME
            PERFORM  910-DB-CLOSE-SEC
       *
@@ -593,13 +593,13 @@
            MOVE    LNK-ORCSJGNGET-KOHID    TO      PTKOHFTN-KOHID
            MOVE    PTKOHFTN-REC            TO      MCPDATA-REC
            MOVE    "DBSELECT"              TO      MCP-FUNC
-           MOVE    "tbl_ptkohinf"          TO      MCP-TABLE
+           MOVE    "tbl_ptkohftn"          TO      MCP-TABLE
            MOVE    "key5"                  TO      MCP-PATHNAME
            CALL    "ORCDBMAIN"             USING   MCPAREA
                                                    MCPDATA-REC
                                                    SPA-AREA
            IF      MCP-RC               =       ZERO
-             MOVE    "tbl_ptkohinf"        TO      MCP-TABLE
+             MOVE    "tbl_ptkohftn"        TO      MCP-TABLE
              MOVE    "key5"                TO      MCP-PATHNAME
              PERFORM  900-PTKOHFTN-READ-SEC
              PERFORM  UNTIL   (IDX1             >=    31)  OR
@@ -626,13 +626,13 @@
                  MOVE  PTKOHFTN-GAIJGNGAK TO  WRK-KOHFTN-GAIJGNGAK(IDX1)
                  MOVE  PTKOHFTN-NYUJGNGAK TO  WRK-KOHFTN-NYUJGNGAK(IDX1)
                END-IF
-               MOVE    "tbl_ptkohinf"     TO      MCP-TABLE
+               MOVE    "tbl_ptkohftn"     TO      MCP-TABLE
                MOVE    "key5"             TO      MCP-PATHNAME
                PERFORM   900-PTKOHFTN-READ-SEC
              END-PERFORM
            END-IF
       *
-           MOVE    "tbl_ptkohinf"     TO      MCP-TABLE
+           MOVE    "tbl_ptkohftn"     TO      MCP-TABLE
            MOVE    "key5"             TO      MCP-PATHNAME
            PERFORM  910-DB-CLOSE-SEC
       *
