@@ -126,6 +126,8 @@
            03  WRK-MAE-KETA                        PIC 9(02).
            03  WRK-ATO-KETA                        PIC 9(02).
            03  WRK-ATO-KETA2                       PIC 9(02).
+           03  WRK-TBLNAME                         PIC X(100).
+           03  WRK-SHELLMSG                        PIC X(100).
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -275,6 +277,8 @@
                  MOVE    "患者番号桁数変更処理"
                                        TO  JOB-SHELLMSG
            END-EVALUATE
+      *
+           MOVE    JOB-SHELLMSG        TO  WRK-SHELLMSG
       *
            PERFORM   900-CALL-ORCSJOB-SEC
       *
@@ -910,6 +914,21 @@
            MOVE    "key10"             TO  MCP-PATHNAME
            PERFORM 900-CLOSE-SEC
       *
+      *    ステップ途中処理
+           PERFORM 800-MCNDATE-SEC
+           MOVE    "STM"               TO  SJOBKANRI-MODE
+           INITIALIZE                      JOBKANRI-REC
+           STRING  "患者番号桁数変更終了 "
+                                       DELIMITED BY SIZE
+                   SMCNDATE-HMS(1:2)   DELIMITED BY SIZE
+                   "."                 DELIMITED BY SIZE
+                   SMCNDATE-HMS(3:2)   DELIMITED BY SIZE
+                   "."                 DELIMITED BY SIZE
+                   SMCNDATE-HMS(5:2)   DELIMITED BY SIZE
+           INTO    JOB-YOBI
+           END-STRING
+           MOVE    WRK-SHELLMSG        TO  JOB-SHELLMSG
+           PERFORM 900-CALL-ORCSJOB-SEC
       *
            .
        200-MAIN-EXT.
@@ -1199,6 +1218,66 @@
        800-FILE-DEL-EXT.
            EXIT.
       *****************************************************************
+      *    マシン日付取得サブ
+      *****************************************************************
+       800-MCNDATE-SEC                 SECTION.
+      *
+           CALL    "ORCSMCNDATE"       USING
+                                       ORCSMCNDATEAREA
+           .
+       800-MCNDATE-EXT.
+           EXIT.
+      *****************************************************************
+      *    処理経過編集処理
+      *****************************************************************
+       800-SYORI-KEIKA-SEC         SECTION.
+      *
+           PERFORM 800-MCNDATE-SEC
+      *
+           MOVE    SPACE           TO  WRK-TBLNAME
+           EVALUATE    MCP-TABLE
+           WHEN    "tbl_ptnum"
+               MOVE    "患者番号"
+                                   TO  WRK-TBLNAME
+           WHEN    "tbl_kohsky"
+               MOVE    "地方公費請求書"
+                                   TO  WRK-TBLNAME
+           WHEN    "tbl_seikyu"
+               MOVE    "請求管理"
+                                   TO  WRK-TBLNAME
+           WHEN    "tbl_order"
+               MOVE    "入院オーダ"
+                                   TO  WRK-TBLNAME
+           WHEN    "tbl_receprt"
+               MOVE    "レセプト明細書"
+                                   TO  WRK-TBLNAME
+           WHEN    "tbl_teikiprt"
+               MOVE    "定期請求印刷情報"
+                                   TO  WRK-TBLNAME
+           END-EVALUATE
+      *
+      *    ステップ途中処理
+           MOVE    "STM"               TO  SJOBKANRI-MODE
+           INITIALIZE                      JOBKANRI-REC
+           STRING  WRK-TBLNAME         DELIMITED BY SPACE
+                   "テーブル更新中 "
+                                       DELIMITED BY SIZE
+                   SMCNDATE-HMS(1:2)   DELIMITED BY SIZE
+                   "."                 DELIMITED BY SIZE
+                   SMCNDATE-HMS(3:2)   DELIMITED BY SIZE
+                   "."                 DELIMITED BY SIZE
+                   SMCNDATE-HMS(5:2)   DELIMITED BY SIZE
+           INTO    JOB-YOBI
+           END-STRING
+           MOVE    WRK-SHELLMSG        TO  JOB-SHELLMSG
+           PERFORM 900-CALL-ORCSJOB-SEC
+      *
+           DISPLAY JOB-SHELLMSG
+      *
+           .
+       800-SYORI-KEIKA-EXT.
+           EXIT.
+     *****************************************************************
       *    エラー出力処理
       *****************************************************************
        500-ERR-HENSYU-SEC              SECTION.
@@ -1583,6 +1662,8 @@
       *    ＤＢ　ＣＯＭＭＩＴ処理
       *****************************************************************
        900-DBCOMMIT-SEC              SECTION.
+      *
+           PERFORM 800-SYORI-KEIKA-SEC
       *
            MOVE    LOW-VALUE           TO  MCP-TABLE
                                            MCP-PATHNAME
