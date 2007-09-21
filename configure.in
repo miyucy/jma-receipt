@@ -49,6 +49,25 @@ AC_CHECK_LIB(jconv,convert_kanji_strict, [have_jconv=yes JCONV_LIB="-ljconv"],
 AC_SUBST(have_jconv)
 AC_SUBST(JCONV_LIB)
 
+dnl PKG_PROG_PKG_CONFIG
+dnl PKG_CHECK_MODULES(png, "libpng12")
+
+AC_PATH_PROG(PKG_CONFIG,pkg-config,no)
+if test x$PKG_CONFIG = xno; then
+  AC_MSG_ERROR(Couldn't find pkg-config)
+fi
+PNG_CFLAGS=`$PKG_CONFIG --cflags 2>/dev/null`
+PNG_LIBS=`$PKG_CONFIG --libs 2>/dev/null`
+AC_SUBST(PNG_CFLAGS)
+AC_SUBST(PNG_LIBS)
+
+AC_CHECK_HEADERS(qrencode.h)
+AC_CHECK_LIB(qrencode,QRcode_encodeString, [have_qrencode=yes QRENCODE_LIB="-lqrencode"],
+ [AC_MSG_ERROR([*** qrencode is not found.])], [-lpng12])
+
+AC_SUBST(have_qrencode)
+AC_SUBST(QRENCODE_LIB)
+
 AC_ARG_WITH(patchdir,
 	    [  --with-patchdir=DIR      patch libraries in DIR [PREFIX]],
             [patchdir=$withval],

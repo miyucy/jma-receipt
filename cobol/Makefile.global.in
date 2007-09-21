@@ -7,6 +7,8 @@ CC = @CC@
 HOSP = @HOSP@
 have_jconv = @have_jconv@
 JCONV_LIB = @JCONV_LIB@
+have_qrencode = @have_qrencode@
+QRENCODE_LIB = @QRENCODE_LIB@
 
 COBCOPYS = -I$(srcdir)/../../cobol/copy
 
@@ -18,6 +20,7 @@ OBJS = ${SRCS:.CBL=.so}
 EXEC = ${EXEC_SRCS:.CBL=}
 COBJS = ${CSRCS:.c=.so}
 CJOBJS = ${CJSRCS:.c=.so}  
+CJQOBJS = ${CJQSRCS:.c=.so}  
 
 define postprocess-depend
 @if test ! -d $(DEPDIR); then mkdir $(DEPDIR); fi
@@ -27,6 +30,11 @@ ifeq ($(have_jconv), yes)
   COBJS += $(CJOBJS)
   orcsjistoeuc.so: orcsjistoeuc.c
 	$(CC) $(JCONV_LIB) -fPIC -shared $< -o $@
+  ifeq ($(have_qrencode), yes)
+    COBJS += $(CJQOBJS)
+    orcqrencode.so: orcqrencode.c
+	$(CC) $(JCONV_LIB) $(QRENCODE_LIB) $(PNG_CFLAGS) $(PNG_LIBS) -fPIC -shared $< -o $@
+  endif
 endif
 
 %.so: %.c
