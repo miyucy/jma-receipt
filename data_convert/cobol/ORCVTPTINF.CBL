@@ -596,6 +596,8 @@
       *****************************************************************
        210-CHAR-END-GET-SEC        SECTION.
       *
+           MOVE    WRK-PO-ST           TO  WRK-PO-ED
+      *
            PERFORM VARYING   IDY   FROM    WRK-PO-ST   BY  1
                    UNTIL   ( IDY           >=  3000 )
                    OR      ( FLG-COMMA     =   1    )
@@ -1212,13 +1214,8 @@
            END-IF
       *
       *    死亡区分セット
-           EVALUATE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
-               WHEN    "0"     THRU    "1"
-                   MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
-                                       TO  PTINF-DEATHKBN
-               WHEN    OTHER
-                   MOVE    3           TO  FLG-ERR
-           END-EVALUATE
+           MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
+                                   TO  PTINF-DEATHKBN
       *
            .
        2410-DEATHKBN-SET-EXT.
@@ -2177,8 +2174,14 @@
            END-IF
       *
       *    テスト患者フラグ
-           MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
-                                   TO  PTINF-TSTPTNUMKBN
+           EVALUATE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
+               WHEN    "0"
+               WHEN    "1"
+                   MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
+                                       TO  PTINF-TSTPTNUMKBN
+               WHEN    OTHER
+                   MOVE    3           TO  FLG-ERR
+           END-EVALUATE
       *
            .
        2410-TSTPTNUMKBN-SET-EXT.
@@ -2448,6 +2451,11 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    ZERO            TO  PTINF-MAXZAINUM
            MOVE    ZERO            TO  PTINF-RRKNUM
            MOVE    ZERO            TO  PTINF-RRKEDANUM
+      *    テスト患者区分が未設定の時は、０ とする
+           IF      PTINF-TSTPTNUMKBN   =   SPACE
+               MOVE    "0"             TO  PTINF-TSTPTNUMKBN
+           END-IF
+      *
            MOVE    SPA-TERMID      TO  PTINF-TERMID
            MOVE    PTINF-REC       TO  MCPDATA-REC
            MOVE    "DBINSERT"      TO  MCP-FUNC
