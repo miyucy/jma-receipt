@@ -65,6 +65,8 @@
            03  IDX-S               PIC 9(04).
            03  IDX-S2              PIC 9(04).
            03  IDS                 PIC 9(04).
+           03  IDX-M               PIC 9(04).
+           03  IDX-M2              PIC 9(04).
       *
       *    一時領域
        01  WRK-AREA.
@@ -1396,10 +1398,19 @@
            END-IF
       *    コメント追加
            MOVE    SPACE               TO  WRK-MEMO-WK
-           STRING  WRK-MEMO            DELIMITED   BY  SPACE
-                   PTMEMOINF-MEMO      DELIMITED   BY  SPACE
-                   INTO                WRK-MEMO-WK
-           END-STRING
+           MOVE    ZERO                TO  IDX-M2
+           PERFORM VARYING     IDX-M   FROM    1000    BY  -1
+                   UNTIL      (IDX-M   <   1   )
+               IF      WRK-MEMO(IDX-M:1)   NOT =   SPACE
+                   MOVE    WRK-MEMO        TO  WRK-MEMO-WK
+                   COMPUTE IDX-M2          =   IDX-M  +  1
+                   MOVE    PTMEMOINF-MEMO  TO  WRK-MEMO-WK(IDX-M2:)
+                   MOVE    1               TO  IDX-M
+               END-IF
+           END-PERFORM
+           IF      WRK-MEMO-WK         =   SPACE
+               MOVE    PTMEMOINF-MEMO  TO  WRK-MEMO-WK
+           END-IF
       *
            INITIALIZE                  ORCXKANACONVAREA
            MOVE    1000                TO  KANACONV-LEN
