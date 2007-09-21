@@ -167,6 +167,7 @@
       *
            03  WRK-BUNRUICD            PIC 9(03).
            03  WRK-BUNRUIMEI           PIC X(30).
+           03  WRK-DSPSEQ              PIC 9(02).
       *
       *    エラー帳票出力領域
        01  MES-AREA.
@@ -484,6 +485,7 @@
            MOVE    ZERO            TO  WRK-KOUMOKU-NO
            MOVE    ZERO            TO  WRK-BUNRUICD
            MOVE    SPACE           TO  WRK-BUNRUIMEI
+           MOVE    50              TO  WRK-DSPSEQ
       *
       *    自院病名ＣＳＶファイルに存在する項目数分、繰り返す
       *    またはレコード終了、または項目エラー４個まで
@@ -507,13 +509,11 @@
       *        項目共通処理デリミタチェック
                PERFORM 220-KOUMOKU-KYOTU-SEC
       *        項目別処理
-               PERFORM 240-KOUMOKU-BETU-SEC
+               IF      FLG-DATAEND     =   ZERO
+                   PERFORM 240-KOUMOKU-BETU-SEC
+               END-IF
            END-PERFORM
       *
-      *    データなし
-           IF     (WRK-KOUMOKU-NO      =   ZERO )
-               CONTINUE
-           ELSE
       *    エラーチェック
            IF      FLG-ERRARI          =   ZERO
       *        自院病名マスタ　更新処理
@@ -528,7 +528,6 @@
       *        エラーリスト出力処理
                PERFORM 270-ERRLST-OUT-SEC
            END-IF
-           END-IF
       *
       *    自院病名ＣＳＶファイル　検索処理
            PERFORM 900-CSV-KENSAKU-SEC
@@ -542,6 +541,7 @@
       *****************************************************************
        210-CHAR-END-GET-SEC        SECTION.
       *
+           MOVE    WRK-PO-ST       TO  WRK-PO-ED
            PERFORM VARYING   IDY   FROM    WRK-PO-ST   BY  1
                    UNTIL   ( IDY       >=  300  )
                    OR      ( FLG-COMMA =   1    )
@@ -925,7 +925,6 @@
       *
       *    データがない場合処理抜ける
            IF      FLG-NODATA      =   1
-               MOVE    50          TO  WKUSBYO-DSPSEQ
                GO  TO  2410-DSPSEQ-SET-EXT
            END-IF
       *
@@ -938,7 +937,7 @@
       *    数字以外はエラー
            IF      CSV-REC (WRK-MO-ST:WRK-MO-CNT)  NUMERIC
                MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
-                                   TO  WKUSBYO-DSPSEQ
+                                   TO  WRK-DSPSEQ
            ELSE
                MOVE    3           TO  FLG-ERR
            END-IF
@@ -1073,6 +1072,9 @@
                  ( WRK-BUNRUIMEI   NOT =   SPACE )
                MOVE    WRK-BUNRUICD    TO  WKUSBYO-BUNRUICD
            END-IF
+      *
+      *    表示連番
+           MOVE    WRK-DSPSEQ          TO  WKUSBYO-DSPSEQ
       *
            .
        24101-BYOMEICD-CHECK-EXT.
