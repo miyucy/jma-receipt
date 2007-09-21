@@ -496,7 +496,6 @@
                CONTINUE
            ELSE
                MOVE    1               TO  FLG-CSV
-               GO  TO  101-PARA-GET-EXT
            END-IF
       *
            .
@@ -659,7 +658,9 @@
       *        項目共通処理
                PERFORM 220-KOUMOKU-KYOTU-SEC
       *        項目別チェック処理
-               PERFORM 240-KOUMOKU-BETU-SEC
+               IF      FLG-DATAEND     =   ZERO
+                   PERFORM 240-KOUMOKU-BETU-SEC
+               END-IF
            END-PERFORM
       *
            IF      FLG-ERRARI              =   ZERO
@@ -688,6 +689,7 @@
       *****************************************************************
        210-CHAR-END-GET-SEC        SECTION.
       *
+           MOVE    WRK-PO-ST       TO  WRK-PO-ED
            PERFORM VARYING   IDY   FROM    WRK-PO-ST   BY  1
                    UNTIL   ( IDY           >=  300  )
                    OR      ( FLG-COMMA     =   1    )

@@ -376,7 +376,6 @@
                CONTINUE
            ELSE
                MOVE    1               TO  FLG-CSV
-               GO  TO  101-PARA-GET-EXT
            END-IF
       *
            .
@@ -495,18 +494,15 @@
       *        項目共通処理
                PERFORM 220-KOUMOKU-KYOTU-SEC
       *        項目別処理
-               PERFORM 240-KOUMOKU-BETU-SEC
+               IF      FLG-DATAEND     =   ZERO
+                   PERFORM 240-KOUMOKU-BETU-SEC
+               END-IF
            END-PERFORM
       *
-      *    データなし
-           IF     (WRK-KOUMOKU-NO      =   ZERO )
-               CONTINUE
-           ELSE
       *    エラーチェック
            IF      FLG-ERRARI           NOT =  ZERO
       *        エラーリスト出力処理
                PERFORM 2950-ERRLST-OUT-SEC
-           END-IF
            END-IF
       *
       *    ＣＳＶファイル　検索処理
@@ -521,6 +517,7 @@
       *****************************************************************
        210-CHAR-END-GET-SEC        SECTION.
       *
+           MOVE    WRK-PO-ST           TO  WRK-PO-ED
            PERFORM VARYING   IDY   FROM    WRK-PO-ST   BY  1
                    UNTIL   ( IDY   >=  3000 )
                    OR      ( FLG-COMMA     =   1    )
