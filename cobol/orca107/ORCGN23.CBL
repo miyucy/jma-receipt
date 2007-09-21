@@ -885,6 +885,15 @@
       *
            MOVE    SPACE           TO  WRK-JYOKEN-AREA
       *
+      *    処理が選択されているかチェック
+           IF    ( SPA-N23-CHK(1)  NOT =   "T" ) AND
+                 ( SPA-N23-CHK(2)  NOT =   "T" ) AND
+                 ( SPA-N23-CHK(3)  NOT =   "T" )
+               MOVE    "0006"      TO  SPA-ERRCD
+               MOVE    1           TO  SPA-N23-CUR
+               GO  TO  410-INPUT-CHK-EXT
+           END-IF
+      *
       *    確認リスト指定
            IF      SPA-N23-CHK(1)      =   "T"
       *        条件有無指定
@@ -1892,6 +1901,9 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                        TO  SPA-ERRMSG
            WHEN    "0005"
                MOVE    "対象期間を選択してください"
+                                       TO  SPA-ERRMSG
+           WHEN    "0006"
+               MOVE    "パラメタが入力されていない項目があります"
                                        TO  SPA-ERRMSG
            WHEN    "1004"
                MOVE    "ジョブ管理ＤＢが削除できませんでした"
