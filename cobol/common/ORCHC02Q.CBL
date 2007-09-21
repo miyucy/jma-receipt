@@ -2581,9 +2581,13 @@
            IF      SRY-SRYCD (IDXA)(1:3)   =   "001"
                MOVE    TNS-NAME        TO  ORCSQRCSV-TNS-NAME
                                                   (IDX-QR1 IDX-QR2)
-      *****ELSE
-      *****    MOVE    WRK-TNS-NAME    TO  ORCSQRCSV-TNS-NAME
-      *****                                       (IDX-QR1 IDX-QR2)
+           ELSE
+               IF      SRY-SRYCD (IDXA)(1:1)   =   "6"
+                   CONTINUE
+               ELSE
+                   MOVE    WRK-TNS-NAME    TO  ORCSQRCSV-TNS-NAME
+                                                  (IDX-QR1 IDX-QR2)
+               END-IF
            END-IF
            MOVE    WRK-SURYO2          TO  ORCSQRCSV-SURYOU
                                                   (IDX-QR1 IDX-QR2)

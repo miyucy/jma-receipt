@@ -84,6 +84,7 @@
            03  IDX-H               PIC 9(02).
            03  IDX-B               PIC 9(04).
            03  IDXM                PIC 9(04).
+           03  IDZ                 PIC 9(04).
       *
            03  TBL-MAX             PIC 9(04).
            03  IDX-B2              PIC 9(03).
@@ -100,6 +101,13 @@
            03  WRK-RP2-1               PIC 9(02).
            03  WRK-RP2                 PIC 9(02).
            03  WRK-RP-11               PIC 9(02).
+      *
+           03  WRK-H-RP1               PIC X(03).
+           03  WRK-H-RP2               PIC X(03).
+           03  WRK-H-RP2-1             PIC X(03).
+           03  WRK-H-RP-11             PIC X(03).
+           03  WRK-H-DATA              PIC X(03).
+           03  WRK-ZZZ                 PIC ZZZ.
       *
            03  WRK-SURYO-K          PIC 9(05)V9(05).
            03  WRK-KANSAN           PIC 9(05)V9(05).
@@ -789,17 +797,39 @@
        2001-RP101-SEC            SECTION.
       *
            ADD     1                   TO  WRK-RP1
+           MOVE    WRK-RP1             TO  WRK-ZZZ
+           PERFORM 20011-SUJIHEN-SEC
+           MOVE    WRK-H-DATA          TO  WRK-H-RP1
+      *
            MOVE    SPACE               TO  TBL-QRCSV-AREA
            MOVE    "101"               TO  TBL-QRCSV-DATA (1)
-           MOVE    WRK-RP1             TO  TBL-QRCSV-DATA (2)
+           MOVE    WRK-H-RP1           TO  TBL-QRCSV-DATA (2)
            MOVE    ORCSQRCSV-ZAIKATA (IDX)
                                        TO  TBL-QRCSV-DATA (3)
-           MOVE    ORCSQRCSV-KAISU   (IDX)
-                                       TO  TBL-QRCSV-DATA (5)
+           MOVE    ORCSQRCSV-KAISU (IDX)   TO  WRK-ZZZ
+           PERFORM 20011-SUJIHEN-SEC
+           MOVE    WRK-H-DATA          TO  TBL-QRCSV-DATA (5)
            MOVE    5                   TO  TBL-MAX
            PERFORM 400-DATAOUT-SEC
            .
        2001-RP101-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ＰＲ番号数値編集処理
+      *****************************************************************
+       20011-SUJIHEN-SEC            SECTION.
+      *
+           MOVE    SPACE               TO  WRK-H-DATA
+           PERFORM VARYING    IDZ      FROM    1  BY  1
+                   UNTIL      IDZ      >   3
+               IF      WRK-ZZZ(IDZ:1)  NOT =   SPACE
+                   MOVE    WRK-ZZZ(IDZ:)   TO  WRK-H-DATA
+                   MOVE    3               TO  IDZ
+               END-IF
+           END-PERFORM
+           .
+       20011-SUJIHEN-EXT.
            EXIT.
       *
       *****************************************************************
@@ -837,7 +867,7 @@
            IF      WRK-RP-11           =   ZERO
                MOVE    SPACE               TO  TBL-QRCSV-AREA
                MOVE    "111"               TO  TBL-QRCSV-DATA (1)
-               MOVE    WRK-RP1             TO  TBL-QRCSV-DATA (2)
+               MOVE    WRK-H-RP1           TO  TBL-QRCSV-DATA (2)
                MOVE    "1"                 TO  TBL-QRCSV-DATA (3)
                MOVE    6                   TO  TBL-MAX
                PERFORM 400-DATAOUT-SEC
@@ -853,13 +883,17 @@
       *
            MOVE    SPACE               TO  TBL-QRCSV-AREA
            MOVE    "111"               TO  TBL-QRCSV-DATA (1)
-           MOVE    WRK-RP1             TO  TBL-QRCSV-DATA (2)
+           MOVE    WRK-H-RP1           TO  TBL-QRCSV-DATA (2)
            MOVE    "1"                 TO  TBL-QRCSV-DATA (3)
            MOVE    ORCSQRCSV-TNS-NAME (IDX IDX2)
                                        TO  TBL-QRCSV-DATA (5)
            MOVE    6                   TO  TBL-MAX
            PERFORM 400-DATAOUT-SEC
            ADD     1                   TO  WRK-RP-11
+      *
+           MOVE    WRK-RP-11           TO  WRK-ZZZ
+           PERFORM 20011-SUJIHEN-SEC
+           MOVE    WRK-H-DATA          TO  WRK-H-RP-11
            .
        20021-RP111-EXT.
            EXIT.
@@ -870,13 +904,17 @@
       *
            MOVE    SPACE               TO  TBL-QRCSV-AREA
            MOVE    "181"               TO  TBL-QRCSV-DATA (1)
-           MOVE    WRK-RP1             TO  TBL-QRCSV-DATA (2)
-           MOVE    WRK-RP-11           TO  TBL-QRCSV-DATA (3)
+           MOVE    WRK-H-RP1           TO  TBL-QRCSV-DATA (2)
+           MOVE    WRK-H-RP-11         TO  TBL-QRCSV-DATA (3)
            MOVE    ORCSQRCSV-TNS-NAME (IDX IDX2)
                                        TO  TBL-QRCSV-DATA (5)
            MOVE    5                   TO  TBL-MAX
            PERFORM 400-DATAOUT-SEC
            ADD     1                   TO  WRK-RP-11
+      *
+           MOVE    WRK-RP-11           TO  WRK-ZZZ
+           PERFORM 20011-SUJIHEN-SEC
+           MOVE    WRK-H-DATA          TO  WRK-H-RP-11
            .
        20022-RP181-EXT.
            EXIT.
@@ -886,10 +924,14 @@
        2003-RP201-SEC            SECTION.
       *
            ADD     1                   TO  WRK-RP2
+           MOVE    WRK-RP2             TO  WRK-ZZZ
+           PERFORM 20011-SUJIHEN-SEC
+           MOVE    WRK-H-DATA          TO  WRK-H-RP2
+      *
            MOVE    SPACE               TO  TBL-QRCSV-AREA
            MOVE    "201"               TO  TBL-QRCSV-DATA (1)
-           MOVE    WRK-RP1             TO  TBL-QRCSV-DATA (2)
-           MOVE    WRK-RP2             TO  TBL-QRCSV-DATA (3)
+           MOVE    WRK-H-RP1           TO  TBL-QRCSV-DATA (2)
+           MOVE    WRK-H-RP2           TO  TBL-QRCSV-DATA (3)
            EVALUATE    ORCSQRCSV-SRYCD(IDX IDX2)(1:1)
                WHEN    "6"
                    MOVE    "1"             TO  TBL-QRCSV-DATA (4)
@@ -924,8 +966,8 @@
            ELSE
                MOVE    SPACE               TO  TBL-QRCSV-AREA
                MOVE    "211"               TO  TBL-QRCSV-DATA (1)
-               MOVE    WRK-RP1             TO  TBL-QRCSV-DATA (2)
-               MOVE    WRK-RP2             TO  TBL-QRCSV-DATA (3)
+               MOVE    WRK-H-RP1           TO  TBL-QRCSV-DATA (2)
+               MOVE    WRK-H-RP2           TO  TBL-QRCSV-DATA (3)
                COMPUTE WRK-SURYO-K         =   ORCSQRCSV-SURYOU
                                                           (IDX IDX2)
                                            /   ORCSQRCSV-KANZANCHI
@@ -973,11 +1015,15 @@
        20032-RP281-SEC         SECTION.
       *
            ADD     1                   TO  WRK-RP2-1
+           MOVE    WRK-RP2-1           TO  WRK-ZZZ
+           PERFORM 20011-SUJIHEN-SEC
+           MOVE    WRK-H-DATA          TO  WRK-H-RP2-1
+      *
            MOVE    SPACE               TO  TBL-QRCSV-AREA
            MOVE    "281"               TO  TBL-QRCSV-DATA (1)
-           MOVE    WRK-RP1             TO  TBL-QRCSV-DATA (2)
-           MOVE    WRK-RP2             TO  TBL-QRCSV-DATA (3)
-           MOVE    WRK-RP2-1           TO  TBL-QRCSV-DATA (4)
+           MOVE    WRK-H-RP1           TO  TBL-QRCSV-DATA (2)
+           MOVE    WRK-H-RP2           TO  TBL-QRCSV-DATA (3)
+           MOVE    WRK-H-RP2-1         TO  TBL-QRCSV-DATA (4)
            MOVE    ORCSQRCSV-TNS-NAME (IDX IDX3)
                                        TO  TBL-QRCSV-DATA (6)
            MOVE    6                   TO  TBL-MAX
