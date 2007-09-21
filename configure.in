@@ -56,8 +56,8 @@ AC_PATH_PROG(PKG_CONFIG,pkg-config,no)
 if test x$PKG_CONFIG = xno; then
   AC_MSG_ERROR(Couldn't find pkg-config)
 fi
-PNG_CFLAGS=`$PKG_CONFIG --cflags 2>/dev/null`
-PNG_LIBS=`$PKG_CONFIG --libs 2>/dev/null`
+PNG_CFLAGS=`$PKG_CONFIG --cflags libpng12 2>/dev/null`
+PNG_LIBS=`$PKG_CONFIG --libs libpng12 2>/dev/null`
 AC_SUBST(PNG_CFLAGS)
 AC_SUBST(PNG_LIBS)
 
