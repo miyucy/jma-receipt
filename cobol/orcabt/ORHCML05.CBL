@@ -31,6 +31,7 @@
       *  01.01.02    NACL-¿¹ÏÆ    04/08/03  ¼«±¡¥³¥á¥ó¥ÈÄÉ²Ã
       *  01.01.03    NACL-¿¹ÏÆ    06/07/27  ¥Õ¥é¥°ÄÉ²Ã¡¢MONFUNCÂÐ±þ
       *  03.05.01    NACL-¿¹ÏÆ    07/05/29  ¥°¥ë¡¼¥×¿ÇÎÅÂÐ±þ
+      *  03.05.02    NACL-¿¹ÏÆ    07/09/21  ¿ÇÎÅ¹Ô°Ù¥³¡¼¥ÉÈÏ°Ï½¤Àµ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -314,8 +315,11 @@ grpsys     INITIALIZE                  SPA-AREA
                            MOVE    "002999999"    TO  WRK-SRYCDEND
                        WHEN    3
       *----(01.01.02)--ADD-START---
+      *----(03.05.02)--UPD-START---
                            MOVE    "008200000"    TO  WRK-SRYCDSTR
-                           MOVE    "008499999"    TO  WRK-SRYCDEND
+                           MOVE    "008599999"    TO  WRK-SRYCDEND
+      *                     MOVE    "008499999"    TO  WRK-SRYCDEND
+      *----(03.05.02)--UPD-END-----
       *                    Ä¢É¼ÊÔ½¸½èÍý
                            PERFORM 2001-PRINT-SEC
       *----(01.01.02)--ADD-END-----
