@@ -534,17 +534,17 @@
            MOVE    SPACE           TO  SYS-1009-REC
            INITIALIZE                  SYS-1009-REC
            MOVE    "1009"          TO  SYS-1009-KANRICD
-           MOVE    "*%"            TO  SYS-1009-KBNCD
+           MOVE    "*"             TO  SYS-1009-KBNCD
            MOVE    WRK-SYSYMD      TO  SYS-1009-STYUKYMD
                                        SYS-1009-EDYUKYMD
            MOVE    SPA-HOSPNUM     TO  SYS-1009-HOSPNUM
            MOVE    SYS-1009-REC    TO  MCPDATA-REC
            MOVE    "tbl_syskanri"  TO  MCP-TABLE
-           MOVE    "key"           TO  MCP-PATHNAME
+           MOVE    "key10"         TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF      MCP-RC          =   ZERO
                MOVE    "tbl_syskanri"  TO  MCP-TABLE
-               MOVE    "key"           TO  MCP-PATHNAME
+               MOVE    "key10"         TO  MCP-PATHNAME
       *        システム管理情報読み込み
                PERFORM 900-SYSTEM-NEXT-SEC
            ELSE
@@ -581,7 +581,7 @@
            END-IF
       *
            MOVE    "tbl_syskanri"  TO  MCP-TABLE
-           MOVE    "key"           TO  MCP-PATHNAME
+           MOVE    "key10"         TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
       *
            .
@@ -682,7 +682,9 @@
       *        項目共通処理デリミタチェック
                PERFORM 220-KOUMOKU-KYOTU-SEC
       *        項目別処理
-               PERFORM 240-KOUMOKU-BETU-SEC
+               IF      FLG-DATAEND     =   ZERO
+                   PERFORM 240-KOUMOKU-BETU-SEC
+               END-IF
            END-PERFORM
       *
       *    エラーチェック
@@ -712,6 +714,7 @@
       *****************************************************************
        210-CHAR-END-GET-SEC        SECTION.
       *
+           MOVE    WRK-PO-ST       TO  WRK-PO-ED
            PERFORM VARYING   IDY   FROM    WRK-PO-ST   BY  1
                    UNTIL   ( IDY           >=  300  )
                    OR      ( FLG-COMMA   =   1    )
@@ -722,6 +725,11 @@
                      ( CSV-X (IDY)         =   SPACE))
                    MOVE    IDY                 TO  WRK-PO-ED
                    MOVE    1                   TO  FLG-COMMA
+               ELSE
+      *            カンマが足りない場合の終了位置決定
+                   IF      CSV-X (IDY) NOT =   SPACE
+                       MOVE    IDY         TO  WRK-PO-ED
+                   END-IF
                END-IF
       *
       *        デリミタ(")存在するかどうか
@@ -919,8 +927,8 @@
                                    TO  WRK-HEN-PTNUM
            MOVE    ZERO            TO  WRK-CNT
            PERFORM VARYING IDZ     FROM    1   BY  1
-                   UNTIL  (IDZ     >   WRK-MO-CNT)
-                   OR     (WRK-HEN-PTNUM (IDZ:1)   =   SPACE)
+                   UNTIL ( IDZ     >   WRK-MO-CNT )
+                   OR    ( WRK-HEN-PTNUM (IDZ:1)   =   SPACE )
                MOVE    IDZ             TO    WRK-CNT
            END-PERFORM
            MOVE    WRK-CNT         TO  WRK-MO-CNT
@@ -932,15 +940,16 @@
                GO  TO  2410-PTNUM-SET-EXT
            END-IF
       *
-      *    患者番号構成桁数チェック
-           IF    ((SYS-1009-PTNUMKSIKBN    =   "1" )  AND
-                 ( SYS-1009-JIYKSIKBN      =   "2"))  OR
-                 ((SYS-1009-PTNUMKSIKBN    =   "2" )  AND
-                 ( SYS-1009-HJNKSIKBN      =   "3" OR "4"))
+      *    患者番号セット
+           IF   (( SYS-1009-PTNUMKSIKBN    =   "1" ) AND
+                 ( SYS-1009-JIYKSIKBN      =   "2" ))    OR
+                (( SYS-1009-PTNUMKSIKBN    =   "2" ) AND
+                 ( SYS-1009-HJNKSIKBN      =   "3" OR "4" ))
                MOVE    ZERO            TO  SPA-PTNUM(1:WRK-RENKETA)
                COMPUTE IDZ             =   WRK-RENKETA
-                                       -   WRK-MO-CNT  +   1
-               MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
+                                       -   WRK-MO-CNT
+                                       +   1
+               MOVE  CSV-REC (WRK-MO-ST:WRK-MO-CNT)
                                        TO  SPA-PTNUM(IDZ:)
            ELSE
                MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
@@ -962,8 +971,13 @@
            END-IF
       *
       *    桁チェック
-           IF      WRK-MO-CNT  NOT =   2
+           IF      WRK-MO-CNT      >   2
                MOVE    2               TO  FLG-ERR
+               GO  TO  2410-SRYKA-SET-EXT
+           END-IF
+      *
+           IF      CSV-REC (WRK-MO-ST:WRK-MO-CNT) NOT NUMERIC
+               MOVE    3               TO  FLG-ERR
                GO  TO  2410-SRYKA-SET-EXT
            END-IF
       *
@@ -1102,15 +1116,14 @@
       *****************************************************************
        2410-NYUGAIKBN-SET-SEC      SECTION.
       *
-           EVALUATE    WRK-MO-CNT
-           WHEN    0
+           IF      FLG-NODATA      =   1
                GO  TO  2410-NYUGAIKBN-SET-EXT
-           WHEN    1
-               CONTINUE
-           WHEN    OTHER
+           END-IF
+      *
+           IF      WRK-MO-CNT      NOT =   1
                MOVE    2               TO  FLG-ERR
                GO  TO  2410-NYUGAIKBN-SET-EXT
-           END-EVALUATE
+           END-IF
       *
       *    入外区分チェック
            EVALUATE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
@@ -1184,13 +1197,15 @@
                GO  TO  2410-REZEMM-SET-EXT
            END-IF
       *
+      *    空白チェック
+           IF      CSV-REC (WRK-MO-ST:WRK-MO-CNT) = SPACE
+               GO  TO  2410-REZEMM-SET-EXT
+           END-IF
+      *
       *    レセプト表示月数セット
            EVALUATE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
            WHEN    "99"
                MOVE    00              TO  WKPTBYO-REZEMM
-           WHEN    SPACE
-               MOVE    3               TO  FLG-ERR
-               GO  TO  2410-REZEMM-SET-EXT
            WHEN    OTHER
                COMPUTE IDZ = 3 - WRK-MO-CNT
                MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
@@ -1670,6 +1685,15 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *    １６：入外区分
            WHEN    16
                MOVE    "入外区分:"       TO  ERR1-KOMOKU(IDE)
+      *    １７〜２０：保険限定レコード番号
+           WHEN    17
+               MOVE    "保険組１:"       TO  ERR1-KOMOKU(IDE)
+           WHEN    18
+               MOVE    "保険組２:"       TO  ERR1-KOMOKU(IDE)
+           WHEN    19
+               MOVE    "保険組３:"       TO  ERR1-KOMOKU(IDE)
+           WHEN    20
+               MOVE    "保険組４:"       TO  ERR1-KOMOKU(IDE)
       *    ２１：レセプト表示月数
            WHEN    21
                MOVE    "表示月数:"       TO  ERR1-KOMOKU(IDE)
@@ -1862,19 +1886,16 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            INITIALIZE                  PTNUM-REC
            MOVE    SPA-HOSPNUM     TO  PTNUM-HOSPNUM
            INITIALIZE                  ORCSADDSIGNAREA
-           MOVE    SPA-PTNUM       TO  SADDSIGN-STR
-           CALL    "ORCSADDSIGN"       USING
-                                       ORCSADDSIGNAREA
-           MOVE    SADDSIGN-STR    TO  PTNUM-PTNUM
+           MOVE    SPA-PTNUM       TO  PTNUM-PTNUM
       *
            MOVE    PTNUM-REC       TO  MCPDATA-REC
            MOVE    "tbl_ptnum"     TO  MCP-TABLE
-           MOVE    "key2"          TO  MCP-PATHNAME
+           MOVE    "key4"          TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
       *
            IF          MCP-RC          =   ZERO
                MOVE    "tbl_ptnum"     TO  MCP-TABLE
-               MOVE    "key2"          TO  MCP-PATHNAME
+               MOVE    "key4"          TO  MCP-PATHNAME
                PERFORM 920-DBFETCH-SEC
                IF          MCP-RC          =   ZERO
                    MOVE    MCPDATA-REC     TO  PTNUM-REC
@@ -1888,7 +1909,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            END-IF
       *
            MOVE    "tbl_ptnum"     TO  MCP-TABLE
-           MOVE    "key2"          TO  MCP-PATHNAME
+           MOVE    "key4"          TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
       *
            .

@@ -168,6 +168,7 @@
            03  WRK-BUNRUICD            PIC 9(03).
            03  WRK-BUNRUIMEI           PIC X(30).
            03  WRK-DSPSEQ              PIC 9(02).
+           03  WRK-MOJISU              PIC 9(02).
       *
       *    エラー帳票出力領域
        01  MES-AREA.
@@ -869,7 +870,8 @@
            IF      WRK-LEN     NOT =   ZERO
                MOVE    WRK-DATA (1:WRK-LEN)
                                    TO  WKUSBYO-BYOMEI
-               MOVE    WRK-LEN     TO  WKUSBYO-BYOMEIMOJI
+               COMPUTE WRK-MOJISU  =   WRK-LEN / 2
+               MOVE    WRK-MOJISU  TO  WKUSBYO-BYOMEIMOJI
       *        病名コードセット
                PERFORM 24101-BYOMEICD-CHECK-SEC
            ELSE
@@ -911,7 +913,8 @@
            IF      WRK-LEN     NOT =   ZERO
                MOVE    WRK-DATA (1:WRK-LEN)
                                    TO  WKUSBYO-CHARTBYOMEI
-               MOVE    WRK-LEN     TO  WKUSBYO-CHARTBYOMEIMOJI
+               COMPUTE WRK-MOJISU  =   WRK-LEN / 2
+               MOVE    WRK-MOJISU  TO  WKUSBYO-CHARTBYOMEIMOJI
            END-IF
       *
            .
