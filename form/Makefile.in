@@ -6,7 +6,6 @@ INSTALL_DATA = @INSTALL_DATA@
 
 FORM_files = \
               HC01.dia \
-              HC02.dia \
               HC03.dia \
               HC04.dia \
               HC04V01.dia \
