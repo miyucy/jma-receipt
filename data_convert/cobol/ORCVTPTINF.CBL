@@ -550,7 +550,9 @@
       *        項目共通処理
                PERFORM 220-KOUMOKU-KYOTU-SEC
       *        項目別処理
-               PERFORM 240-KOUMOKU-BETU-SEC
+               IF      FLG-DATAEND     =   ZERO
+                   PERFORM 240-KOUMOKU-BETU-SEC
+               END-IF
            END-PERFORM
       *    必須項目なし
            IF      FLG-ERRARI          =   ZERO
