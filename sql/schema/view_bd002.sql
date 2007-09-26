@@ -1,4 +1,5 @@
-CREATE VIEW "view_bd002" as SELECT a.hospid,
+CREATE VIEW view_bd002 AS
+    SELECT a.hospnum,
            a.nyugaikbn,
            a.ptid,
            a.denpnum,
@@ -289,13 +290,14 @@ CREATE VIEW "view_bd002" as SELECT a.hospid,
       FROM tbl_syunou a,
            tbl_ptnum b,
            tbl_ptinf c 
-     WHERE (((((((b.hospid = a.hospid) 
+     WHERE (((((((b.hospnum = a.hospnum) 
        AND (b.ptid = a.ptid)) 
-       AND (b.hospid = c.hospid)) 
+       AND (b.hospnum = c.hospnum)) 
        AND (b.ptid = c.ptid)) 
        AND (a.denpjtikbn <> '3'::bpchar)) 
        AND (a.createkbn <> '3'::bpchar)) 
        AND (c.tstptnumkbn <> '1'::bpchar));
 
-COMMENT ON VIEW "view_bd002" IS '¼ýÇ¼¥Ó¥å¡¼2';
+COMMENT 
+        ON VIEW view_bd002 IS '¼ýÇ¼¥Ó¥å¡¼2';
 

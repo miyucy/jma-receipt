@@ -1,12 +1,14 @@
-CREATE TABLE "tbl_teikiprt" (
-	"btunum" character(2) NOT NULL,
-	"denpnum" numeric(7,0) NOT NULL,
-	"hospid" character(24),
-	"ptid" numeric(10,0),
-	"ptnum" character(20),
-	"name" character(100),
-	Constraint "tbl_teikiprt_primary_key" Primary Key ("btunum", "denpnum")
+CREATE TABLE tbl_teikiprt (
+    hospnum numeric(2,0) NOT NULL,
+    btunum character(2) NOT NULL,
+    denpnum numeric(7,0) NOT NULL,
+    ptid numeric(10,0),
+    ptnum character(20),
+    name character varying(100)
 );
 
-COMMENT ON TABLE "tbl_teikiprt" IS 'Äê´üÀÁµá°õºş¾ğÊó';
+ALTER TABLE ONLY tbl_teikiprt
+    ADD CONSTRAINT tbl_teikiprt_primary_key PRIMARY KEY (hospnum, btunum, denpnum);
+
+COMMENT ON TABLE tbl_teikiprt IS 'Äê´üÀÁµá°õºş¾ğÊó';
 

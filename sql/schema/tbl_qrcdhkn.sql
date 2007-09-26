@@ -1,5 +1,4 @@
 CREATE TABLE tbl_qrcdhkn (
-    hospid character(24) NOT NULL,
     registymd character(8) NOT NULL,
     registid numeric(5,0) NOT NULL,
     registtime character(6),
@@ -26,11 +25,12 @@ CREATE TABLE tbl_qrcdhkn (
     opid character varying(16),
     creymd character(8),
     upymd character(8),
-    uphms character(6)
+    uphms character(6),
+    hospnum numeric(2,0) NOT NULL
 );
 
 ALTER TABLE ONLY tbl_qrcdhkn
-    ADD CONSTRAINT tbl_qrcdhkn_pkey PRIMARY KEY (hospid, registymd, registid);
+    ADD CONSTRAINT tbl_qrcdhkn_primary_key PRIMARY KEY (hospnum, registymd, registid);
 
 COMMENT ON TABLE tbl_qrcdhkn IS '£—£“•≥°º•… ›∏±';
 

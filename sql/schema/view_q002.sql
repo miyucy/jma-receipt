@@ -1,4 +1,5 @@
-CREATE VIEW "view_q002" as SELECT a.hospid,
+CREATE VIEW view_q002 AS
+    SELECT a.hospnum,
            a.ptid,
            a.nyugaikbn,
            a.sryka,
@@ -10,7 +11,7 @@ CREATE VIEW "view_q002" as SELECT a.hospid,
            a.srycd5 
       FROM tbl_sryact a,
            tbl_jyurrk b 
-     WHERE (((((a.hospid = b.hospid) 
+     WHERE (((((a.hospnum = b.hospnum) 
        AND (a.ptid = b.ptid)) 
        AND (a.nyugaikbn = b.nyugaikbn)) 
        AND (a.sryka = b.sryka)) 
@@ -30,5 +31,6 @@ CREATE VIEW "view_q002" as SELECT a.hospid,
         OR (a.zainum = b.zainum14)) 
         OR (a.zainum = b.zainum15)));
 
-COMMENT ON VIEW "view_q002" IS '患者照会ビュー2';
+COMMENT 
+        ON VIEW view_q002 IS '患者照会ビュー2';
 
