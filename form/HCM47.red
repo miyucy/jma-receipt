@@ -2013,10 +2013,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O46">
       <attribute name="obj_pos">
-        <point val="5.5,7.75"/>
+        <point val="5.6,7.75"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="5.5,7.47636;10.8025,7.82636"/>
+        <rectangle val="5.6,7.47636;10.9025,7.82636"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#TBL[1].KONOKOKA[0]#</string>
@@ -2036,7 +2036,7 @@
             <real val="0.35"/>
           </attribute>
           <attribute name="pos">
-            <point val="5.5,7.75"/>
+            <point val="5.6,7.75"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -2052,9 +2052,6 @@
           </attribute>
         </composite>
       </attribute>
-      <connections>
-        <connection handle="0" to="O35" connection="4"/>
-      </connections>
     </object>
     <object type="Embed - Text" version="0" id="O47">
       <attribute name="obj_pos">
