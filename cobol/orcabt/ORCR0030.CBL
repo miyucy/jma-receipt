@@ -308,6 +308,8 @@
       *                                     ¤Îµ­ºÜ½çÊÑ¹¹ÂÐ±þ
       *  03.05.20    NACL-Æ£¸¶    07/09/11  ¿·³ã¸©Ãæ±Û²­ÃÏ¿ÌÂÐ±þ
       *                                     £²£°£°£·Ç¯£¹·î¡Á£±£²·îÂÐ¾Ý 
+      *  03.05.21    NACL-ÌçÏÆ    07/09/27  ÆÃÄêÊÝ¸±¼Ô¡ÜÀº¿À¡¢·ë³ËÂÐ±þ½¤Àµ
+      *                                     ¡ÊÏ·¿Í¤ÏÂÐ¾Ý³°¤È¤¹¤ë¡Ë
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -7370,8 +7372,12 @@ grpsys     PERFORM 900-DBSELECT-SEC
                               "133207" OR "133223" OR
                               "133249" OR "133256" OR
                               "133272"
+               IF  RECE02-RJNHKNNUM  NOT =  SPACE
+                CONTINUE
+               ELSE
                 MOVE   ZERO                 TO  WRK-JYOGEN-KOH
                 MOVE   ZERO                 TO  FLG-IRYOHI70K
+               END-IF
              END-IF
            ELSE
              INITIALIZE                     LNK-ORCSJGNGET-REC
