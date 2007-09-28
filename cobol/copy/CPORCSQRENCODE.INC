@@ -40,8 +40,6 @@
            03  QREN-SK-OPTION          PIC X(01).
       *      QRENCODE -C オプション(0:指定なし,1:-C)
            03  QREN-LC-OPTION          PIC X(01).
-      *      QRENCODE -M オプション(0:指定なし,1-7:)
-           03  QREN-LM-OPTION          PIC X(01).
       *      リターンコード(non -C:ＱＲ画像バージョン)
            03  QREN-RET-VERSION        PIC X(02).
       *      リターンコード(ＱＲ画像ファイル数)

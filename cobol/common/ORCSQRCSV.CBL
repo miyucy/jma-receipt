@@ -690,7 +690,6 @@
            MOVE    "12"                TO  QREN-SV-OPTION
            MOVE    "1"                 TO  QREN-SK-OPTION
            MOVE    "1"                 TO  QREN-LC-OPTION
-           MOVE    "0"                 TO  QREN-LM-OPTION
       *
            CALL    "orcqrencode"       USING   ORCSQRENCODEAREA
            MOVE    QREN-RET-VERSION    TO  ORCSQRCSV-RET-VERSION

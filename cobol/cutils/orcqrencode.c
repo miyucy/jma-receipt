@@ -21,7 +21,6 @@
  *		char opt_v[2];
  *		char opt_k;
  *		char opt_C;
- *		char opt_M;
  *		char ver[2];
  *		char num[2];
  *		char ret[1];
@@ -38,7 +37,6 @@
 #define SIZE_SV			2
 #define SIZE_SK			1
 #define SIZE_LC			1
-#define SIZE_LM			1
 #define SIZE_VER		2
 #define SIZE_NUM		2
 #define SIZE_RET		1
@@ -51,8 +49,7 @@
 #define OFFSET_SV		(OFFSET_SM     + SIZE_SM)
 #define OFFSET_SK		(OFFSET_SV     + SIZE_SV)
 #define OFFSET_LC		(OFFSET_SK     + SIZE_SK)
-#define OFFSET_LM		(OFFSET_LC     + SIZE_LC)
-#define OFFSET_VER		(OFFSET_LM     + SIZE_LM)
+#define OFFSET_VER		(OFFSET_LC     + SIZE_LC)
 #define OFFSET_NUM		(OFFSET_VER    + SIZE_VER)
 #define OFFSET_RET		(OFFSET_NUM    + SIZE_NUM)
 
@@ -60,6 +57,7 @@
 #define QRENCODE_ERROR	'1'
 #define CHAR_CONV_ERROR	'2'
 #define WRITE_PNG_ERROR	'3'
+#define PARAM_ERROR		'4'
 
 #define	CTX(p, offset)		(p + offset)
 
@@ -228,7 +226,6 @@ orcqrencode(char *ctx)
 	int version;
 	int level;
 	int hint;
-	int mask;
 	int size;
 	int margin;
 	int comb;
@@ -252,7 +249,6 @@ orcqrencode(char *ctx)
 	printf("v:%02x%02x\n", *CTX(ctx, OFFSET_SV), *CTX(ctx, OFFSET_SV+1));
 	printf("k:%02x\n", *CTX(ctx, OFFSET_SK));
 	printf("C:%02x\n", *CTX(ctx, OFFSET_LC));
-	printf("M:%02x\n", *CTX(ctx, OFFSET_LM));
 	printf("ver:%02x%02x\n", *CTX(ctx, OFFSET_VER), *CTX(ctx, OFFSET_VER+1));
 	printf("num:%02x%02x\n", *CTX(ctx, OFFSET_NUM), *CTX(ctx, OFFSET_NUM+1));
 	printf("ret:%02x\n", *CTX(ctx, OFFSET_RET));
@@ -267,6 +263,10 @@ orcqrencode(char *ctx)
 
 	snprintf(qrfile, SIZE_QRFILE, "%s", CTX(ctx, OFFSET_QRFILE));
 	version = ctx_int(ctx, OFFSET_SV, SIZE_SV);
+	if(version <= 0 || version > 40){
+		memset(CTX(ctx, OFFSET_RET), PARAM_ERROR, SIZE_RET);
+		return;	
+	}
 	switch(*CTX(ctx, OFFSET_SL)){
 		case 'L':
 			level = QR_ECLEVEL_L;
@@ -284,8 +284,6 @@ orcqrencode(char *ctx)
 			level = QR_ECLEVEL_L;
 	}
 	hint = ctx_int(ctx, OFFSET_SK, SIZE_SK) == 0 ? QR_MODE_KANJI : QR_MODE_8;
-	mask = ctx_int(ctx, OFFSET_LM, SIZE_LM);
-	mask = mask == 0 ? -1 : mask;
 	size = ctx_int(ctx, OFFSET_SS, SIZE_SS);
 	margin = ctx_int(ctx, OFFSET_SM, SIZE_SM);
 	comb = ctx_int(ctx, OFFSET_LC, SIZE_LC);
@@ -294,14 +292,13 @@ orcqrencode(char *ctx)
 	printf("version:%d\n", version);
 	printf("level:%d\n", level);
 	printf("hint:%d\n", hint);
-	printf("mask:%d\n", mask);
 	printf("size:%d\n", size);
 	printf("margin:%d\n", margin);
 	printf("comb:%d\n", comb);
 #endif
 
 	if(comb == 0){
-		code = QRcode_encodeString(buf, version, level, hint, mask);
+		code = QRcode_encodeString(buf, version, level, hint);
 		if(code == NULL){
 			memset(CTX(ctx, OFFSET_RET), QRENCODE_ERROR, SIZE_RET);
 		 	return;
@@ -321,8 +318,7 @@ orcqrencode(char *ctx)
 			strlen(buf), 
 			version,
 			level,
-			hint,
-			mask);
+			hint);
 	
 		if(head == NULL){
 			memset(CTX(ctx, OFFSET_RET), QRENCODE_ERROR, SIZE_RET);
@@ -391,7 +387,6 @@ main(int argc,
 	memcpy(CTX(buf, OFFSET_SV), argv[3], SIZE_SV);
 	memcpy(CTX(buf, OFFSET_SK), argv[5], SIZE_SK);
 	memcpy(CTX(buf, OFFSET_LC), argv[6], SIZE_LC);
-	memcpy(CTX(buf, OFFSET_LM), "0", SIZE_LM);
 
 	printf("infile:%s\n", CTX(buf, OFFSET_INFILE));
 	printf("qrfile:%s\n", CTX(buf, OFFSET_QRFILE));
@@ -406,7 +401,6 @@ main(int argc,
 	printf("v:%02x%02x\n", *CTX(buf, OFFSET_SV), *CTX(buf, OFFSET_SV+1));
 	printf("k:%02x\n", *CTX(buf, OFFSET_SK));
 	printf("C:%02x\n", *CTX(buf, OFFSET_LC));
-	printf("M:%02x\n", *CTX(buf, OFFSET_LM));
 	printf("ver:%02x%02x\n", *CTX(buf, OFFSET_VER), *CTX(buf, OFFSET_VER+1));
 	printf("num:%02x%02x\n", *CTX(buf, OFFSET_NUM), *CTX(buf, OFFSET_NUM+1));
 	printf("ret:%02x\n", *CTX(buf, OFFSET_RET));
