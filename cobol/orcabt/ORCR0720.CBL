@@ -44,6 +44,10 @@
       *  03.04.09    NACL-Æ£¸¶    07/04/13  ¾É¾õ¾Üµ­¶èÊ¬¥³¡¼¥ÉÄÉ²Ã¤ËÈ¼¤¦ÂÐ±þ
       *  03.04.10    NACL-Æ£¸¶    07/04/23  ¡Ö¶èÊ¬¡×Íó¤Îµ­ºÜ¤ÎÊÑ¹¹
       *  03.04.11    NACL-ÌçÏÆ    07/05/07  Âè£²¸øÈñ°ìÉôÉéÃ´¶âµ­ºÜ¾ò·ï½¤Àµ
+      *  03.04.12    NACL-Æ£¸¶    07/09/04  µÜºê¸©¡Ö¸øÈñ£¹£°¡×ÂÐ±þ
+      *                                     £²£°£°£·Ç¯£¹·î°Ê¹ß¤Î¤ßÂÐ¾Ý 
+      *  03.04.13    NACL-Æ£¸¶    07/09/11  ¿·³ã¸©Ãæ±Û²­ÃÏ¿ÌÂÐ±þ
+      *                                     £²£°£°£·Ç¯£¹·î¡Á£±£²·îÂÐ¾Ý 
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -872,6 +876,7 @@
            03  WRK-CONS-SRYYM-200609   PIC 9(06)   VALUE   200609.      
       *
            03  WRK-CONS-SRYYM-200703   PIC 9(06)   VALUE   200703.
+           03  WRK-CONS-SRYYM-200709   PIC 9(06)   VALUE   200709.      
       *
            03  WRK-CONS-BODYLIST-MAX
                                    PIC 9(02)   VALUE   50.
@@ -2640,6 +2645,20 @@
                END-IF
            END-IF
       *
+      *    ¿·³ã¸©Ãæ±Û²­ÃÏ¿ÌÂÐ±þ 
+           IF      CNT-PAGE            =   1
+               IF    ( RECE62-PREFNUM      =   "15"   )
+               AND   ( RECE62-SRYYM        >=  200709 )
+               AND   ( RECE62-SRYYM        <=  200712 )
+                   EVALUATE    RECE62-RJNGAIKOHFTN (1)
+                       WHEN    1
+                           MOVE    "¡ÊÉÔ¾Ü¡Ë"  TO  HC06-HEAD4 (2)(1:8)
+                       WHEN    2
+                           MOVE    "¡ÊºÒ£±¡Ë"  TO  HC06-HEAD4 (2)(1:8)
+                   END-EVALUATE
+               END-IF
+           END-IF
+      *
            .
        310-HCN06-HEAD-HEN-EXT.
            EXIT.
@@ -3584,6 +3603,18 @@
                                                    TO  WRK-JINISSU2Z
                        END-IF
                        MOVE    WRK-JINISSU2    TO  HC06-JINISSU2
+                   END-IF
+               END-IF
+      *
+      *        µÜºêÃÏÊý¸øÈñÂÐ±þ
+               IF    ( RECE62-PREFNUM      =   "45"                  )
+               AND   ( RECE62-SRYYM        >=  WRK-CONS-SRYYM-200709 )
+               AND   ( RECE62-TEISYUTUSAKI =   "2"                   )
+                   IF      RECE62-KOHNUM (IDA) =   "190"
+                       MOVE    SPACE               TO  HC06-JINISSU1
+                   END-IF
+                   IF      RECE62-KOHNUM (IDB) =   "190"
+                       MOVE    SPACE               TO  HC06-JINISSU2
                    END-IF
                END-IF
            END-IF
@@ -5529,6 +5560,26 @@
                                                        TO  WRK-KGK7
                    END-IF 
                    MOVE    WRK-KGK7            TO  HC06-SYOFTNMONEY (3)
+               END-IF
+           END-IF
+      *
+      *    µÜºêÃÏÊý¸øÈñÂÐ±þ
+           IF    ( RECE62-PREFNUM      =   "45"                  )
+           AND   ( RECE62-SRYYM        >=  WRK-CONS-SRYYM-200709 )
+           AND   ( RECE62-TEISYUTUSAKI =   "2"                   )
+               IF      RECE62-KOHNUM (1)   =   "190"
+                   MOVE    SPACE               TO  HC06-TOTALTEN(2)
+                                                   HC06-FTNMONEY(2)
+                                                   HC06-SYONISSU(2)
+                                                   HC06-SYOTOTALTEN (2)
+                                                   HC06-SYOFTNMONEY (2)
+               END-IF
+               IF      RECE62-KOHNUM (2)   =   "190"
+                   MOVE    SPACE               TO  HC06-TOTALTEN(3)
+                                                   HC06-FTNMONEY(3)
+                                                   HC06-SYONISSU(3)
+                                                   HC06-SYOTOTALTEN (3)
+                                                   HC06-SYOFTNMONEY (3)
                END-IF
            END-IF
            .
@@ -7714,6 +7765,17 @@
       *    °ìÉôÉéÃ´¶â¡¦¿©»öÎÅÍÜÈñÉ¸½àÉéÃ´³Û¶èÊ¬
            MOVE    RECE62-SHOKUJIFTNKBN
                                        TO  RECE10-SHOKUJIFTNKBN
+      *
+      *    ¿·³ã¸©Ãæ±Û²­ÃÏ¿ÌÂÐ±þ 
+           IF    ( RECE62-PREFNUM      =   "15"   )
+           AND   ( RECE62-SRYYM        >=  200709 )
+           AND   ( RECE62-SRYYM        <=  200712 )
+               IF      RECE62-RJNGAIKOHFTN (1)
+                                           >   ZERO
+                   MOVE    RECE62-RJNGAIKOHFTN (1)
+                                           TO  RECE10-ETC-YKZFTN (1)
+               END-IF
+           END-IF
       *
            MOVE    RECE10-REC          TO  MCPDATA-REC
            MOVE    "SEIKYU-KEY"        TO  ORC-DBPATH
