@@ -80,8 +80,6 @@
                 04  K08-VALUE   PIC X(10).
               03  K08-RYOHKNTEN.
                 04  K08-VALUE   PIC X(10).
-              03  K08-BYRHKNTEN.
-                04  K08-VALUE   PIC X(10).
               03  K08-SELNUM    PIC S9(3)  OCCURS  10.
               03  K08-SCROLLEDWINDOW1.
                 04  K08-MEILIST.
@@ -97,16 +95,6 @@
               03  K08-MSGDATA.
                 04  K08-MSGDATA-STYLE   PIC X(20).
                 04  K08-MSGDATA-VALUE   PIC X(60).
-              03  K08-SRYMEI15.
-                04  K08-VALUE   PIC X(8).
-              03  K08-SRYMEI14.
-                04  K08-VALUE   PIC X(8).
               03  K08-B10.
                 04  K08-B10-STATE   PIC S9(9)   BINARY.
                 04  K08-B10-LABEL   PIC X(10).
-              03  K08-USERPG-COMB.
-                04  K08-USERPG.
-                  05  K08-VALUE   PIC X(20).
-                04  K08-USERPG-COUNT   PIC S9(9)   BINARY.
-                04  K08-USERPG-ITEM
-                        PIC X(20)   OCCURS  2 TIMES.

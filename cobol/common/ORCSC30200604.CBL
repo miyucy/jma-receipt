@@ -422,7 +422,7 @@
            MOVE    SPACE               TO  WRK-ERRCD
       *
            PERFORM VARYING     IDX-Z   FROM    1   BY  1
-                   UNTIL      (IDX-Z       >   200     )   OR
+                   UNTIL      (IDX-Z       >   400     )   OR
                               (WRK-GMN-INPUTCD (IDX-Z) =   SPACE )
       *
                ADD     1                   TO  IDX-MAX
@@ -870,7 +870,7 @@
                                                             (2:3)
       *
                        PERFORM VARYING     IDX     FROM    1   BY  1
-                                UNTIL     (IDX         >   200  )  OR
+                                UNTIL     (IDX         >   400  )  OR
                                           (WRK-GMN-INPUTCD (IDX)
                                                       =   SPACE )
                            MOVE    WRK-COM-SRYSYUKBN(IDX-SYU)
@@ -937,7 +937,7 @@
                        END-IF
       *
                        PERFORM VARYING     IDX     FROM    1   BY  1
-                                UNTIL     (IDX         >   200  )  OR
+                                UNTIL     (IDX         >   400  )  OR
                                           (WRK-GMN-INPUTCD (IDX)
                                                       =   SPACE )
                            MOVE    WRK-COM-SRYSYUKBN(IDX-SYU)
@@ -1048,7 +1048,7 @@
            MOVE    ZERO                TO  FLG-ARI
            MOVE    ZERO                TO  IDX-T
            PERFORM VARYING     IDX1    FROM    1   BY  1
-                   UNTIL      (IDX1        >   200     )   OR
+                   UNTIL      (IDX1        >   400     )   OR
                               (FLG-ARI                 =   1    ) OR
                               (WRK-GMN-INPUTCD (IDX1)  =   SPACE )
                IF       WRK-COM-INPUTCD (IDX1) =   WRK-SRYCD
@@ -1138,7 +1138,7 @@
            INITIALIZE                  ORCSC90AREA
       *
            PERFORM VARYING     IDX-Z   FROM    1   BY  1
-                   UNTIL      (IDX-Z       >   200     )   OR
+                   UNTIL      (IDX-Z       >   400     )   OR
                               (SPA-ERRCD       NOT =   SPACE )  OR
                               (WRK-GMN-INPUTCD (IDX-Z) =   SPACE )
       *
@@ -1243,7 +1243,7 @@
            MOVE    ZERO                TO  WRK-TENSUKEI-G
            MOVE    ZERO                TO  WRK-TENSUKEI-GEN
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL      (IDX         >   200     )   OR
+                   UNTIL      (IDX         >   400     )   OR
                               (WRK-GMN-INPUTCD (IDX)   =   SPACE )
       *        通則対象の点数を所定点数とする
                IF     (WRK-COM-INPUTCD(IDX)(1:1)   =   "1" )  AND
@@ -1318,7 +1318,7 @@
            MOVE    ZERO                TO  IDX-CHU
       *
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL      (IDX     >   200  )  OR
+                   UNTIL      (IDX     >   400  )  OR
                               (WRK-GMN-INPUTCD(IDX) =   SPACE)  OR
                               (SPA-ERRCD        NOT =   SPACE)
              IF   (WRK-COM-HKNCOMBI (IDX) NOT =   "9999")
@@ -1424,7 +1424,7 @@
            INITIALIZE                  TBL-IVH-NISUU-AREA
            MOVE    ZERO                TO  FLG-OK
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL     ( IDX     >   200 )  OR
+                   UNTIL     ( IDX     >   400 )  OR
                              ((WRK-GMN-INPUTCD(IDX)  =   SPACE ) AND
                               (WRK-COM-INPUTCD(IDX)  =   SPACE ))
       *        点滴の時のみ
@@ -1740,7 +1740,7 @@
            MOVE    ZERO                TO  FLG-SYUJUTU
       *
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL      (IDX     >   200  )  OR
+                   UNTIL      (IDX     >   400  )  OR
                               (WRK-GMN-INPUTCD(IDX) =   SPACE)  OR
                               (SPA-ERRCD        NOT =   SPACE)
              IF   (WRK-COM-HKNCOMBI (IDX) NOT =   "9999")

@@ -335,7 +335,7 @@
            MOVE    ZERO                TO  FLG-SONOTA
            MOVE    ZERO                TO  ORCSCHKTCHK-HKTERR
            PERFORM VARYING     IDX-Z   FROM    1   BY  1
-                   UNTIL      (IDX-Z       >   200     )   OR
+                   UNTIL      (IDX-Z       >   400     )   OR
                              ((HZN-GMN-INPUTCD (IDX-Z) =   SPACE ) AND
                               (HZN-COM-INPUTCD (IDX-Z) =   SPACE ))
                IF     (SPA-COM-HOUKATU-ERR (IDX-Z) =   1  )
@@ -541,7 +541,7 @@
            MOVE    ZERO                TO  WRK-TEI-CNT
            IF      SPA-SYORIFLG        =   1
                PERFORM VARYING IDZ     FROM    1   BY  1
-                       UNTIL   (IDZ        >   100 )  OR
+                       UNTIL   (IDZ        >   400 )  OR
                                (SPA-K02-TEI-SRYCD(IDZ)
                                            =   SPACE )
                    IF      SPA-K02-TEI-SRYCD(IDZ)
@@ -1008,7 +1008,7 @@
        400-ERR-DELETE-SEC         SECTION.
       *
            PERFORM VARYING     IDX-Z   FROM    1   BY  1
-                   UNTIL      (IDX-Z       >   200     )   OR
+                   UNTIL      (IDX-Z       >   400     )   OR
                              ((SPA-GMN-INPUTCD (IDX-Z) =   SPACE ) AND
                               (SPA-COM-INPUTCD (IDX-Z) =   SPACE ))
                IF     (SPA-COM-HOUKATU-ERR (IDX-Z) =   1  )
@@ -1017,21 +1017,21 @@
            END-PERFORM
       *    褲恓潘帎分仃及管反綽輪
            PERFORM VARYING     IDX-Z   FROM    1   BY  1
-                   UNTIL      (IDX-Z       >   200     )   OR
+                   UNTIL      (IDX-Z       >   400     )   OR
                              ((SPA-GMN-INPUTCD (IDX-Z) =   SPACE ) AND
                               (SPA-COM-INPUTCD (IDX-Z) =   SPACE ))
                IF     (SPA-GMN-INPUTCD (IDX-Z) (1:1)   =   "." )
                    COMPUTE IDX-Z3              =   IDX-Z   +  1
                    MOVE    ZERO                TO  FLG-ZAIARI
                    PERFORM VARYING     IDX-Z2  FROM    IDX-Z3  BY  1
-                           UNTIL      (IDX-Z2      >   200     )
+                           UNTIL      (IDX-Z2      >   400     )
                        IF      (SPA-GMN-INPUTCD (IDX-Z2)(1:1)
                                                    NOT =   "." ) AND
                                (SPA-GMN-INPUTCD (IDX-Z2) NOT =   SPACE)
                            MOVE    1               TO  FLG-ZAIARI
                        END-IF
                        IF      (SPA-COM-ZAIEND (IDX-Z2)    =   "1"  )
-                           MOVE    200             TO  IDX-Z2
+                           MOVE    400             TO  IDX-Z2
                        END-IF
                    END-PERFORM
                    IF      FLG-ZAIARI          =   ZERO

@@ -183,7 +183,7 @@
            03  WRK-HOUKATU-ZAI         PIC 9(01).
       *
       *画面最大行
-       01  WRK-GYO-MAX                 PIC 9(04)   VALUE   200.
+       01  WRK-GYO-MAX                 PIC 9(04)   VALUE   400.
       *
       *    小児科外来診察料テーブル
            COPY   "CMSYONIKATBL.INC".
@@ -277,7 +277,7 @@
            COPY    "ORCA-SPA".
       *
        01  LNK-WKSRYACT-AREA.
-           02  LNK-WKSRYACT-REC          OCCURS   200.
+           02  LNK-WKSRYACT-REC          OCCURS   400.
            COPY    "CPWKSRYACT.INC"  REPLACING
                                      //WKSRY-// BY //LNK-WKSRY-//.
        01  LNK-WKSRYACT-MAX           PIC 9(04).
@@ -378,8 +378,8 @@
                IF      PARA-FILEMEI        =   "WKSRYACT"
                    IF      PARA-DATA-REC   NOT =   SPACE
                        ADD     1                   TO  LNK-WKSRYACT-MAX
-                       IF      LNK-WKSRYACT-MAX    >   200
-                           DISPLAY "K02 LNK-WKSRYACT-MAX 200 OVR"
+                       IF      LNK-WKSRYACT-MAX    >   400
+                           DISPLAY "K02 LNK-WKSRYACT-MAX 400 OVR"
                            MOVE    "9000"          TO  SPA-ERRCD
                        ELSE
                            MOVE    PARA-DATA-REC   TO  LNK-WKSRYACT-REC
@@ -605,7 +605,7 @@
                IF     (IDXS                >   ZERO  )  OR
                       (FLG-SET             =   1     ) 
                    IF     (IDX                 =   LNK-WKSRYACT-MAX ) OR
-                          ((IDX                <   200  ) AND
+                          ((IDX                <   400  ) AND
                            (LNK-WKSRY-ZAINUM (IDX + 1)
                                            NOT =   LNK-WKSRY-ZAINUM
                                                                 (IDX)))
@@ -967,7 +967,7 @@
            PERFORM VARYING   IDX       FROM    LNK-WKSRYACT-MAX  BY  -1
                    UNTIL     IDX       <       1
                IF    ( IDX             =   LNK-WKSRYACT-MAX  )  OR
-                     ((IDX             <   200  )    AND
+                     ((IDX             <   400  )    AND
                       (LNK-WKSRY-ZAINUM (IDX + 1)
                                        NOT =   LNK-WKSRY-ZAINUM(IDX)))
                    MOVE    LNK-WKSRY-ZAITENKEI(IDX)

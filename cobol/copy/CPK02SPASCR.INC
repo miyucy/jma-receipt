@@ -42,7 +42,7 @@
            03  SPA-GMN-MAX             PIC 9(04).
       *
            03  SPA-GMN-REC.
-               05  SPA-GMN-TBL             OCCURS   200.
+               05  SPA-GMN-TBL             OCCURS   400.
                    07  SPA-GMN-TBLREC.
                        09  SPA-GMN-SRYKBN        PIC X(02).
                        09  SPA-GMN-INPUTCD       PIC X(22).

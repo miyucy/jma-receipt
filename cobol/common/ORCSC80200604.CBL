@@ -456,7 +456,7 @@
            MOVE    ZERO                TO  WRK-TEI-CNT
            IF      LNK-ORCSC-SYORIFLG      =   1
                PERFORM VARYING     IDZ     FROM    1   BY  1
-                       UNTIL      (IDZ     >   100 )  OR
+                       UNTIL      (IDZ     >   400 )  OR
                                   (LNK-ORCSC-TEI-SRYCD(IDZ)
                                            =   SPACE )
                    IF      LNK-ORCSC-TEI-SRYCD(IDZ)
@@ -592,7 +592,7 @@
            MOVE    ZERO                TO  FLG-TOUJITU
            IF      LNK-ORCSC-SYORIFLG      =   1
                PERFORM VARYING     IDZ     FROM    1   BY  1
-                       UNTIL      (IDZ     >   100 )  OR
+                       UNTIL      (IDZ     >   400 )  OR
                                   (LNK-ORCSC-TEI-SRYCD(IDZ)
                                            =   SPACE )
                    IF      LNK-ORCSC-TEI-SRYCD(IDZ)
@@ -917,7 +917,7 @@
            INITIALIZE                  WRK-AREA
       *
            PERFORM VARYING     IDX-Z   FROM    1   BY  1
-                   UNTIL      (IDX-Z       >   200     )   OR
+                   UNTIL      (IDX-Z       >   400     )   OR
                               (WRK-GMN-INPUTCD (IDX-Z) =   SPACE )
       *
                ADD     1                   TO  IDX-MAX
@@ -1055,7 +1055,7 @@
            MOVE    "770020070"         TO  WRK-SRYCD
            MOVE    ZERO                TO  FLG-ARI
            PERFORM VARYING     IDX1    FROM    1   BY  1
-                   UNTIL      (IDX1    >   200  )  OR
+                   UNTIL      (IDX1    >   400  )  OR
                               (WRK-COM-INPUTCD(IDX1)   =   SPACE AND
                                WRK-GMN-INPUTCD(IDX1)   =   SPACE )
                IF       WRK-COM-INPUTCD (IDX1) =   WRK-SRYCD
@@ -1773,7 +1773,7 @@
            MOVE    ZERO                TO  FLG-ROU-ARI
            COMPUTE IDX-Z2              =   IDX-Z     +   1
            PERFORM VARYING     IDX1    FROM    IDX-Z2    BY  1
-                   UNTIL      (IDX1        >   200     )   OR
+                   UNTIL      (IDX1        >   400     )   OR
                               (FLG-ROU-ARI             =   1    ) OR
                               (WRK-GMN-INPUTCD (IDX1)  =   SPACE )
                IF       WRK-COM-INPUTCD (IDX1) =   "101800010"  OR
@@ -1784,7 +1784,7 @@
                END-IF
                IF     (WRK-COM-INPUTCD (IDX1)(1:1) =  "1" ) AND
                       (WRK-COM-DATAKBN (IDX1)      =  "1" )
-                  MOVE    200              TO  IDX1
+                  MOVE    400              TO  IDX1
                END-IF
            END-PERFORM
            IF      FLG-ROU-ARI         =   1
@@ -1803,7 +1803,7 @@
            MOVE    ZERO                TO  IDX-T
            COMPUTE IDX-Z2              =   IDX-Z     +   1
            PERFORM VARYING     IDX1    FROM    IDX-Z2    BY  1
-                   UNTIL      (IDX1        >   200     )   OR
+                   UNTIL      (IDX1        >   400     )   OR
                               (FLG-ARI                 =   1    ) OR
                               (WRK-GMN-INPUTCD (IDX1)  =   SPACE )
                IF       WRK-COM-INPUTCD (IDX1) =   WRK-SRYCD
@@ -1817,7 +1817,7 @@
       *!           END-IF
                    IF     (WRK-COM-INPUTCD (IDX1)(1:1) =  "1" ) AND
                           (WRK-COM-DATAKBN (IDX1)      =  "1" )
-                      MOVE    200              TO  IDX1
+                      MOVE    400              TO  IDX1
                    END-IF
                END-IF
            END-PERFORM
@@ -1912,7 +1912,7 @@
            MOVE    ZERO                TO  FLG-ARI
            MOVE    ZERO                TO  IDX-T
            PERFORM VARYING     IDX1    FROM    1   BY  1
-                   UNTIL      (IDX1        >   200     )   OR
+                   UNTIL      (IDX1        >   400     )   OR
                               (FLG-ARI                 =   1    ) OR
                               (WRK-GMN-INPUTCD (IDX1)  =   SPACE )
                IF       WRK-COM-INPUTCD (IDX1) =   WRK-SRYCD
@@ -2002,7 +2002,7 @@
            MOVE    1                   TO  IDX-STR
       *
            PERFORM VARYING     IDX-Z   FROM    1   BY  1
-                   UNTIL      (IDX-Z       >   200     )   OR
+                   UNTIL      (IDX-Z       >   400     )   OR
                               (SPA-ERRCD       NOT =   SPACE )  OR
                               (WRK-GMN-INPUTCD (IDX-Z) =   SPACE )
       *
@@ -2689,7 +2689,7 @@
        200-ALL-SYORI-SEC                SECTION.
       *
            PERFORM VARYING     IDX-Z   FROM    1   BY  1
-                   UNTIL      (IDX-Z       >   200     )   OR
+                   UNTIL      (IDX-Z       >   400     )   OR
                               (SPA-ERRCD           NOT =   SPACE )  OR
                               (WRK-GMN-INPUTCD (IDX-Z) =   SPACE )
       *        リハビリ発生日と終了日の判定
@@ -2708,7 +2708,7 @@
       *
            COMPUTE IDX-Z1              =   IDX-Z    +   1
            PERFORM VARYING     IDX-Z2  FROM    IDX-Z1  BY  1
-                   UNTIL      (IDX-Z2      >   200     )   OR
+                   UNTIL      (IDX-Z2      >   400     )   OR
                               (SPA-ERRCD   NOT =   SPACE )  OR
                               (WRK-GMN-INPUTCD (IDX-Z2)
                                                =   SPACE )

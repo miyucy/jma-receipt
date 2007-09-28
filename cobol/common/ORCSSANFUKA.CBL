@@ -29,8 +29,6 @@
       *  ¥×¥í¥°¥é¥à½¤ÀµÍúÎò
       * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
       *  01.00.01    NACL-Â¿¡¹Ç¼  05/11/29  MONFUNC ÂÐ±þ
-      *  03.05.00    NACL-Â¿¡¹Ç¼  07/05/08  ¥°¥ë¡¼¥×¿ÇÎÅÂÐ±þ
-      *  04.05.00    NACL-Â¿¡¹Ç¼  10/03/15  Ê¿À®£²£²Ç¯£´·î²þÀµÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -60,7 +58,6 @@
            03  IDX-S               PIC 9(04).
       *
            03  IDX2                PIC 9(02).
-           03  IDD                 PIC 9(02).
       *
       *    °ì»þÎÎ°è
        01  WRK-AREA.
@@ -69,8 +66,6 @@
                05  WRK-DAY-9           PIC 9(02).
            03  WRK-SRYYMD              PIC X(08).
       *
-           03  WRK-KEI-TENSU           PIC 9(08).
-           03  WRK-KEI-TENSU-DEL       PIC 9(08).
            03  WRK-SUM-TENSU           PIC 9(08).
            03  WRK-SUM-TENSU-ALL       PIC 9(08).
            03  WRK-MSANTEITEN          PIC 9(08).
@@ -79,10 +74,6 @@
            03  WRK-IDX                 PIC 9(04).
            03  WRK-TENSU-KEI           PIC 9(08).
            03  WRK-TENSU-SA            PIC 9(08).
-      *
-           03  WRK-TENSU1              PIC 9(08).
-           03  WRK-TENSU2              PIC 9(08).
-           03  WRK-CNT                 PIC 9(08).
       *
        01  TBL-HENSYU-AREA.
            03  TBL-HENSYU-OCC          OCCURS  20.
@@ -188,7 +179,7 @@
       *
       *    »»ÄêÍúÎò¸¡º÷
            INITIALIZE                  SANTEI-REC
-           MOVE    SPA-HOSPNUM         TO  SANTEI-HOSPNUM
+           MOVE    SPA-HOSPID          TO  SANTEI-HOSPID
            MOVE    SPA-PTID            TO  SANTEI-PTID
            MOVE    WRK-HOU-SRYCD       TO  SANTEI-SRYCD
            MOVE    LNK-SANFUKA-SRYYMD(1:6)
@@ -236,7 +227,7 @@
            MOVE    ZERO                TO  FLG-CHK
       *    »»ÄêÍúÎò¸¡º÷
            INITIALIZE                  SANTEI-REC
-           MOVE    SPA-HOSPNUM         TO  SANTEI-HOSPNUM
+           MOVE    SPA-HOSPID          TO  SANTEI-HOSPID
            MOVE    SPA-PTID            TO  SANTEI-PTID
            MOVE    LNK-SANFUKA-SRYYMD(1:6)
                                        TO  SANTEI-SRYYM
@@ -256,7 +247,7 @@
            PERFORM UNTIL   FLG-SANTEI      =   1
                MOVE    ZERO            TO  FLG-OK
                PERFORM VARYING     IDX-T   FROM    1   BY  1
-                       UNTIL      (IDX-T   >   SPA-MAX-LINE )  OR
+                       UNTIL      (IDX-T   >   400  )  OR
                                   (FLG-OK  =   1    )  OR
                                   (LNK-SANFUKA-TEI-SRYCD(IDX-T)
                                            =   SPACE )
@@ -270,25 +261,9 @@
                         MOVE    SANTEI-REC         TO  HZN-SANTEI-REC
                    END-IF
                    IF      FLG-OK              =   1
-      *                ÄûÀµ»þ
-                       PERFORM 1001-TEI-TENSU-SEC
+                       ADD     SANTEI-MSANTEITEN   TO  WRK-SUM-TENSU
                    ELSE
-      *                ·î£²²ó¤Ï1200ÅÀ¤Î¸¡ºº¤È¤¹¤ë
-                       IF     (SANTEI-MSANTEICNT   >   1    )
-                       AND    (SANTEI-MSANTEITEN   <   1200 )
-                           COMPUTE WRK-KEI-TENSU   =   SANTEI-MSANTEITEN
-                                                   +   1200
-                       ELSE
-                           COMPUTE WRK-KEI-TENSU   =   SANTEI-MSANTEITEN
-                                                   *   SANTEI-MSANTEICNT
-                       END-IF
-                       MOVE    ZERO                TO  WRK-KEI-TENSU-DEL
-                   END-IF
-                   ADD     WRK-KEI-TENSU       TO  WRK-SUM-TENSU-ALL
-                   ADD     WRK-KEI-TENSU-DEL   TO  WRK-SUM-TENSU
-                   IF      FLG-OK              =   1
-                       CONTINUE
-                   ELSE
+                       ADD     SANTEI-MSANTEITEN   TO  WRK-SUM-TENSU-ALL
                        MOVE    SANTEI-MSANTEID     TO
                                                    LNK-SANFUKA-MSANTEID
                        IF      SANTEI-MSANTEITENKBN    =   2
@@ -317,49 +292,6 @@
       *
            .
        1001-TEISEI-SUM-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    ÄûÀµÅÀ¿ô½èÍý
-      *****************************************************************
-       1001-TEI-TENSU-SEC            SECTION.
-      *
-           MOVE    ZERO                TO  WRK-KEI-TENSU-DEL
-           MOVE    ZERO                TO  WRK-KEI-TENSU
-      *     ·î£²²ó¤Ï1200ÅÀ¤Î¸¡ºº¤È¤¹¤ë
-           IF     (SANTEI-MSANTEICNT   >   1    )
-           AND    (SANTEI-MSANTEITEN   <   1200 )
-               MOVE    1200                TO  WRK-TENSU1
-               MOVE    SANTEI-MSANTEITEN   TO  WRK-TENSU2
-           ELSE
-               MOVE    SANTEI-MSANTEITEN   TO  WRK-TENSU1
-               MOVE    SANTEI-MSANTEITEN   TO  WRK-TENSU2
-           END-IF
-      *
-           MOVE    ZERO                TO  WRK-CNT
-           MOVE    LNK-SANFUKA-SRYYMD(7:2)     TO  IDD
-           PERFORM VARYING     IDX2    FROM    1   BY  1
-                   UNTIL       IDX2    >   31
-               IF      SANTEI-DAY (IDX2)   >   ZERO
-                   IF      IDD             =   IDX2
-                       IF      WRK-CNT         =   ZERO
-                           ADD     WRK-TENSU1      TO  WRK-KEI-TENSU-DEL
-                       ELSE
-                           ADD     WRK-TENSU2      TO  WRK-KEI-TENSU-DEL
-                       END-IF
-                   ELSE
-                       IF      WRK-CNT         =   ZERO
-                           ADD     WRK-TENSU1      TO  WRK-KEI-TENSU
-                       ELSE
-                           ADD     WRK-TENSU2      TO  WRK-KEI-TENSU
-                       END-IF
-                   END-IF
-                   ADD     1               TO  WRK-CNT
-               END-IF
-           END-PERFORM
-      *
-           .
-       1001-TEI-TENSU-EXT.
            EXIT.
       *
       *****************************************************************
@@ -538,7 +470,7 @@
            MOVE    ZERO                TO  WRK-SUM-TENSU
       *    »»ÄêÍúÎò¸¡º÷
            INITIALIZE                  SANTEI-REC
-           MOVE    SPA-HOSPNUM         TO  SANTEI-HOSPNUM
+           MOVE    SPA-HOSPID          TO  SANTEI-HOSPID
            MOVE    SPA-PTID            TO  SANTEI-PTID
            MOVE    LNK-SANFUKA-SRYYMD(1:6)
                                        TO  SANTEI-SRYYM
@@ -561,21 +493,7 @@
                    IF      SANTEI-SRYCD        =   WRK-HOU-SRYCD
                        MOVE    SANTEI-REC          TO  HZN-SANTEI-REC
                    ELSE
-      ***              ADD     SANTEI-MSANTEITEN   TO  WRK-TENSU-KEI
-      *            ·î£²²ó¤Ï1200ÅÀ¤Î¸¡ºº¤È¤¹¤ë
-                   IF      SANTEI-MSANTEICNT   >   1
-                       IF      SANTEI-MSANTEITEN   <   1200
-                           COMPUTE WRK-KEI-TENSU   =   SANTEI-MSANTEITEN
-                                                   +   1200
-                       ELSE
-                           COMPUTE WRK-KEI-TENSU   =   SANTEI-MSANTEITEN
-                                                   *   SANTEI-MSANTEICNT
-                       END-IF
-                   ELSE
-                       MOVE    SANTEI-MSANTEITEN   TO  WRK-KEI-TENSU
-                   END-IF
-                       ADD     WRK-KEI-TENSU       TO  WRK-TENSU-KEI
-      *
+                       ADD     SANTEI-MSANTEITEN   TO  WRK-TENSU-KEI
                        IF     (SANTEI-MSANTEITENKBN    =   2  )
                           OR  (WRK-TENSU-KEI   >   LNK-SANFUKA-TEN-MAX)
                            PERFORM 10011-ERRHENSYU-SEC
@@ -609,7 +527,6 @@
            MOVE    WRK-SRYYMD          TO  TNS-YUKOSTYMD
            MOVE    WRK-SRYYMD          TO  TNS-YUKOEDYMD
       *
-           MOVE    SPA-HOSPNUM         TO  TNS-HOSPNUM
            MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
            MOVE    "tbl_tensu"         TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
@@ -662,9 +579,9 @@
        910-DBSELECT-SEC                SECTION.
       *
            MOVE    "DBSELECT"      TO  MCP-FUNC
-grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
       *
            .
        910-DBSELECT-EXT.
@@ -675,9 +592,9 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        920-DBFETCH-SEC                 SECTION.
       *
            MOVE    "DBFETCH"       TO  MCP-FUNC
-grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
       *
            .
       *
@@ -690,9 +607,9 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        990-DBCLOSE-SEC         SECTION.
       *
            MOVE    "DBCLOSECURSOR"      TO  MCP-FUNC
-grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
       *
            .
        990-DBCLOSE-EXT.

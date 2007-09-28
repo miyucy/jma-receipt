@@ -203,7 +203,7 @@
       *
       *    訂正時の診療コード
            03  LNK-ORCSC-TEISEI-AREA.
-               05  LNK-ORCSC-TEISEI-OCC      OCCURS   200.
+               05  LNK-ORCSC-TEISEI-OCC      OCCURS   400.
                    07  LNK-ORCSC-TEI-SRYCD   PIC X(09).
                    07  LNK-ORCSC-TEI-KAISU   PIC 9(03).
       *

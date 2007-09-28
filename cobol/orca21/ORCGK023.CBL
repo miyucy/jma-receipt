@@ -29,7 +29,6 @@
       * Maj/Min/Rev  修正者       日付      内容
       *  01.00.01    NACL-多々納  02/09/20  入力インターフェースの変更
       *  01.00.02    NACL-多々納  05/11/17  MONFUNC 対応
-      *  03.05.00    NACL-多々納  07/04/XX  グループ診療対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -39,27 +38,31 @@
       *
       *
       *    ＳＰＡデータ
-      *    SELECT  SPASCR-FILE     ASSIGN  FILE-NAME1
-      *                            ORGANIZATION    IS  SEQUENTIAL
-      *                            FILE    STATUS  IS  STS-SPASCR.
+           SELECT  SPASCR-FILE     ASSIGN  FILE-NAME1
+                                   ORGANIZATION    IS  LINE SEQUENTIAL
+                                   FILE    STATUS  IS  STS-SPASCR.
       *
        DATA                        DIVISION.
        FILE                        SECTION.
       *
       *    ＳＰＡパラメタデータ
-      *FD  SPASCR-FILE.
-      *01  SPA-DATA-REC            PIC X(1500).
+       FD  SPASCR-FILE.
+       01  SPA-DATA-REC            PIC X(60000).
       *
       *
        WORKING-STORAGE             SECTION.
       *
       * ＳＰＡデータ
-      *01  FILE-NAME1.
-      *    03  FILLER              PIC X(09)   VALUE   "/var/tmp/".
-      *    03  FILLER              PIC X(09)   VALUE   "K02SPASCR".
-      *    03  FILE-HOSPNUM1       PIC 9(02)   VALUE   ZERO.
-      *    03  FILE-TERMID1        PIC X(64)   VALUE   SPACE.
-      *    03  FILLER              PIC X(06)   VALUE   ".TXT".
+       01  FILE-NAME1.
+           03  FILLER              PIC X(09)   VALUE   "/var/tmp/".
+           03  FILLER              PIC X(09)   VALUE   "K02SPASCR".
+           03  FILE-TERMID1        PIC X(64)   VALUE   SPACE.
+           03  FILLER              PIC X(06)   VALUE   ".TXT".
+      *
+      *
+       01  WRK-DATA-REC.
+           03  WRK-DATA            PIC X(60000)
+                                   OCCURS  10.
       *
       *    画面色等
            COPY    "ENUM-VALUE".
@@ -77,8 +80,8 @@
       *    画面スパ領域
            COPY    "K02SCR-SPA".
       *    フラグ領域
-      *01  STS-AREA.
-      *    03  STS-SPASCR          PIC X(02).
+       01  STS-AREA.
+           03  STS-SPASCR          PIC X(02).
       *
       *    フラグ領域
        01  FLG-AREA.
@@ -86,7 +89,6 @@
            03  FLG-END             PIC 9(01).
            03  FLG-INPUTCD         PIC 9(01).
            03  FLG-TENSU           PIC 9(01).
-           03  FLG-PARA            PIC 9(01).
       *
            03  FLG-SYORI           PIC 9(01).
            03  FLG-CHK             PIC 9(01).
@@ -100,8 +102,6 @@
       *
            03  FLG-SYURYOU         PIC 9(01).
            03  FLG-MAX             PIC 9(01).
-      *H28.11
-           03  FLG-CHKERR          PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -153,11 +153,6 @@
                05  WRK-K023-INPUTCD    PIC X(20).
                05  WRK-K023-CDSYU      PIC X(01).
       *
-      *テーブルＭＡＸ
-       01  MAX-LINE                PIC 9(04)   VALUE   300.
-      *
-       01  MAX-GMN                 PIC 9(04)   VALUE   20.
-       01  MAX-PAGE                PIC 9(04)   VALUE   15.
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -170,11 +165,6 @@
       *    入力コードマスタ−
        01  INPUTCD-REC.
            COPY    "CPINPUTCD.INC".
-      *
-      *     パラメタテーブル
-       01  PARA-REC.
-           COPY    "CPPARA.INC".
-      *
       *
       *****************************************************************
       *    サブプロ用　領域
@@ -208,34 +198,32 @@
            COPY    "LINKAREA".
       *
        01  SCRAREA.
-           COPY    "ORCA21SCRAREA.INC".
-      *!!!     COPY    "K01.INC".
-      *!!!     COPY    "K02.INC".
-      *!!!     COPY    "K02N.INC".
-      *!!!     COPY    "K021.INC".
-      *!!!     COPY    "K023.INC".
-      *!!!     COPY    "K03.INC".
-      *!!!     COPY    "K04.INC".
-      *!!!     COPY    "K05.INC".
-      *!!!     COPY    "K051.INC".
-      *!!!     COPY    "K052.INC".
-      *!!!     COPY    "K06.INC".
-      *!!!     COPY    "K061.INC".
-      *!!!     COPY    "K062.INC".
-      *!!!     COPY    "K07.INC".
-      *!!!     COPY    "K08.INC".
-      *!!!     COPY    "K081.INC".
-      *!!!     COPY    "K09.INC".
-      *!!!     COPY    "K10.INC".
-      *!!!     COPY    "K97.INC".
-      *!!!     COPY    "K98.INC".
-      *!!!     COPY    "K99.INC".
-      *!!!     COPY    "K03X.INC".
-      *!!!     COPY    "KERR.INC".
-      *!!!     COPY    "KERR2.INC".
-      *!!!     COPY    "KID1.INC".
-      *!!!     COPY    "KID2.INC".
-      *!!!     COPY    "KHELP.INC".
+           COPY    "K01.INC".
+           COPY    "K02.INC".
+           COPY    "K02N.INC".
+           COPY    "K021.INC".
+           COPY    "K022.INC".
+           COPY    "K023.INC".
+           COPY    "K03.INC".
+           COPY    "K04.INC".
+           COPY    "K05.INC".
+           COPY    "K051.INC".
+           COPY    "K052.INC".
+           COPY    "K06.INC".
+           COPY    "K07.INC".
+           COPY    "K08.INC".
+           COPY    "K081.INC".
+           COPY    "K09.INC".
+           COPY    "K10.INC".
+           COPY    "K97.INC".
+           COPY    "K98.INC".
+           COPY    "K99.INC".
+           COPY    "K03X.INC".
+           COPY    "KERR.INC".
+           COPY    "KERR2.INC".
+           COPY    "KID1.INC".
+           COPY    "KID2.INC".
+           COPY    "KHELP.INC".
       *
        PROCEDURE                   DIVISION    USING
            MCPAREA
@@ -401,8 +389,8 @@
            MOVE    ZERO                TO  FLG-OK
            MOVE    ZERO                TO  SPA-K023-MAX
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL      (IDX             >   SPA-GMN-MAX  )  OR
-                              (SPA-K023-MAX    >   MAX-LINE )
+                   UNTIL      (IDX     >   SPA-GMN-MAX  )  OR
+                              (SPA-K023-MAX    >   300 )
                MOVE    ZERO                TO  FLG-OK
                IF     (SPA-GMN-INPUTCD (IDX)(1:1)  =   "." OR "S" )  OR
                       (SPA-COM-INPUTCD (IDX)       =   SPACE     )   OR
@@ -429,7 +417,7 @@
                    END-PERFORM
                    IF      FLG-K023            =   ZERO
                        ADD     1               TO  SPA-K023-MAX
-                       IF      SPA-K023-MAX    >   MAX-LINE
+                       IF      SPA-K023-MAX    >   300
                            CONTINUE
                        ELSE
                            MOVE    SPA-COM-INPUTCD (IDX)
@@ -449,10 +437,6 @@
                END-IF
            END-PERFORM
       *
-           IF      SPA-K023-MAX        >   MAX-LINE
-               MOVE    MAX-LINE            TO  SPA-K023-MAX
-           END-IF
-      *
            .
        310-SPA-SET-EXT.
            EXIT.
@@ -466,7 +450,7 @@
            INITIALIZE                      INPUTCD-REC
       *
            MOVE    SPACE               TO  INPUTCD-REC
-           MOVE    SPA-HOSPNUM         TO  ICD-HOSPNUM
+           MOVE    SPA-HOSPID          TO  ICD-HOSPID
            MOVE    SPA-K023-SRYCD  (SPA-K023-MAX)
                                        TO  ICD-SRYCD
       *
@@ -507,75 +491,33 @@
       *****************************************************************
        1002-K02SPA-SET-SEC             SECTION.
       *
-      *
-      *****MOVE    SPA-TERMID          TO  FILE-TERMID1
-      *    MOVE    SPA-HOSPNUM         TO  FILE-HOSPNUM1
-      *
-      *    OPEN    INPUT               SPASCR-FILE
-      *    IF      STS-SPASCR     NOT =   ZERO
-      *        GO      TO      1002-K02SPA-SET-EXT
-      *    END-IF
-      *
-      *    MOVE    ZERO                TO  FLG-SPASCR
-      *    MOVE    ZERO                TO  IDX
-      *    PERFORM UNTIL       FLG-SPASCR  =   1
-      *        READ    SPASCR-FILE
-      *            AT  END
-      *                MOVE   1            TO  FLG-SPASCR
-      *            NOT AT  END
-      *                ADD    1                TO  IDX
-      *                MOVE   SPA-DATA-REC     TO  SPA-GMN-TBL (IDX)
-      *        END-READ
-      *    END-PERFORM
-      *****CLOSE                       SPASCR-FILE
-      *
-      *
            MOVE    SPACE               TO  SPA-SCR-REC
-           INITIALIZE                  SPA-SCR-REC
-           MOVE    ZERO                TO  IDX
+           INITIALIZE          SPA-SCR-REC
+           MOVE    SPACE               TO  WRK-DATA-REC
+           INITIALIZE          WRK-DATA-REC
       *
-           INITIALIZE                      PARA-REC
-           MOVE    SPA-HOSPNUM         TO  PARA-HOSPNUM
-           MOVE    "K02"               TO  PARA-GYOUMUID
-           MOVE    SPA-TERMID          TO  PARA-TERMID
-           MOVE    "SPAGMN"            TO  PARA-FILEMEI
-           MOVE    PARA-REC            TO  MCPDATA-REC
-           MOVE    "tbl_para"          TO  MCP-TABLE
-           MOVE    "key5"              TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
-           IF      MCP-RC              =   ZERO
-               MOVE    "tbl_para"          TO  MCP-TABLE
-               MOVE    "key5"              TO  MCP-PATHNAME
-               PERFORM 990-PARA-READ-SEC
-           ELSE
-               INITIALIZE                  PARA-REC
-               MOVE    1               TO  FLG-PARA
+           MOVE    SPA-TERMID          TO  FILE-TERMID1
+      *
+           OPEN    INPUT               SPASCR-FILE
+           IF      STS-SPASCR     NOT =   ZERO
+               GO      TO      1002-K02SPA-SET-EXT
            END-IF
-           PERFORM
-               UNTIL  (FLG-PARA            =   1 )
-                 OR   (IDX                 >=  SPA-MAX-LINE)
-               ADD    1                    TO  IDX
-               MOVE   PARA-DATA-REC        TO  SPA-GMN-TBL (IDX)
       *
-               MOVE    "tbl_para"          TO  MCP-TABLE
-               MOVE    "key5"              TO  MCP-PATHNAME
-               PERFORM 990-PARA-READ-SEC
+           MOVE    ZERO                TO  FLG-SPASCR
+           MOVE    ZERO                TO  IDX
+           PERFORM UNTIL       FLG-SPASCR  =   1
+               READ    SPASCR-FILE
+                   AT  END
+                       MOVE   1            TO  FLG-SPASCR
+                   NOT AT  END
+                       ADD    1            TO  IDX
+                       MOVE   SPA-DATA-REC     TO  WRK-DATA (IDX)
+               END-READ
            END-PERFORM
-           MOVE    "tbl_para"          TO  MCP-TABLE
-           MOVE    "key5"              TO  MCP-PATHNAME
-           PERFORM 990-DBCLOSE-SEC
       *
+           MOVE    WRK-DATA-REC        TO  SPA-SCR-REC
       *
-           MOVE    ZERO                TO  SPA-GMN-MAX
-           PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX     >   SPA-MAX-LINE
-               IF      (SPA-COM-INPUTCD(IDX)   =   SPACE ) AND
-                       (SPA-GMN-INPUTCD(IDX)   =   SPACE )
-                   CONTINUE
-               ELSE
-                   ADD     1               TO  SPA-GMN-MAX
-               END-IF
-           END-PERFORM
+           CLOSE                       SPASCR-FILE
            .
        1002-K02SPA-SET-EXT.
            EXIT.
@@ -590,12 +532,12 @@
       *
            MOVE    ZERO                TO  IDY
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX     >   MAX-GMN
+                   UNTIL       IDX     >   20
                COMPUTE IDY             =   IDX
                                        + ((SPA-K023-PAGE   -   1 )
-                                       *   MAX-GMN   )
+                                       *   20   )
                IF      IDY             >   SPA-K023-MAX
-                   MOVE    MAX-GMN         TO  IDX
+                   MOVE    20              TO  IDX
                ELSE
                    MOVE    SPA-K023-SRYCD   (IDY)  TO  K023-SRYCD (IDX)
                    MOVE    SPA-K023-SRYCDMEI (IDY) TO  K023-SRYCDMEI
@@ -635,7 +577,7 @@
                MOVE    1               TO  SPA-K023-MAP
            END-IF
       *
-           IF      SPA-K023-MAP        >   MAX-GMN
+           IF      SPA-K023-MAP        >   20
                MOVE    5               TO  SPA-K023-CUR
            ELSE
                IF     (SPA-K023-IDX        >   SPA-K023-MAX )  OR
@@ -818,7 +760,7 @@
       *
       *    空白削除
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX             >   MAX-LINE
+                   UNTIL       IDX             >   300
                PERFORM VARYING     IDY     FROM    1   BY  1
                        UNTIL       IDY             >   3
                    IF     (SPA-K023-INPUTCD (IDX IDY)  =   SPACE) AND
@@ -840,8 +782,8 @@
       *
       *    入力コードチェック
            PERFORM VARYING     IDX-1   FROM    1   BY  1
-                   UNTIL      (IDX-1           >   MAX-LINE ) OR
-                              (SPA-ERRCD   NOT =   SPACE )
+                   UNTIL      (IDX-1             >   300 )   OR
+                              (SPA-ERRCD     NOT =   SPACE )
                COMPUTE WRK-PAGE        =  ((IDX-1    -   1 )
                                        /   20  )
                                        +   1
@@ -913,10 +855,6 @@
                    MOVE    1               TO  FLG-KANJI
                    IF      KANACHK-MAX         >   10
                        MOVE    "0004"              TO  SPA-ERRCD
-                   END-IF
-                   IF    KANACHK-RC3   NOT =   ZERO
-      *                全角空白あり
-                       MOVE    "0014"          TO  SPA-ERRCD
                    END-IF
                END-IF
       *        半角
@@ -1001,7 +939,7 @@
            INITIALIZE                      INPUTCD-REC
       *
            MOVE    SPACE               TO  INPUTCD-REC
-           MOVE    SPA-HOSPNUM         TO  ICD-HOSPNUM
+           MOVE    SPA-HOSPID          TO  ICD-HOSPID
       *    漢字入力
            IF      FLG-KANJI           =   1
                MOVE    "J"                 TO  ICD-CDSYU
@@ -1207,7 +1145,6 @@
       *
            IF      SPA-K023-PAGE       =   1
                MOVE    1                   TO  SPA-K023-PAGE
-               MOVE     "0013"             TO  SPA-ERRCD
            ELSE
                COMPUTE SPA-K023-PAGE       =   SPA-K023-PAGE   -   1
            END-IF
@@ -1229,15 +1166,16 @@
                GO      TO      460-ATOGMN-EXT
            END-IF
       *
-           COMPUTE IDX                 =   SPA-K023-PAGE   *   MAX-GMN
-                                       +   1
       *
+           COMPUTE IDX                 =   SPA-K023-PAGE   *   20 
+                                       +   1
            IF      IDX                 >   SPA-K023-MAX
-               MOVE     "0012"             TO  SPA-ERRCD
-           ELSE
-               ADD     1                   TO  SPA-K023-PAGE
-               MOVE    1                   TO  SPA-K023-MAP
+               GO  TO                 460-ATOGMN-EXT
            END-IF
+      *
+           ADD     1                   TO  SPA-K023-PAGE
+      *
+           MOVE    1                   TO  SPA-K023-MAP
            MOVE    1                   TO  SPA-K023-CUR
            .
        460-ATOGMN-EXT.
@@ -1336,55 +1274,15 @@
                                                    TO  WRK-INPUTCD
                        MOVE    WRK-K023-CDSYU  (IDY)
                                                     TO  WRK-CDSYU
-      *H28.11
-      *                登録済みチェック
-                       PERFORM 410020-INPUTCD-MAECHK-SEC
-                       IF      FLG-CHKERR          =   ZERO
-                           PERFORM 410021-INPUTCD-INS-SEC
-                       END-IF
+                       PERFORM 410021-INPUTCD-INS-SEC
                    END-IF
                END-PERFORM
            END-PERFORM
+      *
       *    戻る
            PERFORM 210-BACK
            .
        41002-KOUSIN-SYORI-EXT.
-           EXIT.
-      *
-      *H28.11
-      *****************************************************************
-      *    入力コード登録済みチェック処理
-      *****************************************************************
-       410020-INPUTCD-MAECHK-SEC          SECTION.
-      *
-           INITIALIZE                      INPUTCD-REC
-           MOVE    SPA-HOSPNUM         TO  ICD-HOSPNUM
-           MOVE    WRK-CDSYU           TO  ICD-CDSYU
-           MOVE    WRK-INPUTCD         TO  ICD-INPUTCD
-      *
-           MOVE    INPUTCD-REC         TO  MCPDATA-REC
-           MOVE    "tbl_inputcd"       TO  MCP-TABLE
-           MOVE    "key2"              TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
-           IF      MCP-RC              =   ZERO
-               MOVE    "tbl_inputcd"       TO  MCP-TABLE
-               MOVE    "key2"              TO  MCP-PATHNAME
-               PERFORM                     930-INPUTCD-READ-SEC
-           ELSE
-               MOVE    1                   TO  FLG-INPUTCD
-           END-IF
-           MOVE    "tbl_inputcd"       TO  MCP-TABLE
-           MOVE    "key2"              TO  MCP-PATHNAME
-           PERFORM 990-DBCLOSE-SEC
-      *
-           IF      FLG-INPUTCD         =   ZERO
-      *        登録済み
-               MOVE    1                   TO  FLG-CHKERR
-           ELSE
-               MOVE    ZERO                TO  FLG-CHKERR
-           END-IF
-           .
-       410020-INPUTCD-MAECHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1404,9 +1302,11 @@
       *    入力コードチェック
            MOVE    SPACE               TO  INPUTCD-REC
            INITIALIZE                      INPUTCD-REC
-           MOVE    SPA-HOSPNUM         TO  ICD-HOSPNUM
+           MOVE    SPA-HOSPID          TO  ICD-HOSPID
            MOVE    SPA-K023-SRYCD (IDX)
                                        TO  ICD-SRYCD
+      *
+           MOVE    "INPUTCD-KEY4"      TO  WRK-PATH
       *
            MOVE    INPUTCD-REC         TO  MCPDATA-REC
            MOVE    "tbl_inputcd"       TO  MCP-TABLE
@@ -1445,15 +1345,15 @@
            IF     IDX-T            NOT =   ZERO
                MOVE    SPACE               TO  INPUTCD-REC
                INITIALIZE                      INPUTCD-REC
-               MOVE    SPA-HOSPNUM         TO  ICD-HOSPNUM
+               MOVE    SPA-HOSPID          TO  ICD-HOSPID
                MOVE    SPA-K023-SRYCD (IDX)    TO  ICD-SRYCD
                MOVE    INPUTCD-REC         TO  MCPDATA-REC
                MOVE    "DBDELETE"          TO  MCP-FUNC
                MOVE    "tbl_inputcd"       TO  MCP-TABLE
                MOVE    "del22"             TO  MCP-PATHNAME
-grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
-                                                   MCPDATA-REC
-                                                   SPA-AREA
+               CALL    "MONFUNC"           USING
+                                           MCPAREA
+                                           MCPDATA-REC
            END-IF
            .
        410022-INPUTCD-HOZON-EXT.
@@ -1465,7 +1365,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
        410021-INPUTCD-INS-SEC          SECTION.
       *
            INITIALIZE                      INPUTCD-REC
-           MOVE    SPA-HOSPNUM         TO  ICD-HOSPNUM
+           MOVE    SPA-HOSPID          TO  ICD-HOSPID
            MOVE    WRK-CDSYU           TO  ICD-CDSYU
            MOVE    WRK-INPUTCD         TO  ICD-INPUTCD
            MOVE    SPA-K023-SRYCD (IDX)    TO  ICD-SRYCD
@@ -1476,15 +1376,13 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SMCNDATE-YMD        TO  ICD-UPYMD
            MOVE    SMCNDATE-HMS        TO  ICD-UPHMS
       *
-           MOVE    SPA-OPID            TO  ICD-OPID
-      *
            MOVE    INPUTCD-REC         TO  MCPDATA-REC
            MOVE    "DBINSERT"          TO  MCP-FUNC
            MOVE    "tbl_inputcd"       TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
-grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
            IF      MCP-RC          NOT =   ZERO
                MOVE    "1001"          TO  SPA-ERRCD
                DISPLAY "K023 INPUTCD INS ERR:"  MCP-RC
@@ -1589,18 +1487,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                                  TO  SPA-ERRMSG
                    MOVE    "全角５文字までにして下さい。"
                                                  TO  SPA-ERRMSG(31:)
-               WHEN    "0012"
-                   MOVE    "次頁はありません。"
-                                                 TO  SPA-ERRMSG
-               WHEN    "0013"
-                   MOVE    "前頁はありません。"
-                                                 TO  SPA-ERRMSG
-               WHEN    "0014"
-                   STRING  "全角空白があります。"
-                           "全角空白は入力できません。"
-                                        DELIMITED  BY  SIZE
-                                                 INTO  SPA-ERRMSG
-                   END-STRING
            END-EVALUATE
       *
       *
@@ -1638,7 +1524,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            END-EVALUATE
       *
            MOVE    SPACE               TO  KID1
-           INITIALIZE                      KID1
            MOVE    SPA-KIDCD           TO  KID1-ID1CODE
            MOVE    WRK-KIDMSG          TO  KID1-ID1MSG
       *
@@ -1681,32 +1566,14 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        920-INPUTCD-NEXT-EXT.
            EXIT.
       *****************************************************************
-      *    パラメタ情報読み込み
-      *****************************************************************
-       990-PARA-READ-SEC        SECTION.
-      *
-           PERFORM 920-DBFETCH-SEC
-           IF      MCP-RC              =   ZERO
-               MOVE    MCPDATA-REC     TO  PARA-REC
-               MOVE    ZERO            TO  FLG-PARA
-           ELSE
-               INITIALIZE                  PARA-REC
-               MOVE    1               TO  FLG-PARA
-           END-IF
-      *
-           .
-       990-PARA-READ-EXT.
-           EXIT.
-      *
-      *****************************************************************
       *    テーブル検索処理
       *****************************************************************
        910-DBSELECT-SEC                SECTION.
       *
            MOVE    "DBSELECT"      TO  MCP-FUNC
-grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
       *
            .
        910-DBSELECT-EXT.
@@ -1717,9 +1584,9 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        920-DBFETCH-SEC                 SECTION.
       *
            MOVE    "DBFETCH"       TO  MCP-FUNC
-grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
       *
            .
       *
@@ -1732,9 +1599,9 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        990-DBCLOSE-SEC         SECTION.
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
       *
            .
        990-DBCLOSE-EXT.
@@ -1746,9 +1613,9 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        900-PUT-WINDOW              SECTION.
       *
            MOVE   "PUTWINDOW"       TO  MCP-FUNC.
-grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
       *
            .
        900-PUT-WINDOW-EXT.

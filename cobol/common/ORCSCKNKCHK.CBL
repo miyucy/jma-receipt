@@ -28,10 +28,6 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
-      *  03.05.00    NACL-多々納  07/04/XX  グループ診療対応
-      *  04.07.00    NACL-多々納  11/10/XX  チェックマスタの併用禁忌対応
-      *  04.07.00    NACL-多々納  13/07/12  相互の症状コード編集対応
-      *  04.08.00    NACL-多々納  16/08/XX  相互作用チェック区分対応
       *****************************************************************
       *
       *
@@ -53,7 +49,6 @@
            03  FLG-SRYACT          PIC 9(01).
            03  FLG-SRYACCT         PIC 9(01).
            03  FLG-TENSU           PIC 9(01).
-           03  FLG-CHKMST          PIC 9(01).
       *
            03  FLG-ERR             PIC 9(01).
            03  FLG-ALLFLG          PIC 9(01).
@@ -61,11 +56,6 @@
            03  FLG-KINKI-ARI       PIC 9(01).
            03  FLG-KINKI-ARI2      PIC 9(01).
            03  FLG-CHK             PIC 9(01).
-      *
-           03  FLG-ARI             PIC 9(01).
-           03  FLG-ARI2            PIC 9(01).
-      *
-           03  FLG-KINKI-CHK       PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -80,9 +70,6 @@
            03  IDX-K3              PIC 9(04).
            03  IDX-K4              PIC 9(04).
            03  IDX-Y2              PIC 9(02).
-           03  IDX-C               PIC 9(04).
-      *
-           03  IDX-S2              PIC 9(04).
       *
       *    一時領域
        01  WRK-AREA.
@@ -120,7 +107,6 @@
                        09  WRK-KNK-TOUYMDW         PIC X(09).
                        09  WRK-KNK-SRYCD           PIC X(09).
                        09  WRK-KNK-SYOJYOUCD       PIC X(07).
-                       09  WRK-KNK-CHKFLG          PIC X(01).
            03  WRK-KNK-MAX             PIC 9(04).
       *
        01  WRK-SORT-AREA.
@@ -131,7 +117,6 @@
                    09  WRK-SRT-TOUYMDW         PIC X(09).
                    09  WRK-SRT-SRYCD           PIC X(09).
                    09  WRK-SRT-SYOJYOUCD       PIC X(07).
-                   09  WRK-SRT-CHKFLG          PIC X(01).
       *
        01  WRK-HEN-AREA.
            03  WRK-HENYMDG         PIC X(09).
@@ -229,9 +214,6 @@
                    PERFORM 200-KNKCHK-IN-SEC
                WHEN    "3"
                    PERFORM 300-KNKCHK-ALL-SEC
-      *API用
-               WHEN    "4"
-                   PERFORM 100-SRYACT-SPASET-SEC
            END-EVALUATE
            . 
        000-PROC-EXT.
@@ -311,63 +293,12 @@
                        MOVE    WRK-KNKYAK-TOUYMD (IDX3)
                                              TO  SPA-KNK-TOUYMD
                                                 (SPA-KNK-MAX)
-      *ver.4.7
-                   ELSE
-      *                チェックマスタ判定
-                       PERFORM 1001-CHK-CHECK-SEC
-      *ver.4.7
                    END-IF
                END-IF
            END-PERFORM
       *
            .
        100-SRYACT-SPASET-EXT.
-           EXIT.
-      *
-      *ver.4.7
-      *****************************************************************
-      *    チェックマスタ対象判定処理
-      *****************************************************************
-       1001-CHK-CHECK-SEC              SECTION.
-      *
-           INITIALIZE                  CHK-REC
-           MOVE    SPA-HOSPNUM         TO  CHK-HOSPNUM
-           MOVE    "4"                 TO  CHK-CHKKBN
-           MOVE    WRK-KNKYAK-SRYCD (IDX3)
-                                       TO  CHK-SRYCD
-           MOVE    "2"                 TO  CHK-CDKBN
-           MOVE    ZERO                TO  CHK-RENNUM
-           MOVE    SPA-SRYYMD          TO  CHK-YUKOSTYMD
-           MOVE    SPA-SRYYMD          TO  CHK-YUKOEDYMD
-      *
-           MOVE    ZERO                TO  FLG-CHKMST
-           MOVE    CHK-REC             TO  MCPDATA-REC
-           MOVE    "tbl_chk"           TO  MCP-TABLE
-           MOVE    "key3"              TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
-           IF      MCP-RC              =   ZERO
-               MOVE    "tbl_chk"           TO  MCP-TABLE
-               MOVE    "key3"              TO  MCP-PATHNAME
-               PERFORM 950-CHK-READ-SEC
-           ELSE
-               MOVE    1                   TO  FLG-CHKMST
-           END-IF
-           MOVE    "tbl_chk"           TO  MCP-TABLE
-           MOVE    "key3"              TO  MCP-PATHNAME
-           PERFORM 990-DBCLOSE-SEC
-      *    チェックマスタあり
-           IF      FLG-CHKMST          =   ZERO
-               ADD     1               TO  SPA-KNK-MAX
-               MOVE    WRK-KNKYAK-SRYCD (IDX3)
-                                       TO  SPA-KNK-SRYCD
-                                                (SPA-KNK-MAX)
-               MOVE    WRK-KNKYAK-TOUYMD (IDX3)
-                                       TO  SPA-KNK-TOUYMD
-                                                (SPA-KNK-MAX)
-           END-IF
-      *
-           .
-       1001-CHK-CHECK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -399,7 +330,7 @@
       *    診療会計マスタよりチェックする
            MOVE    SPACE               TO  SRYACCT-REC
            INITIALIZE                      SRYACCT-REC
-           MOVE    SPA-HOSPNUM         TO  ACCT-HOSPNUM
+           MOVE    SPA-HOSPID          TO  ACCT-HOSPID
            MOVE    WRK-NYUGAIKBN       TO  ACCT-NYUGAIKBN
            MOVE    SPA-PTID            TO  ACCT-PTID
            MOVE    WRK-SRYYM           TO  ACCT-SRYYM
@@ -455,7 +386,7 @@
       *    診療会計マスターから診療行為マスターを検索する
            MOVE    SPACE               TO  SRYACT-REC
            INITIALIZE                      SRYACT-REC
-           MOVE    ACCT-HOSPNUM        TO  SRY-HOSPNUM
+           MOVE    ACCT-HOSPID         TO  SRY-HOSPID
            MOVE    ACCT-NYUGAIKBN      TO  SRY-NYUGAIKBN
            MOVE    ACCT-PTID           TO  SRY-PTID
            MOVE    ACCT-SRYKA          TO  SRY-SRYKA
@@ -527,7 +458,7 @@
            MOVE    1                   TO  FLG-ALLFLG
            INITIALIZE                  WRK-KNKCHK-AREA
            PERFORM VARYING     IDX-Z   FROM    1   BY  1
-                   UNTIL      (IDX-Z       >   SPA-MAX-LINE )   OR
+                   UNTIL      (IDX-Z       >   400      )   OR
                               (FLG-KINKI   NOT =   ZERO )   OR
                              ((SPA-GMN-INPUTCD(IDX-Z)  =   SPACE ) AND
                               (SPA-COM-INPUTCD(IDX-Z)  =   SPACE ))
@@ -535,15 +466,7 @@
       *            禁忌薬剤チェック処理
                    IF      (SPA-COM-KNKFLG (IDX-Z)  =   SPACE )  AND
                            (SPA-COM-KNKUMU (IDX-Z)  =   SPACE )
-      *H28.8
-      *                相互作用チェック区分判定
-                       IF      SPA-INTERACT-CHKKBN  =   "1"
-      *                    チェックマスタのみ対象
-                           PERFORM 2003-CHKMSTONLY-CHK-SEC
-                       ELSE
-      *
-                           PERFORM 2001-KNKYAK-CHK-SEC
-                       END-IF
+                       PERFORM 2001-KNKYAK-CHK-SEC
                    END-IF
                END-IF
            END-PERFORM
@@ -579,20 +502,20 @@
                MOVE    1                   TO  FLG-INTERACT
            END-IF
       *    禁忌なし
-           IF      FLG-INTERACT        =   1
+           IF      FLG-INTERACT          =   1
                MOVE    "1"             TO  SPA-COM-KNKUMU (IDX-Z)
            END-IF
-      *
+      *TEST
       *    １回目
            IF     (FLG-INTERACT        =   ZERO )  AND
                   (SPA-KNK-SRYCD (100) =   SPACE )
                PERFORM 2000-KNK-SPASET-SEC
            END-IF
+      *TEST
       *
       *    禁忌チェック
            MOVE    ZERO                TO  IDX-K2
            ADD     1                   TO  IDX-K1
-           MOVE    ZERO                TO  FLG-ARI2
            PERFORM
                    UNTIL      FLG-INTERACT     =   1
                PERFORM 20011-KNKCHK-SYORI-SEC
@@ -607,19 +530,12 @@
       *
            IF      IDX-K2              >   ZERO
                MOVE    "1"                 TO  SPA-COM-KNKFLG (IDX-Z)
-               MOVE    SPA-COM-NAME   (IDX-Z)
+               MOVE    SPA-GMN-MEISYO (IDX-Z)
                                            TO  WRK-KNK-TOUMEI (IDX-K1)
                MOVE    SPA-COM-INPUTCD(IDX-Z)
                                            TO  WRK-KNK-TOUSRYCD (IDX-K1)
                MOVE    1                   TO  FLG-KINKI
-               MOVE    1                   TO  FLG-ARI2
-           END-IF
-      *ver.4.7
-      *    チェックマスタとのチェック
-           PERFORM 2009-KNKYKCHKMST-CHK-SEC
-      *    禁忌なし
-           IF      FLG-ARI2            =   ZERO
-               INITIALIZE                  WRK-KNK-TBL (IDX-K1)
+           ELSE
                COMPUTE IDX-K1          =   IDX-K1   -   1
            END-IF
       *
@@ -665,29 +581,16 @@
        20011-KNKCHK-SYORI-SEC           SECTION.
       *
            MOVE    ZERO                TO  FLG-KINKI-ARI
-           MOVE    ZERO                TO  FLG-KINKI-CHK
       *    診療会計マスタとのチェック
            PERFORM VARYING     IDX-S       FROM    1   BY  1
                    UNTIL      (IDX-S           >   SPA-KNK-MAX )  OR
                               (FLG-KINKI-ARI   =   1   ) OR
                               (IDX-K2          >   30  )  OR
                               (SPA-KNK-SRYCD (IDX-S)   =   SPACE )
-      *H25.7
-               MOVE    ZERO                    TO  FLG-KINKI-CHK
-               IF    ( SPA-COM-INPUTCD (IDX-Z)
+               IF    ((SPA-KNK-SRYCD (IDX-S)   =   INTERACT-DRUGCD ) OR
+                      (SPA-KNK-SRYCD (IDX-S)   =  INTERACT-DRUGCD2)) AND
+                     ( SPA-COM-INPUTCD (IDX-Z)
                                            NOT =   SPA-KNK-SRYCD(IDX-S))
-      *            前
-                   IF     (SPA-KNK-SRYCD (IDX-S)   =   INTERACT-DRUGCD2)
-                       MOVE    1                   TO  FLG-KINKI-CHK
-                   END-IF
-      *            後
-                   IF     (SPA-KNK-SRYCD (IDX-S)   =   INTERACT-DRUGCD)
-                       MOVE    2                   TO  FLG-KINKI-CHK
-                   END-IF
-      *            今回入力分は対象外
-                   PERFORM 200111-INPUT-CHK-SEC
-               END-IF
-               IF      FLG-KINKI-CHK       NOT =   ZERO
                    MOVE    1                   TO  FLG-KINKI-ARI
                    MOVE    1                   TO  FLG-KINKI-ARI2
                    ADD     1                   TO  IDX-K2
@@ -703,10 +606,6 @@
                                                         (IDX-K1 IDX-K2)
                    MOVE    SPA-KNK-TOUYMD (IDX-S)  TO  WRK-KNK-TOUYMD
                                                         (IDX-K1 IDX-K2)
-                   MOVE    INTERACT-SYOJYOUCD      TO  WRK-KNK-SYOJYOUCD
-                                                        (IDX-K1 IDX-K2)
-                   MOVE    FLG-KINKI-CHK           TO  WRK-KNK-CHKFLG
-                                                        (IDX-K1 IDX-K2)
                END-IF
            END-PERFORM
       *
@@ -715,26 +614,22 @@
                MOVE    1                   TO  IDX-K3
                COMPUTE IDX-K4              =   IDX-Z   -   1
            ELSE
-      *H25.7   COMPUTE IDX-K3              =   IDX-Z   +   1
-               MOVE    1                   TO  IDX-K3
-               MOVE    SPA-MAX-LINE        TO  IDX-K4
+               COMPUTE IDX-K3              =   IDX-Z   +   1
+               MOVE    400                 TO  IDX-K4
            END-IF
            PERFORM VARYING     IDX-S       FROM    IDX-K3  BY  1
                    UNTIL      (IDX-S           >   IDX-K4 )  OR
                               (FLG-KINKI-ARI   =   1    ) OR
                               (SPA-GMN-INPUTCD(IDX-S)  =   SPACE  AND
                                SPA-COM-INPUTCD(IDX-S)  =   SPACE )
-      *****    IF    ((SPA-COM-INPUTCD (IDX-S) =   INTERACT-DRUGCD)  OR
-      *******         (SPA-COM-INPUTCD (IDX-S) =   INTERACT-DRUGCD2))
-               IF     (SPA-COM-INPUTCD (IDX-S) =   INTERACT-DRUGCD2)
+               IF    ((SPA-COM-INPUTCD (IDX-S) =   INTERACT-DRUGCD)  OR
+                      (SPA-COM-INPUTCD (IDX-S) =   INTERACT-DRUGCD2))
                  AND  (SPA-COM-INPUTCD (IDX-S)
                                            NOT =   SPA-COM-INPUTCD
                                                            (IDX-Z))
                  AND  (IDX-S               NOT =   IDX-Z          )
                    ADD     1                   TO  IDX-K2
-      **           MOVE    SPA-GMN-MEISYO (IDX-S)  TO  WRK-KNK-KNKMEI
-      **                                                (IDX-K1 IDX-K2)
-                   MOVE    SPA-COM-NAME   (IDX-S)  TO  WRK-KNK-KNKMEI
+                   MOVE    SPA-GMN-MEISYO (IDX-S)  TO  WRK-KNK-KNKMEI
                                                         (IDX-K1 IDX-K2)
                    MOVE    SPA-COM-INPUTCD (IDX-S) TO  WRK-KNK-SRYCD
                                                         (IDX-K1 IDX-K2)
@@ -756,167 +651,6 @@
            .
        20011-KNKCHK-SYORI-EXT.
            EXIT.
-      *
-      *****************************************************************
-      *    今回入力分チェック処理
-      *****************************************************************
-       200111-INPUT-CHK-SEC              SECTION.
-      *
-           PERFORM VARYING     IDX-S2      FROM    1   BY  1
-                   UNTIL      (IDX-S2          >   SPA-MAX-LINE )  OR
-                              (SPA-GMN-INPUTCD(IDX-S2) =   SPACE  AND
-                               SPA-COM-INPUTCD(IDX-S2) =   SPACE )
-               IF     (SPA-COM-INPUTCD (IDX-S2)
-                                            =   SPA-KNK-SRYCD (IDX-S))
-                 AND  (SPA-COM-INPUTCD (IDX-S2)
-                                        NOT =   SPA-COM-INPUTCD
-                                                           (IDX-Z))
-                   MOVE    ZERO             TO  FLG-KINKI-CHK
-               END-IF
-           END-PERFORM
-           .
-       200111-INPUT-CHK-EXT.
-           EXIT.
-      *
-      *
-      *ver.4.7
-      *****************************************************************
-      *    チェックマスタとのチェック処理
-      *****************************************************************
-       2009-KNKYKCHKMST-CHK-SEC              SECTION.
-      *
-           INITIALIZE                  CHK-REC
-           MOVE    SPA-HOSPNUM         TO  CHK-HOSPNUM
-           MOVE    "4"                 TO  CHK-CHKKBN
-           MOVE    SPA-COM-INPUTCD (IDX-Z)
-                                       TO  CHK-SRYCD
-           MOVE    "2"                 TO  CHK-CDKBN
-           MOVE    ZERO                TO  CHK-RENNUM
-           MOVE    SPA-SRYYMD          TO  CHK-YUKOSTYMD
-           MOVE    SPA-SRYYMD          TO  CHK-YUKOEDYMD
-      *
-           MOVE    CHK-REC             TO  MCPDATA-REC
-           MOVE    "tbl_chk"           TO  MCP-TABLE
-           MOVE    "key3"              TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
-           IF      MCP-RC              =   ZERO
-               MOVE    "tbl_chk"           TO  MCP-TABLE
-               MOVE    "key3"              TO  MCP-PATHNAME
-               PERFORM 950-CHK-READ-SEC
-           ELSE
-               MOVE    1                   TO  FLG-CHKMST
-           END-IF
-           PERFORM
-                   UNTIL      FLG-CHKMST       =   1
-               MOVE    ZERO                    TO  FLG-ARI
-               PERFORM VARYING     IDX-C   FROM    1   BY  1
-                       UNTIL      (IDX-C       >   30  )  OR 
-                                  (WRK-KNK-SRYCD (IDX-K1 IDX-C)
-                                               =   SPACE)
-                   IF      WRK-KNK-SRYCD (IDX-K1 IDX-C) =   CHK-CD
-                                                        OR  CHK-SRYCD
-                        MOVE    1              TO  FLG-ARI
-                        MOVE    30             TO  IDX-C
-                   END-IF
-               END-PERFORM
-      *        １回目
-               IF     (FLG-ARI             =   ZERO  )  AND
-                      (SPA-KNK-SRYCD (100) =   SPACE )
-                   PERFORM 20091-KINCHK-SPASET-SEC
-               END-IF
-               IF      FLG-ARI             =   ZERO
-                   MOVE    CHK-SRYCD           TO  INTERACT-DRUGCD
-                   MOVE    CHK-CD              TO  INTERACT-DRUGCD2
-                   MOVE    ALL "*"             TO  INTERACT-SYOJYOUCD
-                   PERFORM 20011-KNKCHK-SYORI-SEC
-               END-IF
-      *
-               MOVE    "tbl_chk"           TO  MCP-TABLE
-               MOVE    "key3"              TO  MCP-PATHNAME
-               PERFORM 950-CHK-READ-SEC
-           END-PERFORM
-           MOVE    "tbl_chk"           TO  MCP-TABLE
-           MOVE    "key3"              TO  MCP-PATHNAME
-           PERFORM 990-DBCLOSE-SEC
-           IF      IDX-K2              >   ZERO
-               MOVE    "1"                 TO  SPA-COM-KNKFLG (IDX-Z)
-               MOVE    SPA-COM-NAME   (IDX-Z)
-                                           TO  WRK-KNK-TOUMEI (IDX-K1)
-               MOVE    SPA-COM-INPUTCD(IDX-Z)
-                                           TO  WRK-KNK-TOUSRYCD (IDX-K1)
-               MOVE    1                   TO  FLG-KINKI
-      *        禁忌あり
-               MOVE    SPACE               TO  SPA-COM-KNKUMU (IDX-Z)
-               MOVE    1                   TO  FLG-ARI2
-           END-IF
-           .
-       2009-KNKYKCHKMST-CHK-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    診療行為薬剤編集処理（チェックマスタ）
-      *****************************************************************
-       20091-KINCHK-SPASET-SEC           SECTION.
-      *
-           MOVE    "tbl_chk"           TO  MCP-TABLE
-           MOVE    "key3"              TO  MCP-PATHNAME
-           PERFORM 990-DBCLOSE-SEC
-      *    禁忌薬剤チェック用投薬編集処理
-           PERFORM 100-SRYACT-SPASET-SEC
-           IF      SPA-KNK-SRYCD (100) =   SPACE
-               MOVE    "999999999"         TO  SPA-KNK-SRYCD (100)
-           END-IF
-      *
-      *    再検索
-           INITIALIZE                  CHK-REC
-           MOVE    SPA-HOSPNUM         TO  CHK-HOSPNUM
-           MOVE    "4"                 TO  CHK-CHKKBN
-           MOVE    SPA-COM-INPUTCD (IDX-Z)
-                                       TO  CHK-SRYCD
-           MOVE    "2"                 TO  CHK-CDKBN
-           MOVE    ZERO                TO  CHK-RENNUM
-           MOVE    SPA-SRYYMD          TO  CHK-YUKOSTYMD
-           MOVE    SPA-SRYYMD          TO  CHK-YUKOEDYMD
-      *
-           MOVE    CHK-REC             TO  MCPDATA-REC
-           MOVE    "tbl_chk"           TO  MCP-TABLE
-           MOVE    "key3"              TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
-           IF      MCP-RC              =   ZERO
-               MOVE    "tbl_chk"           TO  MCP-TABLE
-               MOVE    "key3"              TO  MCP-PATHNAME
-               PERFORM 950-CHK-READ-SEC
-           ELSE
-               MOVE    1                   TO  FLG-CHKMST
-           END-IF
-           .
-       20091-KINCHK-SPASET-EXT.
-           EXIT.
-      *
-      *H28.8
-      *****************************************************************
-      *    チェックマスタのみ対象処理
-      *****************************************************************
-       2003-CHKMSTONLY-CHK-SEC           SECTION.
-      *
-           MOVE    ZERO                TO  FLG-KINKI-ARI2
-      *    禁忌チェック
-           MOVE    ZERO                TO  IDX-K2
-           ADD     1                   TO  IDX-K1
-           MOVE    ZERO                TO  FLG-ARI2
-      *    チェックマスタとのチェック
-           PERFORM 2009-KNKYKCHKMST-CHK-SEC
-      *    禁忌なし
-           IF      FLG-ARI2            =   ZERO
-               MOVE    "1"             TO  SPA-COM-KNKUMU (IDX-Z)
-      *
-               INITIALIZE                  WRK-KNK-TBL (IDX-K1)
-               COMPUTE IDX-K1          =   IDX-K1   -   1
-           END-IF
-           .
-       2003-CHKMSTONLY-CHK-EXT.
-           EXIT.
-      *H28.8
       *
       *****************************************************************
       *    禁忌エラーメッセージ表示処理
@@ -948,27 +682,8 @@
                        MOVE    IDX-K               TO  SPA-K021-TSEQNO
                                                                (IDX-K)
                    END-IF
-      *            方向設定
-                   IF     (WRK-KNK-CHKFLG (IDX-K1 IDX-K2)
-                                               =  "2"  )
-                       STRING   "←"
-                               WRK-KNK-KNKMEI (IDX-K1 IDX-K2)
-                               DELIMITED  BY  SIZE
-                                       INTO    SPA-K021-TKNKMEI(IDX-K)
-                       END-STRING
-                   ELSE
-                       STRING   "→"
-                               WRK-KNK-KNKMEI (IDX-K1 IDX-K2)
-                               DELIMITED  BY  SIZE
-                                       INTO    SPA-K021-TKNKMEI(IDX-K)
-                       END-STRING
-                   END-IF
-      *            チェックマスタは方向なし
-                   IF      WRK-KNK-SYOJYOUCD (IDX-K1 IDX-K2)
-                                               =   ALL "*"
-                       MOVE    WRK-KNK-KNKMEI (IDX-K1 IDX-K2)
+                   MOVE    WRK-KNK-KNKMEI (IDX-K1 IDX-K2)
                                            TO  SPA-K021-TKNKMEI(IDX-K)
-                   END-IF
                    MOVE    WRK-KNK-TOUYMD (IDX-K1 IDX-K2)
                                            TO  SPA-K021-TTOUYMD (IDX-K)
                    MOVE    WRK-KNK-SYOJYOUCD (IDX-K1 IDX-K2)
@@ -1012,10 +727,6 @@
                        IF     (IDX-K           NOT =   IDX-K2)  AND
                               (WRK-SRT-SRYCD (IDX-K)
                                               =   WRK-SRT-SRYCD(IDX-K2))
-      *!!!
-                        AND   (WRK-SRT-SYOJYOUCD (IDX-K)
-                                              =   WRK-SRT-SYOJYOUCD
-                                                              (IDX-K2))
                            IF      WRK-SRT-TOUYMD (IDX-K)
                                                <   WRK-SRT-TOUYMD
                                                                (IDX-K2)
@@ -1032,23 +743,10 @@
                PERFORM VARYING     IDX-K       FROM    1   BY  1
                        UNTIL       IDX-K       >   30
                    IF      WRK-SRT-TBL2  (IDX-K)   NOT =   SPACE
-                       IF      WRK-SRT-CHKFLG (IDX-K)  NOT =   "2"
-                           ADD     1               TO  IDX-K2
-                           MOVE    WRK-SRT-TBL2  (IDX-K)
-                                                   TO  WRK-KNK-TBL2
+                       ADD     1               TO  IDX-K2
+                       MOVE    WRK-SRT-TBL2  (IDX-K)
+                                               TO  WRK-KNK-TBL2
                                                        (IDX-K1 IDX-K2)
-                       END-IF
-                   END-IF
-               END-PERFORM
-               PERFORM VARYING     IDX-K       FROM    1   BY  1
-                       UNTIL       IDX-K       >   30
-                   IF      WRK-SRT-TBL2  (IDX-K)   NOT =   SPACE
-                       IF      WRK-SRT-CHKFLG (IDX-K)  =   "2"
-                           ADD     1               TO  IDX-K2
-                           MOVE    WRK-SRT-TBL2  (IDX-K)
-                                                   TO  WRK-KNK-TBL2
-                                                       (IDX-K1 IDX-K2)
-                       END-IF
                    END-IF
                END-PERFORM
            END-PERFORM
@@ -1080,7 +778,7 @@
                    END-IF
                END-PERFORM
            END-PERFORM
-      *
+     *
            .
        20021-KNK-SORT-EXT.
            EXIT.
@@ -1101,9 +799,6 @@
                               (WRK-KNK-SRYCD (IDX-K3 IDX-K4)
                                                    =   WRK-KNK-TOUSRYCD
                                                             (IDX-K1))
-                       AND    (WRK-KNK-SYOJYOUCD(IDX-K3 IDX-K4)
-                                                   =   WRK-KNK-SYOJYOUCD
-                                                        (IDX-K1 IDX-K2))
                            MOVE    SPACE           TO  WRK-KNK-TBL2
                                                         (IDX-K3 IDX-K4)
                        END-IF
@@ -1130,21 +825,13 @@
            MOVE    2                   TO  FLG-ALLFLG
            INITIALIZE                  WRK-KNKCHK-AREA
            PERFORM VARYING     IDX-Z   FROM    1   BY  1
-                   UNTIL      (IDX-Z       >   SPA-MAX-LINE    )   OR
+                   UNTIL      (IDX-Z       >   400      )   OR
                              ((SPA-GMN-INPUTCD(IDX-Z)  =   SPACE ) AND
                               (SPA-COM-INPUTCD(IDX-Z)  =   SPACE ))
                IF     (SPA-COM-INPUTCD(IDX-Z)(1:1)   =   "6" ) AND
                       (SPA-COM-KNKUMU (IDX-Z)  =   SPACE     )
                    MOVE    ZERO                TO  FLG-KINKI-ARI
-      *H28.8
-      *            相互作用チェック区分判定
-                   IF      SPA-INTERACT-CHKKBN  =   "1"
-      *                チェックマスタのみ対象
-                       PERFORM 2003-CHKMSTONLY-CHK-SEC
-                   ELSE
-                       PERFORM 2001-KNKYAK-CHK-SEC
-                   END-IF
-      *
+                   PERFORM 2001-KNKYAK-CHK-SEC
                    IF      FLG-KINKI-ARI2      =   1
                        MOVE    "3"             TO  SPA-COM-CUR (IDX-Z)
                    END-IF
@@ -1227,7 +914,6 @@
            MOVE    SPA-SRYYMD          TO  TNS-YUKOSTYMD
            MOVE    SPA-SRYYMD          TO  TNS-YUKOEDYMD
       *
-           MOVE    SPA-HOSPNUM         TO  TNS-HOSPNUM
            MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
            MOVE    "tbl_tensu"         TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
@@ -1263,7 +949,6 @@
            MOVE    SPA-SRYYMD          TO  TNS-YUKOSTYMD
            MOVE    SPA-SRYYMD          TO  TNS-YUKOEDYMD
       *
-           MOVE    SPA-HOSPNUM         TO  TNS-HOSPNUM
            MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
            MOVE    "tbl_tensu"         TO  MCP-TABLE
            MOVE    "key4"              TO  MCP-PATHNAME
@@ -1321,34 +1006,15 @@
            .
        990-INTERACT-READ-EXT.
            EXIT.
-      *
-      *****************************************************************
-      *    チェックマスタ読込
-      *****************************************************************
-       950-CHK-READ-SEC         SECTION.
-      *
-           MOVE    "tbl_chk"           TO  MCP-TABLE
-           PERFORM 920-DBFETCH-SEC
-           IF      MCP-RC              =   ZERO
-               MOVE    MCPDATA-REC     TO  CHK-REC
-               MOVE    ZERO            TO  FLG-CHKMST
-           ELSE
-               INITIALIZE                  CHK-REC
-               MOVE    1               TO  FLG-CHKMST
-           END-IF
-      *
-           .
-       950-CHK-READ-EXT.
-           EXIT.
       *****************************************************************
       *    テーブル検索処理
       *****************************************************************
        910-DBSELECT-SEC                SECTION.
       *
            MOVE    "DBSELECT"      TO  MCP-FUNC
-grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
       *
            .
        910-DBSELECT-EXT.
@@ -1359,9 +1025,9 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        920-DBFETCH-SEC                 SECTION.
       *
            MOVE    "DBFETCH"       TO  MCP-FUNC
-grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
       *
            .
       *
@@ -1374,9 +1040,9 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        990-DBCLOSE-SEC         SECTION.
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
       *
            .
        990-DBCLOSE-EXT.

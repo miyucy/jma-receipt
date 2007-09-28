@@ -70,7 +70,7 @@
       *
       *    ＳＰＡパラメタデータ
        FD  SPASCR-FILE.
-       01  SPA-DATA-REC            PIC X(30000).
+       01  SPA-DATA-REC            PIC X(60000).
       *
        WORKING-STORAGE             SECTION.
       * ＳＰＡデータ
@@ -91,7 +91,7 @@
            COPY    "ENUM-VALUE".
       *
        01  WRK-DATA-REC.
-           03  WRK-DATA            PIC X(30000)
+           03  WRK-DATA            PIC X(60000)
                                    OCCURS  10.
       *    ＳＰＡパラメタ
        01  SPA-SCR-REC.
@@ -627,7 +627,7 @@
            COPY    "CPINPUTSET.INC".
       *
        01  LNK-WKSRYACT-AREA.
-           02  LNK-WKSRYACT-REC          OCCURS   200.
+           02  LNK-WKSRYACT-REC          OCCURS   400.
            COPY    "CPWKSRYACT.INC"  REPLACING
                                      //WKSRY-// BY //LNK-WKSRY-//.
        01  LNK-WKSRYACT-MAX           PIC 9(04).
@@ -1311,7 +1311,7 @@
       *    診療室入力あり編集
            PERFORM     VARYING   IDX   FROM    1   BY  1
                        UNTIL    (IDX   >   LNK-WKSRYACT-MAX )
-                             OR (IDX2  >   200  )
+                             OR (IDX2  >   400  )
       *
       *        自動作成分、診療、保険外は飛ばす
                IF      LNK-WKSRY-SRYKBN (IDX)   =   "11"  OR
@@ -1356,7 +1356,7 @@
       *
       *    約束コード以外の画面再編集
            PERFORM VARYING     IDX   FROM    1   BY  1
-                   UNTIL      (IDX       >   200     )  OR
+                   UNTIL      (IDX       >   400     )  OR
                               (IDX       >   IDX2   )
                IF     (SPA-GMN-INPUTCD(IDX)(1:1)   =   "S" OR  "." ) OR
                       (SPA-COM-INPUTCD(IDX)(1:1)   =   "S"         )
@@ -1396,7 +1396,7 @@
                        IF     (SPA-COM-KAISU(IDX)    >   1  )  OR
                               (SPA-COM-SRYKBN(IDX)(1:1)
                                                    =   "2"    )  OR
-                              (IDX                 =   200    )
+                              (IDX                 =   400   )
                            CONTINUE
                        ELSE
                            IF     (SPA-COM-INPUTCD(IDX + 1)
@@ -1463,7 +1463,7 @@
            MOVE    SPACE               TO  WRK-ERRCD
       *    約束セットの画面用再編集
            PERFORM VARYING     IDX-1   FROM    1   BY  1
-                   UNTIL      (IDX-1   >   200 )  OR
+                   UNTIL      (IDX-1   >   400 )  OR
                               (SPA-COM-INPUTCD(IDX-1)    =   SPACE  AND
                                SPA-GMN-INPUTCD(IDX-1)    =   SPACE )
                IF      SPA-COM-INPUTCD(IDX-1)(1:1)   =   "S"
@@ -1526,7 +1526,7 @@
                                             OR  "022"
                                             OR  "046" )  AND
                    (SPA-COM-SURYO(IDX)(6:3)  >   ZERO)
-               IF     (IDX               <   200  )  AND
+               IF     (IDX               <   400  )  AND
                       (SPA-COM-INPUTCD(IDX + 1)  =   "099309901")
                    CONTINUE
                ELSE
@@ -1549,7 +1549,7 @@
                   (LNK-WKSRY-RENNUM (IDX)  =   1   )
                IF      LNK-WKSRY-SRYSYUKBN (IDX)   NOT =   SPACE
                    ADD     1                   TO  IDX2
-                   IF      IDX2                >   200
+                   IF      IDX2                >   400
                        MOVE    "7004"          TO  SPA-ERRCD
                        GO      TO      31011-SPA-HEN-EXT
                    END-IF
@@ -1568,7 +1568,7 @@
       *
       *    明細編集
            ADD     1                   TO  IDX2
-           IF      IDX2                >   200
+           IF      IDX2                >   400
                 MOVE    "7004"         TO  SPA-ERRCD
                 GO      TO      31011-SPA-HEN-EXT
            END-IF
@@ -1821,7 +1821,7 @@
                MOVE    1               TO  WRK-STR
            END-IF
            PERFORM VARYING IDX         FROM    WRK-STR  BY  1
-                   UNTIL   IDX         >   200
+                   UNTIL   IDX         >   400
                MOVE    SPACE           TO  SPA-MAE-INPUTCD (IDX)
            END-PERFORM
       *
@@ -1980,11 +1980,11 @@
       *
            MOVE    ZERO                TO  SPA-GMN-IDX
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX     >   200
+                   UNTIL       IDX     >   400
                IF     (SPA-COM-PAGE (IDX)  =   SPA-GMN-PAGE )  AND
                       (SPA-COM-GYOU (IDX)  =   WRK-IDX2     )
                    MOVE    IDX                 TO  SPA-GMN-IDX
-                   MOVE    200                 TO  IDX
+                   MOVE    400                 TO  IDX
                END-IF
            END-PERFORM
       *
@@ -1993,8 +1993,8 @@
                COMPUTE SPA-GMN-IDX     =   (SPA-GMN-PAGE   -   1)
                                        *   23
                                        +   WRK-IDX2
-               IF      SPA-GMN-IDX     >   200
-                   MOVE    200             TO  SPA-GMN-IDX
+               IF      SPA-GMN-IDX     >   400
+                   MOVE    400             TO  SPA-GMN-IDX
                    MOVE    "7001"          TO  SPA-ERRCD
                END-IF
            END-IF
@@ -2040,7 +2040,7 @@
       *
       *    カーソル位置のクリア等
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX     >   200
+                   UNTIL       IDX     >   400
                MOVE    SPACE               TO  SPA-COM-CUR (IDX)
                MOVE    SPACE               TO  SPA-COM-IN  (IDX)
                MOVE    SPACE               TO  SPA-COM-IN2 (IDX)
@@ -2567,7 +2567,7 @@
        410121-SAIHEN-SEC               SECTION.
       *
            PERFORM VARYING IDX         FROM    1  BY  1
-                   UNTIL   IDX         >   200
+                   UNTIL   IDX         >   400
                MOVE    SPACE           TO  SPA-MAE-INPUTCD (IDX)
            END-PERFORM
       *
@@ -2630,7 +2630,7 @@
            MOVE    SPACE               TO  WRK-ERRCD
            MOVE    ZERO                TO  FLG-INS
            PERFORM VARYING SPA-GMN-IDX     FROM    WRK-STR  BY  1
-                   UNTIL   SPA-GMN-IDX     >   200
+                   UNTIL   SPA-GMN-IDX     >   400
                IF     (SPA-MAE-INPUTCD (SPA-GMN-IDX)  NOT =
                                        SPA-GMN-INPUTCD (SPA-GMN-IDX)) OR
                       (SPA-COM-IN2 (SPA-GMN-IDX)   =   "1"  )
@@ -2651,7 +2651,7 @@
            MOVE    WRK-STR             TO  SPA-GMN-IDX
            MOVE    ZERO                TO  FLG-INS
            PERFORM
-                   UNTIL      (SPA-GMN-IDX     >   200   )  OR
+                   UNTIL      (SPA-GMN-IDX     >   400   )  OR
                               (SPA-ERRCD   NOT =   SPACE )  OR
                               (FLG-END     NOT =   ZERO  )
                IF     (SPA-MAE-INPUTCD (SPA-GMN-IDX)  NOT =
@@ -2723,11 +2723,11 @@
       *    行決定
            MOVE    ZERO                TO  SPA-GMN-IDX
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX     >   200
+                   UNTIL       IDX     >   400
                IF     (SPA-COM-PAGE (IDX)  =   SPA-GMN-PAGE )  AND
                       (SPA-COM-GYOU (IDX)  =   WRK-IDX2     )
                    MOVE    IDX                 TO  SPA-GMN-IDX
-                   MOVE    200                 TO  IDX
+                   MOVE    400                 TO  IDX
                END-IF
            END-PERFORM
       *    同一行がない時、計算で求める
@@ -2735,8 +2735,8 @@
                COMPUTE SPA-GMN-IDX     =   (SPA-GMN-PAGE   -   1)
                                        *   23
                                        +   WRK-IDX2
-               IF      SPA-GMN-IDX     >   200
-                   MOVE    200             TO  SPA-GMN-IDX
+               IF      SPA-GMN-IDX     >   400
+                   MOVE    400             TO  SPA-GMN-IDX
                    MOVE    "7001"          TO  SPA-ERRCD
                END-IF
            END-IF
@@ -2925,7 +2925,7 @@
            MOVE    ZERO                TO  WRK-IN-IDX
            MOVE    ZERO                TO  WRK-IN-IDX2
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX     >   200
+                   UNTIL       IDX     >   400
                IF      SPA-COM-IN  (IDX)   =   "1"
                    MOVE    IDX                 TO  WRK-IN-IDX
                END-IF
@@ -3744,7 +3744,7 @@
                                                     OR  "022"
                                                     OR  "046" )  AND
                            (SPA-COM-SURYO(IDX-H)(6:3)  >   ZERO)
-                       IF     (IDX-H               <   200  )  AND
+                       IF     (IDX-H               <   400  )  AND
                               (SPA-COM-INPUTCD(IDX-H + 1)
                                                    =   "099309901")
                            CONTINUE
@@ -3832,7 +3832,7 @@
            PERFORM
                    UNTIL     (FLG-INPUTSET     =   1 )  OR
                              (SPA-ERRCD    NOT =   SPACE )  OR
-                             (SPA-GMN-IDX      >   200 )
+                             (SPA-GMN-IDX      >   400 )
               ADD     1               TO  IDX-IP
       *
                MOVE    ISET-INPUTCD    TO  SPA-GMN-INPUTCD(SPA-GMN-IDX)
@@ -4132,7 +4132,7 @@
            PERFORM
                   UNTIL     (FLG-INPUTSET     =   1 )  OR
                              (SPA-ERRCD    NOT =   SPACE )  OR
-                             (SPA-GMN-IDX      >=  200   )
+                             (SPA-GMN-IDX      >=  400   )
       *
       ******** 行を挿入して追加する
       ***      ADD     1               TO  SPA-GMN-IDX
@@ -4450,7 +4450,7 @@
            INITIALIZE                  WRK-HZN-SCR-AREA
            INITIALIZE                  WRK-HOZ-IDX
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL      (IDX     >   200      )   OR
+                   UNTIL      (IDX     >   400      )   OR
                               (SPA-GMN-INPUTCD (IDX)
                                                    =   SPACE )
       *        回数の入力があるかのチェック
@@ -4540,7 +4540,7 @@
            MOVE    ZERO                TO  SPA-GMN-MAX
            INITIALIZE                  SPA-GMN-REC
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX     >   200
+                   UNTIL       IDX     >   400
                IF     (WRK-HZN-GMN-INPUTCD (IDX)   =   SPACE)  AND
                       (WRK-HZN-COM-INPUTCD (IDX)   =   SPACE)
                    CONTINUE
@@ -4726,7 +4726,7 @@
       *
       *    編集後内容セット
            PERFORM VARYING     IDX-Z   FROM    1   BY  1
-                   UNTIL      (IDX-Z       >   200  )  OR
+                   UNTIL      (IDX-Z       >   400  )  OR
                               (WRK-GMN-INPUTCD (IDX-Z) =   SPACE )
       *        診区
                IF      IDX-Z               =   1
@@ -4750,7 +4750,7 @@
                END-IF
       *
       *        最終行を剤終了とする
-               IF      (IDX-Z              =   200 )  OR
+               IF      (IDX-Z              =   400 )  OR
                        (WRK-COM-INPUTCD(IDX-Z + 1) =   SPACE  AND
                         WRK-GMN-INPUTCD(IDX-Z + 1) =   SPACE )
                    MOVE    "1"             TO  WRK-COM-ZAIEND(IDX-Z)
@@ -4869,7 +4869,7 @@
       *
       *
            PERFORM VARYING     IDX-Z   FROM    1   BY  1
-                   UNTIL      (IDX-Z       >   200  )  OR
+                   UNTIL      (IDX-Z       >   400  )  OR
                               (WRK-GMN-INPUTCD (IDX-Z) =   SPACE )
                IF      WRK-COM-KISOTEN (IDX-Z) =   ZERO
                    MOVE    ZERO            TO  WRK-COM-KEI (IDX-Z)
@@ -5034,14 +5034,14 @@
       *****************************************************************
        41014-GYOINSN-SEC         SECTION.
       *
-           IF      SPA-GMN-MAX         >=   200
-               MOVE    200                 TO  SPA-GMN-MAX
+           IF      SPA-GMN-MAX         >=   400
+               MOVE    400                 TO  SPA-GMN-MAX
                MOVE    "0007"              TO  SPA-ERRCD
                GO      TO      41014-GYOINSN-EXT
            END-IF
       *
-           IF      SPA-GMN-IDX         >=   200
-               MOVE    200                 TO  SPA-GMN-IDX
+           IF      SPA-GMN-IDX         >=   400
+               MOVE    400                 TO  SPA-GMN-IDX
                MOVE    "0007"              TO  SPA-ERRCD
                GO      TO      41014-GYOINSN-EXT
            END-IF
@@ -5050,7 +5050,7 @@
            INITIALIZE                      SPA-GMN-REC
            MOVE    ZERO                TO  IDY
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX     >   200
+                   UNTIL       IDX     >   400
                IF      IDX             =   SPA-GMN-IDX
                    CONTINUE
                ELSE
@@ -5113,21 +5113,21 @@
            END-IF
       *    後ろ
            PERFORM VARYING     IDX     FROM    SPA-GMN-IDX   BY  1
-                   UNTIL      (IDX     >   200 )  OR
+                   UNTIL      (IDX     >   400 )  OR
                               (SPA-GMN-INPUTCD (IDX)   =   SPACE)
                MOVE    SPACE           TO  SPA-GMN-INPUTCD(IDX)
                IF     (SPA-GMN-SRYKBN (IDX + 1)    NOT =   SPACE) OR
                       (SPA-COM-ZAIEND(IDX)     =   "1"   )
-                   MOVE    200             TO  IDX
+                   MOVE    400             TO  IDX
                END-IF
            END-PERFORM
       *
            PERFORM VARYING     IDX     FROM    SPA-GMN-IDX   BY  1
-                   UNTIL      (IDX     >   200 )  OR
+                   UNTIL      (IDX     >   400 )  OR
                               (SPA-GMN-INPUTCD (IDX)   =   SPACE)
                MOVE    SPACE           TO  SPA-GMN-INPUTCD(IDX)
                IF      SPA-GMN-SRYKBN (IDX + 1)    NOT =   SPACE
-                   MOVE    200             TO  IDX
+                   MOVE    400             TO  IDX
                END-IF
            END-PERFORM
       *
@@ -5143,12 +5143,12 @@
            COMPUTE IDX2                =   SPA-GMN-IDX   +   1
       *
            PERFORM VARYING     IDX     FROM    IDX2    BY  1
-                   UNTIL      (IDX     >   200 )  OR
+                   UNTIL      (IDX     >   400 )  OR
                               (SPA-GMN-INPUTCD (IDX)   =   SPACE)
                IF      SPA-COM-SET     (IDX)   =   "1"
                    MOVE    SPACE               TO  SPA-GMN-INPUTCD(IDX)
                ELSE
-                   MOVE    200                 TO  IDX
+                   MOVE    400                 TO  IDX
                END-IF
            END-PERFORM
       *
@@ -5157,7 +5157,7 @@
            MOVE    ZERO                TO  SPA-GMN-MAX
       *
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX     >   200
+                   UNTIL       IDX     >   400
                IF      WRK-GMN-INPUTCD(IDX)    =   SPACE
                    CONTINUE
                ELSE
@@ -5188,7 +5188,7 @@
            MOVE    ZERO                TO  FLG-DELFLG
       *
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX     >   200
+                   UNTIL       IDX     >   400
                IF      WRK-GMN-INPUTCD(IDX)    =   SPACE
                    IF      WRK-COM-TIMEFLG (IDX)   NOT =   ZERO
                        MOVE    1               TO  FLG-DELFLG
@@ -5227,7 +5227,7 @@
            END-IF
       *
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX     >   200
+                   UNTIL       IDX     >   400
                IF      WRK-GMN-INPUTCD(IDX)    =   SPACE
                    CONTINUE
                ELSE
@@ -5609,14 +5609,14 @@
                GO  TO                 460-ATOGMN-EXT
            END-IF
       *
-           IF      SPA-GMN-PAGE        =   8
+           IF      SPA-GMN-PAGE        =   18
                MOVE    3                   TO  SPA-GMN-CUR
                MOVE    "7002"              TO  SPA-ERRCD
                GO      TO      460-ATOGMN-EXT
            END-IF
       *
            ADD     1                   TO  SPA-GMN-PAGE
-           IF      SPA-GMN-PAGE        =   8
+           IF      SPA-GMN-PAGE        =   18
                MOVE    "7003"              TO  SPA-ERRCD
            END-IF
       *
@@ -5872,7 +5872,7 @@
        41001-KIHON-CHK-SEC             SECTION.
       *
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL      (IDX              >   200       )   OR
+                   UNTIL      (IDX              >   400       )   OR
                               (SPA-ERRCD        NOT =   SPACE )   OR
                               (SPA-GMN-INPUTCD(IDX) =   SPACE )
                IF     (SPA-COM-CHKFLG (IDX)    =   SPACE )  AND
@@ -6527,7 +6527,7 @@
            MOVE    1                   TO  WRK-PAGE
       *
            PERFORM VARYING     WRK-IDX     FROM    1   BY  1
-                   UNTIL      (WRK-IDX     >   200  )  OR
+                   UNTIL      (WRK-IDX     >   400  )  OR
                               (IDX         >=  23   )
       *        画面表示
                IF      SPA-COM-PAGE(WRK-IDX)   =   SPA-GMN-PAGE
@@ -6635,7 +6635,7 @@
       *
       *
            PERFORM VARYING     WRK-IDX     FROM    1   BY  1
-                   UNTIL       WRK-IDX     >   200
+                   UNTIL       WRK-IDX     >   400
                MOVE    ZERO                TO  SPA-COM-PAGE (WRK-IDX)
                MOVE    ZERO                TO  SPA-COM-GYOU (WRK-IDX)
       *        画面表示外のものに頁、行位置を設定する

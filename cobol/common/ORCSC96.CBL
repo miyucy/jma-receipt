@@ -127,7 +127,7 @@
                                        TO  SPA-ERRMSG
                WHEN    "0007"
                    MOVE
-                   "２００行を超えます。これ以上挿入はできません"
+                   "４００行を超えます。これ以上挿入はできません"
                                        TO  SPA-ERRMSG
                WHEN    "0008"
                    MOVE    "回数は１回のみです。"
@@ -616,12 +616,12 @@
                    MOVE    "算定終了は算定できません。"
                                        TO  SPA-ERRMSG(47:)
                WHEN    "7007"
-                   MOVE    "自動算定で２００行を超えます。"
+                   MOVE    "自動算定で４００行を超えます。"
                                        TO  SPA-ERRMSG
                    MOVE    "分けて入力して下さい。"
                                        TO  SPA-ERRMSG(31:)
                WHEN    "7001"
-                   MOVE    "２００行を超えた行です。"
+                   MOVE    "４００行を超えた行です。"
                                        TO  SPA-ERRMSG
                    MOVE    "これ以上入力できません。"
                                        TO  SPA-ERRMSG(31:)
@@ -636,9 +636,9 @@
                    MOVE    "登録時にエラーとなることがあります。"
                                        TO  SPA-ERRMSG(25:)
                WHEN    "7004"
-                   MOVE    "２００行をオーバーします。"
+                   MOVE    "４００行をオーバーします。"
                                        TO  SPA-ERRMSG
-                   MOVE    "２００行までを対象とします。"
+                   MOVE    "４００行までを対象とします。"
                                        TO  SPA-ERRMSG(27:)
                WHEN    "7006"
                    MOVE    "剤の明細数は５０明細までです。"
@@ -932,7 +932,7 @@
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "9100"
-                   MOVE    "診療内容が２００行を超えます。"
+                   MOVE    "診療内容が４００行を超えます。"
                                        TO  SPA-ERRMSG
                    MOVE    "会計照会で訂正して下さい。"
                                        TO  SPA-ERRMSG(31:)

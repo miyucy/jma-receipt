@@ -4861,7 +4861,7 @@
                           (TNS-CDKBN-KBNNUM-EDA    =  00 ))
       *
                        ADD     1               TO  IDX-TEI
-                       IF      IDX-TEI         <=  200
+                       IF      IDX-TEI         <=  400
                            MOVE    SRY-SRYCD (IDX) TO  SPA-K02-TEI-SRYCD
                                                              (IDX-TEI)
                            MOVE    WRK-ZAIKAISU    TO  SPA-K02-TEI-KAISU
@@ -4937,7 +4937,7 @@
                IF      TNS-SANTEIRRKKBN        =   ZERO
                    ADD     1                   TO  IDX-TEI
                END-IF
-               IF      IDX-TEI             <=  200
+               IF      IDX-TEI             <=  400
                   MOVE    WRK-HEN-SRYCD       TO  SPA-K02-TEI-SRYCD
                                                             (IDX-TEI)
                   IF      (TNS-JGNCNT1D         >   ZERO )

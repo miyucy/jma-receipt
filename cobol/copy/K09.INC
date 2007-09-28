@@ -20,14 +20,14 @@
               03  K09-DOSEL.
                 04  K09-VALUE   PIC X(40).
               03  K09-SELNUM.
-                04  K09-VALUE   PIC S9(4).
+                04  K09-VALUE   PIC X(3).
               03  K09-SCROLLEDWINDOW2.
                 04  K09-RRKLIST.
                   05  K09-RRKLIST-COUNT   PIC S9(9)   BINARY.
                   05  K09-RRKLIST-ROW     PIC S9(9)   BINARY.
                   05  K09-RRKLIST-ROWATTR PIC S9(9)   BINARY.
                   05  K09-ITEM        OCCURS  150 TIMES.
-                    06  K09-NO      PIC X(4).
+                    06  K09-NO      PIC X(3).
                     06  K09-RRKYMD  PIC X(16).
                     06  K09-RRKSRYKA  PIC X(2).
                     06  K09-RRKHKNCOMBI   PIC X(4).
@@ -37,7 +37,7 @@
                   05  K09-MEILIST-COUNT   PIC S9(9)   BINARY.
                   05  K09-MEILIST-ROW     PIC S9(9)   BINARY.
                   05  K09-MEILIST-ROWATTR PIC S9(9)   BINARY.
-                  05  K09-ITEM        OCCURS  800 TIMES.
+                  05  K09-ITEM        OCCURS 800 TIMES.
                     06  K09-MNO     PIC X(3).
                     06  K09-MEISAI  PIC X(90).
                   05  K09-MEILIST-SELECT  PIC X       OCCURS  800 TIMES.
@@ -53,15 +53,3 @@
                 04  K09-SRYKBN-COUNT   PIC S9(9)   BINARY.
                 04  K09-SRYKBN-ITEM
                         PIC X(23)   OCCURS  20 TIMES.
-              03  K09-GRPHOSPNUM-COMB.
-                04  K09-GRPHOSPNUM.
-                  05  K09-VALUE   PIC X(23).
-                04  K09-GRPHOSPNUM-COUNT   PIC S9(9)   BINARY.
-                04  K09-GRPHOSPNUM-ITEM
-                        PIC X(23)   OCCURS  9 TIMES.
-              03  K09-B03.
-                04  K09-B03-STATE   PIC S9(9)   BINARY.
-                04  K09-B03-LABEL   PIC X(20).
-              03  K09-B04.
-                04  K09-B04-STATE   PIC S9(9)   BINARY.
-                04  K09-B04-LABEL   PIC X(20).
