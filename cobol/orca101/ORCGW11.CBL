@@ -618,8 +618,6 @@
            PERFORM 3103-PRGNAME-SYOKI-SEC
       *
            IF    ( SPA-BEDSU           >   ZERO )
-               CONTINUE
-           ELSE
       *        Æþ±¡Ä¢É¼
                PERFORM 31011-NYUIN-SYOKI-SEC
            END-IF
