@@ -90,7 +90,7 @@
            03  WRK-IDX-YAKUSOKU.
                05  WRK-IDX-YAK         PIC 9(04)    OCCURS  20.
       *画面最大行
-       01  WRK-GYO-MAX                 PIC 9(04)   VALUE   200.
+       01  WRK-GYO-MAX                 PIC 9(04)   VALUE   400.
       *
       *    診療種別名テーブル
            COPY    "CPORCSSRYSYU.INC".
@@ -391,7 +391,7 @@
                                                     OR  "022"
                                                     OR  "046" )  AND
                            (SPA-COM-SURYO(IDX-H)(6:3)  >   ZERO)
-                       IF     (IDX-H               <   200  )  AND
+                       IF     (IDX-H               <   400  )  AND
                               (SPA-COM-INPUTCD(IDX-H + 1)
                                                    =   "099309901")
                            CONTINUE

@@ -458,7 +458,7 @@
            MOVE    1                   TO  FLG-ALLFLG
            INITIALIZE                  WRK-KNKCHK-AREA
            PERFORM VARYING     IDX-Z   FROM    1   BY  1
-                   UNTIL      (IDX-Z       >   200      )   OR
+                   UNTIL      (IDX-Z       >   400      )   OR
                               (FLG-KINKI   NOT =   ZERO )   OR
                              ((SPA-GMN-INPUTCD(IDX-Z)  =   SPACE ) AND
                               (SPA-COM-INPUTCD(IDX-Z)  =   SPACE ))
@@ -615,7 +615,7 @@
                COMPUTE IDX-K4              =   IDX-Z   -   1
            ELSE
                COMPUTE IDX-K3              =   IDX-Z   +   1
-               MOVE    200                 TO  IDX-K4
+               MOVE    400                 TO  IDX-K4
            END-IF
            PERFORM VARYING     IDX-S       FROM    IDX-K3  BY  1
                    UNTIL      (IDX-S           >   IDX-K4 )  OR
@@ -825,7 +825,7 @@
            MOVE    2                   TO  FLG-ALLFLG
            INITIALIZE                  WRK-KNKCHK-AREA
            PERFORM VARYING     IDX-Z   FROM    1   BY  1
-                   UNTIL      (IDX-Z       >   200      )   OR
+                   UNTIL      (IDX-Z       >   400      )   OR
                              ((SPA-GMN-INPUTCD(IDX-Z)  =   SPACE ) AND
                               (SPA-COM-INPUTCD(IDX-Z)  =   SPACE ))
                IF     (SPA-COM-INPUTCD(IDX-Z)(1:1)   =   "6" ) AND

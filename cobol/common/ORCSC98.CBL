@@ -139,7 +139,7 @@
       *
            MOVE    ZERO                TO  IDX-SET
            PERFORM VARYING     IDX-Z   FROM    1   BY  1
-                   UNTIL      (IDX-Z       >   200     )   OR
+                   UNTIL      (IDX-Z       >   400     )   OR
                              ((SPA-GMN-INPUTCD (IDX-Z) =   SPACE ) AND
                               (SPA-COM-INPUTCD (IDX-Z) =   SPACE ))
                            OR (SPA-ERRCD   NOT =   SPACE   )

@@ -285,7 +285,7 @@
       *
       *    訂正の時、算定していた診療コード
            03  SPA-K02-TEISEI-AREA.
-               05  SPA-K02-TEISEI-OCC          OCCURS   200.
+               05  SPA-K02-TEISEI-OCC          OCCURS   400.
                    07  SPA-K02-TEI-SRYCD       PIC X(09).
                    07  SPA-K02-TEI-KAISU       PIC 9(03).
       *    初回算定日設定
@@ -469,7 +469,7 @@
       *
       *    Ｋ０２３画面用
            03  SPA-K023GMN-AREA.
-               05  SPA-K023-TBLREC         OCCURS   100.
+               05  SPA-K023-TBLREC         OCCURS   300.
                    07  SPA-K023-SRYCD      PIC X(09).
                    07  SPA-K023-SRYCDMEI   PIC X(60).
                    07  SPA-K023-INPUTCD-G      OCCURS   3.

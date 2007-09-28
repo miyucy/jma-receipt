@@ -376,7 +376,7 @@
       *
            MOVE    ZERO                TO  WRK-TEI-CNT
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL      (IDX     >   200 )  OR
+                   UNTIL      (IDX     >   400 )  OR
                               (LNK-SC91-TEI-SRYCD(IDX)
                                            =   SPACE )
                IF      WRK-SRYCD           =   LNK-SC91-TEI-SRYCD(IDX)
@@ -838,7 +838,7 @@
            MOVE    ZERO                TO  WRK-DOCNT
       *
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL      (IDX         >   200 )  OR
+                   UNTIL      (IDX         >   400 )  OR
                               (SPA-GMN-INPUTCD (IDX)   =   SPACE)
       *
       *@
@@ -1367,7 +1367,7 @@
        2003-DOJINPUT-CHK-SEC         SECTION.
       *
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL      (IDX         >   200 )  OR
+                   UNTIL      (IDX         >   400 )  OR
                              ((SPA-GMN-INPUTCD (IDX)   =   SPACE) AND
                               (SPA-COM-INPUTCD (IDX)   =   SPACE))
       *@

@@ -46,6 +46,7 @@
       * 03.04.00     NACL-多々納  06/12/01  自賠責健保準拠追加
       * 03.04.01     NACL-多々納  06/12/14  薬剤附加チェック追加
       * 03.04.02     NACL-多々納  07/01/30  排他中処理追加
+      * 03.04.01     NACL-多々納  07/10/01  テーブル４００対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -76,7 +77,7 @@
       *
       *    ＳＰＡパラメタデータ
        FD  SPASCR-FILE.
-       01  SPA-DATA-REC            PIC X(30000).
+       01  SPA-DATA-REC            PIC X(60000).
       *
        WORKING-STORAGE             SECTION.
       *
@@ -95,7 +96,7 @@
            03  FILLER              PIC X(06)   VALUE   ".TXT".
       *
        01  WRK-DATA-REC.
-           03  WRK-DATA            PIC X(30000)
+           03  WRK-DATA            PIC X(60000)
                                    OCCURS  10.
       *
       *    画面色等
@@ -730,7 +731,7 @@
        01  WRK-SYSTIME               PIC 9(08).
       *
       *画面最大行
-       01  WRK-GYO-MAX                 PIC 9(04)   VALUE   200.
+       01  WRK-GYO-MAX                 PIC 9(04)   VALUE   400.
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -804,7 +805,7 @@
                                //PTNYUINRRK-// BY //HZN-PTNYUINRRK-//.
       *
        01  LNK-WKSRYACT-AREA.
-           02  LNK-WKSRYACT-REC          OCCURS   200.
+           02  LNK-WKSRYACT-REC          OCCURS   400.
            COPY    "CPWKSRYACT.INC"  REPLACING
                                      //WKSRY-// BY //LNK-WKSRY-//.
        01  LNK-WKSRYACT-MAX           PIC 9(04).
@@ -2670,7 +2671,7 @@
       *
       *    入力コード・名称チェック処理
            PERFORM VARYING IDX     FROM    1   BY  1
-                   UNTIL   (IDX        >   200 )  OR
+                   UNTIL   (IDX        >    WRK-GYO-MAX )  OR
                           ((SPA-GMN-INPUTCD(IDX)   =   SPACE ) AND
                            (SPA-COM-INPUTCD(IDX)   =   SPACE ))
                IF      SPA-COM-CUR (IDX)   =   SPACE
@@ -2694,7 +2695,7 @@
            MOVE    ZERO                TO  WRK-MAE-TENSU
            MOVE    ZERO                TO  FLG-MAE-TENSU
            PERFORM VARYING IDX     FROM    1   BY  1
-                   UNTIL   (IDX        >   200 )  OR
+                   UNTIL   (IDX        >    WRK-GYO-MAX )  OR
                           ((SPA-GMN-INPUTCD(IDX)   =   SPACE ) AND
                            (SPA-COM-INPUTCD(IDX)   =   SPACE ))
                IF     (SPA-COM-KZMFLG (IDX)    NOT =   SPACE )  OR
@@ -3677,7 +3678,7 @@
       *
       *    老人区分が変更された時、チェックフラグをクリアする
            PERFORM VARYING     IDX     FROM   1   BY  1
-                   UNTIL       IDX     >   200
+                   UNTIL       IDX     >    WRK-GYO-MAX
                MOVE    SPACE               TO  SPA-COM-CHKFLG (IDX)
                MOVE    SPACE               TO  SPA-COM-HCHKFLG (IDX)
            END-PERFORM
@@ -6794,7 +6795,7 @@
                       (SPA-COM-SET  (IDX + 1)  =   "1"))
                    MOVE    SPACE           TO  SPA-GMN-INPUTCD(IDX)
                    PERFORM 410151-SETDEL2-SEC
-                   MOVE    200             TO  IDX
+                   MOVE     WRK-GYO-MAX             TO  IDX
                ELSE
                    MOVE    SPACE           TO  SPA-GMN-INPUTCD(IDX)
                    IF    ((IDX                 <   WRK-GYO-MAX ) AND
@@ -6833,7 +6834,7 @@
                    MOVE    SPACE           TO  SPA-GMN-INPUTCD(IDX3)
                    ADD     1               TO  SPA-GMN-IDX
                ELSE
-                   MOVE    200             TO  IDX3
+                   MOVE     WRK-GYO-MAX             TO  IDX3
                END-IF
            END-PERFORM
       *
@@ -6916,7 +6917,7 @@
                    END-IF
       *
                    IF     (WRK-COM-ZAIEND (IDX)    =   "1" )  OR
-                         ((IDX                     <   200 )  AND
+                         ((IDX                     <    WRK-GYO-MAX) AND
                           (WRK-GMN-SRYKBN (IDX + 1)    NOT =   SPACE))
                        MOVE    ZERO            TO  FLG-ZAIEND
                    END-IF
@@ -8474,7 +8475,7 @@
                GO      TO      460-ATOGMN-EXT
            END-IF
       *
-           IF      SPA-GMN-PAGE        =   9
+           IF      SPA-GMN-PAGE        =   17
                MOVE    1                   TO  SPA-GMN-CUR
                MOVE    "7002"              TO  SPA-ERRCD
                GO      TO      460-ATOGMN-EXT
@@ -8486,7 +8487,7 @@
            END-IF
       *
            ADD     1                   TO  SPA-GMN-PAGE
-           IF      SPA-GMN-PAGE        =   8
+           IF      SPA-GMN-PAGE        =   16  OR  17
                MOVE    "7003"              TO  SPA-ERRCD
            END-IF
       *

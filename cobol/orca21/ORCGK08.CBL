@@ -149,7 +149,7 @@
                05  SPA-GMN-CUR                   PIC 9(02).
       *
                05  SPA-GMN-TBL.
-                   07  SPA-GMN-TBLREC-G    OCCURS  600.
+                   07  SPA-GMN-TBLREC-G    OCCURS  800.
                        09  SPA-GMN-TBANGO      PIC 9(03).
                        09  SPA-GMN-TDELFLG     PIC 9(01).
                        09  SPA-GMN-TMEISYO     PIC X(200).
@@ -204,7 +204,7 @@
       *
            03  SPA-NAI-AREA.
                05  SPA-NAI-TBL.
-                   07  SPA-NAI-TBLREC  OCCURS  600.
+                   07  SPA-NAI-TBLREC  OCCURS  800.
                        09  SPA-NAI-BANGO           PIC 9(03).
                        09  SPA-NAI-EDANUM          PIC 9(03).
                        09  SPA-NAI-ZAINUM          PIC 9(08).
@@ -576,7 +576,7 @@
       *
       *    ¿ÇÎÅ¹Ô°Ù¥Þ¥¹¥¿¥ï¡¼¥¯
        01  LNK-WKSRYACT-AREA.
-           02  LNK-WKSRYACT-REC      OCCURS   600.
+           02  LNK-WKSRYACT-REC      OCCURS   800.
            COPY    "CPWKSRYACT.INC"  REPLACING
                                      //WKSRY-// BY //LNK-WKSRY-//.
       *    Éí²Ã¾ðÊó¤òÄÉ²Ã
@@ -590,7 +590,7 @@
       *
       *    ¿ÇÎÅ¹Ô°Ù¥Þ¥¹¥¿¥ï¡¼¥¯
        01  HZN-WKSRYACT-AREA.
-           02  HZN-WKSRYACT-REC      OCCURS   600.
+           02  HZN-WKSRYACT-REC      OCCURS   800.
            COPY    "CPWKSRYACT.INC"  REPLACING
                                      //WKSRY-// BY //HZN-WKSRY-//.
       *    Éí²Ã¾ðÊó¤òÄÉ²Ã
@@ -604,7 +604,7 @@
       *
       *    ¿ÇÎÅ¹Ô°Ù¥Þ¥¹¥¿¥ï¡¼¥¯
        01  SRT-WKSRYACT-AREA.
-           02  SRT-WKSRYACT-REC      OCCURS   600.
+           02  SRT-WKSRYACT-REC      OCCURS   800.
            COPY    "CPWKSRYACT.INC"  REPLACING
                                      //WKSRY-// BY //SRT-WKSRY-//.
       *    Éí²Ã¾ðÊó¤òÄÉ²Ã
@@ -1052,8 +1052,8 @@
       *****END-IF
       *
       *    ºÇÂç·ï¿ô
-           IF      IDG                 >   600
-               MOVE    600                 TO  SPA-K08-MAX
+           IF      IDG                 >   800
+               MOVE    800                 TO  SPA-K08-MAX
            ELSE
                MOVE    IDG                 TO  SPA-K08-MAX
            END-IF
@@ -1176,7 +1176,7 @@
            END-IF
            PERFORM
                    UNTIL      (FLG-PARA    =    1   )  OR
-                              (IDX         >=   600 )
+                              (IDX         >=   800 )
       *        ¥ï¡¼¥¯¿ÇÎÅ¹Ô
                IF      PARA-FILEMEI    =   "WKSRYACT"
                    ADD     1                    TO  IDX
@@ -1477,7 +1477,7 @@
       *    ºÞÊÌÊÔ½¸
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL      (IDX     >   IDX-KOUI )
-                           OR (IDG     >   600 )
+                           OR (IDG     >   800 )
       *        ºÞÅÀ¿ô·×
                MOVE    LNK-WKSRY-ZAITENKEI(IDX)    TO  WRK-ZAITEN
       *        ²ó¿ô·×
@@ -1492,7 +1492,7 @@
                IF      IDX                 =   1
                    MOVE    ZERO                TO  FLG-RSIFLG
                    ADD     1                   TO  IDG
-                   IF      IDG                 >   600
+                   IF      IDG                 >   800
                        MOVE    "1000"              TO  SPA-ERRCD
                    ELSE
                        PERFORM 31011-GYO1-HEN-SEC
@@ -1502,7 +1502,7 @@
       *        ºÞÌÀºÙÊÔ½¸
                PERFORM VARYING     IDZ     FROM    1   BY  1
                        UNTIL      (IDZ         >   5   )  OR
-                                  (IDG         >   600 )  OR
+                                  (IDG         >   800 )  OR
                                   (LNK-WKSRY-SRYCD (IDX IDZ)
                                                   =   SPACE  AND
                                    LNK-WKSRY-INPUTCD(IDX IDZ)
@@ -1606,7 +1606,7 @@
                ELSE
                    ADD    1                    TO  IDG
                END-IF
-               IF      IDG                 <=  600
+               IF      IDG                 <=  800
                PERFORM 31013-INPUTCD-HEN-SEC
                MOVE    WRK-ZAIKEIJ         TO  SPA-GMN-TZAIKEI (IDG)
       *
@@ -1633,7 +1633,7 @@
       *
       *    ºÞ½ªÎ»ÊÔ½¸
            ADD     1                   TO  IDG
-           IF      IDG                 >   600
+           IF      IDG                 >   800
                CONTINUE
            ELSE
                MOVE    ALL "-"             TO  SPA-GMN-TMEISYO (IDG)
@@ -1675,7 +1675,7 @@
                                                         (WRK-HOUKNS-IDX)
                    ADD     1               TO  IDG
                END-IF
-               IF      WRK-HOUKNS-IDX      <=   600
+               IF      WRK-HOUKNS-IDX      <=   800
                    MOVE    ORCSMEIHEN-MEISYO2
                                        TO  SPA-GMN-TMEISYO2
                                                   (WRK-HOUKNS-IDX)
@@ -1707,7 +1707,7 @@
       *
       *    ºÞÊÔ½¸
            ADD     1                   TO  IDG
-           IF      IDG                 >   600
+           IF      IDG                 >   800
                GO      TO      31012-HKNCOMBI-HEN-EXT
            END-IF
            MOVE    ALL "#"             TO  SPA-GMN-TMEISYO (IDG)
@@ -1718,7 +1718,7 @@
            END-STRING
       *    ºÞ½ªÎ»ÊÔ½¸
            ADD     1                   TO  IDG
-           IF      IDG                 >   600
+           IF      IDG                 >   800
                CONTINUE
            ELSE
                MOVE    ALL "-"             TO  SPA-GMN-TMEISYO (IDG)
@@ -1772,7 +1772,7 @@
       *
       *    ºÞÊÔ½¸
            ADD     1                   TO  IDG
-           IF      IDG                 >   600
+           IF      IDG                 >   800
                GO      TO      31013-SRYKA-HEN-EXT
            END-IF
            MOVE    ALL "="             TO  SPA-GMN-TMEISYO (IDG)
@@ -1785,7 +1785,7 @@
            END-STRING
       *    ºÞ½ªÎ»ÊÔ½¸
            ADD     1                   TO  IDG
-           IF      IDG                 >   600
+           IF      IDG                 >   800
                GO      TO      31013-SRYKA-HEN-EXT
            END-IF
            MOVE    ALL "-"             TO  SPA-GMN-TMEISYO (IDG)
@@ -2172,7 +2172,7 @@
        31012-ZAIMEI-HEN-SEC                  SECTION.
       *
            ADD     1                   TO  IDG
-           IF      IDG                 >   600
+           IF      IDG                 >   800
                GO      TO      31012-ZAIMEI-HEN-EXT
            END-IF
            MOVE    WRK-BANGO           TO  SPA-GMN-NAIBANGO (IDG)
@@ -2319,7 +2319,7 @@
        31013-JIHIMEI-HEN-SEC           SECTION.
       *
            ADD     1                   TO  IDG
-           IF      IDG                 >   600
+           IF      IDG                 >   800
                GO      TO      31013-JIHIMEI-HEN-EXT
            END-IF
            MOVE    WRK-BANGO           TO  SPA-GMN-NAIBANGO (IDG)
@@ -2406,7 +2406,7 @@
              AND ((FLG-KAISUU-ARI2     =   ZERO )  OR
                   (FLG-KAISUU-ARI3     =   ZERO ))
                ADD     1                   TO  IDG
-               IF      IDG                 >   600
+               IF      IDG                 >   800
                    GO      TO      31013-JIHIMEI-HEN-EXT
                END-IF
       *        ²ó¿ô
@@ -2921,7 +2921,7 @@
       *    ¹ÔÁªÂò
            MOVE    ZERO                TO  WRK-SELNUM
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX     >   600
+                   UNTIL       IDX     >   800
                IF      K08-SELECT (IDX)        =   "T"
                    MOVE    SPA-GMN-NAIBANGO (IDX)  TO  WRK-SELNUM
                END-IF
@@ -3051,7 +3051,7 @@
       *
            MOVE    ZERO                TO  FLG-OK
            PERFORM VARYING     IDY     FROM    1   BY  1
-                   UNTIL      (IDY             >   600 )  OR
+                   UNTIL      (IDY             >   800 )  OR
                               (FLG-OK          =   1     )  OR
                               (SPA-ERRCD   NOT =   SPACE )
                IF      SPA-GMN-SELNUM (IDX)    =   SPA-NAI-BANGO (IDY)
@@ -3503,13 +3503,13 @@
                    UNTIL       IDX     >   LNK-WKSRYACT-MAX
                MOVE    ZERO                TO  FLG-DEL
                PERFORM VARYING     IDY     FROM    1   BY  1
-                       UNTIL       IDY     >   600
+                       UNTIL       IDY     >   800
                    IF      LNK-WKSRY-ZAINUM (IDX)  =   SPA-NAI-ZAINUM
                                                                  (IDY)
                        IF      SPA-NAI-DELFLG (IDY)    =   1
                            MOVE    1               TO  FLG-DEL
                        END-IF
-                       MOVE    600             TO  IDY
+                       MOVE    800             TO  IDY
                    END-IF
                END-PERFORM
                IF      FLG-DEL             =   ZERO
@@ -3771,7 +3771,7 @@
            MOVE    ZERO                TO  SYU-SHOHOU-SAI
       *    ³ÆÅÀ¿ô
            PERFORM VARYING     IDY     FROM    1   BY  1
-                   UNTIL       IDY     >  600
+                   UNTIL       IDY     >  800
                IF     (SPA-NAI-HKNCOMBI(IDY)   =   LNK-SYU-HKNCOMBINUM
                                                              (IDH)) AND
                      ((LNK-SYU-SRYKA   (IDH)   =   ZERO      )  OR
@@ -5412,14 +5412,14 @@
                    MOVE    1               TO  FLG-DEL
                END-IF
                PERFORM VARYING     IDY     FROM    1   BY  1
-                       UNTIL      (IDY     >   600     )
+                       UNTIL      (IDY     >   800     )
                                OR (FLG-DEL =   1       )
                    IF      LNK-WKSRY-ZAINUM (IDX)  =   SPA-NAI-ZAINUM
                                                                  (IDY)
                        IF      SPA-NAI-DELFLG (IDY)    =   1
                            MOVE    1               TO  FLG-DEL
                        END-IF
-                       MOVE    600             TO  IDY
+                       MOVE    800             TO  IDY
                    END-IF
                END-PERFORM
                IF      FLG-DEL             =   ZERO

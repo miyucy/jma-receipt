@@ -61,7 +61,7 @@
                05  LNK-SC92-NYUINFLG          PIC  9(01).
       *    訂正時の診療コード
            03  LNK-SC92-TEISEI-AREA.
-               05  LNK-SC92-TEISEI-OCC      OCCURS   100.
+               05  LNK-SC92-TEISEI-OCC      OCCURS   400.
                    07  LNK-SC92-TEI-SRYCD   PIC X(09).
                    07  LNK-SC92-TEI-KAISU   PIC 9(03).
       *

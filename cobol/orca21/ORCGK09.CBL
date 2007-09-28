@@ -32,6 +32,7 @@
       * 01.00.03     NACL-多々納  05/11/17  MONFUNC 対応
       * 01.00.04     NACL-多々納  06/01/23  用量割合・包括検査数追加
       * 03.04.00     NACL-多々納  06/11/14  検査正式名称表示追加他
+      *  03.04.01    NACL-多々納  07/10/01  テーブル４００対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -62,7 +63,7 @@
       *
       *    ＳＰＡパラメタデータ
        FD  SPASCR-FILE.
-       01  SPA-DATA-REC            PIC X(30000).
+       01  SPA-DATA-REC            PIC X(60000).
       *
        WORKING-STORAGE             SECTION.
       *
@@ -81,7 +82,7 @@
       *
       *
        01  WRK-DATA-REC.
-           03  WRK-DATA            PIC X(30000)
+           03  WRK-DATA            PIC X(60000)
                                    OCCURS  10.
       *
       *    スパ領域
@@ -117,7 +118,7 @@
                    07  SPA-SRYKBN-MAX              PIC 9(03).
       *
                05  SPA-GMN-TBL.
-                   07  SPA-GMN-TBLREC-G  OCCURS  400.
+                   07  SPA-GMN-TBLREC-G  OCCURS  800.
                        09  SPA-GMN-TBANGO      PIC 9(03).
                        09  SPA-GMN-TMEISYO     PIC X(200).
                        09  SPA-GMN-TMEISYO-1   REDEFINES
@@ -144,13 +145,13 @@
                05  SPA-GMN-DOSEL             PIC X(40).
                05  SPA-NAI-DOSEL-G.
                    07  SPA-NAI-DOSEL         PIC 9(03)
-                                             OCCURS   100.
+                                             OCCURS   135.
                    07  SPA-NAI-DOSEL-MAX     PIC 9(03).
       *
                05  SPA-NAI-AREA.
       *
                    07  SPA-NAI-TBL.
-                       09  SPA-NAI-TBLREC            OCCURS   400.
+                       09  SPA-NAI-TBLREC            OCCURS   800.
                            11  SPA-NAI-ZAINUM        PIC  9(08).
                            11  SPA-NAI-SRYKBN        PIC  X(02).
                        09  SPA-SEL-IDX               PIC  9(02).
@@ -248,16 +249,16 @@
            03  WRK-BANGO-X             PIC X(03).
       *
            03  WRK-SELNUM-CHK-G.
-               05  WRK-SELNUM-CHK  PIC 9(03)   OCCURS  100.
+               05  WRK-SELNUM-CHK  PIC 9(03)   OCCURS  135.
            03  WRK-HEN-SELNUM      PIC X(40).
            03  WRK-HEN-SELNUM-2    PIC X(40).
            03  WRK-HEN-SELNUM-HZN  PIC X(40).
            03  WRK-SELNUM-AREA.
-               05  WRK-SELNUM-OCC    OCCURS   100.
+               05  WRK-SELNUM-OCC    OCCURS   135.
                    07  WRK-SEL9        PIC 9(01).
       *
            03  WRK-DOSEL.
-               05  WRK-DOSEL-OCC   OCCURS   100.
+               05  WRK-DOSEL-OCC   OCCURS   135.
                    07  WRK-DO          PIC X(03).
                    07  WRK-DONUM       PIC 9(03).
                    07  WRK-KAI         PIC X(03).
@@ -265,12 +266,12 @@
                    07  WRK-SEL         PIC X(01).
       *
            03  WRK-DOZAINUM-AREA.
-               05  WRK-DOZAINUM-OCC    OCCURS   100.
+               05  WRK-DOZAINUM-OCC    OCCURS   135.
                    07  WRK-DOZAINUM    PIC 9(08).
                    07  WRK-DOKAI       PIC 9(03).
       *
            03  HZN-DOZAINUM-AREA.
-               05  HZN-DOZAINUM-OCC    OCCURS   100.
+               05  HZN-DOZAINUM-OCC    OCCURS   135.
                    07  HZN-DOZAINUM    PIC 9(08).
                    07  HZN-DOKAI       PIC 9(03).
       *
@@ -1107,7 +1108,7 @@
       *           同じ剤選択は削除とする
                   MOVE    ZERO             TO  FLG-CHK
                   PERFORM VARYING  IDY     FROM   1   BY  1
-                          UNTIL   (IDY     >   100 )  OR
+                          UNTIL   (IDY     >   135 )  OR
                                   (WRK-SELNUM-CHK (IDY)   =   ZERO)
                       IF      WRK-SELNUM-CHK (IDY)
                                            =   WRK-BANGO
@@ -1126,7 +1127,7 @@
            MOVE    SPACE               TO  WRK-HEN-SELNUM
            MOVE    ZERO                TO  IDX2
            PERFORM VARYING     IDX     FROM   1   BY  1
-                   UNTIL      (IDX     >   100 )  OR
+                   UNTIL      (IDX     >   135 )  OR
                               (SPA-ERRCD   NOT =   SPACE )
                IF      (WRK-SELNUM-CHK (IDX)   NOT =   ZERO) 
                    MOVE    WRK-SELNUM-CHK (IDX)    TO  WRK-BANGO
@@ -1208,7 +1209,7 @@
            INITIALIZE                      WRK-DOZAINUM-AREA
            MOVE    ZERO                TO  IDX
            PERFORM VARYING     IDX-D2      FROM    1   BY  1
-                   UNTIL      (IDX-D2      >   100  )  OR
+                   UNTIL      (IDX-D2      >   135  )  OR
                               (WRK-DO(IDX-D2)  =   SPACE  )
                IF     (IDX-D2                  >   1   )  AND
                       (WRK-SEL  (IDX-D2 - 1)   =   "-" )
@@ -1265,7 +1266,7 @@
                IF      HZN-DOZAINUM (IDX1) NOT =   ZERO
                    MOVE    ZERO                TO  FLG-CHK
                    PERFORM VARYING     IDX2    FROM    1   BY  1
-                           UNTIL  (IDX2        >   100)    OR
+                           UNTIL  (IDX2        >   135)    OR
                                   (WRK-DOZAINUM (IDX2) =   ZERO ) OR
                                   (FLG-CHK             =   1    )
                        IF       HZN-DOZAINUM (IDX1)    =   WRK-DOZAINUM
@@ -1385,7 +1386,7 @@
            END-IF
       *
            PERFORM VARYING     IDX-D2      FROM    1   BY  1
-                   UNTIL      (IDX-D2      >   100  )  OR
+                   UNTIL      (IDX-D2      >   135  )  OR
                               (WRK-DO(IDX-D2)  =   SPACE  )  OR
                               (SPA-ERRCD   NOT =   SPACE  )
                INITIALIZE                      ORCSNUMAREA
@@ -1435,7 +1436,7 @@
            INITIALIZE                      WRK-SELNUM-AREA
            MOVE    ZERO                TO  IDX
            PERFORM VARYING     IDX-D2      FROM    1   BY  1
-                   UNTIL      (IDX-D2      >   100  )  OR
+                   UNTIL      (IDX-D2      >   135  )  OR
                               (WRK-DO (IDX-D2)
                                                =   SPACE  )
                           OR  (SPA-ERRCD   NOT =   SPACE )
@@ -1453,11 +1454,11 @@
            END-PERFORM
            MOVE    ZERO                TO  IDX
            PERFORM VARYING     IDX-D2  FROM    1   BY  1
-                   UNTIL      (IDX-D2  >   100  )  OR
+                   UNTIL      (IDX-D2  >   135  )  OR
                               (SPA-ERRCD   NOT =   SPACE )
                IF      WRK-SEL9(IDX-D2)    =   1
                    ADD     1               TO  IDX
-                   IF      IDX             >   100
+                   IF      IDX             >   135
                        MOVE    "0008"          TO  SPA-ERRCD
                    ELSE
                        MOVE    IDX-D2          TO  SPA-NAI-DOSEL(IDX)
@@ -1608,7 +1609,7 @@
       ****         END-IF
       *
                    PERFORM VARYING     IDX-R   FROM    1   BY  1
-                           UNTIL      (IDG             >   400 )  OR
+                           UNTIL      (IDG             >   800 )  OR
                                       (IDX-R           >   15  )
       *************                OR (FLG-OK2         =   ZERO)
                        IF      JYURRK-ZAINUM (IDX-R)   NOT =   ZERO
@@ -2012,7 +2013,7 @@
       *        剤明細編集
                PERFORM VARYING     IDZ     FROM    1   BY  1
                        UNTIL      (IDZ         >   5   )  OR
-                                  (IDG         >   400 )  OR
+                                  (IDG         >   800 )  OR
                                   (LNK-WKSRY-SRYCD (IDX IDZ) =  SPACE)
                    ADD     1                   TO  WRK-MEISAISU
       *            自費の時、金額を表示
@@ -2071,7 +2072,7 @@
       *
       *    剤終了編集
            ADD     1                   TO  IDG
-           IF      IDG                 >   400
+           IF      IDG                 >   800
                GO      TO      3101-WKSRYACT-HEN-EXT
            END-IF
            MOVE    ALL "-"             TO  SPA-GMN-TMEISYO (IDG)
@@ -2113,7 +2114,7 @@
                                                         (WRK-HOUKNS-IDX)
                    ADD     1               TO  IDG
                END-IF
-               IF      WRK-HOUKNS-IDX      <=   400
+               IF      WRK-HOUKNS-IDX      <=   800
                    MOVE    ORCSMEIHEN-MEISYO2
                                        TO  SPA-GMN-TMEISYO2
                                                   (WRK-HOUKNS-IDX)
@@ -2200,7 +2201,7 @@
        31012-ZAIMEI-HEN-SEC                  SECTION.
       *
            ADD     1                   TO  IDG
-           IF      IDG                 >   400
+           IF      IDG                 >   800
                GO      TO      31012-ZAIMEI-HEN-EXT
            END-IF
            MOVE    SPA-NAI-MAX2        TO  SPA-NAI-TBANGO    (IDG)
@@ -2322,7 +2323,7 @@
        31013-JIHIMEI-HEN-SEC           SECTION.
       *
            ADD     1                   TO  IDG
-           IF      IDG                 >   400
+           IF      IDG                 >   800
                GO      TO      31013-JIHIMEI-HEN-EXT
            END-IF
            MOVE    SPA-NAI-MAX2        TO  SPA-NAI-TBANGO    (IDG)
@@ -2692,7 +2693,7 @@
            MOVE    ZERO                TO  WRK-EDANUM
       *
            PERFORM VARYING     IDX-R   FROM    1   BY  1
-                   UNTIL      (IDX-R           >   100  )  OR
+                   UNTIL      (IDX-R           >   135  )  OR
                               (WRK-DOZAINUM (IDX-R)    =   ZERO  )
                PERFORM 42011-PARA-HEN-SEC
            END-PERFORM

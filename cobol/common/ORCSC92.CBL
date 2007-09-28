@@ -58,6 +58,7 @@
       *  03.04.00    NACL-多々納  06/11/13  検査正式名称表示追加
       *  03.04.01    NACL-多々納  06/12/11  薬剤附加情報追加
       *  03.04.02    NACL-多々納  07/03/XX  リハビリ医学管理料追加(H19.4改正）
+      *  03.04.01    NACL-多々納  07/10/01  テーブル４００対応
       *****************************************************************
       *
       *
@@ -439,7 +440,7 @@
                MOVE    1               TO  FLG-ERR
            END-IF
       *    ２００行以上エラー
-           IF      LNK-SC92-GMN-IDX    >   200
+           IF      LNK-SC92-GMN-IDX    >   400
                MOVE    "0007"          TO  SPA-ERRCD
                MOVE    1               TO  FLG-ERR
            END-IF
@@ -1143,7 +1144,7 @@
       *
       *    最終行判定
            MOVE    ZERO                TO  WRK-MAX
-           PERFORM VARYING     IDX     FROM    200   BY  -1
+           PERFORM VARYING     IDX     FROM    400   BY  -1
                    UNTIL       IDX     <   1
                IF     (SPA-GMN-INPUTCD (IDX)   NOT =   SPACE ) OR
                       (SPA-COM-INPUTCD (IDX)   NOT =   SPACE )
@@ -1782,7 +1783,7 @@
        20052-CHK-INPUT-SEC                SECTION.
       *
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL      (IDX     >   200          )  OR
+                   UNTIL      (IDX     >   400          )  OR
                              ((SPA-GMN-INPUTCD (IDX)   =   SPACE ) AND
                               (SPA-COM-INPUTCD (IDX)   =   SPACE )) OR
                               (FLG-KONKAI          =   1     )
@@ -1884,7 +1885,7 @@
            MOVE    ZERO                TO  FLG-MANSEI-ARI
            IF      LNK-SC92-SRYCD  NOT =   WRK-SRYCD
                PERFORM VARYING     IDX     FROM    1   BY  1
-                       UNTIL      (IDX     >   200  )  OR
+                       UNTIL      (IDX     >   400  )  OR
                                  ((SPA-GMN-INPUTCD (IDX)
                                                =   SPACE ) AND
                                   (SPA-COM-INPUTCD (IDX)
@@ -2030,7 +2031,7 @@
       *    訂正の時、訂正日が初回の場合
            IF      LNK-SC92-SYORIFLG   =   1
                PERFORM VARYING     IDX     FROM    1   BY  1
-                       UNTIL      (IDX     >   100 )  OR
+                       UNTIL      (IDX     >   400 )  OR
                                   (LNK-SC92-TEI-SRYCD (IDX)  =   SPACE)
                    IF      LNK-SC92-TEI-SRYCD (IDX)    =   WRK-SRYCD
                        IF      WRK-FSANTEIYMD      =   SPA-SRYYMD
@@ -2046,7 +2047,7 @@
            MOVE    ZERO                TO  FLG-RKAN-ARI2
            IF      LNK-SC92-SRYCD  NOT =   WRK-SRYCD
                PERFORM VARYING     IDX     FROM    1   BY  1
-                       UNTIL      (IDX     >   200  )  OR
+                       UNTIL      (IDX     >   400  )  OR
                                  ((SPA-GMN-INPUTCD (IDX)
                                                =   SPACE ) AND
                                   (SPA-COM-INPUTCD (IDX)
@@ -2149,7 +2150,7 @@
       *    訂正の時、訂正分はカウントしない
            IF      LNK-SC92-SYORIFLG   =   1
                PERFORM VARYING IDX     FROM    1   BY  1
-                       UNTIL   (IDX     >   100 )  OR
+                       UNTIL   (IDX     >   400 )  OR
                                (LNK-SC92-TEI-SRYCD (IDX)  =   SPACE)
                    IF      LNK-SC92-TEI-SRYCD (IDX)    =   WRK-SRYCD
                        MOVE    SPA-SRYYMD(7:2)     TO  IDX-Y2
@@ -2158,7 +2159,7 @@
                    END-IF
                END-PERFORM
                PERFORM VARYING IDX     FROM    1   BY  1
-                       UNTIL   (IDX     >   100 )  OR
+                       UNTIL   (IDX     >   400 )  OR
                                (LNK-SC92-TEI-SRYCD (IDX)  =   SPACE)
                    IF      LNK-SC92-TEI-SRYCD (IDX)    =   WRK-SRYCD2
                        MOVE    SPA-SRYYMD(7:2)     TO  IDX-Y2
@@ -2226,7 +2227,7 @@
            END-IF
       *    画面入力
            PERFORM VARYING     IDX     FROM    1  BY  1
-                   UNTIL       IDX     >   200
+                   UNTIL       IDX     >   400
                IF      SPA-COM-INPUTCD (IDX)   =   WRK-SRYCD
                    MOVE    SPA-SRYYMD          TO  WRK-STYMD
                END-IF
@@ -3603,7 +3604,7 @@
       *
       *    加算行を開ける（対象行の次に追加）
            MOVE    ZERO                TO  IDX2
-           PERFORM VARYING     IDX1    FROM    200 BY  -1
+           PERFORM VARYING     IDX1    FROM    400 BY  -1
                    UNTIL       IDX1    <   IDX-T
                IF      SPA-GMN-INPUTCD (IDX1)  NOT =   SPACE
                    COMPUTE IDX2            =   IDX1    +   1

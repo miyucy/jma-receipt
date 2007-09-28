@@ -37,10 +37,10 @@
                   05  K09-MEILIST-COUNT   PIC S9(9)   BINARY.
                   05  K09-MEILIST-ROW     PIC S9(9)   BINARY.
                   05  K09-MEILIST-ROWATTR PIC S9(9)   BINARY.
-                  05  K09-ITEM        OCCURS  400 TIMES.
+                  05  K09-ITEM        OCCURS 800 TIMES.
                     06  K09-MNO     PIC X(3).
                     06  K09-MEISAI  PIC X(90).
-                  05  K09-MEILIST-SELECT  PIC X       OCCURS  400 TIMES.
+                  05  K09-MEILIST-SELECT  PIC X       OCCURS  800 TIMES.
               03  K09-NYUGAIKBN-COMB.
                 04  K09-NYUGAIKBN.
                   05  K09-VALUE   PIC X(10).

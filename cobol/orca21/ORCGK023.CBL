@@ -47,7 +47,7 @@
       *
       *    ＳＰＡパラメタデータ
        FD  SPASCR-FILE.
-       01  SPA-DATA-REC            PIC X(30000).
+       01  SPA-DATA-REC            PIC X(60000).
       *
       *
        WORKING-STORAGE             SECTION.
@@ -61,7 +61,7 @@
       *
       *
        01  WRK-DATA-REC.
-           03  WRK-DATA            PIC X(30000)
+           03  WRK-DATA            PIC X(60000)
                                    OCCURS  10.
       *
       *    画面色等
@@ -390,7 +390,7 @@
            MOVE    ZERO                TO  SPA-K023-MAX
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL      (IDX     >   SPA-GMN-MAX  )  OR
-                              (SPA-K023-MAX    >   100 )
+                              (SPA-K023-MAX    >   300 )
                MOVE    ZERO                TO  FLG-OK
                IF     (SPA-GMN-INPUTCD (IDX)(1:1)  =   "." OR "S" )  OR
                       (SPA-COM-INPUTCD (IDX)       =   SPACE     )   OR
@@ -417,7 +417,7 @@
                    END-PERFORM
                    IF      FLG-K023            =   ZERO
                        ADD     1               TO  SPA-K023-MAX
-                       IF      SPA-K023-MAX    >   100
+                       IF      SPA-K023-MAX    >   300
                            CONTINUE
                        ELSE
                            MOVE    SPA-COM-INPUTCD (IDX)
@@ -760,7 +760,7 @@
       *
       *    空白削除
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX             >   100
+                   UNTIL       IDX             >   300
                PERFORM VARYING     IDY     FROM    1   BY  1
                        UNTIL       IDY             >   3
                    IF     (SPA-K023-INPUTCD (IDX IDY)  =   SPACE) AND
@@ -782,7 +782,7 @@
       *
       *    入力コードチェック
            PERFORM VARYING     IDX-1   FROM    1   BY  1
-                   UNTIL      (IDX-1             >   100 )   OR
+                   UNTIL      (IDX-1             >   300 )   OR
                               (SPA-ERRCD     NOT =   SPACE )
                COMPUTE WRK-PAGE        =  ((IDX-1    -   1 )
                                        /   20  )
