@@ -94,18 +94,29 @@
            03  WRK-MOJI            PIC X(01). 
            03  WRK-CHUSYA          PIC 9(09).
       *
-           03  WRK-SURYO           PIC 9(07)V9(05).
-           03  WRK-SURYO-R         REDEFINES   WRK-SURYO.
-               05  WRK-SURYO-S1    PIC 9(07).
-               05  WRK-SURYO-S2    PIC 9(05).
+           03  WRK-SYOKEIS         PIC 9(08)V99.
+           03  WRK-SYOKEIS2        PIC 9(08)V99.
+           03  WRK-SYOKEI          PIC 9(08).
       *
+           03  WRK-ZAIKEI          PIC 9(08)V99.
+           03  WRK-GAIKEI          PIC 9(08)V99.
            03  WRK-ZAITEN          PIC 9(08).
            03  WRK-GAITEN          PIC 9(08).
+           03  WRK-KIZKEI          PIC 9(08).
+           03  WRK-KIZTEN          PIC 9(08).
+           03  WRK-FIRTEN          PIC 9(08).
+           03  WRK-MAISU           PIC 9(08).
+           03  WRK-KEIMAI          PIC 9(08).
            03  WRK-KAISU           PIC 9(04).
       *
            03  WRK-TENSUKEI        PIC 9(08)V99.
            03  WRK-TENSUKEI-9      PIC 9(08).
            03  WRK-TENSUKEI-G      PIC 9(08).
+      *
+           03  WRK-TENSU-X.
+               05  WRK-TENSU-Z     PIC ZZZZZZZZ.
+           03  WRK-KAISU-X.
+               05  WRK-KAISU-Z     PIC ZZZZ.
       *
        01  WRK-SONOTA.
            03  WRK-ERRCD           PIC X(04). 
@@ -245,7 +256,7 @@
            MOVE    SPACE               TO  WRK-ERRCD
       *
            PERFORM VARYING     IDX-Z   FROM    1   BY  1
-                   UNTIL      (IDX-Z       >   SPA-MAX-LINE  )   OR
+                   UNTIL      (IDX-Z       >   400     )   OR
                               (WRK-GMN-INPUTCD (IDX-Z) =   SPACE )
       *
                ADD     1                   TO  IDX-MAX
@@ -370,8 +381,7 @@
       *
       *    アンプルの時、小数以下判定
            IF      WRK-COM-TANICD (IDX-Z)  =   "014" OR "022" OR "046"
-               MOVE    WRK-COM-SURYO(IDX-Z)    TO  WRK-SURYO
-               IF     (WRK-SURYO-S2              >   ZERO    )  AND
+               IF     (WRK-COM-SURYO(IDX-Z)(6:3) >   ZERO    )  AND
                       (WRK-COM-AUTOFLG2 (IDX-Z)  =   SPACE   )
                    MOVE    IDX-Z                 TO  IDX-HAI
                    PERFORM 10011-HAIKI-ADD-SEC
@@ -510,8 +520,8 @@
                                                             (2:3)
       *
                        PERFORM VARYING     IDX     FROM    1   BY  1
-                                UNTIL     (IDX         >   SPA-MAX-LINE)
-                                       OR (WRK-GMN-INPUTCD (IDX)
+                                UNTIL     (IDX         >   400  )  OR
+                                          (WRK-GMN-INPUTCD (IDX)
                                                       =   SPACE )
                            MOVE    WRK-COM-SRYSYUKBN(IDX-SYU)
                                                TO  WRK-COM-SRYSYUKBN
@@ -568,8 +578,8 @@
                        END-IF
       *
                        PERFORM VARYING     IDX     FROM    1   BY  1
-                                UNTIL     (IDX         >   SPA-MAX-LINE)
-                                      OR  (WRK-GMN-INPUTCD (IDX)
+                                UNTIL     (IDX         >   400  )  OR
+                                          (WRK-GMN-INPUTCD (IDX)
                                                       =   SPACE )
                            MOVE    WRK-COM-SRYSYUKBN(IDX-SYU)
                                                TO  WRK-COM-SRYSYUKBN
@@ -654,7 +664,7 @@
            MOVE    ZERO                TO  FLG-ARI
            MOVE    ZERO                TO  IDX-T
            PERFORM VARYING     IDX1    FROM    1   BY  1
-                   UNTIL      (IDX1        >   SPA-MAX-LINE   ) OR
+                   UNTIL      (IDX1        >   400     )   OR
                               (FLG-ARI                 =   1    ) OR
                               (WRK-GMN-INPUTCD (IDX1)  =   SPACE )
                IF       WRK-COM-INPUTCD (IDX1) =   WRK-SRYCD
@@ -745,7 +755,7 @@
            INITIALIZE                  ORCSC90AREA
       *
            PERFORM VARYING     IDX-Z   FROM    1   BY  1
-                   UNTIL      (IDX-Z       >   SPA-MAX-LINE  )  OR
+                   UNTIL      (IDX-Z       >   400     )   OR
                               (SPA-ERRCD       NOT =   SPACE )  OR
                               (WRK-GMN-INPUTCD (IDX-Z) =   SPACE )
       *
@@ -878,7 +888,7 @@
            MOVE    ZERO                TO  WRK-TENSUKEI-G
       *
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL      (IDX         >   SPA-MAX-LINE )   OR
+                   UNTIL      (IDX         >   400     )   OR
                               (WRK-GMN-INPUTCD (IDX)   =   SPACE )
       *        手技料の点数を所定点数とする
                IF     (WRK-COM-INPUTCD(IDX)(1:1)   =   "1" )  AND
@@ -902,7 +912,7 @@
       *    自動加算の加算（時間外、年齢）
            MOVE    ZERO                TO  WRK-TENSUKEI-G
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL      (IDX         >   SPA-MAX-LINE )   OR
+                   UNTIL      (IDX         >   400     )   OR
                               (WRK-GMN-INPUTCD (IDX)   =   SPACE )
                IF     (WRK-COM-INPUTCD(IDX)(1:1)   =   "1" )  AND
                       (WRK-COM-TENSIKIBETU(IDX)    =   5   )  AND
@@ -961,7 +971,7 @@
            MOVE    ZERO                TO  FLG-TENTEKI
       *
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL      (IDX     >   SPA-MAX-LINE  )  OR
+                   UNTIL      (IDX     >   400  )  OR
                               (WRK-GMN-INPUTCD(IDX) =   SPACE)  OR
                               (SPA-ERRCD        NOT =   SPACE)
       *        点滴は１回のみとする

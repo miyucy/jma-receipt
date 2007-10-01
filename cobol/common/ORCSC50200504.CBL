@@ -295,7 +295,7 @@
            MOVE    ZERO                TO  WRK-SCNT
      *
            PERFORM VARYING     IDX-Z   FROM    1   BY  1
-                   UNTIL      (IDX-Z       >   200     )   OR
+                   UNTIL      (IDX-Z       >   400     )   OR
                               (SPA-ERRCD       NOT =   SPACE )  OR
                               (WRK-GMN-INPUTCD (IDX-Z) =   SPACE )
       *
@@ -555,7 +555,7 @@
            MOVE    ZERO                TO  IDX-TUS
       *
            PERFORM VARYING     IDX1    FROM    IDX-S   BY  1
-                   UNTIL      (IDX1        >   200     )   OR
+                   UNTIL      (IDX1        >   400     )   OR
                              ((WRK-GMN-INPUTCD (IDX1)  =   SPACE ) AND
                               (WRK-COM-INPUTCD (IDX1)  =   SPACE)) OR
                               (FLG-ARI                 =   1     )
@@ -570,7 +570,7 @@
                IF     (IDX1                >   IDX-S     )   AND
                       (WRK-COM-DATAKBN (IDX1)  =   "1"   )   AND
                       (WRK-COM-INPUTCD (IDX1)(1:1) =   "1" )
-                   MOVE    200             TO  IDX1
+                   MOVE    400             TO  IDX1
                ELSE
       *        最後の通則加算対象位置
                    IF     (WRK-COM-INPUTCD (IDX1)(1:1) =   "1" )  AND
@@ -596,7 +596,7 @@
            MOVE    "770020070"         TO  WRK-SRYCD
            MOVE    ZERO                TO  FLG-ARI
            PERFORM VARYING     IDX1    FROM    1   BY  1
-                   UNTIL      (IDX1    >   200  )  OR
+                   UNTIL      (IDX1    >   400  )  OR
                               (WRK-COM-INPUTCD(IDX1)   =   SPACE AND
                                WRK-GMN-INPUTCD(IDX1)   =   SPACE )
                IF       WRK-COM-INPUTCD (IDX1) =   WRK-SRYCD
@@ -672,7 +672,7 @@
            MOVE    1                   TO  IDX-Z2
            MOVE    ZERO                TO  IDX-KSN
            PERFORM VARYING     IDX1    FROM    IDX-Z2    BY  1
-                   UNTIL      (IDX1        >   200     )
+                   UNTIL      (IDX1        >   400     )
       ********************OR  (FLG-ROU-ARI             =   1    )
                           OR  (WRK-GMN-INPUTCD (IDX1)  =   SPACE )
                           OR  (SPA-ERRCD           NOT =   SPACE )
@@ -691,7 +691,7 @@
                END-IF
       ******   IF     (WRK-COM-INPUTCD (IDX1)(1:1) =  "1" ) AND
       *               (WRK-COM-DATAKBN (IDX1)      =  "1" )
-      *           MOVE    200              TO  IDX1
+      *           MOVE    400              TO  IDX1
       ******** END-IF
            END-PERFORM
            IF      SPA-ERRCD           =   SPACE
@@ -725,7 +725,7 @@
            MOVE    ZERO                TO  IDX-T
            COMPUTE IDX-Z2              =   IDX-ZS    +   1
            PERFORM VARYING     IDX1    FROM    IDX-Z2    BY  1
-                   UNTIL      (IDX1        >   200     )   OR
+                   UNTIL      (IDX1        >   400     )   OR
                               (FLG-ARI                 =   1    ) OR
                               (WRK-GMN-INPUTCD (IDX1)  =   SPACE )
                IF       WRK-COM-INPUTCD (IDX1) =   WRK-SRYCD
@@ -738,7 +738,7 @@
                    END-IF
                    IF     (WRK-COM-INPUTCD (IDX1)(1:1) =  "1" ) AND
                           (WRK-COM-DATAKBN (IDX1)      =  "1" )
-                      MOVE    200              TO  IDX1
+                      MOVE    400              TO  IDX1
                    END-IF
                END-IF
            END-PERFORM
@@ -771,7 +771,7 @@
            MOVE    ZERO                TO  IDX-KSN
            MOVE    ZERO                TO  IDX-SYU
            PERFORM VARYING     IDX1    FROM    1   BY  1
-                   UNTIL      (IDX1        >   200     )   OR
+                   UNTIL      (IDX1        >   400     )   OR
                              ((WRK-GMN-INPUTCD (IDX1)  =   SPACE ) AND
                               (WRK-COM-INPUTCD (IDX1)  =   SPACE ))
                          OR   (SPA-ERRCD           NOT =   SPACE )
@@ -835,7 +835,7 @@
                   (WRK-RSI-SRYCD   NOT =   SPACE )
                MOVE    ZERO                TO  IDX-T
                PERFORM VARYING     IDX1    FROM    IDX-SYU BY  1
-                       UNTIL      (IDX1        >   200     )   OR
+                       UNTIL      (IDX1        >   400     )   OR
                                  ((WRK-GMN-INPUTCD (IDX1)  =   SPACE )
                               AND (WRK-COM-INPUTCD (IDX1)  =   SPACE ))
                    IF      (WRK-COM-INPUTCD(IDX1)(1:1) =   "1"  )  AND
@@ -871,7 +871,7 @@
            MOVE    ZERO                TO  IDX-TUS
       *
            PERFORM VARYING     IDX1    FROM    1    BY  1
-                   UNTIL      (IDX1        >   200     )   OR
+                   UNTIL      (IDX1        >   400     )   OR
                               (WRK-GMN-INPUTCD (IDX1)  =   SPACE  AND
                                WRK-COM-INPUTCD (IDX1)  =   SPACE )
       *        主たる手術を判定対象とする
@@ -994,7 +994,7 @@
            MOVE    ZERO                TO  FLG-ARI
            MOVE    ZERO                TO  IDX-T
            PERFORM VARYING     IDX1    FROM    1   BY  1
-                   UNTIL      (IDX1        >   200     )   OR
+                   UNTIL      (IDX1        >   400     )   OR
                               (FLG-ARI                 =   1    ) OR
                               (WRK-GMN-INPUTCD (IDX1)  =   SPACE )
                IF       WRK-COM-INPUTCD (IDX1) =   WRK-SRYCD
@@ -1087,7 +1087,7 @@
            MOVE    ZERO                TO  IDX-T
            MOVE    ZERO                TO  IDX-TUS
            PERFORM VARYING     IDX1    FROM    1   BY  1
-                   UNTIL      (IDX1        >   200     )   OR
+                   UNTIL      (IDX1        >   400     )   OR
       *********************** (FLG-ARI                 =   1    ) OR
                               (WRK-GMN-INPUTCD (IDX1)  =   SPACE  AND
                                WRK-COM-INPUTCD (IDX1)  =   SPACE )
@@ -1273,7 +1273,7 @@
            MOVE    ZERO                TO  WRK-SUM-AREA
       *
            PERFORM VARYING     IDX-Z   FROM    1   BY  1
-                   UNTIL      (IDX-Z       >   200     )   OR
+                   UNTIL      (IDX-Z       >   400     )   OR
                               (WRK-GMN-INPUTCD (IDX-Z) =   SPACE )
       *
                ADD     1                   TO  IDX-MAX

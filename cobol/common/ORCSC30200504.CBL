@@ -40,7 +40,6 @@
       * 01.00.10     NACL−多々納 05/05/13  332点滴（手術以外）
       * 01.00.11     NACL−多々納 05/10/25  外来静脈注射チェック追加
       * 01.00.12     NACL-多々納  05/12/14  MONFUNC 対応
-      * 03.05.00    NACL-多々納  07/04/XX  グループ診療対応
       *****************************************************************
       *
       *
@@ -119,14 +118,22 @@
            03  WRK-MOJI            PIC X(01). 
            03  WRK-CHUSYA          PIC 9(09).
       *
+           03  WRK-SYOKEIS         PIC 9(08)V99.
+           03  WRK-SYOKEIS2        PIC 9(08)V99.
+           03  WRK-SYOKEI          PIC 9(08).
+      *
+           03  WRK-ZAIKEI          PIC 9(08)V99.
+           03  WRK-GAIKEI          PIC 9(08)V99.
+           03  WRK-ZAITEN          PIC 9(08).
+           03  WRK-GAITEN          PIC 9(08).
+           03  WRK-KIZKEI          PIC 9(08).
+           03  WRK-KIZTEN          PIC 9(08).
+           03  WRK-FIRTEN          PIC 9(08).
+           03  WRK-MAISU           PIC 9(08).
+           03  WRK-KEIMAI          PIC 9(08).
            03  WRK-KAISU           PIC 9(04).
       *
            03  WRK-SRYSYUKBNMEI    PIC X(40).
-      *
-           03  WRK-SURYO           PIC 9(07)V9(05).
-           03  WRK-SURYO-R         REDEFINES   WRK-SURYO.
-               05  WRK-SURYO-S1    PIC 9(07).
-               05  WRK-SURYO-S2    PIC 9(05).
       *
            03  WRK-TENSUKEI        PIC 9(08)V99.
            03  WRK-TENSUKEI-9      PIC 9(08).
@@ -136,6 +143,11 @@
            03  WRK-TENSU-KEISAN.
                05  WRK-TENSU-GAI       PIC 9(08)V99.
                05  WRK-TENSU-KEI       PIC 9(08)V99.
+      *
+           03  WRK-TENSU-X.
+               05  WRK-TENSU-Z     PIC ZZZZZZZZ.
+           03  WRK-KAISU-X.
+               05  WRK-KAISU-Z     PIC ZZZZ.
       *    入院日＋１年
            03  WRK-NYMD.
                05  WRK-NYY             PIC 9(04).
@@ -174,8 +186,8 @@
       *
       *    最大液量
            03  WRK-MAX-RYOU            PIC 9(04).
-           03  WRK-EKIRYOU             PIC 9(09)V9(5).
-           03  WRK-GOK-RYOU            PIC 9(09)V9(5).
+           03  WRK-EKIRYOU             PIC 9(09)V99.
+           03  WRK-GOK-RYOU            PIC 9(09)V99.
       *    診療種別
            03  WRK-SRYSYUKBN           PIC X(03).
            03  WRK-SRYKBN              PIC X(02).
@@ -188,7 +200,7 @@
        01  TBL-NISUU-AREA.
            03  TBL-NISUU-OCC           OCCURS   31.
                05  TBL-DAY             PIC 9(01).
-               05  TBL-CHUSYA          PIC 9(09)V9(5).
+               05  TBL-CHUSYA          PIC 9(09)V99.
       *
                05  TBL-TEN-SRYCD       PIC X(09).
                05  TBL-TEN-SRYCD2      PIC X(09).
@@ -209,7 +221,7 @@
                05  TBL-MADOKU-IDX      PIC 9(04).
                05  TBL-MADOKU-ARI      PIC X(09).
       *        手術以外液量
-               05  TBL-CHUSYA-2        PIC 9(09)V9(5).
+               05  TBL-CHUSYA-2        PIC 9(09)V99.
                05  TBL-SEIBUTU-2       PIC 9(01).
                05  TBL-MADOKU-2        PIC 9(01).
       *
@@ -217,7 +229,7 @@
        01  TBL-IVH-NISUU-AREA.
            03  TBL-IVH-NISUU-OCC           OCCURS   31.
                05  TBL-IVH-DAY             PIC 9(01).
-               05  TBL-IVH-CHUSYA          PIC 9(09)V9(5).
+               05  TBL-IVH-CHUSYA          PIC 9(09)V99.
                05  TBL-IVH-SRYCD           PIC X(09).
                05  TBL-IVH-IDX             PIC 9(04).
                05  TBL-IVH-CHUIDX          PIC 9(04).
@@ -231,13 +243,13 @@
       *        麻毒加算
                05  TBL-IVH-MADOKU          PIC 9(01).
       *    前回算定分
-               05  TBL-IVH2-CHUSYA         PIC 9(09)V9(5).
+               05  TBL-IVH2-CHUSYA         PIC 9(09)V99.
       *        生物学的製剤
                05  TBL-IVH2-SEIBUTU        PIC 9(01).
       *        麻毒加算
                05  TBL-IVH2-MADOKU         PIC 9(01).
       *    手術以外液量
-               05  TBL-IVH-CHUSYA-2        PIC 9(09)V9(5).
+               05  TBL-IVH-CHUSYA-2        PIC 9(09)V99.
                05  TBL-IVH-SEIBUTU-2       PIC 9(01).
                05  TBL-IVH-MADOKU-2        PIC 9(01).
       *
@@ -410,7 +422,7 @@
            MOVE    SPACE               TO  WRK-ERRCD
       *
            PERFORM VARYING     IDX-Z   FROM    1   BY  1
-                   UNTIL      (IDX-Z       >   SPA-MAX-LINE )   OR
+                   UNTIL      (IDX-Z       >   400     )   OR
                               (WRK-GMN-INPUTCD (IDX-Z) =   SPACE )
       *
                ADD     1                   TO  IDX-MAX
@@ -588,8 +600,7 @@
       *
       *    アンプルの時、小数以下判定
            IF      WRK-COM-TANICD (IDX-Z)  =   "014" OR "022" OR "046"
-               MOVE    WRK-COM-SURYO(IDX-Z)    TO  WRK-SURYO
-               IF     (WRK-SURYO-S2                >   ZERO    )  AND
+               IF     (WRK-COM-SURYO(IDX-Z)(6:3) >   ZERO    )  AND
                       (WRK-COM-AUTOFLG2 (IDX-Z)  =   SPACE   )
                    MOVE    IDX-Z                 TO  IDX-HAI
                    PERFORM 10011-HAIKI-ADD-SEC
@@ -857,8 +868,8 @@
                                                             (2:3)
       *
                        PERFORM VARYING     IDX     FROM    1   BY  1
-                                UNTIL     (IDX         >   SPA-MAX-LINE)
-                                      OR  (WRK-GMN-INPUTCD (IDX)
+                                UNTIL     (IDX         >   400  )  OR
+                                          (WRK-GMN-INPUTCD (IDX)
                                                       =   SPACE )
                            MOVE    WRK-COM-SRYSYUKBN(IDX-SYU)
                                                TO  WRK-COM-SRYSYUKBN
@@ -924,8 +935,8 @@
                        END-IF
       *
                        PERFORM VARYING     IDX     FROM    1   BY  1
-                                UNTIL     (IDX         >   SPA-MAX-LINE)
-                                      OR  (WRK-GMN-INPUTCD (IDX)
+                                UNTIL     (IDX         >   400  )  OR
+                                          (WRK-GMN-INPUTCD (IDX)
                                                       =   SPACE )
                            MOVE    WRK-COM-SRYSYUKBN(IDX-SYU)
                                                TO  WRK-COM-SRYSYUKBN
@@ -1035,7 +1046,7 @@
            MOVE    ZERO                TO  FLG-ARI
            MOVE    ZERO                TO  IDX-T
            PERFORM VARYING     IDX1    FROM    1   BY  1
-                   UNTIL      (IDX1        >   SPA-MAX-LINE     ) OR
+                   UNTIL      (IDX1        >   400     )   OR
                               (FLG-ARI                 =   1    ) OR
                               (WRK-GMN-INPUTCD (IDX1)  =   SPACE )
                IF       WRK-COM-INPUTCD (IDX1) =   WRK-SRYCD
@@ -1125,7 +1136,7 @@
            INITIALIZE                  ORCSC90AREA
       *
            PERFORM VARYING     IDX-Z   FROM    1   BY  1
-                   UNTIL      (IDX-Z       >   SPA-MAX-LINE  )   OR
+                   UNTIL      (IDX-Z       >   400     )   OR
                               (SPA-ERRCD       NOT =   SPACE )  OR
                               (WRK-GMN-INPUTCD (IDX-Z) =   SPACE )
       *
@@ -1230,7 +1241,7 @@
            MOVE    ZERO                TO  WRK-TENSUKEI-G
            MOVE    ZERO                TO  WRK-TENSUKEI-GEN
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL      (IDX         >   SPA-MAX-LINE     )   OR
+                   UNTIL      (IDX         >   400     )   OR
                               (WRK-GMN-INPUTCD (IDX)   =   SPACE )
       *        通則対象の点数を所定点数とする
                IF     (WRK-COM-INPUTCD(IDX)(1:1)   =   "1" )  AND
@@ -1305,7 +1316,7 @@
            MOVE    ZERO                TO  IDX-CHU
       *
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL      (IDX     >   SPA-MAX-LINE  )  OR
+                   UNTIL      (IDX     >   400  )  OR
                               (WRK-GMN-INPUTCD(IDX) =   SPACE)  OR
                               (SPA-ERRCD        NOT =   SPACE)
       *        点滴は１回のみとする（外来のみ）
@@ -1409,7 +1420,7 @@
            INITIALIZE                  TBL-IVH-NISUU-AREA
            MOVE    ZERO                TO  FLG-OK
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL     ( IDX     >   SPA-MAX-LINE )  OR
+                   UNTIL     ( IDX     >   400 )  OR
                              ((WRK-GMN-INPUTCD(IDX)  =   SPACE ) AND
                               (WRK-COM-INPUTCD(IDX)  =   SPACE ))
       *        点滴の時のみ
@@ -1725,7 +1736,7 @@
            MOVE    ZERO                TO  FLG-SYUJUTU
       *
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL      (IDX     >   SPA-MAX-LINE  )  OR
+                   UNTIL      (IDX     >   400  )  OR
                               (WRK-GMN-INPUTCD(IDX) =   SPACE)  OR
                               (SPA-ERRCD        NOT =   SPACE)
       *        点滴は１回のみとする（外来のみ）
@@ -1819,7 +1830,7 @@
       *    診療年月の診療会計マスタ読み込み
            MOVE    SPACE               TO  SRYACCT-REC
            INITIALIZE                      SRYACCT-REC
-           MOVE    SPA-HOSPNUM         TO  ACCT-HOSPNUM
+           MOVE    SPA-HOSPID          TO  ACCT-HOSPID
            MOVE    SPA-NYUGAIKBN       TO  ACCT-NYUGAIKBN
            MOVE    SPA-PTID            TO  ACCT-PTID
            MOVE    SPA-SRYYMD(1:6)     TO  ACCT-SRYYM
@@ -1887,7 +1898,7 @@
       *    診療会計マスターから診療行為マスターを検索する
            MOVE    SPACE               TO  SRYACT-REC
            INITIALIZE                      SRYACT-REC
-           MOVE    ACCT-HOSPNUM        TO  SRY-HOSPNUM
+           MOVE    ACCT-HOSPID         TO  SRY-HOSPID
            MOVE    ACCT-NYUGAIKBN      TO  SRY-NYUGAIKBN
            MOVE    ACCT-PTID           TO  SRY-PTID
            MOVE    ACCT-SRYKA          TO  SRY-SRYKA
@@ -2085,7 +2096,7 @@
       *    診療年月の診療会計マスタ読み込み
            MOVE    SPACE               TO  SRYACCT-REC
            INITIALIZE                      SRYACCT-REC
-           MOVE    SPA-HOSPNUM         TO  ACCT-HOSPNUM
+           MOVE    SPA-HOSPID          TO  ACCT-HOSPID
            MOVE    SPA-NYUGAIKBN       TO  ACCT-NYUGAIKBN
            MOVE    SPA-PTID            TO  ACCT-PTID
            MOVE    SPA-SRYYMD(1:6)     TO  ACCT-SRYYM
@@ -2155,7 +2166,7 @@
       *    診療会計マスターから診療行為マスターを検索する
            MOVE    SPACE               TO  SRYACT-REC
            INITIALIZE                      SRYACT-REC
-           MOVE    ACCT-HOSPNUM        TO  SRY-HOSPNUM
+           MOVE    ACCT-HOSPID         TO  SRY-HOSPID
            MOVE    ACCT-NYUGAIKBN      TO  SRY-NYUGAIKBN
            MOVE    ACCT-PTID           TO  SRY-PTID
            MOVE    ACCT-SRYKA          TO  SRY-SRYKA
@@ -2195,7 +2206,7 @@
       *    診療年月の診療会計マスタ読み込み
            MOVE    SPACE               TO  SRYACCT-REC
            INITIALIZE                      SRYACCT-REC
-           MOVE    SPA-HOSPNUM         TO  ACCT-HOSPNUM
+           MOVE    SPA-HOSPID          TO  ACCT-HOSPID
            MOVE    SPA-NYUGAIKBN       TO  ACCT-NYUGAIKBN
            MOVE    SPA-PTID            TO  ACCT-PTID
            MOVE    SPA-SRYYMD(1:6)     TO  ACCT-SRYYM
@@ -2264,7 +2275,7 @@
       *    診療会計マスターから診療行為マスターを検索する
            MOVE    SPACE               TO  SRYACT-REC
            INITIALIZE                      SRYACT-REC
-           MOVE    ACCT-HOSPNUM        TO  SRY-HOSPNUM
+           MOVE    ACCT-HOSPID         TO  SRY-HOSPID
            MOVE    ACCT-NYUGAIKBN      TO  SRY-NYUGAIKBN
            MOVE    ACCT-PTID           TO  SRY-PTID
            MOVE    ACCT-SRYKA          TO  SRY-SRYKA
@@ -2688,11 +2699,10 @@
            MOVE    SPACE               TO  WRK-NYMD
       *
            INITIALIZE                  ORCSTUSANAREA
-           MOVE    SPA-HOSPNUM         TO  STUSAN-HOSPNUM
+           MOVE    SPA-HOSPID          TO  STUSAN-HOSPID
            MOVE    SPA-PTID            TO  STUSAN-PTID
            MOVE    SPA-SRYYMD          TO  STUSAN-KJNYMD
            CALL    "ORCSTUSAN"         USING   ORCSTUSANAREA
-                                               SPA-AREA
       *
       *    通算入院日を求める
            INITIALIZE                      STS-AREA-DAY
@@ -2924,7 +2934,6 @@
            MOVE    SPA-SRYYMD          TO  TNS-YUKOSTYMD
            MOVE    SPA-SRYYMD          TO  TNS-YUKOEDYMD
       *
-           MOVE    SPA-HOSPNUM         TO  TNS-HOSPNUM
            MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
            MOVE    "tbl_tensu"         TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
@@ -2995,9 +3004,9 @@
        910-DBSELECT-SEC                SECTION.
       *
            MOVE    "DBSELECT"      TO  MCP-FUNC
-grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
       *
            .
        910-DBSELECT-EXT.
@@ -3008,9 +3017,9 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        920-DBFETCH-SEC                 SECTION.
       *
            MOVE    "DBFETCH"       TO  MCP-FUNC
-grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
       *
            .
       *
@@ -3023,9 +3032,9 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        990-DBCLOSE-SEC           SECTION.
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
       *
            .
        990-DBCLOSE-EXT.
