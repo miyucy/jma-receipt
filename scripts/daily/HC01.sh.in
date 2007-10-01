@@ -47,6 +47,10 @@ HCLIST="HC04 HC08 HC18 HC20 HC21 HC22 HC23 HC24"
   done
   if [ -e $4 ]	;then
         echo $4
+#------ 処方せんQRイメージ削除
+	if	[ ${4:7:4} = "HC2Q" ]	;then
+	    ruby -ne '$_.scan(%r|/tmp.*?\.png|m){|a| print "#{a} "}' $4 | xargs rm -f
+	fi
 	rm $4
   fi
 #----------------------------------------------------------------------#

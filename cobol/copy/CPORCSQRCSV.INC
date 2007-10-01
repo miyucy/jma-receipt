@@ -84,6 +84,8 @@
                        09  ORCSQRCSV-TANINAME         PIC X(12).
                        09  ORCSQRCSV-KISAIKBN         PIC X(01).
                        09  ORCSQRCSV-KANZANCHI        PIC 9(05)V9(5).
+      *    ファイル名組み立て項目
+           03  ORCSQRCSV-SYSTIME       PIC 9(08).
       *    エラーコード
            03  ORCSQRCSV-ERRCD         PIC 9(01).
       *    リターンコード(ＱＲ画像バージョン)

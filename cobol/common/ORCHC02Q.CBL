@@ -365,8 +365,12 @@
        01  QR-FILE-NAME.
            03  FILLER              PIC X(05)   VALUE   "/tmp/".
            03  QR-FILE-HOSPNUM     PIC 9(02)   VALUE   ZERO.
-           03  QR-FILE-TERMID      PIC X(64)   VALUE   SPACE.
-           03  FILLER              PIC X(03)   VALUE   "qr_".
+           03  QR-FILE-FORM-ID     PIC X(04)   VALUE   SPACE.
+           03  FILLER              PIC X(01)   VALUE   ".".
+           03  QR-FILE-TERMID      PIC X(32)   VALUE   SPACE.
+           03  FILLER              PIC X(01)   VALUE   ".".
+           03  QR-FILE-SYOHMS      PIC 9(08)   VALUE   ZERO.
+           03  FILLER              PIC X(04)   VALUE   ".qr_".
            03  QR-FILE-ID          PIC 9(02)   VALUE   ZERO.
            03  FILLER              PIC X(04)   VALUE   ".png".
       *
@@ -569,7 +573,7 @@
       *
       *    ファイルＯＰＥＮ
            MOVE    SPA-HOSPNUM         TO  HC01PARA-HOSPNUM
-           MOVE    "HCM1"              TO  HC01PARA-FORM-ID
+           MOVE    "HC2Q"              TO  HC01PARA-FORM-ID
            MOVE    SPA-TERMID          TO  HC01PARA-TERMID
            MOVE    SYS-TIME            TO  HC01PARA-SYOHMS
       *    変更★★★★★★
@@ -1842,7 +1846,9 @@
                ADD     1                   TO  WRK-FILE-CNT
                IF      WRK-FILE-CNT        <=  ORCSQRCSV-RET-COUNT 
                    MOVE    SPA-HOSPNUM         TO  QR-FILE-HOSPNUM
+                   MOVE    "HC2Q"              TO  QR-FILE-FORM-ID
                    MOVE    SPA-TERMID          TO  QR-FILE-TERMID
+                   MOVE    SYS-TIME            TO  QR-FILE-SYOHMS
                    MOVE    WRK-FILE-CNT        TO  QR-FILE-ID
       *            ファイル存在チェック
                    INITIALIZE                      ORCSFILECHKAREA
@@ -3753,6 +3759,8 @@
            MOVE    FLG-MAYAKU          TO  ORCSQRCSV-MAYAKU
       *    一部負担割合備考
            MOVE    WRK-BIKOU           TO  ORCSQRCSV-BIKO-FTN
+      *    ファイル名組み立て項目
+           MOVE    SYS-TIME            TO  ORCSQRCSV-SYSTIME
       *
            CALL    "ORCSQRCSV"         USING
                                        SPA-AREA
