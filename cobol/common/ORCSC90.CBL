@@ -127,7 +127,7 @@
            INITIALIZE                  FLG-AREA
            INITIALIZE                  IDX-AREA
       *
-           IF      LNK-SC90-IDX        <   1  OR  >  200
+           IF      LNK-SC90-IDX        <   1  OR  >  400
                GO      TO      000-PROC-EXT
            END-IF
       *
@@ -260,17 +260,17 @@
       *D                                   OR  "40" 
       *                                                   ) AND
       *          ((LNK-COM-TANICD (IDX)    =   "014" OR "022" OR "046")
-      *        OR  ((IDX                     <   200  )  AND
+      *        OR  ((IDX                     <   400  )  AND
       *             (LNK-COM-INPUTCD(IDX + 1)  =   "099309901"))) )
       *        処置の時、次が残量廃棄
       *       OR  ((LNK-COM-SRYKBN (IDX)    =   "40" )  AND
-      *            (IDX                     <   200  )  AND
+      *            (IDX                     <   400  )  AND
       ************ (LNK-COM-INPUTCD(IDX + 1)  =   "099309901"))
       *    IF     (LNK-COM-TANICD (IDX)    =   "014"
       *                                    OR  "022"
       ***                                  OR  "046"  )  AND
       *    残量廃棄のあるすべての注射薬を対象とする
-           IF     (IDX                     <   200    )  AND
+           IF     (IDX                     <   400    )  AND
                   (LNK-COM-INPUTCD(IDX + 1)  =   "099309901")
                IF      LNK-COM-SURYO(IDX)(6:3) >   ZERO
                    COMPUTE WRK-SURYO-CHU9      =   LNK-COM-SURYO (IDX)

@@ -467,7 +467,7 @@
            INITIALIZE                  WRK-AREA
       *
            PERFORM VARYING     IDX-Z   FROM    1   BY  1
-                   UNTIL      (IDX-Z       >   200     )   OR
+                   UNTIL      (IDX-Z       >   400     )   OR
                               (WRK-GMN-INPUTCD (IDX-Z) =   SPACE )
       *
                ADD     1                   TO  IDX-MAX
@@ -779,7 +779,7 @@
            INITIALIZE                  ORCSC90AREA
       *
            PERFORM VARYING     IDX-Z   FROM    1   BY  1
-                   UNTIL      (IDX-Z       >   200     )   OR
+                   UNTIL      (IDX-Z       >   400     )   OR
                               (SPA-ERRCD       NOT =   SPACE )  OR
                               (WRK-GMN-INPUTCD (IDX-Z) =   SPACE )
       *
@@ -1122,7 +1122,7 @@
            MOVE    ZERO                TO  WRK-TENSUKEI-G
            MOVE    ZERO                TO  WRK-TENSUKEI-K
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL      (IDX         >   200     )   OR
+                   UNTIL      (IDX         >   400     )   OR
                               (WRK-GMN-INPUTCD (IDX)   =   SPACE )
       *        加算
                IF     (WRK-COM-INPUTCD(IDX)(1:1)   =   "1" )  AND
@@ -1164,14 +1164,14 @@
       *
       *    同一検査をエラーとする
            PERFORM VARYING     IDX-Z   FROM    1   BY  1
-                   UNTIL      (IDX-Z       >   200     )   OR
+                   UNTIL      (IDX-Z       >   400     )   OR
                               (SPA-ERRCD           NOT =   SPACE )  OR
                               (WRK-GMN-INPUTCD (IDX-Z) =   SPACE )
                IF     (WRK-COM-SRYKBN (IDX-Z)  =   "60"  )  AND
                       (WRK-COM-INPUTCD(IDX-Z)(1:1)  =   "1" )  AND
                       (WRK-COM-DATAKBN(IDX-Z)  =   "1"   )
                    PERFORM VARYING     IDX-Z2  FROM    1   BY  1
-                           UNTIL      (IDX-Z2      >   200     )   OR
+                           UNTIL      (IDX-Z2      >   400     )   OR
                                       (SPA-ERRCD   NOT =   SPACE )  OR
                                   (WRK-GMN-INPUTCD (IDX-Z2) =   SPACE )
                        IF     (IDX-Z2      NOT =   IDX-Z )  AND
@@ -1193,7 +1193,7 @@
            MOVE    ZERO                TO  IDX-TEIGEN2
       *
            PERFORM VARYING     IDX-Z   FROM    1   BY  1
-                   UNTIL      (IDX-Z       >   200     )   OR
+                   UNTIL      (IDX-Z       >   400     )   OR
                               (SPA-ERRCD           NOT =   SPACE )  OR
                               (WRK-GMN-INPUTCD (IDX-Z) =   SPACE )
       *        時間外緊急院内画像診断加算
@@ -1353,7 +1353,7 @@
       *
       *T   同月内の検査区分番号のチェック
       *    PERFORM VARYING IDX-ACT     FROM    1   BY  1
-      *            UNTIL  (IDX-ACT     >   200  )  OR
+      *            UNTIL  (IDX-ACT     >   400  )  OR
       *                   (LNK-ACCT-SRYCD (IDX-ACT)    =   SPACE )
       *        IF      LNK-ACCT-CDKBN (IDX-ACT)    =   "D100" OR
       *                                                "D101"
@@ -1363,7 +1363,7 @@
       *
       *    今回入力の検査区分番号のチェック
            PERFORM VARYING IDX-ACT     FROM    1   BY  1
-                   UNTIL  (IDX-ACT     >   200  )  OR
+                   UNTIL  (IDX-ACT     >   400  )  OR
                           (WRK-COM-INPUTCD (IDX-ACT)  =   SPACE )
                IF     (IDX-ACT         NOT =   IDX-Z  )  AND
                       (WRK-COM-CDKBN (IDX-ACT) =   "D100" OR
@@ -1599,7 +1599,7 @@
                                                          (IDX-Z))
                    MOVE    TBL-JYU-SRYCD (JYU-IDX) TO  WRK-SRYCD
                    PERFORM VARYING     IDX2    FROM    1   BY  1
-                           UNTIL      (IDX2    >   200  )  OR
+                           UNTIL      (IDX2    >   400  )  OR
                                       (WRK-COM-INPUTCD (IDX2)
                                                    =   SPACE  AND
                                        WRK-GMN-INPUTCD (IDX2)
@@ -1696,7 +1696,7 @@
      *
            INITIALIZE                  WRK-KENSA-AREA
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL      (IDX     >   200  )  OR
+                   UNTIL      (IDX     >   400  )  OR
                               (WRK-GMN-INPUTCD (IDX)   =   SPACE )
       *
       *        検査の時、検査等実施判断を行う
@@ -1920,7 +1920,7 @@
       *----(01.00.01) LINE UPD START ----------------------------------
       *    今回入力にないこと
       *    PERFORM VARYING     IDX     FROM    1   BY  1
-      *            UNTIL      (IDX     >   200  )  OR
+      *            UNTIL      (IDX     >   400  )  OR
       *                       (FLG-ERR              =   1    )   OR
       *                       (WRK-GMN-INPUTCD(IDX) =   SPACE)
       *        IF      WRK-GMN-INPUTCD(IDX)    =   WRK-KEN-SRYCD (IDX)
@@ -1930,7 +1930,7 @@
       *    MOVE    ZERO                TO  FLG-ERR
       *
       *    PERFORM VARYING     IDX-CHK FROM    1   BY  1
-      *            UNTIL      (IDX-CHK >   200  )  OR
+      *            UNTIL      (IDX-CHK >   400  )  OR
       *                       (FLG-ERR              =   1    )   OR
       *                       (WRK-GMN-INPUTCD(IDX-CHK) =   SPACE)
       *        IF      WRK-GMN-INPUTCD(IDX-CHK)    =   WRK-SRYCD
@@ -1976,8 +1976,8 @@
            MOVE    "3"                 TO  LNK-SC92-KBN
            COMPUTE LNK-SC92-GMN-IDX    =   WRK-GMN-MAX
                                        +   1
-           IF      LNK-SC92-GMN-IDX    >   200
-               MOVE    200                 TO  LNK-SC92-GMN-IDX
+           IF      LNK-SC92-GMN-IDX    >   400
+               MOVE    400                 TO  LNK-SC92-GMN-IDX
            END-IF
            MOVE    LNK-ORCSC-SYORIFLG  TO  LNK-SC92-SYORIFLG
            MOVE    LNK-ORCSC-PG        TO  LNK-SC92-PG

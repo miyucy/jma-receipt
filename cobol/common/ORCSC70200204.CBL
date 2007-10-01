@@ -539,7 +539,7 @@
            INITIALIZE                  WRK-AREA
       *
            PERFORM VARYING     IDX-Z   FROM    1   BY  1
-                   UNTIL      (IDX-Z       >   200     )   OR
+                   UNTIL      (IDX-Z       >   400     )   OR
                               (WRK-GMN-INPUTCD (IDX-Z) =   SPACE )  OR
                               (WRK-ERRCD       NOT =   SPACE )
       *
@@ -853,7 +853,7 @@
            MOVE    "770020070"         TO  WRK-SRYCD
            MOVE    ZERO                TO  FLG-ARI
            PERFORM VARYING     IDX1    FROM    1   BY  1
-                   UNTIL      (IDX1    >   200  )  OR
+                   UNTIL      (IDX1    >   400  )  OR
                               (WRK-COM-INPUTCD(IDX1)   =   SPACE AND
                                WRK-GMN-INPUTCD(IDX1)   =   SPACE )
                IF     (WRK-COM-INPUTCD  (IDX1)(1:1)    =   "7" ) AND
@@ -1368,11 +1368,11 @@
       *
       *    現在のチェック位置に戻す
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX     >   200
+                   UNTIL       IDX     >   400
                IF      WRK-COM-AUTOKBN (IDX)   =   "K"
                    MOVE    SPACE           TO  WRK-COM-AUTOKBN (IDX)
                    MOVE    IDX             TO  IDX-Z
-                   MOVE    200             TO  IDX
+                   MOVE    400             TO  IDX
                END-IF
            END-PERFORM
       *
@@ -1453,7 +1453,7 @@
            INITIALIZE                  ORCSC90AREA
            MOVE    ZERO                TO  IDX-MAX
            PERFORM VARYING     IDX-Z   FROM    IDX-HOZ BY  1
-                   UNTIL      (IDX-Z       >   200  )  OR
+                   UNTIL      (IDX-Z       >   400  )  OR
                               (WRK-GMN-INPUTCD(IDX-Z)  =   SPACE ) OR
                               (WRK-COM-AUTOKBN(IDX-Z)  =   "K"   )
       *
@@ -1586,7 +1586,7 @@
            IF     (WRK-CNT-SATUEI      =   1  )  AND
                   (IDX-GEN             >   ZERO )
                PERFORM VARYING     IDX-Z2  FROM    IDX-SAT BY  1
-                   UNTIL      (IDX-Z2      >   200  )  OR
+                   UNTIL      (IDX-Z2      >   400  )  OR
                               (WRK-GMN-INPUTCD(IDX-Z2)  =   SPACE ) OR
                               (WRK-COM-AUTOKBN(IDX-Z2)  =   "K"   )
                    IF     (WRK-COM-TENSIKIBETU (IDX-Z2) =   6 )  AND
@@ -1601,7 +1601,7 @@
                                                -   WRK-GENTEN
                        MOVE    1               TO  WRK-COM-SANFLG
                                                           (IDX-Z2)
-                       MOVE    200            TO  IDX-Z2
+                       MOVE    400            TO  IDX-Z2
                    END-IF
                END-PERFORM
            END-IF
@@ -1610,7 +1610,7 @@
       *    乳幼児加算（％加算）
       **** PERFORM VARYING     IDX-Z2  FROM    1    BY  1
            PERFORM VARYING     IDX-Z2  FROM    IDX-SAT  BY  1
-                   UNTIL      (IDX-Z2      >   200  )  OR
+                   UNTIL      (IDX-Z2      >   400  )  OR
                               (WRK-GMN-INPUTCD(IDX-Z2)  =   SPACE ) OR
                               (WRK-COM-AUTOKBN(IDX-Z2)  =   "K"   )
               IF     (WRK-COM-SANFLG(IDX-Z2)  =   2 OR 5 )  AND
@@ -1626,7 +1626,7 @@
                    COMPUTE WRK-SATU-KASAN      =   WRK-COM-TEN (IDX-Z2)
                                                /   100
       *
-                   MOVE    200                 TO  IDX-Z2
+                   MOVE    400                 TO  IDX-Z2
                END-IF
            END-PERFORM
       *
@@ -1664,7 +1664,7 @@
                   (WRK-COM-TNSSRYSYUKBN(IDX-Z)(1:2)  =  "71" ) AND
                   (IDX-GEN             >   ZERO )
                PERFORM VARYING     IDX-Z2  FROM    IDX-SAT BY  1
-                   UNTIL      (IDX-Z2      >   200  )  OR
+                   UNTIL      (IDX-Z2      >   400  )  OR
                               (WRK-GMN-INPUTCD(IDX-Z2)  =   SPACE ) OR
                               (WRK-COM-AUTOKBN(IDX-Z2)  =   "K"   )
                    IF     (WRK-COM-TENSIKIBETU (IDX-Z2) =   6 )  AND
@@ -1679,7 +1679,7 @@
                                                -   WRK-GENTEN
                        MOVE    1               TO  WRK-COM-SANFLG
                                                           (IDX-Z2)
-                       MOVE    200            TO  IDX-Z2
+                       MOVE    400            TO  IDX-Z2
                    END-IF
                END-PERFORM
            END-IF
@@ -1930,7 +1930,7 @@
            MOVE    ZERO                TO  IDX-DOJI1
            MOVE    ZERO                TO  IDX-DOJI2
            PERFORM VARYING     IDX-S1  FROM    IDX-SAT   BY  1
-                   UNTIL      (IDX-S1      >   200 )  OR
+                   UNTIL      (IDX-S1      >   400 )  OR
                               (IDX-DOJI1   >   ZERO )    OR
                               (IDX-DOJI2   >   ZERO )    OR
                               (WRK-COM-INPUTCD (IDX-S1)  =   SPACE AND
@@ -1953,7 +1953,7 @@
       *
                IF     (IDX-S1          NOT =   IDX-SAT)  AND
                       (WRK-COM-TNSSRYSYUKBN (IDX-S1)    =   "721")
-                   MOVE   200              TO  IDX-S1
+                   MOVE   400              TO  IDX-S1
                END-IF
            END-PERFORM
       *
@@ -2175,7 +2175,7 @@
                END-IF
            END-IF
            PERFORM VARYING     IDX1    FROM    IDXS1  BY  1
-                   UNTIL      (IDX1        >   200     )   OR
+                   UNTIL      (IDX1        >   400     )   OR
                               (FLG-ARI                 =   1    ) OR
                               (WRK-GMN-INPUTCD (IDX1)  =   SPACE ) OR
                               (WRK-GMN-INPUTCD(IDX1)(1:1)  =   "*")
@@ -2353,7 +2353,7 @@
            INITIALIZE                  ORCSC90AREA
            MOVE    ZERO                TO  IDX-MAX
            PERFORM VARYING     IDX-Z   FROM    1   BY  1
-                   UNTIL      (IDX-Z       >   200  )  OR
+                   UNTIL      (IDX-Z       >   400  )  OR
                               (WRK-GMN-INPUTCD(IDX-Z)  =   SPACE )
       *
                ADD     1                   TO  IDX-MAX
@@ -2441,7 +2441,7 @@
            MOVE    ZERO                TO  IDX-MAX
            MOVE    ZERO                TO  IDX-KAS
            PERFORM VARYING     IDX-Z   FROM    1   BY  1
-                   UNTIL      (IDX-Z       >   200  )  OR
+                   UNTIL      (IDX-Z       >   400  )  OR
                              ((WRK-GMN-INPUTCD(IDX-Z)  =   SPACE ) AND
                               (WRK-COM-INPUTCD(IDX-Z)  =   SPACE ))
       *
@@ -2535,7 +2535,7 @@
            INITIALIZE                  ORCSC90AREA
            MOVE    ZERO                TO  IDX-MAX
            PERFORM VARYING     IDX-Z   FROM    1       BY  1
-                   UNTIL      (IDX-Z       >   200  )  OR
+                   UNTIL      (IDX-Z       >   400  )  OR
                               (WRK-GMN-INPUTCD(IDX-Z)  =   SPACE )
       *
                ADD     1                   TO  IDX-MAX
@@ -2711,7 +2711,7 @@
            MOVE    ZERO                TO  FLG-ARI
            MOVE    ZERO                TO  WRK-IDX
            PERFORM VARYING     IDX1    FROM    IDX-HOZ  BY  1
-                   UNTIL      (IDX1        >   200     )   OR
+                   UNTIL      (IDX1        >   400     )   OR
                               (WRK-GMN-INPUTCD (IDX1)  =   SPACE )
       *            フィルム判定
                IF    ((WRK-COM-INPUTCD (IDX1)(1:1) =   "7" ) OR
@@ -2802,7 +2802,7 @@
            MOVE    ZERO                TO  FLG-TENTEKI
       *
            PERFORM VARYING     IDX-Z   FROM    1   BY  1
-                   UNTIL      (IDX-Z       >   200     )   OR
+                   UNTIL      (IDX-Z       >   400     )   OR
                               (SPA-ERRCD           NOT =   SPACE )  OR
                               (WRK-GMN-INPUTCD (IDX-Z) =   SPACE )
       *        時間外緊急院内画像診断加算
@@ -3091,7 +3091,7 @@
            INITIALIZE                      WRK-SCR-REC
            MOVE    ZERO                TO  IDX-D2
            PERFORM VARYING     IDX-D1  FROM    1   BY  1
-                   UNTIL       IDX-D1      >   200
+                   UNTIL       IDX-D1      >   400
                IF      IDX-T           =   IDX-D1
                    CONTINUE
                ELSE
@@ -3134,7 +3134,7 @@
            INITIALIZE                  WRK-NYUINDAY-AREA
       *
            PERFORM VARYING     IDX-Z   FROM    1   BY  1
-                   UNTIL      (IDX-Z       >   200     )   OR
+                   UNTIL      (IDX-Z       >   400     )   OR
                               (SPA-ERRCD           NOT =   SPACE )  OR
                               (WRK-GMN-INPUTCD (IDX-Z) =   SPACE )
                IF     (WRK-COM-SRYKBN (IDX-Z)  =   "70")  AND
@@ -3371,7 +3371,7 @@
       *
       *    今回入力にないこと
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL      (IDX     >   200  )  OR
+                   UNTIL      (IDX     >   400  )  OR
                               (FLG-ERR              =   1    )   OR
                               (WRK-GMN-INPUTCD(IDX) =   SPACE)
                IF      WRK-COM-INPUTCD(IDX)    =   WRK-SRYCD
@@ -3433,8 +3433,8 @@
            MOVE    WRK-SCR-REC         TO  HOZ-SCR-REC
            MOVE    WRK-GMN-MAX         TO  WRK-IDX
            ADD     1                   TO  WRK-IDX
-           IF      WRK-IDX              >   200
-               MOVE    200                 TO  WRK-IDX
+           IF      WRK-IDX              >   400
+               MOVE    400                 TO  WRK-IDX
            END-IF
       *    点数マスタ編集・基本チェック
            INITIALIZE                  ORCSC92AREA
