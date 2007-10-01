@@ -52,10 +52,6 @@
       *
       *    定点調査収集データ
        01  COLLECT.
-           03  FILLER              PIC X(08)  VALUE "/var/lib".
-           03  FILLER              PIC X(12)  VALUE "/jma-receipt".
-           03  FILLER              PIC X(05)  VALUE "/das/".
-           03  COLLECT-HOSPNUM     PIC 9(02).
            03  FILLER              PIC X(05)  VALUE "/tmp/".
            03  FILLER              PIC X(07)  VALUE "collect".
            03  COLLECT-GN          PIC X(01).
@@ -129,7 +125,6 @@
       *
            MOVE    "CHK"               TO  SJOBKANRI-MODE
            INITIALIZE                      JOBKANRI-REC
-           MOVE    SPA-HOSPNUM         TO  JOB-HOSPNUM
            MOVE    WRK-CONS-JOB-JOBID-COLLECT
                                        TO  JOB-JOBID
            MOVE    WRK-CONS-JOB-SHELLID-COLLECT
@@ -137,7 +132,6 @@
            CALL    "ORCSJOB"           USING
                                            ORCSJOBKANRIAREA
                                            JOBKANRI-REC
-                                           SPA-AREA
            IF      SJOBKANRI-RETURN    =   ZERO
                IF      JOB-ENDYMD      =   SPACE
                    MOVE    20          TO  COLCHK-RC
@@ -152,7 +146,6 @@
       *****************************************************************
        200-FILEEXIST-CHK-SEC       SECTION.
       *
-           MOVE    SPA-HOSPNUM         TO  COLLECT-HOSPNUM
            MOVE    "g"                 TO  COLLECT-GN
       *
            OPEN    INPUT    COLLECT-FILE
@@ -162,7 +155,6 @@
            END-IF
       *
            IF      COLCHK-RC           =   ZERO
-               MOVE    SPA-HOSPNUM     TO  COLLECT-HOSPNUM
                MOVE    "n"             TO  COLLECT-GN
       *
                OPEN    INPUT    COLLECT-FILE

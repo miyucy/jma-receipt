@@ -50,12 +50,6 @@
       *  01.02.11    NACL-伊藤    04/02/05  M97の追加
       *  01.02.12    NACL-伊藤    06/02/22  MONFUNC 対応
       *  03.04.00    NACL-多々納  06/11/13  検査正式名称表示フラグ追加
-      *  03.05.00    NACL-多々納  07/05/25  グループ診療対応
-      *  04.04.00    NACL-森脇    08/11/20  印刷削除ボタン追加
-      *  04.04.00    NACL-森脇    09/01/27  排他ＳＰＡ共通対応
-      *  04.07.00    NACL-森脇    12/07/04  ユーザーＩＤ表示
-      *  04.07.00    NACL-太田    13/07/16  電子お薬手帳対応
-      *  04.08.00    NACL-多々納  15/05/12  背景色設定対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -63,16 +57,8 @@
        INPUT-OUTPUT                SECTION.
        FILE-CONTROL.
       *
-      *    プログラム更新　日レセ再起動要求メッセージ
-           SELECT  RESTARTMSG-FILE
-                   ASSIGN  "/tmp/jma-receipt/patch-restart-message"
-                   FILE    STATUS  IS  STS-RESTARTMSG.
-      *
        DATA                    DIVISION.
-       FILE                        SECTION.
-      *
-       FD  RESTARTMSG-FILE.
-       01  RESTARTMSG-REC          PIC X(01). 
+      *FILE                        SECTION.
       *
        WORKING-STORAGE             SECTION.
       *
@@ -90,9 +76,6 @@
       *
            COPY    "CPSHELLTBL.INC".
       *
-       01  STS-AREA.
-           03  STS-RESTARTMSG      PIC X(02).
-      *
       *    フラグ領域
        01  FLG-AREA.
            03  FLG-END             PIC 9(01).
@@ -109,7 +92,6 @@
       *    一時領域
        01  WRK-AREA.
            03  IDX                   PIC 9(03).
-           03  IDJ                   PIC 9(03).
            03  WRK-SYSYMD.
                05  WRK-SYSYY         PIC 9(04).
                05  WRK-SYSMM         PIC 9(02).
@@ -173,12 +155,6 @@
       *
            COPY    "CPORCSCOLCHK.INC".
       *
-      *    COMMON-SPA 初期編集
-           COPY    "CPORCSCOMMON.INC".
-      *
-      *    マシン日付取得サブ
-           COPY    "CPORCSMCNDATE.INC".
-      *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
       *     
@@ -207,17 +183,11 @@
            COPY    "M01N.INC".
            COPY    "M02.INC". 
            COPY    "M95.INC".
+           COPY    "M96.INC".
+           COPY    "M97.INC".
            COPY    "MERR.INC".
            COPY    "MID1.INC".
            COPY    "MVER.INC".
-           COPY    "M98.INC".
-           COPY    "MUID.INC".
-           COPY    "M99.INC".
-           COPY    "MID2.INC".
-           COPY    "MDAS.INC".
-           COPY    "MLOG.INC".
-           COPY    "MINF.INC".
-           COPY    "MPRT.INC".
       *
        PROCEDURE                   DIVISION    USING
            MCPAREA
@@ -277,9 +247,6 @@
            ELSE
       *        初期画面セット
                PERFORM 300-SCREEN-SEC
-               IF      FLG-END             =   1
-                   GO      TO      100-INIT-EXT
-               END-IF
       *        画面編集
                PERFORM 500-GMNHEN-SEC
                PERFORM 510-GSRAUTH-SEC
@@ -338,14 +305,6 @@
        3001-MID1-SYORI-SEC              SECTION.
       *
            EVALUATE    SPA-MIDCD
-               WHEN    "0001"
-                   IF      SPA-MID1-FLG        =   "OK"
-      *                印刷削除処理へ
-                       PERFORM 30012-PRTDEL-SYORI-SEC
-                   END-IF
-                   MOVE    1               TO  SPA-GMN-CUR
-                   MOVE    SPACE           TO  SPA-MID1-FLG
-                   MOVE    SPACE           TO  SPA-MIDCD
                WHEN    "0101"
                    IF      SPA-MID1-FLG        =   "OK"
       *                マスタ更新処理へ
@@ -362,11 +321,9 @@
                    INITIALIZE                  JOBKANRI-REC
                    MOVE    1                   TO  JOB-JOBID
                    MOVE    "MSTMNT"            TO  JOB-SHELLID
-                   MOVE    SPA-HOSPNUM         TO  JOB-HOSPNUM
                    CALL    "ORCSJOB"           USING
                                                WRK-JOBKANRI-AREA
                                                JOBKANRI-REC
-                                               SPA-AREA
       *
                    MOVE    1               TO  SPA-GMN-CUR
                    MOVE    SPACE           TO  SPA-MID1-FLG
@@ -380,11 +337,9 @@
                    INITIALIZE                  JOBKANRI-REC
                    MOVE    1                   TO  JOB-JOBID
                    MOVE    "MSTMNT"            TO  JOB-SHELLID
-                   MOVE    SPA-HOSPNUM         TO  JOB-HOSPNUM
                    CALL    "ORCSJOB"           USING
                                                WRK-JOBKANRI-AREA
                                                JOBKANRI-REC
-                                               SPA-AREA
       *
                    MOVE    1               TO  SPA-GMN-CUR
                    MOVE    SPACE           TO  SPA-MID1-FLG
@@ -405,22 +360,18 @@
            INITIALIZE                  JOBKANRI-REC
            MOVE    1                   TO  JOB-JOBID
            MOVE    "MSTMNT"            TO  JOB-SHELLID
-           MOVE    SPA-HOSPNUM         TO  JOB-HOSPNUM
            CALL    "ORCSJOB"           USING
                                        WRK-JOBKANRI-AREA
                                        JOBKANRI-REC
-                                       SPA-AREA
       *
       *    ジョブ管理作成
            MOVE    "JBS"               TO  WRK-JOBKANRI-MODE
            INITIALIZE                  JOBKANRI-REC
            MOVE    1                   TO  JOB-JOBID
            MOVE    "MSTMNT"            TO  JOB-SHELLID
-           MOVE    SPA-HOSPNUM         TO  JOB-HOSPNUM
            CALL    "ORCSJOB"           USING
                                        WRK-JOBKANRI-AREA
                                        JOBKANRI-REC
-                                       SPA-AREA
       *
       *    マスタ更新処理
            MOVE    "master_upgrade.sh" TO  SHELL-SHELL
@@ -436,42 +387,13 @@
            MOVE    "SHELL"             TO  MCP-FUNC
            MOVE    "shell"             TO  MCP-TABLE
            MOVE    "shell"             TO  MCP-PATHNAME
-           CALL    "ORCDBMAIN"         USING
-                                           MCPAREA
-                                           MCPDATA-REC
-                                           SPA-AREA
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
       *
            .
       *
        30011-MSTMNT-SYORI-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    印刷削除処理
-      *****************************************************************
-       30012-PRTDEL-SYORI-SEC          SECTION.
-      *
-      *    印刷削除処理
-      *
-           MOVE    SPACE               TO  SHELLTBL
-           MOVE    "orc_cups_del.sh"   TO  SHELLTBL-NAME
-           MOVE    SHELL-ARG1          TO  SHELLTBL-ARG1
-           MOVE    SHELL-ARG2          TO  SHELLTBL-ARG2
-           MOVE    SHELL-ARG3          TO  SHELLTBL-ARG3
-           MOVE    SHELL-ARG4          TO  SHELLTBL-ARG4
-           MOVE    SHELLTBL            TO  MCPDATA-REC
-      *
-           MOVE    "SHELL"             TO  MCP-FUNC
-           MOVE    "shell"             TO  MCP-TABLE
-           MOVE    "allways"           TO  MCP-PATHNAME
-           CALL    "ORCDBMAIN"         USING
-                                           MCPAREA
-                                           MCPDATA-REC
-                                           SPA-AREA
-      *
-           .
-      *
-       30012-PRTDEL-SYORI-EXT.
            EXIT.
       *
       *****************************************************************
@@ -492,76 +414,60 @@
       *****************************************************************
        320-SYS-1010-SPASET-SEC              SECTION.
       *
-      *!!
-      *    ＳＰＡ共通設定
-           INITIALIZE                  SYS-1010-REC
-           INITIALIZE                  ORCSCOMMONAREA
-           MOVE    "M01"               TO  ORCSCOMMON-PG
-           CALL    "ORCSCOMMON"        USING
-                                       MCPAREA
-                                       SPA-AREA
-                                       ORCSCOMMONAREA
-                                       SYS-1010-REC
-      *H27.5
-      *    背景色設定
-           PERFORM 3102-BGCOLORS-INIT-SEC
-      *
-      *!!
       *    職員情報
-      *    MOVE    SPACE               TO  SYS-1010-REC
-      *    INITIALIZE                  SYS-1010-REC
-      *    MOVE    "1010"              TO  SYS-1010-KANRICD
-      *    STRING  SPA-OPID            DELIMITED  BY  SPACE
-      *            "%"                 DELIMITED  BY  SIZE
-      *                                INTO    SYS-1010-TBL
-      *    END-STRING
-      *    MOVE    SPA-SYSYMD          TO  SYS-1010-STYUKYMD
-      *    MOVE    SPA-SYSYMD          TO  SYS-1010-EDYUKYMD
-      *    MOVE    SPA-HOSPNUM         TO  SYS-1010-HOSPNUM
-      *    MOVE    SYS-1010-REC        TO  MCPDATA-REC
-      *    MOVE    "tbl_syskanri"      TO  MCP-TABLE
-      *    MOVE    "key3"              TO  MCP-PATHNAME
-      *    PERFORM 910-DBSELECT-SEC
-      *    IF      MCP-RC              =   ZERO
-      *        MOVE    "tbl_syskanri"  TO  MCP-TABLE
-      *        MOVE    "key3"          TO  MCP-PATHNAME
-      *        PERFORM 900-SYSKANRI-READ-SEC
-      *        IF      FLG-SYSKANRI    =   ZERO
-      *            MOVE    MCPDATA-REC     TO  SYS-1010-REC
-      *        ELSE
-      *            INITIALIZE              SYS-1010-REC
-      *        END-IF
-      *    ELSE
-      *        INITIALIZE                  SYS-1010-REC
-      *        MOVE    1                   TO  FLG-SYSKANRI
-      *    END-IF
-      *    MOVE    ZERO                TO  FLG-OK
-      *    PERFORM UNTIL       FLG-SYSKANRI    =   1
-      *        MOVE    MCPDATA-REC     TO  SYS-1010-REC
-      *        IF      SPA-OPID            =   SYS-1010-USERID
-      *            MOVE    1                   TO  FLG-OK
-      *            MOVE    1                   TO  FLG-SYSKANRI
-      *        ELSE
-      *            MOVE    "tbl_syskanri"  TO  MCP-TABLE
-      *            MOVE    "key3"          TO  MCP-PATHNAME
-      *            PERFORM 900-SYSKANRI-READ-SEC
-      *        END-IF
-      *    END-PERFORM
-      *    MOVE    "tbl_syskanri"      TO  MCP-TABLE
-      *    MOVE    "key3"              TO  MCP-PATHNAME
-      *    PERFORM 990-DBCLOSE-SEC
+           MOVE    SPACE               TO  SYS-1010-REC
+           INITIALIZE                  SYS-1010-REC
+           MOVE    "1010"              TO  SYS-1010-KANRICD
+           STRING  SPA-OPID            DELIMITED  BY  SPACE
+                   "%"                 DELIMITED  BY  SIZE
+                                       INTO    SYS-1010-TBL
+           END-STRING
+           MOVE    SPA-SYSYMD          TO  SYS-1010-STYUKYMD
+           MOVE    SPA-SYSYMD          TO  SYS-1010-EDYUKYMD
+           MOVE    SYS-1010-REC        TO  MCPDATA-REC
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key3"              TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_syskanri"  TO  MCP-TABLE
+               MOVE    "key3"          TO  MCP-PATHNAME
+               PERFORM 900-SYSKANRI-READ-SEC
+               IF      FLG-SYSKANRI    =   ZERO
+                   MOVE    MCPDATA-REC     TO  SYS-1010-REC
+               ELSE
+                   INITIALIZE              SYS-1010-REC
+               END-IF
+           ELSE
+               INITIALIZE                  SYS-1010-REC
+               MOVE    1                   TO  FLG-SYSKANRI
+           END-IF
+           MOVE    ZERO                TO  FLG-OK
+           PERFORM UNTIL       FLG-SYSKANRI    =   1
+               MOVE    MCPDATA-REC     TO  SYS-1010-REC
+               IF      SPA-OPID            =   SYS-1010-USERID
+                   MOVE    1                   TO  FLG-OK
+                   MOVE    1                   TO  FLG-SYSKANRI
+               ELSE
+                   MOVE    "tbl_syskanri"  TO  MCP-TABLE
+                   MOVE    "key3"          TO  MCP-PATHNAME
+                   PERFORM 900-SYSKANRI-READ-SEC
+               END-IF
+           END-PERFORM
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key3"              TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
       *    職員情報なし
-      *    IF     FLG-OK               =   ZERO
-      *        INITIALIZE                  SYS-1010-REC
-      *    END-IF
+           IF     FLG-OK               =   ZERO
+               INITIALIZE                  SYS-1010-REC
+           END-IF
       *
       *2001.9.27 強制プロテクト（ＰＧ未作成）
-      *    MOVE    "0"                 TO  SYS-1010-GSRAUTH(3:1)
-      *                                    SYS-1010-GSRAUTH(4:1)
+           MOVE    "0"                 TO  SYS-1010-GSRAUTH(3:1)
+                                           SYS-1010-GSRAUTH(4:1)
       *************************************SYS-1010-GSRAUTH(18:1)
       *************************************SYS-1010-GSRAUTH(32:1)
       *************************************SYS-1010-GSRAUTH(41:1)
-      *                                    SYS-1010-GSRAUTH(46:1)
+                                           SYS-1010-GSRAUTH(46:1)
       ************************************ SYS-1010-GSRAUTH(47:1)
       *2001.9.27 強制プロテクト（ＰＧ未作成）END
       *
@@ -569,114 +475,70 @@
       *
       *業務処理権限設定
       *    受付
-      *    MOVE    SYS-1010-GSRAUTH(16:1)  TO  SPA-GSRAUTH-11
+           MOVE    SYS-1010-GSRAUTH(16:1)  TO  SPA-GSRAUTH-11
       *    患者登録
-      *    MOVE    SYS-1010-GSRAUTH(17:1)  TO  SPA-GSRAUTH-12
+           MOVE    SYS-1010-GSRAUTH(17:1)  TO  SPA-GSRAUTH-12
       *    予約登録
-      *    MOVE    SYS-1010-GSRAUTH(19:1)  TO  SPA-GSRAUTH-14
+           MOVE    SYS-1010-GSRAUTH(19:1)  TO  SPA-GSRAUTH-14
       *    診療行為
-      *    MOVE    SYS-1010-GSRAUTH(21:1)  TO  SPA-GSRAUTH-21
+           MOVE    SYS-1010-GSRAUTH(21:1)  TO  SPA-GSRAUTH-21
       *    病名登録
-      *    MOVE    SYS-1010-GSRAUTH(22:1)  TO  SPA-GSRAUTH-22
+           MOVE    SYS-1010-GSRAUTH(22:1)  TO  SPA-GSRAUTH-22
       *    収納登録
-      *    MOVE    SYS-1010-GSRAUTH(23:1)  TO  SPA-GSRAUTH-23
+           MOVE    SYS-1010-GSRAUTH(23:1)  TO  SPA-GSRAUTH-23
       *    会計照会
-      *    MOVE    SYS-1010-GSRAUTH(24:1)  TO  SPA-GSRAUTH-24
+           MOVE    SYS-1010-GSRAUTH(24:1)  TO  SPA-GSRAUTH-24
       *    入退院登録
-      *    MOVE    SYS-1010-GSRAUTH(36:1)  TO  SPA-GSRAUTH-31
+           MOVE    SYS-1010-GSRAUTH(36:1)  TO  SPA-GSRAUTH-31
       *    入院会計照会
-      *    MOVE    SYS-1010-GSRAUTH(37:1)  TO  SPA-GSRAUTH-32
+           MOVE    SYS-1010-GSRAUTH(37:1)  TO  SPA-GSRAUTH-32
       *
       *    検査正式名称表示
-      *    MOVE    SYS-1010-FORMALFLG  TO  SPA-FORMALFLG
-      *    IF      SYS-1010-FORMALFLG  =   SPACE
-      *        PERFORM 3201-SYS-1038-SET-SEC
-      *    END-IF
-      *    IF      SPA-FORMALFLG       =   SPACE
-      *        MOVE    "0"             TO  SPA-FORMALFLG
-      **** END-IF
-      *
-      *    プログラム更新日レセ再起動要求メッセージ
-           MOVE    SPACE               TO  STS-RESTARTMSG
-           OPEN    INPUT   RESTARTMSG-FILE
-           IF      STS-RESTARTMSG      =   ZERO
-                   CLOSE   RESTARTMSG-FILE
-                   MOVE    ALL "0"         TO  SYS-1010-GSRAUTH
-                   MOVE    "9991"          TO  SPA-ERRCD
-                   PERFORM 500-SET-SCREEN
+           MOVE    SYS-1010-FORMALFLG  TO  SPA-FORMALFLG
+           IF      SYS-1010-FORMALFLG  =   SPACE
+               PERFORM 3201-SYS-1038-SET-SEC
+           END-IF
+           IF      SPA-FORMALFLG       =   SPACE
+               MOVE    "0"             TO  SPA-FORMALFLG
            END-IF
            .
        320-SYS-1010-SPASET-EXT.
            EXIT.
-      *
       *****************************************************************
-      *    背景色設定処理
+      *    検査正式名称表示処理
       *****************************************************************
-       3102-BGCOLORS-INIT-SEC       SECTION.
-      *
-      *    システム日付決定
-           INITIALIZE                  ORCSMCNDATEAREA
-           CALL    "ORCSMCNDATE"       USING
-                                       ORCSMCNDATEAREA
-           MOVE    SMCNDATE-YMD        TO  WRK-SYSYMD
+       3201-SYS-1038-SET-SEC          SECTION.
       *
            MOVE    SPACE               TO  SYS-1038-REC
-           INITIALIZE                      SYS-1038-REC
+           INITIALIZE                  SYS-1038-REC
            MOVE    "1038"              TO  SYS-1038-KANRICD
            MOVE    "*"                 TO  SYS-1038-KBNCD
-           MOVE    WRK-SYSYMD          TO  SYS-1038-STYUKYMD
-           MOVE    WRK-SYSYMD          TO  SYS-1038-EDYUKYMD
-           MOVE    SPA-HOSPNUM         TO  SYS-1038-HOSPNUM
-      *    システム管理検索
+           MOVE    SPA-SYSYMD          TO  SYS-1038-STYUKYMD
+           MOVE    SPA-SYSYMD          TO  SYS-1038-EDYUKYMD
            MOVE    SYS-1038-REC        TO  MCPDATA-REC
+      *
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key10"             TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
+               MOVE    "tbl_syskanri"      TO  MCP-TABLE
                MOVE    "key10"             TO  MCP-PATHNAME
                PERFORM 900-SYSKANRI-READ-SEC
-               IF      FLG-SYSKANRI        =   ZERO
-                   MOVE    MCPDATA-REC         TO  SYS-1038-REC
-               END-IF
            ELSE
+               MOVE    SPACE               TO  SYS-1038-REC
                INITIALIZE                  SYS-1038-REC
                MOVE    1               TO  FLG-SYSKANRI
            END-IF
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key10"             TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
-      *
            IF      FLG-SYSKANRI        =   ZERO
-      *        背景色設定
-               PERFORM 31021-BGCOLORS-HEN-SEC
+               MOVE    MCPDATA-REC         TO  SYS-1038-REC
+      *        検査正式名称表示
+               MOVE    SYS-1038-FORMALFLG  TO  SPA-FORMALFLG
            END-IF
            .
-       3102-BGCOLORS-INIT-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    背景色設定処理
-      *****************************************************************
-       31021-BGCOLORS-HEN-SEC       SECTION.
-      *
-      *    時間内（標準
-           MOVE    SYS-1038-BGCOLORSJ0 TO  SPA-M00-BGCOLORS
-      *
-           IF      WRK-SYSYMD          =   SPA-SYSYMD
-      *    時間外
-               IF      SPA-GAI-JIKANKBN    NOT =   "0"
-                   MOVE    SPA-GAI-JIKANKBN        TO  IDJ
-                   IF     (IDJ                 >=  1   AND   <=  8 )
-                       MOVE    SYS-1038-BGCOLORSJ (IDJ)
-                                               TO  SPA-M00-BGCOLORS
-                   END-IF
-               END-IF
-           ELSE
-      *    日付変更
-               MOVE    SYS-1038-BGCOLORSDAY    TO  SPA-M00-BGCOLORS
-           END-IF
-           .
-       31021-BGCOLORS-HEN-EXT.
+       3201-SYS-1038-SET-EXT.
            EXIT.
       *
       *****************************************************************
@@ -694,18 +556,9 @@
       *    受付一覧へ
                WHEN    "CLICKED"       ALSO    "B11"
                    PERFORM 490-UKEICHI-SEC
-      *    システム日付設定
+      *        システム日付設定
                WHEN    "CLICKED"       ALSO    "B06"
                    PERFORM 460-M95-SEC
-      *    オンライン再印刷
-               WHEN    "CLICKED"       ALSO    "B05"
-                   PERFORM 470-REPRINT-SEC
-      *    印刷削除
-               WHEN    "CLICKED"       ALSO    "B07"
-                   MOVE    "0001"      TO  SPA-MIDCD
-      *    電子版手帳画面
-               WHEN    "CLICKED"       ALSO    "B08"
-                   PERFORM 470-MNOTE-SEC
       *    各業務移動へ
                WHEN    "CLICKED"       ALSO    ANY
                    PERFORM 400-GYOMU-SEL-SEC
@@ -939,15 +792,11 @@
       *----(01.00.04) LINE DEL END   ----------------------------------
       * データ出力
                WHEN    "71"
-                 IF      SPA-MW          NOT =   SPA-PANDA
-                       MOVE    "0001"          TO  SPA-ERRCD
-                 ELSE
                    IF      SYS-1010-GSRAUTH(41:1)    =  "0"
                        MOVE    "0002"          TO  SPA-ERRCD
                    ELSE
                        MOVE    "E01"           TO  SPA-SAKIPG
                    END-IF
-                 END-IF
       * センターバックアップ
                WHEN    "81"
                    IF      SYS-1010-GSRAUTH(46:1)    =  "0"
@@ -957,25 +806,11 @@
                    END-IF
       * 外部媒体
                WHEN    "82"
-                 IF      SPA-MW          NOT =   SPA-PANDA
-                       MOVE    "0001"          TO  SPA-ERRCD
-                 ELSE
                    IF      SYS-1010-GSRAUTH(47:1)    =  "0"
                        MOVE    "0002"          TO  SPA-ERRCD
                    ELSE
-      *                グループ診療の場合
-                       IF      SPA-GRPHOSPNUM(2)   NOT =   SPACE
-      *                    スーパーバイザーであれば活性
-                           IF      SPA-SUPERVISOR      =   "T"
-                               MOVE    "F01"           TO  SPA-SAKIPG
-                           ELSE
-                               MOVE    "0002"          TO  SPA-ERRCD
-                           END-IF
-                       ELSE
-                           MOVE    "F01"           TO  SPA-SAKIPG
-                       END-IF
+                       MOVE    "F01"           TO  SPA-SAKIPG
                    END-IF
-                 END-IF
       * マスタ登録処理
                WHEN    "91"
                    IF      SYS-1010-GSRAUTH(51:1)    =  "0"
@@ -1025,29 +860,21 @@
                    END-EVALUATE
       *
       *修正*************************************************************
-                   MOVE     "CHANGE"           TO  MCP-PUTTYPE
-      *             IF  SPA-SAKIPG   =   "M96"
-      **
-      *                 MOVE    SPA-M00KYOUTU       TO  SPA-WORK
-      *                 MOVE    SPA-AREA            TO  SPA-COMMON
-      **
-      *                 MOVE     "LINK"             TO  MCP-STATUS
-      *                 MOVE     SPACE              TO  MCP-EVENT
-      *                 CALL     "ORCGM96"          USING
-      *                                             MCPAREA
-      *                                             SPAAREA
-      *                                             LINKAREA
-      *                                             SCRAREA
-      *                 MOVE    SPA-FREE            TO  SPA-M01
-      **
-      *                 MOVE    SPA-COMMON          TO  SPA-AREA
-      *                 MOVE    SPA-WORK            TO  SPA-M00KYOUTU
-      **
-      *                 MOVE    "M96"               TO  SPA-MOTOPG2
-      *                 MOVE     "NEW"              TO  MCP-PUTTYPE
-      *             ELSE
-      *                 MOVE     "CHANGE"           TO  MCP-PUTTYPE
-      *             END-IF
+      *             MOVE     "CHANGE"           TO  MCP-PUTTYPE
+                   IF  SPA-SAKIPG   =   "M96"
+                       MOVE     "LINK"             TO  MCP-STATUS
+                       MOVE     SPACE              TO  MCP-EVENT
+                       CALL     "ORCGM96"          USING
+                                                   MCPAREA
+                                                   SPAAREA
+                                                   LINKAREA
+                                                   SCRAREA
+                       MOVE    SPA-FREE        TO  SPA-M01
+                       MOVE    "M96"               TO  SPA-MOTOPG2
+                       MOVE     "NEW"              TO  MCP-PUTTYPE
+                   ELSE
+                       MOVE     "CHANGE"           TO  MCP-PUTTYPE
+                   END-IF
       *修正*************************************************************
                    MOVE     SPA-SAKIPG         TO  MCP-WINDOW
       *
@@ -1071,11 +898,9 @@
            INITIALIZE                  JOBKANRI-REC
            MOVE    1               TO  JOB-JOBID
            MOVE    "MSTMNT"        TO  JOB-SHELLID
-           MOVE    SPA-HOSPNUM         TO  JOB-HOSPNUM
            CALL    "ORCSJOB"       USING
                                    WRK-JOBKANRI-AREA
                                    JOBKANRI-REC 
-                                   SPA-AREA
            IF      WRK-JOBKANRI-RETURN
                                        =   ZERO
       *        バッチ処理中にエラーの時
@@ -1183,59 +1008,10 @@
            EXIT.
       *
       *****************************************************************
-      *    再印刷画面へ
-      *****************************************************************
-       470-REPRINT-SEC             SECTION.
-      *
-      *    画面移行用のパラメタ変更
-           MOVE    "M01"              TO  SPA-MOTOPG
-           MOVE    "XA02"               TO  SPA-SAKIPG
-      *
-           INITIALIZE                  SPA-KYOTUKEY
-           MOVE    "ONLINE"
-                                       TO  SPA-PRTKANRI-TBL-KEY
-           MOVE    SPA-KYOUTU          TO  LNK-KYOUTU
-      *
-           MOVE   "CHANGE"             TO  MCP-PUTTYPE.
-           MOVE   "XA02    "           TO  MCP-WINDOW.
-      *
-           PERFORM 900-PUT-WINDOW.
-      *
-           MOVE    1                   TO  FLG-END
-      *
-           .
-       470-REPRINT-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    電子版手帳画面へ
-      *****************************************************************
-       470-MNOTE-SEC             SECTION.
-      *
-      *    画面移行用のパラメタ変更
-           MOVE    "M01"               TO  SPA-MOTOPG
-           MOVE    "XG03"              TO  SPA-SAKIPG
-      *
-           INITIALIZE                  SPA-KYOTUKEY
-           MOVE    SPA-KYOUTU          TO  LNK-KYOUTU
-      *
-           MOVE   "CHANGE"             TO  MCP-PUTTYPE.
-           MOVE   "XG03"               TO  MCP-WINDOW.
-      *
-           PERFORM 900-PUT-WINDOW.
-      *
-           MOVE    1                   TO  FLG-END
-      *
-           .
-       470-MNOTE-EXT.
-           EXIT.
-      *****************************************************************
       *    システム日付変更画面へ1
       *****************************************************************
        460-M95-SEC                    SECTION.
       *
-           MOVE    SPACE               TO  SPA-MOTOPG
-           MOVE    SPACE               TO  SPA-SAKIPG
            MOVE    SPA-M00KYOUTU       TO  SPA-WORK
            MOVE    SPA-AREA            TO  SPA-COMMON
       *
@@ -1263,7 +1039,6 @@
            PERFORM 900-PUT-WINDOW
       *
            MOVE    1                    TO  FLG-END
-      *
       *
            .
        460-M95-EXT.
@@ -1332,20 +1107,8 @@
       *
            INITIALIZE                  M01N
       *
-      *----(04.07.00) LINE UPD START ----------------------------------
-      *     MOVE    SPA-HOSPNAME        TO  M01N-TITLE
-           MOVE    SPACE           TO  M01N-TITLE
-           STRING  SPA-HOSPNAME        DELIMITED BY SPACE
-                   "  ["               DELIMITED BY SIZE
-                   SPA-OPID            DELIMITED BY SPACE
-                   "]"                 DELIMITED BY SIZE
-                                 INTO  M01N-TITLE
-           END-STRING
-      *----(04.07.00) LINE UPD END   ----------------------------------
            MOVE    SPA-GMN-GSEL        TO  M01N-SELNUM
       *
-      *ver.4.7
-           MOVE    SPA-M00-BGCOLORS    TO  M01N-BGCOLORS
       *----(01.00.04) LINE DEL START ----------------------------------
       ***     IF  ACC1-ST =  "01"
       ***         MOVE    "既に起動済み！"    TO  M01N-ALERT
@@ -1353,8 +1116,6 @@
       ***         MOVE    "未読緊急情報あり！"    TO  M01N-ALERT
       ***     END-IF
       *----(01.00.04) LINE DEL START ----------------------------------
-      *
-           MOVE    "電子版手帳"   TO  M01N-B08-LABEL
       *
            PERFORM 5001-MAPCUR-SEC
       *
@@ -1371,11 +1132,8 @@
            PERFORM VARYING IDX FROM    1   BY  1
                    UNTIL   IDX >       24 
                MOVE    WIDGET-INSENSITIVE      TO  M01N-STATE-O (IDX)
-               MOVE    "T"                     TO  M01N-VISIBLE-O (IDX)
            END-PERFORM
       *----(01.02.07) LINE UPD END   ----------------------------------
-      *
-           MOVE    "T"                         TO  M01N-FR6-VISIBLE
       *
            IF      SYS-1010-GSRAUTH(1:1)    =  "0"
                CONTINUE
@@ -1474,18 +1232,8 @@
       ****     IF      SYS-1010-GSRAUTH(46:1)   =  "1"
       *            MOVE    WIDGET-NORMAL      TO  M01N-G81-STATE
       *****    END-IF
-      *        グループ診療の場合
-               IF      SPA-GRPHOSPNUM(2)   NOT =   SPACE
-      *            スーパーバイザーであれば活性
-                   IF      SPA-SUPERVISOR      =   "T"
-                       IF      SYS-1010-GSRAUTH(47:1)   =  "1"
-                           MOVE    WIDGET-NORMAL      TO  M01N-G82-STATE
-                       END-IF
-                   END-IF
-               ELSE
-                   IF      SYS-1010-GSRAUTH(47:1)   =  "1"
-                       MOVE    WIDGET-NORMAL      TO  M01N-G82-STATE
-                   END-IF
+               IF      SYS-1010-GSRAUTH(47:1)   =  "1"
+                   MOVE    WIDGET-NORMAL      TO  M01N-G82-STATE
                END-IF
       *
                IF      SYS-1010-GSRAUTH(51:1)   =  "1"
@@ -1497,12 +1245,6 @@
                        MOVE    WIDGET-NORMAL      TO  M01N-G92-STATE
                    END-IF
                END-IF
-           END-IF
-      *
-           IF    ( SPA-MW          NOT =   SPA-PANDA )
-               MOVE    "F"             TO  M01N-G71-VISIBLE
-                                           M01N-G82-VISIBLE
-                                           M01N-FR6-VISIBLE
            END-IF
       *
            .
@@ -1539,9 +1281,6 @@
                WHEN    "0092"
                    MOVE    "マスタ更新中です。"
                                                TO  SPA-ERRMSG
-               WHEN    "9991"
-                   MOVE    "日レセを再起動してください。"
-                                               TO  SPA-ERRMSG
            END-EVALUATE
       *
            MOVE    SPACE                TO  MERR
@@ -1569,12 +1308,7 @@
       *****************************************************************
        520-KIDSET-SEC              SECTION.
       *
-      *
            EVALUATE    SPA-MIDCD
-               WHEN    "0001"
-                   MOVE
-               "スプールに溜っているすべての印刷データを削除します。"
-                                           TO  WRK-MIDMSG
                WHEN    "0101"
                    MOVE    "処理を開始します。"
                                            TO  WRK-MIDMSG
@@ -1592,7 +1326,6 @@
            END-EVALUATE
       *
            MOVE    SPACE               TO  MID1
-           INITIALIZE                      MID1
            MOVE    SPA-MIDCD           TO  MID1-ID1CODE
            MOVE    WRK-MIDMSG          TO  MID1-ID1MSG
       *
@@ -1618,10 +1351,9 @@
        900-SYSKANRI-READ-SEC           SECTION.
       *
            MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "ORCDBMAIN"         USING
-                                           MCPAREA
-                                           MCPDATA-REC
-                                           SPA-AREA
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
            IF      MCP-RC              =   ZERO
                MOVE    ZERO            TO  FLG-SYSKANRI
            ELSE
@@ -1637,10 +1369,9 @@
        910-DBSELECT-SEC                SECTION.
       *
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           CALL    "ORCDBMAIN"         USING
-                                           MCPAREA
-                                           MCPDATA-REC
-                                           SPA-AREA
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
       *
            .
        910-DBSELECT-EXT.
@@ -1652,10 +1383,9 @@
        990-DBCLOSE-SEC                 SECTION.
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           CALL    "ORCDBMAIN"         USING
-                                           MCPAREA
-                                           MCPDATA-REC
-                                           SPA-AREA
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
       *
            .
        990-DBCLOSE-EXT.
@@ -1666,11 +1396,10 @@
       *****************************************************************
        900-PUT-WINDOW              SECTION.
       *
-           MOVE    "PUTWINDOW"         TO  MCP-FUNC.
-           CALL    "ORCDBMAIN"         USING
-                                           MCPAREA
-                                           MCPDATA-REC
-                                           SPA-AREA
+           MOVE   "PUTWINDOW"       TO  MCP-FUNC.
+           CALL   "MONFUNC"         USING
+                                        MCPAREA
+                                        MCPDATA-REC
       *
            .
        900-PUT-WINDOW-EXT.

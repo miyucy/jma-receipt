@@ -189,6 +189,7 @@
            03  WRK-PRTNM-R         REDEFINES   WRK-PRTNM.
                05  FILLER          PIC X(02).
                05  WRK-PRTNM-X     PIC X(02). 
+           03  WRK-DASUPLOAD       PIC 9(01).
       *
       *    パラメタＤＢ編集用
            03  WRK-BTPARA-INFO-PARA.
@@ -351,6 +352,8 @@
       *   日付変換サブ
            COPY    "CPORCSGDAY.INC".
       *
+           COPY    "CPORCSCOLCHK.INC".
+      *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
       *
@@ -374,6 +377,7 @@
            COPY    "T01.INC".
            COPY    "T02.INC".
            COPY    "T03.INC".
+           COPY    "T91.INC".
            COPY    "T99.INC".
            COPY    "TERR.INC".
            COPY    "TID1.INC".
@@ -449,6 +453,7 @@
                    EVALUATE    SPA-TIDCD
                        WHEN    "2001"
                        WHEN    "2003"
+                       WHEN    "2004"
                        WHEN    "2007"
                            PERFORM 520-TIDSET-SEC
                            GO  TO  100-INIT-EXT
@@ -1172,6 +1177,11 @@
                            GO  TO  330-TID1-SET-EXT
                        END-IF
                    WHEN    "2002"
+                       MOVE    "2004"          TO  SPA-TIDCD
+                       GO  TO  330-TID1-SET-EXT
+                   WHEN    "2004"
+      *                定点調査 ファイル送信なし
+                       MOVE    ZERO            TO  WRK-DASUPLOAD
                        PERFORM 470-COLLECT-SYORI-SEC
                        MOVE    "JOIN"          TO  MCP-PUTTYPE
                        PERFORM 210-BACK-SYORI-SEC
@@ -1182,6 +1192,12 @@
            ELSE        
                EVALUATE    SPA-TIDCD
                    WHEN    "2002"
+                       MOVE    "JOIN"          TO  MCP-PUTTYPE
+                       PERFORM 210-BACK-SYORI-SEC
+                   WHEN    "2004"
+      *                定点調査 ファイル送信あり
+                       MOVE    1               TO  WRK-DASUPLOAD
+                       PERFORM 470-COLLECT-SYORI-SEC
                        MOVE    "JOIN"          TO  MCP-PUTTYPE
                        PERFORM 210-BACK-SYORI-SEC
                    WHEN    "2003"
@@ -1903,29 +1919,47 @@
                END-PERFORM
            END-IF
       *        
-      *    ジョブ管理チェック（データ収集）
-           IF      SPA-DATACREATEFLG   =   1
-               MOVE    "CHK"           TO  SJOBKANRI-MODE
-               INITIALIZE                  JOBKANRI-REC
-               MOVE    WRK-CONS-JOB-JOBID-COLLECT
-                                       TO  JOB-JOBID
-               MOVE    WRK-CONS-JOB-SHELLID-COLLECT
-                                       TO  JOB-SHELLID
-               CALL    "ORCSJOB"       USING
-                                       ORCSJOBKANRIAREA  
-                                       JOBKANRI-REC 
-               IF      SJOBKANRI-RETURN =   ZERO
-                   IF      JOB-ENDYMD      =   SPACE
-                       CONTINUE
-                   ELSE
-                       MOVE    "2002"          TO  SPA-TIDCD
-                       GO  TO  210-BACK-EXT
-                   END-IF
-               ELSE
+      *    定点調査研究事業 収集データ作成・送信チェック
+           INITIALIZE                  ORCSCOLCHKAREA
+           CALL    "ORCSCOLCHK"        USING
+                                           ORCSCOLCHKAREA
+                                           SPA-AREA
+      *
+      *    COLCHK-RC : 00 はメッセージ表示
+      *                10 or 20 は何にもしない
+      *                30 はデータ確認
+      *
+           IF      COLCHK-RC           =   ZERO
                    MOVE    "2002"          TO  SPA-TIDCD
                    GO  TO  210-BACK-EXT
-               END-IF    
-           END-IF    
+	   END-IF
+           IF      COLCHK-RC           =   30
+	           PERFORM 490-TEITEN-SEC
+                   GO  TO  210-BACK-EXT
+	   END-IF
+      *    ジョブ管理チェック（データ収集）
+      *    IF      SPA-DATACREATEFLG   =   1
+      *        MOVE    "CHK"           TO  SJOBKANRI-MODE
+      *        INITIALIZE                  JOBKANRI-REC
+      *        MOVE    WRK-CONS-JOB-JOBID-COLLECT
+      *                                TO  JOB-JOBID
+      *        MOVE    WRK-CONS-JOB-SHELLID-COLLECT
+      *                                TO  JOB-SHELLID
+      *        CALL    "ORCSJOB"       USING
+      *                                ORCSJOBKANRIAREA  
+      *                                JOBKANRI-REC 
+      *        IF      SJOBKANRI-RETURN =   ZERO
+      *            IF      JOB-ENDYMD      =   SPACE
+      *                CONTINUE
+      *            ELSE
+      *                MOVE    "2002"          TO  SPA-TIDCD
+      *                GO  TO  210-BACK-EXT
+      *            END-IF
+      *        ELSE
+      *            MOVE    "2002"          TO  SPA-TIDCD
+      *            GO  TO  210-BACK-EXT
+      *        END-IF    
+      *    END-IF    
       *
            PERFORM 210-BACK-SYORI-SEC         
            .
@@ -3134,6 +3168,7 @@
                                    TO  SHELLTBL-ARG6
            MOVE    WRK-CONS-JOB-SHELLID-COLLECT
                                    TO  SHELLTBL-ARG7
+           MOVE    WRK-DASUPLOAD   TO  SHELLTBL-ARG8
       *
            MOVE    SHELLTBL        TO  MCPDATA-REC
            MOVE    "SHELL"         TO  MCP-FUNC
@@ -3388,6 +3423,32 @@
       *
            .
        490-JYOUHOU-DEL-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    収集データ確認画面へ
+      *****************************************************************
+       490-TEITEN-SEC              SECTION.
+      *
+           MOVE    SPACE               TO  LINKAREA
+           MOVE    SPA-KYOUTU          TO  LNK-COMMON
+           MOVE    SPA-T01FREE         TO  LNK-SCRSPA
+      *
+      *    画面移行用のパラメタ変更
+           MOVE    "T01"               TO  SPA-MOTOPG
+           MOVE    "T91"               TO  SPA-SAKIPG
+      *
+           MOVE    SPA-KYOUTU          TO  LNK-KYOUTU
+      *
+           MOVE   "CHANGE"             TO  MCP-PUTTYPE
+           MOVE   "T91    "            TO  MCP-WINDOW
+      *
+           PERFORM 900-PUT-WINDOW.
+      *
+           MOVE    1                   TO  FLG-END
+      *
+           .
+       490-TEITEN-EXT.
            EXIT.
       *
       *****************************************************************
@@ -3967,9 +4028,16 @@
                    MOVE    "媒体をドライブにセットして下さい"
                                        TO  WRK-TIDMSG
                WHEN    "2002"
-                   STRING   "データ収集用のファイルを作成し、定点"
+                   STRING   "定点調査研究事業（データ収集）用の"
                                        DELIMITED  BY  SIZE
-                            "調査収集サーバへアップロードしますか？"
+                            "ファイルを作成しますか？"
+                                       DELIMITED  BY  SIZE
+                                       INTO    WRK-TIDMSG
+                   END-STRING
+               WHEN    "2004"
+                   STRING   "定点調査収集サーバへアップロードする"
+                                       DELIMITED  BY  SIZE
+                            "前にデータを確認しますか？"
                                        DELIMITED  BY  SIZE
                                        INTO    WRK-TIDMSG
                    END-STRING
@@ -4005,6 +4073,7 @@
       *
            EVALUATE    SPA-TIDCD
                WHEN    "2002"
+               WHEN    "2004"
                WHEN    "2007"
                    MOVE    "いいえ"         TO  TID1-B01-LABEL
                    MOVE    "は  い"         TO  TID1-B12-LABEL

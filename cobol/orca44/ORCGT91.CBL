@@ -50,10 +50,6 @@
       *
       *    定点調査収集データ 
        01  COLLECT.
-           03  FILLER              PIC X(08)  VALUE "/var/lib".
-           03  FILLER              PIC X(12)  VALUE "/jma-receipt".
-           03  FILLER              PIC X(05)  VALUE "/das/".
-           03  COLLECT-HOSPNUM     PIC 9(02).
            03  FILLER              PIC X(05)  VALUE "/tmp/".
            03  FILLER              PIC X(07)  VALUE "collect".
            03  COLLECT-GN          PIC X(01).
@@ -99,7 +95,6 @@
            03  IDX2                PIC 9(05).
            03  IDX2-1              PIC 9(05).
            03  IDX-1               PIC 9(05).
-           03  IDX-1U              PIC 9(05).
            03  IDX-3               PIC 9(05).
            03  IDY                 PIC 9(05).
            03  IDZ                 PIC 9(05).
@@ -122,7 +117,6 @@
            03  WRK-DATAVIEW-G      PIC X(63000).
            03  WRK-DATAVIEW        PIC X(63000). 
            03  WRK-CNT             PIC 9(05).
-           03  WRK-CNT-U           PIC 9(05).
       *
            03  WRK-Z1              PIC ZZZ,ZZ9.
            03  WRK-Z2              PIC ZZZ,ZZ9.
@@ -158,8 +152,6 @@
                                    PIC X(08)   VALUE   "COLLECT".
            03  WRK-CONS-JOB-JOBID-COLLECT
                                    PIC 9(07)   VALUE   1.
-      *
-           03  WRK-CONS-MAX-LEN    PIC 9(05)   VALUE   63000.
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -210,7 +202,14 @@
            COPY    "LINKAREA".
       *
        01  SCRAREA.
-           COPY    "ORCA44SCRAREA.INC".
+           COPY    "T01.INC".
+           COPY    "T02.INC".
+           COPY    "T03.INC".
+           COPY    "T91.INC".
+           COPY    "T99.INC".
+           COPY    "TERR.INC".
+           COPY    "TID1.INC".
+           COPY    "TID2.INC".
       *
        PROCEDURE                   DIVISION    USING
            MCPAREA
@@ -341,10 +340,8 @@
        310-DATA-HENSYU-SEC            SECTION.
       *
            IF      SPA-GMN-SYORI       =   "2"
-               MOVE    SPA-HOSPNUM     TO  COLLECT-HOSPNUM
                MOVE    "g"             TO  COLLECT-GN
            ELSE
-               MOVE    SPA-HOSPNUM     TO  COLLECT-HOSPNUM
                MOVE    "n"             TO  COLLECT-GN
            END-IF
       *
@@ -377,7 +374,6 @@
       *
            MOVE   SPACE            TO  WRK-DATAVIEW
            MOVE   ZERO             TO  WRK-CNT
-           MOVE   ZERO             TO  WRK-CNT-U
            PERFORM UNTIL       FLG-COLLECT  =   1
                READ    COLLECT-FILE
                    AT  END
@@ -471,15 +467,11 @@
                IF     (COLLECT-REC(IDX2:2)     =   SPACE )
                    MOVE    1           TO  FLG-OVR
                ELSE
-                   IF     (COLLECT-REC(IDX2:1)     >=  X"A1" )
-                       ADD     2           TO  IDX-1
-                   ELSE
-                       ADD     1           TO  IDX-1
-                   END-IF
+                   ADD     1           TO  IDX-1
                END-IF
            END-PERFORM
       *
-           IF     (IDX-1   +   WRK-CNT )   >=  WRK-CONS-MAX-LEN
+           IF     (IDX-1   +   WRK-CNT )   >=  63000
                COMPUTE SPA-NAI-TOTALPAGE   =   SPA-NAI-TOTALPAGE  +  1
                MOVE   ZERO             TO  WRK-CNT
            ELSE
@@ -531,7 +523,6 @@
       *
            MOVE   ZERO             TO  FLG-OVR
            MOVE   ZERO             TO  IDX-1
-           MOVE   ZERO             TO  IDX-1U
            PERFORM VARYING     IDX2    FROM    1   BY  1
                    UNTIL      (IDX2    >   3000 )  OR
                               (FLG-OVR =   1    )
@@ -540,15 +531,10 @@
                    MOVE    1           TO  FLG-OVR
                ELSE
                    ADD     1           TO  IDX-1
-                   IF     (COLLECT-REC(IDX2:1)     >=  X"A1" )
-                       ADD     2           TO  IDX-1U
-                   ELSE
-                       ADD     1           TO  IDX-1U
-                   END-IF
                END-IF
            END-PERFORM
       *
-           IF     (IDX-1U +  WRK-CNT-U )   >=  WRK-CONS-MAX-LEN
+           IF     (IDX-1   +   WRK-CNT )   >=  63000
                MOVE    1               TO  FLG-COLLECT
                MOVE    1               TO  SPA-NAI-NEXT
                COMPUTE SPA-NAI-CNT     =   IDX    -   1
@@ -556,17 +542,14 @@
                IF      WRK-DATAVIEW    =   SPACE
                    MOVE    COLLECT-REC(1:IDX-1)   TO  WRK-DATAVIEW
                    MOVE    IDX-1           TO  WRK-CNT
-                   MOVE    IDX-1U          TO  WRK-CNT-U
                ELSE
                    COMPUTE IDX-3           =   WRK-CNT   +  1
                    MOVE    COLLECT-REC(1:IDX-1)   TO  WRK-DATAVIEW
                                                           (IDX-3:IDX-1)
                    COMPUTE WRK-CNT         =   WRK-CNT  +  IDX-1
-                   COMPUTE WRK-CNT-U       =   WRK-CNT-U  +  IDX-1U
                END-IF
                COMPUTE WRK-CNT         =   WRK-CNT  +  1
-               COMPUTE WRK-CNT-U       =   WRK-CNT-U  +  1
-               IF      WRK-CNT-U       <=  WRK-CONS-MAX-LEN
+               IF      WRK-CNT         <=  63000
                    MOVE    X"0A"           TO  WRK-DATAVIEW(WRK-CNT:1)
                END-IF
            END-IF
@@ -740,7 +723,9 @@
                                    TO  JOB-JOBID
            MOVE    WRK-CONS-JOB-SHELLID-COLLECT
                                    TO  JOB-SHELLID
-           PERFORM 900-CALL-ORCSJOB-SEC
+           CALL    "ORCSJOB"       USING
+                                   ORCSJOBKANRIAREA
+                                   JOBKANRI-REC
       *
            MOVE    "JBS"           TO  SJOBKANRI-MODE
            INITIALIZE                  JOBKANRI-REC
@@ -749,12 +734,21 @@
            MOVE    WRK-CONS-JOB-SHELLID-COLLECT
                                    TO  JOB-SHELLID
            MOVE    SPA-TERMID      TO  JOB-TERMID
-           PERFORM 900-CALL-ORCSJOB-SEC
+           CALL    "ORCSJOB"       USING
+                                   ORCSJOBKANRIAREA
+                                   JOBKANRI-REC
+      *
+      *    ファイルデイレクトリ位置指定
+           MOVE    "scripts/monthly/collectdata1.sh"
+                                   TO  WRK-SHELL-NAME
+           INITIALIZE                  ORCSMKPASSAREA
+           MOVE    WRK-SHELL-NAME  TO  MKPASS-IN-01
+           CALL    "ORCSMKPASS"    USING   ORCSMKPASSAREA
       *
            MOVE    SPACE           TO  SHELLTBL
-           MOVE    "collectdata1.sh"   TO  SHELLTBL-NAME
+           MOVE    MKPASS-OT-01    TO  SHELLTBL-NAME
            MOVE    SPA-TERMID      TO  SHELLTBL-ARG1
-           MOVE    SPA-HOSPNUM     TO  SHELLTBL-ARG2
+           MOVE    SPA-HOSPID      TO  SHELLTBL-ARG2
            MOVE    SPA-PREFNUM     TO  SHELLTBL-ARG3
       *****MOVE    SPA-NAI-SKYYM   TO  SHELLTBL-ARG4
            MOVE    SPA-BEDFLG      TO  SHELLTBL-ARG5
@@ -762,16 +756,15 @@
                                    TO  SHELLTBL-ARG6
            MOVE    WRK-CONS-JOB-SHELLID-COLLECT
                                    TO  SHELLTBL-ARG7
-           MOVE    "2"             TO  SHELLTBL-ARG8
-           MOVE    SPA-HOSPID      TO  SHELLTBL-ARG9
+           MOVE    2               TO  SHELLTBL-ARG8
       *
            MOVE    SHELLTBL        TO  MCPDATA-REC
            MOVE    "SHELL"         TO  MCP-FUNC
            MOVE    "shell"         TO  MCP-TABLE
-           MOVE    "monthly"       TO  MCP-PATHNAME
-grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+           MOVE    "shell"         TO  MCP-PATHNAME
+           CALL    "MONFUNC"       USING
+                                   MCPAREA
+                                   MCPDATA-REC
       *
            .
        470-COLLECT-SYORI-EXT.
@@ -783,14 +776,12 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        470-COLLECT-DELETE-SEC     SECTION.
       *
            MOVE    ZERO                TO  IF-RESULT
-           MOVE    SPA-HOSPNUM         TO  COLLECT-HOSPNUM
            MOVE    "g"                 TO  COLLECT-GN
            MOVE    COLLECT             TO  IF-FILENAME
            CALL    "orcfiledel"        USING
                                            ORCSFDELAREA
       *
            MOVE    ZERO                TO  IF-RESULT
-           MOVE    SPA-HOSPNUM         TO  COLLECT-HOSPNUM
            MOVE    "n"                 TO  COLLECT-GN
            MOVE    COLLECT             TO  IF-FILENAME
            CALL    "orcfiledel"        USING
@@ -816,10 +807,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    "T91"               TO  SPA-MOTOPG
       *
            MOVE    SPACE               TO  LINKAREA
-      *
-           MOVE    SPACE               TO  SPA-WORK
-           INITIALIZE                  SPA-KYOTUKEY
-           MOVE    SPA-KYOUTU          TO  LNK-KYOUTU
       *
            MOVE    SPA-SAKIPG          TO  MCP-WINDOW
       *
@@ -998,7 +985,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            END-EVALUATE
       *
            MOVE    SPACE                TO  TID1
-           INITIALIZE                       TID1
            MOVE    SPA-TIDCD            TO  TID1-ID1CODE
            MOVE    WRK-TIDMSG           TO  TID1-ID1MSG
       *
@@ -1020,28 +1006,14 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    ジョブ管理ＤＢ制御処理
-      *****************************************************************
-       900-CALL-ORCSJOB-SEC            SECTION.
-      *
-grpsys     MOVE    SPA-HOSPNUM     TO  JOB-HOSPNUM
-           CALL    "ORCSJOB"       USING
-                                   ORCSJOBKANRIAREA 
-                                   JOBKANRI-REC
-                                   SPA-AREA
-           .
-       900-CALL-ORCSJOB-EXT.
-           EXIT.
-      *
-      *****************************************************************
       *    ＰＵＴ　処理
       *****************************************************************
        900-PUT-WINDOW              SECTION.
       *
            MOVE   "PUTWINDOW"       TO  MCP-FUNC
-grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
            .
        900-PUT-WINDOW-EXT.
            EXIT.

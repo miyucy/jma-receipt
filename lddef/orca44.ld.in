@@ -1,0 +1,46 @@
+name	orca44;
+
+arraysize	20;
+textsize	400;
+
+bind	""		"OpenCOBOL"	"ORCGT01";
+bind	"T01"		"OpenCOBOL"	"ORCGT01";
+bind	"T02"		"OpenCOBOL"	"ORCGT02";
+bind	"T03"		"OpenCOBOL"	"ORCGT03";
+bind	"T91"		"OpenCOBOL"	"ORCGT91";
+bind	"T99"		"OpenCOBOL"	"ORCGT99";
+bind	"TERR"		"OpenCOBOL"	"ORCGTERR";
+bind	"TID1"		"OpenCOBOL"	"ORCGTID1";
+bind	"TID2"		"OpenCOBOL"	"ORCGTID2";
+
+multiplex_group	orca44;
+
+
+data	{
+	spa	orcaspa;
+	window	{
+		T01;
+		T02;
+		T03;
+		T91;
+		T99;
+		TERR;
+		TID1;
+		TID2;
+	};
+};
+
+db	{
+	tbl_btpara;
+	tbl_hknjainf;
+	tbl_jobkanri;
+	tbl_prtdata;
+	tbl_prtkanri;
+	tbl_ptinf;
+	tbl_ptnum;
+	tbl_syskanri;
+	tbl_syuka;
+};
+
+/* #include "orcadb.inc" */
+#include "orcadbh.inc"

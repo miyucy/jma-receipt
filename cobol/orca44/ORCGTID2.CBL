@@ -27,7 +27,6 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
-      *  04.07.01    NACL-藤原    12/08/01  レセ電データチェック機能対応
       *****************************************************************
       *
        ENVIRONMENT                               DIVISION.
@@ -73,7 +72,14 @@
            COPY    "LINKAREA".
       *
        01  SCRAREA.
-           COPY    "ORCA44SCRAREA.INC".
+           COPY    "T01.INC".
+           COPY    "T02.INC".
+           COPY    "T03.INC".
+           COPY    "T91.INC".
+           COPY    "T99.INC".
+           COPY    "TERR.INC".
+           COPY    "TID1.INC".
+           COPY    "TID2.INC".
       *
        PROCEDURE                                 DIVISION    USING
                                                  MCPAREA
@@ -120,10 +126,6 @@
                WHEN    "CLICKED"                 ALSO    "B01"
                    MOVE    SPACE                 TO  SPA-TID1-FLG
                    PERFORM 210-BACK
-      *     プレビュー
-               WHEN    "CLICKED"                 ALSO    "B10"
-                   MOVE    "PV"                  TO  SPA-TID1-FLG
-                   PERFORM 210-BACK
       *     印刷しない
                WHEN    "CLICKED"                 ALSO    "B11"
                    MOVE    "NO"                  TO  SPA-TID1-FLG
@@ -162,10 +164,9 @@
        900-PUT-WINDOW                            SECTION.
       *
            MOVE   "PUTWINDOW"       TO  MCP-FUNC
-           CALL   "ORCDBMAIN"       USING
-                                        MCPAREA
-                                        MCPDATA-REC
-                                        SPA-AREA
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
            .
        900-PUT-WINDOW-EXT.
            EXIT.

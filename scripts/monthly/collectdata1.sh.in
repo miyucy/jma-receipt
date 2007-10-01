@@ -15,9 +15,10 @@ fi
 #        $2  HOSPID
 #        $3  PREFNUM
 #        $4  SRYYM
-#        $5  BEDFLG (0:病床なし、1:病床あり）
+#        $5  BEDFLG (0:病床なし、1:病床あり)
 #        $6  JOBID
 #        $7  SHELLID
+#        $8  UPLOAD (0:送信なし、1:送信あり、送信のみ)
 #-------------------------------------------#
 
 COLLECTG=collectg.csv
@@ -28,24 +29,28 @@ ERRFILE=/tmp/datacollecterror
 
 DASUPLOAD=$SCRIPTSDIR/monthly/das-upload.sh
 
-#   エラーファイル削除
-    if  [ -e $ERRFILE ]; then
-	rm -f $ERRFILE
-    fi
+# エラーファイル削除
+  if  [ -e $ERRFILE ]; then
+    rm -f $ERRFILE
+  fi
 
-    rm -f /var/tmp/COLDT*
+  rm -f /tmp/$COLLECTG
+  rm -f /tmp/$COLLECTN
+  rm -f /var/tmp/COLDT*
+
+# ファイル送信のみ？
+  if  [ $8 -ne '2' ]; then
 
 #   外来分処理
 
     $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBC010 -parameter $1,$2,$3,$4,2,$6,$7,$ERRFILE 2>&1 | tee $LOGFILE
     if  [ -e $ERRFILE ]; then
 	rm -f /var/tmp/COLDT*
-	exit
     else
 	$DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBC020 -parameter $1,$4,$6,$7,/tmp/$COLLECTG,$ERRFILE 2>&1 | tee -a $LOGFILE
 	if  [ -e $ERRFILE ]; then
 	    rm -f /var/tmp/COLDT*
-	    exit 
+	    rm -f /tmp/$COLLECTG
 	fi
     fi
 
@@ -56,29 +61,40 @@ DASUPLOAD=$SCRIPTSDIR/monthly/das-upload.sh
 	$DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBC010 -parameter $1,$2,$3,$4,1,$6,$7,$ERRFILE 2>&1 | tee -a $LOGFILE
 	if  [ -e $ERRFILE ]; then
 	    rm -f /var/tmp/COLDT*
-	    exit
 	else
 	    $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBC020 -parameter $1,$4,$6,$7,/tmp/$COLLECTN,$ERRFILE 2>&1 | tee -a $LOGFILE
 	    if  [ -e $ERRFILE ]; then
 		rm -f /var/tmp/COLDT*
-		exit 
+		rm -f /tmp/$COLLECTN
 	    fi
 	fi
     fi
 
     if  [ $5 -eq '1' ]; then
-	tar cvfz $DASDIR/collect-$4.tar.gz -C/ tmp/$COLLECTG tmp/$COLLECTN
-	rm -f /tmp/$COLLECTG
-	rm -f /tmp/$COLLECTN
+	if  [ -e /tmp/$COLLECTG ] && [ -e /tmp/$COLLECTN ]; then
+	    tar cvfz $DASDIR/collect-$4.tar.gz -C/ tmp/$COLLECTG tmp/$COLLECTN
+	fi
+	if  [ -e /tmp/$COLLECTG ] && [ ! -e /tmp/$COLLECTN ]; then
+	    tar cvfz $DASDIR/collect-$4.tar.gz -C/ tmp/$COLLECTG
+	fi
+	if  [ ! -e /tmp/$COLLECTG ] && [ -e /tmp/$COLLECTN ]; then
+	    tar cvfz $DASDIR/collect-$4.tar.gz -C/ tmp/$COLLECTN
+	fi
     else
-	tar cvfz $DASDIR/collect-$4.tar.gz -C/ tmp/$COLLECTG
-	rm -f /tmp/$COLLECTG
+	if  [ -e /tmp/$COLLECTG ]; then
+	    tar cvfz $DASDIR/collect-$4.tar.gz -C/ tmp/$COLLECTG
+	fi
     fi
 
     rm -f /var/tmp/COLDT*
 
-    $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE$6$7 2>&1 | tee -a $LOGFILE
+  fi
 
+  $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE$6$7 2>&1 | tee -a $LOGFILE
+
+  if  [ $8 -ne '0' ]; then
+    echo "収集データ送信処理 起動" 2>&1 | tee -a $LOGFILE
     $DASUPLOAD &
+  fi
 
-    exit
+  exit
