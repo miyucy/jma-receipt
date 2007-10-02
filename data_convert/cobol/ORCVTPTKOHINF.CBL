@@ -880,8 +880,11 @@
                    MOVE    WRK-CNT         TO  KANACHK-MAX-CNT
                    CALL    "ORCSKANACHK"       USING
                                                ORCSKANACHKAREA
+      *             IF     (KANACHK-RC          =   ZERO  )  AND
+      *                    (KANACHK-RC2     NOT =   7     )
                    IF     (KANACHK-RC          =   ZERO  )  AND
-                          (KANACHK-RC2     NOT =   7     )
+                          (KANACHK-SYUBETU     =   1     )  AND
+                          (KANACHK-MAE-INPUT   =   KANACHK-OUT-INPUT)
                        CONTINUE
                    ELSE
       *                全角半角混在、間の空白はエラー
