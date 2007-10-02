@@ -1160,8 +1160,8 @@
            END-IF
       *
            IF      WRK-MO-CNT      >   8
-               GO  TO  2410-FTNJANUM-SET-EXT
                MOVE    2           TO  FLG-ERR
+               GO  TO  2410-FTNJANUM-SET-EXT
            END-IF
       *
            MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
@@ -1184,8 +1184,8 @@
            END-IF
       *
            IF      WRK-MO-CNT      >   20
-               GO  TO  2410-JKYSNUM-SET-EXT
                MOVE    2           TO  FLG-ERR
+               GO  TO  2410-JKYSNUM-SET-EXT
            END-IF
       *
            MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
