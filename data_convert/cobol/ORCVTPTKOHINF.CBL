@@ -601,11 +601,11 @@
            MOVE    SPA-HOSPNUM     TO  SYS-1009-HOSPNUM
            MOVE    SYS-1009-REC    TO  MCPDATA-REC
            MOVE    "tbl_syskanri"  TO  MCP-TABLE
-           MOVE    "key"           TO  MCP-PATHNAME
+           MOVE    "key10"         TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
                MOVE    "tbl_syskanri"  TO  MCP-TABLE
-               MOVE    "key"           TO  MCP-PATHNAME
+               MOVE    "key10"         TO  MCP-PATHNAME
                PERFORM 900-SYSTEM-NEXT-SEC
            ELSE
                MOVE    1               TO  FLG-SYSKANRI
