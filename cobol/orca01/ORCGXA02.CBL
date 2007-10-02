@@ -527,10 +527,15 @@ grpsys     MOVE    SPA-HOSPNUM         TO  LDMAP-HOSPNUM
            PERFORM             UNTIL   FLG-LDMAP   =   1
                                OR      SPA-GMN-GYOMULST-MAX
                                                    >=  99
-               ADD     1               TO  SPA-GMN-GYOMULST-MAX
+      *       病床管理は対象としない
+               IF      LDMAP-LDMSG (1:2)   =   "35"
+                   CONTINUE
+               ELSE
+                   ADD     1               TO  SPA-GMN-GYOMULST-MAX
       *
-               MOVE    LDMAP-LDMSG     TO  SPA-GMN-GYOMULST
+                   MOVE    LDMAP-LDMSG     TO  SPA-GMN-GYOMULST
                                                (SPA-GMN-GYOMULST-MAX)
+               END-IF
       *
                MOVE    "tbl_ldmap"     TO  MCP-TABLE
                MOVE    "key4"          TO  MCP-PATHNAME
