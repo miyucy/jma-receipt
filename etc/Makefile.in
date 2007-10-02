@@ -8,7 +8,8 @@ ETC_files = \
 	kentan.inc \
 	orcadbs.inc \
 	jma-receipt.env \
-	jma-receipt.conf
+	jma-receipt.conf \
+	orca-project-ca-1.crt
 
 DBGROUP_files = dbgroup.inc 
 
