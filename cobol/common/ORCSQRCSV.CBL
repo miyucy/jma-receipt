@@ -294,7 +294,7 @@
            MOVE    "11"                TO  TBL-QRCSV-DATA (1)
            MOVE    ORCSQRCSV-NAME(1:40)
                                        TO  TBL-QRCSV-DATA (3)
-      **** MOVE    ORCSQRCSV-KANANAME  TO  TBL-QRCSV-DATA (4)
+           MOVE    ORCSQRCSV-KANANAME  TO  TBL-QRCSV-DATA (4)
            MOVE    4                   TO  TBL-MAX
            PERFORM 400-DATAOUT-SEC
       *    患者性別レコード
