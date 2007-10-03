@@ -13,6 +13,16 @@ handler "Ruby" {
 
 bind    "OrcSioriPull"  "Ruby";
 
+bind    "ORCVTPTINF"    	"OpenCOBOL";
+bind    "ORCVTPTHKNINF" 	"OpenCOBOL";
+bind    "ORCVTPTKOHINF" 	"OpenCOBOL";
+bind    "ORCVTHKNCOMBI" 	"OpenCOBOL";
+bind    "ORCVTINPUTCD"  	"OpenCOBOL";
+bind    "ORCVTINPUTCDTOSHIBA"  	"OpenCOBOL";
+bind    "ORCVTSRYKARRK" 	"OpenCOBOL";
+bind    "ORCVTPTBYOMEI"		"OpenCOBOL";
+bind    "ORCVTUSERBYOMEI"	"OpenCOBOL";
+
 bind	"ORCR0010"	"OpenCOBOL";
 bind	"ORCR0020"	"OpenCOBOL";
 bind	"ORCR0030"	"OpenCOBOL";
