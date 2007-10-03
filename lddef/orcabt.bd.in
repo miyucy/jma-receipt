@@ -18,7 +18,6 @@ bind    "ORCVTPTHKNINF" 	"OpenCOBOL";
 bind    "ORCVTPTKOHINF" 	"OpenCOBOL";
 bind    "ORCVTHKNCOMBI" 	"OpenCOBOL";
 bind    "ORCVTINPUTCD"  	"OpenCOBOL";
-bind    "ORCVTINPUTCDTOSHIBA"  	"OpenCOBOL";
 bind    "ORCVTSRYKARRK" 	"OpenCOBOL";
 bind    "ORCVTPTBYOMEI"		"OpenCOBOL";
 bind    "ORCVTUSERBYOMEI"	"OpenCOBOL";
