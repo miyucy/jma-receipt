@@ -65,6 +65,7 @@ PID1.glade	orca12	(PID1)確認画面
 Q01.glade	orca13	(Q01)患者照会-検索条件入力
 Q02.glade	orca13	(Q02)患者照会-検索結果
 Q03.glade	orca13	(Q03)明細書連携確認
+Q04.glade	orca13	(Q04)検索条件登録				VER4.0.0
 Q96.glade	orca13	(Q96)診療行為一覧選択
 Q97.glade	orca13	(Q97)処理結果
 Q98.glade	orca13	(Q98)住所検索
