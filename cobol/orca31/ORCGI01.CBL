@@ -4390,8 +4390,6 @@
                        IF    ( SYS-5001-BTU-SBT            =   "04" )
                         AND  ( SYS-5111-BRM-NYUINRYOKBN    =   "05" )
                            IF    ( FLG-LIFE-RJN            =   ZERO )
-                            OR   ( SPA-NAI-I01-RSI-HKNKBN
-                                           NOT =   SPACE )
                                IF    ( SYS-5111-SEIKATU-RYOKBN
                                                            =   SPACE )
                                    MOVE    1   TO  FLG-TARGET
@@ -4407,8 +4405,6 @@
                        IF    ( SYS-5001-BTU-SBT            =   "09" )
                         AND  ( SYS-5111-BRM-NYUINRYOKBN    =   "06" )
                            IF    ( FLG-LIFE-RJN            =   ZERO )
-                            OR   ( SPA-NAI-I01-RSI-HKNKBN
-                                           NOT =   SPACE )
                                IF    ( SYS-5111-SEIKATU-RYOKBN
                                                            =   SPACE )
                                    MOVE    1   TO  FLG-TARGET
@@ -4458,13 +4454,12 @@
                        END-IF
                    WHEN  ( SYS-5001-BTU-TOKTEI-NYUIN
                                        =   "13" OR "16" )
-                       MOVE    "5110"      TO  WRK-KANRICD
-                       MOVE    "13"        TO  WRK-KBNCD
-                       MOVE    "2"         TO  WRK-TOKNYUIN-KBN
-                       PERFORM 4100-CMB-TOKNYUIN-DAT-SET-SEC
-                       PERFORM 41011-PT-AGE-SEC
-                       IF    ( WRK-NENREI  >=  70 )
-                        OR   ( FLG-ROUJIN  =   1 )
+                       IF    ( FLG-LIFE-RJN            =   ZERO )
+                           MOVE    "5110"      TO  WRK-KANRICD
+                           MOVE    "13"        TO  WRK-KBNCD
+                           MOVE    "2"         TO  WRK-TOKNYUIN-KBN
+                           PERFORM 4100-CMB-TOKNYUIN-DAT-SET-SEC
+                       ELSE
                            MOVE    "5110"      TO  WRK-KANRICD
                            MOVE    "16"        TO  WRK-KBNCD
                            MOVE    "2"         TO  WRK-TOKNYUIN-KBN
@@ -4501,32 +4496,27 @@
                    EVALUATE    TRUE
                    WHEN    ( SYS-5002-BRM-TOKTEI-NYUIN   =   "02"
                                                           OR "49")
-                       MOVE    "5111"      TO  WRK-KANRICD
-                       MOVE    "02"        TO  WRK-KBNCD
-                       MOVE    "3"         TO  WRK-TOKNYUIN-KBN
-                       PERFORM 4100-CMB-TOKNYUIN-DAT-SET-SEC
       *
-                       MOVE    "5111"      TO  WRK-KANRICD
-                       MOVE    "23"        TO  WRK-KBNCD
-                       MOVE    "3"         TO  WRK-TOKNYUIN-KBN
-                       PERFORM 4100-CMB-TOKNYUIN-DAT-SET-SEC
+                       IF    ( FLG-LIFE-RJN            =   ZERO )
+                           MOVE    "5111"      TO  WRK-KANRICD
+                           MOVE    "02"        TO  WRK-KBNCD
+                           MOVE    "3"         TO  WRK-TOKNYUIN-KBN
+                           PERFORM 4100-CMB-TOKNYUIN-DAT-SET-SEC
       *
-                       PERFORM 41011-PT-AGE-SEC
-                       IF    ( WRK-NENREI  >=  70 )
-                        OR   ( FLG-ROUJIN  =   1 )
-                           IF    ( SPA-NAI-I01-RSI-HKNKBN
-                                                   =   SPACE )
-                               MOVE    "5111"      TO  WRK-KANRICD
-                               MOVE    "49"        TO  WRK-KBNCD
-                               MOVE    "3"         TO  WRK-TOKNYUIN-KBN
-                               PERFORM 4100-CMB-TOKNYUIN-DAT-SET-SEC
+                           MOVE    "5111"      TO  WRK-KANRICD
+                           MOVE    "23"        TO  WRK-KBNCD
+                           MOVE    "3"         TO  WRK-TOKNYUIN-KBN
+                           PERFORM 4100-CMB-TOKNYUIN-DAT-SET-SEC
+                       ELSE
+                           MOVE    "5111"      TO  WRK-KANRICD
+                           MOVE    "49"        TO  WRK-KBNCD
+                           MOVE    "3"         TO  WRK-TOKNYUIN-KBN
+                           PERFORM 4100-CMB-TOKNYUIN-DAT-SET-SEC
       *
-                               MOVE    "5111"      TO  WRK-KANRICD
-                               MOVE    "51"        TO  WRK-KBNCD
-                               MOVE    "3"         TO  WRK-TOKNYUIN-KBN
-                               PERFORM 4100-CMB-TOKNYUIN-DAT-SET-SEC
-                           END-IF
-      *
+                           MOVE    "5111"      TO  WRK-KANRICD
+                           MOVE    "51"        TO  WRK-KBNCD
+                           MOVE    "3"         TO  WRK-TOKNYUIN-KBN
+                           PERFORM 4100-CMB-TOKNYUIN-DAT-SET-SEC
                        END-IF
       *
                    WHEN    OTHER
@@ -4557,20 +4547,16 @@
            END-IF
       *
       *    Ã»´üÂÚºß¼ê½Ñ´ðËÜÎÁ¤ò¥³¥ó¥Ü¤ËÀßÄê
-           MOVE    "5111"      TO  WRK-KANRICD
-           MOVE    "21"        TO  WRK-KBNCD
-           MOVE    "3"         TO  WRK-TOKNYUIN-KBN
-           PERFORM 4100-CMB-TOKNYUIN-DAT-SET-SEC
-      *
-           PERFORM 41011-PT-AGE-SEC
-           IF    ( WRK-NENREI  >=  70 )
-            OR   ( FLG-ROUJIN   =   1 )
-               IF    ( SPA-NAI-I01-RSI-HKNKBN  =   SPACE )
-                   MOVE    "5111"      TO  WRK-KANRICD
-                   MOVE    "50"        TO  WRK-KBNCD
-                   MOVE    "3"         TO  WRK-TOKNYUIN-KBN
-                   PERFORM 4100-CMB-TOKNYUIN-DAT-SET-SEC
-               END-IF
+           IF    ( FLG-LIFE-RJN            =   ZERO )
+               MOVE    "5111"      TO  WRK-KANRICD
+               MOVE    "21"        TO  WRK-KBNCD
+               MOVE    "3"         TO  WRK-TOKNYUIN-KBN
+               PERFORM 4100-CMB-TOKNYUIN-DAT-SET-SEC
+           ELSE
+               MOVE    "5111"      TO  WRK-KANRICD
+               MOVE    "50"        TO  WRK-KBNCD
+               MOVE    "3"         TO  WRK-TOKNYUIN-KBN
+               PERFORM 4100-CMB-TOKNYUIN-DAT-SET-SEC
            END-IF
       *
            .
@@ -14385,13 +14371,18 @@
            MOVE    "key6"           TO   MCP-PATHNAME
            PERFORM 910-DBCLOSECURSOR-SEC
       *
-           MOVE    FLG-RJN          TO  FLG-LIFE-RJN
+           IF    ( WRK-AGECHK-SRYYMD   >=  CONST-H181001 )
+            AND  ( SPA-NAI-I01-RSI-HKNKBN
+                                        =  SPACE )
       *
-      *    Ï·¿ÍÂÐ¾Ý´µ¼ÔÈ½Äê
-           IF    ((FLG-HKNCOMBI     =   ZERO)    AND
-                  (COMB-KOH1HKNNUM  =   "027"))      OR
-                  (AGECHK-NENREI   >=    70)
-               MOVE    1            TO  FLG-LIFE-RJN
+               MOVE    FLG-RJN      TO  FLG-LIFE-RJN
+      *
+      *        Ï·¿ÍÂÐ¾Ý´µ¼ÔÈ½Äê
+               IF    ((FLG-HKNCOMBI     =   ZERO)    AND
+                      (COMB-KOH1HKNNUM  =   "027"))      OR
+                      (AGECHK-NENREI   >=    70)
+                   MOVE    1        TO  FLG-LIFE-RJN
+               END-IF
            END-IF
       *
            .
