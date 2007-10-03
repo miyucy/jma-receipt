@@ -310,6 +310,7 @@
       *                                     ２００７年９月〜１２月対象 
       *  03.05.21    NACL-門脇    07/09/27  特定保険者＋精神、結核対応修正
       *                                     （老人は対象外とする）
+      *  03.05.22    NACL-門脇    07/10/03  秋田県乳幼児一部負担金記載対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -7769,6 +7770,11 @@ grpsys     PERFORM 900-DBSELECT-SEC
                         END-IF
                      END-IF
                  END-IF
+               END-IF
+               IF  (SYS-1001-PREFNUM          =   05  ) AND
+                   (RECE02-KOHNUM(KOHFTN-IDX) =  "174")
+                     MOVE  "1"  TO
+                             RECE02-ZEROKISAIFLG(KOHFTN-IDX + 1)
                END-IF
              END-IF
       *
