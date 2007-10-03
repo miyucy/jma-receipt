@@ -444,7 +444,7 @@
            END-IF
       *
       *    分割レコードファイル　初期処理
-           MOVE    "/var/tmp/ORCVTPTHKNINF_ISAM"
+           MOVE    "/tmp/ORCVTPTHKNINF_ISAM"
                                    TO  ASS-ISAM
       *    ISAMファイルクリア
            OPEN    OUTPUT              ISAM-FILE
