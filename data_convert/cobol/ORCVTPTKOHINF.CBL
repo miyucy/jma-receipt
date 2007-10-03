@@ -642,10 +642,11 @@
                MOVE    1               TO  FLG-CSV
                GO  TO  200-MAIN-EXT
            END-IF
-           MOVE    SPACE           TO  PTKOH-REC
+      *
            INITIALIZE                  PTKOH-REC
-           MOVE    SPACE           TO  WRK-HEN-AREA
+           MOVE    SPACE           TO  PTKOH-REC
            INITIALIZE                  WRK-HEN-AREA
+           MOVE    SPACE           TO  WRK-HEN-AREA
            MOVE    ZERO            TO  WRK-POINT-AREA
            MOVE    ZERO            TO  IDX-AREA
            MOVE    ZERO            TO  FLG-ERRARI
@@ -1372,16 +1373,18 @@
            END-IF
       *
       *    レコード番号が大きかったら最大値をセット
-           IF      WRK-KOHID       <   PTKOH-KOHID
-               MOVE    PTKOH-KOHID     TO  WRK-KOHID
-           END-IF
+      *     IF      WRK-KOHID       <   PTKOH-KOHID
+      *         MOVE    PTKOH-KOHID     TO  WRK-KOHID
+      *     END-IF
       *
            MOVE    SPA-HOSPNUM     TO  PTKOH-HOSPNUM
            MOVE    PTNUM-PTID      TO  PTKOH-PTID
            MOVE    SPA-TERMID      TO  PTKOH-TERMID
       *
       *    老人保健チェック
-           PERFORM 250-ROUJIN-HEN-SEC
+           IF      FLG-ERR             =   ZERO
+               PERFORM 250-ROUJIN-HEN-SEC
+           END-IF
       *
       *    地方公費チェック
            IF      FLG-ERR             =   ZERO
@@ -1416,6 +1419,7 @@
            OPEN    INPUT               ISAM-FILE
       *
            MOVE    ZERO                TO  WRK-PTID
+           MOVE    ZERO                TO  FLG-ERR
       *
            INITIALIZE                  ISAM-REC
            PERFORM 900-ISAM-NEXT-SEC
@@ -1466,7 +1470,10 @@
       *        支払い区分セット
                PERFORM 250-PAYKBN-HEN-SEC
       *        患者番号変換マスタ更新処理
-               PERFORM 250-PTNUM-UPDATE-SEC
+               PERFORM 900-PTNUM-READ-SEC
+               IF  FLG-ERR              =   ZERO
+                   PERFORM 250-PTNUM-UPDATE-SEC
+               END-IF
       *        患者公費マスタ　更新処理
                IF  FLG-ERR              =   ZERO
                    PERFORM 260-PTKOHINF-INSERT-SEC

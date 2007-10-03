@@ -1713,9 +1713,9 @@
            END-IF
       *
       *    レコード番号が大きかったら最大値をセット
-           IF      WRK-HKNID       <   PTHKN-HKNID
-               MOVE    PTHKN-HKNID     TO  WRK-HKNID
-           END-IF
+      *     IF      WRK-HKNID       <   PTHKN-HKNID
+      *         MOVE    PTHKN-HKNID     TO  WRK-HKNID
+      *     END-IF
       *
            MOVE    SPA-HOSPNUM     TO  PTHKN-HOSPNUM
            MOVE    PTNUM-PTID      TO  PTHKN-PTID
@@ -1753,6 +1753,7 @@
            OPEN    INPUT               ISAM-FILE
       *
            MOVE    ZERO                TO  WRK-PTID
+           MOVE    ZERO                TO  FLG-ERR
       *
            INITIALIZE                  ISAM-REC
            PERFORM 900-ISAM-NEXT-SEC
@@ -1819,6 +1820,7 @@
                MOVE    1               TO  FLG-ROUJIN
                PERFORM 250-HOJYOKBN-HEN-SEC
       *        患者番号変換マスタ更新処理
+               PERFORM 900-PTNUM-READ-SEC
                IF  FLG-ERR             =   ZERO
                    PERFORM 260-PTNUM-UPDATE-SEC
                END-IF
