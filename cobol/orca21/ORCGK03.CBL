@@ -659,14 +659,16 @@
       *    エラー画面より
            IF      SPA-MOTOPG          =   "KERR"
                                        OR  "KERR2"
-               IF     (SPA-ERRMSG2     NOT =   SPACE )  AND
+               IF     (SPA-ERRMSG2         =   "K001")  AND
                       (SPA-KEI-FLG         =   1     )
+                   MOVE    SPACE               TO  SPA-ERRMSG2
                    MOVE    "JOIN"              TO  WRK-MCP-PUTTYPE
                    PERFORM 450011-KOUSIN-ATO-SEC
                    IF      FLG-END             =   ZERO
                        PERFORM 4900-END-SYORI-SEC
                    END-IF
                ELSE
+                   MOVE    SPACE               TO  SPA-ERRMSG2
                    MOVE    SPACE               TO  SPA-MOTOPG
                    PERFORM 5001-MAPCUR-SEC
                END-IF
@@ -6211,12 +6213,14 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                                        TO  SPA-ERRMSG
                WHEN    "K001"
                    MOVE    SPA-ERRMSG2     TO  SPA-ERRMSG
-                   MOVE    SPACE           TO  SPA-ERRMSG2
+      *D           MOVE    SPACE           TO  SPA-ERRMSG2
+                   MOVE    SPA-ERRCD       TO  SPA-ERRMSG2
                WHEN    OTHER
                    MOVE    SPA-ERRCD   TO  SPA-ERRMSG
            END-EVALUATE
       *
-           IF      SPA-ERRMSG2     NOT =   SPACE
+           IF     (SPA-ERRMSG2     NOT =   SPACE )  AND
+                  (SPA-ERRCD       NOT =   "K001")
       *        エラー画面２
                PERFORM 5101-KERR2-SET-SEC
                GO      TO      510-ERRSET-EXT
