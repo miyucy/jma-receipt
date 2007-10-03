@@ -92,7 +92,7 @@ grpsys COPY    "COMMON-SPA".
       *
            COPY  "CPSHELLTBL.INC".
       *
-           COPY  "ORCA-DBPATH".
+      ****COPY  "ORCA-DBPATH".
       *
        01  SHELL-AREA.
            03  SHELL-NAME          PIC X(39)  VALUE
@@ -103,6 +103,7 @@ grpsys COPY    "COMMON-SPA".
        01  PARA-AREA.
            03  PARA-RSFILE           PIC X(32).
            03  PARA-DELHOME          PIC X(100).
+           03  PARA-HOSPNUM          PIC 9(02).
       *****************************************************************
       *    ファイル定義
       *****************************************************************
@@ -151,11 +152,15 @@ grpsys COPY    "COMMON-SPA".
            MOVE    ZERO            TO  FLG-AREA
            MOVE    ZERO            TO  CNT-AREA
            INITIALIZE                  WRK-AREA
+           INITIALIZE                  SPA-AREA
       *
            UNSTRING    PARA-REC    DELIMITED  BY  ","
                                    INTO  PARA-RSFILE
                                          PARA-DELHOME
+                                         PARA-HOSPNUM
            END-UNSTRING                                  
+      *
+           MOVE    PARA-HOSPNUM    TO  SPA-HOSPNUM
       *    DB OPEN
            PERFORM 100-DBOPEN-SEC
            IF      MCP-RC          NOT =   ZERO
@@ -177,14 +182,11 @@ grpsys COPY    "COMMON-SPA".
       *
       *    ＰＧ管理マスタ検索
            INITIALIZE                  PGKANRI-REC
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PGKANRI-REC         TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "tbl_pgkanri"       TO  MCP-TABLE
            MOVE    "key2"              TO  MCP-PATHNAME
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC              =   ZERO
                PERFORM 910-PGKANRI-READ-SEC
            ELSE
@@ -201,14 +203,11 @@ grpsys                            SPA-AREA
                MOVE    PGKANRI-PGNAME  TO  SHELLTBL-ARG1
                MOVE    PGKANRI-INSTALLDIR
                                        TO  SHELLTBL-ARG2
-grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    SHELLTBL        TO  MCPDATA-REC
                MOVE    "SHELL"         TO  MCP-FUNC
-               MOVE    PATH-SHELL-SHELL
-                                       TO  MCP-PATH
-               CALL    "MCPSUB"        USING
-                                           MCPAREA
-                                           MCPDATA-REC
+               MOVE    "shell"         TO  MCP-TABLE
+               MOVE    "shell"         TO  MCP-PATHNAME
+grpsys         PERFORM 900-ORCDBMAIN-SEC
       *
                PERFORM 210-KOUSHIN-SEC
                IF      FLG-RESTART     =   0   AND
@@ -224,9 +223,7 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "tbl_pgkanri"       TO  MCP-TABLE
            MOVE    "key2"              TO  MCP-PATHNAME
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     PERFORM 900-ORCDBMAIN-SEC
            .
       *
        200-MAIN-EXT.
@@ -245,11 +242,8 @@ grpsys                            SPA-AREA
            MOVE    "DBUPDATE"          TO  MCP-FUNC
            MOVE    "tbl_pgkanri"       TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PGKANRI-REC         TO  MCPDATA-REC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC          NOT =   ZERO
                MOVE    1               TO  FLG-ERR
                ADD     1               TO  CNT-ERR
@@ -302,14 +296,11 @@ grpsys                            SPA-AREA
                MOVE    MKPASS-OT-01    TO  SHELLTBL-NAME
       *
                MOVE    PARA-DELHOME    TO  SHELLTBL-ARG1
-grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    SHELLTBL        TO  MCPDATA-REC
                MOVE    "SHELL"         TO  MCP-FUNC
-               MOVE    PATH-SHELL-SHELL
-                                       TO  MCP-PATH
-               CALL    "MCPSUB"        USING
-                                           MCPAREA
-                                           MCPDATA-REC
+               MOVE    "shell"         TO  MCP-TABLE
+               MOVE    "shell"         TO  MCP-PATHNAME
+grpsys         PERFORM 900-ORCDBMAIN-SEC
            END-IF
       *    DB DISCONNECT
            PERFORM 900-DBDISCONNECT-SEC
@@ -329,9 +320,7 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    "DBFETCH"           TO  MCP-FUNC
            MOVE    "tbl_pgkanri"       TO  MCP-TABLE
            MOVE    "key2"              TO  MCP-PATHNAME
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC     TO  PGKANRI-REC
                MOVE    ZERO            TO  FLG-PGKANRI
@@ -352,16 +341,12 @@ grpsys                            SPA-AREA
            MOVE    LOW-VALUE           TO  MCP-TABLE
                                            MCP-PATHNAME
            MOVE    "DBOPEN"            TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     PERFORM 900-ORCDBMAIN-SEC
       *
            MOVE    LOW-VALUE           TO  MCP-TABLE
                                            MCP-PATHNAME
            MOVE    "DBSTART"           TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     PERFORM 900-ORCDBMAIN-SEC
            .
        100-DBOPEN-EXT.
            EXIT.
@@ -374,17 +359,26 @@ grpsys                            SPA-AREA
            MOVE    LOW-VALUE           TO  MCP-TABLE
                                            MCP-PATHNAME
            MOVE    "DBCOMMIT"          TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     PERFORM 900-ORCDBMAIN-SEC
       *
            MOVE    LOW-VALUE           TO  MCP-TABLE
                                            MCP-PATHNAME
            MOVE    "DBDISCONNECT"      TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     PERFORM 900-ORCDBMAIN-SEC
            .
        900-DBCLOSE-EXT.
            EXIT.
       *
+      *****************************************************************
+      *    テーブルアクセス処理
+      *****************************************************************
+       900-ORCDBMAIN-SEC               SECTION.
+      *
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
+           .
+      *
+       900-ORCDBMAIN-EXT.
+           EXIT.
+      *      

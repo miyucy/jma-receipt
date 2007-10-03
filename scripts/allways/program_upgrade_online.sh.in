@@ -11,6 +11,13 @@ fi
 
 umask 022
 
+#------------------------------------
+# $1 : 医療機関識別番号(HOSPNUM)
+# $2 : スーパーバイザー
+#------------------------------------
+
+HOSPNUM=$1
+
 HOME=/home/orca
 PRGDIR=orca-prg@VERSION@
 PRGCFILE=ORCAPGC.DAT
@@ -43,7 +50,7 @@ ruby $SCRIPTSDIR/allways/cachedl.rb $PACKAGEFILE $PATCHDIR $PRGPATH $OFFLINE $WG
 if  [ $? -ne 0 ] ; then
     echo "更新プログラムのダウンロードに失敗しました"
     rm -rf $HOME/$PRGDIR
-    $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE0000001PRGMNT01
+    $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE0000001PRGMNT01,$HOSPNUM
     exit 99
 fi
 
@@ -52,34 +59,34 @@ ruby $SCRIPTSDIR/allways/cachetoprgdir.rb $PACKAGEFILE $PATCHDIR $HOME/$PRGDIR
 if  [ $? -ne 0 ] ; then
     echo "更新プログラムの複写に失敗しました"
     rm -rf $HOME/$PRGDIR
-    $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE0000001PRGMNT01
+    $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE0000001PRGMNT01,$HOSPNUM
     exit 99
 fi
 if ! [ -e $HOME/$PRGDIR/$PRGCFILE ];	then
     echo "プログラム管理ファイルが存在しません"
     rm -rf $HOME/$PRGDIR
-    $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE0000001PRGMNT01
+    $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE0000001PRGMNT01,$HOSPNUM
     exit 99
 fi
 
 #プログラム管理テーブル更新
-$DBSTUB  -noredirect -dir $LDDIRECTORY -bd orcabt ORCXPMNT1 -parameter $HOME/$PRGDIR/$PRGCFILE,$HOME/$PRGDIR/$PGKUPDCNTFILE
+$DBSTUB  -noredirect -dir $LDDIRECTORY -bd orcabt ORCXPMNT1 -parameter $HOME/$PRGDIR/$PRGCFILE,$HOME/$PRGDIR/$PGKUPDCNTFILE,$HOSPNUM
 if [ $? -ne 0 ]	;	then 
     echo "プログラム管理テーブルの更新に失敗しました"
     rm -rf $HOME/$PRGDIR
-    $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE0000001PRGMNT99
+    $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE0000001PRGMNT99,$HOSPNUM
     exit 99
 else
     if ! [ -e $HOME/$PRGDIR/$PGKUPDCNTFILE ];	then
 	echo "プログラム管理テーブル更新件数ファイルが存在しません"
 	rm -rf $HOME/$PRGDIR
-	$DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE0000001PRGMNT99
+	$DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE0000001PRGMNT99,$HOSPNUM
 	exit 99
     else
 	if [ `cat $HOME/$PRGDIR/$PGKUPDCNTFILE` -eq "0000" ];	then
 	    echo "プログラム管理テーブル更新件数は０件でした"
 	    rm -rf $HOME/$PRGDIR
-	    $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE0000001PRGMNT01
+	    $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE0000001PRGMNT01,$HOSPNUM
 	    exit 99
 	fi
     fi
@@ -88,15 +95,15 @@ fi
 #情報取得のみの場合終了
 if [ $1 = "1" ];	then
     rm -rf $HOME/$PRGDIR
-    $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE0000001PRGMNT00
+    $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE0000001PRGMNT00,$HOSPNUM
     exit
 fi
 
 #プログラム更新処理
-$DBSTUB  -noredirect -dir $LDDIRECTORY -bd orcabt ORCXPMNT3 -parameter $RSTFILE,$HOME/$PRGDIR
+$DBSTUB  -noredirect -dir $LDDIRECTORY -bd orcabt ORCXPMNT3 -parameter $RSTFILE,$HOME/$PRGDIR,$HOSPNUM
 if [ $? -ne 0 ]	;	then 
     rm -rf $HOME/$PRGDIR
-    $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE0000001PRGMNT99
+    $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE0000001PRGMNT99,$HOSPNUM
     exit 99
 fi
 
@@ -105,4 +112,4 @@ sleep 3
 echo  "全ての処理が完了しました"
 
 #rm -rf $HOME/$PRGDIR
-$DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE0000001PRGMNT00
+$DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE0000001PRGMNT00,$HOSPNUM

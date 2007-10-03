@@ -936,7 +936,8 @@
       *----(01.02.16)--UPD-START---
       *        プログラム更新処理
                WHEN    "03"
-                   IF      SYS-1010-KANRIAUTHFLG   =   "T"
+                   IF    ( SPA-SUPERVISOR          =   "T" )
+                   AND   ( SYS-1010-KANRIAUTHFLG   =   "T" )
                        AND     SYS-1010-GSRAUTH(3:1)    =  "1"
                        MOVE    "M97"           TO  SPA-SAKIPG
                    ELSE
@@ -1158,7 +1159,8 @@
                MOVE    WIDGET-NORMAL      TO  M00-G01-STATE
            END-IF
       *----(01.02.16)--UPD-START---
-           IF      SYS-1010-KANRIAUTHFLG   =   "T"
+           IF    ( SPA-SUPERVISOR          =   "T" )
+           AND   ( SYS-1010-KANRIAUTHFLG   =   "T" )
                AND     SYS-1010-GSRAUTH(3:1)    =  "1"
                MOVE    WIDGET-NORMAL       TO  M00-G03-STATE
            END-IF

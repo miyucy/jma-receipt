@@ -98,6 +98,7 @@ grpsys COPY    "COMMON-SPA".
        01  PARA-AREA.
            03  PARA-DBFILE             PIC X(256).
            03  PARA-CNTFILE            PIC X(256).
+           03  PARA-HOSPNUM            PIC 9(02).
       *
       *****************************************************************
       *    ファイル定義
@@ -117,7 +118,7 @@ grpsys COPY    "COMMON-SPA".
       *    連絡　領域
       *****************************************************************
        LINKAGE                     SECTION.
-       01  PARA-REC                    PIC X(512).
+       01  PARA-REC                    PIC X(400).
       *
        PROCEDURE                   DIVISION
            USING
@@ -146,11 +147,15 @@ grpsys COPY    "COMMON-SPA".
            MOVE    ZERO            TO  FLG-AREA
            MOVE    ZERO            TO  CNT-AREA
            INITIALIZE                  WRK-AREA
+           INITIALIZE                  SPA-AREA
       *
            UNSTRING    PARA-REC    DELIMITED  BY  ","
                                    INTO  PARA-DBFILE
                                          PARA-CNTFILE
+                                         PARA-HOSPNUM
            END-UNSTRING
+      *
+           MOVE    PARA-HOSPNUM    TO  SPA-HOSPNUM
       *
       *    DB OPEN
            PERFORM 100-DBOPEN-SEC
@@ -267,21 +272,16 @@ grpsys COPY    "COMMON-SPA".
                                    TO  PGKANRI-SYSTEMVERSION
            MOVE    PGKANRIC-PGNO   TO  PGKANRI-PGNO
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PGKANRI-REC     TO  MCPDATA-REC
            MOVE    "DBSELECT"      TO  MCP-FUNC
            MOVE    "tbl_pgkanri"   TO  MCP-TABLE
            MOVE    "key"           TO  MCP-PATHNAME
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC              =   ZERO
                MOVE    "DBFETCH"       TO  MCP-FUNC
                MOVE    "tbl_pgkanri"   TO  MCP-TABLE
                MOVE    "key"           TO  MCP-PATHNAME
-grpsys         CALL "ORCDBMAIN" USING MCPAREA
-                                      MCPDATA-REC
-grpsys                                SPA-AREA
+grpsys         PERFORM 900-ORCDBMAIN-SEC
                IF      MCP-RC              =   ZERO
                    MOVE    MCPDATA-REC     TO  PGKANRI-REC
                    MOVE    ZERO            TO  FLG-PGKANRI
@@ -296,9 +296,7 @@ grpsys                                SPA-AREA
            MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
            MOVE    "tbl_pgkanri"   TO  MCP-TABLE
            MOVE    "key"           TO  MCP-PATHNAME
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     PERFORM 900-ORCDBMAIN-SEC
       *
            .
        260-PGKANRI-EXIST-CHK-EXT.
@@ -330,14 +328,11 @@ grpsys                            SPA-AREA
            MOVE    SPACE           TO  PGKANRI-UPYMD
            MOVE    SPACE           TO  PGKANRI-UPHMS
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PGKANRI-REC     TO  MCPDATA-REC
            MOVE    "DBINSERT"      TO  MCP-FUNC
            MOVE    "tbl_pgkanri"   TO  MCP-TABLE
            MOVE    "key"           TO  MCP-PATHNAME
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC          NOT =   ZERO
                 MOVE    6              TO  FLG-ERR
                 GO  TO  280-PGKANRI-INSERT-EXT
@@ -422,9 +417,7 @@ grpsys                            SPA-AREA
            MOVE    LOW-VALUE           TO  MCP-TABLE
                                            MCP-PATHNAME
            MOVE    "DBOPEN"            TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC          NOT =   ZERO
                    DISPLAY "DBOPEN ERROR"
            END-IF
@@ -432,9 +425,7 @@ grpsys                            SPA-AREA
            MOVE    LOW-VALUE           TO  MCP-TABLE
                                            MCP-PATHNAME
            MOVE    "DBSTART"           TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC          NOT =   ZERO
                    DISPLAY "DBSTART ERROR"
            END-IF
@@ -450,9 +441,7 @@ grpsys                            SPA-AREA
            MOVE    LOW-VALUE           TO  MCP-TABLE
                                            MCP-PATHNAME
            MOVE    "DBCOMMIT"          TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC          NOT =   ZERO
                    DISPLAY "DBCOMMIT ERROR"
            END-IF
@@ -460,9 +449,7 @@ grpsys                            SPA-AREA
            MOVE    LOW-VALUE           TO  MCP-TABLE
                                            MCP-PATHNAME
            MOVE    "DBDISCONNECT"      TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC          NOT =   ZERO
                    DISPLAY "DBDISCONNECT ERROR"
            END-IF
@@ -470,3 +457,16 @@ grpsys                            SPA-AREA
        900-DBCLOSE-EXT.
            EXIT.
       *
+      *****************************************************************
+      *    テーブルアクセス処理
+      *****************************************************************
+       900-ORCDBMAIN-SEC               SECTION.
+      *
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
+           .
+      *
+       900-ORCDBMAIN-EXT.
+           EXIT.
+      *      
