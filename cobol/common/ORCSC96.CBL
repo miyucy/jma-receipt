@@ -949,7 +949,7 @@
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "9100"
-                   MOVE    "診療内容が２００行を超えます。"
+                   MOVE    "診療内容が４００行を超えます。"
                                        TO  SPA-ERRMSG
                    MOVE    "会計照会で訂正して下さい。"
                                        TO  SPA-ERRMSG(31:)
