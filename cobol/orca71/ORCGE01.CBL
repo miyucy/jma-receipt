@@ -131,6 +131,7 @@ grpsys     03  FILLER              PIC X(04)   VALUE   ".dat".
            03  IDX1                PIC 9(03).
            03  IDX2                PIC 9(03).
            03  IDX3                PIC 9(03).
+           03  IDX4                PIC 9(03).
       *
        01  WRK-ROW.
            03  WRK-ROW1            PIC S9(9)   BINARY.
@@ -316,11 +317,21 @@ grpsys     03  FILLER              PIC X(04)   VALUE   ".dat".
       *
            CALL    "ORCSTGTSCM"            USING   STGTSCM-AREA
       *
+           MOVE    ZERO            TO      IDX4
            PERFORM VARYING IDX0    FROM    1   BY  1
                    UNTIL ( IDX0    >   STGTSCM-MAX )
       *
-               MOVE    STGTSCM-ID   (IDX0) TO  WK-TBL-NAME-C(IDX0)
-               MOVE    STGTSCM-NAME (IDX0) TO  WK-TBL-MSG-C(IDX0)
+               IF    ( STGTSCM-NAME (IDX0)
+                                       =   "CHK005"
+                                       OR  "RECE_PUTB"
+                                       OR  "RECEPRT"
+                                                        )
+                   CONTINUE
+               ELSE
+                   COMPUTE IDX4    =   IDX4    +   1
+                   MOVE    STGTSCM-ID   (IDX0) TO  WK-TBL-NAME-C(IDX4)
+                   MOVE    STGTSCM-NAME (IDX0) TO  WK-TBL-MSG-C (IDX4)
+               END-IF
       *
            END-PERFORM
       *

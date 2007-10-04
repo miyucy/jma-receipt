@@ -350,8 +350,6 @@ grpsys                                         SPA-AREA
       *
            END-PERFORM
       *
-           MOVE    STGTSCM-MAX             TO   SPA-GMN-MAX-A
-      *
            PERFORM 310-SPASET-SEC.
       *
            PERFORM T-000-SETTABLE-SEC.
@@ -483,6 +481,14 @@ grpsys                                         SPA-AREA
                MOVE    SPA-GMN-MSG (IDX1)   TO  F01-CHKMSG  (IDX1)
                MOVE    SPA-GMN-BTN (IDX1)   TO  F01-CHKBTN  (IDX1)
            END-PERFORM.
+      *
+           MOVE    "red"                 TO  F01-LBLCAUTION-STYLE
+           STRING  "※データベースの全体バックアップは"
+                                             DELIMITED BY SIZE
+                   " pg_dump コマンドで行ってください。"
+                                             DELIMITED BY SIZE
+           INTO    F01-LBLCAUTION
+           END-STRING
       *
            PERFORM 5011-MAPCUR-SEC.
       *
@@ -700,34 +706,34 @@ grpsys                                SPA-AREA.
       *****************************************************************
        T-000-WRITABLE-SEC                SECTION.
       *
-           IF      SPA-GMN-MAX-A = SPA-GMN-MAX-B
-               INITIALIZE                    ORCSMKPASSAREA
-               MOVE    "scripts/allways/orcbsf02.sh"
-                                         TO  MKPASS-IN-01
-               CALL    "ORCSMKPASS"      USING  ORCSMKPASSAREA
-               MOVE    MKPASS-OT-01      TO  SHELL-NAME
-               MOVE    "ALL-TABLE"       TO  SHELL-T-NAME
-               MOVE    "ALL-TABLE"       TO  SHELL-C-NAME
-               MOVE    "ALL-TABLE"       TO  SHELL-W-NAME
-               MOVE    SPA-GMN-FILE-ID   TO  SHELL-O-NAME
-               MOVE    "0"               TO  SHELL-KBEN
-               MOVE    SHELL-NAME        TO  SHELLTBL-NAME
-               MOVE    SHELL-ARG1        TO  SHELLTBL-ARG1
-               MOVE    SHELL-ARG2        TO  SHELLTBL-ARG2
-               MOVE    SHELL-ARG3        TO  SHELLTBL-ARG3
-               MOVE    SHELL-ARG4        TO  SHELLTBL-ARG4
-               MOVE    SHELL-ARG5        TO  SHELLTBL-ARG5
-               MOVE    SHELL-ARG6        TO  SHELLTBL-ARG6
-grpsys         MOVE    SPA-HOSPNUM       TO  SHELLTBL-ARG7
-               MOVE    SHELLTBL          TO  MCPDATA-REC
-               MOVE    "SHELL"           TO  MCP-FUNC
-               MOVE    "shell"           TO  MCP-TABLE
-               MOVE    "shell"           TO  MCP-PATHNAME
-               CALL    "ORCDBMAIN"       USING
-                                             MCPAREA
-                                             MCPDATA-REC
-                                             SPA-AREA
-           ELSE
+      *    IF      SPA-GMN-MAX-A = SPA-GMN-MAX-B
+      *        INITIALIZE                    ORCSMKPASSAREA
+      *        MOVE    "scripts/allways/orcbsf02.sh"
+      *                                  TO  MKPASS-IN-01
+      *        CALL    "ORCSMKPASS"      USING  ORCSMKPASSAREA
+      *        MOVE    MKPASS-OT-01      TO  SHELL-NAME
+      *        MOVE    "ALL-TABLE"       TO  SHELL-T-NAME
+      *        MOVE    "ALL-TABLE"       TO  SHELL-C-NAME
+      *        MOVE    "ALL-TABLE"       TO  SHELL-W-NAME
+      *        MOVE    SPA-GMN-FILE-ID   TO  SHELL-O-NAME
+      *        MOVE    "0"               TO  SHELL-KBEN
+      *        MOVE    SHELL-NAME        TO  SHELLTBL-NAME
+      *        MOVE    SHELL-ARG1        TO  SHELLTBL-ARG1
+      *        MOVE    SHELL-ARG2        TO  SHELLTBL-ARG2
+      *        MOVE    SHELL-ARG3        TO  SHELLTBL-ARG3
+      *        MOVE    SHELL-ARG4        TO  SHELLTBL-ARG4
+      *        MOVE    SHELL-ARG5        TO  SHELLTBL-ARG5
+      *        MOVE    SHELL-ARG6        TO  SHELLTBL-ARG6
+grpsys*        MOVE    SPA-HOSPNUM       TO  SHELLTBL-ARG7
+      *        MOVE    SHELLTBL          TO  MCPDATA-REC
+      *        MOVE    "SHELL"           TO  MCP-FUNC
+      *        MOVE    "shell"           TO  MCP-TABLE
+      *        MOVE    "shell"           TO  MCP-PATHNAME
+      *        CALL    "ORCDBMAIN"       USING
+      *                                      MCPAREA
+      *                                      MCPDATA-REC
+      *                                      SPA-AREA
+      *    ELSE
                MOVE    SPACE             TO  SHELL-KBEN
                PERFORM VARYING IDX1  FROM  1  BY 1
                        UNTIL   IDX1  >    SPA-GMN-MAX-A
@@ -789,7 +795,8 @@ grpsys         MOVE    SPA-HOSPNUM       TO  SHELLTBL-ARG7
                                              MCPAREA
                                              MCPDATA-REC
                                              SPA-AREA
-           END-IF.
+      *    END-IF
+           .
       *
        T-000-WRITABLE-EXT.
            EXIT.

@@ -23,3 +23,5 @@
                 05  F01-VALUE1  PIC X.
               04  F01-CHKMSG    OCCURS  120  TIMES.
                 05  F01-VALUE2  PIC X(30).
+              04  F01-LBLCAUTION-STYLE  PIC  X(20).
+              04  F01-LBLCAUTION        PIC  X(100).

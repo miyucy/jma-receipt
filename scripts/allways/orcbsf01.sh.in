@@ -22,9 +22,9 @@ fi
             if  [ -e $4$5 ]; then
                 rm  $4$5
             fi
-            pg_dump -R -t $1 $DBNAME > $4$5
+            pg_dump -O -t $1 $DBNAME > $4$5
         else
-            pg_dump -R -t $1 $DBNAME > /tmp/$2.out
+            pg_dump -O -t $1 $DBNAME > /tmp/$2.out
             cat  /tmp/$2.out  /tmp/$3.out  >  $4$5
             rm   /tmp/$2.out
         fi

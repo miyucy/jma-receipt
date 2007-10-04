@@ -124,8 +124,33 @@
                05  PIC X(23)   VALUE "091tbl_srykarrk_prv".
                05  PIC X(23)   VALUE "094tbl_hours".
                05  PIC X(23)   VALUE "095tbl_tekioubyomei".
+               05  PIC X(23)   VALUE "096tbl_chktrd".
+               05  PIC X(23)   VALUE "097tbl_syuka".
+               05  PIC X(23)   VALUE "098tbl_chk004".
+               05  PIC X(23)   VALUE "099tbl_odritem".
+               05  PIC X(23)   VALUE "100tbl_ryocom".
+               05  PIC X(23)   VALUE "101tbl_joblog".
+               05  PIC X(23)   VALUE "102tbl_chk005".
+               05  PIC X(23)   VALUE "103tbl_genericname".
+               05  PIC X(23)   VALUE "104tbl_hktsantei".
+               05  PIC X(23)   VALUE "105tbl_hktsrycd".
+               05  PIC X(23)   VALUE "106tbl_qrcdhkn".
+               05  PIC X(23)   VALUE "107tbl_rece_putb".
+               05  PIC X(23)   VALUE "108tbl_rece_puth".
+               05  PIC X(23)   VALUE "109tbl_syurrk".
+               05  PIC X(23)   VALUE "110tbl_tensuplus2".
+               05  PIC X(23)   VALUE "111tbl_clm_uid".
+               05  PIC X(23)   VALUE "112tbl_csv_info".
+               05  PIC X(23)   VALUE "113tbl_file_info".
+               05  PIC X(23)   VALUE "114tbl_mstkanri".
+               05  PIC X(23)   VALUE "115tbl_ptmemoinf".
+               05  PIC X(23)   VALUE "116tbl_shoukaidata".
+               05  PIC X(23)   VALUE "117tbl_shoukaikanri".
+               05  PIC X(23)   VALUE "118tbl_sysbase".
+               05  PIC X(23)   VALUE "119tbl_sysuser".
+               05  PIC X(23)   VALUE "120tbl_yakujyo_temp".
            03  TGTSCM-R     REDEFINES TGTSCM-VAL.
-               05  TGTSCM-OCC  OCCURS  100.
+               05  TGTSCM-OCC  OCCURS  125.
                    07  TGTSCM-NO     PIC 9(03).
                    07  TGTSCM-ID     PIC X(20).
-           03  TGTSCM-MAX      PIC 9(05)   VALUE 100.
+           03  TGTSCM-MAX      PIC 9(05)   VALUE 125.
