@@ -631,7 +631,9 @@
       *
            INITIALIZE                      SPA-GMN-NYKN-HOHOLST-G
                                            SPA-NAI-NYKN-HOHOLST-G
+      *
       *    入金方法
+           MOVE   ZERO                 TO  FLG-SYSKANRI
            INITIALIZE                      SYS-1041-REC
            MOVE    SPA-HOSPNUM         TO  SYS-1041-HOSPNUM
            MOVE    "1041"              TO  SYS-1041-KANRICD
