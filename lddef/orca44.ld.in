@@ -8,6 +8,7 @@ bind	"T01"		"OpenCOBOL"	"ORCGT01";
 bind	"T02"		"OpenCOBOL"	"ORCGT02";
 bind	"T03"		"OpenCOBOL"	"ORCGT03";
 bind	"T04"		"OpenCOBOL"	"ORCGT04";
+bind	"T91"		"OpenCOBOL"	"ORCGT91";
 bind	"T99"		"OpenCOBOL"	"ORCGT99";
 bind	"TERR"		"OpenCOBOL"	"ORCGTERR";
 bind	"TID1"		"OpenCOBOL"	"ORCGTID1";
@@ -24,6 +25,7 @@ data	{
 		T02;
 		T03;
 		T04;
+		T91;
 		T99;
 		TERR;
 		TID1;

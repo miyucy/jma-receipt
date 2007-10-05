@@ -354,6 +354,7 @@ RECORD_files = \
 	XFERR.rec \
 	XFID1.rec \
  	Q04.rec \
+ 	T91.rec \
 
 DEF_files = \
 	HC01.def \

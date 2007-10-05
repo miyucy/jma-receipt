@@ -152,6 +152,8 @@
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
       *
+           COPY    "CPORCSCOLCHK.INC".
+      *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
       *     
@@ -918,15 +920,26 @@
       *****************************************************************
        210-BACK                    SECTION.
       *
-           MOVE    "M00"               TO  SPA-SAKIPG
-           MOVE    "M01"               TO  SPA-MOTOPG
+      *    定点調査研究事業 収集データ送信チェック
+           INITIALIZE                  ORCSCOLCHKAREA
+           CALL    "ORCSCOLCHK"        USING
+                                           ORCSCOLCHKAREA
+                                           SPA-AREA
       *
-           MOVE   "CHANGE"             TO  MCP-PUTTYPE
-           MOVE    SPA-SAKIPG          TO  MCP-WINDOW
+           IF      COLCHK-RC           =   30
+	           PERFORM 490-TEITEN-SEC
+	   ELSE
       *
-           PERFORM 900-PUT-WINDOW
+               MOVE    "M00"               TO  SPA-SAKIPG
+               MOVE    "M01"               TO  SPA-MOTOPG
       *
-           MOVE    1                   TO  FLG-END
+               MOVE   "CHANGE"             TO  MCP-PUTTYPE
+               MOVE    SPA-SAKIPG          TO  MCP-WINDOW
+      *
+               PERFORM 900-PUT-WINDOW
+      *
+               MOVE    1                   TO  FLG-END
+           END-IF
       *
            .
        210-BACK-EXT.
@@ -1065,6 +1078,31 @@
       *
            .
        470-REPRINT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    定点調査確認画面へ
+      *****************************************************************
+       490-TEITEN-SEC             SECTION.
+      *
+      *    画面移行用のパラメタ変更
+           MOVE    "M01"               TO  SPA-MOTOPG
+           MOVE    "T91"               TO  SPA-SAKIPG
+           MOVE    SPACE               TO  SPA-MOTOPG2
+      *
+           INITIALIZE                  SPA-KYOTUKEY
+           MOVE    SPA-KYOUTU          TO  LNK-KYOUTU
+      *    戻り時、画面を元へ戻す
+           MOVE    SPA-M01             TO  LNK-FREE
+      *
+           MOVE   "CHANGE"             TO  MCP-PUTTYPE
+           MOVE   "T91    "            TO  MCP-WINDOW
+      *
+           PERFORM 900-PUT-WINDOW
+      *
+           MOVE    1                   TO  FLG-END
+           .
+       490-TEITEN-EXT.
            EXIT.
       *
       *****************************************************************

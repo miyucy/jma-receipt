@@ -187,6 +187,8 @@
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
       *
+           COPY    "CPORCSCOLCHK.INC".
+      *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
       *     
@@ -737,6 +739,9 @@
       *    点数マスタ更新判定(2006/7/27分更新）
            PERFORM 3101-MSTKANRI-SET-SEC
       *
+      *    定点調査 チェック
+           PERFORM 3102-TEITEN-CHK-SEC
+      *
       *     リダイレクタ不整チェック追加
            IF  MCP-DBSTATUS                =   "DISC"
                MOVE    "1006"              TO  SPA-ERRCD
@@ -846,6 +851,26 @@
            PERFORM 990-DBCLOSE-SEC
            .
        3101-MSTKANRI-SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    定点調査研究事業 収集データ・作成送信チェック処理
+      *****************************************************************
+       3102-TEITEN-CHK-SEC             SECTION.
+      *
+           INITIALIZE                  ORCSCOLCHKAREA
+           CALL    "ORCSCOLCHK"        USING
+                                           ORCSCOLCHKAREA
+                                           SPA-AREA
+      *
+           IF      COLCHK-RC           =   20
+                   MOVE    "1013"      TO  SPA-ERRCD
+	   END-IF
+           IF      COLCHK-RC           =   30
+                   MOVE    "1014"      TO  SPA-ERRCD
+	   END-IF
+           .
+       3102-TEITEN-CHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1326,6 +1351,16 @@
                            "システムバージョンとＤＢの構造に不整合が"
                                                TO  SPA-ERRMSG (1:40)
                    MOVE    "発生しています！！"
+                                               TO  SPA-ERRMSG (41:)
+               WHEN    "1013"
+                   MOVE    "定点調査研究事業（データ収集）用のファイ"
+                                               TO  SPA-ERRMSG (1:40)
+                   MOVE    "ル作成処理中です。"
+                                               TO  SPA-ERRMSG (41:)
+               WHEN    "1014"
+                   MOVE    "定点調査研究事業（データ収集）用のファイ"
+                                               TO  SPA-ERRMSG (1:40)
+                   MOVE    "ルが未送信です。"
                                                TO  SPA-ERRMSG (41:)
            END-EVALUATE
 	   .
