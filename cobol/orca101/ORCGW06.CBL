@@ -49,6 +49,7 @@
       * 03.04.00     NACL-多々納  06/11/13  検査正式名称表示区分の追加
       * 03.05.00     NACL-多々納  07/05/02  グループ診療対応
       * 03.05.01     NACL-藤原    07/09/14  クライアント保存可否フラグ追加
+      * 04.00.00     NACL-多々納  07/10/05  SYSUSER登録対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -245,10 +246,12 @@
            03  FLG-END             PIC 9(01).
            03  FLG-SYSKANRI        PIC 9(01).
            03  FLG-CHK             PIC 9(01).
+           03  FLG-SYSUSER         PIC 9(01).
       *
            03  FLG-OK              PIC 9(01).
            03  FLG-ERR             PIC 9(01).
            03  FLG-TOUROKU         PIC 9(01).
+           03  FLG-USERID-UPD      PIC 9(01).
       *
       *    カウント領域
       *
@@ -291,6 +294,8 @@
            03  WRK-CD              PIC X(02).
            03  WRK-MCP-WIDGET      PIC X(64).
       *
+           03  WRK-MAE-USERID      PIC X(16).
+      *
        01  WRK-HEN-AREA.
            03  WRK-HENYMDG         PIC X(09).
            03  WRK-HENYMD.
@@ -316,6 +321,9 @@
       *    基本情報
            COPY  "CPSK1038.INC".
       *
+      *    システムユーザー
+       01  SYSUSER-REC.
+           COPY    "CPSYSUSER.INC".
       *
       *****************************************************************
       *    サブプロ用　領域
@@ -2509,6 +2517,21 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    "1002"              TO  SPA-ERRCD
                DISPLAY "W06 DB DEL ERR SYSKANRI-KEY =>" SYS-1010-KEY 
            END-IF
+      *    ユーザＩＤを削除
+           INITIALIZE                      SYSUSER-REC
+           MOVE    SPA-GMN-USERID      TO  SYSUSER-USERID
+           MOVE    SYSUSER-REC         TO  MCPDATA-REC
+           MOVE    "tbl_sysuser"       TO  MCP-TABLE 
+           MOVE    "key"               TO  MCP-PATHNAME 
+           MOVE    "DBDELETE"          TO  MCP-FUNC
+           CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
+      *
+           IF      MCP-RC              NOT =   ZERO 
+               MOVE    "1002"              TO  SPA-ERRCD
+               DISPLAY "W06 DB DEL ERR USERID-KEY =>" SYSUSER-USERID
+           END-IF
       *
            IF      SPA-ERRCD           =   SPACE
       *        職員情報初期表示
@@ -2637,8 +2660,46 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                    END-IF
                END-PERFORM
            END-IF
+      *
+           IF      SPA-ERRCD           =   SPACE
+      *        システムユーザーチェック
+               PERFORM 49001-SYSUSER-CHK-SEC
+           END-IF
            .
        4900-KANRENCHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *       システムユーザーチェック処理
+      *****************************************************************
+       49001-SYSUSER-CHK-SEC           SECTION.
+      *
+           INITIALIZE                      SYSUSER-REC
+           MOVE    SYS-1010-USERID     TO  SYSUSER-USERID
+           MOVE    SYSUSER-REC         TO  MCPDATA-REC
+           MOVE    "tbl_sysuser"       TO  MCP-TABLE 
+           MOVE    "key"               TO  MCP-PATHNAME 
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_sysuser"   TO  MCP-TABLE 
+               MOVE    "key"           TO  MCP-PATHNAME 
+               PERFORM 900-SYSUSER-READ-SEC
+           ELSE
+               INITIALIZE                  SYSUSER-REC
+               MOVE    1               TO  FLG-SYSUSER
+           END-IF
+           MOVE    "tbl_sysuser"       TO  MCP-TABLE 
+           MOVE    "key"               TO  MCP-PATHNAME 
+           PERFORM 990-DBCLOSE-SEC
+           IF      FLG-SYSUSER         =   ZERO
+      *         登録済みの時、同じ医療機関であること
+               IF      SPA-HOSPNUM     NOT =   SYSUSER-HOSPNUM
+                   MOVE    "0025"              TO  SPA-ERRCD
+                   MOVE    6                   TO  SPA-GMN-CUR
+               END-IF
+           END-IF
+           .
+       49001-SYSUSER-CHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -2668,6 +2729,13 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE   "1010"                   TO  SYS-1010-KANRICD
                MOVE    SPA-GMN-SYOKUKBN        TO  SYS-1010-KBNCD(1:1)
                MOVE    SPA-GMN-SYOKUCOD        TO  SYS-1010-KBNCD(2:4)
+           END-IF
+      *
+      *    ユザー
+           MOVE    ZERO                TO  FLG-USERID-UPD
+           IF      SPA-GMN-USERID  NOT =   SYS-1010-USERID
+               MOVE    SYS-1010-USERID     TO  WRK-MAE-USERID
+               MOVE    1                   TO  FLG-USERID-UPD
            END-IF
       *
            MOVE    SPA-NAI-STYUKYMD        TO  SYS-1010-STYUKYMD
@@ -2743,6 +2811,11 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                END-IF
            END-IF
       *
+           IF     (SPA-ERRCD           =   SPACE )  AND
+                  (FLG-USERID-UPD      =   1     )
+      *        システムユーザー更新処理
+               PERFORM 4905-SYSUSER-UPD-SEC
+           END-IF
            IF      SPA-ERRCD           =   SPACE
       *        職員情報初期表示
                PERFORM 3101-INIT-GMN-SEC
@@ -2977,6 +3050,68 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *----(02.00.03)--ADD-END-----
           .
        4900-KOUSHIN-GSRAUTH-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    システムユーザー更新処理
+      *****************************************************************
+       4905-SYSUSER-UPD-SEC              SECTION.
+      *
+      *    前のユーザＩＤを削除
+           INITIALIZE                      SYSUSER-REC
+           MOVE    WRK-MAE-USERID      TO  SYSUSER-USERID
+           MOVE    SYSUSER-REC         TO  MCPDATA-REC
+           MOVE    "tbl_sysuser"       TO  MCP-TABLE 
+           MOVE    "key"               TO  MCP-PATHNAME 
+           MOVE    "DBDELETE"          TO  MCP-FUNC
+           CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
+      *
+           IF      MCP-RC              NOT =   ZERO 
+               MOVE    "1002"              TO  SPA-ERRCD
+               DISPLAY "W06 DB DEL ERR USERID-KEY =>" SYSUSER-USERID
+           END-IF
+      *
+      *    新規追加
+           INITIALIZE                      SYSUSER-REC
+           MOVE    SYS-1010-USERID     TO  SYSUSER-USERID
+           MOVE    SYSUSER-REC         TO  MCPDATA-REC
+           MOVE    "tbl_sysuser"       TO  MCP-TABLE 
+           MOVE    "key"               TO  MCP-PATHNAME 
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_sysuser"   TO  MCP-TABLE 
+               MOVE    "key"           TO  MCP-PATHNAME 
+               PERFORM 900-SYSUSER-READ-SEC
+           ELSE
+               INITIALIZE                  SYSUSER-REC
+               MOVE    1               TO  FLG-SYSUSER
+           END-IF
+           MOVE    "tbl_sysuser"       TO  MCP-TABLE 
+           MOVE    "key"               TO  MCP-PATHNAME 
+           PERFORM 990-DBCLOSE-SEC
+           IF      FLG-SYSUSER         =   1
+               INITIALIZE                      SYSUSER-REC
+               MOVE    SYS-1010-USERID     TO  SYSUSER-USERID
+               MOVE    SPA-HOSPNUM         TO  SYSUSER-HOSPNUM
+               MOVE    SMCNDATE-YMD        TO  SYSUSER-UPYMD
+      *
+               MOVE    SYSUSER-REC         TO  MCPDATA-REC
+               MOVE    "tbl_sysuser"       TO  MCP-TABLE 
+               MOVE    "key"               TO  MCP-PATHNAME 
+               MOVE    "DBINSERT"          TO  MCP-FUNC
+               CALL    "ORCDBMAIN"         USING   MCPAREA
+                                                   MCPDATA-REC
+                                                   SPA-AREA
+      *
+               IF      MCP-RC              NOT =   ZERO 
+                    MOVE    "1002"              TO  SPA-ERRCD
+                   DISPLAY "W06 DB DEL ERR USERID-KEY =>" SYSUSER-USERID
+               END-IF
+           END-IF
+          .
+       4905-SYSUSER-UPD-EXT.
            EXIT.
       *
       *****************************************************************
@@ -3253,6 +3388,12 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN    "0009"
                    MOVE    "オペレータＩＤは半角で入力して下さい"
                                                TO  SPA-ERRMSG
+               WHEN    "0025"
+                   STRING  "オペレータＩＤがシステム内に存在します。"
+                           "オペレータＩＤを変更して下さい。"
+                                               DELIMITED  BY  SIZE
+                                               INTO    SPA-ERRMSG
+                   END-STRING
                WHEN    "0010"
                    MOVE    "フリガナは全角で入力して下さい"
                                                TO  SPA-ERRMSG
@@ -3661,6 +3802,22 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            .
        990-SYSKANRI-READ-EXT.
            EXIT.
+      *****************************************************************
+      *    システム基本読込処理
+      *****************************************************************
+       900-SYSUSER-READ-SEC            SECTION.
+      *
+           PERFORM 920-DBFETCH-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC     TO  SYSUSER-REC
+               MOVE    ZERO            TO  FLG-SYSUSER
+           ELSE
+               MOVE    1               TO  FLG-SYSUSER
+           END-IF
+           .
+       900-SYSUSER-READ-EXT.
+           EXIT.
+      *
       *****************************************************************
       *    テーブル検索処理
       *****************************************************************
