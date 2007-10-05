@@ -311,6 +311,7 @@
       *  03.05.21    NACL-ÌçÏÆ    07/09/27  ÆÃÄêÊÝ¸±¼Ô¡ÜÀº¿À¡¢·ë³ËÂÐ±þ½¤Àµ
       *                                     ¡ÊÏ·¿Í¤ÏÂÐ¾Ý³°¤È¤¹¤ë¡Ë
       *  03.05.22    NACL-ÌçÏÆ    07/10/03  ½©ÅÄ¸©ÆýÍÄ»ù°ìÉôÉéÃ´¶âµ­ºÜÂÐ±þ
+      *  03.05.23    NACL-ÌçÏÆ    07/10/04  ¿·³ã¸©Ãæ±Û²­ÃÏ¿ÌÂÐ±þ½¤Àµ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -797,6 +798,10 @@
            03  WK-GENGAKU-RITU                 PIC  9(03).
            03  WK-GENGAKU-RITUX                PIC  9(03).
            03  WK-GENGAKU-KIN                  PIC  9(07).
+      *
+           03  WK-GENGAKU-YMD.
+               05  WK-GENGAKU-YM               PIC  9(06).
+               05  WK-GENGAKU-DD               PIC  9(02).
       *
            03  WRK-CHIHOU-KIN                  PIC  9(09).
            03  WRK-CHIHOU-KIN2                 PIC  9(09).
@@ -1807,6 +1812,12 @@ grpsys         MOVE    WRK-PARA-HOSPNUM    TO  RECE01PARA-HOSPNUM
             OR  (RECE02-HKNNUM       =   "068" OR "069")
               CONTINUE
             ELSE
+              MOVE      RECE02-SRYYM          TO   WK-GENGAKU-YM
+              IF   RECE02-TEKSTYMD(1:6)  >=  RECE02-SRYYM
+                 MOVE   RECE02-TEKSTYMD(7:2)  TO   WK-GENGAKU-DD
+              ELSE
+                 MOVE   01                    TO   WK-GENGAKU-DD
+              END-IF
               PERFORM   VARYING   GEN-IDX   FROM   1    BY   1
                          UNTIL   (GEN-IDX    >    TBL-GENGAKU-MAX)
                            OR    (WK-GENGAKUKBN   NOT = ZERO     )
@@ -1823,9 +1834,9 @@ grpsys          PERFORM 900-DBSELECT-SEC
                   MOVE    "key4"               TO  MCP-PATHNAME
                   PERFORM  900-PTKOHINF-READ-SEC
                   PERFORM  UNTIL   FLG-PTKOHINF    =   1
-                     IF  (PTKOH-TEKSTYMD(1:6)  <=   RECE02-SRYYM       )
-                     AND (RECE02-SRYYM         <=   PTKOH-TEKEDYMD(1:6))
-                     AND (PTKOH-SAKJOKBN        =   SPACE              )
+                     IF  (PTKOH-TEKSTYMD  <=   WK-GENGAKU-YMD)
+                     AND (WK-GENGAKU-YMD  <=   PTKOH-TEKEDYMD)
+                     AND (PTKOH-SAKJOKBN   =   SPACE         )
                          EVALUATE   GEN-IDX
                            WHEN        1
                              MOVE   1           TO  WK-GENGAKUKBN
