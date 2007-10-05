@@ -53,6 +53,7 @@ grpsys COPY    "COMMON-SPA".
            03  WRK-PARA-OBJECTYYM        PIC  X(06).
            03  WRK-PARA-ERRCD            PIC  X(04).
            03  WRK-PARA-MSG              PIC  X(200).
+           03  WRK-PARA-HOSPNUM          PIC  9(02).
        01  FLG-AREA.
            03  FLG-END                                 PIC 9(01).
            03  FLG-JOBLOG                              PIC 9(01).
@@ -101,6 +102,9 @@ grpsys COPY    "COMMON-SPA".
                                                WRK-PARA-OBJECTYYM
                                                WRK-PARA-ERRCD
                                                WRK-PARA-MSG
+                                               WRK-PARA-HOSPNUM
+           END-UNSTRING
+           MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
            PERFORM 500-SYSYMD-HENSYU-SEC
            ACCEPT  WRK-TIME      FROM TIME
            PERFORM 100-DBOPEN-SEC
@@ -164,6 +168,7 @@ grpsys COPY    "COMMON-SPA".
       *****************************************************************
        2001-JOBLOG-SET-SEC         SECTION.
       *
+           MOVE    SPA-HOSPNUM         TO  JOBLOG-HOSPNUM
            MOVE    WRK-SYSYMD-8        TO  JOBLOG-LOGYMD
            MOVE    WRK-TIME            TO  JOBLOG-LOGTIME
            MOVE    WRK-PARA-PROGNAME   TO  JOBLOG-PROGNAME
@@ -182,14 +187,11 @@ grpsys COPY    "COMMON-SPA".
       *****************************************************************
        2002-JOBLOG-READ-SEC        SECTION.
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    JOBLOG-REC          TO  MCPDATA-REC
            MOVE    "tbl_joblog"        TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
            MOVE    "DBSELECT"          TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC              =   ZERO
                MOVE    "tbl_joblog"       TO  MCP-TABLE
                MOVE    "key"              TO  MCP-PATHNAME
@@ -213,11 +215,8 @@ grpsys                            SPA-AREA
       *****************************************************************
        900-JOBLOG-ACC-SEC             SECTION.
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    JOBLOG-REC          TO  MCPDATA-REC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC         TO  JOBLOG-REC
                MOVE    ZERO                TO  FLG-JOBLOG
@@ -237,9 +236,7 @@ grpsys                            SPA-AREA
        900-CLOSE-SEC                  SECTION.
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+grpsys     PERFORM 900-ORCDBMAIN-SEC
       *
            .
        900-CLOSE-EXT.
@@ -250,15 +247,11 @@ grpsys                            SPA-AREA
       *****************************************************************
        100-DBOPEN-SEC                SECTION.
       *
-           MOVE    "DBOPEN"            TO  MCP-FUNC.
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
-           MOVE    "DBSTART"           TO  MCP-FUNC.
-           MOVE    LOW-VALUE           TO  MCP-PATH.
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           MOVE    "DBOPEN"            TO  MCP-FUNC
+grpsys     PERFORM 900-ORCDBMAIN-SEC
+           MOVE    "DBSTART"           TO  MCP-FUNC
+           MOVE    LOW-VALUE           TO  MCP-PATH
+grpsys     PERFORM 900-ORCDBMAIN-SEC
            .
        100-DBOPEN-EXT.
            EXIT.
@@ -267,16 +260,26 @@ grpsys                            SPA-AREA
       *****************************************************************
        900-DBDISCONNECT-SEC            SECTION.
       *
-           MOVE    "DBCOMMIT"          TO  MCP-FUNC.
-           MOVE    LOW-VALUE           TO  MCP-PATH.
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           MOVE    "DBCOMMIT"          TO  MCP-FUNC
+           MOVE    LOW-VALUE           TO  MCP-PATH
+grpsys     PERFORM 900-ORCDBMAIN-SEC
       *
-           MOVE    "DBDISCONNECT"      TO  MCP-FUNC.
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           MOVE    "DBDISCONNECT"      TO  MCP-FUNC
+grpsys     PERFORM 900-ORCDBMAIN-SEC
            .
        900-DBDISCONNECT-EXT.
            EXIT.
+      *
+      *****************************************************************
+      *    テーブルアクセス処理
+      *****************************************************************
+       900-ORCDBMAIN-SEC               SECTION.
+      *
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
+           .
+      *
+       900-ORCDBMAIN-EXT.
+           EXIT.
+      *      

@@ -9,6 +9,8 @@ fi
 
 . $JMARECEIPT_ENV
 
+HOSPNUM=$1
+
 export CLIENT_CONFIG_FILE="$SYSCONFDIR/das-upload.conf"
 if [ ! -f $CLIENT_CONFIG_FILE ]; then
     exit
@@ -16,18 +18,19 @@ fi
 
 FILE_PREFIX="collect-"
 UPLOAD_COMMAND=`dirname $0`/das-upload.rb
+LOGFILE=/var/log/jma-receipt/"$HOSPNUM"datacollect1.log
 
-for file in `ls "$DASDIR"/"$FILE_PREFIX"*tar.gz 2>/dev/null`
+for file in `ls "$DASDIR"/"$HOSPNUM"/"$FILE_PREFIX"*tar.gz 2>/dev/null`
 do
   UPTARGEFILE=1
   OBJECTYYM=`basename $file |sed -e "s/${FILE_PREFIX}\(.*\).tar.gz/\1/"`
   RESULT=`$UPLOAD_COMMAND $file 2>&1|head -1`
   if [ "UP $file" = "$RESULT" ]; then
      echo "000" $RESULT
-     $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOBLOG -parameter "das-upload","2","0",$OBJECTYYM,"000","Upload success"
+     $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOBLOG -parameter "das-upload","2","0",$OBJECTYYM,"000","Upload success",$HOSPNUM 2>&1 | tee -a $LOGFILE
      rm $file
   else
-     $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOBLOG -parameter "das-upload","2","1",$OBJECTYYM,"${RESULT:0:3}","${RESULT:4}"
+     $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOBLOG -parameter "das-upload","2","1",$OBJECTYYM,"${RESULT:0:3}","${RESULT:4}",$HOSPNUM 2>&1 | tee -a $LOGFILE
      echo "${RESULT:0:3}","${RESULT:4}"
   fi
 done

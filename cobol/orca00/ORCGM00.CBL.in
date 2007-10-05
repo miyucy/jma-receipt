@@ -1047,18 +1047,20 @@
       *****************************************************************
        480-M98-SEC                     SECTION.
       *
-      *     MOVE    SPACE                TO  MVER
-           MOVE    "B12"                TO  MCP-WIDGET
+           IF      SPA-DATACREATEFLG   =    1
+      *       MOVE    SPACE            TO  MVER
+              MOVE    "B12"            TO  MCP-WIDGET
       *
-           MOVE    "M00"                TO  SPA-MOTOPG
-           MOVE    "M98"                TO  SPA-SAKIPG
+              MOVE    "M00"            TO  SPA-MOTOPG
+              MOVE    "M98"            TO  SPA-SAKIPG
       *
-           MOVE    "CHANGE"             TO  MCP-PUTTYPE
-           MOVE    "M98"                TO  MCP-WINDOW
+              MOVE    "CHANGE"         TO  MCP-PUTTYPE
+              MOVE    "M98"            TO  MCP-WINDOW
       *
-           PERFORM 900-PUT-WINDOW
+              PERFORM 900-PUT-WINDOW
       *
-           MOVE    1                    TO  FLG-END 
+              MOVE    1                    TO  FLG-END 
+           END-IF
       *
            .
        480-M98-EXT.
@@ -1137,6 +1139,9 @@
                MOVE    "red"           TO  M00-LBLMSG2-STYLE
            END-IF
       *
+           IF      SPA-DATACREATEFLG   =    1
+               MOVE    "ÄêÅÀÄ´ºº"      TO  M00-B11-LABEL
+           END-IF
            PERFORM 5001-MAPCUR-SEC
       *
            .

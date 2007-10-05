@@ -142,7 +142,7 @@
       *
        WORKING-STORAGE             SECTION.
       *
-       01  PRGSKBNO                PIC X(08)  VALUE "20061001".
+       01  PRGSKBNO                PIC X(08)  VALUE "20070809".
       *
            COPY    "CPCOMMONDAT5.INC"
                                    REPLACING  //TEIKI01PARA//
@@ -177,8 +177,6 @@
            03  FLG-PTHKNINF                    PIC 9(01).
            03  FLG-PTKOHINF                    PIC 9(01).
            03  FLG-PTINF                       PIC 9(01).
-           03  FLG-KYUSEIRRK                   PIC 9(01).
-           03  FLG-MONTHLYNUM                  PIC 9(01).
            03  FLG-SRYACT                      PIC 9(01).
            03  FLG-TENSU                       PIC 9(01).
            03  FLG-PTCOM                       PIC 9(01).
@@ -247,7 +245,7 @@
                05  WRK-PARA-SHELLID            PIC X(08).
                05  WRK-PARA-ERRFILENM          PIC X(100).
       *
-           03  WRK-HOSPID             PIC X(24).
+           03  WRK-HOSPID                  PIC X(24).
       *
            03  WRK-COLDATERR               PIC X(200).
       *
@@ -328,6 +326,7 @@
            02  WRK-COLDAT01-OCC    OCCURS  100.
            COPY    "CPCDF001.INC"  REPLACING  //COLDAT01//
                                    BY         //WRK-COLDAT01//.
+       01  WRK-COLDAT01-TABLE-MAX      PIC 9(03)   VALUE    100.
       *
       *    ワーク患者病名
        01  WRK-PTBYOMEI-REC.
@@ -672,6 +671,7 @@
            CALL    "ORCSJOB"       USING
                                    ORCSJOBKANRIAREA
                                    JOBKANRI-REC
+                                   SPA-AREA
       *
       *    診療年月編集
            MOVE    WRK-PARA-SRYYM  TO  WRK-SYMD (1:6)
@@ -689,11 +689,11 @@
       *
       *    医療機関ＩＤ編集
            INITIALIZE                  SYS-1001-REC
+grpsys     MOVE    SPA-HOSPNUM         TO  SYS-1001-HOSPNUM
            MOVE    "1001"              TO  SYS-1001-KANRICD
            MOVE    "*"                 TO  SYS-1001-KBNCD
            MOVE    WRK-SYMD            TO  SYS-1001-STYUKYMD
            MOVE    WRK-SYMD            TO  SYS-1001-EDYUKYMD
-grpsys     MOVE    SPA-HOSPNUM         TO  SYS-1001-HOSPNUM
            MOVE    SYS-1001-REC        TO  MCPDATA-REC
            PERFORM 910-SYSKANRI-INV-SEC
            IF      FLG-SYSKANRI        =   ZERO
@@ -707,11 +707,11 @@ grpsys     MOVE    SPA-HOSPNUM         TO  SYS-1001-HOSPNUM
       *
       *    患者番号構成管理情報編集
            INITIALIZE                  SYS-1009-REC
+grpsys     MOVE    SPA-HOSPNUM         TO  SYS-1009-HOSPNUM
            MOVE    "1009"              TO  SYS-1009-KANRICD
            MOVE    "*"                 TO  SYS-1009-KBNCD
            MOVE    WRK-SYMD            TO  SYS-1009-STYUKYMD
            MOVE    WRK-SYMD            TO  SYS-1009-EDYUKYMD
-grpsys     MOVE    SPA-HOSPNUM         TO  SYS-1009-HOSPNUM
            MOVE    SYS-1009-REC        TO  MCPDATA-REC
            PERFORM 910-SYSKANRI-INV-SEC
            IF      FLG-SYSKANRI        =   ZERO
@@ -734,12 +734,12 @@ grpsys     MOVE    SPA-HOSPNUM         TO  SYS-1009-HOSPNUM
       *
       *    レセプト編集区分情報
            INITIALIZE                  SYS-2005-REC
+grpsys     MOVE    SPA-HOSPNUM         TO  SYS-2005-HOSPNUM
            MOVE    "2005"              TO  SYS-2005-KANRICD
            MOVE    "*"                 TO  SYS-2005-KBNCD
            MOVE    WRK-PARA-SRYYM      TO  SYS-2005-STYUKYMD (1:6)
            MOVE    "01"                TO  SYS-2005-STYUKYMD (7:2)
            MOVE    SYS-2005-STYUKYMD   TO  SYS-2005-EDYUKYMD
-grpsys     MOVE    SPA-HOSPNUM         TO  SYS-2005-HOSPNUM
            MOVE    SYS-2005-REC        TO  MCPDATA-REC
            PERFORM 910-SYSKANRI-INV-SEC
            IF      FLG-SYSKANRI        =   ZERO
@@ -753,12 +753,12 @@ grpsys     MOVE    SPA-HOSPNUM         TO  SYS-2005-HOSPNUM
       *
       *    患者登録機能制御情報
            INITIALIZE                      SYS-1017-REC
+grpsys     MOVE    SPA-HOSPNUM         TO  SYS-1017-HOSPNUM
            MOVE    "1017"              TO  SYS-1017-KANRICD
            MOVE    "*"                 TO  SYS-1017-KBNCD
            MOVE    WRK-PARA-SRYYM      TO  SYS-1017-STYUKYMD (1:6)
            MOVE    "01"                TO  SYS-1017-STYUKYMD (7:2)
            MOVE    SYS-1017-STYUKYMD   TO  SYS-1017-EDYUKYMD
-grpsys     MOVE    SPA-HOSPNUM         TO  SYS-1017-HOSPNUM
            MOVE    SYS-1017-REC        TO  MCPDATA-REC
            PERFORM 910-SYSKANRI-INV-SEC
            IF      FLG-SYSKANRI        =   ZERO
@@ -776,9 +776,9 @@ grpsys     MOVE    SPA-HOSPNUM         TO  SYS-1017-HOSPNUM
       *
            MOVE    SPACE               TO  SYS-1033-REC
            INITIALIZE                      SYS-1033-REC
+grpsys     MOVE    SPA-HOSPNUM         TO  SYS-1033-HOSPNUM
            MOVE    "1033"              TO  SYS-1033-KANRICD
            MOVE    "*"                 TO  SYS-1033-KBNCD
-grpsys     MOVE    SPA-HOSPNUM         TO  SYS-1033-HOSPNUM
            MOVE    SYS-1033-REC        TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
@@ -809,15 +809,19 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            MOVE    "key5"              TO  MCP-PATHNAME
            PERFORM 900-DBCLOSE-SEC
       *
+           MOVE    SPA-HOSPNUM         TO  COLDAT91-HOSPNUM
            MOVE    "COLDT910"          TO  COLDAT91-FILE-ID
            MOVE    WRK-PARA-TERMID     TO  COLDAT91-TERMID
       *
+           MOVE    SPA-HOSPNUM         TO  COLDAT01-HOSPNUM
            MOVE    "COLDT010"          TO  COLDAT01-FILE-ID
            MOVE    WRK-PARA-TERMID     TO  COLDAT01-TERMID
       *
+           MOVE    SPA-HOSPNUM         TO  COLDAT02-HOSPNUM
            MOVE    "COLDT020"          TO  COLDAT02-FILE-ID
            MOVE    WRK-PARA-TERMID     TO  COLDAT02-TERMID
       *
+           MOVE    SPA-HOSPNUM         TO  COLDAT03-HOSPNUM
            MOVE    "COLDT030"          TO  COLDAT03-FILE-ID
            MOVE    WRK-PARA-TERMID     TO  COLDAT03-TERMID
       *
@@ -873,12 +877,12 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
       *
       *    診療科情報
            INITIALIZE                      SYS-1005-REC
+grpsys     MOVE    SPA-HOSPNUM         TO  SYS-1005-HOSPNUM
            MOVE    "1005"              TO  SYS-1005-KANRICD
            MOVE    "*"                 TO  SYS-1005-KBNCD
            MOVE    WRK-PARA-SRYYM      TO  SYS-1005-STYUKYMD(1:6)
            MOVE    "01"                TO  SYS-1005-STYUKYMD(7:2)
            MOVE    SYS-1005-STYUKYMD   TO  SYS-1005-EDYUKYMD
-grpsys     MOVE    SPA-HOSPNUM         TO  SYS-1005-HOSPNUM
            MOVE    SYS-1005-REC        TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
@@ -923,12 +927,12 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
       *
       *    施設基準情報
            INITIALIZE                      SYS-1006-REC
+grpsys     MOVE    SPA-HOSPNUM         TO  SYS-1006-HOSPNUM
            MOVE    "1006"              TO  SYS-1006-KANRICD
            MOVE    "*"                 TO  SYS-1006-KBNCD
            MOVE    WRK-PARA-SRYYM      TO  SYS-1006-STYUKYMD(1:6)
            MOVE    "01"                TO  SYS-1006-STYUKYMD(7:2)
            MOVE    SYS-1006-STYUKYMD   TO  SYS-1006-EDYUKYMD
-grpsys     MOVE    SPA-HOSPNUM         TO  SYS-1006-HOSPNUM
            MOVE    SYS-1006-REC        TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
@@ -1088,7 +1092,7 @@ grpsys             PERFORM 900-ORCDBMAIN-SEC
            MOVE    ZERO                TO  WRK-ZAINUM
       *
       *    テスト患者のときは読み飛ばす
-           MOVE    WRK-PARA-HOSPNUM        TO  PTINF-HOSPNUM
+grpsys     MOVE    SPA-HOSPNUM             TO  PTINF-HOSPNUM
            MOVE    NACCT-PTID              TO  PTINF-PTID
            PERFORM 900-PTINF-READ-SEC
       *
@@ -1173,18 +1177,17 @@ grpsys             PERFORM 900-ORCDBMAIN-SEC
                PERFORM 20011-SKJFTN-SEC
                PERFORM 200111-NYUIN-JNISSU-TAIHI-SEC
                PERFORM 200112-SKJNISSU-TAIHI-SEC
-      *        診療会計編集処理
-               PERFORM 20012-NYUIN-SRYACCT-HENSYU-SEC
-      *
-      *        実日数編集
-               PERFORM   20012-JNISSU-SET-SEC
-               PERFORM   20013-TOTALTENSU-SET-SEC
+      *        実日数、点数編集
+               PERFORM 20012-JNISSU-SET-SEC
+               PERFORM 20013-TOTALTENSU-SET-SEC
                INITIALIZE                  TBL-JNISSU
                INITIALIZE                  TBL-JNISSU-GEN
                INITIALIZE                  TBL-TOTALTENSU-INF
                INITIALIZE                  TBL-SKJNISSU-INF
                INITIALIZE                  TBL-SKJRYOYOHI-INF
                INITIALIZE                  TBL-SKJFTN-INF
+      *        診療会計編集処理
+               PERFORM 20012-NYUIN-SRYACCT-HENSYU-SEC
       *
       *        基本ファイル出力処理
                PERFORM 2002-KIHON-WRITE-SEC
@@ -1251,7 +1254,6 @@ grpsys             MOVE    SPA-HOSPNUM     TO  COMB-HOSPNUM
        20011-SKJFTN-SEC            SECTION.
       *
            INITIALIZE                      ORCSNYURECEDEN-AREA
-           MOVE    WRK-PARA-HOSPNUM    TO  LNK-NYURECEDEN-HOSPNUM
            MOVE    PTINF-PTID          TO  LNK-NYURECEDEN-PTID
            MOVE    WRK-PARA-SRYYM      TO  LNK-NYURECEDEN-SANTEIYM
            IF      COLDAT01-HKNNUM     =   "060" OR "067" OR
@@ -1261,6 +1263,7 @@ grpsys             MOVE    SPA-HOSPNUM     TO  COMB-HOSPNUM
                MOVE    "1"             TO  LNK-NYURECEDEN-HKNKBN
            END-IF
            CALL    "ORCSNYURECEDEN"    USING   ORCSNYURECEDEN-AREA
+                                               SPA-AREA
            IF      LNK-NYURECEDEN-RC   NOT =   ZERO
                    DISPLAY "LNK-NYURECEDEN-RC=" LNK-NYURECEDEN-RC
                    GO    TO    20011-SKJFTN-EXT
@@ -1548,7 +1551,7 @@ grpsys             MOVE    SPA-HOSPNUM     TO  TNS-HOSPNUM
            MOVE    LOW-VALUE           TO  KEY-AREA
       *
            INITIALIZE                      SRYACCT-REC
-           MOVE    WRK-PARA-HOSPNUM    TO  ACCT-HOSPNUM
+grpsys     MOVE    SPA-HOSPNUM         TO  ACCT-HOSPNUM
            MOVE    WRK-PARA-SRYYM      TO  ACCT-SRYYM
            MOVE    WRK-PARA-NYUGAIKBN  TO  ACCT-NYUGAIKBN
            MOVE    PTINF-PTID          TO  ACCT-PTID
@@ -1567,27 +1570,34 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            END-IF
       *
            PERFORM UNTIL       FLG-SRYACCT     =   1
-      *        保険組合せ読込み
-               INITIALIZE                  HKNCOMBI-REC
-               MOVE    WRK-PARA-HOSPNUM    TO  COMB-HOSPNUM
-               MOVE    PTINF-PTID          TO  COMB-PTID
-               MOVE    KEY-N-HKNCOMBI      TO  COMB-HKNCOMBINUM
-               MOVE    HKNCOMBI-REC        TO  MCPDATA-REC
-               PERFORM 910-HKNCOMBI-INV-SEC
-      *
       *        未訂正分があるか
                MOVE    SPACE               TO  WRK-ERR-AREA
                INITIALIZE                      WRK-ERR-AREA
       *
-               IF      FLG-HKNCOMBI    =   ZERO
-                   IF      COMB-TEKSTYMD   <=  WRK-STYMD
-                   AND     COMB-TEKEDYMD   >=  WRK-EDYMD
-                       MOVE    SPACE           TO  WRK-UPDKBN
-                    ELSE
-                       MOVE    "1"             TO  WRK-UPDKBN
-                   END-IF
+               IF      KEY-N-HKNCOMBI      =   9999
+                   INITIALIZE                  HKNCOMBI-REC
+                   MOVE    PTINF-PTID          TO  COMB-PTID
+                   MOVE    KEY-N-HKNCOMBI      TO  COMB-HKNCOMBINUM 
+                   MOVE    ZERO                TO  FLG-HKNCOMBI 
                ELSE
-                   MOVE    "1"             TO  WRK-TEISEIKBN
+      *            保険組合せ読込み
+                   INITIALIZE                  HKNCOMBI-REC
+grpsys             MOVE    SPA-HOSPNUM         TO  COMB-HOSPNUM
+                   MOVE    PTINF-PTID          TO  COMB-PTID
+                   MOVE    KEY-N-HKNCOMBI      TO  COMB-HKNCOMBINUM 
+                   MOVE    HKNCOMBI-REC        TO  MCPDATA-REC
+                   PERFORM 910-HKNCOMBI-INV-SEC
+      *
+                   IF      FLG-HKNCOMBI    =   ZERO
+                       IF      COMB-TEKSTYMD   <=  WRK-STYMD
+                       AND     COMB-TEKEDYMD   >=  WRK-EDYMD
+                           MOVE    SPACE           TO  WRK-UPDKBN
+                        ELSE
+                           MOVE    "1"             TO  WRK-UPDKBN
+                       END-IF
+                   ELSE
+                      MOVE    "1"             TO  WRK-TEISEIKBN
+                   END-IF
                END-IF
       *
                MOVE    KEY-NEW             TO  KEY-OLD
@@ -1613,6 +1623,15 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
                        PERFORM 900-SRYACCT-READ-SEC
                    END-IF
                END-PERFORM
+      *        実日数編集
+               PERFORM   20012-JNISSU-SET-SEC
+               PERFORM   20013-TOTALTENSU-SET-SEC
+               INITIALIZE                  TBL-JNISSU
+               INITIALIZE                  TBL-JNISSU-GEN
+               INITIALIZE                  TBL-TOTALTENSU-INF
+               INITIALIZE                  TBL-SKJNISSU-INF
+               INITIALIZE                  TBL-SKJRYOYOHI-INF
+               INITIALIZE                  TBL-SKJFTN-INF
            END-PERFORM
       *
            MOVE    "tbl_sryacct"      TO  MCP-TABLE
@@ -1633,7 +1652,8 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
       *
            PERFORM 200131-NYUINKA-HEN-SEC
       *
-           MOVE    WRK-PARA-HOSPNUM    TO  HCM34S01-HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  HCM34S01-HOSPNUM
+                                           WRK-SPA-HOSPNUM
            MOVE    PTINF-PTID          TO  HCM34S01-PTID
            MOVE    WRK-PARA-SRYYM      TO  HCM34S01-SANTEIYM
            MOVE    COMB-HKNCOMBINUM    TO  HCM34S01-HKNCOMBI
@@ -1824,7 +1844,7 @@ grpsys         MOVE    SPA-HOSPNUM             TO  TNS-HOSPNUM
            INITIALIZE                  TBL-SKJFTN-INF
       *
       *    テスト患者のときは読み飛ばす
-           MOVE    WRK-PARA-HOSPNUM        TO  PTINF-HOSPNUM
+grpsys     MOVE    SPA-HOSPNUM             TO  PTINF-HOSPNUM
            MOVE    KEY-N-PTID              TO  PTINF-PTID
            PERFORM 900-PTINF-READ-SEC
       *
@@ -1844,24 +1864,23 @@ grpsys         MOVE    SPA-HOSPNUM             TO  TNS-HOSPNUM
                MOVE    KEY-NEW             TO  KEY-OLD
                PERFORM         UNTIL   FLG-SRYACCT     =   1
                                OR      KEY-N-PTID  NOT =   KEY-O-PTID
+      *            未訂正分があるか
+                   MOVE    SPACE               TO  WRK-ERR-AREA
+                   INITIALIZE                      WRK-ERR-AREA
+      *
                    IF      KEY-N-HKNCOMBI      =   9999
                        INITIALIZE                  HKNCOMBI-REC
-                       MOVE    WRK-PARA-HOSPNUM    TO  COMB-HOSPNUM
                        MOVE    KEY-N-PTID          TO  COMB-PTID
                        MOVE    KEY-N-HKNCOMBI      TO  COMB-HKNCOMBINUM
                        MOVE    ZERO                TO  FLG-HKNCOMBI 
                    ELSE
       *                保険組合せ読込み
                        INITIALIZE                  HKNCOMBI-REC
-                       MOVE    WRK-PARA-HOSPNUM    TO  COMB-HOSPNUM
+grpsys                 MOVE    SPA-HOSPNUM         TO  COMB-HOSPNUM
                        MOVE    KEY-N-PTID          TO  COMB-PTID
                        MOVE    KEY-N-HKNCOMBI      TO  COMB-HKNCOMBINUM
                        MOVE    HKNCOMBI-REC        TO  MCPDATA-REC
                        PERFORM 910-HKNCOMBI-INV-SEC
-      *
-      *                未訂正分があるか
-                       MOVE    SPACE               TO  WRK-ERR-AREA
-                       INITIALIZE                      WRK-ERR-AREA
       *
                        IF      FLG-HKNCOMBI    =   ZERO
                            IF      COMB-TEKSTYMD   <=  WRK-STYMD
@@ -1972,14 +1991,14 @@ grpsys         MOVE    SPA-HOSPNUM             TO  TNS-HOSPNUM
                    WHEN    WRK-CONS-ROUSAI-HKNNUM
                    WHEN    WRK-CONS-JIBAI-HKNNUM
                        INITIALIZE                  PTRSIINF-REC
-                       MOVE    COMB-HOSPNUM        TO  PTRSI-HOSPNUM
+grpsys                 MOVE    SPA-HOSPNUM         TO  PTRSI-HOSPNUM
                        MOVE    COMB-HKNID          TO  PTRSI-HKNID
                        MOVE    COMB-PTID           TO  PTRSI-PTID
                        MOVE    PTRSIINF-REC        TO  MCPDATA-REC
                        PERFORM 900-PTRSIINF-INV-SEC
                    WHEN    OTHER
                        INITIALIZE                  PTHKNINF-REC
-                       MOVE    WRK-PARA-HOSPNUM    TO  PTHKN-HOSPNUM
+grpsys                 MOVE    SPA-HOSPNUM         TO  PTHKN-HOSPNUM
                        MOVE    COMB-PTID           TO  PTHKN-PTID
                        MOVE    COMB-HKNID          TO  PTHKN-HKNID
                        MOVE    COMB-TEKSTYMD       TO  PTHKN-TEKSTYMD
@@ -2165,16 +2184,22 @@ grpsys         MOVE    SPA-HOSPNUM             TO  TNS-HOSPNUM
              END-EVALUATE
            END-IF
       *
+           IF      COMB-HKNCOMBINUM    =    9999
+               MOVE    "9999999"            TO  COLDAT01-HKNJANUM
+           END-IF
+      *
            PERFORM VARYING IDXX    FROM    1   BY  1
-                   UNTIL   IDXX    >       100
+                   UNTIL   IDXX    >       WRK-COLDAT01-TABLE-MAX
                IF      WRK-COLDAT01-HOSPID (IDXX)  =   SPACE
                    PERFORM 20011-COLDAT01-WRITE-SEC
-                   MOVE    100             TO  IDXX
+                   MOVE    WRK-COLDAT01-TABLE-MAX
+                                              TO  IDXX
                ELSE
                    IF      WRK-COLDAT01-KEY (IDXX) =
-                                           COLDAT01-KEY
+                                               COLDAT01-KEY
                        PERFORM 20011-COLDAT01-REWRITE-SEC
-                       MOVE    100             TO  IDXX
+                       MOVE    WRK-COLDAT01-TABLE-MAX
+                                                   TO  IDXX
                    END-IF
                END-IF
            END-PERFORM
@@ -2208,7 +2233,7 @@ grpsys         MOVE    SPA-HOSPNUM             TO  TNS-HOSPNUM
                    MOVE    PTHKN-HONKZKKBN TO  COLDAT01-THONKZKKBN (1)
       *            法別番号
                    INITIALIZE                      HKNNUM-REC
-                   MOVE    WRK-PARA-HOSPNUM    TO  HKN-HOSPNUM
+grpsys             MOVE    SPA-HOSPNUM         TO  HKN-HOSPNUM
                    MOVE    PTHKN-HKNNUM        TO  HKN-HKNNUM
                    MOVE    ZERO                TO  HKN-PAYKBN
                    MOVE    WRK-SYMD            TO  HKN-TEKSTYMD
@@ -2227,7 +2252,7 @@ grpsys         MOVE    SPA-HOSPNUM             TO  TNS-HOSPNUM
            IF      COLDAT01-KOHID  >   ZERO
                MOVE    COMB-KOH1HKNNUM TO  COLDAT01-RJNHKNNUM
       *
-               MOVE    WRK-PARA-HOSPNUM TO PTKOH-HOSPNUM
+grpsys         MOVE    SPA-HOSPNUM     TO  PTKOH-HOSPNUM
                MOVE    PTINF-PTID      TO  PTKOH-PTID
                MOVE    COLDAT01-KOHID  TO  PTKOH-KOHID
                MOVE    PTKOHINF-REC    TO  MCPDATA-REC
@@ -2238,7 +2263,7 @@ grpsys         MOVE    SPA-HOSPNUM             TO  TNS-HOSPNUM
                    MOVE    PTKOH-TEKEDYMD      TO  COLDAT01-RJNTEKEDYMD
       *            法別番号のセット
                    INITIALIZE                  HKNNUM-REC
-                   MOVE    WRK-PARA-HOSPNUM TO HKN-HOSPNUM
+grpsys             MOVE    SPA-HOSPNUM     TO  HKN-HOSPNUM
                    MOVE    PTKOH-KOHNUM    TO  HKN-HKNNUM
                    MOVE    PTKOH-PAYKBN    TO  HKN-PAYKBN
                    MOVE    WRK-SYMD        TO  HKN-TEKSTYMD
@@ -2258,13 +2283,13 @@ grpsys         MOVE    SPA-HOSPNUM             TO  TNS-HOSPNUM
       *
       *    年齢
            INITIALIZE                  ORCSAGECHKAREA
-           MOVE    SPA-HOSPNUM     TO  AGECHK-HOSPNUM
            MOVE    COLDAT01-PTID   TO  AGECHK-PTID
            MOVE    WRK-PARA-SRYYM  TO  AGECHK-SRYYMD(1:6)
            MOVE    "01"            TO  AGECHK-SRYYMD(7:2)
            MOVE    PTINF-BIRTHDAY  TO  AGECHK-BIRTHDAY
            CALL    "ORCSAGECHK"        USING
                                        ORCSAGECHKAREA
+                                       SPA-AREA
            IF      AGECHK-RC       =   ZERO
                MOVE  AGECHK-NENREI     TO  COLDAT01-AGE
            END-IF
@@ -2441,8 +2466,8 @@ grpsys         MOVE    SPA-HOSPNUM             TO  TNS-HOSPNUM
            MOVE    COMB-KOHID (IDX)    TO  COLDAT01-TKOHID    (IDY)
            MOVE    COMB-KOHHKNNUM(IDX) TO  COLDAT01-TKOHHKNNUM(IDY)
            MOVE    COMB-KOHPAYKBN(IDX) TO  COLDAT01-TKOHPAYKBN(IDY)
-    *
-           MOVE    WRK-PARA-HOSPNUM    TO  PTKOH-HOSPNUM
+      *
+grpsys     MOVE    SPA-HOSPNUM         TO  PTKOH-HOSPNUM
            MOVE    COLDAT01-PTID       TO  PTKOH-PTID
            MOVE    COMB-KOHID (IDX)    TO  PTKOH-KOHID
            MOVE    PTKOHINF-REC        TO  MCPDATA-REC
@@ -2451,13 +2476,13 @@ grpsys         MOVE    SPA-HOSPNUM             TO  TNS-HOSPNUM
                MOVE   PTKOH-TEKSTYMD   TO  COLDAT01-TKOHTEKSTYMD (IDY)
                MOVE   PTKOH-TEKEDYMD   TO  COLDAT01-TKOHTEKEDYMD (IDY)
       *        法別番号のセット
-               INITIALIZE                  HKNNUM-REC
-               MOVE    WRK-PARA-HOSPNUM TO HKN-HOSPNUM
-               MOVE    PTKOH-KOHNUM     TO HKN-HKNNUM
-               MOVE    PTKOH-PAYKBN     TO HKN-PAYKBN   
-               MOVE    WRK-SYMD         TO HKN-TEKSTYMD
+               INITIALIZE                 HKNNUM-REC
+grpsys         MOVE    SPA-HOSPNUM     TO HKN-HOSPNUM
+               MOVE    PTKOH-KOHNUM    TO HKN-HKNNUM
+               MOVE    PTKOH-PAYKBN    TO HKN-PAYKBN   
+               MOVE    WRK-SYMD        TO  HKN-TEKSTYMD
                                            HKN-TEKEDYMD
-               MOVE    HKNNUM-REC       TO MCPDATA-REC
+               MOVE    HKNNUM-REC      TO  MCPDATA-REC
                PERFORM 900-HKNNUM-CHK-SEC
                IF      FLG-HKNNUM      =   ZERO
                     MOVE   HKN-HBTNUM      TO  COLDAT01-TKOHHBTNUM (IDY)
@@ -2490,7 +2515,6 @@ grpsys         MOVE    SPA-HOSPNUM             TO  TNS-HOSPNUM
                    IF     COLDAT01-TRECESKYKBN (IDY)   =   1
       *                地方公費レセ記載判定
                        INITIALIZE          ORCSFTNJGNCHKAREA
-                       MOVE    COMB-HOSPNUM TO LNK-FTNJGNCHK-HOSPNUM
                        MOVE    COMB-PTID   TO  LNK-FTNJGNCHK-PTID
                        MOVE    WRK-PARA-NYUGAIKBN
                                            TO  LNK-FTNJGNCHK-NYUGAIKBN
@@ -2506,6 +2530,7 @@ grpsys         MOVE    SPA-HOSPNUM             TO  TNS-HOSPNUM
       *
                        CALL    "ORCSFTNJGNCHK" USING
                                                ORCSFTNJGNCHKAREA
+                                               SPA-AREA
                        IF     LNK-FTNJGNCHK-RC =   1
                            MOVE       "2"  TO  COLDAT01-TRECESKYKBN(IDY)
                        END-IF
@@ -2519,7 +2544,6 @@ grpsys         MOVE    SPA-HOSPNUM             TO  TNS-HOSPNUM
                    IF   COMB-KOHHKNNUM (IDX)   =   "012"
       *                レセ記載判定
                        INITIALIZE          ORCSFTNJGNCHKAREA
-                       MOVE    COMB-HOSPNUM TO LNK-FTNJGNCHK-HOSPNUM
                        MOVE    COMB-PTID   TO  LNK-FTNJGNCHK-PTID
                        MOVE    WRK-PARA-NYUGAIKBN
                                            TO  LNK-FTNJGNCHK-NYUGAIKBN
@@ -2535,6 +2559,7 @@ grpsys         MOVE    SPA-HOSPNUM             TO  TNS-HOSPNUM
       *
                        CALL    "ORCSFTNJGNCHK" USING
                                                ORCSFTNJGNCHKAREA
+                                               SPA-AREA
                        IF     LNK-FTNJGNCHK-RC =   1
                            MOVE    "2"     TO  COLDAT01-TRECESKYKBN(IDY)
                        ELSE
@@ -2562,7 +2587,7 @@ grpsys         MOVE    SPA-HOSPNUM             TO  TNS-HOSPNUM
                        END-IF
                        GO  TO  200121-KOHID-HENSYU-EXT
                    END-IF
-      *            全国公費のとき（長期・老人原爆以外）
+      *            全国公費のとき（長期・老人原爆・生保以外）
                    MOVE    "1"         TO  COLDAT01-TRECESKYKBN(IDY)
                END-IF
            END-IF
@@ -2613,13 +2638,13 @@ grpsys         MOVE    SPA-HOSPNUM             TO  TNS-HOSPNUM
                MOVE    "2"                 TO  COLDAT01-TRECESKYKBN(IDY)
            ELSE
                INITIALIZE                  ORCSKOHPLUS-AREA
-               MOVE    COMB-HOSPNUM        TO  LNK-SKOHPLUS-HOSPNUM
                MOVE    SYS-1001-PREFNUM    TO  LNK-SKOHPLUS-PREFNUM
                MOVE    COMB-PTID           TO  LNK-SKOHPLUS-PTID
                MOVE    COMB-HKNCOMBINUM    TO  LNK-SKOHPLUS-HKNCOMBI
                MOVE    WRK-SYMD            TO  LNK-SKOHPLUS-SRYYMD
                CALL    "ORCSKOHPLUS"       USING
                                            ORCSKOHPLUS-AREA
+                                           SPA-AREA
                IF      LNK-SKOHPLUS-RC     =   ZERO
                    IF      LNK-SKOHPLUS-RECESKYKBN =   "1" OR  "3"
                        MOVE    "2"         TO  COLDAT01-TRECESKYKBN(IDY)
@@ -2688,18 +2713,24 @@ grpsys         MOVE    SPA-HOSPNUM             TO  TNS-HOSPNUM
        20013-TOTALTENSU-SET-SEC    SECTION.
       *
       *    主保険
-           MOVE    TBL-TOTALTENSU (1)  TO  COLDAT01-HKNTOTALTENSU
-           MOVE    TBL-SKJRYOYOHI (1)  TO  COLDAT01-HKNSKJRYOYOHI
-           MOVE    TBL-SKJFTN     (1)  TO  COLDAT01-HKNSKJFTN
+           COMPUTE COLDAT01-HKNTOTALTENSU  =   COLDAT01-HKNTOTALTENSU
+                                           +   TBL-TOTALTENSU (1)
+           COMPUTE COLDAT01-HKNSKJRYOYOHI  =   COLDAT01-HKNSKJRYOYOHI
+                                           +   TBL-SKJRYOYOHI (1)
+           COMPUTE COLDAT01-HKNSKJFTN      =   COLDAT01-HKNSKJFTN
+                                           +   TBL-SKJFTN     (1)
       *    公費
            PERFORM    VARYING    JN-IDX    FROM   2   BY   1
                       UNTIL      JN-IDX    >      5
-               MOVE   TBL-TOTALTENSU (JN-IDX)
-                               TO  COLDAT01-TKOHTOTALTENSU(JN-IDX - 1)
-               MOVE   TBL-SKJRYOYOHI (JN-IDX)
-                               TO  COLDAT01-TKOHSKJRYOYOHI(JN-IDX - 1)
-               MOVE   TBL-SKJFTN (JN-IDX)
-                               TO  COLDAT01-TKOHSKJFTN(JN-IDX - 1)
+               COMPUTE COLDAT01-TKOHTOTALTENSU(JN-IDX - 1) =
+                       COLDAT01-TKOHTOTALTENSU(JN-IDX - 1)
+                                           +   TBL-TOTALTENSU (JN-IDX)
+               COMPUTE COLDAT01-TKOHSKJRYOYOHI(JN-IDX - 1) =
+                       COLDAT01-TKOHSKJRYOYOHI(JN-IDX - 1)
+                                           +   TBL-SKJRYOYOHI (JN-IDX)
+               COMPUTE COLDAT01-TKOHSKJFTN(JN-IDX - 1)     =
+                       COLDAT01-TKOHSKJFTN(JN-IDX - 1)
+                                           +   TBL-SKJFTN (JN-IDX)
            END-PERFORM
       *    テーブルレコード入れ替え
            PERFORM VARYING IDXX    FROM    1   BY  1
@@ -2720,7 +2751,7 @@ grpsys         MOVE    SPA-HOSPNUM             TO  TNS-HOSPNUM
        2002-KIHON-WRITE-SEC              SECTION.
       *
            PERFORM VARYING IDXX    FROM    1   BY  1
-                   UNTIL   IDXX    >       100
+                   UNTIL   IDXX    >       WRK-COLDAT01-TABLE-MAX
                    OR      WRK-COLDAT01-HOSPID (IDXX)  =   SPACE
                MOVE    WRK-COLDAT01-OCC (IDXX)     TO  COLDAT01-REC
       *
@@ -2763,6 +2794,10 @@ grpsys         MOVE    SPA-HOSPNUM             TO  TNS-HOSPNUM
       *    保険変更後、訂正していないとき
       *    保険組合せがないとき
            IF      COLDAT01-TEISEIKBN  =   "1"
+               GO  TO  20021-RECESYUBETU-SET-EXT
+           END-IF
+      *    包括のとき
+           IF      COLDAT01-HKNJANUM   =   "9999999"
                GO  TO  20021-RECESYUBETU-SET-EXT
            END-IF
       *
@@ -2999,8 +3034,9 @@ grpsys         MOVE    SPA-HOSPNUM             TO  TNS-HOSPNUM
                END-IF
            END-IF
       *
-           IF    ( WK-RJN          NOT =   SPACE )     
-           AND   ( WK-HONKZKKBN        =   "1"   )     
+           IF    ( WK-RJN          NOT =   SPACE )
+           AND   ( COLDAT01-THONKZKKBN (IDY)
+                                       =   "1"   )
                IF      COLDAT01-HKNNUM =   "063"   OR  "072"   OR
                                            "073"   OR  "074"   OR
                                            "075"
@@ -3041,7 +3077,7 @@ grpsys         MOVE    SPA-HOSPNUM             TO  TNS-HOSPNUM
       *
       *    患者病名読み込み
            INITIALIZE                  PTBYOMEI-REC
-           MOVE    WRK-PARA-HOSPNUM    TO  PTBYO-HOSPNUM
+grpsys     MOVE    SPA-HOSPNUM         TO  PTBYO-HOSPNUM
            MOVE    PTINF-PTID          TO  PTBYO-PTID
            MOVE    PTBYOMEI-REC        TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
@@ -3172,12 +3208,12 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
       *    レセプト診療科
            IF      PTBYO-SRYKA     NOT =   SPACE
                INITIALIZE                      SYS-1005-REC
+grpsys         MOVE    SPA-HOSPNUM         TO  SYS-1005-HOSPNUM
                MOVE    "1005"              TO  SYS-1005-KANRICD
                MOVE     PTBYO-SRYKA        TO  SYS-1005-KBNCD
                MOVE    WRK-PARA-SRYYM      TO  SYS-1005-STYUKYMD(1:6)
                MOVE    "01"                TO  SYS-1005-STYUKYMD(7:2)
                MOVE    SYS-1005-STYUKYMD   TO  SYS-1005-EDYUKYMD
-grpsys         MOVE    SPA-HOSPNUM         TO  SYS-1005-HOSPNUM
                MOVE    SYS-1005-REC        TO  MCPDATA-REC
                PERFORM 910-SYSKANRI-INV-SEC
                IF      FLG-SYSKANRI        =   ZERO
@@ -3203,12 +3239,12 @@ grpsys         MOVE    SPA-HOSPNUM         TO  SYS-1005-HOSPNUM
       *
       *    レセプト診療科
            INITIALIZE                      SYS-1005-REC
+grpsys     MOVE    SPA-HOSPNUM         TO  SYS-1005-HOSPNUM
            MOVE    "1005"              TO  SYS-1005-KANRICD
            MOVE    ACCT-SRYKA          TO  SYS-1005-KBNCD
            MOVE    WRK-PARA-SRYYM      TO  SYS-1005-STYUKYMD(1:6)
            MOVE    "01"                TO  SYS-1005-STYUKYMD(7:2)
            MOVE    SYS-1005-STYUKYMD   TO  SYS-1005-EDYUKYMD
-grpsys     MOVE    SPA-HOSPNUM         TO  SYS-1005-HOSPNUM
            MOVE    SYS-1005-REC        TO  MCPDATA-REC
            PERFORM 910-SYSKANRI-INV-SEC
            IF      FLG-SYSKANRI        =   ZERO
@@ -3219,7 +3255,7 @@ grpsys     MOVE    SPA-HOSPNUM         TO  SYS-1005-HOSPNUM
       *
       *    診療行為データ読み込み
            INITIALIZE                      SRYACT-REC
-           MOVE    ACCT-HOSPNUM        TO  SRY-HOSPNUM
+grpsys     MOVE    SPA-HOSPNUM         TO  SRY-HOSPNUM
            MOVE    ACCT-NYUGAIKBN      TO  SRY-NYUGAIKBN
            MOVE    ACCT-PTID           TO  SRY-PTID
            MOVE    ACCT-SRYKA          TO  SRY-SRYKA
@@ -3330,7 +3366,7 @@ grpsys         MOVE    SPA-HOSPNUM         TO  TNS-HOSPNUM
                    OR (SRY-SRYCD    (IDX2)(1:3)
                                                =   "008") ) 
                AND (   SRY-INPUTNUM (IDX2) NOT =   ZERO   )
-                   MOVE    SRY-HOSPNUM             TO  PTCOM-HOSPNUM
+grpsys             MOVE    SPA-HOSPNUM             TO  PTCOM-HOSPNUM
                    MOVE    SRY-PTID                TO  PTCOM-PTID
                    MOVE    SRY-ZAINUM              TO  PTCOM-ZAINUM
                    MOVE    SRY-SRYCD   (IDX2)      TO  PTCOM-SRYCD
@@ -3626,7 +3662,8 @@ grpsys         MOVE    SPA-HOSPNUM         TO  TNS-HOSPNUM
                                              + (ACCT-ZAITEN
                                              *  ACCT-ZAIKAISU)
              ELSE
-               IF        ACCT-SRYKBN         =   "95"   OR  "96"
+               IF      ( ACCT-SRYKBN         =   "95"   OR  "96" )
+                OR     ( COLDAT02-SRYCD      =   "099999912" )
                    CONTINUE
                ELSE
                  IF        ACCT-SRYCDTOTAL    =    630010002
@@ -3798,6 +3835,7 @@ grpsys         MOVE    SPA-HOSPNUM         TO  TNS-HOSPNUM
                CALL    "ORCSJOB"       USING
                                        ORCSJOBKANRIAREA
                                        JOBKANRI-REC
+                                       SPA-AREA
            END-IF
       *
            MOVE    1                   TO  FLG-END
@@ -3832,6 +3870,7 @@ grpsys         MOVE    SPA-HOSPNUM         TO  TNS-HOSPNUM
            CALL    "ORCSJOB"       USING
                                    ORCSJOBKANRIAREA
                                    JOBKANRI-REC
+                                   SPA-AREA
       *
            PERFORM 900-DBDISCONNECT-SEC
       *
@@ -3938,7 +3977,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            MOVE    ZERO                TO  FLG-PTNYUINRRK
            INITIALIZE                  PTNYUINRRK-REC
       *
-           MOVE    WRK-PARA-HOSPNUM    TO  PTNYUINRRK-HOSPNUM
+grpsys     MOVE    SPA-HOSPNUM         TO  PTNYUINRRK-HOSPNUM
            MOVE    PTINF-PTID          TO  PTNYUINRRK-PTID
            MOVE    WRK-PARA-SRYYM      TO  PTNYUINRRK-TENNYUYMD
            MOVE    "31"                TO  PTNYUINRRK-TENNYUYMD
@@ -3984,6 +4023,11 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
       *    保険組合せマスタ読込
       *****************************************************************
        910-HKNCOMBI-INV-SEC         SECTION.
+      *
+           IF      COMB-HKNCOMBINUM =   9999
+               MOVE    ZERO                TO  FLG-HKNCOMBI
+               GO  TO  910-HKNCOMBI-INV-EXT
+           END-IF
       *
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "tbl_hkncombi"      TO  MCP-TABLE
@@ -4086,6 +4130,7 @@ grpsys         PERFORM 900-ORCDBMAIN-SEC
            .
        900-PTKOHINF-READ-EXT.
            EXIT.
+      *
       *****************************************************************
       *    保険番号マスタ検索処理
       *****************************************************************
@@ -4120,7 +4165,7 @@ grpsys         PERFORM 900-ORCDBMAIN-SEC
       *    退避ワークに存在しない場合はＤＢを検索
            IF      HKN-HKNNUM          =   SPACE
                INITIALIZE                      HKNNUM-REC
-               MOVE    WRK-PARA-HOSPNUM    TO  HKN-HOSPNUM
+grpsys         MOVE    SPA-HOSPNUM         TO  HKN-HOSPNUM
                MOVE    WRK-CHK-HKNNUM      TO  HKN-HKNNUM
                MOVE    WRK-CHK-PAYKBN      TO  HKN-PAYKBN
                MOVE    WRK-CHK-TEKSTYMD    TO  HKN-TEKSTYMD
@@ -4155,31 +4200,6 @@ grpsys         PERFORM 900-ORCDBMAIN-SEC
            END-IF
            .
        900-HKNNUM-CHK-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    保険番号（主キー）読込処理
-      *****************************************************************
-       900-HKNNUM-INV-SEC         SECTION.
-      *
-           MOVE    HKNNUM-REC          TO  MCPDATA-REC
-           MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "tbl_hknnum"        TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-grpsys     PERFORM 900-ORCDBMAIN-SEC
-           IF      MCP-RC              =   ZERO
-               MOVE    "tbl_hknnum"    TO  MCP-TABLE
-               MOVE    "key"           TO  MCP-PATHNAME
-               PERFORM 900-HKNNUM-READ-SEC
-           ELSE
-               MOVE    1               TO  FLG-HKNNUM
-           END-IF
-      *
-           MOVE    "tbl_hknnum"        TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           PERFORM 900-DBCLOSE-SEC
-           .
-       900-HKNNUM-INV-EXT.
            EXIT.
       *
       *****************************************************************
@@ -4498,7 +4518,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            MOVE    "DBDISCONNECT"      TO  MCP-FUNC
 grpsys     PERFORM 900-ORCDBMAIN-SEC
            .
-       900-DBCLOSE-EXT.
+       900-DBDISCONNECT-EXT.
            EXIT.
       *
       *****************************************************************
