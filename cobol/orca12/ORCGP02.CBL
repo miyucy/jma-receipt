@@ -1011,7 +1011,16 @@
            MOVE    1                   TO  FLG-CLAIM-OK
            PERFORM 4902-KOUSIN-SYORI-SEC
       *
-          .
+           IF     (FLG-END             =   ZERO )  AND
+                  (SPA-ERRCD       NOT =   SPACE)
+               PERFORM 510-ERRSET-SEC
+           END-IF
+      *
+           IF     (FLG-END             =   ZERO )  AND
+                  (SPA-PIDCD       NOT =   SPACE)
+               PERFORM 520-JIDSET-SEC
+           END-IF
+           .
        3009-CLAIM-SYORI-EXT.
            EXIT.
       *****************************************************************
