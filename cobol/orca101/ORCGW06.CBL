@@ -2675,7 +2675,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        49001-SYSUSER-CHK-SEC           SECTION.
       *
            INITIALIZE                      SYSUSER-REC
-           MOVE    SYS-1010-USERID     TO  SYSUSER-USERID
+           MOVE    SPA-GMN-USERID      TO  SYSUSER-USERID
            MOVE    SYSUSER-REC         TO  MCPDATA-REC
            MOVE    "tbl_sysuser"       TO  MCP-TABLE 
            MOVE    "key"               TO  MCP-PATHNAME 
