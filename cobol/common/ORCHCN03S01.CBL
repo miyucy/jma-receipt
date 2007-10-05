@@ -42,7 +42,7 @@
       *
       *    °õºþÍÑ¥Ç¡¼¥¿
            SELECT  PRT-FILE    ASSIGN  HC03PARA
-                               ORGANIZATION    IS  LINE SEQUENTIAL 
+                               ORGANIZATION    IS  SEQUENTIAL 
                                FILE    STATUS  IS  STS-PARA.
       *
        DATA                            DIVISION.
