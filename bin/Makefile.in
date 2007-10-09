@@ -7,10 +7,10 @@ INSTALL_SCRIPT = @INSTALL_SCRIPT@
 
 BIN_sources = \
 	jma-receipt-db-setup.sh.in \
-	jma-receipt-db-check.sh.in
+	jma-receipt-db-check.sh.in \
+	jma-receipt-hospid-set.sh.in
 
-BIN_bin = \
-	jma-receipt-hospid-set.sh
+BIN_bin = 
 
 BIN_objs = $(BIN_sources:.sh.in=.sh)
 
