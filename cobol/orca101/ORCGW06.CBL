@@ -554,6 +554,10 @@
            MOVE    "5 管理職"          TO  SPA-GMN-SYOKUKBN-LIST (5)
            MOVE    "0 マスター"        TO  SPA-GMN-SYOKUKBN-LIST (6)
            MOVE    6                   TO  SPA-SYOKUKBN-MAX
+      *    医療機関番号が２以上は 0 マスター なし
+           IF      SPA-HOSPNUM         >=  02
+               MOVE    5                   TO  SPA-SYOKUKBN-MAX
+           END-IF
       *    管理者権限
            MOVE    "管理者である"      TO  SPA-GMN-KANRIAUTH-LST(1)
            MOVE    "管理者でない"      TO  SPA-GMN-KANRIAUTH-LST(2) 
@@ -2733,6 +2737,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *
       *    ユザー
            MOVE    ZERO                TO  FLG-USERID-UPD
+           MOVE    SPACE               TO  WRK-MAE-USERID
            IF      SPA-GMN-USERID  NOT =   SYS-1010-USERID
                MOVE    SYS-1010-USERID     TO  WRK-MAE-USERID
                MOVE    1                   TO  FLG-USERID-UPD
@@ -3058,19 +3063,21 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
        4905-SYSUSER-UPD-SEC              SECTION.
       *
       *    前のユーザＩＤを削除
-           INITIALIZE                      SYSUSER-REC
-           MOVE    WRK-MAE-USERID      TO  SYSUSER-USERID
-           MOVE    SYSUSER-REC         TO  MCPDATA-REC
-           MOVE    "tbl_sysuser"       TO  MCP-TABLE 
-           MOVE    "key"               TO  MCP-PATHNAME 
-           MOVE    "DBDELETE"          TO  MCP-FUNC
-           CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+           IF      WRK-MAE-USERID  NOT =   SPACE
+               INITIALIZE                      SYSUSER-REC
+               MOVE    WRK-MAE-USERID      TO  SYSUSER-USERID
+               MOVE    SYSUSER-REC         TO  MCPDATA-REC
+               MOVE    "tbl_sysuser"       TO  MCP-TABLE 
+               MOVE    "key"               TO  MCP-PATHNAME 
+               MOVE    "DBDELETE"          TO  MCP-FUNC
+               CALL    "ORCDBMAIN"         USING   MCPAREA
+                                                   MCPDATA-REC
+                                                   SPA-AREA
       *
-           IF      MCP-RC              NOT =   ZERO 
-               MOVE    "1002"              TO  SPA-ERRCD
-               DISPLAY "W06 DB DEL ERR USERID-KEY =>" SYSUSER-USERID
+               IF      MCP-RC              NOT =   ZERO 
+                   MOVE    "1002"              TO  SPA-ERRCD
+                   DISPLAY "W06 DB DEL ERR USERID-KEY =>" SYSUSER-USERID
+               END-IF
            END-IF
       *
       *    新規追加
@@ -3095,6 +3102,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                INITIALIZE                      SYSUSER-REC
                MOVE    SYS-1010-USERID     TO  SYSUSER-USERID
                MOVE    SPA-HOSPNUM         TO  SYSUSER-HOSPNUM
+               MOVE    "F"                 TO  SYSUSER-SUPERVISOR
                MOVE    SMCNDATE-YMD        TO  SYSUSER-UPYMD
       *
                MOVE    SYSUSER-REC         TO  MCPDATA-REC
