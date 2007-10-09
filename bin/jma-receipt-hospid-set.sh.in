@@ -27,7 +27,7 @@ fi
 
 if [ $# -ne 2 ]; then
     echo
-    echo "usage: sudo -u orca sh /usr/lib/jma-receipt/bin/jma-receipt-hospid-set.sh <hospnum> <hospid>"
+    echo "usage: sudo -u orca /usr/lib/jma-receipt/bin/jma-receipt-hospid-set.sh <hospnum> <hospid>"
     echo
     exit 1
 fi
