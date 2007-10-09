@@ -2,3 +2,4 @@ Makefile
 jma-receipt-db-setup.sh
 jma-receipt-db-check.sh
 jma-receipt-hospid-set.sh
+orcvt_exec.sh

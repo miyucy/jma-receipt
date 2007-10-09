@@ -8,9 +8,12 @@ INSTALL_SCRIPT = @INSTALL_SCRIPT@
 BIN_sources = \
 	jma-receipt-db-setup.sh.in \
 	jma-receipt-db-check.sh.in \
-	jma-receipt-hospid-set.sh.in
+	jma-receipt-hospid-set.sh.in \
+	orcvt_exec.sh.in
 
-BIN_bin = 
+BIN_bin = \
+	orcvt_euc.rb \
+	orcvt_euc_kananame.rb
 
 BIN_objs = $(BIN_sources:.sh.in=.sh)
 
