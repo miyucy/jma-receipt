@@ -98,7 +98,7 @@ fi
 if [ ! -e "$INSTALLLOG" ]; then
   su - orca -c "touch $INSTALLLOG" 
 fi
-su - orca -c "rm $THISTIMELOG"
+su - orca -c "rm -f $THISTIMELOG"
 
 #エラーファイル用フォルダ作成
 if ! [	-d	$HOME/orca-mstlog	];	then 
