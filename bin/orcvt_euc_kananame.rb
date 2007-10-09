@@ -13,7 +13,7 @@ require "jcode"
 
 $KCODE = "euc"
 
-$file_path_name = $1
+$file_path_name = ARGV[0]
 $tgt_csv_no = [2]
 
 def h2z(buf)
