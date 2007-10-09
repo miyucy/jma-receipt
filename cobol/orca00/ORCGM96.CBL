@@ -332,9 +332,9 @@
            MOVE    "key"               TO  MCP-PATHNAME 
            PERFORM 990-DBCLOSE-SEC
       *
-      *    マスタ管理検索処理
+      *    マスタ管理検索処理(医療機関識別番号01の処理)
            INITIALIZE                  MSTKANRI-REC
-grpsys     MOVE    SPA-HOSPNUM         TO  MSTKANRI-HOSPNUM
+grpsys     MOVE    1                   TO  MSTKANRI-HOSPNUM
            MOVE    MSTKANRI-REC        TO  MCPDATA-REC
            MOVE    "tbl_mstkanri"      TO  MCP-TABLE 
            MOVE    "all"               TO  MCP-PATHNAME 
@@ -358,6 +358,34 @@ grpsys     MOVE    SPA-HOSPNUM         TO  MSTKANRI-HOSPNUM
            MOVE    "tbl_mstkanri"      TO  MCP-TABLE 
            MOVE    "all"               TO  MCP-PATHNAME 
            PERFORM 990-DBCLOSE-SEC
+      *    マスタ管理検索処理(医療機関識別番号02以降の処理)
+           IF      SPA-HOSPNUM         >   1
+             INITIALIZE                  MSTKANRI-REC
+grpsys       MOVE    SPA-HOSPNUM         TO  MSTKANRI-HOSPNUM
+             MOVE    MSTKANRI-REC        TO  MCPDATA-REC
+             MOVE    "tbl_mstkanri"      TO  MCP-TABLE 
+             MOVE    "all"               TO  MCP-PATHNAME 
+             PERFORM 910-DBSELECT-SEC
+             IF      MCP-RC              =   ZERO
+                 MOVE    "tbl_mstkanri"  TO  MCP-TABLE 
+                 MOVE    "all"           TO  MCP-PATHNAME 
+                 PERFORM 900-MSTKANRI-READ-SEC
+             ELSE
+                 INITIALIZE                      MSTKANRI-REC
+                 MOVE    1                   TO  FLG-MSTKANRI
+             END-IF
+             PERFORM UNTIL   FLG-MSTKANRI    =   1
+                 IF      MSTKANRI-KANRICD(7:2)    NUMERIC
+                     PERFORM 3102-LIST3-HENSYU-SEC
+                 END-IF
+                 MOVE    "tbl_mstkanri"  TO  MCP-TABLE 
+                 MOVE    "all"           TO  MCP-PATHNAME 
+                 PERFORM 900-MSTKANRI-READ-SEC
+             END-PERFORM
+             MOVE    "tbl_mstkanri"      TO  MCP-TABLE 
+             MOVE    "all"               TO  MCP-PATHNAME 
+             PERFORM 990-DBCLOSE-SEC
+           END-IF
       *
       *    ＪＯＢ管理検索
            PERFORM 820-JOBKANRI-READ-SEC
@@ -486,7 +514,9 @@ grpsys     MOVE    SPA-HOSPNUM         TO  MSTKANRI-HOSPNUM
            MOVE    MSTKANRI-KANRICD(7:2)   TO  IDX2
            ADD     1                       TO  IDX2
       *
-           ADD     1                    TO  SPA-GMN-MAX3
+           IF      MSTKANRI-HOSPNUM     =   1
+               ADD     1                    TO  SPA-GMN-MAX3
+           END-IF
            MOVE    MSTKANRI-DBRVERSION1 TO  SPA-GMN-DBRVERSION1 (IDX2)
            MOVE    MSTKANRI-DBRVERSION2 TO  SPA-GMN-DBRVERSION2 (IDX2)
       *
