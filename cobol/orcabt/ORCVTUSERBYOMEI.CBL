@@ -36,7 +36,7 @@
       *
       *    パラメータファイル
            SELECT  PARA-FILE       ASSIGN
-                                   "/home/orca/ORCADC.PARA"
+                                   ASS-PARA
                                    ORGANIZATION    IS  LINE SEQUENTIAL
                                    FILE    STATUS  IS  STS-PARA.
       *
@@ -77,6 +77,7 @@
       *
       *    ファイル指定領域
        01  ASS-AREA.
+           03  ASS-PARA                PIC X(256).
            03  ASS-CSV                 PIC X(256).
            03  ASS-ERR                 PIC X(256).
       *
@@ -260,7 +261,14 @@
       *    LIKE使用KEY対応
            COPY    "CPORCSADDSIGN.INC".
       *
-       PROCEDURE                   DIVISION.
+      ****************************************************************
+       LINKAGE                     SECTION.
+       01  COMMAND-PARAM.
+           02  FILLER              PIC X(256).
+      ****************************************************************
+       PROCEDURE               DIVISION
+               USING
+           COMMAND-PARAM.
       ****************************************************************
       *    主　　処理
       *****************************************************************
@@ -287,6 +295,11 @@
            MOVE    ZERO            TO  IDX-AREA
            INITIALIZE                  WRK-AREA
            INITIALIZE                  SPA-AREA
+      *
+      *    パラメタセット
+           UNSTRING   COMMAND-PARAM    DELIMITED  BY  ","
+                                       INTO    ASS-PARA
+           END-UNSTRING
       *
       *    パラメータ情報取得
            PERFORM 101-PARA-GET-SEC
