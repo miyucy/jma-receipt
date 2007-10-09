@@ -9,7 +9,8 @@ ETC_files = \
 	orcadbs.inc \
 	jma-receipt.env \
 	jma-receipt.conf \
-	orca-project-ca-1.crt
+	orca-project-ca-1.crt \
+	ORCADC.PARA
 
 DBGROUP_files = dbgroup.inc 
 
