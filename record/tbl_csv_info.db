@@ -84,3 +84,14 @@ path    del3    {
         };
 };
 
+path	all		{ 	
+	DBSELECT	{
+		DECLARE tbl_csv_info_all_csr CURSOR FOR
+		SELECT *
+		FROM tbl_csv_info
+		WHERE 	  HOSPNUM	=   :HOSPNUM
+		;
+	};
+};
+
+
