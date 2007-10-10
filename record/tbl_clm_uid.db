@@ -63,3 +63,14 @@ path	key 	{
 	};
 };
 
+
+path	all 	{
+	DBSELECT	{
+		DECLARE tbl_clm_uid_all_csr CURSOR FOR
+		SELECT *
+		FROM tbl_clm_uid
+			WHERE	HOSPNUM	=   :HOSPNUM
+		;
+	};
+};
+

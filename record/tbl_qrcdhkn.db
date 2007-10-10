@@ -97,3 +97,13 @@ path	key5 	{
 	};
 };
 
+path	all 	{
+	DBSELECT	{
+		DECLARE tbl_qrcdhkn_all_csr CURSOR FOR
+		SELECT *
+		FROM tbl_qrcdhkn
+			WHERE   HOSPNUM    =   :HOSPNUM
+		;
+	};
+};
+

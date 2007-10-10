@@ -116,3 +116,13 @@ path    del3    {
         };
 };
 
+path	all		{ 	
+	DBSELECT	{
+		DECLARE tbl_file_info_all_csr CURSOR FOR
+		SELECT *
+		FROM tbl_file_info
+		WHERE 	  HOSPNUM	=   :HOSPNUM
+		;
+	};
+};
+

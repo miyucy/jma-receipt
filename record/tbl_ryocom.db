@@ -166,3 +166,14 @@ path	del3 	{
 		;
 	};
 };
+
+path	all 	{
+	DBSELECT	{
+		DECLARE tbl_ryocom_all_csr CURSOR FOR
+		SELECT *
+		FROM tbl_ryocom
+			WHERE HOSPNUM      =   :HOSPNUM
+		;
+	};
+};
+

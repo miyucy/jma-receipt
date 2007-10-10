@@ -46,3 +46,14 @@ path	del1		{
 		;
 	};
 };
+
+
+path	all 	{
+	DBSELECT	{
+		DECLARE tbl_shoukaidata_all_csr CURSOR FOR
+		SELECT *
+		FROM		tbl_shoukaidata
+		WHERE		HOSPNUM	= :HOSPNUM
+		;
+	};
+};

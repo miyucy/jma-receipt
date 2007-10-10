@@ -62,3 +62,12 @@ path	del1	{
 	};
 };
 
+path	all		{ 	
+	DBSELECT	{
+		DECLARE tbl_joblog_all_csr CURSOR FOR
+		SELECT *
+		FROM tbl_joblog
+	WHERE 	HOSPNUM	= :HOSPNUM
+		;
+	};
+};

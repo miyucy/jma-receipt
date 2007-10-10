@@ -72,3 +72,14 @@ path	upd1		{
 		;
 	};
 };
+
+
+path	all 	{
+	DBSELECT	{
+		DECLARE tbl_shoukaikanri_all_csr CURSOR FOR
+		SELECT *
+		FROM		tbl_shoukaikanri
+		WHERE		HOSPNUM	= :HOSPNUM
+		;
+	};
+};

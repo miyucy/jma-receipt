@@ -89,3 +89,14 @@ path	termid	{
 		;
 	};
 };
+
+
+path	all	{
+	DBSELECT	{
+		DECLARE tbl_yakujyo_temp_all_csr CURSOR FOR
+		SELECT *
+		FROM		tbl_yakujyo_temp
+		WHERE		HOSPNUM	= :HOSPNUM
+		;
+	};
+};
