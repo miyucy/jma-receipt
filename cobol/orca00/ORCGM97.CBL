@@ -442,8 +442,8 @@
            CALL    "ORCSMKPASS"        USING
                                        ORCSMKPASSAREA
            MOVE    MKPASS-OT-01    TO  SHELLTBL-NAME
-grpsys     MOVE    SPA-HOSPNUM     TO  SHELLTBL-ARG1
-           MOVE    SPA-SUPERVISOR  TO  SHELLTBL-ARG2
+grpsys     MOVE    SPA-HOSPNUM     TO  SHELLTBL-ARG2
+           MOVE    SPA-SUPERVISOR  TO  SHELLTBL-ARG3
            MOVE    SHELLTBL        TO  MCPDATA-REC
       *
            MOVE    "SHELL"         TO  MCP-FUNC
@@ -677,8 +677,8 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            CALL    "ORCSMKPASS"        USING
                                        ORCSMKPASSAREA
            MOVE    MKPASS-OT-01    TO  SHELLTBL-NAME
-grpsys     MOVE    SPA-HOSPNUM     TO  SHELLTBL-ARG1
-           MOVE    SPA-SUPERVISOR  TO  SHELLTBL-ARG2
+grpsys     MOVE    SPA-HOSPNUM     TO  SHELLTBL-ARG2
+           MOVE    SPA-SUPERVISOR  TO  SHELLTBL-ARG3
            MOVE    SHELLTBL        TO  MCPDATA-REC
       *
            MOVE    "SHELL"         TO  MCP-FUNC
