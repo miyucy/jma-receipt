@@ -195,3 +195,13 @@ path	key9		{
 		;
 	};
 };
+
+path	all		{ 	
+	DBSELECT	{
+		DECLARE tbl_chk004_all_csr CURSOR FOR
+		SELECT *
+		FROM tbl_chk004
+			WHERE   HOSPNUM      =   :HOSPNUM 
+		;
+	};
+};

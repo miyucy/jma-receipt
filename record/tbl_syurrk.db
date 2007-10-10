@@ -274,3 +274,13 @@ path	del2 	{
 		;
 	};
 };
+
+path	all	{
+	DBSELECT	{
+		DECLARE tbl_syurrk_all_csr CURSOR FOR
+		SELECT *
+		FROM tbl_syurrk
+			WHERE   HOSPNUM   =   :HOSPNUM
+		;
+	};
+};

@@ -19,3 +19,12 @@ path	key 	{
 	};
 };
 
+path	all 	{
+	DBSELECT	{
+		DECLARE tbl_sysuser_all_csr CURSOR FOR
+		SELECT *
+		FROM tbl_sysuser
+		;
+	};
+};
+

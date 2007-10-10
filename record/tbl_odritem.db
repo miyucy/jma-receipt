@@ -80,3 +80,13 @@ path	key4 	{
 		;
 	};
 };
+
+path	 all	{
+	DBSELECT	{
+		DECLARE tbl_odritem_all_csr CURSOR FOR
+		SELECT *
+		FROM tbl_odritem
+		WHERE  HOSPNUM        = :HOSPNUM
+		;
+	};
+};
