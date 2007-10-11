@@ -891,16 +891,17 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
       *****************************************************************
        4901-MUID-SYORI-SEC          SECTION.
       *
-           MOVE    SPACE                TO  SPA-MUID-AREA
+           INITIALIZE                      SPA-MUID-AREA
+           MOVE    SPACE                TO  SPA-MIDCD
       *
            MOVE    SPACE                TO  MUID
            MOVE    "USER"               TO  MCP-WIDGET
       *
-           MOVE    "M98 "                TO  SPA-MOTOPG
-           MOVE    "MUID"                TO  SPA-SAKIPG
+           MOVE    "M98 "               TO  SPA-MOTOPG
+           MOVE    "MUID"               TO  SPA-SAKIPG
       *
-           MOVE    "NEW"                 TO  MCP-PUTTYPE
-           MOVE    "MUID"                TO  MCP-WINDOW
+           MOVE    "NEW"                TO  MCP-PUTTYPE
+           MOVE    "MUID"               TO  MCP-WINDOW
       *
            PERFORM 900-PUT-WINDOW
       *

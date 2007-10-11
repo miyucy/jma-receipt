@@ -53,7 +53,7 @@
            03  FILLER              PIC X(40)   VALUE
            "/etc/jma-receipt/das-upload.d/das-upload".
            03  FILE-HOSPNUM        PIC 9(02)   VALUE   ZERO.
-           03  FILLER              PIC X(05)   VALUE   ".comf".
+           03  FILLER              PIC X(05)   VALUE   ".conf".
       *
       *    スパ領域
            COPY    "COMMON-SPA".
@@ -82,7 +82,7 @@
                'config = {'.
        01  WRK-DATA-REC2.
            03  FILLER             PIC X(45)   VALUE
-               '"Host" => "hhtps://orca-das.orca.med.or.jp",'.
+               '"Host" => "https://orca-das.orca.med.or.jp",'.
        01  WRK-DATA-REC3.
            03  FILLER             PIC X(33)   VALUE
                '"Path" => "/orca_das/upload.cgi",'.
@@ -100,6 +100,9 @@
        01  WRK-DATA-REC6.
            03  FILLER             PIC X(15)   VALUE
                '"Password" => "'.
+       01  WRK-DATA-REC62.
+           03  FILLER             PIC X(01)   VALUE
+               '"'.
        01  WRK-DATA-REC7.
            03  FILLER             PIC X(11)   VALUE
                "}".
@@ -197,8 +200,13 @@
       *
       *    エラー画面より
            IF      SPA-MOTOPG          =   "MERR"
-               MOVE    SPACE               TO  SPA-MOTOPG
-               PERFORM 5001-MAPCUR-SEC
+      *        終了時のメッセージ
+               IF      SPA-MUID-END         =   1
+                   PERFORM 210-BACK
+               ELSE
+                   MOVE    SPACE               TO  SPA-MOTOPG
+                   PERFORM 5001-MAPCUR-SEC
+               END-IF
            ELSE
       *        初期画面編集
                PERFORM 300-SCREEN-SEC
@@ -370,6 +378,7 @@
       *****************************************************************
        212-TOROKU-SEC                  SECTION.
       *
+           MOVE    ZERO                TO  SPA-MUID-END
            MOVE    ZERO                TO  SPA-MUID-CUR
       *    画面をＳＰＡセット
            PERFORM 4101-GMN-SPA-SET-SEC
@@ -390,7 +399,8 @@
                PERFORM 2120-TXT-DATA-OUT-SEC
            END-IF
            IF      SPA-ERRCD           =   SPACE
-               PERFORM 210-BACK
+               MOVE    "1000"          TO  SPA-ERRCD
+               MOVE    1               TO  SPA-MUID-END
            END-IF
            .
        212-TOROKU-EXT.
@@ -438,7 +448,7 @@
                MOVE    SPACE               TO  USER-REC
                STRING  WRK-DATA-REC6       DELIMITED  BY  SIZE
                        SPA-MUID-PASSWORD   DELIMITED  BY  SPACE
-                       WRK-DATA-REC52      DELIMITED  BY  SIZE
+                       WRK-DATA-REC62      DELIMITED  BY  SIZE
                                        INTO  USER-REC
                END-STRING
                PERFORM 21201-DATA-WRITE-SEC
@@ -582,6 +592,9 @@
                                                 TO  SPA-ERRMSG
                 WHEN    "0004"
                     MOVE    "ＰＡＳＳＷＯＲＤを入力して下さい。"
+                                                TO  SPA-ERRMSG
+                WHEN    "1000"
+                    MOVE    "データ出力が正常終了しました。"
                                                 TO  SPA-ERRMSG
                 WHEN    "9000"
                     MOVE    "データＯＰＥＮがエラーです"
