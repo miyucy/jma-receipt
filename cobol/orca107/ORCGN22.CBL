@@ -306,12 +306,6 @@
                GO  TO  400-JYOUHOU-SEC-EXT
            END-IF
       *
-           PERFORM 900-TEMP-SELECT-SEC
-           PERFORM 900-TEMP-CLOSE-SEC
-           IF      FLG-TEMP        =   ZERO
-               GO  TO  400-JYOUHOU-SEC-EXT
-           END-IF
-      *
       *    ジョブ管理削除
            PERFORM 820-JOBKANRI-DEL-SEC
       *

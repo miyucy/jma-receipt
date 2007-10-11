@@ -31,6 +31,7 @@ db.execFunction("DBOPEN")
 db.execFunction("DBSTART")
 
 tempdb = PandaTable.new(db,"tbl_yakujyo_temp")
+tempdb["tbl_yakujyo_temp.HOSPNUM"] = hospnum
 tempdb["tbl_yakujyo_temp.termid"] = termid
 tempdb.execFunction("DBDELETE","termid")
 	  
