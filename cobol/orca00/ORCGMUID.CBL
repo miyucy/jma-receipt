@@ -89,8 +89,8 @@
        01  WRK-DATA-REC4.
            03  FILLER             PIC X(23)   VALUE
                '"CertificateCAFile" => '.
-           03  FILLER             PIC X(41)   VALUE
-               '"/etc/jma-receipt/orca-project-ca-1.crt",'.
+           03  FILLER             PIC X(39)   VALUE
+               '"/etc/ssl/certs/orca-project-ca-1.crt",'.
        01  WRK-DATA-REC5.
            03  FILLER             PIC X(11)   VALUE
                '"User" => "'.
