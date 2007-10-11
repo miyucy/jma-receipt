@@ -20,5 +20,8 @@ M98	{
 				select	bool[100];
 			};
 		};
+		B09	{
+			label	varchar(10);
+		};
 	};
 };

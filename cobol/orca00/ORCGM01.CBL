@@ -188,6 +188,7 @@
            COPY    "MID1.INC".
            COPY    "MVER.INC".
            COPY    "M98.INC".
+           COPY    "MUID.INC".
       *
        PROCEDURE                   DIVISION    USING
            MCPAREA

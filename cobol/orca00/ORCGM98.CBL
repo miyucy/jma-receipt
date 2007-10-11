@@ -185,6 +185,8 @@
       *
            COPY    "CPSK3003.INC".
       *
+           COPY    "CPSK1010.INC".
+      *
        01  JOBLOG-REC.
            COPY    "CPJOBLOG.INC".
       *
@@ -231,6 +233,7 @@
            COPY    "MID1.INC".
            COPY    "MVER.INC".
            COPY    "M98.INC".
+           COPY    "MUID.INC".
       *
       *
        PROCEDURE                   DIVISION    USING
@@ -456,8 +459,11 @@
       *        WHEN    "CLICKED"       ALSO    "B11"
       *            PERFORM 450-PRINT-GID-SEC
       *     処理確認
-               WHEN    "CLICKED"       ALSO    "B13"
-                   PERFORM 490-KAKUNIN-SEC
+      *        WHEN    "CLICKED"       ALSO    "B13"
+      ****         PERFORM 490-KAKUNIN-SEC
+      *     設定
+               WHEN    "CLICKED"       ALSO    "B09"
+                   PERFORM 490-SETTEI-SYORI-SEC
            END-EVALUATE
       *
            .
@@ -545,7 +551,7 @@
       *****************************************************************
        210-BACK-SYORI-SEC              SECTION.
       *
-           MOVE    SPA-MOTOPG         TO  SPA-SAKIPG
+           MOVE    "M00"              TO  SPA-SAKIPG
            MOVE    "M98"              TO  SPA-MOTOPG
       *
            MOVE    SPACE               TO  SPA-WORK 
@@ -867,6 +873,43 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
            EXIT.
       *
       *****************************************************************
+      *    設定処理
+      *****************************************************************
+       490-SETTEI-SYORI-SEC        SECTION.
+      *
+           MOVE    SPA-SYS-1010-REC    TO  SYS-1010-REC
+           IF      SYS-1010-KANRIAUTHFLG   =   "T"
+      *        管理者である
+               PERFORM 4901-MUID-SYORI-SEC
+           END-IF
+           .
+       490-SETTEI-SYORI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ＭＵＩＤ画面編集処理
+      *****************************************************************
+       4901-MUID-SYORI-SEC          SECTION.
+      *
+           MOVE    SPACE                TO  SPA-MUID-AREA
+      *
+           MOVE    SPACE                TO  MUID
+           MOVE    "USER"               TO  MCP-WIDGET
+      *
+           MOVE    "M98 "                TO  SPA-MOTOPG
+           MOVE    "MUID"                TO  SPA-SAKIPG
+      *
+           MOVE    "NEW"                 TO  MCP-PUTTYPE
+           MOVE    "MUID"                TO  MCP-WINDOW
+      *
+           PERFORM 900-PUT-WINDOW
+      *
+           MOVE    1                    TO  FLG-END
+           .
+       4901-MUID-SYORI-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    和暦西暦変換編集処理
       *****************************************************************
        5002-HIZUKE-HEN-SEC          SECTION.
@@ -948,6 +991,12 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
            END-PERFORM
       *
            MOVE    SPA-GMN-MAX         TO  M98-COUNT
+      *
+      *    設定
+           MOVE    SPA-SYS-1010-REC    TO  SYS-1010-REC
+           IF      SYS-1010-KANRIAUTHFLG   =   "T"
+               MOVE    "設定"              TO  M98-B09-LABEL
+           END-IF
       *
            PERFORM 5001-MAPCUR-SEC
       *

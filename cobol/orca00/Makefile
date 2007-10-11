@@ -9,6 +9,7 @@ SRCS = ORCGM00.CBL \
        ORCGM96.CBL \
        ORCGM97.CBL \
        ORCGM98.CBL \
+       ORCGMUID.CBL \
 
 top_builddir = ../..
 include $(top_builddir)/cobol/Makefile.global
