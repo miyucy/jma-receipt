@@ -11,7 +11,7 @@ fi
 
 HOSPNUM=$1
 
-export CLIENT_CONFIG_FILE="$SYSCONFDIR/das-upload.conf"
+export CLIENT_CONFIG_FILE="$SYSCONFDIR/das-upload.d/das-upload${HOSPNUM}.conf"
 if [ ! -f $CLIENT_CONFIG_FILE ]; then
     exit
 fi
