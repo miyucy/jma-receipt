@@ -3893,7 +3893,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *    入院履歴判定
            MOVE    SPACE               TO  PTNYUINRRK-REC
            INITIALIZE                  PTNYUINRRK-REC
-           MOVE    SPA-HOSPNUM          TO  PTNYUINRRK-HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  PTNYUINRRK-HOSPNUM
            MOVE    SPA-GMN-PTID        TO  PTNYUINRRK-PTID
       *
            MOVE    PTNYUINRRK-REC      TO  MCPDATA-REC
@@ -6883,6 +6883,10 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                END-IF
            END-IF
       *
+      *    受診履歴より診療科決定
+           IF      SPA-J01-SRYKA       =   SPACE
+               PERFORM 310310-JYURRK-CHK-SEC
+           END-IF
       *    受診履歴編集
            PERFORM 3103-JYURRK-HEN-SEC
       *
@@ -8213,6 +8217,11 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    SPA-GMN-SRYKA       TO  SPA-J01-SRYKA
                MOVE    SPA-GMN-SRYKAMEI    TO  SPA-J01-SRYKAMEI
            END-IF
+      *    入院が存在するかのチェック
+           IF      SPA-BEDSU           >   ZERO
+               PERFORM 410101-NYUINRRK-CHK-SEC
+               PERFORM 410102-NYUINRRK-LST-SEC
+           END-IF
       *    受診履歴より診療科決定
            IF      SPA-J01-SRYKA       =   SPACE
                PERFORM 310310-JYURRK-CHK-SEC
@@ -8224,11 +8233,11 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
            END-IF
       *
            PERFORM 3101-SRYKA-HEN-SEC
-      *    入院が存在するかのチェック
-           IF      SPA-BEDSU           >   ZERO
-               PERFORM 410101-NYUINRRK-CHK-SEC
-               PERFORM 410102-NYUINRRK-LST-SEC
-           END-IF
+      *D   入院が存在するかのチェック
+      *    IF      SPA-BEDSU           >   ZERO
+      *        PERFORM 410101-NYUINRRK-CHK-SEC
+      *        PERFORM 410102-NYUINRRK-LST-SEC
+      *D   END-IF
       *
       *    受診履歴編集
            PERFORM 3103-JYURRK-HEN-SEC
@@ -8462,6 +8471,11 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    SPA-GMN-SRYKA       TO  SPA-J01-SRYKA
                MOVE    SPA-GMN-SRYKAMEI    TO  SPA-J01-SRYKAMEI
            END-IF
+      *    入院が存在するかのチェック
+           IF      SPA-BEDSU           >   ZERO
+               PERFORM 410101-NYUINRRK-CHK-SEC
+               PERFORM 410102-NYUINRRK-LST-SEC
+           END-IF
       *    受診履歴より診療科決定
            IF      SPA-J01-SRYKA       =   SPACE
                PERFORM 310310-JYURRK-CHK-SEC
@@ -8473,11 +8487,11 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
            END-IF
       *
            PERFORM 3101-SRYKA-HEN-SEC
-      *    入院が存在するかのチェック
-           IF      SPA-BEDSU           >   ZERO
-               PERFORM 410101-NYUINRRK-CHK-SEC
-               PERFORM 410102-NYUINRRK-LST-SEC
-           END-IF
+      *DD  入院が存在するかのチェック
+      *    IF      SPA-BEDSU           >   ZERO
+      *        PERFORM 410101-NYUINRRK-CHK-SEC
+      *        PERFORM 410102-NYUINRRK-LST-SEC
+      *DD  END-IF
       *
       *    受診履歴編集
            PERFORM 3103-JYURRK-HEN-SEC
