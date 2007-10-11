@@ -2777,22 +2777,6 @@
 
     <widget>
       <class>GtkLabel</class>
-      <name>NYUINKIKAN</name>
-      <x>732</x>
-      <y>4</y>
-      <width>216</width>
-      <height>20</height>
-      <label></label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
       <name>label9</name>
       <x>416</x>
       <y>556</y>
@@ -2896,6 +2880,22 @@
       <height>20</height>
       <label>変更番号</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>NYUINKIKAN</name>
+      <x>732</x>
+      <y>4</y>
+      <width>240</width>
+      <height>20</height>
+      <label></label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
       <yalign>0.5</yalign>
