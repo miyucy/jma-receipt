@@ -731,10 +731,7 @@
                                    TO  JOB-JOBID
            MOVE    WRK-CONS-JOB-SHELLID-COLLECT
                                    TO  JOB-SHELLID
-           CALL    "ORCSJOB"       USING
-                                   ORCSJOBKANRIAREA
-                                   JOBKANRI-REC
-                                   SPA-AREA
+           PERFORM 900-CALL-ORCSJOB-SEC
       *
            MOVE    "JBS"           TO  SJOBKANRI-MODE
            INITIALIZE                  JOBKANRI-REC
@@ -743,10 +740,7 @@
            MOVE    WRK-CONS-JOB-SHELLID-COLLECT
                                    TO  JOB-SHELLID
            MOVE    SPA-TERMID      TO  JOB-TERMID
-           CALL    "ORCSJOB"       USING
-                                   ORCSJOBKANRIAREA
-                                   JOBKANRI-REC
-                                   SPA-AREA
+           PERFORM 900-CALL-ORCSJOB-SEC
       *
       *    ファイルデイレクトリ位置指定
            MOVE    "scripts/monthly/collectdata1.sh"
@@ -1015,6 +1009,20 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    1                    TO  FLG-END              
            .
        520-TIDSET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ジョブ管理ＤＢ制御処理
+      *****************************************************************
+       900-CALL-ORCSJOB-SEC            SECTION.
+      *
+grpsys     MOVE    SPA-HOSPNUM     TO  JOB-HOSPNUM
+           CALL    "ORCSJOB"       USING
+                                   ORCSJOBKANRIAREA 
+                                   JOBKANRI-REC
+                                   SPA-AREA
+           .
+       900-CALL-ORCSJOB-EXT.
            EXIT.
       *
       *****************************************************************
