@@ -380,35 +380,73 @@
       *****************************************************************
        4100-KANJINAME-CHK-SEC          SECTION.
       *
-           COMPUTE SPA-GMN-P100-CUR    =   ( WRK-WIDGET8 - 1 ) * 2 + 2
+      *    一括入力
+           MOVE    ZERO                TO  SPA-GMN-P100-CUR
+           MOVE    P100-KANJINAME (01)
+                                       TO  SPA-GMN-P100-KANJINAME (01)
+           MOVE    P100-KANJINAME (02)
+                                       TO  SPA-GMN-P100-KANJINAME (02)
+           PERFORM VARYING     IDX1    FROM    1   BY  1
+                   UNTIL      (IDX1    >    2   )  OR
+                              (SPA-ERRCD    NOT =   SPACE )
+      *        未入力時はチェックを行わない 
+               IF    ( SPA-GMN-P100-KANJINAME (IDX1)
+                                       NOT =   SPACE )
+      *            半角混入チェック
+                   INITIALIZE  WRK-HENKAN-AREA
+                   MOVE    SPA-GMN-P100-KANJINAME (IDX1)
+                                               TO  WRK-MAE-INPUT
+                   MOVE    50                  TO  WRK-MAX
+                   PERFORM 890-HALF-ZEN-SEC
+                   MOVE    WRK-ATO-INPUT   TO  SPA-GMN-P100-KANJINAME
+                                                               (IDX1)
+                   IF      SPA-ERRCD           =   SPACE
+                       MOVE    WRK-ATO-INPUT
+                                           TO  SPA-GMN-P100-KANJINAME
+                                                                (IDX1)
+                   ELSE
+                       IF      IDX1        =   1
+                           MOVE    2           TO  SPA-GMN-P100-CUR
+                       ELSE
+                           MOVE    4           TO  SPA-GMN-P100-CUR
+                       END-IF
+                   END-IF
+               END-IF
+           END-PERFORM
+           IF      SPA-ERRCD           =   SPACE
+               MOVE    WRK-WIDGET8         TO  IDX1
+               PERFORM 4100-KANJINAME-CUR-SET-SEC
+           END-IF
       *
-           MOVE    WRK-WIDGET8         TO  IDX1
+      **** COMPUTE SPA-GMN-P100-CUR    =   ( WRK-WIDGET8 - 1 ) * 2 + 2
       *
-           MOVE    P100-KANJINAME (IDX1)
-                                       TO  SPA-GMN-P100-KANJINAME (IDX1)
+      *    MOVE    WRK-WIDGET8         TO  IDX1
+      *
+      *    MOVE    P100-KANJINAME (IDX1)
+      *                                TO  SPA-GMN-P100-KANJINAME (IDX1)
       *
       *    未入力時はチェックを行わない
-           IF  ( SPA-GMN-P100-KANJINAME (IDX1)
-                                       =   SPACE )
-               PERFORM 4100-KANJINAME-CUR-SET-SEC
-               GO  TO  4100-KANJINAME-CHK-EXT
+      *    IF  ( SPA-GMN-P100-KANJINAME (IDX1)
+      *                                =   SPACE )
+      *        PERFORM 4100-KANJINAME-CUR-SET-SEC
+      *        GO  TO  4100-KANJINAME-CHK-EXT
       *
-           END-IF
+      *    END-IF
       *
       *    半角混入チェック
-           INITIALIZE  WRK-HENKAN-AREA
-           MOVE    SPA-GMN-P100-KANJINAME (IDX1)
-                                       TO  WRK-MAE-INPUT
-           MOVE    50                  TO  WRK-MAX
-           PERFORM 890-HALF-ZEN-SEC
-           MOVE    WRK-ATO-INPUT       TO  SPA-GMN-P100-KANJINAME (IDX1)
-           IF      SPA-ERRCD           =   SPACE
-               MOVE    WRK-ATO-INPUT   TO  SPA-GMN-P100-KANJINAME (IDX1)
-           ELSE
-               GO  TO  4100-KANJINAME-CHK-EXT
-           END-IF
+      *    INITIALIZE  WRK-HENKAN-AREA
+      *    MOVE    SPA-GMN-P100-KANJINAME (IDX1)
+      *                                TO  WRK-MAE-INPUT
+      *    MOVE    50                  TO  WRK-MAX
+      *    PERFORM 890-HALF-ZEN-SEC
+      *    MOVE    WRK-ATO-INPUT       TO  SPA-GMN-P100-KANJINAME (IDX1)
+      *    IF      SPA-ERRCD           =   SPACE
+      *        MOVE    WRK-ATO-INPUT   TO  SPA-GMN-P100-KANJINAME (IDX1)
+      *    ELSE
+      *        GO  TO  4100-KANJINAME-CHK-EXT
+      *    END-IF
       *
-           PERFORM 4100-KANJINAME-CUR-SET-SEC
+      ***  PERFORM 4100-KANJINAME-CUR-SET-SEC
       *
            .
        4100-KANJINAME-CHK-EXT.
@@ -456,6 +494,8 @@
                    MOVE    50      TO  IDX2
                END-IF
            END-PERFORM
+      *    カーソル設定
+           PERFORM 4100-SELNUM-CUR-SET-SEC
       *
            .
        4101-KANJILSTSEL-CHK-EXT.
@@ -547,20 +587,25 @@
       *****************************************************************
        490-KANJINAME-SET-SEC        SECTION.
       *
-           PERFORM VARYING IDX1    FROM    1   BY  1
-               UNTIL     ( IDX1    >   2 )
+      ***  PERFORM VARYING IDX1    FROM    1   BY  1
+      *        UNTIL     ( IDX1    >   2 )
       *        半角混入チェック
-               INITIALIZE  WRK-HENKAN-AREA
-               MOVE    SPA-GMN-P100-KANJINAME (IDX1)
-                               TO  WRK-MAE-INPUT
-               MOVE    50                  TO  WRK-MAX
-               PERFORM 890-HALF-ZEN-SEC
-               MOVE    WRK-ATO-INPUT
-                                   TO  SPA-GMN-P100-KANJINAME (IDX1)
-               IF  ( SPA-ERRCD     NOT =   SPACE )
-                   GO  TO  490-KANJINAME-SET-EXT
-               END-IF
-           END-PERFORM
+      *        INITIALIZE  WRK-HENKAN-AREA
+      *        MOVE    SPA-GMN-P100-KANJINAME (IDX1)
+      *                        TO  WRK-MAE-INPUT
+      *        MOVE    50                  TO  WRK-MAX
+      *        PERFORM 890-HALF-ZEN-SEC
+      *        MOVE    WRK-ATO-INPUT
+      *                            TO  SPA-GMN-P100-KANJINAME (IDX1)
+      *        IF  ( SPA-ERRCD     NOT =   SPACE )
+      *            GO  TO  490-KANJINAME-SET-EXT
+      *        END-IF
+      *****END-PERFORM
+      *    氏名チェック
+           PERFORM 4100-KANJINAME-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+                GO  TO  490-KANJINAME-SET-EXT
+           END-IF
       *
       *    漢字氏名を設定し、Ｐ０２に戻る
            MOVE    1               TO  CNT-KANJINAME
