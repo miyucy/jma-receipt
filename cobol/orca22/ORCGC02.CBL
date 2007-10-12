@@ -217,6 +217,9 @@
       *
       *  03.05.01    NACL-藤原    07/04/19  グループ診療対応
       *  03.05.02    NACL-藤原    07/06/25  複数病名登録時のレセプト表示期間対応
+      *  03.05.03    NACL-藤原    07/10/12  ファンクションキー操作による
+      *                                     処理区分、入外区分変更時の
+      *                                     診療科の表示
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -7680,6 +7683,9 @@ grpsys                                          SPA-AREA
                                        SPA-GMN-C02-MAX
                                        SPA-PTBYOMEI-REC
            MOVE    SPA-NAI-C02-SYSYMD  TO  SPA-NAI-C02-SRYYMD
+           IF      SPA-GMN-C02-SRYKA   NOT =   ZERO
+               MOVE    SPA-GMN-C02-SRYKA-G TO  SPA-GMN-C02-BSRYKA-G
+           END-IF
       *
            EVALUATE    SPA-GMN-C02-SYOKBN
                WHEN    ZERO
@@ -7738,6 +7744,9 @@ grpsys     MOVE    SPA-HOSPNUM         TO  PTBYO-HOSPNUM
                                        SPA-GMN-C02-MAX
                                        SPA-PTBYOMEI-REC
            MOVE    SPA-NAI-C02-SYSYMD  TO  SPA-NAI-C02-SRYYMD
+           IF      SPA-GMN-C02-SRYKA   NOT =   ZERO
+               MOVE    SPA-GMN-C02-SRYKA-G TO  SPA-GMN-C02-BSRYKA-G
+           END-IF
       *
            EVALUATE    SPA-GMN-C02-HNYUGAIKBN
                WHEN    ZERO
