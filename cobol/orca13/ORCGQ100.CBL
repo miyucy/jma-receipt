@@ -798,7 +798,7 @@
       *
            EVALUATE    SPA-ERRCD
            WHEN    "1001"
-               MOVE    "出力ファイル名が入力されいていません"
+               MOVE    "出力ファイル名が入力されていません"
                                        TO  SPA-ERRMSG
            WHEN    "1002"
                MOVE    "開始件数＞終了件数となっています"
