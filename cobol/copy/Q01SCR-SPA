@@ -998,9 +998,9 @@
       *            終了ページ数(O)...印刷処理時のみ設定
                    07  SPA-Q02-Q100-EDPAGE             PIC  9(09).
       *            ファイル出力先
-                   09  SPA-Q02-Q100-FILE               PIC X(01).
+                   07  SPA-Q02-Q100-FILE               PIC  X(01).
       *            文字コード
-                   09  SPA-Q02-Q100-CDKBN              PIC X(01).
+                   07  SPA-Q02-Q100-CDKBN              PIC  X(01).
       *            戻る／ＯＫフラグ(O)
                    07  SPA-Q02-Q100-RTOK-FLG           PIC  9(01).
       *        QID1遷移情報
