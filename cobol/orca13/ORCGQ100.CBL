@@ -362,10 +362,10 @@
            MOVE    Q100-EDNUM      TO  SPA-GMN-Q100-EDNUM
       *
       *    出力先
-           MOVE    Q100-FILE       TO  SPA-GMN-Q100-FILE
+           MOVE    Q100-FILE       TO  SPA-GMN-Q100-FILE-G
       *
       *    文字コード
-           MOVE    Q100-CDKBN      TO  SPA-GMN-Q100-CDKBN
+           MOVE    Q100-CDKBN      TO  SPA-GMN-Q100-CDKBN-G
       *
            .
        4101-GMN-SPA-SET-EXT.
@@ -449,8 +449,8 @@
        4100-FILE-CHK-SEC           SECTION.
       *
            IF      SPA-Q100-CLIENT-SAVE    =   "1"
-               IF      SPA-GMN-Q100-FILE     =   SPACE
-                   CONTINUE
+               IF      SPA-GMN-Q100-FILE       =   SPACE
+                   MOVE    SPACE               TO  SPA-GMN-Q100-CDKBN-G
                ELSE
                    PERFORM VARYING IDX2 FROM    1   BY  1
                            UNTIL   IDX2 >       SPA-GMN-Q100-FILE-MAX
@@ -775,6 +775,12 @@
                END-IF
            WHEN    "CDKBN"
                MOVE    004         TO  SPA-GMN-Q100-CUR
+           WHEN   "FILE"
+               IF      SPA-GMN-Q100-FILE       =   "1"
+                   MOVE    006         TO  SPA-GMN-Q100-CUR
+               ELSE
+                   MOVE    004         TO  SPA-GMN-Q100-CUR
+               END-IF
            WHEN    OTHER
                COMPUTE SPA-GMN-Q100-CUR    =   SPA-GMN-Q100-CUR +   1
            END-EVALUATE
