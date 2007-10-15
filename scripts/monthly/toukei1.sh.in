@@ -71,10 +71,10 @@ fi
 
         if  [ ${12} -eq '2' ]; then
             if   [ ${9} != '2' ]; then
-                nkf -s /tmp/${19}toukei01.dat > /tmp/$7
+                nkf -s -Lw /tmp/${19}toukei01.dat > /tmp/$7
             fi 
             if   [ ${9} != '1' ]; then
-                nkf -s /tmp/${19}toukei02.dat > /tmp/$8
+                nkf -s -Lw /tmp/${19}toukei02.dat > /tmp/$8
             fi 
         else
             if   [ ${9} != '2' ]; then

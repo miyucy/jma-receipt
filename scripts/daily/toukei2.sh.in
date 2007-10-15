@@ -71,7 +71,7 @@ fi
 #       ´Á»ú¥³¡¼¥ÉÊÑ´¹¡Ê£Å£Õ£Ã¤«¤é¥·¥Õ¥È£Ê£É£Ó¡Ë
 
         if  [ ${12} -eq '2' ]; then
-            nkf -s /tmp/${19}toukei11.dat > /tmp/$7
+            nkf -s -Lw /tmp/${19}toukei11.dat > /tmp/$7
         else
             cp  /tmp/${19}toukei11.dat /tmp/$7 
         fi
