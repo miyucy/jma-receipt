@@ -902,3 +902,15 @@ path	key40	{
 		;
 	};
 };
+path	key41	{
+	DBSELECT	{
+		DECLARE tbl_jyurrk_key41_csr CURSOR FOR
+		SELECT *
+		FROM tbl_jyurrk
+			WHERE   HOSPNUM    =   :HOSPNUM
+			AND   PTID        =   :PTID
+			AND   HKNCOMBINUM =   :HKNCOMBINUM
+			ORDER   BY        SRYYMD  DESC
+		;
+	};
+};

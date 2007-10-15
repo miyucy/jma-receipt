@@ -1216,11 +1216,11 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            MOVE    JYURRK-REC          TO  MCPDATA-REC
            MOVE    "tbl_jyurrk"        TO  MCP-TABLE
-           MOVE    "key23"             TO  MCP-PATHNAME
+           MOVE    "key41"             TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
                MOVE    "tbl_jyurrk"        TO  MCP-TABLE
-               MOVE    "key23"             TO  MCP-PATHNAME
+               MOVE    "key41"             TO  MCP-PATHNAME
                PERFORM 970-JYURRK-READ-SEC
            ELSE
                MOVE    SPACE               TO  JYURRK-REC
@@ -1228,7 +1228,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    1                   TO  FLG-JYURRK
            END-IF
            MOVE    "tbl_jyurrk"        TO  MCP-TABLE
-           MOVE    "key23"             TO  MCP-PATHNAME
+           MOVE    "key41"             TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
       *
            IF      FLG-JYURRK          =   ZERO
