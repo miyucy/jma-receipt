@@ -11,65 +11,43 @@
       *     Everyone is granted permission to use, copy, modify and
       * redistribute this program, but only under the conditions described
       * in the JMA Open Source License. You should have received a copy of
-      * this license along with this program. If not, stop using this
+      * this licence along with this program. If not, stop using this
       * program and contact JMA, 2-28-16 Honkomagome, Bunkyo-ku, Tokyo,
       * 113-8621, Japan.
       ********************************************************************
-       IDENTIFICATION              DIVISION.
-       PROGRAM-ID.                 ORCGQID1.
+       IDENTIFICATION      DIVISION.
+       PROGRAM-ID.         ORCGQFIL.
       *****************************************************************
       *  システム名        : ＯＲＣＡ
-      *  サブシステム名    : 患者登録
-      *  コンポーネント名  : 確認画面（ＱＩＤ１）
+      *  サブシステム名    : 患者照会
+      *  コンポーネント名  : ファイルセレクション
       *  管理者            : 
-      *  02/06/26    MCC−太田　   新規作成
+      *  作成日付    作業者        記述
+      *  07/10/01    NACL−竹田    新規作成
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
-      *  03.05.00    NACL-太田    07.05.23  グループ診療対応
       *****************************************************************
       *
-       ENVIRONMENT                 DIVISION.
-       CONFIGURATION               SECTION.
-       INPUT-OUTPUT                SECTION.
-       FILE-CONTROL.
-      *
-       DATA                        DIVISION.
-      *FILE                        SECTION.
-      *
-      *
-       WORKING-STORAGE             SECTION.
-      *
+       ENVIRONMENT         DIVISION.
+       CONFIGURATION           SECTION.
+       DATA                DIVISION.
+       WORKING-STORAGE         SECTION.
       *    スパ領域
            COPY    "COMMON-SPA".
       *
-      *    画面用ＳＰＡ
-           COPY    "Q01SCR-SPA".
+           COPY    "ENUM-VALUE".
       *
-      *    フラグ領域
-       01  FLG-AREA.
-           03  FLG-END             PIC 9(01).
-      *
-      *****************************************************************
-      *    ファイルレイアウト
-      *****************************************************************
+           COPY    "ORCA-BLOB".
       *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
-      *****************************************************************
-      *    サブプロ用　領域
-      *****************************************************************
       *
-      *****************************************************************
-      *    連絡　領域
-      *****************************************************************
-        LINKAGE                     SECTION.
-      *
-           COPY    "MCPAREA".
-           COPY    "ORCA-SPA".
-      *
-           COPY    "LINKAREA".
-      *
+      *    ＤＢ検索
+       LINKAGE                 SECTION.
+            COPY    "MCPAREA".
+            COPY    "ORCA-SPA".
+            COPY    "LINKAREA".
        01  SCRAREA.
            COPY    "Q01.INC".
            COPY    "Q02.INC".
@@ -83,40 +61,34 @@
            COPY    "QERR.INC".
            COPY    "QID1.INC".
            COPY    "QFIL.INC".
-      *
-       PROCEDURE                   DIVISION    USING
+      ******************************************************************
+       PROCEDURE           DIVISION    USING
            MCPAREA
            SPAAREA
            LINKAREA
            SCRAREA.
-      *
       *****************************************************************
       *    主　　処理
       *****************************************************************
-       000-PROC-SEC                SECTION.
+       000-PROC-SEC            SECTION.
       *
            MOVE    SPA-COMMON      TO  SPA-AREA
-           MOVE    SPA-FREE        TO  SPA-Q01FREE
-      * 
            EVALUATE    MCP-STATUS      ALSO    MCP-EVENT
-               WHEN    "LINK"          ALSO    ANY
-                   PERFORM 100-INIT-SEC
+             WHEN     "LINK"           ALSO    ANY
+               PERFORM 100-INIT-SEC
       *    画面遷移
-               WHEN     "PUTG"           ALSO   "CLICKED"
-                   PERFORM 200-GMNSENI
-           END-EVALUATE.
-      *
+             WHEN     "PUTG"           ALSO   "CLICKED"
+               PERFORM 290-OTHER
+           END-EVALUATE
            MOVE    SPA-AREA        TO  SPA-COMMON
-           MOVE    SPA-Q01FREE     TO  SPA-FREE
-      *
            .
-           EXIT    PROGRAM
+      *
+           EXIT    PROGRAM.
            .
       *****************************************************************
       *    初期　処理
       *****************************************************************
        100-INIT-SEC                SECTION.
-      *
            .
        100-INIT-EXT.
            EXIT.
@@ -124,37 +96,35 @@
       *****************************************************************
       *    画面遷移処理
       *****************************************************************
-       200-GMNSENI                   SECTION.
-      *
+       290-OTHER                SECTION.
            EVALUATE    MCP-EVENT       ALSO    MCP-WIDGET
-      *        戻る
+      *     戻る
                WHEN    "CLICKED"       ALSO    "B01"
-                   MOVE    SPACE           TO  SPA-QID1-FLG
                    PERFORM 210-BACK
-      *     登録
-               WHEN    "CLICKED"       ALSO    "B12"
-                   MOVE    "OK"            TO  SPA-QID1-FLG
-                   PERFORM 210-BACK
+      *     クリア
+               WHEN    OTHER
+                   MOVE    SPACE       TO  MCP-PUTTYPE
+                   MOVE   "QFIL"       TO  MCP-WINDOW
+                   PERFORM 900-PUT-WINDOW
            END-EVALUATE
-      *
            .
-       200-GMNSENI-EXT.
+       290-OTHER-EXT.
            EXIT.
+      *
       *****************************************************************
       *    戻る　処理
       *****************************************************************
-       210-BACK                    SECTION.
-      * 
-           MOVE    SPA-MOTOPG          TO  SPA-SAKIPG
-           MOVE    "QID1"              TO  SPA-MOTOPG
+       210-BACK                 SECTION.
       *
-      *****MOVE    "BACK"              TO  MCP-PUTTYPE.
-           MOVE    "JOIN"              TO  MCP-PUTTYPE.
+           MOVE    "Q97"               TO  SPA-SAKIPG
+           MOVE    "QFIL"              TO  SPA-MOTOPG
+      *
+           MOVE    "JOIN"              TO  MCP-PUTTYPE
            MOVE    SPA-SAKIPG          TO  MCP-WINDOW
       *
            PERFORM 900-PUT-WINDOW
       *
-           MOVE    1                   TO  FLG-END
+      *    MOVE    1                   TO  FLG-END
       *
            .
        210-BACK-EXT.
@@ -163,13 +133,12 @@
       *****************************************************************
       *    ＰＵＴ　処理
       *****************************************************************
-       900-PUT-WINDOW              SECTION.
-      *
-           MOVE   "PUTWINDOW"       TO  MCP-FUNC.
-           CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
-      *
+       900-PUT-WINDOW          SECTION.
+           MOVE   "PUTWINDOW"  TO  MCP-FUNC
+           CALL   "ORCDBMAIN"          USING
+                                       MCPAREA
+                                       MCPDATA-REC
+                                       SPA-AREA
            .
        900-PUT-WINDOW-EXT.
            EXIT.

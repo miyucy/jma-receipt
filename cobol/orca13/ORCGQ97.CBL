@@ -28,6 +28,7 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *  03.05.00    NACL-太田    07.05.23  グループ診療対応
+      *  04.01.01    NACL-藤原    07/10/01  クライアント保存対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -43,6 +44,9 @@
       *
       *    スパ領域
            COPY    "COMMON-SPA".
+      *
+      *    画面用ＳＰＡ
+           COPY    "Q01SCR-SPA".
       *
       *    フラグ領域
        01  FLG-AREA.
@@ -61,6 +65,7 @@
            03  WRK-JOBID           PIC 9(07).
            03  WRK-MSG             PIC X(100).
            03  WRK-RUNJOB          PIC 9(05).
+           03  WRK-KENSU-Z         PIC ZZZZZZ9.
       *
        01  WRK-HEN-AREA.
            03  WRK-HENTIME.
@@ -97,6 +102,11 @@
       *   ジョブ管理ＤＢ制御サブ
            COPY    "CPORCSJOBKANRI.INC".
       *
+      *    クライアント保存ＤＢ制御サブ
+           COPY    "CPORCSFILESV.INC".
+      *
+           COPY    "ORCA-BLOB".
+      *
       *****************************************************************
       *    連絡　領域
       *****************************************************************
@@ -119,6 +129,7 @@
            COPY    "Q100.INC".
            COPY    "QERR.INC".
            COPY    "QID1.INC".
+           COPY    "QFIL.INC".
       *
        PROCEDURE                   DIVISION    USING
            MCPAREA
@@ -132,6 +143,7 @@
        000-PROC-SEC                SECTION.
       *
            MOVE    SPA-COMMON      TO  SPA-AREA
+           MOVE    SPA-FREE        TO  SPA-Q01FREE
       * 
            EVALUATE    MCP-STATUS      ALSO    MCP-EVENT
                WHEN    "LINK"          ALSO    ANY
@@ -142,6 +154,7 @@
            END-EVALUATE.
       *
            MOVE    SPA-AREA        TO  SPA-COMMON
+           MOVE    SPA-Q01FREE     TO  SPA-FREE
       *
            .
            EXIT    PROGRAM
@@ -150,6 +163,15 @@
       *    初期　処理
       *****************************************************************
        100-INIT-SEC                SECTION.
+      *
+           IF      SPA-MOTOPG          =   "QFIL"
+      *        ファイルエントリ処理(クライアント保存)
+               IF      SPA-SFILESV-MAX     >   SPA-SFILESV-IDX
+                   ADD     1                   TO  SPA-SFILESV-IDX 
+                   PERFORM 3001-FILEENTRY-SEC
+                   GO  TO  100-INIT-EXT
+               END-IF
+           END-IF
       *
            PERFORM 490-KAKUNIN-SEC
       *
@@ -188,7 +210,7 @@
       *****************************************************************
        210-BACK                    SECTION.
       *
-           MOVE    SPA-MOTOPG          TO  SPA-SAKIPG
+           MOVE    SPA-Q97-MOTOPG      TO  SPA-SAKIPG
            MOVE    "Q97"               TO  SPA-MOTOPG
       *
            MOVE    "JOIN"              TO  MCP-PUTTYPE
@@ -211,6 +233,8 @@
            MOVE    ZERO             TO  IDX-LST
            MOVE    ZERO             TO  WRK-RUNJOB
            MOVE    SPACE            TO  WRK-MSG
+      *
+           MOVE    5                TO  Q97-DURATION
       *
            MOVE    "B11"            TO  MCP-WIDGET
       *
@@ -235,6 +259,25 @@
                MOVE    "処理は正常に終了しました"
                                    TO  Q97-MSG
            END-EVALUATE
+      *
+           IF    ( SPA-QID1-FLG    =   "SV" )
+               IF    ( IDX-LST          =   ZERO )
+               OR    ( WRK-MSG      NOT =   SPACE )
+               OR    ( WRK-RUNJOB   NOT =   ZERO )
+                   CONTINUE
+               ELSE
+                   IF      SPA-Q97-FILESV-CHK-FLG  =   ZERO
+                       PERFORM 4902-FILE-INFO-CHK-SEC
+                   ELSE
+      *                ファイルエントリ処理(クライアント保存)
+                       MOVE    1               TO  SPA-SFILESV-IDX 
+                       PERFORM 3001-FILEENTRY-SEC
+                       IF      FLG-END         =   1
+                           GO  TO  490-KAKUNIN-EXT
+                       END-IF
+                   END-IF
+               END-IF    
+           END-IF
       *
            PERFORM 4901-PUT-CURRENT-WINDOW-SEC
       *
@@ -337,6 +380,97 @@
            .
       *
        4901-PUT-CURRENT-WINDOW-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    クライアント保存情報チェック処理
+      *****************************************************************
+       4902-FILE-INFO-CHK-SEC          SECTION.
+      *
+           INITIALIZE                  ORCSFILESVAREA
+           MOVE    "R"             TO  SFILESV-MODE
+           MOVE    CONST-JOB-SHELLID
+                                   TO  SFILESV-TBL-KEY
+           CALL    "ORCSFILESV"    USING
+                                       ORCSFILESVAREA
+                                       SPA-AREA  
+           IF      SFILESV-RETURN  =   ZERO
+               INITIALIZE               SPA-SFILESV-AREA
+               PERFORM VARYING IDX FROM    1   BY  1
+                       UNTIL   IDX >       100
+                       OR      SFILESV-SHELLID (IDX)
+                                   =       SPACE
+                   MOVE    SFILESV-TITLE        (IDX)
+                                       TO  SPA-SFILESV-TITLE     (IDX)
+                   MOVE    SFILESV-CNT-ALL      (IDX)
+                                       TO  SPA-SFILESV-CNT-ALL   (IDX)
+                   MOVE    SFILESV-FOR-FOLDER   (IDX)
+                                       TO  SPA-SFILESV-FOR-FOLDER(IDX)
+                   MOVE    SFILESV-FOR-DATA     (IDX)
+                                       TO  SPA-SFILESV-FOR-DATA  (IDX)
+                   MOVE    SFILESV-TO-FOLDER    (IDX)
+                                       TO  SPA-SFILESV-TO-FOLDER (IDX)
+                   MOVE    SFILESV-TO-DATA      (IDX)
+                                       TO  SPA-SFILESV-TO-DATA   (IDX)
+                   MOVE    SFILESV-CODE-TYPE    (IDX)
+                                       TO  SPA-SFILESV-CODE-TYPE (IDX)
+                   MOVE    SFILESV-DATA-TYPE    (IDX)
+                                       TO  SPA-SFILESV-DATA-TYPE (IDX)
+                   ADD     1           TO  SPA-SFILESV-MAX
+               END-PERFORM
+      *
+               MOVE    1                   TO  SPA-Q97-FILESV-CHK-FLG
+      *
+               MOVE    1                   TO  Q97-DURATION
+           END-IF
+      *
+           .
+       4902-FILE-INFO-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ファイルエントリ処理(クライアント保存)
+      *****************************************************************
+       3001-FILEENTRY-SEC          SECTION.
+      *
+           INITIALIZE                      ORCA-BLOB
+           MOVE    "BLOBIMPORT"        TO  MCP-FUNC
+           MOVE    "key"               TO  MCP-PATHNAME
+           MOVE    "blob"              TO  MCP-TABLE
+           STRING  SPA-SFILESV-FOR-FOLDER (SPA-SFILESV-IDX)
+                                       DELIMITED  BY  SPACE
+                   SPA-SFILESV-FOR-DATA   (SPA-SFILESV-IDX) 
+                                       DELIMITED  BY  SPACE
+                                       INTO  ORCA-BLOB-FILE
+           END-STRING
+           CALL   "ORCDBMAIN"          USING
+                                       MCPAREA
+                                       ORCA-BLOB
+                                       SPA-AREA
+      *
+           INITIALIZE                      QFIL 
+           MOVE    ORCA-BLOB-OBJECT    TO  QFIL-OBJECTDATA
+           STRING  SPA-SFILESV-TO-FOLDER (SPA-SFILESV-IDX)
+                                       DELIMITED  BY  SPACE
+                   SPA-SFILESV-TO-DATA   (SPA-SFILESV-IDX)
+                                       DELIMITED  BY  SPACE
+                                       INTO  QFIL-ENTRY1
+           END-STRING
+           MOVE    SPA-SFILESV-TITLE   (SPA-SFILESV-IDX)
+                                       TO  QFIL-TITLE
+           MOVE    SPA-SFILESV-CNT-ALL (SPA-SFILESV-IDX)
+                                       TO  WRK-KENSU-Z
+           MOVE    WRK-KENSU-Z         TO  QFIL-KENSU
+      *
+           MOVE    ZERO                TO  Q97-DURATION
+      *
+           MOVE    "NEW"               TO  MCP-PUTTYPE
+           MOVE    "QFIL"              TO  MCP-WINDOW
+      *
+           PERFORM 900-PUT-WINDOW
+           MOVE    1                   TO  FLG-END
+           .
+       3001-FILEENTRY-EXT.
            EXIT.
       *****************************************************************
       *    西暦和暦編集処理

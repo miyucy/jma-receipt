@@ -34,3 +34,4 @@
                 06  Q97-ERRMSG     PIC X(100).
               05  Q97-SELECT       PIC X
                                    OCCURS  30 TIMES.
+          03  Q97-DURATION   PIC S9(09) BINARY.

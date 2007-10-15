@@ -5,19 +5,16 @@
   <name>Q100</name>
   <program_name>Q100</program_name>
   <directory></directory>
-  <source_directory>src</source_directory>
   <pixmaps_directory>pixmaps</pixmaps_directory>
-  <language>C</language>
   <gnome_support>True</gnome_support>
   <gtkpanda_support>False</gtkpanda_support>
-  <gettext_support>True</gettext_support>
 </project>
 
 <widget>
   <class>GtkWindow</class>
   <name>Q100</name>
   <width>560</width>
-  <height>192</height>
+  <height>290</height>
   <signal>
     <name>map_event</name>
     <handler>map_event</handler>
@@ -28,7 +25,7 @@
     <handler>set_focus</handler>
     <last_modification_time>Fri, 26 Jan 2001 04:22:42 GMT</last_modification_time>
   </signal>
-  <signal>    
+  <signal>
     <name>delete_event</name>
     <handler>gtk_true</handler>
     <last_modification_time>Mon, 25 Nov 2002 06:01:39 GMT</last_modification_time>
@@ -60,8 +57,8 @@
       <text>3001</text>
       <input_mode>XIM</input_mode>
       <xim_enabled>False</xim_enabled>
-
     </widget>
+
     <widget>
       <class>GtkPandaEntry</class>
       <name>ID1MSG</name>
@@ -76,24 +73,8 @@
       <text></text>
       <input_mode>XIM</input_mode>
       <xim_enabled>False</xim_enabled>
-
     </widget>
-    <widget>
-      <class>GtkLabel</class>
-      <name>LBLFILENAME</name>
-      <x>8</x>
-      <y>84</y>
-      <width>105</width>
-      <height>16</height>
-      <label></label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
 
-    </widget>
     <widget>
       <class>GtkPandaEntry</class>
       <name>FILENAME</name>
@@ -120,8 +101,8 @@
       <text></text>
       <input_mode>XIM</input_mode>
       <xim_enabled>False</xim_enabled>
-
     </widget>
+
     <widget>
       <class>GtkLabel</class>
       <name>LBLNUMSEL</name>
@@ -136,8 +117,8 @@
       <yalign>0.5</yalign>
       <xpad>0</xpad>
       <ypad>0</ypad>
-
     </widget>
+
     <widget>
       <class>GtkNumberEntry</class>
       <name>STNUM</name>
@@ -160,8 +141,8 @@
       </signal>
       <editable>True</editable>
       <format>ZZZZZZZZZ</format>
-
     </widget>
+
     <widget>
       <class>GtkNumberEntry</class>
       <name>EDNUM</name>
@@ -184,13 +165,13 @@
       </signal>
       <editable>True</editable>
       <format>ZZZZZZZZZ</format>
-
     </widget>
+
     <widget>
       <class>GtkButton</class>
       <name>B01</name>
       <x>8</x>
-      <y>160</y>
+      <y>250</y>
       <width>56</width>
       <height>24</height>
       <can_focus>True</can_focus>
@@ -207,13 +188,13 @@
       </signal>
       <label>戻る</label>
       <relief>GTK_RELIEF_NORMAL</relief>
-
     </widget>
+
     <widget>
       <class>GtkButton</class>
       <name>B12</name>
       <x>488</x>
-      <y>160</y>
+      <y>250</y>
       <width>54</width>
       <height>24</height>
       <can_focus>True</can_focus>
@@ -230,8 +211,8 @@
       </signal>
       <label>ＯＫ</label>
       <relief>GTK_RELIEF_NORMAL</relief>
-
     </widget>
+
     <widget>
       <class>GtkLabel</class>
       <name>label2</name>
@@ -246,8 +227,138 @@
       <yalign>0.5</yalign>
       <xpad>0</xpad>
       <ypad>0</ypad>
+    </widget>
 
+    <widget>
+      <class>GtkLabel</class>
+      <name>label4</name>
+      <x>8</x>
+      <y>216</y>
+      <width>110</width>
+      <height>16</height>
+      <label>文字コード</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkPandaCombo</class>
+      <name>FILE_COMBO</name>
+      <x>120</x>
+      <y>170</y>
+      <width>200</width>
+      <height>24</height>
+      <value_in_list>False</value_in_list>
+      <ok_if_empty>True</ok_if_empty>
+      <case_sensitive>False</case_sensitive>
+      <use_arrows>True</use_arrows>
+      <use_arrows_always>False</use_arrows_always>
+      <items>3 システム管理設定場所
+</items>
+
+      <widget>
+	<class>GtkPandaEntry</class>
+	<child_name>GtkPandaCombo:entry</child_name>
+	<name>FILE</name>
+	<can_focus>True</can_focus>
+	<signal>
+	  <name>activate</name>
+	  <handler>send_event</handler>
+	  <data>ACTIVATE</data>
+	  <last_modification_time>Mon, 25 Dec 2000 08:23:41 GMT</last_modification_time>
+	</signal>
+	<signal>
+	  <name>changed</name>
+	  <handler>entry_changed</handler>
+	  <data>CHANGED</data>
+	  <last_modification_time>Mon, 25 Dec 2000 08:24:01 GMT</last_modification_time>
+	</signal>
+	<editable>True</editable>
+	<text_visible>True</text_visible>
+	<text_max_length>22</text_max_length>
+	<text>1 クライアント保存</text>
+	<input_mode>XIM</input_mode>
+	<xim_enabled>False</xim_enabled>
+      </widget>
+    </widget>
+
+    <widget>
+      <class>GtkPandaCombo</class>
+      <name>CDKBN_COMBO</name>
+      <x>120</x>
+      <y>210</y>
+      <width>200</width>
+      <height>24</height>
+      <value_in_list>False</value_in_list>
+      <ok_if_empty>True</ok_if_empty>
+      <case_sensitive>False</case_sensitive>
+      <use_arrows>True</use_arrows>
+      <use_arrows_always>False</use_arrows_always>
+      <items>1 ＥＵＣ
+</items>
+
+      <widget>
+	<class>GtkPandaEntry</class>
+	<child_name>GtkPandaCombo:entry</child_name>
+	<name>CDKBN</name>
+	<can_focus>True</can_focus>
+	<signal>
+	  <name>activate</name>
+	  <handler>send_event</handler>
+	  <data>ACTIVATE</data>
+	  <last_modification_time>Mon, 25 Dec 2000 08:23:41 GMT</last_modification_time>
+	</signal>
+	<signal>
+	  <name>changed</name>
+	  <handler>entry_changed</handler>
+	  <data>CHANGED</data>
+	  <last_modification_time>Mon, 25 Dec 2000 08:24:01 GMT</last_modification_time>
+	</signal>
+	<editable>True</editable>
+	<text_visible>True</text_visible>
+	<text_max_length>22</text_max_length>
+	<text>1 ＥＵＣ</text>
+	<input_mode>XIM</input_mode>
+	<xim_enabled>False</xim_enabled>
+      </widget>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>LBLFILENAME</name>
+      <x>8</x>
+      <y>84</y>
+      <width>105</width>
+      <height>16</height>
+      <label></label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label3</name>
+      <x>8</x>
+      <y>175</y>
+      <width>110</width>
+      <height>16</height>
+      <label>ファイル出力先</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
     </widget>
   </widget>
 </widget>
+
 </GTK-Interface>

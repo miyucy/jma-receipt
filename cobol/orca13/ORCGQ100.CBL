@@ -29,6 +29,7 @@
       * Maj/Min/Rev  修正者       日付      内容
       *  01.00.01    NACL-太田    03/06/10  一括入力対応
       *  03.05.00    NACL-太田    07.05.23  グループ診療対応
+      *  04.01.01    NACL-藤原    07/10/01  クライアント保存対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -58,6 +59,7 @@
       *    添字領域
        01  IDX-AREA.
            03  IDX1                                PIC 9(05).
+           03  IDX2                                PIC 9(05).
       *
       *    一時領域
        01  WRK-AREA.
@@ -69,6 +71,10 @@
            03  CONST-LINE                          PIC 9(05)
                VALUE   30.
       *
+           03  CONST-JOBID         PIC 9(07)   VALUE   1.
+           03  CONST-JOBID2        PIC 9(07)   VALUE   2.
+           03  CONST-JOB-SHELLID   PIC X(08)   VALUE   "ORCBQ01".
+      *
       *****************************************************************
       *    ファイルレイアウト
       *****************************************************************
@@ -79,6 +85,9 @@
       *****************************************************************
       *    サブプロ用　領域
       *****************************************************************
+      *
+      *    クライアント保存可否情報取得サブ
+           COPY    "CPORCSCLIENTSV.INC".
       *
       *****************************************************************
       *    連絡　領域
@@ -102,6 +111,7 @@
            COPY    "Q100.INC".
            COPY    "QERR.INC".
            COPY    "QID1.INC".
+           COPY    "QFIL.INC".
       *
        PROCEDURE                   DIVISION    USING
            MCPAREA
@@ -191,6 +201,33 @@
       *
            IF  ( SPA-Q02-Q100-PROC-FLG     =   ZERO )
       *        ＣＳＶ出力処理
+      *
+      *        クライアント保存可否情報取得サブ
+               INITIALIZE                      ORCSCLIENTSVAREA
+               CALL    "ORCSCLIENTSV"      USING   ORCSCLIENTSVAREA
+                                                   SPA-AREA
+               MOVE    SCLIENTSV-CLIENT-SAVE
+                                           TO  SPA-Q100-CLIENT-SAVE
+               IF      SPA-Q100-CLIENT-SAVE
+                                       =   "1"
+                   MOVE    "1"             TO  SPA-GMN-Q100-FILEL   (1)
+                   MOVE    "クライアント保存"
+                                           TO  SPA-GMN-Q100-FILEMEIL(1)
+                   MOVE    1               TO  SPA-GMN-Q100-FILE-MAX
+                   MOVE    WIDGET-NORMAL   TO  SPA-GMN-Q100-FILE-STATE
+      *
+                   MOVE    "1"             TO  SPA-GMN-Q100-CDKBNL   (1)
+                   MOVE    "ＥＵＣ"        TO  SPA-GMN-Q100-CDKBNMEIL(1)
+                   MOVE    "2"             TO  SPA-GMN-Q100-CDKBNL   (2)
+                   MOVE    "Ｓ−ｊｉｓ"    TO  SPA-GMN-Q100-CDKBNMEIL(2)
+                   MOVE    2               TO  SPA-GMN-Q100-CDKBN-MAX
+                   MOVE    WIDGET-NORMAL   TO  SPA-GMN-Q100-CDKBN-STATE
+               ELSE
+                   MOVE    WIDGET-INSENSITIVE
+                                           TO  SPA-GMN-Q100-FILE-STATE
+                                               SPA-GMN-Q100-CDKBN-STATE
+               END-IF
+      *
                MOVE    "3001"          TO  SPA-GMN-Q100-CD
                MOVE    "ＣＳＶ出力を開始します"
                                        TO  SPA-GMN-Q100-MSG
@@ -209,6 +246,9 @@
                MOVE    WIDGET-INSENSITIVE
                                        TO  SPA-GMN-Q100-FILENAME-STATE
                MOVE    "ページ指定"    TO  SPA-GMN-Q100-LBLNUMSEL
+               MOVE    WIDGET-INSENSITIVE
+                                       TO  SPA-GMN-Q100-FILE-STATE
+                                           SPA-GMN-Q100-CDKBN-STATE
            END-IF
       *
            MOVE    SPA-Q02-Q100-STNUM      TO  SPA-GMN-Q100-STNUM
@@ -292,6 +332,17 @@
                GO  TO  410-INPUT-CHK-EXT
            END-IF
       *
+      *    出力先チェック
+           PERFORM 4100-FILE-CHK-SEC
+           IF    ( SPA-ERRCD   NOT =   SPACE )
+               GO  TO  410-INPUT-CHK-EXT
+           END-IF
+      *
+      *    文字コードチェック
+           PERFORM 4100-CDKBN-CHK-SEC
+           IF    ( SPA-ERRCD   NOT =   SPACE )
+               GO  TO  410-INPUT-CHK-EXT
+           END-IF
            .
       *
        410-INPUT-CHK-EXT.
@@ -310,6 +361,12 @@
       *    終了件数（ページ数）
            MOVE    Q100-EDNUM      TO  SPA-GMN-Q100-EDNUM
       *
+      *    出力先
+           MOVE    Q100-FILE       TO  SPA-GMN-Q100-FILE
+      *
+      *    文字コード
+           MOVE    Q100-CDKBN      TO  SPA-GMN-Q100-CDKBN
+      *
            .
        4101-GMN-SPA-SET-EXT.
            EXIT.
@@ -318,6 +375,21 @@
       *****************************************************************
        4100-FILENAME-CHK-SEC           SECTION.
       *
+           IF      SPA-GMN-Q100-FILENAME   =   SPACE
+               CONTINUE
+           ELSE
+               PERFORM VARYING IDX2    FROM    1   BY  1
+                       UNTIL   IDX2    >       100
+                       OR      SPA-GMN-Q100-FILENAME (IDX2:1)
+                                           =   SPACE
+                   IF        SPA-GMN-Q100-FILENAME (IDX2:1)
+                                               =   "\" OR  ":" 
+                       MOVE    "1004"              TO  SPA-ERRCD
+                       MOVE    1                   TO  SPA-GMN-Q100-CUR
+                       MOVE    100                 TO  IDX2
+                   END-IF
+               END-PERFORM        
+           END-IF
            .
        4100-FILENAME-CHK-EXT.
            EXIT.
@@ -370,6 +442,68 @@
            .
        4100-NUM-HANI-EXT.
            EXIT.
+      *
+      *****************************************************************
+      *    出力先チェック処理
+      *****************************************************************
+       4100-FILE-CHK-SEC           SECTION.
+      *
+           IF      SPA-Q100-CLIENT-SAVE    =   "1"
+               IF      SPA-GMN-Q100-FILE     =   SPACE
+                   CONTINUE
+               ELSE
+                   PERFORM VARYING IDX2 FROM    1   BY  1
+                           UNTIL   IDX2 >       SPA-GMN-Q100-FILE-MAX
+                       IF        SPA-GMN-Q100-FILE
+                                       =   SPA-GMN-Q100-FILEL (IDX2)
+                           MOVE    SPA-GMN-Q100-FILEMEIL (IDX2)
+                                               TO  SPA-GMN-Q100-FILEMEI
+                           MOVE    SPA-GMN-Q100-FILE-MAX
+                                               TO  IDX2
+                       END-IF
+                   END-PERFORM        
+                   IF      SPA-GMN-Q100-FILEMEI  =   SPACE  
+                       MOVE    SPA-GMN-Q100-FILELST (1)
+                                               TO  SPA-GMN-Q100-FILE-G
+                   END-IF
+               END-IF
+           END-IF
+           .
+       4100-FILE-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    文字コードチェック処理
+      *****************************************************************
+       4100-CDKBN-CHK-SEC           SECTION.
+      *
+           IF      SPA-Q100-CLIENT-SAVE    =   "1"
+               IF      SPA-GMN-Q100-CDKBN      =   SPACE
+                   IF      SPA-GMN-Q100-FILE       =   "1"
+                       MOVE    SPA-GMN-Q100-CDKBNLST (1)
+                                               TO  SPA-GMN-Q100-CDKBN-G
+                   END-IF
+               ELSE
+                   PERFORM VARYING IDX2    FROM   1   BY  1
+                           UNTIL   IDX2    >      SPA-GMN-Q100-CDKBN-MAX
+                       IF        SPA-GMN-Q100-CDKBN
+                                       =   SPA-GMN-Q100-CDKBNL (IDX2)
+                           MOVE    SPA-GMN-Q100-CDKBNMEIL (IDX2)
+                                               TO  SPA-GMN-Q100-CDKBNMEI
+                           MOVE    SPA-GMN-Q100-CDKBN-MAX
+                                               TO  IDX2
+                       END-IF
+                   END-PERFORM        
+                   IF      SPA-GMN-Q100-CDKBNMEI   =   SPACE  
+                       MOVE    SPA-GMN-Q100-CDKBNLST (1)
+                                               TO  SPA-GMN-Q100-CDKBN-G
+                   END-IF
+               END-IF
+           END-IF
+           .
+       4100-CDKBN-CHK-EXT.
+           EXIT.
+      *
       *****************************************************************
       *    戻る　処理
       *****************************************************************
@@ -381,7 +515,7 @@
            MOVE    "Q100"              TO  SPA-MOTOPG
       *
       *****MOVE    "BACK"              TO  MCP-PUTTYPE
-           MOVE    "JOIN"              TO  MCP-PUTTYPE.
+           MOVE    "JOIN"              TO  MCP-PUTTYPE
            MOVE    SPA-SAKIPG          TO  MCP-WINDOW
       *
            PERFORM 900-PUT-WINDOW
@@ -429,6 +563,11 @@
       *    Ｑ０２に戻る
            MOVE    SPA-GMN-Q100-FILENAME
                                        TO  SPA-Q02-Q100-FILENAME
+           IF      SPA-GMN-Q100-FILE   =   SPACE
+               MOVE    "0"                 TO  SPA-Q02-Q100-FILE
+           ELSE
+               MOVE    SPA-GMN-Q100-FILE   TO  SPA-Q02-Q100-FILE
+           END-IF
       *
            IF  ( SPA-Q02-Q100-PROC-FLG     =   1 )
       *        開始件数
@@ -450,6 +589,12 @@
       *        終了件数
                MOVE    SPA-GMN-Q100-EDNUM
                                        TO  SPA-Q02-Q100-EDKNS
+      *        文字コード区分
+               IF      SPA-GMN-Q100-CDKBN  =   SPACE
+                   MOVE    "0"                 TO  SPA-Q02-Q100-CDKBN
+               ELSE
+                   MOVE    SPA-GMN-Q100-CDKBN  TO  SPA-Q02-Q100-CDKBN
+               END-IF
            END-IF
       *
            MOVE    1                   TO  SPA-Q02-Q100-RTOK-FLG
@@ -522,6 +667,28 @@
            MOVE    SPA-GMN-Q100-EDNUM
                                        TO  Q100-EDNUM
       *
+      *    出力先
+      *
+           PERFORM VARYING IDX2    FROM    1   BY  1
+                   UNTIL   IDX2    >       SPA-GMN-Q100-FILE-MAX
+               MOVE    SPA-GMN-Q100-FILELST (IDX2)
+                                           TO  Q100-FILE-ITEM (IDX2)
+           END-PERFORM
+           MOVE    SPA-GMN-Q100-FILE-MAX   TO  Q100-FILE-COUNT
+           MOVE    SPA-GMN-Q100-FILE-G     TO  Q100-FILE
+           MOVE    SPA-GMN-Q100-FILE-STATE TO  Q100-FILE-STATE
+      *
+      *    文字コード
+           PERFORM VARYING IDX2    FROM    1   BY  1
+                   UNTIL   IDX2    >       SPA-GMN-Q100-CDKBN-MAX
+               MOVE    SPA-GMN-Q100-CDKBNLST (IDX2)
+                                           TO  Q100-CDKBN-ITEM (IDX2)
+           END-PERFORM
+           MOVE    SPA-GMN-Q100-CDKBN-MAX  TO  Q100-CDKBN-COUNT
+           MOVE    SPA-GMN-Q100-CDKBN-G    TO  Q100-CDKBN
+           MOVE    SPA-GMN-Q100-CDKBN-STATE
+                                           TO  Q100-CDKBN-STATE
+      *
            PERFORM 5001-MAPCUR-SEC
       *
            .
@@ -555,6 +722,14 @@
       *    確定ボタン
            WHEN   004
                MOVE  "B12"         TO  MCP-WIDGET
+      *
+      *    出力先
+           WHEN   005
+               MOVE  "FILE"        TO  MCP-WIDGET
+      *
+      *    文字コード
+           WHEN   006
+               MOVE  "CDKBN"       TO  MCP-WIDGET
            END-EVALUATE
       *
            .
@@ -580,11 +755,25 @@
            WHEN    "EDNUM"
                MOVE    003         TO  SPA-GMN-Q100-CUR
       *
+      *    出力先
+           WHEN   "FILE"
+               MOVE    005         TO  SPA-GMN-Q100-CUR
+      *
+      *    文字コード
+           WHEN   "CDKBN"
+               MOVE    006         TO  SPA-GMN-Q100-CUR
+      *
            END-EVALUATE
       *
       *    次カーソル位置を設定
            EVALUATE    WRK-MCP-WIDGET
            WHEN    "EDNUM"
+               IF      SPA-Q100-CLIENT-SAVE    =   "1"
+                   MOVE    005         TO  SPA-GMN-Q100-CUR
+               ELSE
+                   MOVE    004         TO  SPA-GMN-Q100-CUR
+               END-IF
+           WHEN    "CDKBN"
                MOVE    004         TO  SPA-GMN-Q100-CUR
            WHEN    OTHER
                COMPUTE SPA-GMN-Q100-CUR    =   SPA-GMN-Q100-CUR +   1
@@ -611,6 +800,12 @@
            WHEN    "1003"
                MOVE    "開始ページ＞終了ページとなっています"
                                        TO  SPA-ERRMSG
+           WHEN    "1004"
+               STRING   "出力ファイル名に" DELIMITED  BY  SIZE
+                        "”：”、”￥”が入力してあります"
+                                             DELIMITED  BY  SIZE
+                                             INTO  SPA-ERRMSG
+               END-STRING
            END-EVALUATE
       *
            MOVE    SPACE                TO  QERR

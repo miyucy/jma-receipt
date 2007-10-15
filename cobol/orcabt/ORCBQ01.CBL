@@ -35,6 +35,7 @@
       *  01.00.06    NACL-太田    03/09/11  郵便番号を追加
       *  01.00.07    NACL-太田    04/08/05  保険、電話番号を追加
       *  03.05.00    NACL-太田    07.05.23 グループ診療対応
+      *  04.01.01    NACL-藤原    07/10/01  クライアント保存対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -126,6 +127,7 @@
            03  CNT-PAGE                PIC 9(09).
            03  CNT-LINE                PIC 9(05).
            03  CNT-KNS                 PIC 9(05).
+           03  CNT-CSV                 PIC 9(09).
       *
       *    一時領域
        01  WRK-AREA. 
@@ -143,6 +145,11 @@
                05  WRK-PARA-SYSTIME    PIC X(08).
                05  WRK-PARA-HOSPNUM     PIC 9(02).
                05  WRK-PARA-STAFFCD    PIC X(05).
+               05  WRK-PARA-FILE       PIC X(01).
+               05  WRK-PARA-FILENM     PIC X(100).
+               05  WRK-PARA-FILENM-FOLDER
+                                       PIC X(100).
+               05  WRK-PARA-CSVFILENM  PIC X(100).
            03  WRK-PROC-KNS            PIC 9(09).
            03  WRK-ZZZZ9               PIC ZZZZ9.
            03  WRK-ZZZZ9C              PIC ZZ,ZZ9.
@@ -164,6 +171,7 @@
            03  WRK-AGE-G.
                05  WRK-AGE-Z                       PIC ---9.
                05  WRK-AGE-MEI                     PIC X(04).
+           03  WRK-RENNUM              PIC 9(03).
       * 
        01  CSV-EDIT-AREA.
            03  CSV-NO                  PIC Z(9)9.
@@ -246,6 +254,9 @@
       *    照会用サブ
            COPY    "CPQSUB03.INC".
       *
+      *    クライアント保存ＤＢ制御サブ
+           COPY    "CPORCSFILESV.INC".
+      *
       *****************************************************************
       *    連絡　領域
       *****************************************************************
@@ -292,6 +303,11 @@
                                                WRK-PARA-SYSTIME
                                                WRK-PARA-HOSPNUM
                                                WRK-PARA-STAFFCD
+                                               WRK-PARA-FILE
+                                               WRK-PARA-FILENM-FOLDER
+                                               WRK-PARA-FILENM
+                                               WRK-PARA-CSVFILENM
+           END-UNSTRING
       *
            MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
            MOVE    WRK-PARA-STAFFCD    TO  SPA-STAFFCD
@@ -314,8 +330,7 @@
            CLOSE   BQ01-FILE
       *
            IF  ( WKBQ01-PROC-FLG       =   ZERO )
-               MOVE    WKBQ01-CSVFILENAME
-                                       TO  CSVNAME
+               MOVE    WRK-PARA-CSVFILENM      TO  CSVNAME
       *
                OPEN    OUTPUT              CSV-FILE
       *
@@ -450,12 +465,60 @@
                                                SPA-AREA
            END-IF
       *
+           IF  ( WKBQ01-PROC-FLG    =  ZERO )
+      *        ファイル保存情報更新
+               PERFORM 3001-FILE-INFO-INSERT-SEC
+           END-IF
+      *
            PERFORM 900-JOB-STEP-END-SEC
       *
            PERFORM 900-DBDISCONNECT-SEC
       *
            .
        300-END-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ファイル保存情報更新処理
+      *****************************************************************
+       3001-FILE-INFO-INSERT-SEC             SECTION.
+      *
+           MOVE    ZERO            TO  WRK-RENNUM
+      *
+           INITIALIZE                  ORCSFILESVAREA
+           MOVE    "I"             TO  SFILESV-MODE
+           MOVE    CONST-JOB-SHELLID
+                                   TO  SFILESV-TBL-KEY
+      *
+           IF    ( WRK-PARA-FILE       =   "1"             )
+               ADD     1               TO  WRK-RENNUM
+      *
+               MOVE    "ORCBQ01.sh"    TO  SFILESV-SHELLID  (WRK-RENNUM)
+               MOVE    1               TO  SFILESV-SHORI-RENNUM
+                                                            (WRK-RENNUM)
+               MOVE    WRK-RENNUM      TO  SFILESV-RENNUM   (WRK-RENNUM)
+               MOVE    "/tmp/"         TO  SFILESV-FOR-FOLDER
+                                                            (WRK-RENNUM)
+               STRING   WRK-PARA-FILENM    DELIMITED  BY  SPACE
+                        ".wk"              DELIMITED  BY  SIZE
+                                           INTO
+                                           SFILESV-FOR-DATA (WRK-RENNUM)
+               END-STRING
+               MOVE    WRK-PARA-FILENM-FOLDER
+                                       TO  SFILESV-TO-FOLDER(WRK-RENNUM)
+               MOVE    WRK-PARA-FILENM TO  SFILESV-TO-DATA  (WRK-RENNUM)
+               MOVE    WRK-PROC-KNS    TO  SFILESV-CNT-ALL  (WRK-RENNUM)
+               MOVE    "患者一覧"      TO  SFILESV-TITLE    (WRK-RENNUM)
+      *********MOVE    "1"             TO  SFILESV-DATA-TYPE(WRK-RENNUM) 
+           END-IF
+      *
+           IF      WRK-RENNUM          >   ZERO
+               CALL    "ORCSFILESV"    USING
+                                           ORCSFILESVAREA
+                                           SPA-AREA
+           END-IF
+           .
+       3001-FILE-INFO-INSERT-EXT.
            EXIT.
       *
       *****************************************************************

@@ -25,3 +25,17 @@
               04  Q100-LBLNUMSEL       PIC X(10).
               04  Q100-STNUM           PIC S9(9).
               04  Q100-EDNUM           PIC S9(9).
+              04  Q100-FILE-COMBO.
+                05  Q100-FILE-STATE  PIC S9(9)   BINARY.
+                05  Q100-FILE.
+                  07  Q100-VALUE    PIC X(22).
+                05  Q100-FILE-COUNT PIC S9(9)   BINARY.
+                05  Q100-FILE-ITEM
+                        PIC X(22)   OCCURS  6 TIMES.
+              04  Q100-CDKBN-COMBO.
+                05  Q100-CDKBN-STATE  PIC S9(9)   BINARY.
+                05  Q100-CDKBN.
+                  07  Q100-VALUE    PIC X(22).
+                05  Q100-CDKBN-COUNT PIC S9(9)   BINARY.
+                05  Q100-CDKBN-ITEM
+                        PIC X(22)   OCCURS  5 TIMES.

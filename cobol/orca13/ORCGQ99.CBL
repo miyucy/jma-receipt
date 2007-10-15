@@ -154,6 +154,7 @@
       *----(01.00.02) LINE ADD END   ----------------------------------
            COPY    "QERR.INC".
            COPY    "QID1.INC".
+           COPY    "QFIL.INC".
       *
        PROCEDURE                                 DIVISION    USING
                                                  MCPAREA

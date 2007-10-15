@@ -60,6 +60,7 @@
       * 01.00.07     NACL-太田    04/02/09+コラムリスト編集修正
       * 01.00.08     NACL-太田    04/08/05+保険を追加
       * 03.05.00     NACL-太田    07.05.23 グループ診療対応
+      * 04.01.01     NACL-藤原    07/10/01  クライアント保存対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -114,6 +115,8 @@
            03  IDX1                                PIC 9(05).
            03  IDX2                                PIC 9(05).
            03  IDX3                                PIC 9(05).
+           03  IDX4                                PIC 9(05).
+           03  IDX5                                PIC 9(05).
            03  IDX-LEN                             PIC 9(05).
            03  IDX-GMN                             PIC 9(05).
       *
@@ -163,6 +166,11 @@
            03  WRK-KJYNYMD                         PIC 9(08).
            03  WRK-MCP-WIDGET                      PIC X(64).
            03  WRK-JOBID                           PIC 9(07).
+      *
+           03  WRK-FILENM-AREA.
+               07  WRK-FILENM      PIC X(100).
+               07  WRK-FILENM-FOLDER 
+                                   PIC X(100).
       *
        01  WRK-ROW-AREA.
            03  WRK-KEKKALST-ROW                    PIC S9(9)   BINARY.
@@ -285,6 +293,13 @@
       *    最終受診日取得
            COPY    "CPORCSLASTYMD.INC".
       *
+      *    クライアント保存ＤＢ制御サブ
+           COPY    "CPORCSFILESV.INC".
+      *     
+           COPY    "ORCA-DBMETA".
+      *
+           COPY    "ORCA-BLOB".
+      *
       *****************************************************************
       *    連絡領域
       *****************************************************************
@@ -306,6 +321,7 @@
            COPY    "Q100.INC".
            COPY    "QERR.INC".
            COPY    "QID1.INC".
+           COPY    "QFIL.INC".
       *
        PROCEDURE                                 DIVISION    USING
                                                  MCPAREA
@@ -417,6 +433,7 @@
            EVALUATE    SPA-MOTOPG
       *    処理確認画面
            WHEN    "Q97"
+               PERFORM 3001-Q97SPASET-SEC
                GO  TO      300-SCREEN-EXT
       *    出力指示画面
            WHEN    "Q100"
@@ -461,6 +478,29 @@
       *
            .
        300-SCREEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    処理表示画面戻り処理
+      *****************************************************************
+       3001-Q97SPASET-SEC             SECTION.
+      *
+           IF    ( SPA-QID1-FLG    =   "SV" )
+               INITIALIZE                  ORCSFILESVAREA
+               MOVE    "D"             TO  SFILESV-MODE
+               MOVE    CONST-JOB-SHELLID
+                                       TO  SFILESV-TBL-KEY
+               CALL    "ORCSFILESV"    USING
+                                           ORCSFILESVAREA
+                                           SPA-AREA
+           END-IF
+      *
+           MOVE    SPACE           TO  SPA-QID1-FLG
+           MOVE    SPACE           TO  SPA-QIDCD
+           MOVE    SPACE           TO  SPA-Q97-MOTOPG
+      *
+           .
+       3001-Q97SPASET-EXT.
            EXIT.
       *
       *****************************************************************
@@ -542,6 +582,36 @@
       *
            CLOSE   BQ01-FILE
       *
+           MOVE    ZERO            TO  SPA-Q97-FILESV-CHK-FLG
+      *
+           MOVE    SPACE           TO  WRK-FILENM-AREA
+           PERFORM VARYING IDX4    FROM    100 BY  -1
+                   UNTIL   IDX4     <       1
+               IF      ( SPA-Q02-Q100-FILENAME (IDX4:1)
+                                               =   "/" )
+                   MOVE    SPA-GMN-Q100-FILENAME (1:IDX4)
+                                           TO  WRK-FILENM-FOLDER
+                   COMPUTE IDX5    =   IDX4    +   1
+                   MOVE    SPA-GMN-Q100-FILENAME (IDX5:)
+                                           TO  WRK-FILENM
+                   MOVE    1               TO  IDX4
+               END-IF
+           END-PERFORM
+           IF      WRK-FILENM          =   SPACE
+               MOVE    "/tmp/"             TO  WRK-FILENM-FOLDER
+               MOVE    SPA-Q02-Q100-FILENAME
+                                           TO  WRK-FILENM
+           END-IF             
+      *
+      *    ファイル保存情報削除
+           INITIALIZE                  ORCSFILESVAREA
+           MOVE    "D"             TO  SFILESV-MODE
+           MOVE    CONST-JOB-SHELLID
+                                   TO  SFILESV-TBL-KEY
+           CALL    "ORCSFILESV"    USING
+                                       ORCSFILESVAREA
+                                       SPA-AREA  
+      *
       *    ジョブ開始セット処理
            MOVE    CONST-JOBID     TO  WRK-JOBID
            PERFORM 900-JOBKANRI-HENSYU-SEC
@@ -556,8 +626,15 @@
       *
            MOVE    SPA-Q02-Q100-PROC-FLG
                                    TO  SHELLTBL-ARG1
-           MOVE    SPA-Q02-Q100-FILENAME
-                                   TO  SHELLTBL-ARG2
+           IF    ( SPA-Q02-Q100-FILE   =   "1" )
+               STRING   WRK-FILENM-FOLDER      DELIMITED  BY  SPACE
+                        WRK-FILENM             DELIMITED  BY  SPACE
+                                               INTO  SHELLTBL-ARG2
+               END-STRING
+           ELSE
+               MOVE    SPA-Q02-Q100-FILENAME
+                                       TO  SHELLTBL-ARG2
+           END-IF
            MOVE    PRFNAME         TO  SHELLTBL-ARG3
            MOVE    SPA-TERMID      TO  SHELLTBL-ARG4
            MOVE    SPA-SYSYMD      TO  SHELLTBL-ARG5
@@ -567,6 +644,18 @@
            MOVE    CONST-JOBID     TO  SHELLTBL-ARG9
            MOVE    CONST-JOB-SHELLID
                                    TO  SHELLTBL-ARG10
+           MOVE    SPA-Q02-Q100-FILE
+                                   TO  SHELLTBL-ARG11
+           MOVE    SPA-Q02-Q100-CDKBN
+                                   TO  SHELLTBL-ARG12
+           MOVE    WRK-FILENM-FOLDER
+                                   TO  SHELLTBL-ARG13
+           MOVE    WRK-FILENM      TO  SHELLTBL-ARG14
+           STRING   "/tmp/"                DELIMITED  BY  SIZE
+                    WRK-FILENM             DELIMITED  BY  SPACE
+                    ".wk"                  DELIMITED  BY  SIZE
+                                           INTO  SHELLTBL-ARG15
+           END-STRING
       *
            MOVE    SHELLTBL        TO  MCPDATA-REC
            MOVE    "SHELL"         TO  MCP-FUNC
@@ -575,6 +664,13 @@
            CALL    "ORCDBMAIN"         USING   MCPAREA
                                                MCPDATA-REC
                                                SPA-AREA
+      *
+           IF    ( SPA-Q02-Q100-FILE   =   "1" )
+               MOVE    "SV"            TO  SPA-QID1-FLG
+           ELSE
+               MOVE    SPACE           TO  SPA-QID1-FLG
+           END-IF
+           MOVE    SPACE           TO  SPA-QIDCD
       *
            PERFORM 490-KAKUNIN-SEC
       *
@@ -1757,6 +1853,7 @@
       *
            MOVE    SPACE           TO  SPA-MOTOPG
            MOVE    SPA-AREA        TO  SPA-COMMON
+           MOVE    SPA-Q01FREE     TO  SPA-FREE
       *
            MOVE    "LINK"          TO  MCP-STATUS
            MOVE    SPACE           TO  MCP-EVENT
@@ -1773,6 +1870,7 @@
            MOVE    "B01"           TO  MCP-WIDGET
       *
            MOVE    "Q02"           TO  SPA-MOTOPG
+                                       SPA-Q97-MOTOPG
            MOVE    "Q97"           TO  SPA-SAKIPG
       *
            MOVE    "NEW"           TO  MCP-PUTTYPE
