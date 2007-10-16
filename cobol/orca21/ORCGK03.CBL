@@ -210,6 +210,8 @@
       *
            03  WRK-Z97             PIC ZZZZ,ZZ9.
       *
+           03  WRK-ZZ9             PIC ZZ9.
+      *
            03  WRK-HEN             PIC X(10).
            03  WRK-HEN-1           PIC X(10).
            03  WRK-HEN-2           PIC X(10).
@@ -333,25 +335,6 @@
            03  WRK-SRYKA               PIC X(02).
       *
            03  WRK-RENNUM              PIC 9(02).
-      *
-      *    ø«Œ≈π‘∞Ÿ∆‚Õ∆»Ê≥”Õ—•∆°º•÷•Î
-      *01  TBL-AREA.
-      *    03  TBL-MAE-AREA.
-      *        05  TBL-MAE-REC     OCCURS   30.
-      *            07  TBL-MAE-SRYCD       PIC  X(09).
-      *            07  TBL-MAE-SRYSURYO    PIC  9(05)V9(03).
-      *            07  TBL-MAE-SRYKAISU    PIC  9(03).
-      *            07  TBL-MAE-INPUTCOMENT PIC  X(40).
-      *            07  TBL-MAE-ATAI-G.
-      *                09  TBL-MAE-ATAI    PIC  X(08)  OCCURS  3.
-      *    03  TBL-ATO-AREA.
-      *        05  TBL-ATO-REC     OCCURS   30.
-      *            07  TBL-ATO-SRYCD       PIC  X(09).
-      *            07  TBL-ATO-SRYSURYO    PIC  9(05)V9(03).
-      *            07  TBL-ATO-SRYKAISU    PIC  9(03).
-      *            07  TBL-ATO-INPUTCOMENT PIC  X(40).
-      *            07  TBL-ATO-ATAI-G.
-      *****            09  TBL-ATO-ATAI    PIC  X(08)  OCCURS  3.
       *
       *    ∫ﬁ•∆°º•÷•ÎŒŒ∞Ë
        01  WRK-TBL-ZAINUM-AREA.
@@ -1328,6 +1311,31 @@
            ELSE
                MOVE    SPACE               TO  SPA-GMN-FUKUZENMDS
            END-IF
+      *!!
+      *    ∏∫Ã»∂Ë ¨
+           MOVE    SPACE               TO  SPA-GMN-GENMENMEI
+           IF     (SYU-DISCOUNT-TEIRITU    NOT =   SPACE )
+               IF      SPA-GMN-HKNCOMBI        =   "0000"
+                   MOVE    "∏∫Ã»Õ≠"            TO  SPA-GMN-GENMENMEI
+               ELSE
+                   EVALUATE    SYU-DISCOUNT-TEIRITU
+                       WHEN    "1"
+                           MOVE    SYU-DISCOUNT-RATE   TO  WRK-ZZ9
+                           STRING    "∏∫Ã»Õ≠° "
+                                     WRK-ZZ9
+                                     "°Û°À"     DELIMITED  BY  SIZE
+                                                INTO   SPA-GMN-GENMENMEI
+                           END-STRING
+                       WHEN    "2"
+                           MOVE    SYU-DISCOUNT-RATE   TO  WRK-Z97
+                           STRING    "∏∫Ã»Õ≠° "
+                                     WRK-Z97
+                                     "±ﬂ°À"     DELIMITED  BY  SIZE
+                                                INTO   SPA-GMN-GENMENMEI
+                           END-STRING
+                   END-EVALUATE
+               END-IF
+           END-IF
       *
            .
        31021-SYUNOU-GMN-HEN-EXT.
@@ -1772,6 +1780,14 @@
                                            TO  SPA-NAI-HENKIN
            END-IF
       *
+      *!
+      *    ∏∫Ã»∂Ë ¨
+           IF     (WRK-SYU-DISCOUNT-TEIRITU    NOT =   SPACE )
+               MOVE    WRK-SYU-DISCOUNT-TEIRITU
+                                               TO  SYU-DISCOUNT-TEIRITU
+               MOVE    WRK-SYU-DISCOUNT-RATE
+                                               TO  SYU-DISCOUNT-RATE
+           END-IF
             .
        31000-SYUNOU-ADD-EXT.
            EXIT.
@@ -2858,6 +2874,12 @@
            END-IF
       *
            MOVE    SPA-GMN-TEISEIMSG       TO  K03-TEISEIMSG
+      *!
+      *∏∫Ã»
+           MOVE    SPA-GMN-GENMENMEI   TO  K03-GENMENMEI-VALUE
+           IF      SPA-GMN-GENMENMEI   NOT =   SPACE
+               MOVE    "blue"              TO  K03-GENMENMEI-STYLE
+           END-IF
       *
       *    ¬–æ›§ §∑§ŒæÏπÁ
            IF      SPA-NAI-FLG         =   1

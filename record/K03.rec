@@ -391,5 +391,9 @@ K03	{
 		SRYMEI15	{
 			value	varchar(12);
 		};
+		GENMENMEI	{
+		    style   varchar(20);
+			value	varchar(34);
+		};
 	};
 };

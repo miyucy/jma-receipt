@@ -77,6 +77,8 @@
                        09  SPA-GMN-F1          PIC X(01).
                        09  SPA-GMN-DRCDMEI     PIC X(24).
       *
+                   07  SPA-GMN-GENMENMEI       PIC X(40).
+      *
                05  SPA-GMN-SYOKI-AREA.
                    07  SPA-GMN-DRCDLST-G.
                        09  SPA-GMN-DRCDLST     OCCURS  20.

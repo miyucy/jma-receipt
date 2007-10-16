@@ -278,4 +278,7 @@
                 04  K03-VALUE   PIC X(10).
               03  K03-SRYMEI15.
                 04  K03-VALUE   PIC X(12).
+              03  K03-GENMENMEI.
+                04  K03-GENMENMEI-STYLE   PIC X(20).
+                04  K03-GENMENMEI-VALUE   PIC X(34).
 
