@@ -1,7 +1,7 @@
 K07	{
 	fixed32	{
 		SELNUM	{
-			value	varchar(3);
+			value	number(4);
 		};
 		scrolledwindow26	{
 			LIST	{
@@ -9,7 +9,7 @@ K07	{
 				row	int;
 				rowattr	int;
 				item	{
-					value1	varchar(3);
+					value1	varchar(4);
 					value2	varchar(14);
 					value3	varchar(4);
 					value4	varchar(4);

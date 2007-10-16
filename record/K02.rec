@@ -346,7 +346,7 @@ K02	{
 			label	varchar(10);
 		};
 		DOSELNUM	{
-			value	varchar(3);
+			value	varchar(4);
 		};
 		TEISEI	{
 			value	bool;

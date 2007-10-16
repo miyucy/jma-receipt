@@ -2021,6 +2021,10 @@
                    MOVE    1                   TO  FLG-ERR
                END-IF
            END-IF
+      *    ェ情醱﹋失白正□弗失﹌
+           IF      SPA-NAI-NYUIN       =   1
+               MOVE    1                   TO  FLG-ERR
+           END-IF
       *
            IF      FLG-ERR             =   ZERO
       *        洢碳及賡褲恔遙爛

@@ -662,6 +662,21 @@
                                            DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
+               WHEN    "7008"
+                   STRING  "訂正中です。受診履歴一覧は変更できません。"
+                                           DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
+               WHEN    "7009"
+                   STRING  "受診履歴の次頁はありません。"
+                                           DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
+               WHEN    "7010"
+                   STRING  "受診履歴の前頁はありません。"
+                                           DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
                WHEN    "8000"
                    MOVE    "労災保険の診療コードです。入力できません。"
                                        TO  SPA-ERRMSG
@@ -917,6 +932,12 @@
                WHEN    "9029"
                    MOVE    "アフターケアは入院では選択できません。"
                                        TO  SPA-ERRMSG
+               WHEN    "9036"
+                   STRING  "入院中です。"
+                           "アフターケア以外は入力できません"
+                                       DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
                WHEN    "9030"
                    MOVE    "時間加算区分が選択中の時間加算区分と"
                                        TO  SPA-ERRMSG

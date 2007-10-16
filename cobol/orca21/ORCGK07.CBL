@@ -98,12 +98,13 @@
                05  WRK-SDD         PIC 9(02).
            03  WRK-WYMD            PIC X(09).
       *
-           03  WRK-DOSELNUM            PIC 9(03).
+           03  WRK-SELNUM            PIC 9(04).
+           03  WRK-DOSELNUM          PIC 9(04).
       *
            03  WRK-DBPATH              PIC X(64).
       *
        01  WRK-HENSYU-AREA.
-           03  WRK-ZZ              PIC ZZZ.
+           03  WRK-ZZ              PIC ZZZZ.
       *
            03  WRK-HENYMD.
                05  WRK-HGO         PIC X(01).
@@ -441,26 +442,37 @@
        4101-SELNUM-CHK-SEC              SECTION.
       *
            MOVE    K07-SELNUM           TO  SPA-GMN-K07-SELNUM
-           IF      K07-SELNUM           =   SPACE
+           IF      K07-SELNUM           =   ZERO
                MOVE    ZERO             TO  SPA-NAI-K07-SELNUM
-           ELSE
-               INITIALIZE                      ORCSNUMAREA
-               MOVE    K07-SELNUM           TO  SNUM-INX
-               CALL    "ORCSNUM"           USING
-                                           ORCSNUMAREA
-               IF     (SNUM-RC         NOT =   ZERO  )   OR
-                      (SNUM-MINKBN     NOT =   SPACE )   OR
-                      (SNUM-SYOKBN     NOT =   SPACE )
-                   MOVE    "0001"              TO  SPA-ERRCD
-                   GO      TO      4101-SELNUM-CHK-EXT
-               ELSE
-                   MOVE    SNUM-OUTNUM       TO  SPA-NAI-K07-SELNUM
-               END-IF
            END-IF
-           MOVE    SPA-NAI-K07-SELNUM  TO  WRK-ZZ
-           MOVE    WRK-ZZ              TO  SPA-GMN-K07-SELNUM
+      **** ELSE
+      *        INITIALIZE                      ORCSNUMAREA
+      *        MOVE    K07-SELNUM           TO  SNUM-INX
+      *        CALL    "ORCSNUM"           USING
+      *                                    ORCSNUMAREA
+      *        IF     (SNUM-RC         NOT =   ZERO  )   OR
+      *               (SNUM-MINKBN     NOT =   SPACE )   OR
+      *               (SNUM-SYOKBN     NOT =   SPACE )
+      *            MOVE    "0001"              TO  SPA-ERRCD
+      *            GO      TO      4101-SELNUM-CHK-EXT
+      *        ELSE
+      *            MOVE    SNUM-OUTNUM       TO  SPA-NAI-K07-SELNUM
+      *        END-IF
+      *****END-IF
+      *    MOVE    SPA-NAI-K07-SELNUM  TO  WRK-ZZ
+      *****MOVE    WRK-ZZ              TO  SPA-GMN-K07-SELNUM
+           MOVE    ZERO                TO  SPA-NAI-K07-SELNUM
+           PERFORM VARYING     IDX     FROM   1   BY  1
+                   UNTIL       IDX     >   SPA-K09GMN-MAX1
+              IF      SPA-K09GMN-NO (IDX)      =   SPA-GMN-K07-SELNUM
+                  MOVE    IDX                  TO  SPA-NAI-K07-SELNUM
+                  MOVE    SPA-K09GMN-MAX1      TO  IDX
+              END-IF
+           END-PERFORM
       *
-           IF      SPA-NAI-K07-SELNUM  >   SPA-K09GMN-MAX1
+           IF    ((SPA-GMN-K07-SELNUM  NOT =   ZERO ) AND
+                  (SPA-NAI-K07-SELNUM      =   ZERO ))  OR
+                 ( SPA-NAI-K07-SELNUM  >   SPA-K09GMN-MAX1 )
                MOVE    "0001"              TO  SPA-ERRCD
            ELSE
                PERFORM 490-KAKUTEI-SEC
@@ -489,9 +501,10 @@
       **** END-IF
       *
       *    ÁªÂòÈÖ¹æ¤ò£Ë£°£¹¤ØÅÏ¤¹
-           MOVE    SPA-NAI-K07-SELNUM  TO  SPA-NAI-DOSELNUM
-           MOVE    SPA-NAI-K07-SELNUM  TO  WRK-ZZ
-           MOVE    WRK-ZZ              TO  SPA-GMN-DOSELNUM
+           MOVE    SPA-NAI-K07-SELNUM  TO  SPA-K09-DOSELNUM
+           MOVE    SPA-GMN-K07-SELNUM  TO  SPA-K09-SELNUM
+      *****MOVE    SPA-NAI-K07-SELNUM  TO  WRK-ZZ
+      **** MOVE    WRK-ZZ              TO  SPA-GMN-DOSELNUM
       *
            PERFORM 210-BACK
            .
@@ -504,25 +517,28 @@
        4102-SELECT-SEC           SECTION.
       *
            MOVE    ZERO                TO  WRK-DOSELNUM
+           MOVE    ZERO                TO  WRK-SELNUM
       *
            PERFORM VARYING     IDX   FROM   1   BY  1
                    UNTIL       IDX   >   SPA-K09GMN-MAX1
               IF      K07-SELECT(IDX)         =  "T"
-                  MOVE    SPA-K09GMN-NO (IDX)    TO  WRK-DOSELNUM
+                  MOVE    SPA-K09GMN-NO (IDX)    TO  WRK-SELNUM
+                  MOVE    IDX                    TO  WRK-DOSELNUM
               END-IF
            END-PERFORM
       *
            IF      WRK-DOSELNUM        >   ZERO
-               MOVE    WRK-DOSELNUM        TO  SPA-NAI-DOSELNUM
+               MOVE    WRK-DOSELNUM        TO  SPA-NAI-K07-SELNUM
+               MOVE    WRK-SELNUM          TO  SPA-GMN-K07-SELNUM
            END-IF
       *
-           IF      SPA-NAI-DOSELNUM    <   01   OR
+           IF      SPA-NAI-K07-SELNUM  <   01   OR
                                        >   SPA-K09GMN-MAX1
                CONTINUE
            ELSE
-      *
-               MOVE    SPA-NAI-DOSELNUM    TO  WRK-ZZ
-               MOVE    WRK-ZZ              TO  SPA-GMN-DOSELNUM
+      *        ÁªÂòÈÖ¹æ¤ò£Ë£°£¹¤ØÅÏ¤¹
+               MOVE    SPA-NAI-K07-SELNUM  TO  SPA-K09-DOSELNUM
+               MOVE    SPA-GMN-K07-SELNUM  TO  SPA-K09-SELNUM
       *        ÁªÂò¸å¡¢³ÎÄê½ªÎ»¤Ø
                PERFORM 210-BACK
            END-IF

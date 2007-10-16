@@ -142,10 +142,9 @@
                05  SPA-FTNHEN-KBN          PIC X(01).
       *包括診療行為チェック
                05  SPA-HKTSANTEI-FLG       PIC 9(01).
-      *TEST
+      *
       *前回保険組合せ相違チェック
                05  SPA-ZENHKNCHK-FLG       PIC X(01).
-      *TEST
       *
            03  SPA-K01SET-AREA.
       *処理フラグ（０：通常、１：訂正）
@@ -174,11 +173,9 @@
       *********05  SPA-RSI-HKNKBN          PIC  X(01).
       *保険名称（保険者番号編集）
                05  SPA-HKNCOMBIMEI-60       PIC X(60).
-      *TEST
       *前回保険組合せ判定用
                05  SPA-HKNCHK-FLG          PIC 9(01).
                05  SPA-HKNCHK-CHK          PIC 9(01).
-      *TEST
       *
       *初診算定日
                05  SPA-SYOYMD              PIC  X(08).
@@ -307,6 +304,8 @@
                                               OCCURS   31.
       *        最終退院日
                05  SPA-NAI-LASTTAIIN          PIC X(08).
+      *        入院中区分（アフターケアの外来）
+               05  SPA-NAI-NYUIN              PIC 9(01).
       *
       *複数診療科用
            03  SPA-FUKU-AREA.

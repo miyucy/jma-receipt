@@ -52,7 +52,7 @@
                 04  K02N-SURYO-STYLE   PIC X(20).
                 04  K02N-SURYO   PIC X(60).
               03  K02N-DOSELNUM.
-                04  K02N-VALUE  PIC X(3).
+                04  K02N-VALUE  PIC X(4).
               03  K02N-NYUINKA.
                 04  K02N-VALUE  PIC X(10).
               03  K02N-NYUINKIKAN.
@@ -76,7 +76,7 @@
                   05  K02N-ROW     PIC S9(9)   BINARY.
                   05  K02N-ROWATTR PIC S9(9)   BINARY.
                   05  K02N-ITEM       OCCURS  150 TIMES.
-                    06  K02N-NO      PIC X(3).
+                    06  K02N-NO      PIC X(4).
                     06  K02N-RRKYMD  PIC X(13).
                     06  K02N-RRKSRYKA  PIC X(2).
                     06  K02N-RRKHKNCOMBI  PIC X(04).

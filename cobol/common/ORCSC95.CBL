@@ -43,6 +43,7 @@
       *  03.05.00    NACL-Â¿¡¹Ç¼  07/04/XX  ¥°¥ë¡¼¥×¿ÇÎÅÂÐ±þ
       *  03.05.01    NACL-Â¿¡¹Ç¼  07/08/27  ¸øÈñ´ü¸ÂÀÚ¤ìÂÐ±þ
       *  04.00.00    NACL-Â¿¡¹Ç¼  07/09/XX  ¥Æ¡¼¥Ö¥ë£´£°£°ÂÐ±þ
+      *  04.00.01    NACL-Â¿¡¹Ç¼  07/10/XX  ¼õ¿ÇÍúÎò°ìÍ÷¼¡ÊÇÂÐ±þ
       *****************************************************************
       *
       *
@@ -146,6 +147,12 @@
            03  IDX-Y2              PIC 9(02).
            03  IDX-Y3              PIC 9(02).
       *
+           03  IDX-S1              PIC 9(04).
+           03  IDX-S2              PIC 9(06).
+           03  IDX-SP              PIC 9(06).
+      *
+           03  IDX-F3              PIC 9(04).
+      *
       *    °ì»þÎÎ°è
        01  WRK-AREA.
            03  WRK-SYMD.
@@ -200,8 +207,6 @@
            03  WRK-GOK-TENSU       PIC 9(11).
       *
            03  WRK-HEN-SRYCD       PIC X(09).
-      *
-           03  WRK-JYURRK-REC      PIC X(5000).
       *
       *    É½¼¨ÍÑÊÝ¸±
            03  WRK-IDXH                PIC 9(04).
@@ -520,6 +525,10 @@
       *        ÃæÅÓ½ªÎ»Ê¬ÄÉ²Ã
                WHEN    "A"
                    PERFORM 300-WKSRYACT-INSERT-SEC
+      *        ¼õ¿ÇÍúÎò¥Ú¡¼¥¸ÊÑ¹¹
+               WHEN    "N"
+      *            ¼õ¿ÇÍúÎò°ìÍ÷ÊÔ½¸
+                   PERFORM 2002-JYURRK-SET-SEC
            END-EVALUATE
       *
            .
@@ -1593,6 +1602,7 @@
       *    ½é´üÊÔ½¸»þ
            IF      LNK-SC95-KBN        =   "2"
       *        ¼õ¿ÇÍúÎò°ìÍ÷ÊÔ½¸
+               MOVE    ZERO                TO  SPA-RRK-PAGE
                PERFORM 2002-JYURRK-SET-SEC
       *        ºÇ½ªÍè±¡Æü¤«¤é¤ÎÈ½Äê
                IF      SPA-LAST-KIKAN      NOT =   ZERO
@@ -1647,6 +1657,7 @@
       *
            INITIALIZE                  SPA-GMN-RRKTBL
            INITIALIZE                  SPA-NAI-RRKTBL
+           INITIALIZE                  HZN-JYURRK-REC
       *    ¼õ¿ÇÎò¤ò¸¡º÷¤¹¤ë  °åÎÅµ¡´Ø¡¢´µ¼Ô£É£Ä
            INITIALIZE                  JYURRK-REC
            MOVE    SPA-HOSPNUM         TO  JYURRK-HOSPNUM
@@ -1666,44 +1677,94 @@
            END-IF
       *
            MOVE    ZERO                TO  IDX
+      *    ³«»Ï°ÌÃÖ»ØÄê
+           IF      SPA-RRK-PAGE        =   ZERO
+               MOVE    1               TO  SPA-RRK-PAGE
+           END-IF
+           COMPUTE IDX-SP              =  ((SPA-RRK-PAGE  -   1  )
+                                       *   150  )
+                                       +   1
+           MOVE    ZERO                TO  IDX-S1
+           MOVE    ZERO                TO  IDX-S2
+           MOVE    ZERO                TO  SPA-RRK-NEXT
+      *
            PERFORM
-               UNTIL   (FLG-JYURRK         =   1   )  OR
-                       (SPA-GMN-MAX1       >=  150 )
+               UNTIL   (FLG-JYURRK         =   1   )
+                  OR   (SPA-RRK-NEXT       =   1   )
+      *D          OR   (SPA-GMN-MAX1       >=  150 )
       *        ºÇ½ª¼õ¿ÇÆü¤È²Ê¤ò¤¬Æ±¤¸»þ¡¢ÊÝ¸±ÁÈ¹ç¤»¤ò·èÄê¤¹¤ë
                IF      (JYURRK-SRYYMD      =   SPA-LSTYMD )  AND
                        (JYURRK-SRYKA       =   SPA-LSTSRYKA) AND
                        (JYURRK-SRYKA       =   SPA-SRYKA  ) AND
                        (SPA-HKNCOMBINUM    =   SPACE      )  AND
                        (JYURRK-HKNCOMBINUM NOT =   "9999"  )
+                 AND   (SPA-RRK-PAGE       =   1          )
                    MOVE    JYURRK-HKNCOMBINUM  TO  SPA-HKNCOMBINUM
                END-IF
-      *
-      *        ¿ÇÎÅÆü¡¢Ï¢ÈÖ¤Ç£±¹Ô¤È¤¹¤ë
-               MOVE    ZERO            TO  IDX-S
-               PERFORM VARYING     IDX2    FROM    1   BY  1
-                       UNTIL       IDX2    >   SPA-GMN-MAX1
-                   IF     (JYURRK-RENNUM       =   SPA-NAI-RENNUM
-                                                       (IDX2))  AND
-                          (JYURRK-DOUJI-RENNUM =   SPA-NAI-DOUJI-RENNUM
-                                                       (IDX2))  AND
-                          (JYURRK-SRYYMD       =   SPA-NAI-RRKYMD
-                                                       (IDX2))
-                     AND  (JYURRK-SRYKA        =   SPA-NAI-RRK-SRYKA
-                                                       (IDX2))
-                       MOVE    IDX2            TO  IDX-S
-                       MOVE    SPA-GMN-MAX1    TO  IDX2
+      *TEST
+      **       ¿ÇÎÅÆü¡¢Ï¢ÈÖ¤Ç£±¹Ô¤È¤¹¤ë
+      *        MOVE    ZERO            TO  IDX-S
+      *        PERFORM VARYING     IDX2    FROM    1   BY  1
+      *                UNTIL       IDX2    >   SPA-GMN-MAX1
+      *            IF     (JYURRK-RENNUM       =   SPA-NAI-RENNUM
+      *                                                (IDX2))  AND
+      *                   (JYURRK-DOUJI-RENNUM =   SPA-NAI-DOUJI-RENNUM
+      *                                                (IDX2))  AND
+      *                   (JYURRK-SRYYMD       =   SPA-NAI-RRKYMD
+      *                                                (IDX2))
+      *              AND  (JYURRK-SRYKA        =   SPA-NAI-RRK-SRYKA
+      *                                                (IDX2))
+      *                MOVE    IDX2            TO  IDX-S
+      *                MOVE    SPA-GMN-MAX1    TO  IDX2
+      *            END-IF
+      **       END-PERFORM
+      *TEST
+               MOVE    ZERO                TO  IDX-S
+               IF      JYURRK-EDANUM       =   1
+                   ADD     1                   TO  IDX-S2
+                   IF      IDX-S1              =   9999
+                       MOVE    ZERO            TO  IDX-S1
                    END-IF
-               END-PERFORM
-      *
-               IF      IDX-S           =   ZERO
-                   ADD     1               TO  SPA-GMN-MAX1
-                   MOVE    SPA-GMN-MAX1    TO  IDX
+                   ADD     1                   TO  IDX-S1
                ELSE
-                   MOVE    IDX-S           TO  IDX
+                   IF     (JYURRK-SRYYMD       =   HZN-JYURRK-SRYYMD)
+                     AND  (JYURRK-SRYKA        =   HZN-JYURRK-SRYKA )
+                     AND  (JYURRK-HKNCOMBINUM  =
+                                               HZN-JYURRK-HKNCOMBINUM )
+                     AND  (JYURRK-RENNUM       =   HZN-JYURRK-RENNUM)
+                     AND  (JYURRK-DOUJI-RENNUM =
+                                               HZN-JYURRK-DOUJI-RENNUM)
+                       MOVE    IDX-S1              TO  IDX-S
+                   ELSE
+                       ADD     1                   TO  IDX-S2
+                       IF      IDX-S1              =   9999
+                           MOVE    ZERO            TO  IDX-S1
+                       END-IF
+                       ADD     1                   TO  IDX-S1
+                       DISPLAY "ORCSC95 JYURRK EDANUM ERR??:"
+                                                    JYURRK-KEY
+                   END-IF
+               END-IF
+               IF      IDX-SP          <=   IDX-S2
+      *            ÊÔ½¸ÂÐ¾Ý
+                   IF      IDX-S           =   ZERO
+                       ADD     1               TO  IDX
+                       IF      IDX             >   150
+                           MOVE    1           TO  SPA-RRK-NEXT
+                       ELSE
+                           MOVE    IDX         TO  SPA-GMN-MAX1
+                       END-IF
+                   END-IF
+                   IF      SPA-RRK-NEXT        =   ZERO
+      *                ÌÀºÙ¹àÌÜÂàÈò
+                       PERFORM 20021-JYURRK-HEN-SEC
+                   END-IF
                END-IF
       *
-      *        ÌÀºÙ¹àÌÜÂàÈò
-               PERFORM 20021-JYURRK-HEN-SEC
+      **       ÌÀºÙ¹àÌÜÂàÈò
+      **       PERFORM 20021-JYURRK-HEN-SEC
+      *
+               MOVE    JYURRK-REC          TO  HZN-JYURRK-REC
       *
                MOVE    "tbl_jyurrk"        TO  MCP-TABLE
                MOVE    "key2"              TO  MCP-PATHNAME
@@ -1792,7 +1853,8 @@
       *****************************************************************
        20021-JYURRK-HEN-SEC             SECTION.
       *
-           MOVE    IDX                 TO  SPA-GMN-NO    (IDX)
+      *D   MOVE    IDX                 TO  SPA-GMN-NO    (IDX)
+           MOVE    IDX-S1              TO  SPA-GMN-NO    (IDX)
       *    Ï¢ÈÖ
            MOVE    JYURRK-RENNUM       TO  SPA-NAI-RENNUM(IDX)
       *    Ï¢ÈÖ
@@ -2170,7 +2232,6 @@
       *
            INITIALIZE                  SPA-FUKU-AREA
            INITIALIZE                  WRK-FUKU-AREA
-           MOVE    SPACE               TO  WRK-JYURRK-REC
            MOVE    SPACE               TO  HZN-JYURRK-REC
            MOVE    ZERO                TO  IDX-JYU
            MOVE    SPACE               TO  WRK-TAKA-SRYKA-AREA
@@ -2294,8 +2355,6 @@
                MOVE    SPA-NAI-RRK-SRYKA(IDX-J2)
                                            TO  SPA-RRK-LSTSRYKA
            END-IF
-      *
-      *****MOVE    WRK-JYURRK-REC      TO  JYURRK-REC
       *
       *    ¿ÇÎÅ²Ê
            IF     (SPA-SRYKA           =   SPACE )  AND
@@ -4063,6 +4122,7 @@
       *    ½é´üÊÔ½¸»þ
            IF      LNK-SC95-KBN        =   "5"
       *        ¼õ¿ÇÍúÎò°ìÍ÷ÊÔ½¸
+               MOVE    ZERO                TO  SPA-RRK-PAGE
                PERFORM 2002-JYURRK-SET-SEC
            END-IF
       *
@@ -4771,6 +4831,8 @@
            MOVE    SPACE               TO  WRK-KEY-DRCD
            MOVE    SPACE               TO  WRK-KEY-SRYYMD
            MOVE    ZERO                TO  WRK-RENNUM
+      *    Ê£¿ô¿ÇÎÅ²Ê¡¦ÊÝ¸±
+           INITIALIZE                  SPA-TEI-AREA
            PERFORM
                    UNTIL    FLG-JYURRK     =   1
                MOVE    ZERO                TO  FLG-NO
@@ -4792,6 +4854,14 @@
                        MOVE    JYURRK-HKNCOMBINUM  TO  WRK-KEY-HKNCOMBI
                        MOVE    JYURRK-SRYYMD       TO  WRK-KEY-SRYYMD
                        MOVE    JYURRK-DRCD         TO  WRK-KEY-DRCD
+                   END-IF
+                   IF     (JYURRK-NYUGAIKBN        =   "2"      ) AND
+                          (LNK-SC95-GRP-DENPNUM    NOT =   ZERO ) AND
+                          (LNK-SC95-GRP-DENPNUM
+                                               =   JYURRK-GRP-DENPNUM)
+                     AND  (JYURRK-EDANUM       =   1            )
+      *                ÄûÀµ»þ¤ÎÊ£¿ôÍúÎòÊÔ½¸
+                       PERFORM 49022-TEISEI-RRKHENSYU-SEC
                    END-IF
                    IF     (LNK-SC95-GRP-DENPNUM    NOT =   ZERO ) AND
                          ((JYURRK-SRYKA        NOT =  WRK-KEY-SRYKA) OR
@@ -4891,6 +4961,28 @@
       *
           .
        49021-FUKU-HENSYU-EXT.
+           EXIT.
+      *****************************************************************
+      *    ÄûÀµ»þ¤ÎÊ£¿ôÍúÎòÊÔ½¸½èÍý
+      *****************************************************************
+       49022-TEISEI-RRKHENSYU-SEC       SECTION.
+      *
+           MOVE    JYURRK-GRP-RENNUM   TO  IDX-F3
+           IF     (IDX-F3              >=   1 )  AND
+                  (IDX-F3              <=   15)
+               MOVE    JYURRK-DENPNUM      TO  SPA-TEI-DENPNUM
+                                                              (IDX-F3)
+               MOVE    JYURRK-SRYKA        TO  SPA-TEI-SRYKA  (IDX-F3)
+               MOVE    JYURRK-HKNCOMBINUM  TO  SPA-TEI-HKNCOMBI
+                                                              (IDX-F3)
+               MOVE    JYURRK-RENNUM       TO  SPA-TEI-RENNUM (IDX-F3)
+               MOVE    JYURRK-DOUJI-RENNUM TO  SPA-TEI-DOUJI-RENNUM
+                                                              (IDX-F3)
+           ELSE
+               MOVE    "0141"              TO  SPA-ERRCD
+           END-IF
+           .
+       49022-TEISEI-RRKHENSYU-EXT.
            EXIT.
       *****************************************************************
       *    ¥ï¡¼¥¯¿ÇÎÅ¹Ô°ÙºîÀ®½èÍý

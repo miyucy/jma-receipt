@@ -2674,7 +2674,7 @@
     <widget>
       <class>GtkPandaEntry</class>
       <name>DOSELNUM</name>
-      <x>904</x>
+      <x>880</x>
       <y>612</y>
       <width>48</width>
       <height>24</height>
@@ -2693,7 +2693,7 @@
       </signal>
       <editable>True</editable>
       <text_visible>True</text_visible>
-      <text_max_length>3</text_max_length>
+      <text_max_length>4</text_max_length>
       <text></text>
       <input_mode>ASCII</input_mode>
       <xim_enabled>False</xim_enabled>
@@ -3204,22 +3204,6 @@
 
     <widget>
       <class>GtkLabel</class>
-      <name>label162</name>
-      <x>824</x>
-      <y>612</y>
-      <width>80</width>
-      <height>24</height>
-      <label>£Ä£ÏÁªÂò</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
       <name>CONTKBN</name>
       <x>824</x>
       <y>60</y>
@@ -3304,7 +3288,7 @@
 	  <last_modification_time>Fri, 31 Aug 2001 02:23:14 GMT</last_modification_time>
 	</signal>
 	<columns>4</columns>
-	<column_widths>24,90,16,23</column_widths>
+	<column_widths>32,83,13,27</column_widths>
 	<selection_mode>GTK_SELECTION_SINGLE</selection_mode>
 	<show_titles>True</show_titles>
 	<shadow_type>GTK_SHADOW_IN</shadow_type>
@@ -3492,22 +3476,6 @@
     </widget>
 
     <widget>
-      <class>GtkLabel</class>
-      <name>MODE</name>
-      <x>824</x>
-      <y>644</y>
-      <width>76</width>
-      <height>20</height>
-      <label></label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
       <class>GtkPandaCombo</class>
       <name>JIKANKBNCOMB</name>
       <x>854</x>
@@ -3575,6 +3543,84 @@
       <label></label>
       <relief>GTK_RELIEF_NORMAL</relief>
       <active>False</active>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>MODE</name>
+      <x>824</x>
+      <y>644</y>
+      <width>76</width>
+      <height>20</height>
+      <label></label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label162</name>
+      <x>808</x>
+      <y>612</y>
+      <width>80</width>
+      <height>24</height>
+      <label>£Ä£ÏÁªÂò</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkButton</class>
+      <name>BC06</name>
+      <x>940</x>
+      <y>612</y>
+      <width>28</width>
+      <height>24</height>
+      <can_focus>True</can_focus>
+      <accelerator>
+	<modifiers>GDK_CONTROL_MASK</modifiers>
+	<key>GDK_F6</key>
+	<signal>clicked</signal>
+      </accelerator>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Mon, 25 Dec 2000 04:56:12 GMT</last_modification_time>
+      </signal>
+      <label>Á°</label>
+      <relief>GTK_RELIEF_NORMAL</relief>
+    </widget>
+
+    <widget>
+      <class>GtkButton</class>
+      <name>BC07</name>
+      <x>972</x>
+      <y>612</y>
+      <width>28</width>
+      <height>24</height>
+      <can_focus>True</can_focus>
+      <accelerator>
+	<modifiers>GDK_CONTROL_MASK</modifiers>
+	<key>GDK_F7</key>
+	<signal>clicked</signal>
+      </accelerator>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Mon, 25 Dec 2000 04:56:12 GMT</last_modification_time>
+      </signal>
+      <label>¼¡</label>
+      <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
   </widget>
 </widget>

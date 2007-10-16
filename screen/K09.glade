@@ -97,37 +97,9 @@
     </widget>
 
     <widget>
-      <class>GtkPandaEntry</class>
-      <name>SELNUM</name>
-      <x>84</x>
-      <y>536</y>
-      <width>40</width>
-      <height>24</height>
-      <can_focus>True</can_focus>
-      <signal>
-	<name>activate</name>
-	<handler>send_event</handler>
-	<data>ACTIVATE</data>
-	<last_modification_time>Mon, 25 Jun 2001 02:37:47 GMT</last_modification_time>
-      </signal>
-      <signal>
-	<name>changed</name>
-	<handler>entry_changed</handler>
-	<data>CHANGED</data>
-	<last_modification_time>Mon, 25 Jun 2001 02:38:10 GMT</last_modification_time>
-      </signal>
-      <editable>True</editable>
-      <text_visible>True</text_visible>
-      <text_max_length>3</text_max_length>
-      <text></text>
-      <input_mode>ASCII</input_mode>
-      <xim_enabled>False</xim_enabled>
-    </widget>
-
-    <widget>
       <class>GtkButton</class>
       <name>B05</name>
-      <x>212</x>
+      <x>236</x>
       <y>572</y>
       <width>90</width>
       <height>24</height>
@@ -245,7 +217,7 @@
 	  <last_modification_time>Fri, 07 Sep 2001 04:22:00 GMT</last_modification_time>
 	</signal>
 	<columns>4</columns>
-	<column_widths>23,91,18,20</column_widths>
+	<column_widths>31,81,18,20</column_widths>
 	<selection_mode>GTK_SELECTION_MULTIPLE</selection_mode>
 	<show_titles>True</show_titles>
 	<shadow_type>GTK_SHADOW_IN</shadow_type>
@@ -529,6 +501,76 @@
 	<input_mode>XIM</input_mode>
 	<xim_enabled>False</xim_enabled>
       </widget>
+    </widget>
+
+    <widget>
+      <class>GtkButton</class>
+      <name>BC06</name>
+      <x>136</x>
+      <y>536</y>
+      <width>28</width>
+      <height>24</height>
+      <can_focus>True</can_focus>
+      <accelerator>
+	<modifiers>GDK_CONTROL_MASK</modifiers>
+	<key>GDK_F6</key>
+	<signal>clicked</signal>
+      </accelerator>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Mon, 25 Dec 2000 04:55:00 GMT</last_modification_time>
+      </signal>
+      <label>СА</label>
+      <relief>GTK_RELIEF_NORMAL</relief>
+    </widget>
+
+    <widget>
+      <class>GtkButton</class>
+      <name>BC07</name>
+      <x>168</x>
+      <y>536</y>
+      <width>28</width>
+      <height>24</height>
+      <can_focus>True</can_focus>
+      <accelerator>
+	<modifiers>GDK_CONTROL_MASK</modifiers>
+	<key>GDK_F7</key>
+	<signal>clicked</signal>
+      </accelerator>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Mon, 25 Dec 2000 04:55:00 GMT</last_modification_time>
+      </signal>
+      <label>МЁ</label>
+      <relief>GTK_RELIEF_NORMAL</relief>
+    </widget>
+
+    <widget>
+      <class>GtkNumberEntry</class>
+      <name>SELNUM</name>
+      <x>84</x>
+      <y>536</y>
+      <width>40</width>
+      <height>24</height>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>activate</name>
+	<handler>send_event</handler>
+	<data>ACTIVATE</data>
+	<last_modification_time>Fri, 21 Sep 2007 06:31:44 GMT</last_modification_time>
+      </signal>
+      <signal>
+	<name>changed</name>
+	<handler>entry_changed</handler>
+	<data>CHANGED</data>
+	<last_modification_time>Fri, 21 Sep 2007 06:31:58 GMT</last_modification_time>
+      </signal>
+      <editable>True</editable>
+      <format>ZZZZ</format>
     </widget>
   </widget>
 </widget>

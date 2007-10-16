@@ -186,6 +186,7 @@
                            11  SPA-NAI-KOH2HKNNUM  PIC  X(03).
                            11  SPA-NAI-KOH3HKNNUM  PIC  X(03).
                            11  SPA-NAI-KOH4HKNNUM  PIC  X(03).
+                           11  SPA-NAI-RSI-HKNKBN  PIC  X(01).
                        09  SPA-HKN-MAX             PIC  9(04).
       *
                    07  SPA-NAI-SYOYMD          PIC X(08).
@@ -1393,6 +1394,9 @@
                                        TO  SPA-GMN-TTEKSTYMD (IDX)
                MOVE    ORCSHKN-GMN-TEKEDYMD (IDX)
                                        TO  SPA-GMN-TTEKEDYMD (IDX)
+      *        労災区分
+               MOVE    ORCSHKN-NAI-RSI-HKNKBN (IDX)
+                                       TO  SPA-NAI-RSI-HKNKBN (IDX)
       *
            END-PERFORM
       *
@@ -2535,6 +2539,8 @@
                                        TO  SPA-KOH3HKNNUM
            MOVE    SPA-NAI-KOH4HKNNUM (SPA-NAI-HKNIDX)
                                        TO  SPA-KOH4HKNNUM
+           MOVE    SPA-NAI-RSI-HKNKBN (SPA-NAI-HKNIDX)
+                                       TO  SPA-RSI-HKNKBN
       *    前回処方表示フラグ
            MOVE    SPA-GMN-ZENKAI      TO  SPA-ZENSYOHOFLG
       *

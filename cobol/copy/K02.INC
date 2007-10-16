@@ -60,7 +60,7 @@
                 04  K02-INGAI-VALUE   PIC X.
                 04  K02-INGAI-LABEL   PIC X(10).
               03  K02-DOSELNUM.
-                04  K02-VALUE   PIC X(3).
+                04  K02-VALUE   PIC X(4).
               03  K02-TEISEI.
                 04  K02-TEISEI-VALUE   PIC X.
                 04  K02-TEISEI-LABEL   PIC X(10).
