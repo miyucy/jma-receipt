@@ -1442,7 +1442,7 @@
            MOVE    SYSKANRI-REC        TO  MCPDATA-REC
            PERFORM 900-SYSKANRI-INV-SEC
            IF      FLG-SYSKANRI            =   ZERO
-               MOVE    MCPDATA-REC         TO  SYS-1007-REC
+               MOVE    SYSKANRI-REC        TO  SYS-1007-REC
                PERFORM VARYING IDX FROM    1   BY  1
                        UNTIL   IDX >       6
                    MOVE    SYS-1007-SANTEI(IDX:1)
@@ -1484,7 +1484,7 @@
            MOVE    SYSKANRI-REC        TO  MCPDATA-REC
            PERFORM 900-SYSKANRI-INV-SEC
            IF      FLG-SYSKANRI            =   ZERO
-               MOVE    MCPDATA-REC     TO  SYS-1008-REC
+               MOVE    SYSKANRI-REC    TO  SYS-1008-REC
       *
       *        育児自動算定
                MOVE    SYS-1008-IKUJIEIYO-FLG
@@ -1953,7 +1953,7 @@
            MOVE    SYSKANRI-REC        TO  MCPDATA-REC
            PERFORM 900-SYSKANRI-INV-SEC
            IF      FLG-SYSKANRI            =   ZERO
-               MOVE    MCPDATA-REC     TO  SYS-1017-REC
+               MOVE    SYSKANRI-REC        TO  SYS-1017-REC
       *        カルテの病名対象
                MOVE    SYS-1017-KARUTE-BYOMEI
                                        TO  SPA-GMN-BYOMEIKBN
@@ -2110,7 +2110,7 @@
            MOVE    SYSKANRI-REC        TO  MCPDATA-REC
            PERFORM 900-SYSKANRI-INV-SEC
            IF      FLG-SYSKANRI        =   ZERO
-               MOVE    MCPDATA-REC     TO  SYS-1038-REC
+               MOVE    SYSKANRI-REC        TO  SYS-1038-REC
            ELSE
                INITIALIZE  SYS-1038-REC
            END-IF
@@ -2327,7 +2327,7 @@
            MOVE    SYSKANRI-REC        TO  MCPDATA-REC
            PERFORM 900-SYSKANRI-INV-SEC
            IF      FLG-SYSKANRI        =   ZERO
-               MOVE    MCPDATA-REC     TO  SYS-1039-REC
+               MOVE    SYSKANRI-REC        TO  SYS-1039-REC
            ELSE
                INITIALIZE  SYS-1039-REC
            END-IF
@@ -2462,7 +2462,7 @@
                MOVE    SYS-1001-REC        TO  MCPDATA-REC
                PERFORM 900-SYSKANRI-INV-SEC
                IF    ( FLG-SYSKANRI        =   ZERO )
-                   MOVE    MCPDATA-REC     TO  SYS-1001-REC
+                   MOVE    SYSKANRI-REC       TO  SYS-1001-REC
                    IF    ( SYS-1001-SKYPRTFLG  =   "1" OR  "2" )
                        MOVE    "1"         TO  SPA-GMN-SYUSKYPRTG
                    ELSE
@@ -2558,7 +2558,7 @@
                MOVE    SYS-5000-REC        TO  MCPDATA-REC
                PERFORM 900-SYSKANRI-INV-SEC
                IF    ( FLG-SYSKANRI        =   ZERO )
-                   MOVE    MCPDATA-REC     TO  SYS-5000-REC
+                   MOVE    SYSKANRI-REC        TO  SYS-5000-REC
                    IF    ( SYS-5000-SKYPRTKBN  =   "1" OR  "2" )
                        MOVE    "1"         TO  SPA-GMN-SYUSKYPRTN
                    ELSE
@@ -2755,7 +2755,7 @@
            MOVE    SYSKANRI-REC        TO  MCPDATA-REC
            PERFORM 900-SYSKANRI-INV-SEC
            IF      FLG-SYSKANRI        =   ZERO
-               MOVE    MCPDATA-REC     TO  SYS-1042-REC
+               MOVE    SYSKANRI-REC        TO  SYS-1042-REC
            ELSE
                INITIALIZE  SYS-1042-REC
            END-IF
@@ -2924,7 +2924,7 @@
            MOVE    SYSKANRI-REC        TO  MCPDATA-REC
            PERFORM 900-SYSKANRI-INV-SEC
            IF      FLG-SYSKANRI        =   ZERO
-               MOVE    MCPDATA-REC     TO  SYS-1043-REC
+               MOVE    SYSKANRI-REC        TO  SYS-1043-REC
            ELSE
                INITIALIZE  SYS-1043-REC
            END-IF
@@ -3736,7 +3736,7 @@
                    MOVE    SYSKANRI-REC        TO  MCPDATA-REC
                    PERFORM 900-SYSKANRI-INV-SEC
                    IF      FLG-SYSKANRI            =   ZERO
-                       MOVE    MCPDATA-REC     TO  SYS-1005-REC
+                       MOVE    SYSKANRI-REC        TO  SYS-1005-REC
                        MOVE    SYS-1005-SRYKANAME1
                                                TO  SPA-GMN-SRYKAMEI
                    ELSE
@@ -5648,7 +5648,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SYS-1007-REC        TO  MCPDATA-REC
            PERFORM 900-SYSKANRI-INV-SEC
            IF      FLG-SYSKANRI            =   ZERO
-               MOVE    MCPDATA-REC         TO  SYS-1007-REC
+               MOVE    SYSKANRI-REC        TO  SYS-1007-REC
            ELSE
                MOVE    SPACE               TO  SYS-1007-REC
                INITIALIZE                      SYS-1007-REC
@@ -5742,7 +5742,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SYS-1008-REC        TO  MCPDATA-REC
            PERFORM 900-SYSKANRI-INV-SEC
            IF      FLG-SYSKANRI            =   ZERO
-               MOVE    MCPDATA-REC         TO  SYS-1008-REC
+               MOVE    SYSKANRI-REC        TO  SYS-1008-REC
            ELSE
                MOVE    SPACE               TO  SYS-1008-REC
                INITIALIZE                      SYS-1008-REC
@@ -5841,7 +5841,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SYS-1017-REC        TO  MCPDATA-REC
            PERFORM 900-SYSKANRI-INV-SEC
            IF      FLG-SYSKANRI            =   ZERO
-               MOVE    MCPDATA-REC         TO  SYS-1017-REC
+               MOVE    SYSKANRI-REC        TO  SYS-1017-REC
            ELSE
                MOVE    SPACE               TO  SYS-1017-REC
                INITIALIZE                      SYS-1017-REC
@@ -5889,7 +5889,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SYS-1038-REC        TO  MCPDATA-REC
            PERFORM 900-SYSKANRI-INV-SEC
            IF      FLG-SYSKANRI            =   ZERO
-               MOVE    MCPDATA-REC         TO  SYS-1038-REC
+               MOVE    SYSKANRI-REC        TO  SYS-1038-REC
            ELSE
                MOVE    SPACE               TO  SYS-1038-REC
                INITIALIZE                      SYS-1038-REC
@@ -5937,7 +5937,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SYS-1039-REC        TO  MCPDATA-REC
            PERFORM 900-SYSKANRI-INV-SEC
            IF      FLG-SYSKANRI            =   ZERO
-               MOVE    MCPDATA-REC         TO  SYS-1039-REC
+               MOVE    SYSKANRI-REC        TO  SYS-1039-REC
            ELSE
                MOVE    SPACE               TO  SYS-1039-REC
                INITIALIZE                      SYS-1039-REC
@@ -6013,7 +6013,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SYS-1042-REC        TO  MCPDATA-REC
            PERFORM 900-SYSKANRI-INV-SEC
            IF      FLG-SYSKANRI            =   ZERO
-               MOVE    MCPDATA-REC         TO  SYS-1042-REC
+               MOVE    SYSKANRI-REC        TO  SYS-1042-REC
            ELSE
                MOVE    SPACE               TO  SYS-1042-REC
                INITIALIZE                      SYS-1042-REC
@@ -6058,7 +6058,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SYS-1043-REC        TO  MCPDATA-REC
            PERFORM 900-SYSKANRI-INV-SEC
            IF      FLG-SYSKANRI            =   ZERO
-               MOVE    MCPDATA-REC         TO  SYS-1043-REC
+               MOVE    SYSKANRI-REC        TO  SYS-1043-REC
            ELSE
                MOVE    SPACE               TO  SYS-1043-REC
                INITIALIZE                      SYS-1043-REC
@@ -7850,6 +7850,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                                                    SPA-AREA
                IF      MCP-RC              =   ZERO
                    MOVE    ZERO            TO  FLG-SYSKANRI
+                   MOVE    MCPDATA-REC     TO  SYSKANRI-REC
                ELSE
                    MOVE    1               TO  FLG-SYSKANRI
                END-IF
