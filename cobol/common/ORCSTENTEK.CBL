@@ -35,6 +35,7 @@
       *                                     352中心静脈（手術以外）を追加
       *  01.00.06    NACL-多々納  05/11/25  MONFUNC 対応
       *  03.05.00    NACL-多々納  07/04/XX  グループ診療対応
+      *  04.01.00    NACL-多々納  07/10/02  薬剤コメント編集対応
       *****************************************************************
       *
       *
@@ -60,6 +61,7 @@
            03  FLG-TENSUPLUS       PIC 9(01).
            03  FLG-JYURRK          PIC 9(01).
            03  FLG-HKNCOMBI        PIC 9(01).
+           03  FLG-PTCOM           PIC 9(01).
       *
            03  FLG-ZAIARI          PIC 9(01).
            03  FLG-SEIBUTU         PIC 9(01).
@@ -78,6 +80,8 @@
            03  FLG-YUKETU          PIC 9(01).
       *    薬剤の有無
            03  FLG-YAKU-ARI        PIC 9(01).
+           03  FLG-COMMENT          PIC 9(01).
+           03  FLG-COMMENT-OK      PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -96,6 +100,10 @@
            03  IDX-H               PIC 9(04).
            03  IDX-D               PIC 9(02).
            03  IDY2                PIC 9(02).
+      *
+           03  IDX-YAK             PIC 9(04).
+           03  IDX-C1              PIC 9(04).
+           03  IDX-C               PIC 9(04).
       *
       *    一時領域
        01  WRK-AREA.
@@ -132,6 +140,8 @@
                05  WRK-BYY             PIC 9(04).
                05  WRK-BMM             PIC 9(02).
                05  WRK-BDD             PIC 9(02).
+      *
+           03  WRK-COMMENT             PIC X(80).
       *
       *    液量集計用
        01  TBL-AREA.
@@ -190,6 +200,12 @@
       *            保険組合せ
                    07  TBL-HKNCOMBI5       PIC X(04).
                    07  TBL-SRYKA5          PIC X(02).
+      *        薬剤コメント
+               05  TBL-COM-AREA        OCCURS   31.
+                   07  TBL-COMMNT-OCCURS   OCCURS   5.
+                       09  TBL-COM-DAY         PIC 9(01).
+                       09  TBL-COM-SRYCD       PIC X(09).
+                       09  TBL-COM-COMMENT     PIC X(80).
       *
       *    器材集計用
        01  TBL-KIZAI-AREA.
@@ -197,6 +213,10 @@
                05  TBL-KIZ-SRYCD       PIC X(09).
                05  TBL-KIZ-SURYO       PIC 9(05)V9(03).
                05  TBL-KIZ-CHK         PIC 9(01).
+      *        器材コメント
+               05  TBL-KIZ-COMMNT-AREA         OCCURS   5.
+                   07  TBL-KIZ-COM-SRYCD       PIC X(09).
+                   07  TBL-KIZ-COM-COMMENT     PIC X(80).
       *
       *    手技料用
        01  TBL2-AREA.
@@ -298,6 +318,10 @@
       *    点数マスタ付加コード
         01 TENSUPLUS-REC.
            COPY    "CPTENSUPLUS.INC".
+      *
+      *    患者コメント
+       01  PTCOM-REC.
+           COPY    "CPPTCOM.INC".
       *
       *****************************************************************
       *    サブプロ用　領域
@@ -501,6 +525,8 @@
            MOVE    "key2"              TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
       *
+           MOVE    ZERO                TO  IDX-YAK
+           MOVE    ZERO                TO  FLG-COMMENT
       *    テーブルの診療行為マスターをチェックする
            PERFORM VARYING     IDXA    FROM    1   BY  1
                    UNTIL       IDXA        >   IDXS
@@ -510,13 +536,36 @@
                PERFORM VARYING     IDX2    FROM    1   BY  1
                        UNTIL      (IDX2        >   5   )  OR
                                   (SRY-SRYCD(IDX2) =   SPACE )
-      *            薬剤
-                   IF     (SRY-SRYCD (IDX2)(1:1)   =   "6" )  AND
-                          (SRY-SRYSYUKBN           =   "330" OR "331"
+      *            点滴・中心静脈薬剤
+                   IF     (SRY-SRYSYUKBN           =   "330"
+                                                   OR  "331"
                                                    OR  "350"
                                                    OR  "332"
                                                    OR  "352")
-                       PERFORM 10012-TBL-HENSYU-SEC
+      *                薬剤
+                       IF     (SRY-SRYCD (IDX2)(1:1)   =   "6" )
+                           PERFORM 10012-TBL-HENSYU-SEC
+                           MOVE    1               TO  FLG-COMMENT
+                       END-IF
+      *                薬剤のコメント
+                       IF     (FLG-COMMENT          =   1   )  AND
+                              (IDX-YAK             >   ZERO ) AND
+                             ((SRY-SRYCD (IDX2)(1:1)   =   "8" )  OR
+                              (SRY-SRYCD (IDX2)(1:3)   =   "008"))
+                           IF     (SRY-SRYCD (IDX2)(1:4)   =   "0085")
+                               CONTINUE
+                           ELSE
+                               PERFORM 10017-COMMNT-HENSYU-SEC
+                           END-IF
+                       END-IF
+      *                コメントフラグクリア
+                       IF     (SRY-SRYCD (IDX2)(1:1)   =   "6" )  OR
+                             ((SRY-SRYCD (IDX2)(1:1)   =   "8" )  OR
+                              (SRY-SRYCD (IDX2)(1:3)   =   "008"))
+                           CONTINUE
+                       ELSE
+                           MOVE    ZERO                TO  FLG-COMMENT
+                       END-IF
                    END-IF
       *            手技料
                    IF     (SRY-SRYCD (IDX2)(1:1)   =   "1" )  AND
@@ -572,6 +621,9 @@
                    IF      SRY-SRYSYUKBN       =   "352"
                        PERFORM 100123-DAY5-HEN-SEC
                    END-IF
+      *
+                   MOVE    IDX-T           TO  IDX-YAK
+      *
                    MOVE    50              TO  IDX-T
                ELSE
                    IF      TBL-SRYCD (IDX-T)   =   SPACE
@@ -613,6 +665,9 @@
                                PERFORM 100123-DAY5-HEN-SEC
                            END-IF
                        END-IF
+      *
+                       MOVE    IDX-T           TO  IDX-YAK
+      *
                        MOVE    50              TO  IDX-T
                    END-IF
                END-IF
@@ -904,11 +959,76 @@
            EXIT.
       *
       *****************************************************************
+      *    薬剤コメントテーブル編集処理
+      *****************************************************************
+       10017-COMMNT-HENSYU-SEC            SECTION.
+      *
+           MOVE    SPACE               TO  WRK-COMMENT
+           IF      SRY-INPUTNUM (IDX2) =   ZERO
+               MOVE    SRY-SRYCD (IDX2)    TO  TNS-SRYCD
+               PERFORM 910-TENSU-READ-SEC
+               IF      FLG-TENSU           =   ZERO
+                   MOVE    TNS-NAME            TO  WRK-COMMENT
+               END-IF
+           ELSE
+               PERFORM 100141-PTCOM-SET-SEC
+           END-IF
+      *
+           PERFORM VARYING     IDX-D   FROM    1   BY  1
+                   UNTIL       IDX-D   >   31
+               IF      ACCT-DAY (1 IDX-D)  >   ZERO
+                   PERFORM VARYING IDX-C1      FROM    1   BY  1
+                           UNTIL   IDX-C1      >   5
+                       IF      TBL-COM-COMMENT (IDX-YAK IDX-D IDX-C1)
+                                               =   SPACE
+                           MOVE    WRK-COMMENT     TO  TBL-COM-COMMENT
+                                               (IDX-YAK IDX-D IDX-C1)
+                           MOVE    SRY-SRYCD (IDX2)
+                                                   TO   TBL-COM-SRYCD
+                                               (IDX-YAK IDX-D IDX-C1)
+                       END-IF
+                       IF      WRK-COMMENT     =   TBL-COM-COMMENT
+                                               (IDX-YAK IDX-D IDX-C1)
+                           MOVE    ACCT-DAY (1 IDX-D)
+                                               TO  TBL-COM-DAY
+                                               (IDX-YAK IDX-D IDX-C1)
+                           MOVE    5           TO  IDX-C1
+                       END-IF
+                   END-PERFORM
+               END-IF
+           END-PERFORM
+      *
+           .
+       10017-COMMNT-HENSYU-EXT.
+           EXIT.
+      *****************************************************************
+      *    患者コメントから編集する
+      *****************************************************************
+       100141-PTCOM-SET-SEC              SECTION.
+      *
+           INITIALIZE                     PTCOM-REC
+           MOVE    SRY-HOSPNUM         TO  PTCOM-HOSPNUM
+           MOVE    SRY-PTID            TO  PTCOM-PTID
+           MOVE    SRY-ZAINUM          TO  PTCOM-ZAINUM
+           MOVE    SRY-SRYCD   (IDX2)  TO  PTCOM-SRYCD
+           MOVE    SRY-INPUTNUM(IDX2)  TO  PTCOM-RENNUM
+      *    主キーで検索
+           PERFORM 950-PTCOM-READ-SEC
+           IF      FLG-PTCOM           =   ZERO
+               MOVE    PTCOM-INPUTCOMENT   TO  WRK-COMMENT
+           END-IF
+           .
+       100141-PTCOM-SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    器材集計テーブル編集処理
       *****************************************************************
        10016-TBL-KIZAIHEN-SEC            SECTION.
       *
            INITIALIZE                  TBL-KIZAI-AREA
+           MOVE    ZERO                TO  FLG-COMMENT
+           MOVE    ZERO                TO  IDX-C1
       *    器材のみを保存する
            MOVE    ZERO                TO  IDX-T
            PERFORM VARYING     IDXA    FROM    1   BY  1
@@ -928,6 +1048,27 @@
                                                                (IDX-T)
                        MOVE    SRY-SRYSURYO(IDX2)  TO  TBL-KIZ-SURYO
                                                                (IDX-T)
+                       MOVE    1                   TO  FLG-COMMENT
+                       MOVE    ZERO                TO  IDX-C1
+                   END-IF
+      *            薬剤のコメント
+                   IF     (FLG-COMMENT          =   1   )  AND
+                         ((SRY-SRYCD (IDX2)(1:1)   =   "8" )  OR
+                          (SRY-SRYCD (IDX2)(1:3)   =   "008"))
+                       IF     (SRY-SRYCD (IDX2)(1:4)   =   "0085")
+                           CONTINUE
+                       ELSE
+                           PERFORM 100163-KIZ-COMMNT-SEC
+                       END-IF
+                   END-IF
+      *            コメントフラグクリア
+                   IF     (SRY-SRYCD (IDX2)(1:1)   =   "7" )  OR
+                          (SRY-SRYCD (IDX2)(1:3)   =   "059" ) OR
+                         ((SRY-SRYCD (IDX2)(1:1)   =   "8" )  OR
+                          (SRY-SRYCD (IDX2)(1:3)   =   "008"))
+                       CONTINUE
+                   ELSE
+                       MOVE    ZERO                TO  FLG-COMMENT
                    END-IF
                END-PERFORM
            END-PERFORM
@@ -946,7 +1087,7 @@
                                            =   ACCT-KIZAITEN
                        PERFORM 100162-KIAZI-CHK-SEC
                        IF      FLG-ERR         =   ZERO
-                           PERFORM 100161-KIZAI-HEN-SEC
+                           PERFORM 100164-KIZAI-ADDHEN-SEC
                            MOVE    50              TO  IDX-T
                        END-IF
                    END-IF
@@ -971,6 +1112,17 @@
                                                         (IDX-T IDX-T2)
                MOVE    TBL-KIZ-SURYO(IDX-T2)   TO  ORCSTEN-KIZ-SURYO
                                                         (IDX-T IDX-T2)
+               PERFORM VARYING     IDX-C1  FROM    1   BY  1
+                       UNTIL      (IDX-C1      >   5     )
+                               OR (TBL-KIZ-COM-SRYCD(IDX-T2 IDX-C1)
+                                              =   SPACE)
+                   MOVE    TBL-KIZ-COM-SRYCD(IDX-T2 IDX-C1)
+                                           TO  ORCSTEN-KIZ-COM-SRYCD
+                                                  (IDX-T IDX-T2 IDX-C1)
+                   MOVE    TBL-KIZ-COM-COMMENT(IDX-T2 IDX-C1)
+                                           TO  ORCSTEN-KIZ-COM-MEI
+                                                  (IDX-T IDX-T2 IDX-C1)
+               END-PERFORM
            END-PERFORM
       *    回数集計
            PERFORM VARYING     IDX-T2  FROM    1   BY  1
@@ -1003,8 +1155,13 @@
                                            =   TBL-KIZ-SURYO(IDX-T3))
                    AND    (TBL-KIZ-CHK  (IDX-T3)
                                            =   ZERO            )
-                      MOVE    1                TO  TBL-KIZ-CHK(IDX-T3)
-                      MOVE    1                TO  FLG-CHK
+      *                コメント内容一致
+                       PERFORM 1001621-KIZA-COM-CHK-SEC
+                       IF      FLG-COMMENT-OK  =   ZERO
+                           MOVE    1                TO  TBL-KIZ-CHK
+                                                              (IDX-T3)
+                           MOVE    1                TO  FLG-CHK
+                       END-IF
                    END-IF
                END-PERFORM
                IF      FLG-CHK             =   ZERO
@@ -1015,6 +1172,75 @@
       *
            .
        100162-KIAZI-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    器材コメントテーブルチェック処理
+      *****************************************************************
+       1001621-KIZA-COM-CHK-SEC            SECTION.
+      *
+           MOVE    ZERO                TO  FLG-COMMENT-OK
+           PERFORM VARYING     IDX-C1  FROM    1   BY  1
+                   UNTIL      (IDX-C1      >   5     )
+                           OR (TBL-KIZ-COM-SRYCD(IDX-T2 IDX-C1)
+                                              =   SPACE)
+                           OR (FLG-COMMENT-OK =   1   )
+               IF     (TBL-KIZ-COM-SRYCD(IDX-T3 IDX-C1)
+                                           =   ORCSTEN-KIZ-COM-SRYCD
+                                                  (IDX-T IDX-T2 IDX-C1))
+                 AND  (TBL-KIZ-COM-COMMENT(IDX-T3 IDX-C1)
+                                           =   ORCSTEN-KIZ-COM-MEI
+                                                  (IDX-T IDX-T2 IDX-C1))
+                   CONTINUE
+               ELSE
+                   MOVE    1               TO  FLG-COMMENT-OK
+               END-IF
+           END-PERFORM
+           .
+       1001621-KIZA-COM-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    テーブル編集処理
+      *****************************************************************
+       100164-KIZAI-ADDHEN-SEC            SECTION.
+      *
+      *    回数集計
+           PERFORM VARYING     IDX-T2  FROM    1   BY  1
+                   UNTIL       IDX-T2      >   31
+               ADD     ACCT-DAY (1 IDX-T2) TO  ORCSTEN-KIZ-DAY
+                                                      (IDX-T IDX-T2)
+           END-PERFORM
+      *
+           .
+       100164-KIZAI-ADDHEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    器材コメント編集処理
+      *****************************************************************
+       100163-KIZ-COMMNT-SEC           SECTION.
+      *
+           MOVE    SPACE               TO  WRK-COMMENT
+           IF      SRY-INPUTNUM (IDX2) =   ZERO
+               MOVE    SRY-SRYCD (IDX2)    TO  TNS-SRYCD
+               PERFORM 910-TENSU-READ-SEC
+               IF      FLG-TENSU           =   ZERO
+                   MOVE    TNS-NAME            TO  WRK-COMMENT
+               END-IF
+           ELSE
+               PERFORM 100141-PTCOM-SET-SEC
+           END-IF
+      *
+           ADD     1                   TO  IDX-C1
+           IF      IDX-C1              <=   5
+               MOVE    SRY-SRYCD (IDX2)    TO  TBL-KIZ-COM-SRYCD 
+                                                      (IDX-T IDX-C1)
+               MOVE    WRK-COMMENT         TO  TBL-KIZ-COM-COMMENT
+                                                      (IDX-T IDX-C1)
+           END-IF
+           .
+       100163-KIZ-COMMNT-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1303,6 +1529,20 @@
            IF      TBL-MADOKU (IDX-T)  =   1
                MOVE    1               TO  TBL-S-MADOKU (IDX-D)
            END-IF
+      *
+      *    コメント
+           PERFORM VARYING IDX-C1      FROM    1   BY  1
+                   UNTIL   IDX-C1      >   5
+               IF      TBL-COM-COMMENT (IDX-T IDX-D IDX-C1)
+                                      NOT =   SPACE
+                   MOVE    TBL-COM-COMMENT (IDX-T IDX-D IDX-C1)
+                                          TO  ORCSTEN-COM-MEI
+                                               (IDX-D IDX IDX-C1)
+                   MOVE    TBL-COM-SRYCD (IDX-T IDX-D IDX-C1)
+                                          TO  ORCSTEN-COM-SRYCD
+                                               (IDX-D IDX IDX-C1)
+               END-IF
+           END-PERFORM
       *
            .
        200-KEISAN-SYORI-EXT.
@@ -2269,6 +2509,38 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            .
        940-HKNCOMBI-NEXT-EXT.
+           EXIT.
+      *****************************************************************
+      *    患者コメントマスタ読み込み
+      *****************************************************************
+       950-PTCOM-READ-SEC           SECTION.
+      *
+           MOVE    PTCOM-REC           TO  MCPDATA-REC
+           MOVE    "tbl_ptcom"         TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_ptcom"         TO  MCP-TABLE
+               MOVE    "key"               TO  MCP-PATHNAME
+               PERFORM 920-DBFETCH-SEC
+               IF      MCP-RC              =   ZERO
+                   MOVE    MCPDATA-REC         TO  PTCOM-REC
+                   MOVE    ZERO                TO  FLG-PTCOM
+               ELSE
+                   MOVE    1                   TO  FLG-PTCOM
+                   INITIALIZE                  PTCOM-REC
+               END-IF
+           ELSE
+               MOVE    1                   TO  FLG-PTCOM
+               INITIALIZE                  PTCOM-REC
+           END-IF
+      *
+           MOVE    "tbl_ptcom"         TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM  990-DBCLOSE-SEC
+      *
+           .
+       950-PTCOM-READ-EXT.
            EXIT.
       *****************************************************************
       *    テーブル検索処理

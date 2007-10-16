@@ -54,6 +54,11 @@
                        09  ORCSTEN-HAIK-SRYCD  PIC X(09).
       *                ÇÑ´þ¿ôÎÌ
                        09  ORCSTEN-HAIK-SURYO   PIC 9(05)V9(03).
+      *                ¥³¥á¥ó¥È
+                       09  ORCSTEN-COMMNT-G        OCCURS  5.
+                           11  ORCSTEN-COM-SRYCD       PIC X(09).
+                           11  ORCSTEN-COM-MEI         PIC X(80).
+      *
       *        ´ïºàºÞÊÌ¥Æ¡¼¥Ö¥ë
                05  ORCSTEN-KIZAI-TBL-G.
                    07  ORCSTEN-KIZI-ZAI-OCC        OCCURS   50.
@@ -64,6 +69,10 @@
                            11  ORCSTEN-KIZ-SRYCD       PIC X(09).
       *                    ´ïºà¿ôÎÌ
                            11  ORCSTEN-KIZ-SURYO       PIC 9(05)V9(03).
+      *                    ¥³¥á¥ó¥È
+                           11  ORCSTEN-KIZ-COMMNT-G        OCCURS  5.
+                               13  ORCSTEN-KIZ-COM-SRYCD   PIC X(09).
+                               13  ORCSTEN-KIZ-COM-MEI     PIC X(80).
       *                ´ïºàÆü¿ô
                        09  ORCSTEN-KIZ-DAY-G.
                            11  ORCSTEN-KIZ-DAY         PIC 9(03)
