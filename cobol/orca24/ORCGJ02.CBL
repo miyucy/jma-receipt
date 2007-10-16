@@ -439,6 +439,9 @@
            03  WRK-STDD                PIC 9(02).
            03  WRK-EDDD                PIC 9(02).
       *
+           03  WRK-HKNNUM              PIC X(03).
+           03  WRK-RSI-HKNKBN          PIC X(01).
+      *
            03  WRK-TBANGO              PIC  9(04).
       *
            03  WRK-MOTOPG              PIC X(08).
@@ -1813,9 +1816,9 @@
            PERFORM 3101-SRYKA-HEN-SEC
       *
       *    入院期間編集
-           IF     (SPA-BEDSU           >   ZERO ) AND
-      *D          (SPA-NYUGAIKBN       =  "1"   ) AND
-                  (SPA-NAI-NYUINYMD    =  SPACE )
+           IF     (SPA-BEDSU           >   ZERO )
+      *D     AND  (SPA-NYUGAIKBN       =  "1"   )
+      *D     AND  (SPA-NAI-NYUINYMD    =  SPACE )
                PERFORM 410101-NYUINRRK-CHK-SEC
                PERFORM 410102-NYUINRRK-LST-SEC
            END-IF
@@ -3962,8 +3965,15 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *                入院中としない
                        PERFORM VARYING IDX-D   FROM    WRK-STDD BY  1
                                UNTIL   IDX-D   >   WRK-EDDD
-                           MOVE    1               TO  SPA-NAI-NYUIN
-                                                             (IDX-D)
+                           IF      IDX-D           =   WRK-STDD
+                                                   OR  WRK-EDDD
+      *                        入院日・退院日
+                               MOVE    2           TO  SPA-NAI-NYUIN
+                                                               (IDX-D)
+                           ELSE
+                               MOVE    1           TO  SPA-NAI-NYUIN
+                                                               (IDX-D)
+                           END-IF
                        END-PERFORM
                    END-IF
       *            最終退院日
@@ -4416,6 +4426,8 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                                =   SPA-GMN-HKNCOMBI
                        MOVE    SPA-GMN-THKNCOMBIMEI (IDH)
                                                TO  SPA-GMN-HKNCOMBIMEI
+                       MOVE    SPA-NAI-THKNNUM(IDH)
+                                               TO  SPA-NAI-HKNNUM
                        MOVE    SPA-NAI-THKNKBN (IDH)
                                                TO  SPA-NAI-HKNKBN
                        MOVE    SPA-NAI-TRSI-SISIKBN (IDH)
@@ -4642,11 +4654,24 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *        外来の時エラー
                IF      SPA-GMN-NYUGAIKBN   =   "2"
       *************MOVE    "0004"              TO  SPA-ERRCD
-                   CONTINUE
+      *            入院期間中判定
+                   IF      SPA-NAI-NYUIN (IDX) =   1
+                       IF     (SPA-NAI-HKNNUM      =   "971" ) AND
+                              (SPA-NAI-RSI-HKNKBN  =   "3"   )
+                           CONTINUE
+                       ELSE
+                           MOVE    "0028"              TO  SPA-ERRCD
+                       END-IF
+                   END-IF
                ELSE
       *            入院の時、入院期間中ならＯＫ
                    IF      SPA-NAI-NYUIN (IDX) =   ZERO
                        MOVE    "0026"              TO  SPA-ERRCD
+                   END-IF
+      *            アフターケアはエラー
+                   IF     (SPA-NAI-HKNNUM      =   "971" ) AND
+                          (SPA-NAI-RSI-HKNKBN  =   "3"   )
+                       MOVE    "0029"              TO  SPA-ERRCD
                    END-IF
                END-IF
       *        保険が有効期間かの判定
@@ -5223,6 +5248,44 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *        GO      TO      41016-HENSRYYMD-CHK-EXT
       *****END-IF
       *
+           MOVE    ZERO                TO  FLG-OK
+           MOVE    SPACE               TO  WRK-HKNNUM
+           MOVE    SPACE               TO  WRK-RSI-HKNKBN
+           PERFORM VARYING     IDR     FROM    1   BY   1
+                   UNTIL      (IDR     >   SPA-HKN-MAX  )  OR
+                              (FLG-OK      =   1        )
+                IF     SPA-RRK-HKNCOMBI(SPA-NAI-RRKSELNUM)
+                                           =   SPA-GMN-THKNCOMBINUM
+                                                              (IDR)
+                   MOVE    SPA-NAI-THKNNUM (IDR)   TO  WRK-HKNNUM
+                   MOVE    SPA-NAI-TRSI-HKNKBN(IDR)
+                                                   TO  WRK-RSI-HKNKBN
+                   MOVE    1               TO  FLG-OK
+               END-IF
+           END-PERFORM
+      *
+           MOVE    SPA-NAI-HENSRYYMD(7:2)  TO  IDX-D2
+           IF      SPA-NYUGAIKBN   =   "1"
+      *        入院の時、入院期間中ならＯＫ
+               IF      SPA-NAI-NYUIN (IDX-D2)  =   ZERO
+                   MOVE    "0026"              TO  SPA-ERRCD
+               END-IF
+      *        労災アフターケアは算定不可
+               IF     (WRK-HKNNUM          =   "971" ) AND
+                      (WRK-RSI-HKNKBN      =   "3"   )
+                   MOVE    "0029"              TO  SPA-ERRCD
+               END-IF
+           ELSE
+      *        外来の時、入院期間中ならエラー
+               IF      SPA-NAI-NYUIN (IDX-D2)  =   1
+                   IF     (WRK-HKNNUM          =   "971" ) AND
+                          (WRK-RSI-HKNKBN      =   "3"   )
+                       CONTINUE
+                   ELSE
+                       MOVE    "0028"              TO  SPA-ERRCD
+                   END-IF
+               END-IF
+           END-IF
       *    既に算定のある日には変更できないものとする。
            MOVE    ZERO                TO  FLG-OK
            MOVE    ZERO                TO  FLG-OK2
@@ -6519,6 +6582,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *    伝票番号取得と収納の作成処理
       *****************************************************************
        4101621-INS-INIT-SEC             SECTION.
+      *
       *    伝票番号取得処理
            PERFORM 49011212-DENPNUM-SET-SEC
            MOVE    JYURRK-DENPNUM      TO  WRK-DENPNUM
@@ -8181,6 +8245,10 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    12                  TO  SPA-NAI-SRYMM
                COMPUTE SPA-NAI-SRYYY       =   SPA-NAI-SRYYY    -   1
            END-IF
+      *TEST
+           DISPLAY " 410181-ZENGETU-SYORI1-SEC "
+                     ", SPA-NAI-SRYYM :"  SPA-NAI-SRYYM 
+      *TEST
       *
       *
            MOVE    SPA-NAI-SRYYM      TO  WRK-SYMD(1:6)
@@ -8233,11 +8301,11 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
            END-IF
       *
            PERFORM 3101-SRYKA-HEN-SEC
-      *D   入院が存在するかのチェック
+      *?   入院が存在するかのチェック
       *    IF      SPA-BEDSU           >   ZERO
       *        PERFORM 410101-NYUINRRK-CHK-SEC
       *        PERFORM 410102-NYUINRRK-LST-SEC
-      *D   END-IF
+      *?   END-IF
       *
       *    受診履歴編集
            PERFORM 3103-JYURRK-HEN-SEC
@@ -12299,10 +12367,11 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE    "対象の診療年月に受診はありません。"
                                        TO  WRK-ERRMSG
                WHEN    "0021"
-                   MOVE    "対象の剤は労災の外来管理加算読み替え分です"
-                                       TO  WRK-ERRMSG
-                   MOVE    "。剤変更はできません。"
-                                       TO  WRK-ERRMSG(43:)
+                   STRING  "対象の剤は労災の外来管理加算読み替え分です"
+                           "。剤変更はできません。"
+                                       DELIMITED  BY  SIZE
+                                       INTO    WRK-ERRMSG
+                   END-STRING
                WHEN    "0022"
                    MOVE    "保険の一括変更は科毎に行って下さい。"
                                        TO  WRK-ERRMSG
@@ -12333,6 +12402,12 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                                        TO  WRK-ERRMSG
                    MOVE    "剤変更はできません。"
                                        TO  WRK-ERRMSG(41:)
+               WHEN    "0028"
+                   MOVE    "入院日です。外来での算定はできません。"
+                                       TO  WRK-ERRMSG
+               WHEN    "0029"
+                   MOVE    "アフターケアは入院での算定はできません。"
+                                       TO  WRK-ERRMSG
                WHEN    "0030"
                    MOVE    "入外区分がありません。"
                                        TO  WRK-ERRMSG
@@ -12384,10 +12459,11 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                    "麻毒・生物学的製剤加算が算定できる日があります。"
                                        TO  WRK-ERRMSG
                WHEN    "0058"
-                   MOVE    "麻毒・生物学的製剤加算のみ算定している日が"
-                                       TO  WRK-ERRMSG
-                   MOVE    "あります。確認して下さい。"
-                                       TO  WRK-ERRMSG(43:)
+                   STRING  "麻毒・生物学的製剤加算のみ算定している日が"
+                           "あります。確認して下さい。"
+                                       DELIMITED  BY  SIZE
+                                       INTO    WRK-ERRMSG
+                   END-STRING
                WHEN    "0060"
                    MOVE    "複数科のまとめ入力分です。"
                                        TO  WRK-ERRMSG
@@ -12485,15 +12561,17 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                    END-STRING
       *
                WHEN    "K001"
-                   MOVE    "受診日変更により当日の受診回数が変更"
-                                       TO  WRK-ERRMSG
-                   MOVE    "されました。診察料を確認して下さい。"
-                                       TO  WRK-ERRMSG(37:)
+                   STRING  "受診日変更により当日の受診回数が"
+                           "変更されました。診察料を確認して下さい。"
+                                       DELIMITED  BY  SIZE
+                                       INTO    WRK-ERRMSG
+                   END-STRING
                WHEN    "K002"
-                   MOVE    "収納が変更されました。"
-                                       TO  WRK-ERRMSG
-                   MOVE    "収納を確認して下さい。"
-                                       TO  WRK-ERRMSG(23:)
+                   STRING  "収納が変更されました。"
+                           "収納を確認して下さい。"
+                                       DELIMITED  BY  SIZE
+                                       INTO    WRK-ERRMSG
+                   END-STRING
                WHEN    "K003"
                    MOVE    "警告！！月上限回数をオーバーしています。"
                                        TO  WRK-ERRMSG

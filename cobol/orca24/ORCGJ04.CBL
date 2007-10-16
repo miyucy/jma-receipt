@@ -2099,7 +2099,15 @@
                MOVE    "1033"              TO  SPA-ERRCD
                MOVE    10                  TO  SPA-GMN-CUR
            ELSE
-               PERFORM 41001-HKNCOMBI-HEN-SEC
+      *        アフターケアはエラー
+               IF     (SPA-NAI-THKNNUM (IDX)       =   "971" )  AND
+                      (SPA-NAI-TRSI-HKNKBN (IDX)   =   "3" )
+                   MOVE    "9029"              TO  SPA-ERRCD
+                   MOVE    10                  TO  SPA-GMN-CUR
+               END-IF
+               IF      SPA-ERRCD           =   SPACE
+                   PERFORM 41001-HKNCOMBI-HEN-SEC
+               END-IF
                IF      SPA-ERRCD           =   SPACE
                    MOVE    SPA-GMN-HKNCOMBI    TO  SPA-HKNCOMBINUM
                    MOVE    1                   TO  SPA-GMN-CUR

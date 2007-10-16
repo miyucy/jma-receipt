@@ -105,6 +105,8 @@
                    07  SPA-GMN-ROUJIN            PIC 9(01).
       *            ÊÝ¸±¶èÊ¬
                    07  SPA-NAI-HKNKBN            PIC 9(01).
+      *            ÊÝ¸±¶èÊ¬
+                   07  SPA-NAI-HKNNUM            PIC X(03).
       *            Ï«ºÒÍÑ  »Í»è¶èÊ¬
                    07  SPA-NAI-SISIKBN           PIC 9(01).
       *            Ï«ºÒÍÑ  ½ýÉÂÇ¯·îÆü
