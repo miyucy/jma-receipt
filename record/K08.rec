@@ -153,5 +153,12 @@ K08	{
 	           	state	int;
 			label	varchar(10);
 		};
+		USERPG_COMB	{
+			USERPG	{
+				value	varchar(20);
+			};
+			count	int;
+			item	varchar(20)[2];
+		};
 	};
 };

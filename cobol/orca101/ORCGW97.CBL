@@ -29,6 +29,7 @@
       * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
       *  01.00.01    NACL-Â¿¡¹Ç¼  06/07/13  MONFUNC ÂÐ±þ
       *  03.05.00    NACL-Â¿¡¹Ç¼  07/05/02  ¥°¥ë¡¼¥×¿ÇÎÅÂÐ±þ
+      *  04.01.00    NACL-Â¿¡¹Ç¼  07/10/02  Æþ±¡ÄÉ²Ã
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -387,8 +388,32 @@
            MOVE    "U02"               TO  SPA-NAI-GYOUMUIDL  (2)
            MOVE    "ÀÁµá³ÎÇ§  (K03)"   TO  SPA-GMN-GYOUMUMEIL (3)
            MOVE    "K03"               TO  SPA-NAI-GYOUMUIDL  (3)
+           MOVE    "ÆþÂà±¡ÅÐÏ¿ (I01)" 
+                                       TO  SPA-GMN-GYOUMUMEIL (4)
+           MOVE    "I01"               TO  SPA-NAI-GYOUMUIDL  (4)
+           MOVE    "Æþ±¡ÀÁµá³ÎÇ§ (I04)" 
+                                       TO  SPA-GMN-GYOUMUMEIL (5)
+           MOVE    "I04"               TO  SPA-NAI-GYOUMUIDL  (5)
+           MOVE    "Æþ±¡¿ÇÎÅ³ÎÇ§ (K08)"
+                                       TO  SPA-GMN-GYOUMUMEIL (6)
+           MOVE    "K08"               TO  SPA-NAI-GYOUMUIDL  (6)
       *
-           MOVE    3                   TO  SPA-GYOUMU-MAX
+           MOVE    6                   TO  SPA-GYOUMU-MAX
+      *    ¶ÈÌ³½é´üÉ½¼¨
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-GYOUMU-MAX
+               MOVE    SPA-NAI-GYOUMUIDL(IDX)
+                                       TO  SPA-9700-GYOUMUID(IDX)
+               MOVE    "0"             TO  SPA-9700-GYOUMU-FLG(IDX)
+               MOVE    ZERO            TO  SPA-9700-GYOUMU-CNT(IDX)
+           END-PERFORM
+      *
+           MOVE    "9701"          TO  SPA-9700-GYOUMU-KANRICD (1)
+           MOVE    "9702"          TO  SPA-9700-GYOUMU-KANRICD (2)
+           MOVE    "9703"          TO  SPA-9700-GYOUMU-KANRICD (3)
+           MOVE    "9704"          TO  SPA-9700-GYOUMU-KANRICD (4)
+           MOVE    "9705"          TO  SPA-9700-GYOUMU-KANRICD (5)
+           MOVE    "9706"          TO  SPA-9700-GYOUMU-KANRICD (6)
       *
       *    ¶ÈÌ³½é´üÉ½¼¨
            MOVE    SPACE               TO  SYS-9700-REC
@@ -411,29 +436,32 @@
                MOVE    MCPDATA-REC         TO  SYS-9700-REC
                PERFORM VARYING     IDX     FROM    1   BY  1
                        UNTIL       IDX     >   SPA-GYOUMU-MAX
-                   MOVE    SYS-9700-GYOUMUID(IDX)
+                   IF      SYS-9700-GYOUMUID(IDX)
+                                           =   SPA-9700-GYOUMUID(IDX)
+                       MOVE    SYS-9700-GYOUMUID(IDX)
                                            TO  SPA-9700-GYOUMUID(IDX)
-                   MOVE    SYS-9700-GYOUMU-FLG(IDX)
+                       MOVE    SYS-9700-GYOUMU-FLG(IDX)
                                            TO  SPA-9700-GYOUMU-FLG(IDX)
-                   MOVE    SYS-9700-GYOUMU-CNT(IDX)
+                       MOVE    SYS-9700-GYOUMU-CNT(IDX)
                                            TO  SPA-9700-GYOUMU-CNT(IDX)
-      *            ´ÉÍý¥³¡¼¥É
-                   MOVE    SYS-9700-GYOUMU-KANRICD(IDX)
+      *                ´ÉÍý¥³¡¼¥É
+                       MOVE    SYS-9700-GYOUMU-KANRICD(IDX)
                                            TO  SPA-9700-GYOUMU-KANRICD
                                                                 (IDX)
+                   END-IF
                END-PERFORM
-           ELSE
-               PERFORM VARYING     IDX     FROM    1   BY  1
-                       UNTIL       IDX     >   SPA-GYOUMU-MAX
-                   MOVE    SPA-NAI-GYOUMUIDL(IDX)
-                                           TO  SPA-9700-GYOUMUID(IDX)
-                   MOVE    "0"             TO  SPA-9700-GYOUMU-FLG(IDX)
-                   MOVE    ZERO            TO  SPA-9700-GYOUMU-CNT(IDX)
-               END-PERFORM
+      **** ELSE
+      *        PERFORM VARYING     IDX     FROM    1   BY  1
+      *                UNTIL       IDX     >   SPA-GYOUMU-MAX
+      *            MOVE    SPA-NAI-GYOUMUIDL(IDX)
+      *                                    TO  SPA-9700-GYOUMUID(IDX)
+      *            MOVE    "0"             TO  SPA-9700-GYOUMU-FLG(IDX)
+      *            MOVE    ZERO            TO  SPA-9700-GYOUMU-CNT(IDX)
+      *        END-PERFORM
       *
-               MOVE    "9701"          TO  SPA-9700-GYOUMU-KANRICD (1)
-               MOVE    "9702"          TO  SPA-9700-GYOUMU-KANRICD (2)
-               MOVE    "9703"          TO  SPA-9700-GYOUMU-KANRICD (3)
+      *        MOVE    "9701"          TO  SPA-9700-GYOUMU-KANRICD (1)
+      *        MOVE    "9702"          TO  SPA-9700-GYOUMU-KANRICD (2)
+      *********MOVE    "9703"          TO  SPA-9700-GYOUMU-KANRICD (3)
            END-IF
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
