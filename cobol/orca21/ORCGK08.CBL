@@ -898,6 +898,9 @@
       *****************************************************************
        3000-INIT-SCREEN-SEC          SECTION.
       *
+      *!
+           CALL    "ORCSSPACHK"        USING    SPA-AREA
+      *!
            MOVE    SPACE               TO  SPA-KIDCD
            MOVE    SPACE               TO  SPA-ERRMSG2
       *
