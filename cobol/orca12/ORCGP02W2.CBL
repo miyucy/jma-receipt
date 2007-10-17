@@ -72,6 +72,8 @@
       *                                     ÊÝ¸±ÁÈ¹ç¤»ºîÀ®
       *  03.04.05    NACL-ÌçÏÆ    07/02/21  ¹â³Û¸½ÊªµëÉÕÂÐ±þ
       *  03.05.00    NACL-Â¿¡¹Ç¼  07/05/XX  ¥°¥ë¡¼¥×¿ÇÎÅÂÐ±þ
+      *  03.05.01    NACL-ÌçÏÆ    07/10/16  ¡ã²¬»³¡ä£°£¹£±¡ÜÃÏÊý¸øÈñ
+      *                                     ÊÝ¸±ÁÈ¹ç¤»ºîÀ®
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -3561,8 +3563,8 @@ grpsys            CALL    "ORCDBMAIN"         USING   MCPAREA
                             END-IF
                           WHEN     33
                             IF  WRK-SRT-HJO-KOHNO  =  "091"
-                             IF WRK-KOH-HKNNUM(WRK-COMB-HJOIDX)(2:2)
-                                                          = "80"
+                             IF WRK-KOH-HKNNUM(WRK-COMB-HJOIDX)(1:1)
+                                             >=  "1" AND <=  "8"
                                 PERFORM 5701413-SYUKOH-HJO-SEC
                              END-IF
                             ELSE
