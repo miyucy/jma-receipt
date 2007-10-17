@@ -265,6 +265,7 @@
       *                                     ¡ÊÏ·¿Í¤ÏÂÐ¾Ý³°¤È¤¹¤ë¡Ë
       *  03.05.14    NACL-ÌçÏÆ    07/10/03  ½©ÅÄ¸©ÆýÍÄ»ù°ìÉôÉéÃ´¶âµ­ºÜÂÐ±þ
       *  03.05.15    NACL-ÌçÏÆ    07/10/04  ¿·³ã¸©Ãæ±Û²­ÃÏ¿ÌÂÐ±þ½¤Àµ
+      *  03.05.16    NACL-ÌçÏÆ    07/10/05  Æþ±¡ÅÀÅ©¥³¥á¥ó¥ÈÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -457,6 +458,7 @@
            03  IDX6                                    PIC 9(03).
            03  IDX7                                    PIC 9(02).
            03  IDX8                                    PIC 9(02).
+           03  IDX9                                    PIC 9(02).
            03  IDXA                                    PIC 9(01).
            03  IDXX                                    PIC 9(02).
            03  IDYX                                    PIC 9(02).
@@ -741,9 +743,10 @@
                    07  WRK-MIJ-DAY92                   PIC 9(04).
       *
        01  WRK-ORCSTEN-TABLE.
-           03  WRK-ORCSTEN-T                           OCCURS  100.
+           03  WRK-ORCSTEN-T                           OCCURS  350.
                05  WRK-ORCSTEN-SRYCD                   PIC X(09).
                05  WRK-ORCSTEN-SURYO                   PIC 9(05)V9(03).
+               05  WRK-ORCSTEN-COM-MEI                 PIC X(80).
            03  WRK-ORCSTEN-T2                          OCCURS   31.
                05  WRK-ORCSTEN-DAY                     PIC 9(03).
            03  WRK-ORCSTEN-ZAIKAISU                    PIC 9(04).
@@ -2670,6 +2673,7 @@
                     ((SRY-SRYCD(IDX2)(1:1) =   "8"       ) OR
                      (SRY-SRYCD(IDX2)(1:3) =   "008"     )) AND
                     ( ACCT-ZAITEN      NOT =   ZERO       ) AND
+                    ( ACCT-SYUTEN1         =   ZERO       ) AND
                     ( ACCT-ZAIKAISU    NOT =   ZERO       ))
                   COMPUTE   RECE64-MEISAISU    =  RECE64-MEISAISU
                                                -  1
@@ -2761,6 +2765,7 @@
                       ((SRY-SRYCD(IDX2)(1:1) =   "8"       ) OR
                        (SRY-SRYCD(IDX2)(1:3) =   "008"     )) AND
                       ( ACCT-ZAITEN      NOT =   ZERO       ) AND
+                      ( ACCT-SYUTEN1         =   ZERO       ) AND
                       ( ACCT-ZAIKAISU    NOT =   ZERO       ))
       *
                CONTINUE
@@ -8143,11 +8148,22 @@
                              MOVE  ORCSTEN-HAIK-SURYO(IDY IDX5)
                                        TO   WRK-ORCSTEN-SURYO(IDX6)
                           END-IF 
+                          PERFORM  VARYING  IDX9    FROM    1   BY  1
+                            UNTIL  IDX9     >      5
+                              OR   ORCSTEN-COM-SRYCD(IDY IDX5 IDX9)
+                                                              = SPACE
+                             ADD   1   TO   IDX6
+                             MOVE  "810000001"
+                                       TO   WRK-ORCSTEN-SRYCD(IDX6)
+                             MOVE  1   TO   WRK-ORCSTEN-SURYO(IDX6)
+                             MOVE  ORCSTEN-COM-MEI(IDY IDX5 IDX9)
+                                       TO   WRK-ORCSTEN-COM-MEI(IDX6)
+                          END-PERFORM
                        END-PERFORM
       *
                        PERFORM   21032-RECE64-TENSOU3-SEC
       *
-                       MOVE      100  TO   IDX5
+                       MOVE      350  TO   IDX5
                        PERFORM   21033-RECE65-TENSOU3-SEC
                        PERFORM   21034-RECE62-HENSYU3-SEC
       *
@@ -8165,12 +8181,27 @@
                        MOVE   2      TO   FLG-SIKIBETU
       *
                        INITIALIZE         WRK-ORCSTEN-TABLE
+                       MOVE   ZERO   TO   IDX6
                        PERFORM  VARYING  IDX5    FROM    1   BY  1
                               UNTIL   IDX5     >       10
+                                OR    ORCSTEN-KIZ-SRYCD(IDY IDX5)
+                                                               = SPACE
+                          ADD   1   TO   IDX6
                           MOVE  ORCSTEN-KIZ-SRYCD(IDY IDX5)  TO  
-                                      WRK-ORCSTEN-SRYCD(IDX5)
+                                      WRK-ORCSTEN-SRYCD(IDX6)
                           MOVE  ORCSTEN-KIZ-SURYO(IDY IDX5)  TO  
-                                      WRK-ORCSTEN-SURYO(IDX5)
+                                      WRK-ORCSTEN-SURYO(IDX6)
+                          PERFORM  VARYING  IDX9    FROM    1   BY  1
+                            UNTIL  IDX9     >      5
+                              OR   ORCSTEN-KIZ-COM-SRYCD(IDY IDX5 IDX9)
+                                                              = SPACE
+                             ADD   1   TO   IDX6
+                             MOVE  "810000001"
+                                       TO   WRK-ORCSTEN-SRYCD(IDX6)
+                             MOVE  1   TO   WRK-ORCSTEN-SURYO(IDX6)
+                             MOVE  ORCSTEN-KIZ-COM-MEI(IDY IDX5 IDX9)
+                                       TO   WRK-ORCSTEN-COM-MEI(IDX6)
+                          END-PERFORM
                        END-PERFORM
                        PERFORM  VARYING  IDX5    FROM    1   BY  1
                               UNTIL   IDX5     >       31
@@ -8182,7 +8213,7 @@
       *
                        PERFORM   21032-RECE64-TENSOU3-SEC
       *
-                       MOVE      10   TO   IDX5
+                       MOVE      60   TO   IDX5
                        PERFORM   21033-RECE65-TENSOU3-SEC
                        PERFORM   21034-RECE62-HENSYU3-SEC
       *
@@ -8542,7 +8573,7 @@
                             (WRK-ORCSTEN-SRYCD(IDX2)  =   SPACE)
       *
                 IF   WRK-ORCSTEN-SRYCD(IDX2)(1:1) =   "0" OR  "6" OR  
-                                                      "7" 
+                                                      "7" OR  "8"
       *
                   ADD   1                   TO  IDX4    
       *
@@ -8574,7 +8605,12 @@
                   MOVE  TNS-TENSIKIBETU     TO  RECE65-TENSIKIBETU(IDX4)
                   MOVE  TNS-TEN             TO  RECE65-TEN(IDX4)
                   MOVE  TNS-NYUTENTTLKBN    TO  RECE65-TENTTLKBN(IDX4)
-                  MOVE  TNS-YUKOKETA        TO  RECE65-YUKOKETA(IDX4)
+                  IF  (WRK-ORCSTEN-SRYCD(IDX2)(1:1)  =   "8"  )
+                  OR  (WRK-ORCSTEN-SRYCD(IDX2)(1:3)  =   "008")
+                     MOVE   ZERO            TO  RECE65-YUKOKETA(IDX4)
+                  ELSE
+                     MOVE   TNS-YUKOKETA    TO  RECE65-YUKOKETA(IDX4)
+                  END-IF
                   MOVE  TNS-DATAKBN         TO  RECE65-DATAKBN (IDX4)
                   MOVE  TNS-HOUKNSKBN       TO  RECE65-HOUKNSKBN(IDX4)
                   MOVE  TNS-KNSJISKBN       TO  RECE65-KNSJISKBN(IDX4)
@@ -8606,7 +8642,29 @@
                                       TO RECE65-TOKUKIZAISBT1(IDX4)
                   MOVE  TNS-SANSOKBN  TO RECE65-SANSOKBN     (IDX4)
       *
-                  MOVE  TNS-NAME      TO RECE65-NAME(IDX4)
+                  IF  (WRK-ORCSTEN-SRYCD(IDX2)(1:1)  =   "8"  )
+                  OR  (WRK-ORCSTEN-SRYCD(IDX2)(1:3)  =   "008")
+                     MOVE   WRK-ORCSTEN-COM-MEI(IDX2)
+                                      TO RECE65-NAME(IDX4)
+                  ELSE
+                     MOVE   TNS-NAME  TO RECE65-NAME(IDX4)
+                  END-IF
+      *
+                  IF   RECE65-YUKOKETA(IDX4)  =  ZERO
+                     PERFORM   VARYING   IDW   FROM   200   BY  -1
+                                UNTIL    IDW   <   1
+                       IF   RECE65-NAME(IDX4)(IDW:1)  NOT =   SPACE
+                           COMPUTE RECE65-YUKOKETA(IDX4)  =
+                                   IDW     /   2
+                           MOVE    1          TO  IDW
+                       END-IF
+                     END-PERFORM
+                  END-IF
+      *
+                  IF  (WRK-ORCSTEN-SRYCD(IDX2)(1:1)  =   "8"  )
+                  OR  (WRK-ORCSTEN-SRYCD(IDX2)(1:3)  =   "008")
+                        MOVE     "1"             TO  RECE64-COMCDFLG
+                  END-IF
       *
                   MOVE  WRK-ORCSTEN-SRYCD(IDX2)  TO  WRK-SRYCD
                   COMPUTE  RECE64-SRYCDTOTAL  =  RECE64-SRYCDTOTAL
