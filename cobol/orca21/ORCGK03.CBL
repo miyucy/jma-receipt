@@ -2012,6 +2012,8 @@
                   (SPA-SKYPRTFLG       =   "1" OR  "2" )
                IF      SPA-NAI-TEIKINKBN   =   "1"
                    MOVE    "2"             TO  SPA-GMN-HAKFLG
+               ELSE
+                   MOVE    "1"             TO  SPA-GMN-HAKFLG
                END-IF
            END-IF
       *
@@ -3745,6 +3747,11 @@
                        ELSE
                            MOVE    SPA-GMN-HAKFLGLST(3)
                                                TO  SPA-GMN-HAKFLG-G
+                           IF     (SPA-SYORIFLG        =   1   )  AND
+                                  (SPA-NAI-TEIKINKBN   NOT =   "1" )
+                               MOVE    SPA-GMN-HAKFLGLST(2)
+                                               TO  SPA-GMN-HAKFLG-G
+                           END-IF
                        END-IF
                    END-IF
            END-EVALUATE
