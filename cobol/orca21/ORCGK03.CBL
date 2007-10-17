@@ -707,6 +707,9 @@
       *****************************************************************
        3001-SCREEN-SYORI-SEC             SECTION.
       *
+      *!
+           CALL    "ORCSSPACHK"        USING    SPA-AREA
+      *!
            MOVE    SPACE               TO  SPA-KIDCD
            MOVE    SPACE               TO  SPA-ERRMSG2
       *
