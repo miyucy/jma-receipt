@@ -685,6 +685,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  HC01PARA-HOSPNUM
             MOVE   SYS-1031-PRTNM(5)   TO  MKPRT-PRTNM
             CALL   "ORCSMKPRT"         USING
                                        ORCSMKPRTAREA
+                                       SPA-AREA
            .
        2005-PRINT-OUT-EXT.
            EXIT.
