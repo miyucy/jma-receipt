@@ -34,12 +34,11 @@
        INPUT-OUTPUT                SECTION.
        FILE-CONTROL.
       *
+      *
        DATA                    DIVISION.
        FILE                        SECTION.
       *
        WORKING-STORAGE             SECTION.
-      *
-      * データ領域
       *
       *    スパ領域
            COPY    "COMMON-SPA".
@@ -82,13 +81,19 @@
       *   
            COPY    "CMJOBNAME.INC".
       *
+      *    ファイルデイレクトリ位置指定サブ
+           COPY  "CPMKPASS.INC".
+      *
+      *    フラグ領域
+       01  STS-AREA.
+           03  STS-RECEERR         PIC X(02).
+      *
       *    フラグ領域
        01  FLG-AREA.
            03  FLG-SYSKANRI                        PIC 9(01).
            03  FLG-JOBLOG                          PIC 9(01).
            03  FLG-END                             PIC 9(01).
            03  FLG-LIST-ROW                        PIC 9(01).
-           03  FLG-USER                            PIC 9(01).
       *
       *    システム領域
        01  SYS-AREA.
@@ -107,8 +112,6 @@
            03  IDX                 PIC 9(04).
            03  IDY                 PIC 9(04).
            03  IDZ                 PIC 9(04).
-           03  IXY                 PIC 9(04).
-           03  IXZ                 PIC 9(04).
       *
       *    一時領域
        01  WRK-AREA.
@@ -132,8 +135,6 @@
            03  WRK-STPAGE          PIC 9(05).
            03  WRK-EDPAGE-G.
                05  WRK-EDPAGE      PIC 9(05).
-           03  WRK-STR-G.
-               05  WRK-STR         PIC X(01)   OCCURS  30.
       *
        01  WRK-HEN-AREA.
            03  WRK-HENYMDG         PIC X(09).
@@ -154,6 +155,11 @@
        01  WRK-ROW.
            05  WRK-LIST-ROW        PIC S9(9)   BINARY.
       *                             
+       01  WRK-SHELL-NAME.
+           05  FILLER             PIC X(16) VALUE
+                                             "scripts/monthly/".
+           05  WRK-SHELL-SHELL    PIC X(20).         
+      *
            COPY    "CPSHELLTBL.INC".
       *     
        01  WRK-CONS-AREA.
@@ -167,16 +173,6 @@
            03  WRK-CONS-JOB-JOBID  PIC 9(07)   VALUE   ZERO.
       *
            03  WRK-CONS-LINE-MAX   PIC 9(03)   VALUE   100.     
-      *    ジョブ管理ＤＢのキー値（データ収集）  
-           03  WRK-CONS-JOB-SHELLID-COLLECT
-                                  PIC X(08)    VALUE   "COLLECT".
-           03  WRK-CONS-JOB-JOBID-COLLECT
-                                   PIC 9(07)   VALUE   1.
-      *    ジョブ管理ＤＢのキー値（感染症）  
-           03  WRK-CONS-JOB-SHELLID-INFECTION
-                                  PIC X(08)    VALUE   "INFECTIO".
-           03  WRK-CONS-JOB-JOBID-INFECTION
-                                   PIC 9(07)   VALUE   1.
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -231,17 +227,13 @@
            COPY    "M01N.INC".
            COPY    "M02.INC". 
            COPY    "M95.INC".
+           COPY    "M96.INC".
+           COPY    "M97.INC".
            COPY    "MERR.INC".
            COPY    "MID1.INC".
            COPY    "MVER.INC".
            COPY    "M98.INC".
            COPY    "MUID.INC".
-           COPY    "M99.INC".
-           COPY    "MID2.INC".
-           COPY    "MDAS.INC".
-           COPY    "MLOG.INC".
-           COPY    "MINF.INC".
-           COPY    "MPRT.INC".
       *
       *
        PROCEDURE                   DIVISION    USING
@@ -336,14 +328,6 @@
                WHEN    "MID1"
                    PERFORM 330-MID1-SET-SEC
                    GO      TO      300-SCREEN-EXT
-               WHEN    "MDAS"
-                   PERFORM 330-MDAS-SET-SEC
-      *             GO      TO      300-SCREEN-EXT
-               WHEN    "MUID"
-                   IF      SPA-MID1-FLG     =   "OK"
-                       PERFORM 490-SETTEI-SYORI-SEC
-                   END-IF
-      *             GO      TO      300-SCREEN-EXT
            END-EVALUATE
       *
       *    他のＬＤより
@@ -372,15 +356,13 @@
        310-SPASET-SEC              SECTION.
       *
            INITIALIZE                  JOBLOG-REC
-           MOVE    SPA-HOSPNUM         TO  JOBLOG-HOSPNUM
            MOVE    JOBLOG-REC          TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "tbl_joblog"        TO  MCP-TABLE
            MOVE    "key3"              TO  MCP-PATHNAME
-           CALL    "ORCDBMAIN"         USING
-                                           MCPAREA
-                                           MCPDATA-REC
-                                           SPA-AREA
+           CALL    "MONFUNC"            USING
+                                       MCPAREA
+                                       MCPDATA-REC
            IF      MCP-RC             =   ZERO
                PERFORM 900-JOBLOG-FET-SEC
            ELSE 
@@ -389,11 +371,7 @@
       *
            MOVE    ZERO                TO  IDX
            PERFORM             UNTIL   FLG-JOBLOG    =   1
-                               OR      IDX             =   99
-      *    とりあえず100から99に変更した
-      *    正しい対応はSPA-GMN-MAXの桁数を3桁以上にしなければならない
-      *    他の影響が分からないので改正対応後に見直し
-      *                         OR      IDX             =   100
+                               OR      IDX             =   100
                ADD     1                   TO  IDX
                MOVE    IDX                 TO  SPA-GMN-TNO   (IDX)
                MOVE    JOBLOG-LOGYMD       TO  WRK-SYMD
@@ -421,10 +399,9 @@
            MOVE    "tbl_joblog"        TO  MCP-TABLE
            MOVE    "key3"
                                        TO  MCP-PATHNAME
-           CALL    "ORCDBMAIN"         USING
-                                           MCPAREA
-                                           MCPDATA-REC
-                                           SPA-AREA
+           CALL    "MONFUNC"            USING
+                                       MCPAREA
+                                       MCPDATA-REC
       *                                 
            MOVE    IDX                 TO  SPA-GMN-MAX
       *                                 
@@ -460,21 +437,6 @@
            EXIT.
       *
       *****************************************************************
-      *    参加同意確認画面（ＭＤＡＳ）ＯＫ処理
-      *****************************************************************
-       330-MDAS-SET-SEC             SECTION.
-      *
-           IF      SPA-MID1-FLG     =   "OK"
-               PERFORM 4901-MUID-SYORI-SEC
-           END-IF
-      *
-           MOVE    1               TO  SPA-GMN-CUR
-      *
-           .
-       330-MDAS-SET-EXT.
-           EXIT.
-      *
-      *****************************************************************
       *    画面遷移処理
       *****************************************************************
        200-GMNSENI                   SECTION.
@@ -496,15 +458,9 @@
       *     処理確認
       *        WHEN    "CLICKED"       ALSO    "B13"
       ****         PERFORM 490-KAKUNIN-SEC
-      *     データ収集処理確認
-               WHEN    "CLICKED"       ALSO    "B13"
-                  PERFORM 490-COLLECT-KAKUNIN-SEC
       *     設定
                WHEN    "CLICKED"       ALSO    "B09"
                    PERFORM 490-SETTEI-SYORI-SEC
-      *     感染症画面
-               WHEN    "CLICKED"       ALSO    "B04"
-                   PERFORM 480-MINF-SEC
            END-EVALUATE
       *
            .
@@ -552,7 +508,6 @@
       *    MOVE    SPA-SYSYMD          TO  ORC-DBYMD
            MOVE    SPA-SYSYMD          TO  SYS-3003-STYUKYMD
                                            SYS-3003-EDYUKYMD
-           MOVE    SPA-HOSPNUM         TO  SYS-3003-HOSPNUM
            MOVE    SYS-3003-REC        TO  MCPDATA-REC
            PERFORM 900-SYSKANRI-INV-SEC
            IF      FLG-SYSKANRI        =   ZERO
@@ -565,11 +520,9 @@
                    MOVE    IDX             TO  JOB-JOBID
                    MOVE    WRK-CONS-JOB-SHELLID
                                            TO  JOB-SHELLID
-                   MOVE    SPA-HOSPNUM     TO  JOB-HOSPNUM
                    CALL    "ORCSJOB"       USING
                                            ORCSJOBKANRIAREA  
                                            JOBKANRI-REC
-                                           SPA-AREA
                    IF      SJOBKANRI-RETURN
                                            =   ZERO
                        IF      JOB-ENDYMD      =   SPACE
@@ -619,8 +572,7 @@
            MOVE    "M98"               TO  SPA-MOTOPG
            MOVE    "XB01"              TO  SPA-SAKIPG
       *
-      ****     MOVE    WRK-CONS-JOB-SHELLID
-           MOVE    WRK-CONS-JOB-SHELLID-INFECTION
+           MOVE    WRK-CONS-JOB-SHELLID
                                        TO  SPA-JOB-SHELLID
       *
            MOVE    SPA-M00KYOUTU       TO  SPA-WORK
@@ -651,7 +603,6 @@
       *    MOVE    SPA-SYSYMD          TO  ORC-DBYMD 
            MOVE    SPA-SYSYMD          TO  SYS-3003-STYUKYMD
                                            SYS-3003-EDYUKYMD
-           MOVE    SPA-HOSPNUM         TO  SYS-3003-HOSPNUM
            MOVE    SYS-3003-REC        TO  MCPDATA-REC
            PERFORM 900-SYSKANRI-INV-SEC
            IF      FLG-SYSKANRI        =   ZERO
@@ -664,11 +615,9 @@
                    MOVE    IDX             TO  JOB-JOBID
                    MOVE    WRK-CONS-JOB-SHELLID
                                            TO  JOB-SHELLID
-                   MOVE    SPA-HOSPNUM     TO  JOB-HOSPNUM
                    CALL    "ORCSJOB"       USING
                                            ORCSJOBKANRIAREA  
                                            JOBKANRI-REC
-                                           SPA-AREA
                    IF      SJOBKANRI-RETURN
                                            =   ZERO
                        IF      JOB-ENDYMD      =   SPACE
@@ -676,9 +625,8 @@
                            MOVE    SPACE           TO  WRK-RECEERR
                            STRING  "処理中です【"  DELIMITED  BY  SIZE
                                    JOB-SHELLMSG    DELIMITED  BY  SPACE
-                                   "】"            DELIMITED  BY  SIZE 
+                                   "】"            DELIMITED  BY  SIZE      
                                                    INTO  WRK-RECEERR
-                           END-STRING
                            MOVE    SYS-3003-JOBID  TO  IDX
                        END-IF
                    END-IF    
@@ -717,21 +665,18 @@
       *    MOVE    SPA-SYSYMD          TO  ORC-DBYMD 
            MOVE    SPA-SYSYMD          TO  SYS-3003-STYUKYMD
                                            SYS-3003-EDYUKYMD
-           MOVE    SPA-HOSPNUM         TO  SYS-3003-HOSPNUM
            MOVE    SYS-3003-REC        TO  MCPDATA-REC
            PERFORM 900-SYSKANRI-INV-SEC
            IF      FLG-SYSKANRI        =   ZERO
                MOVE    MCPDATA-REC         TO  SYS-3003-REC
-grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    SYS-3003-REC        TO  MCPDATA-REC
                MOVE    "DBDELETE"          TO  MCP-FUNC
                MOVE    "tbl_syskanri"      TO  MCP-TABLE
                MOVE    "key"
                                            TO  MCP-PATHNAME
-               CALL    "ORCDBMAIN"         USING
-                                               MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+               CALL    "MONFUNC"           USING
+                                           MCPAREA
+                                           MCPDATA-REC
                IF      MCP-RC              =   ZERO
                    CONTINUE
                ELSE                                 
@@ -745,10 +690,8 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
            INITIALIZE                  JOBKANRI-REC
            MOVE    WRK-CONS-JOB-SHELLID
                                    TO  JOB-SHELLID
-           MOVE    SPA-HOSPNUM     TO  JOB-HOSPNUM
            CALL    "ORCSJOB"       USING   ORCSJOBKANRIAREA  
                                            JOBKANRI-REC
-                                           SPA-AREA
            IF      SJOBKANRI-RETURN    =   ZERO
                CONTINUE
            ELSE
@@ -769,18 +712,21 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
            PERFORM 45011-JOBKANRI-HENSYU-SEC
       *             
            MOVE    SPACE               TO  SHELLTBL
-           MOVE    "das-upload.sh"     TO  SHELLTBL-NAME
-           MOVE    SPA-HOSPNUM         TO  SHELLTBL-ARG1
-           MOVE    SPA-HOSPID          TO  SHELLTBL-ARG2
+           MOVE    "das-upload.sh"     TO  WRK-SHELL-SHELL
+      *    ファイルデイレクトリ位置指定
+           INITIALIZE                  ORCSMKPASSAREA
+           MOVE    WRK-SHELL-NAME      TO  MKPASS-IN-01
+           CALL    "ORCSMKPASS"        USING   ORCSMKPASSAREA
+           MOVE    MKPASS-OT-01        TO  SHELLTBL-NAME
       *     
            MOVE    SHELLTBL            TO  MCPDATA-REC
            MOVE    "SHELL"             TO  MCP-FUNC
            MOVE    "shell"             TO  MCP-TABLE
-           MOVE    "monthly"           TO  MCP-PATHNAME
-           CALL    "ORCDBMAIN"         USING
-                                           MCPAREA
-                                           MCPDATA-REC
-                                           SPA-AREA
+           MOVE    "shell"
+                                       TO  MCP-PATHNAME
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
       *
       *    情報確認画面を表示                                                   
            PERFORM 490-KAKUNIN-SEC
@@ -801,11 +747,9 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                                    TO  JOB-JOBID
            MOVE    WRK-CONS-JOB-SHELLID
                                    TO  JOB-SHELLID
-           MOVE    SPA-HOSPNUM     TO  JOB-HOSPNUM
            CALL    "ORCSJOB"       USING
                                    ORCSJOBKANRIAREA 
                                    JOBKANRI-REC
-                                    SPA-AREA
       *
            MOVE    "JBS"           TO  SJOBKANRI-MODE
            INITIALIZE                  JOBKANRI-REC
@@ -813,12 +757,10 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                                    TO  JOB-JOBID
            MOVE    WRK-CONS-JOB-SHELLID
                                    TO  JOB-SHELLID
-           MOVE    SPA-TERMID      TO  JOB-TERMID 
-           MOVE    SPA-HOSPNUM     TO  JOB-HOSPNUM
+           MOVE    SPA-TERMID      TO  JOB-TERMID                        
            CALL    "ORCSJOB"       USING
                                    ORCSJOBKANRIAREA 
                                    JOBKANRI-REC
-                                   SPA-AREA
       *
            .
        45011-JOBKANRI-HENSYU-EXT.
@@ -839,7 +781,6 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
       *    MOVE    SPA-SYSYMD          TO  ORC-DBYMD 
            MOVE    SPA-SYSYMD          TO  SYS-3003-STYUKYMD
                                            SYS-3003-EDYUKYMD
-           MOVE    SPA-HOSPNUM         TO  SYS-3003-HOSPNUM
            MOVE    SYS-3003-REC        TO  MCPDATA-REC
            PERFORM 900-SYSKANRI-INV-SEC
            IF      FLG-SYSKANRI        =   ZERO
@@ -852,11 +793,9 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                    MOVE    IDX             TO  JOB-JOBID
                    MOVE    WRK-CONS-JOB-SHELLID
                                            TO  JOB-SHELLID
-                   MOVE    SPA-HOSPNUM     TO  JOB-HOSPNUM
                    CALL    "ORCSJOB"       USING
                                            ORCSJOBKANRIAREA  
                                            JOBKANRI-REC 
-                                           SPA-AREA
                    IF      SJOBKANRI-RETURN    =   ZERO
                        MOVE    JOB-STARTTIME(1:2)
                                                TO  WRK-HH
@@ -882,7 +821,6 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                                       JOB-SHELLMSG DELIMITED  BY  SPACE
                                       "】"         DELIMITED  BY  SIZE      
                                                    INTO  MERR-ERRMSG
-                               END-STRING
                            END-IF                          
                        END-IF    
                    END-IF
@@ -913,105 +851,15 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    データ収集処理確認処理
-      *****************************************************************
-       490-COLLECT-KAKUNIN-SEC     SECTION.
-      * 
-           INITIALIZE                  M99
-           MOVE    ZERO            TO  M99-COUNT
-      *
-           MOVE    5               TO  M99-DURATION
-      *
-      *    ジョブ管理チェック処理
-           MOVE    "CHK"           TO  SJOBKANRI-MODE
-           INITIALIZE                  JOBKANRI-REC
-           MOVE    WRK-CONS-JOB-JOBID-COLLECT
-                                   TO  JOB-JOBID
-                                       IDX
-           MOVE    WRK-CONS-JOB-SHELLID-COLLECT
-                                   TO  JOB-SHELLID
-           MOVE    SPA-HOSPNUM     TO  JOB-HOSPNUM
-           CALL    "ORCSJOB"           USING
-                                       ORCSJOBKANRIAREA
-                                       JOBKANRI-REC
-                                       SPA-AREA
-           IF      SJOBKANRI-RETURN    =   ZERO
-               MOVE    JOB-JOBID           TO  M99-RENNUM   (IDX)
-               MOVE    JOB-SHELLMSG        TO  M99-SHORINM  (IDX)
-               MOVE    JOB-STARTTIME(1:2)  TO  WRK-HH
-               MOVE    JOB-STARTTIME(3:2)  TO  WRK-MM
-               MOVE    JOB-STARTTIME(5:2)  TO  WRK-SS
-               MOVE    WRK-HENTIME         TO  M99-STARTTIME(IDX)
-               MOVE    JOB-ENDTIME(1:2)    TO  WRK-HH
-               MOVE    JOB-ENDTIME(3:2)    TO  WRK-MM
-               MOVE    JOB-ENDTIME(5:2)    TO  WRK-SS
-               MOVE    WRK-HENTIME         TO  M99-ENDTIME  (IDX)
-               MOVE    JOB-UPDCNT          TO  WRK-PAGE
-               MOVE    WRK-PAGE            TO  M99-PAGE     (IDX)
-               MOVE    JOB-YOBI            TO  M99-ERRMSG   (IDX)
-               IF      JOB-ENDYMD      =   SPACE
-                   MOVE    "処理中です"        TO  M99-MSG
-               ELSE
-                   IF      JOB-ERRCD       =   SPACE
-                       CONTINUE
-                   ELSE
-                       STRING  JOB-YOBI        DELIMITED  BY  SPACE
-                               "【"            DELIMITED  BY  SIZE
-                               JOB-SHELLMSG    DELIMITED  BY  SPACE
-                               "】"            DELIMITED  BY  SIZE
-                                         INTO  M99-MSG
-                       END-STRING
-                   END-IF
-                   MOVE    IDX                 TO  M99-COUNT
-               END-IF
-           END-IF
-      *
-           MOVE    "B11"               TO  MCP-WIDGET
-           IF    ( M99-MSG             =   SPACE )
-               MOVE    "B01"           TO  MCP-WIDGET
-               IF    ( M99-COUNT       >   ZERO )
-                   MOVE    "処理は正常に終了しました"
-                                               TO  M99-MSG
-               ELSE
-                   MOVE    "該当する処理はありません"
-                                               TO  M99-MSG
-               END-IF
-           END-IF
-      *
-           MOVE    "M98"                 TO  SPA-MOTOPG
-           MOVE    "M99"                 TO  SPA-SAKIPG
-      *
-           MOVE    "NEW"                 TO  MCP-PUTTYPE
-           MOVE    "M99"                 TO  MCP-WINDOW
-      *
-           PERFORM 900-PUT-WINDOW
-      *
-           MOVE    1                    TO  FLG-END 
-      *
-           .
-       490-COLLECT-KAKUNIN-EXT.
-           EXIT.
-      *
-      *****************************************************************
       *    設定処理
       *****************************************************************
        490-SETTEI-SYORI-SEC        SECTION.
       *
            MOVE    SPA-SYS-1010-REC    TO  SYS-1010-REC
-           IF      SYS-1010-KANRIAUTHFLG   NOT =   "T"
-               GO  TO  490-SETTEI-SYORI-EXT
+           IF      SYS-1010-KANRIAUTHFLG   =   "T"
+      *        管理者である
+               PERFORM 4901-MUID-SYORI-SEC
            END-IF
-      *
-      *
-           MOVE    "M98"               TO  SPA-MOTOPG
-           MOVE    "MDAS"              TO  SPA-SAKIPG
-      *
-           MOVE    "NEW"               TO  MCP-PUTTYPE
-           MOVE    "MDAS"              TO  MCP-WINDOW
-      *
-           PERFORM 900-PUT-WINDOW
-      *
-           MOVE    1                   TO  FLG-END
            .
        490-SETTEI-SYORI-EXT.
            EXIT.
@@ -1023,28 +871,13 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
       *
            INITIALIZE                      SPA-MUID-AREA
            MOVE    SPACE                TO  SPA-MIDCD
+      *
            MOVE    SPACE                TO  MUID
+           MOVE    "USER"               TO  MCP-WIDGET
       *
-           MOVE    SPA-M00KYOUTU       TO  SPA-WORK
-           MOVE    SPA-AREA            TO  SPA-COMMON
-           MOVE    SPA-M01             TO  SPA-FREE
-      *
-           MOVE    "LINK"          TO  MCP-STATUS
-           MOVE    SPACE           TO  MCP-EVENT
-      *
-           CALL    "ORCGMUID"          USING
-                                       MCPAREA
-                                       SPAAREA
-                                       LINKAREA
-                                       SCRAREA.
-      *
-           MOVE    SPA-COMMON      TO  SPA-AREA
-           MOVE    SPA-WORK        TO  SPA-M00KYOUTU
-           MOVE    SPA-FREE        TO  SPA-M01
-      *
-           MOVE    "KANANAME"           TO  MCP-WIDGET
            MOVE    "M98 "               TO  SPA-MOTOPG
            MOVE    "MUID"               TO  SPA-SAKIPG
+      *
            MOVE    "NEW"                TO  MCP-PUTTYPE
            MOVE    "MUID"               TO  MCP-WINDOW
       *
@@ -1053,27 +886,6 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    1                    TO  FLG-END
            .
        4901-MUID-SYORI-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    感染症表示画面へ
-      *****************************************************************
-       480-MINF-SEC                SECTION.
-      *
-              MOVE    "B12"        TO  MCP-WIDGET
-      *
-              MOVE    "M98"        TO  SPA-MOTOPG
-              MOVE    "MINF"       TO  SPA-SAKIPG
-      *
-              MOVE    "CHANGE"     TO  MCP-PUTTYPE
-              MOVE    "MINF"       TO  MCP-WINDOW
-      *
-              PERFORM 900-PUT-WINDOW
-      *
-              MOVE    1            TO  FLG-END
-      *
-           .
-       480-MINF-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1303,10 +1115,9 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    "tbl_joblog"        TO  MCP-TABLE
            MOVE    "key3"
                                        TO  MCP-PATHNAME
-           CALL    "ORCDBMAIN"         USING
-                                           MCPAREA
-                                           MCPDATA-REC
-                                           SPA-AREA
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
       *                                  
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC         TO  JOBLOG-REC
@@ -1327,19 +1138,17 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key"
                                        TO  MCP-PATHNAME
-           CALL    "ORCDBMAIN"         USING
-                                           MCPAREA
-                                           MCPDATA-REC
-                                           SPA-AREA
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
            IF      MCP-RC              =   ZERO
                MOVE    "DBFETCH"           TO  MCP-FUNC
                MOVE    "tbl_syskanri"      TO  MCP-TABLE
                MOVE    "key"
                                            TO  MCP-PATHNAME
-               CALL    "ORCDBMAIN"         USING
-                                               MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+               CALL    "MONFUNC"           USING
+                                           MCPAREA
+                                           MCPDATA-REC
                IF      MCP-RC              =   ZERO
                    MOVE    ZERO                TO  FLG-SYSKANRI
                ELSE
@@ -1353,10 +1162,9 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key"
                                        TO  MCP-PATHNAME
-           CALL    "ORCDBMAIN"         USING
-                                           MCPAREA
-                                           MCPDATA-REC
-                                           SPA-AREA
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
       *
            .
        900-SYSKANRI-INV-EXT.
@@ -1367,12 +1175,10 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
       *****************************************************************
        900-PUT-WINDOW              SECTION.
       *
-           MOVE    "PUTWINDOW"         TO  MCP-FUNC
-           CALL    "ORCDBMAIN"         USING
-                                           MCPAREA
-                                           MCPDATA-REC
-                                           SPA-AREA
+           MOVE   "PUTWINDOW"                   TO  MCP-FUNC.
+           CALL   "MONFUNC"                     USING
+                                                MCPAREA
+                                                MCPDATA-REC.
       *
-           .
        900-PUT-WINDOW-EXT.
            EXIT.

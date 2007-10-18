@@ -73,3 +73,10 @@
                05  SPA-NAI-AREA.
                    07  SPA-NAI-MOTOPG         PIC X(08).
       *
+      *    £Í£Õ£É£Ä²èÌÌ
+           03  SPA-MUID-AREA.
+               05  SPA-MUID-USER           PIC X(30).
+               05  SPA-MUID-PASSWORD       PIC X(30).
+               05  SPA-MUID-CUR            PIC 9(02).
+               05  SPA-MUID-END            PIC 9(01).
+      *

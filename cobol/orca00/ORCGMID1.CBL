@@ -20,7 +20,7 @@
       *****************************************************************
       *  システム名        : ＯＲＣＡ
       *  サブシステム名    : 業務選択
-      *  コンポーネント名  : 確認画面１（ＭＩＤ１）
+      *  コンポーネント名  : 確認画面１（ＫＩＤ１）
       *  管理者            : 
       *  作成日付    作業者        記述
       *  00/12/01    MCC−多々納   新規作成
@@ -78,17 +78,13 @@
            COPY    "M01N.INC".
            COPY    "M02.INC". 
            COPY    "M95.INC".
+           COPY    "M96.INC".
+           COPY    "M97.INC".
            COPY    "MERR.INC".
            COPY    "MID1.INC".
            COPY    "MVER.INC".
            COPY    "M98.INC".
            COPY    "MUID.INC".
-           COPY    "M99.INC".
-           COPY    "MID2.INC".
-           COPY    "MDAS.INC".
-           COPY    "MLOG.INC".
-           COPY    "MINF.INC".
-           COPY    "MPRT.INC".
       *
        PROCEDURE                   DIVISION    USING
            MCPAREA
@@ -137,7 +133,7 @@
                WHEN    "CLICKED"       ALSO    "B01"
                    MOVE    SPACE           TO  SPA-MID1-FLG
                    PERFORM 210-BACK
-      *        登録
+      *     登録
                WHEN    "CLICKED"       ALSO    "B12"
                    MOVE    "OK"            TO  SPA-MID1-FLG
                    PERFORM 210-BACK
@@ -171,11 +167,10 @@
       *****************************************************************
        900-PUT-WINDOW              SECTION.
       *
-           MOVE    "PUTWINDOW"         TO  MCP-FUNC
-           CALL    "ORCDBMAIN"         USING
-                                           MCPAREA
-                                           MCPDATA-REC
-                                           SPA-AREA
+           MOVE   "PUTWINDOW"      TO  MCP-FUNC.
+           CALL   "MONFUNC"        USING
+                                       MCPAREA
+                                       MCPDATA-REC.
       *
            .
        900-PUT-WINDOW-EXT.
