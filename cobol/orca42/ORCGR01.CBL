@@ -3258,7 +3258,7 @@ grpsys             MOVE    SPA-HOSPNUM         TO  PTINF-HOSPNUM
                            MOVE    "2"            TO  PTINF-HKNKBN
                        WHEN    "5"
                            MOVE    "2"            TO  PTINF-HKNKBN
-                           MOVE    "4"            TO  PTINF-HKNKBN
+                           MOVE    "4"            TO  PTINF-HKNKBN2
                    END-EVALUATE
                    IF      SPA-GMN-R01-SYORI       =   "2"
                        MOVE    SPA-NAI-R01-TEISEIYM
