@@ -756,7 +756,7 @@
                                    TO  SHELLTBL-ARG6
            MOVE    WRK-CONS-JOB-SHELLID-COLLECT
                                    TO  SHELLTBL-ARG7
-           MOVE    2               TO  SHELLTBL-ARG8
+           MOVE    "2"             TO  SHELLTBL-ARG8
       *
            MOVE    SHELLTBL        TO  MCPDATA-REC
            MOVE    "SHELL"         TO  MCP-FUNC
