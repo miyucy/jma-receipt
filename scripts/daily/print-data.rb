@@ -5,7 +5,7 @@ require "tempfile"
 require "fold"
 require "dia/parser"
 
-DIA = "dia-orca"
+DIA = "dia"
 LPR = "lpr"
 
 class DataTranslator < Dia::Parser
