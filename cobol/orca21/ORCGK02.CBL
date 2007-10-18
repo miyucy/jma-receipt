@@ -1177,6 +1177,7 @@
                    MOVE    1               TO  SPA-GMN-CUR
                END-IF
       *!
+               MOVE    MAX-LINE-VALUE      TO  SPA-MAX-LINE
                CALL    "ORCSSPACHK"        USING    SPA-AREA
       *!
       *        予約の時、そのまま画面表示へ
@@ -1205,6 +1206,8 @@
       *!
            CALL    "ORCSSPACHK"        USING    SPA-AREA
       *!
+      *
+           MOVE    MAX-LINE-VALUE      TO  SPA-MAX-LINE
       *
            MOVE    "2"                 TO  SPA-NYUGAIKBN
       *
