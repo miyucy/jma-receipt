@@ -342,6 +342,7 @@ RECORD_files = \
 	W121.rec \
 	W32.rec \
         T91.rec \
+        MUID.rec \
 
 DEF_files = \
 	HC01.def \

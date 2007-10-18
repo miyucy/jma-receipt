@@ -9,7 +9,7 @@ fi
 
 . $JMARECEIPT_ENV
 
-export CLIENT_CONFIG_FILE="$SYSCONFDIR/das-upload.conf"
+export CLIENT_CONFIG_FILE="$SYSCONFDIR/das-upload.d/das-upload.conf"
 if [ ! -f $CLIENT_CONFIG_FILE ]; then
     exit
 fi

@@ -18,3 +18,5 @@
                     07  M98-VALUE8  PIC X(35).
                   06  M98-SELECT
                           PIC X       OCCURS  100 TIMES.
+              03  M98-B09.
+                04  M98-B09-LABEL   PIC X(10).

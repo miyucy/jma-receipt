@@ -1,0 +1,10 @@
+MUID	{
+	fixed3	{
+		USER	{
+			value	varchar(30);
+		};
+		PASSWORD	{
+			value	varchar(30);
+		};
+	};
+};
