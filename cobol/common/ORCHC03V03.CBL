@@ -198,6 +198,7 @@
                05  WRK-HOSPADRS2       PIC X(50).
            03  WRK-HOSPTEL             PIC X(15).
       *----(03.04.01)--ADD-END-----
+           03  WRK-FROMID              PIC X(30).
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -396,7 +397,7 @@
             MOVE   "HC01.sh"           TO  MKPRT-ID
       ***** MOVE   "HC03.dia"          TO  MKPRT-DIA
       ***** MOVE   "HC03.def"          TO  MKPRT-DEF
-            MOVE   "HCM03V03A.red"      TO  MKPRT-DIA
+            MOVE   WRK-FROMID          TO  MKPRT-DIA
             MOVE   SPACE               TO  MKPRT-DEF
             MOVE   HC01PARA            TO  MKPRT-DAT
             MOVE   SYS-1031-PRTNM(3)   TO  MKPRT-PRTNM
@@ -432,7 +433,7 @@
       *
            MOVE    ORCHC03-PRTAREA     TO  ORCSPRTAREA
       *
-           MOVE    "HCM03V03A.red"     TO  SPRT-PRTID
+           MOVE    WRK-FROMID          TO  SPRT-PRTID
            MOVE    HC03                TO  SPRT-PRTDATA
       *-----------------------------------------------------------------
            MOVE    "1"                 TO  SPRT-SITEKBN
@@ -622,6 +623,13 @@
       *    医療機関編集情報
            PERFORM 900-1900-READ-SEC
       *----(03.04.01)--ADD-END-----
+      *
+           EVALUATE    ORCHC03-SIZE
+           WHEN    "A5"
+               MOVE    "HCM03V03A5.red"    TO  WRK-FROMID
+           WHEN    OTHER
+               MOVE    "HCM03V03A.red"     TO  WRK-FROMID
+           END-EVALUATE
       *
            .
        100-SYORI-EXT.

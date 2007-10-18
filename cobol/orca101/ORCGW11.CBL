@@ -554,13 +554,15 @@
            MOVE    "ORCHC03"           TO  SPA-GMN-ORGPGNM03MEIL(1)
            MOVE    "ORCHC03V02"        TO  SPA-GMN-ORGPGNM03MEIL(2)
            MOVE    "ORCHC03V03"        TO  SPA-GMN-ORGPGNM03MEIL(3)
-           MOVE    3                   TO  SPA-GMN-ORGPGNM03-MAX
+           MOVE    "ORCHC03V03A5"      TO  SPA-GMN-ORGPGNM03MEIL(4)
+           MOVE    4                   TO  SPA-GMN-ORGPGNM03-MAX
       *
       *    擱菲踏痱恄璋踏戊件示﹋ェ情﹌
            MOVE    "ORCHCN03"          TO  SPA-GMN-ORGPGNM03NMEIL(1)
            MOVE    "ORCHCN03V02"       TO  SPA-GMN-ORGPGNM03NMEIL(2)
            MOVE    "ORCHCN03V03"       TO  SPA-GMN-ORGPGNM03NMEIL(3)
-           MOVE    3                   TO  SPA-GMN-ORGPGNM03N-MAX
+           MOVE    "ORCHCN03V03A5"     TO  SPA-GMN-ORGPGNM03NMEIL(4)
+           MOVE    4                   TO  SPA-GMN-ORGPGNM03N-MAX
       *
       *    情陸質杅六氏
            MOVE    "ORCHCM19"          TO  SPA-GMN-ORGPGNM02-MEI(1)

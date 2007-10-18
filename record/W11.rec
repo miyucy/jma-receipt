@@ -181,7 +181,7 @@ W11	{
 								value	varchar(20);
 							};
 							count	int;
-							item	varchar(20)[3];
+							item	varchar(20)[5];
 						};
 						ORCAORGNM04	{
 							value	varchar(20);
@@ -406,7 +406,7 @@ W11	{
 								value	varchar(20);
 							};
 							count	int;
-							item	varchar(20)[3];
+							item	varchar(20)[5];
 						};
 						ORCAORGNM04N	{
 							value	varchar(20);

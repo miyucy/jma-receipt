@@ -169,6 +169,7 @@
                05  WRK-HOSPADRS2       PIC X(50).
            03  WRK-HOSPTEL             PIC X(15).
       *----(03.04.01)--ADD-END-----
+           03  WRK-FORMID              PIC X(30).
       *
       *   日本語数字
        01  TBL-SUJI-AREA.
@@ -416,6 +417,13 @@
            MOVE    SYS-TIME            TO  HC01PARA-SYOHMS
            MOVE    1                   TO  HC01PARA-CNT
            OPEN    OUTPUT               PRT-FILE
+      *
+           EVALUATE    ORCHCN03-SIZE
+           WHEN    "A5"
+               MOVE    "HCN03V03A5.red"    TO  WRK-FORMID
+           WHEN    OTHER
+               MOVE    "HCN03V03A.red"     TO  WRK-FORMID
+           END-EVALUATE
       *
            .
        100-INIT-EXT.
@@ -818,7 +826,7 @@
            MOVE    SPACE               TO  PRT-REC
            MOVE    SYU-SRYYMD          TO  PRT-SRYYMD
            MOVE    SYU-PTID            TO  PRT-PTID
-           MOVE    "HCN03V03A.red"     TO  PRT-PRTID
+           MOVE    WRK-FORMID          TO  PRT-PRTID
            MOVE    WRK-PRTNM           TO  PRT-PRTNM
            MOVE    "1"                 TO  PRT-SITEKBN
            MOVE    HCN03               TO  PRT-PRTDATA
