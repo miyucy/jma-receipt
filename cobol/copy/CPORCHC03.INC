@@ -105,20 +105,3 @@
       *    一括パラメタ
            03  ORCHC03-PRTAREA         PIC X(25000).
            03  ORCHC03-SIZE            PIC X(02).
-      *
-      *    依頼元業務
-      *    0:入退院登録業務/診療行為業務
-      *    1:収納業務（再発行）
-      *    2:収納業務（月別請求書）　外来のみ
-      *    3:収納業務（請求確認画面）
-      *    4:収納業務（一括入金画面）
-      *    5:月次統計業務（月別請求書）　外来のみ
-      *    6:定期請求業務　入院のみ
-      *    7:定期請求業務(請求確認画面)　入院のみ
-      *    8:退院時仮計算　入院のみ
-           03  ORCHC03-MOTOID           PIC 9(02).
-      *    まとめ入返金区分
-      *    (ORCSNYUKINの返却値をそのまま設定)
-           03  ORCHC03-MATOME-NYUHENKIN-KBN.
-               05  ORCHC03-MATOME-NYUKIN-KBN   PIC X(01).
-               05  ORCHC03-MATOME-HENKIN-KBN   PIC X(01).

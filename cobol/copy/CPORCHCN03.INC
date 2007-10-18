@@ -32,10 +32,6 @@
            03  ORCHCN03-STAFFCD            PIC X(05).
            03  ORCHCN03-SYSYMD             PIC X(08).
            03  ORCHCN03-TERMID             PIC X(64).
-      *    請求書印刷方法フラグ
-      *    0:収納データの発行方法に従う
-      *    1:個別に発行
-           03  ORCHCN03-SKYPRTFLG          PIC 9(01).
            03  ORCHCN03-CNT                PIC 9(10).
            03  ORCHCN03-OCC                OCCURS  3000.
       *        基準日
@@ -63,26 +59,8 @@
                05  ORCHCN03-DENPEDANUM     PIC 9(02).
       *        今回請求未収額
                05  ORCHCN03-KONMISYU       PIC S9(07).
-      *        診療年月日
-               05  ORCHCN03-SRYYMD         PIC X(08).
-      *        保険組合せ
-               05  ORCHCN03-HKNCOMBI       PIC X(04).
       *
            03  ORCHCN03-PRTKBN             PIC X(1).
            03  ORCHCN03-PRTAREA            PIC X(25000).
            03  ORCHCN03-OUTCNT             PIC 9(10).
            03  ORCHCN03-SIZE               PIC X(02).
-      *
-      *    依頼元業務
-      *    0:入退院登録業務
-      *    1:収納業務（再発行）
-      *    2:収納業務（月別請求書）　外来のみ
-      *    3:収納業務（請求確認画面）
-      *    4:収納業務（一括入金画面）
-      *    5:月次統計業務（月別請求書）　外来のみ
-      *    6:定期請求業務　入院のみ
-      *    7:定期請求業務(請求確認画面)　入院のみ
-      *    8:退院時仮計算　入院のみ
-           03  ORCHCN03-MOTOID           PIC 9(02).
-      *    概算書発行フラグ
-           03  ORCHCN03-GAISAN-FLG       PIC 9(01).

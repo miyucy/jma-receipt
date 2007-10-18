@@ -35,7 +35,6 @@
                05  SPA-GMN-AREA.
                    07  SPA-GMN-STYUKYMD    PIC X(09).
                    07  SPA-GMN-EDYUKYMD    PIC X(09).
-                   07  SPA-GMN-USE-PRINT-SERVER    PIC X(01).
       *
                    07  SPA-GMN-PAGENO      PIC 9(01).
       *            出力先プリンタ割り当て情報
@@ -77,7 +76,7 @@
                                13  SPA-GMN-TNAME   PIC X(30).
                                13  SPA-GMN-TPRTNM  PIC X(16).
       *                    外来・プログラム名
-                           11  SPA-GMN-TBL02       OCCURS  12.
+                           11  SPA-GMN-TBL02       OCCURS  8.
                                13  SPA-GMN-TORGPGNM
                                                    PIC X(20).
                                13  SPA-GMN-TORGPGCHK
@@ -90,7 +89,7 @@
       *
                        09  SPA-GMN-ORGPGNM03LST-G.
                            11  SPA-GMN-ORGPGNM03MEIL  PIC X(20)
-                                                   OCCURS  6.
+                                                   OCCURS  5.
                            11  SPA-GMN-ORGPGNM03-MAX
                                                    PIC 9(04).
       *                    入院帳票
@@ -99,7 +98,7 @@
                                13  SPA-GMN-TNAME-N     PIC X(30).
                                13  SPA-GMN-TPRTNM-N    PIC X(16).
       *                    入院・プログラム名
-                           11  SPA-GMN-TBL02-N         OCCURS  10.
+                           11  SPA-GMN-TBL02-N         OCCURS  8.
                                13  SPA-GMN-TORGPGNM-N
                                                        PIC X(20).
                                13  SPA-GMN-TORGPGCHK-N
@@ -116,11 +115,6 @@
                                                    OCCURS  5.
                            11  SPA-GMN-ORGPGNM03N-MAX
                                                    PIC 9(04).
-                       09  SPA-GMN-ORGPGNM09NLST-G.
-                           11  SPA-GMN-ORGPGNM09NMEIL PIC X(20)
-                                                   OCCURS  5.
-                           11  SPA-GMN-ORGPGNM09N-MAX
-                                                   PIC 9(04).
       *
       *                院外処方せん
                        09  SPA-GMN-ORGPGNM02LST-G.
@@ -128,22 +122,6 @@
                                                       OCCURS  5.
                            11  SPA-GMN-ORGPGNM02-MAX  PIC 9(04).
       *
-      *                薬剤情報提供書
-                       09  SPA-GMN-ORGPGNM04LST-G.
-                           11  SPA-GMN-ORGPGNM04-MEI  PIC X(20)
-                                                      OCCURS  5.
-                           11  SPA-GMN-ORGPGNM04-MAX  PIC 9(04).
-      *
-                       09  SPA-GMN-CSTPGNMLST-G.
-                           11  SPA-GMN-CSTPGNMLST          OCCURS 12.
-                               13  SPA-GMN-CSTPGNMLST-MAX  PIC 9(04).
-                               13  SPA-GMN-CSTPGNMMEIL PIC X(20)
-                                                       OCCURS  10.
-                       09  SPA-GMN-CSTPGNM-NLST-G.
-                           11  SPA-GMN-CSTPGNM-NLST          OCCURS 10.
-                               13  SPA-GMN-CSTPGNM-NLST-MAX  PIC 9(04).
-                               13  SPA-GMN-CSTPGNM-NMEIL PIC X(20)
-                                                       OCCURS  10.
       *            帳票編集区分情報
                    07  SPA-GMN-1030-AREA.
                        09  SPA-GMN-SYOHOGEPRTFLG-G.
@@ -195,7 +173,7 @@
                        09  SPA-NAI-TNAME       PIC X(30).
                        09  SPA-NAI-TPRTNM      PIC X(16).
       *
-                   07  SPA-NAI-TBL02           OCCURS  12.
+                   07  SPA-NAI-TBL02           OCCURS  8.
                        09  SPA-NAI-TORGPGNM    PIC X(20).
                        09  SPA-NAI-TORGPGCHK   PIC X(01).
                        09  SPA-NAI-TCSTPGNM    PIC X(20).
@@ -205,32 +183,11 @@
                        09  SPA-NAI-TNAME-N     PIC X(30).
                        09  SPA-NAI-TPRTNM-N    PIC X(16).
       *
-                   07  SPA-NAI-TBL02-N         OCCURS  10.
+                   07  SPA-NAI-TBL02-N         OCCURS  8.
                        09  SPA-NAI-TORGPGNM-N  PIC X(20).
                        09  SPA-NAI-TORGPGCHK-N PIC X(01).
                        09  SPA-NAI-TCSTPGNM-N  PIC X(20).
                        09  SPA-NAI-TCSTPGCHK-N PIC X(01).
-      *
-      *    出力先プリンタ割り当て コピー情報
-           03  SPA-COPY-AREA.
-               05  SPA-COPY-TBL             OCCURS  20.
-                   07  SPA-COPY-TNAME       PIC X(30).
-                   07  SPA-COPY-TPRTNM      PIC X(16).
-      *        05  SPA-COPY-TBL02           OCCURS  12.
-                   07  SPA-COPY-TORGPGNM    PIC X(20).
-                   07  SPA-COPY-TORGPGCHK   PIC X(01).
-                   07  SPA-COPY-TCSTPGNM    PIC X(20).
-                   07  SPA-COPY-TCSTPGCHK   PIC X(01).
-      *
-               05  SPA-COPY-TBL01-N         OCCURS  20.
-                   07  SPA-COPY-TNAME-N     PIC X(30).
-                   07  SPA-COPY-TPRTNM-N    PIC X(16).
-      *
-               05  SPA-COPY-TBL02-N         OCCURS  10.
-                   07  SPA-COPY-TORGPGNM-N  PIC X(20).
-                   07  SPA-COPY-TORGPGCHK-N PIC X(01).
-                   07  SPA-COPY-TCSTPGNM-N  PIC X(20).
-                   07  SPA-COPY-TCSTPGCHK-N PIC X(01).
       *
       *    帳票オフセット登録（Ｗ１１１）
            03  SPA-W111-AREA.
