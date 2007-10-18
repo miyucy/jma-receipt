@@ -6,5 +6,11 @@ CID3	{
 		MSG	{
 			value	varchar(80);
 		};
+		B12	{
+                        label	varchar(24);
+		};
+		B11	{
+                        label	varchar(24);
+		};
 	};
 };

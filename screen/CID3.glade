@@ -117,16 +117,16 @@
 	<data>CLICKED</data>
 	<last_modification_time>Wed, 14 Feb 2001 00:38:53 GMT</last_modification_time>
       </signal>
-      <label>F12:分類名・病名とも削除</label>
+      <label></label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
     <widget>
       <class>GtkButton</class>
       <name>B11</name>
-      <x>150</x>
+      <x>140</x>
       <y>88</y>
-      <width>150</width>
+      <width>180</width>
       <height>24</height>
       <can_focus>True</can_focus>
       <accelerator>
@@ -140,7 +140,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Wed, 14 Feb 2001 00:38:22 GMT</last_modification_time>
       </signal>
-      <label>F11:分類名のみ削除</label>
+      <label></label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
   </widget>

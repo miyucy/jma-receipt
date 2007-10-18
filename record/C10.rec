@@ -1,5 +1,8 @@
 C10	{
 	fixed6	{
+		B08   {
+			 state   int;
+		};
 		TENKICOMBO	{
 			TENKIKBN	{
 				value	varchar(10);
@@ -47,6 +50,14 @@ C10	{
 		};
 		SRYYMD	{
 			value	varchar(10);
+		};
+		SRYKA_COMBO     {
+			state   int;
+			SRYKA   {
+				value   varchar(21);
+			};
+			count   int;
+			item    varchar(21)[40];
 		};
 	};
 };

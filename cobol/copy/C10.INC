@@ -1,4 +1,5 @@
             02  C10.
+              03  C10-B08-STATE   PIC S9(9)   BINARY.
               03  C10-TENKICOMBO.
                 04  C10-TENKIKBN.
                   05  C10-VALUE   PIC X(10).
@@ -33,3 +34,10 @@
                 04  C10-SYUBYOFLG-ITEM    PIC X(14)   OCCURS  2 TIMES.
               03  C10-SRYYMD.
                 04  C10-VALUE   PIC X(10).
+              03  C10-SRYKA-COMBO.
+                04  C10-SRYKA-STATE   PIC S9(9)   BINARY.
+                04  C10-SRYKA   PIC X(21).
+                04  C10-SRYKA-COUNT
+                                PIC S9(9)   BINARY.
+                04  C10-SRYKA-ITEM
+                                PIC X(21)   OCCURS  40 TIMES.

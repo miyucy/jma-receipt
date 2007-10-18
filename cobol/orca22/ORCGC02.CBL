@@ -220,6 +220,8 @@
       *  03.05.03    NACL-藤原    07/10/12  ファンクションキー操作による
       *                                     処理区分、入外区分変更時の
       *                                     診療科の表示
+      *
+      *  04.01.01    NACL-藤原    07/10/11  診療科コピー（移動）機能対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -349,7 +351,7 @@
                05  WRK-EDNUM       PIC X(05).
                05  WRK-HENSYU-DATA-G.
                    07  WRK-HENSYU-DATA-O
-                                   PIC X(10)   OCCURS  8.
+                                   PIC X(10)   OCCURS  9.
       *
            03  WRK-STR             PIC 9(05).
       *
@@ -449,6 +451,12 @@
            COPY    "CPPTBYOMEI.INC"
                                    REPLACING   //PTBYO-//
                                    BY          //WRK-PTBYO-COPY-//.
+      *
+      *    診療科移動用患者病名マスタ−
+       01  WRK-PTBYOMEI-DELETE-REC.
+           COPY    "CPPTBYOMEI.INC"
+                                   REPLACING   //PTBYO-//
+                                   BY          //WRK-PTBYO-DELETE-//.
       *
       *    患者病名マスタ−（レセ電エラーフラグチェック用）
        01  WRK-PTBYOMEI-CHK-AREA.
@@ -1914,7 +1922,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                            SPA-CIDCD
       *     
            PERFORM VARYING IDX     FROM    1   BY  1
-                   UNTIL   IDX     >       8
+                   UNTIL   IDX     >       9
                MOVE    SPA-C01-HENSYU-DATA-O (IDX)
                                        TO  WRK-HENSYU-DATA-O (IDX)
            END-PERFORM
@@ -1943,10 +1951,16 @@ grpsys     PERFORM 900-DBSELECT-SEC
                        IF      SPA-CID1-FLG        =   "DL"
                            PERFORM 3202-BYOMEI-DELETE-KOUSIN-SEC
                        ELSE
-                           IF      WRK-HENSYU-DATA-O (8)   =   SPACE
+                           IF    ( WRK-HENSYU-DATA-O (8)   =   SPACE )
+                           AND   ( WRK-HENSYU-DATA-O (9)   =   SPACE )
                                PERFORM 4101131-KANTAN-SYUSEI-KOUSIN-SEC
                            ELSE
-                               PERFORM 3201-BYOMEI-COPY-KOUSIN-SEC
+                               IF      WRK-HENSYU-DATA-O (9)   =   SPACE
+                                   PERFORM 3201-BYOMEI-COPY-KOUSIN-SEC
+                               ELSE
+                                   PERFORM
+                                       3203-BYOMEI-SRYKA-COPY-KOUSIN-SEC
+                               END-IF
                            END-IF
                        END-IF
                        IF      SPA-ERRCD   NOT =   SPACE
@@ -1958,6 +1972,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *
            MOVE    SPACE               TO  WRK-HAISIYMDH
                                            SPA-CID1-FLG
+                                           SPA-CID3-FLG
            MOVE    ZERO                TO  SPA-C02-IKOFLG
            INITIALIZE                      SPA-GMN-C02-KOUMOKU
                                            SPA-NAI-C02-KOUMOKU
@@ -2200,6 +2215,104 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            END-IF
            .
        3202-BYOMEI-DELETE-KOUSIN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    病名診療科複写更新処理
+      *****************************************************************
+       3203-BYOMEI-SRYKA-COPY-KOUSIN-SEC         SECTION.
+      *
+      *    更新日取得
+           INITIALIZE                  ORCSMCNDATEAREA
+           CALL    "ORCSMCNDATE"       USING
+                                       ORCSMCNDATEAREA
+      *
+           INITIALIZE                      PTBYO-KEY
+grpsys     MOVE    SPA-HOSPNUM         TO  PTBYO-HOSPNUM
+           MOVE    SPA-NAI-C02-PTID    TO  PTBYO-PTID
+           MOVE    SPA-NAI-C02-TSRYKA  (IDX)
+                                       TO  PTBYO-SRYKA
+           MOVE    SPA-NAI-C02-TSRYYMD (IDX)
+                                       TO  PTBYO-SRYYMD
+           MOVE    SPA-NAI-C02-TRENNUM (IDX)
+                                       TO  PTBYO-RENNUM 
+           MOVE    "tbl_ptbyomei"      TO  WRK-MCP-TABLE
+           MOVE    "key"               TO  WRK-MCP-PATHNAME
+           PERFORM 900-PTBYO-INV-SEC
+           IF      FLG-PTBYOMEI        =   1
+               MOVE    "1003"              TO  SPA-ERRCD
+               DISPLAY "INV PTBYOMEI-KEY =>" PTBYO-KEY 
+               GO  TO  3201-BYOMEI-COPY-KOUSIN-EXT
+           ELSE
+               MOVE    PTBYOMEI-REC        TO  WRK-PTBYOMEI-COPY-REC
+                                               WRK-PTBYOMEI-DELETE-REC
+           END-IF
+      *
+      *    診療科
+           MOVE    WRK-HENSYU-DATA-O (9)
+                                   TO  WRK-PTBYO-COPY-SRYKA
+      *
+      *    連番取得
+           MOVE    ZERO                TO  WRK-RENNUM
+      *
+           INITIALIZE                  PTBYOMEI-REC
+grpsys     MOVE    SPA-HOSPNUM         TO  PTBYO-HOSPNUM
+           MOVE    SPA-NAI-C02-PTID    TO  PTBYO-PTID
+           MOVE    WRK-PTBYO-COPY-SRYKA
+                                       TO  PTBYO-SRYKA
+           MOVE    WRK-PTBYO-COPY-SRYYMD
+                                       TO  PTBYO-SRYYMD
+           MOVE    PTBYOMEI-REC        TO  MCPDATA-REC
+           MOVE    "tbl_ptbyomei"      TO  WRK-MCP-TABLE
+           MOVE    "key7"              TO  WRK-MCP-PATHNAME
+           PERFORM 900-PTBYO-INV-SEC
+           IF      FLG-PTBYOMEI        =   ZERO
+               MOVE    PTBYO-RENNUM        TO  WRK-RENNUM
+           END-IF
+           ADD     1                   TO  WRK-RENNUM
+           MOVE    WRK-RENNUM          TO  WRK-PTBYO-COPY-RENNUM
+      *
+           MOVE    SMCNDATE-YMD        TO  WRK-PTBYO-COPY-CREYMD
+           MOVE    SMCNDATE-YMD        TO  WRK-PTBYO-COPY-UPYMD
+           MOVE    SMCNDATE-HMS        TO  WRK-PTBYO-COPY-UPHMS
+      *
+           MOVE    "DBINSERT"          TO  MCP-FUNC
+      *
+      *???
+           DISPLAY "PTBYO=" WRK-PTBYO-COPY-KEY "#" MCP-FUNC "#"
+      *???                
+           MOVE    WRK-PTBYOMEI-COPY-REC
+                                       TO  MCPDATA-REC
+           MOVE    "tbl_ptbyomei"      TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+grpsys     PERFORM 900-ORCDBMAIN-SEC
+           IF      MCP-RC          NOT =   ZERO 
+               MOVE    "1001"              TO  SPA-ERRCD
+               DISPLAY MCP-FUNC "PTBYOMEI-KEY =>" WRK-PTBYO-COPY-KEY
+               GO  TO  3203-BYOMEI-SRYKA-COPY-KOUSIN-EXT
+           ELSE
+               PERFORM 450221-RECEUPD-UPDATE-SEC
+           END-IF
+      *
+      *    診療科に移動のとき元の診療科分を削除する
+           IF      SPA-CID1-FLG        =   "MV"
+               MOVE    WRK-PTBYOMEI-DELETE-REC
+                                           TO  MCPDATA-REC
+               MOVE    "DBDELETE"          TO  MCP-FUNC
+      *???
+           DISPLAY "PTBYO=" WRK-PTBYO-COPY-KEY "#" MCP-FUNC "#"
+      *???                
+               MOVE    "tbl_ptbyomei"      TO  MCP-TABLE
+               MOVE    "key"               TO  MCP-PATHNAME
+grpsys         PERFORM 900-ORCDBMAIN-SEC
+               IF      MCP-RC              NOT =   ZERO 
+                   MOVE    "1002"                  TO  SPA-ERRCD
+               DISPLAY MCP-FUNC "PTBYOMEI-KEY =>" WRK-PTBYO-COPY-KEY
+                   GO  TO  45022-PTBYOMEI-UPDATE-EXT
+               END-IF
+           END-IF
+           .
+       3203-BYOMEI-SRYKA-COPY-KOUSIN-EXT.
            EXIT.
       *
       *****************************************************************

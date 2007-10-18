@@ -17,6 +17,8 @@
       *  02.07.01    NACL-藤原    06/02/01  検索自院病名コード追加
       *
       *  03.01.01    NACL-藤原    07/07/11  自院病名検索用ＩＮＤＥＸ追加
+      *
+      *  04.01.01    NACL-藤原    07/10/11  診療科コピー（移動）機能対応
       *****************************************************************
       *
        01  SPA-C01KYOUTU.
@@ -48,7 +50,7 @@
                07  SPA-C01-STNUM-O         PIC 9(05)   OCCURS  5.
                07  SPA-C01-EDNUM-O         PIC 9(05)   OCCURS  5.
            05  SPA-C01-HENSYU-DATA-G.
-               07  SPA-C01-HENSYU-DATA-O   PIC X(10)   OCCURS  8.
+               07  SPA-C01-HENSYU-DATA-O   PIC X(10)   OCCURS  9.
       *
       *戻り先
            05  SPA-C01-MOTOPG              PIC  X(08).

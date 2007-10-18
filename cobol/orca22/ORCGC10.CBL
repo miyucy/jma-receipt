@@ -53,6 +53,8 @@
       *  03.04.03    NACL-藤原    07/03/02  月途中保険変更時の病名対応中止
       *
       *  03.05.01    NACL-藤原    07/04/19  グループ診療対応
+      *
+      *  04.01.01    NACL-藤原    07/10/11  診療科コピー（移動）機能対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -155,9 +157,11 @@
                05  WRK-EDNUM       PIC X(05).
                05  WRK-HENSYU-DATA-G.
                    07  WRK-HENSYU-DATA-O
-                                   PIC X(10)   OCCURS  8.
+                                   PIC X(10)   OCCURS  9.
       *    入力項目名
            03  WRK-MCP-WIDGET      PIC X(64).
+      *
+           03  WRK-CIDMSG          PIC X(80).
       *
       *    保険組合せ重複チェック用エリア
            01  WRK-CHK-HKNCOMBI-AREA.
@@ -339,6 +343,23 @@
                END-IF
            END-IF              
       *
+      *    確認画面より
+           IF      SPA-MOTOPG      =   "CID3"
+               IF      SPA-CIDCD3      =   "0102"
+                   IF      SPA-CID3-FLG    =   "MV"    OR  "CP"
+                       PERFORM 4501-TOUROKU-SYORI-SEC
+                       GO  TO  300-SCREEN-EXT
+                   ELSE
+                       MOVE    1               TO  SPA-GMN-C10-CUR
+                   END-IF
+                   MOVE    SPACE           TO  SPA-CIDCD3
+                                               SPA-CID3-FLG
+                   INITIALIZE              SPA-C02-KEIKOKU-FLG-AREA
+                                           SPA-C01-HENSYU-DATA-G
+                   GO  TO  300-SCREEN-EXT
+               END-IF
+           END-IF              
+      *
            PERFORM 310-SPASET-SEC
            .
        300-SCREEN-EXT.
@@ -414,7 +435,31 @@
                                        TO
                                        SPA-GMN-C10-HKNCOMBILST
                                            (SPA-GMN-C10-HKNCOMBI-MAX)
-           END-PERFORM    
+           END-PERFORM
+      *
+      *    全科または単科のときは科設定なし
+           IF    ( SPA-GMN-C02-SRYKA
+                                   =   "00" )
+           OR    ( SPA-GMN-C02-SRYKA-MAX
+                                   =   1    ) 
+               CONTINUE
+           ELSE
+               PERFORM VARYING IDX FROM    1   BY  1
+                       UNTIL   IDX >       SPA-GMN-C02-SRYKA-MAX
+                   IF      SPA-GMN-C02-SRYKAL (IDX) 
+                                           =   SPA-GMN-C02-SRYKA   OR  
+                                               "00"
+                       CONTINUE
+                   ELSE
+                       ADD     1               TO  SPA-GMN-C10-SRYKA-MAX  
+                       MOVE   SPA-GMN-C02-SRYKALST (IDX)
+                                               TO
+                                               SPA-GMN-C10-SRYKALST
+                                                (SPA-GMN-C10-SRYKA-MAX)
+                   END-IF
+               END-PERFORM
+           END-IF
+      *
            MOVE    1               TO  SPA-GMN-C10-CUR
            .
        310-SPASET-EXT.
@@ -500,6 +545,7 @@
            MOVE    C10-NYUGAIKBN        TO  SPA-GMN-C10-NYUGAIKBN-G
            MOVE    C10-HKNCOMBI         TO  SPA-GMN-C10-HKNCOMBI-G
            MOVE    C10-SRYYMD           TO  SPA-GMN-C10-SRYYMD
+           MOVE    C10-SRYKA            TO  SPA-GMN-C10-SRYKA-G
       *
            .
        4101-GMN-SPA-SET-EXT.
@@ -539,6 +585,10 @@
                GO      TO      4102-KIHON-CHK-EXT
            END-IF
            PERFORM 4108-SRYYMD-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      4102-KIHON-CHK-EXT
+           END-IF
+           PERFORM 4109-SRYKA-CHK-SEC
       *
            .
        4102-KIHON-CHK-EXT.
@@ -828,6 +878,37 @@
            EXIT.
       *
       *****************************************************************
+      *    診療科入力処理
+      *****************************************************************
+       4109-SRYKA-CHK-SEC             SECTION.
+      *
+           IF      SPA-GMN-C10-SRYKA   =   SPACE
+               CONTINUE
+           ELSE    
+               PERFORM VARYING IDY FROM   1   BY  1
+                       UNTIL   IDY >      SPA-GMN-C10-SRYKA-MAX
+                   IF      SPA-GMN-C10-SRYKA    
+                                       =   SPA-GMN-C10-SRYKAL (IDY)
+                       MOVE    SPA-GMN-C10-SRYKALST (IDY)
+                                          TO  SPA-GMN-C10-SRYKA-G
+                       MOVE    SPA-GMN-C10-SRYKA-MAX
+                                          TO  IDY
+                   END-IF
+               END-PERFORM
+               IF      SPA-GMN-C10-SRYKAMEI
+                                           =   SPACE  
+                   MOVE    "0012"              TO  SPA-ERRCD
+               END-IF
+           END-IF
+      *
+           IF      SPA-ERRCD       NOT =   SPACE
+               MOVE    9                   TO  SPA-GMN-C10-CUR
+           END-IF    
+           .
+       4109-SRYKA-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    関連チェック処理
       *****************************************************************
        4103-KANREN-CHK-SEC        SECTION.
@@ -837,6 +918,28 @@
                                        NOT =   SPACE )
            AND   ( SPA-NAI-C10-SRYYMD  NOT =   SPACE )
                MOVE    "0006"                  TO  SPA-ERRCD
+               MOVE    8                       TO  SPA-GMN-C10-CUR
+               GO  TO  4103-KANREN-CHK-EXT
+           END-IF       
+      *
+      *    開始日と診療科のチェック
+           IF    ( SPA-ERRCD           =   SPACE )    
+               IF    ( SPA-GMN-C10-SRYKA   NOT =   SPACE )
+                   IF    ( SPA-GMN-C10-TENKIKBN    =   SPACE )
+                   AND   ( SPA-NAI-C10-TENKIYMD    =   SPACE )
+                   AND   ( SPA-GMN-C10-UTAGAIFLG   =   SPACE )
+                   AND   ( SPA-GMN-C10-SYUBYOFLG   =   SPACE )
+                   AND   ( SPA-GMN-C10-MANSEIKBN   =   SPACE )
+                   AND   ( SPA-GMN-C10-NYUGAIKBN   =   SPACE )
+                   AND   ( SPA-GMN-C10-HKNCOMBI    =   SPACE )
+                   AND   ( SPA-NAI-C10-SRYYMD      =   SPACE )
+                       CONTINUE
+                   ELSE
+                       MOVE    "0028"              TO  SPA-ERRCD
+                       MOVE    1                   TO  SPA-GMN-C10-CUR
+                       GO  TO  4103-KANREN-CHK-EXT
+                   END-IF
+               END-IF
            END-IF
       *
            PERFORM VARYING IDX     FROM    1   BY  1
@@ -880,7 +983,7 @@
            IF    ( SPA-ERRCD           =   SPACE )    
            AND   ( SPA-NAI-C10-SRYYMD  NOT
                                        =   SPACE )
-      *        対象病名の重複チェック（複写機能時）
+      *        対象病名の重複チェック（開始日での複写機能時）
                INITIALIZE                  WRK-CHK-HENSYU-AREA
                PERFORM VARYING IDXX    FROM    1   BY  1
                        UNTIL   IDXX    >       5
@@ -994,6 +1097,7 @@
            AND   ( SPA-GMN-C10-NYUGAIKBN   =   SPACE )
            AND   ( SPA-GMN-C10-HKNCOMBI    =   SPACE )
            AND   ( SPA-NAI-C10-SRYYMD      =   SPACE )
+           AND   ( SPA-GMN-C10-SRYKA       =   SPACE )
                MOVE    "0001"                  TO  SPA-ERRCD
                MOVE    1                       TO  SPA-GMN-C10-CUR
                GO  TO  4101-KAKUTEI-CHK-EXT
@@ -1016,12 +1120,14 @@
            MOVE    SPA-GMN-C10-NYUGAIKBN   TO  WRK-HENSYU-DATA-O (6)
            MOVE    SPA-GMN-C10-HKNCOMBI    TO  WRK-HENSYU-DATA-O (7)
            MOVE    SPA-NAI-C10-SRYYMD      TO  WRK-HENSYU-DATA-O (8)
+           MOVE    SPA-GMN-C10-SRYKA       TO  WRK-HENSYU-DATA-O (9)
       *
       *    簡単修正機能時のチェック
            IF    ( WRK-HENSYU-DATA-O (1)   NOT =   SPACE )
            OR    ( WRK-HENSYU-DATA-O (6)   NOT =   SPACE )
            OR    ( WRK-HENSYU-DATA-O (7)   NOT =   SPACE )
-           OR    ( WRK-HENSYU-DATA-O (8)       =   SPACE )
+           OR    (   ( WRK-HENSYU-DATA-O (8)       =   SPACE )
+                  AND( WRK-HENSYU-DATA-O (9)       =   SPACE ) )
       *        転帰・保険適用と開始日のチェック
                PERFORM VARYING IDXX    FROM    1   BY  1
                        UNTIL   IDXX    >       5
@@ -1039,7 +1145,7 @@
                END-PERFORM
            END-IF
       *
-      *    複写機能時のチェック
+      *    開始日複写機能時のチェック
            IF      WRK-HENSYU-DATA-O (8)   NOT =   SPACE
       *        開始日と保険適用の関連チェック
                IF     WRK-HENSYU-DATA-O (7)  
@@ -1070,6 +1176,28 @@
                END-PERFORM
            END-IF
       *
+      *    診療科複写機能時のチェック
+           IF      WRK-HENSYU-DATA-O (9)   NOT =   SPACE
+      *        対象病名の重複チェック（診療科での複写・移動機能時）
+               INITIALIZE                  WRK-CHK-HENSYU-AREA
+               PERFORM VARYING IDXX    FROM    1   BY  1
+                       UNTIL   IDXX    >       5
+                       OR      SPA-ERRCD
+                                   NOT =   SPACE
+                   IF      WRK-STNUM-O (IDXX)  >   ZERO
+                       PERFORM VARYING IDX     FROM
+                                           WRK-STNUM-O (IDXX)  BY  1
+                               UNTIL   IDX     >   WRK-EDNUM-O (IDXX)
+                           PERFORM 41032-SRYKA-DABURI-CHK-SEC
+                           IF      SPA-ERRCD   NOT =   SPACE
+                               MOVE    8           TO  SPA-GMN-C10-CUR
+                               GO  TO  4101-KAKUTEI-CHK-EXT
+                           END-IF
+                       END-PERFORM
+                   END-IF
+               END-PERFORM
+           END-IF
+      *
       *    警告チェック
            IF      SPA-ERRCD            =   SPACE
                MOVE    SPACE           TO  WRK-ERR-BYOMEI
@@ -1077,12 +1205,19 @@
                                            WRK-ERR-SRYKA
                INITIALIZE                  SPA-C02-KEIKOKU-FLG-AREA
       *
-      *        他診療科の同一病名の警告チェック
-               IF      SPA-C02-1042-MSG4-DSPKBN
-                                           =   1
+      *        他診療科の同一病名の警告チェック（診療科複写以外）
+               IF    ( SPA-C02-1042-MSG4-DSPKBN
+                                           =   1     )
+               AND   ( SPA-GMN-C10-SRYKA   =   SPACE )
                    PERFORM 41013-KEIKOKU-CHK-SEC
                END-IF
-           END-IF    
+           END-IF
+      *
+           IF    ( SPA-ERRCD           =   SPACE )
+           AND   ( SPA-GMN-C10-SRYKA
+                                   NOT =   SPACE )
+               MOVE    "0102"              TO  SPA-CIDCD3
+           END-IF
       *
            .
        4101-KAKUTEI-CHK-EXT.
@@ -1764,6 +1899,177 @@ grpsys                 MOVE    SPA-HOSPNUM         TO  PTBYO-HOSPNUM
            EXIT.
       *
       *****************************************************************
+      *    入力病名診療科の重複チェック処理
+      *****************************************************************
+       41032-SRYKA-DABURI-CHK-SEC        SECTION.
+      *
+      *    マスタとの重複チェック
+           INITIALIZE                      PTBYOMEI-REC
+           MOVE    SPA-HOSPNUM         TO  PTBYO-HOSPNUM
+           MOVE    SPA-NAI-C02-PTID    TO  PTBYO-PTID
+           MOVE    SPA-GMN-C10-SRYKA   TO  PTBYO-SRYKA
+           MOVE    SPA-GMN-C02-TBYOMEI    (IDX)
+                                       TO  PTBYO-BYOMEI
+           MOVE    SPA-GMN-C02-TNYUGAIKBN (IDX)
+                                       TO  PTBYO-NYUGAIKBN
+           IF      PTBYO-NYUGAIKBN     =   SPACE
+               MOVE    "tbl_ptbyomei"          TO  WRK-MCP-TABLE
+               MOVE    "key13"                 TO  WRK-MCP-PATHNAME
+           ELSE
+               MOVE    "tbl_ptbyomei"          TO  WRK-MCP-TABLE
+               MOVE    "key21"                 TO  WRK-MCP-PATHNAME
+           END-IF
+      *
+           MOVE    PTBYOMEI-REC        TO  MCPDATA-REC
+           MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
+           MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
+           PERFORM 900-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
+               MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
+               PERFORM 900-PTBYO-READ-SEC
+           ELSE
+               MOVE    1                   TO  FLG-PTBYOMEI
+           END-IF
+      *
+           PERFORM                 UNTIL   FLG-PTBYOMEI    =   1
+                                   OR      SPA-ERRCD   NOT =   SPACE
+               EVALUATE    TRUE
+                   WHEN    SPA-NAI-C02-TSRYYMD (IDX)  =   PTBYO-SRYYMD
+                       MOVE    "0002"              TO  SPA-ERRCD
+                   WHEN    SPA-NAI-C02-TSRYYMD (IDX)  <   PTBYO-SRYYMD
+                       IF      SPA-NAI-C02-TTENKIYMD (IDX) =   SPACE
+                           MOVE    "0038"          TO  SPA-ERRCD
+                       ELSE
+                           IF     SPA-NAI-C02-TTENKIYMD (IDX)
+                                               >   PTBYO-SRYYMD
+                               MOVE    "0038"          TO  SPA-ERRCD
+                           END-IF
+                       END-IF
+                   WHEN    SPA-NAI-C02-TSRYYMD (IDX)  >   PTBYO-SRYYMD
+                       IF      PTBYO-TENKIYMD  =   SPACE
+                           MOVE    "0038"      TO  SPA-ERRCD
+                       ELSE
+                           IF      SPA-NAI-C02-TSRYYMD (IDX)
+                                               <   PTBYO-TENKIYMD
+                               MOVE    "0038"      TO  SPA-ERRCD
+                           END-IF
+                       END-IF
+               END-EVALUATE
+      *
+               IF      SPA-ERRCD           =   "0038"  OR
+                                               "0002"
+                   INITIALIZE                  WRK-CHK-HKNCOMBI-AREA
+      *
+                   MOVE    SPA-NAI-C02-THKNCOMBI (IDX)
+                                           TO  WRK-CHK-HKNCOMBI1
+                   MOVE    PTBYO-HKNCOMBI  TO  WRK-CHK-HKNCOMBI2
+                   PERFORM 410321-HKNCOMBI-DABURI-CHK-SEC
+                   IF      FLG-HKNCOMBI-DABURI =   1
+                       MOVE    SPACE           TO  SPA-ERRCD
+                   ELSE 
+                       MOVE    PTBYO-SRYYMD    TO  WRK-SYMD
+                       PERFORM 5002-HIZUKE-HEN-SEC
+                       MOVE    LNK-DAY2-EDTYMD3
+                                               TO  WRK-ERR-SRYYMD
+                       MOVE    SPA-GMN-C02-TBYOMEI (IDX)
+                                               TO  WRK-ERR-BYOMEI
+                   END-IF
+               END-IF
+      *
+               MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
+               MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
+               PERFORM 900-PTBYO-READ-SEC
+           END-PERFORM
+      *
+           MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
+           MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
+           PERFORM 900-CLOSE-SEC
+           .                   
+       41032-SRYKA-DABURI-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    同一病名における保険限定の重複チェック処理
+      *****************************************************************
+       410321-HKNCOMBI-DABURI-CHK-SEC   SECTION.
+      *
+      *    労災または自賠責または自費の保険がない場合はチェックしない
+           IF    ( SPA-NAI-C02-HKNCOMBI-ROUSAI )
+                                       =   ZERO
+           AND   ( SPA-NAI-C02-HKNCOMBI-JIHI   )
+                                       =   ZERO
+               GO  TO   410321-HKNCOMBI-DABURI-CHK-EXT
+           END-IF
+      *
+      *    保険組合せの設定がない場合はチェックしない
+           IF    ( WRK-CHK-HKNCOMBI1   =   ZERO )
+           AND   ( WRK-CHK-HKNCOMBI2   =   ZERO )
+               GO  TO   410321-HKNCOMBI-DABURI-CHK-EXT
+           END-IF
+      *
+           IF      WRK-CHK-HKNCOMBI1
+                                   NOT =   ZERO
+               MOVE    SPA-HOSPNUM         TO  COMB-HOSPNUM
+               MOVE    SPA-NAI-C02-PTID    TO  COMB-PTID
+               MOVE    WRK-CHK-HKNCOMBI1   TO  COMB-HKNCOMBINUM
+               MOVE    HKNCOMBI-REC        TO  MCPDATA-REC
+               PERFORM 900-COMB-INV-SEC
+               MOVE    HKNCOMBI-REC        TO  WRK-CHK-HKNCOMBI-REC (1)
+           END-IF    
+           IF      WRK-CHK-HKNCOMBI2
+                                   NOT =   ZERO
+               MOVE    SPA-HOSPNUM         TO  COMB-HOSPNUM
+               MOVE    SPA-NAI-C02-PTID    TO  COMB-PTID
+               MOVE    WRK-CHK-HKNCOMBI2   TO  COMB-HKNCOMBINUM
+               MOVE    HKNCOMBI-REC        TO  MCPDATA-REC
+               PERFORM 900-COMB-INV-SEC
+               MOVE    HKNCOMBI-REC        TO  WRK-CHK-HKNCOMBI-REC (2)
+           END-IF
+      *
+      *    片方のみ労災または自賠責の場合は登録可能とする
+           EVALUATE    WRK-CHK-COMB-HKNNUM (1)
+                                   ALSO    WRK-CHK-COMB-HKNNUM (2)
+               WHEN    "971"       ALSO    "971"
+               WHEN    "973"       ALSO    "973"
+                   IF      WRK-CHK-COMB-HKNID (1)
+                                       NOT =    WRK-CHK-COMB-HKNID (2)
+                       MOVE    1                TO  FLG-HKNCOMBI-DABURI
+                   END-IF
+               WHEN    "971"       ALSO    ANY
+               WHEN    "973"       ALSO    ANY
+               WHEN    ANY         ALSO    "971"
+               WHEN    ANY         ALSO    "973"
+                   MOVE    1               TO  FLG-HKNCOMBI-DABURI
+               WHEN    OTHER
+                   MOVE    ZERO            TO  FLG-HKNCOMBI-DABURI
+           END-EVALUATE
+      *
+      *    自費と保険限定なしまたは同じ自費の場合は登録不可とする
+           IF    ( WRK-CHK-COMB-HKNNUM (1) (1:2)
+                                   =   "98" ) 
+           OR    ( WRK-CHK-COMB-HKNNUM (2) (1:2)
+                                   =   "98" ) 
+               EVALUATE    WRK-CHK-COMB-HKNNUM (1) (1:2)
+                                   ALSO    WRK-CHK-COMB-HKNNUM (2) (1:2)
+                   WHEN    "98"       ALSO    "98"
+                       IF      WRK-CHK-COMB-HKNID (1)
+                                       NOT =    WRK-CHK-COMB-HKNID (2)
+                           MOVE    1            TO  FLG-HKNCOMBI-DABURI
+                       END-IF
+                   WHEN    "98"       ALSO    SPACE
+                   WHEN    SPACE      ALSO    "98"
+                       MOVE    ZERO            TO  FLG-HKNCOMBI-DABURI
+                   WHEN    OTHER
+                       MOVE    1               TO  FLG-HKNCOMBI-DABURI
+               END-EVALUATE
+           END-IF
+      *
+           .                   
+       410321-HKNCOMBI-DABURI-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    戻る　処理
       *****************************************************************
        210-BACK                    SECTION.
@@ -1826,7 +2132,7 @@ grpsys                 MOVE    SPA-HOSPNUM         TO  PTBYO-HOSPNUM
            IF    ( SPA-ERRCD            =   SPACE )
       *        修正項目をパラメタに設定     
                PERFORM VARYING IDX     FROM    1   BY  1
-                       UNTIL   IDX     >       8
+                       UNTIL   IDX     >       9
                    MOVE    WRK-HENSYU-DATA-O (IDX)
                                        TO  SPA-C01-HENSYU-DATA-O (IDX)
                END-PERFORM
@@ -1834,6 +2140,7 @@ grpsys                 MOVE    SPA-HOSPNUM         TO  PTBYO-HOSPNUM
       *
            IF    ( SPA-ERRCD            =   SPACE )
            AND   ( SPA-CIDCD            =   SPACE )
+           AND   ( SPA-CIDCD3           =   SPACE )
                PERFORM 4501-TOUROKU-SYORI-SEC
            END-IF
            .
@@ -1845,10 +2152,13 @@ grpsys                 MOVE    SPA-HOSPNUM         TO  PTBYO-HOSPNUM
       *****************************************************************
        4501-TOUROKU-SYORI-SEC             SECTION.
       *
-           IF      SPA-CIDCD       =   "0103"    OR  SPACE
-               MOVE    "OK"            TO  SPA-CID1-FLG
+           IF      SPA-CIDCD3      =   "0102"
+               MOVE    SPA-CID3-FLG    TO  SPA-CID1-FLG
+               MOVE    SPACE           TO  SPA-CID3-FLG
            ELSE
-               MOVE    "DL"            TO  SPA-CID1-FLG
+               IF      SPA-CIDCD       =   "0103"    OR  SPACE
+                   MOVE    "OK"            TO  SPA-CID1-FLG
+               END-IF
            END-IF
       *
            MOVE    SPA-C01KYOUTU   TO  SPA-WORK
@@ -2098,6 +2408,11 @@ grpsys                 MOVE    SPA-HOSPNUM         TO  PTBYO-HOSPNUM
                GO      TO      500-SET-SCREEN-EXT
            END-IF
       *
+           IF      SPA-CIDCD3      NOT =   SPACE
+               PERFORM 540-CIDSET3-SEC
+               GO      TO      500-SET-SCREEN-EXT
+           END-IF
+      *
            MOVE    SPACE               TO  LINKAREA
       *
            MOVE    "CURRENT"           TO  MCP-PUTTYPE
@@ -2172,6 +2487,24 @@ grpsys                 MOVE    SPA-HOSPNUM         TO  PTBYO-HOSPNUM
       *
            MOVE    SPA-GMN-C10-SRYYMD  TO  C10-SRYYMD
       *
+           MOVE    SPA-GMN-C10-SRYKA-G TO  C10-SRYKA
+           PERFORM VARYING IDX FROM    1   BY  1
+                   UNTIL       IDX         >   SPA-GMN-C10-SRYKA-MAX
+               MOVE    SPA-GMN-C10-SRYKALST (IDX)
+                                           TO  C10-SRYKA-ITEM (IDX)
+           END-PERFORM
+           MOVE    SPA-GMN-C10-SRYKA-MAX
+                                       TO  C10-SRYKA-COUNT
+      *
+           IF      SPA-GMN-C10-SRYKA-MAX
+                                       =   ZERO
+               MOVE    WIDGET-INSENSITIVE  TO  C10-SRYKA-STATE
+                                               C10-B08-STATE
+           ELSE
+               MOVE    WIDGET-NORMAL       TO  C10-SRYKA-STATE
+                                               C10-B08-STATE
+           END-IF
+      *
            PERFORM 5001-MAPCUR-SEC
       *
            .
@@ -2205,6 +2538,8 @@ grpsys                 MOVE    SPA-HOSPNUM         TO  PTBYO-HOSPNUM
                      MOVE  "HKNCOMBI"   TO  MCP-WIDGET
              WHEN    8
                      MOVE  "SRYYMD"     TO  MCP-WIDGET
+             WHEN    9
+                     MOVE  "SRYKA"      TO  MCP-WIDGET
              WHEN    99
                      MOVE  "B12"        TO  MCP-WIDGET
          END-EVALUATE
@@ -2240,6 +2575,16 @@ grpsys                 MOVE    SPA-HOSPNUM         TO  PTBYO-HOSPNUM
                WHEN    "SRYYMD"
                WHEN    "B10"
                    IF      SPA-GMN-C10-SRYYMD  =   SPACE
+                       IF      SPA-GMN-C10-SRYKA-MAX   =   ZERO 
+                           MOVE    99          TO  SPA-GMN-C10-CUR
+                       ELSE
+                           MOVE    9           TO  SPA-GMN-C10-CUR
+                       END-IF 
+                   ELSE
+                       MOVE    3           TO  SPA-GMN-C10-CUR
+                   END-IF 
+               WHEN    "SRYKA"
+                   IF      SPA-GMN-C10-SRYKA   =   SPACE
                        MOVE    99          TO  SPA-GMN-C10-CUR
                    ELSE
                        MOVE    3           TO  SPA-GMN-C10-CUR
@@ -2302,6 +2647,9 @@ grpsys                 MOVE    SPA-HOSPNUM         TO  PTBYO-HOSPNUM
                WHEN    "0011"
                MOVE "開始日が該当の保険組合せの適用日の範囲外です"
                                                        TO  SPA-ERRMSG
+               WHEN    "0012"
+                   MOVE    "診療科目入力エラー"
+                                               TO  SPA-ERRMSG
                WHEN    "0013"
                    MOVE    "年号入力エラー"            TO  SPA-ERRMSG
                WHEN    "0014"
@@ -2327,7 +2675,10 @@ grpsys                 MOVE    SPA-HOSPNUM         TO  PTBYO-HOSPNUM
                    MOVE    "転帰年月日が入力してありません"
                                                        TO  SPA-ERRMSG
                WHEN    "0027"
-                   MOVE    "開始日付以前の転帰日付が入力してあります"
+                   MOVE    "開始日以前の転帰日付が入力してあります"
+                                                       TO  SPA-ERRMSG
+               WHEN    "0028"
+                   MOVE    "開始日と他の項目は同時に入力できません" 
                                                        TO  SPA-ERRMSG
                WHEN    "0036"
                    MOVE    "転帰区分が入力してあります"
@@ -2425,6 +2776,48 @@ grpsys                 MOVE    SPA-HOSPNUM         TO  PTBYO-HOSPNUM
       *
            .
        520-CIDSET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    確認画面３表示処理
+      *****************************************************************
+       540-CIDSET3-SEC              SECTION.
+      *
+           MOVE    SPACE               TO  WRK-CIDMSG
+      *
+           EVALUATE    SPA-CIDCD3
+               WHEN    "0102"
+                   STRING  "診療科による処理を次のいずれかの方法により"
+                                       DELIMITED  BY  SIZE
+                           "選択して下さい。"
+                                       DELIMITED  BY  SIZE
+                                       INTO  WRK-CIDMSG
+                   END-STRING
+           END-EVALUATE
+      *
+           MOVE    SPACE               TO  SPA-CID3-FLG
+      *
+           MOVE    SPACE               TO  CID3
+           MOVE    SPA-CIDCD3          TO  CID3-ID1CODE
+           MOVE    WRK-CIDMSG          TO  CID3-MSG
+           MOVE    "F11:選択した診療科に移動"  
+                                       TO  CID3-B11-VALUE  
+           MOVE    "F12:選択した診療科に複写" 
+                                       TO  CID3-B12-VALUE  
+           MOVE    "B01"               TO  MCP-WIDGET
+      *
+           MOVE    "C10"               TO  SPA-MOTOPG
+           MOVE    "CID3"              TO  SPA-SAKIPG
+      *
+           MOVE    "NEW"               TO  MCP-PUTTYPE
+           MOVE    "CID3"              TO  MCP-WINDOW
+      *
+           PERFORM 900-PUT-WINDOW
+      *
+           MOVE    1                   TO  FLG-END
+      *
+           .
+       540-CIDSET3-EXT.
            EXIT.
       *
       *****************************************************************

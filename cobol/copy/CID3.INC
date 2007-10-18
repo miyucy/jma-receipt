@@ -18,3 +18,5 @@
        02  CID3.
            03  CID3-ID1CODE  PIC X(10).
            03  CID3-MSG      PIC X(80).
+           03  CID3-B12-VALUE     PIC X(24).
+           03  CID3-B11-VALUE     PIC X(24).

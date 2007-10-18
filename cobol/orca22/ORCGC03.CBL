@@ -4006,13 +4006,17 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SHELLTBL-ARG3
            MOVE    SPACE               TO  CID3
            MOVE    SPA-CIDCD3          TO  CID3-ID1CODE
            MOVE    WRK-CIDMSG          TO  CID3-MSG
+           MOVE    "F11:分類名のみ削除"  
+                                       TO  CID3-B11-VALUE  
+           MOVE    "F12:分類名・病名とも削除" 
+                                       TO  CID3-B12-VALUE  
            MOVE    "B01"               TO  MCP-WIDGET
       *
            MOVE    "C03"               TO  SPA-MOTOPG
            MOVE    "CID3"              TO  SPA-SAKIPG
       *
-           MOVE    "NEW"               TO  MCP-PUTTYPE.
-           MOVE    "CID3"              TO  MCP-WINDOW.
+           MOVE    "NEW"               TO  MCP-PUTTYPE
+           MOVE    "CID3"              TO  MCP-WINDOW
       *
            PERFORM 900-PUT-WINDOW.
       *

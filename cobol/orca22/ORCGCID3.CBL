@@ -32,6 +32,8 @@
       *  02.07.01    NACL-藤原    05/10/31  MONFUNC対応
       *
       *  03.00.01    NACL-藤原    06/06/19   C06,C07,C08 削除
+      *
+      *  04.01.01    NACL-藤原    07/10/11  診療科コピー（移動）機能対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -142,11 +144,19 @@
                    PERFORM 210-BACK
       *       分類のみ削除
                WHEN    "CLICKED"       ALSO    "B11"
-                   MOVE    "OK"            TO  SPA-CID3-FLG
+                   IF      SPA-MOTOPG      =   "C10"
+                       MOVE    "MV"            TO  SPA-CID3-FLG
+                   ELSE
+                       MOVE    "OK"            TO  SPA-CID3-FLG
+                   END-IF
                    PERFORM 210-BACK
       *       分類・病名とも削除
                WHEN    "CLICKED"       ALSO    "B12"
-                   MOVE    "ALL"           TO  SPA-CID3-FLG
+                   IF      SPA-MOTOPG      =   "C10"
+                       MOVE    "CP"            TO  SPA-CID3-FLG
+                   ELSE
+                       MOVE    "ALL"           TO  SPA-CID3-FLG
+                   END-IF
                    PERFORM 210-BACK
            END-EVALUATE
       *
