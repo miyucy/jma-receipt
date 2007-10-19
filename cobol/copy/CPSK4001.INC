@@ -75,8 +75,15 @@
                    07   SYS-4001-YKZTENTANKA-X PIC  X(02).
                    07   SYS-4001-YKZTENTANKA   REDEFINES
                         SYS-4001-YKZTENTANKA-X PIC  9(02).
+      *¸øÌ³ºÒ³²¶èÊ¬
+               05  SYS-4001-KOMUKBN     PIC  X(01).
+      *¸øÌ³ºÒ³²Ã±²Á
+               05  SYS-4001-KOMUTENTANKA-G.
+                   07   SYS-4001-KOMUTENTANKA-X PIC  X(02).
+                   07   SYS-4001-KOMUTENTANKA   REDEFINES
+                        SYS-4001-KOMUTENTANKA-X PIC  9(02).
       *Í½È÷
-           03                           PIC  X(402).
+           03                           PIC  X(399).
       *Ã¼Ëö£É£Ä
            03  SYS-4001-TERMID          PIC  X(16).
       *¥ª¥Ú¡¼¥ì¡¼¥¿£É£Ä

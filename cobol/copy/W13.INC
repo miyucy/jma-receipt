@@ -53,8 +53,7 @@
                 04  W13-ROUKAISU         PIC X(10).
                 04  W13-ROUKAISU-COUNT   PIC S9(9)   BINARY.
                 04  W13-ROUKAISULST      PIC X(10)   OCCURS  2 TIMES.
-              03  W13-KSNRATE.
-                04  W13-VALUE   PIC S9(3).
+              03  W13-KSNRATE            PIC S9(3).
               03  W13-RSIIRYOKBN-COMBO.
                 04  W13-RSIIRYOKBN       PIC X(20).
                 04  W13-RSIIRYOKBN-COUNT PIC S9(9)   BINARY.
@@ -96,7 +95,10 @@
                 04  W13-RSIPRT           PIC X(10).
                 04  W13-RSIPRT-COUNT   PIC S9(9)   BINARY.
                 04  W13-RSIPRTLST      PIC X(10)   OCCURS  2 TIMES.
-              03  W13-SYUTENTANKA.
-                04  W13-VALUE   PIC S9(2).
-              03  W13-YKZTENTANKA.
-                04  W13-VALUE   PIC S9(2).
+              03  W13-SYUTENTANKA      PIC S9(2).
+              03  W13-YKZTENTANKA      PIC S9(2).
+              03  W13-KOMUKBN-COMBO.
+                04  W13-KOMUKBN           PIC X(10).
+                04  W13-KOMUKBN-COUNT   PIC S9(9)   BINARY.
+                04  W13-KOMUKBNLST      PIC X(10)   OCCURS  2 TIMES.
+              03  W13-KOMUTENTANKA      PIC S9(2).

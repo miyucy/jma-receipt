@@ -131,5 +131,15 @@ W13	{
 		YKZTENTANKA	{
 			value	number(2);
 		};
+		KOMUKBN_COMBO	{
+			KOMUKBN	{
+				value	varchar(10);
+			};
+			count	int;
+			item	varchar(10)[02];
+		};
+		KOMUTENTANKA	{
+			value	number(2);
+		};
 	};
 };
