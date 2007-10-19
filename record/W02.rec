@@ -120,6 +120,13 @@ W02	{
 					count	int;
 					item	varchar(32)[4];
 				};
+				GENTAIKBN_CMB	{
+					GENTAIKBN	{
+						value	varchar(22);
+					};
+					count	int;
+					item	varchar(22)[2];
+				};
 				TAXHASU_COMBO	{
 					TAXHASU	{
 						value	varchar(32);

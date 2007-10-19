@@ -96,6 +96,12 @@
                                              PIC S9(9)   BINARY.
                     06  W02-DISCOUNTHASU2LST PIC X(32)
                                                       OCCURS  4.
+                  05  W02-GENTAIKBN-CMB.
+                    06  W02-GENTAIKBN        PIC X(22).
+                    06  W02-GENTAIKBN-COUNT
+                                             PIC S9(9)   BINARY.
+                    06  W02-GENTAIKBNLST     PIC X(22)
+                                                      OCCURS  2.
                   05  W02-TAXHASU-COMBO.
                     06  W02-TAXHASU          PIC X(32).
                     06  W02-TAXHASU-COUNT

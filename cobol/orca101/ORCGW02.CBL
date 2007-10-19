@@ -61,6 +61,7 @@
       *  03.03.00    NACL-太田    06/10/24  地方公費保険番号タブ区分追加
       *  03.04.01    NACL-森脇    06/12/13  ユーザーＵＲＬ追加
       *  03.05.00    NACL-多々納  07/05/02  グループ診療対応
+      *  04.01.00    NACL-太田    07/10/19  減免計算対象区分追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -167,6 +168,13 @@
                            11                         PIC X(01).
                            11  SPA-GMN-DISCOUNT-HASU-KBN2MEIL
                                                       PIC X(30).
+                       09  SPA-GMN-GENTAIKBNLST
+                                                      OCCURS  2.
+                           11  SPA-GMN-GENTAIKBNL
+                                                      PIC X(01).
+                           11                         PIC X(01).
+                           11  SPA-GMN-GENTAIKBNMEIL
+                                                      PIC X(20).
                        09  SPA-GMN-TAX-HASU-KBNLST
                                                       OCCURS  4.
                            11  SPA-GMN-TAX-HASU-KBNL
@@ -279,6 +287,12 @@
                                13                     PIC X(01).
                                13  SPA-GMN-DISCOUNT-HASU-KBN2MEI
                                                       PIC X(30).
+                           11  SPA-GMN-GENTAIKBN-G.
+                               13  SPA-GMN-GENTAIKBN
+                                                      PIC X(01).
+                               13                     PIC X(01).
+                               13  SPA-GMN-GENTAIKBNMEI
+                                                      PIC X(20).
                            11  SPA-GMN-TAX-HASU-KBN-G.
                                13  SPA-GMN-TAX-HASU-KBN
                                                       PIC X(01).
@@ -937,6 +951,13 @@
            MOVE    SPA-GMN-DISCOUNT-HASU-KBN2LST (4)
                                TO  SPA-GMN-DISCOUNT-HASU-KBN2-G
       *
+           MOVE    "1"         TO  SPA-GMN-GENTAIKBNL    (1)
+           MOVE    "自費分を含む"  
+                               TO  SPA-GMN-GENTAIKBNMEIL (1)
+           MOVE    "2"         TO  SPA-GMN-GENTAIKBNL    (2)
+           MOVE    "自費分を除く" 
+                               TO  SPA-GMN-GENTAIKBNMEIL (2)
+      *
            MOVE    "1"         TO  SPA-GMN-TAX-HASU-KBNL    (1)
            MOVE    "１円未満四捨五入"  
                                TO  SPA-GMN-TAX-HASU-KBNMEIL (1)
@@ -1486,6 +1507,20 @@
                 END-IF
            END-PERFORM
       *
+      *    減免計算対象区分、空白の時"1"とする
+           IF      SYS-1001-GENTAIKBN    =   SPACE
+               MOVE    "1"             TO  SYS-1001-GENTAIKBN
+           END-IF
+           PERFORM VARYING IDY     FROM    1   BY  1
+                   UNTIL   IDY     >       2
+               IF      SYS-1001-GENTAIKBN
+                                   =   SPA-GMN-GENTAIKBNL (IDY)
+                   MOVE    SPA-GMN-GENTAIKBNLST (IDY)
+                                       TO  SPA-GMN-GENTAIKBN-G
+                   MOVE    2               TO  IDY
+                END-IF
+           END-PERFORM
+      *
       *    消費税端数区分 空白の時、"2"とする
            IF      SYS-1001-TAX-HASU-KBN   =   SPACE
                MOVE    "2"             TO  SYS-1001-TAX-HASU-KBN
@@ -1762,6 +1797,7 @@
            MOVE    W02-CHIHOUNUMKBN    TO  SPA-GMN-CHIHOUNUMKBN-G
            MOVE    W02-DISCOUNTHASU    TO  SPA-GMN-DISCOUNT-HASU-KBN-G
            MOVE    W02-DISCOUNTHASU2   TO  SPA-GMN-DISCOUNT-HASU-KBN2-G
+           MOVE    W02-GENTAIKBN       TO  SPA-GMN-GENTAIKBN-G
            MOVE    W02-TAXHASU         TO  SPA-GMN-TAX-HASU-KBN-G
            MOVE    W02-HIWARIKBN       TO  SPA-GMN-HIWARIKBN-G
            MOVE    W02-DATACREATE      TO  SPA-GMN-DATACREATE-G
@@ -1955,6 +1991,11 @@
            END-IF
       *
            PERFORM 4132-DISCOUNT-HASU-KBN2-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      41021-KIHON-1001-EXT
+           END-IF
+      *
+           PERFORM 4132-GENTAIKBN-CHK-SEC
            IF      SPA-ERRCD       NOT =   SPACE
                GO      TO      41021-KIHON-1001-EXT
            END-IF
@@ -2585,6 +2626,30 @@
        4132-DISCOUNT-HASU-KBN2-CHK-EXT.
            EXIT.
       *****************************************************************
+      *    減免計算対象区分
+      *****************************************************************
+       4132-GENTAIKBN-CHK-SEC     SECTION.
+      *
+           MOVE    ZERO                TO  FLG-OK
+           PERFORM VARYING IDY     FROM    1   BY  1
+                   UNTIL   IDY     >       2
+               IF      SPA-GMN-GENTAIKBN
+                                   =   SPA-GMN-GENTAIKBNL
+                                                              (IDY)
+                   MOVE    SPA-GMN-GENTAIKBNLST (IDY)
+                                   TO  SPA-GMN-GENTAIKBN-G
+                   MOVE    1           TO  FLG-OK
+               END-IF
+           END-PERFORM
+           IF      FLG-OK              =   ZERO
+               MOVE    "0206"          TO  SPA-ERRCD
+               MOVE    208             TO  SPA-GMN-CUR
+           END-IF
+      *
+           .
+       4132-GENTAIKBN-CHK-EXT.
+           EXIT.
+      *****************************************************************
       *    消費税端数設定
       *****************************************************************
        4131-TAX-HASU-KBN-CHK-SEC       SECTION.
@@ -3182,6 +3247,8 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                        TO  SYS-1001-DISCOUNT-HASU-KBN
                    MOVE    SPA-GMN-DISCOUNT-HASU-KBN2
                                        TO  SYS-1001-DISCOUNT-HASU-KBN2
+                   MOVE    SPA-GMN-GENTAIKBN
+                                       TO  SYS-1001-GENTAIKBN
                    MOVE    SPA-GMN-TAX-HASU-KBN
                                        TO  SYS-1001-TAX-HASU-KBN
                    MOVE    SPA-GMN-HIWARIKBN
@@ -3591,6 +3658,8 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                        TO  W02-DISCOUNTHASU
            MOVE    SPA-GMN-DISCOUNT-HASU-KBN2-G
                                        TO  W02-DISCOUNTHASU2
+           MOVE    SPA-GMN-GENTAIKBN-G
+                                       TO  W02-GENTAIKBN
            MOVE    SPA-GMN-TAX-HASU-KBN-G
                                        TO  W02-TAXHASU
            MOVE    SPA-GMN-HIWARIKBN-G
@@ -3689,6 +3758,12 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                        TO  W02-DISCOUNTHASU2LST (IDX)
            END-PERFORM    
            MOVE    4                   TO  W02-DISCOUNTHASU2-COUNT     
+           PERFORM VARYING IDX FROM    1   BY  1
+                   UNTIL   IDX >       4
+               MOVE    SPA-GMN-GENTAIKBNLST(IDX)
+                                       TO  W02-GENTAIKBNLST (IDX)
+           END-PERFORM    
+           MOVE    4                   TO  W02-GENTAIKBN-COUNT     
            PERFORM VARYING IDX FROM    1   BY  1
                    UNTIL   IDX >       2
                MOVE    SPA-GMN-TAX-HASU-KBNLST(IDX)
@@ -3977,6 +4052,9 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN    "0205"
                    MOVE    "自費保険集計先区分入力エラー"
                                                TO  SPA-ERRMSG
+               WHEN    "0206"
+                   MOVE    "減免計算対象区分入力エラー"
+                                               TO  SPA-ERRMSG
                WHEN    "0030"
                    MOVE    "自費名称は全角で入力して下さい。"
                                                TO  SPA-ERRMSG
@@ -4120,6 +4198,9 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                 WHEN    201
                     MOVE  "DISCOUNTHASU2"
                                            TO   MCP-WIDGET
+                WHEN    208
+                    MOVE  "GENTAIKBN"
+                                           TO   MCP-WIDGET
                 WHEN    39
                     MOVE  "TAXHASU"
                                            TO   MCP-WIDGET
@@ -4256,6 +4337,8 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
               WHEN    "DISCOUNTHASU"
                   MOVE    201              TO  SPA-GMN-CUR
               WHEN    "DISCOUNTHASU2"
+                  MOVE    208               TO  SPA-GMN-CUR
+              WHEN    "GENTAIKBN"
                   MOVE    39               TO  SPA-GMN-CUR
               WHEN    "TAXHASU"
                   MOVE    202              TO  SPA-GMN-CUR
