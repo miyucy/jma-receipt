@@ -414,8 +414,10 @@
                END-IF
            END-PERFORM
            IF      SPA-ERRCD           =   SPACE
-               MOVE    WRK-WIDGET8         TO  IDX1
-               PERFORM 4100-KANJINAME-CUR-SET-SEC
+	       IF    ( WRK-WIDGET8     NOT =   ZERO )
+                   MOVE    WRK-WIDGET8         TO  IDX1
+                   PERFORM 4100-KANJINAME-CUR-SET-SEC
+	       END-IF
            END-IF
       *
       **** COMPUTE SPA-GMN-P100-CUR    =   ( WRK-WIDGET8 - 1 ) * 2 + 2
@@ -602,6 +604,7 @@
       *        END-IF
       *****END-PERFORM
       *    氏名チェック
+           MOVE    ZERO            TO  WRK-WIDGET
            PERFORM 4100-KANJINAME-CHK-SEC
            IF      SPA-ERRCD       NOT =   SPACE
                 GO  TO  490-KANJINAME-SET-EXT
