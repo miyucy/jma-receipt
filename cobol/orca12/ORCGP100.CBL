@@ -142,8 +142,6 @@
       *
       *    全角チェックパラメタ
            COPY    "CPORCSKANACHK.INC".
-      *    全角チェックパラメタ（拡張）
-           COPY    "CPORCSKANACHK2.INC".
       *
       *    マシン日付取得サブ
            COPY    "CPORCSMCNDATE.INC".
@@ -163,34 +161,27 @@
            COPY    "LINKAREA".
       *
        01  SCRAREA.
-           COPY    "ORCA12SCRAREA.INC".
-      *    COPY    "P02.INC".
-      *    COPY    "P02A.INC".
-      *    COPY    "P02D.INC".
-      *    COPY    "P02E.INC".
-      *    COPY    "P02F.INC".
-      *    COPY    "P014.INC".
-      *    COPY    "P015.INC".
-      *    COPY    "P98.INC".
-      *    COPY    "P981.INC".
-      *    COPY    "P0201.INC".
-      *    COPY    "P982.INC".
-      *    COPY    "P100.INC".
-      *    COPY    "P02X.INC".
-      *    COPY    "P02S.INC".
-      *    COPY    "P02Q.INC".
-      *    COPY    "P02Q1.INC".
-      *    COPY    "P02Y.INC".
-      *    COPY    "P02Y1.INC".
-      *    COPY    "P02G.INC".
-      *    COPY    "P02G2.INC".
-      *    COPY    "P02K.INC".
-      *    COPY    "P02H.INC".
-      *    COPY    "P02T.INC".
-      *    COPY    "PERR.INC".
-      *    COPY    "PID1.INC".
-      *    COPY    "PDMY01.INC".
-      *    COPY    "CPAPIMOD.INC".
+           COPY    "P02.INC".
+           COPY    "P02A.INC".
+      *****COPY    "P02B.INC".
+      *****COPY    "P02C.INC".
+           COPY    "P02D.INC".
+           COPY    "P02E.INC".
+           COPY    "P02F.INC".
+           COPY    "P014.INC".
+           COPY    "P015.INC".
+           COPY    "P98.INC".
+           COPY    "P981.INC".
+      *****COPY    "P99.INC".
+           COPY    "P0201.INC".
+           COPY    "P982.INC".
+           COPY    "P100.INC".
+           COPY    "P02X.INC".
+           COPY    "P02S.INC".
+           COPY    "P02Q.INC".
+           COPY    "P02Q1.INC".
+           COPY    "PERR.INC".
+           COPY    "PID1.INC".
       *
        PROCEDURE                                 DIVISION    USING
                                                  MCPAREA
@@ -406,7 +397,7 @@
                    MOVE    SPA-GMN-P100-KANJINAME (IDX1)
                                                TO  WRK-MAE-INPUT
                    MOVE    50                  TO  WRK-MAX
-                   PERFORM 890-HALF-ZEN2-SEC
+                   PERFORM 890-HALF-ZEN-SEC
                    MOVE    WRK-ATO-INPUT   TO  SPA-GMN-P100-KANJINAME
                                                                (IDX1)
                    IF      SPA-ERRCD           =   SPACE
@@ -857,6 +848,11 @@ grpsys                 CALL    "ORCDBMAIN"         USING   MCPAREA
       *****************************************************************
        890-HALF-ZEN-SEC         SECTION.
       *
+      *    IF  ( WRK-MAE-INPUT  =      SPACE )
+      *        MOVE    SPACE    TO     WRK-ATO-INPUT
+      *        GO  TO  890-HALF-ZEN-EXT
+      *    END-IF
+      *
            INITIALIZE                  ORCSKANACHKAREA
            MOVE    "1"                 TO  KANACHK-SYORI
            MOVE    WRK-MAE-INPUT       TO  KANACHK-MAE-INPUT
@@ -873,45 +869,6 @@ grpsys                 CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            .
        890-HALF-ZEN-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    半角空白を全角空白へ変換処理
-      *****************************************************************
-       890-HALF-ZEN2-SEC         SECTION.
-      *
-           IF     SPA-ENCODING         =   2
-      *        拡張漢字対応
-               PERFORM 8910-HALF-ZENC2-SEC
-           ELSE
-      *        拡張漢字不可
-               PERFORM 890-HALF-ZEN-SEC
-           END-IF
-      *
-           .
-       891-HALF-ZEN2-EXT.
-           EXIT.
-      *****************************************************************
-      *    半角空白を全角空白へ変換処理（外字あり）
-      *****************************************************************
-       8910-HALF-ZENC2-SEC         SECTION.
-      *
-           INITIALIZE                  ORCSKANACHK2AREA
-           MOVE    "1"                 TO  KANACHK2-SYORI
-           MOVE    WRK-MAE-INPUT       TO  KANACHK2-MAE-INPUT
-           CALL    "ORCSKANACHK2"      USING
-                                       ORCSKANACHK2AREA
-           MOVE    WRK-MAX             TO  KANACHK2-MAX-CNT
-           IF     (KANACHK2-RC      NOT =   ZERO  )  OR
-                  (KANACHK2-SYUBETU     =   1     )
-               MOVE    "0002"               TO  SPA-ERRCD
-               MOVE    KANACHK2-MAE-INPUT   TO  WRK-ATO-INPUT
-           ELSE
-               MOVE    KANACHK2-OUT-INPUT   TO  WRK-ATO-INPUT
-           END-IF
-      *
-           .
-       8910-HALF-ZENC2-EXT.
            EXIT.
       *
       *****************************************************************
