@@ -132,8 +132,6 @@
                                               PIC X(60).
                        09  SPA-GMN-SYUTENTANKA PIC 9(02).
                        09  SPA-GMN-YKZTENTANKA PIC 9(02).
-                       09  SPA-GMN-LBLKIZAILST
-                                              PIC X(60).
                        09  SPA-GMN-KOMUKBN-G.
                            11  SPA-GMN-KOMUKBN
                                               PIC X(01).
