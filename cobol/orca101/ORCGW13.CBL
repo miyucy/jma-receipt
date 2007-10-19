@@ -786,7 +786,12 @@
       *
            MOVE    SYS-4001-KOMUKBN    TO  WRK-CMB-CD
            PERFORM 4200-KOMUKBNLST-CHK-SEC
-           MOVE    WRK-CMB-ITM         TO  SPA-GMN-KOMUKBN-G
+           IF    ( WRK-CMB-ITM         =   SPACE )
+               MOVE    SPA-GMN-KOMUKBNLST (1)
+                                       TO  SPA-GMN-KOMUKBN-G
+           ELSE
+               MOVE    WRK-CMB-ITM TO  SPA-GMN-KOMUKBN-G
+           END-IF
       *
            IF      SYS-4001-KOMUTENTANKA-X  IS  NUMERIC
                MOVE    SYS-4001-KOMUTENTANKA
