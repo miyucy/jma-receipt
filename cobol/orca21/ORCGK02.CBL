@@ -3472,18 +3472,17 @@
                MOVE    AGECHK-FTNRATE      TO  SPA-GMN-FTNRATE
                MOVE    AGECHK-FTNRATE      TO  SPA-FTNRATE
       *****END-IF
-      *    ¼«ÇåÀÕ¤Î·òÊÝ½àµòÈ½Äê
            MOVE    SPACE               TO  SPA-RSI-JUNKYO
-           IF      AGECHK-HKNKBN       =   4
-      *D       MOVE    "5"             TO  SPA-RSI-HKNKBN
-               MOVE    "4"             TO  SPA-RSI-HKNKBN
-               MOVE    "1"             TO  SPA-RSI-JUNKYO
-           END-IF
-      *    Ï«Ì³ºÒ³²¤Î·òÊÝ½àµòÈ½Äê
-           IF      AGECHK-HKNKBN       =   5
-               MOVE    "5"             TO  SPA-RSI-HKNKBN
-               MOVE    "1"             TO  SPA-RSI-JUNKYO
-           END-IF
+           EVALUATE    AGECHK-HKNKBN
+      *        ¼«ÇåÀÕ¤Î·òÊÝ½àµòÈ½Äê
+               WHEN     4
+                   MOVE    "4"             TO  SPA-RSI-HKNKBN
+                   MOVE    "1"             TO  SPA-RSI-JUNKYO
+      *        ¸øÌ³ºÒ³²¤Î·òÊÝ½àµòÈ½Äê
+               WHEN    5
+                   MOVE    "5"             TO  SPA-RSI-HKNKBN
+                   MOVE    "1"             TO  SPA-RSI-JUNKYO
+           END-EVALUATE
       *
            MOVE    ZERO                TO  SPA-RJN-ERR
            MOVE    ZERO                TO  SPA-HKN-ERR
@@ -9434,6 +9433,8 @@
       *    Ï«ºÒ¡¦¼«ÇåÀÕ¤Î»þ¡¢ÆüÉÕ¤Î¤ß
            IF      SPA-NAI-RRK-HKNKBN(SPA-NAI-DOSELNUM)  =   "1"
                                                          OR  "2"
+                                                         OR  "4"
+                                                         OR  "5"
                MOVE    SPA-GMN-RRKYMD (SPA-NAI-DOSELNUM)(1:12)
                                            TO  SPA-SRYYMDW
            END-IF
@@ -9561,6 +9562,8 @@
       *    Ï«ºÒ¡¦¼«ÇåÀÕ¤Î»þ¡¢ÆüÉÕ¤Î¤ß
            IF      SPA-NAI-RRK-HKNKBN(SPA-NAI-DOSELNUM)  =   "1"
                                                          OR  "2"
+                                                         OR  "4"
+                                                         OR  "5"
                MOVE    SPA-GMN-RRKYMD (SPA-NAI-DOSELNUM)(1:12)
                                            TO  SPA-GMN-SRYYMD
            END-IF
