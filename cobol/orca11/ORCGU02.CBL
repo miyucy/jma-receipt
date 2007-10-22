@@ -1405,6 +1405,8 @@ grpsys*                        CALL    "ORCDBMAIN"     USING   MCPAREA
                        MOVE    "½ý"        TO  WRK-HKNKBN-MEI
                    WHEN    "3"
                        MOVE    "¥¢"        TO  WRK-HKNKBN-MEI
+                   WHEN    "5"
+                       MOVE    "¸ø"        TO  WRK-HKNKBN-MEI
                END-EVALUATE
                IF      PTRSI-COMMENT       =   SPACE
                    MOVE    SPACE               TO  WRK-HKNCOMBI
@@ -2845,6 +2847,8 @@ grpsys*                        CALL    "ORCDBMAIN"     USING   MCPAREA
                    MOVE    "½ý"        TO  WRK-HKNKBN-MEI
                WHEN    "3"
                    MOVE    "¥¢"        TO  WRK-HKNKBN-MEI
+               WHEN    "5"
+                   MOVE    "¸ø"        TO  WRK-HKNKBN-MEI
            END-EVALUATE
            IF      PTRSI-COMMENT       =   SPACE
                MOVE    WRK-HKNKBN-MEI  TO  SPA-GMN-KOH1-TANSEIDONAME
