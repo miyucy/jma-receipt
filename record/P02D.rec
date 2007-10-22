@@ -35,7 +35,7 @@ P02D	{
 				value	varchar(16);
 			};
 			count	int;
-			item	varchar(16)[4];
+			item	varchar(16)[5];
 		};
 		COMMENT	{
 			value	varchar(100);
@@ -128,6 +128,12 @@ P02D	{
 		};
 		KAISU	{
 			value	number(3);
+		};
+		TANTOIMEI	{
+			value	varchar(20);
+		};
+		SEIKBNMEI	{
+			value	varchar(20);
 		};
 	};
 };

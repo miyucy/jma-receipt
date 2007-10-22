@@ -2917,9 +2917,16 @@
            CALL    "ORCSAGECHK"        USING
                                        ORCSAGECHKAREA
                                        SPA-AREA
-      *    º´«Â¿’§Œ∑Ú ›Ω‡µÚ»ΩƒÍ
+      *    º´«Â¿’°¶œ´Ã≥∫“≥≤§Œ∑Ú ›Ω‡µÚ»ΩƒÍ
+           MOVE    SPACE               TO  SPA-RSI-JUNKYO
            IF      AGECHK-HKNKBN       =   4
+      *D       MOVE    "5"             TO  SPA-RSI-HKNKBN
+               MOVE    "4"             TO  SPA-RSI-HKNKBN
+               MOVE    "1"             TO  SPA-RSI-JUNKYO
+           END-IF
+           IF      AGECHK-HKNKBN       =   5
                MOVE    "5"             TO  SPA-RSI-HKNKBN
+               MOVE    "1"             TO  SPA-RSI-JUNKYO
            END-IF
       *****IF      AGECHK-FTNRATE  NOT =   ZERO
       *        …È√¥Œ®

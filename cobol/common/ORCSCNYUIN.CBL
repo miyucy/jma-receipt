@@ -2091,11 +2091,21 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *                 œ´∫“
                        MOVE    "1"                 TO  JYURRK-HKNKBN
                    WHEN    "4"
-      *                 º´«Â¿’
-                       MOVE    "2"                 TO  JYURRK-HKNKBN
+      *                º´«Â¿’
+                       IF      SPA-RSI-JUNKYO      =   "1"
+      *                    ∑Ú ›Ω‡µÚ
+                           MOVE    "4"                 TO  JYURRK-HKNKBN
+                       ELSE
+                           MOVE    "2"                 TO  JYURRK-HKNKBN
+                       END-IF
                    WHEN    "5"
-      *                 º´«Â¿’° ∑Ú ›Ω‡µÚ°À
-                       MOVE    "4"                 TO  JYURRK-HKNKBN
+      *                ∏¯Ã≥∫“≥≤
+                       IF      SPA-RSI-JUNKYO      =   "1"
+      *                    ∑Ú ›Ω‡µÚ
+                           MOVE    "5"                 TO  JYURRK-HKNKBN
+                       ELSE
+                           MOVE    "1"                 TO  JYURRK-HKNKBN
+                       END-IF
                END-EVALUATE
            END-IF
       *    ø«Œ≈∂Ë ¨ŒŒ∞Ë§Œ ‘Ω∏
@@ -2497,6 +2507,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    ACCT-HKNCOMBI       TO  SSANTEI-HKNCOMBINUM
            MOVE    JYURRK-HKNKBN       TO  SSANTEI-HKNKBN
       *    œ´∫“°¶º´«Â¿’∂Ë ¨
+           MOVE    SPACE               TO  SSANTEI-RSI-JUNKYO
            EVALUATE    JYURRK-HKNKBN
                WHEN    "1"
                    MOVE    "1"             TO  SSANTEI-RSI-HKNKBN
@@ -2504,8 +2515,16 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE    "1"             TO  SSANTEI-HKNKBN
                    MOVE    "4"             TO  SSANTEI-RSI-HKNKBN
                WHEN    "4"
+      *            º´«Â¿’ ∑Ú ›Ω‡µÚ
+                   MOVE    "1"             TO  SSANTEI-HKNKBN
+      ************ MOVE    "5"             TO  SSANTEI-RSI-HKNKBN
+                   MOVE    "4"             TO  SSANTEI-RSI-HKNKBN
+                   MOVE    "1"             TO  SSANTEI-RSI-JUNKYO
+               WHEN    "5"
+      *            œ´∫“° ∏¯Ã≥∫“≥≤°Àº´«Â¿’ ∑Ú ›Ω‡µÚ
                    MOVE    "1"             TO  SSANTEI-HKNKBN
                    MOVE    "5"             TO  SSANTEI-RSI-HKNKBN
+                   MOVE    "1"             TO  SSANTEI-RSI-JUNKYO
            END-EVALUATE
            CALL    "ORCSSANTEI"        USING
                                        ORCSSANTEIAREA

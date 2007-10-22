@@ -1753,8 +1753,21 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *                 Ï«ºÒ
                        MOVE    "1"                 TO  JYURRK-HKNKBN
                    WHEN    "4"
-      *                 ¼«ÇåÀÕ
-                       MOVE    "2"                 TO  JYURRK-HKNKBN
+      *                ¼«ÇåÀÕ
+                       IF      SPA-RSI-JUNKYO      =   "1"
+      *                    ·òÊÝ½àµò
+                           MOVE    "4"                 TO  JYURRK-HKNKBN
+                       ELSE
+                           MOVE    "2"                 TO  JYURRK-HKNKBN
+                       END-IF
+                   WHEN    "5"
+      *                ¸øÌ³ºÒ³²
+                       IF      SPA-RSI-JUNKYO      =   "1"
+      *                    ·òÊÝ½àµò
+                           MOVE    "5"                 TO  JYURRK-HKNKBN
+                       ELSE
+                           MOVE    "1"                 TO  JYURRK-HKNKBN
+                       END-IF
                END-EVALUATE
            END-IF
       *
@@ -4739,8 +4752,21 @@ grpsys                 CALL    "ORCDBMAIN"         USING   MCPAREA
       *                 Ï«ºÒ
                        MOVE    "1"                 TO  LNK-UPD-HKNKBN
                    WHEN    "4"
-      *                 ¼«ÇåÀÕ
-                       MOVE    "2"                 TO  LNK-UPD-HKNKBN
+      *                ¼«ÇåÀÕ
+                       IF      SPA-RSI-JUNKYO      =   "1"
+      *                    ·òÊÝ½àµò
+                           MOVE    "4"             TO  LNK-UPD-HKNKBN
+                       ELSE
+                           MOVE    "2"             TO  LNK-UPD-HKNKBN
+                       END-IF
+                   WHEN    "5"
+      *                ¸øÌ³ºÒ³²
+                       IF      SPA-RSI-JUNKYO      =   "1"
+      *                    ·òÊÝ½àµò
+                           MOVE    "5"             TO  LNK-UPD-HKNKBN
+                       ELSE
+                           MOVE    "1"             TO  LNK-UPD-HKNKBN
+                       END-IF
                END-EVALUATE
            END-IF
            CALL    "ORCSRECEUPD"       USING    ORCSRECEUPDAREA

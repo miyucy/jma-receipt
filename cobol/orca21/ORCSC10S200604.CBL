@@ -864,7 +864,7 @@
               WHEN     1
       *           ¼«ÇåÀÕ
                   IF      SPA-RSI-HKNKBN       =   "4"
-                                               OR  "5"
+      *D                                       OR  "5"
                       IF      JYURRK-HKNKBN        =   "2"
                                                    OR  "4"
                            CONTINUE
@@ -873,7 +873,10 @@
                       END-IF
                   ELSE
       *           Ï«ºÒ
-                      IF      JYURRK-HKNKBN    NOT =   "1"
+                      IF      JYURRK-HKNKBN        =   "1"
+                                                   OR  "5"
+                           CONTINUE
+                      ELSE
                            MOVE    1               TO  FLG-CHK
                       END-IF
                   END-IF
@@ -936,6 +939,7 @@
                        IF      JYURRK-HKNKBN       =   ZERO
       *                    ·òÊÝ½àµòÊ¬
                                                    OR  "4"
+                                                   OR  "5"
       *                    °ìÈÌ
                            PERFORM 100011-IPN-DOUJI-CHK-SEC
                        ELSE
@@ -1773,7 +1777,9 @@
       *****************************************************************
        1000-SANTEI-RSI-SEC              SECTION.
       *
-           IF      SPA-RSI-HKNKBN      =   "5"
+      *    ·òÊÝ½àµò
+      *D   IF      SPA-RSI-HKNKBN      =   "5"
+           IF      SPA-RSI-JUNKYO      =   "1"
                MOVE    SPA-RSI-SHOBYOYMD   TO  SPA-RSI-HASSYOYMD
            ELSE
       *
@@ -2000,6 +2006,11 @@
       *****************************************************************
        200-SYOSIN-SET-SEC              SECTION.
       *
+      *TEST
+           DISPLAY "S10 SPA-HKNKBN:" SPA-HKNKBN
+              ",SPA-RSI-HKNKBN:" SPA-RSI-HKNKBN
+              ",SPA-RSI-JUNKYO:" SPA-RSI-JUNKYO
+      *TEST
            MOVE    ZERO                TO  IDX2
            MOVE    ZERO                TO  SPA-GMN-IDX
            MOVE    ZERO                TO  SPA-GAIRAISIN
@@ -2030,7 +2041,9 @@
       *        Ï«ºÒ¤Î½é¿ÇÎÁ»»Äê
                IF     (SPA-HKNKBN          =   1   )
       *           ¼«ÇåÀÕ¤Î·òÊÝ½àµò°Ê³°
-                 AND  (SPA-RSI-HKNKBN  NOT =   "5" )
+      *D         AND  (SPA-RSI-HKNKBN  NOT =   "5" )
+      *           ·òÊÝ½àµò°Ê³°
+                 AND  (SPA-RSI-JUNKYO  NOT =   "1"  )
                    PERFORM 2001-RSI-SYOSIN-SET-SEC
                ELSE
                    MOVE    ZERO                TO  FLG-SYONIKA
@@ -3342,8 +3355,9 @@
            MOVE    ZERO                TO  SPA-FUKU-SRYKA
       *
            IF      SPA-HKNKBN          =   1
-      *        ¼«ÇåÀÕ¤Î·òÊÝ½àµò°Ê³°
-             AND  (SPA-RSI-HKNKBN  NOT =   "5" )
+      *        ·òÊÝ½àµò°Ê³°
+      ****** AND  (SPA-RSI-HKNKBN  NOT =   "5" )
+             AND  (SPA-RSI-JUNKYO  NOT =   "1" )
       *        Ï«ºÒ¤ÎÆ±ÆüºÆ¿ÇÎÁ»»Äê
                MOVE    "D"                 TO  WRK-KBN
                PERFORM 2009-RSIHKN-SET-SEC
@@ -4584,7 +4598,8 @@
            ELSE
                IF      SPA-HKNKBN          =   1
       *        ¼«ÇåÀÕ¤Î·òÊÝ½àµò°Ê³°
-               AND    (SPA-RSI-HKNKBN  NOT =   "5" )
+      ****     AND    (SPA-RSI-HKNKBN  NOT =   "5" )
+               AND    (SPA-RSI-JUNKYO  NOT =   "1" )
       *            Ï«ºÒ¤Î½é¿ÇÎÁ»»Äê
                    MOVE    ZERO                TO  WRK-KAISU
                    MOVE    "F"                 TO  WRK-KBN
@@ -5573,13 +5588,17 @@
       *****************************************************************
        10151121-DOJITU-HEN-SEC       SECTION.
       *
-           IF      SPA-HKNKBN          =   ZERO
-      *        ¼«ÇåÀÕ¤Î·òÊÝ½àµò°Ê³°
-             OR   (SPA-RSI-HKNKBN      =   "5" )
-               MOVE   "111011810"          TO  WRK-SRYCD
+           IF      SPA-HKNKBN          =   1
+      *        Ï«ºÒ¡¦¼«ÇåÀÕ
+               IF      (SPA-RSI-JUNKYO     =   "1" )
+      *            ·òÊÝ½àµò
+                   MOVE   "111011810"          TO  WRK-SRYCD
+               ELSE
+      *            Ï«ºÒ
+                   MOVE   "101110040"          TO  WRK-SRYCD
+               END-IF
            ELSE
-      *TE      Ï«ºÒ
-               MOVE   "101110040"          TO  WRK-SRYCD
+               MOVE   "111011810"          TO  WRK-SRYCD
            END-IF
            IF      IDX-A               <   SPA-MAX-LINE
                IF      SPA-COM-INPUTCD(IDX-A + 1)
@@ -5593,14 +5612,6 @@
                MOVE    "0007"              TO  SPA-ERRCD
            END-IF
            IF      SPA-ERRCD           =   SPACE
-               IF      SPA-HKNKBN          =   ZERO
-      *        ¼«ÇåÀÕ¤Î·òÊÝ½àµò°Ê³°
-                 OR   (SPA-RSI-HKNKBN      =   "5" )
-                   MOVE   "111011810"          TO  WRK-SRYCD
-               ELSE
-      *TE          Ï«ºÒ
-                   MOVE   "101110040"          TO  WRK-SRYCD
-               END-IF
                INITIALIZE                  SPA-GMN-TBLREC  (IDX-A)
                INITIALIZE                  SPA-COM-TBLREC  (IDX-A)
                MOVE    WRK-SRYCD       TO  SPA-GMN-INPUTCD (IDX-A)

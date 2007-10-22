@@ -1261,8 +1261,8 @@
                    MOVE    "1"             TO  SPA-COM-ZAIEND (IDX)
                    MOVE    1               TO  FLG-ZAI
       *            ¼«ÇåÀÕ¤Î»þ¡¢£¸£°¤È¤¹¤ë
-                   IF     (SPA-RSI-HKNKBN            =  "4"
-                                                     OR "5") AND
+                   IF     (SPA-RSI-HKNKBN            =  "4" )  AND
+      *************                                  OR "5") AND
                           (SPA-COM-INPUTCD(IDX)(1:5) =  "09591"
                                                     OR  "09592"
                                                     OR  "09593")
@@ -1275,7 +1275,9 @@
       *            Ï«ºÒ¤Î»þ¡¢£¸£°¤È¤¹¤ë
                    IF     (SPA-RSI-HKNKBN            =  "1"
                                                      OR "2"
-                                                     OR "3") AND
+                                                     OR "3"
+      *                   ¸øÌ³ºÒ³²
+                                                     OR "5") AND
                           (SPA-COM-INPUTCD(IDX)(1:5) =  "09593")
                        MOVE    "80"        TO  SPA-COM-SRYKBN  (IDX)
                        MOVE    "800"       TO  SPA-COM-SRYSYUKBN(IDX)

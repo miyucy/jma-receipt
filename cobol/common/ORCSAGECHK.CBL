@@ -51,6 +51,7 @@
       * 03.03.00     NACL-Â¿¡¹Ç¼  06/10/24  Àº¿ÀÆþ±¡Ã±ÆÈÄÉ²Ã
       * 03.04.00     NACL-Â¿¡¹Ç¼  06/12/01  ¼«ÇåÀÕ·òÊÝ½àµòÄÉ²Ã
       *  03.05.00    NACL-Â¿¡¹Ç¼  07/04/XX  ¥°¥ë¡¼¥×¿ÇÎÅÂÐ±þ
+      * 04.01.00     NACL-Â¿¡¹Ç¼  07/10/19  ¸øÌ³ºÒ³²ÄÉ²Ã
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -374,7 +375,14 @@
       *    Ï«ºÒ¤Î»þ¡¢³ä¹ç¤ÎÊÑ¹¹
            IF      COMB-HKNNUM         =   "971"
                MOVE    1               TO  AGECHK-HKNKBN
-               PERFORM 2001-RSI-FTNRATE-SEC
+      *        Ï«ºÒ¾ðÊó¸¡º÷
+               PERFORM 2004-PTRSIINF-SELECT-SEC
+               IF      PTRSI-HKNKBN        =   "5"
+      *            ¸øÌ³ºÒ³²¤Î³ä¹çÊÑ¹¹
+                   PERFORM 2003-RSIKOMU-FTNRATE-SEC
+               ELSE
+                   PERFORM 2001-RSI-FTNRATE-SEC
+               END-IF
            END-IF
       *
       *    ¼«ÇåÀÕ¤Î»þ¡¢³ä¹ç¤ÎÊÑ¹¹
@@ -942,26 +950,7 @@
        2002-JIBAI-FTNRATE-SEC         SECTION.
       *
       *    ´µ¼ÔÊÝ¸±¾ðÊó¸¡º÷
-           INITIALIZE                      PTRSIINF-REC
-           MOVE    COMB-HOSPNUM        TO  PTRSI-HOSPNUM
-           MOVE    COMB-PTID           TO  PTRSI-PTID
-           MOVE    COMB-HKNID          TO  PTRSI-HKNID
-      *
-           MOVE    PTRSIINF-REC        TO  MCPDATA-REC
-           MOVE    "tbl_ptrsiinf"      TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
-           IF      MCP-RC              =   ZERO
-               MOVE    "tbl_ptrsiinf"     TO  MCP-TABLE
-               MOVE    "key"              TO  MCP-PATHNAME
-               PERFORM 993-PTRSIINF-NEXT-SEC
-           ELSE
-               INITIALIZE                      PTRSIINF-REC
-               MOVE    1                   TO  FLG-PTRSIINF
-           END-IF
-           MOVE    "tbl_ptrsiinf"     TO  MCP-TABLE
-           MOVE    "key"              TO  MCP-PATHNAME
-           PERFORM 990-DBCLOSE-SEC
+           PERFORM 2004-PTRSIINF-SELECT-SEC
       *    ¼«ÇåÀÕ´µ¼ÔÀÁµá¶èÊ¬
            IF     (FLG-PTRSIINF        =   ZERO )  AND
                   (PTRSI-HKNKBN        =   "4"  )
@@ -1013,6 +1002,88 @@
        2002-JIBAI-FTNRATE-EXT.
            EXIT.
       *
+      *****************************************************************
+      *    ¸øÌ³ºÒ³²¤Î³ä¹çÊÑ¹¹½èÍý
+      *****************************************************************
+       2003-RSIKOMU-FTNRATE-SEC         SECTION.
+      *
+      *    ´µ¼ÔÀÁµá¶èÊ¬
+           EVALUATE    PTRSI-JIBAISEIKBN
+               WHEN    "1"
+                   MOVE    100             TO  COMB-GAI-KFTNRATE
+                   MOVE    100             TO  COMB-NYU-KFTNRATE
+               WHEN    "2"
+                   MOVE    ZERO            TO  COMB-GAI-KFTNRATE
+                   MOVE    ZERO            TO  COMB-NYU-KFTNRATE
+           END-EVALUATE
+      *
+      *    ¸øÌ³ºÒ³²¶èÊ¬¤ÎÈ½Äê
+      *    ¥·¥¹¥Æ¥à´ÉÍý¸¡º÷¡ÊÏ«ºÒ¾ðÊó¡Ë
+           MOVE    SPACE               TO  SYS-4001-REC
+           INITIALIZE                  SYS-4001-REC
+           MOVE    "4001"              TO  SYS-4001-KANRICD
+           MOVE    "*"                 TO  SYS-4001-KBNCD
+           MOVE    AGECHK-SRYYMD       TO  SYS-4001-STYUKYMD
+                                           SYS-4001-EDYUKYMD
+           MOVE    AGECHK-HOSPNUM      TO  SYS-4001-HOSPNUM
+           MOVE    SYS-4001-REC        TO  MCPDATA-REC
+      *
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key10"             TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_syskanri"      TO  MCP-TABLE
+               MOVE    "key10"             TO  MCP-PATHNAME
+               PERFORM 900-SYSKANRI-READ-SEC
+           ELSE
+               MOVE    SPACE               TO  SYS-4001-REC
+               INITIALIZE                  SYS-4001-REC
+               MOVE    1               TO  FLG-SYSKANRI
+           END-IF
+           IF      FLG-SYSKANRI        =   ZERO
+               MOVE    MCPDATA-REC         TO  SYS-4001-REC
+      *        ·òÊÝ½àµò
+      *        ¸øÌ³ºÒ³²¶èÊ¬
+               IF      SYS-4001-KOMUKBN        =   "2"
+                   MOVE    5               TO  AGECHK-HKNKBN
+               END-IF
+           END-IF
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key10"             TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+           .
+       2003-RSIKOMU-FTNRATE-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    Ï«ºÒÊÝ¸±¾ðÊó¸¡º÷½èÍý
+      *****************************************************************
+       2004-PTRSIINF-SELECT-SEC         SECTION.
+      *
+           INITIALIZE                      PTRSIINF-REC
+           MOVE    COMB-HOSPNUM        TO  PTRSI-HOSPNUM
+           MOVE    COMB-PTID           TO  PTRSI-PTID
+           MOVE    COMB-HKNID          TO  PTRSI-HKNID
+      *
+           MOVE    PTRSIINF-REC        TO  MCPDATA-REC
+           MOVE    "tbl_ptrsiinf"      TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_ptrsiinf"     TO  MCP-TABLE
+               MOVE    "key"              TO  MCP-PATHNAME
+               PERFORM 993-PTRSIINF-NEXT-SEC
+           ELSE
+               INITIALIZE                      PTRSIINF-REC
+               MOVE    1                   TO  FLG-PTRSIINF
+           END-IF
+           MOVE    "tbl_ptrsiinf"     TO  MCP-TABLE
+           MOVE    "key"              TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+      *
+           .
+       2004-PTRSIINF-SELECT-EXT.
+           EXIT.
       *****************************************************************
       *    Ï·¿Í¡¦°ìÈÌÄê½èÍý
       *****************************************************************

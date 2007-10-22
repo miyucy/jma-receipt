@@ -2027,6 +2027,8 @@
                                MOVE    "½ý"        TO  WRK-HKNKBN-MEI
                            WHEN    "3"
                                MOVE    "¥¢"        TO  WRK-HKNKBN-MEI
+                           WHEN    "5"
+                               MOVE    "¸ø"        TO  WRK-HKNKBN-MEI
                        END-EVALUATE
                        STRING  SPA-GMN-THKNCOMBIMEI (IDX)
                                                    DELIMITED  BY  SPACE
@@ -2044,6 +2046,8 @@
                                MOVE    "½ý"        TO  WRK-HKNKBN-MEI
                            WHEN    "3"
                                MOVE    "¥¢"        TO  WRK-HKNKBN-MEI
+                           WHEN    "5"
+                               MOVE    "¸ø"        TO  WRK-HKNKBN-MEI
                        END-EVALUATE
                        STRING  SPA-GMN-THKNCOMBIMEI (IDX)
                                                    DELIMITED  BY  SPACE

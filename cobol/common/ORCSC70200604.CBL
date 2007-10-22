@@ -1087,7 +1087,8 @@
       *
       *    Ï«ºÒ¤Î»þ¡¢ÊÑ¹¹¤Ê¤·
            IF      SPA-HKNKBN          =   1
-             AND  (SPA-RSI-HKNKBN  NOT =   "5" )
+      *****  AND  (SPA-RSI-HKNKBN  NOT =   "5" )
+             AND  (SPA-RSI-JUNKYO  NOT =   "1" )
                GO      TO      10012-SYUGI-CHK-EXT
            END-IF
       *
@@ -2461,7 +2462,8 @@
       *    £Ã£Ô¡¢£Í£Ò£É¥Á¥§¥Ã¥¯
       *        Ï«ºÒ¤Î»þ¡¢ÊÑ¹¹¤Ê¤·
            IF      SPA-HKNKBN          =   1
-             AND  (SPA-RSI-HKNKBN  NOT =   "5" )
+      *****  AND  (SPA-RSI-HKNKBN  NOT =   "5" )
+             AND  (SPA-RSI-JUNKYO  NOT =   "1" )
                INITIALIZE                  WRK-CTMRI-CNT-G
            ELSE
                PERFORM 2002-CTMRI-CNT-SEC
@@ -2631,7 +2633,8 @@
       *
       *    Ï«ºÒ¤Î»þ¡¢·Ù¹ð¥Á¥§¥Ã¥¯
            IF      SPA-HKNKBN          =   1
-             AND  (SPA-RSI-HKNKBN  NOT =   "5" )
+      *****  AND  (SPA-RSI-HKNKBN  NOT =   "5" )
+             AND  (SPA-RSI-JUNKYO  NOT =   "1" )
                PERFORM 20012-RSI-CTMRI-CHK-SEC
                GO      TO      2001-CTMRI-CHK-EXT
            END-IF

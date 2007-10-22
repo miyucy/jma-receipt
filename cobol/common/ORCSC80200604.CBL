@@ -981,7 +981,8 @@
                    END-IF
       *            労災の時、労災加算の算定
                    IF      SPA-HKNKBN          =   1
-                     AND  (SPA-RSI-HKNKBN  NOT =   "5" )
+      *************  AND  (SPA-RSI-HKNKBN  NOT =   "5" )
+                     AND  (SPA-RSI-JUNKYO  NOT =   "1" )
                        PERFORM 100113-RSIHKN-SYORI-SEC
                    ELSE
                        IF      WRK-COM-DATAKBN (IDX-Z) =   "1"
@@ -1438,7 +1439,8 @@
            END-IF
       *    労災の時、逓減コードはエラーとする
            IF     (SPA-HKNKBN          =   1   )
-             AND  (SPA-RSI-HKNKBN  NOT =   "5" )
+      ****** AND  (SPA-RSI-HKNKBN  NOT =   "5" )
+             AND  (SPA-RSI-JUNKYO  NOT =   "1" )
                IF      WRK-RIHA-GEN        =   "2"
                    MOVE    "8044"      TO  WRK-ERRCD
                    MOVE    "1"         TO  WRK-COM-CUR (IDX-Z)
@@ -1453,7 +1455,8 @@
            PERFORM 100112-TEIGENYMD15-SEC
       *    労災・自賠責は逓減なしとする
            IF     (SPA-HKNKBN          =   1   )
-             AND  (SPA-RSI-HKNKBN  NOT =   "5" )
+     ******  AND  (SPA-RSI-HKNKBN  NOT =   "5" )
+             AND  (SPA-RSI-JUNKYO  NOT =   "1" )
                MOVE    SPACE           TO  WRK-TEIGEN
                MOVE    SPACE           TO  WRK-TEIGEN-YMD
                MOVE    SPACE           TO  WRK-TEIGEN-MSG
@@ -2161,7 +2164,8 @@
       *
       *    労災の外来管理加算読み替え処理
            IF      SPA-HKNKBN          =   1
-             AND  (SPA-RSI-HKNKBN  NOT =   "5" )
+      *****  AND  (SPA-RSI-HKNKBN  NOT =   "5" )
+             AND  (SPA-RSI-JUNKYO  NOT =   "1" )
       *!       回数を掛けた点数で判定する
       *!         （２単位以上の時、読み替えはないはず）
       *!       COMPUTE WRK-SYOKEI      =   WRK-COM-SYUTEN2 (IDX-SYU)
@@ -2227,7 +2231,8 @@
       *
       *    労災の時、労災加算
            IF      SPA-HKNKBN          =   1
-             AND  (SPA-RSI-HKNKBN  NOT =   "5" )
+      *****  AND  (SPA-RSI-HKNKBN  NOT =   "5" )
+             AND  (SPA-RSI-JUNKYO  NOT =   "1" )
                PERFORM 10061-RSIKASAN-SET-SEC
            END-IF
       *
@@ -2465,7 +2470,8 @@
                        END-STRING
                    END-IF
                    IF      SPA-HKNKBN      =   1
-                     AND  (SPA-RSI-HKNKBN  NOT =   "5" )
+      *******        AND  (SPA-RSI-HKNKBN  NOT =   "5" )
+                     AND  (SPA-RSI-JUNKYO  NOT =   "1" )
                        IF     (WRK-COM-KZMFLG (IDX-Z)   =   SPACE)  AND
                               (LNK-ORCSC-KEI-IDX        =   ZERO )
                            MOVE    IDX-Z       TO  LNK-ORCSC-KEI-IDX

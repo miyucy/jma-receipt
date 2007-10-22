@@ -515,7 +515,8 @@
       *
       *    労災で消炎鎮痛処置の時、当日上限回数を変更する
            IF     (SPA-HKNKBN          =   1  )
-             AND  (SPA-RSI-HKNKBN  NOT =   "5" )
+      ****   AND  (SPA-RSI-HKNKBN  NOT =   "5" )
+             AND  (SPA-RSI-JUNKYO  NOT =   "1" )
                EVALUATE    WRK-RIGAKU-KBN
       *            マッサージ
                    WHEN    "M"
@@ -949,7 +950,8 @@
                SET     TBL-IDX         TO  IDX2
       *        労災で、消炎鎮痛の時、湿布対象外
                IF     ((SPA-HKNKBN         =   1    )  AND
-                       (SPA-RSI-HKNKBN  NOT =   "5" )) AND
+      *************    (SPA-RSI-HKNKBN  NOT =   "5" )) AND
+                       (SPA-RSI-JUNKYO  NOT =   "1" )) AND
                        (WRK-CHK        NOT =   SPACE   )  AND
                        (WRK-CHK            =   TBL-CHK (TBL-IDX))
                    MOVE    1                   TO  FLG-ERR
@@ -980,7 +982,8 @@
                            PERFORM 2003-DOJINPUT-CHK-SEC
                       END-IF
                       IF     ((SPA-HKNKBN          =   1 ) AND
-                              (SPA-RSI-HKNKBN  NOT =   "5" )) AND
+      ******************      (SPA-RSI-HKNKBN  NOT =   "5" )) AND
+                              (SPA-RSI-JUNKYO  NOT =   "1" )) AND
                               (TBL-CHK (TBL-IDX)   =   "P"  )
       *                    労災で湿布の時
                            IF      WRK-DOCNT       >   ZERO
@@ -997,7 +1000,8 @@
                           PERFORM 2001-DOJSANTEI-YMD-SEC
                       END-IF
                       IF     ((SPA-HKNKBN          =   1 ) AND
-                              (SPA-RSI-HKNKBN  NOT =   "5" )) AND
+      ***                     (SPA-RSI-HKNKBN  NOT =   "5" )) AND
+                              (SPA-RSI-JUNKYO  NOT =   "1" )) AND
                               (TBL-CHK (TBL-IDX)   =   "P"     )
       *                    労災で湿布の時
                            IF      WRK-DAYCNT      >   ZERO
@@ -1042,7 +1046,8 @@
       *    労災で消炎鎮痛処置の時、当日上限回数を変更する
            MOVE    LNK-SC91-DAYMAXCNT  TO  WRK-DAYMAXCNT
            IF     (SPA-HKNKBN          =   1 ) AND
-                  (SPA-RSI-HKNKBN  NOT =   "5" )
+      ****        (SPA-RSI-HKNKBN  NOT =   "5" )
+                  (SPA-RSI-JUNKYO  NOT =   "1" )
                EVALUATE    WRK-RIGAKU-KBN
       *            マッサージ
                    WHEN    "M"
@@ -1199,7 +1204,8 @@
            END-IF
       *    労災でリハビリの時３月以内の件数はカウントしない
            IF     ((SPA-HKNKBN          =   1 ) AND
-                   (SPA-RSI-HKNKBN  NOT =   "5" )) AND
+     ***********   (SPA-RSI-HKNKBN  NOT =   "5" )) AND
+                   (SPA-RSI-JUNKYO  NOT =   "1" )) AND
                   (FLG-HKN-SANTEI      =   1     )
                MOVE    WRK-CNT             TO  WRK-RSI-CNT
                PERFORM 10012-RSI-MCNT-SEC

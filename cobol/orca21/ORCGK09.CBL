@@ -987,6 +987,7 @@
                                              TO  SPA-K09GMN-RRKHKNCOMBI
                                                                   (IDX)
                IF      SPA-K09NAI-RRK-HKNKBN  (IDX)  =   "1"
+                                                     OR  "5"
                    MOVE    "ϫ"              TO  SPA-K09GMN-RRKHKNCOMBI
                                                                   (IDX)
                END-IF

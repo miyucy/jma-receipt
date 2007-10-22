@@ -2000,8 +2000,21 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *                 œ´∫“
                        MOVE    "1"                 TO  JYURRK-HKNKBN
                    WHEN    "4"
-      *                 º´«Â¿’
-                       MOVE    "2"                 TO  JYURRK-HKNKBN
+      *                º´«Â¿’
+                       IF      SPA-RSI-JUNKYO      =   "1"
+      *                    ∑Ú ›Ω‡µÚ
+                           MOVE    "4"                 TO  JYURRK-HKNKBN
+                       ELSE
+                           MOVE    "2"                 TO  JYURRK-HKNKBN
+                       END-IF
+                   WHEN    "5"
+      *                ∏¯Ã≥∫“≥≤
+                       IF      SPA-RSI-JUNKYO      =   "1"
+      *                    ∑Ú ›Ω‡µÚ
+                           MOVE    "5"                 TO  JYURRK-HKNKBN
+                       ELSE
+                           MOVE    "1"                 TO  JYURRK-HKNKBN
+                       END-IF
                END-EVALUATE
            END-IF
       *    ø«Œ≈∂Ë ¨ŒŒ∞Ë§Œ ‘Ω∏

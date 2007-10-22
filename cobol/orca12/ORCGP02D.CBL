@@ -37,6 +37,7 @@
       *  02.00.05    NACL-¬ø°π«º  05/11/11  MONFUNC ¬–±˛ ¬æ
       *  02.00.06    NACL-¬ø°π«º  05/12/07  œ´∫“•Ï•ª≤ÛøÙµ≠∫‹ƒ…≤√ ¬æ
       *  03.05.00    NACL-¬ø°π«º  07/05/XX  •∞•Î°º•◊ø«Œ≈¬–±˛
+      *  04.01.00    NACL-¬ø°π«º  07/10/19  ∏¯Ã≥∫“≥≤ƒ…≤√
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -496,6 +497,12 @@
                MOVE    "4 º´«Â¿’ ›∏±"      TO  SPA-GMN2D-HKNKBN-LST
                                                  (SPA-GMN2D-HKNKBN-MAX)
            END-IF
+           IF      SPA-ROSAI-FLG       =   1
+               ADD     1                   TO  SPA-GMN2D-HKNKBN-MAX
+               MOVE    "5 œ´Ã≥∫“≥≤"        TO  SPA-GMN2D-HKNKBN-LST
+                                                 (SPA-GMN2D-HKNKBN-MAX)
+           END-IF
+      *
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   SPA-GMN2D-HKNKBN-MAX
                IF      SPA-GMN2D-HKNKBN-LST(IDX) (1:1)
@@ -524,6 +531,7 @@
            MOVE    "2 ¥µº‘¿¡µ·§∑§ §§(0%)"
                                        TO  SPA-GMN2D-JIBAISEIKBN-LST(02)
            IF      SPA-GMN2D-HKNKBN    =   "4"
+                                       OR  "5"
                MOVE    2                   TO  SPA-GMN2D-JIBAISEIKBN-MAX
            ELSE
                MOVE    ZERO                TO  SPA-GMN2D-JIBAISEIKBN-MAX
@@ -536,6 +544,16 @@
                                            TO  SPA-GMN2D-JIBAISEIKBN-G
                END-IF
            END-PERFORM
+      *
+      *    ∏´Ω–§∑Ω§¿µ
+           EVALUATE    SPA-GMN2D-HKNKBN
+               WHEN    "5"
+                   MOVE    "¿¡µ·∂Ë ¨"          TO  SPA-GMN2D-SEIKBNMEI
+                   MOVE    "√¥≈ˆ∞Â"            TO  SPA-GMN2D-TANTOIMEI
+               WHEN    OTHER
+                   MOVE    "º´«Â¿’¿¡µ·∂Ë ¨"    TO  SPA-GMN2D-SEIKBNMEI
+                   MOVE    "º´«Â¿’√¥≈ˆ∞Â"      TO  SPA-GMN2D-TANTOIMEI
+           END-EVALUATE
       *
       *    ø∑∑—∂Ë ¨
            PERFORM 41012-SINKEI-SET-SEC
@@ -917,6 +935,9 @@
            MOVE    SPA-GMN2D-KIJYUNYM  TO  P02D-KIJYUNYM
            MOVE    SPA-GMN2D-KAISU     TO  P02D-KAISU
       *
+           MOVE    SPA-GMN2D-SEIKBNMEI    TO  P02D-SEIKBNMEI
+           MOVE    SPA-GMN2D-TANTOIMEI    TO  P02D-TANTOIMEI
+      *
            PERFORM 5001-MAPCUR-SEC
       *
            .
@@ -1008,6 +1029,7 @@
                    MOVE    2               TO  SPA-GMN2D-CUR
                    EVALUATE    SPA-GMN2D-HKNKBN
                        WHEN    "4"
+                       WHEN    "5"
                            MOVE    22              TO  SPA-GMN2D-CUR
                    END-EVALUATE
       *        º´«Â¿’¿¡µ·∂Ë ¨
@@ -1023,6 +1045,7 @@
                        WHEN    "3"
                            MOVE    16              TO  SPA-GMN2D-CUR
                        WHEN    "4"
+                       WHEN    "5"
                            MOVE    6               TO  SPA-GMN2D-CUR
                    END-EVALUATE
                WHEN    "KOHNUM1"
@@ -1044,6 +1067,7 @@
                WHEN    "RYOEDYMD"
                    EVALUATE    SPA-GMN2D-HKNKBN
                        WHEN    "4"
+                       WHEN    "5"
       *                    º´«Â¿’√¥≈ˆ∞Â§ÿ
                            MOVE    25              TO  SPA-GMN2D-CUR
                        WHEN    "1"
@@ -1064,6 +1088,7 @@
                WHEN    "CITYKBN"
                    EVALUATE    SPA-GMN2D-HKNKBN
                        WHEN    "4"
+                       WHEN    "5"
                            MOVE    25              TO  SPA-GMN2D-CUR
                        WHEN    "1"
                        WHEN    "2"
@@ -1073,7 +1098,12 @@
                WHEN    "SRYKA"
                    MOVE    26              TO  SPA-GMN2D-CUR
                WHEN    "DRCD"
-                   MOVE    27              TO  SPA-GMN2D-CUR
+                   EVALUATE    SPA-GMN2D-HKNKBN
+                       WHEN    "5"
+                           MOVE    90              TO  SPA-GMN2D-CUR
+                       WHEN    OTHER
+                           MOVE    27              TO  SPA-GMN2D-CUR
+                   END-EVALUATE
                WHEN    "HOKENNAME"
                    MOVE    90              TO  SPA-GMN2D-CUR
       *
@@ -1367,8 +1397,9 @@
       *****************************************************************
        41011-JIBAISEIKBN-CHK-SEC           SECTION.
       *
-      *    º´«Â¿’∞ ≥∞§œ∆˛Œœ§ §∑§»§π§Î
+      *    º´«Â¿’°¶∏¯Ã≥∫“≥≤∞ ≥∞§œ∆˛Œœ§ §∑§»§π§Î
            IF      SPA-GMN2D-HKNKBN    =   "4"
+                                       OR  "5"
                CONTINUE
            ELSE
                MOVE    SPACE               TO  SPA-GMN2D-JIBAISEIKBN-G
@@ -1488,6 +1519,38 @@
                    END-IF
       *            ∫“≥≤∂Ë ¨
                    MOVE   SPACE                TO  SPA-GMN2D-SAIGAI-G
+               WHEN    "5"
+      *            ∏¯Ã≥∫“≥≤
+      *            º´«Â¿’¥µº‘¿¡µ·∂Ë ¨
+                   MOVE    2               TO  SPA-GMN2D-JIBAISEIKBN-MAX
+                   IF      SPA-GMN2D-JIBAISEIKBN   =   SPACE
+                       MOVE    SPA-GMN2D-JIBAISEIKBN-LST (1)
+                                           TO  SPA-GMN2D-JIBAISEIKBN-G
+                   END-IF
+      *
+                   PERFORM 41012-SINKEI-SET-SEC
+                   MOVE    SPACE           TO  SPA-GMN2D-SINKEI-G
+      *            ≈æµ¢
+                   IF      SPA-GMN2D-TENKI     =   SPACE
+                       MOVE    SPA-GMN2D-TENKI-LST (02)
+                                               TO  SPA-GMN2D-TENKI-G
+                   END-IF
+      *
+                   IF      SPA-GMN2D-SISIKBN   =   SPACE
+                       MOVE    SPA-GMN2D-SISIKBN-LST (01)
+                                               TO  SPA-GMN2D-SISIKBN-G
+                   END-IF
+      *            ∫“≥≤∂Ë ¨
+                   MOVE   SPACE                TO  SPA-GMN2D-SAIGAI-G
+           END-EVALUATE
+      *    ∏´Ω–§∑Ω§¿µ
+           EVALUATE    SPA-GMN2D-HKNKBN
+               WHEN    "5"
+                   MOVE    "¿¡µ·∂Ë ¨"          TO  SPA-GMN2D-SEIKBNMEI
+                   MOVE    "√¥≈ˆ∞Â"            TO  SPA-GMN2D-TANTOIMEI
+               WHEN    OTHER
+                   MOVE    "º´«Â¿’¿¡µ·∂Ë ¨"    TO  SPA-GMN2D-SEIKBNMEI
+                   MOVE    "º´«Â¿’√¥≈ˆ∞Â"      TO  SPA-GMN2D-TANTOIMEI
            END-EVALUATE
       *
           .
@@ -1809,6 +1872,17 @@
                END-IF
            END-IF
       *
+      *!!
+      *    ∏¯Ã≥∫“≥≤§œ£»£±£∏°•£¥§´§È§»§π§Î
+           IF     (SPA-ERRCD           =   SPACE ) AND
+                  (SPA-NAI2D-RYOSTYMD  NOT =    SPACE )
+               IF     (SPA-GMN2D-HKNKBN    =   "5" ) AND
+                      (SPA-NAI2D-RYOSTYMD  <   "20060401" )
+                   MOVE    "0044"              TO  SPA-ERRCD
+                   MOVE    9                   TO  SPA-GMN2D-CUR
+               END-IF
+           END-IF
+      *!
            .
        4101-RYOSTYMD-CHK-EXT.
            EXIT.
@@ -1997,8 +2071,9 @@
       *****************************************************************
        4101-SRYKA-CHK-SEC           SECTION.
       *
-      *    º´«Â¿’∞ ≥∞§œ∆˛Œœ§ §∑§»§π§Î
+      *    º´«Â¿’°¶∏¯Ã≥∫“≥≤∞ ≥∞§œ∆˛Œœ§ §∑§»§π§Î
            IF      SPA-GMN2D-HKNKBN    =   "4"
+                                       OR  "5"
                CONTINUE
            ELSE
                MOVE    SPACE               TO  SPA-GMN2D-SRYKA-G
@@ -2070,8 +2145,9 @@
       *****************************************************************
        4101-DRCD-CHK-SEC           SECTION.
       *
-      *    º´«Â¿’∞ ≥∞§œ∆˛Œœ§ §∑§»§π§Î
+      *    º´«Â¿’°¶∏¯Ã≥∫“≥≤∞ ≥∞§œ∆˛Œœ§ §∑§»§π§Î
            IF      SPA-GMN2D-HKNKBN    =   "4"
+                                       OR  "5"
                CONTINUE
            ELSE
                MOVE    SPACE               TO  SPA-GMN2D-DRCD-G
@@ -2541,6 +2617,18 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                        MOVE    "0012"              TO  SPA-ERRCD
                        MOVE    9                   TO  SPA-GMN2D-CUR
                    END-IF
+      *        ∏¯Ã≥∫“≥≤
+               WHEN    "5"
+                   IF      SPA-GMN2D-SHOBYOYMD     =   SPACE
+                     AND  (SPA-ERRCD               =   SPACE )
+                       MOVE    "0025"              TO  SPA-ERRCD
+                       MOVE    8                   TO  SPA-GMN2D-CUR
+                   END-IF
+                   IF      SPA-GMN2D-RYOSTYMD      =   SPACE
+                     AND  (SPA-ERRCD               =   SPACE )
+                       MOVE    "0012"              TO  SPA-ERRCD
+                       MOVE    9                   TO  SPA-GMN2D-CUR
+                   END-IF
            END-EVALUATE
       *
            .
@@ -2575,6 +2663,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN    "1"
                WHEN    "2"
                WHEN    "3"
+               WHEN    "5"
                    MOVE    "971"               TO  SPA-GMN-HKNNUM
                    MOVE    "971"               TO  SPA-NAI2D-HKNNUM
                WHEN    "4"
@@ -2666,6 +2755,17 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                    END-IF
       *    º´«Â¿’ ›∏±≤Òº“Ãæ
                    MOVE    SPA-GMN2D-HOKENNAME TO  PTRSI-HOKENNAME
+               WHEN    "5"
+      *    ∏¯Ã≥∫“≥≤
+                   MOVE    SPA-GMN2D-JIBAISEIKBN
+                                               TO  PTRSI-JIBAISEIKBN
+      *            √¥≈ˆ∞Â
+                   IF      SPA-GMN2D-DRCD      =   SPACE
+                       MOVE    SPACE               TO  PTRSI-DRCD
+                   ELSE
+                       MOVE    "1"                 TO  PTRSI-DRCD(1:1)
+                       MOVE    SPA-GMN2D-DRCD      TO  PTRSI-DRCD(2:4)
+                   END-IF
            END-EVALUATE
       *
            MOVE    SPA-GMN2D-HIHKNJANAME
@@ -2695,7 +2795,8 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN    "1"
                WHEN    "2"
                WHEN    "4"
-      *        √ª¥¸°¶Ω˝…¬°¶º´«Â¿’
+               WHEN    "5"
+      *        √ª¥¸°¶Ω˝…¬°¶º´«Â¿’°¶∏¯Ã≥∫“≥≤
                    MOVE    SPA-GMN2D-TENKI     TO  PTRSI-TENKI
                    MOVE    SPA-NAI2D-SHOBYOYMD TO  PTRSI-SHOBYOYMD
                    MOVE    SPA-GMN2D-SISIKBN   TO  PTRSI-SISIKBN
@@ -3003,6 +3104,12 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN    "0043"
                    MOVE    "≤ÛøÙ§œ…¨ø‹∆˛Œœ§«§π°£∆˛Œœ§∑§∆≤º§µ§§"
                                                TO  SPA-ERRMSG
+               WHEN    "0044"
+                   STRING  "œ´Ã≥∫“≥≤§œ ø¿Æ£±£∏«Ø£¥∑Ó§´§È§Œ"
+                           "¬–±˛§«§π°£"
+                                               DELIMITED  BY  SIZE
+                                               INTO  SPA-ERRMSG
+                   END-STRING
            END-EVALUATE
       *
            MOVE    SPACE               TO  PERR

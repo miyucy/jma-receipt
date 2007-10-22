@@ -2480,8 +2480,16 @@
                MOVE    AGECHK-FTNRATE      TO  SPA-FTNRATE
            END-IF
       *    ¼«ÇåÀÕ¤Î·òÊÝ½àµòÈ½Äê
+           MOVE    SPACE               TO  SPA-RSI-JUNKYO
            IF      AGECHK-HKNKBN       =   4
+      *D       MOVE    "5"             TO  SPA-RSI-HKNKBN
+               MOVE    "4"             TO  SPA-RSI-HKNKBN
+               MOVE    "1"             TO  SPA-RSI-JUNKYO
+           END-IF
+      *    Ï«Ì³ºÒ³²¤Î·òÊÝ½àµòÈ½Äê
+           IF      AGECHK-HKNKBN       =   5
                MOVE    "5"             TO  SPA-RSI-HKNKBN
+               MOVE    "1"             TO  SPA-RSI-JUNKYO
            END-IF
       *
            MOVE    ZERO                TO  SPA-RJN-ERR

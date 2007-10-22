@@ -33,6 +33,7 @@
       * 01.00.04     NACL-Â¿¡¹Ç¼  05/08/17  ÊÝ¸±¼ÔÈÖ¹æ¡¢¸øÈñ£É£ÄÊÖµÑÄÉ²Ã
       * 02.07.00     NACL-ÂÀÅÄ    05/10/24   MONFUNC ÂÐ±þ
       * 03.05.00     NACL-Â¿¡¹Ç¼  07/04/XX  ¥°¥ë¡¼¥×¿ÇÎÅÂÐ±þ
+      * 04.01.00     NACL-Â¿¡¹Ç¼  07/10/19  ¸øÌ³ºÒ³²ÄÉ²Ã
       *****************************************************************
       *
       *
@@ -452,18 +453,6 @@
                    END-IF
                END-IF
            END-IF
-      *    ¼«ÇåÀÕ¤Î»þ¡¢ÀÁµá¶èÊ¬¤è¤ê³ä¹ç¤ò·èÄê¤¹¤ë
-           IF      ORCSHKN-NAI-RSI-HKNKBN(IDX) =   "4"
-               EVALUATE    WRK-JIBAISEKIKBN
-                   WHEN    "1"
-                       MOVE    100             TO  ORCSHKN-NAI-FTNRATE
-                                                               (IDX)
-                   WHEN    "2"
-                       MOVE    ZERO            TO  ORCSHKN-NAI-FTNRATE
-                                                               (IDX)
-               END-EVALUATE
-           END-IF
-      *
       *    Ï«ºÒ¤Î»þ¡¢³ä¹ç¤ÎÊÑ¹¹
            IF      COMB-HKNNUM         =   "971"
                IF      SYS-4001-RSIIRYOKBN     =   "1"
@@ -473,6 +462,19 @@
                    MOVE    100             TO  ORCSHKN-NAI-FTNRATE
                                                                (IDX)
                END-IF
+           END-IF
+      *
+      *    ¼«ÇåÀÕ¡¦¸øÌ³ºÒ³²¤Î»þ¡¢ÀÁµá¶èÊ¬¤è¤ê³ä¹ç¤ò·èÄê¤¹¤ë
+           IF      ORCSHKN-NAI-RSI-HKNKBN(IDX) =   "4"
+                                               OR  "5"
+               EVALUATE    WRK-JIBAISEKIKBN
+                   WHEN    "1"
+                       MOVE    100             TO  ORCSHKN-NAI-FTNRATE
+                                                               (IDX)
+                   WHEN    "2"
+                       MOVE    ZERO            TO  ORCSHKN-NAI-FTNRATE
+                                                               (IDX)
+               END-EVALUATE
            END-IF
       *
            IF      ORCSHKN-NAI-FTNRATE (IDX)   =   ZERO
@@ -541,6 +543,8 @@
                        MOVE    "½ý"        TO  WRK-HKNKBN-MEI
                    WHEN    "3"
                        MOVE    "¥¢"        TO  WRK-HKNKBN-MEI
+                   WHEN    "5"
+                       MOVE    "¸ø"        TO  WRK-HKNKBN-MEI
                END-EVALUATE
                IF      PTRSI-COMMENT       =   SPACE
                    MOVE    SPACE               TO  WRK-HKNCOMBI
@@ -566,6 +570,7 @@
                                                                  (IDX)
       *        ½ýÉÂÇ¯·îÆü
                IF      PTRSI-HKNKBN        =   "1"  OR  "2"  OR  "4"
+                                           OR  "5"
                    MOVE    PTRSI-SHOBYOYMD     TO
                                                ORCSHKN-NAI-RSI-SHOBYOYMD
                                                                   (IDX)
@@ -577,8 +582,9 @@
       *        Ï«ºÒ¶èÊ¬
                MOVE    PTRSI-HKNKBN        TO  ORCSHKN-NAI-RSI-HKNKBN
                                                                   (IDX)
-      *        ¼«ÇåÀÕ´µ¼ÔÀÁµá¶èÊ¬
+      *        ¼«ÇåÀÕ¡¦¸øÌ³ºÒ³²´µ¼ÔÀÁµá¶èÊ¬
                IF      PTRSI-HKNKBN        =   "4"
+                                           OR  "5"
                    MOVE    PTRSI-JIBAISEIKBN   TO  WRK-JIBAISEKIKBN
                END-IF
            END-IF

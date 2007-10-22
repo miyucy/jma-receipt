@@ -213,6 +213,7 @@
                MOVE    SPA-HKNKBN      TO  SSANTEI-HKNKBN
                MOVE    SPA-HKNCOMBINUM TO  SSANTEI-HKNCOMBINUM
                MOVE    SPA-RSI-HKNKBN  TO  SSANTEI-RSI-HKNKBN
+               MOVE    SPA-RSI-JUNKYO  TO  SSANTEI-RSI-JUNKYO
            END-IF
            IF     (SSANTEI-HKNKBN      =   "1" ) AND
                   (SSANTEI-HKNCOMBINUM =   SPACE )
@@ -221,6 +222,10 @@
            IF     (SSANTEI-HKNKBN      =   "1" ) AND
                   (SSANTEI-RSI-HKNKBN  =   SPACE )
                MOVE    SPA-RSI-HKNKBN  TO  SSANTEI-RSI-HKNKBN
+           END-IF
+           IF     (SSANTEI-HKNKBN      =   "1" ) AND
+                  (SSANTEI-RSI-JUNKYO  =   SPACE )
+               MOVE    SPA-RSI-JUNKYO  TO  SSANTEI-RSI-JUNKYO
            END-IF
       *    ≤ÛøÙ —ππ
            IF      SSANTEI-KAISU       =   ZERO
@@ -942,7 +947,8 @@
                MOVE    SPA-HKNKBN      TO  SSANTEI-HKNKBN
            END-IF
            IF     (SSANTEI-HKNKBN  NOT =   ZERO   )  AND
-                  (SSANTEI-RSI-HKNKBN  NOT =   "5" )  AND
+      *********   (SSANTEI-RSI-HKNKBN  NOT =   "5" )  AND
+                  (SSANTEI-RSI-JUNKYO  NOT =   "1" )  AND
                   (SSANTEI-SRYCD       =   "099700101"  OR
                                            "099700102"  OR
                                            "099700103" )
@@ -1295,7 +1301,8 @@
       *
       *    ∑Ú ›∞ ≥∞§«£√£‘°¶£Õ£“£…§Œ∫Ó¿Æ§ §∑° º´«Â¿’∑Ú ›Ω‡µÚ∞ ≥∞°À
            IF     (SSANTEI-HKNKBN  NOT =   ZERO   )  AND
-                  (SSANTEI-RSI-HKNKBN  NOT =   "5" )  AND
+      **********  (SSANTEI-RSI-HKNKBN  NOT =   "5" )  AND
+                  (SSANTEI-RSI-JUNKYO  NOT =   "1" )  AND
                   (SSANTEI-SRYCD       =   "099700101"  OR
                                            "099700102"  OR
                                            "099700103" )
@@ -1873,6 +1880,9 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    TNSP-JGNCNT         TO  TNS-JGNCNT
                MOVE    TNSP-JGNCNT1D       TO  TNS-JGNCNT1D
                MOVE    TNSP-JGNCNTERR      TO  TNS-JGNCNTERR
+      *
+               MOVE    TNSP-JGNCNTETCM     TO  TNS-JGNCNTETCM
+               MOVE    TNSP-JGNCNTETC      TO  TNS-JGNCNTETC
            END-IF
       *
            .
