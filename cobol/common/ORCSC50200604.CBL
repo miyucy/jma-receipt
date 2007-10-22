@@ -793,6 +793,7 @@
                              ((WRK-GMN-INPUTCD (IDX1)  =   SPACE ) AND
                               (WRK-COM-INPUTCD (IDX1)  =   SPACE ))
                          OR   (SPA-ERRCD           NOT =   SPACE )
+                         OR   (SPA-RSI-SISIKBN         =   ZERO  )
                MOVE    ZERO                TO  FLG-ROUSAI
                IF      (WRK-COM-INPUTCD(IDX1)(1:1) =   "1"  )  AND
                        (WRK-COM-INPUTCD(IDX1)(1:3) NOT =   "101")  AND

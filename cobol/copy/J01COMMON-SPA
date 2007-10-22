@@ -107,6 +107,7 @@
                05  SPA-NAI-RSI-ARAE.
       *            労災用労災区分
                    07  SPA-NAI-RSI-HKNKBN        PIC X(01).
+                   07  SPA-NAI-RSI-JUNKYO        PIC X(01).
       *
       *    保険組合せ一覧画面より
            03  SPA-J021-SET.

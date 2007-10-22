@@ -90,6 +90,7 @@
                05  SPA-J04-HKNCOMBI    PIC X(04).
                05  SPA-J04-HKNKBN      PIC X(01).
                05  SPA-J04-RSI-HKNKBN  PIC X(01).
+               05  SPA-J04-RSI-JUNKYO  PIC X(01).
       *        Êñ³ç¿ÇÎÅºÞ
                05  SPA-J04-JIHOKBN          PIC  X(01).
       *
@@ -109,6 +110,7 @@
                            11  SPA-NAI-TRSI-SISIKBN    PIC  X(01).
                            11  SPA-NAI-TRSI-SHOBYOYMD  PIC  X(08).
                            11  SPA-NAI-TRSI-HKNKBN     PIC  X(01).
+                           11  SPA-NAI-TRSI-JUNKYO     PIC  X(01).
                            11  SPA-NAI-TKOH1HKNNUM     PIC  X(03).
                            11  SPA-NAI-TKOH2HKNNUM     PIC  X(03).
                            11  SPA-NAI-TKOH3HKNNUM     PIC  X(03).

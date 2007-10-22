@@ -211,6 +211,7 @@
                            11  SPA-NAI-TRSI-SISIKBN    PIC  X(01).
                            11  SPA-NAI-TRSI-SHOBYOYMD  PIC  X(08).
                            11  SPA-NAI-TRSI-HKNKBN     PIC  X(01).
+                           11  SPA-NAI-TRSI-JUNKYO     PIC  X(01).
                            11  SPA-NAI-TKOH1HKNNUM     PIC  X(03).
                            11  SPA-NAI-TKOH2HKNNUM     PIC  X(03).
                            11  SPA-NAI-TKOH3HKNNUM     PIC  X(03).

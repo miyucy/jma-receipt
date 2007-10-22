@@ -57,6 +57,7 @@
       *  03.05.00    NACL-Â¿¡¹Ç¼  07/06/13  ¥ì¥»¥×¥ì¥Ó¥å¡¼¤ËÏ«ºÒ¡¦¼«ÇåÄÉ²Ã
       *                                     Æþ±¡¤Î¼õ¿ÇÍúÎòºï½üÄÉ²Ã
       *                                     °ì³çÆþÎÏÆâÍÆ½¤Àµ
+      *  04.01.00    NACL-Â¿¡¹Ç¼  07/10/22  ¸øÌ³ºÒ³²ÄÉ²Ã
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -2086,8 +2087,9 @@
                                        TO  SPA-NAI-TTEKSTYMD  (IDH)
                MOVE    ORCSHKN-NAI-TEKEDYMD (IDX)
                                        TO  SPA-NAI-TTEKEDYMD  (IDH)
-      *        ¼«ÇåÀÕÊÝ¸±¤Î»þ¡¢·òÊÝ½àµò¤«¤ÎÈ½Äê
+      *        ¼«ÇåÀÕ¡¦Ï«Ì³ºÒ³²ÊÝ¸±¤Î»þ¡¢·òÊÝ½àµò¤«¤ÎÈ½Äê
                IF      ORCSHKN-NAI-RSI-HKNKBN (IDX)    =   "4"
+                                                       OR  "5"
                    PERFORM 30081-JIBAISEKI-HEN-SEC
                END-IF
       *
@@ -2118,12 +2120,14 @@
            CALL    "ORCSAGECHK"        USING
                                        ORCSAGECHKAREA
                                        SPA-AREA
-      *    ¼«ÇåÀÕ¶èÊ¬
+      *
            EVALUATE    AGECHK-HKNKBN
-               WHEN    2
-                   MOVE    "4"             TO  SPA-NAI-TRSI-HKNKBN(IDH)
+      *        ¼«ÇåÀÕ
                WHEN    4
-                   MOVE    "5"             TO  SPA-NAI-TRSI-HKNKBN(IDH)
+                   MOVE    "1"             TO  SPA-NAI-TRSI-JUNKYO(IDH)
+      *        Ï«Ì³ºÒ³²
+               WHEN    5
+                   MOVE    "1"             TO  SPA-NAI-TRSI-JUNKYO(IDH)
            END-EVALUATE
            .
        30081-JIBAISEKI-HEN-EXT.
@@ -2429,6 +2433,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *    ÊÝ¸±ÁÈ¹ç¤»
            MOVE    JYURRK-HKNCOMBINUM  TO  SPA-GMN-RRKHKNCOMBI (IDX)
            IF      JYURRK-HKNKBN       =   "1"
+                                       OR  "5"
                MOVE    "Ï«"                TO  SPA-GMN-RRKHKNCOMBI (IDX)
            END-IF
            IF      JYURRK-HKNKBN       =   "2"
@@ -3366,9 +3371,12 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *    Æþ±¡¤Î»þ¡¢Æþ±¡Æü
            IF      SPA-GMN-NYUGAIKBN   =   "1"
                MOVE    "Æþ±¡´ü´Ö¡§"       TO  J02-NYUINKIKAN
-               MOVE    SPA-GMN-NYUINYMD   TO  J02-NYUINKIKAN(11:9)
-               MOVE    "-"                TO  J02-NYUINKIKAN(20:1)
-               MOVE    SPA-GMN-TAIINYMD   TO  J02-NYUINKIKAN(21:9)
+               IF     (SPA-GMN-NYUINYMD   NOT =   SPACE )  AND
+                      (SPA-GMN-TAIINYMD   NOT =   SPACE )
+                   MOVE    SPA-GMN-NYUINYMD   TO  J02-NYUINKIKAN(11:9)
+                   MOVE    "-"                TO  J02-NYUINKIKAN(20:1)
+                   MOVE    SPA-GMN-TAIINYMD   TO  J02-NYUINKIKAN(21:9)
+               END-IF
            ELSE
                MOVE    SPACE              TO  J02-NYUINKIKAN
                IF     (SPA-GMN-NYUINYMD   NOT =   SPACE )  AND
@@ -4436,6 +4444,8 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                                TO  SPA-NAI-RSI-HKNKBN
                        MOVE    SPA-NAI-TRSI-SHOBYOYMD (IDH)
                                                TO  SPA-RSI-SHOBYOYMD
+                       MOVE    SPA-NAI-TRSI-JUNKYO (IDH)
+                                               TO  SPA-NAI-RSI-JUNKYO
                    END-IF
                END-PERFORM
       *!       MOVE    SPA-GMN-HKNCOMBI    TO  WRK-HKNCOMBI
@@ -7794,6 +7804,8 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPA-NAI-SISIKBN     TO  SPA-RSI-SISIKBN
       *    Ï«ºÒ¶èÊ¬
            MOVE    SPA-NAI-RSI-HKNKBN  TO  SPA-RSI-HKNKBN
+      *    ·òÊÝ½àµò¶èÊ¬
+           MOVE    SPA-NAI-RSI-JUNKYO  TO  SPA-RSI-JUNKYO
       *
       **** ¿ÇÎÅ²ñ·×¥Þ¥¹¥¿¡¼¹¹¿·
       *    PERFORM 4901-SRYACCT-UPD-SEC
@@ -8245,11 +8257,6 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    12                  TO  SPA-NAI-SRYMM
                COMPUTE SPA-NAI-SRYYY       =   SPA-NAI-SRYYY    -   1
            END-IF
-      *TEST
-           DISPLAY " 410181-ZENGETU-SYORI1-SEC "
-                     ", SPA-NAI-SRYYM :"  SPA-NAI-SRYYM 
-      *TEST
-      *
       *
            MOVE    SPA-NAI-SRYYM      TO  WRK-SYMD(1:6)
            MOVE    "01"               TO  WRK-SYMD(7:2)
@@ -8899,7 +8906,7 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    ZERO                TO  IDX-RRK
            MOVE    ZERO                TO  WRK-RRK-RENNUM
            MOVE    ZERO                TO  WRK-RRK-DOUJI-RENNUM
-           MOVE    ZERO                TO  WRK-RRK-HKNKBN
+           MOVE    SPACE               TO  WRK-RRK-HKNKBN
            MOVE    SPACE               TO  WRK-RRK-DRCD
            PERFORM VARYING     IDR     FROM    1   BY   1
                    UNTIL      (IDR     >   SPA-RRK-MAX  )  OR
@@ -9072,6 +9079,10 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    "0024"          TO  SPA-ERRCD
                GO      TO      41001221-RRK-ADD-EXT
            END-IF
+      *    ÊÝ¸±¶èÊ¬ÀßÄê
+           IF      WRK-RRK-HKNKBN      =   SPACE
+               PERFORM 410012211-RRK-HKNKBN-SEC
+           END-IF
       *
            ADD     1                   TO  SPA-RRK-MAX
            MOVE    SPA-RRK-MAX         TO  IDR
@@ -9127,6 +9138,40 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            .
        41001221-RRK-ADD-EXT.
+           EXIT.
+      *****************************************************************
+      *    ¼õ¿ÇÍúÎòÊÝ¸±¶èÊ¬ÀßÄê½èÍý
+      *****************************************************************
+       410012211-RRK-HKNKBN-SEC             SECTION.
+      *
+           PERFORM VARYING     IDH     FROM    1   BY  1
+                   UNTIL       IDH     >   SPA-HKN-MAX
+               IF      SPA-GMN-THKNCOMBINUM (IDH)
+                                               =   SPA-GMN-HKNCOMBI
+                   MOVE    SPA-NAI-THKNKBN (IDH)   TO  WRK-RRK-HKNKBN
+                   IF     (SPA-NAI-THKNKBN (IDH)   =   "1" )
+      *                ¼«ÇåÀÕ
+                       IF     (SPA-NAI-TRSI-HKNKBN (IDH)   =   "4")
+                           MOVE    "2"             TO  WRK-RRK-HKNKBN
+                           IF      SPA-NAI-TRSI-JUNKYO(IDH)   =   "1"
+      *                        ¼«ÇåÀÕ(·òÊÝ½àµò¡Ë
+                               MOVE    "4"         TO  WRK-RRK-HKNKBN
+                           END-IF
+                       END-IF
+      *                ¸øÌ³ºÒ³²
+                       IF     (SPA-NAI-TRSI-HKNKBN (IDH)   =   "5")
+                           MOVE    "1"             TO  WRK-RRK-HKNKBN
+                           IF      SPA-NAI-TRSI-JUNKYO(IDH)   =   "1"
+      *                        ¸øÌ³ºÒ³²(·òÊÝ½àµò¡Ë
+                               MOVE    "5"         TO  WRK-RRK-HKNKBN
+                           END-IF
+                       END-IF
+                   END-IF
+                   MOVE    SPA-HKN-MAX             TO  IDH
+               END-IF
+           END-PERFORM
+           .
+       410012211-RRK-HKNKBN-EXT.
            EXIT.
       *****************************************************************
       *    ¼õ¿ÇÍúÎò¥Æ¡¼¥Ö¥ëºï½ü½èÍý
@@ -10901,6 +10946,8 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE    SPA-NAI-THKNKBN(IDH)    TO  SPA-HKNKBN
                    MOVE    SPA-NAI-TRSI-HKNKBN (IDH)
                                                    TO  SPA-RSI-HKNKBN
+                   MOVE    SPA-NAI-TRSI-JUNKYO (IDH)
+                                                   TO  SPA-RSI-JUNKYO
                END-IF
            END-PERFORM
       *
@@ -11166,6 +11213,8 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                        MOVE    "½ý"        TO  WRK-HKNKBN-MEI
                    WHEN    "3"
                        MOVE    "¥¢"        TO  WRK-HKNKBN-MEI
+                   WHEN    "5"
+                       MOVE    "¸ø"        TO  WRK-HKNKBN-MEI
                END-EVALUATE
                IF      PTRSI-COMMENT       =   SPACE
                    MOVE    SPACE               TO  WRK-HKNCOMBIMEI
@@ -11192,6 +11241,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    PTRSI-HKNKBN        TO  SPA-NAI-RSI-HKNKBN
       *        ½ýÉÂÇ¯·îÆü
                IF      PTRSI-HKNKBN        =   "1"  OR  "2"  OR  "4"
+                                           OR  "5"
                    MOVE    PTRSI-SHOBYOYMD     TO  SPA-RSI-SHOBYOYMD
                ELSE
                    MOVE    PTRSI-SINSATUYMD    TO  SPA-RSI-SHOBYOYMD
@@ -12199,7 +12249,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *
       *    ¼«ÇåÀÕ
            IF     SPA-XC01-RSI-HKNKBN  =   "4"
-                                       OR  "5"
+      *D                               OR  "5"
                MOVE    "2"                 TO  SPA-XC01-HKNKBN
            END-IF
       *

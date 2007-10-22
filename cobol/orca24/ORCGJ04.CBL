@@ -1282,6 +1282,7 @@
            MOVE    SPA-HKNCOMBINUM     TO  SPA-J04-HKNCOMBI
            MOVE    SPA-HKNKBN          TO  SPA-J04-HKNKBN
            MOVE    SPA-RSI-HKNKBN      TO  SPA-J04-RSI-HKNKBN
+           MOVE    SPA-RSI-JUNKYO      TO  SPA-J04-RSI-JUNKYO
            MOVE    SPA-HKNCOMBINUM     TO  SPA-GMN-HKNCOMBI
            IF     (SPA-NYUGAIKBN       =   1   )
                PERFORM 31031-HKNCOMBI-HEN-SEC
@@ -2144,11 +2145,14 @@
            MOVE    SPA-NAI-TRSI-HKNKBN (IDX)
                                        TO  SPA-RSI-HKNKBN
       *    ¼«ÇåÀÕ¶èÊ¬
+           MOVE    SPACE               TO  SPA-RSI-JUNKYO
            EVALUATE    AGECHK-HKNKBN
-               WHEN    2
-                   MOVE    "4"             TO  SPA-RSI-HKNKBN
                WHEN    4
-                   MOVE    "5"             TO  SPA-RSI-HKNKBN
+      *            ¼«ÇåÀÕ·òÊÝ½àµò
+                   MOVE    "1"             TO  SPA-RSI-JUNKYO
+               WHEN    5
+      *            Ï«Ì³ºÒ³²·òÊÝ½àµò
+                   MOVE    "1"             TO  SPA-RSI-JUNKYO
            END-EVALUATE
       *    Å¬ÍÑ´ü´ÖÈ½Äê
            MOVE    ZERO                TO  WRK-YMDS1
@@ -5344,6 +5348,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *    ÊÝ¸±¶èÊ¬
            MOVE    SPA-J04-HKNKBN      TO  SSANTEI-HKNKBN
            MOVE    SPA-J04-RSI-HKNKBN  TO  SSANTEI-RSI-HKNKBN
+           MOVE    SPA-J04-RSI-JUNKYO  TO  SSANTEI-RSI-JUNKYO
       *
            CALL    "ORCSSANTEI"        USING
                                        ORCSSANTEIAREA
@@ -6360,6 +6365,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *    ÊÝ¸±¶èÊ¬
            MOVE    SPA-HKNKBN          TO  SSANTEI-HKNKBN
            MOVE    SPA-RSI-HKNKBN      TO  SSANTEI-RSI-HKNKBN
+           MOVE    SPA-RSI-JUNKYO      TO  SSANTEI-RSI-JUNKYO
       *
            CALL    "ORCSSANTEI"        USING
                                        ORCSSANTEIAREA
@@ -6444,11 +6450,23 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *                 Ï«ºÒ
                        MOVE    "1"                 TO  LNK-UPD-HKNKBN
                    WHEN    "4"
-      *                 ¼«ÇåÀÕ
-                       MOVE    "2"                 TO  LNK-UPD-HKNKBN
+      *                ¼«ÇåÀÕ
+                       IF      SPA-RSI-JUNKYO      =   "1"
+      *                    ·òÊÝ½àµò
+                           MOVE    "4"             TO  LNK-UPD-HKNKBN
+                       ELSE
+      *                    Ï«ºÒ½àµò
+                           MOVE    "2"             TO  LNK-UPD-HKNKBN
+                       END-IF
                    WHEN    "5"
-      *                 ¼«ÇåÀÕ¡Ê·òÊÝ½àµò¡Ë
-                       MOVE    "4"                 TO  LNK-UPD-HKNKBN
+      *                Ï«Ì³ºÒ³²
+                       IF      SPA-RSI-JUNKYO      =   "1"
+      *                    ·òÊÝ½àµò
+                           MOVE    "5"             TO  LNK-UPD-HKNKBN
+                       ELSE
+      *                    Ï«ºÒ½àµò
+                           MOVE    "1"             TO  LNK-UPD-HKNKBN
+                       END-IF
                END-EVALUATE
            END-IF
            CALL    "ORCSRECEUPD"       USING    ORCSRECEUPDAREA
