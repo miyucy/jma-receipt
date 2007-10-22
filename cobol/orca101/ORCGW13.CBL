@@ -1607,14 +1607,14 @@
                END-IF
            END-IF
       *
-           IF    ( SPA-GMN-KOMUKBN     =   "2" )
-               IF    ( SPA-W01-STYUKYMD    >=  CONST-H180401 )
-                   CONTINUE
-               ELSE
-                   MOVE    "0015"      TO  SPA-ERRCD
-                   MOVE    19          TO  SPA-GMN-CUR
-               END-IF
-           END-IF
+      *    IF    ( SPA-GMN-KOMUKBN     =   "2" )
+      *        IF    ( SPA-W01-STYUKYMD    >=  CONST-H180401 )
+      *            CONTINUE
+      *        ELSE
+      *            MOVE    "0015"      TO  SPA-ERRCD
+      *            MOVE    19          TO  SPA-GMN-CUR
+      *        END-IF
+      *    END-IF
       *
            .
        4101-KOMUKBN-CHK-EXT.
