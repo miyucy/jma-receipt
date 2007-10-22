@@ -1825,6 +1825,7 @@
                                              TO  SPA-GMN-RRKHKNCOMBI
                                                                   (IDX)
                IF      SPA-NAI-RRK-HKNKBN  (IDX)  =   "1"
+                                                  OR  "5"
                    MOVE    "労"              TO  SPA-GMN-RRKHKNCOMBI
                                                                   (IDX)
                END-IF
@@ -2491,7 +2492,8 @@
       *            労災の時、同じ保険であること
                    IF     ((SPA-NAI-RRK-HKNKBN (IDX-J2)
                                                =   "1"  OR "2"
-                                                        OR "4")  AND
+                                                        OR "4"
+                                                        OR "5")  AND
                            (SPA-NAI-RRK-HKNCOMBI (IDX-J2)
                                                =   SPA-NAI-RRK-HKNCOMBI
                                                              (IDX) ))
