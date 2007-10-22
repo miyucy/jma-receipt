@@ -499,7 +499,7 @@
            END-IF
            IF      SPA-ROSAI-FLG       =   1
                ADD     1                   TO  SPA-GMN2D-HKNKBN-MAX
-               MOVE    "5 Ï«Ì³ºÒ³²"        TO  SPA-GMN2D-HKNKBN-LST
+               MOVE    "5 ¸øÌ³ºÒ³²"        TO  SPA-GMN2D-HKNKBN-LST
                                                  (SPA-GMN2D-HKNKBN-MAX)
            END-IF
       *
