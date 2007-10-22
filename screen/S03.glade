@@ -1478,22 +1478,6 @@
     </widget>
 
     <widget>
-      <class>GtkLabel</class>
-      <name>label338</name>
-      <x>680</x>
-      <y>68</y>
-      <width>46</width>
-      <height>24</height>
-      <label>È¯¹ÔÆü</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
       <class>GtkNumberEntry</class>
       <name>SSNTGMONEY</name>
       <x>212</x>
@@ -2813,6 +2797,38 @@
       <width>80</width>
       <height>24</height>
       <label>¹ç·×Ì¤¼ý³Û</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label338</name>
+      <x>680</x>
+      <y>68</y>
+      <width>46</width>
+      <height>24</height>
+      <label>È¯¹ÔÆü</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>LBLGENMEN</name>
+      <x>844</x>
+      <y>68</y>
+      <width>156</width>
+      <height>24</height>
+      <label>¸ºÌÈ</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0</xalign>

@@ -189,6 +189,12 @@
                    07  SPA-NAI-HEAD-AREA.
                        09  SPA-NAI-HEAD-DENPJTIKBN PIC X(01).
                        09  SPA-NAI-SRYKA           PIC X(02).
+                       09  SPA-NAI-DISCOUNT-KBN        PIC  X(02).
+                       09  SPA-NAI-DISCOUNT-BODY       PIC  X(160).
+                       09  SPA-NAI-DISCOUNT-RATEKBN    PIC  X(02).
+                       09  SPA-NAI-DISCOUNT-TEIRITU    PIC  X(01).
+                       09  SPA-NAI-DISCOUNT-RATE       PIC  9(07).
+                       09  SPA-NAI-DISCOUNT-MONEY      PIC  9(07).
                    07  SPA-NAI-INPUT-AREA.
                        09  SPA-NAI-SKYMONEY-MOTO   PIC S9(10).
                        09  SPA-NAI-NYUKINYMD       PIC X(08).
@@ -253,6 +259,8 @@
            03  WRK-SYMD                            PIC X(10).
            03  WRK-HENYMDG                         PIC X(10).
            03  WRK-Z9                              PIC --,---,---.
+           03  WRK-Z99                             PIC --,---,--9.
+           03  WRK-ZZ9                             PIC ZZ9.
            03  WRK-EDABAN                          PIC ZZ.
            03  WRK-MISYU-G.
                05  WRK-MISYU                       PIC S9(08).
@@ -1013,6 +1021,14 @@
            COMPUTE SPA-GMN-MISYU-ZAN
                =   SYU-SKYMONEY    -   SYU-NYUKIN-TOTAL
       *
+      *    ¸ºÌÈ¾ðÊó
+           MOVE    SYU-DISCOUNT-KBN    TO  SPA-NAI-DISCOUNT-KBN
+           MOVE    SYU-DISCOUNT-BODY   TO  SPA-NAI-DISCOUNT-BODY
+           MOVE    SYU-DISCOUNT-RATEKBN TO SPA-NAI-DISCOUNT-RATEKBN
+           MOVE    SYU-DISCOUNT-TEIRITU TO SPA-NAI-DISCOUNT-TEIRITU
+           MOVE    SYU-DISCOUNT-RATE   TO  SPA-NAI-DISCOUNT-RATE
+           MOVE    SYU-DISCOUNT-MONEY  TO  SPA-NAI-DISCOUNT-MONEY
+      *
       *    ¹ç·×ÀÁµá³Û·×»»½èÍý
            PERFORM 3102-SEIKYU-KEI-SEC
       *
@@ -1670,6 +1686,29 @@
       *
                WHEN    OTHER
                    MOVE    "¾È²ñ"          TO  S03-B03-LABEL
+               END-EVALUATE
+           END-IF
+      *
+           MOVE    "black"         TO  S03-LBLGENMEN-STYLE
+           IF    ( SPA-NAI-DISCOUNT-KBN  NOT =   SPACE )
+               MOVE    "blue"  TO  S03-LBLGENMEN-STYLE
+               EVALUATE    SPA-NAI-DISCOUNT-TEIRITU
+               WHEN    "1"
+                   MOVE    SPA-NAI-DISCOUNT-RATE
+                                   TO  WRK-ZZ9
+                   STRING  "¸ºÌÈÍ­¡Ê"  DELIMITED   BY  SIZE
+                           WRK-ZZ9     DELIMITED   BY  SIZE
+                           "¡ó¡Ë"      DELIMITED   BY  SIZE
+                   INTO    S03-LBLGENMEN
+                   END-STRING
+               WHEN    "2"
+                   MOVE    SPA-NAI-DISCOUNT-RATE
+                                   TO  WRK-Z99
+                   STRING  "¸ºÌÈÍ­¡Ê"  DELIMITED   BY  SIZE
+                           WRK-Z99     DELIMITED   BY  SIZE
+                           "±ß¡Ë"      DELIMITED   BY  SIZE
+                   INTO    S03-LBLGENMEN
+                   END-STRING
                END-EVALUATE
            END-IF
       *

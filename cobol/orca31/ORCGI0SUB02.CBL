@@ -918,6 +918,28 @@
                =   TTLSYU-UPD-TAX-SAI
                +   KONSYU-UPD-TAX-SAI (IDX-KON)
       *
+      *    ∏∫Ã»æ Û
+           IF    ( KONSYU-DISCOUNT-KBN (IDX-KON)   NOT =   SPACE )
+               MOVE    KONSYU-DISCOUNT-KBN     (IDX-KON)
+                                   TO  SUMSYU-DISCOUNT-KBN     (IDX-SUM)
+                                       TTLSYU-DISCOUNT-KBN
+               MOVE    KONSYU-DISCOUNT-BODY    (IDX-KON)
+                                   TO  SUMSYU-DISCOUNT-BODY    (IDX-SUM)
+                                       TTLSYU-DISCOUNT-BODY
+               MOVE    KONSYU-DISCOUNT-RATEKBN (IDX-KON)
+                                   TO  SUMSYU-DISCOUNT-RATEKBN (IDX-SUM)
+                                       TTLSYU-DISCOUNT-RATEKBN
+               MOVE    KONSYU-DISCOUNT-TEIRITU (IDX-KON)
+                                   TO  SUMSYU-DISCOUNT-TEIRITU (IDX-SUM)
+                                       TTLSYU-DISCOUNT-TEIRITU
+               MOVE    KONSYU-DISCOUNT-RATE    (IDX-KON)
+                                   TO  SUMSYU-DISCOUNT-RATE    (IDX-SUM)
+                                       TTLSYU-DISCOUNT-RATE
+               MOVE    KONSYU-DISCOUNT-MONEY   (IDX-KON)
+                                   TO  SUMSYU-DISCOUNT-MONEY   (IDX-SUM)
+                                       TTLSYU-DISCOUNT-MONEY
+           END-IF
+      *
            .
        20011-I0SUB02-SYUNOU-HEN-EXT.
            EXIT.

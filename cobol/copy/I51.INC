@@ -17,6 +17,9 @@
       ********************************************************************
         02  I51.
       *     02  I51-FIXED3.
+              03  I51-LBLGENMEN-G.
+	          05   I51-LBLGENMEN-STYLE PIC X(20).
+	          05   I51-LBLGENMEN       PIC X(30).
               03  I51-PTNUM.
                 04  I51-VALUE   PIC X(20).
               03  I51-KANANAME.

@@ -1322,22 +1322,6 @@
     </widget>
 
     <widget>
-      <class>GtkLabel</class>
-      <name>LBLTAIINKEISAN</name>
-      <x>840</x>
-      <y>35</y>
-      <width>150</width>
-      <height>25</height>
-      <label>←轉情瘋煌遙←</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>True</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
       <class>GtkPandaEntry</class>
       <name>JIHI6</name>
       <x>384</x>
@@ -3155,6 +3139,38 @@
 	<input_mode>XIM</input_mode>
 	<xim_enabled>False</xim_enabled>
       </widget>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>LBLTAIINKEISAN</name>
+      <x>840</x>
+      <y>35</y>
+      <width>150</width>
+      <height>25</height>
+      <label>←轉情瘋煌遙←</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>True</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>LBLGENMEN</name>
+      <x>512</x>
+      <y>68</y>
+      <width>176</width>
+      <height>24</height>
+      <label>蛹昈</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
     </widget>
   </widget>
 </widget>

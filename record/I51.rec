@@ -1,5 +1,9 @@
 I51	{
 	fixed3	{
+		LBLGENMEN	{
+			style   varchar(20);
+			value	varchar(30);
+		};
 		PTNUM	{
 			value	varchar(20);
 		};

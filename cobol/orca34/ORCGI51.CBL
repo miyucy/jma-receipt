@@ -93,6 +93,7 @@
            03  FLG-HKNCOMBI        PIC 9(01).
            03  FLG-ENTRYCHK        PIC 9(01).
            03  FLG-ORCSDAY                 PIC 9(01).
+           03  FLG-HKNCOMBILST-ROW PIC 9(01).
       *
       *    ≈∫ª˙ŒŒ∞Ë
        01  IDX-AREA.
@@ -174,6 +175,9 @@
            03  WRK-EDIDX                   PIC 9(05).
            03  WRK-SANTEISTYMD             PIC X(08).
            03  WRK-SANTEIEDYMD             PIC X(08).
+      *
+       01  WRK-ROW-AREA.
+           03  WRK-HKNCOMBILST-ROW         PIC S9(9)   BINARY.
       *
        01  CONST-AREA.
            03  CONST-JIHI-MAX      PIC 9(05)   VALUE 10.
@@ -522,7 +526,20 @@
       *****************************************************************
        500-GMNHEN-SEC                  SECTION.
       *
+           MOVE    I51-HKNCOMBILST-ROW
+                                       TO  WRK-HKNCOMBILST-ROW
+      *
            MOVE    SPACE               TO  I51
+      *
+           EVALUATE    FLG-HKNCOMBILST-ROW
+           WHEN    1
+               MOVE    ZERO            TO  I51-HKNCOMBILST-ROW
+               MOVE    ZERO            TO  I51-HKNCOMBILST-ROWATTR
+           WHEN    OTHER
+               MOVE    WRK-HKNCOMBILST-ROW
+                                       TO  I51-HKNCOMBILST-ROW
+               MOVE    ZERO            TO  I51-HKNCOMBILST-ROWATTR
+           END-EVALUATE
       *
       *    ¥µº‘»÷πÊ
            MOVE    SPA-GMN-I51-PTNUM   TO  I51-PTNUM
@@ -795,6 +812,42 @@
                END-IF
       *
            END-PERFORM
+      *
+           MOVE    "black"         TO  I51-LBLGENMEN-STYLE
+           IF    ( SPA-GMN-I51-HKNCOMBILST-SEL >   ZERO )
+               MOVE    SPA-NAI-I51-TSYUNOUIDX
+                                       (SPA-GMN-I51-HKNCOMBILST-SEL)
+                                   TO  IDX1
+               MOVE    SPA-I5-SYUNOU-DAT (IDX1)
+                                   TO  WKSYUNOU-REC
+      *
+               IF    ( WKSYU-DISCOUNT-KBN  NOT =   SPACE )
+                   MOVE    "blue"  TO  I51-LBLGENMEN-STYLE
+                   IF    ( SPA-I5-SYUNOU-TTLDAT-FLG (IDX1)
+                                        NOT =   ZERO )
+                       MOVE    "∏∫Ã»Õ≠"    TO  I51-LBLGENMEN
+                   ELSE
+                       EVALUATE    WKSYU-DISCOUNT-TEIRITU
+                       WHEN    "1"
+                           MOVE    WKSYU-DISCOUNT-RATE
+                                           TO  WRK-ZZ9
+                           STRING  "∏∫Ã»Õ≠° "  DELIMITED   BY  SIZE
+                                   WRK-ZZ9     DELIMITED   BY  SIZE
+                                   "°Û°À"      DELIMITED   BY  SIZE
+                           INTO    I51-LBLGENMEN
+                           END-STRING
+                       WHEN    "2"
+                           MOVE    WKSYU-DISCOUNT-RATE
+                                           TO  WRK-Z99
+                           STRING  "∏∫Ã»Õ≠° "  DELIMITED   BY  SIZE
+                                   WRK-Z99     DELIMITED   BY  SIZE
+                                   "±ﬂ°À"      DELIMITED   BY  SIZE
+                           INTO    I51-LBLGENMEN
+                           END-STRING
+                       END-EVALUATE
+                   END-IF
+               END-IF
+           END-IF
       *
            PERFORM 5001-MAPCUR-SEC
       *
@@ -2138,6 +2191,28 @@
                        =   TTLSYU-SKYMONEY
                        +   LNK-SYU-SKYMONEY (IDX11)
       *
+      *            ∏∫Ã»æ Û
+                   IF    ( LNK-SYU-DISCOUNT-KBN(IDX11) NOT =   SPACE )
+                       MOVE    LNK-SYU-DISCOUNT-KBN     (IDX11)
+                           TO  SUMSYU-DISCOUNT-KBN     (WRK-SYU-SUM-IDX)
+                               TTLSYU-DISCOUNT-KBN
+                       MOVE    LNK-SYU-DISCOUNT-BODY    (IDX11)
+                           TO  SUMSYU-DISCOUNT-BODY    (WRK-SYU-SUM-IDX)
+                               TTLSYU-DISCOUNT-BODY
+                       MOVE    LNK-SYU-DISCOUNT-RATEKBN (IDX11)
+                           TO  SUMSYU-DISCOUNT-RATEKBN (WRK-SYU-SUM-IDX)
+                               TTLSYU-DISCOUNT-RATEKBN
+                       MOVE    LNK-SYU-DISCOUNT-TEIRITU (IDX11)
+                           TO  SUMSYU-DISCOUNT-TEIRITU (WRK-SYU-SUM-IDX)
+                               TTLSYU-DISCOUNT-TEIRITU
+                       MOVE    LNK-SYU-DISCOUNT-RATE    (IDX11)
+                           TO  SUMSYU-DISCOUNT-RATE    (WRK-SYU-SUM-IDX)
+                               TTLSYU-DISCOUNT-RATE
+                       MOVE    LNK-SYU-DISCOUNT-MONEY   (IDX11)
+                           TO  SUMSYU-DISCOUNT-MONEY   (WRK-SYU-SUM-IDX)
+                               TTLSYU-DISCOUNT-MONEY
+                   END-IF
+      *
                END-IF
       *
            END-PERFORM
@@ -2466,6 +2541,8 @@
       *     ›∏±¡»§ﬂπÁ§Ô§ª•Í•π•» ‘Ω∏ΩËÕ˝
       *****************************************************************
        3100-HKNCOMBILST-EDIT-SEC       SECTION.
+      *
+           MOVE    1               TO  FLG-HKNCOMBILST-ROW
       *
            MOVE    SPACE           TO  SPA-GMN-I51-HKNCOMBILST
                                        SPA-NAI-I51-HKNCOMBILST

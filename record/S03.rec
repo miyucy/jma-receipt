@@ -9,6 +9,10 @@ S03	{
 		B12S	{
 	           	state	int;
 		};
+		LBLGENMEN	{
+			style   varchar(20);
+			value	varchar(30);
+		};
 		PTNUM	{
 			value	varchar(20);
 		};

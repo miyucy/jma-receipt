@@ -1713,22 +1713,6 @@
 
     <widget>
       <class>GtkLabel</class>
-      <name>label338</name>
-      <x>680</x>
-      <y>68</y>
-      <width>46</width>
-      <height>24</height>
-      <label>発行日</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
       <name>label586</name>
       <x>196</x>
       <y>108</y>
@@ -2951,6 +2935,38 @@
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>True</wrap>
       <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label338</name>
+      <x>680</x>
+      <y>68</y>
+      <width>46</width>
+      <height>24</height>
+      <label>発行日</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>LBLGENMEN</name>
+      <x>840</x>
+      <y>68</y>
+      <width>168</width>
+      <height>24</height>
+      <label>減免</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0</xalign>
       <yalign>0.5</yalign>
       <xpad>0</xpad>
       <ypad>0</ypad>

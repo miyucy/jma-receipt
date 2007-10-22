@@ -19,6 +19,10 @@
               03  S03-B03-LABEL    PIC X(10).
               03  S03-B12-STATE    PIC S9(9)   BINARY.
               03  S03-B12S-STATE   PIC S9(9)   BINARY.
+              03  S03-LBLGEMNEN-G.
+                04  S03-LBLGENMEN-STYLE
+                                         PIC X(20).
+                04  S03-LBLGENMEN        PIC X(30).
               03  S03-PTNUM     PIC X(20).
               03  S03-SRYYMD    PIC X(9).
               03  S03-KANANAME  PIC X(50).

@@ -2426,6 +2426,39 @@
                END-IF
            END-IF
       *
+           MOVE    "black"         TO  I04-LBLGENMEN-STYLE
+           IF    ( SPA-GMN-I04-HKNCOMBILST-SEL >   ZERO )
+               MOVE    SPA-NAI-I04-TSYUNOUIDX
+                                       (SPA-GMN-I04-HKNCOMBILST-SEL)
+                                       TO  IDX1
+               MOVE    SPA-I0-SYUNOU-DAT (IDX1)
+                                       TO  WKSYUNOU-REC
+               IF    ( WKSYU-DISCOUNT-KBN  NOT =   SPACE )
+                   MOVE    "blue"      TO  I04-LBLGENMEN-STYLE
+                   IF    ( SPA-I0-SYUNOU-TTLDAT-FLG (IDX1)
+                                        NOT =   ZERO )
+                       MOVE    "∏∫Ã»Õ≠"            TO  I04-LBLGENMEN
+                   ELSE
+                       EVALUATE    WKSYU-DISCOUNT-TEIRITU
+                       WHEN    "1"
+                           MOVE    WKSYU-DISCOUNT-RATE     TO  WRK-ZZ9
+                           STRING  "∏∫Ã»Õ≠° "  DELIMITED   BY  SIZE
+                                   WRK-ZZ9     DELIMITED   BY  SIZE
+                                   "°Û°À"      DELIMITED   BY  SIZE
+                           INTO    I04-LBLGENMEN
+                           END-STRING
+                       WHEN    "2"
+                           MOVE    WKSYU-DISCOUNT-RATE     TO  WRK-Z99
+                           STRING  "∏∫Ã»Õ≠° "  DELIMITED   BY  SIZE
+                                   WRK-Z99     DELIMITED   BY  SIZE
+                                   "±ﬂ°À"      DELIMITED   BY  SIZE
+                           INTO    I04-LBLGENMEN
+                           END-STRING
+                       END-EVALUATE
+                   END-IF
+               END-IF
+           END-IF
+      *
       *    π‡Ã‹æı¬÷ ‘Ω∏
            PERFORM 500-GMNHEN-STATE-EDIT-SEC
       *

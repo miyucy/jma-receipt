@@ -96,6 +96,8 @@
            03  WRK-HENYMDG                         PIC X(10).
            03  WRK-NYUKIN-Z9                       PIC --,---,---.
            03  WRK-Z9                              PIC ZZ.
+           03  WRK-Z99                             PIC --,---,--9.
+           03  WRK-ZZ9                             PIC ZZ9.
            03  WRK-MISYU                           PIC 9(08).
            03  WRK-NYUGAIKBN                       PIC X(01).
            03  WRK-GMN-RITU.
@@ -762,6 +764,14 @@
       *    Ì¤¼ý»Ä
            COMPUTE SPA-GMN-O04-MISYU-ZAN
                =   SYU-SKYMONEY    -   SYU-NYUKIN-TOTAL
+      *
+      *    ¸ºÌÈ¾ðÊó
+           MOVE    SYU-DISCOUNT-KBN    TO  SPA-NAI-O04-DISCOUNT-KBN
+           MOVE    SYU-DISCOUNT-BODY   TO  SPA-NAI-O04-DISCOUNT-BODY
+           MOVE    SYU-DISCOUNT-RATEKBN TO SPA-NAI-O04-DISCOUNT-RATEKBN
+           MOVE    SYU-DISCOUNT-TEIRITU TO SPA-NAI-O04-DISCOUNT-TEIRITU
+           MOVE    SYU-DISCOUNT-RATE   TO  SPA-NAI-O04-DISCOUNT-RATE
+           MOVE    SYU-DISCOUNT-MONEY  TO  SPA-NAI-O04-DISCOUNT-MONEY
       *
       *    ¹ç·×ÀÁµá³Û·×»»½èÍý
            PERFORM 3102-SEIKYU-KEI-SEC
@@ -1481,6 +1491,29 @@
                END-IF
       *
            END-PERFORM
+      *
+           MOVE    "black"         TO  O04-LBLGENMEN-STYLE
+           IF    ( SPA-NAI-O04-DISCOUNT-KBN  NOT =   SPACE )
+               MOVE    "blue"  TO  O04-LBLGENMEN-STYLE
+               EVALUATE    SPA-NAI-O04-DISCOUNT-TEIRITU
+               WHEN    "1"
+                   MOVE    SPA-NAI-O04-DISCOUNT-RATE
+                                   TO  WRK-ZZ9
+                   STRING  "¸ºÌÈÍ­¡Ê"  DELIMITED   BY  SIZE
+                           WRK-ZZ9     DELIMITED   BY  SIZE
+                           "¡ó¡Ë"      DELIMITED   BY  SIZE
+                   INTO    O04-LBLGENMEN
+                   END-STRING
+               WHEN    "2"
+                   MOVE    SPA-NAI-O04-DISCOUNT-RATE
+                                   TO  WRK-Z99
+                   STRING  "¸ºÌÈÍ­¡Ê"  DELIMITED   BY  SIZE
+                           WRK-Z99     DELIMITED   BY  SIZE
+                           "±ß¡Ë"      DELIMITED   BY  SIZE
+                   INTO    O04-LBLGENMEN
+                   END-STRING
+               END-EVALUATE
+           END-IF
       *
            IF    ( SPA-NAI-O04-SAKKBN-MAX  >=  1 )
                MOVE    "£±´ü"          TO  O04-LBLSKY1ST

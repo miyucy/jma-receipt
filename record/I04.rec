@@ -25,6 +25,10 @@ I04	{
 		LBLRSIETC	{
 			value	varchar(10);
 		};
+		LBLGENMEN	{
+			style   varchar(20);
+			value	varchar(30);
+		};
 		PTNUM	{
 			value	varchar(20);
 		};
