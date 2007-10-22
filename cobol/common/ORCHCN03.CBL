@@ -40,6 +40,7 @@
       *  03.04.01    NACL-森脇    07/01/17  医療機関名称、住所セット変更
       *  03.04.02    NACL-森脇    07/01/30  自費消費税H19年4月対応
       *  03.05.00    NACL-太田    07.05.17  グループ診療対応
+      *  04.01.00    NACL-太田    07/10/22  公務災害対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -89,6 +90,7 @@
            03  FLG-HKNCOMBI        PIC 9(01).
            03  FLG-SYSKANRI        PIC 9(01).
            03  FLG-PTRSIINF        PIC 9(01).
+           03  FLG-PTHKNINF        PIC 9(01).
            03  FLG-PTNYUINRRK      PIC 9(01).
       *
            03  FLG-SP              PIC 9(01).
@@ -518,8 +520,25 @@
            PERFORM 3102-ROOM-HEN-SEC
            MOVE    WRK-ROOM            TO  HCN03-ROOM
       *
-      *    保険組合せ名称編集処理
-           PERFORM 3102-HKNCOMBI-HEN-SEC
+           INITIALIZE                      HKNCOMBI-REC
+           MOVE    ORCHCN03-HOSPNUM (IDX-M)
+                                       TO  COMB-HOSPNUM
+           MOVE    ORCHCN03-PTID   (IDX-M)
+                                       TO  COMB-PTID
+           MOVE    SYU-HKNCOMBINUM     TO  COMB-HKNCOMBINUM
+           PERFORM 910-HKNCOMBI-READ-SEC
+           IF      FLG-HKNCOMBI        =   1
+                DISPLAY "*** HKNCOMBI  ERR:"   COMB-KEY "."
+                INITIALIZE             HKNCOMBI-REC
+           END-IF
+      *
+           INITIALIZE                      PTHKNINF-REC
+           MOVE    ORCHCN03-HOSPNUM(IDX-M)
+                                       TO  PTHKN-HOSPNUM
+           MOVE    ORCHCN03-PTID  (IDX-M)
+                                       TO  PTHKN-PTID
+           MOVE    COMB-HKNID          TO  PTHKN-HKNID
+           PERFORM 910-PTHKNINF-KEY-SEL-SEC
       *
            IF    ( COMB-HKNNUM         =   "971" OR "973" )
       *
@@ -534,6 +553,9 @@
            ELSE
                INITIALIZE                      PTRSIINF-REC
            END-IF
+      *
+      *    保険組合せ名称編集処理
+           PERFORM 3102-HKNCOMBI-HEN-SEC
       *
       *    保険種別
            MOVE    WRK-HKNCOMBI        TO  HCN03-HOKEN
@@ -593,10 +615,14 @@
            END-PERFORM
       *
       *    労災・自賠で患者請求が無い場合、点数表示なし
-           IF    ( COMB-HKNNUM             =    "971"  AND
-                   SYS-4001-RSIIRYOKBN     =    "1" )  OR
-                 ( COMB-HKNNUM             =    "973"  AND
-                   SYU-PTFTNRATE           =    ZERO )
+           IF    ( COMB-HKNNUM             =    "971"
+               AND PTRSI-HKNKBN        NOT =    "5"
+               AND SYS-4001-RSIIRYOKBN     =    "1" )
+            OR   ( COMB-HKNNUM             =    "971"
+               AND PTRSI-HKNKBN            =    "5"
+               AND SYU-PTFTNRATE           =    ZERO )
+            OR   ( COMB-HKNNUM             =    "973"
+               AND SYU-PTFTNRATE           =    ZERO )
                PERFORM VARYING     IDX1    FROM  1   BY  1
                        UNTIL       IDX1    >     15
                    MOVE    SPACE           TO  HCN03-HKNRYO(IDX1)
@@ -630,27 +656,28 @@
       *    労災・自賠の時、点数表示なし
            IF    ( COMB-HKNNUM             =    "971"
                                            OR   "973" )
-               EVALUATE    TRUE
-               WHEN      ( COMB-HKNNUM             =    "971" )
-                   AND   ( SYS-4001-RSIIRYOKBN NOT =   "1" )
-      *
-               WHEN      ( COMB-HKNNUM             =    "973" )
-                   AND   ( PTRSI-HKNKBN        =    "4" ) 
-                   AND   ( SYU-PTFTNRATE   NOT =   ZERO  )
-                       COMPUTE WRK-GOKTEN  =    SYU-HKNTEKMONEY
-                                           +    SYU-RSISHOSHIN-MONEY
-                                           +    SYU-RSISAISHIN-MONEY
-                                           +    SYU-RSISDO-MONEY
-                                           +    SYU-RSIETC-MONEY
-                       MOVE    WRK-GOKTEN      TO  WRK-KINGAKU-Z
-                       MOVE    WRK-KINGAKU-Z   TO  WRK-ZHENSYU12
-                       PERFORM 800-HENKAN-SEC
-                       MOVE    WRK-ZHENSYU24   TO  HCN03-HOKENBUN
-               WHEN    OTHER
-                   MOVE    SPACE           TO  HCN03-HOKENBUN
-                                               HCN03-SKJRYO
-                                               HCN03-LIFERYO
-               END-EVALUATE
+               IF    ( COMB-HKNNUM             =    "971"
+                   AND PTRSI-HKNKBN        NOT =    "5"
+                   AND SYS-4001-RSIIRYOKBN     =    "1" )
+                OR   ( COMB-HKNNUM             =    "971"
+                   AND PTRSI-HKNKBN            =    "5"
+                   AND SYU-PTFTNRATE           =    ZERO )
+                OR   ( COMB-HKNNUM             =    "973"
+                   AND SYU-PTFTNRATE           =    ZERO )
+                   MOVE    SPACE       TO  HCN03-HOKENBUN
+                                           HCN03-SKJRYO
+                                           HCN03-LIFERYO
+               ELSE
+                   COMPUTE WRK-GOKTEN  =    SYU-HKNTEKMONEY
+                                       +    SYU-RSISHOSHIN-MONEY
+                                       +    SYU-RSISAISHIN-MONEY
+                                       +    SYU-RSISDO-MONEY
+                                       +    SYU-RSIETC-MONEY
+                   MOVE    WRK-GOKTEN      TO  WRK-KINGAKU-Z
+                   MOVE    WRK-KINGAKU-Z   TO  WRK-ZHENSYU12
+                   PERFORM 800-HENKAN-SEC
+                   MOVE    WRK-ZHENSYU24   TO  HCN03-HOKENBUN
+               END-IF
            END-IF
       *
       *    労災・自賠の診察料等の記載
@@ -1038,32 +1065,25 @@
       *****************************************************************
        3102-HKNCOMBI-HEN-SEC             SECTION.
       *
-      *    保険組合せマスター検索
-           INITIALIZE                      HKNCOMBI-REC
-           MOVE    ORCHCN03-HOSPNUM (IDX-M)
-                                       TO  COMB-HOSPNUM
-           MOVE    ORCHCN03-PTID   (IDX-M)
-                                       TO  COMB-PTID
-           MOVE    SYU-HKNCOMBINUM     TO  COMB-HKNCOMBINUM
-           PERFORM 910-HKNCOMBI-READ-SEC
-           IF      FLG-HKNCOMBI        =   1
-                DISPLAY "*** HKNCOMBI  ERR:"   COMB-KEY "."
-                INITIALIZE             HKNCOMBI-REC
-           END-IF
-      *
            MOVE    SPACE               TO  WRK-HKNCOMBI
       *
-           STRING  COMB-SYU-TANSEIDONAME   DELIMITED  BY  SPACE
-                   "　"                    DELIMITED  BY  SIZE
-                   COMB-KOH1-TANSEIDONAME  DELIMITED  BY  SPACE
-                   "　"                    DELIMITED  BY  SIZE
-                   COMB-KOH2-TANSEIDONAME  DELIMITED  BY  SPACE
-                   "　"                    DELIMITED  BY  SIZE
-                   COMB-KOH3-TANSEIDONAME  DELIMITED  BY  SPACE
-                   "　"                    DELIMITED  BY  SIZE
-                   COMB-KOH4-TANSEIDONAME  DELIMITED  BY  SPACE
-                         INTO              WRK-HKNCOMBI
-           END-STRING
+           IF    ( COMB-HKNNUM         =   "971" )
+            AND  ( PTRSI-HKNKBN        =    "5" )
+               MOVE    PTHKN-KIGO      TO  WRK-HKNCOMBI
+           ELSE
+      *
+               STRING  COMB-SYU-TANSEIDONAME   DELIMITED  BY  SPACE
+                       "　"                    DELIMITED  BY  SIZE
+                       COMB-KOH1-TANSEIDONAME  DELIMITED  BY  SPACE
+                       "　"                    DELIMITED  BY  SIZE
+                       COMB-KOH2-TANSEIDONAME  DELIMITED  BY  SPACE
+                       "　"                    DELIMITED  BY  SIZE
+                       COMB-KOH3-TANSEIDONAME  DELIMITED  BY  SPACE
+                       "　"                    DELIMITED  BY  SIZE
+                       COMB-KOH4-TANSEIDONAME  DELIMITED  BY  SPACE
+               INTO    WRK-HKNCOMBI
+               END-STRING
+           END-IF
       *
            .
        3102-HKNCOMBI-HEN-EXT.
@@ -1423,6 +1443,31 @@
       *
            .
        910-PTRSIINF-READ-EXT.
+           EXIT.
+      *****************************************************************
+      *    患者保険情報読み込み
+      *****************************************************************
+       910-PTHKNINF-KEY-SEL-SEC        SECTION.
+      *
+           MOVE    ZERO                TO  FLG-PTHKNINF
+      *
+           MOVE    PTHKNINF-REC        TO  MCPDATA-REC
+           MOVE    "tbl_pthkninf"      TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF    ( MCP-RC              =   ZERO )
+               MOVE    MCPDATA-REC     TO  PTHKNINF-REC
+           ELSE
+               INITIALIZE                  PTHKNINF-REC
+               MOVE    1               TO  FLG-PTHKNINF
+           END-IF
+     *
+           MOVE    "tbl_pthkninf"      TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 910-DBCLOSECURSOR-SEC
+      *
+           .
+       910-PTHKNINF-KEY-SEL-EXT.
            EXIT.
       *****************************************************************
       *    患者入院履歴検索処理(KEY45)

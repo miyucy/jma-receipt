@@ -47,6 +47,7 @@
            03  FLG-PARA                PIC 9(01).
            03  FLG-HKNCOMBI            PIC 9(01).
            03  FLG-PTRSIINF            PIC 9(01).
+           03  FLG-PTHKNINF            PIC 9(01).
            03  FLG-SYSKANRI            PIC 9(01).
            03  FLG-SRYKA-OVER          PIC 9(01).
       *
@@ -146,6 +147,10 @@
       *    保険組合せ
        01  HKNCOMBI-REC.
            COPY    "CPHKNCOMBI.INC".
+      *
+      *    患者保険情報
+       01  PTHKNINF-REC.
+           COPY    "CPPTHKNINF.INC".
       *
       *    患者労災保険情報
        01  PTRSIINF-REC.
@@ -873,7 +878,7 @@
                 DISPLAY "*** HKNCOMBI  ERR:"   COMB-KEY "."
            END-IF
       *
-           PERFORM 20011-HKNCOMBIMEI-HEN-SEC
+           PERFORM 900-PTHKNINF-KEY-SEC
       *
            IF    ( COMB-HKNNUM         =   "971" OR "973" )
       *
@@ -882,6 +887,8 @@
            ELSE
                INITIALIZE                      PTRSIINF-REC
            END-IF
+      *
+           PERFORM 20011-HKNCOMBIMEI-HEN-SEC
       *
            .
        2001-HKNCOMBI-HEN-EXT.
@@ -893,7 +900,11 @@
       *
            MOVE    SPACE               TO  WRK-HKNCOMBIMEI
       *
-           STRING  COMB-SYU-TANSEIDONAME   DELIMITED  BY  SPACE
+           IF    ( COMB-HKNNUM         =   "971" )
+            AND  ( PTRSI-HKNKBN        =    "5" )
+               MOVE    PTHKN-KIGO      TO  WRK-HKNCOMBIMEI
+           ELSE
+               STRING  COMB-SYU-TANSEIDONAME   DELIMITED  BY  SPACE
                    "　"                    DELIMITED  BY  SIZE
                    COMB-KOH1-TANSEIDONAME  DELIMITED  BY  SPACE
                    "　"                    DELIMITED  BY  SIZE
@@ -902,8 +913,9 @@
                    COMB-KOH3-TANSEIDONAME  DELIMITED  BY  SPACE
                    "　"                    DELIMITED  BY  SIZE
                    COMB-KOH4-TANSEIDONAME  DELIMITED  BY  SPACE
-                         INTO              WRK-HKNCOMBIMEI
-           END-STRING
+               INTO              WRK-HKNCOMBIMEI
+               END-STRING
+           END-IF
       *
            .
        20011-HKNCOMBIMEI-HEN-EXT.
@@ -1165,6 +1177,35 @@
       *
            .
        900-PTRSIINF-KEY-EXT.
+           EXIT.
+      *****************************************************************
+      *    患者保険情報読み込み
+      *****************************************************************
+       900-PTHKNINF-KEY-SEC            SECTION.
+      *
+           MOVE    ZERO                TO  FLG-PTHKNINF
+      *
+           INITIALIZE                      PTHKNINF-REC
+           MOVE    SPA-HOSPNUM         TO  PTHKN-HOSPNUM
+           MOVE    SPA-PTID            TO  PTHKN-PTID
+           MOVE    COMB-HKNID          TO  PTHKN-HKNID
+           MOVE    PTHKNINF-REC        TO  MCPDATA-REC
+           MOVE    "tbl_pthkninf"      TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF    ( MCP-RC              =   ZERO )
+               MOVE    MCPDATA-REC     TO  PTHKNINF-REC
+           ELSE
+               MOVE    1               TO  FLG-PTHKNINF
+               INITIALIZE                  PTHKNINF-REC
+           END-IF
+     *
+           MOVE    "tbl_pthkninf"      TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 910-DBCLOSECURSOR-SEC
+      *
+           .
+       900-PTHKNINF-KEY-EXT.
            EXIT.
       *****************************************************************
       *    システム管理マスタ検索処理(KEY10)

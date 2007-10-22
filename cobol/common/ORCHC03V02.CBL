@@ -43,6 +43,7 @@
       *  03.05.00    NACL-多々納  07/05/22  再印刷処理追加
       *  03.05.00    NACL-太田    07/08/03  月別発行実日数記載追加
       *  03.05.01    NACL-多々納  07/08/06  訂正時合計対応
+      *  04.01.00    NACL-太田    07/10/22  公務災害対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -88,6 +89,7 @@
            03  FLG-HKNCOMBI        PIC 9(01).
            03  FLG-PTRSIINF        PIC 9(01).
            03  FLG-SYSKANRI        PIC 9(01).
+           03  FLG-PTHKNINF        PIC 9(01).
       *
            03  FLG-SP              PIC 9(01).
            03  FLG-OK              PIC 9(01).
@@ -683,7 +685,8 @@
            IF      FLG-HKNCOMBI        =   1
                 DISPLAY "*** HKNCOMBI  ERR:"   COMB-KEY "."
            END-IF
-           PERFORM 10011-HKNCOMBIMEI-HEN-SEC
+      *
+           PERFORM 910-PTHKNINF-READ-SEC
       *
            IF    ( COMB-HKNNUM         =   "971" OR "973" )
       *
@@ -697,6 +700,8 @@
                INITIALIZE                      PTRSIINF-REC
            END-IF
       *
+           PERFORM 10011-HKNCOMBIMEI-HEN-SEC
+      *
            .
        1001-HKNCOMBI-HEN-EXT.
            EXIT.
@@ -707,17 +712,23 @@
       *
            MOVE    SPACE               TO  WRK-HKNCOMBIMEI
       *
-           STRING  COMB-SYU-TANSEIDONAME   DELIMITED  BY  SPACE
-                   "　"                    DELIMITED  BY  SIZE
-                   COMB-KOH1-TANSEIDONAME  DELIMITED  BY  SPACE
-                   "　"                    DELIMITED  BY  SIZE
-                   COMB-KOH2-TANSEIDONAME  DELIMITED  BY  SPACE
-                   "　"                    DELIMITED  BY  SIZE
-                   COMB-KOH3-TANSEIDONAME  DELIMITED  BY  SPACE
-                   "　"                    DELIMITED  BY  SIZE
-                   COMB-KOH4-TANSEIDONAME  DELIMITED  BY  SPACE
-                         INTO              WRK-HKNCOMBIMEI
-           END-STRING
+           IF    ( COMB-HKNNUM         =   "971" )
+            AND  ( PTRSI-HKNKBN        =    "5" )
+               MOVE    PTHKN-KIGO      TO  WRK-HKNCOMBIMEI
+           ELSE
+      *
+               STRING  COMB-SYU-TANSEIDONAME   DELIMITED  BY  SPACE
+                       "　"                    DELIMITED  BY  SIZE
+                       COMB-KOH1-TANSEIDONAME  DELIMITED  BY  SPACE
+                       "　"                    DELIMITED  BY  SIZE
+                       COMB-KOH2-TANSEIDONAME  DELIMITED  BY  SPACE
+                       "　"                    DELIMITED  BY  SIZE
+                       COMB-KOH3-TANSEIDONAME  DELIMITED  BY  SPACE
+                       "　"                    DELIMITED  BY  SIZE
+                       COMB-KOH4-TANSEIDONAME  DELIMITED  BY  SPACE
+                             INTO              WRK-HKNCOMBIMEI
+               END-STRING
+           END-IF
       *
            .
        10011-HKNCOMBIMEI-HEN-EXT.
@@ -904,10 +915,14 @@
            MOVE    WRK-Z72-G           TO  HC03-GOKTEN
       *
       *    労災・自賠で患者請求が無い場合、点数表示なし
-           IF    ( COMB-HKNNUM             =    "971"  AND
-                   SYS-4001-RSIIRYOKBN     =    "1" )  OR
-                 ( COMB-HKNNUM             =    "973"  AND
-                   SYU-PTFTNRATE           =    ZERO )
+           IF    ( COMB-HKNNUM             =    "971"
+               AND PTRSI-HKNKBN        NOT =    "5"
+               AND SYS-4001-RSIIRYOKBN     =    "1" )
+            OR   ( COMB-HKNNUM             =    "971"
+               AND PTRSI-HKNKBN            =    "5"
+               AND SYU-PTFTNRATE           =    ZERO )
+            OR   ( COMB-HKNNUM             =    "973"
+               AND SYU-PTFTNRATE           =    ZERO )
                MOVE    SPACE               TO  HC03-HKNRYO1
                MOVE    SPACE               TO  HC03-HKNRYO2
                MOVE    SPACE               TO  HC03-HKNRYO3
@@ -949,13 +964,18 @@
            IF    ( COMB-HKNNUM             =    "971"
                                            OR   "973" )
       *        労災・自賠の時、点数表示なし
-               EVALUATE    TRUE
-               WHEN      ( COMB-HKNNUM             =    "971" )
-                   AND   ( SYS-4001-RSIIRYOKBN NOT =   "1" )
+               IF    ( COMB-HKNNUM             =    "971"
+                   AND PTRSI-HKNKBN        NOT =    "5"
+                   AND SYS-4001-RSIIRYOKBN     =    "1" )
+                OR   ( COMB-HKNNUM             =    "971"
+                   AND PTRSI-HKNKBN            =    "5"
+                   AND SYU-PTFTNRATE           =    ZERO )
+                OR   ( COMB-HKNNUM             =    "973"
+                   AND SYU-PTFTNRATE           =    ZERO )
       *
-               WHEN      ( COMB-HKNNUM             =    "973" )
-                   AND   ( PTRSI-HKNKBN        =    "4" ) 
-                   AND   ( SYU-PTFTNRATE   NOT =   ZERO  )
+                   MOVE    SPACE               TO  HC03-HOKENBUN
+      *
+               ELSE
       *
                    COMPUTE WRK-GOKTEN      =    SYU-HKNTEKMONEY
                                            +    SYU-RSISHOSHIN-MONEY
@@ -965,9 +985,7 @@
                    MOVE    WRK-GOKTEN      TO  WRK-Z72
                    PERFORM 800-HENKAN-SEC
                    MOVE    WRK-Z72-G           TO  HC03-HOKENBUN
-               WHEN    OTHER
-                   MOVE    SPACE               TO  HC03-HOKENBUN
-               END-EVALUATE
+               END-IF
            END-IF
       *
       *    労災・自賠の診察料等の記載
@@ -1822,6 +1840,39 @@
       *
            .
        910-PTRSIINF-READ-EXT.
+           EXIT.
+      *****************************************************************
+      *    患者保険情報読み込み
+      *****************************************************************
+       910-PTHKNINF-READ-SEC       SECTION.
+      *
+           MOVE    SPA-HOSPNUM     TO  PTHKN-HOSPNUM
+           MOVE    SPA-PTID        TO  PTHKN-PTID
+           MOVE    COMB-HKNID      TO  PTHKN-HKNID
+           MOVE    PTHKNINF-REC    TO  MCPDATA-REC
+           MOVE    "tbl_pthkninf"  TO  MCP-TABLE
+           MOVE    "key"           TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_pthkninf"  TO  MCP-TABLE
+               MOVE    "key"           TO  MCP-PATHNAME
+               PERFORM 920-DBFETCH-SEC
+               IF      MCP-RC              =   ZERO
+                   MOVE    MCPDATA-REC     TO  PTHKNINF-REC
+                   MOVE    ZERO            TO  FLG-PTHKNINF
+               ELSE
+                   MOVE    1               TO  FLG-PTHKNINF
+               END-IF
+           ELSE
+               MOVE    1               TO  FLG-PTHKNINF
+           END-IF
+     *
+           MOVE    "tbl_pthkninf"  TO  MCP-TABLE
+           MOVE    "key"           TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+      *
+           .
+       910-PTHKNINF-READ-EXT.
            EXIT.
       *****************************************************************
       *    テーブル検索処理
