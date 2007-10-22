@@ -3105,7 +3105,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE    "回数は必須入力です。入力して下さい"
                                                TO  SPA-ERRMSG
                WHEN    "0044"
-                   STRING  "労務災害は平成１８年４月からの"
+                   STRING  "公務災害は平成１８年４月からの"
                            "対応です。"
                                                DELIMITED  BY  SIZE
                                                INTO  SPA-ERRMSG
