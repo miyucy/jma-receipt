@@ -578,9 +578,9 @@
            MOVE    2               TO  SPA-GMN-SETMEDKBN-MAX
       *
            MOVE    "1"             TO  SPA-GMN-SETMEDKBNL    (1)
-           MOVE    "引き継がない"  TO  SPA-GMN-SETMEDKBNMEIL (1)
+           MOVE    "引継がない"    TO  SPA-GMN-SETMEDKBNMEIL (1)
            MOVE    "2"             TO  SPA-GMN-SETMEDKBNL    (2)
-           MOVE    "前月の状態を引き継ぐ"
+           MOVE    "前月の状態を引継ぐ"
                                    TO  SPA-GMN-SETMEDKBNMEIL (2)
       *
            .
