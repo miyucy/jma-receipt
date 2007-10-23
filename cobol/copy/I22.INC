@@ -25,3 +25,17 @@
               04  I22-LBLNUMSEL       PIC X(10).
               04  I22-STNUM           PIC S9(9).
               04  I22-EDNUM           PIC S9(9).
+              04  I22-FILE-COMBO.
+                05  I22-FILE-STATE  PIC S9(9)   BINARY.
+                05  I22-FILE.
+                  07  I22-VALUE    PIC X(22).
+                05  I22-FILE-COUNT PIC S9(9)   BINARY.
+                05  I22-FILE-ITEM
+                        PIC X(22)   OCCURS  6 TIMES.
+              04  I22-CDKBN-COMBO.
+                05  I22-CDKBN-STATE  PIC S9(9)   BINARY.
+                05  I22-CDKBN.
+                  07  I22-VALUE    PIC X(22).
+                05  I22-CDKBN-COUNT PIC S9(9)   BINARY.
+                05  I22-CDKBN-ITEM
+                        PIC X(22)   OCCURS  5 TIMES.

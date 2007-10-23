@@ -49,6 +49,15 @@
                07  SPA-I20-I22-STPAGE       PIC 9(09).
       *        終了ページ数(O)...印刷処理時のみ設定
                07  SPA-I20-I22-EDPAGE       PIC 9(09).
+      *        ファイル出力先
+               07  SPA-I20-I22-FILE         PIC  X(01).
+      *        文字コード
+               07  SPA-I20-I22-CDKBN        PIC  X(01).
       *        戻る／ＯＫフラグ(O)
                07  SPA-I20-I22-RTOK-FLG     PIC 9(01).
+      *
+      *    I23遷移情報
+           05  SPA-Q00-I23-AREA.
+               07  SPA-I23-FILESV-CHK-FLG   PIC 9(01).
+               07  SPA-I23-MOTOPG           PIC X(08).
       *

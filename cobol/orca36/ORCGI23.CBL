@@ -27,6 +27,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  04.01.01    NACL-藤原    07/10/19  クライアント保存対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -43,6 +44,12 @@
       *    スパ領域
            COPY    "COMMON-SPA".
       *
+      *    入院患者照会共通ＳＰＡ
+           COPY    "I2SCR-SPA".
+      *
+      *    入院患者照会用共通パラメタ
+           COPY    "I2COMMON-SPA".
+      *
       *    フラグ領域
        01  FLG-AREA.
            03  FLG-END             PIC 9(01).
@@ -56,6 +63,7 @@
            03  WRK-SYMD-TAIHI      PIC X(08).
            03  WRK-HENYMDG         PIC X(09).
            03  WRK-PAGE            PIC ZZ,ZZZ,ZZ9.
+           03  WRK-KENSU-Z         PIC ZZZZZZ9.
       *
        01  WRK-HEN-AREA.
            03  WRK-HENTIME.
@@ -91,6 +99,11 @@
       *   ジョブ管理ＤＢ制御サブ
            COPY    "CPORCSJOBKANRI.INC".
       *
+      *    クライアント保存ＤＢ制御サブ
+           COPY    "CPORCSFILESV.INC".
+      *
+           COPY    "ORCA-BLOB".
+      *
       *****************************************************************
       *    連絡　領域
       *****************************************************************
@@ -108,6 +121,7 @@
            COPY    "I23.INC".
            COPY    "I2ERR.INC".
            COPY    "I2ID1.INC".
+           COPY    "I2FIL.INC".
       *
        PROCEDURE                   DIVISION    USING
            MCPAREA
@@ -121,6 +135,8 @@
        000-PROC-SEC                SECTION.
       *
            MOVE    SPA-COMMON      TO  SPA-AREA
+           MOVE    SPA-FREE        TO  SPA-I2FREE
+           MOVE    SPA-WORK        TO  SPA-I2KYOUTU
       * 
            EVALUATE    MCP-STATUS      ALSO    MCP-EVENT
                WHEN    "LINK"          ALSO    ANY
@@ -128,9 +144,11 @@
       *    画面遷移
                WHEN      OTHER
                    PERFORM 200-GMNSENI
-           END-EVALUATE.
+           END-EVALUATE
       *
+           MOVE    SPA-I2KYOUTU    TO  SPA-WORK  
            MOVE    SPA-AREA        TO  SPA-COMMON
+           MOVE    SPA-I2FREE      TO  SPA-FREE
       *
            .
            EXIT    PROGRAM
@@ -139,6 +157,15 @@
       *    初期　処理
       *****************************************************************
        100-INIT-SEC                SECTION.
+      *
+           IF      SPA-MOTOPG          =   "I2FIL"
+      *        ファイルエントリ処理(クライアント保存)
+               IF      SPA-SFILESV-MAX     >   SPA-SFILESV-IDX
+                   ADD     1                   TO  SPA-SFILESV-IDX 
+                   PERFORM 3001-FILEENTRY-SEC
+                   GO  TO  100-INIT-EXT
+               END-IF
+           END-IF
       *
            PERFORM 490-KAKUNIN-SEC
       *
@@ -177,7 +204,7 @@
       *****************************************************************
        210-BACK                    SECTION.
       *
-           MOVE    SPA-MOTOPG          TO  SPA-SAKIPG
+           MOVE    SPA-I23-MOTOPG      TO  SPA-SAKIPG
            MOVE    "I23"               TO  SPA-MOTOPG
       *
            MOVE    "JOIN"              TO  MCP-PUTTYPE
@@ -198,6 +225,8 @@
       *
            MOVE    SPACE               TO  I23
            MOVE    ZERO                TO  I23-COUNT
+      *
+           MOVE    5                   TO  I23-DURATION
       *
       *    ジョブ管理チェック処理
            MOVE    "CHK"           TO  SJOBKANRI-MODE
@@ -279,6 +308,25 @@
       *
            MOVE    "B11"            TO  MCP-WIDGET
       *
+           IF    ( SPA-I2ID1-FLG    =   "SV" )
+               IF      JOB-ENDYMD  NOT =   SPACE
+                   IF      JOB-ERRCD       =   "9999"
+                       CONTINUE
+                   ELSE
+                       IF      SPA-I23-FILESV-CHK-FLG  =   ZERO
+                           PERFORM 4902-FILE-INFO-CHK-SEC
+                       ELSE
+      *                    ファイルエントリ処理(クライアント保存)
+                           MOVE    1               TO  SPA-SFILESV-IDX 
+                           PERFORM 3001-FILEENTRY-SEC
+                           IF      FLG-END         =   1
+                               GO  TO  490-KAKUNIN-EXT
+                           END-IF
+                       END-IF
+                   END-IF    
+               END-IF    
+           END-IF
+      *
            PERFORM 4901-PUT-CURRENT-WINDOW-SEC
       *
            .
@@ -300,6 +348,97 @@
            .
       *
        4901-PUT-CURRENT-WINDOW-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    クライアント保存情報チェック処理
+      *****************************************************************
+       4902-FILE-INFO-CHK-SEC          SECTION.
+      *
+           INITIALIZE                  ORCSFILESVAREA
+           MOVE    "R"             TO  SFILESV-MODE
+           MOVE    CONST-JOB-SHELLID
+                                   TO  SFILESV-TBL-KEY
+           CALL    "ORCSFILESV"    USING
+                                       ORCSFILESVAREA
+                                       SPA-AREA  
+           IF      SFILESV-RETURN  =   ZERO
+               INITIALIZE               SPA-SFILESV-AREA
+               PERFORM VARYING IDX FROM    1   BY  1
+                       UNTIL   IDX >       100
+                       OR      SFILESV-SHELLID (IDX)
+                                   =       SPACE
+                   MOVE    SFILESV-TITLE        (IDX)
+                                       TO  SPA-SFILESV-TITLE     (IDX)
+                   MOVE    SFILESV-CNT-ALL      (IDX)
+                                       TO  SPA-SFILESV-CNT-ALL   (IDX)
+                   MOVE    SFILESV-FOR-FOLDER   (IDX)
+                                       TO  SPA-SFILESV-FOR-FOLDER(IDX)
+                   MOVE    SFILESV-FOR-DATA     (IDX)
+                                       TO  SPA-SFILESV-FOR-DATA  (IDX)
+                   MOVE    SFILESV-TO-FOLDER    (IDX)
+                                       TO  SPA-SFILESV-TO-FOLDER (IDX)
+                   MOVE    SFILESV-TO-DATA      (IDX)
+                                       TO  SPA-SFILESV-TO-DATA   (IDX)
+                   MOVE    SFILESV-CODE-TYPE    (IDX)
+                                       TO  SPA-SFILESV-CODE-TYPE (IDX)
+                   MOVE    SFILESV-DATA-TYPE    (IDX)
+                                       TO  SPA-SFILESV-DATA-TYPE (IDX)
+                   ADD     1           TO  SPA-SFILESV-MAX
+               END-PERFORM
+      *
+               MOVE    1                   TO  SPA-I23-FILESV-CHK-FLG
+      *
+               MOVE    1                   TO  I23-DURATION
+           END-IF
+      *
+           .
+       4902-FILE-INFO-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ファイルエントリ処理(クライアント保存)
+      *****************************************************************
+       3001-FILEENTRY-SEC          SECTION.
+      *
+           INITIALIZE                      ORCA-BLOB
+           MOVE    "BLOBIMPORT"        TO  MCP-FUNC
+           MOVE    "key"               TO  MCP-PATHNAME
+           MOVE    "blob"              TO  MCP-TABLE
+           STRING  SPA-SFILESV-FOR-FOLDER (SPA-SFILESV-IDX)
+                                       DELIMITED  BY  SPACE
+                   SPA-SFILESV-FOR-DATA   (SPA-SFILESV-IDX) 
+                                       DELIMITED  BY  SPACE
+                                       INTO  ORCA-BLOB-FILE
+           END-STRING
+           CALL   "ORCDBMAIN"          USING
+                                       MCPAREA
+                                       ORCA-BLOB
+                                       SPA-AREA
+      *
+           INITIALIZE                      I2FIL 
+           MOVE    ORCA-BLOB-OBJECT    TO  I2FIL-OBJECTDATA
+           STRING  SPA-SFILESV-TO-FOLDER (SPA-SFILESV-IDX)
+                                       DELIMITED  BY  SPACE
+                   SPA-SFILESV-TO-DATA   (SPA-SFILESV-IDX)
+                                       DELIMITED  BY  SPACE
+                                       INTO  I2FIL-ENTRY1
+           END-STRING
+           MOVE    SPA-SFILESV-TITLE   (SPA-SFILESV-IDX)
+                                       TO  I2FIL-TITLE
+           MOVE    SPA-SFILESV-CNT-ALL (SPA-SFILESV-IDX)
+                                       TO  WRK-KENSU-Z
+           MOVE    WRK-KENSU-Z         TO  I2FIL-KENSU
+      *
+           MOVE    ZERO                TO  I23-DURATION
+      *
+           MOVE    "NEW"               TO  MCP-PUTTYPE
+           MOVE    "I2FIL"             TO  MCP-WINDOW
+      *
+           PERFORM 900-PUT-WINDOW
+           MOVE    1                   TO  FLG-END
+           .
+       3001-FILEENTRY-EXT.
            EXIT.
       *****************************************************************
       *    西暦和暦編集処理

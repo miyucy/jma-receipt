@@ -22,6 +22,9 @@
       *****************************************************************
       *  コピー句修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      * 04.01.01     NACL-藤原    07/10/19  クライアント保存対応
+      *                                     I22:ファイル出力先追加
+      *                                          文字コード区分追加  
       *****************************************************************
       *
        01  SPA-I2FREE.
@@ -173,3 +176,45 @@
                05  SPA-GMN-I22-STNUM           PIC  9(09).
       *        終了件数（ページ数）
                05  SPA-GMN-I22-EDNUM           PIC  9(09).
+      *        ファイル出力先
+               05  SPA-GMN-I22-FILELST         OCCURS  6.
+                   07  SPA-GMN-I22-FILEL       PIC X(01).
+                   07  SPA-GMN-I22-F1L         PIC X(01).
+                   07  SPA-GMN-I22-FILEMEIL    PIC X(20).
+               05  SPA-GMN-I22-FILE-MAX        PIC 9(02).    
+      *                                             
+               05  SPA-GMN-I22-FILE-G.
+                   07  SPA-GMN-I22-FILE        PIC X(01).
+                   07  SPA-GMN-I22-F1          PIC X(01).
+                   07  SPA-GMN-I22-FILEMEI     PIC X(20).
+               05  SPA-GMN-I22-FILE-STATE      PIC S9(9)
+                                                   BINARY.
+      *            文字コード
+               05  SPA-GMN-I22-CDKBNLST        OCCURS  6.
+                   07  SPA-GMN-I22-CDKBNL      PIC X(01).
+                   07  SPA-GMN-I22-F1L         PIC X(01).
+                   07  SPA-GMN-I22-CDKBNMEIL   PIC X(20).
+               05  SPA-GMN-I22-CDKBN-MAX       PIC 9(02).    
+      *                                             
+               05  SPA-GMN-I22-CDKBN-G.
+                   07  SPA-GMN-I22-CDKBN       PIC X(01).
+                   07  SPA-GMN-I22-F1          PIC X(01).
+                   07  SPA-GMN-I22-CDKBNMEI    PIC X(20).
+               05  SPA-GMN-I22-CDKBN-STATE     PIC S9(9)
+                                                       BINARY.
+      *        クライアント保存可否フラグ
+               05  SPA-I22-CLIENT-SAVE         PIC X(01).
+      *
+           03  SPA-I23-AREA.
+               05  SPA-SFILESV-AREA.
+                   07 SPA-SFILESV-OCC                  OCCURS  100.
+                       09  SPA-SFILESV-TITLE           PIC X(100).
+                       09  SPA-SFILESV-CNT-ALL         PIC 9(07).
+                       09  SPA-SFILESV-FOR-FOLDER      PIC X(200).
+                       09  SPA-SFILESV-FOR-DATA        PIC X(200).
+                       09  SPA-SFILESV-TO-FOLDER       PIC X(200).
+                       09  SPA-SFILESV-TO-DATA         PIC X(200).
+                       09  SPA-SFILESV-CODE-TYPE       PIC X(01).
+                       09  SPA-SFILESV-DATA-TYPE       PIC X(01).
+                   07  SPA-SFILESV-IDX                 PIC 9(03).
+                   07  SPA-SFILESV-MAX                 PIC 9(03).

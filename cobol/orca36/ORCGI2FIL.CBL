@@ -11,65 +11,42 @@
       *     Everyone is granted permission to use, copy, modify and
       * redistribute this program, but only under the conditions described
       * in the JMA Open Source License. You should have received a copy of
-      * this license along with this program. If not, stop using this
+      * this licence along with this program. If not, stop using this
       * program and contact JMA, 2-28-16 Honkomagome, Bunkyo-ku, Tokyo,
       * 113-8621, Japan.
       ********************************************************************
-       IDENTIFICATION              DIVISION.
-       PROGRAM-ID.                 ORCGI2ERR.
+       IDENTIFICATION      DIVISION.
+       PROGRAM-ID.         ORCGI2FIL.
       *****************************************************************
       *  システム名        : ＯＲＣＡ
-      *  サブシステム名    : 入院患者検索
-      *  コンポーネント名  : エラーメッセージ（ＥＲＲ）
+      *  サブシステム名    : 患者照会
+      *  コンポーネント名  : ファイルセレクション
       *  管理者            : 
       *  作成日付    作業者        記述
-      *  00/12/01    MCC−藤原　   新規作成
+      *  07/10/19    NACL−竹田    新規作成
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
-      *  01.01.01    MCC-藤原     01/09/21  JOINの修正 
-      *  03.05.00    NACL-太田    07.05.29  グループ診療対応
       *****************************************************************
       *
-       ENVIRONMENT                 DIVISION.
-       CONFIGURATION               SECTION.
-       INPUT-OUTPUT                SECTION.
-       FILE-CONTROL.
-      *
-       DATA                        DIVISION.
-      *FILE                        SECTION.
-      *
-      *
-       WORKING-STORAGE             SECTION.
-      *
+       ENVIRONMENT         DIVISION.
+       CONFIGURATION           SECTION.
+       DATA                DIVISION.
+       WORKING-STORAGE         SECTION.
       *    スパ領域
            COPY    "COMMON-SPA".
       *
-      *    フラグ領域
-       01  FLG-AREA.
-           03  FLG-END             PIC 9(01).
+           COPY    "ENUM-VALUE".
       *
-      *****************************************************************
-      *    ファイルレイアウト
-      *****************************************************************
+           COPY    "ORCA-BLOB".
+      *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
-           COPY    "CPORCMCP.INC".
       *
-      *****************************************************************
-      *    サブプロ用　領域
-      *****************************************************************
-      *
-      *****************************************************************
-      *    連絡　領域
-      *****************************************************************
-        LINKAGE                     SECTION.
-      *
-           COPY    "MCPAREA".
-           COPY    "ORCA-SPA".
-      *
-           COPY    "LINKAREA".
-      *
+       LINKAGE                 SECTION.
+            COPY    "MCPAREA".
+            COPY    "ORCA-SPA".
+            COPY    "LINKAREA".
        01  SCRAREA.
            COPY    "I20.INC".
            COPY    "I21.INC".
@@ -78,56 +55,70 @@
            COPY    "I2ERR.INC".
            COPY    "I2ID1.INC".
            COPY    "I2FIL.INC".
-      *
-       PROCEDURE                   DIVISION    USING
+      ******************************************************************
+       PROCEDURE           DIVISION    USING
            MCPAREA
            SPAAREA
            LINKAREA
            SCRAREA.
-      *
       *****************************************************************
       *    主　　処理
       *****************************************************************
-       000-PROC-SEC                SECTION.
+       000-PROC-SEC            SECTION.
       *
            MOVE    SPA-COMMON      TO  SPA-AREA
-      * 
            EVALUATE    MCP-STATUS      ALSO    MCP-EVENT
-               WHEN    "LINK"          ALSO    ANY
-                   PERFORM 100-INIT-SEC
+             WHEN     "LINK"           ALSO    ANY
+               PERFORM 100-INIT-SEC
       *    画面遷移
-               WHEN      OTHER
-                   PERFORM 210-BACK
-           END-EVALUATE.
-      *
+             WHEN     "PUTG"           ALSO   "CLICKED"
+               PERFORM 290-OTHER
+           END-EVALUATE
            MOVE    SPA-AREA        TO  SPA-COMMON
-      *
            .
-           EXIT    PROGRAM
+      *
+           EXIT    PROGRAM.
            .
       *****************************************************************
       *    初期　処理
       *****************************************************************
        100-INIT-SEC                SECTION.
-      *
            .
        100-INIT-EXT.
            EXIT.
+      *
+      *****************************************************************
+      *    画面遷移処理
+      *****************************************************************
+       290-OTHER                SECTION.
+           EVALUATE    MCP-EVENT       ALSO    MCP-WIDGET
+      *     戻る
+               WHEN    "CLICKED"       ALSO    "B01"
+                   PERFORM 210-BACK
+      *     クリア
+               WHEN    OTHER
+                   MOVE    SPACE       TO  MCP-PUTTYPE
+                   MOVE   "I2FIL"       TO  MCP-WINDOW
+                   PERFORM 900-PUT-WINDOW
+           END-EVALUATE
+           .
+       290-OTHER-EXT.
+           EXIT.
+      *
       *****************************************************************
       *    戻る　処理
       *****************************************************************
-       210-BACK                    SECTION.
+       210-BACK                 SECTION.
       *
-           MOVE    SPA-MOTOPG          TO  SPA-SAKIPG
-           MOVE    "I2ERR"              TO  SPA-MOTOPG
+           MOVE    "I23"               TO  SPA-SAKIPG
+           MOVE    "I2FIL"             TO  SPA-MOTOPG
       *
-      ***  MOVE    "BACK"              TO  MCP-PUTTYPE
-           MOVE   "JOIN"               TO  MCP-PUTTYPE
+           MOVE    "JOIN"              TO  MCP-PUTTYPE
            MOVE    SPA-SAKIPG          TO  MCP-WINDOW
       *
            PERFORM 900-PUT-WINDOW
       *
-           MOVE    1                   TO  FLG-END
+      *    MOVE    1                   TO  FLG-END
       *
            .
        210-BACK-EXT.
@@ -136,14 +127,12 @@
       *****************************************************************
       *    ＰＵＴ　処理
       *****************************************************************
-       900-PUT-WINDOW              SECTION.
-      *
-           MOVE   "PUTWINDOW"       TO  MCP-FUNC.
-           CALL    "ORCDBMAIN"         USING
+       900-PUT-WINDOW          SECTION.
+           MOVE   "PUTWINDOW"  TO  MCP-FUNC
+           CALL   "ORCDBMAIN"          USING
                                        MCPAREA
                                        MCPDATA-REC
                                        SPA-AREA
-      *
            .
        900-PUT-WINDOW-EXT.
            EXIT.

@@ -34,3 +34,4 @@
                 06  I23-ERRMSG     PIC X(100).
               05  I23-SELECT       PIC X
                                    OCCURS  30 TIMES.
+          03  I23-DURATION   PIC S9(09) BINARY.

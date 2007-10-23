@@ -27,6 +27,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  04.01.01    NACL-藤原    07/10/19  クライアント保存対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -59,6 +60,7 @@
       *    添字領域
        01  IDX-AREA.
            03  IDX1                                PIC 9(05).
+           03  IDX2                                PIC 9(05).
       *
       *    一時領域
        01  WRK-AREA.
@@ -69,6 +71,10 @@
        01  CONST-AREA.
            03  CONST-LINE                          PIC 9(05)
                VALUE   30.
+           03  CONST-JOBID             PIC 9(07)
+               VALUE   1.
+           03  CONST-JOB-SHELLID       PIC X(08)
+               VALUE   "ORCBI201".
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -80,6 +86,9 @@
       *****************************************************************
       *    サブプロ用　領域
       *****************************************************************
+      *
+      *    クライアント保存可否情報取得サブ
+           COPY    "CPORCSCLIENTSV.INC".
       *
       *****************************************************************
       *    連絡　領域
@@ -98,6 +107,7 @@
            COPY    "I23.INC".
            COPY    "I2ERR.INC".
            COPY    "I2ID1.INC".
+           COPY    "I2FIL.INC".
       *
        PROCEDURE                   DIVISION    USING
            MCPAREA
@@ -184,6 +194,33 @@
       *
            IF  ( SPA-I20-I22-PROC-FLG     =   ZERO )
       *        ＣＳＶ出力処理
+      *
+      *        クライアント保存可否情報取得サブ
+               INITIALIZE                      ORCSCLIENTSVAREA
+               CALL    "ORCSCLIENTSV"      USING   ORCSCLIENTSVAREA
+                                                   SPA-AREA
+               MOVE    SCLIENTSV-CLIENT-SAVE
+                                           TO  SPA-I22-CLIENT-SAVE
+               IF      SPA-I22-CLIENT-SAVE
+                                       =   "1"
+                   MOVE    "1"             TO  SPA-GMN-I22-FILEL   (1)
+                   MOVE    "クライアント保存"
+                                           TO  SPA-GMN-I22-FILEMEIL(1)
+                   MOVE    1               TO  SPA-GMN-I22-FILE-MAX
+                   MOVE    WIDGET-NORMAL   TO  SPA-GMN-I22-FILE-STATE
+      *
+                   MOVE    "1"             TO  SPA-GMN-I22-CDKBNL   (1)
+                   MOVE    "ＥＵＣ"        TO  SPA-GMN-I22-CDKBNMEIL(1)
+                   MOVE    "2"             TO  SPA-GMN-I22-CDKBNL   (2)
+                   MOVE    "Ｓ−ｊｉｓ"    TO  SPA-GMN-I22-CDKBNMEIL(2)
+                   MOVE    2               TO  SPA-GMN-I22-CDKBN-MAX
+                   MOVE    WIDGET-NORMAL   TO  SPA-GMN-I22-CDKBN-STATE
+               ELSE
+                   MOVE    WIDGET-INSENSITIVE
+                                           TO  SPA-GMN-I22-FILE-STATE
+                                               SPA-GMN-I22-CDKBN-STATE
+               END-IF
+      *
                MOVE    "3001"          TO  SPA-GMN-I22-CD
                MOVE    "ＣＳＶ出力を開始します"
                                        TO  SPA-GMN-I22-MSG
@@ -202,6 +239,9 @@
                MOVE    WIDGET-INSENSITIVE
                                        TO  SPA-GMN-I22-FILENAME-STATE
                MOVE    "ページ指定"    TO  SPA-GMN-I22-LBLNUMSEL
+               MOVE    WIDGET-INSENSITIVE
+                                       TO  SPA-GMN-I22-FILE-STATE
+                                           SPA-GMN-I22-CDKBN-STATE
            END-IF
       *
            MOVE    SPA-I20-I22-STNUM      TO  SPA-GMN-I22-STNUM
@@ -285,6 +325,18 @@
                GO  TO  410-INPUT-CHK-EXT
            END-IF
       *
+      *    出力先チェック
+           PERFORM 4100-FILE-CHK-SEC
+           IF    ( SPA-ERRCD   NOT =   SPACE )
+               GO  TO  410-INPUT-CHK-EXT
+           END-IF
+      *
+      *    文字コードチェック
+           PERFORM 4100-CDKBN-CHK-SEC
+           IF    ( SPA-ERRCD   NOT =   SPACE )
+               GO  TO  410-INPUT-CHK-EXT
+           END-IF
+      *
            .
       *
        410-INPUT-CHK-EXT.
@@ -303,6 +355,12 @@
       *    終了件数（ページ数）
            MOVE    I22-EDNUM      TO  SPA-GMN-I22-EDNUM
       *
+      *    出力先
+           MOVE    I22-FILE       TO  SPA-GMN-I22-FILE-G
+      *
+      *    文字コード
+           MOVE    I22-CDKBN      TO  SPA-GMN-I22-CDKBN-G
+      *
            .
        4101-GMN-SPA-SET-EXT.
            EXIT.
@@ -311,6 +369,21 @@
       *****************************************************************
        4100-FILENAME-CHK-SEC           SECTION.
       *
+           IF      SPA-GMN-I22-FILENAME   =   SPACE
+               CONTINUE
+           ELSE
+               PERFORM VARYING IDX2    FROM    1   BY  1
+                       UNTIL   IDX2    >       100
+                       OR      SPA-GMN-I22-FILENAME (IDX2:1)
+                                           =   SPACE
+                   IF        SPA-GMN-I22-FILENAME (IDX2:1)
+                                               =   "\" OR  ":" 
+                       MOVE    "1004"              TO  SPA-ERRCD
+                       MOVE    1                   TO  SPA-GMN-I22-CUR
+                       MOVE    100                 TO  IDX2
+                   END-IF
+               END-PERFORM        
+           END-IF
            .
        4100-FILENAME-CHK-EXT.
            EXIT.
@@ -344,7 +417,7 @@
            MOVE    WRK-NUM         TO  SPA-GMN-I22-EDNUM
       *
            .
-       4100-STNUM-CHK-EXT.
+       4100-EDNUM-CHK-EXT.
            EXIT.
       *****************************************************************
       *    件数（ページ数）範囲チェック
@@ -363,6 +436,67 @@
            .
        4100-NUM-HANI-EXT.
            EXIT.
+      *
+      *****************************************************************
+      *    出力先チェック処理
+      *****************************************************************
+       4100-FILE-CHK-SEC           SECTION.
+      *
+           IF      SPA-I22-CLIENT-SAVE    =   "1"
+               IF      SPA-GMN-I22-FILE       =   SPACE
+                   MOVE    SPACE               TO  SPA-GMN-I22-CDKBN-G
+               ELSE
+                   PERFORM VARYING IDX2 FROM    1   BY  1
+                           UNTIL   IDX2 >       SPA-GMN-I22-FILE-MAX
+                       IF        SPA-GMN-I22-FILE
+                                       =   SPA-GMN-I22-FILEL (IDX2)
+                           MOVE    SPA-GMN-I22-FILEMEIL (IDX2)
+                                               TO  SPA-GMN-I22-FILEMEI
+                           MOVE    SPA-GMN-I22-FILE-MAX
+                                               TO  IDX2
+                       END-IF
+                   END-PERFORM        
+                   IF      SPA-GMN-I22-FILEMEI  =   SPACE  
+                       MOVE    SPA-GMN-I22-FILELST (1)
+                                               TO  SPA-GMN-I22-FILE-G
+                   END-IF
+               END-IF
+           END-IF
+           .
+       4100-FILE-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    文字コードチェック処理
+      *****************************************************************
+       4100-CDKBN-CHK-SEC           SECTION.
+      *
+           IF      SPA-I22-CLIENT-SAVE    =   "1"
+               IF      SPA-GMN-I22-CDKBN      =   SPACE
+                   IF      SPA-GMN-I22-FILE       =   "1"
+                       MOVE    SPA-GMN-I22-CDKBNLST (1)
+                                               TO  SPA-GMN-I22-CDKBN-G
+                   END-IF
+               ELSE
+                   PERFORM VARYING IDX2    FROM   1   BY  1
+                           UNTIL   IDX2    >      SPA-GMN-I22-CDKBN-MAX
+                       IF        SPA-GMN-I22-CDKBN
+                                       =   SPA-GMN-I22-CDKBNL (IDX2)
+                           MOVE    SPA-GMN-I22-CDKBNMEIL (IDX2)
+                                               TO  SPA-GMN-I22-CDKBNMEI
+                           MOVE    SPA-GMN-I22-CDKBN-MAX
+                                               TO  IDX2
+                       END-IF
+                   END-PERFORM        
+                   IF      SPA-GMN-I22-CDKBNMEI   =   SPACE  
+                       MOVE    SPA-GMN-I22-CDKBNLST (1)
+                                               TO  SPA-GMN-I22-CDKBN-G
+                   END-IF
+               END-IF
+           END-IF
+           .
+       4100-CDKBN-CHK-EXT.
+           EXIT.
       *****************************************************************
       *    戻る　処理
       *****************************************************************
@@ -374,7 +508,7 @@
            MOVE    "I22"              TO  SPA-MOTOPG
       *
       *****MOVE    "BACK"              TO  MCP-PUTTYPE
-           MOVE    "JOIN"              TO  MCP-PUTTYPE.
+           MOVE    "JOIN"              TO  MCP-PUTTYPE
            MOVE    SPA-SAKIPG          TO  MCP-WINDOW
       *
            PERFORM 900-PUT-WINDOW
@@ -422,6 +556,11 @@
       *    Ｑ０２に戻る
            MOVE    SPA-GMN-I22-FILENAME
                                        TO  SPA-I20-I22-FILENAME
+           IF      SPA-GMN-I22-FILE   =   SPACE
+               MOVE    "0"                 TO  SPA-I20-I22-FILE
+           ELSE
+               MOVE    SPA-GMN-I22-FILE   TO  SPA-I20-I22-FILE
+           END-IF
       *
            IF  ( SPA-I20-I22-PROC-FLG     =   1 )
       *        開始件数
@@ -443,6 +582,12 @@
       *        終了件数
                MOVE    SPA-GMN-I22-EDNUM
                                        TO  SPA-I20-I22-EDKNS
+      *        文字コード区分
+               IF      SPA-GMN-I22-CDKBN  =   SPACE
+                   MOVE    "0"                 TO  SPA-I20-I22-CDKBN
+               ELSE
+                   MOVE    SPA-GMN-I22-CDKBN  TO  SPA-I20-I22-CDKBN
+               END-IF
            END-IF
       *
            MOVE    1                   TO  SPA-I20-I22-RTOK-FLG
@@ -515,6 +660,28 @@
            MOVE    SPA-GMN-I22-EDNUM
                                        TO  I22-EDNUM
       *
+      *    出力先
+      *
+           PERFORM VARYING IDX2    FROM    1   BY  1
+                   UNTIL   IDX2    >       SPA-GMN-I22-FILE-MAX
+               MOVE    SPA-GMN-I22-FILELST (IDX2)
+                                           TO  I22-FILE-ITEM (IDX2)
+           END-PERFORM
+           MOVE    SPA-GMN-I22-FILE-MAX   TO  I22-FILE-COUNT
+           MOVE    SPA-GMN-I22-FILE-G     TO  I22-FILE
+           MOVE    SPA-GMN-I22-FILE-STATE TO  I22-FILE-STATE
+      *
+      *    文字コード
+           PERFORM VARYING IDX2    FROM    1   BY  1
+                   UNTIL   IDX2    >       SPA-GMN-I22-CDKBN-MAX
+               MOVE    SPA-GMN-I22-CDKBNLST (IDX2)
+                                           TO  I22-CDKBN-ITEM (IDX2)
+           END-PERFORM
+           MOVE    SPA-GMN-I22-CDKBN-MAX  TO  I22-CDKBN-COUNT
+           MOVE    SPA-GMN-I22-CDKBN-G    TO  I22-CDKBN
+           MOVE    SPA-GMN-I22-CDKBN-STATE
+                                           TO  I22-CDKBN-STATE
+      *
            PERFORM 5001-MAPCUR-SEC
       *
            .
@@ -548,6 +715,14 @@
       *    確定ボタン
            WHEN   004
                MOVE  "B12"         TO  MCP-WIDGET
+      *
+      *    出力先
+           WHEN   005
+               MOVE  "FILE"        TO  MCP-WIDGET
+      *
+      *    文字コード
+           WHEN   006
+               MOVE  "CDKBN"       TO  MCP-WIDGET
            END-EVALUATE
       *
            .
@@ -573,12 +748,32 @@
            WHEN    "EDNUM"
                MOVE    003         TO  SPA-GMN-I22-CUR
       *
+      *    出力先
+           WHEN   "FILE"
+               MOVE    005         TO  SPA-GMN-I22-CUR
+      *
+      *    文字コード
+           WHEN   "CDKBN"
+               MOVE    006         TO  SPA-GMN-I22-CUR
+      *
            END-EVALUATE
       *
       *    次カーソル位置を設定
            EVALUATE    WRK-MCP-WIDGET
            WHEN    "EDNUM"
+               IF      SPA-I22-CLIENT-SAVE    =   "1"
+                   MOVE    005         TO  SPA-GMN-I22-CUR
+               ELSE
+                   MOVE    004         TO  SPA-GMN-I22-CUR
+               END-IF
+           WHEN    "CDKBN"
                MOVE    004         TO  SPA-GMN-I22-CUR
+           WHEN   "FILE"
+               IF      SPA-GMN-I22-FILE       =   "1"
+                   MOVE    006         TO  SPA-GMN-I22-CUR
+               ELSE
+                   MOVE    004         TO  SPA-GMN-I22-CUR
+               END-IF
            WHEN    OTHER
                COMPUTE SPA-GMN-I22-CUR    =   SPA-GMN-I22-CUR +   1
            END-EVALUATE
@@ -604,6 +799,12 @@
            WHEN    "1003"
                MOVE    "開始ページ＞終了ページとなっています"
                                        TO  SPA-ERRMSG
+           WHEN    "1004"
+               STRING   "出力ファイル名に" DELIMITED  BY  SIZE
+                        "”：”、”￥”が入力してあります"
+                                             DELIMITED  BY  SIZE
+                                             INTO  SPA-ERRMSG
+               END-STRING
            END-EVALUATE
       *
            MOVE    SPACE                TO  I2ERR

@@ -21,5 +21,8 @@ I23	{
 				select	bool[30];
 			};
 		};
+                pandatimer1     {
+			duration        int;
+                };
 	};
 };

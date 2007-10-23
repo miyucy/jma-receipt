@@ -35,6 +35,7 @@
       *  01.00.06    NACL-太田    04/02/09  コラムリスト編集修正
       *  02.07.00    NACL-太田    05/10/27  MONFUNC対応
       *  03.05.00    NACL-太田    07.05.29  グループ診療対応
+      *  04.01.01     NACL-藤原   07/10/19  クライアント保存対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -95,6 +96,7 @@
            03  IDX2                PIC 9(04).
            03  IDX3                PIC 9(04).
            03  IDX4                PIC 9(04).
+           03  IDX5                PIC 9(05).
            03  IDXA                PIC 9(04).
       *
       *    一時領域
@@ -147,6 +149,11 @@
            03  WRK-STYMD           PIC X(08).
            03  WRK-EDYMD           PIC X(08).
            03  WRK-SRTKBN          PIC X(01).
+      *
+           03  WRK-FILENM-AREA.
+               07  WRK-FILENM      PIC X(100).
+               07  WRK-FILENM-FOLDER 
+                                   PIC X(100).
       *
        01  WRK-ROW-AREA.
            03  WRK-KANJYALST-ROW   PIC S9(9)   BINARY.
@@ -267,7 +274,7 @@
       *    サブプロ用　領域
       *****************************************************************
       *
-           COPY    "ORCA-DBPATH".
+      ***     COPY    "ORCA-DBPATH".
       *
       *    入院患者照会サブ
            COPY    "CPI2SUB01.INC".
@@ -298,6 +305,13 @@
       *    マシン日付取得サブ
            COPY    "CPORCSMCNDATE.INC".
       *
+      *    クライアント保存ＤＢ制御サブ
+           COPY    "CPORCSFILESV.INC".
+      *     
+           COPY    "ORCA-DBMETA".
+      *
+           COPY    "ORCA-BLOB".
+      *
       *****************************************************************
       *    連絡　領域
       *****************************************************************
@@ -315,6 +329,7 @@
            COPY    "I23.INC".
            COPY    "I2ERR.INC".
            COPY    "I2ID1.INC".
+           COPY    "I2FIL.INC".
       *
        PROCEDURE                   DIVISION    USING
            MCPAREA
@@ -425,6 +440,7 @@
                    PERFORM 3001-I22SPASET-SEC
                    GO  TO  300-SCREEN-EXT
            WHEN    "I23"
+                   PERFORM 3001-I23SPASET-SEC
                    GO  TO  300-SCREEN-EXT
       *
       *    入院会計照会画面
@@ -488,6 +504,36 @@
       *
            CLOSE   BI201-FILE
       *
+           MOVE    ZERO            TO  SPA-I23-FILESV-CHK-FLG
+      *
+           MOVE    SPACE           TO  WRK-FILENM-AREA
+           PERFORM VARYING IDX4    FROM    100 BY  -1
+                   UNTIL   IDX4     <       1
+               IF      ( SPA-I20-I22-FILENAME (IDX4:1)
+                                               =   "/" )
+                   MOVE    SPA-GMN-I22-FILENAME (1:IDX4)
+                                           TO  WRK-FILENM-FOLDER
+                   COMPUTE IDX5    =   IDX4    +   1
+                   MOVE    SPA-GMN-I22-FILENAME (IDX5:)
+                                           TO  WRK-FILENM
+                   MOVE    1               TO  IDX4
+               END-IF
+           END-PERFORM
+           IF      WRK-FILENM          =   SPACE
+               MOVE    "/tmp/"             TO  WRK-FILENM-FOLDER
+               MOVE    SPA-I20-I22-FILENAME
+                                           TO  WRK-FILENM
+           END-IF             
+      *
+      *    ファイル保存情報削除
+           INITIALIZE                  ORCSFILESVAREA
+           MOVE    "D"             TO  SFILESV-MODE
+           MOVE    CONST-JOB-SHELLID
+                                   TO  SFILESV-TBL-KEY
+           CALL    "ORCSFILESV"    USING
+                                       ORCSFILESVAREA
+                                       SPA-AREA  
+      *
       *    ジョブ開始セット処理
            PERFORM 900-JOBKANRI-HENSYU-SEC
       *
@@ -501,8 +547,15 @@
       *
            MOVE    SPA-I20-I22-PROC-FLG
                                    TO  SHELLTBL-ARG1
-           MOVE    SPA-I20-I22-FILENAME
-                                   TO  SHELLTBL-ARG2
+           IF    ( SPA-I20-I22-FILE   =   "1" )
+               STRING   WRK-FILENM-FOLDER      DELIMITED  BY  SPACE
+                        WRK-FILENM             DELIMITED  BY  SPACE
+                                               INTO  SHELLTBL-ARG2
+               END-STRING
+           ELSE
+               MOVE    SPA-I20-I22-FILENAME
+                                       TO  SHELLTBL-ARG2
+           END-IF
            MOVE    PRFNAME         TO  SHELLTBL-ARG3
            MOVE    PRFNAME-TERMID  TO  SHELLTBL-ARG4
            MOVE    SPA-SYSYMD      TO  SHELLTBL-ARG5
@@ -512,6 +565,18 @@
            MOVE    CONST-JOBID     TO  SHELLTBL-ARG9
            MOVE    CONST-JOB-SHELLID
                                    TO  SHELLTBL-ARG10
+           MOVE    SPA-I20-I22-FILE
+                                   TO  SHELLTBL-ARG11
+           MOVE    SPA-I20-I22-CDKBN
+                                   TO  SHELLTBL-ARG12
+           MOVE    WRK-FILENM-FOLDER
+                                   TO  SHELLTBL-ARG13
+           MOVE    WRK-FILENM      TO  SHELLTBL-ARG14
+           STRING   "/tmp/"                DELIMITED  BY  SIZE
+                    WRK-FILENM             DELIMITED  BY  SPACE
+                    ".wk"                  DELIMITED  BY  SIZE
+                                           INTO  SHELLTBL-ARG15
+           END-STRING
       *
            MOVE    SHELLTBL        TO  MCPDATA-REC
            MOVE    "SHELL"         TO  MCP-FUNC
@@ -522,11 +587,42 @@
                                        MCPDATA-REC
                                        SPA-AREA
       *
+           IF    ( SPA-I20-I22-FILE   =   "1" )
+               MOVE    "SV"            TO  SPA-I2ID1-FLG
+           ELSE
+               MOVE    SPACE           TO  SPA-I2ID1-FLG
+           END-IF
+           MOVE    SPACE           TO  SPA-I2IDCD
+      *
            PERFORM 440-I23-SENI-SEC
       *
            .
        3001-I22SPASET-EXT.
            EXIT.
+      *
+      *****************************************************************
+      *    処理表示画面戻り処理
+      *****************************************************************
+       3001-I23SPASET-SEC             SECTION.
+      *
+           IF    ( SPA-I2ID1-FLG    =   "SV" )
+               INITIALIZE                  ORCSFILESVAREA
+               MOVE    "D"             TO  SFILESV-MODE
+               MOVE    CONST-JOB-SHELLID
+                                       TO  SFILESV-TBL-KEY
+               CALL    "ORCSFILESV"    USING
+                                           ORCSFILESVAREA
+                                           SPA-AREA
+           END-IF
+      *
+           MOVE    SPACE           TO  SPA-I2ID1-FLG
+           MOVE    SPACE           TO  SPA-I2IDCD
+           MOVE    SPACE           TO  SPA-I23-MOTOPG
+      *
+           .
+       3001-I23SPASET-EXT.
+           EXIT.
+      *
       *****************************************************************
       *    スパ初期編集処理
       *****************************************************************
@@ -2203,7 +2299,9 @@
            PERFORM 4101-GMN-SPA-SET-SEC
       *
            MOVE    SPACE           TO  SPA-MOTOPG
+           MOVE    SPA-I2KYOUTU    TO  SPA-WORK  
            MOVE    SPA-AREA        TO  SPA-COMMON
+           MOVE    SPA-I2FREE      TO  SPA-FREE
       *
            MOVE    "LINK"          TO  MCP-STATUS
            MOVE    SPACE           TO  MCP-EVENT
@@ -2219,10 +2317,13 @@
       *
       *
            MOVE    SPA-COMMON      TO  SPA-AREA
+           MOVE    SPA-FREE        TO  SPA-I2FREE
+           MOVE    SPA-WORK        TO  SPA-I2KYOUTU
       *
            MOVE  "B01"             TO  MCP-WIDGET
       *
            MOVE  "I20"             TO  SPA-MOTOPG
+                                       SPA-I23-MOTOPG
            MOVE  "I23"             TO  SPA-SAKIPG
       *
            MOVE  "NEW"             TO  MCP-PUTTYPE

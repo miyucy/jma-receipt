@@ -22,5 +22,21 @@ I22	{
 		EDNUM	{
 			value	number(9);
 		};
+		FILE_COMBO	{
+			state	int;
+			FILE	{
+				value	varchar(22);
+			};
+			count	int;
+			item	varchar(22)[6];
+		};
+		CDKBN_COMBO	{
+			state	int;
+			CDKBN	{
+				value	varchar(22);
+			};
+			count	int;
+			item	varchar(22)[5];
+		};
 	};
 };
