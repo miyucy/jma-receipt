@@ -29,6 +29,7 @@
       * Maj/Min/Rev  修正者       日付      内容
       *  01.00.00    NACL-多々納  06/02/02  MONFUNC 対応
       *  03.05.00    NACL-多々納  07/04/XX  グループ診療対応
+      *  04.01.00    NACL-多々納  07/10/23  公務災害対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -72,6 +73,7 @@
            03  FLG-SYUNOU          PIC 9(01).
            03  FLG-TENSU           PIC 9(01).
            03  FLG-NYUINACCT       PIC 9(01).
+           03  FLG-PTHKNINF        PIC 9(01).
       *
            03  FLG-SYORI           PIC 9(01).
            03  FLG-OK              PIC 9(01).
@@ -289,6 +291,10 @@
       *    入院会計マスタ−
        01  NYUINACCT-REC.
            COPY    "CPNYUINACCT.INC".
+      *
+      *    保険マスタ
+       01  PTHKNINF-REC.
+           COPY    "CPPTHKNINF.INC".
       *
       *    点数マスタ−
       *01  TENSU-REC.
@@ -1104,6 +1110,35 @@
            PERFORM 990-DBCLOSE-SEC
       *
            INITIALIZE                  WRK-HKNCOMBI-AREA
+           IF      COMB-HKNNUM         =   "971"
+      *        労災保険名称
+               PERFORM 2001312-RSIMEI-HEN-SEC
+           ELSE
+      *        保険名称
+               PERFORM 2001311-HKNMEI-HEN-SEC
+           END-IF
+      *
+      *    本人家族区分
+           EVALUATE    COMB-HONKZKKBN
+               WHEN    "1"
+                   MOVE    "本人"          TO  TBL-HONKZKKBN (IDX)
+               WHEN    "2"
+                   MOVE    "家族"          TO  TBL-HONKZKKBN (IDX)
+           END-EVALUATE
+      *
+           IF      COMB-HKNNUM         =   "971"  OR  "973"
+               MOVE    1               TO  TBL-HKNKBN (IDX)
+           ELSE
+               MOVE    ZERO            TO  TBL-HKNKBN (IDX)
+           END-IF
+           .
+       200131-HKNCOMBI-MEI-EXT.
+           EXIT.
+      *****************************************************************
+      *     保険名称編集処理
+      *****************************************************************
+       2001311-HKNMEI-HEN-SEC                SECTION.
+      *
            MOVE    SPACE               TO  WRK-HKNCOMBIMEI
            IF      COMB-SYU-TANSEIDONAME   NOT =   SPACE
                MOVE    "・"                TO  WRK-MEI-1
@@ -1139,22 +1174,25 @@
                    MOVE    2               TO  IDX-H
                END-IF
            END-PERFORM
-      *
-      *    本人家族区分
-           EVALUATE    COMB-HONKZKKBN
-               WHEN    "1"
-                   MOVE    "本人"          TO  TBL-HONKZKKBN (IDX)
-               WHEN    "2"
-                   MOVE    "家族"          TO  TBL-HONKZKKBN (IDX)
-           END-EVALUATE
-      *
-           IF      COMB-HKNNUM         =   "971"  OR  "973"
-               MOVE    1               TO  TBL-HKNKBN (IDX)
-           ELSE
-               MOVE    ZERO            TO  TBL-HKNKBN (IDX)
+           .
+       2001311-HKNMEI-HEN-EXT.
+           EXIT.
+      *****************************************************************
+      *     労災保険名称編集処理
+      *****************************************************************
+       2001312-RSIMEI-HEN-SEC                SECTION.
+      *    保険検索
+           MOVE    SPACE               TO  WRK-HKNCOMBIMEI
+           INITIALIZE                      PTHKNINF-REC
+           MOVE    COMB-HOSPNUM        TO  PTHKN-HOSPNUM
+           MOVE    COMB-PTID           TO  PTHKN-PTID
+           MOVE    COMB-HKNID          TO  PTHKN-HKNID
+           PERFORM 950-PTHKNINF-READ-SEC
+           IF      FLG-PTHKNINF        =   ZERO
+              MOVE    PTHKN-KIGO           TO  WRK-HKNCOMBIMEI
            END-IF
            .
-       200131-HKNCOMBI-MEI-EXT.
+       2001312-RSIMEI-HEN-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1954,6 +1992,38 @@
       *
            .
        930-SRYACT-RAED-EXT.
+           EXIT.
+      *****************************************************************
+      *    保険マスター読み込み
+      *****************************************************************
+       950-PTHKNINF-READ-SEC         SECTION.
+      *
+           MOVE    PTHKNINF-REC        TO  MCPDATA-REC
+           MOVE    "tbl_pthkninf"      TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_pthkninf"      TO  MCP-TABLE
+               MOVE    "key"               TO  MCP-PATHNAME
+               PERFORM 920-DBFETCH-SEC
+               IF      MCP-RC              =   ZERO
+                   MOVE    MCPDATA-REC     TO  PTHKNINF-REC
+                   MOVE    ZERO            TO  FLG-PTHKNINF
+               ELSE
+                   INITIALIZE                  PTHKNINF-REC
+                   MOVE    1               TO  FLG-PTHKNINF
+               END-IF
+           ELSE
+               MOVE    1                   TO  FLG-PTHKNINF
+               INITIALIZE                      PTHKNINF-REC
+           END-IF
+     *
+           MOVE    "tbl_pthkninf"      TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+      *
+           .
+       950-PTHKNINF-READ-EXT.
            EXIT.
       *
       *****************************************************************

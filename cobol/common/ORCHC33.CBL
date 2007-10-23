@@ -32,6 +32,7 @@
       * 03.04.01     NACL-¿¹ÏÆ    07/02/08  Ê¿À®£±£¹Ç¯£´·î¼«Èñ¾ÃÈñÀÇÉ½¼¨ÊÑ¹¹
       * 03.04.02     NACL-Â¿¡¹Ç¼  07/02/28  Êñ³ç¿ÇÎÅÄÉ²ÃÂÐ±þ
       * 03.05.00     NACL-Â¿¡¹Ç¼  07/04/XX  ¥°¥ë¡¼¥×¿ÇÎÅÂÐ±þ
+      * 04.01.00     NACL-Â¿¡¹Ç¼  07/10/23  ¸øÌ³ºÒ³²ÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -74,6 +75,7 @@
            03  FLG-SYSKANRI        PIC 9(01).
            03  FLG-SYUNOU          PIC 9(01).
            03  FLG-TENSU           PIC 9(01).
+           03  FLG-PTHKNINF        PIC 9(01).
       *
            03  FLG-SYORI           PIC 9(01).
            03  FLG-OK              PIC 9(01).
@@ -296,6 +298,10 @@
       *    ¼ýÇ¼
        01  SYUNOU-REC.
            COPY    "CPSYUNOU.INC".
+      *
+      *    ÊÝ¸±¥Þ¥¹¥¿
+       01  PTHKNINF-REC.
+           COPY    "CPPTHKNINF.INC".
       *
       *    ÅÀ¿ô¥Þ¥¹¥¿¡Ý
       *01  TENSU-REC.
@@ -1046,6 +1052,36 @@
            PERFORM 990-DBCLOSE-SEC
       *
            INITIALIZE                  WRK-HKNCOMBI-AREA
+           IF      COMB-HKNNUM         =   "971"
+      *        Ï«ºÒÊÝ¸±Ì¾¾Î
+               PERFORM 2001312-RSIMEI-HEN-SEC
+           ELSE
+      *        ÊÝ¸±Ì¾¾Î
+               PERFORM 2001311-HKNMEI-HEN-SEC
+           END-IF
+      *
+      *    ËÜ¿Í²ÈÂ²¶èÊ¬
+           EVALUATE    COMB-HONKZKKBN
+               WHEN    "1"
+                   MOVE    "ËÜ¿Í"          TO  TBL-HONKZKKBN (IDX)
+               WHEN    "2"
+                   MOVE    "²ÈÂ²"          TO  TBL-HONKZKKBN (IDX)
+           END-EVALUATE
+      *
+           IF      COMB-HKNNUM         =   "971"  OR  "973"
+               MOVE    1               TO  TBL-HKNKBN (IDX)
+           ELSE
+               MOVE    ZERO            TO  TBL-HKNKBN (IDX)
+           END-IF
+           .
+       200131-HKNCOMBI-MEI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *     ÊÝ¸±Ì¾¾ÎÊÔ½¸½èÍý
+      *****************************************************************
+       2001311-HKNMEI-HEN-SEC                SECTION.
+      *
            MOVE    SPACE               TO  WRK-HKNCOMBIMEI
            IF      COMB-SYU-TANSEIDONAME   NOT =   SPACE
                MOVE    "¡¦"                TO  WRK-MEI-1
@@ -1081,22 +1117,25 @@
                    MOVE    2               TO  IDX-H
                END-IF
            END-PERFORM
-      *
-      *    ËÜ¿Í²ÈÂ²¶èÊ¬
-           EVALUATE    COMB-HONKZKKBN
-               WHEN    "1"
-                   MOVE    "ËÜ¿Í"          TO  TBL-HONKZKKBN (IDX)
-               WHEN    "2"
-                   MOVE    "²ÈÂ²"          TO  TBL-HONKZKKBN (IDX)
-           END-EVALUATE
-      *
-           IF      COMB-HKNNUM         =   "971"  OR  "973"
-               MOVE    1               TO  TBL-HKNKBN (IDX)
-           ELSE
-               MOVE    ZERO            TO  TBL-HKNKBN (IDX)
+           .
+       2001311-HKNMEI-HEN-EXT.
+           EXIT.
+      *****************************************************************
+      *     Ï«ºÒÊÝ¸±Ì¾¾ÎÊÔ½¸½èÍý
+      *****************************************************************
+       2001312-RSIMEI-HEN-SEC                SECTION.
+      *    ÊÝ¸±¸¡º÷
+           MOVE    SPACE               TO  WRK-HKNCOMBIMEI
+           INITIALIZE                      PTHKNINF-REC
+           MOVE    COMB-HOSPNUM        TO  PTHKN-HOSPNUM
+           MOVE    COMB-PTID           TO  PTHKN-PTID
+           MOVE    COMB-HKNID          TO  PTHKN-HKNID
+           PERFORM 950-PTHKNINF-READ-SEC
+           IF      FLG-PTHKNINF        =   ZERO
+              MOVE    PTHKN-KIGO           TO  WRK-HKNCOMBIMEI
            END-IF
            .
-       200131-HKNCOMBI-MEI-EXT.
+       2001312-RSIMEI-HEN-EXT.
            EXIT.
       *
       *****************************************************************
@@ -2133,6 +2172,39 @@
            .
        930-SRYACT-RAED-EXT.
            EXIT.
+      *****************************************************************
+      *    ÊÝ¸±¥Þ¥¹¥¿¡¼ÆÉ¤ß¹þ¤ß
+      *****************************************************************
+       950-PTHKNINF-READ-SEC         SECTION.
+      *
+           MOVE    PTHKNINF-REC        TO  MCPDATA-REC
+           MOVE    "tbl_pthkninf"      TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_pthkninf"      TO  MCP-TABLE
+               MOVE    "key"               TO  MCP-PATHNAME
+               PERFORM 920-DBFETCH-SEC
+               IF      MCP-RC              =   ZERO
+                   MOVE    MCPDATA-REC     TO  PTHKNINF-REC
+                   MOVE    ZERO            TO  FLG-PTHKNINF
+               ELSE
+                   INITIALIZE                  PTHKNINF-REC
+                   MOVE    1               TO  FLG-PTHKNINF
+               END-IF
+           ELSE
+               MOVE    1                   TO  FLG-PTHKNINF
+               INITIALIZE                      PTHKNINF-REC
+           END-IF
+     *
+           MOVE    "tbl_pthkninf"      TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+      *
+           .
+       950-PTHKNINF-READ-EXT.
+           EXIT.
+      *
       *
       *****************************************************************
       *    ÅÀ¿ô¥Þ¥¹¥¿¡¼ÆÉ¹þ
