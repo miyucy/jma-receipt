@@ -32,6 +32,7 @@
       *  03.04.02    NACL-Â¿¡¹Ç¼  07/02/28  Êñ³çÊ¬ÂÐ¾Ý³°ÄÉ²Ã
       *  03.05.00    NACL-Â¿¡¹Ç¼  07/04/XX  ¥°¥ë¡¼¥×¿ÇÎÅÂÐ±þ
       *  03.05.00    NACL-Â¿¡¹Ç¼  07/05/22  ºÆ°õºþ½èÍýÄÉ²Ã
+      *  04.01.00    NACL-Â¿¡¹Ç¼  07/10/23  ¸øÌ³ºÒ³²ÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -71,6 +72,8 @@
            03  FLG-HKNCOMBI        PIC 9(01).
            03  FLG-SYSKANRI        PIC 9(01).
            03  FLG-TENSU           PIC 9(01).
+           03  FLG-PTHKNINF        PIC 9(01).
+           03  FLG-PTRSIINF        PIC 9(01).
       *
            03  FLG-SP              PIC 9(01).
            03  FLG-OK              PIC 9(01).
@@ -260,6 +263,13 @@
       *    ¼õ¿ÇÍúÎò
        01  JYURRK-REC.
            COPY    "CPJYURRK.INC".
+      *    ´µ¼ÔÏ«ºÒÊÝ¸±¾ðÊó
+       01  PTRSIINF-REC.
+           COPY    "CPPTRSIINF.INC".
+      *
+      *    ÊÝ¸±¥Þ¥¹¥¿
+       01  PTHKNINF-REC.
+           COPY    "CPPTHKNINF.INC".
       *
       *****************************************************************
       *    ¥µ¥Ö¥×¥íÍÑ¡¡ÎÎ°è
@@ -1113,7 +1123,12 @@
            IF      FLG-HKNCOMBI        =   1
                 DISPLAY "*** HKNCOMBI  ERR:"   COMB-KEY "."
            END-IF
-           PERFORM 40012-HKNCOMBIMEI-HEN-SEC
+      *    Ï«ºÒ¤Î¸øÌ³ºÒ³²È½Äê
+           IF      COMB-HKNNUM         =   "971"
+               PERFORM 40013-PTRSIINF-HEN-SEC
+           ELSE
+               PERFORM 40012-HKNCOMBIMEI-HEN-SEC
+           END-IF
       *
            .
        40012-HKNCOMBI-HEN-EXT.
@@ -1139,6 +1154,48 @@
       *
            .
        40012-HKNCOMBIMEI-HEN-EXT.
+           EXIT.
+      *****************************************************************
+      *    Ï«ºÒ¸øÌ³ºÒ³²ÊÝ¸±ÁÈ¹ç¤»Ì¾¾ÎÊÔ½¸½èÍý
+      *****************************************************************
+       40013-PTRSIINF-HEN-SEC             SECTION.
+      *
+           INITIALIZE                      PTRSIINF-REC
+           MOVE    COMB-HOSPNUM        TO  PTRSI-HOSPNUM
+           MOVE    COMB-PTID           TO  PTRSI-PTID
+           MOVE    COMB-HKNID          TO  PTRSI-HKNID
+           MOVE    PTRSIINF-REC        TO  MCPDATA-REC
+           MOVE    "tbl_ptrsiinf"      TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_ptrsiinf"      TO  MCP-TABLE
+               MOVE    "key"               TO  MCP-PATHNAME
+               PERFORM 940-PTRSIINF-READ-SEC
+           ELSE
+               INITIALIZE                      PTRSIINF-REC
+               MOVE    1                   TO  FLG-PTRSIINF
+           END-IF
+           MOVE    "tbl_ptrsiinf"      TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+      *
+           IF      PTRSI-HKNKBN        =   "5"
+      *        ¸øÌ³ºÒ³²
+               INITIALIZE                      PTHKNINF-REC
+               MOVE    COMB-HOSPNUM        TO  PTHKN-HOSPNUM
+               MOVE    COMB-PTID           TO  PTHKN-PTID
+               MOVE    COMB-HKNID          TO  PTHKN-HKNID
+               PERFORM 950-PTHKNINF-READ-SEC
+               IF      FLG-PTHKNINF        =   ZERO
+                  MOVE    PTHKN-KIGO           TO  WRK-HKNCOMBIMEI
+               END-IF
+           ELSE
+      *        ¸øÌ³ºÒ³²°Ê³°
+               PERFORM 40012-HKNCOMBIMEI-HEN-SEC
+           END-IF
+           .
+       40013-PTRSIINF-HEN-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1514,6 +1571,54 @@
       *
            .
        980-SYUNOU-READ-EXT.
+           EXIT.
+      *****************************************************************
+      *    Ï«ºÒÊÝ¸±¥Þ¥¹¥¿¡¼ÆÉ¹þ
+      *****************************************************************
+       940-PTRSIINF-READ-SEC         SECTION.
+      *
+           PERFORM 920-DBFETCH-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC     TO  PTRSIINF-REC
+               MOVE    ZERO            TO  FLG-PTRSIINF
+           ELSE
+               INITIALIZE                  PTRSIINF-REC
+               MOVE    1               TO  FLG-PTRSIINF
+           END-IF
+      *
+           .
+       940-PTRSIINF-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ÊÝ¸±¥Þ¥¹¥¿¡¼ÆÉ¤ß¹þ¤ß
+      *****************************************************************
+       950-PTHKNINF-READ-SEC         SECTION.
+      *
+           MOVE    PTHKNINF-REC        TO  MCPDATA-REC
+           MOVE    "tbl_pthkninf"      TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_pthkninf"      TO  MCP-TABLE
+               MOVE    "key"               TO  MCP-PATHNAME
+               PERFORM 920-DBFETCH-SEC
+               IF      MCP-RC              =   ZERO
+                   MOVE    MCPDATA-REC     TO  PTHKNINF-REC
+                   MOVE    ZERO            TO  FLG-PTHKNINF
+               ELSE
+                   MOVE    1               TO  FLG-PTHKNINF
+               END-IF
+           ELSE
+               MOVE    1               TO  FLG-PTHKNINF
+           END-IF
+     *
+           MOVE    "tbl_pthkninf"      TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+      *
+           .
+       950-PTHKNINF-READ-EXT.
            EXIT.
       *
       *****************************************************************
