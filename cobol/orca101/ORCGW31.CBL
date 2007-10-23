@@ -62,6 +62,10 @@
                    07  SPA-GMN-ADLINPUTKBN        PIC X(01).
                    07  SPA-GMN-ADLINPUTKBNFL      PIC X(01).
                    07  SPA-GMN-ADLINPUTKBNMEI     PIC X(20).
+               05  SPA-GMN-SETMEDKBN-G.
+                   07  SPA-GMN-SETMEDKBN          PIC X(01).
+                   07  SPA-GMN-SETMEDKBNFL        PIC X(01).
+                   07  SPA-GMN-SETMEDKBNMEI       PIC X(30).
            03  SPA-GMN-CMB-AREA.
                05  SPA-GMN-ADLINPUTKBNLST-G.
                    07  SPA-GMN-ADLINPUTKBN-MAX    PIC 9(03).
@@ -69,6 +73,12 @@
                        09  SPA-GMN-ADLINPUTKBNL   PIC X(01).
                        09  SPA-GMN-ADLINPUTKBNFLL PIC X(01).
                        09  SPA-GMN-ADLINPUTKBNMEIL PIC X(20).
+               05  SPA-GMN-SETMEDKBNLST-G.
+                   07  SPA-GMN-SETMEDKBN-MAX      PIC 9(03).
+                   07  SPA-GMN-SETMEDKBNLST       OCCURS  2.
+                       09  SPA-GMN-SETMEDKBNL     PIC X(01).
+                       09  SPA-GMN-SETMEDKBNFLL   PIC X(01).
+                       09  SPA-GMN-SETMEDKBNMEIL  PIC X(30).
            03  SPA-NAI-AREA.
                05  SPA-GMN-NAI-MEDKBN-G.
                    07  SPA-NAI-MEDKBN-OCC         OCCURS  40.
@@ -475,6 +485,9 @@
       *    ADL入力方法区分編集処理
            PERFORM 3101-ADLINPUTKBNLST-SET-SEC
       *
+      *    医療区分引継ぎ区分編集処理
+           PERFORM 3101-SETMEDKBNLST-SET-SEC
+      *
            INITIALIZE                      SYSKANRI-REC
            MOVE    SPA-HOSPNUM         TO  SYS-HOSPNUM
            MOVE    "5015"              TO  SYS-KANRICD
@@ -501,6 +514,15 @@
                                        TO  SPA-GMN-ADLINPUTKBN-G
            ELSE
                MOVE    WRK-CMB-ITM     TO  SPA-GMN-ADLINPUTKBN-G
+           END-IF
+      *
+           MOVE    SYS-5015-SETMEDKBN  TO  WRK-CMB-CD
+           PERFORM 4200-SETMEDKBNLST-CHK-SEC
+           IF    ( WRK-CMB-ITM         =   SPACE )
+               MOVE    SPA-GMN-SETMEDKBNLST (1)
+                                       TO  SPA-GMN-SETMEDKBN-G
+           ELSE
+               MOVE    WRK-CMB-ITM     TO  SPA-GMN-SETMEDKBN-G
            END-IF
       *
            MOVE    101                 TO  SPA-GMN-CUR
@@ -545,6 +567,24 @@
       *
            .
        3101-ADLINPUTKBNLST-SET-EXT.
+           EXIT.
+      *****************************************************************
+      *    医療区分引継ぎ区分編集処理
+      *****************************************************************
+       3101-SETMEDKBNLST-SET-SEC       SECTION.
+      *
+           INITIALIZE                  SPA-GMN-SETMEDKBNLST-G
+      *
+           MOVE    2               TO  SPA-GMN-SETMEDKBN-MAX
+      *
+           MOVE    "1"             TO  SPA-GMN-SETMEDKBNL    (1)
+           MOVE    "引き継がない"  TO  SPA-GMN-SETMEDKBNMEIL (1)
+           MOVE    "2"             TO  SPA-GMN-SETMEDKBNL    (2)
+           MOVE    "前月の状態を引き継ぐ"
+                                   TO  SPA-GMN-SETMEDKBNMEIL (2)
+      *
+           .
+       3101-SETMEDKBNLST-SET-EXT.
            EXIT.
       *****************************************************************
       *    確認画面（ＣＩＤ１）ＯＫ処理
@@ -655,6 +695,7 @@
        4101-GMN-SPA-SET-SEC            SECTION.
       *
            MOVE    W31-ADLINPUTKBN     TO  SPA-GMN-ADLINPUTKBN-G
+           MOVE    W31-SETMEDKBN       TO  SPA-GMN-SETMEDKBN-G
       *
            .
       *
@@ -672,6 +713,9 @@
            WHEN    "5015"
                IF    ( SPA-ERRCD       =   SPACE )
                    PERFORM 4101-ADLINPUTKBN-CHK-SEC
+               END-IF
+               IF    ( SPA-ERRCD       =   SPACE )
+                   PERFORM 4101-SETMEDKBN-CHK-SEC
                END-IF
            END-EVALUATE
       *
@@ -714,6 +758,23 @@
        4101-ADLINPUTKBN-CHK-EXT.
            EXIT.
       *****************************************************************
+      *    医療区分引継ぎ区分チェック処理
+      *****************************************************************
+       4101-SETMEDKBN-CHK-SEC            SECTION.
+      *
+           MOVE    SPA-GMN-SETMEDKBN TO WRK-CMB-CD
+           PERFORM 4200-SETMEDKBNLST-CHK-SEC
+           IF    ( WRK-CMB-ITM         =   SPACE )
+               MOVE    SPA-GMN-SETMEDKBNLST (1)
+                                       TO  SPA-GMN-SETMEDKBN-G
+           ELSE
+               MOVE    WRK-CMB-ITM     TO  SPA-GMN-SETMEDKBN-G
+           END-IF
+      *
+           .
+       4101-SETMEDKBN-CHK-EXT.
+           EXIT.
+      *****************************************************************
       *    ADL区分入力方法コンボボックスチェック処理
       *****************************************************************
        4200-ADLINPUTKBNLST-CHK-SEC         SECTION.
@@ -732,6 +793,26 @@
       *
            .
        4200-ADLINPUTKBNLST-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    医療区分引継ぎ区分コンボボックスチェック処理
+      *****************************************************************
+       4200-SETMEDKBNLST-CHK-SEC         SECTION.
+      *
+           INITIALIZE                  WRK-CMB-ITM-G
+           PERFORM VARYING IDX-CMB FROM    1   BY  1
+                   UNTIL ( IDX-CMB     >   SPA-GMN-SETMEDKBN-MAX )
+                    OR   ( WRK-CMB-ITM NOT =   SPACE )
+      *
+               IF    ( SPA-GMN-SETMEDKBNL (IDX-CMB)  =   WRK-CMB-CD )
+                   MOVE    SPA-GMN-SETMEDKBNLST  (IDX-CMB)
+                                       TO  WRK-CMB-ITM
+               END-IF
+      *
+           END-PERFORM
+      *
+           .
+       4200-SETMEDKBNLST-CHK-EXT.
            EXIT.
       *****************************************************************
       *    戻る　処理
@@ -979,6 +1060,8 @@
            MOVE    SPA-GMN-ADLINPUTKBN
                                        TO  SYS-5015-ADLINPUTKBN
       *
+           MOVE    SPA-GMN-SETMEDKBN   TO  SYS-5015-SETMEDKBN
+      *
            IF    ( FLG-SYSKANRI    =   ZERO )
       *
                MOVE    SYS-5015-REC        TO  SYSKANRI-REC
@@ -1091,6 +1174,18 @@
       *
            END-PERFORM
       *
+           MOVE    SPA-GMN-SETMEDKBN-G
+                                           TO  W31-SETMEDKBN
+           MOVE    SPA-GMN-SETMEDKBN-MAX
+                                           TO  W31-SETMEDKBN-CNT
+           PERFORM VARYING IDX0    FROM    1   BY  1
+                   UNTIL ( IDX0    >   SPA-GMN-SETMEDKBN-MAX )
+      *
+               MOVE    SPA-GMN-SETMEDKBNLST (IDX0)
+                                       TO  W31-SETMEDKBN-ITM (IDX0)
+      *
+           END-PERFORM
+      *
            EVALUATE    SPA-W01-KANRICD
            WHEN    "5014"
                MOVE    "全選択"        TO  W31-B02-LABEL
@@ -1157,6 +1252,8 @@
                MOVE    WRK-WIDGET-MEDKBN-G TO  MCP-WIDGET
            WHEN    101
                MOVE    "ADLINPUTKBN"       TO  MCP-WIDGET
+           WHEN    102
+               MOVE    "SETMEDKBN"         TO  MCP-WIDGET
            WHEN    212
                MOVE    "B12"               TO  MCP-WIDGET
            END-EVALUATE
@@ -1188,6 +1285,8 @@
            WHEN    "CHK_MEDKBN40"
                MOVE    212         TO  SPA-GMN-CUR
            WHEN    "ADLINPUTKBN"
+               MOVE    102         TO  SPA-GMN-CUR
+           WHEN    "SETMEDKBN"
                MOVE    212         TO  SPA-GMN-CUR
            END-EVALUATE
       *

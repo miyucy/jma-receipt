@@ -228,6 +228,13 @@ W31	{
 					count	int;
 					item	varchar(22)[02];
 				};
+				CMB_SETMEDKBN	{
+					SETMEDKBN	{
+						value	varchar(32);
+					};
+					count	int;
+					item	varchar(32)[02];
+				};
 			};
 			NB02	{
 				state	int;

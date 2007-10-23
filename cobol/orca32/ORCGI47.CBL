@@ -473,7 +473,7 @@
       *
       *    ¥¹¥ÑÎÎ°è ¥ï¡¼¥¯
            COPY    "COMMON-SPA"      REPLACING
-                               //SPA-// BY //WRK-SPA-//.
+                               //SPA-// BY //WKSPA-//.
       *
       *
       *****************************************************************
@@ -516,6 +516,8 @@
       *
       *    ¿ô»úÊÑ´¹ÎÎ°è
            COPY    "CPORCSNUM.INC".
+      *
+           COPY    "CPORCSS005.INC".
       *
       *    £Ä£Â¸¡º÷
            COPY    "MCPDATA.INC".
@@ -640,6 +642,15 @@
       *    ¥¹¥Ñ½é´üÊÔ½¸½èÍý
       *****************************************************************
        310-SPASET-SEC                  SECTION.
+      *
+           MOVE    SPA-AREA        TO  WKSPA-AREA
+           MOVE    SPA-GMN-PTID    TO  WKSPA-PTID
+      *
+           INITIALIZE                  SS005-AREA
+           MOVE    SPA-I40-SRYYMD(1:6)
+                                   TO  SS005-SRYYM
+           CALL    "ORCSS005"      USING   SS005-AREA
+                                           WKSPA-AREA
       *
            INITIALIZE                  SPA-I47
       *
@@ -1140,6 +1151,7 @@
                     OR   ( SPA-ERRCD   NOT =   SPACE )
       *
                IF    ( SPA-GMN-TDAY-G (IDX-LST)    NOT =   ZERO )
+                OR   ( SPA-NAI-TZAISKBKBN (IDX-LST)    =   "1" )
                    PERFORM 21211-RYOCOM-INS-SEC
                END-IF
       *
@@ -1258,13 +1270,6 @@
            INITIALIZE                  WRK-DAY-G
                                        SPA-NAI-DAY-G
       *
-           IF    ( SPA-I47-NYUIN-DAY-G =   ZERO )
-            AND  ( SPA-GMN-DAYALL  NOT =   SPACE )
-               MOVE    "0007"      TO  SPA-ERRCD
-               MOVE    100         TO  SPA-GMN-CUR
-               GO  TO  4101-DAY-CHK-EXT
-           END-IF
-      *
            MOVE    SPA-GMN-DAYALL  TO  WRK-TENSU-X
            PERFORM 4101-TENSU-LIMIT-CHK-SEC
            IF    ( FLG-LIMIT-ERR   =   ZERO )
@@ -1284,8 +1289,15 @@
                ELSE
                    IF    ( SPA-GMN-DAY (IDX-DAY)   NOT =   SPACE )
                     AND  ( SPA-I47-NYUIN-DAY (IDX-DAY) =   ZERO )
-                       MOVE    "0007"      TO  SPA-ERRCD
-                       COMPUTE SPA-GMN-CUR =   IDX-DAY     +   100
+                       MOVE    SPA-GMN-DAY (IDX-DAY)
+                                   TO  WRK-TENSU-X
+                       PERFORM 4101-TENSU-LIMIT-CHK-SEC
+                       IF    ( WRK-TENSU   =   ZERO )
+                           CONTINUE
+                       ELSE
+                           MOVE    "0007"      TO  SPA-ERRCD
+                           COMPUTE SPA-GMN-CUR =   IDX-DAY     +   100
+                       END-IF
                    ELSE
       *
                        MOVE    SPA-GMN-DAY (IDX-DAY)
@@ -2300,6 +2312,9 @@
                PERFORM VARYING IDX-LST     FROM    1   BY  1
                        UNTIL ( IDX-LST     >   SPA-GMN-RYOLIST-MAX )
       *
+                       DISPLAY "SPA-NAI-TZAISKBKBN (" IDX-LST ")="
+                                SPA-NAI-TZAISKBKBN (IDX-LST)
+                       DISPLAY "ADLTEN-DAY-G =" ADLTEN-DAY-G
                    IF    ( SPA-NAI-TZAISKBKBN (IDX-LST)    =   "1" )
                        COMPUTE ADLTEN-DAYALL
                            =   ADLTEN-DAYALL

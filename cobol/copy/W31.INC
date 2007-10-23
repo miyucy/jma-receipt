@@ -35,4 +35,8 @@
                     07  W31-ADLINPUTKBN        PIC X(22).
                     07  W31-ADLINPUTKBN-CNT    PIC S9(9)   BINARY.
                     07  W31-ADLINPUTKBN-ITM   PIC X(22)   OCCURS  2.
+                  06  W31-CMB-SETMEDKBN.
+                    07  W31-SETMEDKBN          PIC X(32).
+                    07  W31-SETMEDKBN-CNT      PIC S9(9)   BINARY.
+                    07  W31-SETMEDKBN-ITM      PIC X(32)   OCCURS  2.
                 05  W31-NB02-STATE             PIC S9(9)   BINARY.

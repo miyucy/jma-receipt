@@ -39,8 +39,11 @@
            03  SYS-5015-TBL.
       *ＡＤＬ点数入力区分
                05  SYS-5015-ADLINPUTKBN PIC  X(01).
+      *医療区分引継ぎ区分
+               05  SYS-5015-SETMEDKBN
+                                        PIC  X(01).
       *予備
-               05                       PIC  X(499).
+               05                       PIC  X(498).
       *端末ＩＤ
            03  SYS-5015-TERMID          PIC  X(16).
       *オペーレータＩＤ
