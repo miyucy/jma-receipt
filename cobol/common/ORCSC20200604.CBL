@@ -1287,12 +1287,15 @@
       *        情陸坌
                PERFORM 3001-INGAI-SYORI-SEC
       *        情ま坌
-               IF      SPA-NYUGAIKBN       =   "1"
-      *            ェ情
-                   PERFORM 30021-NYUIN-INNAI-SYORI-SEC
-               ELSE
+               IF     (SPA-ERRCD           =   SPACE )
+                  AND (LNK-ORCSC-KIDCD     =   SPACE )
+                   IF      SPA-NYUGAIKBN       =   "1"
+      *                ェ情
+                       PERFORM 30021-NYUIN-INNAI-SYORI-SEC
+                   ELSE
       *            陸侳
-                   PERFORM 3002-INNAI-SYORI-SEC
+                       PERFORM 3002-INNAI-SYORI-SEC
+                   END-IF
                END-IF
            END-IF
       *
