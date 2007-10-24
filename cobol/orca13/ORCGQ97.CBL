@@ -107,6 +107,9 @@
       *
            COPY    "ORCA-BLOB".
       *
+      *    ファイル削除パラメタ
+           COPY    "CPORCSFDEL.INC".
+      *
       *****************************************************************
       *    連絡　領域
       *****************************************************************
@@ -209,6 +212,20 @@
       *    戻る　処理
       *****************************************************************
        210-BACK                    SECTION.
+      *
+      *    クライアント保存用作業ファイル削除 
+           PERFORM VARYING IDX FROM    1   BY  1
+                   UNTIL   IDX >       SPA-SFILESV-MAX
+               INITIALIZE              ORCSFDELAREA
+               STRING  SPA-SFILESV-FOR-FOLDER (IDX)
+                                           DELIMITED  BY  SPACE
+                       SPA-SFILESV-FOR-DATA   (IDX) 
+                                           DELIMITED  BY  SPACE
+                                           INTO  IF-FILENAME
+               END-STRING
+               CALL    "orcfiledel"    USING
+                                       ORCSFDELAREA
+           END-PERFORM
       *
            MOVE    SPA-Q97-MOTOPG      TO  SPA-SAKIPG
            MOVE    "Q97"               TO  SPA-MOTOPG
