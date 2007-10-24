@@ -1142,47 +1142,10 @@
                              ((WRK-GMN-INPUTCD(IDX) =   SPACE) AND
                               (WRK-COM-INPUTCD(IDX) =   SPACE))
       *
-           IF      WRK-COM-SRYKA (IDX)     =   WRK-SRYKA
-      *@
-            AND    WRK-COM-HKNCOMBI (IDX)  NOT =   "9999"
-               MOVE    WRK-COM-SRYSYUKBN (IDX) TO  WRK-CHK-SRYSYUKBN
-      *----(01.00.01) LINE ADD START ----------------------------------
-               IF      WRK-CHK-SRYSYUKBN       =   SPACE
-                   EVALUATE    WRK-COM-SRYKBN (IDX)
-                       WHEN    "21"
-                           MOVE    "210"       TO  WRK-CHK-SRYSYUKBN
-                       WHEN    "22"
-                           MOVE    "220"       TO  WRK-CHK-SRYSYUKBN
-                       WHEN    "23"
-                           MOVE    "230"       TO  WRK-CHK-SRYSYUKBN
-                   END-EVALUATE
-               END-IF
-      *
-      *----(01.00.01) LINE ADD END   ----------------------------------
-      *        院外の時
-               IF      LNK-ORCSC-INGAIKBN     =   "1"
-                   EVALUATE    WRK-CHK-SRYSYUKBN
-                       WHEN    "210"
-                           MOVE    "212"          TO  WRK-CHK-SRYSYUKBN
-                       WHEN    "290" 
-                           MOVE    "292"          TO  WRK-CHK-SRYSYUKBN
-                       WHEN    "220" 
-                           MOVE    "222"          TO  WRK-CHK-SRYSYUKBN
-                       WHEN    "230" 
-                           MOVE    "232"          TO  WRK-CHK-SRYSYUKBN
-                   END-EVALUATE
-               ELSE
-                   EVALUATE    WRK-CHK-SRYSYUKBN
-                       WHEN    "210"
-                           MOVE    "211"          TO  WRK-CHK-SRYSYUKBN
-                       WHEN    "290" 
-                           MOVE    "291"          TO  WRK-CHK-SRYSYUKBN
-                       WHEN    "220" 
-                           MOVE    "221"          TO  WRK-CHK-SRYSYUKBN
-                       WHEN    "230" 
-                           MOVE    "231"          TO  WRK-CHK-SRYSYUKBN
-                   END-EVALUATE
-               END-IF
+           IF     (WRK-COM-SRYKA (IDX)     =   WRK-SRYKA  )
+            AND   (WRK-COM-HKNCOMBI (IDX)  NOT =   "9999" )
+      *        診療種別区分変換
+               PERFORM 30001-SRYSYUKBN-SET-SEC
       *        投薬の時、薬剤コードがあること
                IF     (WRK-CHK-SRYSYUKBN(1:2)  =   "21"
                                                OR  "22"
@@ -1324,12 +1287,15 @@
       *        院外分
                PERFORM 3001-INGAI-SYORI-SEC
       *        院内分
-               IF      SPA-NYUGAIKBN       =   "1"
-      *            入院
-                   PERFORM 30021-NYUIN-INNAI-SYORI-SEC
-               ELSE
+               IF     (SPA-ERRCD           =   SPACE )
+                  AND (LNK-ORCSC-KIDCD     =   SPACE )
+                   IF      SPA-NYUGAIKBN       =   "1"
+      *                入院
+                       PERFORM 30021-NYUIN-INNAI-SYORI-SEC
+                   ELSE
       *            外来
-                   PERFORM 3002-INNAI-SYORI-SEC
+                       PERFORM 3002-INNAI-SYORI-SEC
+                   END-IF
                END-IF
            END-IF
       *
@@ -1340,6 +1306,52 @@
       *
            .
        3000-JIDOU-SYORI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *   診療種別区分変換処理
+      *****************************************************************
+       30001-SRYSYUKBN-SET-SEC              SECTION.
+      *
+           MOVE    WRK-COM-SRYSYUKBN (IDX) TO  WRK-CHK-SRYSYUKBN
+      *
+           IF      WRK-CHK-SRYSYUKBN       =   SPACE
+               EVALUATE    WRK-COM-SRYKBN (IDX)
+                   WHEN    "21"
+                       MOVE    "210"       TO  WRK-CHK-SRYSYUKBN
+                   WHEN    "22"
+                       MOVE    "220"       TO  WRK-CHK-SRYSYUKBN
+                   WHEN    "23"
+                       MOVE    "230"       TO  WRK-CHK-SRYSYUKBN
+               END-EVALUATE
+           END-IF
+      *
+      *    院外の時
+           IF      LNK-ORCSC-INGAIKBN     =   "1"
+               EVALUATE    WRK-CHK-SRYSYUKBN
+                   WHEN    "210"
+                       MOVE    "212"          TO  WRK-CHK-SRYSYUKBN
+                   WHEN    "290" 
+                       MOVE    "292"          TO  WRK-CHK-SRYSYUKBN
+                   WHEN    "220" 
+                       MOVE    "222"          TO  WRK-CHK-SRYSYUKBN
+                   WHEN    "230" 
+                       MOVE    "232"          TO  WRK-CHK-SRYSYUKBN
+               END-EVALUATE
+           ELSE
+               EVALUATE    WRK-CHK-SRYSYUKBN
+                   WHEN    "210"
+                       MOVE    "211"          TO  WRK-CHK-SRYSYUKBN
+                   WHEN    "290" 
+                       MOVE    "291"          TO  WRK-CHK-SRYSYUKBN
+                   WHEN    "220" 
+                       MOVE    "221"          TO  WRK-CHK-SRYSYUKBN
+                   WHEN    "230" 
+                       MOVE    "231"          TO  WRK-CHK-SRYSYUKBN
+               END-EVALUATE
+           END-IF
+          .
+       30001-SRYSYUKBN-SET-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1567,11 +1579,12 @@
                    IF      WRK-ZAITEN-G        =   ZERO
                        CONTINUE
                    ELSE
-      *
                        IF      WRK-CHK-SRYSYUKBN   =   "211"
                                                    OR  "291"
+      *                院内
                            ADD     1               TO  WRK-ZAICNT
                        ELSE
+      *                院外
                            ADD     1               TO  WRK-ZAICNT2
                        END-IF
       *
@@ -1586,7 +1599,7 @@
                        COMPUTE WRK-ZAICNT2     =   WRK-ZAICNT2
                                                +   WRK-KONGO
                                                +   WRK-SONOTA
-                   END-IF 
+                   END-IF
                END-IF
       *        点数加算
                IF      WRK-CHK-SRYSYUKBN   =   "211"
@@ -1663,7 +1676,7 @@
            EXIT.
       *
       *****************************************************************
-      *    院外　算定処理
+      *    入院回数算定処理
       *****************************************************************
        3009-NYUINKAISU-SEC              SECTION.
       *
@@ -2646,36 +2659,19 @@
                               (WRK-COM-INPUTCD(IDX) =   SPACE ))
                        OR    ( SPA-ERRCD       NOT  =   SPACE )
       *
-             IF      WRK-COM-SRYKA(IDX)    =   WRK-SRYKA
+             IF     (WRK-COM-SRYKA(IDX)    =   WRK-SRYKA  )
                 AND (WRK-COM-HKNCOMBI(IDX) NOT =   "9999" )
-      *
-               MOVE    WRK-COM-SRYSYUKBN  (IDX)  TO  WRK-CHK-SRYSYUKBN
-      *----(01.00.01) LINE ADD START ----------------------------------
-               IF      WRK-CHK-SRYSYUKBN       =   SPACE
-                   EVALUATE    WRK-COM-SRYKBN (IDX)
-                       WHEN    "21"
-                           MOVE    "210"       TO  WRK-CHK-SRYSYUKBN
-                       WHEN    "22"
-                           MOVE    "220"       TO  WRK-CHK-SRYSYUKBN
-                       WHEN    "23"
-                           MOVE    "230"       TO  WRK-CHK-SRYSYUKBN
-                   END-EVALUATE
-               END-IF
-      *        内服薬チェック
+      *        診療種別区分変換
+               PERFORM 30001-SRYSYUKBN-SET-SEC
+      *        院内の内服薬チェック
       *          臨時で１４日以内の時は対象外
-               IF     ( WRK-CHK-SRYSYUKBN      =   "210"
-                                               OR  "211" )  OR
-                      ((WRK-CHK-SRYSYUKBN      =   "290"
-                                               OR  "291" )  AND
-      **************** (WRK-COM-KAISU (IDX)    >=  14 ))
-                       (WRK-COM-KAISU (IDX)    >   14 ))
+               IF     ( WRK-CHK-SRYSYUKBN      =   "211" )  OR
+                      ((WRK-CHK-SRYSYUKBN      =   "291") AND
+                       (WRK-COM-KAISU (IDX)    >   14   ))
                    MOVE    1                   TO  FLG-NAIFUKU
                ELSE
                    MOVE    ZERO                TO  FLG-NAIFUKU
                END-IF
-      ******** IF     (WRK-COM-SRYKBN   (IDX)  =   "21"  )  AND
-      *               (WRK-CHK-SRYSYUKBN       =   "210" OR
-      *********                                    "211" )  AND
                IF     (FLG-NAIFUKU             =   1     )  AND
                       (FLG-ZAI                 =   ZERO  )
                    IF      WRK-GMN-INPUTCD(IDX)(1:1)   =   "."
@@ -2695,6 +2691,7 @@
                    END-IF
                    MOVE    1               TO  FLG-ZAI
                END-IF
+               MOVE    1               TO  FLG-ZAI
              END-IF
       *
                IF      WRK-COM-ZAIEND (IDX)    =   "1"
