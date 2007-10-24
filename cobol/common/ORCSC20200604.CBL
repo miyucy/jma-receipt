@@ -169,11 +169,19 @@
            03  WRK-ERRCD3          PIC X(04). 
            03  WRK-ERRCD6          PIC X(04). 
       *
-           03  WRK-SYOKEIS         PIC 9(08)V9(8).
-           03  WRK-SYOKEIS2        PIC 9(08)V9(8).
+           03  WRK-SYOKEIS         PIC 9(08)V99.
+           03  WRK-SYOKEIS2        PIC 9(08)V9(4).
            03  WRK-SYOKEI          PIC 9(08).
       *
-           03  WRK-TENSUKEI        PIC 9(08)V9(4).
+           03  WRK-ZAIKEI          PIC 9(08)V99.
+           03  WRK-GAIKEI          PIC 9(08)V99.
+           03  WRK-GAITEN          PIC 9(08).
+           03  WRK-KIZKEI          PIC 9(08).
+           03  WRK-KIZTEN          PIC 9(08).
+           03  WRK-FIRTEN          PIC 9(08).
+           03  WRK-MAISU           PIC 9(08).
+           03  WRK-KEIMAI          PIC 9(08).
+           03  WRK-TENSUKEI        PIC 9(08).
            03  WRK-KAISU           PIC 9(04).
       *
            03  WRK-TENSU-KEISAN.
@@ -204,7 +212,7 @@
                05  WRK-SANTEN-9        PIC 9(08)V99.
                05  WRK-TENKEI          PIC 9(08).
                05  WRK-ZAITEN          PIC 9(08).
-               05  WRK-ZAITEN-G        PIC 9(08)V9(8).
+               05  WRK-ZAITEN-G        PIC 9(08)V9(4).
       *
                05  WRK-CHK-SRYSYUKBN   PIC X(03).
       *    保険毎の逓減計算
@@ -532,18 +540,10 @@
       *************    MOVE    "0074"          TO  WRK-ERRCD
       *                MOVE    "1"             TO  WRK-COM-CUR
       *************                                          (IDX-Z)
-      *                自動変換なしはエラーとする
-                       IF      SPA-CHGSRYSYU-FLG   =   "1"
-                           MOVE    "0074"          TO  WRK-ERRCD
-                           MOVE    "1"             TO  WRK-COM-CUR
-                                                             (IDX-Z)
-                       ELSE
-                           MOVE    "0"             TO  WRK-SRYSYUKBN
-                                                               (3:1) 
-                           MOVE    "0"             TO  WRK-GMN-INPUTCD
+                       MOVE    "0"             TO  WRK-SRYSYUKBN(3:1)
+                       MOVE    "0"             TO  WRK-GMN-INPUTCD
                                                         (IDX-Z)(4:1)
-                           PERFORM 100101-SRYSYUMEI-HEN-SEC
-                       END-IF
+                       PERFORM 100101-SRYSYUMEI-HEN-SEC
                    END-IF
                WHEN    "212"
                WHEN    "222"
@@ -1287,15 +1287,12 @@
       *        院外分
                PERFORM 3001-INGAI-SYORI-SEC
       *        院内分
-               IF     (SPA-ERRCD           =   SPACE )
-                  AND (LNK-ORCSC-KIDCD     =   SPACE )
-                   IF      SPA-NYUGAIKBN       =   "1"
-      *                入院
-                       PERFORM 30021-NYUIN-INNAI-SYORI-SEC
-                   ELSE
+               IF      SPA-NYUGAIKBN       =   "1"
+      *            入院
+                   PERFORM 30021-NYUIN-INNAI-SYORI-SEC
+               ELSE
       *            外来
-                       PERFORM 3002-INNAI-SYORI-SEC
-                   END-IF
+                   PERFORM 3002-INNAI-SYORI-SEC
                END-IF
            END-IF
       *
@@ -1823,10 +1820,8 @@
            END-IF
       *TEST
       *    訂正で自動発生なしの場合
-           IF    ((LNK-ORCSC-SYORIFLG  =   1  )  AND
-                  (SPA-TEISEITOKU-FLG  =   "0") )
-      *        病名疾患区分の自動発生なし
-               OR (SPA-BYOMEIAUTO-FLG  NOT =   "1" )
+           IF     (LNK-ORCSC-SYORIFLG  =   1  )  AND
+                  (SPA-TEISEITOKU-FLG  =   "0")
                CONTINUE
            ELSE
       *        特定疾患処方管理加算の処理
@@ -2238,10 +2233,8 @@
            END-IF
       *
       *    訂正で自動発生なしの場合
-           IF    ((LNK-ORCSC-SYORIFLG  =   1  )  AND
-                  (SPA-TEISEITOKU-FLG  =   "0"))
-      *        病名疾患区分の自動発生なし
-               OR (SPA-BYOMEIAUTO-FLG  NOT =   "1" )
+           IF     (LNK-ORCSC-SYORIFLG  =   1  )  AND
+                  (SPA-TEISEITOKU-FLG  =   "0")
                CONTINUE
            ELSE
       *        特定疾患処方管理加算
@@ -2552,7 +2545,6 @@
            END-IF
            MOVE    1                   TO  FLG-ALL
            PERFORM 3003-YAKJYO-CHK-SEC
-           MOVE    ZERO                TO  FLG-ALL
       *****PERFORM 3002-KASAN-SYORI-SEC
            IF      FLG-ERR             =   ZERO
                MOVE    "130"           TO  LNK-ORCSC-SRYSYUKBN(02 IDXS)
@@ -3214,7 +3206,6 @@
                END-EVALUATE
              END-IF
            END-PERFORM
-           MOVE    ZERO                TO  FLG-ALL
            IF      FLG-ERR             =   1
                GO      TO      3002-KASAN-SYORI-EXT
            END-IF
@@ -3722,10 +3713,9 @@
       *
                       COMPUTE IDX-Y3              =   JYURRK-RENNUM
                                                   +   1
-      *ver.4.8
-      *               IF      IDX-Y3              >   4
-      *                    MOVE    4               TO  IDX-Y3
-      ****            END-IF
+                      IF      IDX-Y3              >   4
+                           MOVE    4               TO  IDX-Y3
+                      END-IF
                       MOVE    SPA-SRYYMD(7:2)     TO  IDX-Y2
                       IF      (ACCT-DAY (IDX-Y3 IDX-Y2)
                                                    >   ZERO  ) AND
@@ -3873,8 +3863,8 @@
            MOVE    SPACE               TO  TENSUPLUS-REC
            INITIALIZE                      TENSUPLUS-REC
            MOVE    TNS-SRYCD           TO  TNSP-SRYCD
-           MOVE    SPA-SRYYMD          TO  TNSP-YUKOSTYMD
-           MOVE    SPA-SRYYMD          TO  TNSP-YUKOEDYMD
+           MOVE    TNS-YUKOSTYMD       TO  TNSP-YUKOSTYMD
+           MOVE    TNS-YUKOEDYMD       TO  TNSP-YUKOEDYMD
       *
            MOVE    SPA-HOSPNUM         TO  TNSP-HOSPNUM
            MOVE    TENSUPLUS-REC       TO  MCPDATA-REC
