@@ -193,6 +193,8 @@
       *  03.05.11    NACL-ÌçÏÆ    07/09/27  ÆÃÄêÊÝ¸±¼Ô¡ÜÀº¿À¡¢·ë³ËÂÐ±þ½¤Àµ
       *                                     ¡ÊÏ·¿Í¤ÏÂÐ¾Ý³°¤È¤¹¤ë¡Ë
       *  03.05.12    NACL-ÌçÏÆ    07/10/05  ´µ¼Ô¸ºÌÈ¼«ÈñÂÐ±þ
+      *  03.05.13    NACL-ÌçÏÆ    07/10/24  ¼«ÇåÀÕÆÃÄê´ïºàÅù¾ÃÈñÀÇÂÐ¾Ý³°ÀßÄê
+      *                                     ¹àÌÜ¿ô³ÈÄ¥ÂÐ±þ
       ****************************************************************
        ENVIRONMENT         DIVISION.
        CONFIGURATION       SECTION.
@@ -371,7 +373,7 @@
       *
       *    ¼«ÇåÀÕÆÃÄê´ïºàÅù¾ÃÈñÀÇÂÐ¾Ý³°¥³¡¼¥É
            03  WK-4003-TAIGAI.
-               05  WK-4003-TAIGAI-OCC      OCCURS  10.
+               05  WK-4003-TAIGAI-OCC      OCCURS  50.
                  06  WK-4003-TAIGAI-SRYCD  PIC  X(09).
       *
       *    ¼«ÇåÀÕ¤½¤ÎÂ¾¥³¡¼¥É¡Ê£°£¹£µ£¹£±¡¥£¹£²¡¥£¹£³¡Ë¤Î¿ÇÎÅ¹Ô°Ù¥³¡¼¥ÉÅù
@@ -2001,7 +2003,7 @@
                   PERFORM   SYSKANRI-READ-SEC
                   IF    MCP-RC             =     ZERO
                      PERFORM   VARYING   IDX8    FROM   1   BY   1
-                                UNTIL   (IDX8                 >    10 )
+                                UNTIL   (IDX8                 >    50 )
                                   OR    (SYS-4003-SRYCD(IDX8) =  SPACE)
                           MOVE    SYS-4003-SRYCD(IDX8)
                                         TO   WK-4003-TAIGAI-SRYCD(IDX8)
@@ -2046,7 +2048,7 @@
                     WHEN   "09593"
                        MOVE     SPACE    TO    FLG-TAIGAI
                        PERFORM  VARYING  IDX8    FROM   1   BY   1
-                            UNTIL  (IDX8                       >   10  )
+                            UNTIL  (IDX8                       >   50  )
                               OR   (WK-4003-TAIGAI-SRYCD(IDX8) =  SPACE)
                               OR   (FLG-TAIGAI                 =  "1"  )
                          IF   WK-4003-TAIGAI-SRYCD(IDX8)  =

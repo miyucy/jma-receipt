@@ -38,6 +38,8 @@
       *  01.00.08    NACL-小豆沢  06.07.04  労災入院料に含める加算がコメント
       *                                     と同時入力された場合の対応
       *  03.05.00    NACL-太田    07/05/28  グループ診療対応
+      *  03.05.01    NACL-門脇    07/10/24  自賠責特定器材等消費税対象外設定
+      *                                     項目数拡張対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -3820,7 +3822,7 @@
                IF    ( SYS-4001-TAXKBN-KZI     =   "2" )
                    MOVE    ZERO        TO  FLG-JBI-KZI-OUT
                    PERFORM VARYING IDX0    FROM    1   BY  1
-                           UNTIL ( IDX0    >   10 )
+                           UNTIL ( IDX0    >   50 )
                        IF    ( WRK-JBI-SONOTA-SRYCD
                                            =   SYS-4003-SRYCD (IDX0))
                            MOVE    1   TO  FLG-JBI-KZI-OUT

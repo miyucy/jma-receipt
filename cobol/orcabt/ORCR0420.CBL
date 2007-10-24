@@ -135,6 +135,8 @@
       *  03.05.06    NACL-ÌçÏÆ    07/09/13  Èé²¼¶ÚÆù¡¢ÀÅÌ®Ãí¼Í¤Îµ­ºÜÊÑ¹¹ÂÐ±þ
       *  03.05.07    NACL-ÌçÏÆ    07/09/18  ²èÁü¿ÇÃÇ¤Î²Ã»»¡Ê¥Ç¡¼¥¿¶èÊ¬¡§¼êµ»¡Ë
       *                                     ¤Îµ­ºÜ½çÊÑ¹¹ÂÐ±þ
+      *  03.05.08    NACL-ÌçÏÆ    07/10/24  ¼«ÇåÀÕÆÃÄê´ïºàÅù¾ÃÈñÀÇÂÐ¾Ý³°ÀßÄê
+      *                                     ¹àÌÜ¿ô³ÈÄ¥ÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -2731,7 +2733,7 @@ grpsys        MOVE    SPA-HOSPNUM         TO  SYS-4003-HOSPNUM
               IF      FLG-SYSKANRI        =   ZERO
                   MOVE    MCPDATA-REC     TO  SYS-4003-REC
                   PERFORM   VARYING   IDX5    FROM   1   BY   1
-                             UNTIL   (IDX5                 >    10 )
+                             UNTIL   (IDX5                 >    50 )
                                OR    (SYS-4003-SRYCD(IDX5) =  SPACE)
                                OR    (FLG-TAIGAI           =     1 )
                       IF   SYS-4003-SRYCD(IDX5)  =  SRY-SRYCD(IDX2)
