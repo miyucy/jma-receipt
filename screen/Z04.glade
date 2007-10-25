@@ -3685,10 +3685,10 @@
 
     <widget>
       <class>GtkLabel</class>
-      <name>GENERICHEN</name>
-      <x>700</x>
+      <name>GENERICNAME</name>
+      <x>112</x>
       <y>192</y>
-      <width>228</width>
+      <width>590</width>
       <height>24</height>
       <label></label>
       <justify>GTK_JUSTIFY_CENTER</justify>
@@ -3701,10 +3701,10 @@
 
     <widget>
       <class>GtkLabel</class>
-      <name>GENERICNAME</name>
-      <x>112</x>
+      <name>GENERICHEN</name>
+      <x>700</x>
       <y>192</y>
-      <width>590</width>
+      <width>320</width>
       <height>24</height>
       <label></label>
       <justify>GTK_JUSTIFY_CENTER</justify>
