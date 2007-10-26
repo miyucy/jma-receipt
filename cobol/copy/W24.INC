@@ -201,4 +201,14 @@
                                                OCCURS  5.
                 05  W24-RYOYODSP-ITM-STATE     PIC S9(9)
                                                BINARY.
+              04  W24-CMB-NACCT-SKJ.
+                05  W24-NACCT-SKJ              PIC X(14).
+                05  W24-NACCT-SKJ-STATE        PIC S9(9)
+                                               BINARY.
+                05  W24-NACCT-SKJ-CNT          PIC S9(9)
+                                               BINARY.
+                05  W24-NACCT-SKJ-ITM          PIC X(14)
+                                               OCCURS  5.
+                05  W24-NACCT-SKJ-ITM-STATE    PIC S9(9)
+                                               BINARY.
 

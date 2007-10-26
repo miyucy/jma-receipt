@@ -427,5 +427,14 @@ W24	{
 			item	varchar(20)[05];
 			state	int;
 		};
+		CMB_NACCT_SKJ	{
+			NACCT_SKJ	{
+				value	varchar(14);
+				state	int;
+			};
+			count	int;
+			item	varchar(14)[05];
+			state	int;
+		};
 	};
 };

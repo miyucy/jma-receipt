@@ -58,8 +58,11 @@
       *入院会計テーブル表示情報
                05  SYS-5000-GENSAN-INF     OCCURS  10.
                    07  SYS-5000-DSPCD      PIC  X(09).
+      *入院料削除食事算定区分
+               05  SYS-5000-NACCT-SKJKBN
+                                           PIC  X(01).
       *予備（１）
-               05                          PIC  X(60).
+               05                          PIC  X(59).
       *入院歴表示区分
                05  SYS-5000-REKI-DISPKBN
                                            PIC  X(01).
