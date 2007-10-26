@@ -56,6 +56,8 @@
       *  03.05.01    NACL-藤原    07/04/19  グループ診療対応
       *  03.05.02    NACL-藤原    07/09/11  新潟県中越沖地震対応
       *                                     ２００７年９月〜１２月対象 
+      *
+      *  04.01.01    NACL-藤原    07/10/24  総括表の地方公費記載対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -280,6 +282,7 @@
                        09  SUM-KOH-SHOKUJIKENSU   PIC  9(06).
                        09  SUM-KOH-SHOKUJIRYOYOHI PIC  9(10).
                        09  SUM-KOH-SHOKUJIFTN     PIC  9(10).
+                       09  SUM-KOH-MEISYO         PIC  X(44).
       *        老人保健（再掲）      
                05  SUM-ROU-KOH-TABLE           OCCURS  10. 
                    07  SUM-ROU-KOH-TBL.
@@ -1058,78 +1061,87 @@ grpsys                 MOVE    SPA-HOSPNUM     TO  SYS-1005-HOSPNUM
       *
            MOVE    SPACE               TO  WRK-KOHKBN
       *
-      *    保険番号読込み  
-           INITIALIZE                      HKNNUM-REC
-grpsys     MOVE    SPA-HOSPNUM         TO  HKN-HOSPNUM
-           MOVE   SUM-KOH-KOHNUM (IDX3 IDX1 IDX IDX2)
-                                       TO    HKN-HKNNUM
-           MOVE   HKNNUM-REC           TO    MCPDATA-REC
-           MOVE    "tbl_hknnum"        TO  MCP-TABLE
-           MOVE    "key2"              TO  MCP-PATHNAME
-grpsys     PERFORM 900-DBSELECT-SEC
-           IF      MCP-RC              =   ZERO
+      *    公費番号まとめ情報からの集計か
+           IF      SUM-KOH-MEISYO  (IDX3 IDX1 IDX IDX2)
+                                       =   SPACE
+      *        保険番号読込み  
+               INITIALIZE                      HKNNUM-REC
+grpsys         MOVE    SPA-HOSPNUM         TO  HKN-HOSPNUM
+               MOVE   SUM-KOH-KOHNUM (IDX3 IDX1 IDX IDX2)
+                                           TO    HKN-HKNNUM
+               MOVE   HKNNUM-REC           TO    MCPDATA-REC
                MOVE    "tbl_hknnum"        TO  MCP-TABLE
                MOVE    "key2"              TO  MCP-PATHNAME
-               PERFORM 900-HKNNUM-READ-SEC
-           ELSE
-               MOVE    1                  TO  FLG-HKNNUM
-           END-IF
-      *
-           PERFORM UNTIL       FLG-HKNNUM      =   1
-               IF    ( HKN-TEKSTYMD            <=  WRK-SRYYMD )
-               AND   ( HKN-TEKEDYMD            >=  WRK-SRYYMD )
-                   IF     SUM-KOH-KOHNUM (IDX3 IDX1 IDX IDX2)
-                                                   =   "027"
-      *                老人保険のとき 
-                       IF    ( SYS-1001-HOSPSBT    =   HKN-PAYKBN(1:1) )
-                       AND   ( SYS-1001-ROUPAYKBN  =   HKN-PAYKBN(2:1) )
-                           STRING  "（"            DELIMITED  BY  SIZE
-                                   HKN-TANSEIDONAME
-                                                   DELIMITED  BY  SPACE
-                                   "）"            DELIMITED  BY  SIZE
-                                                   INTO   WRK-HKNNAME
-                           END-STRING
-                           MOVE    1                   TO  FLG-HKNNUM
-                       END-IF
-                   ELSE
-      *                特定疾患のとき 
-                       IF      SUM-KOH-KOHNUM (IDX3 IDX1 IDX IDX2)
-                                                   =   "051"
-                           MOVE    "（特定疾患）"      TO   WRK-HKNNAME
-                       ELSE
-      *                その他の保険のとき 
-                           STRING  "（"            DELIMITED  BY  SIZE
-                                   HKN-TANSEIDONAME
-                                                   DELIMITED  BY  SPACE
-                                   "）"            DELIMITED  BY  SIZE
-                                                   INTO   WRK-HKNNAME
-                           END-STRING
-                       END-IF
-                       MOVE    1                   TO  FLG-HKNNUM 
-                   END-IF     
-               END-IF
-      *
-               IF      FLG-HKNNUM           =   ZERO
+grpsys         PERFORM 900-DBSELECT-SEC
+               IF      MCP-RC              =   ZERO
                    MOVE    "tbl_hknnum"        TO  MCP-TABLE
                    MOVE    "key2"              TO  MCP-PATHNAME
                    PERFORM 900-HKNNUM-READ-SEC
                ELSE
-                   MOVE    HKN-HBTNUM      TO  WRK-Z9
-                   INITIALIZE                  ORCSKANACHKAREA
-                   MOVE    "2"                 TO  KANACHK-SYORI 
-                   MOVE    WRK-Z9 (4:2)    TO  KANACHK-MAE-INPUT 
-                   CALL    "ORCSKANACHK"   USING   ORCSKANACHKAREA
-                   IF    ( KANACHK-RC      =   ZERO )
-                   AND   ( KANACHK-MAX     >   ZERO )
-                       MOVE    KANACHK-OUT-INPUT(1:KANACHK-MAX)
-                                                   TO  WRK-KOHNUM
-                   END-IF    
-               END-IF 
-           END-PERFORM
+                   MOVE    1                  TO  FLG-HKNNUM
+               END-IF
+      *
+               PERFORM UNTIL       FLG-HKNNUM      =   1
+                   IF    ( HKN-TEKSTYMD            <=  WRK-SRYYMD )
+                   AND   ( HKN-TEKEDYMD            >=  WRK-SRYYMD )
+                       IF     SUM-KOH-KOHNUM (IDX3 IDX1 IDX IDX2)
+                                                       =   "027"
+      *                    老人保険のとき 
+                           IF    ( SYS-1001-HOSPSBT
+                                                   =   HKN-PAYKBN(1:1) )
+                           AND   ( SYS-1001-ROUPAYKBN
+                                                   =   HKN-PAYKBN(2:1) )
+                               STRING  "（"        DELIMITED  BY  SIZE
+                                       HKN-TANSEIDONAME
+                                                   DELIMITED  BY  SPACE
+                                       "）"        DELIMITED  BY  SIZE
+                                                   INTO   WRK-HKNNAME
+                               END-STRING
+                               MOVE    1               TO  FLG-HKNNUM
+                           END-IF
+                       ELSE
+      *                    特定疾患のとき 
+                           IF      SUM-KOH-KOHNUM (IDX3 IDX1 IDX IDX2)
+                                                   =   "051"
+                               MOVE    "（特定疾患）"  TO   WRK-HKNNAME
+                           ELSE
+      *                    その他の保険のとき 
+                               STRING  "（"        DELIMITED  BY  SIZE
+                                       HKN-TANSEIDONAME
+                                                   DELIMITED  BY  SPACE
+                                       "）"        DELIMITED  BY  SIZE
+                                                   INTO   WRK-HKNNAME
+                               END-STRING
+                           END-IF
+                           MOVE    1               TO  FLG-HKNNUM 
+                       END-IF     
+                   END-IF
+      *
+                   IF      FLG-HKNNUM           =   ZERO
+                       MOVE    "tbl_hknnum"        TO  MCP-TABLE
+                       MOVE    "key2"              TO  MCP-PATHNAME
+                       PERFORM 900-HKNNUM-READ-SEC
+                   ELSE
+                       MOVE    HKN-HBTNUM      TO  WRK-Z9
+                       INITIALIZE                  ORCSKANACHKAREA
+                       MOVE    "2"                 TO  KANACHK-SYORI 
+                       MOVE    WRK-Z9 (4:2)    TO  KANACHK-MAE-INPUT 
+                       CALL    "ORCSKANACHK"   USING   ORCSKANACHKAREA
+                       IF    ( KANACHK-RC      =   ZERO )
+                       AND   ( KANACHK-MAX     >   ZERO )
+                           MOVE    KANACHK-OUT-INPUT(1:KANACHK-MAX)
+                                                       TO  WRK-KOHNUM
+                       END-IF    
+                   END-IF 
+               END-PERFORM
       *    
-           MOVE    "tbl_hknnum"        TO  MCP-TABLE
-           MOVE    "key2"              TO  MCP-PATHNAME
-           PERFORM 900-CLOSE-SEC
+               MOVE    "tbl_hknnum"        TO  MCP-TABLE
+               MOVE    "key2"              TO  MCP-PATHNAME
+               PERFORM 900-CLOSE-SEC
+           ELSE
+               MOVE    SUM-KOH-MEISYO (IDX3 IDX1 IDX IDX2)
+                                           TO   WRK-KOHKBN
+           END-IF
       *
            MOVE    WRK-KOHKBN          TO  HCM2T-KOHKBN (IDX IDY)
            .

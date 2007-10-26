@@ -391,7 +391,7 @@
                PERFORM 5002-HIZUKE-CHK-SEC
                MOVE    WRK-HENYMDG         TO  SPA-GMN-TEDYUKYMD (IDX)
       *
-               MOVE    SYS-2007-MEISYO     TO  SPA-GMN-TMEISYO   (IDX)
+               MOVE    SYS-2007-MEISYO (1) TO  SPA-GMN-TMEISYO   (IDX)
                PERFORM VARYING IDY FROM    1   BY  1
                        UNTIL   IDY >       10
                        OR      SYS-2007-KOHNUM (IDY)   =   SPACE
@@ -655,7 +655,7 @@
                PERFORM 5002-HIZUKE-CHK-SEC
                MOVE    WRK-HENYMDG         TO  SPA-GMN-EDYUKYMD
       *
-               MOVE    SYS-2007-MEISYO     TO  SPA-GMN-MEISYO
+               MOVE    SYS-2007-MEISYO (1) TO  SPA-GMN-MEISYO
       *
                PERFORM VARYING IDX FROM    1   BY  1
                        UNTIL   IDX >       10
@@ -1138,7 +1138,7 @@
                                                TO  SYS-2007-KOHNUM (IDY)
                    END-IF
                END-PERFORM
-               MOVE    SPA-GMN-MEISYO      TO  SYS-2007-MEISYO
+               MOVE    SPA-GMN-MEISYO      TO  SYS-2007-MEISYO (1)
       *
                MOVE    SYS-2007-REC        TO  SYSKANRI-REC
                IF      SPA-NAI-SELNUM      =   ZERO

@@ -35,14 +35,16 @@
                05  SYS-2007-STYUKYMD    PIC  X(08).
       *Í­¸ú½ªÎ»Ç¯·îÆü
                05  SYS-2007-EDYUKYMD    PIC  X(08).
-      *Ì¾¾Î
-           03  SYS-2007-MEISYO          PIC  X(44).
       *¸øÈñ¾ðÊó
            03  SYS-2007-KOH-AREA.
       *¸øÈñÈÖ¹æ
                05  SYS-2007-KOHNUM      PIC  X(03)   OCCURS  10.
+      *Ì¾¾Î
+           03  SYS-2007-MEISYO-OCC      OCCURS  2.
+      *
+               05  SYS-2007-MEISYO      PIC  X(44).
       *Í½È÷
-           03  FILLER                   PIC  X(426).
+           03  FILLER                   PIC  X(382).
       *Ã¼Ëö£É£Ä
            03  SYS-2007-TERMID          PIC  X(16).
       *¥ª¥Ú¥ì¡¼¥¿£É£Ä

@@ -69,7 +69,9 @@
       *
       *  03.05.01    NACL-Æ£¸¶    07/04/19  ¥°¥ë¡¼¥×¿ÇÎÅÂÐ±þ
       *  03.05.02    NACL-Æ£¸¶    07/09/11  ¿·³ã¸©Ãæ±Û²­ÃÏ¿ÌÂÐ±þ
-      *                                     £²£°£°£·Ç¯£¹·î¡Á£±£²·îÂÐ¾Ý 
+      *                                     £²£°£°£·Ç¯£¹·î¡Á£±£²·îÂÐ¾Ý
+      *
+      *  04.01.01    NACL-Æ£¸¶    07/10/24  Áí³çÉ½¤ÎÃÏÊý¸øÈñµ­ºÜÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -148,6 +150,9 @@ grpsys     COPY    "COMMON-SPA".
            03  IDY2                PIC 9(04).
            03  IDY3                PIC 9(04).
            03  IDY4                PIC 9(04).
+      *     
+           03  IDZ1                PIC 9(04).
+           03  IDZ2                PIC 9(04).
       *
       *    ¥Ñ¥é¥á¥¿ÎÎ°è
        01  WRK-PARA.
@@ -177,10 +182,20 @@ grpsys     COPY    "COMMON-SPA".
            03  WRK-FTNMONEY        PIC 9(10).
            03  WRK-SYOKBN          PIC X(01).
       *
+           03  WRK-MEISYO          PIC X(44).
+      *
       *    ¥«¥¦¥ó¥ÈÎÎ°è
        01  CNT-AREA.
            03  CNT-RECE10          PIC 9(06).
            03  CNT-UPDFILE         PIC 9(06).
+      *
+       01  WRK-2007-AREA.
+           03  WRK-2007-TBL        OCCURS  100.
+               05  WRK-2007-MEISYO PIC X(44).
+               05  WRK-2007-KOH-AREA.
+                   07  WRK-2007-KOHNUM
+                                   PIC X(03)   OCCURS  10.
+           03  WRK-2007-MAX        PIC 9(03).
       *
       *    ½¸·×ÎÎ°è
        01  SUM-AREA.
@@ -229,6 +244,7 @@ grpsys     COPY    "COMMON-SPA".
                        09  SUM-KOH-SHOKUJIKENSU   PIC  9(06).
                        09  SUM-KOH-SHOKUJIRYOYOHI PIC  9(10).
                        09  SUM-KOH-SHOKUJIFTN     PIC  9(10).
+                       09  SUM-KOH-MEISYO         PIC  X(44).
       *        Ï·¿ÍÊÝ·ò¡ÊºÆ·Ç¡Ë      
                05  SUM-ROU-KOH-TABLE           OCCURS  10. 
                    07  SUM-ROU-KOH-TBL.
@@ -275,6 +291,8 @@ grpsys     COPY    "COMMON-SPA".
       *    °åÎÅµ¡´Ø¾ðÊó¾ðÊó
            COPY    "CPSK1001.INC".
       *
+           COPY    "CPSK2007.INC".
+      *
            COPY    "CPSK2009.INC".
       *
       *****************************************************************
@@ -289,7 +307,6 @@ grpsys     COPY    "COMMON-SPA".
       *
       *    £Ä£Â¸¡º÷
            COPY    "MCPDATA.INC".
-      *??     COPY    "CPORCMCP.INC".
       *
       ****************************************************************
        LINKAGE                 SECTION.
@@ -418,6 +435,53 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  SYS-2009-HOSPNUM
                                    =   SPACE
                MOVE    "0"             TO  SYS-2009-SYUKA-KBN
            END-IF
+      *         
+      *    ¸øÈñÈÖ¹æ¤Þ¤È¤á¾ðÊó
+           INITIALIZE                      WRK-2007-AREA
+      *
+           INITIALIZE                      SYS-2007-REC
+           MOVE    "2007"              TO  SYS-2007-KANRICD
+           MOVE    LNK-PRTKANRI-SRYYM  TO  SYS-2007-STYUKYMD (1:6)
+           MOVE    "01"                TO  SYS-2007-STYUKYMD (7:2)
+           MOVE    SYS-2007-STYUKYMD   TO  SYS-2007-EDYUKYMD
+grpsys     MOVE    WRK-PARA-HOSPNUM    TO  SYS-2007-HOSPNUM
+           MOVE    SYS-2007-REC        TO  MCPDATA-REC
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           PERFORM 900-ORCDBMAIN-SEC
+           IF      MCP-RC          =   ZERO
+               MOVE    "tbl_syskanri"  TO  WRK-MCP-TABLE
+               MOVE    "key2"          TO  WRK-MCP-PATHNAME
+               PERFORM 900-SYSKANRI-READ-N-SEC
+           ELSE
+               MOVE    1               TO  FLG-SYSKANRI
+           END-IF
+      *
+           MOVE    ZERO            TO  IDX
+           PERFORM         UNTIL   FLG-SYSKANRI   =   1
+                           OR      IDX            >=  100
+               MOVE    MCPDATA-REC         TO  SYS-2007-REC
+      *
+               ADD     1                   TO  IDX
+               MOVE    SYS-2007-MEISYO (1) TO  WRK-2007-MEISYO   (IDX)
+               PERFORM VARYING IDY FROM    1   BY  1
+                       UNTIL   IDY >       10
+                       OR      SYS-2007-KOHNUM (IDY)   =   SPACE
+                   MOVE    SYS-2007-KOHNUM (IDY)
+                                           TO WRK-2007-KOHNUM (IDX IDY)
+               END-PERFORM
+      *
+               MOVE    "tbl_syskanri"  TO  WRK-MCP-TABLE
+               MOVE    "key2"          TO  WRK-MCP-PATHNAME
+               PERFORM 900-SYSKANRI-READ-N-SEC
+           END-PERFORM
+      *
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           PERFORM 900-CLOSE-SEC
+      *
+           MOVE    IDX             TO  WRK-2007-MAX    
            .
        110-SYSKANRI-GET-EXT.
            EXIT.
@@ -1297,37 +1361,33 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  SYS-2009-HOSPNUM
                    UNTIL   IDZ     >       4
                    OR  RECE10-KOHNUM (IDZ) =   SPACE
       *
+               MOVE    SPACE               TO  WRK-MEISYO 
+      *
       *        ÆÃÄê¼À´µÌµ¤·¤Î¤È¤­ 
                IF      RECE10-KOHNUM (IDZ) =   "091"
                    MOVE    "051"               TO  RECE10-KOHNUM (IDZ)
                END-IF
       *
-      *        ²¬»³¸©¤ÎÃÏÊý¸øÈñ¤Î¤Þ¤È¤á¡Ê£²£°£°£¶Ç¯£±£°·î°Ê¹ß¡Ë
-               IF    ( SYS-1001-PREFNUM    =   "33"                  ) 
-               AND   ( LNK-PRTKANRI-SRYYM  >=  WRK-CONS-SRYYM-200610 )
-                   EVALUATE    RECE10-KOHNUM (IDZ) (2:2)
-                       WHEN    "41"
-                           MOVE    "141"       TO  RECE10-KOHNUM (IDZ)
-                       WHEN    "85"
-                           MOVE    "185"       TO  RECE10-KOHNUM (IDZ)
-                       WHEN    "80"
-                           MOVE    "180"       TO  RECE10-KOHNUM (IDZ)
-                       WHEN    "86"
-                           MOVE    "186"       TO  RECE10-KOHNUM (IDZ)
-                   END-EVALUATE
-               END-IF
-      *
-      *        ËÌ³¤Æ»¤ÎÃÏÊý¸øÈñ¤Î¤Þ¤È¤á¡Ê£²£°£°£·Ç¯£¸·î°Ê¹ß¡Ë
-               IF    ( SYS-1001-PREFNUM    =   "01"     ) 
-               AND   ( LNK-PRTKANRI-SRYYM  >=  "200708" )
-                   EVALUATE    RECE10-KOHNUM (IDZ) (2:2)
-                       WHEN    "90"
-                           MOVE    "190"       TO  RECE10-KOHNUM (IDZ)
-                       WHEN    "91"
-                           MOVE    "191"       TO  RECE10-KOHNUM (IDZ)
-                       WHEN    "92"
-                           MOVE    "192"       TO  RECE10-KOHNUM (IDZ)
-                   END-EVALUATE
+      *        ¸øÈñÈÖ¹æ¤Þ¤È¤á¾ðÊó¤¬¤¢¤ë¤È¤­
+               IF      WRK-2007-MAX        >   ZERO
+                   PERFORM VARYING IDZ1    FROM    1   BY  1
+                           UNTIL   IDZ1    >       WRK-2007-MAX
+                       PERFORM VARYING IDZ2    FROM    1   BY  1
+                               UNTIL   IDZ2    >       5
+                               OR      WRK-2007-KOHNUM (IDZ1 IDZ2)
+                                               =   SPACE
+                           IF      RECE10-KOHNUM (IDZ)
+                                       =   WRK-2007-KOHNUM (IDZ1 IDZ2)
+                               MOVE    WRK-2007-KOHNUM (IDZ1 1)
+                                               TO  RECE10-KOHNUM (IDZ)
+                               MOVE    WRK-2007-MEISYO (IDZ1)
+                                               TO  WRK-MEISYO
+                               MOVE    5       TO  IDZ2
+                               MOVE    WRK-2007-MAX
+                                               TO  IDZ1
+                           END-IF
+                       END-PERFORM
+                   END-PERFORM
                END-IF
       *
                PERFORM VARYING IDX2    FROM    1   BY  1
@@ -1336,6 +1396,9 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  SYS-2009-HOSPNUM
                                                =   SPACE
                        MOVE    RECE10-KOHNUM (IDZ)     TO 
                                        SUM-KOH-KOHNUM
+                                                   (IDY4 IDY3 IDX1 IDX2)
+                       MOVE    WRK-MEISYO              TO 
+                                       SUM-KOH-MEISYO
                                                    (IDY4 IDY3 IDX1 IDX2)
                    END-IF                                
                    IF      RECE10-KOHNUM (IDZ) 
@@ -1718,6 +1781,23 @@ grpsys         PERFORM 900-DBFETCH-SEC
       *
            .
        800-SYSKANRI-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ¥·¥¹¥Æ¥à´ÉÍý¥Þ¥¹¥¿ÆÉ¹þ¡Ê£Î£Å£Ø£Ô¡Ë
+      *****************************************************************
+       900-SYSKANRI-READ-N-SEC         SECTION.
+      *
+           MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
+           MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
+           PERFORM 900-DBFETCH-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    ZERO                TO  FLG-SYSKANRI
+           ELSE
+               MOVE    1                   TO  FLG-SYSKANRI
+           END-IF
+           .
+       900-SYSKANRI-READ-N-EXT.
            EXIT.
       *
       *****************************************************************
