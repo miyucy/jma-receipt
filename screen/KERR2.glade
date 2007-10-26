@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0"?>
 <GTK-Interface>
 
 <project>
@@ -13,7 +13,7 @@
 <widget>
   <class>GtkWindow</class>
   <name>KERR2</name>
-  <width>580</width>
+  <width>574</width>
   <height>130</height>
   <signal>
     <name>map_event</name>
@@ -30,7 +30,7 @@
     <handler>gtk_true</handler>
     <last_modification_time>Mon, 25 Nov 2002 06:01:39 GMT</last_modification_time>
   </signal>
-  <title>(KERR2)„Ç®„É©„ÉºÊÉÖÂ†±</title>
+  <title>(KERR2)•®•È°ºæ Û</title>
   <type>GTK_WINDOW_DIALOG</type>
   <position>GTK_WIN_POS_CENTER</position>
   <modal>True</modal>
@@ -78,16 +78,16 @@
 	<data>CLICKED</data>
 	<last_modification_time>Wed, 31 Jan 2001 07:01:33 GMT</last_modification_time>
       </signal>
-      <label>Èñâ„Åò„Çã</label>
+      <label> ƒ§∏§Î</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
     <widget>
       <class>GtkPandaEntry</class>
       <name>ERRMSG</name>
-      <x>8</x>
+      <x>4</x>
       <y>40</y>
-      <width>566</width>
+      <width>565</width>
       <height>24</height>
       <can_focus>True</can_focus>
       <editable>False</editable>
@@ -101,9 +101,9 @@
     <widget>
       <class>GtkPandaEntry</class>
       <name>ERRMSG2</name>
-      <x>8</x>
+      <x>4</x>
       <y>64</y>
-      <width>566</width>
+      <width>565</width>
       <height>24</height>
       <can_focus>True</can_focus>
       <editable>False</editable>

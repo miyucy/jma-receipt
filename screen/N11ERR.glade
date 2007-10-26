@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0"?>
 <GTK-Interface>
 
 <project>
@@ -33,7 +33,7 @@
     <handler>gtk_true</handler>
     <last_modification_time>Mon, 25 Nov 2002 06:01:39 GMT</last_modification_time>
   </signal>
-  <title>(N11ERR)„Ç®„É©„ÉºÊÉÖÂ†±</title>
+  <title>(N11ERR)•®•È°ºæ Û</title>
   <type>GTK_WINDOW_DIALOG</type>
   <position>GTK_WIN_POS_CENTER</position>
   <modal>True</modal>
@@ -70,18 +70,13 @@
       <width>64</width>
       <height>32</height>
       <can_focus>True</can_focus>
-      <accelerator>
-	<modifiers>0</modifiers>
-	<key>GDK_F1</key>
-	<signal>clicked</signal>
-      </accelerator>
       <signal>
 	<name>clicked</name>
 	<handler>send_event</handler>
 	<data>CLICKED</data>
 	<last_modification_time>Fri, 26 Jan 2001 04:56:59 GMT</last_modification_time>
       </signal>
-      <label>Èñâ„Åò„Çã</label>
+      <label> ƒ§∏§Î</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 

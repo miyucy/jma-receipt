@@ -1,13 +1,16 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0"?>
 <GTK-Interface>
 
 <project>
   <name>CID2</name>
   <program_name>CID2</program_name>
   <directory></directory>
+  <source_directory>src</source_directory>
   <pixmaps_directory>pixmaps</pixmaps_directory>
+  <language>C</language>
   <gnome_support>True</gnome_support>
   <gtkpanda_support>False</gtkpanda_support>
+  <gettext_support>True</gettext_support>
 </project>
 
 <widget>
@@ -25,12 +28,12 @@
     <handler>set_focus</handler>
     <last_modification_time>Fri, 26 Jan 2001 04:22:42 GMT</last_modification_time>
   </signal>
-  <signal>
+  <signal>    
     <name>delete_event</name>
     <handler>gtk_true</handler>
     <last_modification_time>Mon, 25 Nov 2002 06:01:39 GMT</last_modification_time>
   </signal>
-  <title>(CID2)Г≈┘Е░█Ц┌ЁЦ┐╪Ц┐┴Г╫╝Ф▐⌡Ц│┬Г╒╨Х╙█Г■╩И²╒</title>
+  <title>(CID2)ибл╬╔Ё║╪╔ицж╢╧╓╗Ёнг╖╡Хлл</title>
   <type>GTK_WINDOW_DIALOG</type>
   <position>GTK_WIN_POS_CENTER</position>
   <modal>True</modal>
@@ -78,7 +81,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Wed, 14 Feb 2001 00:38:22 GMT</last_modification_time>
       </signal>
-      <label>О╪╝О╪╞</label>
+      <label>ёнёо</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -93,7 +96,7 @@
       <editable>False</editable>
       <text_visible>True</text_visible>
       <text_max_length>70</text_max_length>
-      <text>О╪▒О╪▓О╪⌠О╪■О╪∙О╪√О╪≈О╪≤О╪≥О╪░О╪▒О╪▓О╪⌠О╪■О╪∙О╪√О╪≈О╪≤О╪≥О╪░О╪▒О╪▓О╪⌠О╪■О╪∙О╪√О╪≈О╪≤О╪≥О╪░О╪▒О╪▓О╪⌠О╪■О╪∙О╪√</text>
+      <text>ё╠ё╡ёЁё╢ё╣ё╤ё╥ё╦ё╧ё╟ё╠ё╡ёЁё╢ё╣ё╤ё╥ё╦ё╧ё╟ё╠ё╡ёЁё╢ё╣ё╤ё╥ё╦ё╧ё╟ё╠ё╡ёЁё╢ё╣ё╤</text>
       <input_mode>XIM</input_mode>
       <xim_enabled>False</xim_enabled>
     </widget>
@@ -117,7 +120,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Wed, 14 Feb 2001 00:38:53 GMT</last_modification_time>
       </signal>
-      <label>О╪╞О╪╚</label>
+      <label>ёоёк</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -155,12 +158,28 @@
 
     <widget>
       <class>GtkLabel</class>
+      <name>label3</name>
+      <x>16</x>
+      <y>200</y>
+      <width>250</width>
+      <height>16</height>
+      <label>©Д╬╘╓╧╓Кибл╬╓кцж╓╜╢╧╓╗╓ч╓╧╓╚║╘</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
       <name>label2</name>
       <x>8</x>
       <y>56</y>
       <width>120</width>
       <height>16</height>
-      <label>Е┘╔Е┼⌡Ц│∙Ц┌▄Ц│÷Г≈┘Е░█</label>
+      <label>фЧно╓╣╓Л╓©ибл╬</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -176,7 +195,7 @@
       <y>136</y>
       <width>100</width>
       <height>16</height>
-      <label>Ф▌╗Е╔╗Ц│≥Ц┌▀Г≈┘Е░█</label>
+      <label>©Д╬╘╓╧╓Кибл╬</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -195,23 +214,7 @@
       <label></label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
-      <xalign>0</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>label3</name>
-      <x>5</x>
-      <y>200</y>
-      <width>250</width>
-      <height>16</height>
-      <label>Ф▌╗Е╔╗Ц│≥Ц┌▀Г≈┘Е░█Ц│╚Г╫╝Ц│█Ф▐⌡Ц│┬Ц│╬Ц│≥Ц│▀О╪÷</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0</xalign>
+      <xalign>0.5</xalign>
       <yalign>0.5</yalign>
       <xpad>0</xpad>
       <ypad>0</ypad>

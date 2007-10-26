@@ -1,20 +1,23 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0"?>
 <GTK-Interface>
 
 <project>
-  <name>KID2</name>
-  <program_name>KID2</program_name>
+  <name>KID1</name>
+  <program_name>KID1</program_name>
   <directory></directory>
+  <source_directory>src</source_directory>
   <pixmaps_directory>pixmaps</pixmaps_directory>
+  <language>C</language>
   <gnome_support>True</gnome_support>
   <gtkpanda_support>False</gtkpanda_support>
+  <gettext_support>True</gettext_support>
 </project>
 
 <widget>
   <class>GtkWindow</class>
   <name>KID2</name>
-  <width>610</width>
-  <height>150</height>
+  <width>600</width>
+  <height>120</height>
   <signal>
     <name>map_event</name>
     <handler>map_event</handler>
@@ -25,12 +28,12 @@
     <handler>set_focus</handler>
     <last_modification_time>Fri, 26 Jan 2001 04:22:42 GMT</last_modification_time>
   </signal>
-  <signal>
+  <signal>    
     <name>delete_event</name>
     <handler>gtk_true</handler>
     <last_modification_time>Mon, 25 Nov 2002 06:01:39 GMT</last_modification_time>
   </signal>
-  <title>(KID2)Á¢∫Ë™çÁîªÈù¢</title>
+  <title>(KID2)≥Œ«ß≤ËÃÃ</title>
   <type>GTK_WINDOW_DIALOG</type>
   <position>GTK_WIN_POS_CENTER</position>
   <modal>True</modal>
@@ -50,6 +53,7 @@
       <y>8</y>
       <width>96</width>
       <height>24</height>
+      <can_focus>True</can_focus>
       <editable>False</editable>
       <text_visible>True</text_visible>
       <text_max_length>10</text_max_length>
@@ -62,8 +66,8 @@
       <class>GtkButton</class>
       <name>B01</name>
       <x>8</x>
-      <y>116</y>
-      <width>80</width>
+      <y>88</y>
+      <width>56</width>
       <height>24</height>
       <can_focus>True</can_focus>
       <accelerator>
@@ -77,7 +81,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Wed, 14 Feb 2001 00:38:22 GMT</last_modification_time>
       </signal>
-      <label>F1 Êàª„Çã</label>
+      <label>F1 Ã·§Î</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -86,11 +90,12 @@
       <name>ID2MSG</name>
       <x>8</x>
       <y>40</y>
-      <width>594</width>
+      <width>584</width>
       <height>32</height>
+      <can_focus>True</can_focus>
       <editable>False</editable>
       <text_visible>True</text_visible>
-      <text_max_length>100</text_max_length>
+      <text_max_length>80</text_max_length>
       <text></text>
       <input_mode>XIM</input_mode>
       <xim_enabled>False</xim_enabled>
@@ -99,9 +104,9 @@
     <widget>
       <class>GtkButton</class>
       <name>B12</name>
-      <x>524</x>
-      <y>116</y>
-      <width>80</width>
+      <x>516</x>
+      <y>88</y>
+      <width>70</width>
       <height>24</height>
       <can_focus>True</can_focus>
       <accelerator>
@@ -115,16 +120,16 @@
 	<data>CLICKED</data>
 	<last_modification_time>Wed, 14 Feb 2001 00:38:53 GMT</last_modification_time>
       </signal>
-      <label>F12 ÁôªÈå≤</label>
+      <label>F12 ≈–œø</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
     <widget>
       <class>GtkButton</class>
       <name>B05</name>
-      <x>124</x>
-      <y>80</y>
-      <width>116</width>
+      <x>104</x>
+      <y>88</y>
+      <width>112</width>
       <height>24</height>
       <can_focus>True</can_focus>
       <accelerator>
@@ -138,16 +143,16 @@
 	<data>CLICKED</data>
 	<last_modification_time>Wed, 14 Feb 2001 00:38:53 GMT</last_modification_time>
       </signal>
-      <label>F5„ÄÄËñ¨Ââ§ÊÉÖÂ†±„ÄÄ</label>
+      <label>F5 ÃÙ∫ﬁæ Û»Øπ‘</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
     <widget>
       <class>GtkButton</class>
       <name>B09</name>
-      <x>252</x>
-      <y>116</y>
-      <width>116</width>
+      <x>336</x>
+      <y>88</y>
+      <width>156</width>
       <height>24</height>
       <can_focus>True</can_focus>
       <accelerator>
@@ -161,16 +166,16 @@
 	<data>CLICKED</data>
 	<last_modification_time>Wed, 14 Feb 2001 00:38:53 GMT</last_modification_time>
       </signal>
-      <label>F9 Âá¶ÊñπÁÆã„ÉªËñ¨ÊÉÖ</label>
+      <label>F9 ΩË ˝§ª§Û°¶ÃÙæ»Øπ‘</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
     <widget>
       <class>GtkButton</class>
       <name>B08</name>
-      <x>124</x>
-      <y>116</y>
-      <width>116</width>
+      <x>220</x>
+      <y>88</y>
+      <width>112</width>
       <height>24</height>
       <can_focus>True</can_focus>
       <accelerator>
@@ -184,117 +189,8 @@
 	<data>CLICKED</data>
 	<last_modification_time>Wed, 14 Feb 2001 00:38:53 GMT</last_modification_time>
       </signal>
-      <label>F8„ÄÄÂá¶ÊñπÁÆã„ÄÄ„ÄÄ</label>
+      <label>F8 ΩË ˝§ª§Û»Øπ‘</label>
       <relief>GTK_RELIEF_NORMAL</relief>
-    </widget>
-
-    <widget>
-      <class>GtkButton</class>
-      <name>B06</name>
-      <x>252</x>
-      <y>80</y>
-      <width>116</width>
-      <height>24</height>
-      <can_focus>True</can_focus>
-      <accelerator>
-	<modifiers>0</modifiers>
-	<key>GDK_F6</key>
-	<signal>clicked</signal>
-      </accelerator>
-      <signal>
-	<name>clicked</name>
-	<handler>send_event</handler>
-	<data>CLICKED</data>
-	<last_modification_time>Wed, 14 Feb 2001 00:38:53 GMT</last_modification_time>
-      </signal>
-      <label>F6„ÄÄ„ÅäËñ¨ÊâãÂ∏≥„ÄÄ</label>
-      <relief>GTK_RELIEF_NORMAL</relief>
-    </widget>
-
-    <widget>
-      <class>GtkButton</class>
-      <name>B07</name>
-      <x>380</x>
-      <y>80</y>
-      <width>116</width>
-      <height>24</height>
-      <can_focus>True</can_focus>
-      <accelerator>
-	<modifiers>0</modifiers>
-	<key>GDK_F7</key>
-	<signal>clicked</signal>
-      </accelerator>
-      <signal>
-	<name>clicked</name>
-	<handler>send_event</handler>
-	<data>CLICKED</data>
-	<last_modification_time>Wed, 14 Feb 2001 00:38:53 GMT</last_modification_time>
-      </signal>
-      <label>F7„ÄÄËñ¨ÊÉÖ„ÉªÊâãÂ∏≥</label>
-      <relief>GTK_RELIEF_NORMAL</relief>
-    </widget>
-
-    <widget>
-      <class>GtkButton</class>
-      <name>B10</name>
-      <x>380</x>
-      <y>116</y>
-      <width>116</width>
-      <height>24</height>
-      <can_focus>True</can_focus>
-      <accelerator>
-	<modifiers>0</modifiers>
-	<key>GDK_F10</key>
-	<signal>clicked</signal>
-      </accelerator>
-      <signal>
-	<name>clicked</name>
-	<handler>send_event</handler>
-	<data>CLICKED</data>
-	<last_modification_time>Wed, 14 Feb 2001 00:38:53 GMT</last_modification_time>
-      </signal>
-      <label>F10„ÄÄÂÖ®ÈÉ®„ÄÄ„ÄÄ„ÄÄ</label>
-      <relief>GTK_RELIEF_NORMAL</relief>
-    </widget>
-
-    <widget>
-      <class>GtkPandaCombo</class>
-      <name>USERPG_COMB</name>
-      <x>420</x>
-      <y>4</y>
-      <width>175</width>
-      <height>24</height>
-      <value_in_list>False</value_in_list>
-      <ok_if_empty>True</ok_if_empty>
-      <case_sensitive>False</case_sensitive>
-      <use_arrows>True</use_arrows>
-      <use_arrows_always>False</use_arrows_always>
-      <items></items>
-
-      <widget>
-	<class>GtkPandaEntry</class>
-	<child_name>GtkPandaCombo:entry</child_name>
-	<name>USERPG</name>
-	<can_focus>True</can_focus>
-	<signal>
-	  <name>activate</name>
-	  <handler>send_event</handler>
-	  <data>ACTIVATE</data>
-	  <last_modification_time>Thu, 02 Oct 2008 02:05:25 GMT</last_modification_time>
-	</signal>
-	<signal>
-	  <name>changed</name>
-	  <handler>entry_changed</handler>
-	  <data>CHANGED</data>
-	  <last_modification_time>Thu, 02 Oct 2008 02:05:42 GMT</last_modification_time>
-	</signal>
-	<editable>True</editable>
-	<text_visible>True</text_visible>
-	<text_max_length>20</text_max_length>
-	<text></text>
-	<input_mode>XIM</input_mode>
-	<xim_enabled>False</xim_enabled>
-      </widget>
     </widget>
   </widget>
 </widget>

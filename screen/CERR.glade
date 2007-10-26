@@ -1,20 +1,23 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0"?>
 <GTK-Interface>
 
 <project>
   <name>CERR</name>
   <program_name>CERR</program_name>
   <directory></directory>
+  <source_directory>src</source_directory>
   <pixmaps_directory>pixmaps</pixmaps_directory>
+  <language>C</language>
   <gnome_support>True</gnome_support>
   <gtkpanda_support>False</gtkpanda_support>
+  <gettext_support>True</gettext_support>
 </project>
 
 <widget>
   <class>GtkWindow</class>
   <name>CERR</name>
-  <width>596</width>
-  <height>133</height>
+  <width>600</width>
+  <height>120</height>
   <signal>
     <name>map_event</name>
     <handler>map_event</handler>
@@ -25,12 +28,12 @@
     <handler>set_focus</handler>
     <last_modification_time>Fri, 26 Jan 2001 04:22:42 GMT</last_modification_time>
   </signal>
-  <signal>
+  <signal>    
     <name>delete_event</name>
     <handler>gtk_true</handler>
     <last_modification_time>Mon, 25 Nov 2002 06:01:39 GMT</last_modification_time>
   </signal>
-  <title>(CERR)エラー情報</title>
+  <title>(CERR)���顼����</title>
   <type>GTK_WINDOW_DIALOG</type>
   <position>GTK_WIN_POS_CENTER</position>
   <modal>True</modal>
@@ -63,7 +66,7 @@
       <class>GtkButton</class>
       <name>B01</name>
       <x>250</x>
-      <y>97</y>
+      <y>80</y>
       <width>64</width>
       <height>32</height>
       <can_focus>True</can_focus>
@@ -73,7 +76,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Fri, 26 Jan 2001 04:56:59 GMT</last_modification_time>
       </signal>
-      <label>閉じる</label>
+      <label>�Ĥ���</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -81,32 +84,16 @@
       <class>GtkPandaEntry</class>
       <name>ERRMSG</name>
       <x>8</x>
-      <y>60</y>
+      <y>40</y>
       <width>580</width>
       <height>32</height>
       <can_focus>True</can_focus>
       <editable>False</editable>
       <text_visible>True</text_visible>
-      <text_max_length>88</text_max_length>
+      <text_max_length>86</text_max_length>
       <text></text>
       <input_mode>XIM</input_mode>
       <xim_enabled>False</xim_enabled>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>BYOMEI</name>
-      <x>8</x>
-      <y>40</y>
-      <width>574</width>
-      <height>18</height>
-      <label>ああああああああああええええええええええああああああああああええええええええええ</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
     </widget>
   </widget>
 </widget>

@@ -1,13 +1,16 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0"?>
 <GTK-Interface>
 
 <project>
   <name>RID3</name>
   <program_name>RID3</program_name>
   <directory></directory>
+  <source_directory>src</source_directory>
   <pixmaps_directory>pixmaps</pixmaps_directory>
+  <language>C</language>
   <gnome_support>True</gnome_support>
   <gtkpanda_support>False</gtkpanda_support>
+  <gettext_support>True</gettext_support>
 </project>
 
 <widget>
@@ -25,12 +28,12 @@
     <handler>set_focus</handler>
     <last_modification_time>Fri, 26 Jan 2001 04:22:42 GMT</last_modification_time>
   </signal>
-  <signal>
+  <signal>    
     <name>delete_event</name>
     <handler>gtk_true</handler>
     <last_modification_time>Mon, 25 Nov 2002 06:01:39 GMT</last_modification_time>
   </signal>
-  <title>(RID3)Á¢∫Ë™çÁîªÈù¢</title>
+  <title>(RID3)≥Œ«ß≤ËÃÃ</title>
   <type>GTK_WINDOW_DIALOG</type>
   <position>GTK_WIN_POS_CENTER</position>
   <modal>True</modal>
@@ -55,7 +58,7 @@
       <text_visible>True</text_visible>
       <text_max_length>10</text_max_length>
       <text></text>
-      <input_mode>XIM</input_mode>
+      <use_xim>False</use_xim>
       <xim_enabled>False</xim_enabled>
     </widget>
 
@@ -78,7 +81,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Wed, 14 Feb 2001 00:38:22 GMT</last_modification_time>
       </signal>
-      <label>F1:Êàª„Çã</label>
+      <label>F1:Ã·§Î</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -94,7 +97,7 @@
       <text_visible>True</text_visible>
       <text_max_length>70</text_max_length>
       <text></text>
-      <input_mode>XIM</input_mode>
+      <use_xim>False</use_xim>
       <xim_enabled>False</xim_enabled>
     </widget>
 
@@ -117,7 +120,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Wed, 14 Feb 2001 00:38:53 GMT</last_modification_time>
       </signal>
-      <label>F10:„Éó„É¨„Éì„É•„Éº</label>
+      <label>F10:•◊•Ï•”•Â°º</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -140,7 +143,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Wed, 14 Feb 2001 00:38:53 GMT</last_modification_time>
       </signal>
-      <label>F11:Âç∞Âà∑„Åó„Å™„ÅÑ</label>
+      <label>F11:∞ı∫˛§∑§ §§</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -163,24 +166,8 @@
 	<data>CLICKED</data>
 	<last_modification_time>Wed, 14 Feb 2001 00:38:53 GMT</last_modification_time>
       </signal>
-      <label>F12:Âç∞Âà∑„Åô„Çã</label>
+      <label>F12:∞ı∫˛§π§Î</label>
       <relief>GTK_RELIEF_NORMAL</relief>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>LABEL</name>
-      <x>120</x>
-      <y>10</y>
-      <width>400</width>
-      <height>24</height>
-      <label>ÊèêÂá∫Áî®„É¨„Çª„Éó„Éà„Åß‰ΩúÊàê„Åó„Åæ„Åô</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
     </widget>
   </widget>
 </widget>
