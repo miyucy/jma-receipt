@@ -200,6 +200,15 @@ I01	{
 			item	varchar(11)[05];
 			state	int;
 		};
+		CMB_USERPG	{
+			USERPG	{
+				value	varchar(22);
+				state	int;
+			};
+			count	int;
+			item	varchar(22)[02];
+			state	int;
+		};
 		SELNUM	{
 			value	number(3);
 		};

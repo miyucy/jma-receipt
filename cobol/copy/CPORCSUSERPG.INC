@@ -29,7 +29,8 @@
            03  ORCSUSERPG-GMNPG            PIC X(08).
       *
       *処理状況（１：追加、２：更新、３：削除）
-           03  ORCSUSERPG-SYORI-FLG        PIC X(01).
+      *※入退院登録業務は業務の処理区分（01:入院等）となる。
+           03  ORCSUSERPG-SYORI-FLG        PIC 9(02).
       *システム日付西暦
            03  ORCSUSERPG-SYSYMD           PIC X(08).
       *診療日

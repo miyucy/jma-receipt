@@ -37,7 +37,7 @@
                    07  SPA-GMN-SEX             PIC X(02).
                    07  SPA-GMN-BIRTHDAY        PIC X(10).
                    07  SPA-GMN-SRYYMD          PIC X(10).
-                   07  SPA-GMN-SYORIMEI        PIC X(20).
+                   07  SPA-GMN-SYORIMEI        PIC X(30).
       *
                05  SPA-GMN-TBLG.
                    07  SPA-GMN-TBL             OCCURS  10.

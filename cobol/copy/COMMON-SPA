@@ -195,7 +195,7 @@
       *数量０入力フラグ
              03  SPA-SURYOZERO-FLG        PIC  9(01).
       *処理フラグ（Ｕ・Ｐ起動）
-             03  SPA-SYORI-FLG            PIC  9(01).
+             03  SPA-SYORI-FLG            PIC  9(02).
       *共通内容
              03  SPA-KYOTU-SET.
       *診療日

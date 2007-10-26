@@ -62,6 +62,7 @@
            05  SPA-I01-I03-BTN                 PIC X(03).
       *      £É£°£±¢«¢ª£É£°£´Á«°Ü¾ðÊó
          03  SPA-I01-I04-AREA.
+           05  SPA-I01-I04-SYORIKBN            PIC X(02).
            05  SPA-I01-I04-PROCKBN             PIC X(01).
            05  SPA-I01-I04-RRKNUM              PIC 9(03).
            05  SPA-I01-I04-RRKEDANUM           PIC 9(03).

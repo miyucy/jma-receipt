@@ -132,6 +132,11 @@
                    13  SPA-GMN-I01-DISPKBN-CD      PIC X(02).
                    13  SPA-GMN-I01-DISPKBNFL       PIC X(01).
                    13  SPA-GMN-I01-DISPKBN-NM      PIC X(08).
+      *          ユーザープログラム
+                 11  SPA-GMN-I01-USERPG.
+                   13  SPA-GMN-I01-USERPG-CD       PIC X(01).
+                   13  SPA-GMN-I01-USERPGFL        PIC X(01).
+                   13  SPA-GMN-I01-USERPG-NM       PIC X(20).
       *          選択番号
                  11  SPA-GMN-I01-SELNUM            PIC S9(3).
       *        入院歴リスト領域
@@ -227,6 +232,10 @@
                  11  SPA-NAI-I01-SELNYUKHN         PIC 9(01).
       *          退院処理時、請求データ取消フラグ
                  11  SPA-NAI-I01-TORIKESI-FLG      PIC 9(01).
+      *
+      *          ユーザー起動プログラム設定
+                 11  SPA-NAI-I01-GYOUMU-FLG        PIC X(01).
+                 11  SPA-NAI-I01-GYOUMU-ARI        PIC X(01).
       *        入院歴リスト内部領域
                09  SPA-NAI-I01-NYUREKILST-AREA.
                  11  SPA-NAI-I01-NYUREKILST-ITM    OCCURS  100.
@@ -363,6 +372,13 @@
                      15  SPA-GMN-I01-DISPKBNL      PIC X(02).
                      15  SPA-GMN-I01-DISPKBNFLL    PIC X(01).
                      15  SPA-GMN-I01-DISPKBNMEIL   PIC X(08).
+      *          ユーザープログラムコンボ
+                 11  SPA-GMN-I01-CMB-USERPG.
+                   13  SPA-GMN-I01-USERPG-CNT      PIC 9(5).
+                   13  SPA-GMN-I01-USERPG-ITM      OCCURS  2.
+                     15  SPA-GMN-I01-USERPGL       PIC X(01).
+                     15  SPA-GMN-I01-USERPGFLL     PIC X(01).
+                     15  SPA-GMN-I01-USERPGMEIL    PIC X(20).
       *
       *  入院歴表示画面
          03  SPA-I02.
@@ -741,6 +757,13 @@
                            13   SPA-GMN-I04-DRFL     PIC X(01).
                            13   SPA-GMN-I04-DR-NM    PIC X(24).
       *
+      *                ユーザープログラム
+                       11  SPA-GMN-I04-USERPG.
+                           13   SPA-GMN-I04-USERPG-CD
+                                                       PIC X(01).
+                           13   SPA-GMN-I04-USERPGFL   PIC X(01).
+                           13   SPA-GMN-I04-USERPG-NM  PIC X(20).
+      *
                    09  SPA-GMN-I04-KBT-AREA.
                        11  SPA-GMN-I04-KBT-TITLE       PIC X(30).
                        11  SPA-GMN-I04-SKY1ST          PIC S9(10).
@@ -761,6 +784,8 @@
                    09  SPA-NAI-I04-HEAD-AREA.
       *                患者ＩＤ
                        11  SPA-NAI-I04-PTID          PIC 9(10).
+      *                誕生日
+                       11  SPA-NAI-I04-BIRTHDAY      PIC X(08).
       *                入力データ入院履歴番号
                        11  SPA-NAI-I04-PTRRKNUM      PIC 9(03).
       *                入力データ入院履歴枝番号
@@ -788,6 +813,9 @@
                        11  SPA-NAI-I04-HAKYMD        PIC X(08).
       *                入金方法
                        11  SPA-NAI-I04-NYKNJYOTAI        PIC X(01).
+      *                ユーザープログラム
+                       11  SPA-NAI-I04-GYOUMU-FLG    PIC X(01).
+                       11  SPA-NAI-I04-GYOUMU-ARI    PIC X(01).
       *                請求データ
                        11  SPA-NAI-I04-SEIKYU-AREA.
       *                    請求金額
@@ -877,6 +905,13 @@
                                15  SPA-GMN-I04-DRL   PIC X(04).
                                15  SPA-GMN-I04-DRFLL PIC X(01).
                                15  SPA-GMN-I04-DRMEIL PIC X(24).
+      *                    ユーザープログラム
+                       11  SPA-GMN-I04-CMB-USERPG.
+                           13  SPA-GMN-I04-USERPG-CNT      PIC 9(5).
+                           13  SPA-GMN-I04-USERPG-ITM      OCCURS  2.
+                               15  SPA-GMN-I04-USERPGL     PIC X(01).
+                               15  SPA-GMN-I04-USERPGFLL   PIC X(01).
+                               15  SPA-GMN-I04-USERPGMEIL  PIC X(20).
          03  SPA-I05.
            05  SPA-I05-AREA.
                07  SPA-GMN-I05-CUR                   PIC 9(03).

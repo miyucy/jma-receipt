@@ -88,6 +88,81 @@
                05  FILLER          PIC X(01)   VALUE  ".".
                05  WRK-HDD         PIC Z9.
       *
+       01  CONST-AREA.
+           03  CONST-NYU-SYORIKBN-VAL.
+      *
+               05  CONST-NYUIN-G.
+                   07  CONST-NYUIN
+                           PIC 9(02)   VALUE   01.
+                   07  CONST-NYUINMEI
+                           PIC X(30)   VALUE   "Æþ±¡ÅÐÏ¿".
+      *
+               05  CONST-TAIIN-G.
+                   07  CONST-TAIIN
+                           PIC 9(02)   VALUE   02.
+                   07  CONST-TAIINMEI
+                           PIC X(30)   VALUE   "Âà±¡ÅÐÏ¿".
+      *
+               05  CONST-HENKOU-G.
+                   07  CONST-HENKOU
+                           PIC 9(02)   VALUE   03.
+                   07  CONST-HENKOUMEI
+                           PIC X(30)   VALUE   "ÊÑ¹¹".
+      *
+               05  CONST-SYOUKAI-G.
+                   07  CONST-SYOUKAI
+                           PIC 9(02)   VALUE   04.
+                   07  CONST-SYOUKAIFLMEI 
+                           PIC X(30)   VALUE   "¾È²ñ".
+      *
+               05  CONST-NYUINTORIKESHI-G.
+                   07  CONST-NYUINTORIKESHI
+                           PIC 9(02)   VALUE   05.
+                   07  CONST-NYUINTORIKESHIMEI
+                           PIC X(30)   VALUE   "Æþ±¡¼è¾Ã".
+      *
+               05  CONST-NYUINTORIKESHIALL-G.
+                   07  CONST-NYUINTORIKESHIALL
+                           PIC 9(02)   VALUE   06.
+                   07  CONST-NYUINTORIKESHIALLMEI
+                           PIC X(30)   VALUE "Æþ±¡¼è¾Ã¡Ê²ñ·×´Þ¤à¡Ë".
+      *
+               05  CONST-TAIINTORIKESHI-G.
+                   07  CONST-TAIINTORIKESHI
+                           PIC 9(02)   VALUE   07.
+                   07  CONST-TAIINTORIKESHIMEI
+                           PIC X(30)   VALUE   "Âà±¡¼è¾Ã".
+      *
+               05  CONST-IDO-G.
+                   07  CONST-IDO
+                           PIC 9(02)    VALUE  08.
+                   07  CONST-IDOMEI
+                           PIC X(30)    VALUE   "Å¾²Ê¡¡Å¾Åï¡¡Å¾¼¼".
+      *
+               05  CONST-IDOTORIKESHI-G.
+                   07  CONST-IDOTORIKESHI
+                           PIC 9(02)    VALUE  09.
+                   07  CONST-IDOTORIKESHIMEI
+                           PIC X(30)   VALUE   "°ÛÆ°¼è¾Ã".
+      *
+               05  CONST-SAIKEISAN-G.
+                   07  CONST-SAIKEISAN
+                           PIC 9(02)   VALUE   10.
+                   07  CONST-SAIKEISANMEI
+                           PIC X(30)   VALUE   "Âà±¡ºÆ·×»»".
+      *
+               05  CONST-TAIINSRYHZN-G.
+                   07  CONST-TAIINSRYHZN
+                           PIC 9(02)   VALUE   11.
+                   07  CONST-TAIINSRYHZNMEI
+                           PIC X(30)   VALUE "Âà±¡ÅÐÏ¿¡Ê¿ÇÎÅÊÝÂ¸¡Ë".
+           03  CONST-NYU-SYORIKBN-R    REDEFINES
+                                       CONST-NYU-SYORIKBN-VAL.
+               05  CONST-NYU-SYORIKBN-OCC      OCCURS  11.
+                   07  CONST-NYU-SYORIKBN      PIC 9(02).
+                   07  CONST-NYU-SYORIKBNMEI   PIC X(30).
+           03  CONST-NYU-SYORIKBN-MAX          PIC 9(03)   VALUE   11.
+      *
       *****************************************************************
       *    ¥Õ¥¡¥¤¥ë¥ì¥¤¥¢¥¦¥È
       *****************************************************************
@@ -258,13 +333,28 @@
            MOVE    SPA-MOTOPG          TO  SPA-MAE-MOTOPG
       *
       *    ½èÍý¶èÊ¬
-           EVALUATE    SPA-SYORI-FLG
+           EVALUATE    SPA-MAE-MOTOPG
+           WHEN    "I01"
+           WHEN    "I04"
+               PERFORM VARYING IDX FROM    1   BY  1
+                       UNTIL ( IDX >   CONST-NYU-SYORIKBN-MAX )
+                          OR ( SPA-GMN-SYORIMEI    NOT =   SPACE )
+      *
+                   IF    ( SPA-SYORI-FLG   =   CONST-NYU-SYORIKBN (IDX))
+                       MOVE    CONST-NYU-SYORIKBNMEI (IDX)
+                                           TO  SPA-GMN-SYORIMEI
+                   END-IF
+      *
+               END-PERFORM
+           WHEN    OTHER
+               EVALUATE    SPA-SYORI-FLG
                WHEN    1
                    MOVE    "¡Ú¡¡ÅÐÏ¿½èÍý¡¡¡Û"      TO  SPA-GMN-SYORIMEI
                WHEN    2
                    MOVE    "¡Ú¡¡¹¹¿·½èÍý¡¡¡Û"      TO  SPA-GMN-SYORIMEI
                WHEN    3
                    MOVE    "¡Ú¡¡ºï½ü½èÍý¡¡¡Û"      TO  SPA-GMN-SYORIMEI
+               END-EVALUATE
            END-EVALUATE
       *
       *    ¿ÇÎÅÆü
@@ -277,12 +367,18 @@
       *    ´ÉÍý¥³¡¼¥É·èÄê
            PERFORM 30011-KANRICD-SEC
       *
-           EVALUATE    SPA-SYORI-FLG
+           EVALUATE    SPA-MAE-MOTOPG
+           WHEN    "I01"
+           WHEN    "I04"
+               PERFORM 30011-PTINF-HEN-SEC
+           WHEN    OTHER
+               EVALUATE    SPA-SYORI-FLG
                WHEN    1
                WHEN    2
                    PERFORM 30011-PTINF-HEN-SEC
                WHEN    3
                    PERFORM 30012-SPA-HEN-SEC
+               END-EVALUATE
            END-EVALUATE
       *
       *    ¿ÇÎÅ²Ê½é´üÊÔ½¸

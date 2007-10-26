@@ -158,6 +158,7 @@
            03  WRK-Z9                      PIC --,---,---.
            03  WRK-Z92                     PIC --,---,---.
            03  WRK-ZZ9                     PIC ZZ9.
+           03  WRK-99                      PIC 9(02).
            03  WRK-TEISEIBF                PIC X(20).
            03  WRK-TEISEIAF                PIC X(20).
            03  WRK-STR                     PIC X(500).
@@ -284,6 +285,8 @@
            COPY    "CPSK1013.INC".
       *    ドクター
            COPY    "CPSK1010.INC".
+      *
+           COPY    "CPSK9700.INC".
       *
       *    帳票プログラム名
            COPY    "CPSK1035.INC".
@@ -470,6 +473,9 @@
       *
       *    まとめ入金編集サブ
            COPY    "CPORCSNYUKINS.INC".
+      *
+      *    ユーザプログラム起動サブパラメタ
+           COPY    "CPORCSUSERCHK.INC".
       *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
@@ -806,6 +812,10 @@
       *    患者誕生日
            MOVE    SPA-GMN-I01-BIRTHDAY
                                        TO  SPA-GMN-I04-BIRTHDAY
+      *
+           MOVE    SPA-NAI-I01-BIRTHDAY
+                                       TO  SPA-NAI-I04-BIRTHDAY
+      *
       *    患者年齢
            MOVE    SPA-GMN-I01-AGE     TO  SPA-GMN-I04-AGE
       *
@@ -1104,6 +1114,9 @@
       *    主治医氏名コンボ
            PERFORM 3100-CMB-DR-SET-SEC
       *
+      *    ユーザープログラムコンボ
+           PERFORM 3100-CMB-USERPG-SET-SEC
+      *
             .
        3100-CMB-SYOKI-EXT.
            EXIT.
@@ -1260,6 +1273,54 @@
       *
             .
        3100-CMB-DR-SET-EXT.
+           EXIT.
+      *****************************************************************
+      *    ユーザープログラムコンボ初期処理
+      *****************************************************************
+       3100-CMB-USERPG-SET-SEC         SECTION.
+      *
+           INITIALIZE                  SPA-GMN-I04-CMB-USERPG
+      *
+           MOVE    1           TO  SPA-GMN-I04-USERPG-CNT
+      *
+           MOVE    "0"         TO  SPA-GMN-I04-USERPGL    (1)
+           MOVE    "Ｕ・Ｐ指示なし" 
+                               TO  SPA-GMN-I04-USERPGMEIL (1)
+      *
+           INITIALIZE              ORCSUSERCHKAREA
+           MOVE    "I04"       TO  ORCSUSERCHK-GMNPG
+           MOVE    "1"         TO  ORCSUSERCHK-SYORI
+           CALL    "ORCSUSERCHK"   USING
+                                   ORCSUSERCHKAREA
+                                   SPA-AREA
+           MOVE    ORCSUSERCHK-GYOUMU-FLG
+                               TO  SPA-NAI-I04-GYOUMU-FLG
+           MOVE    ORCSUSERCHK-GYOUMU-ARI
+                               TO  SPA-NAI-I04-GYOUMU-ARI
+      *
+           IF    ( SPA-NAI-I04-GYOUMU-ARI  =   "1" )
+      *
+      *        実行するプログラムがある時
+               MOVE    2       TO  SPA-GMN-I04-USERPG-CNT
+      *
+               MOVE    "1"     TO  SPA-GMN-I04-USERPGL  (2)
+               MOVE    "Ｕ・Ｐ指示あり" 
+                               TO  SPA-GMN-I04-USERPGMEIL (2)
+      *
+               IF    ( SPA-NAI-I04-GYOUMU-FLG  =   "1" )
+                   MOVE    SPA-GMN-I04-USERPG-ITM (2)
+                               TO  SPA-GMN-I04-USERPG
+               ELSE
+                   MOVE    SPA-GMN-I04-USERPG-ITM (1)
+                               TO  SPA-GMN-I04-USERPG
+               END-IF
+           ELSE
+               MOVE    SPA-GMN-I04-USERPG-ITM (1)
+                               TO  SPA-GMN-I04-USERPG
+           END-IF
+      *
+           .
+       3100-CMB-USERPG-SET-EXT.
            EXIT.
       *****************************************************************
       *    未収データ取得処理
@@ -2295,6 +2356,16 @@
                                        TO  I04-DR-ITM (IDX1)
            END-PERFORM
       *
+      *    ユーザープログラム
+           MOVE    SPA-GMN-I04-USERPG      TO  I04-USERPG
+           MOVE    SPA-GMN-I04-USERPG-CNT  TO  I04-USERPG-CNT
+           PERFORM VARYING IDX1    FROM    1   BY  1
+               UNTIL     ( IDX1    >   SPA-GMN-I04-USERPG-CNT   )
+               MOVE    SPA-GMN-I04-USERPG-ITM (IDX1)
+                                           TO  I04-USERPG-ITM (IDX1)
+           END-PERFORM
+      *
+      *
       *    保険組み合わせリスト
            MOVE    SPA-GMN-I04-HKNCOMBILST-CNT
                                        TO  I04-HKNCOMBILST-CNT
@@ -2533,6 +2604,8 @@
                MOVE    "NYKNKNRKBN"    TO  MCP-WIDGET
            WHEN    006
                MOVE    "SRYPRTOUT"     TO  MCP-WIDGET
+           WHEN    008
+               MOVE    "USERPG"        TO  MCP-WIDGET
            WHEN    101
                MOVE    "SELNUM"        TO  MCP-WIDGET
            WHEN    102
@@ -2572,6 +2645,8 @@
                MOVE    007             TO  SPA-GMN-I04-CUR
            WHEN    "NYKNKNRKBN"
                MOVE    002             TO  SPA-GMN-I04-CUR
+           WHEN    "USERPG"
+               MOVE    212             TO  SPA-GMN-I04-CUR
            END-EVALUATE
       *
            .
@@ -2743,6 +2818,9 @@
       *
       *    主治医氏名
            MOVE    I04-DR          TO  SPA-GMN-I04-DR
+      *
+      *    ユーザープログラム
+           MOVE    I04-USERPG      TO  SPA-GMN-I04-USERPG
            .
       *
        4101-GMN-SPA-SET-EXT.
@@ -2797,6 +2875,12 @@
       *
       *    主治医氏名チェック処理
            PERFORM 4100-DR-CHK-SEC
+           IF    ( SPA-ERRCD       NOT =   SPACE )
+               GO  TO  4102-KIHON-CHK-EXT
+           END-IF
+      *
+      *    ユーザープログラムチェック処理
+           PERFORM 4100-USERPG-CHK-SEC
            IF    ( SPA-ERRCD       NOT =   SPACE )
                GO  TO  4102-KIHON-CHK-EXT
            END-IF
@@ -3559,6 +3643,34 @@
        4100-DR-CHK-EXT.
            EXIT.
       *****************************************************************
+      *    ユーザープログラム
+      *****************************************************************
+       4100-USERPG-CHK-SEC             SECTION.
+      *
+           MOVE    SPA-GMN-I04-USERPG-CD
+                                   TO  WRK-CMB-CD
+           PERFORM 4103-CMB-USERPG-CHK-SEC
+           IF    ( WRK-CMB-ITM =   SPACE )
+               IF    ( SPA-NAI-I04-GYOUMU-ARI  =   "1" )
+                   IF    ( SPA-NAI-I04-GYOUMU-FLG  =   "1" )
+                       MOVE    SPA-GMN-I04-USERPG-ITM (2)
+                                   TO  SPA-GMN-I04-USERPG
+                   ELSE
+                       MOVE    SPA-GMN-I04-USERPG-ITM (1)
+                                   TO  SPA-GMN-I04-USERPG
+                   END-IF
+               ELSE
+                   MOVE        SPA-GMN-I04-USERPG-ITM (1)
+                                   TO  SPA-GMN-I04-USERPG
+               END-IF
+           ELSE
+               MOVE    WRK-CMB-ITM TO  SPA-GMN-I04-USERPG
+           END-IF
+      *
+           .
+       4100-USERPG-CHK-EXT.
+           EXIT.
+      *****************************************************************
       *    選択番号チェック処理
       *****************************************************************
        4100-SELNUM-CHK-SEC             SECTION.
@@ -3868,6 +3980,29 @@
        4103-CMB-DR-CHK-EXT.
            EXIT.
       *****************************************************************
+      *    ユーザープログラムコンボチェック処理
+      *****************************************************************
+       4103-CMB-USERPG-CHK-SEC    SECTION.
+      *
+           INITIALIZE              WRK-CMB-G
+      *
+           PERFORM VARYING IDX-CMB FROM    1   BY  1
+                   UNTIL ( IDX-CMB >   SPA-GMN-I04-USERPG-CNT )
+                    OR   ( WRK-CMB-ITM NOT =   SPACE )
+      *
+               IF    ( SPA-GMN-I04-USERPGL (IDX-CMB)
+                                   =   WRK-CMB-CD )
+                   MOVE    IDX-CMB TO  WRK-CMB-IDX
+                   MOVE    SPA-GMN-I04-USERPG-ITM (IDX-CMB)
+                                   TO  WRK-CMB-ITM
+               END-IF
+           END-PERFORM
+      *
+           .
+      *
+       4103-CMB-USERPG-CHK-EXT.
+           EXIT.
+      *****************************************************************
       *    戻る　処理
       *****************************************************************
        210-BACK                        SECTION.
@@ -3937,9 +4072,14 @@
                MOVE SPA-NAI-I04-PTID   TO  SPA-LAST-PTID
                MOVE SPA-GMN-I04-PTNUM  TO  SPA-LAST-PTNUM
       *
-               MOVE    "B12"           TO  SPA-I01-I04-BTN
-               MOVE    "JOIN"          TO  MCP-PUTTYPE
-               PERFORM 210-BACK
+      *        ユーザープログラム
+               PERFORM 4801-USERPG-SEC
+      *
+               IF    ( FLG-END         =   ZERO )
+                   MOVE    "B12"       TO  SPA-I01-I04-BTN
+                   MOVE    "JOIN"      TO  MCP-PUTTYPE
+                   PERFORM 210-BACK
+               END-IF
            END-IF
       *
            .
@@ -4239,9 +4379,14 @@
       *    帳票出力処理
            PERFORM 451-PRTOUT-SEC
       *
-           MOVE    "B12"           TO  SPA-I01-I04-BTN
-           MOVE    "JOIN"          TO  MCP-PUTTYPE
-           PERFORM 210-BACK
+      *    ユーザープログラム
+           PERFORM 4801-USERPG-SEC
+      *
+           IF    ( FLG-END         =   ZERO )
+               MOVE    "B12"           TO  SPA-I01-I04-BTN
+               MOVE    "JOIN"          TO  MCP-PUTTYPE
+               PERFORM 210-BACK
+           END-IF
       *
            .
       *
@@ -5330,6 +5475,103 @@
       *
            .
        4511-PRINT-PG-EDIT-EXT.
+           EXIT.
+      *****************************************************************
+      *    ユーザプログラム起動処理
+      *****************************************************************
+       4801-USERPG-SEC                 SECTION.
+      *
+           MOVE    SPA-I01-I04-SYORIKBN
+                                       TO  WRK-99
+           MOVE    WRK-99              TO  SPA-SYORI-FLG
+      *
+           INITIALIZE                      SPA-KYOTUKEY
+                                           SPA-KYOTU-SET
+      *
+           MOVE    SPA-I01-I04-NYUINKA TO  SPA-SRYKA
+           MOVE    WKPTNYUINRRK-TAIINYMD
+                                       TO  SPA-SRYYMD
+           MOVE    WKPTNYUINRRK-TAIINYMD
+                                       TO  WRK-YMD
+           PERFORM 5002-HIZUKE-CHK-SEC
+           MOVE    WRK-HENYMDG         TO  SPA-SRYYMDW
+      *
+           MOVE    SPA-NAI-I04-PTID    TO  SPA-PTID
+           MOVE    SPA-GMN-I04-PTNUM   TO  SPA-PTNUM
+           MOVE    SPA-GMN-I04-KANANAME
+                                       TO  SPA-KANANAME
+           MOVE    SPA-GMN-I04-NAME    TO  SPA-NAME
+           MOVE    SPA-GMN-I04-SEX     TO  SPA-SEX
+           MOVE    SPA-GMN-I04-BIRTHDAY TO  SPA-BIRTHDAYW
+           MOVE    SPA-NAI-I04-BIRTHDAY TO  SPA-BIRTHDAY
+      *
+           IF    ( SPA-GMN-I04-DR-CD   NOT =   SPACE )
+               MOVE    "1"             TO  SPA-DRCD (1:1)
+               MOVE    SPA-GMN-I04-DR-CD
+                                       TO  SPA-DRCD (2:4)
+           END-IF
+           MOVE    WKPTNYUINRRK-HKNCOMBINUM
+                                       TO  SPA-HKNCOMBINUM
+      *
+           IF    ( SPA-GMN-I04-USERPG-CD   =   "1" )
+               PERFORM 48011-XD01-SENI-SEC
+           ELSE
+               IF    ( SPA-NAI-I04-GYOUMU-ARI  =   "1" )
+      *
+                   INITIALIZE                      ORCSUSERCHKAREA
+                   MOVE    "I04"               TO  ORCSUSERCHK-GMNPG
+                   MOVE    "2"                 TO  ORCSUSERCHK-SYORI
+                   MOVE    SPA-SYSYMD          TO  ORCSUSERCHK-SYSYMD
+                   MOVE    SPA-SRYYMD          TO  ORCSUSERCHK-SRYYMD
+                   MOVE    SPA-PTID            TO  ORCSUSERCHK-PTID
+                   MOVE    SPA-PTNUM           TO  ORCSUSERCHK-PTNUM
+                   MOVE    SPA-SRYKA           TO  ORCSUSERCHK-SRYKA
+                   MOVE    SPA-HKNCOMBINUM     TO  ORCSUSERCHK-HKNCOMBI
+                   MOVE    SPA-DRCD            TO  ORCSUSERCHK-DRCD
+                   MOVE    SPA-SYORI-FLG       TO  ORCSUSERCHK-SYORI-FLG
+                   CALL    "ORCSUSERCHK"       USING
+                                               ORCSUSERCHKAREA
+                                               SPA-AREA
+               END-IF
+           END-IF
+      *
+           .
+       4801-USERPG-EXT.
+           EXIT.
+      *****************************************************************
+      *    ユーザプログラム実行画面表示処理
+      *****************************************************************
+       48011-XD01-SENI-SEC             SECTION.
+      *
+           MOVE    SPACE               TO  LINKAREA
+      *    共通キー編集
+           MOVE    "I04"               TO  SPA-MOTOPG
+           MOVE    "XD01"              TO  SPA-SAKIPG
+           MOVE    SPA-AREA            TO  LNK-KYOUTU
+      *
+      *    共通のキーをクリアする
+           MOVE    SPACE               TO  SPA-ERRMSG
+           INITIALIZE                      SPA-KYOTUKEY
+      *
+           MOVE    "I04"               TO  SPA-MOTOPG
+           MOVE    "I01"               TO  SPA-SAKIPG
+      *
+           MOVE    SPA-KYOUTU          TO  LNK-COMMON
+           MOVE    SPACE               TO  LNK-SCRSPA
+      *
+      *    画面移行用のパラメタ変更
+           MOVE    "I04"               TO  SPA-MOTOPG
+           MOVE    "XD01"              TO  SPA-SAKIPG
+      *
+           MOVE    "JOIN"              TO  MCP-PUTTYPE
+           MOVE    "XD01"              TO  MCP-WINDOW
+      *
+           PERFORM 900-PUT-WINDOW
+      *
+           MOVE    1                   TO  FLG-END
+      *
+           .
+       48011-XD01-SENI-EXT.
            EXIT.
       *****************************************************************
       *    自画面編集処理

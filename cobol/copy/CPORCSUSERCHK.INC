@@ -32,7 +32,8 @@
       *実行の時のみ
            03  ORCSUSERCHK-IN-AREA.
       *処理内容(１：新規、２：更新、３：削除）
-               05  ORCSUSERCHK-SYORI-FLG        PIC X(01).
+      *※入退院登録業務は業務の処理区分（01:入院等）となる。
+               05  ORCSUSERCHK-SYORI-FLG        PIC 9(02).
       *システム日付西暦
                05  ORCSUSERCHK-SYSYMD           PIC X(08).
       *診療日

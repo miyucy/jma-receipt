@@ -134,6 +134,13 @@
                 05  I01-DISPKBN-ITM                PIC X(11)
                                                    OCCURS  5.
                 05  I01-DISPKBN-ITM-STT            PIC S9(9)   BINARY.
+              04  I01-CMB-USERPG.
+                05  I01-USERPG                    PIC X(22).
+                05  I01-USERPG-STT                PIC S9(9)   BINARY.
+                05  I01-USERPG-CNT                PIC S9(9)   BINARY.
+                05  I01-USERPG-ITM                PIC X(22)
+                                                  OCCURS  2.
+                05  I01-USERPG-ITM-STT            PIC S9(9)   BINARY.
               04  I01-SELNUM                       PIC S9(3).
               04  I01-SCROLLEDWINDOW1.
                 05  I01-NYUREKILST.
