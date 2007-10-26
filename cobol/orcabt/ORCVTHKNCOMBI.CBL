@@ -41,9 +41,6 @@
       *  01.00.10    NACL-多々納  06/06/30  県番号設定追加（北海道用）
       *  02.00.01    NACL-多々納  06/07/27  MONFUNC 対応
       *  03.05.00    NACL-多々納  07/05/16  グループ診療対応
-      *  04.01.00    NACL-多々納  07/11/12  保険番号マスタ期間変更削除
-      *  04.02.00    NACL-多々納  08/04/28  後期高齢者対応
-      *                                     期間変更削除
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -145,9 +142,6 @@
            03  FLG-ERR                 PIC 9(01).
            03  FLG-HENKOU              PIC 9(01).
       *
-           03  FLG-KEN-OK              PIC 9(01).
-           03  FLG-KEN-ARI             PIC 9(01).
-      *
       *    カウント領域
        01  CNT-AREA.
            03  CNT-PARM                PIC 9(06).
@@ -169,7 +163,6 @@
            03  IDX                     PIC 9(04).
            03  IDY                     PIC 9(04).
            03  IDZ                     PIC 9(04).
-           03  IDH                     PIC 9(04).
       *
       *    一時領域
        01  WRK-AREA.
@@ -300,13 +293,6 @@
            02  HZN-HKNNUM-REC          OCCURS   2.
            COPY    "CPHKNNUM.INC"      REPLACING
                                        //HKN-// BY //HZN-HKN-//.
-      *    保険番号テーブル
-       01  TBL-HKNNUM-AREA.
-           02  TBL-HKNNUM-REC          OCCURS  300.
-           COPY    "CPHKNNUM.INC"      REPLACING
-                                       //HKN-// BY //TBL-HKN-//.
-       01  IDX-HKN-MAX                 PIC 9(04).
-      *
       *    患者保険情報
        01  HZN-PTHKNINF-REC.
            COPY    "CPPTHKNINF.INC"    REPLACING
@@ -420,12 +406,6 @@
            MOVE    PARA-09-4       TO  WRK-COMMIT
            MOVE    PARA-11-4       TO  WRK-ERR
       *
-      *    保険番号テーブル設定
-           PERFORM 1009-HKNNUM-TBL-SEC
-           IF      FLG-PTINF       =   1
-               GO  TO  100-INIT-EXT
-           END-IF
-      *
       *    患者情報　順ファイル処理
            PERFORM 900-PTINF-SEQUENCE-SEC
       *
@@ -433,50 +413,6 @@
            PERFORM 900-PTINF-READ-SEC
            .
        100-INIT-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    保険番号テーブル設定
-      *****************************************************************
-       1009-HKNNUM-TBL-SEC            SECTION.
-      *
-           INITIALIZE                 TBL-HKNNUM-AREA
-           MOVE    ZERO               TO  IDX-HKN-MAX
-      *
-           MOVE    SPACE               TO  HKNNUM-REC
-           INITIALIZE                      HKNNUM-REC
-           MOVE    SPA-HOSPNUM         TO  HKN-HOSPNUM
-           MOVE    HKNNUM-REC          TO  MCPDATA-REC
-           MOVE    "tbl_hknnum"        TO  MCP-TABLE
-           MOVE    "key6"              TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
-           IF      MCP-RC              =   ZERO
-               MOVE    "tbl_hknnum"        TO  MCP-TABLE
-               MOVE    "key6"              TO  MCP-PATHNAME
-               PERFORM 950-HKNNUM-NEXT-SEC
-           ELSE
-               MOVE    1               TO  FLG-HKNNUM
-           END-IF
-           PERFORM UNTIL      (FLG-HKNNUM  =   1 )
-                           OR (IDX-HKN-MAX >=  300 )
-               ADD     1                   TO  IDX-HKN-MAX
-               MOVE    HKNNUM-REC          TO  TBL-HKNNUM-REC
-                                             (IDX-HKN-MAX)
-      *
-               MOVE    "tbl_hknnum"        TO  MCP-TABLE
-               MOVE    "key6"              TO  MCP-PATHNAME
-               PERFORM 950-HKNNUM-NEXT-SEC
-           END-PERFORM
-           MOVE    "tbl_hknnum"        TO  MCP-TABLE
-           MOVE    "key6"              TO  MCP-PATHNAME
-           PERFORM 990-DBCLOSE-SEC
-      *
-           IF      IDX-HKN-MAX         =   ZERO
-               MOVE    1                   TO  FLG-PTINF
-               DISPLAY "*(ORCVTHKNCOMBI)* TBL-HKNNUM NASI ERR"
-           END-IF
-           .
-       1009-HKNNUM-TBL-EXT.
            EXIT.
       *
       *****************************************************************
@@ -700,11 +636,6 @@
                MOVE    PTNUM-PTNUM     TO  SPA-PTNUM
            END-IF
       *
-      *    既に登録済みの患者は対象外
-           IF      PTNUM-AUTOCOMBINUM  >   ZERO
-               GO      TO   200-SAKUSEI-SYORI-EXT
-           END-IF
-      *
            MOVE    ZERO            TO  IDX-AREA
            MOVE    ZERO            TO  SPA-AREA2
       *    ７０歳到達日
@@ -799,7 +730,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            PERFORM   UNTIL   FLG-PTHKNINF  =   1
                ADD     1               TO  SPA-HKNID
-               IF      PTHKN-SAKJOKBN      =   SPACE
+               IF  PTHKN-SAKJOKBN          =   SPACE
                    INITIALIZE                  WRK-KENSAKU-AREA
                    MOVE    PTHKN-HKNNUM    TO  WRK-KEN-HKNNUM
                    MOVE    PTHKN-TEKSTYMD  TO  WRK-KEN-TEKSTYMD
@@ -849,7 +780,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *    コンバート時に前期高齢者の時、補助区分を再編集する
            IF     (PTINF-BIRTHDAY      >   "19320930" ) AND
                   (WRK-BYMD-70         <=  WRK-SYSYMD ) AND
-                  (PTHKN-TEKEDYMD      >=  WRK-BYMD-70 )
+                  (PTHKN-TEKEDYMD      >=  WRK-SYSYMD )
                IF     (WRK-BYMD-70         >   PTHKN-TEKSTYMD )
       *            適用開始日が前期高齢者年齢以前
                    PERFORM 22012-HOJOKBN-CHK2-SEC
@@ -886,105 +817,51 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            MOVE    ZERO                TO  FLG-HENKOU
       *    労災・自費・治験
-      **** IF      WRK-HKNKOHSBTKBN    =   "4"  OR  "8"  OR  "9"
-           IF      WRK-HKNKOHSBTKBN    =   "4"  OR  "9"
+           IF      WRK-HKNKOHSBTKBN    =   "4"  OR  "8"  OR  "9"
                GO  TO  22011-HOJOKBN-CHK-EXT
            END-IF
-      *    補助区分の内容チェック
+      *
            EVALUATE    PTHKN-HKNNUM
                WHEN    "002"
       *            船員
                    EVALUATE    PTHKN-HOJOKBN
                        WHEN    "1"
+                           MOVE    "A"         TO  PTHKN-HOJOKBN
+                           MOVE    1           TO  FLG-HENKOU
                        WHEN    "2"
+                           MOVE    "B"         TO  PTHKN-HOJOKBN
+                           MOVE    1           TO  FLG-HENKOU
                        WHEN    "3"
+                           MOVE    "C"         TO  PTHKN-HOJOKBN
+                           MOVE    1           TO  FLG-HENKOU
+                       WHEN    "0"
                        WHEN    SPACE
-                           MOVE    "5"             TO  WRK-KEN-ERFLG
+                           MOVE    "9"         TO  PTHKN-HOJOKBN
+                           MOVE    1           TO  FLG-HENKOU
                    END-EVALUATE
                WHEN    "060"
-               WHEN    "068"
       *            国保
                    EVALUATE    PTHKN-HOJOKBN
-                       WHEN    "0"
-                       WHEN    SPACE
-                           MOVE    "5"             TO  WRK-KEN-ERFLG
-                   END-EVALUATE
-               WHEN    "031"
-               WHEN    "032"
-               WHEN    "033"
-               WHEN    "034"
-      *            共済
-                   EVALUATE    PTHKN-HOJOKBN
-                       WHEN    "0"
-                       WHEN    "2"
-                       WHEN    SPACE
-                           MOVE    "5"             TO  WRK-KEN-ERFLG
-                   END-EVALUATE
-               WHEN    "039"
-               WHEN    "040"
-      *            後期高齢者
-                   EVALUATE    PTHKN-HOJOKBN
                        WHEN    "1"
-                       WHEN    "3"
+                       WHEN    "2"
+                       WHEN    "4"
+                       WHEN    "5"
                            CONTINUE
                        WHEN    OTHER
-                           MOVE    "5"             TO  WRK-KEN-ERFLG
-                   END-EVALUATE
-      *        自費
-               WHEN    "980"   THRU   "989"
-                   EVALUATE    PTHKN-HOJOKBN
-                       WHEN    SPACE
-                           MOVE    "5"             TO  WRK-KEN-ERFLG
+                           MOVE    "1"         TO  PTHKN-HOJOKBN
+                           MOVE    1           TO  FLG-HENKOU
                    END-EVALUATE
                WHEN    OTHER
       *            その他
                    EVALUATE    PTHKN-HOJOKBN
-                       WHEN    SPACE
-                           MOVE    "5"             TO  WRK-KEN-ERFLG
+                       WHEN    "9"
+                       WHEN    "8"
+                           CONTINUE
+                       WHEN    OTHER
+                           MOVE    "9"         TO  PTHKN-HOJOKBN
+                           MOVE    1           TO  FLG-HENKOU
                    END-EVALUATE
            END-EVALUATE
-      *
-      **** EVALUATE    PTHKN-HKNNUM
-      *        WHEN    "002"
-      *            船員
-      *            EVALUATE    PTHKN-HOJOKBN
-      *                WHEN    "1"
-      *                    MOVE    "A"         TO  PTHKN-HOJOKBN
-      *                    MOVE    1           TO  FLG-HENKOU
-      *                WHEN    "2"
-      *                    MOVE    "B"         TO  PTHKN-HOJOKBN
-      *                    MOVE    1           TO  FLG-HENKOU
-      *                WHEN    "3"
-      *                    MOVE    "C"         TO  PTHKN-HOJOKBN
-      *                    MOVE    1           TO  FLG-HENKOU
-      *                WHEN    "0"
-      *                WHEN    SPACE
-      *                    MOVE    "9"         TO  PTHKN-HOJOKBN
-      *                    MOVE    1           TO  FLG-HENKOU
-      *            END-EVALUATE
-      *        WHEN    "060"
-      *            国保
-      *            EVALUATE    PTHKN-HOJOKBN
-      *                WHEN    "1"
-      *                WHEN    "2"
-      *                WHEN    "4"
-      *                WHEN    "5"
-      *                    CONTINUE
-      *                WHEN    OTHER
-      *                    MOVE    "1"         TO  PTHKN-HOJOKBN
-      *                    MOVE    1           TO  FLG-HENKOU
-      *            END-EVALUATE
-      *        WHEN    OTHER
-      *            その他
-      *            EVALUATE    PTHKN-HOJOKBN
-      *                WHEN    "9"
-      *                WHEN    "8"
-      *                    CONTINUE
-      *                WHEN    OTHER
-      *                    MOVE    "9"         TO  PTHKN-HOJOKBN
-      *                    MOVE    1           TO  FLG-HENKOU
-      *            END-EVALUATE
-      **** END-EVALUATE
       *
            .
        22011-HOJOKBN-CHK-EXT.
@@ -996,96 +873,33 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
         22012-HOJOKBN-CHK2-SEC     SECTION.
       *
       *    老人年齢、労災・自費・治験
-      ***  IF     (PTINF-BIRTHDAY      <=  "19320930" ) OR
-      ****        (WRK-HKNKOHSBTKBN    =   "4"  OR  "8"  OR  "9")
-      *    労災・治験
-           IF     (WRK-HKNKOHSBTKBN    =   "4"  OR  "9")
+           IF     (PTINF-BIRTHDAY      <=  "19320930" ) OR
+                  (WRK-HKNKOHSBTKBN    =   "4"  OR  "8"  OR  "9")
                GO  TO  22012-HOJOKBN-CHK2-EXT
            END-IF
       *
            EVALUATE    PTHKN-HKNNUM
                WHEN    "002"
       *            船員
-                   IF     (PTINF-BIRTHDAY      <=  "19320930" )
-                       IF     (PTHKN-TEKEDYMD      >=  "20080401" )
-                           EVALUATE    PTHKN-HOJOKBN
-                           WHEN    "1"
-                           WHEN    "2"
-                           WHEN    "3"
-                           WHEN    SPACE
-                               MOVE    "5"             TO  WRK-KEN-ERFLG
-                           END-EVALUATE
-                       END-IF
-                   ELSE
-                       EVALUATE    PTHKN-HOJOKBN
-                           WHEN    "1"
-                           WHEN    "2"
-                           WHEN    "3"
-                           WHEN    SPACE
-                               CONTINUE
-                           WHEN    OTHER
-                               MOVE    "5"             TO  WRK-KEN-ERFLG
-                       END-EVALUATE
-                   END-IF
-               WHEN    "060"
-               WHEN    "068"
-      *            国保
-                   EVALUATE    PTHKN-HOJOKBN
-                       WHEN    SPACE
-                           MOVE    "5"             TO  WRK-KEN-ERFLG
-                   END-EVALUATE
-               WHEN    "031"
-               WHEN    "032"
-               WHEN    "033"
-               WHEN    "034"
-      *            共済
-                   IF     (PTINF-BIRTHDAY      <=  "19320930" )
-                       CONTINUE
-                   ELSE
-                       EVALUATE    PTHKN-HOJOKBN
-                           WHEN    "2"
-                           WHEN    SPACE
-                               CONTINUE
-                           WHEN    OTHER
-                               MOVE    "5"             TO  WRK-KEN-ERFLG
-                       END-EVALUATE
-                   END-IF
-               WHEN    "039"
-               WHEN    "040"
-      *            後期高齢者
                    EVALUATE    PTHKN-HOJOKBN
                        WHEN    "1"
+                       WHEN    "2"
                        WHEN    "3"
+                       WHEN    SPACE
                            CONTINUE
                        WHEN    OTHER
                            MOVE    "5"             TO  WRK-KEN-ERFLG
                    END-EVALUATE
-      *        自費
-               WHEN    "980"   THRU   "989"
-                   EVALUATE    PTHKN-HOJOKBN
-                       WHEN    SPACE
-                           MOVE    "5"             TO  WRK-KEN-ERFLG
-                   END-EVALUATE
+               WHEN    "060"
+      *            国保
+                   CONTINUE
                WHEN    OTHER
       *            その他
-                   IF     (PTINF-BIRTHDAY      <=  "19320930" )
-                       EVALUATE    PTHKN-HOJOKBN
-                           WHEN    SPACE
-                           WHEN    "9"
-                           WHEN    "8"
-                           WHEN    "7"
-                               CONTINUE
-                           WHEN    OTHER
-                               MOVE    "5"             TO  WRK-KEN-ERFLG
-                       END-EVALUATE
-                   ELSE
-                       EVALUATE    PTHKN-HOJOKBN
-                           WHEN    "9"
-                           WHEN    "8"
-                           WHEN    "7"
-                               MOVE    "5"             TO  WRK-KEN-ERFLG
-                       END-EVALUATE
-                   END-IF
+                   EVALUATE    PTHKN-HOJOKBN
+                       WHEN    "9"
+                       WHEN    "8"
+                           MOVE    "5"             TO  WRK-KEN-ERFLG
+                   END-EVALUATE
            END-EVALUATE
       *
            .
@@ -1159,216 +973,132 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            MOVE    SPACE           TO  HZN-HKNNUM-AREA
            INITIALIZE                  HZN-HKNNUM-AREA
-           INITIALIZE                  HKNNUM-REC
       *
            MOVE    ZERO            TO  FLG-HKNNUM
+           MOVE    SPACE           TO  HKNNUM-REC
+           INITIALIZE                  HKNNUM-REC
+           MOVE    SPA-HOSPNUM     TO  HKN-HOSPNUM
+           MOVE    WRK-KEN-HKNNUM  TO  HKN-HKNNUM
            IF      WRK-KEN-PAYKBN      =   SPACE
                MOVE    ZERO            TO  WRK-KEN-PAYKBN
            END-IF
       *    老人公費で支払区分が設定されていない時、システム管理より
            IF     (WRK-KEN-PAYKBN      =    ZERO )  AND
                   (WRK-KEN-HKNNUM      =    "027")
-               MOVE    SPA-HOSPSBT         TO  WRK-KEN-PAYKBN (1:1) 
-               MOVE    SPA-ROUPAYKBN       TO  WRK-KEN-PAYKBN (2:1)
-           END-IF
-           MOVE    ZERO                TO  FLG-KEN-OK
-           MOVE    ZERO                TO  FLG-KEN-ARI
-           PERFORM VARYING     IDH     FROM    1   BY  1
-                   UNTIL      (IDH     >   IDX-HKN-MAX )
-                          OR  (FLG-HKNNUM  =   1       )
-               IF     (WRK-KEN-HKNNUM      =   TBL-HKN-HKNNUM (IDH))
-                 AND  (WRK-KEN-PAYKBN      =   TBL-HKN-PAYKBN (IDH))
-                   MOVE    1               TO  FLG-KEN-ARI
-      *
-                   IF     (WRK-KEN-TEKSTYMD    >=  TBL-HKN-TEKSTYMD
-                                                             (IDH)) AND
-                          (WRK-KEN-TEKEDYMD    <=  TBL-HKN-TEKEDYMD
-                                                             (IDH))
-                       MOVE    1                   TO  FLG-KEN-OK
-                       MOVE    TBL-HKNNUM-REC (IDH)
-                                                   TO  HKNNUM-REC
-                       MOVE    1                   TO  FLG-HKNNUM
-                       IF      TBL-HKN-HKNKOHSBTKBN(IDH)   =   "3"
-      *                老人保険
-                           MOVE    1               TO  FLG-RJN
-                       ELSE
-                           MOVE    TBL-HKN-HKNKOHSBTKBN(IDH)
-                                                   TO  WRK-HKNKOHSBTKBN
-                       END-IF
-                   ELSE
-      *            終了日が対象の時、対象とする
-                       IF      ( WRK-KEN-TEKEDYMD  <=  TBL-HKN-TEKEDYMD
-                                                                (IDH) )
-                           MOVE    TBL-HKNNUM-REC(IDH)
-                                                   TO  HZN-HKNNUM-REC(1)
-                       ELSE
-                           MOVE    TBL-HKNNUM-REC(IDH)
-                                                   TO  HZN-HKNNUM-REC(2)
-                       END-IF
-                   END-IF
-               END-IF
-           END-PERFORM
-      *    老人公費で支払区分＝00の期間内はそのまま
-           IF     (WRK-KEN-HKNNUM      =   "027" )  AND
-                  (FLG-KEN-OK          =   ZERO  )  AND
-                  (FLG-KEN-ARI         =   1     )
-               PERFORM VARYING     IDH     FROM    1   BY  1
-                       UNTIL      (IDH     >   IDX-HKN-MAX )
-                              OR  (FLG-KEN-OK  =   1     )
-                   IF     (WRK-KEN-HKNNUM      =   TBL-HKN-HKNNUM
-                                                          (IDH)) AND
-                          (WRK-KEN-TEKSTYMD    >=  TBL-HKN-TEKSTYMD
-                                                          (IDH)) AND
-                          (WRK-KEN-TEKEDYMD    <=  TBL-HKN-TEKEDYMD
-                                                         (IDH))
-                       IF      TBL-HKN-PAYKBN (IDH)    =   "00"
-                           MOVE    1               TO  FLG-KEN-OK
-                       END-IF
-                   END-IF
-               END-PERFORM
-           END-IF
-      *
-           IF      FLG-KEN-OK      =   1
-      *        対象あり
-               MOVE    SPACE           TO  WRK-KEN-ERFLG
+               MOVE    SPA-HOSPSBT         TO  HKN-PAYKBN (1:1) 
+               MOVE    SPA-ROUPAYKBN       TO  HKN-PAYKBN (2:1)
            ELSE
-               IF      FLG-KEN-ARI     =   1
-      *            期間外あり
-                   MOVE    "1"             TO  WRK-KEN-ERFLG
-               ELSE
-      *            対象無し
-                   MOVE    "2"             TO  WRK-KEN-ERFLG
-               END-IF
+               MOVE    WRK-KEN-PAYKBN      TO  HKN-PAYKBN
            END-IF
       *
-      *    MOVE    ZERO            TO  FLG-HKNNUM
-      *    MOVE    SPACE           TO  HKNNUM-REC
-      *    INITIALIZE                  HKNNUM-REC
-      *    MOVE    SPA-HOSPNUM     TO  HKN-HOSPNUM
-      *    MOVE    WRK-KEN-HKNNUM  TO  HKN-HKNNUM
-      *    IF      WRK-KEN-PAYKBN      =   SPACE
-      *        MOVE    ZERO            TO  WRK-KEN-PAYKBN
-      *    END-IF
-      *    老人公費で支払区分が設定されていない時、システム管理より
-      *    IF     (WRK-KEN-PAYKBN      =    ZERO )  AND
-      *           (WRK-KEN-HKNNUM      =    "027")
-      *        MOVE    SPA-HOSPSBT         TO  HKN-PAYKBN (1:1) 
-      *        MOVE    SPA-ROUPAYKBN       TO  HKN-PAYKBN (2:1)
-      *    ELSE
-      *        MOVE    WRK-KEN-PAYKBN      TO  HKN-PAYKBN
-      *    END-IF
+           MOVE    HKNNUM-REC          TO  MCPDATA-REC
+           MOVE    "tbl_hknnum"        TO  MCP-TABLE
+           MOVE    "key7"              TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_hknnum"        TO  MCP-TABLE
+               MOVE    "key7"              TO  MCP-PATHNAME
+               PERFORM 950-HKNNUM-NEXT-SEC
+               MOVE    "1"             TO  WRK-KEN-ERFLG
+           ELSE
+               INITIALIZE              HKNNUM-REC
+               MOVE    1               TO  FLG-HKNNUM
+               MOVE    "2"             TO  WRK-KEN-ERFLG
+           END-IF
       *
-      *    MOVE    HKNNUM-REC          TO  MCPDATA-REC
-      *    MOVE    "tbl_hknnum"        TO  MCP-TABLE
-      *    MOVE    "key7"              TO  MCP-PATHNAME
-      *    PERFORM 910-DBSELECT-SEC
-      *    IF      MCP-RC              =   ZERO
-      *        MOVE    "tbl_hknnum"        TO  MCP-TABLE
-      *        MOVE    "key7"              TO  MCP-PATHNAME
-      *        PERFORM 950-HKNNUM-NEXT-SEC
-      *        MOVE    "1"             TO  WRK-KEN-ERFLG
-      *    ELSE
-      *        INITIALIZE              HKNNUM-REC
-      *        MOVE    1               TO  FLG-HKNNUM
-      *        MOVE    "2"             TO  WRK-KEN-ERFLG
-      *    END-IF
-      *
-      *    MOVE    ZERO                TO  FLG-RJN
-      *    MOVE    SPACE               TO  WRK-HKNKOHSBTKBN
-      *    PERFORM   UNTIL   FLG-HKNNUM    =   1
-      *      IF  ( WRK-KEN-TEKSTYMD        >=  HKN-TEKSTYMD ) AND
-      *          ( WRK-KEN-TEKEDYMD        <=  HKN-TEKEDYMD )
-      *        IF  HKN-HKNKOHSBTKBN        =   "3"
-      *            MOVE    1               TO  FLG-RJN
+           MOVE    ZERO                TO  FLG-RJN
+           MOVE    SPACE               TO  WRK-HKNKOHSBTKBN
+           PERFORM   UNTIL   FLG-HKNNUM    =   1
+             IF  ( WRK-KEN-TEKSTYMD        >=  HKN-TEKSTYMD ) AND
+                 ( WRK-KEN-TEKEDYMD        <=  HKN-TEKEDYMD )
+               IF  HKN-HKNKOHSBTKBN        =   "3"
+                   MOVE    1               TO  FLG-RJN
       **********   IF  (HKN-PAYKBN (1:1)   =   SPA-HOSPSBT)  AND
       ***********      (HKN-PAYKBN (2:1)   =   SPA-ROUPAYKBN)
-      *              MOVE    SPACE         TO  WRK-KEN-ERFLG
-      *              MOVE    1             TO  FLG-HKNNUM
+                     MOVE    SPACE         TO  WRK-KEN-ERFLG
+                     MOVE    1             TO  FLG-HKNNUM
       *********    ELSE
       *              PERFORM 950-HKNNUM-NEXT-SEC
       **********   END-IF
-      *        ELSE
-      *            MOVE    SPACE               TO  WRK-KEN-ERFLG
-      *            MOVE    1                   TO  FLG-HKNNUM
-      *            MOVE    HKN-HKNKOHSBTKBN    TO  WRK-HKNKOHSBTKBN
-      *        END-IF
-      *      ELSE
+               ELSE
+                   MOVE    SPACE               TO  WRK-KEN-ERFLG
+                   MOVE    1                   TO  FLG-HKNNUM
+                   MOVE    HKN-HKNKOHSBTKBN    TO  WRK-HKNKOHSBTKBN
+               END-IF
+             ELSE
       *        終了日が対象の時、対象とする
-      *        IF      ( WRK-KEN-TEKEDYMD      <=  HKN-TEKEDYMD )
-      *            MOVE    HKNNUM-REC          TO  HZN-HKNNUM-REC (1)
-      *        ELSE
-      *            MOVE    HKNNUM-REC          TO  HZN-HKNNUM-REC (2)
-      *        END-IF
+               IF      ( WRK-KEN-TEKEDYMD      <=  HKN-TEKEDYMD )
+                   MOVE    HKNNUM-REC          TO  HZN-HKNNUM-REC (1)
+               ELSE
+                   MOVE    HKNNUM-REC          TO  HZN-HKNNUM-REC (2)
+               END-IF
       *
-      *        MOVE    "tbl_hknnum"        TO  MCP-TABLE
-      *        MOVE    "key7"              TO  MCP-PATHNAME
-      *        PERFORM 950-HKNNUM-NEXT-SEC
-      *      END-IF
-      *    END-PERFORM
-      *    MOVE    "tbl_hknnum"        TO  MCP-TABLE
-      *    MOVE    "key7"              TO  MCP-PATHNAME
-      *    PERFORM 990-DBCLOSE-SEC
+               MOVE    "tbl_hknnum"        TO  MCP-TABLE
+               MOVE    "key7"              TO  MCP-PATHNAME
+               PERFORM 950-HKNNUM-NEXT-SEC
+             END-IF
+           END-PERFORM
+           MOVE    "tbl_hknnum"        TO  MCP-TABLE
+           MOVE    "key7"              TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
       *
       *    対象支払区分の老人が存在しない場合
-      *    IF  (WRK-KEN-ERFLG          =   "1")  AND
-      *        (FLG-RJN                =   1  )
-      *        MOVE    ZERO            TO  FLG-HKNNUM
-      *        MOVE    SPACE           TO  HKNNUM-REC
-      *        MOVE    SPA-HOSPNUM     TO  HKN-HOSPNUM
-      *        MOVE    WRK-KEN-HKNNUM  TO  HKN-HKNNUM
-      *        MOVE    HKNNUM-REC      TO  MCPDATA-REC
-      *        MOVE    "tbl_hknnum"        TO  MCP-TABLE
-      *        MOVE    "key2"              TO  MCP-PATHNAME
-      *        PERFORM 910-DBSELECT-SEC
-      *        IF      MCP-RC             =   ZERO
-      *            MOVE    "tbl_hknnum"        TO  MCP-TABLE
-      *            MOVE    "key2"              TO  MCP-PATHNAME
-      *            PERFORM 950-HKNNUM-NEXT-SEC
-      *        ELSE
-      *            INITIALIZE             HKNNUM-REC
-      *            MOVE    1              TO  FLG-HKNNUM
-      *        END-IF
+           IF  (WRK-KEN-ERFLG          =   "1")  AND
+               (FLG-RJN                =   1  )
+               MOVE    ZERO            TO  FLG-HKNNUM
+               MOVE    SPACE           TO  HKNNUM-REC
+               MOVE    SPA-HOSPNUM     TO  HKN-HOSPNUM
+               MOVE    WRK-KEN-HKNNUM  TO  HKN-HKNNUM
+               MOVE    HKNNUM-REC      TO  MCPDATA-REC
+               MOVE    "tbl_hknnum"        TO  MCP-TABLE
+               MOVE    "key2"              TO  MCP-PATHNAME
+               PERFORM 910-DBSELECT-SEC
+               IF      MCP-RC             =   ZERO
+                   MOVE    "tbl_hknnum"        TO  MCP-TABLE
+                   MOVE    "key2"              TO  MCP-PATHNAME
+                   PERFORM 950-HKNNUM-NEXT-SEC
+               ELSE
+                   INITIALIZE             HKNNUM-REC
+                   MOVE    1              TO  FLG-HKNNUM
+               END-IF
       *
-      *        PERFORM   UNTIL   FLG-HKNNUM   =   1
-      *          IF  ( WRK-KEN-TEKSTYMD       >=  HKN-TEKSTYMD ) AND
-      *              ( WRK-KEN-TEKEDYMD       <=  HKN-TEKEDYMD )
-      *              IF  HKN-HKNKOHSBTKBN     =   "3"
-      *                  IF  (HKN-PAYKBN      =   "00")
-      *                      MOVE    SPACE    TO  WRK-KEN-ERFLG
-      *                      MOVE    1              TO  FLG-HKNNUM
-      *                  ELSE
-      *                      PERFORM 950-HKNNUM-NEXT-SEC
-      *                  END-IF
-      *              ELSE
-      *                  PERFORM 950-HKNNUM-NEXT-SEC
-      *              END-IF
-      *          ELSE
-      *              PERFORM 950-HKNNUM-NEXT-SEC
-      *          END-IF
-      *        END-PERFORM
-      *        MOVE    "tbl_hknnum"        TO  MCP-TABLE
-      *        MOVE    "key2"              TO  MCP-PATHNAME
-      *        PERFORM 990-DBCLOSE-SEC
-      **** END-IF
+               PERFORM   UNTIL   FLG-HKNNUM   =   1
+                 IF  ( WRK-KEN-TEKSTYMD       >=  HKN-TEKSTYMD ) AND
+                     ( WRK-KEN-TEKEDYMD       <=  HKN-TEKEDYMD )
+                     IF  HKN-HKNKOHSBTKBN     =   "3"
+                         IF  (HKN-PAYKBN      =   "00")
+                             MOVE    SPACE    TO  WRK-KEN-ERFLG
+                             MOVE    1              TO  FLG-HKNNUM
+                         ELSE
+                             PERFORM 950-HKNNUM-NEXT-SEC
+                         END-IF
+                     ELSE
+                         PERFORM 950-HKNNUM-NEXT-SEC
+                     END-IF
+                 ELSE
+                     PERFORM 950-HKNNUM-NEXT-SEC
+                 END-IF
+               END-PERFORM
+               MOVE    "tbl_hknnum"        TO  MCP-TABLE
+               MOVE    "key2"              TO  MCP-PATHNAME
+               PERFORM 990-DBCLOSE-SEC
+           END-IF
       *
-      *!!!!!!!!!!!!
-      *!!  ORCVTPTHKNINF.CBL  ORCVTPTHKNINF.CBL で行うので
-      *!!  対象無しはエラーとする
       *    対象の保険がなかった時、終了日の対象分とする
-      *    IF     (WRK-KEN-ERFLG       NOT =   SPACE )  AND
-      *           (HZN-HKN-TEKSTYMD(1) NOT =   SPACE )
+           IF     (WRK-KEN-ERFLG       NOT =   SPACE )  AND
+                  (HZN-HKN-TEKSTYMD(1) NOT =   SPACE )
       *!       MOVE    HZN-HKNNUM-REC          TO  HKNNUM-REC
       *!       MOVE    HKN-TEKSTYMD            TO  WRK-KEN-TEKSTYMD
-      *        MOVE    SPACE                   TO  WRK-KEN-ERFLG
-      *        EVALUATE    WRK-KEN-HKNKOH
-      *            WHEN    1
+               MOVE    SPACE                   TO  WRK-KEN-ERFLG
+               EVALUATE    WRK-KEN-HKNKOH
+                   WHEN    1
       *                保険更新
-      *                PERFORM 22101-HKNINF-UPD-SEC
-      *            WHEN    2
+                       PERFORM 22101-HKNINF-UPD-SEC
+                   WHEN    2
       *                公費更新
-      *                PERFORM 22102-KOHINF-UPD-SEC
-      *        END-EVALUATE
-      *****END-IF
+                       PERFORM 22102-KOHINF-UPD-SEC
+               END-EVALUATE
+           END-IF
       *
       *    対象の保険番号マスタが見つかった場合
            IF     (WRK-KEN-ERFLG       =   SPACE )  AND
@@ -1628,7 +1358,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    "D"                 TO  WRK-KEN-ERFLG2
                MOVE    HZN-HKN-HKNKOHSBTKBN (1)
                                            TO  WRK-HKNKOHSBTKBN
-      ****     PERFORM 221022-PTKOHINF-INS-SEC
+     **********PERFORM 221022-PTKOHINF-INS-SEC
                PERFORM 221021-PTKOHINF-UPD-SEC
            END-IF
       *
