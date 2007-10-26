@@ -222,6 +222,7 @@
       *                                     ¿ÇÎÅ²Ê¤ÎÉ½¼¨
       *
       *  04.01.01    NACL-Æ£¸¶    07/10/11  ¿ÇÎÅ²Ê¥³¥Ô¡¼¡Ê°ÜÆ°¡Ëµ¡Ç½ÂÐ±þ
+      *  04.01.02    NACL-Æ£¸¶    07/10/26  ¸øÌ³ºÒ³²ÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1588,6 +1589,8 @@ grpsys         PERFORM 900-DBSELECT-SEC
                        MOVE    "½ý"        TO  WRK-HKNKBN-MEI
                    WHEN    "3"
                        MOVE    "¥¢"        TO  WRK-HKNKBN-MEI
+                   WHEN    "5"
+                       MOVE    "¸ø"        TO  WRK-HKNKBN-MEI
                END-EVALUATE
                IF      PTRSI-COMMENT       =   SPACE
                    MOVE    SPACE               TO  WRK-HKNCOMBIMEI

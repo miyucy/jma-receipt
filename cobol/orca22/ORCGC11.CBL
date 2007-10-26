@@ -36,6 +36,8 @@
       *  03.00.01    NACL-Æ£¸¶    06/06/19   C06,C07,C08 ºï½ü
       *
       *  03.05.01    NACL-Æ£¸¶    07/04/19  ¥°¥ë¡¼¥×¿ÇÎÅÂÐ±þ
+      *
+      *  04.01.01    NACL-Æ£¸¶    07/10/26  ¸øÌ³ºÒ³²ÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -695,6 +697,8 @@
                            MOVE    "½ý"        TO  WRK-HKNKBNMEI
                        WHEN    "3"
                            MOVE    "¥¢"        TO  WRK-HKNKBNMEI
+                       WHEN    "5"
+                           MOVE    "¸ø"        TO  WRK-HKNKBNMEI
                    END-EVALUATE
                    IF      PTRSI-COMMENT       =   SPACE
                        STRING  COMB-SYU-TANSEIDONAME
