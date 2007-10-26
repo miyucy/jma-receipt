@@ -1358,7 +1358,8 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    "D"                 TO  WRK-KEN-ERFLG2
                MOVE    HZN-HKN-HKNKOHSBTKBN (1)
                                            TO  WRK-HKNKOHSBTKBN
-               PERFORM 221022-PTKOHINF-INS-SEC
+     **********PERFORM 221022-PTKOHINF-INS-SEC
+               PERFORM 221021-PTKOHINF-UPD-SEC
            END-IF
       *
            .
