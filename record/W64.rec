@@ -1,0 +1,69 @@
+W64	{
+	fixed6	{
+		scrolledwindow28	{
+			KOHNUMLST	{
+				count	int;
+				row	int;
+				item	{
+					value0	varchar(3);
+					value1	varchar(44);
+					value2	varchar(9);
+					value3	varchar(9);
+					value4	varchar(3);
+					value5	varchar(3);
+					value6	varchar(3);
+					value7	varchar(3);
+					value8	varchar(3);
+					value9	varchar(3);
+					value10	varchar(3);
+					value11	varchar(3);
+					value12	varchar(3);
+					value13	varchar(3);
+				}	[100];
+				select	bool[100];
+			};
+		};
+		SELNUM	{
+			value	number(3);
+		};
+		STYUKYMD	{
+			value	varchar(9);
+		};
+		EDYUKYMD	{
+			value	varchar(9);
+		};
+		MEISYO	{
+			value	varchar(44);
+		};
+		KOHNUM1	{
+			value	varchar(3);
+		};
+		SEIDONAME1	{
+			value	varchar(50);
+		};
+		KOHNUM2	{
+			value	varchar(3);
+		};
+		SEIDONAME2	{
+			value	varchar(50);
+		};
+		KOHNUM3	{
+			value	varchar(3);
+		};
+		SEIDONAME3	{
+			value	varchar(50);
+		};
+		KOHNUM4	{
+			value	varchar(3);
+		};
+		SEIDONAME4	{
+			value	varchar(50);
+		};
+		KOHNUM5	{
+			value	varchar(3);
+		};
+		SEIDONAME5	{
+			value	varchar(50);
+		};
+	};
+};
