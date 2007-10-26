@@ -37,7 +37,7 @@
   <allow_shrink>False</allow_shrink>
   <allow_grow>False</allow_grow>
   <auto_shrink>False</auto_shrink>
-  <wmclass_class>jma-receipt.dialog</wmclass_class>
+  <wmclass_class>jma-receipt.dialog2</wmclass_class>
 
   <widget>
     <class>GtkFixed</class>
