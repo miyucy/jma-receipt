@@ -490,15 +490,19 @@
                        IF    ( WRK-HKNNUM      =   "971" OR  "973" )
                            EVALUATE    WRK-HKNNUM  ALSO  WRK-RSIHKNKBN
                            WHEN    "971"       ALSO    "1"
-                               MOVE    "Ï«ºÒÃ»´üµëÉÕ"
+                               MOVE    "Ï«ºÒÊÝ¸±¡¡Ã»"
                                                TO  SDTCHK05-HKNNUMMEI
                                                            (IDX-HKNINF)
                            WHEN    "971"       ALSO    "2"
-                               MOVE    "Ï«ºÒ¾ã³²Ç¯¶â"
+                               MOVE    "Ï«ºÒÊÝ¸±¡¡½ý"
                                                TO  SDTCHK05-HKNNUMMEI
                                                            (IDX-HKNINF)
                            WHEN    "971"       ALSO    "3"
-                               MOVE    "Ï«ºÒ¥¢¥Õ¥¿¡¼¥±¥¢"
+                               MOVE    "Ï«ºÒÊÝ¸±¡¡¥¢"
+                                               TO  SDTCHK05-HKNNUMMEI
+                                                           (IDX-HKNINF)
+                           WHEN    "971"       ALSO    "5"
+                               MOVE    "Ï«ºÒÊÝ¸±¡¡¸ø"
                                                TO  SDTCHK05-HKNNUMMEI
                                                            (IDX-HKNINF)
                            WHEN    "971"       ALSO    ANY

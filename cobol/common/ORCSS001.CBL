@@ -171,6 +171,7 @@ grpsys     COPY  "COMMON-SPA".
                WHEN        "1"     ALSO "0"
                    MOVE    1           TO  SS001-NIHO-FLG
                WHEN        "1"     ALSO "1"
+               WHEN        "1"     ALSO "5"
                    MOVE    1           TO  SS001-NRSI-FLG
                WHEN        "1"     ALSO "2"
                WHEN        "1"     ALSO "4"
@@ -178,6 +179,7 @@ grpsys     COPY  "COMMON-SPA".
                WHEN        "2"     ALSO "0"
                    MOVE    1           TO  SS001-GIHO-FLG
                WHEN        "2"     ALSO "1"
+               WHEN        "2"     ALSO "5"
                    MOVE    1           TO  SS001-GRSI-FLG
                WHEN        "2"     ALSO "2"
                WHEN        "2"     ALSO "4"
