@@ -168,7 +168,6 @@
       *
            03  WRK-BUNRUICD            PIC 9(03).
            03  WRK-BUNRUIMEI           PIC X(30).
-           03  WRK-DSPSEQ              PIC 9(02).
            03  WRK-MOJISU              PIC 9(02).
       *
       *    エラー帳票出力領域
@@ -499,7 +498,6 @@
            MOVE    ZERO            TO  WRK-KOUMOKU-NO
            MOVE    ZERO            TO  WRK-BUNRUICD
            MOVE    SPACE           TO  WRK-BUNRUIMEI
-           MOVE    50              TO  WRK-DSPSEQ
       *
       *    自院病名ＣＳＶファイルに存在する項目数分、繰り返す
       *    またはレコード終了、または項目エラー４個まで
@@ -791,6 +789,8 @@
       *****************************************************************
        2410-BUNRUICD-SET-SEC       SECTION.
       *
+           MOVE    ZERO            TO  WRK-BUNRUICD
+      *
       *    データがない場合処理抜ける
            IF      FLG-NODATA      =   1
                GO  TO  2410-BUNRUICD-SET-EXT
@@ -818,6 +818,8 @@
       *    項目３：分類名　処理
       *****************************************************************
        2410-BUNRUIMEI-SET-SEC      SECTION.
+      *
+           MOVE    SPACE           TO  WRK-BUNRUIMEI
       *
       *    データがない場合処理抜ける
            IF      FLG-NODATA      =   1
@@ -941,6 +943,7 @@
       *
       *    データがない場合処理抜ける
            IF      FLG-NODATA      =   1
+               MOVE    50          TO  WKUSBYO-DSPSEQ
                GO  TO  2410-DSPSEQ-SET-EXT
            END-IF
       *
@@ -953,7 +956,7 @@
       *    数字以外はエラー
            IF      CSV-REC (WRK-MO-ST:WRK-MO-CNT)  NUMERIC
                MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
-                                   TO  WRK-DSPSEQ
+                                   TO  WKUSBYO-DSPSEQ
            ELSE
                MOVE    3           TO  FLG-ERR
            END-IF
@@ -1088,9 +1091,6 @@
                  ( WRK-BUNRUIMEI   NOT =   SPACE )
                MOVE    WRK-BUNRUICD    TO  WKUSBYO-BUNRUICD
            END-IF
-      *
-      *    表示連番
-           MOVE    WRK-DSPSEQ          TO  WKUSBYO-DSPSEQ
       *
            .
        24101-BYOMEICD-CHECK-EXT.
