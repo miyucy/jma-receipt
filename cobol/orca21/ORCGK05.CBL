@@ -41,6 +41,7 @@
       *  03.03.00    NACL-多々納  06/10/03  約束セット期間追加対応
       *  03.05.00    NACL-多々納  07/04/XX  グループ診療対応
       *  04.00.00    NACL-多々納  07/09/XX  テーブル４００対応
+      *  04.01.00    NACL-多々納  07/10/XX  悪性腫瘍検査対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -958,16 +959,24 @@
                        MOVE    2                   TO  FLG-GMN
                    END-IF
                WHEN    "K98"
-                   IF     (SPA-K98-SRYCD-G   NOT =   SPACE )  OR
-                          (SPA-GMN5-CUR          =   1     )
-                       PERFORM 3011-K98-SET-SEC
+                   IF      SPA-GMN5-CUR        =   1
+      *                セットコード選択
+                       PERFORM 30112-K98-SETCODE-SEC
                        MOVE    1                   TO  FLG-GMN
                    ELSE
-                       MOVE    2                   TO  FLG-GMN
-                       MOVE    3                   TO  SPA-GMN5-CUR
-                       MOVE    "1"                 TO  SPA-COM-CUR
-                                                         (SPA-GMN-IDX)
+      *                明細選択
+                       PERFORM 3011-K98-SET-SEC
                    END-IF
+      ***********  IF     (SPA-K98-SRYCD-G   NOT =   SPACE )  OR
+      *                   (SPA-GMN5-CUR          =   1     )
+      *                PERFORM 3011-K98-SET-SEC
+      *                MOVE    1                   TO  FLG-GMN
+      *            ELSE
+      *                MOVE    2                   TO  FLG-GMN
+      *                MOVE    3                   TO  SPA-GMN5-CUR
+      *                MOVE    "1"                 TO  SPA-COM-CUR
+      *                                                  (SPA-GMN-IDX)
+      **********   END-IF
                WHEN    "KID1"
                    PERFORM 3001-KID1-SYORI-SEC
                    MOVE    1                   TO  FLG-GMN
@@ -1116,36 +1125,22 @@
       *****************************************************************
        3011-K98-SET-SEC          SECTION.
       *
-      *    修正セットコード決定
-           IF      SPA-GMN5-CUR        =   1
-               PERFORM 30112-K98-SETCODE-SEC
-               GO      TO      3011-K98-SET-EXT
+      *    悪性腫瘍の検査
+           IF     SPA-AKUSEI-FLG       =   1
+               PERFORM 30112-AKUSEI-COMMENT-SEC
+               MOVE    1                   TO  FLG-GMN
+           ELSE
+      *    入力コード決定
+               IF     (SPA-K98-SRYCD-G   NOT =   SPACE )
+                   PERFORM 3011-K98-SET2-SEC
+                   MOVE    1                   TO  FLG-GMN
+               ELSE
+                   MOVE    2                   TO  FLG-GMN
+                   MOVE    3                   TO  SPA-GMN5-CUR
+                   MOVE    "1"                 TO  SPA-COM-CUR
+                                                         (SPA-GMN-IDX)
+               END-IF
            END-IF
-      *    入力コード決定
-           PERFORM 3011-K98-SET2-SEC
-      *    入力コード決定
-      **** PERFORM VARYING     IDX-K98 FROM    1   BY  1
-      *            UNTIL      (IDX-K98             >   5   )  OR
-      *                       (SPA-K98-SRYCD(IDX-K98)  =   SPACE )
-      *        MOVE    SPA-K98-SRYCD(IDX-K98)  TO  K05-INPUTCD
-      *                                               (SPA-MAP-IDX)
-      *        MOVE    SPA-MAP-IDX     TO  WRK-IDX2
-      *        MOVE    SPA-GMN-IDX     TO  WRK-HZN-IDX
-      *        PERFORM 41011-KOUI-HEN-SEC
-      *
-      *        IF     (IDX-K98         <   5   )  AND
-      *               (SPA-K98-SRYCD(IDX-K98 + 1) NOT =   SPACE )
-      *            ADD     1               TO  SPA-MAP-IDX
-      *            IF      SPA-MAP-IDX     >   MAX-GMN
-      *                ADD     1               TO  SPA-GMN-PAGE
-      *                MOVE    1               TO  SPA-MAP-IDX
-      *            END-IF
-      *            ADD     1               TO  SPA-GMN-IDX
-      *        END-IF
-      *    END-PERFORM
-      *
-      *    MOVE    3                   TO  SPA-GMN5-CUR
-      *****PERFORM 20021-INPUT-GMNSET-SEC
            .
       *
        3011-K98-SET-EXT.
@@ -1183,73 +1178,6 @@
       *****************************************************************
        3011-K98-SET2-SEC          SECTION.
       *
-      *DD  MOVE    SPA-COM-GYOU(SPA-GMN-IDX)
-      *                                TO  SPA-MAP-IDX
-      *    MOVE    SPA-GMN-IDX         TO  WRK-STR
-      *
-      *    １件目を画面入力分として処理する
-      *    MOVE    SPA-SCR-REC         TO  WRK-SCR-REC
-      *    INITIALIZE                  ORCSC97AREA
-      *    MOVE    SPA-GMN-IDX         TO  LNK-SC97-GMN-IDX
-      *    時間外特例区分
-      *    MOVE    SPA-JIKANTOKU       TO  LNK-SC97-JIKANTOKU
-      *    MOVE    K05-INPUTCD(SPA-MAP-IDX)
-      *                                TO  LNK-SC97-INPUTCD
-      *    CALL    "ORCSC97"           USING
-      *                                SPA-AREA
-      *                                ORCSC97AREA
-      *                                WRK-SCR-REC
-      *    MOVE    K05-INPUTCD(SPA-MAP-IDX)
-      *                                TO  WRK-HEN-INPUTCD
-      *    MOVE    SPA-K98-SRYCD(01)   TO  K05-INPUTCD(SPA-MAP-IDX)
-      *    COMPUTE WRK-CD-MCNT         =   LNK-SC97-INCDCNT  +  1
-      *    MOVE    WRK-HEN-INPUTCD(WRK-CD-MCNT:)
-      *                                TO  K05-INPUTCD(SPA-MAP-IDX)
-      *                                          (10:12)
-      *    MOVE    "1"                 TO  SPA-COM-IN2    (SPA-GMN-IDX)
-      *    MOVE    K05-INPUTCD (SPA-MAP-IDX)
-      *                                TO  SPA-GMN-INPUTCD(SPA-GMN-IDX)
-      *    MOVE    SPACE               TO  SPA-COM-KZMFLG(SPA-GMN-IDX)
-      *    PERFORM 41011-KOUI-HEN2-SEC
-      *
-      *    残りのコードは、ＳＰＡへ
-      *    MOVE    ZERO                TO  FLG-ARI2
-      *    PERFORM VARYING     IDX-K98 FROM    2   BY  1
-      *            UNTIL      (IDX-K98             >   5   )  OR
-      *                       (SPA-K98-SRYCD(IDX-K98)  =   SPACE ) OR
-      *                       (SPA-ERRCD       NOT =   SPACE)
-      *        ADD     1               TO  SPA-GMN-IDX
-      *
-      *        点数マスタ編集・基本チェック
-      *        INITIALIZE                  ORCSC92AREA
-      *        MOVE    "K05"               TO  LNK-SC92-PG
-      *        MOVE    SPA-SYORIFLG        TO  LNK-SC92-SYORIFLG
-      *        MOVE    "1"                 TO  LNK-SC92-KBN
-      *        MOVE    SPA-GMN-IDX         TO  LNK-SC92-GMN-IDX
-      *        MOVE    SPA-K98-SRYCD(IDX-K98)
-      *                                    TO  LNK-SC92-SRYCD
-      *        MOVE    SPA-NENREI          TO  LNK-SC92-NENREI
-      *        MOVE    SPA-NAI-ROUJIN      TO  LNK-SC92-ROUJIN
-      *        MOVE    SPA-LSTSRYKA        TO  LNK-SC92-LSTSRYKA
-      *        MOVE    SPA-LSTSRYKAMEI     TO  LNK-SC92-LSTSRYKAMEI
-      *        CALL    "ORCSC92"           USING
-      *                                    MCPAREA
-      *                                    ORCSC92AREA
-      *                                    SPA-SCR-REC
-      *                                    SPA-AREA
-      *        IF      SPA-ERRCD       NOT =   SPACE
-      *            MOVE    "1"             TO  SPA-COM-CUR (SPA-GMN-IDX)
-      *        END-IF
-      *
-      *        MOVE    1               TO  FLG-ARI2
-      *    END-PERFORM
-      *
-      *    IF      SPA-ERRCD           =   SPACE
-      *        画面ＳＰＡチェック処理
-      *        MOVE    1               TO  FLG-NYU-ARI
-      *        PERFORM 410112-KOUI-SPACHK-SEC
-      *DD  END-IF
-      *
            MOVE    ZERO                TO  WRK-IN-MAP-IDX
            MOVE    SPA-GMN-IDX         TO  WRK-STR
       *
@@ -1284,6 +1212,54 @@
            .
        3011-K98-SET2-EXT.
            EXIT.
+      *@@
+      *****************************************************************
+      *    悪性腫瘍検査一覧へ処理
+      *****************************************************************
+       5101-AKUSEI-K98-SEC       SECTION.
+      *
+           MOVE    SPA-AKUSEI-IDX      TO  SPA-GMN-IDX
+      *
+           INITIALIZE                      SPA-K98-AREA
+           MOVE    "//*D009S"          TO  SPA-K98-INPUTCD
+           MOVE    "A"                 TO  SPA-K98-CDSYUBETU
+           MOVE    "3"                 TO  SPA-COM-CUR (SPA-AKUSEI-IDX)
+      *
+      *    診療行為一覧へ
+           PERFORM 410-K98-SYORI-SEC
+           .
+       5101-AKUSEI-K98-EXT.
+           EXIT.
+      *****************************************************************
+      *    悪性腫瘍検査一覧へ処理
+      *****************************************************************
+       30112-AKUSEI-COMMENT-SEC       SECTION.
+      *
+           ADD     1                   TO  SPA-GMN-IDX 
+           MOVE    SPA-GMN-IDX         TO  IDX-S
+           IF      SPA-K98-SRYCD-G   NOT =   SPACE
+               PERFORM 3011-K98-SET2-SEC
+           ELSE
+      *    コメントコード追加
+               ADD     1               TO  SPA-GMN-IDX
+               PERFORM 41014-GYOINSN-SEC
+               IF      SPA-ERRCD       =   SPACE
+                   MOVE    "830000015"     TO  SPA-GMN-INPUTCD
+                                                       (SPA-GMN-IDX)
+                   MOVE    "1"             TO  SPA-COM-IN (SPA-GMN-IDX)
+                   MOVE    "1"             TO  SPA-COM-IN2(SPA-GMN-IDX)
+      *           入力コード・名称チェック処理
+                  PERFORM 410112-KOUI-SPACHK-SEC
+               END-IF
+           END-IF
+      *
+           MOVE    ZERO                TO  SPA-AKUSEI-FLG
+           MOVE    ZERO                TO  SPA-AKUSEI-IDX
+      *
+           .
+       30112-AKUSEI-COMMENT-EXT.
+           EXIT.
+      *@@
       *
       *****************************************************************
       *    画面編集処理
@@ -4543,6 +4519,15 @@
                    MOVE    SPACE           TO  SPA-ERRCD
                END-IF
            END-PERFORM
+      *@@
+      *検査一覧表示へ
+           IF      WRK-ERR-ERRCD       =   "AK98"
+               MOVE    SPACE               TO  WRK-ERR-ERRCD
+               MOVE    1                   TO  SPA-AKUSEI-FLG
+           ELSE
+               MOVE    ZERO                TO  SPA-AKUSEI-FLG
+           END-IF
+      *@@
       *
       *    エラーの再セットを行う
            IF      WRK-ERR-ERRCD   NOT =   SPACE
@@ -4570,8 +4555,25 @@
                    MOVE    WRK-HZN-COM-TBLREC (IDX)
                                                TO  SPA-COM-TBLREC
                                                          (SPA-GMN-MAX)
+      *@
+      *            検査一覧表示へ
+                   IF      SPA-AKUSEI-FLG      =   1
+                       IF    SPA-COM-CUR (SPA-GMN-MAX)  =  "A"
+                           MOVE    SPA-GMN-MAX     TO  SPA-AKUSEI-IDX
+                           MOVE    SPACE           TO  SPA-COM-CUR
+                                                       (SPA-GMN-MAX)
+                       END-IF
+                    END-IF
+      *@
                END-IF
            END-PERFORM
+      *@@
+      *悪性腫瘍検査一覧へ
+           IF      SPA-AKUSEI-FLG      =   1
+               PERFORM 5101-AKUSEI-K98-SEC
+               GO    TO  510-TBLHEN-EXT
+           END-IF
+      *@@
       *
            IF      SPA-ERRCD       NOT =   SPACE
                GO      TO      510-TBLHEN-EXT
@@ -4639,6 +4641,8 @@
            MOVE    SPA-JIKANTOKU       TO  LNK-ORCSC-JIKANTOKU
       *    皮下筋肉注射料変換選択
            MOVE    SPA-CHG310FLG       TO  LNK-ORCSC-CHG310FLG
+      *    腫瘍マーカー一覧展開選択
+           MOVE    SPA-AKUSEIHYOFLG    TO  LNK-ORCSC-AKUSEIHYOFLG
       *
            EVALUATE    WRK-COM-SRYKBN (01)
       *        診療
@@ -5289,6 +5293,8 @@
            MOVE    FLG-TOROKU          TO  LNK-ORCSC-TOROKU
       *    皮下筋肉注射料変換選択
            MOVE    SPA-CHG310FLG       TO  LNK-ORCSC-CHG310FLG
+      *    腫瘍マーカー一覧展開選択
+           MOVE    SPA-AKUSEIHYOFLG    TO  LNK-ORCSC-AKUSEIHYOFLG
       *    検査の重複チェックのみ行う
            IF      SPA-SRYKBN-CNT (07) >   ZERO
                CALL    "ORCSC60"       USING

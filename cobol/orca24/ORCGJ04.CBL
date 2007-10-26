@@ -46,6 +46,7 @@
       * 03.05.01     NACL-多々納  07/07/18  皮下筋肉注射変換なし対応
       *                                     "0085XXXXX"コメント対応
       * 04.00.00     NACL-多々納  07/09/XX  テーブル４００対応
+      * 04.01.00     NACL-多々納  07/10/XX  悪性腫瘍検査対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -53,31 +54,13 @@
        INPUT-OUTPUT                SECTION.
        FILE-CONTROL.
       *
-      *    パラメタデータ
-      *****SELECT  PARA-FILE       ASSIGN  "/var/tmp/J01PARA"
-      *    SELECT  PARA-FILE       ASSIGN  FILE-NAME2
-      *                            ORGANIZATION    IS  INDEXED
-      *                            ACCESS  MODE    IS  DYNAMIC
-      *                            RECORD  KEY     IS  PARA-KEY
-      *                            FILE    STATUS  IS  STS-PARA.
-      *
       *    ＳＰＡデータ
-      *D   SELECT  SPASCR-FILE     ASSIGN  "J04SPASCR.TXT"
            SELECT  SPASCR-FILE     ASSIGN  FILE-NAME1
                                    ORGANIZATION    IS  LINE SEQUENTIAL
                                    FILE    STATUS  IS  STS-SPASCR.
       *
        DATA                        DIVISION.
        FILE                        SECTION.
-      *
-      *    パラメタデータ
-      *FD  PARA-FILE.
-      *01  PARA-REC.
-      *    03  PARA-KEY.
-      *********05  PARA-TERMID          PIC X(36).
-      *        05  PARA-FILEMEI         PIC X(08).
-      *        05  PARA-EDANUM          PIC 9(03).
-      *    03  PARA-DATA-REC            PIC X(3500).
       *
       *    ＳＰＡパラメタデータ
        FD  SPASCR-FILE.
@@ -92,12 +75,6 @@
            03  FILE-HOSPNUM        PIC 9(02)   VALUE   ZERO.
            03  FILE-TERMID         PIC X(64)   VALUE   SPACE.
            03  FILLER              PIC X(06)   VALUE   ".TXT".
-      *
-       01  FILE-NAME2.
-           03  FILLER              PIC X(09)   VALUE   "/var/tmp/".
-           03  FILLER              PIC X(07)   VALUE   "J01PARA".
-           03  FILE-HOSPNUM2       PIC 9(02)   VALUE   ZERO.
-           03  FILE-TERMID2        PIC X(64)   VALUE   SPACE.
       *
        01  WRK-DATA-REC.
            03  WRK-DATA            PIC X(6000)
@@ -279,10 +256,7 @@
            03  WRK-WIDGET          PIC X(20).
            03  WRK-IN-MAP-IDX      PIC 9(02).
            03  WRK-STR             PIC 9(04).
-      *Ｋ９８カウント+
-           03  WRK-CNT-ENT         PIC 9(06).
       *
-      *D   03  WRK-MAP-INDEX       PIC 9(03).
            03  WRK-SURYO-X.
                05  WRK-SURYO-Z1    PIC ZZZZZZZ.
                05  WRK-SURYO-Z19   REDEFINES  WRK-SURYO-Z1
@@ -1022,6 +996,13 @@
                        MOVE    2                   TO  FLG-GMN
                    END-IF
                WHEN    "J98"
+      *@
+      *            悪性腫瘍の検査
+                   IF     SPA-AKUSEI-FLG       =   1
+                       PERFORM 30112-AKUSEI-COMMENT-SEC
+                       MOVE    1                   TO  FLG-GMN
+                   ELSE
+      *
                    IF      SPA-J98-SRYCD-G   NOT =   SPACE
                        PERFORM 3011-J98-SET-SEC
                        MOVE    1               TO  FLG-GMN
@@ -1029,6 +1010,8 @@
                        MOVE    "1"             TO  SPA-COM-CUR
                                                       (SPA-GMN-IDX)
                        MOVE    2               TO  FLG-GMN
+                   END-IF
+      *
                    END-IF
                WHEN    "J041"
       *             禁忌一覧 ＯＫの時、更新処理へ
@@ -1240,9 +1223,14 @@
                MOVE    MCPDATA-REC         TO  SYS-1038-REC
       *        皮下筋肉注射料変換選択
                MOVE    SYS-1038-CHG310FLG      TO  SPA-CHG310FLG
+      *        腫瘍マーカ一覧表示
+               MOVE    SYS-1038-AKUSEIHYOFLG   TO  SPA-AKUSEIHYOFLG
            END-IF
            IF      SPA-CHG310FLG       =   SPACE
                MOVE    "0"                 TO  SPA-CHG310FLG
+           END-IF
+           IF      SPA-AKUSEIHYOFLG    =   SPACE
+               MOVE    "0"                 TO  SPA-AKUSEIHYOFLG
            END-IF
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key10"             TO  MCP-PATHNAME
@@ -1446,7 +1434,54 @@
        3011-J98-SET-EXT.
            EXIT.
       *
+      *@@
+      *****************************************************************
+      *    悪性腫瘍検査一覧へ処理
+      *****************************************************************
+       5101-AKUSEI-J98-SEC       SECTION.
       *
+           MOVE    SPA-AKUSEI-IDX      TO  SPA-GMN-IDX
+      *
+           INITIALIZE                      SPA-J98-AREA
+           MOVE    "//*D009S"          TO  SPA-J98-INPUTCD
+           MOVE    "A"                 TO  SPA-J98-CDSYUBETU
+           MOVE    "3"                 TO  SPA-COM-CUR (SPA-AKUSEI-IDX)
+      *
+      *    診療行為一覧へ
+           PERFORM 410-J98-SYORI-SEC
+           .
+       5101-AKUSEI-J98-EXT.
+           EXIT.
+      *****************************************************************
+      *    悪性腫瘍検査一覧へ処理
+      *****************************************************************
+       30112-AKUSEI-COMMENT-SEC       SECTION.
+      *
+           ADD     1                   TO  SPA-GMN-IDX 
+           MOVE    SPA-GMN-IDX         TO  IDX-S
+           IF      SPA-J98-SRYCD-G   NOT =   SPACE
+               PERFORM 3011-J98-SET-SEC
+           ELSE
+      *    コメントコード追加
+               ADD     1               TO  SPA-GMN-IDX
+               PERFORM 41014-GYOINSN-SEC
+               IF      SPA-ERRCD       =   SPACE
+                   MOVE    "830000015"     TO  SPA-GMN-INPUTCD
+                                                       (SPA-GMN-IDX)
+                   MOVE    "1"             TO  SPA-COM-IN (SPA-GMN-IDX)
+                   MOVE    "1"             TO  SPA-COM-IN2(SPA-GMN-IDX)
+      *           入力コード・名称チェック処理
+                  PERFORM 410112-KOUI-SPACHK-SEC
+               END-IF
+           END-IF
+      *
+           MOVE    ZERO                TO  SPA-AKUSEI-FLG
+           MOVE    ZERO                TO  SPA-AKUSEI-IDX
+      *
+           .
+       30112-AKUSEI-COMMENT-EXT.
+           EXIT.
+      *@@
       *****************************************************************
       *   診療行為マスタより編集処理
       *****************************************************************
@@ -3062,6 +3097,7 @@
            INITIALIZE                  SPA-J98GMN-AREA
       *!!  IF      SPA-J98-INPUTCD         =   SPACE
            IF      SPA-J98-INPUTCD(1:2)    =   "//"
+               MOVE    SPA-J98-INPUTCD(3:)     TO  SPA-J98-GMN-INPUT
                EVALUATE    SPA-J98-INPUTCD(3:1)
       *        コメント一覧
                    WHEN    "C"
@@ -3080,9 +3116,9 @@
                        MOVE    "."             TO  SPA-J98-INPUTCD
       *            区分番号別
                    WHEN    "*"
-                       MOVE    SPA-J98-INPUTCD(3:) TO  SPA-J98-INPUTCD
+                       MOVE    SPA-J98-GMN-INPUT   TO  SPA-J98-INPUTCD
                    WHEN    "/"
-                       MOVE    SPA-J98-INPUTCD(3:) TO  SPA-J98-INPUTCD
+                       MOVE    SPA-J98-GMN-INPUT   TO  SPA-J98-INPUTCD
                    WHEN    OTHER
                        MOVE    SPACE               TO  SPA-J98-INPUTCD
                END-EVALUATE
@@ -3674,13 +3710,15 @@
                    MOVE    ZERO                TO  WRK-KAISU
                END-IF
            END-PERFORM
-      *
-      *    警告メッセージの時、ＳＰＡの再セットを行う
-      *    IF     (SPA-ERRCD       NOT =   SPACE)  AND
-      *           (SPA-ERRCD(1:1)  NOT =   "K"  )
-      *        CONTINUE
-      *    ELSE
-      *
+      *@@
+      *検査一覧表示へ
+           IF      SPA-ERRCD           =   "AK98"
+               MOVE    SPACE               TO  SPA-ERRCD
+               MOVE    1                   TO  SPA-AKUSEI-FLG
+           ELSE
+               MOVE    ZERO                TO  SPA-AKUSEI-FLG
+           END-IF
+      *@@
       *    スパ領域へ戻す
            MOVE    ZERO                TO  SPA-GMN-MAX
            INITIALIZE                  SPA-GMN-REC
@@ -3697,18 +3735,30 @@
                    MOVE    WRK-HZN-COM-TBLREC (IDX)
                                                TO  SPA-COM-TBLREC
                                                          (SPA-GMN-MAX)
+      *@
+      *            検査一覧表示へ
+                   IF      SPA-AKUSEI-FLG      =   1
+                       IF    SPA-COM-CUR (SPA-GMN-MAX)  =  "A"
+                           MOVE    SPA-GMN-MAX     TO  SPA-AKUSEI-IDX
+                           MOVE    SPACE           TO  SPA-COM-CUR
+                                                       (SPA-GMN-MAX)
+                       END-IF
+                    END-IF
+      *@
                END-IF
            END-PERFORM
-      *****END-IF
-      *
-      *D   MOVE    WRK-GOKEI-9         TO  SPA-GMN-GOKEI
-      *
       *
            IF      SPA-GMN-MAX         =   ZERO
                MOVE    1               TO  SPA-MAX-PAGE
            ELSE
                COMPUTE SPA-MAX-PAGE    =  (SPA-GMN-MAX    -  1  )
                                        /   MAX-GMN    +    1
+           END-IF
+      *
+      *    悪性腫瘍検査一覧へ
+           IF      SPA-AKUSEI-FLG      =   1
+               PERFORM 5101-AKUSEI-J98-SEC
+               GO    TO  510-TBLHEN-EXT
            END-IF
       *
       *    禁忌チェックを行う
@@ -3771,6 +3821,8 @@
       *
       *    皮下筋肉注射料変換選択
            MOVE    SPA-CHG310FLG       TO  LNK-ORCSC-CHG310FLG
+      *    腫瘍マーカー一覧展開選択
+           MOVE    SPA-AKUSEIHYOFLG    TO  LNK-ORCSC-AKUSEIHYOFLG
       *
            EVALUATE    WRK-COM-SRYKBN (01)
       *            診療

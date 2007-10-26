@@ -121,6 +121,9 @@
                05  SPA-CHG310FLG           PIC  X(01).
       *ＣＬＡＩＭ展開選択
                05  SPA-SINSATU-FLG         PIC  X(01).
+      *@
+      *腫瘍マーカー一覧展開選択
+               05  SPA-AKUSEIHYOFLG        PIC  X(01).
       *!
       *後発医薬品変更可
                05  SPA-KOUHATUKA           PIC  X(01).
@@ -145,6 +148,9 @@
       *
       *前回保険組合せ相違チェック
                05  SPA-ZENHKNCHK-FLG       PIC X(01).
+      *
+      *薬剤情報提供料算定有無(K08)
+               05  SPA-YAKJYO-ARI             PIC 9(01).
       *
            03  SPA-K01SET-AREA.
       *処理フラグ（０：通常、１：訂正）
@@ -425,8 +431,12 @@
                            11  SPA-TBL-DRCD.
                                13  SPA-TBL-DRCD1    PIC X(01).
                                13  SPA-TBL-DRCD2    PIC X(04).
-      *薬剤情報提供料算定有無
-               05  SPA-YAKJYO-ARI             PIC 9(01).
+      *
+      *        同日初診算定科
+               05  SPA-DOUSYOSIN-AREA.
+                   07  SPA-DOUSYOSIN-OCC           OCCURS   10.
+                       09  SPA-DOU-SRYKA           PIC X(02).
+                       09  SPA-DOU-SRYYMD          PIC X(08).
       *
            03  SPA-SONOTA-AREA.
       *確認メッセージ
@@ -494,6 +504,5 @@
            03  SPA-ETC-MOTOPG          PIC X(08).
       *
       *ヘルプ・発行指示共通
-      *****03  SPA-ETCKYOUTU-AREA           PIC X(1500).
-           03  SPA-ETCKYOUTU-AREA           PIC X(1480).
+           03  SPA-ETCKYOUTU-AREA           PIC X(1500).
       *

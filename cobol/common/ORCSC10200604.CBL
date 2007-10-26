@@ -315,6 +315,10 @@
            03  IDX-SANSO               PIC 9(04).
       *
            03  WRK-SRYKA               PIC X(02).
+      *    悪性腫瘍位置
+           03  WRK-AKUSEI-IDX          PIC 9(04).
+           03  WRK-NAME                PIC X(80).
+           03  WRK-MEISYO-G            PIC X(80).
       *
       *    保存用ＳＰＡ
        01  HZN-SCR-REC.
@@ -800,7 +804,7 @@
            MOVE    ZERO                 TO  FLG-DEL
            EVALUATE    TRUE
       *        在宅診察料が有る時
-               WHEN    LNK-ORCSC-HOUMON-ARI    =   1
+               WHEN    SPA-HOUMON-ARI      =   1
                    PERFORM 100111-HOUMON-CHK-SEC
       *        在宅末期医療総合診察料
                WHEN    SPA-ZAIMATU-ARI NOT =   ZERO
@@ -2333,22 +2337,110 @@
       *****************************************************************
        10012-AKUSEI-SEC           SECTION.
       *
+      *    腫瘍マーカ検査をコメントへ
+           MOVE    ZERO                TO  FLG-ARI
+           MOVE    ZERO                TO  IDX-T
+           PERFORM VARYING     IDX1    FROM    1   BY  1
+                   UNTIL      (IDX1        >   SPA-MAX-LINE   ) OR
+                              (FLG-ARI                 =   1  ) OR
+                              (WRK-COM-INPUTCD (IDX1)  =   SPACE )
+               IF      (WRK-COM-CDKBN-KBN (IDX1)   =   "D" )  AND
+                       (WRK-COM-CDKBN-KBNNUM(IDX1) =   "009")
+                   PERFORM 100121-AKUSEI-COMMENT-SEC
+               END-IF
+           END-PERFORM
+      *
       *    腫瘍マーカー検査名
            MOVE    "830000015"         TO  WRK-SRYCD
            PERFORM 1110-KASAN-CHK-SEC
            IF      FLG-ARI             =   1
                GO      TO      10012-AKUSEI-EXT
            END-IF
-      *
-           MOVE    IDX-Z               TO  IDX-S
-           PERFORM 1100-KASAN-SET-SEC
-           IF      FLG-ADD             =   1
-               MOVE    "1"                 TO  WRK-COM-CUR (IDX-S)
+      *@
+      *    腫瘍マーカー一覧展開選択
+           IF      LNK-ORCSC-AKUSEIHYOFLG  =   "1"
+      *        診療行為一覧へ遷移
+               MOVE    "AK98"              TO  WRK-ERRCD
+               MOVE    "A"                 TO  WRK-COM-CUR (IDX-Z)
+           ELSE
+      *        コメント自動発生
+               MOVE    IDX-Z               TO  IDX-S
+               PERFORM 1100-KASAN-SET-SEC
+               IF      FLG-ADD             =   1
+                   MOVE    "1"                 TO  WRK-COM-CUR (IDX-S)
+               END-IF
            END-IF
       *
            .
        10012-AKUSEI-EXT.
            EXIT.
+      *@
+      *****************************************************************
+      *    特定薬剤治療加算料チェック処理
+      *****************************************************************
+       100121-AKUSEI-COMMENT-SEC              SECTION.
+      *
+           MOVE    WRK-COM-INPUTCD (IDX1)  TO  TNS-SRYCD
+           PERFORM 910-TENSU-READ-SEC
+           IF      FLG-TENSU           =   ZERO
+               MOVE    TNS-NAME            TO  WRK-NAME
+           ELSE
+               MOVE    WRK-COM-NAME (IDX1) TO  WRK-NAME
+           END-IF
+           MOVE    IDX1                TO  IDX-T
+           MOVE    "830000015"         TO  WRK-SRYCD
+      *    コメントコードへ
+           MOVE    WRK-SCR-REC         TO  HZN-SCR-REC
+           INITIALIZE                  ORCSC92AREA
+           MOVE    LNK-ORCSC-SYORIFLG  TO  LNK-SC92-SYORIFLG
+           MOVE    LNK-ORCSC-PG        TO  LNK-SC92-PG
+           MOVE    SPACE               TO  WRK-COM-CHKFLG (IDX-T)
+           MOVE    SPACE               TO  WRK-COM-GMNFLG (IDX-T)
+           MOVE    SPACE               TO  WRK-GMN-MEISYO-G (IDX-T)
+           MOVE    IDX-T               TO  LNK-SC92-GMN-IDX
+           MOVE    WRK-SRYCD           TO  LNK-SC92-SRYCD
+           MOVE    LNK-ORCSC-NENREI    TO  LNK-SC92-NENREI
+           MOVE    LNK-ORCSC-15MIMAN-ARI   TO  LNK-SC92-15MIMAN-ARI
+           MOVE    LNK-ORCSC-ROUJIN    TO  LNK-SC92-ROUJIN
+           MOVE    LNK-ORCSC-LSTSRYKA  TO  LNK-SC92-LSTSRYKA
+           MOVE    LNK-ORCSC-LSTSRYKAMEI   TO  LNK-SC92-LSTSRYKAMEI
+           MOVE    LNK-ORCSC-TEISEI-AREA   TO  LNK-SC92-TEISEI-AREA
+           CALL    "ORCSC92"           USING
+                                       MCPAREA
+                                       ORCSC92AREA
+                                       WRK-SCR-REC
+                                       SPA-AREA
+      *    エラーの時、追加なし
+           IF     (SPA-ERRCD           NOT =   SPACE )  OR
+                  (LNK-SC92-ERRAREA    NOT =   SPACE )
+               MOVE    HZN-SCR-REC        TO  WRK-SCR-REC
+               MOVE    SPACE               TO  SPA-ERRCD
+           ELSE
+               MOVE    WRK-COM-SRYKBN (IDX-T - 1)
+                                           TO  WRK-COM-SRYKBN(IDX-T)
+               MOVE    SPACE               TO  WRK-GMN-SRYKBN(IDX-T)
+               MOVE    WRK-COM-SRYSYUKBN (IDX-T - 1)
+                                           TO  WRK-COM-SRYSYUKBN(IDX-T)
+      *        自動追加分（入力時に追加）
+               MOVE    "2"                 TO  WRK-COM-AUTOKBN (IDX-T)
+      *
+               MOVE    WRK-GMN-MEISYO (IDX-T)
+                                            TO  WRK-MEISYO-G
+               MOVE    SPACE                TO  WRK-GMN-MEISYO (IDX-T)
+               STRING  WRK-MEISYO-G         DELIMITED  BY  "  "
+                       WRK-NAME             DELIMITED  BY  "  "
+                           INTO                WRK-GMN-MEISYO
+                                                  (IDX-T)
+                END-STRING
+                MOVE    WRK-GMN-INPUTCD (IDX-T)
+                                           TO  WRK-MAE-INPUTCD (IDX-T)
+                MOVE    SPACE              TO  WRK-COM-IN (IDX-T)
+           END-IF
+      *
+           .
+       100121-AKUSEI-COMMENT-EXT.
+           EXIT.
+      *@
       *****************************************************************
       *    特定薬剤治療加算料チェック処理
       *****************************************************************
@@ -4675,10 +4767,10 @@
            END-IF
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL      (IDX     >   10  )   OR
-                              (LNK-ORCSC-DOU-SRYKA (IDX) =   SPACE)
-               IF      LNK-ORCSC-DOU-SRYKA (IDX) =   WRK-SRYKA
-                   IF      LNK-ORCSC-DOU-SRYYMD(IDX) >   WRK-SYOYMD
-                       MOVE    LNK-ORCSC-DOU-SRYYMD(IDX)
+                              (SPA-DOU-SRYKA (IDX) =   SPACE)
+               IF      SPA-DOU-SRYKA (IDX) =   WRK-SRYKA
+                   IF      SPA-DOU-SRYYMD(IDX) >   WRK-SYOYMD
+                       MOVE    SPA-DOU-SRYYMD(IDX)
                                                TO  WRK-SYOYMD
                    END-IF
                    MOVE    10          TO  IDX

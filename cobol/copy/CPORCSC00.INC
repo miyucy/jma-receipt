@@ -98,6 +98,8 @@
            03  LNK-ORCSC-RRK-LSTYMD        PIC  X(08).
       *皮下筋肉注射料変換選択
            03  LNK-ORCSC-CHG310FLG         PIC  X(01).
+      *腫瘍マーカー一覧展開選択
+           03  LNK-ORCSC-AKUSEIHYOFLG      PIC  X(01).
       *
       *更新前自動算定のみに使用（Ｋ０２のみ）
       *調剤技術基本料有無
@@ -222,10 +224,10 @@
            03  LNK-ORCSC-KENSAFLG           PIC 9(01).
       *
       *    同日初診算定科（外来のみ）
-           03  LNK-ORCSC-DOUSYOSIN-AREA.
-               05  LNK-ORCSC-DOUSYOSIN-OCC       OCCURS   10.
-                   07  LNK-ORCSC-DOU-SRYKA       PIC X(02).
-                   07  LNK-ORCSC-DOU-SRYYMD      PIC X(08).
+      *D   03  LNK-ORCSC-DOUSYOSIN-AREA.
+      *        05  LNK-ORCSC-DOUSYOSIN-OCC       OCCURS   10.
+      *            07  LNK-ORCSC-DOU-SRYKA       PIC X(02).
+      *D           07  LNK-ORCSC-DOU-SRYYMD      PIC X(08).
       *
       *    加算追加領域（更新時の自動加算（単独剤））
            03  LNK-ORCSC-KASAN.

@@ -66,6 +66,9 @@
                05  SPA-CHOKIKAISU          PIC  9(05).
       *Èé²¼¶ÚÆùÃí¼ÍÎÁÊÑ´¹ÁªÂò
                05  SPA-CHG310FLG           PIC  X(01).
+      *¼ðáç¥Þ¡¼¥«¡¼°ìÍ÷Å¸³«ÁªÂò
+               05  SPA-AKUSEIHYOFLG        PIC  X(01).
+      *
       *        ·Ù¹ðºÑ¤ß
                05  SPA-KEI-FLG             PIC 9(01).
       *        ÊÝ¸±ÁÈ¹ç¤»
@@ -119,6 +122,9 @@
                            11  SPA-NAI-TTEKEDYMD       PIC  X(08).
                        09  SPA-HKN-MAX             PIC  9(04).
       *
+      *°­À­¼ðáç¸¡ºº¸¡º÷ÍÑ
+           03  SPA-AKUSEI-IDX              PIC 9(04).
+           03  SPA-AKUSEI-FLG              PIC 9(01).
       *    £Ë£¹£¸²èÌÌÍÑ
            03  SPA-J98-MOTOPG              PIC X(08).
            03  SPA-J98GMN-AREA.

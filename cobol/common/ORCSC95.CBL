@@ -943,6 +943,8 @@
                MOVE    SYS-1038-TEISEIFLG      TO  SPA-TEISEIFLG
       *        Èé²¼¶ÚÆùÃí¼ÍÎÁÊÑ´¹ÁªÂò
                MOVE    SYS-1038-CHG310FLG      TO  SPA-CHG310FLG
+      *        ¼ðáç¥Þ¡¼¥«°ìÍ÷É½¼¨
+               MOVE    SYS-1038-AKUSEIHYOFLG   TO  SPA-AKUSEIHYOFLG
            END-IF
            IF      SPA-KAGRPFLG        =   SPACE
                MOVE    "0"                 TO  SPA-KAGRPFLG
@@ -958,6 +960,9 @@
            END-IF
            IF      SPA-CHG310FLG       =   SPACE
                MOVE    "0"                 TO  SPA-CHG310FLG
+           END-IF
+           IF      SPA-AKUSEIHYOFLG    =   SPACE
+               MOVE    "0"                 TO  SPA-AKUSEIHYOFLG
            END-IF
       *
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
@@ -1549,6 +1554,8 @@
                MOVE    SYS-1038-TEISEIFLG      TO  SPA-TEISEIFLG
       *        Èé²¼¶ÚÆùÃí¼ÍÎÁÊÑ´¹ÁªÂò
                MOVE    SYS-1038-CHG310FLG      TO  SPA-CHG310FLG
+      *        ¼ðáç¥Þ¡¼¥«°ìÍ÷É½¼¨
+               MOVE    SYS-1038-AKUSEIHYOFLG   TO  SPA-AKUSEIHYOFLG
            END-IF
            IF      SPA-DOSRYKBNFLG     =   SPACE
                MOVE    "00"                TO  SPA-DOSRYKBNFLG
@@ -1561,6 +1568,9 @@
            END-IF
            IF      SPA-CHG310FLG       =   SPACE
                MOVE    "0"                 TO  SPA-CHG310FLG
+           END-IF
+           IF      SPA-AKUSEIHYOFLG    =   SPACE
+               MOVE    "0"                 TO  SPA-AKUSEIHYOFLG
            END-IF
       *
            MOVE    "tbl_syskanri"      TO  MCP-TABLE

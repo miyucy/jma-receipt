@@ -1406,4 +1406,22 @@ path	key72 	{
 		;
 	};
 };
+path	key91m	{
+	DBSELECT	{
+		DECLARE tbl_tensu_key91m_csr CURSOR FOR
+		SELECT distinct a.*
+		FROM tbl_tensu a,tbl_inputcd b
+			WHERE a.HOSPNUM	 =   :HOSPNUM
+			AND   YUKOSTYMD    <=  :YUKOSTYMD
+			AND   YUKOEDYMD    >=  :YUKOEDYMD
+			AND   CDKBN_KBN     =  :CDKBN_KBN
+			AND   CDKBN_KBNNUM  =  :CDKBN_KBNNUM
+			AND   a.HOSPNUM	 =   b.HOSPNUM
+			AND   a.SRYCD    =   b.SRYCD
+			ORDER   BY          CDKBN_KBNNUM,
+					    CDKBN_KBNNUM_EDA,
+					    a.SRYCD
+			;
+	};
+};
 

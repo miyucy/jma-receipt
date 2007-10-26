@@ -88,6 +88,7 @@
       *  03.05.01    NACL-太田    07/08/03  月別請求書前回未収額印字区分追加
       *  03.05.01    NACL-多々納  07/08/XX  訂正の請求書金額区分追加
       *  03.05.02    NACL-多々納  07/09/07  前回保険組合せ相違区分追加
+      *  04.01.00    NACL-多々納  07/11/25  腫瘍マーカー一覧区分追加他
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -445,6 +446,15 @@
                            11  SPA-GMN-FORMALFLG-LST   PIC X(40)
                                                        OCCURS  5.
                            11  SPA-GMN-FORMALFLG-MAX   PIC 9(03).
+      *                腫瘍マーカ一覧表示
+                       09  SPA-GMN-AKUSEIHYO-G.
+                           11  SPA-GMN-AKUSEIHYO       PIC X(01).
+                           11  SPA-GMN-AKUSEIHYO-F1    PIC X(01).
+                           11  SPA-GMN-AKUSEIHYO-MEI   PIC X(38).
+                       09  SPA-GMN-AKUSEIHYOLST-G.
+                           11  SPA-GMN-AKUSEIHYO-LST   PIC X(40)
+                                                       OCCURS  2.
+                           11  SPA-GMN-AKUSEIHYO-MAX   PIC 9(03).
       *                同日再診・訂正選択
                        09  SPA-GMN-TEISEIFLG-G.
                            11  SPA-GMN-TEISEIFLG       PIC X(01).
@@ -1066,11 +1076,11 @@
                    WHEN    "1007"
                        MOVE    2            TO  SPA-GMN-CUR
                    WHEN    "1017"
-                       MOVE    20           TO  SPA-GMN-CUR
+                       MOVE    201          TO  SPA-GMN-CUR
                    WHEN    "1038"
-                       MOVE    30           TO  SPA-GMN-CUR
+                       MOVE    301          TO  SPA-GMN-CUR
                    WHEN    "1043"
-                       MOVE    100          TO  SPA-GMN-CUR
+                       MOVE    601          TO  SPA-GMN-CUR
                END-EVALUATE
            END-IF
       *
@@ -1274,6 +1284,10 @@
            MOVE    "0 使用しない"      TO  SPA-GMN-FORMALFLG-LST(1)
            MOVE    "1 使用する"        TO  SPA-GMN-FORMALFLG-LST(2)
            MOVE    2                   TO  SPA-GMN-FORMALFLG-MAX
+      *    腫瘍マーカ一覧
+           MOVE    "0 自動表示しない"  TO  SPA-GMN-AKUSEIHYO-LST(1)
+           MOVE    "1 自動表示する"    TO  SPA-GMN-AKUSEIHYO-LST(2)
+           MOVE    2                   TO  SPA-GMN-AKUSEIHYO-MAX
       *    同日再診・訂正選択
            MOVE    "0 選択しない"      TO  SPA-GMN-TEISEIFLG-LST(1)
            MOVE    "1 選択する"        TO  SPA-GMN-TEISEIFLG-LST(2)
@@ -2089,7 +2103,7 @@
                                            TO  SPA-GMN-HONKZKKBN-FLG-G
            END-EVALUATE
       *
-           MOVE    20                 TO  SPA-GMN-CUR
+           MOVE    201                 TO  SPA-GMN-CUR
       *
            . 
        310-SPASET-1017-EXT.
@@ -2128,6 +2142,8 @@
            MOVE    SYS-1038-WKSRYHYOFLG    TO  SPA-GMN-WKSRYHYOFLG
       *    検査正式名称表示
            MOVE    SYS-1038-FORMALFLG      TO  SPA-GMN-FORMALFLG
+      *    腫瘍マーカ一覧表示
+           MOVE    SYS-1038-AKUSEIHYOFLG   TO  SPA-GMN-AKUSEIHYO
       *    同日再診・訂正選択
            MOVE    SYS-1038-TEISEIFLG      TO  SPA-GMN-TEISEIFLG
       *    皮下筋肉注射料変換選択
@@ -2272,6 +2288,24 @@
                MOVE    SPA-GMN-FORMALFLG-LST (1)
                                        TO  SPA-GMN-FORMALFLG-G
            END-IF
+      *    腫瘍マーカ−一覧表示
+           MOVE    ZERO                TO  FLG-OK
+           PERFORM VARYING IDY         FROM    1   BY  1
+                   UNTIL   IDY         >   SPA-GMN-AKUSEIHYO-MAX
+               IF      SPA-GMN-AKUSEIHYO
+                                       =   SPA-GMN-AKUSEIHYO-LST (IDY)
+                                                             (1:1)
+                   MOVE    SPA-GMN-AKUSEIHYO-LST (IDY)
+                                       TO  SPA-GMN-AKUSEIHYO-G
+                   MOVE    1           TO  FLG-OK
+                   MOVE    SPA-GMN-AKUSEIHYO-MAX
+                                       TO  IDY
+               END-IF
+           END-PERFORM
+           IF      FLG-OK              =   ZERO
+               MOVE    SPA-GMN-AKUSEIHYO-LST (1)
+                                       TO  SPA-GMN-AKUSEIHYO-G
+           END-IF
       *    同日再診・訂正選択
            MOVE    ZERO                TO  FLG-OK
            PERFORM VARYING IDY         FROM    1   BY  1
@@ -2307,7 +2341,7 @@
                                        TO  SPA-GMN-CHG310FLG-G
            END-IF
       *
-           MOVE    33                  TO  SPA-GMN-CUR
+           MOVE    301                  TO  SPA-GMN-CUR
       *
            . 
        310-SPASET-1038-EXT.
@@ -2905,7 +2939,7 @@
                                        TO  SPA-GMN-SJKBN-G
            END-IF
       *
-           MOVE    70                 TO  SPA-GMN-CUR
+           MOVE    500                 TO  SPA-GMN-CUR
       *
            . 
        310-SPASET-1042-EXT.
@@ -2973,7 +3007,7 @@
                                        TO  SPA-GMN-SRYKA-FLG-G
            END-IF
       *
-           MOVE    100                 TO  SPA-GMN-CUR
+           MOVE    600                 TO  SPA-GMN-CUR
       *
            . 
        310-SPASET-1043-EXT.
@@ -3129,6 +3163,7 @@
            MOVE    W07-DOSRYKBN-FLG    TO  SPA-GMN-DOSRYKBNFLG-G
            MOVE    W07-WKSRYHYO-FLG    TO  SPA-GMN-WKSRYHYOFLG-G
            MOVE    W07-FORMAL-FLG      TO  SPA-GMN-FORMALFLG-G
+           MOVE    W07-AKUSEIHYO       TO  SPA-GMN-AKUSEIHYO-G
            MOVE    W07-TEISEIFLG       TO  SPA-GMN-TEISEIFLG-G
            MOVE    W07-CHG310FLG       TO  SPA-GMN-CHG310FLG-G
       *
@@ -3322,6 +3357,10 @@
       *            検査正式名称表示
                    IF      SPA-ERRCD           =   SPACE
                        PERFORM 4108-FORMALFLG-CHK-SEC
+                   END-IF
+      *            腫瘍マーカー検査表示
+                   IF      SPA-ERRCD           =   SPACE
+                       PERFORM 4108-AKUSEIHYO-CHK-SEC
                    END-IF
       *            同日再診・訂正選択
                    IF      SPA-ERRCD           =   SPACE
@@ -4304,7 +4343,7 @@
                END-IF
            END-PERFORM
            IF      FLG-OK              =   ZERO
-               MOVE    20              TO  SPA-GMN-CUR
+               MOVE    201             TO  SPA-GMN-CUR
                MOVE    "1001"          TO  SPA-ERRCD
            END-IF
       *
@@ -4329,7 +4368,7 @@
                END-IF
            END-PERFORM
            IF      FLG-OK              =   ZERO
-               MOVE    21              TO  SPA-GMN-CUR
+               MOVE    202              TO  SPA-GMN-CUR
                MOVE    "1002"          TO  SPA-ERRCD
            END-IF
       *
@@ -4354,7 +4393,7 @@
                END-IF
            END-PERFORM
            IF      FLG-OK              =   ZERO
-               MOVE    22              TO  SPA-GMN-CUR
+               MOVE    203              TO  SPA-GMN-CUR
                MOVE    "1003"          TO  SPA-ERRCD
            END-IF
       *
@@ -4379,7 +4418,7 @@
                END-IF
            END-PERFORM
            IF      FLG-OK              =   ZERO
-               MOVE    23              TO  SPA-GMN-CUR
+               MOVE    204             TO  SPA-GMN-CUR
                MOVE    "1004"          TO  SPA-ERRCD
            END-IF
       *
@@ -4403,7 +4442,7 @@
                END-IF
            END-PERFORM
            IF      FLG-OK              =   ZERO
-               MOVE    24              TO  SPA-GMN-CUR
+               MOVE    205             TO  SPA-GMN-CUR
                MOVE    "1005"          TO  SPA-ERRCD
            END-IF
       *
@@ -4429,7 +4468,7 @@
                END-IF
            END-PERFORM
            IF      FLG-OK              =   ZERO
-               MOVE    25              TO  SPA-GMN-CUR
+               MOVE    206             TO  SPA-GMN-CUR
                MOVE    "1006"          TO  SPA-ERRCD
            END-IF
       *
@@ -4454,7 +4493,7 @@
                END-IF
            END-PERFORM
            IF      FLG-OK              =   ZERO
-               MOVE    26              TO  SPA-GMN-CUR
+               MOVE    207             TO  SPA-GMN-CUR
                MOVE    "1007"          TO  SPA-ERRCD
            END-IF
       *
@@ -4479,7 +4518,7 @@
                END-IF
            END-PERFORM
            IF      FLG-OK              =   ZERO
-               MOVE    27              TO  SPA-GMN-CUR
+               MOVE    208             TO  SPA-GMN-CUR
                MOVE    "1008"          TO  SPA-ERRCD
            END-IF
       *
@@ -4504,7 +4543,7 @@
                END-IF
            END-PERFORM
            IF      FLG-OK              =   ZERO
-               MOVE    28              TO  SPA-GMN-CUR
+               MOVE    209             TO  SPA-GMN-CUR
                MOVE    "1009"          TO  SPA-ERRCD
            END-IF
       *
@@ -4527,7 +4566,7 @@
                END-IF
            END-PERFORM
            IF      FLG-OK              =   ZERO
-               MOVE    30              TO  SPA-GMN-CUR
+               MOVE    320             TO  SPA-GMN-CUR
                MOVE    "2001"          TO  SPA-ERRCD
            END-IF
       *
@@ -4551,7 +4590,7 @@
                END-IF
            END-PERFORM
            IF      FLG-OK              =   ZERO
-               MOVE    31              TO  SPA-GMN-CUR
+               MOVE    321             TO  SPA-GMN-CUR
                MOVE    "2002"          TO  SPA-ERRCD
            END-IF
       *
@@ -4575,7 +4614,7 @@
                END-IF
            END-PERFORM
            IF      FLG-OK              =   ZERO
-               MOVE    32              TO  SPA-GMN-CUR
+               MOVE    322             TO  SPA-GMN-CUR
                MOVE    "2003"          TO  SPA-ERRCD
            END-IF
       *
@@ -4598,7 +4637,7 @@
                END-IF
            END-PERFORM
            IF      FLG-OK              =   ZERO
-               MOVE    38              TO  SPA-GMN-CUR
+               MOVE    323             TO  SPA-GMN-CUR
                MOVE    "2009"          TO  SPA-ERRCD
            END-IF
       *
@@ -4621,7 +4660,7 @@
                END-IF
            END-PERFORM
            IF      FLG-OK              =   ZERO
-               MOVE    39              TO  SPA-GMN-CUR
+               MOVE    324             TO  SPA-GMN-CUR
                MOVE    "2010"          TO  SPA-ERRCD
            END-IF
       *
@@ -4645,7 +4684,7 @@
                END-IF
            END-PERFORM
            IF      FLG-OK              =   ZERO
-               MOVE    33              TO  SPA-GMN-CUR
+               MOVE    301             TO  SPA-GMN-CUR
                MOVE    "2004"          TO  SPA-ERRCD
            END-IF
       *
@@ -4669,7 +4708,7 @@
                END-IF
            END-PERFORM
            IF      FLG-OK              =   ZERO
-               MOVE    34              TO  SPA-GMN-CUR
+               MOVE    302             TO  SPA-GMN-CUR
                MOVE    "2005"          TO  SPA-ERRCD
            END-IF
       *
@@ -4693,12 +4732,36 @@
                END-IF
            END-PERFORM
            IF      FLG-OK              =   ZERO
-               MOVE    35              TO  SPA-GMN-CUR
+               MOVE    303             TO  SPA-GMN-CUR
                MOVE    "2006"          TO  SPA-ERRCD
            END-IF
       *
            .
        4108-FORMALFLG-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    腫瘍マーカ一覧表示チェック処理（診療行為機能情報）
+      *****************************************************************
+       4108-AKUSEIHYO-CHK-SEC      SECTION.
+      *
+           MOVE    ZERO                TO  FLG-OK
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-GMN-AKUSEIHYO-MAX
+               IF      SPA-GMN-AKUSEIHYO
+                                       =   SPA-GMN-AKUSEIHYO-LST (IDX)
+                                                          (1:1)
+                   MOVE    SPA-GMN-AKUSEIHYO-LST(IDX)
+                                          TO  SPA-GMN-AKUSEIHYO-G
+                   MOVE    1              TO  FLG-OK
+               END-IF
+           END-PERFORM
+           IF      FLG-OK              =   ZERO
+               MOVE    304             TO  SPA-GMN-CUR
+               MOVE    "2011"          TO  SPA-ERRCD
+           END-IF
+      *
+           .
+       4108-AKUSEIHYO-CHK-EXT.
            EXIT.
       *****************************************************************
       *    同日再診・訂正選択チェック処理（診療行為機能情報）
@@ -4718,7 +4781,7 @@
                END-IF
            END-PERFORM
            IF      FLG-OK              =   ZERO
-               MOVE    36              TO  SPA-GMN-CUR
+               MOVE    305             TO  SPA-GMN-CUR
                MOVE    "2007"          TO  SPA-ERRCD
            END-IF
       *
@@ -4743,7 +4806,7 @@
                END-IF
            END-PERFORM
            IF      FLG-OK              =   ZERO
-               MOVE    37              TO  SPA-GMN-CUR
+               MOVE    306             TO  SPA-GMN-CUR
                MOVE    "2008"          TO  SPA-ERRCD
            END-IF
       *
@@ -5125,7 +5188,7 @@
                END-IF
            END-PERFORM
            IF      FLG-OK              =   ZERO
-               MOVE    70              TO  SPA-GMN-CUR
+               MOVE    500             TO  SPA-GMN-CUR
                MOVE    "4001"          TO  SPA-ERRCD
            END-IF
       *
@@ -5148,7 +5211,7 @@
                END-IF
            END-PERFORM
            IF      FLG-OK              =   ZERO
-               MOVE    71              TO  SPA-GMN-CUR
+               MOVE    501             TO  SPA-GMN-CUR
                MOVE    "4002"          TO  SPA-ERRCD
            END-IF
       *
@@ -5171,7 +5234,7 @@
                END-IF
            END-PERFORM
            IF      FLG-OK              =   ZERO
-               MOVE    72              TO  SPA-GMN-CUR
+               MOVE    502             TO  SPA-GMN-CUR
                MOVE    "4003"          TO  SPA-ERRCD
            END-IF
       *
@@ -5194,7 +5257,7 @@
                END-IF
            END-PERFORM
            IF      FLG-OK              =   ZERO
-               MOVE    73              TO  SPA-GMN-CUR
+               MOVE    503             TO  SPA-GMN-CUR
                MOVE    "4006"          TO  SPA-ERRCD
            END-IF
       *
@@ -5217,7 +5280,7 @@
                END-IF
            END-PERFORM
            IF      FLG-OK              =   ZERO
-               MOVE    74              TO  SPA-GMN-CUR
+               MOVE    504             TO  SPA-GMN-CUR
                MOVE    "4004"          TO  SPA-ERRCD
            END-IF
       *
@@ -5240,7 +5303,7 @@
                END-IF
            END-PERFORM
            IF      FLG-OK              =   ZERO
-               MOVE    75              TO  SPA-GMN-CUR
+               MOVE    505             TO  SPA-GMN-CUR
                MOVE    "4005"          TO  SPA-ERRCD
            END-IF
       *
@@ -5263,7 +5326,7 @@
                END-IF
            END-PERFORM
            IF      FLG-OK              =   ZERO
-               MOVE    76              TO  SPA-GMN-CUR
+               MOVE    506             TO  SPA-GMN-CUR
                MOVE    "4007"          TO  SPA-ERRCD
            END-IF
            .
@@ -5286,7 +5349,7 @@
                END-IF
            END-PERFORM
            IF      FLG-OK              =   ZERO
-               MOVE    100             TO  SPA-GMN-CUR
+               MOVE    600             TO  SPA-GMN-CUR
                MOVE    "5001"          TO  SPA-ERRCD
            END-IF
       *
@@ -5310,7 +5373,7 @@
                END-IF
            END-PERFORM
            IF      FLG-OK              =   ZERO
-               MOVE    101             TO  SPA-GMN-CUR
+               MOVE    601             TO  SPA-GMN-CUR
                MOVE    "5002"          TO  SPA-ERRCD
            END-IF
       *
@@ -5908,6 +5971,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPA-GMN-DOSRYKBNFLG     TO  SYS-1038-DOSRYKBNFLG
            MOVE    SPA-GMN-WKSRYHYOFLG     TO  SYS-1038-WKSRYHYOFLG
            MOVE    SPA-GMN-FORMALFLG       TO  SYS-1038-FORMALFLG
+           MOVE    SPA-GMN-AKUSEIHYO       TO  SYS-1038-AKUSEIHYOFLG
            MOVE    SPA-GMN-TEISEIFLG       TO  SYS-1038-TEISEIFLG
            MOVE    SPA-GMN-CHG310FLG       TO  SYS-1038-CHG310FLG
       *
@@ -6610,6 +6674,15 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            END-PERFORM
            MOVE    SPA-GMN-FORMALFLG-MAX
                                        TO  W07-FORMAL-FLG-COUNT
+      *    検査正式名称表示（診療行為機能情報）
+           MOVE    SPA-GMN-AKUSEIHYO-G   TO  W07-AKUSEIHYO
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-GMN-AKUSEIHYO-MAX
+               MOVE    SPA-GMN-AKUSEIHYO-LST (IDX)
+                                       TO  W07-AKUSEIHYO-ITEM(IDX)
+           END-PERFORM
+           MOVE    SPA-GMN-AKUSEIHYO-MAX
+                                       TO  W07-AKUSEIHYO-COUNT
       *    同日再診・訂正選択（診療行為機能情報）
            MOVE    SPA-GMN-TEISEIFLG-G   TO  W07-TEISEIFLG
            PERFORM VARYING     IDX     FROM    1   BY  1
@@ -7080,7 +7153,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN    "1009"
                    MOVE    "本人・家族区分がありません。"
                                                        TO  SPA-ERRMSG
-      *        診療行為機能情報
+      *    診療行為機能情報
                WHEN    "2001"
                    MOVE    "入金管理区分がありません。"
                                                        TO  SPA-ERRMSG
@@ -7111,7 +7184,10 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN    "2010"
                    MOVE    "薬剤情報提供発行区分がありません。"
                                                        TO  SPA-ERRMSG
-      *
+               WHEN    "2011"
+                   MOVE    "悪性腫瘍検査一覧区分がありません。"
+                                                       TO  SPA-ERRMSG
+      *    収納情報
                WHEN    "3001"
                    MOVE    "請求書兼領収書発行区分がありません。"
                                                        TO  SPA-ERRMSG
@@ -7366,47 +7442,50 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE  "JIKANS2_HH2"     TO   MCP-WIDGET
                WHEN    66
                    MOVE  "JIKANS2_MM2"     TO   MCP-WIDGET
-      *
-               WHEN    20
+      *患者登録情報
+               WHEN    201
                    MOVE  "BYOMEIKBN"       TO   MCP-WIDGET
-               WHEN    21
+               WHEN    202
                    MOVE  "JISYOKBN"        TO   MCP-WIDGET
-               WHEN    22
+               WHEN    203
                    MOVE  "HAKKOKBN"        TO   MCP-WIDGET
-               WHEN    23
+               WHEN    204
                    MOVE  "HOJYOKBN"        TO   MCP-WIDGET
-               WHEN    24
+               WHEN    205
                    MOVE  "DOUMEI_CHKFLG"   TO   MCP-WIDGET
-               WHEN    25
+               WHEN    206
                    MOVE  "JYUFUKU_CHKKBN"  TO   MCP-WIDGET
-               WHEN    26
+               WHEN    207
                    MOVE  "KOHONLY_CHKFLG"  TO   MCP-WIDGET
-               WHEN    27
+               WHEN    208
                    MOVE  "PTNUMDEL_FLG"    TO   MCP-WIDGET
-               WHEN    28
+               WHEN    209
                    MOVE  "HONKZKKBN"       TO   MCP-WIDGET
-      *
-               WHEN    30
-                   MOVE  "SRYNYKNKNRKBN"   TO   MCP-WIDGET
-               WHEN    31
-                   MOVE  "KAGRPFLG"        TO   MCP-WIDGET
-               WHEN    32
-                   MOVE  "HAKHOUFLG"       TO   MCP-WIDGET
-               WHEN    33
+      *診療行為情報
+               WHEN    301
                    MOVE  "DOSRYKBN_FLG"    TO   MCP-WIDGET
-               WHEN    34
+               WHEN    302
                    MOVE  "WKSRYHYO_FLG"    TO   MCP-WIDGET
-               WHEN    35
+               WHEN    303
                    MOVE  "FORMAL_FLG"      TO   MCP-WIDGET
-               WHEN    36
+               WHEN    304
+                   MOVE  "AKUSEIHYO"       TO   MCP-WIDGET
+               WHEN    305
                    MOVE  "TEISEIFLG"       TO   MCP-WIDGET
-               WHEN    37
+               WHEN    306
                    MOVE  "CHG310FLG"       TO   MCP-WIDGET
-               WHEN    38
+      *        請求選択
+               WHEN    320
+                   MOVE  "SRYNYKNKNRKBN"   TO   MCP-WIDGET
+               WHEN    321
+                   MOVE  "KAGRPFLG"        TO   MCP-WIDGET
+               WHEN    322
+                   MOVE  "HAKHOUFLG"       TO   MCP-WIDGET
+               WHEN    323
                    MOVE  "TEIKINKBN"       TO   MCP-WIDGET
-               WHEN    39
+               WHEN    324
                    MOVE  "YKJCHKKBN"       TO   MCP-WIDGET
-      *
+      *収納情報
                WHEN    40
                    MOVE  "SYUSKYPRTG"      TO   MCP-WIDGET
       *
@@ -7466,51 +7545,50 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE  "SYUKARIED22_HH"  TO   MCP-WIDGET
                WHEN    415
                    MOVE  "SYUKARIED22_MM"  TO   MCP-WIDGET
-      *
-               WHEN    70
+      *病名・コメント情報
+               WHEN    500
                    MOVE  "MSG1_DSPKBN"     TO   MCP-WIDGET
-               WHEN    71
+               WHEN    501
                    MOVE  "MSG2_DSPKBN"     TO   MCP-WIDGET
-               WHEN    72
+               WHEN    502
                    MOVE  "MSG3_DSPKBN"     TO   MCP-WIDGET
-               WHEN    73
+               WHEN    503
                    MOVE  "MSG4_DSPKBN"     TO   MCP-WIDGET
-               WHEN    74
+               WHEN    504
                    MOVE  "SRYKA_DSPKBN"    TO   MCP-WIDGET
-               WHEN    75
+               WHEN    505
                    MOVE  "SYOKBN_DSPKBN"   TO   MCP-WIDGET
-               WHEN    76
+               WHEN    506
                    MOVE  "SJKBN"           TO   MCP-WIDGET
-      *
-               WHEN    100
+      *会計照会情報
+               WHEN    600
                    MOVE  "SRYKBN_FLG"      TO   MCP-WIDGET
-               WHEN    101
+               WHEN    601
                    MOVE  "SRYKA_FLG"       TO   MCP-WIDGET
       *
-               WHEN    99
+               WHEN    999
                    MOVE  "B12"             TO   MCP-WIDGET
            END-EVALUATE
       *
            EVALUATE    SPA-GMN-CUR
-               WHEN    2   THRU    19
-               WHEN    50  THRU    69
-               WHEN    80  THRU    89
+               WHEN    2   THRU    39
+               WHEN    50  THRU    199
                    MOVE    0               TO  W07-PAGENO
                    MOVE    0               TO  SPA-GMN-PAGENO
-               WHEN    20  THRU    29
+               WHEN    200  THRU   299
                    MOVE    1               TO  W07-PAGENO
                    MOVE    1               TO  SPA-GMN-PAGENO
-               WHEN    30  THRU    39
+               WHEN    300 THRU    399
                    MOVE    2               TO  W07-PAGENO
                    MOVE    2               TO  SPA-GMN-PAGENO
                WHEN    40  THRU    49
                WHEN    400 THRU    499
                    MOVE    3               TO  W07-PAGENO
                    MOVE    3               TO  SPA-GMN-PAGENO
-               WHEN    70  THRU    79
+               WHEN    500 THRU    599
                    MOVE    4               TO  W07-PAGENO
                    MOVE    4               TO  SPA-GMN-PAGENO
-               WHEN    100 THRU    100
+               WHEN    600 THRU    699
                    MOVE    5               TO  W07-PAGENO
                    MOVE    5               TO  SPA-GMN-PAGENO
                WHEN    OTHER
@@ -7634,51 +7712,51 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN    "BYOHYOKBN"
                    MOVE    83              TO  SPA-GMN-CUR
                WHEN    "ZAIJUNKBN"
-                   MOVE    99              TO  SPA-GMN-CUR
+                   MOVE    999              TO  SPA-GMN-CUR
       *        患者登録情報
                WHEN    "BYOMEIKBN"
-                   MOVE    21              TO  SPA-GMN-CUR
+                   MOVE    202              TO  SPA-GMN-CUR
                WHEN    "JISYOKBN"
-                   MOVE    22              TO  SPA-GMN-CUR
+                   MOVE    203              TO  SPA-GMN-CUR
                WHEN    "HAKKOKBN"
-                   MOVE    23              TO  SPA-GMN-CUR
+                   MOVE    204              TO  SPA-GMN-CUR
                WHEN    "HOJYOKBN"
-                   MOVE    24              TO  SPA-GMN-CUR
+                   MOVE    205              TO  SPA-GMN-CUR
                WHEN    "DOUMEI_CHKFLG"
-                   MOVE    25              TO  SPA-GMN-CUR
+                   MOVE    206              TO  SPA-GMN-CUR
                WHEN    "JYUFUKU_CHKKBN"
-      **********   MOVE    99              TO  SPA-GMN-CUR
-                   MOVE    26              TO  SPA-GMN-CUR
+                   MOVE    207              TO  SPA-GMN-CUR
                WHEN    "KOHONLY_CHKFLG"
-                   MOVE    27              TO  SPA-GMN-CUR
+                   MOVE    208              TO  SPA-GMN-CUR
                WHEN    "PTNUMDEL_FLG"
-      *********    MOVE    99              TO  SPA-GMN-CUR
-                   MOVE    28              TO  SPA-GMN-CUR
+                   MOVE    209              TO  SPA-GMN-CUR
                WHEN    "HONKZKKBN"
-                   MOVE    99              TO  SPA-GMN-CUR
-      *
+                   MOVE    999              TO  SPA-GMN-CUR
+      *    診療行為情報
                WHEN    "DOSRYKBN_FLG"
-                   MOVE    34              TO  SPA-GMN-CUR
+                   MOVE    302             TO  SPA-GMN-CUR
                WHEN    "WKSRYHYO_FLG"
-                   MOVE    35              TO  SPA-GMN-CUR
+                   MOVE    303             TO  SPA-GMN-CUR
                WHEN    "FORMAL_FLG"
-      *******      MOVE    30              TO  SPA-GMN-CUR
-                   MOVE    36              TO  SPA-GMN-CUR
+                   MOVE    304             TO  SPA-GMN-CUR
+               WHEN    "AKUSEIHYO" 
+                   MOVE    305             TO  SPA-GMN-CUR
                WHEN    "TEISEIFLG"
-                   MOVE    37              TO  SPA-GMN-CUR
+                   MOVE    306             TO  SPA-GMN-CUR
                WHEN    "CHG310FLG"
-                   MOVE    30              TO  SPA-GMN-CUR
+                   MOVE    320             TO  SPA-GMN-CUR
                WHEN    "SRYNYKNKNRKBN"
-                   MOVE    31              TO  SPA-GMN-CUR
+                   MOVE    321             TO  SPA-GMN-CUR
                WHEN    "KAGRPFLG"
-                   MOVE    32              TO  SPA-GMN-CUR
+                   MOVE    322             TO  SPA-GMN-CUR
                WHEN    "HAKHOUFLG"
-                   MOVE    38              TO  SPA-GMN-CUR
+                   MOVE    323             TO  SPA-GMN-CUR
                WHEN    "TEIKINKBN"
-                   MOVE    39              TO  SPA-GMN-CUR
+                   MOVE    324             TO  SPA-GMN-CUR
                WHEN    "YKJCHKKBN"
-                   MOVE    99              TO  SPA-GMN-CUR
+                   MOVE    999             TO  SPA-GMN-CUR
       *
+      *収納情報
                WHEN    "S02SKYSAI"
                    MOVE    417             TO  SPA-GMN-CUR
                WHEN    "S02SKYMISYUPRT"
@@ -7736,27 +7814,27 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN    "SYUKARIED22_HH"
                    MOVE    415             TO  SPA-GMN-CUR
                WHEN    "SYUKARIED22_MM"
-                   MOVE    99              TO  SPA-GMN-CUR
-      *
+                   MOVE    999             TO  SPA-GMN-CUR
+      *病名コメント情報
                WHEN    "MSG1_DSPKBN"
-                   MOVE    71              TO  SPA-GMN-CUR
+                   MOVE    501              TO  SPA-GMN-CUR
                WHEN    "MSG2_DSPKBN"
-                   MOVE    72              TO  SPA-GMN-CUR
+                   MOVE    502             TO  SPA-GMN-CUR
                WHEN    "MSG3_DSPKBN"
-                   MOVE    73              TO  SPA-GMN-CUR
+                   MOVE    503             TO  SPA-GMN-CUR
                WHEN    "MSG4_DSPKBN"
-                   MOVE    74              TO  SPA-GMN-CUR
+                   MOVE    504             TO  SPA-GMN-CUR
                WHEN    "SRYKA_DSPKBN"
-                   MOVE    75              TO  SPA-GMN-CUR
+                   MOVE    505             TO  SPA-GMN-CUR
                WHEN    "SYOKBN_DSPKBN"
-                   MOVE    76              TO  SPA-GMN-CUR
+                   MOVE    506             TO  SPA-GMN-CUR
                WHEN    "SJKBN"
-                   MOVE    99              TO  SPA-GMN-CUR
-      *
+                   MOVE    999             TO  SPA-GMN-CUR
+      *会計照会情報
                WHEN    "SRYKBN_FLG"
-                   MOVE    101             TO  SPA-GMN-CUR
+                   MOVE    601             TO  SPA-GMN-CUR
                WHEN    "SRYKA_FLG"
-                   MOVE    99              TO  SPA-GMN-CUR
+                   MOVE    999             TO  SPA-GMN-CUR
            END-EVALUATE
       *
            .

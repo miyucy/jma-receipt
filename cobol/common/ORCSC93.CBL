@@ -54,6 +54,7 @@
       * 01.00.23     NACL-Â¿¡¹Ç¼  06/01/23  ÍÑÎÌ³ä¹ç¥³¡¼¥ÉÄÉ²Ã
       * 01.00.24     NACL-Â¿¡¹Ç¼  06/03/XX  £È£±£¸¡¥£´²þÀµÂÐ±þ
       * 03.04.00     NACL-Â¿¡¹Ç¼  06/12/19  ³°ÍÑÌô¤ÎÆâÉþ»»ÄêÄÉ²Ã
+      * 04.01.00     NACL-Â¿¡¹Ç¼  07/10/XX  °­À­¼ðáç¸¡ºº¼«Æ°ÀßÄêÂÐ±þ
       *****************************************************************
       *
       *
@@ -88,6 +89,10 @@
       *
            03  FLG-ZEN             PIC 9(01).
            03  FLG-HOUKATU         PIC 9(01).
+      *@@
+      *    °­À­¼ðáç»ØÆ³ÎÁ¤¢¤ê
+           03  FLG-AKUSEI-ARI      PIC 9(01).
+      *@@
       *
       *    Åº»úÎÎ°è
        01  IDX-AREA.
@@ -526,6 +531,7 @@
                    MOVE    ZERO                TO  FLG-BUIKBN
                    MOVE    ZERO                TO  FLG-SYUGI
                    MOVE    ZERO                TO  FLG-HASSYO
+                   MOVE    ZERO                TO  FLG-AKUSEI-ARI
                    MOVE    ZERO                TO  WRK-KENSA-CNT
                    MOVE    SPACE               TO  WRK-SRYKBN
                    MOVE    SPACE               TO  WRK-SRYSYUKBN
@@ -544,6 +550,7 @@
                    MOVE    ZERO                TO  FLG-BUIKBN
                    MOVE    ZERO                TO  FLG-SYUGI
                    MOVE    ZERO                TO  FLG-HASSYO
+                   MOVE    ZERO                TO  FLG-AKUSEI-ARI
                    MOVE    ZERO                TO  WRK-KENSA-CNT
                    MOVE    SPACE               TO  WRK-SRYKBN
                    MOVE    SPACE               TO  WRK-SRYSYUKBN
@@ -591,6 +598,7 @@
                    MOVE    ZERO                TO  FLG-BUIKBN
                    MOVE    ZERO                TO  FLG-SYUGI
                    MOVE    ZERO                TO  FLG-HASSYO
+                   MOVE    ZERO                TO  FLG-AKUSEI-ARI
                    MOVE    ZERO                TO  WRK-KENSA-CNT
       *!           ½èÊý¥³¥á¥ó¥È¤ÏÆþ±¡¤Î¤ß
       *            IF      WRK-SRYSYUKBN       =   "980"
@@ -633,6 +641,7 @@
                MOVE    ZERO            TO  FLG-JIHI
            END-IF
            MOVE    ZERO                TO  FLG-SYUGI
+           MOVE    ZERO                TO  FLG-AKUSEI-ARI
       *
            .
        5101-JIHI-HEN-EXT.
@@ -1145,6 +1154,7 @@
                    MOVE    SPACE           TO  WRK-SRYSYUKBN
                    MOVE    ZERO            TO  IDX-SET
                    MOVE    ZERO            TO  FLG-SYUGI
+                   MOVE    ZERO            TO  FLG-AKUSEI-ARI
                END-IF
                IF      FLG-SYORI           =   2
                    IF      IDX             >   1
@@ -1162,6 +1172,7 @@
                   (SPA-COM-KAIFLG (IDX - 1)    =   "1" )  AND
                   (SPA-GMN-INPUTCD(IDX - 1)(1:1)   NOT =  ".")
                MOVE    "1"             TO  SPA-COM-ZAIEND (IDX - 1)
+               MOVE    ZERO            TO  FLG-AKUSEI-ARI
            END-IF
       *
       *    Æþ±¡²ó¿ôÆþÎÏ»þ¡¢½ªÎ»¤È¤¹¤ë
@@ -1185,6 +1196,7 @@
            IF      SPA-COM-ZAIEND (IDX)    =   "1"
                MOVE    ZERO            TO  FLG-BUIKBN
                MOVE    ZERO            TO  WRK-KENSA-CNT
+               MOVE    ZERO            TO  FLG-AKUSEI-ARI
            END-IF
            .
        510112-ZAIEND-HEN-EXT.
@@ -1570,6 +1582,31 @@
                    END-IF
                END-IF
            END-IF
+      *!@
+      *°­À­¼ðáç¼£ÎÅ´ÉÍýÎÁ¥Á¥§¥Ã¥¯¡Ê£È£±£¸¡¥£´¤«¤é¡Ë
+           IF      SPA-SRYYMD              >=  "20060401"
+               IF      SPA-COM-INPUTCD (IDX)   =   "113001210"  OR
+                                                   "113001310"  OR
+                                                   "113002110"
+                   MOVE    1                   TO  FLG-AKUSEI-ARI
+               END-IF
+      *        °­À­¼ðáç¤ÈÆ±°ìºÞÆâ¤Î¼ðáç¸¡ºº¤Ï¥³¥á¥ó¥È°·¤¤
+               IF     (FLG-AKUSEI-ARI          =   1   )  AND
+                      (SPA-COM-SRYKBN(IDX - 1) =   "13"    )  AND
+                      (SPA-COM-INPUTCD (IDX)(1:1)  =   "1" )  AND
+                      (SPA-COM-CDKBN-KBN (IDX)     =   "D"  )  AND
+                      (SPA-COM-CDKBN-KBNNUM(IDX)   =   "009"  )
+                   MOVE    SPACE               TO  SPA-COM-DATAKBN (IDX)
+                   MOVE    SPA-COM-SRYKBN(IDX - 1) 
+                                               TO  WRK-SRYKBN
+                   MOVE    SPA-COM-SRYSYUKBN(IDX - 1)
+                                               TO  WRK-SRYSYUKBN
+                   MOVE    WRK-SRYKBN          TO  SPA-COM-SRYKBN (IDX)
+                   MOVE    WRK-SRYSYUKBN       TO  SPA-COM-SRYSYUKBN
+                                                                  (IDX)
+               END-IF
+           END-IF
+      *!@
            .
        51011-SRYSYUKBN-KBN-EXT.
            EXIT.
