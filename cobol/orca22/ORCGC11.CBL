@@ -924,6 +924,8 @@
                            MOVE    "½ý"        TO  WRK-HKNKBNMEI
                        WHEN    "3"
                            MOVE    "¥¢"        TO  WRK-HKNKBNMEI
+                       WHEN    "5"
+                           MOVE    "¸ø"        TO  WRK-HKNKBNMEI
                    END-EVALUATE
                    EVALUATE    OPECOM-HKNNUM
                        WHEN    "971"
@@ -1319,6 +1321,8 @@ grpsys                                         SPA-AREA
                            MOVE    "½ý"        TO  WRK-HKNKBNMEI
                        WHEN    "3"
                            MOVE    "¥¢"        TO  WRK-HKNKBNMEI
+                       WHEN    "5"
+                           MOVE    "¸ø"        TO  WRK-HKNKBNMEI
                    END-EVALUATE
                    STRING  COMB-SYU-TANSEIDONAME
                                                DELIMITED  BY  SPACE
