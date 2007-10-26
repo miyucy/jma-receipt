@@ -68,7 +68,7 @@
                        09  SPA-GMN-MEISYO          PIC X(44).
                        09  SPA-GMN-STYUKYMD        PIC X(10).
                        09  SPA-GMN-EDYUKYMD        PIC X(10).
-                       09  SPA-GMN-KOUMOKU. 
+                       09  SPA-GMN-KOH-KOUMOKU. 
                            11  SPA-GMN-KOH-OCC     OCCURS  5.
                                13  SPA-GMN-KOHNUM  PIC X(03).
                                13  SPA-GMN-SEIDONAME
