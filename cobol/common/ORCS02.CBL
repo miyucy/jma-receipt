@@ -192,9 +192,10 @@
       *  03.05.10    NACL-ÌçÏÆ    07/09/13  ½êÂô»ÔÆýÍÄ»ùÂÐ±þ
       *  03.05.11    NACL-ÌçÏÆ    07/09/27  ÆÃÄêÊÝ¸±¼Ô¡ÜÀº¿À¡¢·ë³ËÂÐ±þ½¤Àµ
       *                                     ¡ÊÏ·¿Í¤ÏÂÐ¾Ý³°¤È¤¹¤ë¡Ë
-      *  03.05.12    NACL-ÌçÏÆ    07/10/05  ´µ¼Ô¸ºÌÈ¼«ÈñÂÐ±þ
-      *  03.05.13    NACL-ÌçÏÆ    07/10/24  ¼«ÇåÀÕÆÃÄê´ïºàÅù¾ÃÈñÀÇÂÐ¾Ý³°ÀßÄê
+      *  04.01.01    NACL-ÌçÏÆ    07/10/05  ´µ¼Ô¸ºÌÈ¼«ÈñÂÐ±þ
+      *  04.01.02    NACL-ÌçÏÆ    07/10/24  ¼«ÇåÀÕÆÃÄê´ïºàÅù¾ÃÈñÀÇÂÐ¾Ý³°ÀßÄê
       *                                     ¹àÌÜ¿ô³ÈÄ¥ÂÐ±þ
+      *  04.01.03    NACL-ÌçÏÆ    07/10/25  ¸øÌ³ºÒ³²ÂÐ±þ
       ****************************************************************
        ENVIRONMENT         DIVISION.
        CONFIGURATION       SECTION.
@@ -304,6 +305,7 @@
            03  FLG-SYUKEI2             PIC 9(01).
            03  FLG-GENBUTU-TAISYODATA  PIC 9(01).
            03  FLG-GENBUTU-TAISYOOK    PIC 9(01).
+           03  FLG-KENPOJYUNKYO        PIC 9(01).
       *
        01  WRK-AREA.
            03  WK-PAYKBN               PIC X(02).
@@ -364,12 +366,12 @@
            03  WK-4001-SKJKBN          PIC X(1).
       *    ¼«ÇåÀÕÆÃÄê´ïºàÅù¾ÃÈñÀÇ
            03  WK-4001-TAXKBN-KZI      PIC X(1).
-      *    ¼«ÇåÀÕ¶èÊ¬
-           03  WK-4001-JIBAIKBN        PIC X(1).
       *    µ»½ÑÅÀÃ±²Á
            03  WK-4001-SYUTENTANKA     PIC 9(2).
       *    ÌôºÞÅùÅÀÃ±²Á
            03  WK-4001-YKZTENTANKA     PIC 9(2).
+      *    ¸øÌ³ºÒ³²ÅÀÃ±²Á
+           03  WK-4001-KOMUTENTANKA    PIC 9(2).
       *
       *    ¼«ÇåÀÕÆÃÄê´ïºàÅù¾ÃÈñÀÇÂÐ¾Ý³°¥³¡¼¥É
            03  WK-4003-TAIGAI.
@@ -1137,9 +1139,9 @@
            MOVE     SPACE     TO    WK-4001-TENKBN.
            MOVE     SPACE     TO    WK-4001-SKJKBN.
            MOVE     SPACE     TO    WK-4001-TAXKBN-KZI.
-           MOVE     SPACE     TO    WK-4001-JIBAIKBN.
            MOVE     ZERO      TO    WK-4001-SYUTENTANKA.
            MOVE     ZERO      TO    WK-4001-YKZTENTANKA.
+           MOVE     ZERO      TO    WK-4001-KOMUTENTANKA.
            IF   LNK-SYU-SYUHKNNUM         =    "971" OR "973"
                INITIALIZE                         SYS-4001-REC
                MOVE    "4001"               TO    SYS-4001-KANRICD
@@ -1165,12 +1167,6 @@
                    MOVE   SYS-4001-SKJKBN   TO    WK-4001-SKJKBN
                    MOVE   SYS-4001-TAXKBN-KZI
                                             TO    WK-4001-TAXKBN-KZI
-                   IF     SYS-4001-JIBAIKBN       =  SPACE
-                        MOVE   "1"          TO    WK-4001-JIBAIKBN
-                   ELSE
-                        MOVE   SYS-4001-JIBAIKBN
-                                            TO    WK-4001-JIBAIKBN
-                   END-IF
                    IF     SYS-4001-SYUTENTANKA-X  =  SPACE
                         MOVE  ZERO          TO    WK-4001-SYUTENTANKA
                    ELSE
@@ -1182,6 +1178,12 @@
                    ELSE
                         MOVE  SYS-4001-YKZTENTANKA
                                             TO    WK-4001-YKZTENTANKA
+                   END-IF
+                   IF     SYS-4001-KOMUTENTANKA-X =  SPACE
+                        MOVE  ZERO          TO    WK-4001-KOMUTENTANKA
+                   ELSE
+                        MOVE  SYS-4001-KOMUTENTANKA
+                                            TO    WK-4001-KOMUTENTANKA
                    END-IF
                END-IF
                MOVE     "tbl_syskanri"      TO    MCP-TABLE
@@ -1615,7 +1617,7 @@
            IF   (WK-HKNKBN               =    "1")   AND
                 (LNK-SYU-SYUHKNNUM       =    "973") AND
                 (LNK-SYU-PTFTNRATE       =     100 )
-              IF   WK-4001-JIBAIKBN  =  "1"
+              IF   FLG-KENPOJYUNKYO  =  ZERO
                  COMPUTE  LNK-SYU-RSISHOSHIN-MONEY  =
                          (LNK-SYU-RSISHOSHIN-MONEY  *  WK-KSNRATE)
                                                     +  0.5
@@ -1671,7 +1673,7 @@
            IF   (WK-HKNKBN               =    "1")   AND
                 (LNK-SYU-SYUHKNNUM       =    "973") AND
                 (LNK-SYU-PTFTNRATE       =    ZERO )
-              IF   WK-4001-JIBAIKBN  =  "1"
+              IF   FLG-KENPOJYUNKYO  =  ZERO
                  COMPUTE  LNK-SYU-RSISHOSHIN-MONEY  =
                          (LNK-SYU-RSISHOSHIN-MONEY  *  WK-KSNRATE)
                                                     +  0.5
@@ -3240,6 +3242,8 @@
       *
       *    IF   WK-HKNKBN              =   "1"
       *
+               MOVE      ZERO               TO      FLG-KENPOJYUNKYO.
+      *
                INITIALIZE                           PTINF-REC.
                MOVE    LNK-SYU-HOSPNUM      TO      PTINF-HOSPNUM.
                MOVE    LNK-SYU-PTID         TO      PTINF-PTID.
@@ -3278,6 +3282,11 @@
                                            SPA-AREA.
                IF      AGECHK-RC       =   ZERO
                    MOVE   AGECHK-FTNRATE  TO  LNK-SYU-PTFTNRATE
+                   IF    WK-HKNKBN        =  "1"
+                     IF   AGECHK-HKNKBN   =   4  OR  5
+                       MOVE     1         TO  FLG-KENPOJYUNKYO
+                     END-IF
+                   END-IF
                ELSE
                    DISPLAY  "PTINF AGE-CHK ERR " LNK-SYU-PTID
                END-IF.
@@ -11769,14 +11778,16 @@
                IF    LNK-SYU-SYUHKNNUM   =   "971" OR "973"
                  EVALUATE  LNK-SYU-SYUHKNNUM
                   WHEN       "971"
-                    COMPUTE   WK-KEISAN    =   WK-NYULIFE-SKJ-MONEY(IDY)
+                    IF   FLG-KENPOJYUNKYO  =  ZERO
+                      COMPUTE   WK-KEISAN  =   WK-NYULIFE-SKJ-MONEY(IDY)
                                            *   1.2
-                    COMPUTE   WK-KEISAN    =   WK-KEISAN  +   5
-                    COMPUTE   WK-KEISAN    =   WK-KEISAN  /  10
-                    COMPUTE   WK-KEISAN    =   WK-KEISAN  *  10
-                    MOVE      WK-KEISAN    TO  WK-NYULIFE-SKJ-MONEY(IDY)
+                      COMPUTE   WK-KEISAN  =   WK-KEISAN  +   5
+                      COMPUTE   WK-KEISAN  =   WK-KEISAN  /  10
+                      COMPUTE   WK-KEISAN  =   WK-KEISAN  *  10
+                      MOVE      WK-KEISAN  TO  WK-NYULIFE-SKJ-MONEY(IDY)
+                    END-IF
                   WHEN       "973"
-                    IF   WK-4001-JIBAIKBN  =   "1"
+                    IF   FLG-KENPOJYUNKYO  =  ZERO
                       COMPUTE   WK-KEISAN  =   WK-NYULIFE-SKJ-MONEY(IDY)
                                            *   1.2
                       COMPUTE   WK-KEISAN  =   WK-KEISAN  +   5
@@ -11925,14 +11936,16 @@
                 IF    LNK-SYU-SYUHKNNUM   =   "971" OR "973"
                  EVALUATE  LNK-SYU-SYUHKNNUM
                   WHEN       "971"
-                    COMPUTE   WK-KEISAN    =   WK-NYULIFE-KAN-MONEY(IDY)
+                    IF   FLG-KENPOJYUNKYO  =  ZERO
+                      COMPUTE   WK-KEISAN  =   WK-NYULIFE-KAN-MONEY(IDY)
                                            *   1.2
-                    COMPUTE   WK-KEISAN    =   WK-KEISAN  +   5
-                    COMPUTE   WK-KEISAN    =   WK-KEISAN  /  10
-                    COMPUTE   WK-KEISAN    =   WK-KEISAN  *  10
-                    MOVE      WK-KEISAN    TO  WK-NYULIFE-KAN-MONEY(IDY)
+                      COMPUTE   WK-KEISAN  =   WK-KEISAN  +   5
+                      COMPUTE   WK-KEISAN  =   WK-KEISAN  /  10
+                      COMPUTE   WK-KEISAN  =   WK-KEISAN  *  10
+                      MOVE      WK-KEISAN  TO  WK-NYULIFE-KAN-MONEY(IDY)
+                    END-IF
                   WHEN       "973"
-                    IF   WK-4001-JIBAIKBN  =   "1"
+                    IF   FLG-KENPOJYUNKYO  =  ZERO
                       COMPUTE   WK-KEISAN  =   WK-NYULIFE-KAN-MONEY(IDY)
                                            *   1.2
                       COMPUTE   WK-KEISAN  =   WK-KEISAN  +   5
@@ -12930,16 +12943,21 @@
                  END-IF
                END-IF
                IF     LNK-SYU-SYUHKNNUM       =  "971"
-                 EVALUATE  WK-4001-TENKBN
+                 IF   FLG-KENPOJYUNKYO  =  ZERO
+                   EVALUATE  WK-4001-TENKBN
                      WHEN  "1"
                          COMPUTE  WK-ZENGAKU  =  
                                  (WK-ZENGAKU  / 10 * 11.5)
                      WHEN  "2"
                          COMPUTE  WK-ZENGAKU  =  
                                  (WK-ZENGAKU  / 10 * 12.0)
-                 END-EVALUATE
+                   END-EVALUATE
+                 ELSE
+                   COMPUTE WK-ZENGAKU =
+                          (WK-ZENGAKU / 10 * WK-4001-KOMUTENTANKA)
+                 END-IF
                ELSE
-                 IF  WK-4001-JIBAIKBN  =  "1"
+                 IF   FLG-KENPOJYUNKYO  =  ZERO
                    EVALUATE  WK-4001-TENKBN
                      WHEN  "1"
                         COMPUTE  WK-ZENGAKU  =  WK-ZENGAKU  /  10  
@@ -19199,12 +19217,16 @@
               IF    LNK-SYU-SYUHKNNUM   =   "971" OR "973"
                 EVALUATE  LNK-SYU-SYUHKNNUM
                   WHEN       "971"
-                    COMPUTE   WK-KEISAN    =   TNS-TEN    *  1.2
-                    COMPUTE   WK-KEISAN    =   WK-KEISAN  +   5
-                    COMPUTE   WK-KEISAN    =   WK-KEISAN  /  10
-                    COMPUTE   WK-KEISAN    =   WK-KEISAN  *  10
+                    IF   FLG-KENPOJYUNKYO  =  ZERO
+                      COMPUTE   WK-KEISAN  =   TNS-TEN    *  1.2
+                      COMPUTE   WK-KEISAN  =   WK-KEISAN  +   5
+                      COMPUTE   WK-KEISAN  =   WK-KEISAN  /  10
+                      COMPUTE   WK-KEISAN  =   WK-KEISAN  *  10
+                    ELSE
+                      MOVE   TNS-TEN   TO     WK-KEISAN
+                    END-IF
                   WHEN       "973"
-                    IF   WK-4001-JIBAIKBN  =   "1"
+                    IF   FLG-KENPOJYUNKYO  =  ZERO
                       COMPUTE   WK-KEISAN  =   TNS-TEN    *  1.2
                       COMPUTE   WK-KEISAN  =   WK-KEISAN  +   5
                       COMPUTE   WK-KEISAN  =   WK-KEISAN  /  10

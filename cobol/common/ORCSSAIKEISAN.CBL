@@ -44,6 +44,7 @@
       *  03.04.04    NACL-ÌçÏÆ    07/05/11  Ï«ºÒ¡¦¼«ÇåÀÕÃ±²Á£±£°±ßÌ¤ËþÂÐ±þ
       *  03.04.05    NACL-ÌçÏÆ    07/06/08  ½é¿ÇÎÁ»»Äê»þ¤Î¾ò·ïÄÉ²Ã
       *  03.05.00    NACL-Â¿¡¹Ç¼  07/04/XX  ¥°¥ë¡¼¥×¿ÇÎÅÂÐ±þ
+      *  04.01.01    NACL-ÌçÏÆ    07/10/25  ¸øÌ³ºÒ³²ÂÐ±þ
       *****************************************************************
        ENVIRONMENT         DIVISION.
        CONFIGURATION       SECTION.
@@ -86,6 +87,7 @@
            03  FLG-NOGRP                   PIC 9(01).
            03  FLG-OK                      PIC 9(01).
            03  FLG-TAISYO                  PIC 9(01).
+           03  FLG-PTINF                   PIC 9(01).
       *
       *    ¥ï¡¼¥¯ÎÎ°è
        01  WRK-AREA.
@@ -116,7 +118,6 @@
                  05  WRK-DOUJI-SRYKA       PIC X(02)
                                            OCCURS  10.
            03  WRK-4001-KOTEIKBN           PIC X(01).
-           03  WRK-4001-JIBAIKBN           PIC X(01).
       *
            03  WRK-SYURRKNUM               PIC S9(09)  BINARY.
            03  WRK-SYUEDANUM               PIC S9(09)  BINARY.
@@ -231,6 +232,10 @@
        01  HKNCOMBI-REC.
            COPY    "CPHKNCOMBI.INC".
       *
+      *    ´µ¼Ô¥Þ¥¹¥¿¡Ý
+       01  PTINF-REC.
+           COPY    "CPPTINF.INC".
+      *
       *    ÅÀ¿ô
            COPY    "CPTENSU.INC".
       *
@@ -257,6 +262,9 @@
       *
       *    ¼ýÇ¼¹¹¿·º¹³Û¼èÆÀ
            COPY    "CPORCSS002.INC".
+      *
+      *    ÊÝ¸±»»ÄêÍÑÇ¯Îð¡¦³ä¹ç·×»»¥µ¥Ö
+           COPY    "CPORCSAGECHK.INC".
       *
       *    ¥ï¡¼¥¯ÉéÃ´¶â³Û·×»»ÍÑ¥Ñ¥é¥á¥¿¡Ê¹ç·×ÍÑ¡Ë
       ***  COPY    "CPORCS01.INC" REPLACING  //LNK-// BY //WRK-//.
@@ -339,15 +347,9 @@
                                                   LNK-S01-KAGRPFLG
       *
                MOVE     SPACE   TO   WRK-4001-KOTEIKBN
-               MOVE     SPACE   TO   WRK-4001-JIBAIKBN
                IF   SYU-SYUHKNNUM   =   "971" OR "973"
                  PERFORM  900-SYS4001-READ-SEC
                  MOVE     SYS-4001-KOTEIKBN   TO  WRK-4001-KOTEIKBN
-                 IF       SYS-4001-JIBAIKBN   =   SPACE
-                    MOVE  "1"                 TO  WRK-4001-JIBAIKBN
-                 ELSE
-                    MOVE  SYS-4001-JIBAIKBN   TO  WRK-4001-JIBAIKBN
-                 END-IF
                END-IF
       *
                IF   WRK-GRP-DENPNUM   =   ZERO
@@ -518,21 +520,81 @@
                    MOVE    "0063"         TO  SPA-ERRCD
                    GO       TO                MAIN-EXT
                  END-IF
-                 IF    LNK-SYU-SYUHKNNUM(IDY)   =   "973"
-                   EVALUATE  WRK-4001-JIBAIKBN
-      *              Ï«ºÒ½àµò
-                     WHEN      "1"
-                       IF  JYURRK-HKNKBN  =  "4"
-                         MOVE    "0062"         TO  SPA-ERRCD
-                         GO       TO                MAIN-EXT
-                       END-IF
-      *              ·òÊÝ½àµò
-                     WHEN      "2"
-                       IF  JYURRK-HKNKBN  =  "2"
-                         MOVE    "0062"         TO  SPA-ERRCD
-                         GO       TO                MAIN-EXT
-                       END-IF
+      *
+                 IF    LNK-SYU-SYUHKNNUM(IDY)   =   "971" OR "973"
+      *
+                   INITIALIZE                        PTINF-REC
+                   MOVE    LNK-SYU-HOSPNUM(IDY) TO   PTINF-HOSPNUM
+                   MOVE    LNK-SYU-PTID(IDY)    TO   PTINF-PTID
+                   MOVE    PTINF-REC            TO   MCPDATA-REC
+                   MOVE    "DBSELECT"           TO   MCP-FUNC
+                   MOVE    "tbl_ptinf"          TO   MCP-TABLE
+                   MOVE    "key"                TO   MCP-PATHNAME
+                   CALL    "ORCDBMAIN"          USING   MCPAREA
+                                                        MCPDATA-REC
+                                                        SPA-AREA
+                   IF      MCP-RC               =    ZERO
+                       MOVE    "tbl_ptinf"      TO   MCP-TABLE
+                       MOVE    "key"            TO   MCP-PATHNAME
+                       PERFORM  900-PTINF-READ-SEC
+                   ELSE
+                       INITIALIZE      PTINF-REC
+                   END-IF
+                   MOVE    "tbl_ptinf"          TO   MCP-TABLE
+                   MOVE    "key"                TO   MCP-PATHNAME
+                   PERFORM  DB-CLOSE-SEC
+      *
+                   INITIALIZE                        ORCSAGECHKAREA
+                   MOVE    LNK-SYU-HOSPNUM(IDY) TO   AGECHK-HOSPNUM
+                   MOVE    LNK-SYU-PTID(IDY)    TO   AGECHK-PTID
+                   MOVE    LNK-SYU-SRYYMD(IDY)  TO   AGECHK-SRYYMD
+                   MOVE    PTINF-BIRTHDAY       TO   AGECHK-BIRTHDAY
+                   MOVE    LNK-SYU-HKNCOMBINUM(IDY)
+                                                TO   AGECHK-HKNCOMBINUM
+                   MOVE    LNK-SYU-NYUGAIKBN(IDY)
+                                                TO   AGECHK-NYUGAIKBN
+                   CALL    "ORCSAGECHK"         USING
+                                                ORCSAGECHKAREA
+                                                SPA-AREA
+                   IF      AGECHK-RC            =    ZERO
+                       CONTINUE
+                   ELSE
+                       INITIALIZE    ORCSAGECHKAREA
+                   END-IF
+      *
+                   EVALUATE  LNK-SYU-SYUHKNNUM(IDY)
+                     WHEN      "971"
+                       EVALUATE  AGECHK-HKNKBN
+      *                  Ï«ºÒ½àµò
+                         WHEN      1
+                           IF  JYURRK-HKNKBN  =  "5"
+                             MOVE    "0062"         TO  SPA-ERRCD
+                             GO       TO                MAIN-EXT
+                           END-IF
+      *                  ·òÊÝ½àµò
+                         WHEN      5
+                           IF  JYURRK-HKNKBN  =  "1"
+                             MOVE    "0062"         TO  SPA-ERRCD
+                             GO       TO                MAIN-EXT
+                           END-IF
+                       END-EVALUATE
+                     WHEN      "973"
+                       EVALUATE  AGECHK-HKNKBN
+      *                  Ï«ºÒ½àµò
+                         WHEN      2
+                           IF  JYURRK-HKNKBN  =  "4"
+                             MOVE    "0062"         TO  SPA-ERRCD
+                             GO       TO                MAIN-EXT
+                           END-IF
+      *                  ·òÊÝ½àµò
+                         WHEN      4
+                           IF  JYURRK-HKNKBN  =  "2"
+                             MOVE    "0062"         TO  SPA-ERRCD
+                             GO       TO                MAIN-EXT
+                           END-IF
+                       END-EVALUATE
                    END-EVALUATE
+      *
                  END-IF
       *
       *          Á¥°÷ÄÌ¶ÐºÒ³²¤ÎÈ½ÊÌ
@@ -3125,6 +3187,27 @@
       *
            .
        900-SYUMEI-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ´µ¼Ô¾ðÊóÆÉ¹þ
+      *****************************************************************
+       900-PTINF-READ-SEC           SECTION.
+      *
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC     TO  PTINF-REC
+               MOVE    ZERO            TO  FLG-PTINF
+           ELSE
+               INITIALIZE                  PTINF-REC
+               MOVE    1               TO  FLG-PTINF
+           END-IF
+      *
+           .
+       900-PTINF-READ-EXT.
            EXIT.
       *
       *****************************************************************

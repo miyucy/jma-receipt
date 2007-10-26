@@ -55,6 +55,7 @@
       *  03.04.01    NACL-ÌçÏÆ    06/12/01  ¼«ÇåÀÕ·òÊÝ½àµòÂÐ±þ
       *  03.04.02    NACL-ÌçÏÆ    07/03/12  Êñ³ç¿ÇÎÅÂÐ±þ
       *  03.05.00    NACL-ÌçÏÆ    07/05/08  ¥°¥ë¡¼¥×¿ÇÎÅÂÐ±þ
+      *  04.01.01    NACL-ÌçÏÆ    07/10/25  ¸øÌ³ºÒ³²ÂÐ±þ
       *****************************************************************
       *
       *
@@ -78,7 +79,6 @@
            03  FLG-TENSU           PIC 9(01).
            03  FLG-PTINF           PIC 9(01).
            03  FLG-SYSKANRI        PIC 9(01).
-           03  FLG-SYS4001         PIC 9(01).
            03  FLG-HKNCOMBI        PIC 9(01).
            03  FLG-RJN             PIC 9(01).
            03  FLG-ROUSAI          PIC 9(01).
@@ -87,6 +87,7 @@
            03  FLG-NYURYAKUSHO     PIC 9(01).
            03  FLG-OK              PIC 9(01).
            03  FLG-KSN             PIC 9(01).
+           03  FLG-KENPOJYUNKYO    PIC 9(01).
       *    Åº»úÎÎ°è
        01  IDX-AREA.
            03  IDX1                PIC 9(04).
@@ -162,8 +163,6 @@
            03  WRK-HYOKETU-TAIHI           PIC X(09).
            03  WRK-HYOKETU-TEN             PIC 9(09)V99.
            03  WRK-ZAITEN-HYOKETU          PIC 9(08).
-      *
-           03  WRK-SYS4001-JIBAIKBN        PIC X(01).
       *
       *    Ï«ºÒÆþ±¡²ñ·×¥ï¡¼¥¯
            03  WRK-ROUSAI-TABLE.
@@ -243,7 +242,6 @@
            COPY    "CPSYSKANRI.INC".
       *
            COPY    "CPSK5000.INC".
-           COPY    "CPSK4001.INC".
       *
       *    Æþ±¡¿ÇÎÅ²ñ·×¥Þ¥¹¥¿¡Ý
        01  NYUINACCT-REC.
@@ -447,6 +445,9 @@
                                         TO  AGECHK-SRYYMD(1:6)
            MOVE    "01"                 TO  AGECHK-SRYYMD(7:2)
            MOVE    PTINF-BIRTHDAY       TO  AGECHK-BIRTHDAY
+           MOVE    LNK-SROUNYUIN-HKNCOMBI
+                                        TO  AGECHK-HKNCOMBINUM
+           MOVE    "1"                  TO  AGECHK-NYUGAIKBN
            CALL    "ORCSAGECHK"         USING
                                             ORCSAGECHKAREA
                                             SPA-AREA
@@ -465,27 +466,14 @@
                MOVE    1               TO  FLG-RJN
            END-IF
       *
-      *    ¼«ÇåÀÕ½àµòÈ½Äê
-           MOVE      ZERO       TO    FLG-SYS4001
-           MOVE      SPACE      TO    WRK-SYS4001-JIBAIKBN
-           IF    ( FLG-HKNCOMBI        =   ZERO  )
-           AND   ( COMB-HKNNUM         =   "973" )
-               PERFORM  910-SYS4001-READ-SEC
-               IF   FLG-SYS4001  =  ZERO
-                 IF    SYS-4001-JIBAIKBN   =   SPACE
-                    MOVE  "1"                 TO  WRK-SYS4001-JIBAIKBN
-                 ELSE
-                    MOVE  SYS-4001-JIBAIKBN   TO  WRK-SYS4001-JIBAIKBN
-                 END-IF
-               END-IF
+      *    ·òÊÝ½àµòÈ½Äê
+           MOVE      ZERO       TO    FLG-KENPOJYUNKYO
+           IF      AGECHK-HKNKBN =   4  OR  5
+              MOVE      1       TO    FLG-KENPOJYUNKYO
            END-IF
       *
            IF      FLG-HKNCOMBI    NOT =   ZERO
                   MOVE    4     TO    LNK-SROUNYUIN-RC
-           END-IF
-      *
-           IF      FLG-SYS4001     NOT =   ZERO
-                  MOVE    5     TO    LNK-SROUNYUIN-RC
            END-IF
       *
            .
@@ -1264,8 +1252,7 @@
                END-IF
       *        Ï«ºÒ¾è¿ô¡ÊÆÃÄêÆþ±¡ÎÁ¤Î¾ì¹ç¤ÏÏ«ºÒ¾è¿ô¤Ê¤·¡Ë
                IF       LNK-SROUNYUIN-SRYKBN(IDX1)    =    "90"
-                 IF   (COMB-HKNNUM           =  "973")
-                 AND  (WRK-SYS4001-JIBAIKBN  =  "2"  )
+                 IF     FLG-KENPOJYUNKYO  =  1
                    CONTINUE
                  ELSE
                    EVALUATE  LNK-SROUNYUIN-JOUSU-KBN(IDX1)
@@ -2196,53 +2183,6 @@
       *
            .
        910-SYSKANRI-READ-EXT.
-           EXIT.
-      *
-      ******************************************************************
-      *    ¥·¥¹¥Æ¥à´ÉÍý£´£°£°£±ÆÉ¹þ
-      ******************************************************************
-       910-SYS4001-READ-SEC           SECTION.
-      *
-           INITIALIZE                          SYS-4001-REC
-           MOVE    "4001"                  TO  SYS-4001-KANRICD
-           MOVE    "*"                     TO  SYS-4001-KBNCD
-           MOVE    LNK-SROUNYUIN-HOSPNUM   TO  SYS-4001-HOSPNUM
-           MOVE    LNK-SROUNYUIN-SANTEIYM  TO  SYS-4001-STYUKYMD(1:6)
-           MOVE    "01"                    TO  SYS-4001-STYUKYMD(7:2)
-           MOVE    LNK-SROUNYUIN-SANTEIYM  TO  SYS-4001-EDYUKYMD(1:6)
-           MOVE    "01"                    TO  SYS-4001-EDYUKYMD(7:2)
-           MOVE    SYS-4001-REC            TO  MCPDATA-REC
-           MOVE    "DBSELECT"              TO  MCP-FUNC
-           MOVE    "tbl_syskanri"          TO  MCP-TABLE
-           MOVE    "key10"                 TO  MCP-PATHNAME
-           CALL    "ORCDBMAIN"             USING   MCPAREA
-                                                   MCPDATA-REC
-                                                   SPA-AREA
-           IF      MCP-RC               =      ZERO
-               MOVE     "DBFETCH"          TO  MCP-FUNC
-               MOVE     "tbl_syskanri"     TO  MCP-TABLE
-               MOVE     "key10"            TO  MCP-PATHNAME
-               CALL     "ORCDBMAIN"        USING   MCPAREA
-                                                   MCPDATA-REC
-                                                   SPA-AREA
-               IF      MCP-RC              =   ZERO
-                   MOVE    MCPDATA-REC     TO  SYS-4001-REC
-                   MOVE    ZERO            TO  FLG-SYS4001
-               ELSE
-                   INITIALIZE                  SYS-4001-REC
-                   MOVE    1               TO  FLG-SYS4001
-               END-IF
-           ELSE
-                   INITIALIZE                  SYS-4001-REC
-                   MOVE    1               TO  FLG-SYS4001
-           END-IF
-      *
-           MOVE     "tbl_syskanri"         TO  MCP-TABLE
-           MOVE     "key10"                TO  MCP-PATHNAME
-           PERFORM   910-DB-CLOSE-SEC
-      *
-           .
-       910-SYS4001-READ-EXT.
            EXIT.
       *
       *****************************************************************
