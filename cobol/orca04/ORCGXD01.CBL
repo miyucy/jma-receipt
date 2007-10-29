@@ -341,8 +341,12 @@
                           OR ( SPA-GMN-SYORIMEI    NOT =   SPACE )
       *
                    IF    ( SPA-SYORI-FLG   =   CONST-NYU-SYORIKBN (IDX))
-                       MOVE    CONST-NYU-SYORIKBNMEI (IDX)
-                                           TO  SPA-GMN-SYORIMEI
+                       STRING  "¡Ú¡¡"          DELIMITED   BY  SIZE
+                               CONST-NYU-SYORIKBNMEI (IDX)
+                                               DELIMITED   BY  SPACE
+                               "¡¡¡Û"          DELIMITED   BY  SIZE
+                       INTO    SPA-GMN-SYORIMEI
+                       END-STRING
                    END-IF
       *
                END-PERFORM
@@ -1117,6 +1121,10 @@
       *
            IF      SPA-MOTOPG          =   SPA-SAKIPG
                MOVE    "XD01"              TO  SPA-MOTOPG
+           END-IF
+      *
+           IF    ( SPA-MOTOPG          =   "I04" )
+               MOVE    "XD01"          TO  SPA-MOTOPG
            END-IF
       *
            MOVE    SPA-KYOUTU          TO  LNK-KYOUTU

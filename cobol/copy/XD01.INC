@@ -53,4 +53,4 @@
                 04  XD01-SYORINM-ITEM
                         PIC X(30)   OCCURS  10 TIMES.
               03  XD01-SYORIMEI.
-                04  XD01-VALUE  PIC X(30).
+                04  XD01-VALUE  PIC X(40).
