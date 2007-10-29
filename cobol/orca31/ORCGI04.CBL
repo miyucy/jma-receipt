@@ -5551,7 +5551,6 @@
       *
       *    共通のキーをクリアする
            MOVE    SPACE               TO  SPA-ERRMSG
-           INITIALIZE                      SPA-KYOTUKEY
       *
            MOVE    "I04"               TO  SPA-MOTOPG
            MOVE    "I01"               TO  SPA-SAKIPG
