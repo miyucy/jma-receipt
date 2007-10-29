@@ -21,7 +21,7 @@ CREATE TABLE tbl_hknjainf (
     creymd character(8),
     upymd character(8),
     uphms character(6),
-    hospnum numeric NOT NULL
+    hospnum numeric (2,0) NOT NULL
 );
 
 ALTER TABLE ONLY tbl_hknjainf
