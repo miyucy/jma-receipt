@@ -6908,7 +6908,7 @@
       *
            INITIALIZE                  USERPGRRK-REC
            IF    ( SPA-GMN-I01-SYORIKBN-CD
-                                       =   "05"  OR  "06" )
+                                       =   "05"  OR  "06" OR "09" )
                MOVE    SPA-NAI-I01-MAEIDOYMD   TO  USERPGRRK-TENNYUYMD
                MOVE    SPA-NAI-I01-PTID        TO  USERPGRRK-PTID
                MOVE    SPA-GMN-I01-NYUINKA-CD  TO  USERPGRRK-NYUINKA
