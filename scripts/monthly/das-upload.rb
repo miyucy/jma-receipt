@@ -21,6 +21,7 @@ module OrcaDAS
     def http_request(url, http_method, header, body, config)
       parsed_url = URI.parse(url)
       http = Net::HTTP.new(parsed_url.host, parsed_url.port)
+      http.read_timeout = http.open_timeout = config["TimeOut"] || 30
       
       case parsed_url.scheme
       when "https"
@@ -86,25 +87,31 @@ module OrcaDAS
     end
 
     def self.main(argv)
-      begin
-        das = self.new
-        if argv.length <= 0
-          $stderr.puts "das-upload.rb $file"
-          exit 1
-        end
-        opt = argv.shift
-        if opt == "-c"
-          exit(das.server_check ? 0 : 1)          
-        else
-          exit(das.run(opt) ? 0 : 1)
-        end
-      rescue => ex
-        if /^[0-9][0-9][0-9]/ =~ ex.message
-            $stderr.puts "#{ex.message} (#{ex.class.name})"
-        else
-            $stderr.puts "999 #{ex.message} (#{ex.class.name})"
-        end
+      num = 3
+      logmessage = ""
+      das = self.new
+      if argv.length <= 0
+        $stderr.puts "das-upload.rb $file"
+        exit 1
       end
+      opt = argv.shift
+      num = 3
+      num.times{
+        begin
+          if opt == "-c"
+            exit!(das.server_check ? 0 : 1)
+          else
+            exit!(das.run(opt) ? 0 : 1)
+          end
+        rescue Exception => ex
+          if /^[0-9][0-9][0-9]/ =~ ex.message
+              logmessage = "#{ex.message} (#{ex.class.name})"
+          else
+              logmessage = "999 #{ex.message} (#{ex.class.name})"
+          end
+        end
+      }
+      $stderr.puts logmessage
     end
   end
 end
