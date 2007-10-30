@@ -66,6 +66,11 @@
       <y>80</y>
       <width>64</width>
       <height>32</height>
+      <accelerator>
+	<modifiers>0</modifiers>
+	<key>GDK_F1</key>
+	<signal>clicked</signal>
+      </accelerator>
       <can_focus>True</can_focus>
       <signal>
 	<name>clicked</name>
