@@ -151,8 +151,8 @@
            03  WRK-STPAGE          PIC 9(05).
            03  WRK-EDPAGE-G.
                05  WRK-EDPAGE      PIC 9(05).
-           03  WRK-STR-G           OCCURS  30.
-               05  WRK-STR         PIC X(01).
+           03  WRK-STR-G.
+               05  WRK-STR         PIC X(01)   OCCURS  30.
       *
        01  WRK-HEN-AREA.
            03  WRK-HENYMDG         PIC X(09).
