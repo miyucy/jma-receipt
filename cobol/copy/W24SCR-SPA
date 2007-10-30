@@ -351,7 +351,7 @@
                        15  SPA-GMN-W24-RYOYODSPMEIL    PIC X(18).
       *
       *          Æþ±¡ºï½ü¿©»ö»»Äê¶èÊ¬
-                 11  SPA-GMN-W24-NACCT-SKJ-G.
+                 11  SPA-GMN-W24-NACCT-SKJLST-G.
                    13  SPA-GMN-W24-NACCT-SKJ-MAX       PIC 9(03).
                    13  SPA-GMN-W24-NACCT-SKJLST        OCCURS  5.
                        15  SPA-GMN-W24-NACCT-SKJL      PIC X(01).
