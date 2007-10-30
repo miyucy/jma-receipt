@@ -4549,6 +4549,14 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE    SPA-GMN-SRYKA       TO  ORCSUSERCHK-SRYKA
                    MOVE    SPA-GMN-COMBINUM    TO  ORCSUSERCHK-HKNCOMBI
                    MOVE    SPA-GMN-DRCD        TO  ORCSUSERCHK-DRCD
+                   IF      SPA-GMN-DRCD        =   SPACE
+                       MOVE    SPACE               TO  ORCSUSERCHK-DRCD
+                   ELSE
+                       MOVE    "1"                 TO  ORCSUSERCHK-DRCD
+                                                                (1:1) 
+                       MOVE    SPA-GMN-DRCD        TO  ORCSUSERCHK-DRCD
+                                                                (2:4)
+                   END-IF
                    MOVE    SPA-SYORI-FLG       TO  ORCSUSERCHK-SYORI-FLG
                    CALL    "ORCSUSERCHK"       USING
                                                ORCSUSERCHKAREA
@@ -5053,8 +5061,12 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
       *    患者氏名
            MOVE    SPA-GMN-NAME        TO  SPA-NAME
       *    ドクター
-           MOVE    "1"                 TO  SPA-DRCD (1:1) 
-           MOVE    SPA-GMN-DRCD        TO  SPA-DRCD (2:)
+           IF      SPA-GMN-DRCD        =   SPACE
+               MOVE    SPACE               TO  SPA-DRCD
+           ELSE
+               MOVE    "1"                 TO  SPA-DRCD (1:1) 
+               MOVE    SPA-GMN-DRCD        TO  SPA-DRCD (2:)
+           END-IF
       *    保険組合せ
            MOVE    SPA-GMN-COMBINUM    TO  SPA-HKNCOMBINUM
       *

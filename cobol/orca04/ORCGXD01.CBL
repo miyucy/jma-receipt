@@ -28,6 +28,7 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *  01.00.01    NACL-多々納  06/02/14  MONFUNC 対応
+      *  04.00.00    NACL-多々納  07/10/30  ドクター５桁対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -542,7 +543,9 @@
                MOVE    SYS-9701-PRTNM      TO  SPA-GMN-TPRTNM   (IDY)
       *
                MOVE    SPA-SRYKA           TO  SPA-NAI-TSRYKA   (IDY)
-               MOVE    SPA-DRCD            TO  SPA-NAI-TDRCD    (IDY)
+               IF      SPA-DRCD            NOT =   SPACE
+                   MOVE    SPA-DRCD(2:4)       TO  SPA-NAI-TDRCD (IDY)
+               END-IF
                MOVE    SPA-HKNCOMBINUM     TO  SPA-NAI-THKNCOMBI(IDY)
                MOVE    SYS-9701-KBNCD      TO  SPA-NAI-TKBNCD   (IDY)
                PERFORM 300121-TBL-MEIHEN-SEC
@@ -1292,7 +1295,12 @@
       *    診療科
            MOVE    SPA-NAI-TSRYKA(IDX) TO  ORCSUSERPG-SRYKA
       *    ドクター
-           MOVE    SPA-NAI-TDRCD (IDX) TO  ORCSUSERPG-DRCD
+           IF      SPA-NAI-TDRCD (IDX) =   SPACE
+               MOVE    SPACE               TO  ORCSUSERPG-DRCD
+           ELSE
+               MOVE    "1"                 TO  ORCSUSERPG-DRCD(1:1)
+               MOVE    SPA-NAI-TDRCD (IDX) TO  ORCSUSERPG-DRCD(2:4)
+           END-IF
       *    保険組合せ
            MOVE    SPA-NAI-THKNCOMBI (IDX)
                                        TO  ORCSUSERPG-HKNCOMBI
