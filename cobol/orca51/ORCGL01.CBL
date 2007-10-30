@@ -400,7 +400,7 @@
       *****************************************************************
        310-SPASET-SEC              SECTION.
       *
-           INITIALIZE                  SPA-L01-AREA
+           INITIALIZE                  SPA-L01FREE
                                        SPA-L01KYOUTU
       *
            PERFORM VARYING IDX FROM    1   BY  1
