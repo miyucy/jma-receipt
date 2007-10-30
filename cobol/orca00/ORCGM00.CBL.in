@@ -93,6 +93,7 @@
            03  FLG-OK              PIC 9(01).
            03  FLG-DBKANRI         PIC 9(01).
            03  FLG-MSTKANRI        PIC 9(01).
+           03  FLG-SYSBASE         PIC 9(01).
       *
       *    システム領域
        01  SYS-AREA.
@@ -137,6 +138,7 @@
            03  WRK-ERRMSG          PIC X(40).
            03  WRK-PRGNAME         PIC X(08).
            03  WRK-DBVERSION       PIC X(64).
+           03  WRK-SYSBASE-CNT     PIC 9(04).
       *
       *
       *****************************************************************
@@ -168,6 +170,9 @@
       *    広告情報
            COPY  "CPSK1003.INC".
       *----(03.04.01)--ADD-END-----------------------------------------
+      *    システム基本
+       01  SYSBASE-REC.
+           COPY    "CPSYSBASE.INC".
       *
       *    ＤＢ管理
        01  DBKANRI-REC.
@@ -699,6 +704,35 @@
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key3"              TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
+      *    スーパーバイザー？
+           IF    ( SPA-SUPERVISOR          =   "F" )
+           AND   ( SYS-1010-KANRIAUTHFLG   =   "T" )
+               MOVE    ZERO                TO  FLG-SYSBASE
+               MOVE    ZERO                TO  WRK-SYSBASE-CNT
+               INITIALIZE                      SYSBASE-REC
+               MOVE    SYSBASE-REC         TO  MCPDATA-REC
+               MOVE    "tbl_sysbase"       TO  MCP-TABLE 
+               MOVE    "all"               TO  MCP-PATHNAME 
+               PERFORM 910-DBSELECT-SEC
+               IF      MCP-RC              =   ZERO
+                   PERFORM UNTIL   FLG-SYSBASE =   1
+                       MOVE    "tbl_sysbase"   TO  MCP-TABLE 
+                       MOVE    "all"           TO  MCP-PATHNAME 
+                       PERFORM 910-DBFETCH-SEC
+                       IF      MCP-RC          =   ZERO
+                           ADD     1           TO  WRK-SYSBASE-CNT
+                       ELSE
+                           MOVE    1           TO  FLG-SYSBASE
+                       END-IF
+                   END-PERFORM
+               END-IF
+               MOVE    "tbl_sysbase"       TO  MCP-TABLE 
+               MOVE    "all"               TO  MCP-PATHNAME 
+               PERFORM 990-DBCLOSE-SEC
+               IF      WRK-SYSBASE-CNT     =   1
+                   MOVE    "T"             TO  SPA-SUPERVISOR
+               END-IF
+           END-IF
       *
       *    主科設定情報
            INITIALIZE                      SPA-SYUKA-INFO
