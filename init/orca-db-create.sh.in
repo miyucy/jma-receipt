@@ -31,7 +31,12 @@ fi
 
 if [ -z `su - postgres -c "psql template1 -t -c \"${USERCHECKSQL}\""` ]
 then
-  su - postgres -c "createuser --createdb --no-adduser ${DBUSER}" 
+  if [ "`createuser --version|sed -e 's/createuser (PostgreSQL) \([0-9]*\)\.[0-9]*\.[0-9]*/\1/'`" -ge 8 ]
+  then
+    su - postgres -c "createuser --createdb --no-superuser --no-createrole ${DBUSER}" 
+  else
+    su - postgres -c "createuser --createdb --no-adduser ${DBUSER}" 
+  fi
 fi
 
 if [ -z `su - postgres -c "psql template1 -t -c \"${DBCHECKSQL}\""` ]
