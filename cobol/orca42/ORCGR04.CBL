@@ -1490,7 +1490,7 @@ grpsys     MOVE    SPA-HOSPNUM         TO  RECE08-HOSPNUM
            MOVE    RECE08-REC          TO  MCPDATA-REC
            MOVE    "DBUPDATE"          TO  MCP-FUNC
            MOVE    "tbl_receprt"       TO  MCP-TABLE
-           MOVE    "upd1"              TO  MCP-PATHNAME
+           MOVE    "upd2"              TO  MCP-PATHNAME
            PERFORM 900-ORCDBMAIN-SEC
       *
       *    °õºþ£Ä£Â¤Î£Ë£Å£ÙÍÑ     
