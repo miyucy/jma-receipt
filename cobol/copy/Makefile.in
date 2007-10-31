@@ -587,7 +587,6 @@ COPYS = \
 	XC01COMMON-SPA \
 	XC99.INC \
 	XCERR.INC \
-	XCID1.INC \
 	XERR.INC \
 	XID1.INC \
 	Y01.INC \
@@ -800,7 +799,6 @@ COPYS = \
         XC01COMMON-SPA \
         XC99.INC \
         XCERR.INC \
-        XCID1.INC \
         HCM28.INC \
         CPORCSNTYMD.INC \
         S05.INC \
