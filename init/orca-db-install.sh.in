@@ -241,10 +241,11 @@ do
 #SQL
 #
 	if	[ -s $HOME/$MSTDIR/$UPD2 ]; then
-#		su - orca -c "psql -o dblog orca < $HOME/$MSTDIR/$UPD2 2>&1 | tee $HOME/$MSTDIR/log" 
-		su - orca -c "psql -e orca < $HOME/$MSTDIR/$UPD2 2>&1 | tee -a $INSTALLLOG $THISTIMELOG" 
-##	else
-##		su - orca -c "touch $HOME/$MSTDIR/log" 
+	    if	[ "${UPD2:0:7}" = "ORCADBC" ]; then
+		su - orca -c "sh $HOME/$MSTDIR/$UPD2 $DBNAME $INSTALLLOG $THISTIMELOG"
+	    else
+		su - orca -c "psql -e orca < $HOME/$MSTDIR/$UPD2 2>&1 | tee -a $INSTALLLOG $THISTIMELOG"
+	    fi
 	fi
 #	LOGLIST=`awk '/NOTICE:/ {skip = !skip; next};/};/ {exit}; (skip == 1) {gsub(/\t| |;/,""); print} ' $HOME/$MSTDIR/log`
 ##	LOGLIST=`awk '/ERROR:/{gsub(/\t| |;/,""); print} ' $HOME/$MSTDIR/log`
