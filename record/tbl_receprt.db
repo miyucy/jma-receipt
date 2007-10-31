@@ -721,7 +721,7 @@ path	key30	{
 path	upd1	{
 	DBUPDATE	{
 		UPDATE  tbl_receprt
-                    SET     PRTJYUN_SYUKA =   0,
+                    SET     PRTJYUN_SYUKA      =   0,
                             PRTRENNUM    =   0 
 		WHERE 	HOSPNUM	= :HOSPNUM
                     AND   PRTID        =   :PRTID
@@ -1087,4 +1087,19 @@ path    del4    {
                     AND     RECENUM      =   :RECENUM 
                 ;
         };
+};
+
+path	upd2	{
+	DBUPDATE	{
+		UPDATE  tbl_receprt
+                    SET     PRTJYUN_SYUKA      =   0,
+                            PRTRENNUM    =   0 
+		WHERE 	HOSPNUM	= :HOSPNUM
+                    AND   PRTID        =   :PRTID
+                    AND     RECEYM       =   :RECEYM
+                    AND     CREYMD       =   :CREYMD
+                    AND     CREHMS       =   :CREHMS
+                    AND     NYUGAIKBN    =   :NYUGAIKBN 
+		;
+	};
 };
