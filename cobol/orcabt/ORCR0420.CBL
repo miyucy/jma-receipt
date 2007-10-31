@@ -137,6 +137,7 @@
       *                                     の記載順変更対応
       *  03.05.08    NACL-門脇    07/10/24  自賠責特定器材等消費税対象外設定
       *                                     項目数拡張対応
+      *  04.01.01    NACL-門脇    07/10/31  公務災害対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -329,6 +330,20 @@
            03  FLG-KHNTEN14-JI2                        PIC 9(01).       
            03  FLG-KHNTEN15-JI2                        PIC 9(01).       
       *
+      *    基本点数の非表示判定用フラグ（公務災害）
+       01  FLG-KHNTEN-KO-AREA.
+           03  FLG-KHNTEN2-KO                          PIC 9(01).
+           03  FLG-KHNTEN3-KO                          PIC 9(01).
+           03  FLG-KHNTEN4-KO                          PIC 9(01).
+           03  FLG-KHNTEN5-KO                          PIC 9(01).
+           03  FLG-KHNTEN6-KO                          PIC 9(01).
+           03  FLG-KHNTEN7-KO                          PIC 9(01).
+           03  FLG-KHNTEN8-KO                          PIC 9(01).
+           03  FLG-KHNTEN17-KO                         PIC 9(01).
+           03  FLG-KHNTEN19-KO                         PIC 9(01).
+           03  FLG-KHNTEN21-KO                         PIC 9(01).
+           03  FLG-KHNTEN22-KO                         PIC 9(01).
+      *
       *    カウント領域
        01  CNT-AREA.
            03  CNT-IN                                  PIC 9(06).
@@ -506,6 +521,7 @@
       *    外来診療料（１回目）
            03  CONS-GAIRAIRYO1 PIC X(09)     VALUE "112011310".
            03  CONS-GAIRAIRYO2 PIC X(09)     VALUE "112705510".
+           03  CONS-GAIRAIRYO3 PIC X(09)     VALUE "112011710".
       *    処方せん料
            03  CONS-SHOHOSEN1 PIC X(09)      VALUE "120002710".
            03  CONS-SHOHOSEN2 PIC X(09)      VALUE "120002810".
@@ -1145,6 +1161,7 @@ grpsys           PERFORM 900-DBSELECT-SEC
               INITIALIZE                   FLG-KHNTEN-AREA
               INITIALIZE                   FLG-KHNTEN-JI-AREA           
               INITIALIZE                   FLG-KHNTEN-JI2-AREA
+              INITIALIZE                   FLG-KHNTEN-KO-AREA
               INITIALIZE                   TBL-TENSUG-JI
       *
               MOVE       ZERO       TO     CNT-NYUYOJI
@@ -1157,11 +1174,15 @@ grpsys           PERFORM 900-DBSELECT-SEC
                   PERFORM     2101-RECE44-HENSYU-SEC
               END-PERFORM
       *
-              IF      RECE41-HKNKBN   NOT  =   "4"                      
+              EVALUATE   RECE41-HKNKBN
+                WHEN       "1"
+                WHEN       "2"
                   PERFORM     2102-KHNTEN-CLEAR-SEC
-              ELSE                                                      
+                WHEN       "4"
                   PERFORM     2103-KHNTEN-JI-CLEAR-SEC                       
-              END-IF                                                    
+                WHEN       "5"
+                  PERFORM     2106-KHNTEN-KO-CLEAR-SEC
+              END-EVALUATE
       *
            ELSE
       *
@@ -1627,7 +1648,8 @@ grpsys     PERFORM 900-DBSELECT-SEC
                         MOVE   "1"      TO    RECE41-KEIZOKU-PRTKBN
                    END-IF
                    IF   SRY-SRYCD(IDX2)   =     CONS-GAIRAIRYO1  OR
-                                                CONS-GAIRAIRYO2
+                                                CONS-GAIRAIRYO2  OR
+                                                CONS-GAIRAIRYO3
                         MOVE   "2"      TO    RECE41-KEIZOKU-PRTKBN
                    END-IF
                    IF   SRY-SRYCD(IDX2)   =     CONS-SAISHIN-A1   
@@ -2046,8 +2068,10 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *
                   ELSE
       *
-                    IF    RECE41-HKNKBN      =   "4"
-                    AND   RECE41-JIBAIKBN    =   "2"
+                    IF  ((RECE41-HKNKBN      =   "4") AND
+                         (RECE41-JIBAIKBN    =   "2"))
+                    OR  ((RECE41-HKNKBN      =   "5") AND
+                         (RECE41-KOMUKBN     =   "2"))
                       IF (( ACCT-SRYKBN            =  "80"      ) AND
                           ( SRY-SRYCD(1)(1:5)      =  "09593"   ) AND
                           ( SRY-SRYCD(IDX2)(1:1)   =   "8"      ))
@@ -2884,10 +2908,13 @@ grpsys        MOVE    SPA-HOSPNUM         TO  SYS-4003-HOSPNUM
                IF  ((ACCT-ZAITEN    NOT =    ZERO) AND
                     (ACCT-ZAIKAISU  NOT =    ZERO))
                OR  ( FLG-TAISYO         =     1   )
-                  IF      RECE41-HKNKBN   NOT  =   "3"
-                     IF   RECE41-HKNKBN   NOT  =   "4"
+                  EVALUATE   RECE41-HKNKBN
+                    WHEN       "1"
+                    WHEN       "2"
                         PERFORM   2101221-RECE-LEFT-SET-SEC
-                     ELSE
+                    WHEN       "3"
+                        PERFORM   2101222-RECE-LEFT-SET2-SEC
+                    WHEN       "4"
                         EVALUATE  WRK-PARA-RECEKBN
                           WHEN      "4"
       ********************* （新様式）
@@ -2896,10 +2923,9 @@ grpsys        MOVE    SPA-HOSPNUM         TO  SYS-4003-HOSPNUM
       ********************* （従来様式）
                             PERFORM   2101224-RECE-LEFT-SET4-SEC
                         END-EVALUATE
-                     END-IF
-                  ELSE
-                        PERFORM   2101222-RECE-LEFT-SET2-SEC
-                  END-IF
+                    WHEN       "5"
+                        PERFORM   2101225-RECE-LEFT-SET5-SEC
+                  END-EVALUATE
                END-IF
                IF    SRY-SRYKBN   =  "21"   OR   "22"   OR   "23"   OR
                                      "31"   OR   "32"   OR   "33"   OR
@@ -2909,9 +2935,9 @@ grpsys        MOVE    SPA-HOSPNUM         TO  SYS-4003-HOSPNUM
                END-IF
            END-PERFORM
       *
-           IF      RECE41-HKNKBN   NOT  =   "3"
-      *
-              IF   RECE41-HKNKBN   NOT  =   "4"                         
+           EVALUATE   RECE41-HKNKBN
+             WHEN       "1"
+             WHEN       "2"
       *
       *         処方の算定回数から特定疾患処方管理加算の減算
                 COMPUTE    RECE41-KAISU(19)   =    RECE41-KAISU(19)  -
@@ -2941,7 +2967,37 @@ grpsys        MOVE    SPA-HOSPNUM         TO  SYS-4003-HOSPNUM
                 COMPUTE    RECE41-KAISU(20)   =    RECE41-KAISU(20)  -
                                                    WRK-MADOKU-SHOHO  
       *
-              ELSE                                                      
+             WHEN       "3"
+      *
+      *         処方の算定回数から特定疾患処方管理加算の減算
+                COMPUTE    RECE41-KAISU(12)   =    RECE41-KAISU(12)  -
+                                                   WRK-TOKUTEI-SKAN
+      *
+      *         処方の算定回数から処方(乳幼児)加算の減算
+                COMPUTE    RECE41-KAISU(12)   =    RECE41-KAISU(12)  -
+                                                   WRK-NYUYOUJI-SKAN           
+      *
+      *         処方の算定回数から長期投薬加算（処方料)の減算
+                COMPUTE    RECE41-KAISU(12)   =    RECE41-KAISU(12)  -  
+                                                   WRK-CYOKI-SKAN       
+      *
+      *         処方の算定回数から特定疾患処方管理加算(処方料)の減算
+                COMPUTE    RECE41-KAISU(30)   =    RECE41-KAISU(30)  -
+                                                   WRK-TOKUTEI-SKAN2           
+      *
+      *         処方せんの算定回数から処方せん(乳幼児)加算の減算
+                COMPUTE    RECE41-KAISU(30)   =    RECE41-KAISU(30)  -
+                                                   WRK-NYUYOUJI-SHOKAN      
+      *
+      *         処方せんの算定回数から長期投薬加算(処方せん料)の減算
+                COMPUTE    RECE41-KAISU(30)   =    RECE41-KAISU(30)  -  
+                                                   WRK-CYOKI-SKAN2      
+      *
+      *         麻毒の算定回数から処方料（麻・向・毒・覚）の減算
+                COMPUTE    RECE41-KAISU(13)   =    RECE41-KAISU(13)  -
+                                                   WRK-MADOKU-SHOHO  
+      *
+             WHEN       "4"
       *
                 EVALUATE  WRK-PARA-RECEKBN
                   WHEN      "4"
@@ -2992,39 +3048,37 @@ grpsys        MOVE    SPA-HOSPNUM         TO  SYS-4003-HOSPNUM
                                                     WRK-MADOKU-SHOHO     
                 END-EVALUATE
       *
-              END-IF                                                    
-      *
-           ELSE
+             WHEN       "5"
       *
       *         処方の算定回数から特定疾患処方管理加算の減算
-                COMPUTE    RECE41-KAISU(12)   =    RECE41-KAISU(12)  -
+                COMPUTE    RECE41-KAISU(22)   =    RECE41-KAISU(22)  -
                                                    WRK-TOKUTEI-SKAN
       *
       *         処方の算定回数から処方(乳幼児)加算の減算
-                COMPUTE    RECE41-KAISU(12)   =    RECE41-KAISU(12)  -
+                COMPUTE    RECE41-KAISU(22)   =    RECE41-KAISU(22)  -
                                                    WRK-NYUYOUJI-SKAN           
       *
       *         処方の算定回数から長期投薬加算（処方料)の減算
-                COMPUTE    RECE41-KAISU(12)   =    RECE41-KAISU(12)  -  
+                COMPUTE    RECE41-KAISU(22)   =    RECE41-KAISU(22)  -  
                                                    WRK-CYOKI-SKAN       
       *
       *         処方の算定回数から特定疾患処方管理加算(処方料)の減算
-                COMPUTE    RECE41-KAISU(30)   =    RECE41-KAISU(30)  -
-                                                   WRK-TOKUTEI-SKAN2           
+      ***       COMPUTE    RECE41-KAISU(36)   =    RECE41-KAISU(36)  -
+      ***                                          WRK-TOKUTEI-SKAN2           
       *
       *         処方せんの算定回数から処方せん(乳幼児)加算の減算
-                COMPUTE    RECE41-KAISU(30)   =    RECE41-KAISU(30)  -
-                                                   WRK-NYUYOUJI-SHOKAN      
+      ***       COMPUTE    RECE41-KAISU(36)   =    RECE41-KAISU(36)  -
+      ***                                          WRK-NYUYOUJI-SHOKAN      
       *
       *         処方せんの算定回数から長期投薬加算(処方せん料)の減算
-                COMPUTE    RECE41-KAISU(30)   =    RECE41-KAISU(30)  -  
-                                                   WRK-CYOKI-SKAN2      
+      ***       COMPUTE    RECE41-KAISU(36)   =    RECE41-KAISU(36)  -  
+      ***                                          WRK-CYOKI-SKAN2      
       *
       *         麻毒の算定回数から処方料（麻・向・毒・覚）の減算
-                COMPUTE    RECE41-KAISU(13)   =    RECE41-KAISU(13)  -
+                COMPUTE    RECE41-KAISU(23)   =    RECE41-KAISU(23)  -
                                                    WRK-MADOKU-SHOHO  
       *
-           END-IF         
+           END-EVALUATE
       *
            .                                           
       *
@@ -5141,6 +5195,466 @@ grpsys        MOVE    SPA-HOSPNUM         TO  SYS-4003-HOSPNUM
            EXIT.
       *
       *****************************************************************
+      *    レセプト中間ファイルの項目転送
+      *****************************************************************
+       2101225-RECE-LEFT-SET5-SEC               SECTION.
+      *
+           EVALUATE    SRY-SRYKBN
+      *    初診のレセ点数欄の編集
+               WHEN    "11"
+                   IF   SRY-SRYCD(IDX3) = CONS-ROUSAI1  OR
+                                          CONS-ROUSAI18 OR
+                                          CONS-ROUSAI2  OR
+                                          CONS-ROUSAI3
+                      CONTINUE
+                   ELSE
+                      IF   WRK-TNS-DATAKBN(IDX3)  =   2
+                        EVALUATE  WRK-TNS-TIMEKSNKBN(IDX3)
+                          WHEN    1
+                          WHEN    5
+                              MOVE  "1"     TO   RECE41-SHOSHINTIME
+                          WHEN    3
+                              MOVE  "2"     TO   RECE41-SHOSHINTIME
+                          WHEN    4
+                              MOVE  "3"     TO   RECE41-SHOSHINTIME
+                        END-EVALUATE
+                      END-IF
+                      IF  WRK-TNS-CHUKSNTUBAN(IDX3)  NOT = "0"
+                          CONTINUE
+                      ELSE
+                          ADD   WK-ZAIKAISU  TO   RECE41-KAISU(1)
+                      END-IF
+                      COMPUTE    RECE41-TENSU(1)    =
+                                 RECE41-TENSU(1)    +
+                                 (WRK-TNS-TEN(IDX3) * ACCT-ZAIKAISU)
+                   END-IF
+      *    再診のレセ点数欄の編集（集計方法変更後）
+               WHEN    "12"
+                   EVALUATE  WRK-TNS-GAITENTTLKBN(IDX3)
+      *      （基本手技）
+                    WHEN  120
+                     IF   SRY-SRYCD(IDX3) =  CONS-ROUSAI5  OR
+                                             CONS-ROUSAI6  OR
+                                             CONS-ROUSAI7
+                         CONTINUE
+                     ELSE
+                       IF SRY-SRYCD(IDX3) =  CONS-GAIRAIRYO1  OR
+                                             CONS-GAIRAIRYO3
+                         IF    RECE41-KHNTEN(3)   =   ZERO
+                           MOVE WRK-TNS-TEN(IDX3) TO RECE41-KHNTEN(3)
+                         ELSE
+                           IF RECE41-KHNTEN(3) NOT = WRK-TNS-TEN(IDX3)
+                             MOVE   ZERO    TO    RECE41-KHNTEN(3)
+                             MOVE   1       TO    FLG-KHNTEN3-KO
+                           END-IF
+                         END-IF
+                         IF  WRK-TNS-CHUKSNTUBAN(IDX3)  NOT = "0"
+                             CONTINUE
+                         ELSE
+                             ADD   WK-ZAIKAISU  TO   RECE41-KAISU(3)
+                         END-IF
+                         COMPUTE    RECE41-TENSU(3)   =
+                                    RECE41-TENSU(3)   +
+                                   (WRK-TNS-TEN(IDX3) * ACCT-ZAIKAISU)
+                       ELSE
+                         IF    RECE41-KHNTEN(2)   =   ZERO
+                           MOVE WRK-TNS-TEN(IDX3) TO RECE41-KHNTEN(2)
+                         ELSE
+                           IF RECE41-KHNTEN(2) NOT = WRK-TNS-TEN(IDX3)
+                             MOVE   ZERO    TO    RECE41-KHNTEN(2)
+                             MOVE   1       TO    FLG-KHNTEN2-KO
+                           END-IF
+                         END-IF
+                         IF  WRK-TNS-CHUKSNTUBAN(IDX3)  NOT = "0"
+                             CONTINUE
+                         ELSE
+                             ADD   WK-ZAIKAISU  TO   RECE41-KAISU(2)
+                         END-IF
+                         COMPUTE    RECE41-TENSU(2)   =
+                                    RECE41-TENSU(2)   +
+                                   (WRK-TNS-TEN(IDX3) * ACCT-ZAIKAISU)
+                       END-IF
+                     END-IF
+      *      （外来管理加算）
+                    WHEN  122
+                        IF    RECE41-KHNTEN(5)   =   ZERO
+                          MOVE WRK-TNS-TEN(IDX3) TO RECE41-KHNTEN(5)
+                        ELSE
+                          IF RECE41-KHNTEN(5) NOT = WRK-TNS-TEN(IDX3)
+                            MOVE   ZERO    TO    RECE41-KHNTEN(5)
+                            MOVE   1       TO    FLG-KHNTEN5-KO
+                          END-IF
+                        END-IF
+                        ADD    WK-ZAIKAISU   TO   RECE41-KAISU(5)
+                        COMPUTE  RECE41-TENSU(5)   =
+                                 RECE41-TENSU(5)   +
+                                (WRK-TNS-TEN(IDX3) * ACCT-ZAIKAISU)
+      *      （時間外）
+                    WHEN  123
+                        IF    RECE41-KHNTEN(6)   =   ZERO
+                          MOVE WRK-TNS-TEN(IDX3) TO RECE41-KHNTEN(6)
+                        ELSE
+                          IF RECE41-KHNTEN(6) NOT = WRK-TNS-TEN(IDX3)
+                            MOVE   ZERO    TO    RECE41-KHNTEN(6)
+                            MOVE   1       TO    FLG-KHNTEN6-KO
+                          END-IF
+                        END-IF
+                        ADD    WK-ZAIKAISU   TO   RECE41-KAISU(6)
+                        COMPUTE  RECE41-TENSU(6)   =
+                                 RECE41-TENSU(6)   +
+                                (WRK-TNS-TEN(IDX3) * ACCT-ZAIKAISU)
+      *      （休日）
+                    WHEN  124
+                        IF    RECE41-KHNTEN(7)   =   ZERO
+                          MOVE WRK-TNS-TEN(IDX3) TO RECE41-KHNTEN(7)
+                        ELSE
+                          IF RECE41-KHNTEN(7) NOT = WRK-TNS-TEN(IDX3)
+                            MOVE   ZERO    TO    RECE41-KHNTEN(7)
+                            MOVE   1       TO    FLG-KHNTEN7-KO
+                          END-IF
+                        END-IF
+                        ADD    WK-ZAIKAISU   TO   RECE41-KAISU(7)
+                        COMPUTE  RECE41-TENSU(7)   =
+                                 RECE41-TENSU(7)   +
+                                (WRK-TNS-TEN(IDX3) * ACCT-ZAIKAISU)
+      *      （深夜）
+                    WHEN  125
+                        IF    RECE41-KHNTEN(8)   =   ZERO
+                          MOVE WRK-TNS-TEN(IDX3) TO RECE41-KHNTEN(8)
+                        ELSE
+                          IF RECE41-KHNTEN(8) NOT = WRK-TNS-TEN(IDX3)
+                            MOVE   ZERO    TO    RECE41-KHNTEN(8)
+                            MOVE   1       TO    FLG-KHNTEN8-KO
+                          END-IF
+                        END-IF
+                        ADD    WK-ZAIKAISU   TO   RECE41-KAISU(8)
+                        COMPUTE  RECE41-TENSU(8)   =
+                                 RECE41-TENSU(8)   +
+                                (WRK-TNS-TEN(IDX3) * ACCT-ZAIKAISU)
+                   END-EVALUATE
+      *    指導のレセ点数欄の編集
+               WHEN    "13"
+                   IF   SRY-SRYCD(IDX3) =   CONS-ROUSAI8  OR
+                                            CONS-ROUSAI9  OR
+                                            CONS-ROUSAI10 OR
+                                            CONS-ROUSAI11 OR
+                                            CONS-ROUSAI12 OR
+                                            CONS-ROUSAI13 OR
+                                            CONS-ROUSAI14 OR
+                                            CONS-ROUSAI15 OR
+                                            CONS-ROUSAI16 OR
+                                            CONS-ROUSAI17 
+                         CONTINUE
+                   ELSE
+                         COMPUTE    RECE41-TENSU(9)   =
+                                    RECE41-TENSU(9)   +
+                                   (WK-ZAITEN   *   WK-ZAIKAISU)
+                   END-IF                   
+      *    在宅のレセ点数欄の編集
+               WHEN    "14"
+                   MOVE      ZERO            TO   FLG-ZAITAKU
+      *            往診・特別往診（時間加算）
+                   IF    FLG-OSINKBN         =   1
+                       MOVE         1        TO   FLG-ZAITAKU
+                       ADD    WK-ZAIKAISU    TO   RECE41-KAISU(10)
+                       COMPUTE   RECE41-TENSU(10)   =
+                                 RECE41-TENSU(10)   +
+                                (WK-SYUTEN   *   WK-ZAIKAISU)
+                   END-IF
+      *            夜間
+                   IF    FLG-OSINKBN         =    2
+                       MOVE   1              TO   FLG-ZAITAKU
+                       ADD    WK-ZAIKAISU    TO   RECE41-KAISU(11)
+                       COMPUTE   RECE41-TENSU(11)   =
+                                 RECE41-TENSU(11)   +
+                                (WK-SYUTEN   *   WK-ZAIKAISU)
+                   END-IF
+      *            深夜・緊急
+                   IF    FLG-OSINKBN         =    3
+                       MOVE   1              TO   FLG-ZAITAKU
+                       ADD    WK-ZAIKAISU    TO   RECE41-KAISU(12)
+                       COMPUTE   RECE41-TENSU(12)   =
+                                 RECE41-TENSU(12)   +
+                                (WK-SYUTEN   *   WK-ZAIKAISU)
+                   END-IF
+      *            在宅患者訪問診療
+                   IF (( WRK-TNS-OSINKBN(IDX3) =     1          )  AND
+                       ((SRY-SRYCD(IDX3)   NOT =    "114000110")   AND
+                        (SRY-SRYCD(IDX3)   NOT =    "114001610")   AND
+                        (SRY-SRYCD(IDX3)   NOT =    "114000970")   AND
+                        (SRY-SRYCD(IDX3)   NOT =    "114002470")   AND
+                        (SRY-SRYCD(IDX3)   NOT =    "114002970")   AND
+                        (SRY-SRYCD(IDX3)   NOT =    "114000470")   AND
+                        (SRY-SRYCD(IDX3)   NOT =    "114001970")   AND
+                        (SRY-SRYCD(IDX3)   NOT =    "114011670")   AND
+                        (SRY-SRYCD(IDX3)   NOT =    "114011970")   AND
+                        (SRY-SRYCD(IDX3)   NOT =    "114000370")   AND
+                        (SRY-SRYCD(IDX3)   NOT =    "114001570")   AND
+                        (SRY-SRYCD(IDX3)   NOT =    "114001870")   AND
+                        (SRY-SRYCD(IDX3)   NOT =    "114002070")   AND
+                        (SRY-SRYCD(IDX3)   NOT =    "114011570")   AND
+                        (SRY-SRYCD(IDX3)   NOT =    "114011770")   AND
+                        (SRY-SRYCD(IDX3)   NOT =    "114011870")   AND
+                        (SRY-SRYCD(IDX3)   NOT =    "114012070")))
+                   OR (  SRY-SRYCD(IDX3)       =    "114001110"  )
+                       MOVE   1              TO   FLG-ZAITAKU
+                       ADD    WK-ZAIKAISU    TO   RECE41-KAISU(13)
+                       COMPUTE   RECE41-TENSU(13)   =
+                                 RECE41-TENSU(13)   +
+                                (WK-SYUTEN         * ACCT-ZAIKAISU)
+                   END-IF
+      *            その他
+                   IF    FLG-ZAITAKU    =   ZERO
+                       COMPUTE   RECE41-TENSU(14)   =
+                                 RECE41-TENSU(14)   +
+                                (WK-SYUTEN     *   WK-ZAIKAISU)
+                   END-IF
+      *            薬剤
+                   COMPUTE   RECE41-TENSU(15)   =
+                             RECE41-TENSU(15)   +
+                             (WK-KIZAITEN *   WK-ZAIKAISU)  +
+                             (WK-YKZTEN   *   WK-ZAIKAISU)
+      *    投薬のレセ点数欄の編集
+               WHEN    "21"
+                   IF    (SRY-SRYCD(IDX3) (1:1)  = "6" OR "S" OR "8"
+                                                       OR "7"       )
+                   OR    (SRY-SRYCD(IDX3) (1:3)  = "001" OR "008"   
+                                                         OR "059"   )
+                   OR    (SRY-SRYCD(IDX3) (1:7)  = "0992000"        )
+                     IF   SRY-SRYCD(IDX3)         =    CONS-YAKTEIGEN
+                       COMPUTE   RECE41-TENSU(16)   =
+                                 RECE41-TENSU(16)   -
+                                (WK-ZAITEN   *   WK-ZAIKAISU)
+                     ELSE
+                       ADD   WK-ZAIKAISU       TO   RECE41-KAISU(16)
+                       COMPUTE   RECE41-TENSU(16)   =
+                                 RECE41-TENSU(16)   +
+                                (WK-ZAITEN   *   WK-ZAIKAISU)
+                     END-IF
+                   ELSE
+                     IF   SRY-SRYCD(IDX3)   =    CONS-FUNSAI-COMMENT
+                       ADD   WK-ZAIKAISU       TO   RECE41-KAISU(16)
+                       COMPUTE   RECE41-TENSU(16)   =
+                                 RECE41-TENSU(16)   +
+                                (WK-ZAITEN   *   WK-ZAIKAISU)
+                     ELSE   
+                       IF    RECE41-KHNTEN(17)   =   ZERO
+                          MOVE  WRK-TNS-TEN(IDX3)  TO  RECE41-KHNTEN(17)
+                       ELSE
+                          IF   RECE41-KHNTEN(17) NOT = WRK-TNS-TEN(IDX3)
+                               MOVE   ZERO    TO    RECE41-KHNTEN(17)
+                               MOVE   1       TO    FLG-KHNTEN17-KO
+                          END-IF
+                       END-IF
+                       ADD    WK-ZAIKAISU    TO   RECE41-KAISU(17)
+                       COMPUTE   RECE41-TENSU(17)   =
+                                 RECE41-TENSU(17)   +
+                                (WRK-TNS-TEN(IDX3) * ACCT-ZAIKAISU)
+                     END-IF   
+                   END-IF
+               WHEN    "22"
+                   ADD    WK-ZAIKAISU    TO   RECE41-KAISU(18)
+                   COMPUTE   RECE41-TENSU(18)   =
+                             RECE41-TENSU(18)   +
+                            (WK-ZAITEN   *   WK-ZAIKAISU)
+               WHEN    "23"
+                   IF    (SRY-SRYCD(IDX3) (1:1)  = "6" OR "S" OR "8"
+                                                       OR "7"       )
+                   OR    (SRY-SRYCD(IDX3) (1:3)  = "001" OR "008"   
+                                                         OR "059"   )
+                   OR    (SRY-SRYCD(IDX3) (1:7)  = "0992000"        )
+                       ADD    WK-ZAIKAISU    TO   RECE41-KAISU(20)
+                       COMPUTE   RECE41-TENSU(20)   =
+                                 RECE41-TENSU(20)   +
+                                (WK-ZAITEN   *   WK-ZAIKAISU)
+                   ELSE
+                       IF    RECE41-KHNTEN(21)   =   ZERO
+                          MOVE  WRK-TNS-TEN(IDX3)  TO  RECE41-KHNTEN(21)
+                       ELSE
+                          IF   RECE41-KHNTEN(21) NOT = WRK-TNS-TEN(IDX3)
+                               MOVE   ZERO    TO    RECE41-KHNTEN(21)
+                               MOVE   1       TO    FLG-KHNTEN21-KO
+                          END-IF
+                       END-IF
+                       ADD    WK-ZAIKAISU    TO   RECE41-KAISU(21)
+                       COMPUTE   RECE41-TENSU(21)   =
+                                 RECE41-TENSU(21)   +
+                                (WRK-TNS-TEN(IDX3) * ACCT-ZAIKAISU)
+                   END-IF
+      *    処方のレセ点数欄の編集
+               WHEN    "25"
+                   IF SRY-SRYCD(IDX3)   =    "120002270"
+                      COMPUTE  WRK-TOKUTEI-SKAN  = WRK-TOKUTEI-SKAN +
+                                                   WK-ZAIKAISU 
+                   END-IF
+                   IF SRY-SRYCD(IDX3)   =    "120002170"
+                      COMPUTE  WRK-NYUYOUJI-SKAN = WRK-NYUYOUJI-SKAN +
+                                                   WK-ZAIKAISU 
+                   END-IF
+                   IF SRY-SRYCD(IDX3)   =    "120003170"                
+                      COMPUTE  WRK-CYOKI-SKAN  =  WRK-CYOKI-SKAN +      
+                                                  WK-ZAIKAISU           
+                   END-IF                                               
+                   IF    RECE41-KHNTEN(22)   =   ZERO
+                      MOVE  WRK-TNS-TEN(IDX3)  TO  RECE41-KHNTEN(22)
+                   ELSE
+                      IF   RECE41-KHNTEN(22) NOT = WRK-TNS-TEN(IDX3)
+                           MOVE   ZERO    TO    RECE41-KHNTEN(22)
+                           MOVE   1       TO    FLG-KHNTEN22-KO
+                      END-IF
+                   END-IF
+                   ADD    WK-ZAIKAISU     TO    RECE41-KAISU(22)
+                   COMPUTE   RECE41-TENSU(22)   =
+                             RECE41-TENSU(22)   +
+                            (WRK-TNS-TEN(IDX3) * ACCT-ZAIKAISU)
+      *    麻毒のレセ点数欄の編集
+               WHEN    "26"
+                   ADD    WK-ZAIKAISU     TO   RECE41-KAISU(23)
+                   IF SRY-SRYCD(IDX3)      =    "120001310"
+                    COMPUTE WRK-MADOKU-SHOHO = WRK-MADOKU-SHOHO +
+                                               WK-ZAIKAISU 
+                   END-IF
+                   COMPUTE   RECE41-TENSU(23)   =
+                             RECE41-TENSU(23)   +
+                            (WRK-TNS-TEN(IDX3) * ACCT-ZAIKAISU)
+      *    調基のレセ点数欄の編集
+               WHEN    "27"
+                   COMPUTE   RECE41-TENSU(24)   =
+                             RECE41-TENSU(24)   +
+                            (WRK-TNS-TEN(IDX3) * ACCT-ZAIKAISU)
+      *    皮下筋肉内注射のレセ点数欄の編集
+               WHEN    "31"
+                   ADD    WK-ZAIKAISU     TO   RECE41-KAISU(25)
+                   COMPUTE   RECE41-TENSU(25)  =
+                             RECE41-TENSU(25)  +
+                            (WK-ZAITEN   *   WK-ZAIKAISU)
+      *    静脈内注射のレセ点数欄の編集
+               WHEN    "32"
+                   ADD    WK-ZAIKAISU     TO   RECE41-KAISU(26)
+                   COMPUTE   RECE41-TENSU(26)  =
+                             RECE41-TENSU(26)  +
+                            (WK-ZAITEN   *   WK-ZAIKAISU)
+      *    その他注射のレセ点数欄の編集
+               WHEN    "33"
+                   ADD    WK-ZAIKAISU     TO   RECE41-KAISU(27)
+                   COMPUTE   RECE41-TENSU(27)  =
+                             RECE41-TENSU(27)  +
+                            (WK-ZAITEN   *   WK-ZAIKAISU)
+      *    処置のレセ点数欄の編集
+               WHEN    "40"
+                   IF    WK-SYUTEN       NOT =   ZERO
+                       ADD    WK-ZAIKAISU    TO   RECE41-KAISU(28)
+                   END-IF
+                   COMPUTE   RECE41-TENSU(28)   =
+                             RECE41-TENSU(28)   +
+                            (WK-SYUTEN   *   WK-ZAIKAISU)
+                   COMPUTE   RECE41-TENSU(29)   =
+                             RECE41-TENSU(29)   +
+                            (WK-YKZTEN   *   WK-ZAIKAISU)
+      *    手術のレセ点数欄の編集
+               WHEN    "50"
+               WHEN    "54"
+                   IF    WK-SYUTEN       NOT =   ZERO
+                       ADD    WK-ZAIKAISU    TO   RECE41-KAISU(30)
+                   END-IF
+                   COMPUTE   RECE41-TENSU(30)   =
+                             RECE41-TENSU(30)   +
+                            (WK-SYUTEN   *   WK-ZAIKAISU)
+                   COMPUTE   RECE41-TENSU(31)   =
+                             RECE41-TENSU(31)   +
+                            (WK-YKZTEN   *   WK-ZAIKAISU)
+      *    検査のレセ点数欄の編集
+               WHEN    "60"
+                   IF    WK-SYUTEN       NOT =   ZERO
+                       ADD    WK-ZAIKAISU    TO   RECE41-KAISU(32)
+                   END-IF
+                   COMPUTE   RECE41-TENSU(32)   =
+                             RECE41-TENSU(32)   +
+                            (WK-SYUTEN   *   WK-ZAIKAISU)
+                   IF    WRK-TNS-KNSJISKBN(IDX3)    =   2
+                         COMPUTE   RECE41-KAISU(32)  =
+                                   RECE41-KAISU(32)  -  
+                                   WK-ZAIKAISU
+                   END-IF
+                   IF    WRK-TNS-SRYCD(IDX3)  =   CONS-SAIKETSU1  OR
+                                                  CONS-SAIKETSU2  OR
+                                                  CONS-SAIKETSU3
+                         IF   RECE41-KAISU(32)  NOT =  ZERO
+                              COMPUTE   RECE41-KAISU(32)  =
+                                        RECE41-KAISU(32)  -   
+                                        WK-ZAIKAISU
+                         END-IF
+                   END-IF
+                   COMPUTE   RECE41-TENSU(33)   =
+                             RECE41-TENSU(33)   +
+                            (WK-YKZTEN   *   WK-ZAIKAISU)
+      *    画像診断のレセ点数欄の編集
+               WHEN    "70"
+                   IF    WK-SYUTEN       NOT =   ZERO
+                       ADD    WK-ZAIKAISU    TO   RECE41-KAISU(34)
+                   END-IF
+                   COMPUTE   RECE41-TENSU(34)   =
+                             RECE41-TENSU(34)   +
+                            (WK-SYUTEN   *   WK-ZAIKAISU)
+                   COMPUTE   RECE41-TENSU(35)   =
+                             RECE41-TENSU(35)   +
+                            (WK-YKZTEN   *   WK-ZAIKAISU)
+      *    その他のレセ点数欄の編集
+               WHEN    "80"
+                   IF ( ACCT-SRYKBN          =  "80"    )  AND         
+                      ( SRY-SRYCD(IDX3)(1:5) =  "09593" )              
+                       IF   FLG-TAISYO   =   1
+                          COMPUTE WRK-ZAITENNASHI  =
+                                  WRK-ZAITENNASHI  +
+                                 (WRK-TNS-TEN(IDX3) * ACCT-ZAIKAISU)
+                       END-IF
+                   ELSE               
+                    IF SRY-SRYCD(IDX3)      =    CONS-SHOHOKSN2
+                     COMPUTE  WRK-TOKUTEI-SKAN2 =  WRK-TOKUTEI-SKAN2 +
+                                                   WK-ZAIKAISU 
+                    END-IF
+                    IF SRY-SRYCD(IDX3)      =    CONS-SHOHOKSN1
+                     COMPUTE WRK-NYUYOUJI-SHOKAN = WRK-NYUYOUJI-SHOKAN +
+                                                  WK-ZAIKAISU 
+                    END-IF
+                    IF SRY-SRYCD(IDX3)      =    CONS-SHOHOKSN3         
+                     COMPUTE  WRK-CYOKI-SKAN2  =   WRK-CYOKI-SKAN2   +  
+                                                   WK-ZAIKAISU          
+                    END-IF                                              
+                    IF   SRY-SRYCD(IDX3)   =  CONS-SHOHOSEN1 OR
+                                              CONS-SHOHOSEN2 OR
+                                              CONS-SHOHOSEN3 OR
+                                              CONS-SHOHOSEN4 OR
+                                              CONS-SHOHOKSN1 OR
+                                              CONS-SHOHOKSN2 OR
+                                              CONS-SHOHOKSN3            
+      ***                ADD    WK-ZAIKAISU  TO  RECE41-KAISU(36)
+                         COMPUTE   RECE41-TENSU(36)  =
+                                   RECE41-TENSU(36)  +
+                                  (WRK-TNS-TEN(IDX3) * ACCT-ZAIKAISU)
+                    ELSE
+                         IF    WRK-TNS-GAITENTTLKBN(IDX3)   =    130
+                           COMPUTE   RECE41-TENSU(9)  =
+                                     RECE41-TENSU(9)  +
+                                    (WRK-TNS-TEN(IDX3) * ACCT-ZAIKAISU)
+                         ELSE  
+                           COMPUTE   RECE41-TENSU(37)  =
+                                     RECE41-TENSU(37)  +
+                                    (WK-SYUTEN   *   ACCT-ZAIKAISU)
+                         END-IF
+                    END-IF
+                    COMPUTE   RECE41-TENSU(38)  =
+                              RECE41-TENSU(38)  +
+                             (WK-YKZTEN   *   WK-ZAIKAISU)
+                   END-IF
+           END-EVALUATE
+      *
+           .
+      *
+       2101225-RECE-LEFT-SET5-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    乳幼児加算のカウント
       *****************************************************************
        2101225-NYUYOJI-COUNT-SEC               SECTION.
@@ -5933,6 +6447,49 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *
            .
        2105-RECE41-REWRITE-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    レセプト中間ファイルの基本点数部分のクリア処理（公務災害）
+      *****************************************************************
+       2106-KHNTEN-KO-CLEAR-SEC               SECTION.
+      *
+           IF        FLG-KHNTEN2-KO  =    1
+             MOVE    ZERO             TO   RECE41-KHNTEN(2)
+           END-IF
+           IF        FLG-KHNTEN3-KO  =    1
+             MOVE    ZERO             TO   RECE41-KHNTEN(3)
+           END-IF
+           IF        FLG-KHNTEN4-KO  =    1
+             MOVE    ZERO             TO   RECE41-KHNTEN(4)
+           END-IF
+           IF        FLG-KHNTEN5-KO  =    1
+             MOVE    ZERO             TO   RECE41-KHNTEN(5)
+           END-IF
+           IF        FLG-KHNTEN6-KO  =    1
+             MOVE    ZERO             TO   RECE41-KHNTEN(6)
+           END-IF
+           IF        FLG-KHNTEN7-KO  =    1
+             MOVE    ZERO             TO   RECE41-KHNTEN(7)
+           END-IF
+           IF        FLG-KHNTEN8-KO  =    1
+             MOVE    ZERO             TO   RECE41-KHNTEN(8)
+           END-IF
+           IF        FLG-KHNTEN17-KO =    1
+             MOVE    ZERO             TO   RECE41-KHNTEN(17)
+           END-IF
+           IF        FLG-KHNTEN19-KO =    1
+             MOVE    ZERO             TO   RECE41-KHNTEN(19)
+           END-IF
+           IF        FLG-KHNTEN21-KO =    1
+             MOVE    ZERO             TO   RECE41-KHNTEN(21)
+           END-IF
+           IF        FLG-KHNTEN22-KO =    1
+             MOVE    ZERO             TO   RECE41-KHNTEN(22)
+           END-IF
+      *
+           .
+       2106-KHNTEN-KO-CLEAR-EXT.
            EXIT.
       *
       *****************************************************************

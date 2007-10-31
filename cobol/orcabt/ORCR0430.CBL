@@ -1153,16 +1153,6 @@ grpsys       PERFORM 900-DBSELECT-SEC
                   END-IF
              END-EVALUATE
            END-IF
-      *    ¸øÌ³ºÒ³²
-           IF   RECE41-HKNKBN     =   "5"
-           AND  RECE41-KOMUKBN    =   "2"
-      *           ÆýÍÄ»ù¡¦ÍÄ»ù¤Î¥³¥á¥ó¥È
-                  IF    RECE41-NYUYOJIFLG   =  SPACE
-                     CONTINUE
-                  ELSE
-                     PERFORM    2001-NYUYOJI-COMMENT-SEC
-                  END-IF
-           END-IF
       *
       *    ºß»Ù±ç¥³¥á¥ó¥È
            IF     TBL-ZAISIEN-COMMENT   =   1
