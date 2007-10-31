@@ -238,7 +238,6 @@ RECORD_files = \
 	XC01.rec \
 	XC99.rec \
 	XCERR.rec \
-	XCID1.rec \
 	Y01.rec \
 	Y03.rec \
 	Y04.rec \
