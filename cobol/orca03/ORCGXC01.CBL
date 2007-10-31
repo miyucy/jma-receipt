@@ -279,8 +279,6 @@
       *              
       *
        01  WRK-CONS-AREA.
-      *    システム管理ＤＢ（３００３）のキー値  
-           03  WRK-CONS-3003-KBNCD PIC X(08)   VALUE   "003".
       *    印刷管理ＤＢのキー値  
            03  WRK-CONS-PREVIEW-TBL-KEY
                                    PIC X(08)   VALUE   "PREPRINT".
@@ -348,7 +346,6 @@
       *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
-           COPY    "CPORCMCP.INC".
       *
       *   ジョブ管理ＤＢ制御サブ
            COPY    "CPORCSJOBKANRI.INC".
@@ -374,7 +371,6 @@
            COPY    "XC02.INC".
            COPY    "XC99.INC".
            COPY    "XCERR.INC".
-           COPY    "XCID1.INC".
       *
       *
        PROCEDURE                   DIVISION    USING
@@ -483,9 +479,6 @@
       *    作表処理
                WHEN    "XC99" 
                    GO      TO      300-SCREEN-EXT
-               WHEN    "XCID1"
-                   PERFORM 330-XCID1-SET-SEC
-                   GO      TO      300-SCREEN-EXT
            END-EVALUATE
       *
            INITIALIZE              SPA-XC01-AREA
@@ -548,31 +541,6 @@
       *
            .
        310-SPASET-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    確認画面（ＸＣＩＤ１）ＯＫ処理
-      *****************************************************************
-       330-XCID1-SET-SEC            SECTION.
-      *
-           IF      SPA-XCID1-FLG    =   "OK"
-               EVALUATE    SPA-XCIDCD
-                   WHEN    "6666"
-                       MOVE    "JOIN"          TO  MCP-PUTTYPE
-                       PERFORM 210-BACK-SYORI-SEC
-                   WHEN    "1001"
-                   WHEN    "1004"
-                   WHEN    "1005"
-                       PERFORM 450-PRINT-SEC
-               END-EVALUATE        
-           END-IF
-      *
-           MOVE    1               TO  SPA-GMN-CUR
-      *
-           MOVE    SPACE           TO  SPA-XCID1-FLG
-           MOVE    SPACE           TO  SPA-XCIDCD
-           .
-       330-XCID1-SET-EXT.
            EXIT.
       *
       *****************************************************************
@@ -955,52 +923,6 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *    戻る　処理
       *****************************************************************
        210-BACK                    SECTION.
-      *        
-           MOVE    SPACE               TO  SYS-3003-REC 
-           INITIALIZE                      SYS-3003-REC
-           MOVE    "3003"              TO  SYS-3003-KANRICD
-           MOVE    WRK-CONS-3003-KBNCD TO  SYS-3003-KBNCD
-           MOVE    SPA-SYSYMD          TO  ORC-DBYMD
-           MOVE    SPA-HOSPNUM         TO  SYS-3003-HOSPNUM
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
-           MOVE    SYS-3003-REC        TO  MCPDATA-REC
-      *    PERFORM 900-SYSKANRI-INV-SEC
-           MOVE    1                   TO  FLG-SYSKANRI
-           IF      FLG-SYSKANRI        =   ZERO
-               MOVE    MCPDATA-REC         TO  SYS-3003-REC 
-               PERFORM VARYING IDX FROM    1   BY  1
-                       UNTIL   IDX >       SYS-3003-JOBID
-      *            ジョブ管理チェック処理
-                   MOVE    "CHK"           TO  SJOBKANRI-MODE
-                   INITIALIZE                  JOBKANRI-REC
-                   MOVE    IDX             TO  JOB-JOBID
-                   MOVE    WRK-CONS-JOB-SHELLID
-                                           TO  JOB-SHELLID
-                   CALL    "ORCSJOB"       USING
-                                           ORCSJOBKANRIAREA  
-                                           JOBKANRI-REC
-                                           SPA-AREA
-                   IF      SJOBKANRI-RETURN
-                                           =   ZERO
-                       IF      JOB-ENDYMD      =   SPACE
-      *********        AND     JOB-TERMID      =   SPA-TERMID
-                           MOVE    "6666"          TO  SPA-XCIDCD
-                           GO  TO  210-BACK-EXT
-                       END-IF
-                   END-IF
-               END-PERFORM
-           END-IF
-      *
-      *    ファイルクリア
-           PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX     >   SPA-GMN-MAX
-               IF    SPA-NAI-FILENAME (IDX)
-                                       NOT =   SPACE
-                   MOVE    ZERO            TO  IF-RESULT
-                   MOVE    SPA-NAI-FILENAME (IDX)
-                                           TO  IF-FILENAME
-               END-IF    
-           END-PERFORM
       *
       *    リアルタイムプレビュー時は、中間ファイル削除
            IF      SPA-PRTKANRI-TBL-KEY    =  "RECEPTX" OR "ONLINE"
@@ -1028,11 +950,9 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                                            ORCSFDELAREA
                END-IF    
            END-PERFORM
-    5 *  10        20        30        40        50
            IF      SPA-PRTKANRI-TBL-KEY    =  "ONLINE"
                    GO      TO  2101-FILE-DEL-EXT
            END-IF
-----+-*--+----+----+----+----+----+----+----+----+----+----+----+----+
            MOVE    SPACE               TO  WRK-PTNUM
            MOVE    SPA-GMN-PTNUM(1)    TO  WRK-PTNUM
            PERFORM VARYING IDX FROM    20  BY  -1
@@ -1282,48 +1202,6 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
        450-PRINT-GID-SEC                SECTION.
       *
            MOVE    SPACE               TO  SPA-ERRCD                 
-      *    ジョブ管理チェック        
-           MOVE    SPACE               TO  SYS-3003-REC 
-           INITIALIZE                      SYS-3003-REC
-           MOVE    "3003"              TO  SYS-3003-KANRICD
-           MOVE    WRK-CONS-3003-KBNCD TO  SYS-3003-KBNCD
-           MOVE    SPA-SYSYMD          TO  ORC-DBYMD 
-           MOVE    SPA-HOSPNUM         TO  SYS-3003-HOSPNUM
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
-           MOVE    SYS-3003-REC        TO  MCPDATA-REC
-           PERFORM 900-SYSKANRI-INV-SEC
-           IF      FLG-SYSKANRI        =   ZERO
-               MOVE    MCPDATA-REC         TO  SYS-3003-REC 
-               PERFORM VARYING IDX FROM    1   BY  1
-                       UNTIL   IDX >       SYS-3003-JOBID
-      *            ジョブ管理チェック処理
-                   MOVE    "CHK"           TO  SJOBKANRI-MODE
-                   INITIALIZE                  JOBKANRI-REC
-                   MOVE    IDX             TO  JOB-JOBID
-                   MOVE    WRK-CONS-JOB-SHELLID
-                                           TO  JOB-SHELLID
-                   CALL    "ORCSJOB"       USING
-                                           ORCSJOBKANRIAREA  
-                                           JOBKANRI-REC
-                                           SPA-AREA
-                   IF      SJOBKANRI-RETURN
-                                           =   ZERO
-                       IF      JOB-ENDYMD      =   SPACE
-                           MOVE    "7777"          TO  SPA-ERRCD
-                           MOVE    SPACE           TO  WRK-RECEERR
-                           STRING  "処理中です【"  DELIMITED  BY  SIZE
-                                   JOB-SHELLMSG    DELIMITED  BY  SPACE
-                                   "】"            DELIMITED  BY  SIZE      
-                                                   INTO  WRK-RECEERR
-                           MOVE    SYS-3003-JOBID  TO  IDX
-                       END-IF
-                   END-IF    
-               END-PERFORM
-           END-IF
-      *
-           IF      SPA-ERRCD       NOT =   SPACE                 
-               GO  TO  450-PRINT-GID-EXT               
-           END-IF
       *     
       *    IF      SPA-GMN-TBL-GROUP   =   SPACE
       *        MOVE    "0001"              TO  SPA-ERRCD
@@ -2190,11 +2068,6 @@ grpsys*     MOVE SPA-HOSPNUM TO -HOSPNUM
                GO  TO  500-SET-SCREEN-EXT
            END-IF
       *
-           IF      SPA-XCIDCD       NOT =   SPACE
-               PERFORM 520-TIDSET-SEC
-               GO  TO  500-SET-SCREEN-EXT
-           END-IF
-      *
       *****MOVE    SPACE               TO  LINKAREA
       *
            MOVE    "CURRENT"           TO  MCP-PUTTYPE
@@ -2406,58 +2279,6 @@ grpsys*     MOVE SPA-HOSPNUM TO -HOSPNUM
       *
            .
        510-ERRMSG-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    エラーメッセージ表示理
-      *****************************************************************
-       520-TIDSET-SEC              SECTION.
-      *
-           MOVE    SPACE               TO  WRK-XCIDMSG
-      *
-           EVALUATE    SPA-XCIDCD
-               WHEN    "1001"
-                   MOVE    "一括印刷処理を行います"
-                                       TO  WRK-XCIDMSG
-               WHEN    "1002"
-                   MOVE    "該当のグループの削除処理を行います"
-                                       TO  WRK-XCIDMSG
-               WHEN    "1003"
-                   MOVE
-                   "処理中の可能性がありますが削除処理を行いますか"
-                                       TO  WRK-XCIDMSG
-               WHEN    "1004"
-                   MOVE
-                   "処理中の可能性がありますが印刷処理を行いますか"
-                                       TO  WRK-XCIDMSG
-               WHEN    "1005"
-                   MOVE    "プレビュー処理を行います"
-                                       TO  WRK-XCIDMSG
-               WHEN    "6666"
-                   MOVE    "印刷処理中です"
-                                            TO  WRK-XCIDMSG
-               WHEN    "8888"
-                   MOVE    "処理が正常終了しました"
-                                            TO  WRK-XCIDMSG
-           END-EVALUATE
-      *
-           MOVE    SPACE                TO  XCID1
-           MOVE    SPA-XCIDCD           TO  XCID1-ID1CODE
-           MOVE    WRK-XCIDMSG          TO  XCID1-ID1MSG
-           MOVE    "B12"                TO  MCP-WIDGET
-      *
-           MOVE    "XC01"               TO  SPA-MOTOPG
-           MOVE    "XCID1"              TO  SPA-SAKIPG
-      *
-           MOVE    "NEW"                TO  MCP-PUTTYPE
-           MOVE    "XCID1"              TO  MCP-WINDOW
-      *
-           PERFORM 900-PUT-WINDOW
-      *
-           MOVE    1                    TO  FLG-END              
-      *
-           .
-       520-TIDSET-EXT.
            EXIT.
       *
       *****************************************************************

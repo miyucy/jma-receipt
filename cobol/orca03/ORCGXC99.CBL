@@ -114,7 +114,6 @@
            COPY    "XC02.INC".
            COPY    "XC99.INC".
            COPY    "XCERR.INC".
-           COPY    "XCID1.INC".
       *
        PROCEDURE                   DIVISION    USING
            MCPAREA
