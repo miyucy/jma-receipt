@@ -4453,28 +4453,6 @@
            EXIT.
       *
       *****************************************************************
-      *    算定歴マスタ読み込み
-      *****************************************************************
-       900-CHK-READ-SEC         SECTION.
-      *
-           MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
-           IF      MCP-RC              =   ZERO
-               MOVE    MCPDATA-REC         TO  CHK-REC
-               MOVE    ZERO                TO  FLG-CHK
-           ELSE
-               INITIALIZE                      CHK-REC
-               MOVE    1                   TO  FLG-CHK
-           END-IF
-      *
-           .
-       900-CHK-READ-EXT.
-           EXIT.
-      *
-      *****************************************************************
       *    点数マスター読込
       *****************************************************************
        910-TENSU-READ-SEC         SECTION.
