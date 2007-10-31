@@ -651,14 +651,14 @@
                  MOVE   SPACE       TO   SYOKIKSN-IN-KHNSRYCD
                                          LNK-SCNYUACCT-NYUKHN-SRYCD(1)
                  MOVE   ZERO            TO  TN-IDX
-                 IF     STUSAN-NISSU02      <=  90
+                 IF     STUSAN-NISSU03      <=  90
                      ADD    1           TO  TN-IDX
                      MOVE   "190739910" TO   LNK-SCNYUACCT-KAGEN-SRYCD
                                                                (TN-IDX)
       *              Ï·¿ÍÀ­Ç§ÃÎ¾É¼À´µ¼£ÎÅÉÂÅïÆþ±¡ÎÁ£±¤Î£¹£°Æü°ÊÆâ¤Î½ªÆü
       *              ¤òºÆ·×»»
                      MOVE     ZERO      TO   WK-TOKUTEI-DAY
-                     COMPUTE  WK-TOKUTEI-DAY  =  90  - STUSAN-NISSU02
+                     COMPUTE  WK-TOKUTEI-DAY  =  90  - STUSAN-NISSU03
                      MOVE   LNK-PTNYUINRRK-TENNYUYMD
                                        TO  LNK-SCNYUACCT-KAGEN-STYUKYMD
                                                                (TN-IDX)
@@ -707,14 +707,14 @@
                  MOVE   SPACE       TO   SYOKIKSN-IN-KHNSRYCD
                                          LNK-SCNYUACCT-NYUKHN-SRYCD(1)
                  MOVE   ZERO            TO  TN-IDX
-                 IF     STUSAN-NISSU02      <=  90
+                 IF     STUSAN-NISSU03      <=  90
                      ADD    1           TO  TN-IDX
                      MOVE   "190813410" TO   LNK-SCNYUACCT-KAGEN-SRYCD
                                                                (TN-IDX)
       *              Ï·¿ÍÀ­Ç§ÃÎ¾É¼À´µ¼£ÎÅÉÂÅïÆþ±¡ÎÁ£²¤Î£¹£°Æü°ÊÆâ¤Î½ªÆü
       *              ¤òºÆ·×»»
                      MOVE     ZERO      TO   WK-TOKUTEI-DAY
-                     COMPUTE  WK-TOKUTEI-DAY  =  90  - STUSAN-NISSU02
+                     COMPUTE  WK-TOKUTEI-DAY  =  90  - STUSAN-NISSU03
                      MOVE   LNK-PTNYUINRRK-TENNYUYMD
                                        TO  LNK-SCNYUACCT-KAGEN-STYUKYMD
                                                                (TN-IDX)
@@ -2743,14 +2743,14 @@
                  MOVE   SPACE       TO   SYOKIKSN-IN-KHNSRYCD
                                          LNK-SCNYUACCT-NYUKHN-SRYCD(1)
                  MOVE   ZERO            TO  TN-IDX
-                 IF     STUSAN-NISSU02      <=  90
+                 IF     STUSAN-NISSU03      <=  90
                      ADD    1           TO  TN-IDX
                      MOVE   "190739910" TO   LNK-SCNYUACCT-KAGEN-SRYCD
                                                                (TN-IDX)
       *              Ï·¿ÍÀ­ÃÔÊò¼À´µ¼£ÎÅÉÂÅïÆþ±¡ÎÁ¤Î£¹£°Æü°ÊÆâ¤Î½ªÆü¤ò
       *              ºÆ·×»»
                      MOVE     ZERO      TO   WK-TOKUTEI-DAY
-                     COMPUTE  WK-TOKUTEI-DAY  =  90  - STUSAN-NISSU02
+                     COMPUTE  WK-TOKUTEI-DAY  =  90  - STUSAN-NISSU03
                      MOVE   LNK-PTNYUINRRK-TENNYUYMD
                                        TO  LNK-SCNYUACCT-KAGEN-STYUKYMD
                                                                (TN-IDX)
@@ -2794,19 +2794,19 @@
                                                                (TN-IDX)
            END-IF
       *
-      *    Ï·¿ÍÀ­ÃÔÊò¼À´µ¼£ÎÅÉÂÅïÆþ±¡ÎÁ£²
+      *    Ï·¿ÍÀ­Ç§ÃÎ¾Ú¼À´µ¼£ÎÅÉÂÅïÆþ±¡ÎÁ£²
            IF    SYOKIKSN-IN-KHNSRYCD   =   "190813410"
                  MOVE   SPACE       TO   SYOKIKSN-IN-KHNSRYCD
                                          LNK-SCNYUACCT-NYUKHN-SRYCD(1)
                  MOVE   ZERO            TO  TN-IDX
-                 IF     STUSAN-NISSU02      <=  90
+                 IF     STUSAN-NISSU03      <=  90
                      ADD    1           TO  TN-IDX
                      MOVE   "190813410" TO   LNK-SCNYUACCT-KAGEN-SRYCD
                                                                (TN-IDX)
       *              Ï·¿ÍÀ­ÃÔÊò¼À´µ¼£ÎÅÉÂÅïÆþ±¡ÎÁ¤Î£¹£°Æü°ÊÆâ¤Î½ªÆü¤ò
       *              ºÆ·×»»
                      MOVE     ZERO      TO   WK-TOKUTEI-DAY
-                     COMPUTE  WK-TOKUTEI-DAY  =  90  - STUSAN-NISSU02
+                     COMPUTE  WK-TOKUTEI-DAY  =  90  - STUSAN-NISSU03
                      MOVE   LNK-PTNYUINRRK-TENNYUYMD
                                        TO  LNK-SCNYUACCT-KAGEN-STYUKYMD
                                                                (TN-IDX)
