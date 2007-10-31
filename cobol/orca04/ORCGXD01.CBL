@@ -642,7 +642,11 @@
                MOVE    SYS-9701-PRTNM      TO  SPA-GMN-TPRTNM   (IDY)
       *
                MOVE    SPA-SRYKA           TO  SPA-NAI-TSRYKA   (IDY)
-               MOVE    SPA-DRCD            TO  SPA-NAI-TDRCD    (IDY)
+               IF      SPA-DRCD            =   SPACE
+                   MOVE    SPACE           TO  SPA-NAI-TDRCD    (IDY)
+               ELSE
+                   MOVE    SPA-DRCD(2:4)   TO  SPA-NAI-TDRCD    (IDY)
+               END-IF
                MOVE    SPA-HKNCOMBINUM     TO  SPA-NAI-THKNCOMBI(IDY)
                MOVE    SYS-9701-KBNCD      TO  SPA-NAI-TKBNCD   (IDY)
                PERFORM 300121-TBL-MEIHEN-SEC
@@ -1396,7 +1400,12 @@
       *    ø«Œ≈≤ 
            MOVE    SPA-NAI-TSRYKA(IDX) TO  ORCSUSERPG-SRYKA
       *    •…•Ø•ø°º
-           MOVE    SPA-NAI-TDRCD (IDX) TO  ORCSUSERPG-DRCD
+           IF      SPA-NAI-TDRCD (IDX) =   SPACE
+               MOVE    SPACE               TO  ORCSUSERPG-DRCD
+           ELSE
+               MOVE    "1"                 TO  ORCSUSERPG-DRCD(1:1)
+               MOVE    SPA-NAI-TDRCD (IDX) TO  ORCSUSERPG-DRCD(2:4)
+           END-IF
       *     ›∏±¡»πÁ§ª
            MOVE    SPA-NAI-THKNCOMBI (IDX)
                                        TO  ORCSUSERPG-HKNCOMBI
