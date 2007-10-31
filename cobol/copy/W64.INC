@@ -19,7 +19,7 @@
                 04  W64-VALUE   PIC X(9).
               03  W64-MEISYO.
                 04  W64-VALUE   PIC X(44).
-              03  W64-KOH-OCC   OCCURS  5.
+              03  W64-KOH-OCC   OCCURS  10.
                 04  W64-KOHNUM.
                   05  W64-VALUE   PIC X(3).
                 04  W64-SEIDONAME.
