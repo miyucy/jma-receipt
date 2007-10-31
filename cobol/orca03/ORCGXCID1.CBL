@@ -16,11 +16,11 @@
       * 113-8621, Japan.
       ********************************************************************
        IDENTIFICATION              DIVISION.
-       PROGRAM-ID.                 ORCGXCERR.
+       PROGRAM-ID.                 ORCGXCID1.
       *****************************************************************
       *  システム名        : ＯＲＣＡ
       *  サブシステム名    : 再印刷
-      *  コンポーネント名  : エラーメッセージ（ＥＲＲ）
+      *  コンポーネント名  : 確認画面１
       *  管理者            : 
       *  00/12/01    MCC−藤原　   新規作成
       *****************************************************************
@@ -41,6 +41,9 @@
       *
       *    スパ領域
            COPY    "COMMON-SPA".
+      *
+      *    診療行為用共通パラメタ
+           COPY    "XC01COMMON-SPA".
       *
       *    フラグ領域
        01  FLG-AREA.
@@ -64,7 +67,6 @@
       *****************************************************************
         LINKAGE                     SECTION.
       *
-      *****COPY    "MCPAREA.INC".
            COPY    MCPAREA.
            COPY    "ORCA-SPA".
       *
@@ -89,15 +91,17 @@
        000-PROC-SEC                SECTION.
       *
            MOVE    SPA-COMMON      TO  SPA-AREA
+           MOVE    SPA-WORK        TO  SPA-XC01KYOUTU
       * 
            EVALUATE    MCP-STATUS      ALSO    MCP-EVENT
                WHEN    "LINK"          ALSO    ANY
                    PERFORM 100-INIT-SEC
       *    画面遷移
-               WHEN      OTHER
-                   PERFORM 210-BACK
+               WHEN     "PUTG"           ALSO   "CLICKED"
+                   PERFORM 200-GMNSENI
            END-EVALUATE.
       *
+           MOVE    SPA-XC01KYOUTU   TO  SPA-WORK
            MOVE    SPA-AREA        TO  SPA-COMMON
       *
            .
@@ -111,14 +115,34 @@
            .
        100-INIT-EXT.
            EXIT.
+      *
+      *****************************************************************
+      *    画面遷移処理
+      *****************************************************************
+       200-GMNSENI                   SECTION.
+      *
+           EVALUATE    MCP-EVENT       ALSO    MCP-WIDGET
+      *        戻る
+               WHEN    "CLICKED"       ALSO    "B01"
+                   MOVE    SPACE           TO  SPA-XCID1-FLG
+                   PERFORM 210-BACK
+      *     登録
+               WHEN    "CLICKED"       ALSO    "B12"
+                   MOVE    "OK"            TO  SPA-XCID1-FLG
+                   PERFORM 210-BACK
+           END-EVALUATE
+      *
+           .
+       200-GMNSENI-EXT.
+           EXIT.
       *****************************************************************
       *    戻る　処理
       *****************************************************************
        210-BACK                    SECTION.
-      *
+      * 
            MOVE    SPA-MOTOPG          TO  SPA-SAKIPG
-           MOVE    "XCERR"              TO  SPA-MOTOPG
-     *
+           MOVE    "XCID1"              TO  SPA-MOTOPG
+      *
            MOVE    "JOIN"              TO  MCP-PUTTYPE
            MOVE    SPA-SAKIPG          TO  MCP-WINDOW
       *
@@ -136,7 +160,7 @@
        900-PUT-WINDOW              SECTION.
       *
            MOVE   "PUTWINDOW"       TO  MCP-FUNC
-          CALL    "ORCDBMAIN"         USING   MCPAREA
+           CALL    "ORCDBMAIN"         USING   MCPAREA
                                                MCPDATA-REC
                                                SPA-AREA
       *
