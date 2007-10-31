@@ -165,6 +165,26 @@
       *
            03  WRK-ERRCD           PIC X(04). 
       *
+           03  WRK-SURYO-X.
+               05  WRK-SURYO-Z1    PIC ZZZZZ.
+               05  WRK-SURYO-Z2    PIC X(01).
+               05  WRK-SURYO-Z3    PIC ZZZ.
+           03  WRK-TENSU-X.
+               05  WRK-TENSU-Z     PIC ZZZZZZZZ.
+           03  WRK-TENSUS-X.
+               05  WRK-TENSUS-Z    PIC ZZZZ9.99.
+           03  WRK-KAISU-X.
+               05  WRK-KAISU-Z     PIC ZZZZ.
+           03  WRK-BUNGSU-X.
+               05  WRK-BUNGSU-Z    PIC ZZZZZZZZ.
+           03  WRK-KEICOM-X.
+               05  WRK-KEICOM-Z    PIC ZZZZZZZ9.
+           03  WRK-KEICOMS-X.
+               05  WRK-KEICOMS-Z   PIC ZZZZ9V99.
+           03  WRK-GOKEI-X.
+               05  WRK-GOKEI-Z     PIC ZZZZZZZZ.
+           03  WRK-NOZ             PIC ZZ9.
+      *
            03  WRK-SYOKEIS         PIC 9(08)V99.
            03  WRK-SYOKEIS2        PIC 9(08)V99.
            03  WRK-SYOKEI          PIC 9(08).
@@ -184,6 +204,10 @@
            03  WRK-TENSU1          PIC 9(08).
       *
            03  WRK-SRYCD           PIC X(09).
+           03  WRK-SURYO           PIC 9(05)V9(03).
+           03  WRK-SURYO-R         REDEFINES   WRK-SURYO.
+               05  WRK-SURYO-S1    PIC 9(05).
+               05  WRK-SURYO-S2    PIC 9(03).
       *
            03  WRK-KEIYMD.
                05  WRK-KEI-YY          PIC 9(04).
