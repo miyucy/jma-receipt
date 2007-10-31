@@ -36,6 +36,7 @@
       *  03.05.01    NACL-門脇    07/05/25  グループ診療対応
       *  03.05.02    NACL-藤原    07/06/01  realtime preview 処理追加
       *  03.05.03    NACL-門脇    07/06/26  不要項目削除
+      *  04.01.01    NACL-門脇    07/10/31  公務災害対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -825,6 +826,10 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
                    ADD     1           TO  CNT-IN-CANCEL
       *
                    DISPLAY "RECE41  PTNUM=" RECE41-PTNUM
+      *
+                   IF       RECE41-HKNKBN   =   "5"
+                       GO  TO  990-RECE41-READ-SEC
+                   END-IF
       *
            END-READ
       *

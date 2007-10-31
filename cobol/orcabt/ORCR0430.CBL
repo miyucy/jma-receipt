@@ -86,6 +86,7 @@
       *  03.05.02    NACL-Æ£¸¶    07/06/01  realtime preview ½èÍýÄÉ²Ã
       *  03.05.03    NACL-ÌçÏÆ    07/06/26  ¼«ÇåÀÕÊ¿À®£±£¹Ç¯£´·î²þÀµÍÍ¼°ÂÐ±þ
       *  03.05.04    NACL-ÌçÏÆ    07/08/07  »»ÄêÍúÎò¤Ë´Ø¤ï¤ëµ­ºÜ½¤Àµ
+      *  04.01.01    NACL-ÌçÏÆ    07/10/31  ¸øÌ³ºÒ³²ÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1152,6 +1153,16 @@ grpsys       PERFORM 900-DBSELECT-SEC
                   END-IF
              END-EVALUATE
            END-IF
+      *    ¸øÌ³ºÒ³²
+           IF   RECE41-HKNKBN     =   "5"
+           AND  RECE41-KOMUKBN    =   "2"
+      *           ÆýÍÄ»ù¡¦ÍÄ»ù¤Î¥³¥á¥ó¥È
+                  IF    RECE41-NYUYOJIFLG   =  SPACE
+                     CONTINUE
+                  ELSE
+                     PERFORM    2001-NYUYOJI-COMMENT-SEC
+                  END-IF
+           END-IF
       *
       *    ºß»Ù±ç¥³¥á¥ó¥È
            IF     TBL-ZAISIEN-COMMENT   =   1
@@ -1181,6 +1192,20 @@ grpsys       PERFORM 900-DBSELECT-SEC
       *
                IF   RECE41-HKNKBN    NOT  =  "4"                        
                  EVALUATE      RECE44-SRYKBN                   
+                   WHEN      "11"
+                      IF   RECE41-HKNKBN     =   "5"
+                      AND  RECE41-KOMUKBN    =   "2"
+                          MOVE   ZERO   TO  FLG-COMMENT
+      *                ¡Ê½é¿Ç¡ÊÆ±ÆüÊ£¿ô¿ÇÎÅ²Ê¡Ë»»Äê²Ê¤Î¥»¥Ã¥È¡Ë
+                          IF   FLG-COMMENT  =  ZERO
+                            PERFORM    2001-SYODOU-HANTEI-SEC
+                          END-IF
+                          IF   FLG-COMMENT  =  ZERO
+                            PERFORM    2099-RECE44-TENSOU-SEC
+                          END-IF
+                      ELSE
+                          PERFORM      2099-RECE44-TENSOU-SEC
+                      END-IF
                    WHEN      "13"
                       MOVE   ZERO   TO  FLG-COMMENT
       *            ¡ÊËýÀ­áÖÄË¼À´µ´ÉÍýÎÁ»»ÄêÆü¤Î¥»¥Ã¥È¡Ë
@@ -1428,7 +1453,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                PERFORM   900-JYURRK-READ-SEC
                PERFORM   UNTIL   FLG-JYURRK   =    1
                   IF   RECE41-HKNKBN    NOT  =  "4" 
-                   IF    JYURRK-HKNKBN    =       "1"
+                   IF    JYURRK-HKNKBN    =       "1"  OR  "5"
                       MOVE   JYURRK-HKNCOMBINUM
                                        TO  WRK-HKNCOMBINUMX
                       IF  WRK-HKNCOMBINUM9  =  RECE41-HKNCOMBI

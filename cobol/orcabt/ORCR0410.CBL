@@ -68,6 +68,7 @@
       *  03.05.01    NACL-門脇    07/05/25  グループ診療対応
       *  03.05.02    NACL-藤原    07/06/01  realtime preview 処理追加
       *  03.05.03    NACL-門脇    07/07/17  個別時のシステム管理編集修正
+      *  04.01.01    NACL-門脇    07/10/31  公務災害対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -206,6 +207,8 @@
            03  WRK-JIBAIKBN                            PIC  X(01).
            03  WRK-SYUTENTANKA                         PIC  9(02).
            03  WRK-YKZTENTANKA                         PIC  9(02).
+           03  WRK-KOMUKBN                             PIC  X(01).
+           03  WRK-KOMUTENTANKA                        PIC  9(02).
       *
            03  WRK-TAIHI-FLG                           PIC  9(01).
            03  WRK-TAIHI-SRYYMD.
@@ -596,6 +599,17 @@ grpsys        MOVE    SPA-HOSPNUM          TO    SYS-4001-HOSPNUM
                     MOVE SYS-4001-YKZTENTANKA
                                            TO    WRK-YKZTENTANKA
                   END-IF
+                  IF     SYS-4001-KOMUKBN  =    SPACE
+                    MOVE "1"               TO    WRK-KOMUKBN
+                  ELSE
+                    MOVE SYS-4001-KOMUKBN  TO    WRK-KOMUKBN
+                  END-IF
+                  IF     SYS-4001-KOMUTENTANKA-X  =  SPACE
+                    MOVE ZERO              TO    WRK-KOMUTENTANKA
+                  ELSE
+                    MOVE SYS-4001-KOMUTENTANKA
+                                           TO    WRK-KOMUTENTANKA
+                  END-IF
               ELSE
                   MOVE    "労災自賠医療機関情報が取得できませんでした"     
                                               TO  WRK-RECEERR
@@ -814,7 +828,7 @@ grpsys         PERFORM 900-DBSELECT-SEC
       *
       *    受診歴チェック
            MOVE    ZERO   TO   FLG-JYURRKCHECK
-           IF      RECE41-HKNKBN    =   "4"
+           IF      RECE41-HKNKBN    =   "4" OR "5"
               PERFORM 2109-JYURRK-CHECK-SEC
            END-IF
       *
@@ -892,6 +906,10 @@ grpsys         PERFORM 900-DBSELECT-SEC
            MOVE    WRK-SYUTENTANKA       TO   RECE41-SYUTENTANKA
       *    薬剤等点単価
            MOVE    WRK-YKZTENTANKA       TO   RECE41-YKZTENTANKA
+      *    公務災害区分
+           MOVE    WRK-KOMUKBN           TO   RECE41-KOMUKBN
+      *    公務災害点単価
+           MOVE    WRK-KOMUTENTANKA      TO   RECE41-KOMUTENTANKA
       *
       *    労災レセプト回数取得
            IF    ( RECE41-HKNKBN     =   "1"  OR  "2" )
@@ -983,6 +1001,8 @@ grpsys         PERFORM 900-DBSELECT-SEC
                    MOVE    7021            TO    RECE41-RECESYUBETU
                WHEN    "4"          ALSO    ANY                         
                    MOVE    7001            TO    RECE41-RECESYUBETU     
+               WHEN    "5"          ALSO    ANY                         
+                   MOVE    7051            TO    RECE41-RECESYUBETU     
            END-EVALUATE
            .
        2101-RECESYUBETU-SET-EXT.
@@ -1861,8 +1881,10 @@ grpsys     PERFORM 900-DBSELECT-SEC
                     END-IF
            END-PERFORM
       *
-           IF    RECE41-HKNKBN   =   "4"
-           AND   WRK-JIBAIKBN    =   "2"
+           IF  ((RECE41-HKNKBN   =   "4") AND
+                (WRK-JIBAIKBN    =   "2"))
+           OR  ((RECE41-HKNKBN   =   "5") AND
+                (WRK-KOMUKBN     =   "2"))
              CONTINUE
            ELSE
              IF       RECE41-JNISSU   =    ZERO  
@@ -1936,10 +1958,14 @@ grpsys     PERFORM 900-DBSELECT-SEC
            IF    RECE41-HKNKBN   =   "4"                                
                CONTINUE                                                 
            ELSE                                                         
+             IF    RECE41-HKNKBN   =   "5"
+             AND   WRK-KOMUKBN     =   "2"
+               COMPUTE  RECE41-TOTALKIN   =   RECE41-TOTALTEN   *
+                                              WRK-KOMUTENTANKA
+             ELSE
                COMPUTE  RECE41-TOTALKIN   =   RECE41-TOTALTEN   *
                                               WRK-TANKA    
-      ****     COMPUTE  RECE41-TOTALKIN   =   
-      ****             (RECE41-TOTALTEN   *   WRK-TANKA)   +   0.5      
+             END-IF
            END-IF                                                       
       *
            .
@@ -2134,13 +2160,23 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *****************************************************************
        2109-JYURRK-CHECK-SEC              SECTION.
       *
-      *    労災準拠の場合、受診歴に４のデータがない事
-      *    健保準拠の場合、受診歴に２のデータがない事
-           EVALUATE  WRK-JIBAIKBN
-             WHEN    "1"
+      *    労災準拠の場合、受診歴に４、５のデータがない事
+      *    健保準拠の場合、受診歴に１、２のデータがない事
+           EVALUATE  RECE41-HKNKBN
+             WHEN      "4"
+               EVALUATE  WRK-JIBAIKBN
+                 WHEN    "1"
                    MOVE   "4"   TO   WRK-HKNKBN
-             WHEN    "2"
+                 WHEN    "2"
                    MOVE   "2"   TO   WRK-HKNKBN
+               END-EVALUATE
+             WHEN      "5"
+               EVALUATE  WRK-KOMUKBN
+                 WHEN    "1"
+                   MOVE   "5"   TO   WRK-HKNKBN
+                 WHEN    "2"
+                   MOVE   "1"   TO   WRK-HKNKBN
+               END-EVALUATE
            END-EVALUATE
       *    受診歴の検索
            INITIALIZE                      JYURRK-REC
@@ -2636,6 +2672,17 @@ grpsys     PERFORM 900-DBFETCH-SEC
                    ELSE
                      MOVE SYS-4001-YKZTENTANKA
                                             TO    WRK-YKZTENTANKA
+                   END-IF
+                   IF     SYS-4001-KOMUKBN  =    SPACE
+                     MOVE "1"               TO    WRK-KOMUKBN
+                   ELSE
+                     MOVE SYS-4001-KOMUKBN  TO    WRK-KOMUKBN
+                   END-IF
+                   IF     SYS-4001-KOMUTENTANKA-X  =  SPACE
+                     MOVE ZERO              TO    WRK-KOMUTENTANKA
+                   ELSE
+                     MOVE SYS-4001-KOMUTENTANKA
+                                            TO    WRK-KOMUTENTANKA
                    END-IF
                 END-IF
       *

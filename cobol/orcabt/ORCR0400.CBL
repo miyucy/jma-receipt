@@ -52,6 +52,7 @@
       *  03.05.01    NACL-ÌçÏÆ    07/05/25  ¥°¥ë¡¼¥×¿ÇÎÅÂÐ±þ
       *  03.05.02    NACL-Æ£¸¶    07/06/01  realtime preview ½èÍýÄÉ²Ã
       *  03.05.03    NACL-ÌçÏÆ    07/07/17  ¸ÄÊÌ»þ¤Î¥·¥¹¥Æ¥à´ÉÍýÊÔ½¸½¤Àµ
+      *  04.01.01    NACL-ÌçÏÆ    07/10/31  ¸øÌ³ºÒ³²ÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -548,7 +549,7 @@ grpsys             MOVE    SPA-HOSPNUM         TO  COMB-HOSPNUM
                        IF    ( WRK-ROUSAIKBN         =   "1"           )  
                        OR    (     ( WRK-UPDKBN      =   SPACE       )         
                                AND ( PTRSI-HKNKBN    =   "1" OR  "2" 
-                                                             OR  "4" ) )  
+                                                     OR  "4" OR  "5" ) )
                            MOVE    KEY-NEW             TO  KEY-OLD
                            PERFORM     UNTIL   FLG-SRYACCT =   1 
                                        OR      FLG-END     =   1 
@@ -851,6 +852,7 @@ grpsys                 MOVE    SPA-HOSPNUM         TO  PTINF-HOSPNUM
                        EVALUATE  WRK-PARA-RECEKBN
                          WHEN      "3"
                               MOVE    "1"          TO  PTINF-HKNKBN
+                              MOVE    "5"          TO  PTINF-HKNKBN2
                          WHEN      "4"
                               MOVE    "2"          TO  PTINF-HKNKBN
                          WHEN      "5"
@@ -865,10 +867,11 @@ grpsys                 MOVE    SPA-HOSPNUM         TO  PTINF-HOSPNUM
                        MOVE    PTINF-REC           TO  MCPDATA-REC
                        MOVE    "DBSELECT"          TO  MCP-FUNC
                        EVALUATE  WRK-PARA-RECEKBN
-                         WHEN      "3"
+      ***                WHEN      "3"
                          WHEN      "4"
                            MOVE    "tbl_ptinf"     TO  WRK-MCP-TABLE
                            MOVE    "key14"         TO  WRK-MCP-PATHNAME
+                         WHEN      "3"
                          WHEN      "5"
                            MOVE    "tbl_ptinf"     TO  WRK-MCP-TABLE
                            MOVE    "key19"         TO  WRK-MCP-PATHNAME
@@ -923,6 +926,7 @@ grpsys                 MOVE    SPA-HOSPNUM         TO  PTINF-HOSPNUM
                        EVALUATE  WRK-PARA-RECEKBN
                          WHEN      "3"
                               MOVE    "1"          TO  PTINF-HKNKBN
+                              MOVE    "5"          TO  PTINF-HKNKBN2
                          WHEN      "4"
                               MOVE    "2"          TO  PTINF-HKNKBN
                          WHEN      "5"
@@ -931,10 +935,11 @@ grpsys                 MOVE    SPA-HOSPNUM         TO  PTINF-HOSPNUM
                        END-EVALUATE
                        MOVE    PTINF-REC           TO  MCPDATA-REC
                        EVALUATE  WRK-PARA-RECEKBN
-                         WHEN      "3"
+      ***                WHEN      "3"
                          WHEN      "4"
                             MOVE    "tbl_ptinf"    TO  WRK-MCP-TABLE
                             MOVE    "key12"        TO  WRK-MCP-PATHNAME
+                         WHEN      "3"
                          WHEN      "5"
                             MOVE    "tbl_ptinf"    TO  WRK-MCP-TABLE
                             MOVE    "key17"        TO  WRK-MCP-PATHNAME
@@ -1261,7 +1266,7 @@ grpsys         MOVE    SPA-HOSPNUM         TO  COMB-HOSPNUM
                    IF    ( WRK-ROUSAIKBN           =   "1"           )  
                    OR    (     ( WRK-UPDKBN        =   SPACE       )         
                            AND ( PTRSI-HKNKBN      =   "1" OR  "2" 
-                                                           OR  "4" ) )    
+                                                   OR  "4" OR  "5" ) )
                        MOVE    KEY-NEW             TO  KEY-OLD
                        PERFORM     UNTIL   FLG-SRYACCT     =   1 
                                    OR      FLG-END         =   1 

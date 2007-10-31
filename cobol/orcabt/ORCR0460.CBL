@@ -98,6 +98,7 @@
       *  03.05.02    NACL-Æ£¸¶    07/06/01  realtime preview ½èÍýÄÉ²Ã
       *  03.05.03    NACL-ÌçÏÆ    07/09/13  ÅÀÅ©¤Îµ­ºÜ½çÊÑ¹¹¡ÊÆüÉÕ½ç¡Ë
       *  03.05.04    NACL-ÌçÏÆ    07/09/13  Èé²¼¶ÚÆù¡¢ÀÅÌ®Ãí¼Í¤Îµ­ºÜÊÑ¹¹ÂÐ±þ
+      *  04.01.01    NACL-ÌçÏÆ    07/10/31  ¸øÌ³ºÒ³²ÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1043,11 +1044,16 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE46PARA-HOSPNUM
       *
       *        ¸¡ºº¤Î¤È¤­²ó¿ô¤òÊÔ½¸¤¹¤ë
                IF      WRK-KENSA-KAISU        >   ZERO
-                   IF      RECE41-HKNKBN          =   "3"
-                       MOVE    WRK-KENSA-KAISU    TO  RECE41-KAISU  (24)
-                   ELSE
+                   EVALUATE  RECE41-HKNKBN
+                     WHEN      "1"
+                     WHEN      "2"
+                     WHEN      "4"
                        MOVE    WRK-KENSA-KAISU    TO  RECE41-KAISU  (29)
-                   END-IF
+                     WHEN      "3"
+                       MOVE    WRK-KENSA-KAISU    TO  RECE41-KAISU  (24)
+                     WHEN      "5"
+                       MOVE    WRK-KENSA-KAISU    TO  RECE41-KAISU  (32)
+                   END-EVALUATE
                    REWRITE RECE41-REC
                END-IF
       *
@@ -1611,8 +1617,10 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE46PARA-HOSPNUM
                END-IF
            END-PERFORM
       *
-           IF    RECE41-HKNKBN      =   "4"
-           AND   RECE41-JIBAIKBN    =   "2"
+           IF  ((RECE41-HKNKBN      =   "4") AND
+                (RECE41-JIBAIKBN    =   "2"))
+           OR  ((RECE41-HKNKBN      =   "5") AND
+                (RECE41-KOMUKBN     =   "2"))
              IF  TBL-ZAIW-SRYCD (WRK-WIDX1 WRK-WIDX2) = "112000970"
                     MOVE     1     TO    FLG-NOPRT
              END-IF
@@ -1672,6 +1680,13 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE46PARA-HOSPNUM
                           PERFORM 20052-SRYKBNELSE-CHECK-SEC
                       END-IF
                    END-EVALUATE
+                 WHEN      "5"                                          
+                   IF    ( RECE41-KHNTEN  (22)     =   ZERO )  AND      
+                         ( WRK-ZAIWMAX    (6)      >   1    )           
+                       PERFORM 20042-SRYKBNELSE-REIGAI-SEC              
+                   ELSE                                                 
+                       PERFORM 20052-SRYKBNELSE-CHECK-SEC               
+                   END-IF                   
                END-EVALUATE                                             
            ELSE            
       *

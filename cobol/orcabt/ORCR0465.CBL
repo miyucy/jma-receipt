@@ -39,6 +39,7 @@
       *
       *  03.05.01    NACL-ÌçÏÆ    07/05/25  ¥°¥ë¡¼¥×¿ÇÎÅÂÐ±þ
       *  03.05.02    NACL-Æ£¸¶    07/06/01  realtime preview ½èÍýÄÉ²Ã
+      *  04.01.01    NACL-ÌçÏÆ    07/10/31  ¸øÌ³ºÒ³²ÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -593,8 +594,10 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE46PARA-HOSPNUM
       * 
            MOVE    ZERO          TO  FLG-NOPRT
       *
-           IF      WRK-PARA-RECEKBN   NOT =  "5"
-      *
+           IF     (WRK-PARA-RECEKBN       =  "5")
+           OR     (RECE41-HKNKBN          =  "5")
+             CONTINUE
+           ELSE
              EVALUATE    RECE44-SRYKBN
                WHEN    "11"
                    IF  TBL-ZAIW-SRYCD (WRK-WIDX1)

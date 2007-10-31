@@ -276,4 +276,8 @@
                05  RECE41-SYUTENTANKA     PIC  9(02).
       *ÃÙ∫ﬁ≈˘≈¿√±≤¡
                05  RECE41-YKZTENTANKA     PIC  9(02).
+      *∏¯Ã≥∫“≥≤∂Ë ¨
+               05  RECE41-KOMUKBN         PIC  X(01).
+      *∏¯Ã≥∫“≥≤≈¿√±≤¡
+               05  RECE41-KOMUTENTANKA    PIC  9(02).
       *
