@@ -61,7 +61,7 @@
                            11  SPA-GMN-TSTYUKYMD   PIC X(09).
                            11  SPA-GMN-TEDYUKYMD   PIC X(09).  
                            11  SPA-GMN-TKOHNUM     PIC X(03)
-                                                       OCCURS  5.
+                                                       OCCURS  10.
       *
                    07  SPA-GMN-KOUMOKU.
                        09  SPA-GMN-SELNUM          PIC 9(03).
@@ -69,7 +69,7 @@
                        09  SPA-GMN-STYUKYMD        PIC X(10).
                        09  SPA-GMN-EDYUKYMD        PIC X(10).
                        09  SPA-GMN-KOH-KOUMOKU. 
-                           11  SPA-GMN-KOH-OCC     OCCURS  5.
+                           11  SPA-GMN-KOH-OCC     OCCURS  10.
                                13  SPA-GMN-KOHNUM  PIC X(03).
                                13  SPA-GMN-SEIDONAME
                                                    PIC X(50).
@@ -133,7 +133,7 @@
            03  WRK-MCP-PATHNAME        PIC X(64).
       *
        01  WRK-CONST-AREA.
-           03  WRK-KOHNUM-MAX          PIC 9(02)   VALUE   5. 
+           03  WRK-KOHNUM-MAX          PIC 9(02)   VALUE   10. 
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -658,7 +658,7 @@
                MOVE    SYS-2007-MEISYO (1) TO  SPA-GMN-MEISYO
       *
                PERFORM VARYING IDX FROM    1   BY  1
-                       UNTIL   IDX >       10
+                       UNTIL   IDX >       WRK-KOHNUM-MAX
                        OR      SYS-2007-KOHNUM (IDX)
                                    =   SPACE
                    MOVE    SYS-2007-KOHNUM (IDX)
@@ -906,6 +906,11 @@
                AND   ( SPA-GMN-KOHNUM (3)  =   SPACE )
                AND   ( SPA-GMN-KOHNUM (4)  =   SPACE )
                AND   ( SPA-GMN-KOHNUM (5)  =   SPACE )
+               AND   ( SPA-GMN-KOHNUM (6)  =   SPACE )
+               AND   ( SPA-GMN-KOHNUM (7)  =   SPACE )
+               AND   ( SPA-GMN-KOHNUM (8)  =   SPACE )
+               AND   ( SPA-GMN-KOHNUM (9)  =   SPACE )
+               AND   ( SPA-GMN-KOHNUM (10) =   SPACE )
                    MOVE    "0103"              TO  SPA-ERRCD
                    MOVE    5                   TO  SPA-GMN-CUR
                END-IF
@@ -926,34 +931,64 @@
                END-IF
            END-IF      
       *
+      *    同一公費番号が重複してないか
+           IF      SPA-ERRCD           =   SPACE
+               PERFORM VARYING IDX FROM    1   BY  1
+                       UNTIL   IDX >       WRK-KOHNUM-MAX
+                       OR      SPA-ERRCD   NOT =   SPACE
+                   IF      SPA-GMN-KOHNUM (IDX)
+                                           NOT =   SPACE
+                       PERFORM VARYING IDY FROM    1   BY  1
+                               UNTIL   IDY >    WRK-KOHNUM-MAX
+                               OR      SPA-ERRCD   NOT =   SPACE
+                           IF    ( SPA-GMN-KOHNUM (IDX)
+                                                   NOT =   SPACE )
+                           AND   ( IDX             NOT =   IDY   )
+                               IF      SPA-GMN-KOHNUM (IDX)
+                                               =   SPA-GMN-KOHNUM (IDY)
+                                   MOVE    "0109"      TO  SPA-ERRCD
+                                   COMPUTE SPA-GMN-CUR =   4   +   IDX
+                               END-IF
+                           END-IF
+                       END-PERFORM
+                   END-IF
+               END-PERFORM
+           END-IF
+      *
       *    同一公費番号の条件で期間重複があるか
            IF      SPA-ERRCD           =   SPACE
                PERFORM VARYING IDX FROM    1   BY  1
                        UNTIL   IDX >       SPA-GMN-MAX
                        OR      SPA-ERRCD   NOT =   SPACE
                    IF      SPA-NAI-SELNUM  NOT =   IDX 
-                       PERFORM VARYING IDY FROM    1   BY  1
-                               UNTIL   IDY >       WRK-KOHNUM-MAX
-                               OR      SPA-GMN-TKOHNUM (IDX IDY)
-                                           =       SPACE
-                               OR      SPA-ERRCD   NOT =   SPACE
-                           IF    ( SPA-GMN-TKOHNUM (IDX IDY)
-                                               =   SPA-GMN-KOHNUM (1)
-                                               OR  SPA-GMN-KOHNUM (2)
-                                               OR  SPA-GMN-KOHNUM (3)
-                                               OR  SPA-GMN-KOHNUM (4)
-                                               OR  SPA-GMN-KOHNUM (5) )
-                               IF    ( SPA-NAI-EDYUKYMD
-                                           <   SPA-NAI-TSTYUKYMD (IDX) )
-                               OR    ( SPA-NAI-STYUKYMD
-                                           >   SPA-NAI-TEDYUKYMD (IDX) )
-                                       CONTINUE
-                               ELSE
-                                   MOVE    "0105"          TO  SPA-ERRCD
+                       IF    ( SPA-NAI-EDYUKYMD
+                                       <   SPA-NAI-TSTYUKYMD (IDX) )
+                       OR    ( SPA-NAI-STYUKYMD
+                                       >   SPA-NAI-TEDYUKYMD (IDX) )
+                           CONTINUE
+                       ELSE
+                           PERFORM VARYING IDY FROM    1   BY  1
+                                   UNTIL   IDY >       WRK-KOHNUM-MAX
+                                   OR      SPA-ERRCD   NOT =   SPACE
+                               IF      SPA-GMN-KOHNUM (IDY)
+                                               NOT =   SPACE
+                                   PERFORM VARYING IDZ FROM    1   BY  1
+                                           UNTIL   IDZ
+                                                   >   WRK-KOHNUM-MAX
+                                           OR      SPA-GMN-TKOHNUM
+                                                               (IDX IDZ)
+                                                       =   SPACE
+                                           OR      SPA-ERRCD
+                                                   NOT =   SPACE
+                                       IF      SPA-GMN-KOHNUM (IDY)
+                                           =   SPA-GMN-TKOHNUM (IDX IDZ)
+                                           MOVE    "0105"  TO  SPA-ERRCD
+                                       END-IF
+                                  END-PERFORM
                                END-IF
-                           END-IF
-                       END-PERFORM 
-                   END-IF 
+                           END-PERFORM
+                       END-IF 
+                   END-IF
                END-PERFORM 
                IF      SPA-ERRCD           NOT =   SPACE
                    MOVE    2                   TO  SPA-GMN-CUR
@@ -1300,6 +1335,16 @@
                     MOVE  "KOHNUM4"        TO  MCP-WIDGET   
              WHEN    9
                     MOVE  "KOHNUM5"        TO  MCP-WIDGET   
+             WHEN    10
+                    MOVE  "KOHNUM6"        TO  MCP-WIDGET   
+             WHEN    11
+                    MOVE  "KOHNUM7"        TO  MCP-WIDGET   
+             WHEN    12
+                    MOVE  "KOHNUM8"        TO  MCP-WIDGET   
+             WHEN    13
+                    MOVE  "KOHNUM9"        TO  MCP-WIDGET   
+             WHEN    14
+                    MOVE  "KOHNUM10"       TO  MCP-WIDGET   
       *
              WHEN    999
                     MOVE  "B12"            TO  MCP-WIDGET   
@@ -1332,6 +1377,16 @@
                WHEN    "KOHNUM4"
                    MOVE    9           TO  SPA-GMN-CUR
                WHEN    "KOHNUM5"
+                   MOVE    10          TO  SPA-GMN-CUR
+               WHEN    "KOHNUM6"
+                   MOVE    11          TO  SPA-GMN-CUR
+               WHEN    "KOHNUM7"
+                   MOVE    12          TO  SPA-GMN-CUR
+               WHEN    "KOHNUM8"
+                   MOVE    13          TO  SPA-GMN-CUR
+               WHEN    "KOHNUM9"
+                   MOVE    14          TO  SPA-GMN-CUR
+               WHEN    "KOHNUM10"
                    MOVE    999         TO  SPA-GMN-CUR
            END-EVALUATE
            .
@@ -1395,6 +1450,10 @@
                WHEN    "0108"
                    MOVE
                        "有効期間の開始日と終了日は同時に変更できません"
+                                           TO  SPA-ERRMSG
+               WHEN    "0109"
+                   MOVE
+                  "公費番号が重複して入力されています"
                                            TO  SPA-ERRMSG
       *
                WHEN    "1001"

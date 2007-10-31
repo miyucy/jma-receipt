@@ -292,7 +292,7 @@
            03  FILLER              PIC X(35)   VALUE
                "2006 レセプト特記事項編集情報".
            03  FILLER              PIC X(35)   VALUE
-               "2007 公費番号まとめ情報".
+               "2007 公費番号まとめ記載情報".
            03  FILLER              PIC X(35)   VALUE
                "3001 統計帳票出力情報（日次）".
            03  FILLER              PIC X(35)   VALUE
