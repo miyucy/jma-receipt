@@ -65,5 +65,35 @@ W64	{
 		SEIDONAME5	{
 			value	varchar(50);
 		};
+		KOHNUM6	{
+			value	varchar(3);
+		};
+		SEIDONAME6	{
+			value	varchar(50);
+		};
+		KOHNUM7	{
+			value	varchar(3);
+		};
+		SEIDONAME7	{
+			value	varchar(50);
+		};
+		KOHNUM8	{
+			value	varchar(3);
+		};
+		SEIDONAME8	{
+			value	varchar(50);
+		};
+		KOHNUM9	{
+			value	varchar(3);
+		};
+		SEIDONAME9	{
+			value	varchar(50);
+		};
+		KOHNUM10	{
+			value	varchar(3);
+		};
+		SEIDONAME10	{
+			value	varchar(50);
+		};
 	};
 };
