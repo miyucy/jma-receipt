@@ -8,7 +8,6 @@ bind	"XC01"		"OpenCOBOL"	"ORCGXC01";
 bind	"XC02"		"OpenCOBOL"	"ORCGXC01";
 bind	"XC99"		"OpenCOBOL"	"ORCGXC99";
 bind	"XCERR"		"OpenCOBOL"	"ORCGXCERR";
-bind	"XCID1"		"OpenCOBOL"	"ORCGXCID1";
 
 multiplex_group	orca03;
 
@@ -20,7 +19,6 @@ data	{
 		XC02;
 		XC99;
 		XCERR;
-                XCID1;
 	};
 };
 
