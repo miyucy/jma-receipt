@@ -125,7 +125,7 @@
            03  RECE82-JNISSU              PIC  9(03).
       *
       *診療区分別点数情報
-           03  RECE82-SRYKBNINF           OCCURS  30.
+           03  RECE82-SRYKBNINF           OCCURS  50.
       *基本点数
                05  RECE82-KHNTEN          PIC  9(08).
       *回数
@@ -308,6 +308,11 @@
       *労災レセプト回数
            03  RECE82-RECEKAISU           PIC  9(03).
       *
+      *公務災害−診療開始日
+           03  RECE82-SINSTYMD            PIC  X(08).
+      *公務災害−転記年月日
+           03  RECE82-TENKIYMD            PIC  X(08).
+      *
       *４００１情報
            03  RECE82-4001-INF.
       *点数単価
@@ -330,4 +335,8 @@
                05  RECE82-SYUTENTANKA     PIC  9(02).
       *薬剤等点単価
                05  RECE82-YKZTENTANKA     PIC  9(02).
+      *公務災害区分
+               05  RECE82-KOMUKBN         PIC  X(01).
+      *公務災害点単価
+               05  RECE82-KOMUTENTANKA    PIC  9(02).
       *

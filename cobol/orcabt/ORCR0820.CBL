@@ -314,7 +314,7 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
       *
       *    受診歴チェック
            MOVE    ZERO   TO   FLG-JYURRKCHECK
-           IF      RECE82-HKNKBN    =   "4"
+           IF      RECE82-HKNKBN    =   "4" OR "5"
               PERFORM 2102-JYURRK-CHECK-SEC
            END-IF
       *
@@ -335,6 +335,8 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
                        MOVE    7102            TO  RECE82-RECESYUBETU
                    WHEN    "4"             ALSO    ANY
                        MOVE    7011            TO  RECE82-RECESYUBETU
+                   WHEN    "5"          ALSO    ANY
+                       MOVE    7061            TO  RECE82-RECESYUBETU
                END-EVALUATE
            END-IF 
       *
@@ -613,13 +615,23 @@ grpsys     MOVE    SPA-HOSPNUM           TO  SYS-HOSPNUM
       *****************************************************************
        2102-JYURRK-CHECK-SEC              SECTION.
       *
-      *    労災準拠の場合、受診歴に４のデータがない事
-      *    健保準拠の場合、受診歴に２のデータがない事
-           EVALUATE  RECE82-JIBAIKBN
-             WHEN    "1"
+      *    労災準拠の場合、受診歴に４、５のデータがない事
+      *    健保準拠の場合、受診歴に１、２のデータがない事
+           EVALUATE  RECE82-HKNKBN
+             WHEN      "4"
+               EVALUATE  RECE82-JIBAIKBN
+                 WHEN    "1"
                    MOVE   "4"   TO   WRK-HKNKBN
-             WHEN    "2"
+                 WHEN    "2"
                    MOVE   "2"   TO   WRK-HKNKBN
+               END-EVALUATE
+             WHEN      "5"
+               EVALUATE  RECE82-KOMUKBN
+                 WHEN    "1"
+                   MOVE   "5"   TO   WRK-HKNKBN
+                 WHEN    "2"
+                   MOVE   "1"   TO   WRK-HKNKBN
+               END-EVALUATE
            END-EVALUATE
       *    受診歴の検索
            INITIALIZE                      JYURRK-REC

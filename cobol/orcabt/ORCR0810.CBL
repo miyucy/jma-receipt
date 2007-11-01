@@ -186,6 +186,9 @@
            03  WRK-SYUTENTANKA         PIC 9(02).
            03  WRK-YKZTENTANKA         PIC 9(02).
       *
+           03  WRK-KOMUKBN             PIC X(01).
+           03  WRK-KOMUTENTANKA        PIC 9(02).
+      *
            03  WRK-STYMD               PIC X(08).
            03  WRK-EDYMD               PIC X(08).
       *
@@ -499,6 +502,17 @@ grpsys        MOVE    SPA-HOSPNUM          TO    SYS-4001-HOSPNUM
                   ELSE
                     MOVE SYS-4001-YKZTENTANKA
                                            TO    WRK-YKZTENTANKA
+                  END-IF
+                  IF     SYS-4001-KOMUKBN  =    SPACE
+                    MOVE "1"               TO    WRK-KOMUKBN
+                  ELSE
+                    MOVE SYS-4001-KOMUKBN  TO    WRK-KOMUKBN
+                  END-IF
+                  IF     SYS-4001-KOMUTENTANKA-X  =  SPACE
+                    MOVE ZERO              TO    WRK-KOMUTENTANKA
+                  ELSE
+                    MOVE SYS-4001-KOMUTENTANKA
+                                           TO    WRK-KOMUTENTANKA
                   END-IF
               ELSE
                   MOVE    "労災自賠医療機関情報が取得できませんでした"     
@@ -1133,6 +1147,10 @@ grpsys     MOVE    SPA-HOSPNUM         TO  SPTID-HOSPNUM
            AND   (WRK-RECE82-SRYYM  <   PTRSI-RYOEDYMD(1:6) )
                   MOVE   "3"           TO  WRK-RECE82-TENKI
            END-IF
+           MOVE   PTRSI-RYOSTYMD       TO  WRK-RECE82-SINSTYMD
+           IF     WRK-RECE82-SRYYM  =   PTRSI-RYOEDYMD(1:6)
+                  MOVE  PTRSI-RYOEDYMD TO  WRK-RECE82-TENKIYMD
+           END-IF
            MOVE   PTRSI-SHOBYOYMD      TO  WRK-RECE82-SHOBYOYMD
            MOVE   PTRSI-SISIKBN        TO  WRK-RECE82-SISIKBN
       **>  MOVE   PTRSI-RYOSTYMD       TO  WRK-RECE82-RYOSTYMD
@@ -1186,6 +1204,10 @@ grpsys     MOVE    SPA-HOSPNUM         TO  SPTID-HOSPNUM
            MOVE    WRK-SYUTENTANKA       TO   WRK-RECE82-SYUTENTANKA
       *    薬剤等点単価
            MOVE    WRK-YKZTENTANKA       TO   WRK-RECE82-YKZTENTANKA
+      *    公務災害区分
+           MOVE    WRK-KOMUKBN           TO   WRK-RECE82-KOMUKBN
+      *    公務災害点単価
+           MOVE    WRK-KOMUTENTANKA      TO   WRK-RECE82-KOMUTENTANKA
       *
            MOVE    WRK-RECE82-REC      TO  RECE82-REC
            WRITE   RECE82-REC
@@ -1362,6 +1384,17 @@ grpsys     PERFORM 900-DBSELECT-SEC
                       MOVE SYS-4001-YKZTENTANKA
                                              TO    WRK-YKZTENTANKA
                     END-IF
+                    IF     SYS-4001-KOMUKBN   =    SPACE
+                      MOVE "1"               TO    WRK-KOMUKBN
+                    ELSE
+                      MOVE SYS-4001-KOMUKBN  TO    WRK-KOMUKBN
+                    END-IF
+                    IF     SYS-4001-KOMUTENTANKA-X =  SPACE
+                      MOVE ZERO              TO    WRK-KOMUTENTANKA
+                    ELSE
+                      MOVE SYS-4001-KOMUTENTANKA
+                                             TO    WRK-KOMUTENTANKA
+                    END-IF
                 END-IF
       *
            END-PERFORM
@@ -1535,6 +1568,17 @@ grpsys         MOVE    SPA-HOSPNUM         TO  NACCT-HOSPNUM
                     ELSE
                       MOVE SYS-4001-YKZTENTANKA
                                              TO    WRK-YKZTENTANKA
+                    END-IF
+                    IF     SYS-4001-KOMUKBN   =    SPACE
+                      MOVE "1"               TO    WRK-KOMUKBN
+                    ELSE
+                      MOVE SYS-4001-KOMUKBN  TO    WRK-KOMUKBN
+                    END-IF
+                    IF     SYS-4001-KOMUTENTANKA-X =  SPACE
+                      MOVE ZERO              TO    WRK-KOMUTENTANKA
+                    ELSE
+                      MOVE SYS-4001-KOMUTENTANKA
+                                             TO    WRK-KOMUTENTANKA
                     END-IF
                 END-IF
       *

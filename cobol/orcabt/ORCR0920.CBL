@@ -583,8 +583,10 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE86PARA-HOSPNUM
       * 
            MOVE    ZERO          TO  FLG-NOPRT
       *
-           IF      WRK-PARA-RECEKBN   NOT =  "5"
-      *
+           IF     (WRK-PARA-RECEKBN       =  "5")
+           OR     (RECE82-HKNKBN          =  "5")
+             CONTINUE
+           ELSE
              EVALUATE    RECE84-SRYKBN
                WHEN    "11"
                    IF  TBL-ZAIW-SRYCD (WRK-WIDX1)

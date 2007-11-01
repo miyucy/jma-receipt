@@ -3063,16 +3063,16 @@ grpsys        MOVE    SPA-HOSPNUM         TO  SYS-4003-HOSPNUM
                                                    WRK-CYOKI-SKAN       
       *
       *         処方の算定回数から特定疾患処方管理加算(処方料)の減算
-      ***       COMPUTE    RECE41-KAISU(36)   =    RECE41-KAISU(36)  -
-      ***                                          WRK-TOKUTEI-SKAN2           
+                COMPUTE    RECE41-KAISU(36)   =    RECE41-KAISU(36)  -
+                                                   WRK-TOKUTEI-SKAN2           
       *
       *         処方せんの算定回数から処方せん(乳幼児)加算の減算
-      ***       COMPUTE    RECE41-KAISU(36)   =    RECE41-KAISU(36)  -
-      ***                                          WRK-NYUYOUJI-SHOKAN      
+                COMPUTE    RECE41-KAISU(36)   =    RECE41-KAISU(36)  -
+                                                   WRK-NYUYOUJI-SHOKAN      
       *
       *         処方せんの算定回数から長期投薬加算(処方せん料)の減算
-      ***       COMPUTE    RECE41-KAISU(36)   =    RECE41-KAISU(36)  -  
-      ***                                          WRK-CYOKI-SKAN2      
+                COMPUTE    RECE41-KAISU(36)   =    RECE41-KAISU(36)  -  
+                                                   WRK-CYOKI-SKAN2      
       *
       *         麻毒の算定回数から処方料（麻・向・毒・覚）の減算
                 COMPUTE    RECE41-KAISU(23)   =    RECE41-KAISU(23)  -
@@ -5628,7 +5628,7 @@ grpsys        MOVE    SPA-HOSPNUM         TO  SYS-4003-HOSPNUM
                                               CONS-SHOHOKSN1 OR
                                               CONS-SHOHOKSN2 OR
                                               CONS-SHOHOKSN3            
-      ***                ADD    WK-ZAIKAISU  TO  RECE41-KAISU(36)
+                         ADD    WK-ZAIKAISU  TO  RECE41-KAISU(36)
                          COMPUTE   RECE41-TENSU(36)  =
                                    RECE41-TENSU(36)  +
                                   (WRK-TNS-TEN(IDX3) * ACCT-ZAIKAISU)

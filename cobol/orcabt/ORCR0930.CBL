@@ -780,6 +780,10 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
       *
                    DISPLAY "RECE82  PTNUM=" RECE82-PTNUM
       *
+                   IF       RECE82-HKNKBN   =   "5"
+                       GO  TO  990-RECE82-READ-SEC
+                   END-IF
+      *
            END-READ
       *
            .

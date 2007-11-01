@@ -1924,8 +1924,10 @@ grpsys     PERFORM 900-DBSELECT-SEC
                 END-IF
            END-PERFORM
       *
-           IF    RECE82-HKNKBN     =   "4"
-           AND   RECE82-JIBAIKBN   =   "2"
+           IF  ((RECE82-HKNKBN     =   "4") AND
+                (RECE82-JIBAIKBN   =   "2"))
+           OR  ((RECE82-HKNKBN     =   "5") AND
+                (RECE82-KOMUKBN    =   "2"))
              CONTINUE
            ELSE
              IF  RECE82-JNISSU     =   ZERO
@@ -2039,8 +2041,14 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *
               ADD      TOTALTEN-ACCT    TO   RECE82-TOTALTEN
       *
-              COMPUTE  RECE82-TOTALKIN   =   RECE82-TOTALTEN   *
-                                             RECE82-TANKA    
+              IF    RECE82-HKNKBN   =   "5"
+              AND   RECE82-KOMUKBN  =   "2"
+                COMPUTE  RECE82-TOTALKIN   =   RECE82-TOTALTEN   *
+                                               RECE82-KOMUTENTANKA
+              ELSE
+                COMPUTE  RECE82-TOTALKIN   =   RECE82-TOTALTEN   *
+                                               RECE82-TANKA
+              END-IF
       *
               MOVE     TOTALKIN-ACCT    TO   RECE82-KINGAKU2-SYO
       *

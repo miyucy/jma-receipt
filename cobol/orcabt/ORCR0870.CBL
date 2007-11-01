@@ -952,6 +952,20 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE859PARA-HOSPNUM
       *
                IF   RECE82-HKNKBN    NOT  =  "4"                        
                  EVALUATE      RECE84-SRYKBN                   
+                   WHEN      "11"
+                      IF   RECE82-HKNKBN     =   "5"
+                      AND  RECE82-KOMUKBN    =   "2"
+                          MOVE   ZERO   TO  FLG-COMMENT
+      *                （初診（同日複数診療科）算定科のセット）
+                          IF   FLG-COMMENT  =  ZERO
+                            PERFORM    2001-SYODOU-HANTEI-SEC
+                          END-IF
+                          IF   FLG-COMMENT  =  ZERO
+                            PERFORM    2099-RECE84-WRITE-SEC
+                          END-IF
+                      ELSE
+                            PERFORM    2099-RECE84-WRITE-SEC
+                      END-IF
                    WHEN      "13"
                       MOVE   ZERO   TO  FLG-COMMENT
       *            （薬剤管理指導料算定日のセット）

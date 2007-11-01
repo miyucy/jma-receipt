@@ -465,7 +465,9 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE851PARA-HOSPNUM
                OR     ( RECE82-HKNID     NOT =   RECE84-HKNID        )
                OR     ( RECE82-TEKSTYMD  NOT =   RECE84-TEKSTYMD     )
       *
-               IF   RECE82-HKNKBN    NOT  =  "4"
+               EVALUATE   RECE82-HKNKBN
+                WHEN       "1"
+                WHEN       "2"
                  EVALUATE      RECE84-SRYKBN
                    WHEN      "11"
                       MOVE   ZERO      TO  FLG-COMMENT
@@ -498,7 +500,8 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE851PARA-HOSPNUM
                       ADD     1          TO      CNT-RECE84
                       PERFORM    2002-RECE85-TENSOU-SEC
                  END-EVALUATE
-               ELSE
+      *
+                WHEN       "4"
                  EVALUATE      RECE84-SRYKBN
                    WHEN      "11"
                       EVALUATE   RECE82-JIBAIKBN
@@ -537,7 +540,42 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE851PARA-HOSPNUM
                       ADD     1          TO      CNT-RECE84
                       PERFORM    2002-RECE85-TENSOU-SEC
                  END-EVALUATE
-               END-IF
+      *
+                WHEN       "5"
+                 EVALUATE      RECE84-SRYKBN
+                   WHEN      "11"
+                      MOVE   ZERO      TO  FLG-COMMENT
+                      IF   FLG-COMMENT  =  ZERO
+                         IF    RECE84-FLG-SYODOU-COMMENT   =    "1"
+                         AND   RECE82-KOMUKBN              =    "1"
+                            MOVE  99   TO  FLG-COMMENT
+                            PERFORM    2001-SYODOU-COMMENT-SEC
+                         END-IF
+                      END-IF
+                      IF   FLG-COMMENT  =  ZERO
+                         IF  (RECE82-KYUKYU-PRTKBN    =      1       )
+                         AND (RECE84-SRYCDTOTAL(6:9)  =   CONS-KYUKYU)
+                             MOVE  99  TO  FLG-COMMENT
+                             IF   RECE82-SRYYM   >=  "200604"
+                               PERFORM  2001-KYUKYU-COMMENT200604-SEC
+                             ELSE
+                               PERFORM  2001-KYUKYU-COMMENT-SEC
+                             END-IF
+                         END-IF
+                      END-IF
+                      IF   FLG-COMMENT  =  ZERO
+                          MOVE       RECE84-REC    TO   RECE841-REC
+                          WRITE      RECE841-REC
+                          ADD     1          TO      CNT-RECE84
+                          PERFORM    2002-RECE85-TENSOU-SEC
+                      END-IF
+                   WHEN   OTHER
+                      MOVE       RECE84-REC    TO   RECE841-REC
+                      WRITE      RECE841-REC
+                      ADD     1          TO      CNT-RECE84
+                      PERFORM    2002-RECE85-TENSOU-SEC
+                 END-EVALUATE
+               END-EVALUATE
       *
                PERFORM 990-RECE84-NEXT-SEC
       *

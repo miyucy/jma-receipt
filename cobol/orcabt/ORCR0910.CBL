@@ -962,18 +962,22 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE86PARA-HOSPNUM
       *
       *        検査のとき回数を編集する
                IF      WRK-KENSA-KAISU        >   ZERO
-                   IF      RECE82-HKNKBN          =   "4"
-                     EVALUATE  WRK-PARA-RECEKBN
-                      WHEN      "4"
+                   EVALUATE  RECE82-HKNKBN
+                     WHEN      "1"
+                     WHEN      "2"
+                       MOVE      WRK-KENSA-KAISU  TO  RECE82-KAISU  (17)
+                     WHEN      "4"
+                       EVALUATE  WRK-PARA-RECEKBN
+                         WHEN      "4"
       *****************（新様式）
-                       MOVE    WRK-KENSA-KAISU    TO  RECE82-KAISU  (18)
-                      WHEN      "5"
+                           MOVE  WRK-KENSA-KAISU  TO  RECE82-KAISU  (18)
+                         WHEN      "5"
       *****************（従来様式）
-                       MOVE    WRK-KENSA-KAISU    TO  RECE82-KAISU  (21)
-                     END-EVALUATE
-                   ELSE
-                       MOVE    WRK-KENSA-KAISU    TO  RECE82-KAISU  (17)
-                   END-IF
+                           MOVE  WRK-KENSA-KAISU  TO  RECE82-KAISU  (21)
+                       END-EVALUATE
+                     WHEN      "5"
+                       MOVE      WRK-KENSA-KAISU  TO  RECE82-KAISU  (32)
+                   END-EVALUATE
                    REWRITE RECE82-REC
                END-IF
       *

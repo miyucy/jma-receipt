@@ -245,7 +245,7 @@
                MOVE    "STS"               TO  SJOBKANRI-MODE
                INITIALIZE                      JOBKANRI-REC
                MOVE    "ORCR0936"          TO  JOB-PGID
-               MOVE    "金額摘要欄編集（自賠責）（従来様式）"
+               MOVE    "金額摘要欄編集（労災・自賠責（従来様式））"
                                            TO  JOB-SHELLMSG
 grpsys         PERFORM 900-CALL-ORCSJOB-SEC
       *
@@ -662,6 +662,13 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
                                            CNT-IN-CANCEL
       *
                    DISPLAY "RECE82  PTNUM=" RECE82-PTNUM
+      *
+                   IF     (WRK-PARA-RECEKBN       =  "5")
+                   OR     (RECE82-HKNKBN          =  "5")
+                       CONTINUE
+                   ELSE
+                       GO  TO  990-RECE82-READ-SEC
+                   END-IF
       *
            END-READ
       *
