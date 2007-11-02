@@ -27,6 +27,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  04.01.01    NACL-藤原    07/11/2   期間変更時のデータの初期化
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -59,6 +60,10 @@
                05  SPA-NAI-AREA.
                    07  SPA-NAI-STYUKYMD       PIC 9(08).
                    07  SPA-NAI-EDYUKYMD       PIC 9(08).
+                   07  SPA-NAI-KOUMOKU.
+                       09  SPA-NAI-8000-MONTHLY
+                                              PIC 9(03).
+                       09  SPA-NAI-8000-DAILY PIC 9(03).
       *
            COPY    "ENUM-VALUE".
       *
@@ -313,7 +318,9 @@ grpsys     MOVE    SPA-HOSPNUM         TO  SYS-8000-HOSPNUM
            IF      FLG-SYSKANRI        =   ZERO
                MOVE    MCPDATA-REC         TO  SYS-8000-REC
                MOVE    SYS-8000-DAILY      TO  SPA-GMN-DAILY
+                                               SPA-NAI-8000-DAILY 
                MOVE    SYS-8000-MONTHLY    TO  SPA-GMN-MONTHLY
+                                               SPA-NAI-8000-MONTHLY
            ELSE
                MOVE    1                   TO  SPA-GMN-DAILY
                MOVE    36                  TO  SPA-GMN-MONTHLY
@@ -489,9 +496,17 @@ grpsys         MOVE    SPA-HOSPNUM         TO  SYS-8000-HOSPNUM
            MOVE    SPA-W01-EDYUKYMD    TO  SYS-8000-EDYUKYMD
            MOVE    SPA-GMN-DAILY       TO  SYS-8000-DAILY
            MOVE    SPA-GMN-MONTHLY     TO  SYS-8000-MONTHLY
-           MOVE    SYS-8000-REC        TO  SYSKANRI-REC
       *     
            IF      FLG-SYSKANRI        =   ZERO
+               IF      SPA-GMN-DAILY   NOT =   SPA-NAI-8000-DAILY
+                   MOVE    SPACE           TO  SYS-8000-DAILY-YM
+                   MOVE    SMCNDATE-YMD    TO  SYS-8000-DAILY-UPYMD
+               END-IF
+               IF      SPA-GMN-MONTHLY NOT =   SPA-NAI-8000-MONTHLY
+                   MOVE    SPACE           TO  SYS-8000-MONTHLY-YM
+                   MOVE    SMCNDATE-YMD    TO  SYS-8000-MONTHLY-UPYMD
+               END-IF
+               MOVE    SYS-8000-REC        TO  SYSKANRI-REC
                MOVE    SMCNDATE-YMD        TO  SYS-UPYMD
                MOVE    SMCNDATE-HMS        TO  SYS-UPHMS
                MOVE    SYS-KANRICD         TO  SYSUP-KANRICD
@@ -506,6 +521,7 @@ grpsys         MOVE    SPA-HOSPNUM         TO  SYSUP-HOSPNUM
                MOVE    "tbl_syskanri"      TO  MCP-TABLE
                MOVE    "upd1"              TO  MCP-PATHNAME
            ELSE
+               MOVE    SYS-8000-REC        TO  SYSKANRI-REC
                MOVE    SMCNDATE-YMD        TO  SYS-CREYMD
                                                SYS-UPYMD
                MOVE    SMCNDATE-HMS        TO  SYS-UPHMS
