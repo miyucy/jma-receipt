@@ -744,7 +744,6 @@
            END-PERFORM
       *
            IF      FLG-END             =   ZERO
-              AND (FLG-ERR             =   ZERO )
                IF      TBL-MAX         >   ZERO
                    PERFORM 2004-WKSRYACT-OUT-SEC
                END-IF
