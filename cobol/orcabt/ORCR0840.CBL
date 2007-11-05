@@ -123,9 +123,10 @@
       *  03.05.06    NACL-門脇    07/09/11  点滴手技集計修正
       *  03.05.07    NACL-門脇    07/09/18  画像診断の加算（データ区分：手技）
       *                                     の記載順変更対応
-      *  03.05.08    NACL-門脇    07/10/05  入院点滴コメント対応
-      *  03.05.09    NACL-門脇    07/10/24  自賠責特定器材等消費税対象外設定
+      *  04.01.01    NACL-門脇    07/10/05  入院点滴コメント対応
+      *  04.01.02    NACL-門脇    07/10/24  自賠責特定器材等消費税対象外設定
       *                                     項目数拡張対応
+      *  04.01.03    NACL-門脇    07/11/01  公務災害対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -298,6 +299,8 @@
            03  FLG-TAISYO                              PIC 9(01).
            03  FLG-TENTEKIMATOME                       PIC 9(01).
            03  FLG-SRYACCTPLUS                         PIC 9(01).
+           03  FLG-OSINKBN                             PIC 9(01).
+           03  FLG-ZAITAKU                             PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -1842,6 +1845,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
            MOVE    SRY-JIHIMONEYTOTAL   TO      RECE85-JIHIMONEY
       *
            MOVE    ZERO                 TO      IDX4
+           MOVE    ZERO                 TO      FLG-OSINKBN
            PERFORM     VARYING   IDX2   FROM    1    BY   1
                        UNTIL    (IDX2      >    5)    OR
                                 (SRY-SRYCD(IDX2)  =   SPACE)
@@ -2356,8 +2360,10 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *
                   ELSE
       *
-                    IF    RECE82-HKNKBN      =   "4"
-                    AND   RECE82-JIBAIKBN    =   "2"
+                    IF  ((RECE82-HKNKBN      =   "4") AND
+                         (RECE82-JIBAIKBN    =   "2"))
+                    OR  ((RECE82-HKNKBN      =   "5") AND
+                         (RECE82-KOMUKBN     =   "2"))
                       IF (( ACCT-SRYKBN          =  "80"    ) AND
                           ( SRY-SRYCD(1)(1:5)    =  "09593"
                                                  OR "09594" ) AND
@@ -2500,6 +2506,37 @@ grpsys     PERFORM 900-DBSELECT-SEC
                      END-IF
                    END-IF
                END-IF
+      *
+               IF    SRY-SRYKBN     =  "14"
+                 EVALUATE    SRY-SRYCD(IDX2)
+      *往診（特別往診）
+                   WHEN    "114000110"
+                   WHEN    "114001610"
+                   WHEN    "114000970"
+                   WHEN    "114002470"
+                   WHEN    "114002970"
+                   IF  FLG-OSINKBN        NOT = 2  AND 3
+                       MOVE     1         TO    FLG-OSINKBN
+                   END-IF
+      *夜間
+                   WHEN    "114000470"
+                   WHEN    "114001970"
+                   WHEN    "114011670"
+                   WHEN    "114011970"
+                       MOVE     2         TO    FLG-OSINKBN
+      *深夜・緊急
+                   WHEN    "114000370"
+                   WHEN    "114000570"
+                   WHEN    "114001870"
+                   WHEN    "114002070"
+                   WHEN    "114011570"
+                   WHEN    "114011770"
+                   WHEN    "114011870"
+                   WHEN    "114012070"
+                       MOVE     3         TO    FLG-OSINKBN
+                 END-EVALUATE
+               END-IF
+      *
               END-IF
              END-IF
             END-IF  
@@ -3036,6 +3073,7 @@ grpsys        MOVE    SPA-HOSPNUM          TO    SYS-HOSPNUM
                            MOVE  ZERO          TO   WK-SYUTEN
                            MOVE  ZERO          TO   WK-KIZAITEN
                            MOVE  ZERO          TO   WK-YKZTEN
+                           MOVE  ZERO          TO   FLG-OSINKBN
                        END-IF
                    END-IF
                ELSE
@@ -3044,13 +3082,16 @@ grpsys        MOVE    SPA-HOSPNUM          TO    SYS-HOSPNUM
                      MOVE    ZERO     TO    WK-SYUTEN
                      MOVE    ZERO     TO    WK-KIZAITEN
                      MOVE    ZERO     TO    WK-YKZTEN
+                     MOVE    ZERO     TO    FLG-OSINKBN
                END-IF
                IF  ((ACCT-ZAITEN    NOT =    ZERO) AND
                     (ACCT-ZAIKAISU  NOT =    ZERO))
                OR  ( FLG-TAISYO         =     1   )
-                  IF   RECE82-HKNKBN   NOT  =   "4"                     
+                  EVALUATE   RECE82-HKNKBN
+                    WHEN       "1"
+                    WHEN       "2"
                         PERFORM   220221-RECE-LEFT-SET-SEC
-                  ELSE                                                  
+                    WHEN       "4"
                         EVALUATE  WRK-PARA-RECEKBN
                           WHEN      "4"
       ********************* （新様式）
@@ -3059,7 +3100,9 @@ grpsys        MOVE    SPA-HOSPNUM          TO    SYS-HOSPNUM
       ********************* （従来様式）
                             PERFORM   220223-RECE-LEFT-SET3-SEC
                         END-EVALUATE
-                  END-IF                                                
+                    WHEN       "5"
+                        PERFORM   220224-RECE-LEFT-SET4-SEC
+                  END-EVALUATE
                END-IF
                IF    SRY-SRYKBN   =   "21"   OR   "22"   OR   "23"   OR
                                       "31"   OR   "32"   OR   "33"   OR
@@ -4250,6 +4293,296 @@ grpsys        MOVE    SPA-HOSPNUM          TO    SYS-HOSPNUM
            EXIT.
       *
       *****************************************************************
+      *    レセプト中間ファイルの項目転送２（Ｆ００２）
+      *****************************************************************
+       220224-RECE-LEFT-SET4-SEC               SECTION.
+      *
+           MOVE        SRY-SRYCD(IDX3)     TO   WRK-SRYCD
+           MOVE        RECE85-SRYYM        TO   WK-TAIHI-SRYYM
+           MOVE        WK-TAIHI-DAY        TO   WK-TAIHI-SRYD
+           PERFORM     900-TENSU-TBL-SEC
+           EVALUATE    SRY-SRYKBN
+      *    初診のレセ点数欄の編集
+               WHEN    "11"
+                   IF   SRY-SRYCD(IDX3) = CONS-ROUSAI1  OR
+                                          CONS-ROUSAI21 OR
+                                          CONS-ROUSAI2
+                      CONTINUE
+                   ELSE
+                      IF   TNS-DATAKBN  =   2
+                        EVALUATE    TNS-TIMEKSNKBN
+                            WHEN    1
+                            WHEN    5
+                                MOVE  "1"     TO   RECE82-SHOSHINTIME
+                            WHEN    3
+                                MOVE  "2"     TO   RECE82-SHOSHINTIME
+                            WHEN    4
+                                MOVE  "3"     TO   RECE82-SHOSHINTIME
+                        END-EVALUATE
+                      END-IF
+                      IF  TNS-CHUKSNTUBAN  NOT = "0"
+                          CONTINUE
+                      ELSE
+                          ADD   WK-ZAIKAISU   TO   RECE82-KAISU(1)
+                      END-IF
+                      COMPUTE   RECE82-TENSU(1)    =
+                                RECE82-TENSU(1)    +
+                               (TNS-TEN   *   ACCT-ZAIKAISU)
+                   END-IF
+      *    指導のレセ点数欄の編集
+               WHEN    "13"
+                   IF   SRY-SRYCD(IDX3) =   CONS-ROUSAI3  OR
+                                            CONS-ROUSAI4  OR
+                                            CONS-ROUSAI5  OR
+                                            CONS-ROUSAI6  OR
+                                            CONS-ROUSAI7  OR
+                                            CONS-ROUSAI8  OR
+                                            CONS-ROUSAI9  OR
+                                            CONS-ROUSAI10 OR
+                                            CONS-ROUSAI11 OR
+                                            CONS-ROUSAI12 
+                         CONTINUE
+                   ELSE
+                         COMPUTE    RECE82-TENSU(9)   =
+                                    RECE82-TENSU(9)   +
+                                   (WK-ZAITEN   *   WK-ZAIKAISU)
+                   END-IF
+      *    在宅のレセ点数欄の編集
+               WHEN    "14"
+                   MOVE      ZERO            TO   FLG-ZAITAKU
+      *            往診・特別往診（時間加算）
+                   IF    FLG-OSINKBN         =   1
+                       MOVE         1        TO   FLG-ZAITAKU
+                       ADD    WK-ZAIKAISU    TO   RECE82-KAISU(10)
+                       COMPUTE   RECE82-TENSU(10)   =
+                                 RECE82-TENSU(10)   +
+                                (WK-SYUTEN   *   WK-ZAIKAISU)
+                   END-IF
+      *            夜間
+                   IF    FLG-OSINKBN         =    2
+                       MOVE   1              TO   FLG-ZAITAKU
+                       ADD    WK-ZAIKAISU    TO   RECE82-KAISU(11)
+                       COMPUTE   RECE82-TENSU(11)   =
+                                 RECE82-TENSU(11)   +
+                                (WK-SYUTEN   *   WK-ZAIKAISU)
+                   END-IF
+      *            深夜・緊急
+                   IF    FLG-OSINKBN         =    3
+                       MOVE   1              TO   FLG-ZAITAKU
+                       ADD    WK-ZAIKAISU    TO   RECE82-KAISU(12)
+                       COMPUTE   RECE82-TENSU(12)   =
+                                 RECE82-TENSU(12)   +
+                                (WK-SYUTEN   *   WK-ZAIKAISU)
+                   END-IF
+      *            在宅患者訪問診療
+                   IF (( TNS-OSINKBN           =     1          )  AND
+                       ((SRY-SRYCD(IDX3)   NOT =    "114000110")   AND
+                        (SRY-SRYCD(IDX3)   NOT =    "114001610")   AND
+                        (SRY-SRYCD(IDX3)   NOT =    "114000970")   AND
+                        (SRY-SRYCD(IDX3)   NOT =    "114002470")   AND
+                        (SRY-SRYCD(IDX3)   NOT =    "114002970")   AND
+                        (SRY-SRYCD(IDX3)   NOT =    "114000470")   AND
+                        (SRY-SRYCD(IDX3)   NOT =    "114001970")   AND
+                        (SRY-SRYCD(IDX3)   NOT =    "114011670")   AND
+                        (SRY-SRYCD(IDX3)   NOT =    "114011970")   AND
+                        (SRY-SRYCD(IDX3)   NOT =    "114000370")   AND
+                        (SRY-SRYCD(IDX3)   NOT =    "114001570")   AND
+                        (SRY-SRYCD(IDX3)   NOT =    "114001870")   AND
+                        (SRY-SRYCD(IDX3)   NOT =    "114002070")   AND
+                        (SRY-SRYCD(IDX3)   NOT =    "114011570")   AND
+                        (SRY-SRYCD(IDX3)   NOT =    "114011770")   AND
+                        (SRY-SRYCD(IDX3)   NOT =    "114011870")   AND
+                        (SRY-SRYCD(IDX3)   NOT =    "114012070")))
+                   OR (  SRY-SRYCD(IDX3)       =    "114001110"  )
+                       MOVE   1              TO   FLG-ZAITAKU
+                       ADD    WK-ZAIKAISU    TO   RECE82-KAISU(13)
+                       COMPUTE   RECE82-TENSU(13)   =
+                                 RECE82-TENSU(13)   +
+                                (WK-SYUTEN         * ACCT-ZAIKAISU)
+                   END-IF
+      *            その他
+                   IF    FLG-ZAITAKU    =   ZERO
+                       COMPUTE   RECE82-TENSU(14)   =
+                                 RECE82-TENSU(14)   +
+                                (WK-SYUTEN     *   WK-ZAIKAISU)
+                   END-IF
+      *            薬剤
+                   COMPUTE   RECE82-TENSU(15)   =
+                             RECE82-TENSU(15)   +
+                             (WK-KIZAITEN *   WK-ZAIKAISU)  +
+                             (WK-YKZTEN   *   WK-ZAIKAISU)
+      *    投薬のレセ点数欄の編集
+               WHEN    "21"
+                   IF    (SRY-SRYCD(IDX3) (1:1)  = "6" OR "S" OR "8"
+                                                       OR "7"       )
+                   OR    (SRY-SRYCD(IDX3) (1:3)  = "001" OR "008"   
+                                                         OR "059"   )
+                   OR    (SRY-SRYCD(IDX3) (1:7)  = "0992000"        )
+                     IF   SRY-SRYCD(IDX3)         =    CONS-YAKTEIGEN
+                           COMPUTE   RECE82-TENSU(16)  =
+                                     RECE82-TENSU(16)  -
+                                    (WK-ZAITEN   *   WK-ZAIKAISU)
+                     ELSE
+                           ADD   WK-ZAIKAISU   TO   RECE82-KAISU(16)
+                           COMPUTE   RECE82-TENSU(16)  =
+                                     RECE82-TENSU(16)  +
+                                    (WK-ZAITEN   *   WK-ZAIKAISU)
+                     END-IF
+                   ELSE
+                     IF   SRY-SRYCD(IDX3)     =    CONS-FUNSAI-COMMENT
+                            ADD   WK-ZAIKAISU  TO   RECE82-KAISU(16)
+                            COMPUTE   RECE82-TENSU(16)  =
+                                      RECE82-TENSU(16)  +
+                                     (WK-ZAITEN   *   WK-ZAIKAISU)
+                     END-IF   
+                   END-IF
+               WHEN    "22"
+                   ADD    WK-ZAIKAISU    TO   RECE82-KAISU(18)
+                   COMPUTE   RECE82-TENSU(18)  =
+                             RECE82-TENSU(18)  +
+                            (WK-ZAITEN   *   WK-ZAIKAISU)
+               WHEN    "23"
+                   ADD    WK-ZAIKAISU    TO   RECE82-KAISU(20)
+                   COMPUTE   RECE82-TENSU(20)  =
+                             RECE82-TENSU(20)  +
+                            (WK-ZAITEN   *   WK-ZAIKAISU)
+      *    調剤のレセ点数欄の編集
+               WHEN    "24"
+                   ADD    WK-ZAIKAISU    TO   RECE82-KAISU(22)
+                   COMPUTE   RECE82-TENSU(22)  =
+                             RECE82-TENSU(22)  +
+                            (TNS-TEN   *   ACCT-ZAIKAISU)
+      *    麻毒のレセ点数欄の編集
+               WHEN    "26"
+                   ADD    WK-ZAIKAISU    TO   RECE82-KAISU(23)
+                   COMPUTE   RECE82-TENSU(23)  =
+                             RECE82-TENSU(23)  +
+                            (TNS-TEN   *   ACCT-ZAIKAISU)
+      *    調基のレセ点数欄の編集
+               WHEN    "27"
+                   COMPUTE   RECE82-TENSU(24)  =
+                             RECE82-TENSU(24)  +
+                            (TNS-TEN   *   ACCT-ZAIKAISU)
+      *    皮下筋肉内注射のレセ点数欄の編集
+               WHEN    "31"
+                   ADD    WK-ZAIKAISU     TO   RECE82-KAISU(25)
+                   COMPUTE   RECE82-TENSU(25)  =
+                             RECE82-TENSU(25)  +
+                            (WK-ZAITEN   *   WK-ZAIKAISU)
+      *    静脈内注射のレセ点数欄の編集
+               WHEN    "32"
+                   ADD    WK-ZAIKAISU     TO   RECE82-KAISU(26)
+                   COMPUTE   RECE82-TENSU(26)  =
+                             RECE82-TENSU(26)  +
+                            (WK-ZAITEN   *   WK-ZAIKAISU)
+      *    その他注射のレセ点数欄の編集
+               WHEN    "33"
+                   ADD    WK-ZAIKAISU     TO   RECE82-KAISU(27)
+                   COMPUTE   RECE82-TENSU(27)  =
+                             RECE82-TENSU(27)  +
+                            (WK-ZAITEN   *   WK-ZAIKAISU)
+      *    処置のレセ点数欄の編集
+               WHEN    "40"
+                   IF    WK-SYUTEN       NOT =   ZERO
+                       ADD    WK-ZAIKAISU    TO   RECE82-KAISU(28)
+                   END-IF
+                   COMPUTE   RECE82-TENSU(28)   =
+                             RECE82-TENSU(28)   +
+                            (WK-SYUTEN   *   WK-ZAIKAISU)
+                   COMPUTE   RECE82-TENSU(29)   =
+                             RECE82-TENSU(29)   +
+                            (WK-YKZTEN   *   WK-ZAIKAISU)
+      *    手術のレセ点数欄の編集
+               WHEN    "50"
+               WHEN    "54"
+                   IF    WK-SYUTEN       NOT =   ZERO
+                       ADD    WK-ZAIKAISU    TO   RECE82-KAISU(30)
+                   END-IF
+                   COMPUTE   RECE82-TENSU(30)   =
+                             RECE82-TENSU(30)   +
+                            (WK-SYUTEN   *   WK-ZAIKAISU)
+                   COMPUTE   RECE82-TENSU(31)   =
+                             RECE82-TENSU(31)   +
+                            (WK-YKZTEN   *   WK-ZAIKAISU)
+      *    検査のレセ点数欄の編集
+               WHEN    "60"
+                   IF    WK-SYUTEN       NOT =   ZERO
+                       ADD    WK-ZAIKAISU    TO   RECE82-KAISU(32)
+                   END-IF
+                   COMPUTE   RECE82-TENSU(32)   =
+                             RECE82-TENSU(32)   +
+                            (WK-SYUTEN   *   WK-ZAIKAISU)
+                   IF    TNS-KNSJISKBN    =   2
+                         COMPUTE   RECE82-KAISU(32)  =
+                                   RECE82-KAISU(32)  -
+                                   WK-ZAIKAISU
+                   END-IF
+                   IF    TNS-SRYCD  =   CONS-SAIKETSU1  OR
+                                        CONS-SAIKETSU2  OR
+                                        CONS-SAIKETSU3
+                         IF   RECE82-KAISU(32)  NOT =  ZERO
+                              COMPUTE   RECE82-KAISU(32)  =
+                                        RECE82-KAISU(32)  -
+                                        WK-ZAIKAISU
+                         END-IF
+                   END-IF
+                   COMPUTE   RECE82-TENSU(33)   =
+                             RECE82-TENSU(33)   +
+                            (WK-YKZTEN   *   WK-ZAIKAISU)
+      *    画像診断のレセ点数欄の編集
+               WHEN    "70"
+                   IF    WK-SYUTEN       NOT =   ZERO
+                       ADD    WK-ZAIKAISU    TO   RECE82-KAISU(34)
+                   END-IF
+                   COMPUTE   RECE82-TENSU(34)   =
+                             RECE82-TENSU(34)   +
+                            (WK-SYUTEN   *   WK-ZAIKAISU)
+                   COMPUTE   RECE82-TENSU(35)   =
+                             RECE82-TENSU(35)   +
+                            (WK-YKZTEN   *   WK-ZAIKAISU)
+      *    その他のレセ点数欄の編集
+               WHEN    "80"
+                   IF ( SRY-SRYCD(IDX3) =   CONS-ROUSAI13  OR
+                                            CONS-ROUSAI14  OR
+                                            CONS-ROUSAI15  OR
+                                            CONS-ROUSAI16  OR
+                                            CONS-ROUSAI17  OR
+                                            CONS-ROUSAI18  OR
+                                            CONS-ROUSAI19  OR
+                                            CONS-ROUSAI20 )
+                   OR ((ACCT-SRYKBN          =  "80"     )  AND
+                       (SRY-SRYCD(IDX3)(1:5) =  "09594"  ))
+                     CONTINUE
+                   ELSE
+                     IF ( ACCT-SRYKBN          =  "80"    )  AND         
+                        ( SRY-SRYCD(IDX3)(1:5) =  "09593" )              
+                         IF   FLG-TAISYO   =   1
+                          COMPUTE  WRK-ZAITENNASHI  =
+                                   WRK-ZAITENNASHI  +
+                                  (TNS-TEN     *   ACCT-ZAIKAISU)
+                         END-IF
+                     ELSE                
+                       IF    TNS-NYUTENTTLKBN   =    130
+                         COMPUTE   RECE82-TENSU(9)  =
+                                   RECE82-TENSU(9)  +
+                                  (TNS-TEN     *   ACCT-ZAIKAISU)
+                       ELSE  
+                         COMPUTE   RECE82-TENSU(37)  =
+                                   RECE82-TENSU(37)  +
+                                  (WK-SYUTEN   *   WK-ZAIKAISU)
+                       END-IF
+                       COMPUTE       RECE82-TENSU(38)  =
+                                     RECE82-TENSU(38)  +
+                                    (WK-YKZTEN   *   WK-ZAIKAISU)
+                     END-IF
+                   END-IF
+           END-EVALUATE
+           .
+      *
+       220224-RECE-LEFT-SET4-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    剤の診療内容チェック
       *****************************************************************
        2203-SINRYO-CHECK-SEC                 SECTION.
@@ -5215,7 +5548,13 @@ grpsys     PERFORM  900-DBSELECT-SEC
        23032-RECE82-HENSYU2-SEC                SECTION.
       *
       *    その他のレセ点数欄の編集
-           IF    RECE82-HKNKBN       =       "4"
+           EVALUATE   RECE82-HKNKBN
+             WHEN      "1"
+             WHEN      "2"
+                COMPUTE    RECE82-TENSU(21)  =
+                           RECE82-TENSU(21)  +
+                          (NACCT-ZAITEN   *   CNT-DAY21)
+             WHEN      "4"
                 EVALUATE  WRK-PARA-RECEKBN
                   WHEN      "4"
       **************（新様式）
@@ -5228,11 +5567,11 @@ grpsys     PERFORM  900-DBSELECT-SEC
                                 RECE82-SONOTAKIN-JYU  +
                                (120            *   CNT-DAY21)
                 END-EVALUATE
-           ELSE
-                 COMPUTE    RECE82-TENSU(21)  =
-                            RECE82-TENSU(21)  +
-                           (NACCT-ZAITEN   *   CNT-DAY21)
-           END-IF
+             WHEN      "5"
+                COMPUTE    RECE82-TENSU(37)  =
+                           RECE82-TENSU(37)  +
+                          (NACCT-ZAITEN   *   CNT-DAY21)
+           END-EVALUATE
       *
            .
        23032-RECE82-HENSYU2-EXT.
@@ -5363,8 +5702,10 @@ grpsys     PERFORM  900-DBSELECT-SEC
            IF   WRK-SKJ200604-DAY(SYUKEI-IDX3 3)  NOT =  ZERO
               ADD   1   TO   WRK-SKJ200604-MEISAISU(SYUKEI-IDX3)
            END-IF
-           IF    RECE82-HKNKBN     =   "4"
-           AND   RECE82-JIBAIKBN   =   "2"
+           IF  ((RECE82-HKNKBN      =   "4") AND
+                (RECE82-JIBAIKBN    =   "2"))
+           OR  ((RECE82-HKNKBN      =   "5") AND
+                (RECE82-KOMUKBN     =   "2"))
              CONTINUE
            ELSE
              IF      RECE82-HKNKBN    =   "4"
@@ -5395,8 +5736,10 @@ grpsys     PERFORM  900-DBSELECT-SEC
              MOVE 197001310 TO WRK-SKJ200604-SRYCD(SYUKEI-IDX3 IDX12)
              MOVE WRK-SKJ200604-DAY(SYUKEI-IDX3 1)
                             TO WRK-SKJ200604-SURYOU(SYUKEI-IDX3 IDX12)
-             IF    RECE82-HKNKBN     =   "4"
-             AND   RECE82-JIBAIKBN   =   "2"
+             IF  ((RECE82-HKNKBN      =   "4") AND
+                  (RECE82-JIBAIKBN    =   "2"))
+             OR  ((RECE82-HKNKBN      =   "5") AND
+                  (RECE82-KOMUKBN     =   "2"))
               CONTINUE
              ELSE
               IF      RECE82-HKNKBN    =   "4"
@@ -5432,8 +5775,10 @@ grpsys     PERFORM  900-DBSELECT-SEC
                MOVE 197001570 TO WRK-SKJ200604-SRYCD(SYUKEI-IDX3 IDX12)
                MOVE WRK-SKJ200604-DAY(SYUKEI-IDX3 2)
                             TO WRK-SKJ200604-SURYOU(SYUKEI-IDX3 IDX12)
-               IF    RECE82-HKNKBN     =   "4"
-               AND   RECE82-JIBAIKBN   =   "2"
+               IF  ((RECE82-HKNKBN      =   "4") AND
+                    (RECE82-JIBAIKBN    =   "2"))
+               OR  ((RECE82-HKNKBN      =   "5") AND
+                    (RECE82-KOMUKBN     =   "2"))
                 CONTINUE
                ELSE
                 IF    RECE82-HKNKBN    =   "4"
@@ -5470,8 +5815,10 @@ grpsys     PERFORM  900-DBSELECT-SEC
                MOVE 197001670 TO  WRK-SKJ200604-SRYCD(SYUKEI-IDX3 IDX12)
                MOVE WRK-SKJ200604-DAY(SYUKEI-IDX3 3)
                             TO  WRK-SKJ200604-SURYOU(SYUKEI-IDX3 IDX12)
-               IF    RECE82-HKNKBN     =   "4"
-               AND   RECE82-JIBAIKBN   =   "2"
+               IF  ((RECE82-HKNKBN      =   "4") AND
+                    (RECE82-JIBAIKBN    =   "2"))
+               OR  ((RECE82-HKNKBN      =   "5") AND
+                    (RECE82-KOMUKBN     =   "2"))
                 CONTINUE
                ELSE
                 IF    RECE82-HKNKBN    =   "4"
@@ -5509,8 +5856,10 @@ grpsys     PERFORM  900-DBSELECT-SEC
              MOVE 197001710 TO WRK-SKJ200604-SRYCD(SYUKEI-IDX3 IDX12)
              MOVE WRK-SKJ200604-DAY(SYUKEI-IDX3 1)
                             TO WRK-SKJ200604-SURYOU(SYUKEI-IDX3 IDX12)
-             IF    RECE82-HKNKBN     =   "4"
-             AND   RECE82-JIBAIKBN   =   "2"
+             IF  ((RECE82-HKNKBN      =   "4") AND
+                  (RECE82-JIBAIKBN    =   "2"))
+             OR  ((RECE82-HKNKBN      =   "5") AND
+                  (RECE82-KOMUKBN     =   "2"))
               CONTINUE
              ELSE
               IF      RECE82-HKNKBN    =   "4"
@@ -5551,8 +5900,10 @@ grpsys     PERFORM  900-DBSELECT-SEC
              MOVE 197000110 TO WRK-SKJ200604-SRYCD(SYUKEI-IDX3 IDX12)
              MOVE WRK-SKJ200604-DAY(SYUKEI-IDX3 1)
                             TO WRK-SKJ200604-SURYOU(SYUKEI-IDX3 IDX12)
-             IF    RECE82-HKNKBN     =   "4"
-             AND   RECE82-JIBAIKBN   =   "2"
+             IF  ((RECE82-HKNKBN      =   "4") AND
+                  (RECE82-JIBAIKBN    =   "2"))
+             OR  ((RECE82-HKNKBN      =   "5") AND
+                  (RECE82-KOMUKBN     =   "2"))
               CONTINUE
              ELSE
               IF      RECE82-HKNKBN    =   "4"
@@ -5588,8 +5939,10 @@ grpsys     PERFORM  900-DBSELECT-SEC
                MOVE 197000470 TO WRK-SKJ200604-SRYCD(SYUKEI-IDX3 IDX12)
                MOVE WRK-SKJ200604-DAY(SYUKEI-IDX3 2)
                             TO WRK-SKJ200604-SURYOU(SYUKEI-IDX3 IDX12)
-               IF    RECE82-HKNKBN     =   "4"
-               AND   RECE82-JIBAIKBN   =   "2"
+               IF  ((RECE82-HKNKBN      =   "4") AND
+                    (RECE82-JIBAIKBN    =   "2"))
+               OR  ((RECE82-HKNKBN      =   "5") AND
+                    (RECE82-KOMUKBN     =   "2"))
                 CONTINUE
                ELSE
                 IF    RECE82-HKNKBN    =   "4"
@@ -5626,8 +5979,10 @@ grpsys     PERFORM  900-DBSELECT-SEC
                MOVE 197000570 TO  WRK-SKJ200604-SRYCD(SYUKEI-IDX3 IDX12)
                MOVE WRK-SKJ200604-DAY(SYUKEI-IDX3 3)
                             TO  WRK-SKJ200604-SURYOU(SYUKEI-IDX3 IDX12)
-               IF    RECE82-HKNKBN     =   "4"
-               AND   RECE82-JIBAIKBN   =   "2"
+               IF  ((RECE82-HKNKBN      =   "4") AND
+                    (RECE82-JIBAIKBN    =   "2"))
+               OR  ((RECE82-HKNKBN      =   "5") AND
+                    (RECE82-KOMUKBN     =   "2"))
                 CONTINUE
                ELSE
                 IF    RECE82-HKNKBN    =   "4"
@@ -5665,8 +6020,10 @@ grpsys     PERFORM  900-DBSELECT-SEC
              MOVE 197000710 TO WRK-SKJ200604-SRYCD(SYUKEI-IDX3 IDX12)
              MOVE WRK-SKJ200604-DAY(SYUKEI-IDX3 1)
                             TO WRK-SKJ200604-SURYOU(SYUKEI-IDX3 IDX12)
-             IF    RECE82-HKNKBN     =   "4"
-             AND   RECE82-JIBAIKBN   =   "2"
+             IF  ((RECE82-HKNKBN      =   "4") AND
+                  (RECE82-JIBAIKBN    =   "2"))
+             OR  ((RECE82-HKNKBN      =   "5") AND
+                  (RECE82-KOMUKBN     =   "2"))
               CONTINUE
              ELSE
               IF      RECE82-HKNKBN    =   "4"
@@ -5753,8 +6110,10 @@ grpsys     PERFORM  900-DBSELECT-SEC
        2308-RECE84-TENSOU2-SKJ200610-KAN-SEC                SECTION.
       *
            ADD     1    TO   WRK-SKJ200604-MEISAISU-KAN(SYUKEI-IDX3)
-           IF    RECE82-HKNKBN     =   "4"
-           AND   RECE82-JIBAIKBN   =   "2"
+           IF  ((RECE82-HKNKBN      =   "4") AND
+                (RECE82-JIBAIKBN    =   "2"))
+           OR  ((RECE82-HKNKBN      =   "5") AND
+                (RECE82-KOMUKBN     =   "2"))
              CONTINUE
            ELSE
              IF      RECE82-HKNKBN    =   "4"
@@ -5778,8 +6137,10 @@ grpsys     PERFORM  900-DBSELECT-SEC
              MOVE 197001410
                         TO WRK-SKJ200604-SRYCD-KAN(SYUKEI-IDX3 IDX12)
              MOVE 1     TO WRK-SKJ200604-SURYOU-KAN(SYUKEI-IDX3 IDX12)
-             IF    RECE82-HKNKBN     =   "4"
-             AND   RECE82-JIBAIKBN   =   "2"
+             IF  ((RECE82-HKNKBN      =   "4") AND
+                  (RECE82-JIBAIKBN    =   "2"))
+             OR  ((RECE82-HKNKBN      =   "5") AND
+                  (RECE82-KOMUKBN     =   "2"))
               CONTINUE
              ELSE
               IF      RECE82-HKNKBN    =   "4"
@@ -5815,8 +6176,10 @@ grpsys     PERFORM  900-DBSELECT-SEC
              MOVE 197001810
                         TO WRK-SKJ200604-SRYCD-KAN(SYUKEI-IDX3 IDX12)
              MOVE 1     TO WRK-SKJ200604-SURYOU-KAN(SYUKEI-IDX3 IDX12)
-             IF    RECE82-HKNKBN     =   "4"
-             AND   RECE82-JIBAIKBN   =   "2"
+             IF  ((RECE82-HKNKBN      =   "4") AND
+                  (RECE82-JIBAIKBN    =   "2"))
+             OR  ((RECE82-HKNKBN      =   "5") AND
+                  (RECE82-KOMUKBN     =   "2"))
               CONTINUE
              ELSE
               IF      RECE82-HKNKBN    =   "4"
@@ -6110,8 +6473,10 @@ grpsys     PERFORM 900-DBSELECT-SEC
                             101970010   OR   099609901
                CONTINUE
              ELSE
-              IF    RECE82-HKNKBN     =   "4"
-              AND   RECE82-JIBAIKBN   =   "2"
+              IF  ((RECE82-HKNKBN      =   "4") AND
+                   (RECE82-JIBAIKBN    =   "2"))
+              OR  ((RECE82-HKNKBN      =   "5") AND
+                   (RECE82-KOMUKBN     =   "2"))
                   COMPUTE RECE84-ZAITEN =
                           RECE84-ZAITEN +
                   (TNS-TEN * WRK-SKJ200604-SURYOU(SYUKEI-IDX3 IDX2))
@@ -6239,8 +6604,10 @@ grpsys     PERFORM 900-DBSELECT-SEC
                             101970010   OR   099609901
                CONTINUE
              ELSE
-              IF    RECE82-HKNKBN     =   "4"
-              AND   RECE82-JIBAIKBN   =   "2"
+              IF  ((RECE82-HKNKBN      =   "4") AND
+                   (RECE82-JIBAIKBN    =   "2"))
+              OR  ((RECE82-HKNKBN      =   "5") AND
+                   (RECE82-KOMUKBN     =   "2"))
                   COMPUTE RECE84-ZAITEN =
                           RECE84-ZAITEN +
                   (TNS-TEN * WRK-SKJ200604-SURYOU-KAN
@@ -6908,13 +7275,15 @@ grpsys     PERFORM 900-DBSELECT-SEC
        2403-RECE82-HENSYU3-SEC               SECTION.
       *
       *    その他注射のレセ点数欄の編集
-           IF   RECE82-HKNKBN   NOT  =   "4"
+           EVALUATE   RECE82-HKNKBN
+            WHEN       "1"
+            WHEN       "2"
              ADD   RECE84-ZAIKAISU    TO   RECE82-KAISU(12)
       *
              COMPUTE   RECE82-TENSU(12)  =
                        RECE82-TENSU(12)  +
                        (RECE84-ZAITEN  *  RECE84-ZAIKAISU)
-           ELSE
+            WHEN       "4"
                 EVALUATE  WRK-PARA-RECEKBN
                   WHEN      "4"
       **************（新様式）
@@ -6949,7 +7318,13 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                  (RECE84-ZAITEN  *  RECE84-ZAIKAISU)
                     END-IF
                 END-EVALUATE
-           END-IF
+            WHEN       "5"
+             ADD   RECE84-ZAIKAISU    TO   RECE82-KAISU(27)
+      *
+             COMPUTE   RECE82-TENSU(27)  =
+                       RECE82-TENSU(27)  +
+                       (RECE84-ZAITEN  *  RECE84-ZAIKAISU)
+           END-EVALUATE
            .                                           
       *
        2403-RECE82-HENSYU3-EXT.
@@ -7293,13 +7668,13 @@ grpsys     PERFORM  900-DBSELECT-SEC
                           MOVE  "２"   TO  RECE82-SHOKUJISYUBETU(1)
                       END-EVALUATE
                      WHEN       3
-                     WHEN       8
                       ADD   SYU-SHOKUJI-NISSU(ID1)  TO
                                        RECE82-SHOKUJIKHNNISSU(2)
                       MOVE  SYU-SHOKUJI(ID1)        TO
                                        RECE82-SHOKUJIKHNRYO(2)
                       MOVE  "特別" TO  RECE82-SHOKUJISYUBETU(2)
                      WHEN       4
+                     WHEN       8
                       ADD   SYU-SHOKUJI-NISSU(ID1)  TO
                                        RECE82-SHOKUJIKHNNISSU(3)
                       MOVE  SYU-SHOKUJI(ID1)        TO
