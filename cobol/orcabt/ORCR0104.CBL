@@ -164,32 +164,9 @@
       *  03.05.04    NACL-藤原    07/09/04  宮崎県「公費９０」対応
       *                                     ２００７年９月以降のみ対象 
       *  03.05.05    NACL-藤原    07/09/11  新潟県中越沖地震対応
-      *                                     ２００７年９月〜１２月対象
-      *
-      *  04.01.01    NACL-門脇    07/10/25  北海道５１（道単独事業）に関わる
+      *                                     ２００７年９月〜１２月対象 
+      *  03.05.06    NACL-門脇    07/10/25  北海道５１（道単独事業）に関わる
       *                                     請求点記載対応
-      *  04.01.02    NACL-藤原    07/12/08  長崎県対応
-      *                                     生保と被爆８６の記載順 
-      *  04.01.03    NACL-藤原    08/01/10  レセプト特記事項編集情報
-      *                                     適用欄コメント対応
-      *  04.01.04    NACL-藤原    08/02/12  宮崎県「公費９０」対応
-      *                                     通常の記載方法に戻す
-      *
-      *  04.02.01    NACL-藤原    08/02/20  レセプトカスタマイズされてい
-      *                                     るときの適用欄下段コメントの
-      *                                     編集方法の修正
-      *  04.02.02    NACL-藤原    08/03/04  平成２０年４月改正対応
-      *  04.02.03    NACL-藤原    08/03/12  フラグ、データエリア追加
-      *  04.02.04    NACL-門脇    08/03/17  宮崎県地方公費（１９０）の対応
-      *
-      *  04.04.01    NACL-藤原    09/03/16  リアルタイムプレビュー時の修正
-      *                                     リアルタイムプレビュー時の表示
-      *  04.05.01    NACL-門脇    10/02/08  地方公費の全国公費併用分請求点
-      *                                     集計対応
-      *
-      *  04.07.01    NACL-藤原    12/01/24  monpe-0.6.20対応
-      *
-      *  04.08.01    NACL-藤原    14/07/07  一時ディレクトリ対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -296,35 +273,39 @@ grpsys     COPY    "COMMON-SPA".
            COPY    "CPCOMMONSHELL.INC".
       *
       *     レセプト明細ファイル 名称領域 
-           COPY    "CPTEMPFL.INC"  REPLACING  //TEMPFLPARA//
-                                   BY         //RECE01PARA//.
+           COPY    "CPRECEDAT1.INC"
+                                   REPLACING  //RECEDAT1//
+                                   BY         //RECE01//.
       *
-           COPY    "CPTEMPFL.INC"  REPLACING  //TEMPFLPARA//
-                                   BY         //RECE02XPARA//.
+           COPY    "CPRECEDAT1.INC"
+                                   REPLACING  //RECEDAT1//
+                                   BY         //RECE02X//.
       *
-           COPY    "CPTEMPFL.INC"  REPLACING  //TEMPFLPARA//
-                                   BY         //RECE031PARA//.
+           COPY    "CPRECEDAT1.INC"
+                                   REPLACING  //RECEDAT1//
+                                   BY         //RECE031//.
       *
-           COPY    "CPTEMPFL.INC"  REPLACING  //TEMPFLPARA//
-                                   BY         //RECE061PARA//.
+           COPY    "CPRECEDAT1.INC"
+                                   REPLACING  //RECEDAT1//
+                                   BY         //RECE061//.
       *
-           COPY    "CPTEMPFL.INC"  REPLACING  //TEMPFLPARA//
-                                   BY         //RECE09PARA//.
+           COPY    "CPRECEDAT1.INC"
+                                   REPLACING  //RECEDAT1//
+                                   BY         //RECE09//.
       *
-           COPY    "CPTEMPFL.INC"  REPLACING  //TEMPFLPARA//
-                                   BY         //RECE11PARA//.
+           COPY    "CPRECEDAT1.INC"
+                                   REPLACING  //RECEDAT1//
+                                   BY         //RECE11//.
       *
       *     入退院履歴情報ファイル 名称領域 
-           COPY    "CPTEMPFL.INC"  REPLACING  //TEMPFLPARA//
-                                   BY         //RECE12PARA//.
+           COPY    "CPRECEDAT1.INC"
+                                   REPLACING  //RECEDAT1//
+                                   BY         //RECE12//.
       *
       *    エラーファイル 名称領域 
-           COPY    "CPTEMPFL.INC"  REPLACING  //TEMPFLPARA//
+           COPY    "CPERRFL.INC"   REPLACING  //ERRFLPARA//
                                    BY         //RECEERR//.
       *
-      *    ファイル名取得
-           COPY    "CPRECEDAT1.INC".
-           COPY    "CPTEMPFL.INC".
       *     
       ***  COPY    "HCM09.INC"     REPLACING  //HCM09//
       ***  COPY    "HCM09V01.INC"  REPLACING  //HCM09V01//
@@ -853,7 +834,7 @@ grpsys             07  KEY-O-HOSPNUM   PIC  9(02).
       *    区切り線
        01  WRK-LINE-AREA.
            03  WRK-KUGIRI1         PIC X(52)   VALUE
-               ALL "―".
+               ALL "−".
            03  WRK-KUGIRI2.
                05  FILLER          PIC X(22)   VALUE
                                    "＝＝＝＝＝＝＝　以下　".
@@ -861,7 +842,7 @@ grpsys             07  KEY-O-HOSPNUM   PIC  9(02).
                05  FILLER          PIC X(20)   VALUE
                                    "　適用分　＝＝＝＝＝".
            03  WRK-KUGIRI3         PIC X(52)   VALUE
-               ALL "―".
+               ALL "−".
       *
       *
        01  WRK-TENSU-AREA.
@@ -1017,10 +998,6 @@ grpsys             07  KEY-O-HOSPNUM   PIC  9(02).
            03  WRK-ERR-MSG-6           PIC X(30)  VALUE
                "【未請求設定の患者です】".
       *
-           03  WRK-ERR-MSG-9.
-               05  FILLER          PIC X(48)   VALUE
-                   "【リアルタイムプレビューより作成のため提出不可】". 
-      *
        01  WRK-CONS-AREA.    
       *    固定端末ＩＤ
            03  WRK-CONS-TERMID         PIC X(32)   VALUE
@@ -1032,7 +1009,7 @@ grpsys             07  KEY-O-HOSPNUM   PIC  9(02).
            03  WRK-CONS-SRYYM-200604   PIC 9(06)   VALUE   200604. 
            03  WRK-CONS-SRYYM-200609   PIC 9(06)   VALUE   200609. 
            03  WRK-CONS-SRYYM-200703   PIC 9(06)   VALUE   200703. 
-           03  WRK-CONS-SRYYM-200803   PIC 9(06)   VALUE   200803.
+           03  WRK-CONS-SRYYM-200709   PIC 9(06)   VALUE   200709.      
       *
            03  WRK-CONS-BODYLIST-MAX
                                    PIC 9(02)   VALUE   50.
@@ -1144,8 +1121,6 @@ grpsys             07  KEY-O-HOSPNUM   PIC  9(02).
       *    マシン日付取得サブ
            COPY    "CPORCSMCNDATE.INC".
       *
-           COPY    "CPORCSGETTEMP.INC".
-      *
       ****************************************************************
        LINKAGE                 SECTION.
        01  COMMAND-PARAM.
@@ -1245,57 +1220,38 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
       *****************************************************************
        110-FILE-OPEN-SEC          SECTION.
       *
-           INITIALIZE                      SGETTEMP-AREA
-           MOVE    RECEERR             TO  SGETTEMP-BASENAMES  (1)
-           MOVE    "RECE020"           TO  RECEDAT1PARA-FILE-ID
-           PERFORM 800-FILENM-SET-SEC
-           MOVE    RECEDAT1PARA-BASENAME
-                                       TO  SGETTEMP-BASENAMES  (2)
-           MOVE    "RECE02X"           TO  RECEDAT1PARA-FILE-ID
-           PERFORM 800-FILENM-SET-SEC
-           IF      WRK-PARA-SHELLID    NOT =   "RECEPTX"
-               MOVE    WRK-CONS-TERMID     TO  RECEDAT1PARA-TERMID
+           MOVE    "RECE020"           TO  RECE01PARA-FILE-ID
+           MOVE    WRK-PARA-TERMID     TO  RECE01PARA-TERMID
+grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE01PARA-HOSPNUM
+      *
+           MOVE    "RECE02X"           TO  RECE02XPARA-FILE-ID
+      *->  MOVE    WRK-CONS-TERMID     TO  RECE02XPARA-TERMID
+           IF      WRK-PARA-SHELLID    =   "RECEPTX"
+               MOVE    WRK-PARA-TERMID TO  RECE02XPARA-TERMID
+           ELSE
+               MOVE    WRK-CONS-TERMID TO  RECE02XPARA-TERMID
            END-IF
-           MOVE    RECEDAT1PARA-BASENAME
-                                       TO  SGETTEMP-BASENAMES  (3)
-           MOVE    "RECE031"           TO  RECEDAT1PARA-FILE-ID
-           PERFORM 800-FILENM-SET-SEC
-           MOVE    RECEDAT1PARA-BASENAME
-                                       TO  SGETTEMP-BASENAMES  (4)
-           MOVE    "RECE061"           TO  RECEDAT1PARA-FILE-ID
-           PERFORM 800-FILENM-SET-SEC
-           MOVE    RECEDAT1PARA-BASENAME
-                                       TO  SGETTEMP-BASENAMES  (5)
-           MOVE    "RECE090"           TO  RECEDAT1PARA-FILE-ID
-           PERFORM 800-FILENM-SET-SEC
-           MOVE    RECEDAT1PARA-BASENAME
-                                       TO  SGETTEMP-BASENAMES  (6)
-           MOVE    "RECE110"           TO  RECEDAT1PARA-FILE-ID
-           PERFORM 800-FILENM-SET-SEC
-           MOVE    RECEDAT1PARA-BASENAME
-                                       TO  SGETTEMP-BASENAMES  (7)
-           MOVE    "RECE120"           TO  RECEDAT1PARA-FILE-ID
-           PERFORM 800-FILENM-SET-SEC
-           MOVE    RECEDAT1PARA-BASENAME
-                                       TO  SGETTEMP-BASENAMES  (8)
-           CALL    "ORCSGETTEMP"       USING   SGETTEMP-AREA
-           MOVE    SPACE               TO  RECEERR
-           MOVE    SGETTEMP-FULLNAMES (1)
-                                       TO  RECEERR
-           MOVE    SGETTEMP-FULLNAMES (2)
-                                       TO  RECE01PARA
-           MOVE    SGETTEMP-FULLNAMES (3)
-                                       TO  RECE02XPARA
-           MOVE    SGETTEMP-FULLNAMES (4)
-                                       TO  RECE031PARA
-           MOVE    SGETTEMP-FULLNAMES (5)
-                                       TO  RECE061PARA
-           MOVE    SGETTEMP-FULLNAMES (6)
-                                       TO  RECE09PARA
-           MOVE    SGETTEMP-FULLNAMES (7)
-                                       TO  RECE11PARA
-           MOVE    SGETTEMP-FULLNAMES (8)
-                                       TO  RECE12PARA
+grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE02XPARA-HOSPNUM
+      *
+           MOVE    "RECE031"           TO  RECE031PARA-FILE-ID
+           MOVE    WRK-PARA-TERMID     TO  RECE031PARA-TERMID
+grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE031PARA-HOSPNUM
+      *
+           MOVE    "RECE061"           TO  RECE061PARA-FILE-ID
+           MOVE    WRK-PARA-TERMID     TO  RECE061PARA-TERMID
+grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE061PARA-HOSPNUM
+      *
+           MOVE    "RECE090"           TO  RECE09PARA-FILE-ID
+           MOVE    WRK-PARA-TERMID     TO  RECE09PARA-TERMID
+grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE09PARA-HOSPNUM
+      *
+           MOVE    "RECE110"           TO  RECE11PARA-FILE-ID
+           MOVE    WRK-PARA-TERMID     TO  RECE11PARA-TERMID
+grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE11PARA-HOSPNUM
+      *
+           MOVE    "RECE120"           TO  RECE12PARA-FILE-ID
+           MOVE    WRK-PARA-TERMID     TO  RECE12PARA-TERMID
+grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE12PARA-HOSPNUM
       *
            OPEN    INPUT               RECE02-FILE
            IF  STS-RECE            NOT =   ZERO
@@ -1303,12 +1259,10 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
                MOVE    2               TO  FLG-STS
            END-IF
       *
-           IF      WRK-PARA-SHELLID    NOT =   "RECEPTX"
-               OPEN    INPUT               RECE02X-FILE
-               IF  STS-RECE02X         NOT =   ZERO
-                   DISPLAY "*** ORCR0104 RECE02X OPEN ERR  ***"
-                   MOVE    2               TO  FLG-STS
-               END-IF
+           OPEN    INPUT               RECE02X-FILE
+           IF  STS-RECE02X         NOT =   ZERO
+               DISPLAY "*** ORCR0104 RECE02X OPEN ERR  ***"
+               MOVE    2               TO  FLG-STS
            END-IF
       *
            OPEN    INPUT               RECE031-FILE
@@ -2007,7 +1961,7 @@ grpsys             OR    ( RECE02-HOSPNUM   NOT =   RECE09-HOSPNUM   )
                            WRK-HKN-HKNJANUM       DELIMITED  BY  SPACE
                            "　"                   DELIMITED  BY  SIZE
                            WRK-HKN-KIGO           DELIMITED  BY  SPACE
-                           "―"                   DELIMITED  BY  SIZE
+                           "−"                   DELIMITED  BY  SIZE
                            WRK-HKN-NUM            DELIMITED  BY  SPACE
                               INTO    WRK-HKN-RIREKI-X
                    END-STRING
@@ -2030,7 +1984,7 @@ grpsys             OR    ( RECE02-HOSPNUM   NOT =   RECE09-HOSPNUM   )
                            GO  TO  2001-RIREKI-HEN-EXT
                        END-IF    
                        STRING  WRK-HKN-KIGO       DELIMITED  BY  SPACE
-                               "―"               DELIMITED  BY  SIZE
+                               "−"               DELIMITED  BY  SIZE
                                WRK-HKN-NUM        DELIMITED  BY  SPACE
                                INTO
                                    WRK-HKN-RIREKI (WRK-RIREKI-MAX)(13:)
@@ -2110,7 +2064,7 @@ grpsys             OR    ( RECE02-HOSPNUM   NOT =   RECE09-HOSPNUM   )
            MOVE    ZERO               TO  SESNIDX
            PERFORM   VARYING   IDX  FROM    1   BY  1
                      UNTIL   ( IDX                >    4    )
-                     OR      ( RECE02-KOHID(IDX)  =   ZERO  )
+                     OR      ( RECE02-KOHID(IDX)  =   SPACE )
       *        生保
                IF  RECE02-KOHNUM (IDX)  =   "012"
                    MOVE    "1"          TO  WRK-3SYU (1:1)
@@ -2148,14 +2102,11 @@ grpsys             OR    ( RECE02-HOSPNUM   NOT =   RECE09-HOSPNUM   )
       *    帳票編集<点数>処理
            PERFORM 330-HC101-TENSU-HEN-SEC
       *
-      *    帳票編集<適用欄下段コメント>処理
+      *    帳票編集<補足>処理
            PERFORM 350-HC101-HOSOKU-HEN-SEC
       *
       *    帳票編集<傷病名>処理
            PERFORM 320-HC101-BYOMEI-HEN-SEC
-      *
-      *    帳票編集<適用欄上段コメント>処理
-           PERFORM 380-HC101-TEKIYOU-COM-HEN-SEC
       *
       *    帳票編集<入退院履歴>処理
            IF    ( SYS-2005-NYUTAIINREKI-KSIKBN
@@ -2192,10 +2143,6 @@ grpsys             OR    ( RECE02-HOSPNUM   NOT =   RECE09-HOSPNUM   )
       *    公費請求書出力処理
       *****************************************************************
        2002-KOHSKY-WRITE-SEC           SECTION.
-      *
-           IF      WRK-PARA-SHELLID     =   "RECEPTX"
-               GO  TO  2002-KOHSKY-WRITE-EXT
-           END-IF
       *
            PERFORM 990-RECE02X-READ-SEC
       *
@@ -2632,7 +2579,6 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            ELSE
                MOVE    SYS-1002-ADRS       TO  HC06-HOSPADRS
            END-IF
-           INSPECT HC06-HOSPADRS   REPLACING   ALL "  "    BY  "　"
       *
       *    医療機関名称
            IF      FLG-SYS-1901        =   1
@@ -2641,7 +2587,6 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            ELSE 
                MOVE    SYS-1001-HOSPNAME   TO  HC06-HOSPNAME
            END-IF
-           INSPECT HC06-HOSPNAME   REPLACING   ALL "  "    BY  "　"
       *
       *    医療機関ＴＥＬ
            IF      FLG-SYS-1902        =   1
@@ -2797,14 +2742,6 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
                     END-IF
                    END-IF
                END-IF
-           END-IF
-      *
-      *    リアルタイムプレビュー時の表示
-           IF      WRK-PARA-SHELLID    =   "RECEPTX"
-               MOVE    SPACE                TO  WRK-HC06-HEAD4-G
-               MOVE    HC06-HEAD4-G (5:)    TO  WRK-HC06-HEAD4-G
-               MOVE    WRK-ERR-MSG-9        TO  HC06-HEAD4-G (5:)
-               MOVE    WRK-HC06-HEAD4-G     TO  HC06-HEAD4-G (53:)
            END-IF
       *
       *    新潟県中越沖地震対応 
@@ -3719,7 +3656,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
                       MOVE    WRK-JINISSU2    TO  HC06-JINISSU1
                   END-IF
                END-IF
-               IF  RECE02-FUKUSHIFLG(IDX3)  =  "1"
+               IF  RECE02-FUKUSHIFLG  =  "1"
                    IF  RECE02-JNISSU (IDX2)
                                        NOT =   RECE02-JNISSU (IDX3)
                        MOVE    RECE02-JNISSU (IDX3)
@@ -3772,6 +3709,18 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
                                                    TO  WRK-KGK2
                        END-IF
                        MOVE    WRK-KGK2        TO  HC06-JINISSU2
+                   END-IF
+               END-IF
+      *
+      *        宮崎地方公費対応
+               IF    ( RECE02-PREFNUM      =   "45"                  )
+               AND   ( RECE02-SRYYM        >=  WRK-CONS-SRYYM-200709 )
+               AND   ( RECE02-TEISYUTUSAKI =   "2"                   )
+                   IF      RECE02-KOHNUM (IDA) =   "190"
+                       MOVE    SPACE               TO  HC06-JINISSU1
+                   END-IF
+                   IF      RECE02-KOHNUM (IDB) =   "190"
+                       MOVE    SPACE               TO  HC06-JINISSU2
                    END-IF
                END-IF
            END-IF
@@ -4469,18 +4418,10 @@ grpsys         OR     ( RECE02-HOSPNUM   NOT =   RECE031-HOSPNUM      )
       *     
            IF      RECE02-HKNNUM      =   SPACE
                IF      SEIHIDX            >   ZERO 
-      *            長崎の生保と被爆（０１２＋１８６）のときはそのまま記載
-                   IF    ( SYS-1001-PREFNUM    =   "42"  )
-                   AND   ( RECE02-KOHNUM (1)   =   "186" )
-                   AND   ( RECE02-KOHNUM (2)   =   "012" )
-                       MOVE    2                  TO  IDX1
-                       MOVE    3                  TO  IDX2
-                   ELSE
-                       COMPUTE IDX1    =   SEIHIDX   +   1
-                       MOVE    2                  TO  IDX2
-                       IF      IDX1               =   IDX2
-                           COMPUTE  IDX2  =  IDX1  +  1
-                       END-IF
+                   COMPUTE IDX1    =   SEIHIDX   +   1
+                   MOVE    2                  TO  IDX2
+                   IF      IDX1               =   IDX2
+                       COMPUTE  IDX2  =  IDX1  +  1
                    END-IF
                ELSE
                    MOVE    2                  TO  IDX1
@@ -4621,15 +4562,10 @@ grpsys         OR     ( RECE02-HOSPNUM   NOT =   RECE031-HOSPNUM      )
                                       NOT =   RECE02-TOTALTEN (IDX1)) OR
                   (RECE02-FTNMONEY (IDX2)
                                       NOT =   RECE02-FTNMONEY (IDX1))  )
-             IF    SYS-1001-PREFNUM   =   45
-             AND   RECE02-KOHNUM(1)   =  "190"
-               CONTINUE
-             ELSE
                IF    RECE02-FTNMONEY (IDX2)   >   ZERO
                    MOVE    RECE02-FTNMONEY (IDX2) TO  WRK-KGK7
                    MOVE    WRK-KGK7               TO  HC06-FTNMONEY(2)
                END-IF
-             END-IF
            END-IF
            IF    ( RECE02-TOTALTEN (IDX2) >   ZERO                  )
            AND   ( RECE02-FTNMONEY (IDX2) =   RECE02-FTNMONEY (IDX1))
@@ -4659,10 +4595,8 @@ grpsys         OR     ( RECE02-HOSPNUM   NOT =   RECE031-HOSPNUM      )
            OR    ((RECE02-SRYYM          >=  "200510"  ) AND
                   (SYS-1001-PREFNUM       =    01      ) AND
                   (RECE02-KOHNUM(1)       =  "051"     ) AND
-                  ((RECE02-KOHJKYSNUM(1)(1:2) >= "91"
-                                          AND <= "95" ) OR
-                   (RECE02-KOHJKYSNUM(1)(1:2) >= "71"
-                                          AND <= "88" )) AND
+                  (RECE02-KOHJKYSNUM(1)(1:2)  =
+                   "91" OR "92" OR "93" OR "94" OR "95") AND
                   (RECE02-TOTALTEN (IDX2) >   ZERO     ))
                MOVE    RECE02-TOTALTEN (IDX2) TO  WRK-KGK6
                MOVE    WRK-KGK6               TO  HC06-TOTALTEN(2)
@@ -4686,15 +4620,10 @@ grpsys         OR     ( RECE02-HOSPNUM   NOT =   RECE031-HOSPNUM      )
                                       NOT =   RECE02-FTNMONEY (IDX2))  )
       ***      IF  RECE02-FTNMONEY (IDX3)
       ***                             NOT =   RECE02-FTNMONEY (IDX2)
-               IF    SYS-1001-PREFNUM   =   45
-               AND   RECE02-KOHNUM(2)   =  "190"
-                 CONTINUE
-               ELSE
                  IF  RECE02-FTNMONEY (IDX3)   >   ZERO
                    MOVE    RECE02-FTNMONEY (IDX3) TO  WRK-KGK7
                    MOVE    WRK-KGK7               TO  HC06-FTNMONEY(3)
                  END-IF
-               END-IF
       ***      END-IF
              END-IF
              IF    ( RECE02-TOTALTEN (IDX3) >   ZERO                  )
@@ -4718,8 +4647,8 @@ grpsys         OR     ( RECE02-HOSPNUM   NOT =   RECE031-HOSPNUM      )
                MOVE    RECE02-TOTALTEN (IDX3) TO  WRK-KGK6
                MOVE    WRK-KGK6               TO  HC06-TOTALTEN(3)
            ELSE
-               IF      RECE02-FUKUSHIFLG(IDX3) =   "1"
-               AND     RECE02-TOTALTEN(IDX3)   =   ZERO
+               IF      RECE02-FUKUSHIFLG      =   "1"
+               AND     RECE02-TOTALTEN (IDX3) =   ZERO
                    MOVE    RECE02-TOTALTEN (IDX3) TO  WRK-KGK6
                    MOVE    WRK-KGK6               TO  HC06-TOTALTEN(3)
                END-IF
@@ -4732,18 +4661,14 @@ grpsys         OR     ( RECE02-HOSPNUM   NOT =   RECE031-HOSPNUM      )
            OR    ((RECE02-SRYYM          >=  "200510"  ) AND
                   (SYS-1001-PREFNUM       =    01      ) AND
                   (RECE02-KOHNUM(2)       =  "051"     ) AND
-                  ((RECE02-KOHJKYSNUM(2)(1:2) >= "91"
-                                          AND <= "95" ) OR
-                   (RECE02-KOHJKYSNUM(2)(1:2) >= "71"
-                                          AND <= "88" )) AND
+                  (RECE02-KOHJKYSNUM(2)(1:2)  =
+                   "91" OR "92" OR "93" OR "94" OR "95") AND
                   (RECE02-TOTALTEN (IDX3) >   ZERO     ))
            OR    ((RECE02-SRYYM          >=  "200510"  ) AND
                   (SYS-1001-PREFNUM       =    01      ) AND
                   (RECE02-KOHNUM(1)       =  "051"     ) AND
-                  ((RECE02-KOHJKYSNUM(1)(1:2) >= "91"
-                                          AND <= "95" ) OR
-                   (RECE02-KOHJKYSNUM(1)(1:2) >= "71"
-                                          AND <= "88" )) AND
+                  (RECE02-KOHJKYSNUM(1)(1:2)  =
+                   "91" OR "92" OR "93" OR "94" OR "95") AND
                   (RECE02-TOTALTEN (IDX2) >   ZERO     ) AND
                   (RECE02-KOHHBTNUM(2)    =  "41"      ) AND
                   (RECE02-TOTALTEN (IDX3) >   ZERO     ))
@@ -4807,6 +4732,20 @@ grpsys         OR     ( RECE02-HOSPNUM   NOT =   RECE031-HOSPNUM      )
                        MOVE    RECE11-FTNMONEY (IDX3)  TO  WRK-KGK7
                    END-IF
                    MOVE    WRK-KGK7                TO  HC06-FTNMONEY(3)
+               END-IF
+           END-IF
+      *
+      *    宮崎地方公費対応
+           IF    ( RECE02-PREFNUM      =   "45"                  )
+           AND   ( RECE02-SRYYM        >=  WRK-CONS-SRYYM-200709 )
+           AND   ( RECE02-TEISYUTUSAKI =   "2"                   )
+               IF      RECE02-KOHNUM (1)   =   "190"
+                   MOVE    SPACE               TO  HC06-TOTALTEN(2)
+                                                   HC06-FTNMONEY(2)
+               END-IF
+               IF      RECE02-KOHNUM (2)   =   "190"
+                   MOVE    SPACE               TO  HC06-TOTALTEN(3)
+                                                   HC06-FTNMONEY(3)
                END-IF
            END-IF
       *
@@ -5688,44 +5627,17 @@ grpsys     PERFORM 900-DBSELECT-SEC
            EXIT.
       *
       *****************************************************************
-      *    帳票編集<適用欄下段コメント>処理
+      *    帳票編集<補足>処理
       *****************************************************************
        350-HC101-HOSOKU-HEN-SEC      SECTION.
       *
-      *    適用欄下段コメント（レセプト特記事項編集情報）
-           IF    ( RECE02-2006-TEKIYOU-COMMENT2 (1)    =   SPACE )
-           AND   ( RECE02-2006-TEKIYOU-COMMENT2 (2)    =   SPACE )
-           AND   ( RECE02-2006-TEKIYOU-COMMENT2 (3)    =   SPACE )
-           AND   ( RECE02-2006-TEKIYOU-COMMENT2 (4)    =   SPACE )
-           AND   ( RECE02-2006-TEKIYOU-COMMENT2 (5)    =   SPACE )
-               CONTINUE
-           ELSE
-               STRING  RECE02-2006-TEKIYOU-COMMENT2 (1)
-                                           DELIMITED   BY  SPACE
-                       RECE02-2006-TEKIYOU-COMMENT2 (2)
-                                           DELIMITED   BY  SPACE
-                       RECE02-2006-TEKIYOU-COMMENT2 (3)
-                                           DELIMITED   BY  SPACE
-                       RECE02-2006-TEKIYOU-COMMENT2 (4)
-                                           DELIMITED   BY  SPACE
-                       RECE02-2006-TEKIYOU-COMMENT2 (5)
-                                           DELIMITED   BY  SPACE
-                                           INTO    HC06-BODY
-               END-STRING        
-           END-IF
-      *
       *    県単用項目
-           IF    ( FLG-RECE11           =   ZERO  )
-           AND   ( RECE11-HC06-BODY NOT =   SPACE )    
+           IF      FLG-RECE11           =   ZERO
                INSPECT RECE11-HC06-BODY     REPLACING   ALL "  "
                                                         BY  "　" 
-               MOVE    RECE11-HC06-BODY     TO  HC06-BODY
-           END-IF
-      *
-      *    県単用項目（適用欄下段欄外コメント）
-           IF      FLG-RECE11           =   ZERO
                INSPECT RECE11-HC06-FOOT-G   REPLACING   ALL "  "
                                                         BY  "　" 
+               MOVE    RECE11-HC06-BODY     TO  HC06-BODY
                MOVE    RECE11-HC06-FOOT-G   TO  HC06-FOOT-G
            END-IF
       *
@@ -6005,68 +5917,6 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *
            .
        370-HC101-HKN-RIREKI-HEN-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    帳票編集<適用欄上段コメント>処理
-      *****************************************************************
-       380-HC101-TEKIYOU-COM-HEN-SEC      SECTION.
-      *
-      *    適用欄上段コメント（レセプト特記事項編集情報）
-           IF    ( RECE02-2006-TEKIYOU-COMMENT1 (1)    =   SPACE )
-           AND   ( RECE02-2006-TEKIYOU-COMMENT1 (2)    =   SPACE )
-           AND   ( RECE02-2006-TEKIYOU-COMMENT1 (3)    =   SPACE )
-           AND   ( RECE02-2006-TEKIYOU-COMMENT1 (4)    =   SPACE )
-           AND   ( RECE02-2006-TEKIYOU-COMMENT1 (5)    =   SPACE )
-               CONTINUE
-           ELSE
-      *        摘要欄に病名が記載されている場合１行あける
-               IF  WRK-LINETEK             >   ZERO
-                   IF      WRK-LINETEK         >=   WRK-TEKIYOU-LINE
-                       PERFORM 34120-PAGE-SEC
-                   ELSE
-                       ADD     1               TO  WRK-LINETEK
-                   END-IF
-               END-IF
-      *
-               PERFORM VARYING IDY     FROM    1   BY  1
-                       UNTIL   IDY     >       5
-                   IF      RECE02-2006-TEKIYOU-COMMENT1 (IDY)
-                                           NOT =   SPACE
-                       IF  WRK-LINETEK         >=  WRK-TEKIYOU-LINE
-                           PERFORM 34120-PAGE-SEC
-                       END-IF    
-                       ADD     1                   TO  WRK-LINETEK
-      *
-                       IF      CNT-PAGE        =   1   
-                           MOVE    RECE02-2006-TEKIYOU-COMMENT1 (IDY)
-                                           TO  HC06-TEKIYO (WRK-LINETEK)
-                       ELSE                    
-                           EVALUATE    SYS-2005-NEXTPRTKBN-G
-                               WHEN    "0"   
-                                   MOVE    RECE02-2006-TEKIYOU-COMMENT1
-                                                                   (IDY)
-                                       TO  HC06-TEKIYO (WRK-LINETEK)
-                               WHEN    "1"   
-                                   MOVE    RECE02-2006-TEKIYOU-COMMENT1
-                                                                   (IDY)
-                                           TO  HC061-TEKIYO(WRK-LINETEK)
-                               WHEN    "2"   
-                                   MOVE    RECE02-2006-TEKIYOU-COMMENT1
-                                                                   (IDY)
-                                           TO  HC062-TEKIYO(WRK-LINETEK)
-                               WHEN    "3"   
-                                   MOVE    RECE02-2006-TEKIYOU-COMMENT1
-                                                                   (IDY)
-                                           TO  HC063-TEKIYO(WRK-LINETEK)
-                           END-EVALUATE
-                       END-IF                    
-                   END-IF
-               END-PERFORM
-           END-IF
-      *
-           .
-       380-HC101-TEKIYOU-COM-HEN-EXT.
            EXIT.
       *
       *****************************************************************
@@ -6642,7 +6492,6 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE08-HOSPNUM
       *
            MOVE    RECE08-REC          TO  MCPDATA-REC
            PERFORM 900-RECE08-READ-SEC
-      
            IF      FLG-RECE08          =   ZERO
                DISPLAY "ORCR0104 MCP-RC=" MCP-RC " " RECE08-KEY 
                STRING   "レセプト明細に更新できません　患者番号＝"
@@ -7592,9 +7441,6 @@ grpsys     MOVE    RECE02-HOSPNUM      TO  RECE10-HOSPNUM
                END-IF
            END-IF
       *
-           MOVE    "00000000000000000000000000000000000000000000000000"
-                                       TO  RECE10-RESERVE-AREA
-      *
            MOVE    RECE10-REC          TO  MCPDATA-REC
            MOVE    "tbl_seikyu"        TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
@@ -7993,11 +7839,8 @@ grpsys             PERFORM 900-ORCDBMAIN-SEC
        300-END-SEC                 SECTION.
       *
       *    ファイルＣＬＯＳＥ処理
-           IF      WRK-PARA-SHELLID
-                                   NOT =   "RECEPTX"
-               CLOSE                       RECE02X-FILE
-           END-IF
            CLOSE                       RECE02-FILE
+           CLOSE                       RECE02X-FILE
            CLOSE                       RECE031-FILE
            CLOSE                       RECE061-FILE
                                        RECE09-FILE
@@ -8107,17 +7950,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            .
       *
        30011-MISEIKYU-FLG-03-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    一時ファイル名取得処理
-      *****************************************************************
-       800-FILENM-SET-SEC        SECTION.
-      *
-           MOVE    WRK-PARA-TERMID     TO  RECEDAT1PARA-TERMID
-           MOVE    WRK-PARA-HOSPNUM    TO  RECEDAT1PARA-HOSPNUM
-           .
-       800-FILENM-SET-EXT.
            EXIT.
       *
       *****************************************************************
