@@ -30,9 +30,6 @@
       *  00.00.01    NACL-¿¹ÏÆ    06/01/20  ÊÔÄÖÊ¬ÂÐ±þ
       *  03.04.01    NACL-¿¹ÏÆ    06/11/29  ¥Ñ¥é¥á¥¿ÊÑ¹¹
       *  03.05.00    NACL-¿¹ÏÆ    07/11/05  ¥°¥ë¡¼¥×¿ÇÎÅÂÐ±þ
-      *  04.02.01    NACL-¿¹ÏÆ    08/04/16  Ê¿À®£²£°Ç¯£´·î²þÀµ
-      *  04.07.01    NACL-Æ£¸¶    15/06/19  ¿ÇÎÅ²ÊÉ½¼¨·ï¿ô¤ÎÊÑ¹¹
-      *  04.08.01    NACL-¿¹ÏÆ    14/08/20  °ì»þ¥Õ¥¡¥¤¥ë¥Ç¥£¥ì¥¯¥È¥êÀßÄê
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -41,11 +38,8 @@
        FILE-CONTROL.
       *
       *    °õºþÍÑ¥Ç¡¼¥¿
-      *----(04.08.01)--UPD-START---
-      *     SELECT  PRT-FILE            ASSIGN  HC01PARA
-           SELECT  PRT-FILE            ASSIGN  ASGNPARA
+           SELECT  PRT-FILE            ASSIGN  HC01PARA
                                        FILE    STATUS  IS  STS-PARA.
-      *----(04.08.01)--UPD-END-----
       *
        DATA                    DIVISION.
        FILE                        SECTION.
@@ -58,9 +52,6 @@
       *
       *    °õºþÍÑ¥Ç¡¼¥¿ Ì¾¾ÎÎÎ°è 
            COPY    "CPCOMMONPRT.INC".
-      *----(04.08.01)--ADD-START---
-           COPY    "CPASGNPARA.INC".
-      *----(04.08.01)--ADD-END-----
       *
       *    ¥¹¥ÑÎÎ°è
        01  STS-AREA.
@@ -79,11 +70,6 @@
            03  CNT-TKENSU              PIC 9(10).
            03  CNT-GPAGE               PIC 9(10).
            03  CNT-GKENSU              PIC 9(10).
-      *----(04.02.01)--ADD-START---
-           03  CNT-SYAHO               PIC 9(02).
-           03  CNT-KOKUHO              PIC 9(02).
-           03  CNT-KOUIKI              PIC 9(02).
-      *----(04.02.01)--ADD-END-----
       *
       *    ¥·¥¹¥Æ¥àÎÎ°è
        01  SYS-AREA.
@@ -108,11 +94,10 @@
       *
            03  WRK-ZZ9                 PIC ZZ9.
            03  WRK-Z10                 PIC ZZZZZZZZZ9.
-      *----(04.02.01)--ADD-START---
-           03  WRK-NAME                PIC X(10).
-      *----(04.02.01)--ADD-END-----
       *
            COPY    "CPSHELLTBL.INC".
+      *
+           COPY    "ORCA-DBPATH".
       *
       *****************************************************************
       *    ¥µ¥Ö¥×¥íÍÑ¡¡ÎÎ°è
@@ -125,12 +110,10 @@
       *    £Ä£Â¸¡º÷
            COPY    "MCPAREA".
            COPY    "MCPDATA.INC".
+           COPY    "CPORCMCP.INC".
       *
       *    °õºþ¥Ñ¥é¥á¥¿
            COPY    "CPORCSMKPRT.INC".
-      *----(04.08.01)--ADD-START---
-           COPY    "CPORCSGETTEMP.INC".
-      *----(04.08.01)--ADD-END-----
       *
       *****************************************************************
       *    Ï¢Íí¡¡ÎÎ°è
@@ -141,8 +124,6 @@
        01  PARA-SYAPRTNM               PIC X(16).
       *----(03.04.01)--UPD-START---
        COPY    "R02SCR-SPA".
-       01  SPA-SCR-REC.
-           COPY    "CPR02SPASCR.INC".
       * 01  PARA-FILEKBN                PIC X(40).
       * 01  PARA-TBL1.
       *----(00.00.01)--UPD-START---
@@ -162,8 +143,7 @@
                                        SPA-AREA
                                        PARA-SYAPRTNM
       *----(03.04.01)--UPD-START---
-                                       SPA-R02
-                                       SPA-SCR-REC.
+                                       SPA-R02.
       *                                 PARA-FILEKBN
       *                                 PARA-TBL1.
       *----(03.04.01)--UPD-END-----
@@ -200,7 +180,6 @@
            EXIT.
       *
       *----(03.04.01)--UPD-START---
-      *----(04.02.01)--UPD-START---
       *****************************************************************
       *    ¼ç¡¡¡¡½èÍý
       *****************************************************************
@@ -210,71 +189,146 @@
            MOVE    0                   TO  CNT-GKENSU
            MOVE    0                   TO  CNT-TPAGE
            MOVE    0                   TO  CNT-TKENSU
-           MOVE    0                   TO  CNT-SYAHO
-           MOVE    0                   TO  CNT-KOKUHO
-           MOVE    0                   TO  CNT-KOUIKI
       *
       *    Ä¢É¼¸«½ÐÊÔ½¸½èÍý
            PERFORM 220-PRT-PAGE-SEC
       *
       *    ¼ÒÊÝ
-           MOVE    1                   TO  IDY
            PERFORM VARYING IDX     FROM    1   BY  1
                    UNTIL   IDX     >   24
-                   OR      SPA-GMN-TSYURUINAME(IDY IDX) =  SPACE
-               ADD     1           TO  CNT-SYAHO
-               PERFORM 210-LINE-SET-SEC
+               ADD     1                   TO  CNT-LINE
+               MOVE    SPA-GMN-TSYURUINAME(1 IDX)
+                                           TO  HCMC001-NAME(CNT-LINE)
+               MOVE    SPA-GMN-TKENSU(1 IDX)   TO  WRK-Z10
+               MOVE    WRK-Z10             TO  HCMC001-NAIYO(CNT-LINE 1)
+               MOVE    SPA-GMN-TPAGE(1 IDX)    TO  WRK-Z10
+               MOVE    WRK-Z10             TO  HCMC001-NAIYO(CNT-LINE 2)
+               ADD     SPA-GMN-TPAGE(1 IDX)    TO  CNT-TPAGE
+               ADD     SPA-GMN-TKENSU(1 IDX)   TO  CNT-TKENSU
            END-PERFORM
       *
-      *    ¼ÒÊÝ¹ç·×
-           PERFORM 210-GOKEI-SYAHO-SET-SEC
+           ADD     2                   TO  CNT-LINE
+           MOVE    "¼ÒÊÝ¡¡¾®·×"        TO  HCMC001-NAME(CNT-LINE)
+           MOVE    CNT-TKENSU          TO  WRK-Z10
+           MOVE    WRK-Z10             TO  HCMC001-NAIYO(CNT-LINE 1)
+           MOVE    CNT-TPAGE           TO  WRK-Z10
+           MOVE    WRK-Z10             TO  HCMC001-NAIYO(CNT-LINE 2)
       *
-      *    ¹ñÊÝ¡¢¹­°è
+           ADD     CNT-TPAGE           TO  CNT-GPAGE
+           ADD     CNT-TKENSU          TO  CNT-GKENSU
+      *
+           MOVE    0                   TO  CNT-TPAGE
+           MOVE    0                   TO  CNT-TKENSU
+           ADD     1                   TO  CNT-LINE
+      *
+      *    ¹ñÊÝ
+      *----(00.00.01)--UPD-START---
            PERFORM VARYING IDY     FROM    2   BY  1
-                   UNTIL ( IDY     >   19 )
-               PERFORM VARYING IDX     FROM    1   BY  1
-                       UNTIL ( IDX     >   36 )
-                       OR    ( SPA-GMN-TSYURUINAME(IDY IDX) =  SPACE )
-                   IF      SPA-NAI-TEISYUTUSAKI(IDY IDX)  = "6"
-      *                ¹ñÊÝ¹ç·×
-                       PERFORM 210-GOKEI-KOKUHO-SET-SEC
-                       MOVE    0           TO  CNT-KOKUHO
-                       ADD     1           TO  CNT-KOUIKI
-                   ELSE
-                       ADD     1           TO  CNT-KOKUHO
-                   END-IF
-                   PERFORM 210-LINE-SET-SEC
-               END-PERFORM
+                   UNTIL   IDY     >   21
+           PERFORM VARYING IDX     FROM    1   BY  1
+                   UNTIL   IDX     >   36
+                   OR      SPA-GMN-TSYURUINAME(IDY IDX) =  SPACE
+               IF      CNT-LINE    >=  35
+      *            °õºþ½èÍý
+                   PERFORM 400-PRINT-OUT-SEC
+      *            Ä¢É¼¸«½ÐÊÔ½¸½èÍý
+                   PERFORM 220-PRT-PAGE-SEC
+               END-IF
+               ADD     1                     TO  CNT-LINE
+               MOVE    SPA-GMN-TSYURUINAME(IDY IDX)
+                                             TO  HCMC001-NAME(CNT-LINE)
+               MOVE    SPA-GMN-TKENSU(IDY IDX)   TO  WRK-Z10
+               MOVE    WRK-Z10           TO  HCMC001-NAIYO(CNT-LINE 1)
+               MOVE    SPA-GMN-TPAGE(IDY IDX)    TO  WRK-Z10
+               MOVE    WRK-Z10           TO  HCMC001-NAIYO(CNT-LINE 2)
+               ADD     SPA-GMN-TPAGE(IDY IDX)    TO  CNT-TPAGE
+               ADD     SPA-GMN-TKENSU(IDY IDX)   TO  CNT-TKENSU
+           END-PERFORM
            END-PERFORM
       *
-      *    ¹ñÊÝ¹ç·×
-           PERFORM 210-GOKEI-KOKUHO-SET-SEC
+           ADD     1                   TO  CNT-LINE
+           IF      CNT-LINE    >=  35
+      *        °õºþ½èÍý
+               PERFORM 400-PRINT-OUT-SEC
+      *        Ä¢É¼¸«½ÐÊÔ½¸½èÍý
+               PERFORM 220-PRT-PAGE-SEC
+           END-IF
+           ADD     1                   TO  CNT-LINE
+           MOVE    "¹ñÊÝ¡¡¾®·×"        TO  HCMC001-NAME(CNT-LINE)
+           MOVE    CNT-TKENSU          TO  WRK-Z10
+           MOVE    WRK-Z10             TO  HCMC001-NAIYO(CNT-LINE 1)
+           MOVE    CNT-TPAGE           TO  WRK-Z10
+           MOVE    WRK-Z10             TO  HCMC001-NAIYO(CNT-LINE 2)
       *
-      *    ¹­°è¹ç·×
-           PERFORM 210-GOKEI-KOUIKI-SET-SEC
+           ADD     CNT-TPAGE           TO  CNT-GPAGE
+           ADD     CNT-TKENSU          TO  CNT-GKENSU
       *
-      *    ÆÃÊÌÎÅÍÜÈñ¡Ê¹­°è¡Ë
-           MOVE    1               TO  IDY
-           MOVE    33              TO  IDX
-           PERFORM 210-LINE-SET-SEC
-      *
-      *    ÆÃÊÌÎÅÍÜÈñ¡Ê¹ñÊÝ¡Ë
-           MOVE    1               TO  IDY
-           MOVE    34              TO  IDX
-           PERFORM 210-LINE-SET-SEC
+      *    ÆÃÊÌÎÅÍÜÈñ
+           ADD     1                   TO  CNT-LINE
+           IF      CNT-LINE    >=  35
+      *        °õºþ½èÍý
+               PERFORM 400-PRINT-OUT-SEC
+      *        Ä¢É¼¸«½ÐÊÔ½¸½èÍý
+               PERFORM 220-PRT-PAGE-SEC
+           END-IF
+           ADD     1                   TO  CNT-LINE
+           MOVE    SPA-GMN-TSYURUINAME(1 34)
+                                       TO  HCMC001-NAME(CNT-LINE)
+           MOVE    SPA-GMN-TKENSU(1 34)    TO  WRK-Z10
+           MOVE    WRK-Z10             TO  HCMC001-NAIYO(CNT-LINE 1)
+           MOVE    SPA-GMN-TPAGE(1 34)     TO  WRK-Z10
+           MOVE    WRK-Z10             TO  HCMC001-NAIYO(CNT-LINE 2)
+           ADD     SPA-GMN-TPAGE(1 34)     TO  CNT-GPAGE
+           ADD     SPA-GMN-TKENSU(1 34)    TO  CNT-GKENSU
       *
       *    ¼«Èñ
-           MOVE    1               TO  IDY
-           MOVE    35              TO  IDX
-           PERFORM 210-LINE-SET-SEC
+           IF      CNT-LINE    >=  35
+      *        °õºþ½èÍý
+               PERFORM 400-PRINT-OUT-SEC
+      *        Ä¢É¼¸«½ÐÊÔ½¸½èÍý
+               PERFORM 220-PRT-PAGE-SEC
+           END-IF
+           ADD     1                   TO  CNT-LINE
+           MOVE    SPA-GMN-TSYURUINAME(1 35)
+                                       TO  HCMC001-NAME(CNT-LINE)
+           MOVE    SPA-GMN-TKENSU(1 35)    TO  WRK-Z10
+           MOVE    WRK-Z10             TO  HCMC001-NAIYO(CNT-LINE 1)
+           MOVE    SPA-GMN-TPAGE(1 35)     TO  WRK-Z10
+           MOVE    WRK-Z10             TO  HCMC001-NAIYO(CNT-LINE 2)
+           ADD     SPA-GMN-TPAGE(1 35)     TO  CNT-GPAGE
+           ADD     SPA-GMN-TKENSU(1 35)    TO  CNT-GKENSU
       *
+           IF      CNT-LINE    >=  35
+      *        °õºþ½èÍý
+               PERFORM 400-PRINT-OUT-SEC
+      *        Ä¢É¼¸«½ÐÊÔ½¸½èÍý
+               PERFORM 220-PRT-PAGE-SEC
+           END-IF
       *    ÉÔÌÀ
-           MOVE    1               TO  IDY
-           MOVE    36              TO  IDX
-           PERFORM 210-LINE-SET-SEC
+           ADD     1                   TO  CNT-LINE
+           MOVE    SPA-GMN-TSYURUINAME(1 36)
+                                       TO  HCMC001-NAME(CNT-LINE)
+           MOVE    SPA-GMN-TKENSU(1 36)    TO  WRK-Z10
+           MOVE    WRK-Z10             TO  HCMC001-NAIYO(CNT-LINE 1)
+           MOVE    SPA-GMN-TPAGE(1 36)     TO  WRK-Z10
+           MOVE    WRK-Z10             TO  HCMC001-NAIYO(CNT-LINE 2)
+           ADD     SPA-GMN-TPAGE(1 36)     TO  CNT-GPAGE
+           ADD     SPA-GMN-TKENSU(1 36)    TO  CNT-GKENSU
       *
       *    ¹ç·×
-           PERFORM 210-GOKEI-GOKEI-SET-SEC
+           ADD     1                   TO  CNT-LINE
+           IF      CNT-LINE    >=  35
+      *        °õºþ½èÍý
+               PERFORM 400-PRINT-OUT-SEC
+      *        Ä¢É¼¸«½ÐÊÔ½¸½èÍý
+               PERFORM 220-PRT-PAGE-SEC
+           END-IF
+           ADD     1                   TO  CNT-LINE
+           MOVE    "¹ç¡¡¡¡·×"          TO  HCMC001-NAME(CNT-LINE)
+           MOVE    CNT-GKENSU          TO  WRK-Z10
+           MOVE    WRK-Z10             TO  HCMC001-NAIYO(CNT-LINE 1)
+           MOVE    CNT-GPAGE           TO  WRK-Z10
+           MOVE    WRK-Z10             TO  HCMC001-NAIYO(CNT-LINE 2)
       *
       *----(00.00.01)--UPD-END-----
       *    °õºþ½èÍý
@@ -284,170 +338,7 @@
        200-MAIN-EXT.
            EXIT.
       *
-      *----(04.02.01)--UPD-END-----
       *----(03.04.01)--UPD-END-----
-      *----(04.02.01)--ADD-START---
-      *****************************************************************
-      *    Ä¢É¼ÌÀºÙ¥»¥Ã¥È½èÍý
-      *****************************************************************
-       210-LINE-SET-SEC            SECTION.
-      *
-           IF      SPA-GMN-TSYURUINAME(IDY IDX) =  SPACE
-               GO  TO  210-LINE-SET-EXT
-           END-IF
-      *
-           IF      CNT-LINE    >=  35
-      *        °õºþ½èÍý
-               PERFORM 400-PRINT-OUT-SEC
-      *        Ä¢É¼¸«½ÐÊÔ½¸½èÍý
-               PERFORM 220-PRT-PAGE-SEC
-           END-IF
-      *
-           ADD     1               TO  CNT-LINE
-           MOVE    SPA-GMN-TSYURUINAME(IDY IDX)
-                                   TO  HCMC001-NAME(CNT-LINE)
-           MOVE    SPA-GMN-TKENSU(IDY IDX)
-                                   TO  WRK-Z10
-           MOVE    WRK-Z10         TO  HCMC001-NAIYO(CNT-LINE 1)
-           MOVE    SPA-GMN-TPAGE(IDY IDX)
-                                   TO  WRK-Z10
-           MOVE    WRK-Z10         TO  HCMC001-NAIYO(CNT-LINE 2)
-           ADD     SPA-GMN-TPAGE(IDY IDX)
-                                   TO  CNT-TPAGE
-           ADD     SPA-GMN-TKENSU(IDY IDX)
-                                   TO  CNT-TKENSU
-      *
-           .
-       210-LINE-SET-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    Ä¢É¼¹ç·×¥»¥Ã¥È½èÍý
-      *****************************************************************
-       210-GOKEI-SET-SEC           SECTION.
-      *
-           ADD     1               TO  CNT-LINE
-      *
-           IF      CNT-LINE    >=  35
-      *        °õºþ½èÍý
-               PERFORM 400-PRINT-OUT-SEC
-      *        Ä¢É¼¸«½ÐÊÔ½¸½èÍý
-               PERFORM 220-PRT-PAGE-SEC
-           END-IF
-      *
-           ADD     1               TO  CNT-LINE
-           MOVE    WRK-NAME        TO  HCMC001-NAME(CNT-LINE)
-           MOVE    CNT-TKENSU      TO  WRK-Z10
-           MOVE    WRK-Z10         TO  HCMC001-NAIYO(CNT-LINE 1)
-           MOVE    CNT-TPAGE       TO  WRK-Z10
-           MOVE    WRK-Z10         TO  HCMC001-NAIYO(CNT-LINE 2)
-      *
-           .
-       210-GOKEI-SET-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    Ä¢É¼¹ç·×¥»¥Ã¥È½èÍý
-      *****************************************************************
-       210-GOKEI-GOKEI-SET-SEC     SECTION.
-      *
-           ADD     CNT-TPAGE           TO  CNT-GPAGE
-           ADD     CNT-TKENSU          TO  CNT-GKENSU
-      *
-           ADD     1               TO  CNT-LINE
-      *
-           IF      CNT-LINE    >=  35
-      *        °õºþ½èÍý
-               PERFORM 400-PRINT-OUT-SEC
-      *        Ä¢É¼¸«½ÐÊÔ½¸½èÍý
-               PERFORM 220-PRT-PAGE-SEC
-           END-IF
-      *
-           ADD     1               TO  CNT-LINE
-      *
-           MOVE    "¹ç¡¡¡¡¡¡·×"    TO  HCMC001-NAME(CNT-LINE)
-           MOVE    CNT-GKENSU      TO  WRK-Z10
-           MOVE    WRK-Z10         TO  HCMC001-NAIYO(CNT-LINE 1)
-           MOVE    CNT-GPAGE       TO  WRK-Z10
-           MOVE    WRK-Z10         TO  HCMC001-NAIYO(CNT-LINE 2)
-      *
-           .
-       210-GOKEI-GOKEI-SET-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    Ä¢É¼¼ÒÊÝ¹ç·×¥»¥Ã¥È½èÍý
-      *****************************************************************
-       210-GOKEI-SYAHO-SET-SEC     SECTION.
-      *
-           IF      CNT-SYAHO       =   0
-               GO  TO  210-GOKEI-SYAHO-SET-EXT
-           END-IF
-      *
-           IF      SPA-GMN-PRTJYUN     =   "01" OR "02" OR "09" OR "10"
-               MOVE    "¼ÒÊÝ¡¡¾®·×"    TO  WRK-NAME
-               PERFORM 210-GOKEI-SET-SEC
-           END-IF
-      *
-           ADD     CNT-TPAGE           TO  CNT-GPAGE
-           ADD     CNT-TKENSU          TO  CNT-GKENSU
-           MOVE    0                   TO  CNT-TPAGE
-           MOVE    0                   TO  CNT-TKENSU
-           ADD     1                   TO  CNT-LINE
-      *
-           .
-       210-GOKEI-SYAHO-SET-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    Ä¢É¼¹ñÊÝ¹ç·×¥»¥Ã¥È½èÍý
-      *****************************************************************
-       210-GOKEI-KOKUHO-SET-SEC    SECTION.
-      *
-           IF      CNT-KOKUHO      =   0
-               GO  TO  210-GOKEI-KOKUHO-SET-EXT
-           END-IF
-      *
-           IF      SPA-GMN-PRTJYUN1    =   "01" OR "02" OR "09" OR "10"
-               MOVE    "¹ñÊÝ¡¡¾®·×"    TO  WRK-NAME
-               PERFORM 210-GOKEI-SET-SEC
-           END-IF
-      *
-           ADD     CNT-TPAGE           TO  CNT-GPAGE
-           ADD     CNT-TKENSU          TO  CNT-GKENSU
-           MOVE    0                   TO  CNT-TPAGE
-           MOVE    0                   TO  CNT-TKENSU
-           ADD     1                   TO  CNT-LINE
-      *
-           .
-       210-GOKEI-KOKUHO-SET-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    Ä¢É¼¹­°è¹ç·×¥»¥Ã¥È½èÍý
-      *****************************************************************
-       210-GOKEI-KOUIKI-SET-SEC    SECTION.
-      *
-           IF      CNT-KOUIKI      =   0
-               GO  TO  210-GOKEI-KOUIKI-SET-EXT
-           END-IF
-      *
-           IF      SPA-GMN-PRTJYUN2    =   "01" OR "02" OR "09" OR "10"
-               MOVE    "¹­°è¡¡¾®·×"    TO  WRK-NAME
-               PERFORM 210-GOKEI-SET-SEC
-           END-IF
-      *
-           ADD     CNT-TPAGE           TO  CNT-GPAGE
-           ADD     CNT-TKENSU          TO  CNT-GKENSU
-           MOVE    0                   TO  CNT-TPAGE
-           MOVE    0                   TO  CNT-TKENSU
-           ADD     1                   TO  CNT-LINE
-      *
-           .
-       210-GOKEI-KOUIKI-SET-EXT.
-           EXIT.
-      *
-      *----(04.02.01)--ADD-END-----
       *****************************************************************
       *    Ä¢É¼<¸«½Ð>ÊÔ½¸½èÍý
       *****************************************************************
@@ -494,13 +385,6 @@
            MOVE    SPA-TERMID          TO  HC01PARA-TERMID
            MOVE    SYS-TIME            TO  HC01PARA-SYOHMS
            MOVE    CNT-PAGE            TO  HC01PARA-CNT
-      *----(04.08.01)--ADD-START---
-           INITIALIZE                      SGETTEMP-AREA
-           MOVE    HC01PARA            TO  SGETTEMP-BASENAME
-           CALL    "ORCSGETTEMP"           USING
-                                           SGETTEMP-AREA
-           MOVE    SGETTEMP-FULLNAME   TO  ASGNPARA
-      *----(04.08.01)--ADD-END-----
            OPEN    OUTPUT              PRT-FILE
            WRITE   HCMC001
            CLOSE                       PRT-FILE
@@ -509,10 +393,7 @@
            MOVE    "HC01.sh"           TO  MKPRT-ID
            MOVE    "HCMC001.red"       TO  MKPRT-DIA
            MOVE    SPACE               TO  MKPRT-DEF
-      *----(04.08.01)--UPD-START---
-      *     MOVE    HC01PARA            TO  MKPRT-DAT
-           MOVE    ASGNPARA            TO  MKPRT-DAT
-      *----(04.08.01)--UPD-END-----
+           MOVE    HC01PARA            TO  MKPRT-DAT
            MOVE    PARA-SYAPRTNM       TO  MKPRT-PRTNM
            CALL    "ORCSMKPRT"         USING
                                        ORCSMKPRTAREA
