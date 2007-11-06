@@ -39,6 +39,8 @@
                05  ORCHCM34-SRYKADAY-G.
                    07  ORCHCM34-SRYKADAY   PIC 9(01)
                                            OCCURS  31.
+      *        保険区分 0:保険毎に改頁1:社保2:国保3:その他
+               05  ORCHCM34-HOKEN          PIC X(01).
       *        一括パラメタ
                05  ORCHCM34-PRTAREA        PIC X(25000).
       *

@@ -170,6 +170,10 @@
            03  FLG-SENTEI-HEN                      PIC 9(01).
            03  FLG-JIHI-HEN                        PIC 9(01).
            03  FLG-SRYSTATUS                       PIC 9(01).
+           03  FLG-TARGET                          PIC 9(01).
+           03  FLG-HIT                             PIC 9(01).
+           03  FLG-ORCSHKNSET                      PIC 9(01)
+                                                   OCCURS 100.
       *
       *    カウント領域
        01  CNT-AREA.
@@ -233,6 +237,7 @@
            03  IDX30                               PIC 9(05).
            03  IDX31                               PIC 9(05).
            03  IDX32                               PIC 9(05).
+           03  IDX33                               PIC 9(05).
            03  IDXA                                PIC 9(05).
            03  IDXB                                PIC 9(05).
            03  IDXC                                PIC 9(05).
@@ -398,6 +403,7 @@
                05  WRK-CALCSRYCD                   PIC 9(01) OCCURS  9.
            03  WRK-NUM                             PIC 9(01).
            03  WRK-DBYMD                           PIC X(08).
+           03  WRK-HOKEN                           PIC X(01).
       *
        01  COMMENT-CHK-AREA.
            03  COMMENT-IDX                         PIC 9(03).
@@ -1167,6 +1173,42 @@
                MOVE    SPACE           TO  WRK-HCM34-BTUNAME
            END-EVALUATE
       *
+      *
+           INITIALIZE                  ORCSHKNSETAREA
+           INITIALIZE                  WRK-SPA-AREA
+      *
+           MOVE    PTINF-HOSPNUM    TO  WRK-SPA-HOSPNUM
+           MOVE    PTINF-PTID      TO  WRK-SPA-PTID
+           MOVE    PTINF-BIRTHDAY  TO  WRK-SPA-BIRTHDAY
+           MOVE    ORCHCM34-SRYYM  TO  WRK-SPA-SRYYMD (1:6)
+           MOVE    "01"            TO  WRK-SPA-SRYYMD (7:2)
+      *
+           MOVE    ORCHCM34-NYUGAIKBN
+                                   TO  WRK-SPA-NYUGAIKBN
+           MOVE    "2"             TO  ORCSHKN-KBN
+      *
+           CALL    "ORCSHKNSET"    USING   WRK-SPA-AREA
+                                           ORCSHKNSETAREA
+           IF    ( ORCSHKN-ERRCD   NOT =   ZERO )
+               INITIALIZE              ORCSHKNSETAREA
+           END-IF
+      *
+           PERFORM VARYING IDX0    FROM    1   BY  1
+                   UNTIL ( IDX0    >   ORCSHKN-HKN-MAX )
+      *
+               IF    ( ORCHCM34-HOKEN  =   SPACE )
+                   MOVE    1       TO  FLG-ORCSHKNSET (IDX0)
+               ELSE
+                   MOVE    ORCSHKN-NAI-HKNNUM (IDX0)
+                                   TO  WRK-HKNNUM
+      *
+                   PERFORM 800-HOKENBUNRUI-SEC
+                   IF    ( ORCHCM34-HOKEN  =   WRK-HOKEN )
+                       MOVE    1   TO  FLG-ORCSHKNSET (IDX0)
+                   END-IF
+               END-IF
+           END-PERFORM
+      *
            .
        1001-KHN-EDIT-EXT.
            EXIT.
@@ -1610,33 +1652,29 @@
       *
            INITIALIZE                  WKHKNCOMBI-AREA
       *
-           INITIALIZE                  ORCSHKNSETAREA
-           INITIALIZE                  WRK-SPA-AREA
-      *
-           MOVE    PTINF-HOSPNUM    TO  WRK-SPA-HOSPNUM
-           MOVE    PTINF-PTID      TO  WRK-SPA-PTID
-           MOVE    PTINF-BIRTHDAY  TO  WRK-SPA-BIRTHDAY
-           MOVE    ORCHCM34-SRYYM  TO  WRK-SPA-SRYYMD (1:6)
-           MOVE    "01"            TO  WRK-SPA-SRYYMD (7:2)
-      *
-           MOVE    ORCHCM34-NYUGAIKBN
-                                   TO  WRK-SPA-NYUGAIKBN
-           MOVE    "2"             TO  ORCSHKN-KBN
-      *
-           CALL    "ORCSHKNSET"    USING   WRK-SPA-AREA
-                                           ORCSHKNSETAREA
-           IF    ( ORCSHKN-ERRCD   NOT =   ZERO )
-               INITIALIZE              ORCSHKNSETAREA
-           END-IF
-      *
            MOVE    ZERO            TO  CNT-HKNCOMBI-LINE
            PERFORM VARYING IDX1    FROM    1   BY  1
                    UNTIL ( IDX1    >   ORCSHKN-HKN-MAX )
+      *
+               MOVE    1           TO  FLG-TARGET
+      *
+      *
+               IF    ( FLG-ORCSHKNSET (IDX1)   =   1 )
+                   CONTINUE
+               ELSE
+                   MOVE    ZERO    TO  FLG-TARGET
+               END-IF
       *
                IF    ( ORCHCM34-SRYYM
                                    >=  ORCSHKN-NAI-TEKSTYMD(IDX1)(1:6))
                 AND  ( ORCHCM34-SRYYM
                                    <=  ORCSHKN-NAI-TEKEDYMD(IDX1)(1:6))
+                   CONTINUE
+               ELSE
+                   MOVE    ZERO    TO  FLG-TARGET
+               END-IF
+      *
+               IF    ( FLG-TARGET  =   1 )
                    IF    ( CNT-HKNCOMBI-LINE
                                        <    CONST-HKNCOMBI-LINE-MAX )
       *
@@ -1673,8 +1711,10 @@
       *
            END-PERFORM
       *
-      *    保険組み合わせ包括分編集処理
-           PERFORM 20011-HOUKATU-HEN-SEC
+           IF    ( ORCHCM34-HOKEN  =   SPACE   OR  "3" )
+      *        保険組み合わせ包括分編集処理
+               PERFORM 20011-HOUKATU-HEN-SEC
+           END-IF
       *
            .
        2001-HKNCOMBI-HEN-EXT.
@@ -1841,9 +1881,44 @@
            MOVE    ZERO            TO  CNT-HKNKOH-LINE
            PERFORM UNTIL ( FLG-PTHKNINF    NOT =   ZERO )
       *
+               MOVE    1           TO  FLG-TARGET
+      *
                IF    ( PTHKN-SAKJOKBN   =  SPACE )
-                AND  ( ORCHCM34-SRYYM  >=  PTHKN-TEKSTYMD (1:6))
+                   CONTINUE
+               ELSE
+                   MOVE    ZERO    TO  FLG-TARGET
+               END-IF
+      *
+               IF    ( ORCHCM34-SRYYM  >=  PTHKN-TEKSTYMD (1:6))
                 AND  ( ORCHCM34-SRYYM  <=  PTHKN-TEKEDYMD (1:6))
+                   CONTINUE
+               ELSE
+                   MOVE    ZERO    TO  FLG-TARGET
+               END-IF
+      *
+               IF    ( ORCHCM34-HOKEN  =   SPACE )
+                   CONTINUE
+               ELSE
+                   MOVE    ZERO    TO  FLG-HIT
+                   PERFORM VARYING IDX0    FROM    1   BY  1
+                           UNTIL ( IDX0    >   ORCSHKN-HKN-MAX )
+                            OR   ( FLG-HIT =   1 )
+                       IF    ( FLG-ORCSHKNSET (IDX0)   =   1 )
+                        AND  ( PTHKN-HKNID =   ORCSHKN-NAI-HKNID (IDX0))
+                           MOVE    1   TO  FLG-HIT
+                       END-IF
+                   END-PERFORM
+      *
+                   IF    ( FLG-HIT     =   1 )
+                       CONTINUE
+                   ELSE
+                       MOVE    ZERO    TO  FLG-TARGET
+                   END-IF
+      *
+               END-IF
+      *
+               IF    ( FLG-TARGET      =   1 )
+      *
                    IF    ( CNT-HKNKOH-LINE
                                        <    CONST-HKNKOH-LINE-MAX )
                        PERFORM 20011-PTHKN-HEN-SEC
@@ -2157,9 +2232,47 @@
       *
            PERFORM UNTIL ( FLG-PTKOHINF    NOT =   ZERO )
       *
-               IF    ( PTKOH-SAKJOKBN   =  SPACE )
-                AND  ( ORCHCM34-SRYYM  >=  PTKOH-TEKSTYMD (1:6))
+               MOVE    1               TO  FLG-TARGET
+      *
+               IF    ( PTKOH-SAKJOKBN  =  SPACE )
+                   CONTINUE
+               ELSE
+                   MOVE    ZERO        TO  FLG-TARGET
+               END-IF
+      *
+               IF    ( ORCHCM34-SRYYM  >=  PTKOH-TEKSTYMD (1:6))
                 AND  ( ORCHCM34-SRYYM  <=  PTKOH-TEKEDYMD (1:6))
+                   CONTINUE
+               ELSE
+                   MOVE    ZERO        TO  FLG-TARGET
+               END-IF
+      *
+               IF    ( ORCHCM34-HOKEN  =   SPACE )
+                   CONTINUE
+               ELSE
+                   MOVE    ZERO    TO  FLG-HIT
+                   PERFORM VARYING IDX0    FROM    1   BY  1
+                           UNTIL ( IDX0    >   ORCSHKN-HKN-MAX )
+                            OR   ( FLG-HIT =   1 )
+                       IF    ( FLG-ORCSHKNSET (IDX0)   =   1 )
+                        AND  ( PTKOH-KOHID = ORCSHKN-NAI-KOHID (IDX0 1)
+                                         OR  ORCSHKN-NAI-KOHID (IDX0 2)
+                                         OR  ORCSHKN-NAI-KOHID (IDX0 3)
+                                         OR  ORCSHKN-NAI-KOHID (IDX0 4))
+                           MOVE    1   TO  FLG-HIT
+                       END-IF
+      *
+                   END-PERFORM
+      *
+                   IF    ( FLG-HIT     =   1 )
+                       CONTINUE
+                   ELSE
+                       MOVE    ZERO    TO  FLG-TARGET
+                   END-IF
+      *
+               END-IF
+      *
+               IF    ( FLG-TARGET      =   1 )
                    IF    ( CNT-HKNKOH-LINE
                                        <    CONST-HKNKOH-LINE-MAX )
                        PERFORM 20011-PTKOH-HEN-SEC
@@ -2295,16 +2408,46 @@
            MOVE    ZERO            TO  CNT-BYOMEI-LINE
            PERFORM UNTIL ( FLG-PTBYOMEI    NOT =   ZERO )
       *
-               IF    ( CNT-BYOMEI-LINE
-                                       <    CONST-BYOMEI-LINE-MAX )
-                   PERFORM 20011-PTBYOMEI-HEN-SEC
+               MOVE    1           TO  FLG-TARGET
+      *
+               IF    ( ORCHCM34-HOKEN  =   SPACE )
+                OR   ( PTBYO-HKNCOMBI  =   SPACE )
+                   CONTINUE
                ELSE
-                   IF    ( WKPTBYOMEI-MAX  <   300 )
-                       COMPUTE WKPTBYOMEI-MAX  =   WKPTBYOMEI-MAX
-                                               +   1
-                       MOVE    WKPTBYOMEI-MAX  TO  IDXA
-                       MOVE    PTBYOMEI-REC    TO  WKPTBYOMEI-OCC
-                                                            (IDXA)
+                   MOVE    ZERO    TO  FLG-HIT
+                   PERFORM VARYING IDX0    FROM    1   BY  1
+                           UNTIL ( IDX0    >   ORCSHKN-HKN-MAX )
+                            OR   ( FLG-HIT =   1 )
+      *
+                       IF    ( PTBYO-HKNCOMBI
+                                   =   ORCSHKN-GMN-HKNCOMBINUM (IDX0))
+      *
+                           MOVE    1       TO  FLG-HIT
+      *
+                           IF    ( FLG-ORCSHKNSET (IDX0)   =   1 )
+                               CONTINUE
+                           ELSE
+                               MOVE    ZERO    TO FLG-TARGET
+                           END-IF
+                       END-IF
+      *
+                   END-PERFORM
+      *
+               END-IF
+      *
+               IF    ( FLG-TARGET      =   1 )
+      *
+                   IF    ( CNT-BYOMEI-LINE
+                                       <    CONST-BYOMEI-LINE-MAX )
+                       PERFORM 20011-PTBYOMEI-HEN-SEC
+                   ELSE
+                       IF    ( WKPTBYOMEI-MAX  <   300 )
+                           COMPUTE WKPTBYOMEI-MAX  =   WKPTBYOMEI-MAX
+                                                   +   1
+                           MOVE    WKPTBYOMEI-MAX  TO  IDXA
+                           MOVE    PTBYOMEI-REC    TO  WKPTBYOMEI-OCC
+                                                                (IDXA)
+                       END-IF
                    END-IF
                END-IF
       *
@@ -4964,33 +5107,54 @@
            PERFORM VARYING IDX27   FROM    1   BY  1
                    UNTIL ( IDX27   >   TCOMBI-MAX )
       *
-               MOVE    TCOMBI-HKNCOMBI (IDX27) TO  WRK-HKNCOMBINUM
-               PERFORM 900-HKNCOMBI-KEY-SEL-SEC
+               MOVE    1           TO  FLG-TARGET
+               MOVE    ZERO        TO  FLG-HIT
       *
-               INITIALIZE                  HCM34S01-AREA
-               MOVE    NACCT-HOSPNUM        TO  HCM34S01-HOSPNUM
-               MOVE    NACCT-PTID          TO  HCM34S01-PTID
-               MOVE    NACCT-SRYYM         TO  HCM34S01-SANTEIYM
-               MOVE    COMB-HKNCOMBINUM    TO  HCM34S01-HKNCOMBI
-               MOVE    COMB-HKNNUM         TO  HCM34S01-HKNNUM
-               MOVE    ORCHCM34-SRYKAKBN   TO  HCM34S01-SRYKAKBN
-               MOVE    ORCHCM34-SRYKA      TO  HCM34S01-SRYKA
-               MOVE    ORCHCM34-SRYKADAY-G TO  HCM34S01-SRYKADAY-G
+               PERFORM VARYING IDX33   FROM    1   BY  1
+                       UNTIL ( IDX33   >   ORCSHKN-HKN-MAX )
+                        OR   ( FLG-HIT =   1 )
       *
-               IF    ( COMB-HKNNUM         =     "971" OR "973" )
+                   IF    ( TCOMBI-HKNCOMBI (IDX27)
+                                   =   ORCSHKN-GMN-HKNCOMBINUM (IDX33))
+                       MOVE    1   TO  FLG-HIT
+                       IF    ( FLG-ORCSHKNSET (IDX33)  =   1 )
+                           CONTINUE
+                       ELSE
+                           MOVE    ZERO    TO FLG-TARGET
+                       END-IF
+                   END-IF
       *
-                   CALL    "ORCHCM34S02"       USING HCM34S01-AREA
-                                                     SPA-AREA
-               ELSE
+               END-PERFORM
       *
-                   CALL    "ORCHCM34S01"       USING HCM34S01-AREA
-                                                     SPA-AREA
-               END-IF
+               IF    ( FLG-TARGET      =   1 )
+                   MOVE    TCOMBI-HKNCOMBI (IDX27) TO  WRK-HKNCOMBINUM
+                   PERFORM 900-HKNCOMBI-KEY-SEL-SEC
       *
-               MOVE    HCM34S01-SENTEI-PTFTN
+                   INITIALIZE                  HCM34S01-AREA
+                   MOVE    NACCT-HOSPNUM        TO  HCM34S01-HOSPNUM
+                   MOVE    NACCT-PTID          TO  HCM34S01-PTID
+                   MOVE    NACCT-SRYYM         TO  HCM34S01-SANTEIYM
+                   MOVE    COMB-HKNCOMBINUM    TO  HCM34S01-HKNCOMBI
+                   MOVE    COMB-HKNNUM         TO  HCM34S01-HKNNUM
+                   MOVE    ORCHCM34-SRYKAKBN   TO  HCM34S01-SRYKAKBN
+                   MOVE    ORCHCM34-SRYKA      TO  HCM34S01-SRYKA
+                   MOVE    ORCHCM34-SRYKADAY-G TO  HCM34S01-SRYKADAY-G
+      *
+                   IF    ( COMB-HKNNUM         =     "971" OR "973" )
+      *
+                       CALL    "ORCHCM34S02"       USING HCM34S01-AREA
+                                                         SPA-AREA
+                   ELSE
+      *
+                       CALL    "ORCHCM34S01"       USING HCM34S01-AREA
+                                                         SPA-AREA
+                   END-IF
+      *
+                   MOVE    HCM34S01-SENTEI-PTFTN
                                    TO  TCOMBI-SENTEI-PTFTN (IDX27)
       *
-               PERFORM 20011-HCM34ACCT-INS-SEC
+                   PERFORM 20011-HCM34ACCT-INS-SEC
+               END-IF
       *
            END-PERFORM
       *
@@ -5896,6 +6060,7 @@
       *
            ACCEPT  SYS-TIME            FROM    TIME
       *
+           MOVE    SPA-HOSPNUM         TO  HC01PARA-HOSPNUM
            MOVE    "HC01"              TO  HC01PARA-FORM-ID
            MOVE    SPA-TERMID          TO  HC01PARA-TERMID
            MOVE    SYS-TIME            TO  HC01PARA-SYOHMS
@@ -6162,6 +6327,36 @@
            EXIT.
       *
       *****************************************************************
+      *    保険分類処理
+      *****************************************************************
+       800-HOKENBUNRUI-SEC         SECTION.
+      *
+           INITIALIZE              WRK-HOKEN
+      *
+           EVALUATE    WRK-HKNNUM
+           WHEN    SPACE
+               MOVE    "1"         TO  WRK-HOKEN
+           WHEN    "971"
+               MOVE    "3"         TO  WRK-HOKEN
+           WHEN    "973"
+               MOVE    "3"         TO  WRK-HOKEN
+           WHEN    "060"
+           WHEN    "067"
+           WHEN    "068"
+           WHEN    "069"
+               MOVE    "2"         TO  WRK-HOKEN
+           WHEN    OTHER
+               IF    ( WRK-HKNNUM (1:2)   =   "98" )
+                   MOVE    "3"     TO  WRK-HOKEN
+               ELSE
+                   MOVE    "1"     TO  WRK-HOKEN
+               END-IF
+           END-EVALUATE
+      *
+           .
+       800-HOKENBUNRUI-EXT.
+           EXIT.
+      *****************************************************************
       *    全角変換処理
       *****************************************************************
        800-ZENKAKU-HEN-SEC         SECTION.
@@ -6418,6 +6613,10 @@
                        IF    ( ORCHCM34-SRYKA  NOT =   SRY-SRYKA )
                            MOVE    ZERO    TO  FLG-LOOPEND
                        END-IF
+      *
+      *--------------------------------------------------------
+      *                保険組合せでの振り落としは編集時に行う
+      *--------------------------------------------------------
                    END-IF
                ELSE
                    INITIALIZE                  SRYACT-REC
@@ -6477,6 +6676,30 @@
                        IF    ( ORCHCM34-SRYKA  NOT =   ACCT-SRYKA )
                            MOVE    ZERO    TO  FLG-LOOPEND
                        END-IF
+                   END-IF
+      *
+                   IF    ( ORCHCM34-HOKEN      =   SPACE )
+                    OR  (( ORCHCM34-HOKEN      =   "3" )
+                     AND (ACCT-HKNCOMBI        =   9999 ))
+                       CONTINUE
+                   ELSE
+                       MOVE    ZERO    TO  FLG-HIT
+                       PERFORM VARYING IDX33   FROM    1   BY  1
+                               UNTIL ( IDX33   >   ORCSHKN-HKN-MAX )
+                                OR   ( FLG-HIT =   1 )
+                           IF    ( ACCT-HKNCOMBI
+                                           =   ORCSHKN-GMN-HKNCOMBINUM
+                                                                (IDX33))
+                               MOVE    1   TO  FLG-HIT
+                               IF    ( FLG-ORCSHKNSET (IDX33)
+                                                   =   1)
+                                   CONTINUE
+                               ELSE
+                                   MOVE    ZERO    TO  FLG-LOOPEND
+                               END-IF
+                           END-IF
+                       END-PERFORM
+      *
                    END-IF
                ELSE
                    MOVE    1               TO  FLG-SRYACCT
