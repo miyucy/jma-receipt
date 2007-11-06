@@ -20,13 +20,58 @@
       *  03.05.01    NACL-藤原    07/04/19  グループ診療対応
       ************************************************************
        01  SS001-AREA.
-           03  SS001-HOSPNUM           PIC 9(2).
-           03  SS001-PTID              PIC 9(10).
-           03  SS001-SRYYM             PIC X(06).
+           03  SS001-HOSPNUM                       PIC 9(2).
+           03  SS001-PTID                          PIC 9(10).
+           03  SS001-SRYYM                         PIC X(06).
+           03  SS001-SRYKAKBN                      PIC X(01).
            03  SS001-HKNGRP-G.
-               05  SS001-GIHO-FLG      PIC 9(01).
-               05  SS001-GRSI-FLG      PIC 9(01).
-               05  SS001-GJBI-FLG      PIC 9(01).
-               05  SS001-NIHO-FLG      PIC 9(01).
-               05  SS001-NRSI-FLG      PIC 9(01).
-               05  SS001-NJBI-FLG      PIC 9(01).
+      *
+               05  SS001-NIHO-FLG                  PIC 9(01).
+               05  SS001-NRSI-FLG                  PIC 9(01).
+               05  SS001-NJBI-FLG                  PIC 9(01).
+               05  SS001-NSYA-FLG                  PIC 9(01).
+               05  SS001-NKOK-FLG                  PIC 9(01).
+               05  SS001-NJHI-FLG                  PIC 9(01).
+               05  SS001-NHKT-FLG                  PIC 9(01).
+      *
+               05  SS001-GIHO-FLG                  PIC 9(01).
+               05  SS001-GRSI-FLG                  PIC 9(01).
+               05  SS001-GJBI-FLG                  PIC 9(01).
+               05  SS001-GSYA-FLG                  PIC 9(01).
+               05  SS001-GKOK-FLG                  PIC 9(01).
+               05  SS001-GJHI-FLG                  PIC 9(01).
+               05  SS001-GHKT-FLG                  PIC 9(01).
+           03  SS001-HKNGRP-R  REDEFINES SS001-HKNGRP-G.
+               05  SS001-HKNGRP-OCC                OCCURS 2.
+                   07  SS001-IHO-FLG               PIC 9(01).
+                   07  SS001-RSI-FLG               PIC 9(01).
+                   07  SS001-JBI-FLG               PIC 9(01).
+                   07  SS001-SYA-FLG               PIC 9(01).
+                   07  SS001-KOK-FLG               PIC 9(01).
+                   07  SS001-JHI-FLG               PIC 9(01).
+                   07  SS001-HKT-FLG               PIC 9(01).
+           03  SS001-SRYKA-G.
+               05  SS001-SRYKA-MAX                 PIC 9(03).
+               05  SS001-SRYKA-OCC                 OCCURS  50.
+                   07  SS001-SRYKA                 PIC X(02).
+                   07  SS001-SRYKA-HKNGRP-OCC      OCCURS  2.
+                       09  SS001-SRYKA-IHO-FLG     PIC 9(01).
+                       09  SS001-SRYKA-RSI-FLG     PIC 9(01).
+                       09  SS001-SRYKA-JBI-FLG     PIC 9(01).
+                       09  SS001-SRYKA-SYA-FLG     PIC 9(01).
+                       09  SS001-SRYKA-KOK-FLG     PIC 9(01).
+                       09  SS001-SRYKA-JHI-FLG     PIC 9(01).
+                       09  SS001-SRYKA-HKT-FLG     PIC 9(01).
+                   07  SS001-SRYKA-DAY-G.
+                       09  SS001-SRYKA-NYU-DAY     PIC 9(01)
+                                                   OCCURS  31.
+                       09  SS001-SRYKA-GAI-DAY     PIC 9(01)
+                                                   OCCURS  31.
+                   07  SS001-SRYKA-DAY-R   REDEFINES
+                                               SS001-SRYKA-DAY-G.
+                       09  SS001-SRYKA-DAY-OCC     OCCURS  2.
+                           11  SS001-SRYKA-DAY     PIC 9(01)
+                                                   OCCURS  31.
+                   07  SS001-SRYKA-NYURRK-DAY-G.
+                       09  SS001-SRYKA-NYURRK-DAY  PIC 9(01)
+                                                   OCCURS  31.

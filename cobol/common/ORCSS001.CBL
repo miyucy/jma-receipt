@@ -46,15 +46,36 @@
            03  FLG-JYURRK          PIC 9(01).
            03  FLG-NYUINACCT       PIC 9(01).
            03  FLG-HKNCOMBI        PIC 9(01).
+           03  FLG-PTNYUINRRK      PIC 9(01).
+           03  FLG-HOKEN-G.
+               05  FLG-SYAHO       PIC 9(01).
+               05  FLG-KOKUHO      PIC 9(01).
+               05  FLG-JIHI        PIC 9(01).
+           03  FLG-TBLCOMBI        PIC 9(01).
       *
       *    Åº»úÎÎ°è
        01  IDX-AREA.
+           03  IDX0                PIC 9(05).
            03  IDX1                PIC 9(05).
            03  IDX2                PIC 9(05).
+           03  IDX-NYUGAI          PIC 9(05).
+           03  IDX-SRYKA           PIC 9(05).
+           03  IDX-DAY             PIC 9(02).
+           03  IDX-TBLCOMBI        PIC 9(02).
       *
       *    °ì»þÎÎ°è
        01  WRK-AREA.
-           03  WRK-COMB-HKNCOMBINUM    PIC 9(04).
+           03  WRK-HKNCOMBINUM         PIC 9(04).
+           03  WRK-SRYKA               PIC X(02).
+           03  WRK-STIDX               PIC 9(02).
+           03  WRK-EDIDX               PIC 9(02).
+           03  WRK-YMD.
+               05  WRK-YYYYMM          PIC X(06).
+               05  WRK-DD              PIC 9(02).
+      *
+       01  TNYURRK-AREA.
+           03  TNYURRK-OCC             OCCURS  31.
+               05  TNYURRK-SRYKA       PIC X(02).
       *
        01  TCOMBI-AREA.
            03  TCOMBI-MAX              PIC 9(05).
@@ -64,7 +85,17 @@
        01  CONST-AREA.
            03  CONST-ROUSAI            PIC X(03)   VALUE   "971".
            03  CONST-JIBAI             PIC X(03)   VALUE   "973".
+           03  CONST-HOUKATU           PIC 9(04)   VALUE   9999.
            03  CONST-TCOMBI-MAX        PIC 9(05)   VALUE   31.
+           03  CONST-SRYKA-MAX         PIC 9(05)   VALUE   50.
+           03  CONST-TBLCOMBI-MAX      PIC 9(05)   VALUE   100.
+      *
+      *    ÊÝ¸±ÁÈ¹ç¤»
+       01  TBLCOMBI-AREA.
+           02  TBLCOMBI-MAX            PIC 9(05).
+           02  TBLCOMBI-OCC            OCCURS      50.
+           COPY    "CPHKNCOMBI.INC"    REPLACING   //COMB-//
+                                       BY          //TBLCOMBI-//.
       *
       *****************************************************************
       *    ¥Õ¥¡¥¤¥ë¥ì¥¤¥¢¥¦¥È
@@ -82,7 +113,9 @@
        01  JYURRK-REC.
            COPY    "CPJYURRK.INC".
       *
-      *
+      *    Æþ±¡ÍúÎò
+       01  PTNYUINRRK-REC.
+           COPY    "CPPTNYUINRRK.INC".
       *
       *****************************************************************
       *    ¥µ¥Ö¥×¥íÍÑ¡¡ÎÎ°è
@@ -114,7 +147,10 @@ grpsys     COPY  "COMMON-SPA".
            INITIALIZE                  FLG-AREA
            INITIALIZE                  IDX-AREA
            INITIALIZE                  WRK-AREA
+           INITIALIZE                  TNYURRK-AREA
+           INITIALIZE                  TBLCOMBI-AREA
            INITIALIZE                  SS001-HKNGRP-G
+           INITIALIZE                  SS001-SRYKA-G
       *
            PERFORM 100-INIT-SEC
       *
@@ -163,35 +199,56 @@ grpsys     COPY  "COMMON-SPA".
       *****************************************************************
        20011-GAIHKN-EDIT-SEC           SECTION.
       *
-           PERFORM 900-JYURRK-KEY37-SEL-SEC
+           PERFORM 900-JYURRK-KEY42-SEL-SEC
       *
            PERFORM UNTIL ( FLG-JYURRK  NOT =   ZERO )
       *
-               EVALUATE    JYURRK-NYUGAIKBN ALSO JYURRK-HKNKBN
-               WHEN        "1"     ALSO "0"
-                   MOVE    1           TO  SS001-NIHO-FLG
-               WHEN        "1"     ALSO "1"
-               WHEN        "1"     ALSO "5"
-                   MOVE    1           TO  SS001-NRSI-FLG
-               WHEN        "1"     ALSO "2"
-               WHEN        "1"     ALSO "4"
-                   MOVE    1           TO  SS001-NJBI-FLG
-               WHEN        "2"     ALSO "0"
-                   MOVE    1           TO  SS001-GIHO-FLG
-               WHEN        "2"     ALSO "1"
-               WHEN        "2"     ALSO "5"
-                   MOVE    1           TO  SS001-GRSI-FLG
-               WHEN        "2"     ALSO "2"
-               WHEN        "2"     ALSO "4"
-                   MOVE    1           TO  SS001-GJBI-FLG
-               END-EVALUATE
+               IF    ( JYURRK-NYUGAIKBN    =   "1" )
+                   MOVE    1           TO  IDX-NYUGAI
+               ELSE
+                   MOVE    2           TO  IDX-NYUGAI
+               END-IF
       *
-               PERFORM 900-JYURRK-KEY37-FET-SEC
+               MOVE    JYURRK-HKNCOMBINUM  TO  WRK-HKNCOMBINUM
+               IF    ( WRK-HKNCOMBINUM     =   "9999" )
+                   MOVE    ZERO        TO  FLG-HKNCOMBI
+                   INITIALIZE                  HKNCOMBI-REC
+                   MOVE    SS001-HOSPNUM   TO  COMB-HOSPNUM
+                   MOVE    SS001-PTID      TO  COMB-PTID
+                   MOVE    9999            TO  COMB-HKNCOMBINUM
+                   MOVE    SPACE           TO  COMB-HKNNUM
+               ELSE
+                   PERFORM 900-HKNCOMBI-KEY-SEL-SEC
+               END-IF
+               IF    ( FLG-HKNCOMBI    =   ZERO )
+      *
+                   PERFORM 200111-HKNBUNRUI-SEC
+      *
+                   MOVE    JYURRK-SRYKA    TO  WRK-SRYKA
+                   IF    ( SS001-SRYKAKBN  =   "1" )
+                       CONTINUE
+                   ELSE
+                       MOVE    ZERO        TO  WRK-SRYKA
+                   END-IF
+                   PERFORM 200111-SRYKA-HKNBUNRUI-SEC
+                   IF    ( IDX-SRYKA   >   ZERO )
+                       MOVE    JYURRK-SRYYMD   TO  WRK-YMD
+                       IF    ( JYURRK-NYUGAIKBN    =   "1" )
+                           MOVE    1
+                               TO  SS001-SRYKA-NYU-DAY(IDX-SRYKA WRK-DD)
+                       ELSE
+                           MOVE    1
+                               TO  SS001-SRYKA-GAI-DAY(IDX-SRYKA WRK-DD)
+                       END-IF
+                   END-IF
+               END-IF
+      *
+               PERFORM 900-JYURRK-KEY42-FET-SEC
       *
            END-PERFORM
       *
            MOVE    "tbl_jyurrk"        TO  MCP-TABLE
-           MOVE    "key37"             TO  MCP-PATHNAME
+           MOVE    "key42"             TO  MCP-PATHNAME
            PERFORM 910-DBCLOSECURSOR-SEC
       *
            .
@@ -202,6 +259,10 @@ grpsys     COPY  "COMMON-SPA".
       *****************************************************************
        20011-NYUHKN-EDIT-SEC           SECTION.
       *
+           MOVE    1           TO  IDX-NYUGAI
+      *
+           PERFORM 200111-TNYURRK-SRYKA-SEC
+      *
            PERFORM 900-NYUINACCT-KEY17-SEL-SEC
            IF    ( FLG-NYUINACCT       =   ZERO )
       *
@@ -211,17 +272,37 @@ grpsys     COPY  "COMMON-SPA".
                        UNTIL ( IDX1    >   TCOMBI-MAX )
       *
                    MOVE    TCOMBI-HKNCOMBI (IDX1)
-                                   TO  WRK-COMB-HKNCOMBINUM
+                                   TO  WRK-HKNCOMBINUM
                    PERFORM 900-HKNCOMBI-KEY-SEL-SEC
                    IF    ( FLG-HKNCOMBI    =   ZERO )
-                       EVALUATE    COMB-HKNNUM
-                       WHEN    CONST-ROUSAI
-                           MOVE    1       TO  SS001-NRSI-FLG
-                       WHEN    CONST-JIBAI
-                           MOVE    1       TO  SS001-NJBI-FLG
-                       WHEN    OTHER
-                           MOVE    1       TO  SS001-NIHO-FLG
-                       END-EVALUATE
+      *
+                       PERFORM 200111-HKNBUNRUI-SEC
+      *
+                       PERFORM VARYING IDX-DAY FROM    1   BY  1
+                               UNTIL ( IDX-DAY >   31 )
+      *
+                           IF    ( TNYURRK-SRYKA (IDX-DAY)
+                                               NOT =   SPACE )
+                            AND  ( NACCT-DAY (IDX-DAY)
+                                                   =   WRK-HKNCOMBINUM )
+                               MOVE    TNYURRK-SRYKA (IDX-DAY)
+                                                   TO  WRK-SRYKA
+                               IF    ( SS001-SRYKAKBN  =   "1" )
+                                   CONTINUE
+                               ELSE
+                                   MOVE    ZERO    TO  WRK-SRYKA
+                               END-IF
+                               PERFORM 200111-SRYKA-HKNBUNRUI-SEC
+                               IF    ( IDX-SRYKA   >   ZERO )
+                                   MOVE    1   TO SS001-SRYKA-NYURRK-DAY
+                                                     (IDX-SRYKA IDX-DAY)
+                                                  SS001-SRYKA-NYU-DAY
+                                                     (IDX-SRYKA IDX-DAY)
+                               END-IF
+                           END-IF
+      *
+                       END-PERFORM
+      *
                    END-IF
       *
                END-PERFORM
@@ -229,6 +310,46 @@ grpsys     COPY  "COMMON-SPA".
       *
            .
        20011-NYUHKN-EDIT-EXT.
+           EXIT.
+      *****************************************************************
+      *    Æþ±¡ÍúÎòÂàÈòÎÎ°è¿ÇÎÅ²ÊÊÔ½¸½èÍý
+      *****************************************************************
+       200111-TNYURRK-SRYKA-SEC        SECTION.
+      *
+           PERFORM 900-PTNYUINRRK-KEY41-SEL-SEC
+      *
+           PERFORM UNTIL ( FLG-PTNYUINRRK  NOT =   ZERO )
+      *
+               IF    ( PTNYUINRRK-TENNYUYMD (1:6)  <   SS001-SRYYM )
+                   MOVE    1           TO  WRK-STIDX
+               ELSE
+                   MOVE    PTNYUINRRK-TENNYUYMD (7:2)
+                                       TO  WRK-STIDX
+               END-IF
+      *
+               IF    ( PTNYUINRRK-TENSTUYMD (1:6)  >   SS001-SRYYM )
+                   MOVE    31          TO  WRK-EDIDX
+               ELSE
+                   MOVE    PTNYUINRRK-TENSTUYMD (7:2)
+                                       TO  WRK-EDIDX
+               END-IF
+      *
+               PERFORM VARYING IDX-DAY     FROM    WRK-STIDX   BY  1
+                       UNTIL ( IDX-DAY     >       WRK-EDIDX )
+                   MOVE    PTNYUINRRK-NYUINKA
+                                       TO  TNYURRK-SRYKA (IDX-DAY)
+               END-PERFORM
+      *
+               PERFORM 900-PTNYUINRRK-KEY41-FET-SEC
+      *
+           END-PERFORM
+      *
+           MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
+           MOVE    "key41"             TO  MCP-PATHNAME
+           PERFORM 910-DBCLOSECURSOR-SEC
+      *
+           .
+       200111-TNYURRK-SRYKA-EXT.
            EXIT.
       *****************************************************************
       *    ÊÝ¸±ÁÈ¹ç¤»ÂàÈòÎÎ°èÊÔ½¸½èÍý
@@ -267,18 +388,217 @@ grpsys     COPY  "COMMON-SPA".
        200111-TCOMBI-EDIT-EXT.
            EXIT.
       *****************************************************************
+      *    ÊÝ¸±Ê¬Îà½èÍý
+      *****************************************************************
+       200111-HKNBUNRUI-SEC            SECTION.
+      *
+           IF    ( COMB-HKNCOMBINUM        =   CONST-HOUKATU )
+                   MOVE    1               TO  SS001-HKT-FLG(IDX-NYUGAI)
+           ELSE
+               IF    ( COMB-HKNNUM         =   CONST-ROUSAI
+                                            OR CONST-JIBAI )
+                   CONTINUE
+               ELSE
+                   MOVE    1               TO  SS001-IHO-FLG(IDX-NYUGAI)
+               END-IF
+      *
+               EVALUATE    COMB-HKNNUM
+               WHEN    SPACE
+                   MOVE    1               TO  SS001-SYA-FLG(IDX-NYUGAI)
+               WHEN    CONST-ROUSAI
+                       MOVE    1           TO  SS001-RSI-FLG(IDX-NYUGAI)
+               WHEN    CONST-JIBAI
+                       MOVE    1           TO  SS001-JBI-FLG(IDX-NYUGAI)
+               WHEN    "060"
+               WHEN    "067"
+               WHEN    "068"
+               WHEN    "069"
+                   MOVE    1               TO  SS001-KOK-FLG(IDX-NYUGAI)
+               WHEN    OTHER
+                   IF    ( COMB-HKNNUM (1:2)   =   "98" )
+                       MOVE    1           TO  SS001-JHI-FLG(IDX-NYUGAI)
+                   ELSE
+                       MOVE    1           TO  SS001-SYA-FLG(IDX-NYUGAI)
+                   END-IF
+               END-EVALUATE
+           END-IF
+      *
+           .
+       200111-HKNBUNRUI-EXT.
+           EXIT.
+      *****************************************************************
+      *    ¿ÇÎÅ²ÊÊÌÊÝ¸±Ê¬Îà½èÍý
+      *****************************************************************
+       200111-SRYKA-HKNBUNRUI-SEC      SECTION.
+      *
+           PERFORM VARYING IDX-SRYKA   FROM    1   BY  1
+                   UNTIL ( IDX-SRYKA   >   SS001-SRYKA-MAX )
+                    OR   ( SS001-SRYKA (IDX-SRYKA)
+                                       =   WRK-SRYKA )
+      *
+               CONTINUE
+      *
+           END-PERFORM
+      *
+           IF    ( IDX-SRYKA       >   SS001-SRYKA-MAX )
+               IF    ( CONST-SRYKA-MAX
+                                   >   SS001-SRYKA-MAX )
+                   COMPUTE SS001-SRYKA-MAX
+                       =   SS001-SRYKA-MAX
+                       +   1
+      *
+                   MOVE    WRK-SRYKA
+                                   TO  SS001-SRYKA (SS001-SRYKA-MAX)
+      *
+                   MOVE    SS001-SRYKA-MAX
+                                   TO  IDX-SRYKA
+      *
+               ELSE
+                   MOVE    ZERO    TO  IDX-SRYKA
+               END-IF
+           END-IF
+      *
+           IF    ( IDX-SRYKA       >   ZERO )
+      *
+               IF    ( COMB-HKNCOMBINUM    =   CONST-HOUKATU )
+                       MOVE    1       TO  SS001-SRYKA-HKT-FLG
+                                                  (IDX-SRYKA IDX-NYUGAI)
+               ELSE
+                   IF    ( COMB-HKNNUM    =    CONST-ROUSAI
+                                           OR  CONST-JIBAI )
+                       CONTINUE
+                   ELSE
+                       MOVE    1       TO  SS001-SRYKA-IHO-FLG
+                                                  (IDX-SRYKA IDX-NYUGAI)
+                   END-IF
+      *
+                   EVALUATE    COMB-HKNNUM
+                   WHEN    SPACE
+                       MOVE    1       TO  SS001-SRYKA-SYA-FLG
+                                                  (IDX-SRYKA IDX-NYUGAI)
+                   WHEN    CONST-ROUSAI
+                       MOVE    1       TO  SS001-SRYKA-RSI-FLG 
+                                                  (IDX-SRYKA IDX-NYUGAI)
+                   WHEN    CONST-JIBAI
+                       MOVE    1       TO  SS001-SRYKA-JBI-FLG
+                                                  (IDX-SRYKA IDX-NYUGAI)
+                   WHEN    "060"
+                   WHEN    "067"
+                   WHEN    "068"
+                   WHEN    "069"
+                       MOVE    1       TO  SS001-SRYKA-KOK-FLG
+                                                  (IDX-SRYKA IDX-NYUGAI)
+                   WHEN    OTHER
+                       IF    ( COMB-HKNNUM (1:2)   =   "98" )
+                           MOVE    1   TO  SS001-SRYKA-JHI-FLG
+                                                  (IDX-SRYKA IDX-NYUGAI)
+                       ELSE
+                           MOVE    1   TO  SS001-SRYKA-SYA-FLG
+                                                  (IDX-SRYKA IDX-NYUGAI)
+                       END-IF
+                   END-EVALUATE
+               END-IF
+           END-IF
+      *
+           .
+       200111-SRYKA-HKNBUNRUI-EXT.
+           EXIT.
+      *****************************************************************
       *    ½ªÎ»½èÍý
       *****************************************************************
        300-END-SEC                SECTION.
       *
+           PERFORM 800-DISPLAY-SEC
       *
            .
        300-END-EXT.
            EXIT.
       *****************************************************************
+      *    DISPLAY½èÍý
+      *****************************************************************
+       800-DISPLAY-SEC             SECTION.
+      *
+           DISPLAY "HOSPNUM = " SS001-HOSPNUM
+           DISPLAY "PTID    = " SS001-PTID
+           DISPLAY "SRYYM   = " SS001-SRYYM
+      *
+           DISPLAY "GIHO-FLG   = " SS001-GIHO-FLG
+           DISPLAY "GRSI-FLG   = " SS001-GRSI-FLG
+           DISPLAY "GJBI-FLG   = " SS001-GJBI-FLG
+           DISPLAY "GSYA-FLG   = " SS001-GSYA-FLG
+           DISPLAY "GKOK-FLG   = " SS001-GKOK-FLG
+           DISPLAY "GJHI-FLG   = " SS001-GJHI-FLG
+           DISPLAY "GHKT-FLG   = " SS001-GHKT-FLG
+      *
+           DISPLAY "NIHO-FLG   = " SS001-NIHO-FLG
+           DISPLAY "NRSI-FLG   = " SS001-NRSI-FLG
+           DISPLAY "NJBI-FLG   = " SS001-NJBI-FLG
+           DISPLAY "NSYA-FLG   = " SS001-NSYA-FLG
+           DISPLAY "NKOK-FLG   = " SS001-NKOK-FLG
+           DISPLAY "NJHI-FLG   = " SS001-NJHI-FLG
+           DISPLAY "NHKT-FLG   = " SS001-NHKT-FLG
+      *
+           DISPLAY "SRYKA-MAX  = " SS001-SRYKA-MAX
+      *
+           PERFORM VARYING IDX0    FROM    1   BY  1
+                   UNTIL ( IDX0    >   SS001-SRYKA-MAX )
+      *
+               DISPLAY IDX0 ":SRYKA = " SS001-SRYKA (IDX0)
+      *
+               DISPLAY "SRYKA (" IDX0  ")= " SS001-SRYKA (IDX0)
+      *
+               DISPLAY       "SRYKA-IHO-FLG ( " IDX0 "1 )="
+                        SS001-SRYKA-IHO-FLG (IDX0 1)
+               DISPLAY       "SRYKA-IHO-FLG ( " IDX0 "2 )="
+                        SS001-SRYKA-IHO-FLG (IDX0 2)
+      *
+               DISPLAY       "SRYKA-RSI-FLG ( " IDX0 "1 )="
+                        SS001-SRYKA-RSI-FLG (IDX0 1)
+               DISPLAY       "SRYKA-RSI-FLG ( " IDX0 "2 )="
+                        SS001-SRYKA-RSI-FLG (IDX0 2)
+      *
+               DISPLAY       "SRYKA-JBI-FLG ( " IDX0 "1 )="
+                        SS001-SRYKA-JBI-FLG (IDX0 1)
+               DISPLAY       "SRYKA-JBI-FLG ( " IDX0 "2 )="
+                        SS001-SRYKA-JBI-FLG (IDX0 2)
+      *
+               DISPLAY       "SRYKA-SYA-FLG ( " IDX0 "1 )="
+                        SS001-SRYKA-SYA-FLG (IDX0 1)
+               DISPLAY       "SRYKA-SYA-FLG ( " IDX0 "2 )="
+                        SS001-SRYKA-SYA-FLG (IDX0 2)
+      *
+               DISPLAY       "SRYKA-KOK-FLG ( " IDX0 "1 )="
+                        SS001-SRYKA-KOK-FLG (IDX0 1)
+               DISPLAY       "SRYKA-KOK-FLG ( " IDX0 "2 )="
+                        SS001-SRYKA-KOK-FLG (IDX0 2)
+      *
+               DISPLAY       "SRYKA-JHI-FLG ( " IDX0 "1 )="
+                        SS001-SRYKA-JHI-FLG (IDX0 1)
+               DISPLAY       "SRYKA-JHI-FLG ( " IDX0 "2 )="
+                        SS001-SRYKA-JHI-FLG (IDX0 2)
+      *
+               DISPLAY       "SRYKA-HKT-FLG ( " IDX0 "1 )="
+                        SS001-SRYKA-HKT-FLG (IDX0 1)
+               DISPLAY       "SRYKA-HKT-FLG ( " IDX0 "2 )="
+                        SS001-SRYKA-HKT-FLG (IDX0 2)
+      *
+               DISPLAY       "SRYKA-DAY-OCC ( " IDX0 "1 )="
+                        SS001-SRYKA-DAY-OCC (IDX0 1)
+               DISPLAY       "SRYKA-DAY-OCC ( " IDX0 "2 )="
+                        SS001-SRYKA-DAY-OCC (IDX0 2)
+               DISPLAY       "SRYKA-NYURRK-DAY-G ( " IDX0 ")="
+                        SS001-SRYKA-NYURRK-DAY-G (IDX0)
+      *
+           END-PERFORM
+           
+      *
+           .
+       800-DISPLAY-EXT.
+           EXIT.
+      *****************************************************************
       *    ¼õ¿ÇÍúÎò¸¡º÷½èÍý
       *****************************************************************
-       900-JYURRK-KEY37-SEL-SEC    SECTION.
+       900-JYURRK-KEY42-SEL-SEC    SECTION.
       *
            MOVE    ZERO                TO  FLG-JYURRK
       *
@@ -291,7 +611,7 @@ grpsys     MOVE    SS001-HOSPNUM       TO  JYURRK-HOSPNUM
            END-STRING
            MOVE    JYURRK-REC          TO  MCPDATA-REC
            MOVE    "tbl_jyurrk"        TO  MCP-TABLE
-           MOVE    "key37"             TO  MCP-PATHNAME
+           MOVE    "key42"             TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF    ( MCP-RC              =   ZERO )
                MOVE    MCPDATA-REC     TO  JYURRK-REC
@@ -301,17 +621,17 @@ grpsys     MOVE    SS001-HOSPNUM       TO  JYURRK-HOSPNUM
            END-IF
       *
            .
-       900-JYURRK-KEY37-SEL-EXT.
+       900-JYURRK-KEY42-SEL-EXT.
            EXIT.
       *****************************************************************
       *    ¼õ¿ÇÍúÎòFETCH½èÍý
       *****************************************************************
-       900-JYURRK-KEY37-FET-SEC    SECTION.
+       900-JYURRK-KEY42-FET-SEC    SECTION.
       *
            MOVE    ZERO                TO  FLG-JYURRK
       *
            MOVE    "tbl_jyurrk"        TO  MCP-TABLE
-           MOVE    "key37"             TO  MCP-PATHNAME
+           MOVE    "key42"             TO  MCP-PATHNAME
            PERFORM 910-DBFETCH-SEC
            IF    ( MCP-RC              =   ZERO )
                MOVE    MCPDATA-REC     TO  JYURRK-REC
@@ -321,7 +641,7 @@ grpsys     MOVE    SS001-HOSPNUM       TO  JYURRK-HOSPNUM
            END-IF
       *
            .
-       900-JYURRK-KEY37-FET-EXT.
+       900-JYURRK-KEY42-FET-EXT.
            EXIT.
       *****************************************************************
       *    Æþ±¡²ñ·×¸¡º÷½èÍý(KEY17)
@@ -361,27 +681,112 @@ grpsys     MOVE    SS001-HOSPNUM       TO  NACCT-HOSPNUM
       *
            MOVE    ZERO                    TO  FLG-HKNCOMBI
       *
-           INITIALIZE                          HKNCOMBI-REC
-grpsys     MOVE    SS001-HOSPNUM           TO  COMB-HOSPNUM
-           MOVE    SS001-PTID              TO  COMB-PTID
-           MOVE    WRK-COMB-HKNCOMBINUM    TO  COMB-HKNCOMBINUM
-           MOVE    HKNCOMBI-REC            TO  MCPDATA-REC
-           MOVE    "tbl_hkncombi"          TO  MCP-TABLE
-           MOVE    "key"                   TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
-           IF    ( MCP-RC                  =   ZERO )
-               MOVE    MCPDATA-REC         TO  HKNCOMBI-REC
-           ELSE
-               MOVE    1                   TO  FLG-HKNCOMBI
+           PERFORM 9001-TBLCOMBI-CHK-SEC
+           IF   (  FLG-TBLCOMBI    =       ZERO )
                INITIALIZE                      HKNCOMBI-REC
+grpsys         MOVE    SS001-HOSPNUM       TO  COMB-HOSPNUM
+               MOVE    SS001-PTID          TO  COMB-PTID
+               MOVE    WRK-HKNCOMBINUM     TO  COMB-HKNCOMBINUM
+               MOVE    HKNCOMBI-REC        TO  MCPDATA-REC
+               MOVE    "tbl_hkncombi"      TO  MCP-TABLE
+               MOVE    "key"               TO  MCP-PATHNAME
+               PERFORM 910-DBSELECT-SEC
+               IF    ( MCP-RC              =   ZERO )
+                   MOVE    MCPDATA-REC     TO  HKNCOMBI-REC
+                   IF    ( CONST-TBLCOMBI-MAX  >   TBLCOMBI-MAX )
+                       COMPUTE TBLCOMBI-MAX
+                           =   TBLCOMBI-MAX    +   1
+                       MOVE    HKNCOMBI-REC TO TBLCOMBI-OCC
+                                                  (TBLCOMBI-MAX)
+                   END-IF
+               ELSE
+                   MOVE    1               TO  FLG-HKNCOMBI
+                   INITIALIZE                  HKNCOMBI-REC
+               END-IF
+      *
+               MOVE    "tbl_hkncombi"      TO  MCP-TABLE
+               MOVE    "key"               TO  MCP-PATHNAME
+               PERFORM 910-DBCLOSECURSOR-SEC
            END-IF
       *
-           MOVE    "tbl_hkncombi"          TO  MCP-TABLE
-           MOVE    "key"                   TO  MCP-PATHNAME
-           PERFORM 910-DBCLOSECURSOR-SEC
       *
            .
        900-HKNCOMBI-KEY-SEL-EXT.
+           EXIT.
+      *****************************************************************
+      *    ÊÝ¸±ÁÈ¹ç¤»¼èÆÀ½èÍý
+      *****************************************************************
+       9001-TBLCOMBI-CHK-SEC           SECTION.
+      *
+           MOVE    ZERO                TO  FLG-TBLCOMBI
+      *
+           PERFORM VARYING IDX-TBLCOMBI    FROM    1   BY  1
+                   UNTIL ( IDX-TBLCOMBI    >   TBLCOMBI-MAX )
+                    OR   ( FLG-TBLCOMBI    =   1 )
+      *
+               IF    ( TBLCOMBI-HOSPNUM  (IDX-TBLCOMBI)
+                                           =   SS001-HOSPNUM )
+                AND  ( TBLCOMBI-PTID     (IDX-TBLCOMBI)
+                                           =   SS001-PTID )
+                AND  ( TBLCOMBI-HKNCOMBINUM (IDX-TBLCOMBI)
+                                           =   WRK-HKNCOMBINUM )
+      *
+                   MOVE    1           TO  FLG-TBLCOMBI
+      *
+                   MOVE    TBLCOMBI-OCC (IDX-TBLCOMBI)
+                                       TO  HKNCOMBI-REC
+               END-IF
+      *
+           END-PERFORM
+      *
+           .
+       9001-TBLCOMBI-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    Æþ±¡ÍúÎò¸¡º÷½èÍý(KEY41)
+      *****************************************************************
+       900-PTNYUINRRK-KEY41-SEL-SEC    SECTION.
+      *
+           MOVE    ZERO                TO  FLG-PTNYUINRRK
+           INITIALIZE                      PTNYUINRRK-REC
+      *
+           MOVE    SS001-HOSPNUM       TO  PTNYUINRRK-HOSPNUM
+           MOVE    SS001-PTID          TO  PTNYUINRRK-PTID
+           MOVE    SS001-SRYYM         TO  PTNYUINRRK-TENNYUYMD
+           MOVE    "31"                TO  PTNYUINRRK-TENNYUYMD
+           MOVE    SS001-SRYYM         TO  PTNYUINRRK-TENSTUYMD
+           MOVE    "01"                TO  PTNYUINRRK-TENSTUYMD
+           MOVE    PTNYUINRRK-REC      TO  MCPDATA-REC
+           MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
+           MOVE    "key41"             TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF    ( MCP-RC          =   ZERO )
+               MOVE    MCPDATA-REC     TO  PTNYUINRRK-REC
+           ELSE
+               MOVE    1               TO  FLG-PTNYUINRRK
+               INITIALIZE                  PTNYUINRRK-REC
+           END-IF
+      *
+           .
+       900-PTNYUINRRK-KEY41-SEL-EXT.
+           EXIT.
+      *****************************************************************
+      *    Æþ±¡ÍúÎòFETCH½èÍý(KEY41)
+      *****************************************************************
+       900-PTNYUINRRK-KEY41-FET-SEC     SECTION.
+      *
+           MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
+           MOVE    "key41"             TO  MCP-PATHNAME
+           PERFORM 910-DBFETCH-SEC
+           IF    ( MCP-RC          =   ZERO )
+               MOVE    MCPDATA-REC     TO  PTNYUINRRK-REC
+           ELSE
+               MOVE    1               TO  FLG-PTNYUINRRK
+               INITIALIZE                  PTNYUINRRK-REC
+           END-IF
+      *
+           .
+       900-PTNYUINRRK-KEY41-FET-EXT.
            EXIT.
       *****************************************************************
       *    £Ä£Â¸¡º÷½èÍý¡ÊFHETCH¤â¹Ô¤¦)
