@@ -914,3 +914,16 @@ path	key41	{
 		;
 	};
 };
+
+path	key42 	{
+	DBSELECT	{
+		DECLARE tbl_jyurrk_key42_csr CURSOR FOR
+		SELECT *
+		FROM tbl_jyurrk
+			WHERE HOSPNUM    =   :HOSPNUM
+			AND   PTID      =   :PTID
+			AND   SRYYMD  LIKE  :SRYYMD
+			AND   EDANUM      =   1
+		;
+	};
+};
