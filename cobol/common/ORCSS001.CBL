@@ -224,22 +224,25 @@ grpsys     COPY  "COMMON-SPA".
       *
                    PERFORM 200111-HKNBUNRUI-SEC
       *
-                   MOVE    JYURRK-SRYKA    TO  WRK-SRYKA
                    IF    ( SS001-SRYKAKBN  =   "1" )
-                       CONTINUE
-                   ELSE
-                       MOVE    ZERO        TO  WRK-SRYKA
-                   END-IF
-                   PERFORM 200111-SRYKA-HKNBUNRUI-SEC
-                   IF    ( IDX-SRYKA   >   ZERO )
-                       MOVE    JYURRK-SRYYMD   TO  WRK-YMD
-                       IF    ( JYURRK-NYUGAIKBN    =   "1" )
-                           MOVE    1
-                               TO  SS001-SRYKA-NYU-DAY(IDX-SRYKA WRK-DD)
-                       ELSE
-                           MOVE    1
-                               TO  SS001-SRYKA-GAI-DAY(IDX-SRYKA WRK-DD)
+                       MOVE    JYURRK-SRYKA    TO  WRK-SRYKA
+                       PERFORM 200111-SRYKA-HKNBUNRUI-SEC
+                       IF    ( IDX-SRYKA   >   ZERO )
+                           PERFORM 200111-GAIHKN-EDIT-SEC
                        END-IF
+                   ELSE
+                       MOVE    ZERO            TO  WRK-SRYKA
+                       PERFORM 200111-SRYKA-HKNBUNRUI-SEC
+                       IF    ( IDX-SRYKA   >   ZERO )
+                           PERFORM 200111-GAIHKN-EDIT-SEC
+                       END-IF
+      *
+                       MOVE    JYURRK-SRYKA    TO  WRK-SRYKA
+                       PERFORM 200111-SRYKA-HKNBUNRUI-SEC
+                       IF    ( IDX-SRYKA   >   ZERO )
+                           PERFORM 200111-GAIHKN-EDIT-SEC
+                       END-IF
+      *
                    END-IF
                END-IF
       *
@@ -253,6 +256,21 @@ grpsys     COPY  "COMMON-SPA".
       *
            .
        20011-GAIHKN-EDIT-EXT.
+           EXIT.
+      *****************************************************************
+      *    ³°ÍèÊÝ¸±¾ðÊóÊÔ½¸½èÍý
+      *****************************************************************
+       200111-GAIHKN-EDIT-SEC          SECTION.
+      *
+           MOVE    JYURRK-SRYYMD   TO  WRK-YMD
+           IF    ( JYURRK-NYUGAIKBN    =   "1" )
+               MOVE    1    TO  SS001-SRYKA-NYU-DAY(IDX-SRYKA WRK-DD)
+           ELSE
+               MOVE    1    TO  SS001-SRYKA-GAI-DAY(IDX-SRYKA WRK-DD)
+           END-IF
+      *
+           .
+       200111-GAIHKN-EDIT-EXT.
            EXIT.
       *****************************************************************
       *    Æþ±¡ÊÝ¸±¾ðÊóÊÔ½¸½èÍý
@@ -285,19 +303,26 @@ grpsys     COPY  "COMMON-SPA".
                                                NOT =   SPACE )
                             AND  ( NACCT-DAY (IDX-DAY)
                                                    =   WRK-HKNCOMBINUM )
-                               MOVE    TNYURRK-SRYKA (IDX-DAY)
-                                                   TO  WRK-SRYKA
                                IF    ( SS001-SRYKAKBN  =   "1" )
-                                   CONTINUE
+                                   MOVE    TNYURRK-SRYKA (IDX-DAY)
+                                                   TO  WRK-SRYKA
+                                   PERFORM 200111-SRYKA-HKNBUNRUI-SEC
+                                   IF    ( IDX-SRYKA   >   ZERO )
+                                       PERFORM 200111-NYUHKN-EDIT-SEC
+                                   END-IF
                                ELSE
                                    MOVE    ZERO    TO  WRK-SRYKA
-                               END-IF
-                               PERFORM 200111-SRYKA-HKNBUNRUI-SEC
-                               IF    ( IDX-SRYKA   >   ZERO )
-                                   MOVE    1   TO SS001-SRYKA-NYURRK-DAY
-                                                     (IDX-SRYKA IDX-DAY)
-                                                  SS001-SRYKA-NYU-DAY
-                                                     (IDX-SRYKA IDX-DAY)
+                                   PERFORM 200111-SRYKA-HKNBUNRUI-SEC
+                                   IF    ( IDX-SRYKA   >   ZERO )
+                                       PERFORM 200111-NYUHKN-EDIT-SEC
+                                   END-IF
+      *
+                                   MOVE    TNYURRK-SRYKA (IDX-DAY)
+                                                   TO  WRK-SRYKA
+                                   PERFORM 200111-SRYKA-HKNBUNRUI-SEC
+                                   IF    ( IDX-SRYKA   >   ZERO )
+                                       PERFORM 200111-NYUHKN-EDIT-SEC
+                                   END-IF
                                END-IF
                            END-IF
       *
@@ -310,6 +335,19 @@ grpsys     COPY  "COMMON-SPA".
       *
            .
        20011-NYUHKN-EDIT-EXT.
+           EXIT.
+      *****************************************************************
+      *    Æþ±¡ÊÝ¸±¾ðÊóÊÔ½¸½èÍý
+      *****************************************************************
+       200111-NYUHKN-EDIT-SEC          SECTION.
+      *
+           MOVE    1               TO  SS001-SRYKA-NYURRK-DAY
+                                           (IDX-SRYKA IDX-DAY)
+                                       SS001-SRYKA-NYU-DAY
+                                           (IDX-SRYKA IDX-DAY)
+      *
+           .
+       200111-NYUHKN-EDIT-EXT.
            EXIT.
       *****************************************************************
       *    Æþ±¡ÍúÎòÂàÈòÎÎ°è¿ÇÎÅ²ÊÊÔ½¸½èÍý
@@ -507,6 +545,12 @@ grpsys     COPY  "COMMON-SPA".
       *    ½ªÎ»½èÍý
       *****************************************************************
        300-END-SEC                SECTION.
+      *
+           IF    ( SS001-SRYKAKBN  NOT =   "1" )
+               IF    ( SS001-SRYKA-MAX     >   1 )
+                   MOVE    1       TO  SS001-SRYKA-MAX
+               END-IF
+           END-IF
       *
            PERFORM 800-DISPLAY-SEC
       *
