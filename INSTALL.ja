@@ -1,5 +1,6 @@
             日医標準レセプトソフトインストール方法
 -----------------------------------------------------------------------------
+$ autoreconf
 $./configure
 
 $ make
@@ -24,6 +25,9 @@ Passowrd: [パスワードを入力]
 ・dia-orca
 ・GNUmake
 ・wget
+・pkg-config
+・libjconv
+・libqrencode
 ・Ruby
    - uconv
    - xmlparser 
@@ -81,12 +85,9 @@ configure オプション
 
 ----------------------------------------------------------------------------
 
-例)
-# for potato deb package
-$ ./configure 
-$ make install 
-
-# for woody deb package
+例1)
+# for sarge deb package
+$ autoreconf
 $ ./configure \
            --prefix=/usr/lib/jma-receipt \
            --libdir=/usr/lib/jma-receipt \
@@ -95,4 +96,19 @@ $ ./configure \
            --with-sitesrcdir=/usr/local/site-jma-receipt \
            --with-sitelibdir=/usr/lib/jma-receipt/site-lib
 $ make install 
+
+例2)
+# その場で実行する場合
+$ autoreconf
+$ ./configure \
+           --prefix=`pwd` \
+           --libdir=`pwd` \
+           --sysconfdir=`pwd`/etc \
+           --with-sitesrcdir=`pwd`/site-src/ \
+           --with-sitedir=`pwd`/site-lib/ \
+           --with-sitelibdir=`pwd`/site-lib/
+$ make 
+$ ./tools/monitor.sh
+別の端末で 
+$ glclient
 ----------------------------------------------------------------------------
