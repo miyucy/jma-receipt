@@ -1,5 +1,6 @@
 dnl Process this file with autoconf to produce a configure script.
-AC_INIT(cobol/orca00/ORCGM01.CBL)
+AC_INIT
+AC_CONFIG_SRCDIR([cobol/orca00/ORCGM01.CBL])
 
 PACKAGE=jma-receipt
 AC_SUBST(PACKAGE)
@@ -20,16 +21,16 @@ AC_ARG_ENABLE(hosp, [  --enable-hosp=[no/yes] support hosp [default=yes]],,enabl
 
 if test "x$enable_hosp" = "xyes"; then
   HOSP="hosp"
-  CLINIC_BED_SET_TO_ZERO="\\
-      *The number of beds is set to 0 with the clinic version start.\\
-      *         MOVE    ZERO                TO  SPA-BEDSU\\
-      *         MOVE    ZERO                TO  SPA-BEDSUIPN\\
+  CLINIC_BED_SET_TO_ZERO="\
+      *The number of beds is set to 0 with the clinic version start.\
+      *         MOVE    ZERO                TO  SPA-BEDSU\
+      *         MOVE    ZERO                TO  SPA-BEDSUIPN\
       *The number of beds is set to 0 with the clinic version end."
 else
-  CLINIC_BED_SET_TO_ZERO="\\
-      *The number of beds is set to 0 with the clinic version start.\\
-               MOVE    ZERO                TO  SPA-BEDSU\\
-               MOVE    ZERO                TO  SPA-BEDSUIPN\\
+  CLINIC_BED_SET_TO_ZERO="\
+      *The number of beds is set to 0 with the clinic version start.\
+               MOVE    ZERO                TO  SPA-BEDSU\
+               MOVE    ZERO                TO  SPA-BEDSUIPN\
       *The number of beds is set to 0 with the clinic version end."
 fi
 
@@ -42,29 +43,34 @@ AC_PROG_CC
 AC_PROG_INSTALL
 AC_PROG_MAKE_SET
 
-AC_CHECK_HEADERS(jconv.h)
-AC_CHECK_LIB(jconv,convert_kanji_strict, [have_jconv=yes JCONV_LIB="-ljconv"],
- [AC_MSG_ERROR([*** jconv is not found.])])
+AC_ARG_ENABLE(jconv,
+	    [  --enable-jconv  Enable jconv extention [default=yes]],
+    	    [if test "$enableval" = "yes"
+		    then
+		    	have_jconv=yes
+		    else
+			have_jconv=no
+		    fi])
 
+AC_CHECK_HEADERS(jconv.h)
+AC_CHECK_LIB(jconv,convert_kanji_strict, 
+	[have_jconv=yes JCONV_LIB="-ljconv"], 
+	have_jconv=no)
 AC_SUBST(have_jconv)
 AC_SUBST(JCONV_LIB)
 
-dnl PKG_PROG_PKG_CONFIG
-dnl PKG_CHECK_MODULES(png, "libpng12")
+PKG_PROG_PKG_CONFIG
+PKG_CHECK_MODULES(png, "libpng12")
 
 AC_PATH_PROG(PKG_CONFIG,pkg-config,no)
 if test x$PKG_CONFIG = xno; then
-  AC_MSG_ERROR(Couldn't find pkg-config)
+	AC_MSG_ERROR(Couldn't find pkg-config)
 fi
-PNG_CFLAGS=`$PKG_CONFIG --cflags libpng12 2>/dev/null`
-PNG_LIBS=`$PKG_CONFIG --libs libpng12 2>/dev/null`
-AC_SUBST(PNG_CFLAGS)
-AC_SUBST(PNG_LIBS)
 
 AC_CHECK_HEADERS(qrencode.h)
-AC_CHECK_LIB(qrencode,QRcode_encodeString, [have_qrencode=yes QRENCODE_LIB="-lqrencode"],
- [AC_MSG_ERROR([*** qrencode is not found.])], [-lpng12])
-
+AC_CHECK_LIB(qrencode,QRcode_encodeString,
+	[have_qrencode=yes QRENCODE_LIB="-lqrencode"],
+ 	[AC_MSG_ERROR([*** qrencode is not found.])], [-lpng12])
 AC_SUBST(have_qrencode)
 AC_SUBST(QRENCODE_LIB)
 
@@ -111,14 +117,14 @@ AC_ARG_WITH(open-cobol-exec-prefix,
 
   if test x$open_cobol_exec_prefix != x ; then
     if test x${COBC+set} != xset; then
-      COBC=$open_cobol_exec_prefix/bin/cobc
-      COB_CONFIG=$open_cobol_exec_prefix/bin/cob-config
+      COBC=$open_cobol_exec_prefix/bin/cobc08
+      COB_CONFIG=$open_cobol_exec_prefix/bin/cob-config08
     fi
   fi
   if test x$open_cobol_prefix != x ; then
     if test x${COBC+set} != xset; then
-      COBC=$open_cobol_prefix/bin/cobc
-      COB_CONFIG=$open_cobol_prefix/bin/cob-config
+      COBC=$open_cobol_prefix/bin/cobc08
+      COB_CONFIG=$open_cobol_prefix/bin/cob-config08
     fi
   fi
   AC_PATH_PROG(COBC, cobc, no)
@@ -208,7 +214,7 @@ dnl Checks for typedefs, structures, and compiler characteristics.
 dnl Checks for library functions.
 
 
-AC_OUTPUT([
+AC_CONFIG_FILES([
 cobol/Makefile
 cobol/Makefile.global
 cobol/orca00/ORCGM00.CBL
@@ -228,3 +234,4 @@ Makefile
 Makefile.directories
 etc/jma-receipt.env
 ])
+AC_OUTPUT

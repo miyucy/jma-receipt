@@ -9,8 +9,8 @@ have_jconv = @have_jconv@
 JCONV_LIB = @JCONV_LIB@
 have_qrencode = @have_qrencode@
 QRENCODE_LIB = @QRENCODE_LIB@
-PNG_CFLAGS = @PNG_CFLAGS@
-PNG_LIBS = @PNG_LIBS@
+PNG_CFLAGS = @png_CFLAGS@
+PNG_LIBS = @png_LIBS@
 
 COBCOPYS = -I$(srcdir)/../../cobol/copy
 
@@ -39,6 +39,7 @@ ifeq ($(have_jconv), yes)
   endif
 endif
 
+
 %.so: %.c
 	$(CC) -fPIC -shared $< -o $@
 
@@ -50,8 +51,9 @@ endif
 	$(postprocess-depend)
 	$(COBOL) $(EXEC_COBOLFLAGS) $(COBCOPYS) -MT $@ -MF $(DEPDIR)/${@:=.Po} $<
 
-all: $(COBJS) $(OBJS) $(EXEC) 
-
+all: $(COBJS) $(OBJS) $(EXEC)
+	@echo $(COBJS) 
+	
 clean: 
 	-rm -f $(COBJS) $(OBJS) $(EXEC)
 
