@@ -28,29 +28,6 @@ define postprocess-depend
 @if test ! -d $(DEPDIR); then mkdir $(DEPDIR); fi
 endef
 
-ifeq ($(have_jconv), yes)
-  COBJS += $(CJOBJS)
-  orcsjistoeuc.so: orcsjistoeuc.c
-	$(CC) $(JCONV_LIB) -fPIC -shared $< -o $@
-  ifeq ($(have_qrencode), yes)
-    COBJS += $(CJQOBJS)
-    orcqrencode.so: orcqrencode.c
-	$(CC) $(JCONV_LIB) $(QRENCODE_LIB) $(PNG_CFLAGS) $(PNG_LIBS) -fPIC -shared $< -o $@
-  endif
-endif
-
-
-%.so: %.c
-	$(CC) -fPIC -shared $< -o $@
-
-%.so: %.CBL
-	$(postprocess-depend)
-	$(COBOL) $(COBOLFLAGS)  $(COBCOPYS)  -MT $@ -MF $(DEPDIR)/${@:.so=.Po} $< 
-	
-%: %.CBL
-	$(postprocess-depend)
-	$(COBOL) $(EXEC_COBOLFLAGS) $(COBCOPYS) -MT $@ -MF $(DEPDIR)/${@:=.Po} $<
-
 all: $(COBJS) $(OBJS) $(EXEC)
 	@echo $(COBJS) 
 	
@@ -85,3 +62,27 @@ install: all installdirs
 
 installdirs:
 	$(INSTALL) -d $(orcalibdir)
+
+ifeq ($(have_jconv), yes)
+  COBJS += $(CJOBJS)
+  orcsjistoeuc.so: orcsjistoeuc.c
+	$(CC) $(JCONV_LIB) -fPIC -shared $< -o $@
+  ifeq ($(have_qrencode), yes)
+    COBJS += $(CJQOBJS)
+    orcqrencode.so: orcqrencode.c
+	$(CC) $(JCONV_LIB) $(QRENCODE_LIB) $(PNG_CFLAGS) $(PNG_LIBS) -fPIC -shared $< -o $@
+  endif
+endif
+
+
+%.so: %.c
+	$(CC) -fPIC -shared $< -o $@
+
+%.so: %.CBL
+	$(postprocess-depend)
+	$(COBOL) $(COBOLFLAGS)  $(COBCOPYS)  -MT $@ -MF $(DEPDIR)/${@:.so=.Po} $< 
+	
+%: %.CBL
+	$(postprocess-depend)
+	$(COBOL) $(EXEC_COBOLFLAGS) $(COBCOPYS) -MT $@ -MF $(DEPDIR)/${@:=.Po} $<
+
