@@ -41,7 +41,8 @@
       * 01.00.11     NACL-多々納  05/11/15  MONFUNC 対応
       * 03.00.01     NACL-多々納  06/08/25  平成１８年１０月改正対応
       *                                     （老人割合変更）
-      *  03.05.00    NACL-多々納  07/05/XX  グループ診療対応
+      * 03.05.00     NACL-多々納  07/05/XX  グループ診療対応
+      * 04.01.00     NACL-多々納  07/11/XX  公害保険対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -797,6 +798,8 @@
                END-IF
       *        自官は本人のみ
                IF      SPA-GMN-HKNNUM      =   "007"
+      *        公害保険は本人のみ
+                                           OR  "975"
                    IF      SPA-GMN-HONKZKKBN-G     =   SPACE
       *                空白の時、本人を設定
                        MOVE    SPA-GMN-HONKZKKBNL (IDT)
@@ -2095,6 +2098,11 @@
       *        労災は対象外
                IF     (SPA-GMN-HKNNUM          =   "971"  OR  "973")  OR
                       (SPA-PTHKN-HKNNUM (IDX)  =   "971"  OR  "973")
+                   MOVE    ZERO            TO  FLG-CHK
+               END-IF
+      *        公害保険は対象外
+               IF     (SPA-GMN-HKNNUM          =   "975"  )  OR
+                      (SPA-PTHKN-HKNNUM (IDX)  =   "975"  )
                    MOVE    ZERO            TO  FLG-CHK
                END-IF
       *

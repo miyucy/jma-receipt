@@ -80,6 +80,7 @@
       *  03.05.00    NACL-多々納  07/05/XX  グループ診療対応
       *  03.05.00    NACL-多々納  07/06/12  保険複写機能追加
       *  03.05.01    NACL-多々納  07/08/28  公費期限切れ区分追加
+      *  04.01.00    NACL-多々納  07/11/XX  公害保険対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1439,6 +1440,8 @@
                END-IF
       *        自官は本人のみ
                IF      SPA-GMN-HKNNUM      =   "007"
+      *        公害保険は本人のみ
+                                           OR  "975"
                    MOVE    2               TO  IDT
                END-IF
            END-PERFORM
@@ -5950,7 +5953,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *
       *    労災か自賠責が登録されていること
            INITIALIZE                  HKNNUM-REC
-           MOVE    SPA-HOSPNUM          TO  HKN-HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  HKN-HOSPNUM
            MOVE    SPA-SYSYMD          TO  HKN-TEKSTYMD
            MOVE    SPA-SYSYMD          TO  HKN-TEKEDYMD
            MOVE    "971"               TO  HKN-HKNNUM
@@ -6634,6 +6637,10 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *            補助がない時、継続へ
                    IF      SPA-GMN-HOJO-MAX    =   ZERO
                        MOVE    11              TO  SPA-GMN-CUR
+      *                継続がない時、記号へ
+                       IF      SPA-GMN-CONT-MAX    =   ZERO
+                           MOVE    12              TO  SPA-GMN-CUR
+                       END-IF
                    END-IF
                WHEN    "P02_HOJOKBN"
                    MOVE    11          TO  SPA-GMN-CUR
