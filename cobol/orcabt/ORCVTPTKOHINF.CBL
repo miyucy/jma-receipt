@@ -42,6 +42,7 @@
       *  01.01.05    NACL-森脇    05/09/28  構造変更
       *  01.01.06    NACL-森脇    06/07/26  MONFUNC対応
       *  03.05.00    NACL-多々納  07/05/16  グループ診療対応
+      *  04.01.00    NACL-多々納  07/11/06  公費追加処理削除
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -101,18 +102,12 @@
        01  ISAM-REC.
            03  ISAM-KEY.
                05  ISAM-PTID           PIC 9(10).
-               05  ISAM-KOHID          PIC 9(10).
+               05  ISAM-KOHID          PIC 9(04).
            03  ISAM-TBL.
-               05  ISAM-KOHNUM         PIC X(03).
-               05  ISAM-FTNKBN         PIC X(01).
-               05  ISAM-FTNJANUM       PIC X(08).
-               05  ISAM-JKYSNUM        PIC X(20).
-               05  ISAM-TEKSTYMD       PIC X(08).
-               05  ISAM-TEKEDYMD       PIC X(08).
-               05  ISAM-KAKUNINYMD     PIC X(08).
-               05  ISAM-CREYMD         PIC X(08).
-               05  ISAM-UPYMD          PIC X(08).
+               05  ISAM-DATA           PIC X(400).
                05  ISAM-PTNUM          PIC X(20).
+               05  ISAM-FTNKBN         PIC X(01).
+               05  ISAM-CNT            PIC 9(06).
       *
        WORKING-STORAGE             SECTION.
       *
@@ -124,7 +119,9 @@
            03  ASS-PARA                PIC X(256).
            03  ASS-CSV                 PIC X(256).
            03  ASS-ERR                 PIC X(256).
-           03  ASS-ISAM                PIC X(256).
+      *    中間レコードファイル
+           03  ASS-ISAM                PIC X(256)  VALUE
+               "/tmp/ORCVTPTKOHINF_ISAM".
       *
       *    フラグ領域
        01  STS-AREA.
@@ -336,7 +333,7 @@
       *    システム管理（患者番号構成管理）
            COPY    "CPSK1009.INC".
       *    患者公費情報
-       01  PTKOH-REC.
+       01  PTKOHINF-REC.
            COPY    "CPPTKOHINF.INC".
       *    患者番号変換
        01  PTNUM-REC.
@@ -381,7 +378,7 @@
            PERFORM 200-MAIN-SEC
                    UNTIL   FLG-CSV     =   1
       *    分割レコードがあれば処理
-           PERFORM 250-PTKOHINF-BUNKATU-SET-SEC
+      **** PERFORM 250-PTKOHINF-BUNKATU-SET-SEC
       *
            PERFORM 300-END-SEC
       *
@@ -399,10 +396,14 @@
            INITIALIZE                  WRK-AREA
            INITIALIZE                  SPA-AREA
       *
+      *TEST
       *    パラメタセット
-           UNSTRING   COMMAND-PARAM    DELIMITED  BY  ","
-                                       INTO    ASS-PARA
-           END-UNSTRING
+      *    UNSTRING   COMMAND-PARAM    DELIMITED  BY  ","
+      *                                INTO    ASS-PARA
+      *    END-UNSTRING
+           MOVE    "/home/orca/ORCADC.PARA"    TO  ASS-PARA
+      *TEST
+      *
       *
       *    パラメータ情報取得
            PERFORM 101-PARA-GET-SEC
@@ -458,9 +459,9 @@
                GO  TO  100-INIT-EXT
            END-IF
       *
-      *    分割レコードファイル　初期処理
-           MOVE    "/tmp/ORCVTPTKOHINF_ISAM"
-                                   TO  ASS-ISAM
+      **** 分割レコードファイル　初期処理
+      *    MOVE    "/tmp/ORCVTPTKOHINF_ISAM"
+      ****                         TO  ASS-ISAM
       *    ISAMファイルクリア
            OPEN    OUTPUT              ISAM-FILE
            CLOSE                       ISAM-FILE
@@ -644,11 +645,11 @@
            IF      CNT-CSV (4:3)       =   ZERO
                DISPLAY "***(ORCVTPTKOHINF)*** CNT-CSV[" CNT-CSV "]"
            END-IF
-      *    指定した件数になったらコミット処理を行う
-           IF  CNT-COMMIT              =   WRK-COMMIT
-               PERFORM 900-DBCOMMIT-SEC
-               MOVE    ZERO            TO  CNT-COMMIT
-           END-IF
+      **** 指定した件数になったらコミット処理を行う
+      *    IF  CNT-COMMIT              =   WRK-COMMIT
+      *        PERFORM 900-DBCOMMIT-SEC
+      *        MOVE    ZERO            TO  CNT-COMMIT
+      **** END-IF
       *    エラーが指定した件数になったら処理を抜ける
            IF    ( WRK-ERR         NOT =   ZERO )  AND
                  ( CNT-ERR             =   WRK-ERR )
@@ -656,8 +657,8 @@
                GO  TO  200-MAIN-EXT
            END-IF
       *
-           INITIALIZE                  PTKOH-REC
-           MOVE    SPACE           TO  PTKOH-REC
+           INITIALIZE                  PTKOHINF-REC
+           MOVE    SPACE           TO  PTKOHINF-REC
            INITIALIZE                  WRK-HEN-AREA
            MOVE    SPACE           TO  WRK-HEN-AREA
            MOVE    ZERO            TO  WRK-POINT-AREA
@@ -695,7 +696,9 @@
       *
            IF      FLG-ERRARI          =   ZERO
       *        患者公費セット処理
-               PERFORM 250-PTKOHINF-SET-SEC
+      ******** PERFORM 250-PTKOHINF-SET-SEC
+      *        患者公費中間データ出力
+               PERFORM 400-PTKOHINF-ISM-SEC
                IF      FLG-ERR         NOT =   ZERO
       *            エラーリスト編集/出力処理
                    PERFORM 270-ERRREC-EDIT-SEC
@@ -1129,6 +1132,7 @@
                WHEN    "0"
                WHEN    "1"
                WHEN    "2"
+               WHEN    "3"
                    MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
                                        TO  WRK-HEN-FTNKBN
                WHEN    OTHER
@@ -1217,18 +1221,19 @@
       *****************************************************************
        2410-TEKSTYMD-SET-SEC       SECTION.
       *
-           IF      FLG-NODATA          =   1
-               MOVE    PARA-06-2   TO  WRK-HEN-TEKSTYMD
-               GO  TO  2410-TEKSTYMD-SET-EXT
-           END-IF
+      **** IF      FLG-NODATA          =   1
+      *        MOVE    PARA-06-2   TO  WRK-HEN-TEKSTYMD
+      *        GO  TO  2410-TEKSTYMD-SET-EXT
+      *****END-IF
       *
            IF      WRK-MO-CNT      >   8
                MOVE    2           TO  FLG-ERR
                GO  TO  2410-TEKSTYMD-SET-EXT
            END-IF
       *
-           IF      CSV-REC (WRK-MO-ST:WRK-MO-CNT)
-                                       =   ALL "0"
+           IF     (FLG-NODATA          =   1     )  OR
+                  (CSV-REC (WRK-MO-ST:WRK-MO-CNT)
+                                       =   ALL "0")
                MOVE    PARA-06-2   TO  WRK-SYMD
            ELSE
                MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
@@ -1366,171 +1371,33 @@
            .
        2410-UPYMD-SET-EXT.
            EXIT.
-      *
       *****************************************************************
-      *    患者公費情報セット処理
+      *    患者公費マスタＩＳＡＭ処理
       *****************************************************************
-       250-PTKOHINF-SET-SEC        SECTION.
+       400-PTKOHINF-ISM-SEC        SECTION.
       *
       *    患者番号読み込み
            PERFORM 900-PTNUM-READ-SEC
            IF      FLG-PTNUM           =   1
                MOVE    5               TO  FLG-ERR
-               GO  TO  250-PTKOHINF-SET-EXT
            END-IF
-      *    患者情報読み込み
-           PERFORM 900-PTINF-READ-SEC
-           IF      FLG-PTINF           NOT =   ZERO
-               MOVE    6               TO  FLG-ERR
-               GO  TO  250-PTKOHINF-SET-EXT
-           END-IF
-      *
-      *    レコード番号が大きかったら最大値をセット
-      *     IF      WRK-KOHID       <   PTKOH-KOHID
-      *         MOVE    PTKOH-KOHID     TO  WRK-KOHID
-      *     END-IF
-      *
-           MOVE    SPA-HOSPNUM     TO  PTKOH-HOSPNUM
-           MOVE    PTNUM-PTID      TO  PTKOH-PTID
-           MOVE    SPA-TERMID      TO  PTKOH-TERMID
-      *
-      *    老人保健チェック
-           IF      FLG-ERR             =   ZERO
-               PERFORM 250-ROUJIN-HEN-SEC
-           END-IF
-      *
       *    地方公費チェック
-           IF      FLG-ERR             =   ZERO
-               PERFORM 250-CHIHOU-HEN-SEC
+           IF     (FLG-ERR             =   ZERO )
+             AND  (PTKOH-KOHNUM        =  SPACE )
+               PERFORM 4001-CHIHOU-HEN-SEC
            END-IF
-      *
       *    支払い区分セット
            IF      FLG-ERR             =   ZERO
-               PERFORM 250-PAYKBN-HEN-SEC
+               PERFORM 4002-PAYKBN-HEN-SEC
            END-IF
       *
-      *    患者番号変換マスタ更新処理
-           IF      FLG-ERR             =   ZERO
-               PERFORM 250-PTNUM-UPDATE-SEC
-           END-IF
-      *    患者公費マスタ　更新処理
-           IF      FLG-ERR             =   ZERO
-               PERFORM 260-PTKOHINF-INSERT-SEC
+           IF      FLG-ERR         NOT =   ZERO
+               GO      TO      400-PTKOHINF-ISM-EXT
            END-IF
       *
-           .
-       250-PTKOHINF-SET-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    患者公費情報分割登録処理
-      *****************************************************************
-       250-PTKOHINF-BUNKATU-SET-SEC    SECTION.
-      *
-           CLOSE                       ISAM-FILE
-      *
-           OPEN    INPUT               ISAM-FILE
-      *
-           MOVE    ZERO                TO  WRK-PTID
-           MOVE    ZERO                TO  FLG-ERR
-      *
-           INITIALIZE                  ISAM-REC
-           PERFORM 900-ISAM-NEXT-SEC
-      *
-      *    ISAMファイルがなくなるまで
-           PERFORM UNTIL ( FLG-ISAM    =   1 )
-                      OR ( FLG-ERR NOT =   ZERO )
-      *        患者が変わったら最大連番取得
-               IF      WRK-PTID        NOT =   ISAM-PTID
-                   MOVE    ISAM-PTID       TO  WRK-PTID
-                   MOVE    ZERO            TO  WRK-KOHID
-                   INITIALIZE                  PTKOH-REC
-                   MOVE    SPA-HOSPNUM     TO  PTKOH-HOSPNUM
-                   MOVE    ISAM-PTID       TO  PTKOH-PTID
-                   MOVE    PTKOH-REC       TO  MCPDATA-REC
-                   MOVE    "tbl_ptkohinf"  TO  WRK-TABLE
-                   MOVE    "key2"          TO  WRK-DBPATH
-                   PERFORM 900-PTKOHINF-SELECT-SEC
-                   PERFORM UNTIL (FLG-PTKOHINF   =   1)
-                       MOVE    MCPDATA-REC     TO  PTKOH-REC
-      *               レコード番号が大きかったら最大値をセット
-                       IF      WRK-KOHID       <   PTKOH-KOHID
-                           MOVE    PTKOH-KOHID     TO  WRK-KOHID
-                       END-IF
-                       PERFORM 900-PTKOHINF-FETCH-SEC
-                   END-PERFORM
-                   PERFORM 900-PTKOHINF-CLOSE-SEC
-               END-IF
-      *
-      *        患者保険情報に再セット
-               INITIALIZE                  PTKOH-REC
-               MOVE    SPA-HOSPNUM     TO  PTKOH-HOSPNUM
-               MOVE    ISAM-PTID       TO  PTKOH-PTID
-               ADD     1               TO  WRK-KOHID
-               MOVE    WRK-KOHID       TO  PTKOH-KOHID
-               MOVE    ISAM-KOHNUM     TO  PTKOH-KOHNUM
-               MOVE    ISAM-FTNKBN     TO  WRK-HEN-FTNKBN
-               MOVE    ISAM-FTNJANUM   TO  PTKOH-FTNJANUM
-               MOVE    ISAM-JKYSNUM    TO  PTKOH-JKYSNUM
-               MOVE    ISAM-TEKSTYMD   TO  WRK-HEN-TEKSTYMD
-               MOVE    ISAM-TEKEDYMD   TO  WRK-HEN-TEKEDYMD
-               MOVE    ISAM-KAKUNINYMD TO  PTKOH-KAKUNINYMD
-               MOVE    ISAM-CREYMD     TO  PTKOH-CREYMD
-               MOVE    ISAM-UPYMD      TO  PTKOH-UPYMD
-               MOVE    ISAM-PTNUM      TO  SPA-PTNUM
-               MOVE    SPA-TERMID      TO  PTKOH-TERMID
-      *
-      *        支払い区分セット
-               PERFORM 250-PAYKBN-HEN-SEC
-      *        患者番号変換マスタ更新処理
-               PERFORM 900-PTNUM-READ-SEC
-               IF  FLG-ERR              =   ZERO
-                   PERFORM 250-PTNUM-UPDATE-SEC
-               END-IF
-      *        患者公費マスタ　更新処理
-               IF  FLG-ERR              =   ZERO
-                   PERFORM 260-PTKOHINF-INSERT-SEC
-               END-IF
-               IF  FLG-ERR              =   ZERO
-                   PERFORM 900-ISAM-NEXT-SEC
-               END-IF
-           END-PERFORM
-      *
-           CLOSE                       ISAM-FILE
-      *
-      *    ISAMファイルクリア
-           OPEN    OUTPUT              ISAM-FILE
-           CLOSE                       ISAM-FILE
-      *
-      *    ISAMファイル削除
-           MOVE    ZERO            TO  IF-RESULT
-           MOVE    ASS-ISAM        TO  IF-FILENAME
-           CALL    "orcfiledel"        USING
-                                       ORCSFDELAREA
-      *
-           .
-       250-PTKOHINF-BUNKATU-SET-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    老人保険チェック処理
-      *****************************************************************
-       250-ROUJIN-HEN-SEC              SECTION.
-      *
-           IF      PTKOH-KOHNUM    NOT =   "027"
-               GO  TO  250-ROUJIN-HEN-EXT
-           END-IF
-      *
-           IF     (WRK-HEN-TEKSTYMD    <   "20021001" )  AND
-                  (WRK-HEN-TEKEDYMD    >   "20021001" )
-               CONTINUE
-           ELSE
-               GO  TO  250-ROUJIN-HEN-EXT
-           END-IF
-      *
+      *    ＩＳＡＭ読込み
            MOVE    ZERO            TO  FLG-ISAM
            MOVE    ZERO            TO  IDI
-      *
            PERFORM UNTIL   FLG-ISAM    NOT =   ZERO
                ADD     1               TO  IDI
                INITIALIZE                  ISAM-REC
@@ -1541,36 +1408,34 @@
            END-PERFORM
       *
            ADD     1                   TO  CNT-ISAM
+      *
+           MOVE    SPA-HOSPNUM         TO  PTKOH-HOSPNUM
+           MOVE    PTNUM-PTID          TO  PTKOH-PTID
+           MOVE    SPA-TERMID          TO  PTKOH-TERMID
+      *
+           MOVE    WRK-HEN-TEKSTYMD    TO  PTKOH-TEKSTYMD
+           MOVE    WRK-HEN-TEKEDYMD    TO  PTKOH-TEKEDYMD
+      *
       *    分割レコードに追加
            INITIALIZE                      ISAM-REC
            MOVE    PTNUM-PTID          TO  ISAM-PTID
            MOVE    IDI                 TO  ISAM-KOHID
-           MOVE    SPA-PTNUM           TO  ISAM-PTNUM
-           MOVE    PTKOH-KOHNUM        TO  ISAM-KOHNUM
+           MOVE    PTKOHINF-REC        TO  ISAM-DATA
+      *
            MOVE    WRK-HEN-FTNKBN      TO  ISAM-FTNKBN
-           MOVE    PTKOH-FTNJANUM      TO  ISAM-FTNJANUM
-           MOVE    PTKOH-JKYSNUM       TO  ISAM-JKYSNUM
-           MOVE    "20021001"          TO  ISAM-TEKSTYMD
-           MOVE    WRK-HEN-TEKEDYMD    TO  ISAM-TEKEDYMD
-           MOVE    PTKOH-KAKUNINYMD    TO  ISAM-KAKUNINYMD
-           MOVE    PTKOH-CREYMD        TO  ISAM-CREYMD
-           MOVE    PTKOH-UPYMD         TO  ISAM-UPYMD
+           MOVE    SPA-PTNUM           TO  ISAM-PTNUM
+           MOVE    CNT-CSV             TO  ISAM-CNT
+      *
            WRITE   ISAM-REC
       *
-           MOVE    "20020930"          TO  WRK-HEN-TEKEDYMD
-      *
            .
-       250-ROUJIN-HEN-EXT.
+       400-PTKOHINF-ISM-EXT.
            EXIT.
       *
       *****************************************************************
       *    地方公費チェック処理
       *****************************************************************
-       250-CHIHOU-HEN-SEC              SECTION.
-      *
-           IF      PTKOH-KOHNUM        NOT =  SPACE
-               GO  TO  250-CHIHOU-HEN-EXT
-           END-IF
+       4001-CHIHOU-HEN-SEC              SECTION.
       *
       *    生年月日から年齢を求める
       *    １日ならば生年月日、１日以外ならば生年月日の翌月１日
@@ -1629,17 +1494,18 @@
            END-IF
       *
            .
-       250-CHIHOU-HEN-EXT.
+       4001-CHIHOU-HEN-EXT.
            EXIT.
       *
       *****************************************************************
       *    支払い区分セット処理
       *****************************************************************
-       250-PAYKBN-HEN-SEC              SECTION.
+       4002-PAYKBN-HEN-SEC              SECTION.
       *
       *    支払い区分セット
            IF      PTKOH-KOHNUM    =   "027"
-               IF      WRK-HEN-TEKEDYMD    <=  "20020930"
+      *****    IF      WRK-HEN-TEKEDYMD    <=  "20020930"
+               IF      WRK-HEN-TEKSTYMD    <=  "20020930"
                    MOVE    "00"            TO  PTKOH-PAYKBN
                ELSE
                    MOVE    "01"            TO  PTKOH-PAYKBN
@@ -1647,73 +1513,21 @@
                        WHEN    "1"
                            MOVE    "01"    TO  PTKOH-PAYKBN
                        WHEN    "2"
-                           MOVE    "02"    TO  PTKOH-PAYKBN
+                       WHEN    "3"
+      *                    ２、３割負担は開始日による
+                           IF      WRK-HEN-TEKSTYMD    >=  "20061001"
+                               MOVE    "03"        TO  PTKOH-PAYKBN
+                           ELSE
+                               MOVE    "02"        TO  PTKOH-PAYKBN
+                           END-IF
                    END-EVALUATE
                END-IF
            ELSE
                MOVE    "00"            TO  PTKOH-PAYKBN
            END-IF
       *
-           MOVE    WRK-HEN-TEKSTYMD    TO  PTKOH-TEKSTYMD
-           MOVE    WRK-HEN-TEKEDYMD    TO  PTKOH-TEKEDYMD
-      *
            .
-       250-PAYKBN-HEN-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    患者番号変換マスタ　更新処理
-      *****************************************************************
-       250-PTNUM-UPDATE-SEC            SECTION.
-      *
-      *    最大公費ＩＤで患者番号変換マスタを更新
-           IF  PTNUM-KOHID             <   PTKOH-KOHID
-               MOVE    PTKOH-KOHID     TO  PTNUM-KOHID
-               MOVE    SPA-SYSYMD      TO  PTNUM-UPYMD
-      *
-               MOVE    PTNUM-REC       TO  MCPDATA-REC
-               MOVE    "DBUPDATE"      TO  MCP-FUNC
-               MOVE    "tbl_ptnum"     TO  MCP-TABLE
-               MOVE    "key"           TO  MCP-PATHNAME
-grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
-                                                   MCPDATA-REC
-                                                   SPA-AREA
-               IF      MCP-RC      NOT =   ZERO
-                   MOVE    7               TO  FLG-ERR
-               END-IF
-           END-IF
-      *
-           .
-       250-PTNUM-UPDATE-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    患者公費マスタ　登録処理
-      *****************************************************************
-       260-PTKOHINF-INSERT-SEC     SECTION.
-      *
-      *    存在チェック
-           PERFORM 900-PTKOHINF-READ-SEC
-           IF      FLG-PTKOHINF    =   ZERO
-               MOVE    8               TO  FLG-ERR
-               GO  TO  260-PTKOHINF-INSERT-EXT
-           END-IF
-      *
-           MOVE    PTKOH-REC       TO  MCPDATA-REC
-           MOVE    "DBINSERT"      TO  MCP-FUNC
-           MOVE    "tbl_ptkohinf"  TO  MCP-TABLE
-           MOVE    "key"           TO  MCP-PATHNAME
-grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
-           IF      MCP-RC          NOT =   ZERO
-               MOVE    8               TO  FLG-ERR
-               GO  TO  260-PTKOHINF-INSERT-EXT
-           END-IF
-           ADD     1               TO  CNT-PTKOHINF
-      *
-           .
-       260-PTKOHINF-INSERT-EXT.
+       4002-PAYKBN-HEN-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1961,9 +1775,10 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *    帳票出力　終了処理
            CLOSE                       CSV-FILE
            CLOSE                       ERR-FILE
+           CLOSE                       ISAM-FILE
       *
            DISPLAY "*(ORCVTPTKOHINF)* CSV     /I CNT[" CNT-CSV      "]"
-           DISPLAY "*(ORCVTPTKOHINF)* PTKOHINF/O CNT[" CNT-PTKOHINF "]"
+      *****DISPLAY "*(ORCVTPTKOHINF)* PTKOHINF/O CNT[" CNT-PTKOHINF "]"
            DISPLAY "*(ORCVTPTKOHINF)* ERR     /O CNT[" CNT-ERR      "]"
            DISPLAY "*(ORCVTPTKOHINF)* ISAM    /O CNT[" CNT-ISAM     "]"
       *
@@ -2069,7 +1884,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *****************************************************************
        900-PTKOHINF-READ-SEC       SECTION.
       *
-           MOVE    PTKOH-REC       TO  MCPDATA-REC
+           MOVE    PTKOHINF-REC       TO  MCPDATA-REC
            MOVE    "tbl_ptkohinf"  TO  WRK-TABLE
            MOVE    "key"           TO  WRK-DBPATH
            PERFORM 900-PTKOHINF-SELECT-SEC
