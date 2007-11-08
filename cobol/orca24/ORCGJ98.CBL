@@ -46,6 +46,7 @@
       *  03.04.00    NACL-多々納  06/11/13  検査正式名称表示追加
       *  03.05.00    NACL-多々納  07/05/XX  グループ診療対応
       *  03.05.00    NACL-多々納  07/06/20  選択数を１０に変更
+      *  04.01.00    NACL-多々納  07/10/XX  区分番号に自院の追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -173,6 +174,7 @@
            03  WRK-KETA            PIC 9(04).
            03  WRK-KEY-INPUT       PIC X(22).
       *
+           03  WRK-SENTAKU         PIC X(70).
            03  WRK-HEN-NAME        PIC X(70).
            03  WRK-KENSA-HEN       PIC X(02).
       *
@@ -544,15 +546,13 @@
       *            区分番号
                    PERFORM 310010-KUBUNNUM-SET-SEC
                WHEN    "/"
-      *TEST
                    IF      SPA-J98-GMN-INPUT(2:1) =   "/"
                                                   OR  "U"
       *                ユーザ登録分
                        PERFORM 310012-USER-TENSET-SEC
                    ELSE
-      *TEST
-      *            検査点数
-                   PERFORM 310011-KENSA-TENSET-SEC
+      *                検査点数
+                       PERFORM 310011-KENSA-TENSET-SEC
                    END-IF
                WHEN    OTHER
       *            その他
@@ -706,6 +706,20 @@
       *****************************************************************
        310010-KUBUNNUM-TBLSET-SEC       SECTION.
       *
+           MOVE    SPACE               TO  SPA-J98-GMN-SYORI
+      *    最後にＳがあれば、自院
+           IF     (SPA-J98-GMN-INPUT(3:3)  NUMERIC  )  AND
+                  (SPA-J98-GMN-INPUT(6:1)  =   "S"  )
+              IF      (SPA-J98-GMN-ALL     =   SPACE )
+      *            自院分
+                   PERFORM 3100102-KUBUNNUM-TBLSET02-SEC
+                   IF      SPA-J98-GMN-MAX     >   ZERO
+                       GO      TO  310010-KUBUNNUM-TBLSET-EXT
+                   END-IF
+               END-IF
+           END-IF
+      *!
+           MOVE    "1"                 TO  SPA-J98-GMN-ALL
            INITIALIZE                      TNS-TENSU-REC
            MOVE    SPA-J98-GMN-INPUT(2:1)  TO  TNS-CDKBN-KBN
            IF      SPA-J98-GMN-INPUT(3:3)  NUMERIC
@@ -757,6 +771,47 @@
       *
            .
        310010-KUBUNNUM-TBLSET-EXT.
+           EXIT.
+      *****************************************************************
+      *    検査（自院）編集
+      *****************************************************************
+       3100102-KUBUNNUM-TBLSET02-SEC            SECTION.
+      *
+           INITIALIZE                      TNS-TENSU-REC
+           MOVE    SPA-J98-GMN-INPUT(2:1)  TO  TNS-CDKBN-KBN
+           MOVE    SPA-J98-GMN-INPUT(3:3)  TO  TNS-CDKBN-KBNNUM
+           MOVE    "key91m"                TO  WRK-PATH
+      *
+           MOVE    WRK-PATH            TO  MCP-PATHNAME
+           PERFORM 910-TENSU-SELECT-SEC
+      *
+           MOVE    ZERO                TO  IDX2
+           MOVE    ZERO                TO  IDX
+           PERFORM
+               UNTIL      (IDX         >    200)   OR
+                          (FLG-TENSU   =   1   )   OR
+                          (SPA-ERRCD   NOT =   SPACE )
+      *        点数マスタチェック
+               PERFORM 31021-TENSU-CHK-SEC
+               IF      FLG-CHK             =   ZERO
+                   ADD     1               TO  IDX2
+      *            次ページの時、表示分は読み飛ばし
+                   IF      IDX2            >=  WRK-STR
+                       PERFORM 31021-TENSU-HEN-SEC
+                   END-IF
+               END-IF
+      *
+               MOVE    WRK-PATH            TO  MCP-PATHNAME
+               PERFORM                     910-TENSU-READ-SEC
+           END-PERFORM
+      *
+           MOVE    "tbl_tensu"         TO  MCP-TABLE
+           MOVE    WRK-PATH            TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+      *
+           MOVE    WRK-CNT-ENT         TO  SPA-J98-GMN-MAX
+           .
+       33100102-KUBUNNUM-TBLSET02-EXT.
            EXIT.
       *
       *TEST
@@ -1963,14 +2018,12 @@
                        WHEN    "U6"
                            MOVE    "システム予約コード"
                                                TO  J98-SENTAKU
-      *TEST
                        WHEN    "JK"
                            MOVE    "器材（自院）"
                                                TO  J98-SENTAKU
                        WHEN    "UK"
                            MOVE    "器材（全体）"
                                                TO  J98-SENTAKU
-      *TEST
                    END-EVALUATE
       *        その他
                WHEN    OTHER
@@ -2155,6 +2208,17 @@
                WHEN    OTHER
                    MOVE    SPACE                       TO  J98-SENTAKU
             END-EVALUATE
+      *!
+           IF      J98-SENTAKU     NOT =   SPACE
+               IF      SPA-J98-GMN-ALL     =   SPACE
+                   MOVE    J98-SENTAKU         TO  WRK-SENTAKU
+                   MOVE    SPACE               TO  J98-SENTAKU
+                   STRING  WRK-SENTAKU     DELIMITED  BY  SPACE
+                           "（自院）"          DELIMITED  BY  SPACE
+                                               INTO  J98-SENTAKU
+                   END-STRING
+               END-IF
+           END-IF
            .
        5001-SENTAKU-MEI-EXT.
            EXIT.

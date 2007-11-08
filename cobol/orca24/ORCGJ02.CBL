@@ -3973,8 +3973,12 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *                入院中としない
                        PERFORM VARYING IDX-D   FROM    WRK-STDD BY  1
                                UNTIL   IDX-D   >   WRK-EDDD
-                           IF      IDX-D           =   WRK-STDD
-                                                   OR  WRK-EDDD
+                           IF    ((PTNYUINRRK-TENNYUYMD(1:6)
+                                                   =   SPA-NAI-SRYYM )
+                              AND (IDX-D           =   WRK-STDD ))
+                           OR    ((PTNYUINRRK-TENSTUYMD(1:6)
+                                                   =   SPA-NAI-SRYYM )
+                              AND (IDX-D           =   WRK-EDDD ))
       *                        入院日・退院日
                                MOVE    2           TO  SPA-NAI-NYUIN
                                                                (IDX-D)
