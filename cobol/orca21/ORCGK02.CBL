@@ -3987,7 +3987,6 @@
            IF      FLG-NYUIN           =   1
       *        保険にアフターケアがあれば対象
                IF     (SPA-NAI-SRYYMD      >=  "20060401" )
-      ****        AND (SPA-SYORIFLG    NOT =   1          )
                    PERFORM 31091-NYUIN-HKNCHK-SEC
                END-IF
                IF      FLG-NYUIN       =   1
@@ -4008,17 +4007,32 @@
       *****************************************************************
        31091-NYUIN-HKNCHK-SEC              SECTION.
       *
-           IF      SPA-SYORIFLG        =   1
-               IF     (SPA-HKNNUM          =   "971" )
-                 AND  (SPA-RSI-HKNKBN      =   "3"   )
-                   CONTINUE
-               ELSE
-                   GO      TO      31091-NYUIN-HKNCHK-EXT
+      *    保険組合せ情報検索
+           MOVE    ZERO                TO  FLG-CHK
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL      (IDX     >   SPA-HKN-MAX )  OR
+                              (FLG-CHK     =    1   ) 
+               IF      SPA-GMN-HKNCOMBINUM   =   SPA-GMN-THKNCOMBINUM
+                                                             (IDX)
+                   MOVE    IDX               TO  IDY
+                   MOVE    1                 TO  FLG-CHK
                END-IF
-           END-IF                 
+           END-PERFORM
+           IF      FLG-CHK             =   ZERO
+               GO      TO      31091-NYUIN-HKNCHK-EXT
+           END-IF
+     *
+           IF      SPA-SYORIFLG        =   1
+               IF     (SPA-NAI-HKNNUM     (IDY)    =   "971" ) AND
+                      (SPA-NAI-RSI-HKNKBN (IDY)    =   "3" )
+                   MOVE    ZERO                TO  FLG-NYUIN
+                   MOVE    1                   TO  SPA-NAI-NYUIN
+               END-IF
+               GO      TO      31091-NYUIN-HKNCHK-EXT
+           END-IF
       *
-           IF     (SPA-HKNNUM          =   "971" )
-             AND  (SPA-RSI-HKNKBN      =   "3"   )
+           IF     (SPA-NAI-HKNNUM     (IDY)    =   "971" ) AND
+                  (SPA-NAI-RSI-HKNKBN (IDY)    =   "3" )
                MOVE    ZERO                TO  FLG-NYUIN
                MOVE    1                   TO  SPA-NAI-NYUIN
            ELSE
