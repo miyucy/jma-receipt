@@ -29,7 +29,6 @@ define postprocess-depend
 endef
 
 all: $(COBJS) $(OBJS) $(EXEC)
-	@echo $(COBJS) 
 	
 clean: 
 	-rm -f $(COBJS) $(OBJS) $(EXEC)
