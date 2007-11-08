@@ -3987,7 +3987,7 @@
            IF      FLG-NYUIN           =   1
       *        保険にアフターケアがあれば対象
                IF     (SPA-NAI-SRYYMD      >=  "20060401" )
-                  AND (SPA-SYORIFLG    NOT =   1          )
+      ****        AND (SPA-SYORIFLG    NOT =   1          )
                    PERFORM 31091-NYUIN-HKNCHK-SEC
                END-IF
                IF      FLG-NYUIN       =   1
@@ -4007,6 +4007,15 @@
       *    入院中アフターケア処理
       *****************************************************************
        31091-NYUIN-HKNCHK-SEC              SECTION.
+      *
+           IF      SPA-SYORIFLG        =   1
+               IF     (SPA-HKNNUM          =   "971" )
+                 AND  (SPA-RSI-HKNKBN      =   "3"   )
+                   CONTINUE
+               ELSE
+                   GO      TO      31091-NYUIN-HKNCHK-EXT
+               END-IF
+           END-IF                 
       *
            IF     (SPA-HKNNUM          =   "971" )
              AND  (SPA-RSI-HKNKBN      =   "3"   )
