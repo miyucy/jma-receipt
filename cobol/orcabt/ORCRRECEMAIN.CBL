@@ -41,6 +41,8 @@
       *  03.05.02    NACL-Æ£¸¶    07/06/01  Ï«ºÒ¡¦¼«ÇåÀÕÂÐ±þ
       *  03.05.03    NACL-Æ£¸¶    07/06/19  ¼«ÇåÀÕ¤ÎÍÍ¼°ÁªÂòÂÐ±þ
       *                                     ¡ÊÊ¿À®£±£¹Ç¯£´·î²þÀµÍÍ¼°¡Ë
+      *
+      *  04.01.01    NACL-Æ£¸¶    07/10/25  ¸øÌ³ºÒ³²ÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -880,6 +882,8 @@
                                        WRK-ARG
            CALL    "ORCR0470"          USING
                                        WRK-ARG
+           CALL    "ORCR0468"          USING
+                                       WRK-ARG
       *
            PERFORM 20010-PRVDATA-DEL-SEC
            PERFORM 900-DBDISCONNECT-SEC
@@ -902,6 +906,8 @@
            CALL    "ORCR0481"          USING
                                        WRK-ARG
            CALL    "ORCR0482"          USING
+                                       WRK-ARG
+           CALL    "ORCR0483"          USING
                                        WRK-ARG
       *
       *
@@ -1102,6 +1108,9 @@
                END-STRING
                DISPLAY "ORCR0961 start = [" WRK-ARG "]"
                CALL    "ORCR0961"          USING
+                                           WRK-ARG
+               DISPLAY "ORCR0962 start = [" WRK-ARG "]"
+               CALL    "ORCR0962"          USING
                                            WRK-ARG
            END-IF
       *

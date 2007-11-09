@@ -142,6 +142,12 @@ fi
        	$DBSTUB -dir $LDDIRECTORY -bd orcabt ORCR0940 -parameter $1$3$5$6,${17},${16},${4}      >> $LOG_FILE 2>&1
 
         fi
+        if  [ -e $4 ]; then
+            exit
+        else
+        $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCR0936 -parameter $1$3$5$6,${17},${16},${4}      >> $LOG_FILE 2>&1
+
+        fi
 
         if  [ -e $4 ]; then
             exit 
@@ -163,6 +169,11 @@ fi
                     else 
                        $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCR0961 -parameter $9${10}$1$3$8$5$6,${16},${4}   >> $LOG_FILE 2>&1
                     fi
+                    if  [ -e $4 ]; then
+                       exit 
+                    else 
+                       $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCR0962 -parameter $9${10}$1$3$8$5$6,${16},${4}   >> $LOG_FILE 2>&1
+                    fi
                 fi
             else
 ##
@@ -180,6 +191,11 @@ fi
                        exit 
                     else 
                        $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCR0961 -parameter $9${10}$1$3$8$5$6,${16},${4}   >> $LOG_FILE 2>&1
+                    fi
+                    if  [ -e $4 ]; then
+                       exit 
+                    else 
+                       $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCR0962 -parameter $9${10}$1$3$8$5$6,${16},${4}   >> $LOG_FILE 2>&1
                     fi
                 fi
             fi

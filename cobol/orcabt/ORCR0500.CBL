@@ -103,6 +103,9 @@
       *                                     HCM53.red  HCN53.red
       *                                     HCM54.red  HCN54.red
       *                                     HCM55.red  HCN55.red
+      *
+      *  04.01.01    NACL-Æ£¸¶    07/10/25  ¸øÌ³ºÒ³²ÂÐ±þ
+      *                                     HCM56.red
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -252,6 +255,7 @@ grpsys     COPY    "COMMON-SPA".
            COPY    "HCM20V02.INC".
            COPY    "HCM20V03.INC".
            COPY    "HCM20V04.INC".
+           COPY    "HCM56.INC".
       *
            COPY    "HCN21.INC".
            COPY    "HCN21V01.INC".
@@ -957,6 +961,10 @@ grpsys         PERFORM 900-ORCDBMAIN-SEC
                        MOVE    RECE08-PRTDATA      TO  HCN55
                        MOVE    WRK-HEN-RENNUM-AREA TO  HCN55-RENNUM
                        MOVE    HCN55               TO  RECE08-PRTDATA
+                   WHEN    "HCM56.red"
+                       MOVE    RECE08-PRTDATA      TO  HCM56
+                       MOVE    WRK-HEN-RENNUM-AREA TO  HCM56-RENNUM
+                       MOVE    HCM56               TO  RECE08-PRTDATA
                END-EVALUATE
            END-IF            
            MOVE    RECE08-PRTDATA      TO  PRT-PRTDATA
@@ -1118,6 +1126,7 @@ grpsys         PERFORM 900-DBFETCH-SEC
                WHEN    "HCM24V02.red"  ALSO    "2"
                WHEN    "HCM24V03.red"  ALSO    "2"
                WHEN    "HCM24V04.red"  ALSO    "2"
+               WHEN    "HCM56.red"     ALSO    "2"
                    MOVE    "Ï«ºÒ¥ì¥»¥×¥È¡ÊÆþ±¡³°¡Ë"    TO  SPRT-TITLE
                WHEN    "HCM23.red"     ALSO    ANY
                WHEN    "HCM23V01.red"  ALSO    ANY
@@ -1164,6 +1173,7 @@ grpsys         PERFORM 900-DBFETCH-SEC
                WHEN    "HCM24V02.red"  ALSO    "1"
                WHEN    "HCM24V03.red"  ALSO    "1"
                WHEN    "HCM24V04.red"  ALSO    "1"
+               WHEN    "HCM56.red"     ALSO    "1"
                    MOVE    "Ï«ºÒ¥ì¥»¥×¥È¡ÊÆþ±¡¡Ë"      TO  SPRT-TITLE
                WHEN    "HCN23.red"     ALSO    ANY
                WHEN    "HCN23V01.red"  ALSO    ANY

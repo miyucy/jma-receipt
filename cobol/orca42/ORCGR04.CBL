@@ -1,4 +1,4 @@
-      *******************************************************************
+      ************************************************??********************
       * Project code name "ORCA"
       * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
       * Copyright(C) 2002 JMA (Japan Medical Association)
@@ -63,6 +63,8 @@
       *
       *  03.05.01    NACL-Æ£¸¶    07/04/19  ¥°¥ë¡¼¥×¿ÇÎÅÂÐ±þ
       *  03.05.02    NACL-Æ£¸¶    07/06/01  ¥×¥ì¥Ó¥å¡¼µ¡Ç½ÄÉ²Ã
+      *
+      *  04.01.00    NACL-Æ£¸¶    07/10/25  ¸øÌ³ºÒ³²ÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -713,8 +715,9 @@ grpsys     MOVE    SPA-HOSPNUM         TO  SYS-1031-HOSPNUM
            MOVE    SPACE               TO  SYS-2003-KEY
            MOVE    "2003"              TO  SYS-2003-KANRICD
       *****MOVE    SPA-SYSYMD          TO  ORC-DBYMD
-           MOVE    SPA-R01-SRYYM       TO  SYS-2003-STYUKYMD (1:6)
-           MOVE    "01"                TO  SYS-2003-STYUKYMD (7:2)
+      *****MOVE    SPA-R01-SRYYM       TO  SYS-2003-STYUKYMD (1:6)
+      *****MOVE    "01"                TO  SYS-2003-STYUKYMD (7:2)
+           MOVE    "00000000"          TO  SYS-2003-STYUKYMD
            MOVE    SYS-2003-STYUKYMD   TO  SYS-2003-EDYUKYMD
 grpsys     MOVE    SPA-HOSPNUM         TO  SYS-2003-HOSPNUM
       * 
@@ -1490,7 +1493,7 @@ grpsys     MOVE    SPA-HOSPNUM         TO  RECE08-HOSPNUM
            MOVE    RECE08-REC          TO  MCPDATA-REC
            MOVE    "DBUPDATE"          TO  MCP-FUNC
            MOVE    "tbl_receprt"       TO  MCP-TABLE
-           MOVE    "upd1"              TO  MCP-PATHNAME
+           MOVE    "upd2"              TO  MCP-PATHNAME
            PERFORM 900-ORCDBMAIN-SEC
       *
       *    °õºþ£Ä£Â¤Î£Ë£Å£ÙÍÑ     

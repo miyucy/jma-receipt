@@ -114,6 +114,8 @@
       *                                     ¡ÊÊ¿À®£±£¹Ç¯£´·î²þÀµÍÍ¼°¡Ë
       *  03.05.03    NACL-Æ£¸¶    07/07/13  ¿ÇÎÅ¹Ô°Ù¤¬¤Ê¤¤ÀÁµá¥Ç¡¼¥¿¤Î
       *                                     ºï½üÂÐ±þ
+      *
+      *  04.01.01    NACL-Æ£¸¶    07/10/25  ¸øÌ³ºÒ³²ÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -3254,6 +3256,7 @@ grpsys             MOVE    SPA-HOSPNUM         TO  PTINF-HOSPNUM
                            MOVE    ZERO           TO  PTINF-HKNKBN
                        WHEN    "3"
                            MOVE    "1"            TO  PTINF-HKNKBN
+                           MOVE    "5"            TO  PTINF-HKNKBN2
                        WHEN    "4"
                            MOVE    "2"            TO  PTINF-HKNKBN
                        WHEN    "5"
@@ -3269,6 +3272,7 @@ grpsys             MOVE    SPA-HOSPNUM         TO  PTINF-HOSPNUM
                    END-IF 
                    MOVE    PTINF-REC           TO  MCPDATA-REC
                    EVALUATE    SPA-R01-RECEKBN
+                       WHEN    "3"
                        WHEN    "5"
                            IF      SPA-GMN-R01-SYORI   =   "2"
                                MOVE    "tbl_ptinf" TO  WRK-MCP-TABLE

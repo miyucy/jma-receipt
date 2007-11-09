@@ -586,9 +586,6 @@ grpsys     MOVE    SPA-HOSPNUM     TO  PTRSI-HOSPNUM
                MOVE    "1"             TO  WRK-ROUSAIKBN
            END-IF                
       *
-      *??
-           DISPLAY "WRK-ROUSAIKBN=" WRK-ROUSAIKBN "#"
-      *??
       *    労災・自賠責保険以外のとき処理しない
            IF      WRK-ROUSAIKBN       =   "1"
                GO  TO  20011-FILE-SYORI-EXT
@@ -1211,9 +1208,6 @@ grpsys     PERFORM 900-CLOSE-SEC
       *    データ出力処理
       *****************************************************************
        20011-HENSYU-SEC                SECTION.
-      *???
-           DISPLAY "20011-HENSYU-SEC"
-      *???
       *
            MOVE    KEY-NEW             TO  KEY-OLD
            PERFORM             UNTIL   FLG-SRYACCT     =   1 
@@ -1235,9 +1229,6 @@ grpsys         MOVE    SPA-HOSPNUM         TO  COMB-HOSPNUM
                                                WRK-ROUSAIKBN
       *
                IF      FLG-HKNCOMBI    =   ZERO
-      *???
-           DISPLAY "COMB-HKNNUM=" COMB-HKNNUM "#"
-      *???
                    IF      COMB-HKNNUM  =   WRK-CONS-HKNNUM
                        IF      COMB-TEKSTYMD   <=  WRK-STYMD
                        AND     COMB-TEKEDYMD   >=  WRK-EDYMD
@@ -1251,9 +1242,6 @@ grpsys         MOVE    SPA-HOSPNUM         TO  COMB-HOSPNUM
                ELSE
                    MOVE    "1"             TO  WRK-TEISEIKBN    
                END-IF    
-      *???
-           DISPLAY "WRK-ROUSAIKBN=" WRK-ROUSAIKBN "#"
-      *???
       *
                MOVE    KEY-NEW             TO  KEY-OLD
                PERFORM         UNTIL   FLG-SRYACCT     =   1
