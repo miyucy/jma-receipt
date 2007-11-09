@@ -21,16 +21,16 @@ AC_ARG_ENABLE(hosp, [  --enable-hosp=[no/yes] support hosp [default=yes]],,enabl
 
 if test "x$enable_hosp" = "xyes"; then
   HOSP="hosp"
-  CLINIC_BED_SET_TO_ZERO="\
-      *The number of beds is set to 0 with the clinic version start.\
-      *         MOVE    ZERO                TO  SPA-BEDSU\
-      *         MOVE    ZERO                TO  SPA-BEDSUIPN\
+  CLINIC_BED_SET_TO_ZERO="\\
+      *The number of beds is set to 0 with the clinic version start.\\
+      *         MOVE    ZERO                TO  SPA-BEDSU\\
+      *         MOVE    ZERO                TO  SPA-BEDSUIPN\\
       *The number of beds is set to 0 with the clinic version end."
 else
-  CLINIC_BED_SET_TO_ZERO="\
-      *The number of beds is set to 0 with the clinic version start.\
-               MOVE    ZERO                TO  SPA-BEDSU\
-               MOVE    ZERO                TO  SPA-BEDSUIPN\
+  CLINIC_BED_SET_TO_ZERO="\\
+      *The number of beds is set to 0 with the clinic version start.\\
+               MOVE    ZERO                TO  SPA-BEDSU\\
+               MOVE    ZERO                TO  SPA-BEDSUIPN\\
       *The number of beds is set to 0 with the clinic version end."
 fi
 
