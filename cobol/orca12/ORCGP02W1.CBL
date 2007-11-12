@@ -240,6 +240,7 @@
            03  IDX-KOH             PIC 9(04).
       *
            03  IDXK                PIC 9(04).
+           03  IDX5                PIC 9(04).
       *
       *    一時領域
        01  WRK-AREA.
@@ -417,8 +418,8 @@
       *
       *    保険組合せ（ＳＰＡと同じ）
        01  WRK-HKNCOBMI-SORT-AREA.
-               05  WRK-HKNCOMBI-AREA.
-                   07  WRK-GMN-HKNCOMBI-LIST       OCCURS   15.
+           03  WRK-HKNCOMBI-AREA.
+               05  WRK-GMN-HKNCOMBI-LIST       OCCURS   15.
                        09  WRK-GMN-THKNCOMBINUM    PIC 9(04).
                        09  WRK-GMN-THKNCOMBIMEI    PIC X(40).
                        09  WRK-GMN-TTEKSTYMD       PIC X(09).
@@ -432,11 +433,30 @@
                        09  WRK-NAI-TKOH2HKNNUM     PIC X(03).
                        09  WRK-NAI-TKOH3HKNNUM     PIC X(03).
                        09  WRK-NAI-TKOH4HKNNUM     PIC X(03).
-                   07  WRK-HKNCOMBI-MAX            PIC 9(04).
-            05  WRK-SORT-KEY.
-                09  WRK-SRT-TEKISTYMD      PIC X(08).
-                09  WRK-SRT-HKNCOMBINUM    PIC X(04).
-                09  WRK-SRT-IDX            PIC 9(04).
+                       09  WRK-NAI-THYOJIKBN       PIC X(01).
+               05  WRK-HKNCOMBI-MAX            PIC 9(04).
+      *
+           03  WRK-SORT-KEY.
+               05  WRK-SRT-TEKISTYMD      PIC X(08).
+               05  WRK-SRT-HKNCOMBINUM    PIC X(04).
+               05  WRK-SRT-IDX            PIC 9(04).
+      *
+           03  WRK-HKNCOMBI02-AREA.
+               05  WRK-GMN-HKNCOMBI02-LIST       OCCURS   15.
+                       09  WRK-GMN02-THKNCOMBINUM    PIC 9(04).
+                       09  WRK-GMN02-THKNCOMBIMEI    PIC X(40).
+                       09  WRK-GMN02-TTEKSTYMD       PIC X(09).
+                       09  WRK-GMN02-TTEKEDYMD       PIC X(09).
+                       09  WRK-GMN02-THKNNUM         PIC X(03).
+                       09  WRK-GMN02-THKNID          PIC 9(10).
+      *
+                       09  WRK-NAI02-TTEKSTYMD       PIC X(08).
+                       09  WRK-NAI02-TTEKEDYMD       PIC X(08).
+                       09  WRK-NAI02-TKOH1HKNNUM     PIC X(03).
+                       09  WRK-NAI02-TKOH2HKNNUM     PIC X(03).
+                       09  WRK-NAI02-TKOH3HKNNUM     PIC X(03).
+                       09  WRK-NAI02-TKOH4HKNNUM     PIC X(03).
+                       09  WRK-NAI02-THYOJIKBN       PIC X(01).
       *
        01  WRK-HENSYU-AREA.
       *
@@ -1872,6 +1892,9 @@
       *    労災保険の時コメントを表示する
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   SPA-HKNCOMBI-MAX
+      *        非表示区分設定
+               PERFORM 3134-HKNCOMBI-HYOJI-SEC
+      *
                IF      SPA-GMN-THKNNUM (IDX)   =   "971"
                                                OR  "973"
                    PERFORM 31032-RSI-HKNCOMBI-HEN-SEC
@@ -1888,8 +1911,38 @@
       *****************************************************************
       *    保険組合せソート処理
       *****************************************************************
+       3134-HKNCOMBI-HYOJI-SEC             SECTION.
+      *
+           PERFORM VARYING     IDX5    FROM    1   BY  1
+                   UNTIL      (IDX5        >   SPA-HYO-MAX )
+               IF     (SPA-GMN-THKNCOMBINUM (IDX)
+                                       =   SPA-HYO-HKNCOMBINUM(IDX5))
+               AND    (SPA-GMN-THKNNUM  (IDX)
+                                       =   SPA-HYO-HKNNUM     (IDX5))
+               AND    (SPA-NAI-TKOH1HKNNUM (IDX)
+                                       =   SPA-HYO-KOH1HKNNUM (IDX5))
+               AND    (SPA-NAI-TKOH2HKNNUM (IDX)
+                                       =   SPA-HYO-KOH2HKNNUM (IDX5))
+               AND    (SPA-NAI-TKOH3HKNNUM (IDX)
+                                       =   SPA-HYO-KOH3HKNNUM (IDX5))
+               AND    (SPA-NAI-TKOH4HKNNUM (IDX)
+                                       =   SPA-HYO-KOH4HKNNUM (IDX5))
+                   MOVE    SPA-HYO-HYOJIKBN (IDX5)
+                                           TO  SPA-NAI-THYOJIKBN (IDX)
+                   MOVE    SPA-HYO-MAX     TO  IDX5
+               END-IF
+           END-PERFORM
+      *
+           .
+       3134-HKNCOMBI-HYOJI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    保険組合せソート処理
+      *****************************************************************
        30133-HKNCOMBI-SORT-SEC             SECTION.
       *
+      *    表示分のみ行う
            INITIALIZE                  WRK-HKNCOBMI-SORT-AREA
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   15
@@ -1899,6 +1952,7 @@
                PERFORM VARYING     IDX2    FROM    1   BY  1
                        UNTIL       IDX2     >   SPA-HKNCOMBI-MAX
                    IF      SPA-GMN-THKNCOMBINUM (IDX2) =   ZERO
+                       OR (SPA-NAI-THYOJIKBN    (IDX2) =   "1" )
                        CONTINUE
                    ELSE
                        PERFORM 301331-SORTSYORI-SEC
@@ -1911,6 +1965,31 @@
                                                          (WRK-SRT-IDX)
                END-IF
            END-PERFORM
+      *
+      *    非表示分のみ行う
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   15
+               MOVE    ALL "9"         TO  WRK-SRT-TEKISTYMD
+               MOVE    ALL "9"         TO  WRK-SRT-HKNCOMBINUM
+               MOVE    ZERO            TO  WRK-SRT-IDX
+               PERFORM VARYING     IDX2    FROM    1   BY  1
+                       UNTIL       IDX2     >   SPA-HKNCOMBI-MAX
+                   IF      SPA-GMN-THKNCOMBINUM (IDX2) =   ZERO
+                      AND (SPA-NAI-THYOJIKBN    (IDX2) =   SPACE)
+                       CONTINUE
+                   ELSE
+                       PERFORM 301331-SORTSYORI-SEC
+                   END-IF
+               END-PERFORM
+               IF      WRK-SRT-IDX     NOT =   ZERO
+                   MOVE    SPA-GMN-HKNCOMBI-LIST (WRK-SRT-IDX)
+                                       TO  WRK-GMN-HKNCOMBI02-LIST(IDX)
+                   INITIALIZE              SPA-GMN-HKNCOMBI-LIST
+                                                         (WRK-SRT-IDX)
+               END-IF
+           END-PERFORM
+      *
+      *    ＳＰＡ編集（表示分）
            MOVE    ZERO                TO   SPA-HKNCOMBI-MAX
            INITIALIZE                  SPA-HKNCOMBI-AREA
            PERFORM VARYING     IDX     FROM    1   BY  1
@@ -1918,6 +1997,16 @@
                IF      WRK-GMN-THKNCOMBINUM (IDX) NOT =   ZERO
                    ADD     1           TO   SPA-HKNCOMBI-MAX
                    MOVE    WRK-GMN-HKNCOMBI-LIST (IDX)
+                                       TO  SPA-GMN-HKNCOMBI-LIST
+                                                  (SPA-HKNCOMBI-MAX)
+               END-IF
+           END-PERFORM
+      *    ＳＰＡ編集（非表示分）
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   15
+               IF      WRK-GMN02-THKNCOMBINUM (IDX) NOT =   ZERO
+                   ADD     1           TO   SPA-HKNCOMBI-MAX
+                   MOVE    WRK-GMN-HKNCOMBI02-LIST (IDX)
                                        TO  SPA-GMN-HKNCOMBI-LIST
                                                   (SPA-HKNCOMBI-MAX)
                END-IF
@@ -3824,6 +3913,10 @@
                PERFORM VARYING   IDX       FROM    1   BY  1
                        UNTIL     IDX       >  SPA-HKNCOMBI-MAX
                    IF      SPA-GMN-SELNUM  =   SPA-GMN-THKNCOMBINUM(IDX)
+                       IF      SPA-NAI-THYOJIKBN (IDX)  =   "1"
+                           MOVE    "0137"          TO  SPA-ERRCD
+                           MOVE    38              TO  SPA-GMN-CUR
+                       END-IF
                        MOVE    1               TO  FLG-CHK
                    END-IF
                END-PERFORM

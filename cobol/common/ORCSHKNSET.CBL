@@ -34,6 +34,7 @@
       * 02.07.00     NACL-太田    05/10/24   MONFUNC 対応
       * 03.05.00     NACL-多々納  07/04/XX  グループ診療対応
       * 04.01.00     NACL-多々納  07/10/19  公務災害追加
+      * 04.01.01     NACL-多々納  07/11/12  非表示区分対応追加
       *****************************************************************
       *
       *
@@ -63,6 +64,7 @@
            03  FLG-CHK             PIC 9(01).
            03  FLG-HKNCOMBICHK     PIC 9(01).
            03  FLG-OK              PIC 9(01).
+           03  FLG-HKNCOMBIERR     PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -286,9 +288,20 @@
       *
       *        対象の保険組合せのみ編集
                MOVE    ZERO                TO  FLG-HKNCOMBICHK
+               MOVE    ZERO                TO  FLG-HKNCOMBIERR
                IF      COMB-DELKBN         =   "1"
-                   CONTINUE
+                   MOVE    1                   TO  FLG-HKNCOMBIERR
                ELSE
+      *            非表示分は処理区分３＝１ のときのみ対象
+                   IF      COMB-HYOJIKBN       =   "1"
+                       IF      ORCSHKN-KBN3        =   "1"
+                           CONTINUE
+                       ELSE
+                           MOVE    1               TO  FLG-HKNCOMBIERR
+                       END-IF
+                   END-IF
+               END-IF
+               IF      FLG-HKNCOMBIERR         =   ZERO
                    IF      ORCSHKN-KBN         =   "2"
       *                全体
                        MOVE    1               TO  FLG-HKNCOMBICHK
@@ -396,6 +409,8 @@
                                                                (IDX)
            MOVE    COMB-TEKEDYMD       TO  ORCSHKN-NAI-TEKEDYMD
                                                                (IDX)
+      *
+           MOVE    COMB-HYOJIKBN       TO  ORCSHKN-NAI-HYOJIKBN (IDX)
       *
            MOVE    COMB-TEKSTYMD       TO  WRK-SYMD
            PERFORM 800-SEIWA-HEN-SEC

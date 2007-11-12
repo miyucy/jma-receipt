@@ -596,6 +596,9 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                        COMPUTE CNT-PARAEDANUM      =   CNT-PARAEDANUM
                                                    +   1
                        MOVE    CNT-AUTOCOMBINUM    TO  COMB-HKNCOMBINUM
+      *  新規設定を変更区分に設定（他で使用しないこと）
+                       MOVE    "A"                 TO  COMB-CHGKBN
+      *
                        PERFORM 2001-PARAHKNCOMBI-INS-SEC
                    END-IF
                END-IF

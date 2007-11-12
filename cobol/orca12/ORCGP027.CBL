@@ -33,6 +33,7 @@
       *  02.00.01    NACL-多々納  02/07/31  パラメタファイルをＤＢへ
       *  02.00.02    NACL-多々納  05/11/11  MONFUNC 対応 他
       *  03.05.00    NACL-多々納  07/05/XX  グループ診療対応
+      *  04.01.00    NACL-多々納  07/11/XX  保険組合せ非表示対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -82,6 +83,8 @@
            03  FLG-END             PIC 9(01).
            03  FLG-PARA            PIC 9(01).
       *
+           03  FLG-OK              PIC 9(01).
+      *
       *    カウント領域
        01  CNT-AREA.
            03  CNT-ERR             PIC 9(06).
@@ -92,6 +95,7 @@
            03  IDX2                PIC 9(04).
            03  IDX3                PIC 9(04).
            03  IDX4                PIC 9(04).
+           03  IDX5                PIC 9(04).
            03  IDY                 PIC 9(04).
       *
            03  IDX-STR             PIC 9(04).
@@ -112,6 +116,8 @@
            03  WRK-ST              PIC 9(04).
            03  WRK-ED              PIC 9(04).
            03  WRK-SBTA            PIC 9(01).
+      *
+           03  WRK-PARA-EDANUM     PIC 9(03).
       *
            03  WRK-SELNUM          PIC 9(04).
       *
@@ -160,6 +166,7 @@
            02  SRT-HKNCOMB-REC         OCCURS   50.
            COPY  "CPHKNCOMBI.INC"
                          REPLACING  //COMB-// BY //SRT-COMB-//.
+               03  SRT-COMB-EDANUM      PIC 9(03).
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -178,6 +185,7 @@
            02  LNK-HKNCOMB-REC         OCCURS   50.
            COPY  "CPHKNCOMBI.INC"
                          REPLACING  //COMB-// BY //LNK-COMB-//.
+               03  LNK-COMB-EDANUM      PIC 9(03).
       *
       *****************************************************************
       *    サブプロ用　領域
@@ -322,6 +330,18 @@
            MOVE    ZERO                TO  SPA-NAI27-GMN
            INITIALIZE                      SPA-GMN27-HKN-AREA
       *
+      *    非表示区分 テーブル位置クリア
+           MOVE    ZERO               TO  SPA-HYO-MAX
+           PERFORM VARYING     IDX5    FROM    1   BY  1
+                   UNTIL       IDX5    >   200
+               IF     (SPA-HYO-HKNCOMBINUM (IDX5)  NOT =   ZERO )
+                  AND (SPA-HYO-ADDKBN      (IDX5)  =   ZERO  )
+                  ADD     1                TO  SPA-HYO-MAX
+               ELSE
+                   INITIALIZE              SPA-HYO-HKNCOMB-OCC(IDX5)
+               END-IF
+           END-PERFORM
+      *
       *    保険表示
            INITIALIZE                  SPA-GMN27-HKN2-AREA
            MOVE    1                   TO  WRK-PAGE
@@ -403,10 +423,30 @@
                    IF     (IDX             >=  WRK-ST )   AND
                           (IDX             <=  WRK-ED )
                        ADD     1               TO  IDY
-                       MOVE    PARA-EDANUM     TO  SPA-NAI27-EDANUM
-                                                           (IDY)
+      *DDDD            MOVE    PARA-EDANUM     TO  SPA-NAI27-EDANUM
+      *DDD                                                 (IDY)
                        MOVE    PARA-DATA-REC   TO  LNK-HKNCOMB-REC(IDY)
+                       MOVE    PARA-EDANUM     TO  LNK-COMB-EDANUM
+                                                                 (IDY)
                    END-IF
+               END-IF
+      *        今回追加分を非表示テーブルへ追加
+               IF      COMB-CHGKBN         =   "A"
+                   ADD     1                   TO  SPA-HYO-MAX
+                   MOVE    COMB-HKNCOMBINUM    TO  SPA-HYO-HKNCOMBINUM
+                                                          (SPA-HYO-MAX)
+                   MOVE    COMB-HKNNUM         TO  SPA-HYO-HKNNUM
+                                                          (SPA-HYO-MAX)
+                   MOVE    COMB-KOH1HKNNUM     TO  SPA-HYO-KOH1HKNNUM
+                                                          (SPA-HYO-MAX)
+                   MOVE    COMB-KOH2HKNNUM     TO  SPA-HYO-KOH2HKNNUM
+                                                          (SPA-HYO-MAX)
+                   MOVE    COMB-KOH3HKNNUM     TO  SPA-HYO-KOH3HKNNUM
+                                                          (SPA-HYO-MAX)
+                   MOVE    COMB-KOH4HKNNUM     TO  SPA-HYO-KOH4HKNNUM
+                                                          (SPA-HYO-MAX)
+                   MOVE    1                   TO  SPA-HYO-ADDKBN
+                                                          (SPA-HYO-MAX)
                END-IF
       *
                MOVE    "tbl_para"          TO  MCP-TABLE
@@ -527,11 +567,46 @@
                    MOVE    LNK-COMB-KOH4ID (IDX)       TO  WRK-KOHID
                    PERFORM 3202-JKYSNUM-HENSYU-SEC
                END-IF
-      *
+      *        パラメタ位置
+               MOVE    LNK-COMB-EDANUM (IDX)   TO  SPA-NAI27-EDANUM(IDY)
+      *        表示区分
+               PERFORM 3201-HYOJIKBN-HEN-SEC
            END-PERFORM
       *
            .
        320-HONCOMBI-SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    表示区分編集処理
+      *****************************************************************
+       3201-HYOJIKBN-HEN-SEC            SECTION.
+     *
+           MOVE    ZERO                TO  FLG-OK
+           PERFORM VARYING     IDX5    FROM    1   BY  1
+                   UNTIL      (IDX5        >   SPA-HYO-MAX )
+                           OR (FLG-OK      =   1    )
+               IF     (LNK-COMB-HKNCOMBINUM  (IDX)
+                                       =   SPA-HYO-HKNCOMBINUM(IDX5))
+               AND    (LNK-COMB-HKNNUM  (IDX)
+                                       =   SPA-HYO-HKNNUM  (IDX5))
+               AND    (LNK-COMB-KOH1HKNNUM  (IDX)
+                                       =   SPA-HYO-KOH1HKNNUM (IDX5))
+               AND    (LNK-COMB-KOH2HKNNUM  (IDX)
+                                       =   SPA-HYO-KOH2HKNNUM (IDX5))
+               AND    (LNK-COMB-KOH3HKNNUM  (IDX)
+                                       =   SPA-HYO-KOH3HKNNUM (IDX5))
+               AND    (LNK-COMB-KOH4HKNNUM  (IDX)
+                                       =   SPA-HYO-KOH4HKNNUM (IDX5))
+                   MOVE    SPA-HYO-HYOJIKBN (IDX5)
+                                           TO  SPA-GMN27-THYOJIKBN (IDY)
+                   MOVE    IDX5            TO  SPA-GMN27-HYOIDX   (IDY)
+                   MOVE    1               TO  FLG-OK
+               END-IF
+           END-PERFORM
+      *
+           .
+       3201-HYOJIKBN-HEN-EXT.
            EXIT.
       *
       *****************************************************************
@@ -704,6 +779,8 @@
            EVALUATE    SPA-GMN27-CUR
                WHEN    01
                    MOVE    "P027_SELNUM"   TO  MCP-WIDGET
+               WHEN    02
+                   MOVE    "BCOB2"         TO  MCP-WIDGET
            END-EVALUATE
       *
            .
@@ -741,6 +818,9 @@
       *    入院・外来切り替え
                WHEN    "CLICKED"       ALSO    "P027_NYUGAIKBN"
                    PERFORM 400-NYUGAI-SYORI-SEC
+      *    表示切り替え
+               WHEN    "CLICKED"       ALSO    "P027_HYOJIKBN"
+                   PERFORM 400-HYOJIKBN-SYORI-SEC
       *     以外はエラー
                WHEN    "CLICKED"       ALSO     ANY
                    MOVE    "0110"          TO  SPA-ERRCD
@@ -927,6 +1007,29 @@
        400-NYUGAI-SYORI-EXT.
            EXIT.
       *****************************************************************
+      *    表示切り替え処理
+      *****************************************************************
+       400-HYOJIKBN-SYORI-SEC            SECTION.
+      *
+           IF      SPA-NAI27-SELNUM    NOT =   ZERO
+               IF      SPA-GMN27-HYOJIKBN  =   SPACE
+                   MOVE    "1"             TO  SPA-GMN27-HYOJIKBN
+               ELSE
+                   MOVE    SPACE           TO  SPA-GMN27-HYOJIKBN
+               END-IF
+      *        表示内容変更
+               MOVE    SPA-NAI27-IDX       TO  IDX
+               MOVE    SPA-GMN27-HYOJIKBN  TO  SPA-GMN27-THYOJIKBN (IDX)
+               MOVE    SPA-GMN27-HYOIDX (IDX)
+                                           TO  IDX5
+               MOVE    SPA-GMN27-THYOJIKBN (IDX)
+                                           TO  SPA-HYO-HYOJIKBN (IDX5)
+           END-IF
+      *
+           .
+       400-HYOJIKBN-SYORI-EXT.
+           EXIT.
+      *****************************************************************
       *    会話　処理
       *****************************************************************
        200-ENTRY                       SECTION.
@@ -950,7 +1053,7 @@
        210-SELNUM-CHK-SEC              SECTION.
       *
       *    パラメタファイル検索処理
-           PERFORM 320-PARAFILE-KENSAKU-SEC
+      *DDD PERFORM 320-PARAFILE-KENSAKU-SEC
       *
            MOVE    P02-P027-SELNUM     TO  SPA-GMN27-SELNUM
            INITIALIZE                      ORCSNUMAREA
@@ -969,16 +1072,24 @@
       *
            IF  SPA-NAI27-SELNUM        =   SPACE  OR  ZERO
                MOVE    SPACE           TO  SPA-GMN27-SELNUM
+               INITIALIZE                  SPA-GMN27-MEISAI-AREA
                MOVE    1               TO  SPA-GMN27-CUR
                GO  TO                  210-SELNUM-CHK-EXT
            END-IF
       *    選択番号　入力チェック
            MOVE    ZERO                TO  IDY
            MOVE    ZERO                TO  SPA-NAI27-IDX
+           MOVE    ZERO                TO  SPA-NAI27-PARADENUM
            PERFORM   VARYING   IDX     FROM    1   BY  1
                      UNTIL   ( IDX         >   SPA-GMN27-MAX )
                      OR      ( IDY     NOT =   ZERO )
-               IF  LNK-COMB-HKNCOMBINUM (IDX)  =   SPA-NAI27-SELNUM
+      ******** IF  LNK-COMB-HKNCOMBINUM (IDX)  =   SPA-NAI27-SELNUM
+               IF      SPA-GMN27-NUM (IDX)     =   SPA-NAI27-SELNUM
+                   MOVE    SPA-NAI27-EDANUM(IDX)
+                                               TO  SPA-NAI27-PARADENUM
+      *            非表示区分
+                   MOVE    SPA-GMN27-THYOJIKBN (IDX)
+                                               TO  SPA-GMN27-HYOJIKBN
                    MOVE    IDX                 TO  SPA-NAI27-IDX
                END-IF
            END-PERFORM
@@ -994,11 +1105,56 @@
            EXIT.
       *
       *****************************************************************
+      *    保険組合せパラメタデータ処理
+      *****************************************************************
+       21091-PARAFILE-HEN-SEC            SECTION.
+      *
+           INITIALIZE                      PARA-REC
+           MOVE    SPA-HOSPNUM         TO  PARA-HOSPNUM
+           MOVE    "P02"               TO  PARA-GYOUMUID
+           MOVE    SPA-TERMID          TO  PARA-TERMID
+           MOVE    "HKNCOMBI"          TO  PARA-FILEMEI
+           MOVE    SPA-NAI27-PARADENUM TO  PARA-EDANUM
+      *
+           MOVE    PARA-REC            TO  MCPDATA-REC
+           MOVE    "tbl_para"          TO  MCP-TABLE
+           MOVE    "key4"              TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_para"          TO  MCP-TABLE
+               MOVE    "key4"               TO  MCP-PATHNAME
+               PERFORM 990-PARA-READ-SEC
+           ELSE
+               INITIALIZE                  PARA-REC
+               MOVE    1               TO  FLG-PARA
+           END-IF
+           MOVE    "tbl_para"          TO  MCP-TABLE
+           MOVE    "key4"              TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+      *
+           IF      FLG-PARA            =   ZERO
+               MOVE    PARA-DATA-REC       TO  HKNCOMB-REC
+           ELSE
+               INITIALIZE                      HKNCOMB-REC
+           END-IF
+      *    パラメタファイルより編集
+           INITIALIZE                      LNK-HKNCOMB-AREA
+           MOVE    HKNCOMB-REC         TO  LNK-HKNCOMB-REC (1)
+           MOVE    SPA-NAI27-PARADENUM TO  LNK-COMB-EDANUM (1)
+           .
+       21091-PARAFILE-HEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    保険組合せ編集処理
       *****************************************************************
        2109-HONCOMBI-HEN-SEC            SECTION.
       *
-           MOVE    SPA-NAI27-IDX       TO  IDX
+      *    パラメタデータ読込み
+           PERFORM 21091-PARAFILE-HEN-SEC
+      *
+      **** MOVE    SPA-NAI27-IDX       TO  IDX
+           MOVE    1                   TO  IDX
       *
            INITIALIZE                  SPA-GMN27-MEISAI-AREA
            MOVE    LNK-COMB-HKNNUM     (IDX) TO  SPA-GMN27-HKNNUM

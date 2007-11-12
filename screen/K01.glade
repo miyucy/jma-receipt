@@ -817,10 +817,10 @@
 	  <name>select_row</name>
 	  <handler>selection_changed</handler>
 	  <data>SELECT</data>
-	  <last_modification_time>Mon, 10 Sep 2001 07:35:07 GMT</last_modification_time>
+	  <last_modification_time>Mon, 12 Nov 2007 01:52:47 GMT</last_modification_time>
 	</signal>
 	<columns>5</columns>
-	<column_widths>35,381,107,105,48</column_widths>
+	<column_widths>35,436,90,80,48</column_widths>
 	<selection_mode>GTK_SELECTION_SINGLE</selection_mode>
 	<show_titles>True</show_titles>
 	<shadow_type>GTK_SHADOW_IN</shadow_type>

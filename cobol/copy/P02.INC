@@ -477,11 +477,15 @@
                         08  P02-P027-TEKSTYMD  PIC X(10).
                         08  P02-P027-TEKEDYMD  PIC X(10).
                         08  P02-P027-TJKYSNUM  PIC X(20).
+                        08  P02-P027-THYOJIKBN PIC X(10).
                       07  P02-P027-HKNKUMI-SELECT PIC X
                                                  OCCURS 50 TIMES.
                   05  P02-P027-NYUGAIKBN.
                     06  P02-P027-NYUGAIKBN-VALUE   PIC X.
                     06  P02-P027-NYUGAIKBN-LABEL   PIC X(20).
+                  05  P02-P027-HYOJIKBN.
+                    06  P02-P027-HYOJIKBN-VALUE   PIC X.
+                    06  P02-P027-HYOJIKBN-LABEL   PIC X(10).
                 04  P02-FIXPAGE4.
                   05  P02-P021-FAX.
                     06  P02-VALUE   PIC X(15).

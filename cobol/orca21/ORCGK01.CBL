@@ -41,6 +41,7 @@
       *  02.00.07    NACL-多々納  05/11/17  MONFUNC 対応
       *  02.00.08    NACL−多々納 06/08/17  当日担当医設定追加他
       *  03.05.00    NACL-多々納  07/04/XX  グループ診療対応
+      *  04.01.00    NACL-多々納  07/11/12  非表示保険組合せ対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -166,7 +167,7 @@
                    07  SPA-GMN-HKN-TBL.
                        09  SPA-GMN-HKN-TBLO    OCCURS  100.
                            11  SPA-GMN-THKNCOMBINUM    PIC X(04).
-                           11  SPA-GMN-THKNCOMBIMEI    PIC X(60).
+                           11  SPA-GMN-THKNCOMBIMEI    PIC X(100).
                            11  SPA-GMN-TTEKSTYMD       PIC X(09).
                            11  SPA-GMN-TTEKEDYMD       PIC X(09).
                            11  SPA-GMN-TFTNRATE        PIC X(04).
@@ -187,6 +188,7 @@
                            11  SPA-NAI-KOH3HKNNUM  PIC  X(03).
                            11  SPA-NAI-KOH4HKNNUM  PIC  X(03).
                            11  SPA-NAI-RSI-HKNKBN  PIC  X(01).
+                           11  SPA-NAI-HYOJIKBN    PIC  X(01).
                        09  SPA-HKN-MAX             PIC  9(04).
       *
                    07  SPA-NAI-SYOYMD          PIC X(08).
@@ -315,7 +317,7 @@
       *
            03  WRK-PATH            PIC X(64).
       *
-           03  WRK-ZZ9             PIC ZZZ.
+           03  WRK-ZZ9             PIC ZZZ9.
            03  WRK-SELNUM          PIC 9(04).
       *    未収金
            03  WRK-MISYU           PIC S9(08).
@@ -1336,6 +1338,8 @@
            INITIALIZE                  ORCSHKNSETAREA
            MOVE    "2"                 TO  ORCSHKN-KBN
            MOVE    "1"                 TO  ORCSHKN-KBN2
+      *    非表示区分込み
+           MOVE    "1"                 TO  ORCSHKN-KBN3
            CALL    "ORCSHKNSET"        USING
                                        SPA-AREA
                                        ORCSHKNSETAREA
@@ -1368,6 +1372,17 @@
                    MOVE    KANACHK-MAE-INPUT   TO  SPA-GMN-THKNCOMBIMEI
                                                             (IDX)
                END-IF
+      *    非表示区分
+               IF      ORCSHKN-NAI-HYOJIKBN (IDX)  =   "1"
+                   MOVE    SPACE       TO  WRK-HKNCOMBI
+                   STRING  SPA-GMN-THKNCOMBIMEI (IDX)
+                                               DELIMITED  BY  SPACE
+                           "【非表示】"        DELIMITED  BY  SIZE
+                         INTO             WRK-HKNCOMBI
+                   END-STRING
+                   MOVE    WRK-HKNCOMBI        TO  SPA-GMN-THKNCOMBIMEI
+                                                            (IDX)
+               END-IF
       *TEST
       *
                MOVE    ORCSHKN-NAI-HKNNUM (IDX)
@@ -1398,6 +1413,9 @@
                MOVE    ORCSHKN-NAI-RSI-HKNKBN (IDX)
                                        TO  SPA-NAI-RSI-HKNKBN (IDX)
       *
+               MOVE    ORCSHKN-NAI-HYOJIKBN (IDX)
+                                       TO  SPA-NAI-HYOJIKBN (IDX)
+      *
            END-PERFORM
       *
            MOVE    ORCSHKN-HKN-MAX     TO  SPA-HKN-MAX
@@ -1421,7 +1439,7 @@
                MOVE    1               TO  ORCSHKN-IDX
            END-IF
            MOVE    SPA-GMN-THKNCOMBINUM (ORCSHKN-IDX)
-                                           TO  SPA-HKNCOMBINUM
+                                       TO  SPA-HKNCOMBINUM
            MOVE    SPA-HKNCOMBINUM     TO  SPA-NAI-HKNCOMBIOK
       *
            MOVE    SPA-HKNCOMBINUM     TO  SPA-GMN-HKNCOMBINUM
@@ -2222,8 +2240,12 @@
                                                                  (IDX))
                       AND  (SPA-NAI-SRYYMDS    <=  SPA-NAI-TEKEDYMD
                                                                  (IDX))
-                       MOVE    IDX                 TO  SPA-NAI-HKNIDX
-                       MOVE    1                   TO  FLG-OK
+                       IF      SPA-NAI-HYOJIKBN (IDX)  =   "1"
+                           MOVE    "0024"              TO  SPA-ERRCD
+                       ELSE
+                           MOVE    IDX             TO  SPA-NAI-HKNIDX
+                           MOVE    1               TO  FLG-OK
+                       END-IF
                    ELSE
                        MOVE    "0006"              TO  SPA-ERRCD
                    END-IF
@@ -2863,6 +2885,7 @@
        500-GMNHEN-SEC              SECTION.
       *
            MOVE    SPACE               TO  K01
+           INITIALIZE                      K01
       *
            MOVE    SPA-GMN-PTNUM       TO  K01-PTNUM
            MOVE    SPA-GMN-NAME        TO  K01-NAME
@@ -3106,6 +3129,9 @@
                                                TO  SPA-ERRMSG
                WHEN    "0023"
                    MOVE    "包括分入力は選択できません。"
+                                               TO  SPA-ERRMSG
+               WHEN    "0024"
+                   MOVE    "非表示の保険組合せは選択できません。"
                                                TO  SPA-ERRMSG
       *
                WHEN    "9999"

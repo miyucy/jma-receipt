@@ -847,6 +847,8 @@
                WHEN    "9100"
                WHEN    "9101"
                WHEN    "9102"
+               WHEN    "9103"
+               WHEN    "9104"
                    IF      SPA-PID1-FLG        =   "OK"
                        PERFORM  49021-KOUSIN-AFTER-SEC
                    ELSE
@@ -3987,6 +3989,11 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN    "0037"
                    MOVE    "保険組合せがありません。"
                                                TO  SPA-ERRMSG
+               WHEN    "0137"
+                   STRING  "非表示の保険組合せです。"
+                           "選択できません。"  DELIMITED  BY  SIZE
+                                               INTO  SPA-ERRMSG
+                   END-STRING
                WHEN    "0038"
                    MOVE    "診療科がありません。"
                                                TO  SPA-ERRMSG
@@ -4838,6 +4845,25 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                                TO  WRK-PIDMSG
                    MOVE    "存在します。診療と病名を保険変更。"
                                                TO  WRK-PIDMSG(41:)
+               WHEN    "9103"
+                   STRING  "非表示の保険組合せで診療行為が登録"
+                           "されています。診療を保険変更して下さい。"
+                                               DELIMITED  BY  SIZE
+                                               INTO    WRK-PIDMSG
+                   END-STRING
+               WHEN    "9104"
+                   STRING  "非表示の保険組合せで病名が登録"
+                           "されています。病名を保険変更して下さい。"
+                                               DELIMITED  BY  SIZE
+                                               INTO    WRK-PIDMSG
+                   END-STRING
+               WHEN    "9105"
+                   STRING  "非表示の保険組合せで診療・病名が登録"
+                           "されています。"
+                           "診療・病名を保険変更して下さい。"
+                                               DELIMITED  BY  SIZE
+                                               INTO    WRK-PIDMSG
+                   END-STRING
                WHEN    OTHER
                    MOVE    SPA-PIDCD
                                        TO  WRK-PIDMSG

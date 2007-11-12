@@ -687,6 +687,7 @@ P02	{
 							value6	varchar(10);
 							value7	varchar(10);
 							value8	varchar(20);
+							value9	varchar(10);
 						}	[50];
 						select	bool[50];
 					};
@@ -694,6 +695,10 @@ P02	{
 				P027_NYUGAIKBN	{
 					value	bool;
 					label	varchar(20);
+				};
+				P027_HYOJIKBN	{
+					value	bool;
+					label	varchar(10);
 				};
 			};
 			FP4	{

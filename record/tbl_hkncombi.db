@@ -102,6 +102,7 @@ tbl_hkncombi {
 	TAXKBN				char(1);
 	CHGKBN				char(1);
 	DELKBN				char(1);
+	HYOJIKBN			char(1);
 	TERMID   			varchar(16);
 	OPID     			varchar(16);
 	CREYMD   			char(8);

@@ -23,6 +23,7 @@
       *  コピー句修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       * 01.00.01     NACL-多々納  05/08/17  保険者番号、公費ＩＤ返却追加
+      * 04.01.00     NACL-多々納  07/11/12  処理区分３（非表示）追加
       ************************************************************
        01  ORCSHKNSETAREA.
       *
@@ -32,6 +33,8 @@
                05  ORCSHKN-KBN                 PIC  X(01).
       *処理区分２（１：包括まとめ入力有り）
                05  ORCSHKN-KBN2                PIC  X(01).
+      *処理区分３（１：非表示分有り）
+               05  ORCSHKN-KBN3                PIC  X(01).
       *
       *保険組合せ一覧
            03  ORCSHKN-OUT-AREA.
@@ -89,6 +92,8 @@
                            11  ORCSHKN-NAI-KOH-OCC     OCCURS   4.
                                13  ORCSHKN-NAI-KOHHKNNUM   PIC  X(03).
                                13  ORCSHKN-NAI-KOHID       PIC  9(10).
+      *                非表示区分
+                       09  ORCSHKN-NAI-HYOJIKBN        PIC  X(01).
       *エラーコード
            03  ORCSHKN-ERRCD                    PIC 9(01).
       *

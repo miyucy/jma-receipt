@@ -2530,6 +2530,8 @@ grpsys*                        CALL    "ORCDBMAIN"     USING   MCPAREA
                IF     (SPA-SYSYMD          >=  COMB-TEKSTYMD) AND
                       (SPA-SYSYMD          <=  COMB-TEKEDYMD) AND
                       (COMB-DELKBN         =   SPACE        )
+      *                ÈóÉ½¼¨¶èÊ¬
+                 AND  (COMB-HYOJIKBN       =   SPACE        )
                    MOVE    1               TO  FLG-HKNOK
       *            Ï«ºÒÊÝ¸±¾ðÊó¤ÎÈ½Äê
                    IF      COMB-HKNNUM         =   "971"  OR  "973"

@@ -512,6 +512,8 @@
                                                     (SPA-J021-MAX)
                    MOVE    COMB-DELKBN         TO  SPA-NAI-TDELKBN
                                                     (SPA-J021-MAX)
+                   MOVE    COMB-HYOJIKBN       TO  SPA-NAI-THYOJIKBN
+                                                    (SPA-J021-MAX)
       *            老人判定
                    IF    ((COMB-KOH1HKNNUM     =   "027"  )  OR
                           (COMB-KOH2HKNNUM     =   "027"  )  OR
@@ -662,6 +664,10 @@
                MOVE    "（削除）"          TO  WRK-DEL-MEI
            ELSE
                MOVE    SPACE               TO  WRK-DEL-MEI
+      *
+               IF      COMB-HYOJIKBN       =   "1"
+                   MOVE    "【非表示】"        TO  WRK-DEL-MEI
+               END-IF
            END-IF
       *
            MOVE    SPACE               TO  WRK-HKNCOMBIMEI
@@ -1385,6 +1391,10 @@
       *            削除でないこと
                    IF      SPA-NAI-TDELKBN (IDX)   =   "1"
                        MOVE    "0012"              TO  SPA-ERRCD
+                   END-IF
+      *            削除でないこと
+                   IF      SPA-NAI-THYOJIKBN (IDX) =   "1"
+                       MOVE    "0022"              TO  SPA-ERRCD
                    END-IF
       *
                    MOVE    1               TO  FLG-OK
@@ -3330,6 +3340,12 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                                        TO  SPA-ERRMSG
                    MOVE    "変更して下さい"
                                        TO  SPA-ERRMSG(33:)
+               WHEN    "0022"
+                   STRING  "変更後の保険組合せは非表示です。"
+                           "選択できません。"
+                                       DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
                WHEN    "0010"
                    MOVE    "保険組合せの変更が終了しました。"
                                        TO  SPA-ERRMSG

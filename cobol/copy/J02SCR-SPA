@@ -241,6 +241,7 @@
                        09  SPA-NAI-TROUJIN       PIC 9(01).
                        09  SPA-NAI-TSEIHO        PIC 9(01).
                        09  SPA-NAI-TDELKBN       PIC X(01).
+                       09  SPA-NAI-THYOJIKBN     PIC X(01).
                        09  SPA-NAI-FTNWARI       PIC 9(03)V99.
                05  SPA-J021-HKNIDX               PIC 9(04).
       *

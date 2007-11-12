@@ -129,6 +129,7 @@
            03  IDX                 PIC 9(04).
            03  IDX2                PIC 9(04).
            03  IDY                 PIC 9(04).
+           03  IDZ                 PIC 9(04).
       *
       *    一時領域
        01  WRK-AREA.
@@ -1960,6 +1961,34 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE    IDX                 TO  PARA-EDANUM
                    MOVE    HKNCOMBI-REC        TO  PARA-DATA-REC
                    PERFORM 400-PARA-INSERT-SEC
+      *TEST
+      *            非表示区分保存
+                   ADD    1                    TO  SPA-HYO-MAX
+                   IF     SPA-HYO-MAX          <=  200
+                       MOVE    COMB-HKNCOMBINUM
+                                           TO  SPA-HYO-HKNCOMBINUM
+                                                          (SPA-HYO-MAX)
+                       MOVE    COMB-HKNNUM
+                                           TO  SPA-HYO-HKNNUM
+                                                          (SPA-HYO-MAX)
+                       MOVE    COMB-KOH1HKNNUM
+                                           TO  SPA-HYO-KOH1HKNNUM
+                                                          (SPA-HYO-MAX)
+                       MOVE    COMB-KOH2HKNNUM
+                                           TO  SPA-HYO-KOH2HKNNUM
+                                                          (SPA-HYO-MAX)
+                       MOVE    COMB-KOH3HKNNUM
+                                           TO  SPA-HYO-KOH3HKNNUM
+                                                          (SPA-HYO-MAX)
+                       MOVE    COMB-KOH4HKNNUM
+                                           TO  SPA-HYO-KOH4HKNNUM
+                                                          (SPA-HYO-MAX)
+                       MOVE    COMB-HYOJIKBN
+                                           TO  SPA-HYO-HYOJIKBN
+                                                          (SPA-HYO-MAX)
+                       MOVE    ZERO        TO  SPA-HYO-ADDKBN
+                                                          (SPA-HYO-MAX)
+                   END-IF
                END-IF
                MOVE    "tbl_hkncombi"      TO  MCP-TABLE
                MOVE    "key2"              TO  MCP-PATHNAME
@@ -2768,27 +2797,32 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPA-GMN20-HKNKUMI   TO  P02-P020-HKNKUMI
       *
       *    保険組合せ
+           MOVE    ZERO                TO  IDZ
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   SPA-HKNCOMBI-MAX
-               MOVE    SPA-GMN-THKNCOMBINUM(IDX)
-                                           TO   P02-P020-HKNCOBNUM (IDX)
-               MOVE    SPA-GMN-THKNCOMBIMEI (IDX)
-                                           TO  P02-P020-HKNCOBMEI (IDX)
-               MOVE    SPA-GMN-TTEKSTYMD (IDX)
-                                           TO  P02-P020-TEKSTYMD (IDX)
-               MOVE    SPA-GMN-TTEKEDYMD (IDX)
-                                           TO  P02-P020-TEKEDYMD (IDX)
+               IF      SPA-NAI-THYOJIKBN (IDX) =   SPACE
+                   ADD     1                   TO  IDZ
+                   MOVE    SPA-GMN-THKNCOMBINUM(IDX)
+                                           TO   P02-P020-HKNCOBNUM (IDZ)
+                   MOVE    SPA-GMN-THKNCOMBIMEI (IDX)
+                                           TO  P02-P020-HKNCOBMEI (IDZ)
+                   MOVE    SPA-GMN-TTEKSTYMD (IDX)
+                                           TO  P02-P020-TEKSTYMD (IDZ)
+                   MOVE    SPA-GMN-TTEKEDYMD (IDX)
+                                           TO  P02-P020-TEKEDYMD (IDZ)
       *
-               IF      SPA-GMN-THKNCOMBINUM (IDX)  =   SPA-NAI20-HKNKUMI
-                   MOVE    "T"             TO  P02-P020-HKNCOMBI-SELECT
-                                                                  (IDX)
-               ELSE
-                   MOVE    "F"             TO  P02-P020-HKNCOMBI-SELECT
-                                                                  (IDX)
+                   IF      SPA-GMN-THKNCOMBINUM (IDX)
+                                           =   SPA-NAI20-HKNKUMI
+                       MOVE    "T"         TO  P02-P020-HKNCOMBI-SELECT
+                                                                  (IDZ)
+                   ELSE
+                       MOVE    "F"         TO  P02-P020-HKNCOMBI-SELECT
+                                                                  (IDZ)
+                   END-IF
                END-IF
       *
            END-PERFORM
-           MOVE    SPA-HKNCOMBI-MAX    TO  P02-P020-HKNCOMBI-COUNT
+           MOVE    IDZ                 TO  P02-P020-HKNCOMBI-COUNT
       *
            .
        2001-P020-SET-EXT.
@@ -3169,6 +3203,10 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    SPA-GMN-TTEKEDYMD (IDX)
                                            TO  P02-HKNCOBNAME (IDX2)
                                                             (14:)
+      *        非表示
+               IF      SPA-NAI-THYOJIKBN (IDX) =   "1"
+                   MOVE    "●非"          TO  P02-HKNCOBNUM (IDX2)
+               END-IF
       *
                MOVE    "F"             TO  P02-HKNLIST-SELECT (IDX2)
            END-PERFORM
@@ -3290,6 +3328,11 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    SPA-GMN27-TJKYSNUM(IDX) 
                                          TO  P02-P027-TJKYSNUM(IDX)
                MOVE    IDX               TO  P02-P027-HKNKUMI-COUNT
+      *
+      *        非表示
+               IF      SPA-GMN27-THYOJIKBN (IDX)    =   "1"
+                   MOVE    "非表示"      TO  P02-P027-THYOJIKBN(IDX)
+               END-IF
       *
                IF      SPA-GMN27-NUM (IDX)(1:4)
                                            =   SPA-NAI27-SELNUM
@@ -3488,6 +3531,17 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            ELSE
                MOVE    "F"                 TO  P02-P027-NYUGAIKBN-VALUE
                MOVE    "外来"              TO  P02-P027-NYUGAIKBN-LABEL
+           END-IF
+      *
+      *    非表示
+           IF      SPA-GMN27-SELNUM    >   ZERO
+               IF      SPA-GMN27-HYOJIKBN  =   "1"
+                   MOVE    "T"             TO  P02-P027-HYOJIKBN-VALUE
+                   MOVE    "非表示"        TO  P02-P027-HYOJIKBN-LABEL
+               ELSE
+                   MOVE    "F"             TO  P02-P027-HYOJIKBN-VALUE
+                   MOVE    "表示"          TO  P02-P027-HYOJIKBN-LABEL
+               END-IF
            END-IF
       *
            .

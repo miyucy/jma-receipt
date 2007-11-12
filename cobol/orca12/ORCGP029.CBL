@@ -124,6 +124,8 @@
            03  FLG-TNKRRK2         PIC X(01).
            03  FLG-KYUSEIRRK2      PIC 9(01).
       *
+           03  FLG-OK              PIC 9(01).
+      *
       *    カウント領域
        01  CNT-AREA.
            03  CNT-ERR             PIC 9(06).
@@ -144,6 +146,7 @@
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
            03  IDX2                PIC 9(04).
+           03  IDX5                PIC 9(04).
       *
       *    一時領域
        01  WRK-AREA.
@@ -1142,6 +1145,8 @@ grpsys                 CALL    "ORCDBMAIN"         USING   MCPAREA
        250-HKNCOMBI-SYORI-SEC        SECTION.
       *
            MOVE    PARA-DATA-REC       TO  HKNCOMBI-REC
+      *    非表示区分設定
+           PERFORM 2502-HKNCOMBI-HYOJI-SEC
       *
            MOVE    SPA-GMN-PTID        TO  COMB-PTID
            MOVE    HKNCOMBI-REC        TO  MCPDATA-REC
@@ -1152,8 +1157,14 @@ grpsys                 CALL    "ORCDBMAIN"         USING   MCPAREA
                IF     (HZN-COMB-TEKSTYMD   NOT =   COMB-TEKSTYMD) OR
                       (HZN-COMB-TEKEDYMD   NOT =   COMB-TEKEDYMD) OR
                       (HZN-COMB-DELKBN     NOT =   COMB-DELKBN  )
+      *TEST
+                  OR  (COMB-HYOJIKBN           =   "1"   )
                    PERFORM 2501-HKNCOMBI-CHK-SEC
                END-IF
+           END-IF
+      *    新規設定を変更区分クリア
+           IF      COMB-CHGKBN         =   "A"
+               MOVE    SPACE               TO  COMB-CHGKBN
            END-IF
       *
            IF      FLG-HKNCOMBI        =   1
@@ -1204,6 +1215,30 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *****************************************************************
       *    保険変更による受診履歴修正の有無チェック処理
       *****************************************************************
+       2502-HKNCOMBI-HYOJI-SEC             SECTION.
+      *
+           PERFORM VARYING     IDX5    FROM    1   BY  1
+                   UNTIL      (IDX5        >   SPA-HYO-MAX )
+               IF     (COMB-HKNCOMBINUM
+                                       =   SPA-HYO-HKNCOMBINUM(IDX5))
+               AND    (COMB-HKNNUM     =   SPA-HYO-HKNNUM     (IDX5))
+               AND    (COMB-KOH1HKNNUM =   SPA-HYO-KOH1HKNNUM (IDX5))
+               AND    (COMB-KOH2HKNNUM =   SPA-HYO-KOH2HKNNUM (IDX5))
+               AND    (COMB-KOH3HKNNUM =   SPA-HYO-KOH3HKNNUM (IDX5))
+               AND    (COMB-KOH4HKNNUM =   SPA-HYO-KOH4HKNNUM (IDX5))
+                   MOVE    SPA-HYO-HYOJIKBN (IDX5)
+                                           TO  COMB-HYOJIKBN 
+                   MOVE    1               TO  FLG-OK
+               END-IF
+           END-PERFORM
+      *
+          .
+       2502-HKNCOMBI-HYOJI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    保険変更による受診履歴修正の有無チェック処理
+      *****************************************************************
        2501-HKNCOMBI-CHK-SEC             SECTION.
       *
       *
@@ -1236,6 +1271,9 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                    IF     (JYURRK-SRYYMD       <   COMB-TEKSTYMD)  OR
                           (JYURRK-SRYYMD       >   COMB-TEKEDYMD)
                        MOVE    "9100"          TO  SPA-KEI-ERRCD
+                   END-IF
+                   IF      COMB-HYOJIKBN       =   "1"
+                       MOVE    "9103"          TO  SPA-KEI-ERRCD
                    END-IF
                ELSE
       *            削除の時
@@ -1277,6 +1315,13 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                            MOVE    "9101"          TO  SPA-KEI-ERRCD
                        ELSE
                            MOVE    "9102"          TO  SPA-KEI-ERRCD
+                       END-IF
+                   END-IF
+                   IF      COMB-HYOJIKBN       =   "1"
+                       IF      SPA-KEI-ERRCD       =   SPACE
+                           MOVE    "9104"          TO  SPA-KEI-ERRCD
+                       ELSE
+                           MOVE    "9105"          TO  SPA-KEI-ERRCD
                        END-IF
                    END-IF
                ELSE
