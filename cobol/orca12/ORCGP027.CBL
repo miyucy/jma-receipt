@@ -133,6 +133,19 @@
            03  WRK-KOHID           PIC 9(10).
            03  WRK-JKYSNUM         PIC X(20).
       *
+      *    非表示区分テーブル（P02SCR-SPA のSPA-HYO-HKNCOMBI-AREA）
+           03  WRK-HYO-HKNCOMBI-AREA.
+               05  WRK-HYO-HKNCOMB-OCC     OCCURS    200.
+                   07  WRK-HYO-HKNCOMBINUM     PIC 9(04).
+                   07  WRK-HYO-HKNNUM          PIC X(03).
+                   07  WRK-HYO-KOH1HKNNUM      PIC X(03).
+                   07  WRK-HYO-KOH2HKNNUM      PIC X(03).
+                   07  WRK-HYO-KOH3HKNNUM      PIC X(03).
+                   07  WRK-HYO-KOH4HKNNUM      PIC X(03).
+                   07  WRK-HYO-HYOJIKBN        PIC X(01).
+                   07  WRK-HYO-ADDKBN          PIC 9(01).
+               05  WRK-HYO-MAX                 PIC 9(03).
+      *
        01  WRK-HENSYU-AREA.
            03  WRK-HENYMD.
                05  WRK-HGO         PIC X(01).
@@ -331,7 +344,9 @@
            INITIALIZE                      SPA-GMN27-HKN-AREA
       *
       *    非表示区分 テーブル位置クリア
-           MOVE    ZERO               TO  SPA-HYO-MAX
+           MOVE    SPA-HYO-HKNCOMBI-AREA
+                                       TO  WRK-HYO-HKNCOMBI-AREA
+           MOVE    ZERO                TO  SPA-HYO-MAX
            PERFORM VARYING     IDX5    FROM    1   BY  1
                    UNTIL       IDX5    >   200
                IF     (SPA-HYO-HKNCOMBINUM (IDX5)  NOT =   ZERO )
@@ -447,6 +462,7 @@
                                                           (SPA-HYO-MAX)
                    MOVE    1                   TO  SPA-HYO-ADDKBN
                                                           (SPA-HYO-MAX)
+                   PERFORM 3201-ADD-HYOJIKBN-SEC
                END-IF
       *
                MOVE    "tbl_para"          TO  MCP-TABLE
@@ -463,9 +479,38 @@
                PERFORM 320-HONCOMBI-SET-SEC
            END-IF
       *
-      *
            .
        320-PARAFILE-KENSAKU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    新規保険組合せの表示区分設定処理
+      *****************************************************************
+       3201-ADD-HYOJIKBN-SEC     SECTION.
+      *
+           PERFORM VARYING     IDX5    FROM    1   BY  1
+                   UNTIL       IDX5    >   WRK-HYO-MAX
+               IF     (COMB-HKNCOMBINUM    =   WRK-HYO-HKNCOMBINUM
+                                                          (IDX5))  AND
+                      (COMB-HKNNUM         =   WRK-HYO-HKNNUM
+                                                          (IDX5))  AND
+                      (COMB-KOH1HKNNUM     =   WRK-HYO-KOH1HKNNUM
+                                                          (IDX5))  AND
+                      (COMB-KOH2HKNNUM     =   WRK-HYO-KOH2HKNNUM
+                                                          (IDX5))  AND
+                      (COMB-KOH3HKNNUM     =   WRK-HYO-KOH3HKNNUM
+                                                          (IDX5))  AND
+                      (COMB-KOH4HKNNUM     =   WRK-HYO-KOH4HKNNUM
+                                                          (IDX5))  AND
+                      (WRK-HYO-ADDKBN (IDX5)   =   1    )
+                   MOVE    WRK-HYO-HYOJIKBN (IDX5)
+                                               TO  SPA-HYO-HYOJIKBN 
+                                                          (SPA-HYO-MAX)
+                   MOVE    WRK-HYO-MAX         TO  IDX5
+               END-IF
+           END-PERFORM
+           .
+       3201-ADD-HYOJIKBN-EXT.
            EXIT.
       *
       *****************************************************************
