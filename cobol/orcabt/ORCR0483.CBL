@@ -116,8 +116,7 @@
            COPY    "HCM56.INC".
       *
       *    公務災害（続紙） 
-           COPY    "HCM56.INC"     REPLACING  //HCM56//
-                                   BY         //HC20//.
+           COPY    "HCM57.INC".
       *
       *    フラグ領域
        01  STS-AREA.
@@ -396,8 +395,8 @@
            03  WRK-TEKIYOU-LINE    PIC 9(02)   VALUE   35.
       *     
       *    適用欄最大行数（続紙）
-           03  WRK-TEKIYOU-HC20-LINE
-                                   PIC 9(03)   VALUE   35.
+           03  WRK-TEKIYOU-HCM57-LINE
+                                   PIC 9(03)   VALUE   110.
       *     
       *    傷病の経過欄最大行数
            03  WRK-KEIKA-HCM56-LINE
@@ -1226,35 +1225,22 @@ grpsys         MOVE    WRK-PARA-HOSPNUM    TO  BTPARA-HOSPNUM
       *****************************************************************
       *    帳票編集<続紙ヘッダー部>処理
       *****************************************************************
-       310-HC20-HEAD-HEN-SEC          SECTION.
+       310-HCM57-HEAD-HEN-SEC          SECTION.
       *
-           MOVE    WRK-TEKIYOU-HC20-LINE
+           MOVE    WRK-TEKIYOU-HCM57-LINE
                                        TO  WRK-LINE-MAX
       *
-           INITIALIZE                  HC20
-      *
-           MOVE    "処方"              TO  HC20-TOUYAKUNAME
-           MOVE    "回"                TO  HC20-TOUYAKUTANI (1)
-                                           HC20-TOUYAKUTANI (2)
-                                           HC20-SONOTATANI
-           MOVE    "処方せん"          TO  HC20-SONOTANAME  (1)
-           MOVE    "薬　　剤"          TO  HC20-SONOTANAME  (2)
+           INITIALIZE                  HCM57
       *
       *    患者番号
-           MOVE    HCM56-PTNUM         TO  HC20-PTNUM
+           MOVE    HCM56-PTNUM         TO  HCM57-PTNUM
       *    カナ氏名
-           MOVE    HCM56-KANANAME      TO  HC20-KANANAME
+           MOVE    HCM56-KANANAME      TO  HCM57-KANANAME
       *    氏名
-           MOVE    HCM56-NAME          TO  HC20-NAME
-      *    所在地
-           MOVE    HCM56-HOSPJYUSYO    TO  HC20-HOSPJYUSYO
-      *    名称
-           MOVE    HCM56-HOSPNAME      TO  HC20-HOSPNAME
-      *    医師の氏名
-           MOVE    HCM56-ISYA          TO  HC20-ISYA
+           MOVE    HCM56-NAME          TO  HCM57-NAME
       *
            .
-       310-HC20-HEAD-HEN-EXT.
+       310-HCM57-HEAD-HEN-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1442,7 +1428,7 @@ grpsys         MOVE    WRK-PARA-HOSPNUM    TO  BTPARA-HOSPNUM
            IF      CNT-PAGE        =   1
                MOVE    WRK-BYOMEI2     TO  HCM56-TEKIYO (WRK-LINETEK)
            ELSE
-               MOVE    WRK-BYOMEI2     TO  HC20-TEKIYO  (WRK-LINETEK)
+               MOVE    WRK-BYOMEI2     TO  HCM57-TEKIYO (WRK-LINETEK)
            END-IF
       *
       *    クリア
@@ -1598,7 +1584,7 @@ grpsys         MOVE    WRK-PARA-HOSPNUM    TO  BTPARA-HOSPNUM
            IF      CNT-PAGE        =   1
                MOVE    RECE47-TEKIYO-INF  TO  HCM56-TEKIYO(WRK-LINETEK)
            ELSE    
-               MOVE    RECE47-TEKIYO-INF  TO  HC20-TEKIYO (WRK-LINETEK)
+               MOVE    RECE47-TEKIYO-INF  TO  HCM57-TEKIYO(WRK-LINETEK)
            END-IF    
       *
            .
@@ -1615,7 +1601,7 @@ grpsys         MOVE    WRK-PARA-HOSPNUM    TO  BTPARA-HOSPNUM
            IF      CNT-PAGE        =   1
                MOVE    WRK-KUGIRI1 TO  HCM56-TEKIYO (WRK-LINETEK)
            ELSE    
-               MOVE    WRK-KUGIRI1 TO  HC20-TEKIYO  (WRK-LINETEK)
+               MOVE    WRK-KUGIRI1 TO  HCM57-TEKIYO (WRK-LINETEK)
            END-IF    
       *
            .
@@ -1671,7 +1657,7 @@ grpsys         MOVE    WRK-PARA-HOSPNUM    TO  BTPARA-HOSPNUM
            IF      CNT-PAGE        =   1
                MOVE    WRK-SRYKBN      TO  HCM56-SRYKBN (WRK-LINETEK)
            ELSE
-               MOVE    WRK-SRYKBN      TO  HC20-SRYKBN (WRK-LINETEK)
+               MOVE    WRK-SRYKBN      TO  HCM57-SRYKBN (WRK-LINETEK)
            END-IF                                    
       *
            .
@@ -1691,7 +1677,7 @@ grpsys         MOVE    WRK-PARA-HOSPNUM    TO  BTPARA-HOSPNUM
       * 
       *    帳票編集<ヘッダー部>処理
            ADD     1             TO  CNT-PAGE
-           PERFORM 310-HC20-HEAD-HEN-SEC
+           PERFORM 310-HCM57-HEAD-HEN-SEC
            MOVE    ZERO          TO  WRK-LINETEK
       *
            .
@@ -1881,7 +1867,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                                            (WRK-LINETEK)
                                ELSE
                                    MOVE    WRK-RECECOM-NAME
-                                           TO  HC20-TEKIYO (WRK-LINETEK)
+                                           TO  HCM57-TEKIYO(WRK-LINETEK)
                                END-IF
                                MOVE    ZERO        TO  FLG-RECECOM-SJKBN
                            END-IF
@@ -1896,7 +1882,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                                            (WRK-LINETEK)
                            ELSE
                                MOVE    WRK-COMMENT (IDX)
-                                           TO  HC20-TEKIYO (WRK-LINETEK)
+                                           TO  HCM57-TEKIYO(WRK-LINETEK)
                            END-IF
                        END-IF
                    END-PERFORM
@@ -2033,7 +2019,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
            IF      CNT-PAGE            =   1
                MOVE    WRK-OPECOM-HEN      TO  HCM56-TEKIYO(WRK-LINETEK)
            ELSE
-               MOVE    WRK-OPECOM-HEN      TO  HC20-TEKIYO (WRK-LINETEK)
+               MOVE    WRK-OPECOM-HEN      TO  HCM57-TEKIYO(WRK-LINETEK)
            END-IF
       *
            MOVE    SPACE               TO  WRK-OPECOM-HEN
@@ -2061,9 +2047,9 @@ grpsys     PERFORM 900-DBSELECT-SEC
                MOVE    HCM56                TO
                                        TBL-RECE-PRTDATA (TBL-RECE-MAX)
            ELSE
-               MOVE    "HCM56.red"      TO
+               MOVE    "HCM57.red"      TO
                                        TBL-RECE-FORMID  (TBL-RECE-MAX)
-               MOVE    HCM56                TO
+               MOVE    HCM57                TO
                                        TBL-RECE-PRTDATA (TBL-RECE-MAX)
            END-IF        
       *
@@ -2189,7 +2175,12 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE08-HOSPNUM
                            MOVE    RECE08-PRTDATA  TO HCM56
                            MOVE    WRK-HEN-PAGE-AREA
                                                    TO HCM56-PAGE
-                           MOVE    HCM56            TO RECE08-PRTDATA
+                           MOVE    HCM56           TO RECE08-PRTDATA
+                       WHEN    "HCM57.red"                  
+                           MOVE    RECE08-PRTDATA  TO HCM57
+                           MOVE    WRK-HEN-PAGE-AREA
+                                                   TO HCM57-PAGE
+                           MOVE    HCM57           TO RECE08-PRTDATA
                    END-EVALUATE
                END-IF
       *
