@@ -315,6 +315,7 @@
       *  04.01.01    NACL-門脇    07/10/25  北海道５１（道単独事業）に関わる
       *                                     （　）再掲記載対応
       *  04.01.02    NACL-門脇    07/11/06  新潟県中越沖地震対応修正
+      *  04.01.03    NACL-門脇    07/11/12  千葉県乳幼児一部負担金記載対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -7782,8 +7783,10 @@ grpsys     PERFORM 900-DBSELECT-SEC
                      END-IF
                  END-IF
                END-IF
-               IF  (SYS-1001-PREFNUM          =   05  ) AND
-                   (RECE02-KOHNUM(KOHFTN-IDX) =  "174")
+               IF ((SYS-1001-PREFNUM          =   05  ) AND
+                   (RECE02-KOHNUM(KOHFTN-IDX) =  "174"))
+               OR ((SYS-1001-PREFNUM          =   12  ) AND
+                   (RECE02-KOHNUM(KOHFTN-IDX) =  "183"))
                      MOVE  "1"  TO
                              RECE02-ZEROKISAIFLG(KOHFTN-IDX + 1)
                END-IF

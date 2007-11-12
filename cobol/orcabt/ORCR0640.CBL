@@ -268,6 +268,7 @@
       *  04.01.01    NACL-門脇    07/10/05  入院点滴コメント対応
       *  04.01.02    NACL-門脇    07/10/25  北海道５１（道単独事業）に関わる
       *                                     （　）再掲記載対応
+      *  04.01.03    NACL-門脇    07/11/12  千葉県乳幼児一部負担金記載対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -10823,8 +10824,10 @@
                      END-IF
                  END-IF
                END-IF
-               IF  (WRK-PREFNUM               =   05  ) AND
-                   (RECE62-KOHNUM(KOHFTN-IDX) =  "174")
+               IF ((WRK-PREFNUM               =   05  ) AND
+                   (RECE62-KOHNUM(KOHFTN-IDX) =  "174"))
+               OR ((WRK-PREFNUM               =   12  ) AND
+                   (RECE62-KOHNUM(KOHFTN-IDX) =  "183"))
                      MOVE  "1"  TO
                              RECE62-ZEROKISAIFLG(KOHFTN-IDX + 1)
                END-IF
