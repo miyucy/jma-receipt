@@ -666,10 +666,10 @@
                GO  TO  200-MAIN-EXT
            END-IF
       *
-           INITIALIZE                  PTHKNINF-REC
            MOVE    SPACE           TO  PTHKNINF-REC
-           INITIALIZE                  WRK-HEN-AREA
+           INITIALIZE                  PTHKNINF-REC
            MOVE    SPACE           TO  WRK-HEN-AREA
+           INITIALIZE                  WRK-HEN-AREA
            MOVE    ZERO            TO  WRK-POINT-AREA
            MOVE    ZERO            TO  IDX-AREA
            MOVE    ZERO            TO  FLG-ERRARI

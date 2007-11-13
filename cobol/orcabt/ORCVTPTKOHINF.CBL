@@ -657,10 +657,10 @@
                GO  TO  200-MAIN-EXT
            END-IF
       *
-           INITIALIZE                  PTKOHINF-REC
            MOVE    SPACE           TO  PTKOHINF-REC
-           INITIALIZE                  WRK-HEN-AREA
+           INITIALIZE                  PTKOHINF-REC
            MOVE    SPACE           TO  WRK-HEN-AREA
+           INITIALIZE                  WRK-HEN-AREA
            MOVE    ZERO            TO  WRK-POINT-AREA
            MOVE    ZERO            TO  IDX-AREA
            MOVE    ZERO            TO  FLG-ERRARI
