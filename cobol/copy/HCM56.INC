@@ -5,7 +5,7 @@
             02  HCM56-KANANAME  PIC X(50).
             02  HCM56-NAME  PIC X(40).
             02  HCM56-SYOBYO
-                    PIC X(50)   OCCURS  3 TIMES.
+                    PIC X(54)   OCCURS  3 TIMES.
             02  HCM56-SYOSHIN
                     PIC X(2)    OCCURS  3 TIMES.
             02  HCM56-KHNTEN
@@ -44,10 +44,8 @@
                     PIC X(2)    OCCURS  4 TIMES.
             02  HCM56-NICHI
                     PIC X(4)    OCCURS  4 TIMES.
-            02  HCM56-SRYKAISIYMD       OCCURS  3 TIMES.
-              03  HCM56-SRYKAISIYY    PIC X(2).
-              03  HCM56-SRYKAISIMM    PIC X(2).
-              03  HCM56-SRYKAISIDD    PIC X(2).
+            02  HCM56-SRYKAISIYMD
+                    PIC X(24)   OCCURS  3 TIMES.
             02  HCM56-STR-G.
               03  HCM56-STRYY PIC X(2).
               03  HCM56-STRMM PIC X(2).
