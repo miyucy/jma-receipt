@@ -313,9 +313,9 @@
                05  WRK-BYOMEI2-NO              PIC X(04).
                05  WRK-BYOMEI2-NAME            PIC X(48).
                05  WRK-BYOMEI2-NAMEW   REDEFINES   WRK-BYOMEI2-NAME.
-                   07  FILLER                  PIC X(28).
+                   07  FILLER                  PIC X(26).
                    07  WRK-BYOMEI2-ELSE.
-                       09  WRK-BYOMEI2-YMD     PIC X(20).
+                       09  WRK-BYOMEI2-YMD     PIC X(22).
       *
            03  WRK-WLINETEK                    PIC 9(03).
            03  WRK-R061-ZAINUM-O               PIC 9(08).
@@ -1047,13 +1047,7 @@ grpsys         MOVE    WRK-PARA-HOSPNUM    TO  BTPARA-HOSPNUM
            MOVE    RECE41-KANANAME     TO  HCM56-KANANAME
       *    氏名
            MOVE    RECE41-NAME         TO  HCM56-NAME
-      *    診療開始日
-      ***  MOVE    RECE41-SINSTYMD     TO  WRK-SYMD
-      ***     PERFORM 31012-SE-WA-YMDEDIT-SEC
-      ***     MOVE    WRK-HENYY           TO  HCM56-SRYKAISIYY (1)
-      ***     MOVE    WRK-HENMM           TO  HCM56-SRYKAISIMM (1)
-      ***     MOVE    WRK-HENDD           TO  HCM56-SRYKAISIDD (1)
-      *
+      *    診療期間
            IF      RECE41-RYOSTYMD     <   WRK-STYMD
                MOVE    WRK-STYMDW(1:2)     TO  HCM56-STRYY
                MOVE    WRK-STYMDW(3:2)     TO  HCM56-STRMM
@@ -1423,11 +1417,12 @@ grpsys         MOVE    WRK-PARA-HOSPNUM    TO  BTPARA-HOSPNUM
                                                     (WRK-LINEBYO)
                MOVE    WRK-BO-SRYYMD       TO  WRK-SYMD
                PERFORM 31012-SE-WA-YMDEDIT-SEC
-               MOVE    LNK-DAY2-EDTYMD3 (5:)
-                                           TO  HCM56-SRYKAISIYMD
-                                                    (WRK-LINEBYO) (5:)
+               MOVE    LNK-DAY2-EDTYMD3    TO  HCM56-SRYKAISIYMD
+                                                    (WRK-LINEBYO) (3:)
            END-IF
       *    病名
+           INSPECT WRK-BYOMEI1
+                           REPLACING    ALL   "  "   BY   "　"
            MOVE    WRK-BYOMEI1     TO  HCM56-SYOBYO(WRK-LINEBYO)
       *
       *    クリア
@@ -1513,8 +1508,7 @@ grpsys         MOVE    WRK-PARA-HOSPNUM    TO  BTPARA-HOSPNUM
       *
            MOVE    WRK-BO-SRYYMD       TO  WRK-SYMD
            PERFORM 31012-SE-WA-YMDEDIT-SEC
-           MOVE    LNK-DAY2-EDTYMD3 (5:)
-                                       TO  WRK-BYOMEI2-YMD
+           MOVE    LNK-DAY2-EDTYMD3    TO  WRK-BYOMEI2-YMD
       *
            .
        32221-SRYYMD-TENKI-HEN-EXT.
@@ -1634,7 +1628,6 @@ grpsys         MOVE    WRK-PARA-HOSPNUM    TO  BTPARA-HOSPNUM
                END-IF
       *
                IF  WRK-WLINETEK          >         WRK-LINE-MAX
-
                    PERFORM 34120-PAGE-SEC
       *
       *            区切り線
