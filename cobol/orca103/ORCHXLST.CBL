@@ -72,6 +72,7 @@
       *
       *    フラグ領域
        01  FLG-AREA.
+           03  FLG-SYSKANRI            PIC 9(01).
            03  FLG-TENSU               PIC 9(01).
            03  FLG-CHKMST              PIC 9(01).
            03  FLG-CHKSND              PIC 9(01).
@@ -89,6 +90,7 @@
                05  FLG-TOTUGO          PIC 9(01)
                                        OCCURS  3.
            03  FLG-TEKCD               PIC 9(01).
+           03  FLG-UTAGAIKBN           PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -155,8 +157,8 @@
            03  FILLER                  PIC X(01)   VALUE   SPACE.
            03  H02-MIDASI2             PIC X(100).
            03  H02-MIDASI2-R   REDEFINES   H02-MIDASI2.
-               05  H02-MIDASI2R1       PIC X(30).
-               05  H02-MIDASI2R2       PIC X(70).
+               05  H02-MIDASI2R1       PIC X(18).
+               05  H02-MIDASI2R2       PIC X(82).
        01  BODY-01.
            03  B01-NYUGAIKBN           PIC X(02).
            03  B01-SRYCD1              PIC X(09).
@@ -164,7 +166,8 @@
            03  B01-NAME1               PIC X(50).
            03  FILLER                  PIC X(02).
            03  B01-COMPKBN             PIC X(02).
-           03  FILLER                  PIC X(02).
+           03  B01-UTAGAIKBN           PIC X(01).
+           03  FILLER                  PIC X(01).
            03  B01-TEKIYO              PIC X(90).
            03  B01-TEKIYO-R1           REDEFINES   B01-TEKIYO.
                05  B01-SRYCD2          PIC X(09).
@@ -242,6 +245,10 @@
       *****************************************************************
       *    ファイルレイアウト
       *****************************************************************
+      *
+           COPY  "CPSYSKANRI.INC".
+      *
+           COPY  "CPSK1101.INC".
       *
       *    出力先プリンタ名割り当て情報
            COPY  "CPSK1031.INC".
@@ -403,12 +410,23 @@
            INITIALIZE                      SYS-1031-REC
            INITIALIZE                      ORCSPRTNMAREA
            MOVE    "2"                 TO  ORCSPRTNM-KBN
-           MOVE    SPA-SRYYMD          TO  ORCSPRTNM-SRYYMD
+           MOVE    SPA-SYSYMD          TO  ORCSPRTNM-SRYYMD
            MOVE    "2"                 TO  ORCSPRTNM-NYUGAIKBN
            CALL    "ORCSPRTNM"         USING
                                            ORCSPRTNMAREA
                                            SPA-AREA
                                            SYS-1031-REC
+      *
+           INITIALIZE                  SYSKANRI-REC
+           MOVE    "1101"          TO  SYS-KANRICD
+           MOVE    "*"             TO  SYS-KBNCD
+           MOVE    SPA-SYSYMD      TO  SYS-STYUKYMD
+                                       SYS-EDYUKYMD
+           PERFORM 900-SYSKANRI-KEY10-SEL-SEC
+           MOVE    SYSKANRI-REC    TO  SYS-1101-REC
+           IF    ( SYS-1101-YBUTAGAIKBN    =   SPACE )
+               MOVE    "1"         TO  SYS-1101-YBUTAGAIKBN
+           END-IF
       *
            MOVE    SPA-SYSYMD(1:4)     TO  H01-YY
            MOVE    SPA-SYSYMD(5:2)     TO  H01-MM
@@ -830,6 +848,19 @@
                MOVE    1              TO  FLG-KOHO
            WHEN    OTHER
                MOVE    "　"           TO  B01-COMPKBN
+           END-EVALUATE
+      *
+           EVALUATE CHKSND-UTAGAIKBN
+           WHEN    "0"
+               IF    ( SYS-1101-YBUTAGAIKBN    =   "2" )
+                   MOVE    "#"        TO  B01-UTAGAIKBN
+                   MOVE    1          TO  FLG-UTAGAIKBN
+               END-IF
+           WHEN    "1"
+               CONTINUE
+           WHEN    "2"
+                   MOVE    "#"        TO  B01-UTAGAIKBN
+                   MOVE    1          TO  FLG-UTAGAIKBN
            END-EVALUATE
       *
            MOVE    CHKSND-CD       TO  WRK-KEY-CD-G
@@ -1390,17 +1421,18 @@
            MOVE    WRK-PAGE            TO  H01-PCNT
            MOVE    HEAD-01             TO  HCM44-MOJI(1)
       *
+           MOVE    1                   TO  WRK-TGPNT
+           MOVE    SPACE               TO  H02-MIDASI2R2
+      *
            IF        ( HXLST-CHKKBN    =   "1" OR "2" OR "6" 
                                         OR "8" OR "9" )
-               MOVE    SPACE           TO  H02-MIDASI2R2
-               MOVE    1               TO  WRK-TGPNT
                PERFORM VARYING IDX2    FROM    1   BY  1
                        UNTIL ( IDX2    >   CONST-TOTUGO-MES-MAX )
       *
                    IF    ( FLG-TOTUGO (IDX2)   =   1 )
                        STRING CONST-TOTUGO-MES (IDX2)
                                            DELIMITED   BY  SPACE
-                              "　"         DELIMITED   BY  SIZE
+                              " "          DELIMITED   BY  SIZE
                        INTO   H02-MIDASI2R2
                        WITH   POINTER  WRK-TGPNT
                        END-STRING
@@ -1408,6 +1440,24 @@
       *
                END-PERFORM
       *
+           END-IF
+      *
+           IF    ( FLG-UTAGAIKBN       =   1 )
+               IF    ( HXLST-CHKKBN    =   "1" OR "2" )
+                   STRING "#:疑い病名を認めない（適応としない）"
+                          DELIMITED   BY  SPACE
+                      " " DELIMITED   BY  SIZE
+                   INTO   H02-MIDASI2R2
+                   WITH   POINTER  WRK-TGPNT
+                   END-STRING
+               ELSE
+                   STRING "#:疑い病名を認めない"
+                          DELIMITED   BY  SPACE
+                      " " DELIMITED   BY  SIZE
+                   INTO   H02-MIDASI2R2
+                   WITH   POINTER  WRK-TGPNT
+                   END-STRING
+               END-IF
            END-IF
       *
            MOVE    HEAD-02             TO  HCM44-MOJI(2)
@@ -1434,6 +1484,7 @@
       *
                INITIALIZE              HCM44
                MOVE    ZERO        TO  FLG-TOTUGO-G
+               MOVE    ZERO        TO  FLG-UTAGAIKBN
       *
                MOVE    CONST-MEISAI-ST TO  IDX-LINE
       *
@@ -1781,6 +1832,33 @@ grpsys*    MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            .
       *
        900-BYOMEI-KEY-SEL-EXT.
+           EXIT.
+      *****************************************************************
+      *    システム管理検索処理
+      *****************************************************************
+       900-SYSKANRI-KEY10-SEL-SEC      SECTION.
+      *
+           MOVE    ZERO            TO  FLG-SYSKANRI
+      *
+           MOVE    SPA-HOSPNUM     TO  SYS-HOSPNUM
+           MOVE    SYSKANRI-REC    TO  MCPDATA-REC
+           MOVE    "tbl_syskanri"  TO  MCP-TABLE
+           MOVE    "key10"         TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF    ( MCP-RC    =     ZERO )
+               MOVE    MCPDATA-REC TO  SYSKANRI-REC
+           ELSE
+               INITIALIZE              SYSKANRI-REC
+               MOVE    1           TO  FLG-SYSKANRI
+           END-IF
+      *
+           MOVE    "tbl_syskanri"  TO  MCP-TABLE
+           MOVE    "key10"         TO  MCP-PATHNAME
+           PERFORM 910-DBCLOSECURSOR-SEC
+      *
+           .
+      *
+       900-SYSKANRI-KEY10-SEL-EXT.
            EXIT.
       *****************************************************************
       *    ＤＢ検索処理（FHETCHも行う)

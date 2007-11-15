@@ -731,10 +731,19 @@
       *
                    CALL    "ORCSDTCHK07"   USING   QDTCHK-REC
       *
-                   IF    ( SYS-1101-YBUTAGAIKBN    =   "2" )
-                       IF    ( SDTCHK01-CHKKBN     =   "1" )
-                        AND  ( QDTCHK-UTAGAIFLG    =   "1"  OR "3" )
-                           MOVE    ZERO        TO  FLG-LOOP-END
+                   IF   ( QDTCHK-UTAGAIFLG     =   "1"  OR "3" )
+                       IF    ( SDTCHK01-CHKKBN             =   "1" )
+                           IF    ( QDTCHK-UTAGAIKBN        =   "0" )
+                            AND  ( SYS-1101-YBUTAGAIKBN    =   "2" )
+                              MOVE    ZERO     TO  FLG-LOOP-END
+                           END-IF
+                           IF    ( QDTCHK-UTAGAIKBN        =   "2" )
+                              MOVE    ZERO     TO  FLG-LOOP-END
+                           END-IF
+                       ELSE
+                           IF    ( QDTCHK-UTAGAIKBN        =   "2" )
+                              MOVE    ZERO     TO  FLG-LOOP-END
+                           END-IF
                        END-IF
                    END-IF
       *

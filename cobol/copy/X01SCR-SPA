@@ -29,6 +29,7 @@
       *    £Ø£°£³²èÌÌÍÑ
            03  SPA-X03-GMN-AREA.
                05  SPA-X03-GMN-KAKUTEI                 PIC 9(01).
+               05  SPA-X03-GMN-DEFAULT-UTAGAI          PIC X(01).
                05  SPA-X03-GMN-NEXT                    PIC 9(01).
                05  SPA-X03-GMN-PAGE                    PIC 9(05).
                05  SPA-X03-GMN-CUR                     PIC 9(03).
@@ -84,6 +85,7 @@
                        09  SPA-X03-NAI-TLCHK-BYOCD     PIC X(07)
                                                        OCCURS  21.
                        09  SPA-X03-NAI-TLCHK-BYOSTATUS PIC X(01).
+                       09  SPA-X03-NAI-TLCHK-UTAGAI    PIC X(01).
                05  SPA-X03-NAI-RYUKOSTYMD              PIC X(08).
                05  SPA-X03-NAI-RYUKOEDYMD              PIC X(08).
                05  SPA-X03-NAI-RCHKLST.
@@ -93,6 +95,7 @@
                        09  SPA-X03-NAI-TRCHK-BYOCD     PIC X(07)
                                                        OCCURS  21.
                        09  SPA-X03-NAI-TRCHK-BYOSTATUS PIC X(01).
+                       09  SPA-X03-NAI-TRCHK-UTAGAI    PIC X(01).
                05  SPA-X03-NAI-SELCHKLST.
                    07  SPA-X03-NAI-SELCHKLST-KBN       PIC X(01).
                    07  SPA-X03-NAI-SELCHKLST-OCC       OCCURS  100.

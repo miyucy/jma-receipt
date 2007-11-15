@@ -490,6 +490,7 @@
       *
                MOVE    TEKBYO-BYOMEI   TO  CHKSND-BYOMEI
                MOVE    "1"             TO  CHKSND-COMPKBN
+               MOVE    "0"             TO  CHKSND-UTAGAIKBN
                MOVE    TEKBYO-BYOMEIHENFLG
                                        TO  CHKSND-BYOMEIHENFLG
       *

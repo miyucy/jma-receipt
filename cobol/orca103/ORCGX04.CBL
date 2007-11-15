@@ -66,7 +66,7 @@
                    07  SPA-GMN-NAME            PIC X(100).
                05  SPA-GMN-NYUGAIKBN-G.
                    07  SPA-GMN-NYUGAIKBN       PIC X(01).
-                   07                          PIC X(01).
+                   07  SPA-GMN-NYUGAIKBNFL     PIC X(01).
                    07  SPA-GMN-NYUGAIKBNMEI    PIC X(20).
                05  SPA-GMN-BYO-INPUT-AREA.
                    07  SPA-GMN-BYOMEI-CHK-FLG  PIC 9(1).
@@ -79,13 +79,17 @@
                    07  SPA-GMN-BYOMEI          PIC X(100).
                    07  SPA-GMN-JYKNKBN-G.
                        09  SPA-GMN-JYKNKBN     PIC X(01).
-                       09                      PIC X(01).
+                       09  SPA-GMN-JYKNKBNFL   PIC X(01).
                        09  SPA-GMN-JYKNKBNMEI  PIC X(10).
+                   07  SPA-GMN-UTAGAIKBN-G.
+                       09  SPA-GMN-UTAGAIKBN     PIC X(01).
+                       09  SPA-GMN-UTAGAIKBNFL   PIC X(01).
+                       09  SPA-GMN-UTAGAIKBNMEI  PIC X(30).
                05  SPA-GMN-SRCBYO-INPUT-AREA.
                    07  SPA-GMN-SEL-BYOMEI      PIC X(100).
                    07  SPA-GMN-SRCBYOKBN-G.
                        09  SPA-GMN-SRCBYOKBN   PIC X(01).
-                       09                      PIC X(01).
+                       09  SPA-GMN-SRCBYOKBNFL PIC X(01).
                        09  SPA-GMN-SRCBYOKBNMEI
                                                PIC X(20).
                    07  SPA-GMN-SRTKBN-G.
@@ -93,23 +97,37 @@
                        09  SPA-GMN-SRTKBNMEI   PIC X(20).
                    07  SPA-GMN-SRCJYKNKBN-G.
                        09  SPA-GMN-SRCJYKNKBN  PIC X(01).
-                       09                      PIC X(01).
+                       09  SPA-GMN-SRCJYKNKBNFL
+                                               PIC X(01).
                        09  SPA-GMN-SRCJYKNKBNMEI
                                                PIC X(10).
+                   07  SPA-GMN-SRCUTAGAIKBN-G.
+                       09  SPA-GMN-SRCUTAGAIKBN  PIC X(01).
+                       09  SPA-GMN-SRCUTAGAIKBNFL
+                                               PIC X(01).
+                       09  SPA-GMN-SRCUTAGAIKBNMEI
+                                               PIC X(30).
                05  SPA-GMN-COMBO-AREA.
                    07  SPA-GMN-NYUGAIKBNLST-G.
                        09  SPA-GMN-NYUGAIKBN-MAX   PIC 9(03).
                        09  SPA-GMN-NYUGAIKBNLST    OCCURS    2.
                            11  SPA-GMN-NYUGAIKBNL  PIC X(01).
-                           11                      PIC X(01).
+                           11  SPA-GMN-NYUGAIKBNFLL
+                                                   PIC X(01).
                            11  SPA-GMN-NYUGAIKBNMEIL
                                                    PIC X(10).
                    07  SPA-GMN-JYKNKBNLST-G.
                        09  SPA-GMN-JYKNKBN-MAX     PIC 9(03).
                        09  SPA-GMN-JYKNKBNLST      OCCURS    5.
                            11  SPA-GMN-JYKNKBNL    PIC X(01).
-                           11                      PIC X(01).
+                           11  SPA-GMN-JYKNKBNFLL  PIC X(01).
                            11  SPA-GMN-JYKNKBNMEIL PIC X(10).
+                   07  SPA-GMN-UTAGAIKBNLST-G.
+                       09  SPA-GMN-UTAGAIKBN-MAX     PIC 9(03).
+                       09  SPA-GMN-UTAGAIKBNLST      OCCURS    5.
+                           11  SPA-GMN-UTAGAIKBNL    PIC X(01).
+                           11  SPA-GMN-UTAGAIKBNFLL  PIC X(01).
+                           11  SPA-GMN-UTAGAIKBNMEIL PIC X(30).
                    07  SPA-GMN-SRTKBNLST-G.
                        09  SPA-GMN-SRTKBN-MAX      PIC 9(03).
                        09  SPA-GMN-SRTKBNLST       OCCURS    50.
@@ -119,7 +137,7 @@
                        09  SPA-GMN-SRCBYOKBN-MAX   PIC 9(03).
                        09  SPA-GMN-SRCBYOKBNLST    OCCURS    5.
                            11  SPA-GMN-SRCBYOKBNL  PIC X(01).
-                           11                      PIC X(01).
+                           11  SPA-GMN-SRCBYOKBNFLL PIC X(01).
                            11  SPA-GMN-SRCBYOKBNMEIL
                                                    PIC X(20).
                05  SPA-GMN-BYOLST-AREA.
@@ -128,6 +146,7 @@
                    07  SPA-GMN-BYOLST-OCC          OCCURS  100.
                        09  SPA-GMN-TBYOMEI         PIC X(100).
                        09  SPA-GMN-TJYKN           PIC X(01).
+                       09  SPA-GMN-TUTAGAI         PIC X(01).
                05  SPA-GMN-SRCBYOLST-AREA.
                    07  SPA-GMN-SRCBYOLST-NEXT      PIC 9(01).
                    07  SPA-GMN-SRCBYOLST-MAX       PIC 9(05).
@@ -144,6 +163,8 @@
                    07  SPA-GMN-CDLST-OCC       OCCURS  30.
                        09  SPA-GMN-TCDBYOCD    PIC X(07).
                        09  SPA-GMN-TCDBYOMEI   PIC X(50).
+               05  SPA-NAI-HEAD-AREA.
+                   07  SPA-NAI-SYS-UTAGAIKBN   PIC X(01).
                05  SPA-NAI-BYOLST-AREA.
                    07  SPA-NAI-BYOLST-OCC      OCCURS  100.
                        09  SPA-NAI-TBYOSTATUS  PIC X(01).
@@ -311,6 +332,27 @@
                      09  CONST-JYKNKBNMEI1 PIC X(10).
                      09  CONST-JYKNKBNMEI2 PIC X(10).
       *
+           03  CONST-UTAGAIKBN-G.
+               05  CONST-UTAGAIKBN-VAL.
+                 07        PIC X(01) VALUE "0".
+                 07        PIC X(30) VALUE "システム管理の設定に従う".
+      *
+                 07        PIC X(01) VALUE "1".
+                 07        PIC X(30) VALUE "認める(適応病名とする)".
+      *
+                 07        PIC X(01) VALUE "2".
+                 07        PIC X(30) VALUE "認めない(適応病名としない)".
+      *
+                 07        PIC X(01) VALUE "1".
+                 07        PIC X(30) VALUE "認める".
+      *
+                 07        PIC X(01) VALUE "2".
+                 07        PIC X(30) VALUE "認めない".
+               05  CONST-UTAGAIKBN-R  REDEFINES  CONST-UTAGAIKBN-VAL.
+                 07  CONST-UTAGAIKBN-OCC  OCCURS   5.
+                     09  CONST-UTAGAIKBNCD   PIC X(01).
+                     09  CONST-UTAGAIKBNMEI1 PIC X(30).
+      *
       *    病名システム予約コードテーブル
            COPY    "CMBYOMEICD.INC".
       *
@@ -322,6 +364,8 @@
            COPY    "CPSYSKANRI.INC".
       *
            COPY    "CPSK1005.INC".
+      *
+           COPY    "CPSK1101.INC".
       *
       *    患者病名
        01  PTBYOMEI-REC.
@@ -524,6 +568,20 @@
       *
            MOVE    ZERO                TO  SPA-NAI-INPUT-MODE
       *
+           INITIALIZE                  SYSKANRI-REC
+           MOVE    "1101"          TO  SYS-KANRICD
+           MOVE    "*"             TO  SYS-KBNCD
+           MOVE    SPA-SYSYMD      TO  SYS-STYUKYMD
+                                       SYS-EDYUKYMD
+           PERFORM 900-SYSKANRI-KEY10-SEL-SEC
+           MOVE    SYSKANRI-REC    TO  SYS-1101-REC
+           IF    ( SYS-1101-YBUTAGAIKBN    =   SPACE )
+               MOVE    "1"         TO  SPA-NAI-SYS-UTAGAIKBN
+           ELSE
+               MOVE    SYS-1101-YBUTAGAIKBN
+                                   TO  SPA-NAI-SYS-UTAGAIKBN
+           END-IF
+      *
       *    コンボボックス初期処理
            PERFORM 3101-COMBO-SYOKI-SEC
       *
@@ -531,6 +589,11 @@
            MOVE    SPA-GMN-JYKNKBNLST (1)
                                        TO  SPA-GMN-JYKNKBN-G
                                            SPA-GMN-SRCJYKNKBN-G
+      *
+      *    疑い区分初期値
+           MOVE    SPA-GMN-UTAGAIKBNLST (1)
+                                       TO  SPA-GMN-UTAGAIKBN-G
+                                           SPA-GMN-SRCUTAGAIKBN-G
       *
            PERFORM 3101-BYOLST-SEC
       *
@@ -549,6 +612,9 @@
       *
       *    一致条件区分コンボ設定処理
            PERFORM 3101-JYKNKBNLST-SET-SEC
+      *
+      *    疑いコンボ設定処理
+           PERFORM 3101-UTAGAIKBNLST-SET-SEC
       *
       *    病名ソースコンボ設定処理
            PERFORM 3101-SRCBYOKBNLST-SET-SEC
@@ -599,6 +665,56 @@
       *
            . 
        3101-JYKNKBNLST-SET-EXT.
+           EXIT.
+      *****************************************************************
+      *    疑い区分コンボ設定処理
+      *****************************************************************
+       3101-UTAGAIKBNLST-SET-SEC       SECTION.
+      *
+           INITIALIZE                  SPA-GMN-UTAGAIKBNLST-G
+      *
+           EVALUATE    SPA-X01-CHKKBN
+           WHEN    "1"
+               MOVE    CONST-UTAGAIKBNCD (1)
+                                   TO  SPA-GMN-UTAGAIKBNL (1)
+               MOVE    CONST-UTAGAIKBNMEI1 (1)
+                                   TO  SPA-GMN-UTAGAIKBNMEIL (1)
+               MOVE    CONST-UTAGAIKBNCD (2)
+                                   TO  SPA-GMN-UTAGAIKBNL (2)
+               MOVE    CONST-UTAGAIKBNMEI1 (2)
+                                   TO  SPA-GMN-UTAGAIKBNMEIL (2)
+               MOVE    CONST-UTAGAIKBNCD (3)
+                                   TO  SPA-GMN-UTAGAIKBNL (3)
+               MOVE    CONST-UTAGAIKBNMEI1 (3)
+                                   TO  SPA-GMN-UTAGAIKBNMEIL (3)
+      *
+               MOVE    3           TO  SPA-GMN-UTAGAIKBN-MAX
+           WHEN    "2"
+               MOVE    CONST-UTAGAIKBNCD (2)
+                                   TO  SPA-GMN-UTAGAIKBNL (1)
+               MOVE    CONST-UTAGAIKBNMEI1 (2)
+                                   TO  SPA-GMN-UTAGAIKBNMEIL (1)
+               MOVE    CONST-UTAGAIKBNCD (3)
+                                   TO  SPA-GMN-UTAGAIKBNL (2)
+               MOVE    CONST-UTAGAIKBNMEI1 (3)
+                                   TO  SPA-GMN-UTAGAIKBNMEIL (2)
+      *
+               MOVE    2           TO  SPA-GMN-UTAGAIKBN-MAX
+           WHEN    "6"
+               MOVE    CONST-UTAGAIKBNCD (4)
+                                   TO  SPA-GMN-UTAGAIKBNL (1)
+               MOVE    CONST-UTAGAIKBNMEI1 (4)
+                                   TO  SPA-GMN-UTAGAIKBNMEIL (1)
+               MOVE    CONST-UTAGAIKBNCD (5)
+                                   TO  SPA-GMN-UTAGAIKBNL (2)
+               MOVE    CONST-UTAGAIKBNMEI1 (5)
+                                   TO  SPA-GMN-UTAGAIKBNMEIL (2)
+      *
+               MOVE    2           TO  SPA-GMN-UTAGAIKBN-MAX
+           END-EVALUATE
+      *
+           . 
+       3101-UTAGAIKBNLST-SET-EXT.
            EXIT.
       *****************************************************************
       *    病名ソート区分設定処理（患者病名）
@@ -772,6 +888,7 @@
       *
                MOVE    CHKSND-BYOMEI       TO  SPA-GMN-TBYOMEI (IDX-MAX)
                MOVE    CHKSND-COMPKBN      TO  SPA-GMN-TJYKN   (IDX-MAX)
+               MOVE    CHKSND-UTAGAIKBN    TO  SPA-GMN-TUTAGAI (IDX-MAX)
                MOVE    CHKSND-BYOMEIHENFLG TO  SPA-NAI-TBYOSTATUS
                                                                (IDX-MAX)
                MOVE    CHKSND-CD           TO  WRK-KEY-CD-G
@@ -848,6 +965,9 @@
       *
                MOVE    SPA-X03-NAI-TLCHK-BYOSTATUS (IDXE)
                                        TO  SPA-NAI-TBYOSTATUS  (IDXE)
+      *
+               MOVE    SPA-X03-NAI-TLCHK-UTAGAI (IDXE)
+                                       TO  SPA-GMN-TUTAGAI  (IDXE)
       *
            END-PERFORM
       *
@@ -975,9 +1095,11 @@
            MOVE   X04-NYUGAIKBN    TO  SPA-GMN-NYUGAIKBN
       *
            MOVE   X04-JYKNKBN      TO  SPA-GMN-JYKNKBN
+           MOVE   X04-UTAGAIKBN    TO  SPA-GMN-UTAGAIKBN
            MOVE   X04-SRTKBN       TO  SPA-GMN-SRTKBN-G
            MOVE   X04-SRCBYOKBN    TO  SPA-GMN-SRCBYOKBN-G
            MOVE   X04-SRCJYKNKBN   TO  SPA-GMN-SRCJYKNKBN-G
+           MOVE   X04-SRCUTAGAIKBN TO  SPA-GMN-SRCUTAGAIKBN-G
       *
            .
        4101-GMN-SPA-SET-EXT.
@@ -1011,6 +1133,11 @@
                GO  TO  4102-KIHON-CHK-EXT
            END-IF
       *
+           PERFORM 4101-UTAGAIKBN-CHK-SEC
+           IF    ( SPA-ERRCD   NOT =   SPACE )
+               GO  TO  4102-KIHON-CHK-EXT
+           END-IF
+      *
            PERFORM 4101-SEL-BYOMEI-CHK-SEC
            IF    ( SPA-ERRCD   NOT =   SPACE )
                GO  TO  4102-KIHON-CHK-EXT
@@ -1027,6 +1154,11 @@
            END-IF
       *
            PERFORM 4101-SRCJYKNKBN-CHK-SEC
+           IF    ( SPA-ERRCD   NOT =   SPACE )
+               GO  TO  4102-KIHON-CHK-EXT
+           END-IF
+      *
+           PERFORM 4101-SRCUTAGAIKBN-CHK-SEC
            IF    ( SPA-ERRCD   NOT =   SPACE )
                GO  TO  4102-KIHON-CHK-EXT
            END-IF
@@ -1366,6 +1498,27 @@
        4101-JYKNKBN-CHK-EXT.
            EXIT.
       *****************************************************************
+      *    疑い区分チェック処理
+      *****************************************************************
+       4101-UTAGAIKBN-CHK-SEC            SECTION.
+      *
+           MOVE    SPA-GMN-UTAGAIKBN   TO  WRK-CMB-CD
+           PERFORM 4200-UTAGAIKBNLST-CHK-SEC
+           IF    ( WRK-CMB-CD      =   SPACE )
+               IF    ( SPA-NAI-INPUT-MODE   =   2 )
+                   MOVE    SPACE       TO  SPA-GMN-UTAGAIKBN-G
+               ELSE
+                   MOVE    SPA-GMN-UTAGAIKBNLST (1)
+                                       TO  SPA-GMN-UTAGAIKBN-G
+               END-IF
+           ELSE
+               MOVE    WRK-CMB-ITM     TO  SPA-GMN-UTAGAIKBN-G
+           END-IF
+      *
+           .
+       4101-UTAGAIKBN-CHK-EXT.
+           EXIT.
+      *****************************************************************
       *    検索病名チェック処理
       *****************************************************************
        4101-SEL-BYOMEI-CHK-SEC         SECTION.
@@ -1456,6 +1609,23 @@
       *
            .
        4101-SRCJYKNKBN-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    ソース病名疑い区分チェック処理
+      *****************************************************************
+       4101-SRCUTAGAIKBN-CHK-SEC            SECTION.
+      *
+           MOVE    SPA-GMN-SRCUTAGAIKBN    TO  WRK-CMB-CD
+           PERFORM 4200-UTAGAIKBNLST-CHK-SEC
+           IF    ( WRK-CMB-CD      =   SPACE )
+               MOVE    SPA-GMN-UTAGAIKBNLST (1)
+                                       TO  SPA-GMN-SRCUTAGAIKBN-G
+           ELSE
+               MOVE    WRK-CMB-ITM     TO  SPA-GMN-SRCUTAGAIKBN-G
+           END-IF
+      *
+           .
+       4101-SRCUTAGAIKBN-CHK-EXT.
            EXIT.
       *****************************************************************
       *    入外区分チェック
@@ -2050,6 +2220,11 @@
            PERFORM 4200-JYKNKBNLST-CHK-SEC
            MOVE    WRK-CMB-ITM         TO  SPA-GMN-JYKNKBN-G
       *
+           MOVE    SPA-GMN-TUTAGAI (IDX3)
+                                       TO  WRK-CMB-CD
+           PERFORM 4200-UTAGAIKBNLST-CHK-SEC
+           MOVE    WRK-CMB-ITM         TO  SPA-GMN-UTAGAIKBN-G
+      *
            MOVE    SPA-NAI-TBYOSTATUS (IDX3)
                                        TO  SPA-GMN-BYOSTATUS
       *
@@ -2235,6 +2410,13 @@ grpsys*                    MOVE    SPA-HOSPNUM         TO  -HOSPNUM
                END-IF
            END-IF
       *
+           IF    ( SPA-ERRCD       =   SPACE )
+               IF    ( SPA-GMN-UTAGAIKBN-G   =   SPACE )
+                   MOVE    "0110"      TO  SPA-ERRCD
+                   MOVE    9           TO  SPA-GMN-CUR
+               END-IF
+           END-IF
+      *
            .
        41011-KANREN-CHK-EXT.
            EXIT.
@@ -2251,6 +2433,7 @@ grpsys*                    MOVE    SPA-HOSPNUM         TO  -HOSPNUM
       *
                MOVE    SPA-GMN-BYOMEI  TO  SPA-GMN-TBYOMEI (IDX-LST)
                MOVE    SPA-GMN-JYKNKBN TO  SPA-GMN-TJYKN   (IDX-LST)
+               MOVE    SPA-GMN-UTAGAIKBN TO  SPA-GMN-TUTAGAI(IDX-LST)
                PERFORM VARYING IDX0    FROM    1   BY  1
                        UNTIL ( IDX0    >       CONST-MKCD-MAX )
       *
@@ -2278,6 +2461,11 @@ grpsys*                    MOVE    SPA-HOSPNUM         TO  -HOSPNUM
                    IF    ( SPA-GMN-JYKNKBN NOT =   SPACE )
                        MOVE    SPA-GMN-JYKNKBN
                                            TO  SPA-GMN-TJYKN (IDX0)
+                   END-IF
+      *
+                   IF    ( SPA-GMN-UTAGAIKBN NOT =   SPACE )
+                       MOVE    SPA-GMN-UTAGAIKBN
+                                           TO  SPA-GMN-TUTAGAI (IDX0)
                    END-IF
       *
                END-IF
@@ -2481,6 +2669,8 @@ grpsys*                    MOVE    SPA-HOSPNUM         TO  -HOSPNUM
                                TO  SPA-GMN-TBYOMEI (IDX-MAX)
            MOVE    SPA-GMN-SRCJYKNKBN
                                TO  SPA-GMN-TJYKN   (IDX-MAX)
+           MOVE    SPA-GMN-SRCUTAGAIKBN
+                               TO  SPA-GMN-TUTAGAI (IDX-MAX)
       *
            EVALUATE    SPA-GMN-SRCBYOLST-PTN
            WHEN    "2"
@@ -2624,6 +2814,30 @@ grpsys*                    MOVE    SPA-HOSPNUM         TO  -HOSPNUM
        4200-JYKNKBNLST-CHK-EXT.
            EXIT.
       *****************************************************************
+      *    疑い区分コンボチェック処理
+      *****************************************************************
+       4200-UTAGAIKBNLST-CHK-SEC         SECTION.
+      *
+           INITIALIZE                  WRK-CMB-ITM-G
+      *
+           PERFORM VARYING IDX-CMB FROM    1   BY  1
+                   UNTIL ( IDX-CMB         >   SPA-GMN-UTAGAIKBN-MAX )
+                    OR   ( WRK-CMB-ITM NOT =   SPACE )
+      *
+               IF    ( SPA-GMN-UTAGAIKBNL (IDX-CMB)
+                                   =   WRK-CMB-CD )
+      *
+                   MOVE    SPA-GMN-UTAGAIKBNLST (IDX-CMB)
+                                   TO  WRK-CMB-ITM
+      *
+               END-IF
+      *
+           END-PERFORM
+      *
+           .
+       4200-UTAGAIKBNLST-CHK-EXT.
+           EXIT.
+      *****************************************************************
       *    入外区分コンボチェック処理
       *****************************************************************
        4200-NYUGAIKBNLST-CHK-SEC       SECTION.
@@ -2758,6 +2972,9 @@ grpsys*                    MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            MOVE    SPA-GMN-JYKNKBNLST (1)
                                    TO  SPA-GMN-JYKNKBN-G
       *
+           MOVE    SPA-GMN-UTAGAIKBNLST (1)
+                                   TO  SPA-GMN-UTAGAIKBN-G
+      *
            MOVE    1               TO  SPA-GMN-CUR
       *
            .
@@ -2824,6 +3041,9 @@ grpsys*                    MOVE    SPA-HOSPNUM         TO  -HOSPNUM
       *
                MOVE    SPA-NAI-TBYOSTATUS  (IDXE)
                                        TO  SPA-X03-NAI-TLCHK-BYOSTATUS
+                                                                  (IDXE)
+               MOVE    SPA-GMN-TUTAGAI  (IDXE)
+                                       TO  SPA-X03-NAI-TLCHK-UTAGAI
                                                                   (IDXE)
       *
            END-PERFORM
@@ -2967,6 +3187,12 @@ grpsys*                    MOVE    SPA-HOSPNUM         TO  -HOSPNUM
                                            TO  CHKSND-BYOMEI
                MOVE    SPA-GMN-TJYKN   (IDXD)
                                            TO  CHKSND-COMPKBN
+               IF    ( SPA-X01-CHKKBN      =   "6" )
+                   MOVE    "1"             TO  CHKSND-UTAGAIKBN
+               ELSE
+                   MOVE    SPA-GMN-TUTAGAI   (IDXD)
+                                           TO  CHKSND-UTAGAIKBN
+               END-IF
                MOVE    SPA-NAI-TBYOSTATUS (IDXD)
                                            TO  CHKSND-BYOMEIHENFLG
                MOVE    SPA-GMN-NYUGAIKBN   TO  CHKSND-NYUGAIKBN
@@ -3117,10 +3343,12 @@ grpsys*                    MOVE    SPA-HOSPNUM         TO  -HOSPNUM
       *
            MOVE    SPA-GMN-BYOMEI          TO  X04-BYOMEI
            MOVE    SPA-GMN-JYKNKBN-G       TO  X04-JYKNKBN
+           MOVE    SPA-GMN-UTAGAIKBN-G     TO  X04-UTAGAIKBN
            MOVE    SPA-GMN-SEL-BYOMEI      TO  X04-SEL-BYOMEI
            MOVE    SPA-GMN-SRTKBN-G        TO  X04-SRTKBN
            MOVE    SPA-GMN-SRCBYOKBN-G     TO  X04-SRCBYOKBN
            MOVE    SPA-GMN-SRCJYKNKBN-G    TO  X04-SRCJYKNKBN
+           MOVE    SPA-GMN-SRCUTAGAIKBN-G  TO  X04-SRCUTAGAIKBN
       *
            MOVE    SPA-GMN-JYKNKBN-MAX TO  X04-JYKNKBN-COUNT
                                            X04-SRCJYKNKBN-COUNT
@@ -3130,6 +3358,17 @@ grpsys*                    MOVE    SPA-HOSPNUM         TO  -HOSPNUM
                MOVE    SPA-GMN-JYKNKBNLST (IDX0)
                                        TO  X04-JYKNKBN-ITEM (IDX0)
                                            X04-SRCJYKNKBN-ITEM (IDX0)
+      *
+           END-PERFORM
+      *
+           MOVE    SPA-GMN-UTAGAIKBN-MAX TO  X04-UTAGAIKBN-COUNT
+                                             X04-SRCUTAGAIKBN-COUNT
+           PERFORM VARYING IDX0    FROM    1   BY  1
+                   UNTIL ( IDX0        >   SPA-GMN-UTAGAIKBN-MAX )
+      *
+               MOVE    SPA-GMN-UTAGAIKBNLST (IDX0)
+                                       TO  X04-UTAGAIKBN-ITEM (IDX0)
+                                           X04-SRCUTAGAIKBN-ITEM (IDX0)
       *
            END-PERFORM
       *
@@ -3179,6 +3418,19 @@ grpsys*                    MOVE    SPA-HOSPNUM         TO  -HOSPNUM
                    END-IF
                END-PERFORM
       *
+               EVALUATE    SPA-GMN-TUTAGAI (IDX0)
+               WHEN    "0"
+                   IF    ( SPA-NAI-SYS-UTAGAIKBN   =   "1" )
+                       MOVE    SPACE   TO  X04-TUTAGAI(IDX0)
+                   ELSE
+                       MOVE    "×"    TO  X04-TUTAGAI(IDX0)
+                   END-IF
+               WHEN    "1"
+                   MOVE    SPACE       TO  X04-TUTAGAI(IDX0)
+               WHEN    "2"
+                       MOVE    "×"    TO  X04-TUTAGAI(IDX0)
+               END-EVALUATE
+      *
                IF    ( SPA-GMN-BYOLST-SEL  =   IDX0 )
                    MOVE    "T"         TO  X04-BYOLST-SELECT (IDX0)
                ELSE
@@ -3189,7 +3441,7 @@ grpsys*                    MOVE    SPA-HOSPNUM         TO  -HOSPNUM
                            MOVE    "==>" 
                                        TO  X04-TNO   (IDX0)
                            MOVE    "<="
-                                       TO  X04-TJYKN(IDX0) (3:)
+                                       TO  X04-TUTAGAI(IDX0) (3:)
                        END-IF
                    END-IF
                END-IF
@@ -3298,6 +3550,32 @@ grpsys*                    MOVE    SPA-HOSPNUM         TO  -HOSPNUM
                MOVE    WIDGET-INSENSITIVE  TO  X04-BTN-ALLINS-STATE
            END-IF
       *
+           MOVE    "black"         TO  X04-LBLSYSKANRI-STYLE
+           MOVE    SPACE           TO  X04-LBLSYSKANRI
+           IF    ( SPA-GMN-UTAGAIKBN   =   "0" )
+               IF    ( SPA-NAI-SYS-UTAGAIKBN   =   "1" )
+                   MOVE    "blue"  TO  X04-LBLSYSKANRI-STYLE
+                   MOVE    CONST-UTAGAIKBNMEI1 (2)
+                                   TO  X04-LBLSYSKANRI
+               ELSE
+                   MOVE    "blue"  TO  X04-LBLSYSKANRI-STYLE
+                   MOVE    CONST-UTAGAIKBNMEI1 (3)
+                                   TO  X04-LBLSYSKANRI
+               END-IF
+           END-IF
+      *
+           MOVE    "疑い病名"      TO  X04-LBLUTAGAIKBN
+           MOVE    WIDGET-NORMAL   TO  X04-UTAGAIKBN-STATE
+                                       X04-UTAGAIKBN-ITEM-STATE
+      *
+           IF    ( SPA-X01-CHKKBN  =   "6" )
+               INITIALIZE              X04-LBLUTAGAIKBN
+                                       X04-CMB-UTAGAIKBN
+               MOVE    WIDGET-INSENSITIVE
+                                   TO  X04-UTAGAIKBN-STATE
+                                       X04-UTAGAIKBN-ITEM-STATE
+           END-IF
+      *
       *    カーソル位置
            PERFORM 5001-MAPCUR-SEC
       *
@@ -3330,6 +3608,13 @@ grpsys*                    MOVE    SPA-HOSPNUM         TO  -HOSPNUM
                 END-IF
            END-IF
       *
+           IF    ( SPA-GMN-CUR         =   15 )
+                IF   ( X04-UTAGAIKBN-STATE
+                                       =   WIDGET-INSENSITIVE )
+                   MOVE    105         TO  SPA-GMN-CUR
+                END-IF
+           END-IF
+      *
            EVALUATE    SPA-GMN-CUR
            WHEN    01
                MOVE    "SELNUM"        TO  MCP-WIDGET
@@ -3359,6 +3644,10 @@ grpsys*                    MOVE    SPA-HOSPNUM         TO  -HOSPNUM
                MOVE    "SRCJYKNKBN"    TO  MCP-WIDGET
            WHEN    14
                MOVE    "NYUGAIKBN"     TO  MCP-WIDGET
+           WHEN    15
+               MOVE    "UTAGAIKBN"     TO  MCP-WIDGET
+           WHEN    16
+               MOVE    "SRCUTAGAIKBN"  TO  MCP-WIDGET
            WHEN    105
                MOVE    "B05"           TO  MCP-WIDGET
            WHEN    112
@@ -3392,6 +3681,8 @@ grpsys*                    MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            WHEN    "BYOMEI"
                MOVE    09              TO  SPA-GMN-CUR
            WHEN    "JYKNKBN"
+               MOVE    15              TO  SPA-GMN-CUR
+           WHEN    "UTAGAIKBN"
                MOVE    105             TO  SPA-GMN-CUR
            WHEN    "SEL_BYOMEI"
                MOVE    10              TO  SPA-GMN-CUR
@@ -3400,6 +3691,8 @@ grpsys*                    MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            WHEN    "SRTKBN"
                MOVE    13              TO  SPA-GMN-CUR
            WHEN    "SRCJYKNKBN"
+               MOVE    16              TO  SPA-GMN-CUR
+           WHEN    "SRCUTAGAIKBN"
                MOVE    10              TO  SPA-GMN-CUR
            WHEN    "NYUGAIKBN"
                MOVE    1               TO  SPA-GMN-CUR
@@ -3474,6 +3767,9 @@ grpsys*                    MOVE    SPA-HOSPNUM         TO  -HOSPNUM
                                        TO  SPA-ERRMSG
            WHEN    "0106"
                MOVE    "一致条件を入力してください"
+                                       TO  SPA-ERRMSG
+           WHEN    "0110"
+               MOVE    "疑い区分を入力してください"
                                        TO  SPA-ERRMSG
            WHEN    "0107"
            WHEN    "0109"
@@ -3657,6 +3953,33 @@ grpsys*                    MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            .
       *
        900-CHKSND-KEY2-FET-EXT.
+           EXIT.
+      *****************************************************************
+      *    システム管理検索処理
+      *****************************************************************
+       900-SYSKANRI-KEY10-SEL-SEC      SECTION.
+      *
+           MOVE    ZERO            TO  FLG-SYSKANRI
+      *
+           MOVE    SPA-HOSPNUM     TO  SYS-HOSPNUM
+           MOVE    SYSKANRI-REC    TO  MCPDATA-REC
+           MOVE    "tbl_syskanri"  TO  MCP-TABLE
+           MOVE    "key10"         TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF    ( MCP-RC    =     ZERO )
+               MOVE    MCPDATA-REC TO  SYSKANRI-REC
+           ELSE
+               INITIALIZE              SYSKANRI-REC
+               MOVE    1           TO  FLG-SYSKANRI
+           END-IF
+      *
+           MOVE    "tbl_syskanri"  TO  MCP-TABLE
+           MOVE    "key10"         TO  MCP-PATHNAME
+           PERFORM 910-DBCLOSECURSOR-SEC
+      *
+           .
+      *
+       900-SYSKANRI-KEY10-SEL-EXT.
            EXIT.
       *****************************************************************
       *    システム管理検索処理(KEY2)

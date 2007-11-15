@@ -39,6 +39,18 @@
                 04  X04-JYKNKBN-COUNT   PIC S9(9)   BINARY.
                 04  X04-JYKNKBN-ITEM
                         PIC X(12)   OCCURS  5 TIMES.
+              03  X04-LBLUTAGAIKBN      PIC X(10).
+              03  X04-CMB-UTAGAIKBN.
+                04  X04-UTAGAIKBN       PIC X(32).
+                04  X04-UTAGAIKBN-STATE PIC S9(9)   BINARY.
+                04  X04-UTAGAIKBN-COUNT   PIC S9(9)   BINARY.
+                04  X04-UTAGAIKBN-ITEM
+                        PIC X(32)   OCCURS  5 TIMES.
+                04  X04-UTAGAIKBN-ITEM-STATE PIC S9(9)   BINARY.
+              03  X04-LBLSYSKANRI-G.
+                04  X04-LBLSYSKANRI-STYLE
+                                      PIC X(20).
+                04  X04-LBLSYSKANRI   PIC X(30).
               03  X04-SEL-BYOMEI.
                 04  X04-VALUE   PIC X(100).
               03  X04-CMB-SRCBYOKBN.
@@ -59,6 +71,12 @@
                 04  X04-SRCJYKNKBN-COUNT   PIC S9(9)   BINARY.
                 04  X04-SRCJYKNKBN-ITEM
                         PIC X(12)   OCCURS  5 TIMES.
+              03  X04-CMB-SRCUTAGAIKBN.
+                04  X04-SRCUTAGAIKBN.
+                  05  X04-VALUE   PIC X(32).
+                04  X04-SRCUTAGAIKBN-COUNT   PIC S9(9)   BINARY.
+                04  X04-SRCUTAGAIKBN-ITEM
+                        PIC X(32)   OCCURS  5 TIMES.
               03  X04-SCROLLEDWINDOW1.
                 04  X04-BYOLST.
                   05  X04-BYOLST-COUNT   PIC S9(9)   BINARY.
@@ -69,6 +87,7 @@
                     06  X04-TMARK     PIC X(1).
                     06  X04-TBYOMEI   PIC X(100).
                     06  X04-TJYKN     PIC X(4).
+                    06  X04-TUTAGAI   PIC X(4).
                   05  X04-BYOLST-SELECT
                           PIC X       OCCURS  100 TIMES.
               03  X04-SCROLLEDWINDOW3.

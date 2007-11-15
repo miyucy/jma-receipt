@@ -79,6 +79,22 @@ X04	{
 			count	int;
 			item	varchar(12)[05];
 		};
+		LBLUTAGAIKBN	{
+			value	varchar(10);
+		};
+		CMB_UTAGAIKBN	{
+			UTAGAIKBN	{
+				value	varchar(32);
+				state	int;
+			};
+			count	int;
+			item	varchar(32)[05];
+			state	int;
+		};
+		LBLSYSKANRI	{
+			style   varchar(20);
+			value	varchar(30);
+		};
 		SEL_BYOMEI	{
 			value	varchar(100);
 		};
@@ -103,6 +119,13 @@ X04	{
 			count	int;
 			item	varchar(12)[05];
 		};
+		CMB_SRCUTAGAIKBN	{
+			SRCUTAGAIKBN	{
+				value	varchar(32);
+			};
+			count	int;
+			item	varchar(32)[05];
+		};
 		scrolledwindow1	{
 			BYOLST	{
 				count	int;
@@ -113,6 +136,7 @@ X04	{
 					value1	varchar(1);
 					value2	varchar(100);
 					value3	varchar(4);
+					value4	varchar(4);
 				}	[100];
 				select	bool[100];
 			};

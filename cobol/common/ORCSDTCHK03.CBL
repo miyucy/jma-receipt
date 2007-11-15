@@ -561,22 +561,29 @@
            PERFORM UNTIL ( FLG-QDTCHK      NOT =   ZERO )
                     OR   ( FLG-LOOP-END    NOT =   ZERO )
       *
+      *
                MOVE    "query_dtchk"       TO  MCP-TABLE
                MOVE    WRK-PATHNAME        TO  MCP-PATHNAME
                PERFORM 910-DBFETCH-SEC
                IF    ( MCP-RC          =   ZERO )
                    MOVE    MCPDATA-REC     TO  QDTCHK-REC
+      *
+                   MOVE    1               TO  FLG-LOOP-END
+      *
+                   CALL    "ORCSDTCHK07"   USING   QDTCHK-REC
+      *
+                   IF   ( QDTCHK-UTAGAIFLG         =   "1"  OR "3" )
+                       IF    ( QDTCHK-UTAGAIKBN    =   "2" )
+                           MOVE    ZERO        TO  FLG-LOOP-END
+                       END-IF
+                   END-IF
+      *
+                   IF    ( QDTCHK-REZEFLG  =   "1" )
+                       MOVE    ZERO        TO  FLG-LOOP-END
+                   END-IF
                ELSE
                    INITIALIZE                  QDTCHK-REC
                    MOVE    1               TO  FLG-QDTCHK
-               END-IF
-      *
-               MOVE    1               TO  FLG-LOOP-END
-      *
-               CALL    "ORCSDTCHK07"   USING   QDTCHK-REC
-      *
-               IF    ( QDTCHK-REZEFLG  =   "1" )
-                   MOVE    ZERO        TO  FLG-LOOP-END
                END-IF
       *
            END-PERFORM
