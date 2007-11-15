@@ -552,7 +552,7 @@ grpsys     COPY  "COMMON-SPA".
                END-IF
            END-IF
       *
-           PERFORM 800-DISPLAY-SEC
+      *    PERFORM 800-DISPLAY-SEC
       *
            .
        300-END-EXT.
