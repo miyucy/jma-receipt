@@ -477,6 +477,7 @@
            MOVE    ZERO                TO  SANTEI-SRYKA
       *    Ï«ºÒËè¤È¤¹¤ë
            IF      SPA-HKNKBN          =   1
+                                       OR  2
                MOVE    SPA-HKNCOMBINUM     TO  SANTEI-HKNCOMBINUM
            ELSE
                MOVE    ZERO                TO  SANTEI-HKNCOMBINUM
@@ -612,7 +613,8 @@
            MOVE    ZERO                TO  SANTEI-SRYKA
       *
       *    Ï«ºÒËè¤È¤¹¤ë
-           IF      SPA-HKNKBN          =   1
+           IF     (SPA-HKNKBN          =   1
+                                       OR  2   )
       *        Äþ¸ºÂÐ¾Ý³°¤Ï£±·ï
               AND (WRK-SRYCD       NOT =   "099800401" )
                MOVE    SPA-HKNCOMBINUM     TO  SANTEI-HKNCOMBINUM

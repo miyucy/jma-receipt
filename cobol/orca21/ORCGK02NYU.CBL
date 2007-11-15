@@ -2425,6 +2425,7 @@
            END-IF
       *    汐阂ˇ极清勒の眷圭、戏客でも办忍とする
            IF      SPA-HKNKBN          =   1
+                                       OR  2
                MOVE    ZERO                TO  SPA-NAI-ROUJIN
            END-IF
       *
@@ -2514,6 +2515,10 @@
            ELSE
                MOVE    ZERO            TO  SPA-HKNKBN
           END-IF
+      *    给坛阂巢冉年
+           IF      SPA-HKNNUM          =   "975"
+               MOVE    2               TO  SPA-HKNKBN
+           END-IF
       *****戏客冉年
       *****PERFORM 3102-ROUJIN-SET-SEC
       *

@@ -1886,8 +1886,8 @@
                PERFORM 10063-JIKANGAI-AUTO-SEC
            END-IF
            IF     (SPA-HKNKBN          =   ZERO)  OR
-      ********    (SPA-RSI-HKNKBN      =   "5" )
                   (SPA-RSI-JUNKYO      =   "1" )
+             OR   (SPA-HKNKBN          =   2   )
       *        時間外加算
                PERFORM 10060-JIKANGAI-KASAN-SEC
            END-IF

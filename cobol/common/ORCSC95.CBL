@@ -2891,6 +2891,10 @@
                    ELSE
                        MOVE    ZERO                TO  SPA-HKNKBN
                    END-IF
+      *            给巢冉年
+                   IF      SPA-NAI-HKNNUM (IDX)    =   "975"
+                       MOVE    2                   TO  SPA-HKNKBN
+                   END-IF
                    MOVE    SPA-NAI-HKNID (IDX)
                                            TO  SPA-HKNID
                    MOVE    SPA-NAI-RSI-HKNKBN (IDX)
@@ -3026,6 +3030,10 @@
                MOVE    1                   TO  SPA-HKNKBN
            ELSE
                MOVE    ZERO                TO  SPA-HKNKBN
+           END-IF
+      *    给巢冉年
+           IF      SPA-NAI-HKNNUM (WRK-IDXH)   =   "975"
+               MOVE    2                   TO  SPA-HKNKBN
            END-IF
            MOVE    SPA-NAI-HKNID (WRK-IDXH)
                                        TO  SPA-HKNID
@@ -5720,6 +5728,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            PERFORM 30011-WKSRYACT-INS-SEC
       *
            IF     (SPA-HKNKBN          =   1   )  OR
+                  (SPA-HKNKBN          =   2   )  OR
                  ((SPA-NAI-ROUJIN2     =   1  )  AND
                   (SPA-HKNCOMBINUM     =   LNK-SC95-HKNCOMBI ))
                CONTINUE

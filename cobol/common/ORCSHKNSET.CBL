@@ -545,6 +545,11 @@
       *
       *    ÊÝ¸±¶èÊ¬
            MOVE    ZERO                TO  ORCSHKN-NAI-HKNKBN(IDX)
+      *    ¸ø³²
+           IF      COMB-HKNNUM         =   "975"
+      *        ÊÝ¸±¶èÊ¬
+               MOVE    2                   TO  ORCSHKN-NAI-HKNKBN(IDX)
+           END-IF
       *    Ï«ºÒ¤Î»þ¡¢¥³¥á¥ó¥È¤ÎÄÉ²Ã
            IF      COMB-HKNNUM         =   "971"  OR  "973"
       *        ÊÝ¸±¶èÊ¬

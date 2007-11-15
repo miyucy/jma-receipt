@@ -40,6 +40,7 @@
       *  03.03.00    NACL-多々納  06/11/17  同時算定チェック方法修正
       *  03.04.00    NACL-多々納  06/12/05  上限回数ユーザ指定追加
       *  03.05.00    NACL-多々納  07/04/XX  グループ診療対応
+      *  04.01.00    NACL-多々納  07/11/XX  公害対応
       *****************************************************************
       *
       *
@@ -515,7 +516,6 @@
       *
       *    労災で消炎鎮痛処置の時、当日上限回数を変更する
            IF     (SPA-HKNKBN          =   1  )
-      ****   AND  (SPA-RSI-HKNKBN  NOT =   "5" )
              AND  (SPA-RSI-JUNKYO  NOT =   "1" )
                EVALUATE    WRK-RIGAKU-KBN
       *            マッサージ
@@ -646,7 +646,9 @@
                MOVE    SANTEI-MSANTEICNT   TO  LNK-SC91-CNT
            END-IF
       *    労災でリハビリの時３月以内の件数はカウントしない
-           IF     (SPA-HKNKBN      NOT =   ZERO  )  AND
+      *### 公害は分からないのでカウントする
+      **** IF     (SPA-HKNKBN      NOT =   ZERO  )  AND
+           IF     (SPA-HKNKBN          =   1     )  AND
                   (FLG-HKN-SANTEI      =   1     )
                MOVE    LNK-SC91-CNT        TO  WRK-RSI-CNT
                PERFORM 10012-RSI-MCNT-SEC
@@ -785,7 +787,9 @@
                    END-IF
                    MOVE    SANTEI-MSANTEICNT   TO  WRK-SANTEI-CNTW
       *            労災でリハビリの時３月以内の件数はカウントしない
-                   IF     (SPA-HKNKBN      NOT =   ZERO  )  AND
+      *### 公害は分からないのでカウントする
+      *!!!!        IF     (SPA-HKNKBN      NOT =   ZERO  )  AND
+                   IF     (SPA-HKNKBN          =   1     )  AND
                           (FLG-HKN-SANTEI      =   1     )
                        MOVE    WRK-SANTEI-CNTW     TO  WRK-RSI-CNT
                        PERFORM 10012-RSI-MCNT-SEC
@@ -950,7 +954,6 @@
                SET     TBL-IDX         TO  IDX2
       *        労災で、消炎鎮痛の時、湿布対象外
                IF     ((SPA-HKNKBN         =   1    )  AND
-      *************    (SPA-RSI-HKNKBN  NOT =   "5" )) AND
                        (SPA-RSI-JUNKYO  NOT =   "1" )) AND
                        (WRK-CHK        NOT =   SPACE   )  AND
                        (WRK-CHK            =   TBL-CHK (TBL-IDX))
@@ -982,7 +985,6 @@
                            PERFORM 2003-DOJINPUT-CHK-SEC
                       END-IF
                       IF     ((SPA-HKNKBN          =   1 ) AND
-      ******************      (SPA-RSI-HKNKBN  NOT =   "5" )) AND
                               (SPA-RSI-JUNKYO  NOT =   "1" )) AND
                               (TBL-CHK (TBL-IDX)   =   "P"  )
       *                    労災で湿布の時
@@ -1314,7 +1316,8 @@
                    END-IF
                    MOVE    SANTEI-MSANTEICNT   TO  WRK-SANTEI-CNTW
       *            労災でリハビリの時３月以内の件数はカウントしない
-                   IF     (SPA-HKNKBN      NOT =   ZERO  )  AND
+      *********    IF     (SPA-HKNKBN      NOT =   ZERO  )  AND
+                   IF     (SPA-HKNKBN          =   1     )  AND
                           (FLG-HKN-SANTEI      =   1     )
                        MOVE    WRK-SANTEI-CNTW     TO  WRK-RSI-CNT
                        PERFORM 10012-RSI-MCNT-SEC

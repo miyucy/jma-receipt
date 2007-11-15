@@ -5916,6 +5916,10 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *D                               OR  "5"
                MOVE    "2"                 TO  WRK-PRV-HKNKBN
            END-IF
+      *    ¸ø³²
+           IF      SPA-HKNKBN          =   "2"
+               MOVE    "6"                 TO  WRK-PRV-HKNKBN
+           END-IF
            CALL    "ORCSRECEARGMK"     USING
                                        "1"
                                        SPA-PTID

@@ -391,6 +391,11 @@
                PERFORM 2002-JIBAI-FTNRATE-SEC
            END-IF
       *
+      *    给巢
+           IF      COMB-HKNNUM         =   "975"
+               MOVE    6               TO  AGECHK-HKNKBN
+           END-IF
+      *
            IF      AGECHK-NYUGAIKBN    =   "1"
                MOVE    COMB-NYU-KFTNRATE   TO  AGECHK-FTNRATE
            ELSE
@@ -413,6 +418,7 @@
                PERFORM 3001-HKNNUM-CHK-SEC
       *        极锐ˇ迹赋ˇ汐阂ˇ极清勒
                IF     (HKN-HKNKOHSBTKBN    =   "8"  OR  "9" )  OR
+                      (HKN-HKNKOHSBTKBN    =   "4"          )  OR
                       (COMB-HKNNUM         =   "971"  OR  "973")
                    CONTINUE
       *            极锐
@@ -1141,9 +1147,10 @@
                END-IF
            END-IF
       *
-      *    汐阂ˇ极清勒の箕、すべて办忍へ
+      *    汐阂ˇ极清勒ˇ给巢の箕、すべて办忍へ
            IF      COMB-HKNNUM         =   "971"
                                        OR  "973"
+                                       OR  "975"
                MOVE    ZERO            TO  AGECHK-ROUJIN
            END-IF
       *

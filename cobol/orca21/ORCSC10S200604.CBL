@@ -861,6 +861,12 @@
                   ELSE
                        MOVE    1               TO  FLG-CHK
                   END-IF
+              WHEN     2
+                  IF      JYURRK-HKNKBN        =   "6"
+                       CONTINUE
+                  ELSE
+                       MOVE    1               TO  FLG-CHK
+                  END-IF
               WHEN     1
       *           ¼«ÇåÀÕ
                   IF      SPA-RSI-HKNKBN       =   "4"
@@ -940,6 +946,8 @@
       *                    ·òÊÝ½àµòÊ¬
                                                    OR  "4"
                                                    OR  "5"
+      *                    ¸ø³²
+                                                   OR  "6"
       *                    °ìÈÌ
                            PERFORM 100011-IPN-DOUJI-CHK-SEC
                        ELSE
@@ -1235,7 +1243,8 @@
            IF      FLG-HKNSAN          =   1
       *        °ìÈÌ¤ÎÊÝ¸±¤Çº£²ó¤¬Ï«ºÒ¤Î»þÂÐ¾Ý³°
                IF      (SANTEI-HKNCOMBINUM     =   ZERO )  AND
-                       (SPA-HKNKBN             =   1     )
+                       (SPA-HKNKBN             =   1
+                                               OR  2     )
                    GO      TO      10011-TOUGETU-CHK-EXT
                END-IF
       *        Ï«ºÒ¤ÎÊÝ¸±¤Çº£²ó¤¬°ìÈÌ
@@ -1245,7 +1254,8 @@
                END-IF
       *        Ï«ºÒ¤ÎÊÝ¸±¤Çº£²ó¤¬Ï«ºÒ¤Î»þÈ½Äê
                IF      (SANTEI-HKNCOMBINUM NOT =   ZERO )  AND
-                       (SPA-HKNKBN             =   1    )  AND
+                       (SPA-HKNKBN             =   1
+                                               OR  2    )  AND
                        (SANTEI-HKNCOMBINUM NOT =   SPA-HKNCOMBINUM)
                    GO      TO      10011-TOUGETU-CHK-EXT
                END-IF
@@ -1669,6 +1679,7 @@
       *
       *    Ï«ºÒËè¤È¤¹¤ë
            IF      SPA-HKNKBN          =   1
+                                       OR  2
                MOVE    SPA-HKNCOMBINUM     TO  SANTEI-HKNCOMBINUM
            ELSE
                MOVE    ZERO                TO  SANTEI-HKNCOMBINUM
@@ -2006,11 +2017,6 @@
       *****************************************************************
        200-SYOSIN-SET-SEC              SECTION.
       *
-      *TEST
-           DISPLAY "S10 SPA-HKNKBN:" SPA-HKNKBN
-              ",SPA-RSI-HKNKBN:" SPA-RSI-HKNKBN
-              ",SPA-RSI-JUNKYO:" SPA-RSI-JUNKYO
-      *TEST
            MOVE    ZERO                TO  IDX2
            MOVE    ZERO                TO  SPA-GMN-IDX
            MOVE    ZERO                TO  SPA-GAIRAISIN

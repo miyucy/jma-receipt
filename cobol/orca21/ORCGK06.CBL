@@ -1098,6 +1098,7 @@
       *         労災の時、コメントの追加
                IF      COMB-HKNNUM         =   "971"
                                            OR  "973"
+                                           OR  "975"
                    MOVE    WRK-HKNCOMBIMEI     TO  SPA-GMN-HKNCOMBIMEI
                ELSE
                    MOVE    "0023"              TO  SPA-ERRCD

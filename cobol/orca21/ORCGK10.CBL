@@ -528,6 +528,9 @@
                                            OR  "973"
                    MOVE    "1"             TO  SPA-K10-HKNKBN (IDX)
                END-IF
+               IF      COMB-HKNNUM         =   "975"
+                   MOVE    "2"             TO  SPA-K10-HKNKBN (IDX)
+               END-IF
                PERFORM 31011-HKNCOMBI-HEN-SEC
                MOVE    WRK-HKNCOMBI        TO  SPA-K10-GMN-HKNCOMBI
                                                           (IDX)
@@ -907,6 +910,7 @@
       *
            IF     (SPA-HKNCOMBINUM     =   "9999")  OR
                   (SPA-HKNKBN          =   1     )
+              OR  (SPA-HKNKBN          =   2     )
                IF      SPA-K10-HKNCOMBI(SPA-K10-SELNUM)
                                            =   SPA-HKNCOMBINUM
                    CONTINUE
@@ -918,7 +922,8 @@
       ****     IF     (SPA-K10-HKNCOMBI(SPA-K10-SELNUM)
       **                                   =   "9999"  ) OR
                IF     (SPA-K10-HKNKBN (SPA-K10-SELNUM)
-                                           =   "1"     )
+                                           =   "1"
+                                           OR  "2"     )
                    MOVE    "0006"          TO  SPA-ERRCD
                    MOVE    2               TO  SPA-K10GMN-CUR
                END-IF

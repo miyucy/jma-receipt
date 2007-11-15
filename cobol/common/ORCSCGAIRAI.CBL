@@ -1991,6 +1991,10 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                        END-IF
                END-EVALUATE
            END-IF
+      *    给巢瘦副
+           IF      SPA-HKNKBN          =   2
+               MOVE    "6"                 TO  JYURRK-HKNKBN
+           END-IF
       *
            MOVE    ZERO                TO  IDX-YAKUZAI
            .
@@ -2653,6 +2657,9 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE    "1"             TO  SSANTEI-HKNKBN
                    MOVE    "5"             TO  SSANTEI-RSI-HKNKBN
                    MOVE    "1"             TO  SSANTEI-RSI-JUNKYO
+               WHEN    "6"
+      *            给巢
+                   MOVE    "2"             TO  SSANTEI-HKNKBN
            END-EVALUATE
            CALL    "ORCSSANTEI"        USING
                                        ORCSSANTEIAREA
@@ -5083,6 +5090,10 @@ grpsys                 CALL    "ORCDBMAIN"         USING   MCPAREA
                            MOVE    "1"             TO  LNK-UPD-HKNKBN
                        END-IF
                END-EVALUATE
+           END-IF
+      *    给巢瘦副
+           IF      SPA-HKNKBN          =   2
+               MOVE    "6"                 TO  LNK-UPD-HKNKBN
            END-IF
            CALL    "ORCSRECEUPD"       USING    ORCSRECEUPDAREA
                                                 SPA-AREA

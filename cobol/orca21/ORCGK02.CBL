@@ -3511,7 +3511,11 @@
                MOVE    1               TO  SPA-HKNKBN
            ELSE
                MOVE    ZERO            TO  SPA-HKNKBN
-          END-IF
+           END-IF
+      *    ¸øÌ³ºÒ³²È½Äê
+           IF      SPA-HKNNUM          =   "975"
+               MOVE    2               TO  SPA-HKNKBN
+           END-IF
       *
       *    ÊÝ¸±»»ÄêÇ¯Îð¥Á¥§¥Ã¥¯Åù
            INITIALIZE                  ORCSAGECHKAREA
@@ -6252,6 +6256,7 @@
            ELSE
                IF      (SPA-HKNCOMBINUM    =   "9999" )  OR
                        (SPA-HKNKBN         =   "1"    )
+                 OR    (SPA-HKNKBN         =   "2"    )
                    MOVE    "SELNUM2"           TO  MCP-WIDGET
                ELSE
                    MOVE    "SELNUM1"           TO  MCP-WIDGET

@@ -215,7 +215,8 @@
                MOVE    SPA-RSI-HKNKBN  TO  SSANTEI-RSI-HKNKBN
                MOVE    SPA-RSI-JUNKYO  TO  SSANTEI-RSI-JUNKYO
            END-IF
-           IF     (SSANTEI-HKNKBN      =   "1" ) AND
+           IF     (SSANTEI-HKNKBN      =   "1"
+                                       OR  "2" ) AND
                   (SSANTEI-HKNCOMBINUM =   SPACE )
                MOVE    SPA-HKNCOMBINUM TO  SSANTEI-HKNCOMBINUM
            END-IF
@@ -946,8 +947,8 @@
            IF      SSANTEI-HKNKBN      =   SPACE
                MOVE    SPA-HKNKBN      TO  SSANTEI-HKNKBN
            END-IF
-           IF     (SSANTEI-HKNKBN  NOT =   ZERO   )  AND
-      *********   (SSANTEI-RSI-HKNKBN  NOT =   "5" )  AND
+     ******IF     (SSANTEI-HKNKBN  NOT =   ZERO   )  AND
+           IF     (SSANTEI-HKNKBN      =   1      )  AND
                   (SSANTEI-RSI-JUNKYO  NOT =   "1" )  AND
                   (SSANTEI-SRYCD       =   "099700101"  OR
                                            "099700102"  OR
@@ -1300,8 +1301,9 @@
       ***** END-IF
       *
       *    ∑Ú ›∞ ≥∞§«£√£‘°¶£Õ£“£…§Œ∫Ó¿Æ§ §∑° º´«Â¿’∑Ú ›Ω‡µÚ∞ ≥∞°À
-           IF     (SSANTEI-HKNKBN  NOT =   ZERO   )  AND
+      *****IF     (SSANTEI-HKNKBN  NOT =   ZERO   )  AND
       **********  (SSANTEI-RSI-HKNKBN  NOT =   "5" )  AND
+           IF     (SSANTEI-HKNKBN      =   1      )  AND
                   (SSANTEI-RSI-JUNKYO  NOT =   "1" )  AND
                   (SSANTEI-SRYCD       =   "099700101"  OR
                                            "099700102"  OR

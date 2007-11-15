@@ -61,6 +61,7 @@
       * 03.05.00     NACL-多々納  07/04/XX  グループ診療対応
       * 03.05.01     NACL-多々納  07/08/22  加算順チェック追加
       * 04.00.00     NACL-多々納  07/09/XX  テーブル４００対応
+      * 04.01.00     NACL-多々納  07/10/26  悪性腫瘍特異物資治療管理コメント対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -1105,33 +1106,11 @@
                END-IF
            END-IF
       *
-      *DD  時間外特例のチェック
-      *    IF      WRK-COM-INPUTCD (IDX-Z)   =   "111000870"  OR
-      *                                          "111700870"  OR
-      *                                          "112001410"  OR
-      *                                          "112701310"  OR
-      *                                          "111010770"  OR
-      *                                          "112006070"
-      *        IF      LNK-ORCSC-JIKANTOKU     NOT =   1
-      *            MOVE    "0069"          TO  WRK-ERRCD
-      *            MOVE    "1"             TO  WRK-COM-CUR (IDX-Z)
-      *        END-IF
-      *DD  END-IF
-      *
       *    包括まとめ入力は以下対象外
            IF      SPA-HKNCOMBINUM     =   "9999"
                OR (WRK-COM-HKNCOMBI (IDX-Z) =   "9999" )
                GO      TO      100114-SYUGISYORI-CHK-EXT
            END-IF
-      *
-      *
-      *----(01.00.02) LINE ADD START ----------------------------------
-      *    寝たきり老人在宅総合診療科を算定時、加算を追加
-      *    IF      WRK-COM-INPUTCD (IDX-Z)     =   "114701210"  OR
-      *                                            "114701710"
-      *        PERFORM 1009-NETAKIRI-HEN-SEC
-      *    END-IF
-      *----(01.00.02) LINE ADD END   ----------------------------------
       *
       *----(01.00.03) LINE ADD START ----------------------------------
       *    診療情報提供料を入力時、算定日のコメントを自動加算
@@ -1257,6 +1236,8 @@
       *      自賠責の健保準拠以外
       *D     OR   (SPA-RSI-HKNKBN      =   "5" )
              OR   (SPA-RSI-JUNKYO      =   "1" )
+      *      公害保険
+             OR   (SPA-HKNKBN          =   2   )
                GO      TO      100111-KEIZOKU-CHK-EXT
            END-IF
       **** 労災で継続管理の時
@@ -2213,74 +2194,6 @@
            .
        1009-NYUYOUJI-KSN-EXT.
            EXIT.
-      *****************************************************************
-      *    寝たきり老人在宅総合診療科に加算追加処理
-      *****************************************************************
-      *1009-NETAKIRI-HEN-SEC           SECTION.
-      *
-      *    既に自動発生した場合、自動加算しない
-      *    IF      WRK-COM-AUTOFLG (IDX-Z)     =   "1"
-      *        GO      TO      1009-NETAKIRI-HEN-EXT
-      *    END-IF
-      *    MOVE    "1"                 TO  WRK-COM-AUTOFLG (IDX-Z)
-      *    初回以外自動加算しない
-      *    IF      LNK-ORCSC-NETAKIRI-ARI3 =   1
-      *        GO      TO      1009-NETAKIRI-HEN-EXT
-      *    END-IF
-      *
-      *    既に入力のある時、自動加算しない
-      *    ２４時間連携体制加算（１)
-      *    MOVE    "114701870"         TO  WRK-SRYCD
-      *    PERFORM 1110-KASAN-CHK-SEC
-      *    IF      FLG-ARI             =   1
-      *        GO      TO      1009-NETAKIRI-HEN-EXT
-      *    END-IF
-      *    ２４時間連携体制加算（２)
-      *    MOVE    "114703970"         TO  WRK-SRYCD
-      *    PERFORM 1110-KASAN-CHK-SEC
-      *    IF      FLG-ARI             =   1
-      *        GO      TO      1009-NETAKIRI-HEN-EXT
-      *    END-IF
-      *    ２４時間連携体制加算（３)
-      *    MOVE    "114703770"         TO  WRK-SRYCD
-      *    PERFORM 1110-KASAN-CHK-SEC
-      *    IF      FLG-ARI             =   1
-      *        GO      TO      1009-NETAKIRI-HEN-EXT
-      *    END-IF
-      *
-      *    ２４時間連携体制加算（１)
-      *    MOVE    "114701870"         TO  WRK-SRYCD
-      *    MOVE    IDX-Z               TO  IDX-S
-      *    PERFORM 1100-KASAN-SET-SEC
-      *    IF      FLG-ADD             =   1
-      *        自動追加分を止める
-      *        MOVE    SPACE               TO  WRK-COM-AUTOKBN (IDX-S)
-      *        GO      TO      1009-NETAKIRI-HEN-EXT
-      *    END-IF
-      *
-      *    ２４時間連携体制加算（２)
-      *    MOVE    "114703970"         TO  WRK-SRYCD
-      *    MOVE    IDX-Z               TO  IDX-S
-      *    PERFORM 1100-KASAN-SET-SEC
-      *    IF      FLG-ADD             =   1
-      *        自動追加分を止める
-      *        MOVE    SPACE               TO  WRK-COM-AUTOKBN (IDX-S)
-      *        GO      TO      1009-NETAKIRI-HEN-EXT
-      *    END-IF
-      *
-      *    ２４時間連携体制加算（３)
-      *    MOVE    "114703770"         TO  WRK-SRYCD
-      *    MOVE    IDX-Z               TO  IDX-S
-      *    PERFORM 1100-KASAN-SET-SEC
-      *    IF      FLG-ADD             =   1
-      *        自動追加分を止める
-      *        MOVE    SPACE               TO  WRK-COM-AUTOKBN (IDX-S)
-      *        GO      TO      1009-NETAKIRI-HEN-EXT
-      *    END-IF
-      *
-      *    .
-      *1009-NETAKIRI-HEN-EXT.
-      **** EXIT.
       *****************************************************************
       *    診療情報提供算定日追加処理
       *****************************************************************
