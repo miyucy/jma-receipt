@@ -2108,6 +2108,10 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                        END-IF
                END-EVALUATE
            END-IF
+      *    ∏¯≥≤ ›∏±
+           IF      SPA-HKNKBN          =   2
+               MOVE    "6"                 TO  JYURRK-HKNKBN
+           END-IF
       *    ø«Œ≈∂Ë ¨ŒŒ∞Ë§Œ ‘Ω∏
            PERFORM 200121-JYURRK-SRYKBN-SEC
       *    ∫ﬁ»÷πÊ
@@ -2525,6 +2529,9 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE    "1"             TO  SSANTEI-HKNKBN
                    MOVE    "5"             TO  SSANTEI-RSI-HKNKBN
                    MOVE    "1"             TO  SSANTEI-RSI-JUNKYO
+               WHEN    "6"
+      *            ∏¯≥≤
+                   MOVE    "2"             TO  SSANTEI-HKNKBN
            END-EVALUATE
            CALL    "ORCSSANTEI"        USING
                                        ORCSSANTEIAREA
