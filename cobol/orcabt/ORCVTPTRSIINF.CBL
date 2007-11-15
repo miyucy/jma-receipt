@@ -1089,9 +1089,9 @@
                GO      TO      2410-SINKEI-SET-EXT
            END-IF
       *
-      *    未入力
+      *    未入力は １：初診
            IF      FLG-NODATA          =   1
-               MOVE    1               TO  FLG-ERR
+               MOVE    "1"                 TO  PTRSI-SINKEI
            END-IF
       *
       *    項目桁数不正
@@ -1099,8 +1099,9 @@
                MOVE    2               TO  FLG-ERR
            END-IF
       *
-           IF      FLG-ERR             =   ZERO
-      *    補助区分セット
+           IF     (FLG-ERR             =   ZERO )  AND
+                  (FLG-NODATA          =   ZERO )
+      *    新継再別セット
                EVALUATE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
                    WHEN    "1"
                    WHEN    "3"
@@ -1108,6 +1109,9 @@
                    WHEN    "7"
                        MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
                                                TO  PTRSI-SINKEI
+      *            未設定
+                   WHEN    "0"
+                       MOVE    "1"             TO  PTRSI-SINKEI
       *            誤入力
                    WHEN    OTHER
                        MOVE    3               TO  FLG-ERR
@@ -1128,9 +1132,9 @@
                GO      TO      2410-TENKI-SET-EXT
            END-IF
       *
-      *    未入力
+      *    未入力は ３：継続
            IF      FLG-NODATA          =   1
-               MOVE    1               TO  FLG-ERR
+               MOVE    "3"                 TO  PTRSI-TENKI
            END-IF
       *
       *    項目桁数不正
@@ -1138,7 +1142,8 @@
                MOVE    2               TO  FLG-ERR
            END-IF
       *
-           IF      FLG-ERR             =   ZERO
+           IF     (FLG-ERR             =   ZERO )  AND
+                  (FLG-NODATA          =   ZERO )
       *    転帰事由セット
                EVALUATE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
                    WHEN    "1"
@@ -1148,6 +1153,9 @@
                    WHEN    "9"
                        MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
                                                TO  PTRSI-TENKI
+      *            未設定
+                   WHEN    "0"
+                       MOVE    "3"             TO  PTRSI-TENKI
       *            誤入力
                    WHEN    OTHER
                        MOVE    3               TO  FLG-ERR
