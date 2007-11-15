@@ -567,6 +567,9 @@
       *    病名組立サブ
            COPY    "CPORCSMKBYOMEI.INC".
       *
+      *    保険組合せセット領域
+           COPY    "CPORCSHKNSET.INC".
+      *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
       *
@@ -1230,42 +1233,19 @@ grpsys                     MOVE    SPA-HOSPNUM TO  PTBYO-HOSPNUM
            MOVE    ZERO                TO  IDY
                                            IDX
       *     
-grpsys     MOVE    SPA-HOSPNUM         TO  COMB-HOSPNUM
-           MOVE    SPA-NAI-C02-PTID    TO  COMB-PTID
-           MOVE    HKNCOMBI-REC        TO  MCPDATA-REC
-           MOVE    "tbl_hkncombi"      TO  MCP-TABLE
-           MOVE    "key2"              TO  MCP-PATHNAME
-grpsys     PERFORM 900-DBSELECT-SEC
-           IF      MCP-RC              =   ZERO
-               MOVE    "tbl_hkncombi"      TO  MCP-TABLE
-               MOVE    "key2"              TO  MCP-PATHNAME
-               PERFORM 900-COMB-READ-SEC
-           ELSE
-               INITIALIZE                  HKNCOMBI-REC
-               MOVE    1               TO  FLG-HKNCOMBI
-           END-IF
+           MOVE    SPA-NAI-C02-PTID    TO  SPA-PTID
+           INITIALIZE                  ORCSHKNSETAREA
+           MOVE    "2"                 TO  ORCSHKN-KBN
+           MOVE    "1"                 TO  ORCSHKN-KBN3
+           CALL    "ORCSHKNSET"        USING
+                                       SPA-AREA
+                                       ORCSHKNSETAREA
       *     
-           PERFORM UNTIL       (IDX            =   100  )  OR
-                               (FLG-HKNCOMBI   =   1    )
-      *---- (01.00.01) LINE MOD START ---------------------------------
-               IF      COMB-DELKBN           =   SPACE
-                   PERFORM 3102-HKNCOMBI-SPA-SEC
-               END-IF
-      *---- (01.00.01) LINE MOD END   ---------------------------------
       *
-               MOVE    "tbl_hkncombi"      TO  MCP-TABLE
-               MOVE    "key2"              TO  MCP-PATHNAME
-               PERFORM 900-COMB-READ-SEC
-           END-PERFORM
-      *    カーソルクロース
-           MOVE    "tbl_hkncombi"      TO  MCP-TABLE
-           MOVE    "key2"              TO  MCP-PATHNAME
-           PERFORM 900-CLOSE-SEC
-      *                                 
-           PERFORM VARYING IDX FROM    1   BY  1
-                   UNTIL   IDX >       SPA-NAI-C02-HKN-MAX
-                   OR      IDY =       200
-               PERFORM 3103-HKNCOMBI-GMN-SEC
+           PERFORM VARYING     IDX     FROM   1   BY  1
+                   UNTIL       IDX     >      ORCSHKN-HKN-MAX
+                   OR          IDX     >      100
+               PERFORM 3102-HKNCOMBI-SPA-SEC
            END-PERFORM                                
            .
        310-SPASET-HKNCOMBI-HENSYU-EXT.
@@ -1521,124 +1501,36 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *****************************************************************
        3102-HKNCOMBI-SPA-SEC          SECTION.
       *
-           ADD     1                   TO  IDX
-      *
-           MOVE    SPACE               TO  WRK-HKNCOMBIMEI
-      *
-           IF       COMB-SYU-TANSEIDONAME  NOT =   SPACE                    
-               STRING  COMB-SYU-TANSEIDONAME   DELIMITED  BY  SPACE
-                       " "                 DELIMITED  BY  SIZE
-                       COMB-KOH1-TANSEIDONAME  DELIMITED  BY  SPACE
-                       " "                 DELIMITED  BY  SIZE
-                       COMB-KOH2-TANSEIDONAME  DELIMITED  BY  SPACE
-                       " "                 DELIMITED  BY  SIZE
-                       COMB-KOH3-TANSEIDONAME  DELIMITED  BY  SPACE
-                       " "                 DELIMITED  BY  SIZE
-                       COMB-KOH4-TANSEIDONAME  DELIMITED  BY  SPACE
-                             INTO              WRK-HKNCOMBIMEI
-               END-STRING
-           ELSE
-               STRING  COMB-KOH1-TANSEIDONAME  DELIMITED  BY  SPACE
-                       " "                 DELIMITED  BY  SIZE
-                       COMB-KOH2-TANSEIDONAME  DELIMITED  BY  SPACE
-                       " "                 DELIMITED  BY  SIZE
-                       COMB-KOH3-TANSEIDONAME  DELIMITED  BY  SPACE
-                       " "                 DELIMITED  BY  SIZE
-                       COMB-KOH4-TANSEIDONAME  DELIMITED  BY  SPACE
-                             INTO              WRK-HKNCOMBIMEI
-               END-STRING
-           END-IF                      
-      *
       *    自費の時
-           IF      COMB-HKNNUM (1:2)   =   "98"
+           IF      ORCSHKN-NAI-HKNNUM (IDX)(1:2)
+                                       =   "98"
                MOVE    1                   TO
                                            SPA-NAI-C02-HKNCOMBI-JIHI
            END-IF
       *
       *    労災の時、コメントの追加
-           IF      COMB-HKNNUM         =   "971"  OR  "973"
+           IF      ORCSHKN-NAI-HKNNUM (IDX)
+                                       =   "971"  OR  "973"
                MOVE    1                   TO
                                            SPA-NAI-C02-HKNCOMBI-ROUSAI
-      *
-      *        患者保険情報検索
-               INITIALIZE                      PTRSIINF-REC
-grpsys         MOVE    SPA-HOSPNUM         TO  PTRSI-HOSPNUM
-               MOVE    SPA-NAI-C02-PTID    TO  PTRSI-PTID
-               MOVE    COMB-HKNID          TO  PTRSI-HKNID
-               MOVE    PTRSIINF-REC        TO  MCPDATA-REC
-               MOVE    "tbl_ptrsiinf"      TO  MCP-TABLE
-               MOVE    "key"               TO  MCP-PATHNAME
-grpsys         PERFORM 900-DBSELECT-SEC
-               IF      MCP-RC              =   ZERO
-                   MOVE    "tbl_ptrsiinf"      TO  MCP-TABLE
-                   MOVE    "key"               TO  MCP-PATHNAME
-                   PERFORM 993-PTRSIINF-NEXT-SEC
-               ELSE
-                   INITIALIZE                      PTRSIINF-REC
-                   MOVE    1                   TO  FLG-PTRSIINF
-               END-IF
-               MOVE    "tbl_ptrsiinf"      TO  MCP-TABLE
-               MOVE    "key"               TO  MCP-PATHNAME
-               PERFORM 900-CLOSE-SEC
-      *
-               MOVE    SPACE               TO  WRK-HKNKBN-MEI
-               EVALUATE    PTRSI-HKNKBN
-                   WHEN    "1"
-                       MOVE    "短"        TO  WRK-HKNKBN-MEI
-                   WHEN    "2"
-                       MOVE    "傷"        TO  WRK-HKNKBN-MEI
-                   WHEN    "3"
-                       MOVE    "ア"        TO  WRK-HKNKBN-MEI
-                   WHEN    "5"
-                       MOVE    "公"        TO  WRK-HKNKBN-MEI
-               END-EVALUATE
-               IF      PTRSI-COMMENT       =   SPACE
-                   MOVE    SPACE               TO  WRK-HKNCOMBIMEI
-                   STRING  COMB-SYU-TANSEIDONAME   DELIMITED  BY  SPACE
-                           " "                     DELIMITED  BY  SIZE
-                           WRK-HKNKBN-MEI          DELIMITED  BY  SPACE
-                           INTO              WRK-HKNCOMBIMEI
-               ELSE
-                   MOVE    SPACE               TO  WRK-HKNCOMBIMEI
-                   STRING  COMB-SYU-TANSEIDONAME   DELIMITED  BY  SPACE
-                           " "                     DELIMITED  BY  SIZE
-                           WRK-HKNKBN-MEI          DELIMITED  BY  SPACE
-                           "（"                    DELIMITED  BY  SIZE
-                           PTRSI-COMMENT           DELIMITED  BY  SPACE
-                           "）"                    DELIMITED  BY  SIZE
-                           INTO              WRK-HKNCOMBIMEI
-               END-IF
-           END-IF    
+           END-IF
       *     
-           MOVE    COMB-HKNCOMBINUM    TO
-                                       SPA-GMN-C02-HKNCOMBIL    (IDX)
-                                       SPA-NAI-C02-THKNCOMBINUM (IDX)
-           INITIALIZE                      ORCSKANACHKAREA
-           MOVE    "1"                 TO  KANACHK-SYORI
-           MOVE    WRK-HKNCOMBIMEI     TO  KANACHK-MAE-INPUT
-           MOVE    35                  TO  KANACHK-MAX-CNT
-           CALL    "ORCSKANACHK"       USING
-                                           ORCSKANACHKAREA
-           MOVE    KANACHK-MAE-INPUT   TO
-                                       SPA-NAI-C02-THKNCOMBIMEI (IDX)
-                                       SPA-GMN-C02-HKNCOMBIMEIL (IDX)
+           MOVE    ORCSHKN-GMN-HKNCOMBINUM (IDX)
+                                       TO  SPA-GMN-C02-HKNCOMBIL   (IDX)
+                                           SPA-NAI-C02-THKNCOMBINUM(IDX)
+           MOVE    ORCSHKN-GMN-HKNCOMBIMEI (IDX)
+                                       TO  SPA-NAI-C02-THKNCOMBIMEI(IDX)
+                                           SPA-GMN-C02-HKNCOMBIMEIL(IDX)
       *                                 
-           MOVE    COMB-TEKSTYMD       TO  SPA-NAI-C02-TEKSTYMD(IDX)
-           MOVE    COMB-TEKEDYMD       TO  SPA-NAI-C02-TEKEDYMD(IDX)
+           MOVE    ORCSHKN-NAI-TEKSTYMD (IDX)
+                                       TO  SPA-NAI-C02-TEKSTYMD(IDX)
+           MOVE    ORCSHKN-NAI-TEKEDYMD (IDX)
+                                       TO  SPA-NAI-C02-TEKEDYMD(IDX)
       *
            MOVE    IDX                 TO  SPA-NAI-C02-HKN-MAX
                                            SPA-GMN-C02-HKNCOMBI-MAX
-           .
-       3102-HKNCOMBI-SPA-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    保険組合せ画面編集処理
-      *****************************************************************
-       3103-HKNCOMBI-GMN-SEC          SECTION.
       *
            ADD     1                   TO  IDY
-      *      
            MOVE    SPA-NAI-C02-THKNCOMBINUM (IDX)
                                    TO  SPA-GMN-C02-THKNCOMBINUM (IDY)
            MOVE    SPA-NAI-C02-THKNCOMBIMEI (IDX)
@@ -1647,15 +1539,10 @@ grpsys         PERFORM 900-DBSELECT-SEC
                                    TO  SPA-GMN-C02-TNUM (IDY)
       *
            ADD     1               TO  IDY 
-           MOVE    SPA-NAI-C02-TEKSTYMD     (IDX)
-                                   TO  WRK-SYMD
-           PERFORM 5002-HIZUKE-HEN-SEC
-           MOVE    WRK-HENYMDG     TO  SPA-GMN-C02-THKNCOMBIMEI (IDY)
-      *
-           MOVE    SPA-NAI-C02-TEKEDYMD     (IDX)
-                                   TO  WRK-SYMD
-           PERFORM 5002-HIZUKE-HEN-SEC
-           MOVE    WRK-HENYMDG     TO
+           MOVE    ORCSHKN-GMN-TEKSTYMD (IDX)
+                                   TO  SPA-GMN-C02-THKNCOMBIMEI (IDY)
+           MOVE    ORCSHKN-GMN-TEKEDYMD (IDX)
+                                   TO
                                    SPA-GMN-C02-THKNCOMBIMEI (IDY)(15:)
            MOVE    SPA-NAI-C02-THKNCOMBINUM (IDX)
                                    TO  SPA-GMN-C02-TNUM (IDY)
