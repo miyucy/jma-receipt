@@ -40,6 +40,7 @@ db	{
 	tbl_hkncombi;
 	tbl_lock;
 	tbl_ldmap;
+	tbl_ptnyuinrrk;
 };
 
 /* #include "orcadb.inc" */
