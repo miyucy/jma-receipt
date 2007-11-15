@@ -9,6 +9,7 @@ tbl_chksnd	{
 	CD				varchar(170);
 	BYOMEI			varchar(160);
 	COMPKBN			char(1);
+	UTAGAIKBN		char(1);
 	BYOMEIHENFLG	char(1);
 	NYUGAIKBN		char(1);
 	TERMID  		varchar(16);

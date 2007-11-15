@@ -43,6 +43,8 @@
            03  CHKSND-BYOMEI             PIC  X(160).
       *条件区分
            03  CHKSND-COMPKBN            PIC  X(1).
+      *疑い区分
+           03  CHKSND-UTAGAIKBN          PIC  X(1).
       *病名編集フラグ
            03  CHKSND-BYOMEIHENFLG       PIC  X(1).
       *入外区分

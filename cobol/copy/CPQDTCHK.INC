@@ -26,6 +26,7 @@
            03  QDTCHK-CD                   PIC X(170).
            03  QDTCHK-BYOMEI               PIC X(160).
            03  QDTCHK-COMPKBN              PIC X(1).
+           03  QDTCHK-UTAGAIKBN            PIC X(1).
            03  QDTCHK-SRYKA                PIC X(2).
            03  QDTCHK-SRYYMD               PIC X(08).
            03  QDTCHK-PTBYOMEI             PIC X(160).
