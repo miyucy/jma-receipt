@@ -1056,10 +1056,10 @@
                GO  TO  5001-PTKOHINF-INS-SYORI-EXT
            END-IF
       *    既に保険登録済みはエラー
-      *TE  IF      PTNUM-KOHID         >   ZERO
-      *        MOVE    4               TO  FLG-ERR
-      *        GO  TO  5001-PTKOHINF-INS-SYORI-EXT
-      *TE  END-IF
+           IF      PTNUM-KOHID         >   ZERO
+               MOVE    4               TO  FLG-ERR
+               GO  TO  5001-PTKOHINF-INS-SYORI-EXT
+           END-IF
       *    患者情報読み込み
            PERFORM 900-PTINF-READ-SEC
            IF      FLG-PTINF       NOT =   ZERO
@@ -1094,7 +1094,7 @@
       *
            MOVE    PTKOHINF-REC        TO  MCPDATA-REC
            MOVE    "DBINSERT"          TO  MCP-FUNC
-           MOVE    "tbl_PTKOHINF"      TO  MCP-TABLE
+           MOVE    "tbl_ptkohinf"      TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
            CALL    "ORCDBMAIN"         USING   MCPAREA
                                                MCPDATA-REC

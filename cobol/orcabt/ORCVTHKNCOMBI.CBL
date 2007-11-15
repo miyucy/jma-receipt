@@ -697,7 +697,7 @@
            IF      FLG-PTNUM       =   ZERO
                MOVE    PTNUM-PTNUM     TO  SPA-PTNUM
            END-IF
-      *TEST
+      *
       *    湃卞瓚狤碧心及斯樊反覆擂陸
            IF      PTNUM-AUTOCOMBINUM  >   ZERO
                GO      TO   200-SAKUSEI-SYORI-EXT
