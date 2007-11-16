@@ -52,7 +52,9 @@
            03  JYURRK-DRCD                 PIC X(05).
       *瘦副寥圭戎规
            03  JYURRK-HKNCOMBINUM          PIC X(04).
-      *瘦副惰尸∈０¨办忍、１¨汐阂、２¨极清勒、３¨货彩∷
+      *瘦副惰尸∈０¨办忍、１¨汐阂、２¨极清勒、３¨货彩∈踏蝗脱∷
+                 ４¨极清勒∈夫瘦洁凋∷、５¨给坛阂巢∈夫瘦洁凋∷、
+                 ６¨给巢∷
            03  JYURRK-HKNKBN               PIC X(01).
       *帕杉戎规
            03  JYURRK-DENPNUM              PIC 9(07).
