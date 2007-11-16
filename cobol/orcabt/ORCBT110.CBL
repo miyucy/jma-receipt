@@ -29,6 +29,7 @@
       * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
       *  03.03.01    NACL-Æ£¸¶    06/09/27  £²£°£°£¶Ç¯£±£°·î²þÀµÂÐ±þ
       *  03.05.01    NACL-Æ£¸¶    07/04/19  ¥°¥ë¡¼¥×¿ÇÎÅÂÐ±þ
+      *  04.01.01    NACL-¾®Æ¦Âô  07/11/16  ¸øÌ³ºÒ³²¡¢¸ø³²¤Î¼ïÊÌÈ½ÄêÄÉ²Ã
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -213,6 +214,8 @@
            03  WRK-CONS-JIBAI-HKNNUM   PIC X(03)   VALUE   "973".       
       *    ¸¶ÇúÊÝ¸±ÈÖ¹æ 
            03  WRK-CONS-GENBAKU-HKNNUM PIC X(03)   VALUE   "019".       
+      *    ¸ø³²ÊÝ¸±ÈÖ¹æ 
+           03  WRK-CONS-KOUGAI-HKNNUM PIC X(03)    VALUE   "975".       
       *
       *****************************************************************
       *    ¥Õ¥¡¥¤¥ë¥ì¥¤¥¢¥¦¥È
@@ -1254,6 +1257,11 @@ grpsys     PERFORM 900-DBSELECT-SEC
                        MOVE    7021        TO    TOUKEI04-RECESYUBETU
                    WHEN    "4"         ALSO    ANY     ALSO    ANY
                        MOVE    7001        TO    TOUKEI04-RECESYUBETU
+      *            ¸øÌ³ºÒ³²
+                   WHEN    "5"         ALSO    ANY     ALSO    "1"
+                       MOVE    7061        TO    TOUKEI04-RECESYUBETU
+                   WHEN    "5"         ALSO    ANY     ALSO    "2"
+                       MOVE    7051        TO    TOUKEI04-RECESYUBETU
                END-EVALUATE
                GO  TO  20021-RECESYUBETU-SET-EXT
            END-IF
@@ -1263,6 +1271,13 @@ grpsys     PERFORM 900-DBSELECT-SEC
                MOVE    8888                TO  TOUKEI04-RECESYUBETU
                GO  TO  20021-RECESYUBETU-SET-EXT
            END-IF
+      *
+      *    ¸ø³²ÊÝ¸±¡ÊÆþ±¡¡Ë¤Î¤È¤­
+           IF     TOUKEI04-HKNNUM     =    WRK-CONS-KOUGAI-HKNNUM
+               MOVE    7200                TO  TOUKEI04-RECESYUBETU
+               GO  TO  20021-RECESYUBETU-SET-EXT
+           END-IF
+      *
       *    Ç¯Îð·×»»
            INITIALIZE                  ORCSAGECHKAREA
            MOVE    SPA-HOSPNUM         TO  AGECHK-HOSPNUM

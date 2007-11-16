@@ -31,6 +31,7 @@
       * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
       *  03.03.01    NACL-Æ£¸¶    06/10/27  ¥ì¥»¥×¥È¤ÇÀ¸³èÊÝ¸î¤ÎÀÁµá¤¬¤Ê
       *                                     ¤¤¾ì¹çµ­ºÜ¤ÎÂÐ¾Ý¤È¤·¤Ê¤¤
+      *  04.01.01    NACL-¾®Æ¦Âô  07/11/16  ¸øÌ³ºÒ³²¡¢¸ø³²¤Î¼ïÊÌÈ½ÄêÄÉ²Ã
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -425,6 +426,8 @@
            03  WRK-CONS-JIBAI-HKNNUM   PIC X(03)   VALUE   "973".
       *    ¸¶ÇúÊÝ¸±ÈÖ¹æ 
            03  WRK-CONS-GENBAKU-HKNNUM PIC X(03)   VALUE   "019".
+      *    ¸ø³²ÊÝ¸±ÈÖ¹æ 
+           03  WRK-CONS-KOUGAI-HKNNUM PIC X(03)    VALUE   "975".
       *    µ¿¤¤
            03  WRK-CONS-UTAGAI     PIC X(06)   VALUE   "¤Îµ¿¤¤".
            03  WRK-CONS-UTAGAI-MOJISU
@@ -2839,6 +2842,11 @@ grpsys         MOVE    SPA-HOSPNUM     TO HKN-HOSPNUM
                        MOVE    7021        TO    COLDAT01-RECESYUBETU
                    WHEN    "4"         ALSO    ANY     ALSO    ANY
                        MOVE    7001        TO    COLDAT01-RECESYUBETU
+      *            ¸øÌ³ºÒ³²
+                   WHEN    "5"         ALSO    ANY     ALSO    "1"
+                       MOVE    7061        TO    COLDAT01-RECESYUBETU
+                   WHEN    "5"         ALSO    ANY     ALSO    "2"
+                       MOVE    7051        TO    COLDAT01-RECESYUBETU
                END-EVALUATE
                GO  TO  20021-RECESYUBETU-SET-EXT
            END-IF
@@ -2847,6 +2855,17 @@ grpsys         MOVE    SPA-HOSPNUM     TO HKN-HOSPNUM
            IF     COLDAT01-HKNKOHSBTKBN
                                        =   "8"
                MOVE    8888                TO  COLDAT01-RECESYUBETU
+               GO  TO  20021-RECESYUBETU-SET-EXT
+           END-IF
+      *
+      *    ¸ø³²ÊÝ¸±¤Î¤È¤­
+           IF      COLDAT01-HKNNUM     =   WRK-CONS-KOUGAI-HKNNUM
+               EVALUATE    WRK-PARA-NYUGAIKBN
+                   WHEN    "1"
+                       MOVE    7210        TO    COLDAT01-RECESYUBETU
+                   WHEN    "2"
+                       MOVE    7200        TO    COLDAT01-RECESYUBETU
+               END-EVALUATE
                GO  TO  20021-RECESYUBETU-SET-EXT
            END-IF
       *

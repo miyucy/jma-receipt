@@ -71,6 +71,7 @@
       *  03.04.03    NACL-Æ£¸¶    07/04/04  ÆÃÎãÂà¿¦°åÎÅ¤Î¼ïÊÌ·èÄê¾ò·ï¤Î½¤Àµ
       *
       *  03.05.01    NACL-Æ£¸¶    07/04/19  ¥°¥ë¡¼¥×¿ÇÎÅÂÐ±þ
+      *  04.01.01    NACL-¾®Æ¦Âô  07/11/16  ¸øÌ³ºÒ³²¡¢¸ø³²¤Î¼ïÊÌÈ½ÄêÄÉ²Ã
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -367,6 +368,8 @@
            03  WRK-CONS-JIBAI-HKNNUM   PIC X(03)   VALUE   "973".       
       *    ¸¶ÇúÊÝ¸±ÈÖ¹æ 
            03  WRK-CONS-GENBAKU-HKNNUM PIC X(03)   VALUE   "019".       
+      *    ¸ø³²ÊÝ¸±ÈÖ¹æ 
+           03  WRK-CONS-KOUGAI-HKNNUM  PIC X(03)   VALUE   "975".       
       *    µ¿¤¤
            03  WRK-CONS-UTAGAI     PIC X(06)   VALUE   "¤Îµ¿¤¤".
            03  WRK-CONS-UTAGAI-MOJISU
@@ -2099,7 +2102,12 @@ grpsys                                         SPA-AREA
                    WHEN    "3"         ALSO    ANY     ALSO    ANY
                        MOVE    7021        TO    TOUKEI01-RECESYUBETU
                    WHEN    "4"         ALSO    ANY     ALSO    ANY                     
-                       MOVE    7001        TO    TOUKEI01-RECESYUBETU     
+                       MOVE    7001        TO    TOUKEI01-RECESYUBETU
+      *            ¸øÌ³ºÒ³²
+                   WHEN    "5"         ALSO    ANY     ALSO    "1"                     
+                       MOVE    7061        TO    TOUKEI01-RECESYUBETU     
+                   WHEN    "5"         ALSO    ANY     ALSO    "2"                     
+                       MOVE    7051        TO    TOUKEI01-RECESYUBETU     
                END-EVALUATE
                GO  TO  20021-RECESYUBETU-SET-EXT
            END-IF
@@ -2110,7 +2118,18 @@ grpsys                                         SPA-AREA
                MOVE    8888                TO  TOUKEI01-RECESYUBETU 
                GO  TO  20021-RECESYUBETU-SET-EXT
            END-IF
-      *         
+      *
+      *    ¸ø³²ÊÝ¸±¤Î¤È¤­
+           IF      TOUKEI01-HKNNUM     =   WRK-CONS-KOUGAI-HKNNUM
+               EVALUATE    WRK-PARA-NYUGAIKBN
+                   WHEN    "1"
+                       MOVE    7210        TO    TOUKEI01-RECESYUBETU
+                   WHEN    "2"
+                       MOVE    7200        TO    TOUKEI01-RECESYUBETU
+               END-EVALUATE
+               GO  TO  20021-RECESYUBETU-SET-EXT
+           END-IF
+      *
            IF      TOUKEI01-HKNNUM     NOT =   SPACE
                IF      TOUKEI01-HKNNUM     =   "060"   OR   "067"   OR
                                                "068"   OR   "069"

@@ -28,6 +28,7 @@
       *  ¥×¥í¥°¥é¥à½¤ÀµÍúÎò
       * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
       *  03.05.01    NACL-¾®Æ¦Âô  07/05/31  ¥°¥ë¡¼¥×¿ÇÎÅÂÐ±þ
+      *  04.01.01    NACL-¾®Æ¦Âô  07/11/16  ¸øÌ³ºÒ³²¡¢¸ø³²¤Î¼ïÊÌÈ½ÄêÄÉ²Ã
       *****************************************************************
       *
       *
@@ -107,6 +108,8 @@
            03  WRK-CONS-JIBAI-HKNNUM   PIC X(03)   VALUE   "973".       
       *    ¸¶ÇúÊÝ¸±ÈÖ¹æ 
            03  WRK-CONS-GENBAKU-HKNNUM PIC X(03)   VALUE   "019".       
+      *    ¸ø³²ÊÝ¸±ÈÖ¹æ 
+           03  WRK-CONS-KOUGAI-HKNNUM PIC X(03)    VALUE   "975".       
       *
       *****************************************************************
       *    ¥Õ¥¡¥¤¥ë¥ì¥¤¥¢¥¦¥È
@@ -826,6 +829,11 @@
                        MOVE    7021        TO    WRK-RECESYUBETU
                    WHEN    "4"         ALSO    ANY     ALSO    ANY
                        MOVE    7011        TO    WRK-RECESYUBETU
+      *            ¸øÌ³ºÒ³²
+                   WHEN    "5"         ALSO    ANY     ALSO    "1"
+                       MOVE    7061        TO    WRK-RECESYUBETU
+                   WHEN    "5"         ALSO    ANY     ALSO    "2"
+                       MOVE    7051        TO    WRK-RECESYUBETU
                    END-EVALUATE
                GO  TO  240-RECESYUBETU-SET-EXT
            END-IF
@@ -835,6 +843,14 @@
                MOVE    8888                TO  WRK-RECESYUBETU
                GO  TO  240-RECESYUBETU-SET-EXT
            END-IF
+      *
+      *    ¸ø³²ÊÝ¸±¡ÊÆþ±¡¡Ë¤Î¤È¤­
+           IF     LNK-ORCBT120SUB-HKNNUM(SYU-IDX)  =
+                                               WRK-CONS-KOUGAI-HKNNUM
+               MOVE    7210                TO  WRK-RECESYUBETU
+               GO  TO  240-RECESYUBETU-SET-EXT
+           END-IF
+      *
       *    Ç¯Îð·×»»
            INITIALIZE                      PTINF-REC
            MOVE    LNK-ORCBT120SUB-HOSPNUM
