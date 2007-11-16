@@ -47,6 +47,7 @@
       *                                     "0085XXXXX"¥³¥á¥ó¥ÈÂÐ±þ
       * 04.00.00     NACL-Â¿¡¹Ç¼  07/09/XX  ¥Æ¡¼¥Ö¥ë£´£°£°ÂÐ±þ
       * 04.01.00     NACL-Â¿¡¹Ç¼  07/10/XX  °­À­¼ðáç¸¡ººÂÐ±þ
+      * 04.01.00     NACL-Â¿¡¹Ç¼  07/11/16  ¸øÌ³ºÒ³²¡¦¸ø³²ÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -6073,7 +6074,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            MOVE    SPACE               TO  JYURRK-REC
            INITIALIZE                      JYURRK-REC
-           MOVE    SPA-HOSPNUM          TO  JYURRK-HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  JYURRK-HOSPNUM
            MOVE    SPA-GMN-PTID        TO  JYURRK-PTID
            MOVE    SPA-NYUGAIKBN       TO  JYURRK-NYUGAIKBN
            MOVE    SPA-J01-SRYKA       TO  JYURRK-SRYKA
@@ -6089,12 +6090,28 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *                 Ï«ºÒ
                        MOVE    "1"                 TO  JYURRK-HKNKBN
                    WHEN    "4"
-      *                 ¼«ÇåÀÕ
-                       MOVE    "2"                 TO  JYURRK-HKNKBN
+      *                ¼«ÇåÀÕ
+                       IF      SPA-RSI-JUNKYO      =   "1"
+      *                    ·òÊÝ½àµò
+                           MOVE    "4"             TO  JYURRK-HKNKBN
+                       ELSE
+      *                    Ï«ºÒ½àµò
+                           MOVE    "2"             TO  JYURRK-HKNKBN
+                       END-IF
                    WHEN    "5"
-      *                 ¼«ÇåÀÕ¡Ê·òÊÝ½àµò¡Ë
-                       MOVE    "4"                 TO  JYURRK-HKNKBN
+      *                Ï«Ì³ºÒ³²
+                       IF      SPA-RSI-JUNKYO      =   "1"
+      *                    ·òÊÝ½àµò
+                           MOVE    "5"             TO  JYURRK-HKNKBN
+                       ELSE
+      *                    Ï«ºÒ½àµò
+                           MOVE    "1"             TO  JYURRK-HKNKBN
+                       END-IF
                END-EVALUATE
+           END-IF
+      *    ¸ø³²
+           IF      SPA-HKNKBN          =   2
+               MOVE    "6"                 TO  JYURRK-HKNKBN
            END-IF
            MOVE    ZERO                TO  JYURRK-DENPNUM
       *

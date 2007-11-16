@@ -498,6 +498,7 @@
       *        Ï«ºÒ¡¦¼«ÇåÀÕ¤ÏÂÐ¾Ý³°
                IF      COMB-HKNNUM         =   "971"  OR
                                                "973"
+                                           OR  "975"
                   MOVE    ZERO                 TO  FLG-HKNCOMBICHK
                END-IF
       *
