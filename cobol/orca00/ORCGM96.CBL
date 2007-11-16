@@ -567,6 +567,9 @@ grpsys       MOVE    SPA-HOSPNUM         TO  MSTKANRI-HOSPNUM
                WHEN    "ORCADB14"
                    MOVE    "包括診療コードマスタ"
                                           TO  SPA-GMN-MASTNAME(IDX2)
+               WHEN    "ORCADB15"
+                   MOVE    "統計メモマスタ"
+                                          TO  SPA-GMN-MASTNAME(IDX2)
                WHEN    OTHER
                    MOVE    MSTKANRI-KANRICD
                                           TO  SPA-GMN-MASTNAME(IDX2)
