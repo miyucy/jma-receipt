@@ -1234,6 +1234,10 @@ grpsys                     MOVE    SPA-HOSPNUM TO  PTBYO-HOSPNUM
                                            IDX
       *     
            MOVE    SPA-NAI-C02-PTID    TO  SPA-PTID
+           MOVE    SPA-NAI-C02-BIRTHDAY
+                                       TO  SPA-BIRTHDAY
+           MOVE    "2"                 TO  SPA-NYUGAIKBN
+           MOVE    SPA-SYSYMD          TO  SPA-SRYYMD
            INITIALIZE                  ORCSHKNSETAREA
            MOVE    "2"                 TO  ORCSHKN-KBN
            MOVE    "1"                 TO  ORCSHKN-KBN3
