@@ -218,6 +218,7 @@
            03  IDX-RRKBYO                  PIC 9(05).
            03  IDX-BTUNUM                  PIC 9(05).
            03  IDX-SYU                     PIC 9(05).
+           03  IDX-MATSUBI                 PIC 9(02).
       *
       *    ¥«¥¦¥ó¥ÈÎÎ°è
        01  CNT-AREA.
@@ -9027,14 +9028,14 @@
                  MOVE   SPACE       TO   SYOKIKSN-IN-KHNSRYCD
                                          LNK-SCNYUACCT-NYUKHN-SRYCD(1)
                  MOVE   ZERO            TO  TN-IDX
-                 IF     STUSAN-NISSU02      <=  90
+                 IF     STUSAN-NISSU03      <=  90
                      ADD    1           TO  TN-IDX
                      MOVE   "190739910" TO   LNK-SCNYUACCT-KAGEN-SRYCD
                                                                (TN-IDX)
       *              Ï·¿ÍÀ­Ç§ÃÎ¾É¼À´µ¼£ÎÅÉÂÅïÆþ±¡ÎÁ£±¤Î£¹£°Æü°ÊÆâ¤Î½ªÆü
       *              ¤òºÆ·×»»
                      MOVE     ZERO      TO   WK-TOKUTEI-DAY
-                     COMPUTE  WK-TOKUTEI-DAY  =  90  - STUSAN-NISSU02
+                     COMPUTE  WK-TOKUTEI-DAY  =  90  - STUSAN-NISSU03
                      MOVE   SPA-NAI-I01-NYUINYMD
                                        TO  LNK-SCNYUACCT-KAGEN-STYUKYMD
                                                                (TN-IDX)
@@ -9083,14 +9084,14 @@
                  MOVE   SPACE       TO   SYOKIKSN-IN-KHNSRYCD
                                          LNK-SCNYUACCT-NYUKHN-SRYCD(1)
                  MOVE   ZERO            TO  TN-IDX
-                 IF     STUSAN-NISSU02      <=  90
+                 IF     STUSAN-NISSU03      <=  90
                      ADD    1           TO  TN-IDX
                      MOVE   "190813410" TO   LNK-SCNYUACCT-KAGEN-SRYCD
                                                                (TN-IDX)
       *              Ï·¿ÍÀ­Ç§ÃÎ¾É¼À´µ¼£ÎÅÉÂÅïÆþ±¡ÎÁ£²¤Î£¹£°Æü°ÊÆâ¤Î½ªÆü
       *              ¤òºÆ·×»»
                      MOVE     ZERO      TO   WK-TOKUTEI-DAY
-                     COMPUTE  WK-TOKUTEI-DAY  =  90  - STUSAN-NISSU02
+                     COMPUTE  WK-TOKUTEI-DAY  =  90  - STUSAN-NISSU03
                      MOVE   SPA-NAI-I01-NYUINYMD
                                        TO  LNK-SCNYUACCT-KAGEN-STYUKYMD
                                                                (TN-IDX)
@@ -10874,7 +10875,7 @@
                  MOVE    LNK-DAY6-KEISAN
                                   TO LNK-SCNYUACCT-KAGEN-EDYUKYMD(1)
       *
-                 MOVE   "190069910"    TO  LNK-SCNYUACCT-KAGEN-SRYCD(2)
+                 MOVE   "190066910"    TO  LNK-SCNYUACCT-KAGEN-SRYCD(2)
                  INITIALIZE                STS-AREA-DAY
                  INITIALIZE                LNK-DAY6-AREA
                  MOVE    "61"              TO  LNK-DAY6-IRAI
@@ -11186,23 +11187,33 @@
                                          TO  WRK-TENROOM-SKJ-SRYYM(1)
                  MOVE    SPA-NAI-I01-IDOYMD(7:2)
                                          TO  IDX-SHOKUJIX
+      *          ·îËöÆü¤ò»»Äê
+                 INITIALIZE                  STS-AREA-DAY
+                 INITIALIZE                  LNK-DAY7-AREA
+                 MOVE      "71"          TO  LNK-DAY7-IRAI
+                 MOVE    SPA-NAI-I01-IDOYMD(1:6)
+                                         TO  LNK-DAY7-YM
+                 CALL    "ORCSDAY"       USING   STS-AREA-DAY
+                                                 LNK-DAY7-AREA
+                 MOVE    LNK-DAY7-KOYOMI TO  IDX-MATSUBI
+      *
                  EVALUATE  IDX-SKJ-TAIHI
                      WHEN  1
                         PERFORM VARYING IDX-SKJ FROM IDX-SHOKUJI9 BY  1
-                           UNTIL     IDX-SKJ   >   31
-                               MOVE   ZERO
+                           UNTIL     IDX-SKJ   >   IDX-MATSUBI
+                               MOVE   1
                                          TO WRK-TENROOM-SKJ18(1 IDX-SKJ)
                         END-PERFORM
                      WHEN  2
                         PERFORM VARYING IDX-SKJ FROM IDX-SHOKUJI9 BY  1
-                           UNTIL     IDX-SKJ   >   31
-                               MOVE   ZERO
+                           UNTIL     IDX-SKJ   >   IDX-MATSUBI
+                               MOVE   1
                                          TO WRK-TENROOM-SKJ19(1 IDX-SKJ)
                         END-PERFORM
                      WHEN  3
                         PERFORM VARYING IDX-SKJ FROM IDX-SHOKUJI9 BY  1
-                           UNTIL     IDX-SKJ   >   31
-                               MOVE   ZERO
+                           UNTIL     IDX-SKJ   >   IDX-MATSUBI
+                               MOVE   1
                                          TO WRK-TENROOM-SKJ20(1 IDX-SKJ)
                         END-PERFORM
                  END-EVALUATE
@@ -11579,14 +11590,14 @@
                  MOVE   SPACE       TO   SYOKIKSN-IN-KHNSRYCD
                                          LNK-SCNYUACCT-NYUKHN-SRYCD(1)
                  MOVE   ZERO            TO  TN-IDX
-                 IF     STUSAN-NISSU02      <=  90
+                 IF     STUSAN-NISSU03      <=  90
                      ADD    1           TO  TN-IDX
                      MOVE   "190739910" TO   LNK-SCNYUACCT-KAGEN-SRYCD
                                                                (TN-IDX)
       *              Ï·¿ÍÀ­Ç§ÃÎ¾É¼À´µ¼£ÎÅÉÂÅïÆþ±¡ÎÁ£±¤Î£¹£°Æü°ÊÆâ¤Î½ªÆü
       *              ¤òºÆ·×»»
                      MOVE     ZERO      TO   WK-TOKUTEI-DAY
-                     COMPUTE  WK-TOKUTEI-DAY  =  90  - STUSAN-NISSU02
+                     COMPUTE  WK-TOKUTEI-DAY  =  90  - STUSAN-NISSU03
                      MOVE   SPA-NAI-I01-IDOYMD
                                        TO  LNK-SCNYUACCT-KAGEN-STYUKYMD
                                                                (TN-IDX)
@@ -11635,14 +11646,14 @@
                  MOVE   SPACE       TO   SYOKIKSN-IN-KHNSRYCD
                                          LNK-SCNYUACCT-NYUKHN-SRYCD(1)
                  MOVE   ZERO            TO  TN-IDX
-                 IF     STUSAN-NISSU02      <=  90
+                 IF     STUSAN-NISSU03      <=  90
                      ADD    1           TO  TN-IDX
                      MOVE   "190813410" TO   LNK-SCNYUACCT-KAGEN-SRYCD
                                                                (TN-IDX)
       *              Ï·¿ÍÀ­Ç§ÃÎ¾É¼À´µ¼£ÎÅÉÂÅïÆþ±¡ÎÁ£²¤Î£¹£°Æü°ÊÆâ¤Î½ªÆü
       *              ¤òºÆ·×»»
                      MOVE     ZERO      TO   WK-TOKUTEI-DAY
-                     COMPUTE  WK-TOKUTEI-DAY  =  90  - STUSAN-NISSU02
+                     COMPUTE  WK-TOKUTEI-DAY  =  90  - STUSAN-NISSU03
                      MOVE   SPA-NAI-I01-IDOYMD
                                        TO  LNK-SCNYUACCT-KAGEN-STYUKYMD
                                                                (TN-IDX)
@@ -13166,14 +13177,14 @@
                  MOVE   SPACE       TO   SYOKIKSN-IN-KHNSRYCD
                                          LNK-SCNYUACCT-NYUKHN-SRYCD(1)
                  MOVE   ZERO            TO  TN-IDX
-                 IF     STUSAN-NISSU01      <=  90
+                 IF     STUSAN-NISSU03      <=  90
                      ADD    1           TO  TN-IDX
                      MOVE   "190739910" TO   LNK-SCNYUACCT-KAGEN-SRYCD
                                                                (TN-IDX)
       *              Ï·¿ÍÀ­Ç§ÃÎ¾É¼À´µ¼£ÎÅÉÂÅïÆþ±¡ÎÁ£±¤Î£¹£°Æü°ÊÆâ¤Î½ªÆü
       *              ¤òºÆ·×»»
                      MOVE     ZERO      TO   WK-TOKUTEI-DAY
-                     COMPUTE  WK-TOKUTEI-DAY  =  90  - STUSAN-NISSU01
+                     COMPUTE  WK-TOKUTEI-DAY  =  90  - STUSAN-NISSU03
                      MOVE   SPA-NAI-I01-MAEIDOYMD
                                        TO  LNK-SCNYUACCT-KAGEN-STYUKYMD
                                                                (TN-IDX)
@@ -13222,14 +13233,14 @@
                  MOVE   SPACE       TO   SYOKIKSN-IN-KHNSRYCD
                                          LNK-SCNYUACCT-NYUKHN-SRYCD(1)
                  MOVE   ZERO            TO  TN-IDX
-                 IF     STUSAN-NISSU01      <=  90
+                 IF     STUSAN-NISSU03      <=  90
                      ADD    1           TO  TN-IDX
                      MOVE   "190813410" TO   LNK-SCNYUACCT-KAGEN-SRYCD
                                                                (TN-IDX)
       *              Ï·¿ÍÀ­Ç§ÃÎ¾É¼À´µ¼£ÎÅÉÂÅïÆþ±¡ÎÁ£²¤Î£¹£°Æü°ÊÆâ¤Î½ªÆü
       *              ¤òºÆ·×»»
                      MOVE     ZERO      TO   WK-TOKUTEI-DAY
-                     COMPUTE  WK-TOKUTEI-DAY  =  90  - STUSAN-NISSU01
+                     COMPUTE  WK-TOKUTEI-DAY  =  90  - STUSAN-NISSU03
                      MOVE   SPA-NAI-I01-MAEIDOYMD
                                        TO  LNK-SCNYUACCT-KAGEN-STYUKYMD
                                                                (TN-IDX)
