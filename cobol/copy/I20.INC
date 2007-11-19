@@ -61,10 +61,14 @@
                 04  I20-TAIINCD         PIC X(23).
                 04  I20-TAIINCD-COUNT   PIC S9(9)   BINARY.
                 04  I20-TAIINCDLST      PIC X(23)   OCCURS  50 TIMES.
-              03  I20-SRTKBNCOMBO.
-                04  I20-SRTKBN          PIC X(22).
-                04  I20-SRTKBN-COUNT    PIC S9(9)   BINARY.
-                04  I20-SRTKBNLST       PIC X(22)   OCCURS  5 TIMES.
+              03  I20-SRT1KBNCOMBO.
+                04  I20-SRT1KBN         PIC X(22).
+                04  I20-SRT1KBN-COUNT   PIC S9(9)   BINARY.
+                04  I20-SRT1KBNLST      PIC X(22)   OCCURS  5 TIMES.
+              03  I20-SRT2KBNCOMBO.
+                04  I20-SRT2KBN         PIC X(22).
+                04  I20-SRT2KBN-COUNT   PIC S9(9)   BINARY.
+                04  I20-SRT2KBNLST      PIC X(22)   OCCURS  5 TIMES.
               03  I20-KJNYMDMES         PIC X(10).
               03  I20-TOTAL             PIC X(22).
               03  I20-SCROLLEDWINDOW28.

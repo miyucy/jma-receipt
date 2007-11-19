@@ -81,8 +81,15 @@ I20	{
 			count	int;
 			item	varchar(23)[50];
 		};
-		SRTKBNCOMBO{
-			SRTKBN {
+		SRT1KBNCOMBO{
+			SRT1KBN {
+				value	varchar(22);
+			};
+			count	int;
+			item	varchar(22)[5];
+		};
+		SRT2KBNCOMBO{
+			SRT2KBN {
 				value	varchar(22);
 			};
 			count	int;

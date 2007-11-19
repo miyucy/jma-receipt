@@ -98,12 +98,16 @@
            03  IDX4                PIC 9(04).
            03  IDX5                PIC 9(05).
            03  IDXA                PIC 9(04).
+           03  IDX-CMB             PIC 9(05).
       *
       *    一時領域
        01  WRK-AREA.
            03  WRK-MOTOPG          PIC X(08).
            03  WRK-SELNO           PIC 9(03). 
            03  WRK-RENNUM          PIC 9(02).
+           03  WRK-CMB-CD          PIC X(10).
+           03  WRK-CMB-ITM-G.
+               07  WRK-CMB-ITM     PIC X(200).
            03  WRK-WIDGET.
                05  WRK-WIDGET1     PIC X(09).
                05  WRK-WIDGET2     PIC 9(01).  
@@ -148,7 +152,10 @@
            03  WRK-SELNUMED        PIC 9(05).
            03  WRK-STYMD           PIC X(08).
            03  WRK-EDYMD           PIC X(08).
-           03  WRK-SRTKBN          PIC X(01).
+           03  WRK-SRT1KBN         PIC X(01).
+           03  WRK-SRT2KBN         PIC X(01).
+           03  WRK-LASTSRTKBN      PIC X(01).
+           03  WRK-ITEM            PIC X(20).
       *
            03  WRK-FILENM-AREA.
                07  WRK-FILENM      PIC X(100).
@@ -845,10 +852,12 @@
            MOVE    "1"                 TO  SPA-GMN-SRTKBNL (1)
            MOVE    "2"                 TO  SPA-GMN-SRTKBNL (2)
            MOVE    "3"                 TO  SPA-GMN-SRTKBNL (3)
+           MOVE    "4"                 TO  SPA-GMN-SRTKBNL (4)
            MOVE    "病棟、病室順"      TO  SPA-GMN-SRTKBNMEIL (1)
            MOVE    "患者番号順"        TO  SPA-GMN-SRTKBNMEIL (2)
            MOVE    "カナ氏名順"        TO  SPA-GMN-SRTKBNMEIL (3)
-           MOVE    3                   TO  SPA-GMN-SRTKBN-MAX
+           MOVE    "入院日"            TO  SPA-GMN-SRTKBNMEIL (4)
+           MOVE    4                   TO  SPA-GMN-SRTKBN-MAX
       *
            PERFORM 420-CLEAR-SEC
       *
@@ -892,9 +901,6 @@
       *    クリア
                WHEN    "CLICKED"       ALSO    "B02"
                    PERFORM 420-CLEAR-SEC
-      *    詳細画面
-               WHEN    "CLICKED"       ALSO    "B04"
-                   PERFORM 440-SYOSAI-SEC
       *    入退院登録画面
                WHEN    "CLICKED"       ALSO    "B05"
                    PERFORM 440-I01-SENI-SEC
@@ -1124,7 +1130,8 @@
            MOVE    I20-JOTAI           TO  SPA-GMN-JOTAI-G
            MOVE    I20-CHKTESTPT       TO  SPA-GMN-CHKTESTPT
            MOVE    I20-TAIINCD         TO  SPA-GMN-TAIINCD-G
-           MOVE    I20-SRTKBN          TO  SPA-GMN-SRTKBN-G
+           MOVE    I20-SRT1KBN         TO  SPA-GMN-SRT1KBN-G
+           MOVE    I20-SRT2KBN         TO  SPA-GMN-SRT2KBN-G
       *
       *****MOVE    I20-SELNUM          TO  SPA-GMN-SELNUM
            .
@@ -1138,79 +1145,68 @@
        4102-KIHON-CHK-SEC          SECTION.
       * 
       *    患者番号
-           PERFORM 41021-PTNUM-CHK-SEC
-           IF      SPA-ERRCD       NOT =   SPACE 
-               GO  TO  4102-KIHON-CHK-EXT
+           IF    ( SPA-ERRCD       =   SPACE )
+               PERFORM 41021-PTNUM-CHK-SEC
            END-IF
       *    患者氏名         
-           PERFORM 41022-NAME-CHK-SEC
-           IF      SPA-ERRCD       NOT =   SPACE 
-              GO  TO  4102-KIHON-CHK-EXT
+           IF    ( SPA-ERRCD       =   SPACE )
+               PERFORM 41022-NAME-CHK-SEC
            END-IF
       *    開始年齢
-           PERFORM 41023-STAGE-CHK-SEC
-           IF      SPA-ERRCD       NOT =   SPACE 
-               GO  TO  4102-KIHON-CHK-EXT
+           IF    ( SPA-ERRCD       =   SPACE )
+               PERFORM 41023-STAGE-CHK-SEC
            END-IF
       *    終了年齢
-           PERFORM 41029-EDAGE-CHK-SEC
-           IF      SPA-ERRCD       NOT =   SPACE 
-               GO  TO  4102-KIHON-CHK-EXT
+           IF    ( SPA-ERRCD       =   SPACE )
+               PERFORM 41029-EDAGE-CHK-SEC
            END-IF
       *    住所         
-           PERFORM 41024-ADRS-CHK-SEC
-           IF      SPA-ERRCD       NOT =   SPACE 
-               GO  TO  4102-KIHON-CHK-EXT
+           IF    ( SPA-ERRCD       =   SPACE )
+               PERFORM 41024-ADRS-CHK-SEC
            END-IF
       *    開始入院日
-           PERFORM 41025-STNYUINYMD-CHK-SEC
-           IF      SPA-ERRCD       NOT =   SPACE 
-               GO  TO  4102-KIHON-CHK-EXT
+           IF    ( SPA-ERRCD       =   SPACE )
+               PERFORM 41025-STNYUINYMD-CHK-SEC
            END-IF
       *    終了入院日
-           PERFORM 41026-EDNYUINYMD-CHK-SEC
-           IF      SPA-ERRCD       NOT =   SPACE 
-              GO  TO  4102-KIHON-CHK-EXT
+           IF    ( SPA-ERRCD       =   SPACE )
+               PERFORM 41026-EDNYUINYMD-CHK-SEC
            END-IF
       *    開始退院日
-           PERFORM 41025-STTAIINYMD-CHK-SEC
-           IF      SPA-ERRCD       NOT =   SPACE 
-               GO  TO  4102-KIHON-CHK-EXT
+           IF    ( SPA-ERRCD       =   SPACE )
+               PERFORM 41025-STTAIINYMD-CHK-SEC
            END-IF
       *    終了退院日
-           PERFORM 41026-EDTAIINYMD-CHK-SEC
-           IF      SPA-ERRCD       NOT =   SPACE 
-              GO  TO  4102-KIHON-CHK-EXT
+           IF    ( SPA-ERRCD       =   SPACE )
+               PERFORM 41026-EDTAIINYMD-CHK-SEC
            END-IF
       *    診療科
-           PERFORM 41027-SRYKA-CHK-SEC
-           IF      SPA-ERRCD       NOT =   SPACE 
-               GO  TO  4102-KIHON-CHK-EXT
+           IF    ( SPA-ERRCD       =   SPACE )
+               PERFORM 41027-SRYKA-CHK-SEC
            END-IF
       *    病棟         
-           PERFORM 41028-BTUNUM-CHK-SEC
-           IF      SPA-ERRCD       NOT =   SPACE 
-               GO  TO  4102-KIHON-CHK-EXT
+           IF    ( SPA-ERRCD       =   SPACE )
+               PERFORM 41028-BTUNUM-CHK-SEC
            END-IF
       *    状態
-           PERFORM 41029-JOTAI-CHK-SEC
-           IF      SPA-ERRCD       NOT =   SPACE 
-               GO  TO  4102-KIHON-CHK-EXT
+           IF    ( SPA-ERRCD       =   SPACE )
+               PERFORM 41029-JOTAI-CHK-SEC
            END-IF
       *    テスト患者
-           PERFORM 41030-CHKTESTPT-CHK-SEC
-           IF      SPA-ERRCD       NOT =   SPACE 
-               GO  TO  4102-KIHON-CHK-EXT
+           IF    ( SPA-ERRCD       =   SPACE )
+               PERFORM 41030-CHKTESTPT-CHK-SEC
            END-IF
       *    退院事由
-           PERFORM 41030-TAIINCD-CHK-SEC
-           IF      SPA-ERRCD       NOT =   SPACE 
-               GO  TO  4102-KIHON-CHK-EXT
+           IF    ( SPA-ERRCD       =   SPACE )
+               PERFORM 41030-TAIINCD-CHK-SEC
            END-IF
-      *    並び順
-           PERFORM 41031-SRTKBN-CHK-SEC
-           IF      SPA-ERRCD       NOT =   SPACE 
-               GO  TO  4102-KIHON-CHK-EXT
+      *    並び順１
+           IF    ( SPA-ERRCD       =   SPACE )
+               PERFORM 41031-SRT1KBN-CHK-SEC
+           END-IF
+      *    並び順２
+           IF    ( SPA-ERRCD       =   SPACE )
+               PERFORM 41031-SRT2KBN-CHK-SEC
            END-IF
            .
       *
@@ -1626,7 +1622,7 @@
                    END-IF
                END-PERFORM
                IF      WRK-HENFLG         =   ZERO
-                   MOVE    "0011"               TO  SPA-ERRCD
+                   MOVE    "0013"               TO  SPA-ERRCD
                END-IF
            END-IF            
            .
@@ -1635,31 +1631,30 @@
       *****************************************************************
       *    並び順区分チェック処理
       *****************************************************************
-       41031-SRTKBN-CHK-SEC            SECTION.
+       41031-SRT1KBN-CHK-SEC           SECTION.
       *
            MOVE    15                  TO  SPA-GMN-CUR
       *
-           IF      SPA-GMN-SRTKBN      =   SPACE
-               CONTINUE
-           ELSE
-               MOVE    ZERO               TO  WRK-HENFLG
-               PERFORM VARYING IDY FROM   1   BY  1
-                       UNTIL   IDY >      SPA-GMN-SRTKBN-MAX
-                       OR      WRK-HENFLG =   1
-                   IF      SPA-GMN-SRTKBN 
-                                      =   SPA-GMN-SRTKBNL (IDY)
-                       MOVE    SPA-GMN-SRTKBNLST (IDY)
-                                       TO  SPA-GMN-SRTKBN-G
-                       MOVE    "1"     TO  WRK-HENFLG
-                   END-IF
-               END-PERFORM
-               IF      WRK-HENFLG         =   ZERO
-                   MOVE    SPACE       TO  SPA-GMN-SRTKBN-G
-               END-IF
-           END-IF
+           MOVE    SPA-GMN-SRT1KBN     TO  WRK-CMB-CD
+           PERFORM 4200-SRTKBNLST-CHK-SEC
+           MOVE    WRK-CMB-ITM         TO  SPA-GMN-SRT1KBN-G
       *
            .
-       41031-SRTKBN-CHK-EXT.
+       41031-SRT1KBN-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    並び順区分チェック処理
+      *****************************************************************
+       41031-SRT2KBN-CHK-SEC           SECTION.
+      *
+           MOVE    17                  TO  SPA-GMN-CUR
+      *
+           MOVE    SPA-GMN-SRT2KBN     TO  WRK-CMB-CD
+           PERFORM 4200-SRTKBNLST-CHK-SEC
+           MOVE    WRK-CMB-ITM         TO  SPA-GMN-SRT2KBN-G
+      *
+           .
+       41031-SRT2KBN-CHK-EXT.
            EXIT.
       *****************************************************************
       *    関連チェック処理
@@ -1911,6 +1906,27 @@
            EXIT.
       *
       *****************************************************************
+      *    ソート区分コンボボックスチェック
+      *****************************************************************
+       4200-SRTKBNLST-CHK-SEC          SECTION.
+      *
+           INITIALIZE                  WRK-CMB-ITM-G
+      *
+           PERFORM VARYING IDX-CMB FROM    1   BY  1
+                   UNTIL ( IDX-CMB         >   SPA-GMN-SRTKBN-MAX )
+                    OR   ( WRK-CMB-ITM NOT =   SPACE )
+      *
+               IF    ( SPA-GMN-SRTKBNL (IDX-CMB)   =   WRK-CMB-CD )
+                   MOVE    SPA-GMN-SRTKBNLST (IDX-CMB)
+                                           TO  WRK-CMB-ITM
+               END-IF
+      *
+           END-PERFORM
+      *
+           .
+       4200-SRTKBNLST-CHK-EXT.
+           EXIT.
+      *****************************************************************
       *    戻る　処理
       *****************************************************************
        210-BACK                    SECTION.
@@ -1961,7 +1977,8 @@
       *****************************************************************
        420-CLEAR-SEC                   SECTION.
       *
-           MOVE    SPA-GMN-SRTKBN      TO  WRK-SRTKBN
+           MOVE    SPA-GMN-SRT1KBN     TO  WRK-SRT1KBN
+           MOVE    SPA-GMN-SRT2KBN     TO  WRK-SRT2KBN
       *
            INITIALIZE                  SPA-GMN-KOUMOKU
                                        SPA-GMN-TBL
@@ -1984,117 +2001,18 @@
       *
            MOVE    1                   TO  SPA-GMN-CUR
       *
-           PERFORM VARYING IDY FROM    1   BY  1
-                   UNTIL ( IDY     >   SPA-GMN-SRTKBN-MAX )
-                    OR   ( SPA-GMN-SRTKBN-G
-                                   NOT =   SPACE )
-               IF    ( SPA-GMN-SRTKBNL (IDY)
-                                       =   WRK-SRTKBN )
-                   MOVE    SPA-GMN-SRTKBNLST (IDY)
-                                       TO  SPA-GMN-SRTKBN-G
-               END-IF
+           MOVE    WRK-SRT1KBN         TO  WRK-CMB-CD
+           PERFORM 4200-SRTKBNLST-CHK-SEC
+           MOVE    WRK-CMB-ITM         TO  SPA-GMN-SRT1KBN-G
       *
-           END-PERFORM
+           MOVE    WRK-SRT2KBN         TO  WRK-CMB-CD
+           PERFORM 4200-SRTKBNLST-CHK-SEC
+           MOVE    WRK-CMB-ITM         TO  SPA-GMN-SRT2KBN-G
       *
            .
        420-CLEAR-EXT.
            EXIT.
       *    
-      *****************************************************************
-      *    詳細画面へ
-      *****************************************************************
-       440-SYOSAI-SEC                   SECTION.
-      *
-      *    画面をＳＰＡセット
-           PERFORM 4101-GMN-SPA-SET-SEC
-      *
-      *    選択番号チェック
-           PERFORM 400-SELNUM-CHK-SEC
-           IF    ( SPA-ERRCD       NOT =   SPACE )
-               GO  TO  440-SYOSAI-EXT
-           END-IF
-      *
-      *    選択されていないとき
-           IF      SPA-GMN-SELNUM      =   ZERO
-               MOVE    "0201"              TO  SPA-ERRCD
-               MOVE    12                  TO  SPA-GMN-CUR
-               GO  TO  440-SYOSAI-EXT
-           END-IF
-      *
-           MOVE    SPA-GMN-SELNUM      TO  IDX     
-      *           
-           MOVE    SPACE               TO  I21
-      *     
-           MOVE    SPA-GMN-TPTNUM (IDX)
-                                       TO  I21-PTNUM
-           MOVE    SPA-NAI-TKANANAME (IDX)
-                                       TO  I21-KANANAME 
-           MOVE    SPA-GMN-TNAME (IDX) TO  I21-NAME
-           MOVE    SPA-GMN-TSEX  (IDX) TO  I21-SEX
-           MOVE    SPA-NAI-TBIRTHDAY (IDX)
-                                       TO  WRK-SYMD
-           PERFORM 5002-HIZUKE-HEN-SEC
-           MOVE    WRK-HENYMDG         TO  I21-BIRTHDAY
-           MOVE    SPA-SYSYMD          TO  WRK-SYSYMD  
-           COMPUTE WRK-AGE     =     ( WRK-SYSYMD  -   
-                                           SPA-NAI-TBIRTHDAY (IDX) )
-                                       /   10000
-           MOVE    WRK-AGE             TO  I21-AGE
-           MOVE    SPA-GMN-TADRS (IDX) TO  I21-ADRS     
-      *
-           MOVE    SPACE               TO  SYS-5001-REC     
-           INITIALIZE                  SYS-5001-REC
-           MOVE    SPA-HOSPNUM         TO  SYS-5001-HOSPNUM
-           MOVE    "5001"              TO  SYS-5001-KANRICD
-           MOVE    SPA-NAI-TBTUNUM (IDX)
-                                       TO  SYS-5001-KBNCD 
-           MOVE    SPA-SYSYMD          TO  SYS-5001-STYUKYMD
-                                           SYS-5001-EDYUKYMD
-           MOVE    SYS-5001-REC        TO  MCPDATA-REC
-           PERFORM 900-SYSKANRI-INV-SEC
-           IF      FLG-SYSKANRI        =   ZERO
-               MOVE    MCPDATA-REC         TO  SYS-5001-REC
-               MOVE    SYS-5001-BTU-NAME   TO  I21-BTUNUM
-           END-IF    
-           MOVE    SPA-GMN-TBRMNUM (IDX)
-                                       TO  I21-BRMNUM
-           MOVE    "外泊中"            TO  I21-GAIHAKU-VALUE
-           MOVE    "red"               TO  I21-GAIHAKU-STYLE                              
-           MOVE    "入院中"            TO  I21-JYOTAI1-VALUE
-           MOVE    "red"               TO  I21-JYOTAI1-STYLE
-           MOVE    "面会謝絶"          TO  I21-JYOTAI2-VALUE
-           MOVE    "red"               TO  I21-JYOTAI2-STYLE
-           MOVE    "面会拒否"          TO  I21-JYOTAI3-VALUE
-           MOVE    "red"               TO  I21-JYOTAI3-STYLE
-           MOVE    "感染症（ＭＲＳＡ）"
-                                       TO  I21-MSG1-VALUE
-           MOVE    "blue"              TO  I21-MSG1-STYLE
-           MOVE    "寝たきり"          TO  I21-MSG2-VALUE
-           MOVE    "blue"              TO  I21-MSG2-STYLE
-           MOVE    "徘徊あり"          TO  I21-MSG3-VALUE
-           MOVE    "blue"              TO  I21-MSG3-STYLE
-           MOVE    "痴呆"              TO  I21-MSG4-VALUE
-           MOVE    "blue"              TO  I21-MSG4-STYLE
-           MOVE    "有名人（政治家）なので入院していることを口外"
-                                       TO  I21-COMMENT-VALUE 
-           MOVE    "しないで下さい"    TO  I21-COMMENT-VALUE (45:)
-           MOVE    "green"             TO  I21-COMMENT-STYLE                            
-      *    	                        
-           MOVE    "B01"               TO  MCP-WIDGET
-      *
-           MOVE    "I20"               TO  SPA-MOTOPG
-           MOVE    "I21"               TO  SPA-SAKIPG
-      *
-           MOVE    "NEW"               TO  MCP-PUTTYPE
-           MOVE    "I21"               TO  MCP-WINDOW
-      *
-           PERFORM 900-PUT-WINDOW
-      *
-           MOVE    1                   TO  FLG-END
-           .
-       440-SYOSAI-EXT.
-           EXIT.
-      *
       *****************************************************************
       *    入退院登録画面へ
       *****************************************************************
@@ -2883,39 +2801,56 @@
       *****************************************************************
        4503-SQL-ORDER-SEC                 SECTION.
       *
-           EVALUATE    SPA-GMN-SRTKBN
+           MOVE    SPACE               TO  WRK-LASTSRTKBN
       *
+           STRING  " ORDER BY HOSPNUM"
+                   DELIMITED  BY  SIZE
+           INTO    WRK-SQL
+           WITH    POINTER WRK-SQL-PNT
+           END-STRING
+      *
+           IF    ( SPA-GMN-SRT1KBN     NOT =   SPACE )
+               MOVE    SPA-GMN-SRT1KBN TO  WRK-LASTSRTKBN
+               PERFORM 45031-SQL-ORDER-SEC
+           END-IF
+      *
+           IF    ( SPA-GMN-SRT2KBN     NOT =   SPACE )
+               MOVE    SPA-GMN-SRT2KBN TO  WRK-LASTSRTKBN
+               PERFORM 45031-SQL-ORDER-SEC
+           END-IF
+      *
+           
+           EVALUATE    WRK-LASTSRTKBN
            WHEN    "1"
-               STRING  " ORDER BY BRMNUM,KANANAME,PTNUM"
-                       DELIMITED  BY  SIZE
-                       ",NYUINYMD,TAIINYMD,RRKNUM"
+               STRING  ",KANANAME,PTNUM,NYUINYMD,TAIINYMD,RRKNUM"
                        DELIMITED  BY  SIZE
                INTO    WRK-SQL
                WITH    POINTER WRK-SQL-PNT
                END-STRING
       *
            WHEN    "2"
-               STRING  " ORDER BY PTNUM"
-                       DELIMITED  BY  SIZE
-                       ",NYUINYMD,TAIINYMD,RRKNUM"
+               STRING  ",NYUINYMD,TAIINYMD,RRKNUM"
                        DELIMITED  BY  SIZE
                INTO    WRK-SQL
                WITH    POINTER WRK-SQL-PNT
                END-STRING
       *
            WHEN    "3"
-               STRING  " ORDER BY KANANAME,PTNUM"
+               STRING  ",PTNUM,NYUINYMD,TAIINYMD,RRKNUM"
                        DELIMITED  BY  SIZE
-                       ",NYUINYMD,TAIINYMD,RRKNUM"
+               INTO    WRK-SQL
+               WITH    POINTER WRK-SQL-PNT
+               END-STRING
+      *
+           WHEN    "4"
+               STRING  ",BRMNUM,KANANAME,PTNUM,TAIINYMD,RRKNUM"
                        DELIMITED  BY  SIZE
                INTO    WRK-SQL
                WITH    POINTER WRK-SQL-PNT
                END-STRING
       *
            WHEN    OTHER
-               STRING  " ORDER BY BRMNUM,KANANAME,PTNUM"
-                       DELIMITED  BY  SIZE
-                       ",NYUINYMD,TAIINYMD,RRKNUM"
+               STRING  ",KANANAME,PTNUM,NYUINYMD,TAIINYMD,RRKNUM"
                        DELIMITED  BY  SIZE
                INTO    WRK-SQL
                WITH    POINTER WRK-SQL-PNT
@@ -2925,7 +2860,33 @@
            .
        4503-SQL-ORDER-EXT.
            EXIT.
+      *****************************************************************
+      *    ＳＱＬ文編集処理（並べ替え条件）
+      *****************************************************************
+       45031-SQL-ORDER-SEC             SECTION.
       *
+           MOVE    SPACE           TO  WRK-ITEM
+      *
+           EVALUATE    WRK-LASTSRTKBN
+           WHEN    "1"
+               MOVE    "BRMNUM"    TO  WRK-ITEM
+           WHEN    "2"
+               MOVE    "PTNUM"     TO  WRK-ITEM
+           WHEN    "3"
+               MOVE    "KANANAME"  TO  WRK-ITEM
+           WHEN    "4"
+               MOVE     "NYUINYMD" TO  WRK-ITEM
+           END-EVALUATE
+      *
+           STRING  ","         DELIMITED  BY  SIZE
+                   WRK-ITEM    DELIMITED  BY  SPACE
+           INTO    WRK-SQL
+           WITH    POINTER WRK-SQL-PNT
+           END-STRING
+      *
+           .
+       45031-SQL-ORDER-EXT.
+           EXIT.
       *****************************************************************
       *    件数取得処理
       *****************************************************************
@@ -3181,7 +3142,8 @@
            MOVE    SPA-GMN-JOTAI-G     TO  I20-JOTAI
            MOVE    SPA-GMN-CHKTESTPT   TO  I20-CHKTESTPT
            MOVE    SPA-GMN-TAIINCD-G   TO  I20-TAIINCD
-           MOVE    SPA-GMN-SRTKBN-G    TO  I20-SRTKBN
+           MOVE    SPA-GMN-SRT1KBN-G   TO  I20-SRT1KBN
+           MOVE    SPA-GMN-SRT2KBN-G   TO  I20-SRT2KBN
            MOVE    SPA-GMN-SELNUM      TO  I20-SELNUM
            MOVE    SPA-GMN-TOTAL       TO  I20-TOTAL
       *     
@@ -3219,9 +3181,11 @@
       *
            PERFORM VARYING IDX FROM    1   BY  1
                    UNTIL       IDX         >   SPA-GMN-SRTKBN-MAX
-               MOVE    SPA-GMN-SRTKBNLST (IDX) TO  I20-SRTKBNLST (IDX)
+               MOVE    SPA-GMN-SRTKBNLST (IDX) TO  I20-SRT1KBNLST (IDX)
+                                                   I20-SRT2KBNLST (IDX)
            END-PERFORM
-           MOVE    SPA-GMN-SRTKBN-MAX  TO  I20-SRTKBN-COUNT
+           MOVE    SPA-GMN-SRTKBN-MAX  TO  I20-SRT1KBN-COUNT
+                                           I20-SRT2KBN-COUNT
       *
            IF      SPA-GMN-MAX             =   ZERO
            AND     SPA-GMN-TNAME (1)   NOT =   SPACE
@@ -3327,7 +3291,9 @@
                WHEN    14
                    MOVE  "EDTAIINYMD"      TO  MCP-WIDGET 
                WHEN    15
-                   MOVE  "SRTKBN"          TO  MCP-WIDGET 
+                   MOVE  "SRT1KBN"         TO  MCP-WIDGET 
+               WHEN    17
+                   MOVE  "SRT2KBN"         TO  MCP-WIDGET 
                WHEN    16
                    MOVE  "TAIINCD"         TO  MCP-WIDGET 
            END-EVALUATE
@@ -3362,10 +3328,12 @@
                    MOVE    10                  TO  SPA-GMN-CUR
                WHEN    "JOTAI"
                    MOVE    16                  TO  SPA-GMN-CUR
-               WHEN    "SRTKBN"
+               WHEN    "SRT1KBN"
+                   MOVE    17                  TO  SPA-GMN-CUR
+               WHEN    "SRT2KBN"
                    MOVE    12                  TO  SPA-GMN-CUR
                WHEN    "CHKTESTPT"
-                   MOVE    16                  TO  SPA-GMN-CUR
+                   MOVE    12                  TO  SPA-GMN-CUR
                WHEN    "STTAIINYMD"
                    MOVE    14                  TO  SPA-GMN-CUR
                WHEN    "EDTAIINYMD"
@@ -3407,12 +3375,11 @@
                WHEN    "0010"
                    MOVE    "該当の番号はありません"    TO  SPA-ERRMSG
                WHEN    "0011"
-                   MOVE    "退院事由入力エラー"        TO  SPA-ERRMSG
-      *             
-               WHEN    "0011"
                    MOVE    "開始退院日入力エラー"      TO  SPA-ERRMSG
                WHEN    "0012"
                    MOVE    "終了退院日入力エラー"      TO  SPA-ERRMSG
+               WHEN    "0013"
+                   MOVE    "退院事由入力エラー"        TO  SPA-ERRMSG
                WHEN    "0101"
                    MOVE    "開始入院日が終了年月日より大きいです" 
                                                        TO  SPA-ERRMSG

@@ -107,10 +107,14 @@
                            11  SPA-GMN-TAIINCD     PIC X(02).
                            11                      PIC X(01).
                            11  SPA-GMN-TAIINCDMEI  PIC X(20).
-                       09  SPA-GMN-SRTKBN-G.
-                           11  SPA-GMN-SRTKBN      PIC X(01).
-                           11                      PIC X(01).
-                           11  SPA-GMN-SRTKBNMEI   PIC X(20).
+                       09  SPA-GMN-SRT1KBN-G.
+                           11  SPA-GMN-SRT1KBN     PIC X(01).
+                           11  SPA-GMN-SRT1KBNFL   PIC X(01).
+                           11  SPA-GMN-SRT1KBNMEI  PIC X(20).
+                       09  SPA-GMN-SRT2KBN-G.
+                           11  SPA-GMN-SRT2KBN     PIC X(01).
+                           11  SPA-GMN-SRT2KBNFL   PIC X(01).
+                           11  SPA-GMN-SRT2KBNMEI  PIC X(20).
       *
                    07  SPA-GMN-TBL.
                        09  SPA-GMN-TBL-NEXT        PIC 9(01).
