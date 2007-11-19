@@ -156,6 +156,7 @@
            03  FLG-RSIJBI-AREA-HEN                 PIC 9(01).
            03  FLG-JIBAI                           PIC 9(01).
            03  FLG-ROSAI                           PIC 9(01).
+           03  FLG-TBLCOMBI                        PIC 9(01).
            03  FLG-SRYACT-HEN5                     PIC 9(01).
            03  FLG-COMMENT-CHK                     PIC 9(01).
            03  FLG-PTCOM                           PIC 9(01).
@@ -253,6 +254,7 @@
            03  IDX-RJ                              PIC 9(05).
            03  IDX-DAY                             PIC 9(05).
            03  IDX-PNT                             PIC 9(05).
+           03  IDX-TBLCOMBI                        PIC 9(05).
       *
       *    同一セクション内のみ使用
            03  IDX0                                PIC 9(05).
@@ -583,9 +585,15 @@
                 "自己抗体検査".                        
                 05  FILLER                 PIC X(50)   VALUE
                 "内分泌負荷試験".
+                05  FILLER                 PIC X(50)   VALUE
+                "ウイルス抗体価".                        
+                05  FILLER                 PIC X(50)   VALUE
+                "ウイルス抗体価精密測定".
+                05  FILLER                 PIC X(50)   VALUE
+                "血漿蛋白免疫学的検査".                        
             03 CONST-KENSACOMMENT-R        REDEFINES
                                            CONST-KENSACOMMENT-VAL.
-                05  CONST-KENSACOMMENT     PIC X(50)   OCCURS  8.
+                05  CONST-KENSACOMMENT     PIC X(50)   OCCURS  11.
       *    薬剤料逓減
            03  CONST-TEIGEN                PIC X(09)   VALUE
                "630010002".
@@ -622,6 +630,7 @@
                "01030507091113151719".
                05  CONST-RUIKEI2-R  REDEFINES   CONST-RUIKEI2-VAL.
                    07  CONST-RUIKEI2       PIC 9(02) OCCURS    10.
+           03  CONST-TBLCOMBI-MAX      PIC 9(05)   VALUE   100.
       *
       *
       *    スパ領域 ワーク
@@ -683,6 +692,13 @@
                03 WKACCT-PRIORITY         PIC 9(03).
                03 WKACCT-PRIORITY2        PIC 9(03).
                03 WKACCT-PRIORITY3        PIC 9(03).
+      *
+      *    保険組合せ
+       01  TBLCOMBI-AREA.
+           02  TBLCOMBI-MAX            PIC 9(05).
+           02  TBLCOMBI-OCC            OCCURS      100.
+           COPY    "CPHKNCOMBI.INC"    REPLACING   //COMB-//
+                                       BY          //TBLCOMBI-//.
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -861,6 +877,7 @@
            INITIALIZE                  CNT-AREA
            INITIALIZE                  SRH-AREA
            INITIALIZE                  ORCHCM34-OT
+           INITIALIZE                  TBLCOMBI-AREA
       *
       *    医療機関情報取得処理
            PERFORM 1001-SYS1001-GET-SEC
@@ -1186,6 +1203,7 @@
            MOVE    ORCHCM34-NYUGAIKBN
                                    TO  WRK-SPA-NYUGAIKBN
            MOVE    "2"             TO  ORCSHKN-KBN
+      *    MOVE    "1"             TO  ORCSHKN-KBN3
       *
            CALL    "ORCSHKNSET"    USING   WRK-SPA-AREA
                                            ORCSHKNSETAREA
@@ -1896,26 +1914,23 @@
                    MOVE    ZERO    TO  FLG-TARGET
                END-IF
       *
-               IF    ( ORCHCM34-HOKEN  =   SPACE )
+               MOVE    ZERO    TO  FLG-HIT
+               PERFORM VARYING IDX0    FROM    1   BY  1
+                       UNTIL ( IDX0    >   ORCSHKN-HKN-MAX )
+                        OR   ( FLG-HIT =   1 )
+                   IF    ( FLG-ORCSHKNSET (IDX0)   =   1 )
+                    AND  ( PTHKN-HKNID =   ORCSHKN-NAI-HKNID (IDX0))
+                       MOVE    1   TO  FLG-HIT
+                   END-IF
+               END-PERFORM
+               IF    ( FLG-HIT     =   1 )
                    CONTINUE
                ELSE
-                   MOVE    ZERO    TO  FLG-HIT
-                   PERFORM VARYING IDX0    FROM    1   BY  1
-                           UNTIL ( IDX0    >   ORCSHKN-HKN-MAX )
-                            OR   ( FLG-HIT =   1 )
-                       IF    ( FLG-ORCSHKNSET (IDX0)   =   1 )
-                        AND  ( PTHKN-HKNID =   ORCSHKN-NAI-HKNID (IDX0))
-                           MOVE    1   TO  FLG-HIT
-                       END-IF
-                   END-PERFORM
-      *
-                   IF    ( FLG-HIT     =   1 )
-                       CONTINUE
-                   ELSE
-                       MOVE    ZERO    TO  FLG-TARGET
-                   END-IF
-      *
+                   MOVE    ZERO    TO  FLG-TARGET
                END-IF
+      *
+               DISPLAY "PTHKN-HKNNUM =" PTHKN-HKNNUM " " FLG-TARGET
+      *
       *
                IF    ( FLG-TARGET      =   1 )
       *
@@ -2247,29 +2262,24 @@
                    MOVE    ZERO        TO  FLG-TARGET
                END-IF
       *
-               IF    ( ORCHCM34-HOKEN  =   SPACE )
-                   CONTINUE
-               ELSE
-                   MOVE    ZERO    TO  FLG-HIT
-                   PERFORM VARYING IDX0    FROM    1   BY  1
-                           UNTIL ( IDX0    >   ORCSHKN-HKN-MAX )
-                            OR   ( FLG-HIT =   1 )
-                       IF    ( FLG-ORCSHKNSET (IDX0)   =   1 )
-                        AND  ( PTKOH-KOHID = ORCSHKN-NAI-KOHID (IDX0 1)
-                                         OR  ORCSHKN-NAI-KOHID (IDX0 2)
-                                         OR  ORCSHKN-NAI-KOHID (IDX0 3)
-                                         OR  ORCSHKN-NAI-KOHID (IDX0 4))
-                           MOVE    1   TO  FLG-HIT
-                       END-IF
-      *
-                   END-PERFORM
-      *
-                   IF    ( FLG-HIT     =   1 )
-                       CONTINUE
-                   ELSE
-                       MOVE    ZERO    TO  FLG-TARGET
+               MOVE    ZERO    TO  FLG-HIT
+               PERFORM VARYING IDX0    FROM    1   BY  1
+                       UNTIL ( IDX0    >   ORCSHKN-HKN-MAX )
+                        OR   ( FLG-HIT =   1 )
+                   IF    ( FLG-ORCSHKNSET (IDX0)   =   1 )
+                    AND  ( PTKOH-KOHID = ORCSHKN-NAI-KOHID (IDX0 1)
+                                     OR  ORCSHKN-NAI-KOHID (IDX0 2)
+                                     OR  ORCSHKN-NAI-KOHID (IDX0 3)
+                                     OR  ORCSHKN-NAI-KOHID (IDX0 4))
+                       MOVE    1   TO  FLG-HIT
                    END-IF
       *
+               END-PERFORM
+      *
+               IF    ( FLG-HIT     =   1 )
+                   CONTINUE
+               ELSE
+                   MOVE    ZERO    TO  FLG-TARGET
                END-IF
       *
                IF    ( FLG-TARGET      =   1 )
@@ -4326,7 +4336,7 @@
        200111-KENSASU-HEN-SEC          SECTION.
       *
            IF    ( WRK-TNS-HOUKNSKBN   >=  1 )
-            AND  ( WRK-TNS-HOUKNSKBN   <=  8 )
+            AND  ( WRK-TNS-HOUKNSKBN   <=  11 )
                MOVE    CNT-HOUSRYACT   TO  WRK-STR-LEFT-ZX99
                PERFORM 800-STR-HIDARIZUME-HEN-SEC
                MOVE    WRK-STR-LEFT    TO  WRK-MAE-INPUT
@@ -5110,25 +5120,23 @@
                MOVE    1           TO  FLG-TARGET
                MOVE    ZERO        TO  FLG-HIT
       *
-               PERFORM VARYING IDX33   FROM    1   BY  1
-                       UNTIL ( IDX33   >   ORCSHKN-HKN-MAX )
-                        OR   ( FLG-HIT =   1 )
+               MOVE    TCOMBI-HKNCOMBI (IDX27) TO  WRK-HKNCOMBINUM
+               PERFORM 900-HKNCOMBI-KEY-SEL-SEC
       *
-                   IF    ( TCOMBI-HKNCOMBI (IDX27)
-                                   =   ORCSHKN-GMN-HKNCOMBINUM (IDX33))
-                       MOVE    1   TO  FLG-HIT
-                       IF    ( FLG-ORCSHKNSET (IDX33)  =   1 )
-                           CONTINUE
-                       ELSE
-                           MOVE    ZERO    TO FLG-TARGET
-                       END-IF
+               IF    ( ORCHCM34-HOKEN      =   SPACE )
+                   CONTINUE
+               ELSE
+      *
+                   MOVE    COMB-HKNNUM     TO  WRK-HKNNUM
+                   PERFORM 800-HOKENBUNRUI-SEC
+                   IF    ( ORCHCM34-HOKEN  =   WRK-HOKEN )
+                       CONTINUE
+                   ELSE
+                       MOVE    ZERO        TO  FLG-TARGET
                    END-IF
-      *
-               END-PERFORM
+               END-IF
       *
                IF    ( FLG-TARGET      =   1 )
-                   MOVE    TCOMBI-HKNCOMBI (IDX27) TO  WRK-HKNCOMBINUM
-                   PERFORM 900-HKNCOMBI-KEY-SEL-SEC
       *
                    INITIALIZE                  HCM34S01-AREA
                    MOVE    NACCT-HOSPNUM        TO  HCM34S01-HOSPNUM
@@ -6683,23 +6691,15 @@
                      AND (ACCT-HKNCOMBI        =   9999 ))
                        CONTINUE
                    ELSE
-                       MOVE    ZERO    TO  FLG-HIT
-                       PERFORM VARYING IDX33   FROM    1   BY  1
-                               UNTIL ( IDX33   >   ORCSHKN-HKN-MAX )
-                                OR   ( FLG-HIT =   1 )
-                           IF    ( ACCT-HKNCOMBI
-                                           =   ORCSHKN-GMN-HKNCOMBINUM
-                                                                (IDX33))
-                               MOVE    1   TO  FLG-HIT
-                               IF    ( FLG-ORCSHKNSET (IDX33)
-                                                   =   1)
-                                   CONTINUE
-                               ELSE
-                                   MOVE    ZERO    TO  FLG-LOOPEND
-                               END-IF
-                           END-IF
-                       END-PERFORM
-      *
+                       MOVE    ACCT-HKNCOMBI   TO  WRK-HKNCOMBINUM
+                       PERFORM 900-HKNCOMBI-KEY-SEL-SEC
+                       MOVE    COMB-HKNNUM     TO  WRK-HKNNUM
+                       PERFORM 800-HOKENBUNRUI-SEC
+                       IF    ( ORCHCM34-HOKEN  =   WRK-HOKEN )
+                           CONTINUE
+                       ELSE
+                           MOVE    ZERO        TO  FLG-LOOPEND
+                       END-IF
                    END-IF
                ELSE
                    MOVE    1               TO  FLG-SRYACCT
@@ -6867,27 +6867,66 @@
       *
            MOVE    ZERO                    TO  FLG-HKNCOMBI
       *
-           INITIALIZE                          HKNCOMBI-REC
-           MOVE    SPA-HOSPNUM              TO  COMB-HOSPNUM
-           MOVE    SPA-PTID                TO  COMB-PTID
-           MOVE    WRK-HKNCOMBINUM         TO  COMB-HKNCOMBINUM
-           MOVE    HKNCOMBI-REC            TO  MCPDATA-REC
-           MOVE    "tbl_hkncombi"          TO  MCP-TABLE
-           MOVE    "key"                   TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
-           IF    ( MCP-RC                  =   ZERO )
-               MOVE    MCPDATA-REC         TO  HKNCOMBI-REC
-           ELSE
-               MOVE    1                   TO  FLG-HKNCOMBI
+           PERFORM 9001-TBLCOMBI-CHK-SEC
+           IF   (  FLG-TBLCOMBI    =       ZERO )
                INITIALIZE                      HKNCOMBI-REC
+               MOVE    SPA-HOSPNUM         TO  COMB-HOSPNUM
+               MOVE    SPA-PTID            TO  COMB-PTID
+               MOVE    WRK-HKNCOMBINUM     TO  COMB-HKNCOMBINUM
+               MOVE    HKNCOMBI-REC        TO  MCPDATA-REC
+               MOVE    "tbl_hkncombi"      TO  MCP-TABLE
+               MOVE    "key"               TO  MCP-PATHNAME
+               PERFORM 910-DBSELECT-SEC
+               IF    ( MCP-RC              =   ZERO )
+                   MOVE    MCPDATA-REC     TO  HKNCOMBI-REC
+                   IF    ( CONST-TBLCOMBI-MAX  >   TBLCOMBI-MAX )
+                       COMPUTE TBLCOMBI-MAX
+                           =   TBLCOMBI-MAX    +   1
+                       MOVE    HKNCOMBI-REC TO TBLCOMBI-OCC
+                                                  (TBLCOMBI-MAX)
+                   END-IF
+               ELSE
+                   MOVE    1               TO  FLG-HKNCOMBI
+                   INITIALIZE                  HKNCOMBI-REC
+               END-IF
+      *
+               MOVE    "tbl_hkncombi"      TO  MCP-TABLE
+               MOVE    "key"               TO  MCP-PATHNAME
+               PERFORM 910-DBCLOSECURSOR-SEC
            END-IF
       *
-           MOVE    "tbl_hkncombi"          TO  MCP-TABLE
-           MOVE    "key"                   TO  MCP-PATHNAME
-           PERFORM 910-DBCLOSECURSOR-SEC
       *
            .
        900-HKNCOMBI-KEY-SEL-EXT.
+           EXIT.
+      *****************************************************************
+      *    保険組合せ取得処理
+      *****************************************************************
+       9001-TBLCOMBI-CHK-SEC           SECTION.
+      *
+           MOVE    ZERO                TO  FLG-TBLCOMBI
+      *
+           PERFORM VARYING IDX-TBLCOMBI    FROM    1   BY  1
+                   UNTIL ( IDX-TBLCOMBI    >   TBLCOMBI-MAX )
+                    OR   ( FLG-TBLCOMBI    =   1 )
+      *
+               IF    ( TBLCOMBI-HOSPNUM  (IDX-TBLCOMBI)
+                                           =   SPA-HOSPNUM )
+                AND  ( TBLCOMBI-PTID     (IDX-TBLCOMBI)
+                                           =   SPA-PTID )
+                AND  ( TBLCOMBI-HKNCOMBINUM (IDX-TBLCOMBI)
+                                           =   WRK-HKNCOMBINUM )
+      *
+                   MOVE    1           TO  FLG-TBLCOMBI
+      *
+                   MOVE    TBLCOMBI-OCC (IDX-TBLCOMBI)
+                                       TO  HKNCOMBI-REC
+               END-IF
+      *
+           END-PERFORM
+      *
+           .
+       9001-TBLCOMBI-CHK-EXT.
            EXIT.
       *****************************************************************
       *    テーブル検索処理
