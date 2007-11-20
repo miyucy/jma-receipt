@@ -21,10 +21,7 @@
               03  HCM56-SONOTANAME-S
                       PIC X(2)    OCCURS  4 TIMES.
             02  HCM56-SONOTATANI    PIC X(2).
-            02  HCM56-NYUINYMD.
-              03  HCM56-NYUINYY   PIC X(2).
-              03  HCM56-NYUINMM   PIC X(2).
-              03  HCM56-NYUINDD   PIC X(2).
+            02  HCM56-NYUINYMD  PIC X(22).
             02  HCM56-HOSPSBT
                     PIC X(2)    OCCURS  3 TIMES.
             02  HCM56-NYUSYUBETSU
@@ -44,23 +41,14 @@
                     PIC X(2)    OCCURS  4 TIMES.
             02  HCM56-NICHI
                     PIC X(4)    OCCURS  4 TIMES.
-            02  HCM56-SRYKAISIYMD
+            02  HCM56-SRYYMD
                     PIC X(24)   OCCURS  3 TIMES.
-            02  HCM56-STR-G.
-              03  HCM56-STRYY PIC X(2).
-              03  HCM56-STRMM PIC X(2).
-              03  HCM56-STRDD PIC X(2).
-            02  HCM56-END-G.
-              03  HCM56-ENDYY PIC X(2).
-              03  HCM56-ENDMM PIC X(2).
-              03  HCM56-ENDDD PIC X(2).
+            02  HCM56-STRYMD    PIC X(26).
+            02  HCM56-ENDYMD    PIC X(26).
             02  HCM56-JITSUNISSU    PIC X(3).
             02  HCM56-KEIKA
                     PIC X(54)   OCCURS  5 TIMES.
-            02  HCM56-TENKIYMD.
-              03  HCM56-TENKIYY   PIC X(2).
-              03  HCM56-TENKIMM   PIC X(2).
-              03  HCM56-TENKIDD   PIC X(2).
+            02  HCM56-TENKIYMD  PIC X(22).
             02  HCM56-TENKI
                     PIC X(2)    OCCURS  5 TIMES.
             02  HCM56-SRYKBN
@@ -81,10 +69,7 @@
             02  HCM56-KOMUTENTANKA  PIC X(4).
             02  HCM56-KOMUKINGAKU
                     PIC X(10)   OCCURS  3 TIMES.
-            02  HCM56-SEIKYU-G.
-              03  HCM56-SEIKYUYY  PIC X(2).
-              03  HCM56-SEIKYUMM  PIC X(2).
-              03  HCM56-SEIKYUDD  PIC X(2).
+            02  HCM56-SEIKYUYMD PIC X(22).
             02  HCM56-HOSPJYUSYO    PIC X(100).
-            02  HCM56-HOSPNAME  PIC X(80).
+            02  HCM56-HOSPNAME  PIC X(120).
             02  HCM56-ISYA  PIC X(40).
