@@ -915,10 +915,7 @@ grpsys        PERFORM 900-DBSELECT-SEC
            MOVE     WRK-STYMDW(1:2)    TO  HC23-HAKKOUYY
            MOVE     WRK-STYMDW(3:2)    TO  HC23-HAKKOUMM
       *    患者番号
-           STRING   RECE82-PTNUM   DELIMITED   BY  SPACE
-                    " "            DELIMITED   BY  SIZE
-                    RECE82-RECEKA  DELIMITED   BY  SPACE
-                                   INTO    HC23-PTNUM
+           MOVE    RECE82-PTNUM        TO  HC23-PTNUM
       *    診療の種類
            MOVE    "○"                TO  HC23-SINRYOKBN(3)
       *    カナ氏名
@@ -1355,6 +1352,7 @@ grpsys        PERFORM 900-DBSELECT-SEC
                END-PERFORM
       *        <基本料>
                MOVE    SPACE                 TO  HC23-NYUKHNTEN(8)
+                                                 HC23-NYUKHNTENN(8)
       *        <日数>
                MOVE    SUM-NYUKHNNISSU       TO  WRK-KAISUZ
                MOVE    WRK-KAISUZ            TO  HC23-NYUKAISU(8)
@@ -2180,11 +2178,10 @@ grpsys        PERFORM 900-DBSELECT-SEC
            MOVE    RECE82-NAME         TO  HC29-NAME
       *    患者番号
            STRING   RECE82-PTNUM   DELIMITED   BY  SPACE
-                    " "            DELIMITED   BY  SIZE
-                    RECE82-RECEKA  DELIMITED   BY  SPACE
                     "-"            DELIMITED   BY  SIZE
                     CNT-PAGE (3:1) DELIMITED   BY  SIZE
                                    INTO    HC29-PTNUM
+           END-STRING
       *
            .
        310-HC29-HEAD-HEN-EXT.

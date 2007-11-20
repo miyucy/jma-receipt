@@ -1148,7 +1148,6 @@ grpsys     MOVE    SPA-HOSPNUM         TO  SPTID-HOSPNUM
            AND   (WRK-RECE82-SRYYM  <   PTRSI-RYOEDYMD(1:6) )
                   MOVE   "3"           TO  WRK-RECE82-TENKI
            END-IF
-           MOVE   PTRSI-RYOSTYMD       TO  WRK-RECE82-SINSTYMD
            IF     WRK-RECE82-SRYYM  =   PTRSI-RYOEDYMD(1:6)
                   MOVE  PTRSI-RYOEDYMD TO  WRK-RECE82-TENKIYMD
            END-IF

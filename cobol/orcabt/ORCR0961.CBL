@@ -1081,11 +1081,7 @@ grpsys        PERFORM 900-DBSELECT-SEC
                    MOVE    "ツウサイ"      TO  HCN51-SAIGAIKBN
            END-EVALUATE        
       *    患者番号
-           STRING   RECE82-PTNUM   DELIMITED   BY  SPACE
-                    " "            DELIMITED   BY  SIZE
-                    RECE82-RECEKA  DELIMITED   BY  SPACE
-                                   INTO    HCN51-PTNUM
-           END-STRING         
+           MOVE    RECE82-PTNUM        TO  HCN51-PTNUM
       *    指定病院等の番号
            MOVE    SYS-4001-RSIIRYOCDN TO  HCN51-RSIIRYOCD
       *    病院等の名称
@@ -1215,11 +1211,10 @@ grpsys        PERFORM 900-DBSELECT-SEC
            END-EVALUATE        
       *    患者番号
            STRING   RECE82-PTNUM   DELIMITED   BY  SPACE
-                    " "            DELIMITED   BY  SIZE
-                    RECE82-RECEKA  DELIMITED   BY  SPACE
                     "-"            DELIMITED   BY  SIZE
                     CNT-PAGE (3:1) DELIMITED   BY  SIZE
                                    INTO    HC24-PTNUM         
+           END-STRING
       *    指定病院等の番号
            MOVE    SYS-4001-RSIIRYOCDN TO  HC24-HOSPNUM
       *    病院等の名称
@@ -1681,6 +1676,7 @@ grpsys        PERFORM 900-DBSELECT-SEC
                END-PERFORM    
       *        <基本料>
                MOVE    SPACE                 TO  HCN51-NYUKHNTEN (8)
+                                                 HCN51-NYUKHNTENN(8)
       *        <日数>
                MOVE    SUM-NYUKHNNISSU       TO  WRK-KAISUZ
                MOVE    WRK-KAISUZ            TO  HCN51-NYUKAISU  (8)

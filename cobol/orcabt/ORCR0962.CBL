@@ -1089,31 +1089,19 @@ grpsys        PERFORM 900-DBSELECT-SEC
            MOVE    "Æü"                TO  HCM56-TOUYAKUTANI (1)
                                            HCM56-TOUYAKUTANI (2)
            MOVE    "Ìô¡¡¡¡ºÞ"          TO  HCM56-SONOTANAME  (2)
-           MOVE    "¡ß"                TO  HCM56-KAKERU (1)
-                                           HCM56-KAKERU (2)
-                                           HCM56-KAKERU (3)
-                                           HCM56-KAKERU (4)
-           MOVE    "Æü´Ö"              TO  HCM56-NICHI  (1)
-                                           HCM56-NICHI  (2)
-                                           HCM56-NICHI  (3)
-                                           HCM56-NICHI  (4)
+      *
            MOVE    "±ß¡ß"              TO  HCM56-SYOKAKERU  (1)
                                            HCM56-SYOKAKERU  (2)
                                            HCM56-SYOKAKERU  (3)
-                                           HCM56-SYOKAKERU  (4)
            MOVE    "¡¡²ó"              TO  HCM56-SYONICHI   (1)
                                            HCM56-SYONICHI   (2)
            MOVE    "¡¡Æü"              TO  HCM56-SYONICHI   (3)
-                                           HCM56-SYONICHI   (4)
+      *
            MOVE    WRK-CONS-HENYMD     TO  HCM56-SEIKYUYMD
                                            HCM56-NYUINYMD
       *
       *    ´µ¼ÔÈÖ¹æ
-           STRING   RECE82-PTNUM   DELIMITED   BY  SPACE
-                    " "            DELIMITED   BY  SIZE
-                    RECE82-RECEKA  DELIMITED   BY  SPACE
-                                   INTO    HCM56-PTNUM
-           END-STRING         
+           MOVE    RECE82-PTNUM        TO  HCM56-PTNUM
       *    ¥«¥Ê»áÌ¾
            MOVE    RECE82-KANANAME     TO  HCM56-KANANAME
       *    »áÌ¾
@@ -1233,11 +1221,14 @@ grpsys        PERFORM 900-DBSELECT-SEC
            MOVE    RECE82-TOTALKIN     TO  WRK-KGK9
            MOVE    WRK-KGK9            TO  HCM56-KOMUKINGAKU (1)
       *
-           MOVE    RECE82-KINGAKU2 (1) TO  WRK-KGK9
+           COMPUTE WRK-GOKEI   =   RECE82-KINGAKU2-SYO
+                               +   RECE82-SHOKUJITOTALKIN
+           MOVE    WRK-GOKEI           TO  WRK-KGK9
            MOVE    WRK-KGK9            TO  HCM56-KOMUKINGAKU (2)
       *
            COMPUTE WRK-GOKEI   =   RECE82-TOTALKIN
-                               +   RECE82-KINGAKU2 (1)
+                               +   RECE82-KINGAKU2-SYO
+                               +   RECE82-SHOKUJITOTALKIN
            MOVE    WRK-GOKEI           TO  WRK-KGK9
            MOVE    WRK-KGK9            TO  HCM56-KOMUKINGAKU (3)
       *    ½êºßÃÏ
@@ -1250,8 +1241,8 @@ grpsys        PERFORM 900-DBSELECT-SEC
       *    Ì¾¾Î
            IF      FLG-SYS-1901        =   1
                MOVE    SYS-1901-HOSPNAME1  TO  HCM56-HOSPNAME (1:)
-               MOVE    SYS-1901-HOSPNAME2  TO  HCM56-HOSPNAME (31:)
-               MOVE    SYS-1901-HOSPNAME3  TO  HCM56-HOSPNAME (61:)
+               MOVE    SYS-1901-HOSPNAME2  TO  HCM56-HOSPNAME (41:)
+               MOVE    SYS-1901-HOSPNAME3  TO  HCM56-HOSPNAME (81:)
            ELSE 
                MOVE    SYS-1001-HOSPNAME   TO  HCM56-HOSPNAME
            END-IF
@@ -1673,6 +1664,7 @@ grpsys        PERFORM 900-DBSELECT-SEC
                END-PERFORM    
       *        <´ðËÜÎÁ>
                MOVE    SPACE                 TO  HCM56-NYUKHNTEN (8)
+                                                 HCM56-NYUKHNTENN(8)
       *        <Æü¿ô>
                MOVE    SUM-NYUKHNNISSU       TO  WRK-KAISUZ
                MOVE    WRK-KAISUZ            TO  HCM56-NYUKAISU  (8)
@@ -1714,7 +1706,7 @@ grpsys        PERFORM 900-DBSELECT-SEC
       *
       *       <Æþ±¡´ðËÜÎÁ¼ïÊÌ>
            PERFORM VARYING IDX FROM    1   BY  1
-                   UNTIL   IDX >       11
+                   UNTIL   IDX >       10
                    OR      RECE82-NYUSYUBETU (IDX) =   SPACE
                MOVE    RECE82-NYUSYUBETU (IDX)
                                        TO  HCM56-NYUSYUBETSU (IDX)
@@ -1736,12 +1728,11 @@ grpsys        PERFORM 900-DBSELECT-SEC
                    MOVE    RECE82-SHOKUJIKHNNISSU (IDX)
                                              TO  WRK-KAISUZ
                    MOVE    WRK-KAISUZ        TO  HCM56-SYOKAISU  (IDX)
-                   MOVE    "±ß¡ß"            TO  HCM56-SYOKAKERU (IDX)
-                   IF      IDX               >   2
-                       MOVE    "¡¡Æü"        TO  HCM56-SYONICHI  (IDX)
-                   ELSE
-                       MOVE    "¡¡²ó"        TO  HCM56-SYONICHI  (IDX)
-                   END-IF
+                   EVALUATE    IDX
+                     WHEN    4
+                         MOVE    "±ß¡ß"      TO  HCM56-SYOKAKERU (IDX)
+                         MOVE    "¡¡Æü"      TO  HCM56-SYONICHI  (IDX)
+                   END-EVALUATE
                END-IF                                        
            END-PERFORM          
       *
@@ -1848,7 +1839,9 @@ grpsys        PERFORM 900-DBSELECT-SEC
                    END-IF
       *            ¿ÇÎÅ¶èÊ¬
                    ADD     1               TO  WRK-LINETEK
-                   PERFORM 34111-SRYKBN-HENSYU-SEC
+                   IF  RECE87-SRYKBN    NOT =   WRK-R061-SRYKBN-O
+                       PERFORM 34111-SRYKBN-HENSYU-SEC
+                   END-IF
                END-IF
            ELSE
                ADD     1                 TO  WRK-LINETEK
@@ -1900,11 +1893,11 @@ grpsys        PERFORM 900-DBSELECT-SEC
                WHEN    "21"
                    MOVE    "ÆâÉþ"         TO  WRK-SRYKBN
                WHEN    "22"
-                   MOVE    "ÆÜÉþ"         TO  WRK-SRYKBN
+                   MOVE    "ÆÖÉþ"         TO  WRK-SRYKBN
                WHEN    "23"
                    MOVE    "³°ÍÑ"         TO  WRK-SRYKBN
-               WHEN    "25"
-                   MOVE    "½èÊý"         TO  WRK-SRYKBN
+               WHEN    "24"
+                   MOVE    "Ä´ºÞ"         TO  WRK-SRYKBN
                WHEN    "26"
                    MOVE    "ËãÆÇ"         TO  WRK-SRYKBN
                WHEN    "27"
@@ -1925,6 +1918,11 @@ grpsys        PERFORM 900-DBSELECT-SEC
                    MOVE    "²èÁü"         TO  WRK-SRYKBN
                WHEN    "80"
                    MOVE    "Â¾"           TO  WRK-SRYKBN
+               WHEN    "90"
+               WHEN    "92"
+                   MOVE    "Æþ±¡"         TO  WRK-SRYKBN
+               WHEN    "97"
+                   MOVE    "¿©»ö"         TO  WRK-SRYKBN
                WHEN    OTHER
                    MOVE    SPACE          TO  WRK-SRYKBN
            END-EVALUATE
@@ -2283,7 +2281,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
            END-IF
       *
       *       <Æþ±¡´ðËÜÎÁ¼ïÊÌ>
-           IF      RECE82-NYUSYUBETU (12)  NOT =   SPACE
+           IF      RECE82-NYUSYUBETU (11)  NOT =   SPACE
                PERFORM VARYING IDXX    FROM    11   BY  1
                        UNTIL   IDXX    >       20
                        OR      RECE82-NYUSYUBETU (IDXX)    =   SPACE

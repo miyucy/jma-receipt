@@ -1055,6 +1055,14 @@ grpsys         MOVE    WRK-PARA-HOSPNUM    TO  BTPARA-HOSPNUM
                                            HCM56-SONOTATANI
            MOVE    "½èÊý¤»¤ó"          TO  HCM56-SONOTANAME  (1)
            MOVE    "Ìô¡¡¡¡ºÞ"          TO  HCM56-SONOTANAME  (2)
+      *
+           MOVE    "±ß¡ß"              TO  HCM56-SYOKAKERU   (1)
+                                           HCM56-SYOKAKERU   (2)
+                                           HCM56-SYOKAKERU   (3)
+           MOVE    "¡¡²ó"              TO  HCM56-SYONICHI    (1)
+                                           HCM56-SYONICHI    (2)
+           MOVE    "¡¡Æü"              TO  HCM56-SYONICHI    (3)
+      *
            MOVE    WRK-CONS-HENYMD     TO  HCM56-SEIKYUYMD
                                            HCM56-NYUINYMD
       *
@@ -1230,11 +1238,11 @@ grpsys         MOVE    WRK-PARA-HOSPNUM    TO  BTPARA-HOSPNUM
            MOVE    RECE41-TOTALKIN     TO  WRK-KGK9
            MOVE    WRK-KGK9            TO  HCM56-KOMUKINGAKU (1)
       *
-           MOVE    RECE41-KINGAKU2 (1) TO  WRK-KGK9
+           MOVE    RECE41-TOTALKIN2    TO  WRK-KGK9
            MOVE    WRK-KGK9            TO  HCM56-KOMUKINGAKU (2)
       *
            COMPUTE WRK-GOKEI   =   RECE41-TOTALKIN
-                               +   RECE41-KINGAKU2 (1)
+                               +   RECE41-TOTALKIN2
            MOVE    WRK-GOKEI           TO  WRK-KGK9
            MOVE    WRK-KGK9            TO  HCM56-KOMUKINGAKU (3)
       *    ½êºßÃÏ
@@ -1247,8 +1255,8 @@ grpsys         MOVE    WRK-PARA-HOSPNUM    TO  BTPARA-HOSPNUM
       *    Ì¾¾Î
            IF      FLG-SYS-1901        =   1
                MOVE    SYS-1901-HOSPNAME1  TO  HCM56-HOSPNAME (1:)
-               MOVE    SYS-1901-HOSPNAME2  TO  HCM56-HOSPNAME (31:)
-               MOVE    SYS-1901-HOSPNAME3  TO  HCM56-HOSPNAME (61:)
+               MOVE    SYS-1901-HOSPNAME2  TO  HCM56-HOSPNAME (41:)
+               MOVE    SYS-1901-HOSPNAME3  TO  HCM56-HOSPNAME (81:)
            ELSE 
                MOVE    SYS-1001-HOSPNAME   TO  HCM56-HOSPNAME
            END-IF
@@ -1732,7 +1740,7 @@ grpsys         MOVE    WRK-PARA-HOSPNUM    TO  BTPARA-HOSPNUM
                WHEN    "21"
                    MOVE    "ÆâÉþ"         TO  WRK-SRYKBN
                WHEN    "22"
-                   MOVE    "ÆÜÉþ"         TO  WRK-SRYKBN
+                   MOVE    "ÆÖÉþ"         TO  WRK-SRYKBN
                WHEN    "23"
                    MOVE    "³°ÍÑ"         TO  WRK-SRYKBN
                WHEN    "25"

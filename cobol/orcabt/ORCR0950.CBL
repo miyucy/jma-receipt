@@ -1712,6 +1712,7 @@ grpsys        PERFORM 900-DBSELECT-SEC
                END-PERFORM    
       *        <基本料>
                MOVE    SPACE                 TO  HC22-NYUKHNTEN (8)
+                                                 HC22-NYUKHNTENN(8)
       *        <日数>
                MOVE    SUM-NYUKHNNISSU       TO  WRK-KAISUZ
                MOVE    WRK-KAISUZ            TO  HC22-NYUKAISU  (8)

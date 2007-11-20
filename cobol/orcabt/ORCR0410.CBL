@@ -799,7 +799,6 @@ grpsys         PERFORM 900-DBSELECT-SEC
                         AND   (RECE41-SRYYM   <   PTRSI-RYOEDYMD(1:6) )
                                 MOVE   "3"      TO  RECE41-TENKI
                         END-IF
-                        MOVE   PTRSI-RYOSTYMD   TO  RECE41-SINSTYMD
                         IF     RECE41-SRYYM   =   PTRSI-RYOEDYMD(1:6)
                           MOVE PTRSI-RYOEDYMD   TO  RECE41-TENKIYMD
                         END-IF

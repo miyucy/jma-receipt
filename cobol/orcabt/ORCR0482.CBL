@@ -1298,7 +1298,7 @@ grpsys         MOVE    WRK-PARA-HOSPNUM    TO  BTPARA-HOSPNUM
                WHEN    "21"
                    MOVE    "ÆâÉþ"         TO  WRK-SRYKBN
                WHEN    "22"
-                   MOVE    "ÆÜÉþ"         TO  WRK-SRYKBN
+                   MOVE    "ÆÖÉþ"         TO  WRK-SRYKBN
                WHEN    "23"
                    MOVE    "³°ÍÑ"         TO  WRK-SRYKBN
                WHEN    "25"
