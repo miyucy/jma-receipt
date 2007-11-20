@@ -258,8 +258,6 @@
       *Ï«ºÒ¥ì¥»¥×¥È²ó¿ô
            03  RECE41-RECEKAISU           PIC  9(03).
       *
-      *¸øÌ³ºÒ³²¡Ý¿ÇÎÅ³«»ÏÆü
-           03  RECE41-SINSTYMD            PIC  X(08).
       *¸øÌ³ºÒ³²¡ÝÅ¾µ­Ç¯·îÆü
            03  RECE41-TENKIYMD            PIC  X(08).
       *
