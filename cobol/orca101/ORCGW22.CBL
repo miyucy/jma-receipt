@@ -1103,7 +1103,7 @@
                                        TO  SYS-5113-STYUKYMD
                    MOVE    SPA-W22-EDYUKYMD-S
                                        TO  SYS-5113-EDYUKYMD
-                   MOVE    SPA-W22-MEISYOU(1:7)
+                   MOVE    SPA-W22-MEISYOU(1:6)
                                        TO  WRK-SAGAKU1
                    MOVE    WRK-SAGAKU1-9
                                        TO  SYS-5113-BRM-SAGAKU-NM
