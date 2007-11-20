@@ -1052,6 +1052,8 @@
                                        WRK-ARG
            CALL    "ORCR0940"          USING
                                        WRK-ARG
+           CALL    "ORCR0936"          USING
+                                       WRK-ARG
       *
            PERFORM 20010-PRVDATA-DEL-SEC
            PERFORM 900-DBDISCONNECT-SEC

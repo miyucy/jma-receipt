@@ -283,8 +283,23 @@
       *
            03  WRK-STYMD           PIC X(08).
            03  WRK-EDYMD           PIC X(08).
-           03  WRK-STYMDW          PIC X(06).
-           03  WRK-EDYMDW          PIC X(06).
+           03  WRK-STYMDW          PIC X(22).
+           03  WRK-EDYMDW          PIC X(22).
+      *
+           03  WRK-HCM56-STRYMD.
+               05  FILLER          PIC X(16).
+               05  WRK-HCM56-STRDD PIC X(04).
+               05  FILLER          PIC X(02).
+               05  WRK-HCM56-STRFL PIC X(04).
+           03  WRK-HCM56-ENDYMD.
+               05  FILLER          PIC X(04).
+               05  WRK-HCM56-ENDYY PIC X(04).
+               05  FILLER          PIC X(02).
+               05  WRK-HCM56-ENDMM PIC X(04).
+               05  FILLER          PIC X(02).
+               05  WRK-HCM56-ENDDD PIC X(04).
+               05  FILLER          PIC X(02).
+               05  WRK-HCM56-ENDFL PIC X(04).
       *
            03  WRK-SINRYO-MM.
                05  WRK-SINRYO-MM2  PIC 9(02).
@@ -462,6 +477,10 @@
       *
       *    改行コード
        01  WRK-CONS-RETURN         PIC X(01)   VALUE   X"0A".
+      *
+      *    年月日
+       01  WRK-CONS-HENYMD         PIC X(22)   VALUE
+                                           "平成　　年　　月　　日".
       *
        01  WRK-BYOMEI-AREA.     
       *     
@@ -992,7 +1011,7 @@ grpsys        PERFORM 900-DBSELECT-SEC
            MOVE    "01"            TO  WRK-STYMD (7:2)
            MOVE    WRK-STYMD       TO  WRK-SYMD
            PERFORM 31012-SE-WA-YMDEDIT-SEC
-           MOVE    WRK-HENYMD      TO  WRK-STYMDW
+           MOVE    LNK-DAY2-EDTYMD3    TO  WRK-STYMDW
       *     
       *    療養期間終了編集
            INITIALIZE                  STS-AREA-DAY
@@ -1004,7 +1023,7 @@ grpsys        PERFORM 900-DBSELECT-SEC
            MOVE    LNK-DAY7-KOYOMI TO  WRK-EDYMD 
            MOVE    WRK-EDYMD       TO  WRK-SYMD
            PERFORM 31012-SE-WA-YMDEDIT-SEC
-           MOVE    WRK-HENYMD      TO  WRK-EDYMDW
+           MOVE    LNK-DAY2-EDTYMD3    TO  WRK-EDYMDW
            . 
        2001-SRYYM-HENSYU-EXT.
            EXIT.
@@ -1086,6 +1105,8 @@ grpsys        PERFORM 900-DBSELECT-SEC
                                            HCM56-SYONICHI   (2)
            MOVE    "　日"              TO  HCM56-SYONICHI   (3)
                                            HCM56-SYONICHI   (4)
+           MOVE    WRK-CONS-HENYMD     TO  HCM56-SEIKYUYMD
+                                           HCM56-NYUINYMD
       *
       *    患者番号
            STRING   RECE82-PTNUM   DELIMITED   BY  SPACE
@@ -1098,33 +1119,34 @@ grpsys        PERFORM 900-DBSELECT-SEC
       *    氏名
            MOVE    RECE82-NAME         TO  HCM56-NAME
       *    診療開始日
-      ***  MOVE    RECE82-SINSTYMD     TO  WRK-SYMD
-      ***     PERFORM 31012-SE-WA-YMDEDIT-SEC
-      ***     MOVE    WRK-HENYY           TO  HCM56-SRYKAISIYY (1)
-      ***     MOVE    WRK-HENMM           TO  HCM56-SRYKAISIMM (1)
-      ***     MOVE    WRK-HENDD           TO  HCM56-SRYKAISIDD (1)
+           MOVE    WRK-CONS-HENYMD     TO  WRK-HCM56-STRYMD
+                                           WRK-HCM56-ENDYMD
+           MOVE    "から"              TO  WRK-HCM56-STRFL
+           MOVE    "まで"              TO  WRK-HCM56-ENDFL
       *
       *    診療期間（開始）
            IF    RECE82-RYOSTYMD   NOT =  SPACE
                IF      RECE82-RYOSTYMD     <   WRK-STYMD
-                   MOVE    WRK-STYMDW(1:2)     TO  HCM56-STRYY
-                   MOVE    WRK-STYMDW(3:2)     TO  HCM56-STRMM
-                   MOVE    WRK-STYMDW(5:2)     TO  HCM56-STRDD
+                   MOVE    WRK-STYMDW          TO  WRK-HCM56-STRYMD
                ELSE
                    MOVE    RECE82-RYOSTYMD     TO  WRK-SYMD
                    PERFORM 31012-SE-WA-YMDEDIT-SEC
-                   MOVE    WRK-HENYY           TO  HCM56-STRYY
-                   MOVE    WRK-HENMM           TO  HCM56-STRMM
-                   MOVE    WRK-HENDD           TO  HCM56-STRDD
+                   MOVE    LNK-DAY2-EDTYMD3    TO  WRK-HCM56-STRYMD
                END-IF
            ELSE
-               MOVE    WRK-STYMDW(1:2)     TO  HCM56-STRYY
-               MOVE    WRK-STYMDW(3:2)     TO  HCM56-STRMM
+               MOVE    WRK-STYMDW          TO  WRK-HCM56-STRYMD
                PERFORM VARYING IDX FROM    1   BY  1
                        UNTIL   IDX >       31
                    IF      RECE82-DAY (IDX)    =   RECE82-HKNCOMBI
                        MOVE    IDX             TO  WRK-KGK2
-                       MOVE    WRK-KGK2        TO  HCM56-STRDD
+                       INITIALIZE                  ORCSKANACHKAREA
+                       MOVE    "2"             TO  KANACHK-SYORI
+                       MOVE    WRK-KGK2        TO  KANACHK-MAE-INPUT
+                       CALL    "ORCSKANACHK"   USING   ORCSKANACHKAREA
+                       IF      KANACHK-RC      =   ZERO
+                            MOVE    KANACHK-OUT-INPUT(1:4)
+                                                   TO  WRK-HCM56-STRDD
+                       END-IF
                        MOVE    31              TO  IDX
                    END-IF
                END-PERFORM
@@ -1132,38 +1154,46 @@ grpsys        PERFORM 900-DBSELECT-SEC
       *    療養終了年月日
            IF    RECE82-RYOEDYMD   NOT =  SPACE
                IF      RECE82-RYOEDYMD     >   WRK-EDYMD
-                   MOVE    WRK-EDYMDW(1:2)     TO  HCM56-ENDYY
-                   MOVE    WRK-EDYMDW(3:2)     TO  HCM56-ENDMM
-                   MOVE    WRK-EDYMDW(5:2)     TO  HCM56-ENDDD
+                   MOVE    WRK-EDYMDW          TO  WRK-HCM56-ENDYMD
                ELSE
                    MOVE    RECE82-RYOEDYMD     TO  WRK-SYMD
                    PERFORM 31012-SE-WA-YMDEDIT-SEC
-                   MOVE    WRK-HENYY           TO  HCM56-ENDYY
-                   MOVE    WRK-HENMM           TO  HCM56-ENDMM
-                   MOVE    WRK-HENDD           TO  HCM56-ENDDD
+                   MOVE    LNK-DAY2-EDTYMD3    TO  WRK-HCM56-ENDYMD
                END-IF
            ELSE
-               MOVE    WRK-EDYMDW(1:2)     TO  HCM56-ENDYY
-               MOVE    WRK-EDYMDW(3:2)     TO  HCM56-ENDMM
+               MOVE    WRK-EDYMDW          TO  WRK-HCM56-ENDYMD
                PERFORM VARYING IDX FROM    31  BY  -1
                        UNTIL   IDX <       1
                    IF      RECE82-DAY (IDX)    =   RECE82-HKNCOMBI
                        MOVE    IDX             TO  WRK-KGK2
-                       MOVE    WRK-KGK2        TO  HCM56-ENDDD
+                       INITIALIZE                  ORCSKANACHKAREA
+                       MOVE    "2"             TO  KANACHK-SYORI
+                       MOVE    WRK-KGK2        TO  KANACHK-MAE-INPUT
+                       CALL    "ORCSKANACHK"   USING   ORCSKANACHKAREA
+                       IF      KANACHK-RC      =   ZERO
+                            MOVE    KANACHK-OUT-INPUT(1:4)
+                                                   TO  WRK-HCM56-ENDDD
+                       END-IF
                        MOVE    1               TO  IDX
                    END-IF
                END-PERFORM
            END-IF
+           MOVE    "から"              TO  WRK-HCM56-STRFL 
+           MOVE    "まで"              TO  WRK-HCM56-ENDFL 
+           MOVE    WRK-HCM56-STRYMD    TO  HCM56-STRYMD
+           MOVE    WRK-HCM56-ENDYMD    TO  HCM56-ENDYMD
       *
       *    実日数
            MOVE    RECE82-JNISSU       TO  WRK-JNISSU
            MOVE    WRK-JNISSU          TO  HCM56-JITSUNISSU
       *    転帰日
-           MOVE    RECE82-TENKIYMD     TO  WRK-SYMD
-           PERFORM 31012-SE-WA-YMDEDIT-SEC
-           MOVE    WRK-HENYY           TO  HCM56-TENKIYY
-           MOVE    WRK-HENMM           TO  HCM56-TENKIMM
-           MOVE    WRK-HENDD           TO  HCM56-TENKIDD
+           IF      RECE82-TENKIYMD     =   SPACE
+               MOVE    WRK-CONS-HENYMD     TO  HCM56-TENKIYMD
+           ELSE
+               MOVE    RECE82-TENKIYMD     TO  WRK-SYMD
+               PERFORM 31012-SE-WA-YMDEDIT-SEC
+               MOVE    LNK-DAY2-EDTYMD3    TO  HCM56-TENKIYMD
+           END-IF
       *    転帰事由
            EVALUATE    RECE82-TENKI
                WHEN    "1"
@@ -1419,11 +1449,11 @@ grpsys        PERFORM 900-DBSELECT-SEC
                    MOVE    "　　"          TO  WRK-BYOMEI1-NO 
                END-IF
       *        診療開始日
-               MOVE    WRK-BYOMEI1-NO      TO  HCM56-SRYKAISIYMD
+               MOVE    WRK-BYOMEI1-NO      TO  HCM56-SRYYMD
                                                     (WRK-LINEBYO)
                MOVE    WRK-BO-SRYYMD       TO  WRK-SYMD
                PERFORM 31012-SE-WA-YMDEDIT-SEC
-               MOVE    LNK-DAY2-EDTYMD3    TO  HCM56-SRYKAISIYMD
+               MOVE    LNK-DAY2-EDTYMD3    TO  HCM56-SRYYMD
                                                     (WRK-LINEBYO) (3:)
            END-IF
       *    病名
@@ -1666,9 +1696,7 @@ grpsys        PERFORM 900-DBSELECT-SEC
       *        <入院年月日>
            MOVE    RECE82-NYUINYMD     TO  WRK-SYMD
            PERFORM 31012-SE-WA-YMDEDIT-SEC
-           MOVE    LNK-DAY2-EDTYMD1-Y  TO  HCM56-NYUINYY
-           MOVE    LNK-DAY2-EDTYMD1-M  TO  HCM56-NYUINMM
-           MOVE    LNK-DAY2-EDTYMD1-D  TO  HCM56-NYUINDD
+           MOVE    LNK-DAY2-EDTYMD3    TO  HCM56-NYUINYMD
       *
       *        <医療機関種別>
            EVALUATE    RECE82-HOSPSBT
@@ -2712,14 +2740,14 @@ grpsys         MOVE    RECE08-HOSPNUM      TO  RECE07-HOSPNUM
                    MOVE    ZERO            TO  RECE07-SYORISBT
                END-IF
                MOVE    1                   TO  RECE07-PAGE
-               MOVE    1                   TO  RECE07-KENSU
            ELSE
                ADD     1                   TO  RECE07-PAGE
-               IF    ( CNT-KENSU           =   1 )
-               AND   ( TBL-RECE-RENNUM (IDXY)
-                                           =   1 )
-                   ADD     1                   TO  RECE07-KENSU
-               END-IF
+           END-IF
+      *
+           IF    ( CNT-KENSU           =   1 )
+           AND   ( TBL-RECE-RENNUM (IDXY)
+                                       =   1 )
+               ADD     1                   TO  RECE07-KENSU
            END-IF
       *
            MOVE    RECE07-REC          TO  MCPDATA-REC
