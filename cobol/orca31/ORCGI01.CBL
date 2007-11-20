@@ -124,6 +124,8 @@
       *  03.04.01    NACL-小豆沢  06/12/15  異動処理時の外泊退避処理追加
       *  03.05.00    NACL-太田    07/05/10  グループ診療対応
       *  03.05.00    NACL-小豆沢  07/10/19  異動取消での食事退避対応
+      *  04.01.00    NACL-太田    07/11/20  公害保険対応
+      *  04.01.00    NACL-太田    07/11/20  室料差額６桁対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -276,7 +278,7 @@
                05  WRK-ZZZZ9               PIC ZZZZ9.
                05  WRK-ZZZZZ9              PIC ZZZZZ9.
            03  WRK-SAGAKU.
-               05  WRK-SAGAKU-NUM          PIC ZZZZ9.
+               05  WRK-SAGAKU-NUM          PIC ZZZZZ9.
                05  WRK-SAGAKU-EN           PIC X(02).
            03  WRK-STR1                    PIC X(20).
            03  WRK-STR2                    PIC X(20).
@@ -1412,8 +1414,6 @@
                MOVE    SYS-5113-KBNCD (1 : 2)
                            TO  SPA-GMN-I01-SAGAKUL (IDX1)
                MOVE    SYS-5113-BRM-SAGAKU-NM
-                           TO  WRK-99999
-               MOVE    WRK-99999
                                TO  WRK-SAGAKU-NUM
                MOVE    "円"    TO  WRK-SAGAKU-EN
                MOVE    WRK-SAGAKU
@@ -3654,6 +3654,10 @@
                MOVE    ORCSHKN-NAI-RSI-HKNKBN (IDX1)
                                        TO  SPA-GMN-I01-HKNCOMBI-ITM3
                                                        (IDX1)
+               IF    ( ORCSHKN-NAI-HKNNUM (IDX1)   =   "975" )
+                   MOVE    "K"         TO  SPA-GMN-I01-HKNCOMBI-ITM3
+                                                       (IDX1)
+               END-IF
                IF    ( ORCSHKN-NAI-HKNJANUM (IDX1) =   SPACE )
                    MOVE    ORCSHKN-GMN-HKNCOMBIMEI (IDX1)
                                        TO  WRK-HKNCOMBI
@@ -14826,7 +14830,8 @@
            PERFORM 4801-RJN-TAISYO-CHK-SEC
            IF    ( FLG-RJN         =   1 )    AND
                  ( COMB-HKNNUM     NOT =   "971" )  AND
-                 ( COMB-HKNNUM     NOT =   "973" )
+                 ( COMB-HKNNUM     NOT =   "973" )  AND
+                 ( COMB-HKNNUM     NOT =   "975" )
       *
       *        平成１８年４月改定対応
       *        老人コード置き換えは療養病棟、療養病床のみ
