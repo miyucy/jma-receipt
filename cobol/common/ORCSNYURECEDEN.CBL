@@ -53,6 +53,7 @@
       *  03.05.02    NACL-小豆沢  07/07/20  平成１８年４月以降の食事情報
       *                                     編集の患者所得情報取得をサブ
       *                                     ルーチンに変更
+      *  04.01.01    NACL-小豆沢  07/11/20  公害保険対応（レセ電対象外）
       *****************************************************************
       *
       *
@@ -632,7 +633,8 @@
                        MOVE    "key"               TO  MCP-PATHNAME
                        PERFORM   910-HKNCOMBI-READ-SEC
                        IF   FLG-HKNCOMBI         =  ZERO
-                            IF    ( COMB-HKNNUM   = "971" OR "973")
+                            IF    ( COMB-HKNNUM   = "971" OR "973" OR
+                                                    "975")
                                             OR
                                   ( COMB-HKNNUM(1:2)  =    "98")
                                 MOVE   ZERO   TO  WRK-HKNCOMBI-DAY(IDX)
