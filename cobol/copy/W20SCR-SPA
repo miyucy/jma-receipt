@@ -278,7 +278,7 @@
                        09  SPA-GMN-W21-SAGAKU-G.
                            11  SPA-GMN-W21-SAGAKU          PIC X(02).
                            11                              PIC X(01).
-                           11  SPA-GMN-W21-SAGAKUMEI       PIC X(07).
+                           11  SPA-GMN-W21-SAGAKUMEI       PIC X(09).
       *
       *                性別特定
                        09  SPA-GMN-W21-SEX-G.
@@ -342,7 +342,7 @@
                            11  SPA-GMN-W21-SAGAKULST       OCCURS  30.
                                13  SPA-GMN-W21-SAGAKUL     PIC X(02).
                                13                          PIC X(01).
-                               13  SPA-GMN-W21-SAGAKUMEIL  PIC X(07).
+                               13  SPA-GMN-W21-SAGAKUMEIL  PIC X(09).
       *                性別特定コンボ
                        09  SPA-GMN-W21-SEXLST-G.
       *                    性別特定コンボ項目数

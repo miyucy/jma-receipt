@@ -22,7 +22,7 @@
               04  W22-KBNCD.
                 05  W22-VALUE                PIC X(02).
               04  W22-MEISYOU.
-                05  W22-VALUE                PIC X(5).
+                05  W22-VALUE                PIC X(6).
               04  W22-STYUKYMD.
                 05  W22-VALUE                PIC X(10).
               04  W22-EDYUKYMD.

@@ -30,6 +30,7 @@
       * 01.00.01     NACL-ÂÀÅÄ    03.11.18  ¹¹¿·ÆüÉÕÊÔ½¸ÂÐ±þ
       * 01.00.02     NACL-¾®Æ¦Âô  06.12.22  ¼¼ÎÁº¹³Û¤ËÆÃ²½¤·¤¿²èÌÌ¤ËÊÑ¹¹
       * 03.05.00     NACL-ÂÀÅÄ    07.05.18  ¥°¥ë¡¼¥×¿ÇÎÅÂÐ±þ
+      * 04.01.00     NACL-ÂÀÅÄ    07/11/20  ¼¼ÎÁº¹³Û£¶·åÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT                               DIVISION.
@@ -79,10 +80,10 @@
                05  WRK-SDD                         PIC 9(02).
            03  WRK-HENYMDG                         PIC X(09).
            03  WRK-SAGAKU-AREA.
-               05  WRK-SAGAKU1                     PIC X(05).
+               05  WRK-SAGAKU1                     PIC X(06).
                05  WRK-SAGAKU1-R       REDEFINES   WRK-SAGAKU1.
-                   07  WRK-SAGAKU1-9               PIC 9(05).
-           03  WRK-NUM-05                          PIC 9(05).
+                   07  WRK-SAGAKU1-9               PIC 9(06).
+           03  WRK-NUM-06                          PIC 9(06).
            03  WRK-CREYMD                          PIC X(08).
            03  WRK-BRMNUMKBN                       PIC 9(02).
       *
@@ -1102,7 +1103,7 @@
                                        TO  SYS-5113-STYUKYMD
                    MOVE    SPA-W22-EDYUKYMD-S
                                        TO  SYS-5113-EDYUKYMD
-                   MOVE    SPA-W22-MEISYOU(1:5)
+                   MOVE    SPA-W22-MEISYOU(1:7)
                                        TO  WRK-SAGAKU1
                    MOVE    WRK-SAGAKU1-9
                                        TO  SYS-5113-BRM-SAGAKU-NM
@@ -1624,8 +1625,8 @@
                    MOVE    T-MESSAGE-001         TO  SPA-W22-ERRMSG
                    GO  TO  T-001-MEISYOU-EXT
                ELSE
-                   MOVE    SNUM-OUTNUM TO  WRK-NUM-05
-                   MOVE    WRK-NUM-05  TO  SPA-W22-MEISYOU
+                   MOVE    SNUM-OUTNUM TO  WRK-NUM-06
+                   MOVE    WRK-NUM-06  TO  SPA-W22-MEISYOU
                END-IF
           END-IF
       *

@@ -63,11 +63,11 @@ W21	{
 		};
 		CMB_BRM_SAGAKU	{
 			BRM_SAGAKU	{
-				value	varchar(10);
+				value	varchar(12);
 				state	int;
 			};
 			count	int;
-			item	varchar(10)[30];
+			item	varchar(12)[30];
 			state	int;
 		};
 		CMB_BRM_SEX	{

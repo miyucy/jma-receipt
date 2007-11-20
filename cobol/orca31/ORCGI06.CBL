@@ -27,6 +27,7 @@
       *  ¥×¥í¥°¥é¥à½¤ÀµÍúÎò
       * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
       *  03.05.00    NACL-ÂÀÅÄ    07.05.15  ¥°¥ë¡¼¥×¿ÇÎÅÂÐ±þ
+      *  04.01.00    NACL-ÂÀÅÄ    07/11/20  ¼¼ÎÁº¹³Û£¶·åÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT                     DIVISION.
@@ -355,7 +356,7 @@
                05  WRK-ZZZZ9               PIC ZZZZ9.
                05  WRK-ZZZZZ9              PIC ZZZZZ9.
            03  WRK-SAGAKU.
-               05  WRK-SAGAKU-NUM          PIC ZZZZ9.
+               05  WRK-SAGAKU-NUM          PIC ZZZZZ9.
                05  WRK-SAGAKU-EN           PIC X(02).
            03  WRK-TNS-SRYCD               PIC X(09).
            03  WRK-TNS-KJNYMD              PIC X(08).
@@ -927,8 +928,6 @@
                MOVE    SYS-5113-KBNCD
                                TO  SPA-GMN-SAGAKUL (CNT-MAX)
                MOVE    SYS-5113-BRM-SAGAKU-NM
-                           TO  WRK-99999
-               MOVE    WRK-99999
                                TO  WRK-SAGAKU-NUM
                MOVE    "±ß"    TO  WRK-SAGAKU-EN
                MOVE    WRK-SAGAKU

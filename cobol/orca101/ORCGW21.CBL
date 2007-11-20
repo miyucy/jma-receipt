@@ -35,6 +35,7 @@
       *                                     Ìµ¶Ý¼£ÎÅ¼¼´ÉÍý²Ã»»¤òÄÉ²Ã
       * 01.00.01     NACL-ÂÀÅÄ    03.11.17  ¹¹¿·ÆüÉÕÊÔ½¸ÂÐ±þ
       * 03.05.00     NACL-ÂÀÅÄ    07.05.18  ¥°¥ë¡¼¥×¿ÇÎÅÂÐ±þ
+      * 04.01.00     NACL-ÂÀÅÄ    07/11/20  ¼¼ÎÁº¹³Û£¶·åÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT                               DIVISION.
@@ -98,8 +99,6 @@
                05  WRK-SYS5002-BTUNUM             PIC X(02).
                05  WRK-SYS5002-BRMNUM             PIC X(06).
            03  WRK-ZZZ9                            PIC ZZZ9.
-           03  WRK-ZZZZ9                           PIC ZZZZ9.
-           03  WRK-99999                           PIC 9(05).
            03  WRK-999999                          PIC 9(06).
            03  WRK-ZZZZZ9                          PIC Z(5)9.
            03  WRK-ZZZZZZZZZ9                      PIC Z(9)9.
@@ -130,7 +129,7 @@
            03  WRK-TNSYMD                          PIC X(08).
            03  WRK-TNSSRYCD                        PIC X(09).
            03  WRK-HEN-SAGAKU.
-               05  WRK-HEN-SAGAKU-Z9               PIC ZZZZ9.
+               05  WRK-HEN-SAGAKU-Z9               PIC ZZZZZ9.
                05  WRK-HEN-SAGAKU-EN               PIC X(02).
       *
       *    ¸ÇÄêÃÍÎÎ°è
@@ -722,10 +721,9 @@
       *
                MOVE    SYS-5113-KBNCD
                                    TO  SPA-GMN-W21-SAGAKUL (IDX1)
+               INITIALIZE              WRK-HEN-SAGAKU
                MOVE    SYS-5113-BRM-SAGAKU-NM
-                                   TO  WRK-99999
-               INITIALIZE          WRK-HEN-SAGAKU
-               MOVE    WRK-99999   TO  WRK-HEN-SAGAKU-Z9
+                                   TO  WRK-HEN-SAGAKU-Z9
                MOVE    "±ß"        TO  WRK-HEN-SAGAKU-EN
                MOVE    WRK-HEN-SAGAKU
                                    TO  SPA-GMN-W21-SAGAKUMEIL (IDX1)
@@ -951,8 +949,7 @@
            IF    ( FLG-SYSKANRI        =   ZERO )
                MOVE    SYSKANRI-REC    TO  SYS-5113-REC
                MOVE    SYS-5113-BRM-SAGAKU-NM
-                                       TO  WRK-99999
-               MOVE    WRK-99999       TO  SPA-GMN-W21-TSAGAKU (IDX1)
+                                       TO  SPA-GMN-W21-TSAGAKU (IDX1)
            END-IF
       *
       *    À­ÊÌÆÃÄê

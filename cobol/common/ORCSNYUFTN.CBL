@@ -90,6 +90,7 @@
       *  03.04.05    NACL-門脇    07/05/22  初診料算定時の条件追加
       *  03.05.00    NACL-太田    07/05/09  グループ診療対応
       *  03.05.01    NACL-門脇    07/09/13  所沢市乳幼児対応
+      *  04.01.00    NACL-太田    07/11/20  室料差額６桁対応
       *****************************************************************
        ENVIRONMENT         DIVISION.
        CONFIGURATION       SECTION.
@@ -225,7 +226,7 @@
       *
       * 室料差額退避用テーブル     
        01  TABLE-RMSAGAKU.
-           03  TBL-RMSAGAKU                PIC 9(05)   OCCURS  99.
+           03  TBL-RMSAGAKU                PIC 9(07)   OCCURS  99.
       *
       * 入院料フラグ退避用テーブル
        01  TABLE-NYUIN.                                                 

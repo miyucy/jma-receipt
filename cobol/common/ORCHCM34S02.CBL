@@ -31,6 +31,7 @@
       *  01.00.01    NACL¡ÝÂÀÅÄ   04/02/02  ¼¼ÎÁº¹³Û¡¦¿©»ö¤Î»»Äê¤ò
       *                                     »ÃÄêÅª¤Ë½¤Àµ
       *  03.05.00    NACL-ÂÀÅÄ    07/05/28  ¥°¥ë¡¼¥×¿ÇÎÅÂÐ±þ
+      *  04.01.00    NACL-ÂÀÅÄ    07/11/20  ¼¼ÎÁº¹³Û£¶·åÂÐ±þ
       *****************************************************************
       *
       *
@@ -120,7 +121,7 @@
            03  WRK-KSNTEN                      PIC 9(08).
            03  WRK-SURYO                       PIC 9(05).
            03  WRK-SRYCDTOTAL                  PIC 9(09).
-           03  WRK-BRMSAGAKU                   PIC 9(05).
+           03  WRK-BRMSAGAKU                   PIC 9(07).
            03  WRK-SKJ-TEN-G.
                05  WRK-SKJ-TEN                 PIC 9(08).
                05  WRK-SKJ-TEN-RYOYO1          PIC 9(08).
@@ -135,7 +136,7 @@
                    07  WRK-SYS-5113-STYUKYMD   PIC X(08).
                    07  WRK-SYS-5113-EDYUKYMD   PIC X(08).
                    07  WRK-SYS-5113-KBNCD      PIC 9(02).
-                   07  WRK-SYS-5113-BRMSAGAKU  PIC 9(05).
+                   07  WRK-SYS-5113-BRMSAGAKU  PIC 9(07).
            03  WRK-SRYCD-NUM                   PIC 9(09).
            03  WRK-SKJ-SRYCD-G.
                05  WRK-SKJ-ZAITEN              PIC 9(08).

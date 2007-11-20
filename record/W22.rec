@@ -7,7 +7,7 @@ W22	{
 			value	varchar(02);
 		};
 		MEISYOU	{
-			value	varchar(5);
+			value	varchar(6);
 		};
 		STYUKYMD	{
 			value	varchar(10);

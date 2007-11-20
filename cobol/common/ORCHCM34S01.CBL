@@ -43,6 +43,7 @@
       *  01.00.07    NACL-小豆沢  06/05/23  外泊時の入院基本料取得修正
       *  03.01.01    NACL-門脇    06/06/30  療養病棟の他医療機関受診対応
       *  03.05.00    NACL-太田    07/05/28  グループ診療対応
+      *  04.01.00    NACL-太田    07/11/20  室料差額６桁対応
       *****************************************************************
       *
       *
@@ -148,7 +149,7 @@
            03  WRK-SENTEISRYCD                 PIC X(09).
            03  WRK-SRYCDTOTAL                  PIC 9(09).
            03  WRK-SENTEI-KEISU                PIC 9V99.
-           03  WRK-BRMSAGAKU                   PIC 9(05).
+           03  WRK-BRMSAGAKU                   PIC 9(07).
            03  WRK-SKJ-TEN-G.
                05  WRK-SKJ-TEN-RYOYO1          PIC 9(08).
                05  WRK-SKJ-TEN-RYOYO2          PIC 9(08).
@@ -169,7 +170,7 @@
                    07  WRK-SYS-5113-STYUKYMD   PIC X(08).
                    07  WRK-SYS-5113-EDYUKYMD   PIC X(08).
                    07  WRK-SYS-5113-KBNCD      PIC 9(02).
-                   07  WRK-SYS-5113-BRMSAGAKU  PIC 9(05).
+                   07  WRK-SYS-5113-BRMSAGAKU  PIC 9(07).
            03  WRK-SRYCD-NUM                   PIC 9(09).
            03  WRK-SKJ-SRYCD-G.
                05  WRK-SKJ-ZAITEN              PIC 9(08).
