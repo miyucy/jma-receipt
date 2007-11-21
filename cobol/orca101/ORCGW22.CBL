@@ -129,6 +129,8 @@
                "区分コードは０１から９９の範囲で入力してください".
            03  T-MESSAGE-056       PIC X(34)   VALUE
                "室料差額の登録は最大３０件迄です。".
+           03  T-MESSAGE-057       PIC X(50)   VALUE
+               "室料差額は３０万円以内で登録してください。".
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -1622,12 +1624,20 @@
                IF  ( SNUM-RC       NOT =   ZERO  )
                 OR ( SNUM-MINKBN   NOT =   SPACE )
                 OR ( SNUM-SYOKBN   NOT =   SPACE )
-                   MOVE    T-MESSAGE-001         TO  SPA-W22-ERRMSG
+                   MOVE    3               TO  SPA-W22-CUR
+                   MOVE    T-MESSAGE-001   TO  SPA-W22-ERRMSG
                    GO  TO  T-001-MEISYOU-EXT
                ELSE
                    MOVE    SNUM-OUTNUM TO  WRK-NUM-06
                    MOVE    WRK-NUM-06  TO  SPA-W22-MEISYOU
                END-IF
+      *
+               IF    ( SNUM-OUTNUM     >   300000 )
+                   MOVE    T-MESSAGE-057   TO  SPA-W22-ERRMSG
+                   MOVE    3               TO  SPA-W22-CUR
+                   GO  TO  T-001-MEISYOU-EXT
+               END-IF
+      *
           END-IF
       *
            .
