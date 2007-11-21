@@ -195,6 +195,8 @@
            03  FLG-FIRUMU           PIC 9(01).
            03  FLG-JYUFKU           PIC 9(01).
       *
+           03  FLG-AUTOKBN2         PIC 9(01).
+      *
       *    システム領域
       *01  SYS-AREA.
       *    03  SYS-YMD.
@@ -3036,6 +3038,13 @@
                PERFORM 410119-INPSET-SEC
                GO      TO      410112-INPUTCD-HENKAN-EXT
            END-IF
+      *!!
+      *    約束セットは器材商品名は入力不可とする
+           IF      (SPA-GMN-SETCODE(1:1)   =   "S"    )  AND
+                   (LNK-SC97-INCD (1:3)    =   "058"  )
+               MOVE    "5028"              TO  SPA-ERRCD
+               GO      TO      410112-INPUTCD-HENKAN-EXT
+           END-IF
       *
       *    入力内容チェック、編集
            IF      LNK-SC97-NYURYOKU   =   1
@@ -3058,8 +3067,10 @@
                CONTINUE
            ELSE
       *        名称を戻す
-               IF      SPA-COM-INPUTCD(SPA-GMN-IDX)(1:1)
-                                           =   "1"
+               IF     (SPA-COM-INPUTCD(SPA-GMN-IDX)(1:1)
+                                           =   "1"  )
+                 AND  (SPA-COM-AUTOKBN2 (SPA-GMN-IDX)
+                                           =   SPACE )
                    MOVE    SPA-COM-NAME(SPA-GMN-IDX)
                                            TO  SPA-GMN-MEISYO
                                                         (SPA-GMN-IDX)
@@ -3826,6 +3837,20 @@
                              (SPA-ERRCD    NOT =   SPACE )  OR
                              (SPA-GMN-IDX      >   SPA-MAX-LINE )
               ADD     1               TO  IDX-IP
+      *!!
+      *        器材商品コード対応
+      *        1行前が器材コードの自動発生の時、置換え
+               MOVE    ZERO            TO  FLG-AUTOKBN2
+               IF     (SPA-GMN-IDX         >   1    )    AND
+                      (ISET-INPUTCD (1:1)  =   "7"  )    AND
+                      (SPA-COM-AUTOKBN2(SPA-GMN-IDX - 1)
+                                           =   "1"   )   AND
+                      (ISET-INPUTCD        =   SPA-COM-INPUTCD
+                                                  (SPA-GMN-IDX - 1 ))
+                   MOVE    1               TO  FLG-AUTOKBN2
+                   COMPUTE SPA-GMN-IDX     =   SPA-GMN-IDX   -  1
+               END-IF
+      *!!
       *
                MOVE    ISET-INPUTCD    TO  SPA-GMN-INPUTCD(SPA-GMN-IDX)
       *
@@ -3966,6 +3991,7 @@
                                                ORCSC92AREA
                                                SPA-SCR-REC
                                                SPA-AREA
+                   MOVE    LNK-SC92-GMN-IDX    TO  SPA-GMN-IDX
       *
       *            点数マスタなしのエラーは表示する
                    IF      SPA-ERRCD           =   "0001"
@@ -4019,6 +4045,12 @@
                IF      SPA-COM-KAIFLG (SPA-GMN-IDX)    =   "1"
                    MOVE    SPACE               TO  WRK-SRYKBN
                END-IF
+      *!!
+               IF      FLG-AUTOKBN2        =   1
+                   MOVE    "1"             TO  SPA-COM-AUTOKBN2 
+                                                      (SPA-GMN-IDX)
+               END-IF
+      *!!
       *
               IF     (SPA-ERRCD        NOT =   SPACE )  OR
                      (LNK-SC92-ERRAREA NOT =   SPACE )
@@ -4222,6 +4254,7 @@
                                                ORCSC92AREA
                                                SPA-SCR-REC
                                                SPA-AREA
+                   MOVE    LNK-SC92-GMN-IDX    TO  SPA-GMN-IDX
       *
       *            点数マスタなしのエラーは表示する
                    IF      SPA-ERRCD           =   "0001"
@@ -5227,11 +5260,34 @@
                           (WRK-COM-DATAKBN(IDX)        =   "1")
                        MOVE    1               TO  FLG-ZAIEND
                    END-IF
+      *            器材商品名
+                   IF     (WRK-COM-INPUTCD(IDX)(1:3)   =   "058")
+                       MOVE    2               TO  FLG-ZAIEND
+                   END-IF
+      *            前も空白の時対象行のみ
+                   IF     (WRK-COM-INPUTCD(IDX)        =   SPACE )  AND
+                          (WRK-MAE-INPUTCD(IDX)        =   SPACE )
+                       MOVE    ZERO            TO  FLG-ZAIEND
+                   END-IF
+      *            前が器材商品名
+                   IF     (WRK-COM-AUTOKBN2(IDX)   NOT =   SPACE )
+                      AND (WRK-COM-INPUTCD(IDX - 1)(1:3)
+                                                       =   "058")
+                       MOVE    SPACE           TO  WRK-GMN-INPUTCD
+                                                             (IDX - 1)
+                   END-IF
                ELSE
                    IF      FLG-ZAIEND          =   1
                        IF      WRK-COM-AUTOKBN(IDX)    NOT =   SPACE
                            MOVE    SPACE           TO  WRK-GMN-INPUTCD
                                                                (IDX)
+                       END-IF
+                   END-IF
+      *            前が器材商品名
+                   IF      FLG-ZAIEND          =   2
+                       IF      WRK-COM-AUTOKBN2(IDX)   NOT =   SPACE
+                           MOVE    SPACE           TO  WRK-GMN-INPUTCD
+                                                                 (IDX)
                        END-IF
                    END-IF
       *            診療の時間加算削除の時、自動追加した時間加算を削除

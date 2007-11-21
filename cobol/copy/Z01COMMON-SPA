@@ -45,6 +45,10 @@
            03  SPA-Z91-TBL-GROUP           PIC  X(14).
            03  SPA-Z91-JOB-JOBID           PIC  9(07).
       *----(01.00.02)--ADD-END-----
+      *
+      *前回コード
+           03  SPA-MAE-SRYCD                   PIC X(09).
+           03  SPA-Z08MAE-SRYCD                PIC X(09).
       * 
       *警告メッセージ
            03  SPA-ZIDCD                       PIC X(04).

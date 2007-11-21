@@ -1,0 +1,763 @@
+<?xml version="1.0"?>
+<GTK-Interface>
+
+<project>
+  <name>Z08</name>
+  <program_name>Z08</program_name>
+  <directory></directory>
+  <pixmaps_directory>pixmaps</pixmaps_directory>
+  <gnome_support>True</gnome_support>
+  <gtkpanda_support>False</gtkpanda_support>
+</project>
+
+<widget>
+  <class>GtkWindow</class>
+  <name>Z08</name>
+  <width>1024</width>
+  <height>768</height>
+  <signal>
+    <name>map_event</name>
+    <handler>map_event</handler>
+    <last_modification_time>Sat, 03 Feb 2001 05:39:56 GMT</last_modification_time>
+  </signal>
+  <signal>
+    <name>set_focus</name>
+    <handler>set_focus</handler>
+    <last_modification_time>Sat, 03 Feb 2001 05:40:10 GMT</last_modification_time>
+  </signal>
+  <signal>
+    <name>delete_event</name>
+    <handler>gtk_true</handler>
+    <last_modification_time>Mon, 25 Nov 2002 06:01:39 GMT</last_modification_time>
+  </signal>
+  <title>(Z08)ÅÀ¿ô¥Þ¥¹¥¿ÀßÄê¡Ý´ïºà¾¦ÉÊÌ¾ÀßÄê</title>
+  <type>GTK_WINDOW_TOPLEVEL</type>
+  <position>GTK_WIN_POS_CENTER</position>
+  <modal>False</modal>
+  <allow_shrink>False</allow_shrink>
+  <allow_grow>False</allow_grow>
+  <auto_shrink>False</auto_shrink>
+
+  <widget>
+    <class>GtkFixed</class>
+    <name>fixed1</name>
+
+    <widget>
+      <class>GtkPandaEntry</class>
+      <name>SRYCDH</name>
+      <x>16</x>
+      <y>8</y>
+      <width>104</width>
+      <height>24</height>
+      <editable>False</editable>
+      <text_visible>True</text_visible>
+      <text_max_length>9</text_max_length>
+      <text></text>
+      <input_mode>XIM</input_mode>
+      <xim_enabled>False</xim_enabled>
+    </widget>
+
+    <widget>
+      <class>GtkButton</class>
+      <name>B01</name>
+      <x>8</x>
+      <y>720</y>
+      <width>80</width>
+      <height>24</height>
+      <can_focus>True</can_focus>
+      <accelerator>
+	<modifiers>0</modifiers>
+	<key>GDK_F1</key>
+	<signal>clicked</signal>
+      </accelerator>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Sat, 03 Feb 2001 04:43:32 GMT</last_modification_time>
+      </signal>
+      <label>Ìá¤ë</label>
+      <relief>GTK_RELIEF_NORMAL</relief>
+    </widget>
+
+    <widget>
+      <class>GtkPandaEntry</class>
+      <name>YUKOSTYMDH</name>
+      <x>432</x>
+      <y>8</y>
+      <width>120</width>
+      <height>24</height>
+      <editable>False</editable>
+      <text_visible>True</text_visible>
+      <text_max_length>9</text_max_length>
+      <text></text>
+      <input_mode>XIM</input_mode>
+      <xim_enabled>False</xim_enabled>
+    </widget>
+
+    <widget>
+      <class>GtkPandaEntry</class>
+      <name>YUKOEDYMDH</name>
+      <x>576</x>
+      <y>8</y>
+      <width>120</width>
+      <height>24</height>
+      <editable>False</editable>
+      <text_visible>True</text_visible>
+      <text_max_length>9</text_max_length>
+      <text></text>
+      <input_mode>XIM</input_mode>
+      <xim_enabled>False</xim_enabled>
+    </widget>
+
+    <widget>
+      <class>GtkPandaEntry</class>
+      <name>NAMEH</name>
+      <x>128</x>
+      <y>8</y>
+      <width>300</width>
+      <height>24</height>
+      <editable>False</editable>
+      <text_visible>True</text_visible>
+      <text_max_length>100</text_max_length>
+      <text></text>
+      <input_mode>XIM</input_mode>
+      <xim_enabled>False</xim_enabled>
+    </widget>
+
+    <widget>
+      <class>GtkButton</class>
+      <name>B02</name>
+      <x>88</x>
+      <y>720</y>
+      <width>80</width>
+      <height>24</height>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Sat, 03 Feb 2001 04:43:32 GMT</last_modification_time>
+      </signal>
+      <label></label>
+      <relief>GTK_RELIEF_NORMAL</relief>
+    </widget>
+
+    <widget>
+      <class>GtkButton</class>
+      <name>B12</name>
+      <x>920</x>
+      <y>720</y>
+      <width>80</width>
+      <height>24</height>
+      <can_focus>True</can_focus>
+      <accelerator>
+	<modifiers>0</modifiers>
+	<key>GDK_F12</key>
+	<signal>clicked</signal>
+      </accelerator>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Sat, 03 Feb 2001 04:43:32 GMT</last_modification_time>
+      </signal>
+      <label>ÅÐÏ¿</label>
+      <relief>GTK_RELIEF_NORMAL</relief>
+    </widget>
+
+    <widget>
+      <class>GtkButton</class>
+      <name>B11</name>
+      <x>840</x>
+      <y>720</y>
+      <width>80</width>
+      <height>24</height>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Sat, 03 Feb 2001 04:43:32 GMT</last_modification_time>
+      </signal>
+      <label></label>
+      <relief>GTK_RELIEF_NORMAL</relief>
+    </widget>
+
+    <widget>
+      <class>GtkButton</class>
+      <name>B10</name>
+      <x>760</x>
+      <y>720</y>
+      <width>80</width>
+      <height>24</height>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Sat, 03 Feb 2001 04:43:32 GMT</last_modification_time>
+      </signal>
+      <label></label>
+      <relief>GTK_RELIEF_NORMAL</relief>
+    </widget>
+
+    <widget>
+      <class>GtkButton</class>
+      <name>B09</name>
+      <x>680</x>
+      <y>720</y>
+      <width>80</width>
+      <height>24</height>
+      <can_focus>True</can_focus>
+      <accelerator>
+	<modifiers>0</modifiers>
+	<key>GDK_F9</key>
+	<signal>clicked</signal>
+      </accelerator>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Sat, 03 Feb 2001 04:43:32 GMT</last_modification_time>
+      </signal>
+      <label>¸¡º÷</label>
+      <relief>GTK_RELIEF_NORMAL</relief>
+    </widget>
+
+    <widget>
+      <class>GtkButton</class>
+      <name>B08</name>
+      <x>584</x>
+      <y>720</y>
+      <width>80</width>
+      <height>24</height>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Sat, 03 Feb 2001 04:43:32 GMT</last_modification_time>
+      </signal>
+      <label></label>
+      <relief>GTK_RELIEF_NORMAL</relief>
+    </widget>
+
+    <widget>
+      <class>GtkButton</class>
+      <name>B07</name>
+      <x>504</x>
+      <y>720</y>
+      <width>80</width>
+      <height>24</height>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Sat, 03 Feb 2001 04:43:32 GMT</last_modification_time>
+      </signal>
+      <label></label>
+      <relief>GTK_RELIEF_NORMAL</relief>
+    </widget>
+
+    <widget>
+      <class>GtkButton</class>
+      <name>B06</name>
+      <x>424</x>
+      <y>720</y>
+      <width>80</width>
+      <height>24</height>
+      <can_focus>True</can_focus>
+      <accelerator>
+	<modifiers>0</modifiers>
+	<key>GDK_F6</key>
+	<signal>clicked</signal>
+      </accelerator>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Sat, 03 Feb 2001 04:43:32 GMT</last_modification_time>
+      </signal>
+      <label>Á°²óÊ£¼Ì</label>
+      <relief>GTK_RELIEF_NORMAL</relief>
+    </widget>
+
+    <widget>
+      <class>GtkButton</class>
+      <name>B05</name>
+      <x>344</x>
+      <y>720</y>
+      <width>80</width>
+      <height>24</height>
+      <can_focus>True</can_focus>
+      <accelerator>
+	<modifiers>0</modifiers>
+	<key>GDK_F5</key>
+	<signal>clicked</signal>
+      </accelerator>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Sat, 03 Feb 2001 04:43:32 GMT</last_modification_time>
+      </signal>
+      <label>ÆþÎÏ£Ã£Ä</label>
+      <relief>GTK_RELIEF_NORMAL</relief>
+    </widget>
+
+    <widget>
+      <class>GtkButton</class>
+      <name>B04</name>
+      <x>248</x>
+      <y>720</y>
+      <width>80</width>
+      <height>24</height>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Sat, 03 Feb 2001 04:43:32 GMT</last_modification_time>
+      </signal>
+      <label></label>
+      <relief>GTK_RELIEF_NORMAL</relief>
+    </widget>
+
+    <widget>
+      <class>GtkButton</class>
+      <name>B03</name>
+      <x>168</x>
+      <y>720</y>
+      <width>80</width>
+      <height>24</height>
+      <can_focus>True</can_focus>
+      <accelerator>
+	<modifiers>0</modifiers>
+	<key>GDK_F3</key>
+	<signal>clicked</signal>
+      </accelerator>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Sat, 03 Feb 2001 04:43:32 GMT</last_modification_time>
+      </signal>
+      <label>ºï½ü</label>
+      <relief>GTK_RELIEF_NORMAL</relief>
+    </widget>
+
+    <widget>
+      <class>GtkPandaEntry</class>
+      <name>NAME</name>
+      <x>120</x>
+      <y>116</y>
+      <width>650</width>
+      <height>24</height>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>activate</name>
+	<handler>send_event</handler>
+	<data>ACTIVATE</data>
+	<last_modification_time>Sat, 03 Feb 2001 04:58:00 GMT</last_modification_time>
+      </signal>
+      <signal>
+	<name>changed</name>
+	<handler>entry_changed</handler>
+	<data>CHANGED</data>
+	<last_modification_time>Sat, 03 Feb 2001 04:58:26 GMT</last_modification_time>
+      </signal>
+      <editable>True</editable>
+      <text_visible>True</text_visible>
+      <text_max_length>100</text_max_length>
+      <text></text>
+      <input_mode>XIM</input_mode>
+      <xim_enabled>True</xim_enabled>
+    </widget>
+
+    <widget>
+      <class>GtkPandaEntry</class>
+      <name>KANANAME</name>
+      <x>120</x>
+      <y>84</y>
+      <width>650</width>
+      <height>24</height>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>activate</name>
+	<handler>send_event</handler>
+	<data>ACTIVATE</data>
+	<last_modification_time>Sat, 03 Feb 2001 04:58:00 GMT</last_modification_time>
+      </signal>
+      <signal>
+	<name>changed</name>
+	<handler>entry_changed</handler>
+	<data>CHANGED</data>
+	<last_modification_time>Sat, 03 Feb 2001 04:58:26 GMT</last_modification_time>
+      </signal>
+      <editable>True</editable>
+      <text_visible>True</text_visible>
+      <text_max_length>100</text_max_length>
+      <text></text>
+      <input_mode>XIM</input_mode>
+      <xim_enabled>True</xim_enabled>
+    </widget>
+
+    <widget>
+      <class>GtkPandaEntry</class>
+      <name>YUKOSTYMD</name>
+      <x>120</x>
+      <y>52</y>
+      <width>120</width>
+      <height>24</height>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>activate</name>
+	<handler>send_event</handler>
+	<data>ACTIVATE</data>
+	<last_modification_time>Thu, 08 Feb 2001 12:37:07 GMT</last_modification_time>
+      </signal>
+      <signal>
+	<name>changed</name>
+	<handler>entry_changed</handler>
+	<data>CHANGED</data>
+	<last_modification_time>Thu, 08 Feb 2001 12:37:56 GMT</last_modification_time>
+      </signal>
+      <editable>True</editable>
+      <text_visible>True</text_visible>
+      <text_max_length>10</text_max_length>
+      <text></text>
+      <input_mode>ASCII</input_mode>
+      <xim_enabled>False</xim_enabled>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label6</name>
+      <x>544</x>
+      <y>8</y>
+      <width>38</width>
+      <height>18</height>
+      <label>¡Á</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkPandaEntry</class>
+      <name>YUKOEDYMD</name>
+      <x>272</x>
+      <y>52</y>
+      <width>120</width>
+      <height>24</height>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>activate</name>
+	<handler>send_event</handler>
+	<data>ACTIVATE</data>
+	<last_modification_time>Thu, 08 Feb 2001 12:39:22 GMT</last_modification_time>
+      </signal>
+      <signal>
+	<name>changed</name>
+	<handler>entry_changed</handler>
+	<data>CHANGED</data>
+	<last_modification_time>Thu, 08 Feb 2001 12:39:49 GMT</last_modification_time>
+      </signal>
+      <editable>True</editable>
+      <text_visible>True</text_visible>
+      <text_max_length>10</text_max_length>
+      <text></text>
+      <input_mode>ASCII</input_mode>
+      <xim_enabled>False</xim_enabled>
+    </widget>
+
+    <widget>
+      <class>GtkPandaEntry</class>
+      <name>FORMALNAME</name>
+      <x>120</x>
+      <y>176</y>
+      <width>890</width>
+      <height>24</height>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>activate</name>
+	<handler>send_event</handler>
+	<data>ACTIVATE</data>
+	<last_modification_time>Sat, 03 Feb 2001 04:58:00 GMT</last_modification_time>
+      </signal>
+      <signal>
+	<name>changed</name>
+	<handler>entry_changed</handler>
+	<data>CHANGED</data>
+	<last_modification_time>Sat, 03 Feb 2001 04:58:26 GMT</last_modification_time>
+      </signal>
+      <editable>True</editable>
+      <text_visible>True</text_visible>
+      <text_max_length>200</text_max_length>
+      <text></text>
+      <input_mode>XIM</input_mode>
+      <xim_enabled>True</xim_enabled>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label209</name>
+      <x>240</x>
+      <y>56</y>
+      <width>38</width>
+      <height>18</height>
+      <label>¡Á</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label210</name>
+      <x>24</x>
+      <y>56</y>
+      <width>76</width>
+      <height>18</height>
+      <label>Í­¸úÇ¯·îÆü</label>
+      <justify>GTK_JUSTIFY_LEFT</justify>
+      <wrap>False</wrap>
+      <xalign>0</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label8</name>
+      <x>24</x>
+      <y>120</y>
+      <width>63</width>
+      <height>18</height>
+      <label>´Á»úÌ¾¾Î</label>
+      <justify>GTK_JUSTIFY_LEFT</justify>
+      <wrap>False</wrap>
+      <xalign>0</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label7</name>
+      <x>24</x>
+      <y>88</y>
+      <width>63</width>
+      <height>18</height>
+      <label>¥«¥ÊÌ¾¾Î</label>
+      <justify>GTK_JUSTIFY_LEFT</justify>
+      <wrap>False</wrap>
+      <xalign>0</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkHSeparator</class>
+      <name>hseparator1</name>
+      <x>0</x>
+      <y>36</y>
+      <width>1020</width>
+      <height>16</height>
+    </widget>
+
+    <widget>
+      <class>GtkPandaEntry</class>
+      <name>IDOKANREN</name>
+      <x>120</x>
+      <y>220</y>
+      <width>120</width>
+      <height>24</height>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>activate</name>
+	<handler>send_event</handler>
+	<data>ACTIVATE</data>
+	<last_modification_time>Thu, 08 Feb 2001 12:37:07 GMT</last_modification_time>
+      </signal>
+      <signal>
+	<name>changed</name>
+	<handler>entry_changed</handler>
+	<data>CHANGED</data>
+	<last_modification_time>Thu, 08 Feb 2001 12:37:56 GMT</last_modification_time>
+      </signal>
+      <editable>True</editable>
+      <text_visible>True</text_visible>
+      <text_max_length>9</text_max_length>
+      <text></text>
+      <input_mode>XIM</input_mode>
+      <xim_enabled>False</xim_enabled>
+    </widget>
+
+    <widget>
+      <class>GtkPandaEntry</class>
+      <name>IDOKANRENNAME</name>
+      <x>120</x>
+      <y>252</y>
+      <width>744</width>
+      <height>24</height>
+      <signal>
+	<name>activate</name>
+	<handler>send_event</handler>
+	<data>ACTIVATE</data>
+	<last_modification_time>Sat, 03 Feb 2001 04:58:00 GMT</last_modification_time>
+      </signal>
+      <signal>
+	<name>changed</name>
+	<handler>entry_changed</handler>
+	<data>CHANGED</data>
+	<last_modification_time>Sat, 03 Feb 2001 04:58:26 GMT</last_modification_time>
+      </signal>
+      <editable>False</editable>
+      <text_visible>True</text_visible>
+      <text_max_length>100</text_max_length>
+      <text></text>
+      <input_mode>XIM</input_mode>
+      <xim_enabled>False</xim_enabled>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label216</name>
+      <x>24</x>
+      <y>180</y>
+      <width>63</width>
+      <height>18</height>
+      <label>¾¦ÉÊÌ¾¾Î</label>
+      <justify>GTK_JUSTIFY_LEFT</justify>
+      <wrap>False</wrap>
+      <xalign>0</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label217</name>
+      <x>252</x>
+      <y>220</y>
+      <width>72</width>
+      <height>24</height>
+      <label>Í­¸ú´ü´Ö</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>IDOKIKAN</name>
+      <x>320</x>
+      <y>220</y>
+      <width>188</width>
+      <height>24</height>
+      <label></label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label9</name>
+      <x>12</x>
+      <y>220</y>
+      <width>100</width>
+      <height>24</height>
+      <label>»»Äê´ïºà¥³¡¼¥É</label>
+      <justify>GTK_JUSTIFY_LEFT</justify>
+      <wrap>False</wrap>
+      <xalign>0</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkPandaEntry</class>
+      <name>COPYCD</name>
+      <x>120</x>
+      <y>656</y>
+      <width>120</width>
+      <height>24</height>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>activate</name>
+	<handler>send_event</handler>
+	<data>ACTIVATE</data>
+	<last_modification_time>Thu, 08 Feb 2001 12:37:07 GMT</last_modification_time>
+      </signal>
+      <signal>
+	<name>changed</name>
+	<handler>entry_changed</handler>
+	<data>CHANGED</data>
+	<last_modification_time>Thu, 08 Feb 2001 12:37:56 GMT</last_modification_time>
+      </signal>
+      <editable>True</editable>
+      <text_visible>True</text_visible>
+      <text_max_length>9</text_max_length>
+      <text></text>
+      <input_mode>XIM</input_mode>
+      <xim_enabled>False</xim_enabled>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label218</name>
+      <x>16</x>
+      <y>656</y>
+      <width>100</width>
+      <height>24</height>
+      <label>Ê£¼Ì¸µ¥³¡¼¥É</label>
+      <justify>GTK_JUSTIFY_LEFT</justify>
+      <wrap>False</wrap>
+      <xalign>0</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkHSeparator</class>
+      <name>hseparator2</name>
+      <x>0</x>
+      <y>148</y>
+      <width>1020</width>
+      <height>16</height>
+    </widget>
+
+    <widget>
+      <class>GtkHSeparator</class>
+      <name>hseparator3</name>
+      <x>4</x>
+      <y>628</y>
+      <width>1012</width>
+      <height>16</height>
+    </widget>
+  </widget>
+</widget>
+
+</GTK-Interface>

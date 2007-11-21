@@ -5234,6 +5234,12 @@
                IF      SRY-INPUTNUM (IDX)  NOT =   ZERO
                    PERFORM 490111-PTCOM-SET-SEC
                END-IF
+      *!!
+      *       器材商品名対応
+              IF       SRY-MEISKYFLG (IDX) =   "1"
+                   MOVE    "T"             TO  WKSRY-AUTOKBN  (IDX)
+               END-IF
+      *!!
                MOVE    IDX                 TO  IDX-W
                ADD     1                   TO  IDX-KAI
       *        訂正の時、時間外の自動発生の有無

@@ -1313,6 +1313,7 @@
                    MOVE    "1"             TO  SPA-COM-ZAIEND  (IDX)
                    MOVE    1               TO  FLG-ZAI
       *        特定器材（前の剤に付属する）
+               WHEN    "058"
                WHEN    "059"
                    MOVE    SPACE           TO  SPA-COM-SRYSYUKBN (IDX)
       *            器材（前の剤に付属する）

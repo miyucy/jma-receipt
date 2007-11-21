@@ -2031,6 +2031,12 @@
                    MOVE    SRY-SRYSURYO (IDX)  TO  WKSRY-SRYSURYO (IDY)
                    MOVE    SRY-SRYKAISU (IDX)  TO  WKSRY-SRYKAISU (IDY)
                    MOVE    SRY-AUTOKBN  (IDX)  TO  WKSRY-AUTOKBN  (IDY)
+      *!!
+      *            ´ïºà¾¦ÉÊÌ¾ÂÐ±þ
+                   IF      SRY-MEISKYFLG (IDX) =   "1"
+                       MOVE    "T"             TO  WKSRY-AUTOKBN  (IDY)
+                   END-IF
+      *!!
       *            ¼«Æ°È¯À¸¤ÎÃæ¿´ÀÅÌ®Ãí¼Í¤Î¤ßÁªÂò²ÄÇ½¤È¤¹¤ë
                    IF     (SRY-AUTOKBN (IDX)   =   "3" )  AND
                           (SRY-SRYSYUKBN       =   "340")
@@ -2352,6 +2358,13 @@
                 MOVE    WRK-MEISYO    TO  SPA-GMN-TMEISYO2(IDG)
            END-IF
       *!
+      *    ´ïºà¾¦ÉÊÌ¾¤Î´ïºà¥³¡¼¥É
+           IF     (LNK-WKSRY-SRYCD(IDX IDZ)(1:1)   =   "7"  )  AND
+                  (LNK-WKSRY-AUTOKBN (IDX IDZ)     =   "T"  )
+                PERFORM 3005-INPUT-MEISYO4-SEC
+                MOVE    WRK-MEISYO    TO  SPA-GMN-TMEISYO2(IDG)
+           END-IF
+      *!
       *
       *    ÌóÂ«¤ÎÆâÍÆ¤Î»þ¡¢ºÆÊÔ½¸
            IF      FLG-YAKUSOKU        =   1
@@ -2603,6 +2616,21 @@
            MOVE    ORCSMEIHEN-MEISYO   TO  WRK-MEISYO
            .
        3005-INPUT-MEISYO3-EXT.
+           EXIT.
+      *****************************************************************
+      *    ´ïºà¾¦ÉÊÌ¾¥³¡¼¥É¤Î´ïºàÊÔ½¸
+      *****************************************************************
+       3005-INPUT-MEISYO4-SEC        SECTION.
+      *
+           MOVE    SPACE               TO  WRK-MEISYO
+      *
+           STRING     "¡Ì"             DELIMITED   BY  SIZE
+                      TNS-NAME         DELIMITED   BY  "    "
+                      "¡Í"             DELIMITED   BY  SIZE
+                      INTO             WRK-MEISYO
+           END-STRING
+           .
+       3005-INPUT-MEISYO4-EXT.
            EXIT.
       *
       *****************************************************************

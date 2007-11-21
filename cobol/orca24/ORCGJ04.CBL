@@ -130,7 +130,6 @@
            03  FLG-KANA            PIC 9(01).
            03  FLG-SUJI            PIC 9(01).
            03  FLG-TOROKU          PIC X(01).
-           03  FLG-SYORI           PIC X(01).
            03  FLG-SST             PIC 9(01).
            03  FLG-KINKI           PIC 9(01).
            03  FLG-YAKZAI          PIC 9(01).
@@ -299,7 +298,7 @@
            03  WRK-MAISU           PIC 9(08).
            03  WRK-KEIMAI          PIC 9(08).
            03  WRK-TENSUKEI        PIC 9(08).
-           03  WRK-TENSU1          PIC 9(08).
+           03  WRK-TENSU           PIC 9(08).
            03  WRK-KAISU           PIC 9(04).
       *    分画数フラグ
            03  FLG-BUIKBN          PIC X(01).
@@ -1321,6 +1320,38 @@
            PERFORM 510-TBLHEN-SEC
            MOVE    SPACE           TO  FLG-TOROKU
       *
+      *    剤点数不一致
+      *    訂正時点数変更チェック
+           MOVE    ZERO                TO  SPA-TENKAI-CHK
+           MOVE    ZERO                TO  SPA-TENKAI-ERR
+      *    警告フラグクリア
+           PERFORM VARYING IDX     FROM    1   BY  1
+                   UNTIL   (IDX        >   SPA-MAX-LINE )  OR
+                          ((SPA-GMN-INPUTCD(IDX)   =   SPACE ) AND
+                           (SPA-COM-INPUTCD(IDX)   =   SPACE ))
+               IF     (SPA-COM-ZAIEND(IDX)     =   "1" )  OR
+                     ((SPA-COM-SRYKBN(IDX)     =   "95"
+                                               OR  "96" ) AND
+                      (SPA-COM-JIHIMONEY(IDX)  >   ZERO ))
+                   IF      SPA-COM-SRYKBN(IDX)     =   "95"
+                                                   OR  "96"
+                       MOVE    SPA-COM-JIHIMONEY(IDX)
+                                                   TO  WRK-TENSU
+                   ELSE
+                       MOVE    SPA-COM-TENSU (IDX)
+                                                   TO  WRK-TENSU
+                   END-IF
+                   IF      WRK-TENSU       NOT =   SPA-ZAITEN
+                       MOVE    1               TO  SPA-TENKAI-ERR
+                       MOVE    "1"             TO  SPA-COM-CUR (IDX)
+                   END-IF
+               END-IF
+           END-PERFORM
+      *
+           IF      SPA-TENKAI-ERR      =   1
+               MOVE    "K103"              TO  SPA-ERRCD
+           END-IF
+      *
            MOVE    SPA-ZAINUM          TO  SPA-MAE-ZAINUM
       *
            .
@@ -1660,6 +1691,28 @@
                    MOVE    SRY-SRYKBN          TO  SPA-COM-SRYKBN(IDX2)
                END-IF
            END-IF
+      *!!
+      *    前の行が器材商品の自動発生の時
+           IF     (SPA-COM-INPUTCD  (IDX2)(1:3)    =   "058" )  AND
+                  (SPA-COM-AUTOKBN2 (IDX2 + 1 )    =   "1" )
+               IF      SRY-SRYCD   (IDS)   =   SPA-COM-INPUTCD
+                                                        (IDX2 + 1)
+                   CONTINUE
+               ELSE
+      *            登録時と器材コードが違う時、編集なし
+                   IF      SRY-MEISKYFLG (IDS) =   "1"
+                       MOVE    1               TO  SPA-TENKAI-ERR
+                       ADD     1               TO  IDX2
+                       MOVE    SRY-SRYSURYO(IDS)
+                                               TO  SPA-COM-SURYO (IDX2)
+                       MOVE    SRY-SRYSURYO(IDS)
+                                               TO  SPA-COM-SURYO2(IDX2)
+                       MOVE    "1"             TO  SPA-COM-CUR   (IDX2)
+                       GO      TO      31011-SPA-HEN-EXT
+                   END-IF
+               END-IF
+           END-IF
+      *!!
       *
       *    明細編集
            ADD     1                   TO  IDX2
@@ -1681,6 +1734,12 @@
                   (SRY-SRYCD (IDS) NOT =   "820000047" )
                MOVE    "1"                 TO  SPA-COM-SET (IDX2)
            END-IF
+      *!!
+      *    器材商品コード
+           IF      SRY-MEISKYFLG (IDX) =   "1"
+               MOVE    "1"                 TO  SPA-COM-AUTOKBN2 (IDX2)
+           END-IF
+      *!!
       *
       *    回数を編集
            MOVE    IDX2                TO  IDXS
@@ -2839,6 +2898,8 @@
                                        ORCSC92AREA
                                        SPA-SCR-REC
                                        SPA-AREA
+           MOVE    LNK-SC92-GMN-IDX    TO  SPA-GMN-IDX
+      *
            MOVE    LNK-SC92-INPUT-G    TO  LNK-SC97-INPUT-G
       *****MOVE    LNK-SC92-TIMEFLG    TO  SPA-NAI-TIMEFLG
       *    カーソル位置設定
@@ -4414,7 +4475,6 @@
            MOVE    SPA-GMN-REC         TO  WRK-GMN-REC
            INITIALIZE                      SPA-GMN-REC
            MOVE    ZERO                TO  SPA-GMN-MAX
-           MOVE    SPACE               TO  FLG-SYORI
       *
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   SPA-MAX-LINE
@@ -4426,6 +4486,25 @@
                        MOVE    SPACE           TO  WRK-GMN-INPUTCD
                                                              (IDX + 1)
                    END-IF
+      *            器材商品名は次も削除
+                   IF     (WRK-COM-INPUTCD(IDX)(1:3)   =   "058") AND
+                          (WRK-COM-AUTOKBN2 (IDX + 1)  =   "1"   )
+                       MOVE    SPACE           TO  WRK-GMN-INPUTCD
+                                                             (IDX + 1)
+                   END-IF
+      *            前が器材商品名
+                   IF     (WRK-COM-AUTOKBN2(IDX)   NOT =   SPACE )
+                      AND (WRK-COM-INPUTCD(IDX - 1)(1:3)
+                                                       =   "058")
+                       MOVE    SPACE           TO  WRK-GMN-INPUTCD
+                                                             (IDX - 1)
+                   END-IF
+               END-IF
+           END-PERFORM
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-MAX-LINE
+               IF      WRK-GMN-INPUTCD(IDX)    =   SPACE
+                   CONTINUE
                ELSE
                    ADD     1               TO  SPA-GMN-MAX
                    MOVE    WRK-COM-TBLREC (IDX) 
@@ -4434,9 +4513,6 @@
                    MOVE    WRK-GMN-TBLREC (IDX) 
                                            TO  SPA-GMN-TBLREC
                                                        (SPA-GMN-MAX)
-                   IF      SPA-GMN-MAX     NOT =   IDX
-                       MOVE    "1"             TO  FLG-SYORI
-                   END-IF
                END-IF
            END-PERFORM
       *
@@ -4967,7 +5043,6 @@
            MOVE    ZERO                TO  WRK-SURYOKEI
            MOVE    ZERO                TO  WRK-MEISAISU
            INITIALIZE                      WRK-WKSRY-AREA
-           MOVE    ZERO                TO  FLG-SYORI
       *    附加情報
            INITIALIZE                      WKSRYACTPLUS-REC
       *
@@ -5486,6 +5561,12 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                   (SPA-COM-SURFLG  (IDX)   =   "1"   )
                MOVE    "S"                     TO  SRY-AUTOKBN (IDS)
            END-IF
+      *!!
+      *    器材商品コード対応
+           IF      SPA-COM-AUTOKBN2 (IDX)  =   "1"
+               MOVE    "1"                 TO  SRY-MEISKYFLG (IDS)
+           END-IF
+      *!!
       *    時間外区分入力がある時、英字変換後セット
            IF      SPA-COM-AUTOKBN (IDX)    =   SPACE
                 PERFORM 45022-JIKANGAI-SET-SEC
@@ -7295,6 +7376,16 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
        500-SET-SCREEN              SECTION.
       *
            PERFORM 500-GMNHEN-SEC
+      *
+      *    展開時のエラー
+           IF     (SPA-TENKAI-ERR      =   1  )  AND
+                  (SPA-TENKAI-CHK      =   ZERO)
+               IF      SPA-ERRCD       NOT =   "K103"
+                   MOVE    "K103"              TO  SPA-ERRCD
+                   MOVE    1                   TO  SPA-TENKAI-CHK
+                   MOVE    1                   TO  SPA-GMN-CUR
+               END-IF
+           END-IF
       *
            IF      SPA-ERRCD       NOT =   SPACE
                PERFORM 510-ERRSET-SEC

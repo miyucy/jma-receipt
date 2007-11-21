@@ -1414,6 +1414,15 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE    LNK-WKSRY-SRYKAISU(IDX IDX-SIN)
                                                TO  SRY-SRYKAISU
                                                             (IDX-SIN2)
+      *!!
+      *            Ã¿∫Ÿ¿¡µ·∂Ë ¨
+                   IF      LNK-WKSRY-AUTOKBN(IDX IDX-SIN)  =   "T"
+                       MOVE    "1"             TO  SRY-MEISKYFLG
+                                                            (IDX-SIN2)
+                       MOVE    SPACE           TO  LNK-WKSRY-AUTOKBN
+                                                         (IDX IDX-SIN)
+                   END-IF
+      *!!
                    MOVE    LNK-WKSRY-AUTOKBN(IDX IDX-SIN)
                                                TO  SRY-AUTOKBN
                                                             (IDX-SIN2)

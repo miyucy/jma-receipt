@@ -363,6 +363,7 @@
            COPY    "Z05.INC".
            COPY    "Z06.INC".
            COPY    "Z07.INC".
+           COPY    "Z08.INC".
            COPY    "Z90.INC".
            COPY    "Z91.INC".
            COPY    "Z97.INC".
@@ -1435,6 +1436,17 @@
                MOVE    TNS-TANINAME        TO  SPA-Z98-GMN-TANI(IDX)
            END-IF
       *
+      *TEST
+      *    ユーザ登録
+           IF     (TNS-SRYCD(1:1)      =   "0" )
+               MOVE    "("                 TO  SPA-Z98-GMN-TANI(IDX)
+                                                              (1:1)
+               MOVE    TNS-SRYCD(1:3)      TO  SPA-Z98-GMN-TANI(IDX)
+                                                              (2:3)
+               MOVE    ")"                 TO  SPA-Z98-GMN-TANI(IDX)
+                                                              (6:1)
+           END-IF
+      *TEST
       *!!  診療コードの時、種別
       *    IF      SPA-Z98-GMN-SYORI   =   "9"
       *        CONTINUE
@@ -2048,11 +2060,6 @@
       *
            MOVE    6               TO  SPA-Z98-GMN-CUR
       *
-      *    IF      Z98-INPUT           =   SPA-Z98-GMN-INPUT
-      *        MOVE    1               TO  SPA-Z98-GMN-CUR
-      *        GO      TO      41013-INPUT-CHK-EXT
-      *    END-IF
-      *
            MOVE    Z98-INPUT           TO  SPA-Z98-GMN-INPUT
            MOVE    ZERO                TO  FLG-KANJI
            MOVE    ZERO                TO  FLG-KANA
@@ -2111,25 +2118,14 @@
                MOVE    SPACE               TO  SPA-Z98-GMN-ALL
       *
                MOVE    SPACE               TO  SPA-Z98-GMN-SYORI
-      *        IF      SPA-Z98-GMN-SYORI   =   "P"  OR  SPACE
-      *            内服とする
-      *            MOVE    "3"                 TO  SPA-Z98-GMN-SYORI
-      *        END-IF
+      *!Ｚ０８からは器材とする
+               IF      SPA-Z98-MOTOPG      =   "Z08"
+                   MOVE    "7"                 TO  SPA-Z98-GMN-SYORI
+               END-IF
            ELSE
                MOVE    SPACE               TO  SPA-Z98-GMN-ALL
       *        半角入力（入力セットマスタより）
                MOVE    "1"                 TO  SPA-Z98-TYPE
-      *----(01.00.01) LINE UPD START ----------------------------------
-      *********IF      FLG-KANA            =   1
-      *            MOVE    "5"             TO  SPA-Z98-CDSYUBETU
-      *        分類入力
-      *        ELSE
-      *            IF      WRK-MOJI        =   4
-      *                MOVE    "4"             TO  SPA-Z98-CDSYUBETU
-      *            ELSE
-      *                MOVE    "6"             TO  SPA-Z98-CDSYUBETU
-      *            END-IF
-      *********END-IF
       *
       *       全桁数字、”Ｐ、Ｓ”で始まるものは、コード種別を桁数で決定
                MOVE    SPACE               TO  SPA-Z98-GMN-SYORI

@@ -57,6 +57,8 @@
            03  FLG-YAKUSOKU        PIC 9(01).
            03  FLG-SETSYORI        PIC 9(01).
       *
+           03  FLG-AUTOKBN2        PIC 9(01).
+      *
       *    添字領域
        01  IDX-AREA.
            03  IDX                     PIC 9(04).
@@ -263,6 +265,20 @@
                ADD     1               TO  IDX-IP
       *        編集
                MOVE    ZERO            TO  FLG-SYORI
+      *!!
+      *        器材商品コード対応
+      *        1行前が器材コードの自動発生の時、置換え
+               MOVE    ZERO            TO  FLG-AUTOKBN2
+               IF     (SPA-GMN-IDX         >   1    )    AND
+                      (ISET-INPUTCD (1:1)  =   "7"  )    AND
+                      (SPA-COM-AUTOKBN2(SPA-GMN-IDX - 1)
+                                           =   "1"   )   AND
+                      (ISET-INPUTCD        =   SPA-COM-INPUTCD
+                                                  (SPA-GMN-IDX - 1 ))
+                   MOVE    1               TO  FLG-AUTOKBN2
+                   COMPUTE SPA-GMN-IDX     =   SPA-GMN-IDX   -  1
+               END-IF
+      *!!
                MOVE    ISET-INPUTCD    TO  SPA-GMN-INPUTCD(SPA-GMN-IDX)
       *        保険組合せは前の行を複写する
                IF     (SPA-GMN-IDX     >   1   )  AND
@@ -297,6 +313,13 @@
                        PERFORM 1001-INSET-HEN-SEC
                        PERFORM 1001-SRYCD-SYORI-SEC
                END-EVALUATE
+      *
+      *!!
+               IF      FLG-AUTOKBN2        =   1
+                   MOVE    "1"             TO  SPA-COM-AUTOKBN2 
+                                                      (SPA-GMN-IDX)
+               END-IF
+      *!!
       *
                IF      SPA-COM-KAIFLG (SPA-GMN-IDX)    =   "1"
                    MOVE    SPACE               TO  WRK-SRYKBN
@@ -529,6 +552,8 @@
                                        ORCSC92AREA
                                        SPA-SCR-REC
                                        SPA-AREA
+           MOVE    LNK-SC92-GMN-IDX    TO  SPA-GMN-IDX
+      *
       *    点数マスタなしのエラーは表示する
            IF      SPA-ERRCD           =   "0001"
                 IF      SPA-COM-SET (SPA-GMN-IDX)   =  "1"

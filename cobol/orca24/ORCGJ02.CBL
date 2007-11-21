@@ -2841,6 +2841,14 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                 PERFORM 3100122-KOUHATU-MEISYO-SEC
                 MOVE    WRK-MEISYO    TO  SPA-GMN-TMEISYO (IDG)
            END-IF
+      *!
+      *    ¥Ô∫‡æ¶… Ãæ§Œ¥Ô∫‡•≥°º•…
+           IF     (SRY-SRYCD (IDZ)(1:1)    =   "7"  )  AND
+                  (SRY-MEISKYFLG (IDZ)     =   "1"  )
+                PERFORM 3005-INPUT-MEISYO4-SEC
+                MOVE    WRK-MEISYO    TO  SPA-GMN-TMEISYO (IDG)
+           END-IF
+      *!
       *
       *    ÃÛ¬´§Œ∆‚Õ∆§Œª˛°¢∫∆ ‘Ω∏
            IF      FLG-YAKUSOKU        =   1
@@ -3097,6 +3105,21 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    ORCSMEIHEN-MEISYO   TO  WRK-MEISYO
            .
        3100121-FUKIYO-MEISYO-EXT.
+           EXIT.
+      *****************************************************************
+      *    ¥Ô∫‡æ¶… Ãæ•≥°º•…§Œ¥Ô∫‡ ‘Ω∏
+      *****************************************************************
+       3005-INPUT-MEISYO4-SEC        SECTION.
+      *
+           MOVE    SPACE               TO  WRK-MEISYO
+      *
+           STRING     "°Ã"             DELIMITED   BY  SIZE
+                      TNS-NAME         DELIMITED   BY  "    "
+                      "°Õ"             DELIMITED   BY  SIZE
+                      INTO             WRK-MEISYO
+           END-STRING
+           .
+       3005-INPUT-MEISYO4-EXT.
            EXIT.
       *
       *****************************************************************

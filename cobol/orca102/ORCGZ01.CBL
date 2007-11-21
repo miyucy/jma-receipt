@@ -44,6 +44,7 @@
       *  02.00.01    NACL-多々納  05/12/09  登録コードチェック追加
       *                                     MONFUNC対応
       *  03.05.00    NACL-多々納  07/05/07  グループ診療対応
+      *  04.01.00    NACL-多々納  07/11/XX  器材商品名対応
       *****************************************************************
       *
        ENVIRONMENT                               DIVISION.
@@ -153,6 +154,9 @@
       *    パス名
            03  WRK-PATH                PIC X(64).
       *
+           03  WRK-SRYCD               PIC X(09).
+           03  WRK-Z08-SRYCD           PIC X(09).
+      *
            03  WRK-INPUTCD             PIC X(09).
            03  WRK-CD-MCNT             PIC 9(02).
            03  FLG-KANJI               PIC 9(01).
@@ -226,6 +230,7 @@
            COPY    "Z05.INC".
            COPY    "Z06.INC".
            COPY    "Z07.INC".
+           COPY    "Z08.INC".
            COPY    "Z90.INC".
            COPY    "Z91.INC".
            COPY    "Z97.INC".
@@ -345,9 +350,16 @@
       *****************************************************************
        310-SPASET-SEC              SECTION.
       *
-           INITIALIZE                        SPA-Z01KYOUTU
+           MOVE    SPACE               TO  WRK-SRYCD
+           IF      SPA-MOTOPG      NOT =   "M02"
+               MOVE    SPA-MAE-SRYCD       TO  WRK-SRYCD
+           END-IF
+           MOVE    SPA-Z08MAE-SRYCD    TO  WRK-Z08-SRYCD
+           INITIALIZE                      SPA-Z01KYOUTU
+           MOVE    WRK-SRYCD           TO  SPA-MAE-SRYCD
+           MOVE    WRK-Z08-SRYCD       TO  SPA-Z08MAE-SRYCD
       *
-           INITIALIZE                        SPA-Z01-AREA
+           INITIALIZE                      SPA-Z01-AREA
       *
            MOVE    "通　常"            TO  SPA-Z01GMN-BS1LABEL
            MOVE    "F"                 TO  SPA-Z01GMN-BS1VALUE
@@ -381,11 +393,12 @@
       *        戻る
                WHEN    "CLICKED"       ALSO    "B01"
                    PERFORM  401-BACK-SEC
-      *---- (01.00.01) LINE ADD START --------------------------------
       *        クリア
                WHEN    "CLICKED"       ALSO    "B02"
                    PERFORM 493-CLEAR-SEC
-      *---- (01.00.01) LINE ADD END ----------------------------------
+      *        前回コード
+               WHEN    "CLICKED"       ALSO    "B03"
+                   PERFORM 430-ZEN-SRYCD-SEC
       *---- (01.02.01) LINE ADD START --------------------------------
       *        リスト
                WHEN    "CLICKED"       ALSO    "B04"
@@ -491,7 +504,7 @@
                        MOVE    "0003"        TO  SPA-ERRCD
                END-EVALUATE
                IF      SPA-ERRCD               =   SPACE
-                   MOVE  SPA-Z01GMN-SRYCD          TO  SPA-Z01GMN-SRYCD
+                   MOVE  SPA-Z01GMN-SRYCD          TO  SPA-MAE-SRYCD
       *            点数マスタ該当データ読み出し
                    PERFORM 5011-TENSU-HEN-SEC
                END-IF
@@ -600,6 +613,8 @@
            IF     (SPA-Z01GMN-SRYCD (1:3)  =   "001"
                                            OR  "002"
                                            OR  "059"
+      *           器材商品名
+                                           OR  "058"
                                            OR  "095"
                                            OR  "096" )  OR
                   (SPA-Z01GMN-SRYCD (1:4)  =   "0082"
@@ -943,7 +958,6 @@
        402-LIST-EXT.
            EXIT.
       *---- (01.02.01) LINE ADD END -----------------------------------
-      *---- (01.00.01) LINE ADD START ---------------------------------
       *
       *****************************************************************
       *    項目クリア
@@ -954,7 +968,19 @@
            .
        491-CLEAR-EXT.
            EXIT.
-      *---- (01.00.01) LINE ADD END -----------------------------------
+      *****************************************************************
+      *    前回コード処理
+      *****************************************************************
+       430-ZEN-SRYCD-SEC                   SECTION.
+      *
+           IF      SPA-MAE-SRYCD   NOT =   SPACE
+               MOVE    SPACE               TO  SPA-Z01GMN-SRYCD
+               MOVE    SPA-MAE-SRYCD       TO  Z01-SRYCD
+               PERFORM 501-SRYCD-CHK-SEC
+           END-IF
+           .
+       430-ZEN-SRYCD-EXT.
+           EXIT.
       *
       *****************************************************************
       *    検索処理
@@ -1298,6 +1324,9 @@
       *               特定器材
                       WHEN    "059"
                           MOVE   "Z05"                   TO  SPA-SAKIPG
+      *               特定器材商品名
+                      WHEN    "058"
+                          MOVE   "Z08"                   TO  SPA-SAKIPG
       *               用法
                       WHEN    "001"
                           MOVE   "Z06"                   TO  SPA-SAKIPG

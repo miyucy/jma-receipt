@@ -4888,6 +4888,8 @@
                                        SPA-AREA
       *
            MOVE    LNK-SC92-INPUT-G    TO  LNK-SC97-INPUT-G
+      *
+           MOVE    LNK-SC92-GMN-IDX    TO  SPA-GMN-IDX
       *    カーソル位置設定
            PERFORM 41011139-INFLG-HEN-SEC
       *
@@ -6957,10 +6959,21 @@
                            WRK-COM-INPUTCD(IDX)        =   SPACE)
                        MOVE    1               TO  FLG-ZAIEND
                    END-IF
+      *            器材商品名
+                   IF     (WRK-COM-INPUTCD(IDX)(1:3)   =   "058")
+                       MOVE    2               TO  FLG-ZAIEND
+                   END-IF
       *            前も空白の時対象行のみ
                    IF     (WRK-COM-INPUTCD(IDX)        =   SPACE )  AND
                           (WRK-MAE-INPUTCD(IDX)        =   SPACE )
                        MOVE    ZERO            TO  FLG-ZAIEND
+                   END-IF
+      *            前が器材商品名
+                   IF     (WRK-COM-AUTOKBN2(IDX)   NOT =   SPACE )
+                      AND (WRK-COM-INPUTCD(IDX - 1)(1:3)
+                                                       =   "058")
+                       MOVE    SPACE           TO  WRK-GMN-INPUTCD
+                                                             (IDX - 1)
                    END-IF
       *
                    IF     (WRK-COM-ZAIEND (IDX)    =   "1" )  OR
@@ -6971,6 +6984,13 @@
                ELSE
                    IF      FLG-ZAIEND          =   1
                        IF      WRK-COM-AUTOKBN(IDX)    NOT =   SPACE
+                           MOVE    SPACE           TO  WRK-GMN-INPUTCD
+                                                                 (IDX)
+                       END-IF
+                   END-IF
+      *            前が器材商品名
+                   IF      FLG-ZAIEND          =   2
+                       IF      WRK-COM-AUTOKBN2(IDX)   NOT =   SPACE
                            MOVE    SPACE           TO  WRK-GMN-INPUTCD
                                                                  (IDX)
                        END-IF

@@ -521,6 +521,14 @@
       *                基本編集・併用チェック
                        PERFORM 300-KIHON-HEN-SEC
                    END-IF
+      *TEST
+                   IF      SPA-ERRCD           =   SPACE
+      *                器材商品名
+                       IF      LNK-SC92-SRYCD(1:3) =   "058"
+                           PERFORM 400-SYOHINMEI-SEC
+                       END-IF
+                   END-IF
+      *TEST
                WHEN    "3"
       *            チェックのみ
                    MOVE    LNK-SC92-SRYCD  TO  SPA-COM-INPUTCD(IDX-T)
@@ -548,6 +556,13 @@
                    IF      SPA-ERRCD           =   SPACE
       *                基本編集・併用チェック
                        PERFORM 300-KIHON-HEN-SEC
+                   END-IF
+      *TEST
+                   IF      SPA-ERRCD           =   SPACE
+      *                器材商品名
+                       IF      LNK-SC92-SRYCD(1:3) =   "058"
+                           PERFORM 400-SYOHINMEI-SEC
+                       END-IF
                    END-IF
            END-EVALUATE
       *
@@ -784,6 +799,7 @@
       *    対象年齢チェック
            IF     (LNK-SC92-SRYCD(1:1) =   "1" )  OR
                   (LNK-SC92-SRYCD(1:1) =   "7" )
+             OR   (LNK-SC92-SRYCD(1:3) =   "059" )
                MOVE    TNS-KGNAGE          TO  WRK-TNS-KGNAGE
                MOVE    TNS-JGNAGE          TO  WRK-TNS-JGNAGE
                PERFORM 2003-NENREI-CHK-SEC
@@ -2791,6 +2807,14 @@
                 MOVE    WRK-MEISYO    TO  SPA-GMN-MEISYO (IDX-T)
            END-IF
       *!
+      *!
+      *    器材商品名コードの発生分
+           IF     (SPA-COM-INPUTCD (IDX-T)(1:1)    =   "7"   )  AND
+                  (SPA-COM-AUTOKBN2(IDX-T)         =   "1"   )
+                PERFORM 3005-INPUT-MEISYO4-SEC
+                MOVE    WRK-MEISYO    TO  SPA-GMN-MEISYO (IDX-T)
+           END-IF
+      *!
       *
       *    数量単位（薬剤・器材の時）
            IF     (SPA-COM-INPUTCD (IDX-T)(1:1)   =   "6"  OR  "7" ) OR
@@ -3293,6 +3317,21 @@
       *
            .
        3005-INPUT-MEISYO3-EXT.
+           EXIT.
+      *****************************************************************
+      *    器材商品名コードの器材編集
+      *****************************************************************
+       3005-INPUT-MEISYO4-SEC        SECTION.
+      *
+           MOVE    SPACE               TO  WRK-MEISYO
+      *
+           STRING     "〔"             DELIMITED   BY  SIZE
+                      TNS-NAME         DELIMITED   BY  "    "
+                      "〕"             DELIMITED   BY  SIZE
+                      INTO             WRK-MEISYO
+           END-STRING
+           .
+       3005-INPUT-MEISYO4-EXT.
            EXIT.
       *
       *****************************************************************
@@ -3804,7 +3843,48 @@
        300-SURYOHEN-EXT.
            EXIT.
       *
+      *TEST
+      *****************************************************************
+      *    器材商品名コード処理
+      *****************************************************************
+       400-SYOHINMEI-SEC         SECTION.
       *
+           IF     (IDX-T               <   SPA-MAX-LINE )  AND
+                  (SPA-COM-AUTOKBN2(IDX-T + 1)  =   "1" )  AND
+                  (SPA-COM-INPUTCD (IDX-T + 1)  =   TNS-IDOKANREN)
+      *        自動発生済み
+               CONTINUE
+           ELSE
+      *        下に器材コードを自動発生する
+               IF     (IDX-T               <   SPA-MAX-LINE )  AND
+                     ((SPA-COM-AUTOKBN2(IDX-T + 1)  =   "1" )
+                   OR (SPA-COM-INPUTCD (IDX-T + 1)  =   TNS-IDOKANREN))
+                   ADD     1               TO  IDX-T
+               ELSE
+      *            行挿入
+                   ADD     1               TO  IDX-T
+                   PERFORM 400-GYOINSN-SEC
+               END-IF
+               IF      SPA-ERRCD           =   SPACE
+                   MOVE    TNS-IDOKANREN   TO  LNK-SC92-SRYCD
+                   MOVE    TNS-IDOKANREN   TO  SPA-COM-INPUTCD(IDX-T)
+                   MOVE    TNS-IDOKANREN   TO  SPA-GMN-INPUTCD(IDX-T)
+                   MOVE    "1"             TO  SPA-COM-AUTOKBN2 (IDX-T)
+      *            基本編集・併用チェック
+                   PERFORM 200-KIHON-CHK-SEC
+                   IF      SPA-ERRCD           =   SPACE
+                       PERFORM 300-KIHON-HEN-SEC
+                   END-IF
+                   MOVE    SPA-COM-IN (IDX-T - 1)
+                                           TO  SPA-COM-IN       (IDX-T)
+                   MOVE    SPA-COM-IN2(IDX-T - 1)
+                                           TO  SPA-COM-IN2      (IDX-T)
+                   MOVE    IDX-T           TO  LNK-SC92-GMN-IDX
+               END-IF
+           END-IF
+           .
+       400-SYOHINMEI-EXT.
+           EXIT.
       *****************************************************************
       *    システム管理マスタ読み込み処理
       *****************************************************************

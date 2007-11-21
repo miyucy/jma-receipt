@@ -1885,6 +1885,12 @@
                WHEN    "5027"
                    MOVE    "期間が重複しています。"
                                        TO  SPA-ERRMSG
+               WHEN    "5028"
+                   STRING  "約束セットに器材商品コードの算定は"
+                           "できません。"
+                                       DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
                WHEN    OTHER
                    MOVE    SPA-ERRCD
                                        TO  SPA-ERRMSG
@@ -1981,6 +1987,12 @@
                                        TO  SPA-ERRMSG
                    MOVE    "必ず訂正で逓減点数を変更して下さい。"
                                        TO  SPA-ERRMSG(37:)
+               WHEN    "K103"
+                   STRING  "警告！！登録時と診療内容が違います。"
+                           "必ず登録をして点数を変更して下さい。"
+                                       DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
                WHEN    OTHER
                    MOVE    SPA-ERRCD
                                        TO  SPA-ERRMSG

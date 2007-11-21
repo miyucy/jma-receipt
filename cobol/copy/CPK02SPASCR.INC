@@ -116,6 +116,7 @@
                        09  SPA-COM-ZAIEND        PIC X(01).
       *                自動算定区分（１：画面表示、２：入力条件により変更）
                        09  SPA-COM-AUTOKBN       PIC X(01).
+                       09  SPA-COM-AUTOKBN2      PIC X(01).
       *                数量入力
                        09  SPA-COM-SURFLG        PIC X(01).
       *                回数入力

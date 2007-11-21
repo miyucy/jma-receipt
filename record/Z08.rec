@@ -1,0 +1,44 @@
+Z08	{
+	fixed1	{
+		SRYCDH	{
+			value	varchar(9);
+		};
+		YUKOSTYMDH	{
+			value	varchar(9);
+		};
+		YUKOEDYMDH	{
+			value	varchar(9);
+		};
+		NAMEH	{
+			value	varchar(100);
+		};
+		NAME	{
+			value	varchar(100);
+		};
+		KANANAME	{
+			value	varchar(100);
+		};
+		YUKOSTYMD	{
+			value	varchar(10);
+		};
+		YUKOEDYMD	{
+			value	varchar(10);
+		};
+		FORMALNAME	{
+			value	varchar(200);
+		};
+		IDOKANREN	{
+			value	varchar(9);
+		};
+		IDOKANRENNAME	{
+			value	varchar(100);
+		};
+		IDOKIKAN	{
+			style	varchar(20);
+			value	varchar(30);
+		};
+		COPYCD	{
+			value	varchar(9);
+		};
+	};
+};

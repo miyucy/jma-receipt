@@ -1058,6 +1058,13 @@
                                        OR  "E" OR "F" OR "G"
                MOVE    SPACE               TO  SPA-COM-AUTOKBN (IDX2)
            END-IF
+      *!!
+      *    器材商品名対応
+           IF      LNK-WKSRY-AUTOKBN (IDX IDY)
+                                       =   "T"
+               MOVE    "1"             TO  SPA-COM-AUTOKBN2(IDX2)
+               MOVE    SPACE           TO  SPA-COM-AUTOKBN (IDX2)
+           END-IF
       *    数量入力時
            IF      LNK-WKSRY-AUTOKBN (IDX IDY)
                                        =   "S"
@@ -1903,6 +1910,14 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                        MOVE    "S"                  TO  WKSRY-AUTOKBN
                                                                  (IDY)
                    END-IF
+      *!!
+      *            器材の商品名入力がある時
+                   IF     (SPA-COM-INPUTCD (IDX)(1:1)   =   "7"   )
+                     AND  (SPA-COM-AUTOKBN2(IDX)    NOT =   SPACE )
+                       MOVE    "T"                  TO  WKSRY-AUTOKBN
+                                                                 (IDY)
+                   END-IF
+      *!!
       *            時間外区分入力がある時、英字変換後セット
                    IF      SPA-COM-AUTOKBN (IDX)    =   SPACE
                        PERFORM 20021-JIKANGAI-SET-SEC
