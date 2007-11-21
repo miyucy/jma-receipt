@@ -3477,6 +3477,12 @@
            IF      LNK-SC92-GMN-IDX    >   SPA-MAX-LINE
                MOVE    SPA-MAX-LINE        TO  LNK-SC92-GMN-IDX
            END-IF
+      *
+           IF      WRK-COM-INPUTCD (LNK-SC92-GMN-IDX)
+                                       NOT =   SPACE
+               INITIALIZE              WRK-GMN-TBL (LNK-SC92-GMN-IDX)
+           END-IF
+      *
            MOVE    LNK-ORCSC-SYORIFLG  TO  LNK-SC92-SYORIFLG
            MOVE    LNK-ORCSC-PG        TO  LNK-SC92-PG
            MOVE    WRK-SRYCD           TO  LNK-SC92-SRYCD
