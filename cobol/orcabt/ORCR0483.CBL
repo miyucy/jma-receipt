@@ -1185,6 +1185,10 @@ grpsys         MOVE    WRK-PARA-HOSPNUM    TO  BTPARA-HOSPNUM
            END-IF
            MOVE    "から"              TO  WRK-HCM56-STRFL 
            MOVE    "まで"              TO  WRK-HCM56-ENDFL 
+           INSPECT WRK-HCM56-STRYMD
+                               REPLACING    ALL   "  "   BY   "　"
+           INSPECT WRK-HCM56-ENDYMD
+                               REPLACING    ALL   "  "   BY   "　"
            MOVE    WRK-HCM56-STRYMD    TO  HCM56-STRYMD
            MOVE    WRK-HCM56-ENDYMD    TO  HCM56-ENDYMD
       *
