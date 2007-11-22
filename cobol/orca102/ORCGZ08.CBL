@@ -645,10 +645,10 @@
       *        関連コード
                WHEN    "ACTIVATE"       ALSO    "IDOKANREN"
                    MOVE    ZERO                TO  FLG-TOUROKU
-                   PERFORM  501-IDOKANREN-CHK-SEC
+                   PERFORM 501-IDOKANREN-CHK-SEC
       *        複写先コード
                WHEN    "ACTIVATE"       ALSO    "COPYCD"
-                   PERFORM  502-COPYCD-CHK-SEC
+                   PERFORM 502-COPYCD-CHK-SEC
       *        一括入力分
                WHEN    OTHER
                    PERFORM 5000-ENTRY-SYORI-SEC
@@ -863,6 +863,7 @@
        501-IDOKANREN-CHK-SEC           SECTION.
       *
            MOVE    Z08-IDOKANREN       TO  SPA-GMN-IDOKANREN
+           MOVE    SPACE               TO  SPA-NAI-COPY
       *    一括入力分
       *    入力個所のセット
            MOVE    MCP-WIDGET          TO  WRK-MCP-WIDGET
@@ -1400,7 +1401,9 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *****************************************************************
        406-ZENCOPY-SEC          SECTION.
       *
-           IF      SPA-Z08MAE-SRYCD    NOT =   SPACE
+           IF      SPA-Z08MAE-SRYCD        =   SPACE
+               MOVE    7                   TO  SPA-GMN-CUR
+           ELSE
       *        点数マスタ読込み
                MOVE    SPACE               TO  TNS-TENSU-REC
                INITIALIZE                      TNS-TENSU-REC

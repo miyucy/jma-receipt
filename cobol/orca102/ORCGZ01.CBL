@@ -351,10 +351,11 @@
        310-SPASET-SEC              SECTION.
       *
            MOVE    SPACE               TO  WRK-SRYCD
+           MOVE    SPACE               TO  WRK-Z08-SRYCD
            IF      SPA-MOTOPG      NOT =   "M02"
                MOVE    SPA-MAE-SRYCD       TO  WRK-SRYCD
+               MOVE    SPA-Z08MAE-SRYCD    TO  WRK-Z08-SRYCD
            END-IF
-           MOVE    SPA-Z08MAE-SRYCD    TO  WRK-Z08-SRYCD
            INITIALIZE                      SPA-Z01KYOUTU
            MOVE    WRK-SRYCD           TO  SPA-MAE-SRYCD
            MOVE    WRK-Z08-SRYCD       TO  SPA-Z08MAE-SRYCD
