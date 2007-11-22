@@ -59,6 +59,7 @@
       *  03.04.01    NACL-多々納  06/12/11  薬剤附加情報追加
       *  03.04.02    NACL-多々納  07/03/XX  リハビリ医学管理料追加(H19.4改正）
       *  03.05.00    NACL-多々納  07/04/XX  グループ診療対応
+      *  04.01.00    NACL-多々納  07/11/21  器材商品名表示対応
       *****************************************************************
       *
       *
@@ -2732,11 +2733,20 @@
       *
       *    労災加算振替え
            IF      LNK-SC92-SRYCD          =   "099509901"
-               IF      SPA-HKNKBN          NOT =   1
+               IF     (SPA-HKNKBN          NOT =   1   )
+                  OR  (SPA-RSI-JUNKYO          =   "1" )
                    MOVE    "8000"              TO  SPA-ERRCD
                END-IF
            END-IF
       *
+      *!!
+      *    公害のコード
+           IF     (LNK-SC92-SRYCD (1:1)    =   "1"  )  AND
+                  (LNK-SC92-SRYCD (2:2)    =   "02" )
+               IF     (SPA-HKNKBN          NOT =   2 )
+                   MOVE    "8100"              TO  SPA-ERRCD
+               END-IF
+           END-IF
            .
        20088-RSIJIB-CHK-EXT.
            EXIT.

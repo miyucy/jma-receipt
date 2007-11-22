@@ -808,6 +808,9 @@
                                        TO  SPA-ERRMSG
                    MOVE    "できません。"
                                        TO  SPA-ERRMSG(31:)
+               WHEN    "8100"
+                   MOVE    "公害保険の診療コードです。入力できません。"
+                                       TO  SPA-ERRMSG
                WHEN    "S001"
                    MOVE    "約束セット内に使用できないコードがあります"
                                        TO  SPA-ERRMSG

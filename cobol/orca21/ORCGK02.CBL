@@ -5215,6 +5215,12 @@
                   (SPA-HKNKBN      NOT =   SPA-MAE-HKNKBN )
                PERFORM 4101311-ROUJINCHK-SEC
            END-IF
+      *
+           IF     (SPA-HKNKBN      NOT =   SPA-MAE-HKNKBN ) OR
+                  (SPA-HKNKBN      NOT =   ZERO           )
+      *        リハビリ情報クリア
+               INITIALIZE              SPA-RIGAKU-NCNT-AREA
+           END-IF
       *    他保険受診がある時、診察料はないものとする
            IF      SPA-TAHOKEN-FLG     =   1
                GO      TO      410131-SINSATUHEN-EXT

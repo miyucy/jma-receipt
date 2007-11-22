@@ -52,6 +52,7 @@
       * 04.01.00     NACL-多々納  07/10/XX  テーブル４００対応
       * 04.01.00     NACL-多々納  07/10/22  公務災害対応
       * 04.01.00     NACL-多々納  07/10/XX  悪性腫瘍検査対応
+      * 04.01.00     NACL-多々納  07/11/21  器材商品名表示対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -3695,6 +3696,12 @@
            IF     (SPA-NAI-ROUJIN  NOT =   WRK-ROUJIN )  OR
                   (SPA-HKNKBN      NOT =   SPA-MAE-HKNKBN)
                PERFORM 410121-ROUJINCHK-SEC
+           END-IF
+      *
+           IF     (SPA-HKNKBN      NOT =   SPA-MAE-HKNKBN ) OR
+                  (SPA-HKNKBN      NOT =   ZERO           )
+      *        リハビリ情報クリア
+               INITIALIZE              SPA-RIGAKU-NCNT-AREA
            END-IF
       *
       *    保険区分が変更された時、ワーク診療行為を判定する
