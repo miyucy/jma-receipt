@@ -59,6 +59,8 @@
       * 03.05.00     NACL-多々納  07/04/XX  グループ診療対応
       * 03.05.00     NACL-多々納  07/05/22  再印刷処理追加
       * 04.00.00     NACL-多々納  07/09/19  Ａ５印刷として新規作成
+      * 04.01.00     NACL-多々納  07/11/22  公害保険表示
+      *                                     器材商品名コード対応
       *****************************************************************
       *
       *
@@ -1280,8 +1282,14 @@
                    INTO                    WRK-HEN-KIGONUM
            END-STRING
       *
-      *---(01.00.07) LINE ADD START ------------------------------------
+      *---(04.01.00) LINE ADD START ------------------------------------
+      *    公害保険は保険名を保険者番号へ
+           IF      COMB-HKNNUM         =  "975"
+               MOVE    COMB-SYU-TANSEIDONAME   TO  WRK-HKNJA-G
+           END-IF
+      *---(04.01.00) LINE ADD END   ------------------------------------
       *
+      *---(01.00.07) LINE ADD START ------------------------------------
       *    労災の時、保険者番号・記号の変更
            IF      COMB-HKNNUM         =   "971"  OR  "973"
       *        患者保険情報検索
@@ -1922,6 +1930,12 @@
                        PERFORM VARYING     IDXA    FROM    1   BY  1
                                UNTIL      (IDXA    >   5   )  OR
                                           (SRY-SRYCD (IDXA)   =   SPACE)
+      *---(04.01.00) LINE ADD START ------------------------------------
+      *             器材商品コードは対象外とする
+                       IF    SRY-SRYCD (IDXA)(1:3)     =   "058"
+                         CONTINUE
+                       ELSE
+      *---(04.01.00) LINE ADD END   ------------------------------------
                          IF      SRY-SRYKBN        =   "14"
                            IF      SRY-SRYCD (IDXA)(1:1)   NOT =   "1"
                                MOVE    SRY-SRYCD (IDXA)    TO  WRK-SRYCD
@@ -1944,6 +1958,9 @@
                                PERFORM 3103-SRYACT-HEN-SEC
                            END-IF
                          END-IF
+      *---(04.01.00) LINE ADD START ------------------------------------
+                       END-IF
+      *---(04.01.00) LINE ADD END   ------------------------------------
                        END-PERFORM
                    END-IF
                END-IF
@@ -3005,6 +3022,10 @@
       *             用量コード対象外
                   AND (WKSRY-SRYCD (IDXA)(1:7)  NOT =  "0992000")
       *---(01.00.17) LINE ADD END   ------------------------------------
+      *---(04.01.00) LINE ADD START ------------------------------------
+      *             器材商品コード対象外
+                  AND (WKSRY-SRYCD (IDXA)(1:3)  NOT =  "058"    )
+      *---(04.01.00) LINE ADD END   ------------------------------------
                    MOVE    WKSRY-SRYCD (IDXA)  TO  SRY-SRYCD (IDXA)
       *            数量
                    MOVE    WKSRY-SRYSURYO (IDXA)
@@ -3230,6 +3251,11 @@
       *                用量コード対象外
                        IF      ORCHC19-SRYCD (IDX-L IDX-L2)(1:7)
                                                    =   "0992000"
+      *---(04.01.00) LINE ADD START ------------------------------------
+      *                 器材商品名コード対象外
+                           OR  (ORCHC19-SRYCD (IDX-L IDX-L2)(1:3)
+                                                   =  "058"    )
+      *---(04.01.00) LINE ADD END   ------------------------------------
                            CONTINUE
                        ELSE
                            PERFORM 20041-ORCHC19-HEN-SEC

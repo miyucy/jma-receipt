@@ -49,6 +49,7 @@
       *  02.00.04    NACL-多々納  05/10/26  MONFUNCへ変更
       *  02.00.05    NACL-多々納  06/02/06  一括印刷追加
       *  03.05.00    NACL-多々納  07/04/XX  グループ診療対応
+      *  04.01.00    NACL-多々納  07/11/22  公害保険表示
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -732,6 +733,12 @@
       *    電話番号
            MOVE    PTINF-OFFICE-TEL    TO  HC01-KINADRSTEL
       *
+      *---(04.01.00) LINE ADD START ------------------------------------
+      *    公害保険は保険名を保険者番号へ
+           IF      COMB-HKNNUM         =  "975"
+               MOVE    COMB-SYU-TANSEIDONAME   TO  WRK-HKNJA-G
+           END-IF
+      *---(04.01.00) LINE ADD END   ------------------------------------
       *    保険者情報
       *    保険者番号
            MOVE    WRK-HKNJA-G         TO  HC01-HPTNUM
