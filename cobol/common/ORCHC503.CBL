@@ -30,6 +30,7 @@
       *  01.00.01    NACL-Â¿¡¹Ç¼  06/01/25  MONFUNC¤ØÊÑ¹¹
       *  03.05.00    NACL-Â¿¡¹Ç¼  07/04/XX  ¥°¥ë¡¼¥×¿ÇÎÅÂÐ±þ
       *  03.05.00    NACL-Â¿¡¹Ç¼  07/05/22  ºÆ°õºþ½èÍýÄÉ²Ã
+      *  04.01.00    NACL-Â¿¡¹Ç¼  07/11/22  ´ïºà¾¦ÉÊÌ¾¥³¡¼¥ÉÂÐ±þ
       *****************************************************************
       *
       *
@@ -70,6 +71,7 @@
       *
            03  FLG-OK              PIC 9(01).
            03  FLG-SP              PIC 9(01).
+           03  FLG-KIZAI           PIC 9(01).
       *
       *    Åº»úÎÎ°è
        01  IDX-AREA.
@@ -734,6 +736,22 @@
                MOVE    LNK-ORDERPRT-INPUTCOMENT(IDX)
                                            TO  WRK-TNS-NAME
            END-IF
+      *!   ´ïºà¾¦ÉÊÌ¾¤Î´ïºà
+           IF     (WRK-SRYCD (1:1)     =   "7"  )  AND
+                  (FLG-KIZAI           =   1    )
+               MOVE    SPACE           TO  WRK-TNS-NAME
+               STRING  "¡¡¡Ì"
+                       TNS-NAME        DELIMITED  BY  SPACE
+                       "¡Í"            DELIMITED  BY  SIZE
+                                       INTO    WRK-TNS-NAME
+               END-STRING
+           END-IF
+           IF      WRK-SRYCD (1:3)     =   "058"
+               MOVE    1               TO  FLG-KIZAI
+           ELSE
+               MOVE    ZERO            TO  FLG-KIZAI
+           END-IF
+      *!
       *    Ì¾¾ÎÊÔ½¸
            PERFORM 20011-MEISYOU-HEN-SEC
       *

@@ -31,6 +31,7 @@
       *  01.00.01    NACL¡ÝÂ¿¡¹Ç¼ 05/05/18  ½èÊý¤»¤ó¥³¥á¥ó¥ÈÄÉ²Ã
       *  01.00.02    NACL-Â¿¡¹Ç¼  06/01/25  MONFUNC¤ØÊÑ¹¹
       *  03.05.00    NACL-Â¿¡¹Ç¼  07/05/23  ¥°¥ë¡¼¥×¿ÇÎÅÂÐ±þ
+      *  04.01.00    NACL-Â¿¡¹Ç¼  07/11/22  ´ïºà¾¦ÉÊÌ¾¥³¡¼¥ÉÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -576,6 +577,12 @@
                                (FLG-MAYAKU-NASI    =   ZERO )
                            MOVE    1               TO  FLG-OK
                        END-IF
+      *!               ´ïºà¾¦ÉÊÌ¾
+                       IF      (LNK-WKSRY-SRYCD (IDX IDY)(1:3)
+                                                   =   "058")  AND
+                               (FLG-MAYAKU-NASI    =   ZERO )
+                           MOVE    1               TO  FLG-OK
+                       END-IF
                        IF       LNK-WKSRY-SRYCD (IDX IDY)(1:1)
                                                    =   "8"
                                                    OR  "0"
@@ -791,6 +798,11 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                                    =   "008"
                            MOVE    1               TO  FLG-OK
                        END-IF
+      *!               ´ïºà¾¦ÉÊÌ¾
+                       IF       LNK-WKSRY-SRYCD (IDX IDY)(1:3)
+                                                   =   "058"
+                           MOVE    1               TO  FLG-OK
+                       END-IF
                        IF       FLG-OK             =   1
                            MOVE    "4"             TO  WRK-PRTKBN
                            PERFORM 10030-ORDERPRT-HEN-SEC
@@ -825,6 +837,12 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                        END-IF
                        IF      (LNK-WKSRY-SRYCD (IDX IDY)(1:1)
                                                    =   "7"  )  AND
+                               (FLG-MAYAKU-NASI    =   ZERO )
+                           MOVE    1               TO  FLG-OK
+                       END-IF
+      *!               ´ïºà¾¦ÉÊÌ¾
+                       IF      (LNK-WKSRY-SRYCD (IDX IDY)(1:3)
+                                                   =   "058")  AND
                                (FLG-MAYAKU-NASI    =   ZERO )
                            MOVE    1               TO  FLG-OK
                        END-IF
@@ -881,6 +899,11 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                    END-IF
                    IF       LNK-WKSRY-SRYCD (IDX IDY)(1:3)
                                                =   "008"
+                       MOVE    1               TO  FLG-OK
+                   END-IF
+      *!           ´ïºà¾¦ÉÊÌ¾
+                   IF      LNK-WKSRY-SRYCD (IDX IDY)(1:3)
+                                               =   "058"
                        MOVE    1               TO  FLG-OK
                    END-IF
                    IF      FLG-OK              =   1
