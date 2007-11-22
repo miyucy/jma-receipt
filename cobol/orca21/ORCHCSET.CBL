@@ -34,6 +34,7 @@
       *  03.04.00    NACL-多々納  06/11/14  検査正式名称表示追加
       *  03.04.01    NACL-多々納  07/03/13  経過措置日追加
       *  03.05.00    NACL-多々納  07/04/XX  グループ診療対応
+      *  04.01.00    NACL-多々納  07/11/22  器材商品名コード対応
       *****************************************************************
       *
       *
@@ -92,6 +93,8 @@
            03  FLG-KEIKA-GAI        PIC 9(01).
            03  FLG-KEIKA            PIC 9(01).
            03  FLG-OK-KEIKA         PIC 9(01).
+      *
+           03  FLG-KIZAI            PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -802,6 +805,12 @@
       *            点数マスタ
                    PERFORM 20023-SRYCD-HEN-SEC
            END-EVALUATE
+      *    器材商品コード
+           IF      ISET-INPUTCD(1:3)   =   "058"
+               MOVE    1                   TO  FLG-KIZAI
+           ELSE
+               MOVE    ZERO                TO  FLG-KIZAI
+           END-IF
       *
            IF      WRK-NAME(51:)       =   SPACE
                MOVE    WRK-NAME (1:50)     TO  B01-NAME
@@ -944,6 +953,17 @@
                            "　【"          DELIMITED  BY  SIZE
                            TNS-FORMALNAME  DELIMITED  BY  SPACE
                            "】"            DELIMITED  BY  SIZE
+                                           INTO  WRK-NAME
+                   END-STRING
+               END-IF
+      *!
+      *        器材商品名コードの器材コード
+               IF     (FLG-KIZAI           =   1   )  AND
+                      (TNS-SRYCD(1:1)      =   "7" )
+                   MOVE    SPACE               TO  WRK-NAME
+                   STRING  "〔"            DELIMITED  BY  SIZE
+                           TNS-NAME        DELIMITED  BY  SPACE
+                           "〕"            DELIMITED  BY  SIZE
                                            INTO  WRK-NAME
                    END-STRING
                END-IF
