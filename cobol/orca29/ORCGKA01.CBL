@@ -1279,6 +1279,7 @@
                                                OR  "7"
                                                OR  "8" ) OR
                        (SRY-SRYCD (IDX)(1:3)   =   "059" 
+                                               OR  "058"
                                                OR  "001"
                                                OR  "008" )
       *                Õ—ŒÃ≥‰πÁ°¶ ¥∫’
@@ -1290,6 +1291,12 @@
                    MOVE    SRY-SRYSURYO (IDX)  TO  WKSRY-SRYSURYO (IDY)
                    MOVE    SRY-SRYKAISU (IDX)  TO  WKSRY-SRYKAISU (IDY)
                    MOVE    SRY-AUTOKBN  (IDX)  TO  WKSRY-AUTOKBN  (IDY)
+      *!!
+      *            ¥Ô∫‡æ¶… Ãæ¬–±˛
+                   IF      SRY-MEISKYFLG (IDX) =   "1"
+                       MOVE    "T"             TO  WKSRY-AUTOKBN  (IDY)
+                   END-IF
+      *!!
                    MOVE    SRY-INPUTNUM (IDX)  TO  WKSRY-INPUTNUM (IDY)
                    MOVE    SRY-JIHIMONEY(IDX)  TO  WKSRY-JIHIMONEY(IDY)
                    IF      SRY-INPUTNUM (IDX)  NOT =   ZERO
@@ -1552,6 +1559,13 @@
                 MOVE    WRK-MEISYO         TO  SPA-GMN-TMEISYO2(IDG)
            END-IF
       *!
+      *    ¥Ô∫‡æ¶… Ãæ§Œ¥Ô∫‡•≥°º•…
+           IF     (LNK-WKSRY-SRYCD(IDX IDZ)(1:1)   =   "7"  )  AND
+                  (LNK-WKSRY-AUTOKBN (IDX IDZ)     =   "T"  )
+                PERFORM 3005-INPUT-MEISYO4-SEC
+                MOVE    WRK-MEISYO        TO  SPA-GMN-TMEISYO2(IDG)
+           END-IF
+      *!
       *
       *    øÙŒÃ° ÃÙ∫ﬁ°¢¥Ô∫‡§Œ§»§≠°À
            IF     (LNK-WKSRY-SRYCD (IDX IDZ)(1:1)   =   "6"  OR  "7" )
@@ -1647,7 +1661,22 @@
                                        ORCSMEIHENAREA
            MOVE    ORCSMEIHEN-MEISYO   TO  WRK-MEISYO
            .
-       3100121-FUKIYO-MEISYO-EXT.
+       3005-INPUT-MEISYO3-EXT.
+           EXIT.
+      *****************************************************************
+      *    ¥Ô∫‡æ¶… Ãæ•≥°º•…§Œ¥Ô∫‡ ‘Ω∏
+      *****************************************************************
+       3005-INPUT-MEISYO4-SEC        SECTION.
+      *
+           MOVE    SPACE               TO  WRK-MEISYO
+      *
+           STRING     "°Ã"             DELIMITED   BY  SIZE
+                      TNS-NAME         DELIMITED   BY  "    "
+                      "°Õ"             DELIMITED   BY  SIZE
+                      INTO             WRK-MEISYO
+           END-STRING
+           .
+       3005-INPUT-MEISYO4-EXT.
            EXIT.
       *
       *****************************************************************
