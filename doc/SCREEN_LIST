@@ -26,7 +26,6 @@ XC01.glade	orca03	(XC01)プレビュー選択画面
 XC02.glade	orca03	(XC02)プレビュー選択画面（横）			VER4.0.0
 XC99.glade	orca03	(XC99)処理結果
 XCERR.glade	orca03	(XCERR)エラー情報
-XCID1.glade	orca03	(XCID1)確認画面
 
 XD01.glade	orca04	(XD01)ユーザプログラム起動画面
 XDERR.glade	orca04	(XDERR)エラー情報
@@ -74,6 +73,7 @@ Q99.glade	orca13	(Q99)住所検索-町域選択画面
 Q100.glade	orca13	(Q100)出力指示画面
 QERR.glade	orca13	(QERR)エラー情報
 QID1.glade	orca13	(QID1)確認画面
+QFIL.glade	orca13	(QFIL)クライアント保存画面			VER4.0.0
 
 Y01.glade	orca14	(Y01)予約登録-予約状況
 Y03.glade	orca14	(Y03)予約登録-予約一覧
@@ -224,6 +224,7 @@ R03.glade	orca42	(R03)レセプト作成-作成指示
 R04.glade	orca42	(R04)労災・自賠責レセプト作成-印刷指示
 R05.glade	orca42	(R05)レセプト印刷画面-編綴順設定情報
 R06.glade	orca42	(R06)レセプト印刷画面-プリンタ一括設定
+R96.glade	orca42	(R96)明細書-未請求患者設定
 R97.glade	orca42	(R97)明細書-主科まとめ入力
 R98.glade	orca42	(R98)明細書-生活保護まとめ入力
 R99.glade	orca42	(R99)処理結果
@@ -240,12 +241,13 @@ HID1.glade	orca43	(HID1)確認画面
 T01.glade	orca44	(T01)総括表・公費請求書作成
 T02.glade	orca44	(T02)公費請求書-個別指定
 T03.glade	orca44	(T03)総括・公費請求書-プリンタ設定
+T04.glade	orca44	(T04)地方公費ＣＳＶデータ一覧
 T91.glade	orca44	(T91)定点調査データ確認				VER4.1.0
 T99.glade	orca44	(T99)処理結果
 TERR.glade	orca44	(TERR)エラー情報
 TID1.glade	orca44	(TID1)確認画面
 TID2.glade	orca44	(TID2)確認画面
-TFIL.glade	orca44	(TFIL)クライアント保存画面			VER4.1.0
+TFIL.glade	orca44	(TFIL)クライアント保存画面			VER4.0.0
 
 L01.glade	orca51	(L01)日次統計
 L02.glade	orca51	(L02)日次統計データ作成
@@ -255,6 +257,7 @@ L99.glade	orca51	(L99)処理結果
 LERR.glade	orca51	(LERR)エラー情報
 LID1.glade	orca51	(LID1)確認画面
 LID2.glade	orca51	(LID2)確認画面
+LFIL.glade	orca51	(LFIL)クライアント保存画面			VER4.0.0
 
 G01.glade	orca52	(G01)月次統計
 G02.glade	orca52	(G02)月次統計データ作成
@@ -263,6 +266,7 @@ G99.glade	orca52	(G99)処理結果
 GERR.glade	orca52	(GERR)エラー情報
 GID1.glade	orca52	(GID1)確認画面
 GID2.glade	orca52	(GID2)確認画面
+GFIL.glade	orca52	(GFIL)クライアント保存画面			VER4.0.0
 
 E01.glade	orca71	(E01)ＣＳＶ作成指示１
 E02.glade	orca71	(E02)ＣＳＶ作成指示２
@@ -314,6 +318,7 @@ W60.glade	orca101	(W60)システム管理情報-データチェック機能情報２
 W61.glade	orca101	(W61)システム管理情報-レセプト特記事項編集情報設定
 W62.glade	orca101	(W62)印刷設定確認画面
 W63.glade	orca101	(W63)システム管理情報-データチェック機能情報３
+W64.glade	orca101	(W64)システム管理情報-公費番号まとめ情報設定	VER4.1.0
 W97.glade	orca101	(W97)システム管理情報-ユーザプログラム起動設定
 W98.glade	orca101	(W98)システム管理情報-排他情報設定
 W981.glade	orca101	(W981)システム管理情報-排他制御状況
