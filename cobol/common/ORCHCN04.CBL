@@ -31,6 +31,7 @@
       *  03.04.01    NACL-¿¹ÏÆ    07/01/17  °åÎÅµ¡´ØÌ¾¾Î¡¢½»½ê¥»¥Ã¥ÈÊÑ¹¹
       *  03.05.00    NACL-Â¿¡¹Ç¼  07/04/XX  ¥°¥ë¡¼¥×¿ÇÎÅÂÐ±þ
       *  04.01.00    NACL-Â¿¡¹Ç¼  07/10/23  ¸øÌ³ºÒ³²ÂÐ±þ
+      *  04.01.00    NACL-Â¿¡¹Ç¼  07/11/22  ´ïºà¾¦ÉÊÌ¾¥³¡¼¥ÉÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -791,6 +792,8 @@
                                                        OR  "002"
                                                        OR  "095"
                                                        OR  "096")
+      *            ´ïºà¾¦ÉÊÌ¾ÂÐ¾Ý
+                       OR  (SRY-SRYCD (IDXA)(1:3)      =   "058")
                        PERFORM 200321-MEISAI-HEN-SEC
                    END-IF
                END-PERFORM
@@ -826,6 +829,17 @@
            ADD     1                   TO  IDX-S
            MOVE    SRY-SRYCD (IDXA)    TO  TBL-SRYCD (IDX-S)
            MOVE    TNS-NAME            TO  TBL-NAME  (IDX-S)
+      *    ´ïºà¾¦ÉÊÌ¾¤Î´ïºà¥³¡¼¥É
+           IF     (SRY-SRYCD (IDXA)(1:1)   =   "7" ) AND
+                  (SRY-MEISKYFLG  (IDXA)   =   "1" )
+               MOVE    SPACE               TO  TBL-NAME  (IDX-S)
+               STRING     "¡Ì"             DELIMITED   BY  SIZE
+                          TNS-NAME         DELIMITED   BY  "    "
+                          "¡Í"             DELIMITED   BY  SIZE
+                          INTO             TBL-NAME  (IDX-S)
+               END-STRING
+           END-IF
+      *
            IF      TNS-TANICD          =   ZERO
                                        OR  SPACE
                CONTINUE
