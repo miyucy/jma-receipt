@@ -27,7 +27,6 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *  03.05.00    NACL-太田    07.05.15  グループ診療対応
-      *  04.01.00    NACL-太田    07/11/20  室料差額６桁対応
       *****************************************************************
       *
        ENVIRONMENT                     DIVISION.
@@ -257,6 +256,7 @@
                        09  SPA-NAI-TOKUTEI-NYUIN   PIC X(02).
                    07  SPA-NAI-KHNNYUIN            PIC X(60).
                    07  SPA-NAI-SELNYUKHN           PIC 9(01).
+                   07  SPA-NAI-HKNNUM              PIC X(03).
                05  SPA-NAI-ALLIDOLIST-INPUT-AREA.
                    07  SPA-NAI-UKEYMD              PIC X(08).
                05  SPA-NAI-ALLIDOLST-AREA.
@@ -288,6 +288,10 @@
                                                    PIC X(03).
                        09  SPA-NAI-BTUDEF-BRMKHNKBNCD
                                                    PIC X(03).
+               05  SPA-NAI-COMBO-AREA.
+                   07  SPA-NAI-HKNCOMBILST-G.
+                       09  SPA-NAI-HKNCOMBILST     OCCURS  30.
+                           11  SPA-NAI-HKNNUML     PIC X(03).
       *
       *    フラグエリア
        01  FLG-AREA.
@@ -312,6 +316,7 @@
            03  FLG-PTNUM                   PIC 9(01).
            03  FLG-TARGET                  PIC 9(01).
            03  FLG-ROUJIN                  PIC 9(01).
+           03  FLG-LIFE-RJN                PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -1100,6 +1105,7 @@
        3101-HKNCOMBILST-SET-SEC        SECTION.
       *
            INITIALIZE                  SPA-GMN-HKNCOMBILST-G
+                                       SPA-NAI-HKNCOMBILST-G
       *
            MOVE    SPA-AREA            TO  WRK-SPA-AREA
       *
@@ -1135,6 +1141,8 @@
                                        TO  SPA-GMN-HKNCOMBIL   (IDX0)
                MOVE    ORCSHKN-GMN-HKNCOMBIMEI (IDX0)
                                        TO  SPA-GMN-HKNCOMBIMEIL(IDX0)
+               MOVE    ORCSHKN-NAI-HKNNUM (IDX0)
+                                       TO  SPA-NAI-HKNNUML   (IDX0)
       *
            END-PERFORM
       *
@@ -1198,6 +1206,8 @@
            MOVE    ZERO            TO  CNT-MAX
            MOVE    ZERO            TO  FLG-CMB-EDIT
       *
+           PERFORM 800-ROUJINAGE-CHK-SEC
+      *
            IF    ( SPA-NAI-BTU-KHNSRYCD    NOT =   SPACE )
                MOVE    SPA-NAI-BTU-KHNSRYCD    TO  WRK-TNS-SRYCD
                MOVE    SPA-NAI-KJNYMD          TO  WRK-TNS-KJNYMD
@@ -1222,13 +1232,14 @@
                    MOVE    ZERO        TO  FLG-TARGET
                    IF    ( SPA-NAI-BTU-SBT             =   "04" )
                     AND  ( SYS-5111-BRM-NYUINRYOKBN    =   "05" )
-                       PERFORM 800-ROUJINAGE-CHK-SEC
-                       IF    ( WRK-NENREI >=  70 )
-                        OR   ( FLG-ROUJIN  =   1 )
-                           MOVE    1       TO  FLG-TARGET
-                       ELSE
+                       IF    ( FLG-LIFE-RJN            =   ZERO )
                            IF    ( SYS-5111-SEIKATU-RYOKBN
                                                        =   SPACE )
+                               MOVE    1   TO  FLG-TARGET
+                           END-IF
+                       ELSE
+                           IF    ( SYS-5111-SEIKATU-RYOKBN
+                                                   NOT =   SPACE )
                                MOVE    1   TO  FLG-TARGET
                            END-IF
                        END-IF
@@ -1236,13 +1247,14 @@
       *
                    IF    ( SPA-NAI-BTU-SBT             =   "09" )
                     AND  ( SYS-5111-BRM-NYUINRYOKBN    =   "06" )
-                       PERFORM 800-ROUJINAGE-CHK-SEC
-                       IF    ( WRK-NENREI >=  70 )
-                        OR   ( FLG-ROUJIN  =   1 )
-                           MOVE    1       TO  FLG-TARGET
-                       ELSE
+                       IF    ( FLG-LIFE-RJN            =   ZERO )
                            IF    ( SYS-5111-SEIKATU-RYOKBN
                                                        =   SPACE )
+                               MOVE    1   TO  FLG-TARGET
+                           END-IF
+                       ELSE
+                           IF    ( SYS-5111-SEIKATU-RYOKBN
+                                                   NOT =   SPACE )
                                MOVE    1   TO  FLG-TARGET
                            END-IF
                        END-IF
@@ -1284,14 +1296,14 @@
                        PERFORM 31011-TOKNYUINLST-SET-SEC
                    END-IF
                WHEN  ( SPA-NAI-BTU-BTUTOK  =   "13" OR "16" )
-                   MOVE    "2"     TO  WRK-TOKNYUIN-KBN
-                   MOVE    "13"    TO  WRK-TOKKBNCD
-                   PERFORM 31011-TOKNYUINLST-SET-SEC
-                   PERFORM 800-ROUJINAGE-CHK-SEC
-                   IF    ( WRK-NENREI >=  70 )
-                    OR   ( FLG-ROUJIN  =   1 )
-                       MOVE    "2"     TO  WRK-TOKNYUIN-KBN
-                       MOVE    "16"    TO  WRK-TOKKBNCD
+                   IF    ( FLG-LIFE-RJN        =   ZERO )
+                    OR   ( SPA-NAI-BTU-SBT NOT =   "04" )
+                       MOVE    "13"        TO  WRK-TOKKBNCD
+                       MOVE    "2"         TO  WRK-TOKNYUIN-KBN
+                       PERFORM 31011-TOKNYUINLST-SET-SEC
+                   ELSE
+                       MOVE    "16"        TO  WRK-TOKKBNCD
+                       MOVE    "2"         TO  WRK-TOKNYUIN-KBN
                        PERFORM 31011-TOKNYUINLST-SET-SEC
                    END-IF
                WHEN    OTHER
@@ -1306,22 +1318,22 @@
            IF    ( SPA-NAI-BTU-BRMTOK  NOT =   SPACE )
                EVALUATE    TRUE
                WHEN  ( SPA-NAI-BTU-BRMTOK  =   "02" OR  "49" )
-                   MOVE    "3"         TO  WRK-TOKNYUIN-KBN
-                   MOVE    "02"        TO  WRK-TOKKBNCD
-                   PERFORM 31011-TOKNYUINLST-SET-SEC
-      *
-                   MOVE    "3"         TO  WRK-TOKNYUIN-KBN
-                   MOVE    "23"        TO  WRK-TOKKBNCD
-                   PERFORM 31011-TOKNYUINLST-SET-SEC
-                   PERFORM 800-ROUJINAGE-CHK-SEC
-                   IF    ( WRK-NENREI >=  70 )
-                    OR   ( FLG-ROUJIN  =   1 )
-                       MOVE    "3"     TO  WRK-TOKNYUIN-KBN
-                       MOVE    "49"    TO  WRK-TOKKBNCD
+                   IF    ( FLG-LIFE-RJN        =   ZERO )
+                    OR   ( SPA-NAI-BTU-SBT     NOT =   "09" )
+                       MOVE    "02"        TO  WRK-TOKKBNCD
+                       MOVE    "3"         TO  WRK-TOKNYUIN-KBN
                        PERFORM 31011-TOKNYUINLST-SET-SEC
       *
-                       MOVE    "3"     TO  WRK-TOKNYUIN-KBN
-                       MOVE    "51"    TO  WRK-TOKKBNCD
+                       MOVE    "23"        TO  WRK-TOKKBNCD
+                       MOVE    "3"         TO  WRK-TOKNYUIN-KBN
+                       PERFORM 31011-TOKNYUINLST-SET-SEC
+                   ELSE
+                       MOVE    "49"        TO  WRK-TOKKBNCD
+                       MOVE    "3"         TO  WRK-TOKNYUIN-KBN
+                       PERFORM 31011-TOKNYUINLST-SET-SEC
+      *
+                       MOVE    "51"        TO  WRK-TOKKBNCD
+                       MOVE    "3"         TO  WRK-TOKNYUIN-KBN
                        PERFORM 31011-TOKNYUINLST-SET-SEC
                    END-IF
       *
@@ -1346,14 +1358,15 @@
            END-IF
       *
       *    短期滞在手術基本料をコンボに設定
-           MOVE    "3"             TO  WRK-TOKNYUIN-KBN
-           MOVE    "21"            TO  WRK-TOKKBNCD
-           PERFORM 31011-TOKNYUINLST-SET-SEC
-      *
-           IF    ( WRK-NENREI >=  70 )
-            OR   ( FLG-ROUJIN  =   1 )
-               MOVE    "3"     TO  WRK-TOKNYUIN-KBN
-               MOVE    "50"    TO  WRK-TOKKBNCD
+           IF    ( FLG-LIFE-RJN        =   ZERO )
+            OR  (( SPA-NAI-BTU-SBT NOT =   "04" )
+             AND ( SPA-NAI-BTU-SBT NOT =   "09" ))
+               MOVE    "21"        TO  WRK-TOKKBNCD
+               MOVE    "3"         TO  WRK-TOKNYUIN-KBN
+               PERFORM 31011-TOKNYUINLST-SET-SEC
+           ELSE
+               MOVE    "50"        TO  WRK-TOKKBNCD
+               MOVE    "3"         TO  WRK-TOKNYUIN-KBN
                PERFORM 31011-TOKNYUINLST-SET-SEC
            END-IF
       *
@@ -2631,6 +2644,7 @@
            PERFORM 4200-HKNCOMBILST-CHK-SEC
            IF    ( WRK-CMB-ITM NOT =   SPACE )
                MOVE    WRK-CMB-ITM     TO  SPA-GMN-HKNCOMBI-G
+               MOVE    WRK-CMB-ITM2    TO  SPA-NAI-HKNNUM
            END-IF
       *
            .
@@ -3337,6 +3351,8 @@
       *****************************************************************
        4101-HKNCOMBI-CHK-SEC           SECTION.
       *
+           MOVE    SPACE               TO  SPA-NAI-HKNNUM
+      *
            IF    ( SPA-GMN-HKNCOMBI-G    =   SPACE )
                GO  TO  4101-HKNCOMBI-CHK-EXT
            END-IF
@@ -3348,6 +3364,7 @@
                MOVE    15              TO  SPA-GMN-CUR
            ELSE
                MOVE    WRK-CMB-ITM     TO  SPA-GMN-HKNCOMBI-G
+               MOVE    WRK-CMB-ITM2    TO  SPA-NAI-HKNNUM
            END-IF
       *
            .
@@ -3490,15 +3507,14 @@
        41011-TOKNYUIN-SYOKI-SEC        SECTION.
       *
            PERFORM 800-ROUJINAGE-CHK-SEC
-           IF    ( WRK-NENREI  >=  70 )
-            OR   ( FLG-ROUJIN  =   1 )
+           IF    ( FLG-LIFE-RJN        =   1 )
                PERFORM VARYING IDX10   FROM    1   BY  1
                        UNTIL ( IDX10 > CONST-TOK-LIFECD-MAX)
                    IF    ( WRK-CMB-CD  =   CONST-TOK-LIFECD-IPN (IDX10))
                        MOVE    CONST-TOK-LIFECD-LIFE (IDX10)
-                                       TO  WRK-CMB-CD
+                                   TO  WRK-CMB-CD
                        MOVE    CONST-TOK-LIFECD-MAX
-                                       TO  IDX10
+                                   TO  IDX10
                    END-IF
                END-PERFORM
            END-IF
@@ -3707,6 +3723,8 @@
                                            =   WRK-CMB-CD )
                    MOVE    SPA-GMN-HKNCOMBILST (IDX-CMB)
                                        TO  WRK-CMB-ITM
+                   MOVE    SPA-NAI-HKNNUML (IDX-CMB)
+                                       TO  WRK-CMB-ITM2
                    MOVE    IDX-CMB     TO  WRK-CMB-IDX
                END-IF
       *
@@ -3898,6 +3916,7 @@
                                            SPA-NAI-INPUT-AREA
                                            SPA-NAI-KJNIDOLST-AREA
                                            SPA-GMN-COMBO-AREA
+                                           SPA-NAI-COMBO-AREA
       *
            MOVE    SPA-NAI-UKEYMD      TO  SPA-NAI-KJNYMD
       *
@@ -5679,6 +5698,7 @@
       *
            MOVE    ZERO            TO  FLG-ROUJIN
                                        WRK-NENREI
+                                       FLG-LIFE-RJN
       *
            IF    ( BAK-AGE-PTID            =   ZERO )
             OR  (( BAK-AGE-PTID        NOT =   SPA-NAI-PTID )
@@ -5707,6 +5727,17 @@
            ELSE
                MOVE    BAK-AGE-NENREI      TO  WRK-NENREI
                MOVE    BAK-AGE-FLG-ROUJIN  TO  FLG-ROUJIN
+           END-IF
+      *
+           IF    ( SPA-NAI-KJNYMD         >=  CONST-H181001 )
+               IF    ( SPA-NAI-HKNNUM      =  "971" OR "973" OR "975" )
+                   CONTINUE
+               ELSE
+                   MOVE    FLG-ROUJIN      TO  FLG-LIFE-RJN
+                   IF    ( AGECHK-NENREI   >=  70 )
+                       MOVE    1           TO  FLG-LIFE-RJN
+                   END-IF
+               END-IF
            END-IF
       *
            .
