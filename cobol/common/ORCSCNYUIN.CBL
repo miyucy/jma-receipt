@@ -36,6 +36,8 @@
       *  01.00.07    NACL-多々納  06/03/06  主科設定追加
       *  03.03.00    NACL-多々納  06/10/27  削除時の受診履歴変更追加
       *  03.05.00    NACL-多々納  07/04/XX  グループ診療対応
+      *  04.01.00    NACL-多々納  07/11/XX  公務災害・公害対応
+      *                                     器材商品名コード対応
       *****************************************************************
       *
       *
@@ -2092,7 +2094,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *
       *    労災用に保険区分をセットする
            MOVE    SPA-HKNKBN          TO  JYURRK-HKNKBN
-           IF      SPA-HKNKBN          =   "1"
+           IF      SPA-HKNKBN          =   1
                EVALUATE    SPA-RSI-HKNKBN
                    WHEN    "1"
                    WHEN    "2"

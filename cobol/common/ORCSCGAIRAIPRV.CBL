@@ -33,6 +33,8 @@
       *  XX.XX.XX    NACL-XXXX    XX/XX/XX  XXXXX
       *  02.09.01    NACL-ÃÝÅÄ    06/04/17  MONFUNCÂÐ±þÂ¾
       *  03.05.00    NACL-Â¿¡¹Ç¼  07/04/XX  ¥°¥ë¡¼¥×¿ÇÎÅÂÐ±þ
+      *  04.01.00    NACL-Â¿¡¹Ç¼  07/11/XX  ¸øÌ³ºÒ³²¡¦¸ø³²ÂÐ±þ
+      *                                     ´ïºà¾¦ÉÊÌ¾¥³¡¼¥ÉÂÐ±þ
       *****************************************************************
       *
       *
@@ -1745,7 +1747,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *
       *    Ï«ºÒÍÑ¤ËÊÝ¸±¶èÊ¬¤ò¥»¥Ã¥È¤¹¤ë¡Ê¤¹¤Ù¤ÆÆ±¤¸¤È¤¹¤ë¡Ë
            MOVE    SPA-HKNKBN          TO  JYURRK-HKNKBN
-           IF      SPA-HKNKBN          =   "1"
+           IF      SPA-HKNKBN          =   1
                EVALUATE    SPA-RSI-HKNKBN
                    WHEN    "1"
                    WHEN    "2"
@@ -1769,6 +1771,10 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                            MOVE    "1"                 TO  JYURRK-HKNKBN
                        END-IF
                END-EVALUATE
+           END-IF
+      *    ¸ø³²ÊÝ¸±
+           IF      SPA-HKNKBN          =   2
+               MOVE    "6"                 TO  JYURRK-HKNKBN
            END-IF
       *
            MOVE    ZERO                TO  IDX-YAKUZAI
@@ -3259,6 +3265,13 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE    LNK-WKSRY-SRYKAISU(IDX IDX-SIN)
                                                TO  SRY-SRYKAISU
                                                             (IDX-SIN)
+      *            ÌÀºÙÀÁµá¶èÊ¬
+                   IF      LNK-WKSRY-AUTOKBN(IDX IDX-SIN)  =   "T"
+                       MOVE    "1"             TO  SRY-MEISKYFLG
+                                                            (IDX-SIN)
+                       MOVE    SPACE           TO  LNK-WKSRY-AUTOKBN
+                                                         (IDX IDX-SIN)
+                   END-IF
                    MOVE    LNK-WKSRY-AUTOKBN(IDX IDX-SIN)
                                                TO  SRY-AUTOKBN
                                                             (IDX-SIN)
@@ -4744,7 +4757,7 @@ grpsys                 CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPA-NYUGAIKBN       TO  LNK-UPD-NYUGAIKBN
            MOVE    SPA-SRYYMD(1:6)     TO  LNK-UPD-SRYYM
            MOVE    SPA-HKNKBN          TO  LNK-UPD-HKNKBN
-           IF      SPA-HKNKBN          =   "1"
+           IF      SPA-HKNKBN          =   1
                EVALUATE    SPA-RSI-HKNKBN
                    WHEN    "1"
                    WHEN    "2"
@@ -4768,6 +4781,10 @@ grpsys                 CALL    "ORCDBMAIN"         USING   MCPAREA
                            MOVE    "1"             TO  LNK-UPD-HKNKBN
                        END-IF
                END-EVALUATE
+           END-IF
+      *    ¸ø³²ÊÝ¸±
+           IF      SPA-HKNKBN          =   2
+               MOVE    "6"                 TO  LNK-UPD-HKNKBN
            END-IF
            CALL    "ORCSRECEUPD"       USING    ORCSRECEUPDAREA
                                                 SPA-AREA
