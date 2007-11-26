@@ -569,6 +569,7 @@
                ELSE
                    MOVE    1                   TO  SPA-GMN-CUR
                END-IF
+               MOVE    SPACE               TO  SPA-GMN-COPYCD
            END-IF 
            MOVE    SPACE               TO  SPA-NAI-COPY
            .
