@@ -49,8 +49,6 @@
       *  03.05.00    NACL-ÂÀÅÄ    07.05.18  ¥°¥ë¡¼¥×¿ÇÎÅÂÐ±þ
       *  03.05.00    NACL-¾®Æ¦Âô  07.07.27  ÎÅÍÜÉÂÅï¡ÊÉÂ¾²¡ËÆþ±¡²ñ·×
       *                                     É½¼¨¶èÊ¬ÂÐ±þ
-      *  04.01.00    NACL-¾®Æ¦Âô  07.10.25  Æþ±¡ÎÁºï½ü»þ¤Î¿©»ö»»Äê
-      *                                     ¶èÊ¬ÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT                               DIVISION.
@@ -629,9 +627,6 @@
       *    ÎÅÍÜÆþ±¡É½¼¨¶èÊ¬¥³¥ó¥Ü
            PERFORM 310-RYOYODSPLST-SET-SEC
       *
-      *    Æþ±¡ÎÁºï½ü»þ¿©»ö»»Äê¶èÊ¬¥³¥ó¥Ü
-           PERFORM 310-NACCT-SKJLST-SET-SEC
-      *
            .
        310-CMB-SYOKI-EXT.
            EXIT.
@@ -1047,22 +1042,6 @@
        310-RYOYODSPLST-SET-EXT.
            EXIT.
       *****************************************************************
-      *    Æþ±¡ºï½ü»þ¿©»ö»»Äê¶èÊ¬¥³¥ó¥Ü
-      *****************************************************************
-       310-NACCT-SKJLST-SET-SEC    SECTION.
-      *
-           MOVE    2               TO  SPA-GMN-W24-NACCT-SKJ-MAX
-      *
-           MOVE    "0"             TO  SPA-GMN-W24-NACCT-SKJL    (1)
-           MOVE    "»»Äê¤·¤Ê¤¤"    TO  SPA-GMN-W24-NACCT-SKJMEIL (1)
-      *
-           MOVE    "1"             TO  SPA-GMN-W24-NACCT-SKJL    (2)
-           MOVE    "»»Äê¤¹¤ë"      TO  SPA-GMN-W24-NACCT-SKJMEIL (2)
-      *
-           .
-       310-NACCT-SKJLST-SET-EXT.
-           EXIT.
-      *****************************************************************
       *    ÆþÎÏ¾ðÊóÊÔ½¸½èÍý
       *****************************************************************
        310-INPUT-AREA-EDIT-SEC     SECTION.
@@ -1207,16 +1186,6 @@
            ELSE
                MOVE    SPA-GMN-W24-RYOYODSPLST (1)
                                        TO  SPA-GMN-W24-RYOYODSP-G
-           END-IF
-      *
-      *    Æþ±¡ÎÁºï½ü»þ¿©»ö»»Äê¶èÊ¬
-           MOVE    SYS-5000-NACCT-SKJKBN  TO  WRK-CMB-CD
-           PERFORM 4200-NACCT-SKJLST-CHK-SEC
-           IF    ( WRK-CMB-ITM     NOT =   SPACE )
-               MOVE    WRK-CMB-ITM     TO  SPA-GMN-W24-NACCT-SKJ-G
-           ELSE
-               MOVE    SPA-GMN-W24-NACCT-SKJLST (1)
-                                       TO  SPA-GMN-W24-NACCT-SKJ-G
            END-IF
       *
       *    Æþ±¡ÎÁ²Ã»»¾ðÊó
@@ -1723,9 +1692,6 @@
       *    ÎÅÍÜÆþ±¡É½¼¨¶èÊ¬
            MOVE    W24-RYOYODSP        TO  SPA-GMN-W24-RYOYODSP-G
       *
-      *    Æþ±¡ÎÁºï½ü»þ¿©»ö»»Äê¶èÊ¬
-           MOVE    W24-NACCT-SKJ       TO  SPA-GMN-W24-NACCT-SKJ-G
-      *
            .
       *
        4101-GMN-SPA-SET-EXT.
@@ -1905,12 +1871,6 @@
       *
       *    ÎÅÍÜÆþ±¡É½¼¨¶èÊ¬¥Á¥§¥Ã¥¯½èÍý
            PERFORM 4100-RYOYODSP-CHK-SEC
-           IF    ( SPA-ERRCD   NOT =   SPACE )
-               GO  TO  4102-KIHON-CHK-EXT
-           END-IF
-      *
-      *    Æþ±¡ÎÁºï½ü»þ¿©»ö»»Äê¶èÊ¬
-           PERFORM 4100-NACCT-SKJ-CHK-SEC
            IF    ( SPA-ERRCD   NOT =   SPACE )
                GO  TO  4102-KIHON-CHK-EXT
            END-IF
@@ -2360,10 +2320,6 @@
       *    ÎÅÍÜÆþ±¡É½¼¨¶èÊ¬
            MOVE    SPA-GMN-W24-RYOYODSP
                                    TO  SYS-5000-RYOYODSPKBN
-      *
-      *    Æþ±¡ÎÁºï½ü»þ¿©»ö»»Äê¶èÊ¬
-           MOVE    SPA-GMN-W24-NACCT-SKJ
-                                   TO  SYS-5000-NACCT-SKJKBN
       *
       *    ¸º»»¾ðÊó
            IF    ( SPA-W01-EDYUKYMD    >=  CONST-H180401 )
@@ -3203,25 +3159,6 @@
        4100-RYOYODSP-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    Æþ±¡ÎÁºï½ü»þ¿©»ö»»Äê¶èÊ¬
-      *****************************************************************
-       4100-NACCT-SKJ-CHK-SEC         SECTION.
-      *
-      *    ³ºÅö¥³¡¼¥É¤Î¥Ç¡¼¥¿¤¬Â¸ºß¤¹¤ë¤«¥Á¥§¥Ã¥¯
-           MOVE    SPA-GMN-W24-NACCT-SKJ
-                                       TO  WRK-CMB-CD
-           PERFORM 4200-NACCT-SKJLST-CHK-SEC
-           IF    ( WRK-CMB-ITM         =   SPACE )
-               MOVE    SPA-GMN-W24-NACCT-SKJLST (1)
-                                       TO  SPA-GMN-W24-NACCT-SKJ-G
-           ELSE
-               MOVE    WRK-CMB-ITM     TO  SPA-GMN-W24-NACCT-SKJ-G
-           END-IF
-      *
-           .
-       4100-NACCT-SKJ-CHK-EXT.
-           EXIT.
-      *****************************************************************
       *    Æþ±¡»þ¿©»öÎÅÍÜ¥³¥ó¥Ü¥Á¥§¥Ã¥¯½èÍý
       *****************************************************************
        4200-SKJRYOYOLST-CHK-SEC    SECTION.
@@ -3718,29 +3655,6 @@
        4200-RYOYODSPLST-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    Æþ±¡ÎÁºï½ü¿©»ö»»Äê¶èÊ¬¥³¥ó¥Ü¥Á¥§¥Ã¥¯½èÍý
-      *****************************************************************
-       4200-NACCT-SKJLST-CHK-SEC   SECTION.
-      *
-           INITIALIZE                  WRK-CMB-ITM-G
-      *
-           PERFORM VARYING IDX-CMB FROM    1   BY  1
-                   UNTIL ( IDX-CMB >   SPA-GMN-W24-NACCT-SKJ-MAX )
-                    OR   ( WRK-CMB-ITM NOT =   SPACE )
-      *
-               IF    ( SPA-GMN-W24-NACCT-SKJL (IDX-CMB)
-                                       =   WRK-CMB-CD )
-                   MOVE    SPA-GMN-W24-NACCT-SKJLST (IDX-CMB)
-                                       TO  WRK-CMB-ITM
-                   MOVE    IDX-CMB     TO  WRK-CMB-IDX
-               END-IF
-      *
-           END-PERFORM
-      *
-           .
-       4200-NACCT-SKJLST-CHK-EXT.
-           EXIT.
-      *****************************************************************
       *    ÆþÎÏ¾ðÊóÎÎ°è½é´ü²½½èÍý
       *****************************************************************
        4201-INPUT-AREA-INIT-SEC        SECTION.
@@ -3844,8 +3758,6 @@
                                    TO  SPA-GMN-W24-TEIKISAGAKUACT-G
            MOVE    SPA-GMN-W24-RYOYODSPLST (1)
                                    TO  SPA-GMN-W24-RYOYODSP-G
-           MOVE    SPA-GMN-W24-NACCT-SKJLST (1)
-                                   TO  SPA-GMN-W24-NACCT-SKJ-G
       *
       *
       *    Æþ±¡²Ã»»Ì¾¾ÎÊÔ½¸½èÍý
@@ -4465,19 +4377,6 @@
       *
            END-PERFORM
       *
-      *    Æþ±¡ÎÁºï½ü»þ¿©»ö»»Äê¶èÊ¬
-           MOVE    SPA-GMN-W24-NACCT-SKJ-G
-                                           TO  W24-NACCT-SKJ
-           MOVE    SPA-GMN-W24-NACCT-SKJ-MAX
-                                           TO  W24-NACCT-SKJ-CNT
-           PERFORM VARYING IDX0    FROM    1   BY  1
-                   UNTIL ( IDX0    >   W24-NACCT-SKJ-CNT )
-      *
-               MOVE    SPA-GMN-W24-NACCT-SKJLST (IDX0)
-                                       TO  W24-NACCT-SKJ-ITM (IDX0)
-      *
-           END-PERFORM
-      *
            IF    ( SPA-W01-EDYUKYMD    >=  CONST-H180401 )
                MOVE    "Æþ±¡²Ã»»¾ðÊó"          TO  W24-FRAME3-LABEL
            ELSE
@@ -4675,8 +4574,6 @@
                MOVE    "TEIKISAGAKUACT" TO MCP-WIDGET
            WHEN    059
                MOVE    "RYOYODSP"      TO MCP-WIDGET
-           WHEN    060
-               MOVE    "NACCT_SKJ"     TO MCP-WIDGET
            WHEN    212
                MOVE    "B12"           TO  MCP-WIDGET
            END-EVALUATE
@@ -4794,7 +4691,7 @@
            WHEN    "BRMSGK_TAX"
                MOVE    047             TO  SPA-GMN-W24-CUR
            WHEN    "NACCT_BRMSGK"
-               MOVE    060             TO  SPA-GMN-W24-CUR
+               MOVE    051             TO  SPA-GMN-W24-CUR
            WHEN    "NACCT_GAIHAKU"
                MOVE    053             TO  SPA-GMN-W24-CUR
            WHEN    "HYOUKETU"
@@ -4807,8 +4704,6 @@
                MOVE    212             TO  SPA-GMN-W24-CUR
            WHEN    "RYOYODSP"
                MOVE    008             TO  SPA-GMN-W24-CUR
-           WHEN    "NACCT_SKJ"
-               MOVE    051             TO  SPA-GMN-W24-CUR
            END-EVALUATE
       *
            .
