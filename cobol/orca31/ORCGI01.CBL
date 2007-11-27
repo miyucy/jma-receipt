@@ -126,6 +126,8 @@
       *  03.05.00    NACL-¾®Æ¦Âô  07/10/19  °ÛÆ°¼è¾Ã¤Ç¤Î¿©»öÂàÈòÂÐ±þ
       *  04.01.00    NACL-ÂÀÅÄ    07/11/20  ¸ø³²ÊÝ¸±ÂÐ±þ
       *  04.01.00    NACL-ÂÀÅÄ    07/11/20  ¼¼ÎÁº¹³Û£¶·åÂÐ±þ
+      *  04.01.00    NACL-¾®Æ¦Âô  07/11/27  Ç¾Â´Ãæ¥±¥¢¥æ¥Ë¥Ã¥ÈÆþ±¡°åÎÅ´ÉÍýÎÁ
+      *                                     ÄÌ»»Æü¿ôÈ½Äê¤òÊÑ¹¹
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -11191,7 +11193,7 @@
       *    ·Ð²á¤·¤Æ¤¤¤¿¾ì¹ç¤Ï°ìÈÌ¤ÎÆþ±¡ÎÁ»»Äê¤È¤¹¤ë
            IF   PTNYUINRRK-TOKUTEI-KBN   =   "3"
                IF   PTNYUINRRK-TOKUTEI-NYUIN   = "19"
-                   IF   STUSAN-NISSU06   >=   14
+                   IF   STUSAN-NISSU07   >=   14
                        MOVE    SPACE   TO   SPA-GMN-I01-TOKNYUIN-CD
                    END-IF
                END-IF
@@ -12033,7 +12035,7 @@
                                          LNK-SCNYUACCT-NYUKHN-SRYCD(1)
       *          Ç¾Â´Ãæ¥±¥¢¥æ¥Ë¥Ã¥ÈÆþ±¡°åÎÅ´ÉÍýÎÁ¤Î»»Äê²ÄÇ½Æü¿ô¤ò·×»»
                  MOVE     ZERO      TO   WK-TOKUTEI-DAY
-                 COMPUTE  WK-TOKUTEI-DAY  =  14  - STUSAN-NISSU06
+                 COMPUTE  WK-TOKUTEI-DAY  =  14  - STUSAN-NISSU07
       *
                  IF     WK-TOKUTEI-DAY   >=   1
                      MOVE   "190120810"  TO 
@@ -13609,7 +13611,7 @@
                                          LNK-SCNYUACCT-NYUKHN-SRYCD(1)
       *          Ç¾Â´Ãæ¥±¥¢¥æ¥Ë¥Ã¥ÈÆþ±¡°åÎÅ´ÉÍýÎÁ¤Î»»Äê²ÄÇ½Æü¿ô¤ò·×»»
                  MOVE     ZERO      TO   WK-TOKUTEI-DAY
-                 COMPUTE  WK-TOKUTEI-DAY  =  14  - STUSAN-NISSU06
+                 COMPUTE  WK-TOKUTEI-DAY  =  14  - STUSAN-NISSU07
       *
                  IF     WK-TOKUTEI-DAY   >=   1
                      MOVE   "190120810"  TO 
