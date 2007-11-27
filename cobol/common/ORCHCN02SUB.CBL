@@ -231,11 +231,14 @@
                PERFORM   910-NYUINACCT-READ-SEC
                PERFORM   UNTIL   (FLG-NYUINACCT    =   1)
       *
-      *            該当入院行為テーブルの読み込み
-                   PERFORM    210-NYUINACT-GET-SEC
-      *
-      *            入院基本料単位の入院日数カウント
-                   PERFORM    210-NYUIN-COUNT-SEC
+                   IF   (LNK-ORCHCN02SUB-NYUINYMD(1:6)  <= NACCT-SRYYM)
+                                         AND
+                        (LNK-ORCHCN02SUB-TAIINYMD(1:6)  >= NACCT-SRYYM)
+      *                該当入院行為テーブルの読み込み
+                       PERFORM    210-NYUINACT-GET-SEC
+      *                入院基本料単位の入院日数カウント
+                       PERFORM    210-NYUIN-COUNT-SEC
+                   END-IF
       *
                    MOVE    "tbl_nyuinacct"         TO  MCP-TABLE
                    MOVE    "key34"                 TO  MCP-PATHNAME
