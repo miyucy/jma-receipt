@@ -88,7 +88,7 @@
            03  CONST-HOUKATU           PIC 9(04)   VALUE   9999.
            03  CONST-TCOMBI-MAX        PIC 9(05)   VALUE   31.
            03  CONST-SRYKA-MAX         PIC 9(05)   VALUE   50.
-           03  CONST-TBLCOMBI-MAX      PIC 9(05)   VALUE   100.
+           03  CONST-TBLCOMBI-MAX      PIC 9(05)   VALUE   50.
       *
       *    保険組合せ
        01  TBLCOMBI-AREA.
