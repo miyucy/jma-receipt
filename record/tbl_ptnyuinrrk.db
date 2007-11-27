@@ -868,7 +868,7 @@ path	key48		{
 		FROM tbl_ptnyuinrrk
 			WHERE	HOSPNUM             =   :HOSPNUM 
 			AND		PTID        =   :PTID
-			AND		NYUINYMD    >=  :NYUINYMD
+			AND		NYUINYMD    =   :NYUINYMD
 			AND		JTIKBN	    =   '6'
 			ORDER BY NYUINYMD
 		;
