@@ -48,6 +48,7 @@
            03  FLG-NYUINACT                PIC 9(01).
            03  FLG-TENSU                   PIC 9(01).
            03  FLG-PTINF                   PIC 9(01).
+           03  FLG-PTNYUINRRK              PIC 9(01).
            03  FLG-MATCH                   PIC 9(01).
       *    Åº»úÎÎ°è
        01  IDX-AREA.
@@ -94,6 +95,10 @@
       *    ´µ¼Ô¥Þ¥¹¥¿¡Ý
        01  PTINF-REC.
            COPY    "CPPTINF.INC".
+      *
+      *    ´µ¼ÔÆþ±¡ÍúÎò¥Þ¥¹¥¿¡Ý
+       01  PTNYUINRRK-REC.
+           COPY    "CPPTNYUINRRK.INC".
       *
       *
       *    £Ä£Â¸¡º÷
@@ -187,6 +192,29 @@
       *    ¼ç¼èÆÀ
       *****************************************************************
        200-MAIN-SEC            SECTION.
+      *
+      *Æþ±¡ÍúÎò¤«¤é¼«±¡Îò¤ÎÆü¿ô¼èÆÀ¡ÊÆþ±¡ÎòºîÀ®µ¡Ç½¤Ë¤è¤ëÍúÎòÊ¬¤Î
+      *                              Æü¿ô¼èÆÀ¡Ë
+           INITIALIZE                           PTNYUINRRK-REC
+           MOVE    LNK-ORCHCN02SUB-HOSPNUM  TO  PTNYUINRRK-HOSPNUM
+           MOVE    LNK-ORCHCN02SUB-PTID     TO  PTNYUINRRK-PTID
+           MOVE    LNK-ORCHCN02SUB-NYUINYMD TO  PTNYUINRRK-NYUINYMD
+           MOVE    "tbl_ptnyuinrrk"         TO  MCP-TABLE
+           MOVE    "key48"                  TO  MCP-PATHNAME
+           PERFORM 910-PTNYUINRRK-SELECT-SEC
+           IF      FLG-PTNYUINRRK          =   ZERO
+               MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
+               MOVE    "key48"             TO  MCP-PATHNAME
+               PERFORM   910-PTNYUINRRK-READ-SEC
+               IF    FLG-PTNYUINRRK        =   ZERO
+                   ADD   PTNYUINRRK-TAISYONISSU
+                                       TO   LNK-ORCHCN02SUB-NISSU(1)
+               END-IF
+           END-IF
+      *    ´µ¼ÔÆþ±¡ÍúÎò¥¯¥í¡¼¥º
+           MOVE    "tbl_ptnyuinrrk"        TO  MCP-TABLE
+           MOVE    "key48"                 TO  MCP-PATHNAME
+           PERFORM   910-DB-CLOSE-SEC
       *
       *Æþ±¡ÎÁ¤Î¼èÆÀ
            INITIALIZE                           NYUINACCT-REC
@@ -526,6 +554,47 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            .
        910-NYUINACT-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ´µ¼ÔÆþ±¡ÍúÎò¥Þ¥¹¥¿¡¼¸¡º÷
+      *****************************************************************
+       910-PTNYUINRRK-SELECT-SEC        SECTION.
+      *
+           MOVE    PTNYUINRRK-REC      TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
+           IF      MCP-RC              =   ZERO
+               MOVE    ZERO               TO  FLG-PTNYUINRRK
+           ELSE
+               MOVE    1                  TO  FLG-PTNYUINRRK
+           END-IF
+      *
+           .
+       910-PTNYUINRRK-SELECT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ´µ¼ÔÆþ±¡ÍúÎò¥Þ¥¹¥¿¡¼ÆÉ¹þ
+      *****************************************************************
+       910-PTNYUINRRK-READ-SEC         SECTION.
+      *
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC         TO  PTNYUINRRK-REC
+               MOVE    ZERO                TO  FLG-PTNYUINRRK
+           ELSE
+               INITIALIZE                      PTNYUINRRK-REC
+               MOVE    1                   TO  FLG-PTNYUINRRK
+           END-IF
+      *
+           .
+       910-PTNYUINRRK-READ-EXT.
            EXIT.
       *
       *****************************************************************
