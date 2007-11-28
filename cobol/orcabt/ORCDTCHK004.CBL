@@ -595,8 +595,9 @@
            INITIALIZE                  SDTCHK02AREA
                                        LNK-HKNCOMBI-AREA
       *
-           MOVE    WRK-PARA-HOSPNUM     TO  SDTCHK02-HOSPNUM
+           MOVE    WRK-PARA-HOSPNUM    TO  SDTCHK02-HOSPNUM
            MOVE    DTCHK005-PTID       TO  SDTCHK02-PTID
+           MOVE    1                   TO  SDTCHK02-ALL
       *
            CALL    "ORCSDTCHK02"       USING   SDTCHK02AREA
                                                LNK-HKNCOMBI-AREA

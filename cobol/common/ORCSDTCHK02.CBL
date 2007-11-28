@@ -48,6 +48,7 @@
            03  FLG-END             PIC 9(01).
            03  FLG-HKNCOMBI        PIC 9(01).
            03  FLG-PTRSIINF        PIC 9(01).
+           03  FLG-TARGET          PIC 9(01).
       *
       *    Åº»úÎÎ°è
        01  IDX-AREA.
@@ -140,9 +141,17 @@
            PERFORM UNTIL ( FLG-HKNCOMBI    =   1 )
                     OR   ( IDX-MAX        >=   CONST-HKNCOMBI-MAX )
       *
+               MOVE    ZERO            TO  FLG-TARGET
+      *
                IF    ( COMB-DELKBN         =   "1" )
-                   CONTINUE
+                   IF    ( SDTCHK02-ALL    =   1   )
+                       MOVE    1       TO  FLG-TARGET
+                   END-IF
                ELSE
+                       MOVE    1       TO  FLG-TARGET
+               END-IF
+      *
+               IF    ( FLG-TARGET      =   1 )
                    COMPUTE IDX-MAX =   IDX-MAX +   1
                    MOVE    HKNCOMBI-REC TO  LNK-HKNCOMBI-OCC (IDX-MAX)
                    PERFORM 1101-HKNCOMBIMEI-HEN-SEC
