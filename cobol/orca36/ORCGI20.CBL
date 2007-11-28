@@ -2850,7 +2850,7 @@
                END-STRING
       *
            WHEN    OTHER
-               STRING  ",KANANAME,PTNUM,NYUINYMD,TAIINYMD,RRKNUM"
+               STRING  ",BRMNUM,KANANAME,PTNUM,NYUINYMD,TAIINYMD,RRKNUM"
                        DELIMITED  BY  SIZE
                INTO    WRK-SQL
                WITH    POINTER WRK-SQL-PNT
