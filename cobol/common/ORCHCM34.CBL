@@ -4062,6 +4062,16 @@
                END-STRING
            END-IF
       *
+      *    器材商品名の器材コード
+           IF    ( SRY-SRYCD      (IDX9)(1:1)  =   "7" )
+             AND ( SRY-MEISKYFLG  (IDX9)       =   "1" )
+               STRING "〔"                 DELIMITED   BY  SIZE
+                      TNS-NAME             DELIMITED   BY  SPACE
+                      "〕"                 DELIMITED   BY  SIZE
+               INTO   WRK-SRYACT-STR
+               END-STRING
+           END-IF
+      *
       *    コメントの時、内容設定
            IF   (( SRY-SRYCD  (IDX9)(1:1)  =   "8"  )
              OR  ( SRY-SRYCD  (IDX9)(1:3)  =   "008"  ))
