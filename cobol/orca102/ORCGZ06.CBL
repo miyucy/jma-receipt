@@ -29,6 +29,7 @@
       * Maj/Min/Rev  修正者       日付      内容
       *  01.00.01    NACL-多々納  05/12/09  MONFUNC対応 他
       *  03.05.00    NACL-多々納  07/05/07  グループ診療対応
+      *  04.01.00    NACL-森脇    07/11/28  起床時追加
       *****************************************************************
       *
        ENVIRONMENT                               DIVISION.
@@ -105,6 +106,19 @@
                    07  SPA-GMN-JITEN4L         PIC X(01).
                    07  SPA-GMN-H4L             PIC X(01).
                    07  SPA-GMN-JITEN4MEIL      PIC X(10).
+      *
+      *----(04.01.00)--ADD-START-------------------------------------
+               05  SPA-GMN-JITEN5-G.
+                   07  SPA-GMN-JITEN5          PIC 9(01).
+                   07  SPA-GMN-JITEN5-X        REDEFINES
+                       SPA-GMN-JITEN5          PIC X(01).
+                   07  SPA-GMN-H5              PIC X(01).
+                   07  SPA-GMN-JITEN5MEI       PIC X(10).
+               05  SPA-GMN-JITEN5-LST          OCCURS  2.
+                   07  SPA-GMN-JITEN5L         PIC X(01).
+                   07  SPA-GMN-H5L             PIC X(01).
+                   07  SPA-GMN-JITEN5MEIL      PIC X(10).
+      *----(04.01.00)--ADD-END---------------------------------------
       *
       *    第二画面内容
            03  SPA-NAI-AREA.
@@ -375,6 +389,13 @@
            MOVE    "1"                 TO  SPA-GMN-JITEN4L    (2)
            MOVE    "服用する"          TO  SPA-GMN-JITEN4MEIL (2)
       *
+      *----(04.01.00)--ADD-START-------------------------------------
+           MOVE    "0"                 TO  SPA-GMN-JITEN5L    (1)
+           MOVE    "服用しない"        TO  SPA-GMN-JITEN5MEIL (1)
+           MOVE    "1"                 TO  SPA-GMN-JITEN5L    (2)
+           MOVE    "服用する"          TO  SPA-GMN-JITEN5MEIL (2)
+      *----(04.01.00)--ADD-END---------------------------------------
+      *
       *    点数マスタ検索
            INITIALIZE                  TNS-TENSU-REC
       *
@@ -418,11 +439,17 @@
                MOVE    TNS-SSTKIJUNCD(2)   TO  SPA-GMN-JITEN2
                MOVE    TNS-SSTKIJUNCD(3)   TO  SPA-GMN-JITEN3
                MOVE    TNS-SSTKIJUNCD(4)   TO  SPA-GMN-JITEN4
+      *----(04.01.00)--ADD-START-------------------------------------
+               MOVE    TNS-SSTKIJUNCD(5)   TO  SPA-GMN-JITEN5
+      *----(04.01.00)--ADD-END---------------------------------------
            ELSE
                MOVE    ZERO                TO  SPA-GMN-JITEN1
                MOVE    ZERO                TO  SPA-GMN-JITEN2
                MOVE    ZERO                TO  SPA-GMN-JITEN3
                MOVE    ZERO                TO  SPA-GMN-JITEN4
+      *----(04.01.00)--ADD-START-------------------------------------
+               MOVE    ZERO                TO  SPA-GMN-JITEN5
+      *----(04.01.00)--ADD-END---------------------------------------
            END-IF
       *    朝
            PERFORM VARYING     IDX     FROM    1   BY  1
@@ -456,6 +483,16 @@
                                            TO  SPA-GMN-JITEN4-G
                END-IF
            END-PERFORM
+      *----(04.01.00)--ADD-START-------------------------------------
+      *    起床
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   2
+               IF      SPA-GMN-JITEN5-X    =   SPA-GMN-JITEN5L(IDX)
+                   MOVE    SPA-GMN-JITEN5-LST (IDX)
+                                           TO  SPA-GMN-JITEN5-G
+               END-IF
+           END-PERFORM
+      *----(04.01.00)--ADD-END---------------------------------------
       *
            MOVE    1                   TO  SPA-GMNZ6-CUR
            .
@@ -565,6 +602,9 @@
            MOVE    Z06-JITEN2          TO  SPA-GMN-JITEN2-G
            MOVE    Z06-JITEN3          TO  SPA-GMN-JITEN3-G
            MOVE    Z06-JITEN4          TO  SPA-GMN-JITEN4-G
+      *----(04.01.00)--ADD-START-------------------------------------
+           MOVE    Z06-JITEN5          TO  SPA-GMN-JITEN5-G
+      *----(04.01.00)--ADD-END---------------------------------------
            .
       *
        4101-GMN-SPA-SET-EXT.
@@ -620,6 +660,13 @@
            IF      SPA-ERRCD       NOT =   SPACE
                GO      TO      4102-KIHON-CHK-EXT
            END-IF
+      *----(04.01.00)--ADD-START-------------------------------------
+      *    起床チェック
+           PERFORM 506-JITEN5-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      4102-KIHON-CHK-EXT
+           END-IF
+      *----(04.01.00)--ADD-END---------------------------------------
            .
       *
        4102-KIHON-CHK-EXT.
@@ -827,6 +874,33 @@
        506-JITEN4-CHK-EXT.
            EXIT.
       *
+      *----(04.01.00)--ADD-START-------------------------------------
+      *****************************************************************
+      *    服用時点起床チェック処理
+      *****************************************************************
+       506-JITEN5-CHK-SEC          SECTION.
+      *
+           MOVE    ZERO                TO  FLG-OK
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL      (IDX         >   2   )  OR
+                              (FLG-OK      =   1  )
+               IF      SPA-GMN-JITEN5-X    =   SPA-GMN-JITEN5L (IDX)
+                   MOVE    SPA-GMN-JITEN5-LST (IDX)
+                                           TO  SPA-GMN-JITEN5-G
+                   MOVE    1               TO  FLG-OK
+               END-IF
+           END-PERFORM
+      *
+           IF      FLG-OK              =   ZERO
+               MOVE    "0016"              TO  SPA-ERRCD
+               MOVE    11                  TO  SPA-GMNZ6-CUR
+           END-IF
+           .
+      *
+       506-JITEN5-CHK-EXT.
+           EXIT.
+      *
+      *----(04.01.00)--ADD-END---------------------------------------
       ****************************************************************
       *    登録前、必須入力チェック処理
       ****************************************************************
@@ -1296,6 +1370,9 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPA-GMN-JITEN2      TO  TNS-SSTKIJUNCD(2)
            MOVE    SPA-GMN-JITEN3      TO  TNS-SSTKIJUNCD(3)
            MOVE    SPA-GMN-JITEN4      TO  TNS-SSTKIJUNCD(4)
+      *----(04.01.00)--ADD-START-------------------------------------
+           MOVE    SPA-GMN-JITEN5      TO  TNS-SSTKIJUNCD(5)
+      *----(04.01.00)--ADD-END---------------------------------------
       *
            .
        4121-KOUMOKUISO-EXT.
@@ -1400,6 +1477,15 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    IDX                     TO  Z06-JITEN4-COUNT
             END-PERFORM
       *
+      *----(04.01.00)--ADD-START-------------------------------------
+            MOVE   SPA-GMN-JITEN5-G        TO  Z06-JITEN5
+            PERFORM VARYING    IDX     FROM    1   BY  1
+                    UNTIL      IDX     >   2
+               MOVE    SPA-GMN-JITEN5-LST(IDX) TO  Z06-JITEN5-ITEM(IDX)
+               MOVE    IDX                     TO  Z06-JITEN5-COUNT
+            END-PERFORM
+      *----(04.01.00)--ADD-END---------------------------------------
+      *
            PERFORM 5001-MAPCUR-SEC
       *
            .
@@ -1422,7 +1508,10 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                    WHEN    "NAME"
                        MOVE    5                 TO  SPA-GMNZ6-CUR
                    WHEN    "FORMALNAME"
-                       MOVE    6                 TO  SPA-GMNZ6-CUR
+      *----(04.01.00)--UPD-START-------------------------------------
+      *                 MOVE    6                 TO  SPA-GMNZ6-CUR
+                       MOVE    11                TO  SPA-GMNZ6-CUR
+      *----(04.01.00)--UPD-END---------------------------------------
                    WHEN    "JITEN1"
                        MOVE    7                 TO  SPA-GMNZ6-CUR
                    WHEN    "JITEN2"
@@ -1431,6 +1520,10 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                        MOVE    9                 TO  SPA-GMNZ6-CUR
                    WHEN    "JITEN4"
                        MOVE    10                TO  SPA-GMNZ6-CUR
+      *----(04.01.00)--ADD-START-------------------------------------
+                   WHEN    "JITEN5"
+                       MOVE    6                 TO  SPA-GMNZ6-CUR
+      *----(04.01.00)--ADD-END---------------------------------------
                    WHEN    OTHER
                        MOVE    1                 TO  SPA-GMNZ6-CUR
                END-EVALUATE
@@ -1456,6 +1549,10 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                   MOVE  "JITEN4"           TO  MCP-WIDGET
               WHEN     10
                   MOVE  "B12"              TO  MCP-WIDGET
+      *----(04.01.00)--ADD-START-------------------------------------
+              WHEN     11
+                  MOVE  "JITEN5"           TO  MCP-WIDGET
+      *----(04.01.00)--ADD-END---------------------------------------
            END-EVALUATE
       *
            .
@@ -1515,6 +1612,11 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN    "0015"
                    MOVE    "削除処理が失敗しました"
                                                  TO  SPA-ERRMSG
+      *----(04.01.00)--ADD-START-------------------------------------
+               WHEN    "0016"
+                   MOVE    "起床コードがありません"
+                                                 TO  SPA-ERRMSG
+      *----(04.01.00)--ADD-END---------------------------------------
            END-EVALUATE.
       *
            MOVE    SPACE                         TO  ZERR

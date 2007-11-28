@@ -55,3 +55,8 @@
                   05  Z06-VALUE   PIC X(12).
                 04  Z06-JITEN4-COUNT   PIC S9(9)   BINARY.
                 04  Z06-JITEN4-ITEM    PIC X(12)   OCCURS  2 TIMES.
+              03  Z06-JITEN5COMB.
+                04  Z06-JITEN5.
+                  05  Z06-VALUE   PIC X(12).
+                04  Z06-JITEN5-COUNT   PIC S9(9)   BINARY.
+                04  Z06-JITEN5-ITEM    PIC X(12)   OCCURS  2 TIMES.

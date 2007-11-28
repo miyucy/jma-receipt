@@ -55,5 +55,12 @@ Z06	{
 			count	int;
 			item	varchar(12)[2];
 		};
+		JITEN5COMB	{
+			JITEN5	{
+				value	varchar(12);
+			};
+			count	int;
+			item	varchar(12)[2];
+		};
 	};
 };
