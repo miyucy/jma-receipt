@@ -269,6 +269,7 @@
       *  04.01.02    NACL-ÌçÏÆ    07/10/25  ËÌ³¤Æ»£µ£±¡ÊÆ»Ã±ÆÈ»ö¶È¡Ë¤Ë´Ø¤ï¤ë
       *                                     ¡Ê¡¡¡ËºÆ·Çµ­ºÜÂÐ±þ
       *  04.01.03    NACL-ÌçÏÆ    07/11/12  ÀéÍÕ¸©ÆýÍÄ»ù°ìÉôÉéÃ´¶âµ­ºÜÂÐ±þ
+      *  04.01.04    NACL-ÌçÏÆ    07/11/26  ÆÃÄê´ïºà¾¦ÉÊÌ¾µ­ºÜÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -403,6 +404,7 @@
            03  FLG-SIKIBETU                            PIC 9(01).
            03  FLG-SENTEICDCHG                         PIC 9(01).
            03  FLG-ZANHAIKI                            PIC 9(01).
+           03  FLG-FORMAL-KISAI                        PIC 9(01).
            03  FLG-RECE65-ZAN                          PIC 9(01).
            03  FLG-REWRITE                             PIC 9(01).
            03  FLG-OKIKAE                              PIC 9(01).
@@ -825,6 +827,7 @@
            03  WRK-ZAINUM                              PIC 9(08).
            03  WRK-ZAINUM-CNT                          PIC 9(03).
            03  WRK-RENNUM                              PIC 9(02).
+           03  WRK-RENNUM2                             PIC 9(02).
            03  WRK-TANICD                              PIC 9(03).
            03  WRK-TANIMOJISU                          PIC 9(01).
            03  WRK-TANINAME                            PIC X(24).
@@ -957,6 +960,8 @@
            03  WRK-TAIHI-GENKIN-EN             PIC  9(07).
            03  WRK-TAIHI-GENKIN2               PIC  9(07).
            03  WRK-TAIHI-GENKIN3               PIC  9(07).
+      *
+           03  WRK-FORMALNAME                  PIC  X(300).
       *
       *    ¸ÇÄêÃÍ
        01  CONST-AREA.
@@ -2335,6 +2340,7 @@
       *
                                MOVE   ZERO   TO   WRK-FILMTEN
       *
+                               MOVE   SPACE  TO   WRK-FORMALNAME
                                MOVE   ZERO   TO   FLG-WRITE65
                                MOVE   ZERO   TO   FLG-TENTEKI
                                PERFORM   21011-RECE64-TENSOU-SEC
@@ -2383,6 +2389,7 @@
       *
                                       MOVE   ZERO   TO   WRK-FILMTEN
       *
+                                      MOVE   SPACE  TO   WRK-FORMALNAME
                                       MOVE   ZERO   TO   FLG-WRITE65
                                       MOVE   ZERO   TO   FLG-TENTEKI
                                       PERFORM   21011-RECE64-TENSOU-SEC
@@ -2408,6 +2415,7 @@
       *
                                       MOVE   ZERO   TO   WRK-FILMTEN
       *
+                                      MOVE   SPACE  TO   WRK-FORMALNAME
                                       MOVE   ZERO   TO   FLG-WRITE65
                                       MOVE   ZERO   TO   FLG-TENTEKI
                                       PERFORM   21011-RECE64-TENSOU-SEC
@@ -2542,7 +2550,9 @@
                PERFORM  900-SRYACT-READ-SEC
                PERFORM  UNTIL  FLG-SRYACT    =    1
                    MOVE    ZERO         TO      FLG-ZANHAIKI
+                                                FLG-FORMAL-KISAI
                    MOVE    ZERO         TO      WRK-RENNUM
+                                                WRK-RENNUM2
                    MOVE    ZERO         TO      FLG-WRITE65X
                    PERFORM   210121-RECE65-TENSOU-SEC
                    IF   FLG-TENTEKI  =  ZERO
@@ -2553,6 +2563,9 @@
                    END-IF
                    IF   FLG-ZANHAIKI  =  1
                       PERFORM  RECE65-REWRITE-SEC
+                   END-IF
+                   IF  FLG-FORMAL-KISAI  =  1
+                      PERFORM  RECE65-REWRITE2-SEC
                    END-IF
                    MOVE    "tbl_sryact"      TO      MCP-TABLE
                    MOVE    "key9"            TO      MCP-PATHNAME
@@ -3048,6 +3061,35 @@
                IF    (SRY-SRYCD    (IDX2)(1:1)     =   "8"  )  OR
                      (SRY-SRYCD    (IDX2)(1:3)     =   "008")
                         MOVE     "1"       TO    RECE64-COMCDFLG
+               END-IF
+      *
+               IF  SRY-SRYCD(IDX2)(1:3)     =   "058"
+                 MOVE  TNS-FORMALYUKOKETA TO  RECE65-YUKOKETA(IDX4)
+                 MOVE  TNS-FORMALNAME     TO  RECE65-NAME(IDX4)
+                                              WRK-FORMALNAME
+                 MOVE  "1"                TO  RECE65-RECEDENFLG(IDX4)
+               END-IF
+               IF  (SRY-SRYCD(IDX2)(1:1)    =   "7")
+               AND (SRY-MEISKYFLG(IDX2)     =   "1")
+                 IF   (SRY-SRYKBN  =   "70")
+                 AND  (TNS-DATAKBN =   "3" )
+                    IF    RECE65-RENNUM  >  1
+                    AND   IDX4           =  1
+                      MOVE    1           TO  FLG-FORMAL-KISAI
+                      COMPUTE  WRK-RENNUM2 =  RECE65-RENNUM  -  1
+                    ELSE
+                      MOVE  "1"           TO  RECE65-RECEPTFLG(IDX4 - 1)
+                    END-IF
+                 ELSE
+                    MOVE  "¡Ê"            TO  RECE65-NAME(IDX4)(1:2)
+                    COMPUTE IDW =   RECE65-YUKOKETA(IDX4)  *  2
+                    MOVE  TNS-NAME        TO  RECE65-NAME(IDX4)(3:IDW)
+                    COMPUTE IDW =  (RECE65-YUKOKETA(IDX4)  *  2) + 3
+                    MOVE  "¡Ë"            TO  RECE65-NAME(IDX4)(IDW:2)
+                    COMPUTE  RECE65-YUKOKETA(IDX4) =
+                             RECE65-YUKOKETA(IDX4) + 2
+                    MOVE  WRK-FORMALNAME  TO  RECE65-RECEDENNAME(IDX4)
+                 END-IF
                END-IF
       *
                IF  RECE65-YUKOKETA(IDX4)  =  ZERO
@@ -13641,6 +13683,72 @@
       *
            .
        RECE65-REWRITE-EXT.
+           EXIT.                                                       
+      *
+      *****************************************************************
+      *    ¥Ç¡¼¥¿½ÐÎÏ½èÍý¡Ê£Æ£°£°£µ¡Ë
+      *****************************************************************
+       RECE65-REWRITE2-SEC              SECTION.
+      *
+           IF      IDZ             =   1               
+      *    ¥ì¥»¥×¥È½èÍý
+      *
+              MOVE    ZERO                TO  FLG-REWRITE
+      *
+              INITIALIZE                      RECE65-REC
+              MOVE    RECE64-HOSPNUM      TO  RECE65-HOSPNUM
+              MOVE    RECE64-SRYYM        TO  RECE65-SRYYM
+              MOVE    RECE64-NYUGAIKBN    TO  RECE65-NYUGAIKBN
+              MOVE    RECE64-PTID         TO  RECE65-PTID
+              MOVE    RECE64-RECEKA       TO  RECE65-RECEKA
+              MOVE    RECE64-TEISYUTUSAKI TO  RECE65-TEISYUTUSAKI
+              MOVE    RECE64-RECESYUBETU  TO  RECE65-RECESYUBETU
+              MOVE    RECE64-HKNJANUM     TO  RECE65-HKNJANUM
+              MOVE    RECE64-HOJOKBN      TO  RECE65-HOJOKBN
+              MOVE    RECE64-TEKSTYMD     TO  RECE65-TEKSTYMD
+              MOVE    RECE64-ZAINUM       TO  RECE65-ZAINUM
+              MOVE    RECE64-ZAIREN       TO  RECE65-ZAIREN
+              START   RECE65-FILE
+                    KEY IS    >=   RECE65-KEY
+                    INVALID
+                        MOVE    1         TO  FLG-RECE65-ZAN
+                    NOT INVALID
+                        MOVE    ZERO      TO  FLG-RECE65-ZAN
+                        READ    RECE65-FILE   NEXT
+                          AT  END
+                            MOVE    1     TO  FLG-RECE65-ZAN
+                        END-READ
+              END-START
+              PERFORM   UNTIL
+                  (RECE64-HOSPNUM      NOT =  RECE65-HOSPNUM)     OR
+                  (RECE64-SRYYM        NOT =  RECE65-SRYYM)       OR
+                  (RECE64-NYUGAIKBN    NOT =  RECE65-NYUGAIKBN)   OR
+                  (RECE64-PTID         NOT =  RECE65-PTID)        OR
+                  (RECE64-RECEKA       NOT =  RECE65-RECEKA)      OR
+                  (RECE64-TEISYUTUSAKI NOT =  RECE65-TEISYUTUSAKI) OR
+                  (RECE64-RECESYUBETU  NOT =  RECE65-RECESYUBETU)  OR
+                  (RECE64-HKNJANUM     NOT =  RECE65-HKNJANUM)    OR
+                  (RECE64-HOJOKBN      NOT =  RECE65-HOJOKBN )    OR
+                  (RECE64-TEKSTYMD     NOT =  RECE65-TEKSTYMD)    OR
+                  (RECE64-ZAINUM       NOT =  RECE65-ZAINUM)      OR
+                  (RECE64-ZAIREN       NOT =  RECE65-ZAIREN)      OR
+                  (FLG-RECE65-ZAN            =      1        )    OR
+                  (FLG-REWRITE               =      1        )
+                   IF    RECE65-RENNUM   =   WRK-RENNUM2
+                      MOVE    1              TO  FLG-REWRITE
+                      MOVE   "1"             TO  RECE65-RECEPTFLG(5)
+                      REWRITE   RECE65-REC
+                   END-IF
+                   READ    RECE65-FILE   NEXT
+                     AT  END
+                       MOVE    1     TO  FLG-RECE65-ZAN
+                   END-READ
+              END-PERFORM
+      *
+           END-IF 
+      *
+           .
+       RECE65-REWRITE2-EXT.
            EXIT.                                                       
       *
       ****************************************************************

@@ -316,6 +316,7 @@
       *                                     ¡Ê¡¡¡ËºÆ·Çµ­ºÜÂÐ±þ
       *  04.01.02    NACL-ÌçÏÆ    07/11/06  ¿·³ã¸©Ãæ±Û²­ÃÏ¿ÌÂÐ±þ½¤Àµ
       *  04.01.03    NACL-ÌçÏÆ    07/11/12  ÀéÍÕ¸©ÆýÍÄ»ù°ìÉôÉéÃ´¶âµ­ºÜÂÐ±þ
+      *  04.01.04    NACL-ÌçÏÆ    07/11/26  ÆÃÄê´ïºà¾¦ÉÊÌ¾µ­ºÜÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -434,6 +435,7 @@
            03  FLG-SP                                  PIC 9(01). 
            03  FLG-PTCOM                               PIC 9(01).
            03  FLG-ZANHAIKI                            PIC 9(01).
+           03  FLG-FORMAL-KISAI                        PIC 9(01).
            03  FLG-RECE05                              PIC 9(01).
            03  FLG-REWRITE                             PIC 9(01).
            03  FLG-SHOSAISIN                           PIC 9(01).       
@@ -753,6 +755,7 @@
            03  WRK-SRYSURYO2                           PIC 9(05).
            03  WRK-SRYSURYO3                           PIC 9(05).
            03  WRK-RENNUM                              PIC 9(02).
+           03  WRK-RENNUM2                             PIC 9(02).
       *
            03  WRK-SRYCD                               PIC 9(09).
       *
@@ -833,6 +836,8 @@
            03  WRK-TAIHI-GENKIN-EN             PIC  9(07).
            03  WRK-TAIHI-GENKIN2               PIC  9(07).
            03  WRK-TAIHI-GENKIN3               PIC  9(07).
+      *
+           03  WRK-FORMALNAME                  PIC  X(300).
       *
       *---------------------------------------------------------------
       *  ²ó¿ô¸º»»ÍÑÂàÈòÎÎ°è
@@ -2301,6 +2306,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *
                                MOVE  ZERO  TO   WRK-FILMTEN
       *
+                               MOVE  SPACE TO   WRK-FORMALNAME
                                MOVE  ZERO  TO   FLG-WRITE05
                                PERFORM 21042-RECE02-TOTALTEN-HENSYU-SEC     
                                PERFORM 21043-RECE04-TENSOU-SEC
@@ -2353,6 +2359,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *
                                       MOVE  ZERO  TO   WRK-FILMTEN
       *
+                                      MOVE  SPACE TO   WRK-FORMALNAME
                                       MOVE  ZERO  TO   FLG-WRITE05
                                       PERFORM   21043-RECE04-TENSOU-SEC
                                       PERFORM   21044-RECE05-HENSYU-SEC
@@ -2383,6 +2390,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *
                                     MOVE  ZERO  TO   WRK-FILMTEN
       *
+                                    MOVE  SPACE TO   WRK-FORMALNAME
                                     MOVE  ZERO  TO   FLG-WRITE05
                                     PERFORM   21043-RECE04-TENSOU-SEC
                                     PERFORM   21044-RECE05-HENSYU-SEC
@@ -2626,7 +2634,9 @@ grpsys     PERFORM 900-DBSELECT-SEC
                PERFORM  900-SRYACT-READ-SEC
                PERFORM  UNTIL  FLG-SRYACT    =    1
                    MOVE   ZERO   TO  FLG-ZANHAIKI
+                                     FLG-FORMAL-KISAI
                    MOVE   ZERO   TO  WRK-RENNUM
+                                     WRK-RENNUM2
                    MOVE   ZERO   TO  FLG-WRITE05X
                    PERFORM   210441-RECE05-TENSOU-SEC
                    PERFORM   210442-RECE02-HENSYU-SEC
@@ -2636,6 +2646,9 @@ grpsys     PERFORM 900-DBSELECT-SEC
                    END-IF
                    IF  FLG-ZANHAIKI  =  1
                       PERFORM  RECE05-REWRITE-SEC
+                   END-IF
+                   IF  FLG-FORMAL-KISAI  =  1
+                      PERFORM  RECE05-REWRITE2-SEC
                    END-IF
                    MOVE    "tbl_sryact"         TO  MCP-TABLE
                    MOVE    "key2"               TO  MCP-PATHNAME
@@ -3214,6 +3227,35 @@ grpsys             MOVE    SRY-HOSPNUM          TO  PTCOM-HOSPNUM
                          MOVE    1     TO    FLG-HOUTEN-COM
                       END-IF
                     END-PERFORM
+               END-IF
+      *
+               IF  SRY-SRYCD(IDX2)(1:3)     =   "058"
+                 MOVE  TNS-FORMALYUKOKETA TO  RECE05-YUKOKETA(IDX4)
+                 MOVE  TNS-FORMALNAME     TO  RECE05-NAME(IDX4)
+                                              WRK-FORMALNAME
+                 MOVE  "1"                TO  RECE05-RECEDENFLG(IDX4)
+               END-IF
+               IF  (SRY-SRYCD(IDX2)(1:1)    =   "7")
+               AND (SRY-MEISKYFLG(IDX2)     =   "1")
+                 IF   (SRY-SRYKBN  =   "70")
+                 AND  (TNS-DATAKBN =   "3" )
+                    IF    RECE05-RENNUM  >  1
+                    AND   IDX4           =  1
+                      MOVE    1           TO  FLG-FORMAL-KISAI
+                      COMPUTE  WRK-RENNUM2 =  RECE05-RENNUM  -  1
+                    ELSE
+                      MOVE  "1"           TO  RECE05-RECEPTFLG(IDX4 - 1)
+                    END-IF
+                 ELSE
+                    MOVE  "¡Ê"            TO  RECE05-NAME(IDX4)(1:2)
+                    COMPUTE IDW =   RECE05-YUKOKETA(IDX4)  *  2
+                    MOVE  TNS-NAME        TO  RECE05-NAME(IDX4)(3:IDW)
+                    COMPUTE IDW =  (RECE05-YUKOKETA(IDX4)  *  2) + 3
+                    MOVE  "¡Ë"            TO  RECE05-NAME(IDX4)(IDW:2)
+                    COMPUTE  RECE05-YUKOKETA(IDX4) =
+                             RECE05-YUKOKETA(IDX4) + 2
+                    MOVE  WRK-FORMALNAME  TO  RECE05-RECEDENNAME(IDX4)
+                 END-IF
                END-IF
       *
                IF  RECE05-YUKOKETA(IDX4)  =  ZERO
@@ -9270,6 +9312,70 @@ grpsys            (RECE04-HOSPNUM      NOT =  RECE05-HOSPNUM)     OR
       *
            .
        RECE05-REWRITE-EXT.
+           EXIT.                                                        
+      *
+      *****************************************************************
+      *    ¥Ç¡¼¥¿½ÐÎÏ½èÍý¡Ê£Æ£°£°£µ¡Ë
+      *****************************************************************
+       RECE05-REWRITE2-SEC              SECTION.
+      *
+           IF      IDZ             =   1               
+      *    ¥ì¥»¥×¥È½èÍý
+      *
+              MOVE    ZERO                TO  FLG-REWRITE
+      *
+              INITIALIZE                      RECE05-REC
+              MOVE    RECE04-HOSPNUM      TO  RECE05-HOSPNUM
+              MOVE    RECE04-SRYYM        TO  RECE05-SRYYM
+              MOVE    RECE04-NYUGAIKBN    TO  RECE05-NYUGAIKBN
+              MOVE    RECE04-PTID         TO  RECE05-PTID
+              MOVE    RECE04-RECEKA       TO  RECE05-RECEKA
+              MOVE    RECE04-TEISYUTUSAKI TO  RECE05-TEISYUTUSAKI
+              MOVE    RECE04-RECESYUBETU  TO  RECE05-RECESYUBETU
+              MOVE    RECE04-HKNJANUM     TO  RECE05-HKNJANUM
+              MOVE    RECE04-HOJOKBN      TO  RECE05-HOJOKBN
+              MOVE    RECE04-TEKSTYMD     TO  RECE05-TEKSTYMD
+              MOVE    RECE04-ZAINUM       TO  RECE05-ZAINUM
+              START   RECE05-FILE
+                    KEY IS    >=   RECE05-KEY
+                    INVALID
+                        MOVE    1         TO  FLG-RECE05
+                    NOT INVALID
+                        MOVE    ZERO      TO  FLG-RECE05
+                        READ    RECE05-FILE   NEXT
+                          AT  END
+                            MOVE    1     TO  FLG-RECE05
+                        END-READ
+              END-START
+              PERFORM   UNTIL
+                  (RECE04-HOSPNUM      NOT =  RECE05-HOSPNUM)     OR
+                  (RECE04-SRYYM        NOT =  RECE05-SRYYM)       OR
+                  (RECE04-NYUGAIKBN    NOT =  RECE05-NYUGAIKBN)   OR
+                  (RECE04-PTID         NOT =  RECE05-PTID)        OR
+                  (RECE04-RECEKA       NOT =  RECE05-RECEKA)      OR
+                  (RECE04-TEISYUTUSAKI NOT =  RECE05-TEISYUTUSAKI) OR
+                  (RECE04-RECESYUBETU  NOT =  RECE05-RECESYUBETU)  OR
+                  (RECE04-HKNJANUM     NOT =  RECE05-HKNJANUM)    OR
+                  (RECE04-HOJOKBN      NOT =  RECE05-HOJOKBN )    OR
+                  (RECE04-TEKSTYMD     NOT =  RECE05-TEKSTYMD)    OR
+                  (RECE04-ZAINUM       NOT =  RECE05-ZAINUM)      OR
+                  (FLG-RECE05                =      1        )    OR
+                  (FLG-REWRITE               =      1        )
+                   IF    RECE05-RENNUM   =   WRK-RENNUM2
+                      MOVE    1              TO  FLG-REWRITE
+                      MOVE   "1"             TO  RECE05-RECEPTFLG(5)
+                      REWRITE   RECE05-REC
+                   END-IF
+                   READ    RECE05-FILE   NEXT
+                     AT  END
+                       MOVE    1     TO  FLG-RECE05
+                   END-READ
+              END-PERFORM
+      *
+           END-IF
+      *
+           .
+       RECE05-REWRITE2-EXT.
            EXIT.                                                        
       *
       ****************************************************************

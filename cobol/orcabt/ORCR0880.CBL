@@ -39,6 +39,7 @@
       *  03.05.01    NACL-門脇    07/06/01  グループ診療対応
       *  03.05.02    NACL-藤原    07/06/01  realtime preview 処理追加
       *  04.01.01    NACL-門脇    07/11/01  公務災害対応
+      *  04.01.02    NACL-門脇    07/11/26  特定器材商品名記載対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -220,7 +221,7 @@
       *
        01  WRK-FREE-AREA2.
            03  WRK-FREEINF2                  OCCURS 50.
-               05  WK-FREE-YUKOKETA2         PIC  9(02).
+               05  WK-FREE-YUKOKETA2         PIC  9(03).
                05  WK-FREE-NAME2             PIC  X(200).
       *
        01  TBL-NYU-DAY.

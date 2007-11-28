@@ -175,6 +175,7 @@
       *  03.05.01    NACL-Æ£¸¶    07/04/19  ¥°¥ë¡¼¥×¿ÇÎÅÂÐ±þ
       *  03.05.02    NACL-ÌçÏÆ    07/09/13  ÅÀÅ©¤Îµ­ºÜ½çÊÑ¹¹¡ÊÆüÉÕ½ç¡Ë
       *  03.05.03    NACL-ÌçÏÆ    07/09/13  Èé²¼¶ÚÆù¡¢ÀÅÌ®Ãí¼Í¤Îµ­ºÜÊÑ¹¹ÂÐ±þ
+      *  04.01.01    NACL-ÌçÏÆ    07/11/26  ÆÃÄê´ïºà¾¦ÉÊÌ¾µ­ºÜÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -394,7 +395,7 @@
            03  WRK-ZAIWMAX-SAV-G.
                05  WRK-ZAIWMAX-SAV PIC 9(03)   OCCURS  6.
       * 
-           03  WRK-YUKOKETA        PIC  9(02).
+           03  WRK-YUKOKETA        PIC  9(03).
            03  WRK-NAME            PIC  X(200).
       *
            03  WRK-RECE05          PIC 9(01).     
@@ -590,7 +591,7 @@
                05  TBL-TANINAME            PIC  X(24).
                05  TBL-NAMEINF.
       *            ´Á»úÍ­¸ú·å¿ô/´Á»úÌ¾¾Î
-                   07  TBL-YUKOKETA        PIC  9(02).
+                   07  TBL-YUKOKETA        PIC  9(03).
                    07  TBL-NAME            PIC  X(200).
       *        Êñ³çÂÐ¾Ý¸¡ºº¾ðÊó
                05  TBL-HOUKNSKBN           PIC  9(02).
@@ -725,7 +726,7 @@
       *            Ì¾¾Î¾ðÊó
                    07  TBL-ZAIW-NAMEINF.
       *                ´Á»úÍ­¸ú·å¿ô
-                       09  TBL-ZAIW-YUKOKETA        PIC  9(02).
+                       09  TBL-ZAIW-YUKOKETA        PIC  9(03).
       *                ´Á»úÌ¾¾Î
                        09  TBL-ZAIW-NAME            PIC  X(200).
                    07  TBL-ZAIW-SRYSYUKBN-INPUT     PIC  X(03).
@@ -1554,6 +1555,9 @@ grpsys         OR     ( RECE04-HOSPNUM   NOT =   RECE05-HOSPNUM      )
                                      MOVE    4             TO  IDY
                                  END-IF
                                ELSE
+                                IF     RECE05-SRYCD (IDX) (1:3) = "058"
+                                     MOVE    4             TO  IDY
+                                ELSE
                                  IF  RECE05-SRYCD (IDX)(1:3) =  "008"
                                     IF   RECE05-SRYSYUKBN  =  "334"
                                         MOVE    5         TO  IDY
@@ -1567,6 +1571,7 @@ grpsys         OR     ( RECE04-HOSPNUM   NOT =   RECE05-HOSPNUM      )
                                         MOVE    1         TO  IDY
                                     END-IF
                                  END-IF
+                                END-IF
                                END-IF
                              END-IF
                            WHEN    "8"

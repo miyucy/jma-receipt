@@ -40,6 +40,7 @@
       *  03.05.01    NACL-門脇    07/05/25  グループ診療対応
       *  03.05.02    NACL-藤原    07/06/01  realtime preview 処理追加
       *  04.01.01    NACL-門脇    07/10/31  公務災害対応
+      *  04.01.02    NACL-門脇    07/11/26  特定器材商品名記載対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -238,7 +239,7 @@
       *****        07  TBL-ZAIW-KENTAICOMMENT   PIC  9(01).
                05  TBL-ZAIW-NAMEINF.
       *            漢字有効桁数/漢字名称
-                   07  TBL-ZAIW-YUKOKETA        PIC  9(02).
+                   07  TBL-ZAIW-YUKOKETA        PIC  9(03).
                    07  TBL-ZAIW-NAME            PIC  X(200).
       *          
       *    診療行為別テーブル（出力用）
@@ -265,7 +266,7 @@
       *****        07  TBL-ZAI-KENTAICOMMENT   PIC  9(01).
                05  TBL-ZAI-NAMEINF.
       *            漢字有効桁数/漢字名称
-                   07  TBL-ZAI-YUKOKETA        PIC  9(02).
+                   07  TBL-ZAI-YUKOKETA        PIC  9(03).
                    07  TBL-ZAI-NAME            PIC  X(200).
       *
       *    固定値

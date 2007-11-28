@@ -68,6 +68,7 @@
       *  03.05.03    NACL-ÌçÏÆ    07/06/26  ¼«ÇåÀÕÊ¿À®£±£¹Ç¯£´·î²þÀµÍÍ¼°ÂÐ±þ
       *  03.05.04    NACL-ÌçÏÆ    07/08/07  »»ÄêÍúÎò¤Ë´Ø¤ï¤ëµ­ºÜ½¤Àµ
       *  04.01.01    NACL-ÌçÏÆ    07/11/01  ¸øÌ³ºÒ³²ÂÐ±þ
+      *  04.01.02    NACL-ÌçÏÆ    07/11/26  ÆÃÄê´ïºà¾¦ÉÊÌ¾µ­ºÜÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -426,12 +427,12 @@
       *
        01  WRK-FREE-AREA.
            03  WRK-FREEINF                     OCCURS 49.         
-               05  WK-FREE-YUKOKETA          PIC  9(02).
+               05  WK-FREE-YUKOKETA          PIC  9(03).
                05  WK-FREE-NAME              PIC  X(200).
       *
        01  WRK-FREE-AREA2.                                              
            03  WRK-FREEINF2                    OCCURS 50.               
-               05  WK-FREE-YUKOKETA2         PIC  9(02).                
+               05  WK-FREE-YUKOKETA2         PIC  9(03).                
                05  WK-FREE-NAME2             PIC  X(200).               
       *
        01  WRK-FREE-AREA3.

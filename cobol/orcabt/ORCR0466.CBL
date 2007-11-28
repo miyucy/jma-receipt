@@ -37,6 +37,7 @@
       *  03.05.02    NACL-藤原    07/06/01  realtime preview 処理追加
       *  03.05.03    NACL-門脇    07/06/26  不要項目削除
       *  04.01.01    NACL-門脇    07/10/31  公務災害対応
+      *  04.01.02    NACL-門脇    07/11/26  特定器材商品名記載対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -166,9 +167,6 @@
            03  WRK-LINENUM         PIC 9(05).
       *    剤印字行数
            03  WRK-TBLMAX         PIC 9(03).
-      * 
-           03  WRK-YUKOKETA        PIC  9(02).
-           03  WRK-NAME            PIC  X(200).
       *
       *    数字半角全角変換用     
            03  WRK-NUM                         PIC 9(01).
@@ -255,7 +253,7 @@
                    07  TBL-ZAIW-TENTTLKBN       PIC  9(03).
                05  TBL-ZAIW-NAMEINF.
       *            漢字有効桁数/漢字名称
-                   07  TBL-ZAIW-YUKOKETA        PIC  9(02).
+                   07  TBL-ZAIW-YUKOKETA        PIC  9(03).
                    07  TBL-ZAIW-NAME            PIC  X(200).
       *
       *    固定値

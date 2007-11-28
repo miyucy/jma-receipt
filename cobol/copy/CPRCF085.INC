@@ -28,6 +28,7 @@
       *  02.09.01    NACL-藤原    06/04/13  きざみ値計算識別
       *                                     検査等実施判断グループの追加
       *  03.05.01    NACL-門脇    07.06.01  グループ診療対応
+      *  04.01.01    NACL-門脇    07/11/26  特定器材商品名記載対応
       ************************************************************
       *01  RECE85-REC.
            03  RECE85-KEY.
@@ -95,7 +96,7 @@
       *名称情報
              05  RECE85-NAMEINF.
       *漢字有効桁数
-                 07  RECE85-YUKOKETA      PIC  9(02).
+                 07  RECE85-YUKOKETA      PIC  9(03).
       *漢字名称
                  07  RECE85-NAME          PIC  X(200).
       *識別フラグ情報
@@ -126,3 +127,8 @@
                  07  RECE85-CDKBN-KBNNUM-EDA PIC  9(02).
                  07  RECE85-CDKBN-KOUBAN     PIC  9(02).
                  07  RECE85-KOUHYOJYUNNUM    PIC  9(09).
+      *その他情報
+             05  RECE85-SONOTAINF.
+      *レセプト対象外フラグ
+                 07  RECE85-RECEPTFLG        PIC  X(01).
+      *

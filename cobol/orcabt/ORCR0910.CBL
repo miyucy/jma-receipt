@@ -78,6 +78,7 @@
       *  03.05.04    NACL-門脇    07/09/13  点滴の記載順変更（日付順）
       *  04.01.01    NACL-門脇    07/10/05  入院点滴コメント対応
       *  04.01.02    NACL-門脇    07/11/01  公務災害対応
+      *  04.01.03    NACL-門脇    07/11/26  特定器材商品名記載対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -237,7 +238,7 @@
            03  WRK-ZAIWMAX-SAV-G.
                05  WRK-ZAIWMAX-SAV PIC 9(03)   OCCURS  6.
       * 
-           03  WRK-YUKOKETA        PIC  9(02).
+           03  WRK-YUKOKETA        PIC  9(03).
            03  WRK-NAME            PIC  X(200).
       *
            03  WRK-RECE85          PIC 9(01).
@@ -393,7 +394,7 @@
                05  TBL-TANINAME            PIC  X(24).
                05  TBL-NAMEINF.
       *            漢字有効桁数/漢字名称
-                   07  TBL-YUKOKETA        PIC  9(02).
+                   07  TBL-YUKOKETA        PIC  9(03).
                    07  TBL-NAME            PIC  X(200).
       *        データ区分情報
                05  TBL-DATAKBN             PIC  9(01).
@@ -490,7 +491,7 @@
                        09  TBL-ZAIW-KZMCOMPSIKIBETU PIC  9(01).
                    07  TBL-ZAIW-NAMEINF.
       *                漢字有効桁数/漢字名称
-                       09  TBL-ZAIW-YUKOKETA        PIC  9(02).
+                       09  TBL-ZAIW-YUKOKETA        PIC  9(03).
                        09  TBL-ZAIW-NAME            PIC  X(200).
       *                データ区分情報
                    07  TBL-ZAIW-DATAKBNINF.
@@ -1050,6 +1051,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE86PARA-HOSPNUM
                          OR      ( RECE85-SRYCD(IDX) =   SPACE )
                          OR      ( SPA-STS           =   2     ) 
                  IF      RECE85-SIKFLG (IDX)         =   "1"        
+                 AND     RECE85-RECEPTFLG(IDX)       =   SPACE
       *
                    IF      RECE85-SRYCD (IDX) (1:1)  =   "1"
                        IF      TBL-DATAKBN (IDX)         =   "2"
@@ -1083,6 +1085,9 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE86PARA-HOSPNUM
                                      MOVE    4             TO  IDY
                                  END-IF
                               ELSE
+                                IF   RECE85-SRYCD (IDX) (1:3) = "058"
+                                     MOVE    4             TO  IDY
+                                ELSE
                                  IF  RECE85-SRYCD (IDX) (1:3) = "008"
                                     IF      IDY           =   ZERO
                                         MOVE    2          TO  IDY
@@ -1092,11 +1097,15 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE86PARA-HOSPNUM
                                         MOVE    1          TO  IDY
                                     END-IF
                                  END-IF
+                                END-IF
                               END-IF
                             ELSE
                               IF     RECE85-SRYCD (IDX) (1:3) = "059"
                                      MOVE    4             TO  IDY
                               ELSE
+                                IF   RECE85-SRYCD (IDX) (1:3) = "058"
+                                     MOVE    4             TO  IDY
+                                ELSE
                                  IF  RECE85-SRYCD (IDX) (1:3) = "008"
                                     IF      IDY           =   ZERO
                                         MOVE    2          TO  IDY
@@ -1106,6 +1115,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE86PARA-HOSPNUM
                                         MOVE    1          TO  IDY
                                     END-IF
                                  END-IF
+                                END-IF
                               END-IF
                             END-IF
                            WHEN    "8"

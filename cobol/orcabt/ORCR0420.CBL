@@ -138,6 +138,7 @@
       *  03.01.01    NACL-ÌçÏÆ    07/10/24  ¼«ÇåÀÕÆÃÄê´ïºàÅù¾ÃÈñÀÇÂÐ¾Ý³°ÀßÄê
       *                                     ¹àÌÜ¿ô³ÈÄ¥ÂÐ±þ
       *  04.01.02    NACL-ÌçÏÆ    07/10/31  ¸øÌ³ºÒ³²ÂÐ±þ
+      *  04.01.03    NACL-ÌçÏÆ    07/11/26  ÆÃÄê´ïºà¾¦ÉÊÌ¾µ­ºÜÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -283,6 +284,7 @@
            03  FLG-DAY                                 PIC 9(01).
            03  FLG-SP                                  PIC 9(01). 
            03  FLG-ZANHAIKI                            PIC 9(01).
+           03  FLG-FORMAL-KISAI                        PIC 9(01).
            03  FLG-RECE45                              PIC 9(01).
            03  FLG-REWRITE                             PIC 9(01).
            03  FLG-SET                                 PIC 9(01).
@@ -459,6 +461,7 @@
            03  WRK-SRYSURYO2                           PIC 9(05).
            03  WRK-SRYSURYO3                           PIC 9(05).
            03  WRK-RENNUM                              PIC 9(02).
+           03  WRK-RENNUM2                             PIC 9(02).
       *
            03  WRK-TEN-KZI                             PIC 9(09).
       *
@@ -1486,7 +1489,9 @@ grpsys     PERFORM 900-DBSELECT-SEC
                PERFORM  800-SRYACT-READ-SEC
                PERFORM  UNTIL  FLG-SRYACT    =    1
                    MOVE   ZERO   TO  FLG-ZANHAIKI
+                                     FLG-FORMAL-KISAI
                    MOVE   ZERO   TO  WRK-RENNUM
+                                     WRK-RENNUM2
                    MOVE   ZERO   TO  FLG-WRITE45X
                    PERFORM   210121-RECE45-TENSOU-SEC
                    PERFORM   210122-RECE41-HENSYU-SEC
@@ -1496,6 +1501,9 @@ grpsys     PERFORM 900-DBSELECT-SEC
                    END-IF
                    IF  FLG-ZANHAIKI  =  1
                       PERFORM  210124-RECE45-REWRITE-SEC
+                   END-IF
+                   IF  FLG-FORMAL-KISAI  =  1
+                      PERFORM  210124-RECE45-REWRITE2-SEC
                    END-IF
                    MOVE     "tbl_sryact"   TO   MCP-TABLE
                    MOVE     "key2"         TO   MCP-PATHNAME
@@ -2003,6 +2011,32 @@ grpsys     PERFORM 900-DBSELECT-SEC
                          MOVE    1     TO    FLG-HOUTEN-COM
                       END-IF
                     END-PERFORM
+               END-IF
+      *
+               IF  SRY-SRYCD(IDX2)(1:3)     =   "058"
+                 MOVE  TNS-FORMALYUKOKETA TO  RECE45-YUKOKETA(IDX4)
+                 MOVE  TNS-FORMALNAME     TO  RECE45-NAME(IDX4)
+               END-IF
+               IF  (SRY-SRYCD(IDX2)(1:1)    =   "7")
+               AND (SRY-MEISKYFLG(IDX2)     =   "1")
+                 IF   (SRY-SRYKBN  =   "70")
+                 AND  (TNS-DATAKBN =   "3" )
+                    IF    RECE45-RENNUM  >  1
+                    AND   IDX4           =  1
+                      MOVE    1           TO  FLG-FORMAL-KISAI
+                      COMPUTE  WRK-RENNUM2 =  RECE45-RENNUM  -  1
+                    ELSE
+                      MOVE  "1"           TO  RECE45-RECEPTFLG(IDX4 - 1)
+                    END-IF
+                 ELSE
+                    MOVE  "¡Ê"            TO  RECE45-NAME(IDX4)(1:2)
+                    COMPUTE IDW =   RECE45-YUKOKETA(IDX4)  *  2
+                    MOVE  TNS-NAME        TO  RECE45-NAME(IDX4)(3:IDW)
+                    COMPUTE IDW =  (RECE45-YUKOKETA(IDX4)  *  2) + 3
+                    MOVE  "¡Ë"            TO  RECE45-NAME(IDX4)(IDW:2)
+                    COMPUTE  RECE45-YUKOKETA(IDX4) =
+                             RECE45-YUKOKETA(IDX4) + 2
+                 END-IF
                END-IF
       *
                IF  RECE45-YUKOKETA(IDX4)  =  ZERO
@@ -5751,6 +5785,59 @@ grpsys        MOVE    SPA-HOSPNUM         TO  SYS-4003-HOSPNUM
       *
            .
        210124-RECE45-REWRITE-EXT.
+           EXIT.                                                       
+      *
+      *****************************************************************
+      *    ¥Ç¡¼¥¿½ÐÎÏ½èÍý
+      *****************************************************************
+       210124-RECE45-REWRITE2-SEC              SECTION.
+      *
+           MOVE    ZERO                TO  FLG-REWRITE
+      *
+           INITIALIZE                      RECE45-REC
+           MOVE    RECE44-HOSPNUM      TO  RECE45-HOSPNUM
+           MOVE    RECE44-SRYYM        TO  RECE45-SRYYM
+           MOVE    RECE44-NYUGAIKBN    TO  RECE45-NYUGAIKBN
+           MOVE    RECE44-PTID         TO  RECE45-PTID
+           MOVE    RECE44-RECEKA       TO  RECE45-RECEKA
+           MOVE    RECE44-HKNID        TO  RECE45-HKNID
+           MOVE    RECE44-TEKSTYMD     TO  RECE45-TEKSTYMD
+           MOVE    RECE44-ZAINUM       TO  RECE45-ZAINUM
+           START   RECE45-FILE
+                 KEY IS    >=   RECE45-KEY
+                 INVALID
+                     MOVE    1         TO  FLG-RECE45
+                 NOT INVALID
+                     MOVE    ZERO      TO  FLG-RECE45
+                     READ    RECE45-FILE   NEXT
+                       AT  END
+                         MOVE    1     TO  FLG-RECE45
+                     END-READ
+           END-START
+           PERFORM   UNTIL
+               (RECE44-HOSPNUM      NOT =  RECE45-HOSPNUM)     OR
+               (RECE44-SRYYM        NOT =  RECE45-SRYYM)       OR
+               (RECE44-NYUGAIKBN    NOT =  RECE45-NYUGAIKBN)   OR
+               (RECE44-PTID         NOT =  RECE45-PTID)        OR
+               (RECE44-RECEKA       NOT =  RECE45-RECEKA)      OR
+               (RECE44-HKNID        NOT =  RECE45-HKNID)       OR
+               (RECE44-TEKSTYMD     NOT =  RECE45-TEKSTYMD)    OR
+               (RECE44-ZAINUM       NOT =  RECE45-ZAINUM)      OR
+               (FLG-RECE45                =      1        )    OR
+               (FLG-REWRITE               =      1        )
+                IF    RECE45-RENNUM   =   WRK-RENNUM2
+                   MOVE    1              TO  FLG-REWRITE
+                   MOVE   "1"             TO  RECE45-RECEPTFLG(5)
+                   REWRITE   RECE45-REC
+                END-IF
+                READ    RECE45-FILE   NEXT
+                  AT  END
+                    MOVE    1     TO  FLG-RECE45
+                END-READ
+           END-PERFORM
+      *
+           .
+       210124-RECE45-REWRITE2-EXT.
            EXIT.                                                       
       *
       *****************************************************************
