@@ -213,3 +213,18 @@ path	key5	{
 		;
 	};
 };
+
+path	key6	{ 	
+	DBSELECT	{
+		DECLARE tbl_hkncombi_key6_csr CURSOR FOR
+		SELECT *
+		FROM tbl_hkncombi
+			WHERE   HOSPNUM      =   :HOSPNUM
+			AND   PTID          =   :PTID
+                        AND   TEKSTYMD      <=  :TEKSTYMD
+                        AND   TEKEDYMD      >=  :TEKEDYMD
+			ORDER   BY  HKNCOMBINUM
+		;
+	};
+};
+
