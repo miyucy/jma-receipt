@@ -3247,13 +3247,6 @@ grpsys             MOVE    SRY-HOSPNUM          TO  PTCOM-HOSPNUM
                       MOVE  "1"           TO  RECE05-RECEPTFLG(IDX4 - 1)
                     END-IF
                  ELSE
-                    MOVE  "¡Ê"            TO  RECE05-NAME(IDX4)(1:2)
-                    COMPUTE IDW =   RECE05-YUKOKETA(IDX4)  *  2
-                    MOVE  TNS-NAME        TO  RECE05-NAME(IDX4)(3:IDW)
-                    COMPUTE IDW =  (RECE05-YUKOKETA(IDX4)  *  2) + 3
-                    MOVE  "¡Ë"            TO  RECE05-NAME(IDX4)(IDW:2)
-                    COMPUTE  RECE05-YUKOKETA(IDX4) =
-                             RECE05-YUKOKETA(IDX4) + 2
                     MOVE  WRK-FORMALNAME  TO  RECE05-RECEDENNAME(IDX4)
                  END-IF
                END-IF

@@ -2028,14 +2028,6 @@ grpsys     PERFORM 900-DBSELECT-SEC
                     ELSE
                       MOVE  "1"           TO  RECE45-RECEPTFLG(IDX4 - 1)
                     END-IF
-                 ELSE
-                    MOVE  "¡Ê"            TO  RECE45-NAME(IDX4)(1:2)
-                    COMPUTE IDW =   RECE45-YUKOKETA(IDX4)  *  2
-                    MOVE  TNS-NAME        TO  RECE45-NAME(IDX4)(3:IDW)
-                    COMPUTE IDW =  (RECE45-YUKOKETA(IDX4)  *  2) + 3
-                    MOVE  "¡Ë"            TO  RECE45-NAME(IDX4)(IDW:2)
-                    COMPUTE  RECE45-YUKOKETA(IDX4) =
-                             RECE45-YUKOKETA(IDX4) + 2
                  END-IF
                END-IF
       *

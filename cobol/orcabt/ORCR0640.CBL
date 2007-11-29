@@ -3081,13 +3081,6 @@
                       MOVE  "1"           TO  RECE65-RECEPTFLG(IDX4 - 1)
                     END-IF
                  ELSE
-                    MOVE  "¡Ê"            TO  RECE65-NAME(IDX4)(1:2)
-                    COMPUTE IDW =   RECE65-YUKOKETA(IDX4)  *  2
-                    MOVE  TNS-NAME        TO  RECE65-NAME(IDX4)(3:IDW)
-                    COMPUTE IDW =  (RECE65-YUKOKETA(IDX4)  *  2) + 3
-                    MOVE  "¡Ë"            TO  RECE65-NAME(IDX4)(IDW:2)
-                    COMPUTE  RECE65-YUKOKETA(IDX4) =
-                             RECE65-YUKOKETA(IDX4) + 2
                     MOVE  WRK-FORMALNAME  TO  RECE65-RECEDENNAME(IDX4)
                  END-IF
                END-IF
