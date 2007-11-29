@@ -317,6 +317,7 @@
       *  04.01.02    NACL-門脇    07/11/06  新潟県中越沖地震対応修正
       *  04.01.03    NACL-門脇    07/11/12  千葉県乳幼児一部負担金記載対応
       *  04.01.04    NACL-門脇    07/11/26  特定器材商品名記載対応
+      *  04.01.05    NACL-門脇    07/11/29  新潟県中越沖地震対応修正
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -7605,6 +7606,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
               MOVE   WRK-FTNKEI-KOH          TO  RECE02-FTNMONEY(2)
                                                  RECE02-FTNMONEY-KOJ(2)
               IF    RECE02-FTNMONEY(2)    NOT =  ZERO
+              AND   RECE02-ZAITAKU            =  "1"
                 IF   RECE02-FTNMONEY(2)   <   RECE02-FTNMONEY(1)
                   COMPUTE  RECE02-FTNMONEY(1) =  RECE02-FTNMONEY(1)
                                               -  RECE02-FTNMONEY(2)

@@ -270,6 +270,7 @@
       *                                     （　）再掲記載対応
       *  04.01.03    NACL-門脇    07/11/12  千葉県乳幼児一部負担金記載対応
       *  04.01.04    NACL-門脇    07/11/26  特定器材商品名記載対応
+      *  04.01.05    NACL-門脇    07/11/29  新潟県中越沖地震対応修正
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -11995,6 +11996,7 @@
               MOVE   WRK-FTNKEI-KOH          TO  RECE62-FTNMONEY(2)
                                                  RECE62-FTNMONEY-KOJ(2)
               IF    RECE62-FTNMONEY(2)    NOT =  ZERO
+              AND   RECE62-KOUREI             =  "1"
                 IF   RECE62-FTNMONEY(2)   <   RECE62-FTNMONEY(1)
                   COMPUTE  RECE62-FTNMONEY(1) =  RECE62-FTNMONEY(1)
                                               -  RECE62-FTNMONEY(2)
