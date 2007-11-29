@@ -3082,6 +3082,7 @@
                     END-IF
                  ELSE
                     MOVE  WRK-FORMALNAME  TO  RECE65-RECEDENNAME(IDX4)
+                    MOVE  "1"             TO  RECE65-RECEHENFLG(IDX4)
                  END-IF
                END-IF
       *

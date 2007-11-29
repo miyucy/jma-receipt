@@ -2318,6 +2318,8 @@ grpsys     PERFORM 900-DBSELECT-SEC
                     ELSE
                       MOVE  "1"           TO  RECE85-RECEPTFLG(IDX4 - 1)
                     END-IF
+                 ELSE
+                    MOVE  "1"             TO  RECE85-RECEHENFLG(IDX4)
                  END-IF
                END-IF
       *

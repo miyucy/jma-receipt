@@ -136,4 +136,6 @@
              05  RECE45-SONOTAINF.
       *レセプト対象外フラグ
                  07  RECE45-RECEPTFLG        PIC  X(01).
+      *レセ用特定器材商品名編集フラグ
+                 07  RECE45-RECEHENFLG       PIC  X(01).
       *

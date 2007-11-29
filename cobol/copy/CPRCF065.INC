@@ -160,4 +160,6 @@
                    07  RECE65-RECEPTFLG        PIC  X(01).
       *レセ電用特定器材商品名
                    07  RECE65-RECEDENNAME      PIC  X(300).
+      *レセ用特定器材商品名編集フラグ
+                   07  RECE65-RECEHENFLG       PIC  X(01).
       *

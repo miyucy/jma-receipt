@@ -3248,6 +3248,7 @@ grpsys             MOVE    SRY-HOSPNUM          TO  PTCOM-HOSPNUM
                     END-IF
                  ELSE
                     MOVE  WRK-FORMALNAME  TO  RECE05-RECEDENNAME(IDX4)
+                    MOVE  "1"             TO  RECE05-RECEHENFLG(IDX4)
                  END-IF
                END-IF
       *
