@@ -2573,6 +2573,7 @@
            PERFORM 4103-CMB-HKNCOMBI-CHK-SEC
            MOVE    WRK-CMB-ITM     TO  SPA-GMN-I01-HKNCOMBI
            MOVE    WRK-CMB-ITM2    TO  SPA-NAI-I01-FTNRATE
+           MOVE    WRK-CMB-ITM3    TO  SPA-NAI-I01-RSI-HKNKBN
            MOVE    PTNYUINRRK-HKNCOMBINUM
                                    TO  SPA-NAI-I01-HKNCOMBI-MOT
       *
