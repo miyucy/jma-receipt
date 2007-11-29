@@ -4072,6 +4072,10 @@
                END-STRING
            END-IF
       *
+           IF    ( SRY-SRYCD      (IDX9)(1:3)  =   "058" )
+               MOVE    TNS-FORMALNAME  TO  WRK-SRYACT-STR
+           END-IF
+      *
       *    コメントの時、内容設定
            IF   (( SRY-SRYCD  (IDX9)(1:1)  =   "8"  )
              OR  ( SRY-SRYCD  (IDX9)(1:3)  =   "008"  ))
