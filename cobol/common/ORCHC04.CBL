@@ -672,6 +672,10 @@
            ADD     1                   TO  IDX-S
            MOVE    SRY-SRYCD (IDXA)    TO  WRK-TBL-SRYCD (IDX-S)
            MOVE    TNS-NAME            TO  WRK-TBL-NAME  (IDX-S)
+      *    ¥Ô∫‡æ¶… Ãæ•≥°º•…
+           IF      SRY-SRYCD (IDXA)(1:3)   =   "058"
+               MOVE   TNS-FORMALNAME       TO  WRK-TBL-NAME  (IDX-S)
+           END-IF
       *    ¥Ô∫‡æ¶… Ãæ§Œ¥Ô∫‡•≥°º•…
            IF     (SRY-SRYCD (IDXA)(1:1)   =   "7" ) AND
                   (SRY-MEISKYFLG  (IDXA)   =   "1" )
