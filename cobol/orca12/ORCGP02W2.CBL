@@ -74,6 +74,11 @@
       *  03.05.00    NACL-Â¿¡¹Ç¼  07/05/XX  ¥°¥ë¡¼¥×¿ÇÎÅÂÐ±þ
       *  03.05.01    NACL-ÌçÏÆ    07/10/16  ¡ã²¬»³¡ä£°£¹£±¡ÜÃÏÊý¸øÈñ
       *                                     ÊÝ¸±ÁÈ¹ç¤»ºîÀ®
+      *  04.00.01    NACL-¾®Æ¦Âô  07/11/30  °ìÈÌÎÅÍÜ¡¢ÆÃÊÌÎÅÍÜ¡ÊµìÆü¸ÛÊÝ¸±¡Ë
+      *                                     ¤Î¾ì¹ç¤ÏÀ¸³èÊÝ¸î¤ÎÃ±ÆÈ¤òºîÀ®²ÄÇ½
+      *                                     ¤ËÊÑ¹¹
+      *  04.00.02    NACL-¾®Æ¦Âô  **/**/**  Àº¿ÀÄÌ±¡¤ÈÆÃÄê¼À´µ¡Ê¿åËó¡Ë¤Î
+      *                                     ÊÝ¸±ÁÈ¹ç¤»ºîÀ®¡Ê»ÃÄêÂÐ±þ¡Ë
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -341,6 +346,7 @@
                    07  WRK-KOH-GENHKNNUM1  PIC X(03).
                    07  WRK-KOH-GENHKNNUM2  PIC X(03).
                    07  WRK-KOH-GENHKNNUM3  PIC X(03).
+                   07  WRK-KOH-FTNJANUM    PIC X(08).
       *
            03  WRK-SYOCYO-TEKSTYMD         PIC 9(08).
            03  WRK-SYOCYO-TEKEDYMD         PIC 9(08).
@@ -643,6 +649,7 @@
            MOVE    PTKOH-TEKSTYMD       TO  WRK-KOH-TEKSTYMD  (CNT-KOH)
            MOVE    PTKOH-TEKEDYMD       TO  WRK-KOH-TEKEDYMD  (CNT-KOH)
            MOVE    PTKOH-SAKJOKBN       TO  WRK-KOH-SAKJOKBN  (CNT-KOH)
+           MOVE    PTKOH-FTNJANUM       TO  WRK-KOH-FTNJANUM  (CNT-KOH)
       *
       *
       *    À©ÅÙÌ¾Åù¤ÏËè²óÊÔ½¸¤¹¤ë
@@ -1373,7 +1380,7 @@ grpsys            CALL    "ORCDBMAIN"         USING   MCPAREA
                    ( WRK-KOH-SBT       (IDZ)   =   "7" OR "A" ) AND
       *----(01.00.04) LINE MOD END   -------------------------------
                    ((WRK-KOH-HKNKOHKBN (IDZ)   =   "2" OR "3") OR
-                    (WRK-KOH-HKNNUM(IDZ)   =  "019" OR "053" ))
+                    (WRK-KOH-HKNNUM(IDZ)   =  "019" OR "053" OR "091" ))
       ****         ( WRK-KOH-HKNKOHKBN (IDZ)   =   "2" OR "3") AND
       ****         ((WRK-KOH-GENHKNNUM1(IDZ)   =   SPACE)  OR
       ****          (WRK-KOH-GENHKNNUM1(IDZ)
@@ -3099,7 +3106,7 @@ grpsys            CALL    "ORCDBMAIN"         USING   MCPAREA
                        OR      ( IDX   >       CNT-KOH )
              IF ((WRK-KOH-SBT   (IDX)  =   "6")   AND
                  (WRK-KOH-SAKJOKBN   (IDX)  =   SPACE)) OR
-                ((WRK-KOH-HKNNUM   (IDX)  =   "019")   AND
+                ((WRK-KOH-HKNNUM   (IDX)  =   "019" OR "012")   AND
                  (WRK-KOH-SAKJOKBN (IDX)  =   SPACE)   AND
                  (WRK-HIYATOI-FLG         =   1 )     )
       *
@@ -3120,7 +3127,7 @@ grpsys            CALL    "ORCDBMAIN"         USING   MCPAREA
                                         TO  WRK-LCOMB-TEKSTYMD   (IDX2)
                MOVE    WRK-KOH-TEKEDYMD(IDX)
                                         TO  WRK-LCOMB-TEKEDYMD   (IDX2)
-               IF      WRK-KOH-HKNNUM   (IDX)  =   "019"
+               IF      WRK-KOH-HKNNUM   (IDX)  =   "019" OR "012"
                    MOVE   WRK-HIYATOI-TEKSTYMD
                                         TO  WRK-LCOMB-TEKSTYMD   (IDX2)
                    MOVE   WRK-HIYATOI-TEKEDYMD
@@ -3540,13 +3547,24 @@ grpsys            CALL    "ORCDBMAIN"         USING   MCPAREA
                       IF WRK-KOH-HKNNUM(WRK-COMB-HJOIDX)(1:2) = "99"
                             PERFORM 5701413-SYUKOH-HJO-SEC
                       ELSE
-                       IF  WRK-KOH-HKNNUM(WRK-COMB-HJOIDX) =
-                               "019" OR "053"
-                         IF  WRK-SRT-HJO-KOHNO             =
-                               "010" OR "021" OR "015" OR "016"
-                                                       OR "020"
-                            PERFORM 5701413-SYUKOH-HJO-SEC
-                         END-IF
+                        IF  WRK-KOH-HKNNUM(WRK-COMB-HJOIDX) =
+                               "019" OR "053" OR "091"
+                          IF  WRK-KOH-HKNNUM(WRK-COMB-HJOIDX) =
+                                   "019" OR "053"
+                             IF  WRK-SRT-HJO-KOHNO             =
+                                   "010" OR "021" OR "015" OR "016"
+                                                           OR "020"
+                                PERFORM 5701413-SYUKOH-HJO-SEC
+                             END-IF
+                          ELSE
+      *                      IF   SPA-PREFNUM    =    43
+                             IF  WRK-KOH-FTNJANUM(WRK-COMB-HJOIDX)
+                                          =   "51433027"
+                               IF  WRK-SRT-HJO-KOHNO     =   "021"
+                                  PERFORM 5701413-SYUKOH-HJO-SEC
+                               END-IF
+                             END-IF
+                          END-IF
                        ELSE
       *******************ÃÏÊý¸øÈñ
                          EVALUATE  SPA-PREFNUM
