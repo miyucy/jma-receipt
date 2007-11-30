@@ -2216,6 +2216,8 @@
       *    画面をＳＰＡにセット
            PERFORM 4101-GMN-SPA-SET-SEC
       *
+           INITIALIZE                  SPA-I23-AREA
+      *
            MOVE    SPACE           TO  SPA-MOTOPG
            MOVE    SPA-I2KYOUTU    TO  SPA-WORK  
            MOVE    SPA-AREA        TO  SPA-COMMON

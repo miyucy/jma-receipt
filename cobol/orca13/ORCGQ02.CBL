@@ -1851,6 +1851,8 @@
       *    画面をＳＰＡにセット
            PERFORM 4101-GMN-SPA-SET-SEC
       *
+           INITIALIZE                  SPA-Q97-AREA
+      *
            MOVE    SPACE           TO  SPA-MOTOPG
            MOVE    SPA-AREA        TO  SPA-COMMON
            MOVE    SPA-Q01FREE     TO  SPA-FREE
