@@ -69,6 +69,7 @@
       *  03.05.04    NACL-ÌçÏÆ    07/08/07  »»ÄêÍúÎò¤Ë´Ø¤ï¤ëµ­ºÜ½¤Àµ
       *  04.01.01    NACL-ÌçÏÆ    07/11/01  ¸øÌ³ºÒ³²ÂÐ±þ
       *  04.01.02    NACL-ÌçÏÆ    07/11/26  ÆÃÄê´ïºà¾¦ÉÊÌ¾µ­ºÜÂÐ±þ
+      *  04.01.03    NACL-ÌçÏÆ    07/11/30  Âà±¡»þÉþÌô»ØÆ³²Ã»»»»ÄêÆüµ­ºÜÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -272,6 +273,7 @@
            03  FLG-SYSKANRI        PIC 9(01).
            03  FLG-COMOKIKAE       PIC 9(01).
            03  FLG-COMOKIKAE2      PIC 9(01).
+           03  FLG-HANTEI          PIC 9(01).
       *
       *    ¥«¥¦¥ó¥ÈÎÎ°è
        01  CNT-AREA.
@@ -2710,12 +2712,15 @@ grpsys                   PERFORM  900-DBFETCH-SEC
       *
              END-IF
       *
-           END-IF
+             MOVE       99                TO     FLG-COMMENT
+             IF    WRK-DAY-YAKUKAN    NOT   =   ZERO
+                MOVE    2                 TO     FLG-HANTEI
+                MOVE    WRK-ZENYYMM(5:2)  TO     WRK-TUKI-YAKUKAN
+             ELSE
+                MOVE    1                 TO     FLG-HANTEI
+             END-IF
+             PERFORM    20011-TAIIN-COMMENT-SEC
       *
-           IF      WRK-DAY-YAKUKAN    NOT   =   ZERO
-                MOVE       99             TO   FLG-COMMENT
-                MOVE    WRK-ZENYYMM(5:2)  TO   WRK-TUKI-YAKUKAN
-                PERFORM    20011-TAIIN-COMMENT-SEC
            END-IF
       *
            .
@@ -3075,7 +3080,12 @@ grpsys       PERFORM 900-DBSELECT-SEC
        20011-TAIIN-COMMENT-SEC          SECTION.
       *
            MOVE       RECE84-REC       TO  RECE849-REC
-           ADD     1                   TO  RECE849-MEISAISU
+           EVALUATE   FLG-HANTEI
+             WHEN       1
+                ADD     1              TO  RECE849-MEISAISU
+             WHEN       2
+                ADD     2              TO  RECE849-MEISAISU
+           END-EVALUATE
            WRITE      RECE849-REC
            ADD     1                   TO  CNT-RECE849
       *
@@ -3090,23 +3100,64 @@ grpsys       PERFORM 900-DBSELECT-SEC
            END-START
       *
            MOVE    RECE85-REC           TO  RECE859-REC
-           MOVE    RECE85-SRYACT-TBL(1) TO  RECE859-SRYACT-TBL(1)
-           MOVE    RECE85-SRYACT-TBL(2) TO  RECE859-SRYACT-TBL(3)
-           MOVE    RECE85-SRYACT-TBL(3) TO  RECE859-SRYACT-TBL(4)
-           MOVE    RECE85-SRYACT-TBL(4) TO  RECE859-SRYACT-TBL(5)
-     *
-           MOVE    SPACE                TO  RECE859-SRYACT-TBL(2)
-           INITIALIZE                       RECE859-SRYACT-TBL(2)
-           MOVE    "810000001"          TO  RECE859-SRYCD(2)
-           MOVE    ZERO                 TO  RECE859-SRYSURYO(2)
-           MOVE    16                   TO  RECE859-YUKOKETA(2)
-           MOVE    "ÌôºÞ´ÉÍý»ØÆ³ÎÁ»»Äê¡¡¡¡¡¡·î¡¡¡¡Æü"
-                                        TO  RECE859-NAME(2)
-           MOVE     WRK-TUKI-YAKUKAN    TO  DAY-IDX
-           MOVE     TBL-DAY(DAY-IDX)    TO  RECE859-NAME(2)(21:4)
-           MOVE     WRK-DAY-YAKUKAN     TO  DAY-IDX
-           MOVE     TBL-DAY(DAY-IDX)    TO  RECE859-NAME(2)(27:4)
-           MOVE     "1"                 TO  RECE859-SIKFLG(2)
+           EVALUATE   FLG-HANTEI
+             WHEN       1
+               MOVE    RECE85-SRYACT-TBL(1) TO  RECE859-SRYACT-TBL(1)
+               MOVE    RECE85-SRYACT-TBL(2) TO  RECE859-SRYACT-TBL(3)
+               MOVE    RECE85-SRYACT-TBL(3) TO  RECE859-SRYACT-TBL(4)
+               MOVE    RECE85-SRYACT-TBL(4) TO  RECE859-SRYACT-TBL(5)
+      *
+               MOVE    SPACE                TO  RECE859-SRYACT-TBL(2)
+               INITIALIZE                       RECE859-SRYACT-TBL(2)
+               MOVE    "810000001"          TO  RECE859-SRYCD(2)
+               MOVE    ZERO                 TO  RECE859-SRYSURYO(2)
+               PERFORM  200111-SANTEI-DAY-SEC
+               MOVE     TB-SANTEI-DAY(1)    TO  DAY-IDX
+               IF       DAY-IDX  <  10
+                 MOVE    5                  TO  RECE859-YUKOKETA(2)
+                 MOVE    "»»Äê¡¡¡¡Æü"       TO  RECE859-NAME(2)
+                 MOVE   TBL-DAY(DAY-IDX)    TO  RECE859-NAME(2)(5:4)
+               ELSE
+                 MOVE    6                  TO  RECE859-YUKOKETA(2)
+                 MOVE    "»»Äê¡¡¡¡¡¡Æü"     TO  RECE859-NAME(2)
+                 MOVE   TBL-DAY(DAY-IDX)    TO  RECE859-NAME(2)(7:4)
+               END-IF
+               MOVE     "1"                 TO  RECE859-SIKFLG(2)
+             WHEN       2
+               MOVE    RECE85-SRYACT-TBL(1) TO  RECE859-SRYACT-TBL(1)
+               MOVE    RECE85-SRYACT-TBL(2) TO  RECE859-SRYACT-TBL(4)
+               MOVE    RECE85-SRYACT-TBL(3) TO  RECE859-SRYACT-TBL(5)
+      *
+               MOVE    SPACE                TO  RECE859-SRYACT-TBL(2)
+               INITIALIZE                       RECE859-SRYACT-TBL(2)
+               MOVE    "810000001"          TO  RECE859-SRYCD(2)
+               MOVE    ZERO                 TO  RECE859-SRYSURYO(2)
+               PERFORM  200111-SANTEI-DAY-SEC
+               MOVE     TB-SANTEI-DAY(1)    TO  DAY-IDX
+               IF       DAY-IDX  <  10
+                 MOVE    5                  TO  RECE859-YUKOKETA(2)
+                 MOVE    "»»Äê¡¡¡¡Æü"       TO  RECE859-NAME(2)
+                 MOVE   TBL-DAY(DAY-IDX)    TO  RECE859-NAME(2)(5:4)
+               ELSE
+                 MOVE    6                  TO  RECE859-YUKOKETA(2)
+                 MOVE    "»»Äê¡¡¡¡¡¡Æü"     TO  RECE859-NAME(2)
+                 MOVE   TBL-DAY(DAY-IDX)    TO  RECE859-NAME(2)(7:4)
+               END-IF
+               MOVE     "1"                 TO  RECE859-SIKFLG(2)
+      *
+               MOVE    SPACE                TO  RECE859-SRYACT-TBL(3)
+               INITIALIZE                       RECE859-SRYACT-TBL(3)
+               MOVE    "810000001"          TO  RECE859-SRYCD(3)
+               MOVE    ZERO                 TO  RECE859-SRYSURYO(3)
+               MOVE    16                   TO  RECE859-YUKOKETA(3)
+               MOVE    "ÌôºÞ´ÉÍý»ØÆ³ÎÁ»»Äê¡¡¡¡¡¡·î¡¡¡¡Æü"
+                                            TO  RECE859-NAME(3)
+               MOVE     WRK-TUKI-YAKUKAN    TO  DAY-IDX
+               MOVE     TBL-DAY(DAY-IDX)    TO  RECE859-NAME(3)(21:4)
+               MOVE     WRK-DAY-YAKUKAN     TO  DAY-IDX
+               MOVE     TBL-DAY(DAY-IDX)    TO  RECE859-NAME(3)(27:4)
+               MOVE     "1"                 TO  RECE859-SIKFLG(3)
+           END-EVALUATE
       *
            WRITE    RECE859-REC
            ADD      1                   TO  CNT-RECE859
