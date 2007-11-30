@@ -271,6 +271,7 @@
       *  04.01.03    NACL-ÌçÏÆ    07/11/12  ÀéÍÕ¸©ÆýÍÄ»ù°ìÉôÉéÃ´¶âµ­ºÜÂÐ±þ
       *  04.01.04    NACL-ÌçÏÆ    07/11/26  ÆÃÄê´ïºà¾¦ÉÊÌ¾µ­ºÜÂÐ±þ
       *  04.01.05    NACL-ÌçÏÆ    07/11/29  ¿·³ã¸©Ãæ±Û²­ÃÏ¿ÌÂÐ±þ½¤Àµ
+      *  04.01.06    NACL-ÌçÏÆ    07/11/30  Â¾ÊÝ¸±¤Ë¤Æ¿Ç»¡ÎÁ»»ÄêºÑ¤ÎÌ¾¾ÎÃÖ´¹
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -438,6 +439,7 @@
            03  FLG-IRYOHI70K                           PIC 9(01).
            03  FLG-KOUGAKUCYO-GEN70K                   PIC 9(01).
            03  FLG-SAIKEI-KISAI                        PIC 9(01).
+           03  FLG-TAHOKEN                             PIC 9(01).
       *
       *    ¥«¥¦¥ó¥ÈÎÎ°è
        01  CNT-AREA.
@@ -475,6 +477,10 @@
            03  IDZ                                     PIC 9(03).
            03  IDW                                     PIC 9(03).
            03  IDW2                                    PIC 9(03).
+           03  IDW3                                    PIC 9(03).
+           03  IDW4                                    PIC 9(03).
+           03  IDW5                                    PIC 9(03).
+           03  IDW6                                    PIC 9(03).
            03  ID1                                     PIC 9(03).
            03  ID2                                     PIC 9(03).
            03  ID3                                     PIC 9(03).
@@ -2338,6 +2344,7 @@
                                                   FLG-RYOYO-COM
                                                   FLG-SYODOU-COM
                                                   FLG-OSIN-COM
+                                                  FLG-TAHOKEN
       *
                                MOVE   ZERO   TO   WRK-FILMTEN
       *
@@ -2387,6 +2394,7 @@
                                                          FLG-RYOYO-COM
                                                          FLG-SYODOU-COM
                                                          FLG-OSIN-COM
+                                                         FLG-TAHOKEN
       *
                                       MOVE   ZERO   TO   WRK-FILMTEN
       *
@@ -2413,6 +2421,7 @@
                                                          FLG-RYOYO-COM
                                                          FLG-SYODOU-COM
                                                          FLG-OSIN-COM
+                                                         FLG-TAHOKEN
       *
                                       MOVE   ZERO   TO   WRK-FILMTEN
       *
@@ -3085,6 +3094,44 @@
                     MOVE  WRK-FORMALNAME  TO  RECE65-RECEDENNAME(IDX4)
                     MOVE  "1"             TO  RECE65-RECEHENFLG(IDX4)
                  END-IF
+               END-IF
+      *
+               IF  (SRY-SRYKBN         =  "99"       )
+               AND (SRY-RENNUM         =   1         )
+               AND (IDX2               =   1         )
+               AND (SRY-SRYCD(IDX2)    =  "099999902")
+                    MOVE      1         TO  FLG-TAHOKEN
+               END-IF
+               IF  (FLG-TAHOKEN           =   1              )
+               AND (SRY-RENNUM            =   1              )
+               AND (IDX2                  =   2              )
+               AND (SRY-SRYCD(IDX2)(1:4)  =  "0082"          )
+               AND (TNS-NAME(1:14)        =  "ÊÝ¸±Ì¾¾ÎÊÑ¹¹¡§")
+                  MOVE     "1"          TO  RECE65-RECEPTFLG(IDX4)
+                  MOVE     "1"          TO  RECE65-RECEDENFLG(IDX4)
+      *
+                  MOVE      ZERO        TO  IDW3
+                  PERFORM   VARYING   IDW   FROM   200   BY  -1
+                             UNTIL    IDW     <    15
+                       IF   TNS-NAME(IDW:1)  NOT =   SPACE
+                           COMPUTE IDW6       =  (IDW / 2) - 7
+                           MOVE    IDW        TO  IDW3
+                           MOVE    1          TO  IDW
+                       END-IF
+                  END-PERFORM
+                  IF     IDW3    NOT =  ZERO
+                    MOVE  SPACE TO RECE65-NAME(IDX4 - 1)
+                    COMPUTE   IDW4  =  IDW3  -  14
+                    MOVE  TNS-NAME(15:IDW4)
+                                TO RECE65-NAME(IDX4 - 1)(1:IDW4)
+                    COMPUTE   IDW5  =  IDW4  +   1
+                    MOVE  "¤Ë¤Æ¿Ç»¡ÎÁ»»ÄêºÑ"
+                                TO RECE65-NAME(IDX4 - 1)(IDW5:16)
+                    COMPUTE   RECE65-YUKOKETA(IDX4 - 1) =
+                              RECE65-YUKOKETA(IDX4 - 1) -
+                              3                         +
+                              IDW6
+                  END-IF
                END-IF
       *
                IF  RECE65-YUKOKETA(IDX4)  =  ZERO

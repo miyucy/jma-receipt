@@ -139,6 +139,7 @@
       *                                     ¹àÌÜ¿ô³ÈÄ¥ÂÐ±þ
       *  04.01.02    NACL-ÌçÏÆ    07/10/31  ¸øÌ³ºÒ³²ÂÐ±þ
       *  04.01.03    NACL-ÌçÏÆ    07/11/26  ÆÃÄê´ïºà¾¦ÉÊÌ¾µ­ºÜÂÐ±þ
+      *  04.01.04    NACL-ÌçÏÆ    07/11/30  Â¾ÊÝ¸±¤Ë¤Æ¿Ç»¡ÎÁ»»ÄêºÑ¤ÎÌ¾¾ÎÃÖ´¹
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -303,6 +304,7 @@
            03  FLG-SRYACCTPLUS                         PIC 9(01).
            03  FLG-WRITE45                             PIC 9(01).
            03  FLG-WRITE45X                            PIC 9(01).
+           03  FLG-TAHOKEN                             PIC 9(01).
       *
       *    ´ðËÜÅÀ¿ô¤ÎÈóÉ½¼¨È½ÄêÍÑ¥Õ¥é¥°
        01  FLG-KHNTEN-AREA.
@@ -369,6 +371,10 @@
            03  ID1                                     PIC 9(03). 
            03  IDY                                     PIC 9(03).
            03  IDW                                     PIC 9(03).
+           03  IDW3                                    PIC 9(03).
+           03  IDW4                                    PIC 9(03).
+           03  IDW5                                    PIC 9(03).
+           03  IDW6                                    PIC 9(03).
            03  IDV                                     PIC 9(03).
            03  IDU                                     PIC 9(03).
            03  NUM-IDX                                 PIC 9(01).
@@ -1266,6 +1272,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                                        FLG-ZENSOKU-COM
                                                        FLG-OSIN-COM
                                                        FLG-ZAIHOU-COM
+                                                       FLG-TAHOKEN
       *
                                MOVE    SPACE   TO      WRK-KYUGYOFLG
       *
@@ -1323,6 +1330,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                                       FLG-ZENSOKU-COM
                                                       FLG-OSIN-COM
                                                       FLG-ZAIHOU-COM
+                                                      FLG-TAHOKEN
       *
                                       MOVE  SPACE TO  WRK-KYUGYOFLG
       *
@@ -1360,6 +1368,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                                       FLG-ZENSOKU-COM
                                                       FLG-OSIN-COM
                                                       FLG-ZAIHOU-COM
+                                                      FLG-TAHOKEN
       *
                                       MOVE  SPACE TO  WRK-KYUGYOFLG
       *
@@ -2031,6 +2040,43 @@ grpsys     PERFORM 900-DBSELECT-SEC
                  ELSE
                     MOVE  "1"             TO  RECE45-RECEHENFLG(IDX4)
                  END-IF
+               END-IF
+      *
+               IF  (SRY-SRYKBN         =  "99"       )
+               AND (SRY-RENNUM         =   1         )
+               AND (IDX2               =   1         )
+               AND (SRY-SRYCD(IDX2)    =  "099999902")
+                    MOVE      1         TO  FLG-TAHOKEN
+               END-IF
+               IF  (FLG-TAHOKEN           =   1              )
+               AND (SRY-RENNUM            =   1              )
+               AND (IDX2                  =   2              )
+               AND (SRY-SRYCD(IDX2)(1:4)  =  "0082"          )
+               AND (TNS-NAME(1:14)        =  "ÊÝ¸±Ì¾¾ÎÊÑ¹¹¡§")
+                  MOVE     "1"          TO  RECE45-RECEPTFLG(IDX4)
+      *
+                  MOVE      ZERO        TO  IDW3
+                  PERFORM   VARYING   IDW   FROM   200   BY  -1
+                             UNTIL    IDW     <    15
+                       IF   TNS-NAME(IDW:1)  NOT =   SPACE
+                           COMPUTE IDW6       =  (IDW / 2) - 7
+                           MOVE    IDW        TO  IDW3
+                           MOVE    1          TO  IDW
+                       END-IF
+                  END-PERFORM
+                  IF     IDW3    NOT =  ZERO
+                    MOVE  SPACE TO RECE45-NAME(IDX4 - 1)
+                    COMPUTE   IDW4  =  IDW3  -  14
+                    MOVE  TNS-NAME(15:IDW4)
+                                TO RECE45-NAME(IDX4 - 1)(1:IDW4)
+                    COMPUTE   IDW5  =  IDW4  +   1
+                    MOVE  "¤Ë¤Æ¿Ç»¡ÎÁ»»ÄêºÑ"
+                                TO RECE45-NAME(IDX4 - 1)(IDW5:16)
+                    COMPUTE   RECE45-YUKOKETA(IDX4 - 1) =
+                              RECE45-YUKOKETA(IDX4 - 1) -
+                              3                         +
+                              IDW6
+                  END-IF
                END-IF
       *
                IF  RECE45-YUKOKETA(IDX4)  =  ZERO
@@ -6124,6 +6170,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                                      FLG-ZENSOKU-COM
                                                      FLG-OSIN-COM
                                                      FLG-ZAIHOU-COM
+                                                     FLG-TAHOKEN
       *
                                MOVE    SPACE   TO    WRK-KYUGYOFLG
       *
@@ -6183,6 +6230,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                                       FLG-ZENSOKU-COM
                                                       FLG-OSIN-COM
                                                       FLG-ZAIHOU-COM
+                                                      FLG-TAHOKEN
       *
                                       MOVE  SPACE TO  WRK-KYUGYOFLG
       *
@@ -6222,6 +6270,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                                       FLG-ZENSOKU-COM
                                                       FLG-OSIN-COM
                                                       FLG-ZAIHOU-COM
+                                                      FLG-TAHOKEN
       *
                                       MOVE  SPACE TO  WRK-KYUGYOFLG
       *
