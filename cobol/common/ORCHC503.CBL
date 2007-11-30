@@ -736,6 +736,10 @@
                MOVE    LNK-ORDERPRT-INPUTCOMENT(IDX)
                                            TO  WRK-TNS-NAME
            END-IF
+      *    ¥Ô∫‡æ¶… Ãæ•≥°º•…
+           IF      WRK-SRYCD (1:3)     =   "058"
+               MOVE   TNS-FORMALNAME       TO  WRK-TNS-NAME
+           END-IF
       *!   ¥Ô∫‡æ¶… Ãæ§Œ¥Ô∫‡
            IF     (WRK-SRYCD (1:1)     =   "7"  )  AND
                   (FLG-KIZAI           =   1    )
