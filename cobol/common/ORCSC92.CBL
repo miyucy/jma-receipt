@@ -60,6 +60,7 @@
       *  03.04.02    NACL-Â¿¡¹Ç¼  07/03/XX  ¥ê¥Ï¥Ó¥ê°å³Ø´ÉÍýÎÁÄÉ²Ã(H19.4²þÀµ¡Ë
       *  03.05.00    NACL-Â¿¡¹Ç¼  07/04/XX  ¥°¥ë¡¼¥×¿ÇÎÅÂÐ±þ
       *  04.01.00    NACL-Â¿¡¹Ç¼  07/11/21  ´ïºà¾¦ÉÊÌ¾É½¼¨ÂÐ±þ
+      *  04.01.00    NACL-Â¿¡¹Ç¼  07/12/XX  ´µ¼Ô¶Ø´÷ÌôºÞÂÐ±þ
       *****************************************************************
       *
       *
@@ -85,6 +86,7 @@
            03  FLG-TENSUPLUS       PIC 9(01).
            03  FLG-TENSUPLUS2      PIC 9(01).
            03  FLG-CHKMST          PIC 9(01).
+           03  FLG-PTKINKI         PIC 9(01).
       *
            03  FLG-ERR             PIC 9(01).
            03  FLG-SST             PIC 9(01).
@@ -326,6 +328,10 @@
       *    »»ÄêÍúÎò
        01  SANTEI-REC.
            COPY    "CPSANTEI.INC".
+      *
+      *    ´µ¼Ô¶Ø´÷ÌôºÞ¥Þ¥¹¥¿
+       01  PTKINKI-REC.
+           COPY    "CPPTKINKI.INC".
       *
       *    »»ÄêÍúÎò
        01  HZN-SANTEI-REC.
@@ -619,6 +625,14 @@
                    PERFORM 2001-SANTEI-CHK-SEC
                END-IF
            END-IF
+      *
+      *    ´µ¼Ô¶Ø´÷ÌôºÞ¥Á¥§¥Ã¥¯
+      *    IF     (LNK-SC92-SRYCD(1:1) =   "6" )  AND
+      *           (LNK-SC92-PG     NOT =   "K05")
+      *        IF      SPA-COM-KINKI (IDX-T)   =   ZERO
+      *            PERFORM 2009-PTKINKI-CHK-SEC
+      *        END-IF
+      *    END-IF
       *
       *    ´ðËÜ¥Á¥§¥Ã¥¯£²
            IF      SPA-ERRCD           =   SPACE
@@ -2752,6 +2766,39 @@
            EXIT.
       *
       *****************************************************************
+      *    ´µ¼Ô¶Ø´÷ÌôºÞ¥Á¥§¥Ã¥¯½èÍý
+      *****************************************************************
+       3008-PTKINKI-CHK-SEC           SECTION.
+      *
+           INITIALIZE                      PTKINKI-REC
+           MOVE    SPA-HOSPNUM         TO  PTKINKI-HOSPNUM
+           MOVE    SPA-PTID            TO  PTKINKI-PTID
+           MOVE    TNS-SRYCD           TO  PTKINKI-SRYCD
+           MOVE    PTKINKI-REC         TO  MCPDATA-REC
+           MOVE    "tbl_ptkinki"       TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_ptkinki"       TO  MCP-TABLE
+               MOVE    "key"               TO  MCP-PATHNAME
+               PERFORM 900-PTKINKI-READ-SEC
+           ELSE
+               MOVE    1                   TO  FLG-PTKINKI
+               INITIALIZE                      PTKINKI-REC
+           END-IF
+           MOVE    "tbl_ptkinki"       TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+      *    ´µ¼Ô¶Ø´÷ÌôºÞ¥Á¥§¥Ã¥¯
+           IF      FLG-PTKINKI         =   ZERO
+               MOVE    1               TO  SPA-COM-PTKINKI-ARI
+                                                           (IDX-T)
+           END-IF
+           MOVE    1                   TO  SPA-COM-PTKINKI (IDX-T)
+           .
+       2009-PTKINKI-CHK-EXT.
+           EXIT.
+      *****************************************************************
       *    ÅÀ¿ô¥Þ¥¹¥¿ÆâÍÆÊÔ½¸½èÍý
       *****************************************************************
        300-TENSU-HENSYU-SEC           SECTION.
@@ -3013,6 +3060,12 @@
       *    ÅÀ¿ô¥Þ¥¹¥¿ÌôºÞÉÕ²Ã¾ðÊó¤è¤êÊÔ½¸
            IF     (TNS-SRYCD(1:1)      =   "6" )
                PERFORM 3007-TENSUPLUS2-HEN-SEC
+           END-IF
+      *
+      *    ´µ¼Ô¶Ø´÷ÌôºÞ¾ðÊó
+           IF     (TNS-SRYCD(1:1)      =   "6" )
+             AND  (LNK-SC92-PG     NOT =   "K05")
+               PERFORM 3008-PTKINKI-CHK-SEC
            END-IF
       *
            .
@@ -4177,6 +4230,22 @@
       *
            .
        990-SRYCDCHG-READ-EXT.
+           EXIT.
+      *****************************************************************
+      *    ´µ¼Ô¶Ø´÷ÌôºÞ¥Þ¥¹¥¿ÆÉ¹þ½èÍý
+      *****************************************************************
+       900-PTKINKI-READ-SEC         SECTION.
+      *
+           PERFORM 920-DBFETCH-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC     TO  PTKINKI-REC
+               MOVE    ZERO            TO  FLG-PTKINKI
+           ELSE
+               INITIALIZE                  PTKINKI-REC
+               MOVE    1               TO  FLG-PTKINKI
+           END-IF
+           .
+       900-PTKINKI-READ-EXT.
            EXIT.
       *
       *****************************************************************

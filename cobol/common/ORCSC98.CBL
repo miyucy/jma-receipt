@@ -29,6 +29,7 @@
       *****************************************************************
       *  ¥×¥í¥°¥é¥à½¤ÀµÍúÎò
       * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      *  04.01.00    NACL-Â¿¡¹Ç¼  07/12/XX  ´µ¼Ô¶Ø´÷ÌôºÞÂÐ±þ
       *****************************************************************
       *
       *
@@ -94,7 +95,9 @@
       *****************************************************************
       *
       *
-      *    COPY    "MCPAREA".
+           COPY    "MCPDATA.INC".
+      *
+           COPY    "MCPAREA".
       *
       *****************************************************************
       *    Ï¢Íí¡¡ÎÎ°è
@@ -137,6 +140,7 @@
       *****************************************************************
        100-MAIN-SYORI-SEC            SECTION.
       *
+           MOVE    SPACE               TO  LNK-SC98-ERRMSG
            MOVE    ZERO                TO  IDX-SET
            PERFORM VARYING     IDX-Z   FROM    1   BY  1
                    UNTIL      (IDX-Z       >   SPA-MAX-LINE     )   OR
@@ -147,34 +151,66 @@
                IF      SPA-GMN-INPUTCD(IDX-Z)(1:1) =   "S"
                    MOVE    IDX-Z               TO  IDX-SET
                END-IF
-      *        Ä¹´üÅêÌô´ü´Ö
-               IF     LNK-SC98-PG              =   "J04"
-                   CONTINUE
-               ELSE
-                   IF    (SPA-COM-INPUTCD(IDX-Z)(1:1)  =   "6" ) AND
-                         (SPA-COM-CHOKINISSU (IDX-Z)   >   ZERO) AND
-                         (SPA-COM-CHOKINISSU (IDX-Z)   <   SPA-COM-KAISU
-                                                          (IDX-Z))
-                       PERFORM 10012-CHOKI-ERR-SEC
-                   END-IF
+      *
+      *        ´µ¼Ô¶Ø´÷ÌôºÞ¥Á¥§¥Ã¥¯
+               IF     (SPA-COM-INPUTCD (IDX-Z) (1:1)
+                                                   =   "6" )
+                   PERFORM 300-PTKINKI-CHK-SEC
                END-IF
-      *        ÅêÍ¿ÎÌ
-               IF    (SPA-COM-INPUTCD(IDX-Z)(1:1)  =   "6" ) AND
-                     (SPA-ERRCD                    =   SPACE)
-                   IF     (SPA-COM-SURFLG (IDX-Z)  =   "1" )  OR
-                          (SPA-COM-SURCHK (IDX-Z)  NOT =   SPACE)
-                       PERFORM 1001-TOUYO-CHK-SEC
-                       MOVE    "1"             TO  SPA-COM-SURCHK
-                                                              (IDX-Z)
-                   ELSE
-                       MOVE    "2"             TO  SPA-COM-SURCHK
-                                                              (IDX-Z)
-                   END-IF
+      *
+      *        ºßÂð¡¦ÅêÌô¡¦Ãí¼Í¤Î¤ß
+               IF     (SPA-COM-SRYKBN (01)     =   "14"
+                                               OR  "21"
+                                               OR  "22"
+                                               OR  "23"
+                                               OR  "31"
+                                               OR  "32"
+                                               OR  "33" )
+               AND   (SPA-ERRCD                =   SPACE)
+      *            ÅÀ¿ôÉí²Ã¾ðÊó¤Î¥Á¥§¥Ã¥¯
+                   PERFORM 200-TENSUPLUS-CHK-SEC
                END-IF
            END-PERFORM
       *
            .
        100-MAIN-SYORI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ÅÀ¿ôÉí²Ã¾ðÊó¤Î¥Á¥§¥Ã¥¯½èÍý
+      *****************************************************************
+       200-TENSUPLUS-CHK-SEC            SECTION.
+      *
+      *    Ä¹´üÅêÌô´ü´Ö
+           IF     LNK-SC98-PG              =   "J04"
+               CONTINUE
+           ELSE
+               IF    (SPA-COM-INPUTCD(IDX-Z)(1:1)  =   "6" ) AND
+                     (SPA-COM-CHOKINISSU (IDX-Z)   >   ZERO) AND
+                     (SPA-COM-CHOKINISSU (IDX-Z)   <   SPA-COM-KAISU
+                                                          (IDX-Z))
+                   PERFORM 10012-CHOKI-ERR-SEC
+               END-IF
+           END-IF
+      *    ÅêÍ¿ÎÌ
+           IF    (SPA-COM-INPUTCD(IDX-Z)(1:1)  =   "6" ) AND
+                 (SPA-ERRCD                    =   SPACE)
+               IF     (SPA-COM-SURFLG (IDX-Z)  =   "1" )  OR
+                      (SPA-COM-SURCHK (IDX-Z)  NOT =   SPACE)
+                   PERFORM 1001-TOUYO-CHK-SEC
+                   MOVE    "1"             TO  SPA-COM-SURCHK
+                                                              (IDX-Z)
+               ELSE
+                   MOVE    "2"             TO  SPA-COM-SURCHK
+                                                              (IDX-Z)
+               END-IF
+           END-IF
+      *
+           IF      SPA-ERRCD           =   SPACE
+               MOVE    SPACE               TO  LNK-SC98-ERRMSG
+           END-IF
+           .
+       200-TENSUPLUS-CHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -459,5 +495,33 @@
            END-PERFORM
            .
        2001-SURYO-HEN-EXT.
+           EXIT.
+      *****************************************************************
+      *    ´µ¼Ô¶Ø´÷ÌôºÞ¥Á¥§¥Ã¥¯½èÍý
+      *****************************************************************
+       300-PTKINKI-CHK-SEC              SECTION.
+      *
+           IF     SPA-COM-PTKINKI-ARI (IDX-Z)  =   1
+               IF      SPA-COM-SET (IDX-Z)     =   "1"
+                   IF      SPA-COM-KINKIFLG (IDX-SET)  =   SPACE
+                       MOVE    "K210"      TO  SPA-ERRCD
+                       MOVE    "1"         TO  SPA-COM-KINKIFLG
+                                                            (IDX-SET)
+                       MOVE    "1"         TO  SPA-COM-CUR  (IDX-SET)
+                       MOVE    1           TO  SPA-COM-PTKINKI-ARI
+                                                            (IDX-SET)
+                   END-IF
+               ELSE
+                   IF      SPA-COM-KINKIFLG (IDX-Z)  =   SPACE
+                       MOVE    "K211"          TO  SPA-ERRCD
+                       MOVE    "1"             TO  SPA-COM-KINKIFLG
+                                                               (IDX-Z)
+                       MOVE    "1"             TO  SPA-COM-CUR (IDX-Z)
+                   END-IF
+               END-IF
+           END-IF
+      *
+           .
+       300-PTKINKI-CHK-EXT.
            EXIT.
       *

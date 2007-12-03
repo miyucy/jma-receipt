@@ -88,6 +88,8 @@
            COPY    "P02S.INC".
            COPY    "P02Q.INC".
            COPY    "P02Q1.INC".
+           COPY    "P02Y.INC".
+           COPY    "P02Y1.INC".
            COPY    "PERR.INC".
            COPY    "PID1.INC".
       *

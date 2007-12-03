@@ -85,6 +85,7 @@
       *  04.01.00    NACL-多々納  07/10/22  公務災害対応
       *  04.01.00    NACL-多々納  07/10/XX  悪性腫瘍検査対応
       *  04.01.00    NACL-多々納  07/11/21  器材商品名表示対応
+      *  04.01.00    NACL-多々納  07/12/XX  患者禁忌薬剤対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -460,6 +461,9 @@
            03  WRK-TIMEFLG         PIC X(01).
       *    入力セット処理
            03  WRK-SETCD           PIC X(06).
+      *
+           03  WRK-KINKIFLG            PIC X(01).
+           03  WRK-PTKINKI-ARI         PIC 9(01).
       *    算定回数
            03  WRK-SANTEI-CNT          PIC 9(04).
       *    入力位置
@@ -2034,6 +2038,7 @@
                MOVE    SPACE           TO  SPA-COM-KZMFLG2(IDX)
                MOVE    SPACE           TO  SPA-COM-KZMFLG4(IDX)
                MOVE    SPACE           TO  SPA-COM-KZMFLG5(IDX)
+               MOVE    SPACE           TO  SPA-COM-KINKIFLG(IDX)
            END-PERFORM
       *
            MOVE    SPACE               TO  SPA-ERRCD
@@ -3736,6 +3741,7 @@
                MOVE    SPACE           TO  SPA-COM-KZMFLG2(IDX)
                MOVE    SPACE           TO  SPA-COM-KZMFLG4(IDX)
                MOVE    SPACE           TO  SPA-COM-KZMFLG5(IDX)
+               MOVE    SPACE           TO  SPA-COM-KINKIFLG(IDX)
       *        訂正時の点数判定
                IF      SPA-SYORIFLG        =   1
                    IF      FLG-MAE-TENSU   =   ZERO
@@ -5966,7 +5972,6 @@
                END-IF
            END-IF
       *
-      *
            IF     LNK-SC97-NYURYOKU    =   1
       *///     セットコードに変更がない時
                IF     (SPA-MAE-INPUTCD(SPA-GMN-IDX)(1:1) =   "S" ) AND
@@ -5976,6 +5981,12 @@
                    MOVE    1                   TO  FLG-SET-HEN
                ELSE
                    MOVE    ZERO                TO  FLG-SET-HEN
+      *            コードが同一の時
+                   IF    (SPA-MAE-INPUTCD(SPA-GMN-IDX)(1:6)
+                                               =   SPA-GMN-INPUTCD
+                                                   (SPA-GMN-IDX)(1:6))
+                       MOVE    2               TO  FLG-SET-HEN
+                   END-IF
                END-IF
       *        セットが変更削除の時セット内容を削除する
                IF     (SPA-MAE-INPUTCD(SPA-GMN-IDX)(1:1)   =   "S" ) OR
@@ -5984,7 +5995,17 @@
                    PERFORM 41016-SETDEL-SEC
                END-IF
                IF      FLG-SET-HEN         =   ZERO
-      *
+                                           OR  2
+      *        セットコードが同じ時、禁忌チェック済みを保存する
+               IF      FLG-SET-HEN         =   2
+                   MOVE    SPA-COM-KINKIFLG (SPA-GMN-IDX)
+                                               TO  WRK-KINKIFLG
+                   MOVE    SPA-COM-PTKINKI-ARI (SPA-GMN-IDX)
+                                               TO  WRK-PTKINKI-ARI
+               ELSE
+                   MOVE    SPACE               TO  WRK-KINKIFLG
+                   MOVE    ZERO                TO  WRK-PTKINKI-ARI
+               END-IF
                MOVE    SPA-COM-TIMEFLG(SPA-GMN-IDX)    TO  WRK-TIMEFLG
                MOVE    SPA-COM-IN     (SPA-GMN-IDX)    TO  WRK-FLG-IN
                MOVE    SPA-GMN-MEISYO-G(SPA-GMN-IDX)   TO  WRK-MEISYO-G
@@ -5993,6 +6014,10 @@
                MOVE    WRK-TIMEFLG     TO  SPA-COM-TIMEFLG(SPA-GMN-IDX)
                MOVE    WRK-FLG-IN      TO  SPA-COM-IN  (SPA-GMN-IDX)
                MOVE    "1"             TO  SPA-COM-IN2 (SPA-GMN-IDX)
+               MOVE    WRK-KINKIFLG    TO  SPA-COM-KINKIFLG
+                                                        (SPA-GMN-IDX)
+               MOVE    WRK-PTKINKI-ARI TO  SPA-COM-PTKINKI-ARI
+                                                        (SPA-GMN-IDX)
       *
                END-IF
            ELSE
@@ -8322,15 +8347,15 @@
                   (WRK-KEI-ERRCD       =   SPACE )  AND
                   (WRK-KIDCD           =   SPACE )
       *        在宅・投薬・注射のみ
-               IF     (WRK-COM-SRYKBN (01)     =   "14"
-                                               OR  "21"
-                                               OR  "22"
-                                               OR  "23"
-                                               OR  "31"
-                                               OR  "32"
-                                               OR  "33" )
+      ****     IF     (WRK-COM-SRYKBN (01)     =   "14"
+      *                                        OR  "21"
+      *                                        OR  "22"
+      *                                        OR  "23"
+      *                                        OR  "31"
+      *                                        OR  "32"
+      ***                                      OR  "33" )
                    PERFORM 51022-TENSUPLUS2-CHK-SEC
-               END-IF
+      ***      END-IF
            END-IF
       *@
       *
@@ -12377,7 +12402,8 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                        IF     (SPA-GMN-INPUTCD (WRK-IDX)(1:1) =  "S")
                           AND (SPA-ERRCD(1:1)      =   "K"   )
                           AND ((SPA-COM-KZMFLG4 (WRK-IDX)  =  "1" )
-                           OR  (SPA-COM-KZMFLG5 (WRK-IDX)  =  "1" ))
+                           OR  (SPA-COM-KZMFLG5 (WRK-IDX)  =  "1" )
+                           OR  (SPA-COM-KINKIFLG(WRK-IDX)  =  "1" ))
                           CONTINUE
                        ELSE
                            MOVE    SPACE       TO  SPA-MAE-INPUTCD
@@ -12519,6 +12545,11 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                    ELSE
                        MOVE    "black"        TO  K02-SRYKBN-STYLE(IDX)
                        MOVE    "black"        TO  K02-MEISYO-STYLE(IDX)
+                   END-IF
+      *
+      *!!          禁忌薬剤
+                   IF      SPA-COM-PTKINKI-ARI (WRK-IDX)   =   1
+                       MOVE    "red"          TO  K02-MEISYO-STYLE(IDX)
                    END-IF
       *!
                    IF      SPA-GMN-INPUTCD(WRK-IDX)(1:1)   =   "#"

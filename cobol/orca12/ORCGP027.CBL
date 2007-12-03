@@ -82,6 +82,8 @@
        01  FLG-AREA.
            03  FLG-END             PIC 9(01).
            03  FLG-PARA            PIC 9(01).
+           03  FLG-JYURRK          PIC 9(01).
+           03  FLG-PTBYOMEI        PIC 9(01).
       *
            03  FLG-OK              PIC 9(01).
       *
@@ -200,6 +202,13 @@
                          REPLACING  //COMB-// BY //LNK-COMB-//.
                03  LNK-COMB-EDANUM      PIC 9(03).
       *
+      *    患者病名
+       01  PTBYOMEI-REC.
+           COPY    "CPPTBYOMEI.INC".
+      *    受診履歴
+       01  JYURRK-REC.
+           COPY    "CPJYURRK.INC".
+      *
       *****************************************************************
       *    サブプロ用　領域
       *****************************************************************
@@ -247,6 +256,8 @@
            COPY    "P02S.INC".
            COPY    "P02Q.INC".
            COPY    "P02Q1.INC".
+           COPY    "P02Y.INC".
+           COPY    "P02Y1.INC".
            COPY    "PERR.INC".
            COPY    "PID1.INC".
       *
@@ -1058,21 +1069,100 @@
       *
            IF      SPA-NAI27-SELNUM    NOT =   ZERO
                IF      SPA-GMN27-HYOJIKBN  =   SPACE
-                   MOVE    "1"             TO  SPA-GMN27-HYOJIKBN
+      *            受診履歴・病名等の算定チェック
+                   IF      SPA-P02-SYORI       =   1
+                       CONTINUE
+                   ELSE
+                       PERFORM 4001-HKNCOMBI-CHK-SEC
+                   END-IF
+                   IF      SPA-ERRCD           =   SPACE
+                       MOVE    "1"             TO  SPA-GMN27-HYOJIKBN
+                   END-IF
                ELSE
                    MOVE    SPACE           TO  SPA-GMN27-HYOJIKBN
                END-IF
+               IF      SPA-ERRCD           =   SPACE
       *        表示内容変更
-               MOVE    SPA-NAI27-IDX       TO  IDX
-               MOVE    SPA-GMN27-HYOJIKBN  TO  SPA-GMN27-THYOJIKBN (IDX)
-               MOVE    SPA-GMN27-HYOIDX (IDX)
-                                           TO  IDX5
-               MOVE    SPA-GMN27-THYOJIKBN (IDX)
-                                           TO  SPA-HYO-HYOJIKBN (IDX5)
+                   MOVE    SPA-NAI27-IDX       TO  IDX
+                   MOVE    SPA-GMN27-HYOJIKBN  TO  SPA-GMN27-THYOJIKBN
+                                                                 (IDX)
+                   MOVE    SPA-GMN27-HYOIDX (IDX)
+                                               TO  IDX5
+                   MOVE    SPA-GMN27-THYOJIKBN (IDX)
+                                               TO  SPA-HYO-HYOJIKBN
+                                                                 (IDX5)
+               END-IF
            END-IF
       *
            .
        400-HYOJIKBN-SYORI-EXT.
+           EXIT.
+      *****************************************************************
+      *    受診履歴・病名等の算定チェック処理
+      *****************************************************************
+       4001-HKNCOMBI-CHK-SEC                SECTION.
+      *
+           MOVE    SPACE               TO  JYURRK-REC
+           INITIALIZE                      JYURRK-REC
+           MOVE    SPA-HOSPNUM         TO  JYURRK-HOSPNUM
+           MOVE    SPA-GMN-PTID        TO  JYURRK-PTID
+           MOVE    SPA-NAI27-SELNUM    TO  JYURRK-HKNCOMBINUM
+      *
+           MOVE    JYURRK-REC          TO  MCPDATA-REC
+           MOVE    "tbl_jyurrk"        TO  MCP-TABLE
+           MOVE    "key41"             TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_jyurrk"        TO  MCP-TABLE
+               MOVE    "key41"             TO  MCP-PATHNAME
+               PERFORM 970-JYURRK-READ-SEC
+           ELSE
+               MOVE    SPACE               TO  JYURRK-REC
+               INITIALIZE                  JYURRK-REC
+               MOVE    1                   TO  FLG-JYURRK
+           END-IF
+           MOVE    "tbl_jyurrk"        TO  MCP-TABLE
+           MOVE    "key41"             TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+      *
+           IF      FLG-JYURRK          =   ZERO
+               MOVE    "9103"              TO  SPA-ERRCD
+           END-IF
+      *
+      *    病名チェック
+           MOVE    SPACE               TO  PTBYOMEI-REC
+           INITIALIZE                  PTBYOMEI-REC
+           MOVE    SPA-HOSPNUM         TO  PTBYO-HOSPNUM
+           MOVE    SPA-GMN-PTID        TO  PTBYO-PTID
+           MOVE    SPA-NAI27-SELNUM    TO  PTBYO-HKNCOMBI
+      *
+           MOVE    PTBYOMEI-REC        TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "tbl_ptbyomei"      TO  MCP-TABLE
+           MOVE    "key8"              TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_ptbyomei"      TO  MCP-TABLE
+               MOVE    "key8"              TO  MCP-PATHNAME
+               PERFORM 980-PTBYOMEI-READ-SEC
+           ELSE
+               MOVE    SPACE               TO  PTBYOMEI-REC
+               INITIALIZE                  PTBYOMEI-REC
+               MOVE    1                   TO  FLG-PTBYOMEI
+           END-IF
+           MOVE    "tbl_ptbyomei"      TO  MCP-TABLE
+           MOVE    "key8"              TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+      *
+           IF      FLG-PTBYOMEI        =   ZERO
+               IF      SPA-ERRCD           =   SPACE
+                   MOVE    "9104"          TO  SPA-ERRCD
+               ELSE
+                   MOVE    "9105"          TO  SPA-ERRCD
+               END-IF
+           END-IF
+           .
+       4001-HKNCOMBI-CHK-EXT.
            EXIT.
       *****************************************************************
       *    会話　処理
@@ -1599,10 +1689,7 @@
       *****************************************************************
        990-PARA-READ-SEC        SECTION.
       *
-           MOVE    "DBFETCH"           TO  MCP-FUNC
-grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+           PERFORM 920-DBFETCH-SEC
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC     TO  PARA-REC
                MOVE    ZERO            TO  FLG-PARA
@@ -1613,6 +1700,40 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            .
        990-PARA-READ-EXT.
+           EXIT.
+      *****************************************************************
+      *    受診履歴マスター読込
+      *****************************************************************
+       970-JYURRK-READ-SEC         SECTION.
+      *
+           PERFORM 920-DBFETCH-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC     TO  JYURRK-REC
+               MOVE    ZERO            TO  FLG-JYURRK
+           ELSE
+               INITIALIZE                  JYURRK-REC
+               MOVE    1               TO  FLG-JYURRK
+           END-IF
+      *
+           .
+       970-JYURRK-READ-EXT.
+           EXIT.
+      *****************************************************************
+      *    病名マスター読込
+      *****************************************************************
+       980-PTBYOMEI-READ-SEC         SECTION.
+      *
+           PERFORM 920-DBFETCH-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC     TO  PTBYOMEI-REC
+               MOVE    ZERO            TO  FLG-PTBYOMEI
+           ELSE
+               INITIALIZE                  PTBYOMEI-REC
+               MOVE    1               TO  FLG-PTBYOMEI
+           END-IF
+      *
+           .
+       980-PTBYOMEI-READ-EXT.
            EXIT.
       *****************************************************************
       *    テーブル検索処理

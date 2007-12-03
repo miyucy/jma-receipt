@@ -36,6 +36,7 @@
       *  02.00.09    NACL-Â¿¡¹Ç¼  05/12/07  Ï«ºÒ¥ì¥»²ó¿ôµ­ºÜÄÉ²Ã
       *  02.00.10    NACL-Â¿¡¹Ç¼  06/02/27  ¼ç²ÊÂÐ±þÄÉ²Ã
       *  03.04.00    NACL-Â¿¡¹Ç¼  07/02/16  £Ñ£Ò¼õÉÕÂÐ±þ
+      *  04.01.00    NACL-Â¿¡¹Ç¼  07/12/03  ´µ¼Ô¶Ø´÷ÌôºÞÂÐ±þ
       *****************************************************************
        01  SPA-P02SCRAREA.
       *
@@ -1281,6 +1282,89 @@
                    07  SPA-GMN-SCODE           PIC X(01).
                    07  SPA-GMN-F1              PIC X(01).
                    07  SPA-GMN-SCODEMEI        PIC X(18).
+      *
+      *    ´µ¼Ô¶Ø´÷ÌôºÞ¡Ê£Ð£°£²£Ù¡Ë
+           03  SPA-P02Y-AREA.
+               05  SPA-P02Y-CUR                PIC 9(02).
+               05  SPA-P02Y-PAGE               PIC 9(03).
+               05  SPA-P02Y-NEXT               PIC 9(01).
+               05  SPA-P02Y-SYORI              PIC 9(01).
+               05  SPA-P02Y-KINKILIST.
+                   07  SPA-P02Y-KINLIST-T          OCCURS   100.
+                       09  SPA-P02Y-TNUM           PIC 9(03).
+                       09  SPA-P02Y-TSRYCD         PIC X(09).
+                       09  SPA-P02Y-TNAME          PIC X(60).
+                       09  SPA-P02Y-TYUKOEDYMD     PIC X(10).
+                       09  SPA-P02Y-TCHNGECD       PIC X(09).
+                       09  SPA-P02Y-TINPUTCD       PIC X(20).
+      *
+                       09  SPA-P02Y-TKANANAME      PIC X(80).
+                       09  SPA-P02Y-TYUKOEDYMDS    PIC X(08).
+                       09  SPA-P02Y-TCHNGFLG       PIC X(01).
+                   07  SPA-P02Y-MAX            PIC 9(03).
+               05  SPA-P02Y-SELNUM             PIC 9(03).
+               05  SPA-P02Y-IDX                PIC 9(03).
+               05  SPA-P02Y-INPUT-G.
+                   07  SPA-P02Y-SRYCD              PIC X(09).
+                   07  SPA-P02Y-SRYCDMEI           PIC X(80).
+                   07  SPA-P02Y-KIKAN              PIC X(24).
+                   07  SPA-P02Y-KEIKAMSG           PIC X(56).
+                   07  SPA-P02Y-MAE-SRYCD          PIC X(09).
+                   07  SPA-P02Y-INPUTCD            PIC X(22).
+      *
+      *    ÌôºÞ°ìÍ÷¡Ê£Ð£°£²£Ù£±¡Ë
+           03  SPA-P02Y1-AREA.
+               07  SPA-P02Y1-CDSYUBETU     PIC X(01).
+               07  SPA-P02Y1-INPUTCD       PIC X(22).
+               07  SPA-P02Y1-NAIYOU        PIC X(07).
+               07  SPA-P02Y1-MOJI          PIC 9(02).
+               07  SPA-P02Y1-TYPE          PIC X(01).
+      *
+               07  SPA-P02Y1-GMN-ALL       PIC X(01).
+      *
+               07  SPA-P02Y1-SRYCD-G.
+                   09  SPA-P02Y1-SRYCD     PIC X(09)  OCCURS   10.
+      *
+           03  SPA-P02Y1GMN-AREA.
+               05  SPA-P02Y1-GMN-MAX               PIC 9(03).
+               05  SPA-P02Y1-NEXT                  PIC 9(04).
+               05  SPA-P02Y1-PAGE                  PIC 9(04).
+               05  SPA-P02Y1-GMN-CUR               PIC 9(03).
+      *
+               05  SPA-P02Y1-GMN-SELNUM-G.
+                   07  SPA-P02Y1-GMN-SELNUM        PIC X(03)
+                                                 OCCURS  10.
+               05  SPA-P02Y1-NAI-SELNUM-G.
+                   07  SPA-P02Y1-NAI-SELNUM        PIC 9(03)
+                                                 OCCURS  10.
+               05  SPA-P02Y1-GMN-INPUT             PIC X(22).
+               05  SPA-P02Y1-GMN-SYORI             PIC X(01).
+               05  SPA-P02Y1-GMN-SYORI2            PIC X(01).
+               05  SPA-P02Y1-GMN-SYORI3            PIC X(02).
+               05  SPA-P02Y1-OLD-SYORI             PIC X(01).
+               05  SPA-P02Y1-NAI-KENSA.
+                   07  SPA-P02Y1-NAI-KENSANO       PIC 9(02).
+                   07  SPA-P02Y1-NAI-HOUKATU       PIC X(01).
+      *
+               05  SPA-P02Y1-GMN-TBL.
+                   07  SPA-P02Y1-GMN-TBLREC        OCCURS   200.
+                       11  SPA-P02Y1-GMN-NO         PIC 9(03).
+                       11  SPA-P02Y1-GMN-NO-X       REDEFINES
+                           SPA-P02Y1-GMN-NO         PIC X(03).
+                       11  SPA-P02Y1-GMN-INPUTCD    PIC X(20).
+                       11  SPA-P02Y1-GMN-SRYCD      PIC X(09).
+                       11  SPA-P02Y1-GMN-NAME       PIC X(70).
+                       11  SPA-P02Y1-GMN-TANI       PIC X(10).
+                       11  SPA-P02Y1-GMN-KISOTEN    PIC 9(07)V99.
+      *
+                       11  SPA-P02Y1-NAI-NO         PIC 9(03).
+      *        ¼«±¡ºÎÍÑ
+               05  SPA-P02Y1-JIIN-G.
+                   07  SPA-P02Y1-JIIN               PIC X(01).
+                   07  SPA-P02Y1-JIINF              PIC X(01).
+                   07  SPA-P02Y1-JIINMEI            PIC X(18).
+               05  SPA-P02Y1-JIIN-COB               OCCURS  10.
+                   07  SPA-P02Y1-JIINLST            PIC X(20).
       *
       *@@
       *    £Ñ£Ò²èÌÌ¡Ê£Ð£°£²£Ñ¡Ë

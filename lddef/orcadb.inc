@@ -127,4 +127,5 @@ db	{
 	tbl_csv_info;
 	tbl_shoukaikanri;
 	tbl_shoukaidata;
+	tbl_ptkinki;
 };

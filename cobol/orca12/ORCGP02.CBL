@@ -61,6 +61,7 @@
       *  03.05.00    NACL-多々納  07/05/XX  グループ診療対応
       *  03.05.01    NACL-多々納  07/08/16  患者メモ削除追加
       *                                     ＱＲ受付削除
+      *  04.01.00    NACL-多々納  07/12/XX  患者禁忌薬剤マスタ追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -362,6 +363,10 @@
       *    地方公費請求書
            COPY    "CPKOHSKY.INC".
       *
+      *    患者禁忌薬剤マスタ
+       01  PTKINKI-REC.
+           COPY    "CPPTKINKI.INC".
+      *
       *    パラメタテーブル
        01  PARA-REC.
            COPY    "CPPARA.INC".
@@ -477,6 +482,8 @@
            COPY    "P02S.INC".
            COPY    "P02Q.INC".
            COPY    "P02Q1.INC".
+           COPY    "P02Y.INC".
+           COPY    "P02Y1.INC".
            COPY    "PERR.INC".
            COPY    "PID1.INC".
       *
@@ -1317,6 +1324,9 @@
       ***  ＱＲ一覧へ
       *        WHEN    "CLICKED"       ALSO    "B12S"
       ***          PERFORM 4902-QRSYORI-SEC
+      *    患者薬剤登録へ
+               WHEN    "CLICKED"       ALSO    "B12S"
+                   PERFORM 4902-P02YSYORI-SEC
       *    タグ切り替え
                WHEN    "CLICKED"       ALSO    "N01"
                WHEN    "CLICKED"       ALSO    "N02"
@@ -2074,6 +2084,64 @@
            MOVE    1                   TO  FLG-END
            .
        49021-P02Q-SYORI-EXT.
+           EXIT.
+      *****************************************************************
+      *    患者禁忌薬剤登録へ処理
+      *****************************************************************
+       4902-P02YSYORI-SEC            SECTION.
+      *
+           IF     (SPA-P02-SYORI       =   1     )
+      *        登録不可
+               MOVE    "1025"              TO  SPA-ERRCD
+           END-IF
+           IF     (SPA-GMN-PTID        =   ZERO  )
+               MOVE    "1021"              TO  SPA-ERRCD
+           END-IF
+           IF      SPA-ERRCD           =   SPACE
+               PERFORM 49021-P02Y-SYORI-SEC
+           END-IF
+      *
+           .
+       4902-P02YSYORI-EXT.
+           EXIT.
+      *****************************************************************
+      *    禁忌薬剤一覧へ処理
+      *****************************************************************
+       49021-P02Y-SYORI-SEC            SECTION.
+      *
+           INITIALIZE                  SPA-P02Q-AREA
+      *
+           MOVE    SPA-P02KYOUTU       TO  SPA-WORK
+           MOVE    SPA-AREA            TO  SPA-COMMON
+           MOVE    SPA-P02SCRAREA      TO  SPA-FREE
+      *
+           MOVE    "LINK"              TO  MCP-STATUS
+           MOVE    SPACE               TO  MCP-EVENT
+      *
+           CALL    "ORCGP02Y"          USING
+                                       MCPAREA
+                                       SPAAREA
+                                       LINKAREA
+                                       SCRAREA.
+      *
+           MOVE    SPA-COMMON          TO  SPA-AREA
+           MOVE    SPA-FREE            TO  SPA-P02SCRAREA
+           MOVE    SPA-WORK            TO  SPA-P02KYOUTU
+      *
+           IF      SPA-P02Y-MAX        =   ZERO
+               MOVE    "SRYCD"             TO  MCP-WIDGET
+           ELSE
+               MOVE    "SELNUM"            TO  MCP-WIDGET
+           END-IF
+           MOVE    "P02"               TO  SPA-MOTOPG
+           MOVE    "P02Y"              TO  SPA-SAKIPG
+      *
+           MOVE    "NEW"               TO  MCP-PUTTYPE
+           MOVE    "P02Y"              TO  MCP-WINDOW
+           PERFORM 900-PUT-WINDOW
+           MOVE    1                   TO  FLG-END
+           .
+       49021-P02Y-SYORI-EXT.
            EXIT.
       *****************************************************************
       *    再発行処理
@@ -2857,7 +2925,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *
       *    患者定期請求履歴
            INITIALIZE                      PTTEIKIRRK-REC
-           MOVE    SPA-HOSPNUM          TO  PTTEIKIRRK-HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  PTTEIKIRRK-HOSPNUM
            MOVE    SPA-GMN-PTID        TO  PTTEIKIRRK-PTID
            MOVE    PTTEIKIRRK-REC      TO  MCPDATA-REC
            MOVE    "DBDELETE"          TO  MCP-FUNC
@@ -3012,6 +3080,18 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    PTMEMOINF-REC       TO  MCPDATA-REC
            MOVE    "DBDELETE"          TO  MCP-FUNC
            MOVE    "tbl_ptmemoinf"     TO  MCP-TABLE
+           MOVE    "del1"              TO  MCP-PATHNAME
+           CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
+      *
+      *    患者禁忌薬剤マスタ
+           INITIALIZE                      PTKINKI-REC
+           MOVE    SPA-HOSPNUM         TO  PTKINKI-HOSPNUM
+           MOVE    SPA-GMN-PTID        TO  PTKINKI-PTID
+           MOVE    PTKINKI-REC         TO  MCPDATA-REC
+           MOVE    "DBDELETE"          TO  MCP-FUNC
+           MOVE    "tbl_ptkinki"       TO  MCP-TABLE
            MOVE    "del1"              TO  MCP-PATHNAME
            CALL    "ORCDBMAIN"         USING   MCPAREA
                                                MCPDATA-REC
@@ -4435,6 +4515,13 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN    "1021"
                    MOVE    "患者番号を入力して下さい。"
                                                TO  SPA-ERRMSG
+      *
+               WHEN    "1025"
+                   STRING  "登録済みの患者ではありません。"
+                           "患者登録後、禁忌薬剤を登録して下さい。"
+                                               DELIMITED  BY  SIZE
+                                               INTO  SPA-ERRMSG
+                   END-STRING
                WHEN    "1023"
                    MOVE    "ＱＲデータはありません。"
                                                TO  SPA-ERRMSG
@@ -4649,6 +4736,25 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE    "保険組合更新エラー"
                                                 TO  SPA-ERRMSG
       *
+               WHEN    "9103"
+                   STRING  "保険組合せで診療行為が登録されています。"
+                           "非表示にできません。"
+                                               DELIMITED  BY  SIZE
+                                               INTO    SPA-ERRMSG
+                   END-STRING
+               WHEN    "9104"
+                   STRING  "保険組合せで病名が登録されています。"
+                           "非表示にできません。"
+                                               DELIMITED  BY  SIZE
+                                               INTO    SPA-ERRMSG
+                   END-STRING
+               WHEN    "9105"
+                   STRING  "保険組合せで診療・病名が登録されています。"
+                           "非表示にできません。"
+                                               DELIMITED  BY  SIZE
+                                               INTO    SPA-ERRMSG
+                   END-STRING
+      *
                WHEN    "9999"
                    MOVE    "他端末で使用中です。"
                                                TO  SPA-ERRMSG
@@ -4845,25 +4951,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                                TO  WRK-PIDMSG
                    MOVE    "存在します。診療と病名を保険変更。"
                                                TO  WRK-PIDMSG(41:)
-               WHEN    "9103"
-                   STRING  "非表示の保険組合せで診療行為が登録"
-                           "されています。診療を保険変更して下さい。"
-                                               DELIMITED  BY  SIZE
-                                               INTO    WRK-PIDMSG
-                   END-STRING
-               WHEN    "9104"
-                   STRING  "非表示の保険組合せで病名が登録"
-                           "されています。病名を保険変更して下さい。"
-                                               DELIMITED  BY  SIZE
-                                               INTO    WRK-PIDMSG
-                   END-STRING
-               WHEN    "9105"
-                   STRING  "非表示の保険組合せで診療・病名が登録"
-                           "されています。"
-                           "診療・病名を保険変更して下さい。"
-                                               DELIMITED  BY  SIZE
-                                               INTO    WRK-PIDMSG
-                   END-STRING
                WHEN    OTHER
                    MOVE    SPA-PIDCD
                                        TO  WRK-PIDMSG

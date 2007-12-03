@@ -1157,8 +1157,6 @@ grpsys                 CALL    "ORCDBMAIN"         USING   MCPAREA
                IF     (HZN-COMB-TEKSTYMD   NOT =   COMB-TEKSTYMD) OR
                       (HZN-COMB-TEKEDYMD   NOT =   COMB-TEKEDYMD) OR
                       (HZN-COMB-DELKBN     NOT =   COMB-DELKBN  )
-      *TEST
-                  OR  (COMB-HYOJIKBN           =   "1"   )
                    PERFORM 2501-HKNCOMBI-CHK-SEC
                END-IF
            END-IF
@@ -1272,9 +1270,6 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                           (JYURRK-SRYYMD       >   COMB-TEKEDYMD)
                        MOVE    "9100"          TO  SPA-KEI-ERRCD
                    END-IF
-                   IF      COMB-HYOJIKBN       =   "1"
-                       MOVE    "9103"          TO  SPA-KEI-ERRCD
-                   END-IF
                ELSE
       *            ºï½ü¤Î»þ
                    MOVE    "9100"          TO  SPA-KEI-ERRCD
@@ -1315,13 +1310,6 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                            MOVE    "9101"          TO  SPA-KEI-ERRCD
                        ELSE
                            MOVE    "9102"          TO  SPA-KEI-ERRCD
-                       END-IF
-                   END-IF
-                   IF      COMB-HYOJIKBN       =   "1"
-                       IF      SPA-KEI-ERRCD       =   SPACE
-                           MOVE    "9104"          TO  SPA-KEI-ERRCD
-                       ELSE
-                           MOVE    "9105"          TO  SPA-KEI-ERRCD
                        END-IF
                    END-IF
                ELSE

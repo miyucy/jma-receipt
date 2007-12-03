@@ -1359,6 +1359,19 @@
                                                DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
+      *!
+               WHEN    "K210"
+                   STRING  "·Ù¹ð¡ª¡ª"
+                           "¥»¥Ã¥ÈÆâ¤Ë´µ¼Ô¶Ø´÷ÌôºÞ¤¬¤¢¤ê¤Þ¤¹¡£"
+                                               DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
+               WHEN    "K211"
+                   STRING  "·Ù¹ð¡ª¡ª"
+                           "´µ¼Ô¶Ø´÷ÌôºÞ¤Ç¤¹¡£"
+                                               DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
       *
            END-EVALUATE
            .
