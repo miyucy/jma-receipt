@@ -1436,17 +1436,6 @@
                MOVE    TNS-TANINAME        TO  SPA-Z98-GMN-TANI(IDX)
            END-IF
       *
-      *TEST
-      *    ユーザ登録
-           IF     (TNS-SRYCD(1:1)      =   "0" )
-               MOVE    "("                 TO  SPA-Z98-GMN-TANI(IDX)
-                                                              (1:1)
-               MOVE    TNS-SRYCD(1:3)      TO  SPA-Z98-GMN-TANI(IDX)
-                                                              (2:3)
-               MOVE    ")"                 TO  SPA-Z98-GMN-TANI(IDX)
-                                                              (6:1)
-           END-IF
-      *TEST
       *!!  診療コードの時、種別
       *    IF      SPA-Z98-GMN-SYORI   =   "9"
       *        CONTINUE
