@@ -17,6 +17,9 @@
       ********************************************************************
         02  W27.
             03  W27-FIXED6.
+              04  W27-LBLINFO-G.
+                05  W27-LBLINFO-STYLE      PIC X(20).
+                05  W27-LBLINFO            PIC X(200).
               04  W27-CMB-BTU-NAME.
                 05  W27-BTU-NAME           PIC X(23).
                 05  W27-BTU-NAME-CNT       PIC S9(9)   BINARY.

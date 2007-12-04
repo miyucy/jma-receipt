@@ -758,6 +758,7 @@
       *
            MOVE    SPA-NAI-W27-KJNYMD
                                TO   SPA-NAI-W27-BRMSTYUKYMD
+                                    SPA-NAI-W27-BRMEDYUKYMD
       *
            MOVE    ALL  "F"    TO  SPA-GMN-W27-CHK-KSN-G
            MOVE    SPA-NAI-W27-KJNYMD  TO  WRK-KSNKJNYMD
@@ -1254,6 +1255,8 @@
            MOVE    SPA-GMN-W27-TBRMNUM2 (IDXI)
                                    TO  SPA-GMN-W27-STBRMNUM2
       *
+           MOVE    SPA-NAI-W27-TEDYUKYMD  (IDXI)
+                                       TO  SPA-NAI-W27-BRMEDYUKYMD
       *
            PERFORM VARYING IDX-KSN    FROM    1   BY  1
                    UNTIL ( IDX-KSN    >   CONST-KSN-MAX )
@@ -1665,6 +1668,7 @@
       *
            MOVE    SPA-NAI-W27-KJNYMD
                                TO  SPA-NAI-W27-BRMSTYUKYMD
+                                   SPA-NAI-W27-BRMEDYUKYMD
       *
            MOVE    ALL  "F"    TO  SPA-GMN-W27-CHK-KSN-G
            MOVE    SPA-NAI-W27-BRMSTYUKYMD
@@ -2049,6 +2053,20 @@
                    MOVE    "F"             TO  W27-BRMLST-SELECT (IDX1)
                END-IF
            END-PERFORM
+      *
+           MOVE    "black"                 TO  W27-LBLINFO-STYLE
+           DISPLAY "SPA-NAI-W27-BRMSTYUKYMD  =" SPA-NAI-W27-BRMSTYUKYMD 
+           DISPLAY "SPA-NAI-W27-BRMEDYUKYMD  =" SPA-NAI-W27-BRMEDYUKYMD 
+           IF    ( SPA-NAI-W27-BRMSTYUKYMD <  CONST-H180401 )
+            AND  ( SPA-NAI-W27-BRMEDYUKYMD >= CONST-H180401 )
+               MOVE    "red"               TO  W27-LBLINFO-STYLE
+               STRING "¢®Œ≈Õ‹…¬≈Ô¥ƒ∂≠≤√ªª£±°¢£≤°¢£≥§œ ø¿Æ£±£∏«Ø£¥∑Ó∞ πﬂ"
+                                               DELIMITED   BY  SIZE
+                      "§Ω§Ï§æ§Ï£≤°¢£≥°¢£¥§»§ﬂ§ §∑§ﬁ§π°£"
+                                               DELIMITED   BY  SIZE
+               INTO   W27-LBLINFO
+               END-STRING
+           END-IF
       *
       *    π‡Ã‹æı¬÷ ‘Ω∏
            PERFORM 500-GMNHEN-STATE-EDIT-SEC

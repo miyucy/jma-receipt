@@ -1,5 +1,9 @@
 W27	{
 	fixed6	{
+		LBLINFO	{
+			style   varchar(20);
+			value	varchar(200);
+		};
 		CMB_BTU_NAME	{
 			BTU_NAME	{
 				value	varchar(23);
