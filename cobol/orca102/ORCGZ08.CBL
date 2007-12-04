@@ -1184,12 +1184,6 @@
                GO      TO   403-DEL-EXT
            END-IF
       *
-           IF      SPA-NAI-KEIFLG1     =   ZERO
-               IF      SPA-Z01-SRYCD(1:1)  =   "7"
-                   MOVE    "K003"          TO  SPA-ERRCD
-               END-IF
-               MOVE    1               TO  SPA-NAI-KEIFLG1
-           END-IF
            IF      SPA-ERRCD           =   SPACE
                MOVE    "0001"              TO  SPA-ZIDCD
            END-IF
@@ -1205,11 +1199,11 @@
       *
            MOVE    SPA-Z01-SRYCD       TO  TNS-SRYCD
            MOVE    SPA-Z01-TYUKOSTYMD(SPA-Z01-SELNUM)
-                                       TO  TNSP-YUKOSTYMD
+                                       TO  TNS-YUKOSTYMD
            MOVE    SPA-Z01-TYUKOEDYMD(SPA-Z01-SELNUM)
-                                       TO  TNSP-YUKOEDYMD
+                                       TO  TNS-YUKOEDYMD
+           MOVE    SPA-HOSPNUM         TO  TNS-HOSPNUM
       *
-           MOVE    SPA-HOSPNUM         TO  TNSP-HOSPNUM
            MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
            MOVE    "DBDELETE"          TO  MCP-FUNC
            MOVE    "tbl_tensu"         TO  MCP-TABLE
