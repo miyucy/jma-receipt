@@ -357,6 +357,10 @@ RECORD_files = \
  	MUID.rec \
  	P02Y.rec \
  	P02Y1.rec \
+ 	I2FIL.rec \
+ 	QFIL.rec \
+ 	W64.rec \
+ 	Z08.rec \
 
 DEF_files = \
 	HC01.def \

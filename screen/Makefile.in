@@ -353,9 +353,12 @@ SCREEN_screen = \
 	Q04.glade \
 	T91.glade \
 	MUID.glade \
-	TFIL.glade \
 	P02Y.glade \
 	P02Y1.glade \
+	I2FIL.glade \
+	QFIL.glade \
+	W64.glade \
+	Z08.glade \
 
 SCREEN_objs = $(SCREEN_sources:.glade.in=.glade)
 
