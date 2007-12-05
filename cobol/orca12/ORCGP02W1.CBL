@@ -1318,8 +1318,21 @@
                                            TO  SPA-MAE-HKAKUNINYMD
            MOVE    SPA-PTHKN-MAEKAKUNINYMDW(IDX)
                                            TO  SPA-MAE-HKAKUNINYMDW
+           MOVE    SPA-PTHKN-KIGO    (IDX) TO  SPA-OLD-KIGO
+           MOVE    SPA-PTHKN-NUM     (IDX) TO  SPA-OLD-NUM
            MOVE    SPA-PTHKN-KIGO    (IDX) TO  SPA-MAE-KIGO
            MOVE    SPA-PTHKN-NUM     (IDX) TO  SPA-MAE-NUM
+           MOVE    SPA-PTHKN-KIGO-KEIFLG (IDX)
+                                           TO  SPA-KIGO-KEIFLG
+           MOVE    SPA-PTHKN-NUM-KEIFLG (IDX)
+                                           TO  SPA-NUM-KEIFLG
+      *    更新前の記号空白チェックは当日有効のもの
+           IF      FLG-TOUROKU     NOT =   ZERO
+               IF      (SPA-PTHKN-TEKEDYMD(IDX)  <=  SPA-SYSYMD )
+                   MOVE    1               TO  SPA-KIGO-KEIFLG
+                   MOVE    1               TO  SPA-NUM-KEIFLG
+               END-IF
+           END-IF
       *
       *    保険者番号　検索チェック
            INITIALIZE                    HKNJAINF-REC
@@ -4192,6 +4205,8 @@
                                        TO  SPA-PTHKN-HKN-SBTKBN(IDX)
       *
            MOVE    SPA-HKNJA-KEIFLG    TO  SPA-PTHKN-KEIFLG  (IDX)
+           MOVE    SPA-KIGO-KEIFLG     TO  SPA-PTHKN-KIGO-KEIFLG (IDX)
+           MOVE    SPA-NUM-KEIFLG      TO  SPA-PTHKN-NUM-KEIFLG (IDX)
       *
       *    新規の時保険ＩＤ取得（労災は労災画面で取得する）
            IF      SPA-NAI-HKNID       =   ZERO
@@ -5386,7 +5401,8 @@
                        MOVE    IDX             TO  SPA-NAI-HKNSTR
                        PERFORM 3101-HOKEN-HEN-SEC
       *                保険情報チェックサブ
-                       CALL    "ORCSP03A"          USING   SPA-AREA
+                       CALL    "ORCSP03A"          USING
+                                                   SPA-AREA
                                                    SPA-P02SCRAREA
                                                    SPA-P02KYOUTU
                    END-IF

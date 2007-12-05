@@ -43,6 +43,7 @@
       *                                     （老人割合変更）
       * 03.05.00     NACL-多々納  07/05/XX  グループ診療対応
       * 04.01.00     NACL-多々納  07/11/XX  公害保険対応
+      * 04.01.00     NACL-多々納  07/12/12  記号番号空白チェック
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -77,6 +78,8 @@
       *
            03  IDX-S1              PIC 9(04).
            03  IDX-S2              PIC 9(04).
+      *
+           03  IDC                 PIC 9(04).
       *
       *    一時領域
        01  WRK-AREA.
@@ -1374,10 +1377,29 @@
                END-IF
       *        半角の時、変更はＯＫとする
                IF      FLG-ERR             =   2
-                   IF      SPA-GMN-KIGO    NOT =   SPA-MAE-KIGO
+                   IF      SPA-GMN-KIGO    NOT =   SPA-OLD-KIGO
                        MOVE    "0048"              TO  SPA-ERRCD
                        MOVE    13                  TO  SPA-GMN-CUR
                    END-IF
+               END-IF
+      *        空白チェック
+               IF     (SPA-ERRCD           =   SPACE  )
+                  AND (SPA-GMN-HKNNUM      >=  "001"  AND
+                                           <=  "099"  )
+                   IF      SPA-GMN-KIGO    NOT =   SPA-MAE-KIGO
+                       MOVE    ZERO            TO  SPA-KIGO-KEIFLG
+                   END-IF
+                   IF      SPA-KIGO-KEIFLG     =   ZERO
+                       MOVE    SPA-GMN-KIGO        TO  WRK-MAE-INPUT
+                       MOVE    40                  TO  WRK-MAX
+                       PERFORM 891-KUHAKU-CHK-SEC
+                       IF      FLG-ERR             =   1
+                           MOVE    "K048"              TO  SPA-ERRCD
+                           MOVE    13                  TO  SPA-GMN-CUR
+                       END-IF
+                       MOVE    1                   TO  SPA-KIGO-KEIFLG
+                   END-IF
+                   MOVE    SPA-GMN-KIGO        TO  SPA-MAE-KIGO
                END-IF
            END-IF
       *
@@ -1394,15 +1416,33 @@
                END-IF
       *        半角の時、変更はＯＫとする
                IF      FLG-ERR             =   2
-                   IF      SPA-GMN-NUM     NOT =   SPA-MAE-NUM
+                   IF      SPA-GMN-NUM     NOT =   SPA-OLD-NUM
                        MOVE    "0049"              TO  SPA-ERRCD
                        MOVE    14                  TO  SPA-GMN-CUR
                    END-IF
                END-IF
+      *        空白チェック
+               IF     (SPA-ERRCD           =   SPACE  )
+                  AND (SPA-GMN-HKNNUM      >=  "001"  AND
+                                           <=  "099"  )
+                   IF      SPA-GMN-NUM     NOT =   SPA-MAE-NUM
+                       MOVE    ZERO            TO  SPA-NUM-KEIFLG
+                   END-IF
+                   IF      SPA-NUM-KEIFLG      =   ZERO
+                       MOVE    SPA-GMN-NUM         TO  WRK-MAE-INPUT
+                       MOVE    40                  TO  WRK-MAX
+                       PERFORM 891-KUHAKU-CHK-SEC
+                       IF      FLG-ERR             =   1
+                           MOVE    "K049"              TO  SPA-ERRCD
+                           MOVE    14                  TO  SPA-GMN-CUR
+                       END-IF
+                       MOVE    1                   TO  SPA-NUM-KEIFLG
+                   END-IF
+                   MOVE    SPA-GMN-NUM         TO  SPA-MAE-NUM
+               END-IF
            END-IF
       *
            .
-      *
        1001-KIGO-NUM-CHK-EXT.
            EXIT.
       *
@@ -2754,6 +2794,22 @@
       *
            .
        890-HALF-ZEN-EXT.
+           EXIT.
+      *****************************************************************
+      *    全角空白チェック処理
+      *****************************************************************
+       891-KUHAKU-CHK-SEC         SECTION.
+      *
+           MOVE    ZERO                TO  FLG-ERR
+      *
+           PERFORM VARYING     IDC     FROM    1   BY  2
+                   UNTIL       IDC     >   WRK-MAX
+               IF      WRK-MAE-INPUT(IDC:2)    =   "　"
+                   MOVE    1               TO  FLG-ERR
+               END-IF
+           END-PERFORM
+           .
+       891-KUHAKU-CHK-EXT.
            EXIT.
       *
       *****************************************************************

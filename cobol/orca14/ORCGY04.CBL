@@ -360,7 +360,7 @@
            END-IF
       *
            PERFORM
-                   UNTIL      (SPA-SINRYO-MAX  >=  31  )   OR
+                   UNTIL      (SPA-SINRYO-MAX  >=  100 )   OR
                               (FLG-SYSKANRI    =   1   )
       *
                MOVE    MCPDATA-REC         TO  SYS-1012-REC

@@ -114,7 +114,7 @@
                    07  SPA-DRCD-MAX                   PIC 9(04).
       *            診療内容
                    07  SPA-GMN-SRYNAILST              PIC X(20)
-                                                      OCCURS  30.
+                                                      OCCURS  99.
                    07  SPA-SRYNAIYO-MAX               PIC 9(04).
       *            カルテ
                    07  SPA-GMN-KARUTELST              PIC X(14)

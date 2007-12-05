@@ -4113,9 +4113,23 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN    "0048"
                    MOVE    "保険の記号は全角で入力して下さい。"
                                                TO  SPA-ERRMSG
+               WHEN    "K048"
+                   STRING  "警告！！"
+                           "記号に全角空白があります。"
+                           "レセ電でエラーになります。"
+                                               DELIMITED  BY  SIZE
+                                               INTO   SPA-ERRMSG
+                   END-STRING
                WHEN    "0049"
                    MOVE    "保険の番号は全角で入力して下さい。"
                                                TO  SPA-ERRMSG
+               WHEN    "K049"
+                   STRING  "警告！！"
+                           "番号に全角空白があります。"
+                           "レセ電でエラーになります。"
+                                               DELIMITED  BY  SIZE
+                                               INTO   SPA-ERRMSG
+                   END-STRING
                WHEN    "0050"
                    MOVE    "資格取得日が入力エラーです。"
                                                TO  SPA-ERRMSG

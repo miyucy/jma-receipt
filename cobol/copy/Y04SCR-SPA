@@ -34,7 +34,7 @@
                        09  SPA-GMN-SINRYOCD    PIC X(02).
                        09  SPA-GMN-SK1         PIC X(01).
                        09  SPA-GMN-SINRYOMEI   PIC X(18).
-                   07  SPA-GMN-SINRYOLST       PIC X(21)   OCCURS  31.
+                   07  SPA-GMN-SINRYOLST       PIC X(21)   OCCURS  100.
                    07  SPA-SINRYO-MAX          PIC 9(04).
       *
                    07  SPA-GMN-DRNAME.

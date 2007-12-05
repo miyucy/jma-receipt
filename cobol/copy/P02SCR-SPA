@@ -243,6 +243,9 @@
                            11  SPA-MAE-HKAKUNINYMDW        PIC X(09).
                            11  SPA-MAE-KIGO             PIC X(40).
                            11  SPA-MAE-NUM              PIC X(40).
+      *                    展開時
+                           11  SPA-OLD-KIGO             PIC X(40).
+                           11  SPA-OLD-NUM              PIC X(40).
       *                保険者情報
                        09  SPA-HKNJA-AREA.
                            11  SPA-HKNJA-HKNJANAME     PIC X(100).
@@ -256,6 +259,9 @@
                            11  SPA-HKNJA-KZK-GAIKYURATE    PIC 9(03).
                            11  SPA-HKNJA-KZK-NYUKYURATE    PIC 9(03).
                       09  SPA-HKNJA-KEIFLG        PIC X(01).
+      *               記号番号警告フラグ
+                      09  SPA-KIGO-KEIFLG         PIC 9(01).
+                      09  SPA-NUM-KEIFLG          PIC 9(01).
       *
       *            対象開始番号
                    07  SPA-NAI-HKNSTR              PIC 9(04).
@@ -489,6 +495,8 @@
                        09  SPA-PTHKN-MAEKAKUNINYMDW    PIC X(09).
       *                保険者警告表示
                        09  SPA-PTHKN-KEIFLG            PIC X(01).
+                       09  SPA-PTHKN-KIGO-KEIFLG       PIC 9(01).
+                       09  SPA-PTHKN-NUM-KEIFLG        PIC 9(01).
       *
                    07  SPA-PTHKN-MAX               PIC 9(04).
       *
@@ -596,7 +604,7 @@
                        09  SPA-GMN20-SRYNAICD    PIC X(02).
                        09  SPA-GMN20-SRYNA1      PIC X(01).
                        09  SPA-GMN20-SRYNAIMEI   PIC X(17).
-                   07  SPA-GMN20-SRYNAILST     OCCURS  30.
+                   07  SPA-GMN20-SRYNAILST     OCCURS  99.
                        09  SPA-SRYNAI-CD           PIC X(02).
                        09  SPA-SRYNAI-H            PIC X(01).
                        09  SPA-SRYNAI-MEI          PIC X(16).

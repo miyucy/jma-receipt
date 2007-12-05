@@ -33,7 +33,7 @@ U02	{
 				value	varchar(21);
 			};
 			count	int;
-			item	varchar(21)[30];
+			item	varchar(21)[99];
 		};
 		KARUTE_COMBO	{
 			KARUTE	{

@@ -834,7 +834,7 @@
            END-IF
       *
            PERFORM VARYING IDX FROM    1       BY  1
-                   UNTIL      (IDX             >   30    )   OR
+                   UNTIL      (IDX             >   99    )   OR
                               (FLG-SYSKANRI    =   1   )
       *
                MOVE    MCPDATA-REC       TO  SYS-1012-REC

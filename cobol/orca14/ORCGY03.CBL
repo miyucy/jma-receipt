@@ -75,7 +75,7 @@
                        09  SPA-GMN-SK1         PIC X(01).
                        09  SPA-GMN-SINRYOMEI   PIC X(18).
                    07  SPA-GMN-SINRYOLST-G.
-                       09  SPA-GMN-SINRYOLST   PIC X(21)   OCCURS  31.
+                       09  SPA-GMN-SINRYOLST   PIC X(21)   OCCURS  100.
                    07  SPA-SINRYO-MAX          PIC 9(04).
       *
                    07  SPA-GMN-DRNAME.
@@ -415,7 +415,7 @@
            END-IF
       *
            PERFORM
-                   UNTIL   (SPA-SINRYO-MAX     >=  30  )   OR
+                   UNTIL   (SPA-SINRYO-MAX     >=  100 )   OR
                            (FLG-SYSKANRI       =   1   )
       *
                MOVE    MCPDATA-REC       TO  SYS-1012-REC

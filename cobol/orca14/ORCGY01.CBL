@@ -72,7 +72,7 @@
                        09  SPA-GMN-SK1         PIC X(01).
                        09  SPA-GMN-SRYNAIYOMEI PIC X(18).
                    07  SPA-GMN-SRYNAIYOLST     PIC X(21)
-                                               OCCURS  30.
+                                               OCCURS  99.
                    07  SPA-SRYNAIYO-MAX        PIC 9(04).
       *
                    07  SPA-GMN-DRNAME.
@@ -637,7 +637,7 @@
                MOVE    1               TO  FLG-SYSKANRI
            END-IF
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       (IDX            >   30   )  OR
+                   UNTIL       (IDX            >   99   )  OR
                                (FLG-SYSKANRI   =   1    )
                MOVE    MCPDATA-REC             TO  SYS-1012-REC
       *
