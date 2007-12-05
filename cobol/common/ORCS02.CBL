@@ -196,6 +196,7 @@
       *  04.01.02    NACL-ÌçÏÆ    07/10/24  ¼«ÇåÀÕÆÃÄê´ïºàÅù¾ÃÈñÀÇÂÐ¾Ý³°ÀßÄê
       *                                     ¹àÌÜ¿ô³ÈÄ¥ÂÐ±þ
       *  04.01.03    NACL-ÌçÏÆ    07/10/25  ¸øÌ³ºÒ³²ÂÐ±þ
+      *  04.01.04    NACL-ÌçÏÆ    07/12/03  ËÌ³¤Æ»ÆÃÄê¼À´µ¡ÊÆ»Ã±ÆÈ»ö¶È¡ËÂÐ±þ
       ****************************************************************
        ENVIRONMENT         DIVISION.
        CONFIGURATION       SECTION.
@@ -478,6 +479,10 @@
            03  WK-GENTAI-SKYMONEY          PIC  9(07).
            03  WK-GENTAI-SKYMONEY2         PIC  9(07).
            03  WK-GENTAI-SKYMONEY3         PIC  9(07).
+      *
+           03  WK-DOTANDOKU-TBL.
+               05  WK-DOTANDOKU-OCC        OCCURS   4.
+                 06  WK-DOTANDOKU          PIC  9(01).
       *
       *    ¸øÈñ¤Î´µ¼ÔÉéÃ´¾å¸Â¶â³Û¤ÎÂàÈòÍÑ¥¨¥ê¥¢
        01  HOKEN-MAX-AREA.
@@ -4038,6 +4043,48 @@
       *
            END-IF.
       *
+      *    ËÌ³¤Æ»¡¦ÆÃÄê¼À´µ¡Ê£°£µ£±¡Ë¡ÊÆ»Ã±ÆÈ»ö¶È¡Ë
+      *
+           INITIALIZE        WK-DOTANDOKU-TBL.
+      *
+           IF     (WK-1001-PREFNUM         =  01     )
+           AND    (LNK-SYU-SRYYMD(1:6)    >= "200510")
+      *
+             PERFORM    VARYING   KOH-IDX    FROM   1   BY   1
+                         UNTIL    KOH-IDX      >    4
+      *
+              IF  COMB-KOHHKNNUM(KOH-IDX) = "051"
+                INITIALIZE                       PTKOHINF-REC
+                MOVE    LNK-SYU-HOSPNUM      TO  PTKOH-HOSPNUM
+                MOVE    LNK-SYU-PTID         TO  PTKOH-PTID
+                MOVE    COMB-KOHID(KOH-IDX)  TO  PTKOH-KOHID
+                MOVE    PTKOHINF-REC         TO  MCPDATA-REC
+                MOVE    "DBSELECT"           TO  MCP-FUNC
+                MOVE    "tbl_ptkohinf"       TO  MCP-TABLE
+                MOVE    "key8"               TO  MCP-PATHNAME
+                CALL    "ORCDBMAIN"          USING  MCPAREA
+                                                    MCPDATA-REC
+                                                    SPA-AREA
+                IF      MCP-RC               =       ZERO
+                    MOVE    "tbl_ptkohinf"   TO  MCP-TABLE
+                    MOVE    "key8"           TO  MCP-PATHNAME
+                    PERFORM  PTKOHINF-READ-SEC
+                    IF       FLG-PTKOHINF    =       ZERO
+                      IF  PTKOH-JKYSNUM(1:2) = "91" OR "92" OR "93"
+                                            OR "94" OR "95"
+                         MOVE    1    TO   WK-DOTANDOKU(KOH-IDX)
+                      END-IF
+                    END-IF
+                END-IF
+                MOVE    "tbl_ptkohinf"       TO  MCP-TABLE
+                MOVE    "key8"               TO  MCP-PATHNAME
+                PERFORM  DB-CLOSE-SEC
+              END-IF
+      *
+             END-PERFORM
+      *
+           END-IF.
+      *
       *    ´µ¼Ô¸øÈñÉéÃ´¡Ê¶â³Û¡Ë¼è¤ê¹þ¤ß
            IF    LNK-SYU-SRYYMD(1:6)   <   "200304"
                CONTINUE
@@ -4241,6 +4288,13 @@
                    OR (( COMB-KOH2HKNNUM(1:2)   =     "99") AND
                        ( COMB-KOH3HKNNUM        =    SPACE) AND
                        ( COMB-KOH4HKNNUM        =    SPACE))
+                   OR (( WK-DOTANDOKU(2)        =      1  ) AND
+                       ( COMB-KOH3HKNNUM        =    SPACE) AND
+                       ( COMB-KOH4HKNNUM        =    SPACE))
+                   OR (( WK-DOTANDOKU(2)        =      1  ) AND
+                       ( COMB-KOH3HKNNUM(1:1)  >=     "1" ) AND
+                       ( COMB-KOH3HKNNUM(1:1)  <=     "8" ) AND
+                       ( COMB-KOH4HKNNUM        =    SPACE))
                           MOVE    "1"    TO   FLG-SYUHEN
                           IF   MAX-KIN-KOHI1-M    =  72300 OR 80100
                              MOVE   WK-ZENGAKU  TO   WK-KOUREI-IRYOHI
@@ -4315,6 +4369,15 @@
                        ( COMB-KOH4HKNNUM        =    SPACE))
                    OR (( COMB-KOH1HKNNUM(1:2)   =     "99") AND
                        ( COMB-KOH2HKNNUM        =    SPACE) AND
+                       ( COMB-KOH3HKNNUM        =    SPACE) AND
+                       ( COMB-KOH4HKNNUM        =    SPACE))
+                   OR (( WK-DOTANDOKU(1)        =      1  ) AND
+                       ( COMB-KOH2HKNNUM        =    SPACE) AND
+                       ( COMB-KOH3HKNNUM        =    SPACE) AND
+                       ( COMB-KOH4HKNNUM        =    SPACE))
+                   OR (( WK-DOTANDOKU(1)        =      1  ) AND
+                       ( COMB-KOH2HKNNUM(1:1)  >=     "1" ) AND
+                       ( COMB-KOH2HKNNUM(1:1)  <=     "8" ) AND
                        ( COMB-KOH3HKNNUM        =    SPACE) AND
                        ( COMB-KOH4HKNNUM        =    SPACE))
                           MOVE    "1"    TO   FLG-SYUHEN
@@ -4432,6 +4495,15 @@
                    ( COMB-KOH4HKNNUM        =    SPACE))
                OR (( COMB-KOH1HKNNUM(1:2)   =     "99") AND
                    ( COMB-KOH2HKNNUM        =    SPACE) AND
+                   ( COMB-KOH3HKNNUM        =    SPACE) AND
+                   ( COMB-KOH4HKNNUM        =    SPACE))
+               OR (( WK-DOTANDOKU(1)        =      1  ) AND
+                   ( COMB-KOH2HKNNUM        =    SPACE) AND
+                   ( COMB-KOH3HKNNUM        =    SPACE) AND
+                   ( COMB-KOH4HKNNUM        =    SPACE))
+               OR (( WK-DOTANDOKU(1)        =      1  ) AND
+                   ( COMB-KOH2HKNNUM(1:1)  >=     "1" ) AND
+                   ( COMB-KOH2HKNNUM(1:1)  <=     "8" ) AND
                    ( COMB-KOH3HKNNUM        =    SPACE) AND
                    ( COMB-KOH4HKNNUM        =    SPACE))
       ***          MOVE    "1"    TO   FLG-SYUHEN
@@ -5441,8 +5513,11 @@
                                    (LNK-SYU-SRYYMD(1:6) >= "200610"))
                                  CONTINUE
                               ELSE
-                                 IF    MAX-KIN-KOHI1-M   >
-                                                       WK-KOH-GENDOGAKU
+                                 IF  (MAX-KIN-KOHI1-M    >
+                                                      WK-KOH-GENDOGAKU)
+                                 AND (COMB-KOHHKNNUM(KOH-IDX)(1:1)
+                                                                 = "0")
+                                 AND (WK-DOTANDOKU(KOH-IDX)   =  ZERO )
                                    MOVE  WK-KOH-GENDOGAKU
                                       TO WK-SYOFUKUMU-GENDOGAK(KOH-IDX)
                                    EVALUATE  WK-KOH-GENDOGAKU
@@ -5477,8 +5552,11 @@
                                                  OR "024" OR "079"
                                  CONTINUE
                               ELSE
-                                 IF  MAX-KIN-KOHI1-M   >
-                                                  WK-GEN70-GENDOGAKU
+                                 IF  (MAX-KIN-KOHI1-M    >
+                                                    WK-GEN70-GENDOGAKU)
+                                 AND (COMB-KOHHKNNUM(KOH-IDX)(1:1)
+                                                                 = "0")
+                                 AND (WK-DOTANDOKU(KOH-IDX)   =  ZERO )
                                    MOVE  WK-GEN70-GENDOGAKU
                                       TO WK-SYOFUKUMU-GENDOGAK(KOH-IDX)
                                    MOVE 3 TO WK-SYOFUKUMU-FLG(KOH-IDX)
@@ -5688,8 +5766,11 @@
                                    (LNK-SYU-SRYYMD(1:6) >= "200610"))
                                  CONTINUE
                               ELSE
-                                 IF    MAX-KIN-KOHI2-M   >
-                                                       WK-KOH-GENDOGAKU
+                                 IF  (MAX-KIN-KOHI2-M    >
+                                                      WK-KOH-GENDOGAKU)
+                                 AND (COMB-KOHHKNNUM(KOH-IDX)(1:1)
+                                                                 = "0")
+                                 AND (WK-DOTANDOKU(KOH-IDX)   =  ZERO )
                                    MOVE  WK-KOH-GENDOGAKU
                                       TO WK-SYOFUKUMU-GENDOGAK(KOH-IDX)
                                    EVALUATE  WK-KOH-GENDOGAKU
@@ -5724,8 +5805,11 @@
                                                  OR "024" OR "079"
                                  CONTINUE
                               ELSE
-                                 IF  MAX-KIN-KOHI2-M   >
-                                                  WK-GEN70-GENDOGAKU
+                                 IF  (MAX-KIN-KOHI2-M    >
+                                                    WK-GEN70-GENDOGAKU)
+                                 AND (COMB-KOHHKNNUM(KOH-IDX)(1:1)
+                                                                 = "0")
+                                 AND (WK-DOTANDOKU(KOH-IDX)   =  ZERO )
                                    MOVE  WK-GEN70-GENDOGAKU
                                       TO WK-SYOFUKUMU-GENDOGAK(KOH-IDX)
                                    MOVE 3 TO WK-SYOFUKUMU-FLG(KOH-IDX)
@@ -5902,8 +5986,11 @@
                                    (LNK-SYU-SRYYMD(1:6) >= "200610"))
                                  CONTINUE
                               ELSE
-                                 IF    MAX-KIN-KOHI3-M   >
-                                                       WK-KOH-GENDOGAKU
+                                 IF  (MAX-KIN-KOHI3-M    >
+                                                      WK-KOH-GENDOGAKU)
+                                 AND (COMB-KOHHKNNUM(KOH-IDX)(1:1)
+                                                                 = "0")
+                                 AND (WK-DOTANDOKU(KOH-IDX)   =  ZERO )
                                    MOVE  WK-KOH-GENDOGAKU
                                       TO WK-SYOFUKUMU-GENDOGAK(KOH-IDX)
                                    EVALUATE  WK-KOH-GENDOGAKU
@@ -5938,8 +6025,11 @@
                                                  OR "024" OR "079"
                                  CONTINUE
                               ELSE
-                                 IF  MAX-KIN-KOHI3-M   >
-                                                  WK-GEN70-GENDOGAKU
+                                 IF  (MAX-KIN-KOHI3-M    >
+                                                    WK-GEN70-GENDOGAKU)
+                                 AND (COMB-KOHHKNNUM(KOH-IDX)(1:1)
+                                                                 = "0")
+                                 AND (WK-DOTANDOKU(KOH-IDX)   =  ZERO )
                                    MOVE  WK-GEN70-GENDOGAKU
                                       TO WK-SYOFUKUMU-GENDOGAK(KOH-IDX)
                                    MOVE 3 TO WK-SYOFUKUMU-FLG(KOH-IDX)
@@ -6007,8 +6097,11 @@
                                    (LNK-SYU-SRYYMD(1:6) >= "200610"))
                                  CONTINUE
                               ELSE
-                                 IF    MAX-KIN-KOHI4-M   >
-                                                       WK-KOH-GENDOGAKU
+                                 IF  (MAX-KIN-KOHI4-M    >
+                                                      WK-KOH-GENDOGAKU)
+                                 AND (COMB-KOHHKNNUM(KOH-IDX)(1:1)
+                                                                 = "0")
+                                 AND (WK-DOTANDOKU(KOH-IDX)   =  ZERO )
                                    MOVE  WK-KOH-GENDOGAKU
                                       TO WK-SYOFUKUMU-GENDOGAK(KOH-IDX)
                                    EVALUATE  WK-KOH-GENDOGAKU
@@ -6043,8 +6136,11 @@
                                                  OR "024" OR "079"
                                  CONTINUE
                               ELSE
-                                 IF  MAX-KIN-KOHI4-M   >
-                                                  WK-GEN70-GENDOGAKU
+                                 IF  (MAX-KIN-KOHI4-M    >
+                                                    WK-GEN70-GENDOGAKU)
+                                 AND (COMB-KOHHKNNUM(KOH-IDX)(1:1)
+                                                                 = "0")
+                                 AND (WK-DOTANDOKU(KOH-IDX)   =  ZERO )
                                    MOVE  WK-GEN70-GENDOGAKU
                                       TO WK-SYOFUKUMU-GENDOGAK(KOH-IDX)
                                    MOVE 3 TO WK-SYOFUKUMU-FLG(KOH-IDX)
@@ -6106,6 +6202,7 @@
        21071-KOHFTN-KINGAKU-GEN-SEC           SECTION.
       *
            IF  ((COMB-KOHHKNNUM(KOH-IDX)(1:1)  =  "0"  ) AND
+                (WK-DOTANDOKU(KOH-IDX)         =  ZERO ) AND
                 (LNK-ORCSJGNGET-NYUJGNGAK  NOT =  ZERO ))
       *
              IF  LNK-ORCSJGNGET-NYUJGNGAK = 9999999 OR 999999
@@ -13348,50 +13445,10 @@
       *
            END-IF.
       *
-      *    ËÌ³¤Æ»¡¦ÆÃÄê¼À´µ¡Ê£°£µ£±¡Ë
-           IF     (WK-1001-PREFNUM         =  01     ) AND
-                  (COMB-KOHHKNNUM(KOH-IDX) = "051"   ) AND
-                  (LNK-SYU-SRYYMD(1:6)    >= "200510")
-      *
-                INITIALIZE                       PTKOHINF-REC
-                MOVE    LNK-SYU-HOSPNUM      TO  PTKOH-HOSPNUM
-                MOVE    LNK-SYU-PTID         TO  PTKOH-PTID
-                MOVE    COMB-KOHHKNNUM(KOH-IDX)
-                                             TO  PTKOH-KOHNUM
-                MOVE    LNK-SYU-SRYYMD       TO  PTKOH-TEKSTYMD
-                MOVE    LNK-SYU-SRYYMD       TO  PTKOH-TEKEDYMD
-                MOVE    PTKOHINF-REC         TO  MCPDATA-REC
-                MOVE    "DBSELECT"           TO  MCP-FUNC
-                MOVE    "tbl_ptkohinf"       TO  MCP-TABLE
-                MOVE    "key6"               TO  MCP-PATHNAME
-                CALL    "ORCDBMAIN"          USING  MCPAREA
-                                                    MCPDATA-REC
-                                                    SPA-AREA
-                IF      MCP-RC               =       ZERO
-                    MOVE    "tbl_ptkohinf"   TO  MCP-TABLE
-                    MOVE    "key6"           TO  MCP-PATHNAME
-                    PERFORM  PTKOHINF-READ-SEC
-                    PERFORM  UNTIL   FLG-PTKOHINF    =   1
-                        IF   PTKOH-KOHID  =  COMB-KOHID(KOH-IDX)
-                           IF   PTKOH-JKYSNUM(1:2)  =  "91" OR "92" OR
-                                                       "93" OR "94" OR
-                                                       "95"
-                             MOVE   "1"      TO  WK-NYUSKJRYYKBN
-                             MOVE   9999999  TO
-                                           WK-TAIHI-NYUJGNGAK(KOH-IDX)
-                           END-IF
-                           MOVE    1         TO  FLG-PTKOHINF
-                        ELSE
-                           MOVE    "tbl_ptkohinf"   TO   MCP-TABLE
-                           MOVE    "key6"           TO   MCP-PATHNAME
-                           PERFORM  PTKOHINF-READ-SEC
-                        END-IF
-                    END-PERFORM
-                END-IF
-                MOVE    "tbl_ptkohinf"   TO   MCP-TABLE
-                MOVE    "key6"           TO   MCP-PATHNAME
-                PERFORM  DB-CLOSE-SEC
-      *
+      *    ËÌ³¤Æ»¡¦ÆÃÄê¼À´µ¡Ê£°£µ£±¡Ë¡ÊÆ»Ã±ÆÈ»ö¶È¡Ë
+           IF     WK-DOTANDOKU(KOH-IDX)  =   1
+               MOVE    "1"       TO   WK-NYUSKJRYYKBN
+               MOVE    9999999   TO   WK-TAIHI-NYUJGNGAK(KOH-IDX)
            END-IF.
       *
       *    ºë¶Ì¸©¤µ¤¤¤¿¤Þ»Ô
