@@ -798,7 +798,32 @@
            03  SRH-1102-DAT.
                05  SRH-1102-HKNJANUM               PIC X(08).
                05  SRH-1102-HKNNUM                 PIC X(03).
-               05  SRH-1102-KIGOCHK                PIC X(01).
+               05  SRH-1102-CHK-DAT.
+                   07  SRH-1102-KIGOCHK            PIC X(01).
+                   07  SRH-1102-KGCHKPTN           PIC X(01).
+                   07  SRH-1102-KGSUJI             PIC X(01).
+                   07  SRH-1102-KGKANJI            PIC X(01).
+                   07  SRH-1102-KGABT              PIC X(01).
+                   07  SRH-1102-KGHYPN             PIC X(01).
+                   07  SRH-1102-KGKAKKO            PIC X(01).
+                   07  SRH-1102-KGETC              PIC X(01).
+                   07  SRH-1102-KGKANJINASHI       PIC X(01).
+                   07  SRH-1102-NMSUJINASHI        PIC X(01).
+                   07  SRH-1102-NM1CHKPTN          PIC X(01).
+                   07  SRH-1102-NM1SUJI            PIC X(01).
+                   07  SRH-1102-NM1KANJI           PIC X(01).
+                   07  SRH-1102-NM1ABT             PIC X(01).
+                   07  SRH-1102-NM1HYPN            PIC X(01).
+                   07  SRH-1102-NM1KAKKO           PIC X(01).
+                   07  SRH-1102-NM1ETC             PIC X(01).
+                   07  SRH-1102-NM2CHKPTN          PIC X(01).
+                   07  SRH-1102-NM2SUJI            PIC X(01).
+                   07  SRH-1102-NM2KANJI           PIC X(01).
+                   07  SRH-1102-NM2ABT             PIC X(01).
+                   07  SRH-1102-NM2HYPN            PIC X(01).
+                   07  SRH-1102-NM2KAKKO           PIC X(01).
+                   07  SRH-1102-NM2ETC             PIC X(01).
+                   07  SRH-1102-UPDDUMMY           PIC X(01).
                05  SRH-1102-MAX                    PIC 9(05).
                05  SRH-1102-OCC                    OCCURS  200.
                    07  SRH-1102-HKNJANUML          PIC X(08).
@@ -806,6 +831,30 @@
                    07  SRH-1102-JYKNKBNL           PIC X(01).
                    07  SRH-1102-HKNNUML            PIC X(03).
                    07  SRH-1102-KIGOCHKL           PIC X(01).
+                   07  SRH-1102-KGCHKPTNL          PIC X(01).
+                   07  SRH-1102-KGSUJIL            PIC X(01).
+                   07  SRH-1102-KGKANJIL           PIC X(01).
+                   07  SRH-1102-KGABTL             PIC X(01).
+                   07  SRH-1102-KGHYPNL            PIC X(01).
+                   07  SRH-1102-KGKAKKOL           PIC X(01).
+                   07  SRH-1102-KGETCL             PIC X(01).
+                   07  SRH-1102-KGKANJINASHIL      PIC X(01).
+                   07  SRH-1102-NMSUJINASHIL       PIC X(01).
+                   07  SRH-1102-NM1CHKPTNL         PIC X(01).
+                   07  SRH-1102-NM1SUJIL           PIC X(01).
+                   07  SRH-1102-NM1KANJIL          PIC X(01).
+                   07  SRH-1102-NM1ABTL            PIC X(01).
+                   07  SRH-1102-NM1HYPNL           PIC X(01).
+                   07  SRH-1102-NM1KAKKOL          PIC X(01).
+                   07  SRH-1102-NM1ETCL            PIC X(01).
+                   07  SRH-1102-NM2CHKPTNL         PIC X(01).
+                   07  SRH-1102-NM2SUJIL           PIC X(01).
+                   07  SRH-1102-NM2KANJIL          PIC X(01).
+                   07  SRH-1102-NM2ABTL            PIC X(01).
+                   07  SRH-1102-NM2HYPNL           PIC X(01).
+                   07  SRH-1102-NM2KAKKOL          PIC X(01).
+                   07  SRH-1102-NM2ETCL            PIC X(01).
+                   07  SRH-1102-UPDDUMMYL          PIC X(01).
       *
       *    パラメタ領域
        01  WRK-PARA.
@@ -993,6 +1042,8 @@
            COPY    "COMMON-SPA".
       *
            COPY    "CPTTNS.INC".
+      *
+           COPY    "CPKGNMCHK.INC".
       *
        01  ERRPTINF-REC.
            COPY    "CPPTINF.INC"           REPLACING  //PTINF-//
@@ -1781,15 +1832,57 @@
       *
                MOVE    IDX5            TO  SRH-1102-MAX
                MOVE    CK4-1102-HKNJANUM
-                                       TO  SRH-1102-HKNJANUML (IDX5)
+                                       TO  SRH-1102-HKNJANUML   (IDX5)
                MOVE    CK4-1102-HKNJANUMLEN
                                        TO  SRH-1102-HKNJANUMLENL(IDX5)
                MOVE    CK4-1102-JYKNKBN
-                                       TO  SRH-1102-JYKNKBNL (IDX5)
+                                       TO  SRH-1102-JYKNKBNL    (IDX5)
                MOVE    CK4-1102-HKNNUM
-                                       TO  SRH-1102-HKNNUML (IDX5)
+                                       TO  SRH-1102-HKNNUML     (IDX5)
                MOVE    CK4-1102-KIGOCHK
-                                       TO  SRH-1102-KIGOCHKL (IDX5)
+                                       TO  SRH-1102-KIGOCHKL    (IDX5)
+      *
+               MOVE    CK4-1102-KGCHKPTN
+                                       TO SRH-1102-KGCHKPTNL    (IDX5)
+               MOVE    CK4-1102-KGSUJI TO SRH-1102-KGSUJIL      (IDX5)
+               MOVE    CK4-1102-KGKANJI
+                                       TO SRH-1102-KGKANJIL     (IDX5)
+               MOVE    CK4-1102-KGABT  TO SRH-1102-KGABTL       (IDX5)
+               MOVE    CK4-1102-KGHYPN TO SRH-1102-KGHYPNL      (IDX5)
+               MOVE    CK4-1102-KGKAKKO
+                                       TO SRH-1102-KGKAKKOL     (IDX5)
+               MOVE    CK4-1102-KGETC  TO SRH-1102-KGETCL       (IDX5)
+               MOVE    CK4-1102-KGKANJINASHI
+                                       TO SRH-1102-KGKANJINASHIL
+                                                                (IDX5)
+               MOVE    CK4-1102-NM1CHKPTN
+                                       TO SRH-1102-NM1CHKPTNL   (IDX5)
+               MOVE    CK4-1102-NM1SUJI
+                                       TO SRH-1102-NM1SUJIL     (IDX5)
+               MOVE    CK4-1102-NM1KANJI
+                                       TO SRH-1102-NM1KANJIL    (IDX5)
+               MOVE    CK4-1102-NM1ABT TO SRH-1102-NM1ABTL      (IDX5)
+               MOVE    CK4-1102-NM1HYPN
+                                       TO SRH-1102-NM1HYPNL     (IDX5)
+               MOVE    CK4-1102-NM1KAKKO
+                                       TO SRH-1102-NM1KAKKOL    (IDX5)
+               MOVE    CK4-1102-NM1ETC TO SRH-1102-NM1ETCL      (IDX5)
+               MOVE    CK4-1102-NMSUJINASHI
+                                       TO SRH-1102-NMSUJINASHIL(IDX5)
+               MOVE    CK4-1102-NM2CHKPTN
+                                       TO SRH-1102-NM2CHKPTNL   (IDX5)
+               MOVE    CK4-1102-NM2SUJI
+                                       TO SRH-1102-NM2SUJIL     (IDX5)
+               MOVE    CK4-1102-NM2KANJI
+                                       TO SRH-1102-NM2KANJIL    (IDX5)
+               MOVE    CK4-1102-NM2ABT TO SRH-1102-NM2ABTL      (IDX5)
+               MOVE    CK4-1102-NM2HYPN
+                                       TO SRH-1102-NM2HYPNL     (IDX5)
+               MOVE    CK4-1102-NM2KAKKO 
+                                       TO SRH-1102-NM2KAKKOL    (IDX5)
+               MOVE    CK4-1102-NM2ETC TO SRH-1102-NM2ETCL      (IDX5)
+               MOVE    CK4-1102-UPDDUMMY
+                                       TO SRH-1102-UPDDUMMYL    (IDX5)
       *
                MOVE    "tbl_chk004"        TO  MCP-TABLE
                MOVE    "key2"              TO  MCP-PATHNAME
@@ -2553,8 +2646,6 @@
            ELSE
                        CONTINUE
            END-IF
-      *
-           DISPLAY "FLG-TAISYO-SRY = " FLG-TAISYO-SRY
       *
       *    約束セットのコードは読み飛ばす
            IF    ( DCSRY-SRYCD (1:1)   =   "S" )
@@ -3550,7 +3641,7 @@
            INSPECT WRK-PTHKN-NUM       REPLACING   ALL "　"    BY  "  "
       *
            EVALUATE    TRUE
-           WHEN  ( SRH-1102-KIGOCHK    =   SPACE OR "0" )
+           WHEN  ( SRH-1102-KGCHKPTN   =   "0" )
              AND ( WRK-PTHKN-KIGO      =   SPACE )
                MOVE    PTHKN-HKNNUM    TO  SRH-HKNNUM
                MOVE    "020001"        TO  WRK-ERRCD
@@ -3559,7 +3650,18 @@
                    MOVE    1           TO  FLG-CHKEND (2)
                    GO  TO  200111-KIGONUM-CHK-EXT
                END-IF
-           WHEN  ( WRK-PTHKN-NUM       =   SPACE )
+           WHEN  ( SRH-1102-KGCHKPTN   =   "2" )
+            AND  ( WRK-PTHKN-KIGO  NOT =   SPACE )
+               MOVE    PTHKN-HKNNUM    TO  SRH-HKNNUM
+               MOVE    "020012"        TO  WRK-ERRCD
+               PERFORM 211-ERRMES-HEN-SEC
+               IF    ( ORCBSD01-CHKKBN (2) =   "1" )
+                   MOVE    1           TO  FLG-CHKEND (2)
+                   GO  TO  200111-KIGONUM-CHK-EXT
+               END-IF
+           END-EVALUATE
+      *
+           IF  ( WRK-PTHKN-NUM       =   SPACE )
       *
                MOVE    PTHKN-HKNNUM    TO  SRH-HKNNUM
                MOVE    "020005"        TO  WRK-ERRCD
@@ -3570,7 +3672,7 @@
                    GO  TO  200111-KIGONUM-CHK-EXT
                END-IF
       *
-           END-EVALUATE
+           END-IF
       *
            IF    ( PTHKN-KIGO          NOT =   SPACE )
                MOVE    PTHKN-KIGO      TO  WRK-KANACHK-MAE-INPUT
@@ -3590,7 +3692,12 @@
                        GO  TO  200111-KIGONUM-CHK-EXT
                    END-IF
                ELSE
-                   PERFORM 2001111-HKN-KIGO-CHK-SEC
+                   IF    ( SRH-1102-KGCHKPTN    =   "2" )
+                    AND  ( WRK-PTHKN-KIGO  NOT =   SPACE )
+                       CONTINUE
+                   ELSE
+                       PERFORM 2001111-HKN-KIGO-CHK-SEC
+                   END-IF
                END-IF
            END-IF
       *
@@ -3669,45 +3776,52 @@
            CALL    "ORCSDTCHK04"   USING   SDTCHK04AREA
                                            SPA-AREA
       *
-      *    IF    ( SDTCHK04-SPACE  =   1 )
-      *        MOVE    "020012"    TO  WRK-ERRCD
-      *        PERFORM 2001111-HKN-KIGO-ERR-SET-SEC
-      *    END-IF
-      *
-           IF    ( FLG-HKNKIGOERR      =   ZERO )
-               EVALUATE    PTHKN-HKNNUM
-               WHEN    "001"
-               WHEN    "033"
-                   IF    ( SDTCHK04-KANJI      =   ZERO )
-                       MOVE    "020009"    TO  WRK-ERRCD
-                       PERFORM 2001111-HKN-KIGO-ERR-SET-SEC
-                   END-IF
-               END-EVALUATE
+           IF    ( SRH-1102-KGSUJI         =   "2" )
+               IF    ( SDTCHK04-SUJI       =   1 )
+                   MOVE    1       TO  FLG-HKNKIGOERR
+               END-IF
            END-IF
       *
-           IF    ( FLG-HKNKIGOERR      =   ZERO )
+           IF    ( SRH-1102-KGKANJI        =   "2" )
+               IF    ( SDTCHK04-KANJI     =   1 )
+                   MOVE    1       TO  FLG-HKNKIGOERR
+               END-IF
+           END-IF
       *
-               EVALUATE    PTHKN-HKNNUM
-               WHEN    "001"
-                   CONTINUE
-               WHEN    "031"
-               WHEN    "032"
-               WHEN    "034"
-                   CONTINUE
-               WHEN    "033"
-                   CONTINUE
-               WHEN    "006"
-               WHEN    "063"
-                   IF    ( SDTCHK04-KANJI      =   1 )
-                    OR   ( SDTCHK04-ALPHABET   =   1 )
-                    OR   ( SDTCHK04-HYPHEN     =   1 )
-                    OR   ( SDTCHK04-TYOON      =   1 )
-                    OR   ( SDTCHK04-KAKKO      =   1 )
-                    OR   ( SDTCHK04-ETC        =   1 )
-                       MOVE    "020009"    TO  WRK-ERRCD
-                       PERFORM 2001111-HKN-KIGO-ERR-SET-SEC
-                   END-IF
-               END-EVALUATE
+           IF    ( SRH-1102-KGABT          =   "2" )
+               IF    ( SDTCHK04-ALPHABET   =   1 )
+                   MOVE    1       TO  FLG-HKNKIGOERR
+               END-IF
+           END-IF
+      *
+           IF    ( SRH-1102-KGHYPN         =   "2" )
+               IF    ( SDTCHK04-HYPHEN     =   1 )
+                OR   ( SDTCHK04-TYOON      =   1 )
+                   MOVE    1       TO  FLG-HKNKIGOERR
+               END-IF
+           END-IF
+      *
+           IF    ( SRH-1102-KGKAKKO        =   "2" )
+               IF    ( SDTCHK04-KAKKO      =   1 )
+                   MOVE    1       TO  FLG-HKNKIGOERR
+               END-IF
+           END-IF
+      *
+           IF    ( SRH-1102-KGETC          =   "2" )
+               IF    ( SDTCHK04-ETC        =   1 )
+                   MOVE    1       TO  FLG-HKNKIGOERR
+               END-IF
+           END-IF
+      *
+           IF    ( SRH-1102-KGKANJINASHI   =   "2" )
+               IF    ( SDTCHK04-KANJI      =   ZERO )
+                   MOVE    1       TO  FLG-HKNKIGOERR
+               END-IF
+           END-IF
+      *
+           IF    ( FLG-HKNKIGOERR      =   1 )
+               MOVE    "020009"    TO  WRK-ERRCD
+               PERFORM 2001111-HKN-KIGO-ERR-SET-SEC
            END-IF
       *
            .
@@ -3741,55 +3855,61 @@
            CALL    "ORCSDTCHK04"   USING   SDTCHK04AREA
                                            SPA-AREA
       *
-           IF    ( SDTCHK04-SUJI       =   ZERO )
-               MOVE    "020011"    TO  WRK-ERRCD
-               PERFORM 2001111-HKN-NUM-ERR-SET-SEC
+           IF    ( SRH-1102-NMSUJINASHI    =   "2" )
+               IF    ( SDTCHK04-SUJI       =   ZERO )
+                   MOVE    1       TO  FLG-HKNNUMERR
+               END-IF
            END-IF
       *
-           IF    ( FLG-HKNNUMERR       =   ZERO )
+           INITIALIZE                  SDTCHK04AREA
+           MOVE    PTHKN-NUM(1:2)  TO  SDTCHK04-KIGONUM
+           CALL    "ORCSDTCHK04"   USING   SDTCHK04AREA
+                                           SPA-AREA
       *
-               INITIALIZE                  SDTCHK04AREA
-               MOVE    PTHKN-NUM (1:2) TO  SDTCHK04-KIGONUM
-               CALL    "ORCSDTCHK04"   USING   SDTCHK04AREA
-                                               SPA-AREA
+           IF    ( SRH-1102-NM1SUJI        =   "2" )
+               IF    ( SDTCHK04-SUJI       =   1 )
+                   MOVE    1       TO  FLG-HKNNUMERR
+               END-IF
+           END-IF
       *
-               EVALUATE    PTHKN-HKNNUM
-               WHEN    "001"
-                   IF    ( SDTCHK04-SUJI       =   1 )
-                       CONTINUE
-                   ELSE
-                       MOVE    "020010"    TO  WRK-ERRCD
-                       PERFORM 2001111-HKN-NUM-ERR-SET-SEC
-                   END-IF
-               WHEN    "031"
-               WHEN    "032"
-               WHEN    "034"
-                   IF    ( SDTCHK04-SUJI       =   1 )
-                    OR   ( SDTCHK04-KANJI      =   1 )
-                    OR   ( SDTCHK04-ALPHABET   =   1 )
-                    OR   ( SDTCHK04-KAKKO      =   1 )
-                       CONTINUE
-                   ELSE
-                       MOVE    "020010"    TO  WRK-ERRCD
-                       PERFORM 2001111-HKN-NUM-ERR-SET-SEC
-                   END-IF
-               WHEN    "033"
-                   IF    ( SDTCHK04-SUJI       =   1 )
-                    OR   ( SDTCHK04-ALPHABET   =   1 )
-                       CONTINUE
-                   ELSE
-                       MOVE    "020010"    TO  WRK-ERRCD
-                       PERFORM 2001111-HKN-NUM-ERR-SET-SEC
-                   END-IF
-               WHEN    "006"
-               WHEN    "063"
-                   IF    ( SDTCHK04-SUJI       =   1 )
-                       CONTINUE
-                   ELSE
-                       MOVE    "020010"    TO  WRK-ERRCD
-                       PERFORM 2001111-HKN-NUM-ERR-SET-SEC
-                   END-IF
-               END-EVALUATE
+           IF    ( SRH-1102-NM1KANJI       =   "2" )
+               IF    ( SDTCHK04-KANJI      =   1 )
+                   MOVE    1       TO  FLG-HKNNUMERR
+               END-IF
+           END-IF
+      *
+           IF    ( SRH-1102-NM1ABT         =   "2" )
+               IF    ( SDTCHK04-ALPHABET   =   1 )
+                   MOVE    1       TO  FLG-HKNNUMERR
+               END-IF
+           END-IF
+      *
+           IF    ( SRH-1102-NM1HYPN        =   "2" )
+               IF    ( SDTCHK04-HYPHEN     =   1 )
+                OR   ( SDTCHK04-TYOON      =   1 )
+                   MOVE    1       TO  FLG-HKNNUMERR
+               END-IF
+           END-IF
+      *
+           IF    ( SRH-1102-NM1KAKKO       =   "2" )
+               IF    ( SDTCHK04-KAKKO      =   1 )
+                   MOVE    1       TO  FLG-HKNNUMERR
+               END-IF
+           END-IF
+      *
+           IF    ( SRH-1102-NM1ETC         =   "2" )
+               IF    ( SDTCHK04-ETC        =   1 )
+                   MOVE    1       TO  FLG-HKNNUMERR
+               END-IF
+           END-IF
+      *
+           IF    ( FLG-HKNNUMERR  =   1 )
+               IF    ( SDTCHK04-SUJI       =   ZERO )
+                   MOVE    "020011"    TO  WRK-ERRCD
+               ELSE
+                   MOVE    "020010"    TO  WRK-ERRCD
+               END-IF
+               PERFORM 2001111-HKN-NUM-ERR-SET-SEC
            END-IF
       *
       *
@@ -3801,58 +3921,47 @@
                CALL    "ORCSDTCHK04"   USING   SDTCHK04AREA
                                                SPA-AREA
       *
-               EVALUATE    PTHKN-HKNNUM
-               WHEN    "001"
-                   IF        ( SDTCHK04-SUJI       =   ZERO )
-                           MOVE    "020011"    TO  WRK-ERRCD
-                           PERFORM 2001111-HKN-NUM-ERR-SET-SEC
-                   ELSE
-                       IF    ( SDTCHK04-KANJI      =   1 )
-                        OR   ( SDTCHK04-KAKKO      =   1 )
-                        OR   ( SDTCHK04-ETC        =   1 )
-                           MOVE    "020011"    TO  WRK-ERRCD
-                           PERFORM 2001111-HKN-NUM-ERR-SET-SEC
-                       END-IF
+               IF    ( SRH-1102-NM2SUJI        =   "2" )
+                   IF    ( SDTCHK04-SUJI       =   1 )
+                       MOVE    1       TO  FLG-HKNNUMERR
                    END-IF
-               WHEN    "031"
-               WHEN    "032"
-               WHEN    "034"
-                   IF        ( SDTCHK04-SUJI       =   ZERO )
-                           MOVE    "020011"    TO  WRK-ERRCD
-                           PERFORM 2001111-HKN-NUM-ERR-SET-SEC
-                   ELSE
-                       IF    ( SDTCHK04-ETC        =   1 )
-                           MOVE    "020011"    TO  WRK-ERRCD
-                           PERFORM 2001111-HKN-NUM-ERR-SET-SEC
-                       END-IF
+               END-IF
+      *
+               IF    ( SRH-1102-NM2KANJI       =   "2" )
+                   IF    ( SDTCHK04-KANJI      =   1 )
+                       MOVE    1       TO  FLG-HKNNUMERR
                    END-IF
-               WHEN    "033"
-                   IF        ( SDTCHK04-SUJI       =   ZERO )
-                           MOVE    "020011"    TO  WRK-ERRCD
-                           PERFORM 2001111-HKN-NUM-ERR-SET-SEC
-                   ELSE
-                       IF    ( SDTCHK04-KANJI      =   1 )
-                        OR   ( SDTCHK04-KAKKO      =   1 )
-                        OR   ( SDTCHK04-ETC        =   1 )
-                           MOVE    "020011"    TO  WRK-ERRCD
-                           PERFORM 2001111-HKN-NUM-ERR-SET-SEC
-                       END-IF
+               END-IF
+      *
+               IF    ( SRH-1102-NM2ABT         =   "2" )
+                   IF    ( SDTCHK04-ALPHABET   =   1 )
+                       MOVE    1       TO  FLG-HKNNUMERR
                    END-IF
-               WHEN    "006"
-               WHEN    "063"
-                   IF        ( SDTCHK04-SUJI       =   ZERO )
-                           MOVE    "020011"    TO  WRK-ERRCD
-                           PERFORM 2001111-HKN-NUM-ERR-SET-SEC
-                   ELSE
-                       IF    ( SDTCHK04-KANJI      =   1 )
-                        OR   ( SDTCHK04-ALPHABET   =   1 )
-                        OR   ( SDTCHK04-KAKKO      =   1 )
-                        OR   ( SDTCHK04-ETC        =   1 )
-                           MOVE    "020011"    TO  WRK-ERRCD
-                           PERFORM 2001111-HKN-NUM-ERR-SET-SEC
-                       END-IF
+               END-IF
+      *
+               IF    ( SRH-1102-NM2HYPN        =   "2" )
+                   IF    ( SDTCHK04-HYPHEN     =   1 )
+                    OR   ( SDTCHK04-TYOON      =   1 )
+                       MOVE    1       TO  FLG-HKNNUMERR
                    END-IF
-               END-EVALUATE
+               END-IF
+      *
+               IF    ( SRH-1102-NM2KAKKO       =   "2" )
+                   IF    ( SDTCHK04-KAKKO      =   1 )
+                       MOVE    1       TO  FLG-HKNNUMERR
+                   END-IF
+               END-IF
+      *
+               IF    ( SRH-1102-NM2ETC         =   "2" )
+                   IF    ( SDTCHK04-ETC        =   1 )
+                       MOVE    1       TO  FLG-HKNNUMERR
+                   END-IF
+               END-IF
+      *
+               IF    ( FLG-HKNNUMERR  =   1 )
+                   MOVE    "020011"    TO  WRK-ERRCD
+                   PERFORM 2001111-HKN-NUM-ERR-SET-SEC
+               END-IF
       *
            END-IF
       *
@@ -8520,18 +8629,18 @@
       *****************************************************************
        2111-CK4-1102-GET-SEC           SECTION.
       *
-           INITIALIZE                  SRH-1102-KIGOCHK
+           INITIALIZE                  SRH-1102-CHK-DAT
+           MOVE    ZERO            TO  FLG-HIT
       *
            PERFORM VARYING SRH-IDX FROM    1   BY  1
                    UNTIL ( SRH-IDX >   SRH-1102-MAX )
-                    OR   ( SRH-1102-KIGOCHK    NOT =   SPACE )
+                    OR   ( FLG-HIT     NOT =   ZERO )
       *
                IF    ( SRH-1102-JYKNKBNL (SRH-IDX)
                                        =   "0" )
                    IF    ( SRH-1102-HKNJANUML (SRH-IDX)
                                        =   SRH-1102-HKNJANUM )
-                       MOVE    SRH-1102-KIGOCHKL (SRH-IDX)
-                                   TO  SRH-1102-KIGOCHK
+                           MOVE    1   TO  FLG-HIT
                    END-IF
                ELSE
                    MOVE    SRH-1102-HKNJANUMLENL (SRH-IDX)
@@ -8542,23 +8651,311 @@
                                                  (1 : WRK-HKNJANUMLEN))
                         AND  ( SRH-1102-HKNNUML (SRH-IDX)
                                        =   SRH-1102-HKNNUM )
-                           MOVE    SRH-1102-KIGOCHKL (SRH-IDX)
-                                       TO  SRH-1102-KIGOCHK
+                           MOVE    1   TO  FLG-HIT
                        END-IF
                    ELSE
                        IF    ( SRH-1102-HKNNUML (SRH-IDX)
                                        =   SRH-1102-HKNNUM )
-                           MOVE    SRH-1102-KIGOCHKL (SRH-IDX)
-                                       TO  SRH-1102-KIGOCHK
+                           MOVE    1   TO  FLG-HIT
                        END-IF
+                   END-IF
+               END-IF
+      *
+               IF    ( FLG-HIT         =   1 )
+                   IF    ( SRH-1102-UPDDUMMYL (SRH-IDX)
+                                       =   SPACE )
+                       MOVE    SRH-1102-KIGOCHKL (SRH-IDX)
+                                       TO  SRH-1102-KGCHKPTN
+      *
+                       PERFORM 21111-CK4-1102-DEFAULT-SET-SEC
+                   ELSE
+                       MOVE    SRH-1102-KGCHKPTNL (SRH-IDX)
+                                       TO  SRH-1102-KGCHKPTN
+      *
+                       MOVE    SRH-1102-KGSUJIL  (SRH-IDX)
+                                       TO  SRH-1102-KGSUJI
+                       MOVE    SRH-1102-KGKANJIL (SRH-IDX)
+                                       TO  SRH-1102-KGKANJI
+                       MOVE    SRH-1102-KGABTL   (SRH-IDX)
+                                       TO  SRH-1102-KGABT
+                       MOVE    SRH-1102-KGHYPNL  (SRH-IDX)
+                                       TO  SRH-1102-KGHYPN
+                       MOVE    SRH-1102-KGKAKKOL (SRH-IDX)
+                                       TO  SRH-1102-KGKAKKO
+                       MOVE    SRH-1102-KGETCL   (SRH-IDX)
+                                       TO  SRH-1102-KGETC
+                       MOVE    SRH-1102-KGKANJINASHIL (SRH-IDX)
+                                       TO  SRH-1102-KGKANJINASHI
+      *
+                       MOVE    SRH-1102-NM1SUJIL (SRH-IDX)
+                                       TO  SRH-1102-NM1SUJI
+                       MOVE    SRH-1102-NM1KANJIL(SRH-IDX)
+                                       TO  SRH-1102-NM1KANJI
+                       MOVE    SRH-1102-NM1ABTL  (SRH-IDX)
+                                       TO  SRH-1102-NM1ABT
+                       MOVE    SRH-1102-NM1HYPNL (SRH-IDX)
+                                       TO  SRH-1102-NM1HYPN
+                       MOVE    SRH-1102-NM1KAKKOL(SRH-IDX)
+                                       TO  SRH-1102-NM1KAKKO
+                       MOVE    SRH-1102-NM1ETCL  (SRH-IDX)
+                                       TO  SRH-1102-NM1ETC
+                       MOVE    SRH-1102-NMSUJINASHIL (SRH-IDX)
+                                       TO  SRH-1102-NMSUJINASHI
+      *
+                       MOVE    SRH-1102-NM2SUJIL (SRH-IDX)
+                                       TO  SRH-1102-NM2SUJI
+                       MOVE    SRH-1102-NM2KANJIL(SRH-IDX)
+                                       TO  SRH-1102-NM2KANJI
+                       MOVE    SRH-1102-NM2ABTL  (SRH-IDX)
+                                       TO  SRH-1102-NM2ABT
+                       MOVE    SRH-1102-NM2HYPNL (SRH-IDX)
+                                       TO  SRH-1102-NM2HYPN
+                       MOVE    SRH-1102-NM2KAKKOL(SRH-IDX)
+                                       TO  SRH-1102-NM2KAKKO
+                       MOVE    SRH-1102-NM2ETCL  (SRH-IDX)
+                                       TO  SRH-1102-NM2ETC
+      *
                    END-IF
                END-IF
       *
            END-PERFORM
       *
+           IF    ( FLG-HIT     =   ZERO )
+               MOVE    "0"             TO  SRH-1102-KGCHKPTN
+               PERFORM 21111-CK4-1102-DEFAULT-SET-SEC
+           END-IF
       *
            .
        2111-CK4-1102-GET-EXT.
+           EXIT.
+      *****************************************************************
+      *    記号番号チェックデータ初期値設定処理
+      *****************************************************************
+       21111-CK4-1102-DEFAULT-SET-SEC   SECTION.
+      *
+           EVALUATE    SRH-1102-HKNNUM
+           WHEN    "001"
+               MOVE    KGNMCHK-H001-KGSUJI
+                                       TO  SRH-1102-KGSUJI
+               MOVE    KGNMCHK-H001-KGKANJI
+                                       TO  SRH-1102-KGKANJI
+               MOVE    KGNMCHK-H001-KGABT
+                                       TO  SRH-1102-KGABT
+               MOVE    KGNMCHK-H001-KGHYPN
+                                       TO  SRH-1102-KGHYPN
+               MOVE    KGNMCHK-H001-KGKAKKO
+                                       TO  SRH-1102-KGKAKKO
+               MOVE    KGNMCHK-H001-KGETC
+                                       TO  SRH-1102-KGETC
+               MOVE    KGNMCHK-H001-KGKANJINASHI
+                                       TO  SRH-1102-KGKANJINASHI
+      *
+               MOVE    KGNMCHK-H001-NM1SUJI
+                                       TO  SRH-1102-NM1SUJI
+               MOVE    KGNMCHK-H001-NM1KANJI
+                                       TO  SRH-1102-NM1KANJI
+               MOVE    KGNMCHK-H001-NM1ABT
+                                       TO  SRH-1102-NM1ABT
+               MOVE    KGNMCHK-H001-NM1HYPN
+                                       TO  SRH-1102-NM1HYPN
+               MOVE    KGNMCHK-H001-NM1KAKKO
+                                       TO  SRH-1102-NM1KAKKO
+               MOVE    KGNMCHK-H001-NM1ETC
+                                       TO  SRH-1102-NM1ETC
+               MOVE    KGNMCHK-H001-NMSUJINASHI
+                                       TO  SRH-1102-NMSUJINASHI
+      *
+               MOVE    KGNMCHK-H001-NM2SUJI
+                                       TO  SRH-1102-NM2SUJI
+               MOVE    KGNMCHK-H001-NM2KANJI
+                                       TO  SRH-1102-NM2KANJI
+               MOVE    KGNMCHK-H001-NM2ABT
+                                       TO  SRH-1102-NM2ABT
+               MOVE    KGNMCHK-H001-NM2HYPN
+                                       TO  SRH-1102-NM2HYPN
+               MOVE    KGNMCHK-H001-NM2KAKKO
+                                       TO  SRH-1102-NM2KAKKO
+               MOVE    KGNMCHK-H001-NM2ETC
+                                       TO  SRH-1102-NM2ETC
+           WHEN    "031"
+           WHEN    "032"
+           WHEN    "034"
+               MOVE    KGNMCHK-H031-KGSUJI
+                                       TO  SRH-1102-KGSUJI
+               MOVE    KGNMCHK-H031-KGKANJI
+                                       TO  SRH-1102-KGKANJI
+               MOVE    KGNMCHK-H031-KGABT
+                                       TO  SRH-1102-KGABT
+               MOVE    KGNMCHK-H031-KGHYPN
+                                       TO  SRH-1102-KGHYPN
+               MOVE    KGNMCHK-H031-KGKAKKO
+                                       TO  SRH-1102-KGKAKKO
+               MOVE    KGNMCHK-H031-KGETC
+                                       TO  SRH-1102-KGETC
+               MOVE    KGNMCHK-H031-KGKANJINASHI
+                                       TO  SRH-1102-KGKANJINASHI
+      *
+               MOVE    KGNMCHK-H031-NM1SUJI
+                                       TO  SRH-1102-NM1SUJI
+               MOVE    KGNMCHK-H031-NM1KANJI
+                                       TO  SRH-1102-NM1KANJI
+               MOVE    KGNMCHK-H031-NM1ABT
+                                       TO  SRH-1102-NM1ABT
+               MOVE    KGNMCHK-H031-NM1HYPN
+                                       TO  SRH-1102-NM1HYPN
+               MOVE    KGNMCHK-H031-NM1KAKKO
+                                       TO  SRH-1102-NM1KAKKO
+               MOVE    KGNMCHK-H031-NM1ETC
+                                       TO  SRH-1102-NM1ETC
+               MOVE    KGNMCHK-H031-NMSUJINASHI
+                                       TO  SRH-1102-NMSUJINASHI
+      *
+               MOVE    KGNMCHK-H031-NM2SUJI
+                                       TO  SRH-1102-NM2SUJI
+               MOVE    KGNMCHK-H031-NM2KANJI
+                                       TO  SRH-1102-NM2KANJI
+               MOVE    KGNMCHK-H031-NM2ABT
+                                       TO  SRH-1102-NM2ABT
+               MOVE    KGNMCHK-H031-NM2HYPN
+                                       TO  SRH-1102-NM2HYPN
+               MOVE    KGNMCHK-H031-NM2KAKKO
+                                       TO  SRH-1102-NM2KAKKO
+               MOVE    KGNMCHK-H031-NM2ETC
+                                       TO  SRH-1102-NM2ETC
+           WHEN    "033"
+               MOVE    KGNMCHK-H033-KGSUJI
+                                       TO  SRH-1102-KGSUJI
+               MOVE    KGNMCHK-H033-KGKANJI
+                                       TO  SRH-1102-KGKANJI
+               MOVE    KGNMCHK-H033-KGABT
+                                       TO  SRH-1102-KGABT
+               MOVE    KGNMCHK-H033-KGHYPN
+                                       TO  SRH-1102-KGHYPN
+               MOVE    KGNMCHK-H033-KGKAKKO
+                                       TO  SRH-1102-KGKAKKO
+               MOVE    KGNMCHK-H033-KGETC
+                                       TO  SRH-1102-KGETC
+               MOVE    KGNMCHK-H033-KGKANJINASHI
+                                       TO  SRH-1102-KGKANJINASHI
+      *
+               MOVE    KGNMCHK-H033-NM1SUJI
+                                       TO  SRH-1102-NM1SUJI
+               MOVE    KGNMCHK-H033-NM1KANJI
+                                       TO  SRH-1102-NM1KANJI
+               MOVE    KGNMCHK-H033-NM1ABT
+                                       TO  SRH-1102-NM1ABT
+               MOVE    KGNMCHK-H033-NM1HYPN
+                                       TO  SRH-1102-NM1HYPN
+               MOVE    KGNMCHK-H033-NM1KAKKO
+                                       TO  SRH-1102-NM1KAKKO
+               MOVE    KGNMCHK-H033-NM1ETC
+                                       TO  SRH-1102-NM1ETC
+               MOVE    KGNMCHK-H033-NMSUJINASHI
+                                       TO  SRH-1102-NMSUJINASHI
+      *
+               MOVE    KGNMCHK-H033-NM2SUJI
+                                       TO  SRH-1102-NM2SUJI
+               MOVE    KGNMCHK-H033-NM2KANJI
+                                       TO  SRH-1102-NM2KANJI
+               MOVE    KGNMCHK-H033-NM2ABT
+                                       TO  SRH-1102-NM2ABT
+               MOVE    KGNMCHK-H033-NM2HYPN
+                                       TO  SRH-1102-NM2HYPN
+               MOVE    KGNMCHK-H033-NM2KAKKO
+                                       TO  SRH-1102-NM2KAKKO
+               MOVE    KGNMCHK-H033-NM2ETC
+                                       TO  SRH-1102-NM2ETC
+           WHEN    "006"
+           WHEN    "063"
+               MOVE    KGNMCHK-H006-KGSUJI
+                                       TO  SRH-1102-KGSUJI
+               MOVE    KGNMCHK-H006-KGKANJI
+                                       TO  SRH-1102-KGKANJI
+               MOVE    KGNMCHK-H006-KGABT
+                                       TO  SRH-1102-KGABT
+               MOVE    KGNMCHK-H006-KGHYPN
+                                       TO  SRH-1102-KGHYPN
+               MOVE    KGNMCHK-H006-KGKAKKO
+                                       TO  SRH-1102-KGKAKKO
+               MOVE    KGNMCHK-H006-KGETC
+                                       TO  SRH-1102-KGETC
+               MOVE    KGNMCHK-H006-KGKANJINASHI
+                                       TO  SRH-1102-KGKANJINASHI
+      *
+               MOVE    KGNMCHK-H006-NM1SUJI
+                                       TO  SRH-1102-NM1SUJI
+               MOVE    KGNMCHK-H006-NM1KANJI
+                                       TO  SRH-1102-NM1KANJI
+               MOVE    KGNMCHK-H006-NM1ABT
+                                       TO  SRH-1102-NM1ABT
+               MOVE    KGNMCHK-H006-NM1HYPN
+                                       TO  SRH-1102-NM1HYPN
+               MOVE    KGNMCHK-H006-NM1KAKKO
+                                       TO  SRH-1102-NM1KAKKO
+               MOVE    KGNMCHK-H006-NM1ETC
+                                       TO  SRH-1102-NM1ETC
+               MOVE    KGNMCHK-H006-NMSUJINASHI
+                                       TO  SRH-1102-NMSUJINASHI
+      *
+               MOVE    KGNMCHK-H006-NM2SUJI
+                                       TO  SRH-1102-NM2SUJI
+               MOVE    KGNMCHK-H006-NM2KANJI
+                                       TO  SRH-1102-NM2KANJI
+               MOVE    KGNMCHK-H006-NM2ABT
+                                       TO  SRH-1102-NM2ABT
+               MOVE    KGNMCHK-H006-NM2HYPN
+                                       TO  SRH-1102-NM2HYPN
+               MOVE    KGNMCHK-H006-NM2KAKKO
+                                       TO  SRH-1102-NM2KAKKO
+               MOVE    KGNMCHK-H006-NM2ETC
+                                       TO  SRH-1102-NM2ETC
+           WHEN    OTHER
+               MOVE    KGNMCHK-HDEF-KGSUJI
+                                       TO  SRH-1102-KGSUJI
+               MOVE    KGNMCHK-HDEF-KGKANJI
+                                       TO  SRH-1102-KGKANJI
+               MOVE    KGNMCHK-HDEF-KGABT
+                                       TO  SRH-1102-KGABT
+               MOVE    KGNMCHK-HDEF-KGHYPN
+                                       TO  SRH-1102-KGHYPN
+               MOVE    KGNMCHK-HDEF-KGKAKKO
+                                       TO  SRH-1102-KGKAKKO
+               MOVE    KGNMCHK-HDEF-KGETC
+                                       TO  SRH-1102-KGETC
+               MOVE    KGNMCHK-HDEF-KGKANJINASHI
+                                       TO  SRH-1102-KGKANJINASHI
+      *
+               MOVE    KGNMCHK-HDEF-NM1SUJI
+                                       TO  SRH-1102-NM1SUJI
+               MOVE    KGNMCHK-HDEF-NM1KANJI
+                                       TO  SRH-1102-NM1KANJI
+               MOVE    KGNMCHK-HDEF-NM1ABT
+                                       TO  SRH-1102-NM1ABT
+               MOVE    KGNMCHK-HDEF-NM1HYPN
+                                       TO  SRH-1102-NM1HYPN
+               MOVE    KGNMCHK-HDEF-NM1KAKKO
+                                       TO  SRH-1102-NM1KAKKO
+               MOVE    KGNMCHK-HDEF-NM1ETC
+                                       TO  SRH-1102-NM1ETC
+               MOVE    KGNMCHK-HDEF-NMSUJINASHI
+                                       TO  SRH-1102-NMSUJINASHI
+      *
+               MOVE    KGNMCHK-HDEF-NM2SUJI
+                                       TO  SRH-1102-NM2SUJI
+               MOVE    KGNMCHK-HDEF-NM2KANJI
+                                       TO  SRH-1102-NM2KANJI
+               MOVE    KGNMCHK-HDEF-NM2ABT
+                                       TO  SRH-1102-NM2ABT
+               MOVE    KGNMCHK-HDEF-NM2HYPN
+                                       TO  SRH-1102-NM2HYPN
+               MOVE    KGNMCHK-HDEF-NM2KAKKO
+                                       TO  SRH-1102-NM2KAKKO
+               MOVE    KGNMCHK-HDEF-NM2ETC
+                                       TO  SRH-1102-NM2ETC
+           END-EVALUATE
+      *
+           .
+       21111-CK4-1102-DEFAULT-SET-EXT.
            EXIT.
       *****************************************************************
       *    処理経過編集処理

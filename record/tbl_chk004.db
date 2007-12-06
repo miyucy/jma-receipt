@@ -205,3 +205,20 @@ path	all		{
 		;
 	};
 };
+
+path	upd2	{ 	
+	DBUPDATE	{
+		UPDATE	tbl_chk004
+				SET	
+					KBNCD     	 =   :KBNCD,
+					UPYMD        =   :UPYMD,
+					UPHMS        =   :UPHMS
+			WHERE   HOSPNUM      =   :UPHOSPNUM 
+			AND		KANRICD      =   :UPKANRICD
+			AND		KBNCD        =   :UPKBNCD
+			AND		STYUKYMD     =   :UPSTYUKYMD
+			AND		EDYUKYMD     =   :UPEDYUKYMD
+		;
+	};
+};
+
