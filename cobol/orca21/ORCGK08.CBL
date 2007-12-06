@@ -52,6 +52,7 @@
       *  03.04.01    NACL-Â¿¡¹Ç¼  07/02/XX  Êñ³ç¿ÇÎÅ½èÍýÄÉ²Ã
       *  03.05.00    NACL-Â¿¡¹Ç¼  07/04/XX  ¥°¥ë¡¼¥×¿ÇÎÅÂÐ±þ
       *  03.05.00    NACL-Â¿¡¹Ç¼  07/05/22  ºÆ°õºþ½èÍýÄÉ²Ã
+      *  04.01.00    NACL-Â¿¡¹Ç¼  07/12/06  ¸ø³²ÊÝ¸±ÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -4325,6 +4326,11 @@
                            (LNK-WKSRY-SYUTEN1 (IDX)    >   ZERO )
                        PERFORM 45052-JIBAI-SYORI-SEC
                    END-IF
+      *            ¸ø³²ÊÝ¸±¤Î»þ¡¢µ»½ÑÅÀ¤ò½¸·×¤¹¤ë
+                   IF      (SPA-HKNKBN         =   2   )  AND
+                           (LNK-WKSRY-SYUTEN1 (IDX)    >   ZERO )
+                       PERFORM 45052-KOGAI-SYORI-SEC
+                   END-IF
                END-IF
            END-PERFORM
       *
@@ -4509,7 +4515,7 @@
       *
       *    ÌôºÞÎÁÄþ¸º¤ÏÂÐ¾Ý³°
            IF      LNK-WKSRY-SRYCD (IDX 01)    =   "630010002"
-               GO      TO      450511-JIBAI-SYORI-EXT
+               GO      TO      45052-JIBAI-SYORI-EXT
            END-IF
       *
       *    ²èÁü¿ÇÃÇ¤Î»þ¡¢¥Õ¥£¥ë¥àÅÀ¿ô¤òÂÐ¾Ý³°¤È¤¹¤ë
@@ -4549,7 +4555,56 @@
            END-IF
       *
            .
-       450511-JIBAI-SYORI-EXT.
+       45052-JIBAI-SYORI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ¸ø³²ÊÝ¸±¤Î»þ¡¢µ»½ÑÅÀ¤ò½¸·×½èÍý
+      *****************************************************************
+       45052-KOGAI-SYORI-SEC          SECTION.
+      *
+           MOVE    ZERO                TO  WRK-SYUTEN1
+      *
+      *    ÌôºÞÎÁÄþ¸º¤ÏÂÐ¾Ý³°
+           IF      LNK-WKSRY-SRYCD (IDX 01)    =   "630010002"
+               GO      TO      45052-KOGAI-SYORI-EXT
+           END-IF
+      *
+      *    ²èÁü¿ÇÃÇ¤Î»þ¡¢¥Õ¥£¥ë¥àÅÀ¿ô¤òÂÐ¾Ý³°¤È¤¹¤ë
+           IF      LNK-WKSRY-SRYKBN (IDX)  =   "70"
+               MOVE    LNK-WKSRY-SYUTEN2 (IDX)     TO  WRK-SYUTEN1
+           END-IF
+      *
+      *    ¸ø³²¸ÇÍ­¤Î¥³¡¼¥É¤òÂÐ¾Ý³°¤È¤¹¤ë
+           IF     (LNK-WKSRY-SRYKBN(IDX)(1:1)  NOT =   "9"  )
+               PERFORM VARYING     IDS     FROM    1   BY  1
+                       UNTIL      (IDS         >   5   )  OR
+                                  (LNK-WKSRY-SRYCD(IDX IDS)
+                                              =   SPACE )
+                   IF     LNK-WKSRY-SRYCD(IDX IDS)(1:3)
+                                                   =   "102"
+                       MOVE    LNK-WKSRY-SRYCD (IDX IDS)   TO  TNS-SRYCD
+                       PERFORM 910-TENSU-READ-SEC
+                       ADD     TNS-TEN         TO  WRK-SYUTEN1
+                   END-IF
+               END-PERFORM
+           END-IF
+      *
+      *    ¼«ÇåÀÕ¼êµ»ÅÀ¹ç·×
+           IF      LNK-WKSRY-SYUTEN1 (IDX) <   WRK-SYUTEN1
+               CONTINUE
+           ELSE
+               COMPUTE LNK-S01-SYUTEN (LNK-SYUNOU2-MAX)
+                                           =   LNK-S01-SYUTEN
+                                                      (LNK-SYUNOU2-MAX)
+                                           + ((LNK-WKSRY-SYUTEN1 (IDX)
+                                           -   WRK-SYUTEN1    )
+                                           *   LNK-WKSRY-ZAIKAIKEI
+                                                             (IDX) )
+           END-IF
+      *
+           .
+       45052-KOGAI-SYORI-EXT.
            EXIT.
       *
       *****************************************************************
