@@ -120,6 +120,8 @@
            03  WRK-KYURATE1            PIC 9(03).
            03  WRK-KYURATE2            PIC 9(03).
       *
+           03  WRK-CNT                 PIC 9(04).
+      *
       *    È¾³ÑÁ´³ÑÊÑ´¹
        01  WRK-HENKAN-AREA.
            03  WRK-MAE-INPUT       PIC X(100).
@@ -2801,13 +2803,13 @@
        891-KUHAKU-CHK-SEC         SECTION.
       *
            MOVE    ZERO                TO  FLG-ERR
+           MOVE    ZERO                TO  WRK-CNT
+           INSPECT    WRK-MAE-INPUT    TALLYING   WRK-CNT
+                                       FOR   ALL  "¡¡"
       *
-           PERFORM VARYING     IDC     FROM    1   BY  2
-                   UNTIL       IDC     >   WRK-MAX
-               IF      WRK-MAE-INPUT(IDC:2)    =   "¡¡"
-                   MOVE    1               TO  FLG-ERR
-               END-IF
-           END-PERFORM
+           IF      WRK-CNT             >   ZERO
+               MOVE    1                   TO  FLG-ERR
+           END-IF
            .
        891-KUHAKU-CHK-EXT.
            EXIT.
