@@ -98,12 +98,6 @@
            03  PTNYUINRRK-MAXEDANUM               PIC  9(03).
       *入院食事区分（０：食なし／１：食あり／２：特食）
            03  PTNYUINRRK-SKJKBN                  PIC  X(01).
-      *入院時食事時間区分
-      *（０：食なし／１：朝から／２：昼から／３：夜から）
-           03  PTNYUINRRK-TIMEKBN-IN              PIC  X(01).
-      *退院時食事時間区分
-      *（０：食なし／１：朝まで／２：昼まで／３：夜まで）
-           03  PTNYUINRRK-TIMEKBN-OUT             PIC  X(01).
       *選定入院区分（１：選定対象／２：選定対象外）
            03  PTNYUINRRK-SENTEIKBN               PIC  X(01).
       *端末ＩＤ
