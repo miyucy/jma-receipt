@@ -85,6 +85,7 @@
        01  CONST-AREA.
            03  CONST-ROUSAI            PIC X(03)   VALUE   "971".
            03  CONST-JIBAI             PIC X(03)   VALUE   "973".
+           03  CONST-KOUGAI            PIC X(03)   VALUE   "975".
            03  CONST-HOUKATU           PIC 9(04)   VALUE   9999.
            03  CONST-TCOMBI-MAX        PIC 9(05)   VALUE   31.
            03  CONST-SRYKA-MAX         PIC 9(05)   VALUE   50.
@@ -434,7 +435,8 @@ grpsys     COPY  "COMMON-SPA".
                    MOVE    1               TO  SS001-HKT-FLG(IDX-NYUGAI)
            ELSE
                IF    ( COMB-HKNNUM         =   CONST-ROUSAI
-                                            OR CONST-JIBAI )
+                                            OR CONST-JIBAI
+                                            OR CONST-KOUGAI )
                    CONTINUE
                ELSE
                    MOVE    1               TO  SS001-IHO-FLG(IDX-NYUGAI)
@@ -447,6 +449,8 @@ grpsys     COPY  "COMMON-SPA".
                        MOVE    1           TO  SS001-RSI-FLG(IDX-NYUGAI)
                WHEN    CONST-JIBAI
                        MOVE    1           TO  SS001-JBI-FLG(IDX-NYUGAI)
+               WHEN    CONST-KOUGAI
+                       MOVE    1           TO  SS001-KGI-FLG(IDX-NYUGAI)
                WHEN    "060"
                WHEN    "067"
                WHEN    "068"
@@ -503,7 +507,8 @@ grpsys     COPY  "COMMON-SPA".
                                                   (IDX-SRYKA IDX-NYUGAI)
                ELSE
                    IF    ( COMB-HKNNUM    =    CONST-ROUSAI
-                                           OR  CONST-JIBAI )
+                                           OR  CONST-JIBAI
+                                           OR  CONST-KOUGAI  )
                        CONTINUE
                    ELSE
                        MOVE    1       TO  SS001-SRYKA-IHO-FLG
@@ -519,6 +524,9 @@ grpsys     COPY  "COMMON-SPA".
                                                   (IDX-SRYKA IDX-NYUGAI)
                    WHEN    CONST-JIBAI
                        MOVE    1       TO  SS001-SRYKA-JBI-FLG
+                                                  (IDX-SRYKA IDX-NYUGAI)
+                   WHEN    CONST-KOUGAI
+                       MOVE    1       TO  SS001-SRYKA-KGI-FLG
                                                   (IDX-SRYKA IDX-NYUGAI)
                    WHEN    "060"
                    WHEN    "067"
