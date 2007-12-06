@@ -94,9 +94,11 @@
            03  CNT-GIHO                PIC 9(05).
            03  CNT-GRSI                PIC 9(05).
            03  CNT-GJBI                PIC 9(05).
+           03  CNT-GKGI                PIC 9(05).
            03  CNT-NIHO                PIC 9(05).
            03  CNT-NRSI                PIC 9(05).
            03  CNT-NJBI                PIC 9(05).
+           03  CNT-NKGI                PIC 9(05).
       *    °ì»þÎÎ°è
        01  WRK-AREA. 
            03  WRK-BQERRCD             PIC X(04).
@@ -320,9 +322,11 @@
            MOVE    SS001-GIHO-FLG  TO  QTORS-GIHO-FLG
            MOVE    SS001-GRSI-FLG  TO  QTORS-GRSI-FLG
            MOVE    SS001-GJBI-FLG  TO  QTORS-GJBI-FLG
+           MOVE    SS001-GKGI-FLG  TO  QTORS-GKGI-FLG
            MOVE    SS001-NIHO-FLG  TO  QTORS-NIHO-FLG
            MOVE    SS001-NRSI-FLG  TO  QTORS-NRSI-FLG
            MOVE    SS001-NJBI-FLG  TO  QTORS-NJBI-FLG
+           MOVE    SS001-NKGI-FLG  TO  QTORS-NKGI-FLG
       *
            IF    ( QTORS-GIHO-FLG      =   1 )
                COMPUTE CNT-GIHO    =   CNT-GIHO    +   1
@@ -336,6 +340,10 @@
                COMPUTE CNT-GJBI    =   CNT-GJBI    +   1
            END-IF
       *
+           IF    ( QTORS-GKGI-FLG      =   1 )
+               COMPUTE CNT-GKGI    =   CNT-GKGI    +   1
+           END-IF
+      *
            IF    ( QTORS-NIHO-FLG      =   1 )
                COMPUTE CNT-NIHO    =   CNT-NIHO    +   1
            END-IF
@@ -346,6 +354,10 @@
       *
            IF    ( QTORS-NJBI-FLG      =   1 )
                COMPUTE CNT-NJBI    =   CNT-NJBI    +   1
+           END-IF
+      *
+           IF    ( QTORS-NKGI-FLG      =   1 )
+               COMPUTE CNT-NKGI    =   CNT-NKGI    +   1
            END-IF
       *
            PERFORM 200111-BTPARA-COMMON-SEC
@@ -399,9 +411,11 @@
            MOVE    CNT-GIHO            TO  QTORM-GIHO-CNT
            MOVE    CNT-GRSI            TO  QTORM-GRSI-CNT
            MOVE    CNT-GJBI            TO  QTORM-GJBI-CNT
+           MOVE    CNT-GKGI            TO  QTORM-GKGI-CNT
            MOVE    CNT-NIHO            TO  QTORM-NIHO-CNT
            MOVE    CNT-NRSI            TO  QTORM-NRSI-CNT
            MOVE    CNT-NJBI            TO  QTORM-NJBI-CNT
+           MOVE    CNT-NKGI            TO  QTORM-NKGI-CNT
       *
            PERFORM 200111-BTPARA-COMMON-SEC
       *

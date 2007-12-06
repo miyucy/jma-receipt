@@ -31,4 +31,6 @@
            03  QTORS-NIHO-FLG              PIC 9(01).
            03  QTORS-NRSI-FLG              PIC 9(01).
            03  QTORS-NJBI-FLG              PIC 9(01).
+           03  QTORS-GKGI-FLG              PIC 9(01).
+           03  QTORS-NKGI-FLG              PIC 9(01).
       *
