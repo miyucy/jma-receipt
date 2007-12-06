@@ -614,57 +614,66 @@
        220-BODY-HEN-SEC                SECTION.
       *
            COMPUTE CNT-LINE    =   CNT-LINE    +   1
-           COMPUTE CNT-RENBAN  =   CNT-RENBAN  +   1
       *
-           IF    ( DTCHK004-PTID   NOT =   ZERO )
-            AND  ( KEY-PTID        NOT =   DTCHK004-PTID )
+           IF    ( KEY-PTID            =   ZERO )
+            OR   ( KEY-PTID        NOT =   DTCHK004-PTID )
+            OR   ( CNT-LINE            =   1 )
+      *
+               IF    ( KEY-PTID            =   ZERO )
+                OR   ( KEY-PTID        NOT =   DTCHK004-PTID )
+      *
+                   COMPUTE CNT-RENBAN  =   CNT-RENBAN  +   1
+      *
+                   MOVE    DTCHK004-PTID   TO  KEY-PTID
+      *
+               END-IF
+      *
                PERFORM 2201-PTHKN-HEN-SEC
                MOVE    WRK-MESG        TO  HCM401-HKNINF(CNT-LINE)
-           END-IF
       *
-           MOVE    DTCHK004-PTID       TO  KEY-PTID
-      *
-      *    ÈÖ¹æ
-           MOVE    CNT-RENBAN          TO  WRK-ZZZZ9
-           MOVE    WRK-ZZZZ9           TO  WRK-MAE-INPUT
-           PERFORM 800-ZENKAKU-HEN-SEC
-           MOVE    WRK-OUT-INPUT       TO  HCM401-RENBAN(CNT-LINE)
-      *
-      *    ´µ¼ÔÈÖ¹æ
-           IF    ( DTCHK004-PTNUM      =   SPACE )
-               MOVE   SPACE            TO  WRK-MAE-INPUT
-               STRING "´µ¼Ô£É£Ä"       DELIMITED   BY  SIZE
-                      DTCHK004-PTID    DELIMITED   BY  SIZE
-               INTO   WRK-MAE-INPUT
-               END-STRING
-           ELSE
-               MOVE    DTCHK004-PTNUM  TO  WRK-MAE-INPUT
-           END-IF
-           PERFORM 800-ZENKAKU-HEN-SEC
-           IF    ( WRK-OUT-INPUT (21:) =   SPACE )
-               MOVE    WRK-OUT-INPUT   TO  HCM401-PTNUM (CNT-LINE)
-           ELSE
-               MOVE    WRK-OUT-INPUT   TO  HCM401-PTNUM2(CNT-LINE)
-           END-IF
-      *
-      *    ´µ¼Ô»áÌ¾
-           MOVE    DTCHK004-NAME       TO  HCM401-NAME  (CNT-LINE)
-      *
-      *    Ç¯Îð
-           IF    ( DTCHK004-BIRTHDAY   NOT =   SPACE )
-               PERFORM 2201-NENREI-HEN-SEC
-               MOVE    WRK-NENREI      TO  WRK-ZZ9
-               MOVE    WRK-ZZ9         TO  WRK-MAE-INPUT
+      *        ÈÖ¹æ
+               MOVE    CNT-RENBAN      TO  WRK-ZZZZ9
+               MOVE    WRK-ZZZZ9       TO  WRK-MAE-INPUT
                PERFORM 800-ZENKAKU-HEN-SEC
-               MOVE    WRK-OUT-INPUT   TO  HCM401-NENREI(CNT-LINE)
-           END-IF
+               MOVE    WRK-OUT-INPUT   TO  HCM401-RENBAN(CNT-LINE)
       *
-      *    Â¾ÊÝ¸±¤¢¤ê
-           IF    ( ORCBSD01-PRTSRTKBN  =   "3" OR  "4" )
-               IF    ( DTCHK004-HKNOTHERS  =   "1" )
-                   MOVE    1           TO  FLG-HKNOTHERS
-                   MOVE    "¡ö"        TO  HCM401-MARK (CNT-LINE)
+      *        ´µ¼ÔÈÖ¹æ
+               IF    ( DTCHK004-PTNUM      =   SPACE )
+                   MOVE   SPACE            TO  WRK-MAE-INPUT
+                   STRING "´µ¼Ô£É£Ä"       DELIMITED   BY  SIZE
+                          DTCHK004-PTID    DELIMITED   BY  SIZE
+                   INTO   WRK-MAE-INPUT
+                   END-STRING
+               ELSE
+                   MOVE    DTCHK004-PTNUM  TO  WRK-MAE-INPUT
                END-IF
+               PERFORM 800-ZENKAKU-HEN-SEC
+               IF    ( WRK-OUT-INPUT (21:) =   SPACE )
+                   MOVE    WRK-OUT-INPUT   TO  HCM401-PTNUM (CNT-LINE)
+               ELSE
+                   MOVE    WRK-OUT-INPUT   TO  HCM401-PTNUM2(CNT-LINE)
+               END-IF
+      *
+      *        ´µ¼Ô»áÌ¾
+               MOVE    DTCHK004-NAME   TO  HCM401-NAME  (CNT-LINE)
+      *
+      *        Ç¯Îð
+               IF    ( DTCHK004-BIRTHDAY   NOT =   SPACE )
+                   PERFORM 2201-NENREI-HEN-SEC
+                   MOVE    WRK-NENREI  TO  WRK-ZZ9
+                   MOVE    WRK-ZZ9     TO  WRK-MAE-INPUT
+                   PERFORM 800-ZENKAKU-HEN-SEC
+                   MOVE    WRK-OUT-INPUT   TO  HCM401-NENREI(CNT-LINE)
+               END-IF
+      *
+      *        Â¾ÊÝ¸±¤¢¤ê
+               IF    ( ORCBSD01-PRTSRTKBN  =   "3" OR  "4" )
+                   IF    ( DTCHK004-HKNOTHERS  =   "1" )
+                       MOVE    1       TO  FLG-HKNOTHERS
+                       MOVE    "¡ö"    TO  HCM401-MARK (CNT-LINE)
+                   END-IF
+               END-IF
+      *
            END-IF
       *
            MOVE    SPACE               TO  WRK-ERRMSG
