@@ -1,7 +1,7 @@
 \set ON_ERROR_STOP
 
 COPY tbl_mstkanri FROM stdin;
-0	ORCADB15	R-030500-1-20070708-4	R-030500-1-20070708-4			        		
+0	ORCADB15	R-040100-1-00000000-0	R-040100-1-00000000-0			        		
 \.
 
 insert into tbl_mstkanri
