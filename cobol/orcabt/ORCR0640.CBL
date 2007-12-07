@@ -273,6 +273,9 @@
       *  04.01.05    NACL-門脇    07/11/29  新潟県中越沖地震対応修正
       *  04.01.06    NACL-門脇    07/11/30  他保険にて診察料算定済の名称置換
       *  04.01.07    NACL-門脇    07/12/03  北海道特定疾患（道単独事業）対応
+      *  04.01.08    NACL-門脇    07/12/07  ＜７０歳未満現物給付＞
+      *                                     月途中に保険者番号の変更なく、記
+      *                                     号番号のみ変更になった場合の対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -9590,10 +9593,10 @@
            COMPUTE  WRK-FTNKEI = WRK-FTNKEI / 10
            COMPUTE  WRK-FTNKEI = WRK-FTNKEI * 10
       *
-           IF     SYU-KOHTAIYKZKBN  =   "9"
-                 ADD    SYU-TOTAL-HKNTEN TO   WRK-JYOGENKBN-TEN
-                 ADD    SYU-KOH-FTN      TO   WRK-KOH-FTN-GEN70
-           END-IF
+      ***  IF     SYU-KOHTAIYKZKBN  =   "9"
+      ***        ADD    SYU-TOTAL-HKNTEN TO   WRK-JYOGENKBN-TEN
+      ***        ADD    SYU-KOH-FTN      TO   WRK-KOH-FTN-GEN70
+      ***  END-IF
       *
            IF   ( SYU-KOH-FTN         =   ZERO   )
            AND  ( SYU-KOH-HKNNUM(1)   =   SPACE  )
@@ -9606,9 +9609,14 @@
                  MOVE   1                TO   FLG-JYOGENKBN
                  IF     SYU-KOHTAIYKZKBN  =   "9"
                      MOVE      1            TO  FLG-GENBUTU-TAISYOOK
-                     ADD    SYU-SYUCOMPFTN  TO  WRK-KOH-GAI-GEN70
                  END-IF
+                 ADD    SYU-SYUCOMPFTN      TO  WRK-KOH-GAI-GEN70
+                 ADD    SYU-TOTAL-HKNTEN    TO  WRK-JYOGENKBN-TEN
            ELSE
+             IF     SYU-KOHTAIYKZKBN  =   "9"
+                 ADD    SYU-TOTAL-HKNTEN    TO  WRK-JYOGENKBN-TEN
+                 ADD    SYU-KOH-FTN         TO  WRK-KOH-FTN-GEN70
+             END-IF
              IF   ( SYU-KOH-HKNNUM(1)   =   "012" )
              OR   ( SYU-KOH-HKNNUM(2)   =   "012" )
              OR   ( SYU-KOH-HKNNUM(3)   =   "012" )
