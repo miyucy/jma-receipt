@@ -4224,7 +4224,7 @@
                    GO  TO  4101-NYUINYMD-CHK-EXT
                END-IF
       *
-               MOVE    8              TO   SPA-GMN-I01-CUR
+               MOVE    25              TO   SPA-GMN-I01-CUR
       *
            END-IF
       *
