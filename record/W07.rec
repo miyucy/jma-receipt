@@ -264,6 +264,20 @@ W07	{
 					count	int;
 					item	varchar(12)[2];
 				};
+				BYOMEIAUTO_COMB	{
+					BYOMEIAUTO	{
+						value	varchar(12);
+					};
+					count	int;
+					item	varchar(12)[2];
+				};
+				TEINYUAUTO_COMB	{
+					TEINYUAUTO	{
+						value	varchar(12);
+					};
+					count	int;
+					item	varchar(12)[2];
+				};
 			};
 			TAGNAME1    {
 			    state   int;
@@ -409,6 +423,13 @@ W07	{
 				};
 				AKUSEIHYO_COMB	{
 					AKUSEIHYO	{
+						value	varchar(40);
+					};
+					count	int;
+					item	varchar(40)[2];
+				};
+				CHGSRYSYU_COMB	{
+					CHGSRYSYU	{
 						value	varchar(40);
 					};
 					count	int;

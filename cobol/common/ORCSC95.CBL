@@ -529,6 +529,12 @@
                WHEN    "N"
       *            受診履歴一覧編集
                    PERFORM 2002-JYURRK-SET-SEC
+      *        病名のみ変更
+               WHEN    "B"
+      *            病名編集
+                   PERFORM 11012-BYOMEI-HENSYU-SEC
+      *            特定疾患の有無検索
+                   PERFORM 11011-TOKUTEI-SYORI-SEC
            END-EVALUATE
       *
            .
@@ -785,6 +791,14 @@
                    MOVE    SYS-1008-ZENHKNCHK-FLG
                                            TO  SPA-ZENHKNCHK-FLG
                END-IF
+      *        病名疾患区分からの自動発生
+               IF      SYS-1008-BYOMEIAUTO-FLG   =   SPACE
+      *            未設定は算定する
+                   MOVE    "1"             TO  SPA-BYOMEIAUTO-FLG
+               ELSE
+                   MOVE    SYS-1008-BYOMEIAUTO-FLG
+                                           TO  SPA-BYOMEIAUTO-FLG
+               END-IF
            ELSE
                MOVE    ZERO                TO  SPA-INTERACT-KIKAN
                MOVE    "1"                 TO  SPA-GAIKANRIKBN-CHK
@@ -809,6 +823,7 @@
       *        検体検査加算自動発生
                MOVE    "0"                 TO  SPA-KENSAAUTO-FLG
                MOVE    "0"                 TO  SPA-ZENHKNCHK-FLG
+               MOVE    "1"                 TO  SPA-BYOMEIAUTO-FLG
            END-IF
       *
       *    診療科
@@ -1371,11 +1386,17 @@
                    MOVE    SYS-1008-YAKJYOCHK-FLG
                                            TO  SPA-YAKJYOCHK-FLG
                END-IF
-      *        訂正時の自動発生
-               IF      SYS-1008-TEISEIAUTO-FLG   =   SPACE
-                   MOVE    "1"             TO  SPA-TEISEI-FLG
+      *        訂正時の自動発生（入院）
+               IF      SYS-1008-TEINYUAUTO-FLG   =   SPACE
+      *            未設定は外来から
+                   IF      SYS-1008-TEISEIAUTO-FLG   =   SPACE
+                       MOVE    "1"             TO  SPA-TEISEI-FLG
+                   ELSE
+                       MOVE    SYS-1008-TEISEIAUTO-FLG
+                                               TO  SPA-TEISEI-FLG
+                   END-IF
                ELSE
-                   MOVE    SYS-1008-TEISEIAUTO-FLG
+                   MOVE    SYS-1008-TEINYUAUTO-FLG
                                            TO  SPA-TEISEI-FLG
                END-IF
       *        訂正時の自動発生（特定疾患処方管理）
@@ -3981,7 +4002,7 @@
            .
        110111-MANSEIKBN-SET-EXT.
            EXIT.
-      *    
+      *
       *****************************************************************
       *    病名編集処理
       *****************************************************************

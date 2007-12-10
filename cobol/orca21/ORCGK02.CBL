@@ -1321,6 +1321,13 @@
                WHEN    "KHELP"
       *            ヘルプ画面より
                    MOVE    2                   TO  FLG-GMN
+      *
+               WHEN    "M01"
+      *            業務選択画面より
+                   PERFORM 30010-INIT-GMN-SEC
+               WHEN    OTHER
+      *            外部・患者決定
+                   PERFORM 3000-SCREEN-SYORI-SEC
            END-EVALUATE
       *
            IF      FLG-GMN         NOT =   ZERO
@@ -1341,18 +1348,19 @@
                    PERFORM 500-GMNHEN-SEC
                    PERFORM 520-KIDSET-SEC
                END-IF
-               GO      TO      300-SCREEN-EXT
            END-IF
+      *
+           .
+       300-SCREEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    患者設定初期画面処理
+      *****************************************************************
+       3000-SCREEN-SYORI-SEC              SECTION.
+      *
            MOVE    SPACE               TO  SPA-KIDCD
            MOVE    SPACE               TO  SPA-KIDCD2
-      *
-      *    患者の確定していない時、クリア画面の表示、M01より
-           IF    ( SPA-MOTOPG(1:3)     =   "M01"    )  OR
-                 ((SPA-MOTOPG          =   "K03"  OR  "K08")  AND
-                   (SPA-PTNUM          =   SPACE    ))
-               PERFORM 30010-INIT-GMN-SEC
-               GO      TO      300-SCREEN-EXT
-           END-IF
       *
            MOVE    ZERO                TO  FLG-SYOKAI
            EVALUATE    SPA-MOTOPG
@@ -1421,7 +1429,6 @@
       *                     入院中の時、入院画面へ
                            MOVE    SPACE               TO  WRK-PUTTYPE
                            PERFORM 450-K02N-SYORI-SEC
-                           GO      TO      300-SCREEN-EXT
                        END-IF
                   ELSE
                        IF     (SPA-PTNUM       =   SPACE )  AND
@@ -1434,6 +1441,12 @@
       *
                WHEN    "K08"
                WHEN    "K03"
+      *            登録後クリア画面の表示
+                   IF      SPA-PTNUM          =   SPACE
+                       PERFORM 30010-INIT-GMN-SEC
+                   ELSE
+      *
+      *            前回の表示
                    INITIALIZE                  SPA-K02
                    MOVE    ZERO            TO  FLG-PARASET
                    PERFORM 3002-PARA-SET-SEC
@@ -1451,9 +1464,11 @@
                    PERFORM 510-TBLHEN-SEC
                    MOVE    SPACE           TO  FLG-TOROKU
       *
+                   END-IF
+      *
                WHEN    "K10"
                    IF      SPA-K10-SELNUM      =   ZERO
-                       GO      TO      300-SCREEN-EXT
+                       MOVE    2                   TO  FLG-SYOKAI
                    ELSE
                        IF      SPA-K10-SYORI       =   ZERO
       *                変更
@@ -1468,24 +1483,19 @@
                    INITIALIZE                  SPA-K02
                    MOVE    ZERO            TO  FLG-PARASET
                    PERFORM 3002-PARA-SET-SEC
-                   IF      SPA-MOTOPG      =   "K03"
-      *                特定疾患判定のクリア
-                       MOVE    ZERO            TO  SPA-TOKUTEIFLG
-                       MOVE    ZERO            TO  SPA-NAIFUKU-CHK
-                       MOVE    ZERO            TO  SPA-NAIFUKU-OK
-                       MOVE    ZERO            TO  SPA-CHOKITOFLG-CHK
-                       MOVE    SPACE           TO  SPA-TOKUTEI-SRYKA 
-                       MOVE    ZERO            TO  SPA-HKTKEI-FLG
-                   END-IF
                    PERFORM 3003-GMN-HEN-SEC
                    IF      SPA-MOTOPG      =   "S02"  OR  "J02" OR "C02"
                        PERFORM 3004-SAI-SET-SEC
                    END-IF
            END-EVALUATE
       *
-           MOVE    1               TO  SPA-GMN-PAGE
-           MOVE    1               TO  SPA-GMN-CUR
-           MOVE    1               TO  SPA-MAP-IDX
+           IF      FLG-SYOKAI          =   2
+               CONTINUE
+           ELSE
+               MOVE    1               TO  SPA-GMN-PAGE
+               MOVE    1               TO  SPA-GMN-CUR
+               MOVE    1               TO  SPA-MAP-IDX
+           END-IF
       *
            IF     (SPA-ERRCD       =   SPACE  )  AND
                   (FLG-SYOKAI      =   1      )
@@ -1508,7 +1518,7 @@
            END-IF
       *
            .
-       300-SCREEN-EXT.
+       3000-SCREEN-SYORI-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1670,6 +1680,20 @@
       *
       *        未収金
                MOVE    SPA-MISYUMONEY      TO  SPA-GMN-MISYUMONEY
+           END-IF
+      *    病名からの戻りの時、病名再編集
+           IF      SPA-MOTOPG      =   "C02"
+               INITIALIZE                  ORCSC95AREA
+               MOVE    "B"                 TO  LNK-SC95-KBN
+               MOVE    SPA-SRYYMD          TO  LNK-SC95-SRYYMD
+               MOVE    SPA-SRYYMDW         TO  LNK-SC95-SRYYMDG
+               MOVE    "K02"               TO  LNK-SC95-PG
+               CALL    "ORCSC95"           USING
+                                           MCPAREA
+                                           ORCSC95AREA
+                                           SPA-AREA
+                                           SPA-K01KYOUTU
+                                           SPA-K02
            END-IF
       *
            .
@@ -2336,17 +2360,10 @@
       *
       *        再診を初診料へ自動算定の確認
                WHEN    "0110"
-                   MOVE    SPACE               TO  SPA-KIDCD
-                   IF      SPA-KID1-FLG        =   "OK"
-                       MOVE    SPACE               TO  SPA-KIDCD
-      *                初診料算定へ
-                       PERFORM                 300109-SYOSINSET-SEC
-                   ELSE
-                       MOVE    1               TO  SPA-GMN-CUR
-                   END-IF
-      *
       *        再診を初診料へ自動算定の確認（警告表示）
                WHEN    "0112"
+      *        初診料の再算定
+               WHEN    "0132"
                    MOVE    SPACE               TO  SPA-KIDCD
                    IF      SPA-KID1-FLG        =   "OK"
                        MOVE    SPACE               TO  SPA-KIDCD
@@ -2357,6 +2374,7 @@
                    END-IF
       *        初診料を再診料へ自動算定の確認
                WHEN    "0117"
+               WHEN    "0137"
                    MOVE    SPACE               TO  SPA-KIDCD
                    IF      SPA-KID1-FLG        =   "OK"
                        MOVE    SPACE               TO  SPA-KIDCD
@@ -7114,25 +7132,30 @@
                END-IF
            END-PERFORM
            IF      FLG-OK             =   ZERO
+           AND    (SPA-GMN-INPUTCD(SPA-GMN-IDX)(1:4)  =   ".110" )
                GO      TO      4101120-SAISIN-SYOSIN-EXT
            END-IF
       *
       *    再診で、当日以降受診が無いこと
            IF      (SPA-SYORIFLG       =   ZERO )  AND
-                   (SPA-SYOSIN         =   ZERO )  AND
+      *D           (SPA-SYOSIN         =   ZERO )  AND
                    (SPA-LSTYMD         <   SPA-SRYYMD)
       *        病名をチェックする
                PERFORM 41011201-BYOMEI-CHK-SEC
       *        初診料算定時、算定不可のコードチェック
-               PERFORM 41011202-SYOSIN-CHK-SEC
-               IF      SPA-ERRCD       NOT =   SPACE
-                   GO      TO      4101120-SAISIN-SYOSIN-EXT
+               IF      FLG-OK              =   1
+                   PERFORM 41011202-SYOSIN-CHK-SEC
                END-IF
-      *
-               IF      FLG-KEIZOKU         =   ZERO
-                   MOVE    "0110"              TO  SPA-KIDCD
-               ELSE
-                   MOVE    "0112"              TO  SPA-KIDCD
+               IF      SPA-ERRCD           =   SPACE
+                   IF      FLG-KEIZOKU         =   ZERO
+                       MOVE    "0110"              TO  SPA-KIDCD
+                   ELSE
+                       MOVE    "0112"              TO  SPA-KIDCD
+                   END-IF
+                   IF      FLG-OK              =   ZERO
+      *                再度、自動発生
+                       MOVE    "0132"              TO  SPA-KIDCD
+                   END-IF
                END-IF
            ELSE
                MOVE    "1016"              TO  SPA-ERRCD
@@ -7158,6 +7181,7 @@
            END-PERFORM
       *
            IF      FLG-OK             =   ZERO
+           AND    (SPA-GMN-INPUTCD(SPA-GMN-IDX)(1:4)  =   ".120" )
                CONTINUE
            ELSE
                MOVE    SPA-MAE-INPUTCD(SPA-GMN-IDX)
@@ -7168,6 +7192,10 @@
       *                Ｈ１８．４から
                        (SPA-SRYYMD         >=  "20060401" )
                    MOVE    "0117"              TO  SPA-KIDCD
+                   IF      FLG-OK              =   ZERO
+      *                再度、自動発生
+                       MOVE    "0137"              TO  SPA-KIDCD
+                   END-IF
                ELSE
                    IF      SPA-SYOSINFLG       =   ZERO
                        MOVE    "1017"              TO  SPA-ERRCD
@@ -13158,9 +13186,23 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                    "初診料算定へ変更します。よろしいですか？"
                                        TO  WRK-KIDMSG
                WHEN    "0117"
-               MOVE
-                   "再診料算定へ変更します。よろしいですか？"
-                                       TO  WRK-KIDMSG
+                   STRING   "再診料算定へ変更します。"
+                            "よろしいですか？"
+                                       DELIMITED   BY  SIZE
+                                       INTO    WRK-KIDMSG
+                   END-STRING
+               WHEN    "0132"
+                   STRING   "初診料を再度自動発生させます。"
+                            "よろしいですか？"
+                                       DELIMITED   BY  SIZE
+                                       INTO    WRK-KIDMSG
+                   END-STRING
+               WHEN    "0137"
+                   STRING   "再診料を再度自動発生させます。"
+                            "よろしいですか？"
+                                       DELIMITED   BY  SIZE
+                                       INTO    WRK-KIDMSG
+                   END-STRING
                WHEN    "0111"
                    MOVE
                    "診療日が未来日です。よろしいですか？"

@@ -188,6 +188,18 @@
                     06  W07-KENSAAUTO-COUNT   PIC S9(9)   BINARY.
                     06  W07-KENSAAUTO-ITEM
                             PIC X(12)   OCCURS  2 TIMES.
+                  05  W07-BYOMEIAUTO-COMB.
+                    06  W07-BYOMEIAUTO.
+                      07  W07-VALUE   PIC X(12).
+                    06  W07-BYOMEIAUTO-COUNT   PIC S9(9)   BINARY.
+                    06  W07-BYOMEIAUTO-ITEM
+                            PIC X(12)   OCCURS  2 TIMES.
+                  05  W07-TEINYUAUTO-COMB.
+                    06  W07-TEINYUAUTO.
+                      07  W07-VALUE   PIC X(12).
+                    06  W07-TEINYUAUTO-COUNT   PIC S9(9)   BINARY.
+                    06  W07-TEINYUAUTO-ITEM
+                            PIC X(12)   OCCURS  2 TIMES.
                 04  W07-TAGNAME1.
                   05  W07-TAGNAME1-STATE   PIC S9(9)   BINARY.
                 04  W07-TAG2.
@@ -308,6 +320,12 @@
                       07  W07-VALUE   PIC X(40).
                     06  W07-AKUSEIHYO-COUNT   PIC S9(9)   BINARY.
                     06  W07-AKUSEIHYO-ITEM
+                            PIC X(40)   OCCURS  2 TIMES.
+                  05  W07-CHGSRYSYU-COMB.
+                    06  W07-CHGSRYSYU.
+                      07  W07-VALUE   PIC X(40).
+                    06  W07-CHGSRYSYU-COUNT   PIC S9(9)   BINARY.
+                    06  W07-CHGSRYSYU-ITEM
                             PIC X(40)   OCCURS  2 TIMES.
                 04  W07-TAGNAME3.
                   05  W07-TAGNAME3-STATE   PIC S9(9)   BINARY.

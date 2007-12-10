@@ -29,6 +29,7 @@
       *  01.00.06    NACL-多々納  03/02/19  療養担当手当追加
       *  01.00.07    NACL-多々納  03/03/14  特定薬剤治療管理料追加
       *  01.00.08    NACL-多々納  05/09/14  患者の入金方法追加
+      *  04.01.00    NACL-多々納  07/12/14  病名疾患区分反映区分追加他
       ************************************************************
       *
        01  SPA-K01KYOUTU.
@@ -121,9 +122,6 @@
                05  SPA-CHG310FLG           PIC  X(01).
       *ＣＬＡＩＭ展開選択
                05  SPA-SINSATU-FLG         PIC  X(01).
-      *@
-      *腫瘍マーカー一覧展開選択
-               05  SPA-AKUSEIHYOFLG        PIC  X(01).
       *!
       *後発医薬品変更可
                05  SPA-KOUHATUKA           PIC  X(01).
@@ -145,6 +143,13 @@
                05  SPA-FTNHEN-KBN          PIC X(01).
       *包括診療行為チェック
                05  SPA-HKTSANTEI-FLG       PIC 9(01).
+      *@
+      *腫瘍マーカー一覧展開選択
+               05  SPA-AKUSEIHYOFLG        PIC  X(01).
+      *病名疾患区分からの自動発生
+               05  SPA-BYOMEIAUTO-FLG      PIC X(01).
+      *投薬診療種別変換選択
+               05  SPA-CHGSRYSYU-FLG       PIC  X(01).
       *
       *前回保険組合せ相違チェック
                05  SPA-ZENHKNCHK-FLG       PIC X(01).

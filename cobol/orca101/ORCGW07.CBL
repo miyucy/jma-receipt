@@ -89,6 +89,10 @@
       *  03.05.01    NACL-多々納  07/08/XX  訂正の請求書金額区分追加
       *  03.05.02    NACL-多々納  07/09/07  前回保険組合せ相違区分追加
       *  04.01.00    NACL-多々納  07/11/25  腫瘍マーカー一覧区分追加他
+      *  04.01.00    NACL-多々納  07/12/XX  訂正時の自動発生（入院）
+      *                                     病名疾患区分からの自動発生
+      *                                     投薬診療種別自動変換
+      *                                     初診料の警告対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -279,6 +283,19 @@
                            11  SPA-GMN-KENSAAUTO-MEI       PIC X(10).
                        09  SPA-GMN-KENSAAUTO-COMB.
                            11  SPA-GMN-KENSAAUTO-LIST      PIC X(12)
+                                                           OCCURS  2.
+      *                訂正時の自動発生（入院）
+                       09  SPA-GMN-TEINYUAUTO-G.
+                           11  SPA-GMN-TEINYUAUTO       PIC X(01).
+                           11  SPA-GMN-TEINYUAUTO-F     PIC X(01).
+                           11  SPA-GMN-TEINYUAUTO-MEI   PIC X(10).
+      *                病名新患区分からの自動発生
+                       09  SPA-GMN-BYOMEIAUTO-G.
+                           11  SPA-GMN-BYOMEIAUTO       PIC X(01).
+                           11  SPA-GMN-BYOMEIAUTO-F     PIC X(01).
+                           11  SPA-GMN-BYOMEIAUTO-MEI   PIC X(10).
+                       09  SPA-GMN-BYOMEIAUTO-COMB.
+                           11  SPA-GMN-BYOMEIAUTO-LIST      PIC X(12)
                                                            OCCURS  2.
       *
                    07  SPA-GMN-PAGE2-AREA.
@@ -473,6 +490,16 @@
                            11  SPA-GMN-CHG310FLG-LST   PIC X(40)
                                                        OCCURS  2.
                            11  SPA-GMN-CHG310FLG-MAX   PIC 9(03).
+      *                投薬診療種別変換選択
+                       09  SPA-GMN-CHGSRYSYU-G.
+                           11  SPA-GMN-CHGSRYSYU       PIC X(01).
+                           11  SPA-GMN-CHGSRYSYU-F1    PIC X(01).
+                           11  SPA-GMN-CHGSRYSYU-MEI   PIC X(38).
+                       09  SPA-GMN-CHGSRYSYU-COMB.
+                           11  SPA-GMN-CHGSRYSYU-LST   PIC X(40)
+                                                       OCCURS  2.
+                           11  SPA-GMN-CHGSRYSYU-MAX   PIC 9(02).
+      *
                    07  SPA-GMN-PAGE4-AREA.
       *                入金管理情報（収納機能情報）
                        09  SPA-GMN-SYUNYKNKNRKBN-G.
@@ -1296,6 +1323,10 @@
            MOVE    "0 変換する"        TO  SPA-GMN-CHG310FLG-LST(1)
            MOVE    "1 変換しない"      TO  SPA-GMN-CHG310FLG-LST(2)
            MOVE    2                   TO  SPA-GMN-CHG310FLG-MAX
+      *    投薬診療種別変換選択
+           MOVE    "0 変換する"        TO  SPA-GMN-CHGSRYSYU-LST(1)
+           MOVE    "1 変換しない"      TO  SPA-GMN-CHGSRYSYU-LST(2)
+           MOVE    2                   TO  SPA-GMN-CHGSRYSYU-MAX
       *
            MOVE    "0 発行しない"      TO  SPA-GMN-SYUSKYPRTGLST(1)
            MOVE    "1 発行する"        TO  SPA-GMN-SYUSKYPRTGLST(2)
@@ -1588,12 +1619,18 @@
       *        中途終了展開時の自動発生
                MOVE    SYS-1008-CHUTOTENKAI-FLG
                                        TO  SPA-GMN-CHUTOTENKAI
-      *        訂正時の自動発生
+      *        訂正時の自動発生（外来）
                MOVE    SYS-1008-TEISEIAUTO-FLG
                                        TO  SPA-GMN-TEISEIAUTO
       *        訂正時の自動発生（特定疾患処方管理）
                MOVE    SYS-1008-TEISEITOKU-FLG
                                        TO  SPA-GMN-TEISEITOKU
+      *        訂正時の自動発生（入院）
+               MOVE    SYS-1008-TEINYUAUTO-FLG
+                                       TO  SPA-GMN-TEINYUAUTO
+      *        病名からの自動発生
+               MOVE    SYS-1008-BYOMEIAUTO-FLG
+                                       TO  SPA-GMN-BYOMEIAUTO
       *
       *        時間外加算チェック
                MOVE    SYS-1008-JIKANTOKU-CHK
@@ -1901,8 +1938,8 @@
                                                TO  SPA-GMN-ZENHKNCHK-G
            END-EVALUATE
       *
-      *     診療科コードセット
-            PERFORM 4102-SRYKACD-CHK-SEC
+      *    診療科コードセット
+           PERFORM 4102-SRYKACD-CHK-SEC
       *    病名表示区分
            IF     SPA-GMN-BYOHYOKBN   =   SPACE
                MOVE    "1"             TO  SPA-GMN-BYOHYOKBN
@@ -1932,7 +1969,7 @@
                 WHEN    OTHER
                     MOVE    SPA-GMN-ZAIJUNKBN-LIST(1)
                                                TO  SPA-GMN-ZAIJUNKBN-G
-            END-EVALUATE
+           END-EVALUATE
       *    検体検査加算自動発生
            EVALUATE    SPA-GMN-KENSAAUTO
                 WHEN    "0"
@@ -1945,6 +1982,37 @@
                     MOVE    SPA-GMN-KENSAAUTO-LIST(1)
                                                TO  SPA-GMN-KENSAAUTO-G
             END-EVALUATE
+      *    訂正時の自動発生（入院）
+           IF     SPA-GMN-TEINYUAUTO  =   SPACE
+      *        未設定は外来と同様
+               MOVE    SPA-GMN-TEISEIAUTO  TO  SPA-GMN-TEINYUAUTO
+           END-IF
+           MOVE    ZERO                TO  FLG-OK
+           PERFORM VARYING IDY         FROM    1   BY  1
+                   UNTIL   IDY         >   SPA-GMN-DATA-MAX
+               IF      SPA-GMN-TEINYUAUTO
+                                       =   SPA-GMN-DATAL(IDY)
+                   MOVE    SPA-GMN-DATALST(IDY)
+                                               TO SPA-GMN-TEINYUAUTO-G
+                   MOVE    1                   TO  FLG-OK
+                   MOVE    SPA-GMN-DATA-MAX    TO  IDY
+               END-IF
+           END-PERFORM
+      *    病名からの自動発生
+           IF      SPA-GMN-BYOMEIAUTO  =   SPACE
+               MOVE    "1"                 TO  SPA-GMN-BYOMEIAUTO
+           END-IF
+           MOVE    ZERO                TO  FLG-OK
+           PERFORM VARYING IDY         FROM    1   BY  1
+                   UNTIL   IDY         >   SPA-GMN-DATA-MAX
+               IF      SPA-GMN-BYOMEIAUTO
+                                           =   SPA-GMN-DATAL(IDY)
+                   MOVE    SPA-GMN-DATALST(IDY)
+                                               TO SPA-GMN-BYOMEIAUTO-G
+                   MOVE    1                   TO  FLG-OK
+                   MOVE    SPA-GMN-DATA-MAX    TO  IDY
+               END-IF
+           END-PERFORM
       *
             MOVE    2                  TO  SPA-GMN-CUR
       *
@@ -2148,6 +2216,8 @@
            MOVE    SYS-1038-TEISEIFLG      TO  SPA-GMN-TEISEIFLG
       *    皮下筋肉注射料変換選択
            MOVE    SYS-1038-CHG310FLG      TO  SPA-GMN-CHG310FLG
+      *    投薬診療種別変換選択
+           MOVE    SYS-1038-CHGSRYSYU-FLG  TO  SPA-GMN-CHGSRYSYU
       *
       *    入金管理区分
            MOVE    ZERO                TO  FLG-OK
@@ -2339,6 +2409,23 @@
            IF      FLG-OK              =   ZERO
                MOVE    SPA-GMN-CHG310FLG-LST (1)
                                        TO  SPA-GMN-CHG310FLG-G
+           END-IF
+      *    投薬診療種別変換選択
+           MOVE    ZERO                TO  FLG-OK
+           PERFORM VARYING IDY         FROM    1   BY  1
+                   UNTIL  (IDY         >   SPA-GMN-CHGSRYSYU-MAX )
+                       OR (FLG-OK      =   1       )
+               IF      SPA-GMN-CHGSRYSYU
+                                       =   SPA-GMN-CHGSRYSYU-LST (IDY)
+                                                             (1:1)
+                   MOVE    SPA-GMN-CHGSRYSYU-LST (IDY)
+                                       TO  SPA-GMN-CHGSRYSYU-G
+                   MOVE    1           TO  FLG-OK
+               END-IF
+           END-PERFORM
+           IF      FLG-OK              =   ZERO
+               MOVE    SPA-GMN-CHGSRYSYU-LST (1)
+                                       TO  SPA-GMN-CHGSRYSYU-G
            END-IF
       *
            MOVE    301                  TO  SPA-GMN-CUR
@@ -3107,6 +3194,10 @@
            MOVE    W07-TEISEI          TO  SPA-GMN-TEISEIAUTO-G
       *    訂正時の自動発生
            MOVE    W07-TEISEITOKU      TO  SPA-GMN-TEISEITOKU-G
+      *    訂正時の自動発生（入院）
+           MOVE    W07-TEINYUAUTO      TO  SPA-GMN-TEINYUAUTO-G
+      *    病名からの自動発生
+           MOVE    W07-BYOMEIAUTO      TO  SPA-GMN-BYOMEIAUTO-G
       *
            MOVE    W07-LASTKIKAN       TO  SPA-GMN-LAST-KIKAN
       *
@@ -3166,6 +3257,7 @@
            MOVE    W07-AKUSEIHYO       TO  SPA-GMN-AKUSEIHYO-G
            MOVE    W07-TEISEIFLG       TO  SPA-GMN-TEISEIFLG-G
            MOVE    W07-CHG310FLG       TO  SPA-GMN-CHG310FLG-G
+           MOVE    W07-CHGSRYSYU       TO  SPA-GMN-CHGSRYSYU-G
       *
       *    収納機能情報
            MOVE    W07-SYUNYKNKNRKBN   TO  SPA-GMN-SYUNYKNKNRKBN-G
@@ -3259,6 +3351,14 @@
       *            検体検査加算自動発生）
                    IF      SPA-ERRCD           =   SPACE
                        PERFORM 4103-KENSAAUTO-CHK-SEC
+                   END-IF
+      *            訂正時の自動発生（入院）
+                   IF      SPA-ERRCD           =   SPACE
+                       PERFORM 4103-TEINYUAUTO-CHK-SEC
+                   END-IF
+      *            病名からの自動発生
+                   IF      SPA-ERRCD           =   SPACE
+                       PERFORM 4103-BYOMEIAUTO-CHK-SEC
                    END-IF
       *            外来管理加算チェック
                    IF      SPA-ERRCD           =   SPACE
@@ -3369,6 +3469,10 @@
       *            皮下筋肉注射料変換選択
                    IF      SPA-ERRCD           =   SPACE
                        PERFORM 4108-CHG310FLG-CHK-SEC
+                   END-IF
+      *            投薬診療種別変換選択
+                   IF      SPA-ERRCD           =   SPACE
+                       PERFORM 4108-CHGSRYSYU-CHK-SEC
                    END-IF
       *            入金管理区分チェック
                    IF      SPA-ERRCD           =   SPACE
@@ -3652,6 +3756,54 @@
       *
           .
        4103-TEISEIAUTO-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    訂正時の自動発生（入院）チェック処理
+      *****************************************************************
+       4103-TEINYUAUTO-CHK-SEC       SECTION.
+      *
+           MOVE    ZERO                TO  FLG-OK
+      *
+           PERFORM VARYING     IDY     FROM    1   BY  1
+                   UNTIL       IDY     >   SPA-GMN-DATA-MAX
+               IF      SPA-GMN-TEINYUAUTO  =   SPA-GMN-DATAL(IDY)
+                   MOVE    SPA-GMN-DATALST (IDY)
+                                           TO  SPA-GMN-TEINYUAUTO-G
+                   MOVE    1               TO  FLG-OK
+               END-IF
+           END-PERFORM
+      *
+           IF      FLG-OK              =   ZERO
+               MOVE    "0083"              TO  SPA-ERRCD
+               MOVE    86                  TO  SPA-GMN-CUR
+           END-IF
+      *
+          .
+       4103-TEINYUAUTO-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    病名疾患区分からの自動発生チェック処理
+      *****************************************************************
+       4103-BYOMEIAUTO-CHK-SEC       SECTION.
+      *
+           MOVE    ZERO                TO  FLG-OK
+      *
+           PERFORM VARYING     IDY     FROM    1   BY  1
+                   UNTIL       IDY     >   SPA-GMN-DATA-MAX
+               IF      SPA-GMN-BYOMEIAUTO  =   SPA-GMN-DATAL(IDY)
+                   MOVE    SPA-GMN-DATALST (IDY)
+                                           TO  SPA-GMN-BYOMEIAUTO-G
+                   MOVE    1               TO  FLG-OK
+               END-IF
+           END-PERFORM
+      *
+           IF      FLG-OK              =   ZERO
+               MOVE    "0084"              TO  SPA-ERRCD
+               MOVE    87                  TO  SPA-GMN-CUR
+           END-IF
+      *
+          .
+       4103-BYOMEIAUTO-CHK-EXT.
            EXIT.
       *****************************************************************
       *    訂正時の自動発生（特定疾患処方管理）チェック処理
@@ -4814,6 +4966,31 @@
        4108-CHG310FLG-CHK-EXT.
            EXIT.
       *****************************************************************
+      *    投薬診療種別変換選択チェック処理（診療行為機能情報）
+      *****************************************************************
+       4108-CHGSRYSYU-CHK-SEC      SECTION.
+      *
+           MOVE    ZERO                TO  FLG-OK
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL      (IDX     >   SPA-GMN-CHGSRYSYU-MAX)
+                       OR     (FLG-OK  =   1    ) 
+               IF      SPA-GMN-CHGSRYSYU
+                                       =   SPA-GMN-CHGSRYSYU-LST (IDX)
+                                                          (1:1)
+                   MOVE    SPA-GMN-CHGSRYSYU-LST(IDX)
+                                          TO  SPA-GMN-CHGSRYSYU-G
+                   MOVE    1              TO  FLG-OK
+               END-IF
+           END-PERFORM
+           IF      FLG-OK              =   ZERO
+               MOVE    307             TO  SPA-GMN-CUR
+               MOVE    "2012"          TO  SPA-ERRCD
+           END-IF
+      *
+           .
+       4108-CHGSRYSYU-CHK-EXT.
+           EXIT.
+      *****************************************************************
       *    入金管理区分チェック処理（収納行為機能情報）
       *****************************************************************
        4109-SYUNYKNKNRKBN-CHK-SEC      SECTION.
@@ -5855,6 +6032,10 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPA-GMN-ZAIJUNKBN       TO  SYS-1008-ZAIJUNKBN-FLG
       *    検体検査加算自動発生
            MOVE    SPA-GMN-KENSAAUTO       TO  SYS-1008-KENSAAUTO-FLG
+      *    訂正時の自動発生（入院）
+           MOVE    SPA-GMN-TEINYUAUTO      TO  SYS-1008-TEINYUAUTO-FLG
+      *    病名疾患区分からの自動発生
+           MOVE    SPA-GMN-BYOMEIAUTO      TO  SYS-1008-BYOMEIAUTO-FLG
       *
       *    時間外加算乳幼児チェック
            MOVE    SPA-GMN-JIKANTOKU-CHK   TO
@@ -5974,6 +6155,8 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPA-GMN-AKUSEIHYO       TO  SYS-1038-AKUSEIHYOFLG
            MOVE    SPA-GMN-TEISEIFLG       TO  SYS-1038-TEISEIFLG
            MOVE    SPA-GMN-CHG310FLG       TO  SYS-1038-CHG310FLG
+      *
+           MOVE    SPA-GMN-CHGSRYSYU       TO  SYS-1038-CHGSRYSYU-FLG
       *
            MOVE    SYS-1038-REC            TO  SYSKANRI-REC
       *
@@ -6498,6 +6681,23 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            END-PERFORM
            MOVE    2                   TO  W07-KENSAAUTO-COUNT
       *
+      *    訂正時の自動発生（入院）
+           MOVE    SPA-GMN-TEINYUAUTO-G    TO  W07-TEINYUAUTO
+           PERFORM VARYING IDY     FROM    1   BY  1
+                   UNTIL   IDY     >       SPA-GMN-DATA-MAX
+               MOVE    SPA-GMN-DATALST(IDY)
+                                       TO  W07-TEINYUAUTO-ITEM(IDY)
+           END-PERFORM
+           MOVE    SPA-GMN-DATA-MAX    TO  W07-TEINYUAUTO-COUNT
+      *    病名疾患区分からの自動発生
+           MOVE    SPA-GMN-BYOMEIAUTO-G    TO  W07-BYOMEIAUTO
+           PERFORM VARYING IDY     FROM    1   BY  1
+                   UNTIL   IDY     >       SPA-GMN-DATA-MAX
+               MOVE    SPA-GMN-DATALST(IDY)
+                                       TO  W07-BYOMEIAUTO-ITEM(IDY)
+           END-PERFORM
+           MOVE    SPA-GMN-DATA-MAX    TO  W07-BYOMEIAUTO-COUNT
+      *
       *    時間外加算チェック
            MOVE    SPA-GMN-JIKANTOKU-CHK-G TO  W07-JIKANTOKU-CHK
            PERFORM VARYING     IDX     FROM    1   BY  1
@@ -6701,6 +6901,15 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            END-PERFORM
            MOVE    SPA-GMN-CHG310FLG-MAX
                                        TO  W07-CHG310FLG-COUNT
+      *    投薬診療種別変換選択（診療行為機能情報）
+           MOVE    SPA-GMN-CHGSRYSYU-G   TO  W07-CHGSRYSYU
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-GMN-CHGSRYSYU-MAX
+               MOVE    SPA-GMN-CHGSRYSYU-LST (IDX)
+                                       TO  W07-CHGSRYSYU-ITEM(IDX)
+           END-PERFORM
+           MOVE    SPA-GMN-CHGSRYSYU-MAX
+                                       TO  W07-CHGSRYSYU-COUNT
       *
       *    複数科まとめ（診療行為機能情報）
            MOVE    SPA-GMN-KAGRPFLG-G  TO  W07-KAGRPFLG
@@ -7094,6 +7303,12 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN    "0082"
                    MOVE    "検体検査加算自動発生チェックエラー"
                                                     TO  SPA-ERRMSG
+               WHEN    "0083"
+                   MOVE    "訂正時の自動発生（入院）チェックエラー"
+                                                    TO  SPA-ERRMSG
+               WHEN    "0084"
+                   MOVE    "病名疾患区分からの自動発生チェックエラー"
+                                                    TO  SPA-ERRMSG
                WHEN    "0030"
                    MOVE    "時間外加算（乳幼児）チェックエラー"
                                                        TO  SPA-ERRMSG
@@ -7187,6 +7402,15 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN    "2011"
                    MOVE    "悪性腫瘍検査一覧区分がありません。"
                                                        TO  SPA-ERRMSG
+               WHEN    "2012"
+                   MOVE    "投薬診療種別変換選択区分がありません。"
+                                                       TO  SPA-ERRMSG
+               WHEN    "2013"
+                   STRING  "特定疾患療養指導料と初診料のチェック区分が"
+                           "ありません。"
+                                                   DELIMITED  BY  SIZE
+                                                   INTO    SPA-ERRMSG
+                   END-STRING
       *    収納情報
                WHEN    "3001"
                    MOVE    "請求書兼領収書発行区分がありません。"
@@ -7407,6 +7631,10 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE  "ZAIJUNKBN"       TO   MCP-WIDGET
                WHEN    84
                    MOVE  "KENSAAUTO"       TO   MCP-WIDGET
+               WHEN    86
+                   MOVE  "TEINYUAUTO"      TO   MCP-WIDGET
+               WHEN    87
+                   MOVE  "BYOMEIAUTO"      TO   MCP-WIDGET
       *        時間外加算チェック
                WHEN    50
                    MOVE  "JIKANTOKU_CHK"   TO   MCP-WIDGET
@@ -7474,6 +7702,8 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE  "TEISEIFLG"       TO   MCP-WIDGET
                WHEN    306
                    MOVE  "CHG310FLG"       TO   MCP-WIDGET
+               WHEN    307
+                   MOVE  "CHGSRYSYU"       TO   MCP-WIDGET
       *        請求選択
                WHEN    320
                    MOVE  "SRYNYKNKNRKBN"   TO   MCP-WIDGET
@@ -7641,6 +7871,10 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN    "TEISEITOKU"
                    MOVE    84              TO  SPA-GMN-CUR
                WHEN    "KENSAAUTO"
+                   MOVE    86              TO  SPA-GMN-CUR
+               WHEN    "TEINYUAUTO"
+                   MOVE    87              TO  SPA-GMN-CUR
+               WHEN    "BYOMEIAUTO"
                    MOVE    10              TO  SPA-GMN-CUR
       *
                WHEN    "KIKAN"
@@ -7744,6 +7978,9 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN    "TEISEIFLG"
                    MOVE    306             TO  SPA-GMN-CUR
                WHEN    "CHG310FLG"
+      ********     MOVE    320             TO  SPA-GMN-CUR
+                   MOVE    307             TO  SPA-GMN-CUR
+               WHEN    "CHGSRYSYU"
                    MOVE    320             TO  SPA-GMN-CUR
                WHEN    "SRYNYKNKNRKBN"
                    MOVE    321             TO  SPA-GMN-CUR

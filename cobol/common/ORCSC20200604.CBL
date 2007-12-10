@@ -1823,8 +1823,10 @@
            END-IF
       *TEST
       *    訂正で自動発生なしの場合
-           IF     (LNK-ORCSC-SYORIFLG  =   1  )  AND
-                  (SPA-TEISEITOKU-FLG  =   "0")
+           IF    ((LNK-ORCSC-SYORIFLG  =   1  )  AND
+                  (SPA-TEISEITOKU-FLG  =   "0") )
+      *        病名疾患区分の自動発生なし
+               OR (SPA-BYOMEIAUTO-FLG  NOT =   "1" )
                CONTINUE
            ELSE
       *        特定疾患処方管理加算の処理
@@ -2236,8 +2238,10 @@
            END-IF
       *
       *    訂正で自動発生なしの場合
-           IF     (LNK-ORCSC-SYORIFLG  =   1  )  AND
-                  (SPA-TEISEITOKU-FLG  =   "0")
+           IF    ((LNK-ORCSC-SYORIFLG  =   1  )  AND
+                  (SPA-TEISEITOKU-FLG  =   "0"))
+      *        病名疾患区分の自動発生なし
+               OR (SPA-BYOMEIAUTO-FLG  NOT =   "1" )
                CONTINUE
            ELSE
       *        特定疾患処方管理加算

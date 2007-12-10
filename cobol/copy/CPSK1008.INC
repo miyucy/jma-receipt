@@ -39,6 +39,8 @@
       *                                     剤登録順区分追加
       *  01.00.11    NACL-多々納  06/03/14  検体検査加算
       *  04.00.00    NACL-多々納  07/09/06  前回保険組合せ相違チェック追加
+      *  04.01.00    NACL-多々納  07/12/XX  訂正時の自動発生（入院）追加
+      *                                     病名からの自動発生追加
       *****************************************************************
        01  SYS-1008-REC.
            03  SYS-1008-KEY.
@@ -100,7 +102,7 @@
            03  SYS-1008-CLEARCHK-FLG   PIC X(01).
       *薬剤情報提供料チェック
            03  SYS-1008-YAKJYOCHK-FLG   PIC X(01).
-      *訂正時の自動発生
+      *訂正時の自動発生（外来）
            03  SYS-1008-TEISEIAUTO-FLG         PIC X(01).
       *訂正時の自動発生（特定疾患処方管理）
            03  SYS-1008-TEISEITOKU-FLG         PIC X(01).
@@ -112,6 +114,10 @@
            03  SYS-1008-KENSAAUTO-FLG          PIC X(01).
       *前回保険組合せ相違チェック区分
            03  SYS-1008-ZENHKNCHK-FLG          PIC X(01).
+      *訂正時の自動発生（入院）
+           03  SYS-1008-TEINYUAUTO-FLG         PIC X(01).
+      *病名疾患区分からの自動発生
+           03  SYS-1008-BYOMEIAUTO-FLG         PIC X(01).
       *予備
       *****03  FILLER                   PIC X(489).
       *****03  FILLER                   PIC X(486).
@@ -119,7 +125,8 @@
       *****03  FILLER                   PIC X(451).
       *****03  FILLER                   PIC X(450).
       *****03  FILLER                   PIC X(449).
-           03  FILLER                   PIC X(445).
+      **** 03  FILLER                   PIC X(445).
+           03  FILLER                   PIC X(443).
       *端末ＩＤ
            03  SYS-1008-TERMID          PIC  X(16).
       *オペーレータＩＤ

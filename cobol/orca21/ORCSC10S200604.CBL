@@ -2834,9 +2834,12 @@
                    MOVE    "113001810"         TO  WRK-SRYCD
            END-EVALUATE
       *
-      *    指導料追加、チェック処理
-           MOVE    ZERO                TO  FLG-SIDOU
-           PERFORM 3301211-SIDOU-ADD-SEC
+      *    自動発生区分判定
+           IF      SPA-BYOMEIAUTO-FLG  =  "1"
+      *        指導料追加、チェック処理
+               MOVE    ZERO                TO  FLG-SIDOU
+               PERFORM 3301211-SIDOU-ADD-SEC
+           END-IF
            .
        330121-TOKUTEI-SIDOU-EXT.
            EXIT.
@@ -3123,9 +3126,12 @@
                    MOVE    "113002310"     TO  WRK-SRYCD
            END-EVALUATE
       *
-      *    指導料追加、チェック処理
-           MOVE    1                   TO  FLG-SIDOU
-           PERFORM 3301211-SIDOU-ADD-SEC
+      *    自動発生区分判定
+           IF      SPA-BYOMEIAUTO-FLG  =  "1"
+      *        指導料追加、チェック処理
+               MOVE    1                   TO  FLG-SIDOU
+               PERFORM 3301211-SIDOU-ADD-SEC
+           END-IF
       *
            .
        330122-HIFUKA-SIDOU-EXT.
