@@ -1,0 +1,77 @@
+      *******************************************************************
+      * Project code name "ORCA"
+      * 日医標準レセプトソフト（JMA standard receipt software）
+      * Copyright(C) 2002 JMA (Japan Medical Association)
+      *
+      * This program is part of "JMA standard receipt software".
+      *
+      *     This program is distributed in the hope that it will be useful
+      * for further advancement in medical care, according to JMA Open
+      * Source License, but WITHOUT ANY WARRANTY.
+      *     Everyone is granted permission to use, copy, modify and
+      * redistribute this program, but only under the conditions described
+      * in the JMA Open Source License. You should have received a copy of
+      * this license along with this program. If not, stop using this
+      * program and contact JMA, 2-28-16 Honkomagome, Bunkyo-ku, Tokyo,
+      * 113-8621, Japan.
+      ********************************************************************
+      ************************************************************
+      *    公害レセプト・点数情報         COPY (CPRCF121.INC) 
+      *                       診療科違いの同一剤のまとめ用         
+      ************************************************************
+      ************************************************************
+      *  コピー句修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      ************************************************************
+      *01  RECE121-REC.
+           03  RECE121-KEY.
+               05  RECE121-KEY1.
+      *医療機関番号
+                   07  RECE121-HOSPNUM     PIC 9(2).
+      *診療年月
+                   07  RECE121-SRYYM       PIC 9(06).
+      *入外区分
+                   07  RECE121-NYUGAIKBN   PIC X(01).
+      *患者ＩＤ
+                   07  RECE121-PTID        PIC 9(10).
+      *レセプト診療科
+                   07  RECE121-RECEKA      PIC X(02).
+      *公費ＩＤ
+                   07  RECE121-HKNID       PIC 9(10).
+      *適用開始年月日
+                   07  RECE121-TEKSTYMD    PIC X(08). 
+      *診療区分
+               05  RECE121-SRYKBN          PIC X(02).
+      *診療種別区分
+               05  RECE121-SRYSYUKBN       PIC X(03).
+      *剤点数
+               05  RECE121-ZAITEN          PIC 9(08).
+      *診療コード計
+               05  RECE121-SRYCDTOTAL      PIC 9(14).
+      *数量計
+               05  RECE121-SURYOUTOTAL     PIC 9(07)V9(03).
+      *診療コード＊数量の累計
+               05  RECE121-RUIKEITOTAL     PIC 9(15)V9(03).
+      *明細数
+               05  RECE121-MEISAISU        PIC 9(04).
+      *在宅患者訪問点滴注射管理指導料算定時の点滴注射
+               05  RECE121-FLG-HOUTEN-COMMENT
+                                           PIC X(01).
+      *コメント剤連番
+               05  RECE121-COMRENNUM       PIC 9(05).
+      *剤回数
+           03  RECE121-ZAIKAISU            PIC 9(04).
+      *日数回数テーブル
+           03  RECE121-DAY-AREA.
+      *        診療回数テーブル（1:合計,2:１回,3:２回, 4:３回以上）
+               05  RECE121-DAY-TBL         OCCURS  4.
+                   07  RECE121-KAISUINF    OCCURS  31.
+                       09  RECE121-KAISU   PIC 9(03).
+      *データ
+           03  RECE121-REC1                PIC X(700).
+      *コメントデータ
+           03  RECE121-COM-AREA.
+               05  RECE121-COM             PIC X(200)    OCCURS  10.
+      *初診（同日複数診療科）算定科
+           03  RECE121-SYODOU-SRYKA-AREA.
+               05  RECE121-SYODOU-SRYKA    PIC X(02)     OCCURS  10.

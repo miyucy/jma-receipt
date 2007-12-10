@@ -31,6 +31,8 @@
       *  03.05.02    NACL-Æ£¸¶    07/06/01  Ï«ºÒ¡¦¼«ÇåÀÕÂÐ±þ
       *  03.05.03    NACL-Æ£¸¶    07/06/19  ¼«ÇåÀÕ¤ÎÍÍ¼°ÁªÂòÂÐ±þ
       *                                     ¡ÊÊ¿À®£±£¹Ç¯£´·î²þÀµÍÍ¼°¡Ë
+      *
+      *  04.01.01    NACL-Æ£¸¶    07/11/22  ¸ø³²¥ì¥»¥×¥ÈÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -477,6 +479,8 @@ grpsys     MOVE    SPA-HOSPNUM     TO  RECEERR-HOSPNUM
                WHEN    "2"
                    MOVE    SYS-4001-JIBAIKBN
                                            TO  SHELLTBL-ARG3
+               WHEN    "3"
+                   MOVE    "6"             TO  SHELLTBL-ARG3
            END-EVALUATE 
            MOVE    RECEERR         TO  SHELLTBL-ARG4
            MOVE    WRK-CONS-JOB-JOBID
@@ -518,6 +522,7 @@ grpsys     MOVE    SPA-HOSPNUM     TO  RECEERR-HOSPNUM
       *------------------> recept2.sh $11 - $26 (#24 ¤Ï½ü¤¯)
            EVALUATE   LINK-NYUGAIKBN   ALSO    LINK-HKNKBN
                WHEN   "1"              ALSO    "0"
+               WHEN   "1"              ALSO    "3"
                    MOVE    SYS-2005-SYAPRTNM-N
                                    TO  SHELLTBL-ARG15
                    MOVE    SYS-2005-KKHPRTNM-N
@@ -527,6 +532,7 @@ grpsys     MOVE    SPA-HOSPNUM     TO  RECEERR-HOSPNUM
                    MOVE    SYS-2005-KKHPRTNM-NEXT-N
                                    TO  SHELLTBL-ARG29
                WHEN   "2"              ALSO    "0"
+               WHEN   "2"              ALSO    "3"
                    MOVE    SYS-2005-SYAPRTNM
                                    TO  SHELLTBL-ARG15
                    MOVE    SYS-2005-KKHPRTNM

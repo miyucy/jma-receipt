@@ -102,6 +102,8 @@
       *
       *  03.05.01    NACL-小豆沢  07/05/30  グループ診療対応
       *  03.05.02    NACL-門脇    07/07/17  個別時のシステム管理編集修正
+      *
+      *  04.01.01    NACL-藤原    07/11/22  公害レセプト対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -426,6 +428,8 @@
            03  WRK-CONS-ROUSAI-HKNNUM  PIC X(03)   VALUE   "971". 
       *    自賠責保険番号 
            03  WRK-CONS-JIBAI-HKNNUM   PIC X(03)   VALUE   "973".       
+      *    公害保険番号 
+           03  WRK-CONS-KOUGAI-HKNNUM  PIC X(03)   VALUE   "975". 
       *
            03  WRK-CONS-SRYYM          PIC 9(06)   VALUE   200604.      
       *     
@@ -937,7 +941,8 @@
                    IF      FLG-HKNCOMBI    =   ZERO
                        IF      COMB-HKNNUM     =
                                                WRK-CONS-ROUSAI-HKNNUM OR
-                                               WRK-CONS-JIBAI-HKNNUM 
+                                               WRK-CONS-JIBAI-HKNNUM  OR
+                                               WRK-CONS-KOUGAI-HKNNUM 
                            MOVE    "1"             TO  WRK-ROUSAIKBN
                        ELSE     
                            IF      COMB-TEKSTYMD   <=  WRK-STYMD
@@ -1413,7 +1418,8 @@
       *                医保以外読み飛ばし
                        IF      COMB-HKNNUM     =
                                            WRK-CONS-ROUSAI-HKNNUM OR
-                                           WRK-CONS-JIBAI-HKNNUM 
+                                           WRK-CONS-JIBAI-HKNNUM  OR
+                                           WRK-CONS-KOUGAI-HKNNUM 
                            MOVE    "1"         TO
                                            WRK-HKNCOMBI-SYOKBN (IDX1)
                        END-IF
@@ -1424,7 +1430,8 @@
       *                    医保以外読み飛ばし
                            IF      COMB-HKNNUM     =
                                                WRK-CONS-ROUSAI-HKNNUM OR
-                                               WRK-CONS-JIBAI-HKNNUM 
+                                               WRK-CONS-JIBAI-HKNNUM  OR
+                                               WRK-CONS-KOUGAI-HKNNUM
                                MOVE    "1"         TO
                                            WRK-HKNCOMBI-SYOKBN (IDX1)
                            ELSE
@@ -2823,7 +2830,8 @@
       *
                IF      FLG-HKNCOMBI        =   ZERO
                    IF      COMB-HKNNUM     =   WRK-CONS-ROUSAI-HKNNUM OR
-                                               WRK-CONS-JIBAI-HKNNUM 
+                                               WRK-CONS-JIBAI-HKNNUM  OR
+                                               WRK-CONS-KOUGAI-HKNNUM 
                        MOVE    "1"             TO  WRK-ROUSAIKBN
                    ELSE                                         
                        IF      COMB-TEKSTYMD   <=  WRK-STYMD

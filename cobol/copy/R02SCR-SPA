@@ -26,6 +26,8 @@
       *  03.04.02    NACL-藤原    07/03/01  国保レセプト編綴順詳細設定対応
       *
       *  03.05.01    NACL-藤原    07/06/30  印刷後のチェック解除機能対応
+      *
+      *  04.01.01    NACL-藤原    07/11/22  公害レセプト対応
       *****************************************************************
       *
        01  SPA-R02.
@@ -211,7 +213,7 @@
                05  SPA-LNK-XC01-SHORI-RENNUM
                                           PIC 9(4).
       *
-      *    労災・自賠責印刷指示画面
+      *    労災・自賠責・公害印刷指示画面
             03  SPA-R04-AREA.
                05  SPA-GMN-R04-PAGE                PIC 9(02).
                05  SPA-GMN-R04-CUR                 PIC 9(02).
@@ -257,16 +259,24 @@
                    07  SPA-NAI-R04-WIDGET          PIC X(08). 
                    07  SPA-NAI-R04-2005-ROUPRTNM   PIC X(16).
                    07  SPA-NAI-R04-2005-JBAIPRTNM  PIC X(16).
+                   07  SPA-NAI-R04-2005-KOUGAIPRTNM
+                                                   PIC X(16).
                    07  SPA-NAI-R04-2005-ROUPRTNM-NEXT
                                                    PIC X(16).
                    07  SPA-NAI-R04-2005-JBAIPRTNM-NEXT
                                                    PIC X(16).
+                   07  SPA-NAI-R04-2005-KOUGAIPRTNM-NEXT
+                                                   PIC X(16).
                    07  SPA-NAI-R04-2005-ROUPRTNM-N PIC X(16).
                    07  SPA-NAI-R04-2005-JBAIPRTNM-N
+                                                   PIC X(16).
+                   07  SPA-NAI-R04-2005-KOUGAIPRTNM-N
                                                    PIC X(16).
                    07  SPA-NAI-R04-2005-ROUPRTNM-NEXT-N
                                                    PIC X(16).
                    07  SPA-NAI-R04-2005-JBAIPRTNM-NEXT-N
+                                                   PIC X(16).
+                   07  SPA-NAI-R04-2005-KOUGAIPRTNM-NEXT-N
                                                    PIC X(16).
                    07  SPA-NAI-R04-TBL.
                        09  SPA-NAI-R04-TBL-G       OCCURS  25.

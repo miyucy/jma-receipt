@@ -52,6 +52,7 @@ shell_sources = \
 	monthly/recept11.sh.in \
 	monthly/recept12.sh.in \
 	monthly/recept13.sh.in \
+	monthly/recept14.sh.in \
 	monthly/sokatsu.sh.in \
 	monthly/teiki1.sh.in \
 	monthly/teiki2.sh.in \

@@ -35,6 +35,8 @@
       * 01.01.01     NACL-藤原    02/09/25  入外区分・表示順の追加     
       * 01.01.06     NACL-多々納  02/11/13  一括入力 
       * 03.05.00     NACL-多々納  07/05/02  グループ診療対応
+      *
+      *  04.01.01    NACL-藤原    07/11/22  公害レセプト対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -381,7 +383,9 @@
            MOVE    "労働基準監督署"    TO  SPA-GMN-TEISYUTUSAKIMEIL(3)
            MOVE    "4"                 TO  SPA-GMN-TEISYUTUSAKIL   (4)
            MOVE    "保険会社"          TO  SPA-GMN-TEISYUTUSAKIMEIL(4)
-           MOVE    4                   TO  SPA-GMN-TEISYUTUSAKI-MAX 
+           MOVE    "5"                 TO  SPA-GMN-TEISYUTUSAKIL   (5)
+           MOVE    "公害"              TO  SPA-GMN-TEISYUTUSAKIMEIL(5)
+           MOVE    5                   TO  SPA-GMN-TEISYUTUSAKI-MAX 
       *
            MOVE    "1"                 TO  SPA-GMN-NYUGAIKBNL   (1) 
            MOVE    "入院"              TO  SPA-GMN-NYUGAIKBNMEIL(1)

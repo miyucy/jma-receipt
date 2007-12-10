@@ -52,6 +52,8 @@
       *  03.05.01    NACL-藤原    07/04/19  グループ診療対応
       *  03.05.02    NACL-藤原    07/09/04  宮崎県「公費９０」対応
       *                                     ２００７年９月以降のみ対象 
+      *
+      *  04.01.01    NACL-藤原    07/11/22  公害レセプト対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -251,6 +253,8 @@
            03  WRK-CONS-CHOUKI-HKNNUM  PIC X(03)   VALUE   "972".
       *    長期（上位所得者）
            03  WRK-CONS-CHOUKI-HKNNUM2 PIC X(03)   VALUE   "974".
+      *    公害保険番号 
+           03  WRK-CONS-KOUGAI-HKNNUM  PIC X(03)   VALUE   "975". 
       *
            03  WRK-CONS-SRYYM-200609   PIC 9(06)   VALUE   200609.      
            03  WRK-CONS-SRYYM-200709   PIC 9(06)   VALUE   200709.      
@@ -811,6 +815,13 @@ grpsys             MOVE    LNK-SYUBETU-HOSPNUM TO  COMB-HOSPNUM
       *                MOVE    COMB-PTID           TO  PTRSI-PTID
       *                MOVE    PTRSIINF-REC        TO  MCPDATA-REC
       *****************PERFORM 900-PTRSIINF-INV-SEC
+                   WHEN    WRK-CONS-KOUGAI-HKNNUM
+                       INITIALIZE                      PTHKNINF-REC
+      *****************MOVE    LNK-SYUBETU-HOSPNUM TO  PTHKN-HOSPNUM
+      *                MOVE    COMB-PTID           TO  PTHKN-PTID
+      *                MOVE    COMB-HKNID          TO  PTHKN-HKNID
+      *                MOVE    PTHKNINF-REC        TO  MCPDATA-REC
+      *****************PERFORM 900-PTHKNINF-READ-SEC
                    WHEN    OTHER
                        INITIALIZE                      PTHKNINF-REC
 grpsys                 MOVE    LNK-SYUBETU-HOSPNUM TO  PTHKN-HOSPNUM
@@ -1278,6 +1289,7 @@ grpsys                                     SPA-AREA
                EVALUATE    WRK-RECE61-HKNNUM
                    WHEN    WRK-CONS-ROUSAI-HKNNUM
                    WHEN    WRK-CONS-JIBAI-HKNNUM
+                   WHEN    WRK-CONS-KOUGAI-HKNNUM
                        CONTINUE
                    WHEN    OTHER
                        MOVE    PTHKN-HKNID TO  WRK-RECE61-HKNID
@@ -1351,6 +1363,7 @@ grpsys         MOVE    WRK-RECE61-HOSPNUM   TO  PTKOH-HOSPNUM
                EVALUATE    WRK-RECE61-HKNNUM
                    WHEN    WRK-CONS-ROUSAI-HKNNUM
                    WHEN    WRK-CONS-JIBAI-HKNNUM
+                   WHEN    WRK-CONS-KOUGAI-HKNNUM
                        CONTINUE
                    WHEN    OTHER
                        MOVE    1                   TO  FLG-LASTHKNID
@@ -1604,6 +1617,8 @@ grpsys             OR      TBL-RECE61-HOSPNUM (IDXX)  =   ZERO
                        MOVE    3   TO  LNK-SYUBETU-TEISYUTUSAKI (IDXX)
                    WHEN    WRK-CONS-JIBAI-HKNNUM
                        MOVE    4   TO  LNK-SYUBETU-TEISYUTUSAKI (IDXX)
+                   WHEN    WRK-CONS-KOUGAI-HKNNUM
+                       MOVE    5   TO  LNK-SYUBETU-TEISYUTUSAKI (IDXX)
                    WHEN    "060"
                    WHEN    "067"
                    WHEN    "068"
@@ -1653,6 +1668,11 @@ grpsys             OR      TBL-RECE61-HOSPNUM (IDXX)  =   ZERO
       *    労災・自賠責のときレセプト種別の設定はなし
            IF      WRK-RECE61-HKNNUM   =   WRK-CONS-ROUSAI-HKNNUM  OR
                                            WRK-CONS-JIBAI-HKNNUM 
+               GO  TO  30011-RECESYUBETU-SET-EXT
+           END-IF
+      *
+      *    公害のときレセプト種別の設定はなし
+           IF      WRK-RECE61-HKNNUM   =   WRK-CONS-KOUGAI-HKNNUM
                GO  TO  30011-RECESYUBETU-SET-EXT
            END-IF
       *     

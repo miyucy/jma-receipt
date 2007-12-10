@@ -639,3 +639,19 @@ path	del31	{
 	};
 };
 
+path	key32	{ 	
+	DBSELECT	{
+		DECLARE tbl_ptbyomei_key32_csr CURSOR FOR
+		SELECT *
+		FROM tbl_ptbyomei
+			WHERE HOSPNUM    =   :HOSPNUM
+			AND   PTID       =   :PTID
+			AND   SRYYMD     <=  :SRYYMD
+			AND   HKNCOMBI   =   :HKNCOMBI
+			AND   REZEFLG    <>  '1'
+			AND   DLTFLG     =   ' '
+			ORDER  BY  SRYYMD,RENNUM,SRYKA
+		;
+	};
+};
+

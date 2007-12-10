@@ -43,6 +43,7 @@
       *                                     ¡ÊÊ¿À®£±£¹Ç¯£´·î²þÀµÍÍ¼°¡Ë
       *
       *  04.01.01    NACL-Æ£¸¶    07/10/25  ¸øÌ³ºÒ³²ÂÐ±þ
+      *  04.01.02    NACL-Æ£¸¶    07/11/22  ¸ø³²¥ì¥»¥×¥ÈÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -397,6 +398,8 @@
                    MOVE    "HC21"          TO  WRK-CONS-ARG-PRTID
                WHEN    "2"
                    MOVE    "HC23"          TO  WRK-CONS-ARG-PRTID
+               WHEN    "3"
+                   MOVE    "HC25"          TO  WRK-CONS-ARG-PRTID
            END-EVALUATE
 
       *
@@ -426,6 +429,10 @@
                    PERFORM 2006-JIBAI-NYUIN-SEC
                WHEN    "2"                   ALSO    "2"
                    PERFORM 2005-JIBAI-GAIRAI-SEC
+               WHEN    "1"                   ALSO    "3"
+                   PERFORM 2008-KOUGAI-NYUIN-SEC
+               WHEN    "2"                   ALSO    "3"
+                   PERFORM 2007-KOUGAI-GAIRAI-SEC
            END-EVALUATE
       *
            IF      WRK-PARA-SHORI-KBN  NOT  =  ZERO
@@ -1766,6 +1773,341 @@
                                    WRK-ARG
            .
        2006-JIBAI-NYUIN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ¸ø³²¡ÊÆþ±¡³°¡Ë½èÍý
+      *****************************************************************
+       2007-KOUGAI-GAIRAI-SEC                SECTION.
+      *
+           MOVE     SPACE       TO WRK-ARG
+           STRING   WRK-PARA0      DELIMITED   BY  SIZE
+                    ","            DELIMITED   BY  SIZE
+                    WRK-PARA-HOSPNUM
+                                   DELIMITED   BY  SIZE
+                    ","            DELIMITED   BY  SIZE
+                    RECEERR        DELIMITED   BY  SPACE
+                                   INTO    WRK-ARG
+           END-STRING
+           DISPLAY "ORCR1000 start = [" WRK-ARG "]"
+           CALL    "ORCR1000"          USING
+                                       WRK-ARG
+      *
+           MOVE     SPACE       TO WRK-ARG
+           STRING   WRK-PARA2      DELIMITED   BY  SIZE
+                    ","            DELIMITED   BY  SIZE
+                    WRK-PARA-HOSPNUM
+                                   DELIMITED   BY  SIZE
+                    ","            DELIMITED   BY  SIZE
+                    RECEERR        DELIMITED   BY  SPACE
+                                   INTO    WRK-ARG
+           END-STRING
+           DISPLAY "ORCR0030 start = [" WRK-ARG "]"
+           CALL    "ORCR1010"          USING
+                                       WRK-ARG
+           CALL    "ORCR1020"          USING
+                                       WRK-ARG
+      *??? CALL    "ORCR1030"          USING
+      *???                             WRK-ARG
+           CALL    "ORCR1040"          USING
+                                       WRK-ARG
+           CALL    "ORCR1050"          USING
+                                       WRK-ARG
+      *
+           PERFORM 20010-PRVDATA-DEL-SEC
+           PERFORM 900-DBDISCONNECT-SEC
+      *    Á°²óÊ¬ºï½ü(Â¸ºß¤¹¤ì¤Ð)
+           PERFORM 200101-PRVDATA-DEL-SEC
+      *
+      *
+           MOVE     SPACE       TO WRK-ARG
+           STRING   WRK-PARA3      DELIMITED   BY  SIZE
+                    ","            DELIMITED   BY  SIZE
+                    WRK-PARA-HOSPNUM
+                                   DELIMITED   BY  SIZE
+                    ","            DELIMITED   BY  SIZE
+                    RECEERR        DELIMITED   BY  SPACE
+                                   INTO    WRK-ARG
+           END-STRING
+           DISPLAY "ORCR1060 start = [" WRK-ARG "]"
+           CALL    "ORCR1060"          USING
+                                       WRK-ARG
+      *
+           MOVE     SPACE       TO WRK-ARG
+           STRING   WRK-PARA-A5 DELIMITED   BY  SPACE
+                    ","         DELIMITED   BY  SIZE
+                    WRK-PARA-A6 DELIMITED   BY  SPACE
+                    ","         DELIMITED   BY  SIZE
+                    WRK-PARA-A1 DELIMITED   BY  SPACE
+                    ","         DELIMITED   BY  SIZE
+                    WRK-CONS-ARG
+                                DELIMITED   BY  SPACE
+                    ","         DELIMITED   BY  SIZE
+                    "0,"        DELIMITED   BY  SIZE
+                    "Z,05,"     DELIMITED   BY  SIZE
+                    WRK-PARA-A15  DELIMITED BY  SPACE
+                    ","         DELIMITED   BY  SIZE
+                    WRK-PARA-A16  DELIMITED BY  SPACE
+                    ","         DELIMITED   BY  SIZE
+                    WRK-PARA-HOSPNUM
+                                DELIMITED   BY  SIZE
+                    ","         DELIMITED   BY  SIZE
+                    RECEERR     DELIMITED   BY  SPACE
+                    ","         DELIMITED   BY  SIZE
+                                INTO    WRK-ARG
+           END-STRING
+           DISPLAY "ORCR0490 start = [" WRK-ARG "]"
+           CALL    "ORCR0490"          USING
+                                       WRK-ARG
+      *
+           MOVE     SPACE       TO WRK-ARG
+           STRING   WRK-PARA-A5 DELIMITED   BY  SPACE
+                    ","         DELIMITED   BY  SIZE
+                    WRK-PARA-A6 DELIMITED   BY  SPACE
+                    ","         DELIMITED   BY  SIZE
+                    WRK-PARA-A1 DELIMITED   BY  SPACE
+                    ","         DELIMITED   BY  SIZE
+                    WRK-CONS-ARG
+                                DELIMITED   BY  SPACE
+                    ","         DELIMITED   BY  SIZE
+                    "2"         DELIMITED   BY  SPACE
+                    ","         DELIMITED   BY  SIZE
+                    WRK-PARA-A17 DELIMITED   BY  SPACE
+                    ","         DELIMITED   BY  SIZE
+                    WRK-PARA-A18 DELIMITED   BY  SPACE
+                     ","         DELIMITED   BY  SIZE
+                    WRK-PARA-A19 DELIMITED   BY  SIZE
+                    ","         DELIMITED   BY  SIZE
+                    WRK-PARA-A20 DELIMITED   BY  SPACE
+                    ","         DELIMITED   BY  SIZE
+                    WRK-PARA-A21 DELIMITED   BY  SPACE
+                    ","         DELIMITED   BY  SIZE
+                    WRK-PARA-A22 DELIMITED   BY  SPACE
+                    ","         DELIMITED   BY  SIZE
+                    WRK-PARA-A23 DELIMITED   BY  SPACE
+                    ","         DELIMITED   BY  SIZE
+                    WRK-PARA-A24 DELIMITED   BY  SPACE
+                    ","         DELIMITED   BY  SIZE
+                    WRK-PARA-A25 DELIMITED   BY  SPACE
+                    ","         DELIMITED   BY  SIZE
+                    WRK-PARA-A26 DELIMITED   BY  SPACE
+                    ","         DELIMITED   BY  SIZE
+                    WRK-PARA-A27  DELIMITED BY  SPACE
+                    ","         DELIMITED   BY  SIZE
+                    "3"         DELIMITED   BY  SIZE
+                    ","         DELIMITED   BY  SIZE
+                    "4"         DELIMITED   BY  SIZE
+                    ","         DELIMITED   BY  SIZE
+                    WRK-PARA-HOSPNUM
+                                DELIMITED   BY  SIZE
+                    ","         DELIMITED   BY  SIZE
+                    RECEERR     DELIMITED   BY  SPACE
+                                INTO    WRK-ARG
+           END-STRING
+           DISPLAY "ORCR0500 start = [" WRK-ARG "]"
+           CALL    "ORCR0500"          USING
+                                   WRK-ARG
+           .
+       2007-KOUGAI-GAIRAI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ¸ø³²¡ÊÆþ±¡¡Ë½èÍý
+      *****************************************************************
+       2008-KOUGAI-NYUIN-SEC          SECTION.
+      *
+           MOVE     SPACE       TO WRK-ARG
+           STRING   WRK-PARA0      DELIMITED   BY  SIZE
+                    ","            DELIMITED   BY  SIZE
+                    WRK-PARA-HOSPNUM
+                                   DELIMITED   BY  SIZE
+                    ","            DELIMITED   BY  SIZE
+                    RECEERR        DELIMITED   BY  SPACE
+                                   INTO    WRK-ARG
+           END-STRING
+           DISPLAY "ORCR0600 start = [" WRK-ARG "]"
+           CALL    "ORCR0600"          USING
+                                       WRK-ARG
+      *
+           CALL    "ORCR0610"          USING
+                                       WRK-ARG
+      *
+           MOVE     SPACE       TO WRK-ARG
+           STRING   WRK-PARA1      DELIMITED   BY  SIZE
+                    ","            DELIMITED   BY  SIZE
+                    WRK-PARA-HOSPNUM
+                                   DELIMITED   BY  SIZE
+                    ","            DELIMITED   BY  SIZE
+                    RECEERR        DELIMITED   BY  SPACE
+                                   INTO    WRK-ARG
+           END-STRING
+           DISPLAY "ORCR0620 start = [" WRK-ARG "]"
+           CALL    "ORCR0620"          USING
+                                   WRK-ARG
+      *
+           MOVE     SPACE       TO WRK-ARG
+           STRING   WRK-PARA2      DELIMITED   BY  SIZE
+                    ","            DELIMITED   BY  SIZE
+                    WRK-PARA-HOSPNUM
+                                   DELIMITED   BY  SIZE
+                    ","            DELIMITED   BY  SIZE
+                    RECEERR        DELIMITED   BY  SPACE
+                                   INTO    WRK-ARG
+           END-STRING
+           DISPLAY "ORCR0630 start = [" WRK-ARG "]"
+           CALL    "ORCR0630"          USING
+                                   WRK-ARG
+      *
+           CALL    "ORCR0640"          USING
+                                   WRK-ARG
+      *
+           CALL    "ORCR0650"          USING
+                                   WRK-ARG
+      *
+           CALL    "ORCR0655"          USING
+                                   WRK-ARG
+      *
+           CALL    "ORCR0660"          USING
+                                   WRK-ARG
+      *
+           CALL    "ORCR0670"          USING
+                                   WRK-ARG
+      *
+           CALL    "ORCR0680"          USING
+                                   WRK-ARG
+      *
+           CALL    "ORCR0690"          USING
+                                   WRK-ARG
+      *
+           CALL    "ORCR0700"          USING
+                                   WRK-ARG
+      *
+      ***  IF      WRK-PARA-A7 NOT =   "NOPG"
+      ***      CALL    WRK-PARA-A7     USING
+      ***                             WRK-ARG
+      ***  END-IF
+      *
+           PERFORM 20010-PRVDATA-DEL-SEC
+      *
+           PERFORM 900-DBDISCONNECT-SEC
+      *
+           PERFORM 200101-PRVDATA-DEL-SEC
+      *
+           MOVE     SPACE       TO WRK-ARG
+           STRING   WRK-PARA3      DELIMITED   BY  SIZE
+                    ","            DELIMITED   BY  SIZE
+                    WRK-PARA-HOSPNUM
+                                   DELIMITED   BY  SIZE
+                    ","            DELIMITED   BY  SIZE
+                    RECEERR        DELIMITED   BY  SPACE
+                                   INTO    WRK-ARG
+           END-STRING
+           DISPLAY "ORCR0710 start = [" WRK-ARG "]"
+           IF      WRK-PARA-A8     <=  WRK-CONS-SRYYM-200609     
+               CALL    "ORCR0710"          USING
+                                           WRK-ARG
+      *
+               IF      WRK-PARA-A11    =   "40"
+                   CALL    "ORCRCP401"     USING
+                                           WRK-ARG
+               END-IF
+           ELSE    
+               CALL    "ORCR0720"          USING
+                                           WRK-ARG
+           END-IF
+      *
+      *
+           MOVE     SPACE       TO WRK-ARG
+           STRING   "1,"        DELIMITED   BY  SIZE
+                    "1,"        DELIMITED   BY  SIZE
+                    "%%,"       DELIMITED   BY  SIZE
+                    WRK-PARA-A5 DELIMITED   BY  SPACE
+                    ","         DELIMITED   BY  SIZE
+                    WRK-PARA-A6 DELIMITED   BY  SPACE
+                    ","         DELIMITED   BY  SIZE
+                    WRK-PARA-A1 DELIMITED   BY  SPACE
+                    ","         DELIMITED   BY  SIZE
+                    WRK-CONS-ARG
+                                DELIMITED   BY  SPACE
+                    ","         DELIMITED   BY  SIZE
+                    "0,"        DELIMITED   BY  SIZE
+                    "Z,05,"     DELIMITED   BY  SIZE
+                    WRK-PARA-A15  DELIMITED BY  SPACE
+                    ","         DELIMITED   BY  SIZE
+                    WRK-PARA-A16  DELIMITED BY  SPACE
+                    ","         DELIMITED   BY  SIZE
+                    WRK-PARA-A28  DELIMITED BY  SPACE
+                    ","         DELIMITED   BY  SIZE
+                    WRK-PARA-A29  DELIMITED BY  SPACE
+                    ","         DELIMITED   BY  SIZE
+                    WRK-PARA-HOSPNUM
+                                DELIMITED   BY  SIZE
+                    ","         DELIMITED   BY  SIZE
+                    RECEERR     DELIMITED   BY  SPACE
+                    ","         DELIMITED   BY  SIZE
+                                INTO    WRK-ARG
+           END-STRING
+           DISPLAY "ORCR0101 start = [" WRK-ARG "]"
+           CALL    "ORCR0101"          USING
+                                   WRK-ARG
+      *
+      *
+           MOVE     SPACE       TO WRK-ARG
+           STRING   WRK-PARA-A5 DELIMITED   BY  SPACE
+                    ","         DELIMITED   BY  SIZE
+                    WRK-PARA-A6 DELIMITED   BY  SPACE
+                    ","         DELIMITED   BY  SIZE
+                    WRK-PARA-A1 DELIMITED   BY  SPACE
+                    ","         DELIMITED   BY  SIZE
+                    WRK-CONS-ARG
+                                DELIMITED   BY  SPACE
+                    ","         DELIMITED   BY  SIZE
+                    "2"         DELIMITED   BY  SPACE
+                    ","         DELIMITED   BY  SIZE
+      **************WRK-PARA-A15  DELIMITED BY  SPACE
+      **************","         DELIMITED   BY  SIZE
+      **************WRK-PARA-A16  DELIMITED BY  SPACE
+      **************","         DELIMITED   BY  SIZE
+                    WRK-PARA-A17 DELIMITED   BY  SPACE
+                    ","         DELIMITED   BY  SIZE
+                    WRK-PARA-A18 DELIMITED   BY  SPACE
+                    ","         DELIMITED   BY  SIZE
+                    WRK-PARA-A19 DELIMITED   BY  SIZE
+                    ","         DELIMITED   BY  SIZE
+                    WRK-PARA-A20 DELIMITED   BY  SPACE
+                    ","         DELIMITED   BY  SIZE
+                    WRK-PARA-A21 DELIMITED   BY  SPACE
+                    ","         DELIMITED   BY  SIZE
+                    WRK-PARA-A22 DELIMITED   BY  SPACE
+                    ","         DELIMITED   BY  SIZE
+                    WRK-PARA-A23 DELIMITED   BY  SPACE
+                    ","         DELIMITED   BY  SIZE
+                    WRK-PARA-A24 DELIMITED   BY  SPACE
+                    ","         DELIMITED   BY  SIZE
+                    WRK-PARA-A25 DELIMITED   BY  SPACE
+                    ","         DELIMITED   BY  SIZE
+                    WRK-PARA-A26 DELIMITED   BY  SPACE
+                    ","         DELIMITED   BY  SIZE
+                    WRK-PARA-A27  DELIMITED BY  SPACE
+                    ","         DELIMITED   BY  SIZE
+      **************WRK-PARA-A28  DELIMITED BY  SPACE
+      **************","         DELIMITED   BY  SIZE
+      **************WRK-PARA-A29  DELIMITED BY  SPACE
+      **************","         DELIMITED   BY  SIZE
+                    "3"         DELIMITED   BY  SIZE
+                    ","         DELIMITED   BY  SIZE
+                    WRK-PARA-HOSPNUM
+                                DELIMITED   BY  SIZE
+                    ","         DELIMITED   BY  SIZE
+                    RECEERR     DELIMITED   BY  SPACE
+                                INTO    WRK-ARG
+           END-STRING
+           DISPLAY "ORCR0102 start = [" WRK-ARG "]"
+           CALL    "ORCR0102"          USING
+                                   WRK-ARG
+      *
+           .
+       2008-KOUGAI-NYUIN-EXT.
            EXIT.
       *
       *****************************************************************

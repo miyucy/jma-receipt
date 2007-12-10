@@ -24,6 +24,8 @@
       * Maj/Min/Rev  修正者       日付      内容
       *  03.05.01    NACL-藤原    07/07/13  診療行為がない請求データの
       *                                     削除対応
+      *
+      *  04.01.01    NACL-藤原    07/11/22  公害レセプト対応
       *****************************************************************
       *
        01  SPA-R01FREE.
@@ -53,6 +55,7 @@
                            11  SPA-GMN-R01-TIHO    PIC X(04).
                            11  SPA-GMN-R01-TRSI    PIC X(04).
                            11  SPA-GMN-R01-TJBI    PIC X(04).
+                           11  SPA-GMN-R01-TKGI    PIC X(04).
                    07  SPA-GMN-R01-SYORI-G.
                        09  SPA-GMN-R01-SYORI       PIC X(01).
                        09  SPA-GMN-R01-F1          PIC X(01).

@@ -92,6 +92,8 @@
       *  03.05.01    NACL-Æ£¸¶    07/04/19  ¥°¥ë¡¼¥×¿ÇÎÅÂÐ±þ
       *  03.05.02    NACL-Æ£¸¶    07/06/19  ¼«ÇåÀÕ¤ÎÍÍ¼°ÁªÂòÂÐ±þ
       *                                     ¡ÊÊ¿À®£±£¹Ç¯£´·î²þÀµÍÍ¼°¡Ë
+      *
+      *  04.01.01    NACL-Æ£¸¶    07/11/22  ¸ø³²¥ì¥»¥×¥ÈÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -155,11 +157,13 @@
                        09  SPA-DATAKBN1-VALUE      PIC X(01).
                        09  SPA-DATAKBN2-VALUE      PIC X(01).
                        09  SPA-DATAKBN3-VALUE      PIC X(01).
+                       09  SPA-DATAKBN4-VALUE      PIC X(01).
                        09  SPA-DATAKBN11-VALUE     PIC X(01).
                        09  SPA-DATAKBN21-VALUE     PIC X(01).
                        09  SPA-DATAKBN22-VALUE     PIC X(01).
                        09  SPA-DATAKBN23-VALUE     PIC X(01).
                        09  SPA-DATAKBN24-VALUE     PIC X(01).
+                       09  SPA-DATAKBN25-VALUE     PIC X(01).
                        09  SPA-DATAKBN31-VALUE     PIC X(01).
                        09  SPA-DATAKBN32-VALUE     PIC X(01).
      *
@@ -212,22 +216,6 @@
            03  IDZ                 PIC 9(04).
            03  IDX2                PIC 9(04).
            03  IDXX                PIC 9(04).
-      *
-      *    ¥·¥¹¥Æ¥àÎÎ°è
-       01  SYS-AREA.
-           03  SYS-TIME.
-               05  SYS-THH         PIC 9(02).
-               05  SYS-TMM         PIC 9(02).
-               05  SYS-TSS         PIC 9(02).
-               05  SYS-TDD         PIC 9(02).
-           03  SYS-YMD.
-               05  SYS-YY          PIC 9(02).
-               05  SYS-MM          PIC 9(02).
-               05  SYS-DD          PIC 9(02).
-           03  WRK-SYSYMD.
-               05  WRK-SYSYY       PIC 9(04).
-               05  WRK-SYSMM       PIC 9(02).
-               05  WRK-SYSDD       PIC 9(02).
       *
       *    °ì»þÎÎ°è
        01  WRK-AREA.
@@ -450,9 +438,8 @@
       *
            MOVE    SPACE               TO  LINKAREA
       *
-      ***  MOVE    "NEW"               TO  MCP-PUTTYPE.
-           MOVE    SPACE               TO  MCP-PUTTYPE.
-           MOVE    "R03    "           TO  MCP-WINDOW.
+           MOVE    SPACE               TO  MCP-PUTTYPE
+           MOVE    "R03    "           TO  MCP-WINDOW
       *
            PERFORM 900-PUT-WINDOW.
       *
@@ -534,11 +521,13 @@
            MOVE    "F"                 TO  SPA-DATAKBN1-VALUE
            MOVE    "F"                 TO  SPA-DATAKBN2-VALUE
            MOVE    "F"                 TO  SPA-DATAKBN3-VALUE
+           MOVE    "F"                 TO  SPA-DATAKBN4-VALUE
            MOVE    "F"                 TO  SPA-DATAKBN11-VALUE
            MOVE    "F"                 TO  SPA-DATAKBN21-VALUE
            MOVE    "F"                 TO  SPA-DATAKBN22-VALUE
            MOVE    "F"                 TO  SPA-DATAKBN23-VALUE
            MOVE    "F"                 TO  SPA-DATAKBN24-VALUE
+           MOVE    "F"                 TO  SPA-DATAKBN25-VALUE
            MOVE    "F"                 TO  SPA-DATAKBN31-VALUE
            MOVE    "F"                 TO  SPA-DATAKBN32-VALUE
       *
@@ -575,6 +564,8 @@ grpsys     MOVE    SPA-HOSPNUM         TO  SYS-2001-HOSPNUM
                        MOVE    "T"             TO  SPA-DATAKBN31-VALUE
                    WHEN    "1"             ALSO    "5"             
                        MOVE    "T"             TO  SPA-DATAKBN32-VALUE
+                   WHEN    "1"             ALSO    "6"             
+                       MOVE    "T"             TO  SPA-DATAKBN4-VALUE
                    WHEN    "2"             ALSO    " "             
                    WHEN    "2"             ALSO    "0"             
                        MOVE    "T"             TO  SPA-DATAKBN21-VALUE
@@ -584,6 +575,8 @@ grpsys     MOVE    SPA-HOSPNUM         TO  SYS-2001-HOSPNUM
                        MOVE    "T"             TO  SPA-DATAKBN23-VALUE
                    WHEN    "2"             ALSO    "5"             
                        MOVE    "T"             TO  SPA-DATAKBN24-VALUE
+                   WHEN    "2"             ALSO    "6"             
+                       MOVE    "T"             TO  SPA-DATAKBN25-VALUE
                END-EVALUATE
                IF      SYS-2001-SYOKBN     =   "1"
                    MOVE    SYS-2001-SRYYM      TO  SPA-NAI-SRYYM
@@ -733,11 +726,13 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SYS-2005-HOSPNUM
            MOVE    "F"                 TO  SPA-DATAKBN1-VALUE
            MOVE    "F"                 TO  SPA-DATAKBN2-VALUE
            MOVE    "F"                 TO  SPA-DATAKBN3-VALUE
+           MOVE    "F"                 TO  SPA-DATAKBN4-VALUE
            MOVE    "F"                 TO  SPA-DATAKBN11-VALUE
            MOVE    "F"                 TO  SPA-DATAKBN21-VALUE
            MOVE    "F"                 TO  SPA-DATAKBN22-VALUE
            MOVE    "F"                 TO  SPA-DATAKBN23-VALUE
            MOVE    "F"                 TO  SPA-DATAKBN24-VALUE
+           MOVE    "F"                 TO  SPA-DATAKBN25-VALUE
            MOVE    "F"                 TO  SPA-DATAKBN31-VALUE
            MOVE    "F"                 TO  SPA-DATAKBN32-VALUE
       *
@@ -755,6 +750,8 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SYS-2005-HOSPNUM
                    MOVE    "T"             TO  SPA-DATAKBN31-VALUE
                WHEN    "1"             ALSO    "5"             
                    MOVE    "T"             TO  SPA-DATAKBN32-VALUE
+               WHEN    "1"             ALSO    "6"             
+                   MOVE    "T"             TO  SPA-DATAKBN4-VALUE
                WHEN    "2"             ALSO    " "             
                WHEN    "2"             ALSO    "0"             
                    MOVE    "T"             TO  SPA-DATAKBN21-VALUE
@@ -764,6 +761,8 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SYS-2005-HOSPNUM
                    MOVE    "T"             TO  SPA-DATAKBN23-VALUE
                WHEN    "2"             ALSO    "5"             
                    MOVE    "T"             TO  SPA-DATAKBN24-VALUE
+               WHEN    "2"             ALSO    "6"             
+                   MOVE    "T"             TO  SPA-DATAKBN25-VALUE
            END-EVALUATE
       *
            IF      SPA-R01-FILEKBN     =   "1"        
@@ -848,11 +847,13 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SYS-2005-HOSPNUM
                    MOVE    "F"                 TO  SPA-DATAKBN1-VALUE
                    MOVE    "F"                 TO  SPA-DATAKBN2-VALUE
                    MOVE    "F"                 TO  SPA-DATAKBN3-VALUE
+                   MOVE    "F"                 TO  SPA-DATAKBN4-VALUE
                    MOVE    "F"                 TO  SPA-DATAKBN11-VALUE
                    MOVE    "F"                 TO  SPA-DATAKBN21-VALUE
                    MOVE    "F"                 TO  SPA-DATAKBN22-VALUE
                    MOVE    "F"                 TO  SPA-DATAKBN23-VALUE
                    MOVE    "F"                 TO  SPA-DATAKBN24-VALUE
+                   MOVE    "F"                 TO  SPA-DATAKBN25-VALUE
                    MOVE    "F"                 TO  SPA-DATAKBN31-VALUE
                    MOVE    "F"                 TO  SPA-DATAKBN32-VALUE
                    IF      SPA-GMN-IKKATU      =   "T"
@@ -873,36 +874,22 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SYS-2005-HOSPNUM
                            MOVE    7                   TO  SPA-GMN-CUR    
                        END-IF
                    END-IF             
-      *    Ä¢É¼¶èÊ¬£±
+      *    °ì³çÄ¢É¼¶èÊ¬
                WHEN    "CLICKED"       ALSO    "DATAKBN1"
-                   PERFORM 400-DATAKBN1-SEC
-      *    Ä¢É¼¶èÊ¬£²
                WHEN    "CLICKED"       ALSO    "DATAKBN2"
-                   PERFORM 400-DATAKBN2-SEC
-      *    Ä¢É¼¶èÊ¬£³
                WHEN    "CLICKED"       ALSO    "DATAKBN3"
-                   PERFORM 400-DATAKBN3-SEC
-      *    Ä¢É¼¶èÊ¬£±
+               WHEN    "CLICKED"       ALSO    "DATAKBN4"
+               WHEN    "CLICKED"       ALSO    "DATAKBN31"
+               WHEN    "CLICKED"       ALSO    "DATAKBN32"
                WHEN    "CLICKED"       ALSO    "DATAKBN11"
                    PERFORM 400-DATAKBN11-SEC
-      *    Ä¢É¼¶èÊ¬£±
+      *    ¸ÄÊÌÄ¢É¼¶èÊ¬
                WHEN    "CLICKED"       ALSO    "DATAKBN21"
-                   PERFORM 400-DATAKBN21-SEC
-      *    Ä¢É¼¶èÊ¬£²
                WHEN    "CLICKED"       ALSO    "DATAKBN22"
-                   PERFORM 400-DATAKBN22-SEC
-      *    Ä¢É¼¶èÊ¬£³
                WHEN    "CLICKED"       ALSO    "DATAKBN23"
-                   PERFORM 400-DATAKBN23-SEC
-      *    Ä¢É¼¶èÊ¬£³
                WHEN    "CLICKED"       ALSO    "DATAKBN24"
-                   PERFORM 400-DATAKBN24-SEC
-      *    Ä¢É¼¶èÊ¬£³
-               WHEN    "CLICKED"       ALSO    "DATAKBN31"
-                   PERFORM 400-DATAKBN31-SEC
-      *    Ä¢É¼¶èÊ¬£³
-               WHEN    "CLICKED"       ALSO    "DATAKBN32"
-                   PERFORM 400-DATAKBN32-SEC
+               WHEN    "CLICKED"       ALSO    "DATAKBN25"
+                   PERFORM 400-DATAKBN21-SEC
       *    °ì³çºîÀ®
                WHEN    "CLICKED"       ALSO    "IKKATU"
                    PERFORM 400-IKKATU-SEC
@@ -1076,102 +1063,52 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
            EXIT.
       *
       *****************************************************************
-      *    Ä¢É¼¶èÊ¬£±ÁªÂò½èÍý
-      *****************************************************************
-       400-DATAKBN1-SEC          SECTION.
-      *
-           MOVE    R03-DATAKBN1  TO  SPA-DATAKBN1-VALUE
-      *
-           MOVE    "T"           TO  SPA-GMN-IKKATU
-           MOVE    "F"           TO  SPA-GMN-KOBETU
-      *
-           MOVE    2             TO  SPA-GMN-CUR     
-           .
-       400-DATAKBN1-EXT.
-           EXIT.
-      *
-      *
-      *****************************************************************
-      *    Ä¢É¼¶èÊ¬£²ÁªÂò½èÍý
-      *****************************************************************
-       400-DATAKBN2-SEC          SECTION.
-      *
-           MOVE    R03-DATAKBN2  TO  SPA-DATAKBN2-VALUE
-      *
-           MOVE    "T"           TO  SPA-GMN-IKKATU
-           MOVE    "F"           TO  SPA-GMN-KOBETU
-      *
-           MOVE    2             TO  SPA-GMN-CUR     
-           .
-       400-DATAKBN2-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    Ä¢É¼¶èÊ¬£³ÁªÂò½èÍý
-      *****************************************************************
-       400-DATAKBN3-SEC          SECTION.
-      *
-           MOVE    R03-DATAKBN3 TO  SPA-DATAKBN3-VALUE
-      *
-           MOVE    "T"           TO  SPA-GMN-IKKATU
-           MOVE    "F"           TO  SPA-GMN-KOBETU
-      *
-           MOVE    2             TO  SPA-GMN-CUR     
-           .
-       400-DATAKBN3-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    Ä¢É¼¶èÊ¬£±ÁªÂò½èÍý
+      *    °ì³çÄ¢É¼¶èÊ¬ÁªÂò½èÍý
       *****************************************************************
        400-DATAKBN11-SEC          SECTION.
       *
-           MOVE    R03-DATAKBN11  TO  SPA-DATAKBN11-VALUE
+           EVALUATE    MCP-EVENT       ALSO    MCP-WIDGET
+               WHEN    "CLICKED"       ALSO    "DATAKBN1"
+                   MOVE    R03-DATAKBN1  TO  SPA-DATAKBN1-VALUE
+               WHEN    "CLICKED"       ALSO    "DATAKBN2"
+                   MOVE    R03-DATAKBN2  TO  SPA-DATAKBN2-VALUE
+               WHEN    "CLICKED"       ALSO    "DATAKBN3"
+                   MOVE    R03-DATAKBN3  TO  SPA-DATAKBN3-VALUE
+               WHEN    "CLICKED"       ALSO    "DATAKBN4"
+                   MOVE    R03-DATAKBN4  TO  SPA-DATAKBN4-VALUE
+               WHEN    "CLICKED"       ALSO    "DATAKBN31"
+                   MOVE    R03-DATAKBN31 TO  SPA-DATAKBN31-VALUE
+               WHEN    "CLICKED"       ALSO    "DATAKBN32"
+                   MOVE    R03-DATAKBN32 TO  SPA-DATAKBN32-VALUE
+               WHEN    "CLICKED"       ALSO    "DATAKBN11"
+                   MOVE    R03-DATAKBN11  TO  SPA-DATAKBN11-VALUE
+           END-EVALUATE
       *
            MOVE    "T"           TO  SPA-GMN-IKKATU
            MOVE    "F"           TO  SPA-GMN-KOBETU
       *
            MOVE    2             TO  SPA-GMN-CUR     
            .
-       400-DATAKBN1-EXT.
+       400-DATAKBN11-EXT.
            EXIT.
       *
       *****************************************************************
-      *    Ä¢É¼¶èÊ¬£³ÁªÂò½èÍý
-      *****************************************************************
-       400-DATAKBN31-SEC          SECTION.
-      *
-           MOVE    R03-DATAKBN31 TO  SPA-DATAKBN31-VALUE
-      *
-           MOVE    "T"           TO  SPA-GMN-IKKATU
-           MOVE    "F"           TO  SPA-GMN-KOBETU
-      *
-           MOVE    2             TO  SPA-GMN-CUR     
-           .
-       400-DATAKBN31-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    Ä¢É¼¶èÊ¬£³ÁªÂò½èÍý
-      *****************************************************************
-       400-DATAKBN32-SEC          SECTION.
-      *
-           MOVE    R03-DATAKBN32 TO  SPA-DATAKBN32-VALUE
-      *
-           MOVE    "T"           TO  SPA-GMN-IKKATU
-           MOVE    "F"           TO  SPA-GMN-KOBETU
-      *
-           MOVE    2             TO  SPA-GMN-CUR     
-           .
-       400-DATAKBN32-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    Ä¢É¼¶èÊ¬£±ÁªÂò½èÍý
+      *    ¸ÄÊÌÄ¢É¼¶èÊ¬ÁªÂò½èÍý
       *****************************************************************
        400-DATAKBN21-SEC          SECTION.
       *
-           MOVE    R03-DATAKBN21  TO  SPA-DATAKBN21-VALUE
+           EVALUATE    MCP-EVENT       ALSO    MCP-WIDGET
+               WHEN    "CLICKED"       ALSO    "DATAKBN21"
+                   MOVE    R03-DATAKBN21  TO  SPA-DATAKBN21-VALUE
+               WHEN    "CLICKED"       ALSO    "DATAKBN22"
+                   MOVE    R03-DATAKBN22  TO  SPA-DATAKBN22-VALUE
+               WHEN    "CLICKED"       ALSO    "DATAKBN23"
+                   MOVE    R03-DATAKBN23  TO  SPA-DATAKBN23-VALUE
+               WHEN    "CLICKED"       ALSO    "DATAKBN24"
+                   MOVE    R03-DATAKBN24  TO  SPA-DATAKBN24-VALUE
+               WHEN    "CLICKED"       ALSO    "DATAKBN25"
+                   MOVE    R03-DATAKBN25  TO  SPA-DATAKBN25-VALUE
+           END-EVALUATE
       *
            MOVE    "F"           TO  SPA-GMN-IKKATU
            MOVE    "T"           TO  SPA-GMN-KOBETU
@@ -1179,52 +1116,6 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
            MOVE    7             TO  SPA-GMN-CUR     
            .
        400-DATAKBN21-EXT.
-           EXIT.
-      *
-      *
-      *****************************************************************
-      *    Ä¢É¼¶èÊ¬£²ÁªÂò½èÍý
-      *****************************************************************
-       400-DATAKBN22-SEC          SECTION.
-      *
-           MOVE    R03-DATAKBN22  TO  SPA-DATAKBN22-VALUE
-      *
-           MOVE    "F"           TO  SPA-GMN-IKKATU
-           MOVE    "T"           TO  SPA-GMN-KOBETU
-      *
-           MOVE    7             TO  SPA-GMN-CUR     
-           .
-       400-DATAKBN22-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    Ä¢É¼¶èÊ¬£³ÁªÂò½èÍý
-      *****************************************************************
-       400-DATAKBN23-SEC          SECTION.
-      *
-           MOVE    R03-DATAKBN23 TO  SPA-DATAKBN23-VALUE
-      *
-           MOVE    "F"           TO  SPA-GMN-IKKATU
-           MOVE    "T"           TO  SPA-GMN-KOBETU
-      *
-           MOVE    7             TO  SPA-GMN-CUR     
-           .
-       400-DATAKBN23-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    Ä¢É¼¶èÊ¬£³ÁªÂò½èÍý
-      *****************************************************************
-       400-DATAKBN24-SEC          SECTION.
-      *
-           MOVE    R03-DATAKBN24 TO  SPA-DATAKBN24-VALUE
-      *
-           MOVE    "F"           TO  SPA-GMN-IKKATU
-           MOVE    "T"           TO  SPA-GMN-KOBETU
-      *
-           MOVE    7             TO  SPA-GMN-CUR     
-           .
-       400-DATAKBN24-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1636,42 +1527,53 @@ grpsys                 PERFORM 900-DBSELECT-SEC
            END-EVALUATE
       *
       *    ¥¬¥¤¥É¥á¥Ã¥»¡¼¥¸¥»¥Ã¥È
-           IF      SPA-R01-RECEKBN     =   "4" OR  "5"    
-               EVALUATE    SPA-GMN-SYOKBN    ALSO    SPA-R01-FILEKBN
-                   WHEN    "T"               ALSO    "1" 
-                       MOVE    "1009"              TO  SPA-RIDCD
-                   WHEN    "F"               ALSO    "1"
-                       MOVE    "1010"              TO  SPA-RIDCD
-                   WHEN    "T"               ALSO    "2" 
-                       MOVE    "1011"              TO  SPA-RIDCD
-                   WHEN    "F"               ALSO    "2"
-                       MOVE    "1012"              TO  SPA-RIDCD
-               END-EVALUATE
-           ELSE
-               IF      SPA-R01-RECEKBN       =   "3"
-                   EVALUATE    SPA-GMN-SYOKBN    ALSO    SPA-R01-FILEKBN
-                       WHEN    "T"               ALSO    "1" 
+           EVALUATE    SPA-R01-RECEKBN
+               WHEN    "4"
+               WHEN    "5"    
+                   EVALUATE    SPA-GMN-SYOKBN  ALSO    SPA-R01-FILEKBN
+                       WHEN    "T"             ALSO    "1" 
+                           MOVE    "1009"              TO  SPA-RIDCD
+                       WHEN    "F"             ALSO    "1"
+                           MOVE    "1010"              TO  SPA-RIDCD
+                       WHEN    "T"             ALSO    "2" 
+                           MOVE    "1011"              TO  SPA-RIDCD
+                       WHEN    "F"             ALSO    "2"
+                           MOVE    "1012"              TO  SPA-RIDCD
+                   END-EVALUATE
+               WHEN    "3"    
+                   EVALUATE    SPA-GMN-SYOKBN  ALSO    SPA-R01-FILEKBN
+                       WHEN    "T"             ALSO    "1" 
                            MOVE    "1005"              TO  SPA-RIDCD
-                       WHEN    "F"               ALSO    "1"
+                       WHEN    "F"             ALSO    "1"
                            MOVE    "1006"              TO  SPA-RIDCD
-                       WHEN    "T"               ALSO    "2" 
+                       WHEN    "T"             ALSO    "2" 
                            MOVE    "1007"              TO  SPA-RIDCD
-                       WHEN    "F"               ALSO    "2"
+                       WHEN    "F"             ALSO    "2"
                            MOVE    "1008"              TO  SPA-RIDCD
                    END-EVALUATE
-               ELSE
-                   EVALUATE    SPA-GMN-SYOKBN    ALSO    SPA-R01-FILEKBN
-                       WHEN    "T"               ALSO    "1" 
+               WHEN    "6"    
+                   EVALUATE    SPA-GMN-SYOKBN  ALSO    SPA-R01-FILEKBN
+                       WHEN    "T"             ALSO    "1" 
+                           MOVE    "1013"              TO  SPA-RIDCD
+                       WHEN    "F"             ALSO    "1"
+                           MOVE    "1014"              TO  SPA-RIDCD
+                       WHEN    "T"             ALSO    "2" 
+                           MOVE    "1015"              TO  SPA-RIDCD
+                       WHEN    "F"             ALSO    "2"
+                           MOVE    "1016"              TO  SPA-RIDCD
+                   END-EVALUATE
+               WHEN    OTHER
+                   EVALUATE    SPA-GMN-SYOKBN  ALSO    SPA-R01-FILEKBN
+                       WHEN    "T"             ALSO    "1" 
                            MOVE    "1001"              TO  SPA-RIDCD
-                       WHEN    "F"               ALSO    "1"
+                       WHEN    "F"             ALSO    "1"
                            MOVE    "1002"              TO  SPA-RIDCD
-                       WHEN    "T"               ALSO    "2" 
+                       WHEN    "T"             ALSO    "2" 
                            MOVE    "1003"              TO  SPA-RIDCD
-                       WHEN    "F"               ALSO    "2"
+                       WHEN    "F"             ALSO    "2"
                            MOVE    "1004"              TO  SPA-RIDCD
                    END-EVALUATE
-               END-IF    
-           END-IF    
+           END-EVALUATE
            .
        450-TOUROKU-EXT.
            EXIT.
@@ -1748,6 +1650,9 @@ grpsys     MOVE    SPA-HOSPNUM         TO  RECE07-HOSPNUM
                END-IF
                IF      SPA-R01-RECEKBN     =   "4" OR  "5"
                    MOVE    "HC23"              TO  RECE07-PRTID
+               END-IF
+               IF      SPA-R01-RECEKBN     =   "6"
+                   MOVE    "HC25"              TO  RECE07-PRTID
                END-IF
            END-IF            
            IF      SPA-R01-FILEKBN         =   "1"
@@ -1880,6 +1785,11 @@ grpsys     MOVE    SPA-HOSPNUM         TO  RECE07-HOSPNUM
       *****************************************************************
        450-KOUSHIN-SEC                 SECTION.
       *
+      *    ¹¹¿·Æü¼èÆÀ
+           INITIALIZE                  ORCSMCNDATEAREA
+           CALL    "ORCSMCNDATE"       USING
+                                       ORCSMCNDATEAREA
+      *
       *    ¥Õ¥é¥°½é´ü²½
            MOVE    ZERO            TO  SPA-R01-JOBCNT       
                                        SPA-R01-STOPFLG    
@@ -1937,11 +1847,6 @@ grpsys             MOVE    SPA-HOSPNUM     TO  BTPARA-HOSPNUM
                    MOVE    "del1"          TO  MCP-PATHNAME
 grpsys             PERFORM 900-ORCDBMAIN-SEC
       *
-      *            ¹¹¿·Æü¼èÆÀ
-                   INITIALIZE                  ORCSMCNDATEAREA
-                    CALL    "ORCSMCNDATE"       USING
-                                               ORCSMCNDATEAREA
-      *
                    INITIALIZE                      BTPARA-REC
                    MOVE    WRK-CONS-JOB-SHELLID
                                                TO  BTPARA-SHELLID
@@ -1986,32 +1891,6 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
 grpsys             PERFORM 900-CALL-ORCSJOB-SEC
       *
       *            °õºþÍÑ¥¹¥¯¥ê¥×¥È½èÍý
-      *************EVALUATE    SPA-R01-RECEKBN
-      *                WHEN    "0"
-      *                WHEN    "1"
-      *                WHEN    "2"
-      *                    MOVE    "recept1.sh"    TO  SHELL-SHELL
-      *                WHEN    "3"
-      *                    MOVE    "recept6.sh"    TO  SHELL-SHELL
-      *                WHEN    "4"
-      *                    MOVE    "recept8.sh"    TO  SHELL-SHELL
-      *            END-EVALUATE        
-      *            MOVE    SHELL-NAME          TO  SHELL-NAME
-      *            
-      *            MOVE    SPA-NAI-SRYYM       TO  SHELL-SRYYM
-      *            MOVE    SPA-TERMID          TO  SHELL-TERMID
-      *            MOVE    SPA-SYSYMD          TO  SHELL-SYSYMD
-      *            MOVE    "1"                 TO  SHELL-SYOKBN
-      *************MOVE    SPA-R01-RECEKBN     TO  SHELL-RECEKBN
-      *****        IF      SPA-DATAKBN1-VALUE  =   "T"
-      *                 MOVE    "0"                 TO  SHELL-RECEKBN
-      *             ELSE
-      *                IF      SPA-DATAKBN2-VALUE  =   "T"
-      *                    MOVE    "1"             TO  SHELL-RECEKBN
-      *                ELSE
-      *                    MOVE    "2"             TO  SHELL-RECEKBN
-      *                END-IF
-      *****        END-IF
                    MOVE    WRK-CONS-FILE-ID    TO  RECEERR-FILE-ID
                    MOVE    SPA-TERMID          TO  RECEERR-TERMID
 grpsys             MOVE    SPA-HOSPNUM         TO  RECEERR-HOSPNUM
@@ -2023,7 +1902,6 @@ grpsys             MOVE    SPA-HOSPNUM         TO  RECEERR-HOSPNUM
                    INITIALIZE                  SYS-1001-REC
                    MOVE    "1001"          TO  SYS-1001-KANRICD
                    MOVE    "*"             TO  SYS-1001-KBNCD
-      *************MOVE    SPA-SYSYMD      TO  ORC-DBYMD
                    MOVE    SPA-NAI-SRYYM   TO  SYS-1001-STYUKYMD (1:6)
                    MOVE    "01"            TO  SYS-1001-STYUKYMD (7:2)
                    MOVE    SYS-1001-STYUKYMD 
@@ -2085,14 +1963,6 @@ grpsys             MOVE    SPA-HOSPNUM     TO  SYS-2005-HOSPNUM
                                                SYS-2005-JIBAIPRTKBN-N
                    END-IF
       *
-      *            ºîÀ®Æü¡¦»þ´Ö¤ÎÀßÄê
-                   ACCEPT  SYS-YMD         FROM    DATE
-                   COMPUTE WRK-SYSYY       =   SYS-YY      +   2000
-                   MOVE    SYS-MM              TO  WRK-SYSMM
-                   MOVE    SYS-DD              TO  WRK-SYSDD
-                   ACCEPT  SYS-TIME            FROM    TIME
-      *
-      *¡ú¡ú        ETC-EXEC SHELL SHELL-AREA 10
                    MOVE    SPACE           TO  SHELLTBL
                    EVALUATE    SPA-R01-RECEKBN
                        WHEN    "0"
@@ -2129,6 +1999,14 @@ grpsys             MOVE    SPA-HOSPNUM     TO  SYS-2005-HOSPNUM
                                MOVE    "recept12.sh"
                                                    TO  WRK-SHELL-SHELL
                            END-IF
+                       WHEN    "6"
+                           IF      SPA-GMN-NYUGAIKBN   =   "1"
+                               MOVE    "recept15.sh"
+                                                   TO  WRK-SHELL-SHELL
+                           ELSE
+                               MOVE    "recept14.sh"
+                                                   TO  WRK-SHELL-SHELL
+                           END-IF
                    END-EVALUATE        
       *            ¥Õ¥¡¥¤¥ë¥Ç¥¤¥ì¥¯¥È¥ê°ÌÃÖ»ØÄê
                    INITIALIZE              ORCSMKPASSAREA
@@ -2155,8 +2033,9 @@ grpsys             MOVE    SPA-HOSPNUM     TO  SYS-2005-HOSPNUM
                                                TO  SHELLTBL-ARG7
                    END-IF
                    MOVE    SPA-NAI-SRYYM   TO  SHELLTBL-ARG8
-                   MOVE    WRK-SYSYMD      TO  SHELLTBL-ARG9
-                   MOVE    SYS-TIME        TO  SHELLTBL-ARG10
+                   MOVE    SMCNDATE-YMD    TO  SHELLTBL-ARG9
+                   MOVE    SMCNDATE-HMS    TO  SHELLTBL-ARG10 (1:6)
+                   MOVE    "00"            TO  SHELLTBL-ARG10 (7:2)
                    MOVE    SYS-1001-PREFNUM
                                            TO  SHELLTBL-ARG11
                    IF      SYS-2005-SYARECEKBN
@@ -2269,6 +2148,8 @@ grpsys             PERFORM 900-ORCDBMAIN-SEC
                    MOVE    "4"                 TO  SPA-R01-RECEKBN
                WHEN    SPA-DATAKBN32-VALUE =   "T"
                    MOVE    "5"                 TO  SPA-R01-RECEKBN
+               WHEN    SPA-DATAKBN4-VALUE  =   "T"
+                   MOVE    "6"                 TO  SPA-R01-RECEKBN
                WHEN    SPA-DATAKBN21-VALUE  =   "T"
                    MOVE    "0"                 TO  SPA-R01-RECEKBN
                WHEN    SPA-DATAKBN22-VALUE  =   "T"
@@ -2277,6 +2158,8 @@ grpsys             PERFORM 900-ORCDBMAIN-SEC
                    MOVE    "4"                 TO  SPA-R01-RECEKBN
                WHEN    SPA-DATAKBN24-VALUE  =   "T"
                    MOVE    "5"                 TO  SPA-R01-RECEKBN
+               WHEN    SPA-DATAKBN25-VALUE  =   "T"
+                   MOVE    "6"                 TO  SPA-R01-RECEKBN
            END-EVALUATE
       *
            IF      SPA-GMN-IKKATU          =   "T"
@@ -2321,7 +2204,7 @@ grpsys             PERFORM 900-ORCDBMAIN-SEC
            MOVE   "CHANGE"             TO  MCP-PUTTYPE
            MOVE   "XA01   "            TO  MCP-WINDOW
       *
-           PERFORM 900-PUT-WINDOW.
+           PERFORM 900-PUT-WINDOW
       *
            MOVE    1                   TO  FLG-END
       *
@@ -2342,7 +2225,7 @@ grpsys             PERFORM 900-ORCDBMAIN-SEC
       *    ²èÌÌ°Ü¹ÔÍÑ¤Î¥Ñ¥é¥á¥¿
            PERFORM 45011-PARA-HENSYU-SEC
       *
-           MOVE    SPACE               TO  R99
+           INITIALIZE                      R99
            MOVE    ZERO                TO  R99-COUNT
            MOVE    "F12:°õ    ºþ"      TO  R99-B12-LABEL
       *
@@ -2605,6 +2488,7 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
            MOVE    SPA-DATAKBN1-VALUE     TO  R03-DATAKBN1
            MOVE    SPA-DATAKBN2-VALUE     TO  R03-DATAKBN2
            MOVE    SPA-DATAKBN3-VALUE     TO  R03-DATAKBN3
+           MOVE    SPA-DATAKBN4-VALUE     TO  R03-DATAKBN4
            MOVE    SPA-DATAKBN11-VALUE    TO  R03-DATAKBN11
            MOVE    SPA-DATAKBN31-VALUE    TO  R03-DATAKBN31
            MOVE    SPA-DATAKBN32-VALUE    TO  R03-DATAKBN32
@@ -2612,6 +2496,7 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
            MOVE    SPA-DATAKBN22-VALUE    TO  R03-DATAKBN22
            MOVE    SPA-DATAKBN23-VALUE    TO  R03-DATAKBN23
            MOVE    SPA-DATAKBN24-VALUE    TO  R03-DATAKBN24
+           MOVE    SPA-DATAKBN25-VALUE    TO  R03-DATAKBN25
       *
            MOVE    SPA-GMN-NYUGAIKBN-G    TO  R03-NYUGAIKBN
            PERFORM VARYING IDX FROM    1       BY  1
@@ -2659,9 +2544,10 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
            EXIT.
       *
       *****************************************************************
-      *    ¥¨¥é¡¼¥á¥Ã¥»¡¼¥¸É½¼¨Íý
+      *    ¥¨¥é¡¼¥á¥Ã¥»¡¼¥¸É½¼¨½èÍý
       *****************************************************************
        510-ERRSET-SEC              SECTION.
+      *
            MOVE    SPACE               TO  SPA-ERRMSG
       *
            EVALUATE    SPA-ERRCD
@@ -2716,7 +2602,7 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
                    MOVE    WRK-RECEERR                 TO  SPA-ERRMSG
            END-EVALUATE
       *
-           MOVE    SPACE                TO  RERR
+           INITIALIZE                       RERR
            MOVE    SPA-ERRCD            TO  RERR-ERRCODE
            MOVE    SPA-ERRMSG           TO  RERR-ERRMSG
            MOVE    "B01"                TO  MCP-WIDGET
@@ -2736,7 +2622,7 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
            EXIT.
       *
       *****************************************************************
-      *    ¥¬¥¤¥É¥á¥Ã¥»¡¼¥¸É½¼¨Íý
+      *    ¥¬¥¤¥É¥á¥Ã¥»¡¼¥¸É½¼¨½èÍý
       *****************************************************************
        520-RIDSET-SEC              SECTION.
       *
@@ -2799,6 +2685,20 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
                WHEN    "1012"
                    MOVE    "¸ÄÊÌºîÀ®Ê¬¤ÎºÆ°õºþ½èÍý¡Ê¼«ÇåÀÕ¡Ë¤ò¹Ô¤¤¤Þ¤¹"
                                             TO  WRK-RIDMSG
+               WHEN    "1013"
+                   MOVE    SPA-NAI-SRYYMH   TO  WRK-RIDMSG
+                   MOVE    "Ê¬¿·µ¬ºîÀ®½èÍý¡Ê¸ø³²¡Ë¤ò¹Ô¤¤¤Þ¤¹"
+                                            TO  WRK-RIDMSG (17:)
+               WHEN    "1014"
+                   MOVE    SPA-NAI-SRYYMH   TO  WRK-RIDMSG
+                   MOVE    "Ê¬ºÆ°õºþ½èÍý¡Ê¸ø³²¡Ë¤ò¹Ô¤¤¤Þ¤¹"
+                                            TO  WRK-RIDMSG (17:)
+               WHEN    "1015"
+                   MOVE    "¸ÄÊÌºîÀ®Ê¬¤Î¿·µ¬ºîÀ®½èÍý¡Ê¸ø³²¡Ë¤ò¹Ô¤¤¤Þ¤¹"
+                                            TO  WRK-RIDMSG
+               WHEN    "1016"
+                   MOVE    "¸ÄÊÌºîÀ®Ê¬¤ÎºÆ°õºþ½èÍý¡Ê¸ø³²¡Ë¤ò¹Ô¤¤¤Þ¤¹"
+                                            TO  WRK-RIDMSG
                WHEN    "6666"
                    MOVE    "¥ì¥»¥×¥ÈºîÀ®½èÍýÃæ¤Ç¤¹"
                                             TO  WRK-RIDMSG
@@ -2807,7 +2707,7 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
                                             TO  WRK-RIDMSG
            END-EVALUATE
       *
-           MOVE    SPACE                TO  RID1
+           INITIALIZE                       RID1
            MOVE    SPA-RIDCD            TO  RID1-ID1CODE
            MOVE    WRK-RIDMSG           TO  RID1-ID1MSG
            MOVE    "Ìá¤ë"               TO  RID1-B01-LABEL
@@ -2828,7 +2728,7 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
            EXIT.
       *
       *****************************************************************
-      *    ¥¨¥é¡¼¥á¥Ã¥»¡¼¥¸É½¼¨Íý
+      *    ³ÎÇ§¥á¥Ã¥»¡¼¥¸É½¼¨½èÍý
       *****************************************************************
        530-RIDSET2-SEC              SECTION.
       *
@@ -2840,7 +2740,7 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
                                                        TO  WRK-RIDMSG
            END-EVALUATE
       *
-           MOVE    SPACE                TO  RID2
+           INITIALIZE                       RID2
            MOVE    SPA-RIDCD2           TO  RID2-ID1CODE
            MOVE    WRK-RIDMSG           TO  RID2-ID1MSG
            MOVE    "B12"                TO  MCP-WIDGET

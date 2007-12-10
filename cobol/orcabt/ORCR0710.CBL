@@ -157,6 +157,8 @@
       *  03.05.03    NACL-門脇    07/08/01  所得情報取扱い機能強化対応
       *  03.05.04    NACL-門脇    07/08/01  標準負担額減額認定証設定対応
       *  03.05.05    NACL-門脇    07/08/01  月途中の所得情報変更対応
+      *
+      *  04.01.01    NACL-藤原    07/11/22  公害レセプト対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -7340,26 +7342,6 @@
        5001-DB-DELETE-SEC               SECTION.
       *
            IF      WRK-PARA-SYOKBN     =   "1"
-      *        診療年月の請求管理削除処理（種別不明分）
-               INITIALIZE                  RECE10-REC
-               MOVE    SYS-1001-HOSPNUM    TO  RECE10-HOSPNUM
-               MOVE    WRK-PARA-SRYYM      TO  RECE10-SRYYM
-               MOVE    "1"                 TO  RECE10-NYUGAIKBN
-               MOVE    RECE10-REC          TO  MCPDATA-REC
-               MOVE    "tbl_seikyu"        TO  MCP-TABLE
-               MOVE    "del5"              TO  MCP-PATHNAME
-               MOVE    "DBDELETE"          TO  MCP-FUNC
-               PERFORM   900-ORCDBMAIN-SEC
-               IF      MCP-RC           NOT =   ZERO
-                   DISPLAY "TABLE=" MCP-TABLE "PATHNAME=" MCP-PATHNAME
-                   DISPLAY " MCP-RC=" MCP-RC
-                   MOVE
-                   "請求管理削除処理（種別不明分）でエラーとなりました"
-                                               TO    WRK-RECEERR
-                   PERFORM 500-ERR-HENSYU-SEC
-                   GO  TO  5001-DB-DELETE-EXT
-               END-IF
-      *
       *        診療年月の請求管理削除処理（社保分）
                IF      WRK-PARA-RECEKBN    =   "0" OR  "1"          
                    INITIALIZE                  RECE10-REC
@@ -7619,6 +7601,8 @@
                    MOVE    SYS-2002-PTID       TO  RECE10-PTID
                    MOVE    SYS-2002-SRYYM      TO  RECE10-SRYYM
                    MOVE    SYS-2002-NYUGAIKBN  TO  RECE10-NYUGAIKBN
+                   MOVE    "1"                 TO  RECE10-TEISYUTUSAKI
+                   MOVE    "2"                 TO  RECE10-XXTEISYUTUSAKI 
                    MOVE    RECE10-REC          TO  MCPDATA-REC
                    MOVE    "tbl_seikyu"        TO  MCP-TABLE
                    MOVE    "del4"              TO  MCP-PATHNAME

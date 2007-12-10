@@ -65,6 +65,7 @@
       *  03.05.02    NACL-藤原    07/06/01  プレビュー機能追加
       *
       *  04.01.00    NACL-藤原    07/10/25  公務災害対応
+      *  04.01.01    NACL-藤原    07/11/22  公害レセプト対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -461,6 +462,8 @@
                WHEN    "5"
                    MOVE    "自賠責（従来様式）"
                                          TO  WRK-RECEKBN
+               WHEN    "6"
+                   MOVE    "公害"        TO  WRK-RECEKBN
            END-EVALUATE  
            EVALUATE    SPA-R01-RECE07-NYUGAIKBN
                WHEN    "1"
@@ -607,6 +610,18 @@ grpsys     MOVE    SPA-HOSPNUM      TO  SYS-2005-HOSPNUM
                                    TO  SPA-NAI-R04-2005-ROUPRTNM-NEXT-N
            MOVE    SYS-2005-JBAIPRTNM-NEXT-N
                                    TO  SPA-NAI-R04-2005-JBAIPRTNM-NEXT-N
+           MOVE    SYS-2005-SYAPRTNM    TO  SPA-NAI-R04-2005-KOUGAIPRTNM
+           MOVE    SYS-2005-SYAPRTNM-NEXT
+                                   TO  SPA-NAI-R04-2005-KOUGAIPRTNM-NEXT
+           IF      SYS-2005-SYAPRTNM-N  =   SPACE
+                   MOVE   SYS-2005-SYAPRTNM
+                                   TO  SPA-NAI-R04-2005-KOUGAIPRTNM-N
+           END-IF
+           IF      SYS-2005-SYAPRTNM-NEXT-N  =   SPACE
+                   MOVE   SYS-2005-SYAPRTNM-NEXT
+                                   TO
+                                   SPA-NAI-R04-2005-KOUGAIPRTNM-NEXT-N
+           END-IF
       *
       *    出力先プリンタ名割り当て情報編集
            MOVE    SPACE               TO  SYS-1031-REC
@@ -668,6 +683,42 @@ grpsys     MOVE    SPA-HOSPNUM         TO  SYS-1031-HOSPNUM
                MOVE    SYS-1031-PRTNM (4)  TO
                                        SPA-NAI-R04-2005-JBAIPRTNM-NEXT-N
            END-IF
+      *    公害印刷先
+           IF      SPA-NAI-R04-2005-KOUGAIPRTNM
+                                       =   SPACE
+               MOVE    SYS-1031-PRTNM (4)  TO
+                                      SPA-NAI-R04-2005-KOUGAIPRTNM
+           END-IF                                              
+           IF      SPA-NAI-R04-2005-KOUGAIPRTNM-N
+                                       =   SPACE
+               MOVE    SYS-1031-PRTNM (4)  TO
+                                      SPA-NAI-R04-2005-KOUGAIPRTNM-N
+           END-IF                                              
+      *    公害印刷先（続紙）
+           IF      SPA-NAI-R04-2005-KOUGAIPRTNM-NEXT
+                                       =   SPACE
+               IF      SPA-NAI-R04-2005-KOUGAIPRTNM
+                                           =   SPACE
+                   MOVE    SYS-1031-PRTNM (4)  TO
+                                       SPA-NAI-R04-2005-KOUGAIPRTNM-NEXT
+               ELSE                                              
+                   MOVE    SPA-NAI-R04-2005-KOUGAIPRTNM
+                                               TO
+                                       SPA-NAI-R04-2005-KOUGAIPRTNM-NEXT
+               END-IF
+           END-IF                                              
+           IF      SPA-NAI-R04-2005-KOUGAIPRTNM-NEXT-N
+                                       =   SPACE
+               IF      SPA-NAI-R04-2005-KOUGAIPRTNM-N
+                                           =   SPACE
+                   MOVE    SYS-1031-PRTNM (4)  TO
+                                   SPA-NAI-R04-2005-KOUGAIPRTNM-NEXT-N
+               ELSE                                              
+                   MOVE    SPA-NAI-R04-2005-KOUGAIPRTNM-N
+                                               TO
+                                   SPA-NAI-R04-2005-KOUGAIPRTNM-NEXT-N
+               END-IF
+           END-IF                                              
       *
       *    プリンター名取得
            INITIALIZE                      ORCSPRTNMGETAREA
@@ -772,6 +823,18 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                      TO  SPA-GMN-R04-TSYURUINAME (IDX)
       *************        MOVE    "T"   TO  SPA-GMN-R04-TCHK-VALUE  (IDX)
                        END-IF
+                   WHEN    "6"
+                       IF      SYS-2003-TEISYUTUSAKI =   "5"
+                           ADD     1             TO  IDX  
+                           MOVE    SYS-2003-DSPSEQ (2:2)   TO                         
+                                         SPA-NAI-R04-PRTJYUNI    (IDX)
+                           MOVE    SYS-2003-TEISYUTUSAKI
+                                     TO  SPA-NAI-R04-TEISYUTUSAKI(IDX)
+                           MOVE    SYS-2003-SYUBETU (1)
+                                     TO  SPA-NAI-R04-SYUBETU-G   (IDX)
+                           MOVE    SYS-2003-SYURUINAME
+                                     TO  SPA-GMN-R04-TSYURUINAME (IDX)
+                       END-IF
                END-EVALUATE
              END-IF  
       *
@@ -786,7 +849,16 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *                                      
       *    レセプト種別不明の編集     
            MOVE    "25"              TO  SPA-NAI-R04-PRTJYUNI    (25)
-           MOVE    "3"               TO  SPA-NAI-R04-TEISYUTUSAKI(25)
+           EVALUATE    SPA-R01-RECE07-RECEKBN
+               WHEN    "3"
+                   MOVE    "3"         TO  SPA-NAI-R04-TEISYUTUSAKI(25)
+               WHEN    "4"
+               WHEN    "5"
+                   MOVE    "4"         TO  SPA-NAI-R04-TEISYUTUSAKI(25)
+               WHEN    "6"
+                   MOVE    "5"         TO  SPA-NAI-R04-TEISYUTUSAKI(25)
+           END-EVALUATE        
+      *****MOVE    "3"               TO  SPA-NAI-R04-TEISYUTUSAKI(25)
            MOVE    "0000"            TO  SPA-NAI-R04-SYUBETU     (25 1)
            MOVE    "レセプト種別不明"
                                      TO  SPA-GMN-R04-TSYURUINAME (25)
@@ -808,6 +880,8 @@ grpsys     PERFORM 900-DBSELECT-SEC
                    WHEN    "4"
                    WHEN    "5"
                        MOVE    "4"             TO  RECE07-TEISYUTUSAKI
+                   WHEN    "6"
+                       MOVE    "5"             TO  RECE07-TEISYUTUSAKI
                END-EVALUATE        
                MOVE    SPA-NAI-R04-SYUBETU (IDX 1)
                                            TO  RECE07-RECESYUBETU
@@ -833,19 +907,17 @@ grpsys         MOVE    SPA-HOSPNUM         TO  RECE07-HOSPNUM
                                ADD     RECE07-KENSU
                                                TO SPA-GMN-R04-KENSUH
                            END-IF
+                       WHEN    "6"
+                           ADD     RECE07-KENSU
+                                               TO SPA-GMN-R04-KENSUH
                    END-EVALUATE
                END-IF
            END-PERFORM
       *    レセプト種別不明のレセプトのページ数     
            INITIALIZE                  RECE07-REC
            MOVE    SPA-R01-RECE07-KEY  TO  RECE07-KEY
-           EVALUATE    SPA-R01-RECE07-RECEKBN
-               WHEN    "3"
-                   MOVE    "3"             TO  RECE07-TEISYUTUSAKI
-               WHEN    "4"
-               WHEN    "5"
-                   MOVE    "4"             TO  RECE07-TEISYUTUSAKI
-           END-EVALUATE        
+           MOVE    SPA-NAI-R04-TEISYUTUSAKI (25)
+                                       TO  RECE07-TEISYUTUSAKI
            MOVE    "0000"              TO  RECE07-RECESYUBETU
 grpsys     MOVE    SPA-HOSPNUM         TO  RECE07-HOSPNUM
            MOVE    RECE07-REC          TO  MCPDATA-REC                             
@@ -930,15 +1002,19 @@ grpsys     MOVE    SPA-HOSPNUM         TO  RECE07-HOSPNUM
                CONTINUE
            ELSE
                MOVE    SPA-R01-PRTNMMEI    TO
-                                       SPA-NAI-R04-2005-ROUPRTNM
-                                       SPA-NAI-R04-2005-JBAIPRTNM
-                                       SPA-NAI-R04-2005-ROUPRTNM-N
-                                       SPA-NAI-R04-2005-JBAIPRTNM-N
+                                   SPA-NAI-R04-2005-ROUPRTNM
+                                   SPA-NAI-R04-2005-JBAIPRTNM
+                                   SPA-NAI-R04-2005-ROUPRTNM-N
+                                   SPA-NAI-R04-2005-JBAIPRTNM-N
+                                   SPA-NAI-R04-2005-KOUGAIPRTNM
+                                   SPA-NAI-R04-2005-KOUGAIPRTNM-N
                MOVE    SPA-R01-PRTNM-NMEI  TO
-                                       SPA-NAI-R04-2005-ROUPRTNM-NEXT
-                                       SPA-NAI-R04-2005-JBAIPRTNM-NEXT
-                                       SPA-NAI-R04-2005-ROUPRTNM-NEXT-N
-                                       SPA-NAI-R04-2005-JBAIPRTNM-NEXT-N
+                                   SPA-NAI-R04-2005-ROUPRTNM-NEXT
+                                   SPA-NAI-R04-2005-JBAIPRTNM-NEXT
+                                   SPA-NAI-R04-2005-ROUPRTNM-NEXT-N
+                                   SPA-NAI-R04-2005-JBAIPRTNM-NEXT-N
+                                   SPA-NAI-R04-2005-KOUGAIPRTNM-NEXT
+                                   SPA-NAI-R04-2005-KOUGAIPRTNM-NEXT-N
            END-IF
       *
            MOVE    SPACE           TO  SPA-RID1-FLG
@@ -1387,14 +1463,19 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
                GO  TO  450-PRINT-GIDMSG-EXT
            END-IF
       *
-      *    複数種類のレセプトが選択されているとき
+      *    複数種類のレセプトが選択されているとき（労災・自賠責）
            MOVE    ZERO                TO  WRK-PRTKBN
                                            FLG-ERR
       *
-           PERFORM VARYING IDX FROM    1   BY  1
-                   UNTIL   IDX >       25
-                   OR      FLG-ERR     =   1
-               IF      SPA-GMN-R04-TCHK-VALUE (IDX)    =   "T"
+           IF      SPA-R01-RECE07-RECEKBN
+                                       =   "6"
+               CONTINUE
+           ELSE
+      *
+               PERFORM VARYING IDX FROM    1   BY  1
+                       UNTIL   IDX >       25
+                       OR      FLG-ERR     =   1
+                 IF      SPA-GMN-R04-TCHK-VALUE (IDX)    =   "T"
                    EVALUATE    SPA-R01-RECE07-RECEKBN
                        WHEN    "3"
                            EVALUATE    IDX
@@ -1451,8 +1532,9 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
                                    END-IF         
                            END-EVALUATE
                    END-EVALUATE        
-               END-IF
-           END-PERFORM
+                 END-IF
+               END-PERFORM
+           END-IF
                                          
       *    ガイドメッセージセット
            IF      FLG-ERR                     =   1
@@ -1537,6 +1619,8 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
                WHEN    "4"
                WHEN    "5"
                    MOVE    "4"              TO  WRK-TEISYUTUSAKI
+               WHEN    "6"
+                   MOVE    "5"              TO  WRK-TEISYUTUSAKI
            END-EVALUATE        
            MOVE    "0"              TO  WRK-PREFKBN
            PERFORM 4501-PRTJYUN-PRINT-SEC
@@ -1551,6 +1635,8 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
                        WHEN    "4"
                        WHEN    "5"
                            MOVE    "4"     TO  WRK-TEISYUTUSAKI
+                       WHEN    "6"
+                           MOVE    "5"     TO  WRK-TEISYUTUSAKI
                    END-EVALUATE        
                    MOVE    "0"             TO  WRK-PREFKBN
                    MOVE    25              TO  IDX
@@ -1560,15 +1646,6 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
            END-IF
       *
       *    印刷処理
-      *
-      *****MOVE    "recept7.sh"        TO  SHELL-SHELL
-      *    MOVE    SHELL-NAME          TO  SHELL-NAME
-      *    MOVE    SPA-TERMID          TO  SHELL-TERMID
-      *    MOVE    SPA-R01-RECE07-SRYYM
-      *                                TO  SHELL-SRYYM    
-      *    MOVE    SPA-SYSYMD          TO  SHELL-SYSYMD
-      *    MOVE    "1"                 TO  SHELL-SYOKBN
-      *****MOVE    "0"                 TO  SHELL-RECEKBN 
       *     
            MOVE    WRK-CONS-FILE-ID    TO  RECEERR-FILE-ID
            MOVE    SPA-TERMID          TO  RECEERR-TERMID
@@ -1615,6 +1692,7 @@ grpsys     MOVE    SPA-HOSPNUM         TO  RECEERR-HOSPNUM
                                    TO  LNK-PRTKANRI-SRYYM 
            MOVE    SPA-SYSYMD      TO  LNK-PRTKANRI-SKYYMD
            MOVE    "recept7.sh"    TO  LNK-PRTKANRI-SHELLID
+      *    プレビュータイトル表示用
            IF      SPA-R01-RECE07-NYUGAIKBN    =   "1"
                EVALUATE    SPA-R01-RECE07-RECEKBN
                    WHEN    "3"
@@ -1622,6 +1700,8 @@ grpsys     MOVE    SPA-HOSPNUM         TO  RECEERR-HOSPNUM
                    WHEN    "4"
                    WHEN    "5"
                        MOVE    5           TO  LNK-PRTKANRI-PRIORITY
+                   WHEN    "6"
+                       MOVE    7           TO  LNK-PRTKANRI-PRIORITY
                END-EVALUATE
            ELSE
                EVALUATE    SPA-R01-RECE07-RECEKBN
@@ -1630,12 +1710,12 @@ grpsys     MOVE    SPA-HOSPNUM         TO  RECEERR-HOSPNUM
                    WHEN    "4"
                    WHEN    "5"
                        MOVE    6           TO  LNK-PRTKANRI-PRIORITY
+                   WHEN    "6"
+                       MOVE    8           TO  LNK-PRTKANRI-PRIORITY
                END-EVALUATE
            END-IF
            MOVE    SPA-TERMID      TO  LNK-PRTKANRI-TERMID
            MOVE    SPA-OPID        TO  LNK-PRTKANRI-OPID
-      *****MOVE    SYS-1031-PRTNM (5)
-      *****                        TO  LNK-PRTKANRI-PRTNM
            MOVE    LNK-PRTKANRI-RENNUM
                                    TO  SHELLTBL-ARG12       
            MOVE    LNK-PRTKANRI-TBL-KEY
@@ -1728,7 +1808,6 @@ grpsys     MOVE    SPA-HOSPNUM         TO  RECEERR-HOSPNUM
            MOVE    WRK-TEISYUTUSAKI    TO  WRK-RECE09-TEISYUTUSAKI
            MOVE    WRK-PREFKBN         TO  WRK-RECE09-PREFKBN
            MOVE    SPA-GMN-R04-PRTJYUN     TO  WRK-RECE09-PRTJYUN
-      *****MOVE    "2"                 TO  WRK-RECE09-NYUGAIKBN
            MOVE    SPA-R01-RECE07-NYUGAIKBN
                                        TO  WRK-RECE09-NYUGAIKBN
            MOVE    SPA-GMN-R04-TSTDATA (IDX)
@@ -1737,7 +1816,6 @@ grpsys     MOVE    SPA-HOSPNUM         TO  RECEERR-HOSPNUM
                                        TO  WRK-RECE09-EDDATA 
            IF      WRK-RECE09-STDATA   =   SPACE
                IF      SPA-GMN-R04-PRTJYUN =   "03"
-      *************MOVE    "Ａ"        TO  WRK-RECE09-STDATA (1:2)
                    MOVE    SPACE       TO  WRK-RECE09-STDATA
                ELSE
                    MOVE    "0"         TO  WRK-RECE09-STDATA (1:1)
@@ -1776,7 +1854,6 @@ grpsys     MOVE    SPA-HOSPNUM         TO  RECEERR-HOSPNUM
                END-IF     
            END-IF
       *
-      *　　（ＯＲＣＲ０１０１）　
            MOVE    WRK-CONS-FILE-ID    TO  RECEERR-FILE-ID
            MOVE    SPA-TERMID          TO  RECEERR-TERMID
 grpsys     MOVE    SPA-HOSPNUM         TO  RECEERR-HOSPNUM
@@ -1822,6 +1899,11 @@ grpsys     MOVE    SPA-HOSPNUM         TO  RECEERR-HOSPNUM
                                                TO  SHELLTBL-ARG11
                        MOVE    SPA-NAI-R04-2005-JBAIPRTNM-NEXT-N
                                                TO  SHELLTBL-ARG24
+                   WHEN    "6"
+                       MOVE    SPA-NAI-R04-2005-KOUGAIPRTNM-N
+                                               TO  SHELLTBL-ARG11
+                       MOVE    SPA-NAI-R04-2005-KOUGAIPRTNM-NEXT-N
+                                               TO  SHELLTBL-ARG24
                END-EVALUATE
            ELSE
                EVALUATE    SPA-R01-RECE07-RECEKBN
@@ -1835,6 +1917,11 @@ grpsys     MOVE    SPA-HOSPNUM         TO  RECEERR-HOSPNUM
                        MOVE    SPA-NAI-R04-2005-JBAIPRTNM
                                                TO  SHELLTBL-ARG11
                        MOVE    SPA-NAI-R04-2005-JBAIPRTNM-NEXT
+                                               TO  SHELLTBL-ARG24
+                   WHEN    "6"
+                       MOVE    SPA-NAI-R04-2005-KOUGAIPRTNM
+                                               TO  SHELLTBL-ARG11
+                       MOVE    SPA-NAI-R04-2005-KOUGAIPRTNM-NEXT
                                                TO  SHELLTBL-ARG24
                END-EVALUATE
            END-IF
@@ -2028,6 +2115,11 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
                                                TO  SPA-R01-PRTNMMEI
                        MOVE    SPA-NAI-R04-2005-JBAIPRTNM-NEXT-N
                                                TO  SPA-R01-PRTNM-NMEI
+                   WHEN    "6"
+                       MOVE    SPA-NAI-R04-2005-KOUGAIPRTNM-N
+                                               TO  SPA-R01-PRTNMMEI
+                       MOVE    SPA-NAI-R04-2005-KOUGAIPRTNM-NEXT-N
+                                               TO  SPA-R01-PRTNM-NMEI
                END-EVALUATE
            ELSE
                EVALUATE    SPA-R01-RECE07-RECEKBN
@@ -2041,6 +2133,11 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
                        MOVE    SPA-NAI-R04-2005-JBAIPRTNM
                                                TO  SPA-R01-PRTNMMEI
                        MOVE    SPA-NAI-R04-2005-JBAIPRTNM-NEXT
+                                               TO  SPA-R01-PRTNM-NMEI
+                   WHEN    "6"
+                       MOVE    SPA-NAI-R04-2005-KOUGAIPRTNM
+                                               TO  SPA-R01-PRTNMMEI
+                       MOVE    SPA-NAI-R04-2005-KOUGAIPRTNM-NEXT
                                                TO  SPA-R01-PRTNM-NMEI
                END-EVALUATE
            END-IF
@@ -2101,8 +2198,8 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
       *
            MOVE    SPACE               TO  LINKAREA
       *
-           MOVE    "CURRENT"           TO  MCP-PUTTYPE.
-           MOVE    "R04    "           TO  MCP-WINDOW.
+           MOVE    "CURRENT"           TO  MCP-PUTTYPE
+           MOVE    "R04    "           TO  MCP-WINDOW
       *
            PERFORM 900-PUT-WINDOW.
            .

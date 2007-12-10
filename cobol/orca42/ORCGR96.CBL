@@ -29,6 +29,8 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *  03.05.01    NACL-藤原    07/04/19  グループ診療対応
+      *
+      *  04.01.01    NACL-藤原    07/11/22  公害レセプト対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -60,6 +62,7 @@
       *     
            03  FLG-MISEIKYU-ROW    PIC 9(01).
            03  FLG-KAIJYO-ROW      PIC 9(01).
+           03  FLG-SEIKYU-UMU      PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -1367,7 +1370,7 @@ grpsys     MOVE    SPA-HOSPNUM     TO  RECE10-HOSPNUM
            MOVE    SPA-NAI-R96-PTID
                                    TO  RECE10-PTID
            PERFORM 900-SEIKYU-READ-SEC
-           IF      FLG-SEIKYU      =   ZERO
+           IF      FLG-SEIKYU-UMU  =   1
                MOVE    "1001"          TO  SPA-RIDCD
            ELSE
       *        未請求設定処理
@@ -1398,6 +1401,8 @@ grpsys         MOVE    SPA-HOSPNUM     TO  RECE10-HOSPNUM
                                        TO  RECE10-NYUGAIKBN
                MOVE    SPA-NAI-R96-PTID
                                        TO  RECE10-PTID
+               MOVE    "1"             TO  RECE10-TEISYUTUSAKI
+               MOVE    "2"             TO  RECE10-XXTEISYUTUSAKI 
                MOVE    RECE10-REC      TO  MCPDATA-REC
                MOVE    "tbl_seikyu"    TO  MCP-TABLE
                MOVE    "del7"          TO  MCP-PATHNAME
@@ -1945,9 +1950,11 @@ grpsys         MOVE    SPA-HOSPNUM         TO  SYUKA-HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    請求マスター読込（主キー）
+      *    請求マスター読込（医保の対象データの存在チェック）
       *****************************************************************
        900-SEIKYU-READ-SEC         SECTION.
+      *
+           MOVE    ZERO                TO  FLG-SEIKYU-UMU
       *
            MOVE    RECE10-REC          TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
@@ -1961,6 +1968,17 @@ grpsys         MOVE    SPA-HOSPNUM         TO  SYUKA-HOSPNUM
            ELSE
                MOVE    1                   TO  FLG-SEIKYU
            END-IF
+      *
+           PERFORM                 UNTIL   FLG-SEIKYU      =   1
+                                   OR      FLG-SEIKYU-UMU  =   1
+               IF      RECE10-TEISYUTUSAKI =   1   OR  2
+                   MOVE    1               TO  FLG-SEIKYU-UMU
+               END-IF
+      * 
+               MOVE    "tbl_seikyu"        TO  MCP-TABLE
+               MOVE    "key59"             TO  MCP-PATHNAME
+               PERFORM 900-SEIKYU-NEXT-SEC
+           END-PERFORM
       *
            MOVE    "tbl_seikyu"        TO  MCP-TABLE
            MOVE    "key59"             TO  MCP-PATHNAME

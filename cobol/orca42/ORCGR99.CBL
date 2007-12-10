@@ -56,6 +56,8 @@
       *  03.04.02    NACL-藤原    07/03/01  国保レセプト編綴順詳細設定対応
       *
       *  03.05.01    NACL-藤原    07/04/19  グループ診療対応
+      *
+      *  04.01.01    NACL-藤原    07/11/22  公害レセプト対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -639,6 +641,9 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
                END-IF
                IF      SPA-R01-RECEKBN     =   "4" OR  "5"
                    MOVE    "HC23"              TO  RECE07-PRTID
+               END-IF
+               IF      SPA-R01-RECEKBN     =   "6"
+                   MOVE    "HC25"              TO  RECE07-PRTID
                END-IF
            END-IF            
 grpsys     MOVE    SPA-HOSPNUM         TO  RECE07-HOSPNUM

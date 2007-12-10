@@ -106,6 +106,9 @@
       *
       *  04.01.01    NACL-藤原    07/10/25  公務災害対応
       *                                     HCM56.red  HCM57.red
+      *  04.01.02    NACL-藤原    07/11/22  公害レセプト対応
+      *                                     HCM58.red  HCM59.red
+      *                                     HCN58.red
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -298,6 +301,11 @@ grpsys     COPY    "COMMON-SPA".
            COPY    "HCN53.INC".
       *    COPY    "HCN54.INC".
            COPY    "HCN55.INC".
+      *
+      *    公害レセプト
+           COPY    "HCM58.INC".
+           COPY    "HCM59.INC".
+           COPY    "HCN58.INC".
       *
       *    ファイルデイレクトリ位置指定サブ
            COPY  "CPMKPASS.INC".
@@ -637,7 +645,7 @@ grpsys         PERFORM 900-ORCDBMAIN-SEC
       *
       *    リアルタイムプレビュー時の自賠責のときの連番の初期化
            IF      WRK-PARA-SHELLID    =   "RECEPTX"
-               IF      WRK-PARA-RECEKBN    =   "3" 
+               IF      WRK-PARA-RECEKBN    =   "3" OR  "6" 
                    CONTINUE
                ELSE
                    IF   ( RECE08-RECENUM   =   110 )
@@ -669,7 +677,7 @@ grpsys         PERFORM 900-ORCDBMAIN-SEC
                MOVE    LNK-PRTKANRI-SHORI-RENNUM
                                            TO  PRT-SHORI-RENNUM
            ELSE
-               IF      WRK-PARA-RECEKBN    =   "3" 
+               IF      WRK-PARA-RECEKBN    =   "3" OR  "6"
                    MOVE    LNK-PRTKANRI-SHORI-RENNUM
                                                TO  PRT-SHORI-RENNUM
                ELSE
@@ -691,7 +699,7 @@ grpsys         PERFORM 900-ORCDBMAIN-SEC
            IF      WRK-PARA-SHELLID    NOT =   "RECEPTX"
                MOVE    WRK-RENNUM          TO  PRT-PAGE
            ELSE
-               IF      WRK-PARA-RECEKBN    =   "3" 
+               IF      WRK-PARA-RECEKBN    =   "3" OR  "6"
                    MOVE    WRK-RENNUM          TO  PRT-PAGE
                ELSE
                    MOVE    RECE08-RENNUM       TO  PRT-PAGE
@@ -970,6 +978,18 @@ grpsys         PERFORM 900-ORCDBMAIN-SEC
                        MOVE    RECE08-PRTDATA      TO  HCM57
                        MOVE    WRK-HEN-RENNUM-AREA TO  HCM57-RENNUM
                        MOVE    HCM57               TO  RECE08-PRTDATA
+                   WHEN    "HCM58.red"
+                       MOVE    RECE08-PRTDATA      TO  HCM58
+                       MOVE    WRK-HEN-RENNUM-AREA TO  HCM58-RENNUM
+                       MOVE    HCM58               TO  RECE08-PRTDATA
+                   WHEN    "HCM59.red"
+                       MOVE    RECE08-PRTDATA      TO  HCM59
+                       MOVE    WRK-HEN-RENNUM-AREA TO  HCM59-RENNUM
+                       MOVE    HCM59               TO  RECE08-PRTDATA
+                   WHEN    "HCN58.red"
+                       MOVE    RECE08-PRTDATA      TO  HCN58
+                       MOVE    WRK-HEN-RENNUM-AREA TO  HCN58-RENNUM
+                       MOVE    HCN58               TO  RECE08-PRTDATA
                END-EVALUATE
            END-IF            
            MOVE    RECE08-PRTDATA      TO  PRT-PRTDATA
@@ -1063,7 +1083,7 @@ grpsys         PERFORM 900-DBFETCH-SEC
                MOVE    LNK-PRTKANRI-SHORI-RENNUM
                                            TO  SPRT-SHORI-RENNUM
            ELSE
-               IF      WRK-PARA-RECEKBN    =   "3" 
+               IF      WRK-PARA-RECEKBN    =   "3" OR  "6"
                    MOVE    LNK-PRTKANRI-SHORI-RENNUM
                                                TO  SPRT-SHORI-RENNUM
                ELSE
@@ -1163,6 +1183,9 @@ grpsys         PERFORM 900-DBFETCH-SEC
                        MOVE    "自賠（従）レセプト（入院外）"
                                                        TO  SPRT-TITLE
                    END-IF
+               WHEN    "HCM58.red"     ALSO    "2"
+               WHEN    "HCM59.red"     ALSO    "2"
+                   MOVE    "公害レセプト（入院外）"    TO  SPRT-TITLE
                WHEN    "HCN21.red"     ALSO    ANY
                WHEN    "HCN21V01.red"  ALSO    ANY
                WHEN    "HCN21V02.red"  ALSO    ANY
@@ -1211,6 +1234,9 @@ grpsys         PERFORM 900-DBFETCH-SEC
                        MOVE    "自賠（従）レセプト（入院）"
                                                        TO  SPRT-TITLE
                    END-IF
+               WHEN    "HCN58.red"     ALSO    "1"
+               WHEN    "HCM59.red"     ALSO    "1"
+                   MOVE    "公害レセプト（入院）"      TO  SPRT-TITLE
            END-EVALUATE
            MOVE    LNK-PRTKANRI-TERMID TO  SPRT-TERMID
            MOVE    LNK-PRTKANRI-OPID   TO  SPRT-OPID

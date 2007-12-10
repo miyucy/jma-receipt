@@ -56,8 +56,10 @@
       *                                     ２００７年９月以降のみ対象 
       *  03.05.09    NACL-藤原    07/09/11  新潟県中越沖地震対応
       *                                     ２００７年９月〜１２月対象 
+      *
       *  04.01.01    NACL-門脇    07/10/25  北海道５１（道単独事業）に関わる
       *                                     請求点記載対応
+      *  04.01.02    NACL-藤原    07/11/22  公害レセプト対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -8122,25 +8124,6 @@
       *
       *    個別作成時はORCR710で削除済なので処理しない
            IF      WRK-PARA-SYOKBN     =   "1"
-      *        診療年月の請求管理削除処理（種別不明分）
-               INITIALIZE                  RECE10-REC
-               MOVE    SYS-1001-HOSPNUM    TO  RECE10-HOSPNUM
-               MOVE    WRK-PARA-SRYYM      TO  RECE10-SRYYM
-               MOVE    "1"                 TO  RECE10-NYUGAIKBN
-               MOVE    RECE10-REC          TO  MCPDATA-REC
-               MOVE    "tbl_seikyu"        TO  MCP-TABLE
-               MOVE    "del5"              TO  MCP-PATHNAME
-               MOVE    "DBDELETE"          TO  MCP-FUNC
-               PERFORM   900-ORCDBMAIN-SEC
-               IF      MCP-RC           NOT =   ZERO
-                   DISPLAY "TABLE=" MCP-TABLE "PATHNAME=" MCP-PATHNAME
-                   DISPLAY " MCP-RC=" MCP-RC
-                   MOVE
-                   "請求管理削除処理（種別不明分）でエラーとなりました"
-                                               TO    WRK-RECEERR
-                   PERFORM 500-ERR-HENSYU-SEC
-                   GO  TO  5001-DB-DELETE-EXT
-               END-IF
       *
       *        診療年月の請求管理削除処理（社保分）
                IF      WRK-PARA-RECEKBN    =   "0" OR  "1"          

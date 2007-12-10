@@ -145,6 +145,8 @@
       *  02.07.01    NACL-藤原    05/12/12  国保レセプト編綴順対応
       *
       *  03.05.01    NACL-藤原    07/04/19  グループ診療対応
+      *
+      *  04.01.01    NACL-藤原    07/11/22  公害レセプト対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -4343,6 +4345,8 @@ grpsys             MOVE    WRK-PARA-HOSPNUM    TO  RECE10-HOSPNUM
                    MOVE    SYS-2002-PTID       TO  RECE10-PTID
                    MOVE    SYS-2002-SRYYM      TO  RECE10-SRYYM
                    MOVE    SYS-2002-NYUGAIKBN  TO  RECE10-NYUGAIKBN
+                   MOVE    "1"                 TO  RECE10-TEISYUTUSAKI
+                   MOVE    "2"                 TO  RECE10-XXTEISYUTUSAKI 
                    MOVE    RECE10-REC          TO  MCPDATA-REC
                    MOVE    "DBDELETE"          TO  MCP-FUNC
                    MOVE    "tbl_seikyu"        TO  MCP-TABLE

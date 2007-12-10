@@ -89,6 +89,8 @@
       *
       *  03.05.01    NACL-藤原    07/04/19  グループ診療対応
       *  03.05.02    NACL-藤原    07/09/01  照会機能連携対応
+      *
+      *  04.01.01    NACL-藤原    07/11/22  公害レセプト対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -4251,6 +4253,10 @@ grpsys                     MOVE    WRK-PARA-HOSPNUM    TO
                            MOVE    SYS-2002-SRYYM      TO  RECE10-SRYYM
                            MOVE    SYS-2002-NYUGAIKBN  TO
                                                        RECE10-NYUGAIKBN
+                           MOVE    "1"                 TO
+                                                   RECE10-TEISYUTUSAKI
+                           MOVE    "2"                 TO
+                                                   RECE10-XXTEISYUTUSAKI 
                            MOVE    RECE10-REC          TO  MCPDATA-REC
                            MOVE    "DBDELETE"          TO  MCP-FUNC
                            MOVE    "tbl_seikyu"        TO  MCP-TABLE
@@ -4360,6 +4366,10 @@ grpsys                     MOVE    WRK-PARA-HOSPNUM
                            MOVE    BTPARA-INFO-PARA (17:6)
                                                    TO  RECE10-SRYYM
                            MOVE    "2"             TO  RECE10-NYUGAIKBN
+                           MOVE    "1"             TO
+                                                   RECE10-TEISYUTUSAKI
+                           MOVE    "2"             TO
+                                                   RECE10-XXTEISYUTUSAKI 
                            MOVE    RECE10-REC      TO  MCPDATA-REC
                            MOVE    "DBDELETE"      TO  MCP-FUNC
                            MOVE    "tbl_seikyu"    TO  MCP-TABLE
@@ -4466,6 +4476,10 @@ grpsys                     MOVE    WRK-PARA-HOSPNUM
                            MOVE    BTPARA-INFO-PARA (1:6)
                                                    TO  RECE10-SRYYM
                            MOVE    "2"             TO  RECE10-NYUGAIKBN
+                           MOVE    "1"             TO
+                                                   RECE10-TEISYUTUSAKI
+                           MOVE    "2"             TO
+                                                   RECE10-XXTEISYUTUSAKI 
                            MOVE    RECE10-REC      TO  MCPDATA-REC
                            MOVE    "DBDELETE"      TO  MCP-FUNC
                            MOVE    "tbl_seikyu"    TO  MCP-TABLE
