@@ -183,6 +183,7 @@
            INITIALIZE                  STS-AREA
            INITIALIZE                  WRK-AREA
            INITIALIZE                  CNT-AREA
+           INITIALIZE                  SPA-AREA
       *
            ACCEPT  SYS-TIME            FROM    TIME     
       *
