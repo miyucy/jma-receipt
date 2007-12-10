@@ -201,6 +201,7 @@
            03  FLG-NAIBUN          PIC 9(01).
       *
            03  FLG-HKN-OK          PIC 9(01).
+           03  FLG-KOGHKN-OK       PIC 9(01).
            03  FLG-RSIHKN-OK       PIC 9(01).
            03  FLG-RSIHKN-OK2      PIC 9(01).
            03  FLG-RRKNUM-ARI      PIC 9(01).
@@ -11977,6 +11978,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *    瘦副冉年
            MOVE    ZERO                TO  FLG-HKN-OK
            MOVE    ZERO                TO  FLG-RSIHKN-OK
+           MOVE    ZERO                TO  FLG-KOGHKN-OK
            MOVE    ZERO                TO  FLG-RSIHKN-OK2
            IF     (SPA-GMN-PTNUM   NOT =   SPACE )  AND
                   (SPA-GMN-PTID    NOT =   ZERO  )  AND
@@ -12041,7 +12043,8 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            IF      FLG-HKN-OK      NOT =   ZERO
                MOVE    "0"                 TO  SPA-XC01-HKNKBN
                MOVE    SPACE               TO  SPA-XC01-RSI-HKNKBN
-               IF      FLG-RSIHKN-OK   NOT =   ZERO
+               IF     (FLG-RSIHKN-OK   NOT =   ZERO ) OR
+                      (FLG-KOGHKN-OK   NOT =   ZERO )
                    MOVE    "1"             TO  SPA-XC01-CHK
                END-IF
            ELSE
@@ -12149,6 +12152,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *            给巢
                    IF      SPA-NAI-THKNNUM(IDH)    =   "975"
                        ADD     1               TO  WRK-KOG-CNT
+                       MOVE    1               TO  FLG-KOGHKN-OK
                    ELSE
                        MOVE    1               TO  FLG-HKN-OK
                    END-IF
@@ -12202,9 +12206,17 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                            MOVE    "0"         TO  SPA-XC01-HKNKBN
                            MOVE    SPACE       TO  SPA-XC01-RSI-HKNKBN
                        ELSE
-                           MOVE    "1"         TO  SPA-XC01-HKNKBN
-                           MOVE    SPA-NAI-TRSI-HKNKBN (IDH)
+                           IF      SPA-NAI-THKNNUM(IDH)    =   "975"
+      *                    给巢
+                               MOVE    "3"         TO  SPA-XC01-HKNKBN
+                               MOVE    SPACE       TO
+                                                   SPA-XC01-RSI-HKNKBN
+                           ELSE
+      *                    汐阂ˇ极清勒
+                               MOVE    "1"         TO  SPA-XC01-HKNKBN
+                               MOVE    SPA-NAI-TRSI-HKNKBN (IDH)
                                                TO  SPA-XC01-RSI-HKNKBN
+                           END-IF
                        END-IF
                        MOVE    SPA-HKN-MAX     TO  IDH
                    END-IF
@@ -12318,6 +12330,10 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *D                               OR  "5"
                MOVE    "2"                 TO  SPA-XC01-HKNKBN
            END-IF
+      *TEST
+           DISPLAY "41301-PREVIEW-KICK-SEC"
+               ",SPA-XC01-HKNKBN:" SPA-XC01-HKNKBN
+      *TEST
       *
            MOVE    SPACE               TO  SPA-XC01-CHK
            MOVE    ZERO                TO  WRK-RRK-HKNKBN
