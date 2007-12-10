@@ -60,6 +60,13 @@
                 05  I01-SKJKBN-ITM                 PIC X(24)
                                                    OCCURS  10.
                 05  I01-SKJKBN-ITM-STT             PIC S9(9)   BINARY.
+              04  I01-CMB-TIMEKBN.
+                05  I01-TIMEKBN                    PIC X(12).
+                05  I01-TIMEKBN-STT                PIC S9(9)   BINARY.
+                05  I01-TIMEKBN-CNT                PIC S9(9)   BINARY.
+                05  I01-TIMEKBN-ITM                PIC X(12)
+                                                   OCCURS  5.
+                05  I01-TIMEKBN-ITM-STT            PIC S9(9)   BINARY.
               04  I01-CMB-SENTEIKBN.
                 05  I01-SENTEIKBN                  PIC X(24).
                 05  I01-SENTEIKBN-STT              PIC S9(9)   BINARY.
