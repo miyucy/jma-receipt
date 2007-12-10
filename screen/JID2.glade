@@ -13,7 +13,7 @@
 <widget>
   <class>GtkWindow</class>
   <name>JID2</name>
-  <width>540</width>
+  <width>574</width>
   <height>132</height>
   <signal>
     <name>map_event</name>
@@ -46,7 +46,7 @@
     <widget>
       <class>GtkPandaEntry</class>
       <name>ID2CODE</name>
-      <x>8</x>
+      <x>4</x>
       <y>8</y>
       <width>96</width>
       <height>24</height>
@@ -84,9 +84,9 @@
     <widget>
       <class>GtkPandaEntry</class>
       <name>ID2MSG</name>
-      <x>8</x>
+      <x>4</x>
       <y>40</y>
-      <width>524</width>
+      <width>565</width>
       <height>24</height>
       <editable>False</editable>
       <text_visible>True</text_visible>
@@ -99,7 +99,7 @@
     <widget>
       <class>GtkButton</class>
       <name>B12</name>
-      <x>456</x>
+      <x>504</x>
       <y>96</y>
       <width>64</width>
       <height>24</height>
@@ -122,7 +122,7 @@
     <widget>
       <class>GtkButton</class>
       <name>B08</name>
-      <x>232</x>
+      <x>240</x>
       <y>96</y>
       <width>64</width>
       <height>24</height>
@@ -145,9 +145,9 @@
     <widget>
       <class>GtkPandaEntry</class>
       <name>ID2MSG2</name>
-      <x>8</x>
+      <x>4</x>
       <y>64</y>
-      <width>524</width>
+      <width>565</width>
       <height>24</height>
       <editable>False</editable>
       <text_visible>True</text_visible>
