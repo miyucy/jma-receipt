@@ -12330,10 +12330,6 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *D                               OR  "5"
                MOVE    "2"                 TO  SPA-XC01-HKNKBN
            END-IF
-      *TEST
-           DISPLAY "41301-PREVIEW-KICK-SEC"
-               ",SPA-XC01-HKNKBN:" SPA-XC01-HKNKBN
-      *TEST
       *
            MOVE    SPACE               TO  SPA-XC01-CHK
            MOVE    ZERO                TO  WRK-RRK-HKNKBN
@@ -12893,7 +12889,8 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *
                WHEN    "0125"
                    STRING   "健保のプレビューを行います。"
-                            "労災・自賠責は保険組合せを選択して下さい。"
+                            "労災・自賠責・公害は保険組合せを"
+                            "選択して下さい。"
                                        DELIMITED  BY  SIZE
                                        INTO    WRK-JIDMSG
                    END-STRING
