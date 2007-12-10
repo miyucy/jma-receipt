@@ -1,6 +1,6 @@
 db_group {
  type "PostgreSQL";
- port "localhost";
+ port "";
  name "orca";
  redirect "log";
 };
