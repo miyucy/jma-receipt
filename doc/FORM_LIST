@@ -30,12 +30,13 @@ HC502.red	←	鏜槨質杅鉾
 HC503.red	←	ェ情隙憎鉾
 HCN02.red	←	轉情據抸踏
 
-HCM301.red	←	泔管樹扷﹋ㄠ﹌
-HCM302.red	←	泔管樹扷﹋ㄡ﹌
-HCM303.red	←	泔管樹扷﹋ㄢ﹌
-HCM304.red	←	泔管樹扷﹋ㄣ﹌
-HCM305.red	←	泔管樹扷﹋ㄤ﹌
-HCM306.red	←	泔管樹扷﹋ㄥ﹌
+HCM300.red	←	泔管樹扷					VER4.1.0
+HCM301.red		泔管樹扷﹋ㄠ﹌
+HCM302.red		泔管樹扷﹋ㄡ﹌
+HCM303.red		泔管樹扷﹋ㄢ﹌
+HCM304.red		泔管樹扷﹋ㄣ﹌
+HCM305.red		泔管樹扷﹋ㄤ﹌
+HCM306.red		泔管樹扷﹋ㄥ﹌
 
 HCM43.red		陸侳畸帎擱菲踏痱恄璋踏
 HCM43V01.red		陸侳畸帎擱菲踏痱恄璋踏﹋ㄠ﹌

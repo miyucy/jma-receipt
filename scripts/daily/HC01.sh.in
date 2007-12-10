@@ -13,6 +13,9 @@ export HOME=/home/orca
 
 ruby -e "puts File.readlines(ARGV[0]).at(0).chomp + ' ' * 20000  " $4 > $4.tmp
 mv $4.tmp $4
+LAYEROPTION=`ruby -ne '$_.scan(/MonpeLayerIn(.*)MonpeLayerOut/){ print $1 }' $4`
+ruby -ne 'print $_.gsub(/MonpeLayerIn(.*)MonpeLayerOut/,"")' $4 > $4.tmp
+mv $4.tmp $4
 
 #
 	if	[ $1 = 'red2ps' ]	;then
@@ -27,9 +30,9 @@ mv $4.tmp $4
 			OFFSETY=$7
 		fi
 		if	[ -z $5  ]	;then
-			$1 $2 $4 -x $OFFSETX -y $OFFSETY -p lp1
+			$1 $2 $4 $LAYEROPTION -x $OFFSETX -y $OFFSETY -p lp1
 		else
-			$1 $2 $4 -x $OFFSETX -y $OFFSETY -p $5
+			$1 $2 $4 $LAYEROPTION -x $OFFSETX -y $OFFSETY -p $5
 		fi
 	else	
 		ruby $1 $2 $3 $4 $5
