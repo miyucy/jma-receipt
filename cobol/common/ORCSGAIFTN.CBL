@@ -33,6 +33,7 @@
       *  01.00.03    NACL-ÌçÏÆ    05/07/19  ¼ýÇ¼¹àÌÜÄÉ²Ã¤ËÈ¼¤¦½¤Àµ
       *  01.00.04    NACL-ÌçÏÆ    06/03/22  ¼«Î©»Ù±çË¡ÂÐ±þ
       *  03.05.00    NACL-ÌçÏÆ    07/05/08  ¥°¥ë¡¼¥×¿ÇÎÅÂÐ±þ
+      *  04.01.01    NACL-ÌçÏÆ    07/12/07  ¸ø³²ÂÐ±þ
       *****************************************************************
        ENVIRONMENT         DIVISION.
        CONFIGURATION       SECTION.
@@ -295,13 +296,14 @@ grpsys     COPY    "COMMON-SPA".
                     END-PERFORM
       *
                     IF     LNK-SYU-SYUHKNNUM(IDX)  =   "973"
-      *
                        MOVE   WRK-SYUTEN    TO    LNK-S01-SYUTEN(IDX)
                        MOVE   WRK-SINDAN    TO    LNK-S01-SINDAN(IDX)
                        MOVE   WRK-MEISAI    TO    LNK-S01-MEISAI(IDX)
                        MOVE   WRK-RYOYO     TO    LNK-S01-RYOYO(IDX)
                        MOVE   WRK-SONOTA-TBL  TO  LNK-S01-SONOTA(IDX)
-      *
+                    END-IF
+                    IF     LNK-SYU-SYUHKNNUM(IDX)  =   "975"
+                       MOVE   WRK-SYUTEN    TO    LNK-S01-SYUTEN(IDX)
                     END-IF
       *
                     MOVE      WRK-SENINFLG  TO    LNK-S01-SENINFLG(IDX)
@@ -319,7 +321,6 @@ grpsys     COPY    "COMMON-SPA".
                     END-IF
       *
                     IF  LNK-SYU-SYUHKNNUM(IDX)  =   "973"
-      *
                       COMPUTE   WRK-SYUTEN  =  WRK-SYUTEN
                                             +  LNK-S01-SYUTEN(IDX)
                       COMPUTE   WRK-SINDAN  =  WRK-SINDAN
@@ -328,7 +329,6 @@ grpsys     COPY    "COMMON-SPA".
                                             +  LNK-S01-MEISAI(IDX)
                       COMPUTE   WRK-RYOYO   =  WRK-RYOYO
                                             +  LNK-S01-RYOYO(IDX)
-      *
                       PERFORM    VARYING   IDX2    FROM   1   BY   1
                         UNTIL  (IDX2                           >    20 )
                           OR   (LNK-S01-SONOTA-SRYCD(IDX IDX2) =  SPACE)
@@ -344,7 +344,11 @@ grpsys     COPY    "COMMON-SPA".
                                           TO   WRK-SONOTA-TANKA(IDX3)
                          END-IF
                       END-PERFORM
+                    END-IF
       *
+                    IF  LNK-SYU-SYUHKNNUM(IDX)  =   "975"
+                      COMPUTE   WRK-SYUTEN  =  WRK-SYUTEN
+                                            +  LNK-S01-SYUTEN(IDX)
                     END-IF
       *
                     IF      WRK-SENINFLG            =  SPACE

@@ -45,6 +45,7 @@
       *  03.04.05    NACL-ÌçÏÆ    07/06/08  ½é¿ÇÎÁ»»Äê»þ¤Î¾ò·ïÄÉ²Ã
       *  03.05.00    NACL-Â¿¡¹Ç¼  07/04/XX  ¥°¥ë¡¼¥×¿ÇÎÅÂÐ±þ
       *  04.01.01    NACL-ÌçÏÆ    07/10/25  ¸øÌ³ºÒ³²ÂÐ±þ
+      *  04.01.02    NACL-ÌçÏÆ    07/12/07  ¸ø³²ÂÐ±þ
       *****************************************************************
        ENVIRONMENT         DIVISION.
        CONFIGURATION       SECTION.
@@ -165,6 +166,8 @@
       *
            03  WK-SYUTEN-KEI               PIC  9(08).
            03  WRK-TEN                     PIC  9(08).
+      *
+           03  WK-KOGAI-TEN                PIC  9(08).
       *
       *    ¥·¥¹¥Æ¥àÎÎ°è
        01  SYS-AREA.
@@ -1175,7 +1178,8 @@
            END-IF
       *
            IF    (LNK-SYU-SYUHKNNUM(IDY)
-                                      NOT =   "971" AND "973"   )
+                                      NOT =   "971" AND "973"
+                                                    AND "975"   )
            AND   (ACCT-SRYKBN             =   "11"              )
            AND   (ACCT-ZAITEN             =    ZERO             )
            AND   (ACCT-DAY(SAI-IDX  WRK-SAIKEISAN-DD) NOT = ZERO)
@@ -1208,8 +1212,8 @@
               ELSE                                                      
                  COMPUTE  TBL-SYUTEN(IDX1)  =  ACCT-SYUTEN1
                                             *  TBL-ZAIKAISU(IDX1)
-                 IF  (LNK-SYU-SYUHKNNUM(IDY)  =   "973")
-                 AND (ACCT-SRYKBN             =   "70" )
+                 IF  (LNK-SYU-SYUHKNNUM(IDY)  =   "973" OR "975")
+                 AND (ACCT-SRYKBN             =   "70"          )
                      COMPUTE  TBL-SYUTEN(IDX1) =
                               TBL-SYUTEN(IDX1) -
                              (ACCT-SYUTEN2 * TBL-ZAIKAISU(IDX1))
@@ -1459,6 +1463,7 @@
                IF    (IDY                 =     1  )
                AND   (LNK-S01-SYOSINFLG   =   SPACE)
                    IF  LNK-SYU-SYUHKNNUM(IDY)   =   "971"  OR  "973"
+                                                           OR  "975"
                       CONTINUE
                    ELSE
                       PERFORM  44025-SYOSINFLG-SET-SEC
@@ -1564,6 +1569,7 @@
                END-IF
       *
                IF  LNK-SYU-SYUHKNNUM(IDY)   =   "971"  OR  "973"
+                                                       OR  "975"
                  IF  TBL-SRYKBN(IDX1)       =   "95"   OR  "96"        
                    CONTINUE                                            
                  ELSE                                                  
@@ -1667,6 +1673,12 @@
       *
              MOVE      WK-RYOYOTEATE   TO   LNK-S01-RYOYO(IDY)
       *
+           END-IF
+      *
+      *    ¸ø³²½èÍý
+           IF  LNK-SYU-SYUHKNNUM(IDY)  =   "975"
+             COMPUTE   LNK-S01-SYUTEN(IDY)  =   WK-SYUTEN-KEI
+                                            -   WK-KOGAI-TEN
            END-IF
       *
            IF      FLG-SENIN-SYOSIN   =   1
@@ -2334,6 +2346,8 @@
                     PERFORM    900-TENSU-READ-SEC
                     IF      FLG-TENSU   =    ZERO
       *                                                     
+                      IF  LNK-SYU-SYUHKNNUM(IDY)  =  "971" OR "973"
+      *
                          COMPUTE  WRK-TEN     =   TNS-TEN  /  10       
       *                                                                
                          IF   SRY-SRYCD(IDX3) =  "101110010"  OR       
@@ -2419,6 +2433,14 @@
                            COMPUTE WK-RYOYOTEATE = WK-RYOYOTEATE +
                                   (TNS-TEN  *   TBL-ZAIKAISU (IDX1))
                          END-IF
+                      ELSE
+                         IF    SRY-SRYCD (IDX3)  =  "102130010"
+                                                OR  "102130020"
+                                                OR  "102400010"
+                           COMPUTE WK-KOGAI-TEN = WK-KOGAI-TEN +
+                                  (TNS-TEN  *   TBL-ZAIKAISU (IDX1))
+                         END-IF
+                      END-IF
       *                                                                
                     END-IF                                             
       *                                                                

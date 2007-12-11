@@ -90,7 +90,8 @@
       *  03.04.05    NACL-ÌçÏÆ    07/05/22  ½é¿ÇÎÁ»»Äê»þ¤Î¾ò·ïÄÉ²Ã
       *  03.05.00    NACL-ÂÀÅÄ    07/05/09  ¥°¥ë¡¼¥×¿ÇÎÅÂÐ±þ
       *  03.05.01    NACL-ÌçÏÆ    07/09/13  ½êÂô»ÔÆýÍÄ»ùÂÐ±þ
-      *  04.01.00    NACL-ÂÀÅÄ    07/11/20  ¼¼ÎÁº¹³Û£¶·åÂÐ±þ
+      *  04.01.01    NACL-ÂÀÅÄ    07/11/20  ¼¼ÎÁº¹³Û£¶·åÂÐ±þ
+      *  04.01.02    NACL-ÌçÏÆ    07/12/07  ¸ø³²ÂÐ±þ
       *****************************************************************
        ENVIRONMENT         DIVISION.
        CONFIGURATION       SECTION.
@@ -128,6 +129,7 @@
            03  WRK-KYOBUKASAN              PIC 9(09).
            03  WRK-SOGAIKASAN              PIC 9(09).
            03  WRK-RYOYOTEATE              PIC 9(09).
+           03  WRK-KOGAI-TEN               PIC 9(09).
       *
        01  WRK-JIBAI-TABLE.
            02  WRK-JIBAI-TBL     OCCURS   10.
@@ -1523,7 +1525,7 @@
       *³°Çñ¾ðÊó¤Î¼èÆÀ
            MOVE    ZERO                TO  FLG-NYUINACCT
            INITIALIZE                      NYUINACCT-REC
-           MOVE    SYU-HOSPNUM          TO  NACCT-HOSPNUM
+           MOVE    SYU-HOSPNUM         TO  NACCT-HOSPNUM
            MOVE    SYU-PTID            TO  NACCT-PTID
            MOVE    SYU-SRYYMD (1:6)    TO  NACCT-SRYYM
            MOVE    NYUINACCT-REC       TO  MCPDATA-REC
@@ -1538,59 +1540,63 @@ grpsys                            SPA-AREA
                MOVE    "key26"         TO  MCP-PATHNAME
                PERFORM  NYUINACCT-READ-SEC
            ELSE
-               MOVE    1               TO      FLG-NYUINACCT
+               MOVE    1               TO  FLG-NYUINACCT
            END-IF
       *
-           MOVE     ZERO               TO      FLG-GAIHAKU-SET
-           INITIALIZE                          TABLE-GAIHAKU
+           MOVE     ZERO               TO  FLG-GAIHAKU-SET
+           INITIALIZE                      TABLE-GAIHAKU
+           MOVE     ZERO               TO  WRK-GAIHAKU-COUNT
       *
            PERFORM      GAIHAKU-SET-SEC
                UNTIL   (FLG-NYUINACCT   =       1      )   OR
                        (FLG-GAIHAKU-SET =       1      )
-      *
       *
            MOVE    "tbl_nyuinacct"     TO  MCP-TABLE
            MOVE    "key26"             TO  MCP-PATHNAME
            PERFORM   CSR-CLOSE-SEC
       *
       *ÁªÄêÎÅÍÜ¾ðÊó¤Î¼èÆÀ
-           MOVE    ZERO                TO  FLG-NYUINACCT
-           INITIALIZE                      NYUINACCT-REC
-           MOVE    SYU-HOSPNUM          TO  NACCT-HOSPNUM
-           MOVE    SYU-PTID            TO  NACCT-PTID
-           MOVE    SYU-SRYYMD (1:6)    TO  NACCT-SRYYM
-           MOVE    NYUINACCT-REC       TO  MCPDATA-REC
-           MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "tbl_nyuinacct"     TO  MCP-TABLE
-           MOVE    "key22"             TO  MCP-PATHNAME
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
-           IF      MCP-RC              =   ZERO
-               MOVE    "tbl_nyuinacct" TO  MCP-TABLE
-               MOVE    "key22"         TO  MCP-PATHNAME
-               PERFORM  NYUINACCT-READ-SEC
+           MOVE     ZERO               TO  FLG-SENTEI-SET
+           INITIALIZE                      TABLE-SENTEI
+      *
+           MOVE     ZERO               TO  WRK-SENTEI-GAIHAKU-KEISU
+      *
+           IF   SYU-SYUHKNNUM    =    "975"
+              CONTINUE
            ELSE
-               MOVE    1               TO      FLG-NYUINACCT
+              MOVE    ZERO                TO  FLG-NYUINACCT
+              INITIALIZE                      NYUINACCT-REC
+              MOVE    SYU-HOSPNUM         TO  NACCT-HOSPNUM
+              MOVE    SYU-PTID            TO  NACCT-PTID
+              MOVE    SYU-SRYYMD (1:6)    TO  NACCT-SRYYM
+              MOVE    NYUINACCT-REC       TO  MCPDATA-REC
+              MOVE    "DBSELECT"          TO  MCP-FUNC
+              MOVE    "tbl_nyuinacct"     TO  MCP-TABLE
+              MOVE    "key22"             TO  MCP-PATHNAME
+grpsys        CALL "ORCDBMAIN" USING MCPAREA
+                                     MCPDATA-REC
+grpsys                               SPA-AREA
+              IF      MCP-RC              =   ZERO
+                  MOVE    "tbl_nyuinacct" TO  MCP-TABLE
+                  MOVE    "key22"         TO  MCP-PATHNAME
+                  PERFORM  NYUINACCT-READ-SEC
+              ELSE
+                  MOVE    1               TO  FLG-NYUINACCT
+              END-IF
+      *
+              PERFORM      SENTEI-SET-SEC
+                  UNTIL   (FLG-NYUINACCT   =       1      )   OR
+                          (FLG-SENTEI-SET  =       1      )
+      *
+              MOVE    "tbl_nyuinacct"     TO  MCP-TABLE
+              MOVE    "key22"             TO  MCP-PATHNAME
+              PERFORM   CSR-CLOSE-SEC
+      *
+      *       ÁªÄê³°Çñ¤Î·¸¿ô¥»¥Ã¥È
+              PERFORM   SENTEI-GAIHAKU-KEISU-SET-SEC
            END-IF
       *
-           MOVE     ZERO               TO      FLG-SENTEI-SET
-           INITIALIZE                          TABLE-SENTEI
-      *
-           PERFORM      SENTEI-SET-SEC
-               UNTIL   (FLG-NYUINACCT   =       1      )   OR
-                       (FLG-SENTEI-SET =       1      )
-      *
-      *
-           MOVE    "tbl_nyuinacct"     TO  MCP-TABLE
-           MOVE    "key22"             TO  MCP-PATHNAME
-           PERFORM   CSR-CLOSE-SEC
-      *
-      *ÁªÄê³°Çñ¤Î·¸¿ô¥»¥Ã¥È
-           PERFORM   SENTEI-GAIHAKU-KEISU-SET-SEC
-      *
       *Æþ±¡ÎÁ´Ø·¸¤Î¼èÆÀ
-      *
            MOVE    ZERO                TO  NYUIN-COUNT
            INITIALIZE                      TABLE-NYUIN
            INITIALIZE                      TABLE-RMSAGAKU
@@ -1599,10 +1605,10 @@ grpsys                            SPA-AREA
       *
            MOVE    ZERO                TO  FLG-NYUINACCT
            INITIALIZE                      NYUINACCT-REC
-           MOVE    SYU-HOSPNUM          TO  NACCT-HOSPNUM
+           MOVE    SYU-HOSPNUM         TO  NACCT-HOSPNUM
            MOVE    "1"                 TO  NACCT-NYUGAIKBN
            MOVE    SYU-PTID            TO  NACCT-PTID
-           MOVE    SYU-SRYYMD (1:6)  TO  NACCT-SRYYM
+           MOVE    SYU-SRYYMD (1:6)    TO  NACCT-SRYYM
            MOVE    NYUINACCT-REC       TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "tbl_nyuinacct"     TO  MCP-TABLE
@@ -1856,7 +1862,6 @@ grpsys                            SPA-AREA
        GAIHAKU-SET-SEC           SECTION.
       *
            IF  NACCT-SRYYM      =   SYU-SRYYMD(1:6)
-               MOVE     ZERO        TO  WRK-GAIHAKU-COUNT
       *    ³°Çñ¾ðÊó¤Î¥Æ¡¼¥Ö¥ë¥»¥Ã¥È
                PERFORM   VARYING  SYU-IDX  FROM  1  BY  1
                          UNTIL    SYU-IDX  >   31
@@ -1907,8 +1912,6 @@ grpsys                            SPA-AREA
       **************************************************************
        SENTEI-GAIHAKU-KEISU-SET-SEC           SECTION.
       *
-           MOVE      ZERO           TO     WRK-SENTEI-GAIHAKU-KEISU
-      *
            IF  SYU-SRYYMD(1:6)    <=    "200303"
                MOVE   0.1           TO     WRK-SENTEI-GAIHAKU-KEISU
            END-IF
@@ -1932,12 +1935,12 @@ grpsys                            SPA-AREA
       **************************************************************
        NYUINACCT-GET-SEC           SECTION.
       *
-           IF    (NACCT-ZAITEN            NOT = ZERO  )           AND
-                 (NACCT-SRYYM(1:6)    =   SYU-SRYYMD(1:6))
+           IF    (NACCT-ZAITEN    NOT = ZERO           ) AND
+                 (NACCT-SRYYM(1:6)    = SYU-SRYYMD(1:6))
       *
       *        Æþ±¡´µ¼Ô¤ÎÏ·¿ÍÈ½Äê
-               INITIALIZE   ORCSAGECHKAREA
-               MOVE    SYU-HOSPNUM          TO  AGECHK-HOSPNUM
+               INITIALIZE                      ORCSAGECHKAREA
+               MOVE    SYU-HOSPNUM         TO  AGECHK-HOSPNUM
                MOVE    SYU-PTID            TO  AGECHK-PTID
                MOVE    SYU-SRYYMD          TO  AGECHK-SRYYMD
                CALL    "ORCSAGECHK"        USING
@@ -1950,7 +1953,7 @@ grpsys                            SPA-AREA
                END-IF
       *
       *        Æþ±¡ÎÁ¤Î½¸·×
-               IF  (NACCT-ZAISKBKBN      =   "1")   AND
+               IF  (NACCT-ZAISKBKBN          =  "1" ) AND
                    (NACCT-ZAITEN         NOT =  ZERO)
       *            Æþ±¡´ðËÜÎÁ¤È²Ã¸º»»ÅÀ¿ô¤Î¼èÆÀ
                    PERFORM   NYUINKHN-GET-SEC
@@ -1958,8 +1961,8 @@ grpsys                            SPA-AREA
       ***                MOVE  WRK-GAIHAKU-KHNTEN  TO  WRK-KHNTEN
       ***          END-IF
       *            ÉÂÅïÀßÄê¤ÎÁªÄê¼«¸ÊÉéÃ´¾ðÊó¤Î¼èÆÀ
-                   INITIALIZE                  ORCSBTUSENTEIAREA
-                   MOVE    SYU-HOSPNUM          TO  SBTUSENTEI-HOSPNUM
+                   INITIALIZE                      ORCSBTUSENTEIAREA
+                   MOVE    SYU-HOSPNUM         TO  SBTUSENTEI-HOSPNUM
                    MOVE    SYU-PTID            TO  SBTUSENTEI-PTID
                    MOVE    SYU-SRYYMD (1:6)    TO  SBTUSENTEI-SRYYM
                    CALL    "ORCSBTUSENTEI"     USING
@@ -2475,25 +2478,25 @@ grpsys                              SPA-AREA
            MOVE    "1"                TO   NSRY-NYUGAIKBN
            MOVE    SYU-PTID           TO   NSRY-PTID
            MOVE    "00"               TO   NSRY-SRYKA
-           MOVE    SYU-SRYYMD(1:6)  TO   NSRY-SRYYM
+           MOVE    SYU-SRYYMD(1:6)    TO   NSRY-SRYYM
            MOVE    NACCT-ZAINUM       TO   NSRY-ZAINUM
            MOVE    1                  TO   NSRY-RENNUM
            MOVE    NYUINACT-REC       TO   MCPDATA-REC
            MOVE    "DBSELECT"         TO   MCP-FUNC
-           MOVE    "tbl_nyuinact"     TO  MCP-TABLE
+           MOVE    "tbl_nyuinact"     TO   MCP-TABLE
            MOVE    "key2"             TO   MCP-PATHNAME
 grpsys     CALL "ORCDBMAIN" USING MCPAREA
                                   MCPDATA-REC
 grpsys                            SPA-AREA
            IF      MCP-RC             =    ZERO
-               MOVE    "tbl_nyuinact" TO  MCP-TABLE
+               MOVE    "tbl_nyuinact" TO   MCP-TABLE
                MOVE    "key2"         TO   MCP-PATHNAME
                PERFORM NYUINACT-READ-SEC
            ELSE
                MOVE    1              TO   FLG-NYUINACT
            END-IF
            IF      FLG-NYUINACT        =   ZERO
-               MOVE      ZERO          TO  FLG-NYUKHN  
+               MOVE      ZERO         TO   FLG-NYUKHN
                PERFORM   VARYING  NYUINACT-IDX  FROM 1  BY  1
                  UNTIL  (FLG-NYUKHN         =   1)    OR
                         (NYUINACT-IDX       >   5)    OR
@@ -2538,7 +2541,7 @@ grpsys                            SPA-AREA
       ***                                  WRK-KHNTEN
       *
            MOVE    "tbl_nyuinact" TO  MCP-TABLE
-           MOVE    "key2"         TO   MCP-PATHNAME
+           MOVE    "key2"         TO  MCP-PATHNAME
            PERFORM   CSR-CLOSE-SEC
       *
       *    ÁªÄêÎÅÍÜ¤ÎÆþ±¡ºÞÅÀ¿ô¤È´ðËÜÅÀ¿ô¤Î¼èÆÀ
@@ -2568,16 +2571,17 @@ grpsys                                SPA-AREA
                MOVE    "key2"              TO  MCP-PATHNAME
                PERFORM  CSR-CLOSE-SEC
       *
-               MOVE    SPACE         TO   TNS-TENSU-REC
-               INITIALIZE                 TNS-TENSU-REC
-               MOVE     LNK-S02-HOSPNUM   TO  TNS-HOSPNUM
-               MOVE    SENCHG-SENTEISRYCD TO  TNS-SRYCD
-               MOVE     SYU-SRYYMD(1:6)   TO  TNS-YUKOSTYMD
-                                              TNS-YUKOEDYMD
-               MOVE     "01"              TO  TNS-YUKOSTYMD(7:2)
-                                              TNS-YUKOEDYMD(7:2)
-               PERFORM  TENSU-READ-SEC
-               IF       FLG-TENSU      =    ZERO
+               IF   FLG-SENTEICDCHG = ZERO
+                 MOVE    SPACE         TO   TNS-TENSU-REC
+                 INITIALIZE                 TNS-TENSU-REC
+                 MOVE     LNK-S02-HOSPNUM   TO  TNS-HOSPNUM
+                 MOVE    SENCHG-SENTEISRYCD TO  TNS-SRYCD
+                 MOVE     SYU-SRYYMD(1:6)   TO  TNS-YUKOSTYMD
+                                                TNS-YUKOEDYMD
+                 MOVE     "01"              TO  TNS-YUKOSTYMD(7:2)
+                                                TNS-YUKOEDYMD(7:2)
+                 PERFORM  TENSU-READ-SEC
+                 IF       FLG-TENSU      =    ZERO
                    MOVE   TNS-TEN      TO   WRK-SENTEI-KHNTEN
                    COMPUTE    WRK-SENTEI-ZAITEN  =  WRK-SENTEI-KHNTEN
                                                  +  WRK-KSNTEN
@@ -2592,7 +2596,8 @@ grpsys                                SPA-AREA
                                (WRK-SENTEI-ZAITEN  *
                                 (WRK-HYOKETU-TEN   /  100)))  +  0.5
                    END-IF
-               END-IF                  
+                 END-IF
+               END-IF
       *
            END-IF
       *
@@ -3378,6 +3383,10 @@ grpsys                            SPA-AREA
            IF   SYU-SYUHKNNUM    =    "971"  OR  "973"
                PERFORM   ROSAI-JIBAI-TENSO-SEC
            END-IF
+      *    ¸ø³²Å¾Á÷½èÍý
+           IF   SYU-SYUHKNNUM    =    "975"
+               PERFORM   KOGAI-TENSO-SEC
+           END-IF
       *
       *    ÅÀÅ©ÌôºÞ¡Ê´ïºà¡ËÅÀ¿ô¤Þ¤È¤á½èÍý
            PERFORM   TENTEK-MATOME-SEC
@@ -3578,15 +3587,20 @@ grpsys                                        SPA-AREA
       *
            IF  SINRYO-COUNT     NOT =     ZERO
       *
-      *        Ï«ºÒ¡¦¼«ÇåÀÕÍÑ¤ÎÊÔ½¸½èÍý
-               IF   SYU-SYUHKNNUM  =  "971"  OR  "973"
-                   PERFORM   ROSAI-JIBAI-HENSYU-SEC
-               ELSE
-      *            ½é¿ÇÎÁ»»Äê¥Õ¥é¥°¡ÊÃÏÊý¸øÈñÍÑ¡Ë¤Î¥»¥Ã¥È
-                   IF    WRK-SYOSIN(IDX)   =   SPACE
-                         PERFORM  SYOSINFLG-SET-SEC
-                   END-IF
-               END-IF
+               EVALUATE   SYU-SYUHKNNUM
+                 WHEN      "971"
+                 WHEN      "973"
+      *              Ï«ºÒ¡¦¼«ÇåÀÕÍÑ¤ÎÊÔ½¸½èÍý
+                     PERFORM     ROSAI-JIBAI-HENSYU-SEC
+                 WHEN      "975"
+      *              ¸ø³²ÍÑ¤ÎÊÔ½¸½èÍý
+                     PERFORM     KOGAI-HENSYU-SEC
+                 WHEN       OTHER
+      *              ½é¿ÇÎÁ»»Äê¥Õ¥é¥°¡ÊÃÏÊý¸øÈñÍÑ¡Ë¤Î¥»¥Ã¥È
+                     IF    WRK-SYOSIN(IDX)   =   SPACE
+                        PERFORM  SYOSINFLG-SET-SEC
+                     END-IF
+               END-EVALUATE
       *
                EVALUATE    ACCT-SRYKBN
       *            ¿ÇÎÅ
@@ -4156,6 +4170,80 @@ grpsys                              SPA-AREA
            EXIT.
       *
       **************************************************************
+      *    ¸ø³²ÍÑ¤ÎÊÔ½¸½èÍý
+      **************************************************************
+       KOGAI-HENSYU-SEC          SECTION.
+      *
+           IF   ACCT-SRYKBN  =  "90" OR "92" OR "95" OR "96" OR "97"
+             CONTINUE
+           ELSE
+             COMPUTE     WRK-SYUTEN  =  WRK-SYUTEN
+                              +  ( ACCT-SYUTEN1 * SINRYO-COUNT )
+             IF     ACCT-SRYKBN   =   "70"
+                COMPUTE  WRK-SYUTEN  =  WRK-SYUTEN
+                              -  ( ACCT-SYUTEN2 * SINRYO-COUNT )
+             END-IF
+           END-IF
+      *
+           IF   ACCT-SRYKBN  =  "90" OR "92"
+             INITIALIZE                      SRYACT-REC
+             MOVE    ACCT-HOSPNUM       TO   SRY-HOSPNUM
+             MOVE    ACCT-NYUGAIKBN     TO   SRY-NYUGAIKBN
+             MOVE    ACCT-PTID          TO   SRY-PTID
+             MOVE    ACCT-SRYKA         TO   SRY-SRYKA
+             MOVE    ACCT-SRYYM         TO   SRY-SRYYM
+             MOVE    ACCT-ZAINUM        TO   SRY-ZAINUM
+             MOVE    SRYACT-REC         TO   MCPDATA-REC
+             MOVE    "DBSELECT"         TO   MCP-FUNC
+             MOVE    "tbl_sryact"       TO   MCP-TABLE
+             MOVE    "key2"             TO   MCP-PATHNAME
+grpsys       CALL "ORCDBMAIN" USING MCPAREA
+                                    MCPDATA-REC
+grpsys                              SPA-AREA
+             IF      MCP-RC             =    ZERO
+                MOVE    "tbl_sryact"    TO   MCP-TABLE
+                MOVE    "key2"          TO   MCP-PATHNAME
+                PERFORM  SRYACT-READ-SEC
+                PERFORM  UNTIL  FLG-SRYACT    =    1
+                  PERFORM   VARYING   IDZ   FROM   1   BY   1
+                       UNTIL    (IDZ            >       5)  OR
+                                (SRY-SRYCD(IDZ) =   SPACE)
+      *
+                    MOVE    SPACE             TO   TNS-TENSU-REC
+                    INITIALIZE                     TNS-TENSU-REC
+                    MOVE     LNK-S02-HOSPNUM  TO   TNS-HOSPNUM
+                    MOVE    SRY-SRYCD(IDZ)    TO   TNS-SRYCD
+                    MOVE     SYU-SRYYMD(1:6)  TO   TNS-YUKOSTYMD
+                                                   TNS-YUKOEDYMD
+                    MOVE     "01"             TO   TNS-YUKOSTYMD(7:2)
+                                                   TNS-YUKOEDYMD(7:2)
+                    PERFORM    TENSU-READ-SEC
+                    IF       FLG-TENSU      =    ZERO
+                      IF   SRY-SRYCD(IDZ) =  "102900010"  OR
+                                             "102900020"  OR
+                                             "102900030"  OR
+                                             "102900040"
+                         COMPUTE  WRK-KOGAI-TEN = WRK-KOGAI-TEN +
+                                 (TNS-TEN  *  SINRYO-COUNT)
+                      END-IF
+                    END-IF
+      *
+                  END-PERFORM
+                  MOVE    "tbl_sryact"    TO   MCP-TABLE
+                  MOVE    "key2"          TO   MCP-PATHNAME
+                  PERFORM  SRYACT-READ-SEC
+                END-PERFORM
+             END-IF
+             MOVE    "tbl_sryact"    TO   MCP-TABLE
+             MOVE    "key2"          TO   MCP-PATHNAME
+             PERFORM   CSR-CLOSE-SEC
+           END-IF
+      *
+           .
+       KOGAI-HENSYU-EXT.
+           EXIT.
+      *
+      **************************************************************
       *    ½é¿ÇÎÁ»»Äê¥Õ¥é¥°¡ÊÃÏÊý¸øÈñÍÑ¡Ë¤Î¥»¥Ã¥È
       **************************************************************
        SYOSINFLG-SET-SEC          SECTION.
@@ -4258,6 +4346,19 @@ grpsys                                    SPA-AREA
       *
            .
        ROSAI-JIBAI-TENSO-EXT.
+           EXIT.
+      *
+      **************************************************************
+      *    ¸ø³²ÍÑ¤ÎÅ¾Á÷½èÍý
+      **************************************************************
+       KOGAI-TENSO-SEC          SECTION.
+      *
+           COMPUTE   WRK-JIBAI-SYUTEN(IDX) =  WRK-SYUTEN
+                                           +  SYU-HKNTEN(14)
+                                           -  WRK-KOGAI-TEN
+      *
+           .
+       KOGAI-TENSO-EXT.
            EXIT.
       *
       **************************************************************

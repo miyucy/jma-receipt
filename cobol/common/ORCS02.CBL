@@ -197,6 +197,7 @@
       *                                     π‡Ã‹øÙ≥»ƒ•¬–±˛
       *  04.01.03    NACL-ÃÁœ∆    07/10/25  ∏¯Ã≥∫“≥≤¬–±˛
       *  04.01.04    NACL-ÃÁœ∆    07/12/03  ÀÃ≥§∆ª∆√ƒÍº¿¥µ° ∆ª√±∆»ªˆ∂»°À¬–±˛
+      *  04.01.05    NACL-ÃÁœ∆    07/12/07  ∏¯≥≤¬–±˛
       ****************************************************************
        ENVIRONMENT         DIVISION.
        CONFIGURATION       SECTION.
@@ -321,7 +322,7 @@
            03  WK-DAYTAIHI-COMPFTN     PIC 9(07).
            03  WK-DAYTAIHI-COMPFTNWK   PIC 9(07).
       *
-      *     ›∏±∂Ë ¨° ∂ı«Ú°ß∞Â ›°°£±°ßœ´∫“°¶º´«Â°À
+      *     ›∏±∂Ë ¨° ∂ı«Ú°ß∞Â ›°¢£±°ßœ´∫“º´«Â°¢£≤°ß∏¯≥≤°À
            03  WK-HKNKBN               PIC X(01).
       *
       *    ¥µº‘…È√¥∑◊ªªª˛§ŒªÕºŒ∏ﬁ∆˛Õ—•Ô°º•Ø
@@ -787,6 +788,8 @@
            03  WK-SHOKUJI-RYOYOHI96    PIC 9(07).
            03  WK-SHOKUJI-RYOYOHI95L   PIC 9(07).
            03  WK-SHOKUJI-RYOYOHI96L   PIC 9(07).
+           03  WK-SHOKUJI-RYOYOHI-KOGAI
+                                       PIC 9(07).
            03  WK-SHOKUJI-JIHI         PIC 9(07).
            03  WK-SHOKUJI-FTN          PIC 9(07).
            03  WK-SHOKUJI-FTNS         PIC 9(07).
@@ -1243,12 +1246,15 @@
            PERFORM   105-JYOGENKBN-HENSYU-SEC.
       *
       *     ›∏±¡»πÁ§ª•ﬁ•π•ø§´§ÈºÁ ›∏±§Œ ›∏±ºÔŒ‡§Ú»ΩƒÍ
-      *    ° ∂ı«Ú°ß∞Â ›°¢£±°ßœ´∫“°¶º´«Â°À
+      *    ° ∂ı«Ú°ß∞Â ›°¢£±°ßœ´∫“º´«Â°¢£≤°ß∏¯≥≤°À
            MOVE     SPACE               TO       WK-HKNKBN.
            EVALUATE    COMB-SYU-HKNKOHSBTKBN
                WHEN    "4"
                        MOVE    "1"      TO       WK-HKNKBN
            END-EVALUATE.
+           IF   COMB-HKNNUM  = "975"
+                       MOVE    "2"      TO       WK-HKNKBN
+           END-IF.
       *
       *    ¥µº‘…È√¥≥€§ŒªªƒÍ
            PERFORM       200-HKNFTN-SANTEI-SEC.
@@ -1257,18 +1263,18 @@
       *    ¢®œ´∫“ ›∏±§ŒæÏπÁ§œªÕºŒ∏ﬁ∆˛§Úπ‘§Ô§ §§
       *    ¢®œ∑øÕ£≤≥‰§«∏¬≈Ÿ§¨£∑£≤£≥£∞£∞±ﬂ°‹°˜±ﬂ§ŒæÏπÁ§œªÕºŒ∏ﬁ∆˛§Úπ‘§Ô§ §§
            IF     (LNK-SYU-SKYMONEY      NOT =   ZERO)   
-               IF   WK-HKNKBN                =   "1"
-               OR   FLG-KOUGAKUCYO           =    1 
-               OR   FLG-KOUGAKUCYO2          =    1 
-               OR   FLG-KOUGAKUCYO3          =    1 
-               OR   FLG-KOUGAKUCYO5          =    1 
-               OR   FLG-KOUGAKUCYO-JIRITU    =    1
-               OR   FLG-KOUGAKUCYO-ININ      =    1
-               OR   FLG-KOUGAKUCYO-GEN70     =    1
-               OR   FLG-KOUGAKUCYO-GEN70K    =    1
-               OR   FLG-KOUGAKUCYO-OITA      =    1
-               OR   FLG-KUMAMOTO             =   "1"
-               OR   COMB-SYU-HKNKOHSBTKBN    =   "8"
+               IF  (WK-HKNKBN                =   "1" OR "2")
+               OR  (FLG-KOUGAKUCYO           =    1        )
+               OR  (FLG-KOUGAKUCYO2          =    1        )
+               OR  (FLG-KOUGAKUCYO3          =    1        )
+               OR  (FLG-KOUGAKUCYO5          =    1        )
+               OR  (FLG-KOUGAKUCYO-JIRITU    =    1        )
+               OR  (FLG-KOUGAKUCYO-ININ      =    1        )
+               OR  (FLG-KOUGAKUCYO-GEN70     =    1        )
+               OR  (FLG-KOUGAKUCYO-GEN70K    =    1        )
+               OR  (FLG-KOUGAKUCYO-OITA      =    1        )
+               OR  (FLG-KUMAMOTO             =   "1"       )
+               OR  (COMB-SYU-HKNKOHSBTKBN    =   "8"       )
                    CONTINUE
                ELSE
                    COMPUTE  LNK-SYU-SKYMONEY = LNK-SYU-SKYMONEY  +  5
@@ -1382,7 +1388,7 @@
                                LNK-SYU-TGMONEY-TAX(16)        +
                                LNK-SYU-JIHI-TOTAL             +
                                LNK-SYU-JIHI-TOTAL-TAX
-             IF   WK-HKNKBN  =   "1"
+             IF   WK-HKNKBN  =   "1" OR "2"
                   COMPUTE      LNK-SYU-RSIJIBAI-SKYMONEY      =
                                LNK-SYU-RSIJIBAI-SKYMONEY      +
                                LNK-SYU-RMSAGAKU               +
@@ -1476,7 +1482,7 @@
                                LNK-SYU-JIHI-TOTAL             +
                                LNK-SYU-JIHI-TOTAL-TAX         +
                                LNK-SYU-JIHI-TAX
-             IF   WK-HKNKBN  =   "1"
+             IF   WK-HKNKBN  =   "1" OR "2"
                   COMPUTE      LNK-SYU-RSIJIBAI-SKYMONEY      =
                                LNK-SYU-RSIJIBAI-SKYMONEY      +
                                LNK-SYU-RMSAGAKU               +
@@ -1518,9 +1524,9 @@
       *
            MOVE      LNK-SYU-SKYMONEY   TO  WK-GENTAI-SKYMONEY2.
       *
-      *    ∏∫Ã»∑◊ªª°¶¿¡µ·≥€√ºøÙ∑◊ªª° œ´∫“°¶º´«Â¿’§ÚΩ¸§Ø°À
+      *    ∏∫Ã»∑◊ªª°¶¿¡µ·≥€√ºøÙ∑◊ªª° œ´∫“°¶º´«Â¿’°¶∏¯≥≤§ÚΩ¸§Ø°À
            MOVE     ZERO      TO    FLG-GENMEN.
-           IF   LNK-SYU-SYUHKNNUM         =    "971" OR "973"
+           IF   LNK-SYU-SYUHKNNUM   =  "971" OR "973" OR "975"
                    CONTINUE
            ELSE
       *            ∏∫Ã»∑◊ªª
@@ -2274,9 +2280,9 @@
                            UNTIL    SYOTOKU-IDX     >    31
                    MOVE   LNK-SYOTOKU-SKJKBN(SYOTOKU-IDX)
                                     TO  WK-SYOTOKU-SKJKBN(SYOTOKU-IDX)
-                   IF (LNK-SYU-SYUHKNNUM = "971" OR "973" OR
-                                           "068" OR "069"    )
-                   OR (LNK-SYU-SYUHKNNUM(1:2) = "98"         )
+                   IF (LNK-SYU-SYUHKNNUM = "971" OR "973" OR "975"
+                                                 OR "068" OR "069")
+                   OR (LNK-SYU-SYUHKNNUM(1:2) = "98"              )
                        MOVE  SPACE  TO  WK-SYOTOKU-SKJKBN(SYOTOKU-IDX)
                    END-IF
                 END-PERFORM
@@ -2913,8 +2919,8 @@
                IF  COMB-SYU-HKNKOHSBTKBN   =   "8"
                    MOVE  SPACE       TO  LNK-S02-KOUREI-NYUIN-KBN
                END-IF
-               IF  COMB-HKNNUM  =  "971"  OR  "973"  OR
-                                   "068"  OR  "069"
+               IF  COMB-HKNNUM  =  "971" OR "973" OR "975"
+                                         OR "068" OR "069"
                    MOVE  SPACE       TO  LNK-S02-KOUREI-NYUIN-KBN
                END-IF
            END-IF.                                               
@@ -2966,8 +2972,9 @@
            IF   (LNK-SYU-SRYYMD(1:6)       >=  "200610")
            AND  (COMB-HKNNUM            NOT =   SPACE  )
       *
-            IF  (COMB-SYU-HKNKOHSBTKBN      =   "8"              )
-            OR  (COMB-HKNNUM  =  "971" OR "973" OR "068" OR "069")
+            IF  (COMB-SYU-HKNKOHSBTKBN      =   "8"     )
+            OR  (COMB-HKNNUM  =  "971" OR "973" OR "975"
+                                       OR "068" OR "069")
               CONTINUE
             ELSE
               PERFORM   VARYING   GEN-IDX   FROM   1    BY   1
@@ -3038,8 +3045,9 @@
             AND  COMB-KOH2HKNNUM      =  SPACE
             AND  COMB-KOH3HKNNUM      =  SPACE
             AND  COMB-KOH4HKNNUM      =  SPACE
-              IF  (COMB-SYU-HKNKOHSBTKBN      =   "8"              )
-              OR  (COMB-HKNNUM  =  "971" OR "973" OR "068" OR "069")
+              IF  (COMB-SYU-HKNKOHSBTKBN      =   "8"     )
+              OR  (COMB-HKNNUM  =  "971" OR "973" OR "975"
+                                         OR "068" OR "069")
                 CONTINUE
               ELSE
                 INITIALIZE                       PTKOHINF-REC
@@ -3082,11 +3090,11 @@
       *    £∑£∞∫–Ã§À˛π‚≥€∏Ω ™µÎ…’¬–æ›º‘
            MOVE      ZERO     TO    FLG-GENBUTU70.
            IF     LNK-SYU-SRYYMD(1:6)       >=  "200704"
-             IF  (LNK-S02-KOUREI-NYUIN-KBN   =   "1"  )
-             OR  (COMB-HKNNUM                =   SPACE)
-             OR  (COMB-SYU-HKNKOHSBTKBN      =   "8"  )
-             OR  (COMB-HKNNUM  =  "971" OR "973" OR
-                                  "068" OR "069"      )
+             IF  (LNK-S02-KOUREI-NYUIN-KBN   =   "1"     )
+             OR  (COMB-HKNNUM                =   SPACE   )
+             OR  (COMB-SYU-HKNKOHSBTKBN      =   "8"     )
+             OR  (COMB-HKNNUM  =  "971" OR "973" OR "975"
+                                        OR "068" OR "069")
                CONTINUE
              ELSE
                PERFORM   VARYING   GEN-IDX   FROM   1    BY   1
@@ -7358,9 +7366,9 @@
              IF ( LNK-S02-KOUREI-NYUIN-KBN   =   "1" )
              OR ( FLG-KOHININBARAI           =    1  )
              OR ( FLG-GENBUTU70          NOT =   ZERO)
-               IF ( SYU-SYUHKNNUM       =  "971" OR "973" OR
-                                           "068" OR "069" )
-               OR ( SYU-SYUHKNNUM(1:2)  =  "98"           )
+               IF ( SYU-SYUHKNNUM       =  "971" OR "973" OR "975"
+                                                 OR "068" OR "069" )
+               OR ( SYU-SYUHKNNUM(1:2)  =  "98"                    )
       *
                  CONTINUE
       *
@@ -11510,8 +11518,8 @@
               END-IF
       *
               IF   ( COMB-SYU-HKNKOHSBTKBN   =   "8"            )
-              OR   ( COMB-HKNNUM             =  "971"  OR  "973"  OR
-                                                "068"  OR  "069")
+              OR   ( COMB-HKNNUM =  "971"  OR  "973"  OR  "975"
+                                           OR  "068"  OR  "069" )
                 ADD   WK-SHOKUJI-JIHI    TO   WK-SHOKUJI-FTN
               ELSE
                 EVALUATE   WK-SYOTOKU-SKJKBN(1)
@@ -12003,8 +12011,8 @@
                END-EVALUATE
       *
                IF   ( COMB-SYU-HKNKOHSBTKBN   =   "8"            )
-               OR   ( COMB-HKNNUM             =  "971"  OR  "973"  OR
-                                                 "068"  OR  "069")
+               OR   ( COMB-HKNNUM =  "971"  OR  "973"  OR  "975"
+                                            OR  "068"  OR  "069" )
                  ADD   WK-SHOKUJI-JIHI    TO   WK-SHOKUJI-FTN
                                                WK-SHOKUJI-FTNL
                ELSE
@@ -12105,8 +12113,8 @@
                 END-EVALUATE
       *
                 IF   ( COMB-SYU-HKNKOHSBTKBN   =   "8"            )
-                OR   ( COMB-HKNNUM             =  "971"  OR  "973"  OR
-                                                  "068"  OR  "069")
+                OR   ( COMB-HKNNUM =  "971"  OR  "973"  OR  "975"
+                                             OR  "068"  OR  "069" )
                   ADD   WK-SHOKUJI-JIHI    TO   WK-SHOKUJI-FTN
                                                 WK-SHOKUJI-FTNL
                 ELSE
@@ -12234,8 +12242,8 @@
                END-EVALUATE
       *
                IF   ( COMB-SYU-HKNKOHSBTKBN   =   "8"            )
-               OR   ( COMB-HKNNUM             =  "971"  OR  "973"  OR
-                                                "068"  OR  "069")
+               OR   ( COMB-HKNNUM =  "971"  OR  "973"  OR  "975"
+                                            OR  "068"  OR  "069" )
                 ADD   WK-SHOKUJI-JIHI    TO   WK-SHOKUJI-FTN
                                               WK-SHOKUJI-FTNS
                ELSE
@@ -12635,8 +12643,8 @@
            END-IF.
       *
       *    ¥µº‘…È√¥∂‚ªªΩ–¡∞§Œ£±£∞£∞°Û…È√¥≥€ªªΩ–
-           IF     WK-HKNKBN         =   "1"
-           OR     COMB-HKNNUM(1:1)  =   "0"
+           IF    (WK-HKNKBN         =   "1" OR "2")
+           OR    (COMB-HKNNUM(1:1)  =   "0"       )
                  MOVE    10    TO      HKN-TENTNK
            ELSE
              IF   HKN-TENTNK   =   ZERO
@@ -13128,6 +13136,51 @@
                        END-IF
                        MOVE  WK-SHOKUJI-FTN
                                         TO   LNK-SYU-SYUSKJ-FTN-RECE
+               END-IF
+             WHEN   "2"
+               MOVE     ZERO            TO   HKN-HON-NYUKFTNRATE
+                                             HKN-KZK-NYUKFTNRATE
+                                             HKN-TSY-NYUKFTNRATE
+                                             HKN-TNK-NYUKFTNRATE
+               MOVE     "0"             TO   HKN-HON-NYUSKJRYYKBN
+                                             HKN-KZK-NYUSKJRYYKBN
+                                             HKN-TSY-NYUSKJRYYKBN
+                                             HKN-TNK-NYUSKJRYYKBN
+      *
+               COMPUTE  WK-ZENGAKU      =    WK-ZENGAKU  /  10
+               MOVE     LNK-S02-SYUTEN  TO   WK-ZENGAKU-SYU
+               COMPUTE  WK-ZENGAKU-YAK  =    WK-ZENGAKU
+                                        -    LNK-S02-SYUTEN
+               COMPUTE  WK-ZENGAKU-SYU  =    WK-ZENGAKU-SYU * 12
+               COMPUTE  WK-ZENGAKU-YAK  =    WK-ZENGAKU-YAK * 10
+               COMPUTE  WK-ZENGAKU      =    WK-ZENGAKU-SYU
+                                        +    WK-ZENGAKU-YAK
+      *
+               COMPUTE  WK-SHOKUJI-RYOYOHI-KOGAI =  WK-SHOKUJI-RYOYOHI
+                                                 *  1.2
+      *
+               COMPUTE  LNK-SYU-RSIJIBAI-SKYMONEY  =
+                        WK-ZENGAKU                 +
+                        WK-SHOKUJI-RYOYOHI-KOGAI
+      *
+               COMPUTE  WK-FUTANWARI  =
+                        HKN-HON-NYUKFTNRATE  /  100
+               COMPUTE  LNK-SYU-SYUCOMPFTN  =
+                        WK-ZENGAKU    *  WK-FUTANWARI
+      *
+               COMPUTE  LNK-SYU-SYUCOMPTOTAL   =
+                        LNK-SYU-SYUCOMPFTN
+      *
+               MOVE     HKN-HON-NYUSKJRYYKBN TO  LNK-SYU-SYUSKJ-FTNKBN
+               MOVE     WK-SHOKUJI-NISSU     TO  LNK-SYU-SYUSKJ-NISSU
+      ***      MOVE     WK-SHOKUJI-RYOYOHI   TO  LNK-SYU-SYUSKJ-RYOYOHI
+               MOVE     WK-SHOKUJI-RYOYOHI-KOGAI
+                                             TO  LNK-SYU-SYUSKJ-RYOYOHI
+               IF    HKN-HON-NYUSKJRYYKBN  NOT =  "0"
+                 IF  HKN-HON-NYUSKJRYYKBN  NOT =  "3"
+                   MOVE WK-SHOKUJI-FTN       TO  LNK-SYU-SYUSKJ-FTN
+                 END-IF
+                 MOVE   WK-SHOKUJI-FTN       TO  LNK-SYU-SYUSKJ-FTN-RECE
                END-IF
            END-EVALUATE.
       *
