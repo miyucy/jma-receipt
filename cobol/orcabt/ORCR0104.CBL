@@ -4418,10 +4418,18 @@ grpsys         OR     ( RECE02-HOSPNUM   NOT =   RECE031-HOSPNUM      )
       *     
            IF      RECE02-HKNNUM      =   SPACE
                IF      SEIHIDX            >   ZERO 
-                   COMPUTE IDX1    =   SEIHIDX   +   1
-                   MOVE    2                  TO  IDX2
-                   IF      IDX1               =   IDX2
-                       COMPUTE  IDX2  =  IDX1  +  1
+      *            長崎の生保と被爆（０１２＋１８６）のときはそのまま記載
+                   IF    ( SYS-1001-PREFNUM    =   "42"  )
+                   AND   ( RECE02-KOHNUM (1)   =   "186" )
+                   AND   ( RECE02-KOHNUM (2)   =   "012" )
+                       MOVE    2                  TO  IDX1
+                       MOVE    3                  TO  IDX2
+                   ELSE
+                       COMPUTE IDX1    =   SEIHIDX   +   1
+                       MOVE    2                  TO  IDX2
+                       IF      IDX1               =   IDX2
+                           COMPUTE  IDX2  =  IDX1  +  1
+                       END-IF
                    END-IF
                ELSE
                    MOVE    2                  TO  IDX1
