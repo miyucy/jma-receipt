@@ -1454,6 +1454,7 @@
                        WHEN    "099200012"
                        WHEN    "099200013"
                        WHEN    "099200014"
+                       WHEN    "099200015"
                            IF     (SPA-COM-SRYKBN(IDX - 1) =   "21"
                                                            OR  "22"
                                                            OR  "23" )

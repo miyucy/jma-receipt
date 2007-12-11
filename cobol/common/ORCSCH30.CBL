@@ -37,6 +37,7 @@
       * 01.00.08     NACL-多々納  05/11/08  再印刷他対応
       *                                     MONFUNC対応
       * 01.00.09     NACL-多々納  06/01/24  用量割合コード追加
+      * 04.01.00     NACL-多々納  07/12/11  起床追加
       *****************************************************************
       *
       *
@@ -100,7 +101,7 @@
                    07  TBL-SRYCD           PIC X(09).
                    07  TBL-SURYO           PIC 9(05)V9(03).
                    07  TBL-YOURYOU         PIC 9(05)V9(03)
-                                           OCCURS   4.
+                                           OCCURS   5.
                    07  TBL-SRYKAISU        PIC 9(03).
                05  WRK-YSRYCD              PIC X(09).
                05  WRK-SRYKBN              PIC X(02).
@@ -687,6 +688,10 @@
                    WHEN    "099200014"
                        MOVE    SRY-SRYSURYO (IDXA) TO  TBL-YOURYOU
                                                           (IDX-S 4)
+      *            起床
+                   WHEN    "099200015"
+                       MOVE    SRY-SRYSURYO (IDXA) TO  TBL-YOURYOU
+                                                          (IDX-S 5)
                END-EVALUATE
            END-IF
       *
@@ -707,7 +712,7 @@
                MOVE    TBL-SRYCD (IDX)     TO  ORCHC30-SRYCD (IDY)
                MOVE    TBL-SURYO (IDX)     TO  ORCHC30-SURYO (IDY)
                PERFORM VARYING     IDXY    FROM    1   BY  1
-                       UNTIL       IDXY        >   4
+                       UNTIL       IDXY        >   5
                    MOVE    TBL-YOURYOU (IDX IDXY)
                                            TO  ORCHC30-YOURYOU
                                                             (IDY IDXY)
@@ -1004,6 +1009,10 @@
                    WHEN    "099200014"
                        MOVE    WKSRY-SRYSURYO (IDXA) TO  TBL-YOURYOU
                                                           (IDX-S 4)
+      *            床
+                   WHEN    "099200015"
+                       MOVE    WKSRY-SRYSURYO (IDXA) TO  TBL-YOURYOU
+                                                          (IDX-S 5)
                    END-EVALUATE
                END-IF
       *
@@ -1121,6 +1130,10 @@
                    WHEN    "099200014"
                        MOVE    ORCSCH30-SRYSURYO (IDT IDXA)
                                            TO  TBL-YOURYOU (IDX-S 4)
+      *            起床
+                   WHEN    "099200015"
+                       MOVE    ORCSCH30-SRYSURYO (IDT IDXA)
+                                           TO  TBL-YOURYOU (IDX-S 5)
                END-EVALUATE
            END-IF
       *
