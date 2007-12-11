@@ -7601,8 +7601,8 @@
                    MOVE    SYS-2002-PTID       TO  RECE10-PTID
                    MOVE    SYS-2002-SRYYM      TO  RECE10-SRYYM
                    MOVE    SYS-2002-NYUGAIKBN  TO  RECE10-NYUGAIKBN
-                   MOVE    "1"                 TO  RECE10-TEISYUTUSAKI
-                   MOVE    "2"                 TO  RECE10-XXTEISYUTUSAKI 
+                   MOVE    1                   TO  RECE10-TEISYUTUSAKI
+                   MOVE    2                   TO  RECE10-XXTEISYUTUSAKI 
                    MOVE    RECE10-REC          TO  MCPDATA-REC
                    MOVE    "tbl_seikyu"        TO  MCP-TABLE
                    MOVE    "del4"              TO  MCP-PATHNAME

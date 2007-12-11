@@ -3147,11 +3147,11 @@ grpsys             MOVE    SPA-HOSPNUM     TO  PTINF-HOSPNUM
                                    TO  RECE10-NYUGAIKBN
            MOVE    WRK-ACCT-PTID   TO  RECE10-PTID
            IF      SPA-R01-RECEKBN =   "0"
-               MOVE    "1"             TO  RECE10-TEISYUTUSAKI
-               MOVE    "2"             TO  RECE10-XXTEISYUTUSAKI 
+               MOVE    1               TO  RECE10-TEISYUTUSAKI
+               MOVE    2               TO  RECE10-XXTEISYUTUSAKI 
            ELSE
-               MOVE    "5"             TO  RECE10-TEISYUTUSAKI
-               MOVE    "5"             TO  RECE10-XXTEISYUTUSAKI 
+               MOVE    5               TO  RECE10-TEISYUTUSAKI
+               MOVE    5               TO  RECE10-XXTEISYUTUSAKI 
            END-IF
            MOVE    RECE10-REC      TO  MCPDATA-REC
            MOVE    "tbl_seikyu"    TO  MCP-TABLE

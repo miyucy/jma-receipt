@@ -1401,8 +1401,8 @@ grpsys         MOVE    SPA-HOSPNUM     TO  RECE10-HOSPNUM
                                        TO  RECE10-NYUGAIKBN
                MOVE    SPA-NAI-R96-PTID
                                        TO  RECE10-PTID
-               MOVE    "1"             TO  RECE10-TEISYUTUSAKI
-               MOVE    "2"             TO  RECE10-XXTEISYUTUSAKI 
+               MOVE    1               TO  RECE10-TEISYUTUSAKI
+               MOVE    2               TO  RECE10-XXTEISYUTUSAKI 
                MOVE    RECE10-REC      TO  MCPDATA-REC
                MOVE    "tbl_seikyu"    TO  MCP-TABLE
                MOVE    "del7"          TO  MCP-PATHNAME

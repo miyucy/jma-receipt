@@ -4253,9 +4253,9 @@ grpsys                     MOVE    WRK-PARA-HOSPNUM    TO
                            MOVE    SYS-2002-SRYYM      TO  RECE10-SRYYM
                            MOVE    SYS-2002-NYUGAIKBN  TO
                                                        RECE10-NYUGAIKBN
-                           MOVE    "1"                 TO
+                           MOVE    1                   TO
                                                    RECE10-TEISYUTUSAKI
-                           MOVE    "2"                 TO
+                           MOVE    2                   TO
                                                    RECE10-XXTEISYUTUSAKI 
                            MOVE    RECE10-REC          TO  MCPDATA-REC
                            MOVE    "DBDELETE"          TO  MCP-FUNC
@@ -4366,9 +4366,9 @@ grpsys                     MOVE    WRK-PARA-HOSPNUM
                            MOVE    BTPARA-INFO-PARA (17:6)
                                                    TO  RECE10-SRYYM
                            MOVE    "2"             TO  RECE10-NYUGAIKBN
-                           MOVE    "1"             TO
+                           MOVE    1               TO
                                                    RECE10-TEISYUTUSAKI
-                           MOVE    "2"             TO
+                           MOVE    2               TO
                                                    RECE10-XXTEISYUTUSAKI 
                            MOVE    RECE10-REC      TO  MCPDATA-REC
                            MOVE    "DBDELETE"      TO  MCP-FUNC
@@ -4476,9 +4476,9 @@ grpsys                     MOVE    WRK-PARA-HOSPNUM
                            MOVE    BTPARA-INFO-PARA (1:6)
                                                    TO  RECE10-SRYYM
                            MOVE    "2"             TO  RECE10-NYUGAIKBN
-                           MOVE    "1"             TO
+                           MOVE    1               TO
                                                    RECE10-TEISYUTUSAKI
-                           MOVE    "2"             TO
+                           MOVE    2               TO
                                                    RECE10-XXTEISYUTUSAKI 
                            MOVE    RECE10-REC      TO  MCPDATA-REC
                            MOVE    "DBDELETE"      TO  MCP-FUNC
