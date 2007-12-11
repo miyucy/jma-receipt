@@ -8292,6 +8292,9 @@
                                        WRK-TOKUTEI-KEY
            MOVE    ZERO            TO  WRK-SHONUM
       *
+           PERFORM 900-PTNYUINRRK-KEY-SEL-SEC
+           MOVE    PTNYUINRRK-REC  TO  BAKRRK-REC
+      *
            MOVE    SPA-NAI-I01-PTRRKNUM
                                    TO  WRK-RRKNUM
            MOVE    SPA-NAI-I01-PTRRKEDANUM
@@ -8394,7 +8397,6 @@
       *
       *    入院履歴マスタ検索
            PERFORM 4801-PTNYUINRRK-SEL-SEC
-           MOVE    PTNYUINRRK-REC  TO  BAKRRK-REC
            IF    ( FLG-PTNYUINRRK  =   ZERO )
       *        追加処理時、既にデータが存在する場合はエラーとする
                IF    ( WRK-UPDKBN  =   "INS" )
@@ -17726,6 +17728,40 @@
       *
            .
        910-NYUINACCT-READ-EXT.
+           EXIT.
+      *****************************************************************
+      *    患者入院履歴情報検索処理
+      *****************************************************************
+       900-PTNYUINRRK-KEY-SEL-SEC      SECTION.
+      *
+           MOVE    ZERO            TO   FLG-PTNYUINRRK
+           INITIALIZE  PTNYUINRRK-REC
+      *
+           MOVE    SPA-HOSPNUM     TO   PTNYUINRRK-HOSPNUM
+           MOVE    SPA-NAI-I01-PTID
+                                   TO  PTNYUINRRK-PTID
+           MOVE    SPA-NAI-I01-PTRRKNUM
+                                   TO  PTNYUINRRK-RRKNUM
+           MOVE    SPA-NAI-I01-PTRRKEDANUM
+                                   TO  PTNYUINRRK-RRKEDANUM
+           MOVE    PTNYUINRRK-REC  TO  MCPDATA-REC
+      *
+           MOVE    "tbl_ptnyuinrrk"   TO  MCP-TABLE
+           MOVE    "key"              TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF    ( MCP-RC          =   ZERO )
+               MOVE    MCPDATA-REC TO  PTNYUINRRK-REC
+           ELSE
+               MOVE    1           TO  FLG-PTNYUINRRK
+           END-IF
+      *
+           MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 910-DBCLOSECURSOR-SEC
+      *
+           .
+      *
+       900-PTNYUINRRK-KEY-SEL-EXT.
            EXIT.
       *****************************************************************
       *    ＤＢ検索処理（FHETCHも行う)
