@@ -58,8 +58,6 @@
       * 03.05.00     NACL-多々納  07/04/XX  グループ診療対応
       * 03.05.01     NACL-多々納  07/07/XX  同日再診と訂正の選択対応他
       * 04.00.00     NACL-多々納  07/09/XX  テーブル４００対応
-      * 04.01.00     NACL-多々納  07/12/XX  .213 自動変換システム設定対応
-      *                                     アトピー性皮膚炎の年齢対応
       *****************************************************************
       *
       *
@@ -68,11 +66,30 @@
        INPUT-OUTPUT                SECTION.
        FILE-CONTROL.
       *
+      *    パラメタデータ
+      *    SELECT  PARA-FILE       ASSIGN  FILE-NAME2
+      *                            ORGANIZATION    IS  LINE SEQUENTIAL
+      *                            FILE    STATUS  IS  STS-PARA.
+      *
        DATA                    DIVISION.
        FILE                        SECTION.
       *
+      *    パラメタデータ
+      *FD  PARA-FILE.
+      *01  PARA-REC.
+      *    03  PARA-KEY.
+      *        05  PARA-FILEMEI         PIC X(08).
+      *        05  PARA-EDABAN          PIC 9(03).
+      *    03  PARA-DATA-REC            PIC X(60000).
       *
        WORKING-STORAGE             SECTION.
+      *
+      *    パラメタファイル名
+      *01  FILE-NAME2.
+      *    03  FILLER              PIC X(09)   VALUE   "/var/tmp/".
+      *    03  FILLER              PIC X(07)   VALUE   "K01PARA".
+      *    03  FILE-TERMID2        PIC X(64)   VALUE   SPACE.
+      *    03  FILLER              PIC X(06)   VALUE   ".TXT".
       *
       *    フラグ領域
        01  STS-AREA.
@@ -478,39 +495,39 @@
            COPY    "CPORCSLNK.INC".
       *
       *    画面日付変換サブ
-      *    COPY    "CPORCSGDAY.INC".
+           COPY    "CPORCSGDAY.INC".
       *
       *    数字変換領域
-      *    COPY    "CPORCSNUM.INC".
+           COPY    "CPORCSNUM.INC".
       *    患者番号変換サブ
-      *    COPY    "CPORCSPTID.INC".
+           COPY    "CPORCSPTID.INC".
       *
       *    負担金額計算用パラメタ
-      *    COPY    "CPORCS01.INC".
+           COPY    "CPORCS01.INC".
       *
       *    診療行為算定用共通パラメタ
-      *    COPY    "CPORCSC00.INC".
+           COPY    "CPORCSC00.INC".
       *
       *    算定履歴チェックパラメタ
-      *    COPY    "CPORCSC91.INC".
+           COPY    "CPORCSC91.INC".
       *
       *    点数マスタ編集パラメタ
            COPY    "CPORCSC92.INC".
       *
       *    剤分離パラメタ
-      *    COPY    "CPORCSC93.INC".
+           COPY    "CPORCSC93.INC".
       *
       *    画面再編集パラメタ
            COPY    "CPORCSC94.INC".
       *
       *    初期ＳＰＡ画面編集パラメタ
-      *    COPY    "CPORCSC95.INC".
+           COPY    "CPORCSC95.INC".
       *
       *    エラーメッセージ編集パラメタ
-      *    COPY    "CPORCSC96.INC".
+           COPY    "CPORCSC96.INC".
       *
       *    エラーメッセージ編集パラメタ
-      *    COPY    "CPORCSC97.INC".
+           COPY    "CPORCSC97.INC".
       *
       *    保険年齢・負担割合算定サブ
            COPY    "CPORCSAGECHK.INC".
@@ -844,16 +861,10 @@
                   ELSE
                        MOVE    1               TO  FLG-CHK
                   END-IF
-              WHEN     2
-                  IF      JYURRK-HKNKBN        =   "6"
-                       CONTINUE
-                  ELSE
-                       MOVE    1               TO  FLG-CHK
-                  END-IF
               WHEN     1
       *           自賠責
                   IF      SPA-RSI-HKNKBN       =   "4"
-      *D                                       OR  "5"
+                                               OR  "5"
                       IF      JYURRK-HKNKBN        =   "2"
                                                    OR  "4"
                            CONTINUE
@@ -862,10 +873,7 @@
                       END-IF
                   ELSE
       *           労災
-                      IF      JYURRK-HKNKBN        =   "1"
-                                                   OR  "5"
-                           CONTINUE
-                      ELSE
+                      IF      JYURRK-HKNKBN    NOT =   "1"
                            MOVE    1               TO  FLG-CHK
                       END-IF
                   END-IF
@@ -928,9 +936,6 @@
                        IF      JYURRK-HKNKBN       =   ZERO
       *                    健保準拠分
                                                    OR  "4"
-                                                   OR  "5"
-      *                    公害
-                                                   OR  "6"
       *                    一般
                            PERFORM 100011-IPN-DOUJI-CHK-SEC
                        ELSE
@@ -1226,8 +1231,7 @@
            IF      FLG-HKNSAN          =   1
       *        一般の保険で今回が労災の時対象外
                IF      (SANTEI-HKNCOMBINUM     =   ZERO )  AND
-                       (SPA-HKNKBN             =   1
-                                               OR  2     )
+                       (SPA-HKNKBN             =   1     )
                    GO      TO      10011-TOUGETU-CHK-EXT
                END-IF
       *        労災の保険で今回が一般
@@ -1237,8 +1241,7 @@
                END-IF
       *        労災の保険で今回が労災の時判定
                IF      (SANTEI-HKNCOMBINUM NOT =   ZERO )  AND
-                       (SPA-HKNKBN             =   1
-                                               OR  2    )  AND
+                       (SPA-HKNKBN             =   1    )  AND
                        (SANTEI-HKNCOMBINUM NOT =   SPA-HKNCOMBINUM)
                    GO      TO      10011-TOUGETU-CHK-EXT
                END-IF
@@ -1662,7 +1665,6 @@
       *
       *    労災毎とする
            IF      SPA-HKNKBN          =   1
-                                       OR  2
                MOVE    SPA-HKNCOMBINUM     TO  SANTEI-HKNCOMBINUM
            ELSE
                MOVE    ZERO                TO  SANTEI-HKNCOMBINUM
@@ -1771,9 +1773,7 @@
       *****************************************************************
        1000-SANTEI-RSI-SEC              SECTION.
       *
-      *    健保準拠
-      *D   IF      SPA-RSI-HKNKBN      =   "5"
-           IF      SPA-RSI-JUNKYO      =   "1"
+           IF      SPA-RSI-HKNKBN      =   "5"
                MOVE    SPA-RSI-SHOBYOYMD   TO  SPA-RSI-HASSYOYMD
            ELSE
       *
@@ -1953,8 +1953,8 @@
       *****************************************************************
        200-SINSATU-SET-SEC             SECTION.
       *
-      ***  MOVE    SPACE               TO  SPA-SCR-REC
-      **** INITIALIZE                  SPA-SCR-REC
+           MOVE    SPACE               TO  SPA-SCR-REC
+           INITIALIZE                  SPA-SCR-REC
            MOVE    ZERO                TO  IDX2
            MOVE    ZERO                TO  SPA-GMN-IDX
            MOVE    ZERO                TO  SPA-GAIRAISIN
@@ -1968,18 +1968,14 @@
            IF      SPA-HKNCOMBINUM     =   "9999"
       *       受付あり
               OR  (SPA-UKETUKE-ARI     =   1    )
-              OR  (SPA-TEISEIFLG       =   "0"  )
+              OR  (SPA-TEISEIFLG   NOT =   "1"  )
                CONTINUE
            ELSE
                IF     ( SPA-NYUGAIKBN      =   "2"        ) AND
                       ( SPA-SYORIFLG       =   ZERO       ) AND
                       ( SPA-RRK-LSTYMD     =   SPA-SRYYMD ) AND
                       ( SPA-LSTYMD         =   SPA-SRYYMD )
-                   IF      (SPA-TEISEIFLG       =   "1"  )
-                       MOVE    "0100"              TO  SPA-KIDCD
-                   ELSE
-                       MOVE    "0131"              TO  SPA-KIDCD
-                   END-IF
+                   MOVE    "0100"              TO  SPA-KIDCD
                END-IF
            END-IF
       *    入院日の時、初診料のみ算定する
@@ -2008,8 +2004,6 @@
            MOVE    ZERO                TO  SPA-GMN-IDX
            MOVE    ZERO                TO  SPA-GAIRAISIN
            MOVE    ZERO                TO  SPA-SYONIKA-ARI
-           MOVE    ZERO                TO  SPA-SYOSIN-KEI
-           MOVE    ZERO                TO  SPA-SYOSIN-KEIFLG
       *
            MOVE    SPACE               TO  WRK-SRYCD
       *
@@ -2027,18 +2021,12 @@
                    MOVE    1                   TO  FLG-ERR
                END-IF
            END-IF
-      *    入院中（アフターケア）
-           IF      SPA-NAI-NYUIN       =   1
-               MOVE    1                   TO  FLG-ERR
-           END-IF
       *
            IF      FLG-ERR             =   ZERO
       *        労災の初診料算定
                IF     (SPA-HKNKBN          =   1   )
       *           自賠責の健保準拠以外
-      *D         AND  (SPA-RSI-HKNKBN  NOT =   "5" )
-      *           健保準拠以外
-                 AND  (SPA-RSI-JUNKYO  NOT =   "1"  )
+                 AND  (SPA-RSI-HKNKBN  NOT =   "5" )
                    PERFORM 2001-RSI-SYOSIN-SET-SEC
                ELSE
                    MOVE    ZERO                TO  FLG-SYONIKA
@@ -2140,20 +2128,8 @@
                MOVE    SPACE               TO  SPA-KIDCD
            END-IF
       *
-           IF     (WRK-SRYKBN          =   "11"  )  AND
-                  (SPA-GMN-IDX         =   ZERO  )  AND
-                  (SPA-NYUGAIKBN       =   "2"   )
-      *        初診料でエラーにより対象がない時、エラーの表示
-               MOVE    2                   TO  SPA-SYOSIN-KEI
-           END-IF
-      *
-           IF     (SPA-SYOSIN          =   1 )
-      *        療養担当手当発生
-               PERFORM 330123-RYOYOU-TEATE-SEC
-           ELSE
-      *        指導料の自動発生
-               PERFORM 33012-SIDOU-SYORI-SEC
-           END-IF
+      *    指導料の自動発生
+           PERFORM 33012-SIDOU-SYORI-SEC
       *
            .
        2002-KNH-SYOSIN-SET-EXT.
@@ -2366,8 +2342,6 @@
            MOVE    "1"                 TO  LNK-SC92-KBN
            MOVE    SPA-SYORIFLG        TO  LNK-SC92-SYORIFLG
            MOVE    "K02"               TO  LNK-SC92-PG
-      *    警告のチェックなし
-           MOVE    SPACE               TO  LNK-SC92-KEIFLG
            MOVE    SPA-GMN-IDX         TO  LNK-SC92-GMN-IDX
            MOVE    WRK-SRYCD           TO  LNK-SC92-SRYCD
            MOVE    SPA-NENREI          TO  LNK-SC92-NENREI
@@ -2381,17 +2355,7 @@
                                        ORCSC92AREA
                                        SPA-SCR-REC
                                        SPA-AREA
-      *    初診料の併用エラー
-           IF      WRK-SRYKBN          =   "11"
-               IF      LNK-SC92-SYOKBN     =   "1"
-      *            前に併用算定がある時、病名がすべて治癒であること
-                   IF      SPA-BYOMEI-STR      =   ZERO
-                       MOVE    1                   TO  SPA-SYOSIN-KEI
-                   ELSE
-                       MOVE    "0033"              TO  LNK-SC92-ERRCD6
-                   END-IF
-               END-IF
-           END-IF
+      *
       *    エラー時、追加しない
            IF     (SPA-ERRCD           NOT =   SPACE )  OR
                   (LNK-SC92-ERRAREA    NOT =   SPACE )
@@ -2847,12 +2811,9 @@
                    MOVE    "113001810"         TO  WRK-SRYCD
            END-EVALUATE
       *
-      *    自動発生区分判定
-           IF      SPA-BYOMEIAUTO-FLG  =  "1"
-      *        指導料追加、チェック処理
-               MOVE    ZERO                TO  FLG-SIDOU
-               PERFORM 3301211-SIDOU-ADD-SEC
-           END-IF
+      *    指導料追加、チェック処理
+           MOVE    ZERO                TO  FLG-SIDOU
+           PERFORM 3301211-SIDOU-ADD-SEC
            .
        330121-TOKUTEI-SIDOU-EXT.
            EXIT.
@@ -3130,7 +3091,6 @@
       *****************************************************************
        330122-HIFUKA-SIDOU-SEC         SECTION.
       *
-           MOVE    SPACE               TO  WRK-SRYCD
            EVALUATE    FLG-TOKUTEI
       *           （１）
                WHEN    03
@@ -3139,22 +3099,10 @@
                WHEN    04
                    MOVE    "113002310"     TO  WRK-SRYCD
            END-EVALUATE
-      *    皮膚科特定疾患管理料（２）でアトピー性皮膚炎のある場合
-           IF     (FLG-TOKUTEI         =   04  )  AND
-                  (SPA-ATOPII-FLG      =   1   )
-      *        16才未満はなし
-               IF      SPA-NENREI-YY       <   16
-                   MOVE    SPACE           TO  WRK-SRYCD
-               END-IF
-           END-IF
       *
-      *    自動発生区分判定
-           IF     (WRK-SRYCD       NOT =   SPACE )  AND
-                  (SPA-BYOMEIAUTO-FLG  =   "1"   )
-      *        指導料追加、チェック処理
-               MOVE    1                   TO  FLG-SIDOU
-               PERFORM 3301211-SIDOU-ADD-SEC
-           END-IF
+      *    指導料追加、チェック処理
+           MOVE    1                   TO  FLG-SIDOU
+           PERFORM 3301211-SIDOU-ADD-SEC
       *
            .
        330122-HIFUKA-SIDOU-EXT.
@@ -3390,9 +3338,8 @@
            MOVE    ZERO                TO  SPA-FUKU-SRYKA
       *
            IF      SPA-HKNKBN          =   1
-      *        健保準拠以外
-      ****** AND  (SPA-RSI-HKNKBN  NOT =   "5" )
-             AND  (SPA-RSI-JUNKYO  NOT =   "1" )
+      *        自賠責の健保準拠以外
+             AND  (SPA-RSI-HKNKBN  NOT =   "5" )
       *        労災の同日再診料算定
                MOVE    "D"                 TO  WRK-KBN
                PERFORM 2009-RSIHKN-SET-SEC
@@ -3956,7 +3903,6 @@
                                                      "$" )
       *              コメント
                  OR (SPA-COM-INPUTCD(IDX)(1:1)   =   "8" )
-                 OR (SPA-COM-INPUTCD(IDX)(1:3)   =   "008" )
       *          包括保険
                  OR (SPA-COM-HKNCOMBI (IDX)      =   "9999")
                  CONTINUE
@@ -4099,11 +4045,6 @@
       *    投薬種別変更処理
       *****************************************************************
        50192-SRYSYUKBN-CHK-SEC                SECTION.
-      *
-      *    自動変換なし
-           IF      SPA-CHGSRYSYU-FLG   =   "1"
-               GO     TO      50192-SRYSYUKBN-CHK-EXT
-           END-IF
       *
            IF      SPA-COM-SRYSYUKBN(IDX)  =   SPACE
       *        院外
@@ -4647,8 +4588,7 @@
            ELSE
                IF      SPA-HKNKBN          =   1
       *        自賠責の健保準拠以外
-      ****     AND    (SPA-RSI-HKNKBN  NOT =   "5" )
-               AND    (SPA-RSI-JUNKYO  NOT =   "1" )
+               AND    (SPA-RSI-HKNKBN  NOT =   "5" )
       *            労災の初診料算定
                    MOVE    ZERO                TO  WRK-KAISU
                    MOVE    "F"                 TO  WRK-KBN
@@ -4684,17 +4624,6 @@
                                        ORCSC92AREA
                                        SPA-SCR-REC
                                        SPA-AREA
-      *    初診料の併用エラー
-           MOVE    ZERO                TO  SPA-SYOSIN-KEI
-           MOVE    ZERO                TO  SPA-SYOSIN-KEIFLG
-           IF      LNK-SC92-SYOKBN     =   "1"
-      *        前に併用算定がある時、病名がすべて治癒であること
-               IF      SPA-BYOMEI-STR      =   ZERO
-                   MOVE    1                   TO  SPA-SYOSIN-KEI
-               ELSE
-                   MOVE    "0033"              TO  LNK-SC92-ERRCD6
-               END-IF
-           END-IF
       *
       *    エラー時、最初のエラーコードをセット
            IF      SPA-ERRCD       NOT =   SPACE
@@ -5648,17 +5577,13 @@
       *****************************************************************
        10151121-DOJITU-HEN-SEC       SECTION.
       *
-           IF      SPA-HKNKBN          =   1
-      *        労災・自賠責
-               IF      (SPA-RSI-JUNKYO     =   "1" )
-      *            健保準拠
-                   MOVE   "111011810"          TO  WRK-SRYCD
-               ELSE
-      *            労災
-                   MOVE   "101110040"          TO  WRK-SRYCD
-               END-IF
-           ELSE
+           IF      SPA-HKNKBN          =   ZERO
+      *        自賠責の健保準拠以外
+             OR   (SPA-RSI-HKNKBN      =   "5" )
                MOVE   "111011810"          TO  WRK-SRYCD
+           ELSE
+      *TE      労災
+               MOVE   "101110040"          TO  WRK-SRYCD
            END-IF
            IF      IDX-A               <   SPA-MAX-LINE
                IF      SPA-COM-INPUTCD(IDX-A + 1)
@@ -5672,6 +5597,14 @@
                MOVE    "0007"              TO  SPA-ERRCD
            END-IF
            IF      SPA-ERRCD           =   SPACE
+               IF      SPA-HKNKBN          =   ZERO
+      *        自賠責の健保準拠以外
+                 OR   (SPA-RSI-HKNKBN      =   "5" )
+                   MOVE   "111011810"          TO  WRK-SRYCD
+               ELSE
+      *TE          労災
+                   MOVE   "101110040"          TO  WRK-SRYCD
+               END-IF
                INITIALIZE                  SPA-GMN-TBLREC  (IDX-A)
                INITIALIZE                  SPA-COM-TBLREC  (IDX-A)
                MOVE    WRK-SRYCD       TO  SPA-GMN-INPUTCD (IDX-A)
@@ -5737,7 +5670,6 @@
            END-PERFORM
       *    特定慢性疾患指導料
            IF      FLG-TOKUTEI         =   05
-                                       OR  08
                IF      IDX-HKN         >   IDX-A
                    MOVE    IDX-HKN         TO  SPA-GMN-IDX
                ELSE
@@ -5845,10 +5777,9 @@
                MOVE    SPA-GMN-INPUTCD(IDX-A)
                                        TO  SPA-MAE-INPUTCD(IDX-A)
            END-IF
-      *    労災・公害はエラー
+      *    労災はエラー
            IF     (SPA-ERRCD           =   SPACE  )  AND
-                 ((SPA-NAI-RSI-HKNKBN (IDY)   NOT =  SPACE)
-              OR  (SPA-NAI-HKNNUM (IDY)    =   "975"  ))
+                  (SPA-NAI-RSI-HKNKBN (IDY)   NOT =  SPACE)
                MOVE    "1050"          TO  SPA-ERRCD
                MOVE    SPACE           TO  SPA-MAE-INPUTCD(IDX-A)
                MOVE    "1"             TO  SPA-COM-CUR    (IDX-A)
