@@ -171,8 +171,6 @@
                                    TO  SS003-JIKANGAI-KBN
            END-IF
       *
-           DISPLAY "SS003-JIKANGAI-KBN =" SS003-JIKANGAI-KBN
-      *
            .
        200-MAIN-EXT.
            EXIT.

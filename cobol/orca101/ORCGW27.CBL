@@ -1029,8 +1029,6 @@
       *
            MOVE    SPA-NAI-W27-KJNYMD  TO  WRK-KJNYMD-BAK
       *
-           DISPLAY "WRK-KJNYMD-BAK =" WRK-KJNYMD-BAK
-      *
            MOVE    SPACE               TO  SPA-NAI-W27-KJNYMD
       *
            MOVE    W27-KJNYMD          TO  SPA-GMN-W27-KJNYMD
@@ -2055,8 +2053,6 @@
            END-PERFORM
       *
            MOVE    "black"                 TO  W27-LBLINFO-STYLE
-           DISPLAY "SPA-NAI-W27-BRMSTYUKYMD  =" SPA-NAI-W27-BRMSTYUKYMD 
-           DISPLAY "SPA-NAI-W27-BRMEDYUKYMD  =" SPA-NAI-W27-BRMEDYUKYMD 
            IF    ( SPA-NAI-W27-BRMSTYUKYMD <  CONST-H180401 )
             AND  ( SPA-NAI-W27-BRMEDYUKYMD >= CONST-H180401 )
                MOVE    "red"               TO  W27-LBLINFO-STYLE
