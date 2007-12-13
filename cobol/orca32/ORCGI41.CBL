@@ -78,6 +78,8 @@
       *  03.05.00    NACL-小豆沢  07.08.02  療養病棟（病床）入院会計
       *                                     表示区分対応
       *  03.05.00    NACL-多々納  07/08/06  入院料重複チェック追加
+      *  04.01.00    NACL-小豆沢  07/12/13  ９１日以上の表示に他院歴（特別な
+      *                                     関係にある医療機関）を加算
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -1363,6 +1365,7 @@
            END-IF
       *
            MOVE    STUSAN-NISSU03  TO  WRK-TUSAN
+           ADD     STUSAN-TAINREL-NISSU  TO  WRK-TUSAN
       *
            PERFORM VARYING IDX10   FROM    1   BY  1
                    UNTIL ( IDX10   >   STUSAN-RRK-CNT )
