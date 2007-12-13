@@ -19,7 +19,7 @@
             03  I02-FIXED4.
               04  I02-B05-STT              PIC S9(9)   BINARY.
               04  I02-SHOKAI               PIC X(4).
-              04  I02-JYOTAI               PIC X(20).
+              04  I02-JYOTAI               PIC X(40).
               04  I02-BTUNAME              PIC X(20).
               04  I02-BRMNUM               PIC X(6).
               04  I02-NYUINYMD             PIC X(9).

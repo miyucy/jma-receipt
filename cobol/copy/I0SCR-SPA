@@ -406,7 +406,7 @@
       *          初回
                  11  SPA-GMN-I02-SHOKAI            PIC X(4).
       *          状態
-                 11  SPA-GMN-I02-JYOTAI            PIC X(20).
+                 11  SPA-GMN-I02-JYOTAI            PIC X(40).
       *          病棟名
                  11  SPA-GMN-I02-BTUNAME           PIC X(20).
       *          病室番号

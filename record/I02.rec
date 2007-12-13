@@ -7,7 +7,7 @@ I02	{
 			value	varchar(4);
 		};
 		JYOTAI	{
-			value	varchar(20);
+			value	varchar(40);
 		};
 		BTUNAME	{
 			value	varchar(20);

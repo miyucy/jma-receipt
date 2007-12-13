@@ -422,7 +422,12 @@
       *    状態
            EVALUATE    TRUE
            WHEN    PTNYUINRRK-JTIKBN   =   "5"
-               MOVE    "他院歴"    TO  SPA-GMN-I02-JYOTAI
+	       IF    ( PTNYUINRRK-TAINRELKBN   =   "1" )
+	           MOVE    "他院歴（特別な関係にある医療機関）"
+		                       TO  SPA-GMN-I02-JYOTAI
+	       ELSE
+                   MOVE    "他院歴"    TO  SPA-GMN-I02-JYOTAI
+	       END-IF
            WHEN    PTNYUINRRK-JTIKBN   =   "6"
                MOVE    "自院入院歴"
                                    TO  SPA-GMN-I02-JYOTAI
