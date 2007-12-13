@@ -221,6 +221,8 @@
       *
            03  FLG-HOUKATU-ZAI         PIC 9(01).
       *
+           03  FLG-SYOKAI           PIC 9(01).
+      *
       *    添字領域
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
@@ -1174,6 +1176,13 @@
       *            指示せん発行画面
                    PERFORM 3014-K081-SET-SEC
                    MOVE    2                   TO  FLG-GMN
+      *
+               WHEN    "M01"
+      *            業務選択画面より
+                   PERFORM 30010-INIT-GMN-SEC
+               WHEN    OTHER
+      *            外部・患者決定
+                   PERFORM 3000-SCREEN-SYORI-SEC
            END-EVALUATE
       *
            IF      FLG-GMN         NOT =   ZERO
@@ -1187,25 +1196,27 @@
                    ELSE
                        PERFORM 510-ERRSET-SEC
                    END-IF
-                   GO      TO      300-SCREEN-EXT
+               ELSE
+                   IF      SPA-KIDCD       NOT =   SPACE
+      *                画面編集
+                       PERFORM 500-GMNHEN-SEC
+                       PERFORM 520-KIDSET-SEC
+                   END-IF
                END-IF
-               IF      SPA-KIDCD       NOT =   SPACE
-                   PERFORM 520-KIDSET-SEC
-                   GO      TO      300-SCREEN-EXT
-               END-IF
-               GO      TO      300-SCREEN-EXT
            END-IF
+      *
+           .
+       300-SCREEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    患者設定初期画面処理
+      *****************************************************************
+       3000-SCREEN-SYORI-SEC              SECTION.
       *
            MOVE    SPACE               TO  SPA-KIDCD
            MOVE    SPACE               TO  SPA-KIDCD2
-      *
-      *    患者の確定していない時、クリア画面の表示、M01より
-           IF    ( SPA-MOTOPG          =   "M01"    )  OR
-                 ((SPA-MOTOPG          =   "K08"  OR  "K02") AND
-                  (SPA-PTNUM           =   SPACE    ))
-               PERFORM 30010-INIT-GMN-SEC
-               GO      TO      300-SCREEN-EXT
-           END-IF
+           MOVE    ZERO                TO  FLG-SYOKAI
       *
            EVALUATE    SPA-MOTOPG
                WHEN    "K01"
@@ -1239,9 +1250,9 @@
                WHEN    "P02"
       *            患者登録より再編集
                    INITIALIZE                  SPA-K02
-                   MOVE    ZERO            TO  FLG-PARASET
+                   MOVE    ZERO                TO  FLG-PARASET
                    PERFORM 3002-PARA-SET-SEC
-                   IF      SPA-ERRMSG(1:2)    =   "NO"
+                   IF      SPA-ERRMSG(1:2)     =   "NO"
       *                戻る
                        PERFORM 3003-GMN-HEN-SEC
                    ELSE
@@ -1273,7 +1284,12 @@
                    END-IF
       *
                WHEN    "K08"
-               WHEN    "K03"
+      ******** WHEN    "K03"
+      *            登録後クリア画面の表示
+                   IF      SPA-PTNUM          =   SPACE
+                       PERFORM 30010-INIT-GMN-SEC
+                   ELSE
+      *
                    INITIALIZE                  SPA-K02
                    MOVE    ZERO            TO  FLG-PARASET
                    PERFORM 3002-PARA-SET-SEC
@@ -1286,9 +1302,11 @@
                    PERFORM 510-TBLHEN-SEC
                    MOVE    SPACE           TO  FLG-TOROKU
       *
+                   END-IF
+      *
                WHEN    "K10"
                    IF      SPA-K10-SELNUM      =   ZERO
-                       GO      TO      300-SCREEN-EXT
+                       MOVE    2                   TO  FLG-SYOKAI
                    ELSE
                        PERFORM 30091-SAIHEN2-SEC
                    END-IF
@@ -1297,20 +1315,19 @@
                    INITIALIZE                  SPA-K02
                    MOVE    ZERO            TO  FLG-PARASET
                    PERFORM 3002-PARA-SET-SEC
-                   IF      SPA-MOTOPG      =   "K03"
-      *                特定疾患判定のクリア
-                       MOVE    ZERO            TO  SPA-TOKUTEIFLG
-                       MOVE    ZERO            TO  SPA-CHOZAI-CHK
-                   END-IF
                    PERFORM 3003-GMN-HEN-SEC
            END-EVALUATE
       *
-           MOVE    1               TO  SPA-GMN-PAGE
-           MOVE    1               TO  SPA-GMN-CUR
-           MOVE    1               TO  SPA-MAP-IDX
+           IF      FLG-SYOKAI          =   2
+               CONTINUE
+           ELSE
+               MOVE    1               TO  SPA-GMN-PAGE
+               MOVE    1               TO  SPA-GMN-CUR
+               MOVE    1               TO  SPA-MAP-IDX
+           END-IF
       *
            .
-       300-SCREEN-EXT.
+       3000-SCREEN-SYORI-EXT.
            EXIT.
       *
       *****************************************************************

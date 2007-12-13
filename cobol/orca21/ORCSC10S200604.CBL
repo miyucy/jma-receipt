@@ -58,6 +58,8 @@
       * 03.05.00     NACL-多々納  07/04/XX  グループ診療対応
       * 03.05.01     NACL-多々納  07/07/XX  同日再診と訂正の選択対応他
       * 04.00.00     NACL-多々納  07/09/XX  テーブル４００対応
+      * 04.01.00     NACL-多々納  07/12/XX  .213 自動変換システム設定対応
+      *                                     アトピー性皮膚炎の年齢対応
       *****************************************************************
       *
       *
@@ -3117,6 +3119,7 @@
       *****************************************************************
        330122-HIFUKA-SIDOU-SEC         SECTION.
       *
+           MOVE    SPACE               TO  WRK-SRYCD
            EVALUATE    FLG-TOKUTEI
       *           （１）
                WHEN    03
@@ -3125,9 +3128,18 @@
                WHEN    04
                    MOVE    "113002310"     TO  WRK-SRYCD
            END-EVALUATE
+      *    皮膚科特定疾患管理料（２）でアトピー性皮膚炎のある場合
+           IF     (FLG-TOKUTEI         =   04  )  AND
+                  (SPA-ATOPII-FLG      =   1   )
+      *        16才未満はなし
+               IF      SPA-NENREI-YY       <   16
+                   MOVE    SPACE           TO  WRK-SRYCD
+               END-IF
+           END-IF
       *
       *    自動発生区分判定
-           IF      SPA-BYOMEIAUTO-FLG  =  "1"
+           IF     (WRK-SRYCD       NOT =   SPACE )  AND
+                  (SPA-BYOMEIAUTO-FLG  =   "1"   )
       *        指導料追加、チェック処理
                MOVE    1                   TO  FLG-SIDOU
                PERFORM 3301211-SIDOU-ADD-SEC
@@ -4076,6 +4088,11 @@
       *****************************************************************
        50192-SRYSYUKBN-CHK-SEC                SECTION.
       *
+      *    自動変換なし
+           IF      SPA-CHGSRYSYU-FLG   =   "1"
+               GO     TO      50192-SRYSYUKBN-CHK-EXT
+           END-IF
+      *
            IF      SPA-COM-SRYSYUKBN(IDX)  =   SPACE
       *        院外
                IF      SPA-INGAIKBN        =   "1"
@@ -4197,6 +4214,8 @@
                               (SPA-GMN-INPUTCD (IDX)   =   SPACE )
       *      包括保険
              IF     (SPA-COM-HKNCOMBI (IDX)      =   "9999")
+                 OR (SPA-GMN-INPUTCD  (IDX)(1:1) =   "#"
+                                                 OR  "$"   )
                CONTINUE
              ELSE
       *        生活指導、検査、注射、在宅料以外であること
@@ -4330,6 +4349,8 @@
                               (SPA-GMN-INPUTCD (IDX)   =   SPACE )
       *      包括保険
              IF     (SPA-COM-HKNCOMBI (IDX)      =   "9999")
+                 OR (SPA-GMN-INPUTCD  (IDX)(1:1) =   "#"
+                                                 OR  "$"   )
                CONTINUE
              ELSE
       *        検査、投薬、注射は算定できない
@@ -4400,6 +4421,8 @@
                               (SPA-GMN-INPUTCD (IDX)   =   SPACE )
       *      包括保険
              IF     (SPA-COM-HKNCOMBI (IDX)      =   "9999")
+                 OR (SPA-GMN-INPUTCD  (IDX)(1:1) =   "#"
+                                                 OR  "$"   )
                CONTINUE
              ELSE
       *        検査、投薬、注射は算定できない
@@ -4464,6 +4487,8 @@
                               (SPA-GMN-INPUTCD (IDX)   =   SPACE )
       *      包括保険
              IF     (SPA-COM-HKNCOMBI (IDX)      =   "9999")
+                 OR (SPA-GMN-INPUTCD  (IDX)(1:1) =   "#"
+                                                 OR  "$"   )
                CONTINUE
              ELSE
       *        今回入力

@@ -241,6 +241,7 @@
                    07  SPA-TOKU-SRYKA-G   OCCURS   10.
                        09  SPA-TOKU-SRYKA      PIC X(02).
                        09  SPA-TOKU-FLG        PIC 9(02).
+                   07  SPA-ATOPII-FLG      PIC  9(01).
                05  SPA-TOKUTEI-SRYKA       PIC  X(02).
       *
       *当月累計点数

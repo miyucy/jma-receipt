@@ -1171,7 +1171,6 @@
       *
            IF      LINKAREA        NOT =   SPACE
                MOVE    LNK-KYOUTU          TO  SPA-KYOUTU
-      *
       *        画面ＳＰＡ読み込み
                PERFORM 1002-K02SPA-SET-SEC
       *        元画面へ戻す
@@ -1682,7 +1681,7 @@
                MOVE    SPA-MISYUMONEY      TO  SPA-GMN-MISYUMONEY
            END-IF
       *    病名からの戻りの時、病名再編集
-           IF      SPA-MOTOPG      =   "C02"
+           IF      SPA-MOTOPG          =   "C02"
                INITIALIZE                  ORCSC95AREA
                MOVE    "B"                 TO  LNK-SC95-KBN
                MOVE    SPA-SRYYMD          TO  LNK-SC95-SRYYMD

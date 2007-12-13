@@ -44,6 +44,9 @@
       *  03.05.01    NACL-¬ø°π«º  07/08/27  ∏¯»Ò¥¸∏¬¿⁄§Ï¬–±˛
       *  04.00.00    NACL-¬ø°π«º  07/09/XX  •∆°º•÷•Î£¥£∞£∞¬–±˛
       *  04.00.01    NACL-¬ø°π«º  07/10/XX  ºıø«Õ˙ŒÚ∞ÏÕ˜º° «¬–±˛
+      *  04.01.00    NACL-¬ø°π«º  07/12/XX  .213 º´∆∞ —¥π¿ﬂƒÍ¬–±˛
+      *                                     …¬Ãæº¿¥µ∂Ë ¨¿ﬂƒÍ¬–±˛
+      *                                     •¢•»•‘°º¿≠»È…Ê±Í§Œ«ØŒ¬–±˛
       *****************************************************************
       *
       *
@@ -960,6 +963,8 @@
                MOVE    SYS-1038-CHG310FLG      TO  SPA-CHG310FLG
       *        º·Á•ﬁ°º•´∞ÏÕ˜…Ωº®
                MOVE    SYS-1038-AKUSEIHYOFLG   TO  SPA-AKUSEIHYOFLG
+      *        ≈ÍÃÙø«Œ≈∂Ë ¨ —¥π¡™¬Ú
+               MOVE    SYS-1038-CHGSRYSYU-FLG  TO  SPA-CHGSRYSYU-FLG
            END-IF
            IF      SPA-KAGRPFLG        =   SPACE
                MOVE    "0"                 TO  SPA-KAGRPFLG
@@ -978,6 +983,10 @@
            END-IF
            IF      SPA-AKUSEIHYOFLG    =   SPACE
                MOVE    "0"                 TO  SPA-AKUSEIHYOFLG
+           END-IF
+      *    ≈ÍÃÙø«Œ≈∂Ë ¨ —¥π¡™¬Ú
+           IF      SPA-CHGSRYSYU-FLG    =   SPACE
+               MOVE    "0"                  TO  SPA-CHGSRYSYU-FLG
            END-IF
       *
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
@@ -1577,6 +1586,8 @@
                MOVE    SYS-1038-CHG310FLG      TO  SPA-CHG310FLG
       *        º·Á•ﬁ°º•´∞ÏÕ˜…Ωº®
                MOVE    SYS-1038-AKUSEIHYOFLG   TO  SPA-AKUSEIHYOFLG
+      *        ≈ÍÃÙø«Œ≈∂Ë ¨ —¥π¡™¬Ú
+               MOVE    SYS-1038-CHGSRYSYU-FLG  TO  SPA-CHGSRYSYU-FLG
            END-IF
            IF      SPA-DOSRYKBNFLG     =   SPACE
                MOVE    "00"                TO  SPA-DOSRYKBNFLG
@@ -1592,6 +1603,10 @@
            END-IF
            IF      SPA-AKUSEIHYOFLG    =   SPACE
                MOVE    "0"                 TO  SPA-AKUSEIHYOFLG
+           END-IF
+      *    ≈ÍÃÙø«Œ≈∂Ë ¨ —¥π¡™¬Ú
+           IF      SPA-CHGSRYSYU-FLG    =   SPACE
+               MOVE    "0"                 TO  SPA-CHGSRYSYU-FLG
            END-IF
       *
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
@@ -3966,42 +3981,6 @@
            .
        11011-TOKUTEI-SYORI-EXT.
            EXIT.
-      *****************************************************************
-      *    ø«Œ≈≤ ÀË§Œ∆√ƒÍº¿¥µ ‘Ω∏ΩËÕ˝
-      *****************************************************************
-       110111-MANSEIKBN-SET-SEC              SECTION.
-      *
-           PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX     >   10
-               IF      SPA-TOKU-SRYKA (IDX)    =   SPACE
-                   MOVE    PTBYO-SRYKA     TO  SPA-TOKU-SRYKA (IDX)
-                   MOVE    PTBYO-MANSEIKBN TO  SPA-TOKU-FLG   (IDX)
-                   MOVE    10              TO  IDX
-               ELSE
-                   IF      SPA-TOKU-SRYKA (IDX)    =   PTBYO-SRYKA
-                       EVALUATE    SPA-TOKU-FLG (IDX)
-                           WHEN    05
-                               CONTINUE
-                           WHEN    03
-                               IF      PTBYO-MANSEIKBN     =   05
-                                   MOVE    PTBYO-MANSEIKBN
-                                                   TO  SPA-TOKU-FLG(IDX)
-                               END-IF
-                           WHEN    04
-                               IF      PTBYO-MANSEIKBN     =   03
-                                                           OR  05
-                                   MOVE    PTBYO-MANSEIKBN
-                                                   TO  SPA-TOKU-FLG(IDX)
-                               END-IF
-                       END-EVALUATE
-                       MOVE    10              TO  IDX
-                   END-IF
-               END-IF
-           END-PERFORM
-      *
-           .
-       110111-MANSEIKBN-SET-EXT.
-           EXIT.
       *
       *****************************************************************
       *    …¬Ãæ ‘Ω∏ΩËÕ˝
@@ -4145,6 +4124,63 @@
            END-IF
            .
        11012-BYOMEI-HENSYU-EXT.
+           EXIT.
+      *****************************************************************
+      *    ø«Œ≈≤ ÀË§Œ∆√ƒÍº¿¥µ ‘Ω∏ΩËÕ˝
+      *****************************************************************
+       110111-MANSEIKBN-SET-SEC              SECTION.
+      *
+      *    »È…Ê≤ ∆√ƒÍº¿¥µ° £≤°À§Œ…¬Ãæ•¡•ß•√•Ø
+           IF      PTBYO-MANSEIKBN     =   04
+               PERFORM 110111-ATOPIICHEK-SEC
+           END-IF
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL      (IDX     >   10  )
+               IF      SPA-TOKU-SRYKA (IDX)    =   SPACE
+                   MOVE    PTBYO-SRYKA     TO  SPA-TOKU-SRYKA (IDX)
+                   MOVE    PTBYO-MANSEIKBN TO  SPA-TOKU-FLG   (IDX)
+                   MOVE    10              TO  IDX
+               ELSE
+                   IF      SPA-TOKU-SRYKA (IDX)    =   PTBYO-SRYKA
+                       EVALUATE    SPA-TOKU-FLG (IDX)
+                           WHEN    05
+                               CONTINUE
+                           WHEN    03
+                               IF      PTBYO-MANSEIKBN     =   05
+                                   MOVE    PTBYO-MANSEIKBN
+                                                   TO  SPA-TOKU-FLG(IDX)
+                               END-IF
+                           WHEN    04
+                               IF      PTBYO-MANSEIKBN     =   03
+                                                           OR  05
+                                   MOVE    PTBYO-MANSEIKBN
+                                                   TO  SPA-TOKU-FLG(IDX)
+                               END-IF
+                       END-EVALUATE
+                       MOVE    10              TO  IDX
+                   END-IF
+               END-IF
+           END-PERFORM
+      *
+           .
+       110111-MANSEIKBN-SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    »È…Ê≤ ∆√ƒÍº¿¥µ° £≤°À§Œ…¬Ãæ•¡•ß•√•ØΩËÕ˝
+      *****************************************************************
+       110111-ATOPIICHEK-SEC             SECTION.
+      *
+      *    ¥À‹…¬Ãæ•≥°º•…
+           IF      PTBYO-KHNBYOMEICD   =   "6918001"
+                                       OR  "6918002"
+                                       OR  "6918024"
+                                       OR  "8830277"
+      *        •¢•»•‘°º¿≠»È…Ê±Í
+               MOVE    1               TO  SPA-ATOPII-FLG
+           END-IF
+           .
+       110111-ATOPIICHEK-EXT.
            EXIT.
       *****************************************************************
       *    ∆˛±°£”£–£¡ ‘Ω∏°¢•Ô°º•Øø«Œ≈π‘∞Ÿ∫Ó¿ÆΩËÕ˝
