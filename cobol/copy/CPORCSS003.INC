@@ -32,3 +32,4 @@
             03  SS003-OT.
                 05  SS003-SYOSAISIN-KBN    PIC X(01).
                 05  SS003-JNISSUGEN-KBN    PIC X(01).
+                05  SS003-JIKANGAI-KBN     PIC X(01).

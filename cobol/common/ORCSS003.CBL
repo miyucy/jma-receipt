@@ -59,6 +59,7 @@
        01  WRK-AREA.
            03  WRK-SYOSAISIN-KBN               PIC X(01).
            03  WRK-JNISSUGEN-KBN               PIC X(01).
+           03  WRK-JIKANGAI-KBN                PIC X(01).
       *
       *
        01  CONST-AREA.
@@ -146,6 +147,7 @@
       *
            INITIALIZE                  WRK-SYOSAISIN-KBN
                                        WRK-JNISSUGEN-KBN
+                                       WRK-JIKANGAI-KBN
       *
            MOVE    ZERO            TO  FLG-END
       *
@@ -165,7 +167,11 @@
                                    TO  SS003-SYOSAISIN-KBN
                MOVE    WRK-JNISSUGEN-KBN
                                    TO  SS003-JNISSUGEN-KBN
+               MOVE    WRK-JIKANGAI-KBN
+                                   TO  SS003-JIKANGAI-KBN
            END-IF
+      *
+           DISPLAY "SS003-JIKANGAI-KBN =" SS003-JIKANGAI-KBN
       *
            .
        200-MAIN-EXT.
@@ -381,6 +387,26 @@
       *
            IF    ( SRY-SRYCD (IDX-SRYCD)   =  "099409903" )
                    MOVE    "1"             TO  WRK-JNISSUGEN-KBN
+           END-IF
+      *
+           IF   (( TNS-DATAKBN             =  "2" )
+             AND ( TNS-SRYKBN              =  "11" OR "12" OR "13" )
+             AND ( TNS-TIMEKSNKBN          =  1 OR 2 OR 3 OR 4 OR 5 ))
+            OR  (  SRY-SRYCD (IDX-SRYCD)   =  "113005570"
+                                           OR "113007770"
+                                           OR "113009870"
+                                           OR "113007870"
+                                           OR "113007670"
+                                           OR "112006070"
+                                           OR "113007470"
+                                           OR "113009770"
+                                           OR "113007570"
+                                           OR "113007370"
+                                           OR "111010770"
+                                           OR "113009670"
+                                           OR "113007270"
+                                           OR "113007070" )
+                   MOVE    "1"             TO  WRK-JIKANGAI-KBN
            END-IF
       *
            .
