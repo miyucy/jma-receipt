@@ -103,6 +103,8 @@
            03  PTNYUINRRK-TIMEKBN-IN              PIC  X(01).
       *選定入院区分（１：選定対象／２：選定対象外）
            03  PTNYUINRRK-SENTEIKBN               PIC  X(01).
+      *他院関係区分（１：特別な関係にある医療機関）
+           03  PTNYUINRRK-TAINRELKBN              PIC  X(01).
       *端末ＩＤ
            03  PTNYUINRRK-TERMID                  PIC  X(16).
       *オペーレータＩＤ
