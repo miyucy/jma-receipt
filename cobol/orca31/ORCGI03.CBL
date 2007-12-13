@@ -37,6 +37,7 @@
       *                                     「入院期間≧通算対象日数となっていること」
       *                                     のチェックを外す
       *  03.05.00    NACL-太田    07.05.15  グループ診療対応
+      *  04.01.00    NACL-太田    07.12.13  特別な関係にある医療機関の考慮を追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -382,13 +383,17 @@
       *****************************************************************
        310-CMB-RRKKBN-SET-SEC          SECTION.
       *
-           MOVE    2                   TO  SPA-GMN-I03-RRKKBN-CNT
+           MOVE    3                   TO  SPA-GMN-I03-RRKKBN-CNT
       *
            MOVE    "1"                 TO  SPA-GMN-I03-RRKKBNL    (01)
            MOVE    "自院歴"            TO  SPA-GMN-I03-RRKKBNMEIL (01)
       *
            MOVE    "2"                 TO  SPA-GMN-I03-RRKKBNL    (02)
            MOVE    "他院歴"            TO  SPA-GMN-I03-RRKKBNMEIL (02)
+      *
+           MOVE    "3"                 TO  SPA-GMN-I03-RRKKBNL    (03)
+           MOVE    "他院歴（特別な関係にある医療機関）"
+                                       TO  SPA-GMN-I03-RRKKBNMEIL (03)
       *
            .
        310-CMB-RRKKBN-SET-EXT.
@@ -664,8 +669,13 @@
       *
       *    履歴区分／入院中区分
            IF    ( PTNYUINRRK-JTIKBN   =   "5" )
-               MOVE    SPA-GMN-I03-RRKKBN-ITM (02)
+               IF    ( PTNYUINRRK-TAINRELKBN  =   "1" )
+                   MOVE    SPA-GMN-I03-RRKKBN-ITM (03)
                                    TO    SPA-GMN-I03-RRKKBN
+               ELSE
+                   MOVE    SPA-GMN-I03-RRKKBN-ITM (02)
+                                   TO    SPA-GMN-I03-RRKKBN
+               END-IF
       *        MOVE    SPA-GMN-I03-NYUINCHUKBN-ITM (01)
       *                            TO    SPA-GMN-I03-NYUINCHUKBN
                MOVE    SPACE
@@ -959,18 +969,21 @@
       *
            MOVE    I03-RRKKBN      TO  SPA-GMN-I03-RRKKBN
       *
-           IF    ( SPA-GMN-I03-RRKKBN-CD   =   "1" )
+           EVALUATE    SPA-GMN-I03-RRKKBN-CD
+           WHEN    "1"
                MOVE    SPA-GMN-I03-RRKKBN-ITM (1)
                                    TO  SPA-GMN-I03-RRKKBN
                MOVE    SPA-GMN-I03-NYUINCHUKBN-ITM (1)
                                    TO  SPA-GMN-I03-NYUINCHUKBN
-           ELSE
+           WHEN    "3"
+               MOVE    SPA-GMN-I03-RRKKBN-ITM (3)
+                                   TO  SPA-GMN-I03-RRKKBN
+               MOVE    SPACE       TO  SPA-GMN-I03-NYUINCHUKBN
+           WHEN    OTHER
                MOVE    SPA-GMN-I03-RRKKBN-ITM (2)
                                    TO  SPA-GMN-I03-RRKKBN
-      *        MOVE    SPA-GMN-I03-NYUINCHUKBN-ITM (1)
-      *                            TO  SPA-GMN-I03-NYUINCHUKBN
                MOVE    SPACE       TO  SPA-GMN-I03-NYUINCHUKBN
-           END-IF
+           END-EVALUATE
       *
            .
       *
@@ -1316,7 +1329,7 @@
            MOVE    WRK-SHONUM      TO  PTNYUINRRK-SHONUM
       *
       *    状態区分
-           IF    ( SPA-GMN-I03-RRKKBN (1 : 1) =   "2" )
+           IF    ( SPA-GMN-I03-RRKKBN-CD   =   "2" OR "3" )
                MOVE    "5"             TO  PTNYUINRRK-JTIKBN
            ELSE
                MOVE    "6"             TO  PTNYUINRRK-JTIKBN
@@ -1339,6 +1352,11 @@
            END-IF
       *
            MOVE    1               TO  PTNYUINRRK-MAXEDANUM
+      *
+      *    他院区分
+           IF    ( SPA-GMN-I03-RRKKBN-CD   =   "3" )
+               MOVE    "1"         TO  PTNYUINRRK-TAINRELKBN
+           END-IF
       *
            IF    ( WRK-UPDKBN      =   "UPD" )
       *

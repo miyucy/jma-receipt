@@ -64,17 +64,20 @@
       *            基準日チェックフラグ　（0:対象外／1:対象）
       *            （基準日の入院料が通算日数の対象となるかチェック）
                05  STUSAN-KJNYMD-CHK-FLG   PIC 9(01).
+      *        特別な関係にある医療機関に入院していた日数
+               05  STUSAN-TAINREL-NISSU    PIC 9(08).
                05  STUSAN-RRK-VAL.
       *            テーブルオーバーフラグ
-                   07  STUSAN-RRK-FLG-OVER     PIC 9(01).
-                   07  STUSAN-RRK-CNT      PIC 9(05).
-                   07  STUSAN-RRK-OCC      OCCURS  50.
-                       09  STUSAN-RRK-JTIKBN   PIC X(01).
-                       09  STUSAN-RRK-NYUINYMD PIC X(08).
-                       09  STUSAN-RRK-TAIINYMD PIC X(08).
-                       09  STUSAN-RRK-DJKBN    PIC X(01).
+                   07  STUSAN-RRK-FLG-OVER         PIC 9(01).
+                   07  STUSAN-RRK-CNT              PIC 9(05).
+                   07  STUSAN-RRK-OCC              OCCURS  50.
+                       09  STUSAN-RRK-JTIKBN       PIC X(01).
+                       09  STUSAN-RRK-TAINRELKBN   PIC X(01).
+                       09  STUSAN-RRK-NYUINYMD     PIC X(08).
+                       09  STUSAN-RRK-TAIINYMD     PIC X(08).
+                       09  STUSAN-RRK-DJKBN        PIC X(01).
       *                一般入院料で入院していた日数
       *                （歴作成データの場合は対象日数）
-                       09  STUSAN-RRK-NISSU    PIC 9(08).
+                       09  STUSAN-RRK-NISSU        PIC 9(08).
       *  リターンコード
            03  STUSAN-RC               PIC 9(02).

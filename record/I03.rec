@@ -57,11 +57,11 @@ I03	{
 		};
 		CMB_RRKKBN	{
 			RRKKBN	{
-				value	varchar(10);
+				value	varchar(40);
 				state	int;
 			};
 			count	int;
-			item	varchar(10)[02];
+			item	varchar(40)[03];
 			state	int;
 		};
 		CMB_NYUINCHUKBN	{

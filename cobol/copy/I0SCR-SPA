@@ -535,7 +535,7 @@
                  11  SPA-GMN-I03-RRKKBN.
                      13  SPA-GMN-I03-RRKKBN-CD     PIC X(01).
                      13  SPA-GMN-I03-RRKKBNFL      PIC X(01).
-                     13  SPA-GMN-I03-RRKKBN-NM     PIC X(08).
+                     13  SPA-GMN-I03-RRKKBN-NM     PIC X(38).
       *
       *          Æþ±¡Ãæ¶èÊ¬
                  11  SPA-GMN-I03-NYUINCHUKBN.
@@ -566,10 +566,10 @@
                        15  SPA-GMN-I03-SHOKAIMEIL  PIC X(6).
                  11  SPA-GMN-I03-CMB-RRKKBN.
                    13  SPA-GMN-I03-RRKKBN-CNT      PIC 9(5).
-                   13  SPA-GMN-I03-RRKKBN-ITM      OCCURS  2.
+                   13  SPA-GMN-I03-RRKKBN-ITM      OCCURS  3.
                        15  SPA-GMN-I03-RRKKBNL     PIC X(01).
                        15  SPA-GMN-I03-RRKKBNFLL   PIC X(01).
-                       15  SPA-GMN-I03-RRKKBNMEIL  PIC X(08).
+                       15  SPA-GMN-I03-RRKKBNMEIL  PIC X(38).
                  11  SPA-GMN-I03-CMB-NYUINCHUKBN.
                    13  SPA-GMN-I03-NYUINCHUKBN-CNT PIC 9(5).
                    13  SPA-GMN-I03-NYUINCHUKBN-ITM OCCURS  2.

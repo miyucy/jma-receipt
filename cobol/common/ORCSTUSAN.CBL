@@ -38,6 +38,7 @@
       *  03.01.00    NACL-太田    06.06.30  入院料が拾えないケースを認める
       *  03.05.00    NACL-多々納  07/04/26  グループ診療対応
       *  03.05.00    NACL-太田    07/05/10  グループ診療対応
+      *  04.01.00    NACL-太田    07/12/13  日数８追加
       *****************************************************************
       *
        ENVIRONMENT                         DIVISION.
@@ -185,7 +186,7 @@
                PERFORM 200-MAIN-SEC
            END-IF
       *
-      *     PERFORM 800-DISPLAY-SEC
+           PERFORM 800-DISPLAY-SEC
       *
            .
        000-PROC-EXT.
@@ -382,6 +383,11 @@
                    =   STUSAN-NISSU02  +   PTNYUINRRK-TAISYONISSU
                COMPUTE STUSAN-NISSU04
                    =   STUSAN-NISSU04  +   PTNYUINRRK-TAISYONISSU
+               IF    ( PTNYUINRRK-TAINRELKBN   =   "1" )
+                   COMPUTE STUSAN-TAINREL-NISSU
+                       =   STUSAN-TAINREL-NISSU
+                       +   PTNYUINRRK-TAISYONISSU
+               END-IF
            WHEN    "6"
                COMPUTE STUSAN-NISSU02
                    =   STUSAN-NISSU02  +   PTNYUINRRK-TAISYONISSU
@@ -391,7 +397,6 @@
                    =   STUSAN-NISSU04  +   PTNYUINRRK-TAISYONISSU
                COMPUTE STUSAN-NISSU05
                    =   STUSAN-NISSU05  +   PTNYUINRRK-TAISYONISSU
-               DISPLAY "PTNYUINRRK-NYUINCHUKBN =" PTNYUINRRK-NYUINCHUKBN
                IF    ( PTNYUINRRK-NYUINCHUKBN  =   "1" )
                    MOVE   PTNYUINRRK-TAIINYMD
                                        TO  WRK-YMD
@@ -792,6 +797,9 @@
                MOVE    STUSAN-RRK-CNT      TO  IDX2
       *
                MOVE    PTNYUINRRK-JTIKBN   TO  STUSAN-RRK-JTIKBN  (IDX2)
+               MOVE    PTNYUINRRK-TAINRELKBN
+                                           TO  STUSAN-RRK-TAINRELKBN
+                                                                  (IDX2)
                MOVE    PTNYUINRRK-NYUINYMD TO  STUSAN-RRK-NYUINYMD(IDX2)
                MOVE    PTNYUINRRK-TAIINYMD TO  STUSAN-RRK-TAIINYMD(IDX2)
                MOVE    SDNTCHK-DJKBN       TO  STUSAN-RRK-DJKBN   (IDX2)
@@ -883,11 +891,14 @@
            DISPLAY "STUSAN-NISSU05 = " STUSAN-NISSU05
            DISPLAY "STUSAN-NISSU06 = " STUSAN-NISSU06
            DISPLAY "STUSAN-NISSU07 = " STUSAN-NISSU07
+           DISPLAY "STUSAN-TAINREL-NISSU = " STUSAN-TAINREL-NISSU
       *
            PERFORM VARYING IDX1    FROM    1   BY  1
                UNTIL     ( IDX1    >   STUSAN-RRK-CNT )
                DISPLAY "STUSAN-RRK-JTIKBN (" IDX1 ")= "
                         STUSAN-RRK-JTIKBN (IDX1)
+               DISPLAY "STUSAN-RRK-TAINRELKBN (" IDX1 ")= "
+                        STUSAN-RRK-TAINRELKBN (IDX1)
                DISPLAY "STUSAN-RRK-NYUINYMD (" IDX1 ")= "
                         STUSAN-RRK-NYUINYMD (IDX1)
                DISPLAY "STUSAN-RRK-TAIINYMD (" IDX1 ")= "
