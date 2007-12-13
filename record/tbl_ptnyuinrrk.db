@@ -876,3 +876,19 @@ path	key48		{
 		;
 	};
 };
+
+path	key49		{ 	
+	DBSELECT	{
+		DECLARE tbl_ptnyuinrrk_key49_csr CURSOR FOR
+		SELECT *
+		FROM tbl_ptnyuinrrk
+			WHERE	HOSPNUM             =   :HOSPNUM 
+			AND		PTID        =   :PTID
+			AND		JTIKBN	    <>	'5'
+			AND		JTIKBN	    <>	'6'
+			AND		TOKUTEI_KBN =   :TOKUTEI_KBN
+			AND		TOKUTEI_NYUIN = :TOKUTEI_NYUIN
+			ORDER BY NYUINYMD
+		;
+	};
+};
