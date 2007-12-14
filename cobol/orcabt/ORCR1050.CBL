@@ -161,8 +161,6 @@
            03  IDX2                PIC 9(04).
            03  IDX3                PIC 9(04).
            03  IDX4                PIC 9(04).
-      *
-           03  IDX5                PIC 9(04).
       *     
            03  WRK-SYU-INDEX       PIC 9(04).
            03  WRK-YKZ-INDEX       PIC 9(04).
@@ -525,8 +523,7 @@
        01  TBL-DENSHI-INF.
            03  TBL-DENSHI-FLG              PIC  9(01).
            03  TBL-DENSHI-TEN              PIC  9(07).
-           03  TBL-DENSHI-OCC              OCCURS   5.
-               05  TBL-DENSHI-ZAIKAISU     PIC  9(04).
+           03  TBL-DENSHI-ZAIKAISU         PIC  9(04).
       *
       *   日本語数字
        01  TBL-SUJI-AREA.
@@ -1450,7 +1447,7 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
                MOVE     1              TO  TBL-DENSHI-FLG
                MOVE  TBL-ZAIW-TEN (WRK-WIDX1 WRK-WIDX2)
                                        TO  TBL-DENSHI-TEN
-               ADD   RECE120-ZAIKAISU   TO  TBL-DENSHI-ZAIKAISU(IDX5)
+               ADD   RECE120-ZAIKAISU  TO  TBL-DENSHI-ZAIKAISU
       *
            END-IF
       *
@@ -2529,17 +2526,14 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
       *****************************************************************
        2010-DENSHI-HENSYU-SEC      SECTION.
       *
-           PERFORM   VARYING   IDX5   FROM    1   BY  1
-                      UNTIL    IDX5    >      5
-      *
-             IF  TBL-DENSHI-ZAIKAISU(IDX5)  NOT =  ZERO
+           IF  TBL-DENSHI-ZAIKAISU  NOT =  ZERO
       *
                MOVE    SPACE             TO  WRK-ZAI
                MOVE    "＊"              TO  WRK-ZAI-MK
                MOVE    "電子化加算"      TO  WRK-ZAI-NAME(1:10)
       *        点数・回数セット
                MOVE    TBL-DENSHI-TEN    TO  WRK-ZAITENX
-               MOVE    TBL-DENSHI-ZAIKAISU(IDX5)
+               MOVE    TBL-DENSHI-ZAIKAISU
                                          TO  WRK-ZAIKAISUX
       *        必要有効桁数・開始位置・回数編集
                PERFORM 810-TENSUKAI-HEN-SEC
@@ -2549,10 +2543,10 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
                MOVE    SPACE             TO  RECE140-REC
                INITIALIZE                    RECE140-REC
                MOVE    RECE100-KEY       TO  RECE140-KEY1
-               COMPUTE RECE140-ZAINUM   = 99999974 + IDX5
+               MOVE    99999975          TO  RECE140-ZAINUM
                MOVE    1                 TO  RECE140-LINENUM
                MOVE    1                 TO  RECE140-ZAIMEISAISU
-               MOVE    RECE100-PTNUM      TO  RECE140-PTNUM
+               MOVE    RECE100-PTNUM     TO  RECE140-PTNUM
                MOVE    "11"              TO  RECE140-SRYKBN
                MOVE    WRK-ZAI           TO  RECE140-TEKIYO-INF
       *
@@ -2573,13 +2567,7 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
       *
                PERFORM 4501-RECE140-WRITE-SEC
       *
-               IF  STS-RECE140       NOT =   ZERO
-                   MOVE    5         TO  IDX5
-               END-IF
-      *
-             END-IF
-      *
-           END-PERFORM
+           END-IF
       *
            .
       *
