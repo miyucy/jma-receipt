@@ -201,7 +201,7 @@
            03  WRK-ZAIWMAX-SAV-G.
                05  WRK-ZAIWMAX-SAV PIC 9(03)   OCCURS  6.
       * 
-           03  WRK-YUKOKETA        PIC  9(02).
+           03  WRK-YUKOKETA        PIC  9(03).
            03  WRK-NAME            PIC  X(200).
       *
            03  WRK-RECE130          PIC 9(01).     
@@ -1119,20 +1119,15 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
                    ELSE                          
                        EVALUATE    RECE130-SRYCD (IDX) (1:1)
                            WHEN    "0"
-                               IF      RECE130-SRYCD (IDX) (1:3) = "059"
-                                 IF     ( RECE120-SRYKBN     =   "70" )
-                                 AND    ( RECE130-DATAKBN (IDX)
-                                                              =   "3")
-                                     MOVE    3             TO  IDY
-                                 ELSE
-                                     MOVE    4             TO  IDY
-                                 END-IF
+                               IF    RECE130-SRYCD (IDX)(1:3)
+                                                   =  "059" OR "058"
+                                     MOVE       4         TO  IDY
                                ELSE
                                  IF  RECE130-SRYCD (IDX)(1:3) =  "008"
                                     IF   RECE130-SRYSYUKBN  =  "334"
                                         MOVE    5         TO  IDY
                                     ELSE
-                                      IF      IDY          =   ZERO
+                                      IF    IDY          =    ZERO
                                         MOVE    2         TO  IDY
                                       END-IF
                                     END-IF
@@ -1146,7 +1141,7 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
                                IF   RECE130-SRYSYUKBN  =  "334"
                                    MOVE    5         TO  IDY
                                ELSE
-                                 IF (     IDY            =   ZERO )
+                                 IF    IDY   =   ZERO
                                    MOVE    2         TO  IDY
                                  END-IF
                                END-IF    
@@ -1155,18 +1150,7 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
                            WHEN    "6"
                                MOVE    5             TO  IDY
                            WHEN    "7"
-                               IF    ( RECE120-SRYKBN     =   "70" )
-                               AND   ( RECE130-DATAKBN (IDX)
-                                                         =   "3"  )
-                                   MOVE    3                 TO  IDY
-                               ELSE
-                                   IF      RECE130-SRYCD (IDX)    =
-                                             WRK-CONS-FILM-YOUJI-KASAN
-                                       MOVE    3             TO  IDY
-                                   ELSE
-                                       MOVE    4             TO  IDY
-                                   END-IF
-                               END-IF
+                               MOVE    4             TO  IDY
                            WHEN    OTHER
                                DISPLAY "ORCR1050 SRYCD="
                                                  RECE130-SRYCD (IDX) 
@@ -1630,7 +1614,7 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
        2005-SRYKBNELSE-HENSYU-SEC    SECTION.
       *    処方のとき
            IF  RECE120-SRYKBN         =   "25"
-               IF    ( RECE100-KHNTEN  (19)     =   ZERO )  AND
+               IF    ( RECE100-KHNTEN (21)     =   ZERO )  AND
                      ( WRK-ZAIWMAX    (6)      >   1    )
                    PERFORM 20042-SRYKBNELSE-REIGAI-SEC
                ELSE

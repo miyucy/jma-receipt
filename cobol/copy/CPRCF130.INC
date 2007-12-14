@@ -126,8 +126,8 @@
                05  RECE130-SANSOKBN             PIC 9(01).
       *その他情報
                05  RECE130-SONOTAINF.
-      *レセプト電算対象外フラグ
-                   07  RECE130-RECEDENFLG       PIC X(01).
       *レセプト対象外フラグ
                    07  RECE130-RECEPTFLG        PIC X(01).
+      *レセ用特定器材商品名編集フラグ
+                   07  RECE130-RECEHENFLG       PIC X(01).
       *

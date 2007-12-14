@@ -1560,10 +1560,10 @@ grpsys         MOVE    WRK-PARA-HOSPNUM    TO  BTPARA-HOSPNUM
                    WHEN    OTHER
                        MOVE    2               TO  WRK-TNSIDX
                END-EVALUATE
-               MOVE    RECE100-TENSU(IDX 1)
+               MOVE    RECE100-TENSU(IDX WRK-TNSIDX)
                                            TO  WRK-TENSUZ
                MOVE    WRK-TENSU           TO  HCM58-TENSU
-                                                   (IDX WRK-TNSIDX)
+                                                   (WRK-TNSIDX IDX)
            END-PERFORM
       *
       *    ¾®·×

@@ -42,7 +42,7 @@
            03  RECE100-RECESYUBETU         PIC 9(04).
       *
       *レセプト対象年月日情報
-           03  RECE41-TEKYMD.
+           03  RECE100-TEKYMD.
       *適用開始年月日
                05  RECE100-TEKSTYMD-X      PIC X(08). 
       *適用終了年月日
@@ -113,10 +113,6 @@
       *
       *初診時間区分
            03  RECE100-SHOSHINTIME         PIC X(01).
-      *再診摘要印刷区分
-           03  RECE100-SAISHIN-PRTKBN      PIC X(01).
-      *外来管理加算摘要印刷区分
-           03  RECE100-GAIRAIKSN-PRTKBN    PIC X(01).
       *外来迅速検体検査加算フラグ
            03  RECE100-KENTAIKASANFLG      PIC X(01).
       *コメントカウントフラグ
@@ -134,4 +130,3 @@
                05  RECE100-ERR-HKNCOMBINUM PIC 9(04).
                05  RECE100-ERR-TEKSTYMD    PIC 9(08).
                05  RECE100-ERR-TEKEDYMD    PIC 9(08).
-
