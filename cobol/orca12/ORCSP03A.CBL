@@ -805,7 +805,8 @@
                IF      SPA-GMN-HKNNUM      =   "007"
       *        公害保険は本人のみ
                                            OR  "975"
-                   IF      SPA-GMN-HONKZKKBN-G     =   SPACE
+      ************ IF      SPA-GMN-HONKZKKBN-G     =   SPACE
+                   IF      IDT                 =   1
       *                空白の時、本人を設定
                        MOVE    SPA-GMN-HONKZKKBNL (IDT)
                                                TO  SPA-GMN-HONKZKKBN-G
