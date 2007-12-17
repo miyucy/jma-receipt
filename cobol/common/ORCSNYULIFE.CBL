@@ -31,6 +31,8 @@
       *  03.05.00    NACL-太田    07/05/10  グループ診療対応
       *              NACL-小豆沢  07/07/12  患者所得情報の取得をサブ
       *                                     ルーチンに変更
+      *  04.01.00    NACL-小豆沢  07/12/17  短期滞在手術基本料２の入院
+      *                                     翌日対応
       *****************************************************************
       *
       *
@@ -143,6 +145,9 @@
       *
       *    患者所得情報編集サブ
            COPY    "CPORCSSYOTOKU.INC".
+      *
+      *    入院料未算定日取得サブ
+           COPY    "CPORCSNYUINDAY.INC".
       *
       *****************************************************************
       *    連絡　領域
@@ -313,6 +318,28 @@
            MOVE    "tbl_nyuinacct"         TO  MCP-TABLE
            MOVE    "key17"                 TO  MCP-PATHNAME
            PERFORM   910-DB-CLOSE-SEC
+      *
+      *    短期滞在手術基本料２の入院料未算定日について生活療養の該当日と
+      *    軽減区分２の情報を取得（サブプロより取得）
+           INITIALIZE                          ORCSNYUINDAY-AREA
+           MOVE    LNK-NYULIFE-HOSPNUM     TO  LNK-NYUINDAY-HOSPNUM
+           MOVE    LNK-NYULIFE-PTID        TO  LNK-NYUINDAY-PTID
+           MOVE    LNK-NYULIFE-SANTEIYM    TO  LNK-NYUINDAY-SANTEIYM
+           CALL    "ORCSNYUINDAY"      USING   ORCSNYUINDAY-AREA
+                                               SPA-AREA
+           IF      LNK-NYUINDAY-RC         =   ZERO
+               IF    LNK-NYUINDAY-TANKI2-TBL   NOT =    SPACE
+                   PERFORM    VARYING   IDX1   FROM   1   BY   1
+                      UNTIL   IDX1   >   31
+                         IF    LNK-NYUINDAY-TANKI2-KBN(IDX1)   =   "2"
+                               MOVE   "1"   TO   LNK-NYULIFE-KBN(IDX1)
+                               MOVE   "1"   TO
+                                             LNK-NYULIFE-FTNKBN2(IDX1)
+                               MOVE    1    TO   FLG-OK
+                         END-IF
+                   END-PERFORM
+               END-IF
+           END-IF
       *
       *−−−−医療機関食事情報取得ここから−−−−−−−−−−−
       *医療機関食事情報の取得（システム管理テーブルより）
