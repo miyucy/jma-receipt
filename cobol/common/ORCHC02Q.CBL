@@ -3310,9 +3310,9 @@
                    IF      WKSRY-SRYCD (IDXA)(1:3) =   "001"
                        MOVE    TNS-NAME        TO  ORCSQRCSV-BIKOU
                                                            (IDX-QRB)
-      *****        ELSE
-      *****            MOVE    WRK-TNS-NAME    TO  ORCSQRCSV-BIKOU
-      *****                                                (IDX-QRB)
+                   ELSE
+                       MOVE    WRK-TNS-NAME    TO  ORCSQRCSV-BIKOU
+                                                           (IDX-QRB)
                    END-IF
                END-IF
       *---(04.00.00) LINE ADD END   ------------------------------------
@@ -3634,9 +3634,9 @@
                   IF      ORCHC19-SRYCD (IDX-L IDX-L2)(1:3) =   "001"
                       MOVE    TNS-NAME         TO  ORCSQRCSV-BIKOU
                                                            (IDX-QRB)
-      *****        ELSE
-      *****           MOVE    WRK-TNS-NAME     TO  ORCSQRCSV-BIKOU
-      *****                                                (IDX-QRB)
+                   ELSE
+                      MOVE    WRK-TNS-NAME     TO  ORCSQRCSV-BIKOU
+                                                           (IDX-QRB)
                    END-IF
                END-IF
       *---(04.00.00) LINE ADD END   ------------------------------------
