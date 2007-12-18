@@ -1990,35 +1990,9 @@ grpsys             MOVE    SRY-HOSPNUM          TO  PTCOM-HOSPNUM
                         MOVE   "1"    TO    RECE100-COMCNTFLG
                         MOVE   "1"    TO    RECE120-DOUJITUSAI-COMMENT
               END-IF
-      *       ºÆ¿Ç¡Ê£´²óÌÜ°Ê¹ß¡¿¿Í¹©¿ÕÂ¡¡Ë
-              IF   SRY-SRYCD(IDX2)    =     "112009510"   OR
-                                            "112009610"   OR
-                                            "112012610"   OR
-                                            "112704010"   OR
-                                            "112706610"   OR
-                                            "112010450"   OR
-                                            "112010550"   OR
-                                            "112704750"   OR
-                                            "112007710"   OR
-                                            "112007810"   OR
-                                            "112012310"   OR
-                                            "112702610"   OR
-                                            "112706310"   OR
-                                            "112008650"   OR
-                                            "112008750"   OR
-                                            "112703350"     
-                        MOVE   "1"    TO    RECE100-COMCNTFLG
-                        MOVE   "1"    TO    RECE120-SAIJINKO-COMMENT
-              END-IF
            END-IF
       *
            IF      RECE120-SRYKBN      =     "40"
-      *       ¿Í¹©¿ÕÂ¡
-              IF   SRY-SRYCD(IDX2)    =     "140036710"   OR
-                                            "140007710"
-                        MOVE   "1"    TO    RECE100-COMCNTFLG
-                        MOVE   "1"    TO    RECE120-JINKOJIN-COMMENT
-              END-IF
       *       ²ðÃ£¸£°ú¡ÊÈ¯¾ÉÆüµ­ºÜ¡Ë
               IF   RECE100-SRYYM      >=    "200604"
                 IF   SRY-SRYCD(IDX2)  =     CONS-KAITATU-COMMENT

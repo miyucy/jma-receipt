@@ -464,6 +464,12 @@ grpsys     COPY    "COMMON-SPA".
            END-PERFORM
       *
            IF      FLG-END             =   ZERO
+           AND     FLG-RECE120         =   ZERO
+           AND     RECE100-KEY     NOT =   RECE120-KEY1
+               COMPUTE   CNT-IN  =  CNT-IN  -  1
+           END-IF
+      *
+           IF      FLG-END             =   ZERO
                PERFORM 900-RECE100-READ-SEC
            END-IF
            .

@@ -910,10 +910,10 @@
            MOVE    "RECE900"           TO  RECE100PARA-FILE-ID
            MOVE    WRK-PARA-TERMID     TO  RECE100PARA-TERMID
            MOVE    WRK-PARA-HOSPNUM    TO  RECE100PARA-HOSPNUM
-           MOVE    "RECE920"           TO  RECE120PARA-FILE-ID
+           MOVE    "RECE922"           TO  RECE120PARA-FILE-ID
            MOVE    WRK-PARA-TERMID     TO  RECE120PARA-TERMID
            MOVE    WRK-PARA-HOSPNUM    TO  RECE120PARA-HOSPNUM
-           MOVE    "RECE930"           TO  RECE130PARA-FILE-ID
+           MOVE    "RECE932"           TO  RECE130PARA-FILE-ID
            MOVE    WRK-PARA-TERMID     TO  RECE130PARA-TERMID
            MOVE    WRK-PARA-HOSPNUM    TO  RECE130PARA-HOSPNUM
            MOVE    "RECE940"           TO  RECE140PARA-FILE-ID
@@ -3130,7 +3130,7 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
                    END-IF
                    IF    ( RECE140-CDKBN-KBNNUM    >=  400 )   AND
                          ( RECE140-CDKBN-KBNNUM    <=  499 )
-                       MOVE   2                TO  RECE140-KNSJISKBN
+                       MOVE    2               TO  RECE140-KNSJISKBN
                    END-IF
                    IF    ( RECE140-CDKBN-KBNNUM    >=  200 )   AND
                          ( RECE140-CDKBN-KBNNUM    <=  399 )
@@ -3140,9 +3140,9 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
                        MOVE    4               TO  RECE140-KNSJISKBN
                    END-IF
                END-IF
-              IF      RECE140-SAFLG    NOT =   SPACE
-                   MOVE    9               TO  RECE140-KNSJISKBN
-              END-IF
+               IF      RECE140-SAFLG    NOT =   SPACE
+                       MOVE    9               TO  RECE140-KNSJISKBN
+               END-IF
            END-IF
            IF      RECE140-SRYKBN      =   "99"
                MOVE    SPACE           TO  RECE140-SRYKBN
@@ -3151,9 +3151,10 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
                IF   RECE140-SRYKBN       NOT =   "40" AND "60" AND "80"
                    CONTINUE
                ELSE 
-                   INITIALIZE                RECE140-ZAITEN
+                   INITIALIZE            RECE140-ZAITEN
                END-IF
            ELSE
+               INITIALIZE                RECE140-ZAITEN
                INITIALIZE                RECE140-CDKBN-SYO
                                          RECE140-CDKBN-BU
                                          RECE140-CDKBN-KBN

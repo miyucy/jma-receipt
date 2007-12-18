@@ -90,10 +90,6 @@
            03  RECE120-DENWASAI-COMMENT    PIC X(01).
       *Æ±ÆüºÆ¿Ç
            03  RECE120-DOUJITUSAI-COMMENT  PIC X(01).
-      *ºÆ¿Ç¡Ê£´²óÌÜ°Ê¹ß¡¿¿Í¹©¿ÕÂ¡¡Ë
-           03  RECE120-SAIJINKO-COMMENT    PIC X(01).
-      *¿Í¹©¿ÕÂ¡
-           03  RECE120-JINKOJIN-COMMENT    PIC X(01).
       *¥ê¥Ï¥Ó¥ê
            03  RECE120-RIHABIRI-COMMENT    PIC X(01).
       *¥ê¥Ï¥Ó¥ê¡Ê¿´Âç·ì´É¼À´µ¡Ë
