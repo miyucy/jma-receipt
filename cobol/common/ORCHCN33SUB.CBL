@@ -42,6 +42,8 @@
       *  01.00.09    NACL-¾®Æ¦Âô  06/10/24  Æþ±¡»þÀ¸³èÎÅÍÜÂÐ±þ
       *  03.04.01    NACL-Æ£¸¶    07/04/18  £Ä£Â£Ã£Ì£Ï£Ó£Å£Ã£Õ£Ò£Ó£Ï£ÒÂÐ±þ
       *  03.05.00    NACL-Â¿¡¹Ç¼  07/04/XX  ¥°¥ë¡¼¥×¿ÇÎÅÂÐ±þ
+      *  04.01.00    NACL-¾®Æ¦Âô  07/12/18  Ã»´üÂÚºß¼ê½Ñ´ðËÜÎÁ£²¤ÎÆþ±¡
+      *                                     ÍâÆü¿©»ö»»ÄêÂÐ±þ
       *****************************************************************
       *
       *
@@ -378,6 +380,9 @@
       *
       *    Æþ±¡»þÀ¸³èÎÅÍÜÈñÉéÃ´³Û¼èÆÀ¥µ¥Ö
            COPY    "CPORCSNYULIFE.INC".
+      *
+      *    Æþ±¡ÎÁÌ¤»»ÄêÆü¼èÆÀ¥µ¥Ö
+           COPY    "CPORCSNYUINDAY.INC".
       *
       *****************************************************************
       *    Ï¢Íí¡¡ÎÎ°è
@@ -750,16 +755,25 @@
                END-PERFORM
                IF   FLG-OK     =   ZERO
                    MOVE     7      TO      LNK-ORCHCN33SUB-RC
-      *************GO   TO    210-NYUINTEN-GET-EXT
                END-IF
            ELSE
                MOVE     6      TO      LNK-ORCHCN33SUB-RC
-      *********GO   TO    210-NYUINTEN-GET-EXT
            END-IF
       *    Æþ±¡²ñ·×¥¯¥í¡¼¥º
            MOVE    "tbl_nyuinacct"         TO  MCP-TABLE
            MOVE    "key17"                 TO  MCP-PATHNAME
            PERFORM   910-DB-CLOSE-SEC
+      *
+      *    Ã»´üÂÚºß¼ê½Ñ´ðËÜÎÁ£²¤ÎÆþ±¡ÎÁÌ¤»»ÄêÆü¤Ë¤Ä¤¤¤Æ¼èÆÀ
+           INITIALIZE                         ORCSNYUINDAY-AREA
+           MOVE LNK-ORCHCN33SUB-HOSPNUM   TO  LNK-NYUINDAY-HOSPNUM
+           MOVE LNK-ORCHCN33SUB-PTID      TO  LNK-NYUINDAY-PTID
+           MOVE LNK-ORCHCN33SUB-SANTEIYM  TO  LNK-NYUINDAY-SANTEIYM
+           CALL    "ORCSNYUINDAY"      USING  ORCSNYUINDAY-AREA
+                                              SPA-AREA
+           IF      LNK-NYUINDAY-TBL    NOT = SPACE
+               MOVE    ZERO        TO   LNK-ORCHCN33SUB-RC
+           END-IF
       *
            IF    ( LNK-ORCHCN33SUB-RC       NOT =   ZERO )
                 GO   TO    210-NYUINTEN-GET-EXT
@@ -2382,13 +2396,22 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            CALL    "ORCSNYULIFE"    USING  ORCSNYULIFE-AREA
                                            SPA-AREA
       *    
+      *    Ã»´üÂÚºß¼ê½Ñ´ðËÜÎÁ£²¤ÎÆþ±¡ÎÁÌ¤»»ÄêÆü¤Ë¤Ä¤¤¤Æ¼èÆÀ
+           INITIALIZE                          ORCSNYUINDAY-AREA
+           MOVE    LNK-ORCHCN33SUB-HOSPNUM     TO  LNK-NYUINDAY-HOSPNUM
+           MOVE    LNK-ORCHCN33SUB-PTID        TO  LNK-NYUINDAY-PTID
+           MOVE    LNK-ORCHCN33SUB-SANTEIYM    TO  LNK-NYUINDAY-SANTEIYM
+           CALL    "ORCSNYUINDAY"      USING   ORCSNYUINDAY-AREA
+                                               SPA-AREA
+      *
       *    ¿©»öÎÅÍÜÈñ·×»»
            PERFORM    VARYING   IDX1   FROM   1   BY   1
                        UNTIL    IDX1     >   31
       *
              IF    (WRK-SRYKA-DAY(IDX1)          NOT = SPACE)
              AND   (WRK-SKJ200604-NYUINJI(IDX1)  NOT =  ZERO)
-             AND   (WRK-NYUINKHN(IDX1)           NOT = SPACE)
+             AND  ((WRK-NYUINKHN(IDX1)           NOT = SPACE)  OR
+                   (LNK-NYUINDAY-KBN(IDX1)       NOT = SPACE))
              AND   (WRK-GAIHAKU-KBN(IDX1)     =  ZERO  OR  4)
       *
                EVALUATE   WRK-SYS5000-SHOKUCD(1 IDX1)
