@@ -156,6 +156,8 @@
       *
            03  IDX-F3              PIC 9(04).
       *
+           03  IDX-P               PIC 9(04).
+      *
       *    °ì»þÎÎ°è
        01  WRK-AREA.
            03  WRK-SYMD.
@@ -275,6 +277,10 @@
                05  WRK-SRYDD           PIC 9(02).
       *
            03  WRK-MAE-HKNCOMBI        PIC X(04).
+      *    ¶Ø´÷£±
+       01  WRK-TABOO-G.
+           03  WRK-TABOO               PIC X(62)
+                                       OCCURS   32.
       *
       *Â¾²Ê¼õ¿Ç²ÊÍ­¤ê
        01  WRK-TAKA-SRYKA-AREA.
@@ -2544,9 +2550,11 @@
                                                =   SPA-NAI-RRK-HKNCOMBI
                                                              (IDX) ))
                      OR   ((SPA-NAI-RRK-HKNKBN (IDX-J2)
-                                               =   ZERO) AND
+                                               =   ZERO
+                                               OR  "6"  ) AND
                            (SPA-NAI-RRK-HKNKBN (IDX)
-                                               =   ZERO ))
+                                               =   ZERO
+                                               OR  "6" ))
                        ADD     1               TO  IDX-SRY
                        IF      IDX-SRY         <=  10
                            MOVE    SPA-NAI-RRK-SRYKA(IDX)
@@ -3227,135 +3235,58 @@
       *
            INITIALIZE                  SPA-GMN-TABOO-TBL
            MOVE    ZERO                TO  IDX
+      *
       *    ¶Ø´÷£±
            IF      PTINF-TABOO-1   NOT =   SPACE
-                ADD     1                  TO  IDX
-                MOVE    "¶Ø´÷¡§"           TO  SPA-GMN-TABOO (IDX)
-                MOVE    PTINF-TABOO-1      TO  SPA-GMN-TABOO (IDX)
-                                                             (7:50)
-                IF      PTINF-TABOO-1(51:62)   NOT =   SPACE
-                    ADD     1                  TO  IDX
-                    MOVE    PTINF-TABOO-1(51:62)
-                                               TO  SPA-GMN-TABOO (IDX)
-                END-IF
-                IF      PTINF-TABOO-1(113:62)  NOT =   SPACE
-                    ADD     1                  TO  IDX
-                    MOVE    PTINF-TABOO-1(113:62)
-                                               TO  SPA-GMN-TABOO (IDX)
-                END-IF
-                IF      PTINF-TABOO-1(175:)    NOT =   SPACE
-                    ADD     1                  TO  IDX
-                    MOVE    PTINF-TABOO-1(175:)
-                                               TO  SPA-GMN-TABOO (IDX)
-                END-IF
+                MOVE    SPACE              TO  WRK-TABOO-G
+                STRING  "¶Ø´÷¡§"           DELIMITED  BY  SIZE
+                        PTINF-TABOO-1      DELIMITED  BY  SIZE
+                                           INTO  WRK-TABOO-G
+                END-STRING
+                PERFORM 4010110-TABOO-HEN-SEC
            END-IF
       *    ¶Ø´÷£²
            IF      PTINF-TABOO-2   NOT =   SPACE
-               ADD     1                  TO  IDX
-               MOVE    PTINF-TABOO-2      TO  SPA-GMN-TABOO (IDX)
-               IF      PTINF-TABOO-2(63:)     NOT =   SPACE
-                   ADD     1                  TO  IDX
-                   MOVE    PTINF-TABOO-2(63:)
-                                               TO  SPA-GMN-TABOO (IDX)
-               END-IF
-               IF      PTINF-TABOO-2(125:)     NOT =   SPACE
-                   ADD     1                   TO  IDX
-                   MOVE    PTINF-TABOO-2(125:)
-                                               TO  SPA-GMN-TABOO (IDX)
-               END-IF
-               IF      PTINF-TABOO-2(187:)     NOT =   SPACE
-                   ADD     1                   TO  IDX
-                   MOVE    PTINF-TABOO-2(187:)
-                                               TO  SPA-GMN-TABOO (IDX)
-               END-IF
+               MOVE    PTINF-TABOO-2   TO  WRK-TABOO-G
+               PERFORM 4010110-TABOO-HEN-SEC
            END-IF
       *    ¥¢¥ì¥ë¥®¡¼£±
-           IF      PTINF-ALLERGY-1   NOT =   SPACE
-                ADD     1                  TO  IDX
-                MOVE    "¥¢¥ì¥ë¥®¡¼¡§"     TO  SPA-GMN-TABOO (IDX)
-                MOVE    PTINF-ALLERGY-1    TO  SPA-GMN-TABOO (IDX)
-                                                             (13:)
-                IF      PTINF-ALLERGY-1(51:)   NOT =   SPACE
-                    ADD     1                  TO  IDX
-                    MOVE    PTINF-ALLERGY-1(51:) TO  SPA-GMN-TABOO (IDX)
-                END-IF
-                IF      PTINF-ALLERGY-1(113:)  NOT =   SPACE
-                    ADD     1                  TO  IDX
-                    MOVE    PTINF-ALLERGY-1(113:)
-                                               TO  SPA-GMN-TABOO (IDX)
-                END-IF
-                IF      PTINF-ALLERGY-1(175:)  NOT =   SPACE
-                    ADD     1                  TO  IDX
-                    MOVE    PTINF-ALLERGY-1(175:)
-                                               TO  SPA-GMN-TABOO (IDX)
-                END-IF
+           IF      PTINF-ALLERGY-1     NOT =   SPACE
+                MOVE    SPACE              TO  WRK-TABOO-G
+                STRING  "¥¢¥ì¥ë¥®¡¼¡§"     DELIMITED  BY  SIZE
+                        PTINF-ALLERGY-1    DELIMITED  BY  SIZE
+                                           INTO  WRK-TABOO-G
+                END-STRING
+                PERFORM 4010110-TABOO-HEN-SEC
            END-IF
       *    ¥¢¥ì¥ë¥®¡¼£²
-           IF      PTINF-ALLERGY-2 NOT =   SPACE
-               ADD     1                   TO  IDX
-               MOVE    PTINF-ALLERGY-2     TO  SPA-GMN-TABOO (IDX)
-               IF      PTINF-ALLERGY-2(63:)     NOT =   SPACE
-                   ADD     1                   TO  IDX
-                   MOVE    PTINF-ALLERGY-2(63:)
-                                               TO  SPA-GMN-TABOO (IDX)
-               END-IF
-               IF      PTINF-ALLERGY-2(125:)   NOT =   SPACE
-                   ADD     1                   TO  IDX
-                   MOVE    PTINF-ALLERGY-2(125:)
-                                               TO  SPA-GMN-TABOO (IDX)
-               END-IF
-               IF      PTINF-ALLERGY-2(187:)   NOT =   SPACE
-                   ADD     1                   TO  IDX
-                   MOVE    PTINF-ALLERGY-2(187:)
-                                               TO  SPA-GMN-TABOO (IDX)
-               END-IF
+           IF      PTINF-ALLERGY-2     NOT =   SPACE
+               MOVE    PTINF-ALLERGY-2     TO  WRK-TABOO-G
+               PERFORM 4010110-TABOO-HEN-SEC
            END-IF
       *    ´¶À÷¾É£±
            IF      PTINF-KANSENSYO-1   NOT =   SPACE
-                ADD     1                  TO  IDX
-                MOVE    "´¶À÷¾É¡§"         TO  SPA-GMN-TABOO (IDX)
-                MOVE    PTINF-KANSENSYO-1  TO  SPA-GMN-TABOO (IDX)
-                                                             (9:)
-                IF      PTINF-KANSENSYO-1(55:) NOT =   SPACE
-                    ADD     1                  TO  IDX
-                    MOVE    PTINF-KANSENSYO-1(55:)
-                                               TO  SPA-GMN-TABOO (IDX)
-                END-IF
-                IF      PTINF-KANSENSYO-1(117:)    NOT =   SPACE
-                    ADD     1                  TO  IDX
-                    MOVE    PTINF-KANSENSYO-1(117:)
-                                               TO  SPA-GMN-TABOO (IDX)
-                END-IF
-                IF      PTINF-KANSENSYO-1(178:)    NOT =   SPACE
-                    ADD     1                  TO  IDX
-                    MOVE    PTINF-KANSENSYO-1(178:)
-                                               TO  SPA-GMN-TABOO (IDX)
-                END-IF
+                MOVE    SPACE              TO  WRK-TABOO-G
+                STRING  "´¶À÷¾É¡§"         DELIMITED  BY  SIZE
+                        PTINF-KANSENSYO-1  DELIMITED  BY  SIZE
+                                           INTO  WRK-TABOO-G
+                END-STRING
+                PERFORM 4010110-TABOO-HEN-SEC
            END-IF
       *    ´¶À÷¾É£²
            IF      PTINF-KANSENSYO-2   NOT =   SPACE
-               ADD     1                   TO  IDX
-               MOVE    PTINF-KANSENSYO-2   TO  SPA-GMN-TABOO (IDX)
-               IF      PTINF-KANSENSYO-2(63:)  NOT =   SPACE
-                   ADD     1                   TO  IDX
-                   MOVE    PTINF-KANSENSYO-2(63:)
-                                               TO  SPA-GMN-TABOO (IDX)
-               END-IF
-               IF      PTINF-KANSENSYO-2(125:) NOT =   SPACE
-                   ADD     1                   TO  IDX
-                   MOVE    PTINF-KANSENSYO-2(125:)
-                                               TO  SPA-GMN-TABOO (IDX)
-               END-IF
-               IF      PTINF-KANSENSYO-2(187:) NOT =   SPACE
-                   ADD     1                   TO  IDX
-                   MOVE    PTINF-KANSENSYO-2(187:)
-                                               TO  SPA-GMN-TABOO (IDX)
-               END-IF
+               MOVE    PTINF-KANSENSYO-2   TO  WRK-TABOO-G
+               PERFORM 4010110-TABOO-HEN-SEC
            END-IF
       *
       *    ¥³¥á¥ó¥È£±
            MOVE    ZERO                TO  FLG-COMMENT
            IF      PTINF-COMMENT-1 NOT =   SPACE
+                MOVE    SPACE              TO  WRK-TABOO-G
+                STRING  "¥³¥á¥ó¥È¡§"       DELIMITED  BY  SIZE
+                        PTINF-COMMENT-1    DELIMITED  BY  SIZE
+                                           INTO  WRK-TABOO-G
+                END-STRING
       *        Á´³Ñ¡¦È¾³ÑÈ½Äê
                INITIALIZE                  ORCSKANACHKAREA
                MOVE    "1"                 TO  KANACHK-SYORI
@@ -3368,53 +3299,20 @@
                ELSE
                    MOVE    ZERO                TO  FLG-COMMENT
                END-IF
-               ADD     1                  TO  IDX
-               MOVE    "¥³¥á¥ó¥È¡§"       TO  SPA-GMN-TABOO (IDX)
-      *
-               IF      FLG-COMMENT        =   1
-      *            ºÇÂç·å¿ôÈ½Äê
-                   MOVE    ZERO                TO  KANACHK-MAX
-                   PERFORM VARYING     IDK     FROM    200 BY  -1
-                           UNTIL       IDK     <   1
-                       IF     KANACHK-MAE-INPUT (IDK:1)    NOT =   SPACE
-                          MOVE    IDK             TO  KANACHK-MAX
-                          MOVE    1               TO  IDK
-                      END-IF
-                   END-PERFORM
-                   IF      KANACHK-MAX        <=  48
-                       MOVE    PTINF-COMMENT-1(1:KANACHK-MAX)
-                                          TO  SPA-GMN-TABOO (IDX)
-                                                             (11:)
-                   ELSE
-                       MOVE    "Á´³ÑÈ¾³Ñº®ºß¤Î°ÙÉ½¼¨¤Ç¤­¤Þ¤»¤ó"
-                                          TO  SPA-GMN-TABOO (IDX)
-                                                             (11:)
-                   END-IF
-               ELSE
-      *
-               MOVE    PTINF-COMMENT-1    TO  SPA-GMN-TABOO (IDX)
-                                                             (11:)
-               IF      PTINF-COMMENT-1(53:)   NOT =   SPACE
+      *        ºÇ½é¤¬Àµ¾ï¤ËÉ½¼¨¤Ç¤­¤Ê¤¤»þ
+               IF     (FLG-COMMENT        =   1   )  AND
+                      (KANACHK-MAX        >   52 )
                    ADD     1                  TO  IDX
-                   MOVE    PTINF-COMMENT-1(53:) TO  SPA-GMN-TABOO (IDX)
+                   MOVE    "¥³¥á¥ó¥È¡§Á´³ÑÈ¾³Ñº®ºß¤Î°ÙÉ½¼¨¤Ç¤­¤Þ¤»¤ó"
+                                              TO  SPA-GMN-TABOO (IDX)
+               ELSE
+                   PERFORM 4010110-TABOO-HEN-SEC
                END-IF
-               IF      PTINF-COMMENT-1(115:)  NOT =   SPACE
-                    ADD     1                  TO  IDX
-                    MOVE    PTINF-COMMENT-1(115:)
-                                               TO  SPA-GMN-TABOO (IDX)
-                END-IF
-                IF      PTINF-COMMENT-1(177:)  NOT =   SPACE
-                    ADD     1                  TO  IDX
-                    MOVE    PTINF-COMMENT-1(177:)
-                                               TO  SPA-GMN-TABOO (IDX)
-                END-IF
-      *
-                END-IF
-      *
            END-IF
       *    ¥³¥á¥ó¥È£²
            IF      PTINF-COMMENT-2 NOT =   SPACE
       *        Á´³Ñ¡¦È¾³ÑÈ½Äê
+               MOVE    PTINF-COMMENT-2    TO  WRK-TABOO-G
                INITIALIZE                  ORCSKANACHKAREA
                MOVE    "1"                 TO  KANACHK-SYORI
                MOVE    PTINF-COMMENT-2     TO  KANACHK-MAE-INPUT
@@ -3423,48 +3321,40 @@
                IF     (KANACHK-SYUBETU     =   ZERO ) OR
                       (KANACHK-RC2         =   8    )
       *            ºÇÂç·å¿ôÈ½Äê
-                   MOVE    ZERO                TO  KANACHK-MAX
-                   PERFORM VARYING     IDK     FROM    200  BY  -1
-                           UNTIL       IDK     <   1
-                       IF     KANACHK-MAE-INPUT (IDK:1)    NOT =   SPACE
-                          MOVE    IDK             TO  KANACHK-MAX
-                          MOVE    1               TO  IDK
-                      END-IF
-                   END-PERFORM
-                   ADD     1                   TO  IDX
                    IF      KANACHK-MAX        <=  62
-                       MOVE    PTINF-COMMENT-2(1:KANACHK-MAX)
-                                          TO  SPA-GMN-TABOO (IDX)
+                       PERFORM 4010110-TABOO-HEN-SEC
                    ELSE
+                       ADD     1                   TO  IDX
                        MOVE    "Á´³ÑÈ¾³Ñº®ºß¤Î°ÙÉ½¼¨¤Ç¤­¤Þ¤»¤ó"
-                                          TO  SPA-GMN-TABOO (IDX)
+                                               TO  SPA-GMN-TABOO (IDX)
                    END-IF
                ELSE
-      *
-               ADD     1                   TO  IDX
-               MOVE    PTINF-COMMENT-2     TO  SPA-GMN-TABOO (IDX)
-               IF      PTINF-COMMENT-2(63:)     NOT =   SPACE
-                   ADD     1                   TO  IDX
-                   MOVE    PTINF-COMMENT-2(63:)
-                                               TO  SPA-GMN-TABOO (IDX)
-               END-IF
-               IF      PTINF-COMMENT-2(125:)   NOT =   SPACE
-                   ADD     1                   TO  IDX
-                   MOVE    PTINF-COMMENT-2(125:)
-                                               TO  SPA-GMN-TABOO (IDX)
-               END-IF
-               IF      PTINF-COMMENT-2(187:)   NOT =   SPACE
-                   ADD     1                   TO  IDX
-                   MOVE    PTINF-COMMENT-2(187:)
-                                               TO  SPA-GMN-TABOO (IDX)
-               END-IF
-      *
+                   PERFORM 4010110-TABOO-HEN-SEC
                END-IF
            END-IF
+      *
            MOVE    IDX                 TO  SPA-TABOO-MAX
       *
            .
        401011-TABOO-SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ¥³¥á¥ó¥ÈÊÔ½¸½èÍý
+      *****************************************************************
+       4010110-TABOO-HEN-SEC            SECTION.
+      *
+           PERFORM VARYING     IDX-P   FROM    1  BY  1
+                   UNTIL      (IDX-P       >   32 )
+                           OR (IDX         >=  32 )
+               IF      WRK-TABOO (IDX-P)   NOT =   SPACE
+                   ADD     1                   TO  IDX
+                   MOVE    WRK-TABOO (IDX-P)   TO  SPA-GMN-TABOO
+                                                                (IDX)
+               END-IF
+           END-PERFORM
+           .
+       4010110-TABOO-HEN-EXT.
            EXIT.
       *
       *****************************************************************
