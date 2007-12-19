@@ -2411,7 +2411,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
              IF    (WRK-SRYKA-DAY(IDX1)          NOT = SPACE)
              AND   (WRK-SKJ200604-NYUINJI(IDX1)  NOT =  ZERO)
              AND  ((WRK-NYUINKHN(IDX1)           NOT = SPACE)  OR
-                   (LNK-NYUINDAY-KBN(IDX1)       NOT = SPACE))
+                   (LNK-NYUINDAY-KBN(IDX1)       =     "1"))
              AND   (WRK-GAIHAKU-KBN(IDX1)     =  ZERO  OR  4)
       *
                EVALUATE   WRK-SYS5000-SHOKUCD(1 IDX1)
@@ -2456,7 +2456,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *     ´Ä¶­ÎÅÍÜ·×»»
              IF    (WRK-SRYKA-DAY(IDX1)          NOT = SPACE)
              AND  ((WRK-NYUINKHN(IDX1)           NOT = SPACE)  OR
-                   (LNK-NYUINDAY-KBN(IDX1)       NOT = SPACE))
+                   (LNK-NYUINDAY-KBN(IDX1)       =     "1"))
              AND   (WRK-GAIHAKU-KBN(IDX1)     =  ZERO  OR  4)
       *
                  MOVE    ZERO    TO   WRK-KEISAN
