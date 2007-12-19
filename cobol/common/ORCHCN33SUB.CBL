@@ -2453,8 +2453,10 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *
              END-IF
       *
+      *     ´Ä¶­ÎÅÍÜ·×»»
              IF    (WRK-SRYKA-DAY(IDX1)          NOT = SPACE)
-             AND   (WRK-NYUINKHN(IDX1)           NOT = SPACE)
+             AND  ((WRK-NYUINKHN(IDX1)           NOT = SPACE)  OR
+                   (LNK-NYUINDAY-KBN(IDX1)       NOT = SPACE))
              AND   (WRK-GAIHAKU-KBN(IDX1)     =  ZERO  OR  4)
       *
                  MOVE    ZERO    TO   WRK-KEISAN
