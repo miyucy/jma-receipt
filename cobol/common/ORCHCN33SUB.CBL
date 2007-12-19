@@ -764,7 +764,7 @@
            MOVE    "key17"                 TO  MCP-PATHNAME
            PERFORM   910-DB-CLOSE-SEC
       *
-      *    Ã»´üÂÚºß¼ê½Ñ´ðËÜÎÁ£²¤ÎÆþ±¡ÎÁÌ¤»»ÄêÆü¤Ë¤Ä¤¤¤Æ¼èÆÀ
+      *Ã»´üÂÚºß¼ê½Ñ´ðËÜÎÁ£²¤ÎÆþ±¡ÎÁÌ¤»»ÄêÆü¤Ë¤Ä¤¤¤Æ¼èÆÀ
            INITIALIZE                         ORCSNYUINDAY-AREA
            MOVE LNK-ORCHCN33SUB-HOSPNUM   TO  LNK-NYUINDAY-HOSPNUM
            MOVE LNK-ORCHCN33SUB-PTID      TO  LNK-NYUINDAY-PTID
@@ -991,7 +991,8 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *            Æþ±¡ÎÁ²Ã»»¤ÎÂàÈò
                    PERFORM    VARYING   IDX1   FROM   1   BY   1
                               UNTIL     IDX1   >   31
-                       IF    (WRK-NYUINKHN(IDX1) NOT = SPACE)
+                       IF   ((WRK-NYUINKHN(IDX1) NOT = SPACE)    OR
+                             (LNK-NYUINDAY-KBN(IDX1)  =  "1"))
                        AND   (WRK-GAIHAKU-KBN(IDX1)  =  ZERO  OR  4)
                        AND   (NACCT-DAY(IDX1)    NOT =  ZERO)
                            IF   FLG-KSN   =  ZERO
@@ -1032,7 +1033,8 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *            Æþ±¡ÎÁ²Ã»»¤ÎÂàÈò
                    PERFORM    VARYING   IDX1   FROM   1   BY   1
                               UNTIL     IDX1   >   31
-                       IF    (WRK-NYUINKHN(IDX1) NOT = SPACE)
+                       IF   ((WRK-NYUINKHN(IDX1) NOT = SPACE)  OR
+                             (LNK-NYUINDAY-KBN(IDX1)  =  "1"))
                        AND   (WRK-GAIHAKU-KBN(IDX1)  =  ZERO  OR  4)
                        AND   (NACCT-DAY(IDX1)    NOT =  ZERO)
                            MOVE   NACCT-ZAITEN  
@@ -1528,7 +1530,8 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *                Æþ±¡ÎÁ²Ã»»¤ÎÂàÈò
                        PERFORM    VARYING   IDX1   FROM   1   BY   1
                                   UNTIL     IDX1   >   31
-                           IF    (WRK-NYUINKHN(IDX1) NOT = SPACE)
+                           IF   ((WRK-NYUINKHN(IDX1) NOT = SPACE)  OR
+                                 (LNK-NYUINDAY-KBN(IDX1)  =  "1"))
                            AND   (WRK-GAIHAKU-KBN(IDX1)  =  ZERO OR 4)
                            AND   (ACCT-DAY(1 IDX1)   NOT =  ZERO)
                               EVALUATE   ACCT-SRYCDTOTAL(6:9)
@@ -1621,7 +1624,8 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                        END-IF
                        PERFORM    VARYING   IDX1   FROM   1   BY   1
                                   UNTIL     IDX1   >   31
-                           IF    (WRK-NYUINKHN(IDX1) NOT = SPACE)
+                           IF   ((WRK-NYUINKHN(IDX1) NOT = SPACE)  OR
+                                 (LNK-NYUINDAY-KBN(IDX1)  =  "1"))
                            AND   (WRK-GAIHAKU-KBN(IDX1)  =  ZERO OR 4)
                            AND   (ACCT-DAY(1 IDX1)   NOT =  ZERO)
                               EVALUATE   ACCT-SRYCDTOTAL(6:9)
