@@ -32,6 +32,7 @@
       *                                     暫定的に修正
       *  03.05.00    NACL-太田    07/05/28  グループ診療対応
       *  04.01.00    NACL-太田    07/11/20  室料差額６桁対応
+      *  04.01.00    NACL-太田    07/12/19  短期滞在手術基本料２の判定追加
       *****************************************************************
       *
       *
@@ -455,6 +456,9 @@
       *    保険算定用年齢・割合計算サブ
            COPY    "CPORCSAGECHK.INC".
       *
+      *    入院料未算定日取得サブ
+           COPY    "CPORCSNYUINDAY.INC".
+      *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
       *
@@ -666,6 +670,19 @@
       *
       *    入院基本情報取得
            PERFORM 1501-SYS5000-GET-SEC
+      *
+      *
+           INITIALIZE  ORCSNYUINDAY-AREA
+           MOVE    HCM34S01-HOSPNUM    TO  LNK-NYUINDAY-HOSPNUM
+           MOVE    HCM34S01-PTID       TO  LNK-NYUINDAY-PTID
+           MOVE    HCM34S01-SANTEIYM   TO  LNK-NYUINDAY-SANTEIYM
+           CALL    "ORCSNYUINDAY"          USING
+                                           ORCSNYUINDAY-AREA
+                                           SPA-AREA
+           IF    ( LNK-NYUINDAY-RC     NOT =   ZERO )
+                   DISPLAY "ORCSNYUINDAY ERR:" LNK-NYUINDAY-RC
+                   INITIALIZE              ORCSNYUINDAY-AREA
+           END-IF
       *
            .
        150-INIT-EXT.
@@ -1674,6 +1691,7 @@
                 AND  ( FLG-NYUINDAY (IDXD)     =   1 )
                 AND  ( FLG-GAIHAKUDAY(IDXD)    =   ZERO OR 4 )
                     IF   ( FLG-NYUINRYODAY (IDXD)  =   1 )
+                     OR  ( LNK-NYUINDAY-KBN(IDXD)  NOT =   SPACE )
                         MOVE   1       TO  FLG-SANTEI
                     END-IF
                END-IF
@@ -2184,6 +2202,7 @@
                 AND  ( FLG-NYUINDAY (IDXD)     =   1 )
                 AND  ( FLG-GAIHAKUDAY(IDXD)    =   ZERO OR 4 )
                     IF   ( FLG-NYUINRYODAY (IDXD)  =   1 )
+                     OR  ( LNK-NYUINDAY-KBN(IDXD)  NOT =   SPACE )
                         MOVE   1       TO  FLG-SANTEI
                     END-IF
                END-IF
