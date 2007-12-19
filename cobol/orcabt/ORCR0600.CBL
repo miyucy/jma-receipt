@@ -135,7 +135,7 @@
            03  WRK-PARA-SHELLID                        PIC X(08).
            03  WRK-PARA-PTID                           PIC X(10).
            03  WRK-PARA-SRYYM-O                        PIC X(06).
-           03  WRK-PARA-HOSPNUM                        PIC 9(02).
+       01  WRK-PARA-HOSPNUM                            PIC 9(02).
       *
       *    エラーメッセージ編集領域
        01  ERR-EDIT-AREA.
@@ -709,12 +709,24 @@
                    MOVE    SPACE               TO  WRK-ROUSAIKBN
       *
                    IF      FLG-HKNCOMBI    =   ZERO
-                       IF      COMB-HKNNUM     =
+                       EVALUATE    WRK-PARA-RECEKBN
+                           WHEN    "0"
+                           WHEN    "1"
+                           WHEN    "2"
+                               IF      COMB-HKNNUM     =
                                               WRK-CONS-ROUSAI-HKNNUM OR
                                               WRK-CONS-JIBAI-HKNNUM  OR
                                               WRK-CONS-KOUGAI-HKNNUM 
-                           MOVE    "1"             TO  WRK-ROUSAIKBN
-                       END-IF
+                                   MOVE    "1"         TO  WRK-ROUSAIKBN
+                               END-IF
+                           WHEN    "6"
+                               IF      COMB-HKNNUM     =
+                                              WRK-CONS-KOUGAI-HKNNUM
+                                   CONTINUE
+                               ELSE  
+                                   MOVE    "1"         TO  WRK-ROUSAIKBN
+                               END-IF
+                       END-EVALUATE
                    END-IF
       *
                    MOVE    KEY-NEW             TO  KEY-OLD
@@ -724,6 +736,7 @@
       *                社保・国保の読み飛ばし
                        EVALUATE    WRK-PARA-RECEKBN
                            WHEN    "0"
+                           WHEN    "6"
                                PERFORM 20011-SRYACCT-FILE-HENSYU-SEC 
                            WHEN    "1"
                                IF      COMB-HKNNUM 
@@ -903,14 +916,29 @@
       *
            IF      FLG-HKNCOMBI    =   ZERO
       *        医保以外読み飛ばし
-               IF      COMB-HKNNUM     =   WRK-CONS-ROUSAI-HKNNUM OR
+               EVALUATE    WRK-PARA-RECEKBN
+                   WHEN    "0"
+                   WHEN    "1"
+                   WHEN    "2"
+                       IF      COMB-HKNNUM     =
+                                           WRK-CONS-ROUSAI-HKNNUM OR
                                            WRK-CONS-JIBAI-HKNNUM  OR
                                            WRK-CONS-KOUGAI-HKNNUM 
-                   MOVE    "1"         TO  WRK-SYOKBN
-               ELSE    
+                           MOVE    "1"         TO  WRK-SYOKBN
+                       END-IF    
+                   WHEN    "6"
+                       IF      COMB-HKNNUM     =
+                                           WRK-CONS-KOUGAI-HKNNUM
+                           CONTINUE
+                       ELSE  
+                           MOVE    "1"         TO  WRK-SYOKBN
+                       END-IF    
+               END-EVALUATE
+               IF      WRK-SYOKBN          =   SPACE
       *            社保・国保の読み飛ばし
                    EVALUATE    WRK-PARA-RECEKBN
                        WHEN    "0"
+                       WHEN    "6"
                            CONTINUE 
                        WHEN    "1"
                            IF      COMB-HKNNUM 
@@ -1555,11 +1583,24 @@
            MOVE    SPACE               TO  WRK-ROUSAIKBN
       *
            IF      FLG-HKNCOMBI        =   ZERO
-               IF      COMB-HKNNUM     =   WRK-CONS-ROUSAI-HKNNUM OR 
+               EVALUATE    WRK-PARA-RECEKBN
+                   WHEN    "0"
+                   WHEN    "1"
+                   WHEN    "2"
+                       IF      COMB-HKNNUM     =
+                                           WRK-CONS-ROUSAI-HKNNUM OR
                                            WRK-CONS-JIBAI-HKNNUM  OR
                                            WRK-CONS-KOUGAI-HKNNUM 
-                   MOVE    "1"             TO  WRK-ROUSAIKBN
-               END-IF    
+                           MOVE    "1"         TO  WRK-ROUSAIKBN
+                       END-IF    
+                   WHEN    "6"
+                       IF      COMB-HKNNUM     =   
+                                           WRK-CONS-KOUGAI-HKNNUM
+                           CONTINUE
+                       ELSE 
+                           MOVE    "1"         TO  WRK-ROUSAIKBN
+                       END-IF
+               END-EVALUATE    
            END-IF    
       *
            MOVE    KEY-NEW             TO  KEY-OLD
@@ -1570,6 +1611,7 @@
       *          社保・国保の読み飛ばし
                  EVALUATE    WRK-PARA-RECEKBN
                    WHEN    "0"
+                   WHEN    "6"
                        MOVE    1               TO  FLG-SYORI
                    WHEN    "1"
                        IF      COMB-HKNNUM NOT =   "060" AND "067" AND
@@ -1819,20 +1861,27 @@
            EXIT.
       *
       *****************************************************************
-      *    未請求フラグチェック処理
+      *    未請求フラグチェック処理（医保のみ）
       *****************************************************************
        800-MISEIKYU-CHECK-SEC          SECTION.
       *
-           INITIALIZE                      SYUKA-REC
-           MOVE    SYS-1001-HOSPNUM    TO  SYUKA-HOSPNUM
-           MOVE    WRK-SYUKA-PTID      TO  SYUKA-PTID
-           MOVE    WRK-SYUKA-SRYYM     TO  SYUKA-SRYYM
-           MOVE    "1"                 TO  SYUKA-NYUGAIKBN
-           MOVE    "YYYY"              TO  SYUKA-RECESYUBETU
-           MOVE    SYUKA-REC           TO  MCPDATA-REC
-           MOVE    "tbl_syuka"         TO  WRK-MCP-TABLE
-           MOVE    "key15"             TO  WRK-MCP-PATHNAME
-           PERFORM 900-SYUKA-READ-SEC
+           EVALUATE    WRK-PARA-RECEKBN
+               WHEN    "0"
+               WHEN    "1"
+               WHEN    "2"
+                   INITIALIZE                      SYUKA-REC
+                   MOVE    SYS-1001-HOSPNUM    TO  SYUKA-HOSPNUM
+                   MOVE    WRK-SYUKA-PTID      TO  SYUKA-PTID
+                   MOVE    WRK-SYUKA-SRYYM     TO  SYUKA-SRYYM
+                   MOVE    "1"                 TO  SYUKA-NYUGAIKBN
+                   MOVE    "YYYY"              TO  SYUKA-RECESYUBETU
+                   MOVE    SYUKA-REC           TO  MCPDATA-REC
+                   MOVE    "tbl_syuka"         TO  WRK-MCP-TABLE
+                   MOVE    "key15"             TO  WRK-MCP-PATHNAME
+                   PERFORM 900-SYUKA-READ-SEC
+               WHEN    "6"
+                   INITIALIZE                      SYUKA-REC
+           END-EVALUATE
            .
        800-MISEIKYU-CHECK-EXT.
            EXIT.

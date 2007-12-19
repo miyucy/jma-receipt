@@ -35,6 +35,8 @@
       *                                     ★にて追加
       *
       *  03.05.01    NACL-藤原    07/04/19  グループ診療対応
+      *
+      *  04.01.01    NACL-藤原    07/11/22  公害レセプト対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -188,6 +190,8 @@ grpsys         MOVE    SPA-HOSPNUM         TO  PRTKANRI-HOSPNUM
                    WHEN    41
                    WHEN    51
                    WHEN    61
+                   WHEN    71
+                   WHEN    81
                            COMPUTE PRTKANRI-PRIORITY  =   SPRT-PRIORITY 
                                                       /   10
                            MOVE    SPRT-SRYYM         TO  PRTKANRI-SRYYM
@@ -197,6 +201,8 @@ grpsys         MOVE    SPA-HOSPNUM         TO  PRTKANRI-HOSPNUM
                    WHEN    42
                    WHEN    52
                    WHEN    62
+                   WHEN    72
+                   WHEN    82
                            COMPUTE PRTKANRI-PRIORITY  =   SPRT-PRIORITY 
                                                       /   10
                            MOVE    ZERO               TO  PRTKANRI-SRYYM
@@ -279,6 +285,8 @@ grpsys     MOVE    SPA-HOSPNUM         TO  PRTDATA-HOSPNUM
                    WHEN    41
                    WHEN    51
                    WHEN    61
+                   WHEN    71
+                   WHEN    81
                            COMPUTE PRTDATA-PRIORITY   =   SPRT-PRIORITY 
                                                       /   10
                            MOVE    SPRT-SRYYM         TO  PRTDATA-SRYYM
@@ -288,6 +296,8 @@ grpsys     MOVE    SPA-HOSPNUM         TO  PRTDATA-HOSPNUM
                    WHEN    42
                    WHEN    52
                    WHEN    62
+                   WHEN    72
+                   WHEN    82
                            COMPUTE PRTDATA-PRIORITY   =   SPRT-PRIORITY 
                                                       /   10
                            MOVE    SPRT-SRYYM         TO  PRTDATA-SRYYM

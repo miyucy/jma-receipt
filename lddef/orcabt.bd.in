@@ -230,6 +230,14 @@ bind    "ORCR1030"      "OpenCOBOL";
 bind    "ORCR1040"      "OpenCOBOL";
 bind    "ORCR1050"      "OpenCOBOL";
 bind    "ORCR1060"      "OpenCOBOL";
+bind    "ORCR1200"      "OpenCOBOL";
+bind    "ORCR1210"      "OpenCOBOL";
+bind    "ORCR1220"      "OpenCOBOL";
+bind    "ORCR1230"      "OpenCOBOL";
+bind    "ORCR1240"      "OpenCOBOL";
+bind    "ORCR1250"      "OpenCOBOL";
+bind    "ORCR1260"      "OpenCOBOL";
+bind    "ORCR1270"      "OpenCOBOL";
 
 
 #include "orcadb.inc"

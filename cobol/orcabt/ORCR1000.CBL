@@ -89,7 +89,7 @@
       *    ¥«¥¦¥ó¥ÈÎÎ°è
        01  CNT-AREA.
            03  CNT-IN-CANCEL       PIC 9(06).
-           03  CNT-RECE100            PIC 9(06).
+           03  CNT-RECE100         PIC 9(06).
       *
        01  INDEX-AREA.
            03  IDX                 PIC 9(03). 
@@ -1501,7 +1501,7 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
                PERFORM 900-DBDISCONNECT-SEC
            END-IF
       *     
-           DISPLAY "RECE01  CNT-OUT :" CNT-RECE100
+           DISPLAY "RECE100  CNT-OUT :" CNT-RECE100
            DISPLAY "*** ORCR1000 END ***"
            .
        300-TERM-EXT.

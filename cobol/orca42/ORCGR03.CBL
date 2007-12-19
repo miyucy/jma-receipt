@@ -1128,11 +1128,13 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
            MOVE    "T"                 TO  SPA-DATAKBN1-VALUE
            MOVE    "F"                 TO  SPA-DATAKBN2-VALUE
            MOVE    "F"                 TO  SPA-DATAKBN3-VALUE
+           MOVE    "F"                 TO  SPA-DATAKBN4-VALUE
            MOVE    "F"                 TO  SPA-DATAKBN11-VALUE
            MOVE    "F"                 TO  SPA-DATAKBN21-VALUE
            MOVE    "F"                 TO  SPA-DATAKBN22-VALUE
            MOVE    "F"                 TO  SPA-DATAKBN23-VALUE
            MOVE    "F"                 TO  SPA-DATAKBN24-VALUE
+           MOVE    "F"                 TO  SPA-DATAKBN25-VALUE
            MOVE    "F"                 TO  SPA-DATAKBN31-VALUE
            MOVE    "F"                 TO  SPA-DATAKBN32-VALUE
       *
@@ -1151,11 +1153,13 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
            MOVE    "F"                 TO  SPA-DATAKBN1-VALUE
            MOVE    "F"                 TO  SPA-DATAKBN2-VALUE
            MOVE    "F"                 TO  SPA-DATAKBN3-VALUE
+           MOVE    "F"                 TO  SPA-DATAKBN4-VALUE
            MOVE    "F"                 TO  SPA-DATAKBN11-VALUE
            MOVE    "T"                 TO  SPA-DATAKBN21-VALUE
            MOVE    "F"                 TO  SPA-DATAKBN22-VALUE
            MOVE    "F"                 TO  SPA-DATAKBN23-VALUE
            MOVE    "F"                 TO  SPA-DATAKBN24-VALUE
+           MOVE    "F"                 TO  SPA-DATAKBN25-VALUE
            MOVE    "F"                 TO  SPA-DATAKBN31-VALUE
            MOVE    "F"                 TO  SPA-DATAKBN32-VALUE
       *
