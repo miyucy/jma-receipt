@@ -2429,7 +2429,7 @@
                 AND  ( FLG-NYUINDAY (IDXD)     =   1 )
                 AND  ( FLG-GAIHAKUDAY(IDXD)    =   ZERO OR 4 )
                     IF   ( FLG-NYUINRYODAY (IDXD)  =   1 )
-                     OR  ( LNK-NYUINDAY-KBN(IDXD)  NOT =   SPACE )
+                     OR  ( LNK-NYUINDAY-KBN(IDXD)  =   "1" )
                         MOVE   1       TO  FLG-SANTEI
                     END-IF
                END-IF
@@ -2919,7 +2919,7 @@
                 AND  ( FLG-NYUINDAY (IDXD)     =   1 )
                 AND  ( FLG-GAIHAKUDAY(IDXD)    =   ZERO OR 4 )
                     IF   ( FLG-NYUINRYODAY (IDXD)  =   1 )
-                     OR  ( LNK-NYUINDAY-KBN(IDXD)  NOT =   SPACE )
+                     OR  ( LNK-NYUINDAY-KBN(IDXD)  =   "1" )
                         MOVE   1       TO  FLG-SANTEI
                     END-IF
                END-IF
@@ -3180,6 +3180,7 @@
                 AND  ( FLG-GAIHAKUDAY(IDXD)    =   ZERO OR 4 )
                 AND  ( LNK-NYULIFE-KBN(IDXD)   NOT =   SPACE )
                     IF   ( FLG-NYUINRYODAY (IDXD)  =   1 )
+                     OR  ( LNK-NYUINDAY-KBN(IDXD)  =   "1" )
                        COMPUTE CNT-KANKYO-DAY-TOTAL
                            =   CNT-KANKYO-DAY-TOTAL
                            +   1
@@ -3309,7 +3310,8 @@
                PERFORM VARYING IDXD    FROM    1   BY  1
                        UNTIL ( IDXD        >   31 )
                    IF    ( FLG-NYUINDAY  (IDXD)        =   1  )
-                    AND  ( FLG-NYUINRYODAY (IDXD)      =   1 )
+                    AND  ((FLG-NYUINRYODAY (IDXD)      =   1 )
+                     OR  ( LNK-NYUINDAY-KBN(IDXD)      =   "1" ))
                     AND  ( FLG-NYUINGENDAY (IDX4 IDXD) =   1 )
                     AND  ( FLG-GAIHAKUDAY(IDXD)        =   ZERO )
                     AND  ( FLG-TOKTEIDAY (IDXD)        =   ZERO )
@@ -3332,7 +3334,8 @@
                PERFORM VARYING IDXD    FROM    1   BY  1
                        UNTIL ( IDXD        >   31 )
                    IF    ( FLG-NYUINDAY  (IDXD)        =   1  )
-                    AND  ( FLG-NYUINRYODAY (IDXD)      =   1 )
+                    AND  ((FLG-NYUINRYODAY (IDXD)      =   1 )
+                     OR  ( LNK-NYUINDAY-KBN(IDXD)      =   "1" ))
                     AND  ( FLG-NYUINGENDAY (IDX4 IDXD) =   1 )
                     AND  ( FLG-GAIHAKUDAY(IDXD)        =   ZERO )
                     AND  ( FLG-TOKTEIDAY (IDXD)    NOT =   ZERO )
@@ -3433,7 +3436,8 @@
                        UNTIL ( IDXD        >   31 )
                    IF    ( NACCT-DAY (IDXD)            >   ZERO )
                     AND  ( FLG-NYUINDAY  (IDXD)        =   1  )
-                    AND  ( FLG-NYUINRYODAY (IDXD)      =   1 )
+                    AND  ((FLG-NYUINRYODAY (IDXD)      =   1 )
+                      OR  ( LNK-NYUINDAY-KBN(IDXD)     =   "1" ))
                     AND  ( FLG-GAIHAKUDAY(IDXD)        =   ZERO OR 4 )
                     AND  ( FLG-TOKTEIDAY (IDXD)        =   ZERO )
                        IF    ( FLG-TAISYO              =   ZERO )
@@ -3456,7 +3460,8 @@
                        UNTIL ( IDXD        >   31 )
                    IF    ( NACCT-DAY (IDXD)            >   ZERO )
                     AND  ( FLG-NYUINDAY  (IDXD)        =   1  )
-                    AND  ( FLG-NYUINRYODAY (IDXD)      =   1 )
+                    AND  ((FLG-NYUINRYODAY (IDXD)      =   1 )
+                      OR  ( LNK-NYUINDAY-KBN(IDXD)     =   "1" ))
                     AND  ( FLG-GAIHAKUDAY(IDXD)        =   ZERO OR 4 )
                     AND  ( FLG-TOKTEIDAY (IDXD)    NOT =   ZERO )
                        IF    ( FLG-TAISYO              =   ZERO )
@@ -3513,7 +3518,8 @@
       *
                IF    ( NACCT-DAY (IDXD)        >   ZERO )
                 AND  ( FLG-NYUINDAY  (IDXD)    =   1  )
-                AND  ( FLG-NYUINRYODAY (IDXD)  =   1 )
+                AND  ((FLG-NYUINRYODAY (IDXD)      =   1 )
+                  OR  ( LNK-NYUINDAY-KBN(IDXD)     =   "1" ))
                 AND  ( FLG-GAIHAKUDAY(IDXD)    =   ZERO OR 4 )
                    MOVE    1       TO  WRYYTAN-DAY (IDXD)
                    COMPUTE WRYYTAN-ZAIKAISU
