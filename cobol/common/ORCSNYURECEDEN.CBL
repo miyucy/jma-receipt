@@ -54,6 +54,8 @@
       *                                     編集の患者所得情報取得をサブ
       *                                     ルーチンに変更
       *  04.01.01    NACL-小豆沢  07/11/20  公害保険対応（レセ電対象外）
+      *  04.01.00    NACL-小豆沢  07/12/19  短期滞在手術基本料２の入院翌日の
+      *                                     食事と入院料加算対応
       *****************************************************************
       *
       *
@@ -505,6 +507,9 @@
       *    患者所得情報編集サブ
            COPY    "CPORCSSYOTOKU.INC".
       *
+      *    入院料未算定日取得サブ
+           COPY    "CPORCSNYUINDAY.INC".
+      *
       *****************************************************************
       *    連絡　領域
       *****************************************************************
@@ -616,6 +621,14 @@
       *    主取得
       *****************************************************************
        200-MAIN-SEC            SECTION.
+      *
+      *短期滞在手術基本料２の入院料未算定日について取得
+           INITIALIZE                             ORCSNYUINDAY-AREA
+           MOVE    LNK-NYURECEDEN-HOSPNUM     TO  LNK-NYUINDAY-HOSPNUM
+           MOVE    LNK-NYURECEDEN-PTID        TO  LNK-NYUINDAY-PTID
+           MOVE    LNK-NYURECEDEN-SANTEIYM    TO  LNK-NYUINDAY-SANTEIYM
+           CALL    "ORCSNYUINDAY"         USING   ORCSNYUINDAY-AREA
+                                                  SPA-AREA
       *
       *レセ電対象保険組合せ番号の取得
            PERFORM    VARYING   IDX   FROM   1   BY   1
@@ -3181,7 +3194,8 @@
                          UNTIL     IDX1   >    31
                    IF    (WRK-HKNCOMBI-DAY(IDX1) NOT = ZERO)  AND
                          (NACCT-DAY(IDX1)    NOT =  ZERO)     AND
-                         (WRK-NYUINKHN(IDX1) NOT =  SPACE)    AND
+                        ((WRK-NYUINKHN(IDX1) NOT =  SPACE)    OR
+                         (LNK-NYUINDAY-KBN(IDX1) =  "1"  ))   AND
                          (WRK-GAIHAKU-KBN(IDX1)  =  ZERO  OR  4)
                        MOVE   WRK-HKNCOMBI-DAY(IDX1)
                                        TO  WRK-SKJ4-HKNCOMBI-DAY(IDX1)
@@ -3242,7 +3256,8 @@
                    COMPUTE   IDX2   =    IDX1   +   31
                    IF    (WRK-HKNCOMBI-DAY(IDX1) NOT = ZERO)  AND
                          (NACCT-DAY(IDX1)    NOT =  ZERO)     AND
-                         (WRK-NYUINKHN(IDX1) NOT =  SPACE)    AND
+                        ((WRK-NYUINKHN(IDX1) NOT =  SPACE)    OR
+                         (LNK-NYUINDAY-KBN(IDX1) =  "1"  ))   AND
                          (WRK-GAIHAKU-KBN(IDX1)  =  ZERO  OR  4)
                        MOVE   WRK-HKNCOMBI-DAY(IDX1)
                                        TO  WRK-SKJ4-HKNCOMBI-DAY(IDX2)
@@ -3302,7 +3317,8 @@
                    COMPUTE   IDX3   =    IDX1   +   62
                    IF    (WRK-HKNCOMBI-DAY(IDX1) NOT = ZERO)  AND
                          (NACCT-DAY(IDX1)    NOT =  ZERO)     AND
-                         (WRK-NYUINKHN(IDX1) NOT =  SPACE)    AND
+                        ((WRK-NYUINKHN(IDX1) NOT =  SPACE)    OR
+                         (LNK-NYUINDAY-KBN(IDX1) =  "1"  ))   AND
                          (WRK-GAIHAKU-KBN(IDX1)  =  ZERO  OR  4)
                        MOVE   WRK-HKNCOMBI-DAY(IDX1)
                                        TO  WRK-SKJ4-HKNCOMBI-DAY(IDX3)
@@ -3905,7 +3921,8 @@
                          UNTIL     IDX1   >    31
                    IF    (WRK-HKNCOMBI-DAY(IDX1) NOT = ZERO)  AND
                          (NACCT-DAY(IDX1)    NOT =  ZERO)     AND
-                         (WRK-NYUINKHN(IDX1) NOT =  SPACE)    AND
+                        ((WRK-NYUINKHN(IDX1) NOT =  SPACE)    OR
+                         (LNK-NYUINDAY-KBN(IDX1) =  "1"  ))   AND
                          (WRK-GAIHAKU-KBN(IDX1)  =  ZERO  OR  4)
                        MOVE   WRK-HKNCOMBI-DAY(IDX1)
                                        TO  WRK-SKJ4-HKNCOMBI-DAY(IDX1)
@@ -3966,7 +3983,8 @@
                    COMPUTE   IDX2   =    IDX1   +   31
                    IF    (WRK-HKNCOMBI-DAY(IDX1) NOT = ZERO)  AND
                          (NACCT-DAY(IDX1)    NOT =  ZERO)     AND
-                         (WRK-NYUINKHN(IDX1) NOT =  SPACE)    AND
+                        ((WRK-NYUINKHN(IDX1) NOT =  SPACE)    OR
+                         (LNK-NYUINDAY-KBN(IDX1) =  "1"  ))   AND
                          (WRK-GAIHAKU-KBN(IDX1)  =  ZERO  OR  4)
                        MOVE   WRK-HKNCOMBI-DAY(IDX1)
                                        TO  WRK-SKJ4-HKNCOMBI-DAY(IDX2)
@@ -4026,7 +4044,8 @@
                    COMPUTE   IDX3   =    IDX1   +   62
                    IF    (WRK-HKNCOMBI-DAY(IDX1) NOT = ZERO)  AND
                          (NACCT-DAY(IDX1)    NOT =  ZERO)     AND
-                         (WRK-NYUINKHN(IDX1) NOT =  SPACE)    AND
+                        ((WRK-NYUINKHN(IDX1) NOT =  SPACE)    OR
+                         (LNK-NYUINDAY-KBN(IDX1) =  "1"  ))   AND
                          (WRK-GAIHAKU-KBN(IDX1)  =  ZERO  OR  4)
                        MOVE   WRK-HKNCOMBI-DAY(IDX1)
                                        TO  WRK-SKJ4-HKNCOMBI-DAY(IDX3)
@@ -5071,9 +5090,10 @@
       *
            PERFORM   VARYING   IDX1    FROM   1   BY   1
              UNTIL   IDX1      >       31
-               IF    (WRK-HKNCOMBI-DAY(IDX1) NOT = ZERO)            AND
+               IF    (WRK-HKNCOMBI-DAY(IDX1) NOT =  ZERO)           AND
                      (LNK-NYULIFE-KAN-SRYCD(IDX1)    NOT =  SPACE)  AND
-                     (WRK-NYUINKHN(IDX1) NOT =  SPACE)              AND
+                    ((WRK-NYUINKHN(IDX1)     NOT =  SPACE)          OR
+                     (LNK-NYUINDAY-KBN(IDX1)     =  "1"  ))         AND
                      (WRK-GAIHAKU-KBN(IDX1)  =  ZERO  OR  4)
                    MOVE   WRK-HKNCOMBI-DAY(IDX1)
                                      TO  WRK-KANKYO-HKNCOMBI-DAY(IDX1)
