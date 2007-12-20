@@ -214,7 +214,9 @@
                PERFORM   UNTIL   (FLG-PTNYUINRRK   =   1)
                  IF (PTNYUINRRK-TENNYUYMD(1:6) = LNK-NYUINDAY-SANTEIYM)
                                    OR
-                    (PTNYUINRRK-TENSTUYMD(1:6) = LNK-NYUINDAY-SANTEIYM)
+                   ((PTNYUINRRK-TENSTUYMD(1:6) = LNK-NYUINDAY-SANTEIYM)
+                                   OR
+                    (PTNYUINRRK-TENSTUYMD(1:6) = "999999"))
                       MOVE     ZERO       TO     IDX-ST
                                                  IDX-ED
                       IF  (PTNYUINRRK-TENNYUYMD(1:6)
@@ -237,6 +239,9 @@
                                           >  LNK-NYUINDAY-SANTEIYM)
                           MOVE  PTNYUINRRK-TENNYUYMD(7:2)  TO  IDX-ST
                           MOVE  PTNYUINRRK-TENNYUYMD(7:2)  TO  IDX-ED
+                      END-IF
+                      IF      PTNYUINRRK-TENSTUYMD(1:6) = "999999"
+                           MOVE   99     TO    IDX-ED
                       END-IF
                       PERFORM    VARYING   IDX   FROM   1   BY   1
                                UNTIL     IDX   >   31
@@ -273,7 +278,9 @@
                PERFORM   UNTIL   (FLG-PTNYUINRRK   =   1)
                  IF (PTNYUINRRK-TENNYUYMD(1:6) = LNK-NYUINDAY-SANTEIYM)
                                    OR
-                    (PTNYUINRRK-TENSTUYMD(1:6) = LNK-NYUINDAY-SANTEIYM)
+                   ((PTNYUINRRK-TENSTUYMD(1:6) = LNK-NYUINDAY-SANTEIYM)
+                                   OR
+                    (PTNYUINRRK-TENSTUYMD(1:6) = "999999"))
                       MOVE     ZERO       TO     IDX-ST
                                                  IDX-ED
                       IF  (PTNYUINRRK-TENNYUYMD(1:6)
@@ -296,6 +303,9 @@
                                           >  LNK-NYUINDAY-SANTEIYM)
                           MOVE  PTNYUINRRK-TENNYUYMD(7:2)  TO  IDX-ST
                           MOVE  PTNYUINRRK-TENNYUYMD(7:2)  TO  IDX-ED
+                      END-IF
+                      IF      PTNYUINRRK-TENSTUYMD(1:6) = "999999"
+                           MOVE   99     TO    IDX-ED
                       END-IF
                       PERFORM    VARYING   IDX   FROM   1   BY   1
                                UNTIL     IDX   >   31
