@@ -1,10 +1,4 @@
         01  HCM60.
-            02  HCM60-PREFNUM.
-              03  HCM60-PREFNUM-S
-                      PIC X(1)    OCCURS  2 TIMES.
-            02  HCM60-HOSPCD.
-              03  HCM60-HOSPCD-S
-                      PIC X(1)    OCCURS  7 TIMES.
             02  HCM60-PRTYM PIC X(16).
             02  HCM60-HOSPSBT
                     PIC X(2)    OCCURS  2 TIMES.
