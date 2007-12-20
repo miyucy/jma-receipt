@@ -645,7 +645,9 @@
                PERFORM 200121-NYUINACCT-HENSYU-SEC
       *
       *        ¿ÇÎÅ²ñ·×½èÍý
-               IF      FLG-END             =   ZERO 
+               IF    ( FLG-END             =   ZERO ) 
+               AND   ( TBL-RECE200-HOSPNUM (1)
+                                           >   ZERO )
                    INITIALIZE                      SRYACCT-REC
                    MOVE    SPA-HOSPNUM         TO  ACCT-HOSPNUM
                    MOVE    KEY-O-PTID          TO  ACCT-PTID
@@ -2054,6 +2056,9 @@
            END-IF
       *
            IF      FLG-NYUINACCT       =   ZERO
+      *???
+               DISPLAY "NYUIN=" NACCT-PTID "#"
+      *???
                MOVE    NACCT-PTID          TO  KEY-N-PTID 
       *********MOVE    NACCT-HKNCOMBI      TO  KEY-N-HKNCOMBI
       *********MOVE    NACCT-SRYKA         TO  KEY-N-SRYKA
