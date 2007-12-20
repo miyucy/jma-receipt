@@ -1,4 +1,5 @@
         01  HCM60.
+            02  HCM60-KIGO  PIC X(20).
             02  HCM60-PRTYM PIC X(16).
             02  HCM60-HOSPSBT
                     PIC X(2)    OCCURS  2 TIMES.
