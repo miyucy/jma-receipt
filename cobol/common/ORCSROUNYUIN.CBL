@@ -56,6 +56,7 @@
       *  03.04.02    NACL-ÌçÏÆ    07/03/12  Êñ³ç¿ÇÎÅÂÐ±þ
       *  03.05.00    NACL-ÌçÏÆ    07/05/08  ¥°¥ë¡¼¥×¿ÇÎÅÂÐ±þ
       *  04.01.01    NACL-ÌçÏÆ    07/10/25  ¸øÌ³ºÒ³²ÂÐ±þ
+      *  04.01.02    NACL-ÌçÏÆ    07/12/19  Æþ±¡ÎÁÌ¤»»ÄêÆüÂÐ±þ
       *****************************************************************
       *
       *
@@ -233,6 +234,9 @@
            03  WRK-SRYCD-X                 PIC X(09).
            03  WRK-SRYCD-9    REDEFINES    WRK-SRYCD-X
                                            PIC 9(09).
+      *    Æþ±¡ÎÁÌ¤»»Äê¶èÊ¬
+           03  WRK-NYUINDAY-TBL.
+               05  WRK-NYUINDAY-KBN        PIC X(01) OCCURS  31.
       *
       *****************************************************************
       *    ¥Õ¥¡¥¤¥ë¥ì¥¤¥¢¥¦¥È
@@ -291,6 +295,9 @@
       *
       *    ÄÌ»»Æü¿ô¼èÆÀ¥µ¥Ö¡ÊÏ«ºÒÊÝ¸±ÍÑ¡Ë
            COPY    "CPORCSRSITUSAN.INC".
+      *
+      *    Æþ±¡ÎÁÌ¤»»ÄêÆü¼èÆÀ¥µ¥Ö
+           COPY    "CPORCSNYUINDAY.INC".
       *
       *****************************************************************
       *    Ï¢Íí¡¡ÎÎ°è
@@ -404,6 +411,23 @@
       *
            IF   LNK-SROUNYUIN-RC    NOT =   ZERO
                    GO  TO  100-PRM-CHK-EXT
+           END-IF
+      *
+      *    Æþ±¡ÎÁÌ¤»»ÄêÆü¼èÆÀ
+           INITIALIZE                          ORCSNYUINDAY-AREA
+           MOVE    LNK-SROUNYUIN-HOSPNUM   TO  LNK-NYUINDAY-HOSPNUM
+           MOVE    LNK-SROUNYUIN-PTID      TO  LNK-NYUINDAY-PTID
+           MOVE    LNK-SROUNYUIN-SANTEIYM  TO  LNK-NYUINDAY-SANTEIYM
+           CALL    "ORCSNYUINDAY"          USING   ORCSNYUINDAY-AREA
+                                                   SPA-AREA
+           IF      LNK-NYUINDAY-RC     =   ZERO
+              PERFORM    VARYING   IDX1    FROM   1   BY   1
+                          UNTIL    IDX1     >    31
+                IF   LNK-SROUNYUIN-NYUIN-FLG(IDX1) = "1"
+                   MOVE  LNK-NYUINDAY-KBN(IDX1)
+                                           TO  WRK-NYUINDAY-KBN(IDX1)
+                END-IF
+              END-PERFORM
            END-IF
       *
            .
@@ -644,8 +668,8 @@
       *            ³°Çñ¶èÊ¬¤ÎÂàÈò
                    PERFORM    VARYING   IDX1   FROM   1   BY   1
                               UNTIL     IDX1   >   31
-                       IF    (WRK-NYUINKHN(IDX1) NOT = SPACE) 
-                       AND   (NACCT-DAY(IDX1)    NOT =  ZERO) 
+      ****             IF    (WRK-NYUINKHN(IDX1) NOT = SPACE) 
+                       IF     NACCT-DAY(IDX1)    NOT =  ZERO
                               PERFORM     210-GAIHAKU-SET-SEC
                        END-IF
                    END-PERFORM
@@ -762,7 +786,8 @@
       *            Æþ±¡ÎÁ²Ã»»¤ÎÂàÈò
                    PERFORM    VARYING   IDX1   FROM   1   BY   1
                               UNTIL     IDX1   >   31
-                       IF    (WRK-NYUINKHN(IDX1) NOT = SPACE)
+                       IF    ((WRK-NYUINKHN(IDX1) NOT = SPACE) OR
+                              (WRK-NYUINDAY-KBN(IDX1) =  "1" ))
                        AND   (LNK-SROUNYUIN-GAIHAKU(IDX1)  
                                              =  ZERO  OR  4)
                        AND   (NACCT-DAY(IDX1)    NOT =  ZERO)
@@ -770,6 +795,8 @@
                          IF  (NACCT-SRYCDTOTAL(6:9) = CONS-KANGO-KSN1
                                                    OR CONS-KANGO-KSN2)
                          AND (LNK-SROUNYUIN-SANTEIYM  >= "200604"    )
+                          IF    (WRK-NYUINKHN(IDX1)      NOT = SPACE)
+                          AND   (LNK-SROUNYUIN-GAIHAKU(IDX1) =  ZERO)
                            EVALUATE   NACCT-SRYCDTOTAL(6:9)
                              WHEN  CONS-KANGO-KSN1
                                   MOVE   NACCT-DAY(IDX1)
@@ -788,6 +815,7 @@
       *
                               MOVE    1     TO    FLG-RYAKU
                            END-IF
+                          END-IF
                          ELSE
                            IF   FLG-KSN   =  ZERO
                                ADD     1    TO    KSN-IDX
@@ -1010,8 +1038,9 @@
       *                  Æþ±¡ÎÁ²Ã»»¤ÎÂàÈò
                          PERFORM    VARYING   IDX1   FROM   1   BY   1
                                     UNTIL     IDX1   >   31
-                             IF    (WRK-NYUINKHN(IDX1) NOT = SPACE)
-                             AND   (ACCT-DAY(1 IDX1)   NOT =  ZERO)
+                             IF    ((WRK-NYUINKHN(IDX1) NOT = SPACE) OR
+                                    (WRK-NYUINDAY-KBN(IDX1) =  "1" ))
+                             AND   ( ACCT-DAY(1 IDX1)   NOT =  ZERO )
                                COMPUTE LNK-SROUNYUIN-ZAITEN-ACCTETC
                                                              (IDX1)
                                     =  LNK-SROUNYUIN-ZAITEN-ACCTETC
@@ -1033,8 +1062,9 @@
       *                  Æþ±¡ÎÁ²Ã»»¤ÎÂàÈò
                          PERFORM    VARYING   IDX1   FROM   1   BY   1
                                     UNTIL     IDX1   >   31
-                             IF    (WRK-NYUINKHN(IDX1) NOT = SPACE)
-                             AND   (ACCT-DAY(1 IDX1)   NOT =  ZERO)
+                             IF    ((WRK-NYUINKHN(IDX1) NOT = SPACE) OR
+                                    (WRK-NYUINDAY-KBN(IDX1) =  "1" ))
+                             AND   ( ACCT-DAY(1 IDX1)   NOT =  ZERO )
                                COMPUTE LNK-SROUNYUIN-ZAITEN-ACCT(IDX1)
                                     =  LNK-SROUNYUIN-ZAITEN-ACCT(IDX1)
                                     + (ACCT-ZAITEN * ACCT-DAY(1 IDX1))
@@ -1075,7 +1105,8 @@
                                            (IDX1 WRK-MEISAISU)
                END-IF
       *        ³°Çñ
-               IF         WRK-GAIHAKU(IDX1)   NOT =        SPACE
+               IF        (WRK-NYUINKHN(IDX1)  NOT =        SPACE)
+               AND       (WRK-GAIHAKU(IDX1)   NOT =        SPACE)
                    ADD      1               TO  WRK-MEISAISU
                    MOVE   WRK-GAIHAKU(IDX1)  TO  LNK-SROUNYUIN-SRYCD
                                            (IDX1 WRK-MEISAISU)
@@ -1346,10 +1377,10 @@
                   END-IF
                END-PERFORM
       *
-               IF    LNK-SROUNYUIN-NYUIN-FLG(IDX1)      =   "1"
-               AND   LNK-SROUNYUIN-ZAITEN(IDX1)         =  ZERO
-                  MOVE     SPACE   TO   LNK-SROUNYUIN-NYUIN-FLG(IDX1)
-               END-IF
+      ***      IF    LNK-SROUNYUIN-NYUIN-FLG(IDX1)      =   "1"
+      ***      AND   LNK-SROUNYUIN-ZAITEN(IDX1)         =  ZERO
+      ***         MOVE     SPACE   TO   LNK-SROUNYUIN-NYUIN-FLG(IDX1)
+      ***      END-IF
            END-PERFORM
       *
       *

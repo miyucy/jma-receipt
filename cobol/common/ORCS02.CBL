@@ -198,6 +198,7 @@
       *  04.01.03    NACL-ÌçÏÆ    07/10/25  ¸øÌ³ºÒ³²ÂÐ±þ
       *  04.01.04    NACL-ÌçÏÆ    07/12/03  ËÌ³¤Æ»ÆÃÄê¼À´µ¡ÊÆ»Ã±ÆÈ»ö¶È¡ËÂÐ±þ
       *  04.01.05    NACL-ÌçÏÆ    07/12/07  ¸ø³²ÂÐ±þ
+      *  04.01.06    NACL-ÌçÏÆ    07/12/19  Æþ±¡ÎÁÌ¤»»ÄêÆüÂÐ±þ
       ****************************************************************
        ENVIRONMENT         DIVISION.
        CONFIGURATION       SECTION.
@@ -11877,7 +11878,8 @@
       *
       *       Æþ±¡»þÀ¸³èÎÅÍÜ¡Ê¿©»ö¡Ë
               IF       ( WK-SHOKUJI-NYUINJI(IDY)   NOT =  ZERO )
-              AND      ( LNK-SYU-DAY(IDY)              =  "1"  )
+              AND      ((LNK-SYU-DAY(IDY)              =  "1" ) OR
+                        (LNK-S02-NYUINDAY-KBN(IDY)     =  "1" ))
               AND      ( WK-GAIHAKU(IDY)        =  ZERO  OR  4 )
       *
                IF    LNK-SYU-SYUHKNNUM   =   "971" OR "973"
@@ -12035,7 +12037,8 @@
       *
       *       Æþ±¡»þÀ¸³èÎÅÍÜ¡Ê´Ä¶­¡Ë
               MOVE     ZERO     TO      WK-SHOKUJI-JIHI
-              IF       ( LNK-SYU-DAY(IDY)              =  "1"  )
+              IF       ((LNK-SYU-DAY(IDY)              =  "1" ) OR
+                        (LNK-S02-NYUINDAY-KBN(IDY)     =  "1" ))
               AND      ( WK-GAIHAKU(IDY)        =  ZERO  OR  4 )
       *
                 IF    LNK-SYU-SYUHKNNUM   =   "971" OR "973"
@@ -12134,7 +12137,8 @@
              ELSE
       *
               IF       ( WK-SHOKUJI-NYUINJI(IDY)   NOT =  ZERO )
-              AND      ( LNK-SYU-DAY(IDY)              =  "1"  )
+              AND      ((LNK-SYU-DAY(IDY)              =  "1" ) OR
+                        (LNK-S02-NYUINDAY-KBN(IDY)     =  "1" ))
               AND      ( WK-GAIHAKU(IDY)        =  ZERO  OR  4 )
       *
                EVALUATE   WK-SHOKUJIRYOYO(IDY)

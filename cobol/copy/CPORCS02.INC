@@ -24,6 +24,7 @@
       * Maj/Min/Rev  修正者       日付      内容
       * 01.00.01     NACL-門脇    04/10/01  自賠責特定器材等消費税対応
       * 01.00.02     NACL-門脇    06/03/20  自立支援再計算区分追加
+      * 04.01.01     NACL-門脇    07/12/19  入院料未算定日対応
       ************************************************************
       *01  LNK-ORCS02-REC.
       *医療機関ＩＤ
@@ -72,6 +73,10 @@
                 07  LNK-S02-SONOTA-SRYCD     PIC  X(09).
                 07  LNK-S02-SONOTA-ZAIKAISU  PIC  9(07).
                 07  LNK-S02-SONOTA-TANKA     PIC  9(07).
+      *
+      *入院料未算定区分
+           03  LNK-S02-NYUINDAY-TBL.
+              05  LNK-S02-NYUINDAY-KBN     PIC  X(01)   OCCURS  31.
       *
       *復帰コード
            03  LNK-S02-RC                  PIC  S9(9)   BINARY.
