@@ -276,6 +276,7 @@
       *  04.01.08    NACL-門脇    07/12/07  ＜７０歳未満現物給付＞
       *                                     月途中に保険者番号の変更なく、記
       *                                     号番号のみ変更になった場合の対応
+      *  04.01.09    NACL-門脇    07/12/19  入院料未算定日対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -4777,15 +4778,19 @@
                                   END-IF                                
                                  END-IF
                               ELSE
-                                 IF  (WRK-DAY1(IDY)   NOT  =  ZERO)
-                                 AND (WRK-DAY2(IDY) =  ZERO  OR  4)
+                                IF  ((WRK-DAY1(IDY)   NOT  =  ZERO  ) OR
+                                     (RECE62-NYUINDAY-KBN(IDY) = "1"))
+                                AND ( WRK-DAY2(IDY) =  ZERO  OR  4   )
                                     MOVE   NACCT-DAY(IDY)  
                                                TO   WRK-DAY21(IDY) 
                                     MOVE   WRK-DAY1-NYUTENTTLKBN(IDY)
                                                TO   WRK-NYUTENTTLKBN
+                                    IF RECE62-NYUINDAY-KBN(IDY) = "1"
+                                      MOVE 920 TO   WRK-NYUTENTTLKBN
+                                    END-IF
                                     ADD    1     TO   CNT-DAY21
                                     MOVE   1     TO   FLG-DAY21
-                                 END-IF
+                                END-IF
                               END-IF
                             END-IF
       *                     *外泊
@@ -4804,12 +4809,13 @@
       *************************MOVE   1     TO   FLG-DAY22
                             END-IF
       *                     *食事
-                            IF  (WRK-DAY1(IDY)   NOT  =  ZERO)
-                            AND (NACCT-ZAITEN         =  ZERO)
-                            AND (NACCT-ZAISKBKBN      =  "4" )
-                            AND (NACCT-DAY(IDY)  NOT  =  ZERO)
-                            AND (WRK-SHOKUJIRYOYO(IDY)
-                                                 NOT  =  ZERO)
+                            IF  ((WRK-DAY1(IDY)   NOT  =  ZERO  ) OR
+                                 (RECE62-NYUINDAY-KBN(IDY) = "1"))
+                            AND ( NACCT-ZAITEN         =  ZERO   )
+                            AND ( NACCT-ZAISKBKBN      =  "4"    )
+                            AND ( NACCT-DAY(IDY)  NOT  =  ZERO   )
+                            AND ( WRK-SHOKUJIRYOYO(IDY)
+                                                  NOT  =  ZERO   )
                                IF  WRK-DAY2(IDY) =  ZERO  OR  4
                                 IF   RECE62-SRYYM  >= "200604"
                                  IF  NACCT-SRYCDTOTAL = 099999918
@@ -4831,16 +4837,17 @@
                                END-IF
                             END-IF
                             IF     RECE62-SRYYM        >= "200610"
-                              IF  (WRK-DAY1(IDY)   NOT  =  ZERO)
-                              AND (NACCT-ZAITEN         =  ZERO)
-                              AND (NACCT-ZAISKBKBN      =  "4" )
-      ***                     AND (NACCT-DAY(IDY)  NOT  =  ZERO)
-                              AND (WRK-SHOKUJIRYOYO(IDY)
-                                                   NOT  =  ZERO)
-                              AND (NACCT-SRYCDTOTAL = 099999918
-                                                  OR  099999919
-                                                  OR  099999920)
-                              AND (WRK-DAY2(IDY) =  ZERO  OR  4)
+                              IF  ((WRK-DAY1(IDY)   NOT  =  ZERO  ) OR
+                                   (RECE62-NYUINDAY-KBN(IDY) = "1"))
+                              AND ( NACCT-ZAITEN         =  ZERO   )
+                              AND ( NACCT-ZAISKBKBN      =  "4"    )
+      ***                     AND ( NACCT-DAY(IDY)  NOT  =  ZERO   )
+                              AND ( WRK-SHOKUJIRYOYO(IDY)
+                                                    NOT  =  ZERO   )
+                              AND ( NACCT-SRYCDTOTAL = 099999918
+                                                   OR  099999919
+                                                   OR  099999920   )
+                              AND ( WRK-DAY2(IDY) =  ZERO  OR  4   )
                                 PERFORM   210218-NYUINACCT-SYU2-KAN-SEC
                               END-IF
                             END-IF
