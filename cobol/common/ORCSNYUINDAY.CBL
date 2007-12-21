@@ -150,7 +150,8 @@
        100-PRM-CHK-SEC                     SECTION.
       *
       *    算定年月チェック
-           IF      LNK-NYUINDAY-SANTEIYM  =   SPACE
+           IF     (LNK-NYUINDAY-SANTEIYM  =   SPACE)      OR
+                  (LNK-NYUINDAY-SANTEIYM  <=   "200603")
                MOVE    1                TO  LNK-NYUINDAY-RC
                GO  TO  100-PRM-CHK-EXT
            END-IF
