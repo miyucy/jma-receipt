@@ -79,6 +79,9 @@
       *                                     に変更
       *  04.00.02    NACL-小豆沢  **/**/**  精神通院と特定疾患（水俣）の
       *                                     保険組合せ作成（暫定対応）
+      *  04.00.03    NACL-小豆沢  07/12/21  一般療養、特別療養（旧日雇保険）
+      *                                     の場合は結核入院の単独を作成可能
+      *                                     に変更
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -3106,7 +3109,8 @@ grpsys            CALL    "ORCDBMAIN"         USING   MCPAREA
                        OR      ( IDX   >       CNT-KOH )
              IF ((WRK-KOH-SBT   (IDX)  =   "6")   AND
                  (WRK-KOH-SAKJOKBN   (IDX)  =   SPACE)) OR
-                ((WRK-KOH-HKNNUM   (IDX)  =   "019" OR "012")   AND
+                ((WRK-KOH-HKNNUM   (IDX)  =   "019" OR "012" OR
+                                              "011")   AND
                  (WRK-KOH-SAKJOKBN (IDX)  =   SPACE)   AND
                  (WRK-HIYATOI-FLG         =   1 )     )
       *
@@ -3127,7 +3131,8 @@ grpsys            CALL    "ORCDBMAIN"         USING   MCPAREA
                                         TO  WRK-LCOMB-TEKSTYMD   (IDX2)
                MOVE    WRK-KOH-TEKEDYMD(IDX)
                                         TO  WRK-LCOMB-TEKEDYMD   (IDX2)
-               IF      WRK-KOH-HKNNUM   (IDX)  =   "019" OR "012"
+               IF      WRK-KOH-HKNNUM   (IDX)  =   "019" OR "012" OR
+                                                   "011"
                    MOVE   WRK-HIYATOI-TEKSTYMD
                                         TO  WRK-LCOMB-TEKSTYMD   (IDX2)
                    MOVE   WRK-HIYATOI-TEKEDYMD
