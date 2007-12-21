@@ -962,38 +962,6 @@
 
 	<widget>
 	  <class>GtkLabel</class>
-	  <name>label360</name>
-	  <x>32</x>
-	  <y>168</y>
-	  <width>208</width>
-	  <height>22</height>
-	  <label>  4  公害レセプト（入院外）</label>
-	  <justify>GTK_JUSTIFY_LEFT</justify>
-	  <wrap>False</wrap>
-	  <xalign>0</xalign>
-	  <yalign>0.5</yalign>
-	  <xpad>0</xpad>
-	  <ypad>0</ypad>
-	</widget>
-
-	<widget>
-	  <class>GtkLabel</class>
-	  <name>label361</name>
-	  <x>32</x>
-	  <y>328</y>
-	  <width>208</width>
-	  <height>22</height>
-	  <label>  8  公害レセプト（入院）</label>
-	  <justify>GTK_JUSTIFY_LEFT</justify>
-	  <wrap>False</wrap>
-	  <xalign>0</xalign>
-	  <yalign>0.5</yalign>
-	  <xpad>0</xpad>
-	  <ypad>0</ypad>
-	</widget>
-
-	<widget>
-	  <class>GtkLabel</class>
 	  <name>label354</name>
 	  <x>32</x>
 	  <y>408</y>
@@ -1774,6 +1742,38 @@
 	    <input_mode>XIM</input_mode>
 	    <xim_enabled>True</xim_enabled>
 	  </widget>
+	</widget>
+
+	<widget>
+	  <class>GtkLabel</class>
+	  <name>label360</name>
+	  <x>32</x>
+	  <y>168</y>
+	  <width>208</width>
+	  <height>22</height>
+	  <label>  4  公害レセプト　　（入院外）</label>
+	  <justify>GTK_JUSTIFY_LEFT</justify>
+	  <wrap>False</wrap>
+	  <xalign>0</xalign>
+	  <yalign>0.5</yalign>
+	  <xpad>0</xpad>
+	  <ypad>0</ypad>
+	</widget>
+
+	<widget>
+	  <class>GtkLabel</class>
+	  <name>label361</name>
+	  <x>32</x>
+	  <y>328</y>
+	  <width>208</width>
+	  <height>22</height>
+	  <label>  8  公害レセプト　　（入院）</label>
+	  <justify>GTK_JUSTIFY_LEFT</justify>
+	  <wrap>False</wrap>
+	  <xalign>0</xalign>
+	  <yalign>0.5</yalign>
+	  <xpad>0</xpad>
+	  <ypad>0</ypad>
 	</widget>
       </widget>
 
