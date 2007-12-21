@@ -1471,18 +1471,27 @@ grpsys                                     SPA-AREA
       *****************************************************************
        900-SEIKYU-FETCH-SEC        SECTION.
       *
-           MOVE    "DBFETCH"           TO  MCP-FUNC
-grpsys     MOVE    "tbl_seikyu"    TO  MCP-TABLE
-grpsys     MOVE    "all2"          TO  MCP-PATHNAME
-grpsys     CALL    "ORCDBMAIN"     USING   MCPAREA
-                                           MCPDATA-REC
-grpsys                                     SPA-AREA
-           IF          MCP-RC          =   ZERO
-               MOVE    ZERO                TO  FLG-SEIKYU
-               MOVE    MCPDATA-REC         TO  RECE10-REC
-           ELSE
-               MOVE    1                   TO  FLG-SEIKYU
-           END-IF
+           MOVE    ZERO            TO  FLG-OK
+           PERFORM UNTIL   FLG-OK  =   1
+               MOVE    "DBFETCH"       TO  MCP-FUNC
+               MOVE    "tbl_seikyu"    TO  MCP-TABLE
+               MOVE    "all2"         TO  MCP-PATHNAME
+               CALL    "ORCDBMAIN"     USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
+               IF          MCP-RC          =   ZERO
+                   MOVE    ZERO                TO  FLG-SEIKYU
+                   MOVE    MCPDATA-REC         TO  RECE10-REC
+                   IF      RECE10-HKNNUM-S =   "975"
+                       MOVE    ZERO            TO  FLG-OK
+                   ELSE
+                       MOVE    1               TO  FLG-OK
+                   END-IF
+               ELSE
+                   MOVE    1               TO  FLG-SEIKYU
+                   MOVE    1               TO  FLG-OK
+               END-IF
+           END-PERFORM
            .
        900-SEIKYU-FETCH-EXT.
            EXIT.

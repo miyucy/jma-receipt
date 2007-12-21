@@ -1416,23 +1416,27 @@ grpsys*DD                              MCPDATA-REC
       *****************************************************************
        900-SEIKYU-FETCH-SEC        SECTION.
       *
-           MOVE    "DBFETCH"           TO  MCP-FUNC
-grpsys     MOVE    "tbl_seikyu"        TO  MCP-TABLE
-grpsys     MOVE    "key19"             TO  MCP-PATHNAME
-grpsys     CALL    "ORCDBMAIN"     USING   MCPAREA
-grpsys                                     MCPDATA-REC
-grpsys                                     SPA-AREA
-grpsys*DD  MOVE    "SEIKYU-KEY19"      TO  ORC-DBPATH
-grpsys*DD  CALL    "ORCMCPSUB"         USING
-grpsys*DD                              MCPAREA
-grpsys*DD                              ORCMCPAREA
-grpsys*DD                              MCPDATA-REC
-           IF          MCP-RC          =   ZERO
-               MOVE    ZERO                TO  FLG-SEIKYU
-               MOVE    MCPDATA-REC         TO  RECE10-REC
-           ELSE
-               MOVE    1                   TO  FLG-SEIKYU
-           END-IF
+           MOVE    ZERO            TO  FLG-OK
+           PERFORM UNTIL   FLG-OK  =   1
+               MOVE    "DBFETCH"       TO  MCP-FUNC
+               MOVE    "tbl_seikyu"    TO  MCP-TABLE
+               MOVE    "key19"         TO  MCP-PATHNAME
+               CALL    "ORCDBMAIN"     USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
+               IF          MCP-RC          =   ZERO
+                   MOVE    ZERO                TO  FLG-SEIKYU
+                   MOVE    MCPDATA-REC         TO  RECE10-REC
+                   IF      RECE10-HKNNUM-S =   "975"
+                       MOVE    ZERO            TO  FLG-OK
+                   ELSE
+                       MOVE    1               TO  FLG-OK
+                   END-IF
+               ELSE
+                   MOVE    1               TO  FLG-SEIKYU
+                   MOVE    1               TO  FLG-OK
+               END-IF
+           END-PERFORM
            .
        900-SEIKYU-FETCH-EXT.
            EXIT.
