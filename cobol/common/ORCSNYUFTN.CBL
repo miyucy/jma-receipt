@@ -181,6 +181,7 @@
                 05 WRK-HANBETU-KAISHI      PIC X(02).
               03 WRK-HANBETU-HKNCOMBINUM   PIC 9(04).
               03 WRK-HANBETU-DAY           PIC X(01)   OCCURS   31.
+              03 WRK-HANBETU-DAY-NACCT     PIC X(01)   OCCURS   31.
               03 WRK-HANBETU-KAISHI2       PIC X(02).
               03 WRK-HANBETU-SYURYO        PIC X(02).
               03 WRK-HANBETU-SYUHKNNUM     PIC X(03).
@@ -198,7 +199,7 @@
               03 WRK-HANBETU2-HKNCOMBINUM  PIC 9(04).
               03 WRK-HANBETU2-DAY          PIC X(01)   OCCURS   31.
       *
-       01  WRK-HANBETU-DATA                PIC X(78).                   
+       01  WRK-HANBETU-DATA                PIC X(109).
       *
       *    入院点数算定用ワークエリア
        01  WRK-NYUIN-TENSU-AREA.
@@ -949,6 +950,18 @@
       *
               END-PERFORM
       *
+           END-PERFORM
+      *
+           PERFORM    VARYING   IDX    FROM   1   BY   1
+                       UNTIL   (IDX                    >    10 )
+                         OR    (WRK-HANBETU-SKYYM(IDX) =  SPACE)
+      *
+             PERFORM  VARYING   IDY    FROM   1   BY   1
+                       UNTIL    IDY     >    31
+                 MOVE   WRK-HANBETU-DAY(IDX IDY)
+                                  TO  WRK-HANBETU-DAY-NACCT(IDX IDY)
+             END-PERFORM
+      *
            END-PERFORM.
       *
        NYUINKAIKEI-SYORI-EXT.
@@ -1533,7 +1546,7 @@
               IF      LNK-NYUINDAY-RC     =   ZERO
                  PERFORM    VARYING   IDY    FROM   1   BY   1
                              UNTIL    IDY     >    31
-                   IF   LNK-SYU-DAY(IDX IDY)  NOT =  SPACE
+                   IF   WRK-HANBETU-DAY-NACCT(IDX IDY) NOT =  SPACE
                       MOVE  LNK-NYUINDAY-KBN(IDY)
                                       TO  WRK-NYUINDAY-KBN(IDX IDY)
                    END-IF
