@@ -31,7 +31,7 @@
       *  02.06.01    NACL-Æ£¸¶    05/08/22  ¶èÊ¬¥³¡¼¥É¤Î¹¹¿·Á°¥Á¥§¥Ã¥¯ÄÉ²Ã
       *  03.04.01    NACL-¿¹ÏÆ    07/01/16  ½»½ê£¶¢ª£±£³
       *  03.05.00    NACL-Â¿¡¹Ç¼  07/05/02  ¥°¥ë¡¼¥×¿ÇÎÅÂÐ±þ
-      *  04.01.00    NACL-¿¹ÏÆ    07/12/06  ¸ø³²¥ì¥»¥×¥ÈÄÉ²Ã
+      *  04.01.00    NACL-¿¹ÏÆ    07/12/21  ¸ø³²¥ì¥»¥×¥ÈÄÉ²Ã
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -85,7 +85,7 @@
       *----(03.04.01)--UPD-START---
       *----(04.01.00)--UPD-START---
                    07  SPA-GMN-KOUMOKU2.
-                       09  SPA-GMN-PRTKBN-G   OCCURS  15.
+                       09  SPA-GMN-PRTKBN-G   OCCURS  16.
                            11  SPA-GMN-PRTKBN
                                               PIC X(02).
                            11  SPA-GMN-F1     PIC X(01).
@@ -432,7 +432,7 @@
       *
       *----(03.04.01)--UPD-START---
       *----(04.01.00)--UPD-START---
-           MOVE    15                  TO  SPA-GMN-PRTKBN-MAX
+           MOVE    16                  TO  SPA-GMN-PRTKBN-MAX
       *----(04.01.00)--UPD-END-----
       *----(03.04.01)--UPD-END-----
       *
@@ -1908,6 +1908,8 @@ grpsys                 CALL    "ORCDBMAIN"         USING   MCPAREA
                     MOVE  "PRTKBN14"          TO   MCP-WIDGET
                 WHEN    115
                     MOVE  "PRTKBN15"          TO   MCP-WIDGET
+                WHEN    116
+                    MOVE  "PRTKBN16"          TO   MCP-WIDGET
       *----(04.01.00)--ADD-END-----
                 WHEN    200
                     MOVE  "B12"              TO   MCP-WIDGET
@@ -1969,7 +1971,9 @@ grpsys                 CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN    "PRTKBN7"
                    MOVE    108         TO  SPA-GMN-CUR
                WHEN    "PRTKBN8"
-                   MOVE    109         TO  SPA-GMN-CUR
+      *----(04.01.00)--UPD-START---
+                   MOVE    116         TO  SPA-GMN-CUR
+      *----(04.01.00)--UPD-END-----
                WHEN    "PRTKBN9"
                    MOVE    110         TO  SPA-GMN-CUR
                WHEN    "PRTKBN10"
@@ -1986,6 +1990,8 @@ grpsys                 CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE    104         TO  SPA-GMN-CUR
                WHEN    "PRTKBN15"
                    MOVE    107         TO  SPA-GMN-CUR
+               WHEN    "PRTKBN16"
+                   MOVE    109         TO  SPA-GMN-CUR
       *----(04.01.00)--ADD-END-----
            END-EVALUATE
       *
