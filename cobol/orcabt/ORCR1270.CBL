@@ -861,12 +861,12 @@
               ELSE    
                   INITIALIZE                   SYS-1900-REC
               END-IF
-              IF      SYS-1900-PRTKBN (14) =   SPACE
+              IF      SYS-1900-PRTKBN (15) =   SPACE
                   CONTINUE
               ELSE
                   INITIALIZE                       SYSKANRI-REC
                   MOVE    "1901"               TO  SYS-KANRICD
-                  MOVE    SYS-1900-PRTKBN (14) TO  SYS-KBNCD
+                  MOVE    SYS-1900-PRTKBN (15) TO  SYS-KBNCD
                   MOVE    WRK-PARA-SRYYM       TO  SYS-STYUKYMD (1:6)
                   MOVE    "01"                 TO  SYS-STYUKYMD (7:2)
                   MOVE    SYS-STYUKYMD         TO  SYS-EDYUKYMD
@@ -879,7 +879,7 @@
                   END-IF
                   INITIALIZE                       SYSKANRI-REC
                   MOVE    "1902"               TO  SYS-KANRICD
-                  MOVE    SYS-1900-PRTKBN (14) TO  SYS-KBNCD
+                  MOVE    SYS-1900-PRTKBN (15) TO  SYS-KBNCD
                   MOVE    WRK-PARA-SRYYM       TO  SYS-STYUKYMD (1:6)
                   MOVE    "01"                 TO  SYS-STYUKYMD (7:2)
                   MOVE    SYS-STYUKYMD         TO  SYS-EDYUKYMD
@@ -912,7 +912,7 @@
                             OR    (SYSKAN-IDX   >=  100)
       *
                     MOVE    MCPDATA-REC   TO  SYS-1900-REC
-                    IF      SYS-1900-PRTKBN (14) =   SPACE
+                    IF      SYS-1900-PRTKBN (15) =   SPACE
                         CONTINUE
                     ELSE
                         ADD     1             TO  SYSKAN-IDX
@@ -2794,9 +2794,9 @@ grpsys     MOVE    RECE200-HOSPNUM     TO  RECE10-HOSPNUM
                MOVE    ZERO                TO  RECE10-UPDYMD
            END-IF
       *
-           MOVE    RECE200-JNISSU      TO  RECE10-JNISSU (1)
-      ***  MOVE    RECE200-TOTALTENINF (IDX)    TO 
-      ***                              RECE10-TOTALTENINF (IDX)
+           MOVE    RECE200-JNISSU      TO  RECE10-JNISSU   (1)
+           MOVE    RECE200-TOTALTEN (4)
+                                       TO  RECE10-FTNMONEY (1)
       ***  MOVE    RECE200-FTNMONEYINF(IDX) TO
       ***                              RECE10-FTNMONEYINF (IDX)
       ***  MOVE    RECE200-SHOKUJIINF (IDX) TO
@@ -3339,7 +3339,7 @@ grpsys             MOVE    RECE200-HOSPNUM     TO  KEY-N-HOSPNUM
                IF      FLG-SET             =   1
                   INITIALIZE                       SYSKANRI-REC
                   MOVE    "1901"               TO  SYS-KANRICD
-                  MOVE    SYS-1900-PRTKBN (14) TO  SYS-KBNCD
+                  MOVE    SYS-1900-PRTKBN (15) TO  SYS-KBNCD
                   MOVE    WRK-SYS-SRYYMD (1:6) TO  SYS-STYUKYMD (1:6)
                   MOVE    "01"                 TO  SYS-STYUKYMD (7:2)
                   MOVE    SYS-STYUKYMD         TO  SYS-EDYUKYMD
@@ -3352,7 +3352,7 @@ grpsys             MOVE    RECE200-HOSPNUM     TO  KEY-N-HOSPNUM
                   END-IF
                   INITIALIZE                       SYSKANRI-REC
                   MOVE    "1902"               TO  SYS-KANRICD
-                  MOVE    SYS-1900-PRTKBN (14) TO  SYS-KBNCD
+                  MOVE    SYS-1900-PRTKBN (15) TO  SYS-KBNCD
                   MOVE    WRK-SYS-SRYYMD (1:6) TO  SYS-STYUKYMD (1:6)
                   MOVE    "01"                 TO  SYS-STYUKYMD (7:2)
                   MOVE    SYS-STYUKYMD         TO  SYS-EDYUKYMD

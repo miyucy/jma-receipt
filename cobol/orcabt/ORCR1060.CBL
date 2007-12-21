@@ -2463,9 +2463,9 @@ grpsys     MOVE    RECE100-HOSPNUM     TO  RECE10-HOSPNUM
                MOVE    ZERO                TO  RECE10-UPDYMD
            END-IF
       *
-           MOVE    RECE100-JNISSU      TO  RECE10-JNISSU (1)
-      ***  MOVE    RECE100-TOTALTENINF (IDX)    TO 
-      ***                              RECE10-TOTALTENINF (IDX)
+           MOVE    RECE100-JNISSU      TO  RECE10-JNISSU   (1)
+           MOVE    RECE100-TOTALTEN (3)
+                                       TO  RECE10-FTNMONEY (1)
       ***  MOVE    RECE100-FTNMONEYINF(IDX) TO
       ***                              RECE10-FTNMONEYINF (IDX)
            PERFORM VARYING IDX FROM    1   BY  1

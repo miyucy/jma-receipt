@@ -32,6 +32,8 @@
               03  T01-DATAKBN3-VALUE   PIC X.
               03  T01-DATAKBN6-STATE   PIC S9(9)   BINARY.
               03  T01-DATAKBN6-VALUE   PIC X.
+              03  T01-DATAKBN7-STATE   PIC S9(9)   BINARY.
+              03  T01-DATAKBN7-VALUE   PIC X.
               03  T01-HKNJAMEI.
                 04  T01-VALUE   PIC X(40).
               03  T01-CHK11-STATE   PIC S9(9)   BINARY.

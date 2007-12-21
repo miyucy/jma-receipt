@@ -91,6 +91,8 @@
       *  03.05.03    NACL-藤原    07/08/01  クライアント保存対応
       *  03.05.04    NACL-藤原    07/09/11  新潟県中越沖地震対応
       *                                     ２００７年９月〜１２月対象 
+      *
+      *  04.01.01    NACL-藤原    07/11/22  公害レセプト対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -716,6 +718,7 @@ grpsys                                         SPA-AREA
                                            SPA-DATAKBN5-STATE
                                            SPA-DATAKBN3-STATE       
                                            SPA-DATAKBN6-STATE       
+                                           SPA-DATAKBN7-STATE       
                                            SPA-B21-STATE
       *
       *    レセプト編集区分情報（主科情報）
@@ -765,6 +768,7 @@ grpsys                                         SPA-AREA
            MOVE    "T"                TO  SPA-DATAKBN5-VALUE  
            MOVE    "T"                TO  SPA-DATAKBN3-VALUE  
            MOVE    "T"                TO  SPA-DATAKBN6-VALUE  
+           MOVE    "F"                TO  SPA-DATAKBN7-VALUE  
       *
            IF      SPA-NAI-SRYYM      =   ZERO
                MOVE    WIDGET-INSENSITIVE  TO  SPA-DATAKBN3-STATE
@@ -865,7 +869,16 @@ grpsys                                         SPA-AREA
                                                             (IDX)
                MOVE    SPA-NAI-1031-PRTNM
                                        TO  SPA-3004-PRTNM   (IDX)
-           END-IF    
+           END-IF
+      *    
+           ADD     1               TO  IDX
+           MOVE    903             TO  SPA-3004-KBNCD   (IDX)
+           MOVE    "recept16.sh"   TO  SPA-3004-SHELLID (IDX) 
+           MOVE    "公害・総括表（標準）"
+                                   TO  SPA-3004-SHORIMSG
+                                                        (IDX)
+           MOVE    SPA-NAI-1031-PRTNM
+                                   TO  SPA-3004-PRTNM   (IDX)
       *
       *    県単独事業
            MOVE    ZERO                TO  FLG-3004-PARAKBN
@@ -1805,6 +1818,7 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
                WHEN    "CLICKED"       ALSO    "DATAKBN4"
                WHEN    "CLICKED"       ALSO    "DATAKBN5"
                WHEN    "CLICKED"       ALSO    "DATAKBN6"
+               WHEN    "CLICKED"       ALSO    "DATAKBN7"
                    PERFORM 400-DATAKBN-SEC
       *    当月分・月遅れ分、返戻分
                WHEN    "CLICKED"       ALSO    "CHK11"
@@ -1937,6 +1951,8 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
                    END-IF
                WHEN    "DATAKBN6"
                    MOVE    T01-DATAKBN6-VALUE  TO  SPA-DATAKBN6-VALUE
+               WHEN    "DATAKBN7"
+                   MOVE    T01-DATAKBN7-VALUE  TO  SPA-DATAKBN7-VALUE
            END-EVALUATE
       *
            .
@@ -2129,7 +2145,7 @@ grpsys         MOVE    SPA-HOSPNUM     TO  HKNJA-HOSPNUM
        4101-KAKUTEI-CHK-SEC        SECTION.
       *
       *    対象帳票が未選択
-           IF      SPA-DATAKBN     =   "FFFF" 
+           IF      SPA-DATAKBN     =   "FFFFF" 
                MOVE    "0006"          TO  SPA-ERRCD
            END-IF
       *
@@ -2262,14 +2278,16 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
                IF      SPA-ERRCD       =   SPACE
       *            ガイドメッセージセット
                    EVALUATE    TRUE
-                       WHEN    SPA-DATAKBN     =   "TFFF" 
+                       WHEN    SPA-DATAKBN     =   "TFFFF" 
                            MOVE    "1003"              TO  SPA-TIDCD
-                       WHEN    SPA-DATAKBN     =   "FTFF"
+                       WHEN    SPA-DATAKBN     =   "FTFFF"
                            MOVE    "1004"              TO  SPA-TIDCD
-                       WHEN    SPA-DATAKBN     =   "FFTF"
+                       WHEN    SPA-DATAKBN     =   "FFTFF"
                            MOVE    "1005"              TO  SPA-TIDCD
-                       WHEN    SPA-DATAKBN     =   "FFFT"
+                       WHEN    SPA-DATAKBN     =   "FFFTF"
                            MOVE    "1006"              TO  SPA-TIDCD
+                       WHEN    SPA-DATAKBN     =   "FFFFT"
+                           MOVE    "1007"              TO  SPA-TIDCD
                        WHEN    SPA-DATAKBN3-VALUE
                                                =   "T" 
                            MOVE    "1001"              TO  SPA-TIDCD
@@ -2504,6 +2522,16 @@ grpsys     MOVE    SPA-HOSPNUM         TO  RECEERR-HOSPNUM
                    IF      SPA-NAI-PRTKBN3   NOT =   SPACE
                        PERFORM 45014-RECEDEN-SOKATU-SYORI-SEC
                    END-IF    
+           END-EVALUATE                                               
+      *
+      *???
+           DISPLAY "DATAKBN7=" T01-DATAKBN7-VALUE "#"
+      *???
+           
+      *    総括表印刷（公害）
+           EVALUATE    TRUE
+               WHEN    T01-DATAKBN7-VALUE    =   "T" 
+                   PERFORM 45015-KOUGAI-SOKATU-SYORI-SEC
            END-EVALUATE                                               
       *     
       *    県単独事業（総括）
@@ -3176,6 +3204,90 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
       *
            .
        45014-RECEDEN-SOKATU-SYORI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    レセ電総括（公害）処理        
+      *****************************************************************
+       45015-KOUGAI-SOKATU-SYORI-SEC       SECTION.
+      *
+           PERFORM 45011-JOBKANRI-HENSYU-SEC
+      *             
+           MOVE    SPACE           TO  SHELLTBL
+           MOVE    "scripts/monthly/recept16.sh"
+                                       TO  WRK-SHELL-NAME
+      *    ファイルデイレクトリ位置指定
+           INITIALIZE                  ORCSMKPASSAREA
+           MOVE    WRK-SHELL-NAME      TO  MKPASS-IN-01
+           CALL    "ORCSMKPASS"        USING   ORCSMKPASSAREA
+           MOVE    MKPASS-OT-01        TO  SHELLTBL-NAME
+      *                                 
+           MOVE    SPACE           TO  LNK-PRTKANRI-AREA
+           INITIALIZE                  LNK-PRTKANRI-AREA
+           ADD     1               TO  WRK-PRTKANRI-RENNUM
+           MOVE    WRK-PRTKANRI-RENNUM
+                                   TO  LNK-PRTKANRI-RENNUM 
+           MOVE    WRK-CONS-PRTKANRI-TBL-KEY
+                                   TO  LNK-PRTKANRI-TBL-KEY 
+           MOVE    WRK-CONS-PRTKANRI-TBL-GROUP
+                                   TO  LNK-PRTKANRI-TBL-GROUP
+           MOVE    SPA-NAI-SKYYM   TO  LNK-PRTKANRI-SRYYM 
+           MOVE    SPA-NAI-SKYYMD  TO  LNK-PRTKANRI-SKYYMD
+           MOVE    "receden_sokatu.sh"
+                                   TO  LNK-PRTKANRI-SHELLID
+           MOVE    ZERO            TO  LNK-PRTKANRI-PRIORITY
+      *****MOVE    SPA-TERMID      TO  LNK-PRTKANRI-TERMID
+           MOVE    WRK-CONS-TERMID TO  LNK-PRTKANRI-TERMID 
+           MOVE    SPA-OPID        TO  LNK-PRTKANRI-OPID
+           PERFORM VARYING IDXX    FROM    1   BY  1
+                   UNTIL   IDXX    >       4
+               IF      SPA-3004-KBNCD  (IDXX)
+                                           =   903
+                   MOVE    SPA-3004-PRTNM (IDXX)
+                                           TO  LNK-PRTKANRI-PRTNM
+                   MOVE    SPA-3004-MAX    TO  IDXX
+               END-IF
+           END-PERFORM         
+           MOVE    LNK-PRTKANRI-RENNUM
+                                   TO  SHELLTBL-ARG1       
+           MOVE    LNK-PRTKANRI-TBL-KEY
+                                   TO  SHELLTBL-ARG2     
+           MOVE    LNK-PRTKANRI-TBL-GROUP
+                                   TO  SHELLTBL-ARG3       
+           MOVE    LNK-PRTKANRI-SHORI-RENNUM
+                                   TO  SHELLTBL-ARG4       
+           MOVE    LNK-PRTKANRI-SRYYM
+                                   TO  SHELLTBL-ARG5       
+           MOVE    LNK-PRTKANRI-SKYYMD
+                                   TO  SHELLTBL-ARG6       
+           MOVE    LNK-PRTKANRI-SHELLID
+                                   TO  SHELLTBL-ARG7       
+           MOVE    LNK-PRTKANRI-PRIORITY
+                                   TO  SHELLTBL-ARG8      
+           MOVE    LNK-PRTKANRI-TERMID
+                                   TO  SHELLTBL-ARG9       
+           MOVE    LNK-PRTKANRI-OPID
+                                   TO  SHELLTBL-ARG10      
+           MOVE    LNK-PRTKANRI-PRTNM
+                                   TO  SHELLTBL-ARG11      
+      *                 
+           MOVE    WRK-CONS-JOB-JOBID
+                                   TO  SHELLTBL-ARG12
+           MOVE    WRK-CONS-JOB-SHELLID
+                                   TO  SHELLTBL-ARG13
+grpsys     MOVE    SPA-HOSPNUM     TO  SHELLTBL-ARG14
+           MOVE    RECEERR         TO  SHELLTBL-ARG15
+           MOVE    SHELLTBL        TO  MCPDATA-REC
+           MOVE    "SHELL"         TO  MCP-FUNC
+           MOVE    "shell"         TO  MCP-TABLE
+           MOVE    "shell"         TO  MCP-PATHNAME
+grpsys     PERFORM 900-ORCDBMAIN-SEC
+           IF      MCP-RC          NOT =   ZERO
+               DISPLAY "ERROR MCP-RC=" MCP-RC 
+           END-IF
+      *
+           .
+       45015-KOUGAI-SOKATU-SYORI-EXT.
            EXIT.
       *
       *****************************************************************
@@ -4149,6 +4261,7 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
                    WHEN    "1004"
                    WHEN    "1005"
                    WHEN    "1006"
+                   WHEN    "1007"
                    WHEN    "1010"
                    WHEN    "1011"
                    WHEN    "1014"  
@@ -4203,10 +4316,12 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
            MOVE    SPA-DATAKBN4-STATE  TO  T01-DATAKBN4-STATE
            MOVE    SPA-DATAKBN5-STATE  TO  T01-DATAKBN5-STATE
            MOVE    SPA-DATAKBN6-STATE  TO  T01-DATAKBN6-STATE
+           MOVE    SPA-DATAKBN7-STATE  TO  T01-DATAKBN7-STATE
            MOVE    SPA-DATAKBN3-VALUE  TO  T01-DATAKBN3-VALUE
            MOVE    SPA-DATAKBN4-VALUE  TO  T01-DATAKBN4-VALUE
            MOVE    SPA-DATAKBN5-VALUE  TO  T01-DATAKBN5-VALUE
            MOVE    SPA-DATAKBN6-VALUE  TO  T01-DATAKBN6-VALUE
+           MOVE    SPA-DATAKBN7-VALUE  TO  T01-DATAKBN7-VALUE
       *
            EVALUATE    SPA-DATAKBN4-VALUE
                WHEN    "T"
@@ -4511,6 +4626,9 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
                                        TO  WRK-TIDMSG
                WHEN    "1006"
                    MOVE    "レセ電総括表（国保）の印刷処理を行います" 
+                                       TO  WRK-TIDMSG
+               WHEN    "1007"
+                   MOVE    "総括表（公害）の印刷処理を行います" 
                                        TO  WRK-TIDMSG
                WHEN    "1010"
                    MOVE    "社保分のレセプト電算データを作成します"

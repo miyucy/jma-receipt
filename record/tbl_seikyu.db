@@ -2079,6 +2079,7 @@ path	key60	{
                        AND (( SKYYM       =  '000000' ) OR ( SKYYM = :SKYYM )))
                        OR (( SKYYM       =   :SKYYM   )
                        AND ( SKYKBN      <>  '0'      )))
+                ORDER  BY  KIGO
 		;
 	};
 };

@@ -35,6 +35,8 @@
       *  03.04.01    NACL-藤原    06/12/05  未請求レセ対応
       *
       *  03.05.02    NACL-藤原    07/08/01  クライアント保存対応
+      *
+      *  04.01.01    NACL-藤原    07/11/22  公害レセプト対応
       *****************************************************************
       *
        01  SPA-T01FREE.
@@ -105,12 +107,14 @@
                    07  SPA-DATAKBN4-STATE          PIC S9(09)  BINARY.
                    07  SPA-DATAKBN5-STATE          PIC S9(09)  BINARY.
                    07  SPA-DATAKBN6-STATE          PIC S9(09)  BINARY.
+                   07  SPA-DATAKBN7-STATE          PIC S9(09)  BINARY.
       *
                05  SPA-DATAKBN.         
                    07  SPA-DATAKBN3-VALUE          PIC X(01).
                    07  SPA-DATAKBN4-VALUE          PIC X(01).
                    07  SPA-DATAKBN5-VALUE          PIC X(01).
                    07  SPA-DATAKBN6-VALUE          PIC X(01).
+                   07  SPA-DATAKBN7-VALUE          PIC X(01).
       *
                05  SPA-CHK.
                    07  SPA-CHK11-VALUE             PIC X(01).

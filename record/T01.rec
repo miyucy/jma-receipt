@@ -56,6 +56,10 @@ T01	{
 			state	int;
 			value	bool;
 		};
+		DATAKBN7	{
+			state	int;
+			value	bool;
+		};
 		HKNJAMEI	{
 			value	varchar(40);
 		};
