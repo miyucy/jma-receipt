@@ -8,6 +8,7 @@
             02  HCM60-KINGAK
                     PIC X(13)   OCCURS  2 TIMES.
             02  HCM60-SEIYMD    PIC X(22).
+            02  HCM60-HOSPCD    PIC X(7).
             02  HCM60-ADRS  PIC X(100).
             02  HCM60-HOSPNAME  PIC X(100).
             02  HCM60-KAISETUNAME   PIC X(60).
