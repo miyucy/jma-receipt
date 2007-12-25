@@ -3118,7 +3118,7 @@ grpsys            CALL    "ORCDBMAIN"         USING   MCPAREA
       *
                MOVE    ZERO            TO  FLG-KOH-CHK
                IF      WRK-KOH-HKNNUM   (IDX)  =   "019"
-                                          OR "012"
+                                               OR "012"
                                                OR  "011"
                    MOVE    1           TO  FLG-KOH-CHK
       *            日雇いの範囲外は作成しない
@@ -3129,14 +3129,6 @@ grpsys            CALL    "ORCDBMAIN"         USING   MCPAREA
                        MOVE    2           TO  FLG-KOH-CHK
                    END-IF
                END-IF
-      *TEST
-               DISPLAY " WRK-HIYATOI-TEKSTYMD:"  WRK-HIYATOI-TEKSTYMD
-                       ",WRK-HIYATOI-TEKEDYMD:"  WRK-HIYATOI-TEKEDYMD
-      *TEST
-               DISPLAY "WRK-KOH-HKNNUM:" WRK-KOH-HKNNUM (IDX)
-                 ",ST:" WRK-KOH-TEKSTYMD(IDX)
-                 ",ED:" WRK-KOH-TEKEDYMD(IDX)
-                 ",FLG-KOH-CHK:" FLG-KOH-CHK
       *
                IF     (FLG-KOH-CHK      =   2    )
                    CONTINUE
@@ -3287,13 +3279,6 @@ grpsys            CALL    "ORCDBMAIN"         USING   MCPAREA
       *----(01.00.04) LINE MOD END   -----------------------------
                  (WRK-KOH-HKNKOHKBN(IDX)   =   "1"  OR  "3")   AND
                  (WRK-KOH-SAKJOKBN (IDX)   =   SPACE)
-      *@保険が日雇いの時、単独なし
-              IF   ((WRK-KOH-HKNNUM   (IDX)  =   "019"
-                                             OR  "011")   AND
-                    (WRK-KOH-SAKJOKBN (IDX)  =   SPACE)   AND
-                    (WRK-HIYATOI-FLG         =   1 )     )
-                CONTINUE
-             ELSE
       *
                MOVE    IDX                 TO  WRK-COMB-SYUKOHIDX
       *
@@ -3367,8 +3352,6 @@ grpsys            CALL    "ORCDBMAIN"         USING   MCPAREA
               END-PERFORM
               PERFORM 5701410-SYUKOH-KYOUTU-HEN-SEC
       *
-             END-IF
-      *@
              END-IF
            END-PERFORM
       *
