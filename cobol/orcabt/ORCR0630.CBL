@@ -2050,13 +2050,14 @@
                     COMPUTE  RECE62-NYUKHNKEI2(KH-IDX)  =
                              RECE62-NYUKHNKEI2(KH-IDX)  +  NACCT-ZAITEN
               END-EVALUATE
-              IF RECE62-NYUINDAY-KBN(IDY) = "1"
+      *
+           END-IF
+      *
+           IF RECE62-NYUINDAY-KBN(IDY) = "1"
                     COMPUTE  WRK-NYUTOKKEI2(KH-IDX)     =
                              WRK-NYUTOKKEI2(KH-IDX)     +  NACCT-ZAITEN
                     COMPUTE  RECE62-NYUTOKKEI2(KH-IDX)  =
                              RECE62-NYUTOKKEI2(KH-IDX)  +  NACCT-ZAITEN
-              END-IF
-      *
            END-IF
       *
            .
@@ -2427,6 +2428,8 @@
                             UNTIL    ACCT-IDX   >      31
                         IF  ((WRK-DAY1(ACCT-IDX)   NOT =  ZERO   ) OR
                              (RECE62-NYUINDAY-KBN(ACCT-IDX) = "1"))
+                        AND ( WRK-DAY5(ACCT-IDX) =
+                                           RECE62-HKNCOMBI (IDX1) )
                         AND ( ACCT-DAY(1 ACCT-IDX) NOT =  ZERO    )
                             PERFORM      20011261-SRYACCT-GET-SEC
                         END-IF
@@ -2463,6 +2466,8 @@
                                 UNTIL    ACCT-IDX   >      31
                           IF  ((WRK-DAY1(ACCT-IDX)   NOT =  ZERO   ) OR
                                (RECE62-NYUINDAY-KBN(ACCT-IDX) = "1"))
+                          AND ( WRK-DAY5(ACCT-IDX) =
+                                           RECE62-HKNCOMBI (IDX1)   )
                           AND ( ACCT-DAY(1 ACCT-IDX) NOT =  ZERO    )
                               PERFORM      20011261-SRYACCT-GET-SEC
                           END-IF
@@ -2539,7 +2544,8 @@
                              (ACCT-ZAITEN * ACCT-DAY(1 ACCT-IDX))
                  END-IF
            END-EVALUATE
-           IF    RECE62-NYUINDAY-KBN(IDY) = "1"
+      *
+           IF    RECE62-NYUINDAY-KBN(ACCT-IDX) = "1"
                     COMPUTE  WRK-NYUTOKKEI2(KH-IDX)     =
                              WRK-NYUTOKKEI2(KH-IDX)     +
                              (ACCT-ZAITEN * ACCT-DAY(1 ACCT-IDX))
@@ -2699,7 +2705,10 @@
                                PERFORM VARYING ACCT-IDX FROM 1 BY 1
                                   UNTIL    ACCT-IDX   >   31
                                 IF  ((WRK-DAY1(ACCT-IDX) NOT = ZERO ) OR
-                                     (RECE62-NYUINDAY-KBN(IDY) = "1"))
+                                     (RECE62-NYUINDAY-KBN(ACCT-IDX)
+                                                               = "1"))
+                                AND ( WRK-DAY5(ACCT-IDX) =
+                                           RECE62-HKNCOMBI (IDX1)    )
                                 AND ( ACCT-DAY(1 ACCT-IDX) NOT = ZERO)
                                         PERFORM 2001132-ACCTKHN-GET3-SEC
                                         MOVE  31  TO  ACCT-IDX

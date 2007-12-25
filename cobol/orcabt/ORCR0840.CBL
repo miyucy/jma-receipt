@@ -129,6 +129,7 @@
       *  04.01.03    NACL-ÌçÏÆ    07/11/01  ¸øÌ³ºÒ³²ÂÐ±þ
       *  04.01.04    NACL-ÌçÏÆ    07/11/26  ÆÃÄê´ïºà¾¦ÉÊÌ¾µ­ºÜÂÐ±þ
       *  04.01.05    NACL-ÌçÏÆ    07/11/30  Â¾ÊÝ¸±¤Ë¤Æ¿Ç»¡ÎÁ»»ÄêºÑ¤ÎÌ¾¾ÎÃÖ´¹
+      *  04.01.06    NACL-ÌçÏÆ    07/12/19  Æþ±¡ÎÁÌ¤»»ÄêÆüÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -4883,10 +4884,11 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                   UNTIL   IDY     >       31
       *
                          IF  RECE82-HKNCOMBI     =  WRK-DAY5(IDY)
-                            IF  (WRK-DAY1(IDY)   NOT  =  ZERO)
-                            AND (NACCT-ZAITEN    NOT  =  ZERO)
-                            AND (NACCT-ZAISKBKBN NOT  =  "4" )
-                            AND (NACCT-DAY(IDY)  NOT  =  ZERO)
+                            IF  ((WRK-DAY1(IDY)   NOT  =  ZERO  ) OR
+                                 (RECE82-NYUINDAY-KBN(IDY) = "1"))
+                            AND ( NACCT-ZAITEN    NOT  =  ZERO   )
+                            AND ( NACCT-ZAISKBKBN NOT  =  "4"    )
+                            AND ( NACCT-DAY(IDY)  NOT  =  ZERO   )
                                IF  WRK-DAY2(IDY) =  ZERO  OR  4
                                     MOVE   NACCT-DAY(IDY)  
                                            TO   WRK-DAY21(IDY) 
@@ -4895,12 +4897,13 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                END-IF
                             END-IF
       *                     *¿©»ö
-                            IF  (WRK-DAY1(IDY)   NOT  =  ZERO)
-                            AND (NACCT-ZAITEN         =  ZERO)
-                            AND (NACCT-ZAISKBKBN      =  "4" )
-                            AND (NACCT-DAY(IDY)  NOT  =  ZERO)
-                            AND (WRK-SHOKUJIRYOYO(IDY)
-                                                 NOT  =  ZERO)
+                            IF  ((WRK-DAY1(IDY)   NOT  =  ZERO  ) OR
+                                 (RECE82-NYUINDAY-KBN(IDY) = "1"))
+                            AND ( NACCT-ZAITEN         =  ZERO   )
+                            AND ( NACCT-ZAISKBKBN      =  "4"    )
+                            AND ( NACCT-DAY(IDY)  NOT  =  ZERO   )
+                            AND ( WRK-SHOKUJIRYOYO(IDY)
+                                                  NOT  =  ZERO   )
                                IF  WRK-DAY2(IDY) =  ZERO  OR  4
                                 IF   RECE82-SRYYM  >= "200604"
                                  IF  NACCT-SRYCDTOTAL = 099999918
@@ -4922,16 +4925,17 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                END-IF
                             END-IF
                             IF     RECE82-SRYYM        >= "200610"
-                              IF  (WRK-DAY1(IDY)   NOT  =  ZERO)
-                              AND (NACCT-ZAITEN         =  ZERO)
-                              AND (NACCT-ZAISKBKBN      =  "4" )
-      ***                     AND (NACCT-DAY(IDY)  NOT  =  ZERO)
-                              AND (WRK-SHOKUJIRYOYO(IDY)
-                                                   NOT  =  ZERO)
-                              AND (NACCT-SRYCDTOTAL = 099999918
-                                                  OR  099999919
-                                                  OR  099999920)
-                              AND (WRK-DAY2(IDY) =  ZERO  OR  4)
+                              IF  ((WRK-DAY1(IDY)   NOT  =  ZERO  ) OR
+                                   (RECE82-NYUINDAY-KBN(IDY) = "1"))
+                              AND ( NACCT-ZAITEN         =  ZERO   )
+                              AND ( NACCT-ZAISKBKBN      =  "4"    )
+      ***                     AND ( NACCT-DAY(IDY)  NOT  =  ZERO   )
+                              AND ( WRK-SHOKUJIRYOYO(IDY)
+                                                    NOT  =  ZERO   )
+                              AND ( NACCT-SRYCDTOTAL = 099999918
+                                                   OR  099999919
+                                                   OR  099999920   )
+                              AND ( WRK-DAY2(IDY) =  ZERO  OR  4   )
                                 PERFORM   2307-NYUINACCT-SYU-KAN-SEC
                               END-IF
                             END-IF
@@ -7431,6 +7435,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                           UNTIL    IDY    >    31
       *
                 IF   LNK-SROUNYUIN-NYUIN-FLG(IDY)    =  "1"
+                AND  RECE82-NYUINDAY-KBN(IDY)        =  SPACE
       *
                    MOVE     ZERO        TO    WRK-RENNUM
       *

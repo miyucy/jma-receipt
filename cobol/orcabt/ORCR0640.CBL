@@ -4785,9 +4785,6 @@
                                                TO   WRK-DAY21(IDY) 
                                     MOVE   WRK-DAY1-NYUTENTTLKBN(IDY)
                                                TO   WRK-NYUTENTTLKBN
-                                    IF RECE62-NYUINDAY-KBN(IDY) = "1"
-                                      MOVE 920 TO   WRK-NYUTENTTLKBN
-                                    END-IF
                                     ADD    1     TO   CNT-DAY21
                                     MOVE   1     TO   FLG-DAY21
                                 END-IF
@@ -5956,11 +5953,12 @@
              END-IF
            END-IF
            IF      NACCT-ZAISKBKBN      =       "6"
-             IF    WRK-NYUTENTTLKBN     =  903
+             EVALUATE  WRK-NYUTENTTLKBN
+               WHEN      903
                 MOVE    "90"            TO      RECE64-SRYKBN
-             ELSE
+               WHEN      920
                 MOVE    "92"            TO      RECE64-SRYKBN
-             END-IF
+             END-EVALUATE
            END-IF
            MOVE    NACCT-ZAISKBKBN      TO      RECE64-ZAISKBKBN
            IF      NACCT-ZAISKBKBN      =       "7"
@@ -6103,13 +6101,14 @@
              END-IF
            END-IF
            IF      NACCT-ZAISKBKBN      =       "6"
-             IF    WRK-NYUTENTTLKBN     =  903
+             EVALUATE  WRK-NYUTENTTLKBN
+               WHEN      903
                 MOVE    "90"            TO      RECE65-SRYKBN
                 MOVE    "900"           TO      RECE65-SRYSYUKBN
-             ELSE
+               WHEN      920
                 MOVE    "92"            TO      RECE65-SRYKBN
                 MOVE    "920"           TO      RECE65-SRYSYUKBN
-             END-IF
+             END-EVALUATE
            END-IF
            IF      NACCT-ZAISKBKBN      =       "7"
                 MOVE     "80"           TO      RECE65-SRYKBN
@@ -6377,11 +6376,12 @@
              END-IF
            END-IF
            IF      NACCT-ZAISKBKBN      =       "6"
-             IF    WRK-NYUTENTTLKBN     =  903
+             EVALUATE  WRK-NYUTENTTLKBN
+               WHEN      903
                 MOVE    "90"            TO      RECE64-SRYKBN
-             ELSE
+               WHEN      920
                 MOVE    "92"            TO      RECE64-SRYKBN
-             END-IF
+             END-EVALUATE
            END-IF
            MOVE    NACCT-ZAISKBKBN      TO      RECE64-ZAISKBKBN
       *
@@ -6507,13 +6507,14 @@
              END-IF
            END-IF
            IF      NACCT-ZAISKBKBN      =       "6"
-             IF    WRK-NYUTENTTLKBN     =  903
+             EVALUATE  WRK-NYUTENTTLKBN
+               WHEN      903
                 MOVE    "90"            TO      RECE65-SRYKBN
                 MOVE    "900"           TO      RECE65-SRYSYUKBN
-             ELSE
+               WHEN      920
                 MOVE    "92"            TO      RECE65-SRYKBN
                 MOVE    "920"           TO      RECE65-SRYSYUKBN
-             END-IF
+             END-EVALUATE
            END-IF
            MOVE    NSRY-JIHIMONEYTOTAL  TO      RECE65-JIHIMONEY
       *

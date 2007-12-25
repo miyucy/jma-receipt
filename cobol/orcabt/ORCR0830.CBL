@@ -51,6 +51,7 @@
       *  03.05.02    NACL-Æ£¸¶    07/06/01  realtime preview ½èÍýÄÉ²Ã
       *  03.05.03    NACL-ÌçÏÆ    07/07/17  ¸ÄÊÌ»þ¤Î¥·¥¹¥Æ¥à´ÉÍýÊÔ½¸½¤Àµ
       *  04.01.01    NACL-ÌçÏÆ    07/11/01  ¸øÌ³ºÒ³²ÂÐ±þ
+      *  04.01.02    NACL-ÌçÏÆ    07/12/19  Æþ±¡ÎÁÌ¤»»ÄêÆüÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -328,6 +329,9 @@
       *
       *    Ï«ºÒÆþ±¡²ñ·×ºîÀ®¥µ¥Ö
            COPY    "CPORCSROUNYUIN.INC".
+      *
+      *    Æþ±¡ÎÁÌ¤»»ÄêÆü¼èÆÀ¥µ¥Ö
+           COPY    "CPORCSNYUINDAY.INC".
       *
       *    £Ä£Â¸¡º÷
            COPY    "MCPDATA.INC".
@@ -706,6 +710,17 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                                WRK-SINDAN-KIN
                                                WRK-MEISAI-TUU
                                                WRK-MEISAI-KIN
+      *
+      *    Æþ±¡ÎÁÌ¤»»ÄêÆü¼èÆÀ
+           INITIALIZE                   ORCSNYUINDAY-AREA
+           MOVE    RECE82-HOSPNUM   TO  LNK-NYUINDAY-HOSPNUM
+           MOVE    RECE82-PTID      TO  LNK-NYUINDAY-PTID
+           MOVE    RECE82-SRYYM     TO  LNK-NYUINDAY-SANTEIYM
+           CALL    "ORCSNYUINDAY"   USING   ORCSNYUINDAY-AREA
+                                            SPA-AREA
+           IF      LNK-NYUINDAY-RC     =   ZERO
+               MOVE   LNK-NYUINDAY-TBL  TO  RECE82-NYUINDAY-TBL
+           END-IF
       *
            PERFORM     220-RECE82-HENSYU-SEC
            PERFORM     230-RECE82-HENSYU2-SEC
@@ -1157,6 +1172,22 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *
            END-EVALUATE
       *
+           IF   RECE82-NYUINDAY-KBN(IDY)  =  "1"
+      *
+                  COMPUTE  RECE82-NYUTOKKEI2  =
+                           RECE82-NYUTOKKEI2  +
+                           LNK-SROUNYUIN-ZAITEN-NACCT(IDY)
+      *
+                  COMPUTE  RECE82-NYUTOKKEI2  =
+                           RECE82-NYUTOKKEI2  +  
+                           LNK-SROUNYUIN-ZAITEN-ACCT(IDY)
+      *
+                  COMPUTE  RECE82-NYUTOKKEI2  =
+                           RECE82-NYUTOKKEI2  +
+                           LNK-SROUNYUIN-ZAITEN-ACCTETC(IDY)
+      *
+           END-IF
+      *
            .
        2301-KHNTEN-HENSYU-EXT.
            EXIT.
@@ -1356,8 +1387,9 @@ grpsys     PERFORM 900-DBSELECT-SEC
            PERFORM  VARYING  IDY    FROM    1   BY  1
                      UNTIL   IDY     >     31
       *
-              IF   WRK-DAY1(IDY)  NOT =  ZERO
-              AND  WRK-DAY5(IDY)      =  RECE82-HKNCOMBI
+              IF   ((WRK-DAY1(IDY)          NOT =  ZERO   ) OR
+                    (RECE82-NYUINDAY-KBN(IDY)   =  "1"    ))
+              AND  ( WRK-DAY5(IDY)      =  RECE82-HKNCOMBI )
                   IF  (WRK-DAY7(IDY)          NOT =  ZERO)
                   AND (WRK-DAY7-ZAITEN(IDY)   NOT =  ZERO)
                   AND (WRK-DAY2(IDY)              =  ZERO  OR  4)
