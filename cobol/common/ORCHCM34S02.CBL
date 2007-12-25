@@ -982,6 +982,7 @@
       *
                IF    ( LNK-SROUNYUIN-NYUIN-FLG (IDXD)  =   "1" )
                 AND  ( FLG-NYUINDAY            (IDXD)  =    1  )
+                AND  ( LNK-NYUINDAY-KBN        (IDXD)  =   SPACE )
                    IF    ( LNK-SROUNYUIN-GAIHAKU(IDXD) =   ZERO )
                        PERFORM 20011-NYUINRYO-HEN-SEC
                    ELSE
