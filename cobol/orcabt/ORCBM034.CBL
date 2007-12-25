@@ -98,7 +98,6 @@
            03  IDZ                 PIC 9(04).
            03  IDX1                PIC 9(04).
            03  IDX2                PIC 9(04).
-           03  IDX                PIC 9(04).
       *     
            03  IDZ1                PIC 9(04).
            03  IDZ2                PIC 9(04).
@@ -152,7 +151,7 @@
       *    ½¸·×ÎÎ°è
        01  SUM-AREA.
            03  SUM-TABLE                   OCCURS  2.
-               09  SUM-KENSU           PIC 9(06).
+               07  SUM-KENSU           PIC 9(06).
                07  SUM-KINGAK          PIC 9(13).
       *
       *    ¥­¡¼ÎÎ°è
