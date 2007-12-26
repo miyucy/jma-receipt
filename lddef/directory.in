@@ -18,6 +18,8 @@ wfc  {
     port    "/tmp/wfc.jma-receipt";
 };
 
+#include	<./dbgroup.inc>
+
 ld	{
 	orca00	 1;
 	orca01	 1;
@@ -67,4 +69,3 @@ bd	{
 db      {
 #include	<./orcadbs.inc>
 };
-#include	<./dbgroup.inc>

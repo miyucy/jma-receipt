@@ -15,7 +15,10 @@ bind    "OrcSioriPull"  "Ruby";
 
 bind    "ORCVTPTINF"    	"OpenCOBOL";
 bind    "ORCVTPTHKNINF" 	"OpenCOBOL";
+bind    "ORCVTPTHKNINF02" 	"OpenCOBOL";
 bind    "ORCVTPTKOHINF" 	"OpenCOBOL";
+bind    "ORCVTPTKOHINF02" 	"OpenCOBOL";
+bind    "ORCVTPTRSIINF" 	"OpenCOBOL";
 bind    "ORCVTHKNCOMBI" 	"OpenCOBOL";
 bind    "ORCVTINPUTCD"  	"OpenCOBOL";
 bind    "ORCVTSRYKARRK" 	"OpenCOBOL";
