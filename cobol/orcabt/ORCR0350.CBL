@@ -186,6 +186,9 @@
       *                                     £²£°£°£·Ç¯£¹·î¡Á£±£²·îÂÐ¾Ý 
       *  03.05.09    NACL-Æ£¸¶    07/09/18  µÜºê¸©¡Ö¸øÈñ£¹£°¡×ÂÐ±þ
       *                                     £²£°£°£·Ç¯£¹·î°Ê¹ß¤Î¤ßÂÐ¾Ý 
+      *
+      *  04.01.01    NACL-Æ£¸¶    07/11/26  ÆÃÄê´ïºà¤Î¾¦ÉÊÌ¾µÚ¤Óµ¬³ÊËô¤Ï
+      *                                     ¥µ¥¤¥ºµ­ºÜÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -325,7 +328,6 @@
       *
       *    ¥Õ¥é¥°ÎÎ°è
        01  STS-AREA.
-           03  STS-RECE35              PIC X(02).
            03  STS-RECE62              PIC X(02).
            03  STS-RECE63              PIC X(02).
            03  STS-RECE64              PIC X(02).
@@ -343,7 +345,6 @@
            03  FLG-SYSKANRI            PIC 9(01).
            03  FLG-RECECOM             PIC 9(01).
            03  FLG-RECEDEN             PIC 9(01).
-           03  FLG-RECE35              PIC 9(01).
            03  FLG-RECE62              PIC 9(01).
            03  FLG-RECE63              PIC 9(01).
            03  FLG-RECE64              PIC 9(01).
@@ -666,6 +667,8 @@
                    07  TBL-ZAIW-TOKUKIZAISBT1       PIC  9(01).
       *            »ÀÁÇÅù¶èÊ¬  
                    07  TBL-ZAIW-SANSOKBN            PIC  9(01).
+      *            ¥ì¥»ÅÅÍÑÆÃÄê´ïºà¾¦ÉÊÌ¾
+                   07  TBL-ZAIW-RECEDENNAME         PIC  X(300).
       *
       *    ¿ÇÎÅ¹Ô°Ù¡¦¥³¥á¥ó¥ÈÍÑ¥Æ¡¼¥Ö¥ë
        01  TBL-KOUI-AREA.
@@ -4077,6 +4080,8 @@
                                    TBL-ZAIW-DATAKBN    (2 WRK-TBLMAX7)
                MOVE    RECE65-NAMEINF   (IDX)  TO
                                    TBL-ZAIW-NAMEINF    (2 WRK-TBLMAX7)
+               MOVE    RECE65-RECEDENNAME(IDX)  TO
+                                   TBL-ZAIW-RECEDENNAME(2 WRK-TBLMAX7)
       *
                IF    ( RECE65-DATAKBN (IDX)
                                            =   "3"  )
@@ -4167,6 +4172,9 @@
                                                      (3 WRK-TBLMAX7-SRT)
                MOVE    RECE65-SANSOKBN  (IDX)  TO
                                    TBL-ZAIW-SANSOKBN (3 WRK-TBLMAX7-SRT)
+               MOVE    RECE65-RECEDENNAME  (IDX)   TO
+                                   TBL-ZAIW-RECEDENNAME
+                                                     (3 WRK-TBLMAX7-SRT)
            END-IF
            .
        200711-KIZAI-ACCT-TAIHI-EXT.
@@ -4955,6 +4963,8 @@
                                    ORCSRECESORT-IN-TOKUKIZAISBT1 (IDX)
                    MOVE    TBL-ZAIW-SANSOKBN      (3 IDX)  TO
                                    ORCSRECESORT-IN-SANSOKBN (IDX)
+                   MOVE    TBL-ZAIW-RECEDENNAME   (3 IDX)  TO
+                                   ORCSRECESORT-IN-RECEDENNAME   (IDX)
                END-PERFORM
                CALL    "ORCSRECESORT"      USING   ORCSRECESORTAREA
                                                    SPA-AREA
@@ -5279,6 +5289,11 @@
            MOVE    40                  TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC
       *    ¾¦ÉÊÌ¾µÚ¤Óµ¬³ÊÌ¾µÚ¤Ó¥µ¥¤¥º
+           IF      TBL-ZAIW-RECEDENNAME (2 IDX)
+                                       NOT =   SPACE
+               MOVE    TBL-ZAIW-RECEDENNAME (2 IDX)
+                                                 TO  WRK-DATA
+           END-IF
            MOVE    300                 TO  WRK-NAGASA
            MOVE    1                   TO  WRK-END 
            PERFORM 5004-MOJI-HENSYU-SEC
@@ -5384,6 +5399,11 @@
            MOVE    40                  TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC
       *    ¾¦ÉÊÌ¾µÚ¤Óµ¬³ÊÌ¾µÚ¤Ó¥µ¥¤¥º
+           IF      ORCSRECESORT-RECEDENNAME (IDXX IDX)
+                                       NOT =   SPACE
+               MOVE    ORCSRECESORT-RECEDENNAME (IDXX IDX)
+                                               TO  WRK-DATA
+           END-IF
            MOVE    300                 TO  WRK-NAGASA
            MOVE    1                   TO  WRK-END 
            PERFORM 5004-MOJI-HENSYU-SEC

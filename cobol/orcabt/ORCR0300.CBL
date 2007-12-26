@@ -248,7 +248,10 @@
       *  03.05.05    NACL-Æ£¸¶    07/09/04  µÜºê¸©¡Ö¸øÈñ£¹£°¡×ÂÐ±þ
       *                                     £²£°£°£·Ç¯£¹·î°Ê¹ß¤Î¤ßÂÐ¾Ý 
       *  03.05.06    NACL-Æ£¸¶    07/09/11  ¿·³ã¸©Ãæ±Û²­ÃÏ¿ÌÂÐ±þ
-      *                                     £²£°£°£·Ç¯£¹·î¡Á£±£²·îÂÐ¾Ý 
+      *                                     £²£°£°£·Ç¯£¹·î¡Á£±£²·îÂÐ¾Ý
+      *
+      *  04.01.01    NACL-Æ£¸¶    07/11/26  ÆÃÄê´ïºà¤Î¾¦ÉÊÌ¾µÚ¤Óµ¬³ÊËô¤Ï
+      *                                     ¥µ¥¤¥ºµ­ºÜÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -381,19 +384,12 @@ grpsys     COPY    "COMMON-SPA".
                                    REPLACING  //RECEDAT1//
                                    BY         //RECE12//.
       *
-      *     ¥ì¥»¥×¥ÈÅÅ»»¥Õ¥¡¥¤¥ë Ì¾¾ÎÎÎ°è 
-           COPY    "CPRECEDAT1.INC"
-                                   REPLACING  //RECEDAT1//
-                                   BY         //RECE30//.
-           03  FILLER              PIC X(04)   VALUE   ".dat".
-      *
       *    ¥¨¥é¡¼¥Õ¥¡¥¤¥ë Ì¾¾ÎÎÎ°è 
            COPY    "CPERRFL.INC"   REPLACING  //ERRFLPARA//
                                    BY         //RECEERR//.
       *
       *    ¥Õ¥é¥°ÎÎ°è
        01  STS-AREA.
-           03  STS-RECE30              PIC X(02).
            03  STS-RECE02              PIC X(02).
            03  STS-RECE03              PIC X(02).
            03  STS-RECE04              PIC X(02).
@@ -412,7 +408,6 @@ grpsys     COPY    "COMMON-SPA".
            03  FLG-SYSKANRI            PIC 9(01).
            03  FLG-RECECOM             PIC 9(01).
            03  FLG-RECEDEN             PIC 9(01).
-           03  FLG-RECE30              PIC 9(01).
            03  FLG-RECE02              PIC 9(01).
            03  FLG-RECE03              PIC 9(01).
            03  FLG-RECE04              PIC 9(01).
@@ -736,6 +731,8 @@ grpsys     COPY    "COMMON-SPA".
                    07  TBL-ZAIW-TOKUKIZAISBT1       PIC  9(01).
       *            »ÀÁÇÅù¶èÊ¬  
                    07  TBL-ZAIW-SANSOKBN            PIC  9(01).
+      *            ¥ì¥»ÅÅÍÑÆÃÄê´ïºà¾¦ÉÊÌ¾
+                   07  TBL-ZAIW-RECEDENNAME         PIC  X(300).
       *
       *    ¿ÇÎÅ¹Ô°Ù¡¦¥³¥á¥ó¥ÈÍÑ¥Æ¡¼¥Ö¥ë
        01  TBL-KOUI-AREA.
@@ -1474,10 +1471,6 @@ grpsys     COPY    "COMMON-SPA".
 grpsys     PERFORM 900-CALL-ORCSJOB-SEC
       *
            PERFORM 110-SYSKANRI-HENSYU-SEC
-      *     
-           MOVE    "RECE300"           TO  RECE30PARA-FILE-ID
-           MOVE    WRK-PARA-TERMID     TO  RECE30PARA-TERMID
-grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE30PARA-HOSPNUM
       *
            MOVE    "RECE020"           TO  RECE02PARA-FILE-ID
            MOVE    WRK-PARA-TERMID     TO  RECE02PARA-TERMID
@@ -3659,6 +3652,8 @@ grpsys         OR     ( RECE041-HOSPNUM    NOT =   RECE05-HOSPNUM      )
                                    TBL-ZAIW-DATAKBN    (2 WRK-TBLMAX7)
                MOVE    RECE05-NAMEINF   (IDX)  TO
                                    TBL-ZAIW-NAMEINF    (2 WRK-TBLMAX7)
+               MOVE    RECE05-RECEDENNAME(IDX)  TO
+                                   TBL-ZAIW-RECEDENNAME(2 WRK-TBLMAX7)
       *
                IF    ( RECE05-DATAKBN (IDX)
                                            =   "3"  )
@@ -3750,6 +3745,9 @@ grpsys         OR     ( RECE041-HOSPNUM    NOT =   RECE05-HOSPNUM      )
                                                      (3 WRK-TBLMAX7-SRT)
                MOVE    RECE05-SANSOKBN  (IDX)  TO
                                    TBL-ZAIW-SANSOKBN (3 WRK-TBLMAX7-SRT)
+               MOVE    RECE05-RECEDENNAME  (IDX)   TO
+                                   TBL-ZAIW-RECEDENNAME
+                                                     (3 WRK-TBLMAX7-SRT)
            END-IF
            .
        200711-KIZAI-ACCT-TAIHI-EXT.
@@ -4325,6 +4323,8 @@ grpsys         MOVE    RECE02-HOSPNUM      TO  ORCSRECESORT-HOSPNUM
                                    ORCSRECESORT-IN-TOKUKIZAISBT1 (IDX)
                    MOVE    TBL-ZAIW-SANSOKBN      (3 IDX)  TO
                                    ORCSRECESORT-IN-SANSOKBN      (IDX)
+                   MOVE    TBL-ZAIW-RECEDENNAME   (3 IDX)  TO
+                                   ORCSRECESORT-IN-RECEDENNAME   (IDX)
                END-PERFORM
                CALL    "ORCSRECESORT"      USING   ORCSRECESORTAREA
                                                    SPA-AREA
@@ -4604,6 +4604,11 @@ grpsys         MOVE    RECE02-HOSPNUM      TO  ORCSRECESORT-HOSPNUM
            MOVE    40                  TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC
       *    ¾¦ÉÊÌ¾µÚ¤Óµ¬³ÊÌ¾µÚ¤Ó¥µ¥¤¥º
+           IF      TBL-ZAIW-RECEDENNAME (2 IDX)
+                                       NOT =   SPACE
+               MOVE    TBL-ZAIW-RECEDENNAME (2 IDX)
+                                                 TO  WRK-DATA
+           END-IF
            MOVE    300                 TO  WRK-NAGASA
            MOVE    1                   TO  WRK-END 
            PERFORM 5004-MOJI-HENSYU-SEC
@@ -4710,6 +4715,11 @@ grpsys         MOVE    RECE02-HOSPNUM      TO  ORCSRECESORT-HOSPNUM
            MOVE    40                  TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC
       *    ¾¦ÉÊÌ¾µÚ¤Óµ¬³ÊÌ¾µÚ¤Ó¥µ¥¤¥º
+           IF      ORCSRECESORT-RECEDENNAME (IDXX IDX)
+                                       NOT =   SPACE
+               MOVE    ORCSRECESORT-RECEDENNAME (IDXX IDX)
+                                               TO  WRK-DATA
+           END-IF
            MOVE    300                 TO  WRK-NAGASA
            MOVE    1                   TO  WRK-END 
            PERFORM 5004-MOJI-HENSYU-SEC
