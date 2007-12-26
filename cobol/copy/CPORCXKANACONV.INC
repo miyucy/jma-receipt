@@ -49,8 +49,8 @@
       *   文字領域の長さ(INDATA, OUTDATAの長さと同じであること)
            03 KANACONV-STLEN           PIC S9(9) BINARY.
       *   入力文字列
-           03 KANACONV-INDATA          PIC X(1000).
+           03 KANACONV-INDATA          PIC X(10000).
       *   出力文字列
-           03 KANACONV-OUTDATA         PIC X(1000).
+           03 KANACONV-OUTDATA         PIC X(10000).
       *
       *
