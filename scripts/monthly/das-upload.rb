@@ -67,7 +67,7 @@ module OrcaDAS
           raise res.code + " " + res.msg
         end
       }
-      $stdout.puts "UP #{filename}"
+      STDERR.puts "UP #{filename}"
       return true
     end
 
@@ -78,7 +78,7 @@ module OrcaDAS
           return false
         end
       }
-      $stdout.puts "OK"
+      STDERR.puts "OK"
       return true
     end
 
