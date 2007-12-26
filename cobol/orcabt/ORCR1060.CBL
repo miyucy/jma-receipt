@@ -2466,13 +2466,22 @@ grpsys     MOVE    RECE100-HOSPNUM     TO  RECE10-HOSPNUM
            MOVE    RECE100-JNISSU      TO  RECE10-JNISSU   (1)
            MOVE    RECE100-TOTALTEN (3)
                                        TO  RECE10-FTNMONEY (1)
-      ***  MOVE    RECE100-FTNMONEYINF(IDX) TO
-      ***                              RECE10-FTNMONEYINF (IDX)
            PERFORM VARYING IDX FROM    1   BY  1
                    UNTIL   IDX >       38
-               MOVE    RECE100-SRYKBNINF (IDX)  TO
-                                       RECE10-SRYKBNINF (IDX)
+               MOVE    RECE100-KHNTEN (IDX)  TO
+                                       RECE10-KHNTEN (IDX)
+               MOVE    RECE100-KAISU  (IDX)  TO
+                                       RECE10-KAISU  (IDX)
+               IF      RECE100-TENSU  (IDX 1)  >   ZERO
+                   MOVE    RECE100-TENSU  (IDX 1)  TO
+                                               RECE10-TENSU (IDX 1)
+               ELSE
+                   MOVE    RECE100-TENSU  (IDX 2)  TO
+                                               RECE10-TENSU (IDX 1)
+               END-IF
            END-PERFORM
+           COMPUTE RECE10-TOTALTEN (1) =   RECE100-TENSU  (41 1)
+                                       +   RECE100-TENSU  (41 2)
       *     
            MOVE    RECE100-AGE          TO  RECE10-AGE  
       *
