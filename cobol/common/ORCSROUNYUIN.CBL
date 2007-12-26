@@ -636,9 +636,9 @@
                    MOVE   "key17"           TO  MCP-PATHNAME
                    PERFORM 910-NYUINACCT-READ-SEC
                END-PERFORM
-               IF   FLG-OK     =   ZERO
-                   MOVE     6      TO      LNK-SROUNYUIN-RC
-               END-IF
+      ***      IF   FLG-OK     =   ZERO
+      ***          MOVE     6      TO      LNK-SROUNYUIN-RC
+      ***      END-IF
            ELSE
                MOVE     6      TO      LNK-SROUNYUIN-RC
            END-IF

@@ -7957,6 +7957,8 @@ grpsys     PERFORM  900-DBSELECT-SEC
       *    組み合わせ＝国保                      ・・・４
       *    組み合わせ＝社保                      ・・・５
       *
+           MOVE     SPACE    TO    RECE82-NYUINRYOFLG
+      *
            PERFORM  VARYING  IDY    FROM    1   BY  1
                             UNTIL   IDY     >       31
       *
@@ -7990,15 +7992,17 @@ grpsys     PERFORM  900-DBSELECT-SEC
                           MOVE    "5"   TO   RECE82-NYUINRYOFLG
                        END-IF
                      END-IF
+                     MOVE       1       TO   FLG-NYUINRYO
+                     MOVE      31       TO   IDY
                    END-IF
-                ELSE
-                   IF      WRK-DAY5(IDY)      NOT =  ZERO
-                          MOVE    "1"   TO   RECE82-NYUINRYOFLG
-                   END-IF
+      ***       ELSE
+      ***          IF      WRK-DAY5(IDY)      NOT =  ZERO
+      ***                 MOVE    "1"   TO   RECE82-NYUINRYOFLG
+      ***          END-IF
                 END-IF
       *
-                MOVE      1       TO     FLG-NYUINRYO
-                MOVE     31       TO     IDY
+      ***       MOVE      1       TO     FLG-NYUINRYO
+      ***       MOVE     31       TO     IDY
       *
              END-IF
       *

@@ -9454,6 +9454,8 @@
       *    組み合わせ＝自賠責                    ・・・３
       *    以外＝他保険                          ・・・６
       *
+           MOVE     SPACE    TO    RECE62-NYUINRYOFLG
+      *
            PERFORM  VARYING  IDY    FROM    1   BY  1
                             UNTIL   IDY     >       31
       *
@@ -9483,18 +9485,20 @@
                      ELSE
                           MOVE    "6"   TO   RECE62-NYUINRYOFLG
                      END-IF
+                     MOVE       1       TO   FLG-NYUINRYO
+                     MOVE      31       TO   IDY
                    END-IF
                    MOVE    "tbl_hkncombi"      TO  MCP-TABLE
                    MOVE    "key"               TO  MCP-PATHNAME
                    PERFORM 900-CLOSE-SEC
-                ELSE
-                   IF      WRK-DAY5(IDY)      NOT =  ZERO
-                          MOVE    "1"   TO   RECE62-NYUINRYOFLG
-                   END-IF
+      ***       ELSE
+      ***          IF      WRK-DAY5(IDY)      NOT =  ZERO
+      ***                 MOVE    "1"   TO   RECE62-NYUINRYOFLG
+      ***          END-IF
                 END-IF
       *
-                MOVE      1       TO     FLG-NYUINRYO
-                MOVE     31       TO     IDY
+      ***       MOVE      1       TO     FLG-NYUINRYO
+      ***       MOVE     31       TO     IDY
       *
              END-IF
       *

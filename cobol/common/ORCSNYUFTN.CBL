@@ -2490,8 +2490,8 @@ grpsys                              SPA-AREA
                           UNTIL    SYU-IDX    >    31
       *
                 IF  ( LNK-SROUNYUIN-NYUIN-FLG(SYU-IDX)    =   "1" )
-      ***       AND ((SYU-DAY(SYU-IDX)                    =   "1") OR
-      ***            (WRK-NYUINDAY-KBN(IDX SYU-IDX)       =   "1"))
+                AND ((SYU-DAY(SYU-IDX)                    =   "1") OR
+                     (WRK-NYUINDAY-KBN(IDX SYU-IDX)       =   "1"))
       *
                      ADD   LNK-SROUNYUIN-ZAITEN(SYU-IDX)
                                                  TO  SYU-HKNTEN(14)
