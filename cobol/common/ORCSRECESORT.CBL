@@ -293,6 +293,10 @@ grpsys     COPY    "COMMON-SPA".
            MOVE    ORCSRECESORT-IN-NAME (IDX2)
                                        TO  ORCSRECESORT-NAME
                                                         (IDX IDXZ)
+      *    レセ電用特定器材商品名
+           MOVE    ORCSRECESORT-IN-RECEDENNAME (IDX2)
+                                       TO  ORCSRECESORT-RECEDENNAME
+                                                        (IDX IDXZ)
            .
        2009-TBL-HEN-EXT.
            EXIT.

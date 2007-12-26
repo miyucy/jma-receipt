@@ -66,6 +66,9 @@
                                                     PIC X(01).
       *                酸素等区分
                        09  ORCSRECESORT-IN-SANSOKBN PIC X(01).
+      *                レセ電用特定器材商品名
+                       09  ORCSRECESORT-IN-RECEDENNAME
+                                                    PIC X(300).
       *出力
            03  ORCSRECESORT-OUT-AREA.
       *        器材テーブル（１：フィルム、２：酸素、３：窒素、４：その他器材）
@@ -92,6 +95,8 @@
                        09  ORCSRECESORT-TEN         PIC  9(09)V9(02).
       *                漢字名称
                        09  ORCSRECESORT-NAME        PIC  X(200).
+      *                レセ電用特定器材商品名
+                       09  ORCSRECESORT-RECEDENNAME PIC  X(300).
       *エラーコード（１：剤なし）
            03  ORCSRECESORT-ERRCD           PIC 9(01).
       *
