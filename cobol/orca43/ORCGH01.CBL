@@ -67,6 +67,8 @@
       *                                     ππø∑¡∞•¡•ß•√•Ø§Úƒ…≤√ 
       *
       *  03.05.01    NACL-∆£∏∂    07/04/19  •∞•Î°º•◊ø«Œ≈¬–±˛
+      *
+      *  04.01.01    NACL-∆£∏∂    07/11/22  ∏¯≥≤•Ï•ª•◊•»¬–±˛
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -118,6 +120,8 @@
            03  WRK-SYO             PIC 9(02).
            03  WRK-AMARI           PIC 9(02).
            03  WRK-WIDGET          PIC 9(02).
+           03  WRK-WIDGET-X        REDEFINES   WRK-WIDGET
+                                   PIC X(02).
            03  WRK-WIDGET1         PIC 9(01).
       *
            03  WRK-NYUGAIKBN       PIC X(06).
@@ -274,8 +278,8 @@
       *
            MOVE    SPACE               TO  LINKAREA
       *
-           MOVE    SPACE               TO  MCP-PUTTYPE.
-           MOVE    "H01    "           TO  MCP-WINDOW.
+           MOVE    SPACE               TO  MCP-PUTTYPE
+           MOVE    "H01    "           TO  MCP-WINDOW
       *
            PERFORM 900-PUT-WINDOW.
       *
@@ -404,9 +408,11 @@ grpsys     MOVE    SPA-HOSPNUM         TO  SYS-1001-HOSPNUM
       *    ∏´Ω–§∑ ‘Ω∏
            MOVE    "2"                 TO  SPA-RECE10-NYUGAIKBN
            MOVE    SPA-SYSYMD (1:6)    TO  SPA-RECE10-SRYYM
+           MOVE    1                   TO  SPA-RECE10-TEISYUTUSAKI 
            PERFORM 3101-MIDASI-HENSYU-SEC
            MOVE    SPACE               TO  SPA-RECE10-NYUGAIKBN
            MOVE    ZERO                TO  SPA-RECE10-SRYYM
+                                           SPA-RECE10-TEISYUTUSAKI
       *
            MOVE    "0"                 TO  SPA-H01GMN-SKYKBNL    (1)
            MOVE    "¿¡µ·§∑§ §§"        TO  SPA-H01GMN-SKYKBNMEIL (1)
@@ -425,8 +431,12 @@ grpsys     MOVE    SPA-HOSPNUM         TO  SYS-1001-HOSPNUM
       *****************************************************************
        3101-MIDASI-HENSYU-SEC          SECTION.
       *
+           MOVE    SPACE               TO  SPA-H01GMN-MIDASI-AREA
+      *
            EVALUATE    SPA-RECE10-NYUGAIKBN
-               WHEN    "1"
+                                       ALSO    SPA-RECE10-TEISYUTUSAKI
+               WHEN    "1"             ALSO    1
+               WHEN    "1"             ALSO    2
                    PERFORM VARYING IDX FROM    1   BY  1
                            UNTIL   IDX >       35
                        MOVE    "blue"  TO  SPA-H01GMN-MIDASI-STYLE (IDX)
@@ -444,7 +454,7 @@ grpsys     MOVE    SPA-HOSPNUM         TO  SYS-1001-HOSPNUM
                    MOVE  "          ∆÷    …˛"  TO SPA-H01GMN-MIDASI(05)
                    MOVE  "          ≥∞    Õ—"  TO SPA-H01GMN-MIDASI(06)
                    MOVE  "          ƒ¥    ∫ﬁ"  TO SPA-H01GMN-MIDASI(07)
-                   MOVE  "          À„    ÃÙ"  TO SPA-H01GMN-MIDASI(08)
+                   MOVE  "          À„    ∆«"  TO SPA-H01GMN-MIDASI(08)
                    MOVE  "          ƒ¥    ¥"  TO SPA-H01GMN-MIDASI(09)
                    MOVE  "        »È≤º∂⁄∆˘∆‚"  TO SPA-H01GMN-MIDASI(10)
                    MOVE  "            ¿≈ÃÆ∆‚"  TO SPA-H01GMN-MIDASI(11)
@@ -473,17 +483,20 @@ grpsys     MOVE    SPA-HOSPNUM         TO  SYS-1001-HOSPNUM
                    MOVE  SPACE              TO    SPA-H01GMN-MIDASI(33)
                                                   SPA-H01GMN-MIDASI(34)
                                                   SPA-H01GMN-MIDASI(35)
-                   MOVE  "    ø©ªˆŒ≈Õ‹»Ò"   TO SPA-H01GMN-SHOMIDASI (1)
+                   MOVE  "ø©ªˆŒ≈Õ‹»Ò"       TO SPA-H01GMN-SHOMIDASI (1)
                    MOVE  "ø©ªˆ…∏Ω‡…È√¥≥€"   TO SPA-H01GMN-SHOMIDASI (2) 
                    IF      SPA-RECE10-SRYYM    >=  "200604"
-                       MOVE  "      ø©ªˆ≤ÛøÙ"
-                                            TO SPA-H01GMN-SHOMIDASI (3)
+                       MOVE  "ø©ªˆ≤ÛøÙ"     TO SPA-H01GMN-SHOMIDASI (3)
                    ELSE
-                       MOVE  "      ø©ªˆ∆¸øÙ"
-                                            TO SPA-H01GMN-SHOMIDASI (3)
+                       MOVE  "ø©ªˆ∆¸øÙ"     TO SPA-H01GMN-SHOMIDASI (3)
                    END-IF 
                    MOVE  WIDGET-NORMAL      TO SPA-H01GMN-SHO-STATE 
-               WHEN    "2"
+                   MOVE    "πÁ∑◊≈¿øÙ"       TO SPA-H01GMN-TENMIDASI (1)
+                   MOVE    "∞Ï…Ù…È√¥∂‚"     TO SPA-H01GMN-TENMIDASI (2)
+                   MOVE    "ÃÙ∫ﬁ∞Ï…Ù…È√¥∂‚" TO SPA-H01GMN-TENMIDASI (3)
+                   MOVE    "º¬∆¸øÙ"         TO SPA-H01GMN-TENMIDASI (4)
+               WHEN    "2"             ALSO    1
+               WHEN    "2"             ALSO    2
                    PERFORM VARYING IDX FROM    1   BY  1
                            UNTIL   IDX >       35
                        MOVE    "blue"  TO  SPA-H01GMN-MIDASI-STYLE (IDX)
@@ -513,7 +526,7 @@ grpsys     MOVE    SPA-HOSPNUM         TO  SYS-1001-HOSPNUM
                    MOVE    "        ≥∞Õ—ÃÙ∫ﬁ"  TO SPA-H01GMN-MIDASI(17)
                    MOVE    "        ≥∞Õ—ƒ¥∫ﬁ"  TO SPA-H01GMN-MIDASI(18)
                    MOVE    "        ΩË     ˝"  TO SPA-H01GMN-MIDASI(19)
-                   MOVE    "        À„    ÃÙ"  TO SPA-H01GMN-MIDASI(20)
+                   MOVE    "        À„    ∆«"  TO SPA-H01GMN-MIDASI(20)
                    MOVE    "        ƒ¥    ¥"  TO SPA-H01GMN-MIDASI(21)
                    MOVE    "      »È≤º∂⁄∆˘∆‚"  TO SPA-H01GMN-MIDASI(22)
                    MOVE    "          ¿≈ÃÆ∆‚"  TO SPA-H01GMN-MIDASI(23)
@@ -534,6 +547,99 @@ grpsys     MOVE    SPA-HOSPNUM         TO  SYS-1001-HOSPNUM
                                                SPA-H01GMN-SHOMIDASI (2)
                                                SPA-H01GMN-SHOMIDASI (3)
                    MOVE  WIDGET-INSENSITIVE TO SPA-H01GMN-SHO-STATE 
+                   MOVE    "πÁ∑◊≈¿øÙ"       TO SPA-H01GMN-TENMIDASI (1)
+                   MOVE    "∞Ï…Ù…È√¥∂‚"     TO SPA-H01GMN-TENMIDASI (2)
+                   MOVE    "ÃÙ∫ﬁ∞Ï…Ù…È√¥∂‚" TO SPA-H01GMN-TENMIDASI (3)
+                   MOVE    "º¬∆¸øÙ"         TO SPA-H01GMN-TENMIDASI (4)
+               WHEN    "1"             ALSO    5
+                   PERFORM VARYING IDX FROM    1   BY  1
+                           UNTIL   IDX >       31
+                       MOVE    "blue"  TO  SPA-H01GMN-MIDASI-STYLE (IDX)
+                   END-PERFORM
+                   MOVE  "          ΩÈ    ø«"  TO SPA-H01GMN-MIDASI(01)
+                   MOVE  "          ∞Â≥ÿ¥…Õ˝"  TO SPA-H01GMN-MIDASI(02)
+                   MOVE  "          ∫ﬂ    ¬"  TO SPA-H01GMN-MIDASI(03)
+                   MOVE  "          ∆‚    …˛"  TO SPA-H01GMN-MIDASI(04)
+                   MOVE  "          ∆÷    …˛"  TO SPA-H01GMN-MIDASI(05)
+                   MOVE  "          ≥∞    Õ—"  TO SPA-H01GMN-MIDASI(06)
+                   MOVE  "          ƒ¥    ∫ﬁ"  TO SPA-H01GMN-MIDASI(07)
+                   MOVE  "          À„    ∆«"  TO SPA-H01GMN-MIDASI(08)
+                   MOVE  "          ƒ¥    ¥"  TO SPA-H01GMN-MIDASI(09)
+                   MOVE  "            √Ì  ºÕ"  TO SPA-H01GMN-MIDASI(10)
+                   MOVE  "            ÃÙ  ∫ﬁ"  TO SPA-H01GMN-MIDASI(11)
+                   MOVE  "            ΩË  √÷"  TO SPA-H01GMN-MIDASI(12)
+                   MOVE  "            ÃÙ  ∫ﬁ"  TO SPA-H01GMN-MIDASI(13)
+                   MOVE  "        ºÍΩ—°¶À„øÏ"  TO SPA-H01GMN-MIDASI(14)
+                   MOVE  "            ÃÙ  ∫ﬁ"  TO SPA-H01GMN-MIDASI(15)
+                   MOVE  "            ∏°  ∫∫"  TO SPA-H01GMN-MIDASI(16)
+                   MOVE  "            ÃÙ  ∫ﬁ"  TO SPA-H01GMN-MIDASI(17)
+                   MOVE  "          ≤Ë¡¸ø«√«"  TO SPA-H01GMN-MIDASI(18)
+                   MOVE  "        •’•£•Î•‡≈˘"  TO SPA-H01GMN-MIDASI(19)
+                   MOVE  "            §Ω§Œ¬æ"  TO SPA-H01GMN-MIDASI(20)
+                   MOVE  "          ÃÙ    ∫ﬁ"  TO SPA-H01GMN-MIDASI(21)
+                   MOVE  "  ∆˛±°¥À‹Œ¡°¶≤√ªª"  TO SPA-H01GMN-MIDASI(22)
+                   MOVE  "  ∏¯≥≤∆˛±°Œ≈Õ‹ªÿ∆≥"  TO SPA-H01GMN-MIDASI(27)
+                   MOVE  "  ¿∂æÙ∂ıµ§ºº¥…Õ˝Œ¡"  TO SPA-H01GMN-MIDASI(30)
+                   MOVE  "            §Ω§Œ¬æ"  TO SPA-H01GMN-MIDASI(31)
+                   MOVE  "        °∑        "  TO SPA-H01GMN-MIDASI(23)
+                                                  SPA-H01GMN-MIDASI(24)
+                                                  SPA-H01GMN-MIDASI(25)
+                                                  SPA-H01GMN-MIDASI(26)
+                                                  SPA-H01GMN-MIDASI(28)
+                                                  SPA-H01GMN-MIDASI(29)
+                   MOVE  WIDGET-INSENSITIVE TO SPA-H01GMN-SHO-STATE 
+                   MOVE    "        æÆ  ∑◊" TO SPA-H01GMN-TENMIDASI (1)
+                   MOVE    "° ø©ªˆ°ÀæÆ  ∑◊" TO SPA-H01GMN-TENMIDASI (2)
+                   MOVE    "        πÁ  ∑◊" TO SPA-H01GMN-TENMIDASI (3)
+                   MOVE    "        º¬∆¸øÙ" TO SPA-H01GMN-TENMIDASI (4)
+               WHEN    "2"             ALSO    5
+                   PERFORM VARYING IDX FROM    1   BY  1
+                           UNTIL   IDX >       38
+                       MOVE    "blue"  TO  SPA-H01GMN-MIDASI-STYLE (IDX)
+                   END-PERFORM
+                   MOVE    "        ΩÈ    ø«"  TO SPA-H01GMN-MIDASI(1)
+                   MOVE    "        ∫∆    ø«"  TO SPA-H01GMN-MIDASI(2)
+                   MOVE    "    ≥∞ÕË¥…Õ˝≤√ªª"  TO SPA-H01GMN-MIDASI(3)
+                   MOVE    "          ª˛¥÷≥∞"  TO SPA-H01GMN-MIDASI(4)
+                   MOVE    "        µŸ    ∆¸"  TO SPA-H01GMN-MIDASI(5)
+                   MOVE    "        øº    ÃÎ"  TO SPA-H01GMN-MIDASI(6)
+                   MOVE    "        ∏¯≥≤¡Í√Ã"  TO SPA-H01GMN-MIDASI(7)
+                   MOVE    "∏¯≥≤≥∞ÕËŒ≈Õ‹ªÿ∆≥"  TO SPA-H01GMN-MIDASI(8)
+                   MOVE    "          §Ω§Œ¬æ"  TO SPA-H01GMN-MIDASI(9)
+                   MOVE    "        ±˝    ø«"  TO SPA-H01GMN-MIDASI(10)
+                   MOVE    "        ÃÎ    ¥÷"  TO SPA-H01GMN-MIDASI(11)
+                   MOVE    "      øºÃÎ°¶∂€µﬁ"  TO SPA-H01GMN-MIDASI(12)
+                   MOVE    "∫ﬂ¬¥µº‘À¨Ã‰ø«Œ≈"  TO SPA-H01GMN-MIDASI(13)
+                   MOVE    "          §Ω§Œ¬æ"  TO SPA-H01GMN-MIDASI(14)
+                   MOVE    "          ÃÙ  ∫ﬁ"  TO SPA-H01GMN-MIDASI(15)
+                   MOVE    "        ∆‚…˛ÃÙ∫ﬁ"  TO SPA-H01GMN-MIDASI(16)
+                   MOVE    "        ∆‚…˛ƒ¥∫ﬁ"  TO SPA-H01GMN-MIDASI(17)
+                   MOVE    "        ∆÷    …˛"  TO SPA-H01GMN-MIDASI(18)
+                   MOVE    "        ≥∞Õ—ÃÙ∫ﬁ"  TO SPA-H01GMN-MIDASI(19)
+                   MOVE    "        ≥∞Õ—ƒ¥∫ﬁ"  TO SPA-H01GMN-MIDASI(20)
+                   MOVE    "        ΩË     ˝"  TO SPA-H01GMN-MIDASI(21)
+                   MOVE    "        À„    ∆«"  TO SPA-H01GMN-MIDASI(22)
+                   MOVE    "        ƒ¥    ¥"  TO SPA-H01GMN-MIDASI(23)
+                   MOVE    "      »È≤º∂⁄∆˘∆‚"  TO SPA-H01GMN-MIDASI(24)
+                   MOVE    "          ¿≈ÃÆ√Ì"  TO SPA-H01GMN-MIDASI(25)
+                   MOVE    "          §Ω§Œ¬æ"  TO SPA-H01GMN-MIDASI(26)
+                   MOVE    "          ÃÙ  ∫ﬁ"  TO SPA-H01GMN-MIDASI(27)
+                   MOVE    "          ΩË  √÷"  TO SPA-H01GMN-MIDASI(28)
+                   MOVE    "          ÃÙ  ∫ﬁ"  TO SPA-H01GMN-MIDASI(29)
+                   MOVE    "      ºÍΩ—°¶À„øÏ"  TO SPA-H01GMN-MIDASI(30)
+                   MOVE    "          ÃÙ  ∫ﬁ"  TO SPA-H01GMN-MIDASI(31)
+                   MOVE    "          ∏°  ∫∫"  TO SPA-H01GMN-MIDASI(32)
+                   MOVE    "          ÃÙ  ∫ﬁ"  TO SPA-H01GMN-MIDASI(33)
+                   MOVE    "        ≤Ë¡¸ø«√«"  TO SPA-H01GMN-MIDASI(34)
+                   MOVE    "      •’•£•Î•‡≈˘"  TO SPA-H01GMN-MIDASI(35)
+                   MOVE    "        ΩË ˝§ª§Û"  TO SPA-H01GMN-MIDASI(36)
+                   MOVE    "          §Ω§Œ¬æ"  TO SPA-H01GMN-MIDASI(37)
+                   MOVE    "          ÃÙ  ∫ﬁ"  TO SPA-H01GMN-MIDASI(38)
+                   MOVE  WIDGET-INSENSITIVE TO SPA-H01GMN-SHO-STATE 
+                   MOVE    "æÆ  ∑◊"         TO SPA-H01GMN-TENMIDASI (1)
+                   MOVE    SPACE            TO SPA-H01GMN-TENMIDASI (2)
+                   MOVE    "πÁ  ∑◊"         TO SPA-H01GMN-TENMIDASI (3)
+                   MOVE    "º¬∆¸øÙ"         TO SPA-H01GMN-TENMIDASI (4)
            END-EVALUATE
       *
            .
@@ -669,6 +775,9 @@ grpsys     MOVE    SPA-HOSPNUM         TO  SYS-1001-HOSPNUM
                WHEN    "ACTIVATE"      ALSO    "NKHNTEN33"
                WHEN    "ACTIVATE"      ALSO    "NKHNTEN34"
                WHEN    "ACTIVATE"      ALSO    "NKHNTEN35"
+      **         WHEN    "ACTIVATE"      ALSO    "NKHNTEN36"
+      **         WHEN    "ACTIVATE"      ALSO    "NKHNTEN37"
+      **         WHEN    "ACTIVATE"      ALSO    "NKHNTEN38"
                    MOVE    MCP-WIDGET (8:2)    TO  WRK-WIDGET 
                    MOVE    WRK-WIDGET          TO  IDX 
                    PERFORM 4108-KHNTEN-CHK-SEC
@@ -707,6 +816,9 @@ grpsys     MOVE    SPA-HOSPNUM         TO  SYS-1001-HOSPNUM
                WHEN    "ACTIVATE"      ALSO    "NKAISU33"
                WHEN    "ACTIVATE"      ALSO    "NKAISU34"
                WHEN    "ACTIVATE"      ALSO    "NKAISU35"
+      **         WHEN    "ACTIVATE"      ALSO    "NKAISU36"
+      **         WHEN    "ACTIVATE"      ALSO    "NKAISU37"
+      **         WHEN    "ACTIVATE"      ALSO    "NKAISU38"
                    MOVE    MCP-WIDGET (7:2)    TO  WRK-WIDGET 
                    MOVE    WRK-WIDGET          TO  IDX  
                    PERFORM 4109-KAISU-CHK-SEC
@@ -745,6 +857,9 @@ grpsys     MOVE    SPA-HOSPNUM         TO  SYS-1001-HOSPNUM
                WHEN    "ACTIVATE"      ALSO    "NTENSU33"
                WHEN    "ACTIVATE"      ALSO    "NTENSU34"
                WHEN    "ACTIVATE"      ALSO    "NTENSU35"
+      **         WHEN    "ACTIVATE"      ALSO    "NTENSU36"
+      **         WHEN    "ACTIVATE"      ALSO    "NTENSU37"
+      **         WHEN    "ACTIVATE"      ALSO    "NTENSU38"
                    MOVE    MCP-WIDGET (7:2)    TO  WRK-WIDGET 
                    MOVE    WRK-WIDGET          TO  IDX  
                    MOVE    1                   TO  IDY
@@ -784,6 +899,9 @@ grpsys     MOVE    SPA-HOSPNUM         TO  SYS-1001-HOSPNUM
                WHEN    "ACTIVATE"      ALSO    "NKOHTENSU133"
                WHEN    "ACTIVATE"      ALSO    "NKOHTENSU134"
                WHEN    "ACTIVATE"      ALSO    "NKOHTENSU135"
+      **         WHEN    "ACTIVATE"      ALSO    "NKOHTENSU136"
+      **         WHEN    "ACTIVATE"      ALSO    "NKOHTENSU137"
+      **         WHEN    "ACTIVATE"      ALSO    "NKOHTENSU138"
                    MOVE    MCP-WIDGET (11:2)   TO  WRK-WIDGET 
                    MOVE    WRK-WIDGET          TO  IDX 
                    MOVE    2                   TO  IDY 
@@ -823,6 +941,9 @@ grpsys     MOVE    SPA-HOSPNUM         TO  SYS-1001-HOSPNUM
                WHEN    "ACTIVATE"      ALSO    "NKOHTENSU233"
                WHEN    "ACTIVATE"      ALSO    "NKOHTENSU234"
                WHEN    "ACTIVATE"      ALSO    "NKOHTENSU235"
+      **         WHEN    "ACTIVATE"      ALSO    "NKOHTENSU236"
+      **         WHEN    "ACTIVATE"      ALSO    "NKOHTENSU237"
+      **         WHEN    "ACTIVATE"      ALSO    "NKOHTENSU238"
                    MOVE    MCP-WIDGET (11:2)   TO  WRK-WIDGET 
                    MOVE    WRK-WIDGET          TO  IDX 
                    MOVE    3                   TO  IDY 
@@ -1067,20 +1188,27 @@ grpsys     PERFORM 900-DBSELECT-SEC
            END-IF
       *
            IF      RECE10-NYUGAIKBN   =   "1"
-               MOVE    "∆˛°°±°"       TO  SPA-H01GMN-HNYUGAIKBN
+               MOVE    "∆˛  ±°"       TO  SPA-H01GMN-HNYUGAIKBN
            ELSE    
                MOVE    "∆˛±°≥∞"       TO  SPA-H01GMN-HNYUGAIKBN
            END-IF
-           IF      RECE10-TEISYUTUSAKI     =   "1"
-               MOVE    "ªŸ ß¥∂‚"      TO  SPA-H01GMN-HTEISYUTUSAKI
-           ELSE    
-               MOVE    "πÒ ›œ¢πÁ≤Ò"    TO  SPA-H01GMN-HTEISYUTUSAKI
-           END-IF
+           EVALUATE    RECE10-TEISYUTUSAKI
+               WHEN    "1"
+                   MOVE    "ªŸ ß¥∂‚"      TO  SPA-H01GMN-HTEISYUTUSAKI
+               WHEN    "2"
+                   MOVE    "πÒ ›œ¢πÁ≤Ò"    TO  SPA-H01GMN-HTEISYUTUSAKI
+               WHEN    "5"
+                   MOVE    "∏¯≥≤"          TO  SPA-H01GMN-HTEISYUTUSAKI
+           END-EVALUATE
       *
            PERFORM 530-RECESYUBETU-HENSYU-SEC
            MOVE    WRK-RECESYUBETU     TO  SPA-H01GMN-HRECESYUBETU
       *
-           MOVE    RECE10-HKNJANUM     TO  SPA-H01GMN-HHKNJANUM
+           EVALUATE    RECE10-TEISYUTUSAKI
+               WHEN    "1"
+               WHEN    "2"
+                   MOVE    RECE10-HKNJANUM     TO  SPA-H01GMN-HHKNJANUM
+           END-EVALUATE
       *
            STRING  RECE10-KIGO     DELIMITED   BY  SPACE
                    "°°"            DELIMITED   BY  SIZE
@@ -1149,34 +1277,44 @@ grpsys     PERFORM 900-DBSELECT-SEC
                WHEN    "1"
                    PERFORM VARYING IDX FROM    1   BY  1
                            UNTIL   IDX >       32
-                       MOVE    RECE10-KHNTEN (IDX)
+                       IF    ( RECE10-TEISYUTUSAKI     =   "5" )
+                       AND   ( IDX                     >   31  )
+                           CONTINUE
+                       ELSE 
+                           MOVE    RECE10-KHNTEN (IDX)
                                        TO  SPA-H01GMN-KHNTEN (IDX)
                                            SPA-H01GMN-NKHNTEN(IDX)
-                       MOVE    RECE10-KAISU  (IDX)
+                           MOVE    RECE10-KAISU  (IDX)
                                        TO  SPA-H01GMN-KAISU  (IDX)
                                            SPA-H01GMN-NKAISU (IDX)
-                       PERFORM VARYING IDY FROM    1   BY  1
-                               UNTIL   IDY >       3
-                           MOVE    RECE10-TENSU  (IDX IDY)
-                                   TO  SPA-H01GMN-TENSU  (IDY IDX)
-                                       SPA-H01GMN-NTENSU (IDY IDX)
-                       END-PERFORM 
+                           PERFORM VARYING IDY FROM    1   BY  1
+                                   UNTIL   IDY >       3
+                               MOVE    RECE10-TENSU  (IDX IDY)
+                                       TO  SPA-H01GMN-TENSU  (IDY IDX)
+                                           SPA-H01GMN-NTENSU (IDY IDX)
+                          END-PERFORM
+                       END-IF 
                    END-PERFORM       
                WHEN    "2"
                    PERFORM VARYING IDX FROM    1   BY  1
-                           UNTIL   IDX >       35
-                       MOVE    RECE10-KHNTEN (IDX)
-                                       TO  SPA-H01GMN-KHNTEN (IDX)
-                                           SPA-H01GMN-NKHNTEN(IDX)
-                       MOVE    RECE10-KAISU  (IDX)
-                                       TO  SPA-H01GMN-KAISU  (IDX)
-                                           SPA-H01GMN-NKAISU (IDX)
-                       PERFORM VARYING IDY FROM    1   BY  1
-                               UNTIL   IDY >       3
-                           MOVE    RECE10-TENSU  (IDX IDY)
-                                   TO  SPA-H01GMN-TENSU  (IDY IDX)
-                                       SPA-H01GMN-NTENSU (IDY IDX)
-                       END-PERFORM        
+                           UNTIL   IDX >       38
+                       IF    ( RECE10-TEISYUTUSAKI     =   "1" OR  "2" )
+                       AND   ( IDX                     >   35          )
+                           CONTINUE
+                       ELSE 
+                           MOVE    RECE10-KHNTEN (IDX)
+                                           TO  SPA-H01GMN-KHNTEN (IDX)
+                                               SPA-H01GMN-NKHNTEN(IDX)
+                           MOVE    RECE10-KAISU  (IDX)
+                                           TO  SPA-H01GMN-KAISU  (IDX)
+                                               SPA-H01GMN-NKAISU (IDX)
+                           PERFORM VARYING IDY FROM    1   BY  1
+                                   UNTIL   IDY >       3
+                               MOVE    RECE10-TENSU  (IDX IDY)
+                                       TO  SPA-H01GMN-TENSU  (IDY IDX)
+                                           SPA-H01GMN-NTENSU (IDY IDX)
+                           END-PERFORM
+                       END-IF        
                    END-PERFORM
            END-EVALUATE 
       *    
@@ -1185,40 +1323,60 @@ grpsys     PERFORM 900-DBSELECT-SEC
                MOVE    RECE10-TOTALTEN (IDY)
                                    TO  SPA-H01GMN-TOTALTEN (IDY)
                                        SPA-H01GMN-NTOTALTEN(IDY)
-               MOVE    RECE10-FTNMONEY (IDY)
-                                   TO  SPA-H01GMN-FTNMONEY (IDY)
-                                       SPA-H01GMN-NFTNMONEY(IDY)
-               MOVE    RECE10-YKZFTN   (IDY)
-                                   TO  SPA-H01GMN-YKZFTN   (IDY)
-                                       SPA-H01GMN-NYKZFTN  (IDY)
                MOVE    RECE10-JNISSU   (IDY)
                                    TO  SPA-H01GMN-JNISSU   (IDY)
                                        SPA-H01GMN-NJNISSU  (IDY)
+               IF      RECE10-TEISYUTUSAKI =   "5"
+      *            æÆ∑◊
+                   MOVE    RECE10-FTNMONEY (IDY)
+                                       TO  SPA-H01GMN-YKZFTN   (IDY)
+                                           SPA-H01GMN-NYKZFTN  (IDY)
+      *            æÆ∑◊° ø©ªˆ°À
+                   MOVE    RECE10-YKZFTN   (IDY)
+                                       TO  SPA-H01GMN-FTNMONEY (IDY)
+                                           SPA-H01GMN-NFTNMONEY(IDY)
+               ELSE
+                   MOVE    RECE10-FTNMONEY (IDY)
+                                       TO  SPA-H01GMN-FTNMONEY (IDY)
+                                           SPA-H01GMN-NFTNMONEY(IDY)
+                   MOVE    RECE10-YKZFTN   (IDY)
+                                       TO  SPA-H01GMN-YKZFTN   (IDY)
+                                           SPA-H01GMN-NYKZFTN  (IDY)
+               END-IF
            END-PERFORM
       *
            IF     RECE10-NYUGAIKBN     =   "1"
-               PERFORM VARYING IDY FROM    1   BY  1
-                       UNTIL   IDY >       3
-                   MOVE    RECE10-SHOKUJIRYOYOHI (IDY)
+               IF      RECE10-TEISYUTUSAKI =   "5"
+                   CONTINUE
+               ELSE
+                   PERFORM VARYING IDY FROM    1   BY  1
+                           UNTIL   IDY >       3
+                       MOVE    RECE10-SHOKUJIRYOYOHI (IDY)
                                    TO  SPA-H01GMN-SHORYOYOHI (IDY)
                                        SPA-H01GMN-NSHORYOYOHI(IDY)
-                   MOVE    RECE10-SHOKUJIFTN   (IDY)
+                       MOVE    RECE10-SHOKUJIFTN   (IDY)
                                    TO  SPA-H01GMN-SHOFTN     (IDY)
                                        SPA-H01GMN-NSHOFTN    (IDY)
-                   MOVE    RECE10-SHOKUJINISSU   (IDY)
+                       MOVE    RECE10-SHOKUJINISSU   (IDY)
                                    TO  SPA-H01GMN-SHONISSU   (IDY)
                                        SPA-H01GMN-NSHONISSU  (IDY)
-               END-PERFORM
+                   END-PERFORM
+               END-IF
            END-IF
       *
            MOVE    RECE10-AGE      TO  SPA-H01GMN-AGE
-           MOVE    RECE10-KYURATE  TO  SPA-H01GMN-KYURATE         
+           IF      RECE10-TEISYUTUSAKI =   "5"
+               CONTINUE
+           ELSE
+               MOVE    RECE10-KYURATE  TO  SPA-H01GMN-KYURATE
       *
-           IF      RECE10-ZAITAKU  =   "1"
-               MOVE    "∫ﬂ∞Â¡Ì≈˘"          TO  SPA-H01GMN-ZAITAKU
-           END-IF
+               IF      RECE10-ZAITAKU  =   "1"
+                   MOVE    "∫ﬂ∞Â¡Ì≈˘"          TO  SPA-H01GMN-ZAITAKU
+               END-IF
+           END-IF         
       *
-           IF      RECE10-RECESYUBETU  =   "6666"
+           IF    ( RECE10-RECESYUBETU  =   "6666" )
+           OR    ( RECE10-TEISYUTUSAKI =   "5"    )
                CONTINUE
            ELSE
                EVALUATE    RECE10-RECESYUBETU (4:1)
@@ -1812,7 +1970,7 @@ grpsys         MOVE    SPA-HOSPNUM         TO  SYS-1005-HOSPNUM
       *
            MOVE    SPACE           TO  RECE10-REC   
            INITIALIZE                  RECE10-REC
-           MOVE    SPA-RECE10-KEY      TO  RECE10-KEY
+           MOVE    SPA-RECE10-KEY  TO  RECE10-KEY
       *
            PERFORM 900-SEIKYU-INV-SEC
            IF      FLG-SEIKYU          =   ZERO
@@ -1827,53 +1985,58 @@ grpsys         MOVE    SPA-HOSPNUM         TO  SYS-1005-HOSPNUM
            MOVE    SPA-H01GMN-SKYKBN      TO  RECE10-SKYKBN
            MOVE    "1"                    TO  RECE10-TEISEIKBN
       *
-           PERFORM VARYING IDX FROM    1   BY  1
-                   UNTIL   IDX >       3
-               MOVE    SPA-H01GMN-NJNISSU (IDX)  TO
-                                       RECE10-JNISSU   (IDX)
-               MOVE    SPA-H01GMN-NTOTALTEN (IDX)    TO 
-                                       RECE10-TOTALTEN (IDX)
-               MOVE    SPA-H01GMN-NFTNMONEY(IDX) TO
-                                       RECE10-FTNMONEY (IDX)
-               MOVE    SPA-H01GMN-NYKZFTN  (IDX) TO
-                                       RECE10-YKZFTN   (IDX)
-               IF      SPA-RECE10-NYUGAIKBN      =   "1"
-                   MOVE    SPA-H01GMN-NSHONISSU (IDX)  TO
-                                       RECE10-SHOKUJINISSU   (IDX)
-                   MOVE    SPA-H01GMN-NSHORYOYOHI (IDX)    TO 
-                                       RECE10-SHOKUJIRYOYOHI (IDX)
-                   MOVE    SPA-H01GMN-NSHOFTN(IDX) TO
-                                       RECE10-SHOKUJIFTN (IDX)
-               END-IF
-           END-PERFORM
-           EVALUATE    SPA-RECE10-NYUGAIKBN
-               WHEN    "1"
-                   PERFORM VARYING IDX FROM    1   BY  1
-                           UNTIL   IDX >       32
-                       MOVE    SPA-H01GMN-NKHNTEN  (IDX)  TO
-                                           RECE10-KHNTEN (IDX)
-                       MOVE    SPA-H01GMN-NKAISU   (IDX)  TO
-                                           RECE10-KAISU  (IDX)
-                       PERFORM VARYING IDY FROM    1   BY  1
-                               UNTIL   IDY >       3
-                           MOVE    SPA-H01GMN-NTENSU (IDY IDX)  TO
+      *    ∏¯≥≤§œ≈¿øÙ≈˘§Œππø∑§œ§∑§ §§
+           IF      SPA-RECE10-TEISYUTUSAKI =   "5"
+               CONTINUE
+           ELSE
+               PERFORM VARYING IDX FROM    1   BY  1
+                       UNTIL   IDX >       3
+                   MOVE    SPA-H01GMN-NJNISSU (IDX)  TO
+                                           RECE10-JNISSU   (IDX)
+                   MOVE    SPA-H01GMN-NTOTALTEN (IDX)    TO 
+                                           RECE10-TOTALTEN (IDX)
+                   MOVE    SPA-H01GMN-NFTNMONEY(IDX) TO
+                                           RECE10-FTNMONEY (IDX)
+                   MOVE    SPA-H01GMN-NYKZFTN  (IDX) TO
+                                           RECE10-YKZFTN   (IDX)
+                   IF      SPA-RECE10-NYUGAIKBN      =   "1"
+                       MOVE    SPA-H01GMN-NSHONISSU (IDX)  TO
+                                           RECE10-SHOKUJINISSU   (IDX)
+                       MOVE    SPA-H01GMN-NSHORYOYOHI (IDX)    TO 
+                                           RECE10-SHOKUJIRYOYOHI (IDX)
+                       MOVE    SPA-H01GMN-NSHOFTN(IDX) TO
+                                           RECE10-SHOKUJIFTN (IDX)
+                   END-IF
+               END-PERFORM
+               EVALUATE    SPA-RECE10-NYUGAIKBN
+                   WHEN    "1"
+                       PERFORM VARYING IDX FROM    1   BY  1
+                               UNTIL   IDX >       32
+                           MOVE    SPA-H01GMN-NKHNTEN  (IDX)  TO
+                                               RECE10-KHNTEN (IDX)
+                           MOVE    SPA-H01GMN-NKAISU   (IDX)  TO
+                                               RECE10-KAISU  (IDX)
+                           PERFORM VARYING IDY FROM    1   BY  1
+                                   UNTIL   IDY >       3
+                               MOVE    SPA-H01GMN-NTENSU (IDY IDX)  TO
                                                RECE10-TENSU (IDX IDY)
-                       END-PERFORM 
-                   END-PERFORM
-               WHEN    "2"
-                   PERFORM VARYING IDX FROM    1   BY  1
-                           UNTIL   IDX >       35
-                       MOVE    SPA-H01GMN-NKHNTEN  (IDX)  TO
-                                           RECE10-KHNTEN (IDX)
-                       MOVE    SPA-H01GMN-NKAISU   (IDX)  TO
-                                           RECE10-KAISU  (IDX)
-                       PERFORM VARYING IDY FROM    1   BY  1
-                               UNTIL   IDY >       3
-                           MOVE    SPA-H01GMN-NTENSU (IDY IDX)  TO
+                           END-PERFORM 
+                       END-PERFORM
+                   WHEN    "2"
+                       PERFORM VARYING IDX FROM    1   BY  1
+                               UNTIL   IDX >       38
+                           MOVE    SPA-H01GMN-NKHNTEN  (IDX)  TO
+                                               RECE10-KHNTEN (IDX)
+                           MOVE    SPA-H01GMN-NKAISU   (IDX)  TO
+                                               RECE10-KAISU  (IDX)
+                           PERFORM VARYING IDY FROM    1   BY  1
+                                   UNTIL   IDY >       3
+                               MOVE    SPA-H01GMN-NTENSU (IDY IDX)  TO
                                                RECE10-TENSU (IDX IDY)
-                       END-PERFORM 
-                   END-PERFORM
-           END-EVALUATE 
+                           END-PERFORM 
+                       END-PERFORM
+               END-EVALUATE
+           END-IF     
       *     
            MOVE    SPA-SYSYMD          TO  RECE10-UPDYMD
       *
@@ -1884,7 +2047,7 @@ grpsys         MOVE    SPA-HOSPNUM         TO  SYS-1005-HOSPNUM
 grpsys     PERFORM 900-ORCDBMAIN-SEC
       *
       *    ∏¯»Ò¿¡µ·ΩÒ§¨§¢§Ï§–ππø∑§π§Î
-           IF      MCP-RC     =   ZERO
+           IF      MCP-RC              =   ZERO
                MOVE    SPACE           TO  KOHSKY-REC   
                INITIALIZE                  KOHSKY-REC
                MOVE    SPA-RECE10-KEY      TO  KOHSKY-KEY
@@ -2020,7 +2183,7 @@ grpsys             PERFORM 900-ORCDBMAIN-SEC
            MOVE    SPA-H01GMN-HKIGO       TO  H01-HKIGO-VALUE   
       *
            PERFORM VARYING IDX FROM    1       BY  1
-                   UNTIL   IDX     >   35
+                   UNTIL   IDX     >   38
       *****        OR          SPA-H01GMN-MIDASI (IDX)    =   SPACE
                MOVE    SPA-H01GMN-MIDASI (IDX)    TO  H01-MIDASI (IDX)
                MOVE    SPA-H01GMN-KHNTEN (IDX)    TO  H01-KHNTEN (IDX)
@@ -2081,9 +2244,18 @@ grpsys             PERFORM 900-ORCDBMAIN-SEC
                                                    H01-SHOMIDASI (5) 
            MOVE    SPA-H01GMN-SHOMIDASI (3)    TO  H01-SHOMIDASI (3)
                                                    H01-SHOMIDASI (6) 
+      *
+           MOVE    SPA-H01GMN-TENMIDASI (1)    TO  H01-TENMIDASI (1)
+                                                   H01-TENMIDASI (5) 
+           MOVE    SPA-H01GMN-TENMIDASI (2)    TO  H01-TENMIDASI (2)
+                                                   H01-TENMIDASI (6) 
+           MOVE    SPA-H01GMN-TENMIDASI (3)    TO  H01-TENMIDASI (3)
+                                                   H01-TENMIDASI (7) 
+           MOVE    SPA-H01GMN-TENMIDASI (4)    TO  H01-TENMIDASI (4)
+                                                   H01-TENMIDASI (8) 
       *    øß§Œ¿ﬂƒÍ
            PERFORM VARYING IDX FROM    1       BY  1
-                   UNTIL   IDX     >   35
+                   UNTIL   IDX     >   38
                MOVE    SPA-H01GMN-MIDASI-STYLE (IDX)
                                        TO  H01-MIDASI-STYLE (IDX)
            END-PERFORM
@@ -2104,7 +2276,7 @@ grpsys             PERFORM 900-ORCDBMAIN-SEC
                MOVE    WIDGET-NORMAL       TO  H01-SRYKA-STATE
            END-IF
            PERFORM VARYING IDX FROM    1   BY  1
-                   UNTIL   IDX     >   35
+                   UNTIL   IDX     >   38
                MOVE    WIDGET-INSENSITIVE  TO  H01-KHNTEN-STATE (IDX)
                                                H01-KAISU-STATE  (IDX)
                PERFORM VARYING IDY FROM    1       BY  1
@@ -2169,19 +2341,19 @@ grpsys             PERFORM 900-ORCDBMAIN-SEC
                  EVALUATE    WRK-AMARI
                      WHEN    0
                          MOVE  "NKHNTEN"  TO  MCP-WIDGET
-                         MOVE  WRK-WIDGET TO  MCP-WIDGET (8:2)
+                         MOVE  WRK-WIDGET-X TO  MCP-WIDGET (8:2)
                      WHEN    1
                          MOVE  "NKAISU"   TO  MCP-WIDGET
-                         MOVE  WRK-WIDGET TO  MCP-WIDGET (7:2)
+                         MOVE  WRK-WIDGET-X TO  MCP-WIDGET (7:2)
                      WHEN    2
                          MOVE  "NTENSU"   TO  MCP-WIDGET
-                         MOVE  WRK-WIDGET TO  MCP-WIDGET (7:2)
+                         MOVE  WRK-WIDGET-X TO  MCP-WIDGET (7:2)
                      WHEN    3
                          MOVE  "NKOHTENSU1"  TO  MCP-WIDGET
-                         MOVE  WRK-WIDGET TO  MCP-WIDGET (11:2)
+                         MOVE  WRK-WIDGET-X TO  MCP-WIDGET (11:2)
                      WHEN    4
                          MOVE  "NKOHTENSU2"  TO  MCP-WIDGET
-                         MOVE  WRK-WIDGET TO  MCP-WIDGET (11:2)
+                         MOVE  WRK-WIDGET-X TO  MCP-WIDGET (11:2)
                  END-EVALUATE                    
              WHEN    183
                     MOVE  "NFTNMONEY1"   TO  MCP-WIDGET
@@ -2347,6 +2519,13 @@ grpsys             PERFORM 900-ORCDBMAIN-SEC
       *    •Ï•ª•◊•»ºÔ Ã ‘Ω∏ΩËÕ˝
       *****************************************************************
        530-RECESYUBETU-HENSYU-SEC          SECTION.
+      *
+           MOVE   SPACE                TO  WRK-RECESYUBETU
+      *
+           IF      RECE10-TEISYUTUSAKI =   "5"
+      ***      MOVE    "∏¯≥≤"              TO  WRK-RECESYUBETU
+               GO  TO  530-RECESYUBETU-HENSYU-EXT
+           END-IF        
       *
            IF      RECE10-RECESYUBETU  =   "6666"
                MOVE    "∆√ ÃŒ≈Õ‹»Ò"        TO  WRK-RECESYUBETU

@@ -23,17 +23,20 @@
               03  H01-SRYKA.
                 04  H01-SRYKA-STATE   PIC S9(9)   BINARY.
                 04  H01-SRYKA-VALUE   PIC X(2).
-              03  H01-MIDASI-G  OCCURS  35.
+              03  H01-SCROLL.
+                04  H01-SCR-HPOS      PIC S9(9)   BINARY.
+                04  H01-SCR-VPOS      PIC S9(9)   BINARY.
+              03  H01-MIDASI-G  OCCURS  38.
                 04  H01-MIDASI-STYLE   PIC X(20).
                 04  H01-MIDASI         PIC X(20).
-              03  H01-KHNTEN-G  OCCURS  35.
+              03  H01-KHNTEN-G  OCCURS  38.
                 04  H01-KHNTEN-STATE   PIC S9(9)   BINARY.
                 04  H01-KHNTEN   PIC 9(8).
-              03  H01-KAISU-G   OCCURS  35.
+              03  H01-KAISU-G   OCCURS  38.
                 04  H01-KAISU-STATE   PIC S9(9)   BINARY.
                 04  H01-KAISU   PIC 9(5).
               03  H01-TENSU-G   OCCURS  3.
-                04  H01-TENSU-TBL OCCURS  35.
+                04  H01-TENSU-TBL OCCURS  38.
                   05  H01-TENSU-STATE   PIC S9(9)   BINARY.
                   05  H01-TENSU   PIC S9(8).
               03  H01-TOTALTEN-G  OCCURS  3.
@@ -57,12 +60,12 @@
               03  H01-SHONISSU-G  OCCURS  3.
                 04  H01-SHONISSU-STATE   PIC S9(9)   BINARY.
                 04  H01-SHONISSU   PIC 9(2).
-              03  H01-NKHNTEN-G  OCCURS  35.
+              03  H01-NKHNTEN-G  OCCURS  38.
                 04  H01-NKHNTEN   PIC 9(8).
-              03  H01-NKAISU-G  OCCURS  35.
+              03  H01-NKAISU-G  OCCURS  38.
                 04  H01-NKAISU   PIC 9(5).
               03  H01-NTENSU-G  OCCURS  3.
-                04  H01-NTENSU-TBL  OCCURS  35.
+                04  H01-NTENSU-TBL  OCCURS  38.
                   05  H01-NTENSU   PIC S9(8).
               03  H01-NTOTALTEN-G OCCURS  3.
                 04  H01-NTOTALTEN-STATE   PIC S9(9)   BINARY.
@@ -84,6 +87,8 @@
                 04  H01-NSHONISSU   PIC 9(2).
               03  H01-SHOMIDASI-G  OCCURS  6.
                 04  H01-SHOMIDASI  PIC X(14).
+              03  H01-TENMIDASI-G  OCCURS  8.
+                04  H01-TENMIDASI  PIC X(14).
               03  H01-SKYKBN-COMBO.
                 04  H01-SKYKBN.
                   05  H01-VALUE   PIC X(15).

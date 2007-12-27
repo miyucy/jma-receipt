@@ -10,6 +10,11 @@ H01	{
                     state   int;
 			value	varchar(2);
 		};
+                scrolledwindow2 {
+                        hpos    int;
+                        vpos    int;
+                        viewport1       {
+                                fixed3  {
 		MIDASI01	{
                     style   varchar(20);
 			value	varchar(20);
@@ -147,6 +152,18 @@ H01	{
 			value	varchar(20);
 		};
 		MIDASI35	{
+                    style   varchar(20);
+			value	varchar(20);
+		};
+		MIDASI36	{
+                    style   varchar(20);
+			value	varchar(20);
+		};
+		MIDASI37	{
+                    style   varchar(20);
+			value	varchar(20);
+		};
+		MIDASI38	{
                     style   varchar(20);
 			value	varchar(20);
 		};
@@ -290,6 +307,18 @@ H01	{
                     state   int;
 			value	number(8);
 		};
+		KHNTEN36	{
+                    state   int;
+			value	number(8);
+		};
+		KHNTEN37	{
+                    state   int;
+			value	number(8);
+		};
+		KHNTEN38	{
+                    state   int;
+			value	number(8);
+		};
 		KAISU01	{
                     state   int;
 			value	number(5);
@@ -427,6 +456,18 @@ H01	{
 			value	number(5);
 		};
 		KAISU35	{
+                    state   int;
+			value	number(5);
+		};
+		KAISU36	{
+                    state   int;
+			value	number(5);
+		};
+		KAISU37	{
+                    state   int;
+			value	number(5);
+		};
+		KAISU38	{
                     state   int;
 			value	number(5);
 		};
@@ -570,6 +611,18 @@ H01	{
                     state   int;
 			value	number(8);
 		};
+		TENSU36	{
+                    state   int;
+			value	number(8);
+		};
+		TENSU37	{
+                    state   int;
+			value	number(8);
+		};
+		TENSU38	{
+                    state   int;
+			value	number(8);
+		};
 		KOHTENSU101	{
                     state   int;
 			value	number(8);
@@ -710,6 +763,18 @@ H01	{
                     state   int;
 			value	number(8);
 		};
+		KOHTENSU136	{
+                    state   int;
+			value	number(8);
+		};
+		KOHTENSU137	{
+                    state   int;
+			value	number(8);
+		};
+		KOHTENSU138	{
+                    state   int;
+			value	number(8);
+		};
 		KOHTENSU201	{
                     state   int;
 			value	number(8);
@@ -847,6 +912,18 @@ H01	{
 			value	number(8);
 		};
 		KOHTENSU235	{
+                    state   int;
+			value	number(8);
+		};
+		KOHTENSU236	{
+                    state   int;
+			value	number(8);
+		};
+		KOHTENSU237	{
+                    state   int;
+			value	number(8);
+		};
+		KOHTENSU238	{
                     state   int;
 			value	number(8);
 		};
@@ -1039,6 +1116,15 @@ H01	{
 		NKHNTEN35	{
 			value	number(8);
 		};
+		NKHNTEN36	{
+			value	number(8);
+		};
+		NKHNTEN37	{
+			value	number(8);
+		};
+		NKHNTEN38	{
+			value	number(8);
+		};
 		NKAISU01	{
 			value	number(5);
 		};
@@ -1142,6 +1228,15 @@ H01	{
 			value	number(5);
 		};
 		NKAISU35	{
+			value	number(5);
+		};
+		NKAISU36	{
+			value	number(5);
+		};
+		NKAISU37	{
+			value	number(5);
+		};
+		NKAISU38	{
 			value	number(5);
 		};
 		NTENSU01	{
@@ -1249,6 +1344,15 @@ H01	{
 		NTENSU35	{
 			value	number(8);
 		};
+		NTENSU36	{
+			value	number(8);
+		};
+		NTENSU37	{
+			value	number(8);
+		};
+		NTENSU38	{
+			value	number(8);
+		};
 		NKOHTENSU101	{
 			value	number(8);
 		};
@@ -1352,6 +1456,15 @@ H01	{
 			value	number(8);
 		};
 		NKOHTENSU135	{
+			value	number(8);
+		};
+		NKOHTENSU136	{
+			value	number(8);
+		};
+		NKOHTENSU137	{
+			value	number(8);
+		};
+		NKOHTENSU138	{
 			value	number(8);
 		};
 		NKOHTENSU201	{
@@ -1459,6 +1572,15 @@ H01	{
 		NKOHTENSU235	{
 			value	number(8);
 		};
+		NKOHTENSU236	{
+			value	number(8);
+		};
+		NKOHTENSU237	{
+			value	number(8);
+		};
+		NKOHTENSU238	{
+			value	number(8);
+		};
 		NTOTALTEN1	{
                     state   int;
 			value	number(8);
@@ -1551,6 +1673,33 @@ H01	{
 		};
 		SHOMIDASI6	{
 			value	varchar(14);
+		};
+		TENMIDASI1	{
+			value	varchar(14);
+		};
+		TENMIDASI2	{
+			value	varchar(14);
+		};
+		TENMIDASI3	{
+			value	varchar(14);
+		};
+		TENMIDASI4	{
+			value	varchar(14);
+		};
+		TENMIDASI5	{
+			value	varchar(14);
+		};
+		TENMIDASI6	{
+			value	varchar(14);
+		};
+		TENMIDASI7	{
+			value	varchar(14);
+		};
+		TENMIDASI8	{
+			value	varchar(14);
+		};
+		};
+		};
 		};
 		SKYKBN_COMBO	{
 			SKYKBN	{
