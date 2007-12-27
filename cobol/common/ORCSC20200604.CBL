@@ -540,10 +540,18 @@
       *************    MOVE    "0074"          TO  WRK-ERRCD
       *                MOVE    "1"             TO  WRK-COM-CUR
       *************                                          (IDX-Z)
-                       MOVE    "0"             TO  WRK-SRYSYUKBN(3:1)
-                       MOVE    "0"             TO  WRK-GMN-INPUTCD
+      *                自動変換なしはエラーとする
+                       IF      SPA-CHGSRYSYU-FLG   =   "1"
+                           MOVE    "0074"          TO  WRK-ERRCD
+                           MOVE    "1"             TO  WRK-COM-CUR
+                                                             (IDX-Z)
+                       ELSE
+                           MOVE    "0"             TO  WRK-SRYSYUKBN
+                                                               (3:1) 
+                           MOVE    "0"             TO  WRK-GMN-INPUTCD
                                                         (IDX-Z)(4:1)
-                       PERFORM 100101-SRYSYUMEI-HEN-SEC
+                           PERFORM 100101-SRYSYUMEI-HEN-SEC
+                       END-IF
                    END-IF
                WHEN    "212"
                WHEN    "222"
