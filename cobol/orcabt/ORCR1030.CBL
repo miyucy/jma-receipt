@@ -877,7 +877,7 @@
            PERFORM   2001-HASSYO-HANTEI-SEC
       *
       *    Ê£¿ô¿ÇÎÅ²Ê¼õ¿Ç
-           IF   CNT-SANTEIKA   >  ZERO
+      *****IF   CNT-SANTEIKA   >  ZERO
       *
              MOVE       ZERO             TO  CNT-JUSHIN
              INITIALIZE                      TBL-JUSHIN-INF
@@ -927,11 +927,12 @@ grpsys       PERFORM 900-DBSELECT-SEC
                END-IF
              END-PERFORM
       *      Ê£¿ô¿ÇÎÅ²Ê¼õ¿Ç¤Î¥³¥á¥ó¥ÈÊÔ½¸
-             IF    CNT-JUSHIN  >   1
+      *****  IF    CNT-JUSHIN  >   1
+             IF    CNT-JUSHIN  >   ZERO
                     PERFORM   2001-JUSHIN-COMMENT-SEC
              END-IF
       *
-           END-IF
+      *****END-IF
       *
       *    ÅÅÏÃºÆ¿Ç¡¦Æ±ÆüÊ£¿ôºÆ¿Ç
            IF         CNT-DENWA     >   ZERO
@@ -1325,9 +1326,11 @@ grpsys     PERFORM 900-DBSELECT-SEC
            ADD     1           TO  IDX-RECE130
            MOVE    "810000001" TO  WRK-RECE130XX-SRYCD(IDX-RECE130 1)
            MOVE    ZERO        TO  WRK-RECE130XX-SRYSURYO(IDX-RECE130 1)
-           MOVE    7           TO  WRK-RECE130XX-YUKOKETA(IDX-RECE130 1)
-           MOVE    "Ê£¿ô¿ÇÎÅ²Ê¼õ¿Ç"
-                               TO  WRK-RECE130XX-NAME(IDX-RECE130 1)
+      *****MOVE    7           TO  WRK-RECE130XX-YUKOKETA(IDX-RECE130 1)
+      *****MOVE  "Ê£¿ô¿ÇÎÅ²Ê¼õ¿Ç"
+      *****                    TO  WRK-RECE130XX-NAME(IDX-RECE130 1)
+           MOVE    2           TO  WRK-RECE130XX-YUKOKETA(IDX-RECE130 1)
+           MOVE  "¼õ¿Ç"        TO  WRK-RECE130XX-NAME(IDX-RECE130 1)
       *
            PERFORM   VARYING   IDX   FROM    1   BY  1
                          UNTIL   ( IDX               >   49    )
