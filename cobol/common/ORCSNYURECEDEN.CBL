@@ -709,7 +709,7 @@
                        PERFORM    VARYING   IDX1   FROM   1   BY   1
                                   UNTIL     IDX1   >   31
                            IF    (WRK-HKNCOMBI-DAY(IDX1) NOT = ZERO)
-                           AND   (NACCT-DAY(IDX1)    NOT =  ZERO) 
+                           AND   (NACCT-DAY(IDX1)    NOT =  ZERO)
                                MOVE    NSRY-SRYCD(1)   TO  
                                                    WRK-NYUINKHN(IDX1)
       *
@@ -1045,7 +1045,8 @@
       *            ∆˛±°Œ¡≤√ªª§Œ¬‡»Ú
                    PERFORM    VARYING   IDX1   FROM   1   BY   1
                               UNTIL     IDX1   >   31
-                       IF    (WRK-NYUINKHN(IDX1) NOT = SPACE)
+                       IF   ((WRK-NYUINKHN(IDX1) NOT = SPACE)  OR
+                             (LNK-NYUINDAY-KBN(IDX1) = "1"))
                        AND   (WRK-GAIHAKU-KBN(IDX1)  =  ZERO  OR  4)
                        AND   (NACCT-DAY(IDX1)    NOT =  ZERO)
                          IF   NACCT-SRYCDTOTAL(6:9)  =   190117070
@@ -1088,7 +1089,8 @@
       *            ∆˛±°Œ¡≤√ªª§Œ¬‡»Ú
                    PERFORM    VARYING   IDX1   FROM   1   BY   1
                               UNTIL     IDX1   >   31
-                       IF    (WRK-NYUINKHN(IDX1) NOT = SPACE)
+                       IF   ((WRK-NYUINKHN(IDX1) NOT = SPACE)  OR
+                             (LNK-NYUINDAY-KBN(IDX1) = "1"))
                        AND   (WRK-GAIHAKU-KBN(IDX1)  =  ZERO  OR  4)
                        AND   (NACCT-DAY(IDX1)    NOT =  ZERO)
                          IF   NACCT-SRYCDTOTAL(6:9)  =   190109670
@@ -1132,7 +1134,8 @@
       *            ∆˛±°Œ¡≤√ªª§Œ¬‡»Ú
                    PERFORM    VARYING   IDX1   FROM   1   BY   1
                               UNTIL     IDX1   >   31
-                       IF    (WRK-NYUINKHN(IDX1) NOT = SPACE)
+                       IF   ((WRK-NYUINKHN(IDX1) NOT = SPACE)  OR
+                             (LNK-NYUINDAY-KBN(IDX1) = "1"))
                        AND   (WRK-GAIHAKU-KBN(IDX1)  =  ZERO  OR  4)
                        AND   (NACCT-DAY(IDX1)    NOT =  ZERO)
                          IF   (NACCT-SRYCDTOTAL(6:9) =  190117070)  OR
@@ -1201,7 +1204,8 @@
       *                ∆˛±°Œ¡≤√ªª§Œ¬‡»Ú
                        PERFORM    VARYING   IDX1   FROM   1   BY   1
                                   UNTIL     IDX1   >   31
-                           IF    (WRK-NYUINKHN(IDX1) NOT = SPACE)
+                           IF   ((WRK-NYUINKHN(IDX1) NOT = SPACE)  OR
+                                 (LNK-NYUINDAY-KBN(IDX1) = "1"))
                            AND   (WRK-GAIHAKU-KBN(IDX1)  =  ZERO OR 4)
                            AND   (ACCT-DAY(1 IDX1)   NOT =  ZERO)
                               EVALUATE   ACCT-SRYCDTOTAL(6:9)
@@ -1296,7 +1300,8 @@
                        END-IF
                        PERFORM    VARYING   IDX1   FROM   1   BY   1
                                   UNTIL     IDX1   >   31
-                           IF    (WRK-NYUINKHN(IDX1) NOT = SPACE)
+                           IF   ((WRK-NYUINKHN(IDX1) NOT = SPACE)  OR
+                                 (LNK-NYUINDAY-KBN(IDX1) = "1"))
                            AND   (WRK-GAIHAKU-KBN(IDX1)  =  ZERO OR 4)
                            AND   (ACCT-DAY(1 IDX1)   NOT =  ZERO)
                               EVALUATE   ACCT-SRYCDTOTAL(6:9)
@@ -1360,6 +1365,9 @@
                         UNTIL      IDX1   >   31
       *        ø«Œ≈∂Ë ¨
                MOVE   WRK-SRYKBN(IDX1)  TO  WRK-SO-SRYKBN(IDX1)
+               IF     LNK-NYUINDAY-KBN(IDX1)   =    "1"
+                   MOVE   "92"     TO       WRK-SO-SRYKBN(IDX1)
+               END-IF
       *         ›∏±¡»πÁ§ª
                MOVE   WRK-HKNCOMBI-DAY(IDX1)
                                         TO  WRK-SO-HKNCOMBI-DAY(IDX1)
@@ -1602,22 +1610,22 @@
                END-PERFORM
            END-PERFORM
       *
-      **     PERFORM    VARYING   IDX1   FROM  1  BY  1
-      **                UNTIL     (IDX1   >     31)
-      **          DISPLAY  "IDX1 = " IDX1
-      **          DISPLAY  "WRK-SO-HKNCOMBI-DAY = " WRK-SO-HKNCOMBI-DAY
-      **                                                         (IDX1)
-      **          DISPLAY  "WRK-SO-SRYKBN   = " WRK-SO-SRYKBN(IDX1)
-      **          DISPLAY  "WRK-SO-MEISAISU = " WRK-SO-MEISAISU(IDX1)
-      **          DISPLAY  "WRK-SO-SRYCD(1) = " WRK-SO-SRYCD(IDX1 1)
-      **          DISPLAY  "WRK-SO-SRYCD(2) = " WRK-SO-SRYCD(IDX1 2)
-      **          DISPLAY  "WRK-SO-SRYCD(3) = " WRK-SO-SRYCD(IDX1 3)
-      **          DISPLAY  "WRK-SO-SRYCD(4) = " WRK-SO-SRYCD(IDX1 4)
-      **          DISPLAY  "WRK-SO-SRYCD(5) = " WRK-SO-SRYCD(IDX1 5)
-      **          DISPLAY  "WRK-SO-SRYCDTOTAL = " WRK-SO-SRYCDTOTAL(IDX1)
-      **          DISPLAY  "WRK-SO-TEN      = " WRK-SO-TEN(IDX1)
-      **          DISPLAY  "WRK-SO-KAISU    = " WRK-SO-KAISU(IDX1)
-      **     END-PERFORM
+      *     PERFORM    VARYING   IDX1   FROM  1  BY  1
+      *                UNTIL     (IDX1   >     31)
+      *          DISPLAY  "IDX1 = " IDX1
+      *          DISPLAY  "WRK-SO-HKNCOMBI-DAY = " WRK-SO-HKNCOMBI-DAY
+      *                                                         (IDX1)
+      *          DISPLAY  "WRK-SO-SRYKBN   = " WRK-SO-SRYKBN(IDX1)
+      *          DISPLAY  "WRK-SO-MEISAISU = " WRK-SO-MEISAISU(IDX1)
+      *          DISPLAY  "WRK-SO-SRYCD(1) = " WRK-SO-SRYCD(IDX1 1)
+      *          DISPLAY  "WRK-SO-SRYCD(2) = " WRK-SO-SRYCD(IDX1 2)
+      *          DISPLAY  "WRK-SO-SRYCD(3) = " WRK-SO-SRYCD(IDX1 3)
+      *          DISPLAY  "WRK-SO-SRYCD(4) = " WRK-SO-SRYCD(IDX1 4)
+      *          DISPLAY  "WRK-SO-SRYCD(5) = " WRK-SO-SRYCD(IDX1 5)
+      *          DISPLAY  "WRK-SO-SRYCDTOTAL = " WRK-SO-SRYCDTOTAL(IDX1)
+      *          DISPLAY  "WRK-SO-TEN      = " WRK-SO-TEN(IDX1)
+      *          DISPLAY  "WRK-SO-KAISU    = " WRK-SO-KAISU(IDX1)
+      *     END-PERFORM
       *
       *    ∞ÂŒ≈∂Ë ¨°¢£¡£ƒ£Ã≈¿øÙæ Û§ŒºË∆¿
            INITIALIZE                          ORCSRYOCOM-AREA
