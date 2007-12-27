@@ -344,7 +344,7 @@
            IF      KANACHK-MAX-CNT     =   ZERO
                MOVE    IDX-MAX             TO  KANACONV-LEN
            END-IF
-           MOVE    10000               TO  KANACONV-STLEN
+           MOVE    1000                TO  KANACONV-STLEN
            MOVE    0                   TO  KANACONV-CONV-FLAG
            MOVE    0                   TO  KANACONV-CHAR-TYPE
            MOVE    KANACHK-MAE-INPUT   TO  KANACONV-INDATA
@@ -378,7 +378,7 @@
       *
            INITIALIZE                  ORCXKANACONVAREA
            MOVE    KANACHK-MAX-CNT     TO  KANACONV-LEN
-           MOVE    10000               TO  KANACONV-STLEN
+           MOVE    1000                TO  KANACONV-STLEN
            MOVE    0                   TO  KANACONV-CONV-FLAG
            MOVE    15                  TO  KANACONV-CHAR-TYPE
            MOVE    KANACHK-MAE-INPUT   TO  KANACONV-INDATA
@@ -388,7 +388,7 @@
                MOVE    1                   TO  FLG-KANJI
                INITIALIZE                  ORCXKANACONVAREA
                MOVE    KANACHK-MAX-CNT     TO  KANACONV-LEN
-               MOVE    10000               TO  KANACONV-STLEN
+               MOVE    1000                TO  KANACONV-STLEN
                MOVE    1                   TO  KANACONV-CONV-FLAG
                MOVE    15                  TO  KANACONV-CHAR-TYPE
                MOVE    KANACHK-MAE-INPUT   TO  KANACONV-INDATA
@@ -407,7 +407,7 @@
       *        È¾³Ñ¤Î¤ß¤ÎÈ½Äê
                INITIALIZE                  ORCXKANACONVAREA
                MOVE    KANACHK-MAX-CNT     TO  KANACONV-LEN
-               MOVE    10000               TO  KANACONV-STLEN
+               MOVE    1000                TO  KANACONV-STLEN
                MOVE    0                   TO  KANACONV-CONV-FLAG
                MOVE    113                 TO  KANACONV-CHAR-TYPE
                MOVE    KANACHK-MAE-INPUT   TO  KANACONV-INDATA
@@ -436,7 +436,7 @@
       *
            INITIALIZE                  ORCXKANACONVAREA
            MOVE    KANACHK-MAX-CNT     TO  KANACONV-LEN
-           MOVE    10000               TO  KANACONV-STLEN
+           MOVE    1000                TO  KANACONV-STLEN
            MOVE    0                   TO  KANACONV-CONV-FLAG
            MOVE    112                 TO  KANACONV-CHAR-TYPE
            MOVE    KANACHK-MAE-INPUT   TO  KANACONV-INDATA
@@ -459,7 +459,7 @@
       *
            INITIALIZE                  ORCXKANACONVAREA
            MOVE    KANACHK-MAX-CNT     TO  KANACONV-LEN
-           MOVE    10000               TO  KANACONV-STLEN
+           MOVE    1000                TO  KANACONV-STLEN
            MOVE    1                   TO  KANACONV-CONV-FLAG
            MOVE    15                  TO  KANACONV-CHAR-TYPE
            MOVE    KANACHK-MAE-INPUT   TO  KANACONV-INDATA
