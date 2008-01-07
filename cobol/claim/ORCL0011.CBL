@@ -89,6 +89,7 @@
            03  FLG-SRYACT          PIC 9(01).
            03  FLG-HKNNUM          PIC 9(01).
            03  FLG-PTMEMOINF       PIC 9(01).
+           03  FLG-UID             PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -98,6 +99,8 @@
            03  IDY                 PIC 9(04).
            03  IDY1                PIC 9(01).
            03  IDZ                 PIC 9(04).
+      *
+           03  IDX-U               PIC 9(04).
       *
            03  IDX-HZN             PIC 9(04).
       *
@@ -582,6 +585,7 @@
       *01  LNK-DRCD             PIC X(05).
       *01  LNK-HKNCOMBI         PIC X(04).
        01  LNK-PARA-SINRYONAIYO PIC X(16).
+       01  LNK-PARA-RENNUM      PIC X(02).
       *    スパ領域
            COPY    "COMMON-SPA".
       *
@@ -605,6 +609,7 @@
                                        USING
            LNK-TIME
            LNK-PARA-SINRYONAIYO
+           LNK-PARA-RENNUM
            SPA-AREA
            WRK-LF01-REC
            .
@@ -722,6 +727,13 @@
                MOVE    SPA-HOSPNUM         TO  CLMUID-HOSPNUM
                MOVE    SPA-PTID            TO  CLMUID-PTID
                MOVE    WRK-SRYKA           TO  CLMUID-SRYKA
+           END-IF
+      *    複数ホストの時、UIDは最初のみ設定
+           IF     (LNK-PARA-RENNUM     =   "01"  )
+             OR   (FLG-CLMUID          =   1     )
+               MOVE    ZERO                TO  FLG-UID
+           ELSE
+               MOVE    1                   TO  FLG-UID
            END-IF
            .
        100-INIT-EXT.
@@ -995,15 +1007,20 @@
       *                負担率
                        MOVE    WRK-FTNRATEMEI      TO
                                                WRK-LF01-OUTRATIO (IDX)
-      *
-                       MOVE    COMB-HKNCOMBINUM    TO
+      *                １回目
+                       IF      FLG-UID             =   ZERO
+                           MOVE    COMB-HKNCOMBINUM    TO
                                                CLMUID-HKNCOMBI (IDX)
-      *                 
-                       INITIALIZE              UIDIO-AREA
-                       PERFORM 500-UUID-SET-SEC
-                       MOVE    C-UID               TO
+      *
+                           INITIALIZE              UIDIO-AREA
+                           PERFORM 500-UUID-SET-SEC
+                           MOVE    C-UID               TO
                                                WRK-LF01-UID2    (IDX)
                                                CLMUID-UID       (IDX)
+                       ELSE
+      *                ２回目から
+                           PERFORM 2004-UID-TBL-SEC
+                       END-IF
       *
                        IF      SPA-HKNCOMBINUM     =   COMB-HKNCOMBINUM
                            MOVE    C-UID           TO  WRK-C-UID
@@ -1067,14 +1084,20 @@
                       PERFORM 2001-HKNNUM-SET-SEC
                    ELSE
       *                主保険なし
-                       MOVE    COMB-HKNCOMBINUM    TO
+      *                １回目
+                       IF      FLG-UID             =   ZERO
+                           MOVE    COMB-HKNCOMBINUM    TO
                                                CLMUID-HKNCOMBI (IDX)
       *                 
-                       INITIALIZE              UIDIO-AREA
-                       PERFORM 500-UUID-SET-SEC
-                       MOVE    C-UID               TO
+                           INITIALIZE              UIDIO-AREA
+                           PERFORM 500-UUID-SET-SEC
+                           MOVE    C-UID               TO
                                                WRK-LF01-UID2    (IDX)
                                                CLMUID-UID       (IDX)
+                       ELSE
+      *                ２回目から
+                           PERFORM 2004-UID-TBL-SEC
+                       END-IF
       *
                        IF      SPA-HKNCOMBINUM     =   COMB-HKNCOMBINUM
                            MOVE    C-UID           TO  WRK-C-UID
@@ -1397,6 +1420,23 @@
       *
            .
        200-MAIN-EXT.
+           EXIT.
+      * 
+      *****************************************************************
+      *    ２回目からのUID設定処理
+      *****************************************************************
+       2004-UID-TBL-SEC              SECTION.
+      *
+           PERFORM VARYING     IDX-U   FROM    1   BY  1
+                   UNTIL       IDX-U   >   20
+               IF      CLMUID-HKNCOMBI (IDX-U) =   COMB-HKNCOMBINUM
+                   MOVE    CLMUID-UID  (IDX-U) TO  C-UID
+                   MOVE    CLMUID-UID  (IDX-U) TO  WRK-LF01-UID2 (IDX)
+                   MOVE    20                  TO  IDX-U
+               END-IF
+           END-PERFORM
+           .
+       2004-UID-TBL-EXT.
            EXIT.
       * 
       *****************************************************************

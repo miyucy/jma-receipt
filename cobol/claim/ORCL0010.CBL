@@ -61,6 +61,8 @@
                                     PIC  X(04).
                05  WRK-PARA-SINRYONAIYO
                                     PIC  X(16).
+               05  WRK-PARA-RENNUM
+                                    PIC  X(02).
       *
            03  WRK-IN               PIC X(01).
       *
@@ -141,6 +143,7 @@
                                             WRK-PARA-DRCD
                                             WRK-PARA-HKNCOMBI
                                             WRK-PARA-SINRYONAIYO
+                                            WRK-PARA-RENNUM
       *
       *???
            DISPLAY "PARA " WRK-PARA "##"
@@ -174,6 +177,7 @@
       ***                                      WRK-LF01-REC
            CALL    "ORCL0011"          USING   WRK-PARA-TIME
                                                WRK-PARA-SINRYONAIYO 
+                                               WRK-PARA-RENNUM
                                                SPA-AREA
                                                WRK-LF01-REC
       *
