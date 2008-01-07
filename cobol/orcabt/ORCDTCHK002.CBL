@@ -1174,7 +1174,7 @@
       *    保険組合せ取得サブ
            COPY    "CPORCSDTCHK02.INC".
            01  LNK-HKNCOMBI-AREA.
-             02  LNK-HKNCOMBI-OCC      OCCURS  100.
+             02  LNK-HKNCOMBI-OCC      OCCURS  1000.
            COPY    "CPHKNCOMBI.INC"    REPLACING  //COMB-//
                                        BY         //LNK-COMB-//.
       *
@@ -7845,6 +7845,7 @@
                PERFORM 200111-NISSU-HEN-SEC
                MOVE    WRK-NISSU-MES       TO  WRK-INNAI-MES
       *
+               INITIALIZE                  WRK-NISSU-AREA
                MOVE    FLG-INGAI-DAY-G     TO  WRK-NISSU-DAY-G
                PERFORM 200111-NISSU-HEN-SEC
                MOVE    WRK-NISSU-MES       TO  WRK-INGAI-MES
