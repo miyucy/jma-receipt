@@ -547,9 +547,6 @@
                        MOVE    PARA-REC          TO  PARA2-REC
                        IF    PARA2-IDX           =   "00"
                            MOVE    PARA2-HBTNUM  TO  PARA-07-00
-      *TEST
-             DISPLAY "PARA-07-00:" PARA-07-00
-      *TEST
                        ELSE
                            MOVE    PARA2-IDX     TO  IDJ
                            MOVE    PARA2-HBTNUM  TO  PARA-07-HBTNUM(IDJ)
@@ -558,11 +555,6 @@
                            MOVE    PARA2-STRAGE  TO  PARA-07-STRAGE(IDJ)
                            MOVE    PARA2-ENDAGE  TO  PARA-07-ENDAGE(IDJ)
                            MOVE    PARA2-HKNNUM  TO  PARA-07-HKNNUM(IDJ)
-      *TEST
-             DISPLAY "PARA2-HKNNUM:" PARA2-HKNNUM
-                ",PARA2-HBTNUM:" PARA2-HBTNUM
-                ",PARA2-IDX:" PARA2-IDX
-      *TEST
                        END-IF
                    END-IF
            END-EVALUATE
@@ -1128,6 +1120,7 @@
            END-IF
       *
            IF      FLG-NODATA          =   1
+               MOVE    "0"        TO  WRK-HEN-FTNKBN
                GO  TO  2410-FTNKBN-SET-EXT
            END-IF
       *
@@ -1471,9 +1464,6 @@
                END-IF
            END-IF
       *
-      *TEST
-             DISPLAY "WRK-HEN-HBTNUM :" WRK-HEN-HBTNUM 
-      *TEST
            MOVE    PARA-07-00      TO  IDM
            PERFORM VARYING IDJ  FROM   1   BY      1
                    UNTIL   IDJ  >  IDM
@@ -1497,9 +1487,6 @@
                            MOVE    1           TO  FLG-OK
                        END-IF
                    END-IF
-      *TEST
-             DISPLAY "IDJ:" IDJ ",FLG-OK:" FLG-OK
-      *TEST
                    IF  FLG-OK    =   ZERO
                        MOVE  PARA-07-HKNNUM(IDJ)
                                             TO  PTKOH-KOHNUM
