@@ -1381,6 +1381,11 @@
            IF      FLG-PTNUM           =   1
                MOVE    5               TO  FLG-ERR
            END-IF
+      *    患者情報読み込み
+           PERFORM 900-PTINF-READ-SEC
+           IF      FLG-PTNUM           =   1
+               MOVE    5               TO  FLG-ERR
+           END-IF
       *    地方公費チェック
            IF     (FLG-ERR             =   ZERO )
              AND  (PTKOH-KOHNUM        =  SPACE )
