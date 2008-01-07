@@ -457,15 +457,15 @@
        101-PARA-GET1-SEC           SECTION.
       *
            EVALUATE    PARA-DATKBN
-               WHEN    "01-8"
+               WHEN    "01-9"
                    MOVE    PARA-DATA     TO  ASS-CSV
-               WHEN    "02-8"
+               WHEN    "02-9"
                    MOVE    PARA-DATA     TO  ASS-ERR
                WHEN    "05-1"
                    MOVE    PARA-DATA     TO  PARA-05-1
-               WHEN    "09-8"
+               WHEN    "09-9"
                    MOVE    PARA-DATA     TO  PARA-09-8
-               WHEN    "11-8"
+               WHEN    "11-9"
                    MOVE    PARA-DATA     TO  PARA-11-8
                WHEN    "HN"
                    MOVE    PARA-DATA     TO  PARA-HOSPNUM

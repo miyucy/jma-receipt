@@ -637,7 +637,7 @@
        2001-DISPLAY-SEC        SECTION.
       *
       *    指定した件数になったらコミット処理
-           IF      CNT-COMMIT          >   WRK-COMMIT
+           IF      CNT-COMMIT          =   WRK-COMMIT
                PERFORM 900-DBCOMMIT-SEC
                MOVE    ZERO            TO  CNT-COMMIT
            END-IF
