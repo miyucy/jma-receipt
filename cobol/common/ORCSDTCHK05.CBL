@@ -25,10 +25,6 @@
       *  ºîÀ®ÆüÉÕ    ºî¶È¼Ô        µ­½Ò
       *  05/02/02    NACL¡ÝÂÀÅÄ    ¿·µ¬ºîÀ®
       *****************************************************************
-      *  ¥×¥í¥°¥é¥à½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
-      *  03.05.00    NACL-ÂÀÅÄ    07/06/04  ¥°¥ë¡¼¥×¿ÇÎÅÂÐ±þ
-      *****************************************************************
       *
        ENVIRONMENT             DIVISION.
        CONFIGURATION           SECTION.
@@ -101,14 +97,6 @@
                                                    VALUE   "4".
            03  CONST-JIHI                          PIC X(01)
                                                    VALUE   "5".
-           03  CONST-KOUGAI                        PIC X(01)
-                                                   VALUE   "6".
-           03  CONST-KOUKI                         PIC X(01)
-                                                   VALUE   "7".
-           03  CONST-CHIKEN                        PIC X(01)
-                                                   VALUE   "8".
-           03  CONST-DAISAN                        PIC X(01)
-                                                   VALUE   "9".
       *
       *****************************************************************
       *    ¥Õ¥¡¥¤¥ë¥ì¥¤¥¢¥¦¥È
@@ -154,13 +142,11 @@
       *
            COPY    "CPORCSDTCHK05.INC".
            COPY    "CPORCBSD01PARA.INC".
-           COPY    "COMMON-SPA".
       *
       *
        PROCEDURE                    DIVISION    USING
        SDTCHK05AREA
-       ORCBSD01PARA
-       SPA-AREA.
+       ORCBSD01PARA.
       *
       *****************************************************************
       *    ¼ç¡¡¡¡½èÍý
@@ -331,11 +317,10 @@
            INITIALIZE                  SDTCHK02AREA
                                        LNK-HKNCOMBI-AREA
       *
-           MOVE    SDTCHK05-HOSPNUM     TO  SDTCHK02-HOSPNUM
+           MOVE    SDTCHK05-HOSPID     TO  SDTCHK02-HOSPID
            MOVE    SDTCHK05-PTID       TO  SDTCHK02-PTID
            CALL    "ORCSDTCHK02"       USING   SDTCHK02AREA
                                                LNK-HKNCOMBI-AREA
-                                               SPA-AREA
       *
            PERFORM 21011-PTHKNINF-HEN-SEC
       *
@@ -430,24 +415,8 @@
                        IF   ( SDTCHK02-O-JIBAI (IDX-HKNNUM)    =   1 )
                            MOVE    1       TO  FLG-TARGET
                        END-IF
-                   WHEN    CONST-KOUGAI
-                       IF   ( SDTCHK02-O-KOUGAI(IDX-HKNNUM)    =   1 )
-                           MOVE    1       TO  FLG-TARGET
-                       END-IF
-                   WHEN    CONST-KOUKI
-                       IF   ( SDTCHK02-O-KOUKI(IDX-HKNNUM)    =   1 )
-                           MOVE    1       TO  FLG-TARGET
-                       END-IF
                    WHEN    CONST-JIHI
                        IF   ( SDTCHK02-O-JIHI  (IDX-HKNNUM)    =   1 )
-                           MOVE    1       TO  FLG-TARGET
-                       END-IF
-                   WHEN    CONST-CHIKEN
-                       IF   ( SDTCHK02-O-CHIKEN  (IDX-HKNNUM)  =   1 )
-                           MOVE    1       TO  FLG-TARGET
-                       END-IF
-                   WHEN    CONST-DAISAN
-                       IF   ( SDTCHK02-O-DAISAN  (IDX-HKNNUM)  =   1 )
                            MOVE    1       TO  FLG-TARGET
                        END-IF
                    END-EVALUATE
@@ -468,24 +437,8 @@
                     AND  ( SDTCHK02-O-JIBAI    (IDX-HKNNUM)    =   1 )
                            MOVE    1       TO  FLG-TARGET
                    END-IF
-                   IF    ( ORCBSD01-KGIPROCKBN     =   "1" )
-                    AND  ( SDTCHK02-O-KOUGAI   (IDX-HKNNUM)    =   1 )
-                           MOVE    1       TO  FLG-TARGET
-                   END-IF
-                   IF    ( ORCBSD01-KOUKIPROCKBN     =   "1" )
-                    AND  ( SDTCHK02-O-KOUKI    (IDX-HKNNUM)    =   1 )
-                           MOVE    1       TO  FLG-TARGET
-                   END-IF
                    IF    ( ORCBSD01-JIHIPROCKBN    =   "1" )
                     AND  ( SDTCHK02-O-JIHI     (IDX-HKNNUM)    =   1 )
-                           MOVE    1       TO  FLG-TARGET
-                   END-IF
-                   IF    ( ORCBSD01-CHIKENPROCKBN  =   "1" )
-                    AND  ( SDTCHK02-O-CHIKEN   (IDX-HKNNUM)    =   1 )
-                           MOVE    1       TO  FLG-TARGET
-                   END-IF
-                   IF    ( ORCBSD01-DAISANPROCKBN  =   "1" )
-                    AND  ( SDTCHK02-O-DAISAN   (IDX-HKNNUM)    =   1 )
                            MOVE    1       TO  FLG-TARGET
                    END-IF
                END-IF
@@ -530,19 +483,15 @@
                        IF    ( WRK-HKNNUM      =   "971" OR  "973" )
                            EVALUATE    WRK-HKNNUM  ALSO  WRK-RSIHKNKBN
                            WHEN    "971"       ALSO    "1"
-                               MOVE    "Ï«ºÒÊÝ¸±¡¡Ã»"
+                               MOVE    "Ï«ºÒÃ»´üµëÉÕ"
                                                TO  SDTCHK05-HKNNUMMEI
                                                            (IDX-HKNINF)
                            WHEN    "971"       ALSO    "2"
-                               MOVE    "Ï«ºÒÊÝ¸±¡¡½ý"
+                               MOVE    "Ï«ºÒ¾ã³²Ç¯¶â"
                                                TO  SDTCHK05-HKNNUMMEI
                                                            (IDX-HKNINF)
                            WHEN    "971"       ALSO    "3"
-                               MOVE    "Ï«ºÒÊÝ¸±¡¡¥¢"
-                                               TO  SDTCHK05-HKNNUMMEI
-                                                           (IDX-HKNINF)
-                           WHEN    "971"       ALSO    "5"
-                               MOVE    "Ï«ºÒÊÝ¸±¡¡¸ø"
+                               MOVE    "Ï«ºÒ¥¢¥Õ¥¿¡¼¥±¥¢"
                                                TO  SDTCHK05-HKNNUMMEI
                                                            (IDX-HKNINF)
                            WHEN    "971"       ALSO    ANY
@@ -699,7 +648,7 @@
       *    ´µ¼ÔÊÝ¸±¥Þ¥¹¥¿¸¡º÷
            MOVE    ZERO                TO  FLG-PTHKNINF
            INITIALIZE                      PTHKNINF-REC
-           MOVE    SDTCHK05-HOSPNUM     TO  PTHKN-HOSPNUM
+           MOVE    SDTCHK05-HOSPID     TO  PTHKN-HOSPID
            MOVE    SDTCHK05-PTID       TO  PTHKN-PTID
            MOVE    PTHKNINF-REC        TO  MCPDATA-REC
            MOVE    "tbl_pthkninf"      TO  MCP-TABLE
@@ -742,7 +691,7 @@
       *
            MOVE    ZERO                TO  FLG-HKNNUM
            INITIALIZE                  HKNNUM-REC
-           MOVE    SDTCHK05-HOSPNUM     TO  HKN-HOSPNUM
+           MOVE    SDTCHK05-HOSPID     TO  HKN-HOSPID
            MOVE    ORCBSD01-SRYYM      TO  HKN-TEKSTYMD
            MOVE    "01"                TO  HKN-TEKSTYMD (7:2)
            MOVE    HKN-TEKSTYMD        TO  HKN-TEKEDYMD
@@ -787,7 +736,7 @@
       *    ´µ¼Ô¸øÈñ¥Þ¥¹¥¿¸¡º÷
            MOVE    ZERO                TO  FLG-PTKOHINF
            INITIALIZE                      PTKOHINF-REC
-           MOVE    SDTCHK05-HOSPNUM     TO  PTKOH-HOSPNUM
+           MOVE    SDTCHK05-HOSPID     TO  PTKOH-HOSPID
            MOVE    SDTCHK05-PTID       TO  PTKOH-PTID
            MOVE    PTKOHINF-REC        TO  MCPDATA-REC
            MOVE    "tbl_ptkohinf"      TO  MCP-TABLE
@@ -831,7 +780,7 @@
       *    ´µ¼Ô¸øÈñ¥Þ¥¹¥¿¸¡º÷
            MOVE    ZERO                TO  FLG-PTRSIINF
            INITIALIZE                      PTRSIINF-REC
-           MOVE    PTHKN-HOSPNUM        TO  PTRSI-HOSPNUM
+           MOVE    PTHKN-HOSPID        TO  PTRSI-HOSPID
            MOVE    PTHKN-PTID          TO  PTRSI-PTID
            MOVE    PTHKN-HKNID         TO  PTRSI-HKNID
            MOVE    PTRSIINF-REC        TO  MCPDATA-REC
@@ -858,10 +807,9 @@
        910-DBSELECT-SEC                SECTION.
       *
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           CALL    "ORCDBMAIN"         USING
+           CALL    "MONFUNC"           USING
                                        MCPAREA
                                        MCPDATA-REC
-                                       SPA-AREA
            IF    ( MCP-RC          =   ZERO )
                PERFORM 910-DBFETCH-SEC
            END-IF
@@ -876,10 +824,9 @@
        911-DBSELECT-SEC                SECTION.
       *
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           CALL    "ORCDBMAIN"         USING
+           CALL    "MONFUNC"           USING
                                        MCPAREA
                                        MCPDATA-REC
-                                       SPA-AREA
       *
            .
       *
@@ -891,10 +838,9 @@
        910-DBFETCH-SEC                 SECTION.
       *
            MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "ORCDBMAIN"         USING
+           CALL    "MONFUNC"           USING
                                        MCPAREA
                                        MCPDATA-REC
-                                       SPA-AREA
       *
            .
       *
@@ -906,10 +852,9 @@
        910-DBCLOSECURSOR-SEC                 SECTION.
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           CALL    "ORCDBMAIN"         USING
+           CALL    "MONFUNC"           USING
                                        MCPAREA
                                        MCPDATA-REC
-                                       SPA-AREA
       *
            .
       *
