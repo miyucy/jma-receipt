@@ -18,7 +18,7 @@ export HOME=/home/orca
 	echo	`date`
 	echo	$1
 
-ruby "$SCRIPTSDIR"/daily/print_parent2.rb "/var/tmp/temp.tmp" "ruby ${SCRIPTSDIR}/daily/print-data.rb " ${FORMDIR} ${RECORDDIR} ${SITEFORMDIR} ${SITERECORDDIR} $1 
+ruby "$SCRIPTSDIR"/daily/print_parent2.rb "/var/tmp/temp.tmp" "ruby ${SCRIPTSDIR}/daily/print-data.rb " ${FORMDIR} ${RECORDDIR} ${SITEFORMDIR} ${SITERECORDDIR} $1 ${PATCHFORMDIR}
 
 	rm -f $1
 	echo	`date`

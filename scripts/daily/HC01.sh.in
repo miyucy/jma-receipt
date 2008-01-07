@@ -18,6 +18,21 @@ ruby -ne 'print $_.gsub(/MonpeLayerIn(.*)MonpeLayerOut/,"")' $4 > $4.tmp
 mv $4.tmp $4
 
 #
+#-------> path switch st
+file=`basename ${2}`
+patch_file=$PATCHFORMDIR/$file
+normal_file=$FORMDIR/$file
+site_file=$SITEFORMDIR/$file
+usr_form=$2
+
+if ! test -f $site_file
+then
+  if test -f $patch_file
+  then
+    usr_form=$patch_file
+  fi
+fi
+#-------> path switch ed
 	if	[ $1 = 'red2ps' ]	;then
 		if	[ -z $6  ]	;then
 			OFFSETX=0
@@ -30,9 +45,9 @@ mv $4.tmp $4
 			OFFSETY=$7
 		fi
 		if	[ -z $5  ]	;then
-			$1 $2 $4 $LAYEROPTION -x $OFFSETX -y $OFFSETY -p lp1
+			$1 $usr_form $4 $LAYEROPTION -x $OFFSETX -y $OFFSETY -p lp1
 		else
-			$1 $2 $4 $LAYEROPTION -x $OFFSETX -y $OFFSETY -p $5
+			$1 $usr_form $4 $LAYEROPTION -x $OFFSETX -y $OFFSETY -p $5
 		fi
 	else	
 		ruby $1 $2 $3 $4 $5

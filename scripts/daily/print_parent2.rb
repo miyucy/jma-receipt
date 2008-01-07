@@ -21,6 +21,7 @@
 # 拡張子非依存対応 (2003/05/24)
 #   dataファイルの拡張子が(.dat)でないといけなかったが、
 #   拡張子に依存しないように修正した
+# (2007/12/27 ) patch-lib 対応
 
 
 # 引数指定方法
@@ -76,13 +77,14 @@ if (help_flg != 0)
 end
 
 
-std_form = ''; std_record = ''; site_form = ''; site_record = ''
+std_form = ''; std_record = ''; site_form = ''; site_record = ''; patch_form = ''
 
 # 定数の指定(最後に、かならず「/」を付けた形にしてください)
 std_form = ARGV[2] + '/'   		# 日レセ標準formディレクトリ
 std_record = ARGV[3] + '/' 		# 日レセ標準recordディレクトリ
 site_form = ARGV[4] + '/'  		# 日レセsite固有formディレクトリ
 site_record = ARGV[5] + '/'		# 日レセsite固有recordディレクトリ
+patch_form = ARGV[7] + '/'  		# 日レセpatch固有formディレクトリ
 
 
 # .redからpsファイルに変換する際に使用するプログラム
@@ -288,6 +290,22 @@ word2.each do |d2|
 			fp.print word3
 			fp.print ' ' * 20000
 		end
+
+# take patch-lib にformが存在する場合は、pathを切替える
+site_red_file = site_form + ls_w1
+patch_red_file = patch_form + ls_w1
+     puts 'Site  file ' + ls_w1 + ' ' + site_form
+     puts 'Patch file ' + ls_w1 + ' ' + patch_form
+if File.exist?(site_red_file)
+     puts 'Site  Hit!!' + ls_w1 + ' ' + site_form
+else
+  if File.exist?(patch_red_file)
+     red_file = patch_red_file
+     puts 'Patch Hit!!' + ls_w1 + ' ' + patch_form
+  else
+     puts 'Normal Hit!!' + ls_w1
+  end
+end
 
 # デバッグ用の表示
 		case	word3

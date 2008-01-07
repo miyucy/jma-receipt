@@ -17,19 +17,23 @@
 # (2007/05/09 ) オンライン再印刷処理追加(UUID)
 # (2007/05/31 ) グループ診療対応(hospnum追加)
 # (2007/06/19 ) 労災枠なし対応
+# (2007/12/27 ) patch-lib 対応
 #
 
 # ※複数のプロセスの実行はできない
 
 
 # 引数指定方法
-# 引数1 = 一時ファイル名
-# 引数2 = 起動プログラム
-# 引数3 = 日医標準レセプトformディレクトリ
-# 引数4 = 日医標準レセプトrecordディレクトリ
-# 引数5 = 日医標準レセプトsite固有formディレクトリ
-# 引数6 = 日医標準レセプトsite固有recordディレクトリ
-# 引数7 = dataファイル
+# 引数1  = 一時ファイル名
+# 引数2  = 起動プログラム
+# 引数3  = 日医標準レセプトformディレクトリ
+# 引数4  = 日医標準レセプトrecordディレクトリ
+# 引数5  = 日医標準レセプトsite固有formディレクトリ
+# 引数6  = 日医標準レセプトsite固有recordディレクトリ
+# 引数7  = dataファイル
+# 引数8  = 起動用スクリプト名1
+# 引数9  = 起動用スクリプト名2
+# 引数10 = 日医標準レセプトpatch固有formディレクトリ
 
 # dataファイルフォーマット
 # +------------------+------------+---------------+---------------+---------------+---------------+-----------------------+
@@ -49,6 +53,7 @@
 
 
 
+#	puts '<temp>        = 一時ファイル名'
 
 # ============================================================
 
@@ -79,13 +84,14 @@ if (help_flg != 0)
 end
 
 
-std_form = ''; std_record = ''; site_form = ''; site_record = ''
+std_form = ''; std_record = ''; site_form = ''; site_record = ''; patch_form = ''
 
 # 定数の指定(最後に、かならず「/」を付けた形にしてください)
 std_form = ARGV[2] + '/'   		# 日レセ標準formディレクトリ
 std_record = ARGV[3] + '/' 		# 日レセ標準recordディレクトリ
 site_form = ARGV[4] + '/'  		# 日レセsite固有formディレクトリ
 site_record = ARGV[5] + '/'		# 日レセsite固有recordディレクトリ
+patch_form = ARGV[9] + '/'  		# 日レセsite固有formディレクトリ
 
 
 # .redからpsファイルに変換する際に使用するプログラム
@@ -121,7 +127,7 @@ d2_len = 0
 # 引数のセット
 
 # 引数の数チェック
-for li_cnt1 in 1..8 do
+for li_cnt1 in 1..9 do
 	if ARGV[li_cnt1] == nil
 		puts '引数の数が足りません'
 		exit 1
@@ -208,6 +214,9 @@ std_form = add_slash(std_form)
 std_record = add_slash(std_record)
 site_form = add_slash(site_form)
 site_record = add_slash(site_record)
+patch_form = add_slash(patch_form)
+
+
 
 
 # デバッグ用の表示
@@ -450,6 +459,20 @@ end
 		end
 	end
 #   労災の枠なし帳票をスイッチする ed
+
+# take patch-lib にformが存在する場合は、pathを切替える
+site_red_file = site_form + ls_w1
+patch_red_file = patch_form + ls_w1
+if File.exist?(site_red_file)
+     puts 'Site  Hit!!' + ls_w1 + ' ' + site_form
+else
+  if File.exist?(patch_red_file)
+     red_file = patch_red_file
+     puts 'Patch Hit!!' + ls_w1 + ' ' + patch_form
+  else
+     puts 'Normal Hit!!' + ls_w1
+  end
+end
 
 #---- (2003/07/03) start
 		case	prt_flg
