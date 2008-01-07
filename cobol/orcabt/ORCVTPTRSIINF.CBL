@@ -136,8 +136,8 @@
       *    パラメータ保存
        01  PARA-SAVE.
            03  PARA-05-1               PIC X(02).
-           03  PARA-09-8               PIC X(06).
-           03  PARA-11-8               PIC X(06).
+           03  PARA-09-9               PIC X(06).
+           03  PARA-11-9               PIC X(06).
            03  PARA-HOSPNUM            PIC X(02).
       *
       *    一時領域
@@ -402,8 +402,8 @@
            PERFORM 1009-HKNNUM-TBL-SEC
       *
            MOVE    PARA-05-1       TO  WRK-RENKETA(1:2)
-           MOVE    PARA-09-8       TO  WRK-COMMIT
-           MOVE    PARA-11-8       TO  WRK-ERR
+           MOVE    PARA-09-9       TO  WRK-COMMIT
+           MOVE    PARA-11-9       TO  WRK-ERR
       *
       *    患者保険ＣＳＶファイル　検索処理
            PERFORM 900-CSV-KENSAKU-SEC
@@ -440,8 +440,8 @@
       *
       *    パラメータチェック処理
            IF    ( PARA-05-1           IS  NUMERIC )   AND
-                 ( PARA-09-8           IS  NUMERIC )   AND
-                 ( PARA-11-8           IS  NUMERIC )
+                 ( PARA-09-9           IS  NUMERIC )   AND
+                 ( PARA-11-9           IS  NUMERIC )
                CONTINUE
            ELSE
                MOVE    1               TO  FLG-CSV
@@ -464,9 +464,9 @@
                WHEN    "05-1"
                    MOVE    PARA-DATA     TO  PARA-05-1
                WHEN    "09-9"
-                   MOVE    PARA-DATA     TO  PARA-09-8
+                   MOVE    PARA-DATA     TO  PARA-09-9
                WHEN    "11-9"
-                   MOVE    PARA-DATA     TO  PARA-11-8
+                   MOVE    PARA-DATA     TO  PARA-11-9
                WHEN    "HN"
                    MOVE    PARA-DATA     TO  PARA-HOSPNUM
            END-EVALUATE
