@@ -44,7 +44,6 @@
       *    フラグ領域
        01  FLG-AREA.
            03  FLG-QDTCHK                  PIC 9(01).
-           03  FLG-PTKOHINF                PIC 9(01).
            03  FLG-MATCH                   PIC 9(01).
            03  FLG-TAISYO                  PIC 9(01).
            03  FLG-HIT                     PIC 9(01).
@@ -58,7 +57,6 @@
            03  IDX-LEN                     PIC 9(05).
            03  IDX-ST                      PIC 9(05).
            03  IDX-COMB                    PIC 9(05).
-           03  IDX-DAY                     PIC 9(05).
       *
       *    一時領域
        01  WRK-AREA.
@@ -76,10 +74,6 @@
            03  WRK-PTBYOMEI-KEY            PIC X(200).
            03  WRK-HKNCOMBI                PIC 9(04).
            03  WRK-ZAIHKNNUM               PIC X(03).
-           03  WRK-BYOEDYMD                PIC X(08).
-           03  WRK-SRYYMD.
-               05  WRK-SRYYM               PIC X(06).
-               05  WRK-SRYDD               PIC 9(02).
       *
        01  LEN-AREA.
            03  LEN-CHKMST                  PIC 9(05).
@@ -94,8 +88,6 @@
            03  TBYOMEI-OCC                 OCCURS 101.
                05  TBYOMEI-ID              PIC 9(09).
                05  TBYOMEI-PTBYOMEI        PIC X(160).
-               05  TBYOMEI-BYODAY-G.
-                   07  TBYOMEI-BYODAY      PIC 9(01)   OCCURS  31.
                05  TBYOMEI-KEY.
                    07  TBYOMEI-SRYKA       PIC X(02).
                    07  TBYOMEI-SRYYMD      PIC X(08).
@@ -115,16 +107,6 @@
                                            VALUE   "4".
            03  CONST-JIHI                  PIC X(01)
                                            VALUE   "5".
-           03  CONST-KOUGAI                PIC X(01)
-                                           VALUE   "6".
-           03  CONST-KOUKI                 PIC X(01)
-                                           VALUE   "7".
-           03  CONST-CHIKEN                PIC X(01)
-                                           VALUE   "8".
-           03  CONST-DAISAN                PIC X(01)
-                                           VALUE   "9".
-           03  CONST-HOUKATU               PIC X(01)
-                                           VALUE   "H".
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -137,10 +119,6 @@
       *    保険組合せ
        01  HKNCOMBI-REC.
            COPY    "CPHKNCOMBI.INC".
-      *
-      *    公費マスタ
-       01  PTKOHINF-REC.
-           COPY    "CPPTKOHINF.INC".
       *
       *****************************************************************
       *    サブプロ用領域
@@ -167,15 +145,13 @@
                                        BY         //LNK-COMB-//.
       *
            COPY    "COMMON-SPA".
-           COPY    "CPDTCHKCOMMON.INC".
       *
        PROCEDURE                    DIVISION    USING
        SDTCHK06AREA
        SYS-1101-REC
        SDTCHK02AREA
        LNK-HKNCOMBI-AREA
-       SPA-AREA
-       DTCHKCOMMON-AREA.
+       SPA-AREA.
       *
       *****************************************************************
       *    主　　処理
@@ -461,23 +437,6 @@
                MOVE    QDTCHK-SRYYMD   TO  TBYOMEI-SRYYMD (TBYOMEI-MAX)
                MOVE    QDTCHK-PTBYOMEI TO  TBYOMEI-PTBYOMEI(TBYOMEI-MAX)
       *
-               MOVE    SDTCHK06-KJNYMD TO  WRK-SRYYMD
-               PERFORM VARYING IDX-DAY FROM    1   BY  1
-                       UNTIL ( IDX-DAY >   31 )
-                   MOVE    IDX-DAY     TO  WRK-SRYDD
-                   IF    ( QDTCHK-SRYYMD   <=  WRK-SRYYMD )
-                       IF    ( QDTCHK-TENKIKBN =   SPACE )
-                               MOVE    1   TO  TBYOMEI-BYODAY
-                                                   (TBYOMEI-MAX IDX-DAY)
-                       ELSE
-                           IF    ( QDTCHK-TENKIYMD >=  WRK-SRYYMD )
-                               MOVE    1   TO  TBYOMEI-BYODAY
-                                                   (TBYOMEI-MAX IDX-DAY)
-                           END-IF
-                       END-IF
-                   END-IF
-               END-PERFORM
-      *
            END-IF
       *
            .
@@ -492,7 +451,7 @@
       *
            PERFORM VARYING IDX-COMB    FROM    1   BY  1
                    UNTIL ( IDX-COMB    >   SDTCHK02-O-MAX )
-                    OR   ( COMB-HOSPNUM    NOT =   ZERO )
+                    OR   ( COMB-HKNNUM    NOT =   SPACE )
       *
                IF    ( LNK-COMB-HKNCOMBINUM (IDX-COMB)
                                   =    WRK-HKNCOMBI )
@@ -528,31 +487,11 @@
                IF    ( SDTCHK06-HKNKBN =   CONST-JIBAI )
                    MOVE    1           TO  FLG-TAISYO-HKN
                END-IF
-           WHEN      ( WRK-ZAIHKNNUM   =   "970" )
-               IF    ( SDTCHK06-HKNKBN =   CONST-DAISAN )
-                   MOVE    1           TO  FLG-TAISYO-HKN
-               END-IF
-           WHEN      ( WRK-ZAIHKNNUM   =   "975" )
-               IF    ( SDTCHK06-HKNKBN =   CONST-KOUGAI )
-                   MOVE    1           TO  FLG-TAISYO-HKN
-               END-IF
-           WHEN      ( WRK-ZAIHKNNUM   =   "040" )
-           WHEN      ( WRK-ZAIHKNNUM   =   "039" )
-               IF    ( SDTCHK06-HKNKBN =   CONST-KOUKI )
-                   MOVE    1           TO  FLG-TAISYO-HKN
-               END-IF
       *
            WHEN      ( WRK-ZAIHKNNUM (1:2) =   "98" )
                IF    ( SDTCHK06-HKNKBN =   CONST-JIHI )
                    MOVE    1           TO  FLG-TAISYO-HKN
                END-IF
-      *
-           WHEN      ( WRK-ZAIHKNNUM (1:2) =   "90" OR "91" )
-               IF    ( SDTCHK06-HKNKBN =   CONST-CHIKEN )
-                   MOVE    1           TO  FLG-TAISYO-HKN
-               END-IF
-           WHEN      ( SDTCHK06-HKNKBN =   CONST-HOUKATU )
-                   MOVE    1           TO  FLG-TAISYO-HKN
       *
            WHEN      OTHER
                IF    ( SDTCHK06-HKNKBN =   CONST-SYAHO )
@@ -584,8 +523,6 @@
                                        TO  SDTCHK06-O-SRYYMD (IDX0)
                MOVE    TBYOMEI-PTBYOMEI(IDX0)
                                        TO  SDTCHK06-O-PTBYOMEI(IDX0)
-               MOVE    TBYOMEI-BYODAY-G(IDX0)
-                                       TO  SDTCHK06-O-BYODAY-G(IDX0)
       *
            END-PERFORM
       *
@@ -666,11 +603,11 @@
       *
            MOVE    SDTCHK06-HOSPNUM     TO  QDTCHK-SELHOSPNUM
            MOVE    SDTCHK06-PTID       TO  QDTCHK-SELPTID
-      *    IF    ( SYS-1101-BYOSRYKAKBN    =   "1" OR SPACE )
-      *        MOVE    SDTCHK06-SRYKA  TO  QDTCHK-SELSRYKA
-      *    ELSE
+           IF    ( SYS-1101-BYOSRYKAKBN    =   "1" OR SPACE )
+               MOVE    SDTCHK06-SRYKA  TO  QDTCHK-SELSRYKA
+           ELSE
                MOVE    "%"             TO  QDTCHK-SELSRYKA
-      *    END-IF
+           END-IF
            MOVE    SDTCHK06-CHKKBN     TO  QDTCHK-SELCHKKBN
            MOVE    SDTCHK06-SRYCD      TO  QDTCHK-SELSRYCD
            MOVE    SDTCHK06-KJNYMD     TO  QDTCHK-SELYUKOSTYMD
@@ -722,79 +659,17 @@
                        MOVE    ZERO        TO  FLG-LOOP-END
                    END-IF
       *
-                   IF    ( QDTCHK-TENKIKBN =   "8" )
-                    AND  ( QDTCHK-TENKIYMD (1:6)
-                                          <=   SDTCHK06-KJNYMD (1:6))
-                       MOVE    ZERO        TO  FLG-LOOP-END
-                   END-IF
-      *
                    IF    ( QDTCHK-HKNCOMBI  NOT =   ZERO )
-                    OR   ( QDTCHK-KOHID     NOT =   ZERO )
-      *
-                       MOVE    "99999999"  TO  WRK-BYOEDYMD
-                       IF    ( QDTCHK-TENKIYMD  NOT =   SPACE )
-                           MOVE    QDTCHK-TENKIYMD
-                                           TO  WRK-BYOEDYMD
-                       END-IF
-      *
-                       IF    ( QDTCHK-HKNCOMBI  NOT =   ZERO )
-                           MOVE    QDTCHK-HKNCOMBI     TO  WRK-HKNCOMBI
-                           PERFORM 220-HKNCOMBI-GET-SEC
-                           MOVE    COMB-HKNNUM         TO  WRK-ZAIHKNNUM
-                           PERFORM 220-TAISYO-HKN-CHK-SEC
-                           IF    ( FLG-TAISYO-HKN  =   ZERO )
-                               MOVE    ZERO            TO  FLG-LOOP-END
-                           END-IF
-      *
-                           MOVE    ZERO            TO  WRK-HKNCOMBI
-                           PERFORM VARYING IDX-COMB  FROM  1   BY  1
-                                   UNTIL ( IDX-COMB  >   THKNCOMBI-MAX )
-                                    OR   ( WRK-HKNCOMBI  NOT = ZERO )
-      *
-                               IF    ( COMB-HKNCOMBINUM
-                                               =   THKNCOMBI-HKNCOMBI
-                                                        (IDX-COMB))
-                                   MOVE    THKNCOMBI-HKNCOMBI (IDX-COMB)
-                                                   TO  WRK-HKNCOMBI
-      *
-                                   IF    ( QDTCHK-SRYYMD
-                                               <=  COMB-TEKEDYMD )
-                                    AND  ( WRK-BYOEDYMD
-                                               >=  COMB-TEKSTYMD )
-                                       CONTINUE
-                                   ELSE
-                                       MOVE    ZERO    TO  FLG-LOOP-END
-                                   END-IF
-      *
-                               END-IF
-      *
-                           END-PERFORM
-      *
-                           IF    ( WRK-HKNCOMBI    =   ZERO )
-                                   MOVE    ZERO    TO  FLG-LOOP-END
-                           END-IF
-                       END-IF
-                       IF    ( QDTCHK-KOHID    NOT =   ZERO )
-                           MOVE    "970"           TO  WRK-ZAIHKNNUM
-                           PERFORM 220-TAISYO-HKN-CHK-SEC
-                           IF    ( FLG-TAISYO-HKN  =   ZERO )
-                               MOVE    ZERO        TO  FLG-LOOP-END
-                           ELSE
-                               PERFORM 900-PTKOHINF-KEY-SEL-SEC
-                               IF    ( QDTCHK-SRYYMD <= PTKOH-TEKEDYMD )
-                                AND  ( WRK-BYOEDYMD  >= PTKOH-TEKSTYMD )
-                                   CONTINUE
-                               ELSE
-                                   MOVE    ZERO    TO  FLG-LOOP-END
-                               END-IF
-                           END-IF
+                       MOVE    QDTCHK-HKNCOMBI     TO  WRK-HKNCOMBI
+                       PERFORM 220-HKNCOMBI-GET-SEC
+                       MOVE    COMB-HKNNUM         TO  WRK-ZAIHKNNUM
+                       PERFORM 220-TAISYO-HKN-CHK-SEC
+                       IF    ( FLG-TAISYO-HKN  =   ZERO )
+                           MOVE    ZERO            TO  FLG-LOOP-END
                        END-IF
                    ELSE
                        IF    ( SDTCHK06-HKNKBN      =  CONST-ROSAI
-                                                    OR CONST-JIBAI
-                                                    OR CONST-KOUGAI
-                                                    OR CONST-DAISAN
-                                                                   )
+                                                    OR CONST-JIBAI  )
                            MOVE    ZERO            TO  FLG-LOOP-END
                        END-IF
                    END-IF
@@ -808,35 +683,6 @@
       *
            .
        900-QDTCHK-KEY-FET-EXT.
-           EXIT.
-      *****************************************************************
-      *    患者公費情報検索処理
-      *****************************************************************
-       900-PTKOHINF-KEY-SEL-SEC        SECTION.
-      *
-           MOVE    ZERO                TO  FLG-PTKOHINF
-           INITIALIZE                      PTKOHINF-REC
-           MOVE    SDTCHK06-HOSPNUM    TO  PTKOH-HOSPNUM
-           MOVE    SDTCHK06-PTID       TO  PTKOH-PTID
-           MOVE    QDTCHK-KOHID        TO  PTKOH-KOHID
-           MOVE    PTKOHINF-REC        TO  MCPDATA-REC
-           MOVE    "tbl_ptkohinf"      TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
-           IF    ( MCP-RC          =   ZERO )
-               MOVE    MCPDATA-REC     TO  PTKOHINF-REC
-           ELSE
-               MOVE    1               TO  FLG-PTKOHINF
-               INITIALIZE                  PTKOHINF-REC
-           END-IF
-      *
-           MOVE    "tbl_ptkohinf"      TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           PERFORM 910-DBCLOSECURSOR-SEC
-      *
-           .
-      *
-       900-PTKOHINF-KEY-SEL-EXT.
            EXIT.
       *****************************************************************
       *    ＤＢ検索処理（FHETCHも行う)

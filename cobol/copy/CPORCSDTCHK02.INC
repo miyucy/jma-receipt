@@ -19,12 +19,10 @@
            03  SDTCHK02-IN.
                05  SDTCHK02-HOSPNUM            PIC 9(02).
                05  SDTCHK02-PTID               PIC 9(10).
-               05  SDTCHK02-ALL                PIC 9(01).
            03  SDTCHK02-OT.
                05  SDTCHK02-O-MAX              PIC 9(05).
-               05  SDTCHK02-O-OCC              OCCURS  1000.
-                   07  SDTCHK02-O-RSI-HKNKBN   PIC X(1).
-                   07  SDTCHK02-O-HKNCOMBIMEI  PIC X(50).
+               05  SDTCHK02-O-HKNCOMBIMEI      PIC X(50)
+                                               OCCURS  1000.
            03  SDTCHK02-OT-HKNINF.
                05  SDTCHK02-O-HKNINF-MAX       PIC 9(05).
                05  SDTCHK02-O-HKNINF-OCC       OCCURS  50.
@@ -33,8 +31,4 @@
                    07  SDTCHK02-O-ROSAI        PIC 9(01).
                    07  SDTCHK02-O-JIBAI        PIC 9(01).
                    07  SDTCHK02-O-JIHI         PIC 9(01).
-                   07  SDTCHK02-O-KOUGAI       PIC 9(01).
-                   07  SDTCHK02-O-KOUKI        PIC 9(01).
-                   07  SDTCHK02-O-CHIKEN       PIC 9(01).
-                   07  SDTCHK02-O-DAISAN       PIC 9(01).
                    07  SDTCHK02-O-HKNNUM       PIC X(03).

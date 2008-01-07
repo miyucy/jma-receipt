@@ -48,7 +48,6 @@
            03  FLG-END             PIC 9(01).
            03  FLG-HKNCOMBI        PIC 9(01).
            03  FLG-PTRSIINF        PIC 9(01).
-           03  FLG-TARGET          PIC 9(01).
       *
       *    Åº»úÎÎ°è
        01  IDX-AREA.
@@ -66,7 +65,6 @@
            03  WRK-HKNKBN-MEI          PIC X(02).
            03  WRK-SYUHKNNUM           PIC X(03).
            03  WRK-HKNNUM              PIC X(03).
-           03  WRK-RSI-HKNKBN          PIC X(01).
       *
        01  CONST-AREA.
            03  CONST-HKNCOMBI-MAX      PIC 9(05)   VALUE   1000.
@@ -142,24 +140,13 @@
            PERFORM UNTIL ( FLG-HKNCOMBI    =   1 )
                     OR   ( IDX-MAX        >=   CONST-HKNCOMBI-MAX )
       *
-               MOVE    ZERO            TO  FLG-TARGET
-      *
                IF    ( COMB-DELKBN         =   "1" )
-                   IF    ( SDTCHK02-ALL    =   1   )
-                       MOVE    1       TO  FLG-TARGET
-                   END-IF
+                   CONTINUE
                ELSE
-                       MOVE    1       TO  FLG-TARGET
-               END-IF
-      *
-               IF    ( FLG-TARGET      =   1 )
                    COMPUTE IDX-MAX =   IDX-MAX +   1
                    MOVE    HKNCOMBI-REC TO  LNK-HKNCOMBI-OCC (IDX-MAX)
                    PERFORM 1101-HKNCOMBIMEI-HEN-SEC
                    MOVE    WRK-HKNCOMBI TO  SDTCHK02-O-HKNCOMBIMEI
-                                                             (IDX-MAX)
-                   MOVE    WRK-RSI-HKNKBN
-                                        TO  SDTCHK02-O-RSI-HKNKBN
                                                              (IDX-MAX)
                    PERFORM 1101-HKNINF-HEN-SEC
                END-IF
@@ -187,7 +174,6 @@
        1101-HKNCOMBIMEI-HEN-SEC             SECTION.
       *
            MOVE    SPACE               TO  WRK-HKNCOMBI
-                                           WRK-RSI-HKNKBN
       *
            MOVE    1                   TO  IDX-PNT
       *
@@ -223,8 +209,6 @@
       *
                PERFORM 900-PTRSIINF-KEY-SEL-SEC
       *
-               MOVE    PTRSI-HKNKBN    TO  WRK-RSI-HKNKBN
-      *
                MOVE    SPACE           TO  WRK-HKNKBN-MEI
                EVALUATE    PTRSI-HKNKBN
                WHEN    "1"
@@ -233,8 +217,6 @@
                    MOVE    "½ý"        TO  WRK-HKNKBN-MEI
                WHEN    "3"
                    MOVE    "¥¢"        TO  WRK-HKNKBN-MEI
-               WHEN    "5"
-                   MOVE    "¸ø"        TO  WRK-HKNKBN-MEI
                END-EVALUATE
       *
                IF    ( PTRSI-COMMENT       =   SPACE )
@@ -265,26 +247,15 @@
        1101-HKNINF-HEN-SEC             SECTION.
       *
            IF    ( CONST-HKNINF-MAX    >   SDTCHK02-O-HKNINF-MAX )
-               IF    ( COMB-KOHHKNNUM (1)  =   "970" )
-                   MOVE    "970"       TO  WRK-SYUHKNNUM
-                   MOVE    COMB-HKNNUM TO  WRK-HKNNUM
-                   PERFORM 11011-HKNINF-HEN-SEC
-                   MOVE    COMB-KOHHKNNUM (1)
-                                       TO  WRK-SYUHKNNUM
+               MOVE    COMB-HKNNUM     TO  WRK-SYUHKNNUM
                                            WRK-HKNNUM
-                   PERFORM 11011-HKNINF-HEN-SEC
-               ELSE
-                   MOVE    COMB-HKNNUM TO  WRK-SYUHKNNUM
-                                           WRK-HKNNUM
-                   PERFORM 11011-HKNINF-HEN-SEC
-               END-IF
+               PERFORM 11011-HKNINF-HEN-SEC
            END-IF
       *
            PERFORM VARYING IDX-KOH     FROM    1   BY  1
                    UNTIL ( IDX-KOH     >   4 )
       *
                IF    ( COMB-KOHHKNNUM (IDX-KOH)    NOT =   SPACE )
-                AND  ( COMB-KOHHKNNUM (IDX-KOH)    NOT =   "970" )
                    IF    ( CONST-HKNINF-MAX
                                        >   SDTCHK02-O-HKNINF-MAX)
                        MOVE    COMB-HKNNUM TO  WRK-SYUHKNNUM
@@ -334,23 +305,12 @@
                    MOVE    1       TO  SDTCHK02-O-ROSAI (IDX-HKNNUM)
                WHEN      "973"
                    MOVE    1       TO  SDTCHK02-O-JIBAI (IDX-HKNNUM)
-               WHEN      "970"
-                   MOVE    1       TO  SDTCHK02-O-DAISAN (IDX-HKNNUM)
-               WHEN      "975"
-                   MOVE    1       TO  SDTCHK02-O-KOUGAI (IDX-HKNNUM)
-               WHEN      "040"
-               WHEN      "039"
-                   MOVE    1       TO  SDTCHK02-O-KOUKI  (IDX-HKNNUM)
                WHEN      OTHER
-                   EVALUATE    WRK-SYUHKNNUM (1:2)
-                   WHEN  "98"
+                   IF    ( WRK-SYUHKNNUM (1:2) =   "98" )
                        MOVE    1   TO  SDTCHK02-O-JIHI  (IDX-HKNNUM)
-                   WHEN  "90"
-                   WHEN  "91"
-                       MOVE    1   TO  SDTCHK02-O-CHIKEN(IDX-HKNNUM)
-                   WHEN  OTHER
+                   ELSE
                        MOVE    1   TO  SDTCHK02-O-SYAHO (IDX-HKNNUM)
-                   END-EVALUATE
+                   END-IF
                END-EVALUATE
            END-IF
       *
