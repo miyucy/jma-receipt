@@ -76,6 +76,7 @@
       *  03.05.02    NACL-Æ£¸¶    07/06/01  realtime preview ½èÍýÄÉ²Ã
       *  03.05.03    NACL-ÌçÏÆ    07/09/13  Èé²¼¶ÚÆù¡¢ÀÅÌ®Ãí¼Í¤Îµ­ºÜÊÑ¹¹ÂÐ±þ
       *  03.05.04    NACL-ÌçÏÆ    07/09/13  ÅÀÅ©¤Îµ­ºÜ½çÊÑ¹¹¡ÊÆüÉÕ½ç¡Ë
+      *
       *  04.01.01    NACL-ÌçÏÆ    07/10/05  Æþ±¡ÅÀÅ©¥³¥á¥ó¥ÈÂÐ±þ
       *  04.01.02    NACL-ÌçÏÆ    07/11/01  ¸øÌ³ºÒ³²ÂÐ±þ
       *  04.01.03    NACL-ÌçÏÆ    07/11/26  ÆÃÄê´ïºà¾¦ÉÊÌ¾µ­ºÜÂÐ±þ
@@ -304,6 +305,12 @@
                05  WRK-SURYO-N1                PIC X(10).
                05  WRK-SURYO-N2                PIC X(02).
                05  WRK-SURYO-N3                PIC X(06).
+      *
+      *    ÆÃÄêÊÝ¸±°åÎÅºàÎÁÊÔ½¸ÍÑ
+           03  WRK-RECEHENNAME                 PIC X(300).
+           03  WRK-RECEHENTANINAME             PIC X(50).
+           03  WRK-RECEHENTANI                 PIC 9(02).
+      *
       *    ºÞ¿ÇÎÅ¹Ô°Ù¥³¡¼¥ÉÊÌÊÔ½¸ÍÑ     
            03  WRK-WIDX1                       PIC 9(03).
            03  WRK-WIDX2                       PIC 9(03).
@@ -501,6 +508,8 @@
                        09  TBL-ZAIW-HOUKNSKBN       PIC  9(02).
                    07  TBL-ZAIW-SRYSYUKBN-INPUT     PIC  X(03).
                    07  TBL-ZAIW-KENTAICOMMENT-SRYCD PIC  9(09).
+      *            ¥ì¥»ÍÑÆÃÄê´ïºà¾¦ÉÊÌ¾ÊÔ½¸¥Õ¥é¥°
+                   07  TBL-ZAIW-RECEHENFLG          PIC  X(01).
       *
        01  TBL-ZAI-MAX         PIC  9(03)  VALUE   100.
       *
@@ -1228,6 +1237,8 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE86PARA-HOSPNUM
                                      TO  TBL-ZAIW-SRYACTINF (IDY IDZ)
                        MOVE    RECE85-NAMEINF   (IDX)
                                      TO  TBL-ZAIW-NAMEINF   (IDY IDZ)
+                       MOVE    RECE85-RECEHENFLG(IDX)
+                                     TO  TBL-ZAIW-RECEHENFLG(IDY IDZ)
                        MOVE    RECE85-DATAKBNINF(IDX)
                                      TO  TBL-ZAIW-DATAKBNINF(IDY IDZ)
                        MOVE    RECE85-HOUKNSKBNINF(IDX)
@@ -2493,6 +2504,16 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE86PARA-HOSPNUM
                MOVE    WRK-KOUI (51:)    TO  WRK-ZAI-NAME
                PERFORM 4303-ZAITBL-TENSO-SEC
            END-IF
+           IF  WRK-WCLM            >   100
+               MOVE    SPACE             TO  WRK-ZAI-NAME
+               MOVE    WRK-KOUI (101:)   TO  WRK-ZAI-NAME
+               PERFORM 4303-ZAITBL-TENSO-SEC
+           END-IF
+           IF  WRK-WCLM            >   150
+               MOVE    SPACE             TO  WRK-ZAI-NAME
+               MOVE    WRK-KOUI (151:)   TO  WRK-ZAI-NAME
+               PERFORM 4303-ZAITBL-TENSO-SEC
+           END-IF
       *
            .
        430-TBLZAI-HEN-EXT.
@@ -2628,6 +2649,22 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE86PARA-HOSPNUM
        4302-MEISAI-KETA-HEN1-SEC    SECTION.
       *
            MOVE    SPACE           TO  WRK-KOUI
+                                       WRK-RECEHENNAME
+                                       WRK-RECEHENTANINAME
+           MOVE    ZERO            TO  WRK-RECEHENTANI
+      *
+           IF      TBL-ZAIW-RECEHENFLG (WRK-WIDX1 WRK-WIDX2) 
+                                   =   "1"
+               STRING    "¡Ê"          DELIMITED   BY  SIZE
+                         TBL-ZAIW-NAME (WRK-WIDX1 WRK-WIDX2)
+                                       DELIMITED   BY  SIZE
+                                       INTO    WRK-RECEHENNAME
+               END-STRING
+               MOVE    WRK-RECEHENNAME TO
+                                   TBL-ZAIW-NAME (WRK-WIDX1 WRK-WIDX2)
+               COMPUTE TBL-ZAIW-YUKOKETA (WRK-WIDX1 WRK-WIDX2)  =
+                       TBL-ZAIW-YUKOKETA (WRK-WIDX1 WRK-WIDX2)  +   1
+           END-IF
       *
            IF  TBL-ZAIW-TANINAME (WRK-WIDX1 WRK-WIDX2)
                                    =   SPACE
@@ -2641,8 +2678,35 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE86PARA-HOSPNUM
       *
                IF   TBL-ZAIW-TANINAME (WRK-WIDX1 WRK-WIDX2)(1:2)
                                             =  "¡ö"
-                   MOVE    SPACE   TO  
+                   IF      TBL-ZAIW-RECEHENFLG (WRK-WIDX1 WRK-WIDX2) 
+                                                =   "1"
+                       MOVE    "¡Ë"    TO  
+                               TBL-ZAIW-TANINAME   (WRK-WIDX1 WRK-WIDX2)
+                       MOVE    2       TO  
+                               TBL-ZAIW-TANIMOJISU (WRK-WIDX1 WRK-WIDX2)
+                   ELSE
+                       MOVE    SPACE   TO  
                               TBL-ZAIW-TANINAME (WRK-WIDX1 WRK-WIDX2)
+                   END-IF
+               ELSE
+                   IF      TBL-ZAIW-RECEHENFLG (WRK-WIDX1 WRK-WIDX2) 
+                                                =   "1"
+                       COMPUTE WRK-RECEHENTANI =
+                           TBL-ZAIW-TANIMOJISU (WRK-WIDX1 WRK-WIDX2)
+                                           *   2
+                       STRING    TBL-ZAIW-TANINAME (WRK-WIDX1 WRK-WIDX2)
+                                                    (1:WRK-RECEHENTANI)
+                                           DELIMITED   BY  SIZE
+                             "¡Ë"          DELIMITED   BY  SIZE
+                                           INTO    WRK-RECEHENTANINAME
+                       END-STRING
+                       MOVE    WRK-RECEHENTANINAME TO
+                               TBL-ZAIW-TANINAME   (WRK-WIDX1 WRK-WIDX2)
+                       COMPUTE
+                           TBL-ZAIW-TANIMOJISU (WRK-WIDX1 WRK-WIDX2)  =
+                           TBL-ZAIW-TANIMOJISU (WRK-WIDX1 WRK-WIDX2)
+                                                                   +  1
+                   END-IF
                END-IF
       *        Ì¾¾Î¤ÎÄ¹¤µ
                COMPUTE   WRK-NAMEKETA  =

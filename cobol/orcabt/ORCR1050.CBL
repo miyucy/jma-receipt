@@ -21,7 +21,7 @@
       *  システム名        : ＯＲＣＡ
       *  サブシステム名    : レセプト
       *  コンポーネント名  : 公害レセプト（入院外）
-      *                      適用欄情報
+      *                      摘要欄編集
       *  管理者            : 
       *  作成日付    作業者        記述
       *  07/11/16    NACL−藤原    新規作成
@@ -270,6 +270,12 @@
                05  WRK-SURYO-N1                PIC X(10).
                05  WRK-SURYO-N2                PIC X(02).
                05  WRK-SURYO-N3                PIC X(06).
+      *
+      *    特定保険医療材料編集用
+           03  WRK-RECEHENNAME                 PIC X(300).
+           03  WRK-RECEHENTANINAME             PIC X(50).
+           03  WRK-RECEHENTANI                 PIC 9(02).
+      *
       *    剤診療行為コード別編集用     
            03  WRK-WIDX1                       PIC 9(03).
            03  WRK-WIDX2                       PIC 9(03).
@@ -516,6 +522,8 @@
                        09  TBL-ZAIW-NAME            PIC  X(200).
                    07  TBL-ZAIW-SRYSYUKBN-INPUT     PIC  X(03).
                    07  TBL-ZAIW-KENTAICOMMENT-SRYCD PIC  9(09).
+      *            レセ用特定器材商品名編集フラグ
+                   07  TBL-ZAIW-RECEHENFLG          PIC  X(01).
       *
        01  TBL-ZAI-MAX         PIC  9(03)  VALUE   100.              
       *
@@ -1217,6 +1225,8 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
                                      TO  TBL-ZAIW-SRYACTINF (IDY IDZ)
                        MOVE    RECE130-NAMEINF   (IDX)
                                      TO  TBL-ZAIW-NAMEINF   (IDY IDZ)
+                       MOVE    RECE130-RECEHENFLG(IDX)
+                                     TO  TBL-ZAIW-RECEHENFLG(IDY IDZ)
                        MOVE    RECE130-SRYSYUKBN  TO
                                      TBL-ZAIW-SRYSYUKBN-INPUT(IDY IDZ)
                        IF      WRK-KENTAICOMMENT-SRYCD  NOT =  ZERO
@@ -2632,6 +2642,16 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
                MOVE    WRK-KOUI (51:)    TO  WRK-ZAI-NAME
                PERFORM 4303-ZAITBL-TENSO-SEC
            END-IF
+           IF  WRK-WCLM            >   100
+               MOVE    SPACE             TO  WRK-ZAI-NAME
+               MOVE    WRK-KOUI (101:)   TO  WRK-ZAI-NAME
+               PERFORM 4303-ZAITBL-TENSO-SEC
+           END-IF
+           IF  WRK-WCLM            >   150
+               MOVE    SPACE             TO  WRK-ZAI-NAME
+               MOVE    WRK-KOUI (151:)   TO  WRK-ZAI-NAME
+               PERFORM 4303-ZAITBL-TENSO-SEC
+           END-IF
       *
            .
        430-TBLZAI-HEN-EXT.
@@ -2767,6 +2787,22 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
        4302-MEISAI-KETA-HEN1-SEC    SECTION.
       *
            MOVE    SPACE           TO  WRK-KOUI
+                                       WRK-RECEHENNAME
+                                       WRK-RECEHENTANINAME
+           MOVE    ZERO            TO  WRK-RECEHENTANI
+      *
+           IF      TBL-ZAIW-RECEHENFLG (WRK-WIDX1 WRK-WIDX2) 
+                                   =   "1"
+               STRING    "（"          DELIMITED   BY  SIZE
+                         TBL-ZAIW-NAME (WRK-WIDX1 WRK-WIDX2)
+                                       DELIMITED   BY  SIZE
+                                       INTO    WRK-RECEHENNAME
+               END-STRING
+               MOVE    WRK-RECEHENNAME TO
+                                   TBL-ZAIW-NAME (WRK-WIDX1 WRK-WIDX2)
+               COMPUTE TBL-ZAIW-YUKOKETA (WRK-WIDX1 WRK-WIDX2)  =
+                       TBL-ZAIW-YUKOKETA (WRK-WIDX1 WRK-WIDX2)  +   1
+           END-IF
       *
            IF  TBL-ZAIW-TANINAME (WRK-WIDX1 WRK-WIDX2)
                                    =   SPACE
@@ -2780,8 +2816,35 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
       *
                IF   TBL-ZAIW-TANINAME (WRK-WIDX1 WRK-WIDX2)(1:2)
                                             =  "＊"
-                   MOVE    SPACE   TO  
+                   IF      TBL-ZAIW-RECEHENFLG (WRK-WIDX1 WRK-WIDX2) 
+                                                =   "1"
+                       MOVE    "）"    TO  
+                               TBL-ZAIW-TANINAME   (WRK-WIDX1 WRK-WIDX2)
+                       MOVE    2       TO  
+                               TBL-ZAIW-TANIMOJISU (WRK-WIDX1 WRK-WIDX2)
+                   ELSE
+                       MOVE    SPACE   TO  
                               TBL-ZAIW-TANINAME (WRK-WIDX1 WRK-WIDX2)
+                   END-IF
+               ELSE
+                   IF      TBL-ZAIW-RECEHENFLG (WRK-WIDX1 WRK-WIDX2) 
+                                                =   "1"
+                       COMPUTE WRK-RECEHENTANI =
+                           TBL-ZAIW-TANIMOJISU (WRK-WIDX1 WRK-WIDX2)
+                                           *   2
+                       STRING    TBL-ZAIW-TANINAME (WRK-WIDX1 WRK-WIDX2)
+                                                    (1:WRK-RECEHENTANI)
+                                           DELIMITED   BY  SIZE
+                             "）"          DELIMITED   BY  SIZE
+                                           INTO    WRK-RECEHENTANINAME
+                       END-STRING
+                       MOVE    WRK-RECEHENTANINAME TO
+                               TBL-ZAIW-TANINAME   (WRK-WIDX1 WRK-WIDX2)
+                       COMPUTE
+                           TBL-ZAIW-TANIMOJISU (WRK-WIDX1 WRK-WIDX2)  =
+                           TBL-ZAIW-TANIMOJISU (WRK-WIDX1 WRK-WIDX2)
+                                                                   +  1
+                   END-IF
                END-IF
       *        名称の長さ
                COMPUTE   WRK-NAMEKETA  =
