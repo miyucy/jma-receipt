@@ -671,7 +671,7 @@
                    MOVE    "00"                TO  HKN-PAYKBN
                    MOVE    HKNNUM-REC          TO  MCPDATA-REC
                    PERFORM 900-HKNNUM-READ-SEC
-                   MOVE    HKN-SEIDONAME       TO SPA-GMN-SEIDONAME
+                   MOVE    HKN-TANSEIDONAME    TO SPA-GMN-SEIDONAME
                                                                   (IDX)
                END-PERFORM
       *
@@ -871,7 +871,7 @@
                    PERFORM 900-HKNNUM-READ-SEC
       *
                    IF      FLG-HKNNUM      =   ZERO
-                       MOVE    HKN-SEIDONAME   TO
+                       MOVE    HKN-TANSEIDONAME     TO
                                            SPA-GMN-SEIDONAME (IDX)
                        IF      SPA-GMN-KOHNUM (IDX)(1:1)
                                                =   "0" OR  "9"
