@@ -879,6 +879,11 @@
            IF     (SPA-GMN-IDOKANREN   =   SPA-MAE-IDOKANREN )  OR
                   (SPA-GMN-IDOKANREN   =   SPACE             )
                MOVE    SPA-GMN-IDOKANREN   TO  SPA-MAE-IDOKANREN
+               IF     (SPA-GMN-IDOKANREN   =   SPACE             )
+                   MOVE    SPACE               TO  SPA-GMN-IDOKIKAN
+                   MOVE    SPACE               TO  SPA-GMN-IDOKANRENNAME
+                   MOVE    6                   TO  SPA-GMN-CUR
+               END-IF
                GO      TO      501-IDOKANREN-CHK-EXT
            END-IF
       *
@@ -894,6 +899,7 @@
            CALL    "ORCSKANACHK"       USING
                                        ORCSKANACHKAREA
            MOVE    KANACHK-MAE-INPUT   TO  SPA-GMN-IDOKANREN
+           MOVE    SPACE               TO  SPA-MAE-IDOKANREN
       *
       *    "//" 入力の時、検索画面へ
            IF      SPA-GMN-IDOKANREN(1:2)  =  "//"
