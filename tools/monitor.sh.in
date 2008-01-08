@@ -131,7 +131,7 @@ then
     server_exit()
     {
 	if test ! -z "$glpid"; then
-	    kill $glpid
+	    killall glserver
 	fi
 	if test "x"$Start_dbredirector = "xtrue"; then
 	    killall dbredirector
@@ -180,7 +180,7 @@ do
   read END
   if [ "$END" == "exit" ]; then
     killall wfc
-    kill $glpid
+    killall glserver
     break
   fi
 done
