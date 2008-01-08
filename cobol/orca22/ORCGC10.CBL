@@ -2678,7 +2678,7 @@ grpsys                 MOVE    SPA-HOSPNUM         TO  PTBYO-HOSPNUM
                    MOVE    "開始日以前の転帰日付が入力してあります"
                                                        TO  SPA-ERRMSG
                WHEN    "0028"
-                   MOVE    "開始日と他の項目は同時に入力できません" 
+                   MOVE    "診療科と他の項目は同時に入力できません" 
                                                        TO  SPA-ERRMSG
                WHEN    "0036"
                    MOVE    "転帰区分が入力してあります"
