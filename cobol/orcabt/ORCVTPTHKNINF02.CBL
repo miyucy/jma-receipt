@@ -979,11 +979,16 @@
                   (PTHKN-TEKEDYMD      >=  WRK-BYMD-70 )
       *        £È£±£¸¡¥£±£°°Ê¹ß¤ËÁ°´ü¹âÎð¼Ô
                IF      (PTHKN-TEKSTYMD     >=   "20061001" )
-      *            £²³ä¤Ï£³³ä¤Ø
-                   IF      WRK-HEN-FTNKBN      =   "2"
-                       MOVE    "3"             TO  WRK-HEN-FTNKBN
+                   IF      (PTHKN-TEKSTYMD     <    WRK-BYMD-70 )
+      *                Á°´ü¹âÎð¼ÔÅþÃ£Æü¤ÇÀÚ¤êÂØ¤¨
+                       PERFORM 50022-HKNINF-BYMD-SEC
+                   ELSE
+      *                £²³ä¤Ï£³³ä¤Ø
+                       IF      WRK-HEN-FTNKBN      =   "2"
+                           MOVE    "3"             TO  WRK-HEN-FTNKBN
+                       END-IF
+                       PERFORM 5003-ROJIN-HOJYOKBN-HEN-SEC
                    END-IF
-                   PERFORM 5003-ROJIN-HOJYOKBN-HEN-SEC
                ELSE
       *            £È£±£¸¡¥£±£°°Ê¹ß¤ËÁ°´ü¹âÎð¼Ô
                    IF      (PTHKN-TEKSTYMD     >=   WRK-BYMD-70 )

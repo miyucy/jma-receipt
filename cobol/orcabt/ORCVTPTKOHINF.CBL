@@ -396,13 +396,10 @@
            INITIALIZE                  WRK-AREA
            INITIALIZE                  SPA-AREA
       *
-      *TEST
       *    パラメタセット
-      *    UNSTRING   COMMAND-PARAM    DELIMITED  BY  ","
-      *                                INTO    ASS-PARA
-      *    END-UNSTRING
-           MOVE    "/home/orca/ORCADC.PARA"    TO  ASS-PARA
-      *TEST
+           UNSTRING   COMMAND-PARAM    DELIMITED  BY  ","
+                                       INTO    ASS-PARA
+           END-UNSTRING
       *
       *
       *    パラメータ情報取得
