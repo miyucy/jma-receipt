@@ -297,11 +297,6 @@ grpsys             07  KEY-O-HOSPNUM   PIC  9(02).
            03  WRK-R061-SRYKBN-O               PIC X(02).
       *
            03  WRK-SRYYMD                      PIC X(08).
-           03  WRK-KGKZ                        PIC ZZZ,ZZZ,ZZZ.
-           03  WRK-KGK9                        PIC ZZZ,ZZZ,ZZ9.
-           03  WRK-KGK7                        PIC ZZZZ,ZZ9.
-           03  WRK-KGK8                        PIC ZZZZZ,ZZ9.
-           03  WRK-KGK6                        PIC ZZZ,ZZ9.
            03  WRK-KGK2                        PIC Z9.
       *
       *    レセプトコメント編集
@@ -415,14 +410,11 @@ grpsys             07  KEY-O-HOSPNUM   PIC  9(02).
                05  WRK-KHNTENZ     PIC  ZZZZZZZ.
            03  WRK-KAISU.
                05  WRK-KAISUZ      PIC  ZZZ.
-           03  WRK-KOUTEN.
-               05  WRK-KOUTENZ     PIC  ZZZZZZZ.
            03  WRK-TENSU.
                05  WRK-TENSUZ      PIC  ZZZZZZZ.
-           03  WRK-JINISSU.
-               05  WRK-JINISSUZ    PIC  ZZ.
            03  WRK-JINISSU2.
                05  WRK-JINISSU2Z   PIC  Z9.
+           03  WRK-TOTALTENZ       PIC ZZ,ZZZ,ZZ9.
       *
        01  WRK-CNT                 PIC  9(5).
       *
@@ -1572,12 +1564,12 @@ grpsys         MOVE    WRK-PARA-HOSPNUM    TO  BTPARA-HOSPNUM
                MOVE    WRK-TENSU           TO  HCM58-SYOUKEI (2)
       *    
       *    合計
-            MOVE    RECE100-TOTALTEN (1)   TO  WRK-KGK6
-            MOVE    WRK-KGK6               TO  HCM58-GOKEI (1)
-            MOVE    RECE100-TOTALTEN (2)   TO  WRK-KGK6
-            MOVE    WRK-KGK6               TO  HCM58-GOKEI (2)
-            MOVE    RECE100-TOTALTEN (3)   TO  WRK-KGK6
-            MOVE    WRK-KGK6               TO  HCM58-GOKEI (3)
+            MOVE    RECE100-TOTALTEN (1)   TO  WRK-TOTALTENZ
+            MOVE    WRK-TOTALTENZ          TO  HCM58-GOKEI (1)
+            MOVE    RECE100-TOTALTEN (2)   TO  WRK-TOTALTENZ
+            MOVE    WRK-TOTALTENZ          TO  HCM58-GOKEI (2)
+            MOVE    RECE100-TOTALTEN (3)   TO  WRK-TOTALTENZ
+            MOVE    WRK-TOTALTENZ          TO  HCM58-GOKEI (3)
       *
            .
        330-HC101-TENSU-HEN-EXT.
