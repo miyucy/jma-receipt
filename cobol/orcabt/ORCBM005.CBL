@@ -46,6 +46,8 @@
       *                                     HCM05V02.red に変更
       *
       *  03.05.01    NACL-藤原    07/04/19  グループ診療対応
+      *
+      *  04.01.01    NACL-藤原    07/11/22  公害レセプト対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -352,10 +354,14 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
                    MOVE    "社保・入院"    TO  HC05-TEISYUTUNAME
                WHEN    1   ALSO    2   ALSO    1    
                    MOVE    "国保・入院"    TO  HC05-TEISYUTUNAME
+               WHEN    1   ALSO    5   ALSO    1    
+                   MOVE    "公害・入院"    TO  HC05-TEISYUTUNAME
                WHEN    1   ALSO    1   ALSO    2 
                    MOVE    "社保・入院外"  TO  HC05-TEISYUTUNAME
                WHEN    1   ALSO    2   ALSO    2    
                    MOVE    "国保・入院外"  TO  HC05-TEISYUTUNAME
+               WHEN    1   ALSO    5   ALSO    2    
+                   MOVE    "公害・入院外"  TO  HC05-TEISYUTUNAME
                WHEN    2   ALSO    2   ALSO    1    
                    MOVE    "特療・入院"    TO  HC05-TEISYUTUNAME
                WHEN    2   ALSO    2   ALSO    2    
@@ -409,18 +415,23 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
            PERFORM 31012-SEIWA-HEN-SEC
            MOVE    WRK-HENYMDG(1:16)   TO  HC05-SEIYM(CNT-LINE)
       *
-           MOVE    RECE10-TOTALTEN(1)  TO  WRK-TEN
-           MOVE    WRK-TEN             TO  HC05-HKNTEN(CNT-LINE)   
-           MOVE    RECE10-TOTALTEN(2)  TO  WRK-TEN
-           MOVE    WRK-TEN             TO  HC05-MONEY1(CNT-LINE)
-           MOVE    RECE10-TOTALTEN(3)  TO  WRK-TEN
-           MOVE    WRK-TEN             TO  HC05-MONEY2(CNT-LINE)
+           IF      KEY-N-TEISYUTUSAKI  =   5 
+               MOVE    RECE10-FTNMONEY (1) TO  WRK-TEN
+               MOVE    WRK-TEN             TO  HC05-HKNTEN(CNT-LINE)
+           ELSE   
+               MOVE    RECE10-TOTALTEN(1)  TO  WRK-TEN
+               MOVE    WRK-TEN             TO  HC05-HKNTEN(CNT-LINE)   
+               MOVE    RECE10-TOTALTEN(2)  TO  WRK-TEN
+               MOVE    WRK-TEN             TO  HC05-MONEY1(CNT-LINE)
+               MOVE    RECE10-TOTALTEN(3)  TO  WRK-TEN
+               MOVE    WRK-TEN             TO  HC05-MONEY2(CNT-LINE)
+               MOVE    RECE10-JNISSU  (2)  TO  WRK-JNISSU
+               MOVE    WRK-JNISSU          TO  HC05-JNISSU1(CNT-LINE)
+               MOVE    RECE10-JNISSU  (3)  TO  WRK-JNISSU
+               MOVE    WRK-JNISSU          TO  HC05-JNISSU2(CNT-LINE)
+           END-IF
            MOVE    RECE10-JNISSU  (1)  TO  WRK-JNISSU
            MOVE    WRK-JNISSU          TO  HC05-JNISSU(CNT-LINE)
-           MOVE    RECE10-JNISSU  (2)  TO  WRK-JNISSU
-           MOVE    WRK-JNISSU          TO  HC05-JNISSU1(CNT-LINE)
-           MOVE    RECE10-JNISSU  (3)  TO  WRK-JNISSU
-           MOVE    WRK-JNISSU          TO  HC05-JNISSU2(CNT-LINE)
       *
            EVALUATE    RECE10-SKYKBN
                WHEN    "0"
