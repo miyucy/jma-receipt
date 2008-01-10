@@ -343,6 +343,9 @@
       *       极清勒
               WHEN     "973"
                   MOVE    "4"          TO  TBL-QRCSV-DATA (2)
+      *       给巢
+              WHEN     "975"
+                  MOVE    "5"          TO  TBL-QRCSV-DATA (2)
       *       极锐
               WHEN     "980"  THRU  "989"
                   MOVE    "6"          TO  TBL-QRCSV-DATA (2)
@@ -352,6 +355,15 @@
            END-EVALUATE
            MOVE    2                   TO  TBL-MAX
            PERFORM 400-DATAOUT-SEC
+      *    汐阂ˇ极清勒ˇ极锐は瘦副荚ˇ淡规戎规クリア
+           IF     (COMB-HKNNUM         =   "971"
+                                       OR  "973" )
+               OR (COMB-HKNNUM (1:2)   =   "98"  )
+               MOVE    SPACE               TO  PTHKN-HKNJANUM
+               MOVE    SPACE               TO  PTHKN-KIGO
+               MOVE    SPACE               TO  PTHKN-NUM
+               MOVE    "1"                 TO  PTHKN-HONKZKKBN
+           END-IF
       *    瘦副荚戎规レコ〖ド
            MOVE    SPACE               TO  TBL-QRCSV-AREA
            MOVE    "22"                TO  TBL-QRCSV-DATA (1)
