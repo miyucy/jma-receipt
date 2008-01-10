@@ -581,12 +581,9 @@
                MOVE    LNK-KYOUTU          TO  SPA-KYOUTU
            END-IF
       *
-           DISPLAY "SPA-MOTOPG =" SPA-MOTOPG
            IF    ( SPA-MOTOPG      =   "M02" )
                PERFORM 310-SPASET-SEC
            ELSE
-               DISPLAY ":SPA-W01-MAE-KANRICD =" SPA-W01-MAE-KANRICD
-               DISPLAY ":SPA-W01-MAE-KBNCD   =" SPA-W01-MAE-KBNCD
                MOVE    SPA-W01-MAE-G   TO  WRK-W01-MAE-G
                PERFORM 310-SPASET-SEC
                MOVE    WRK-W01-MAE-G   TO  SPA-W01-MAE-G
@@ -1739,8 +1736,6 @@
       *****************************************************************
        403-ZENKAICD-SEC                SECTION.
       *
-           DISPLAY "SPA-W01-MAE-KANRICD =" SPA-W01-MAE-KANRICD
-           DISPLAY "SPA-W01-MAE-KBNCD   =" SPA-W01-MAE-KBNCD
            IF    ( SPA-W01-MAE-KANRICD     NOT =   SPACE )
                MOVE    SPA-W01-MAE-KANRICD TO  W01-KANRICD
                PERFORM 4104-KANRICD-CHK-SEC
@@ -1786,9 +1781,6 @@
       *
            MOVE    SPA-GMN-KANRICD     TO  SPA-W01-MAE-KANRICD
            MOVE    SPA-W01-KBNCD       TO  SPA-W01-MAE-KBNCD
-      *
-               DISPLAY "XSPA-W01-MAE-KANRICD =" SPA-W01-MAE-KANRICD
-               DISPLAY "XSPA-W01-MAE-KBNCD   =" SPA-W01-MAE-KBNCD
       *
            MOVE    SPA-W01KYOUTU       TO  SPA-WORK
       *
