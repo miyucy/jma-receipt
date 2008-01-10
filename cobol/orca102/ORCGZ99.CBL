@@ -562,6 +562,10 @@
                                                OR  "．"   OR  "＊"
                        MOVE    "0010"      TO  SPA-ERRCD
                    END-IF
+                   IF     SPA-Z99GMN-INPUTCD(SPA-Z99GMN-IDX) (IDY:2)
+                                               =   "　"
+                       MOVE    "0014"      TO  SPA-ERRCD
+                   END-IF
                END-IF
            END-PERFORM
       *
@@ -1009,6 +1013,12 @@
                                                  TO  SPA-ERRMSG
                    MOVE    "全角５文字までにして下さい。"
                                                  TO  SPA-ERRMSG(31:)
+               WHEN    "0014"
+                   STRING  "全角空白があります。"
+                           "全角空白は入力できません。"
+                                        DELIMITED  BY  SIZE
+                                                 INTO  SPA-ERRMSG
+                   END-STRING
            END-EVALUATE.
       *
            MOVE    SPACE               TO  ZERR

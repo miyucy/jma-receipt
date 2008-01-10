@@ -534,6 +534,10 @@
                                                OR  "．"   OR  "＊"
                        MOVE    "0008"      TO  SPA-ERRCD
                    END-IF
+                   IF    SPA-GMN-K051-INPUTCD (IDX) (IDY:2)
+                                               =   "　"
+                       MOVE    "0011"      TO  SPA-ERRCD
+                   END-IF
                END-IF
            END-PERFORM
            IF      SPA-ERRCD       NOT =   SPACE
@@ -758,6 +762,12 @@
                WHEN    "0010"
                    MOVE    "文字の間に空白は入力できません。"
                                                  TO  SPA-ERRMSG
+               WHEN    "0011"
+                   STRING  "全角空白があります。"
+                           "全角空白は入力できません。"
+                                        DELIMITED  BY  SIZE
+                                                 INTO  SPA-ERRMSG
+                   END-STRING
            END-EVALUATE
       *
            MOVE    SPACE               TO  KERR

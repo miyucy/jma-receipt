@@ -914,6 +914,9 @@
                                                OR  "．"   OR  "＊"
                        MOVE    "0008"      TO  SPA-ERRCD
                    END-IF
+                   IF    WRK-INPUTCD (IDY:2)   =   "　"
+                       MOVE    "0014"      TO  SPA-ERRCD
+                   END-IF
                END-IF
            END-PERFORM
       *
@@ -1503,6 +1506,12 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN    "0013"
                    MOVE    "前頁はありません。"
                                                  TO  SPA-ERRMSG
+               WHEN    "0014"
+                   STRING  "全角空白があります。"
+                           "全角空白は入力できません。"
+                                        DELIMITED  BY  SIZE
+                                                 INTO  SPA-ERRMSG
+                   END-STRING
            END-EVALUATE
       *
       *
