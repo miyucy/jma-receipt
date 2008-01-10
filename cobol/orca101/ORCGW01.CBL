@@ -82,6 +82,7 @@
       *  03.05.00    NACL-多々納  07/05/02  グループ診療対応
       *  03.05.01    NACL-藤原    07/05/25  印刷データ削除設定追加
       *  04.01.01    NACL-藤原    07/10/24  総括表の地方公費記載対応
+      *  04.01.01    NACL-太田    08/01/10  前回ＣＤボタン追加
       *****************************************************************
       *
        ENVIRONMENT                               DIVISION.
@@ -208,6 +209,9 @@
                    07  WRK-RATE-EDITR  PIC X(11).
       *
            03  WRK-PATHNAME            PIC X(64).
+           03  WRK-W01-MAE-G.
+               05  WRK-W01-MAE-KANRICD PIC X(04).
+               05  WRK-W01-MAE-KBNCD   PIC X(08).
       *
        01  WRK-HEN-AREA.
            03  WRK-HENYMDG         PIC X(09).
@@ -577,7 +581,16 @@
                MOVE    LNK-KYOUTU          TO  SPA-KYOUTU
            END-IF
       *
-           PERFORM 310-SPASET-SEC
+           DISPLAY "SPA-MOTOPG =" SPA-MOTOPG
+           IF    ( SPA-MOTOPG      =   "M02" )
+               PERFORM 310-SPASET-SEC
+           ELSE
+               DISPLAY ":SPA-W01-MAE-KANRICD =" SPA-W01-MAE-KANRICD
+               DISPLAY ":SPA-W01-MAE-KBNCD   =" SPA-W01-MAE-KBNCD
+               MOVE    SPA-W01-MAE-G   TO  WRK-W01-MAE-G
+               PERFORM 310-SPASET-SEC
+               MOVE    WRK-W01-MAE-G   TO  SPA-W01-MAE-G
+           END-IF
       *
            MOVE    1               TO  SPA-GMN-PAGE
       *
@@ -756,6 +769,9 @@
                WHEN    "CLICKED"       ALSO    "B02"
                    PERFORM 402-CLEAR-SEC
       *---- (01.00.01) LINE ADD END ----------------------------------
+      *        前回ＣＤ
+               WHEN    "CLICKED"       ALSO    "B03"
+                   PERFORM 403-ZENKAICD-SEC
       *        確定
                WHEN    "CLICKED"       ALSO    "B12"
                    PERFORM  410-KAKUTEI-SEC
@@ -1719,6 +1735,25 @@
       *---- (01.00.01) LINE ADD END -----------------------------------
       *
       *****************************************************************
+      *    前回ＣＤ
+      *****************************************************************
+       403-ZENKAICD-SEC                SECTION.
+      *
+           DISPLAY "SPA-W01-MAE-KANRICD =" SPA-W01-MAE-KANRICD
+           DISPLAY "SPA-W01-MAE-KBNCD   =" SPA-W01-MAE-KBNCD
+           IF    ( SPA-W01-MAE-KANRICD     NOT =   SPACE )
+               MOVE    SPA-W01-MAE-KANRICD TO  W01-KANRICD
+               PERFORM 4104-KANRICD-CHK-SEC
+               IF    ( SPA-W01-MAE-KBNCD   NOT =   SPACE )
+                   MOVE    SPA-W01-MAE-KBNCD   TO  W01-KBNCD
+                   PERFORM 4105-KBNCD-CHK-SEC
+               END-IF
+           END-IF
+      *
+           .
+       403-ZENKAICD-EXT.
+           EXIT.
+      *****************************************************************
       *    確定
       *****************************************************************
        410-KAKUTEI-SEC           SECTION.
@@ -1748,6 +1783,12 @@
                    GO  TO  410-KAKUTEI-EXT
                END-IF
            END-IF
+      *
+           MOVE    SPA-GMN-KANRICD     TO  SPA-W01-MAE-KANRICD
+           MOVE    SPA-W01-KBNCD       TO  SPA-W01-MAE-KBNCD
+      *
+               DISPLAY "XSPA-W01-MAE-KANRICD =" SPA-W01-MAE-KANRICD
+               DISPLAY "XSPA-W01-MAE-KBNCD   =" SPA-W01-MAE-KBNCD
       *
            MOVE    SPA-W01KYOUTU       TO  SPA-WORK
       *

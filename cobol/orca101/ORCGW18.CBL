@@ -1031,7 +1031,7 @@
            MOVE    "W01"               TO  SPA-SAKIPG
            MOVE    "W18"               TO  SPA-MOTOPG
       *
-           INITIALIZE                  SPA-W01KYOUTU
+      *     INITIALIZE                  SPA-W01KYOUTU
       *
            MOVE    SPA-SAKIPG          TO  MCP-WINDOW
       *
