@@ -83,7 +83,8 @@
                                    REPLACING  //RECE01//
                                    BY         //BD00801//.
       *
-           COPY    "HCM41.INC".
+           COPY    "HCM41V01.INC"  REPLACING  //HCM41V01//
+                                   BY         //HCM41//.
       *
       *    ¥¹¥ÑÎÎ°è
        01  STS-AREA.
@@ -168,6 +169,8 @@
            03  WRK-CONS-ROUSAI-HKNNUM  PIC X(03)   VALUE   "971".
       *    ¼«ÇåÀÕÊÝ¸±ÈÖ¹æ
            03  WRK-CONS-JIBAI-HKNNUM   PIC X(03)   VALUE   "973".
+      *    ¸ø³²ÊÝ¸±ÈÖ¹æ
+           03  WRK-CONS-KOUGAI-HKNNUM   PIC X(03)   VALUE  "975".
       *
       *----(03.04.01)--ADD-START---
        01  CONST-AREA.
@@ -500,6 +503,7 @@
                EVALUATE    SYU-SYUHKNNUM
                    WHEN    WRK-CONS-JIBAI-HKNNUM
                    WHEN    WRK-CONS-ROUSAI-HKNNUM
+                   WHEN    WRK-CONS-KOUGAI-HKNNUM
                        MOVE    ZERO        TO  SYU-TOTAL-HKNTEN
                    WHEN    OTHER
                        MOVE    SYU-TOTAL-HKNTEN
@@ -511,6 +515,8 @@
                EVALUATE    SYU-SYUHKNNUM
                    WHEN    SPACE
                        MOVE    6                   TO  IDX
+                   WHEN    WRK-CONS-KOUGAI-HKNNUM
+                       MOVE    10                  TO  IDX
                    WHEN    WRK-CONS-JIBAI-HKNNUM
                        MOVE    9                   TO  IDX
                    WHEN    WRK-CONS-ROUSAI-HKNNUM
@@ -563,7 +569,7 @@
                        END-IF
       *----(03.04.01)--UPD-START---
                    END-IF
-                   IF    IDX  =  8  OR  9
+                   IF    IDX  =  8  OR  9 OR 10
                        COMPUTE WRK-MONEY   =   SYU-RSIJIBAI-SKYMONEY
                                            -   WRK-JIHI
                    ELSE
@@ -652,7 +658,7 @@
        330-TERM-HEN-SEC            SECTION.
       *
            PERFORM VARYING IDX FROM    1   BY  1
-                   UNTIL   IDX >       10
+                   UNTIL   IDX >       11
                IF      IDX                 <   9
                    MOVE    SUM-HKNTEN(IDX) TO  WRK-Z8
                    MOVE    WRK-Z8          TO  HCM41-GHKNTEN(IDX)
@@ -695,7 +701,7 @@
                                    TO  SPRT-SHORI-RENNUM
            MOVE    LNK-PRTKANRI-PRIORITY
                                    TO  SPRT-PRIORITY
-           MOVE    "HCM41.red"     TO  SPRT-PRTID
+           MOVE    "HCM41V01.red"  TO  SPRT-PRTID
            IF      ORCBD008-SYORIKBN   =   "1" OR "3"
                MOVE    "Æü·×É½¡ÊÅÁÉ¼È¯¹ÔÆü¡Ë"
                                        TO  SPRT-TITLE

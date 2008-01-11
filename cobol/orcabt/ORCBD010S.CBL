@@ -114,7 +114,8 @@
                                    BY          //BD01004//.
       *
            COPY    "HCM51.INC".
-           COPY    "HCM52.INC".
+           COPY    "HCM52V01.INC"  REPLACING   //HCM52V01//
+                                   BY          //HCM52//.
       *
        01  FLG-AREA.
            03  FLG-END                     PIC 9(01).
@@ -311,11 +312,15 @@
                05  CONST-JIBAIMSG              PIC X(10)
                                                VALUE "¼«ÇåÀÕ".
       *
-               05  CONST-CHOSEI                PIC 9(2)    VALUE 10.
+               05  CONST-KOUGAI                PIC 9(2)    VALUE 10.
+               05  CONST-KOUGAIMSG             PIC X(10)
+                                               VALUE "¸ø¡¡³²".
+      *
+               05  CONST-CHOSEI                PIC 9(2)    VALUE 11.
                05  CONST-CHOSEIMSG             PIC X(10)
                                                VALUE "Ä´À°¶â".
       *
-               05  CONST-GENMEN                PIC 9(2)    VALUE 11.
+               05  CONST-GENMEN                PIC 9(2)    VALUE 12.
                05  CONST-GENMENMSG             PIC X(10)
                                                VALUE "¸ºÌÈ³Û".
            03  CONST-SEIKYU-R  REDEFINES   CONST-SEIKYU-VAL.
@@ -1099,6 +1104,8 @@
                EVALUATE    COMB-HKNNUM
                WHEN    SPACE
                    MOVE    CONST-KOHTAN    TO  WRK-HOKEN
+               WHEN    "975"
+                   MOVE    CONST-KOUGAI    TO  WRK-HOKEN
                WHEN    "973"
                    MOVE    CONST-JIBAI     TO  WRK-HOKEN
                WHEN    "971"
@@ -2273,6 +2280,10 @@
                                            TO  WRK-ZZZZZZZ9
                    MOVE    WRK-ZZZZZZZ9    TO  HCM52-JIBAI (IDX1)
       *
+                   MOVE    BD01003-SEIKYU-KOUGAI (IDX1)
+                                           TO  WRK-ZZZZZZZ9
+                   MOVE    WRK-ZZZZZZZ9    TO  HCM52-KOUGAI(IDX1)
+      *
                    MOVE    BD01003-SEIKYU-CHOSEI(IDX1)
                                            TO  WRK-ZZZZZZZ9
                    MOVE    WRK-ZZZZZZZ9    TO  HCM52-CHOSEI(IDX1)
@@ -2355,7 +2366,7 @@
       *
            INITIALIZE                  ORCSPRTAREA
            PERFORM 230-PRINT-COMMON-SEC
-           MOVE   "HCM52.red"          TO  SPRT-PRTID
+           MOVE   "HCM52V01.red"       TO  SPRT-PRTID
            MOVE    "¼ýÇ¼ÆüÊó¡Ê¹ç·×¡Ë"  TO  SPRT-TITLE
            MOVE    HCM52               TO  SPRT-PRTDATA
            CALL    "ORCSPRT"           USING

@@ -763,6 +763,10 @@
            PERFORM 2009-HENKAN-SEC
            MOVE    WRK-OUT-INPUT(1:16) TO  WRK-HKNJA-G
       *
+           IF      COMB-HKNNUM         =  "975"
+               MOVE    COMB-SYU-TANSEIDONAME   TO  WRK-HKNJA-G
+           END-IF
+      *
       *    記号・番号
       *    全角変換
            IF      PTHKN-KIGO          =   SPACE

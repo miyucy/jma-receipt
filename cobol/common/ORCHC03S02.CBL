@@ -62,7 +62,7 @@
            03  IDX-DAY                 PIC 9(02).
       *
        01  WRK-AREA.
-           03  WRK-RSIJBIFLG           PIC 9(01).
+           03  WRK-KBTPRTFLG           PIC 9(01).
            03  WRK-HKNCOMBI            PIC X(04).
            03  WRK-SRYKA               PIC X(02).
            03  WRK-DENPNUM             PIC 9(07).
@@ -95,7 +95,7 @@
                    07  SRT-DENPNUM     PIC 9(07).
                    07  SRT-SRYYM.
                        09  SRT-SRYYM9  PIC 9(06).
-                   07  SRT-RSIJBIFLG   PIC 9(01).
+                   07  SRT-KBTPRTFLG   PIC 9(01).
                    07  SRT-SRYKA       PIC X(02).
                    07  SRT-HKNCOMBI    PIC X(04).
                05  SRT-KBT-SRYKA-MAX   PIC 9(03).
@@ -271,12 +271,14 @@
                        PERFORM 20011-SYUNOU-SYUKEI-SEC
                ELSE
       *
-                       MOVE    ZERO            TO  WRK-RSIJBIFLG
+                       MOVE    ZERO            TO  WRK-KBTPRTFLG
                        MOVE    ZERO            TO  WRK-DENPNUM
                        MOVE    SYU-SRYYMD (1:6) TO WRK-SRYYM
       *
-                   IF    ( SYU-SYUHKNNUM   =   "971"   OR  "973" )
-                       MOVE    1               TO  WRK-RSIJBIFLG
+                   IF    ( SYU-SYUHKNNUM   =   "971"
+                                            OR "973"
+                                            OR "975" )
+                       MOVE    1               TO  WRK-KBTPRTFLG
                        MOVE    SYU-SRYKA       TO  WRK-SRYKA
                        MOVE    SYU-HKNCOMBINUM TO  WRK-HKNCOMBI
                        PERFORM 20011-SYUNOU-SYUKEI-SEC
@@ -332,7 +334,7 @@
       *
                IF    ( SRT-SRYYM     (IDX1)    =   WRK-SRYYM )
                 AND  ( SRT-DENPNUM   (IDX1)    =   WRK-DENPNUM )
-                AND  ( SRT-RSIJBIFLG (IDX1)    =   WRK-RSIJBIFLG )
+                AND  ( SRT-KBTPRTFLG (IDX1)    =   WRK-KBTPRTFLG )
                 AND  ( SRT-SRYKA     (IDX1)    =   WRK-SRYKA )
                 AND  ( SRT-HKNCOMBI  (IDX1)    =   WRK-HKNCOMBI )
                     MOVE    IDX1   TO  SRT-PNT
@@ -361,8 +363,8 @@
                                    TO  SRT-SRYYM     (SRT-MAX)
                    MOVE    WRK-DENPNUM
                                    TO  SRT-DENPNUM   (SRT-MAX)
-                   MOVE    WRK-RSIJBIFLG
-                                   TO  SRT-RSIJBIFLG (SRT-MAX)
+                   MOVE    WRK-KBTPRTFLG
+                                   TO  SRT-KBTPRTFLG (SRT-MAX)
                    MOVE    WRK-SRYKA
                                    TO  SRT-SRYKA     (SRT-MAX)
                    MOVE    WRK-HKNCOMBI

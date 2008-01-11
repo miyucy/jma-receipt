@@ -450,6 +450,7 @@
                IF    ( SYU-SYUHKNNUM (1:2) =   "98" )
                 OR   ( SYU-SYUHKNNUM       =   "971" )
                 OR   ( SYU-SYUHKNNUM       =   "973" )
+                OR   ( SYU-SYUHKNNUM       =   "975" )
                    MOVE    ZERO    TO  FLG-TAISYO
                END-IF
            END-IF

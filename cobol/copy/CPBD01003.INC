@@ -40,12 +40,13 @@
                        09  BD01003-SEIKYU-JIHHKN   PIC S9(10).
                        09  BD01003-SEIKYU-ROUSAI   PIC S9(10).
                        09  BD01003-SEIKYU-JIBAI    PIC S9(10).
+                       09  BD01003-SEIKYU-KOUGAI   PIC S9(10).
                        09  BD01003-SEIKYU-CHOSEI   PIC S9(10).
                        09  BD01003-SEIKYU-GENMEN   PIC S9(10).
                05  BD01003-SEIKYU-R      REDEFINES   BD01003-SEIKYU-VAL.
                    07  BD01003-SEIKYU-OCC          OCCURS  4.
                        09  BD01003-SEIKYU          PIC S9(10)
-                                                   OCCURS  11.
+                                                   OCCURS  12.
            03  BD01003-JIHI-AREA.
                05  BD01003-JIHI-TOTAL              PIC S9(10).
                05  BD01003-JIHI                    PIC S9(10)
