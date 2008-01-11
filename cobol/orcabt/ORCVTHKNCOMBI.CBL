@@ -847,7 +847,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *    コンバート時に前期高齢者の時、補助区分を再編集する
            IF     (PTINF-BIRTHDAY      >   "19320930" ) AND
                   (WRK-BYMD-70         <=  WRK-SYSYMD ) AND
-                  (PTHKN-TEKEDYMD      >=  WRK-SYSYMD )
+                  (PTHKN-TEKEDYMD      >=  WRK-BYMD-70 )
                IF     (WRK-BYMD-70         >   PTHKN-TEKSTYMD )
       *            適用開始日が前期高齢者年齢以前
                    PERFORM 22012-HOJOKBN-CHK2-SEC
