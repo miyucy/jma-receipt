@@ -157,7 +157,7 @@
            03  WRK-Z99             PIC --------9.
       *
        01  SUM-AREA                            VALUE   ZERO.
-           03  SUM-OCC             OCCURS  10.
+           03  SUM-OCC             OCCURS  11.
                05  SUM-KENSU       PIC 9(05).
                05  SUM-HKNTEN      PIC 9(08).
                05  SUM-MONEY       PIC S9(08).
