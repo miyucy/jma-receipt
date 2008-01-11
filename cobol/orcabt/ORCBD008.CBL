@@ -495,8 +495,11 @@
                MOVE    WRK-RENNUM      TO  WRK-RENNUM-X
                MOVE    WRK-RENNUM-X    TO  HCM41-RENNUM(CNT-LINE)
       *    患者番号
-               MOVE    BD00801-PTNUM
-                                       TO  HCM41-PTNUM(CNT-LINE)
+               IF    ( BD00801-PTNUM (11:) =   SPACE )
+                   MOVE    BD00801-PTNUM   TO  HCM41-PTNUM(CNT-LINE)
+               ELSE
+                   MOVE    BD00801-PTNUM   TO  HCM41-PTNUM2(CNT-LINE)
+               END-IF
       *    氏名
                MOVE    PTINF-NAME      TO  HCM41-NAME(CNT-LINE)
       *    保険点数
