@@ -161,16 +161,10 @@
            03  IDX2                PIC 9(04).
            03  IDX3                PIC 9(04).
            03  IDX4                PIC 9(04).
-      *     
-           03  WRK-SYU-INDEX       PIC 9(04).
-           03  WRK-YKZ-INDEX       PIC 9(04).
-           03  WRK-KIZ-INDEX       PIC 9(04).
       *
            03  IDXY                PIC 9(03).
            03  IDXZ                PIC 9(03).
       *     
-           03  SYSKAN-IDX          PIC 9(03).
-           03  SYSKAN-IDY          PIC 9(03).
            03  IDW1                PIC 9(04). 
            03  IDW2                PIC 9(04). 
            03  IDW3                PIC 9(04). 
@@ -288,9 +282,6 @@
            03  WRK-KENTAICOMMENT-NAME          PIC X(200).
            03  WRK-KENTAICOMMENT-NAME-TEMP     PIC X(200).
            03  WRK-KENTAICOMMENT-SRYCD         PIC 9(09).
-      *
-           03  WRK-HKNNUM              PIC X(03).
-           03  WRK-FTNJANUM            PIC X(08).
       *
            03  WRK-SRYSYUKBN           PIC X(03).
       *
@@ -977,6 +968,11 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
                                            WRK-KENTAIKASAN-TABLE
            INITIALIZE                      TBL-DENSHI-INF
       *
+      *    外来迅速検体検査加算算定日を確認
+      ***  IF      RECE100-KENTAIKASANFLG     =   '1'
+      ***      PERFORM 2009-KENTAIKASAN-KAKUNIN-SEC
+      ***  END-IF
+      *
            INITIALIZE                      RECE120-REC
            MOVE    RECE100-KEY         TO  RECE120-KEY1
            MOVE    ZERO                TO  RECE120-ZAINUM
@@ -1502,7 +1498,6 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
            IF  ( RECE100-KHNTEN  (2)      =   ZERO )  AND
                ( RECE100-KAISU   (2)      >   ZERO )
                    CONTINUE
-      *            PERFORM 20042-SRYKBN12-REIGAI-SEC
            ELSE
       *        継続管理加算のとき
                IF ((FLG-KEIKNRKSN     =   1)  OR
@@ -2037,7 +2032,6 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
                IF      IDX1              =   5
                AND     WRK-ZAIWMAX(IDX1) >   ZERO
                AND     RECE120-YKZTEN    >   ZERO
-      *            点数・回数セット
                    IF      RECE120-SRYKBN     >=   "33"
                        MOVE    RECE120-YKZTEN     TO  WRK-ZAITENX
                        MOVE    RECE120-ZAIKAISU   TO  WRK-ZAIKAISUX
@@ -2602,24 +2596,6 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
            EXIT.
       *
       *****************************************************************
-      *    明細空白処理
-      *****************************************************************
-       410-MEISAI-SPACE-SEC   SECTION.
-      *
-           PERFORM   VARYING   IDY   FROM    1   BY  1
-                     UNTIL     IDY   >       WRK-TBLMAX
-               IF  IDY                   =   1
-                   MOVE    SPACE         TO  TBL-ZAI (IDY)(3:)
-               ELSE
-                   INITIALIZE                TBL-ZAI (IDY)
-               END-IF
-           END-PERFORM
-           MOVE    1                 TO  WRK-TBLMAX
-      *
-           .
-       410-MEISAI-SPACE-EXT.
-           EXIT.
-      *****************************************************************
       *    剤テーブル編集処理
       *****************************************************************
        430-TBLZAI-HEN-SEC     SECTION.
@@ -3035,7 +3011,6 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
                MOVE    WRK-TNSKAI-ST     TO  IDA
                COMPUTE   IDA             =   IDA     -   2
                MOVE    WRK-TNSKAI-KETA   TO  IDB
-      *****    MOVE    WRK-TBLMAX       TO  IDY
       *
       *        最終明細に点数・回数を印字するスペース有り
                MOVE    TBL-ZAI (IDY)(3:)     TO  WRK-ZAI-NAME

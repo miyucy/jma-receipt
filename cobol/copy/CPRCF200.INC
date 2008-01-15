@@ -120,17 +120,13 @@
                05  RECE200-NYUKHNRYO       PIC 9(09).
       *入院日数
                05  RECE200-NYUKHNNISSU     PIC 9(02).
-      *合計金額情報
-               05  RECE200-NYUKHNKEIINF-AREA.
-                   07  RECE200-NYUKHNKEIINF    OCCURS  5.
       *合計金額
-                       09  RECE200-NYUKHNKEI   PIC 9(09).
+               05  RECE200-NYUKHNKEI       PIC 9(09).
+      *
       *入院基本料情報２
            03  RECE200-NYUKHNINF2.
-      *合計金額情報２
-               05  RECE200-NYUKHNKEIINF2   OCCURS  5.
       *合計金額２
-                   07  RECE200-NYUKHNKEI2  PIC S9(09).
+               05  RECE200-NYUKHNKEI2      PIC S9(09).
       *
       *特定入院基本料情報
            03  RECE200-NYUTOKINF           OCCURS  10.
@@ -140,33 +136,31 @@
                05  RECE200-NYUTOKRYO-RYAKU PIC X(14).
       *入院日数
                05  RECE200-NYUTOKNISSU     PIC 9(02).
-      *合計金額情報
-               05  RECE200-NYUTOKKEIINF-AREA.
-                   07  RECE200-NYUTOKKEIINF    OCCURS  5.
       *合計金額
-                       09  RECE200-NYUTOKKEI   PIC 9(09).
+               05  RECE200-NYUTOKKEI       PIC 9(09).
       *
       *特定入院基本料情報２
            03  RECE200-NYUTOKINF2.
-      *合計金額情報２
-               05  RECE200-NYUTOKKEIINF2   OCCURS  5.
       *合計金額２
-                   07  RECE200-NYUTOKKEI2  PIC S9(09).
+               05  RECE200-NYUTOKKEI2      PIC S9(09).
       *
-      *食事療養費情報
-           03  RECE200-SHOKUJIINF-AREA.
-               05  RECE200-SHOKUJIINF      OCCURS  5.
-      *食事日数
-                   07  RECE200-SHOKUJINISSU
-                                           PIC 9(02).
-      *食事療養費
-                   07  RECE200-SHOKUJIRYOYOHI
-                                           PIC 9(09).
-      *標準負担額
-                   07  RECE200-SHOKUJIFTN  PIC 9(09).
+      *公害入院療養指導
+           03  RECE200-KOGAISIDOINF        OCCURS   3.
+      *基本料
+               05  RECE200-KOGAISIDORYO    PIC 9(09).
+      *日数
+               05  RECE200-KOGAISIDONISSU  PIC 9(02).
+      *合計金額
+               05  RECE200-KOGAISIDOKEI    PIC 9(09).
       *
-      *一部負担金・食事療養費標準負担額区分
-           03  RECE200-SHOKUJIFTNKBN       PIC X(01).
+      *清浄空気室管理料
+           03  RECE200-SEIKANINF.
+      *基本料
+               05  RECE200-SEIKANRYO       PIC 9(09).
+      *日数
+               05  RECE200-SEIKANNISSU     PIC 9(02).
+      *合計金額
+               05  RECE200-SEIKANKEI       PIC 9(09).
       *
       *食事種別情報‐基本
            03  RECE200-SHOKUJISYUBETU-KHN  PIC X(02).
@@ -182,26 +176,6 @@
                05  RECE200-SHOKUJIKHNRYO   PIC 9(09).
       *食事日数
                05  RECE200-SHOKUJIKHNNISSU PIC 9(02).
-      *
-      *食事種別情報‐基本（生活）
-           03  RECE200-SHOKUJISYUBETU-KHNSEI   PIC X(02).
-      *
-      *食事基本料情報（生活）
-           03  RECE200-SHOKUJIKHNINF-SEI   OCCURS   2.
-      *食事基本料
-               05  RECE200-SHOKUJIKHNRYO-SEI   PIC 9(09).
-      *食事日数
-               05  RECE200-SHOKUJIKHNNISSU-SEI PIC 9(02).
-      *
-      *食事基本料情報（その他）
-           03  RECE200-SHOKUJIKHNINF-ETC       OCCURS   3.
-      *食事基本料
-               05  RECE200-SHOKUJIKHNRYO-ETC   PIC 9(09).
-      *食事日数
-               05  RECE200-SHOKUJIKHNNISSU-ETC PIC 9(02).
-      *
-      *入院時生活療養費に係る生活療養食事算定フラグ
-           03  RECE200-SEIKATURYOYO        PIC X(01).
       *
       *他保険入院料算定済みフラグ
            03  RECE200-NYUINRYOFLG         PIC X(01).
@@ -232,13 +206,17 @@
       *診療回数テーブル
            03  RECE200-DAY-AREA.
                05  RECE200-DAY             PIC 9(03)
-                                               OCCURS   31.
+                                           OCCURS  31.
+      *
       *実日数テーブル情報
            03  RECE200-JNISSUTBLINF        OCCURS  31.
       *実日数テーブル
                05  RECE200-JNISSUTBL       PIC X(01).
-      *乳幼児・幼児のコメントフラグ
-           03  RECE200-NYUYOJIFLG          PIC X(01).
+      *
+      *入院料未算定区分
+           03  RECE200-NYUINDAY-TBL.
+               05  RECE200-NYUINDAY-KBN    PIC X(01)
+                                           OCCURS  31.
       *
       *初診時間区分
            03  RECE200-SHOSHINTIME         PIC X(01).
@@ -247,7 +225,7 @@
       *コメントカウントフラグ
            03  RECE200-COMCNTFLG           PIC X(01).
       *病床数編集フラグ（特定疾患療養指導料等）
-           03  RECE200-BEDSUFLG            PIC  X(01).
+           03  RECE200-BEDSUFLG            PIC X(01).
       *印刷順
            03  RECE200-PRTSEQ              PIC 9(03).
       *未請求フラグ
@@ -261,4 +239,3 @@
                05  RECE200-ERR-HKNCOMBINUM PIC 9(04).
                05  RECE200-ERR-TEKSTYMD    PIC 9(08).
                05  RECE200-ERR-TEKEDYMD    PIC 9(08).
-

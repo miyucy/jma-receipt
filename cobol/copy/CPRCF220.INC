@@ -41,10 +41,6 @@
                    07  RECE220-TEKSTYMD    PIC X(08). 
       *∫ﬁ»÷πÊ
                05  RECE220-ZAINUM          PIC 9(08).
-      *∫ﬁœ¢»÷
-               05  RECE220-ZAIREN          PIC 9(02).
-      *∏¯»Ò ¨Œ•∂Ë ¨
-           03  RECE220-KOHBUNRI            PIC 9(01).
       *ø«Œ≈∂Ë ¨
            03  RECE220-SRYKBN              PIC X(02).
       *∫ﬁº± Ã∂Ë ¨

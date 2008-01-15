@@ -143,7 +143,6 @@
            03  FLG-SYS-1900        PIC 9(01).
            03  FLG-SYS-1901        PIC 9(01).
            03  FLG-SYS-1902        PIC 9(01).
-           03  FLG-SHOKUJI-ETC     PIC 9(01).
            03  FLG-RECECOM-SJKBN   PIC 9(01).
            03  FLG-STS             PIC 9(04).
       *
@@ -174,6 +173,7 @@
            03  IDX1                PIC 9(02).
            03  IDX2                PIC 9(02).
            03  IDX3                PIC 9(02).
+           03  IDX4                PIC 9(02).
            03  IDXP                PIC 9(02).
            03  IDY1                PIC 9(03).
            03  IDY2                PIC 9(03).
@@ -188,7 +188,7 @@
       *    
        01  SUM-AREA                    VALUE   ZERO.          
            03  SUM-NYUKHNNISSU     PIC 9(03).
-           03  SUM-NYUKHNKEI       PIC 9(07)   OCCURS  2.
+           03  SUM-NYUKHNKEI       PIC 9(07).
       *
       *    
        01  KEY-AREA                    VALUE   LOW-VALUE.          
@@ -379,19 +379,8 @@
       *
            03  WRK-SRYKACD         PIC X(04).
            03  WRK-SRYKANAME       PIC X(40).
-      *                 
-      *    ø©ªˆ¥À‹Œ¡æ Û° §Ω§Œ¬æ°À° ≈¶Õ◊ÕÛ°À
-           03  WRK-SHOKUJIKHNINF-ETC-AREA.
-               05  WRK-SHOKUJIKHNRYO-ETC-NM    PIC X(06).
-               05  WRK-SHOKUJIKHNRYO-ETC       PIC X(08).
-               05  WRK-SHOKUJIKHNRYO-ETC-FL    PIC X(04).
-               05  WRK-SHOKUJIKHNNISSU-ETC     PIC X(04).
-               05  WRK-SHOKUJIKHNNISSU-ETC-FL  PIC X(02).
       *
-           03  WRK-HENSYU-KIN.
-               05  WRK-HENSYU-KIN-9            PIC 9(04).
-           03  WRK-HENSYU-DAY.
-               05  WRK-HENSYU-DAY-9            PIC 9(02).
+           03  WRK-SYOKUJIKEI      PIC 9(07).
       *
       *    •Ï•ª•◊•»≥ «ºÕ—
        01  TABLE-AREA                          VALUE   SPACE.
@@ -457,14 +446,11 @@
                05  WRK-KHNTENZ     PIC  ZZZZZZZ.
            03  WRK-KAISU.
                05  WRK-KAISUZ      PIC  ZZZ.
-           03  WRK-KOUTEN.
-               05  WRK-KOUTENZ     PIC  ZZZZZZZ.
            03  WRK-TENSU.
                05  WRK-TENSUZ      PIC  ZZZZZZZ.
-           03  WRK-JINISSU.
-               05  WRK-JINISSUZ    PIC  ZZ.
            03  WRK-JINISSU2.
                05  WRK-JINISSU2Z   PIC  Z9.
+           03  WRK-TOTALTENZ       PIC  ZZ,ZZZ,ZZ9.
       *
        01  WRK-CNT                 PIC  9(5).
       *
@@ -538,8 +524,6 @@
       *    ∞ÂŒ≈µ°¥ÿæ Û
            COPY    "CPSK1001.INC".
            COPY    "CPSK1002.INC".
-      *    
-           COPY    "CPSK1005.INC".
       *
       *    ∞ÂŒ≈µ°¥ÿ ‘Ω∏æ Û
            COPY    "CPSK1900.INC".
@@ -1603,13 +1587,6 @@
       *            
            PERFORM VARYING IDX     FROM    1   BY  1
                    UNTIL   IDX     >       21
-      *        ¥À‹≈¿øÙ
-               IF      IDX             >   3
-                   COMPUTE   WRK-TNSIDX    =   IDX -   3
-                   MOVE    RECE200-KHNTEN (IDX)    TO  WRK-KHNTENZ
-                   MOVE    WRK-KHNTEN              TO  HCN58-KHNTEN
-                                                           (WRK-TNSIDX)
-               END-IF
       *        ≤ÛøÙ
                MOVE    RECE200-KAISU(IDX)      TO  WRK-KAISUZ
                MOVE    WRK-KAISU               TO  HCN58-KAISU  (IDX)
@@ -1669,20 +1646,20 @@
                                            TO  WRK-KAISUZ
                MOVE    WRK-KAISU           TO  HCN58-NYUKAISU  (IDX)
       *        <∂‚≥€>
-               MOVE    RECE200-NYUKHNKEI(IDX 1)
+               MOVE    RECE200-NYUKHNKEI(IDX)
                                            TO  WRK-TENSUZ
                MOVE    WRK-TENSU           TO  HCN58-NYUTENSU  (1 IDX)
            END-PERFORM
       *
            IF        RECE200-NYUKHNRYO (5) >   ZERO
                MOVE    ZERO                    TO  SUM-AREA  
-               PERFORM VARYING     IDX     FROM    1   BY  1
-                       UNTIL       IDX     >       4
+               PERFORM VARYING     IDX     FROM    4   BY  1
+                       UNTIL       IDX     >      10
                        OR          RECE200-NYUKHNRYO (IDX) =   ZERO
                    ADD     RECE200-NYUKHNNISSU (IDX)
                                                    TO  SUM-NYUKHNNISSU
-                   ADD     RECE200-NYUKHNKEI   (IDX 1)
-                                                   TO  SUM-NYUKHNKEI (1)
+                   ADD     RECE200-NYUKHNKEI   (IDX)
+                                                   TO  SUM-NYUKHNKEI
                END-PERFORM    
       *        <¥À‹Œ¡>
                MOVE    SPACE               TO  HCN58-NYUKHNTEN (4)
@@ -1690,42 +1667,66 @@
                MOVE    SUM-NYUKHNNISSU     TO  WRK-KAISUZ
                MOVE    WRK-KAISU           TO  HCN58-NYUKAISU  (4)
       *        <∂‚≥€>
-               MOVE    SUM-NYUKHNKEI (1)   TO  WRK-TENSUZ
+               MOVE    SUM-NYUKHNKEI       TO  WRK-TENSUZ
                MOVE    WRK-TENSU           TO  HCN58-NYUTENSU  (1 4)
            END-IF
+      *
       *    <∆˛±°¥À‹Œ¡°¶≤√ªª>
-           MOVE    RECE200-NYUKHNKEI2 (1)
-                                       TO  WRK-TENSUZ
+           MOVE    RECE200-NYUKHNKEI2  TO  WRK-TENSUZ
            MOVE    WRK-TENSU           TO  HCN58-NYUTENSU (1 5)
       *
       *    ∏¯≥≤∆˛±°Œ≈Õ‹ªÿ∆≥
-      *??  MOVE    RECE200-??          TO  WRK-KHNTENZ
-      *??  MOVE    WRK-KHNTEN          TO  HCN58-NYUKHNTEN (6)
-      *??  MOVE    RECE200-??          TO  WRK-KAISUZ
-      *??  MOVE    WRK-KAISU           TO  HCN58-NYUKAISU  (6)
-      *??  MOVE    RECE200-??          TO  WRK-TENSUZ
-      *??  MOVE    WRK-TENSU           TO  HCN58-NYUTENSU  (1 6)
+           MOVE    5           TO      IDX4
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >       3
+               ADD     1       TO      IDX4
+      *        <¥À‹Œ¡>
+               MOVE    RECE200-KOGAISIDORYO(IDX)
+                                           TO  WRK-KHNTENZ
+               MOVE    WRK-KHNTEN          TO  HCN58-NYUKHNTEN (IDX4)
+      *        <∆¸øÙ>
+               MOVE    RECE200-KOGAISIDONISSU(IDX)
+                                           TO  WRK-KAISUZ
+               MOVE    WRK-KAISU           TO  HCN58-NYUKAISU  (IDX4)
+      *        <∂‚≥€>
+               MOVE    RECE200-KOGAISIDOKEI(IDX)
+                                           TO  WRK-TENSUZ
+               MOVE    WRK-TENSU           TO  HCN58-NYUTENSU  (2 IDX4)
+           END-PERFORM
       *
       *    ¿∂æÙ∂ıµ§ºº¥…Õ˝Œ¡
-      *??  MOVE    RECE200-??          TO  WRK-KAISUZ
-      *??  MOVE    WRK-KAISU           TO  HCN58-NYUKAISU  (9)
-      *??  MOVE    RECE200-??          TO  WRK-TENSUZ
-      *??  MOVE    WRK-TENSU           TO  HCN58-NYUTENSU  (2 9)
+      *    <∆¸øÙ>
+           MOVE    RECE200-SEIKANNISSU     TO  WRK-KAISUZ
+           MOVE    WRK-KAISU               TO  HCN58-NYUKAISU  (9)
+      *    <∂‚≥€>
+           MOVE    RECE200-SEIKANKEI       TO  WRK-TENSUZ
+           MOVE    WRK-TENSU               TO  HCN58-NYUTENSU  (2 9)
       *
-      *    §Ω§Œ¬æ
-      *??  MOVE    RECE200-??          TO  WRK-KAISUZ
-      *??  MOVE    WRK-KAISU           TO  HCN58-NYUKAISU  (10)
-      *??  MOVE    RECE200-??          TO  WRK-TENSUZ
-      *??  MOVE    WRK-TENSU           TO  HCN58-NYUTENSU  ( 1 10)
-      *??  MOVE    RECE200-??          TO  WRK-TENSUZ
-      *??  MOVE    WRK-TENSU           TO  HCN58-NYUTENSU  (2 10)
+      *    <∆√ƒÍ∆˛±°Œ¡°¶§Ω§Œ¬æ>
+           MOVE    ZERO                    TO  SUM-AREA
+           PERFORM VARYING   IDX   FROM    1   BY  1
+                   UNTIL     IDX       >   10
+                   OR        RECE200-NYUTOKNISSU (IDX)  =   ZERO
+      *        <∆¸øÙ>
+               ADD     RECE200-NYUTOKNISSU(IDX)
+                                               TO  SUM-NYUKHNNISSU
+      *        <∂‚≥€>
+               ADD     RECE200-NYUTOKKEI(IDX)  TO  SUM-NYUKHNKEI
+           END-PERFORM
+      *    <∂‚≥€>
+           ADD         RECE200-NYUTOKKEI2      TO  SUM-NYUKHNKEI
+      *    <∆¸øÙ>
+           MOVE    SUM-NYUKHNNISSU     TO  WRK-KAISUZ
+           MOVE    WRK-KAISU           TO  HCN58-NYUKAISU (10)
+      *    <∂‚≥€>
+           MOVE    SUM-NYUKHNKEI       TO  WRK-TENSUZ
+           MOVE    WRK-TENSU           TO  HCN58-NYUTENSU (1 10)
       *
-      *    £π£∑ø©ªˆ            
-      *??  MOVE    RECE200-            TO  HCN58-SYOKJN-KHN
-      *??  MOVE    RECE200-            TO  HCN58-SYOKJN
-      *??  MOVE    "°ﬂ"                TO  HCN58-SYOKAKERU
-      *??  MOVE    "±ﬂ"                TO  HCN58-SYOEN
-      *??  MOVE    ""                  TO  HCN58-SYONICHI
+      *    £π£∑ø©ªˆ
+           MOVE    RECE200-SHOKUJISYUBETU-KHN
+                                       TO  HCN58-SYOKJN-KHN
+           MOVE    RECE200-SHOKUJISYUBETU(3)
+                                       TO  HCN58-SYOKJN
       *
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >       4
@@ -1736,6 +1737,17 @@
                    MOVE    RECE200-SHOKUJIKHNNISSU (IDX)
                                                TO  WRK-KGK2
                    MOVE    WRK-KGK2            TO  HCN58-SYOKAISU  (IDX)
+      *
+                   COMPUTE WRK-SYOKUJIKEI = RECE200-SHOKUJIKHNRYO  (IDX)
+                                          * RECE200-SHOKUJIKHNNISSU(IDX)
+                   MOVE    WRK-SYOKUJIKEI      TO  WRK-TENSUZ
+                   MOVE    WRK-TENSU           TO  HCN58-SYOKINGAKU(IDX)
+                   EVALUATE    IDX
+                     WHEN    4
+                           MOVE    "±ﬂ°ﬂ"      TO  HCN58-SYOKAKERU
+                           MOVE    "∆¸¥÷"      TO  HCN58-SYONICHI
+                           MOVE    "±ﬂ"        TO  HCN58-SYOEN
+                   END-EVALUATE
                END-IF                                        
            END-PERFORM          
       *
@@ -1748,14 +1760,14 @@
            MOVE    WRK-TENSU           TO  HCN58-SYOUKEI (3)
       *    
       *    πÁ∑◊
-           MOVE    RECE200-TOTALTEN(1) TO  WRK-KGK6
-           MOVE    WRK-KGK6            TO  HCN58-GOKEI   (1)
-           MOVE    RECE200-TOTALTEN(2) TO  WRK-KGK6
-           MOVE    WRK-KGK6            TO  HCN58-GOKEI   (2)
-           MOVE    RECE200-TOTALTEN(3) TO  WRK-KGK6
-           MOVE    WRK-KGK6            TO  HCN58-GOKEI   (3)
-           MOVE    RECE200-TOTALTEN(4) TO  WRK-KGK6
-           MOVE    WRK-KGK6            TO  HCN58-GOKEI   (4)
+           MOVE    RECE200-TOTALTEN(1) TO  WRK-TOTALTENZ
+           MOVE    WRK-TOTALTENZ       TO  HCN58-GOKEI   (1)
+           MOVE    RECE200-TOTALTEN(2) TO  WRK-TOTALTENZ
+           MOVE    WRK-TOTALTENZ       TO  HCN58-GOKEI   (2)
+           MOVE    RECE200-TOTALTEN(3) TO  WRK-TOTALTENZ
+           MOVE    WRK-TOTALTENZ       TO  HCN58-GOKEI   (3)
+           MOVE    RECE200-TOTALTEN(4) TO  WRK-TOTALTENZ
+           MOVE    WRK-TOTALTENZ       TO  HCN58-GOKEI   (4)
            .
        330-HC101-TENSU-HEN-EXT.
            EXIT.
@@ -2237,67 +2249,6 @@
                END-IF    
                ADD     1               TO  WRK-LINETEK     
            END-IF    
-      *
-      *       <ø©ªˆ¥À‹Œ¡æ Û° §Ω§Œ¬æ°À>
-           MOVE    ZERO                TO  FLG-SHOKUJI-ETC
-           IF      RECE200-SHOKUJIKHNRYO-ETC(1)  NOT =   ZERO
-               PERFORM VARYING IDXX    FROM     1   BY  1
-                       UNTIL   IDXX    >        3
-                       OR      RECE200-SHOKUJIKHNRYO-ETC(IDXX)  =  ZERO
-                   IF  WRK-LINETEK         >=  WRK-TEKIYOU-LINE
-                       PERFORM 34120-PAGE-SEC
-                   END-IF
-                   ADD     1               TO  WRK-LINETEK
-      *
-                   MOVE    SPACE    TO     WRK-SHOKUJIKHNINF-ETC-AREA
-      *
-                   MOVE  RECE200-SHOKUJIKHNRYO-ETC(IDXX)
-                                           TO  WRK-HENSYU-KIN-9
-                   INITIALIZE                  ORCSKANACHKAREA
-                   MOVE    "2"             TO  KANACHK-SYORI
-                   MOVE    WRK-HENSYU-KIN  TO  KANACHK-MAE-INPUT
-                   CALL    "ORCSKANACHK"   USING   ORCSKANACHKAREA
-                   IF      KANACHK-RC      =   ZERO
-                        MOVE    KANACHK-OUT-INPUT(1:8)
-                                           TO  WRK-SHOKUJIKHNRYO-ETC
-                   END-IF
-      *
-                   MOVE  RECE200-SHOKUJIKHNNISSU-ETC(IDXX)
-                                           TO  WRK-HENSYU-DAY-9
-                   IF      WRK-HENSYU-DAY(1:1) =  "0"
-                      MOVE      SPACE      TO  WRK-HENSYU-DAY(1:1)
-                   END-IF
-                   INITIALIZE                  ORCSKANACHKAREA
-                   MOVE    "2"             TO  KANACHK-SYORI
-                   MOVE    WRK-HENSYU-DAY  TO  KANACHK-MAE-INPUT
-                   CALL    "ORCSKANACHK"   USING   ORCSKANACHKAREA
-                   IF      KANACHK-RC      =   ZERO
-                        MOVE    KANACHK-OUT-INPUT(1:4)
-                                           TO  WRK-SHOKUJIKHNNISSU-ETC
-                   END-IF
-      *
-                   IF   FLG-SHOKUJI-ETC  =  ZERO
-                     MOVE  "ø©ªˆ°°" TO   WRK-SHOKUJIKHNRYO-ETC-NM
-                     MOVE   1       TO   FLG-SHOKUJI-ETC
-                   ELSE
-                     MOVE  "°°°°°°" TO   WRK-SHOKUJIKHNRYO-ETC-NM
-                   END-IF
-                   MOVE    "±ﬂ°ﬂ"   TO   WRK-SHOKUJIKHNRYO-ETC-FL
-                   MOVE    "∆¸"     TO   WRK-SHOKUJIKHNNISSU-ETC-FL
-      *
-                   IF      CNT-PAGE        =   1
-                       MOVE    WRK-SHOKUJIKHNINF-ETC-AREA
-                                       TO  HCN58-TEKIYO (WRK-LINETEK)
-                   ELSE
-                       MOVE    WRK-SHOKUJIKHNINF-ETC-AREA
-                                       TO  HCM59-TEKIYO (WRK-LINETEK)
-                   END-IF
-               END-PERFORM
-               IF      WRK-LINETEK         >=  WRK-TEKIYOU-LINE
-                   PERFORM 34120-PAGE-SEC
-               END-IF
-               ADD     1               TO  WRK-LINETEK
-           END-IF
       *
            .
        380-HC101-NYUTAI-RIREKI-HEN-EXT.
@@ -2804,87 +2755,75 @@ grpsys     MOVE    RECE200-HOSPNUM     TO  RECE10-HOSPNUM
       *    £±£±ΩÈø«°¡£∏£∞¬æ
            PERFORM VARYING IDX FROM    1   BY  1
                    UNTIL   IDX >       21
-               MOVE    RECE200-SRYKBNINF (IDX)  TO
-                                       RECE10-SRYKBNINF (IDX)
+               MOVE    RECE200-KHNTEN (IDX)  TO
+                                       RECE10-KHNTEN (IDX)
+               MOVE    RECE200-KAISU  (IDX)  TO
+                                       RECE10-KAISU  (IDX)
+               IF      RECE200-TENSU  (IDX 1)  >   ZERO
+                   MOVE    RECE200-TENSU  (IDX 1)  TO
+                                       RECE10-TENSU (IDX 1)
+               ELSE
+                   MOVE    RECE200-TENSU  (IDX 2)  TO
+                                       RECE10-TENSU (IDX 1)
+               END-IF
            END-PERFORM
       *
       *    £π£∞∆˛±°¥À‹Œ¡°¶≤√ªª
            MOVE    ZERO              TO  IDY
-           PERFORM   VARYING   IDX   FROM    23   BY  1
-                     UNTIL     IDX       >   26
+           PERFORM   VARYING   IDX   FROM    22   BY  1
+                     UNTIL     IDX       >   25
                ADD     1                 TO  IDY
                MOVE    RECE200-NYUKHNRYO  (IDY)
                                          TO  RECE10-KHNTEN (IDX)
                MOVE    RECE200-NYUKHNNISSU(IDY)
                                          TO  RECE10-KAISU  (IDX)
-               PERFORM   VARYING   IDY1  FROM    1   BY  1
-                         UNTIL     IDY1      >   5
-                   MOVE    RECE200-NYUKHNKEI  (IDY IDY1)
-                                         TO  RECE10-TENSU  (IDX IDY1)
-               END-PERFORM
+               MOVE    RECE200-NYUKHNKEI  (IDY)
+                                         TO  RECE10-TENSU  (IDX 1)
            END-PERFORM
            IF        RECE200-NYUKHNRYO (5)    >   ZERO
-               MOVE    ZERO                  TO  RECE10-KHNTEN (26)
+               MOVE    ZERO              TO  RECE10-KHNTEN (25)
                PERFORM   VARYING   IDY   FROM    5   BY  1
                          UNTIL     IDY       >   10
                          OR        RECE200-NYUKHNRYO (IDY)    =   ZERO
                    ADD     RECE200-NYUKHNNISSU(IDY)
-                                                 TO  RECE10-KAISU  (26)
-                   PERFORM   VARYING   IDY1  FROM    1   BY  1
-                             UNTIL     IDY1      >   5
-                       ADD       RECE200-NYUKHNKEI  (IDY IDY1)
-                                         TO  RECE10-TENSU  (26 IDY1)
-                   END-PERFORM
+                                         TO  RECE10-KAISU  (25)
+                   ADD     RECE200-NYUKHNKEI  (IDY)
+                                         TO  RECE10-TENSU  (25 1)
                END-PERFORM    
            END-IF
-           PERFORM   VARYING   IDY1  FROM    1   BY  1
-                     UNTIL     IDY1      >   5
-               MOVE    RECE200-NYUKHNKEI2 (IDY1)
-                                         TO  RECE10-TENSU  (27 IDY1)
-           END-PERFORM
-      *     
-      *    £π£≤∆√ƒÍ∆˛±°Œ¡°¶≤√ªª
+           MOVE    RECE200-NYUKHNKEI2    TO  RECE10-TENSU  (26 1)
+      *
+      *    ∏¯≥≤∆˛±°Œ≈Õ‹ªÿ∆≥
            MOVE    ZERO              TO  IDY
-           PERFORM   VARYING   IDX   FROM    28   BY  1
-                     UNTIL     IDX       >   31
+           PERFORM   VARYING   IDX   FROM    27   BY  1
+                     UNTIL     IDX       >   29
                ADD     1                 TO  IDY
-               IF      RECE200-NYUTOKRYO-RYAKU (IDY)
-                                             =   SPACE
-                   MOVE    RECE200-NYUTOKRYO  (IDY)
+               MOVE    RECE200-KOGAISIDORYO(IDY)
                                          TO  RECE10-KHNTEN (IDX)
-               END-IF
-               MOVE    RECE200-NYUTOKNISSU(IDY)
+               MOVE    RECE200-KOGAISIDONISSU(IDY)
                                          TO  RECE10-KAISU  (IDX)
-               PERFORM   VARYING   IDY1  FROM    1   BY  1
-                         UNTIL     IDY1      >   5
-                   MOVE    RECE200-NYUTOKKEI  (IDY IDY1)
-                                         TO  RECE10-TENSU  (IDX IDY1)
-               END-PERFORM
+               MOVE    RECE200-KOGAISIDOKEI(IDY)
+                                         TO  RECE10-TENSU  (IDX 1)
            END-PERFORM
-           IF        RECE200-NYUTOKNISSU (5)  >   ZERO
-               MOVE    ZERO                  TO  RECE10-KHNTEN (31)
-               PERFORM   VARYING   IDY   FROM    5   BY  1
-                         UNTIL     IDY       >   10
-                         OR        RECE200-NYUTOKRYO (IDY)    =   ZERO
-                   ADD     RECE200-NYUTOKNISSU(IDY)
-                                                 TO  RECE10-KAISU  (31)
-                   PERFORM   VARYING   IDY1  FROM    1   BY  1
-                             UNTIL     IDY1      >   5
-                       ADD       RECE200-NYUTOKKEI  (IDY IDY1)
-                                         TO  RECE10-TENSU  (31 IDY1)
-                   END-PERFORM
-               END-PERFORM    
-           END-IF
-           PERFORM   VARYING   IDY1  FROM    1   BY  1
-                     UNTIL     IDY1      >   5
-               MOVE    RECE200-NYUTOKKEI2 (IDY1)
-                                         TO  RECE10-TENSU  (32 IDY1)
+      *
+      *    ¿∂æÙ∂ıµ§ºº¥…Õ˝Œ¡
+           MOVE    RECE200-SEIKANNISSU   TO  RECE10-KAISU  (30)
+           MOVE    RECE200-SEIKANKEI     TO  RECE10-TENSU  (30 1)
+      *
+      *    £π£≤∆√ƒÍ∆˛±°Œ¡°¶≤√ªª
+           PERFORM   VARYING   IDY   FROM    1   BY  1
+                     UNTIL     IDY       >   10
+                     OR        RECE200-NYUTOKNISSU(IDY)  =   ZERO
+               ADD     RECE200-NYUTOKNISSU(IDY)
+                                         TO  RECE10-KAISU  (31)
+               ADD     RECE200-NYUKHNKEI  (IDY)
+                                         TO  RECE10-TENSU  (31 1)
            END-PERFORM
-      *     
-           MOVE    RECE200-AGE          TO  RECE10-AGE  
+           ADD     RECE200-NYUTOKKEI2    TO  RECE10-TENSU  (31 1)
+      *
+           MOVE    RECE200-AGE         TO  RECE10-AGE  
       *    ∞Ï…Ù…È√¥∂‚°¶ø©ªˆŒ≈Õ‹»Ò…∏Ω‡…È√¥≥€∂Ë ¨
-           MOVE    RECE200-SHOKUJIFTNKBN
-                                       TO  RECE10-SHOKUJIFTNKBN
+           MOVE    SPACE               TO  RECE10-SHOKUJIFTNKBN
       *
            MOVE    SPA-HOSPNUM         TO  RECE10-HOSPNUM
            MOVE    RECE10-REC          TO  MCPDATA-REC

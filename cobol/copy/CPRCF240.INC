@@ -74,13 +74,11 @@
            03  RECE240-ZAIMEISAISU         PIC 9(03).
       *患者番号
            03  RECE240-PTNUM               PIC X(20).
-      *診療科
-           03  RECE240-SRYKA               PIC X(02).
-      *（サ）フラグ
-           03  RECE240-SAFLG               PIC X(01).
       *適要欄情報
            03  RECE240-TEKIYO-INF.
       *剤区切（＊）
                05  RECE240-ASTER           PIC X(02).
       *摘要
                05  RECE240-TEKIYO          PIC X(100).
+      *（サ）フラグ
+           03  RECE240-SAFLG               PIC X(01).

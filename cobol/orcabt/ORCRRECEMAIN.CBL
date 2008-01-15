@@ -1942,14 +1942,14 @@
                                    INTO    WRK-ARG
            END-STRING
            DISPLAY "ORCR1210 start = [" WRK-ARG "]"
-      *****CALL    "ORCR1210"          USING
-      *****                            WRK-ARG
+           CALL    "ORCR1210"          USING
+                                       WRK-ARG
            CALL    "ORCR1220"          USING
                                        WRK-ARG
            CALL    "ORCR1230"          USING
                                        WRK-ARG
-           CALL    "ORCR1240"          USING
-                                       WRK-ARG
+      **** CALL    "ORCR1240"          USING
+      ****                             WRK-ARG
            CALL    "ORCR1250"          USING
                                        WRK-ARG
            CALL    "ORCR1260"          USING

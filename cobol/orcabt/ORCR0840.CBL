@@ -130,6 +130,7 @@
       *  04.01.04    NACL-ÌçÏÆ    07/11/26  ÆÃÄê´ïºà¾¦ÉÊÌ¾µ­ºÜÂÐ±þ
       *  04.01.05    NACL-ÌçÏÆ    07/11/30  Â¾ÊÝ¸±¤Ë¤Æ¿Ç»¡ÎÁ»»ÄêºÑ¤ÎÌ¾¾ÎÃÖ´¹
       *  04.01.06    NACL-ÌçÏÆ    07/12/19  Æþ±¡ÎÁÌ¤»»ÄêÆüÂÐ±þ
+      *  04.01.07    NACL-ÌçÏÆ    08/01/15  ¸ø³²ÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -7976,6 +7977,7 @@ grpsys     PERFORM  900-DBSELECT-SEC
                      IF   COMB-HKNNUM(1:2)  =  "98"
                      OR   COMB-HKNNUM       =  "971"
                      OR   COMB-HKNNUM       =  "973"
+                     OR   COMB-HKNNUM       =  "975"
                        IF   COMB-HKNNUM(1:2)  =  "98"
                           MOVE    "1"   TO   RECE82-NYUINRYOFLG
                        END-IF
@@ -7984,6 +7986,9 @@ grpsys     PERFORM  900-DBSELECT-SEC
                        END-IF
                        IF   COMB-HKNNUM       =  "973"
                           MOVE    "3"   TO   RECE82-NYUINRYOFLG
+                       END-IF
+                       IF   COMB-HKNNUM       =  "975"
+                          MOVE    "7"   TO   RECE82-NYUINRYOFLG
                        END-IF
                      ELSE
                        IF   COMB-HKNNUM       =  "060" OR  "067"

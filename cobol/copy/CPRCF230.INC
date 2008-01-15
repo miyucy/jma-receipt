@@ -41,12 +41,8 @@
                    07  RECE230-TEKSTYMD    PIC X(08). 
       *剤番号
                05  RECE230-ZAINUM          PIC 9(08).
-      *剤連番
-               05  RECE230-ZAIREN          PIC 9(02).
       *連番号
                05  RECE230-RENNUM          PIC 9(02).
-      *公費分離区分
-           03  RECE230-KOHBUNRI            PIC 9(01).
       *患者番号
            03  RECE230-PTNUM               PIC X(20).
       *診療科
@@ -135,12 +131,8 @@
                05  RECE230-SANSOKBN            PIC 9(01).
       *その他情報
                05  RECE230-SONOTAINF.
-      *レセプト電算対象外フラグ
-                   07  RECE230-RECEDENFLG      PIC X(01).
       *レセプト対象外フラグ
                    07  RECE230-RECEPTFLG       PIC X(01).
-      *レセ電用特定器材商品名
-                   07  RECE230-RECEDENNAME     PIC X(300).
       *レセ用特定器材商品名編集フラグ
                    07  RECE230-RECEHENFLG      PIC X(01).
       *

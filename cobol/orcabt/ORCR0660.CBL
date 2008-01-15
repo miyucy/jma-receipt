@@ -86,6 +86,7 @@
       *  03.05.02    NACL-門脇    07/08/07  算定履歴に関わる記載修正
       *  04.01.01    NACL-門脇    07/11/26  特定器材商品名記載対応
       *  04.01.02    NACL-門脇    07/11/30  退院時服薬指導加算算定日記載対応
+      *  04.01.03    NACL-門脇    08/01/15  公害対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1300,6 +1301,10 @@
              WHEN     "6"
                MOVE     11             TO  WRK-RECE65XX-YUKOKETA(1 1)
                MOVE    "他保険にて入院料算定済" 
+                                       TO  WRK-RECE65XX-NAME(1 1)
+             WHEN     "7"
+               MOVE     10             TO  WRK-RECE65XX-YUKOKETA(1 1)
+               MOVE    "公害にて入院料算定済" 
                                        TO  WRK-RECE65XX-NAME(1 1)
            END-EVALUATE
       *

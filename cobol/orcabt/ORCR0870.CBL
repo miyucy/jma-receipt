@@ -70,6 +70,7 @@
       *  04.01.01    NACL-ÌçÏÆ    07/11/01  ¸øÌ³ºÒ³²ÂÐ±þ
       *  04.01.02    NACL-ÌçÏÆ    07/11/26  ÆÃÄê´ïºà¾¦ÉÊÌ¾µ­ºÜÂÐ±þ
       *  04.01.03    NACL-ÌçÏÆ    07/11/30  Âà±¡»þÉþÌô»ØÆ³²Ã»»»»ÄêÆüµ­ºÜÂÐ±þ
+      *  04.01.04    NACL-ÌçÏÆ    08/01/15  ¸ø³²ÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1301,6 +1302,10 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE859PARA-HOSPNUM
              WHEN     "5"
                MOVE     10             TO  WRK-RECE85XX-YUKOKETA(1 1)
                MOVE    "¼ÒÊÝ¤Ë¤ÆÆþ±¡ÎÁ»»ÄêºÑ" 
+                                       TO  WRK-RECE85XX-NAME(1 1)
+             WHEN     "7"
+               MOVE     10             TO  WRK-RECE85XX-YUKOKETA(1 1)
+               MOVE    "¸ø³²¤Ë¤ÆÆþ±¡ÎÁ»»ÄêºÑ" 
                                        TO  WRK-RECE85XX-NAME(1 1)
            END-EVALUATE
            MOVE     "1"                TO  WRK-RECE85XX-SIKFLG(1 1)

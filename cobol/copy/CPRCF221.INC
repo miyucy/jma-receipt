@@ -40,8 +40,6 @@
                    07  RECE221-HKNID       PIC 9(10).
       *適用開始年月日
                    07  RECE221-TEKSTYMD    PIC X(08). 
-      *公費分離区分
-               05  RECE221-KOHBUNRI        PIC 9(01).
       *診療区分
                05  RECE221-SRYKBN          PIC X(02).
       *診療種別区分

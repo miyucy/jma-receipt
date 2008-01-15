@@ -129,7 +129,6 @@
            03  FLG-SRYCD1          PIC 9(01).
            03  FLG-OK              PIC 9(01).
       *
-           03  FLG-CHK-SYOKBN      PIC 9(01).
            03  FLG-GAIJINKEN       PIC 9(01).
       *
       *    カウント領域
@@ -156,8 +155,6 @@
            03  IDX2                PIC 9(04).
            03  IDX3                PIC 9(04).
            03  IDX4                PIC 9(04).
-      *
-           03  IDX5                PIC 9(04).
       *
            03  IDXY                PIC 9(03).
            03  IDXZ                PIC 9(03).
@@ -279,8 +276,6 @@
            03  WRK-KENTAICOMMENT-NAME          PIC X(200).
            03  WRK-KENTAICOMMENT-NAME-TEMP     PIC X(200).
            03  WRK-KENTAICOMMENT-SRYCD         PIC 9(09).
-      *
-           03  WRK-HKNNUM          PIC X(03).
       *
       *    剤・診療行為テーブル
        01  TBL-ZAI-AREA.
@@ -516,8 +511,7 @@
        01  TBL-DENSHI-INF.
            03  TBL-DENSHI-FLG              PIC  9(01).
            03  TBL-DENSHI-TEN              PIC  9(07).
-           03  TBL-DENSHI-OCC              OCCURS   5.
-               05  TBL-DENSHI-ZAIKAISU     PIC  9(04).
+           03  TBL-DENSHI-ZAIKAISU         PIC  9(04).
       *
       *   日本語数字
        01  TBL-SUJI-AREA.
@@ -610,6 +604,12 @@
       *    老人初診（診療所）紹介患者加算
            03  WRK-CONS-SYOSIN-KASAN2  PIC X(09)   VALUE 
                                                    "111700470".
+      ***  初診（乳幼児）加算
+      ***  03  WRK-CONS-SYOSIN-KASAN3  PIC X(09)   VALUE 
+      ***                                          "111000370".
+      ***  初診（育児栄養指導）加算
+      ***  03  WRK-CONS-SYOSIN-KASAN4  PIC X(09)   VALUE 
+      ***                                          "111000470".
       *    小児科外来診療料（初診時診療時の紹介患者）加算
            03  WRK-CONS-SYOSIN-KASAN5  PIC X(09)   VALUE 
                                                    "111010370".
@@ -686,15 +686,6 @@
            03  WRK-CONS-SYOSIN-KASAN29 PIC X(09)   VALUE 
                                                    "111012370".
       *
-      *    未実施減算
-           03  CONS-GENZAN1            PIC X(09)   VALUE   "190080470".
-           03  CONS-GENZAN2            PIC X(09)   VALUE   "190799670".
-           03  CONS-GENZAN3            PIC X(09)   VALUE   "190080570".
-           03  CONS-GENZAN4            PIC X(09)   VALUE   "190799770".
-           03  CONS-GENZAN5            PIC X(09)   VALUE   "190111690".
-           03  CONS-GENZAN6            PIC X(09)   VALUE   "190809090".
-           03  CONS-GENZAN7            PIC X(09)   VALUE   "190111790".
-           03  CONS-GENZAN8            PIC X(09)   VALUE   "190809190".
       *    外来迅速検体検査加算
            03  WRK-CONS-GAIJINKEN      PIC X(09)   VALUE 
                                                    "160177770".
@@ -865,7 +856,7 @@
       *
       *    パラメータ０４ファイルより編集
            INITIALIZE                      RECE220-REC
-           MOVE    RECE200-KEY          TO  RECE220-KEY1
+           MOVE    RECE200-KEY         TO  RECE220-KEY1
            MOVE    ZERO                TO  RECE220-ZAINUM
       *
            START   RECE220-FILE
@@ -934,8 +925,7 @@
       *
       *        検査のとき回数を編集する
                IF      WRK-KENSA-KAISU        >   ZERO
-                   MOVE    WRK-KENSA-KAISU        TO  RECE200-KAISU (17)
-      *************REWRITE RECE200-REC
+                   MOVE    WRK-KENSA-KAISU        TO  RECE200-KAISU (16)
                END-IF
       *
       *        電子化加算編集
@@ -944,7 +934,7 @@
                END-IF
       *
                REWRITE RECE200-REC
-      *                 
+      *
                PERFORM 990-RECE200-READ-SEC
            END-IF
       *
@@ -978,7 +968,6 @@
            INITIALIZE                      RECE230-REC
            MOVE    RECE220-KEY1        TO  RECE230-KEY1
            MOVE    RECE220-ZAINUM      TO  RECE230-ZAINUM
-           MOVE    RECE220-ZAIREN      TO  RECE230-ZAIREN
            START   RECE230-FILE
                KEY IS    >=   RECE230-KEY
                INVALID
@@ -991,12 +980,11 @@
                OR     ( FLG-RECE230          =   1              )
                OR     ( RECE220-KEY1     NOT =   RECE230-KEY1   )
                OR     ( RECE220-ZAINUM   NOT =   RECE230-ZAINUM )
-               OR     ( RECE220-ZAIREN   NOT =   RECE230-ZAIREN )
       *
                PERFORM   VARYING   IDX   FROM    1   BY  1
-                         UNTIL   ( IDX               >   5     )
+                         UNTIL   ( IDX                >   5     )
                          OR      ( RECE230-SRYCD(IDX) =   SPACE )
-                         OR      ( SPA-STS           =   2     ) 
+                         OR      ( SPA-STS            =   2     )
       *
                  IF        RECE230-RECEPTFLG(IDX)     =   SPACE
       *
@@ -1021,58 +1009,30 @@
                      ELSE
                        EVALUATE    RECE230-SRYCD (IDX) (1:1)
                            WHEN    "0"
-                             IF   (RECE200-RECESYUBETU    =  8888   )
-                             AND  (RECE220-SRYKBN  = "95" OR "96"   )
-                             AND  (RECE230-SRYCD (IDX) (1:3) = "095"
-                                                           OR "096")
-                                     MOVE    3             TO  IDY
-                             ELSE
-                               IF      RECE230-SRYCD (IDX) (1:3) = "059"
-                                 IF    ( RECE220-SRYKBN     =   "70" )
-                                 AND   ( RECE230-DATAKBN (IDX)
-                                                           =   "3"  )
-                                     MOVE    3             TO  IDY
-                                 ELSE
-                                     MOVE    4             TO  IDY
-                                 END-IF
+                               IF      RECE230-SRYCD (IDX) (1:3)
+                                                     =  "059" OR "058"
+                                     MOVE    4           TO  IDY
                                ELSE
-                                IF     RECE230-SRYCD (IDX) (1:3) = "058"
-                                     MOVE    4             TO  IDY
-                                ELSE
                                  IF    RECE230-SRYCD (IDX) (1:3) = "008"
-                                    IF      IDY           =   ZERO
-                                        MOVE    2          TO  IDY
+                                    IF      IDY      =   ZERO
+                                        MOVE    2        TO  IDY
                                     END-IF
                                  ELSE
-                                    IF      IDY           =   ZERO
-                                        MOVE    1          TO  IDY
+                                    IF      IDY      =   ZERO
+                                        MOVE    1        TO  IDY
                                     END-IF
                                  END-IF
-                                END-IF
                                END-IF
-                             END-IF
                            WHEN    "8"
-                               IF (    IDY             =   ZERO      )
-      *****                    OR ( RECE230-SRYCD (IDX) = CONS-RINYAK )
+                               IF      IDY           =   ZERO
                                    MOVE    2             TO  IDY
-                               END-IF    
-                           WHEN    "1"
-                               MOVE    3             TO  IDY
-                           WHEN    "6"
-                               MOVE    5             TO  IDY
-                           WHEN    "7"
-                               IF    ( RECE220-SRYKBN     =   "70" )
-                               AND   ( RECE230-DATAKBN (IDX)
-                                                         =   "3"  )
-                                   MOVE    3                 TO  IDY
-                               ELSE
-                                   IF      RECE230-SRYCD (IDX)    =
-                                             WRK-CONS-FILM-YOUJI-KASAN
-                                       MOVE    3             TO  IDY
-                                   ELSE
-                                       MOVE    4             TO  IDY
-                                   END-IF
                                END-IF
+                           WHEN    "1"
+                                   MOVE    3             TO  IDY
+                           WHEN    "6"
+                                   MOVE    5             TO  IDY
+                           WHEN    "7"
+                                   MOVE    4             TO  IDY
                            WHEN    OTHER
                                DISPLAY "ORCR1260 SRYCD="
                                                  RECE230-SRYCD (IDX) 
@@ -1235,17 +1195,6 @@
                        IF      RECE230-SRYCD(IDX) =   CONS-TEIGEN
                            MOVE    1             TO  FLG-TEIGEN
                        END-IF
-                       IF    ( RECE220-SRYKBN     =   "90" OR "92"    )
-                       AND   ( RECE230-SRYCD(IDX) =  CONS-GENZAN1  OR 
-                                                     CONS-GENZAN2  OR
-                                                     CONS-GENZAN3  OR
-                                                     CONS-GENZAN4  OR
-                                                     CONS-GENZAN5  OR
-                                                     CONS-GENZAN6  OR
-                                                     CONS-GENZAN7  OR
-                                                     CONS-GENZAN8     )
-                           MOVE    1             TO  FLG-TEIGEN
-                       END-IF
                      END-IF
       *
                    END-IF
@@ -1348,7 +1297,6 @@
                                             OR  WRK-CONS-SYOSIN-KASAN26
                                             OR  WRK-CONS-SYOSIN-KASAN27
                                             OR  WRK-CONS-SYOSIN-KASAN28
-      ***>                                  OR  WRK-CONS-SYOSIN-KASAN29
                                             OR  CONS-COMMENT5         
                                             OR  CONS-COMMENT6         
                                             OR  CONS-COMMENT7         
@@ -1377,8 +1325,7 @@
                MOVE     1              TO  TBL-DENSHI-FLG
                MOVE  TBL-ZAIW-TEN (WRK-WIDX1 WRK-WIDX2)
                                        TO  TBL-DENSHI-TEN
-      *??         COMPUTE  IDX5  =  RECE220-KOHBUNRI + 1
-      *??         ADD   RECE220-ZAIKAISU   TO  TBL-DENSHI-ZAIKAISU(IDX5)
+               ADD   RECE220-ZAIKAISU  TO  TBL-DENSHI-ZAIKAISU
       *
            END-IF
       *
@@ -1466,7 +1413,6 @@
                    END-PERFORM
                END-IF             
            END-PERFORM
-      ***  MOVE    TBL-ZAIW-SRYCD   (1)  TO  TBL-SRYCD
       *
            COMPUTE WRK-ZAIWMAX (6)   =   WRK-ZAIWMAX  (6)     -   
                                          WRK-ZAIWMAX  (3) 
@@ -1773,7 +1719,6 @@
                IF      IDX1              =   3
                AND     WRK-ZAIWMAX(IDX1) >   ZERO
                    IF      RECE220-SRYKBN     >=  "33"                   
-      **>          IF      RECE220-SRYKBN     >   "33"                   
                        MOVE    RECE220-SYUTEN1    TO  WRK-ZAITENX
                        MOVE    RECE220-ZAIKAISU   TO  WRK-ZAIKAISUX
                        PERFORM 810-TENSUKAI-HEN-SEC
@@ -1787,7 +1732,6 @@
                AND     WRK-ZAIWMAX(IDX1) >   ZERO
                AND     RECE220-KIZAITEN   >   ZERO
                    IF      RECE220-SRYKBN     >=  "33"                   
-      **>          IF      RECE220-SRYKBN     >   "33"                   
                        MOVE    RECE220-KIZAITEN   TO  WRK-ZAITENX
                        MOVE    RECE220-ZAIKAISU   TO  WRK-ZAIKAISUX
                        PERFORM 810-TENSUKAI-HEN-SEC
@@ -1800,7 +1744,6 @@
                IF      IDX1              =   5
                AND     WRK-ZAIWMAX(IDX1) >   ZERO
                AND     RECE220-YKZTEN     >   ZERO
-      *            点数・回数セット
                    IF      RECE220-SRYKBN     >=  "33"               
                        MOVE    RECE220-YKZTEN     TO  WRK-ZAITENX
                        MOVE    RECE220-ZAIKAISU   TO  WRK-ZAIKAISUX
@@ -1853,18 +1796,6 @@
            OR  (TBL-ZAIW-SRYCD (WRK-WIDX1 WRK-WIDX2)(1:5) =   "09693" )
            OR  (TBL-ZAIW-SRYCD (WRK-WIDX1 WRK-WIDX2)(1:5) =   "09694" )
                MOVE    1             TO  FLG-NOPRT
-           END-IF
-           IF  ( RECE200-RECESYUBETU    =  8888   )  AND
-               ( RECE220-SRYKBN  = "95" OR "96"   )  
-             IF   (TBL-ZAIW-SRYCD (WRK-WIDX1 WRK-WIDX2)(1:1)  =  "8"  )
-             OR   (TBL-ZAIW-SRYCD (WRK-WIDX1 WRK-WIDX2)(1:3)  =  "008")
-                 CONTINUE
-             ELSE
-               IF  TBL-ZAIW-SRYCD (WRK-WIDX1 WRK-WIDX2)(1:3)
-                                           NOT  = "095" AND "096"
-                   MOVE    1         TO  FLG-NOPRT
-               END-IF
-             END-IF
            END-IF
       *    診療行為テーブルに存在した場合、印字しないこと
            PERFORM   VARYING   IDY   FROM    1   BY  1
@@ -2310,31 +2241,27 @@
       *****************************************************************
        2010-DENSHI-HENSYU-SEC      SECTION.
       *
-           PERFORM   VARYING   IDX5   FROM    1   BY  1
-                      UNTIL    IDX5    >      5
-      *
-             IF  TBL-DENSHI-ZAIKAISU(IDX5)  NOT =  ZERO
+           IF  TBL-DENSHI-ZAIKAISU  NOT =  ZERO
       *
                MOVE    SPACE             TO  WRK-ZAI
                MOVE    "＊"              TO  WRK-ZAI-MK
                MOVE    "電子化加算"      TO  WRK-ZAI-NAME(1:10)
       *        点数・回数セット
                MOVE    TBL-DENSHI-TEN    TO  WRK-ZAITENX
-               MOVE    TBL-DENSHI-ZAIKAISU(IDX5)
+               MOVE    TBL-DENSHI-ZAIKAISU
                                          TO  WRK-ZAIKAISUX
       *        必要有効桁数・開始位置・回数編集
                PERFORM 810-TENSUKAI-HEN-SEC
       *
                MOVE    WRK-TNSKAI(13:10) TO  WRK-ZAI-TNSKAI(13:10)
-      ****
+      *
                MOVE    SPACE             TO  RECE240-REC
                INITIALIZE                    RECE240-REC
                MOVE    RECE200-KEY       TO  RECE240-KEY1
-               COMPUTE RECE240-ZAINUM   = 99999974 + IDX5
+               MOVE    99999975          TO  RECE240-ZAINUM
                MOVE    1                 TO  RECE240-LINENUM
                MOVE    1                 TO  RECE240-ZAIMEISAISU
                MOVE    RECE200-PTNUM     TO  RECE240-PTNUM
-               MOVE    SPACE             TO  RECE240-SRYKA
                MOVE    "11"              TO  RECE240-SRYKBN
                MOVE    SPACE             TO  RECE240-ZAISKBKBN
                MOVE    ZERO              TO  RECE240-ZAISKBBAN
@@ -2358,12 +2285,8 @@
                MOVE    ZERO              TO  RECE240-DAY
       *
                PERFORM 4501-RECE240-WRITE-SEC
-      *         
-               IF      STS-RECE240     NOT =   ZERO
-                   MOVE    5             TO  IDX5
-               END-IF    
-             END-IF
-           END-PERFORM
+      *
+           END-IF
       *
            .
       *
@@ -2861,11 +2784,10 @@
                MOVE    WRK-LINENUM       TO  RECE240-LINENUM
                MOVE    WRK-TBLMAX        TO  RECE240-ZAIMEISAISU
                MOVE    RECE220-PTNUM     TO  RECE240-PTNUM
-               MOVE    RECE220-SRYKA     TO  RECE240-SRYKA
                MOVE    RECE220-SRYKBN    TO  RECE240-SRYKBN
                MOVE    RECE220-ZAISKBKBN TO  RECE240-ZAISKBKBN
                IF    RECE220-ZAISKBKBN   =   "1" OR "2" OR "4"
-                   MOVE   RECE220-ZAINUM     TO  RECE240-ZAISKBBAN
+                   MOVE   RECE220-ZAINUM TO  RECE240-ZAISKBBAN
                END-IF
                MOVE    TBL-ZAI (IDY)     TO  RECE240-TEKIYO-INF
       *
@@ -2942,12 +2864,11 @@
       *
                END-IF
       *
-               IF    ( FLG-COMMENT2     =   1   )               
+               IF    ( FLG-COMMENT2      =   1   )               
                AND   ( RECE220-SRYKBN    =  "11" )               
                    MOVE  SPACE           TO  RECE240-SRYKBN              
                END-IF        
       *
-      *---------適用欄並び替え用の編集（表用番号等）-----------------
                IF      IDY               =   1
                  IF       (WRK-ZAIW-SRYCD1(1:1)  =   "6"  OR  "7")
                  OR       (WRK-ZAIW-SRYCD1(1:3)  =   "059"       )
@@ -2983,12 +2904,7 @@
                END-IF
       *
       *--------------------------------------------------------------
-               IF   (RECE200-RECESYUBETU    =  8888   )
-               AND  (RECE220-SRYKBN  = "95" OR "96"   )
-                   MOVE    RECE220-SYUTEN1    TO  RECE240-ZAITEN
-               ELSE
-                   MOVE    RECE220-ZAITEN     TO  RECE240-ZAITEN
-               END-IF
+               MOVE    RECE220-ZAITEN      TO  RECE240-ZAITEN
       *
                IF      RECE220-SRYKBN     =   "60"
                        MOVE   WRK-ZAIW-KNSJISKBN
@@ -3079,6 +2995,7 @@
                    INITIALIZE              RECE240-ZAITEN
                END-IF
            ELSE
+               INITIALIZE                  RECE240-ZAITEN
                INITIALIZE                  RECE240-CDKBN-SYO
                                            RECE240-CDKBN-BU
                                            RECE240-CDKBN-KBN

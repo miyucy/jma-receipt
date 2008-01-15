@@ -274,12 +274,13 @@
       *    同一剤のまとめ処理
            OPEN    INPUT               RECE220-FILE
                                        RECE230-FILE
-           OPEN    I-O                 RECE200-FILE
-                                       RECE221-FILE
+                                       RECE200-FILE
+           OPEN    I-O                 RECE221-FILE
            PERFORM 900-RECE200-READ-SEC
       *
            PERFORM 210-RECE221-WRITE-SEC
                                    UNTIL   FLG-RECE200  =   1
+                                   OR      FLG-END      =   1
            CLOSE   RECE221-FILE
                    RECE220-FILE
                    RECE230-FILE
@@ -293,6 +294,7 @@
                PERFORM 900-RECE221-READ-SEC 
                PERFORM 220-RECE220-WRITE-SEC
                                        UNTIL   FLG-RECE221 =   1
+                                       OR      FLG-END     =   1
                CLOSE   RECE220-FILE
                        RECE221-FILE
            END-IF
@@ -349,7 +351,7 @@
                  ADD     1                 TO  WRK-COMRENNUM
                  MOVE    WRK-COMRENNUM     TO  RECE221-COMRENNUM
       *
-                 MOVE    RECE221-REC         TO  WRK-RECE221-REC
+                 MOVE    RECE221-REC       TO  WRK-RECE221-REC
                  PERFORM 900-RECE221-INV2-SEC
                  IF      FLG-MATOME    =   ZERO
                      MOVE    WRK-RECE221-REC     TO  RECE221-REC
@@ -357,13 +359,13 @@
                      MOVE    WRK-COM-AREA        TO  RECE221-COM-AREA
                  END-IF
       *          剤回数・日数回数テーブルの加算
-                 ADD     RECE220-ZAIKAISU     TO  RECE221-ZAIKAISU
+                 ADD     RECE220-ZAIKAISU  TO  RECE221-ZAIKAISU
                  PERFORM VARYING IDX FROM    1   BY  1
                          UNTIL   IDX >       4
                      PERFORM VARYING IDY FROM    1   BY  1
                              UNTIL   IDY >       31
                          ADD     RECE220-KAISU (IDX IDY)
-                                         TO   RECE221-KAISU (IDX IDY)
+                                           TO  RECE221-KAISU (IDX IDY)
                      END-PERFORM
                  END-PERFORM
       *
@@ -399,7 +401,7 @@
                      MOVE    RECE220-REC       TO  RECE221-REC1
                  END-IF
       *          剤回数・日数回数テーブルの加算
-                 ADD     RECE220-ZAIKAISU     TO  RECE221-ZAIKAISU
+                 ADD     RECE220-ZAIKAISU  TO  RECE221-ZAIKAISU
                  PERFORM VARYING IDX FROM    1   BY  1
                          UNTIL   IDX >       4
                      PERFORM VARYING IDY FROM    1   BY  1
@@ -438,10 +440,15 @@
                PERFORM     900-RECE220-READ-SEC
            END-PERFORM
       *
-           REWRITE   RECE200-REC
+           IF      FLG-END             =   ZERO
+           AND     FLG-RECE220         =   ZERO
+           AND     RECE200-KEY     NOT =   RECE220-KEY1
+               COMPUTE   CNT-IN  =  CNT-IN  -  1
+           END-IF
       *
-      *
-           PERFORM 900-RECE200-READ-SEC
+           IF      FLG-END             =   ZERO
+               PERFORM 900-RECE200-READ-SEC
+           END-IF
            .
        210-RECE221-WRITE-EXT.
            EXIT.
@@ -518,11 +525,6 @@
       *
            PERFORM     900-RECE221-READ-SEC
       *
-      *    処理中止設定処理
-           IF      CNT-IN-CANCEL   =   50
-               MOVE    ZERO            TO  CNT-IN-CANCEL
-               PERFORM 500-CANCEL-HENSYU-SEC
-           END-IF
            .
        220-RECE220-WRITE-EXT.
            EXIT.

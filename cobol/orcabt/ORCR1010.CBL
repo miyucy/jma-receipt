@@ -103,7 +103,6 @@
            03  FLG-SRYACCT                             PIC 9(01).
            03  FLG-SRYACT                              PIC 9(01).
            03  FLG-TENSU                               PIC 9(01).
-           03  FLG-SYUNOU                              PIC 9(01).
            03  FLG-SYSKANRI                            PIC 9(01).
            03  FLG-ZAITAKU                             PIC 9(01).
            03  FLG-OSINKBN                             PIC 9(01).
@@ -128,10 +127,8 @@
            03  FLG-NIKOCHIN-COM                        PIC 9(01).
            03  FLG-ZENSOKU-COM                         PIC 9(01).
            03  FLG-RINYAK                              PIC 9(01).
-           03  FLG-KEISAN                              PIC 9(01).
            03  FLG-WRITE05                             PIC 9(01).
            03  FLG-WRITE05X                            PIC 9(01).
-           03  FLG-TAISYO                              PIC 9(01).
            03  FLG-TAHOKEN                             PIC 9(01).
       *
       *    基本点数の非表示判定用フラグ
@@ -155,7 +152,6 @@
        01  CNT-SAISIN-AREA.
            03  CNT-NYUYOJI                             PIC 9(02).
            03  CNT-NYUYOJI2                            PIC 9(02).
-           03  CNT-YOJI                                PIC 9(02).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -169,17 +165,12 @@
       *    添字領域
        01  IDX-AREA.
            03  IDX                                     PIC 9(03).
-           03  IDX1                                    PIC 9(03).
            03  IDX2                                    PIC 9(03).
            03  IDX3                                    PIC 9(03).
            03  IDX4                                    PIC 9(03).
-           03  IDX8                                    PIC 9(02).
            03  IDXA                                    PIC 9(01).
            03  IDXX                                    PIC 9(02).
-           03  IDYX                                    PIC 9(02).
-           03  IDZX                                    PIC 9(02).
            03  IDY                                     PIC 9(03).
-           03  IDY2                                    PIC 9(03).
            03  IDW                                     PIC 9(03).
            03  IDW2                                    PIC 9(03).
            03  IDW3                                    PIC 9(03).
@@ -190,15 +181,8 @@
            03  IDU                                     PIC 9(03).
            03  NUM-IDX                                 PIC 9(01).
            03  ACCT-IDX                                PIC 9(02).       
-           03  SYSKAN-IDX                              PIC 9(03).
            03  SYSKAN-IDX2                             PIC 9(03).
            03  FUKA-IDX                                PIC 9(03).
-      *
-           03  IDA                 PIC 9(04).
-           03  IDB                 PIC 9(04).
-           03  IDX5                PIC 9(03).
-           03  IDX6                PIC 9(03).
-           03  IDX7                PIC 9(03).
       *
       *    パス名領域
            03  WRK-MCP-TABLE       PIC X(64).
@@ -239,10 +223,6 @@
        01  TBL-JNISSU-GEN.
            03  TBL-JNISSU-DAY-GEN                      PIC X(01)
                                                        OCCURS   31.
-      *    医療機関（基本情報）退避用領域
-       01  TBL-SYS1001-T.
-           03  TBL-SYS1001-OCC                         OCCURS  100.
-               05  TBL-SYS1001                         PIC X(610).
       *    施設基準情報退避用領域
        01  TBL-SYS1006-T.
            03  TBL-SYS1006-OCC                         OCCURS  100.
@@ -314,8 +294,6 @@
       *
            03  WRK-FUKA-KINGAKU                PIC 9(09).
            03  WRK-FUKA-VALUE                  PIC 9(01).
-      *
-           03  WRK-BIRTHDAY                    PIC X(08).
       *
       *---------------------------------------------------------------
       *  回数減算用退避領域
@@ -597,16 +575,6 @@
            03  CONS-GAIKAN2          PIC X(09)  VALUE  "112705110".
            03  CONS-GAIKAN3          PIC X(09)  VALUE  "112705310".
       *
-      *    老人理学療法の摘要欄記載判定用（名称に老人を追加）
-           03  CONS-RJNRIGAKU1     PIC X(09) VALUE "180706810".
-           03  CONS-RJNRIGAKU2     PIC X(09) VALUE "180706910".
-           03  CONS-RJNRIGAKU3     PIC X(09) VALUE "180707010".
-           03  CONS-RJNRIGAKU4     PIC X(09) VALUE "180707110".
-           03  CONS-RJNRIGAKU5     PIC X(09) VALUE "180707210".
-           03  CONS-RJNRIGAKU6     PIC X(09) VALUE "180707310".
-           03  CONS-RJNRIGAKU7     PIC X(09) VALUE "180707410".
-           03  CONS-RJNRIGAKU8     PIC X(09) VALUE "180707510".
-      *
       *    剤の診療内容チェックテーブル
        01  TBL-ZAICHECK-AREA.
       *    （サ）
@@ -668,23 +636,13 @@
       *    点数
            COPY    "CPTENSU.INC".
       *
-      *    収納
-       01  SYUNOU-REC.
-           COPY    "CPSYUNOU.INC".
-      *
       *    システム管理
            COPY    "CPSYSKANRI.INC".
-      *    
-           COPY    "CPSK1001.INC".
            COPY    "CPSK1006.INC".
       *
       *    患者コメント
        01  PTCOM-REC.
            COPY    "CPPTCOM.INC".
-      *
-      *    患者公費情報
-       01  PTKOHINF-REC.
-           COPY    "CPPTKOHINF.INC".
       *
       *****************************************************************
       *    サブプロ用領域
@@ -777,23 +735,6 @@
            END-IF
       *
            IF   WRK-PARA-SRYYM    NOT =  ZERO
-      *       医療機関情報
-              INITIALIZE                   SYSKANRI-REC
-              MOVE    "1001"           TO  SYS-KANRICD
-              MOVE    "*"              TO  SYS-KBNCD
-              MOVE    WRK-PARA-SRYYM   TO  SYS-STYUKYMD (1:6)
-              MOVE    "01"             TO  SYS-STYUKYMD (7:2)
-              MOVE    SYS-STYUKYMD     TO  SYS-EDYUKYMD
-              MOVE    "tbl_syskanri"   TO  WRK-MCP-TABLE
-              MOVE    "key10"          TO  WRK-MCP-PATHNAME
-              PERFORM 960-KANRIMST-READ-SEC
-              IF      FLG-SYSKANRI     =   ZERO
-                  MOVE    MCPDATA-REC  TO  SYS-1001-REC
-              ELSE    
-                  MOVE    "医療機関情報が取得できませんでした。"
-                                       TO  WRK-RECEERR
-                  PERFORM 500-ERR-HENSYU-SEC
-              END-IF    
       *       施設基準情報
               MOVE     ZERO     TO     WRK-SISETU613
               PERFORM  VARYING  IDXA   FROM   1   BY  1
@@ -818,44 +759,6 @@
                  END-IF
               END-PERFORM
            ELSE
-              MOVE     ZERO               TO  SYSKAN-IDX
-              MOVE     SPACE              TO  TBL-SYS1001-T
-              INITIALIZE                      TBL-SYS1001-T
-      *
-              INITIALIZE                      SYSKANRI-REC
-              MOVE    "1001"              TO  SYS-KANRICD
-              MOVE    "*"                 TO  SYS-KBNCD
-              MOVE    SPA-HOSPNUM         TO  SYS-HOSPNUM
-              MOVE    SYSKANRI-REC        TO  MCPDATA-REC
-              MOVE    "tbl_syskanri"      TO  MCP-TABLE
-              MOVE    "key8"              TO  MCP-PATHNAME
-              PERFORM 900-DBSELECT-SEC
-              IF      MCP-RC              =   ZERO
-                  MOVE    "tbl_syskanri"      TO  MCP-TABLE
-                  MOVE    "key8"              TO  MCP-PATHNAME
-                  PERFORM  970-KANRIMST-READ-SEC
-                  PERFORM  UNTIL  (FLG-SYSKANRI  =    1)
-                            OR    (SYSKAN-IDX   >=  100)
-      *
-                    MOVE    MCPDATA-REC   TO  SYS-1001-REC
-                    ADD     1             TO  SYSKAN-IDX
-                    MOVE    SYS-1001-REC  TO  TBL-SYS1001(SYSKAN-IDX)
-      *
-                    MOVE    "tbl_syskanri"      TO  MCP-TABLE
-                    MOVE    "key8"              TO  MCP-PATHNAME
-                    PERFORM 970-KANRIMST-READ-SEC
-      *
-                  END-PERFORM
-              ELSE
-                  MOVE    "医療機関情報が取得できませんでした。"
-                                       TO  WRK-RECEERR
-                  PERFORM 500-ERR-HENSYU-SEC
-              END-IF
-      *
-              MOVE    "tbl_syskanri"      TO  MCP-TABLE
-              MOVE    "key8"              TO  MCP-PATHNAME
-              PERFORM 900-CLOSE-SEC
-      *
               MOVE     SPACE              TO  TBL-SYS1006-T
               INITIALIZE                      TBL-SYS1006-T
       *
@@ -1138,13 +1041,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *
            MOVE    SPACE               TO  RECE120-REC
            INITIALIZE                      RECE120-REC
-grpsys     MOVE    RECE100-HOSPNUM     TO  RECE120-HOSPNUM
-           MOVE    RECE100-SRYYM       TO  RECE120-SRYYM
-           MOVE    RECE100-NYUGAIKBN   TO  RECE120-NYUGAIKBN
-           MOVE    RECE100-PTID        TO  RECE120-PTID
-           MOVE    RECE100-RECEKA      TO  RECE120-RECEKA
-           MOVE    RECE100-HKNID       TO  RECE120-HKNID
-           MOVE    RECE100-TEKSTYMD    TO  RECE120-TEKSTYMD
+           MOVE    RECE100-KEY         TO  RECE120-KEY1
            MOVE    ACCT-SRYKBN         TO  RECE120-SRYKBN
            MOVE    ACCT-ZAINUM         TO  RECE120-ZAINUM
            MOVE    ACCT-SRYCDTOTAL     TO  WRK-SRYCDTOTAL9
@@ -1269,13 +1166,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *
            MOVE    SPACE                TO  RECE130-REC
            INITIALIZE                       RECE130-REC
-grpsys     MOVE    RECE100-HOSPNUM      TO  RECE130-HOSPNUM
-           MOVE    RECE100-SRYYM        TO  RECE130-SRYYM
-           MOVE    RECE100-NYUGAIKBN    TO  RECE130-NYUGAIKBN
-           MOVE    RECE100-PTID         TO  RECE130-PTID
-           MOVE    RECE100-RECEKA       TO  RECE130-RECEKA
-           MOVE    RECE100-HKNID        TO  RECE130-HKNID
-           MOVE    RECE100-TEKSTYMD     TO  RECE130-TEKSTYMD
+           MOVE    RECE100-KEY          TO  RECE130-KEY1
            MOVE    SRY-ZAINUM           TO  RECE130-ZAINUM
            IF      RECE120-ZAINUM       >       88888880
                MOVE   RECE120-ZAINUM    TO  RECE130-ZAINUM
@@ -1683,21 +1574,8 @@ grpsys             MOVE    SRY-HOSPNUM          TO  PTCOM-HOSPNUM
                ELSE
                    MOVE    TNS-NAME        TO    RECE130-NAME    (IDX4)
                                                  RECE130-INPUTCOMENT
-                                                                (IDX4)
+                                                                 (IDX4)
                    MOVE    TNS-YUKOKETA    TO    RECE130-YUKOKETA(IDX4)
-                   IF      TNS-SRYCD       =     CONS-RJNRIGAKU1  OR
-                                                 CONS-RJNRIGAKU2  OR
-                                                 CONS-RJNRIGAKU3  OR
-                                                 CONS-RJNRIGAKU4  OR
-                                                 CONS-RJNRIGAKU5  OR
-                                                 CONS-RJNRIGAKU6  OR
-                                                 CONS-RJNRIGAKU7  OR
-                                                 CONS-RJNRIGAKU8
-                         MOVE  "老人"    TO   RECE130-NAME(IDX4)(1:4)
-                         MOVE  TNS-NAME  TO   RECE130-NAME(IDX4)(5:) 
-                         COMPUTE  RECE130-YUKOKETA(IDX4) =
-                                  RECE130-YUKOKETA(IDX4) + 2
-                   END-IF
                END-IF
       *
                IF          SRY-SRYKBN       =  "21"
@@ -3582,24 +3460,6 @@ grpsys     PERFORM 900-DBFETCH-SEC
            EXIT.
       *
       *****************************************************************
-      *    収納読込
-      *****************************************************************
-       900-SYUNOU-READ-SEC           SECTION.
-      *
-grpsys     PERFORM 900-DBFETCH-SEC
-           IF      MCP-RC              =   ZERO
-               MOVE    MCPDATA-REC     TO  SYUNOU-REC
-               MOVE    ZERO            TO  FLG-SYUNOU
-           ELSE
-               INITIALIZE                  SYUNOU-REC
-               MOVE    1               TO  FLG-SYUNOU
-           END-IF
-      *
-           .
-       900-SYUNOU-READ-EXT.
-           EXIT.
-      *
-      *****************************************************************
       *    システム管理マスタ読込
       *****************************************************************
        960-KANRIMST-READ-SEC         SECTION.
@@ -3709,30 +3569,6 @@ grpsys         PERFORM 900-DBFETCH-SEC
       ****************************************************************
        900-SYSKANRI-HENSYU-SEC         SECTION.
       *
-      *    医療機関情報（基本情報）
-           MOVE    ZERO                TO  FLG-SET
-      *
-           PERFORM VARYING SYSKAN-IDX  FROM    1   BY  1
-                   UNTIL ( SYSKAN-IDX              >  100  )
-                   OR    ( TBL-SYS1001(SYSKAN-IDX) = SPACE )
-                   OR    ( FLG-SET                 =   1   )
-               MOVE    TBL-SYS1001(SYSKAN-IDX) TO  SYS-1001-REC
-               IF    ( SYS-1001-STYUKYMD       <= WRK-SYS-SRYYMD    )
-               AND   ( WRK-SYS-SRYYMD          <= SYS-1001-EDYUKYMD )
-                   MOVE     1                  TO  FLG-SET
-               END-IF
-           END-PERFORM
-           IF      FLG-SET             =   ZERO
-               STRING  "医療機関情報が取得できませんでした。診療年月＝"
-                                               DELIMITED  BY  SIZE 
-                       WRK-SYS-SRYYMD (1:6)    DELIMITED  BY  SIZE
-                                       INTO    WRK-RECEERR
-               END-STRING
-               PERFORM 500-ERR-HENSYU-SEC
-               MOVE    1              TO  FLG-RECE100
-               GO  TO  900-SYSKANRI-HENSYU-EXT
-           END-IF
-      *
       *    施設基準情報
            MOVE    ZERO                TO  FLG-SET
       *
@@ -3801,13 +3637,7 @@ grpsys         PERFORM 900-DBFETCH-SEC
               MOVE    ZERO                 TO  FLG-REWRITE
       *
               INITIALIZE                       RECE130-REC
-grpsys        MOVE    RECE120-HOSPNUM      TO  RECE130-HOSPNUM
-              MOVE    RECE120-SRYYM        TO  RECE130-SRYYM
-              MOVE    RECE120-NYUGAIKBN    TO  RECE130-NYUGAIKBN
-              MOVE    RECE120-PTID         TO  RECE130-PTID
-              MOVE    RECE120-RECEKA       TO  RECE130-RECEKA
-              MOVE    RECE120-HKNID        TO  RECE130-HKNID
-              MOVE    RECE120-TEKSTYMD     TO  RECE130-TEKSTYMD
+              MOVE    RECE120-KEY1         TO  RECE130-KEY1
               MOVE    RECE120-ZAINUM       TO  RECE130-ZAINUM
               START   RECE130-FILE
                     KEY IS    >=   RECE130-KEY
@@ -3821,15 +3651,9 @@ grpsys        MOVE    RECE120-HOSPNUM      TO  RECE130-HOSPNUM
                         END-READ
               END-START
               PERFORM   UNTIL
-grpsys            (RECE120-HOSPNUM      NOT =  RECE130-HOSPNUM)     OR
-                  (RECE120-SRYYM        NOT =  RECE130-SRYYM)       OR
-                  (RECE120-NYUGAIKBN    NOT =  RECE130-NYUGAIKBN)   OR
-                  (RECE120-PTID         NOT =  RECE130-PTID)        OR
-                  (RECE120-RECEKA       NOT =  RECE130-RECEKA)      OR
-                  (RECE120-HKNID        NOT =  RECE130-HKNID)       OR
-                  (RECE120-TEKSTYMD     NOT =  RECE130-TEKSTYMD)    OR
-                  (RECE120-ZAINUM       NOT =  RECE130-ZAINUM)      OR
-                  (FLG-RECE130              =      1         )      OR
+                  (RECE120-KEY1         NOT =  RECE130-KEY1  ) OR
+                  (RECE120-ZAINUM       NOT =  RECE130-ZAINUM) OR
+                  (FLG-RECE130              =      1         ) OR
                   (FLG-REWRITE              =      1         )
                    IF    RECE130-RENNUM   =   WRK-RENNUM
                       MOVE    1              TO  FLG-REWRITE
@@ -3853,13 +3677,7 @@ grpsys            (RECE120-HOSPNUM      NOT =  RECE130-HOSPNUM)     OR
               MOVE    ZERO                 TO  FLG-REWRITE
       *
               INITIALIZE                       RECE130-REC
-grpsys        MOVE    RECE120-HOSPNUM      TO  RECE130-HOSPNUM
-              MOVE    RECE120-SRYYM        TO  RECE130-SRYYM
-              MOVE    RECE120-NYUGAIKBN    TO  RECE130-NYUGAIKBN
-              MOVE    RECE120-PTID         TO  RECE130-PTID
-              MOVE    RECE120-RECEKA       TO  RECE130-RECEKA
-              MOVE    RECE120-HKNID        TO  RECE130-HKNID
-              MOVE    RECE120-TEKSTYMD     TO  RECE130-TEKSTYMD
+              MOVE    RECE120-KEY1         TO  RECE130-KEY1
               MOVE    RECE120-ZAINUM       TO  RECE130-ZAINUM
               START   RECE130-FILE
                     KEY IS    >=   RECE130-KEY
@@ -3873,15 +3691,9 @@ grpsys        MOVE    RECE120-HOSPNUM      TO  RECE130-HOSPNUM
                         END-READ
               END-START
               PERFORM   UNTIL
-grpsys            (RECE120-HOSPNUM      NOT =  RECE130-HOSPNUM)     OR
-                  (RECE120-SRYYM        NOT =  RECE130-SRYYM)       OR
-                  (RECE120-NYUGAIKBN    NOT =  RECE130-NYUGAIKBN)   OR
-                  (RECE120-PTID         NOT =  RECE130-PTID)        OR
-                  (RECE120-RECEKA       NOT =  RECE130-RECEKA)      OR
-                  (RECE120-HKNID        NOT =  RECE130-HKNID)       OR
-                  (RECE120-TEKSTYMD     NOT =  RECE130-TEKSTYMD)    OR
-                  (RECE120-ZAINUM       NOT =  RECE130-ZAINUM)      OR
-                  (FLG-RECE130              =      1         )      OR
+                  (RECE120-KEY1         NOT =  RECE130-KEY1  ) OR
+                  (RECE120-ZAINUM       NOT =  RECE130-ZAINUM) OR
+                  (FLG-RECE130              =      1         ) OR
                   (FLG-REWRITE              =      1         )
                    IF    RECE130-RENNUM   =   WRK-RENNUM2
                       MOVE    1              TO  FLG-REWRITE

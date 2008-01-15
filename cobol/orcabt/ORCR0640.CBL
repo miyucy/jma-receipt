@@ -279,6 +279,7 @@
       *  04.01.09    NACL-門脇    07/12/19  入院料未算定日対応
       *  04.01.10    NACL-門脇    08/01/07  京都府地方公費請求点記載対応
       *  04.01.11    NACL-門脇    08/01/07  徳島県地方公費一部負担金記載対応
+      *  04.01.12    NACL-門脇    08/01/15  公害対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -9475,6 +9476,7 @@
                      IF   COMB-HKNNUM(1:2)  =  "98"
                      OR   COMB-HKNNUM       =  "971"
                      OR   COMB-HKNNUM       =  "973"
+                     OR   COMB-HKNNUM       =  "975"
                        IF   COMB-HKNNUM(1:2)  =  "98"
                           MOVE    "1"   TO   RECE62-NYUINRYOFLG
                        END-IF
@@ -9483,6 +9485,9 @@
                        END-IF
                        IF   COMB-HKNNUM       =  "973"
                           MOVE    "3"   TO   RECE62-NYUINRYOFLG
+                       END-IF
+                       IF   COMB-HKNNUM       =  "975"
+                          MOVE    "7"   TO   RECE62-NYUINRYOFLG
                        END-IF
                      ELSE
                           MOVE    "6"   TO   RECE62-NYUINRYOFLG

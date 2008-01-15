@@ -37,7 +37,7 @@
       *
            SELECT  RECE100-FILE    ASSIGN  RECE100PARA
                                    ORGANIZATION    IS  INDEXED
-                                   ACCESS  MODE    IS  DYNAMIC
+                                   ACCESS  MODE    IS  SEQUENTIAL
                                    RECORD  KEY     IS  RECE100-KEY
                                    FILE    STATUS  IS  STS-RECE100.
            SELECT  RECE110-FILE    ASSIGN  RECE110PARA
@@ -47,7 +47,7 @@
                                    FILE    STATUS  IS  STS-RECE110.
            SELECT  RECE140-FILE    ASSIGN  RECE140PARA
                                    ORGANIZATION    IS  INDEXED
-                                   ACCESS  MODE    IS  DYNAMIC
+                                   ACCESS  MODE    IS  SEQUENTIAL
                                    RECORD  KEY     IS  RECE140-KEY
                                    FILE    STATUS  IS  STS-RECE140.
       *
