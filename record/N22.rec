@@ -17,8 +17,8 @@ N22	{
 					value2	varchar(5);
 					value3	varchar(50);
 					value4	varchar(50);
-				}	[100];
-				select	bool[100];
+				}	[50];
+				select	bool[50];
 			};
 		};
 		SELNUM	{

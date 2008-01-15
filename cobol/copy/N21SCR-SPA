@@ -110,7 +110,7 @@
                  09  SPA-N22-COPYKBNMEI    PIC X(12).
       *
              05  SPA-N22-TBL.
-               07  SPA-N22-TBL-G       OCCURS  100.
+               07  SPA-N22-TBL-G       OCCURS  50.
                  09  SPA-N22-TNO       PIC X(05).
                  09  SPA-N22-TYJCD     PIC X(12).
                  09  SPA-N22-TGAZO     PIC X(5).
