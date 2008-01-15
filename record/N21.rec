@@ -31,7 +31,7 @@ N21	{
 			value	varchar(100);
 		};
 		EFFECT	{
-			value	varchar(400);
+			value	varchar(2000);
 		};
 		COLOR	{
 			value	varchar(360);
@@ -43,7 +43,7 @@ N21	{
 			value	varchar(360);
 		};
 		CAUTION	{
-			value	varchar(850);
+			value	varchar(4000);
 		};
 		PHOTO	{
 			value	varchar(256);

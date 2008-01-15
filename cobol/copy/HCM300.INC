@@ -26,7 +26,7 @@
                         PIC X(20)   OCCURS  8 TIMES.
               03  HCM300-KBN-G.
                 04  HCM300-KBN
-                        PIC X(2)    OCCURS  5 TIMES.
+                        PIC X(3)    OCCURS  5 TIMES.
               03  HCM300-NAIYO-G.
                 04  HCM300-NAIYO
                         PIC X(20)   OCCURS  6 TIMES.
