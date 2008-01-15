@@ -56,17 +56,16 @@
             02  HCN58-SYOKJN-KHN    PIC X(2).
             02  HCN58-SYOKJN    PIC X(4).
             02  HCN58-SYOKHNTEN
-                    PIC X(7)    OCCURS  4 TIMES.
-            02  HCN58-SYOKAKERU
                     PIC X(4)    OCCURS  4 TIMES.
+            02  HCN58-SYOKAKERU PIC X(4).
             02  HCN58-SYOKAISU
-                    PIC X(3)    OCCURS  4 TIMES.
+                    PIC X(2)    OCCURS  4 TIMES.
             02  HCN58-SYONICHI  PIC X(4).
             02  HCN58-SYOKINGAKU
                     PIC X(7)    OCCURS  4 TIMES.
             02  HCN58-SYOEN PIC X(2).
             02  HCN58-GOKEI
-                    PIC X(7)    OCCURS  4 TIMES.
+                    PIC X(10)   OCCURS  4 TIMES.
             02  HCN58-SRYKBN
                     PIC X(2)    OCCURS  50 TIMES.
             02  HCN58-TEKIYO

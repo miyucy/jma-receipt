@@ -191,17 +191,17 @@
     </element>
     <element name="SYOKHNTEN" occurs="4">
       <appinfo>
-        <embed object="string" length="7"/>
+        <embed object="string" length="4"/>
       </appinfo>
     </element>
-    <element name="SYOKAKERU" occurs="4">
+    <element name="SYOKAKERU" occurs="1">
       <appinfo>
         <embed object="string" length="4"/>
       </appinfo>
     </element>
     <element name="SYOKAISU" occurs="4">
       <appinfo>
-        <embed object="string" length="3"/>
+        <embed object="string" length="2"/>
       </appinfo>
     </element>
     <element name="SYONICHI" occurs="1">
@@ -221,7 +221,7 @@
     </element>
     <element name="GOKEI" occurs="4">
       <appinfo>
-        <embed object="string" length="7"/>
+        <embed object="string" length="10"/>
       </appinfo>
     </element>
     <element name="SRYKBN" occurs="50">
@@ -15829,7 +15829,7 @@
         <point val="5.7,21.9"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="4.2153,21.6213;5.7,21.9713"/>
+        <rectangle val="4.8516,21.6213;5.7,21.9713"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#SYOKHNTEN[0]#</string>
@@ -15840,7 +15840,7 @@
       <attribute name="text">
         <composite type="text">
           <attribute name="string">
-            <string>#9999999#</string>
+            <string>#9999#</string>
           </attribute>
           <attribute name="font">
             <font name="Courier"/>
@@ -15871,7 +15871,7 @@
         <point val="6.9,21.9"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="6.2637,21.6213;6.9,21.9713"/>
+        <rectangle val="6.4758,21.6213;6.9,21.9713"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#SYOKAISU[0]#</string>
@@ -15882,7 +15882,7 @@
       <attribute name="text">
         <composite type="text">
           <attribute name="string">
-            <string>#999#</string>
+            <string>#99#</string>
           </attribute>
           <attribute name="font">
             <font name="Courier"/>
@@ -15913,7 +15913,7 @@
         <point val="5.7,22.3"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="4.2153,22.0213;5.7,22.3713"/>
+        <rectangle val="4.8516,22.0213;5.7,22.3713"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#SYOKHNTEN[1]#</string>
@@ -15924,7 +15924,7 @@
       <attribute name="text">
         <composite type="text">
           <attribute name="string">
-            <string>#9999999#</string>
+            <string>#9999#</string>
           </attribute>
           <attribute name="font">
             <font name="Courier"/>
@@ -15955,7 +15955,7 @@
         <point val="6.9,22.3"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="6.2637,22.0213;6.9,22.3713"/>
+        <rectangle val="6.4758,22.0213;6.9,22.3713"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#SYOKAISU[1]#</string>
@@ -15966,7 +15966,7 @@
       <attribute name="text">
         <composite type="text">
           <attribute name="string">
-            <string>#999#</string>
+            <string>#99#</string>
           </attribute>
           <attribute name="font">
             <font name="Courier"/>
@@ -15997,7 +15997,7 @@
         <point val="5.7,22.7"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="4.2153,22.4213;5.7,22.7713"/>
+        <rectangle val="4.8516,22.4213;5.7,22.7713"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#SYOKHNTEN[2]#</string>
@@ -16008,7 +16008,7 @@
       <attribute name="text">
         <composite type="text">
           <attribute name="string">
-            <string>#9999999#</string>
+            <string>#9999#</string>
           </attribute>
           <attribute name="font">
             <font name="Courier"/>
@@ -16039,7 +16039,7 @@
         <point val="6.9,22.7"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="6.2637,22.4213;6.9,22.7713"/>
+        <rectangle val="6.4758,22.4213;6.9,22.7713"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#SYOKAISU[2]#</string>
@@ -16050,7 +16050,7 @@
       <attribute name="text">
         <composite type="text">
           <attribute name="string">
-            <string>#999#</string>
+            <string>#99#</string>
           </attribute>
           <attribute name="font">
             <font name="Courier"/>
@@ -16081,7 +16081,7 @@
         <point val="5.7,23.1"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="4.2153,22.8213;5.7,23.1713"/>
+        <rectangle val="4.8516,22.8213;5.7,23.1713"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#SYOKHNTEN[3]#</string>
@@ -16092,7 +16092,7 @@
       <attribute name="text">
         <composite type="text">
           <attribute name="string">
-            <string>#9999999#</string>
+            <string>#9999#</string>
           </attribute>
           <attribute name="font">
             <font name="Courier"/>
@@ -16123,7 +16123,7 @@
         <point val="6.9,23.1"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="6.2637,22.8213;6.9,23.1713"/>
+        <rectangle val="6.4758,22.8213;6.9,23.1713"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#SYOKAISU[3]#</string>
@@ -16134,7 +16134,7 @@
       <attribute name="text">
         <composite type="text">
           <attribute name="string">
-            <string>#999#</string>
+            <string>#99#</string>
           </attribute>
           <attribute name="font">
             <font name="Courier"/>
@@ -20617,7 +20617,7 @@
         <point val="10.5,24.3"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="9.0153,24.0213;10.5,24.3713"/>
+        <rectangle val="8.379,24.0213;10.5,24.3713"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#GOKEI[0]#</string>
@@ -20628,7 +20628,7 @@
       <attribute name="text">
         <composite type="text">
           <attribute name="string">
-            <string>#9999999#</string>
+            <string>#9999999999#</string>
           </attribute>
           <attribute name="font">
             <font name="Courier"/>
@@ -20659,7 +20659,7 @@
         <point val="10.5,24.7"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="9.0153,24.4213;10.5,24.7713"/>
+        <rectangle val="8.379,24.4213;10.5,24.7713"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#GOKEI[1]#</string>
@@ -20670,7 +20670,7 @@
       <attribute name="text">
         <composite type="text">
           <attribute name="string">
-            <string>#9999999#</string>
+            <string>#9999999999#</string>
           </attribute>
           <attribute name="font">
             <font name="Courier"/>
@@ -20701,7 +20701,7 @@
         <point val="10.5,25.1"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="9.0153,24.8213;10.5,25.1713"/>
+        <rectangle val="8.379,24.8213;10.5,25.1713"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#GOKEI[2]#</string>
@@ -20712,7 +20712,7 @@
       <attribute name="text">
         <composite type="text">
           <attribute name="string">
-            <string>#9999999#</string>
+            <string>#9999999999#</string>
           </attribute>
           <attribute name="font">
             <font name="Courier"/>
@@ -20743,7 +20743,7 @@
         <point val="10.5,25.5"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="9.0153,25.2213;10.5,25.5713"/>
+        <rectangle val="8.379,25.2213;10.5,25.5713"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#GOKEI[3]#</string>
@@ -20754,7 +20754,7 @@
       <attribute name="text">
         <composite type="text">
           <attribute name="string">
-            <string>#9999999#</string>
+            <string>#9999999999#</string>
           </attribute>
           <attribute name="font">
             <font name="Courier"/>
@@ -20914,7 +20914,7 @@
         <rectangle val="5.694,22.8611;6.3,23.1611"/>
       </attribute>
       <attribute name="dnode_path">
-        <string>#SYOKAKERU[0]#</string>
+        <string>#SYOKAKERU#</string>
       </attribute>
       <attribute name="embed_text_string">
         <enum val="0"/>
