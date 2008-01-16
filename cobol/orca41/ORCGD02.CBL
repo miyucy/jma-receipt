@@ -92,6 +92,7 @@
                05  SPA-NAI-KOKUHOPROCKBN   PIC  X(01).
                05  SPA-NAI-RSIPROCKBN      PIC  X(01).
                05  SPA-NAI-JBIPROCKBN      PIC  X(01).
+               05  SPA-NAI-KGIPROCKBN      PIC  X(01).
                05  SPA-NAI-JIHIPROCKBN     PIC  X(01).
                05  SPA-NAI-INGAIPROCKBN    PIC  X(01).
                05  SPA-NAI-PRTSRTKBN       PIC  X(01).
@@ -382,6 +383,7 @@
            MOVE    SPA-D01-KOKUHOPROCKBN   TO  SPA-NAI-KOKUHOPROCKBN
            MOVE    SPA-D01-RSIPROCKBN      TO  SPA-NAI-RSIPROCKBN
            MOVE    SPA-D01-JBIPROCKBN      TO  SPA-NAI-JBIPROCKBN
+           MOVE    SPA-D01-KGIPROCKBN      TO  SPA-NAI-KGIPROCKBN
            MOVE    SPA-D01-JIHIPROCKBN     TO  SPA-NAI-JIHIPROCKBN
            MOVE    SPA-D01-INGAIPROCKBN    TO  SPA-NAI-INGAIPROCKBN
            MOVE    SPA-D01-PRTSRTKBN       TO  SPA-NAI-PRTSRTKBN
@@ -1028,6 +1030,7 @@
                    IF    ( SS001-NIHO-FLG  =   1 )
                     OR   ( SS001-NRSI-FLG  =   1 )
                     OR   ( SS001-NJBI-FLG  =   1 )
+                    OR   ( SS001-NKGI-FLG  =   1 )
                        CONTINUE
                    ELSE
                        MOVE    "0003"  TO  SPA-ERRCD
@@ -1037,6 +1040,7 @@
                    IF    ( SS001-GIHO-FLG  =   1 )
                     OR   ( SS001-GRSI-FLG  =   1 )
                     OR   ( SS001-GJBI-FLG  =   1 )
+                    OR   ( SS001-GKGI-FLG  =   1 )
                        CONTINUE
                    ELSE
                        MOVE    "0003"  TO  SPA-ERRCD
@@ -1175,6 +1179,8 @@
                                    TO  SPA-NAI-RSIPROCKBN
            MOVE    ORCBSD01-JBIPROCKBN
                                    TO  SPA-NAI-JBIPROCKBN
+           MOVE    ORCBSD01-KGIPROCKBN
+                                   TO  SPA-NAI-KGIPROCKBN
            MOVE    ORCBSD01-JIHIPROCKBN
                                    TO  SPA-NAI-JIHIPROCKBN
            MOVE    ORCBSD01-INGAIPROCKBN
@@ -1444,6 +1450,7 @@
            MOVE    SPA-NAI-KOKUHOPROCKBN   TO  SPA-D01-KOKUHOPROCKBN
            MOVE    SPA-NAI-RSIPROCKBN      TO  SPA-D01-RSIPROCKBN
            MOVE    SPA-NAI-JBIPROCKBN      TO  SPA-D01-JBIPROCKBN
+           MOVE    SPA-NAI-KGIPROCKBN      TO  SPA-D01-KGIPROCKBN
            MOVE    SPA-NAI-JIHIPROCKBN     TO  SPA-D01-JIHIPROCKBN
            MOVE    SPA-NAI-INGAIPROCKBN    TO  SPA-D01-INGAIPROCKBN
            MOVE    SPA-NAI-PRTSRTKBN       TO  SPA-D01-PRTSRTKBN

@@ -107,6 +107,8 @@
                                            VALUE   "4".
            03  CONST-JIHI                  PIC X(01)
                                            VALUE   "5".
+           03  CONST-KOUGAI                PIC X(01)
+                                           VALUE   "6".
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -487,6 +489,10 @@
                IF    ( SDTCHK06-HKNKBN =   CONST-JIBAI )
                    MOVE    1           TO  FLG-TAISYO-HKN
                END-IF
+           WHEN      ( WRK-ZAIHKNNUM   =   "975" )
+               IF    ( SDTCHK06-HKNKBN =   CONST-KOUGAI )
+                   MOVE    1           TO  FLG-TAISYO-HKN
+               END-IF
       *
            WHEN      ( WRK-ZAIHKNNUM (1:2) =   "98" )
                IF    ( SDTCHK06-HKNKBN =   CONST-JIHI )
@@ -669,7 +675,9 @@
                        END-IF
                    ELSE
                        IF    ( SDTCHK06-HKNKBN      =  CONST-ROSAI
-                                                    OR CONST-JIBAI  )
+                                                    OR CONST-JIBAI
+                                                    OR CONST-KOUGAI
+                                                                   )
                            MOVE    ZERO            TO  FLG-LOOP-END
                        END-IF
                    END-IF

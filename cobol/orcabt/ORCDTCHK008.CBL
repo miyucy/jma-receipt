@@ -133,15 +133,16 @@
       *
       *    ∏«ƒÍ√ÕŒŒ∞Ë
        01  CONST-AREA.
-               05  CONST-HKNKBN-MAX            PIC 9(03)   VALUE   5.
+               05  CONST-HKNKBN-MAX            PIC 9(03)   VALUE   6.
                05  CONST-HKNKBN-VAL.
                    07  CONST-SYAHO             PIC X(01)   VALUE   "1".
                    07  CONST-KOKUHO            PIC X(01)   VALUE   "2".
                    07  CONST-ROSAI             PIC X(01)   VALUE   "3".
                    07  CONST-JIBAI             PIC X(01)   VALUE   "4".
                    07  CONST-JIHI              PIC X(01)   VALUE   "5".
+                   07  CONST-KOUGAI            PIC X(01)   VALUE   "6".
                05  CONST-HKNKBN-R      REDEFINES   CONST-HKNKBN-VAL.
-                   07  CONST-HKNKBN            PIC X(01)   OCCURS  5.
+                   07  CONST-HKNKBN            PIC X(01)   OCCURS  6.
       *
            COPY    "COMMON-SPA".
       *
@@ -243,6 +244,8 @@
                                                ORCBSD01-SRYYMDKBN
                                                ORCBSD01-STSRYYMD
                                                ORCBSD01-EDSRYYMD
+                                               ORCBSD01-KGIPROCKBN
+           END-UNSTRING
       *
            MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
       *

@@ -294,6 +294,8 @@
                                                ORCBSD01-SRYYMDKBN
                                                ORCBSD01-STSRYYMD
                                                ORCBSD01-EDSRYYMD
+                                               ORCBSD01-KGIPROCKBN
+           END-UNSTRING
       *
            MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
       *
@@ -865,6 +867,8 @@
                MOVE    "极清勒"        TO  WRK-HKNMES
            WHEN    "5"
                MOVE    "极锐"          TO  WRK-HKNMES
+           WHEN    "6"
+               MOVE    "给巢"          TO  WRK-HKNMES
            END-EVALUATE
       *
            .

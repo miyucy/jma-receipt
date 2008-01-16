@@ -80,6 +80,7 @@
                        09  SPA-GMN-D01-CHK-SYAHO           PIC X(01).
                        09  SPA-GMN-D01-CHK-KOKUHO          PIC X(01).
                        09  SPA-GMN-D01-CHK-RSIJBI          PIC X(01).
+                       09  SPA-GMN-D01-CHK-KOUGAI          PIC X(01).
                        09  SPA-GMN-D01-CHK-JIHI            PIC X(01).
                        09  SPA-GMN-D01-CHK-SRYYMD          PIC X(01).
                        09  SPA-GMN-D01-STSRYYMD            PIC 9(02).
@@ -689,6 +690,9 @@
              OR  ( SPA-D01-JBIPROCKBN      =   "1" )
                MOVE    "T"         TO  SPA-GMN-D01-CHK-RSIJBI
            END-IF
+           IF    ( SPA-D01-KGIPROCKBN      =   "1" )
+               MOVE    "T"         TO  SPA-GMN-D01-CHK-KOUGAI
+           END-IF
            IF    ( SPA-D01-JIHIPROCKBN     =   "1" )
                MOVE    "T"         TO  SPA-GMN-D01-CHK-JIHI
            END-IF
@@ -1066,6 +1070,8 @@
       *
            MOVE    ORCBSD01-EDSRYYMD       TO  SHELLTBL-ARG30
       *
+           MOVE    ORCBSD01-KGIPROCKBN     TO  SHELLTBL-ARG31
+      *
            MOVE    SHELLTBL                TO  MCPDATA-REC
            MOVE    "SHELL"                 TO  MCP-FUNC
            MOVE    "shell"                 TO  MCP-TABLE
@@ -1215,6 +1221,10 @@
                MOVE    "1"         TO  ORCBSD01-JBIPROCKBN
            END-IF
       *
+           IF    ( SPA-GMN-D01-CHK-KOUGAI      =   "T" )
+               MOVE    "1"         TO  ORCBSD01-KGIPROCKBN
+           END-IF
+      *
            IF    ( SPA-GMN-D01-CHK-JIHI        =   "T" )
                MOVE    "1"         TO  ORCBSD01-JIHIPROCKBN
            END-IF
@@ -1279,6 +1289,7 @@
            MOVE    ORCBSD01-SYAHOPROCKBN   TO  SPA-D01-SYAHOPROCKBN
            MOVE    ORCBSD01-KOKUHOPROCKBN  TO  SPA-D01-KOKUHOPROCKBN
            MOVE    ORCBSD01-RSIPROCKBN     TO  SPA-D01-RSIPROCKBN
+           MOVE    ORCBSD01-KGIPROCKBN     TO  SPA-D01-KGIPROCKBN
            MOVE    ORCBSD01-JBIPROCKBN     TO  SPA-D01-JBIPROCKBN
            MOVE    ORCBSD01-JIHIPROCKBN    TO  SPA-D01-JIHIPROCKBN
            MOVE    ORCBSD01-INGAIPROCKBN   TO  SPA-D01-INGAIPROCKBN
@@ -1485,6 +1496,7 @@
            WHEN    "CLICKED"       ALSO    "CHK_SYAHO"
            WHEN    "CLICKED"       ALSO    "CHK_KOKUHO"
            WHEN    "CLICKED"       ALSO    "CHK_RSIJBI"
+           WHEN    "CLICKED"       ALSO    "CHK_KOUGAI"
            WHEN    "CLICKED"       ALSO    "CHK_JIHI"
                PERFORM 4101-TARGET-HOKEN-CHK-SEC
            WHEN    "CLICKED"       ALSO    "B01"
@@ -1701,6 +1713,7 @@
            MOVE    D01-CHK-SYAHO       TO  SPA-GMN-D01-CHK-SYAHO
            MOVE    D01-CHK-KOKUHO      TO  SPA-GMN-D01-CHK-KOKUHO
            MOVE    D01-CHK-RSIJBI      TO  SPA-GMN-D01-CHK-RSIJBI
+           MOVE    D01-CHK-KOUGAI      TO  SPA-GMN-D01-CHK-KOUGAI
            MOVE    D01-CHK-JIHI        TO  SPA-GMN-D01-CHK-JIHI
       *
            .
@@ -1995,6 +2008,7 @@
            MOVE    "T"                 TO  SPA-GMN-D01-CHK-SYAHO
            MOVE    "T"                 TO  SPA-GMN-D01-CHK-KOKUHO
            MOVE    "T"                 TO  SPA-GMN-D01-CHK-RSIJBI
+           MOVE    "T"                 TO  SPA-GMN-D01-CHK-KOUGAI
            MOVE    "F"                 TO  SPA-GMN-D01-CHK-JIHI
            MOVE    "F"                 TO  SPA-GMN-D01-CHK-SRYYMD
       *
@@ -2557,6 +2571,7 @@
            IF    ( SPA-GMN-D01-CHK-SYAHO   =   "F" )
             AND  ( SPA-GMN-D01-CHK-KOKUHO  =   "F" )
             AND  ( SPA-GMN-D01-CHK-RSIJBI  =   "F" )
+            AND  ( SPA-GMN-D01-CHK-KOUGAI  =   "F" )
             AND  ( SPA-GMN-D01-CHK-JIHI    =   "F" )
                MOVE    "1003"          TO  SPA-ERRCD
                GO  TO  4900-KANRENCHK-EXT
@@ -2844,6 +2859,7 @@
            MOVE    SPA-GMN-D01-CHK-SYAHO   TO  D01-CHK-SYAHO
            MOVE    SPA-GMN-D01-CHK-KOKUHO  TO  D01-CHK-KOKUHO
            MOVE    SPA-GMN-D01-CHK-RSIJBI  TO  D01-CHK-RSIJBI
+           MOVE    SPA-GMN-D01-CHK-KOUGAI  TO  D01-CHK-KOUGAI
            MOVE    SPA-GMN-D01-CHK-JIHI    TO  D01-CHK-JIHI
       *
       *    院外処方の処理項目名
@@ -2999,6 +3015,8 @@
                MOVE    "EDSRYYMD"      TO  MCP-WIDGET
            WHEN    109
                MOVE    "USRCHKKBN"     TO  MCP-WIDGET
+           WHEN    110
+               MOVE    "CHK_KOUGAI"    TO  MCP-WIDGET
            WHEN    212
                MOVE    "B12"           TO  MCP-WIDGET
            END-EVALUATE
@@ -3059,6 +3077,8 @@
            WHEN    "CHK_KOKUHO"
                MOVE    103             TO  SPA-GMN-D01-CUR
            WHEN    "CHK_RSIJBI"
+               MOVE    110             TO  SPA-GMN-D01-CUR
+           WHEN    "CHK_KOUGAI"
                MOVE    104             TO  SPA-GMN-D01-CUR
            WHEN    "CHK_JIHI"
                MOVE    106             TO  SPA-GMN-D01-CUR

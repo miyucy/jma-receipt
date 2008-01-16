@@ -37,6 +37,7 @@
                05  SPA-D01-KOKUHOPROCKBN   PIC  X(01).
                05  SPA-D01-RSIPROCKBN      PIC  X(01).
                05  SPA-D01-JBIPROCKBN      PIC  X(01).
+               05  SPA-D01-KGIPROCKBN      PIC  X(01).
                05  SPA-D01-JIHIPROCKBN     PIC  X(01).
                05  SPA-D01-INGAIPROCKBN    PIC  X(01).
                05  SPA-D01-PRTSRTKBN       PIC  X(01).

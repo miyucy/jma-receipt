@@ -35,6 +35,9 @@ D01	{
 		CHK_RSIJBI	{
 			value	bool;
 		};
+		CHK_KOUGAI	{
+			value	bool;
+		};
 		CHK_JIHI	{
 			value	bool;
 		};

@@ -208,6 +208,7 @@
                                                        OCCURS  50.
            03  FLG-JIHI                                PIC 9(01).
            03  FLG-RSI-JBI                             PIC 9(01).
+           03  FLG-KOUGAI                              PIC 9(01).
            03  FLG-TAISYO-HKN                          PIC 9(01).
            03  FLG-TAISYO-SRY                          PIC 9(01).
            03  FLG-LOOP-END                            PIC 9(01).
@@ -948,6 +949,8 @@
                                                    VALUE   "4".
            03  CONST-JIHI                          PIC X(01)
                                                    VALUE   "5".
+           03  CONST-KOUGAI                        PIC X(01)
+                                                   VALUE   "6".
       *
            03  CONST-TSANTEICD-G.
                05  CONST-TSANTEICD-MAX         PIC 9(05)
@@ -1253,6 +1256,8 @@
                                                ORCBSD01-SRYYMDKBN
                                                ORCBSD01-STSRYYMD
                                                ORCBSD01-EDSRYYMD
+                                               ORCBSD01-KGIPROCKBN
+           END-UNSTRING
       *
            MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
       *
@@ -2131,6 +2136,10 @@
                IF    ( DTCHK003-HKNKBN =   CONST-JIBAI )
                    MOVE    1           TO  FLG-TAISYO-HKN
                END-IF
+           WHEN      ( WRK-ZAIHKNNUM   =   "975" )
+               IF    ( DTCHK003-HKNKBN =   CONST-KOUGAI )
+                   MOVE    1           TO  FLG-TAISYO-HKN
+               END-IF
       *
            WHEN      ( WRK-ZAIHKNNUM (1:2) =   "98" )
                IF    ( DTCHK003-HKNKBN =   CONST-JIHI )
@@ -2334,8 +2343,9 @@
       *
            MOVE    ZERO                TO  FLG-JIHI
                                            FLG-RSI-JBI
+                                           FLG-KOUGAI
       *
-      *    极锐ˇ汐阂ˇ极清勒の冉们
+      *    极锐ˇ汐阂ˇ极清勒ˇ给巢の冉们
            IF    ( COMB-HKNNUM (1:2)   =   "98" )
                MOVE        1           TO  FLG-JIHI
            END-IF
@@ -2343,6 +2353,10 @@
            IF    ( COMB-HKNNUM         =   "971"
                                        OR  "973" )
                MOVE        1           TO  FLG-RSI-JBI
+           END-IF
+      *
+           IF    ( COMB-HKNNUM         =   "975" )
+               MOVE        1           TO  FLG-KOUGAI
            END-IF
       *
            .
@@ -2413,6 +2427,7 @@
       *
            IF    ( FLG-RSI-JBI         =   ZERO )
              AND ( FLG-JIHI            =   ZERO )
+             AND ( FLG-KOUGAI          =   ZERO )
                PERFORM VARYING IDX3    FROM    1   BY  1
                        UNTIL ( IDX3    >  4 )
                        OR    ( COMB-KOHID (IDX3)   =   ZERO   )
@@ -3609,17 +3624,21 @@
       *****************************************************************
        200111-HKNNUM-CHK-SEC           SECTION.
       *
-           IF    ( PTHKN-HKNJANUM      =   SPACE )
+           IF    ( PTHKN-HKNNUM        =   "975" )
+               CONTINUE
+           ELSE
+               IF    ( PTHKN-HKNJANUM      =   SPACE )
       *
-               MOVE    PTHKN-HKNNUM    TO  SRH-HKNNUM
-               MOVE    "010001"        TO  WRK-ERRCD
-               PERFORM 211-ERRMES-HEN-SEC
+                   MOVE    PTHKN-HKNNUM    TO  SRH-HKNNUM
+                   MOVE    "010001"        TO  WRK-ERRCD
+                   PERFORM 211-ERRMES-HEN-SEC
       *
-               IF    ( ORCBSD01-CHKKBN (1) =   "1" )
-                   MOVE    1           TO  FLG-CHKEND (1)
-                   GO  TO  200111-HKNNUM-CHK-EXT
+                   IF    ( ORCBSD01-CHKKBN (1) =   "1" )
+                       MOVE    1           TO  FLG-CHKEND (1)
+                       GO  TO  200111-HKNNUM-CHK-EXT
+                   END-IF
+      *
                END-IF
-      *
            END-IF
       *
            .
@@ -4156,6 +4175,7 @@
                IF    ( COMB-HKNID      NOT =   ZERO )
                 AND  ( COMB-HKNNUM     NOT =   "971" )
                 AND  ( COMB-HKNNUM     NOT =   "973" )
+                AND  ( COMB-HKNNUM     NOT =   "975" )
                 AND  ( COMB-HKNNUM (1:2)
                                        NOT =   "98" )
       *
@@ -4538,7 +4558,8 @@
                END-IF
            ELSE
                IF    ( DTCHK003-HKNKBN =   CONST-ROSAI
-                                       OR  CONST-JIBAI )
+                                       OR  CONST-JIBAI 
+                                       OR  CONST-KOUGAI )
                    MOVE    ZERO        TO  FLG-TAISYO-BYOMEI
                END-IF
            END-IF
