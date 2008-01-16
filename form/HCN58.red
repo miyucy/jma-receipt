@@ -9706,7 +9706,7 @@
       <attribute name="text">
         <composite type="text">
           <attribute name="string">
-            <string>#&#198;&#252;#</string>
+            <string>#&#178;&#243;#</string>
           </attribute>
           <attribute name="font">
             <font name="Courier"/>
@@ -9742,7 +9742,7 @@
       <attribute name="text">
         <composite type="text">
           <attribute name="string">
-            <string>#&#198;&#252;#</string>
+            <string>#&#178;&#243;#</string>
           </attribute>
           <attribute name="font">
             <font name="Courier"/>
