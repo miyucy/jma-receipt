@@ -2746,12 +2746,16 @@ grpsys     MOVE    RECE200-HOSPNUM     TO  RECE10-HOSPNUM
            END-IF
       *
            MOVE    RECE200-JNISSU      TO  RECE10-JNISSU   (1)
+      *    ¾®·×¡ÊÆþ±¡¡Ë
+           COMPUTE RECE10-TOTALTEN (1) =   
+                                       RECE200-SYOUKEI (1) +
+                                       RECE200-SYOUKEI (2)
+      *    ¾®·×¡Ê¿©»ö¡Ë
+           MOVE    RECE200-SYOUKEI (3) TO
+                                       RECE10-YKZFTN (1)
+      *    ¹ç·×
            MOVE    RECE200-TOTALTEN (4)
                                        TO  RECE10-FTNMONEY (1)
-      ***  MOVE    RECE200-FTNMONEYINF(IDX) TO
-      ***                              RECE10-FTNMONEYINF (IDX)
-      ***  MOVE    RECE200-SHOKUJIINF (IDX) TO
-      ***                              RECE10-SHOKUJIINF (IDX)
       *    £±£±½é¿Ç¡Á£¸£°Â¾
            PERFORM VARYING IDX FROM    1   BY  1
                    UNTIL   IDX >       21

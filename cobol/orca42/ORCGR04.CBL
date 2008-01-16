@@ -738,7 +738,12 @@ grpsys     MOVE    SPA-HOSPNUM         TO  SYS-1031-HOSPNUM
       *
            PERFORM 3101-PAGE-HENSYU-03-SEC     
       *
-           MOVE    4              TO  SPA-GMN-R04-CUR
+           EVALUATE    SPA-R01-RECE07-RECEKBN
+               WHEN    "6"
+                  MOVE    99             TO  SPA-GMN-R04-CUR
+               WHEN    OTHER
+                  MOVE    4              TO  SPA-GMN-R04-CUR
+           END-EVALUATE
            .
        310-SPASET-EXT.
            EXIT.
@@ -834,6 +839,8 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                      TO  SPA-NAI-R04-SYUBETU-G   (IDX)
                            MOVE    SYS-2003-SYURUINAME
                                      TO  SPA-GMN-R04-TSYURUINAME (IDX)
+                           MOVE    "T"
+                                     TO  SPA-GMN-R04-TCHK-VALUE  (IDX)
                        END-IF
                END-EVALUATE
              END-IF  
@@ -862,7 +869,10 @@ grpsys     PERFORM 900-DBSELECT-SEC
            MOVE    "0000"            TO  SPA-NAI-R04-SYUBETU     (25 1)
            MOVE    "レセプト種別不明"
                                      TO  SPA-GMN-R04-TSYURUINAME (25)
-      *****MOVE    "T"               TO  SPA-GMN-R04-TCHK-VALUE  (25)
+           EVALUATE    SPA-R01-RECE07-RECEKBN
+               WHEN    "6"
+                     MOVE    "T"     TO  SPA-GMN-R04-TCHK-VALUE  (25)
+           END-EVALUATE
       *
       *    ページ数・件数設定
       *    続紙のときは総件計に加算しない
@@ -929,7 +939,7 @@ grpsys     MOVE    SPA-HOSPNUM         TO  RECE07-HOSPNUM
                                            SPA-GMN-R04-KENSUH
            END-IF
            .
-       3101-PAGE-HENSYU-01-EXT.
+       3101-PAGE-HENSYU-03-EXT.
            EXIT.
       *
       *****************************************************************
