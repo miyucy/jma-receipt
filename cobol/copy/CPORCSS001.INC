@@ -79,3 +79,7 @@
                    07  SS001-SRYKA-NYURRK-DAY-G.
                        09  SS001-SRYKA-NYURRK-DAY  PIC 9(01)
                                                    OCCURS  31.
+           03  SS001-HKNCOMBI-G.
+               05  SS001-HKNCOMBI-MAX              PIC 9(03).
+               05  SS001-HKNCOMBINUM               PIC 9(04)
+                                                   OCCURS  100.

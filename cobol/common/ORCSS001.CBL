@@ -89,12 +89,12 @@
            03  CONST-HOUKATU           PIC 9(04)   VALUE   9999.
            03  CONST-TCOMBI-MAX        PIC 9(05)   VALUE   31.
            03  CONST-SRYKA-MAX         PIC 9(05)   VALUE   50.
-           03  CONST-TBLCOMBI-MAX      PIC 9(05)   VALUE   50.
+           03  CONST-TBLCOMBI-MAX      PIC 9(05)   VALUE   100.
       *
       *    保険組合せ
        01  TBLCOMBI-AREA.
            02  TBLCOMBI-MAX            PIC 9(05).
-           02  TBLCOMBI-OCC            OCCURS      50.
+           02  TBLCOMBI-OCC            OCCURS      100.
            COPY    "CPHKNCOMBI.INC"    REPLACING   //COMB-//
                                        BY          //TBLCOMBI-//.
       *
@@ -750,6 +750,13 @@ grpsys         MOVE    SS001-HOSPNUM       TO  COMB-HOSPNUM
                            =   TBLCOMBI-MAX    +   1
                        MOVE    HKNCOMBI-REC TO TBLCOMBI-OCC
                                                   (TBLCOMBI-MAX)
+      *
+      *
+                       MOVE    TBLCOMBI-MAX TO SS001-HKNCOMBI-MAX
+                       MOVE    COMB-HKNCOMBINUM
+                                            TO SS001-HKNCOMBINUM
+                                                  (TBLCOMBI-MAX)
+      *
                    END-IF
                ELSE
                    MOVE    1               TO  FLG-HKNCOMBI
