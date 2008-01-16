@@ -2160,6 +2160,10 @@ grpsys                            SPA-AREA
                            ADD   NACCT-ZAITEN    TO
                                              SYU-HKNTEN(15)
                                              SDAY-HKNTEN(SYU-IDX)      
+                           IF    SYU-SYUHKNNUM   =    "975"
+                             ADD NACCT-ZAITEN    TO
+                                        WRK-JIBAI-RYOYO-NACCT(IDX)
+                           END-IF
                        END-IF
                    END-PERFORM
                END-IF
@@ -4407,6 +4411,7 @@ grpsys                                    SPA-AREA
       *
            COMPUTE   WRK-JIBAI-SYUTEN(IDX) =  WRK-SYUTEN
                                            +  SYU-HKNTEN(14)
+                                           +  WRK-JIBAI-RYOYO-NACCT(IDX)
                                            -  WRK-KOGAI-TEN
       *
            .

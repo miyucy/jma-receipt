@@ -436,48 +436,6 @@
       *****************************************************************
        1001-SYUNOU-DELETE-SEC                SECTION.
       *
-      *    °ì³ç¥À¥ß¡¼¼ýÇ¼ºï½ü½èÍý
-      *
-      ***  IF      WRK-PARA-SHELLID    NOT =   "RECEPTX"
-      *
-      ***    ÅÁÉ¼ÈÖ¹æ£¹£°£°£°£°£°£°¡Á£¹£°£¹£¹£¹£¹£¹ºï½ü¡Ê°ÊÁ°Ê¬¡Ë
-      ***    INITIALIZE                      SYUNOU-REC
-      ***    MOVE    SYUNOU-REC          TO  MCPDATA-REC
-      ***    MOVE    "SYUNOU-DEL5"       TO  ORC-DBPATH
-      ***    MOVE    "DBDELETE"          TO  MCP-FUNC
-      ***    CALL    "ORCMCPSUB"             USING
-      ***                                    MCPAREA
-      ***                                    ORCMCPAREA
-      ***                                    MCPDATA-REC
-      ***    IF      MCP-RC          NOT =   ZERO
-      ***        MOVE  "²¾¼ýÇ¼¥Ç¡¼¥¿ºï½ü½èÍý¤Ë¼ºÇÔ¤·¤Þ¤·¤¿"
-      ***                        TO  WRK-RECEERR
-      ***        PERFORM 500-ERR-HENSYU-SEC
-      ***    END-IF
-      *
-      *      °ì³ç¥À¥ß¡¼ÆüÊÌ¼ýÇ¼ºï½ü½èÍý
-      *
-      ***    IF   FLG-ERR         =   1
-      ***       CONTINUE
-      ***    ELSE
-      ***       ÅÁÉ¼ÈÖ¹æ£¹£°£°£°£°£°£°¡Á£¹£°£¹£¹£¹£¹£¹ºï½ü¡Ê°ÊÁ°Ê¬¡Ë
-      ***       INITIALIZE                      SYUDAY-REC
-      ***       MOVE    SYUDAY-REC          TO  MCPDATA-REC
-      ***       MOVE    "SYUDAY-DEL4"       TO  ORC-DBPATH
-      ***       MOVE    "DBDELETE"          TO  MCP-FUNC
-      ***       CALL    "ORCMCPSUB"             USING
-      ***                                       MCPAREA
-      ***                                       ORCMCPAREA
-      ***                                       MCPDATA-REC
-      ***       IF      MCP-RC          NOT =   ZERO
-      ***           MOVE  "²¾ÆüÊÌ¼ýÇ¼¥Ç¡¼¥¿ºï½ü½èÍý¤Ë¼ºÇÔ¤·¤Þ¤·¤¿"
-      ***                           TO  WRK-RECEERR
-      ***           PERFORM 500-ERR-HENSYU-SEC
-      ***       END-IF
-      ***    END-IF
-      *
-      ***  END-IF
-      *
       *    ¥À¥ß¡¼¼ýÇ¼ºï½ü½èÍý
       *    ¥À¥ß¡¼ÆüÊÌ¼ýÇ¼ºï½ü½èÍý
       *
@@ -500,13 +458,16 @@
                               (FLG-SYUNOU     =   1)  OR
                               (FLG-ERR        =   1)
       *
-                 IF   SYU-SYUHKNNUM   =  WRK-CONS-ROUSAI-HKNNUM
-                                     OR  WRK-CONS-JIBAI-HKNNUM
-                                     OR  WRK-CONS-KOUGAI-HKNNUM
-                   CONTINUE
-                 ELSE
-                   IF      SYU-DAYINFFLG   =   "1"
-      *
+                 EVALUATE WRK-PARA-RECEKBN
+                  WHEN    "0"
+                  WHEN    "1"
+                  WHEN    "2"
+                   IF   SYU-SYUHKNNUM   =  WRK-CONS-ROUSAI-HKNNUM
+                                       OR  WRK-CONS-JIBAI-HKNNUM
+                                       OR  WRK-CONS-KOUGAI-HKNNUM
+                     CONTINUE
+                   ELSE
+                     IF      SYU-DAYINFFLG   =   "1"
                       INITIALIZE                      SYUDAY-REC
                       MOVE    SYS-1001-HOSPNUM    TO  SDAY-HOSPNUM
                       MOVE    "1"                 TO  SDAY-NYUGAIKBN
@@ -522,15 +483,22 @@
                                   TO  WRK-RECEERR
                           PERFORM 500-ERR-HENSYU-SEC
                       END-IF
-      *
+                     END-IF
+                     MOVE    SYUNOU-REC       TO      MCPDATA-REC
+                     MOVE    "DBDELETE"       TO      MCP-FUNC
+                     MOVE    "tbl_syunou"     TO      MCP-TABLE
+                     MOVE    "key"            TO      MCP-PATHNAME
+                     PERFORM    900-ORCDBMAIN-SEC
                    END-IF
-      *
-                   MOVE    SYUNOU-REC       TO      MCPDATA-REC
-                   MOVE    "DBDELETE"       TO      MCP-FUNC
-                   MOVE    "tbl_syunou"     TO      MCP-TABLE
-                   MOVE    "key"            TO      MCP-PATHNAME
-                   PERFORM    900-ORCDBMAIN-SEC
-                 END-IF
+                  WHEN    "6"
+                   IF   SYU-SYUHKNNUM   =  WRK-CONS-KOUGAI-HKNNUM
+                     MOVE    SYUNOU-REC       TO      MCPDATA-REC
+                     MOVE    "DBDELETE"       TO      MCP-FUNC
+                     MOVE    "tbl_syunou"     TO      MCP-TABLE
+                     MOVE    "key"            TO      MCP-PATHNAME
+                     PERFORM    900-ORCDBMAIN-SEC
+                   END-IF
+                 END-EVALUATE
       *
                  MOVE    "tbl_syunou"         TO  MCP-TABLE
                  MOVE    "key40"              TO  MCP-PATHNAME
@@ -741,10 +709,12 @@
                            WHEN    "1"
                                IF      COMB-HKNNUM 
                                                NOT =   "060" AND "067"
+                                                   AND "068" AND "069"
                                    PERFORM 20011-SRYACCT-FILE-HENSYU-SEC 
                                END-IF
                            WHEN    "2"
                                IF      COMB-HKNNUM =   "060" OR  "067"
+                                                    OR "068" OR  "069"
                                    PERFORM 20011-SRYACCT-FILE-HENSYU-SEC 
                                END-IF
                        END-EVALUATE
@@ -943,6 +913,7 @@
                        WHEN    "1"
                            IF      COMB-HKNNUM 
                                        NOT =   "060" AND "067"
+                                           AND "068" AND "069"
                                CONTINUE
                            ELSE
                                MOVE    "1"       TO  WRK-SYOKBN
@@ -950,6 +921,7 @@
                        WHEN    "2"
                            IF      COMB-HKNNUM
                                            =   "060" OR  "067"
+                                            OR "068" OR  "069"
                                CONTINUE
                            ELSE
                                MOVE    "1"       TO  WRK-SYOKBN
@@ -1148,13 +1120,7 @@
                           UNTIL ( IDX1                    >     10  )
                             OR  ( LNK-SYU-SKYSTYMD (IDX1) =   SPACE )
                             OR  ( FLG-ERR                 =      1  )
-      *****         IF  LNK-SYU-SYUHKNNUM(IDX1)  =
-      *****                                 WRK-CONS-ROUSAI-HKNNUM OR
-      *****                                 WRK-CONS-JIBAI-HKNNUM 
-      *****            CONTINUE
-      *****         ELSE
                        PERFORM 20011-KARITEIKI-OUTPUT-SEC
-      *****         END-IF
                   END-PERFORM
               ELSE
                   DISPLAY "PTID=" KEY-O-PTID
@@ -2117,13 +2083,22 @@
                             (FLG-SYUNOU     =    1)  OR
                             (FLG-DATA       =    1)
       *
-               IF   SYU-SYUHKNNUM   =  WRK-CONS-ROUSAI-HKNNUM
-                                   OR  WRK-CONS-JIBAI-HKNNUM
-                                   OR  WRK-CONS-KOUGAI-HKNNUM
-                 CONTINUE
-               ELSE
-                 MOVE     1       TO     FLG-DATA
-               END-IF
+               EVALUATE  WRK-PARA-RECEKBN
+                 WHEN    "0"
+                 WHEN    "1"
+                 WHEN    "2"
+                   IF   SYU-SYUHKNNUM   =  WRK-CONS-ROUSAI-HKNNUM
+                                       OR  WRK-CONS-JIBAI-HKNNUM
+                                       OR  WRK-CONS-KOUGAI-HKNNUM
+                     CONTINUE
+                   ELSE
+                     MOVE     1       TO     FLG-DATA
+                   END-IF
+                 WHEN    "6"
+                   IF   SYU-SYUHKNNUM   =  WRK-CONS-KOUGAI-HKNNUM
+                     MOVE     1       TO     FLG-DATA
+                   END-IF
+               END-EVALUATE
       *
                MOVE    "tbl_syunou"         TO  MCP-TABLE
                MOVE    "key17"              TO  MCP-PATHNAME

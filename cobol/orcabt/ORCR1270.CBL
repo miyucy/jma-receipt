@@ -1591,22 +1591,33 @@
                MOVE    RECE200-KAISU(IDX)      TO  WRK-KAISUZ
                MOVE    WRK-KAISU               TO  HCN58-KAISU  (IDX)
       *        ÅÀ¿ô
-               EVALUATE    IDX
-                   WHEN    1   THRU    3
+               IF   IDX  =  3
+                 MOVE    RECE200-TENSU(IDX 1)
+                                           TO  WRK-TENSUZ
+                 MOVE    WRK-TENSU         TO  HCN58-TENSU
+                                                   (1 IDX)
+                 MOVE    RECE200-TENSU(IDX 2)
+                                           TO  WRK-TENSUZ
+                 MOVE    WRK-TENSU         TO  HCN58-TENSU
+                                                   (2 IDX)
+               ELSE
+                 EVALUATE    IDX
+                   WHEN    1   THRU    2
                    WHEN    7   THRU    10
                    WHEN    12
                    WHEN    14
                    WHEN    16
                    WHEN    18
                    WHEN    20
-                       MOVE    1               TO  WRK-TNSIDX
+                       MOVE    1           TO  WRK-TNSIDX
                    WHEN    OTHER
-                       MOVE    2               TO  WRK-TNSIDX
-               END-EVALUATE
-               MOVE    RECE200-TENSU(IDX WRK-TNSIDX)
+                       MOVE    2           TO  WRK-TNSIDX
+                 END-EVALUATE
+                 MOVE    RECE200-TENSU(IDX WRK-TNSIDX)
                                            TO  WRK-TENSUZ
-               MOVE    WRK-TENSU           TO  HCN58-TENSU
+                 MOVE    WRK-TENSU         TO  HCN58-TENSU
                                                    (WRK-TNSIDX IDX)
+               END-IF
            END-PERFORM
       *
       *    £¹£°Æþ±¡            
@@ -2763,13 +2774,10 @@ grpsys     MOVE    RECE200-HOSPNUM     TO  RECE10-HOSPNUM
                                        RECE10-KHNTEN (IDX)
                MOVE    RECE200-KAISU  (IDX)  TO
                                        RECE10-KAISU  (IDX)
-               IF      RECE200-TENSU  (IDX 1)  >   ZERO
-                   MOVE    RECE200-TENSU  (IDX 1)  TO
+               MOVE    RECE200-TENSU  (IDX 1)  TO
                                        RECE10-TENSU (IDX 1)
-               ELSE
-                   MOVE    RECE200-TENSU  (IDX 2)  TO
+               ADD     RECE200-TENSU  (IDX 2)  TO
                                        RECE10-TENSU (IDX 1)
-               END-IF
            END-PERFORM
       *
       *    £¹£°Æþ±¡´ðËÜÎÁ¡¦²Ã»»

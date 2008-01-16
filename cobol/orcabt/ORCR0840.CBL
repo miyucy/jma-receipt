@@ -7992,6 +7992,7 @@ grpsys     PERFORM  900-DBSELECT-SEC
                        END-IF
                      ELSE
                        IF   COMB-HKNNUM       =  "060" OR  "067"
+                                             OR  "068" OR  "069"
                           MOVE    "4"   TO   RECE82-NYUINRYOFLG
                        ELSE
                           MOVE    "5"   TO   RECE82-NYUINRYOFLG

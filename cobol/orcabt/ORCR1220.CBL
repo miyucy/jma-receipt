@@ -385,6 +385,8 @@
                05  WRK-TENTEKI2-SRYCD          PIC  X(09)
                                                OCCURS    5.
       *
+           03  WRK-SYOKUJIKEI                  PIC  9(07).
+      *
       *    固定値
        01  CONST-AREA.
       *    フリーコメント
@@ -4902,7 +4904,13 @@
       *
            COMPUTE   RECE200-TENSU(10 1)  =
                      RECE200-TENSU(10 1)  +
-                    (RECE220-ZAITEN  *  RECE220-ZAIKAISU)
+                    (RECE220-SYUTEN1   *  RECE220-ZAIKAISU)
+           COMPUTE   RECE200-TENSU(11 2)  =
+                     RECE200-TENSU(11 2)  +
+                    (RECE220-YKZTEN    *  RECE220-ZAIKAISU)
+           COMPUTE   RECE200-TENSU(11 2)  =
+                     RECE200-TENSU(11 2)  +
+                    (RECE220-KIZAITEN  *  RECE220-ZAIKAISU)
       *
            .
       *
@@ -4967,10 +4975,6 @@
            END-IF
       *
            PERFORM             210445-SKJ-KINGAKU-HENSYU-SEC
-      *
-           IF   SYU-SYUSKJ-RYOYOHI  NOT =  ZERO
-               ADD   SYU-SYUSKJ-RYOYOHI   TO   RECE200-SYOUKEI(3)
-           END-IF
       *
            .
        21044-RECE200-FTN-HENSYU-EXT.
@@ -5191,6 +5195,15 @@
                                              TO   RECE200-SYOUKEI(2)
            END-PERFORM
            ADD        RECE200-SEIKANKEI      TO   RECE200-SYOUKEI(2)
+      *
+           PERFORM VARYING IDX    FROM    1   BY  1
+                   UNTIL   IDX    >       4
+               IF      RECE200-SHOKUJIKHNRYO (IDX)  >   ZERO
+                   COMPUTE WRK-SYOKUJIKEI = RECE200-SHOKUJIKHNRYO  (IDX)
+                                          * RECE200-SHOKUJIKHNNISSU(IDX)
+                   ADD     WRK-SYOKUJIKEI    TO   RECE200-SYOUKEI(3)
+               END-IF
+           END-PERFORM
       *
       *    合計（１２円×手技点）
            COMPUTE    RECE200-TOTALTEN(1)  =  RECE200-SYOUKEI(1)

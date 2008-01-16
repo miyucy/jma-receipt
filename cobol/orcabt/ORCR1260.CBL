@@ -2885,6 +2885,23 @@
                        END-IF
                      END-IF
                  END-IF
+                 IF        WRK-ZAIW-SRYCD1  =  "102900010" OR
+                                               "102900020" OR
+                                               "102900030" OR
+                                               "102900040"
+                     MOVE    ALL "9"            TO
+                                            WRK-ZAIW-CDKBN-AREA
+                     EVALUATE   WRK-ZAIW-SRYCD1
+                       WHEN      "102900010"
+                         MOVE    999999996   TO  WRK-ZAIW-KOUHYOJYUNNUM
+                       WHEN      "102900020"
+                         MOVE    999999997   TO  WRK-ZAIW-KOUHYOJYUNNUM
+                       WHEN      "102900030"
+                         MOVE    999999998   TO  WRK-ZAIW-KOUHYOJYUNNUM
+                       WHEN      "102900040"
+                         MOVE    999999999   TO  WRK-ZAIW-KOUHYOJYUNNUM
+                     END-EVALUATE
+                 END-IF
                END-IF
                MOVE    WRK-ZAIW-CDKBN-SYO  TO  RECE240-CDKBN-SYO
                MOVE    WRK-ZAIW-CDKBN-BU   TO  RECE240-CDKBN-BU
