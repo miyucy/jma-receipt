@@ -868,6 +868,10 @@
                    IF      KANACHK-MAX         >   10
                        MOVE    "0004"              TO  SPA-ERRCD
                    END-IF
+                   IF    KANACHK-RC3   NOT =   ZERO
+      *                Á´³Ñ¶õÇò¤¢¤ê
+                       MOVE    "0014"          TO  SPA-ERRCD
+                   END-IF
                END-IF
       *        È¾³Ñ
                IF      KANACHK-SYUBETU     =   1
@@ -913,9 +917,6 @@
                                                OR  "¡¿"   OR  "¡ª"
                                                OR  "¡¥"   OR  "¡ö"
                        MOVE    "0008"      TO  SPA-ERRCD
-                   END-IF
-                   IF    WRK-INPUTCD (IDY:2)   =   "¡¡"
-                       MOVE    "0014"      TO  SPA-ERRCD
                    END-IF
                END-IF
            END-PERFORM

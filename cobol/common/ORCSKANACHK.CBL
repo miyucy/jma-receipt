@@ -27,6 +27,7 @@
       *  01.00.01    NACL-多々納  02/08/09  入力・出力領域をX(1000)へ
       *  01.00.02    NACL-多々納  04/09/30  全角エラー追加
       *  01.00.03    NACL-多々納  05/08/10  kanaconv 使用へ変更
+      *  04.01.00    NACL-多々納  08/01/17  全角空白判定追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -49,6 +50,8 @@
            03  FLG-KANJI           PIC 9(01).
            03  FLG-KANJI-ERR       PIC 9(01).
            03  FLG-KUHAKU          PIC 9(01).
+           03  FLG-ZENKAKU1        PIC 9(01).
+           03  FLG-ZENKAKU2        PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -425,6 +428,11 @@
                END-IF
            END-IF
       *
+      *    全角空白の判定
+           IF     (KANACHK-SYUBETU     =   2    )  AND
+                  (KANACHK-RC          =   ZERO )
+               PERFORM 1003-ZENSPACE-CHK-SEC
+           END-IF
            .
        100-ZENKAKU-CHECK-EXT.
            EXIT.
@@ -448,6 +456,33 @@
       *
            .
        1001-KUHAKU-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    全角空白判定処理
+      *****************************************************************
+       1003-ZENSPACE-CHK-SEC           SECTION.
+      *
+           MOVE    ZERO                TO  FLG-ZENKAKU1
+           MOVE    ZERO                TO  FLG-ZENKAKU2
+           PERFORM VARYING     IDX     FROM    1   BY  2
+                   UNTIL       IDX     >   KANACHK-MAX
+               IF      KANACHK-OUT-INPUT(IDX:2)    =   "　"
+                   MOVE    1               TO  FLG-ZENKAKU2
+               ELSE
+                   MOVE    1               TO  FLG-ZENKAKU1
+               END-IF
+           END-PERFORM
+           IF      FLG-ZENKAKU2        =   1
+               IF      FLG-ZENKAKU1        =   1
+      *            全角空白あり
+                   MOVE    1               TO  KANACHK-RC3
+               ELSE
+      *            全角空白のみ
+                   MOVE    2               TO  KANACHK-RC3
+               END-IF
+           END-IF
+           .
+       1003-ZENSPACE-CHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -473,6 +508,11 @@
                MOVE    2                   TO  KANACHK-RC
            END-IF
       *
+      *    全角空白の判定
+           IF     (KANACHK-SYUBETU     =   2    )  AND
+                  (KANACHK-RC          =   ZERO )
+               PERFORM 1003-ZENSPACE-CHK-SEC
+           END-IF
            .
        200-ZENKAKU-HENKAN-EXT.
            EXIT.
