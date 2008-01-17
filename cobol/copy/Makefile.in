@@ -1382,6 +1382,7 @@ COPYS = \
 	CPRCF250.INC\
 	HCM41V01.INC \
 	HCM52V01.INC \
+	HCM61.INC \
         
         
 DBPATH = \
