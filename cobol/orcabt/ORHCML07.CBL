@@ -35,6 +35,7 @@
       *  02.00.01    NACL-森脇    03/12/25  その他材料追加
       *  02.00.02    NACL-森脇    06/07/27  フラグ追加、MONFUNC対応
       *  03.05.01    NACL-森脇    07/05/29  グループ診療対応
+      *  04.01.01    NACL-森脇    08/01/17  器材点数追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -247,6 +248,11 @@ grpsys     INITIALIZE                  SPA-AREA
                WHEN    2
                    MOVE    "入力コード一覧表・その他材料" 
                                    TO  JOB-SHELLMSG
+      *----(04.01.01)--ADD-START---
+               WHEN    3
+                   MOVE    "入力コード一覧表・器材商品"
+                                   TO  JOB-SHELLMSG
+      *----(04.01.01)--ADD-END-----
            END-EVALUATE
       *----(02.00.01)--UPD-END-----
            CALL    "ORCSJOB"       USING
@@ -351,6 +357,10 @@ grpsys     INITIALIZE                  SPA-AREA
                    MOVE    "【特定器材】"      TO  HCML06-DAI
                WHEN    2
                    MOVE    "【その他材料】"    TO  HCML06-DAI
+      *----(04.01.01)--ADD-START---
+               WHEN    3
+                   MOVE    "【器材商品】"      TO  HCML06-DAI
+      *----(04.01.01)--ADD-END-----
            END-EVALUATE
       *----(02.00.01)--UPD-END-----
       *
@@ -422,6 +432,11 @@ grpsys     INITIALIZE                  SPA-AREA
                WHEN    2
                    MOVE    "入力コード一覧表・その他材料"
                                        TO  SPRT-TITLE
+      *----(04.01.01)--ADD-START---
+               WHEN    3
+                   MOVE    "入力コード一覧表・器材商品"
+                                       TO  SPRT-TITLE
+      *----(04.01.01)--ADD-END-----
            END-EVALUATE
       *----(02.00.01)--UPD-END-----
            MOVE    HCML06              TO  SPRT-PRTDATA
@@ -609,6 +624,11 @@ grpsys                                     SPA-AREA
                WHEN    2
                    MOVE    "059000001"         TO  TNS-SRYCD
                    MOVE    "059999999"         TO  TNSUP-SRYCD 
+      *----(04.01.01)--ADD-START---
+               WHEN    3
+                   MOVE    "058000001"         TO  TNS-SRYCD
+                   MOVE    "058999999"         TO  TNSUP-SRYCD 
+      *----(04.01.01)--ADD-END-----
            END-EVALUATE
       *----(02.00.01)--UPD-END-----
       *

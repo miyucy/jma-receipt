@@ -24,6 +24,9 @@
       *----(02.00.01)--ADD-START---
           03  SHELL-HOKACHK       PIC 9(01).
       *----(02.00.01)--ADD-END-----
+      *----(04.01.01)--ADD-START---
+          03  SHELL-KZICHK        PIC 9(01).
+      *----(04.01.01)--ADD-END-----
           03  SHELL-JIHCHK        PIC 9(01).
       *----(01.01.01)--ADD-START---
           03  SHELL-COMCHK-G.

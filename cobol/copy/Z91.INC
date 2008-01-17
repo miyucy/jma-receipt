@@ -33,6 +33,7 @@
                     05  Z91-IYKCHK             PIC X       OCCURS  7.
                     05  Z91-TOKCHK             PIC X.
                     05  Z91-HOKACHK            PIC X.
+                    05  Z91-KZICHK             PIC X.
                     05  Z91-COMCHKALL          PIC X.
                     05  Z91-COMCHK             PIC X       OCCURS  3.
                     05  Z91-JIHCHK             PIC X.

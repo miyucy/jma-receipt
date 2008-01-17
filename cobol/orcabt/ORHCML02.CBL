@@ -38,6 +38,7 @@
       *  02.00.02    NACL-森脇    04/03/16  点数の桁修正
       *  02.00.03    NACL-森脇    06/07/27  フラグ追加、MONFUNC対応
       *  03.05.01    NACL-森脇    07/05/29  グループ診療対応
+      *  04.01.01    NACL-森脇    08/01/17  器材商品対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -70,7 +71,11 @@
                                    BY         //TENSUERR//.
       *----(03.05.01)--UPD-END-----
       *     
-           COPY    "HCML02.INC".
+      *----(04.01.01)--UPD-START---
+      *     COPY    "HCML02.INC".
+           COPY    "HCML02V01.INC" REPLACING  //HCML02V01//
+                                   BY         //HCML02//.
+      *----(04.01.01)--UPD-END-----
       *
       *    スパ領域
        01  STS-AREA.
@@ -250,6 +255,11 @@ grpsys     INITIALIZE                  SPA-AREA
                WHEN    2
                    MOVE    "点数マスタ一覧表・その他材料" 
                                    TO  JOB-SHELLMSG
+      *----(04.01.01)--ADD-START---
+               WHEN    3
+                   MOVE    "点数マスタ一覧表・器材商品"
+                                   TO  JOB-SHELLMSG
+      *----(04.01.01)--ADD-END-----
            END-EVALUATE
       *----(02.00.01)--UPD-END-----
            CALL    "ORCSJOB"       USING
@@ -355,6 +365,10 @@ grpsys     INITIALIZE                  SPA-AREA
                    MOVE    "（特定器材）"      TO  HCML02-TITLE
                WHEN    2
                    MOVE    "（その他材料）"    TO  HCML02-TITLE
+      *----(04.01.01)--ADD-START---
+               WHEN    3
+                   MOVE    "（器材商品）"      TO  HCML02-TITLE
+      *----(04.01.01)--ADD-END-----
            END-EVALUATE
       *----(02.00.01)--ADD-END-----
       *
@@ -459,6 +473,17 @@ grpsys     INITIALIZE                  SPA-AREA
                        MOVE  "＊＊＊＊"  
                              TO       HCML02-TOKUKIZAISBTTSU(CNT-LINE)
                END-EVALUATE
+      *----(04.01.01)--ADD-START---
+      *        レセ用コード
+               IF    ( WRK-PARA-KBN    =   3 ) AND
+                     ( TNS-IDOKANREN   NOT =   SPACE )
+                   STRING  "("             DELIMITED  BY  SIZE
+                           TNS-IDOKANREN   DELIMITED  BY  SIZE
+                           ")"             DELIMITED  BY  SIZE
+                           INTO            HCML02-IDOKANREN(CNT-LINE)
+                   END-STRING
+               END-IF
+      *----(04.01.01)--ADD-END-----
       *
                PERFORM 900-DBFETCH-SEC         
       *              
@@ -488,7 +513,10 @@ grpsys     INITIALIZE                  SPA-AREA
                                        TO  SPRT-SHORI-RENNUM
            MOVE    LNK-PRTKANRI-PRIORITY
                                        TO  SPRT-PRIORITY
-           MOVE    "HCML02"            TO  SPRT-PRTID
+      *----(04.01.01)--UPD-START---
+      *     MOVE    "HCML02"            TO  SPRT-PRTID
+           MOVE    "HCML02V01.red"     TO  SPRT-PRTID
+      *----(04.01.01)--UPD-END-----
       *----(02.00.01)--UPD-START---
            EVALUATE    WRK-PARA-KBN
                WHEN    1
@@ -497,6 +525,11 @@ grpsys     INITIALIZE                  SPA-AREA
                WHEN    2
                    MOVE    "点数マスタ一覧表・その他材料"
                                        TO  SPRT-TITLE
+      *----(04.01.01)--ADD-START---
+               WHEN    3
+                   MOVE    "点数マスタ一覧表・器材商品"
+                                       TO  SPRT-TITLE
+      *----(04.01.01)--ADD-END-----
            END-EVALUATE
       *----(02.00.01)--UPD-END-----
            MOVE    HCML02              TO  SPRT-PRTDATA
@@ -620,6 +653,12 @@ grpsys     INITIALIZE                  SPA-AREA
                WHEN    2
                    MOVE    "059000001"         TO  TNS-SRYCD
                    MOVE    "059999999"         TO  TNSUP-SRYCD
+      *----(04.01.01)--ADD-START---
+      *        器材商品
+               WHEN    3
+                   MOVE    "058000001"         TO  TNS-SRYCD
+                   MOVE    "058999999"         TO  TNSUP-SRYCD
+      *----(04.01.01)--ADD-END-----
            END-EVALUATE
       *----(02.00.01)--UPD-END-----
       *

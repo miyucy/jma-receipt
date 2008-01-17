@@ -55,6 +55,9 @@ Z91	{
 		HOKACHK	{
 			value	bool;
 		};
+		KZICHK	{
+			value	bool;
+		};
 		COMCHKALL	{
 			value	bool;
 		};

@@ -46,6 +46,7 @@
       *  02.00.06    NACL-森脇    06/03/20  プレビュー表示
       *  02.00.07    NACL-森脇    06/07/27  抽出データと出力順に自院採用を追加
       *  03.05.01    NACL-森脇    07/05/29  グループ診療対応
+      *  04.01.01    NACL-森脇    08/01/17  器材商品追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -111,6 +112,9 @@
       *----(02.00.01)--ADD-START---
                    07  SPA-GMN-HOKACHK     PIC X.
       *----(02.00.01)--ADD-END-----
+      *----(04.01.01)--ADD-START---
+                   07  SPA-GMN-KZICHK      PIC X.
+      *----(04.01.01)--ADD-END-----
                    07  SPA-GMN-JIHCHK      PIC X.
       *----(01.01.01)--ADD-START----
                    07  SPA-GMN-COMCHK-G.
@@ -471,6 +475,9 @@
       *----(02.00.01)--ADD-START---
            MOVE  "F"     TO  SPA-GMN-HOKACHK
       *----(02.00.01)--ADD-END-----
+      *----(04.01.01)--ADD-START---
+           MOVE  "F"     TO  SPA-GMN-KZICHK
+      *----(04.01.01)--ADD-END-----
            MOVE  "F"     TO  SPA-GMN-JIHCHK
       *
       *----(01.01.01)--ADD-START---
@@ -818,9 +825,15 @@
       *----(02.00.01)--ADD-START---
       *        その他材料チェック
                WHEN    "CLICKED"       ALSO    "HOKACHK" 
-                   MOVE  Z91-HOKACHK     TO  SPA-GMN-HOKACHK
+                   MOVE  Z91-HOKACHK    TO  SPA-GMN-HOKACHK
                    MOVE  15             TO  SPA-GMN-CUR
       *----(02.00.01)--ADD-END-----
+      *----(04.01.01)--ADD-START---
+      *        器材商品チェック
+               WHEN    "CLICKED"       ALSO    "KZICHK" 
+                   MOVE  Z91-KZICHK     TO  SPA-GMN-KZICHK
+                   MOVE  31             TO  SPA-GMN-CUR
+      *----(04.01.01)--ADD-END-----
       *        自費チェック
                WHEN    "CLICKED"       ALSO    "JIHCHK" 
                    MOVE  Z91-JIHCHK     TO  SPA-GMN-JIHCHK
@@ -1293,6 +1306,9 @@
                   (SPA-GMN-TOKCHK      =   "F")    AND
                   (SPA-GMN-JIHCHK      =   "F")    AND
                   (SPA-GMN-COMCHKALL   =   "F")    AND
+      *----(04.01.01)--ADD-START---
+                  (SPA-GMN-KZICHK      =   "F")    AND
+      *----(04.01.01)--ADD-END-----
                   (SPA-GMN-HOKACHK     =   "F")
                MOVE    "0004"          TO  SPA-ERRCD
                GO  TO  490-PRINT-MAE-EXT
@@ -1501,6 +1517,14 @@
                MOVE  ZERO                  TO  SHELL-HOKACHK
            END-IF
       *----(02.00.01)--ADD-END-----
+      *----(04.01.01)--ADD-START---
+      *    器材商品チェックセット
+           IF      SPA-GMN-KZICHK     =   "T"
+               MOVE  1                     TO  SHELL-KZICHK
+           ELSE
+               MOVE  ZERO                  TO  SHELL-KZICHK
+           END-IF
+      *----(04.01.01)--ADD-END-----
       *
       *    自費チェックセット
            IF      SPA-GMN-JIHCHK      =   "T"
@@ -1592,6 +1616,14 @@
                    MOVE    "ORHCML02"        TO  WRK-PGID
                    PERFORM 4901-PRINT-SYORI-SEC
                END-IF
+      *
+      *----(04.01.01)--ADD-START---
+               IF      SHELL-KZICHK        =   1
+                   MOVE    3                 TO  SHELL-KBN
+                   MOVE    "ORHCML02"        TO  WRK-PGID
+                   PERFORM 4901-PRINT-SYORI-SEC
+               END-IF
+      *----(04.01.01)--ADD-END-----
       *----(02.00.01)--UPD-END-----
       *
                IF      SHELL-JIHCHK        =   1    
@@ -1644,6 +1676,14 @@
                    MOVE    "ORHCML07"        TO  WRK-PGID
                    PERFORM 4901-PRINT-SYORI-SEC
                END-IF
+      *
+      *----(04.01.01)--ADD-START---
+               IF      SHELL-KZICHK        =   1
+                   MOVE    3                 TO  SHELL-KBN
+                   MOVE    "ORHCML07"        TO  WRK-PGID
+                   PERFORM 4901-PRINT-SYORI-SEC
+               END-IF
+      *----(04.01.01)--ADD-END-----
       *----(02.00.01)--UPD-END-----
       *
                IF      SHELL-JIHCHK        =   1    
@@ -2078,6 +2118,9 @@
       *----(02.00.01)--ADD-START---
            MOVE  SPA-GMN-HOKACHK    TO  Z91-HOKACHK
       *----(02.00.01)--ADD-END-----
+      *----(04.01.01)--ADD-START---
+           MOVE  SPA-GMN-KZICHK     TO  Z91-KZICHK
+      *----(04.01.01)--ADD-END-----
            MOVE  SPA-GMN-SRY(1)     TO  Z91-SRY(1)
            MOVE  SPA-GMN-SRY(2)     TO  Z91-SRY(2)
            MOVE  SPA-GMN-KEI(1)     TO  Z91-KEI(1)
@@ -2231,6 +2274,10 @@
                WHEN    30
                    MOVE    "SYU4"              TO  MCP-WIDGET
       *----(01.01.01)--UPD-END-----
+      *----(04.01.01)--ADD-START---
+               WHEN    31
+                   MOVE    "KZICHK"            TO  MCP-WIDGET
+      *----(04.01.01)--ADD-END-----
                WHEN    99
                    MOVE    "B12"               TO  MCP-WIDGET
            END-EVALUATE
