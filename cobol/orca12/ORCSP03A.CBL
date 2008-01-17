@@ -1393,10 +1393,7 @@
                        MOVE    ZERO            TO  SPA-KIGO-KEIFLG
                    END-IF
                    IF      SPA-KIGO-KEIFLG     =   ZERO
-                       MOVE    SPA-GMN-KIGO        TO  WRK-MAE-INPUT
-                       MOVE    40                  TO  WRK-MAX
-                       PERFORM 891-KUHAKU-CHK-SEC
-                       IF      FLG-ERR             =   1
+                       IF      KANACHK-RC3     NOT =   ZERO
                            MOVE    "K048"              TO  SPA-ERRCD
                            MOVE    13                  TO  SPA-GMN-CUR
                        END-IF
@@ -1432,10 +1429,7 @@
                        MOVE    ZERO            TO  SPA-NUM-KEIFLG
                    END-IF
                    IF      SPA-NUM-KEIFLG      =   ZERO
-                       MOVE    SPA-GMN-NUM         TO  WRK-MAE-INPUT
-                       MOVE    40                  TO  WRK-MAX
-                       PERFORM 891-KUHAKU-CHK-SEC
-                       IF      FLG-ERR             =   1
+                       IF      KANACHK-RC3     NOT =   ZERO
                            MOVE    "K049"              TO  SPA-ERRCD
                            MOVE    14                  TO  SPA-GMN-CUR
                        END-IF

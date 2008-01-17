@@ -95,6 +95,9 @@
       *
            03  WRK-MAX-CNT             PIC 9(04).
       *
+           03  WRK-IDX1                PIC 9(04).
+           03  WRK-IDX2                PIC 9(04).
+      *
       *    変換テーブル
        01  TBL-HENKAN-AREA.
            03  FILLER              PIC X(01)   VALUE   "0".
@@ -464,18 +467,26 @@
       *
            MOVE    ZERO                TO  FLG-ZENKAKU1
            MOVE    ZERO                TO  FLG-ZENKAKU2
+           MOVE    ZERO                TO  WRK-IDX1
+           MOVE    ZERO                TO  WRK-IDX2
            PERFORM VARYING     IDX     FROM    1   BY  2
                    UNTIL       IDX     >   KANACHK-MAX
                IF      KANACHK-OUT-INPUT(IDX:2)    =   "　"
                    MOVE    1               TO  FLG-ZENKAKU2
+                   MOVE    IDX             TO  WRK-IDX2
                ELSE
                    MOVE    1               TO  FLG-ZENKAKU1
+                   MOVE    IDX             TO  WRK-IDX1
                END-IF
            END-PERFORM
            IF      FLG-ZENKAKU2        =   1
                IF      FLG-ZENKAKU1        =   1
       *            全角空白あり
                    MOVE    1               TO  KANACHK-RC3
+      *            最後が全角空白
+                   IF      WRK-IDX1        <   WRK-IDX2
+                       MOVE    3               TO  KANACHK-RC3
+                   END-IF
                ELSE
       *            全角空白のみ
                    MOVE    2               TO  KANACHK-RC3
