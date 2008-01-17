@@ -5020,6 +5020,7 @@
                        END-IF
                      ELSE
                        IF   COMB-HKNNUM       =  "060" OR  "067"
+                                             OR  "068" OR  "069"
                           MOVE    "4"   TO   RECE200-NYUINRYOFLG
                        ELSE
                           MOVE    "5"   TO   RECE200-NYUINRYOFLG
@@ -5662,7 +5663,9 @@
                CONTINUE
            ELSE
       *        施設基準情報
-               MOVE    ZERO         TO  FLG-SET
+               MOVE  ZERO          TO  FLG-SET
+               MOVE  RECE200-SRYYM TO  WRK-SYS-SRYYMD(1:6)
+               MOVE  "01"          TO  WRK-SYS-SRYYMD(7:2)
                PERFORM  VARYING  SYSKAN-IDX2  FROM  1   BY  1
                          UNTIL ( SYSKAN-IDX2               >  100  )
                           OR   ( TBL-SYS10062(SYSKAN-IDX2) = SPACE )
