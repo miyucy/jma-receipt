@@ -100,6 +100,11 @@
                  11  SPA-GMN-I01-SHONUM            PIC  9(3).
       *          賡莢ェ情ゥ
                  11  SPA-GMN-I01-LBL-SHONYUINYMD   PIC X(16).
+      *          莞賃唱が
+                 11  SPA-GMN-I01-KAIGO.
+                   13  SPA-GMN-I01-KAIGO-CD        PIC X(01).
+                   13  SPA-GMN-I01-KAIGOFL         PIC X(01).
+                   13  SPA-GMN-I01-KAIGO-NM        PIC X(18).
       *          轉情ゥ
                  11  SPA-GMN-I01-TAIINYMD          PIC X(10).
                  11  SPA-GMN-I01-TAIINCD.
@@ -329,6 +334,13 @@
                        15  SPA-GMN-I01-SHOKAIL     PIC X(01).
                        15  SPA-GMN-I01-SHOKAIFLL   PIC X(01).
                        15  SPA-GMN-I01-SHOKAIMEIL  PIC X(06).
+      *          莞賃唱が戊件示
+                 11  SPA-GMN-I01-CMB-KAIGO.
+                   13  SPA-GMN-I01-KAIGO-CNT       PIC 9(5).
+                   13  SPA-GMN-I01-KAIGO-ITM       OCCURS  5.
+                       15  SPA-GMN-I01-KAIGOL      PIC X(01).
+                       15  SPA-GMN-I01-KAIGOFLL    PIC X(01).
+                       15  SPA-GMN-I01-KAIGOMEIL   PIC X(18).
       *          轉情儀苀戊件示
                  11  SPA-GMN-I01-CMB-TAIINCD.
                    13  SPA-GMN-I01-TAIINCD-CNT      PIC 9(5).

@@ -93,6 +93,13 @@
               04  I01-SHONUM                       PIC S9(2).
               04  I01-SHONUM-STT                   PIC S9(9)   BINARY.
               04  I01-LBL-SHONYUINYMD              PIC X(16).
+              04  I01-CMB-KAIGO.
+                05  I01-KAIGO                      PIC X(18).
+                05  I01-KAIGO-STT                  PIC S9(9)   BINARY.
+                05  I01-KAIGO-CNT                  PIC S9(9)   BINARY.
+                05  I01-KAIGO-ITM                  PIC X(18)
+                                                   OCCURS  5.
+                05  I01-KAIGO-ITM-STT              PIC S9(9)   BINARY.
               04  I01-TAIINYMD                     PIC X(10).
               04  I01-TAIINYMD-STT                 PIC S9(9)   BINARY.
               04  I01-CMB-TAIINCD.

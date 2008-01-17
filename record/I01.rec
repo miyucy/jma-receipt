@@ -126,6 +126,15 @@ I01	{
 		LBL_SHONYUINYMD	{
 			value	varchar(16);
 		};
+		CMB_KAIGO	{
+			KAIGO	{
+				value	varchar(18);
+				state	int;
+			};
+			count	int;
+			item	varchar(18)[05];
+			state	int;
+		};
 		TAIINYMD	{
 			value	varchar(10);
 			state	int;

@@ -130,6 +130,8 @@
       *                                     通算日数判定を変更
       *  04.01.00    NACL-太田    07/12/05  食事時間区分追加
       *  04.01.00    NACL-小豆沢  07/12/10  食事時間区分追加
+      *  04.01.00    NACL-小豆沢  08/01/17  介護施設からの急性増悪による
+      *                                     転入区分追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -1214,6 +1216,9 @@
       *    初回コンボ
            PERFORM 310-CMB-SHOKAI-SET-SEC
       *
+      *    介護異動コンボ
+           PERFORM 310-CMB-KAIGO-SET-SEC
+      *
       *    担当医コンボ
            PERFORM 310-CMB-DR-SET-SEC
       *
@@ -1683,6 +1688,24 @@
       *
            .
        310-CMB-SHOKAI-SET-EXT.
+           EXIT.
+      *****************************************************************
+      *    介護異動コンボ初期処理
+      *****************************************************************
+       310-CMB-KAIGO-SET-SEC          SECTION.
+      *
+           INITIALIZE                  SPA-GMN-I01-CMB-KAIGO
+      *
+           MOVE    2                   TO  SPA-GMN-I01-KAIGO-CNT
+      *
+           MOVE    "1"                 TO  SPA-GMN-I01-KAIGOL (01)
+           MOVE    "対象外"            TO  SPA-GMN-I01-KAIGOMEIL (01)
+      *
+           MOVE    "2"                 TO  SPA-GMN-I01-KAIGOL (02)
+           MOVE    "急性増悪により"    TO  SPA-GMN-I01-KAIGOMEIL (02)
+      *
+           .
+       310-CMB-KAIGO-SET-EXT.
            EXIT.
       *****************************************************************
       *    担当医コンボ初期処理
@@ -2279,6 +2302,8 @@
            MOVE    I01-SHONUM          TO  SPA-GMN-I01-SHONUM
       *    初回入院日
            MOVE    I01-LBL-SHONYUINYMD TO  SPA-GMN-I01-LBL-SHONYUINYMD
+      *    介護異動
+           MOVE    I01-KAIGO           TO  SPA-GMN-I01-KAIGO
       *    退院日
            MOVE    I01-TAIINYMD        TO  SPA-GMN-I01-TAIINYMD
       *    退院事由
@@ -2425,6 +2450,12 @@
       *
       *    初回番号チェック処理
            PERFORM 4101-SHONUM-CHK-SEC
+           IF    ( SPA-ERRCD   NOT =   SPACE )
+               GO  TO  4102-KIHON-CHK-EXT
+           END-IF
+      *
+      *    介護異動チェック処理
+           PERFORM 4101-KAIGO-CHK-SEC
            IF    ( SPA-ERRCD   NOT =   SPACE )
                GO  TO  4102-KIHON-CHK-EXT
            END-IF
@@ -2784,6 +2815,12 @@
       *    初回入院日
            PERFORM 4101-SHONYUINYMD-EDIT-SEC
       *
+      *    介護異動区分
+           MOVE  PTNYUINRRK-KAIGOKBN
+                                   TO  WRK-CMB-CD
+           PERFORM 4103-CMB-KAIGO-CHK-SEC
+           MOVE    WRK-CMB-ITM     TO  SPA-GMN-I01-KAIGO
+      *
       *    担当医１
            MOVE    PTNYUINRRK-DRCD1 (2 : 4)
                                    TO  WRK-CMB-CD
@@ -2919,6 +2956,12 @@
                                    TO  SPA-GMN-I01-SHONUM
       *    初回入院日
            PERFORM 4101-SHONYUINYMD-EDIT-SEC
+      *
+      *    介護異動区分
+           MOVE  PTNYUINRRK-KAIGOKBN
+                                   TO  WRK-CMB-CD
+           PERFORM 4103-CMB-KAIGO-CHK-SEC
+           MOVE    WRK-CMB-ITM     TO  SPA-GMN-I01-KAIGO
       *
        .
       *
@@ -5290,6 +5333,30 @@
        4101-SHONUM-CHK-EXT.
            EXIT.
       *****************************************************************
+      *    介護異動チェック処理
+      *****************************************************************
+       4101-KAIGO-CHK-SEC             SECTION.
+      *
+           IF    ( SPA-GMN-I01-KAIGO  =   SPACE )
+               GO  TO  4101-SHOKAI-CHK-EXT
+           END-IF
+      *
+           MOVE    SPA-GMN-I01-KAIGO-CD
+                                       TO  WRK-CMB-CD
+           PERFORM 4103-CMB-KAIGO-CHK-SEC
+           IF    ( WRK-CMB-ITM     NOT =   SPACE )
+               MOVE    WRK-CMB-ITM TO  SPA-GMN-I01-KAIGO
+           ELSE
+               MOVE    "0029"      TO  SPA-ERRCD
+               MOVE    26          TO  SPA-GMN-I01-CUR
+               GO  TO  4101-KAIGO-CHK-EXT
+           END-IF
+      *
+           .
+      *
+       4101-KAIGO-CHK-EXT.
+           EXIT.
+      *****************************************************************
       *    担当医チェック処理
       *****************************************************************
        4101-DR-CHK-SEC                 SECTION.
@@ -5763,6 +5830,29 @@
        4103-CMB-SHOKAI-CHK-EXT.
            EXIT.
       *****************************************************************
+      *    介護異動コンボチェック処理
+      *****************************************************************
+       4103-CMB-KAIGO-CHK-SEC     SECTION.
+      *
+           INITIALIZE              WRK-CMB-G
+      *
+           PERFORM VARYING IDX-CMB FROM    1   BY  1
+                   UNTIL ( IDX-CMB >   SPA-GMN-I01-KAIGO-CNT )
+                    OR   ( WRK-CMB-ITM NOT =   SPACE )
+      *
+               IF    ( SPA-GMN-I01-KAIGOL (IDX-CMB)
+                                   =   WRK-CMB-CD )
+                   MOVE    IDX-CMB TO  WRK-CMB-IDX
+                   MOVE    SPA-GMN-I01-KAIGO-ITM (IDX-CMB)
+                                   TO  WRK-CMB-ITM
+               END-IF
+           END-PERFORM
+      *
+           .
+      *
+       4103-CMB-KAIGO-CHK-EXT.
+           EXIT.
+      *****************************************************************
       *    担当医コンボチェック処理
       *****************************************************************
        4103-CMB-DR-CHK-SEC         SECTION.
@@ -6045,6 +6135,8 @@
       *
            MOVE    SPA-GMN-I01-SHOKAI-ITM (01)
                                        TO  SPA-GMN-I01-SHOKAI
+           MOVE    SPA-GMN-I01-KAIGO-ITM (01)
+                                       TO  SPA-GMN-I01-KAIGO
            MOVE    SPA-GMN-I01-SEIKYU-ITM (01)
                                    TO  SPA-GMN-I01-SEIKYU
            MOVE    SPA-GMN-I01-DISPKBN-ITM (1)
@@ -7275,6 +7367,13 @@
                END-IF
            END-IF
       *
+      *    介護異動
+           IF    ( SPA-GMN-I01-KAIGO      =   SPACE )
+               MOVE    "1046"      TO  SPA-ERRCD
+               MOVE    26          TO  SPA-GMN-I01-CUR
+               GO  TO  4801-KANREN-CHK-EXT
+           END-IF
+      *
       *    担当医
       ***  IF    ( SPA-GMN-I01-DR (1)         =   SPACE )
       *     AND  ( SPA-GMN-I01-DR (2)         =   SPACE )
@@ -8150,6 +8249,9 @@
       *    初回番号
            MOVE    WRK-SHONUM
                                    TO  PTNYUINRRK-SHONUM
+      *    介護異動区分
+           MOVE    SPA-GMN-I01-KAIGO-CD
+                                   TO  PTNYUINRRK-KAIGOKBN
       *
       *    担当医１
            IF    ( SPA-GMN-I01-DR-CD (1)   NOT =   SPACE )
@@ -9146,6 +9248,12 @@
            END-IF
       *
            MOVE    WRK-TSUSAN      TO  SYOKIKSN-IN-TUSANNISSU
+      *
+      *    介護病棟からの急性増悪による入院時
+           IF      PTNYUINRRK-KAIGOKBN    =    "2"
+               MOVE    ZERO        TO  SYOKIKSN-IN-TUSANNISSU
+           END-IF
+      *
            MOVE    WRK-SANTEISTYMD
                                    TO  SYOKIKSN-IN-SANTEISTYMD
       *
@@ -16365,6 +16473,15 @@
            MOVE    SPA-GMN-I01-LBL-SHONYUINYMD
                                            TO  I01-LBL-SHONYUINYMD
       *
+      *    介護異動
+           MOVE    SPA-GMN-I01-KAIGO       TO  I01-KAIGO
+           MOVE    SPA-GMN-I01-KAIGO-CNT   TO  I01-KAIGO-CNT
+           PERFORM VARYING IDX1    FROM    1   BY  1
+               UNTIL     ( IDX1    >   SPA-GMN-I01-KAIGO-CNT )
+               MOVE    SPA-GMN-I01-KAIGO-ITM (IDX1)
+                                           TO  I01-KAIGO-ITM (IDX1)
+           END-PERFORM
+      *
       *    退院日
            MOVE    SPA-GMN-I01-TAIINYMD    TO  I01-TAIINYMD
       *
@@ -16534,6 +16651,7 @@
                                        I01-TAIINCD-STT
                                        I01-TAIINCD-ITM-STT
                                        I01-SHONUM-STT
+                                       I01-KAIGO-STT
       *    退院登録
            WHEN    "02"
            WHEN    "11"
@@ -16559,6 +16677,7 @@
                                        I01-SHOKAI-STT
                                        I01-SHOKAI-ITM-STT
                                        I01-SHONUM-STT
+                                       I01-KAIGO-STT
                                        I01-DR-STT (1)
                                        I01-DR-ITM-STT (1)
                                        I01-DR-STT (2)
@@ -16600,6 +16719,7 @@
                                        I01-SHOKAI-STT
                                        I01-SHOKAI-ITM-STT
                                        I01-SHONUM-STT
+                                       I01-KAIGO-STT
                                        I01-TAIINYMD-STT
                                        I01-TAIINCD-STT
                                        I01-TAIINCD-ITM-STT
@@ -16625,6 +16745,7 @@
                                        I01-SHOKAI-STT
                                        I01-SHOKAI-ITM-STT
                                        I01-SHONUM-STT
+                                       I01-KAIGO-STT
                                        I01-TAIINYMD-STT
                                        I01-TAIINCD-STT
                                        I01-TAIINCD-ITM-STT
@@ -16655,6 +16776,7 @@
            IF    ( SPA-GMN-I01-SYORIKBN-CD =   "01" )
             AND  ( SPA-GMN-I01-SHOKAI-CD   =   "2" )
                MOVE    WIDGET-NORMAL   TO  I01-SHONUM-STT
+               MOVE    WIDGET-NORMAL   TO  I01-KAIGO-STT
            END-IF
       *
       *    入院オーダー遷移
@@ -16708,6 +16830,7 @@
                                            I01-SHOKAI-STT
                                            I01-SHOKAI-ITM-STT
                                            I01-SHONUM-STT
+                                           I01-KAIGO-STT
                                            I01-TAIINYMD-STT
                                            I01-TAIINCD-STT
                                            I01-TAIINCD-ITM-STT
@@ -16771,6 +16894,8 @@
                MOVE    "SHOKAI"        TO  MCP-WIDGET
            WHEN    10
                MOVE    "SHONUM"        TO  MCP-WIDGET
+           WHEN    26
+               MOVE    "KAIGO"         TO  MCP-WIDGET
            WHEN    11
                MOVE    "TAIINYMD"      TO  MCP-WIDGET
            WHEN    20
@@ -16824,6 +16949,8 @@
            WHEN    "SHOKAI"
                MOVE    010             TO  SPA-GMN-I01-CUR
            WHEN    "SHONUM"
+               MOVE    026             TO  SPA-GMN-I01-CUR
+           WHEN    "KAIGO"
                MOVE    011             TO  SPA-GMN-I01-CUR
            WHEN    "TAIINYMD"
                MOVE    020             TO  SPA-GMN-I01-CUR
@@ -17087,6 +17214,9 @@
            WHEN    "0028"
                MOVE    "退院事由入力エラー" 
                                        TO  SPA-ERRMSG
+           WHEN    "0029"
+               MOVE    "介護異動入力エラー" 
+                                       TO  SPA-ERRMSG
            WHEN    "1001"
                MOVE    "患者番号を入力してください"
                                        TO  SPA-ERRMSG
@@ -17255,6 +17385,9 @@
                                            DELIMITED   BY  SIZE
                INTO    SPA-ERRMSG
                END-STRING
+           WHEN    "1046"
+               MOVE    "介護異動を入力して下さい"
+                                       TO  SPA-ERRMSG
            WHEN    "2012"
                MOVE    "退院計算に必要な会計情報が作成されていません"
                                        TO  SPA-ERRMSG
