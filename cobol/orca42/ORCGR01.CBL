@@ -225,6 +225,7 @@
                    07  WRK-GMN-TIHO    PIC X(04).
                    07  WRK-GMN-TRSI    PIC X(04).
                    07  WRK-GMN-TJBI    PIC X(04).
+                   07  WRK-GMN-TKGI    PIC X(04).
       * 
            03  WRK-NAI-TBL.
                05  WRK-NAI-TBL-G           OCCURS   500.
