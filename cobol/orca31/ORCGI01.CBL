@@ -12034,7 +12034,13 @@
                GO  TO  4801-TENROOM-EDIT-EXT
            END-IF
       *
+      *    介護病棟からの急性増悪による入院時
+           IF      PTNYUINRRK-KAIGOKBN    =    "2"
+               COMPUTE    WRK-TSUSAN   =   STUSAN-NISSU01  -  1
+           END-IF
+      *
            MOVE    WRK-TSUSAN      TO  SYOKIKSN-IN-TUSANNISSU
+      *
            MOVE    WRK-SANTEISTYMD
                                    TO  SYOKIKSN-IN-SANTEISTYMD
       *
