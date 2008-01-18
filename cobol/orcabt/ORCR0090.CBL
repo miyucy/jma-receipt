@@ -177,6 +177,8 @@
       *  03.05.03    NACL-門脇    07/09/13  皮下筋肉、静脈注射の記載変更対応
       *
       *  04.01.01    NACL-門脇    07/11/26  特定器材商品名記載対応
+      *  04.01.02    NACL-藤原    08/01/10  レセプト特記事項編集情報
+      *                                     適用欄コメント対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -3236,6 +3238,18 @@ grpsys         OR     ( RECE04-HOSPNUM   NOT =   RECE05-HOSPNUM      )
                    MOVE    SYS-2006-RECEDEN-JKYSNUM
                                        TO
                                    RECE02-2006-RECEDEN-JKYSNUM     (IDY)
+                   MOVE    SYS-2006-TEKIYOU-COMMENT1
+                                       TO
+                                   RECE02-2006-TEKIYOU-COMMENT1    (IDY)
+                   MOVE    SYS-2006-TEKIYOU-COMMENT2
+                                       TO
+                                   RECE02-2006-TEKIYOU-COMMENT2    (IDY)
+                   MOVE    SYS-2006-TEKIYOU-COMMENT1KBN
+                                       TO
+                                   RECE02-2006-TEKIYOU-COMMENT1KBN (IDY)
+                   MOVE    SYS-2006-TEKIYOU-COMMENT2KBN
+                                       TO
+                                   RECE02-2006-TEKIYOU-COMMENT2KBN (IDY)
                END-IF
            END-PERFORM        
       *

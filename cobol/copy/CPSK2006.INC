@@ -65,8 +65,20 @@
       *レセ電：公費レコード区分
            03  SYS-2006-RECEDEN-KORECKBN
                                         PIC  X(01).
+      *適用欄上段コメント
+           03  SYS-2006-TEKIYOU-COMMENT1
+                                        PIC  X(52).
+      *適用欄上段コメントレセ電編集区分
+           03  SYS-2006-TEKIYOU-COMMENT1KBN
+                                        PIC  X(01).
+      *適用欄下段コメント
+           03  SYS-2006-TEKIYOU-COMMENT2
+                                        PIC  X(52).
+      *適用欄下段コメントレセ電編集区分
+           03  SYS-2006-TEKIYOU-COMMENT2KBN
+                                        PIC  X(01).
       *予備
-           03  FILLER                   PIC  X(155).
+           03  FILLER                   PIC  X(49).
       *負担者番号編集区分
            03  SYS-2006-FTNJANUMKBN     PIC  X(02).
       *負担者番号編集内容

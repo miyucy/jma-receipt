@@ -97,6 +97,26 @@ W61	{
 		JKYSNUM	{
 			value	varchar(7);
 		};
+		TEKIYOU_COMMENT1	{
+			value	varchar(52);
+		};
+		TEKIYOU_COMMENT1KBN_COMBO	{
+			TEKIYOU_COMMENT1KBN	{
+				value	varchar(20);
+			};
+			count	int;
+			item	varchar(20)[5];
+		};
+		TEKIYOU_COMMENT2	{
+			value	varchar(52);
+		};
+		TEKIYOU_COMMENT2KBN_COMBO	{
+			TEKIYOU_COMMENT2KBN	{
+				value	varchar(20);
+			};
+			count	int;
+			item	varchar(20)[5];
+		};
 		RECEDEN_TOKKI	{
 			value	varchar(2);
 		};

@@ -170,6 +170,8 @@
       *                                     請求点記載対応
       *  04.01.02    NACL-藤原    07/12/08  長崎県対応
       *                                     生保と被爆８６の記載順 
+      *  04.01.03    NACL-藤原    08/01/10  レセプト特記事項編集情報
+      *                                     適用欄コメント対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -2105,11 +2107,14 @@ grpsys             OR    ( RECE02-HOSPNUM   NOT =   RECE09-HOSPNUM   )
       *    帳票編集<点数>処理
            PERFORM 330-HC101-TENSU-HEN-SEC
       *
-      *    帳票編集<補足>処理
+      *    帳票編集<適用欄下段コメント>処理
            PERFORM 350-HC101-HOSOKU-HEN-SEC
       *
       *    帳票編集<傷病名>処理
            PERFORM 320-HC101-BYOMEI-HEN-SEC
+      *
+      *    帳票編集<適用欄上段コメント>処理
+           PERFORM 380-HC101-TEKIYOU-COMMENT-HEN-SEC
       *
       *    帳票編集<入退院履歴>処理
            IF    ( SYS-2005-NYUTAIINREKI-KSIKBN
@@ -5644,9 +5649,28 @@ grpsys     PERFORM 900-DBSELECT-SEC
            EXIT.
       *
       *****************************************************************
-      *    帳票編集<補足>処理
+      *    帳票編集<適用欄下段コメント>処理
       *****************************************************************
        350-HC101-HOSOKU-HEN-SEC      SECTION.
+      *
+      *    適用欄下段コメント（レセプト特記事項編集情報）
+           IF    ( RECE02-2006-TEKIYOU-COMMENT2 (1)    =   SPACE )
+           AND   ( RECE02-2006-TEKIYOU-COMMENT2 (2)    =   SPACE )
+           AND   ( RECE02-2006-TEKIYOU-COMMENT2 (3)    =   SPACE )
+           AND   ( RECE02-2006-TEKIYOU-COMMENT2 (4)    =   SPACE )
+               CONTINUE
+           ELSE
+               STRING  RECE02-2006-TEKIYOU-COMMENT2 (1)
+                                           DELIMITED   BY  SPACE
+                       RECE02-2006-TEKIYOU-COMMENT2 (2)
+                                           DELIMITED   BY  SPACE
+                       RECE02-2006-TEKIYOU-COMMENT2 (3)
+                                           DELIMITED   BY  SPACE
+                       RECE02-2006-TEKIYOU-COMMENT2 (4)
+                                           DELIMITED   BY  SPACE
+                                           INTO    HC06-BODY
+               END-STRING        
+           END-IF
       *
       *    県単用項目
            IF      FLG-RECE11           =   ZERO
@@ -5934,6 +5958,67 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *
            .
        370-HC101-HKN-RIREKI-HEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    帳票編集<適用欄上段コメント>処理
+      *****************************************************************
+       380-HC101-TEKIYOU-COMMENT-HEN-SEC      SECTION.
+      *
+      *    適用欄上段コメント（レセプト特記事項編集情報）
+           IF    ( RECE02-2006-TEKIYOU-COMMENT1 (1)    =   SPACE )
+           AND   ( RECE02-2006-TEKIYOU-COMMENT1 (2)    =   SPACE )
+           AND   ( RECE02-2006-TEKIYOU-COMMENT1 (3)    =   SPACE )
+           AND   ( RECE02-2006-TEKIYOU-COMMENT1 (4)    =   SPACE )
+               CONTINUE
+           ELSE
+      *        摘要欄に病名が記載されている場合１行あける
+               IF  WRK-LINETEK             >   ZERO
+                   IF      WRK-LINETEK         >=   WRK-TEKIYOU-LINE
+                       PERFORM 34120-PAGE-SEC
+                   ELSE
+                       ADD     1               TO  WRK-LINETEK
+                   END-IF
+               END-IF
+      *
+               PERFORM VARYING IDY     FROM    1   BY  1
+                       UNTIL   IDY     >       4
+                   IF      RECE02-2006-TEKIYOU-COMMENT1 (IDY)
+                                           NOT =   SPACE
+                       IF  WRK-LINETEK         >=  WRK-TEKIYOU-LINE
+                           PERFORM 34120-PAGE-SEC
+                       END-IF    
+                       ADD     1                   TO  WRK-LINETEK
+      *
+                       IF      CNT-PAGE        =   1   
+                           MOVE    RECE02-2006-TEKIYOU-COMMENT1 (IDY)
+                                           TO  HC06-TEKIYO (WRK-LINETEK)
+                       ELSE                    
+                           EVALUATE    SYS-2005-NEXTPRTKBN-G
+                               WHEN    "0"   
+                                   MOVE    RECE02-2006-TEKIYOU-COMMENT1
+                                                                   (IDY)
+                                       TO  HC06-TEKIYO (WRK-LINETEK)
+                               WHEN    "1"   
+                                   MOVE    RECE02-2006-TEKIYOU-COMMENT1
+                                                                   (IDY)
+                                           TO  HC061-TEKIYO(WRK-LINETEK)
+                               WHEN    "2"   
+                                   MOVE    RECE02-2006-TEKIYOU-COMMENT1
+                                                                   (IDY)
+                                           TO  HC062-TEKIYO(WRK-LINETEK)
+                               WHEN    "3"   
+                                   MOVE    RECE02-2006-TEKIYOU-COMMENT1
+                                                                   (IDY)
+                                           TO  HC063-TEKIYO(WRK-LINETEK)
+                           END-EVALUATE
+                       END-IF                    
+                   END-IF
+               END-PERFORM
+           END-IF
+      *
+           .
+       380-HC101-TEKIYOU-COMMENT-HEN-EXT.
            EXIT.
       *
       *****************************************************************

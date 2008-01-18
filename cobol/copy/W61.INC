@@ -72,6 +72,20 @@
                         PIC X(25)   OCCURS  5 TIMES.
               03  W61-JKYSNUM.
                 04  W61-VALUE   PIC X(7).
+              03  W61-TEKIYOU-COMMENT1.
+                04  W61-VALUE   PIC X(52).
+              03  W61-TEKIYOU-COMMENT1KBN-COMBO.
+                04  W61-TEKIYOU-COMMENT1KBN         PIC X(20).
+                04  W61-TEKIYOU-COMMENT1KBN-COUNT   PIC S9(9)   BINARY.
+                04  W61-TEKIYOU-COMMENT1KBN-ITEM
+                        PIC X(20)   OCCURS  5 TIMES.
+              03  W61-TEKIYOU-COMMENT2.
+                04  W61-VALUE   PIC X(52).
+              03  W61-TEKIYOU-COMMENT2KBN-COMBO.
+                04  W61-TEKIYOU-COMMENT2KBN         PIC X(20).
+                04  W61-TEKIYOU-COMMENT2KBN-COUNT   PIC S9(9)   BINARY.
+                04  W61-TEKIYOU-COMMENT2KBN-ITEM
+                        PIC X(20)   OCCURS  5 TIMES.
               03  W61-RECEDEN-TOKKI.
                 04  W61-VALUE   PIC X(2).
               03  W61-RECEDEN-KYURATE.

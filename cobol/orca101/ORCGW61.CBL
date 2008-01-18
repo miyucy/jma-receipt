@@ -38,6 +38,8 @@
       *
       *  03.01.01    NACL-藤原    06/08/23  DBCLOSECURSOR追加
       *  03.05.00    NACL-多々納  07/05/02  グループ診療対応
+      *
+      *  04.01.01    NACL-藤原    08/01/10  適用欄コメント対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -115,6 +117,16 @@
                    07  SPA-GMN-RECEDEN-KORECKBN-MAX
                                                    PIC 9(01).
       *
+                   07  SPA-GMN-TEKIYOU-COMMENT1KBNLST
+                                                   OCCURS  5.
+                       09  SPA-GMN-TEKIYOU-COMMENT1KBNL
+                                                   PIC X(01).
+                       09  SPA-GMN-F1L             PIC X(01).
+                       09  SPA-GMN-TEKIYOU-COMMENT1KBNMEIL
+                                                   PIC X(18).
+                   07  SPA-GMN-TEKIYOU-COMMENT1KBN-MAX
+                                                   PIC 9(01).
+      *
                    07  SPA-GMN-TBL.
                        09  SPA-GMN-TBL-OCC         OCCURS  100.
                            11  SPA-GMN-TRENNUM     PIC 9(03).
@@ -190,6 +202,18 @@
                                13  SPA-GMN-F1      PIC X(01).
                                13  SPA-GMN-RECEDEN-JKYSNUMKBNMEI
                                                    PIC X(22).
+                           11  SPA-GMN-TEKIYOU-COMMENT1KBN-G.
+                               13  SPA-GMN-TEKIYOU-COMMENT1KBN
+                                                   PIC X(01).
+                               13  SPA-GMN-F1      PIC X(01).
+                               13  SPA-GMN-TEKIYOU-COMMENT1KBNMEI
+                                                   PIC X(18).
+                           11  SPA-GMN-TEKIYOU-COMMENT2KBN-G.
+                               13  SPA-GMN-TEKIYOU-COMMENT2KBN
+                                                   PIC X(01).
+                               13  SPA-GMN-F1      PIC X(01).
+                               13  SPA-GMN-TEKIYOU-COMMENT2KBNMEI
+                                                   PIC X(18).
                            11  SPA-GMN-FTNJANUM-JYOKEN
                                                    PIC X(08).
                            11  SPA-GMN-HKNJANUM    PIC X(08).
@@ -206,6 +230,10 @@
                                                    PIC X(08).
                            11  SPA-GMN-RECEDEN-JKYSNUM
                                                    PIC X(07).
+                           11  SPA-GMN-TEKIYOU-COMMENT1
+                                                   PIC X(52).
+                           11  SPA-GMN-TEKIYOU-COMMENT2
+                                                   PIC X(52).
       *  
                05  SPA-NAIB-AREA.
                    07  SPA-NAI-KOUMOKU.
@@ -276,7 +304,6 @@
            03  WRK-MCP-TABLE           PIC X(64).
            03  WRK-MCP-PATHNAME        PIC X(64).
       *
-      *??     COPY    "ORCA-DBPATH".
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -312,7 +339,6 @@
       *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
-      *??  COPY    "CPORCMCP.INC".
       *
       *    全角チェックパラメタ
            COPY    "CPORCSKANACHK.INC".
@@ -540,6 +566,16 @@
            MOVE    "記録しない"    TO  SPA-GMN-RECEDEN-KORECKBNMEIL
                                                                  (1)
            MOVE    1               TO  SPA-GMN-RECEDEN-KORECKBN-MAX
+      *
+           MOVE    "1"             TO  SPA-GMN-TEKIYOU-COMMENT1KBNL(1)
+           MOVE    "レセ電に記録しない"
+                                   TO  SPA-GMN-TEKIYOU-COMMENT1KBNMEIL
+                                                                   (1)
+           MOVE    "2"             TO  SPA-GMN-TEKIYOU-COMMENT1KBNL(2)
+           MOVE    "レセ電に記録する"
+                                   TO  SPA-GMN-TEKIYOU-COMMENT1KBNMEIL
+                                                                   (2)
+           MOVE    2               TO  SPA-GMN-TEKIYOU-COMMENT1KBN-MAX
       *
       *    レセプト特記事項編集情報
            PERFORM 3101-SPA-HENSYU-SEC
@@ -809,6 +845,14 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            MOVE    W61-JKYSNUMKBN      TO  SPA-GMN-JKYSNUMKBN-G
            MOVE    W61-FTNJANUM        TO  SPA-GMN-FTNJANUM
            MOVE    W61-JKYSNUM         TO  SPA-GMN-JKYSNUM
+           MOVE    W61-TEKIYOU-COMMENT1
+                                       TO  SPA-GMN-TEKIYOU-COMMENT1
+           MOVE    W61-TEKIYOU-COMMENT1KBN
+                                       TO  SPA-GMN-TEKIYOU-COMMENT1KBN-G
+           MOVE    W61-TEKIYOU-COMMENT2
+                                       TO  SPA-GMN-TEKIYOU-COMMENT2
+           MOVE    W61-TEKIYOU-COMMENT2KBN
+                                       TO  SPA-GMN-TEKIYOU-COMMENT2KBN-G
            MOVE    W61-RECEDEN-KORECKBN
                                        TO  SPA-GMN-RECEDEN-KORECKBN-G
            MOVE    W61-RECEDEN-KYURATE TO  SPA-GMN-RECEDEN-KYURATE
@@ -907,6 +951,26 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            END-IF
       *    受給者番号
            PERFORM 41021-JKYSNUM-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      4102-KIHON-CHK-EXT
+           END-IF
+      *    適用欄上段コメント
+           PERFORM 41021-TEKIYOU-COMMENT1-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      4102-KIHON-CHK-EXT
+           END-IF
+      *    適用欄上段コメントレセ電編集区分
+           PERFORM 41021-TEKIYOU-COMMENT1KBN-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      4102-KIHON-CHK-EXT
+           END-IF
+      *    適用欄下段コメント
+           PERFORM 41021-TEKIYOU-COMMENT2-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      4102-KIHON-CHK-EXT
+           END-IF
+      *    適用欄下段コメントレセ電編集区分
+           PERFORM 41021-TEKIYOU-COMMENT2KBN-CHK-SEC
            IF      SPA-ERRCD       NOT =   SPACE
                GO      TO      4102-KIHON-CHK-EXT
            END-IF
@@ -1113,6 +1177,28 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
       *
                MOVE    SYS-2006-RECEDEN-JKYSNUM
                                            TO  SPA-GMN-RECEDEN-JKYSNUM
+      *
+               MOVE    SYS-2006-TEKIYOU-COMMENT1KBN
+                                           TO
+                                           SPA-GMN-TEKIYOU-COMMENT1KBN
+                                           WRK-KBN
+               PERFORM 5001-JKYSNUMKBN-HENSYU-SEC
+               MOVE    WRK-KBNMEI          TO
+                                       SPA-GMN-TEKIYOU-COMMENT1KBNMEI
+      *
+               MOVE    SYS-2006-TEKIYOU-COMMENT1
+                                           TO  SPA-GMN-TEKIYOU-COMMENT1
+      *
+               MOVE    SYS-2006-TEKIYOU-COMMENT2KBN
+                                           TO
+                                           SPA-GMN-TEKIYOU-COMMENT2KBN
+                                           WRK-KBN
+               PERFORM 5001-JKYSNUMKBN-HENSYU-SEC
+               MOVE    WRK-KBNMEI          TO
+                                       SPA-GMN-TEKIYOU-COMMENT2KBNMEI
+      *
+               MOVE    SYS-2006-TEKIYOU-COMMENT2
+                                           TO  SPA-GMN-TEKIYOU-COMMENT2
       *
                MOVE    2                   TO  SPA-GMN-CUR
            ELSE
@@ -1471,9 +1557,15 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
                MOVE    "1"                 TO  KANACHK-SYORI 
                MOVE    SPA-GMN-TOKKI       TO  KANACHK-MAE-INPUT
                CALL    "ORCSKANACHK"       USING   ORCSKANACHKAREA
-               IF    ( KANACHK-RC          =   ZERO )
-               AND   ( KANACHK-SYUBETU     =   "2"  )
+               MOVE    KANACHK-MAE-INPUT   TO  SPA-GMN-TOKKI
+               IF      KANACHK-RC2         =   7
                    MOVE    KANACHK-OUT-INPUT   TO  SPA-GMN-TOKKI
+               END-IF
+               IF    ( KANACHK-RC          =   ZERO )
+               AND   ( KANACHK-SYUBETU     =   2    )
+                   IF      KANACHK-RC3         =   2
+                       MOVE    "0032"              TO  SPA-ERRCD
+                   END-IF
                ELSE
                    MOVE    "0009"              TO  SPA-ERRCD
                END-IF
@@ -1557,7 +1649,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    負担者番号記載入力処理
+      *    負担者番号入力処理
       *****************************************************************
        41021-FTNJANUM-CHK-SEC      SECTION.
       *
@@ -1596,7 +1688,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            IF      SPA-ERRCD           =   SPACE
                IF    ( WRK-MCP-WIDGET      =   "JKYSNUMKBN"     )
                AND   ( SPA-GMN-JKYSNUMKBN  =   SPACE   OR  "01" )
-                   MOVE    100                 TO  SPA-GMN-CUR
+                   MOVE    17                  TO  SPA-GMN-CUR
                END-IF
            ELSE
                MOVE    13                  TO  SPA-GMN-CUR
@@ -1607,7 +1699,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    受給者番号記載入力処理
+      *    受給者番号入力処理
       *****************************************************************
        41021-JKYSNUM-CHK-SEC      SECTION.
       *
@@ -1619,6 +1711,167 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
        41021-JKYSNUM-CHK-EXT.
            EXIT.
       *
+      *****************************************************************
+      *    適用欄上段コメント入力処理
+      *****************************************************************
+       41021-TEKIYOU-COMMENT1-CHK-SEC      SECTION.
+      *
+           IF      SPA-GMN-TEKIYOU-COMMENT1    =   SPACE
+               MOVE    SPACE               TO
+                                           SPA-GMN-TEKIYOU-COMMENT1KBN-G
+           ELSE
+               INITIALIZE                      ORCSKANACHKAREA
+               MOVE    "1"                 TO  KANACHK-SYORI 
+               MOVE    SPA-GMN-TEKIYOU-COMMENT1
+                                           TO  KANACHK-MAE-INPUT
+               MOVE    52                  TO  KANACHK-MAX-CNT
+               CALL    "ORCSKANACHK"       USING   ORCSKANACHKAREA
+               MOVE    KANACHK-MAE-INPUT   TO  SPA-GMN-TEKIYOU-COMMENT1
+               IF      KANACHK-RC2         =   7
+                   MOVE    KANACHK-OUT-INPUT   TO
+                                               SPA-GMN-TEKIYOU-COMMENT1
+               END-IF
+               IF    ( KANACHK-RC          =   ZERO )
+               AND   ( KANACHK-SYUBETU     =   2    )
+                   IF      KANACHK-RC3         =   2
+                       MOVE    "0032"              TO  SPA-ERRCD
+                   END-IF
+               ELSE
+                   MOVE    "0026"              TO  SPA-ERRCD
+               END-IF
+               IF      SPA-ERRCD           =   SPACE
+                   IF      SPA-GMN-HKNNUM      =   SPACE
+                       MOVE    "0014"          TO  SPA-ERRCD
+                   END-IF
+               END-IF
+           END-IF 
+      *
+           IF      SPA-ERRCD           =   SPACE
+               IF    ( WRK-MCP-WIDGET      =   "TEKIYOU_COMMENT1" )
+               AND   ( SPA-GMN-TEKIYOU-COMMENT1
+                                           =   SPACE              )
+                   MOVE    19                  TO  SPA-GMN-CUR
+               END-IF
+           ELSE
+               MOVE    17                  TO  SPA-GMN-CUR
+           END-IF
+      *
+           .
+       41021-TEKIYOU-COMMENT1-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    適用欄上段コメントレセ電編集区分入力処理
+      *****************************************************************
+       41021-TEKIYOU-COMMENT1KBN-CHK-SEC      SECTION.
+      *
+           IF      SPA-GMN-TEKIYOU-COMMENT1KBN =   SPACE
+               MOVE    SPACE               TO
+                                           SPA-GMN-TEKIYOU-COMMENT1KBN-G
+           ELSE
+               MOVE    SPA-GMN-TEKIYOU-COMMENT1KBN
+                                           TO  WRK-KBN
+               PERFORM 5001-TEKIYOU-COMMENT1KBN-HENSYU-SEC
+               IF      WRK-KBNMEI          =   SPACE
+                   MOVE    "0027"              TO  SPA-ERRCD
+               ELSE
+                   MOVE    WRK-KBNMEI          TO
+                                       SPA-GMN-TEKIYOU-COMMENT1KBNMEI
+                   IF      SPA-GMN-TEKIYOU-COMMENT1
+                                               =   SPACE
+                       MOVE    "0030"              TO  SPA-ERRCD
+                   END-IF
+               END-IF
+           END-IF 
+      *
+           IF      SPA-ERRCD       NOT =   SPACE
+               MOVE    18                  TO  SPA-GMN-CUR
+           END-IF
+      *
+           .
+       41021-TEKIYOU-COMMENT1KBN-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    適用欄下段コメント入力処理
+      *****************************************************************
+       41021-TEKIYOU-COMMENT2-CHK-SEC      SECTION.
+      *
+           IF      SPA-GMN-TEKIYOU-COMMENT2    =   SPACE
+               MOVE    SPACE               TO
+                                           SPA-GMN-TEKIYOU-COMMENT2KBN-G
+           ELSE
+               INITIALIZE                      ORCSKANACHKAREA
+               MOVE    "1"                 TO  KANACHK-SYORI 
+               MOVE    SPA-GMN-TEKIYOU-COMMENT2
+                                           TO  KANACHK-MAE-INPUT
+               MOVE    52                  TO  KANACHK-MAX-CNT
+               CALL    "ORCSKANACHK"       USING   ORCSKANACHKAREA
+               MOVE    KANACHK-MAE-INPUT   TO  SPA-GMN-TEKIYOU-COMMENT2
+               IF      KANACHK-RC2         =   7
+                   MOVE    KANACHK-OUT-INPUT   TO
+                                               SPA-GMN-TEKIYOU-COMMENT2
+               END-IF
+               IF    ( KANACHK-RC          =   ZERO )
+               AND   ( KANACHK-SYUBETU     =   2    )
+                   IF      KANACHK-RC3         =   2
+                       MOVE    "0032"              TO  SPA-ERRCD
+                   END-IF
+               ELSE
+                   MOVE    "0028"              TO  SPA-ERRCD
+               END-IF
+               IF      SPA-ERRCD           =   SPACE
+                   IF      SPA-GMN-HKNNUM      =   SPACE
+                       MOVE    "0014"          TO  SPA-ERRCD
+                   END-IF
+               END-IF
+           END-IF 
+      *
+           IF      SPA-ERRCD           =   SPACE
+               IF    ( WRK-MCP-WIDGET      =   "TEKIYOU_COMMENT2" )
+               AND   ( SPA-GMN-TEKIYOU-COMMENT2
+                                           =   SPACE              )
+                   MOVE    100                 TO  SPA-GMN-CUR
+               END-IF
+           ELSE
+               MOVE    19                  TO  SPA-GMN-CUR
+           END-IF
+      *
+           .
+       41021-TEKIYOU-COMMENT2-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    適用欄下段コメントレセ電編集区分入力処理
+      *****************************************************************
+       41021-TEKIYOU-COMMENT2KBN-CHK-SEC      SECTION.
+      *
+           IF      SPA-GMN-TEKIYOU-COMMENT2KBN =   SPACE
+               MOVE    SPACE               TO
+                                           SPA-GMN-TEKIYOU-COMMENT2KBN-G
+           ELSE
+               MOVE    SPA-GMN-TEKIYOU-COMMENT2KBN
+                                           TO  WRK-KBN
+               PERFORM 5001-TEKIYOU-COMMENT1KBN-HENSYU-SEC
+               IF      WRK-KBNMEI          =   SPACE
+                   MOVE    "0029"              TO  SPA-ERRCD
+               ELSE
+                   MOVE    WRK-KBNMEI          TO
+                                       SPA-GMN-TEKIYOU-COMMENT2KBNMEI
+                   IF      SPA-GMN-TEKIYOU-COMMENT2
+                                               =   SPACE
+                       MOVE    "0031"              TO  SPA-ERRCD
+                   END-IF
+               END-IF
+           END-IF 
+      *
+           IF      SPA-ERRCD       NOT =   SPACE
+               MOVE    20                  TO  SPA-GMN-CUR
+           END-IF
+      *
+           .
+       41021-TEKIYOU-COMMENT2KBN-CHK-EXT.
+           EXIT.
       *
       *****************************************************************
       *    レセ電：特記事項入力処理
@@ -1856,6 +2109,10 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            AND   ( SPA-GMN-RECEDEN-FTNJANUMKBN
                                        =   SPACE )
            AND   ( SPA-GMN-RECEDEN-JKYSNUMKBN
+                                       =   SPACE )
+           AND   ( SPA-GMN-TEKIYOU-COMMENT1
+                                       =   SPACE )
+           AND   ( SPA-GMN-TEKIYOU-COMMENT2
                                        =   SPACE )
                MOVE    "0103"              TO  SPA-ERRCD
                MOVE    9                   TO  SPA-GMN-CUR
@@ -2204,6 +2461,16 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
                                            SYS-2006-RECEDEN-JKYSNUMKBN
                MOVE    SPA-GMN-RECEDEN-JKYSNUM
                                            TO  SYS-2006-RECEDEN-JKYSNUM
+               MOVE    SPA-GMN-TEKIYOU-COMMENT1
+                                           TO  SYS-2006-TEKIYOU-COMMENT1
+               MOVE    SPA-GMN-TEKIYOU-COMMENT1KBN
+                                           TO
+                                           SYS-2006-TEKIYOU-COMMENT1KBN
+               MOVE    SPA-GMN-TEKIYOU-COMMENT2
+                                           TO  SYS-2006-TEKIYOU-COMMENT2
+               MOVE    SPA-GMN-TEKIYOU-COMMENT2KBN
+                                           TO
+                                           SYS-2006-TEKIYOU-COMMENT2KBN
       *
                MOVE    SYS-2006-REC        TO  SYSKANRI-REC
                IF      SPA-NAI-SELNUM      =   ZERO
@@ -2275,10 +2542,10 @@ grpsys         PERFORM 900-ORCDBMAIN-SEC
                GO  TO  500-SET-SCREEN-EXT
            END-IF
       *
-           MOVE    "CURRENT"           TO  MCP-PUTTYPE.
-           MOVE    "W61    "           TO  MCP-WINDOW.
+           MOVE    "CURRENT"           TO  MCP-PUTTYPE
+           MOVE    "W61    "           TO  MCP-WINDOW
       *
-           PERFORM 900-PUT-WINDOW.
+           PERFORM 900-PUT-WINDOW
            .
        500-SET-SCREEN-EXT.
            EXIT.
@@ -2362,6 +2629,14 @@ grpsys         PERFORM 900-ORCDBMAIN-SEC
                                        TO  W61-RECEDEN-JKYSNUMKBN
            MOVE    SPA-GMN-RECEDEN-JKYSNUM
                                        TO  W61-RECEDEN-JKYSNUM
+           MOVE    SPA-GMN-TEKIYOU-COMMENT1KBN-G
+                                       TO  W61-TEKIYOU-COMMENT1KBN
+           MOVE    SPA-GMN-TEKIYOU-COMMENT1
+                                       TO  W61-TEKIYOU-COMMENT1
+           MOVE    SPA-GMN-TEKIYOU-COMMENT2KBN-G
+                                       TO  W61-TEKIYOU-COMMENT2KBN
+           MOVE    SPA-GMN-TEKIYOU-COMMENT2
+                                       TO  W61-TEKIYOU-COMMENT2
       *
            PERFORM VARYING IDX     FROM    1   BY  1
                    UNTIL   IDX     >       SPA-GMN-TEISYUTUSAKI-MAX
@@ -2426,6 +2701,17 @@ grpsys         PERFORM 900-ORCDBMAIN-SEC
            MOVE    SPA-GMN-RECEDEN-KORECKBN-MAX
                                    TO  W61-RECEDEN-KORECKBN-COUNT
       *
+           PERFORM VARYING IDX     FROM    1   BY  1
+                   UNTIL   IDX     >   SPA-GMN-TEKIYOU-COMMENT1KBN-MAX
+                MOVE   SPA-GMN-TEKIYOU-COMMENT1KBNLST (IDX)
+                                       TO
+                                       W61-TEKIYOU-COMMENT1KBN-ITEM(IDX)
+                                       W61-TEKIYOU-COMMENT2KBN-ITEM(IDX)
+           END-PERFORM
+           MOVE    SPA-GMN-TEKIYOU-COMMENT1KBN-MAX
+                                   TO  W61-TEKIYOU-COMMENT1KBN-COUNT
+                                       W61-TEKIYOU-COMMENT2KBN-COUNT 
+      *
            PERFORM 5001-MAPCUR-SEC
       *
            .
@@ -2477,6 +2763,18 @@ grpsys         PERFORM 900-ORCDBMAIN-SEC
                     MOVE  "JKYSNUMKBN"     TO  MCP-WIDGET   
              WHEN    14
                     MOVE  "JKYSNUM"        TO  MCP-WIDGET   
+             WHEN    17
+                    MOVE  "TEKIYOU_COMMENT1"
+                                           TO  MCP-WIDGET   
+             WHEN    18
+                    MOVE  "TEKIYOU_COMMENT1KBN" 
+                                           TO  MCP-WIDGET   
+             WHEN    19
+                    MOVE  "TEKIYOU_COMMENT2"
+                                           TO  MCP-WIDGET   
+             WHEN    20
+                    MOVE  "TEKIYOU_COMMENT2KBN" 
+                                           TO  MCP-WIDGET   
       *
              WHEN    100
                     MOVE  "RECEDEN_TOKKI"  TO  MCP-WIDGET   
@@ -2500,7 +2798,7 @@ grpsys         PERFORM 900-ORCDBMAIN-SEC
                                            TO  MCP-WIDGET   
       *
              WHEN    999
-                    MOVE  "B12"           TO  MCP-WIDGET   
+                    MOVE  "B12"            TO  MCP-WIDGET   
          END-EVALUATE
       *
            .
@@ -2544,6 +2842,14 @@ grpsys         PERFORM 900-ORCDBMAIN-SEC
                WHEN    "JKYSNUMKBN"
                    MOVE    14          TO  SPA-GMN-CUR
                WHEN    "JKYSNUM"
+                   MOVE    17          TO  SPA-GMN-CUR
+               WHEN    "TEKIYOU_COMMENT1"
+                   MOVE    18          TO  SPA-GMN-CUR
+               WHEN    "TEKIYOU_COMMENT1KBN"
+                   MOVE    19          TO  SPA-GMN-CUR
+               WHEN    "TEKIYOU_COMMENT2"
+                   MOVE    20          TO  SPA-GMN-CUR
+               WHEN    "TEKIYOU_COMMENT2KBN"
                    MOVE    100         TO  SPA-GMN-CUR
       *
                WHEN    "RECEDEN_TOKKI"
@@ -2649,6 +2955,27 @@ grpsys         PERFORM 900-ORCDBMAIN-SEC
                                            TO  SPA-ERRMSG
                WHEN    "0025"
                    MOVE    "負担者番号固定値入力エラー"
+                                           TO  SPA-ERRMSG
+               WHEN    "0026"
+                   MOVE    "適用欄上段コメントは全角で入力して下さい"
+                                           TO  SPA-ERRMSG
+               WHEN    "0027"
+                   MOVE    "適用欄上段コメント記載区分入力エラー"
+                                           TO  SPA-ERRMSG
+               WHEN    "0028"
+                   MOVE    "適用欄下段コメントは全角で入力して下さい"
+                                           TO  SPA-ERRMSG
+               WHEN    "0029"
+                   MOVE    "適用欄下段コメント記載区分入力エラー"
+                                           TO  SPA-ERRMSG
+               WHEN    "0030"
+                   MOVE    "適用欄上段コメント入力時のみ選択できます"
+                                           TO  SPA-ERRMSG
+               WHEN    "0031"
+                   MOVE    "適用欄上段コメント入力時のみ選択できます"
+                                           TO  SPA-ERRMSG
+               WHEN    "0032"
+                   MOVE    "全角空白のみ入力されています"
                                            TO  SPA-ERRMSG
       *
                WHEN    "0101"
@@ -2818,7 +3145,6 @@ grpsys         PERFORM 900-ORCDBMAIN-SEC
        5001-RJNKBN-HENSYU-EXT.
            EXIT.
       *
-      *
       *****************************************************************
       *    在総診区分編集処理
       *****************************************************************
@@ -2843,6 +3169,7 @@ grpsys         PERFORM 900-ORCDBMAIN-SEC
            .
        5001-ZAITAKU-HENSYU-EXT.
            EXIT.
+      *
       *****************************************************************
       *    レセ電：公費レコード区分編集処理
       *****************************************************************
@@ -2916,6 +3243,31 @@ grpsys         PERFORM 900-ORCDBMAIN-SEC
       *
            .
        5001-JKYSNUMKBN-HENSYU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    適用欄コメントレセ電編集区分編集処理
+      *****************************************************************
+       5001-TEKIYOU-COMMENT1KBN-HENSYU-SEC    SECTION.
+      * 
+           MOVE    SPACE               TO  WRK-KBNMEI
+      *     
+           IF      WRK-KBN             =   SPACE   
+               CONTINUE
+           ELSE
+               PERFORM VARYING IDY FROM   1   BY  1
+                       UNTIL   IDY >   SPA-GMN-TEKIYOU-COMMENT1KBN-MAX
+                   IF      WRK-KBN =   SPA-GMN-TEKIYOU-COMMENT1KBNL(IDY)
+                       MOVE    SPA-GMN-TEKIYOU-COMMENT1KBNMEIL (IDY)
+                                              TO  WRK-KBNMEI
+                       MOVE    SPA-GMN-TEKIYOU-COMMENT1KBN-MAX
+                                              TO  IDY
+                   END-IF
+               END-PERFORM
+           END-IF
+      *
+           .
+       5001-TEKIYOU-COMMENT1KBN-HENSYU-EXT.
            EXIT.
       *
       *****************************************************************
