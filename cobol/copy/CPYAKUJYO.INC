@@ -33,9 +33,9 @@
       *医薬品名称
            03  YAKUJYO-NAME                PIC X(170).
       *効能効果
-           03  YAKUJYO-EFFECT              PIC X(400).
+           03  YAKUJYO-EFFECT              PIC X(2000).
       *注意事項
-           03  YAKUJYO-CAUTION             PIC X(850).
+           03  YAKUJYO-CAUTION             PIC X(4000).
       *画像ファイル名
            03  YAKUJYO-PHOTO               PIC X(256).
       *色

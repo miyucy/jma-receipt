@@ -40,9 +40,9 @@
       *記号
            03  TEMP-MARK                PIC X(360).
       *効能効果
-           03  TEMP-EFFECT              PIC X(400).
+           03  TEMP-EFFECT              PIC X(2000).
       *注意事項
-           03  TEMP-CAUTION             PIC X(850).
+           03  TEMP-CAUTION             PIC X(4000).
       *製造会社名
            03  TEMP-MAKE-COMPANY        PIC X(400).
       *販売会社名

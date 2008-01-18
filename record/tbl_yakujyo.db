@@ -3,8 +3,8 @@ tbl_yakujyo {
         SRYCD				char(9);
         TEKNUM	         		number(2);
         NAME                            varchar(170);
-        EFFECT  			varchar(400);
-        CAUTION  			varchar(850);
+        EFFECT  			varchar(2000);
+        CAUTION  			varchar(4000);
         PHOTO                    	varchar(256);
         COLOR                     	varchar(360);
         SHAPE           	        varchar(360);

@@ -7,8 +7,8 @@ tbl_yakujyo_temp	{
 	shape			varchar(360);
 	color			varchar(360);
 	mark			varchar(360);
-	effect			varchar(400);
-	caution			varchar(850);
+	effect			varchar(2000);
+	caution			varchar(4000);
 	make_company		varchar(400);
 	sale_company		varchar(400);
 	photo1_filename		varchar(256);
