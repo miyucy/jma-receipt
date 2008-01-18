@@ -177,6 +177,8 @@
                    13  SPA-GMN-I01-TNISSU          PIC X(5).
       *            ÄÌ»»
                    13  SPA-GMN-I01-TTUSAN          PIC X(5).
+      *            ²ð¸î°ÛÆ°
+                   13  SPA-GMN-I01-TKAIGO          PIC X(1).
                  11  SPA-GMN-I01-NYUREKILST-SEL    PIC 9(05).
       *        ¥Ø¥Ã¥ÀÆâÉôÎÎ°è
                09  SPA-NAI-I01-HEAD-AREA.

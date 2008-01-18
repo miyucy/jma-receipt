@@ -3281,6 +3281,10 @@
            MOVE    PTNYUINRRK-SHOKAIKBN
                                    TO  SPA-GMN-I01-TSHOKAI (IDX1)
       *
+      *    ²ð¸î°ÛÆ°¶èÊ¬
+           MOVE    PTNYUINRRK-KAIGOKBN
+                                   TO  SPA-GMN-I01-TKAIGO (IDX1)
+      *
       *    ½é²óÈÖ¹æ
            MOVE    PTNYUINRRK-SHONUM
                                    TO  SPA-GMN-I01-TSHONUM (IDX1)
@@ -3385,6 +3389,10 @@
            MOVE    PTNYUINRRK-SHOKAIKBN
                                    TO  SPA-GMN-I01-TSHOKAI (IDX1)
       *
+      *    ²ð¸î°ÛÆ°¶èÊ¬
+           MOVE    PTNYUINRRK-KAIGOKBN
+                                   TO  SPA-GMN-I01-TKAIGO (IDX1)
+      *
       *    ½é²óÈÖ¹æ
            MOVE    PTNYUINRRK-SHONUM
                                    TO  SPA-GMN-I01-TSHONUM (IDX1)
@@ -3459,6 +3467,7 @@
                                        WRK-REKI-BYO-TAIINYMD (IDX1)
                                        WRK-REKI-BYO-TAIINYMD  (IDX1)
                                        WRK-REKI-BYO-NYUINKA (IDX1)
+      *
            .
       *
        4101-NYUREKILST-EDIT-EXT.
@@ -16592,6 +16601,9 @@
                    MOVE    "¡ý"        TO  I01-TSHOKAI (IDX1)
                ELSE
                    MOVE    SPACE       TO  I01-TSHOKAI (IDX1)
+               END-IF
+               IF    ( SPA-GMN-I01-TKAIGO (IDX1)  =   "2" )
+                   MOVE    "²ð"        TO  I01-TSHOKAI (IDX1)
                END-IF
                MOVE    SPA-GMN-I01-TSHONUM (IDX1)
                                        TO  WRK-ZZZ9
