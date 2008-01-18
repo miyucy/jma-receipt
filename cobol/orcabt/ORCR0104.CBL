@@ -5658,6 +5658,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
            AND   ( RECE02-2006-TEKIYOU-COMMENT2 (2)    =   SPACE )
            AND   ( RECE02-2006-TEKIYOU-COMMENT2 (3)    =   SPACE )
            AND   ( RECE02-2006-TEKIYOU-COMMENT2 (4)    =   SPACE )
+           AND   ( RECE02-2006-TEKIYOU-COMMENT2 (5)    =   SPACE )
                CONTINUE
            ELSE
                STRING  RECE02-2006-TEKIYOU-COMMENT2 (1)
@@ -5667,6 +5668,8 @@ grpsys     PERFORM 900-DBSELECT-SEC
                        RECE02-2006-TEKIYOU-COMMENT2 (3)
                                            DELIMITED   BY  SPACE
                        RECE02-2006-TEKIYOU-COMMENT2 (4)
+                                           DELIMITED   BY  SPACE
+                       RECE02-2006-TEKIYOU-COMMENT2 (5)
                                            DELIMITED   BY  SPACE
                                            INTO    HC06-BODY
                END-STRING        
@@ -5970,6 +5973,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
            AND   ( RECE02-2006-TEKIYOU-COMMENT1 (2)    =   SPACE )
            AND   ( RECE02-2006-TEKIYOU-COMMENT1 (3)    =   SPACE )
            AND   ( RECE02-2006-TEKIYOU-COMMENT1 (4)    =   SPACE )
+           AND   ( RECE02-2006-TEKIYOU-COMMENT1 (5)    =   SPACE )
                CONTINUE
            ELSE
       *        摘要欄に病名が記載されている場合１行あける
@@ -5982,7 +5986,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                END-IF
       *
                PERFORM VARYING IDY     FROM    1   BY  1
-                       UNTIL   IDY     >       4
+                       UNTIL   IDY     >       5
                    IF      RECE02-2006-TEKIYOU-COMMENT1 (IDY)
                                            NOT =   SPACE
                        IF  WRK-LINETEK         >=  WRK-TEKIYOU-LINE

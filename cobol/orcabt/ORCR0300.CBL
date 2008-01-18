@@ -5331,7 +5331,7 @@ grpsys             OR    ( RECE02-HOSPNUM   NOT =   RECE09-HOSPNUM   )
       *
       *    適用欄上段コメント編集
            PERFORM VARYING IDXX    FROM    1   BY  1
-                   UNTIL   IDXX    >       4
+                   UNTIL   IDXX    >       5
                IF      RECE02-2006-TEKIYOU-COMMENT1KBN (IDXX)
                                            =   "2"
                    ADD     1                   TO  WRK-COM-RENNUM
@@ -5772,7 +5772,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
       *
       *    適用欄下段コメント編集
            PERFORM VARYING IDXX    FROM    1   BY  1
-                   UNTIL   IDXX    >       4
+                   UNTIL   IDXX    >       5
                IF      RECE02-2006-TEKIYOU-COMMENT2KBN (IDXX)
                                            =   "2"
                    ADD     1                   TO  WRK-COM-RENNUM

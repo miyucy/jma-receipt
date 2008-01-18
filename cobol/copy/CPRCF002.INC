@@ -479,42 +479,45 @@
                05  RECE02-2006-KOHINF.
                    07  RECE02-2006-KOH-OCC     OCCURS  4. 
       *                負担者番号記載区分
-                       11  RECE02-2006-FTNJANUMKBN
+                       09  RECE02-2006-FTNJANUMKBN
                                           PIC  X(02).
       *                負担者番号
-                       11  RECE02-2006-FTNJANUM
+                       09  RECE02-2006-FTNJANUM
                                           PIC  X(08).
       *                受給者番号記載区分
-                       11  RECE02-2006-JKYSNUMKBN
+                       09  RECE02-2006-JKYSNUMKBN
                                           PIC  X(02).
       *                受給者番号
-                       11  RECE02-2006-JKYSNUM
+                       09  RECE02-2006-JKYSNUM
                                           PIC  X(07).
-      *                適用欄上段コメント
-                       11  RECE02-2006-TEKIYOU-COMMENT1
-                                          PIC  X(52).
-      *                適用欄下段コメント
-                       11  RECE02-2006-TEKIYOU-COMMENT2
-                                          PIC  X(52).
-      *                適用欄上段コメントレセ電編集区分
-                       11  RECE02-2006-TEKIYOU-COMMENT1KBN
-                                          PIC  X(01).
-      *                適用欄下段コメントレセ電編集区分
-                       11  RECE02-2006-TEKIYOU-COMMENT2KBN
-                                          PIC  X(01).
       *                レセ電：公費レコード区分
-                       11  RECE02-2006-RECEDEN-KORECKBN
+                       09  RECE02-2006-RECEDEN-KORECKBN
                                           PIC  X(01).
       *                レセ電：負担者番号記載区分
-                       11  RECE02-2006-RECEDEN-FTNJANUMKBN
+                       09  RECE02-2006-RECEDEN-FTNJANUMKBN
                                           PIC  X(02).
       *                レセ電：負担者番号
-                       11  RECE02-2006-RECEDEN-FTNJANUM
+                       09  RECE02-2006-RECEDEN-FTNJANUM
                                           PIC  X(08).
       *                レセ電：受給者番号記載区分
-                       11  RECE02-2006-RECEDEN-JKYSNUMKBN
+                       09  RECE02-2006-RECEDEN-JKYSNUMKBN
                                           PIC  X(02).
       *                レセ電：受給者番号
-                       11  RECE02-2006-RECEDEN-JKYSNUM
+                       09  RECE02-2006-RECEDEN-JKYSNUM
                                           PIC  X(07).
+      *        適用欄コメント情報
+               05  RECE02-2006-TEKIYOU-COMMENTINF.
+                   07  RECE02-2006-TEKIYOU-COMMENT-OCC OCCURS  5. 
+      *                適用欄上段コメント
+                       09  RECE02-2006-TEKIYOU-COMMENT1
+                                          PIC  X(52).
+      *                適用欄下段コメント
+                       09  RECE02-2006-TEKIYOU-COMMENT2
+                                          PIC  X(52).
+      *                適用欄上段コメントレセ電編集区分
+                       09  RECE02-2006-TEKIYOU-COMMENT1KBN
+                                          PIC  X(01).
+      *                適用欄下段コメントレセ電編集区分
+                       09  RECE02-2006-TEKIYOU-COMMENT2KBN
+                                          PIC  X(01).
       *
