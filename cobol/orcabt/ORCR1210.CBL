@@ -1410,6 +1410,7 @@
                               IF   (NACCT-ZAITEN    NOT =    ZERO)
                               AND  (NACCT-DAY(IDY)  NOT =    ZERO)
                               AND  (WRK-DAY2(IDY)  =    ZERO  OR  4)
+                              AND  (WRK-DAY1-NYUTENTTLKBN(IDY) = 903)
                                    PERFORM   2001131-NYUINKHN-GET3-SEC
                                    MOVE    31    TO    IDY
                               END-IF
@@ -1460,6 +1461,8 @@
                           AND ( WRK-DAY5(ACCT-IDX) =
                                                RECE200-HKNCOMBI)
                           AND ( ACCT-DAY(1 ACCT-IDX) NOT = ZERO)
+                          AND ( WRK-DAY1-NYUTENTTLKBN(ACCT-IDX)
+                                                          = 903)
                                 PERFORM 2001132-ACCTKHN-GET3-SEC
                                 MOVE  31  TO  ACCT-IDX
                           END-IF
