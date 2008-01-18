@@ -342,7 +342,7 @@
                    13  SPA-GMN-I01-KAIGO-ITM       OCCURS  5.
                        15  SPA-GMN-I01-KAIGOL      PIC X(01).
                        15  SPA-GMN-I01-KAIGOFLL    PIC X(01).
-                       15  SPA-GMN-I01-KAIGOMEIL   PIC X(18).
+                       15  SPA-GMN-I01-KAIGOMEIL   PIC X(16).
       *          轉情儀苀戊件示
                  11  SPA-GMN-I01-CMB-TAIINCD.
                    13  SPA-GMN-I01-TAIINCD-CNT      PIC 9(5).
