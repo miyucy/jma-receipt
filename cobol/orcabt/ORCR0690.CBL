@@ -115,6 +115,8 @@
       *
       *  04.01.01    NACL-門脇    07/10/05  入院点滴コメント対応
       *  04.01.02    NACL-門脇    07/11/26  特定器材商品名記載対応
+      *  04.01.03    NACL-藤原    08/01/10  レセプト特記事項編集情報
+      *                                     適用欄コメント対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -2715,6 +2717,36 @@
                END-IF
            END-PERFORM
       *
+      *    適用欄コメント情報
+           MOVE    ZERO                TO  IDZ
+           MOVE    1                   TO  IDW1
+           IF    ( RECE62-KOHNUM (1)   NOT =   SPACE )
+           OR    ( RECE62-ETC-KOHNUM (1)
+                                       NOT =   SPACE )
+           OR    ( RECE62-KOHSKY-KOHNUM (1)
+                                       NOT =   SPACE )
+               PERFORM UNTIL   IDW1                >   SYSKAN-IDY
+                       OR      TBL-SYS2006 (IDW1)  =   SPACE
+                       OR      IDZ                 =   5
+                   PERFORM 20083-SYS2006-HENSYU-SEC
+                   IF      FLG-2006-CHK        =   1
+                       ADD     1               TO  IDZ    
+                       MOVE    SYS-2006-TEKIYOU-COMMENT1
+                                               TO
+                                   RECE62-2006-TEKIYOU-COMMENT1    (IDZ)
+                       MOVE    SYS-2006-TEKIYOU-COMMENT2
+                                               TO
+                                   RECE62-2006-TEKIYOU-COMMENT2    (IDZ)
+                       MOVE    SYS-2006-TEKIYOU-COMMENT1KBN
+                                               TO
+                                   RECE62-2006-TEKIYOU-COMMENT1KBN (IDZ)
+                       MOVE    SYS-2006-TEKIYOU-COMMENT2KBN
+                                               TO
+                                   RECE62-2006-TEKIYOU-COMMENT2KBN (IDZ)
+                   END-IF
+               END-PERFORM
+           END-IF
+      *
       *    レセ電・公費別編集情報
            PERFORM VARYING IDY FROM    1   BY  1
                    UNTIL   IDY >       4
@@ -2978,7 +3010,7 @@
            EXIT.
       *
       *****************************************************************
-      *    レセプト特記事項編集情報条件チェック処理
+      *    レセプト特記事項編集情報条件（特記事項）チェック処理
       *****************************************************************
        20082-SYS2006-HENSYU-SEC          SECTION.
       *
@@ -3075,6 +3107,75 @@
            .
        20082-SYS2006-HENSYU-EXT.
            EXIT.
+      *
+      *****************************************************************
+      *    レセプト特記事項編集情報（適用欄コメント）条件チェック処理
+      *****************************************************************
+       20083-SYS2006-HENSYU-SEC          SECTION.
+      *
+           MOVE    ZERO                TO  FLG-2006-CHK
+           INITIALIZE                      SYS-2006-REC
+                                           WRK-FTNJANUM
+      *
+      *    対象の保険チェック
+           MOVE    ZERO                TO  FLG-HKNNUM-OK
+           MOVE    TBL-SYS2006 (IDW1)  TO  WRK-2006-REC
+           PERFORM VARYING IDW2    FROM    1   BY  1
+                   UNTIL ( IDW2    >       4             )
+                   OR    ( RECE62-KOHNUM(IDW2) =   SPACE )
+                   OR    ( FLG-HKNNUM-OK       =   1     )
+               IF      RECE62-KOHNUM(IDW2) =   WRK-2006-HKNNUM
+                   MOVE    1                   TO  FLG-HKNNUM-OK
+                   MOVE    RECE62-KOHFTNJANUM (IDW2)
+                                               TO  WRK-FTNJANUM
+               END-IF
+           END-PERFORM
+      *    レセプト記載外公費情報も検索
+           PERFORM VARYING IDW2    FROM    1   BY  1
+                   UNTIL ( IDW2    >       4                 )
+                   OR    ( RECE62-ETC-KOHNUM(IDW2) =   SPACE )
+                   OR    ( FLG-HKNNUM-OK           =   1     )
+               IF      RECE62-ETC-KOHNUM (IDW2)
+                                           =   WRK-2006-HKNNUM
+                   MOVE    1               TO  FLG-HKNNUM-OK
+                   MOVE    RECE62-ETC-KOHFTNJANUM (IDW2)
+                                           TO  WRK-FTNJANUM
+               END-IF
+           END-PERFORM
+      *    レセプト請求しない地方公費情報も検索
+           PERFORM VARYING IDW2    FROM    1   BY  1
+                   UNTIL ( IDW2    >       4                 )
+                   OR    ( RECE62-KOHSKY-KOHNUM(IDW2)
+                                                   =   SPACE )
+                   OR    ( FLG-HKNNUM-OK           =   1     )
+               IF      RECE62-KOHSKY-KOHNUM (IDW2)
+                                           =   WRK-2006-HKNNUM
+                   MOVE    1               TO  FLG-HKNNUM-OK
+                   MOVE    RECE62-KOHSKY-KOHFTNJANUM (IDW2)
+                                           TO  WRK-FTNJANUM
+               END-IF
+           END-PERFORM
+      *
+           IF      FLG-HKNNUM-OK   =   ZERO
+               ADD     1                   TO  IDW1
+           ELSE
+      *        対象の保険がある場合は保険番号単位にチェック
+               MOVE    WRK-2006-HKNNUM     TO  WRK-HKNNUM
+               PERFORM     UNTIL ( IDW1        >   SYSKAN-IDY )
+                           OR    ( TBL-SYS2006-HKNNUM (IDW1)
+                                            NOT =   WRK-HKNNUM )
+                   MOVE    TBL-SYS2006 (IDW1)      TO  WRK-2006-REC
+                   IF    ( WRK-2006-TEKIYOU-COMMENT1   NOT =   SPACE )
+                   OR    ( WRK-2006-TEKIYOU-COMMENT2   NOT =   SPACE )
+                       PERFORM 200811-SYS2006-CHECK-SEC
+                   END-IF
+                   ADD     1                   TO  IDW1
+               END-PERFORM
+           END-IF
+           .
+       20083-SYS2006-HENSYU-EXT.
+           EXIT.
+      *
       *
       *****************************************************************
       *    外来迅速検体検査加算の算定日確認処理

@@ -189,6 +189,8 @@
       *
       *  04.01.01    NACL-藤原    07/11/26  特定器材の商品名及び規格又は
       *                                     サイズ記載対応
+      *  04.01.02    NACL-藤原    08/01/10  レセプト特記事項編集情報
+      *                                     適用欄コメント対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1754,7 +1756,7 @@
                    PERFORM     2006-HENSYU-SEC
       *            適用レコード
                    PERFORM     2007-HENSYU-SEC
-      *            症状詳記（レセコメント）
+      *            症状詳記（適用欄下段コメント・レセコメント）
                    PERFORM     2009-COMMENT-HEN-99-SEC
       *
                    ADD     1           TO  CNT-COMMIT
@@ -2994,7 +2996,7 @@
            MOVE    RECE62-HKNCOMBI (1) TO  WRK-RECE641-HKNCOMBI
            PERFORM 20070-FTNKBN-HENSYU-SEC
       *
-      *    症状詳記（手術歴・保険履歴）
+      *        症状詳記（適用欄上段コメント・手術歴・保険履歴）
            MOVE    WRK-FTNKBN          TO  WRK-COM-FTNKBN
            PERFORM 2008-COMMENT-HEN-01-SEC
       *                                        
@@ -6066,11 +6068,38 @@
            EXIT.
       *
       *****************************************************************
-      *    症状詳記（手術歴・保険履歴）
+      *        症状詳記（適用欄上段コメント・手術歴・保険履歴）
       *****************************************************************
        2008-COMMENT-HEN-01-SEC      SECTION.
       *
            MOVE    "01"                TO  WRK-COM-SRYKBN
+      *
+      *    適用欄上段コメント編集
+           PERFORM VARYING IDXX    FROM    1   BY  1
+                   UNTIL   IDXX    >       5
+               IF      RECE62-2006-TEKIYOU-COMMENT1KBN (IDXX)
+                                           =   "2"
+                   ADD     1                   TO  WRK-COM-RENNUM
+      *                キー編集処理
+                   PERFORM 50011-KEY-HENSYU-SEC
+                   MOVE    "2"                 TO  RECEDEN-RECKBN
+                   MOVE    WRK-COM-RENNUM      TO  RECEDEN-RENNUM
+                   MOVE    WRK-PARA-SYSYMD     TO  RECEDEN-CREYMD
+                   MOVE    RECE62-2006-TEKIYOU-COMMENT1 (IDXX)
+                                               TO  RECEDEN-RECEDATA
+      *
+                   MOVE    RECEDEN-REC         TO  MCPDATA-REC
+                   MOVE    "DBINSERT"          TO  MCP-FUNC
+                   MOVE    "tbl_receden"       TO  MCP-TABLE
+                   MOVE    "key"               TO  MCP-PATHNAME
+                   PERFORM 900-ORCDBMAIN-SEC
+      *
+                   ADD     1                   TO  CNT-OUT      
+      *
+      *            症状詳記（コメント）編集処理
+                   PERFORM 20099-COMMENT-HENSYU-SEC
+               END-IF
+           END-PERFORM
       *
       *    手術歴編集
            PERFORM 20081-OPECOM-HEN-SEC
@@ -6081,50 +6110,8 @@
       *
                ADD     1                   TO  WRK-COM-RENNUM
       *          
-               INITIALIZE                  RECEDEN-REC
-               MOVE    RECE62-HOSPNUM      TO  RECEDEN-HOSPNUM
-               MOVE    RECE62-SRYYM        TO  RECEDEN-SRYYM
-               MOVE    RECE62-NYUGAIKBN    TO  RECEDEN-NYUGAIKBN
-               MOVE    RECE62-PTID         TO  RECEDEN-PTID
-               IF    ( SYS-2009-SYUKA-KBN  =   "1" )
-                   IF  (     ( RECE62-TEISYUTUSAKI   =   "1" )
-                         AND ( SYS-2009-SYUKA-SYAHO  =   "1" ) )
-                   OR  (     ( RECE62-TEISYUTUSAKI   =   "2" )
-                         AND ( SYS-2009-SYUKA-KOKUHO =   "1" ) )
-                       MOVE    RECE62-SYUKA        TO  RECEDEN-RECEKA
-                   ELSE
-                       IF      RECE62-RECEKA       =   SPACE
-                           MOVE    ZERO            TO  RECEDEN-RECEKA
-                       ELSE
-                           MOVE    RECE62-RECEKA   TO  RECEDEN-RECEKA
-                       END-IF
-                   END-IF
-               ELSE
-                   IF      RECE62-RECEKA       =   SPACE
-                       MOVE    ZERO            TO  RECEDEN-RECEKA
-                   ELSE
-                        MOVE    RECE62-RECEKA  TO  RECEDEN-RECEKA
-                   END-IF
-               END-IF
-               MOVE    RECE62-TEISYUTUSAKI TO
-                                               RECEDEN-TEISYUTUSAKI
-               MOVE    RECE62-RECESYUBETU  TO
-                                               RECEDEN-RECESYUBETU
-               IF      RECE62-HKNJANUM-KEY =   SPACE
-                   MOVE    ZERO                TO  RECEDEN-HKNJANUM
-               ELSE
-                   MOVE    RECE62-HKNJANUM-KEY TO  RECEDEN-HKNJANUM
-               END-IF
-               IF      RECE62-HOJOKBN-KEY  =   SPACE
-                   MOVE    ZERO                TO  RECEDEN-HOJOKBN-KEY
-               ELSE
-                   MOVE    RECE62-HOJOKBN-KEY  TO  RECEDEN-HOJOKBN-KEY
-               END-IF   
-               IF      RECE62-TEKSTYMD     =   SPACE
-                   MOVE    ZERO            TO  RECEDEN-TEKSTYMD
-               ELSE
-                   MOVE    RECE62-TEKSTYMD TO  RECEDEN-TEKSTYMD
-               END-IF
+      *        キー編集処理
+               PERFORM 50011-KEY-HENSYU-SEC
                MOVE    "2"                 TO  RECEDEN-RECKBN
                MOVE    WRK-COM-RENNUM      TO  RECEDEN-RENNUM
                MOVE    WRK-PARA-SYSYMD     TO  RECEDEN-CREYMD
@@ -6282,50 +6269,8 @@
       *
            ADD     1                   TO  WRK-COM-RENNUM
       *          
-           INITIALIZE                  RECEDEN-REC
-           MOVE    RECE62-HOSPNUM      TO  RECEDEN-HOSPNUM
-           MOVE    RECE62-SRYYM        TO  RECEDEN-SRYYM
-           MOVE    RECE62-NYUGAIKBN    TO  RECEDEN-NYUGAIKBN
-           MOVE    RECE62-PTID         TO  RECEDEN-PTID
-           IF    ( SYS-2009-SYUKA-KBN  =   "1" )
-               IF  (     ( RECE62-TEISYUTUSAKI   =   "1" )
-                     AND ( SYS-2009-SYUKA-SYAHO  =   "1" ) )
-               OR  (     ( RECE62-TEISYUTUSAKI   =   "2" )
-                     AND ( SYS-2009-SYUKA-KOKUHO =   "1" ) )
-                   MOVE    RECE62-SYUKA        TO  RECEDEN-RECEKA
-               ELSE
-                   IF      RECE62-RECEKA       =   SPACE
-                       MOVE    ZERO            TO  RECEDEN-RECEKA
-                   ELSE
-                       MOVE    RECE62-RECEKA   TO  RECEDEN-RECEKA
-                   END-IF
-               END-IF
-           ELSE
-               IF      RECE62-RECEKA       =   SPACE
-                   MOVE    ZERO            TO  RECEDEN-RECEKA
-               ELSE
-                    MOVE    RECE62-RECEKA  TO  RECEDEN-RECEKA
-               END-IF
-           END-IF
-           MOVE    RECE62-TEISYUTUSAKI TO
-                                               RECEDEN-TEISYUTUSAKI
-           MOVE    RECE62-RECESYUBETU  TO
-                                               RECEDEN-RECESYUBETU
-           IF      RECE62-HKNJANUM-KEY =   SPACE
-               MOVE    ZERO                TO  RECEDEN-HKNJANUM
-           ELSE
-               MOVE    RECE62-HKNJANUM-KEY TO  RECEDEN-HKNJANUM
-           END-IF
-           IF      RECE62-HOJOKBN-KEY  =   SPACE
-               MOVE    ZERO                TO  RECEDEN-HOJOKBN-KEY
-           ELSE
-               MOVE    RECE62-HOJOKBN-KEY  TO  RECEDEN-HOJOKBN-KEY
-           END-IF   
-           IF      RECE62-TEKSTYMD     =   SPACE
-               MOVE    ZERO            TO  RECEDEN-TEKSTYMD
-           ELSE
-               MOVE    RECE62-TEKSTYMD TO  RECEDEN-TEKSTYMD
-           END-IF
+      *    キー編集処理
+           PERFORM 50011-KEY-HENSYU-SEC
            MOVE    "2"                 TO  RECEDEN-RECKBN
            MOVE    WRK-COM-RENNUM      TO  RECEDEN-RENNUM
            MOVE    WRK-PARA-SYSYMD     TO  RECEDEN-CREYMD
@@ -6350,13 +6295,42 @@
            EXIT.
       *
       *****************************************************************
-      *    症状詳記（レセコメント）
+      *    症状詳記（適用欄下段コメント・レセコメント）
       *****************************************************************
        2009-COMMENT-HEN-99-SEC      SECTION.
       *
            MOVE    "99"                TO  WRK-COM-SRYKBN
            MOVE   SPACE                TO  WRK-SJ-KBN
                                            WRK-RECECOM-SJKBN
+      *
+      *    適用欄下段コメント編集
+           PERFORM VARYING IDXX    FROM    1   BY  1
+                   UNTIL   IDXX    >       5
+               IF      RECE62-2006-TEKIYOU-COMMENT2KBN (IDXX)
+                                           =   "2"
+                   ADD     1                   TO  WRK-COM-RENNUM
+      *            キー編集処理
+                   PERFORM 50011-KEY-HENSYU-SEC
+                   MOVE    "2"                 TO  RECEDEN-RECKBN
+                   MOVE    WRK-COM-RENNUM      TO  RECEDEN-RENNUM
+                   MOVE    WRK-PARA-SYSYMD     TO  RECEDEN-CREYMD
+                   MOVE    RECE62-2006-TEKIYOU-COMMENT2 (IDXX)
+                                               TO  RECEDEN-RECEDATA
+      *
+                   MOVE    RECEDEN-REC         TO  MCPDATA-REC
+                   MOVE    "DBINSERT"          TO  MCP-FUNC
+                   MOVE    "tbl_receden"       TO  MCP-TABLE
+                   MOVE    "key"               TO  MCP-PATHNAME
+                   PERFORM 900-ORCDBMAIN-SEC
+      *
+                   ADD     1                   TO  CNT-OUT
+      *
+      *            症状詳記（コメント）編集処理
+                   PERFORM 20099-COMMENT-HENSYU-SEC
+               END-IF 
+           END-PERFORM
+      *     
+      *    レセコメント編集処理
       *     
       *    適用欄コメント     
            MOVE    "tbl_rececom"       TO  WRK-MCP-TABLE
@@ -6476,57 +6450,8 @@
       *
                        ADD     1                   TO  WRK-COM-RENNUM
       *          
-                       INITIALIZE                  RECEDEN-REC
-                       MOVE    RECE62-HOSPNUM      TO  RECEDEN-HOSPNUM
-                       MOVE    RECE62-SRYYM        TO  RECEDEN-SRYYM
-                       MOVE    RECE62-NYUGAIKBN    TO  RECEDEN-NYUGAIKBN
-                       MOVE    RECE62-PTID         TO  RECEDEN-PTID
-                       IF    ( SYS-2009-SYUKA-KBN  =   "1" )
-                           IF  (     ( RECE62-TEISYUTUSAKI   =   "1" )
-                                 AND ( SYS-2009-SYUKA-SYAHO  =   "1" ) )
-                           OR  (     ( RECE62-TEISYUTUSAKI   =   "2" )
-                                 AND ( SYS-2009-SYUKA-KOKUHO =   "1" ) )
-                               MOVE    RECE62-SYUKA 
-                                                   TO  RECEDEN-RECEKA
-                           ELSE
-                               IF      RECE62-RECEKA       =   SPACE
-                                   MOVE    ZERO    TO  RECEDEN-RECEKA
-                               ELSE
-                                   MOVE    RECE62-RECEKA
-                                                   TO  RECEDEN-RECEKA
-                               END-IF
-                           END-IF
-                       ELSE
-                           IF      RECE62-RECEKA       =   SPACE
-                               MOVE    ZERO        TO  RECEDEN-RECEKA
-                           ELSE
-                               MOVE    RECE62-RECEKA
-                                                   TO  RECEDEN-RECEKA
-                           END-IF
-                       END-IF
-                       MOVE    RECE62-TEISYUTUSAKI TO
-                                                   RECEDEN-TEISYUTUSAKI
-                       MOVE    RECE62-RECESYUBETU  TO
-                                                   RECEDEN-RECESYUBETU
-                       IF      RECE62-HKNJANUM-KEY =   SPACE
-                           MOVE    ZERO                TO
-                                                   RECEDEN-HKNJANUM
-                       ELSE
-                           MOVE    RECE62-HKNJANUM-KEY TO
-                                                   RECEDEN-HKNJANUM
-                       END-IF
-                       IF      RECE62-HOJOKBN-KEY  =   SPACE
-                           MOVE    ZERO                TO
-                                                   RECEDEN-HOJOKBN-KEY
-                       ELSE
-                           MOVE    RECE62-HOJOKBN-KEY  TO
-                                                   RECEDEN-HOJOKBN-KEY
-                       END-IF   
-                       IF      RECE62-TEKSTYMD     =   SPACE
-                           MOVE    ZERO            TO  RECEDEN-TEKSTYMD
-                       ELSE
-                           MOVE    RECE62-TEKSTYMD TO  RECEDEN-TEKSTYMD
-                       END-IF
+      *                キー編集処理
+                       PERFORM 50011-KEY-HENSYU-SEC
                        MOVE    "2"                 TO  RECEDEN-RECKBN
                        MOVE    WRK-COM-RENNUM      TO  RECEDEN-RENNUM
                        MOVE    WRK-PARA-SYSYMD     TO  RECEDEN-CREYMD
@@ -6604,57 +6529,8 @@
       *
                        ADD     1                   TO  WRK-COM-RENNUM
       *          
-                       INITIALIZE                  RECEDEN-REC
-                       MOVE    RECE62-HOSPNUM      TO  RECEDEN-HOSPNUM
-                       MOVE    RECE62-SRYYM        TO  RECEDEN-SRYYM
-                       MOVE    RECE62-NYUGAIKBN    TO  RECEDEN-NYUGAIKBN
-                       MOVE    RECE62-PTID         TO  RECEDEN-PTID
-                       IF    ( SYS-2009-SYUKA-KBN  =   "1" )
-                           IF  (     ( RECE62-TEISYUTUSAKI   =   "1" )
-                                 AND ( SYS-2009-SYUKA-SYAHO  =   "1" ) )
-                           OR  (     ( RECE62-TEISYUTUSAKI   =   "2" )
-                                 AND ( SYS-2009-SYUKA-KOKUHO =   "1" ) )
-                               MOVE    RECE62-SYUKA 
-                                                   TO  RECEDEN-RECEKA
-                           ELSE
-                               IF      RECE62-RECEKA       =   SPACE
-                                   MOVE    ZERO    TO  RECEDEN-RECEKA
-                               ELSE
-                                   MOVE    RECE62-RECEKA
-                                                   TO  RECEDEN-RECEKA
-                               END-IF
-                           END-IF
-                       ELSE
-                           IF      RECE62-RECEKA       =   SPACE
-                               MOVE    ZERO        TO  RECEDEN-RECEKA
-                           ELSE
-                               MOVE    RECE62-RECEKA
-                                                   TO  RECEDEN-RECEKA
-                           END-IF
-                       END-IF
-                       MOVE    RECE62-TEISYUTUSAKI TO
-                                                   RECEDEN-TEISYUTUSAKI
-                       MOVE    RECE62-RECESYUBETU  TO
-                                                   RECEDEN-RECESYUBETU
-                       IF      RECE62-HKNJANUM-KEY =   SPACE
-                           MOVE    ZERO                TO
-                                                   RECEDEN-HKNJANUM
-                       ELSE
-                           MOVE    RECE62-HKNJANUM-KEY TO
-                                                   RECEDEN-HKNJANUM
-                       END-IF
-                       IF      RECE62-HOJOKBN-KEY  =   SPACE
-                           MOVE    ZERO                TO
-                                                   RECEDEN-HOJOKBN-KEY
-                       ELSE
-                           MOVE    RECE62-HOJOKBN-KEY  TO
-                                                   RECEDEN-HOJOKBN-KEY
-                       END-IF   
-                       IF      RECE62-TEKSTYMD     =   SPACE
-                           MOVE    ZERO            TO  RECEDEN-TEKSTYMD
-                       ELSE
-                           MOVE    RECE62-TEKSTYMD TO  RECEDEN-TEKSTYMD
-                       END-IF
+      *                キー編集処理
+                       PERFORM 50011-KEY-HENSYU-SEC
                        MOVE    "2"                 TO  RECEDEN-RECKBN
                        MOVE    WRK-COM-RENNUM      TO  RECEDEN-RENNUM
                        MOVE    WRK-PARA-SYSYMD     TO  RECEDEN-CREYMD
@@ -6864,6 +6740,34 @@
       *
            ADD     1                   TO  WRK-RENNUM
       *          
+      *    キー編集処理
+           PERFORM 50011-KEY-HENSYU-SEC
+      *          
+           MOVE    "1"                 TO  RECEDEN-RECKBN
+           MOVE    WRK-RENNUM          TO  RECEDEN-RENNUM
+           MOVE    WRK-PARA-SYSYMD     TO  RECEDEN-CREYMD
+           IF      FLG-TOTALTEN        =   1
+               MOVE    SUM-TOTALTEN        TO  RECEDEN-TOTALTEN
+           END-IF
+           MOVE    WRK-REC             TO  RECEDEN-RECEDATA
+      *
+           MOVE    RECEDEN-REC         TO  MCPDATA-REC
+           MOVE    "tbl_receden"       TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           MOVE    "DBINSERT"          TO  MCP-FUNC
+           PERFORM   900-ORCDBMAIN-SEC
+      *
+           ADD     1                   TO  CNT-OUT
+           MOVE    ZERO                TO  FLG-TOTALTEN
+           .
+       5001-FILE-WRITE-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    キー編集処理
+      *****************************************************************
+       50011-KEY-HENSYU-SEC        SECTION.
+      *          
            INITIALIZE                  RECEDEN-REC
            MOVE    RECE62-HOSPNUM      TO  RECEDEN-HOSPNUM
            MOVE    RECE62-SRYYM        TO  RECEDEN-SRYYM
@@ -6906,24 +6810,8 @@
            ELSE
                MOVE    RECE62-TEKSTYMD TO  RECEDEN-TEKSTYMD
            END-IF
-           MOVE    "1"                 TO  RECEDEN-RECKBN
-           MOVE    WRK-RENNUM          TO  RECEDEN-RENNUM
-           MOVE    WRK-PARA-SYSYMD     TO  RECEDEN-CREYMD
-           IF      FLG-TOTALTEN        =   1
-               MOVE    SUM-TOTALTEN        TO  RECEDEN-TOTALTEN
-           END-IF
-           MOVE    WRK-REC             TO  RECEDEN-RECEDATA
-      *
-           MOVE    RECEDEN-REC         TO  MCPDATA-REC
-           MOVE    "tbl_receden"       TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           MOVE    "DBINSERT"          TO  MCP-FUNC
-           PERFORM   900-ORCDBMAIN-SEC
-      *
-           ADD     1                   TO  CNT-OUT
-           MOVE    ZERO                TO  FLG-TOTALTEN
            .
-       5001-FILE-WRITE-EXT.
+       50011-KEY-HENSYU-EXT.
            EXIT.
       *
       *****************************************************************

@@ -5539,48 +5539,8 @@ grpsys     MOVE    RECE02-HOSPNUM      TO  OPECOM-HOSPNUM
       *
            ADD     1                   TO  WRK-COM-RENNUM
       *          
-           INITIALIZE                  RECEDEN-REC
-grpsys     MOVE    RECE02-HOSPNUM      TO  RECEDEN-HOSPNUM
-           MOVE    RECE02-SRYYM        TO  RECEDEN-SRYYM
-           MOVE    RECE02-NYUGAIKBN    TO  RECEDEN-NYUGAIKBN
-           MOVE    RECE02-PTID         TO  RECEDEN-PTID
-           IF    ( SYS-2009-SYUKA-KBN  =   "1" )
-               IF  (     ( RECE02-TEISYUTUSAKI   =   "1" )
-                     AND ( SYS-2009-SYUKA-SYAHO  =   "1" ) )
-               OR  (     ( RECE02-TEISYUTUSAKI   =   "2" )
-                     AND ( SYS-2009-SYUKA-KOKUHO =   "1" ) )
-                   MOVE    RECE02-SYUKA        TO  RECEDEN-RECEKA
-               ELSE
-                   IF      RECE02-RECEKA       =   SPACE
-                       MOVE    ZERO            TO  RECEDEN-RECEKA
-                   ELSE
-                       MOVE    RECE02-RECEKA   TO  RECEDEN-RECEKA
-                   END-IF
-               END-IF
-           ELSE
-               IF      RECE02-RECEKA       =   SPACE
-                   MOVE    ZERO            TO  RECEDEN-RECEKA
-               ELSE
-                    MOVE    RECE02-RECEKA  TO  RECEDEN-RECEKA
-               END-IF
-           END-IF
-           MOVE    RECE02-TEISYUTUSAKI TO  RECEDEN-TEISYUTUSAKI
-           MOVE    RECE02-RECESYUBETU  TO  RECEDEN-RECESYUBETU
-           IF      RECE02-HKNJANUM-KEY =   SPACE
-               MOVE    ZERO                TO  RECEDEN-HKNJANUM
-           ELSE
-               MOVE    RECE02-HKNJANUM-KEY TO  RECEDEN-HKNJANUM
-           END-IF
-           IF      RECE02-HOJOKBN-KEY  =   SPACE
-               MOVE    ZERO                TO  RECEDEN-HOJOKBN-KEY
-           ELSE
-               MOVE    RECE02-HOJOKBN-KEY  TO  RECEDEN-HOJOKBN-KEY
-           END-IF   
-           IF      RECE02-TEKSTYMD     =   SPACE
-               MOVE    ZERO            TO  RECEDEN-TEKSTYMD
-           ELSE
-               MOVE    RECE02-TEKSTYMD TO  RECEDEN-TEKSTYMD
-           END-IF
+      *    キー編集処理
+           PERFORM 50011-KEY-HENSYU-SEC
            MOVE    "2"                 TO  RECEDEN-RECKBN
            MOVE    WRK-COM-RENNUM      TO  RECEDEN-RENNUM
            MOVE    WRK-PARA-SYSYMD     TO  RECEDEN-CREYMD
@@ -5697,48 +5657,8 @@ grpsys             OR    ( RECE02-HOSPNUM   NOT =  RECE12-HOSPNUM      )
       *
            ADD     1                   TO  WRK-COM-RENNUM
       *          
-           INITIALIZE                  RECEDEN-REC
-grpsys     MOVE    RECE02-HOSPNUM      TO  RECEDEN-HOSPNUM
-           MOVE    RECE02-SRYYM        TO  RECEDEN-SRYYM
-           MOVE    RECE02-NYUGAIKBN    TO  RECEDEN-NYUGAIKBN
-           MOVE    RECE02-PTID         TO  RECEDEN-PTID
-           IF    ( SYS-2009-SYUKA-KBN  =   "1" )
-               IF  (     ( RECE02-TEISYUTUSAKI   =   "1" )
-                     AND ( SYS-2009-SYUKA-SYAHO  =   "1" ) )
-               OR  (     ( RECE02-TEISYUTUSAKI   =   "2" )
-                     AND ( SYS-2009-SYUKA-KOKUHO =   "1" ) )
-                   MOVE    RECE02-SYUKA        TO  RECEDEN-RECEKA
-               ELSE
-                   IF      RECE02-RECEKA       =   SPACE
-                       MOVE    ZERO            TO  RECEDEN-RECEKA
-                   ELSE
-                       MOVE    RECE02-RECEKA   TO  RECEDEN-RECEKA
-                   END-IF
-               END-IF
-           ELSE
-               IF      RECE02-RECEKA       =   SPACE
-                   MOVE    ZERO            TO  RECEDEN-RECEKA
-               ELSE
-                    MOVE    RECE02-RECEKA  TO  RECEDEN-RECEKA
-               END-IF
-           END-IF
-           MOVE    RECE02-TEISYUTUSAKI TO      RECEDEN-TEISYUTUSAKI
-           MOVE    RECE02-RECESYUBETU  TO      RECEDEN-RECESYUBETU
-           IF      RECE02-HKNJANUM-KEY =   SPACE
-               MOVE    ZERO                TO  RECEDEN-HKNJANUM
-           ELSE
-               MOVE    RECE02-HKNJANUM-KEY TO  RECEDEN-HKNJANUM
-           END-IF
-           IF      RECE02-HOJOKBN-KEY  =   SPACE
-               MOVE    ZERO                TO  RECEDEN-HOJOKBN-KEY
-           ELSE
-               MOVE    RECE02-HOJOKBN-KEY  TO  RECEDEN-HOJOKBN-KEY
-           END-IF   
-           IF      RECE02-TEKSTYMD     =   SPACE
-               MOVE    ZERO            TO  RECEDEN-TEKSTYMD
-           ELSE
-               MOVE    RECE02-TEKSTYMD TO  RECEDEN-TEKSTYMD
-           END-IF
+      *    キー編集処理
+           PERFORM 50011-KEY-HENSYU-SEC
            MOVE    "2"                 TO  RECEDEN-RECKBN
            MOVE    WRK-COM-RENNUM      TO  RECEDEN-RENNUM
            MOVE    WRK-PARA-SYSYMD     TO  RECEDEN-CREYMD
@@ -5917,57 +5837,8 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *
                        ADD     1                   TO  WRK-COM-RENNUM
       *          
-                       INITIALIZE                  RECEDEN-REC
-grpsys                 MOVE    RECE02-HOSPNUM      TO  RECEDEN-HOSPNUM
-                       MOVE    RECE02-SRYYM        TO  RECEDEN-SRYYM
-                       MOVE    RECE02-NYUGAIKBN    TO  RECEDEN-NYUGAIKBN
-                       MOVE    RECE02-PTID         TO  RECEDEN-PTID
-                       IF    ( SYS-2009-SYUKA-KBN  =   "1" )
-                           IF  (     ( RECE02-TEISYUTUSAKI   =   "1" )
-                                 AND ( SYS-2009-SYUKA-SYAHO  =   "1" ) )
-                           OR  (     ( RECE02-TEISYUTUSAKI   =   "2" )
-                                 AND ( SYS-2009-SYUKA-KOKUHO =   "1" ) )
-                               MOVE    RECE02-SYUKA 
-                                                   TO  RECEDEN-RECEKA
-                           ELSE
-                               IF      RECE02-RECEKA       =   SPACE
-                                   MOVE    ZERO    TO  RECEDEN-RECEKA
-                               ELSE
-                                   MOVE    RECE02-RECEKA
-                                                   TO  RECEDEN-RECEKA
-                               END-IF
-                           END-IF
-                       ELSE
-                           IF      RECE02-RECEKA       =   SPACE
-                               MOVE    ZERO        TO  RECEDEN-RECEKA
-                           ELSE
-                               MOVE    RECE02-RECEKA
-                                                   TO  RECEDEN-RECEKA
-                           END-IF
-                       END-IF
-                       MOVE    RECE02-TEISYUTUSAKI TO
-                                                   RECEDEN-TEISYUTUSAKI
-                       MOVE    RECE02-RECESYUBETU  TO
-                                                   RECEDEN-RECESYUBETU
-                       IF      RECE02-HKNJANUM-KEY =   SPACE
-                           MOVE    ZERO                TO
-                                                   RECEDEN-HKNJANUM
-                       ELSE
-                           MOVE    RECE02-HKNJANUM-KEY TO
-                                                   RECEDEN-HKNJANUM
-                       END-IF
-                       IF      RECE02-HOJOKBN-KEY  =   SPACE
-                           MOVE    ZERO                TO
-                                                   RECEDEN-HOJOKBN-KEY
-                       ELSE
-                           MOVE    RECE02-HOJOKBN-KEY  TO
-                                                   RECEDEN-HOJOKBN-KEY
-                       END-IF   
-                       IF      RECE02-TEKSTYMD     =   SPACE
-                           MOVE    ZERO            TO  RECEDEN-TEKSTYMD
-                       ELSE
-                           MOVE    RECE02-TEKSTYMD TO  RECEDEN-TEKSTYMD
-                       END-IF
+      *                キー編集処理
+                       PERFORM 50011-KEY-HENSYU-SEC
                        MOVE    "2"                 TO  RECEDEN-RECKBN
                        MOVE    WRK-COM-RENNUM      TO  RECEDEN-RENNUM
                        MOVE    WRK-PARA-SYSYMD     TO  RECEDEN-CREYMD
@@ -6045,57 +5916,8 @@ grpsys                 PERFORM 900-ORCDBMAIN-SEC
       *
                        ADD     1                   TO  WRK-COM-RENNUM
       *          
-                       INITIALIZE                  RECEDEN-REC
-grpsys                 MOVE    RECE02-HOSPNUM      TO  RECEDEN-HOSPNUM
-                       MOVE    RECE02-SRYYM        TO  RECEDEN-SRYYM
-                       MOVE    RECE02-NYUGAIKBN    TO  RECEDEN-NYUGAIKBN
-                       MOVE    RECE02-PTID         TO  RECEDEN-PTID
-                       IF    ( SYS-2009-SYUKA-KBN  =   "1" )
-                           IF  (     ( RECE02-TEISYUTUSAKI   =   "1" )
-                                 AND ( SYS-2009-SYUKA-SYAHO  =   "1" ) )
-                           OR  (     ( RECE02-TEISYUTUSAKI   =   "2" )
-                                 AND ( SYS-2009-SYUKA-KOKUHO =   "1" ) )
-                               MOVE    RECE02-SYUKA 
-                                                   TO  RECEDEN-RECEKA
-                           ELSE
-                               IF      RECE02-RECEKA       =   SPACE
-                                   MOVE    ZERO    TO  RECEDEN-RECEKA
-                               ELSE
-                                   MOVE    RECE02-RECEKA
-                                                   TO  RECEDEN-RECEKA
-                               END-IF
-                           END-IF
-                       ELSE
-                           IF      RECE02-RECEKA       =   SPACE
-                               MOVE    ZERO        TO  RECEDEN-RECEKA
-                           ELSE
-                               MOVE    RECE02-RECEKA
-                                                   TO  RECEDEN-RECEKA
-                           END-IF
-                       END-IF
-                       MOVE    RECE02-TEISYUTUSAKI TO
-                                                   RECEDEN-TEISYUTUSAKI
-                       MOVE    RECE02-RECESYUBETU  TO
-                                                   RECEDEN-RECESYUBETU
-                       IF      RECE02-HKNJANUM-KEY =   SPACE
-                           MOVE    ZERO                TO
-                                                   RECEDEN-HKNJANUM
-                       ELSE
-                           MOVE    RECE02-HKNJANUM-KEY TO
-                                                   RECEDEN-HKNJANUM
-                       END-IF
-                       IF      RECE02-HOJOKBN-KEY  =   SPACE
-                           MOVE    ZERO                TO
-                                                   RECEDEN-HOJOKBN-KEY
-                       ELSE
-                           MOVE    RECE02-HOJOKBN-KEY  TO
-                                                   RECEDEN-HOJOKBN-KEY
-                       END-IF   
-                       IF      RECE02-TEKSTYMD     =   SPACE
-                           MOVE    ZERO            TO  RECEDEN-TEKSTYMD
-                       ELSE
-                           MOVE    RECE02-TEKSTYMD TO  RECEDEN-TEKSTYMD
-                       END-IF
+      *                キー編集処理
+                       PERFORM 50011-KEY-HENSYU-SEC
                        MOVE    "2"                 TO  RECEDEN-RECKBN
                        MOVE    WRK-COM-RENNUM      TO  RECEDEN-RENNUM
                        MOVE    WRK-PARA-SYSYMD     TO  RECEDEN-CREYMD
