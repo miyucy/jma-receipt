@@ -2828,7 +2828,7 @@ grpsys     MOVE    RECE200-HOSPNUM     TO  RECE10-HOSPNUM
                      OR        RECE200-NYUTOKNISSU(IDY)  =   ZERO
                ADD     RECE200-NYUTOKNISSU(IDY)
                                          TO  RECE10-KAISU  (31)
-               ADD     RECE200-NYUKHNKEI  (IDY)
+               ADD     RECE200-NYUTOKKEI  (IDY)
                                          TO  RECE10-TENSU  (31 1)
            END-PERFORM
            ADD     RECE200-NYUTOKKEI2    TO  RECE10-TENSU  (31 1)
