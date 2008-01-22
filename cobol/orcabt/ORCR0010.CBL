@@ -1252,7 +1252,7 @@ grpsys                                             SPA-AREA
                    MOVE    1                      TO  FLG-KOH 
                END-IF  
            END-PERFORM
-      *****END-IF           
+      *****END-IF
       *
            INITIALIZE                      WRK-KOHSKY-RECE01-REC
       * 
@@ -1261,7 +1261,7 @@ grpsys                                             SPA-AREA
                MOVE    "2"             TO  WRK-SYOKBN
                PERFORM 20011-FILE-HENSYU-SEC
                MOVE    WRK-RECE01-REC      TO  WRK-KOHSKY-RECE01-REC
-           END-IF   
+           END-IF
       *
       *    レセプト明細書
            MOVE    "1"                 TO  WRK-SYOKBN
@@ -1611,7 +1611,7 @@ grpsys     MOVE    SPA-HOSPNUM         TO  WRK-RECE01-HOSPNUM
                        PERFORM 20011-RECE01-WRITE-SEC
                    END-IF
                WHEN    "2"
-                   IF      WRK-PARA-SHELLID    NOT =   "RECEPTX"
+      *************IF      WRK-PARA-SHELLID    NOT =   "RECEPTX"
                        IF      SYS-1001-HOSPSBT1   =   1
                            MOVE    SYS-1005-RECESRYKA
                                                    TO WRK-RECE01-RECEKA
@@ -1626,7 +1626,7 @@ grpsys     MOVE    SPA-HOSPNUM         TO  WRK-RECE01-HOSPNUM
                        ELSE
                            PERFORM 20011-RECE01-WRITE-SEC
                        END-IF
-                   END-IF    
+      *************END-IF    
            END-EVALUATE
            .
        20011-FILE-HENSYU-EXT.
