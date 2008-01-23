@@ -29,15 +29,58 @@ ERRFILE=/tmp/$2datacollecterror
 
 DASUPLOAD=$SCRIPTSDIR/monthly/das-upload.sh
 
-# エラーファイル削除
+function gairai () {
+#外来分処理
+  $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBC010 -parameter $1,$2,$3,$4,2,$5,$6,$ERRFILE 2>&1 | tee -a $LOGFILE
   if  [ -e $ERRFILE ]; then
-    rm -f $ERRFILE
+    rm -f /tmp/$2COLDT*
+  else
+    $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBC020 -parameter $1,$2,$4,$5,$6,$DASDIR/$2/tmp/$COLLECTG,$ERRFILE 2>&1 | tee -a $LOGFILE
+    if  [ -e $ERRFILE ]; then
+      rm -f /tmp/$2COLDT*
+      rm -f $DASDIR/$2/tmp/$COLLECTG
+    fi
   fi
+}
+
+function nyuin () {
+#入院分処理
+  $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBC010 -parameter $1,$2,$3,$4,1,$5,$6,$ERRFILE 2>&1 | tee -a $LOGFILE
+  if  [ -e $ERRFILE ]; then
+    rm -f /tmp/$2COLDT*
+  else
+    $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBC020 -parameter $1,$2,$4,$5,$6,$DASDIR/$2/tmp/$COLLECTN,$ERRFILE 2>&1 | tee -a $LOGFILE
+    if  [ -e $ERRFILE ]; then
+      rm -f /tmp/$2COLDT*
+      rm -f $DASDIR/$2/tmp/$COLLECTN
+    fi
+  fi
+}
+
+function make_upload_file () {
+#アップロードファイル作成
+  if  [ $3 -eq '1' ]; then
+    if  [ -e $DASDIR/$1/tmp/$COLLECTG ] && [ -e $DASDIR/$1/tmp/$COLLECTN ]; then
+      tar cvfz $DASDIR/$1/collect-$2.tar.gz -C$DASDIR/$1/ tmp/$COLLECTG tmp/$COLLECTN
+    fi
+    if  [ -e $DASDIR/$1/tmp/$COLLECTG ] && [ ! -e $DASDIR/$1/tmp/$COLLECTN ]; then
+      tar cvfz $DASDIR/$1/collect-$2.tar.gz -C$DASDIR/$1/ tmp/$COLLECTG
+    fi
+    if  [ ! -e $DASDIR/$1/tmp/$COLLECTG ] && [ -e $DASDIR/$1/tmp/$COLLECTN ]; then
+      tar cvfz $DASDIR/$1/collect-$2.tar.gz -C$DASDIR/$1/ tmp/$COLLECTN
+    fi
+  else
+    if  [ -e $DASDIR/$1/tmp/$COLLECTG ]; then
+      tar cvfz $DASDIR/$1/collect-$2.tar.gz -C$DASDIR/$1/ tmp/$COLLECTG
+    fi
+  fi
+}
+
+#main
 
   if ! [ -d $DASDIR/$2 ]; then 
     mkdir $DASDIR/$2
   fi
-
   if ! [ -d $DASDIR/$2/tmp ]; then 
     mkdir $DASDIR/$2/tmp
   fi
@@ -48,54 +91,25 @@ DASUPLOAD=$SCRIPTSDIR/monthly/das-upload.sh
 
 # ファイル送信のみ？
   if  [ $8 -ne '2' ]; then
-
-#   外来分処理
-
-    $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBC010 -parameter $1,$2,$3,$4,2,$6,$7,$ERRFILE 2>&1 | tee $LOGFILE
-    if  [ -e $ERRFILE ]; then
-	rm -f /tmp/$2COLDT*
-    else
-	$DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBC020 -parameter $1,$2,$4,$6,$7,$DASDIR/$2/tmp/$COLLECTG,$ERRFILE 2>&1 | tee -a $LOGFILE
-	if  [ -e $ERRFILE ]; then
-	    rm -f /tmp/$2COLDT*
-	    rm -f $DASDIR/$2/tmp/$COLLECTG
-	fi
-    fi
-
+    rm -f $LOGFILE
+    #前年同月
+    PREVYM=$(expr $4 - 100)
+    rm -f $ERRFILE
+    gairai $1 $2 $3 $PREVYM $6 $7
     if  [ $5 -eq '1' ]; then
-
-#   入院分処理
-
-	$DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBC010 -parameter $1,$2,$3,$4,1,$6,$7,$ERRFILE 2>&1 | tee -a $LOGFILE
-	if  [ -e $ERRFILE ]; then
-	    rm -f /tmp/$2COLDT*
-	else
-	    $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBC020 -parameter $1,$2,$4,$6,$7,$DASDIR/$2/tmp/$COLLECTN,$ERRFILE 2>&1 | tee -a $LOGFILE
-	    if  [ -e $ERRFILE ]; then
-		rm -f /tmp/$2COLDT*
-		rm -f $DASDIR/$2/tmp/$COLLECTN
-	    fi
-	fi
+      nyuin $1 $2 $3 $PREVYM $6 $7
     fi
-
-    if  [ $5 -eq '1' ]; then
-	if  [ -e $DASDIR/$2/tmp/$COLLECTG ] && [ -e $DASDIR/$2/tmp/$COLLECTN ]; then
-	    tar cvfz $DASDIR/$2/collect-$4.tar.gz -C$DASDIR/$2/ tmp/$COLLECTG tmp/$COLLECTN
-	fi
-	if  [ -e $DASDIR/$2/tmp/$COLLECTG ] && [ ! -e $DASDIR/$2/tmp/$COLLECTN ]; then
-	    tar cvfz $DASDIR/$2/collect-$4.tar.gz -C$DASDIR/$2/ tmp/$COLLECTG
-	fi
-	if  [ ! -e $DASDIR/$2/tmp/$COLLECTG ] && [ -e $DASDIR/$2/tmp/$COLLECTN ]; then
-	    tar cvfz $DASDIR/$2/collect-$4.tar.gz -C$DASDIR/$2/ tmp/$COLLECTN
-	fi
-    else
-	if  [ -e $DASDIR/$2/tmp/$COLLECTG ]; then
-	    tar cvfz $DASDIR/$2/collect-$4.tar.gz -C$DASDIR/$2/ tmp/$COLLECTG
-	fi
-    fi
-
+    make_upload_file $2 $PREVYM $5
     rm -f /tmp/$2COLDT*
 
+    #当年月
+    rm -f $ERRFILE
+    gairai $1 $2 $3 $4 $6 $7
+    if  [ $5 -eq '1' ]; then
+      nyuin $1 $2 $3 $4 $6 $7
+    fi
+    make_upload_file $2 $4 $5
+    rm -f /tmp/$2COLDT*
   fi
 
   $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE$6$7,$2 2>&1 | tee -a $LOGFILE
@@ -103,6 +117,8 @@ DASUPLOAD=$SCRIPTSDIR/monthly/das-upload.sh
   if  [ $8 -ne '0' ]; then
     echo "収集データ送信処理 起動" 2>&1 | tee -a $LOGFILE
     $DASUPLOAD $2 &
+    rm -f $DASDIR/$2/tmp/$COLLECTG
+    rm -f $DASDIR/$2/tmp/$COLLECTN
   fi
 
   exit
