@@ -12123,8 +12123,12 @@
                        GO  TO  4801-TENROOM-EDIT-EXT
                    END-IF
                ELSE
-                   MOVE    "4022"      TO  SPA-ERRCD
-                   GO  TO  4801-TENROOM-EDIT-EXT
+                   IF    SYS-5001-BTU-SBT    =   "04" OR "09"
+                       GO  TO  4801-TENROOM-EDIT-EXT
+                   ELSE
+                       MOVE    "4022"      TO  SPA-ERRCD
+                       GO  TO  4801-TENROOM-EDIT-EXT
+                   END-IF
                END-IF
            END-IF
       *
