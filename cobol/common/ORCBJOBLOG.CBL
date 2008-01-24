@@ -221,7 +221,6 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
                MOVE    MCPDATA-REC         TO  JOBLOG-REC
                MOVE    ZERO                TO  FLG-JOBLOG
            ELSE
-               DISPLAY "JOBLOG ACC NG "
                MOVE    1                   TO  FLG-JOBLOG
                INITIALIZE                      JOBLOG-REC
            END-IF
