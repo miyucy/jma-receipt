@@ -1844,10 +1844,10 @@
     <widget>
       <class>GtkLabel</class>
       <name>HTEL</name>
-      <x>0</x>
-      <y>0</y>
-      <width>0</width>
-      <height>0</height>
+      <x>150</x>
+      <y>88</y>
+      <width>150</width>
+      <height>24</height>
       <label></label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>False</wrap>
