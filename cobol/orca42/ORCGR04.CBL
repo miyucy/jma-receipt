@@ -1344,12 +1344,12 @@ grpsys     MOVE    SPA-HOSPNUM         TO  RECE07-HOSPNUM
            ELSE    
                MOVE    ZERO                 TO  WRK-HENFLG
                PERFORM VARYING IDX FROM    1   BY  1
-                       UNTIL   IDX >       5
+                       UNTIL   IDX >       2
                        OR      SPA-GMN-R04-PRTJYUNLST  (IDX)   =   SPACE
                    IF      SPA-GMN-R04-PRTJYUN =
                                            SPA-GMN-R04-PRTJYUNL (IDX)
                        MOVE    1                   TO  WRK-HENFLG
-                       MOVE    5                   TO  IDX
+                       MOVE    2                   TO  IDX
                    END-IF
                END-PERFORM
            END-IF
@@ -2233,7 +2233,7 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
       *
            MOVE    SPA-GMN-R04-PRTJYUN-G   TO  R04-PRTJYUN
            PERFORM VARYING IDX FROM    1       BY  1
-                   UNTIL       IDX             >   5
+                   UNTIL       IDX             >   2
                    OR          SPA-GMN-R04-PRTJYUNL    (IDX)   =   SPACE 
                MOVE    SPA-GMN-R04-PRTJYUNLST(IDX)
                                                TO  R04-PRTJYUNLST (IDX)
@@ -2242,7 +2242,7 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
       *
            MOVE    SPA-GMN-R04-PREFKBN-G   TO  R04-PREFKBN
            PERFORM VARYING IDX FROM    1       BY  1
-                   UNTIL       IDX             >   3
+                   UNTIL       IDX             >   1
                    OR          SPA-GMN-R04-PREFKBNL    (IDX)   =   SPACE 
                MOVE    SPA-GMN-R04-PREFKBNLST(IDX)
                                                TO  R04-PREFKBNLST (IDX)
