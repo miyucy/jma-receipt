@@ -91,7 +91,7 @@ module OrcaDAS
       logmessage = ""
       das = self.new
       if argv.length <= 0
-        $stderr.puts "das-upload.rb $file"
+        STDERR.puts "das-upload.rb $file"
         exit 1
       end
       opt = argv.shift
@@ -111,7 +111,7 @@ module OrcaDAS
           end
         end
       }
-      $stderr.puts logmessage
+      STDERR.puts logmessage
     end
   end
 end
