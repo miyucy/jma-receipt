@@ -3840,10 +3840,10 @@
                MOVE    ORCSHKN-NAI-RSI-HKNKBN (IDX1)
                                        TO  SPA-GMN-I01-HKNCOMBI-ITM3
                                                        (IDX1)
-               IF    ( ORCSHKN-NAI-HKNNUM (IDX1)   =   "975" )
-                   MOVE    "K"         TO  SPA-GMN-I01-HKNCOMBI-ITM3
-                                                       (IDX1)
-               END-IF
+      *        IF    ( ORCSHKN-NAI-HKNNUM (IDX1)   =   "975" )
+      *            MOVE    "K"         TO  SPA-GMN-I01-HKNCOMBI-ITM3
+      *                                                (IDX1)
+      *        END-IF
                IF    ( ORCSHKN-NAI-HKNJANUM (IDX1) =   SPACE )
                    MOVE    ORCSHKN-GMN-HKNCOMBIMEI (IDX1)
                                        TO  WRK-HKNCOMBI

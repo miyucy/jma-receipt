@@ -980,12 +980,16 @@
       *
       *        選定入院料を算定していた日にちを退避
                IF    ( NACCT-SRYCDTOTAL    =    099999916 )
-                   PERFORM VARYING     IDX1    FROM    1   BY  1
-                           UNTIL     ( IDX1    >   31 )
-                       IF   ( NACCT-DAY(IDX1)  >   ZERO )
-                           MOVE    1       TO  FLG-SENTEIDAY (IDX1)
-                       END-IF
-                   END-PERFORM
+                   IF    ( HCM34S01-HKNNUM =    "975" )
+                       CONTINUE
+                   ELSE
+                       PERFORM VARYING     IDX1    FROM    1   BY  1
+                               UNTIL     ( IDX1    >   31 )
+                           IF   ( NACCT-DAY(IDX1)  >   ZERO )
+                               MOVE    1       TO  FLG-SENTEIDAY (IDX1)
+                           END-IF
+                       END-PERFORM
+                   END-IF
                ELSE
       *
       *            入院料を算定している日にちを退避
