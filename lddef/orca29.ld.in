@@ -46,6 +46,7 @@ db	{
 	tbl_tsyrrk;
         tbl_tensuplus2;
         tbl_genericname;
+	tbl_prgoption;
 };
 
 /* #include "orcadb.inc" */
