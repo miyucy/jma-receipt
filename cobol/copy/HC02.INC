@@ -4,6 +4,7 @@
             02  HC02-FTNJAN PIC X(20).
             02  HC02-JKYSNUM    PIC X(14).
             02  HC02-JKYSNUMN   PIC X(20).
+            02  HC02-JKYSNUM12  PIC X(24).
             02  HC02-HKNJA  PIC X(16).
             02  HC02-KIGONUM    PIC X(32).
             02  HC02-BIRTH  PIC X(22).
@@ -25,6 +26,7 @@
             02  HC02-FTNJA2N    PIC X(20).
             02  HC02-JKYSNUM2   PIC X(14).
             02  HC02-JKYSNUM2N  PIC X(20).
+            02  HC02-JKYSNUM212 PIC X(24).
             02  HC02-NAIYO
                     PIC X(86)   OCCURS  20 TIMES.
             02  HC02-MENJYO PIC X(6).
@@ -32,3 +34,8 @@
                     PIC X(86)   OCCURS  9 TIMES.
             02  HC02-HENKOUKA   PIC X(16).
             02  HC02-HKNINAME   PIC X(16).
+            02  HC02-SRYKAMEI   PIC X(10).
+            02  HC02-PAGE   PIC X(5).
+            02  HC02-FTNRATE    PIC X(3).
+            02  HC02-FTNWARI    PIC X(2).
+            02  HC02-MIDASHI    PIC X(20).

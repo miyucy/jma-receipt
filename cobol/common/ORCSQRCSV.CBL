@@ -28,6 +28,7 @@
       *  ¥×¥í¥°¥é¥à½¤ÀµÍúÎò
       * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
       *  03.05.00    NACL-Â¿¡¹Ç¼  07/05/31  ¥°¥ë¡¼¥×¿ÇÎÅÂÐ±þ
+      *  04.01.00    NACL-Â¿¡¹Ç¼  08/01/21  ¸øÈñÊÔ½¸¥Ñ¥é¥á¥¿ÂÐ±þ
       *****************************************************************
       *
       *
@@ -91,6 +92,7 @@
            03  IDX-D               PIC 9(04).
            03  IDX-H               PIC 9(02).
            03  IDX-B               PIC 9(04).
+           03  IDX-K               PIC 9(04).
            03  IDXM                PIC 9(04).
            03  IDZ                 PIC 9(04).
       *
@@ -212,21 +214,29 @@
                MOVE    9               TO  ORCSQRCSV-ERRCD
            END-IF
       *
+      *    £Ä£Â¸¡º÷½èÍý
+           PERFORM 1001-DBKENSAKU-SEC
       *    ¶¦ÄÌ¾ðÊó½ÐÎÏ
-           PERFORM 100-HEAD-SYORI-SEC
+           IF      ORCSQRCSV-ERRCD     =   ZERO
+               PERFORM 100-HEAD-SYORI-SEC
+           END-IF
       *    ÌôºÞ¾ðÊó½ÐÎÏ
-           PERFORM 200-MAIN-SYORI-SEC
+           IF      ORCSQRCSV-ERRCD     =   ZERO
+               PERFORM 200-MAIN-SYORI-SEC
+           END-IF
       *
            CLOSE                       QRCSV-FILE
       *
       *    £Ñ£Ò¥¤¥á¡¼¥¸ºîÀ®
-           PERFORM 400-QRIMAGE-SEC
+           IF      ORCSQRCSV-ERRCD     =   ZERO
+               PERFORM 400-QRIMAGE-SEC
+           END-IF
       *
       *    £Ñ£Ò¥Ç¡¼¥¿ºï½ü
-           MOVE    ZERO                TO  IF-RESULT
-           MOVE    FILE-NAME1          TO  IF-FILENAME
-           CALL    "orcfiledel"        USING
-                                       ORCSFDELAREA
+      *TST MOVE    ZERO                TO  IF-RESULT
+      *    MOVE    FILE-NAME1          TO  IF-FILENAME
+      *    CALL    "orcfiledel"        USING
+      *                                ORCSFDELAREA
            .
        000-PROC-EXT.
            EXIT    PROGRAM
@@ -237,8 +247,6 @@
       *****************************************************************
        100-HEAD-SYORI-SEC             SECTION.
       *
-      *    £Ä£Â¸¡º÷½èÍý
-           PERFORM 1001-DBKENSAKU-SEC
       *    ¥Ð¡¼¥¸¥ç¥ó¾ðÊó
            MOVE    SPACE               TO  TBL-QRCSV-AREA
            MOVE    "JAHIS2"            TO  TBL-QRCSV-DATA (1)
@@ -312,15 +320,7 @@
       *    °ìÉôÉéÃ´¶èÊ¬¥ì¥³¡¼¥É
            IF      ORCSQRCSV-BIKO-FTN  NOT =   SPACE
                MOVE    SPACE               TO  TBL-QRCSV-AREA
-               EVALUATE    ORCSQRCSV-BIKO-FTN
-                   WHEN    "¡Ê¹â£¹¡Ë"
-                       MOVE    "1"         TO  TBL-QRCSV-DATA (2)
-                   WHEN    "¡Ê¹â£·¡Ë"
-                   WHEN    "¡Ê¹â£¸¡Ë"
-                       MOVE    "2"         TO  TBL-QRCSV-DATA (2)
-                   WHEN    "¡Ê£³ºÐ¡Ë"
-                       MOVE    "3"         TO  TBL-QRCSV-DATA (2)
-               END-EVALUATE
+               MOVE    ORCSQRCSV-BIKO-FTN  TO  TBL-QRCSV-DATA (2)
                IF      TBL-QRCSV-DATA (2)  NOT =   SPACE
                    MOVE    "14"                TO  TBL-QRCSV-DATA (1)
                    MOVE    2                   TO  TBL-MAX
@@ -527,101 +527,33 @@
       *****************************************************************
        1001-KOHHKN-HEN-SEC             SECTION.
       *
-      *    Ï·¿ÍÊÝ·ò¥ì¥³¡¼¥É
            MOVE    SPACE               TO  WRK-QR-KOHDATA
            MOVE    ZERO                TO  IDX-H
-      *    ¸øÈñ¾ðÊó£±
-      *    ÉéÃ´¼ÔÈÖ¹æÊÔ½¸¤Ê¤·
-           IF    (COMB-KOH1ID          =   ZERO   )
-      *@@@ ºë¶Ì¸©ÂÐ±þ
-             OR ((ORCSQRCSV-PREFNUM    =   "11"   )  AND
-                 (COMB-KOH1HKNNUM      =   "342"
-                                       OR  "343"
-                                       OR  "344"   ))
-      *@@@ ºë¶Ì¸©ÂÐ±þ
-               CONTINUE
-           ELSE
+      *
+           PERFORM VARYING    IDX-K    FROM    1   BY  1
+                   UNTIL     (IDX-K    >   4   )
+                         OR  (ORCSQRCSV-KOHID (IDX-K)  =   ZERO )
+                         OR  (ORCSQRCSV-ERRCD  NOT =   ZERO     )
                INITIALIZE                  PTKOHINF-REC
                MOVE    SPA-HOSPNUM         TO  PTKOH-HOSPNUM
                MOVE    SPA-PTID            TO  PTKOH-PTID
-               MOVE    COMB-KOH1ID         TO  PTKOH-KOHID
+               MOVE    ORCSQRCSV-KOHID (IDX-K)
+                                           TO  PTKOH-KOHID
                PERFORM 940-PTKOHINF-READ-SEC
-               IF      COMB-KOH1HKNNUM     =   "027"
-                   MOVE    PTKOH-FTNJANUM      TO  WRK-RJ-FTNJA
-                   MOVE    PTKOH-JKYSNUM       TO  WRK-RJ-JKYSNUM
+      *        ÉéÃ´¼ÔÈÖ¹æ¤¬¤Ê¤¤»þ¡¢¥¨¥é¡¼¤È¤¹¤ë
+               IF      PTKOH-FTNJANUM      =   SPACE
+                   MOVE    1                   TO  ORCSQRCSV-ERRCD
                ELSE
-                   PERFORM 1001-KOHCHEK-SEC
+                  IF      PTKOH-KOHNUM            =   "027"
+      *            Ï·¿ÍÊÝ·ò
+                       MOVE    PTKOH-FTNJANUM      TO  WRK-RJ-FTNJA
+                       MOVE    PTKOH-JKYSNUM       TO  WRK-RJ-JKYSNUM
+                   ELSE
+      *            ¸øÈñ
+                       PERFORM 1001-KOHCHEK-SEC
+                   END-IF
                END-IF
-           END-IF
-      *    ¸øÈñ¾ðÊó£²
-      *    ÉéÃ´¼ÔÈÖ¹æÊÔ½¸¤Ê¤·
-           IF    (COMB-KOH2ID          =   ZERO   )
-      *@@@ ºë¶Ì¸©ÂÐ±þ
-             OR ((ORCSQRCSV-PREFNUM    =   "11"   )  AND
-                 (COMB-KOH2HKNNUM      =   "342"
-                                       OR  "343"
-                                       OR  "344"   ))
-      *@@@ ºë¶Ì¸©ÂÐ±þ
-               CONTINUE
-           ELSE
-               INITIALIZE                  PTKOHINF-REC
-               MOVE    SPA-HOSPNUM         TO  PTKOH-HOSPNUM
-               MOVE    SPA-PTID            TO  PTKOH-PTID
-               MOVE    COMB-KOH2ID         TO  PTKOH-KOHID
-               PERFORM 940-PTKOHINF-READ-SEC
-               IF      COMB-KOH2HKNNUM     =   "027"
-                   MOVE    PTKOH-FTNJANUM      TO  WRK-RJ-FTNJA
-                   MOVE    PTKOH-JKYSNUM       TO  WRK-RJ-JKYSNUM
-               ELSE
-                   PERFORM 1001-KOHCHEK-SEC
-               END-IF
-           END-IF
-      *    ¸øÈñ¾ðÊó£³
-      *    ÉéÃ´¼ÔÈÖ¹æÊÔ½¸¤Ê¤·
-           IF    (COMB-KOH3ID          =   ZERO   )
-      *@@@ ºë¶Ì¸©ÂÐ±þ
-             OR ((ORCSQRCSV-PREFNUM    =   "11"   )  AND
-                 (COMB-KOH3HKNNUM      =   "342"
-                                       OR  "343"
-                                       OR  "344"   ))
-      *@@@ ºë¶Ì¸©ÂÐ±þ
-               CONTINUE
-           ELSE
-               INITIALIZE                  PTKOHINF-REC
-               MOVE    SPA-HOSPNUM         TO  PTKOH-HOSPNUM
-               MOVE    SPA-PTID            TO  PTKOH-PTID
-               MOVE    COMB-KOH3ID         TO  PTKOH-KOHID
-               PERFORM 940-PTKOHINF-READ-SEC
-               IF      COMB-KOH3HKNNUM     =   "027"
-                   MOVE    PTKOH-FTNJANUM      TO  WRK-RJ-FTNJA
-                   MOVE    PTKOH-JKYSNUM       TO  WRK-RJ-JKYSNUM
-               ELSE
-                   PERFORM 1001-KOHCHEK-SEC
-               END-IF
-           END-IF
-      *    ¸øÈñ¾ðÊó£´
-      *    ÉéÃ´¼ÔÈÖ¹æÊÔ½¸¤Ê¤·
-           IF    (COMB-KOH4ID          =   ZERO   )
-      *@@@ ºë¶Ì¸©ÂÐ±þ
-             OR ((ORCSQRCSV-PREFNUM    =   "11"   )  AND
-                 (COMB-KOH4HKNNUM      =   "342"
-                                       OR  "343"
-                                       OR  "344"   ))
-      *@@@ ºë¶Ì¸©ÂÐ±þ
-               CONTINUE
-           ELSE
-               INITIALIZE                  PTKOHINF-REC
-               MOVE    SPA-HOSPNUM         TO  PTKOH-HOSPNUM
-               MOVE    SPA-PTID            TO  PTKOH-PTID
-               MOVE    COMB-KOH4ID         TO  PTKOH-KOHID
-               PERFORM 940-PTKOHINF-READ-SEC
-               IF      COMB-KOH4HKNNUM     =   "027"
-                   MOVE    PTKOH-FTNJANUM      TO  WRK-RJ-FTNJA
-                   MOVE    PTKOH-JKYSNUM       TO  WRK-RJ-JKYSNUM
-               ELSE
-                   PERFORM 1001-KOHCHEK-SEC
-               END-IF
-           END-IF
+           END-PERFORM
            .
        1001-KOHHKN-HEN-EXT.
            EXIT.
@@ -892,6 +824,7 @@
                MOVE    "111"               TO  TBL-QRCSV-DATA (1)
                MOVE    WRK-H-RP1           TO  TBL-QRCSV-DATA (2)
                MOVE    "1"                 TO  TBL-QRCSV-DATA (3)
+               MOVE    "°å»Õ¤Î»Ø¼¨ÄÌ¤ê¤Ë"  TO  TBL-QRCSV-DATA (5)
                MOVE    6                   TO  TBL-MAX
                PERFORM 400-DATAOUT-SEC
            END-IF

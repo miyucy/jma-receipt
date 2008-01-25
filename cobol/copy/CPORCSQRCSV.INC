@@ -61,10 +61,14 @@
                05  ORCSQRCSV-TEL           PIC  X(13).
       *        ¥µº‘ ›∏±æ Û
                05  ORCSQRCSV-HKNCOMBINUM   PIC  X(04).
+      *        ¥µº‘∏¯»Ò£…£ƒ
+               05  ORCSQRCSV-KOHID-G       OCCURS   4.
+                   07  ORCSQRCSV-KOHID         PIC 9(10).
+                   07  ORCSQRCSV-KOHHKNNUM     PIC X(03).
       *        À„∆«•’•È•∞
                05  ORCSQRCSV-MAYAKU        PIC  9(01).
       *        ∞Ï…Ù…È√¥∂Ë ¨
-               05  ORCSQRCSV-BIKO-FTN      PIC  X(80).
+               05  ORCSQRCSV-BIKO-FTN      PIC  X(01).
       *
       *    »˜πÕ∆‚Õ∆
            03  ORCSQRCSV-BIKOU-AREA.

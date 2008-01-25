@@ -17,13 +17,16 @@
             02  HCM01-ONNA  PIC X(2).
             02  HCM01-TENKI-TBL         OCCURS  8 TIMES.
               03  HCM01-TENKIG.
-                04  HCM01-TENKI PIC X(2)    OCCURS  3 TIMES.
+                04  HCM01-TENKI
+                        PIC X(2)    OCCURS  3 TIMES.
             02  HCM01-STRYMD-TBL        OCCURS  8 TIMES.
               03  HCM01-STRYMDG.
-                04  HCM01-STRYMD    PIC X(2)        OCCURS  3 TIMES.
+                04  HCM01-STRYMD
+                        PIC X(2)    OCCURS  3 TIMES.
             02  HCM01-ENDYMD-TBL        OCCURS  8 TIMES.
               03  HCM01-ENDYMDG.
-                04  HCM01-ENDYMD    PIC X(2)        OCCURS  3 TIMES.
+                04  HCM01-ENDYMD
+                        PIC X(2)    OCCURS  3 TIMES.
             02  HCM01-TANJYOG   PIC X(4).
             02  HCM01-TANJYOY   PIC X(2).
             02  HCM01-TANJYOM   PIC X(2).
@@ -52,3 +55,5 @@
               03  HCM01-JKYSNON   PIC X(20).
             02  HCM01-FKOHN-TBL         OCCURS  3 TIMES.
               03  HCM01-FTNSNON   PIC X(20).
+            02  HCM01-JKOH12-TBL        OCCURS  3 TIMES.
+              03  HCM01-JKYSNO12  PIC X(24).

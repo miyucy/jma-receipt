@@ -1,0 +1,44 @@
+W34	{
+	fixed1	{
+		PRGID	{
+			value	varchar(25);
+		};
+		SELNUM	{
+			value	number(3);
+		};
+		scrolledwindow1	{
+			hpos	int;
+			vpos	int;
+			PRGLST	{
+				count	int;
+				row	int;
+				item	{
+					value0	varchar(3);
+					value1	varchar(25);
+				}	[100];
+				select	bool[100];
+			};
+		};
+		KBNCD_COMB	{
+			KBNCD	{
+				value	varchar(20);
+			};
+			count	int;
+			item	varchar(20)[50];
+		};
+		scrolledwindow2	{
+			hpos	int;
+			vpos	int;
+			EXPLANTION	{
+				value	varchar(5000);
+			};
+		};
+		scrolledwindow3	{
+			hpos	int;
+			vpos	int;
+			OPTION	{
+				value	varchar(5000);
+			};
+		};
+	};
+};

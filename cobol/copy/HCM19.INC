@@ -4,6 +4,7 @@
             02  HCM19-FTNJAN    PIC X(20).
             02  HCM19-JKYSNUM   PIC X(14).
             02  HCM19-JKYSNUMN  PIC X(20).
+            02  HCM19-JKYSNUM12 PIC X(24).
             02  HCM19-HKNJA PIC X(16).
             02  HCM19-KIGONUM   PIC X(32).
             02  HCM19-BIRTH PIC X(22).
@@ -25,6 +26,7 @@
             02  HCM19-FTNJA2N   PIC X(20).
             02  HCM19-JKYSNUM2  PIC X(14).
             02  HCM19-JKYSNUM2N PIC X(20).
+            02  HCM19-JKYSNUM212    PIC X(24).
             02  HCM19-NAIYO
                     PIC X(86)   OCCURS  20 TIMES.
             02  HCM19-MENJYO    PIC X(6).
@@ -32,3 +34,8 @@
                     PIC X(86)   OCCURS  9 TIMES.
             02  HCM19-HENKOUKA  PIC X(16).
             02  HCM19-HKNINAME  PIC X(16).
+            02  HCM19-SRYKAMEI  PIC X(10).
+            02  HCM19-PAGE  PIC X(5).
+            02  HCM19-FTNRATE   PIC X(3).
+            02  HCM19-FTNWARI   PIC X(2).
+            02  HCM19-MIDASHI   PIC X(20).

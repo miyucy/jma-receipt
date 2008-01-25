@@ -50,6 +50,7 @@
       *  02.00.05    NACL-Â¿¡¹Ç¼  06/02/06  °ì³ç°õºþÄÉ²Ã
       *  03.05.00    NACL-Â¿¡¹Ç¼  07/04/XX  ¥°¥ë¡¼¥×¿ÇÎÅÂÐ±þ
       *  04.01.00    NACL-Â¿¡¹Ç¼  07/11/22  ¸ø³²ÊÝ¸±É½¼¨
+      *  04.01.00    NACL-Â¿¡¹Ç¼  08/01/25  ¼õµë¼ÔÈÖ¹æ£±£²Ê¸»ú
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -184,7 +185,7 @@
            03  WRK-HPTNUM          PIC X(08). 
            03  WRK-FTNSNO          PIC X(16).
       *****03  WRK-JKYSNO          PIC X(16).
-           03  WRK-JKYSNO          PIC X(20).
+           03  WRK-JKYSNO          PIC X(40).
            03  WRK-TEKSTYMD        PIC X(22).
            03  WRK-TEKEDYMD        PIC X(22).
       *
@@ -833,7 +834,12 @@
                    IF      WRK-JKYSNO(15:)     =   SPACE
                        MOVE    WRK-JKYSNO      TO  HC01-JKYSNO (IDY)
                    ELSE
-                       MOVE    WRK-JKYSNO      TO  HC01-JKYSNON(IDY)
+                       IF      WRK-JKYSNO(21:)     =   SPACE
+                           MOVE    WRK-JKYSNO      TO  HC01-JKYSNON(IDY)
+                       ELSE
+                           MOVE    WRK-JKYSNO      TO  HC01-JKYSNO12
+                                                                  (IDY)
+                       END-IF
                    END-IF
                END-IF
            END-PERFORM
@@ -1088,7 +1094,10 @@
       *    ¼õµë¼ÔÈÖ¹æ£±¡¡´Á»úÊÑ´¹
       *    Á´³ÑÊÑ´¹
            MOVE    PTKOH-JKYSNUM       TO  WRK-MAE-INPUT
-           MOVE    14                  TO  WRK-MOJISU
+      *---- (04.01.00) LINE MOD START ---------------------------------
+      **** MOVE    14                  TO  WRK-MOJISU
+           MOVE    20                  TO  WRK-MOJISU
+      *---- (04.01.00) LINE MOD END   ---------------------------------
            PERFORM 2009-HENKAN-SEC
            MOVE    SPACE               TO  WRK-JKYSNO
            MOVE    WRK-OUT-INPUT

@@ -83,6 +83,7 @@
       *  03.05.01    NACL-藤原    07/05/25  印刷データ削除設定追加
       *  04.01.01    NACL-藤原    07/10/24  総括表の地方公費記載対応
       *  04.01.01    NACL-太田    08/01/10  前回ＣＤボタン追加
+      *  04.01.01    NACL-多々納  08/01/2X  プログラムオプション追加
       *****************************************************************
       *
        ENVIRONMENT                               DIVISION.
@@ -290,6 +291,8 @@
            03  FILLER              PIC X(35)   VALUE
                "1901 医療機関編集情報".
            03  FILLER              PIC X(35)   VALUE
+               "1910 プログラムオプション情報".
+           03  FILLER              PIC X(35)   VALUE
                "2003 レセプト作成指示（印刷順）情報".
            03  FILLER              PIC X(35)   VALUE
                "2005 レセプト・総括印刷情報".
@@ -311,7 +314,7 @@
                05  TBL-KANRICD             PIC X(04).
                05  TBL-FILLER              PIC X(01).
                05  TBL-KANRICDMEI          PIC X(30).
-       01  TBL-KANRICD-MAX                 PIC 9(04)   VALUE   38.
+       01  TBL-KANRICD-MAX                 PIC 9(04)   VALUE   39.
       *
       *外来のみ
        01  TBL-KANRICD-G-AREA.
@@ -484,6 +487,7 @@
            COPY    "W31.INC".
            COPY    "W32.INC".
            COPY    "W33.INC".
+           COPY    "W34.INC".
            COPY    "W60.INC".
            COPY    "W61.INC".
            COPY    "W62.INC".
@@ -1127,6 +1131,7 @@
                WHEN    "5006"
                WHEN    "2006"
                WHEN    "2007"
+               WHEN    "1910"
                WHEN    "9700"
       *            期間指定なし
                    MOVE    SPACE           TO  SPA-GMN-KBNCD
@@ -1767,6 +1772,7 @@
       *---- (01.05.24) LINE ADD START --------------------------------
              OR                            "1010"
              OR                            "1014"
+             OR                            "1910"
              OR                            "9700")
       *---- (01.05.24) LINE ADD END   --------------------------------
                CONTINUE
@@ -1854,6 +1860,8 @@
                    MOVE    "W63"               TO  SPA-SAKIPG
                WHEN    "1901" 
                    MOVE    "W18"               TO  SPA-SAKIPG
+               WHEN    "1910" 
+                   MOVE    "W34"               TO  SPA-SAKIPG
                WHEN    "5000"
                    MOVE    "W24"               TO  SPA-SAKIPG
                WHEN    "5001"
