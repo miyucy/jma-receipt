@@ -54,6 +54,9 @@
                05  SPA-I47-GETUMATU.
                    07  SPA-I47-GETUMATU-YM         PIC X(06).
                    07  SPA-I47-GETUMATU-DD         PIC 9(02).
+               05  SPA-I47-ZENGETUMATU.
+                   07  SPA-I47-ZENGETUMATU-YM      PIC X(06).
+                   07  SPA-I47-ZENGETUMATU-DD      PIC 9(02).
                05  SPA-I47-NYUIN-DAY-G.
                    07  SPA-I47-NYUIN-DAY           PIC 9(01)
                                                    OCCURS  31.
@@ -116,6 +119,7 @@
        01  CNT-AREA.
            03  CNT-MAX                     PIC 9(05).
            03  CNT-DAY                     PIC 9(05).
+           03  CNT-NISSU                   PIC 9(05).
       *
       *    添字領域
        01  IDX-AREA.
@@ -136,6 +140,7 @@
            03  WRK-IIDCD                   PIC X(04).
            03  WRK-I4ID-FLG                PIC X(02).
            03  WRK-SYMD                    PIC X(10).
+           03  WRK-SRYYM                   PIC X(06).
            03  WRK-MCP-WIDGET              PIC X(64).
            03  WRK-MAE-INPUT               PIC X(100).
            03  WRK-OUT-INPUT               PIC X(100).
@@ -174,6 +179,8 @@
                05  WRK-MUL-STNUM           PIC 9(05).
                05  WRK-MUL-EDNUM           PIC 9(05).
            03  WRK-MAX                     PIC 9(05).
+           03  WRK-STIDX                   PIC 9(05).
+           03  WRK-EDIDX                   PIC 9(05).
            03  WRK-WIDGET-DAY-G.
                05  WRK-WIDGET-DAY-LBL      PIC X(03).
                05  WRK-WIDGET-DAY          PIC 9(02).
@@ -188,6 +195,9 @@
                                            OCCURS  31.
            03  WRK-ZAINUM-G.
                05  WRK-ZAINUM              PIC 9(08).
+           03  WRK-ZOGENPTN                PIC X(01).
+           03  WRK-ZOGEN                   PIC S9(05).
+           03  WRK-ERRMSG                  PIC X(100).
       *
        01  MEDKBN-DAY-AREA.
            03  MEDKBN-OCC                  OCCURS 2.
@@ -679,6 +689,13 @@
            PERFORM 800-GETUMATU-SEC
            MOVE    WRK-SYMD        TO  SPA-I47-GETUMATU
       *
+           MOVE    SPA-I40-SRYYMD  TO  WRK-SYMD
+           MOVE    "01"            TO  WRK-SYMD(7:2)
+           MOVE    "1"             TO  WRK-ZOGENPTN
+           MOVE    -1              TO  WRK-ZOGEN
+           PERFORM 800-CALENDAR-SEC
+           MOVE    WRK-SYMD        TO  SPA-I47-ZENGETUMATU
+      *
            PERFORM 3101-EDIT-NYUIN-DAY-SEC
       *
            PERFORM 3101-EDIT-RYOYO-DAY-SEC
@@ -887,6 +904,8 @@
                    UNTIL ( IDX0    >   CONST-MEDKBN-MAX )
                     OR   ( IDX-LST >=  CONST-RYOLIST-MAX )
       *
+               MOVE    SPA-I40-SRYYMD (1:6)
+                                       TO  WRK-SRYYM
                MOVE    CONST-MEDKBN-ZAINUM (IDX0)
                                        TO  WRK-ZAINUM
                PERFORM 900-RYOCOM-KEY-SEL-SEC
@@ -955,6 +974,8 @@
                MOVE    CONST-ADLKBN-NAME   (IDX0)
                                    TO  SPA-GMN-TNAME   (IDX-LST)
       *
+               MOVE    SPA-I40-SRYYMD (1:6)
+                                   TO  WRK-SRYYM
                MOVE    SPA-NAI-TZAINUM (IDX-LST)
                                    TO  WRK-ZAINUM
                PERFORM 900-RYOCOM-KEY-SEL-SEC
@@ -1257,6 +1278,10 @@
       *
            IF    ( SPA-ERRCD       =   SPACE )
                PERFORM 4101-DAY-CHK-SEC
+           END-IF
+      *
+           IF    ( SPA-ERRCD       =   SPACE )
+               PERFORM 4101-NISSU-CHK-SEC
            END-IF
       *
            .
@@ -1994,6 +2019,107 @@
        4101-ZAIHENKOU-EXT.
            EXIT.
       *****************************************************************
+      *    日数制限チェック処理
+      *****************************************************************
+       4101-NISSU-CHK-SEC              SECTION.
+      *
+           PERFORM VARYING IDX-LST FROM    1   BY  1
+                   UNTIL ( IDX-LST >   SPA-GMN-RYOLIST-MAX )
+      *
+               IF    ( SPA-NAI-SELNUM-FLG (IDX-LST)  =  1 )
+                OR   ( IDX-LST             =   SPA-GMN-RYOLIST-SEL )
+                   IF    ( SPA-NAI-TZAINUM (IDX-LST)   =    2004
+                                                       OR   2020
+                                                       OR   2022
+                                                       OR   2027
+                                                       OR   2031 )
+      *
+                       MOVE    ZERO    TO  CNT-NISSU
+      *
+                       MOVE    SPA-I47-ZENGETUMATU-YM
+                                           TO  WRK-SRYYM
+                       MOVE    SPA-NAI-TZAINUM (IDX-LST)
+                                           TO  WRK-ZAINUM
+                       PERFORM 900-RYOCOM-KEY-SEL-SEC
+                       IF    ( FLG-RYOCOM  =   ZERO )
+                           COMPUTE WRK-STIDX
+                               =   SPA-I47-ZENGETUMATU-DD
+                           MOVE    ZERO    TO  WRK-EDIDX
+                           IF    ( SPA-NAI-TZAINUM (IDX-LST)
+                                                       =   2020 )
+                               COMPUTE WRK-EDIDX
+                                   =   SPA-I47-ZENGETUMATU-DD
+                                   -   12
+                           ELSE
+                               COMPUTE WRK-EDIDX
+                                   =   SPA-I47-ZENGETUMATU-DD
+                                   -   5
+                           END-IF
+                           PERFORM VARYING IDX-DAY
+                                   FROM    WRK-STIDX   BY  -1
+                                   UNTIL ( IDX-DAY     <   WRK-EDIDX )
+                                    OR   ( RYOCOM-DAY (IDX-DAY)
+                                                       =   ZERO )
+      *
+                               COMPUTE CNT-NISSU   =   CNT-NISSU   +   1
+      *
+                           END-PERFORM
+                       END-IF
+      *
+                       PERFORM VARYING IDX-DAY FROM    1   BY  1
+                               UNTIL ( IDX-DAY >   31 )
+                                OR   ( SPA-ERRCD   NOT = SPACE )
+      *
+                           IF    ( SPA-GMN-DAY (IDX-DAY)
+                                                       = SPACE )
+                               MOVE    ZERO    TO  CNT-NISSU
+                           ELSE
+                               COMPUTE CNT-NISSU
+                                   =   CNT-NISSU   +   1
+                               IF    ( SPA-NAI-TZAINUM (IDX-LST)
+                                                       =   2020 )
+                                   IF    ( CNT-NISSU   >   14 )
+                                       IF    ( SPA-NAI-INPUT-MODE
+                                                           =   1 )
+                                           MOVE    "0101"  TO  SPA-ERRCD
+                                       ELSE
+                                           MOVE    "0102"  TO  SPA-ERRCD
+                                           MOVE    SPA-GMN-TNAME
+                                                               (IDX-LST)
+                                                           TO WRK-ERRMSG
+                                       END-IF
+                                   END-IF
+                               ELSE
+                                   IF    ( CNT-NISSU   >   7 )
+                                       IF    ( SPA-NAI-INPUT-MODE
+                                                       =   1 )
+                                           MOVE    "0103"  TO  SPA-ERRCD
+                                       ELSE
+                                           MOVE    "0104"  TO  SPA-ERRCD
+                                           MOVE    SPA-GMN-TNAME
+                                                               (IDX-LST)
+                                                           TO WRK-ERRMSG
+                                       END-IF
+                                   END-IF
+                               END-IF
+      *
+                               IF    ( SPA-ERRCD   NOT =   SPACE )
+                                   COMPUTE SPA-GMN-CUR
+                                       =   IDX-DAY +   100
+                               END-IF
+      *
+                           END-IF
+      *
+                       END-PERFORM
+                   END-IF
+               END-IF
+      *
+           END-PERFORM
+      *
+           .
+       4101-NISSU-CHK-EXT.
+           EXIT.
+      *****************************************************************
       *    剤変更処理
       *****************************************************************
        41011-ZAIHENKOU-SEC             SECTION.
@@ -2312,9 +2438,6 @@
                PERFORM VARYING IDX-LST     FROM    1   BY  1
                        UNTIL ( IDX-LST     >   SPA-GMN-RYOLIST-MAX )
       *
-                       DISPLAY "SPA-NAI-TZAISKBKBN (" IDX-LST ")="
-                                SPA-NAI-TZAISKBKBN (IDX-LST)
-                       DISPLAY "ADLTEN-DAY-G =" ADLTEN-DAY-G
                    IF    ( SPA-NAI-TZAISKBKBN (IDX-LST)    =   "1" )
                        COMPUTE ADLTEN-DAYALL
                            =   ADLTEN-DAYALL
@@ -2578,6 +2701,28 @@
            WHEN    "0007"
                MOVE    "入院期間外です"
                                        TO  SPA-ERRMSG
+           WHEN    "0101"
+               MOVE    "連続して１４日を越えて入力されています"
+                                       TO  SPA-ERRMSG
+           WHEN    "0102"
+               STRING  "連続して１４日を越えて入力されています"
+                                           DELIMITED   BY  SIZE
+                       "【"                DELIMITED   BY  SIZE
+                       WRK-ERRMSG(1:20)    DELIMITED   BY  SIZE
+                       "】"                DELIMITED   BY  SIZE
+                       INTO    SPA-ERRMSG
+               END-STRING
+           WHEN    "0103"
+               MOVE    "連続して７日を越えて入力されています"
+                                       TO  SPA-ERRMSG
+           WHEN    "0104"
+               STRING  "連続して７日を越えて入力されています"
+                                           DELIMITED   BY  SIZE
+                       "【"                DELIMITED   BY  SIZE
+                       WRK-ERRMSG(1:20)    DELIMITED   BY  SIZE
+                       "】"                DELIMITED   BY  SIZE
+                       INTO    SPA-ERRMSG
+               END-STRING
            WHEN    "1001"
                MOVE    "剤が修正中です。変更確定かクリアをしてください"
                                        TO  SPA-ERRMSG
@@ -2679,6 +2824,24 @@
        800-GETUMATU-EXT.
             EXIT.
       *****************************************************************
+      *    カレンダー処理
+      *****************************************************************
+       800-CALENDAR-SEC               SECTION.
+      *
+           INITIALIZE                  STS-AREA-DAY
+           INITIALIZE                  LNK-DAY6-AREA
+           MOVE    "61"                TO  LNK-DAY6-IRAI
+           MOVE    WRK-SYMD            TO  LNK-DAY6-KIJUN
+           MOVE    WRK-ZOGENPTN        TO  LNK-DAY6-ZOGENPTN
+           MOVE    WRK-ZOGEN           TO  LNK-DAY6-ZOGEN
+           CALL  "ORCSDAY"             USING   STS-AREA-DAY
+                                               LNK-DAY6-AREA
+           MOVE    LNK-DAY6-KEISAN     TO  WRK-SYMD
+      *
+           .
+       800-CALENDAR-EXT.
+           EXIT.
+      *****************************************************************
       *    マシン日付取得サブ
       *****************************************************************
        800-MCNDATE-SEC         SECTION.
@@ -2724,7 +2887,7 @@
            MOVE    SPA-HOSPNUM     TO  RYOCOM-HOSPNUM
            MOVE    "1"             TO  RYOCOM-NYUGAIKBN
            MOVE    SPA-GMN-PTID    TO  RYOCOM-PTID
-           MOVE    SPA-I40-SRYYMD (1:6)
+           MOVE    WRK-SRYYM
                                    TO  RYOCOM-SRYYM
            MOVE    WRK-ZAINUM      TO  RYOCOM-ZAINUM
            MOVE    RYOCOM-REC      TO  MCPDATA-REC
