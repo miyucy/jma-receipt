@@ -201,6 +201,7 @@
       *  04.01.06    NACL-ÌçÏÆ    07/12/19  Æþ±¡ÎÁÌ¤»»ÄêÆüÂÐ±þ
       *  04.01.07    NACL-ÌçÏÆ    08/01/18  ºë¶Ì¸©ÀîÅçÄ®ÃÏÊý¸øÈñÂÐ±þ
       *  04.01.08    NACL-ÌçÏÆ    08/01/21  Æ±ÆüºÆÆþ±¡¿©»öÂÐ±þ
+      *  04.01.09    NACL-ÌçÏÆ    08/01/25  ·ë³ËÆþ±¡¸ÂÅÙ³ÛÂÐ±þ
       ****************************************************************
        ENVIRONMENT         DIVISION.
        CONFIGURATION       SECTION.
@@ -354,6 +355,9 @@
       *
            03  WK-TAIHI-NYUJGNGAK-OCC.
                05  WK-TAIHI-NYUJGNGAK  PIC 9(7)    OCCURS   4.
+      *
+           03  WK-TAIHI-KANSEN11-OCC.
+               05  WK-TAIHI-KANSEN11   PIC 9(1)    OCCURS   4.
       *
            03  WK-TAIHI-SDAY-COMPFTN   PIC 9(7).
            03  WK-TAIHI-SDAY-COMPFTNWK PIC 9(7).
@@ -754,6 +758,7 @@
            03  FLG-KOUGAKUCYO-GEN70    PIC 9(01).
            03  FLG-KOUGAKUCYO-GEN70K   PIC 9(01).
            03  FLG-KOUGAKUCYO-OITA     PIC 9(01).
+           03  FLG-KANSEN11            PIC 9(01).
            03  WK-SYU-SYUCOMPFTN       PIC 9(08).
            03  WK-KOUREI-IRYOHI        PIC 9(08).
            03  WK-KOUREI-IRYOHI2       PIC 9(08).
@@ -1281,6 +1286,7 @@
                OR  (FLG-KOUGAKUCYO-OITA      =    1        )
                OR  (FLG-KUMAMOTO             =   "1"       )
                OR  (COMB-SYU-HKNKOHSBTKBN    =   "8"       )
+               OR  (FLG-KANSEN11             =    1        )
                    CONTINUE
                ELSE
                    COMPUTE  LNK-SYU-SKYMONEY = LNK-SYU-SKYMONEY  +  5
@@ -5479,6 +5485,9 @@
                  (COMB-KOHHKNNUM(KOH-IDX)      = "281"   )  AND
                  (LNK-SYU-SRYYMD(1:6)         >= "200702"))
       *
+             OR ((COMB-KOHHKNNUM(KOH-IDX)      = "011"   )  AND
+                 (LNK-SYU-SRYYMD(1:6)         >= "200704")           )
+      *
       ***    OR ( COMB-KOHHKNNUM(KOH-IDX)(1:1) = "1" OR "2" OR "3" OR 
       ***                                        "4" OR "5" OR "6" OR
       ***                                        "7" OR "8"          )
@@ -5514,13 +5523,23 @@
                                             WK-TAIHI-NYUJGNGAK(KOH-IDX)
                         MOVE     "1"   TO     COMB-KOH1-NYUJGNKBN
                         IF   LNK-S02-KOUREI-NYUIN-KBN  =    "1" 
-                            IF  COMB-KOHHKNNUM(KOH-IDX) = "012"
+                            IF  COMB-KOHHKNNUM(KOH-IDX) = "012" OR "011"
+                             EVALUATE  COMB-KOHHKNNUM(KOH-IDX)
+                             WHEN  "012"
                               IF   (COMB-HKNNUM  NOT   =   SPACE)
                               AND  (MAX-KIN-KOHI1-M > WK-SEIHO-GENDO)
                                 MOVE  WK-SEIHO-GENDO
                                      TO   MAX-KIN-KOHI1-M
                                           WK-TAIHI-NYUJGNGAK(KOH-IDX)
                               END-IF
+                             WHEN  "011"
+                              IF   (COMB-HKNNUM  NOT   =   SPACE)
+                              AND  (MAX-KIN-KOHI1-M > WK-KOH-GENDOGAKU)
+                                MOVE  WK-KOH-GENDOGAKU
+                                     TO   MAX-KIN-KOHI1-M
+                                          WK-TAIHI-NYUJGNGAK(KOH-IDX)
+                              END-IF
+                             END-EVALUATE
                             ELSE
                               IF  ((COMB-KOHHKNNUM(KOH-IDX) =
                                            "015" OR "016" OR "021" ) AND
@@ -5558,11 +5577,21 @@
                         END-IF
                         IF   FLG-GENBUTU70   NOT =   ZERO
                             IF    COMB-KOHHKNNUM(KOH-IDX) = "012"
+                                                         OR "011"
+                             EVALUATE  COMB-KOHHKNNUM(KOH-IDX)
+                             WHEN  "012"
                               IF  MAX-KIN-KOHI1-M > WK-SEIHO-GENDO70
                                 MOVE WK-SEIHO-GENDO70
                                      TO MAX-KIN-KOHI1-M
                                         WK-TAIHI-NYUJGNGAK(KOH-IDX)
                               END-IF
+                             WHEN  "011"
+                              IF  MAX-KIN-KOHI1-M > WK-GEN70-GENDOGAKU
+                                MOVE WK-GEN70-GENDOGAKU
+                                     TO MAX-KIN-KOHI1-M
+                                        WK-TAIHI-NYUJGNGAK(KOH-IDX)
+                              END-IF
+                             END-EVALUATE
                             ELSE
                               IF  COMB-KOHHKNNUM(KOH-IDX) =
                                            "015" OR "016" OR "021"
@@ -5581,7 +5610,8 @@
                               END-IF
                             END-IF
                         END-IF
-                        IF  ( COMB-KOHHKNNUM(KOH-IDX) = "012" )
+                        IF  ( COMB-KOHHKNNUM(KOH-IDX) = "012"
+                                                     OR "011" )
                         OR  ((COMB-KOHHKNNUM(KOH-IDX) =
                                      "015" OR "016" OR "021" ) AND
                              (LNK-SYU-SRYYMD(1:6) >= "200604"))
@@ -5767,13 +5797,23 @@
                                             WK-TAIHI-NYUJGNGAK(KOH-IDX)
                         MOVE     "1"   TO     COMB-KOH2-NYUJGNKBN
                         IF   LNK-S02-KOUREI-NYUIN-KBN  =    "1" 
-                            IF  COMB-KOHHKNNUM(KOH-IDX) = "012"
+                            IF  COMB-KOHHKNNUM(KOH-IDX) = "012" OR "011"
+                             EVALUATE  COMB-KOHHKNNUM(KOH-IDX)
+                             WHEN  "012"
                               IF   (COMB-HKNNUM  NOT   =   SPACE)
                               AND  (MAX-KIN-KOHI2-M > WK-SEIHO-GENDO)
                                 MOVE  WK-SEIHO-GENDO
                                      TO   MAX-KIN-KOHI2-M
                                           WK-TAIHI-NYUJGNGAK(KOH-IDX)
                               END-IF
+                             WHEN  "011"
+                              IF   (COMB-HKNNUM  NOT   =   SPACE)
+                              AND  (MAX-KIN-KOHI2-M > WK-KOH-GENDOGAKU)
+                                MOVE  WK-KOH-GENDOGAKU
+                                     TO   MAX-KIN-KOHI2-M
+                                          WK-TAIHI-NYUJGNGAK(KOH-IDX)
+                              END-IF
+                             END-EVALUATE
                             ELSE
                               IF  ((COMB-KOHHKNNUM(KOH-IDX) =
                                            "015" OR "016" OR "021" ) AND
@@ -5811,11 +5851,21 @@
                         END-IF
                         IF   FLG-GENBUTU70   NOT =   ZERO
                             IF    COMB-KOHHKNNUM(KOH-IDX) = "012"
+                                                         OR "011"
+                             EVALUATE  COMB-KOHHKNNUM(KOH-IDX)
+                             WHEN  "012"
                               IF  MAX-KIN-KOHI2-M > WK-SEIHO-GENDO70
                                 MOVE WK-SEIHO-GENDO70
                                      TO MAX-KIN-KOHI2-M
                                         WK-TAIHI-NYUJGNGAK(KOH-IDX)
                               END-IF
+                             WHEN  "011"
+                              IF  MAX-KIN-KOHI2-M > WK-GEN70-GENDOGAKU
+                                MOVE WK-GEN70-GENDOGAKU
+                                     TO MAX-KIN-KOHI2-M
+                                        WK-TAIHI-NYUJGNGAK(KOH-IDX)
+                              END-IF
+                             END-EVALUATE
                             ELSE
                               IF  COMB-KOHHKNNUM(KOH-IDX) =
                                            "015" OR "016" OR "021"
@@ -5834,7 +5884,8 @@
                               END-IF
                             END-IF
                         END-IF
-                        IF  ( COMB-KOHHKNNUM(KOH-IDX) = "012" )
+                        IF  ( COMB-KOHHKNNUM(KOH-IDX) = "012"
+                                                     OR "011" )
                         OR  ((COMB-KOHHKNNUM(KOH-IDX) =
                                      "015" OR "016" OR "021" ) AND
                              (LNK-SYU-SRYYMD(1:6) >= "200604"))
@@ -5987,13 +6038,23 @@
                                             WK-TAIHI-NYUJGNGAK(KOH-IDX)
                         MOVE     "1"   TO     COMB-KOH3-NYUJGNKBN
                         IF   LNK-S02-KOUREI-NYUIN-KBN  =    "1" 
-                            IF  COMB-KOHHKNNUM(KOH-IDX) = "012"
+                            IF  COMB-KOHHKNNUM(KOH-IDX) = "012" OR "011"
+                             EVALUATE  COMB-KOHHKNNUM(KOH-IDX)
+                             WHEN  "012"
                               IF   (COMB-HKNNUM  NOT   =   SPACE)
                               AND  (MAX-KIN-KOHI3-M > WK-SEIHO-GENDO)
                                 MOVE  WK-SEIHO-GENDO
                                      TO   MAX-KIN-KOHI3-M
                                           WK-TAIHI-NYUJGNGAK(KOH-IDX)
                               END-IF
+                             WHEN  "011"
+                              IF   (COMB-HKNNUM  NOT   =   SPACE)
+                              AND  (MAX-KIN-KOHI3-M > WK-KOH-GENDOGAKU)
+                                MOVE  WK-KOH-GENDOGAKU
+                                     TO   MAX-KIN-KOHI3-M
+                                          WK-TAIHI-NYUJGNGAK(KOH-IDX)
+                              END-IF
+                             END-EVALUATE
                             ELSE
                               IF  ((COMB-KOHHKNNUM(KOH-IDX) =
                                            "015" OR "016" OR "021" ) AND
@@ -6031,11 +6092,21 @@
                         END-IF
                         IF   FLG-GENBUTU70   NOT =   ZERO
                             IF    COMB-KOHHKNNUM(KOH-IDX) = "012"
+                                                         OR "011"
+                             EVALUATE  COMB-KOHHKNNUM(KOH-IDX)
+                             WHEN  "012"
                               IF  MAX-KIN-KOHI3-M > WK-SEIHO-GENDO70
                                 MOVE WK-SEIHO-GENDO70
                                      TO MAX-KIN-KOHI3-M
                                         WK-TAIHI-NYUJGNGAK(KOH-IDX)
                               END-IF
+                             WHEN  "011"
+                              IF  MAX-KIN-KOHI3-M > WK-GEN70-GENDOGAKU
+                                MOVE WK-GEN70-GENDOGAKU
+                                     TO MAX-KIN-KOHI3-M
+                                        WK-TAIHI-NYUJGNGAK(KOH-IDX)
+                              END-IF
+                             END-EVALUATE
                             ELSE
                               IF  COMB-KOHHKNNUM(KOH-IDX) =
                                            "015" OR "016" OR "021"
@@ -6054,7 +6125,8 @@
                               END-IF
                             END-IF
                         END-IF
-                        IF  ( COMB-KOHHKNNUM(KOH-IDX) = "012" )
+                        IF  ( COMB-KOHHKNNUM(KOH-IDX) = "012"
+                                                     OR "011" )
                         OR  ((COMB-KOHHKNNUM(KOH-IDX) =
                                      "015" OR "016" OR "021" ) AND
                              (LNK-SYU-SRYYMD(1:6) >= "200604"))
@@ -6098,13 +6170,23 @@
                                             WK-TAIHI-NYUJGNGAK(KOH-IDX)
                         MOVE     "1"   TO     COMB-KOH4-NYUJGNKBN
                         IF   LNK-S02-KOUREI-NYUIN-KBN  =    "1" 
-                            IF  COMB-KOHHKNNUM(KOH-IDX) = "012"
+                            IF  COMB-KOHHKNNUM(KOH-IDX) = "012" OR "011"
+                             EVALUATE  COMB-KOHHKNNUM(KOH-IDX)
+                             WHEN  "012"
                               IF   (COMB-HKNNUM  NOT   =   SPACE)
                               AND  (MAX-KIN-KOHI4-M > WK-SEIHO-GENDO)
                                 MOVE  WK-SEIHO-GENDO
                                      TO   MAX-KIN-KOHI4-M
                                           WK-TAIHI-NYUJGNGAK(KOH-IDX)
                               END-IF
+                             WHEN  "011"
+                              IF   (COMB-HKNNUM  NOT   =   SPACE)
+                              AND  (MAX-KIN-KOHI4-M > WK-KOH-GENDOGAKU)
+                                MOVE  WK-KOH-GENDOGAKU
+                                     TO   MAX-KIN-KOHI4-M
+                                          WK-TAIHI-NYUJGNGAK(KOH-IDX)
+                              END-IF
+                             END-EVALUATE
                             ELSE
                               IF  ((COMB-KOHHKNNUM(KOH-IDX) =
                                            "015" OR "016" OR "021" ) AND
@@ -6142,11 +6224,21 @@
                         END-IF
                         IF   FLG-GENBUTU70   NOT =   ZERO
                             IF    COMB-KOHHKNNUM(KOH-IDX) = "012"
+                                                         OR "011"
+                             EVALUATE  COMB-KOHHKNNUM(KOH-IDX)
+                             WHEN  "012"
                               IF  MAX-KIN-KOHI4-M > WK-SEIHO-GENDO70
                                 MOVE WK-SEIHO-GENDO70
                                      TO MAX-KIN-KOHI4-M
                                         WK-TAIHI-NYUJGNGAK(KOH-IDX)
                               END-IF
+                             WHEN  "011"
+                              IF  MAX-KIN-KOHI4-M > WK-GEN70-GENDOGAKU
+                                MOVE WK-GEN70-GENDOGAKU
+                                     TO MAX-KIN-KOHI4-M
+                                        WK-TAIHI-NYUJGNGAK(KOH-IDX)
+                              END-IF
+                             END-EVALUATE
                             ELSE
                               IF  COMB-KOHHKNNUM(KOH-IDX) =
                                            "015" OR "016" OR "021"
@@ -6165,7 +6257,8 @@
                               END-IF
                             END-IF
                         END-IF
-                        IF  ( COMB-KOHHKNNUM(KOH-IDX) = "012" )
+                        IF  ( COMB-KOHHKNNUM(KOH-IDX) = "012"
+                                                     OR "011" )
                         OR  ((COMB-KOHHKNNUM(KOH-IDX) =
                                      "015" OR "016" OR "021" ) AND
                              (LNK-SYU-SRYYMD(1:6) >= "200604"))
@@ -10298,6 +10391,7 @@
            INITIALIZE               WK-TAIHI-RECEFTNDSPKBN-OCC.
       *
            INITIALIZE               WK-SYOUKAN-FLG-TAIHI-AREA.
+           INITIALIZE               WK-TAIHI-KANSEN11-OCC.
       *
            MOVE    ZERO      TO     WK-TOKUSYU-COMPFTN.
            MOVE    9999999   TO     WK-TOKUSYU-COMPFTN2.
@@ -13483,6 +13577,11 @@
                 MOVE    "1"                  TO   HKN-RECEFTNDSPKBN
            END-IF.
       *
+           IF   COMB-KOHHKNNUM(KOH-IDX)  =  "011"
+           AND  LNK-SYU-SRYYMD(1:6)     >=  "200704"
+                MOVE    "2"                  TO   HKN-RECEFTNDSPKBN
+           END-IF.
+      *
            IF   COMB-KOHHKNNUM(KOH-IDX)  =  "010" OR "021"
               IF    (COMB-KOHHKNNUM(KOH-IDX)  =  "021"   )
               AND   (LNK-SYU-SRYYMD(1:6)     >=  "200604")
@@ -14248,6 +14347,11 @@
                COMPUTE   ZAN-KOHI-T(KOH-IDX)  =
                          ZAN-KOHI-T(KOH-IDX)  -
                          LNK-SYU-KOH-COMPFTN(KOH-IDX)
+               IF   (LNK-SYU-KOH-HKNNUM(KOH-IDX)     =  "011")
+               AND  (WK-TAIHI-NYUJGNGAK(KOH-IDX) NOT =   ZERO)
+               AND  (ZAN-KOHI-T(KOH-IDX)             =   ZERO)
+                  MOVE     1    TO    WK-TAIHI-KANSEN11(KOH-IDX)
+               END-IF
                COMPUTE   LNK-SYU-KOH-COMPTOTAL(KOH-IDX)   =
                          LNK-SYU-KOH-COMPFTN(KOH-IDX)     
                IF    ZAN-KOHI-T(KOH-IDX)   NOT =   ZERO
@@ -17318,6 +17422,7 @@
                                          NOT =    ZERO ) AND
                     ( FLG-IRYOHI70       =   3  OR 4   ) AND
                     ( FLG-SYOUKAN(1)         =    "1"  ))
+               OR  (  WK-TAIHI-KANSEN11(1)   =     1    )
                     MOVE     LNK-SYU-KOH1COMPFTN  TO
                                           LNK-SYU-KOH1HKNFTNMONEY
                ELSE
@@ -17337,6 +17442,7 @@
                     ( FLG-SYOUKAN(2)         =    "1"  ))
                OR  (( FLG-KOUGAKUCYO5    NOT =    ZERO ) AND
                     ( FLG-IRYOHI5            =    21   ))
+               OR  (  WK-TAIHI-KANSEN11(2)   =     1    )
                     MOVE     LNK-SYU-KOH2COMPFTN  TO
                                           LNK-SYU-KOH2HKNFTNMONEY
                ELSE
@@ -17388,6 +17494,7 @@
                                            NOT =    ZERO ) AND
                       ( FLG-IRYOHI70       =   3  OR 4   ) AND
                       ( FLG-SYOUKAN(1)         =    "1"  ))
+                  OR (  WK-TAIHI-KANSEN11(1)   =     1    )
                     CONTINUE
                   ELSE
                     COMPUTE  LNK-SYU-KOH1COMPFTN  =
@@ -17423,6 +17530,7 @@
                                            NOT =    ZERO ) AND
                       ( FLG-IRYOHI70       =   3  OR 4   ) AND
                       ( FLG-SYOUKAN(1)         =    "1"  ))
+                  OR (  WK-TAIHI-KANSEN11(1)   =     1    )
                     CONTINUE
                   ELSE
                     COMPUTE  LNK-SYU-KOH1COMPFTN  =
@@ -17462,6 +17570,7 @@
                       ( FLG-SYOUKAN(2)         =    "1"  ))
                   OR (( FLG-KOUGAKUCYO5    NOT =    ZERO ) AND
                       ( FLG-IRYOHI5            =     21  ))
+                  OR (  WK-TAIHI-KANSEN11(2)   =     1    )
                     CONTINUE
                   ELSE
                     COMPUTE  LNK-SYU-KOH2COMPFTN  =
@@ -17486,6 +17595,7 @@
                       ( FLG-SYOUKAN(2)         =    "1"  ))
                   OR (( FLG-KOUGAKUCYO5    NOT =    ZERO ) AND
                       ( FLG-IRYOHI5            =     21  ))
+                  OR (  WK-TAIHI-KANSEN11(2)   =     1    )
                     CONTINUE
                   ELSE
                     COMPUTE  LNK-SYU-KOH2COMPFTN  =
@@ -17708,6 +17818,18 @@
                     CONTINUE
                ELSE
                     MOVE    ZERO   TO    FLG-KOUGAKUCYO-GEN70K
+               END-IF
+           END-IF.
+      *
+           MOVE       ZERO         TO    FLG-KANSEN11.
+           IF   WK-TAIHI-KANSEN11(1)    =    1
+               IF   FLG-HIKAKU     =     1
+                    MOVE    1      TO    FLG-KANSEN11
+               END-IF
+           END-IF.
+           IF   WK-TAIHI-KANSEN11(2)    =    1
+               IF   FLG-HIKAKU     =     2
+                    MOVE    1      TO    FLG-KANSEN11
                END-IF
            END-IF.
       *
