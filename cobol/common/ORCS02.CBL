@@ -200,6 +200,7 @@
       *  04.01.05    NACL-ÌçÏÆ    07/12/07  ¸ø³²ÂÐ±þ
       *  04.01.06    NACL-ÌçÏÆ    07/12/19  Æþ±¡ÎÁÌ¤»»ÄêÆüÂÐ±þ
       *  04.01.07    NACL-ÌçÏÆ    08/01/18  ºë¶Ì¸©ÀîÅçÄ®ÃÏÊý¸øÈñÂÐ±þ
+      *  04.01.08    NACL-ÌçÏÆ    08/01/21  Æ±ÆüºÆÆþ±¡¿©»öÂÐ±þ
       ****************************************************************
        ENVIRONMENT         DIVISION.
        CONFIGURATION       SECTION.
@@ -823,6 +824,8 @@
                05  WK-ROSAITOKU95      PIC 9(04).
                05  WK-ROSAITOKU96      PIC 9(04).
                05  WK-ROSAITOKU97      PIC 9(04).
+      *
+               05  WK-SHOKUJI-KANFLG   PIC 9(01).
       *
            03  WK-NYULIFE-AREA         OCCURS   31.
                05  WK-NYULIFE-KBN           PIC  X(01).
@@ -11760,6 +11763,63 @@
       ******************************************************************
        23046-SHOKUJI-FURIWAKE-SEC                 SECTION.
       *
+           IF   LNK-S02-SKYSTYMD(1:6) = LNK-SYU-SRYYMD(1:6)
+             IF   LNK-S02-DOJITUFLG-ST  =  "1"
+                MOVE      LNK-SYU-SKYSTYMD(7:2)  TO   IDX-ST
+                EVALUATE  LNK-S02-TIMEKBN-ST
+                  WHEN     "0"
+                    MOVE   ZERO   TO  WK-SHOKUJI-ASA (IDX-ST)
+                    MOVE   ZERO   TO  WK-SHOKUJI-HIRU(IDX-ST)
+                    MOVE   ZERO   TO  WK-SHOKUJI-YORU(IDX-ST)
+                    MOVE   ZERO   TO  WK-SHOKUDOKASAN(IDX-ST)
+                  WHEN     "1"
+                    CONTINUE
+                  WHEN     "2"
+                    IF   WK-SHOKUJI-ASA (IDX-ST)  NOT = ZERO
+                      MOVE ZERO   TO  WK-SHOKUDOKASAN(IDX-ST)
+                    END-IF
+                    MOVE   ZERO   TO  WK-SHOKUJI-ASA (IDX-ST)
+                  WHEN     "3"
+                    IF   WK-SHOKUJI-ASA (IDX-ST)  NOT = ZERO
+                    OR   WK-SHOKUJI-HIRU(IDX-ST)  NOT = ZERO
+                      MOVE ZERO   TO  WK-SHOKUDOKASAN(IDX-ST)
+                    END-IF
+                    MOVE   ZERO   TO  WK-SHOKUJI-ASA (IDX-ST)
+                    MOVE   ZERO   TO  WK-SHOKUJI-HIRU(IDX-ST)
+                END-EVALUATE
+                MOVE        1     TO  WK-SHOKUJI-KANFLG(IDX-ST)
+                MOVE       ZERO   TO  WK-ROSAITOKU95 (IDX-ST)
+                MOVE       ZERO   TO  WK-ROSAITOKU96 (IDX-ST)
+                MOVE       ZERO   TO  WK-ROSAITOKU97 (IDX-ST)
+             END-IF
+           END-IF
+           IF   LNK-S02-SKYEDYMD(1:6) = LNK-SYU-SRYYMD(1:6)
+             IF   LNK-S02-DOJITUFLG-ED  =  "1"
+                MOVE      LNK-SYU-SKYEDYMD(7:2)  TO   IDX-ED
+                EVALUATE  LNK-S02-TIMEKBN-ED
+                  WHEN     "0"
+                    MOVE   ZERO   TO  WK-SHOKUJI-ASA (IDX-ED)
+                    MOVE   ZERO   TO  WK-SHOKUJI-HIRU(IDX-ED)
+                    MOVE   ZERO   TO  WK-SHOKUJI-YORU(IDX-ED)
+                    MOVE   ZERO   TO  WK-SHOKUDOKASAN(IDX-ED)
+                  WHEN     "1"
+                    IF   WK-SHOKUJI-ASA (IDX-ED)   = ZERO
+                      MOVE ZERO   TO  WK-SHOKUDOKASAN(IDX-ED)
+                    END-IF
+                    MOVE   ZERO   TO  WK-SHOKUJI-HIRU(IDX-ED)
+                    MOVE   ZERO   TO  WK-SHOKUJI-YORU(IDX-ED)
+                  WHEN     "2"
+                    IF   WK-SHOKUJI-ASA (IDX-ED)   = ZERO
+                    AND  WK-SHOKUJI-HIRU(IDX-ED)   = ZERO
+                      MOVE ZERO   TO  WK-SHOKUDOKASAN(IDX-ED)
+                    END-IF
+                    MOVE   ZERO   TO  WK-SHOKUJI-YORU(IDX-ED)
+                  WHEN     "3"
+                    CONTINUE
+                END-EVALUATE
+             END-IF
+           END-IF
+      *
            PERFORM    VARYING   IDY   FROM   1   BY   1
                        UNTIL    IDY    >    31
       *
@@ -12068,6 +12128,7 @@
               IF       ((LNK-SYU-DAY(IDY)              =  "1" ) OR
                         (LNK-S02-NYUINDAY-KBN(IDY)     =  "1" ))
               AND      ( WK-GAIHAKU(IDY)        =  ZERO  OR  4 )
+              AND      ( WK-SHOKUJI-KANFLG(IDY) =  ZERO        )
       *
                 IF    LNK-SYU-SYUHKNNUM   =   "971" OR "973"
                  EVALUATE  LNK-SYU-SYUHKNNUM

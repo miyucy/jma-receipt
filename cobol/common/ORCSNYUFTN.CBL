@@ -94,6 +94,7 @@
       *  04.01.02    NACL-ÌçÏÆ    07/12/07  ¸ø³²ÂÐ±þ
       *  04.01.03    NACL-ÌçÏÆ    07/12/19  Æþ±¡ÎÁÌ¤»»ÄêÆüÂÐ±þ
       *  04.01.04    NACL-ÌçÏÆ    08/01/18  ºë¶Ì¸©ÀîÅçÄ®ÃÏÊý¸øÈñÂÐ±þ
+      *  04.01.05    NACL-ÌçÏÆ    08/01/21  Æ±ÆüºÆÆþ±¡¿©»öÂÐ±þ
       *****************************************************************
        ENVIRONMENT         DIVISION.
        CONFIGURATION       SECTION.
@@ -150,6 +151,11 @@
        01  WRK-NYUINDAY-TABLE.
            02  WRK-NYUINDAY-TBL  OCCURS   10.
               03 WRK-NYUINDAY-KBN          PIC X(01)  OCCURS  31.
+      *
+      *    Æ±ÆüºÆÆþ±¡¥Æ¡¼¥Ö¥ë
+       01  WRK-DOJITU-TABLE.
+           02  WRK-DOJITU-TBL    OCCURS   10.
+              03 WRK-DOJITU-FLG            PIC 9(01)  OCCURS  31.
       *
        01  WRK-SYOSIN-TABLE.
            02  WRK-SYOSIN-TBL    OCCURS   10.
@@ -527,6 +533,7 @@
                          WRK-JIBAI-TABLE
                          WRK-NYUINDAY-TABLE
                          WRK-SYOSIN-TABLE
+                         WRK-DOJITU-TABLE
                          FLG-AREA
                          CNT-AREA.
       *
@@ -1570,6 +1577,13 @@
                  END-PERFORM
               END-IF
       *
+              IF   LNK-S02-SKYSTYMD(1:6) = LNK-SYU-SRYYMD(IDX)(1:6)
+                IF   LNK-S02-DOJITUFLG-ST  =  "1"
+                   MOVE    LNK-SYU-SKYSTYMD(IDX)(7:2)  TO  IDY
+                   MOVE    1   TO   WRK-DOJITU-FLG(IDX IDY)
+                END-IF
+              END-IF
+      *
            END-PERFORM. 
       *
        SYUNOU-SET-EXT.
@@ -1932,6 +1946,8 @@ grpsys                            SPA-AREA
                        MOVE   NACCT-DAY(SYU-IDX)
                                   TO  TBL-GAIHAKU (SYU-IDX)
                        IF  SYU-DAY(SYU-IDX)    =  "1"
+                       AND WRK-DOJITU-FLG(IDX SYU-IDX)
+                                               =  ZERO
                            ADD    1   TO  WRK-GAIHAKU-COUNT
                        END-IF
                    END-IF
@@ -2036,7 +2052,9 @@ grpsys                            SPA-AREA
                    PERFORM   VARYING  SYU-IDX  FROM  1  BY  1
                              UNTIL    SYU-IDX  >   31
                        IF  (SYU-DAY(SYU-IDX)       =   "1")    AND
-                           (NACCT-DAY(SYU-IDX) NOT =  ZERO)
+                           (NACCT-DAY(SYU-IDX) NOT =  ZERO)    AND
+                           (WRK-DOJITU-FLG(IDX SYU-IDX)
+                                                   =  ZERO)
                            ADD        1      TO    NYUIN-COUNT
                            MOVE   NACCT-DAY(SYU-IDX)                   
                                       TO  TBL-NYUIN(SYU-IDX)           
@@ -2159,6 +2177,7 @@ grpsys                            SPA-AREA
                             (WRK-NYUINDAY-KBN(IDX SYU-IDX)   =   "1"))
                        AND ( NACCT-DAY(SYU-IDX)          NOT =  ZERO )
                        AND ( TBL-GAIHAKU(SYU-IDX)     =  ZERO  OR  4 )
+                       AND ( WRK-DOJITU-FLG(IDX SYU-IDX)     =  ZERO )
                            ADD   NACCT-ZAITEN   TO
                                              SYU-HKNTEN(14)
                                              SDAY-HKNTEN(SYU-IDX)      
@@ -2174,6 +2193,7 @@ grpsys                            SPA-AREA
                             (WRK-NYUINDAY-KBN(IDX SYU-IDX)   =   "1"))
                        AND ( NACCT-DAY(SYU-IDX)          NOT =  ZERO )
                        AND ( TBL-GAIHAKU(SYU-IDX)     =  ZERO  OR  4 )
+                       AND ( WRK-DOJITU-FLG(IDX SYU-IDX)     =  ZERO )
                            ADD   NACCT-ZAITEN    TO
                                              SYU-HKNTEN(15)
                                              SDAY-HKNTEN(SYU-IDX)      
@@ -2254,7 +2274,9 @@ grpsys                                    SPA-AREA
                          WHEN  SPACE
                          WHEN  "1"
                            IF  (SYU-DAY(SYU-IDX)       =   "1")    AND
-                               (NACCT-DAY(SYU-IDX) NOT =  ZERO)
+                               (NACCT-DAY(SYU-IDX) NOT =  ZERO)    AND
+                               (WRK-DOJITU-FLG(IDX SYU-IDX)
+                                                       =  ZERO)
                              MOVE  NACCT-DAY(SYU-IDX)  TO  RMSAGAKU-IDX
                              IF  (WRK-BRMSGK-TAXKBN    =  "1"    )
                              AND (SYU-SRYYMD(1:6)     >= "200704")
@@ -2278,8 +2300,10 @@ grpsys                                    SPA-AREA
                          WHEN  "2"
                            IF  SYU-SRYYMD(1:6)   =  WRK-SKYYM(1)
                              IF  (SYU-HKNCOMBINUM =
-                                              WRK-DAY5(1 SYU-IDX))  AND
-                                 (NACCT-DAY(SYU-IDX) NOT =  ZERO)
+                                             WRK-DAY5(1 SYU-IDX))   AND
+                                 (NACCT-DAY(SYU-IDX) NOT =  ZERO)   AND
+                                 (WRK-DOJITU-FLG(IDX SYU-IDX)
+                                                         =  ZERO)
                                MOVE  NACCT-DAY(SYU-IDX) TO RMSAGAKU-IDX
                                IF  (WRK-BRMSGK-TAXKBN    =  "1"    )
                                AND (SYU-SRYYMD(1:6)     >= "200704")
@@ -2303,8 +2327,10 @@ grpsys                                    SPA-AREA
                            ELSE
                              IF  (SYU-SRYYMD(1:6)  =  WRK-SKYYM(2)) AND
                                  (SYU-HKNCOMBINUM  =
-                                              WRK-DAY5(2 SYU-IDX))  AND
-                                 (NACCT-DAY(SYU-IDX) NOT =  ZERO)
+                                             WRK-DAY5(2 SYU-IDX))   AND
+                                 (NACCT-DAY(SYU-IDX) NOT =  ZERO)   AND
+                                 (WRK-DOJITU-FLG(IDX SYU-IDX)
+                                                         =  ZERO)
                                MOVE  NACCT-DAY(SYU-IDX) TO RMSAGAKU-IDX
                                IF  (WRK-BRMSGK-TAXKBN    =  "1"    )
                                AND (SYU-SRYYMD(1:6)     >= "200704")
@@ -2351,6 +2377,7 @@ grpsys                                    SPA-AREA
                             (WRK-NYUINDAY-KBN(IDX SYU-IDX)   =   "1"))
                        AND ( NACCT-DAY(SYU-IDX)          NOT =  ZERO )
                        AND ( TBL-GAIHAKU(SYU-IDX)     =  ZERO  OR  4 )
+                       AND ( WRK-DOJITU-FLG(IDX SYU-IDX)     =  ZERO )
                            ADD   NACCT-ZAITEN    TO   SYU-HKNTEN(15)
                            IF    SYU-SYUHKNNUM   =    "973"
                               ADD  NACCT-ZAITEN
@@ -2513,6 +2540,7 @@ grpsys                              SPA-AREA
                 IF  ( LNK-SROUNYUIN-NYUIN-FLG(SYU-IDX)    =   "1" )
                 AND ((SYU-DAY(SYU-IDX)                    =   "1") OR
                      (WRK-NYUINDAY-KBN(IDX SYU-IDX)       =   "1"))
+                AND ( WRK-DOJITU-FLG(IDX SYU-IDX)         =   ZERO)
       *
                      ADD   LNK-SROUNYUIN-ZAITEN(SYU-IDX)
                                                  TO  SYU-HKNTEN(14)
@@ -3565,6 +3593,7 @@ grpsys                                        SPA-AREA
                            PERFORM VARYING FUKU-IDX2 FROM 1 BY 1
                                     UNTIL  FUKU-IDX2  >  31
                             IF  SANTEI-DAY(FUKU-IDX2) NOT =  ZERO
+                            AND WRK-DOJITU-FLG(IDX FUKU-IDX2) = ZERO
       ***                     ADD  SANTEI-DAY(FUKU-IDX2)
       ***                          TO  TBL-FUKUOKA-SYOSIN(FUKU-IDX2)
                               IF TBL-SYOSIN2(FUKU-IDX) = "111011810"
@@ -3630,6 +3659,7 @@ grpsys                                        SPA-AREA
                       (WRK-NYUINDAY-KBN(IDX SYU-IDX)   =   "1"))
                  AND ( ACCT-DAY(1 SYU-IDX)         NOT =  ZERO )
                  AND ( SYU-HKNCOMBINUM      =    ACCT-HKNCOMBI )
+                 AND ( WRK-DOJITU-FLG(IDX SYU-IDX)     =  ZERO )
                      ADD   ACCT-DAY(1 SYU-IDX)
                                       TO   SINRYO-COUNT
                      IF   SYU-SYUHKNNUM  =  "971"  OR  "973"           
@@ -3645,7 +3675,8 @@ grpsys                                        SPA-AREA
                      UNTIL      SYU-IDX   >   31
                  IF  (SYU-DAY(SYU-IDX)       =     "1"  OR  "2")   AND
                      (ACCT-DAY(1 SYU-IDX)    NOT =  ZERO)          AND
-                     (SYU-HKNCOMBINUM        =    ACCT-HKNCOMBI)
+                     (SYU-HKNCOMBINUM        =    ACCT-HKNCOMBI)   AND
+                     (WRK-DOJITU-FLG(IDX SYU-IDX)     =  ZERO  )
                      ADD   ACCT-DAY(1 SYU-IDX)
                                       TO   SINRYO-COUNT
                      IF   SYU-SYUHKNNUM  =  "971"  OR  "973"           
@@ -5142,7 +5173,8 @@ grpsys                            SPA-AREA
            PERFORM  VARYING  IDX1    FROM    1   BY  1
                       UNTIL  IDX1     >       31
       *
-               IF  SYU-DAY(IDX1)   =   "1"  OR  "2"
+               IF  (SYU-DAY(IDX1)   =   "1"  OR  "2" )
+               AND (WRK-DOJITU-FLG(IDX IDX1)  =  ZERO)
                     IF  ORCSTEN-ZAITEN(IDX1)  NOT =  ZERO
                         ADD    ORCSTEN-ZAITEN(IDX1)
                                       TO   SYU-HKNTEN (05)
@@ -5164,7 +5196,8 @@ grpsys                            SPA-AREA
                     MOVE    ZERO   TO   WRK-ZAIKAISU
                     PERFORM  VARYING  IDX2    FROM    1   BY  1
                           UNTIL   IDX2     >       31
-                      IF  SYU-DAY(IDX2)   =   "1"  OR  "2"
+                      IF  (SYU-DAY(IDX2)  =   "1"  OR  "2"  )
+                      AND (WRK-DOJITU-FLG(IDX IDX2)  =  ZERO)
       *
                         IF   SYU-SYUHKNNUM  =  "971"  OR  "973"        
                            CONTINUE                                    
