@@ -17,7 +17,7 @@
       ********************************************************************
        IDENTIFICATION          DIVISION.
        PROGRAM-ID.             ORCGY05.
-1     *****************************************************************
+      *****************************************************************
       *  システム名        : ＯＲＣＡ
       *  サブシステム名    : 予約登録
       *  コンポーネント名  : 患者予約状況一覧（Ｙ０５）　
@@ -30,6 +30,7 @@
       * Maj/Min/Rev  修正者       日付      内容
       *  01.00.01    NACL-多々納  06/05/15  MONFUNC 対応
       *  03.05.00    NACL-多々納  07/05/07  グループ診療対応
+      *  04.01.00    NACL-多々納  08/01/30  予約内容テーブル対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -74,7 +75,7 @@
                            11  SPA-GMN-TSRYKA      PIC X(20).
                            11  SPA-GMN-TSINRYO     PIC X(20).
                            11  SPA-GMN-TDRNAME     PIC X(50).
-                           11  SPA-GMN-TYYKKBN     PIC X(20).
+                           11  SPA-GMN-TYYKKBN     PIC X(30).
                            11  SPA-GMN-TRENRAKU    PIC X(20).
                            11  SPA-GMN-TRAIIN      PIC X(04).
                05  SPA-NAIB-AREA.
@@ -150,6 +151,8 @@
            COPY    "CPSK1010.INC".
       *    予約確認
            COPY    "CPSK0051.INC".
+      *    予約内容
+           COPY    "CPSK1028.INC".
       *
       *    患者マスタ−
        01  PTINF-REC.
@@ -402,14 +405,14 @@
            IF      YYK-RAIINZUMI       =   "1"
                MOVE    "来院"          TO  SPA-GMN-TRAIIN(IDX)
            END-IF
-           EVALUATE    YYK-YYKKBN
-               WHEN    "00"
-                   MOVE    SPACE               TO  SPA-GMN-TYYKKBN (IDX)
-               WHEN    "01"
-                   MOVE    "患者による予約"    TO  SPA-GMN-TYYKKBN (IDX)
-               WHEN    "02"
-                   MOVE    "医師による予約"    TO  SPA-GMN-TYYKKBN (IDX)
-           END-EVALUATE
+      ***  EVALUATE    YYK-YYKKBN
+      *        WHEN    "00"
+      *            MOVE    SPACE               TO  SPA-GMN-TYYKKBN (IDX)
+      *        WHEN    "01"
+      *            MOVE    "患者による予約"    TO  SPA-GMN-TYYKKBN (IDX)
+      *        WHEN    "02"
+      *            MOVE    "医師による予約"    TO  SPA-GMN-TYYKKBN (IDX)
+      **** END-EVALUATE
       *    ドクター
            MOVE    ZERO                TO  FLG-OK
            PERFORM VARYING     IDX-D   FROM    1   BY  1
@@ -489,6 +492,33 @@
            IF      FLG-SYSKANRI        =   ZERO
                MOVE    MCPDATA-REC         TO  SYS-0051-REC
                MOVE    SYS-0051-YYKKAKNAME TO  SPA-GMN-TRENRAKU(IDX)
+           END-IF
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key10"             TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+      *
+      *    予約内容コード
+           MOVE    SPACE               TO  SYS-1028-REC
+           MOVE    SPA-HOSPNUM         TO  SYS-1028-HOSPNUM
+           MOVE    "1028"              TO  SYS-1028-KANRICD
+           MOVE    YYK-YYKKBN          TO  SYS-1028-KBNCD
+           MOVE    YYK-YYKYMD          TO  SYS-1028-STYUKYMD
+           MOVE    YYK-YYKYMD          TO  SYS-1028-EDYUKYMD
+      *
+           MOVE    SYS-1028-REC        TO  MCPDATA-REC
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key10"             TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_syskanri"      TO  MCP-TABLE
+               MOVE    "key10"             TO  MCP-PATHNAME
+               PERFORM 900-SYSKANRI-READ-SEC
+           ELSE
+               MOVE    1                   TO  FLG-SYSKANRI
+           END-IF
+           IF      FLG-SYSKANRI        =   ZERO
+               MOVE    MCPDATA-REC         TO  SYS-1028-REC
+               MOVE    SYS-1028-YYKKBNNAME TO  SPA-GMN-TYYKKBN (IDX)
            END-IF
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key10"             TO  MCP-PATHNAME

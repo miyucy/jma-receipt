@@ -34,6 +34,7 @@
                         08  Y03-TDRNAME     PIC X(12).
                         08  Y03-TNAME       PIC X(20).
                         08  Y03-TPTNUM      PIC X(20).
+                        08  Y03-TYYKKBN     PIC X(20).
                         08  Y03-TRENRAKU    PIC X(16).
                         08  Y03-TRAIIN      PIC X(4).
                   05  Y03-SELECT  PIC X       OCCURS  200 TIMES.

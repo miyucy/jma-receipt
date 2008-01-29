@@ -236,4 +236,18 @@
                             PIC X(22)   OCCURS  10 TIMES.
                 04  W02-N09.
                   05  W02-N09-STATE   PIC S9(9)   BINARY.
+                04  W02-FIXED32.
+                  05  W02-YYKKBNNAME.
+                    06  W02-VALUE   PIC X(30).
+                  05  W02-YYKKBNNAME1.
+                    06  W02-VALUE   PIC X(10).
+                  05  W02-HYOJIKBN-COMB.
+                    06  W02-HYOJIKBN.
+                      07  W02-VALUE   PIC X(20).
+                    06  W02-HYOJIKBN-COUNT   PIC S9(9)   BINARY.
+                    06  W02-HYOJIKBN-ITEM
+                            PIC X(20)   OCCURS  2 TIMES.
+                04  W02-N10.
+                  05  W02-N10-STATE   PIC S9(9)   BINARY.
+
 

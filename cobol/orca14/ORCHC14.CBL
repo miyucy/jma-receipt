@@ -94,6 +94,7 @@
            03  IDXP                PIC 9(02).
            03  IDXM                PIC 9(02).
            03  IDK                 PIC 9(04).
+           03  IDX-D               PIC 9(04).
       *    ¥·¥¹¥Æ¥àÎÎ°è
        01  SYS-AREA.
            03  SYS-TIME            PIC 9(08).
@@ -134,6 +135,22 @@
            03  WRK-MOJI                PIC X(10).
            03  WRK-MOJISU              PIC 9(02).
       *
+      *    ¿ÇÎÅ²Ê¥Æ¡¼¥Ö¥ë
+       01  TBL-SRYKA-AREA.
+           03  TBL-SRYKA-G             OCCURS   99.
+               05  TBL-SRYKA-CD        PIC X(02).
+               05  TBL-SRYKANAME       PIC X(30).
+      *    Ï¢ÍíÀè¥Æ¡¼¥Ö¥ë
+       01  TBL-RENRAK-AREA.
+           03  TBL-RENRAK-G            OCCURS   9.
+               05  TBL-RENRAK-CD       PIC X(01).
+               05  TBL-YYKKAKNAME      PIC X(10).
+      *    Í½ÌóÆâÍÆ¥Æ¡¼¥Ö¥ë
+       01  TBL-YYKKBN-AREA.
+           03  TBL-YYKKBN-G            OCCURS   99.
+               05  TBL-YYKKBN-CD       PIC X(02).
+               05  TBL-YYKKBNNAME      PIC X(30).
+      *
       *****************************************************************
       *    ¥Õ¥¡¥¤¥ë¥ì¥¤¥¢¥¦¥È
       *****************************************************************
@@ -152,6 +169,8 @@
            COPY    "CPSK1010.INC".
       *    Í½Ìó³ÎÇ§
            COPY    "CPSK0051.INC".
+      *    Í½ÌóÆâÍÆ
+           COPY    "CPSK1028.INC".
       *
       *    ´µ¼Ô¥Þ¥¹¥¿¡Ý
        01  PTINF-REC.
@@ -370,10 +389,126 @@
            MOVE    SPA-Y03-YYKYMDS     TO  WRK-SYMD
            PERFORM 31012-SEIWA-HEN-SEC
       *
+      *    ¥·¥¹¥Æ¥à´ÉÍý¥Æ¡¼¥Ö¥ëÊÔ½¸
+           PERFORM 1001-SYSKANRI-TBL-SEC
            .
        100-SYORI-EXT.
            EXIT.
       *
+      *****************************************************************
+      *    ¥·¥¹¥Æ¥à´ÉÍý¥Æ¡¼¥Ö¥ëÊÔ½¸½èÍý
+      *****************************************************************
+       1001-SYSKANRI-TBL-SEC           SECTION.
+      *
+           INITIALIZE                  TBL-SRYKA-AREA
+           INITIALIZE                  TBL-RENRAK-AREA
+           INITIALIZE                  TBL-YYKKBN-AREA
+      *    ¿ÇÎÅ²Ê
+           MOVE    SPACE               TO  SYS-1005-REC
+           MOVE    "1005"              TO  SYS-1005-KANRICD
+           MOVE    SPA-Y03-YYKYMDS     TO  SYS-1005-STYUKYMD
+           MOVE    SPA-Y03-YYKYMDS     TO  SYS-1005-EDYUKYMD
+      *    ¥·¥¹¥Æ¥à´ÉÍý¸¡º÷
+           MOVE    SPA-HOSPNUM         TO  SYS-1005-HOSPNUM
+           MOVE    SYS-1005-REC        TO  MCPDATA-REC
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_syskanri"      TO  MCP-TABLE
+               MOVE    "key2"             TO  MCP-PATHNAME
+               PERFORM 901-KANRIMST-READ-SEC
+           ELSE
+               MOVE    1                   TO  FLG-SYSKANRI
+           END-IF
+           MOVE    ZERO                TO  IDX
+           PERFORM UNTIL   (FLG-SYSKANRI   =   1   )
+                       OR  (IDX            >=  99  )
+               ADD     1                   TO  IDX
+               MOVE    MCPDATA-REC         TO  SYS-1005-REC
+               MOVE    SYS-1005-KBNCD(1:2) TO  TBL-SRYKA-CD  (IDX)
+               MOVE    SYS-1005-SRYKANAME1 TO  TBL-SRYKANAME (IDX)
+      *
+               MOVE    "tbl_syskanri"      TO  MCP-TABLE
+               MOVE    "key2"              TO  MCP-PATHNAME
+               PERFORM 901-KANRIMST-READ-SEC
+           END-PERFORM
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+      *
+      *    Í½Ìó³ÎÇ§Ï¢Íí¥³¡¼¥É
+           MOVE    SPACE               TO  SYS-0051-REC
+           MOVE    "0051"              TO  SYS-0051-KANRICD
+           MOVE    SPA-Y03-YYKYMDS     TO  SYS-0051-STYUKYMD
+           MOVE    SPA-Y03-YYKYMDS     TO  SYS-0051-EDYUKYMD
+      *
+           MOVE    SPA-HOSPNUM         TO  SYS-0051-HOSPNUM
+           MOVE    SYS-0051-REC        TO  MCPDATA-REC
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_syskanri"      TO  MCP-TABLE
+               MOVE    "key2"              TO  MCP-PATHNAME
+               PERFORM 901-KANRIMST-READ-SEC
+           ELSE
+               MOVE    1                   TO  FLG-SYSKANRI
+           END-IF
+           MOVE    ZERO                TO  IDX
+           PERFORM UNTIL   (FLG-SYSKANRI   =   1   )
+                       OR  (IDX            >=  9   )
+               ADD     1                   TO  IDX
+               MOVE    MCPDATA-REC         TO  SYS-0051-REC
+               MOVE    SYS-0051-KBNCD(1:2) TO  TBL-RENRAK-CD (IDX)
+               MOVE    SYS-0051-YYKKAKNAME TO  TBL-YYKKAKNAME (IDX)
+      *
+               MOVE    "tbl_syskanri"      TO  MCP-TABLE
+               MOVE    "key2"              TO  MCP-PATHNAME
+               PERFORM 901-KANRIMST-READ-SEC
+           END-PERFORM
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+      *
+      *    Í½ÌóÆâÍÆ¥³¡¼¥É
+           MOVE    SPACE               TO  SYS-1028-REC
+           MOVE    SPA-HOSPNUM         TO  SYS-1028-HOSPNUM
+           MOVE    "1028"              TO  SYS-1028-KANRICD
+           MOVE    SPA-Y03-YYKYMDS     TO  SYS-1028-STYUKYMD
+           MOVE    SPA-Y03-YYKYMDS     TO  SYS-1028-EDYUKYMD
+      *
+           MOVE    SYS-1028-REC        TO  MCPDATA-REC
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_syskanri"      TO  MCP-TABLE
+               MOVE    "key2"              TO  MCP-PATHNAME
+               PERFORM 901-KANRIMST-READ-SEC
+           ELSE
+               MOVE    1                   TO  FLG-SYSKANRI
+           END-IF
+           MOVE    ZERO                TO  IDX
+           PERFORM UNTIL   (FLG-SYSKANRI   =   1   )
+                       OR  (IDX            >=  99  )
+               ADD     1                   TO  IDX
+               MOVE    MCPDATA-REC         TO  SYS-1028-REC
+               MOVE    SYS-1028-KBNCD(1:2) TO  TBL-YYKKBN-CD (IDX)
+               MOVE    SYS-1028-YYKKBNNAME
+                                           TO  TBL-YYKKBNNAME (IDX)
+      *
+               MOVE    "tbl_syskanri"      TO  MCP-TABLE
+               MOVE    "key2"              TO  MCP-PATHNAME
+               PERFORM 901-KANRIMST-READ-SEC
+           END-PERFORM
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+      *
+           .
+       1001-SYSKANRI-TBL-EXT.
+           EXIT.
       *****************************************************************
       *    Ä¢É¼ÊÔ½¸½èÍý
       *****************************************************************
@@ -433,20 +568,6 @@
                MOVE    SYS-1010-NAME       TO  HC14-DRNAME (IDX)
            END-IF
       *
-      *    ¿ÇÎÅ²Ê
-           MOVE    SPACE               TO  SYS-1005-REC
-           MOVE    "1005"              TO  SYS-1005-KANRICD
-           MOVE    YYK-SRYKA           TO  SYS-1005-KBNCD
-           MOVE    SPA-Y03-YYKYMDS     TO  SYS-1005-STYUKYMD
-           MOVE    SPA-Y03-YYKYMDS     TO  SYS-1005-EDYUKYMD
-           MOVE    SPA-HOSPNUM         TO  SYS-1005-HOSPNUM
-           MOVE    SYS-1005-REC        TO  MCPDATA-REC
-           PERFORM 900-SYSKANRI-READ-SEC
-           IF      FLG-SYSKANRI        =   ZERO
-               MOVE    SYSKANRI-REC            TO  SYS-1005-REC
-               MOVE    SYS-1005-SRYKANAME2     TO  HC14-SRYKA  (IDX)
-           END-IF
-      *
       *    ¿ÇÎÅÆâÍÆ¤ò¥»¥Ã¥È
            MOVE    SPACE               TO  SYS-1012-REC
            MOVE    "1012"              TO  SYS-1012-KANRICD
@@ -461,34 +582,43 @@
                MOVE    SYS-1012-SRYNAIYODSP    TO  HC14-SRYNAIYO  (IDX)
            END-IF
       *
-      *    Í½Ìó³ÎÇ§Ï¢Íí¥³¡¼¥É
-           MOVE    SPACE               TO  SYS-0051-REC
-           MOVE    "0051"              TO  SYS-0051-KANRICD
-           MOVE    YYK-KAKREN          TO  SYS-0051-KBNCD
-           MOVE    SPA-Y03-YYKYMDS     TO  SYS-0051-STYUKYMD
-           MOVE    SPA-Y03-YYKYMDS     TO  SYS-0051-EDYUKYMD
-           MOVE    SPA-HOSPNUM         TO  SYS-0051-HOSPNUM
-           MOVE    SYS-0051-REC        TO  MCPDATA-REC
-           PERFORM 900-SYSKANRI-READ-SEC
-           IF      FLG-SYSKANRI        =   ZERO
-               MOVE    SYSKANRI-REC        TO  SYS-0051-REC
-               MOVE    SYS-0051-YYKKAKNAME TO  HC14-RENRAKU  (IDX)
-           END-IF
       *    Íè±¡ºÑ¤ß
            IF      YYK-RAIINZUMI       =   "1"
                MOVE    "ºÑ"            TO  HC14-RAIIN  (IDX)
            END-IF
       *
-           EVALUATE    YYK-YYKKBN
-               WHEN    "00"
-                   MOVE    SPACE           TO  HC14-YOYAKUNAIY (IDX)
-               WHEN    "01"
-                   MOVE    "´µ¼Ô¤Ë¤è¤ëÍ½Ìó"
+      *    ¿ÇÎÅ²Ê
+           PERFORM VARYING     IDX-D   FROM    1   BY  1
+                   UNTIL      (IDX-D   >   99  )
+                          OR  (TBL-SRYKA-CD (IDX-D)    =   SPACE)
+               IF     YYK-SRYKA            =   TBL-SRYKA-CD (IDX-D)
+                   MOVE    TBL-SRYKANAME (IDX-D)
+                                           TO  HC14-SRYKA  (IDX)
+                   MOVE    99              TO  IDX-D
+               END-IF
+           END-PERFORM
+      *
+      *    Í½Ìó³ÎÇ§Ï¢Íí¥³¡¼¥É
+           PERFORM VARYING     IDX-D   FROM    1   BY  1
+                   UNTIL      (IDX-D   >   9   )
+                          OR  (TBL-RENRAK-CD (IDX-D)   =   SPACE)
+               IF     YYK-KAKREN            =   TBL-RENRAK-CD (IDX-D)
+                   MOVE    TBL-YYKKAKNAME (IDX-D)
+                                           TO  HC14-RENRAKU  (IDX)
+                   MOVE    9               TO  IDX-D
+               END-IF
+           END-PERFORM
+      *
+      *    Í½ÌóÆâÍÆ¥³¡¼¥É
+           PERFORM VARYING     IDX-D   FROM    1   BY  1
+                   UNTIL      (IDX-D   >   99   )
+                          OR  (TBL-YYKKBN-CD (IDX-D)   =   SPACE)
+               IF     YYK-YYKKBN            =   TBL-YYKKBN-CD (IDX-D)
+                   MOVE    TBL-YYKKBNNAME (IDX-D)
                                            TO  HC14-YOYAKUNAIY (IDX)
-               WHEN    "02"
-                   MOVE    "°å»Õ¤Ë¤è¤ëÍ½Ìó"
-                                           TO  HC14-YOYAKUNAIY (IDX)
-           END-EVALUATE
+                   MOVE    99              TO  IDX-D
+               END-IF
+           END-PERFORM
       *
            .
        310-HC14-HEN-EXT.

@@ -19,8 +19,9 @@ Y03	{
 					value5	varchar(12);
 					value6	varchar(20);
 					value7	varchar(20);
-					value8	varchar(16);
-					value9	varchar(4);
+					value8	varchar(20);
+					value9	varchar(16);
+					value10	varchar(4);
 				}	[200];
 				select	bool[200];
 			};

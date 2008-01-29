@@ -35,6 +35,7 @@
       *  01.00.07    NACL-多々納  06/05/12  MONFUNC 対応
       *  03.03.00    NACL-多々納  06/10/10  名前検索の追加
       *  03.05.00    NACL-多々納  07/05/07  グループ診療対応
+      *  04.01.00    NACL-多々納  08/01/30  予約内容テーブル対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -100,12 +101,12 @@
                    07  SPA-GMN-SRYKA-G.
                        09  SPA-GMN-SRYKA       PIC X(02).
                        09  SPA-GMN-SRYKAH1     PIC X(01).
-                       09  SPA-GMN-SRYKAMEI    PIC X(12).
+                       09  SPA-GMN-SRYKAMEI    PIC X(20).
       *            予約内容
                    07  SPA-GMN-YYKKBN-G.
                        09  SPA-GMN-YYKKBN       PIC X(02).
                        09  SPA-GMN-YYKKBNH1     PIC X(01).
-                       09  SPA-GMN-YYKKBNMEI    PIC X(24).
+                       09  SPA-GMN-YYKKBNMEI    PIC X(30).
       *            確認連絡
                    07  SPA-GMN-KAKREN-G.
                        09  SPA-GMN-KAKREN       PIC X(02).
@@ -126,10 +127,15 @@
       *
       *        表示リスト等
                05  SPA-GMN-HYOU-AERA.
-                   07  SPA-GMN-SRYKALST    PIC X(17)   OCCURS  40.
+                   07  SPA-GMN-SRYKALST-G      OCCURS  40.
+                       09  SPA-GMN-SRYKALST.
+                           11  SPA-GMN-SRYKACDL    PIC X(02).
+                           11  SPA-GMN-SRYKALH     PIC X(01).
+                           11  SPA-GMN-SRYKAMEIL   PIC X(20).
+                       09  SPA-NAI-SRYKAMEI3   PIC X(04).
                    07  SPA-SRYKA-MAX       PIC 9(04).
       *
-                   07  SPA-GMN-YYKKBNLST    PIC X(29)   OCCURS  10.
+                   07  SPA-GMN-YYKKBNLST    PIC X(33)   OCCURS  100.
                    07  SPA-YYKKBN-MAX       PIC 9(04).
       *
                    07  SPA-GMN-KAKRENLST    PIC X(23)   OCCURS  10.
@@ -348,6 +354,8 @@
       *
            03  WRK-GMN-CUR         PIC 9(02).
       *
+           03  WRK-HYOJI               PIC 9(04).
+      *
       *  ＳＯＲＴ用ワーク
       *    受付患者一覧
        01  WRK-SORT-AREA.
@@ -404,6 +412,8 @@
            COPY  "CPSK1010.INC".
       *    予約確認連絡コード情報
            COPY  "CPSK0051.INC".
+      *    予約内容
+           COPY  "CPSK1028.INC".
       *
       *    患者マスタ−
        01  PTINF-REC.
@@ -767,6 +777,9 @@
                MOVE    SYS-1005-SRYKANAME1     TO  SPA-GMN-SRYKAMEI
                MOVE    SPA-GMN-SRYKA-G         TO  SPA-GMN-SRYKALST
                                                               (IDX)
+      *        短縮名３保存
+               MOVE    SYS-1005-SRYKANAME3     TO  SPA-NAI-SRYKAMEI3
+                                                              (IDX)
                MOVE    IDX                     TO  SPA-SRYKA-MAX
       *
                MOVE    "tbl_syskanri"      TO  MCP-TABLE
@@ -824,12 +837,75 @@
            MOVE    SPA-GMN-KAKRENLST (1)
                                        TO  SPA-GMN-KAKREN-G
       *
-           MOVE    "00 　　　　"       TO  SPA-GMN-YYKKBNLST (01)
-           MOVE    "01 患者による予約" TO  SPA-GMN-YYKKBNLST (02)
-           MOVE    "02 医師による予約" TO  SPA-GMN-YYKKBNLST (03)
-           MOVE    SPA-GMN-YYKKBNLST (2)
-                                       TO  SPA-GMN-YYKKBN-G
-           MOVE    3                   TO  SPA-YYKKBN-MAX
+      **** MOVE    "00 　　　　"       TO  SPA-GMN-YYKKBNLST (01)
+      *    MOVE    "01 患者による予約" TO  SPA-GMN-YYKKBNLST (02)
+      *    MOVE    "02 医師による予約" TO  SPA-GMN-YYKKBNLST (03)
+      *    MOVE    SPA-GMN-YYKKBNLST (2)
+      *                                TO  SPA-GMN-YYKKBN-G
+      ***  MOVE    3                   TO  SPA-YYKKBN-MAX
+      *    予約内容
+           MOVE    ZERO                TO  FLG-SYSKANRI
+           MOVE    SPACE               TO  SYS-1028-REC
+           INITIALIZE                  SYS-1028-REC
+           MOVE    "1028"              TO  SYS-1028-KANRICD
+           MOVE    WRK-SYSYMD          TO  SYS-1028-STYUKYMD
+           MOVE    WRK-SYSYMD          TO  SYS-1028-EDYUKYMD
+      *
+           MOVE    SPA-HOSPNUM         TO  SYS-1028-HOSPNUM
+           MOVE    SYS-1028-REC        TO  MCPDATA-REC
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_syskanri"      TO  MCP-TABLE
+               MOVE    "key2"              TO  MCP-PATHNAME
+               PERFORM 900-SYSKANRIT-READ-SEC
+           ELSE
+               INITIALIZE                  SYS-1028-REC
+               MOVE    1               TO  FLG-SYSKANRI
+           END-IF
+           MOVE    ZERO                TO  WRK-HYOJI
+           MOVE    1                   TO  IDX
+           MOVE    "00"                TO  SPA-GMN-YYKKBNLST(IDX)
+           MOVE    IDX                 TO  SPA-YYKKBN-MAX
+           PERFORM
+                   UNTIL       (IDX            >=  100  )  OR
+                               (FLG-SYSKANRI   =   1    )
+               MOVE    MCPDATA-REC             TO  SYS-1028-REC
+      *
+               IF      SYS-1028-KBNCD (1:2)    =   "00"
+                   MOVE    1                       TO  IDX
+                   MOVE    SYS-1028-KBNCD (1:2)    TO  SPA-GMN-YYKKBNLST
+                                                           (IDX)(1:2)
+                   MOVE    SYS-1028-YYKKBNNAME     TO  SPA-GMN-YYKKBNLST
+                                                           (IDX)(4:)
+               ELSE
+                   ADD     1                       TO  IDX
+                   MOVE    SYS-1028-KBNCD (1:2)    TO  SPA-GMN-YYKKBNLST
+                                                           (IDX)(1:2)
+                   MOVE    SYS-1028-YYKKBNNAME     TO  SPA-GMN-YYKKBNLST
+                                                           (IDX)(4:)
+                   MOVE    IDX                     TO  SPA-YYKKBN-MAX
+               END-IF
+               IF     (SYS-1028-HYOJIKBN   =   "1" )
+                 AND  (WRK-HYOJI           =   ZERO )
+                   MOVE    IDX             TO  WRK-HYOJI
+               END-IF
+      *
+               MOVE    "tbl_syskanri"      TO  MCP-TABLE
+               MOVE    "key2"              TO  MCP-PATHNAME
+               PERFORM 900-SYSKANRIT-READ-SEC
+           END-PERFORM
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+           IF      WRK-HYOJI           =   ZERO
+               MOVE    SPA-GMN-YYKKBNLST (2)
+                                           TO  SPA-GMN-YYKKBN-G
+           ELSE
+               MOVE    SPA-GMN-YYKKBNLST (WRK-HYOJI)
+                                           TO  SPA-GMN-YYKKBN-G
+           END-IF
       *
            MOVE    "21"                TO  LNK-DAY2-IRAI
            MOVE    WRK-SYSYMD          TO  LNK-DAY2-YMD
@@ -1229,9 +1305,6 @@
            PERFORM 4101-GMN-SPA-SET-SEC
       *    基本チェック処理
            PERFORM 4102-KIHON-CHK-SEC
-           IF      SPA-ERRCD       NOT =   SPACE
-               GO      TO      410-INPUT-CHK-EXT
-           END-IF
       *
            .
        410-INPUT-CHK-EXT.
@@ -1257,30 +1330,26 @@
       *    基本チェック処理
       *****************************************************************
        4102-KIHON-CHK-SEC       SECTION.
+      *
       *    予約日入力
-           PERFORM 41014-YYKYMD-SEC
-           IF      SPA-ERRCD       NOT =   SPACE
-               GO      TO      4102-KIHON-CHK-EXT
+           IF      SPA-ERRCD           =   SPACE
+               PERFORM 41014-YYKYMD-SEC
            END-IF
       *    予約時間
-           PERFORM 41015-YYKTIME-SEC
-           IF      SPA-ERRCD       NOT =   SPACE
-               GO      TO      4102-KIHON-CHK-EXT
+           IF      SPA-ERRCD           =   SPACE
+               PERFORM 41015-YYKTIME-SEC
            END-IF
       *    診療科
-           PERFORM 41016-SRYKA-SEC
-           IF      SPA-ERRCD       NOT =   SPACE
-               GO      TO      4102-KIHON-CHK-EXT
+           IF      SPA-ERRCD           =   SPACE
+               PERFORM 41016-SRYKA-SEC
            END-IF
       *    予約内容
-           PERFORM 41017-YYKKBN-SEC
-           IF      SPA-ERRCD       NOT =   SPACE
-               GO      TO      4102-KIHON-CHK-EXT
+           IF      SPA-ERRCD           =   SPACE
+               PERFORM 41017-YYKKBN-SEC
            END-IF
       *    確認連絡
-           PERFORM 41018-KAKREN-SEC
-           IF      SPA-ERRCD       NOT =   SPACE
-               GO      TO      4102-KIHON-CHK-EXT
+           IF      SPA-ERRCD           =   SPACE
+               PERFORM 41018-KAKREN-SEC
            END-IF
       *
            .
@@ -1389,8 +1458,7 @@
                        PERFORM VARYING     IDY     FROM    1   BY  1
                                UNTIL       IDY     >   SPA-SRYKA-MAX
                            IF      WRK-DR-SEMONKACD (IDX)
-                                           =   SPA-GMN-SRYKALST(IDY)
-                                                               (1:2)
+                                           =   SPA-GMN-SRYKACDL(IDY)
                                MOVE    SPA-GMN-SRYKALST(IDY)
                                                    TO  SPA-GMN-SRYKA-G
                                MOVE    SPA-SRYKA-MAX   TO  IDY
@@ -1683,44 +1751,6 @@
            MOVE    "key5"              TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
       *
-      *    かな検索
-      *    IF      IDZ                 =   ZERO
-      *        INITIALIZE                  PTINF-REC
-      *        MOVE    SPA-HOSPNUM          TO  PTINF-HOSPNUM
-     ********* MOVE    SPA-GMN-YYKNAME     TO  PTINF-KANANAME
-     **        STRING  SPA-GMN-YYKNAME     DELIMITED  BY  SPACE
-     **                "%"                 DELIMITED  BY  SIZE
-     **                                    INTO    PTINF-KANANAME
-     ********* END-STRING
-      *        MOVE    WRK-NAME-KEY        TO  PTINF-KANANAME
-      *
-      *        患者マスターをかな氏名で検索
-      *        MOVE    PTINF-REC           TO  MCPDATA-REC
-      *        MOVE    "tbl_ptinf"         TO  MCP-TABLE
-      *        MOVE    "key3"              TO  MCP-PATHNAME
-      *        PERFORM 910-DBSELECT-SEC
-      *        IF      MCP-RC              =   ZERO
-      *            MOVE    "tbl_ptinf"         TO  MCP-TABLE
-      *            MOVE    "key3"              TO  MCP-PATHNAME
-      *            PERFORM 910-PTINF-READ-SEC
-      *        ELSE
-      *            INITIALIZE                  PTINF-REC
-      *            MOVE    1                   TO  FLG-PTINF
-      *        END-IF
-      *        PERFORM UNTIL      (IDZ             >   1     ) OR
-      *                           (FLG-PTINF       =   1     )
-      *            PERFORM 410141-PTINF-HENSYU-SEC
-      *
-      *            MOVE    "tbl_ptinf"         TO  MCP-TABLE
-      *            MOVE    "key3"              TO  MCP-PATHNAME
-      *            PERFORM 910-PTINF-READ-SEC
-      *        END-PERFORM
-      *        カーソルクロース
-      *        MOVE    "tbl_ptinf"         TO  MCP-TABLE
-      *        MOVE    "key3"              TO  MCP-PATHNAME
-      *        PERFORM 990-DBCLOSE-SEC
-      ******END-IF
-      *
            .
        410141-KNJKEN-HEN-EXT.
            EXIT.
@@ -1792,9 +1822,7 @@
            MOVE    SPA-HOSPNUM         TO  SPTID-HOSPNUM
            MOVE    PTINF-PTID          TO  SPTID-PTID
            CALL    "ORCSPTID"          USING  ORCSPTIDAREA
-      *----(01.00.01) LINE ADD START ----------------------------------
                                               SPA-AREA
-      *----(01.00.01) LINE ADD END   ----------------------------------
            IF      SPTID-RC        NOT =   ZERO
                MOVE    SPACE           TO  WRK-PTNUM
            ELSE
@@ -1820,10 +1848,6 @@
       *    予約日入力
       *****************************************************************
        41014-YYKYMD-SEC             SECTION.
-      *
-      *     MOVE    5                  TO  SPA-GMN-CUR
-      *
-      **** MOVE    Y01-YYKYMD          TO  SPA-GMN-YYKYMD
       *
            INITIALIZE                      ORCSGDAYAREA
            MOVE    SPA-GMN-YYKYMD      TO  SGDAY-INDAY
@@ -1853,9 +1877,6 @@
                    IF      WRK-GMN-YYKTIME     NOT =   SPACE
                        MOVE    WRK-GMN-YYKTIME     TO  SPA-GMN-YYKTIME
                    END-IF
-      *******      MOVE    6                   TO  SPA-GMN-CUR
-      *******  ELSE
-      ******       MOVE    6                   TO  SPA-GMN-CUR
                END-IF
            END-IF
       *
@@ -1886,6 +1907,8 @@
                               (SPA-ERRCD   NOT =   SPACE )
                IF      SPA-GMN-YYKTIME(IDX:1)  NOT =   SPACE
                    IF      SPA-GMN-YYKTIME(IDX:1)  =   ":"
+                                                   OR  ","
+                                                   OR  "."
                        MOVE    1               TO  FLG-TIME
                    ELSE
                      IF      FLG-TIME            =   ZERO
@@ -2035,8 +2058,7 @@
            PERFORM VARYING IDY     FROM   1   BY  1
                    UNTIL  (IDY     >      SPA-SRYKA-MAX  )  OR
                           (FLG-HENFLG     =   1  )
-               IF      SPA-GMN-SRYKA      =   SPA-GMN-SRYKALST (IDY)
-                                                                  (1:2)
+               IF      SPA-GMN-SRYKA      =   SPA-GMN-SRYKACDL  (IDY)
                    MOVE    SPA-GMN-SRYKALST (IDY)
                                            TO  SPA-GMN-SRYKA-G
                    MOVE    1               TO  FLG-HENFLG
@@ -2323,6 +2345,19 @@
       *****************************************************************
        41002-SRYKAMEI-SET-SEC             SECTION.
       *
+           MOVE    ZERO               TO  FLG-HENFLG
+           PERFORM VARYING IDY     FROM   1   BY  1
+                   UNTIL  (IDY     >      SPA-SRYKA-MAX  )  OR
+                          (FLG-HENFLG     =   1  )
+               IF      YYK-SRYKA          =   SPA-GMN-SRYKACDL  (IDY)
+                   MOVE    SPA-NAI-SRYKAMEI3  (IDY)
+                                           TO  SPA-GMN-TKAMEI  (IDX)
+                   MOVE    1               TO  FLG-HENFLG
+               END-IF
+           END-PERFORM
+      *
+           IF      FLG-HENFLG          =   ZERO
+      *        テーブルにないとき、システム管理より
            MOVE    SPACE               TO  SYS-1005-REC
            MOVE    "1005"              TO  SYS-1005-KANRICD
            MOVE    YYK-SRYKA           TO  SYS-1005-KBNCD
@@ -2349,6 +2384,8 @@
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key10"             TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
+      *
+           END-IF
            .
        41002-SRYKAMEI-SET-EXT.
            EXIT.
@@ -2524,7 +2561,7 @@
       *    診療科
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   SPA-SRYKA-MAX
-               IF      SPA-GMN-SRYKALST(IDX)(1:2)  =   SPA-GMN-SRYKA
+               IF      SPA-GMN-SRYKACDL (IDX)      =   SPA-GMN-SRYKA
                    MOVE    SPA-GMN-SRYKALST(IDX)   TO  SPA-GMN-SRYKA-G
                    MOVE    SPA-SRYKA-MAX           TO  IDX
                END-IF

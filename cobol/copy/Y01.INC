@@ -489,9 +489,9 @@
                   05  Y01-PTLIST-SELECT  PIC X       OCCURS  200 TIMES.
               03  Y01-SRYKA-COMB.
                 04  Y01-SRYKA.
-                  05  Y01-VALUE   PIC X(21).
+                  05  Y01-VALUE   PIC X(23).
                 04  Y01-SRYKA-COUNT   PIC S9(9)   BINARY.
-                04  Y01-SRYKA-LST    PIC X(21)   OCCURS  40 TIMES.
+                04  Y01-SRYKA-LST    PIC X(23)   OCCURS  40 TIMES.
               03  Y01-KAKREN-COMB.
                 04  Y01-KAKREN.
                   05  Y01-VALUE   PIC X(23).
@@ -499,6 +499,6 @@
                 04  Y01-KAKREN-LST    PIC X(23)   OCCURS  10 TIMES.
               03  Y01-YYKKBN-COMB.
                 04  Y01-YYKKBN.
-                  05  Y01-VALUE   PIC X(29).
+                  05  Y01-VALUE   PIC X(33).
                 04  Y01-YYKKBN-COUNT   PIC S9(9)   BINARY.
-                04  Y01-YYKKBN-LST    PIC X(29)   OCCURS  10 TIMES.
+                04  Y01-YYKKBN-LST    PIC X(33)   OCCURS  100 TIMES.

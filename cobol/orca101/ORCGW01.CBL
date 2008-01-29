@@ -84,6 +84,7 @@
       *  04.01.01    NACL-藤原    07/10/24  総括表の地方公費記載対応
       *  04.01.01    NACL-太田    08/01/10  前回ＣＤボタン追加
       *  04.01.01    NACL-多々納  08/01/2X  プログラムオプション追加
+      *  04.01.01    NACL-多々納  08/01/29  予約内容追加
       *****************************************************************
       *
        ENVIRONMENT                               DIVISION.
@@ -265,6 +266,8 @@
            03  FILLER              PIC X(35)   VALUE
                "1027 割引率情報".
            03  FILLER              PIC X(35)   VALUE
+               "1028 予約内容情報".
+           03  FILLER              PIC X(35)   VALUE
                "1030 帳票編集区分情報".
            03  FILLER              PIC X(35)   VALUE
                "1031 出力先プリンタ割り当て情報".
@@ -310,11 +313,11 @@
                "4001 労災自賠医療機関情報".
       *
        01  TBL-KANRICD-AREAR           REDEFINES   TBL-KANRICD-AREA.
-           03  TBL-KANRICD-TBL         OCCURS   39.
+           03  TBL-KANRICD-TBL         OCCURS   40.
                05  TBL-KANRICD             PIC X(04).
                05  TBL-FILLER              PIC X(01).
                05  TBL-KANRICDMEI          PIC X(30).
-       01  TBL-KANRICD-MAX                 PIC 9(04)   VALUE   39.
+       01  TBL-KANRICD-MAX                 PIC 9(04)   VALUE   40.
       *
       *外来のみ
        01  TBL-KANRICD-G-AREA.
@@ -402,6 +405,8 @@
       *
            COPY    "CPSK1027.INC".
       *
+           COPY    "CPSK1028.INC".
+      *
            COPY    "CPSK3001.INC".
       *
            COPY    "CPSK3002.INC".
@@ -432,6 +437,8 @@
            COPY    "CPORCSGDAY.INC".
       *----(01.02.03) LINE ADD END   ----------------------------------
       *
+      *    全角チェックパラメタ
+           COPY    "CPORCSKANACHK.INC".
       *
       *    ＤＢ検索
       *01  MCPDATA-REC                 PIC X(5000).
@@ -1077,6 +1084,7 @@
                WHEN    "1020"
                WHEN    "1026"
                WHEN    "1027"
+               WHEN    "1028"
                WHEN    "1041"
                WHEN    "5013"
       *---- (01.02.04) LINE ADD START --------------------------------
@@ -1429,6 +1437,11 @@
                            MOVE    "(円)"     TO  WRK-RATE-TANI
                        END-EVALUATE
                        MOVE    WRK-RATE-AREA  TO  SPA-GMN-KBNCDMEIL(IDX)
+      *            予約内容
+                   WHEN    "1028"
+                       MOVE    SYSKANRI-REC   TO  SYS-1028-REC
+                       MOVE    SYS-1028-YYKKBNNAME (1:26)
+                                              TO  SPA-GMN-KBNCDMEIL(IDX)
                    WHEN    "3001"
                        MOVE    SYSKANRI-REC   TO  SYS-3001-REC
                        MOVE    SYS-3001-HCNAME (1:26)
@@ -1490,6 +1503,15 @@
            MOVE    W01-KBNCD           TO  SPA-GMN-KBNCD-G
       *
       *    区分コードの桁数
+           INITIALIZE                  ORCSKANACHKAREA
+           MOVE    "1"                 TO  KANACHK-SYORI
+           MOVE    W01-KBNCD           TO  KANACHK-MAE-INPUT
+           MOVE    35                  TO  KANACHK-MAX-CNT
+           CALL    "ORCSKANACHK"       USING
+                                       ORCSKANACHKAREA
+           MOVE    KANACHK-MAE-INPUT   TO  SPA-GMN-KBNCD-G
+      *
+      *    区分コードの桁数
            MOVE    ZERO                TO  WRK-LEN
            PERFORM VARYING IDZ     FROM    1   BY  1
                    UNTIL   IDZ     >   35
@@ -1509,6 +1531,7 @@
                WHEN    "1020"
                WHEN    "1026"
                WHEN    "1027"
+               WHEN    "1028"
                WHEN    "1041"
                WHEN    "5013"
       *---- (01.02.02) LINE ADD START --------------------------------
@@ -1518,53 +1541,34 @@
       ***********  IF      WRK-LEN         NOT =   2
                    IF      WRK-LEN             >   2
                        MOVE    "0008"          TO  SPA-ERRCD
-                       GO  TO  4105-KBNCD-CHK-EXT
                    END-IF
                WHEN    "1013"
                    MOVE    2                   TO  WRK-CODE-MAX
                    IF      WRK-LEN         NOT =   2
                        MOVE    "0008"          TO  SPA-ERRCD
-                       GO  TO  4105-KBNCD-CHK-EXT
                    END-IF
-                   IF      SPA-GMN-KBNCD (1:1) NOT =   "1" AND "2"
+                   IF     (SPA-GMN-KBNCD (1:1) NOT =   "1" AND "2")
+                     AND  (SPA-ERRCD           =   SPACE )
                        MOVE    "0009"          TO  SPA-ERRCD
-                       GO  TO  4105-KBNCD-CHK-EXT
                    END-IF
-                   IF      SPA-GMN-KBNCD (2:1)     <   "0"     OR
-                           SPA-GMN-KBNCD (2:1)     >   "9" 
+                   IF     (SPA-GMN-KBNCD (2:1)     <   "0"     OR
+                           SPA-GMN-KBNCD (2:1)     >   "9" )
+                     AND  (SPA-ERRCD           =   SPACE )
                        MOVE    "0010"          TO  SPA-ERRCD
-                       GO  TO  4105-KBNCD-CHK-EXT
                    END-IF
                WHEN    "1010"
                    MOVE    SPACE               TO  SPA-GMN-KBNCD
                    MOVE    12                  TO  SPA-GMN-CUR
-                   GO  TO  4105-KBNCD-CHK-EXT
-      ************ MOVE    5                   TO  WRK-CODE-MAX
-      *            IF      WRK-LEN         NOT =   5
-      *                MOVE    "0011"          TO  SPA-ERRCD
-      *                GO  TO  4105-KBNCD-CHK-EXT
-      *            END-IF
-      *            IF    ( SPA-GMN-KBNCD (1:1) =   "1" OR  "2"  OR 
-      *                                            "3" OR  "4"  OR
-      *                                            "5" ) OR
-      *                    SPA-GMN-KBNCD       =   "00001"
-      *                CONTINUE
-      *            ELSE  
-      *                MOVE    "0012"          TO  SPA-ERRCD
-      *                GO  TO  4105-KBNCD-CHK-EXT
-      ************ END-IF
       *---- (03.04.00) LINE ADD START --------------------------------
                WHEN    "1014"
                    MOVE    SPACE               TO  SPA-GMN-KBNCD
                    MOVE    12                  TO  SPA-GMN-CUR
-                   GO  TO  4105-KBNCD-CHK-EXT
       *---- (03.04.00) LINE ADD END   --------------------------------
       *---- (01.02.02) LINE ADD START --------------------------------
                WHEN    "2004"
                    MOVE    4                   TO  WRK-CODE-MAX
                    IF      WRK-LEN             >   4
                        MOVE    "0013"          TO  SPA-ERRCD
-                       GO  TO  4105-KBNCD-CHK-EXT
                    END-IF
       *---- (01.02.02) LINE ADD END   --------------------------------
       *---- (01.02.04) LINE ADD START --------------------------------
@@ -1574,16 +1578,23 @@
                    MOVE    3                   TO  WRK-CODE-MAX
                    IF      WRK-LEN             >  3
                        MOVE    "0014"          TO  SPA-ERRCD
-                       GO  TO  4105-KBNCD-CHK-EXT
                    END-IF
       *---- (01.02.04) LINE ADD END ----------------------------------
                WHEN    OTHER
                    MOVE    SPACE           TO  SPA-GMN-KBNCD
                    MOVE    "0002"          TO  SPA-ERRCD
                    MOVE    1               TO  SPA-GMN-CUR 
-                   GO  TO  4105-KBNCD-CHK-EXT
            END-EVALUATE
-      *         
+      *
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO  TO  4105-KBNCD-CHK-EXT
+           END-IF
+      *    区分コードなし
+           IF     (WRK-CODE-MAX        =   ZERO )
+            AND   (SPA-GMN-KBNCD       =   SPACE )
+               GO  TO  4105-KBNCD-CHK-EXT
+           END-IF
+      *
            IF      SPA-GMN-KBNCD           =   SPACE
                MOVE    "0002"          TO  SPA-ERRCD
                GO  TO  4105-KBNCD-CHK-EXT
@@ -1602,7 +1613,7 @@
            ELSE
                COMPUTE WRK-IN          =   15  -   WRK-CODE-MAX
                                        +   1
-               MOVE    SPACE           TO  SPA-GMN-KBNCD
+               MOVE    SPACE           TO  SPA-GMN-KBNCD-G
                MOVE    SNUM-OUTEDT(WRK-IN:WRK-CODE-MAX)
                                        TO  SPA-GMN-KBNCD(1:WRK-CODE-MAX)
            END-IF
@@ -1801,6 +1812,7 @@
                WHEN    "1020" 
                WHEN    "1026"
                WHEN    "1027"
+               WHEN    "1028"
                    MOVE    "W02"               TO  SPA-SAKIPG
                WHEN    "1005" 
                    MOVE    "W05"               TO  SPA-SAKIPG
@@ -1952,6 +1964,7 @@
                WHEN    "1020"
                WHEN    "1026"
                WHEN    "1027"
+               WHEN    "1028"
                WHEN    "1041"
                WHEN    "5013"
       *---- (01.02.04) LINE ADD START --------------------------------
@@ -2061,6 +2074,7 @@
                WHEN    "1020" 
                WHEN    "1026"
                WHEN    "1027"
+               WHEN    "1028"
                WHEN    "1041"
                WHEN    "5013"
       *---- (01.02.04) LINE ADD START --------------------------------

@@ -319,6 +319,24 @@ W02	{
 	            N09	{
 	            	state	int;
 	            };
+			fixed32	{
+				YYKKBNNAME	{
+					value	varchar(30);
+				};
+				YYKKBNNAME1	{
+					value	varchar(10);
+				};
+				HYOJIKBN_COMB	{
+					HYOJIKBN	{
+						value	varchar(20);
+					};
+					count	int;
+					item	varchar(20)[2];
+				};
+			};
+	            N10	{
+	            	state	int;
+	            };
 		};
 	};
 };

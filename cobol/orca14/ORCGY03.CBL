@@ -35,6 +35,7 @@
       *  01.00.04    NACL-多々納  03/12/02  前頁・次頁追加
       *  01.00.05    NACL-多々納  06/05/12  MONFUNC 対応
       *  03.05.00    NACL-多々納  07/05/07  グループ診療対応
+      *  04.01.00    NACL-多々納  08/01/30  予約内容追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -102,6 +103,7 @@
                            11  SPA-GMN-TDRNAME     PIC X(20).
                            11  SPA-GMN-TKNJNAME    PIC X(30).
                            11  SPA-GMN-TPTNUM      PIC X(20).
+                           11  SPA-GMN-TYYKKBN     PIC X(10).
                            11  SPA-GMN-TRENRAKU    PIC X(10).
                            11  SPA-GMN-TRAIIN      PIC X(04).
                    07  SPA-GMN-SELBAN          PIC 9(04).
@@ -117,6 +119,7 @@
                            11  SPA-NAI-TDRNCD      PIC X(05).
                            11  SPA-NAI-TRAIIN      PIC X(01).
                            11  SPA-NAI-TYYKID      PIC 9(02).
+                           11  SPA-NAI-TYYKKBN     PIC X(02).
                            11  SPA-NAI-TRENRAKU    PIC X(01).
                            11  SPA-NAI-TPTID       PIC 9(10).
       *    フラグ領域
@@ -194,6 +197,7 @@
                    07  WRK-GMN-TDRNAME     PIC X(20).
                    07  WRK-GMN-TKNJNAME    PIC X(30).
                    07  WRK-GMN-TKNJNO      PIC X(20).
+                   07  WRK-GMN-TYYKKBN     PIC X(10).
                    07  WRK-GMN-TRENRAKU    PIC X(10).
                    07  WRK-GMN-TRAIIN      PIC X(04).
       *
@@ -205,8 +209,25 @@
                    07  WRK-NAI-TDRNCD      PIC X(05).
                    07  WRK-NAI-TRAIIN      PIC X(01).
                    07  WRK-NAI-TYYKID      PIC 9(02).
+                   07  WRK-NAI-TYYKKBN     PIC X(02).
                    07  WRK-NAI-TRENRAKU    PIC X(01).
                    07  WRK-NAI-TKNJID      PIC X(10).
+      *
+      *    診療科テーブル
+       01  TBL-SRYKA-AREA.
+           03  TBL-SRYKA-G             OCCURS   99.
+               05  TBL-SRYKA-CD        PIC X(02).
+               05  TBL-SRYKANAME       PIC X(20).
+      *    連絡先テーブル
+       01  TBL-RENRAK-AREA.
+           03  TBL-RENRAK-G            OCCURS   9.
+               05  TBL-RENRAK-CD       PIC X(01).
+               05  TBL-YYKKAKNAME      PIC X(10).
+      *    予約内容テーブル
+       01  TBL-YYKKBN-AREA.
+           03  TBL-YYKKBN-G            OCCURS   99.
+               05  TBL-YYKKBN-CD       PIC X(02).
+               05  TBL-YYKKBNNAME1     PIC X(10).
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -222,6 +243,8 @@
            COPY    "CPSK1010.INC".
       *    予約確認
            COPY    "CPSK0051.INC".
+      *    予約内容
+           COPY    "CPSK1028.INC".
       *
       *    患者マスタ−
        01  PTINF-REC.
@@ -388,6 +411,7 @@
       *    テーブル初期編集処理
       *****************************************************************
        301-INIT-SPATBL-SEC           SECTION.
+      *
       *    診療内容をＳＰＡにセット
            INITIALIZE                   SPA-GMN-SINRYOLST-G
       *    １件目を全体
@@ -517,7 +541,6 @@
            .
        301-INIT-SPATBL-EXT.
            EXIT.
-      *
       *****************************************************************
       *    予約マスタ編集処理
       *****************************************************************
@@ -617,17 +640,30 @@
       *    開始行読み飛ばし
            ADD     1               TO  IDX-G
            IF      IDX-G           <   WRK-STR
-               GO      TO      3101-YOYAKU-HEN-EXT
+               CONTINUE
+           ELSE
+               ADD     1               TO  IDX
+               IF      IDX             >   200
+                   MOVE    1               TO  SPA-NAI-NEXT
+               ELSE
+                   IF      IDX             =   1
+      *                システム管理テーブル編集
+                       PERFORM 3011-SYSKANRI-TBL-SEC
+                   END-IF
+      *            テーブル編集
+                   PERFORM 31011-YOYAKU-TBLHEN-SEC
+               END-IF
            END-IF
+           .
+       3101-YOYAKU-HEN-EXT.
+           EXIT.
       *
-           ADD     1               TO  IDX
-           IF      IDX             >   200
-               MOVE    1               TO  SPA-NAI-NEXT
-               GO      TO      3101-YOYAKU-HEN-EXT
-           END-IF
+      *****************************************************************
+      *    予約マスタテーブル編集処理
+      *****************************************************************
+       31011-YOYAKU-TBLHEN-SEC           SECTION.
       *
            MOVE    IDX             TO  SPA-GMN-MAX
-      *****MOVE    IDX             TO  SPA-GMN-TBANGO  (IDX)
            MOVE    IDX-G           TO  SPA-GMN-TBANGO  (IDX)
            MOVE    YYK-KEYYYKTIME  TO  SPA-NAI-TKYYKTIME (IDX)
            MOVE    YYK-YYKTIME     TO  SPA-GMN-TYYKTIME(IDX)
@@ -640,6 +676,7 @@
            PERFORM 3001-PTNUM-HENSYU-SEC
            MOVE    WRK-PTNUM       TO  SPA-GMN-TPTNUM (IDX)
       *
+           MOVE    YYK-YYKKBN      TO  SPA-NAI-TYYKKBN (IDX)
            MOVE    YYK-KAKREN      TO  SPA-NAI-TRENRAKU(IDX)
            MOVE    YYK-RAIINZUMI   TO  SPA-NAI-TRAIIN  (IDX)
            MOVE    YYK-YYKID       TO  SPA-NAI-TYYKID  (IDX)
@@ -672,60 +709,39 @@
            END-PERFORM
       *
       *    診療科
-           MOVE    SPACE               TO  SYS-1005-REC
-           MOVE    "1005"              TO  SYS-1005-KANRICD
-           MOVE    YYK-SRYKA           TO  SYS-1005-KBNCD
-           MOVE    SPA-NAI-SINYMD      TO  SYS-1005-STYUKYMD
-           MOVE    SPA-NAI-SINYMD      TO  SYS-1005-EDYUKYMD
-      *    システム管理検索
-           MOVE    SPA-HOSPNUM         TO  SYS-1005-HOSPNUM
-           MOVE    SYS-1005-REC        TO  MCPDATA-REC
-           MOVE    "tbl_syskanri"      TO  MCP-TABLE
-           MOVE    "key10"             TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
-           IF      MCP-RC              =   ZERO
-               MOVE    "tbl_syskanri"      TO  MCP-TABLE
-               MOVE    "key10"             TO  MCP-PATHNAME
-               PERFORM 900-SYSKANRI-READ-SEC
-           ELSE
-               MOVE    1                   TO  FLG-SYSKANRI
-           END-IF
-           IF      FLG-SYSKANRI        =   ZERO
-               MOVE    MCPDATA-REC         TO  SYS-1005-REC
-               MOVE    SYS-1005-SRYKANAME2 TO  SPA-GMN-TSRYKA(IDX)
-           END-IF
-           MOVE    "tbl_syskanri"      TO  MCP-TABLE
-           MOVE    "key10"             TO  MCP-PATHNAME
-           PERFORM 990-DBCLOSE-SEC
+           PERFORM VARYING     IDX-D   FROM    1   BY  1
+                   UNTIL      (IDX-D   >   99  )
+                          OR  (TBL-SRYKA-CD (IDX-D)    =   SPACE)
+               IF     YYK-SRYKA            =   TBL-SRYKA-CD (IDX-D)
+                   MOVE    TBL-SRYKANAME (IDX-D)
+                                           TO  SPA-GMN-TSRYKA(IDX)
+                   MOVE    99              TO  IDX-D
+               END-IF
+           END-PERFORM
       *
       *    予約確認連絡コード
-           MOVE    SPACE               TO  SYS-0051-REC
-           MOVE    "0051"              TO  SYS-0051-KANRICD
-           MOVE    YYK-KAKREN          TO  SYS-0051-KBNCD
-           MOVE    SPA-NAI-SINYMD      TO  SYS-0051-STYUKYMD
-           MOVE    SPA-NAI-SINYMD      TO  SYS-0051-EDYUKYMD
+           PERFORM VARYING     IDX-D   FROM    1   BY  1
+                   UNTIL      (IDX-D   >   9   )
+                          OR  (TBL-RENRAK-CD (IDX-D)   =   SPACE)
+               IF     YYK-KAKREN            =   TBL-RENRAK-CD (IDX-D)
+                   MOVE    TBL-YYKKAKNAME (IDX-D)
+                                           TO  SPA-GMN-TRENRAKU(IDX)
+                   MOVE    9               TO  IDX-D
+               END-IF
+           END-PERFORM
       *
-           MOVE    SPA-HOSPNUM         TO  SYS-0051-HOSPNUM
-           MOVE    SYS-0051-REC        TO  MCPDATA-REC
-           MOVE    "tbl_syskanri"      TO  MCP-TABLE
-           MOVE    "key10"             TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
-           IF      MCP-RC              =   ZERO
-               MOVE    "tbl_syskanri"      TO  MCP-TABLE
-               MOVE    "key10"             TO  MCP-PATHNAME
-               PERFORM 900-SYSKANRI-READ-SEC
-           ELSE
-               MOVE    1                   TO  FLG-SYSKANRI
-           END-IF
-           IF      FLG-SYSKANRI        =   ZERO
-               MOVE    MCPDATA-REC         TO  SYS-0051-REC
-               MOVE    SYS-0051-YYKKAKNAME TO  SPA-GMN-TRENRAKU(IDX)
-           END-IF
-           MOVE    "tbl_syskanri"      TO  MCP-TABLE
-           MOVE    "key10"             TO  MCP-PATHNAME
-           PERFORM 990-DBCLOSE-SEC
+      *    予約内容コード
+           PERFORM VARYING     IDX-D   FROM    1   BY  1
+                   UNTIL      (IDX-D   >   99   )
+                          OR  (TBL-YYKKBN-CD (IDX-D)   =   SPACE)
+               IF     YYK-YYKKBN            =   TBL-YYKKBN-CD (IDX-D)
+                   MOVE    TBL-YYKKBNNAME1 (IDX-D)
+                                           TO  SPA-GMN-TYYKKBN(IDX)
+                   MOVE    99              TO  IDX-D
+               END-IF
+           END-PERFORM
            .
-       3101-YOYAKU-HEN-EXT.
+       31011-YOYAKU-TBLHEN-EXT.
            EXIT.
       *
       *****************************************************************
@@ -749,6 +765,121 @@
       *
            .
        3001-PTNUM-HENSYU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    システム管理テーブル編集処理
+      *****************************************************************
+       3011-SYSKANRI-TBL-SEC           SECTION.
+      *
+           INITIALIZE                  TBL-SRYKA-AREA
+           INITIALIZE                  TBL-RENRAK-AREA
+           INITIALIZE                  TBL-YYKKBN-AREA
+      *    診療科
+           MOVE    SPACE               TO  SYS-1005-REC
+           MOVE    "1005"              TO  SYS-1005-KANRICD
+           MOVE    SPA-NAI-SINYMD      TO  SYS-1005-STYUKYMD
+           MOVE    SPA-NAI-SINYMD      TO  SYS-1005-EDYUKYMD
+      *    システム管理検索
+           MOVE    SPA-HOSPNUM         TO  SYS-1005-HOSPNUM
+           MOVE    SYS-1005-REC        TO  MCPDATA-REC
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_syskanri"      TO  MCP-TABLE
+               MOVE    "key2"             TO  MCP-PATHNAME
+               PERFORM 900-SYSKANRI-READ-SEC
+           ELSE
+               MOVE    1                   TO  FLG-SYSKANRI
+           END-IF
+           MOVE    ZERO                TO  IDX
+           PERFORM UNTIL   (FLG-SYSKANRI   =   1   )
+                       OR  (IDX            >=  99  )
+               ADD     1                   TO  IDX
+               MOVE    MCPDATA-REC         TO  SYS-1005-REC
+               MOVE    SYS-1005-KBNCD(1:2) TO  TBL-SRYKA-CD  (IDX)
+               MOVE    SYS-1005-SRYKANAME2 TO  TBL-SRYKANAME (IDX)
+      *
+               MOVE    "tbl_syskanri"      TO  MCP-TABLE
+               MOVE    "key2"              TO  MCP-PATHNAME
+               PERFORM 900-SYSKANRI-READ-SEC
+           END-PERFORM
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+      *
+      *    予約確認連絡コード
+           MOVE    SPACE               TO  SYS-0051-REC
+           MOVE    "0051"              TO  SYS-0051-KANRICD
+           MOVE    SPA-NAI-SINYMD      TO  SYS-0051-STYUKYMD
+           MOVE    SPA-NAI-SINYMD      TO  SYS-0051-EDYUKYMD
+      *
+           MOVE    SPA-HOSPNUM         TO  SYS-0051-HOSPNUM
+           MOVE    SYS-0051-REC        TO  MCPDATA-REC
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_syskanri"      TO  MCP-TABLE
+               MOVE    "key2"              TO  MCP-PATHNAME
+               PERFORM 900-SYSKANRI-READ-SEC
+           ELSE
+               MOVE    1                   TO  FLG-SYSKANRI
+           END-IF
+           MOVE    ZERO                TO  IDX
+           PERFORM UNTIL   (FLG-SYSKANRI   =   1   )
+                       OR  (IDX            >=  9   )
+               ADD     1                   TO  IDX
+               MOVE    MCPDATA-REC         TO  SYS-0051-REC
+               MOVE    SYS-0051-KBNCD(1:2) TO  TBL-RENRAK-CD (IDX)
+               MOVE    SYS-0051-YYKKAKNAME TO  TBL-YYKKAKNAME (IDX)
+      *
+               MOVE    "tbl_syskanri"      TO  MCP-TABLE
+               MOVE    "key2"              TO  MCP-PATHNAME
+               PERFORM 900-SYSKANRI-READ-SEC
+           END-PERFORM
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+      *
+      *    予約内容コード
+           MOVE    SPACE               TO  SYS-1028-REC
+           MOVE    SPA-HOSPNUM         TO  SYS-1028-HOSPNUM
+           MOVE    "1028"              TO  SYS-1028-KANRICD
+           MOVE    SPA-NAI-SINYMD      TO  SYS-1028-STYUKYMD
+           MOVE    SPA-NAI-SINYMD      TO  SYS-1028-EDYUKYMD
+      *
+           MOVE    SYS-1028-REC        TO  MCPDATA-REC
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_syskanri"      TO  MCP-TABLE
+               MOVE    "key2"              TO  MCP-PATHNAME
+               PERFORM 900-SYSKANRI-READ-SEC
+           ELSE
+               MOVE    1                   TO  FLG-SYSKANRI
+           END-IF
+           MOVE    ZERO                TO  IDX
+           PERFORM UNTIL   (FLG-SYSKANRI   =   1   )
+                       OR  (IDX            >=  99  )
+               ADD     1                   TO  IDX
+               MOVE    MCPDATA-REC         TO  SYS-1028-REC
+               MOVE    SYS-1028-KBNCD(1:2) TO  TBL-YYKKBN-CD (IDX)
+               MOVE    SYS-1028-YYKKBNNAME1
+                                           TO  TBL-YYKKBNNAME1(IDX)
+      *
+               MOVE    "tbl_syskanri"      TO  MCP-TABLE
+               MOVE    "key2"              TO  MCP-PATHNAME
+               PERFORM 900-SYSKANRI-READ-SEC
+           END-PERFORM
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+      *
+           .
+       3011-SYSKANRI-TBL-EXT.
            EXIT.
       *
       *****************************************************************
@@ -849,6 +980,8 @@
                                                TO  Y03-TDRNAME (IDX)
                MOVE    SPA-GMN-TKNJNAME(IDX)   TO  Y03-TNAME(IDX)
                MOVE    SPA-GMN-TPTNUM  (IDX)   TO  Y03-TPTNUM  (IDX)
+               MOVE    SPA-GMN-TYYKKBN (IDX)
+                                               TO  Y03-TYYKKBN (IDX)
                MOVE    SPA-GMN-TRENRAKU(IDX)
                                                TO  Y03-TRENRAKU(IDX)
                MOVE    SPA-GMN-TRAIIN  (IDX)

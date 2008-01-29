@@ -702,10 +702,10 @@ Y01	{
 		};
 		SRYKA_COMB	{
 			SRYKA	{
-				value	varchar(21);
+				value	varchar(23);
 			};
 			count	int;
-			item	varchar(21)[40];
+			item	varchar(23)[40];
 		};
 		KAKREN_COMB	{
 			KAKREN	{
@@ -716,10 +716,10 @@ Y01	{
 		};
 		YYKKBN_COMB	{
 			YYKKBN	{
-				value	varchar(29);
+				value	varchar(33);
 			};
 			count	int;
-			item	varchar(29)[10];
+			item	varchar(33)[100];
 		};
 	};
 };
