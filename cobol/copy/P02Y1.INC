@@ -26,3 +26,6 @@
                     06  P02Y1-SRYKBN    PIC X(20).
                   05  P02Y1-SELECT
                           PIC X       OCCURS  200 TIMES.
+              03  P02Y1-NEXT.
+                04  P02Y1-NEXT-STYLE   PIC X(20).
+                04  P02Y1-NEXT-VALUE   PIC X(20).

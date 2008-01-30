@@ -45,3 +45,6 @@
                   05  J98-VALUE   PIC X(10).
                 04  J98-USER-COUNT   PIC S9(9)   BINARY.
                 04  J98-USER-ITEM    PIC X(10)   OCCURS  10 TIMES.
+              03  J98-NEXT.
+                04  J98-NEXT-STYLE   PIC X(20).
+                04  J98-NEXT-VALUE   PIC X(20).

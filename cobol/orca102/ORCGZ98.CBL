@@ -44,6 +44,7 @@
       *  01.00.12    NACL−多々納 04/12/07  点数検査検索追加他
       *  01.00.13    NACL-多々納  05/11/17  MONFUNC 対応
       *  03.04.00    NACL-多々納  06/11/14  検査正式名称表示追加
+      *  04.01.00    NACL-多々納  08/01/30  次頁表示の追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -545,7 +546,8 @@
                ELSE
                    MOVE    1                   TO  SPA-Z98-GMN-CUR
                    IF      FLG-MAX         NOT =   ZERO
-                       MOVE    "0005"              TO  SPA-ERRCD
+                       CONTINUE
+      **************   MOVE    "0005"              TO  SPA-ERRCD
                    ELSE
                        MOVE    ZERO                TO  SPA-Z98-NEXT
                    END-IF
@@ -898,7 +900,8 @@
       *
            MOVE    WRK-CNT-ENT         TO  SPA-Z98-GMN-MAX
            IF      FLG-MAX         NOT =   ZERO
-               MOVE    "0005"              TO  SPA-ERRCD
+               CONTINUE
+      ******** MOVE    "0005"              TO  SPA-ERRCD
            ELSE
                MOVE    ZERO                TO  SPA-Z98-NEXT
            END-IF
@@ -1436,6 +1439,17 @@
                MOVE    TNS-TANINAME        TO  SPA-Z98-GMN-TANI(IDX)
            END-IF
       *
+      *TEST
+      *    ユーザ登録
+           IF     (TNS-SRYCD(1:1)      =   "0" )
+               MOVE    "("                 TO  SPA-Z98-GMN-TANI(IDX)
+                                                              (1:1)
+               MOVE    TNS-SRYCD(1:3)      TO  SPA-Z98-GMN-TANI(IDX)
+                                                              (2:3)
+               MOVE    ")"                 TO  SPA-Z98-GMN-TANI(IDX)
+                                                              (6:1)
+           END-IF
+      *TEST
       *!!  診療コードの時、種別
       *    IF      SPA-Z98-GMN-SYORI   =   "9"
       *        CONTINUE
@@ -1847,6 +1861,24 @@
                MOVE    SPA-Z98-USER-G      TO  Z98-USER
            ELSE
                MOVE    SPACE               TO  SPA-Z98-USER-G
+           END-IF
+      *
+      *    次頁あり
+           IF      SPA-Z98-NEXT        =   1
+               IF      SPA-Z98-PAGE        =   1
+                   MOVE    "次頁有り"          TO  Z98-NEXT-VALUE
+               ELSE
+                   MOVE    "前頁・次頁有り"    TO  Z98-NEXT-VALUE
+               END-IF
+               MOVE    "red"               TO  Z98-NEXT-STYLE
+           ELSE
+               IF      SPA-Z98-PAGE        >   1
+                   MOVE    "前頁有り"          TO  Z98-NEXT-VALUE
+                   MOVE    "red"               TO  Z98-NEXT-STYLE
+               ELSE
+                   MOVE    SPACE               TO  Z98-NEXT-VALUE
+                   MOVE    "black"             TO  Z98-NEXT-STYLE
+               END-IF
            END-IF
       *
            PERFORM 5001-MAPCUR-SEC
@@ -2792,6 +2824,8 @@
            INITIALIZE                      SPA-Z98-NAI-SELNUM-G
            INITIALIZE                      SPA-Z98-GMN-SELNUM-G
            MOVE    SPACE               TO  SPA-Z98-SRYCD
+           MOVE    ZERO                TO  SPA-Z98-NEXT
+           MOVE    1                   TO  SPA-Z98-PAGE
       *
            MOVE    SPACE               TO  SPA-Z98-GMN-INPUT
       *

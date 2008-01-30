@@ -41,6 +41,7 @@
       *   01.00.10    NACL-多々納  05/11/10  MONFUNCの修正
       *   03.03.00    NACL-多々納  06/10/06  名前検索の追加
       *   03.05.00    NACL-多々納  07/06/05  前回来院日の共通化
+      *   04.01.00    NACL-多々納  08/01/30  次頁の画面表示追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -880,10 +881,10 @@
            MOVE    WRK-ORC-DBPATH      TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
       *
-           IF     (SPA-GMN-NEXT    =   1    )  AND
-                  (FLG-KNJHEN      =   ZERO )
-               MOVE    "0003"          TO  SPA-ERRCD
-           END-IF
+      ***  IF     (SPA-GMN-NEXT    =   1    )  AND
+      *           (FLG-KNJHEN      =   ZERO )
+      *        MOVE    "0003"          TO  SPA-ERRCD
+      **** END-IF
       *
            .
        2011-KNJKEN-HEN-EXT.
@@ -1668,6 +1669,15 @@
                MOVE    SPA-GMN-BRMNUM(IDX)     TO  P97-BRMNUM (IDX)
            END-PERFORM
            MOVE    SPA-GMN-MAX         TO  P97-COUNT
+      *
+      *    次頁あり
+           IF      SPA-GMN-NEXT        =   1
+               MOVE    "［次頁有り］"      TO  P97-NEXT-VALUE
+               MOVE    "red"               TO  P97-NEXT-STYLE
+           ELSE
+               MOVE    SPACE               TO  P97-NEXT-VALUE
+               MOVE    "black"             TO  P97-NEXT-STYLE
+           END-IF
       *
            PERFORM 5011-MAPCUR-SEC
       *

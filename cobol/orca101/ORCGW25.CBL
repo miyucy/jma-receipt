@@ -29,6 +29,7 @@
       * Maj/Min/Rev  修正者       日付      内容
       *  03.04.00    NACL-多々納  06/10/26  検索画面連絡情報変更
       *  03.05.00    NACL-多々納  07/05/02  グループ診療対応
+      *  04.01.00    NACL-多々納  08/01/30  次頁表示の追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -565,7 +566,8 @@
                ELSE
                    MOVE    1                   TO  SPA-W25-GMN-CUR
                    IF      FLG-MAX         NOT =   ZERO
-                       MOVE    "0005"              TO  SPA-ERRCD
+      **************   MOVE    "0005"              TO  SPA-ERRCD
+                       CONTINUE
                    ELSE
                        MOVE    ZERO                TO  SPA-W25-NEXT
                    END-IF
@@ -917,7 +919,8 @@
       *
            MOVE    WRK-CNT-ENT         TO  SPA-W25-GMN-MAX
            IF      FLG-MAX         NOT =   ZERO
-               MOVE    "0005"              TO  SPA-ERRCD
+      ******   MOVE    "0005"              TO  SPA-ERRCD
+               CONTINUE
            ELSE
                MOVE    ZERO                TO  SPA-W25-NEXT
            END-IF
@@ -1867,6 +1870,24 @@
            ELSE
                MOVE    SPACE               TO  SPA-W25-USER-G
            END-IF
+      *    次頁あり
+           IF      SPA-W25-NEXT        =   1
+               IF      SPA-W25-PAGE        =   1
+                   MOVE    "次頁有り"          TO  W25-NEXT-VALUE
+               ELSE
+                   MOVE    "前頁・次頁有り"    TO  W25-NEXT-VALUE
+               END-IF
+               MOVE    "red"               TO  W25-NEXT-STYLE
+           ELSE
+               IF      SPA-W25-PAGE        >   1
+                   MOVE    "前頁有り"          TO  W25-NEXT-VALUE
+                   MOVE    "red"               TO  W25-NEXT-STYLE
+               ELSE
+                   MOVE    SPACE               TO  W25-NEXT-VALUE
+                   MOVE    "black"             TO  W25-NEXT-STYLE
+               END-IF
+           END-IF
+      *
       *
            PERFORM 5001-MAPCUR-SEC
            .
@@ -2827,6 +2848,8 @@
            INITIALIZE                      SPA-W25-NAI-SELNUM-G
            INITIALIZE                      SPA-W25-GMN-SELNUM-G
            MOVE    SPACE               TO  SPA-W25-SRYCD
+           MOVE    ZERO                TO  SPA-W25-NEXT
+           MOVE    1                   TO  SPA-W25-PAGE
       *
            MOVE    SPACE               TO  SPA-W25-GMN-INPUT
       *

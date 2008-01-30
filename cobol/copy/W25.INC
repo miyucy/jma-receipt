@@ -43,4 +43,7 @@
                   05  W25-VALUE   PIC X(10).
                 04  W25-USER-COUNT   PIC S9(9)   BINARY.
                 04  W25-USER-ITEM    PIC X(10)   OCCURS  10 TIMES.
+              03  W25-NEXT.
+                04  W25-NEXT-STYLE   PIC X(20).
+                04  W25-NEXT-VALUE   PIC X(20).
 

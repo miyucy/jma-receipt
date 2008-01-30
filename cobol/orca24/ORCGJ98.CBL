@@ -47,6 +47,7 @@
       *  03.05.00    NACL-多々納  07/05/XX  グループ診療対応
       *  03.05.00    NACL-多々納  07/06/20  選択数を１０に変更
       *  04.01.00    NACL-多々納  07/10/XX  区分番号に自院の追加
+      *  04.01.00    NACL-多々納  08/01/30  次頁表示の追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -566,7 +567,8 @@
                ELSE
                    MOVE    1                   TO  SPA-J98-GMN-CUR
                    IF      FLG-MAX         NOT =   ZERO
-                       MOVE    "0005"              TO  SPA-ERRCD
+      **************   MOVE    "0005"              TO  SPA-ERRCD
+                       CONTINUE
                    ELSE
                        MOVE    ZERO                TO  SPA-J98-NEXT
                    END-IF
@@ -1089,7 +1091,8 @@
       *
            MOVE    WRK-CNT-ENT         TO  SPA-J98-GMN-MAX
            IF      FLG-MAX         NOT =   ZERO
-               MOVE    "0005"              TO  SPA-ERRCD
+      *****    MOVE    "0005"              TO  SPA-ERRCD
+               CONTINUE
            ELSE
                MOVE    ZERO                TO  SPA-J98-NEXT
            END-IF
@@ -2164,6 +2167,24 @@
                MOVE    SPA-J98-USER-G      TO  J98-USER
            ELSE
                MOVE    SPACE               TO  SPA-J98-USER-G
+           END-IF
+      *
+      *    次頁あり
+           IF      SPA-J98-NEXT        =   1
+               IF      SPA-J98-PAGE        =   1
+                   MOVE    "次頁有り"          TO  J98-NEXT-VALUE
+               ELSE
+                   MOVE    "前頁・次頁有り"    TO  J98-NEXT-VALUE
+               END-IF
+               MOVE    "red"               TO  J98-NEXT-STYLE
+           ELSE
+               IF      SPA-J98-PAGE        >   1
+                   MOVE    "前頁有り"          TO  J98-NEXT-VALUE
+                   MOVE    "red"               TO  J98-NEXT-STYLE
+               ELSE
+                   MOVE    SPACE               TO  J98-NEXT-VALUE
+                   MOVE    "black"             TO  J98-NEXT-STYLE
+               END-IF
            END-IF
       *
            PERFORM 5001-MAPCUR-SEC
@@ -3267,6 +3288,8 @@
            INITIALIZE                      SPA-J98-NAI-SELNUM-G
            INITIALIZE                      SPA-J98-GMN-SELNUM-G
            MOVE    SPACE               TO  SPA-J98-SRYCD-G
+           MOVE    ZERO                TO  SPA-J98-NEXT
+           MOVE    1                   TO  SPA-J98-PAGE
       *
            MOVE    SPACE               TO  SPA-J98-GMN-INPUT
       *

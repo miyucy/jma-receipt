@@ -51,3 +51,6 @@
                     06  P97-HONKZKKBN PIC X(2).
                     06  P97-BRMNUM  PIC X(10).
                   05  P97-SELECT  PIC X       OCCURS  100 TIMES.
+              03  P97-NEXT.
+                04  P97-NEXT-STYLE   PIC X(20).
+                04  P97-NEXT-VALUE   PIC X(20).

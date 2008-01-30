@@ -556,9 +556,7 @@
                    MOVE    "0004"              TO  SPA-ERRCD
                ELSE
                    MOVE    1                   TO  SPA-P02Y1-GMN-CUR
-                   IF      FLG-MAX         NOT =   ZERO
-                       MOVE    "0005"              TO  SPA-ERRCD
-                   ELSE
+                   IF      FLG-MAX             =   ZERO
                        MOVE    ZERO                TO  SPA-P02Y1-NEXT
                    END-IF
       *T2
@@ -1087,9 +1085,7 @@
            PERFORM 990-DBCLOSE-SEC
       *
            MOVE    WRK-CNT-ENT         TO  SPA-P02Y1-GMN-MAX
-           IF      FLG-MAX         NOT =   ZERO
-               MOVE    "0005"              TO  SPA-ERRCD
-           ELSE
+           IF      FLG-MAX             =   ZERO
                MOVE    ZERO                TO  SPA-P02Y1-NEXT
            END-IF
       *
@@ -2113,20 +2109,23 @@
                MOVE    SPACE               TO  SPA-P02Y1-JIIN-G
            END-IF
       *
-      *    PERFORM VARYING     IDX     FROM    1   BY  1
-      *            UNTIL       IDX     >   10
-      *        IF      SPA-P02Y1-USERLST (IDX)   NOT =   SPACE
-      *            MOVE    SPA-P02Y1-USERLST(IDX)
-      *                                         TO  P02Y1-USER-ITEM(IDX)
-      *            MOVE    IDX                  TO  P02Y1-USER-COUNT
-      *        END-IF
-      *    END-PERFORM
-      *    IF     (SPA-P02Y1-GMN-SYORI   =   "U"  )  AND
-      *           (SPA-P02Y1-GMN-SYORI3(1:1)  =   "U")
-      *        MOVE    SPA-P02Y1-USER-G      TO  P02Y1-USER
-      *    ELSE
-      *        MOVE    SPACE               TO  SPA-P02Y1-USER-G
-      **** END-IF
+      *    次頁あり
+           IF      SPA-P02Y1-NEXT      =   1
+               IF      SPA-P02Y1-PAGE      =   1
+                   MOVE    "［次頁有り］"          TO  P02Y1-NEXT-VALUE
+               ELSE
+                   MOVE    "［前頁・次頁有り］"    TO  P02Y1-NEXT-VALUE
+               END-IF
+               MOVE    "red"               TO  P02Y1-NEXT-STYLE
+           ELSE
+               IF      SPA-P02Y1-PAGE      >   1
+                   MOVE    "［前頁有り］"          TO  P02Y1-NEXT-VALUE
+                   MOVE    "red"               TO  P02Y1-NEXT-STYLE
+               ELSE
+                   MOVE    SPACE               TO  P02Y1-NEXT-VALUE
+                   MOVE    "black"             TO  P02Y1-NEXT-STYLE
+               END-IF
+           END-IF
       *
            PERFORM 5001-MAPCUR-SEC
            .
@@ -2297,7 +2296,7 @@
                WHEN    "CLICKED"       ALSO    "B07"
                    PERFORM 270-NEXT-SEC
       *        前ページ
-               WHEN    "CLICKED"       ALSO    "B07S"
+               WHEN    "CLICKED"       ALSO    "B06"
                    PERFORM 270-BACK-SEC
       *        確定
                WHEN    "CLICKED"       ALSO    "B12"
