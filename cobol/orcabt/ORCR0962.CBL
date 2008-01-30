@@ -1788,6 +1788,7 @@ grpsys        PERFORM 900-DBSELECT-SEC
       *
                MOVE    ZERO                  TO  FLG-KUGIRI
                IF  RECE87-ZAINUM        NOT =   WRK-R061-ZAINUM-O
+               OR  RECE87-SRYKBN        NOT =   WRK-R061-SRYKBN-O
                    MOVE    ZERO              TO  CNT-ZAIMEISAISU
                END-IF
                ADD     1                     TO  CNT-ZAIMEISAISU

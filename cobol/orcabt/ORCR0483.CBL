@@ -1639,6 +1639,7 @@ grpsys         MOVE    WRK-PARA-HOSPNUM    TO  BTPARA-HOSPNUM
       *
                MOVE    ZERO                  TO  FLG-KUGIRI
                IF  RECE47-ZAINUM        NOT =   WRK-R061-ZAINUM-O
+               OR  RECE47-SRYKBN        NOT =   WRK-R061-SRYKBN-O
                    MOVE    ZERO              TO  CNT-ZAIMEISAISU
                END-IF
                ADD     1                     TO  CNT-ZAIMEISAISU
