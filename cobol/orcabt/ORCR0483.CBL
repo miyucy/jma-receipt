@@ -1731,6 +1731,13 @@ grpsys         MOVE    WRK-PARA-HOSPNUM    TO  BTPARA-HOSPNUM
       *    ¿ÇÎÅ¶èÊ¬Ì¾¾ÎÊÔ½¸½èÍý
       *****************************************************************
        34111-SRYKBN-HENSYU-SEC     SECTION.
+      *                  
+           IF      CNT-PAGE        =   1
+               MOVE    RECE47-SRYKBN   TO  HCM56-SRYKBN (WRK-LINETEK)
+           ELSE
+               MOVE    RECE47-SRYKBN   TO  HCM57-SRYKBN (WRK-LINETEK)
+           END-IF
+           GO  TO  34111-SRYKBN-HENSYU-EXT                                      
       *
            EVALUATE    RECE47-SRYKBN
                WHEN    "11"
@@ -2191,9 +2198,9 @@ grpsys     PERFORM 900-DBSELECT-SEC
                    UNTIL   IDXY    >       TBL-RECE-MAX
                    OR      FLG-ERR >       ZERO
       *
-               IF      WRK-PARA-SHELLID    NOT =   "RECEPTX"
-                   ADD     1                   TO  WRK-RECENUM
-               END-IF
+      ****     IF      WRK-PARA-SHELLID    NOT =   "RECEPTX"
+      ****         ADD     1                   TO  WRK-RECENUM
+      ****     END-IF
       * 
       *        ¥ì¥»¥×¥ÈÌÀºÙ´ÉÍý£Ä£Â
                PERFORM 3901-RECE08-INSERT-SEC
@@ -2204,6 +2211,10 @@ grpsys     PERFORM 900-DBSELECT-SEC
                    PERFORM 3903-RECE07-WRITE-SEC
                END-IF
            END-PERFORM
+      *
+           IF      WRK-PARA-SHELLID    NOT =   "RECEPTX"
+               ADD     TBL-RECE-MAX        TO  WRK-RECENUM
+           END-IF
       *
       *
            IF      FLG-ERR              =   1
@@ -2248,7 +2259,9 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE08-HOSPNUM
            MOVE    TBL-RECE-RENNUM (IDXY)
                                        TO  RECE08-RENNUM
            IF      WRK-PARA-SHELLID    NOT =   "RECEPTX"
-               MOVE    WRK-RECENUM         TO  RECE08-RECENUM
+      *********MOVE    WRK-RECENUM         TO  RECE08-RECENUM
+               COMPUTE RECE08-RECENUM      =   WRK-RECENUM
+                                           +   TBL-RECE-RENNUM (IDXY)
            ELSE
                COMPUTE RECE08-RECENUM      =   WRK-RECENUM
                                            +   TBL-RECE-RENNUM (IDXY)
