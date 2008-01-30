@@ -43,4 +43,6 @@
                   05  Q96-VALUE   PIC X(10).
                 04  Q96-USER-COUNT   PIC S9(9)   BINARY.
                 04  Q96-USER-ITEM    PIC X(10)   OCCURS  10 TIMES.
-
+              03  Q96-NEXT.
+                04  Q96-NEXT-STYLE   PIC X(20).
+                04  Q96-NEXT-VALUE   PIC X(20).

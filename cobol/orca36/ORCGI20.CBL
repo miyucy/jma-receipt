@@ -873,10 +873,10 @@
       *
            IF      SPA-I2ID1-FLG    =   "OK"
                EVALUATE    SPA-I2IDCD
-                   WHEN    "1001"
-                       MOVE    1           TO  SPA-GMN-PAGE
-                       PERFORM 450-KENSAKU-SEC
-                       PERFORM 4504-COUNT-GET-SEC
+      *            WHEN    "1001"
+      *                MOVE    1           TO  SPA-GMN-PAGE
+      *                PERFORM 450-KENSAKU-SEC
+      *                PERFORM 4504-COUNT-GET-SEC
                    WHEN    "6666"
                       MOVE    "JOIN"       TO  MCP-PUTTYPE
                       PERFORM 2101-BACK-SYORI-SEC
@@ -2269,8 +2269,9 @@
            PERFORM 410-INPUT-CHK-SEC
       *
            IF      SPA-ERRCD           =   SPACE
-               MOVE    "1001"              TO  SPA-I2IDCD
-               CONTINUE
+               MOVE    1           TO  SPA-GMN-PAGE
+               PERFORM 450-KENSAKU-SEC
+               PERFORM 4504-COUNT-GET-SEC
            END-IF
            .
        450-KENSAKU-MAE-EXT.

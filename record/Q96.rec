@@ -49,5 +49,9 @@ Q96	{
 			count	int;
 			item	varchar(10)[10];
 		};
+		NEXT	{
+			style	varchar(20);
+			value	varchar(20);
+		};
 	};
 };

@@ -614,22 +614,6 @@
     </widget>
 
     <widget>
-      <class>GtkLabel</class>
-      <name>label467</name>
-      <x>492</x>
-      <y>484</y>
-      <width>93</width>
-      <height>20</height>
-      <label>ユーザー登録</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
       <class>GtkPandaCombo</class>
       <name>JIINCOB</name>
       <x>352</x>
@@ -748,6 +732,22 @@
       <y>524</y>
       <width>104</width>
       <height>16</height>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>NEXT</name>
+      <x>592</x>
+      <y>512</y>
+      <width>93</width>
+      <height>20</height>
+      <label>前・次頁有り</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
     </widget>
   </widget>
 </widget>

@@ -540,7 +540,8 @@
                ELSE
                    MOVE    1                   TO  SPA-X98-GMN-CUR
                    IF      FLG-MAX         NOT =   ZERO
-                       MOVE    "0005"              TO  SPA-ERRCD
+      *                MOVE    "0005"              TO  SPA-ERRCD
+                       CONTINUE
                    ELSE
                        MOVE    ZERO                TO  SPA-X98-NEXT
                    END-IF
@@ -892,7 +893,8 @@
       *
            MOVE    WRK-CNT-ENT         TO  SPA-X98-GMN-MAX
            IF      FLG-MAX         NOT =   ZERO
-               MOVE    "0005"              TO  SPA-ERRCD
+      *        MOVE    "0005"              TO  SPA-ERRCD
+               CONTINUE
            ELSE
                MOVE    ZERO                TO  SPA-X98-NEXT
            END-IF
@@ -1842,6 +1844,24 @@
                MOVE    SPA-X98-USER-G      TO  X98-USER
            ELSE
                MOVE    SPACE               TO  SPA-X98-USER-G
+           END-IF
+      *
+      *    次頁あり
+           IF      SPA-X98-NEXT        =   1
+               IF      SPA-X98-PAGE        =   1
+                   MOVE    "次頁有り"          TO  X98-NEXT-VALUE
+               ELSE
+                   MOVE    "前頁・次頁有り"    TO  X98-NEXT-VALUE
+               END-IF
+               MOVE    "red"               TO  X98-NEXT-STYLE
+           ELSE
+               IF      SPA-X98-PAGE        >   1
+                   MOVE    "前頁有り"          TO  X98-NEXT-VALUE
+                   MOVE    "red"               TO  X98-NEXT-STYLE
+               ELSE
+                   MOVE    SPACE               TO  X98-NEXT-VALUE
+                   MOVE    "black"             TO  X98-NEXT-STYLE
+               END-IF
            END-IF
       *
            MOVE    WIDGET-NORMAL       TO  X98-B09-STATE

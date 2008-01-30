@@ -30,6 +30,7 @@
       *  02.08.00    NACL-太田    06/03/24  Z98から流用
       *  03.04.00    NACL-多々納  06/11/14  検査正式名称表示追加
       *  03.05.00    NACL-太田    07.05.23  グループ診療対応
+      *  04.01.00    NACL-太田    08/01/30  次頁表示の追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -521,7 +522,8 @@
                ELSE
                    MOVE    1                   TO  SPA-Q96-GMN-CUR
                    IF      FLG-MAX         NOT =   ZERO
-                       MOVE    "0005"              TO  SPA-ERRCD
+      *                MOVE    "0005"              TO  SPA-ERRCD
+                       CONTINUE
                    ELSE
                        MOVE    ZERO                TO  SPA-Q96-NEXT
                    END-IF
@@ -873,7 +875,8 @@
       *
            MOVE    WRK-CNT-ENT         TO  SPA-Q96-GMN-MAX
            IF      FLG-MAX         NOT =   ZERO
-               MOVE    "0005"              TO  SPA-ERRCD
+      *        MOVE    "0005"              TO  SPA-ERRCD
+               CONTINUE
            ELSE
                MOVE    ZERO                TO  SPA-Q96-NEXT
            END-IF
@@ -1822,6 +1825,24 @@
                MOVE    SPA-Q96-USER-G      TO  Q96-USER
            ELSE
                MOVE    SPACE               TO  SPA-Q96-USER-G
+           END-IF
+      *
+      *    次頁あり
+           IF      SPA-Q96-NEXT        =   1
+               IF      SPA-Q96-PAGE        =   1
+                   MOVE    "次頁有り"          TO  Q96-NEXT-VALUE
+               ELSE
+                   MOVE    "前頁・次頁有り"    TO  Q96-NEXT-VALUE
+               END-IF
+               MOVE    "red"               TO  Q96-NEXT-STYLE
+           ELSE
+               IF      SPA-Q96-PAGE        >   1
+                   MOVE    "前頁有り"          TO  Q96-NEXT-VALUE
+                   MOVE    "red"               TO  Q96-NEXT-STYLE
+               ELSE
+                   MOVE    SPACE               TO  Q96-NEXT-VALUE
+                   MOVE    "black"             TO  Q96-NEXT-STYLE
+               END-IF
            END-IF
       *
            PERFORM 5001-MAPCUR-SEC
