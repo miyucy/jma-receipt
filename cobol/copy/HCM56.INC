@@ -52,7 +52,7 @@
             02  HCM56-TENKI
                     PIC X(2)    OCCURS  5 TIMES.
             02  HCM56-SRYKBN
-                    PIC X(4)    OCCURS  35 TIMES.
+                    PIC X(2)    OCCURS  35 TIMES.
             02  HCM56-TEKIYO
                     PIC X(52)   OCCURS  35 TIMES.
             02  HCM56-SYOKJN
