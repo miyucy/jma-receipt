@@ -452,7 +452,11 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE87PARA-HOSPNUM
              MOVE    WRK-RECE86-RECEKA     TO  RECE87-RECEKA
              MOVE    WRK-RECE86-HKNID      TO  RECE87-HKNID
              MOVE    WRK-RECE86-TEKSTYMD   TO  RECE87-TEKSTYMD
-             MOVE    "99"                  TO  RECE87-SRYKBN
+             IF   RECE82-HKNKBN  =  "5"
+               MOVE  "10"                  TO  RECE87-SRYKBN
+             ELSE
+               MOVE  "99"                  TO  RECE87-SRYKBN
+             END-IF
              MOVE    SPACE                 TO  RECE87-ZAISKBKBN
              MOVE    ZERO                  TO  RECE87-ZAISKBBAN
              MOVE    ZERO                  TO  RECE87-TENTEKIKBN

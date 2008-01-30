@@ -1881,6 +1881,9 @@ grpsys        PERFORM 900-DBSELECT-SEC
       *****************************************************************
        34111-SRYKBN-HENSYU-SEC     SECTION.
       *                  
+           IF  RECE87-SRYKBN = "10"
+               GO  TO  34111-SRYKBN-HENSYU-EXT
+           END-IF
            IF      CNT-PAGE        =   1
                MOVE    RECE87-SRYKBN   TO  HCM56-SRYKBN (WRK-LINETEK)
            ELSE

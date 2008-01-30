@@ -316,7 +316,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE47PARA-HOSPNUM
       *
                MOVE    1                 TO  WRK-TBLMAX
                MOVE    RECE41-KEY        TO  WRK-RECE46-KEY
-               MOVE    "99"              TO  WRK-RECE46-SRYKBN
+      ***      MOVE    "99"              TO  WRK-RECE46-SRYKBN
                MOVE    ZERO              TO  WRK-RECE46-GAITENTTLKBN
                MOVE    SPACE             TO  WRK-RECE46-SRYCD1
                MOVE    99999986          TO  WRK-RECE46-ZAINUM
@@ -342,7 +342,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE47PARA-HOSPNUM
       *
                MOVE    1                 TO  WRK-TBLMAX
                MOVE    RECE41-KEY        TO  WRK-RECE46-KEY
-               MOVE    "99"              TO  WRK-RECE46-SRYKBN
+      ***      MOVE    "99"              TO  WRK-RECE46-SRYKBN
                MOVE    ZERO              TO  WRK-RECE46-GAITENTTLKBN
                MOVE    SPACE             TO  WRK-RECE46-SRYCD1
                MOVE    99999987          TO  WRK-RECE46-ZAINUM
@@ -503,7 +503,11 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE47PARA-HOSPNUM
              MOVE    WRK-RECE46-RECEKA     TO  RECE47-RECEKA
              MOVE    WRK-RECE46-HKNID      TO  RECE47-HKNID
              MOVE    WRK-RECE46-TEKSTYMD   TO  RECE47-TEKSTYMD
-             MOVE    "99"                  TO  RECE47-SRYKBN
+             IF   RECE41-HKNKBN  =  "5"
+               MOVE  "10"                  TO  RECE47-SRYKBN
+             ELSE
+               MOVE  "99"                  TO  RECE47-SRYKBN
+             END-IF
              MOVE    ZERO                  TO  RECE47-KNSJISKBN
              MOVE    SPACE                 TO  RECE47-SRYSYUKBN
              MOVE    ZERO                  TO  RECE47-DAY
