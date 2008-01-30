@@ -41,6 +41,14 @@
       *算定期間（診療費明細書からの呼び出しの際は設定する）
            03  HCM34S01-SKYSTYMD               PIC X(08).
            03  HCM34S01-SKYEDYMD               PIC X(08).
+      *請求開始日同日再入院フラグ
+           03  HCM34S01-DOJITUFLG-ST           PIC  X(01).
+      *開始日入院食事区分（０：食なし、１：朝から、２：昼から、３：夕から）
+           03  HCM34S01-TIMEKBN-ST             PIC  X(01).
+      *請求終了日同日再入院フラグ
+           03  HCM34S01-DOJITUFLG-ED           PIC  X(01).
+      *終了日入院食事区分（０：食なし、１：朝まで、２：昼まで、３：夕まで）
+           03  HCM34S01-TIMEKBN-ED             PIC  X(01).
       *保険組合せ
            03  HCM34S01-HKNCOMBI               PIC 9(04).
       *保険番号

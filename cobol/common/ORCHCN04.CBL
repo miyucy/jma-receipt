@@ -32,6 +32,7 @@
       *  03.05.00    NACL-多々納  07/04/XX  グループ診療対応
       *  04.01.00    NACL-多々納  07/10/23  公務災害対応
       *  04.01.00    NACL-多々納  07/11/22  器材商品名コード対応
+      *  04.01.00    NACL-太田    08/01/30  同日再入院対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -75,6 +76,7 @@
            03  FLG-TENSU           PIC 9(01).
            03  FLG-PTHKNINF        PIC 9(01).
            03  FLG-PTRSIINF        PIC 9(01).
+           03  FLG-PTNYUINRRK      PIC 9(01).
       *
            03  FLG-SP              PIC 9(01).
            03  FLG-OK              PIC 9(01).
@@ -209,6 +211,7 @@
       *
       *帳票明細数
        01  LINE-MAX                    PIC 9(03)   VALUE   70.
+       01  CONST-H180401               PIC X(08)   VALUE "20060401".
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -272,6 +275,10 @@
        01  PTHKNINF-REC.
            COPY    "CPPTHKNINF.INC".
       *
+      *    入院履歴
+       01  PTNYUINRRK-REC.
+           COPY    "CPPTNYUINRRK.INC".
+      *
       *****************************************************************
       *    サブプロ用　領域
       *****************************************************************
@@ -290,6 +297,9 @@
       *
       *    印刷パラメタ
            COPY    "CPORCSMKPRT.INC".
+      *
+      *    入院請求期間取得サブ
+           COPY    "CPORCSS006.INC".
       *
       *    オンライン帳票名・出力先プリンタ名取得パラ
            COPY    "CPORCSPRTNM.INC".
@@ -1312,6 +1322,24 @@
       *****************************************************************
        2004-NYUIN-SYORI-SEC                SECTION.
       *
+           PERFORM 900-PTNYUINRRK-KEY-SEL-SEC
+      *
+           INITIALIZE                      SS006-AREA
+           MOVE    SYU-SKYSTYMD        TO  SS006-SKYSTYMD
+           MOVE    SYU-SKYEDYMD        TO  SS006-SKYEDYMD
+           IF    ( SYU-CREATEKBN       =   "1" )
+               IF    ( SYU-SKYEDYMD    =   PTNYUINRRK-TAIINYMD )
+                   MOVE    "1"         TO  SS006-SKYKBN
+               ELSE
+                   MOVE    "2"         TO  SS006-SKYKBN
+               END-IF
+           ELSE
+               MOVE    SYU-CREATEKBN   TO  SS006-SKYKBN
+           END-IF
+           CALL    "ORCSS006"              USING
+                                           SS006-AREA
+                                           SPA-AREA
+      *
            INITIALIZE                      HCM34S01-AREA
            MOVE    SYU-HOSPNUM         TO  HCM34S01-HOSPNUM
            MOVE    SYU-PTID            TO  HCM34S01-PTID
@@ -1319,6 +1347,18 @@
            MOVE    "1"                 TO  HCM34S01-KIKANKBN
            MOVE    SYU-SKYSTYMD        TO  HCM34S01-SKYSTYMD
            MOVE    SYU-SKYEDYMD        TO  HCM34S01-SKYEDYMD
+           IF    ( SYU-SKYSTYMD        <   CONST-H180401 )
+               CONTINUE
+           ELSE
+               MOVE    SS006-DOJITUFLG-ST  TO  HCM34S01-DOJITUFLG-ST
+               MOVE    SS006-TIMEKBN-ST    TO  HCM34S01-TIMEKBN-ST
+           END-IF
+           IF    ( SYU-SKYEDYMD        <  CONST-H180401 )
+               CONTINUE
+           ELSE
+               MOVE    SS006-DOJITUFLG-ED  TO  HCM34S01-DOJITUFLG-ED
+               MOVE    SS006-TIMEKBN-ED    TO  HCM34S01-TIMEKBN-ED
+           END-IF
            MOVE    SYU-HKNCOMBINUM     TO  HCM34S01-HKNCOMBI
            MOVE    SYU-SYUHKNNUM       TO  HCM34S01-HKNNUM
       *
@@ -1802,6 +1842,44 @@
        910-TENSU-READ-EXT.
            EXIT.
       *
+      *****************************************************************
+      *    患者入院履歴検索処理
+      *****************************************************************
+       900-PTNYUINRRK-KEY-SEL-SEC      SECTION.
+      *
+           MOVE    ZERO                TO  FLG-PTNYUINRRK
+           INITIALIZE                      PTNYUINRRK-REC
+      *
+           MOVE    SYU-HOSPNUM         TO  PTNYUINRRK-HOSPNUM
+           MOVE    SYU-PTID            TO  PTNYUINRRK-PTID
+           MOVE    SYU-NYUIN-RRKNUM    TO  PTNYUINRRK-RRKNUM
+           MOVE    1                   TO  PTNYUINRRK-RRKEDANUM
+           MOVE    PTNYUINRRK-REC      TO  MCPDATA-REC
+           MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF    ( MCP-RC              =   ZERO )
+               MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
+               MOVE    "key"               TO  MCP-PATHNAME
+               PERFORM 920-DBFETCH-SEC
+               IF    ( MCP-RC          =   ZERO )
+                   MOVE    MCPDATA-REC TO  PTNYUINRRK-REC
+               ELSE
+                   INITIALIZE              PTNYUINRRK-REC
+                   MOVE    1           TO  FLG-PTNYUINRRK
+               END-IF
+           ELSE
+                   INITIALIZE              PTNYUINRRK-REC
+                   MOVE    1           TO  FLG-PTNYUINRRK
+           END-IF
+      *
+           MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+      *
+           .
+       900-PTNYUINRRK-KEY-SEL-EXT.
+           EXIT.
       *****************************************************************
       *    テーブル検索処理
       *****************************************************************
