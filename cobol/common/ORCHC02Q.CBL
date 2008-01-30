@@ -421,6 +421,8 @@
            03  PARA-FTNKBN             PIC X(01).
            03  PARA-KOHKBN             PIC X(01).
            03  PARA-SRYKAKBN           PIC X(01).
+           03  PARA-DRKBN              PIC X(01).
+           03  PARA-KOFYMDKBN          PIC X(01).
       *
            03  WRK-PARA-NAME           PIC X(25).
            03  WRK-PARA                PIC X(50).
@@ -627,6 +629,14 @@
            MOVE    "SRYKA"             TO  WRK-PARA-NAME
            PERFORM 1001-OPTION-CALL-SEC
            MOVE    WRK-PARA(1:1)       TO  PARA-SRYKAKBN
+      *    ドクター
+           MOVE    "DRKBN"             TO  WRK-PARA-NAME
+           PERFORM 1001-OPTION-CALL-SEC
+           MOVE    WRK-PARA(1:1)       TO  PARA-DRKBN
+      *    交付年月日
+           MOVE    "KOFYMDKBN"         TO  WRK-PARA-NAME
+           PERFORM 1001-OPTION-CALL-SEC
+           MOVE    WRK-PARA(1:1)       TO  PARA-KOFYMDKBN
       *
            .
        100-OPTION-SELECT-EXT.
@@ -712,9 +722,12 @@
                                        OR  "5"
                                        OR  "A"   )
                AND (IDX-QR1            >   ZERO  )
-      *        医師未設定は作成なし
-               IF      (WRK-DRCD       NOT =   SPACE )
-                   AND (WRK-DRNAME     NOT =   SPACE )
+      *        医師・交付日未設定は作成なし
+               IF      (WRK-DRCD           =   SPACE )
+                   OR  (WRK-DRNAME         =   SPACE )
+                   OR  (WRK-KOFYMD         =   SPACE )
+                   INITIALIZE                  ORCSQRCSVAREA
+               ELSE
                    PERFORM 600-QRDATA-SYORI-SEC
                END-IF
            END-IF
@@ -1126,14 +1139,24 @@
       *****************************************************************
        4002-USER-SETHEN-SEC      SECTION.
       *
-      *ＱＲは省略不可
       *    保険医名称
-           MOVE    SYS-1010-NAME       TO  WRK-DRNAME
-      *ＱＲは省略不可
+           IF      PARA-DRKBN          =   "1"
+      *        表示しない
+               MOVE    SPACE               TO  WRK-DRNAME
+      *        麻薬施用者免許番号をクリア
+               MOVE    SPACE               TO  SYS-1010-MAYAKULICENSE
+           ELSE
+               MOVE    SYS-1010-NAME       TO  WRK-DRNAME
+           END-IF
+      *
       *    交付年月日
-           MOVE    SPA-SRYYMD          TO  WRK-SYMD
-           PERFORM 31012-SEIWA-HEN-SEC
-           MOVE    WRK-HENYMDG         TO  WRK-KOFYMD
+           IF      PARA-KOFYMDKBN      =   "1"
+               MOVE    SPACE               TO  WRK-KOFYMD
+           ELSE
+               MOVE    SPA-SRYYMD          TO  WRK-SYMD
+               PERFORM 31012-SEIWA-HEN-SEC
+               MOVE    WRK-HENYMDG         TO  WRK-KOFYMD
+           END-IF
       *
       *    負担割合
            MOVE    SPACE               TO  WRK-HEN-FTNRATE
