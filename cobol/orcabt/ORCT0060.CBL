@@ -453,17 +453,17 @@
            PERFORM 910-TEIKI04-READ-SEC
       *
       *
-           PERFORM UNTIL ( TEIKI01-KEY =   HIGH-VALUE )
-                   AND   ( TEIKI04-KEY =   HIGH-VALUE )
+           PERFORM UNTIL ( TEIKI01-MAIN-KEY =   HIGH-VALUE )
+                   AND   ( TEIKI04-MAIN-KEY =   HIGH-VALUE )
       *
                EVALUATE    TRUE
-               WHEN    TEIKI01-KEY     <   TEIKI04-KEY
+               WHEN    TEIKI01-MAIN-KEY     <   TEIKI04-MAIN-KEY
                    PERFORM 2001-TEIKI06-WRITE-SEC
                    PERFORM 910-TEIKI01-READ-SEC
-               WHEN    TEIKI01-KEY     >   TEIKI04-KEY
+               WHEN    TEIKI01-MAIN-KEY     >   TEIKI04-MAIN-KEY
                    PERFORM 2001-TEIKI07-WRITE-SEC
                    PERFORM 910-TEIKI04-READ-SEC
-               WHEN    TEIKI01-KEY     =   TEIKI04-KEY
+               WHEN    TEIKI01-MAIN-KEY     =   TEIKI04-MAIN-KEY
       *            同一収納チェック
                    PERFORM 2001-DOUITU-SYUNOU-CHK-SEC
                    PERFORM 910-TEIKI01-READ-SEC
@@ -902,7 +902,7 @@
       *
            READ    TEIKI01-FILE        NEXT
            AT  END
-               MOVE    HIGH-VALUE      TO  TEIKI01-KEY
+               MOVE    HIGH-VALUE      TO  TEIKI01-MAIN-KEY
            END-READ
       *
            .
@@ -916,7 +916,7 @@
       *
            READ    TEIKI04-FILE        NEXT
            AT  END
-               MOVE    HIGH-VALUE      TO  TEIKI04-KEY
+               MOVE    HIGH-VALUE      TO  TEIKI04-MAIN-KEY
            END-READ
       *
            .

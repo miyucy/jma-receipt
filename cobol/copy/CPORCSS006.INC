@@ -16,29 +16,28 @@
       * 113-8621, Japan.
       ********************************************************************
       ************************************************************
-      *    患者定期請求収納データ
-      *　  COPY  (CPTEIKI01.INC)                                 *
+      *    入院請求期間編集　　COPY (CPORCSS006.INC)
       ************************************************************
       ************************************************************
       *  コピー句修正履歴
-      * Maj/Min/Rev  修正者       日付      内容
+      * Maj/Min/Rev  修正者        日付      内容
       ************************************************************
-      *01  TEIKI01-REC.
-           03  TEIKI01-KEY.
-               05  TEIKI01-MAIN-KEY.
-                   07  TEIKI01-HOSPNUM     PIC 9(02).
-                   07  TEIKI01-PTID        PIC 9(10).
-                   07  TEIKI01-HKNCOMBINUM PIC 9(04).
-               05  TEIKI01-SKYSTYMD        PIC X(08).
-               05  TEIKI01-SKYEDYMD        PIC X(08).
-           03  TEIKI01-SAKKBN              PIC X(01).
-           03  TEIKI01-KBT                 PIC X(01).
-           03  TEIKI01-SYU-DAT             PIC X(5000).
-           03  TEIKI01-TSI-SKYTEN          PIC S9(09).
-           03  TEIKI01-TSI-SKYMONEY-TAX-SAI
-                                           PIC S9(07).
-           03  TEIKI01-TSI-SKYMONEY        PIC S9(09).
-           03  TEIKI01-SYUDAY.
-               05  TEIKI01-SYUDAY-EXIST-FLG
-                                           PIC 9(01).
-               05  TEIKI01-SYUDAY-DAT      PIC X(5000).
+       01  SS006-AREA.
+           03  SS006-IN.
+      *請求期間開始開始日
+               05  SS006-SKYSTYMD          PIC X(08).
+      *請求期間開始終了日
+               05  SS006-SKYEDYMD          PIC X(08).
+      *計算区分(1:退院計算/2:定期請求)
+               05  SS006-SKYKBN            PIC X(01).
+           03  SS006-OT.
+      *請求開始日同日再入院フラグ
+               05  SS006-DOJITUFLG-ST      PIC  X(01).
+      *開始日入院食事区分（０：食なし、１：朝から、２：昼から、３：夕から）
+               05  SS006-TIMEKBN-ST        PIC  X(01).
+      *開始日食道加算算定可否
+               05  SS006-SYOKUDO-OK        PIC  9(01).
+      *請求終了日同日再入院フラグ
+               05  SS006-DOJITUFLG-ED      PIC  X(01).
+      *終了日入院食事区分（０：食なし、１：朝まで、２：昼まで、３：夕まで）
+               05  SS006-TIMEKBN-ED        PIC  X(01).

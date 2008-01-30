@@ -262,6 +262,7 @@
            05  WRK-SHELL-SHELL    PIC X(20).         
       *
        01  CONST-AREA.
+           03  CONST-H180401       PIC X(08)   VALUE "20060401".
       *    ジョブ管理ＤＢのキー値  
            03  CONST-SHELLID   PIC X(08)   VALUE   "TEIKI1".
       *
@@ -1053,7 +1054,9 @@
                IF    ( FLG-PTNYUINRRK  =   ZERO )
                    MOVE    WRK-KIKAN-SKYSTYMD (IDX1)  TO  WRK-STYMD
                    MOVE    WRK-KIKAN-SKYEDYMD (IDX1)  TO  WRK-EDYMD
-                   PERFORM 800-ORCSDNTCHK-SEC
+                   IF    ( WRK-STYMD   <   CONST-H180401 )
+                       PERFORM 800-ORCSDNTCHK-SEC
+                   END-IF
                    IF    ( WRK-STYMD (1:6) =   SDNTCHK-STYMD(1:6))
                        MOVE    SDNTCHK-STYMD (7:2)
                                            TO  WRK-STYMD (7:2)

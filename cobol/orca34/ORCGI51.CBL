@@ -180,6 +180,7 @@
            03  WRK-HKNCOMBILST-ROW         PIC S9(9)   BINARY.
       *
        01  CONST-AREA.
+           03  CONST-H180401       PIC X(08)   VALUE "20060401".
            03  CONST-JIHI-MAX      PIC 9(05)   VALUE 10.
       *
       *    ¥¹¥ÑÎÎ°è ¥ï¡¼¥¯
@@ -310,6 +311,9 @@
       *
       *    ÊÝ¸±ÁÈ¹ç¤»ÊÔ½¸¥µ¥Ö
            COPY    "CPORCSHKNSET.INC".
+      *
+      *    Æþ±¡ÀÁµá´ü´Ö¼èÆÀ¥µ¥Ö
+           COPY    "CPORCSS006.INC".
       *
       *    £Ä£Â¸¡º÷
       *01  MCPDATA-REC                 PIC X(5000).
@@ -1741,6 +1745,18 @@
                                        LNK-SYUNOU-REC-T
                                        LNK-SYUDAY-REC-T
       *
+      *
+           INITIALIZE                  SS006-AREA
+           MOVE    SPA-NAI-I51-PTID    TO  SPA-PTID
+           MOVE    SPA-NAI-I51-SANTEISTYMD
+                                       TO  SS006-SKYSTYMD
+           MOVE    SPA-NAI-I51-SANTEIEDYMD
+                                       TO  SS006-SKYEDYMD
+           MOVE    "1"                 TO  SS006-SKYKBN
+           CALL    "ORCSS006"      USING
+                                   SS006-AREA
+                                   SPA-AREA
+      *
            MOVE    SPA-HOSPNUM      TO  LNK-S02-HOSPNUM
            MOVE    "1"             TO  LNK-S02-NYUGAIKBN
            MOVE    SPA-NAI-I51-PTID
@@ -1751,6 +1767,18 @@
                                    TO  LNK-S02-SKYSTYMD
            MOVE    SPA-NAI-I51-SANTEIEDYMD
                                    TO  LNK-S02-SKYEDYMD
+           IF    ( SPA-NAI-I51-SANTEISTYMD <    CONST-H180401 )
+               CONTINUE
+           ELSE
+               MOVE    SS006-DOJITUFLG-ST  TO  LNK-S02-DOJITUFLG-ST
+               MOVE    SS006-TIMEKBN-ST    TO  LNK-S02-TIMEKBN-ST
+           END-IF
+           IF    ( SPA-NAI-I51-SANTEIEDYMD <    CONST-H180401 )
+               CONTINUE
+           ELSE
+               MOVE    SS006-DOJITUFLG-ED  TO  LNK-S02-DOJITUFLG-ED
+               MOVE    SS006-TIMEKBN-ED    TO  LNK-S02-TIMEKBN-ED
+           END-IF
            MOVE    SPA-SYSYMD      TO  LNK-S02-SYSYMD
            MOVE    "1"             TO  LNK-S02-SYORI-KBN
            DISPLAY "LNK-S02-HOSPNUM             = " LNK-S02-HOSPNUM
@@ -1760,6 +1788,10 @@
                     LNK-S02-NYUIN-TSUSAN-NISSU
            DISPLAY "LNK-S02-SKYSTYMD           = " LNK-S02-SKYSTYMD
            DISPLAY "LNK-S02-SKYEDYMD           = " LNK-S02-SKYEDYMD
+           DISPLAY "LNK-S02-DOJITUFLG-ST       = " LNK-S02-DOJITUFLG-ST
+           DISPLAY "LNK-S02-TIMEKBN-ST         = " LNK-S02-TIMEKBN-ST
+           DISPLAY "LNK-S02-DOJITUFLG-ED       = " LNK-S02-DOJITUFLG-ED
+           DISPLAY "LNK-S02-TIMEKBN-ED         = " LNK-S02-TIMEKBN-ED
            CALL    "ORCSNYUFTN"    USING
                                    SPA-AREA
                                    LNK-ORCS02-REC

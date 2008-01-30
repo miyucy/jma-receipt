@@ -131,6 +131,7 @@
            03  WRK-ST-IDX                  PIC 9(05).
       *
        01  CONST-AREA.
+           03  CONST-H180401       PIC X(08)   VALUE "20060401".
            03  CONST-BIKO-VAL.
                05                  PIC X(20)   VALUE "入院科".
                05                  PIC X(20)   VALUE "科".
@@ -192,6 +193,9 @@
       *
       *    全角チェックパラメタ
            COPY    "CPORCSKANACHK.INC".
+      *
+      *    入院請求期間取得
+           COPY    "CPORCSS006.INC".
       *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
@@ -490,6 +494,35 @@
       *    主治医
            PERFORM 3101-S1010-SEL-SEC
            MOVE    SYS-1010-NAME   TO  SPA-GMN-I02-DR
+      *
+      *    入院時時間区分
+           IF    ( PTNYUINRRK-NYUINYMD <   CONST-H180401 )
+               CONTINUE
+           ELSE
+               IF    ( PTNYUINRRK-DOUJITSUKBN  =   "1" )
+                   MOVE    "1"     TO  SPA-NAI-I02-DOUJITSUKBN-IN
+                   MOVE    PTNYUINRRK-TIMEKBN-IN
+                                   TO  SPA-NAI-I02-TIMEKBN-IN
+               END-IF
+           END-IF
+      *
+           IF    ( PTNYUINRRK-TAIINYMD <   CONST-H180401 )
+               CONTINUE
+           ELSE
+               INITIALIZE                      SS006-AREA
+               MOVE    SPA-I01-I02-PTID    TO  SPA-PTID
+               MOVE    PTNYUINRRK-TAIINYMD TO  SS006-SKYSTYMD
+                                               SS006-SKYEDYMD
+               MOVE    "1"                 TO  SS006-SKYKBN
+               CALL    "ORCSS006"          USING
+                                           SS006-AREA
+                                           SPA-AREA
+               IF    ( SS006-DOJITUFLG-ED  =   "1" )
+                   MOVE    "1"         TO  SPA-NAI-I02-DOUJITSUKBN-OT
+                   MOVE    SS006-TIMEKBN-ED
+                                       TO  SPA-NAI-I02-TIMEKBN-OT
+               END-IF
+           END-IF
       *
            .
        3101-NEW-NYUINRRK-EDIT-EXT.
@@ -1388,6 +1421,32 @@
                    MOVE    "F"       TO   I02-BYOMEILST-SELECT(IDX1)
                END-IF
            END-PERFORM
+      *
+           IF    ( SPA-NAI-I02-DOUJITSUKBN-IN  =   "1" )
+               EVALUATE    SPA-NAI-I02-TIMEKBN-IN
+               WHEN    "0"
+                   MOVE    "食なし"  TO    I02-LBLTIMEKBN-IN
+               WHEN    "1"
+                   MOVE    "朝から"  TO    I02-LBLTIMEKBN-IN
+               WHEN    "2"
+                   MOVE    "昼から"  TO    I02-LBLTIMEKBN-IN
+               WHEN    "3"
+                   MOVE    "夕から"  TO    I02-LBLTIMEKBN-IN
+               END-EVALUATE
+           END-IF
+      *
+           IF    ( SPA-NAI-I02-DOUJITSUKBN-OT  =   "1" )
+               EVALUATE    SPA-NAI-I02-TIMEKBN-OT
+               WHEN    "0"
+                   MOVE    "食なし"  TO    I02-LBLTIMEKBN-OT
+               WHEN    "1"
+                   MOVE    "朝まで"  TO    I02-LBLTIMEKBN-OT
+               WHEN    "2"
+                   MOVE    "昼まで"  TO    I02-LBLTIMEKBN-OT
+               WHEN    "3"
+                   MOVE    "夕まで"  TO    I02-LBLTIMEKBN-OT
+               END-EVALUATE
+           END-IF
       *
       *    項目状態編集
            PERFORM 500-GMNHEN-STATE-EDIT-SEC

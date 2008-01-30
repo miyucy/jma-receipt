@@ -161,6 +161,7 @@
                05   SHR-1005-SRYKANAME3            PIC X(04).
       *
        01  CONST-AREA.
+           03  CONST-H180401           PIC X(08)   VALUE "20060401".
            03  CONST-SMEILIST-MAX      PIC 9(03)   VALUE   50.
            03  CONST-SKYLIST-MAX       PIC 9(03)   VALUE   50.
            03  CONST-JIHI-MAX          PIC 9(03)   VALUE   10.
@@ -253,6 +254,9 @@
       *
       *    ¼ýÇ¼¹¹¿·º¹³Û¼èÆÀ
            COPY  "CPORCSS002.INC".
+      *
+      *    Æþ±¡ÀÁµá´ü´Ö¼èÆÀ¥µ¥Ö
+           COPY    "CPORCSS006.INC".
       *
       *    £Ä£Â¸¡º÷
            COPY    "MCPDATA.INC".
@@ -891,6 +895,15 @@
                                            LNK-SYUNOU-REC-T
                                            LNK-SYUDAY-REC-T
       *
+                   INITIALIZE                  SS006-AREA
+                   MOVE    SPA-NAI-O04-PTID    TO  SPA-PTID
+                   MOVE    KBT-SKYSTYMD (IDX5) TO  SS006-SKYSTYMD
+                   MOVE    KBT-SKYEDYMD (IDX5) TO  SS006-SKYEDYMD
+                   MOVE    "2"                 TO  SS006-SKYKBN
+                   CALL    "ORCSS006"          USING
+                                               SS006-AREA
+                                               SPA-AREA
+      *
                    MOVE    SPA-HOSPNUM  TO  LNK-S02-HOSPNUM
                    MOVE    "1"         TO  LNK-S02-NYUGAIKBN
                    MOVE    SPA-NAI-O04-PTID
@@ -900,6 +913,24 @@
                                        TO  LNK-S02-SKYSTYMD
                    MOVE    KBT-SKYEDYMD (IDX5)
                                        TO  LNK-S02-SKYEDYMD
+      *
+                   IF    ( LNK-S02-SKYSTYMD    <  CONST-H180401 )
+                       CONTINUE
+                   ELSE
+                       MOVE    SS006-DOJITUFLG-ST
+                                       TO  LNK-S02-DOJITUFLG-ST
+                       MOVE    SS006-TIMEKBN-ST
+                                       TO  LNK-S02-TIMEKBN-ST
+                   END-IF
+                   IF    ( LNK-S02-SKYEDYMD    <  CONST-H180401 )
+                       CONTINUE
+                   ELSE
+                       MOVE    SS006-DOJITUFLG-ED
+                                       TO  LNK-S02-DOJITUFLG-ED
+                       MOVE    SS006-TIMEKBN-ED
+                                       TO  LNK-S02-TIMEKBN-ED
+                   END-IF
+      *
                    MOVE    SPA-SYSYMD  TO  LNK-S02-SYSYMD
                    MOVE    "1"         TO  LNK-S02-SYORI-KBN
                    CALL    "ORCSNYUFTN"    USING

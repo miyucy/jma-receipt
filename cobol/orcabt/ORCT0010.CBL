@@ -171,6 +171,7 @@
                05  WRK-KBTMSG              PIC X(06).
                05  WRK-MONMSG              PIC X(06).
                05  WRK-SHELLMSG            PIC X(100).
+           03  WRK-NYUINYMD                PIC X(08).
       *
        01  SRH-AREA.
            03  SRH-IDX                     PIC 9(05).
@@ -212,6 +213,9 @@
                "定期請求管理情報の取得に失敗しました".
            03  ERR-MSG88                   PIC X(100)    VALUE
                "キャンセルしました".
+      *
+       01  CONST-AREA.
+           03  CONST-H180401               PIC X(08)   VALUE "20060401".
       *
            COPY    "MCPAREA".
       *
@@ -276,9 +280,6 @@
       *    定期請求サブ
            COPY    "CPORCSTEIKI01.INC".
       *
-      *    同日入院チェックサブ
-           COPY    "CPORCSDNTCHK.INC".
-      *
        01  LNKNRRK-REC.
            COPY    "CPPTNYUINRRK.INC"  REPLACING  //PTNYUINRRK-// 
                                        BY         //LNKNRRK-//.
@@ -300,6 +301,12 @@
        01  LNK-SYUDAY-REC-T.
          02 LNK-SYUDAY-REC     OCCURS 10.
            COPY  "CPSYUDAY.INC"  REPLACING  //SDAY-// BY //LNK-SDAY-//.
+      *
+      *    同日入院チェックサブ
+           COPY    "CPORCSDNTCHK.INC".
+      *
+      *    入院請求期間取得サブ
+           COPY    "CPORCSS006.INC".
       *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
@@ -603,8 +610,18 @@
       *        処理対象チェック処理
                PERFORM 20011-TAISYO-CHK-SEC
                IF    ( FLG-TAISYO  =   1 )
-                   PERFORM 800-ORCSDNTCHK-SEC
-                   IF    ( SDNTCHK-STYMD   NOT =   ZERO )
+                   MOVE    SPACE           TO  WRK-NYUINYMD
+                   IF    ( PTNYUINRRK-NYUINYMD <   CONST-H180401 )
+                       PERFORM 800-ORCSDNTCHK-SEC
+                       IF    ( SDNTCHK-STYMD   NOT =   ZERO )
+                           MOVE    SDNTCHK-STYMD
+                                           TO  WRK-NYUINYMD
+                       END-IF
+                   ELSE
+                       MOVE    PTNYUINRRK-NYUINYMD
+                                           TO  WRK-NYUINYMD
+                   END-IF
+                   IF    ( WRK-NYUINYMD    NOT =   SPACE )
                        PERFORM 20011-HENSYU-SEC
                    END-IF
                END-IF
@@ -796,8 +813,8 @@
            END-IF
       *
       *
-           IF  ( SDNTCHK-STYMD     >   WRK-YMD )
-               MOVE    SDNTCHK-STYMD
+           IF  ( WRK-NYUINYMD      >   WRK-YMD )
+               MOVE    WRK-NYUINYMD
                                    TO  WRK-SEIKYUSTYMD
            ELSE
                MOVE    WRK-YMD     TO  WRK-SEIKYUSTYMD
@@ -826,6 +843,15 @@
                                        LNK-SYUNOU-REC-T
                                        LNK-SYUDAY-REC-T
       *
+           INITIALIZE                  SS006-AREA
+           MOVE    PTNYUINRRK-PTID     TO  SPA-PTID
+           MOVE    WRK-SEIKYUSTYMD     TO  SS006-SKYSTYMD
+           MOVE    WRK-SEIKYUEDYMD     TO  SS006-SKYEDYMD
+           MOVE    "2"                 TO  SS006-SKYKBN
+           CALL    "ORCSS006"      USING
+                                   SS006-AREA
+                                   SPA-AREA
+      *
            MOVE    TEIKI1P-HOSPNUM  TO  LNK-S02-HOSPNUM
            MOVE    "1"             TO  LNK-S02-NYUGAIKBN
            MOVE    PTNYUINRRK-PTID TO  LNK-S02-PTID
@@ -835,6 +861,18 @@
                                    TO  LNK-S02-SKYSTYMD
            MOVE    WRK-SEIKYUEDYMD
                                    TO  LNK-S02-SKYEDYMD
+           IF    ( WRK-SEIKYUSTYMD <  CONST-H180401 )
+               CONTINUE
+           ELSE
+               MOVE    SS006-DOJITUFLG-ST  TO  LNK-S02-DOJITUFLG-ST
+               MOVE    SS006-TIMEKBN-ST    TO  LNK-S02-TIMEKBN-ST
+           END-IF
+           IF    ( WRK-SEIKYUEDYMD <  CONST-H180401 )
+               CONTINUE
+           ELSE
+               MOVE    SS006-DOJITUFLG-ED  TO  LNK-S02-DOJITUFLG-ED
+               MOVE    SS006-TIMEKBN-ED    TO  LNK-S02-TIMEKBN-ED
+           END-IF
            MOVE    "A"             TO  LNK-S02-TEIKI-KBN
            MOVE    TEIKI1P-SYSYMD TO  LNK-S02-SYSYMD
            MOVE    "2"             TO  LNK-S02-SYORI-KBN
@@ -1134,8 +1172,18 @@
                    PERFORM 910-DBCLOSECURSOR-SEC
       *
                    IF    ( FLG-PTNYUINRRK  =   ZERO )
-                       PERFORM 800-ORCSDNTCHK-SEC
-                       IF    ( SDNTCHK-STYMD   NOT =   ZERO )
+                       MOVE    SPACE           TO  WRK-NYUINYMD
+                       IF    ( PTNYUINRRK-NYUINYMD <   CONST-H180401 )
+                           PERFORM 800-ORCSDNTCHK-SEC
+                           IF    ( SDNTCHK-STYMD   NOT =   ZERO )
+                               MOVE    SDNTCHK-STYMD
+                                           TO  WRK-NYUINYMD
+                           END-IF
+                       ELSE
+                           MOVE    PTNYUINRRK-NYUINYMD
+                                           TO  WRK-NYUINYMD
+                       END-IF
+                       IF    ( WRK-NYUINYMD    NOT =   SPACE )
                            PERFORM 20011-HENSYU-SEC
                        END-IF
                    END-IF

@@ -18,10 +18,16 @@ I02	{
 		NYUINYMD	{
 			value	varchar(9);
 		};
+		LBLTIMEKBN_IN	{
+			value	varchar(10);
+		};
 		TAIINYMD	{
 			value	varchar(9);
 		};
 		TAIINCD	{
+			value	varchar(10);
+		};
+		LBLTIMEKBN_OT	{
 			value	varchar(10);
 		};
 		NYUINKA	{

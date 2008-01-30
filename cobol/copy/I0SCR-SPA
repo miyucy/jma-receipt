@@ -495,6 +495,14 @@
                  11  SPA-NAI-I02-TAIINYMD          PIC X(08).
       *          退院事由
                  11  SPA-NAI-I02-TAIINCD           PIC X(08).
+      *          入院時同日区分
+                 11  SPA-NAI-I02-DOUJITSUKBN-IN    PIC X(01).
+      *          入院時時間区分
+                 11  SPA-NAI-I02-TIMEKBN-IN        PIC X(01).
+      *          退院時同日区分
+                 11  SPA-NAI-I02-DOUJITSUKBN-OT    PIC X(01).
+      *          退院時時間区分
+                 11  SPA-NAI-I02-TIMEKBN-OT        PIC X(01).
       *        転科（転棟・転室）履歴内部領域
                09  SPA-NAI-I02-TENKALST-AREA.
                  11  SPA-NAI-I02-TENKALST-ITM      OCCURS  100.

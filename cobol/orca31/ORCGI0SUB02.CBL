@@ -111,6 +111,7 @@
            03  CONST-HKNTEN-MAX        PIC 9(03)   VALUE 16.
            03  CONST-JIHI-MAX          PIC 9(03)   VALUE 10.
            03  CONST-ORCSHKN-MAX       PIC 9(03)   VALUE 100.
+           03  CONST-H180401           PIC X(08)   VALUE "20060401".
       *
            COPY    "COMMON-SPA"        REPLACING
                                        //SPA-//    BY  //WRK-SPA-//.
@@ -159,6 +160,9 @@
       *
       *    全角チェックパラメタ
            COPY    "CPORCSKANACHK.INC".
+      *
+      *    入院請求期間取得サブ
+           COPY    "CPORCSS006.INC".
       *
            COPY    "MCPDATA.INC".
            COPY    "MCPAREA".
@@ -245,6 +249,14 @@
                                        LNK-SYUDAY-REC-T
                                        WRK-NYUFTN-MAX
       *
+           INITIALIZE                  SS006-AREA
+           MOVE    I0SUB02-SKYSTYMD    TO  SS006-SKYSTYMD
+           MOVE    I0SUB02-SKYEDYMD    TO  SS006-SKYEDYMD
+           MOVE    "1"                 TO  SS006-SKYKBN
+           CALL    "ORCSS006"      USING
+                                   SS006-AREA
+                                   SPA-AREA
+      *
            MOVE    SPA-HOSPNUM      TO  LNK-S02-HOSPNUM
            MOVE    "1"             TO  LNK-S02-NYUGAIKBN
            MOVE    SPA-PTID        TO  LNK-S02-PTID
@@ -252,10 +264,21 @@
       *
       *    請求開始日（入院日（同日再入院の場合は入院日翌日）または
       *    前回定期請求終了日の翌日）を設定
-           MOVE    I0SUB02-SKYSTYMD
-                                       TO  LNK-S02-SKYSTYMD
-           MOVE    I0SUB02-SKYEDYMD
-                                   TO  LNK-S02-SKYEDYMD
+           MOVE    I0SUB02-SKYSTYMD TO LNK-S02-SKYSTYMD
+           MOVE    I0SUB02-SKYEDYMD TO LNK-S02-SKYEDYMD
+           IF    ( I0SUB02-SKYSTYMD <  CONST-H180401 )
+               CONTINUE
+           ELSE
+               MOVE    SS006-DOJITUFLG-ST  TO  LNK-S02-DOJITUFLG-ST
+               MOVE    SS006-TIMEKBN-ST    TO  LNK-S02-TIMEKBN-ST
+           END-IF
+           IF    ( I0SUB02-SKYEDYMD <  CONST-H180401 )
+               CONTINUE
+           ELSE
+               MOVE    SS006-DOJITUFLG-ED  TO  LNK-S02-DOJITUFLG-ED
+               MOVE    SS006-TIMEKBN-ED    TO  LNK-S02-TIMEKBN-ED
+           END-IF
+      *
            MOVE    SPA-SYSYMD      TO  LNK-S02-SYSYMD
            MOVE    "1"             TO  LNK-S02-SYORI-KBN
            CALL    "ORCSNYUFTN"    USING

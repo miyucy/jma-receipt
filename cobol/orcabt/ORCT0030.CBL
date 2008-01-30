@@ -392,6 +392,7 @@
                IF    ( TEIKI03-SKYSTYMD       <=  SYU-SKYEDYMD )
                 AND  ( TEIKI03-SKYEDYMD       >=  SYU-SKYSTYMD )
                    IF    ( SYU-DENPJTIKBN  NOT =   "3" )
+                    AND  ( SYU-CREATEKBN       =   "2" )
                        PERFORM 20011-TEIKI04-OUTPUT-SEC
                    END-IF
                END-IF
@@ -619,9 +620,6 @@
                    "¡Ï"                DELIMITED   BY  SIZE
            INTO    ERR-HEN-ERRMSG
            END-STRING
-      *
-           MOVE    ERR-HEN-ERRMSG      TO  ERR-ERRMSG
-           PERFORM 500-ERR-HENSYU-SEC
       *
            .
        800-EDIT-ERRMSG-EXT.

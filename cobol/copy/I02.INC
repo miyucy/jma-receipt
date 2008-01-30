@@ -23,8 +23,10 @@
               04  I02-BTUNAME              PIC X(20).
               04  I02-BRMNUM               PIC X(6).
               04  I02-NYUINYMD             PIC X(9).
+              04  I02-LBLTIMEKBN-IN        PIC X(10).
               04  I02-TAIINYMD             PIC X(9).
               04  I02-TAIINCD              PIC X(10).
+              04  I02-LBLTIMEKBN-OT        PIC X(10).
               04  I02-NYUINKA              PIC X(20).
               04  I02-DR                   PIC X(24).
               04  I02-SANTEI               PIC X(60).

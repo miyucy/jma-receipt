@@ -489,6 +489,8 @@
                05  WRK-YYS2                PIC 9(04).
                05  WRK-MMS2                PIC 9(02).
                05  WRK-DDS2                PIC 9(02).
+           03  WRK-DOUJITUFLG-ST           PIC X(01).
+           03  WRK-DOUJITUFLG-ED           PIC X(01).
       *
       *    ø«Œ≈ΩÍœ∑øÕ∞ÂŒ≈¥…Õ˝Œ¡° ≈æ≤ °¢≈æ≈Ô°À∑◊ªª•®•Í•¢
        01  TN-IDX                          PIC 9(02).
@@ -7927,33 +7929,38 @@
                        ELSE
                            MOVE    SPA-NAI-I01-NYUINYMD
                                            TO  WRK-NOW-SKYSTYMD
-      *
-                           IF    ( SPA-NAI-I01-DJKBN   =   "1" )
-                               MOVE    SPA-NAI-I01-NYUINYMD
-                                               TO  WRK-YMD
-                               MOVE    "1"     TO  WRK-ZOGENPTN
-                               MOVE    1       TO  WRK-ZOGEN
-                               PERFORM 5002-CALENDAR-SEC
-                               MOVE    WRK-KEISANYMD
-                                       TO  WRK-NOW-SKYSTYMD
+               DISPLAY "BF:WRK-NOW-SKYSTYMD =" WRK-NOW-SKYSTYMD
+                           IF    ( WRK-NOW-SKYSTYMD  <   CONST-H180401 )
+                               IF    ( SPA-NAI-I01-DJKBN =   "1" )
+                                   MOVE    SPA-NAI-I01-NYUINYMD
+                                                   TO  WRK-YMD
+                                   MOVE    "1"     TO  WRK-ZOGENPTN
+                                   MOVE    1       TO  WRK-ZOGEN
+                                   PERFORM 5002-CALENDAR-SEC
+                                   MOVE    WRK-KEISANYMD
+                                           TO  WRK-NOW-SKYSTYMD
+                               END-IF
                            END-IF
-      *
                        END-IF
                    END-IF
                END-IF
            ELSE
                MOVE    SPA-NAI-I01-NYUINYMD
                                        TO  WRK-NOW-SKYSTYMD
-               IF    ( SPA-NAI-I01-DJKBN   =   "1" )
-                   MOVE    SPA-NAI-I01-NYUINYMD
-                                       TO  WRK-YMD
-                   MOVE    "1"         TO  WRK-ZOGENPTN
-                   MOVE    1           TO  WRK-ZOGEN
-                   PERFORM 5002-CALENDAR-SEC
-                   MOVE    WRK-KEISANYMD
-                                       TO  WRK-NOW-SKYSTYMD
+               DISPLAY "BF:WRK-NOW-SKYSTYMD =" WRK-NOW-SKYSTYMD
+               IF    ( WRK-NOW-SKYSTYMD  <   CONST-H180401 )
+                   IF    ( SPA-NAI-I01-DJKBN   =   "1" )
+                       MOVE    SPA-NAI-I01-NYUINYMD
+                                           TO  WRK-YMD
+                       MOVE    "1"         TO  WRK-ZOGENPTN
+                       MOVE    1           TO  WRK-ZOGEN
+                       PERFORM 5002-CALENDAR-SEC
+                       MOVE    WRK-KEISANYMD
+                                           TO  WRK-NOW-SKYSTYMD
+                   END-IF
                END-IF
            END-IF
+               DISPLAY "AF:WRK-NOW-SKYSTYMD =" WRK-NOW-SKYSTYMD
       *
            .
        4801-SKYSTYMD-GET-EXT.
@@ -16347,14 +16354,16 @@
            IF    ( WRK-NOW-SKYSTYMD    =   SPACE )
                MOVE    WRK-FTN-NYUINYMD
                                        TO  WRK-NOW-SKYSTYMD
-               IF    ( WRK-FTN-DJKBN   =   "1" )
-                   MOVE    WRK-FTN-NYUINYMD
+               IF    ( WRK-NOW-SKYSTYMD  <   CONST-H180401 )
+                   IF    ( WRK-FTN-DJKBN   =   "1" )
+                       MOVE    WRK-FTN-NYUINYMD
                                        TO  WRK-YMD
-                   MOVE    "1"         TO  WRK-ZOGENPTN
-                   MOVE    1           TO  WRK-ZOGEN
-                   PERFORM 5002-CALENDAR-SEC
-                   MOVE    WRK-KEISANYMD
+                       MOVE    "1"     TO  WRK-ZOGENPTN
+                       MOVE    1       TO  WRK-ZOGEN
+                       PERFORM 5002-CALENDAR-SEC
+                       MOVE    WRK-KEISANYMD
                                        TO  WRK-NOW-SKYSTYMD
+                   END-IF
                END-IF
            END-IF
       *
