@@ -77,6 +77,7 @@
                                                OCCURS  31.
            03  FLG-SANTEI                      PIC 9(01).
            03  FLG-TARGET                      PIC 9(01).
+           03  FLG-CLEAR                       PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -103,6 +104,7 @@
            03  IDXG                            PIC 9(05).
            03  IDX-KHN                         PIC 9(05).
            03  IDX-DAY                         PIC 9(02).
+           03  IDX-SKJ                         PIC 9(05).
       *
       *    一時領域
        01  WRK-AREA.
@@ -171,6 +173,12 @@
                05  WRK-SRYCD-9                 REDEFINES WRK-SRYCD
                                                PIC  9(09).
            03  WRK-SRYYMD                      PIC  X(08).
+           03  WRK-SKYSTYMD.
+               05  WRK-SKYSTYM                 PIC  X(06).
+               05  WRK-SKYSTDD                 PIC  9(02).
+           03  WRK-SKYEDYMD.
+               05  WRK-SKYEDYM                 PIC  X(06).
+               05  WRK-SKYEDDD                 PIC  9(02).
       *
       *    入院料
        01  WNYUINRYO-AREA.
@@ -396,9 +404,24 @@
       *    自賠責食事療養費乗数
            03  CONST-JBISKJ-JOUSU              PIC X(09)
                                                    VALUE "099609901".
+      *    食事朝
+           03  CONST-SKJ-ASA                   PIC 9(09)
+                                               VALUE 99999918.
+      *    食事昼
+           03  CONST-SKJ-HIRU                  PIC 9(09)
+                                               VALUE 99999919.
+      *    食事夕
+           03  CONST-SKJ-YUU                   PIC 9(09)
+                                               VALUE 99999920.
       *
            COPY    "CPSK5000.INC"  REPLACING   //SYS-5000//
                                    BY          //WKSYS-5000//.
+      *
+       01  WSKJNACCT-AREA.
+           02  WSKJNACCT-SYOKUDO-NG            PIC X(01).
+           02  WSKJNACCT-OCC                   OCCURS  3.
+           COPY    "CPNYUINACCT.INC"   REPLACING   //NACCT-//
+                                       BY          //WSKJNACCT-//.
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -497,6 +520,7 @@
                                            WSKJH1804-AREA
                                            WNYUINKSN-AREA
                                            WRYYTAN-AREA
+                                           WSKJNACCT-AREA
       *
            INITIALIZE                      HCM34S01-HENKYAKU-AREA
            MOVE    ZERO                TO  HCM34S01-RC
@@ -601,6 +625,13 @@
                    ELSE
                        MOVE    ZERO        TO  FLG-NYUINDAY (IDX1)
                    END-IF
+      *
+               MOVE    HCM34S01-SKYSTYMD   TO  WRK-SKYSTYMD
+               MOVE    HCM34S01-SKYEDYMD   TO  WRK-SKYEDYMD
+      *
+               IF    ( HCM34S01-DOJITUFLG-ST   =   "1" )
+                   MOVE    ZERO            TO  FLG-NYUINDAY(WRK-SKYSTDD)
+               END-IF
       *
                END-PERFORM
       *
@@ -1903,8 +1934,6 @@
       *    食事基本点数取得処理
            PERFORM 20011-SKJ-KHNTEN-GET-SEC
       *
-      *    食堂加算チェック
-           PERFORM 20011-SYOKUDOKSN-CHK-SEC
       *
            MOVE    "4"                 TO  WRK-NACCT-ZAISKBKBN
            PERFORM 1001-NYUINACCT-KEY17-SEL-SEC
@@ -1914,8 +1943,9 @@
                IF    ( NACCT-SRYCDTOTAL    =   197000570 )
                    CONTINUE
                ELSE
-      *            食事編集処理
-                   PERFORM 20021-SYOKUJI-HEN-SEC
+      *
+      *            食事退避領域編集処理
+                   PERFORM 20021-WSKJNACCT-HEN-SEC
                END-IF
       *
                PERFORM 1001-NYUINACCT-KEY17-READ-SEC
@@ -1925,6 +1955,20 @@
            MOVE    "tbl_nyuinacct"         TO  MCP-TABLE
            MOVE    "key17"                 TO  MCP-PATHNAME
            PERFORM 910-DBCLOSECURSOR-SEC
+      *
+      *    食堂加算チェック
+           PERFORM 20021-SYOKUDOKSN-CHK-SEC
+      *
+           PERFORM VARYING IDX-SKJ FROM    1   BY  1
+                   UNTIL ( IDX-SKJ >   3 )
+      *
+               MOVE    WSKJNACCT-OCC (IDX-SKJ)
+                                   TO      NYUINACCT-REC
+      *
+               PERFORM 20021-SYOKUJI-HEN-SEC
+      *
+           END-PERFORM
+      *
       *
            PERFORM VARYING IDXF    FROM    1   BY  1
                    UNTIL ( IDXF    >   31 )
@@ -1980,6 +2024,117 @@
        2002-SYOKUJI-HEN-EXT.
            EXIT.
       *****************************************************************
+      *    食事退避領域編集処理
+      *****************************************************************
+       20021-WSKJNACCT-HEN-SEC         SECTION.
+      *
+           MOVE        ZERO   TO   IDX-SKJ
+           EVALUATE    NACCT-SRYCDTOTAL
+           WHEN    CONST-SKJ-ASA
+               MOVE    1       TO  IDX-SKJ
+           WHEN    CONST-SKJ-HIRU
+               MOVE    2       TO  IDX-SKJ
+           WHEN    CONST-SKJ-YUU
+               MOVE    3       TO  IDX-SKJ
+           END-EVALUATE
+      *
+           IF    ( IDX-SKJ     >   ZERO )
+      *
+               MOVE    NYUINACCT-REC
+                                   TO  WSKJNACCT-OCC      (IDX-SKJ)
+               INITIALIZE              WSKJNACCT-DAY-AREA (IDX-SKJ)
+      *
+               PERFORM VARYING IDXD    FROM    1   BY  1
+                       UNTIL ( IDXD    >   31 )
+      *
+                   MOVE    ZERO                TO  FLG-SANTEI
+                   IF    ( NACCT-DAY    (IDXD)     >   ZERO )
+                    AND (( FLG-NYUINDAY (IDXD)     =   1 )
+                      OR ((HCM34S01-DOJITUFLG-ST   =   "1" )
+                      AND( IDXD                    =   WRK-SKYSTDD )))
+                    AND  ( FLG-GAIHAKUDAY(IDXD)    =   ZERO OR 4 )
+                        IF   ( FLG-NYUINRYODAY (IDXD)  =   1 )
+                         OR  ( LNK-NYUINDAY-KBN(IDXD)  =   "1" )
+                            MOVE   1       TO  FLG-SANTEI
+                        END-IF
+                   END-IF
+      *
+                   IF    ( FLG-SANTEI          =   1 )
+                       MOVE    NACCT-DAY    (IDXD)
+                                       TO  WSKJNACCT-DAY (IDX-SKJ IDXD)
+      *
+                       MOVE    ZERO    TO  FLG-CLEAR
+                       IF    ( HCM34S01-DOJITUFLG-ST   =   "1" )
+                           IF    ( WRK-SKYSTDD         =   IDXD )
+                               EVALUATE    HCM34S01-TIMEKBN-ST
+                               WHEN    "0"
+                                       MOVE    1   TO  FLG-CLEAR
+                               WHEN    "1"
+                                   CONTINUE
+                               WHEN    "2"
+                                   IF    ( IDX-SKJ <   2 )
+                                       MOVE    1   TO  FLG-CLEAR
+                                   END-IF
+                               WHEN    "3"
+                                   IF    ( IDX-SKJ <   3 )
+                                       MOVE    1   TO  FLG-CLEAR
+                                   END-IF
+                               END-EVALUATE
+                           END-IF
+                       END-IF
+      *
+                       IF    ( FLG-CLEAR   =   1 )
+                           MOVE    ZERO    TO  WSKJNACCT-DAY
+                                                         (IDX-SKJ IDXD)
+                           MOVE    "1"     TO  WSKJNACCT-SYOKUDO-NG
+                       END-IF
+      *
+                       MOVE    ZERO    TO  FLG-CLEAR
+                       IF    ( HCM34S01-DOJITUFLG-ED   =   "1" )
+                           IF    ( WRK-SKYEDDD         =   IDXD )
+                               EVALUATE    HCM34S01-TIMEKBN-ED
+                               WHEN    "0"
+                                       MOVE    1   TO  FLG-CLEAR
+                               WHEN    "1"
+                                   IF    ( IDX-SKJ >   1 )
+                                       MOVE    1   TO  FLG-CLEAR
+                                   END-IF
+                               WHEN    "2"
+                                   IF    ( IDX-SKJ >   2 )
+                                       MOVE    1   TO  FLG-CLEAR
+                                   END-IF
+                               WHEN    "3"
+                                       CONTINUE
+                               END-EVALUATE
+                           END-IF
+                       END-IF
+                       IF    ( FLG-CLEAR   =   1 )
+                           MOVE    ZERO    TO  WSKJNACCT-DAY
+                                                         (IDX-SKJ IDXD)
+                       END-IF
+      *
+                   END-IF
+      *
+               END-PERFORM
+           END-IF
+      *
+           .
+       20021-WSKJNACCT-HEN-EXT.
+           EXIT.
+      *****************************************************************
+      *    食堂加算チェック
+      *****************************************************************
+       20021-SYOKUDOKSN-CHK-SEC        SECTION.
+      *
+           PERFORM 20011-SYOKUDOKSN-CHK-SEC
+           IF    ( WSKJNACCT-SYOKUDO-NG    =   "1" )
+               MOVE    ZERO    TO  FLG-SYOKUDODAY(WRK-SKYSTDD)
+           END-IF
+      *
+           .
+       20021-SYOKUDOKSN-CHK-EXT.
+           EXIT.
+      *****************************************************************
       *    食事編集処理
       *****************************************************************
        20021-SYOKUJI-HEN-SEC           SECTION.
@@ -1987,17 +2142,8 @@
            PERFORM VARYING IDXD    FROM    1   BY  1
                    UNTIL ( IDXD    >   31 )
       *
-               MOVE    ZERO                TO  FLG-SANTEI
                IF    ( NACCT-DAY    (IDXD)     >   ZERO )
-                AND  ( FLG-NYUINDAY (IDXD)     =   1 )
-                AND  ( FLG-GAIHAKUDAY(IDXD)    =   ZERO OR 4 )
-                    IF   ( FLG-NYUINRYODAY (IDXD)  =   1 )
-                     OR  ( LNK-NYUINDAY-KBN(IDXD)  =   "1" )
-                        MOVE   1       TO  FLG-SANTEI
-                    END-IF
-               END-IF
       *
-               IF    ( FLG-SANTEI          =   1 )
       *            食事診療行為コード取得処理
                    PERFORM 200111-SYOKUJI-SRYCD-GET-SEC
       *
