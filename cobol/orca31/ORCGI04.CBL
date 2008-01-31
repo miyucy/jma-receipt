@@ -1345,9 +1345,7 @@
            PERFORM   UNTIL  MCP-RC  NOT =  ZERO
       *
                MOVE    MCPDATA-REC     TO  SYUNOU-REC
-               IF    ( SPA-I01-I04-SKYSTYMD   <= SYU-SKYSTYMD )
-                AND  ( SPA-I01-I04-SKYEDYMD   >= SYU-SKYEDYMD )
-                AND  ( SPA-I01-I04-RRKNUM
+               IF    ( SPA-I01-I04-RRKNUM
                                         = SYU-NYUIN-RRKNUM )
                    CONTINUE
                ELSE
