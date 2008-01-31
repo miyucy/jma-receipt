@@ -168,6 +168,7 @@
                    END-IF
       *
                    IF    ( SS006-SKYEDYMD  =   PTNYUINRRK-NYUINYMD )
+                    AND  ( PTNYUINRRK-TAIINYMD >   SS006-SKYEDYMD )
                        MOVE    1           TO  FLG-SKYED-NYUIN
                        EVALUATE    PTNYUINRRK-TIMEKBN-IN
                        WHEN    "1"
