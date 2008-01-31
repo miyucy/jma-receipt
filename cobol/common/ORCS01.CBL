@@ -240,6 +240,7 @@
       *  04.01.05    NACL-ÌçÏÆ    07/12/07  ¸ø³²ÂÐ±þ
       *  04.01.06    NACL-ÌçÏÆ    08/01/17  ¹âÎð¼Ô£³³äºßÁí¿Ç·×»»½¤Àµ
       *  04.01.07    NACL-ÌçÏÆ    08/01/18  ºë¶Ì¸©ÀîÅçÄ®ÃÏÊý¸øÈñÂÐ±þ
+      *  04.01.08    NACL-ÌçÏÆ    08/01/31  ÂçºåÉÜ£²£¸£°ÄÉ²Ã¤ËÈ¼¤¦½¤Àµ
       *****************************************************************
        ENVIRONMENT         DIVISION.
        CONFIGURATION       SECTION.
@@ -8641,7 +8642,8 @@
                    IF (( WK-1001-PREFNUM         =  27        ) AND
                        ( LNK-SYU-KOH2HKNNUM  = "972" OR "974" ) AND
                        ( COMB-KOH1HKNNUM     = "180" OR "182"
-                                            OR "186" OR "188" ) AND
+                                            OR "186" OR "188"
+                                                     OR "280" ) AND
                        ( LNK-S01-SAIKEISAN-KBN   =   "1"      ) AND
                        ( LNK-SYU-DENPNUM     NOT =  ZERO      ) AND
                        ( LNK-SYU-DENPNUM      <  SYU-DENPNUM  ))
@@ -9275,9 +9277,11 @@
                    IF (( WK-1001-PREFNUM         =  27        ) AND
                        ( LNK-SYU-KOH3HKNNUM  = "972" OR "974" ) AND
                        ((COMB-KOH1HKNNUM     = "180" OR "182"
-                                            OR "186" OR "188") OR
+                                            OR "186" OR "188"
+                                                     OR "280") OR
                         (COMB-KOH2HKNNUM     = "180" OR "182"
-                                            OR "186" OR "188")) AND
+                                            OR "186" OR "188"
+                                                     OR "280")) AND
                        ( LNK-S01-SAIKEISAN-KBN   =   "1"      ) AND
                        ( LNK-SYU-DENPNUM     NOT =  ZERO      ) AND
                        ( LNK-SYU-DENPNUM      <  SYU-DENPNUM  ))
@@ -9862,11 +9866,14 @@
                    IF (( WK-1001-PREFNUM         =  27        ) AND
                        ( LNK-SYU-KOH4HKNNUM  = "972" OR "974" ) AND
                        ((COMB-KOH1HKNNUM     = "180" OR "182"
-                                            OR "186" OR "188") OR
+                                            OR "186" OR "188"
+                                                     OR "280") OR
                         (COMB-KOH2HKNNUM     = "180" OR "182"
-                                            OR "186" OR "188") OR
+                                            OR "186" OR "188"
+                                                     OR "280") OR
                         (COMB-KOH3HKNNUM     = "180" OR "182"
-                                            OR "186" OR "188")) AND
+                                            OR "186" OR "188"
+                                                     OR "280")) AND
                        ( LNK-S01-SAIKEISAN-KBN   =   "1"      ) AND
                        ( LNK-SYU-DENPNUM     NOT =  ZERO      ) AND
                        ( LNK-SYU-DENPNUM      <  SYU-DENPNUM  ))
@@ -12185,19 +12192,19 @@
       *
            IF     WK-1001-PREFNUM       =   27
              IF   COMB-KOH1HKNNUM       =  "180" OR "182" OR
-                                           "186" OR "188"
+                                           "186" OR "188" OR "280"
                   PERFORM    23081-ZANOKIKAE-HENSYU1-SEC
              END-IF
              IF   COMB-KOH2HKNNUM       =  "180" OR "182" OR
-                                           "186" OR "188"
+                                           "186" OR "188" OR "280"
                   PERFORM    23082-ZANOKIKAE-HENSYU2-SEC
              END-IF
              IF   COMB-KOH3HKNNUM       =  "180" OR "182" OR
-                                           "186" OR "188"
+                                           "186" OR "188" OR "280"
                   PERFORM    23083-ZANOKIKAE-HENSYU3-SEC
              END-IF
              IF   COMB-KOH4HKNNUM       =  "180" OR "182" OR
-                                           "186" OR "188"
+                                           "186" OR "188" OR "280"
                   PERFORM    23084-ZANOKIKAE-HENSYU4-SEC
              END-IF
            END-IF
@@ -13544,15 +13551,15 @@
                END-IF
            END-IF.
       *
-           IF     (WK-1001-PREFNUM         =  06           ) AND
-                  (COMB-KOHHKNNUM(KOH-IDX) = "182" OR "183")
-               IF    LNK-S01-SINSATUFLG =  SPACE
-                    MOVE    SPACE   TO   COMB-KOH-GAIJGNKBN(KOH-IDX)
-                    MOVE    ZERO    TO   WK-GAIKFTNRATE
-                    MOVE    "0"     TO   WK-GAIYKZFTNKBN
-                    MOVE    ZERO    TO   WK-GAIKKOTGAK
-               END-IF
-           END-IF.
+      ***  IF     (WK-1001-PREFNUM         =  06           ) AND
+      ***         (COMB-KOHHKNNUM(KOH-IDX) = "182" OR "183")
+      ***      IF    LNK-S01-SINSATUFLG =  SPACE
+      ***           MOVE    SPACE   TO   COMB-KOH-GAIJGNKBN(KOH-IDX)
+      ***           MOVE    ZERO    TO   WK-GAIKFTNRATE
+      ***           MOVE    "0"     TO   WK-GAIYKZFTNKBN
+      ***           MOVE    ZERO    TO   WK-GAIKKOTGAK
+      ***      END-IF
+      ***  END-IF.
       *
            IF     (WK-1001-PREFNUM         =  01           ) AND
                   (COMB-KOHHKNNUM(KOH-IDX) = "121"         ) AND
