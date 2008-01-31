@@ -3025,11 +3025,11 @@
                                WHEN    "0"
                                        MOVE    1   TO  FLG-CLEAR
                                WHEN    "1"
-                                   IF    ( IDX-SKJ <   2 )
+                                   IF    ( IDX-SKJ >   1 )
                                        MOVE    1   TO  FLG-CLEAR
                                    END-IF
                                WHEN    "2"
-                                   IF    ( IDX-SKJ <   3 )
+                                   IF    ( IDX-SKJ >   2 )
                                        MOVE    1   TO  FLG-CLEAR
                                    END-IF
                                WHEN    "3"
