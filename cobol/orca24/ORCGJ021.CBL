@@ -1145,6 +1145,8 @@
       *    汐阂ˇ极清勒は滦据嘲
            IF      COMB-HKNNUM         =   "971"  OR
                                            "973"
+      *        给巢
+                                       OR  "975"
                MOVE    "0001"              TO  SPA-ERRCD
                MOVE    1                   TO  SPA-J021-CUR
            END-IF
