@@ -176,6 +176,7 @@
            03  WRK-NAME                PIC X(200).
            03  WRK-INPUTCD             PIC X(20).
            03  WRK-SRYCD               PIC X(20).
+           03  WRK-TEKCD               PIC X(20).
            03  WRK-MOJI                PIC 9(03).
            03  WRK-CDSYUBETU           PIC X(01).
            03  WRK-BYOMEICD            PIC X(07).
@@ -1024,6 +1025,12 @@
                MOVE    X05-TEKCD (IDX-LINE)    TO  SPA-GMN-TTEKCD
                                                                  (IDX7)
                MOVE    X05-DMKBN (IDX-LINE)    TO  SPA-GMN-TDMKBN(IDX7)
+      *
+               MOVE    SPA-GMN-TTEKCD (IDX7)    TO  WRK-TEKCD
+               INSPECT WRK-TEKCD       REPLACING   ALL "-"  BY  " "
+               IF    ( SPA-GMN-TTEKCD (IDX7)    NOT =   WRK-TEKCD )
+                   MOVE    SPACE               TO  SPA-GMN-TTEKCD (IDX7)
+               END-IF
       *
       *        全角入力の時、１０文字まで
                INITIALIZE                  ORCSKANACHKAREA
@@ -2070,7 +2077,7 @@
            PERFORM 40321-DEL-SEC
            IF    ( SPA-ERRCD       NOT =   SPACE )
                MOVE    "1003"      TO  SPA-ERRCD
-               GO  TO  490-KOUSHIN-EXT
+               GO  TO  491-KOUSHIN-EXT
            END-IF
       *
            IF    ( SPA-X01-SELNUM      =   ZERO )
@@ -2108,7 +2115,7 @@
                PERFORM 910-DBINSERT-SEC
                IF    ( MCP-RC          NOT =   ZERO  )
                    MOVE    "1001"      TO  SPA-ERRCD
-                   GO  TO  490-KOUSHIN-EXT
+                   GO  TO  491-KOUSHIN-EXT
                END-IF
            END-PERFORM
       *

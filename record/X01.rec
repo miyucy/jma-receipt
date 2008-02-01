@@ -40,7 +40,7 @@ X01	{
 				value	varchar(32);
 			};
 			count	int;
-			item	varchar(32)[9];
+			item	varchar(32)[11];
 		};
 		LBLBYOSTATUS	{
 			style	varchar(20);

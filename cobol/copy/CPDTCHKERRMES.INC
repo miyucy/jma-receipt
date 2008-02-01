@@ -318,8 +318,14 @@
       *    ** 110xxx Ê»ÍÑ»»Äê¤Î¿ÇÎÅ¹Ô°Ù
       *                            +---------+---------+---------+.
            05 PIC  X(06)   VALUE   "110001".
-           05 PIC  X(30)   VALUE   "¿ÇÎÅ¹Ô°Ù¤¬Ê»ÍÑ»»Äê¤Î¸í¤ê¤Ç¤¹  ".
+           05 PIC  X(30)   VALUE   "¿ÇÎÅ¹Ô°Ù¤¬Ê»ÍÑ»»Äê¸í¤ê¤Ç¤¹¡ÊÆ±".
+           05 PIC  X(30)   VALUE   "·î¡Ë                          ".
            05 PIC  X(30)   VALUE   "                              ".
+      *
+      *                            +---------+---------+---------+.
+           05 PIC  X(06)   VALUE   "110002".
+           05 PIC  X(30)   VALUE   "¿ÇÎÅ¹Ô°Ù¤¬Ê»ÍÑ»»Äê¸í¤ê¤Ç¤¹¡ÊÆ±".
+           05 PIC  X(30)   VALUE   "Æü¡Ë                          ".
            05 PIC  X(30)   VALUE   "                              ".
       *
       *    ** 120xxx ¼ÂÆü¿ô
@@ -448,7 +454,7 @@
            05 PIC  X(30)   VALUE   "                              ".
       *
          03  ERRMES-RED    REDEFINES   ERRMES-VAL.
-           05 ERRMES-OCC   OCCURS  76.
+           05 ERRMES-OCC   OCCURS  77.
               07  ERRMES-CD            PIC X(06).
               07  ERRMES-MESSAGE       PIC X(90).
-         03  ERRMES-MAX                PIC 9(05)   VALUE   76.
+         03  ERRMES-MAX                PIC 9(05)   VALUE   77.

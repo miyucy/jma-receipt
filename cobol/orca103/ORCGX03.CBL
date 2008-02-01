@@ -120,6 +120,10 @@
                                            OCCURS   21.
                05  WRK-LCHKLST-BYOSTATUS   PIC X(01).
                05  WRK-LCHKLST-UTAGAI      PIC X(01).
+               05  WRK-LCHKLST-SYORIKBN    PIC X(01).
+               05  WRK-LCHKLST-NGBNDKBN    PIC X(01).
+               05  WRK-LCHKLST-CHKERR      PIC 9(01).
+               05  WRK-LCHKLST-DATAKBN     PIC X(01).
       *
        01  WRK-ROW-AREA.
            03  WRK-LCHKLST-ROW             PIC S9(9)   BINARY.
@@ -428,7 +432,7 @@
                MOVE    1                   TO  SPA-X03-GMN-CHKKBN-MAX
       *
                MOVE    "5"                 TO  SPA-X03-GMN-CHKKBNL   (1)
-               MOVE    "診療行為の併用算定"
+               MOVE    "診療行為の併用算定（同月内）"
                                            TO  SPA-X03-GMN-CHKKBNMEIL(1)
            WHEN    "6"
       *
@@ -456,6 +460,20 @@
       *
                MOVE    "9"                 TO  SPA-X03-GMN-CHKKBNL   (1)
                MOVE    "病名と診療行為"    TO  SPA-X03-GMN-CHKKBNMEIL(1)
+           WHEN    "A"
+      *
+               MOVE    1                   TO  SPA-X03-GMN-CHKKBN-MAX
+      *
+               MOVE    "A"                 TO  SPA-X03-GMN-CHKKBNL   (1)
+               MOVE    "診療行為の併用算定（同日内）"
+                                           TO  SPA-X03-GMN-CHKKBNMEIL(1)
+           WHEN    "B"
+      *
+               MOVE    1                   TO  SPA-X03-GMN-CHKKBN-MAX
+      *
+               MOVE    "B"                 TO  SPA-X03-GMN-CHKKBNL   (1)
+               MOVE    "診療行為の併用算定（同会計内）"
+                                           TO  SPA-X03-GMN-CHKKBNMEIL(1)
            END-EVALUATE
       *
            . 
@@ -1323,7 +1341,12 @@
                    UNTIL ( IDX4   >   SPA-X03-GMN-LCHKLST-MAX )
       *
                IF    ( X03-LCHKLST-SELECT (IDX4)   =   "T" )
-                   MOVE    1       TO  SPA-X03-GMN-LCHKLST-FLG (IDX4)
+                   IF    ( SPA-X03-NAI-TLCHK-DATAKBN (IDX4)
+                                                   =   "1" )
+                       MOVE    ZERO    TO  SPA-X03-GMN-LCHKLST-FLG(IDX4)
+                   ELSE
+                       MOVE    1       TO  SPA-X03-GMN-LCHKLST-FLG(IDX4)
+                   END-IF
                ELSE
                    MOVE    ZERO    TO  SPA-X03-GMN-LCHKLST-FLG (IDX4)
                END-IF
@@ -1721,40 +1744,41 @@
                    OR    ( SPA-X03-GMN-RCHKLST-MAX
                                           >=   CONST-CHKLST-MAX )
       *
-               PERFORM VARYING IDX3    FROM    1   BY  1
-                       UNTIL ( IDX3    >   10 )
-                       OR    ( CHK-CD (IDX3)   =   SPACE  )
-                       OR    ( SPA-X03-GMN-RCHKLST-MAX
-                                              >=   CONST-CHKLST-MAX )
+               COMPUTE SPA-X03-GMN-RCHKLST-MAX
+                   =   SPA-X03-GMN-RCHKLST-MAX +   1
       *
-                   COMPUTE SPA-X03-GMN-RCHKLST-MAX
-                       =   SPA-X03-GMN-RCHKLST-MAX +   1
+               MOVE    SPA-X03-GMN-RCHKLST-MAX
+                                       TO  IDXA
       *
-                   MOVE    SPA-X03-GMN-RCHKLST-MAX
-                                           TO  IDXA
+               MOVE    IDXA            TO  SPA-X03-GMN-TRCHK-NUM  (IDXA)
+               MOVE    CHK-CD          TO  SPA-X03-NAI-TRCHK-SRYCD(IDXA)
       *
-                   MOVE    IDXA            TO  SPA-X03-GMN-TRCHK-NUM
-                                                                  (IDXA)
-                   MOVE    CHK-CD (IDX3)   TO  SPA-X03-NAI-TRCHK-SRYCD
-                                                                  (IDXA)
-      *
-                   EVALUATE    SPA-X03-GMN-CHKKBN
-                   WHEN    "4"
-                   WHEN    "5"  
-      *                点数マスタ読み込み
-                       MOVE    CHK-CD (IDX3)
-                                           TO  WRK-CHK-CD
-                       PERFORM 41011-TNS-NAME-HEN-SEC
-                       MOVE    WRK-NAME    TO  SPA-X03-GMN-TRCHK-NAME
+               EVALUATE    SPA-X03-GMN-CHKKBN
+               WHEN    "4"
+               WHEN    "5"
+               WHEN    "A"
+               WHEN    "B"
+      *            点数マスタ読み込み
+                   MOVE    CHK-CD      TO  WRK-CHK-CD
+                   PERFORM 41011-TNS-NAME-HEN-SEC
+                   MOVE    WRK-NAME    TO  SPA-X03-GMN-TRCHK-NAME
                                                                (IDXA)
-                       MOVE    FLG-SRYCD-DEL
-                                           TO  SPA-X03-NAI-TRCHK-DELFLG
+                   MOVE    FLG-SRYCD-DEL
+                                       TO  SPA-X03-NAI-TRCHK-DELFLG
                                                                (IDXA)
-                   END-EVALUATE
-               END-PERFORM
+                   MOVE    SPACE       TO  SPA-X03-NAI-TRCHK-NGBNDKBN
+                                                               (IDXA)
+                   MOVE    CHK-NYUGAIBNDKBN
+                                       TO  SPA-X03-NAI-TRCHK-NGBNDKBN
+                                                               (IDXA)
+                   MOVE    CHK-CHKERR  TO  SPA-X03-NAI-TRCHK-CHKERR
+                                                               (IDXA)
+                   MOVE    SPACE       TO  SPA-X03-NAI-TRCHK-DATAKBN
+                                                               (IDXA)
+               END-EVALUATE
       *
-               MOVE    "tbl_chk"           TO  MCP-TABLE
-               MOVE    "key2"              TO  MCP-PATHNAME
+               MOVE    "tbl_chk"       TO  MCP-TABLE
+               MOVE    "key2"          TO  MCP-PATHNAME
                PERFORM 910-DBFETCH-SEC
                IF    ( MCP-RC          =   ZERO )
                    MOVE    MCPDATA-REC TO  CHK-REC
@@ -2020,6 +2044,18 @@
                        MOVE    SPA-X03-NAI-TRCHK-UTAGAI (IDX0)
                                        TO  WRK-LCHKLST-UTAGAI
                                                       (WRK-LCHKLST-MAX)
+                       MOVE    SPA-X03-NAI-TRCHK-SYORIKBN (IDX0)
+                                       TO  WRK-LCHKLST-SYORIKBN
+                                                      (WRK-LCHKLST-MAX)
+                       MOVE    SPA-X03-NAI-TRCHK-NGBNDKBN (IDX0)
+                                       TO  WRK-LCHKLST-NGBNDKBN
+                                                      (WRK-LCHKLST-MAX)
+                       MOVE    SPA-X03-NAI-TRCHK-CHKERR (IDX0)
+                                       TO  WRK-LCHKLST-CHKERR
+                                                      (WRK-LCHKLST-MAX)
+                       MOVE    SPA-X03-NAI-TRCHK-DATAKBN (IDX0)
+                                       TO  WRK-LCHKLST-DATAKBN
+                                                      (WRK-LCHKLST-MAX)
       *
                    END-IF
                END-IF
@@ -2072,6 +2108,14 @@
       *
                MOVE    WRK-LCHKLST-UTAGAI (IDX0)
                                TO  SPA-X03-NAI-TLCHK-UTAGAI (IDXA)
+               MOVE    WRK-LCHKLST-SYORIKBN (IDX0)
+                               TO  SPA-X03-NAI-TLCHK-SYORIKBN (IDXA)
+               MOVE    WRK-LCHKLST-NGBNDKBN (IDX0)
+                               TO  SPA-X03-NAI-TLCHK-NGBNDKBN (IDXA)
+               MOVE    WRK-LCHKLST-CHKERR (IDX0)
+                               TO  SPA-X03-NAI-TLCHK-CHKERR (IDXA)
+               MOVE    WRK-LCHKLST-DATAKBN (IDX0)
+                               TO  SPA-X03-NAI-TLCHK-DATAKBN (IDXA)
       *
            END-PERFORM
       *
@@ -2152,6 +2196,18 @@
                        MOVE    SPA-X03-NAI-TRCHK-UTAGAI (IDX0)
                                        TO  WRK-LCHKLST-UTAGAI
                                                       (WRK-LCHKLST-MAX)
+                       MOVE    SPA-X03-NAI-TRCHK-SYORIKBN (IDX0)
+                                       TO  WRK-LCHKLST-SYORIKBN
+                                                      (WRK-LCHKLST-MAX)
+                       MOVE    SPA-X03-NAI-TRCHK-NGBNDKBN (IDX0)
+                                       TO  WRK-LCHKLST-NGBNDKBN
+                                                      (WRK-LCHKLST-MAX)
+                       MOVE    SPA-X03-NAI-TRCHK-CHKERR (IDX0)
+                                       TO  WRK-LCHKLST-CHKERR
+                                                      (WRK-LCHKLST-MAX)
+                       MOVE    SPA-X03-NAI-TRCHK-DATAKBN (IDX0)
+                                       TO  WRK-LCHKLST-DATAKBN
+                                                      (WRK-LCHKLST-MAX)
       *
                    END-IF
                END-IF
@@ -2206,6 +2262,18 @@
                    MOVE    SPA-X03-NAI-TLCHK-UTAGAI (IDX0)
                                        TO  WRK-LCHKLST-UTAGAI
                                                       (WRK-LCHKLST-MAX)
+                   MOVE    SPA-X03-NAI-TLCHK-SYORIKBN (IDX0)
+                                       TO  WRK-LCHKLST-SYORIKBN
+                                                      (WRK-LCHKLST-MAX)
+                   MOVE    SPA-X03-NAI-TLCHK-NGBNDKBN (IDX0)
+                                       TO  WRK-LCHKLST-NGBNDKBN
+                                                      (WRK-LCHKLST-MAX)
+                   MOVE    SPA-X03-NAI-TLCHK-CHKERR (IDX0)
+                                       TO  WRK-LCHKLST-CHKERR
+                                                      (WRK-LCHKLST-MAX)
+                   MOVE    SPA-X03-NAI-TLCHK-DATAKBN (IDX0)
+                                       TO  WRK-LCHKLST-DATAKBN
+                                                      (WRK-LCHKLST-MAX)
       *
                END-IF
       *
@@ -2236,6 +2304,14 @@
                                TO  SPA-X03-NAI-TLCHK-BYOSTATUS (IDX0)
                MOVE    WRK-LCHKLST-UTAGAI (IDX0)
                                TO  SPA-X03-NAI-TLCHK-UTAGAI (IDX0)
+               MOVE    WRK-LCHKLST-SYORIKBN (IDX0)
+                               TO  SPA-X03-NAI-TLCHK-SYORIKBN (IDX0)
+               MOVE    WRK-LCHKLST-NGBNDKBN (IDX0)
+                               TO  SPA-X03-NAI-TLCHK-NGBNDKBN (IDX0)
+               MOVE    WRK-LCHKLST-CHKERR (IDX0)
+                               TO  SPA-X03-NAI-TLCHK-CHKERR (IDX0)
+               MOVE    WRK-LCHKLST-DATAKBN (IDX0)
+                               TO  SPA-X03-NAI-TLCHK-DATAKBN(IDX0)
       *
            END-PERFORM
       *
@@ -2456,6 +2532,10 @@
                MOVE    SPA-X03-GMN-TLCHK-NUM  (IDX1)
                                        TO  WRK-ZZZZ
                MOVE    WRK-ZZZZ        TO  X03-TLCHK-NUM  (IDX1)
+               IF    ( SPA-X03-NAI-TLCHK-DATAKBN(IDX1)
+                                           =   "1" )
+                   MOVE    "◎"        TO  X03-TLCHK-NUM  (IDX1) (1:2)
+               END-IF
                MOVE    SPA-X03-GMN-TLCHK-NAME (IDX1)
                                        TO  X03-TLCHK-NAME (IDX1)
       *

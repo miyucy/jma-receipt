@@ -86,6 +86,10 @@
                                                        OCCURS  21.
                        09  SPA-X03-NAI-TLCHK-BYOSTATUS PIC X(01).
                        09  SPA-X03-NAI-TLCHK-UTAGAI    PIC X(01).
+                       09  SPA-X03-NAI-TLCHK-SYORIKBN  PIC X(01).
+                       09  SPA-X03-NAI-TLCHK-NGBNDKBN  PIC X(01).
+                       09  SPA-X03-NAI-TLCHK-CHKERR    PIC 9(01).
+                       09  SPA-X03-NAI-TLCHK-DATAKBN   PIC X(01).
                05  SPA-X03-NAI-RYUKOSTYMD              PIC X(08).
                05  SPA-X03-NAI-RYUKOEDYMD              PIC X(08).
                05  SPA-X03-NAI-RCHKLST.
@@ -96,6 +100,10 @@
                                                        OCCURS  21.
                        09  SPA-X03-NAI-TRCHK-BYOSTATUS PIC X(01).
                        09  SPA-X03-NAI-TRCHK-UTAGAI    PIC X(01).
+                       09  SPA-X03-NAI-TRCHK-SYORIKBN  PIC X(01).
+                       09  SPA-X03-NAI-TRCHK-NGBNDKBN  PIC X(01).
+                       09  SPA-X03-NAI-TRCHK-CHKERR    PIC 9(01).
+                       09  SPA-X03-NAI-TRCHK-DATAKBN   PIC X(01).
                05  SPA-X03-NAI-SELCHKLST.
                    07  SPA-X03-NAI-SELCHKLST-KBN       PIC X(01).
                    07  SPA-X03-NAI-SELCHKLST-OCC       OCCURS  100.

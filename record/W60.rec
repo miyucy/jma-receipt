@@ -82,6 +82,13 @@ W60	{
 			count	int;
 			item	varchar(32)[5];
 		};
+		CMB_SRYHEIWRNKBN	{
+			SRYHEIWRNKBN	{
+				value	varchar(32);
+			};
+			count	int;
+			item	varchar(32)[5];
+		};
 		CMB_PRTSRTKBN	{
 			PRTSRTKBN	{
 				value	varchar(22);

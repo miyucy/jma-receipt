@@ -200,6 +200,7 @@
                                        WRK-PARA-STSRYCD
                                        WRK-PARA-EDSRYCD
                                        WRK-PARA-CHKMERR
+           END-UNSTRING
       *
       *    ＳＰＡエリアセット処理
            PERFORM 110-SPA-SET-SEC
@@ -217,7 +218,7 @@
                MOVE    "薬剤と併用禁忌一覧表"
                                        TO  WRK-TITLE
            WHEN    "5"
-               MOVE    "診療行為の併用算定一覧表"
+               MOVE    "診療行為の併用算定一覧表（同月内）"
                                        TO  WRK-TITLE
            WHEN    "6"
                MOVE    "薬剤と投与禁忌病名一覧表"
@@ -230,6 +231,12 @@
                                        TO  WRK-TITLE
            WHEN    "9"
                MOVE    "病名と診療行為"
+                                       TO  WRK-TITLE
+           WHEN    "A"
+               MOVE    "診療行為の併用算定一覧表（同日内）"
+                                       TO  WRK-TITLE
+           WHEN    "B"
+               MOVE    "診療行為の併用算定一覧表（同会計内）"
                                        TO  WRK-TITLE
            END-EVALUATE
       *

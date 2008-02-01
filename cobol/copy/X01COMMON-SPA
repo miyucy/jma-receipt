@@ -56,6 +56,10 @@
                07  SPA-X01-BYOCD-OCC       OCCURS  21.
                    09  SPA-X01-BYOCD       PIC X(07).
                    09  SPA-X01-BYOCDSEP    PIC X(01).
+           05  SPA-X01-MAE-G.
+               07  SPA-X01-MAE-CHKKBN      PIC X(01).
+               07  SPA-X01-MAE-SRYCD       PIC X(09).
+               07  SPA-X01-MAE-NAME        PIC X(100).
       *
       *----(01.00.02)--ADD-START---
            05  SPA-X91-TBL-GROUP           PIC  X(14).

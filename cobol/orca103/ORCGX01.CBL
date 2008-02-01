@@ -86,7 +86,7 @@
                            11  SPA-GMN-SELNUM     PIC X(03).
                            11  SPA-GMN-STYUKYMD   PIC X(10).
                            11  SPA-GMN-EDYUKYMD   PIC X(10).
-                   07  SPA-GMN-CHKKBNLIST         OCCURS  9.
+                   07  SPA-GMN-CHKKBNLIST         OCCURS  11.
                        09  SPA-GMN-CHKKBNL        PIC X(01).
                        09  SPA-GMN-F1L            PIC X(01).
                        09  SPA-GMN-CHKKBNMEIL     PIC X(30).
@@ -111,7 +111,7 @@
                            11  SPA-NAI-TEDYUKYMD  PIC 9(08). 
                            11  SPA-NAI-NAME       PIC X(100).
                            11  SPA-NAI-TID        PIC 9(09).
-                   07  SPA-MAE-SRYCD              PIC X(100). 
+                   07  SPA-MAE-SRYCD              PIC X(09). 
       *
               05  SPA-NAI-SELNO                   PIC 9(03).
       *
@@ -140,6 +140,7 @@
            03  IDY                               PIC 9(04).
            03  IDX0                              PIC 9(04).
            03  IDX1                              PIC 9(04).
+           03  IDX2                              PIC 9(04).
            03  IDX-PNT                           PIC 9(04).
            03  IDX-CMB                           PIC 9(04).
       *
@@ -174,6 +175,10 @@
            03  WRK-CMB-CD                  PIC X(10).
            03  WRK-CMB-ITM-G.
                05  WRK-CMB-ITM             PIC X(200).
+           03  WRK-X01-MAE-G.
+               05  WRK-X01-MAE-CHKKBN      PIC X(01).
+               05  WRK-X01-MAE-SRYCD       PIC X(09).
+               05  WRK-X01-MAE-NAME        PIC X(100).
       *
        01  WRK-HEN-AREA.
            03  WRK-HENYMDG         PIC X(09).
@@ -364,13 +369,17 @@
            WHEN    "X02"
            WHEN    "X04"
            WHEN    "X05"
-               MOVE    SPA-X01-CHKKBN
-                                   TO  WRK-CHKKBN
+               MOVE    SPA-X01-CHKKBN  TO  WRK-CHKKBN
+               MOVE    SPA-X01-MAE-G   TO  WRK-X01-MAE-G
                PERFORM 310-SPASET-SEC
-               MOVE    WRK-CHKKBN  TO  SPA-GMN-CHKKBN
+               MOVE    WRK-CHKKBN      TO  SPA-GMN-CHKKBN
+               MOVE    WRK-X01-MAE-G   TO  SPA-X01-MAE-G
                PERFORM 4105-CHKKBN-CHK-SEC
                MOVE    1           TO  SPA-GMN-PAGE
                MOVE    2           TO  SPA-GMN-CUR 
+               GO      TO      300-SCREEN-EXT
+           WHEN    "X91"
+               PERFORM 493-CLEAR-SEC
                GO      TO      300-SCREEN-EXT
            WHEN    "X98"
       *    ¿ÇÎÅ¹Ô°Ù¥³¡¼¥É½èÍý
@@ -408,7 +417,8 @@
            MOVE    "4"                     TO  SPA-GMN-CHKKBNL    (3)
            MOVE    "ÌôºÞ¤ÈÊ»ÍÑ¶Ø´÷"        TO  SPA-GMN-CHKKBNMEIL (3)
            MOVE    "5"                     TO  SPA-GMN-CHKKBNL    (4)
-           MOVE    "¿ÇÎÅ¹Ô°Ù¤ÎÊ»ÍÑ»»Äê"    TO  SPA-GMN-CHKKBNMEIL (4)
+           MOVE    "¿ÇÎÅ¹Ô°Ù¤ÎÊ»ÍÑ»»Äê¡ÊÆ±·îÆâ¡Ë"
+                                           TO  SPA-GMN-CHKKBNMEIL (4)
            MOVE    "6"                     TO  SPA-GMN-CHKKBNL    (5)
            MOVE    "ÅêÍ¿¶Ø´÷ÌôºÞ¤ÈÉÂÌ¾"    TO  SPA-GMN-CHKKBNMEIL (5)
            MOVE    "7"                     TO  SPA-GMN-CHKKBNL    (6)
@@ -418,6 +428,14 @@
            MOVE    "ÉÂÌ¾¤ÈÌôºÞ"            TO  SPA-GMN-CHKKBNMEIL (7)
            MOVE    "9"                     TO  SPA-GMN-CHKKBNL    (8)
            MOVE    "ÉÂÌ¾¤È¿ÇÎÅ¹Ô°Ù"        TO  SPA-GMN-CHKKBNMEIL (8)
+           MOVE    "A"                     TO  SPA-GMN-CHKKBNL    (9)
+           MOVE    "¿ÇÎÅ¹Ô°Ù¤ÎÊ»ÍÑ»»Äê¡ÊÆ±ÆüÆâ¡Ë"
+                                           TO  SPA-GMN-CHKKBNMEIL (9)
+           MOVE    "B"                     TO  SPA-GMN-CHKKBNL    (10)
+           MOVE    "¿ÇÎÅ¹Ô°Ù¤ÎÊ»ÍÑ»»Äê¡ÊÆ±²ñ·×Æâ¡Ë"
+                                           TO  SPA-GMN-CHKKBNMEIL (10)
+      *
+           MOVE    10                      TO  SPA-GMN-CHKKBN-MAX
       *
            MOVE    1                       TO  SPA-GMN-CUR
       *
@@ -430,6 +448,7 @@
       *****************************************************************
        320-X98SPASET-SEC          SECTION.
       *
+           MOVE    SPACE               TO  SPA-MAE-SRYCD
       *
            IF    ( SPA-X98-SRYCD (1)   NOT =   SPACE  )
       ******** MOVE    SPA-X98-SRYCD       TO  X01-SRYCD
@@ -485,6 +504,8 @@
       *****************************************************************
        200-GMNSENI                           SECTION.
       *
+           MOVE    MCP-WIDGET          TO  WRK-MCP-WIDGET
+      *
            EVALUATE    MCP-EVENT       ALSO      MCP-WIDGET
       *    Ìá¤ë
            WHEN    "CLICKED"       ALSO    "B01"
@@ -492,6 +513,9 @@
       *    ¥¯¥ê¥¢
            WHEN    "CLICKED"       ALSO    "B02"
                PERFORM 493-CLEAR-SEC
+      *    Á°²ó£Ã£Ä
+           WHEN    "CLICKED"       ALSO    "B03"
+               PERFORM 430-ZENKAICD-SEC
       *    ¥ê¥¹¥È
            WHEN    "CLICKED"       ALSO    "B04"
                PERFORM  411-PRINT-SEC
@@ -751,7 +775,7 @@
       *
            IF    (  SPA-GMN-CHKKBN     =   "8" OR  "9" )
       *        ÉÂÌ¾¥³¡¼¥É
-               IF    (  WRK-MCP-WIDGET =   "SRYCD" OR  "NAME" )
+               IF    (  WRK-MCP-WIDGET =   "SRYCD" OR  "NAME" OR "B03" )
                    IF    (  WRK-MCP-WIDGET =   "SRYCD" )
                        PERFORM  4100-BYOMEICD-CHK-SEC
                        IF     ( SPA-ERRCD      NOT =   SPACE )
@@ -759,6 +783,7 @@
                        END-IF
                    END-IF
                    IF    (  WRK-MCP-WIDGET =   "NAME" )
+                    OR   (  WRK-MCP-WIDGET =   "B03" )
                        PERFORM  4100-BYOMEI-CHK-SEC
                        IF     ( SPA-ERRCD      NOT =   SPACE )
                            GO  TO      4102-KIHON-CHK-EXT
@@ -820,12 +845,13 @@
       *
            MOVE    ZERO                TO  FLG-OK
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX     >   9
+                   UNTIL       IDX     >   SPA-GMN-CHKKBN-MAX
                IF      SPA-GMN-CHKKBN      =   SPA-GMN-CHKKBNLIST(IDX)
                                                                 (1:1)
                    MOVE    SPA-GMN-CHKKBNLIST(IDX)
                                            TO  SPA-GMN-CHKKBN-G
-                   MOVE    9               TO  IDX
+                   MOVE    SPA-GMN-CHKKBN-MAX
+                                           TO  IDX
                    MOVE    1               TO  FLG-OK
                END-IF
            END-PERFORM
@@ -842,19 +868,19 @@
       *
            MOVE    SPA-GMN-CHKKBN-G    TO  WRK-CHKKBN-G
       *
-           IF    ( SPA-NAI-CHKKBN    >=   "1" )
-            AND  ( SPA-NAI-CHKKBN    <=   "7" )
-            AND  ( SPA-GMN-CHKKBN    >=   "8" )
-            AND  ( SPA-GMN-CHKKBN    <=   "9" )
+           IF    ( SPA-NAI-CHKKBN      =   "1" OR "2" OR "3" OR "4"
+                                        OR "5" OR "6" OR "7" OR "A"
+                                        OR "B" )
+            AND  ( SPA-GMN-CHKKBN      =   "8" OR "9" )
       *
                PERFORM 493-CLEAR-SEC
-               MOVE    ZERO          TO   SPA-GMN-CUR
+               MOVE    ZERO            TO   SPA-GMN-CUR
            END-IF
       *
-           IF    ( SPA-NAI-CHKKBN    >=   "8" )
-            AND  ( SPA-NAI-CHKKBN    <=   "9" )
-            AND  ( SPA-GMN-CHKKBN    >=   "1" )
-            AND  ( SPA-GMN-CHKKBN    <=   "7" )
+           IF    ( SPA-NAI-CHKKBN      =   "8" OR "9" )
+            AND  ( SPA-GMN-CHKKBN      =   "1" OR "2" OR "3" OR "4"
+                                        OR "5" OR "6" OR "7" OR "A"
+                                        OR "B" )
       *
                PERFORM 493-CLEAR-SEC
                MOVE    ZERO          TO   SPA-GMN-CUR
@@ -958,7 +984,6 @@
                GO      TO      4104-SRYCD-CHK-EXT
            END-IF
       *
-      *
            INITIALIZE                  SPA-GMN-KOUMOKU1
                                        SPA-GMN-TBL
                                        SPA-NAI-KOUMOKU1
@@ -971,6 +996,7 @@
            IF      SPA-GMN-SRYCD       =   SPACE
                GO      TO      4104-SRYCD-CHK-EXT
            END-IF
+      *
       *
       *    ÆþÎÏ¥³¡¼¥É¥Á¥§¥Ã¥¯
            PERFORM 4010-SRYCD-CHK-SEC
@@ -1004,6 +1030,7 @@
       *
            END-PERFORM
       *
+      *
            MOVE    "tbl_tensu"         TO  MCP-TABLE
            MOVE    "key4"              TO  MCP-PATHNAME
            PERFORM 910-DBCLOSECURSOR-SEC
@@ -1020,6 +1047,8 @@
                END-IF
            WHEN    "2"
            WHEN    "5"
+           WHEN    "A"
+           WHEN    "B"
                IF      SPA-GMN-SRYCD (1:1)     =   "6" OR  "7"
                    MOVE    "0008"      TO  SPA-ERRCD
                    MOVE    2           TO  SPA-GMN-CUR
@@ -1038,6 +1067,8 @@
            WHEN    "3"
            WHEN    "4"
            WHEN    "5"
+           WHEN    "A"
+           WHEN    "B"
                PERFORM 41041-SRYCD-CHKMST-SEC
            WHEN    "7"
                PERFORM 41041-SRYCD-CHKTRD-SEC
@@ -1588,8 +1619,6 @@
        411-PRINT-SEC               SECTION.
       *
       *    ²èÌÌ°Ü¹ÔÍÑ¤Î¥Ñ¥é¥á¥¿
-           INITIALIZE                      SPA-X01KYOUTU
-      *
            MOVE    SPA-X01KYOUTU       TO  SPA-WORK
       *
            MOVE    "X91"               TO  SPA-SAKIPG
@@ -1629,6 +1658,8 @@
                        MOVE    "3"         TO  SPA-X98-GMN-SYORI
                WHEN    "2"
                WHEN    "5"
+               WHEN    "A"
+               WHEN    "B"
       *                ¿ÇÎÅ¹Ô°Ù
                        MOVE    "8"         TO  SPA-X98-GMN-SYORI
                END-EVALUATE
@@ -1869,7 +1900,9 @@
       *****************************************************************
        493-CLEAR-SEC                   SECTION.
       *
+           MOVE    SPA-X01-MAE-G   TO  WRK-X01-MAE-G
            PERFORM 310-SPASET-SEC
+           MOVE    WRK-X01-MAE-G   TO  SPA-X01-MAE-G
            MOVE    1               TO  SPA-GMN-PAGE
       *
            .
@@ -2001,6 +2034,10 @@
       *
            END-PERFORM
       *
+           MOVE    SPA-X01-CHKKBN      TO  SPA-X01-MAE-CHKKBN
+           MOVE    SPA-X01-SRYCD       TO  SPA-X01-MAE-SRYCD
+           MOVE    SPA-X01-NAME        TO  SPA-X01-MAE-NAME
+      *
            MOVE    SPA-X01KYOUTU       TO  SPA-WORK
       *
            EVALUATE SPA-X01-CHKKBN
@@ -2028,6 +2065,36 @@
        410-KAKUTEI-EXT.
            EXIT.
       *
+      *****************************************************************
+      *    Á°²ó£Ã£Ä½èÍý
+      *****************************************************************
+       430-ZENKAICD-SEC                SECTION.
+      *
+           IF    ( SPA-X01-MAE-CHKKBN  NOT =   SPACE )
+      *
+               MOVE    SPACE           TO  SPA-NAI-CHKKBN
+                                           SPA-GMN-SRYCD
+                                           SPA-NAI-SRYCD
+                                           SPA-GMN-NAME
+               MOVE    SPA-X01-MAE-CHKKBN
+                                       TO  SPA-GMN-CHKKBN
+      *
+               IF    ( SPA-GMN-CHKKBN  =   "8" OR "9" )
+                   MOVE    SPA-X01-MAE-NAME
+                                       TO  X01-NAME
+                   PERFORM 4100-BYOMEI-CHK-SEC
+                   MOVE    SPACE       TO  SPA-ERRCD
+                   PERFORM 4102-KIHON-CHK-SEC
+               ELSE
+                   MOVE    SPA-X01-MAE-SRYCD
+                                       TO  SPA-GMN-SRYCD
+                   PERFORM 4102-KIHON-CHK-SEC
+               END-IF
+           END-IF
+      *
+           .
+       430-ZENKAICD-EXT.
+           EXIT.
       *****************************************************************
       *    Í½ÌóÉÂÌ¾¥³¡¼¥É¥Á¥§¥Ã¥¯½èÍý
       *****************************************************************
@@ -2155,7 +2222,7 @@
            MOVE    SPA-GMN-CHKKBN-G    TO  X01-CHKKBN 
       *
            PERFORM VARYING IDX FROM    1   BY  1
-                   UNTIL ( IDX >   8 )
+                   UNTIL ( IDX >   SPA-GMN-CHKKBN-MAX )
       *
                MOVE    SPA-GMN-CHKKBNLIST(IDX) TO  X01-CHKKBNLIST (IDX)
                MOVE    IDX                     TO  X01-CHKKBNCOUNT

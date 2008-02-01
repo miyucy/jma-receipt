@@ -28,8 +28,7 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *  03.05.00    NACL-太田    07/06/04  グループ診療対応
-      *****************************************************************
-      *  現在は未使用ＰＧのため、休眠状態に修正(07/06/04)
+      *  04.01.00    NACL-太田    08/01/21  チェックマスタ変更対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -50,9 +49,6 @@
       *
        WORKING-STORAGE             SECTION.
       *
-      *    確認リスト
-           COPY    "HCMSL80.INC".
-      *
       *    ステータス領域
        01  STS-AREA.
            03  STS-RECEERR                 PIC X(02).
@@ -60,20 +56,11 @@
       *    フラグ領域
        01  FLG-AREA.
            03  FLG-END                             PIC 9(01).
-           03  FLG-ERR                             PIC 9(01).
-           03  FLG-CHKMST                          PIC 9(01).
-           03  FLG-CHKSND-KEY2                     PIC 9(01).
-           03  FLG-CHKSND                          PIC 9(01).
-           03  FLG-TENSU                           PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
-           03  CNT-RENNUM                          PIC 9(08).
-           03  CNT-LINE                            PIC 9(08).
-           03  CNT-PAGE                            PIC 9(08).
-           03  CNT-CD                              PIC 9(08).
+           03  CNT-CHKMST                          PIC 9(08).
            03  CNT-OUTPUT                          PIC 9(08).
-           03  CNT-CHKSND                          PIC 9(08).
       *
       *    添字領域
        01  IDX-AREA.
@@ -89,30 +76,10 @@
       *
       *    一時領域
        01  WRK-AREA.
-           03  WRK-ZZZZ9-G.
-               05  WRK-ZZZZ9                       PIC ZZZZ9.
            03  WRK-RECEERR                         PIC X(200).
-           03  WRK-MEMO                            PIC X(500).
-           03  WRK-TNS-SRYCD                       PIC X(09).
-           03  WRK-TNS-YMD                         PIC X(08).
            03  WRK-TITLE                           PIC X(100).
-           03  WRK-CHKKBNMEI                       PIC X(20).
-      *
-       01  MES-AREA.
-           03  MES-MES01.
-               05  PIC X(40)
-                   VALUE   "　旧マスタに登録済みでした    ".
-      *
-       01  CONST-AREA.
-           03  CONST-CHK-MAX                   PIC 9(03)   VALUE 10.
-           03  CONST-LINE-MAX                  PIC 9(05)   VALUE 80.
       *
            COPY    "CPSHELLTBL.INC".
-      *
-       01  WKCHKSND-REC.
-           COPY    "CPCHKSND.INC"          REPLACING  //CHKSND-//
-                                           BY         //WKCHKSND-//.
-      *
       *
            COPY    "COMMON-SPA".
       *
@@ -132,17 +99,6 @@
        01  PRTDATA-REC.
            COPY    "CPPRTDATA.INC".
       *
-      *    点数マスタ−
-      *01  TENSU-REC.
-           COPY    "CPTENSU.INC".
-      *
-      *    チェックマスター
-       01  CHK-REC.
-           COPY    "CPCHK.INC".
-      *
-      *    チェックマスター２
-       01  CHKSND-REC.
-           COPY    "CPCHKSND.INC".
       *
       *****************************************************************
       *    サブプロ用　領域
@@ -193,7 +149,7 @@
       *
            PERFORM 100-INIT-SEC
       *
-grpsys*    PERFORM 200-MAIN-SEC
+           PERFORM 200-MAIN-SEC
       *
            PERFORM 300-END-SEC
       *
@@ -229,6 +185,7 @@ grpsys*    PERFORM 200-MAIN-SEC
                                        WRK-PARA-SHELLID
                                        WRK-PARA-HOSPNUM
                                        RECEERR
+           END-UNSTRING
       *
            MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
       *
@@ -242,15 +199,13 @@ grpsys*    PERFORM 200-MAIN-SEC
            INITIALIZE                      JOBKANRI-REC
            MOVE    WRK-PARA-JOBID      TO  JOB-JOBID
            MOVE    WRK-PARA-SHELLID    TO  JOB-SHELLID
-           MOVE    "ORCBCHKSND2"       TO  JOB-PGID
+           MOVE    "ORCBCHKSND"        TO  JOB-PGID
            MOVE    WRK-TITLE           TO  JOB-SHELLMSG
       *
            MOVE    WRK-PARA-HOSPNUM    TO  JOB-HOSPNUM
            PERFORM 800-ORCSJOB-SEC
       *
            MOVE    ZERO                TO  FLG-END
-      *
-           PERFORM 800-MCNDATE-SEC
       *
            .
        100-INIT-EXT.
@@ -260,266 +215,12 @@ grpsys*    PERFORM 200-MAIN-SEC
       *****************************************************************
        200-MAIN-SEC                SECTION.
       *
-           INITIALIZE              HCMSL80
-           MOVE    ZERO            TO  CNT-LINE
-           MOVE    ZERO            TO  CNT-PAGE
-      *
-           PERFORM 20011-HEAD-HEN-SEC
-      *
-           PERFORM 900-CHKSND-KEY14-SEL-SEC
-      *
-           PERFORM UNTIL ( FLG-CHKSND  NOT =   ZERO )
-                    OR   ( FLG-END     NOT =   ZERO )
-      *
-               PERFORM 900-CHKMST-KEY3-SEL-SEC
-               IF    ( FLG-CHKMST  =   ZERO )
-                   MOVE    CHKSND-SRYCD        TO  WRK-TNS-SRYCD
-                   MOVE    CHKSND-YUKOSTYMD    TO  WRK-TNS-YMD
-                   PERFORM 2200-SRYNAME-HEN-SEC
-                   MOVE    WRK-MEMO        TO  HCMSL80-MOJI (CNT-LINE)
-                   PERFORM 250-LINE-CNT-SEC
-                   MOVE    MES-MES01       TO  HCMSL80-MOJI (CNT-LINE)
-                   PERFORM 250-LINE-CNT-SEC
-               ELSE
-                   PERFORM 2001-CHKMST-HEN-SEC
-                   IF    ( FLG-END     NOT =   ZERO )
-                       GO  TO  200-MAIN-EXT
-                   END-IF
-               END-IF
-      *
-               PERFORM 900-CHKSND-KEY14-FET-SEC
-      *
-           END-PERFORM
-      *
-           IF    ( CNT-LINE        >   2 )
-               PERFORM 250-PRINT-SEC
-           END-IF
-      *
            MOVE    1                   TO  FLG-END
       *
            .
        200-MAIN-EXT.
            EXIT.
       *
-      *****************************************************************
-      *    チェックマスタ編集処理
-      *****************************************************************
-       2001-CHKMST-HEN-SEC             SECTION.
-      *
-           MOVE    ZERO            TO  CNT-RENNUM
-           MOVE    ZERO            TO  CNT-CD
-           INITIALIZE                  CHK-REC
-      *
-           MOVE    CHKSND-REC      TO  WKCHKSND-REC
-      *
-           PERFORM 900-CHKSND-KEY2-SEL-SEC
-      *
-           PERFORM UNTIL ( FLG-CHKSND-KEY2 NOT =   ZERO )
-                    OR   ( FLG-END         NOT =   ZERO )
-      *
-               COMPUTE CNT-CD      =   CNT-CD  +   1
-      *
-               MOVE    CHKSND-KEY  TO  CHK-KEY
-                                       CHKUP-KEY
-      *
-               MOVE    CHKSND-CD (1:7) TO  CHK-CD (CNT-CD)
-      *
-               IF    ( CNT-CD     >=   CONST-CHK-MAX )
-                   PERFORM 2001-CHKMST-INS-SEC
-                   IF    ( FLG-END     NOT =   ZERO )
-                       GO  TO  2001-CHKMST-HEN-EXT
-                   END-IF
-      *
-                   MOVE    ZERO        TO  CNT-CD
-                   INITIALIZE          CHK-REC
-      *
-               END-IF
-      *
-               PERFORM 900-CHKSND-KEY2-FET-SEC
-      *
-           END-PERFORM
-      *
-           MOVE    "tbl_chksnd"            TO  MCP-TABLE
-           MOVE    "key2"                  TO  MCP-PATHNAME
-           PERFORM 910-DBCLOSECURSOR-SEC
-      *
-           IF    ( CNT-CD     >    ZERO )
-               PERFORM 2001-CHKMST-INS-SEC
-               IF    ( FLG-END     NOT =   ZERO )
-                   GO  TO  2001-CHKMST-HEN-EXT
-               END-IF
-           END-IF
-      *
-           MOVE    WKCHKSND-REC    TO  CHKSND-REC
-      *
-           INITIALIZE                  CHK-REC
-           MOVE    CHKSND-KEY      TO  CHK-KEY
-                                       CHKUP-KEY
-           COMPUTE CHK-TEKCDNUM
-               = ( CNT-RENNUM  -   1 )
-               *   CONST-CHK-MAX
-               +   CNT-CD
-      *
-           MOVE    WRK-PARA-HOSPNUM    TO  CHKUP-HOSPNUM
-           MOVE    CHK-REC             TO  MCPDATA-REC
-           MOVE    "tbl_chk"           TO  MCP-TABLE
-           MOVE    "upd2"              TO  MCP-PATHNAME
-           PERFORM 910-DBUPDATE-SEC
-           IF    ( MCP-RC      NOT =   ZERO )
-               MOVE    "チェックマスタの更新に失敗しました"
-                                   TO  WRK-RECEERR
-               PERFORM 500-ERR-HENSYU-SEC
-           END-IF
-      *
-           .
-       2001-CHKMST-HEN-EXT.
-           EXIT.
-      *****************************************************************
-      *    チェックマスタ追加処理
-      *****************************************************************
-       2001-CHKMST-INS-SEC             SECTION.
-      *
-           COMPUTE CNT-RENNUM  =   CNT-RENNUM  +   1
-      *
-           MOVE    CNT-RENNUM      TO  CHK-RENNUM
-      *
-           PERFORM 800-MCNDATE-SEC
-           MOVE    SMCNDATE-YMD    TO  CHK-CREYMD
-                                       CHK-UPYMD
-           MOVE    SMCNDATE-HMS    TO  CHK-UPHMS
-      *
-           MOVE    WRK-PARA-HOSPNUM TO CHK-HOSPNUM
-           MOVE    CHK-REC         TO  MCPDATA-REC
-           MOVE    "tbl_chk"           TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           PERFORM 910-DBINSERT-SEC
-           IF    ( MCP-RC      NOT =   ZERO )
-               MOVE    "チェックマスタの追加に失敗しました"
-                                   TO  WRK-RECEERR
-               PERFORM 500-ERR-HENSYU-SEC
-           END-IF
-      *
-           .
-       2001-CHKMST-INS-EXT.
-           EXIT.
-      *****************************************************************
-      *    ヘッダ情報編集処理
-      *****************************************************************
-       20011-HEAD-HEN-SEC              SECTION.
-      *
-           COMPUTE CNT-PAGE    =   CNT-PAGE    +   1
-      *
-           MOVE    CNT-PAGE        TO  WRK-ZZZZ9
-      *
-           INITIALIZE                  HCMSL80
-      *
-           STRING
-               "＊＊＊＊　適用病名情報更新確認リスト（新→旧）　＊＊＊"
-                                                   DELIMITED   BY  SIZE
-               "（作成日："                        DELIMITED   BY  SIZE
-               LNK-PRTKANRI-SKYYMD(1:4)            DELIMITED   BY  SIZE
-               "."                                 DELIMITED   BY  SIZE
-               LNK-PRTKANRI-SKYYMD(5:2)            DELIMITED   BY  SIZE
-               "."                                 DELIMITED   BY  SIZE
-               LNK-PRTKANRI-SKYYMD(7:2)            DELIMITED   BY  SIZE
-               "）"                                DELIMITED   BY  SIZE
-               "PAGE "                             DELIMITED   BY  SIZE
-               WRK-ZZZZ9-G                         DELIMITED   BY  SIZE
-           INTO    HCMSL80-MOJI (1)
-           END-STRING
-      *
-           MOVE    2               TO  CNT-LINE
-      *
-           .
-       20011-HEAD-HEN-EXT.
-           EXIT.
-      *****************************************************************
-      *    診療行為名称編集処理
-      *****************************************************************
-       2200-SRYNAME-HEN-SEC            SECTION.
-      *
-           MOVE    SPACE           TO  WRK-CHKKBNMEI
-           IF    ( CHKSND-CHKKBN   =   "1" )
-               MOVE    "薬剤と病名："
-                                   TO  WRK-CHKKBNMEI
-           ELSE
-               MOVE    "診療行為と病名："
-                                   TO  WRK-CHKKBNMEI
-           END-IF
-      *
-           INITIALIZE                  WRK-MEMO
-      *
-           PERFORM 900-TENSU-KEY-SEL-SEC
-      *
-           STRING  WRK-CHKKBNMEI       DELIMITED   BY  SPACE
-                   CHKSND-SRYCD        DELIMITED   BY  SIZE
-                   " "                 DELIMITED   BY  SIZE
-                   TNS-NAME            DELIMITED   BY  SPACE
-                   " "                 DELIMITED   BY  SIZE
-                   CHKSND-YUKOSTYMD    DELIMITED   BY  SIZE
-                   "-"                 DELIMITED   BY  SIZE
-                   CHKSND-YUKOEDYMD    DELIMITED   BY  SIZE
-           INTO    WRK-MEMO
-           END-STRING
-      *
-           .
-       2200-SRYNAME-HEN-EXT.
-           EXIT.
-      *****************************************************************
-      *    行カウント処理
-      *****************************************************************
-       250-LINE-CNT-SEC                SECTION.
-      *
-           IF    ( CNT-LINE       >=   CONST-LINE-MAX )
-               PERFORM 250-PRINT-SEC
-               PERFORM 20011-HEAD-HEN-SEC
-           ELSE
-               COMPUTE CNT-LINE    =   CNT-LINE    +   1
-           END-IF
-      *
-           .
-       250-LINE-CNT-EXT.
-           EXIT.
-      *****************************************************************
-      *    印刷処理
-      *****************************************************************
-       250-PRINT-SEC                   SECTION.
-      *
-           INITIALIZE                  ORCSPRTAREA
-           MOVE    "INS"               TO  SPRT-MODE
-           MOVE    LNK-PRTKANRI-RENNUM TO  SPRT-RENNUM
-           MOVE    LNK-PRTKANRI-TBL-KEY
-                                       TO  SPRT-TBL-KEY
-           MOVE    LNK-PRTKANRI-TBL-GROUP
-                                       TO  SPRT-TBL-GROUP
-           MOVE    LNK-PRTKANRI-SRYYM  TO  SPRT-SRYYM
-           MOVE    LNK-PRTKANRI-SKYYMD TO  SPRT-SKYYMD
-           MOVE    LNK-PRTKANRI-SHELLID 
-                                       TO  SPRT-SHELLID
-           MOVE    LNK-PRTKANRI-SHORI-RENNUM
-                                       TO  SPRT-SHORI-RENNUM
-           MOVE    LNK-PRTKANRI-PRIORITY
-                                       TO  SPRT-PRIORITY
-           MOVE   "HCMSL80.red"        TO  SPRT-PRTID
-           MOVE    "適用病名情報更新確認リスト（新→旧）"
-                                       TO  SPRT-TITLE
-           MOVE    HCMSL80             TO  SPRT-PRTDATA
-           MOVE    LNK-PRTKANRI-TERMID TO  SPRT-TERMID
-           MOVE    LNK-PRTKANRI-OPID   TO  SPRT-OPID
-           MOVE    LNK-PRTKANRI-PRTNM  TO  SPRT-PRTNM
-           MOVE    "1"                 TO  SPRT-SITEKBN
-           CALL    "ORCSPRT"           USING
-                                       ORCSPRTAREA
-                                       SPA-AREA
-           IF    ( SPRT-RETURN         =   ZERO )
-               COMPUTE CNT-OUTPUT  =   CNT-OUTPUT  +   1
-           ELSE
-               DISPLAY "ORCSPRT ERR!!"
-           END-IF
-      *
-           .
-       250-PRINT-EXT.
-           EXIT.
       *****************************************************************
       *    エラー出力処理
       *****************************************************************
@@ -558,20 +259,12 @@ grpsys*    PERFORM 200-MAIN-SEC
       *****************************************************************
        300-END-SEC                 SECTION.
       *
-           IF    ( CNT-CHKSND      =   ZERO )
-               MOVE    "処理対象のデータがありませんでした"
+           MOVE    "この処理はご利用いただけません。"
                                    TO  WRK-RECEERR
-               PERFORM 500-ERR-HENSYU-SEC
-           ELSE
-               IF    ( CNT-OUTPUT  >   ZERO )
-                   MOVE    "確認リストを確認してください"
-                                   TO  WRK-RECEERR
-                   PERFORM 500-ERR-HENSYU-SEC
-               END-IF
-           END-IF
+           PERFORM 500-ERR-HENSYU-SEC
       *
-           DISPLAY "*** ORCBCHKSND2 IN " CNT-CHKSND  " ***"
-           DISPLAY "*** ORCBCHKSND2 END ***"
+           DISPLAY "*** BCHKSND01 IN " CNT-CHKMST  " ***"
+           DISPLAY "*** BCHKSND01 END ***"
       *     
       *    ステップ管理終了処理
            MOVE    "STE"           TO  SJOBKANRI-MODE
@@ -590,17 +283,6 @@ grpsys*    PERFORM 200-MAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    マシン日付取得サブ
-      *****************************************************************
-       800-MCNDATE-SEC         SECTION.
-      *
-           CALL    "ORCSMCNDATE"   USING   ORCSMCNDATEAREA
-      *
-           .
-      *
-       800-MCNDATE-EXT.
-           EXIT.
-      *****************************************************************
       *    ジョブ管理サブ
       *****************************************************************
        800-ORCSJOB-SEC                 SECTION.
@@ -614,156 +296,6 @@ grpsys*    PERFORM 200-MAIN-SEC
            .
       *
        800-ORCSJOB-EXT.
-           EXIT.
-      *****************************************************************
-      *    チェックマスタ２情報検索(KEY2)
-      *****************************************************************
-       900-CHKSND-KEY2-SEL-SEC         SECTION.
-      *
-           MOVE    ZERO            TO  FLG-CHKSND-KEY2
-      *
-           MOVE    WRK-PARA-HOSPNUM    TO  CHKSND-HOSPNUM
-           MOVE    CHKSND-REC          TO  MCPDATA-REC
-           MOVE    "tbl_chksnd"            TO  MCP-TABLE
-           MOVE    "key2"                  TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
-           IF    ( MCP-RC          =   ZERO )
-               MOVE    MCPDATA-REC TO  CHKSND-REC
-           ELSE
-               MOVE    1           TO  FLG-CHKSND-KEY2
-           END-IF
-      *
-           .
-       900-CHK-KEY2-SEL-EXT.
-           EXIT.
-      *****************************************************************
-      *    チェックマスタ情報ＦＥＴＣＨ処理(KEY2)
-      *****************************************************************
-       900-CHKSND-KEY2-FET-SEC         SECTION.
-      *
-           MOVE    "tbl_chksnd"            TO  MCP-TABLE
-           MOVE    "key2"                  TO  MCP-PATHNAME
-           PERFORM 910-DBFETCH-SEC
-           IF    ( MCP-RC          =   ZERO )
-               MOVE    MCPDATA-REC TO  CHKSND-REC
-           ELSE
-               MOVE    1           TO  FLG-CHKSND-KEY2
-           END-IF
-      *
-           .
-       900-CHKSND-KEY2-FET-EXT.
-           EXIT.
-      *****************************************************************
-      *    チェックマスタ２情報検索(KEY14)
-      *****************************************************************
-       900-CHKSND-KEY14-SEL-SEC           SECTION.
-      *
-           MOVE    ZERO                TO  FLG-CHKSND
-      *
-           INITIALIZE                  CHKSND-REC
-           MOVE    WRK-PARA-HOSPNUM    TO  CHKSND-HOSPNUM
-           MOVE    CHKSND-REC          TO  MCPDATA-REC
-           MOVE    "tbl_chksnd"        TO  MCP-TABLE
-           MOVE    "key14"             TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
-           IF    ( MCP-RC          =   ZERO )
-               MOVE    MCPDATA-REC TO  CHKSND-REC
-           ELSE
-               INITIALIZE              CHKSND-REC
-               MOVE    1           TO  FLG-CHKSND
-           END-IF
-      *
-           IF    ( FLG-CHKSND      =   ZERO )
-               COMPUTE CNT-CHKSND  =   CNT-CHKSND  +   1
-           END-IF
-      *
-           .
-       900-CHKSND-KEY14-SEL-EXT.
-           EXIT.
-      *****************************************************************
-      *    チェックマスタ２情報ＦＥＴＣＨ処理(KEY14)
-      *****************************************************************
-       900-CHKSND-KEY14-FET-SEC           SECTION.
-      *
-           MOVE    "tbl_chksnd"        TO  MCP-TABLE
-           MOVE    "key14"             TO  MCP-PATHNAME
-           PERFORM 910-DBFETCH-SEC
-           IF    ( MCP-RC          =   ZERO )
-               MOVE    MCPDATA-REC TO  CHKSND-REC
-           ELSE
-               INITIALIZE              CHKSND-REC
-               MOVE    1           TO  FLG-CHKSND
-           END-IF
-      *
-           IF    ( FLG-CHKSND      =   ZERO )
-               COMPUTE CNT-CHKSND  =   CNT-CHKSND  +   1
-           END-IF
-      *
-           .
-       900-CHKSND-KEY14-FET-EXT.
-           EXIT.
-      *****************************************************************
-      *    チェックマスタ情報検索(KEY3)
-      *****************************************************************
-       900-CHKMST-KEY3-SEL-SEC         SECTION.
-      *
-           MOVE    ZERO                TO  FLG-CHKMST
-      *
-           INITIALIZE                      CHK-REC
-           MOVE    CHKSND-CHKKBN       TO  CHK-CHKKBN
-           MOVE    CHKSND-SRYCD        TO  CHK-SRYCD
-           MOVE    CHKSND-YUKOEDYMD    TO  CHK-YUKOSTYMD
-           MOVE    CHKSND-YUKOSTYMD    TO  CHK-YUKOEDYMD
-           MOVE    CHKSND-CDKBN        TO  CHK-CDKBN
-      *
-           MOVE    WRK-PARA-HOSPNUM    TO  CHK-HOSPNUM
-           MOVE    CHK-REC             TO  MCPDATA-REC
-           MOVE    "tbl_chk"           TO  MCP-TABLE
-           MOVE    "key3"              TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
-           IF    ( MCP-RC          =   ZERO )
-               MOVE    MCPDATA-REC     TO  CHK-REC
-           ELSE
-               INITIALIZE                  CHK-REC
-               MOVE    1               TO  FLG-CHKMST
-           END-IF
-      *
-           MOVE    "tbl_chk"           TO  MCP-TABLE
-           MOVE    "key3"              TO  MCP-PATHNAME
-           PERFORM 910-DBCLOSECURSOR-SEC
-      *
-           .
-       900-CHKMST-KEY3-SEL-EXT.
-           EXIT.
-      *****************************************************************
-      *    点数マスタ検索処理(KEY)
-      *****************************************************************
-       900-TENSU-KEY-SEL-SEC           SECTION.
-      *
-           MOVE    ZERO            TO  FLG-TENSU
-      *
-           INITIALIZE                  TNS-TENSU-REC
-           MOVE    WRK-TNS-SRYCD   TO  TNS-SRYCD
-           MOVE    WRK-TNS-YMD     TO  TNS-YUKOSTYMD
-                                       TNS-YUKOEDYMD
-           MOVE    WRK-PARA-HOSPNUM TO TNS-HOSPNUM
-           MOVE    TNS-TENSU-REC   TO  MCPDATA-REC
-           MOVE    "tbl_tensu"     TO  MCP-TABLE
-           MOVE    "key"           TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
-           IF    ( MCP-RC          =   ZERO )
-               MOVE    MCPDATA-REC TO  TNS-TENSU-REC
-           ELSE
-               MOVE    1           TO  FLG-TENSU
-               INITIALIZE              TNS-TENSU-REC
-           END-IF
-      *
-           MOVE    "tbl_tensu"     TO  MCP-TABLE
-           MOVE    "key"           TO  MCP-PATHNAME
-           PERFORM 910-DBCLOSECURSOR-SEC
-      *
-           .
-       900-TENSU-KEY-SEL-EXT.
            EXIT.
       *****************************************************************
       *    テーブル検索処理
@@ -811,11 +343,11 @@ grpsys*    PERFORM 200-MAIN-SEC
        910-DBCLOSECURSOR-EXT.
            EXIT.
       *****************************************************************
-      *    ＤＢＵＰＤＡＴＥ処理
+      *    ＤＢＤＥＬＥＴＥ処理
       *****************************************************************
-       910-DBUPDATE-SEC                 SECTION.
+       910-DBDELETE-SEC                 SECTION.
       *
-           MOVE    "DBUPDATE"          TO  MCP-FUNC
+           MOVE    "DBDELETE"          TO  MCP-FUNC
            CALL    "ORCDBMAIN"         USING
                                        MCPAREA
                                        MCPDATA-REC
@@ -823,7 +355,7 @@ grpsys*    PERFORM 200-MAIN-SEC
       *
            .
       *
-       910-DBUPDATE-EXT.
+       910-DBDELETE-EXT.
            EXIT.
       *****************************************************************
       *    ＤＢＩＮＳＥＲＴ処理

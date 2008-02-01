@@ -78,8 +78,10 @@
                        09  SPA-GMN-CHKSRYSNT       PIC X(01).
                        09  SPA-GMN-CHKBYOYKZ       PIC X(01).
                        09  SPA-GMN-CHKBYOSRY       PIC X(01).
+                       09  SPA-GMN-CHKSRYHEIA      PIC X(01).
+                       09  SPA-GMN-CHKSRYHEIB      PIC X(01).
                    07  SPA-GMN-CHK-R   REDEFINES   SPA-GMN-CHK-VAL.
-                       09  SPA-GMN-CHKKBN      PIC X(01)   OCCURS  8.
+                       09  SPA-GMN-CHKKBN      PIC X(01)   OCCURS  10.
       *----(03.04.01)--UPD-END-----
                    07  SPA-GMN-CHKSRYRANGE     PIC X(01).
                    07  SPA-GMN-STSRYCD         PIC X(09).
@@ -212,7 +214,7 @@
       *
        01  WRK-CONS-AREA.
       *----(03.04.01)--UPD-START---
-           03  WRK-CONS-CHKKBN-MAX     PIC 9(02)   VALUE   8.
+           03  WRK-CONS-CHKKBN-MAX     PIC 9(02)   VALUE   10.
            03  WRK-CONS-CHKKBN-VAL.
                05                      PIC X(01)   VALUE   "1".
                05                      PIC X(01)   VALUE   "2".
@@ -222,8 +224,10 @@
                05                      PIC X(01)   VALUE   "7".
                05                      PIC X(01)   VALUE   "8".
                05                      PIC X(01)   VALUE   "9".
+               05                      PIC X(01)   VALUE   "A".
+               05                      PIC X(01)   VALUE   "B".
            03  WRK-CONS-CHKKBN-R       REDEFINES   WRK-CONS-CHKKBN-VAL.
-               05  WRK-CONS-CHKKBN     PIC X(01)   OCCURS  8.
+               05  WRK-CONS-CHKKBN     PIC X(01)   OCCURS  10.
       *----(03.04.01)--UPD-END-----
       *    ¥·¥¹¥Æ¥à´ÉÍý£Ä£Â¡Ê£³£°£°£³¡Ë¤Î¥­¡¼ÃÍ  
            03  WRK-CONS-3003-KBNCD     PIC X(08)   VALUE   "103".
@@ -428,7 +432,7 @@
       *
       *        ¸µ¤Î²èÌÌ¤ØÌá¤¹
                IF    (  SPA-MOTOPG     =   "XA01" OR "XB01" OR "XC01" )
-                   MOVE    LNK-COMMON      TO  SPA-KYOTUKEY
+                   MOVE    LNK-COMMON      TO  SPA-KYOUTU
                    MOVE    LNK-SCRSPA      TO  SPA-X91
                    MOVE    SPA-WORK        TO  SPA-X01KYOUTU
                    GO  TO  300-SCREEN-EXT
@@ -787,7 +791,18 @@
                MOVE    X91-CHKBYOSRY      TO  SPA-GMN-CHKBYOSRY
                PERFORM 4101-GMN-SPA-SET-SEC
                PERFORM 41011-CHKMST-CHK-SEC
+      *
       *----(03.04.01)--ADD-END-----
+      *    ¿ÇÎÅ¹Ô°Ù¤ÎÊ»ÍÑ»»Äê¡ÊÆ±Æü¡Ë
+           WHEN    "CLICKED"       ALSO    "CHKSRYHEIA"
+               MOVE    X91-CHKSRYHEIA     TO  SPA-GMN-CHKSRYHEIA
+               PERFORM 4101-GMN-SPA-SET-SEC
+               PERFORM 41011-CHKMST-CHK-SEC
+      *    ¿ÇÎÅ¹Ô°Ù¤ÎÊ»ÍÑ»»Äê¡ÊÆ±Æü¡Ë
+           WHEN    "CLICKED"       ALSO    "CHKSRYHEIB"
+               MOVE    X91-CHKSRYHEIB     TO  SPA-GMN-CHKSRYHEIB
+               PERFORM 4101-GMN-SPA-SET-SEC
+               PERFORM 41011-CHKMST-CHK-SEC
       *
       *    ¿ÇÎÅ¹Ô°ÙÈÏ°Ï»ØÄê¥Á¥§¥Ã¥¯¥Ü¥¿¥ó
            WHEN    "CLICKED"       ALSO    "CHKSRYRANGE"
@@ -1183,6 +1198,8 @@
             AND  ( SPA-GMN-CHKBYOYKZ   =   "F")
             AND  ( SPA-GMN-CHKBYOSRY   =   "F")
       *----(03.04.01)--ADD-END-----
+            AND  ( SPA-GMN-CHKSRYHEIA  =   "F")
+            AND  ( SPA-GMN-CHKSRYHEIB  =   "F")
             AND  ( SPA-GMN-CHKMOREYKZBYO   =   "F")
             AND  ( SPA-GMN-CHKMOREKENSA    =   "F")
             AND  ( SPA-GMN-CHKMOREBUI      =   "F")
@@ -1370,11 +1387,6 @@
       * 
            MOVE    "X01"               TO  SPA-SAKIPG
            MOVE    "X91"               TO  SPA-MOTOPG
-      *
-           MOVE    SPACE               TO  LINKAREA
-      *
-           INITIALIZE                  SPA-KYOTUKEY
-           MOVE    SPA-KYOUTU          TO  LNK-KYOUTU
       *
            MOVE    SPA-SAKIPG          TO  MCP-WINDOW
       *
@@ -1768,6 +1780,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            ADD     1               TO  WRK-PRTKANRI-RENNUM
            MOVE    WRK-PRTKANRI-RENNUM
                                    TO  LNK-PRTKANRI-RENNUM
+           MOVE    1               TO  LNK-PRTKANRI-SHORI-RENNUM
            MOVE    WRK-CONS-PRTKANRI-TBL-KEY
                                    TO  LNK-PRTKANRI-TBL-KEY 
            MOVE    WRK-CONS-PRTKANRI-TBL-GROUP
@@ -2241,6 +2254,8 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPA-GMN-CHKBYOYKZ   TO  X91-CHKBYOYKZ
            MOVE    SPA-GMN-CHKBYOSRY   TO  X91-CHKBYOSRY
       *----(03.04.01)--ADD-END-----
+           MOVE    SPA-GMN-CHKSRYHEIA  TO  X91-CHKSRYHEIA
+           MOVE    SPA-GMN-CHKSRYHEIB  TO  X91-CHKSRYHEIB
            MOVE    SPA-GMN-CHKSRYRANGE TO  X91-CHKSRYRANGE
            MOVE    SPA-GMN-STSRYCD     TO  X91-STSRYCD
            MOVE    SPA-GMN-STSRYNAME   TO  X91-STSRYNAME
@@ -2351,6 +2366,10 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    "CHKMOREBUI"    TO  MCP-WIDGET
            WHEN    19
                MOVE    "MORESORT"      TO  MCP-WIDGET
+           WHEN    20
+               MOVE    "CHKSRYHEIA"    TO  MCP-WIDGET
+           WHEN    21
+               MOVE    "CHKSRYHEIB"    TO  MCP-WIDGET
            WHEN    212
                MOVE    "B12"           TO  MCP-WIDGET
            END-EVALUATE
@@ -2377,6 +2396,10 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            WHEN    "CHKYKZKNKBYO"
                MOVE    12              TO  SPA-GMN-CUR
            WHEN    "CHKSRYSNT"
+               MOVE    20              TO  SPA-GMN-CUR
+           WHEN    "CHKSRYHEIA"
+               MOVE    21              TO  SPA-GMN-CUR
+           WHEN    "CHKSRYHEIB"
                MOVE    05              TO  SPA-GMN-CUR
            WHEN    "CHKSRYRANGE"
                MOVE    06              TO  SPA-GMN-CUR

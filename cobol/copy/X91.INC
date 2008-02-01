@@ -29,6 +29,10 @@
                 04  X91-VALUE   PIC X.
               03  X91-CHKSRYSNT.
                 04  X91-VALUE   PIC X.
+              03  X91-CHKSRYHEIA.
+                04  X91-VALUE   PIC X.
+              03  X91-CHKSRYHEIB.
+                04  X91-VALUE   PIC X.
               03  X91-CHKSRYRANGE.
                 04  X91-VALUE   PIC X.
               03  X91-STSRYCD-G.
