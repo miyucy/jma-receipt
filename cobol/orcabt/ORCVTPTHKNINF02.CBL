@@ -713,6 +713,7 @@
                IF      (IDX-C                      =   IDX  )  OR
                        (TBL-PTHKN-HKNNUM (IDX-C)   =   "980" ) OR
                        (TBL-PTHKN-CONTKBN (IDX-C)  NOT =   SPACE )
+                   OR  (TBL-PTHKN-HKNNUM (IDX-C)   =   SPACE )
                    CONTINUE
                ELSE
                    IF     (WRK-HEN-TEKEDYMD    <   TBL-PTHKN-TEKSTYMD
