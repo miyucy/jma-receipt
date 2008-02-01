@@ -994,18 +994,21 @@
       *****************************************************************
        4102-RRKKBN-CHK-SEC             SECTION.
       *
-           IF    ( SPA-GMN-I03-RRKKBN-CD   =   "1" )
+           EVALUATE    SPA-GMN-I03-RRKKBN-CD
+           WHEN    "1"
                MOVE    SPA-GMN-I03-RRKKBN-ITM (2)
                                    TO  SPA-GMN-I03-RRKKBN
-      *        MOVE    SPA-GMN-I03-NYUINCHUKBN-ITM (1)
-      *                            TO  SPA-GMN-I03-NYUINCHUKBN
                MOVE    SPACE       TO  SPA-GMN-I03-NYUINCHUKBN
-           ELSE
+           WHEN    "3"
                MOVE    SPA-GMN-I03-RRKKBN-ITM (1)
                                    TO  SPA-GMN-I03-RRKKBN
                MOVE    SPA-GMN-I03-NYUINCHUKBN-ITM (1)
                                    TO  SPA-GMN-I03-NYUINCHUKBN
-           END-IF
+           WHEN    OTHER
+               MOVE    SPA-GMN-I03-RRKKBN-ITM (3)
+                                   TO  SPA-GMN-I03-RRKKBN
+               MOVE    SPACE       TO  SPA-GMN-I03-NYUINCHUKBN
+           END-EVALUATE
       *
            .
       *
