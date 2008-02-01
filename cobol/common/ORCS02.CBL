@@ -1268,6 +1268,12 @@
                        MOVE    "2"      TO       WK-HKNKBN
            END-IF.
       *
+      *    Æ±ÆüºÆÆþ±¡·×»»¼±ÊÌÍÑ
+           IF   (LNK-S02-DOJITUFLG-ST   =  "1"                )
+           AND  (LNK-S02-SKYSTYMD(1:6)  =  LNK-SYU-SRYYMD(1:6))
+                MOVE    "1"     TO      LNK-SYU-SAIKEISANKBN
+           END-IF.
+      *
       *    ´µ¼ÔÉéÃ´³Û¤Î»»Äê
            PERFORM       200-HKNFTN-SANTEI-SEC.
       *
@@ -6957,9 +6963,7 @@
                             OR ((LNK-SYU-SKYSTYMD = SYU-SKYSTYMD) AND
                                 (LNK-SYU-SKYEDYMD = SYU-SKYEDYMD) AND
                                 (SYU-SAIKEISANKBN = SPACE       ) AND
-                                (LNK-S02-DOJITUFLG-ST  =  "1"   ) AND
-                                (LNK-S02-SKYSTYMD(1:6) =
-                                             LNK-SYU-SRYYMD(1:6)))
+                                (LNK-SYU-SAIKEISANKBN  =  "1"   ))
                                IF   SYU-DAYINFFLG  =  "1"
                                   PERFORM     SYUDAY-READ-SEC
                                ELSE
@@ -7009,9 +7013,7 @@
                         OR ((LNK-SYU-SKYSTYMD = SYU-SKYSTYMD) AND
                             (LNK-SYU-SKYEDYMD = SYU-SKYEDYMD) AND
                             (SYU-SAIKEISANKBN = SPACE       ) AND
-                            (LNK-S02-DOJITUFLG-ST  =  "1"   ) AND
-                            (LNK-S02-SKYSTYMD(1:6) =
-                                         LNK-SYU-SRYYMD(1:6)))
+                            (LNK-SYU-SAIKEISANKBN  =  "1"   ))
                                IF   SYU-DAYINFFLG  =  "1"
                                   PERFORM     SYUDAY-READ-SEC
                                ELSE
@@ -11876,7 +11878,6 @@
       *
            IF   LNK-S02-SKYSTYMD(1:6) = LNK-SYU-SRYYMD(1:6)
              IF   LNK-S02-DOJITUFLG-ST  =  "1"
-                MOVE       "1"    TO  LNK-SYU-SAIKEISANKBN
                 MOVE      LNK-SYU-SKYSTYMD(7:2)  TO   IDX-ST
                 EVALUATE  LNK-S02-TIMEKBN-ST
                   WHEN     "0"
