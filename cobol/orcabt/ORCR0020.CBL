@@ -169,6 +169,9 @@
       *  03.05.04    NACL-門脇    07/08/01  月途中の所得情報変更対応
       *  03.05.05    NACL-藤原    07/09/04  宮崎県「公費９０」対応
       *                                     ２００７年９月以降のみ対象 
+      *
+      *  04.01.01    NACL-藤原    07/01/21  月途中の負担者番号変更対応
+      *                                     （生保の公費単独のみ） 
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -327,6 +330,7 @@
            03  FLG-ROUJINHOKEN                         PIC 9(01).
            03  FLG-GENBUTU70                           PIC 9(01).
            03  FLG-TAISYO                              PIC 9(01).
+           03  FLG-SEIHO                               PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -342,6 +346,12 @@
                05  KEY-N-HKNCOMBI                      PIC 9(04).
            03  KEY-OLD.
                05  KEY-O-HKNCOMBI                      PIC 9(04).
+      *
+       01  KEY-AREA1                           VALUE   LOW-VALUE.
+           03  KEY-NEW1.
+               05  KEY-N-PTID                          PIC 9(10).
+           03  KEY-OLD1.
+               05  KEY-O-PTID                          PIC 9(10).
       *
       *    添字領域
        01  IDX-AREA.
@@ -817,6 +827,7 @@ grpsys         MOVE    WRK-PARA-HOSPNUM    TO  RECE01PARA-HOSPNUM
        200-HENSYU-SEC                SECTION.
       *
            MOVE    ZERO                TO  FLG-RECE01
+           MOVE    LOW-VALUE           TO  KEY-AREA1
       *
            OPEN    OUTPUT              RECE022-FILE
            CLOSE                       RECE022-FILE
@@ -850,35 +861,44 @@ grpsys         MOVE    WRK-PARA-HOSPNUM    TO  RECE01PARA-HOSPNUM
            PERFORM                     UNTIL   FLG-RECE01  =   1
                                        OR      FLG-END     =   1
       *
-      *        保険履歴情報編集処理
-               IF      IDZ             =   1               
-                   PERFORM 230-RECE09-HENSYU-SEC
-               END-IF
+               MOVE    ZERO            TO  FLG-SEIHO 
+      *
+               MOVE    KEY-N-PTID      TO  KEY-O-PTID
+               PERFORM         UNTIL   FLG-RECE01      =   1
+                               OR      FLG-END         =   1 
+                               OR      KEY-N-PTID  NOT =   KEY-O-PTID
+      *            保険履歴情報編集処理
+                   IF      IDZ             =   1               
+                       PERFORM 230-RECE09-HENSYU-SEC
+                   END-IF
       *            
-      *        編集処理
-      *        処理区分（社保・国保）により読み飛ばす
-               EVALUATE    WRK-PARA-RECEKBN
-                   WHEN    "0"
-                       PERFORM 210-HENSYU-SEC
-                   WHEN    "1"
-                       IF      RECE01-HKNNUM   NOT =   "060" AND "067"
+      *            編集処理
+      *            処理区分（社保・国保）により読み飛ばす
+                   EVALUATE    WRK-PARA-RECEKBN
+                       WHEN    "0"
+                           PERFORM 210-HENSYU-SEC
+                       WHEN    "1"
+                           IF      RECE01-HKNNUM   NOT =
+                                                       "060" AND "067"
                                                    AND "068" AND "069"    
-                           PERFORM 210-HENSYU-SEC
-                       END-IF
-                   WHEN    "2"
-                       IF      RECE01-HKNNUM       =   "060" OR  "067"
+                               PERFORM 210-HENSYU-SEC
+                           END-IF
+                       WHEN    "2"
+                           IF      RECE01-HKNNUM       =
+                                                       "060" OR  "067"
                                                    OR  "068" OR  "069"
-                           PERFORM 210-HENSYU-SEC
-                       END-IF
-               END-EVALUATE
+                               PERFORM 210-HENSYU-SEC
+                           END-IF
+                   END-EVALUATE
       *
-               PERFORM     RECE01-READ-SEC
+                   PERFORM     RECE01-READ-SEC
       *
-      *        処理中止設定処理
-               IF      CNT-IN-CANCEL       =   50
-                   MOVE    ZERO                TO  CNT-IN-CANCEL
-                   PERFORM 500-CANCEL-HENSYU-SEC
-               END-IF
+      *            処理中止設定処理
+                   IF      CNT-IN-CANCEL       =   50
+                       MOVE    ZERO                TO  CNT-IN-CANCEL
+                       PERFORM 500-CANCEL-HENSYU-SEC
+                   END-IF
+               END-PERFORM
            END-PERFORM
       *
            CLOSE   RECE01-FILE
@@ -896,6 +916,24 @@ grpsys         MOVE    WRK-PARA-HOSPNUM    TO  RECE01PARA-HOSPNUM
       *    編集処理
       *****************************************************************
        210-HENSYU-SEC                   SECTION.
+      *
+      *    公費単独の場合
+           IF      RECE01-HKNNUM        =   SPACE
+               IF      RECE01-TEKSTYMD      =   ZERO
+                   IF    ( RECE01-KOHHKNNUM-O (1)  = "012" OR  SPACE )
+                   AND   ( RECE01-KOHHKNNUM-O (2)  = "012" OR  SPACE )
+                   AND   ( RECE01-KOHHKNNUM-O (3)  = "012" OR  SPACE )
+                   AND   ( RECE01-KOHHKNNUM-O (4)  = "012" OR  SPACE )
+                       GO  TO  210-HENSYU-EXT
+                   ELSE
+                       MOVE    1                TO  FLG-SEIHO
+                   END-IF
+               ELSE
+                   IF      FLG-SEIHO            =   1
+                       GO  TO  210-HENSYU-EXT
+                   END-IF
+               END-IF
+           END-IF
       *
            MOVE    SPACE                TO  WK-RECESYUBETU-AREA
            INITIALIZE                       WK-RECESYUBETU-AREA
@@ -1350,6 +1388,13 @@ grpsys         MOVE    RECE02-HOSPNUM  TO  SPA-HOSPNUM
                                        TO  LNK-SYUACC-IO-HOJOKBN     (1)
                MOVE    RECE02-TEISYUTUSAKI
                                        TO  LNK-SYUACC-IO-TEISYUTUSAKI(1)
+      *        精神入院か生保単独複数のとき
+               IF    ( RECE02-HKNNUM   =   SPACE      )
+               AND   ( RECE02-TEKSTYMD
+                                   NOT =   "00000000" )
+                   MOVE    RECE02-TEKSTYMD
+                                       TO  LNK-SYUACC-IO-HKNJANUM    (1)
+               END-IF 
                MOVE    "06"            TO  LNK-SYUACC-I-KBN
                CALL    "ORCSSYUKAMAIN" USING   SPA-AREA
                                                ORCSSYUACCAREA
@@ -3486,8 +3531,10 @@ grpsys         PERFORM 900-DBFETCH-SEC
                NOT  AT  END
                    ADD     1     TO    CNT-IN (IDZ)
                                        CNT-IN-CANCEL
+                   MOVE    RECE01-PTID
+                                 TO    KEY-N-PTID
       *
-                   DISPLAY "RECE01 " IDZ " PTNUM=" RECE01-PTNUM     
+                   DISPLAY "RECE01 " IDZ " PTNUM=" RECE01-PTNUM
            END-READ
            .
        RECE01-READ-EXT.

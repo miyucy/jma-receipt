@@ -54,6 +54,8 @@
       *                                     £²£°£°£·Ç¯£¹·î°Ê¹ß¤Î¤ßÂÐ¾Ý 
       *
       *  04.01.01    NACL-Æ£¸¶    07/11/22  ¸ø³²¥ì¥»¥×¥ÈÂÐ±þ
+      *  04.01.02    NACL-Æ£¸¶    07/01/21  ·îÅÓÃæ¤ÎÉéÃ´¼ÔÈÖ¹æÊÑ¹¹ÂÐ±þ
+      *                                     ¡ÊÀ¸ÊÝ¤Î¸øÈñÃ±ÆÈ¤Î¤ß¡Ë 
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -80,6 +82,8 @@
            03  FLG-LASTHKNID           PIC 9(01). 
            03  FLG-KOHRECEDSP          PIC 9(01).
            03  FLG-ADDKBN              PIC 9(01).
+           03  FLG-SEIHO               PIC 9(01).
+           03  FLG-WRITE               PIC 9(01).
       *
       *    Åº»úÎÎ°è
        01  IDX-AREA.
@@ -91,6 +95,7 @@
            03  IDX2                    PIC 9(04).
            03  IDX3                    PIC 9(04).
            03  IDXX                    PIC 9(04).
+           03  IDZZ                    PIC 9(04).
       *
        01  KEY-AREA                        VALUE   LOW-VALUE.
            03  KEY-NEW.
@@ -243,6 +248,18 @@
            03  TBL-RECE61-KOH-AREA     OCCURS  4. 
       *       ¸øÈñ¡ÝË¡ÊÌÈÖ¹æ
                05  TBL-RECE61-KOHHBTNUM    PIC X(02).
+      *     
+       01  WRK-SEIHO-RECE61-REC. 
+           COPY    "CPRCF061.INC"  REPLACING  //RECE61//
+                                   BY         //WRK-SEIHO-RECE61//.
+      *    Ï·¿ÍÊÝ¸±¡Ý»ÙÊ§¶èÊ¬
+           03  WRK-SEIHO-RECE61-RJNPAYKBN    PIC X(02).
+      *    ¼çÊÝ¸±¡Ý¸øÈñ¼ïÊÌ¶èÊ¬
+           03  WRK-SEIHO-RECE61-HKNKOHSBTKBN PIC X(01).
+      *    
+           03  WRK-SEIHO-RECE61-KOH-AREA     OCCURS  4. 
+      *       ¸øÈñ¡ÝË¡ÊÌÈÖ¹æ
+               05  WRK-SEIHO-RECE61-KOHHBTNUM    PIC X(02).
       *
        01  WRK-CONS-AREA.
       *    Ï«ºÒÊÝ¸±ÈÖ¹æ 
@@ -1191,6 +1208,13 @@ grpsys         IF      TBL-RECE61-HOSPNUM (IDXX)  =   ZERO
                    END-IF
                END-IF
            END-PERFORM
+      *
+      *    À¸ÊÝÃ±ÆÈ¤Î¤ß¤Î¤È¤­
+           IF    ( COMB-HKNNUM         =   SPACE )
+           AND   ( COMB-KOHHKNNUM (1)  =   "012" )
+           AND   ( COMB-KOHHKNNUM (2)  =   SPACE )
+               PERFORM 200194-SEIHO-RECE61-WRITE-SEC
+           END-IF
            .
        20019-FILE-SYORI-EXT.
            EXIT. 
@@ -1581,6 +1605,36 @@ grpsys                 MOVE   LNK-SYUBETU-HOSPNUM
            .
        20019211-KOHID-TBL-HENSYU-EXT.
            EXIT.
+      *            
+      *****************************************************************
+      *    ½ÐÎÏ½èÍý¡ÊÀ¸ÊÝÃ±ÆÈ¤Î¤È¤­¤Î¤ß¡Ë
+      *****************************************************************
+       200194-SEIHO-RECE61-WRITE-SEC              SECTION.
+      *
+           MOVE    WRK-RECE61-REC      TO  WRK-SEIHO-RECE61-REC
+      *
+           INITIALIZE                      WRK-RECE61-REC
+           MOVE    WRK-SEIHO-RECE61-KEY
+                                       TO  WRK-RECE61-KEY
+           MOVE    COMB-TEKSTYMD       TO  WRK-RECE61-TEKSTYMD
+           PERFORM VARYING IDXX    FROM    1   BY  1
+                   UNTIL   IDXX    >       100
+grpsys         IF      TBL-RECE61-HOSPNUM (IDXX)  =   ZERO
+                   PERFORM 200192-RECE61-WRITE-SEC
+                   MOVE    100             TO  IDXX
+               ELSE
+                   IF      TBL-RECE61-KEY (IDXX) =
+                                           WRK-RECE61-KEY
+                       PERFORM 200193-RECE61-REWRITE-SEC
+                       MOVE    100               TO  IDXX
+                   END-IF
+               END-IF
+           END-PERFORM
+      *
+           .
+       200194-SEIHO-RECE61-WRITE-EXT.
+           EXIT.
+      * 
       *
       *****************************************************************
       *    ½ªÎ»½èÍý
@@ -1606,41 +1660,79 @@ grpsys         IF      TBL-RECE61-HOSPNUM (1)  =   ZERO
       *****************************************************************
        3001-RECESYUBETU-HENSYU-SEC     SECTION.
       *
+           MOVE    ZERO                TO  FLG-SEIHO
+                                           IDZZ
+      *
            PERFORM VARYING IDXX    FROM    1   BY  1
                    UNTIL   IDXX    >       100
 grpsys             OR      TBL-RECE61-HOSPNUM (IDXX)  =   ZERO
                MOVE    TBL-RECE61-OCC (IDXX)   TO  WRK-RECE61-REC
+      *
+               MOVE    ZERO            TO  FLG-WRITE 
+      *
+      *        ¸øÈñÃ±ÆÈ¤Î¾ì¹ç¡ÊÀº¿ÀÆþ±¡°Ê³°¡Ë
+               IF      WRK-RECE61-HKNNUM        =   SPACE
+                   IF      WRK-RECE61-KOHHKNNUM-O (1)  = "020"
+                       CONTINUE
+                   ELSE 
+                       IF      WRK-RECE61-TEKSTYMD  =   ZERO
+                           IF    ( WRK-RECE61-KOHHKNNUM-O (1)
+                                                    = "012" OR SPACE )
+                           AND   ( WRK-RECE61-KOHHKNNUM-O (2) 
+                                                    = "012" OR SPACE )
+                           AND   ( WRK-RECE61-KOHHKNNUM-O (3) 
+                                                    = "012" OR SPACE )
+                           AND   ( WRK-RECE61-KOHHKNNUM-O (4) 
+                                                    = "012" OR SPACE )
+                               MOVE    1                TO  FLG-WRITE 
+                           ELSE
+                               MOVE    1                TO  FLG-SEIHO
+                           END-IF
+                       ELSE
+                           IF      FLG-SEIHO            =   1
+                               MOVE    1                TO  FLG-WRITE 
+                           END-IF
+                       END-IF
+                  END-IF
+               END-IF
       *     
+      *
+      *        ÂÐ¾Ý³°¥Õ¥é¥°
+               IF      FLG-WRITE            =   ZERO
+                   ADD     1                    TO  IDZZ 
       *        ¿³ºº»ÙÊ§µ¡´Ø
                EVALUATE    WRK-RECE61-HKNNUM
                    WHEN    WRK-CONS-ROUSAI-HKNNUM
-                       MOVE    3   TO  LNK-SYUBETU-TEISYUTUSAKI (IDXX)
+                       MOVE    3   TO  LNK-SYUBETU-TEISYUTUSAKI (IDZZ)
                    WHEN    WRK-CONS-JIBAI-HKNNUM
-                       MOVE    4   TO  LNK-SYUBETU-TEISYUTUSAKI (IDXX)
+                       MOVE    4   TO  LNK-SYUBETU-TEISYUTUSAKI (IDZZ)
                    WHEN    WRK-CONS-KOUGAI-HKNNUM
-                       MOVE    5   TO  LNK-SYUBETU-TEISYUTUSAKI (IDXX)
+                       MOVE    5   TO  LNK-SYUBETU-TEISYUTUSAKI (IDZZ)
                    WHEN    "060"
                    WHEN    "067"
                    WHEN    "068"
                    WHEN    "069"
-                       MOVE    2   TO  LNK-SYUBETU-TEISYUTUSAKI (IDXX)
+                       MOVE    2   TO  LNK-SYUBETU-TEISYUTUSAKI (IDZZ)
                    WHEN    OTHER
-                       MOVE    1   TO  LNK-SYUBETU-TEISYUTUSAKI (IDXX)
+                       MOVE    1   TO  LNK-SYUBETU-TEISYUTUSAKI (IDZZ)
                END-EVALUATE
       *        ÊÝ¸±¼ÔÈÖ¹æ
                MOVE    WRK-RECE61-HKNJANUM 
-                                   TO  LNK-SYUBETU-HKNJANUM (IDXX)
+                                   TO  LNK-SYUBETU-HKNJANUM (IDZZ)
       *        Êä½õ¶èÊ¬
                MOVE    WRK-RECE61-HOJOKBN
-                                   TO  LNK-SYUBETU-HOJOKBN  (IDXX)
+                                   TO  LNK-SYUBETU-HOJOKBN  (IDZZ)
+      *        Å¬ÍÑ³«»ÏÇ¯·îÆü
+               MOVE    WRK-RECE61-TEKSTYMD
+                                   TO  LNK-SYUBETU-TEKSTYMD (IDZZ)
       *        ÊÝ¸±ÈÖ¹æ¡Ê¼çÊÝ¸±¡Ë
                MOVE    WRK-RECE61-HKNNUM
-                                   TO  LNK-SYUBETU-HKNNUM   (IDXX)
+                                   TO  LNK-SYUBETU-HKNNUM   (IDZZ)
       *        ÊÝ¸±ÁÈ¹ç¤»
                PERFORM VARYING IDX     FROM    1   BY  1
                        UNTIL   IDX     >       10
                    MOVE    WRK-RECE61-HKNCOMBI-O (IDX)
-                                   TO  LNK-SYUBETU-HKNCOMBI (IDXX IDX)
+                                   TO  LNK-SYUBETU-HKNCOMBI (IDZZ IDX)
                END-PERFORM
       *        ¥ì¥»¥×¥È¼ïÊÌ
                PERFORM 30011-RECESYUBETU-SET-SEC
@@ -1661,7 +1753,7 @@ grpsys             OR      TBL-RECE61-HOSPNUM (IDXX)  =   ZERO
       *    ÊÝ¸±ÁÈ¹ç¤»¤¬¤Ê¤¤¤È¤­
            IF      WRK-RECE61-TEISEIKBN
                                    =   "1"
-               MOVE    "0000"      TO  LNK-SYUBETU-RECESYUBETU (IDXX)
+               MOVE    "0000"      TO  LNK-SYUBETU-RECESYUBETU (IDZZ)
                GO  TO  30011-RECESYUBETU-SET-EXT
            END-IF
       *
@@ -1679,7 +1771,7 @@ grpsys             OR      TBL-RECE61-HOSPNUM (IDXX)  =   ZERO
       *    ¼«Èñ¤Î¤È¤­
            IF     WRK-RECE61-HKNKOHSBTKBN
                                    =   "8"
-               MOVE    "8888"      TO  LNK-SYUBETU-RECESYUBETU (IDXX)
+               MOVE    "8888"      TO  LNK-SYUBETU-RECESYUBETU (IDZZ)
                GO  TO  30011-RECESYUBETU-SET-EXT
            END-IF
       *         
@@ -1698,7 +1790,7 @@ grpsys             OR      TBL-RECE61-HOSPNUM (IDXX)  =   ZERO
       *
       *    ¿ÀÆàÀîÃÏÊý¸øÈñÂÐ±þ
            IF    ( LNK-SYUBETU-PREFNUM     =   "14" )
-           AND   ( LNK-SYUBETU-TEISYUTUSAKI (IDXX)
+           AND   ( LNK-SYUBETU-TEISYUTUSAKI (IDZZ)
                                        =   "2"      )
                PERFORM VARYING IDX     FROM    1   BY  1
                        UNTIL   IDX     >       4
@@ -1955,9 +2047,9 @@ grpsys                 MOVE    LNK-SYUBETU-HOSPNUM TO  PTKOH-HOSPNUM
            CALL    "ORCSSYUBETUGET"    USING   ORCSSYUBETUGETAREA
       *
            MOVE    LNK-SYUBETUGET-RECESYUBETU
-                                       TO  LNK-SYUBETU-RECESYUBETU(IDXX)
+                                       TO  LNK-SYUBETU-RECESYUBETU(IDZZ)
       *??
-      *     DISPLAY "SYUBETU=" LNK-SYUBETU-RECESYUBETU(IDXX)
+      *     DISPLAY "SYUBETU=" LNK-SYUBETU-RECESYUBETU(IDZZ)
       *??
            .
         30011-RECESYUBETU-SET-EXT.

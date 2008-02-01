@@ -30,6 +30,9 @@
       *                                     主科設定対応
       *
       *  03.05.01    NACL-藤原    07/04/19  グループ診療対応
+      *
+      *  04.01.01    NACL-藤原    07/01/21  月途中の負担者番号変更対応
+      *                                     （生保の公費単独のみ） 
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -49,7 +52,6 @@
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
            03  IDY                 PIC 9(04).
-           03  IDZ                 PIC 9(04).
            03  IDX1                PIC 9(04).
            03  IDX2                PIC 9(04).
            03  IDX3                PIC 9(04).
@@ -304,6 +306,14 @@ grpsys     MOVE    SPA-HOSPNUM     TO  LNK-SYUBETU-HOSPNUM
                                    TO  LNK-SYUACC-IO-HOJOKBN      (IDY)
                    MOVE    LNK-SYUBETU-HKNNUM       (IDY)
                                    TO  LNK-SYUACC-IO-HKNNUM       (IDY)
+      *            精神入院か生保単独複数のとき
+                   IF    ( LNK-SYUBETU-HKNNUM   (IDY)
+                                               =   SPACE      )
+                   AND   ( LNK-SYUBETU-TEKSTYMD (IDY)
+                                           NOT =   "00000000" )
+                       MOVE    LNK-SYUBETU-TEKSTYMD     (IDY)
+                                   TO  LNK-SYUACC-IO-HKNJANUM     (IDY)
+                   END-IF 
                END-PERFORM
            ELSE
                MOVE    LNK-SYUBETU-RC  TO  LNK-SYUACC-RC

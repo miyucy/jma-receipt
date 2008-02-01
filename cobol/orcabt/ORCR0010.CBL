@@ -142,6 +142,8 @@
       *  04.01.01    NACL-藤原    07/11/22  公害レセプト対応
       *  04.01.02    NACL-藤原    07/12/08  長崎県対応
       *                                     生保と被爆８６の記載順 
+      *  04.01.03    NACL-藤原    07/01/21  月途中の負担者番号変更対応
+      *                                     （生保の公費単独のみ） 
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -276,7 +278,6 @@
                05  KEY-O-PTID                          PIC 9(10).
                05  KEY-O-HKNCOMBI                      PIC 9(04).
                05  KEY-O-SRYKA                         PIC X(02).
-      
       *
       *    一時領域
       *
@@ -458,14 +459,14 @@
            COPY    "CPRCF001.INC"  REPLACING  //RECE01//
                                    BY         //WRK-RECE01//.
       *     
+       01  WRK-SEIHO-RECE01-REC. 
+           COPY    "CPRCF001.INC"  REPLACING  //RECE01//
+                                   BY         //WRK-SEIHO-RECE01//.
+      *     
       * 
        01  WRK-KOHSKY-RECE01-REC. 
            COPY    "CPRCF001.INC"  REPLACING  //RECE01//
                                    BY         //WRK-KOHSKY-RECE01//.
-      *
-       01  WRK-RECE07-REC. 
-           COPY    "CPRCF007.INC"  REPLACING  //RECE07//
-                                   BY         //WRK-RECE07//.
       *
       *    社保（継続）のとき 
        01  WRK-CONTKBN-REC. 
@@ -1628,6 +1629,14 @@ grpsys     MOVE    SPA-HOSPNUM         TO  WRK-RECE01-HOSPNUM
                        END-IF
       *************END-IF    
            END-EVALUATE
+      *
+      *    生保単独のみのとき
+           IF    ( WRK-SYOKBN          =   "1"   )
+           AND   ( COMB-HKNNUM         =   SPACE )
+           AND   ( COMB-KOHHKNNUM (1)  =   "012" )
+           AND   ( COMB-KOHHKNNUM (2)  =   SPACE )
+               PERFORM 20013-SEIHO-RECE01-WRITE-SEC
+           END-IF
            .
        20011-FILE-HENSYU-EXT.
            EXIT. 
@@ -1650,10 +1659,8 @@ grpsys     MOVE    SPA-HOSPNUM         TO  WRK-RECE01-HOSPNUM
            END-PERFORM
       *
            MOVE    ACCT-SRYKA         TO  WRK-RECE01-SRYKA (1)
-      *****IF      COMB-HKNID          NOT =   ZERO
-               MOVE    PTHKN-TEKSTYMD     TO  WRK-RECE01-TEKSTYMDX (1)
-               MOVE    PTHKN-TEKEDYMD     TO  WRK-RECE01-TEKEDYMDX (1)
-      *****END-IF
+           MOVE    PTHKN-TEKSTYMD     TO  WRK-RECE01-TEKSTYMDX (1)
+           MOVE    PTHKN-TEKEDYMD     TO  WRK-RECE01-TEKEDYMDX (1)
       *    
       *    主保険情報
            MOVE    PTHKN-HKNID        TO  WRK-RECE01-HKNID
@@ -1873,6 +1880,34 @@ grpsys     MOVE    SPA-HOSPNUM         TO  KYUSEI-HOSPNUM
            END-EVALUATE
            .
        20011-RECE01-REWRITE-EXT.
+           EXIT.
+      *            
+      *****************************************************************
+      *    出力処理（生保単独のときのみ）
+      *****************************************************************
+       20013-SEIHO-RECE01-WRITE-SEC              SECTION.
+      *
+           MOVE    WRK-RECE01-REC      TO  WRK-SEIHO-RECE01-REC
+      *
+           INITIALIZE                      WRK-RECE01-REC
+           MOVE    WRK-SEIHO-RECE01-KEY
+                                       TO  WRK-RECE01-KEY
+           MOVE    COMB-TEKSTYMD       TO  WRK-RECE01-TEKSTYMD
+      *
+           MOVE    WRK-RECE01-KEY      TO  RECE01-KEY 
+           PERFORM 900-RECE01-READ-SEC
+           IF      FLG-RECE01          =   ZERO
+               MOVE    RECE01-REC          TO  WRK-RECE01-REC 
+               PERFORM 20011-RECE01-REWRITE-SEC
+           ELSE
+               MOVE    COMB-TEKSTYMD       TO  PTHKN-TEKSTYMD 
+               MOVE    COMB-TEKEDYMD       TO  PTHKN-TEKEDYMD
+      *  
+               PERFORM 20011-RECE01-WRITE-SEC
+           END-IF
+      *
+           .
+       20013-SEIHO-RECE01-WRITE-EXT.
            EXIT.
       * 
       *****************************************************************

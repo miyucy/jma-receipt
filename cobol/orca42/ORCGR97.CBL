@@ -35,6 +35,9 @@
       *                                     で科が設定できない場合の対応
       *
       *  03.05.01    NACL-藤原    07/04/19  グループ診療対応
+      *
+      *  04.01.01    NACL-藤原    07/01/21  月途中の負担者番号変更対応
+      *                                     （生保の公費単独のみ） 
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -172,6 +175,7 @@
                    07  SPA-NAI-KOUMOKU. 
                        09  SPA-NAI-PTID            PIC 9(10).
                        09  SPA-NAI-HOJOKBN         PIC X(01).
+                       09  SPA-NAI-HKNJANUM        PIC X(08).
                        09  SPA-NAI-TEISYUTUSAKI    PIC 9(01).
                        09  SPA-NAI-RECESYUBETU     PIC X(04).
                        09  SPA-NAI-SELNUM          PIC 9(05).
@@ -187,6 +191,7 @@
                            11  SPA-NAI-THOJOKBN    PIC X(01).
                            11  SPA-NAI-TRECESYUBETU
                                                    PIC X(04).
+                           11  SPA-NAI-THKNJANUM   PIC X(08).
       *
                    07  SPA-NAI-PAGE-TABLE.
                        09  SPA-NAI-PAGE-TBL        OCCURS  100.
@@ -905,7 +910,14 @@ grpsys     MOVE    SPA-HOSPNUM     TO  PTINF-HOSPNUM
                                                               (WRK-LINE)
                END-EVALUATE
                MOVE    LNK-SYUACC-IO-HKNJANUM   (IDX1)
+                                       TO  SPA-NAI-THKNJANUM  (WRK-LINE)
+               IF      LNK-SYUACC-IO-HKNNUM (IDX1) =   SPACE
+      *            精神入院か生保単独複数のとき
+                   CONTINUE
+               ELSE
+                   MOVE    LNK-SYUACC-IO-HKNJANUM   (IDX1)
                                        TO  SPA-GMN-THKNJANUM  (WRK-LINE)
+               END-IF 
                EVALUATE    LNK-SYUACC-IO-HKNNUM (IDX1) 
                    WHEN    "002"
                    WHEN    "031"  THRU  "034"
@@ -1090,6 +1102,8 @@ grpsys     MOVE    SPA-HOSPNUM     TO  PTINF-HOSPNUM
                                            TO  SPA-NAI-RECESYUBETU
                    MOVE    SPA-GMN-THKNJANUM     (SPA-NAI-SELNUM)
                                            TO  SPA-GMN-HKNJANUM
+                   MOVE    SPA-NAI-THKNJANUM     (SPA-NAI-SELNUM)
+                                           TO  SPA-NAI-HKNJANUM
                    MOVE    SPA-GMN-THOJOKBN      (SPA-NAI-SELNUM)
                                         TO  SPA-GMN-HOJOKBN
                    MOVE    SPA-NAI-THOJOKBN      (SPA-NAI-SELNUM)
@@ -1149,7 +1163,7 @@ grpsys     MOVE    SPA-HOSPNUM     TO  HKNJA-HOSPNUM
            MOVE    SPA-NAI-PTID    TO  SPA-PTID
            MOVE    SPA-NAI-RECESYUBETU
                                    TO  LNK-SYUACC-IO-RECESYUBETU (1)
-           MOVE    SPA-GMN-HKNJANUM
+           MOVE    SPA-NAI-HKNJANUM
                                    TO  LNK-SYUACC-IO-HKNJANUM    (1)
            MOVE    SPA-NAI-HOJOKBN TO  LNK-SYUACC-IO-HOJOKBN     (1)
            MOVE    SPA-NAI-TEISYUTUSAKI
@@ -1303,6 +1317,8 @@ grpsys     MOVE    SPA-HOSPNUM     TO  HKNJA-HOSPNUM
                                    TO  SPA-NAI-RECESYUBETU
            MOVE    SPA-GMN-THKNJANUM     (SPA-NAI-SELNUM)
                                    TO  SPA-GMN-HKNJANUM
+           MOVE    SPA-NAI-THKNJANUM     (SPA-NAI-SELNUM)
+                                   TO  SPA-NAI-HKNJANUM
            MOVE    SPA-GMN-THOJOKBN      (SPA-NAI-SELNUM)
                                    TO  SPA-GMN-HOJOKBN
            MOVE    SPA-NAI-THOJOKBN      (SPA-NAI-SELNUM)
@@ -1501,6 +1517,8 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SYUKA-HOSPNUM
                                    TO  SPA-NAI-RECESYUBETU
            MOVE    SPA-GMN-THKNJANUM     (SPA-NAI-SELNUM)
                                    TO  SPA-GMN-HKNJANUM
+           MOVE    SPA-NAI-THKNJANUM     (SPA-NAI-SELNUM)
+                                   TO  SPA-NAI-HKNJANUM
            MOVE    SPA-GMN-THOJOKBN      (SPA-NAI-SELNUM)
                                    TO  SPA-GMN-HOJOKBN
            MOVE    SPA-NAI-THOJOKBN      (SPA-NAI-SELNUM)
@@ -1781,7 +1799,7 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SYUKA-HOSPNUM
                                    TO  SYUKA-NYUGAIKBN
            MOVE    SPA-NAI-RECESYUBETU
                                    TO  SYUKA-RECESYUBETU
-           MOVE    SPA-GMN-HKNJANUM
+           MOVE    SPA-NAI-HKNJANUM
                                    TO  SYUKA-HKNJANUM
            MOVE    SPA-NAI-HOJOKBN TO  SYUKA-HOJOKBN 
            MOVE    SPA-NAI-TEISYUTUSAKI
@@ -1845,7 +1863,7 @@ grpsys         MOVE    SPA-HOSPNUM     TO  SYUKA-HOSPNUM
                            MOVE    SPA-NAI-TRECESYUBETU (IDX)
                                                    TO
                                            LNK-SYUACC-IO-RECESYUBETU (1)
-                           MOVE    SPA-GMN-THKNJANUM (IDX)
+                           MOVE    SPA-NAI-THKNJANUM (IDX)
                                                    TO
                                            LNK-SYUACC-IO-HKNJANUM    (1)
                            MOVE    SPA-NAI-THOJOKBN (IDX)

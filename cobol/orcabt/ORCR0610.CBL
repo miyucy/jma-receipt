@@ -106,6 +106,8 @@
       *  04.01.01    NACL-藤原    07/11/22  公害レセプト対応
       *  04.01.02    NACL-藤原    07/12/08  長崎県対応
       *                                     生保と被爆８６の記載順 
+      *  04.01.03    NACL-藤原    07/01/21  月途中の負担者番号変更対応
+      *                                     （生保の公費単独のみ） 
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -442,6 +444,10 @@
        01  WRK-RECE61-REC. 
            COPY    "CPRCF061.INC"  REPLACING  //RECE61//
                                    BY         //WRK-RECE61//.
+      *     
+       01  WRK-SEIHO-RECE61-REC. 
+           COPY    "CPRCF061.INC"  REPLACING  //RECE61//
+                                   BY         //WRK-SEIHO-RECE61//.
       *     
       * 
        01  WRK-KOHSKY-RECE61-REC. 
@@ -2065,6 +2071,14 @@
                        END-IF
       *************END-IF
            END-EVALUATE
+      *
+      *    生保単独のみのとき
+           IF    ( WRK-SYOKBN          =   "1"   )
+           AND   ( COMB-HKNNUM         =   SPACE )
+           AND   ( COMB-KOHHKNNUM (1)  =   "012" )
+           AND   ( COMB-KOHHKNNUM (2)  =   SPACE )
+               PERFORM 20013-SEIHO-RECE61-WRITE-SEC
+           END-IF
            .
        20011-FILE-HENSYU-EXT.
            EXIT. 
@@ -2195,6 +2209,9 @@
                MOVE    SYUKA-MISEIKYU-FLG  TO  WRK-RECE61-MISEIKYU-FLG
            END-IF
       *
+      *???
+           DISPLAY "KEY=" WRK-RECE61-KEY "#"
+      *???
            EVALUATE    WRK-SYOKBN
                WHEN    "1"
                    MOVE    WRK-RECE61-REC      TO  RECE61-REC
@@ -2340,6 +2357,34 @@
            END-EVALUATE
            .
        20011-RECE61-REWRITE-EXT.
+           EXIT.
+      *            
+      *****************************************************************
+      *    出力処理（生保単独のときのみ）
+      *****************************************************************
+       20013-SEIHO-RECE61-WRITE-SEC              SECTION.
+      *
+           MOVE    WRK-RECE61-REC      TO  WRK-SEIHO-RECE61-REC
+      *
+           INITIALIZE                      WRK-RECE61-REC
+           MOVE    WRK-SEIHO-RECE61-KEY
+                                       TO  WRK-RECE61-KEY
+           MOVE    COMB-TEKSTYMD       TO  WRK-RECE61-TEKSTYMD
+      *
+           MOVE    WRK-RECE61-KEY      TO  RECE61-KEY 
+           PERFORM 900-RECE61-READ-SEC
+           IF      FLG-RECE61          =   ZERO
+               MOVE    RECE61-REC          TO  WRK-RECE61-REC 
+               PERFORM 20011-RECE61-REWRITE-SEC
+           ELSE
+               MOVE    COMB-TEKSTYMD       TO  PTHKN-TEKSTYMD 
+               MOVE    COMB-TEKEDYMD       TO  PTHKN-TEKEDYMD
+      *  
+               PERFORM 20011-RECE61-WRITE-SEC
+           END-IF
+      *
+           .
+       20013-SEIHO-RECE61-WRITE-EXT.
            EXIT.
       * 
       *****************************************************************

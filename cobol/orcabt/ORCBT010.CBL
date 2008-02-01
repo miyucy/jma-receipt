@@ -71,7 +71,10 @@
       *  03.04.03    NACL-藤原    07/04/04  特例退職医療の種別決定条件の修正
       *
       *  03.05.01    NACL-藤原    07/04/19  グループ診療対応
+      *
       *  04.01.01    NACL-小豆沢  07/11/16  公務災害、公害の種別判定追加
+      *  04.01.02    NACL-藤原    07/01/21  月途中の負担者番号変更対応
+      *                                     （生保の公費単独のみ） 
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -206,6 +209,8 @@
            03  FLG-CONTKBN                     PIC 9(01).
            03  FLG-SET                         PIC 9(01).
            03  FLG-LASTHKNID                   PIC 9(01). 
+           03  FLG-SEIHO                       PIC 9(01).
+           03  FLG-WRITE                       PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -235,7 +240,6 @@
                05  KEY-O-HKNCOMBI              PIC 9(04).
       *
       *    一時領域
-      *
        01  WRK-AREA.
            03  WRK-PARA.
                05  WRK-PARA-TERMID             PIC X(32).
@@ -325,6 +329,10 @@
            COPY    "CPTCF001.INC"  REPLACING  //TOUKEI01//
                                    BY         //WRK-TOUKEI01//.
        01  WRK-TOUKEI01-TABLE-MAX  PIC 9(03)   VALUE   100.
+      *     
+       01  WRK-SEIHO-TOUKEI01-REC. 
+           COPY    "CPTCF001.INC"  REPLACING  //TOUKEI01//
+                                   BY         //WRK-SEIHO-TOUKEI01//.
       *
       *    ワーク患者病名
        01  WRK-PTBYOMEI-REC.
@@ -1041,10 +1049,10 @@ grpsys     PERFORM 900-DBSELECT-SEC
            PERFORM VARYING IDX4    FROM    1   BY  1
                    UNTIL   IDX4    >       HCM34S01-HENKYAKU-MAX
       *
-               PERFORM VARYING IDX5    FROM    1   BY  1
-                       UNTIL ( IDX5                >   20    )
-                       OR    ( HCM34S01-SRYCD (IDX4 IDX5)
-                                                   =   SPACE )
+             PERFORM VARYING IDX5    FROM    1   BY  1
+                     UNTIL ( IDX5                >   20    )
+                     OR    ( HCM34S01-SRYCD (IDX4 IDX5)
+                                                 =   SPACE )
       *
                MOVE    SPACE               TO  TOUKEI02-REC
                INITIALIZE                      TOUKEI02-REC
@@ -1091,7 +1099,18 @@ grpsys         MOVE    SPA-HOSPNUM             TO  TNS-HOSPNUM
       *
                WRITE   TOUKEI02-REC
                ADD     1               TO  CNT-TOUKEI02 
-               END-PERFORM
+      *
+      *        生保単独で別ファイルがあるとき
+               IF    ( WRK-SEIHO-TOUKEI01-HOSPNUM )
+                                       >   ZERO
+               AND   ( WRK-SEIHO-TOUKEI01-SRYYM
+                                   NOT =   SPACE  )    
+                   MOVE    WRK-SEIHO-TOUKEI01-KEY
+                                           TO  TOUKEI02-KEY1
+                   WRITE   TOUKEI02-REC
+                   ADD     1               TO  CNT-TOUKEI02
+               END-IF  
+             END-PERFORM
            END-PERFORM
            .
        20013-NYUIN-KIHON-EXT.
@@ -1336,9 +1355,9 @@ grpsys         MOVE    SPA-HOSPNUM             TO  TNS-HOSPNUM
            END-IF
       *
            MOVE    PTHKN-HKNJANUM      TO  TOUKEI01-HKNJANUM
-           IF    ( COMB-HKNNUM        =   SPACE )
-           AND   ( COMB-KOH1HKNNUM    =   "020" )
-               MOVE    COMB-KOH1HKNNUM       TO  TOUKEI01-HKNJANUM
+           IF    ( COMB-HKNNUM         =   SPACE )
+           AND   ( COMB-KOH1HKNNUM     =   "020" )
+               MOVE    COMB-KOH1HKNNUM     TO  TOUKEI01-HKNJANUM
            END-IF
       *
            IF      WRK-PARA-SRYYM      <=   "200609"
@@ -1462,6 +1481,14 @@ grpsys         MOVE    SPA-HOSPNUM             TO  TNS-HOSPNUM
                    END-IF
                END-IF
            END-PERFORM
+      *
+           INITIALIZE                  WRK-SEIHO-TOUKEI01-REC
+      *    生保単独のみのとき
+           IF    ( COMB-HKNNUM         =   SPACE )
+           AND   ( COMB-KOHHKNNUM (1)  =   "012" )
+           AND   ( COMB-KOHHKNNUM (2)  =   SPACE )
+               PERFORM 20013-SEIHO-TOUKEI01-WRITE-SEC
+           END-IF
            .
        2001-FILE-SYORI-EXT.
            EXIT. 
@@ -1971,6 +1998,38 @@ grpsys                                         SPA-AREA
            EXIT.
       *            
       *****************************************************************
+      *    出力処理（生保単独のときのみ）
+      *****************************************************************
+       20013-SEIHO-TOUKEI01-WRITE-SEC              SECTION.
+      *
+           MOVE    TOUKEI01-REC        TO  WRK-SEIHO-TOUKEI01-REC
+      *
+           INITIALIZE                      TOUKEI01-REC
+           MOVE    WRK-SEIHO-TOUKEI01-KEY
+                                       TO  TOUKEI01-KEY
+           MOVE    COMB-TEKSTYMD       TO  TOUKEI01-HKNJANUM
+      *
+           PERFORM VARYING IDXX    FROM   1   BY  1
+                   UNTIL   IDXX    >      WRK-TOUKEI01-TABLE-MAX
+               IF      WRK-TOUKEI01-HOSPNUM (IDXX) =   ZERO
+                   PERFORM 20011-TOUKEI01-WRITE-SEC
+                   MOVE    WRK-TOUKEI01-TABLE-MAX
+                                              TO  IDXX
+               ELSE
+                   IF      WRK-TOUKEI01-KEY (IDXX) =
+                                               TOUKEI01-KEY
+                       PERFORM 20011-TOUKEI01-REWRITE-SEC
+                       MOVE    WRK-TOUKEI01-TABLE-MAX
+                                                   TO  IDXX
+                   END-IF
+               END-IF
+           END-PERFORM
+      *
+           .
+       20013-SEIHO-TOUKEI01-WRITE-EXT.
+           EXIT.
+      *            
+      *****************************************************************
       *    福岡県公費チェック処理
       *****************************************************************
        20011-PREFKBN-40-CHECK-SEC      SECTION.
@@ -2041,16 +2100,49 @@ grpsys                                         SPA-AREA
       *****************************************************************
        2002-KIHON-WRITE-SEC              SECTION.
       *
+           MOVE    ZERO            TO  FLG-SEIHO 
+      *
            PERFORM VARYING IDXX    FROM    1   BY  1
                    UNTIL   IDXX    >       WRK-TOUKEI01-TABLE-MAX
                    OR      WRK-TOUKEI01-HOSPNUM (IDXX) =   ZERO
                MOVE    WRK-TOUKEI01-OCC (IDXX)     TO  TOUKEI01-REC
       *
-      *        レセプト種別
-               PERFORM 20021-RECESYUBETU-SET-SEC
+               MOVE    ZERO            TO  FLG-WRITE 
       *
-               WRITE   TOUKEI01-REC
-               ADD     1                    TO  CNT-TOUKEI01
+      *        公費単独の場合（精神入院・包括以外）
+               IF      TOUKEI01-HKNNUM     =   SPACE
+                   IF    ( TOUKEI01-TKOHHKNNUM (1) =   "020"     )
+                   OR    ( TOUKEI01-HKNJANUM       =   "9999999" )
+                       CONTINUE
+                   ELSE 
+                       IF      TOUKEI01-HKNJANUM       =   SPACE
+                           IF    ( TOUKEI01-TKOHHKNNUM (1) =
+                                                      "012" OR SPACE )
+                           AND   ( TOUKEI01-TKOHHKNNUM (2) =
+                                                      "012" OR SPACE )
+                           AND   ( TOUKEI01-TKOHHKNNUM (3) =
+                                                      "012" OR SPACE )
+                           AND   ( TOUKEI01-TKOHHKNNUM (4) =
+                                                      "012" OR SPACE )
+                               MOVE    1                TO  FLG-WRITE 
+                           ELSE
+                               MOVE    1                TO  FLG-SEIHO
+                           END-IF
+                       ELSE
+                           IF      FLG-SEIHO            =   1
+                               MOVE    1                TO  FLG-WRITE 
+                           END-IF
+                       END-IF
+                  END-IF
+               END-IF
+      *
+               IF      FLG-WRITE            =   ZERO
+      *            レセプト種別
+                   PERFORM 20021-RECESYUBETU-SET-SEC
+      *
+                   WRITE   TOUKEI01-REC
+                   ADD     1                    TO  CNT-TOUKEI01
+               END-IF
            END-PERFORM
       *
       *    病名ファイル出力処理
@@ -2672,10 +2764,21 @@ grpsys         MOVE    SPA-HOSPNUM         TO  TNS-HOSPNUM
       *
                WRITE   TOUKEI02-REC
                ADD     1               TO  CNT-TOUKEI02 
+      *
+      *        生保単独で別ファイルがあるとき
+               IF    ( WRK-SEIHO-TOUKEI01-HOSPNUM )
+                                       >   ZERO
+               AND   ( WRK-SEIHO-TOUKEI01-SRYYM
+                                   NOT =   SPACE  )    
+                   MOVE    WRK-SEIHO-TOUKEI01-KEY
+                                           TO  TOUKEI02-KEY1
+                   WRITE   TOUKEI02-REC
+                   ADD     1               TO  CNT-TOUKEI02
+               END-IF  
            END-PERFORM
       *
            .
-       TOUKEI02-TENSOU-EXT.
+       20031-SRYACT-HENSYU-EXT.
            EXIT.
       *
       *****************************************************************
