@@ -21,41 +21,37 @@
       *****************************************************************
       *  コピー句修正履歴
       * Maj/Min/Rev  修正者       日付      内容
-      *  01.00.01    MCC-藤原     02.03.14  主キー更新用項目の追加
       *****************************************************************
       *01  CHK-REC.
            03  CHK-KEY.
+      *医療機関番号
                05  CHK-HOSPNUM         PIC 9(2).
       *チェック区分
-               05  CHK-CHKKBN          PIC  X(01).
+               05  CHK-CHKKBN          PIC X(1).
       *診療コード
-               05  CHK-SRYCD           PIC  X(09).
+               05  CHK-SRYCD           PIC X(9).
+      *グループ番号（未使用）
+               05  CHK-GRPNUM          PIC 9(2).
       *有効開始年月日
-               05  CHK-YUKOSTYMD       PIC  X(08).
+               05  CHK-YUKOSTYMD       PIC X(8).
       *有効終了年月日
-               05  CHK-YUKOEDYMD       PIC  X(08).
+               05  CHK-YUKOEDYMD       PIC X(8).
       *コード区分
-               05  CHK-CDKBN           PIC  X(01).
-      *連番号
-               05  CHK-RENNUM          PIC  9(02).
-      *適用コード個数
-           03  CHK-TEKCDNUM            PIC  9(03).
-      *コード１から１０
-           03  CHK-CD-G.
-               05  CHK-CD1             PIC  X(09).
-               05  CHK-CD2             PIC  X(09).
-               05  CHK-CD3             PIC  X(09).
-               05  CHK-CD4             PIC  X(09).
-               05  CHK-CD5             PIC  X(09).
-               05  CHK-CD6             PIC  X(09).
-               05  CHK-CD7             PIC  X(09).
-               05  CHK-CD8             PIC  X(09).
-               05  CHK-CD9             PIC  X(09).
-               05  CHK-CD10            PIC  X(09).
-      *
-           03  CHK-CD-R                REDEFINES   CHK-CD-G.
-               05  CHK-CD              PIC  X(09)
-                                       OCCURS   10.
+               05  CHK-CDKBN           PIC X(1).
+      *適用コード
+               05  CHK-CD              PIC X(9).
+      *入外区分（未使用）
+           03  CHK-NYUGAIKBN           PIC X(1).
+      *同一入外制御区分（1:入院・外来の判定を行う）
+           03  CHK-NYUGAIBNDKBN        PIC X(1).
+      *処理区分（1:慢性疼痛管理料チェック、2:初診料チェック）
+           03  CHK-SYORIKBN            PIC X(1).
+      *エラー処理（0:エラー、9:エラー、8:処理なし）
+           03  CHK-CHKERR              PIC 9(1).
+      *データ区分（1:マスタ提供、2:ユーザ登録）
+           03  CHK-DATAKBN             PIC X(1).
+      *連番号（画面表示）
+           03  CHK-RENNUM              PIC 9(3).
       *端末ＩＤ
            03  CHK-TERMID              PIC  X(16).
       *オペーレータＩＤ
@@ -67,14 +63,13 @@
       *更新時間 
            03  CHK-UPHMS               PIC  X(06).
       *主キー更新用項目
-           03  CHKUP-KEY.
-               05  CHKUP-HOSPNUM       PIC  9(02).
-               05  CHKUP-CHKKBN        PIC  X(01).
-               05  CHKUP-SRYCD         PIC  X(09).
-               05  CHKUP-YUKOSTYMD     PIC  X(08).
-               05  CHKUP-YUKOEDYMD     PIC  X(08).
-               05  CHKUP-CDKBN         PIC  X(01).
-               05  CHKUP-RENNUM        PIC  9(02).
-      *
-      *検索用項目
-           03  CHK-SELNAME             PIC  X(200).
+           03  CHK-UPDKEY.
+               05  CHK-UPHOSPNUM       PIC 9(2).
+               05  CHK-UPCHKKBN        PIC X(1).
+               05  CHK-UPSRYCD         PIC X(9).
+               05  CHK-UPGRPNUM        PIC 9(2).
+               05  CHK-UPYUKOSTYMD     PIC X(8).
+               05  CHK-UPYUKOEDYMD     PIC X(8).
+               05  CHK-UPCDKBN         PIC X(1).
+               05  CHK-UPCD            PIC X(9).
+           03  CHK-SELNAME             PIC X(200).

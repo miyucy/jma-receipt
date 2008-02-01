@@ -155,6 +155,8 @@
                            11  SPA-COM-SURCHK        PIC X(01).
       *                    併用算定済フラグ
                            11  SPA-COM-HCHKFLG       PIC X(01).
+      *                    併用算定警告済フラグ
+                           11  SPA-COM-HKEIFLG       PIC X(01).
       *                    基本チェック済フラグ
                            11  SPA-COM-CHKFLG        PIC X(01).
       *                    時間加算フラグ
@@ -198,6 +200,8 @@
                        09  SPA-COM-KENGRP        PIC  X(09).
       *                後発医薬品有無（１：後発あり）
                        09  SPA-COM-KOUHATU-FLG   PIC  9(01).
+      *                日毎のチェックデータあり
+                       09  SPA-COM-DAYCHK-FLG    PIC  9(01).
       *!????
       *                包括コード（１：包括分）
                        09  SPA-COM-HOUKATU-FLG   PIC  9(01).

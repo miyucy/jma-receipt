@@ -2,21 +2,17 @@ tbl_chk	{
 	HOSPNUM			number(2,0);
 	CHKKBN			char(1);
 	SRYCD   		char(9);
-	YUKOSTYMD  		char(8);
-	YUKOEDYMD  		char(8);
+	GRPNUM			number(2,0);
+	YUKOSTYMD  	char(8);
+	YUKOEDYMD  	char(8);
 	CDKBN   		char(1);
-	RENNUM			number(2);
-	TEKCDNUM		number(3);
-	CD1				char(9);
-	CD2				char(9);
-	CD3				char(9);
-	CD4				char(9);
-	CD5				char(9);
-	CD6				char(9);
-	CD7				char(9);
-	CD8				char(9);
-	CD9				char(9);
-	CD10			char(9);
+	CD					varchar(9);
+	NYUGAIKBN		char(1);
+	NYUGAIBNDKBN		char(1);
+	SYORIKBN		char(1);
+	CHKERR				number(1,0);
+	DATAKBN			char(1);
+	RENNUM		 number(3);
 	TERMID  		varchar(16);
 	OPID    		varchar(16);
 	CREYMD  		char(8);
@@ -25,17 +21,18 @@ tbl_chk	{
 #-----> 潛平□凳蕙迕嫩杴
 	UPHOSPNUM		number(2,0),virtual;
 	UPCHKKBN		char(1),virtual;
-	UPSRYCD   		char(9),virtual;
-	UPYUKOSTYMD 	char(8),virtual;
-	UPYUKOEDYMD 	char(8),virtual;
-	UPCDKBN   		char(1),virtual;
-	UPRENNUM		number(2),virtual;
+	UPSRYCD   	char(9),virtual;
+	UPGRPNUM		number(2,0),virtual;
+	UPYUKOSTYMD char(8),virtual;
+	UPYUKOEDYMD char(8),virtual;
+	UPCDKBN   	char(1),virtual;
+	UPCD				varchar(9),virtual;
 #-----> 腹綢平□迕嫩杴
-	SELNAME		char(200),virtual;
+	SELNAME			char(200),virtual;
 };
 
 primary	{
-	HOSPNUM,CHKKBN,SRYCD,YUKOSTYMD,YUKOEDYMD,CDKBN,RENNUM;
+	HOSPNUM,CHKKBN,SRYCD,GRPNUM,YUKOSTYMD,YUKOEDYMD,CDKBN,CD;
 };
 
 path	key		{ 	
@@ -43,13 +40,14 @@ path	key		{
 		DECLARE tbl_chk_key_csr CURSOR FOR
 		SELECT *
 		FROM tbl_chk
-			WHERE 	HOSPNUM	= :HOSPNUM
-			AND CHKKBN      =   :CHKKBN
+			WHERE HOSPNUM	= :HOSPNUM
+			AND   CHKKBN      =   :CHKKBN
 			AND   SRYCD       =   :SRYCD
+			AND   GRPNUM      =   :GRPNUM
 			AND   YUKOSTYMD  <=   :YUKOSTYMD
 			AND   YUKOEDYMD  >=   :YUKOEDYMD
 			AND   CDKBN       =   :CDKBN
-			AND   RENNUM      =   :RENNUM
+			AND   CD          =   :CD
 		;
 	};
 };
@@ -59,13 +57,14 @@ path	key2	{
 		DECLARE tbl_chk_key2_csr CURSOR FOR
 		SELECT *
 		FROM tbl_chk
-			WHERE 	HOSPNUM	= :HOSPNUM
+			WHERE HOSPNUM	= :HOSPNUM
 			AND   CHKKBN    =   :CHKKBN
-			AND   SRYCD       =   :SRYCD
-			AND   YUKOSTYMD  <=   :YUKOSTYMD
-			AND   YUKOEDYMD  >=   :YUKOEDYMD
-			ORDER   BY        SRYCD,
-                                          RENNUM
+			AND   SRYCD     =   :SRYCD
+			AND   GRPNUM    =   :GRPNUM
+			AND   YUKOSTYMD <=   :YUKOSTYMD
+			AND   YUKOEDYMD >=   :YUKOEDYMD
+                        AND   CHKERR    <>   8
+			ORDER   BY      DATAKBN,RENNUM
 		;
 	};
 };
@@ -78,11 +77,12 @@ path	key3	{
 			WHERE 	HOSPNUM	= :HOSPNUM
 			AND   CHKKBN    =   :CHKKBN
 			AND   SRYCD       =   :SRYCD
+			AND   GRPNUM    =   :GRPNUM
 			AND   YUKOSTYMD  <=   :YUKOSTYMD
 			AND   YUKOEDYMD  >=   :YUKOEDYMD
 			AND   CDKBN       =   :CDKBN
-			ORDER   BY        SRYCD,
-                                          RENNUM
+                        AND   CHKERR    <>   8
+			ORDER   BY      DATAKBN,RENNUM
 		;
 	};
 };
@@ -95,10 +95,10 @@ path	key4	{
 			WHERE 	HOSPNUM	= :HOSPNUM
 			AND   CHKKBN    =   :CHKKBN
 			AND   SRYCD       =   :SRYCD
+			AND   GRPNUM    =   :GRPNUM
 			AND   YUKOSTYMD  <=   :YUKOSTYMD
 			AND   YUKOEDYMD  >=   :YUKOEDYMD
-			ORDER   BY        SRYCD,
-                                          RENNUM
+			ORDER   BY      DATAKBN,RENNUM
 		;
 	};
 };
@@ -110,49 +110,47 @@ path	key5	{
 		FROM tbl_chk
 			WHERE 	HOSPNUM	= :HOSPNUM
 			AND   CHKKBN    =   :CHKKBN
-			AND   CDKBN       =   :CDKBN
+			AND   GRPNUM    =   :GRPNUM
 			AND   YUKOSTYMD  <=   :YUKOSTYMD
 			AND   YUKOEDYMD  >=   :YUKOEDYMD
-			ORDER   BY        SRYCD,
-                                          RENNUM
+			AND   CDKBN       =   :CDKBN
+			ORDER   BY        SRYCD,DATAKBN,RENNUM
 		;
 	};
 };
+
 
 path	upd1	{
 	DBUPDATE		{
 		UPDATE	tbl_chk
 				SET
-	HOSPNUM		=	:HOSPNUM,
-	CHKKBN		=	:CHKKBN,
-	SRYCD		=	:SRYCD,
-	YUKOSTYMD	=	:YUKOSTYMD,
-	YUKOEDYMD	=	:YUKOEDYMD,
-	CDKBN		=	:CDKBN,
-	RENNUM		=	:RENNUM,
-	TEKCDNUM	=	:TEKCDNUM,
-	CD1		=	:CD1,
-	CD2		=	:CD2,
-	CD3		=	:CD3,
-	CD4		=	:CD4,
-	CD5		=	:CD5,
-	CD6		=	:CD6,
-	CD7		=	:CD7,
-	CD8		=	:CD8,
-	CD9		=	:CD9,
-	CD10		=	:CD10,
-	TERMID		=	:TERMID,
-	OPID		=	:OPID,
-	CREYMD		=	:CREYMD,
-	UPYMD		=	:UPYMD,
-	UPHMS		=	:UPHMS
-			WHERE 	HOSPNUM	= :UPHOSPNUM
+				HOSPNUM      = :HOSPNUM,
+				CHKKBN       = :CHKKBN,
+				SRYCD        = :SRYCD,
+				GRPNUM       = :GRPNUM,
+				YUKOSTYMD    = :YUKOSTYMD,
+				YUKOEDYMD    = :YUKOEDYMD,
+				CDKBN        = :CDKBN,
+				CD           = :CD,
+				NYUGAIKBN    = :NYUGAIKBN,
+				NYUGAIBNDKBN = :NYUGAIBNDKBN,
+				SYORIKBN     = :SYORIKBN,
+				CHKERR       = :CHKERR,
+				DATAKBN      = :DATAKBN,
+				RENNUM       = :RENNUM,
+				TERMID       = :TERMID,
+				OPID         = :OPID,
+				CREYMD       = :CREYMD,
+				UPYMD        = :UPYMD,
+				UPHMS        = :UPHMS
+			WHERE HOSPNUM	 = :UPHOSPNUM
 			AND	CHKKBN		=	:UPCHKKBN
-			AND		SRYCD		=	:UPSRYCD
-			AND		YUKOSTYMD	=	:UPYUKOSTYMD
-			AND		YUKOEDYMD	=	:UPYUKOEDYMD
-			AND		CDKBN		=	:UPCDKBN
-			AND		RENNUM		=	:UPRENNUM
+			AND   	SRYCD		  =	:UPSRYCD
+			AND     GRPNUM    =	:UPGRPNUM
+			AND	YUKOSTYMD	=	:UPYUKOSTYMD
+			AND	YUKOEDYMD	=	:UPYUKOEDYMD
+			AND	CDKBN	        =	:UPCDKBN
+			AND	CD	        =	:CD
 		;
 	};
 };
@@ -164,6 +162,7 @@ path	del11	{
 		WHERE 	HOSPNUM	= :HOSPNUM
 			AND   CHKKBN    =   :CHKKBN
 			AND   SRYCD       =   :SRYCD
+			AND   GRPNUM      =   :GRPNUM
 			AND   YUKOSTYMD   =   :YUKOSTYMD
 			AND   YUKOEDYMD   =   :YUKOEDYMD
 		;
@@ -186,10 +185,10 @@ path	key6	{
 		SELECT *
 		FROM tbl_chk
 		WHERE 	HOSPNUM	= :HOSPNUM
-			AND   CHKKBN    =   :CHKKBN
-			AND   SRYCD       =   :SRYCD
-			ORDER  BY  YUKOSTYMD,
-                                   RENNUM
+			AND   CHKKBN  = :CHKKBN
+			AND   GRPNUM  = :GRPNUM
+			AND   SRYCD   = :SRYCD
+			ORDER  BY  YUKOSTYMD,DATAKBN,RENNUM
 		;
 	};
 };
@@ -203,11 +202,11 @@ path	key7	{
 			AND   CHKKBN    =   :CHKKBN
 			AND   SRYCD       >=  :SRYCD
 			AND   SRYCD       <=  :UPSRYCD
+			AND   GRPNUM     =    :GRPNUM
 			AND   CDKBN       =   :CDKBN
 			AND   YUKOSTYMD  <=   :YUKOSTYMD
 			AND   YUKOEDYMD  >=   :YUKOEDYMD
-			ORDER   BY        SRYCD,
-                                          RENNUM
+			ORDER   BY        SRYCD,DATAKBN,RENNUM
 		;
 	};
 };
@@ -225,10 +224,11 @@ path	key8	{
 		AND A.CHKKBN    =   :CHKKBN
 		AND   A.SRYCD     >=  :SRYCD
 		AND   A.SRYCD     <=  :UPSRYCD
+		AND   A.GRPNUM     =    :GRPNUM
 		AND   A.CDKBN     =   :CDKBN
 		AND   A.YUKOSTYMD  <=   :YUKOSTYMD
 		AND   A.YUKOEDYMD  >=   :YUKOEDYMD
-		ORDER   BY COALESCE(B.KANANAME,'任任任任任任任任任任'),A.SRYCD,A.YUKOSTYMD,A.YUKOEDYMD,A.RENNUM
+		ORDER   BY COALESCE(B.KANANAME,'任任任任任任任任任任'),A.SRYCD,A.YUKOSTYMD,A.YUKOEDYMD,A.DATAKBN,A.RENNUM
 		;
 	};
 };
@@ -245,11 +245,12 @@ path	key9	{
 		AND A.CHKKBN    =   :CHKKBN
 		AND   A.SRYCD     >=  :SRYCD
 		AND   A.SRYCD     <=  :UPSRYCD
+		AND   A.GRPNUM     =    :GRPNUM
 		AND   A.CDKBN     =   :CDKBN
 		AND   A.YUKOSTYMD  <=   :YUKOSTYMD
 		AND   A.YUKOEDYMD  >=   :YUKOEDYMD
 		ORDER  BY   COALESCE(B.CDKBN_KBN,'z'),B.CDKBN_KBNNUM,B.CDKBN_KBNNUM_EDA,
-					B.CDKBN_KOUBAN,A.SRYCD,A.YUKOSTYMD,A.YUKOEDYMD,A.RENNUM
+					B.CDKBN_KOUBAN,A.SRYCD,A.YUKOSTYMD,A.YUKOEDYMD,A.DATAKBN,A.RENNUM
 		;
 	};
 };
@@ -266,10 +267,11 @@ path	key10	{
 		AND A.CHKKBN    =   :CHKKBN
 		AND   A.SRYCD     >=  :SRYCD
 		AND   A.SRYCD     <=  :UPSRYCD
+		AND   A.GRPNUM     =    :GRPNUM
 		AND   A.CDKBN     =   :CDKBN
 		AND   A.YUKOSTYMD  <=   :YUKOSTYMD
 		AND   A.YUKOEDYMD  >=   :YUKOEDYMD
-		ORDER  BY   COALESCE(B.SRYCD,'999999999'),A.SRYCD,A.YUKOSTYMD,A.YUKOEDYMD,A.RENNUM
+		ORDER  BY   COALESCE(B.SRYCD,'999999999'),A.SRYCD,A.YUKOSTYMD,A.YUKOEDYMD,A.DATAKBN,A.RENNUM
 		;
 	};
 };
@@ -277,35 +279,34 @@ path	key10	{
 path	key11	{ 	
 	DBSELECT	{
 		DECLARE tbl_chk_key11_csr CURSOR FOR
-		SELECT A.* FROM TBL_CHK A,TBL_TENSU B
+		SELECT A.SRYCD,A.YUKOSTYMD,A.YUKOEDYMD FROM TBL_CHK A,TBL_TENSU B
 		WHERE 	A.HOSPNUM = :HOSPNUM
 		AND  A.CHKKBN     = :CHKKBN
+		AND A.GRPNUM     =    :GRPNUM
 		AND A.YUKOSTYMD    <= :YUKOSTYMD
 		AND A.YUKOEDYMD    >= :YUKOEDYMD
-		AND A.RENNUM        = 1 
 		AND B.HOSPNUM       = A.HOSPNUM
 		AND B.SRYCD         = A.SRYCD
 		AND B.YUKOSTYMD    <= :YUKOSTYMD
 		AND B.YUKOEDYMD    >= :YUKOEDYMD
 		AND	(B.NAME      LIKE :SELNAME
 		 OR	 B.KANANAME  LIKE :SELNAME)
+		GROUP BY B.KANANAME,A.SRYCD,A.YUKOSTYMD,A.YUKOEDYMD
 		ORDER BY B.KANANAME,A.SRYCD
 		;
 	};
 };
 
-
 path	key12	{ 	
 	DBSELECT	{
 		DECLARE tbl_chk_key12_csr CURSOR FOR
-		SELECT *
+		SELECT  SRYCD,YUKOSTYMD,YUKOEDYMD
 		FROM tbl_chk
 		WHERE 	HOSPNUM	= :HOSPNUM
 			AND   CHKKBN    =   :CHKKBN
 			AND   SRYCD       =   :SRYCD
-			AND   RENNUM      =   1
-			ORDER  BY  YUKOSTYMD,
-                                   RENNUM
+			GROUP BY  SRYCD,YUKOSTYMD,YUKOEDYMD
+			ORDER BY  SRYCD,YUKOSTYMD,YUKOEDYMD
 		;
 	};
 };
@@ -317,21 +318,25 @@ path	key13	{
 		FROM tbl_chk
 		WHERE 	HOSPNUM	= :HOSPNUM
 			AND CHKKBN    in ( '1','2')
-			ORDER  BY  CHKKBN,SRYCD,YUKOSTYMD,RENNUM
+			AND GRPNUM    = :GRPNUM
+			ORDER  BY  CHKKBN,SRYCD,YUKOSTYMD,DATAKBN,RENNUM
+		;
+	};
+};
+path	key14	{ 	
+	DBSELECT	{
+		DECLARE tbl_chk_key14_csr CURSOR FOR
+		SELECT *
+		FROM tbl_chk
+			WHERE HOSPNUM	=   :HOSPNUM
+			AND   SRYCD     =   :SRYCD
+			AND   GRPNUM    =   :GRPNUM
+			AND   YUKOSTYMD <=   :YUKOSTYMD
+			AND   YUKOEDYMD >=   :YUKOEDYMD
+                        AND   CHKERR    <>   8
+			ORDER   BY      CHKKBN DESC,
+                                        DATAKBN,RENNUM
 		;
 	};
 };
 
-path	upd2	{
-	DBUPDATE		{
-		UPDATE	tbl_chk
-		SET	TEKCDNUM	=	:TEKCDNUM
-		WHERE 	HOSPNUM	= :UPHOSPNUM
-			AND	CHKKBN		=	:UPCHKKBN
-			AND		SRYCD		=	:UPSRYCD
-			AND		YUKOSTYMD	=	:UPYUKOSTYMD
-			AND		YUKOEDYMD	=	:UPYUKOEDYMD
-			AND		CDKBN		=	:UPCDKBN
-		;
-	};
-};

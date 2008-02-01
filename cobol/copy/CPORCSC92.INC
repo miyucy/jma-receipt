@@ -35,6 +35,9 @@
            03  LNK-SC92-SYORIFLG       PIC 9(01).
       *    1:注加算チェックなし（画像診断の乳幼児加算等）
            03  LNK-SC92-CHUKSN         PIC X(01).
+      *    空白:警告エラーなし（自動発生時に対象とする）
+      *    1:警告エラーあり（入力時）
+           03  LNK-SC92-KEIFLG         PIC X(01).
       *
       *    診療コード
            03  LNK-SC92-SRYCD          PIC X(09).
@@ -91,6 +94,10 @@
                                            OCCURS  10.
       *    エラーメッセージ（併用算定）
            03  LNK-SC92-ERRMSG         PIC X(100).
+      *    併用算定警告
+           03  LNK-SC92-KEIARI         PIC X(01).
+      *    初診料併用算定エラー
+           03  LNK-SC92-SYOKBN         PIC X(01).
       *
       *    入力値（ORCSC97）（診療行為画面入力時のみ）
            03  LNK-SC92-INPUT-G        PIC X(100).

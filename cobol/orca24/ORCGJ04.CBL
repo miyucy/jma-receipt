@@ -49,7 +49,8 @@
       * 04.01.00     NACL-多々納  07/10/XX  悪性腫瘍検査対応
       * 04.01.00     NACL-多々納  07/11/16  公務災害・公害対応
       * 04.01.00     NACL-多々納  07/12/XX  患者禁忌薬剤対応
-      *****************************************************************
+      * 04.01.00     NACL-多々納  08/01/XX  チェックマスタ変更対応
+      ***************************************************************
       *
        ENVIRONMENT                 DIVISION.
        CONFIGURATION               SECTION.
@@ -2195,6 +2196,7 @@
        4100-HKNCOMBI-CHK-SEC               SECTION.
       *
            MOVE    ZERO                TO  FLG-CHK
+           MOVE    ZERO                TO  IDX
            PERFORM VARYING     IDY     FROM    1   BY  1
                    UNTIL      (IDY     >   SPA-HKN-MAX )  OR
                               (FLG-CHK     =    1   ) 
@@ -2235,7 +2237,7 @@
       *
       *    保険算定年齢チェック等
            INITIALIZE                  ORCSAGECHKAREA
-           MOVE    SPA-HOSPNUM          TO  AGECHK-HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  AGECHK-HOSPNUM
            MOVE    SPA-GMN-PTID        TO  AGECHK-PTID
            MOVE    SPA-J02-SRYYMD(1:6) TO  AGECHK-SRYYMD(1:6)
            MOVE    "01"                TO  AGECHK-SRYYMD(7:2)
@@ -2322,6 +2324,24 @@
       *****************************************************************
        2001-INPUT-SET-SEC               SECTION.
       *
+           MOVE    ZERO                TO  WRK-IDX2
+           MOVE    SPACE               TO  WRK-WIDGET
+           IF     (MCP-WIDGET(1:7)     =   "INPUTCD" )  OR
+                  (MCP-WIDGET(1:6)     =   "MEISYO"  )
+               PERFORM 20011-INPUT-IDXSET-SEC
+           ELSE
+               MOVE    MCP-WIDGET          TO  WRK-WIDGET
+           END-IF
+      *
+           .
+       2001-INPUT-SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    入力項目の決定
+      *****************************************************************
+       20011-INPUT-IDXSET-SEC               SECTION.
+      *
       *    入力行NOの設定
            MOVE    ZERO                TO  WRK-IDX2
            MOVE    SPACE               TO  WRK-WIDGET
@@ -2332,9 +2352,6 @@
            IF      MCP-WIDGET(1:6)     =   "MEISYO"
                MOVE    MCP-WIDGET(7:2)     TO  WRK-IDX2
                MOVE    MCP-WIDGET(1:6)     TO  WRK-WIDGET
-           END-IF
-           IF      WRK-WIDGET          =   SPACE
-               MOVE    MCP-WIDGET          TO  WRK-WIDGET
            END-IF
       *
            MOVE    ZERO                TO  SPA-GMN-IDX
@@ -2353,9 +2370,8 @@
                                        *   MAX-GMN
                                        +   WRK-IDX2
            END-IF
-      *
            .
-       2001-INPUT-SET-EXT.
+       20011-INPUT-IDXSET-EXT.
            EXIT.
       *
       *****************************************************************
@@ -4206,11 +4222,11 @@
            INITIALIZE                  WRK-KNKCHK-AREA
            PERFORM
                    UNTIL      FLG-CHKMST        =   1
-               PERFORM VARYING     IDX-C       FROM    1   BY  1
-                       UNTIL      (IDX-C           >   10  )  OR
-                                  (CHK-CD (IDX-C)  =   SPACE )
+      *******  PERFORM VARYING     IDX-C       FROM    1   BY  1
+      *                UNTIL      (IDX-C           >   10  )  OR
+      *****                       (CHK-CD (IDX-C)  =   SPACE )
                    PERFORM 5102221-KNKCHK-SYORI-SEC
-               END-PERFORM
+      *****    END-PERFORM
       *
                MOVE    "tbl_chk"           TO  MCP-TABLE
                MOVE    "key3"              TO  MCP-PATHNAME
@@ -4259,7 +4275,7 @@
            PERFORM VARYING     IDX-S       FROM    1   BY  1
                    UNTIL      (IDX-S           >   100 )  OR
                               (SPA-KNK-SRYCD (IDX-S)   =   SPACE )
-               IF     (SPA-KNK-SRYCD (IDX-S)   =   CHK-CD  (IDX-C)) AND
+               IF     (SPA-KNK-SRYCD (IDX-S)   =   CHK-CD   ) AND
                       (SPA-KNK-TOGETU (IDX-S)  =   "1"  ) 
                    ADD     1                   TO  IDX-K
                    MOVE    SPA-KNK-SRYMEI (IDX-S)  TO  WRK-KNK-KNKMEI
@@ -4276,7 +4292,7 @@
                IF     (SPA-COM-SRYKBN  (IDX-S)     =   "21" OR  "22"
                                                    OR  "23" OR  "31"
                                                    OR  "32" OR  "33")
-                 AND  (SPA-COM-INPUTCD (IDX-S)     =   CHK-CD  (IDX-C))
+                 AND  (SPA-COM-INPUTCD (IDX-S)     =   CHK-CD  )
                  AND  (IDX-S                   NOT =   IDX-Z          )
                    ADD     1                   TO  IDX-K
                    MOVE    SPA-GMN-MEISYO (IDX-S)  TO  WRK-KNK-KNKMEI
@@ -7150,11 +7166,11 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                    END-IF
                    PERFORM
                            UNTIL      FLG-CHKMST   =   1
-                       PERFORM VARYING     IDX-C   FROM    1   BY  1
-                               UNTIL      (IDX-C           >   10 ) OR
-                                          (CHK-CD (IDX-C)  =   SPACE)
+      **********       PERFORM VARYING     IDX-C   FROM    1   BY  1
+      *                        UNTIL      (IDX-C           >   10 ) OR
+      ******                              (CHK-CD (IDX-C)  =   SPACE)
                            PERFORM 410011-YAKKNK-SYORI-SEC
-                       END-PERFORM
+      *******          END-PERFORM
       *
                        MOVE    "tbl_chk"           TO  MCP-TABLE
                        MOVE    "key3"              TO  MCP-PATHNAME
@@ -7191,7 +7207,7 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
            PERFORM VARYING     IDX-S       FROM    1   BY  1
                    UNTIL      (IDX-S           >   100 )  OR
                               (SPA-KNK-SRYCD (IDX-S)   =   SPACE )
-               IF      SPA-KNK-SRYCD (IDX-S)   =   CHK-CD  (IDX-C)
+               IF      SPA-KNK-SRYCD (IDX-S)   =   CHK-CD
                    PERFORM VARYING     IDX-S2      FROM    1   BY  1
                            UNTIL       IDX-S2      >   12
                        IF      SPA-KNK-SRYYM (IDX-S IDX-S2)
@@ -7218,7 +7234,7 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                IF     (SPA-COM-SRYKBN  (IDX-S)     =   "21" OR  "22"
                                                    OR  "23" OR  "31"
                                                    OR  "32"  OR  "33")
-                 AND  (SPA-COM-INPUTCD (IDX-S)     =   CHK-CD  (IDX-C))
+                 AND  (SPA-COM-INPUTCD (IDX-S)     =   CHK-CD )
                  AND  (IDX-S                   NOT =   IDX            )
                    ADD     1                       TO  IDX-K
                    MOVE    SPA-GMN-MEISYO (IDX-S)  TO  WRK-KNK-KNKMEI

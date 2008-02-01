@@ -1151,7 +1151,7 @@
                WRITE                       SPA-DATA-REC
                IF      STS-SPASCR     NOT =   ZERO
                    DISPLAY "K02SPASCR OUT WRITE ERR:"   STS-SPASCR "."
-                END-IF
+               END-IF
            END-PERFORM
       *
            CLOSE                       SPASCR-FILE
@@ -3535,7 +3535,7 @@
            ELSE
                MOVE    ZERO            TO  SPA-HKNKBN
            END-IF
-      *    公務災害判定
+      *    公害判定
            IF      SPA-HKNNUM          =   "975"
                MOVE    2               TO  SPA-HKNKBN
            END-IF
@@ -3642,10 +3642,6 @@
            END-IF
       *
       *    診察料編集なし
-      *****MOVE    ZERO                TO  FLG-SINSATU
-      *    入院中の時、入院開始日の時のみ初診料の自動発生を行う
-      *?   MOVE    SPACE               TO  SPA-KIDCD
-      *?   PERFORM 3109-NYUIN-CHK-SEC
            IF      SPA-KIDCD      NOT =   SPACE
                GO      TO      310-SPA-GMNSET-EXT
            END-IF
@@ -3754,11 +3750,17 @@
                        MOVE    SPACE       TO  SPA-MAE-INPUTCD (IDX)
                    END-IF
                END-IF
+      *        警告フラグクリア
                MOVE    SPACE           TO  SPA-COM-KZMFLG (IDX)
                MOVE    SPACE           TO  SPA-COM-KZMFLG2(IDX)
                MOVE    SPACE           TO  SPA-COM-KZMFLG4(IDX)
                MOVE    SPACE           TO  SPA-COM-KZMFLG5(IDX)
                MOVE    SPACE           TO  SPA-COM-KINKIFLG(IDX)
+      *        併用算定が警告の時、クリア
+               IF      SPA-COM-HKEIFLG (IDX)   =   "1"
+                   MOVE    SPACE               TO  SPA-COM-HKEIFLG (IDX)
+                   MOVE    SPACE               TO  SPA-COM-HCHKFLG (IDX)
+               END-IF
       *        訂正時の点数判定
                IF      SPA-SYORIFLG        =   1
                    IF      FLG-MAE-TENSU   =   ZERO
@@ -6175,6 +6177,8 @@
                   (SPA-HKNKBN          =   1     )
             OR   ((WRK-HKNCOMBI        =   "9999")  AND
                   (SPA-SRYYMD          <   "20060401"))
+      *        公害はエラー
+             OR   (SPA-HKNKBN          =   2     )
                MOVE    "1050"          TO  SPA-ERRCD
                MOVE    SPACE           TO  SPA-MAE-INPUTCD(SPA-GMN-IDX)
                MOVE    "1"             TO  SPA-COM-CUR (SPA-GMN-IDX)
@@ -6201,7 +6205,9 @@
                GO      TO     410113-GMN-HKNCOMBI-EXT
            END-IF
       *    労災はエラー
-           IF      SPA-NAI-RSI-HKNKBN (IDY)   NOT =  SPACE
+           IF     (SPA-NAI-RSI-HKNKBN (IDY)   NOT =  SPACE )
+      *        公害はエラー
+             OR   (SPA-HKNKBN          =   2     )
                MOVE    "1050"          TO  SPA-ERRCD
                MOVE    SPACE           TO  SPA-MAE-INPUTCD(SPA-GMN-IDX)
                MOVE    "1"             TO  SPA-COM-CUR (SPA-GMN-IDX)
@@ -6304,8 +6310,8 @@
                END-IF
            ELSE
                IF      (SPA-HKNCOMBINUM    =   "9999" )  OR
-                       (SPA-HKNKBN         =   "1"    )
-                 OR    (SPA-HKNKBN         =   "2"    )
+                       (SPA-HKNKBN         =   1      )
+                 OR    (SPA-HKNKBN         =   2      )
                    MOVE    "SELNUM2"           TO  MCP-WIDGET
                ELSE
                    MOVE    "SELNUM1"           TO  MCP-WIDGET
@@ -6838,6 +6844,8 @@
            MOVE    "1"                 TO  LNK-SC92-INFLG
            MOVE    LNK-SC97-INPUT-G    TO  LNK-SC92-INPUT-G
            MOVE    SPA-NAI-TIMEFLG     TO  LNK-SC92-TIMEFLG
+      *    警告チェックあり
+           MOVE    "1"                 TO  LNK-SC92-KEIFLG
       *
            MOVE    SPA-SYORIFLG        TO  LNK-SC92-SYORIFLG
            MOVE    "K02"               TO  LNK-SC92-PG
@@ -7272,6 +7280,8 @@
                                        SPA-K02
            MOVE    SPA-WORK            TO  SPA-K01KYOUTU
       *
+           MOVE    ZERO                TO  SPA-SYOSIN-KEI
+           MOVE    ZERO                TO  SPA-SYOSIN-KEIFLG
            IF      SPA-ERRCD       NOT =   SPACE
                MOVE    "1025"          TO  SPA-ERRCD
            END-IF
@@ -7310,6 +7320,8 @@
       *    セットの入力値
            INITIALIZE                  ORCSC92AREA
            MOVE    SPACE               TO  LNK-SC92-KBN
+      *    警告チェックあり
+           MOVE    "1"                 TO  LNK-SC92-KEIFLG
       *    入力値編集あり
            MOVE    "1"                 TO  LNK-SC92-INFLG
            MOVE    LNK-SC97-INPUT-G    TO  LNK-SC92-INPUT-G
@@ -8029,6 +8041,8 @@
                    MOVE    "4"                 TO  LNK-SC92-KBN
                    MOVE    SPA-SYORIFLG        TO  LNK-SC92-SYORIFLG
                    MOVE    "K02"               TO  LNK-SC92-PG
+      *            警告チェックあり
+                   MOVE    "1"                 TO  LNK-SC92-KEIFLG
                    MOVE    IDX                 TO  LNK-SC92-GMN-IDX
                    MOVE    SPA-COM-INPUTCD (IDX)
                                                TO  LNK-SC92-SRYCD
@@ -11540,6 +11554,8 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE    SPACE               TO  LNK-SC92-KBN
                    MOVE    SPA-SYORIFLG        TO  LNK-SC92-SYORIFLG
                    MOVE    "K02"               TO  LNK-SC92-PG 
+      *            警告チェックあり
+                   MOVE    "1"                 TO  LNK-SC92-KEIFLG
                    MOVE    IDX                 TO  LNK-SC92-GMN-IDX
                    MOVE    SPA-COM-INPUTCD (IDX)
                                                TO  LNK-SC92-SRYCD
@@ -12318,6 +12334,20 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    5                   TO  SPA-GMN-CUR
                MOVE    1                   TO  SPA-HKNCHK-CHK
                MOVE    ZERO                TO  SPA-HKNCHK-FLG
+           END-IF
+      *    初診料の併用算定判定
+           IF     (SPA-ERRCD           =   SPACE  )  AND
+                  (SPA-SYOSIN-KEI      =   1      )  AND
+                  (SPA-SYOSIN-KEIFLG   =   ZERO   )
+               MOVE    "K174"              TO  SPA-ERRCD
+               MOVE    1                   TO  SPA-SYOSIN-KEIFLG
+           END-IF
+      *    初診料の併用算定判定
+           IF     (SPA-ERRCD           =   SPACE  )  AND
+                  (SPA-SYOSIN-KEI      =   2      )  AND
+                  (SPA-SYOSIN-KEIFLG   =   ZERO   )
+               MOVE    "K175"              TO  SPA-ERRCD
+               MOVE    1                   TO  SPA-SYOSIN-KEIFLG
            END-IF
       *
            IF      SPA-ERRCD           =   SPACE

@@ -444,6 +444,9 @@
                        09  SPA-DOU-SRYKA           PIC X(02).
                        09  SPA-DOU-SRYYMD          PIC X(08).
       *
+      *        初診料の併用チェック
+               05  SPA-SYOSIN-KEI          PIC 9(01).
+               05  SPA-SYOSIN-KEIFLG       PIC 9(01).
            03  SPA-SONOTA-AREA.
       *確認メッセージ
                05  SPA-ERRMSG2             PIC  X(100).

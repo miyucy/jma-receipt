@@ -1405,13 +1405,13 @@
            END-IF.
            PERFORM UNTIL     (FLG-CHKMST       =   1     )  OR
                              (SPA-ERRCD     NOT =   SPACE)
-               PERFORM VARYING     IDX-C       FROM    1   BY  1
-                       UNTIL      (IDX-C            >   10   )  OR
-                                  (CHK-CD (IDX-C)   =   SPACE)  OR
-                                  (SPA-ERRCD    NOT =   SPACE)
+      ******** PERFORM VARYING     IDX-C       FROM    1   BY  1
+      *                UNTIL      (IDX-C            >   10   )  OR
+      *                           (CHK-CD (IDX-C)   =   SPACE)  OR
+      *************               (SPA-ERRCD    NOT =   SPACE)
       *            入力値とのチェック
                    PERFORM 31011-TEN-CHK-INPUT-SEC
-               END-PERFORM
+      ******** END-PERFORM
       *
                MOVE    "tbl_chk"           TO  MCP-TABLE
                MOVE    "key3"              TO  MCP-PATHNAME
@@ -1435,7 +1435,7 @@
                IF      IDX                 =   IDX-T
                    CONTINUE
                ELSE
-                   IF      SPA-COM-INPUTCD(IDX)  =   CHK-CD (IDX-C)
+                   IF      SPA-COM-INPUTCD(IDX)  =   CHK-CD
                        MOVE    "0033"          TO  SPA-ERRCD
                    END-IF
                END-IF

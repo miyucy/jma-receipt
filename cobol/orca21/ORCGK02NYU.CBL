@@ -1655,7 +1655,7 @@
            ELSE
       *        中途終了分のみ
                INITIALIZE                  ORCSC95AREA
-               MOVE    "3"                 TO  LNK-SC95-KBN
+               MOVE    "8"                 TO  LNK-SC95-KBN
                MOVE    SPA-SRYYMD          TO  LNK-SC95-SRYYMD
                MOVE    SPA-SRYYMDW         TO  LNK-SC95-SRYYMDG
                MOVE    "K10"               TO  LNK-SC95-PG
@@ -2445,7 +2445,7 @@
                    MOVE    1               TO  SPA-NAI-ROUJIN
                END-IF
            END-IF
-      *    労災・自賠責の場合、老人でも一般とする
+      *    労災・自賠責・公害の場合、老人でも一般とする
            IF      SPA-HKNKBN          =   1
                                        OR  2
                MOVE    ZERO                TO  SPA-NAI-ROUJIN
@@ -2537,7 +2537,7 @@
            ELSE
                MOVE    ZERO            TO  SPA-HKNKBN
           END-IF
-      *    公務災害判定
+      *    公害判定
            IF      SPA-HKNNUM          =   "975"
                MOVE    2               TO  SPA-HKNKBN
            END-IF
@@ -2736,6 +2736,11 @@
                MOVE    SPACE           TO  SPA-COM-KZMFLG5(IDX)
                MOVE    SPACE           TO  SPA-COM-KINKIFLG(IDX)
                MOVE    SPACE           TO  SPA-COM-NYU-KZMFLG-G(IDX)
+      *        併用算定が警告の時、クリア
+               IF      SPA-COM-HKEIFLG (IDX)   =   "1"
+                   MOVE    SPACE               TO  SPA-COM-HKEIFLG (IDX)
+                   MOVE    SPACE               TO  SPA-COM-HCHKFLG (IDX)
+               END-IF
       *        訂正時の点数判定
                IF      SPA-SYORIFLG        =   1
                    IF      FLG-MAE-TENSU   =   ZERO
@@ -2897,8 +2902,9 @@
       *
       *    初診料がないこと
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL      (IDX     >   SPA-GMN-MAX ) OR
-                              (FLG-OK3     =   1       )
+                   UNTIL      (IDX     >   SPA-MAX-LINE )
+                           OR (SPA-GMN-INPUTCD (IDX)   =   SPACE )
+                           OR (FLG-OK3     =   1        )
                IF      SPA-COM-SRYKBN (IDX)    =   "11"
                    MOVE    1               TO  FLG-OK3
                END-IF
@@ -4921,6 +4927,8 @@
            MOVE    "1"                 TO  LNK-SC92-INFLG
            MOVE    LNK-SC97-INPUT-G    TO  LNK-SC92-INPUT-G
            MOVE    SPA-NAI-TIMEFLG     TO  LNK-SC92-TIMEFLG
+      *    警告チェックあり
+           MOVE    "1"                 TO  LNK-SC92-KEIFLG
       *
            MOVE    SPA-GMN-IDX         TO  LNK-SC92-GMN-IDX
            MOVE    SPA-COM-INPUTCD (SPA-GMN-IDX)
@@ -5176,6 +5184,8 @@
            MOVE    LNK-SC97-INPUT-G    TO  LNK-SC92-INPUT-G
            MOVE    SPA-NAI-TIMEFLG     TO  LNK-SC92-TIMEFLG
            MOVE    "K02"               TO  LNK-SC92-PG
+      *    警告チェックあり
+           MOVE    "1"                 TO  LNK-SC92-KEIFLG
            MOVE    SPA-GMN-IDX         TO  LNK-SC92-GMN-IDX
            MOVE    SPA-GMN-INPUTCD(SPA-GMN-IDX)
                                        TO  LNK-SC92-SRYCD
@@ -5888,9 +5898,69 @@
                        MOVE    SPACE           TO  SPA-COM-HCHKFLG(IDX)
                    END-IF
                END-IF
+      *        併用算定チェック
+               IF      (SPA-ERRCD          =   SPACE )
+                 AND   (SPA-COM-HKNCOMBI(IDX)  NOT =   "9999")
+                   PERFORM 51019-NYUIN-SANCHK02-SEC
+                   IF      SPA-ERRCD           =   SPACE
+                       MOVE    "1"             TO  SPA-COM-HCHKFLG(IDX)
+                   ELSE
+                       MOVE    SPACE           TO  SPA-COM-HCHKFLG(IDX)
+                   END-IF
+               END-IF
            END-PERFORM
            .
        51017-SANTEI-CHEK-EXT.
+           EXIT.
+      *****************************************************************
+      *    入院日数がある時併用算定チェック処理
+      *****************************************************************
+       51019-NYUIN-SANCHK02-SEC             SECTION.
+      *
+           MOVE    SPA-SRYYMD          TO  WRK-SPA-SRYYMD
+      *
+           PERFORM VARYING IDX-N2      FROM    1   BY  1
+                   UNTIL  (IDX-N2      >   31  )   OR
+                          (SPA-ERRCD   NOT =   SPACE )
+               IF      SPA-COM-NYUINDAY(IDX IDX-N2)    >   ZERO
+                   MOVE    IDX-N2              TO  SPA-SRYYMD(7:2)
+                   MOVE    31                  TO  IDX-N2
+               END-IF
+           END-PERFORM
+      *
+           IF     ((SPA-COM-HCHKFLG (IDX)  =   SPACE )
+               OR  (SPA-COM-DAYCHK-FLG (IDX)   NOT =   "2"  ))
+      *       併用算定チェック
+      *             点数マスタ編集・基本チェック
+               INITIALIZE                  ORCSC92AREA
+               MOVE    "4"                 TO  LNK-SC92-KBN
+               MOVE    SPA-SYORIFLG        TO  LNK-SC92-SYORIFLG
+               MOVE    "K02"               TO  LNK-SC92-PG
+      *        警告チェックあり
+               MOVE    "1"                 TO  LNK-SC92-KEIFLG
+               MOVE    IDX                 TO  LNK-SC92-GMN-IDX
+               MOVE    SPA-COM-INPUTCD (IDX)
+                                           TO  LNK-SC92-SRYCD
+               MOVE    SPA-NENREI          TO  LNK-SC92-NENREI
+               MOVE    SPA-15MIMAN-ARI     TO  LNK-SC92-15MIMAN-ARI
+               MOVE    SPA-NAI-ROUJIN      TO  LNK-SC92-ROUJIN
+               MOVE    SPA-LSTSRYKA        TO  LNK-SC92-LSTSRYKA
+               MOVE    SPA-LSTSRYKAMEI     TO  LNK-SC92-LSTSRYKAMEI
+               MOVE    SPA-K02-TEISEI-AREA TO  LNK-SC92-TEISEI-AREA
+               CALL    "ORCSC92"           USING
+                                           MCPAREA
+                                           ORCSC92AREA
+                                           SPA-SCR-REC
+                                           SPA-AREA
+               IF       LNK-SC92-ERRCD(6)  NOT =   SPACE
+                   MOVE    LNK-SC92-ERRCD(6)   TO  SPA-ERRCD
+                   MOVE    LNK-SC92-ERRMSG     TO  SPA-ERRMSG2
+               END-IF
+               MOVE    SPACE       TO  SPA-COM-HCHKFLG (IDX)
+           END-IF
+           MOVE    WRK-SPA-SRYYMD      TO  SPA-SRYYMD
+           .
+       51019-NYUIN-SANCHK02-EXT.
            EXIT.
       *****************************************************************
       *    入院日数がある時回数のチェック処理
@@ -5963,37 +6033,40 @@
                    END-IF
                    MOVE    LNK-SC91-ERRMSG     TO  SPA-ERRMSG2
       *
-                   IF     (SPA-ERRCD               =   SPACE )  AND
-                          (SPA-COM-HCHKFLG (IDX)   =   SPACE )
+      ****         IF     (SPA-ERRCD               =   SPACE )  AND
+      *                  ((SPA-COM-HCHKFLG (IDX)   =   SPACE )
+      *               OR  (SPA-COM-DAYCHK-FLG (IDX)  NOT =   "2"  ))
       *                併用算定チェック
       *                点数マスタ編集・基本チェック
-                       INITIALIZE                  ORCSC92AREA
-                       MOVE    "4"                 TO  LNK-SC92-KBN
-                       MOVE    SPA-SYORIFLG        TO  LNK-SC92-SYORIFLG
-                       MOVE    "K02"               TO  LNK-SC92-PG
-                       MOVE    IDX                 TO  LNK-SC92-GMN-IDX
-                       MOVE    SPA-COM-INPUTCD (IDX)
-                                                   TO  LNK-SC92-SRYCD
-                       MOVE    SPA-NENREI          TO  LNK-SC92-NENREI
-                       MOVE    SPA-15MIMAN-ARI     TO
-                                                   LNK-SC92-15MIMAN-ARI
-                       MOVE    SPA-NAI-ROUJIN      TO  LNK-SC92-ROUJIN
-                       MOVE    SPA-LSTSRYKA        TO  LNK-SC92-LSTSRYKA
-                       MOVE    SPA-LSTSRYKAMEI     TO
-                                                   LNK-SC92-LSTSRYKAMEI
-                       MOVE    SPA-K02-TEISEI-AREA TO
-                                                   LNK-SC92-TEISEI-AREA
-                       CALL    "ORCSC92"           USING
-                                                   MCPAREA
-                                                   ORCSC92AREA
-                                                   SPA-SCR-REC
-                                                   SPA-AREA
-                       IF       LNK-SC92-ERRCD(6)  NOT =   SPACE
-                           MOVE    LNK-SC92-ERRCD(6)   TO  SPA-ERRCD
-                           MOVE    LNK-SC92-ERRMSG     TO  SPA-ERRMSG2
-                       END-IF
-                       MOVE    SPACE       TO  SPA-COM-HCHKFLG (IDX)
-                   END-IF
+      *                INITIALIZE                  ORCSC92AREA
+      *                MOVE    "4"                 TO  LNK-SC92-KBN
+      *                MOVE    SPA-SYORIFLG        TO  LNK-SC92-SYORIFLG
+      *                MOVE    "K02"               TO  LNK-SC92-PG
+      *                警告チェックあり
+      *                MOVE    "1"                 TO  LNK-SC92-KEIFLG
+      *                MOVE    IDX                 TO  LNK-SC92-GMN-IDX
+      *                MOVE    SPA-COM-INPUTCD (IDX)
+      *                                            TO  LNK-SC92-SRYCD
+      *                MOVE    SPA-NENREI          TO  LNK-SC92-NENREI
+      *                MOVE    SPA-15MIMAN-ARI     TO
+      *                                            LNK-SC92-15MIMAN-ARI
+      *                MOVE    SPA-NAI-ROUJIN      TO  LNK-SC92-ROUJIN
+      *                MOVE    SPA-LSTSRYKA        TO  LNK-SC92-LSTSRYKA
+      *                MOVE    SPA-LSTSRYKAMEI     TO
+      *                                            LNK-SC92-LSTSRYKAMEI
+      *                MOVE    SPA-K02-TEISEI-AREA TO
+      *                                            LNK-SC92-TEISEI-AREA
+      *                CALL    "ORCSC92"           USING
+      *                                            MCPAREA
+      *                                            ORCSC92AREA
+      *                                            SPA-SCR-REC
+      *                                            SPA-AREA
+      *                IF       LNK-SC92-ERRCD(6)  NOT =   SPACE
+      *                    MOVE    LNK-SC92-ERRCD(6)   TO  SPA-ERRCD
+      *                    MOVE    LNK-SC92-ERRMSG     TO  SPA-ERRMSG2
+      *                END-IF
+      *                MOVE    SPACE       TO  SPA-COM-HCHKFLG (IDX)
+      ***          END-IF
       *
                END-IF
            END-PERFORM
@@ -9201,58 +9274,56 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                    END-IF
                END-IF
            END-IF
-           IF      SPA-ERRCD       NOT =   SPACE
-               GO      TO      41001-KIHON-CHK-EXT
+      *    老人保険編集エラーがある時、エラーとする
+           IF      SPA-ERRCD           =   SPACE
+               IF      SPA-RJN-ERR         =   1
+                   MOVE    "1027"              TO  SPA-ERRCD
+               END-IF
            END-IF
       *    老人保険編集エラーがある時、エラーとする
-           IF      SPA-RJN-ERR         =   1
-               MOVE    "1027"              TO  SPA-ERRCD
-               GO      TO      41001-KIHON-CHK-EXT
-           END-IF
-      *    老人保険編集エラーがある時、エラーとする
-           IF      SPA-RJN-ERR         =   2
-               MOVE    "1070"              TO  SPA-ERRCD
-               GO      TO      41001-KIHON-CHK-EXT
+           IF      SPA-ERRCD           =   SPACE
+               IF      SPA-RJN-ERR         =   2
+                   MOVE    "1070"              TO  SPA-ERRCD
+               END-IF
            END-IF
       *    保険エラーがある時、エラーとする
-           IF      SPA-HKN-ERR         =   1
-               MOVE    "1028"              TO  SPA-ERRCD
-               GO      TO      41001-KIHON-CHK-EXT
-           END-IF
-           IF      SPA-HKN-ERR         =   2
-               MOVE    "1032"              TO  SPA-ERRCD
-               GO      TO      41001-KIHON-CHK-EXT
-           END-IF
-      *    保険未選択の場合、エラー
-           IF      SPA-HKN-ERR         =   3
-               MOVE    "1006"              TO  SPA-ERRCD
-               GO      TO      41001-KIHON-CHK-EXT
-           END-IF
-      *    保険未選択の場合、エラー
-           IF      SPA-HKN-ERR         =   4
-               MOVE    "1034"              TO  SPA-ERRCD
-               MOVE    5                   TO  SPA-GMN-CUR
-               GO      TO      41001-KIHON-CHK-EXT
+           IF      SPA-ERRCD           =   SPACE
+               EVALUATE    SPA-HKN-ERR
+                   WHEN    1
+                       MOVE    "1028"              TO  SPA-ERRCD
+                   WHEN    2
+                       MOVE    "1032"              TO  SPA-ERRCD
+      *            保険未選択の場合、エラー
+                   WHEN    3
+                       MOVE    "1006"              TO  SPA-ERRCD
+                   WHEN    4
+                       MOVE    "1034"              TO  SPA-ERRCD
+                       MOVE    5                   TO  SPA-GMN-CUR
+               END-EVALUATE
            END-IF
       *    地方公費のみの場合、警告
-           IF      SPA-NAI-KOHFLG      =   1
-               IF      SPA-NAI-KOHFLG-ERR  =   ZERO
-                   MOVE    "K034"              TO  SPA-ERRCD
-                   MOVE    5                   TO  SPA-GMN-CUR
-                   GO      TO      41001-KIHON-CHK-EXT
+           IF      SPA-ERRCD           =   SPACE
+               IF      SPA-NAI-KOHFLG      =   1
+                  IF      SPA-NAI-KOHFLG-ERR  =   ZERO
+                       MOVE    "K034"              TO  SPA-ERRCD
+                       MOVE    5                   TO  SPA-GMN-CUR
+                   END-IF
                END-IF
            END-IF
       *    国保 前期高齢者変更チェック
-           IF      SPA-NAI-ZENKIFLG      =   1
-               IF      SPA-NAI-ZENKIFLG-ERR    =   ZERO
-                   MOVE    "K171"              TO  SPA-ERRCD
-                   MOVE    5                   TO  SPA-GMN-CUR
-                   GO      TO      41001-KIHON-CHK-EXT
+           IF      SPA-ERRCD           =   SPACE
+               IF      SPA-NAI-ZENKIFLG      =   1
+                   IF      SPA-NAI-ZENKIFLG-ERR    =   ZERO
+                       MOVE    "K171"              TO  SPA-ERRCD
+                       MOVE    5                   TO  SPA-GMN-CUR
+                   END-IF
                END-IF
            END-IF
       *
       *    診療行為入力チェック
-           PERFORM 41011-KOUI-ALLHEN-SEC
+           IF      SPA-ERRCD           =   SPACE
+               PERFORM 41011-KOUI-ALLHEN-SEC
+           END-IF
            IF     (SPA-ERRCD       NOT =   SPACE )  OR
                   (SPA-KIDCD           =   "0180" )  OR
                   (FLG-END             =   1     )
@@ -9284,7 +9355,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                    IF      SGDAY-SDAY          <   SPA-BIRTHDAY
                         MOVE    "1011"         TO  SPA-ERRCD
                         MOVE    7              TO  SPA-GMN-CUR
-                        GO      TO      41001-KIHON-CHK-EXT
+      **************    GO      TO      41001-KIHON-CHK-EXT
                    END-IF
       *            変更のない時、以降の処理はそのまま
                    IF      SGDAY-SDAY      NOT =   SPA-NAI-SRYYMD
@@ -9294,7 +9365,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                ELSE
                    MOVE    "1010"          TO  SPA-ERRCD
                    MOVE    7               TO  SPA-GMN-CUR
-                   GO      TO      41001-KIHON-CHK-EXT
+      **********   GO      TO      41001-KIHON-CHK-EXT
                END-IF
            END-IF
       *
@@ -9322,6 +9393,8 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE    SPACE               TO  LNK-SC92-KBN
                    MOVE    SPA-SYORIFLG        TO  LNK-SC92-SYORIFLG
                    MOVE    "K02"               TO  LNK-SC92-PG 
+      *            警告チェックあり
+                   MOVE    "1"                 TO  LNK-SC92-KEIFLG
                    MOVE    IDX                 TO  LNK-SC92-GMN-IDX
                    MOVE    SPA-COM-INPUTCD (IDX)
                                                TO  LNK-SC92-SRYCD

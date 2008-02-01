@@ -3952,6 +3952,10 @@
                         END-IF
                    END-IF
                END-IF
+      *        開始日＜当日
+               IF      PTBYO-SRYYMD        <   SPA-SRYYMD
+                   MOVE    1               TO  SPA-BYOMEI-STR
+               END-IF
       *
                MOVE    "tbl_ptbyomei"      TO  MCP-TABLE
                MOVE    "key25"             TO  MCP-PATHNAME

@@ -61,6 +61,7 @@
       *  03.05.00    NACL-多々納  07/04/XX  グループ診療対応
       *  04.01.00    NACL-多々納  07/11/21  器材商品名表示対応
       *  04.01.00    NACL-多々納  07/12/XX  患者禁忌薬剤対応
+      *  04.01.01    NACL-多々納  08/01/XX  チェックマスタ変更対応
       *****************************************************************
       *
       *
@@ -107,6 +108,8 @@
            03  FLG-MANSEI-CHK          PIC 9(01).
       *
            03  FLG-KONKAI              PIC 9(01).
+           03  FLG-DAYCHK              PIC 9(01).
+           03  FLG-DAYERR              PIC 9(01).
       *
            03  FLG-RKAN-OK             PIC 9(01).
            03  FLG-RKAN-OK2            PIC 9(01).
@@ -142,6 +145,7 @@
       *
            03  IDX-T2              PIC 9(04).
            03  IDX-T3              PIC 9(04).
+           03  IDX-N2              PIC 9(02).
       *
       *    一時領域
        01  WRK-AREA.
@@ -149,8 +153,6 @@
            03  WRK-TANINAME        PIC X(04).
       *
            03  WRK-MEISYO          PIC X(80).
-      *****03  WRK-MEISYO-N        REDEFINES   WRK-MEISYO
-      *****                        PIC N(22).
       *   きざみ値行為再計算用
            03  WRK-KEI-TEN         PIC 9(08)V9(03).
            03  WRK-KEI-TEN1        PIC 9(08)V9(03).
@@ -209,6 +211,18 @@
       *
            03  WRK-KAN-KBN             PIC X(01).
            03  WRK-KAN-KBN2            PIC X(01).
+      *
+      *    チェックマスタ変更
+           03  WRK-ERR-SRYCD           PIC X(09).
+           03  WRK-ERR-YMD             PIC X(08).
+           03  WRK-KEI-SRYCD           PIC X(09).
+           03  WRK-KEI-YMD             PIC X(08).
+           03  WRK-MANSEI-YMD          PIC X(08).
+           03  FLG-CHKERR              PIC 9(01).
+           03  FLG-SANTEI-TBL          PIC 9(01).
+           03  WRK-TEI-CNT             PIC 9(03).
+           03  FLG-SYO-ERR             PIC 9(01).
+           03  WRK-DAYERR              PIC 9(02).
       *
       *    コメントの入力値用
        01  WRK-INPUT-SET-AREA.
@@ -528,14 +542,14 @@
       *                基本編集・併用チェック
                        PERFORM 300-KIHON-HEN-SEC
                    END-IF
-      *TEST
+      *!!
                    IF      SPA-ERRCD           =   SPACE
       *                器材商品名
                        IF      LNK-SC92-SRYCD(1:3) =   "058"
                            PERFORM 400-SYOHINMEI-SEC
                        END-IF
                    END-IF
-      *TEST
+      *!!
                WHEN    "3"
       *            チェックのみ
                    MOVE    LNK-SC92-SRYCD  TO  SPA-COM-INPUTCD(IDX-T)
@@ -564,7 +578,6 @@
       *                基本編集・併用チェック
                        PERFORM 300-KIHON-HEN-SEC
                    END-IF
-      *TEST
                    IF      SPA-ERRCD           =   SPACE
       *                器材商品名
                        IF      LNK-SC92-SRYCD(1:3) =   "058"
@@ -690,7 +703,7 @@
            IF      SPA-ERRCD           =   SPACE
                MOVE    LNK-SC92-SRYCD      TO  SPA-COM-INPUTCD (IDX-T)
                MOVE    ZERO                TO  WRK-CD-MCNT
-               PERFORM VARYING     IDX     FROM    WRK-IDX-FT  BY  1
+               PERFORM VARYING     IDX     FROM    1   BY  1
                        UNTIL      (IDX         >   22  )   OR
                                   (SPA-GMN-INPUTCD(IDX-T)(IDX:1)
                                            =   SPACE   OR  "*" )
@@ -1518,85 +1531,93 @@
                GO      TO      2005-HEIYOU-CHK-EXT
            END-IF
       *
-           MOVE    ZERO                TO  FLG-KONKAI
-      *    当月算定済み
-           PERFORM 200512-SANTEI-SELECT-SEC
-      *
       *    チェックテーブル検索
            INITIALIZE                  CHK-REC
-           MOVE    "5"                 TO  CHK-CHKKBN
+           MOVE    SPA-HOSPNUM         TO  CHK-HOSPNUM
            MOVE    LNK-SC92-SRYCD      TO  CHK-SRYCD
            MOVE    "2"                 TO  CHK-CDKBN
-           MOVE    ZERO                TO  CHK-RENNUM
            MOVE    SPA-SRYYMD          TO  CHK-YUKOSTYMD
            MOVE    SPA-SRYYMD          TO  CHK-YUKOEDYMD
-           MOVE    SPA-HOSPNUM         TO  CHK-HOSPNUM
       *
-           MOVE    ZERO                TO  FLG-CHKMST
            MOVE    CHK-REC             TO  MCPDATA-REC
            MOVE    "tbl_chk"           TO  MCP-TABLE
-           MOVE    "key3"              TO  MCP-PATHNAME
+           MOVE    "key14"             TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
                MOVE    "tbl_chk"           TO  MCP-TABLE
-               MOVE    "key3"              TO  MCP-PATHNAME
+               MOVE    "key14"             TO  MCP-PATHNAME
                PERFORM 950-CHK-READ-SEC
            ELSE
                MOVE    1                   TO  FLG-CHKMST
            END-IF
            MOVE    SPACE               TO  WRK-MANSEI-ERR
+           MOVE    SPACE               TO  WRK-KEI-SRYCD
+           MOVE    SPACE               TO  WRK-ERR-SRYCD
+           MOVE    SPACE               TO  WRK-KEI-YMD
+           MOVE    SPACE               TO  WRK-ERR-YMD
+           MOVE    SPACE               TO  WRK-ERR-YMD
+           MOVE    ZERO                TO  FLG-CHKERR
+           MOVE    ZERO                TO  FLG-MANSEI-ARI
+           MOVE    ZERO                TO  FLG-MANSEI-CHK
+           MOVE    SPACE               TO  WRK-MANSEI-YMD
+           MOVE    ZERO                TO  FLG-KONKAI
+           MOVE    ZERO                TO  FLG-DAYCHK
+           MOVE    ZERO                TO  FLG-SANTEI-TBL
+           MOVE    ZERO                TO  FLG-DAYERR
+           MOVE    ZERO                TO  WRK-DAYERR
            PERFORM
-                   UNTIL     (FLG-CHKMST       =   1    )  OR
-                             (LNK-SC92-ERRCD6 NOT =   SPACE )
-               PERFORM VARYING     IDX-C       FROM    1   BY  1
-                       UNTIL      (IDX-C           >   10  )    OR
-                                  (CHK-CD (IDX-C)  =   SPACE )  OR
-                                  (LNK-SC92-ERRCD6 NOT =   SPACE )
-                   MOVE    ZERO                TO  FLG-MANSEI-CHK
-      *            算定履歴とのチェック
-                   PERFORM 20051-CHK-SANTEI-SEC
-      *            入力値とのチェック
-                   PERFORM 20052-CHK-INPUT-SEC
-      *
-                   IF     (LNK-SC92-ERRCD6 NOT =   SPACE )  AND
-                          (FLG-MANSEI-CHK      =   1     )  AND
-                          (FLG-KONKAI          =   ZERO  )
-                       IF      WRK-MANSEI-ERR      =   SPACE
-                           MOVE    LNK-SC92-ERRCD6
-                                                   TO  WRK-MANSEI-ERR
-                           MOVE    CHK-CD (IDX-C)  TO  WRK-CHK-CD
+                   UNTIL     (FLG-CHKMST       =   1    ) 
+                         OR  (FLG-CHKERR       =   1 )
+               EVALUATE    CHK-CHKKBN
+                   WHEN    "5"
+      *            同月内チェック
+      *                同一画面でのチェック
+                       PERFORM 20052-CHK-INPUT-SEC
+                       IF      FLG-CHKERR          =   ZERO
+      *                    算定履歴とのチェック
+                           PERFORM 20051-CHK-SANTEI-SEC
                        END-IF
-                       MOVE    SPACE           TO  LNK-SC92-ERRCD6
-                   END-IF
-                   IF      LNK-SC92-ERRCD6 NOT =   SPACE
-                       MOVE    CHK-CD (IDX-C)  TO  WRK-CHK-CD
-                   END-IF
-               END-PERFORM
-      *
+                   WHEN    "A"
+      *            同日内チェック
+                       IF      SPA-NYUGAIKBN       =   "2"
+      *                    同一画面でのチェック
+                           PERFORM 20052-CHK-INPUT-SEC
+                           IF      FLG-CHKERR          =   ZERO
+      *                        算定履歴とのチェック
+                               PERFORM 20053-DAYCHK-SANTEI-SEC
+                           END-IF
+                       END-IF
+      *                同日内チェックあり
+                       MOVE    1               TO  SPA-COM-DAYCHK-FLG
+                                                              (IDX-T)
+      *                入院
+                       IF     (SPA-NYUGAIKBN       =   "1" )
+                          AND (LNK-SC92-KBN        =   "4" )
+      *                    同一画面でのチェック
+                           PERFORM 200521-CHKNYU-INPUT-SEC
+                           IF      FLG-CHKERR          =   ZERO
+      *                        算定履歴とのチェック
+                               PERFORM 200531-DAYCHKNYU-SANTEI-SEC
+                           END-IF
+                           MOVE    2            TO  SPA-COM-DAYCHK-FLG
+                                                              (IDX-T)
+                       END-IF
+                   WHEN    "B"
+      *            同会計チェック
+                       IF      SPA-NYUGAIKBN       =   "2"
+      *                    同一画面でのチェック
+                           PERFORM 20052-CHK-INPUT-SEC
+                       END-IF
+               END-EVALUATE
                MOVE    "tbl_chk"           TO  MCP-TABLE
-               MOVE    "key3"              TO  MCP-PATHNAME
+               MOVE    "key14"             TO  MCP-PATHNAME
                PERFORM 950-CHK-READ-SEC
            END-PERFORM
-      *
            MOVE    "tbl_chk"           TO  MCP-TABLE
-           MOVE    "key3"              TO  MCP-PATHNAME
+           MOVE    "key14"             TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
       *
-           IF     (LNK-SC92-ERRCD6     =   SPACE )  AND
-                  (WRK-MANSEI-ERR  NOT =   SPACE )
-               MOVE    WRK-MANSEI-ERR      TO  LNK-SC92-ERRCD6
-           END-IF
-      *    慢性疼痛疾患管理料のチェック
-           IF     (LNK-SC92-ERRCD6 NOT =   SPACE      )  AND
-                  (SPA-SRYYMD          >=  "20021017" )  AND
-                  (LNK-SC92-SRYCD      =   "113006510" OR
-                   WRK-CHK-CD          =   "113006510" )
-      *        今回入力時エラーはそのまま
-               IF      FLG-KONKAI          =   ZERO
-                   PERFORM 20053-MANSEI-CHK-SEC
-               END-IF
-           END-IF
-      *@   リハビリテーション管理料チェック
+      *    リハビリテーション管理料チェック
            IF     (LNK-SC92-ERRCD6 NOT =   SPACE      )  AND
                   (SPA-SRYYMD          >=  "20070401" )
       *        今回入力時エラーはそのまま
@@ -1604,15 +1625,387 @@
                    PERFORM 20054-RIHA-CHKSYORI-SEC
                END-IF
            END-IF
-      *@
+      *
+           IF      FLG-CHKERR          =   1
+      *        エラーメッセージ
+               PERFORM 20053-CHKERRMSG-SEC
+           ELSE
+               IF      WRK-KEI-SRYCD   NOT =   SPACE
+      *        警告メッセージ
+                   IF      LNK-SC92-KEIFLG     =   "1"
+                       PERFORM 20054-CHKKEIMSG-SEC
+                   ELSE
+                       MOVE    "1"             TO  LNK-SC92-KEIARI
+                   END-IF
+                   MOVE    "1"             TO  SPA-COM-HKEIFLG (IDX-T)
+               END-IF
+           END-IF
+      *
            IF     (LNK-SC92-ERRCD6     =   SPACE )
                MOVE    "1"             TO  SPA-COM-HCHKFLG (IDX-T)
            ELSE
                MOVE    SPACE           TO  SPA-COM-HCHKFLG (IDX-T)
+               MOVE    "1"             TO  SPA-COM-CUR (IDX-T)
            END-IF
       *
            .
        2005-HEIYOU-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    エラーメッセージ編集処理
+      *****************************************************************
+       20053-CHKERRMSG-SEC            SECTION.
+      *
+           MOVE    "0033"              TO  LNK-SC92-ERRCD6
+           MOVE    WRK-ERR-SRYCD       TO  TNS-SRYCD
+           PERFORM 911-TENSU-READ22-SEC
+      *
+           PERFORM 200531-ERRMSG-HEN-SEC
+           .
+       20053-CHKERRMSG-EXT.
+           EXIT.
+      *****************************************************************
+      *    メッセージ編集処理
+      *****************************************************************
+       200531-ERRMSG-HEN-SEC            SECTION.
+      *
+           MOVE    SPACE               TO  LNK-SC92-ERRMSG
+           IF      FLG-KONKAI          =   ZERO
+      *         当日
+               IF      FLG-DAYCHK          =   1
+                   STRING  "当日　"            DELIMITED  BY  SIZE
+                           TNS-NAME            DELIMITED  BY  SPACE
+                           INTO                 LNK-SC92-ERRMSG
+                   END-STRING
+               ELSE
+                   INITIALIZE                      STS-AREA-DAY
+                   INITIALIZE                      LNK-DAY2-AREA
+                   MOVE    "21"                TO  LNK-DAY2-IRAI
+                   MOVE    WRK-ERR-YMD         TO  LNK-DAY2-YMD
+                   CALL    "ORCSDAY"           USING   STS-AREA-DAY
+                                                       LNK-DAY2-AREA
+                   STRING  LNK-DAY2-EDTYMD3    DELIMITED  BY  SIZE
+                           "　"                DELIMITED  BY  SIZE
+                           TNS-NAME            DELIMITED  BY  SPACE
+                          INTO                 LNK-SC92-ERRMSG
+                   END-STRING
+               END-IF
+           ELSE
+               STRING  "今回　"            DELIMITED  BY  SIZE
+                       TNS-NAME            DELIMITED  BY  SPACE
+                       INTO                 LNK-SC92-ERRMSG
+               END-STRING
+      *        入院の日指定
+               IF      WRK-DAYERR      NOT =   ZERO
+                   MOVE    SPACE               TO  LNK-SC92-ERRMSG
+                   STRING  "今回　"            DELIMITED  BY  SIZE
+                           WRK-DAYERR          DELIMITED  BY  SIZE
+                           "日指定　"          DELIMITED  BY  SIZE
+                           TNS-NAME            DELIMITED  BY  SPACE
+                           INTO                LNK-SC92-ERRMSG
+                   END-STRING
+               END-IF
+           END-IF
+           .
+       200531-ERRMSG-HEN-EXT.
+           EXIT.
+      *****************************************************************
+      *    警告メッセージ編集処理
+      *****************************************************************
+       20054-CHKKEIMSG-SEC            SECTION.
+      *
+           MOVE    "K033"              TO  LNK-SC92-ERRCD6
+           MOVE    WRK-KEI-SRYCD       TO  TNS-SRYCD
+           PERFORM 911-TENSU-READ22-SEC
+      *
+           PERFORM 200531-ERRMSG-HEN-SEC
+           .
+       20054-CHKKEIMSG-EXT.
+           EXIT.
+      *****************************************************************
+      *    算定履歴の同月併算定チェック
+      *****************************************************************
+       20051-CHK-SANTEI-SEC            SECTION.
+      *
+      *    算定履歴テーブル保存
+           IF      FLG-SANTEI-TBL      =   ZERO
+               PERFORM 200512-SANTEI-SELECT-SEC
+               MOVE    1               TO  FLG-SANTEI-TBL
+           END-IF
+      *    保険毎のコードの判定
+           PERFORM 1000-SANTEI-CHK-SEC
+      *
+           INITIALIZE                  SANTEI-REC
+           MOVE    ZERO                TO  FLG-SANTEI-OK
+           PERFORM VARYING     IDX2    FROM    1   BY   1
+                   UNTIL      (IDX2    >   IDX-TBL )  OR
+                              (FLG-SANTEI-OK   =   1  )
+               IF      CHK-CD              =   TBLW-SANTEI-SRYCD(IDX2)
+      *            対象の算定履歴判定
+                   MOVE    TBLW-SANTEI-REC(IDX2)   TO  SANTEI-REC
+                   PERFORM 200511-SANTEI-CHK-SEC
+               END-IF
+           END-PERFORM
+           IF      FLG-SANTEI-OK       =   ZERO
+               INITIALIZE                  SANTEI-REC
+           END-IF
+      *
+      *    算定歴の回数をチェックする
+           MOVE    SANTEI-MSANTEICNT   TO  WRK-SANTEI-CNT
+      *
+      *    訂正の時、訂正分はカウントしない
+           IF      LNK-SC92-SYORIFLG   =   1
+               MOVE    ZERO                TO  WRK-TEI-CNT
+               PERFORM VARYING     IDX2    FROM    1   BY  1
+                       UNTIL      (IDX2    >   SPA-MAX-LINE )  OR
+                                  (LNK-SC92-TEI-SRYCD(IDX2)
+                                               =   SPACE )
+                   IF      SANTEI-SRYCD    =   LNK-SC92-TEI-SRYCD(IDX2)
+                       ADD     LNK-SC92-TEI-KAISU(IDX2)
+                                               TO  WRK-TEI-CNT
+                   END-IF
+               END-PERFORM
+               MOVE    SPA-SRYYMD(7:2)     TO  IDX-Y2
+               IF     (SANTEI-SRYYM        =   SPA-SRYYMD(1:6)) AND
+                      (SANTEI-DAY (IDX-Y2) >   ZERO )  AND
+                      (WRK-SANTEI-CNT      >   ZERO )
+                   COMPUTE WRK-SANTEI-CNT  =   WRK-SANTEI-CNT
+                                           -   WRK-TEI-CNT
+                   IF      SANTEI-DAY (IDX-Y2) >=  WRK-TEI-CNT
+                       COMPUTE SANTEI-DAY (IDX-Y2)
+                                           =   SANTEI-DAY (IDX-Y2)
+                                           -   WRK-TEI-CNT
+                   ELSE
+                       MOVE    ZERO            TO  SANTEI-DAY (IDX-Y2)
+                   END-IF
+               END-IF
+           END-IF
+      *    入院・外来チェック
+           IF     (WRK-SANTEI-CNT      >   ZERO    )
+               IF      CHK-NYUGAIBNDKBN    =   "1"
+                   PERFORM 20055-NYUGAIBND-CHK-SEC
+               END-IF
+           END-IF
+      *
+      *    慢性疼痛疾患管理料と消炎鎮痛等処置
+           IF     (WRK-SANTEI-CNT      >   ZERO    )  AND
+                  (CHK-SYORIKBN        =   "1"     )
+               PERFORM 20055-MANSEI-CHK-SEC
+           END-IF
+      *
+      *    初診料とのチェック処理
+           IF     (WRK-SANTEI-CNT      >   ZERO    )  AND
+                  (CHK-SYORIKBN        =   "2"     )
+               PERFORM 20056-SYOSIN-CHK-SEC
+           END-IF
+      *
+      *    算定歴の回数をチェックする
+           IF      WRK-SANTEI-CNT      >   ZERO
+               IF      CHK-CHKERR          =   ZERO
+                   MOVE    SANTEI-SRYYM        TO  WRK-ERR-YMD(1:6)
+                   MOVE    SANTEI-MSANTEID     TO  WRK-ERR-YMD(7:2)
+                   MOVE    CHK-CD              TO  WRK-ERR-SRYCD
+                   MOVE    1                   TO  FLG-CHKERR
+               ELSE
+      *            警告
+                   IF      SPA-COM-HKEIFLG (IDX-T) =   SPACE
+                       IF      WRK-KEI-SRYCD       =   SPACE
+                           MOVE    CHK-CD          TO  WRK-KEI-SRYCD
+                           MOVE    SANTEI-SRYYM    TO  WRK-ERR-YMD(1:6)
+                           MOVE    SANTEI-MSANTEID TO  WRK-ERR-YMD(7:2)
+                      END-IF
+                  END-IF
+              END-IF
+           END-IF
+           .
+       20051-CHK-SANTEI-EXT.
+           EXIT.
+      *****************************************************************
+      *    入力値とのチェック処理
+      *****************************************************************
+       20052-CHK-INPUT-SEC                SECTION.
+      *
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL      (IDX     >   SPA-MAX-LINE          )  OR
+                             ((SPA-GMN-INPUTCD (IDX)   =   SPACE ) AND
+                              (SPA-COM-INPUTCD (IDX)   =   SPACE )) OR
+                              (FLG-KONKAI          =   1     )
+               IF     (IDX                 =   IDX-T   )
+                 OR   (SPA-COM-HKNCOMBI (IDX)  =   "9999" )
+                   CONTINUE
+               ELSE
+                   IF      SPA-COM-INPUTCD(IDX)    =   CHK-CD
+                       IF      CHK-CHKERR          =   ZERO
+                           MOVE    CHK-CD              TO  WRK-ERR-SRYCD
+                           MOVE    1                   TO  FLG-CHKERR
+                           MOVE    1                   TO  FLG-KONKAI
+                       ELSE
+      *                    警告
+                           IF     (SPA-COM-HKEIFLG (IDX-T) =   SPACE)
+                              AND (WRK-KEI-SRYCD       =   SPACE    )
+                               MOVE    CHK-CD          TO  WRK-KEI-SRYCD
+                               MOVE    1               TO  FLG-KONKAI
+                           END-IF
+                       END-IF
+                   END-IF
+               END-IF
+           END-PERFORM
+           .
+       20052-CHK-INPUT-EXT.
+           EXIT.
+      *****************************************************************
+      *    算定履歴の同日併算定チェック
+      *****************************************************************
+       20053-DAYCHK-SANTEI-SEC            SECTION.
+      *
+      *    算定履歴テーブル保存
+           IF      FLG-SANTEI-TBL      =   ZERO
+               PERFORM 200512-SANTEI-SELECT-SEC
+               MOVE    1               TO  FLG-SANTEI-TBL
+           END-IF
+      *    保険毎のコードの判定
+           PERFORM 1000-SANTEI-CHK-SEC
+      *
+           INITIALIZE                  SANTEI-REC
+           MOVE    ZERO                TO  FLG-SANTEI-OK
+           PERFORM VARYING     IDX2    FROM    1   BY   1
+                   UNTIL      (IDX2    >   IDX-TBL )  OR
+                              (FLG-SANTEI-OK   =   1  )
+               IF      CHK-CD              =   TBLW-SANTEI-SRYCD(IDX2)
+      *            対象の算定履歴判定
+                   MOVE    TBLW-SANTEI-REC(IDX2)   TO  SANTEI-REC
+                   PERFORM 200511-SANTEI-CHK-SEC
+               END-IF
+           END-PERFORM
+           IF      FLG-SANTEI-OK       =   ZERO
+               INITIALIZE                  SANTEI-REC
+           END-IF
+      *
+      *    訂正の時、訂正分はカウントしない
+           MOVE    SPA-SRYYMD(7:2)     TO  IDX-Y2
+           IF      LNK-SC92-SYORIFLG   =   1
+               PERFORM VARYING     IDX2    FROM    1   BY  1
+                       UNTIL      (IDX2    >   SPA-MAX-LINE )  OR
+                                  (LNK-SC92-TEI-SRYCD(IDX2)
+                                               =   SPACE )
+                   IF      SANTEI-SRYCD    =   LNK-SC92-TEI-SRYCD(IDX2)
+                       ADD     LNK-SC92-TEI-KAISU(IDX2)
+                                               TO  WRK-TEI-CNT
+                   END-IF
+               END-PERFORM
+               IF      SANTEI-DAY (IDX-Y2) >=  WRK-TEI-CNT
+                   COMPUTE SANTEI-DAY (IDX-Y2) =   SANTEI-DAY (IDX-Y2)
+                                               -   WRK-TEI-CNT
+               ELSE
+                    MOVE    ZERO           TO  SANTEI-DAY (IDX-Y2)
+               END-IF
+           END-IF
+      *    当日に算定があればエラー
+           IF      SANTEI-DAY (IDX-Y2) >   ZERO
+               IF      CHK-CHKERR          =   ZERO
+                   MOVE    CHK-CD              TO  WRK-ERR-SRYCD
+                   MOVE    1                   TO  FLG-CHKERR
+                   MOVE    1                   TO  FLG-DAYCHK
+               ELSE
+      *            警告
+                   IF      SPA-COM-HKEIFLG (IDX-T) =   SPACE
+                       IF      WRK-KEI-SRYCD       =   SPACE
+                           MOVE    CHK-CD          TO  WRK-KEI-SRYCD
+                           MOVE    1               TO  FLG-DAYCHK
+                      END-IF
+                  END-IF
+               END-IF
+           END-IF
+      *
+           .
+       20053-DAYCHK-SANTEI-EXT.
+           EXIT.
+      *****************************************************************
+      *    入院・外来チェック処理
+      *****************************************************************
+       20055-NYUGAIBND-CHK-SEC            SECTION.
+      *
+           IF      SPA-NYUGAIKBN       =   "1"
+      *        入院は、外来分は算定対象外
+               PERFORM VARYING     IDX-Y3  FROM    1   BY   1
+                       UNTIL       IDX-Y3  >   31
+      *            入院期間チェック
+                   IF      SPA-K02-NYUDAY(IDX-Y3)  =   ZERO
+                       COMPUTE WRK-SANTEI-CNT  =   WRK-SANTEI-CNT
+                                               -   SANTEI-DAY (IDX-Y3)
+                       MOVE    ZERO            TO  SANTEI-DAY (IDX-Y3)
+                   END-IF
+               END-PERFORM
+           ELSE
+      *        外来は、入院分は対象外
+               PERFORM VARYING     IDX-Y3  FROM    1   BY   1
+                       UNTIL       IDX-Y3  >   31
+      *            入院期間チェック
+                   IF      SPA-K02-NYUDAY(IDX-Y3)  =   1
+                       COMPUTE WRK-SANTEI-CNT  =   WRK-SANTEI-CNT
+                                               -   SANTEI-DAY (IDX-Y3)
+                       MOVE    ZERO            TO  SANTEI-DAY (IDX-Y3)
+                   END-IF
+               END-PERFORM
+           END-IF
+      *
+      *    初回算定日の変更
+           IF      WRK-SANTEI-CNT      >   ZERO
+               PERFORM VARYING     IDX-Y3  FROM    1   BY   1
+                       UNTIL       IDX-Y3  >   31
+                   IF      SANTEI-DAY (IDX-Y3)     >   ZERO
+                       MOVE    IDX-Y3          TO  SANTEI-MSANTEID
+                       MOVE    31              TO  IDX-Y3
+                   END-IF
+               END-PERFORM
+           END-IF
+           .
+       20055-NYUGAIBND-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *     慢性疼痛疾患管理料と消炎鎮痛等処置のチェック処理
+      *****************************************************************
+       20055-MANSEI-CHK-SEC        SECTION.
+      *
+      *    直帰の初診算定日を決定する
+           PERFORM 200531-SYOSIN-SANTEI-SEC
+      *
+      *    直帰の慢性疼痛疾患管理料算定日
+           MOVE    "113006510"         TO  WRK-SRYCD
+           IF      FLG-MANSEI-CHK      =   ZERO
+      *        直帰の初診算定日を決定する
+               PERFORM 200531-SYOSIN-SANTEI-SEC
+               MOVE    1                   TO  FLG-MANSEI-CHK
+               PERFORM 2005332-SANTEI-CHK-SEC
+               MOVE    WRK-YMD             TO  WRK-MANSEI-YMD
+      *        訂正の時、当日ならＯＫとする
+               IF      LNK-SC92-SYORIFLG   =   1
+                   IF     (WRK-YMD             =   SPA-SRYYMD  )
+                       MOVE    SPACE           TO  WRK-MANSEI-YMD
+                   END-IF
+               END-IF
+      *        初診算定日が前回の慢性疼痛より後の時、初回とする
+               IF     (WRK-MANSEI-YMD      =   SPACE   )  OR
+                      (WRK-SYOSINYMD1      >   WRK-MANSEI-YMD)
+                   MOVE    ZERO            TO  FLG-MANSEI-ARI
+               ELSE
+                   MOVE    1               TO  FLG-MANSEI-ARI
+               END-IF
+           END-IF
+      *
+      *    慢性疼痛入力
+           IF      LNK-SC92-SRYCD      =   WRK-SRYCD
+      *        初回慢性疼痛がない時ＯＫ
+               IF      FLG-MANSEI-ARI      =   ZERO
+                   MOVE    ZERO            TO  WRK-SANTEI-CNT
+               END-IF
+           ELSE
+               IF      FLG-MANSEI-ARI      =   ZERO
+                   MOVE    ZERO            TO  WRK-SANTEI-CNT
+               END-IF
+           END-IF
+           .
+       20053-MANSEI-CHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1663,81 +2056,6 @@
            EXIT.
       *
       *****************************************************************
-      *    チェックコードの算定チェック
-      *****************************************************************
-       20051-CHK-SANTEI-SEC            SECTION.
-      *
-      *    保険毎のコードの判定
-           PERFORM 1000-SANTEI-CHK-SEC
-      *
-           INITIALIZE                  SANTEI-REC
-           MOVE    ZERO                TO  FLG-SANTEI-OK
-           PERFORM VARYING     IDX2    FROM    1   BY   1
-                   UNTIL      (IDX2    >   IDX-TBL )  OR
-                              (FLG-SANTEI-OK   =   1  )
-               IF      CHK-CD (IDX-C)      =   TBLW-SANTEI-SRYCD(IDX2)
-      *            対象の算定履歴判定
-                   MOVE    TBLW-SANTEI-REC(IDX2)   TO  SANTEI-REC
-                   PERFORM 200511-SANTEI-CHK-SEC
-               END-IF
-           END-PERFORM
-           IF      FLG-SANTEI-OK       =   ZERO
-               INITIALIZE                  SANTEI-REC
-           END-IF
-      *
-      *    算定歴の回数をチェックする
-           MOVE    SANTEI-MSANTEICNT   TO  WRK-SANTEI-CNT
-      *
-      *    訂正の時、訂正分はカウントしない
-           IF      LNK-SC92-SYORIFLG   =   1
-               MOVE    SPA-SRYYMD(7:2)     TO  IDX-Y2
-               IF     (SANTEI-SRYYM        =   SPA-SRYYMD(1:6)) AND
-                      (SANTEI-DAY (IDX-Y2) >   ZERO )  AND
-                      (WRK-SANTEI-CNT      >   ZERO )
-                   COMPUTE WRK-SANTEI-CNT  =   WRK-SANTEI-CNT
-                                           -   SANTEI-DAY (IDX-Y2)
-               END-IF
-           END-IF
-      *
-      *    在宅寝たきり患者処置指導管理料チェック
-           IF     (WRK-SANTEI-CNT      >   ZERO    )  AND
-                 ((LNK-SC92-SRYCD      =   "114005810" ) OR
-                  (CHK-CD (IDX-C)      =   "114005810" ))
-               PERFORM 20054-NETAKIRI-CHK-SEC
-           END-IF
-      *    慢性疼痛疾患管理料の入院チェック
-           IF     (WRK-SANTEI-CNT      >   ZERO    )  AND
-                 ((LNK-SC92-SRYCD      =   "113006510" ) OR
-                  (CHK-CD (IDX-C)      =   "113006510" ))
-               PERFORM 20055-NYUIN-MANSEI-CHK-SEC
-           END-IF
-      *
-      *    算定歴の回数をチェックする
-           IF      WRK-SANTEI-CNT      >   ZERO
-               MOVE    "0033"              TO  LNK-SC92-ERRCD6
-      *
-               MOVE    CHK-CD (IDX-C)      TO  TNS-SRYCD
-               PERFORM 911-TENSU-READ22-SEC
-      *
-               MOVE    SPACE               TO  LNK-SC92-ERRMSG
-               INITIALIZE                      STS-AREA-DAY
-               INITIALIZE                      LNK-DAY2-AREA
-               MOVE    "21"                TO  LNK-DAY2-IRAI
-               MOVE    SANTEI-SRYYM        TO  LNK-DAY2-YMD(1:6)
-               MOVE    SANTEI-MSANTEID     TO  LNK-DAY2-YMD(7:2)
-               CALL    "ORCSDAY"           USING   STS-AREA-DAY
-                                                   LNK-DAY2-AREA
-               STRING  LNK-DAY2-EDTYMD3    DELIMITED  BY  SIZE
-                       "　"                DELIMITED  BY  SIZE
-                       TNS-NAME            DELIMITED  BY  SPACE
-                      INTO                 LNK-SC92-ERRMSG
-               END-STRING
-           END-IF
-           .
-       20051-CHK-SANTEI-EXT.
-           EXIT.
-      *
-      *****************************************************************
       *    保険毎のコードの判定処理
       *****************************************************************
        1000-SANTEI-CHK-SEC      SECTION.
@@ -1747,7 +2065,7 @@
                AT  END
                    MOVE    ZERO            TO  FLG-HKNSAN
                    MOVE    SPACE           TO  WRK-RSI-KBN
-               WHEN    CHK-CD (IDX-C)      =   TBL-SANTEI-SRYCD
+               WHEN    CHK-CD              =   TBL-SANTEI-SRYCD
                                                           (TBL-SAN)
                    MOVE    1               TO  FLG-HKNSAN
                    MOVE    TBL-RSI-KBN    (TBL-SAN)
@@ -1812,194 +2130,6 @@
        200511-SANTEI-CHK-EXT.
            EXIT.
       *
-      *****************************************************************
-      *    入力値とのチェック処理
-      *****************************************************************
-       20052-CHK-INPUT-SEC                SECTION.
-      *
-           PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL      (IDX     >   SPA-MAX-LINE          )  OR
-                             ((SPA-GMN-INPUTCD (IDX)   =   SPACE ) AND
-                              (SPA-COM-INPUTCD (IDX)   =   SPACE )) OR
-                              (FLG-KONKAI          =   1     )
-               IF      IDX                 =   IDX-T
-                 OR   (SPA-COM-HKNCOMBI (IDX)  =   "9999" )
-                   CONTINUE
-               ELSE
-                   IF      SPA-COM-INPUTCD(IDX)
-                                               =   CHK-CD (IDX-C)
-                       MOVE    "0033"          TO  LNK-SC92-ERRCD6
-      *
-                       MOVE    CHK-CD (IDX-C)      TO  TNS-SRYCD
-                       PERFORM 911-TENSU-READ22-SEC
-      *
-                       MOVE    SPACE               TO  LNK-SC92-ERRMSG
-                       STRING  "今回　"            DELIMITED  BY  SIZE
-                               TNS-NAME            DELIMITED  BY  SPACE
-                              INTO                 LNK-SC92-ERRMSG
-                       END-STRING
-                       MOVE    1                   TO  FLG-KONKAI
-                   END-IF
-               END-IF
-           END-PERFORM
-           .
-       20052-CHK-INPUT-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *     慢性疼痛疾患管理料のチェック処理
-      *****************************************************************
-       200531-MANSEI-SYOCHI-SEC     SECTION.
-      *
-           MOVE    ZERO                TO  FLG-MANSEI-CHK
-      *    理学療法４、消炎鎮痛等処置の時チェック
-           IF     (LNK-SC92-SRYCD      =   "180707410"
-                                       OR  "180022710"
-                                       OR  "180022810"
-                                       OR  "180707510"
-                                       OR  "140029610"
-                                       OR  "140040310"
-                                       OR  "140002210"
-                                       OR  "140002310"
-      *            介達牽引
-                                       OR  "140048010")  OR
-                  (WRK-CHK-CD2         =   "180707410"
-                                       OR  "180022710"
-                                       OR  "180022810"
-                                       OR  "180707510"
-                                       OR  "140029610"
-                                       OR  "140040310"
-                                       OR  "140002210"
-                                       OR  "140002310" 
-      *            介達牽引
-                                       OR  "140048010") 
-               MOVE    1               TO  FLG-MANSEI-CHK
-           ELSE
-      *        Ｈ１８．１０ からの追加
-               IF      SPA-SRYYMD      >=  "20061001"
-      *             矯正固定〜肛門処置
-                   IF     (LNK-SC92-SRYCD      =   "140030350"
-                                               OR  "140048250"
-                                               OR  "140048350"
-                                               OR  "140048450"
-                                               OR  "140048550"
-                                               OR  "140002450" )  OR
-                          (WRK-CHK-CD2         =   "140030350"
-                                               OR  "140048250"
-                                               OR  "140048350"
-                                               OR  "140048450"
-                                               OR  "140048550"
-                                               OR  "140002450" )
-                       MOVE    1               TO  FLG-MANSEI-CHK
-                   END-IF
-               END-IF
-           END-IF
-           .
-       200531-MANSEI-SYOCHI-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *     慢性疼痛疾患管理料のチェック処理
-      *****************************************************************
-       20053-MANSEI-CHK-SEC        SECTION.
-      *
-           MOVE    WRK-CHK-CD          TO  WRK-CHK-CD2
-      *    理学療法４、消炎鎮痛等処置の時チェック
-           PERFORM 200531-MANSEI-SYOCHI-SEC
-           IF      FLG-MANSEI-CHK      =   ZERO
-               GO      TO      20053-MANSEI-CHK-EXT
-           END-IF
-      *
-      *    直帰の初診算定日を決定する
-           PERFORM 200531-SYOSIN-SANTEI-SEC
-      *
-      *    直帰の慢性疼痛疾患管理料算定日
-           MOVE    "113006510"         TO  WRK-SRYCD
-           PERFORM 2005332-SANTEI-CHK-SEC
-      *    今回入力でないこと
-           MOVE    ZERO                TO  FLG-MANSEI-ARI
-           IF      LNK-SC92-SRYCD  NOT =   WRK-SRYCD
-               PERFORM VARYING     IDX     FROM    1   BY  1
-                       UNTIL      (IDX     >   SPA-MAX-LINE  )  OR
-                                 ((SPA-GMN-INPUTCD (IDX)
-                                               =   SPACE ) AND
-                                  (SPA-COM-INPUTCD (IDX)
-                                               =   SPACE ))
-                  IF      SPA-COM-INPUTCD (IDX)   =   WRK-SRYCD
-                       MOVE    1                   TO  FLG-MANSEI-ARI
-                   END-IF
-               END-PERFORM
-           END-IF
-      *
-      *    初回慢性疼痛がない時ＯＫ
-           IF     (WRK-YMD             =   SPACE  )  AND
-                  (FLG-MANSEI-ARI      =   ZERO   )
-               MOVE    SPACE           TO  LNK-SC92-ERRCD6
-               MOVE    SPACE           TO  LNK-SC92-ERRMSG
-           END-IF
-      *    訂正の時、当日ならＯＫとする
-           IF      LNK-SC92-SYORIFLG   =   1
-               IF     (WRK-YMD             =   SPA-SRYYMD  )  AND
-                      (FLG-MANSEI-ARI      =   ZERO   )
-                   MOVE    SPACE           TO  LNK-SC92-ERRCD6
-                   MOVE    SPACE           TO  LNK-SC92-ERRMSG
-               END-IF
-           END-IF
-      *
-      *    初診算定日が前回の算定日より後の時、算定ができること
-           IF    ((WRK-YMD             =   SPACE  )  OR
-                  (WRK-SYOSINYMD1      >   WRK-YMD))
-              AND (FLG-MANSEI-ARI      =   ZERO   )
-               MOVE    SPACE           TO  LNK-SC92-ERRCD6
-               MOVE    SPACE           TO  LNK-SC92-ERRMSG
-           END-IF
-           .
-       20053-MANSEI-CHK-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *     慢性疼痛疾患管理料の入院チェック処理
-      *****************************************************************
-       20055-NYUIN-MANSEI-CHK-SEC        SECTION.
-      *
-           MOVE    CHK-CD (IDX-C)      TO  WRK-CHK-CD2
-      *    理学療法４、消炎鎮痛等処置の時チェック
-           PERFORM 200531-MANSEI-SYOCHI-SEC
-           IF      FLG-MANSEI-CHK      =   ZERO
-               GO      TO      20055-NYUIN-MANSEI-CHK-EXT
-           END-IF
-      *
-      *    入院中の場合対象外
-           IF     (SPA-NYUGAIKBN       =   "1"     )  AND
-                  (CHK-CD (IDX-C)      =   "113006510" )
-               MOVE    ZERO                TO  WRK-SANTEI-CNT
-           ELSE
-      *
-      *    外来で当月入院が有り消炎鎮痛の場合のみ対象とする
-               IF     (CHK-CD (IDX-C)      =   "180707410"
-                                           OR  "180022710"
-                                           OR  "180022810"
-                                           OR  "180707510"
-                                           OR  "140029610"
-                                           OR  "140040310"
-                                           OR  "140002210"
-                                           OR  "140002310" 
-      *            介達牽引
-                                           OR  "140048010")
-               OR    ((SPA-SRYYMD          >=  "20061001" )  AND
-      *               矯正固定〜肛門処置
-                       (CHK-CD (IDX-C)     =   "140030350"
-                                           OR  "140048250"
-                                           OR  "140048350"
-                                           OR  "140048450"
-                                           OR  "140048550"
-                                           OR  "140002450" ))
-                   PERFORM 200541-NYUIN-CHK-SEC
-               END-IF
-           END-IF
-           .
-       20055-NYUIN-MANSEI-CHK-EXT.
-           EXIT.
       *****************************************************************
       *    リハビリ管理料のチェック処理
       *****************************************************************
@@ -2431,7 +2561,6 @@
                    END-IF
                END-IF
       *        発生日より後の時、算定なしとする
-      *D       IF      WRK-STYMD           <=  WRK-YMD2
                IF     (WRK-STYMD       NOT =   SPACE     )  AND
                       (WRK-STYMD           <=  WRK-YMD2  )
                    MOVE    SPACE               TO  WRK-YMD
@@ -2463,78 +2592,6 @@
            END-SEARCH
            .
        200542-RIHA-HENKAN-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *     在宅寝たきり患者処置指導管理料のチェック処理
-      *****************************************************************
-       20054-NETAKIRI-CHK-SEC        SECTION.
-      *
-      *    消炎鎮痛等処置との時チェック
-           IF      (CHK-CD (IDX-C)     =   "140029610"
-                                       OR  "140040310"
-                                       OR  "140002210"
-                                       OR  "140002310"
-                                       OR  "114005810")  OR
-                   (LNK-SC92-SRYCD     =   "140029610"
-                                       OR  "140040310"
-                                       OR  "140002210"
-                                       OR  "140002310"
-                                       OR  "114005810") 
-               CONTINUE
-           ELSE
-      *        Ｈ１８．１０ からの追加
-               IF      SPA-SRYYMD      >=  "20061001"
-      *            矯正固定〜肛門処置
-                   IF     (LNK-SC92-SRYCD      =   "140030350"
-                                               OR  "140048250"
-                                               OR  "140048350"
-                                               OR  "140048450"
-                                               OR  "140048550"
-                                               OR  "140002450" )  OR
-                          (CHK-CD (IDX-C)      =   "140030350"
-                                               OR  "140048250"
-                                               OR  "140048350"
-                                               OR  "140048450"
-                                               OR  "140048550"
-                                               OR  "140002450" )
-                       CONTINUE
-                   ELSE
-                       GO      TO      20054-NETAKIRI-CHK-EXT
-                   END-IF
-               ELSE
-                   GO      TO      20054-NETAKIRI-CHK-EXT
-               END-IF
-           END-IF
-      *
-      *    入院中の場合対象外
-           IF     (SPA-NYUGAIKBN       =   "1"     )  AND
-                  (CHK-CD (IDX-C)      =   "114005810" )
-               MOVE    ZERO                TO  WRK-SANTEI-CNT
-               GO      TO      20054-NETAKIRI-CHK-EXT
-           END-IF
-      *
-      *    外来で当月入院が有り消炎鎮痛の場合のみ対象とする
-           IF     (CHK-CD (IDX-C)      =   "140029610"
-                                       OR  "140040310"
-                                       OR  "140002210"
-                                       OR  "140002310"
-                                       OR  "114005810") 
-           OR    ((SPA-SRYYMD          >=  "20061001" )  AND
-      *           矯正固定〜肛門処置
-                   (CHK-CD (IDX-C)     =   "140030350"
-                                       OR  "140048250"
-                                       OR  "140048350"
-                                       OR  "140048450"
-                                       OR  "140048550"
-                                       OR  "140002450" ))
-               IF      (SPA-K02N-NYUINFLG    =   1         )
-                  PERFORM 200541-NYUIN-CHK-SEC
-               END-IF
-           END-IF
-      *
-           .
-       20054-NETAKIRI-CHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -2595,8 +2652,6 @@
       *
            MOVE    SPACE               TO  WRK-YMD
       *
-      *D   MOVE    WRK-SRYCD           TO  TNS-SRYCD
-      *D   PERFORM 910-TENSU-READ-SEC
       *    保険毎のコードの判定
            SET     TBL-SAN             TO  1
            SEARCH  TBL-SANTEI-OCC      VARYING   TBL-SAN
@@ -2706,6 +2761,169 @@
            .
       *
        2005332-SANTEI-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *     初診料とのチェック処理
+      *****************************************************************
+       20056-SYOSIN-CHK-SEC        SECTION.
+      *
+      *    初診料
+           MOVE    "111000110"         TO  WRK-SRYCD
+      *
+           MOVE    SPA-SRYYMD(7:2)     TO  IDX-Y2
+           MOVE    ZERO                TO  FLG-SYO-ERR
+           IF      CHK-CD              =   WRK-SRYCD
+      *        初診以外入力時、前に初診算定があればエラー
+               PERFORM VARYING     IDX-Y3  FROM    1   BY   1
+                       UNTIL       IDX-Y3  >   31
+                   IF     (SANTEI-DAY (IDX-Y3) >   ZERO )
+                      AND (IDX-Y2              >=  IDX-Y3 )
+                       MOVE    2               TO  FLG-SYO-ERR
+                   END-IF
+               END-PERFORM
+           ELSE
+      *        初診入力時、後に算定があればエラー
+               PERFORM VARYING     IDX-Y3  FROM    1   BY   1
+                       UNTIL       IDX-Y3  >   31
+                   IF     (SANTEI-DAY (IDX-Y3) >   ZERO )
+                      AND (IDX-Y2              <=  IDX-Y3 )
+                       MOVE    1               TO  FLG-SYO-ERR
+                   END-IF
+               END-PERFORM
+           END-IF
+           IF      FLG-SYO-ERR         =   ZERO
+               MOVE    "1"             TO  LNK-SC92-SYOKBN
+               MOVE    ZERO            TO  WRK-SANTEI-CNT
+           END-IF
+           .
+       20056-SYOSIN-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    入力値とのチェック処理
+      *****************************************************************
+       200521-CHKNYU-INPUT-SEC                SECTION.
+      *
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL      (IDX     >   SPA-MAX-LINE          )  OR
+                             ((SPA-GMN-INPUTCD (IDX)   =   SPACE ) AND
+                              (SPA-COM-INPUTCD (IDX)   =   SPACE )) OR
+                              (FLG-KONKAI          =   1     )
+               IF     (IDX                 =   IDX-T   )
+                 OR   (SPA-COM-HKNCOMBI (IDX)  =   "9999" )
+                   CONTINUE
+               ELSE
+                   MOVE    ZERO                TO  FLG-DAYERR
+                   IF      SPA-COM-INPUTCD(IDX)    =   CHK-CD
+      *                同じ日の指定があること
+                       PERFORM VARYING IDX-N2      FROM    1   BY  1
+                               UNTIL  (IDX-N2      >   31  )   OR
+                                      (FLG-DAYERR  =   1   )
+                           IF     (SPA-COM-NYUINDAY(IDX IDX-N2)
+                                                        >   ZERO ) AND
+                                  (SPA-COM-NYUINDAY(IDX-T IDX-N2)
+                                                        >   ZERO )
+                               MOVE    1                TO  FLG-DAYERR
+                               MOVE    IDX-N2           TO  WRK-DAYERR
+                           END-IF
+                       END-PERFORM
+                   END-IF
+                   IF      FLG-DAYERR          =   1
+                       IF      CHK-CHKERR          =   ZERO
+                           MOVE    CHK-CD              TO  WRK-ERR-SRYCD
+                           MOVE    1                   TO  FLG-CHKERR
+                           MOVE    1                   TO  FLG-KONKAI
+                       ELSE
+      *                    警告
+                           IF     (SPA-COM-HKEIFLG (IDX-T) =   SPACE)
+                              AND (WRK-KEI-SRYCD       =   SPACE    )
+                               MOVE    CHK-CD          TO  WRK-KEI-SRYCD
+                               MOVE    1               TO  FLG-KONKAI
+                           END-IF
+                       END-IF
+                   END-IF
+               END-IF
+           END-PERFORM
+           .
+       200521-CHKNYU-INPUT-EXT.
+           EXIT.
+      *****************************************************************
+      *    算定履歴の入院同日併算定チェック
+      *****************************************************************
+       200531-DAYCHKNYU-SANTEI-SEC            SECTION.
+      *
+      *    算定履歴テーブル保存
+           IF      FLG-SANTEI-TBL      =   ZERO
+               PERFORM 200512-SANTEI-SELECT-SEC
+               MOVE    1               TO  FLG-SANTEI-TBL
+           END-IF
+      *    保険毎のコードの判定
+           PERFORM 1000-SANTEI-CHK-SEC
+      *
+           INITIALIZE                  SANTEI-REC
+           MOVE    ZERO                TO  FLG-SANTEI-OK
+           PERFORM VARYING     IDX2    FROM    1   BY   1
+                   UNTIL      (IDX2    >   IDX-TBL )  OR
+                              (FLG-SANTEI-OK   =   1  )
+               IF      CHK-CD              =   TBLW-SANTEI-SRYCD(IDX2)
+      *            対象の算定履歴判定
+                   MOVE    TBLW-SANTEI-REC(IDX2)   TO  SANTEI-REC
+                   PERFORM 200511-SANTEI-CHK-SEC
+               END-IF
+           END-PERFORM
+           IF      FLG-SANTEI-OK       =   ZERO
+               INITIALIZE                  SANTEI-REC
+           END-IF
+      *    訂正の時、訂正分はカウントしない
+           MOVE    SPA-SRYYMD(7:2)     TO  IDX-Y2
+           IF      LNK-SC92-SYORIFLG   =   1
+               PERFORM VARYING     IDX2    FROM    1   BY  1
+                       UNTIL      (IDX2    >   SPA-MAX-LINE )  OR
+                                  (LNK-SC92-TEI-SRYCD(IDX2)
+                                               =   SPACE )
+                   IF      SANTEI-SRYCD    =   LNK-SC92-TEI-SRYCD(IDX2)
+                       ADD     LNK-SC92-TEI-KAISU(IDX2)
+                                               TO  WRK-TEI-CNT
+                   END-IF
+               END-PERFORM
+               IF      SANTEI-DAY (IDX-Y2) >=  WRK-TEI-CNT
+                   COMPUTE SANTEI-DAY (IDX-Y2) =   SANTEI-DAY (IDX-Y2)
+                                               -   WRK-TEI-CNT
+               ELSE
+                    MOVE    ZERO           TO  SANTEI-DAY (IDX-Y2)
+               END-IF
+           END-IF
+      *    同日に算定があればエラー
+           MOVE    ZERO                TO  FLG-DAYERR
+           PERFORM VARYING IDX-N2      FROM    1   BY  1
+                   UNTIL  (IDX-N2      >   31  )   OR
+                          (FLG-DAYERR  =   1   )
+               IF     (SANTEI-DAY (IDX-N2)              >   ZERO ) AND
+                      (SPA-COM-NYUINDAY(IDX-T IDX-N2)
+                                                        >   ZERO )
+                   MOVE    1                TO  FLG-DAYERR
+                   MOVE    IDX-N2           TO  WRK-DAYERR
+               END-IF
+           END-PERFORM
+           IF      FLG-DAYERR          =   1
+               IF      CHK-CHKERR          =   ZERO
+                   MOVE    CHK-CD              TO  WRK-ERR-SRYCD
+                   MOVE    1                   TO  FLG-CHKERR
+                   MOVE    1                   TO  FLG-DAYCHK
+               ELSE
+      *            警告
+                   IF      SPA-COM-HKEIFLG (IDX-T) =   SPACE
+                       IF      WRK-KEI-SRYCD       =   SPACE
+                           MOVE    CHK-CD          TO  WRK-KEI-SRYCD
+                           MOVE    1               TO  FLG-DAYCHK
+                      END-IF
+                  END-IF
+               END-IF
+           END-IF
+      *
+           .
+       200531-DAYCHKNYU-SANTEI-EXT.
            EXIT.
       *****************************************************************
       *     労災・自賠責 チェック処理
@@ -3906,7 +4124,6 @@
        300-SURYOHEN-EXT.
            EXIT.
       *
-      *TEST
       *****************************************************************
       *    器材商品名コード処理
       *****************************************************************

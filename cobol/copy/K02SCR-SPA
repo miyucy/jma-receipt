@@ -108,6 +108,8 @@
                            11  SPA-GMN-BYOMEI-NO     PIC X(02).
                            11  SPA-GMN-BYOMEI        PIC X(22).
                    07  SPA-BYOMEI-MAX            PIC 9(04).
+      *            1:開始日が当日以前
+                   07  SPA-BYOMEI-STR            PIC 9(01).
       *
       *漢字モード
       *************07  SPA-GMN-MCPCHK            PIC X(02).

@@ -537,6 +537,8 @@
            MOVE    ORCSCSETHEN-SYORIFLG    TO  LNK-SC92-SYORIFLG
            MOVE    SPACE               TO  LNK-SC92-KBN
            MOVE    "8"                 TO  LNK-SC92-KBN
+      *    警告チェックあり
+           MOVE    "1"                 TO  LNK-SC92-KEIFLG
            MOVE    SPA-GMN-IDX         TO  LNK-SC92-GMN-IDX
            MOVE    SPA-COM-INPUTCD(SPA-GMN-IDX)
                                        TO  LNK-SC92-SRYCD
@@ -574,6 +576,7 @@
                   (LNK-SC92-ERRCD6  (1:1)   =   "K"  )
                MOVE    SPACE           TO  LNK-SC92-ERRAREA
                MOVE    SPACE           TO  SPA-COM-KZMFLG (SPA-GMN-IDX)
+               MOVE    SPACE           TO  SPA-COM-HKEIFLG (SPA-GMN-IDX)
            END-IF
       *    画像診断のＣＴ．ＭＲＩは２回目のコードが違うので
       *    算定回数のチェックなし

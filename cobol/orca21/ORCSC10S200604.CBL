@@ -1972,8 +1972,8 @@
       *****************************************************************
        200-SINSATU-SET-SEC             SECTION.
       *
-           MOVE    SPACE               TO  SPA-SCR-REC
-           INITIALIZE                  SPA-SCR-REC
+      ***  MOVE    SPACE               TO  SPA-SCR-REC
+      **** INITIALIZE                  SPA-SCR-REC
            MOVE    ZERO                TO  IDX2
            MOVE    ZERO                TO  SPA-GMN-IDX
            MOVE    ZERO                TO  SPA-GAIRAISIN
@@ -2023,6 +2023,8 @@
            MOVE    ZERO                TO  SPA-GMN-IDX
            MOVE    ZERO                TO  SPA-GAIRAISIN
            MOVE    ZERO                TO  SPA-SYONIKA-ARI
+           MOVE    ZERO                TO  SPA-SYOSIN-KEI
+           MOVE    ZERO                TO  SPA-SYOSIN-KEIFLG
       *
            MOVE    SPACE               TO  WRK-SRYCD
       *
@@ -2153,8 +2155,20 @@
                MOVE    SPACE               TO  SPA-KIDCD
            END-IF
       *
-      *    指導料の自動発生
-           PERFORM 33012-SIDOU-SYORI-SEC
+           IF     (WRK-SRYKBN          =   "11"  )  AND
+                  (SPA-GMN-IDX         =   ZERO  )  AND
+                  (SPA-NYUGAIKBN       =   "2"   )
+      *        初診料でエラーにより対象がない時、エラーの表示
+               MOVE    2                   TO  SPA-SYOSIN-KEI
+           END-IF
+      *
+           IF     (SPA-SYOSIN          =   1 )
+      *        療養担当手当発生
+               PERFORM 330123-RYOYOU-TEATE-SEC
+           ELSE
+      *        指導料の自動発生
+               PERFORM 33012-SIDOU-SYORI-SEC
+           END-IF
       *
            .
        2002-KNH-SYOSIN-SET-EXT.
@@ -2367,6 +2381,8 @@
            MOVE    "1"                 TO  LNK-SC92-KBN
            MOVE    SPA-SYORIFLG        TO  LNK-SC92-SYORIFLG
            MOVE    "K02"               TO  LNK-SC92-PG
+      *    警告のチェックなし
+           MOVE    SPACE               TO  LNK-SC92-KEIFLG
            MOVE    SPA-GMN-IDX         TO  LNK-SC92-GMN-IDX
            MOVE    WRK-SRYCD           TO  LNK-SC92-SRYCD
            MOVE    SPA-NENREI          TO  LNK-SC92-NENREI
@@ -2380,7 +2396,17 @@
                                        ORCSC92AREA
                                        SPA-SCR-REC
                                        SPA-AREA
-      *
+      *    初診料の併用エラー
+           IF      WRK-SRYKBN          =   "11"
+               IF      LNK-SC92-SYOKBN     =   "1"
+      *            前に併用算定がある時、病名がすべて治癒であること
+                   IF      SPA-BYOMEI-STR      =   ZERO
+                       MOVE    1                   TO  SPA-SYOSIN-KEI
+                   ELSE
+                       MOVE    "0033"              TO  LNK-SC92-ERRCD6
+                   END-IF
+               END-IF
+           END-IF
       *    エラー時、追加しない
            IF     (SPA-ERRCD           NOT =   SPACE )  OR
                   (LNK-SC92-ERRAREA    NOT =   SPACE )
@@ -4673,6 +4699,17 @@
                                        ORCSC92AREA
                                        SPA-SCR-REC
                                        SPA-AREA
+      *    初診料の併用エラー
+           MOVE    ZERO                TO  SPA-SYOSIN-KEI
+           MOVE    ZERO                TO  SPA-SYOSIN-KEIFLG
+           IF      LNK-SC92-SYOKBN     =   "1"
+      *        前に併用算定がある時、病名がすべて治癒であること
+               IF      SPA-BYOMEI-STR      =   ZERO
+                   MOVE    1                   TO  SPA-SYOSIN-KEI
+               ELSE
+                   MOVE    "0033"              TO  LNK-SC92-ERRCD6
+               END-IF
+           END-IF
       *
       *    エラー時、最初のエラーコードをセット
            IF      SPA-ERRCD       NOT =   SPACE
