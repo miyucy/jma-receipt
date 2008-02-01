@@ -1103,6 +1103,7 @@
            MOVE    ZERO            TO  LNK-SYU-NYNSHOKAISU.
            MOVE    SPACE           TO  LNK-SYU-KOHTAIYKZKBN.
            MOVE    ZERO            TO  LNK-SYU-YKZKENNUM.
+           MOVE    SPACE           TO  LNK-SYU-SAIKEISANKBN.
       *
            MOVE    ZERO            TO  FLG-SEISINJYO
                                        FLG-TOKUREI-HKNJYA.
@@ -6950,7 +6951,15 @@
                      PERFORM  UNTIL  (FLG-SYUNOU   =    "1")
                        IF  SYU-DENPJTIKBN    NOT =  "3"
                           IF   SYU-NYUGAIKBN     =  "1"
-                            IF   LNK-SYU-SKYSTYMD    > SYU-SKYSTYMD
+                            IF ( LNK-SYU-SKYSTYMD > SYU-SKYSTYMD )
+                            OR ((LNK-SYU-SKYSTYMD = SYU-SKYSTYMD) AND
+                                (LNK-SYU-SKYEDYMD > SYU-SKYEDYMD))
+                            OR ((LNK-SYU-SKYSTYMD = SYU-SKYSTYMD) AND
+                                (LNK-SYU-SKYEDYMD = SYU-SKYEDYMD) AND
+                                (SYU-SAIKEISANKBN = SPACE       ) AND
+                                (LNK-S02-DOJITUFLG-ST  =  "1"   ) AND
+                                (LNK-S02-SKYSTYMD(1:6) =
+                                             LNK-SYU-SRYYMD(1:6)))
                                IF   SYU-DAYINFFLG  =  "1"
                                   PERFORM     SYUDAY-READ-SEC
                                ELSE
@@ -6994,7 +7003,15 @@
                      PERFORM  SYUNOU-READ-SEC
                      PERFORM  UNTIL  (FLG-SYUNOU   =    "1")
                        IF  SYU-DENPJTIKBN    NOT =  "3"
-                        IF   LNK-SYU-SKYSTYMD    > SYU-SKYSTYMD
+                        IF ( LNK-SYU-SKYSTYMD > SYU-SKYSTYMD )
+                        OR ((LNK-SYU-SKYSTYMD = SYU-SKYSTYMD) AND
+                            (LNK-SYU-SKYEDYMD > SYU-SKYEDYMD))
+                        OR ((LNK-SYU-SKYSTYMD = SYU-SKYSTYMD) AND
+                            (LNK-SYU-SKYEDYMD = SYU-SKYEDYMD) AND
+                            (SYU-SAIKEISANKBN = SPACE       ) AND
+                            (LNK-S02-DOJITUFLG-ST  =  "1"   ) AND
+                            (LNK-S02-SKYSTYMD(1:6) =
+                                         LNK-SYU-SRYYMD(1:6)))
                                IF   SYU-DAYINFFLG  =  "1"
                                   PERFORM     SYUDAY-READ-SEC
                                ELSE
@@ -11859,6 +11876,7 @@
       *
            IF   LNK-S02-SKYSTYMD(1:6) = LNK-SYU-SRYYMD(1:6)
              IF   LNK-S02-DOJITUFLG-ST  =  "1"
+                MOVE       "1"    TO  LNK-SYU-SAIKEISANKBN
                 MOVE      LNK-SYU-SKYSTYMD(7:2)  TO   IDX-ST
                 EVALUATE  LNK-S02-TIMEKBN-ST
                   WHEN     "0"
