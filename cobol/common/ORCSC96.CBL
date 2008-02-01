@@ -239,6 +239,12 @@
                WHEN    "0033"
                    MOVE    "上記算定済です。併用算定はできません。"
                                        TO  SPA-ERRMSG
+               WHEN    "K033"
+                   STRING  "警告！！"
+                           "上記算定済です。併用算定はできません。"
+                                       DELIMITED  BY  SIZE
+                                       INTO  SPA-ERRMSG
+                   END-STRING
                WHEN    "0034"
                    MOVE
                    "初診料算定日より、１月以内です。算定できません。"
@@ -1630,12 +1636,27 @@
                                        DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
+               WHEN    "K174"
+                   STRING  "警告！！"
+                           "当月に初診料と併用算定できないコードが登録"
+                           "されています。"
+                                       DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
+               WHEN    "K175"
+                   STRING  "警告！！"
+                           "初診料は併用算定エラーです。"
+                           "初診料の自動発生はできません。"
+                                       DELIMITED  BY  SIZE
+                                       INTO  SPA-ERRMSG
+                   END-STRING
       *!
                WHEN    "1050"
-                   MOVE    "労災・自賠責、包括分入力の"
-                                       TO  SPA-ERRMSG
-                   MOVE    "複数保険入力はできません。"
-                                       TO  SPA-ERRMSG(27:)
+                   STRING  "労災・自賠責・公害、包括分入力の"
+                           "複数保険入力はできません。"
+                                       DELIMITED  BY  SIZE
+                                       INTO  SPA-ERRMSG
+                   END-STRING
                WHEN    "1051"
                    MOVE    "保険組合せがありません。"
                                        TO  SPA-ERRMSG

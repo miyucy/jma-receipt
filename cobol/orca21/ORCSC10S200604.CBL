@@ -5822,9 +5822,10 @@
                MOVE    SPA-GMN-INPUTCD(IDX-A)
                                        TO  SPA-MAE-INPUTCD(IDX-A)
            END-IF
-      *    Ï«ºÒ¤Ï¥¨¥é¡¼
+      *    Ï«ºÒ¡¦¸ø³²¤Ï¥¨¥é¡¼
            IF     (SPA-ERRCD           =   SPACE  )  AND
-                  (SPA-NAI-RSI-HKNKBN (IDY)   NOT =  SPACE)
+                 ((SPA-NAI-RSI-HKNKBN (IDY)   NOT =  SPACE)
+              OR  (SPA-NAI-HKNNUM (IDY)    =   "975"  ))
                MOVE    "1050"          TO  SPA-ERRCD
                MOVE    SPACE           TO  SPA-MAE-INPUTCD(IDX-A)
                MOVE    "1"             TO  SPA-COM-CUR    (IDX-A)
