@@ -95,6 +95,7 @@
       *  04.01.03    NACL-ÌçÏÆ    07/12/19  Æþ±¡ÎÁÌ¤»»ÄêÆüÂÐ±þ
       *  04.01.04    NACL-ÌçÏÆ    08/01/18  ºë¶Ì¸©ÀîÅçÄ®ÃÏÊý¸øÈñÂÐ±þ
       *  04.01.05    NACL-ÌçÏÆ    08/01/21  Æ±ÆüºÆÆþ±¡¿©»öÂÐ±þ
+      *  04.01.06    NACL-ÌçÏÆ    08/02/04  É¸·ç³°Çñ·×»»½¤Àµ
       *****************************************************************
        ENVIRONMENT         DIVISION.
        CONFIGURATION       SECTION.
@@ -2701,13 +2702,13 @@ grpsys                                SPA-AREA
       *
            END-IF
       *
-           IF     WRK-HYOKETU-TEN    NOT =   ZERO
+      ***  IF     WRK-HYOKETU-TEN    NOT =   ZERO
       *      É¸·ç¡§¡ó¸º»»
-             COMPUTE    WRK-KHNTEN  =
-                      ( WRK-KHNTEN  -
-                       (WRK-KHNTEN  *
-                        (WRK-HYOKETU-TEN   /  100)))  +  0.5
-           END-IF
+      ***    COMPUTE    WRK-KHNTEN  =
+      ***             ( WRK-KHNTEN  -
+      ***              (WRK-KHNTEN  *
+      ***               (WRK-HYOKETU-TEN   /  100)))  +  0.5
+      ***  END-IF
       *
            .
        NYUINKHN-GET-EXT.

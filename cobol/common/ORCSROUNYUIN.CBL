@@ -57,6 +57,7 @@
       *  03.05.00    NACL-ÌçÏÆ    07/05/08  ¥°¥ë¡¼¥×¿ÇÎÅÂÐ±þ
       *  04.01.01    NACL-ÌçÏÆ    07/10/25  ¸øÌ³ºÒ³²ÂÐ±þ
       *  04.01.02    NACL-ÌçÏÆ    07/12/19  Æþ±¡ÎÁÌ¤»»ÄêÆüÂÐ±þ
+      *  04.01.03    NACL-ÌçÏÆ    08/02/04  É¸·ç³°Çñ·×»»½¤Àµ
       *****************************************************************
       *
       *
@@ -1313,11 +1314,15 @@
                END-IF
       *        É¸·ç
                IF       WRK-HYOKETU(IDX1)    NOT =         SPACE
+                 IF     WRK-GAIHAKU(IDX1)        =         SPACE
                    ADD      1               TO  WRK-MEISAISU
                    MOVE   WRK-HYOKETU(IDX1)  TO  LNK-SROUNYUIN-SRYCD
                                            (IDX1 WRK-MEISAISU)
                    MOVE    "6"           TO  LNK-SROUNYUIN-SRYCD-SK
                                            (IDX1 WRK-MEISAISU)
+                 ELSE
+                   MOVE   SPACE             TO  WRK-HYOKETU(IDX1)
+                 END-IF
                END-IF
       *        Æþ±¡ÎÁ²Ã»»¡ÊÆþ±¡²ñ·×¡Ë
       *         PERFORM   VARYING   KSN-IDX   FROM  1  BY  1
