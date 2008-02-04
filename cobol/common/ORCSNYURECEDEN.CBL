@@ -56,6 +56,7 @@
       *  04.01.01    NACL-小豆沢  07/11/20  公害保険対応（レセ電対象外）
       *  04.01.00    NACL-小豆沢  07/12/19  短期滞在手術基本料２の入院翌日の
       *                                     食事と入院料加算対応
+      *  04.01.00    NACL-小豆沢  08/02/04  標欠と定数超過の外泊修正
       *****************************************************************
       *
       *
@@ -1413,14 +1414,16 @@
                END-IF
       *
       *        標欠
-               IF      WRK-HYOUKETSU(IDX1)   NOT =         SPACE
+               IF     (WRK-GAIHAKU(IDX1)     =             SPACE) AND
+                      (WRK-HYOUKETSU(IDX1)   NOT =         SPACE)
                    ADD      1               TO  WRK-MEISAISU
                    MOVE   WRK-HYOUKETSU(IDX1) TO  WRK-SO-SRYCD
                                            (IDX1 WRK-MEISAISU)
                END-IF
       *
       *        定数超過
-               IF      WRK-TEISU(IDX1)      NOT =         SPACE
+               IF     (WRK-GAIHAKU(IDX1)     =             SPACE) AND
+                      (WRK-TEISU(IDX1)       NOT =         SPACE)
                    ADD      1               TO  WRK-MEISAISU
                    MOVE   WRK-TEISU(IDX1)  TO  WRK-SO-SRYCD
                                            (IDX1 WRK-MEISAISU)
