@@ -1700,42 +1700,43 @@ grpsys             OR      TBL-RECE61-HOSPNUM (IDXX)  =   ZERO
       *        対象外フラグ
                IF      FLG-WRITE            =   ZERO
                    ADD     1                    TO  IDZZ 
-      *        審査支払機関
-               EVALUATE    WRK-RECE61-HKNNUM
-                   WHEN    WRK-CONS-ROUSAI-HKNNUM
-                       MOVE    3   TO  LNK-SYUBETU-TEISYUTUSAKI (IDZZ)
-                   WHEN    WRK-CONS-JIBAI-HKNNUM
-                       MOVE    4   TO  LNK-SYUBETU-TEISYUTUSAKI (IDZZ)
-                   WHEN    WRK-CONS-KOUGAI-HKNNUM
-                       MOVE    5   TO  LNK-SYUBETU-TEISYUTUSAKI (IDZZ)
-                   WHEN    "060"
-                   WHEN    "067"
-                   WHEN    "068"
-                   WHEN    "069"
-                       MOVE    2   TO  LNK-SYUBETU-TEISYUTUSAKI (IDZZ)
-                   WHEN    OTHER
-                       MOVE    1   TO  LNK-SYUBETU-TEISYUTUSAKI (IDZZ)
-               END-EVALUATE
-      *        保険者番号
-               MOVE    WRK-RECE61-HKNJANUM 
+      *            審査支払機関
+                   EVALUATE    WRK-RECE61-HKNNUM
+                       WHEN    WRK-CONS-ROUSAI-HKNNUM
+                         MOVE    3   TO  LNK-SYUBETU-TEISYUTUSAKI (IDZZ)
+                       WHEN    WRK-CONS-JIBAI-HKNNUM
+                         MOVE    4   TO  LNK-SYUBETU-TEISYUTUSAKI (IDZZ)
+                       WHEN    WRK-CONS-KOUGAI-HKNNUM
+                         MOVE    5   TO  LNK-SYUBETU-TEISYUTUSAKI (IDZZ)
+                       WHEN    "060"
+                       WHEN    "067"
+                       WHEN    "068"
+                       WHEN    "069"
+                         MOVE    2   TO  LNK-SYUBETU-TEISYUTUSAKI (IDZZ)
+                       WHEN    OTHER
+                         MOVE    1   TO  LNK-SYUBETU-TEISYUTUSAKI (IDZZ)
+                   END-EVALUATE
+      *            保険者番号
+                   MOVE    WRK-RECE61-HKNJANUM 
                                    TO  LNK-SYUBETU-HKNJANUM (IDZZ)
-      *        補助区分
-               MOVE    WRK-RECE61-HOJOKBN
+      *            補助区分
+                   MOVE    WRK-RECE61-HOJOKBN
                                    TO  LNK-SYUBETU-HOJOKBN  (IDZZ)
-      *        適用開始年月日
-               MOVE    WRK-RECE61-TEKSTYMD
+      *            適用開始年月日
+                   MOVE    WRK-RECE61-TEKSTYMD
                                    TO  LNK-SYUBETU-TEKSTYMD (IDZZ)
-      *        保険番号（主保険）
-               MOVE    WRK-RECE61-HKNNUM
+      *           保険番号（主保険）
+                   MOVE    WRK-RECE61-HKNNUM
                                    TO  LNK-SYUBETU-HKNNUM   (IDZZ)
-      *        保険組合せ
-               PERFORM VARYING IDX     FROM    1   BY  1
-                       UNTIL   IDX     >       10
-                   MOVE    WRK-RECE61-HKNCOMBI-O (IDX)
+      *            保険組合せ
+                   PERFORM VARYING IDX     FROM    1   BY  1
+                           UNTIL   IDX     >       10
+                       MOVE    WRK-RECE61-HKNCOMBI-O (IDX)
                                    TO  LNK-SYUBETU-HKNCOMBI (IDZZ IDX)
-               END-PERFORM
-      *        レセプト種別
-               PERFORM 30011-RECESYUBETU-SET-SEC
+                   END-PERFORM
+      *            レセプト種別
+                   PERFORM 30011-RECESYUBETU-SET-SEC
+               END-IF
            END-PERFORM
            .
        3001-RECESYUBETU-HENSYU-EXT.
