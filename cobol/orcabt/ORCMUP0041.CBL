@@ -195,7 +195,7 @@ grpsys     COPY    "COMMON-SPA".
       *
       *    チェックマスタ−
        01  CHK-REC.
-           COPY    "CPCHK.INC".
+           COPY    "CPCHKOLD.INC".
       *
       *    共通パラメタ
            COPY    "MCPAREA".
