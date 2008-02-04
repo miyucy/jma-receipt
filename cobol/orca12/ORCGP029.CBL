@@ -1923,7 +1923,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *********IF  ( SPA-GMN20-TKARUTE (IDX2)      =   "1"   )  AND
       *            ( SPA-GMN20-THKNCOMBI(IDX2)  NOT =   SPACE  AND
       **********     SPA-GMN20-THKNCOMBI(IDX2)  NOT =   ZERO  )
-               IF    SPA-GMN20-TKARUTE (IDX2)      =   "1"  OR  "2"
+               IF   (SPA-GMN20-TKARUTE (IDX2)      =   "1"  OR  "2" )
                    PERFORM 21001-HC01-CALL-SEC
                END-IF
       *        処方箋出力
@@ -2013,17 +2013,27 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPA-GMN-PTID        TO  SPA-PTID
            MOVE    SPA-GMN-PTNUM       TO  SPA-PTNUM
       *----(01.00.02) LINE ADD START -------------------------------
-           MOVE    SPA-GMN20-THKNCOMBI(IDX2)
-                                     TO  SPA-HKNCOMBINUM
+           IF      SPA-GMN20-THKNCOMBI(IDX2)   =   SPACE
+               MOVE    ZERO            TO  SPA-HKNCOMBINUM
+           ELSE
+               MOVE    SPA-GMN20-THKNCOMBI(IDX2)
+                                       TO  SPA-HKNCOMBINUM
+           END-IF
            MOVE    SPA-NAI20-SRYKA   (IDX2)
-                                     TO  SPA-SRYKA
+                                       TO  SPA-SRYKA
            MOVE    SPA-GMN20-TSRYKA  (IDX2)
-                                     TO  SPA-SRYKAMEI
+                                       TO  SPA-SRYKAMEI
            MOVE    SPA-GMN20-TKARUTE (IDX2)
-                                     TO  ORCHC01-SYORIKBN
-      *
-           CALL    WRK-KARUTE-PG     USING  SPA-AREA
-                                            ORCHC01AREA
+                                       TO  ORCHC01-SYORIKBN
+      *    基本情報のカルテ発行と同じカルテは発行しない
+           IF     (SPA-GMN-HAKKO       =   "1"  OR  "2" )
+             AND  (SPA-SRYKA           =   SPA-GMN-SRYKA )
+             AND  (SPA-HKNCOMBINUM     =   SPA-GMN-SELNUM)
+               CONTINUE
+           ELSE
+               CALL    WRK-KARUTE-PG       USING  SPA-AREA
+                                                  ORCHC01AREA
+           END-IF
       *
            .
        21001-HC01-CALL-EXT.
