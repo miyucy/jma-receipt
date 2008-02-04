@@ -2025,15 +2025,8 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                                        TO  SPA-SRYKAMEI
            MOVE    SPA-GMN20-TKARUTE (IDX2)
                                        TO  ORCHC01-SYORIKBN
-      *    基本情報のカルテ発行と同じカルテは発行しない
-           IF     (SPA-GMN-HAKKO       =   "1"  OR  "2" )
-             AND  (SPA-SRYKA           =   SPA-GMN-SRYKA )
-             AND  (SPA-HKNCOMBINUM     =   SPA-GMN-SELNUM)
-               CONTINUE
-           ELSE
-               CALL    WRK-KARUTE-PG       USING  SPA-AREA
-                                                  ORCHC01AREA
-           END-IF
+           CALL    WRK-KARUTE-PG       USING  SPA-AREA
+                                              ORCHC01AREA
       *
            .
        21001-HC01-CALL-EXT.
