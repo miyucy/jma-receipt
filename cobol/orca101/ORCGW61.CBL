@@ -1183,7 +1183,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
                                            TO
                                            SPA-GMN-TEKIYOU-COMMENT1KBN
                                            WRK-KBN
-               PERFORM 5001-JKYSNUMKBN-HENSYU-SEC
+               PERFORM 5001-TEKIYOU-COMMENT1KBN-HENSYU-SEC
                MOVE    WRK-KBNMEI          TO
                                        SPA-GMN-TEKIYOU-COMMENT1KBNMEI
       *
@@ -1194,7 +1194,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
                                            TO
                                            SPA-GMN-TEKIYOU-COMMENT2KBN
                                            WRK-KBN
-               PERFORM 5001-JKYSNUMKBN-HENSYU-SEC
+               PERFORM 5001-TEKIYOU-COMMENT1KBN-HENSYU-SEC
                MOVE    WRK-KBNMEI          TO
                                        SPA-GMN-TEKIYOU-COMMENT2KBNMEI
       *
