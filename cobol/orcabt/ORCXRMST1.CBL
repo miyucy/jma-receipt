@@ -237,7 +237,8 @@ grpsys     COPY    "COMMON-SPA".
            STRING  WRK-HOMEDIR         DELIMITED  BY  SPACE
       ************ "/ORCADBR.DAT"      DELIMITED  BY  SIZE
       * 2.5.0del * "/ORCADBR-1.DAT"    DELIMITED  BY  SIZE
-                   "/ORCADBR-2.DAT"    DELIMITED  BY  SIZE
+      * 4.1.0del * "/ORCADBR-2.DAT"    DELIMITED  BY  SIZE
+                   "/ORCADBR-3.DAT"    DELIMITED  BY  SIZE
                                        INTO    ASS-IN
            END-STRING
       *
