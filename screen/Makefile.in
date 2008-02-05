@@ -359,6 +359,7 @@ SCREEN_screen = \
 	QFIL.glade \
 	W64.glade \
 	Z08.glade \
+	W34.glade \
 
 SCREEN_objs = $(SCREEN_sources:.glade.in=.glade)
 

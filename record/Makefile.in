@@ -361,6 +361,7 @@ RECORD_files = \
  	QFIL.rec \
  	W64.rec \
  	Z08.rec \
+	W34.rec \
 
 DEF_files = \
 	HC01.def \
@@ -553,6 +554,7 @@ DB_files = \
 	tbl_shoukaidata.db \
 	tbl_shoukaikanri.db \
 	tbl_ptkinki.db \
+	tbl_prgoption.db \
 
 
 all:   
