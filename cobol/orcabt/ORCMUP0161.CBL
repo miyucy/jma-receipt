@@ -16,15 +16,15 @@
       * 113-8621, Japan.
       ********************************************************************
        IDENTIFICATION              DIVISION.
-       PROGRAM-ID.                 ORCMUP0151.
+       PROGRAM-ID.                 ORCMUP0161.
       *****************************************************************
       *  システム名        : ＯＲＣＡ
       *  サブシステム名    : ＤＢ作成処理
-      *  コンポーネント名  : 統計メモ更新処理
+      *  コンポーネント名  : プログラムオプション更新処理
       *                    : 
       *  管理者            : 
       *  作成日付    作業者        記述
-      *  07.11.15    NACL-太田     新規作成
+      *  08.02.04    NACL-伊藤     新規作成
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
@@ -35,7 +35,7 @@
        INPUT-OUTPUT                SECTION.
        FILE-CONTROL.
       *
-      *    入力：統計メモ更新データ
+      *    入力：プログラムオプション更新データ
            SELECT  IN-FILE         ASSIGN
                                    ASS-IN
                                    ORGANIZATION    IS  LINE SEQUENTIAL
@@ -54,19 +54,19 @@
        DATA                        DIVISION.
        FILE                        SECTION.
       *
-      *    入力：統計メモ更新データ
+      *    入力：プログラムオプション更新データ
        FD  IN-FILE.
-       01  TOUKEIMEMOWK-REC.
-           03  TKIMEMOWK-SYORIKBN             PIC  X(01).
-           COPY    "CPTOUKEIMEMO.INC"  REPLACING   //TKIMEMO-//
-                                              BY   //TKIMEMOWK-//.
+       01  PRGOPTIONWK-REC.
+           03  PRGOPTIONWK-SYORIKBN           PIC  X(01).
+           COPY    "CPPRGOPTION.INC"   REPLACING   //PRGOPTION-//
+                                              BY   //PRGOPTIONWK-//.
       *
       *    出力：エラーファイル
        FD  ERR-FILE.
-       01  ERR-TOUKEIMEMOWK-REC.
-           03  ERR-TOUKEIMEMOWK-SYORIKBN      PIC  X(01).
-           COPY    "CPTOUKEIMEMO.INC"  REPLACING   //TKIMEMO-//
-                                              BY   //ERR-TKIMEMOWK-//.
+       01  ERR-PRGOPTIONWK-REC.
+           03  ERR-PRGOPTIONWK-SYORIKBN       PIC  X(01).
+           COPY    "CPPRGOPTION.INC"   REPLACING  //PRGOPTION-//
+                                              BY  //ERR-PRGOPTIONWK-//.
       *
       *    出力：プルーフファイル
        FD  PLF-FILE.
@@ -91,7 +91,7 @@ grpsys     COPY    "COMMON-SPA".
       *    フラグ領域
        01  FLG-AREA.
            03  FLG-IN                  PIC 9(01).
-           03  FLG-TOUKEIMEMO          PIC 9(01).
+           03  FLG-PRGOPTION           PIC 9(01).
            03  FLG-LF                  PIC 9(01).
       *
       *    インデックス領域
@@ -127,14 +127,14 @@ grpsys     COPY    "COMMON-SPA".
            03  WRK-ERRCD               PIC 9(01).
       *
            03  WRK-IN                  PIC X(01).
-           03  WRK-MEMO                PIC X(10000).
-           03  WRK-MEMO-LEN            PIC 9(08).
+           03  WRK-OPTION              PIC X(10000).
+           03  WRK-OPTION-LEN          PIC 9(08).
       *
       *    出力ファイル領域
        01  MES-AREA.
            03  MES-TITLE1.
                05  FILLER              PIC X(26) VALUE
-                                       "【PGID:ORCMUP0151.CBL】".
+                                       "【PGID:ORCMUP0161.CBL】".
                05  MES-TITLE1-YY       PIC X(04) VALUE SPACE.
                05  FILLER              PIC X(01) VALUE ".".
                05  MES-TITLE1-MM       PIC X(02) VALUE SPACE.
@@ -148,15 +148,9 @@ grpsys     COPY    "COMMON-SPA".
            03  FILLER                  PIC X(01)   VALUE   SPACE.
            03  WRK-SYORIKBN            PIC X(01).
            03  FILLER                  PIC X(01)   VALUE   ",".
-           03  WRK-PGID                PIC X(20).
+           03  WRK-PRGID               PIC X(20).
            03  FILLER                  PIC X(01)   VALUE   ",".
-           03  WRK-KANRICD             PIC  X(04).
-           03  FILLER                  PIC X(01)   VALUE   ",".
-           03  WRK-KBNCD               PIC  X(08).
-           03  FILLER                  PIC X(01)   VALUE   ",".
-           03  WRK-STYUKYMD            PIC  X(08).
-           03  FILLER                  PIC X(01)   VALUE   "-".
-           03  WRK-EDYUKYMD            PIC  X(08).
+           03  WRK-KBNCD               PIC X(08).
       *
        01  WRK-HOMEDIR.
            03  FILLER                  PIC X(28)  VALUE
@@ -167,9 +161,9 @@ grpsys     COPY    "COMMON-SPA".
       *    ファイル定義
       *****************************************************************
       *
-      *    統計メモ
-       01  TOUKEIMEMO-REC.
-           COPY    "CPTOUKEIMEMO.INC".
+      *    プログラムオプション
+       01  PRGOPTION-REC.
+           COPY    "CPPRGOPTION.INC".
       *
       *    共通パラメタ
            COPY    "MCPAREA".
@@ -242,7 +236,7 @@ grpsys     COPY    "COMMON-SPA".
       *    出力ファイル　初期処理
            PERFORM 2700-OUTLST-INIT-SEC
       *
-      *    統計メモ更新データ読込み処理
+      *    プログラムオプションデータ読込み処理
            IF      FLG-IN              =   ZERO
                PERFORM 900-IN-KENSAKU-SEC
            END-IF
@@ -294,7 +288,7 @@ grpsys     COPY    "COMMON-SPA".
       *
            MOVE    ZERO                TO  WRK-ERRCD
       *
-           EVALUATE    TKIMEMOWK-SYORIKBN
+           EVALUATE    PRGOPTIONWK-SYORIKBN
       *        追加
                WHEN    "I"
                    PERFORM 2010-INSERT-SYORI-SEC
@@ -306,7 +300,7 @@ grpsys     COPY    "COMMON-SPA".
                    PERFORM 2030-DELETE-SYORI-SEC
            END-EVALUATE
       *
-      *    統計メモ更新データ読込み処理
+      *    プログラムオプションデータ読込み処理
            PERFORM 900-IN-KENSAKU-SEC
            .
        200-MAIN-EXT.
@@ -317,38 +311,33 @@ grpsys     COPY    "COMMON-SPA".
       *****************************************************************
        2010-INSERT-SYORI-SEC       SECTION.
       *
-           INITIALIZE                      TOUKEIMEMO-REC
-           MOVE    TKIMEMOWK-KEY       TO  TKIMEMO-KEY
-           MOVE    TOUKEIMEMO-REC      TO  MCPDATA-REC
+           INITIALIZE                      PRGOPTION-REC
+           MOVE    PRGOPTIONWK-KEY     TO  PRGOPTION-KEY
+           MOVE    PRGOPTION-REC       TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "tbl_toukeimemo"    TO  MCP-TABLE
+           MOVE    "tbl_prgoption"     TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
 grpsys     PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC              =   ZERO
-               MOVE    "tbl_toukeimemo"  TO  MCP-TABLE
+               MOVE    "tbl_prgoption" TO  MCP-TABLE
                MOVE    "key"           TO  MCP-PATHNAME
-               PERFORM  910-TOUKEIMEMO-READ-SEC
+               PERFORM  910-PRGOPTION-READ-SEC
            ELSE
-               MOVE    1               TO  FLG-TOUKEIMEMO
+               MOVE    1               TO  FLG-PRGOPTION
            END-IF
       *
-      *    追加エラー（同一キー存在）
-           IF      FLG-TOUKEIMEMO        =   ZERO
-               MOVE    1               TO  WRK-ERRCD
-               PERFORM 2040-ERR-SYORI-SEC
-               GO      TO      2010-INSERT-SYORI-EXT
-           END-IF
-      *
-      *    ＤＢ追加
-           PERFORM 20101-TOUKEIMEMO-INS-SEC
-           IF      WRK-ERRCD       =   ZERO
-               ADD     1               TO  CNT-INS
-           END-IF
-      *
-      *    統計メモクローズ
-           MOVE    "tbl_toukeimemo"      TO  MCP-TABLE
+           MOVE    "tbl_prgoption"     TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
            PERFORM 900-TBL-CLOSE-SEC
+      *
+      *    追加エラー（同一キー存在）
+           IF      FLG-PRGOPTION       =   ZERO
+               MOVE    1               TO  WRK-ERRCD
+               PERFORM 2040-ERR-SYORI-SEC
+           ELSE
+      *        ＤＢ追加
+               PERFORM 20101-PRGOPTION-INS-SEC
+           END-IF
            .
        2010-INSERT-SYORI-EXT.
            EXIT.
@@ -358,38 +347,34 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
       *****************************************************************
        2020-UPDATE-SYORI-SEC           SECTION.
       *
-           INITIALIZE                  TOUKEIMEMO-REC
-           MOVE    TKIMEMOWK-KEY       TO  TKIMEMO-KEY
-           MOVE    TOUKEIMEMO-REC      TO  MCPDATA-REC
+           INITIALIZE                      PRGOPTION-REC
+           MOVE    PRGOPTIONWK-KEY     TO  PRGOPTION-KEY
+           MOVE    PRGOPTION-REC       TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "tbl_toukeimemo"      TO  MCP-TABLE
+           MOVE    "tbl_prgoption"     TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
 grpsys     PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC              =   ZERO
-               MOVE    "tbl_toukeimemo"      TO  MCP-TABLE
+               MOVE    "tbl_prgoption"     TO  MCP-TABLE
                MOVE    "key"               TO  MCP-PATHNAME
-               PERFORM  910-TOUKEIMEMO-READ-SEC
+               PERFORM  910-PRGOPTION-READ-SEC
            ELSE
-               MOVE    1                   TO  FLG-TOUKEIMEMO
+               MOVE    1                   TO  FLG-PRGOPTION
            END-IF
       *
-      *    更新エラー（同一キーなし）
-           IF      FLG-TOUKEIMEMO     NOT =  ZERO
-               MOVE    3               TO  WRK-ERRCD
-               PERFORM 2040-ERR-SYORI-SEC
-               GO      TO      2020-UPDATE-SYORI-EXT
-           END-IF
-      *
-      *    ＤＢ更新
-           PERFORM 20101-TOUKEIMEMO-UPD-SEC
-           IF      WRK-ERRCD           =   ZERO
-               ADD     1               TO  CNT-UPD
-           END-IF
-      *
-      *    統計メモクローズ
-           MOVE    "tbl_toukeimemo"      TO  MCP-TABLE
+           MOVE    "tbl_prgoption"     TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
            PERFORM 900-TBL-CLOSE-SEC
+      *
+           IF      FLG-PRGOPTION       =   ZERO
+      *        ＤＢ更新
+               PERFORM 20101-PRGOPTION-UPD-SEC
+           ELSE
+               MOVE    3               TO  WRK-ERRCD
+               PERFORM 2040-ERR-SYORI-SEC
+      *        ＤＢ追加
+               PERFORM 20101-PRGOPTION-INS-SEC
+           END-IF
            .
        2020-UPDATE-SYORI-EXT.
            EXIT.
@@ -399,38 +384,32 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
       *****************************************************************
        2030-DELETE-SYORI-SEC       SECTION.
       *
-           INITIALIZE                      TOUKEIMEMO-REC
-           MOVE    TKIMEMOWK-KEY       TO  TKIMEMO-KEY
-           MOVE    TOUKEIMEMO-REC      TO  MCPDATA-REC
+           INITIALIZE                      PRGOPTION-REC
+           MOVE    PRGOPTIONWK-KEY     TO  PRGOPTION-KEY
+           MOVE    PRGOPTION-REC       TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "tbl_toukeimemo"      TO  MCP-TABLE
+           MOVE    "tbl_prgoption"     TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
 grpsys     PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC              =   ZERO
-               MOVE    "tbl_toukeimemo"      TO  MCP-TABLE
+               MOVE    "tbl_prgoption"     TO  MCP-TABLE
                MOVE    "key"               TO  MCP-PATHNAME
-               PERFORM  910-TOUKEIMEMO-READ-SEC
+               PERFORM  910-PRGOPTION-READ-SEC
            ELSE
-               MOVE    1                   TO  FLG-TOUKEIMEMO
+               MOVE    1                   TO  FLG-PRGOPTION
            END-IF
       *
-      *    削除エラー（同一キーなし）
-           IF      FLG-TOUKEIMEMO     NOT =  ZERO
-               MOVE    4               TO  WRK-ERRCD
-               PERFORM 2040-ERR-SYORI-SEC
-               GO      TO      2030-DELETE-SYORI-EXT
-           END-IF
-      *
-      *    ＤＢ削除
-           PERFORM 20101-TOUKEIMEMO-DEL-SEC
-           IF      WRK-ERRCD           =   ZERO
-               ADD     1               TO  CNT-DEL
-           END-IF
-      *
-      *    統計メモクローズ
-           MOVE    "tbl_toukeimemo"      TO  MCP-TABLE
+           MOVE    "tbl_prgoption"     TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
            PERFORM 900-TBL-CLOSE-SEC
+      *
+           IF      FLG-PRGOPTION       =   ZERO
+      *        ＤＢ削除
+               PERFORM 20101-PRGOPTION-DEL-SEC
+           ELSE
+               MOVE    4               TO  WRK-ERRCD
+               PERFORM 2040-ERR-SYORI-SEC
+           END-IF
            .
        2030-DELETE-SYORI-EXT.
            EXIT.
@@ -438,106 +417,121 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
       *****************************************************************
       *    ＤＢ追加  処理
       *****************************************************************
-       20101-TOUKEIMEMO-INS-SEC  SECTION.
+       20101-PRGOPTION-INS-SEC  SECTION.
       *
-           PERFORM 220-TOUKEIMEMO-EDIT-SEC
+           PERFORM 220-PRGOPTION-EDIT-SEC
       *
-           MOVE    WRK-SYMD            TO  TKIMEMO-CREYMD
-           MOVE    SYS-TIME(1:6)       TO  TKIMEMO-UPHMS
-           MOVE    TOUKEIMEMO-REC      TO  MCPDATA-REC
+           MOVE    WRK-SYMD            TO  PRGOPTION-CREYMD
+           MOVE    SPACE               TO  PRGOPTION-UPYMD
+           MOVE    SYS-TIME(1:6)       TO  PRGOPTION-UPHMS
+           MOVE    PRGOPTION-REC       TO  MCPDATA-REC
            MOVE    "DBINSERT"          TO  MCP-FUNC
-           MOVE    "tbl_toukeimemo"      TO  MCP-TABLE
+           MOVE    "tbl_prgoption"     TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
 grpsys     PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC          NOT =   ZERO
                MOVE    2               TO  WRK-ERRCD
                PERFORM 2040-ERR-SYORI-SEC
            END-IF
+           IF      WRK-ERRCD       =   ZERO
+               ADD     1               TO  CNT-INS
+           END-IF
            .
-       20101-TOUKEIMEMO-INS-EXT.
+       20101-PRGOPTION-INS-EXT.
            EXIT.
       *
       *****************************************************************
       *    ＤＢ更新  処理
       *****************************************************************
-       20101-TOUKEIMEMO-UPD-SEC  SECTION.
+       20101-PRGOPTION-UPD-SEC  SECTION.
       *
-           PERFORM 220-TOUKEIMEMO-EDIT-SEC
+      *    ユーザがオプションを編集していた場合は更新しない
+           IF     (PRGOPTIONWK-KBNCD   =   "*")
+             AND  (PRGOPTION-OPID     NOT = SPACE)
+             AND  (PRGOPTION-UPYMD    NOT = SPACE)
+                  CONTINUE
+           ELSE
+               PERFORM 220-PRGOPTION-EDIT-SEC
       *
-           MOVE    TOUKEIMEMO-REC      TO  MCPDATA-REC
-           MOVE    "DBUPDATE"          TO  MCP-FUNC
-           MOVE    "tbl_toukeimemo"      TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-grpsys     PERFORM 900-ORCDBMAIN-SEC
-           IF      MCP-RC          NOT =   ZERO
-               MOVE    3               TO  WRK-ERRCD
-               PERFORM 2040-ERR-SYORI-SEC
+               MOVE    PRGOPTION-REC       TO  MCPDATA-REC
+               MOVE    "DBUPDATE"          TO  MCP-FUNC
+               MOVE    "tbl_prgoption"     TO  MCP-TABLE
+               MOVE    "key"               TO  MCP-PATHNAME
+grpsys         PERFORM 900-ORCDBMAIN-SEC
+               IF      MCP-RC          NOT =   ZERO
+                   MOVE    3               TO  WRK-ERRCD
+                   PERFORM 2040-ERR-SYORI-SEC
+               END-IF
+               IF      WRK-ERRCD           =   ZERO
+                   ADD     1               TO  CNT-UPD
+               END-IF
            END-IF
            .
-       20101-TOUKEIMEMO-UPD-EXT.
+       20101-PRGOPTION-UPD-EXT.
            EXIT.
       *
       *****************************************************************
       *    ＤＢ削除  処理
       *****************************************************************
-       20101-TOUKEIMEMO-DEL-SEC  SECTION.
+       20101-PRGOPTION-DEL-SEC  SECTION.
       *
-           INITIALIZE                  TOUKEIMEMO-REC
-           MOVE    TOUKEIMEMOWK-REC(2:)
-                                       TO  TOUKEIMEMO-REC
-           MOVE    TOUKEIMEMO-REC      TO  MCPDATA-REC
+           INITIALIZE                      PRGOPTION-REC
+           MOVE    PRGOPTIONWK-REC(2:) TO  PRGOPTION-REC
+           MOVE    PRGOPTION-REC       TO  MCPDATA-REC
            MOVE    "DBDELETE"          TO  MCP-FUNC
-           MOVE    "tbl_toukeimemo"    TO  MCP-TABLE
+           MOVE    "tbl_prgoption"     TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
 grpsys     PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC          NOT =   ZERO
                MOVE    4               TO  WRK-ERRCD
                PERFORM 2040-ERR-SYORI-SEC
            END-IF
+           IF      WRK-ERRCD           =   ZERO
+               ADD     1               TO  CNT-DEL
+           END-IF
            .
-       20101-TOUKEIMEMO-DEL-EXT.
+       20101-PRGOPTION-DEL-EXT.
            EXIT.
       *****************************************************************
-      *    統計メモ編集処理
+      *    オプション編集処理
       *****************************************************************
-       220-TOUKEIMEMO-EDIT-SEC         SECTION.
+       220-PRGOPTION-EDIT-SEC         SECTION.
       *
-           INITIALIZE                  TOUKEIMEMO-REC
-           MOVE    TOUKEIMEMOWK-REC(2:)
-                                       TO  TOUKEIMEMO-REC
+           INITIALIZE                      PRGOPTION-REC
+           MOVE    PRGOPTIONWK-REC(2:) TO  PRGOPTION-REC
       *
-           MOVE    SPACE               TO  WRK-MEMO
-           MOVE    1                   TO  WRK-MEMO-LEN
-           STRING  TKIMEMO-MEMO        DELIMITED   BY  SIZE
-           INTO    WRK-MEMO
-           WITH    POINTER             WRK-MEMO-LEN
+           MOVE    SPACE               TO  WRK-OPTION
+           MOVE    1                   TO  WRK-OPTION-LEN
+           STRING  PRGOPTION-OPTION    DELIMITED   BY  SIZE
+           INTO    WRK-OPTION
+           WITH    POINTER             WRK-OPTION-LEN
            END-STRING
       *
-           COMPUTE WRK-MEMO-LEN    =   WRK-MEMO-LEN    -   1
+           COMPUTE WRK-OPTION-LEN      =   WRK-OPTION-LEN  -  1
       *
            MOVE    1                   TO  IDX-PNT1
            MOVE    1                   TO  IDX-PNT2
-           MOVE    SPACE               TO  WRK-MEMO
+           MOVE    SPACE               TO  WRK-OPTION
       *
-           PERFORM UNTIL ( IDX-PNT1    >   WRK-MEMO-LEN )
-                    OR   ( TKIMEMO-MEMO (IDX-PNT1 : ) 
+           PERFORM UNTIL ( IDX-PNT1    >   WRK-OPTION-LEN )
+                    OR   ( PRGOPTION-OPTION (IDX-PNT1 : ) 
                                        =   SPACE )
       *
                MOVE    ZERO            TO  FLG-LF
       *
-               IF    ( IDX-PNT1        <   WRK-MEMO-LEN )
-                   IF    ( TKIMEMO-MEMO (IDX-PNT1 : 2 )
+               IF    ( IDX-PNT1        <   WRK-OPTION-LEN )
+                   IF    ( PRGOPTION-OPTION (IDX-PNT1 : 2 )
                                        =   "\n" )
                        MOVE    1       TO  FLG-LF
                    END-IF
                END-IF
       *
                IF  ( FLG-LF  =  ZERO )
-                   MOVE    TKIMEMO-MEMO (IDX-PNT1 : 1)
-                                        TO  WRK-MEMO (IDX-PNT2 : 1)
+                   MOVE    PRGOPTION-OPTION (IDX-PNT1 : 1)
+                                        TO  WRK-OPTION (IDX-PNT2 : 1)
                    COMPUTE IDX-PNT2 =   IDX-PNT2    +   1
                ELSE
-                   MOVE    X"0A"        TO  WRK-MEMO (IDX-PNT2 : 1)
+                   MOVE    X"0A"        TO  WRK-OPTION (IDX-PNT2 : 1)
                    COMPUTE IDX-PNT2 =   IDX-PNT2   +   1
                    COMPUTE IDX-PNT1 =   IDX-PNT1   +   1
                END-IF
@@ -546,13 +540,13 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
       *
            END-PERFORM
       *
-           MOVE    WRK-MEMO            TO  TKIMEMO-MEMO
+           MOVE    WRK-OPTION          TO  PRGOPTION-OPTION
       *
-           MOVE    WRK-SYMD            TO  TKIMEMO-UPYMD
-           MOVE    SYS-TIME(1:6)       TO  TKIMEMO-UPHMS
+           MOVE    WRK-SYMD            TO  PRGOPTION-UPYMD
+           MOVE    SYS-TIME(1:6)       TO  PRGOPTION-UPHMS
       *
            .
-       220-TOUKEIMEMO-EDIT-EXT.
+       220-PRGOPTION-EDIT-EXT.
            EXIT.
       *****************************************************************
       *    エラー処理
@@ -560,8 +554,8 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
        2040-ERR-SYORI-SEC          SECTION.
       *
       *    エラー出力
-           MOVE    TOUKEIMEMOWK-REC     TO  ERR-TOUKEIMEMOWK-REC
-           WRITE   ERR-TOUKEIMEMOWK-REC
+           MOVE    PRGOPTIONWK-REC     TO  ERR-PRGOPTIONWK-REC
+           WRITE   ERR-PRGOPTIONWK-REC
            ADD     1                   TO  CNT-ERR
       *
       *    エラーメッセージ出力
@@ -575,15 +569,12 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
       *****************************************************************
        20401-PLF-OUT-SEC           SECTION.
       *
-           MOVE    TKIMEMOWK-SYORIKBN  TO  WRK-SYORIKBN
-           MOVE    TKIMEMOWK-PGID      TO  WRK-PGID
-           MOVE    TKIMEMOWK-KANRICD   TO  WRK-KANRICD
-           MOVE    TKIMEMOWK-KBNCD     TO  WRK-KBNCD
-           MOVE    TKIMEMOWK-STYUKYMD  TO  WRK-STYUKYMD
-           MOVE    TKIMEMOWK-EDYUKYMD  TO  WRK-EDYUKYMD
+           MOVE    PRGOPTIONWK-SYORIKBN  TO  WRK-SYORIKBN
+           MOVE    PRGOPTIONWK-PRGID     TO  WRK-PRGID
+           MOVE    PRGOPTIONWK-KBNCD     TO  WRK-KBNCD
            EVALUATE    WRK-ERRCD
                WHEN    1
-                   MOVE  "統計メモデータ存在"
+                   MOVE  "オプションデータ存在"
                                        TO  WRK-MSG-01
                WHEN    2
                    MOVE  "追加エラー"  TO  WRK-MSG-01
@@ -607,7 +598,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
       *
            OPEN    OUTPUT              ERR-FILE
            IF  STS-ERR             NOT =   ZERO
-               DISPLAY "*(ORCMUP0151)* OUTFILE OPN STS[" STS-ERR "]"
+               DISPLAY "*(ORCMUP0161)* OUTFILE OPN STS[" STS-ERR "]"
                GO      TO              2700-OUTLST-INIT-EXT
            END-IF
       *
@@ -640,19 +631,19 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            CLOSE                       ERR-FILE
            CLOSE                       PLF-FILE
       *
-           DISPLAY "*(ORCMUP0151)* INPUT  /I   CNT[" CNT-IN  "]"
-           DISPLAY "*(ORCMUP0151)*  INSERT     CNT[" CNT-INS "]"
-           DISPLAY "*(ORCMUP0151)*  UPDATE     CNT[" CNT-UPD "]"
-           DISPLAY "*(ORCMUP0151)*  DELETE     CNT[" CNT-DEL "]"
-           DISPLAY "*(ORCMUP0151)* ERR    /O   CNT[" CNT-ERR "]"
-           DISPLAY "*(ORCMUP0151)* PLF    /O   CNT[" CNT-PLF "]"
+           DISPLAY "*(ORCMUP0161)* INPUT  /I   CNT[" CNT-IN  "]"
+           DISPLAY "*(ORCMUP0161)*  INSERT     CNT[" CNT-INS "]"
+           DISPLAY "*(ORCMUP0161)*  UPDATE     CNT[" CNT-UPD "]"
+           DISPLAY "*(ORCMUP0161)*  DELETE     CNT[" CNT-DEL "]"
+           DISPLAY "*(ORCMUP0161)* ERR    /O   CNT[" CNT-ERR "]"
+           DISPLAY "*(ORCMUP0161)* PLF    /O   CNT[" CNT-PLF "]"
       **** ACCEPT  WRK-IN
            .
        300-END-EXT.
            EXIT.
       *
       *****************************************************************
-      *     統計メモ変更データ読込み処理
+      *     プログラムオプション読込み処理
       *****************************************************************
        900-IN-KENSAKU-SEC          SECTION.
       *
@@ -662,28 +653,28 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
               NOT AT  END
                   MOVE    ZERO            TO  FLG-IN
                   ADD     1               TO  CNT-IN
-                  MOVE    SPA-HOSPNUM     TO  TKIMEMOWK-HOSPNUM
+                  MOVE    SPA-HOSPNUM     TO  PRGOPTIONWK-HOSPNUM
           END-READ
           .
        900-IN-KENSAKU-EXT.
           EXIT.
       *
       *****************************************************************
-      *    統計メモ読込
+      *    プログラムオプション読込
       *****************************************************************
-       910-TOUKEIMEMO-READ-SEC   SECTION.
+       910-PRGOPTION-READ-SEC   SECTION.
       *
            MOVE    "DBFETCH"           TO  MCP-FUNC
 grpsys     PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC              =   ZERO
-               MOVE    MCPDATA-REC         TO  TOUKEIMEMO-REC
-               MOVE    ZERO                TO  FLG-TOUKEIMEMO
+               MOVE    MCPDATA-REC         TO  PRGOPTION-REC
+               MOVE    ZERO                TO  FLG-PRGOPTION
            ELSE
-               INITIALIZE                      TOUKEIMEMO-REC
-               MOVE    1                   TO  FLG-TOUKEIMEMO
+               INITIALIZE                      PRGOPTION-REC
+               MOVE    1                   TO  FLG-PRGOPTION
            END-IF
            .
-       910-TOUKEIMEMO-READ-EXT.
+       910-PRGOPTION-READ-EXT.
            EXIT.
       *
       *****************************************************************
