@@ -1164,6 +1164,7 @@
                END-IF 
       *
                MOVE    ZERO                TO  IDY
+               INITIALIZE                      SYS-2007-KOH-AREA
                PERFORM VARYING IDX FROM    1   BY  1
                        UNTIL   IDX >       WRK-KOHNUM-MAX
                    IF      SPA-GMN-KOHNUM (IDX)    =   SPACE
