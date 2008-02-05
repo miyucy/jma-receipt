@@ -1899,8 +1899,6 @@
                MOVE    "BYOSRYKAKBN"   TO  MCP-WIDGET
            WHEN    002
                MOVE    "UTAGAIKKNKBN"  TO  MCP-WIDGET
-           WHEN    011
-               MOVE    "KYUSEIKKNKBN"  TO  MCP-WIDGET
            WHEN    003
                MOVE    "CHKMTRX01"     TO  MCP-WIDGET
            WHEN    004
@@ -1925,6 +1923,8 @@
                MOVE    "TENKITEKBYOKBN" TO MCP-WIDGET
            WHEN    014
                MOVE    "SRYHEIWRNKBN"   TO  MCP-WIDGET
+           WHEN    015
+               MOVE    "KYUSEIKKNKBN"  TO  MCP-WIDGET
            WHEN    212
                MOVE    "B12"           TO  MCP-WIDGET
            END-EVALUATE
@@ -1944,7 +1944,7 @@
            WHEN    "SYUBYOCHK"
                MOVE    02              TO  SPA-GMN-CUR
            WHEN    "UTAGAIKKNKBN"
-               MOVE    11              TO  SPA-GMN-CUR
+               MOVE    15              TO  SPA-GMN-CUR
            WHEN    "KYUSEIKKNKBN"
                MOVE    13              TO  SPA-GMN-CUR
            WHEN    "CHKMTRX01"
