@@ -30,6 +30,7 @@
       *  03.03.01    NACL-Æ£¸¶    06/09/27  £²£°£°£¶Ç¯£±£°·î²þÀµÂÐ±þ
       *  03.05.01    NACL-Æ£¸¶    07/04/19  ¥°¥ë¡¼¥×¿ÇÎÅÂÐ±þ
       *  04.01.01    NACL-¾®Æ¦Âô  07/11/16  ¸øÌ³ºÒ³²¡¢¸ø³²¤Î¼ïÊÌÈ½ÄêÄÉ²Ã
+      *  04.01.01    NACL-¾®Æ¦Âô  08/02/05  ¥ì¥»¥×¥È¼ïÊÌ¥»¥Ã¥È½¤Àµ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -174,6 +175,8 @@
                    07  WRK-HKN-HBTNUM                PIC  X(02).
       *            ¥ì¥»¥×¥ÈÀÁµá¶èÊ¬
                    07  WRK-HKN-RECESKYKBN            PIC  X(01).
+      *            ÊÝ¸±ÈÖ¹æ
+                   07  WRK-HKN-HKNNUM                PIC  X(03).
       *
            03  WRK-1033-TABLE.
                05  WRK-1033-TBL    OCCURS  5.
@@ -1294,8 +1297,9 @@ grpsys     PERFORM 900-DBSELECT-SEC
            END-IF
       *
            IF      TOUKEI04-HKNNUM     NOT =   SPACE
-               IF      TOUKEI04-HKNNUM     =   "060"   OR   "067"
-                   IF      TOUKEI04-HKNNUM     =   "060"
+               IF      TOUKEI04-HKNNUM     =   "060"   OR   "067"  OR
+                                               "068"   OR   "069"
+                   IF      TOUKEI04-HKNNUM     =   "060"  OR  "068"
                         MOVE   "1"             TO  WK-KOKUHO
                    ELSE
                         MOVE   "2"             TO  WK-KOKUHO
@@ -1314,6 +1318,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                PERFORM 200211-HKNNUM-SET-SEC
                MOVE    HKN-HBTNUM          TO  WRK-HKN-HBTNUM(IDX)
                MOVE    HKN-RECESKYKBN      TO  WRK-HKN-RECESKYKBN(IDX)
+               MOVE    HKN-HKNNUM          TO  WRK-HKN-HKNNUM(IDX)
            END-PERFORM
       *
            IF      WRK-PARA-SRYYMD(1:6)    <      "200210" 
@@ -1328,7 +1333,10 @@ grpsys     PERFORM 900-DBSELECT-SEC
            PERFORM VARYING IDX FROM    1   BY  1
                    UNTIL   IDX >       4
       *        ¸øÈñ¿ô
-               IF      WRK-HKN-RECESKYKBN (IDX)   NOT =   SPACE
+               IF     (WRK-HKN-HKNNUM (IDX)   NOT =   SPACE) AND
+                      (WRK-HKN-HKNNUM (IDX)   NOT =   "027") AND
+                      (WRK-HKN-HKNNUM (IDX)   NOT =   "972") AND
+                      (WRK-HKN-HKNNUM (IDX)   NOT =   "974")
                    ADD     1               TO  WK-KOHI-CNT
                END-IF
            END-PERFORM
