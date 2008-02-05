@@ -1629,6 +1629,18 @@
                    MOVE    WIDGET-INSENSITIVE 
                                        TO  S03N-CHOSEIIN-STATE
                                            S03N-NYUKINGK2-STATE
+                                           S03N-NYUKINHOUHOU-STATE
+                                           S03N-NYUKINHOUHOULST-STATE
+                                           S03N-SKYPRT-STATE
+                                           S03N-SKYPRTLST-STATE
+                                           S03N-SRYPRT-STATE
+                                           S03N-SRYPRTLST-STATE
+               END-IF
+      *
+               IF    ( SPA-GMN-SMEILIST-SEL    =   ZERO )
+                   MOVE    WIDGET-INSENSITIVE
+                                       TO  S03N-CHOSEIIN-STATE
+                                           S03N-NYUKINGK2-STATE
                                            S03N-NYUKINYMD-STATE
                                            S03N-NYUKINHOUHOU-STATE
                                            S03N-NYUKINHOUHOULST-STATE
@@ -2070,18 +2082,6 @@
                    IF    ( SPA-NAI-LASTHENKINFLG
                            =   1 )
                        CONTINUE
-                   ELSE
-      *
-                       MOVE    "0015"  TO  SPA-ERRCD
-                       MOVE    1       TO  SPA-GMN-CUR
-      *
-                       INITIALIZE          SPA-GMN-INPUT-AREA
-                                           SPA-NAI-INPUT-AREA
-      *
-                       MOVE    SPA-SYSYMD  TO  WRK-SYMD
-                       PERFORM 800-SEIWA-HEN-SEC
-                       MOVE    WRK-HENYMDG TO  SPA-GMN-NYUKINYMD
-                       MOVE    WRK-SYMD    TO  SPA-NAI-NYUKINYMD
                    END-IF
                ELSE
                    IF    ( SPA-NAI-DENPJTIKBN
@@ -2186,18 +2186,6 @@
                        IF    ( SPA-NAI-TLASTHENKINFLG(SPA-GMN-SELNUM)
                            =   1 )
                            CONTINUE
-                       ELSE
-      *
-                           MOVE    "0015"  TO  SPA-ERRCD
-                           MOVE    1       TO  SPA-GMN-CUR
-      *
-                           INITIALIZE          SPA-GMN-INPUT-AREA
-                                               SPA-NAI-INPUT-AREA
-      *
-                           MOVE    SPA-SYSYMD  TO  WRK-SYMD
-                           PERFORM 800-SEIWA-HEN-SEC
-                           MOVE    WRK-HENYMDG TO  SPA-GMN-NYUKINYMD
-                           MOVE    WRK-SYMD    TO  SPA-NAI-NYUKINYMD
                        END-IF
                    ELSE
                        IF    ( SPA-NAI-TJOUTAIKBN (SPA-GMN-SELNUM)
@@ -2252,6 +2240,14 @@
       *
            MOVE    ZERO                TO  SPA-NAI-PROC-FLG
       *
+           IF    ( SPA-NAI-HEAD-DENPJTIKBN =   "3" )
+            AND  ( SPA-NAI-LASTHENKINFLG   =   ZERO )
+               MOVE    SPA-GMN-SKYPRTLST (1)
+                                       TO  SPA-GMN-SKYPRT-G
+               MOVE    SPA-GMN-SRYPRTLST (1)
+                                       TO  SPA-GMN-SRYPRT-G
+           END-IF
+      *
            EVALUATE    SPA-NAI-DENPJTIKBN
            WHEN    " "
            WHEN    "1"
@@ -2260,6 +2256,7 @@
            WHEN    "3"
            WHEN    "7"
            WHEN    "8"
+           WHEN    "5"
                MOVE    2               TO  SPA-NAI-PROC-FLG
            WHEN    "2"
                MOVE    3               TO  SPA-NAI-PROC-FLG
@@ -3233,6 +3230,8 @@
                ELSE
                    MOVE   "00"             TO  SMEI-NYUKIN-HOHO
                END-IF
+      *
+               DISPLAY "SPA-NAI-PROC-FLG =  " SPA-NAI-PROC-FLG
       *
       *        ≈¡…ºæı¬÷∂Ë ¨
                EVALUATE    SPA-NAI-PROC-FLG
