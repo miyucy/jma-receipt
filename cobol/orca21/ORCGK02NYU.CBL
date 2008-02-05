@@ -5892,21 +5892,16 @@
                  AND   (SPA-COM-HKNCOMBI(IDX)  NOT =   "9999")
                  AND   (SPA-COM-HCHKFLG (IDX)      =   SPACE )
                    PERFORM 51019-NYUIN-SANCHK-SEC
-                   IF      SPA-ERRCD           =   SPACE
-                       MOVE    "1"             TO  SPA-COM-HCHKFLG(IDX)
-                   ELSE
-                       MOVE    SPACE           TO  SPA-COM-HCHKFLG(IDX)
-                   END-IF
                END-IF
       *        併用算定チェック
                IF      (SPA-ERRCD          =   SPACE )
                  AND   (SPA-COM-HKNCOMBI(IDX)  NOT =   "9999")
                    PERFORM 51019-NYUIN-SANCHK02-SEC
-                   IF      SPA-ERRCD           =   SPACE
-                       MOVE    "1"             TO  SPA-COM-HCHKFLG(IDX)
-                   ELSE
-                       MOVE    SPACE           TO  SPA-COM-HCHKFLG(IDX)
-                   END-IF
+               END-IF
+               IF      SPA-ERRCD           =   SPACE
+                   MOVE    "1"             TO  SPA-COM-HCHKFLG(IDX)
+               ELSE
+                   MOVE    SPACE           TO  SPA-COM-HCHKFLG(IDX)
                END-IF
            END-PERFORM
            .
@@ -6071,9 +6066,7 @@
                END-IF
            END-PERFORM
       *
-           IF      SPA-ERRCD           =   SPACE
-               MOVE    "1"                 TO  SPA-COM-HCHKFLG (IDX)
-           ELSE
+           IF      SPA-ERRCD      NOT  =   SPACE
                MOVE    "1"                 TO  SPA-COM-CUR (IDX)
            END-IF
       *
