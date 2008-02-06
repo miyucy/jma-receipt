@@ -223,6 +223,7 @@
       *
       *  04.01.01    NACL-藤原    07/10/11  診療科コピー（移動）機能対応
       *  04.01.02    NACL-藤原    07/10/26  公務災害対応
+      *  04.01.03    NACL-藤原    07/10/26  登録年月日の更新時の編集追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -7381,6 +7382,9 @@ grpsys                 MOVE    SPA-HOSPNUM         TO  PTBYO-HOSPNUM
                        ELSE
                            MOVE    PTBYO-KEY       TO
                                                    WRK-PTBYO-KEY (IDXX)
+                           MOVE    PTBYO-CREYMD    TO
+                                                   WRK-PTBYO-CREYMD
+                                                                 (IDXX)
                            MOVE    WRK-PTBYOMEI-REC (IDXX)
                                                    TO  PTBYOMEI-REC
       *
