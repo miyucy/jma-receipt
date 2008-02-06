@@ -73,6 +73,7 @@
            03  FLG-IN-SELNUM       PIC 9(01).
            03  FLG-IN-HKNKUMI      PIC 9(01).
       *
+           03  FLG-ARI             PIC 9(01).
       *    ¥«¥¦¥ó¥ÈÎÎ°è
        01  CNT-AREA.
            03  CNT-ERR             PIC 9(06).
@@ -366,6 +367,8 @@
       *
            MOVE    ZERO                TO  IDX
            MOVE    ZERO                TO  SPA-NAI20-UKEMAX
+           INITIALIZE                      SPA-GMN20-TBL
+           INITIALIZE                      SPA-NAI20-TBL
       *
            INITIALIZE                      PARA-REC
            MOVE    "P02"               TO  PARA-GYOUMUID
@@ -542,8 +545,8 @@
       *
       *    Í½Ìó¥Þ¥¹¥¿¡¼¤è¤ê
            MOVE    SPACE               TO  YYK-REC
-           MOVE    SPA-HOSPNUM          TO  YYK-HOSPNUM
-           MOVE    SPA-GMN-PTID            TO  YYK-PTID
+           MOVE    SPA-HOSPNUM         TO  YYK-HOSPNUM
+           MOVE    SPA-GMN-PTID        TO  YYK-PTID
            MOVE    SPA-SYSYMD          TO  YYK-YYKYMD
            MOVE    YYK-REC             TO  MCPDATA-REC
            MOVE    "tbl_yyk"           TO  MCP-TABLE
@@ -561,42 +564,23 @@
                    OR        (IDX          >=  10   )
                IF     (YYK-YYKID       NOT =   ZERO       ) AND
                       (YYK-RAIINZUMI       =   SPACE      )
-                   ADD     1               TO  IDX
-                   MOVE    IDX             TO  SPA-GMN20-YBANGOU (IDX)
-                   MOVE    YYK-SRYNAIYO    TO  SPA-NAI20-SRYNAI  (IDX)
-                   MOVE    YYK-DRCD (2:4)  TO  SPA-NAI20-DRCD    (IDX)
-                   MOVE    YYK-SRYKA       TO  SPA-NAI20-SRYKA   (IDX)
-                   MOVE    YYK-KEYYYKTIME  TO  SPA-NAI20-KEYYYKTIME
-                                                                 (IDX)
-                   MOVE    YYK-YYKID       TO  SPA-NAI20-YYKID   (IDX)
-                   MOVE    YYK-YYKTIME     TO  SPA-NAI20-YYKTIME (IDX)
-                   MOVE    YYK-YYKTIME(1:2)
-                                           TO  SPA-GMN20-TYYKTIME(IDX)
-                                                                (1:2)
-                   MOVE    ":"             TO  SPA-GMN20-TYYKTIME(IDX)
-                                                                (3:1)
-                   MOVE    YYK-YYKTIME(3:2)
-                                           TO  SPA-GMN20-TYYKTIME(IDX)
-                                                                (4:2)
-      *            ¿ÇÎÅ²Ê
-                   IF      YYK-SRYKA       NOT =   SPACE
-                       PERFORM 31012-SRYKA-HEN-SEC
-                   END-IF
-      *            Ã´Åö¥É¥¯¥¿¡¼Ì¾ÊÔ½¸
-                   IF      YYK-DRCD           NOT =   SPACE
-                       PERFORM 31013-DRCD-HEN-SEC
-                   END-IF
-      *            ¿ÇÎÅ¹Ô°ÙÆâÍÆÊÔ½¸
-                   IF  YYK-SRYNAIYO       NOT =   SPACE
-                       PERFORM     VARYING   IDY   FROM    1   BY  1
-                                   UNTIL    (IDY           >   10)
-                                   OR       (SPA-SRYNAI-CD(IDY)
-                                                           =   SPACE)
-                       IF  YYK-SRYNAIYO      =   SPA-SRYNAI-CD(IDY)
-                           MOVE    SPA-SRYNAI-MEI (IDY)
-                                             TO  SPA-GMN20-TSRYNAI(IDX)
+      *            ¼õÉÕºÑ¤ß¤Ç¤Ê¤¤¤â¤Î
+                   MOVE    ZERO                TO  FLG-ARI
+                   PERFORM VARYING     IDY     FROM    1   BY  1
+                           UNTIL       IDY     >   IDX
+                       IF     (YYK-YYKID       =   SPA-NAI20-YYKID(IDY))
+                       AND    (YYK-SRYNAIYO    =   SPA-NAI20-SRYNAI
+                                                                  (IDY))
+                       AND    (YYK-DRCD (2:4)  =   SPA-NAI20-DRCD (IDY))
+                       AND    (YYK-SRYKA       =   SPA-NAI20-SRYKA(IDY))
+                       AND    (YYK-KEYYYKTIME  =   SPA-NAI20-KEYYYKTIME
+                                                                  (IDY))
+                           MOVE    1               TO  FLG-ARI
+                           MOVE    IDX             TO  IDY
                        END-IF
-                       END-PERFORM
+                   END-PERFORM
+                   IF      FLG-ARI         =   ZERO
+                        PERFORM 31011-YYKUKE-HENSYU-SEC
                    END-IF
                END-IF
       *
@@ -612,6 +596,49 @@
            MOVE    IDX                 TO  SPA-NAI20-UKEMAX
            .
        3101-YYKSPA-HEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    Í½Ìó¼õÉÕ°ìÍ÷É½¼¨ÊÔ½¸Íý
+      *****************************************************************
+       31011-YYKUKE-HENSYU-SEC             SECTION.
+      *
+           ADD     1               TO  IDX
+           MOVE    IDX             TO  SPA-GMN20-YBANGOU (IDX)
+           MOVE    YYK-SRYNAIYO    TO  SPA-NAI20-SRYNAI  (IDX)
+           MOVE    YYK-DRCD (2:4)  TO  SPA-NAI20-DRCD    (IDX)
+           MOVE    YYK-SRYKA       TO  SPA-NAI20-SRYKA   (IDX)
+           MOVE    YYK-KEYYYKTIME  TO  SPA-NAI20-KEYYYKTIME
+                                                         (IDX)
+           MOVE    YYK-YYKID       TO  SPA-NAI20-YYKID   (IDX)
+           MOVE    YYK-YYKTIME     TO  SPA-NAI20-YYKTIME (IDX)
+           MOVE    YYK-YYKTIME(1:2)
+                                    TO  SPA-GMN20-TYYKTIME(IDX)(1:2)
+           MOVE    ":"              TO  SPA-GMN20-TYYKTIME(IDX)(3:1)
+           MOVE    YYK-YYKTIME(3:2)
+                                    TO  SPA-GMN20-TYYKTIME(IDX)(4:2)
+      *    ¿ÇÎÅ²Ê
+           IF      YYK-SRYKA       NOT =   SPACE
+               PERFORM 31012-SRYKA-HEN-SEC
+           END-IF
+      *    Ã´Åö¥É¥¯¥¿¡¼Ì¾ÊÔ½¸
+           IF      YYK-DRCD           NOT =   SPACE
+               PERFORM 31013-DRCD-HEN-SEC
+           END-IF
+      *    ¿ÇÎÅ¹Ô°ÙÆâÍÆÊÔ½¸
+           IF      YYK-SRYNAIYO       NOT =   SPACE
+               PERFORM     VARYING   IDY   FROM    1   BY  1
+                           UNTIL    (IDY           >   10)
+                           OR       (SPA-SRYNAI-CD(IDY)
+                                                   =   SPACE)
+                   IF      YYK-SRYNAIYO      =   SPA-SRYNAI-CD(IDY)
+                       MOVE    SPA-SRYNAI-MEI (IDY)
+                                             TO  SPA-GMN20-TSRYNAI(IDX)
+                   END-IF
+               END-PERFORM
+           END-IF
+           .
+       31011-YYKUKE-HENSYU-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1453,8 +1480,10 @@
                                                    (SPA-NAI20-YSELNUM)
                MOVE    SPACE           TO  SPA-GMN20-YSELNUM
                MOVE    ZERO            TO  SPA-NAI20-YSELNUM
-               MOVE    SPACE           TO  SPA-GMN20-KARUTE-G
-               MOVE    SPACE           TO  SPA-GMN20-SYOHOU-G
+               MOVE    SPA-GMN20-KARUTE-LST(1)
+                                       TO  SPA-GMN20-KARUTE-G
+               MOVE    SPA-GMN20-SYOHOU-LST(1)
+                                       TO  SPA-GMN20-SYOHOU-G
                MOVE    SPACE           TO  SPA-GMN20-HKNKUMI 
                MOVE    ZERO            TO  SPA-NAI20-HKNKUMI 
                GO      TO                  422-UKETUDEL-EXT
@@ -1513,7 +1542,7 @@
            INITIALIZE                       P0201
            INITIALIZE                       SPA-NAI201-AREA
       *
-           MOVE  SPA-HOSPNUM                 TO  UKE-HOSPNUM.
+           MOVE  SPA-HOSPNUM                TO  UKE-HOSPNUM.
            MOVE  SPA-SYSYMD                 TO  UKE-UKEYMD.
            MOVE  ZERO                       TO  UKE-PTID.
            MOVE  UKETUKE-REC                TO  MCPDATA-REC.
