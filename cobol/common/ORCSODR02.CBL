@@ -129,6 +129,7 @@
            03  ERRCD-ORDER             PIC X(04).
       *
        01  CONST-AREA.
+           03  CONST-H180401           PIC X(08)   VALUE "20060401".
            03  CONST-SYU-MAX           PIC 9(05)   VALUE   10.
            03  CONST-JOB-SHELLID       PIC X(08)   VALUE   "TEIKI1".
            03  CONST-JOB-JOBID         PIC 9(07)   VALUE   1.
@@ -256,6 +257,9 @@
       *
       *    収納更新差額取得
            COPY  "CPORCSS002.INC".
+      *
+      *    入院請求期間取得サブ
+           COPY    "CPORCSS006.INC".
       *
            COPY    "MCPDATA.INC".
            COPY    "MCPAREA".
@@ -840,12 +844,14 @@
            IF    ( WRK-SKYSTYMD        =   SPACE )
                MOVE    PTNYUINRRK-NYUINYMD
                                            TO  WRK-SKYSTYMD
-               IF    ( PTNYUINRRK-DOUJITSUKBN   =   "1" )
-                   MOVE    WRK-SKYSTYMD    TO  WRK-KIJUNYMD
-                   MOVE    "1"             TO  WRK-ZOGENPTN
-                   MOVE    1               TO  WRK-ZOGEN
-                   PERFORM 800-CALENDAR-SEC
-                   MOVE    WRK-KEISANYMD   TO  WRK-SKYSTYMD
+               IF    ( WRK-SKYSTYMD    <   CONST-H180401 )
+                   IF    ( PTNYUINRRK-DOUJITSUKBN  =   "1" )
+                       MOVE    WRK-SKYSTYMD    TO  WRK-KIJUNYMD
+                       MOVE    "1"             TO  WRK-ZOGENPTN
+                       MOVE    1               TO  WRK-ZOGEN
+                       PERFORM 800-CALENDAR-SEC
+                       MOVE    WRK-KEISANYMD   TO  WRK-SKYSTYMD
+                   END-IF
                END-IF
            END-IF
       *
@@ -1114,6 +1120,15 @@
                                        LNK-SYUNOU-REC-T
                                        LNK-SYUDAY-REC-T
       *
+           INITIALIZE                  SS006-AREA
+           INITIALIZE                  SS006-AREA
+           MOVE    WRK-SKYSTYMD        TO  SS006-SKYSTYMD
+           MOVE    SODR-SRYYMD         TO  SS006-SKYEDYMD
+           MOVE    "1"                 TO  SS006-SKYKBN
+           CALL    "ORCSS006"      USING
+                                   SS006-AREA
+                                   SPA-AREA
+      *
            MOVE    SODR-HOSPNUM     TO  LNK-S02-HOSPNUM
            MOVE    "1"             TO  LNK-S02-NYUGAIKBN
            MOVE    SODR-PTID       TO  LNK-S02-PTID
@@ -1122,6 +1137,20 @@
       *    請求開始日（入院日または前回定期請求終了日の翌日）を設定
            MOVE    WRK-SKYSTYMD    TO  LNK-S02-SKYSTYMD
            MOVE    SODR-SRYYMD     TO  LNK-S02-SKYEDYMD
+      *
+           IF    ( WRK-SKYSTYMD    <   CONST-H180401 )
+               CONTINUE
+           ELSE
+               MOVE    SS006-DOJITUFLG-ST  TO  LNK-S02-DOJITUFLG-ST
+               MOVE    SS006-TIMEKBN-ST    TO  LNK-S02-TIMEKBN-ST
+           END-IF
+           IF    ( SODR-SRYYMD     <   CONST-H180401 )
+               CONTINUE
+           ELSE
+               MOVE    SS006-DOJITUFLG-ED  TO  LNK-S02-DOJITUFLG-ED
+               MOVE    SS006-TIMEKBN-ED    TO  LNK-S02-TIMEKBN-ED
+           END-IF
+      *
            MOVE    SODR-SRYYMD     TO  LNK-S02-SYSYMD
            MOVE    "1"             TO  LNK-S02-SYORI-KBN
            CALL    "ORCSNYUFTN"    USING

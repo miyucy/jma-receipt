@@ -1161,6 +1161,14 @@
            MOVE    ITEM-DOUJITSUKBN
                                    TO  PTNYUINRRK-DOUJITSUKBN
       *
+           IF    ( PTNYUINRRK-DOUJITSUKBN  =   "1" )
+               MOVE    "0"         TO  PTNYUINRRK-TIMEKBN-IN
+           ELSE
+               MOVE    "1"         TO  PTNYUINRRK-TIMEKBN-IN
+           END-IF
+      *
+           MOVE    "1"             TO  PTNYUINRRK-KAIGOKBN
+      *
            MOVE    1               TO  PTNYUINRRK-MAXEDANUM
       *
            MOVE    SODR-OPID       TO  PTNYUINRRK-OPID
