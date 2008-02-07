@@ -1766,6 +1766,7 @@ path	key50	{
                   AND (      HKNNUM_S    <>   '067'       ) 
                   AND (      HKNNUM_S    <>   '068'       )
                   AND (      HKNNUM_S    <>   '069'       ) 
+                  AND (      HKNNUM_S    <>   '975'       ) 
                   AND (      RECESYUBETU <>   '0000'      )
                   AND (   (( SRYYM       =    :SKYYM   )
                        AND ( SKYKBN      <>   '0'      )
