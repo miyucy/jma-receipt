@@ -2315,7 +2315,7 @@ grpsys             MOVE    SRY-HOSPNUM          TO  PTCOM-HOSPNUM
                            MOVE  ZERO          TO   WK-SYUTEN
                            MOVE  ZERO          TO   WK-KIZAITEN
                            MOVE  ZERO          TO   WK-YKZTEN
-                           MOVE  ZERO          TO   FLG-OSINKBN
+      ***                  MOVE  ZERO          TO   FLG-OSINKBN
                        END-IF
                    END-IF
                ELSE
@@ -2324,7 +2324,7 @@ grpsys             MOVE    SRY-HOSPNUM          TO  PTCOM-HOSPNUM
                      MOVE    ZERO     TO    WK-SYUTEN
                      MOVE    ZERO     TO    WK-KIZAITEN
                      MOVE    ZERO     TO    WK-YKZTEN
-                     MOVE    ZERO     TO    FLG-OSINKBN
+      ***            MOVE    ZERO     TO    FLG-OSINKBN
                END-IF
                IF   (ACCT-ZAITEN    NOT =    ZERO)    AND
                     (ACCT-ZAIKAISU  NOT =    ZERO)
@@ -2333,8 +2333,7 @@ grpsys             MOVE    SRY-HOSPNUM          TO  PTCOM-HOSPNUM
                IF    SRY-SRYKBN   =   "21"   OR   "22"   OR   "23"   OR
                                       "31"   OR   "32"   OR   "33"   OR
                                                   "50"   OR   "54"   OR
-                                      "60"   OR   "70"   OR
-                                      "13"   OR   "14"
+                                      "60"   OR   "70"
                      MOVE    6      TO    IDX3
                END-IF
            END-PERFORM
@@ -2705,6 +2704,15 @@ grpsys             MOVE    SRY-HOSPNUM          TO  PTCOM-HOSPNUM
                       COMPUTE    RECE100-TENSU(9 1)  =
                                  RECE100-TENSU(9 1)  +
                                  (WK-ZAITEN   *   WK-ZAIKAISU)
+      *               ネブライザー加算
+                      IF    SRY-SRYCD(IDX3)  =  "102400010"
+                       COMPUTE    RECE100-TENSU(8 2)  =
+                                  RECE100-TENSU(8 2)  +
+                                 (WRK-TNS-TEN(IDX3)  *  ACCT-ZAIKAISU)
+                       COMPUTE    RECE100-TENSU(9 1) =
+                                  RECE100-TENSU(9 1) -
+                                 (WRK-TNS-TEN(IDX3)  *  ACCT-ZAIKAISU)
+                      END-IF
                  END-EVALUATE
       *    在宅のレセ点数欄の編集
                WHEN    "14"
@@ -2716,6 +2724,15 @@ grpsys             MOVE    SRY-HOSPNUM          TO  PTCOM-HOSPNUM
                        COMPUTE   RECE100-TENSU(10 1)  =
                                  RECE100-TENSU(10 1)  +
                                 (WK-SYUTEN   *   WK-ZAIKAISU)
+      *                ネブライザー加算
+                       IF    SRY-SRYCD(IDX3)  =  "102400010"
+                         COMPUTE    RECE100-TENSU(15 2)  =
+                                    RECE100-TENSU(15 2)  +
+                                   (WRK-TNS-TEN(IDX3)  *  ACCT-ZAIKAISU)
+                         COMPUTE    RECE100-TENSU(10 1) =
+                                    RECE100-TENSU(10 1) -
+                                   (WRK-TNS-TEN(IDX3)  *  ACCT-ZAIKAISU)
+                       END-IF
                    END-IF
       *            夜間
                    IF    FLG-OSINKBN         =    2
@@ -2724,6 +2741,15 @@ grpsys             MOVE    SRY-HOSPNUM          TO  PTCOM-HOSPNUM
                        COMPUTE   RECE100-TENSU(11 1)  =
                                  RECE100-TENSU(11 1)  +
                                 (WK-SYUTEN   *   WK-ZAIKAISU)
+      *                ネブライザー加算
+                       IF    SRY-SRYCD(IDX3)  =  "102400010"
+                         COMPUTE    RECE100-TENSU(15 2)  =
+                                    RECE100-TENSU(15 2)  +
+                                   (WRK-TNS-TEN(IDX3)  *  ACCT-ZAIKAISU)
+                         COMPUTE    RECE100-TENSU(11 1) =
+                                    RECE100-TENSU(11 1) -
+                                   (WRK-TNS-TEN(IDX3)  *  ACCT-ZAIKAISU)
+                       END-IF
                    END-IF
       *            深夜・緊急
                    IF    FLG-OSINKBN         =    3
@@ -2732,6 +2758,15 @@ grpsys             MOVE    SRY-HOSPNUM          TO  PTCOM-HOSPNUM
                        COMPUTE   RECE100-TENSU(12 1)  =
                                  RECE100-TENSU(12 1)  +
                                 (WK-SYUTEN   *   WK-ZAIKAISU)
+      *                ネブライザー加算
+                       IF    SRY-SRYCD(IDX3)  =  "102400010"
+                         COMPUTE    RECE100-TENSU(15 2)  =
+                                    RECE100-TENSU(15 2)  +
+                                   (WRK-TNS-TEN(IDX3)  *  ACCT-ZAIKAISU)
+                         COMPUTE    RECE100-TENSU(12 1) =
+                                    RECE100-TENSU(12 1) -
+                                   (WRK-TNS-TEN(IDX3)  *  ACCT-ZAIKAISU)
+                       END-IF
                    END-IF
       *            在宅患者訪問診療
                    IF (( WRK-TNS-OSINKBN(IDX3)   =     1          )  AND
@@ -2758,12 +2793,30 @@ grpsys             MOVE    SRY-HOSPNUM          TO  PTCOM-HOSPNUM
                        COMPUTE   RECE100-TENSU(13 1)  =
                                  RECE100-TENSU(13 1)  +
                                 (WK-SYUTEN     *   ACCT-ZAIKAISU)
+      *                ネブライザー加算
+                       IF    SRY-SRYCD(IDX3)  =  "102400010"
+                         COMPUTE    RECE100-TENSU(15 2)  =
+                                    RECE100-TENSU(15 2)  +
+                                   (WRK-TNS-TEN(IDX3)  *  ACCT-ZAIKAISU)
+                         COMPUTE    RECE100-TENSU(13 1) =
+                                    RECE100-TENSU(13 1) -
+                                   (WRK-TNS-TEN(IDX3)  *  ACCT-ZAIKAISU)
+                       END-IF
                    END-IF
       *            その他
                    IF    FLG-ZAITAKU    =   ZERO
                        COMPUTE   RECE100-TENSU(14 1)  =
                                  RECE100-TENSU(14 1)  +
                                 (WK-SYUTEN     *   WK-ZAIKAISU)
+      *                ネブライザー加算
+                       IF    SRY-SRYCD(IDX3)  =  "102400010"
+                         COMPUTE    RECE100-TENSU(15 2)  =
+                                    RECE100-TENSU(15 2)  +
+                                   (WRK-TNS-TEN(IDX3)  *  ACCT-ZAIKAISU)
+                         COMPUTE    RECE100-TENSU(14 1) =
+                                    RECE100-TENSU(14 1) -
+                                   (WRK-TNS-TEN(IDX3)  *  ACCT-ZAIKAISU)
+                       END-IF
                    END-IF
       *            薬剤
                    COMPUTE   RECE100-TENSU(15 2)  =
