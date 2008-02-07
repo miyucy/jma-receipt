@@ -15,7 +15,8 @@ CREATE TABLE tbl_chksnd (
     creymd character(8),
     upymd character(8),
     uphms character(6),
-    hospnum numeric(2,0) NOT NULL
+    hospnum numeric(2,0) NOT NULL,
+    utagaikbn character(1)
 );
 
 ALTER TABLE ONLY tbl_chksnd

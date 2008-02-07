@@ -38,7 +38,10 @@ CREATE TABLE tbl_ptnyuinrrk (
     maxedanum numeric(3,0),
     skjkbn character(1),
     senteikbn character(1),
-    hospnum numeric(2,0) NOT NULL
+    hospnum numeric(2,0) NOT NULL,
+    timekbn_in character(1),
+    tainrelkbn character(1),
+    kaigokbn character(1)
 );
 
 ALTER TABLE ONLY tbl_ptnyuinrrk
