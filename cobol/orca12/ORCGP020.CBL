@@ -1067,6 +1067,13 @@
                                            ORCSDRSETAREA
                MOVE    ORCSDR-DRCD-TBL-G   TO  SPA-GMN20-DRCDLST-G
                MOVE    ORCSDR-DRCD-MAX     TO  SPA-DRCD-MAX
+      *
+      *        選択分が受付無しの時
+               IF      SPA-NAI20-UKETIME(IDX)  =   SPACE
+                   MOVE     8                  TO  SPA-GMN20-CUR
+               ELSE
+                   MOVE     9                  TO  SPA-GMN20-CUR
+               END-IF
            END-IF
       *
            .

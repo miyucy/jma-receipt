@@ -222,6 +222,7 @@
            03  FLG-HOUKATU-ZAI         PIC 9(01).
       *
            03  FLG-SYOKAI           PIC 9(01).
+           03  FLG-RRK-ARI          PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -237,6 +238,7 @@
            03  IDXS                PIC 9(04).
            03  IDX-Z               PIC 9(04).
            03  IDX-T               PIC 9(04).
+           03  IDX-J               PIC 9(04).
            03  IDX-SA              PIC 9(04).
       *
            03  IDX-1               PIC 9(04).
@@ -1849,6 +1851,7 @@
                    END-IF
       *        保険組合せ変更確認
                WHEN    "0105"
+               WHEN    "0124"
                    MOVE    SPACE               TO  SPA-KIDCD
                    IF      SPA-KID1-FLG        =   "OK"
                        MOVE    ZERO            TO  FLG-CHK2
@@ -1883,6 +1886,7 @@
       *
       *        診療科変更確認
                WHEN    "0123"
+               WHEN    "0128"
                    MOVE    SPACE               TO  SPA-KIDCD
                    IF      SPA-KID1-FLG        =   "OK"
                        PERFORM 41013-SRYKA-CHANGE-SEC
@@ -3687,10 +3691,16 @@
                    MOVE    "1033"              TO  SPA-ERRCD
                    MOVE    SPA-MAE-HKNCOMBI-G  TO  SPA-GMN-HKNCOMBI-G
                    MOVE    SPA-MAE-HKNKBN      TO  SPA-HKNKBN
-                   GO      TO      41012-HKNCOMBI-SYORI-EXT
                END-IF
                MOVE    1                   TO  FLG-CHK2
                PERFORM 41012-HKNCOMBI-CHANGE-SEC
+      *        訂正で既に同じ保険の受診履歴がある時、エラー
+               IF     (SPA-ERRCD           =   SPACE )
+                   PERFORM 410123-JYURRK-HKNCHK-SEC
+                   IF      FLG-RRK-ARI     =   1
+                       MOVE    "0124"              TO  SPA-KIDCD
+                   END-IF
+               END-IF
                IF     (SPA-ERRCD           =   SPACE )  AND
                       (SPA-KIDCD           =   SPACE )
       *            訂正の時、確認メッセージ表示
@@ -3742,13 +3752,32 @@
        41012-HKNCOMBI-CHANGE-EXT.
            EXIT.
       *****************************************************************
+      *    訂正で既に同じ保険の受診履歴判定処理
+      *****************************************************************
+       410123-JYURRK-HKNCHK-SEC         SECTION.
+      *
+           MOVE    ZERO                 TO  FLG-RRK-ARI
+           PERFORM VARYING     IDX-J    FROM    1   BY  1
+                   UNTIL       IDX-J    >   SPA-GMN-MAX1
+               IF      (SPA-SRYYMD      =   SPA-NAI-RRKYMD (IDX-J))
+                  AND  (SPA-GMN-SRYKA   =   SPA-NAI-RRK-SRYKA(IDX-J))
+                  AND  (SPA-GMN-HKNCOMBINUM
+                                        =   SPA-NAI-RRK-HKNCOMBI(IDX-J))
+                  AND  (SPA-NAI-DOSELNUM    NOT =   IDX-J     )  
+                   MOVE    1                TO  FLG-RRK-ARI
+               END-IF
+           END-PERFORM
+           .
+       410123-JYURRK-HKNCHK-EXT.
+           EXIT.
+      *****************************************************************
       *    チェックフラグクリア処理
       *****************************************************************
        410121-ROUJINCHK-SEC         SECTION.
       *
       *    老人区分が変更された時、チェックフラグをクリアする
            PERFORM VARYING     IDX     FROM   1   BY  1
-                   UNTIL       IDX     >   200
+                   UNTIL       IDX     >   SPA-MAX-LINE
                MOVE    SPACE               TO  SPA-COM-CHKFLG (IDX)
                MOVE    SPACE               TO  SPA-COM-HCHKFLG (IDX)
            END-PERFORM
@@ -3882,18 +3911,26 @@
                MOVE    SPA-MAE-SRYKA-G TO  SPA-GMN-SRYKA-G
                GO      TO      41013-SRYKAI-SYORI-EXT
            END-IF
-      *
+      *    訂正で既に同じ受診履歴がある時、エラー
            IF      SPA-SYORIFLG        =   1
-               MOVE    "0123"              TO  SPA-KIDCD
-           ELSE
-               IF      SPA-GMN-MAX         >   ZERO
-                   MOVE    "0107"              TO  SPA-KIDCD
-               ELSE
-                   PERFORM 41013-SRYKA-CHANGE-SEC
+               PERFORM 410123-JYURRK-HKNCHK-SEC
+               IF      FLG-RRK-ARI         =   1
+                   MOVE    "0128"              TO  SPA-KIDCD
                END-IF
            END-IF
-      *********PERFORM 41013-SRYKA-CHANGE-SEC
-      *****END-IF
+      *
+           IF     (SPA-ERRCD           =   SPACE )  AND
+                  (SPA-KIDCD           =   SPACE )
+               IF      SPA-SYORIFLG        =   1
+                   MOVE    "0123"              TO  SPA-KIDCD
+               ELSE
+                   IF      SPA-GMN-MAX         >   ZERO
+                       MOVE    "0107"              TO  SPA-KIDCD
+                   ELSE
+                       PERFORM 41013-SRYKA-CHANGE-SEC
+                   END-IF
+               END-IF
+           END-IF
            .
        41013-SRYKAI-SYORI-EXT.
            EXIT.
@@ -11046,6 +11083,12 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                                        TO  WRK-KIDMSG
                    MOVE    "よろしいですか？"
                                        TO  WRK-KIDMSG(29:)
+               WHEN    "0124"
+                   STRING  "保険組合せが変更されました。"
+                           "同日の同じ受診履歴に追加されます。"
+                           "よろしいですか？"
+                                       INTO    WRK-KIDMSG
+                   END-STRING
                WHEN    "0106"
                    MOVE    "同日再診が３回以上になります。"
                                        TO  WRK-KIDMSG
@@ -11061,6 +11104,12 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                                        TO  WRK-KIDMSG
                    MOVE     "よろしいですか？"
                                        TO  WRK-KIDMSG(25:)
+               WHEN    "0128"
+                   STRING  "診療科が変更されました。"
+                           "同日の同じ受診履歴に追加されます。"
+                           "よろしいですか？"
+                                       INTO    WRK-KIDMSG
+                   END-STRING
                WHEN    "0122"
                    MOVE    "この科の中途終了データが存在します。"
                                        TO  WRK-KIDMSG

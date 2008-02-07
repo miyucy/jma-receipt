@@ -1244,7 +1244,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            PERFORM 940-PTINF-READ-SEC
            IF      FLG-PTINF           =   1
                MOVE    "0002"          TO  SPA-ERRCD
-               DISPLAY "K03 ZAINUM-SET ERR:" SPA-PTID
+               DISPLAY "K08 ZAINUM-SET ERR:" SPA-PTID
                STRING  "PTINF INV ERR SPA-PTID : "
                        PTINF-PTID      DELIMITED  BY  SIZE
                                    INTO  ORCSCNYUIN-ERRMSG
@@ -1456,7 +1456,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                                                    SPA-AREA
       *
                IF      MCP-RC          NOT =   ZERO
-                   DISPLAY "K03 SRYACT INS ERR:" SRY-KEY  "."
+                   DISPLAY "K08 SRYACT INS ERR:" SRY-KEY  "."
                    DISPLAY "MCP-RC:" MCP-RC ":" 
                    MOVE    "0005"          TO  SPA-ERRCD
                    STRING  "SRYACT INS ERR KEY : "
@@ -1520,7 +1520,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                                SPA-AREA
       *
            IF      MCP-RC          NOT =   ZERO
-               DISPLAY "K03 PTCOM INS ERR:" PTCOM-KEY
+               DISPLAY "K08 PTCOM INS ERR:" PTCOM-KEY
                             ",MCP-RC:" MCP-RC
                MOVE    "0005"          TO  SPA-ERRCD
                STRING  "PTCOM INS ERR KEY : "
@@ -1716,7 +1716,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                                SPA-AREA
       *
            IF      MCP-RC          NOT =   ZERO
-               DISPLAY "K03 SRYACCTPLUS INS ERR:" ACCTP-KEY  "."
+               DISPLAY "K08 SRYACCTPLUS INS ERR:" ACCTP-KEY  "."
                DISPLAY "MCP-RC:" MCP-RC ":" 
                MOVE    "0005"          TO  SPA-ERRCD
                STRING  "SRYACCTPLUS INS ERR KEY : "
@@ -1884,7 +1884,10 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *    訂正で科・保険組合せ変更がない時、前の同日連番
            IF     (SPA-SYORIFLG        =   1  )  AND
                   (SPA-SRYKA           =   SPA-OLD-SRYKA )
-               MOVE    SPA-DOUJI-RENNUM    TO  WRK-JYURRK-DOUJI-RENNUM
+      *        同じ保険組合せがある時
+               IF      FLG-OK              =   ZERO
+                 MOVE    SPA-DOUJI-RENNUM    TO  WRK-JYURRK-DOUJI-RENNUM
+               END-IF
       *        他の保険組合せがない時、ゼロ
                IF      WRK-CNT-DOUJI       =   ZERO
                    MOVE    ZERO            TO  WRK-JYURRK-DOUJI-RENNUM
@@ -2323,7 +2326,7 @@ grpsys                 CALL    "ORCDBMAIN"         USING   MCPAREA
                                                            MCPDATA-REC
                                                            SPA-AREA
                        IF      MCP-RC          NOT =   ZERO
-                           DISPLAY "K03 SRYACCT UPD ERR:" MCP-RC
+                           DISPLAY "K08 SRYACCT UPD ERR:" MCP-RC
                            MOVE    "0005"          TO  SPA-ERRCD
                            STRING  "SRYACCT UPD ERR KEY : "
                                    ACCT-KEY      DELIMITED  BY  SIZE
@@ -2371,7 +2374,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                                MCPDATA-REC
                                                SPA-AREA
            IF      MCP-RC          NOT =   ZERO
-                DISPLAY "K03 SRYACT DEL ERR:" MCP-RC
+                DISPLAY "K08 SRYACT DEL ERR:" MCP-RC
                         ",KEY:" SRY-KEY
            END-IF
       *    コメント
@@ -2388,7 +2391,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                                MCPDATA-REC
                                                SPA-AREA
            IF      MCP-RC          NOT =   ZERO
-               DISPLAY "K03  PTCOM  DEL ERR:" MCP-RC
+               DISPLAY "K08  PTCOM  DEL ERR:" MCP-RC
                      ",KEY:" PTCOM-KEY
            END-IF
       *
@@ -2400,7 +2403,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                                MCPDATA-REC
                                                SPA-AREA
            IF      MCP-RC          NOT =   ZERO
-               DISPLAY "K03 SRYACCT DEL ERR:" MCP-RC
+               DISPLAY "K08 SRYACCT DEL ERR:" MCP-RC
                         ",KEY:" ACCT-KEY
            END-IF
       *
@@ -2421,7 +2424,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                                MCPDATA-REC
                                                SPA-AREA
            IF      MCP-RC          NOT =   ZERO
-               DISPLAY "K03  SRYACCTPLUS  DEL ERR:" MCP-RC
+               DISPLAY "K08  SRYACCTPLUS  DEL ERR:" MCP-RC
                      ",KEY:" ACCTP-KEY
            END-IF
       *
@@ -2660,10 +2663,16 @@ grpsys                 CALL    "ORCDBMAIN"         USING   MCPAREA
                END-IF
                IF      JYURRK-DOUJI-RENNUM =   WRK-DOUJI-RENNUM-KEY
                    CONTINUE
+                   IF      JYURRK-EDANUM       =   1
+                       ADD     1               TO  WRK-RENNUM
+                   END-IF
                ELSE
-                   ADD     1               TO  WRK-RENNUM
-                   IF      WRK-RENNUM      >   1
-                       ADD     1           TO  WRK-JYURRK-DOUJI-RENNUM
+                   IF      JYURRK-EDANUM       =   1
+                       ADD     1               TO  WRK-RENNUM
+                       IF      WRK-RENNUM      >   1
+                          ADD     1            TO
+                                               WRK-JYURRK-DOUJI-RENNUM
+                       END-IF
                    END-IF
                    MOVE    JYURRK-DOUJI-RENNUM TO  WRK-DOUJI-RENNUM-KEY
                END-IF
@@ -2705,7 +2714,7 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                                                        MCPDATA-REC
                                                        SPA-AREA
                    IF      MCP-RC          NOT =   ZERO
-                       DISPLAY "K03 JYURRK INS ERR:" JYURRK-KEY
+                       DISPLAY "K08 JYURRK INS ERR:" JYURRK-KEY
                            ",MCP-RC:" MCP-RC
                        MOVE    "0005"          TO  SPA-ERRCD
                        STRING  "JYURRK INS ERR KEY : "
@@ -2801,7 +2810,7 @@ grpsys                 CALL    "ORCDBMAIN"         USING   MCPAREA
                                                            SPA-AREA
       *
                        IF      MCP-RC          NOT =   ZERO
-                           DISPLAY "K03 SRYACCT UPD ERR:" MCP-RC
+                           DISPLAY "K08 SRYACCT UPD ERR:" MCP-RC
                              ",KEY:"  ACCT-KEY
                            MOVE    "0005"          TO  SPA-ERRCD
                            STRING  "SRYACCT INS ERR KEY : "
