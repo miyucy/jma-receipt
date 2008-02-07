@@ -282,6 +282,7 @@
       *  04.01.12    NACL-ÌçÏÆ    08/01/15  ¸ø³²ÂÐ±þ
       *  04.01.13    NACL-ÌçÏÆ    08/01/25  ·ë³ËÆþ±¡¸ÂÅÙ³ÛÂÐ±þ
       *  04.01.14    NACL-ÌçÏÆ    08/02/04  É¸·ç³°Çñ·×»»½¤Àµ
+      *  04.01.15    NACL-ÌçÏÆ    07/02/06  ²¬»³¸©ÃÏÊý¸øÈñÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -9855,9 +9856,12 @@
       *****************************************************************
        2104424-ICHIBUFTN-KOH-HEN3-SEC               SECTION.
       *
-           IF   (WRK-PREFNUM        = "01"          )
-           AND  (SYU-SYUHKNNUM NOT = "060" AND "067")
-           AND  (SYU-KOH-HKNNUM(1)  = "141" OR "241")
+           IF  ((WRK-PREFNUM        = "01"          ) AND
+                (SYU-SYUHKNNUM NOT = "060" AND "067") AND
+                (SYU-KOH-HKNNUM(1)  = "141" OR "241"))
+           OR  ((WRK-PREFNUM        = "33"          ) AND
+                (SYU-KOH-HKNNUM(1)(1:1)
+                                 >=  "1" AND <=  "8"))
             IF  FLG-KOHYONKAIME = 1
                MOVE   44400   TO   WRK-KINGAKU
             ELSE
@@ -10402,7 +10406,8 @@
                    ADD   SYU-SKJ-FTN(IDX3)          TO
                                    WRK-SKJ-FTN(KH-IDX)
                 ELSE
-                  IF     (RECE62-KOUREI          =  "1" OR "2")
+      ***         IF     (RECE62-KOUREI          =  "1" OR "2")
+                  IF     (RECE62-KOUREI          =  "1"       )
                   AND    (RECE62-SRYYM          >=  "200610"  )
                   AND    (WRK-PREFNUM            =   33       )
                   AND    (RECE62-KOHNUM(KH-IDX - 1)(1:1)
@@ -11395,9 +11400,9 @@
                    IF  ( RECE62-KOHNUM(KOHFTN-IDX) =
                               "015" OR "016" OR "051" OR "021" OR
                               "024" OR "079" OR "052" OR "011"     )
-                   OR  ((WRK-PREFNUM             =   33           ) AND
-                        (RECE62-KOHNUM(KOHFTN-IDX)(1:1)
-                                                >= "1" AND <=  "8"))
+      ***          OR  ((WRK-PREFNUM             =   33           ) AND
+      ***               (RECE62-KOHNUM(KOHFTN-IDX)(1:1)
+      ***                                       >= "1" AND <=  "8"))
                       MOVE  WRK-TAIHI-FTNMONEY    (KOHFTN-IDX + 1)
                                 TO  RECE62-FTNMONEY(KOHFTN-IDX + 1)
                       MOVE  WRK-TAIHI-FTNMONEY-KOJ(KOHFTN-IDX + 1)
