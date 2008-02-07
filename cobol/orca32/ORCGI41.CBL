@@ -212,6 +212,7 @@
            03  WRK-NAI-SRYYM       PIC X(06).
       *    パス名領域
            03  WRK-DBPATH          PIC X(20).
+           03  WRK-PATHNAME        PIC X(20).
       *    室料差額表示
            03  WRK-SAGAKU.
                05  WRK-SAGAKU-Z1   PIC ------,--9.
@@ -1164,6 +1165,8 @@
       *
                MOVE    SYS-5000-ADLINPUTKBN TO SPA-5000-ADLINPUTKBN
       *
+               MOVE    SYS-5000-RYOYODSPKBN TO SPA-5000-RYOYODSPKBN
+      *
            END-IF.
       *
        3500-KIHON-HEN-EXT.
@@ -1798,6 +1801,11 @@
       *****************************************************************
        31011-NYUINACCT-HENSYU-SEC              SECTION.
       *
+           IF      SPA-5000-RYOYODSPKBN   =    "1"
+               MOVE   "key36"          TO  WRK-PATHNAME
+           ELSE
+               MOVE   "key39"          TO  WRK-PATHNAME
+           END-IF
       *    入院会計マスターを編集（入院基本料）
            INITIALIZE                      NYUINACCT-REC.
            MOVE    SPA-HOSPNUM         TO  NACCT-HOSPNUM
@@ -1808,11 +1816,11 @@
       *
            MOVE    NYUINACCT-REC       TO  MCPDATA-REC.
            MOVE    "tbl_nyuinacct"     TO  MCP-TABLE
-           MOVE    "key36"             TO  MCP-PATHNAME
+           MOVE    WRK-PATHNAME        TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
                MOVE    "tbl_nyuinacct"     TO  MCP-TABLE
-               MOVE    "key36"             TO  MCP-PATHNAME
+               MOVE    WRK-PATHNAME        TO  MCP-PATHNAME
                PERFORM 900-NYUINACCT-READ-SEC
            ELSE
                INITIALIZE                  NYUINACCT-REC
@@ -1832,12 +1840,12 @@
                END-EVALUATE
       *
                MOVE    "tbl_nyuinacct"     TO  MCP-TABLE
-               MOVE    "key36"             TO  MCP-PATHNAME
+               MOVE    WRK-PATHNAME        TO  MCP-PATHNAME
                PERFORM 900-NYUINACCT-READ-SEC
            END-PERFORM
       *
            MOVE    "tbl_nyuinacct"     TO  MCP-TABLE
-           MOVE    "key36"             TO  MCP-PATHNAME
+           MOVE    WRK-PATHNAME        TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC.
       *
       *    入院会計マスターを編集（選定入院料）

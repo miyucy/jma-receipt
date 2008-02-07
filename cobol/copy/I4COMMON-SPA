@@ -142,6 +142,9 @@
                                            PIC  X(01).
       *       入院時食事療養区分
                05  SPA-5000-NACCT-SKJKBN       PIC  X(01).
+      *       ＡＤＬ入力区分
                05  SPA-5000-ADLINPUTKBN        PIC  X(01).
+      *       療養病棟（病床）会計表示区分
+               05  SPA-5000-RYOYODSPKBN        PIC  X(01).
       *
       *
