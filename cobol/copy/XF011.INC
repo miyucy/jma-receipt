@@ -8,8 +8,12 @@
                 04  XF011-BUNREILIST.
                   05  XF011-BUNREI-COUNT PIC S9(9)   BINARY.
                   05  XF011-BUNREI-ROW   PIC S9(9)   BINARY.
+                  05  XF011-BUNREI-ROWATTR PIC S9(9)   BINARY.
                   05  XF011-ITEM      OCCURS  200 TIMES.
                     06  XF011-TRENNUM   PIC X(3).
                     06  XF011-TCOMMENT  PIC X(100).
                   05  XF011-BUNREI-SELECT
                           PIC X       OCCURS  200 TIMES.
+              03   XF011-NEXT.
+                04   XF011-NEXT-STYLE   PIC X(20).
+                04   XF011-NEXT-VALUE   PIC X(20).

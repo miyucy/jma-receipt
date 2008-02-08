@@ -9,12 +9,17 @@ XF011	{
 			BUNREILIST	{
 				count	int;
 				row	int;
+				rowattr	int;
 				item	{
 					value0	varchar(3);
 					value1	varchar(100);
 				}	[200];
 				select	bool[200];
 			};
+		};
+		NEXT	{
+			style	varchar(20);
+			value	varchar(20);
 		};
 	};
 };

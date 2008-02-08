@@ -264,7 +264,7 @@
       *****************************************************************
        3101-BUNREI-HEN-SEC        SECTION.
       *
-           MOVE    ZERO                TO  FLG-GMN-INIT
+           MOVE    1                   TO  FLG-GMN-INIT
       *
            INITIALIZE                  SPA-XF011-BUNNREI-G
            MOVE    ZERO                TO  SPA-XF011-BUNREIMAX
@@ -343,7 +343,7 @@
       *
       *    コラムリストの位置指定
            MOVE    ZERO                TO  XF011-BUNREI-ROW
-      *D   MOVE    ZERO                TO  XF011-BUNREI-ROWATTR
+           MOVE    ZERO                TO  XF011-BUNREI-ROWATTR
            IF      WRK-XF011-BUNREI-ROW NOT =   ZERO
                MOVE    WRK-XF011-BUNREI-ROW TO  XF011-BUNREI-ROW
            END-IF
@@ -357,7 +357,7 @@
                IF      SPA-XF011-SELNUM    =   SPA-XF011-TRENNUM (IDX)
                    MOVE    "T"             TO  XF011-BUNREI-SELECT (IDX)
                    MOVE    IDX             TO  XF011-BUNREI-ROW
-      *D           MOVE    2               TO  XF011-BUNREI-ROWATTR
+                   MOVE    2               TO  XF011-BUNREI-ROWATTR
                ELSE
                    MOVE    "F"             TO  XF011-BUNREI-SELECT (IDX)
                END-IF
@@ -365,6 +365,23 @@
            MOVE    SPA-XF011-BUNREIMAX  TO  XF011-BUNREI-COUNT
       *
            MOVE    SPA-XF011-SELNUM     TO  XF011-SELNUM
+      *    次頁あり
+           IF      SPA-XF011-NEXT       =   1
+               IF      SPA-XF011-PAGE       =   1
+                   MOVE    "［次頁有り］"       TO  XF011-NEXT-VALUE
+               ELSE
+                   MOVE    "［前頁・次頁有り］" TO  XF011-NEXT-VALUE
+               END-IF
+               MOVE    "red"               TO  XF011-NEXT-STYLE
+           ELSE
+               IF      SPA-XF011-PAGE      >   1
+                   MOVE    "［前頁有り］"      TO  XF011-NEXT-VALUE
+                   MOVE    "red"               TO  XF011-NEXT-STYLE
+               ELSE
+                   MOVE    SPACE               TO  XF011-NEXT-VALUE
+                   MOVE    "black"             TO  XF011-NEXT-STYLE
+               END-IF
+           END-IF
       *
            PERFORM 5001-MAPCUR-SEC
            .

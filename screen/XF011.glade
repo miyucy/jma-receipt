@@ -275,6 +275,22 @@
 	</widget>
       </widget>
     </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>NEXT</name>
+      <x>296</x>
+      <y>510</y>
+      <width>144</width>
+      <height>24</height>
+      <label></label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
   </widget>
 </widget>
 
