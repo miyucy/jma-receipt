@@ -12,3 +12,7 @@
                     06  C501-TCOMMENT PIC X(100).
                   05  C501-BUNREI-SELECT
                           PIC X       OCCURS  200 TIMES.
+              03  C501-NEXT.
+                04  C501-NEXT-STYLE   PIC X(20).
+                04  C501-NEXT-VALUE   PIC X(20).
+

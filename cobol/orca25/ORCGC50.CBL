@@ -2399,6 +2399,11 @@
            MOVE    14                  TO  SPA-GMN-CUR
       *
            MOVE    C50-COMSEL          TO  SPA-GMN-COMSEL
+      *TEST
+           DISPLAY "SPA-GMN-COMSEL:" SPA-GMN-COMSEL
+               ",SPA-GMN-SELNUM(1):" SPA-GMN-SELNUM(1)
+               ",SSPA-COMMENT-MAX:" SPA-COMMENT-MAX
+      *TEST
       *
            IF     (SPA-GMN-COMSEL      >=  1   )  AND
                   (SPA-GMN-COMSEL      <=  SPA-COMMENT-MAX )
@@ -3782,9 +3787,10 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            END-IF
       *
            MOVE    SPACE               TO  SPA-GMN-COMMENT
-           MOVE    SPACE               TO  SPA-GMN-SELNUM-X
-           MOVE    ZERO                TO  SPA-GMN-SELNUM-G
            MOVE    ZERO                TO  SPA-GMN-BUNNUM
+           MOVE    ZERO                TO  SPA-GMN-COMSEL
+           PERFORM 31031-SJKBN-INI-SEC
+      *    コメントへ
            MOVE    1                   TO  SPA-GMN-CUR
       *
            .

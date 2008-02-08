@@ -15,5 +15,9 @@ C501	{
 				select	bool[200];
 			};
 		};
+		NEXT	{
+			style	varchar(20);
+			value	varchar(20);
+		};
 	};
 };

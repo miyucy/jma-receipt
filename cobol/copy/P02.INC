@@ -319,13 +319,13 @@
                         08  P02-HKNCOBNAME    PIC X(40).
                       07  P02-HKNLIST-SELECT  PIC X   OCCURS  30 TIMES.
                   05  P02-P02-HKNNAME.
-                    06  P02-VALUE   PIC X(24).
+                    06  P02-VALUE   PIC X(30).
                   05  P02-P02-HKNNAME2.
-                    06  P02-VALUE   PIC X(24).
+                    06  P02-VALUE   PIC X(30).
                   05  P02-P02-HKNJAADRS.
-                    06  P02-VALUE   PIC X(24).
+                    06  P02-VALUE   PIC X(30).
                   05  P02-P02-HKNJAADRS2.
-                    06  P02-VALUE   PIC X(24).
+                    06  P02-VALUE   PIC X(30).
                   05  P02-P02-HKNJATEL.
                     06  P02-VALUE   PIC X(16).
                   05  P02-P02-NYUKIN-COB.

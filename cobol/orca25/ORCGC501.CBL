@@ -287,7 +287,7 @@
       *****************************************************************
        3101-BUNREI-HEN-SEC        SECTION.
       *
-           MOVE    ZERO                TO  FLG-GMN-INIT
+           MOVE    1                   TO  FLG-GMN-INIT
       *
            INITIALIZE                  SPA-C501-BUNNREI-G
            MOVE    ZERO                TO  SPA-C501-BUNREIMAX
@@ -363,6 +363,7 @@
       *
       *
            MOVE    SPACE               TO  C501
+           INITIALIZE                      C501
       *
       *    コラムリストの位置指定
            MOVE    ZERO                TO  C501-BUNREI-ROW
@@ -388,6 +389,23 @@
            MOVE    SPA-C501-BUNREIMAX  TO  C501-BUNREI-COUNT
       *
            MOVE    SPA-C501-SELNUM     TO  C501-SELNUM
+      *    次頁あり
+           IF      SPA-C501-NEXT        =   1
+               IF      SPA-C501-PAGE        =   1
+                   MOVE    "［次頁有り］"       TO  C501-NEXT-VALUE
+               ELSE
+                   MOVE    "［前頁・次頁有り］" TO  C501-NEXT-VALUE
+               END-IF
+               MOVE    "red"               TO  C501-NEXT-STYLE
+           ELSE
+               IF      SPA-C501-PAGE       >   1
+                   MOVE    "［前頁有り］"      TO  C501-NEXT-VALUE
+                   MOVE    "red"               TO  C501-NEXT-STYLE
+               ELSE
+                   MOVE    SPACE               TO  C501-NEXT-VALUE
+                   MOVE    "black"             TO  C501-NEXT-STYLE
+               END-IF
+           END-IF
       *
            PERFORM 5001-MAPCUR-SEC
            .

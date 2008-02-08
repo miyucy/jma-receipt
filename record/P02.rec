@@ -411,16 +411,16 @@ P02	{
 					};
 				};
 				P02_HKNNAME	{
-					value	varchar(24);
+					value	varchar(30);
 				};
 				P02_HKNNAME2	{
-					value	varchar(24);
+					value	varchar(30);
 				};
 				P02_HKNJAADRS	{
-					value	varchar(24);
+					value	varchar(30);
 				};
 				P02_HKNJAADRS2	{
-					value	varchar(24);
+					value	varchar(30);
 				};
 				P02_HKNJATEL	{
 					value	varchar(16);

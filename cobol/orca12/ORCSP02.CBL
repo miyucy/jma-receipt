@@ -3081,7 +3081,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            END-IF
       *    ÊÝ¸±¾ðÊó
            MOVE    SPA-HKNJA-HKNJANAME TO  P02-P02-HKNNAME
-           MOVE    SPA-HKNJA-HKNJANAME(25:)
+           MOVE    SPA-HKNJA-HKNJANAME(31:)
                                        TO  P02-P02-HKNNAME2
            MOVE    SPA-HKNJA-ADRS      TO  P02-P02-HKNJAADRS
            MOVE    SPA-HKNJA-BANTI     TO  P02-P02-HKNJAADRS2
