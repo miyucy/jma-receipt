@@ -1807,14 +1807,14 @@
                MOVE   "key39"          TO  WRK-PATHNAME
            END-IF
       *    入院会計マスターを編集（入院基本料）
-           INITIALIZE                      NYUINACCT-REC.
+           INITIALIZE                      NYUINACCT-REC
            MOVE    SPA-HOSPNUM         TO  NACCT-HOSPNUM
-           MOVE    SPA-NYUGAIKBN       TO  NACCT-NYUGAIKBN.
+           MOVE    SPA-NYUGAIKBN       TO  NACCT-NYUGAIKBN
            MOVE    SPA-GMN-PTID        TO  NACCT-PTID
            MOVE    "00"                TO  NACCT-SRYKA
            MOVE    SPA-NAI-SRYYM       TO  NACCT-SRYYM
       *
-           MOVE    NYUINACCT-REC       TO  MCPDATA-REC.
+           MOVE    NYUINACCT-REC       TO  MCPDATA-REC
            MOVE    "tbl_nyuinacct"     TO  MCP-TABLE
            MOVE    WRK-PATHNAME        TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
@@ -1836,7 +1836,7 @@
                EVALUATE    NACCT-ZAISKBKBN
       *            入院料
                    WHEN    "1"
-                       MOVE   1                TO   FLG-NYUINKHNRYO
+                       MOVE   1            TO  FLG-NYUINKHNRYO
                END-EVALUATE
       *
                MOVE    "tbl_nyuinacct"     TO  MCP-TABLE
@@ -1849,14 +1849,14 @@
            PERFORM 990-DBCLOSE-SEC.
       *
       *    入院会計マスターを編集（選定入院料）
-           INITIALIZE                      NYUINACCT-REC.
+           INITIALIZE                      NYUINACCT-REC
            MOVE    SPA-HOSPNUM         TO  NACCT-HOSPNUM
-           MOVE    SPA-NYUGAIKBN       TO  NACCT-NYUGAIKBN.
+           MOVE    SPA-NYUGAIKBN       TO  NACCT-NYUGAIKBN
            MOVE    SPA-GMN-PTID        TO  NACCT-PTID
            MOVE    "00"                TO  NACCT-SRYKA
            MOVE    SPA-NAI-SRYYM       TO  NACCT-SRYYM
       *
-           MOVE    NYUINACCT-REC       TO  MCPDATA-REC.
+           MOVE    NYUINACCT-REC       TO  MCPDATA-REC
            MOVE    "tbl_nyuinacct"     TO  MCP-TABLE
            MOVE    "key37"             TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
@@ -1886,14 +1886,14 @@
       *
       *
       *    入院会計マスターを編集（入院料以外）
-           INITIALIZE                      NYUINACCT-REC.
+           INITIALIZE                      NYUINACCT-REC
            MOVE    SPA-HOSPNUM         TO  NACCT-HOSPNUM
-           MOVE    SPA-NYUGAIKBN       TO  NACCT-NYUGAIKBN.
+           MOVE    SPA-NYUGAIKBN       TO  NACCT-NYUGAIKBN
            MOVE    SPA-GMN-PTID        TO  NACCT-PTID
            MOVE    "00"                TO  NACCT-SRYKA
            MOVE    SPA-NAI-SRYYM       TO  NACCT-SRYYM
       *
-           MOVE    NYUINACCT-REC       TO  MCPDATA-REC.
+           MOVE    NYUINACCT-REC       TO  MCPDATA-REC
            MOVE    "tbl_nyuinacct"     TO  MCP-TABLE
            MOVE    "key38"             TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
@@ -1955,7 +1955,7 @@
       *
            MOVE    "tbl_nyuinacct"     TO  MCP-TABLE
            MOVE    "key38"             TO  MCP-PATHNAME
-           PERFORM 990-DBCLOSE-SEC.
+           PERFORM 990-DBCLOSE-SEC
       *
            .
        31011-NYUINACCT-HENSYU-EXT.
