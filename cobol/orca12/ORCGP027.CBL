@@ -583,6 +583,7 @@
                MOVE    WRK-HENYMD          TO  SPA-GMN27-TEKEDYMD(IDY)
       *        労災の時、部位を公費１の項目へ
                IF      LNK-COMB-HKNNUM (IDX)   =   "971"
+                                               OR  "973"
                    PERFORM 3201-RSI-HENSYU-SEC
                END-IF
       *
@@ -972,6 +973,7 @@
            IF      IDY                 >   ZERO
       *        労災保険の時、セットしない
                IF      SPA-PTHKN-HKNNUM (IDY) =   "971"
+                                              OR  "973"
                    CONTINUE
                ELSE
                    IF     (SPA-SYSYMD      =  SPA-PTHKN-KAKUNINYMD(IDY))
