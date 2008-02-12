@@ -123,6 +123,8 @@
                "scripts/allways/program_upgrade_online.sh".
            03  SHELL-NAME2         PIC X(42)  VALUE
                "scripts/allways/program_upgrade_offline.sh".
+           03  SHELL-NAME3         PIC X(40)  VALUE
+               "scripts/allways/program_upgrade_check.sh".
       *
       *****************************************************************
       *    連絡　領域
@@ -259,9 +261,9 @@
       *        情報削除
                WHEN    "CLICKED"   ALSO    "B02"
                    PERFORM 410-JOBDEL-SEC
-      *        情報
-      ***         WHEN    "CLICKED"   ALSO    "B09"
-      ***             PERFORM 400-JYOUHOU-SEC
+      *        チェック
+               WHEN    "CLICKED"   ALSO    "B09"
+                   PERFORM 400-CHECK-SEC
       *----(03.04.01)---ADD-START---
                WHEN    "CLICKED"   ALSO    "pandatimer1"
       *----(03.04.01)---ADD-END-----
@@ -412,9 +414,9 @@
            EXIT.
       *
       *****************************************************************
-      *    情報入手
+      *    チェック
       *****************************************************************
-       400-JYOUHOU-SEC             SECTION.
+       400-CHECK-SEC               SECTION.
       *
       *    プログラム更新処理
            MOVE    SPACE           TO  SHELLTBL
@@ -422,29 +424,14 @@
       *
       *    オンライン
            IF      SPA-GMN-ONKBN   =   "T"
-               MOVE    SHELL-NAME1     TO  MKPASS-IN-01
-               MOVE    "1"             TO  SHELLTBL-ARG1
+               MOVE    SHELL-NAME3     TO  MKPASS-IN-01
            END-IF
-      *    オフライン
-      *     IF      SPA-GMN-OFFKBN  =   "T"
-      *         MOVE    SHELL-NAME2     TO  MKPASS-IN-01
-      *         EVALUATE    SPA-GMN-CD
-      *             WHEN    "1"
-      *                 MOVE    "1"             TO  SHELLTBL-ARG1
-      *                 MOVE    "1"             TO  SHELLTBL-ARG2
-      *             WHEN    "2"
-      *                 MOVE    "1"             TO  SHELLTBL-ARG1
-      *                 MOVE    "2"             TO  SHELLTBL-ARG2
-      *             WHEN    OTHER
-      *                 GO  TO  400-JYOUHOU-SEC-EXT
-      *         END-EVALUATE
-      *     END-IF
       *
            CALL    "ORCSMKPASS"        USING
                                        ORCSMKPASSAREA
            MOVE    MKPASS-OT-01    TO  SHELLTBL-NAME
-grpsys     MOVE    SPA-HOSPNUM     TO  SHELLTBL-ARG2
-           MOVE    SPA-SUPERVISOR  TO  SHELLTBL-ARG3
+grpsys     MOVE    SPA-HOSPNUM     TO  SHELLTBL-ARG1
+           MOVE    SPA-SUPERVISOR  TO  SHELLTBL-ARG2
            MOVE    SHELLTBL        TO  MCPDATA-REC
       *
            MOVE    "SHELL"         TO  MCP-FUNC
@@ -455,7 +442,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                                SPA-AREA
       *
            .
-       400-JYOUHOU-SEC-EXT.
+       400-CHECK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -478,7 +465,11 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                IF      PGKANRI-UPDATEFLG   =   "T"
                    MOVE    "　　済　"      TO  SPA-GMN-SYORIFLG(IDX)
                ELSE
-                   MOVE    "　　　　"      TO  SPA-GMN-SYORIFLG(IDX)
+                   IF      PGKANRI-UPDATEFLG   =   "E"
+                       MOVE    "　エラー"      TO  SPA-GMN-SYORIFLG(IDX)
+                   ELSE
+                       MOVE    "　　　　"      TO  SPA-GMN-SYORIFLG(IDX)
+                   END-IF
                END-IF
       *    内容
                MOVE    PGKANRI-COMMENT     TO  SPA-GMN-NAIYO(IDX)

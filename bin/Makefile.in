@@ -9,6 +9,8 @@ BIN_sources = \
 	jma-receipt-db-setup.sh.in \
 	jma-receipt-db-check.sh.in \
 	jma-receipt-hospid-set.sh.in \
+	jma-receipt-program-upgrade.sh.in \
+	jma-receipt-program-upgrade-check.sh.in \
 	orcvt_exec.sh.in
 
 BIN_bin = \

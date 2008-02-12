@@ -1,0 +1,95 @@
+#!/bin/sh
+
+if test -z "$JMARECEIPT_ENV"; then
+    JMARECEIPT_ENV="@jma-receipt-env@"
+fi
+if ! test -f "$JMARECEIPT_ENV"; then
+    exit 0
+fi
+
+. $JMARECEIPT_ENV
+
+umask 022
+
+#------------------------------------
+# $1 : 処理区分
+# $2 : プログラム名
+# $3 : インストールディレクトリ
+#------------------------------------
+
+HOME=/home/orca
+PRGDIR=orca-prgupwork
+LOGDIR=/var/log/jma-receipt
+
+LOG="$LOGDIR"/program_upgrade_check.log
+
+SYORI=$1
+PGNAME=$2
+INSTALLDIR=$3
+
+case "${SYORI}" in
+  clear)
+      SQL="\set ON_ERROR_STOP
+      begin;
+      delete from tbl_pgkanri where systemversion = 'check';
+      commit;"
+      echo "${SQL}" | psql ${DBNAME}
+      exit 0
+      ;;
+
+  complete)
+      COMMENT="提供されている最新の状態でした。"
+      UPDATEFLG=""
+      ;;
+
+  error1)
+      COMMENT="${PGNAME} が提供されていますが適用されていません。"
+      UPDATEFLG="E"
+      ;;
+
+  error2)
+      COMMENT="${INSTALLDIR}/${PGNAME} がありますが提供されたものではありません。"
+      UPDATEFLG="E"
+      ;;
+
+  error3)
+      COMMENT="${INSTALLDIR}/${PGNAME} は提供されたものと内容が違います。"
+      UPDATEFLG="E"
+      ;;
+
+  error4)
+      COMMENT="${INSTALLDIR}/${PGNAME} は提供されたものと違う場所にあります。"
+      UPDATEFLG="E"
+      ;;
+
+  error9)
+      COMMENT="${INSTALLDIR}/${PGNAME} ？？"
+      UPDATEFLG="E"
+      ;;
+
+  *)
+      COMMENT=""
+      UPDATEFLG=""
+      ;;
+esac
+
+ymd=$(date +'%Y%m%d')
+time=$(date +'%H%M%S')
+
+SQL="select max(pgno) from tbl_pgkanri;"
+
+PGNOMAX=`echo ${SQL} | psql -t -A ${DBNAME}`
+if [ -z ${PGNOMAX} ]; then
+  PGNOMAX=000
+fi
+WKNUM=`expr ${PGNOMAX} + 1`
+PGNO=`printf "%03d" ${WKNUM}`
+
+SQL="\set ON_ERROR_STOP
+begin;
+insert into tbl_pgkanri values ('','check','${PGNO}','${ymd}','${PGNAME}','${UPDATEFLG}','','${INSTALLDIR}','${COMMENT}','','','${ymd}','','${time}');
+commit;"
+
+echo "${SQL}" | psql ${DBNAME}
+
+exit 0

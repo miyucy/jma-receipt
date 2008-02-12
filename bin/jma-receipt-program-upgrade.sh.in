@@ -1,0 +1,34 @@
+#!/bin/sh
+
+if test -z "$JMARECEIPT_ENV"; then
+    JMARECEIPT_ENV="@jma-receipt-env@"
+fi
+if ! test -f "$JMARECEIPT_ENV"; then
+    exit 0
+fi
+
+. $JMARECEIPT_ENV
+
+PANDALIB=/usr/lib/panda
+COBLIB=/usr/lib/open-cobol
+
+# echo message (default character-code EUC)
+function echomsg() {
+  if [ "${LANG}" = "ja_JP.UTF-8" ] || [ "${LANG}" = "ja_JP.UTF8" ]; then
+    echo `echo $1 | nkf -wE`
+  else
+    echo $1
+  fi
+}
+
+if [ `whoami` != "orca" ]; then
+  echomsg "orcaユーザーで実行してください。"
+  exit 1
+fi
+
+COB_LIBRARY_PATH="${PATCHLIBDIR}":"${ORCALIBDIR}":"${PANDALIB}":"${COBLIB}"
+export COB_LIBRARY_PATH
+
+$DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter "JBS0000001PRGMNT,01"
+
+sh ${SCRIPTSDIR}/allways/program_upgrade_online.sh "0" "01"

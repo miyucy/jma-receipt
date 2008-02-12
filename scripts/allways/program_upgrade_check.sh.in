@@ -12,22 +12,21 @@ fi
 umask 022
 
 #------------------------------------
-# $1 : 処理区分
-# $2 : 医療機関識別番号(HOSPNUM)
-# $3 : スーパーバイザー
+# $1 : 医療機関識別番号(HOSPNUM)
+# $2 : スーパーバイザー
 #------------------------------------
 
-HOSPNUM=$2
+HOSPNUM=$1
 
 HOME=/home/orca
-PRGDIR=orca-prg@VERSION@
+PRGDIR=orca-prgupwork
 PATCHDIR=/var/lib/jma-receipt/patch
 LOGDIR=/var/log/jma-receipt
 PACKAGEFILE=patch@VERSION@.gz
 
 PRGPATH=$PGUPGRADEPATH/@VERSION@
 
-LOG="$LOGDIR"/program_upgrade_online.log
+LOG="$LOGDIR"/program_upgrade_check.log
 
 # echo message (default character-code EUC)
 function echomsg() {
@@ -51,8 +50,7 @@ fi
 echomsg ${OFFLINE} ${LOG}
 
 if ! [ -d $HOME/$PRGDIR ]; then 
-  cd $HOME
-  mkdir $PRGDIR
+  mkdir $HOME/$PRGDIR
 fi
 cd $HOME/$PRGDIR
 rm -f $HOME/$PRGDIR/*
@@ -66,21 +64,22 @@ if [ $? -ne 0 ] ; then
   exit 99
 fi
 
-#プログラム更新処理
-ruby $SCRIPTSDIR/allways/program_upgrade_exec.rb $PACKAGEFILE $PATCHDIR $HOME/$PRGDIR
+#アーカイブよりパッチプログラムを複写
+ruby $SCRIPTSDIR/allways/cachetoprgdir.rb $PACKAGEFILE $PATCHDIR $HOME/$PRGDIR
 if [ $? -ne 0 ] ; then
-  echomsg "更新プログラムの処理に失敗しました" ${LOG}
+  echomsg "更新プログラムの複写に失敗しました" ${LOG}
   rm -rf $HOME/$PRGDIR
-  $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE0000001PRGMNT99,$HOSPNUM
+  $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE0000001PRGMNT01,$HOSPNUM
   exit 99
 fi
 
-#monitor再起動（ＳＩＧＨＵＰ）
-if [ -e /var/run/jma-receipt/monitor.pid ]; then
-  echomsg "monitorの再起動を行います" ${LOG}
-  kill -HUP `cat /var/run/jma-receipt/monitor.pid`
-else
-  echomsg "monitor.pidファイルがありませんので再起動はしません" ${LOG}
+#パッチプログラムチェック
+ruby $SCRIPTSDIR/allways/program_upgrade_check.rb $PACKAGEFILE $PATCHDIR $HOME/$PRGDIR
+if [ $? -ne 0 ]	; then 
+  echomsg "更新プログラムのチェック処理が異常終了しました" ${LOG}
+  rm -rf $HOME/$PRGDIR
+  $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE0000001PRGMNT99,$HOSPNUM
+  exit 99
 fi
 
 echomsg "全ての処理が完了しました" ${LOG}
