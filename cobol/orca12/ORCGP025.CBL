@@ -185,21 +185,9 @@
        01  JYURRK-REC.
            COPY    "CPJYURRK.INC".
       *
-       01  LNK-KYUSEIRRK-AREA.
-           02  LNK-KYUSEIRRK-REC          OCCURS   10.
-           COPY    "CPKYUSEIRRK.INC"
-                              REPLACING  //KYUSEI// BY //LNK-KYU//.
-      **********************  REPLACING  //KYUSEI-// BY //LNK-KYU-//.
-      *        変更前の開始日・終了日（更新時使用）
-      *        03  LNK-KYU-KEY-O.
-      *            05  LNK-KYU-HOSPNUM-O       PIC X(24).
-      *            05  LNK-KYU-PTID-O         PIC 9(10).
-      *            05  LNK-KYU-CHGYMD-O       PIC X(08).
-      *
-      *
       *    パラメタテーブル
-       01  PARA-REC.
-           COPY    "CPPARA.INC".
+      *01  PARA-REC.
+      **** COPY    "CPPARA.INC".
       *
       *****************************************************************
       *    サブプロ用　領域
@@ -322,9 +310,6 @@
       *****************************************************************
        300-SCREEN-SEC              SECTION.
       *
-      *    パラメタファイル検索処理
-      *****PERFORM 320-PARAFILE-KENSAKU-SEC
-      *
            MOVE    SPA-WORK        TO  SPA-P02KYOUTU
       *
       *    初期画面編集
@@ -337,48 +322,6 @@
            EXIT.
       *
       *****************************************************************
-      *    パラメタファイル検索処理
-      *****************************************************************
-      *320-PARAFILE-KENSAKU-SEC             SECTION.
-      *
-      *    パラメタファイルより編集
-      *    MOVE    ZERO                TO  FLG-PARA
-      *    MOVE    SPA-TERMID          TO  FILE-TERMID1
-      *    OPEN    INPUT                   PARA-FILE
-      *    INITIALIZE                      PAR-KEY
-      *    START   PARA-FILE
-      *        KEY IS    >=   PAR-KEY
-      *        INVALID
-      *            MOVE    1           TO  FLG-PARA
-      *        NOT INVALID
-      *            PERFORM 990-PARA-NEXT-SEC
-      *    END-START
-      *
-      *    MOVE    ZERO            TO  SPA-NAI25-KYU-MAX
-      *    MOVE    ZERO            TO  SPA-NAI25-EDA-MAX
-      *
-      *    PERFORM    UNTIL   ( FLG-PARA        =   1 )
-      *        EVALUATE    PAR-FILEMEI
-      *        WHEN    "KYUSEI"
-      *            IF  PAR-EDANUM             <=  10
-      *                MOVE    PAR-DATA-REC    TO  LNK-KYUSEIRRK-REC
-      *                                                (PAR-EDANUM)
-      *                MOVE    PAR-EDANUM      TO  SPA-NAI25-KYU-MAX
-      *                MOVE    PAR-EDANUM      TO  SPA-NAI25-EDA-MAX
-      *            ELSE
-      *                DISPLAY "P025*<320> KYU-TBL 10 OVER ***"
-      *            END-IF
-      *        END-EVALUATE
-      *
-      *        PERFORM 990-PARA-NEXT-SEC
-      *    END-PERFORM
-      *    CLOSE                       PARA-FILE
-      *
-      *    .
-      *320-PARAFILE-KENSAKU-EXT.
-      *    EXIT.
-      *
-      *****************************************************************
       *    スパ初期編集処理
       *****************************************************************
        310-SPASET-SEC              SECTION.
@@ -386,48 +329,12 @@
            MOVE    ZERO            TO  SPA-NAI25-JYU-MAX
            INITIALIZE                  SPA-GMN25-JYU-TBL
       *
-      *    旧姓履歴スパ初期編集処理
-      *****PERFORM 311-KYUSEIRRK-SPASET-SEC
-      *
       *    診療科履歴スパ初期編集処理
            PERFORM 312-SRYKARRK-SPASET-SEC
       *
            .
        31O-SPASET-EXT.
            EXIT.
-      *
-      *****************************************************************
-      *    旧姓履歴スパ初期編集処理
-      *****************************************************************
-      *311-KYUSEIRRK-SPASET-SEC              SECTION.
-      *
-      *    PERFORM     VARYING     IDX   FROM    1   BY  1
-      *                UNTIL      (IDX           >   10)
-      *                OR         (IDX           >   SPA-NAI25-KYU-MAX)
-      *        MOVE    LNK-KYU-CHGYMD (IDX)
-      *                                TO  SPA-GMN25-KYU-CHGYMD(IDX)
-      *        MOVE    LNK-KYU-CHGYMD (IDX)   TO  WRK-SYMD
-      *        PERFORM 410112-SE-WAFORMAT-YMDEDIT-SEC
-      *        MOVE    WRK-HENYMD      TO  SPA-GMN25-KYU-CHGYMDW (IDX)
-      *        MOVE    LNK-KYU-KANANAME(IDX)
-      *                                TO  SPA-GMN25-KYU-KANANAME(IDX)
-      *        MOVE    LNK-KYU-NAME(IDX)
-      *                                TO  SPA-GMN25-KYU-NAME    (IDX)
-      *        MOVE    LNK-KYU-NICKNAME(IDX)
-      *                                TO  SPA-GMN25-KYU-NICKNAME(IDX)
-      *        MOVE    LNK-KYU-CREYMD (IDX)
-      *                                TO  SPA-GMN25-KYU-CREYMD  (IDX)
-      *        MOVE    LNK-KYU-UPYMD(IDX)
-      *                                TO  SPA-GMN25-KYU-UPYMD   (IDX)
-      *        IF  LNK-KYU-UPYMD (IDX) =   ALL "9"
-      *            MOVE    "1"         TO  SPA-GMN25-KYU-DELKBN  (IDX)
-      *        ELSE
-      *            MOVE    SPACE       TO  SPA-GMN25-KYU-DELKBN  (IDX)
-      *        END-IF
-      *    END-PERFORM
-      *    .
-      *311-KYUSEIRRK-SPASET-EXT.
-      *    EXIT.
       *
       *****************************************************************
       *    診療科履歴スパ初期編集処理
@@ -490,10 +397,6 @@
                MOVE    1               TO  SPA-NAI25-SELNUM2
       *        受診２テーブル編集
                MOVE    SPA-NAI25-SRY-SRYKA(1)  TO  WRK-SRYKA
-      **        １年前の年月日取得
-      *         PERFORM 4221-ZENYMD-GET-SEC
-      *         MOVE    WRK-SYMD        TO  WRK-ZENYMD
-      *　    　受診履歴２編集
                PERFORM 4222-JYURRK-SPASET-SEC
                MOVE    ZERO            TO  SPA-NAI25-SELNUM2
            END-IF
@@ -591,12 +494,6 @@
        4101-BETUGAMEN-SEC          SECTION.
       *
            EVALUATE    MCP-WIDGET
-      *    自画面
-      *        WHEN    "N08"
-      *            パラメタファイル検索処理
-      *************PERFORM 320-PARAFILE-KENSAKU-SEC
-      *            旧姓履歴スパ初期編集処理
-      *************PERFORM 311-KYUSEIRRK-SPASET-SEC
       *    他画面
                WHEN    OTHER
                    PERFORM 490-TOUROKU-SEC
@@ -612,19 +509,11 @@
       *
       *    登録チェック処理
            PERFORM 4901-TOUROKU-CHECK-SEC
-           IF      SPA-ERRCD       NOT =   SPACE
-               GO      TO              490-TOUROKU-EXT
-           END-IF
-      *
-      *****パラメタファイル再検索処理
-      *    INITIALIZE                  LNK-KYUSEIRRK-AREA
-      *****PERFORM 320-PARAFILE-KENSAKU-SEC
       *
       *    画面の内容を患者マスター保存へ
-           PERFORM 500-GMN-SPA-HEN-SEC
-      *
-      *    パラメタデータ出力
-      *****PERFORM 520-PARA-OUT-SEC
+           IF      SPA-ERRCD           =   SPACE
+               PERFORM 500-GMN-SPA-HEN-SEC
+           END-IF
       *
            .
        490-TOUROKU-EXT.
@@ -635,27 +524,6 @@
       *****************************************************************
        4901-TOUROKU-CHECK-SEC         SECTION.
       *
-           PERFORM     VARYING     IDX   FROM    1   BY  1
-                       UNTIL      (IDX       >   10)
-                       OR         (IDX       >   SPA-NAI25-EDA-MAX)
-                       OR         (SPA-ERRCD     NOT =   SPACE )
-      *
-             IF  SPA-GMN25-KYU-DELKBN (IDX)    =   SPACE
-      *
-                 COMPUTE     IDZ               =   IDX    +   1
-                 PERFORM     VARYING   IDY   FROM   IDZ   BY  1
-                             UNTIL    (IDY     >   10)
-                             OR       (IDY     >   SPA-NAI25-EDA-MAX)
-                             OR       (SPA-ERRCD   NOT =   SPACE )
-      *
-                     IF  ( SPA-GMN25-KYU-DELKBN (IDY)  =   SPACE )  AND
-                         ( SPA-GMN25-KYU-CHGYMD (IDX)
-                                         =   SPA-GMN25-KYU-CHGYMD(IDY))
-                         MOVE    "2517"      TO  SPA-ERRCD
-                     END-IF
-                 END-PERFORM
-             END-IF
-           END-PERFORM
            .
        4901-TOUROKU-CHECK-EXT.
            EXIT.
@@ -665,143 +533,67 @@
       *****************************************************************
        500-GMN-SPA-HEN-SEC         SECTION.
       *
-      *    全データ
-           PERFORM     VARYING   IDX   FROM    1   BY  1
-                       UNTIL     IDX   >   SPA-NAI25-EDA-MAX
-      *
-      *********MOVE    SPACE           TO  LNK-KYU-KEY-O(IDX)
-      *
-      *        削除データの場合
-               IF  SPA-GMN25-KYU-DELKBN (IDX)  =   "1"
-                   MOVE    ALL "9"     TO  LNK-KYU-UPYMD   (IDX)
-               ELSE
-      *            変更年月日変更時、名称など転送
-                   IF  ( SPA-GMN25-KYU-CHGYMD  (IDX)
-                                   NOT =   LNK-KYU-CHGYMD  (IDX)) OR
-                       ( SPA-GMN25-KYU-KANANAME(IDX)
-                                   NOT =   LNK-KYU-KANANAME(IDX)) OR
-                       ( SPA-GMN25-KYU-NAME    (IDX)
-                                   NOT =   LNK-KYU-NAME    (IDX)) OR
-                       ( SPA-GMN25-KYU-NICKNAME(IDX)
-                                   NOT =   LNK-KYU-NICKNAME(IDX))
-      *                変更前キー転送
-                       MOVE    LNK-KYU-KEY (IDX)
-      *************************************TO  LNK-KYU-KEY-O   (IDX)
-                                           TO  LNK-KYUUP-KEY   (IDX)
-                       MOVE    SPA-GMN25-KYU-UPYMD (IDX)
-                                           TO  LNK-KYU-UPYMD   (IDX)
-                       MOVE    SPA-GMN25-KYU-CHGYMD  (IDX)
-                                           TO  LNK-KYU-CHGYMD  (IDX)
-                       MOVE    SPA-GMN25-KYU-KANANAME(IDX)
-                                           TO  LNK-KYU-KANANAME(IDX)
-                       MOVE    SPA-GMN25-KYU-NAME    (IDX)
-                                           TO  LNK-KYU-NAME    (IDX)
-                       MOVE    SPA-GMN25-KYU-NICKNAME(IDX)
-                                           TO  LNK-KYU-NICKNAME(IDX)
-                       MOVE    SPA-TERMID  TO  LNK-KYU-TERMID  (IDX)
-                       MOVE    SPA-OPID    TO  LNK-KYU-OPID    (IDX)
-                       MOVE    SPA-GMN25-KYU-CREYMD  (IDX)
-                                           TO  LNK-KYU-CREYMD (IDX)
-                   END-IF
-               END-IF
-           END-PERFORM
-      *
            .
        500-GMN-SPA-HEN-EXT.
            EXIT.
       *
       *****************************************************************
-      *    パラメタデータ出力
-      *****************************************************************
-      *520-PARA-OUT-SEC             SECTION.
-      *
-      *    MOVE    SPA-TERMID          TO  FILE-TERMID1
-      *    OPEN    I-O                 PARA-FILE
-      *    PERFORM     VARYING   IDX   FROM    1   BY  1
-      *                UNTIL     IDX       >   SPA-NAI25-EDA-MAX
-      *        MOVE    "KYUSEI"            TO  PAR-FILEMEI
-      *        MOVE    IDX                 TO  PAR-EDANUM
-      *        PERFORM 980-PARA-READ-SEC
-      *        MOVE    "KYUSEI"            TO  PAR-FILEMEI
-      *        MOVE    IDX                 TO  PAR-EDANUM
-      *        MOVE    LNK-KYUSEIRRK-REC (IDX)
-      *                                    TO  PAR-DATA-REC
-      *        IF      FLG-PARA            =   ZERO
-      *            REWRITE   PARA-REC
-      *        ELSE
-      *            WRITE     PARA-REC
-      *        END-IF
-      *    END-PERFORM
-      *    CLOSE                     PARA-FILE
-      *    .
-      *
-      *520-PARA-OUT-EXT.
-      *****EXIT.
-      *
-      *****************************************************************
-      *    保険情報処理
+      *    旧姓データ更新処理
       *****************************************************************
        460-KYUSEI-UPDATE-SEC          SECTION.
       *
-      *チェック
-           IF  SPA-NAI25-SELNUM       =   ZERO
-               MOVE    "2501"         TO  SPA-ERRCD
-      *----(01.00.01) LINE ADD START -------------------------------
-               MOVE    1              TO  SPA-GMN25-CUR
-      *----(01.00.01) LINE ADD END   -------------------------------
-               GO  TO                 460-KYUSEI-UPDATE-EXT
-           END-IF
-           MOVE    ZERO               TO  WRK-IDX
-           PERFORM     VARYING   IDX  FROM    1   BY  1
-                       UNTIL    (IDX      >   10)
-                       OR       (IDX      >   SPA-NAI25-KYU-MAX)
-             IF  SPA-GMN25-KYU-DELKBN (IDX)    =   SPACE
-               ADD     1              TO  WRK-IDX 
-             END-IF
+      *選択番号チェック
+           MOVE    ZERO                TO  WRK-IDX
+           PERFORM     VARYING   IDX   FROM    1   BY  1
+                       UNTIL    (IDX       >   SPA-NAI25-KYU-MAX)
+               IF      SPA-GMN25-KYU-DELKBN (IDX)  =   SPACE
+                   ADD     1               TO  WRK-IDX
+               END-IF
            END-PERFORM
-           IF  SPA-NAI25-SELNUM       >   WRK-IDX
-               MOVE    "2502"         TO  SPA-ERRCD
-               GO  TO                 460-KYUSEI-UPDATE-EXT
+           IF      SPA-NAI25-SELNUM    =   ZERO
+               MOVE    "2501"          TO  SPA-ERRCD
+               MOVE    1               TO  SPA-GMN25-CUR
            END-IF
+           IF      SPA-NAI25-SELNUM    >   WRK-IDX
+               MOVE    "2502"          TO  SPA-ERRCD
+               MOVE    1               TO  SPA-GMN25-CUR
+           END-IF
+      *
       *必須入力チェック
-           IF  (SPA-GMN25-TKYU-CHGYMD    =   SPACE)   AND
-               (SPA-GMN25-TKYU-KANANAME  =   SPACE)   AND
-               (SPA-GMN25-TKYU-NAME      =   SPACE)
-               MOVE    "2507"         TO  SPA-ERRCD
-               GO  TO                 460-KYUSEI-UPDATE-EXT
+           IF      SPA-ERRCD           =   SPACE
+               IF     (SPA-GMN25-TKYU-CHGYMD    =   SPACE)   AND
+                      (SPA-GMN25-TKYU-KANANAME  =   SPACE)   AND
+                      (SPA-GMN25-TKYU-NAME      =   SPACE)
+                   MOVE    "2507"         TO  SPA-ERRCD
+               END-IF
            END-IF
       *----(01.00.01) LINE ADD START -------------------------------
       *    変更年月日
-           PERFORM 4230-CHGYMD-CHECK-SEC
-           IF  SPA-ERRCD          NOT =   SPACE
-               GO  TO                 460-KYUSEI-UPDATE-EXT
+           IF      SPA-ERRCD           =   SPACE
+               PERFORM 4230-CHGYMD-CHECK-SEC
            END-IF
       *    カナ氏名
-           PERFORM 4230-TKANANAME-CHECK-SEC
-           IF  SPA-ERRCD          NOT =   SPACE
-               GO  TO                 460-KYUSEI-UPDATE-EXT
+           IF      SPA-ERRCD           =   SPACE
+               PERFORM 4230-TKANANAME-CHECK-SEC
            END-IF
       *    漢字氏名
-           PERFORM 4230-TNAME-CHECK-SEC
-           IF  SPA-ERRCD          NOT =   SPACE
-               GO  TO                 460-KYUSEI-UPDATE-EXT
+           IF      SPA-ERRCD           =   SPACE
+               PERFORM 4230-TNAME-CHECK-SEC
            END-IF
       *    通称
-           PERFORM 4230-TNICKNAME-CHECK-SEC
-           IF  SPA-ERRCD          NOT =   SPACE
-               GO  TO                 460-KYUSEI-UPDATE-EXT
+           IF      SPA-ERRCD           =   SPACE
+               PERFORM 4230-TNICKNAME-CHECK-SEC
            END-IF
       *    必須チェック
-           IF  (SPA-GMN25-TKYU-KANANAME  =   SPACE)   OR
-               (SPA-GMN25-TKYU-NAME      =   SPACE)
-               MOVE    "2507"         TO  SPA-ERRCD
-               IF  SPA-GMN25-TKYU-NAME   =   SPACE
-                   MOVE    4             TO  SPA-GMN25-CUR
+           IF      SPA-ERRCD           =   SPACE
+               IF      SPA-GMN25-TKYU-NAME     =   SPACE
+                   MOVE    "2507"          TO  SPA-ERRCD
+                   MOVE    4               TO  SPA-GMN25-CUR
                END-IF
-               IF  SPA-GMN25-TKYU-KANANAME   =   SPACE
-                   MOVE    3             TO  SPA-GMN25-CUR
+               IF      SPA-GMN25-TKYU-KANANAME =   SPACE
+                   MOVE    "2507"          TO  SPA-ERRCD
+                   MOVE    3               TO  SPA-GMN25-CUR
                END-IF
-               GO  TO                 460-KYUSEI-UPDATE-EXT
            END-IF
       *----(01.00.01) LINE ADD END   -------------------------------
       *同一年月日チェック
@@ -811,47 +603,46 @@
                        UNTIL    (IDX      >   10)
                        OR       (IDX      >   SPA-NAI25-KYU-MAX)
                        OR       (IDY      >   ZERO )
-             IF  SPA-GMN25-KYU-DELKBN (IDX)   =   SPACE
-               ADD     1              TO  WRK-IDX
-               IF  WRK-IDX            =   SPA-NAI25-SELNUM
-                   MOVE    IDX        TO  IDY
+               IF      SPA-GMN25-KYU-DELKBN (IDX)  =   SPACE
+                   ADD     1               TO  WRK-IDX
+                   IF      WRK-IDX         =   SPA-NAI25-SELNUM
+                       MOVE    IDX             TO  IDY
+                   END-IF
                END-IF
-             END-IF
            END-PERFORM
            PERFORM     VARYING   IDX  FROM    1   BY  1
                        UNTIL    (IDX      >   10)
                        OR       (IDX      >   SPA-NAI25-KYU-MAX)
-               IF  IDX           NOT  =   IDY
-                   IF  SPA-GMN25-TKYU-CHGYMD
-                                      =   SPA-GMN25-KYU-CHGYMD(IDX)
-                       MOVE    "2517"     TO  SPA-ERRCD
-                       GO  TO             460-KYUSEI-UPDATE-EXT
+                       OR       (SPA-ERRCD    NOT =   SPACE    )
+               IF      IDX             NOT =   IDY
+                   IF      SPA-GMN25-TKYU-CHGYMD
+                                           =   SPA-GMN25-KYU-CHGYMD(IDX)
+                       MOVE    "2517"      TO  SPA-ERRCD
+                       MOVE    2           TO  SPA-GMN25-CUR
                    END-IF
                END-IF
            END-PERFORM
       *
       *スパテーブルに追加転送
-           PERFORM     VARYING    IDX     FROM    1   BY  1
-                       UNTIL      IDX         >   10
-               IF  IDX                =   IDY
-                   MOVE    SPA-GMN25-TKYU-CHGYMDW
-                                      TO  SPA-GMN25-KYU-CHGYMDW (IDX)
-                   MOVE    SPA-GMN25-TKYU-CHGYMD
-                                      TO  SPA-GMN25-KYU-CHGYMD  (IDX)
-                   MOVE    SPA-GMN25-TKYU-KANANAME
-                                      TO  SPA-GMN25-KYU-KANANAME(IDX)
-                   MOVE    SPA-GMN25-TKYU-NAME
-                                      TO  SPA-GMN25-KYU-NAME    (IDX)
-                   MOVE    SPA-GMN25-TKYU-NICKNAME
-                                      TO  SPA-GMN25-KYU-NICKNAME(IDX)
-                   MOVE    SPA-SYSYMD TO  SPA-GMN25-KYU-UPYMD   (IDX)
-               END-IF
-           END-PERFORM
+           IF      SPA-ERRCD           =   SPACE
+               MOVE    IDY             TO  IDX
+               MOVE    SPA-GMN25-TKYU-CHGYMDW
+                                       TO  SPA-GMN25-KYU-CHGYMDW (IDX)
+               MOVE    SPA-GMN25-TKYU-CHGYMD
+                                       TO  SPA-GMN25-KYU-CHGYMD  (IDX)
+               MOVE    SPA-GMN25-TKYU-KANANAME
+                                       TO  SPA-GMN25-KYU-KANANAME(IDX)
+               MOVE    SPA-GMN25-TKYU-NAME
+                                       TO  SPA-GMN25-KYU-NAME    (IDX)
+               MOVE    SPA-GMN25-TKYU-NICKNAME
+                                       TO  SPA-GMN25-KYU-NICKNAME(IDX)
+               MOVE    SPA-SYSYMD      TO  SPA-GMN25-KYU-UPYMD   (IDX)
       *
-           MOVE    SPACE              TO  SPA-GMN25-TKYUSEI-REC
-           MOVE    SPACE              TO  SPA-GMN25-SELNUM
-           MOVE    ZERO               TO  SPA-NAI25-SELNUM
-           MOVE    1                  TO  SPA-GMN25-CUR
+               MOVE    SPACE              TO  SPA-GMN25-TKYUSEI-REC
+               MOVE    SPACE              TO  SPA-GMN25-SELNUM
+               MOVE    ZERO               TO  SPA-NAI25-SELNUM
+               MOVE    1                  TO  SPA-GMN25-CUR
+           END-IF
            .
        460-KYUSEI-UPDATE-EXT.
            EXIT.
@@ -861,25 +652,21 @@
       *****************************************************************
        470-KYUSEI-DELETE-SEC         SECTION.
       *
-      *チェック
-           IF  SPA-NAI25-SELNUM      =   ZERO
-               MOVE    "2501"        TO  SPA-ERRCD
-      *----(01.00.01) LINE ADD START -------------------------------
-               MOVE    1             TO  SPA-GMN25-CUR
-      *----(01.00.01) LINE ADD END   -------------------------------
-               GO  TO                470-KYUSEI-DELETE-EXT
-           END-IF
-           MOVE    ZERO              TO  WRK-IDX
-           PERFORM   VARYING   IDX   FROM    1   BY  1
-                     UNTIL    (IDX       >   10)
-                     OR       (IDX       >   SPA-NAI25-KYU-MAX)
-             IF  SPA-GMN25-KYU-DELKBN (IDX)   =   SPACE
-               ADD     1             TO  WRK-IDX 
-             END-IF
+      *選択番号チェック
+           MOVE    ZERO                TO  WRK-IDX
+           PERFORM     VARYING   IDX   FROM    1   BY  1
+                       UNTIL    (IDX       >   SPA-NAI25-KYU-MAX)
+               IF      SPA-GMN25-KYU-DELKBN (IDX)  =   SPACE
+                   ADD     1               TO  WRK-IDX
+               END-IF
            END-PERFORM
-           IF  SPA-NAI25-SELNUM      >   WRK-IDX
-               MOVE    "2502"        TO  SPA-ERRCD
-               GO  TO                470-KYUSEI-DELETE-EXT
+           IF      SPA-NAI25-SELNUM    =   ZERO
+               MOVE    "2501"          TO  SPA-ERRCD
+               MOVE    1               TO  SPA-GMN25-CUR
+           END-IF
+           IF      SPA-NAI25-SELNUM    >   WRK-IDX
+               MOVE    "2502"          TO  SPA-ERRCD
+               MOVE    1               TO  SPA-GMN25-CUR
            END-IF
       *旧姓テーブルとの内容確認
            MOVE    ZERO              TO  WRK-IDX
@@ -888,30 +675,36 @@
                      UNTIL    (IDX       >   10)
                      OR       (IDX       >   SPA-NAI25-KYU-MAX)
                      OR       (IDY       >   ZERO )
-             IF  SPA-GMN25-KYU-DELKBN (IDX)    =   SPACE
-               ADD     1             TO  WRK-IDX
-               IF  WRK-IDX           =   SPA-NAI25-SELNUM
-                   MOVE    IDX       TO  IDY
+               IF      SPA-GMN25-KYU-DELKBN (IDX)    =   SPACE
+                   ADD     1               TO  WRK-IDX
+                   IF      WRK-IDX         =   SPA-NAI25-SELNUM
+                       MOVE    IDX             TO  IDY
+                   END-IF
                END-IF
-             END-IF
            END-PERFORM
-           IF  (SPA-GMN25-TKYU-CHGYMD
-                                 =   SPA-GMN25-KYU-CHGYMD  (IDY))  AND
-               (SPA-GMN25-TKYU-KANANAME
-                                 =   SPA-GMN25-KYU-KANANAME(IDY))  AND
-               (SPA-GMN25-TKYU-NAME  =   SPA-GMN25-KYU-NAME  (IDY))
-               CONTINUE
-           ELSE
-               MOVE    "2506"        TO  SPA-ERRCD
-               GO  TO                470-KYUSEI-DELETE-EXT
+           IF     SPA-ERRCD            =   SPACE
+               IF      (IDY                >   ZERO  )  AND
+                       (SPA-GMN25-TKYU-CHGYMD
+                                           =   SPA-GMN25-KYU-CHGYMD
+                                                           (IDY))  AND
+                      (SPA-GMN25-TKYU-KANANAME
+                                           =   SPA-GMN25-KYU-KANANAME
+                                                           (IDY))  AND
+                      (SPA-GMN25-TKYU-NAME =   SPA-GMN25-KYU-NAME
+                                                           (IDY))
+                   CONTINUE
+               ELSE
+                   MOVE    "2506"              TO  SPA-ERRCD
+               END-IF
            END-IF
       *
-           MOVE    "1"               TO  SPA-GMN25-KYU-DELKBN(IDY)
+           IF     SPA-ERRCD            =   SPACE
+               MOVE    "1"                 TO  SPA-GMN25-KYU-DELKBN(IDY)
       *
-           MOVE    SPACE                   TO  SPA-GMN25-TKYUSEI-REC
-           MOVE    SPACE                   TO  SPA-GMN25-SELNUM
-           MOVE    ZERO                    TO  SPA-NAI25-SELNUM
-      *
+               MOVE    SPACE               TO  SPA-GMN25-TKYUSEI-REC
+               MOVE    SPACE               TO  SPA-GMN25-SELNUM
+               MOVE    ZERO                TO  SPA-NAI25-SELNUM
+           END-IF
            .
        470-KYUSEI-DELETE-EXT.
            EXIT.
@@ -975,32 +768,29 @@
       *****************************************************************
        4230-CHGYMD-CHECK-SEC          SECTION.
       *
-      *----(01.00.01) LINE MOD START --------------------------------
-      *     MOVE    P02-P025-THENYMD       TO  SPA-GMN25-TKYU-CHGYMDW
            MOVE    P02-P025-THENYMD       TO  WRK-WWYMD
            IF  ( WRK-WWYMD                =   SPACE )  AND
                ( SPA-GMN25-SELNUM         =   SPACE )
                MOVE    SPACE              TO  SPA-GMN25-TKYU-CHGYMDW
                MOVE    SPACE              TO  SPA-GMN25-TKYU-CHGYMD
                MOVE    3                  TO  SPA-GMN25-CUR
-               GO  TO                     4230-CHGYMD-CHECK-EXT
-           END-IF
-      *----(01.00.04) LINE ADD START --------------------------------
-      *    日付画面チェックサブ
-           MOVE    2                   TO  SPA-GMN25-CUR
-           INITIALIZE                      ORCSGDAYAREA
-           MOVE    P02-P025-THENYMD    TO  SGDAY-INDAY
-           CALL    "ORCSGDAY"          USING
-                                       ORCSGDAYAREA
-           IF      SGDAY-RC            =   ZERO
-               MOVE    SGDAY-OTDAY         TO  SPA-GMN25-TKYU-CHGYMDW
-               MOVE    SGDAY-SDAY          TO  SPA-GMN25-TKYU-CHGYMD
-               MOVE    3                   TO  SPA-GMN25-CUR
            ELSE
-               MOVE    P02-P025-THENYMD    TO  SPA-GMN25-TKYU-CHGYMDW
-               MOVE    "2503"              TO  SPA-ERRCD
+      *    日付画面チェックサブ
+               MOVE    2                   TO  SPA-GMN25-CUR
+               INITIALIZE                      ORCSGDAYAREA
+               MOVE    P02-P025-THENYMD    TO  SGDAY-INDAY
+               CALL    "ORCSGDAY"          USING
+                                           ORCSGDAYAREA
+               IF      SGDAY-RC            =   ZERO
+                   MOVE    SGDAY-OTDAY     TO  SPA-GMN25-TKYU-CHGYMDW
+                   MOVE    SGDAY-SDAY      TO  SPA-GMN25-TKYU-CHGYMD
+                   MOVE    3               TO  SPA-GMN25-CUR
+               ELSE
+                   MOVE    P02-P025-THENYMD
+                                           TO  SPA-GMN25-TKYU-CHGYMDW
+                   MOVE    "2503"          TO  SPA-ERRCD
+               END-IF
            END-IF
-      *
            .
        4230-CHGYMD-CHECK-EXT.
            EXIT.
@@ -1102,31 +892,25 @@
                   (SNUM-MINKBN     NOT =   SPACE )   OR
                   (SNUM-SYOKBN     NOT =   SPACE )
                MOVE    "2502"          TO  SPA-ERRCD
-      *----(01.00.01) LINE ADD START -------------------------------
                MOVE    1               TO  SPA-GMN25-CUR
-      *----(01.00.01) LINE ADD END   -------------------------------
-               GO      TO              4210-KYU-SELNUM-EXT
            ELSE
                MOVE    SNUM-OUTNUM     TO  SPA-NAI25-SELNUM
                MOVE    SNUM-OUTNUM     TO  WRK-RENNUMZ
                MOVE    WRK-RENNUMZ     TO  SPA-GMN25-SELNUM
            END-IF
       *
-           IF  SPA-NAI25-SELNUM        =   ZERO
-      *----(01.00.01) LINE ADD START -------------------------------
-      *        必須入力チェック
-               IF  ( SPA-GMN25-TKYU-CHGYMD   =   SPACE )  AND
-                   ( SPA-GMN25-TKYU-KANANAME =   SPACE )  AND
-                   ( SPA-GMN25-TKYU-NAME     =   SPACE )
-                   MOVE    2           TO  SPA-GMN25-CUR
-               ELSE
-      *----(01.00.01) LINE ADD END   -------------------------------
-                   MOVE    "2504"      TO  SPA-ERRCD
-      *----(01.00.01) LINE ADD START -------------------------------
-                   MOVE    1           TO  SPA-GMN25-CUR
+           IF      SPA-ERRCD           =   SPACE
+               IF      SPA-NAI25-SELNUM    =   ZERO
+      *            必須入力チェック
+                   IF  ( SPA-GMN25-TKYU-CHGYMD   =   SPACE )  AND
+                       ( SPA-GMN25-TKYU-KANANAME =   SPACE )  AND
+                       ( SPA-GMN25-TKYU-NAME     =   SPACE )
+                       MOVE    2               TO  SPA-GMN25-CUR
+                   ELSE
+                       MOVE    "2504"          TO  SPA-ERRCD
+                       MOVE    1               TO  SPA-GMN25-CUR
+                   END-IF
                END-IF
-      *----(01.00.01) LINE ADD END   -------------------------------
-               GO      TO              4210-KYU-SELNUM-EXT
            END-IF
       *
            MOVE    ZERO                TO  WRK-IDX
@@ -1134,30 +918,39 @@
            PERFORM     VARYING   IDX   FROM    1   BY  1
                        UNTIL    (IDX       >   10)
                        OR       (IDX       >   SPA-NAI25-KYU-MAX)
-             IF  SPA-GMN25-KYU-DELKBN (IDX)    =   SPACE
-                 ADD     1             TO  WRK-IDX
-                 IF  WRK-IDX           =   SPA-NAI25-SELNUM
-                     MOVE    IDX       TO  IDY
-                 END-IF
-             END-IF
+                       OR       (SPA-ERRCD NOT =   SPACE )
+               IF      SPA-GMN25-KYU-DELKBN (IDX)    =   SPACE
+                   ADD     1               TO  WRK-IDX
+                   IF      WRK-IDX         =   SPA-NAI25-SELNUM
+                       MOVE    IDX             TO  IDY
+                   END-IF
+               END-IF
            END-PERFORM
-           IF  SPA-NAI25-SELNUM        >   WRK-IDX
-               MOVE    "2502"          TO  SPA-ERRCD
-               GO      TO              4210-KYU-SELNUM-EXT
+           IF     (SPA-ERRCD           =   SPACE )  AND
+                  (SPA-NAI25-SELNUM    >   ZERO  )
+               IF      SPA-NAI25-SELNUM    >   WRK-IDX
+                   MOVE    "2502"          TO  SPA-ERRCD
+                   MOVE    1               TO  SPA-GMN25-CUR
+               END-IF
            END-IF
       *
-           INITIALIZE                  SPA-GMN25-TKYUSEI-REC
-           MOVE    SPA-GMN25-KYU-CHGYMDW  (IDY)
-                                       TO  SPA-GMN25-TKYU-CHGYMDW
-           MOVE    SPA-GMN25-KYU-CHGYMD   (IDY)
-                                       TO  SPA-GMN25-TKYU-CHGYMD
-           MOVE    SPA-GMN25-KYU-KANANAME (IDY)
-                                       TO  SPA-GMN25-TKYU-KANANAME
-           MOVE    SPA-GMN25-KYU-NAME     (IDY)
-                                       TO  SPA-GMN25-TKYU-NAME
-           MOVE    SPA-GMN25-KYU-NICKNAME (IDY)
-                                       TO  SPA-GMN25-TKYU-NICKNAME
-           MOVE    2                   TO  SPA-GMN25-CUR
+           IF     (SPA-ERRCD           =   SPACE )  AND
+                  (SPA-NAI25-SELNUM    >   ZERO  )  AND
+                  (IDY                 >   ZERO  )
+      *
+               INITIALIZE                  SPA-GMN25-TKYUSEI-REC
+               MOVE    SPA-GMN25-KYU-CHGYMDW  (IDY)
+                                           TO  SPA-GMN25-TKYU-CHGYMDW
+               MOVE    SPA-GMN25-KYU-CHGYMD   (IDY)
+                                           TO  SPA-GMN25-TKYU-CHGYMD
+               MOVE    SPA-GMN25-KYU-KANANAME (IDY)
+                                           TO  SPA-GMN25-TKYU-KANANAME
+               MOVE    SPA-GMN25-KYU-NAME     (IDY)
+                                           TO  SPA-GMN25-TKYU-NAME
+               MOVE    SPA-GMN25-KYU-NICKNAME (IDY)
+                                           TO  SPA-GMN25-TKYU-NICKNAME
+               MOVE    2                   TO  SPA-GMN25-CUR
+           END-IF
            .
        4210-KYU-SELNUM-EXT.
            EXIT.
@@ -1209,33 +1002,30 @@
                   (SNUM-MINKBN     NOT =   SPACE )   OR
                   (SNUM-SYOKBN     NOT =   SPACE )
                MOVE    "2508"          TO  SPA-ERRCD
-               GO      TO              4220-JYU-SELNUM-EXT
            ELSE
                MOVE    SNUM-OUTNUM     TO  SPA-NAI25-SELNUM2
                MOVE    SNUM-OUTNUM     TO  WRK-RENNUMZ
                MOVE    WRK-RENNUMZ     TO  SPA-GMN25-SELNUM2
            END-IF
       *
-           IF  SPA-NAI25-SELNUM2       =   ZERO
-               MOVE    "2508"          TO  SPA-ERRCD
-               GO  TO                  4220-JYU-SELNUM-EXT
-           END-IF
-           IF  SPA-NAI25-SELNUM2       >   SPA-NAI25-SRY-MAX
-               MOVE    "2508"          TO  SPA-ERRCD
-               GO  TO                  4220-JYU-SELNUM-EXT
+           IF      SPA-ERRCD           =   SPACE
+      *        選択番号エラー
+               IF      SPA-NAI25-SELNUM2   =   ZERO
+                   MOVE    "2508"          TO  SPA-ERRCD
+               END-IF
+               IF      SPA-NAI25-SELNUM2   >   SPA-NAI25-SRY-MAX
+                   MOVE    "2508"          TO  SPA-ERRCD
+               END-IF
            END-IF
       *
       *    受診２テーブル編集
-           MOVE    SPA-NAI25-SRY-SRYKA (SPA-NAI25-SELNUM2)
-                                       TO  WRK-SRYKA
-      *
-      **    １年前の年月日取得
-      *     PERFORM 4221-ZENYMD-GET-SEC
-      *     MOVE    WRK-SYMD            TO  WRK-ZENYMD
-      *
-      *　　受診履歴２編集
-           PERFORM 4222-JYURRK-SPASET-SEC
-           MOVE    8                    TO  SPA-GMN25-CUR
+           IF      SPA-ERRCD           =   SPACE
+               MOVE    SPA-NAI25-SRY-SRYKA (SPA-NAI25-SELNUM2)
+                                           TO  WRK-SRYKA
+      *        受診履歴２編集
+               PERFORM 4222-JYURRK-SPASET-SEC
+               MOVE    8                    TO  SPA-GMN25-CUR
+           END-IF
            .
        4220-JYU-SELNUM-EXT.
            EXIT.
@@ -1303,7 +1093,7 @@
            MOVE    ZERO                  TO  IDX
            PERFORM   UNTIL   ( FLG-JYURRK    =   1  )
                      OR      ( IDX           =   50 )
-      *      受診履歴
+      *       受診履歴
       *       IF  WRK-ZENYMD              <=  JYURRK-SRYYMD
                  ADD     1               TO  IDX
                  MOVE    JYURRK-SRYYMD   TO  WRK-SYMD
