@@ -54,8 +54,10 @@
       *                                     £²£°£°£·Ç¯£¹·î°Ê¹ß¤Î¤ßÂÐ¾Ý 
       *
       *  04.01.01    NACL-Æ£¸¶    07/11/22  ¸ø³²¥ì¥»¥×¥ÈÂÐ±þ
-      *  04.01.02    NACL-Æ£¸¶    07/01/21  ·îÅÓÃæ¤ÎÉéÃ´¼ÔÈÖ¹æÊÑ¹¹ÂÐ±þ
+      *  04.01.02    NACL-Æ£¸¶    08/01/21  ·îÅÓÃæ¤ÎÉéÃ´¼ÔÈÖ¹æÊÑ¹¹ÂÐ±þ
       *                                     ¡ÊÀ¸ÊÝ¤Î¸øÈñÃ±ÆÈ¤Î¤ß¡Ë 
+      *  04.01.03    NACL-Æ£¸¶    08/02/12  µÜºê¸©¡Ö¸øÈñ£¹£°¡×ÂÐ±þ
+      *                                     ÄÌ¾ï¤Îµ­ºÜÊýË¡¤ËÌá¤¹ 
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -274,7 +276,6 @@
            03  WRK-CONS-KOUGAI-HKNNUM  PIC X(03)   VALUE   "975". 
       *
            03  WRK-CONS-SRYYM-200609   PIC 9(06)   VALUE   200609.      
-           03  WRK-CONS-SRYYM-200709   PIC 9(06)   VALUE   200709.      
       *
       *****************************************************************
       *    ¥Õ¥¡¥¤¥ë¥ì¥¤¥¢¥¦¥È
@@ -1845,19 +1846,6 @@ grpsys                 MOVE    LNK-SYUBETU-HOSPNUM TO  PTKOH-HOSPNUM
                                              (4)(1:1)  =   "1" OR  "2")
                    AND  (WRK-RECE61-KOHHBTNUM(4)   NOT =   "41"       )
                        COMPUTE  WK-KOHI-CNT  =  WK-KOHI-CNT  -  1
-                   END-IF
-               END-IF
-           END-IF
-      *
-      *    µÜºêÃÏÊý¸øÈñÂÐ±þ
-           IF    ( LNK-SYUBETU-PREFNUM     =   "45"                  )
-           AND   ( LNK-SYUBETU-SRYYM       >=  WRK-CONS-SRYYM-200709 )
-               IF  WK-KOKUHO               =   "1" OR  "2"
-                   IF    ( WRK-RECE61-KOHHKNNUM-O  (1) =   "190" )
-                   OR    ( WRK-RECE61-KOHHKNNUM-O  (2) =   "190" )
-                   OR    ( WRK-RECE61-KOHHKNNUM-O  (3) =   "190" )
-                   OR    ( WRK-RECE61-KOHHKNNUM-O  (4) =   "190" )
-                       COMPUTE WK-KOHI-CNT =   WK-KOHI-CNT -   1
                    END-IF
                END-IF
            END-IF

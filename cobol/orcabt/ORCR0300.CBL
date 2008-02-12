@@ -254,6 +254,8 @@
       *                                     サイズ記載対応
       *  04.01.02    NACL-藤原    08/01/10  レセプト特記事項編集情報
       *                                     適用欄コメント対応
+      *  04.01.03    NACL-藤原    08/02/12  宮崎県「公費９０」対応
+      *                                     通常の記載方法に戻す 
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1333,7 +1335,6 @@ grpsys     COPY    "COMMON-SPA".
       *********05  WRK-CONS-COMMENT4  PIC X(09)   VALUE   "099309901".
       *
            03  WRK-CONS-SRYYM-200704  PIC 9(06)   VALUE    200704.
-           03  WRK-CONS-SRYYM-200709  PIC 9(06)   VALUE    200709.      
       *
       *    改行コード
        01  WRK-CONS-RETURN          PIC X(01)   VALUE   X"0A".
@@ -2421,80 +2422,48 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SYS-2009-HOSPNUM
            END-IF
            PERFORM 5004-MOJI-HENSYU-SEC
       *    診療実日数     
-      *    宮崎地方公費対応
-           IF    ( RECE02-PREFNUM      =   "45"                  )
-           AND   ( RECE02-SRYYM        >=  WRK-CONS-SRYYM-200709 )
-           AND   ( RECE02-TEISYUTUSAKI =   "2"                   )
-           AND   ( RECE02-KOHNUM (IDY) =   "190"                 )
-               CONTINUE
-           ELSE
-               MOVE    RECE02-JNISSU(IDX)     TO  WRK-NUM
-               MOVE    2                      TO  WRK-NAGASA
-           END-IF
+           MOVE    RECE02-JNISSU(IDX)     TO  WRK-NUM
+           MOVE    2                      TO  WRK-NAGASA
            PERFORM 5005-NUM-HENSYU-SEC
       *    合計点数     
-      *    宮崎地方公費対応
-           IF    ( RECE02-PREFNUM      =   "45"                  )
-           AND   ( RECE02-SRYYM        >=  WRK-CONS-SRYYM-200709 )
-           AND   ( RECE02-TEISYUTUSAKI =   "2"                   )
-           AND   ( RECE02-KOHNUM (IDY) =   "190"                 )
-               CONTINUE
-           ELSE
-               MOVE    RECE02-TOTALTEN(IDX)   TO  WRK-NUM
-               MOVE    8                      TO  WRK-NAGASA
-           END-IF
+           MOVE    RECE02-TOTALTEN(IDX)   TO  WRK-NUM
+           MOVE    8                      TO  WRK-NAGASA
            PERFORM 5005-NUM-HENSYU-SEC
       *    負担金額（公費）
-      *    宮崎地方公費対応
-           IF    ( RECE02-PREFNUM      =   "45"                  )
-           AND   ( RECE02-SRYYM        >=  WRK-CONS-SRYYM-200709 )
-           AND   ( RECE02-TEISYUTUSAKI =   "2"                   )
-           AND   ( RECE02-KOHNUM (IDY) =   "190"                 )
-               CONTINUE
+           IF     RECE02-KOHFTNJANUM (IDY) (1:2)
+                                           =   "51"
+               IF      RECE02-KOHFTNJANUM (IDY) (5:3)
+                                               =   "602"
+                   MOVE    RECE02-FTNMONEY(IDX)   TO  WRK-NUM
+                   MOVE    8                      TO  WRK-NAGASA
+               END-IF
            ELSE
-               IF     RECE02-KOHFTNJANUM (IDY) (1:2)
-                                               =   "51"
-                   IF      RECE02-KOHFTNJANUM (IDY) (5:3)
-                                                   =   "602"
-                       MOVE    RECE02-FTNMONEY(IDX)   TO  WRK-NUM
-                       MOVE    8                      TO  WRK-NAGASA
-                   END-IF
+               IF      RECE02-FTNMONEY(IDX)   >   ZERO     
+                   MOVE    RECE02-FTNMONEY(IDX)   TO  WRK-NUM
+                   MOVE    8                      TO  WRK-NAGASA
                ELSE
-                   IF      RECE02-FTNMONEY(IDX)   >   ZERO     
+                   IF    ( RECE02-TOTALTEN (IDX)      >   ZERO )
+                   AND   ( RECE02-FTNMONEY (IDX)      =   ZERO )
+                   AND   ( RECE02-ZEROKISAIFLG (IDX)  =   "1"  )
                        MOVE    RECE02-FTNMONEY(IDX)   TO  WRK-NUM
                        MOVE    8                      TO  WRK-NAGASA
-                   ELSE
-                       IF    ( RECE02-TOTALTEN (IDX)      >   ZERO )
-                       AND   ( RECE02-FTNMONEY (IDX)      =   ZERO )
-                       AND   ( RECE02-ZEROKISAIFLG (IDX)  =   "1"  )
-                           MOVE    RECE02-FTNMONEY(IDX)   TO  WRK-NUM
-                           MOVE    8                      TO  WRK-NAGASA
-                       END-IF
                    END-IF
                END-IF
-      *        県単用項目
-               IF      FLG-RECE11          =   ZERO
-                   IF      RECE11-RECEDEN-FTNMONEY(IDX)
-                                               =   999999999
-                       MOVE    ZERO                TO  WRK-NUM
-                       MOVE    8                   TO  WRK-NAGASA
-                   END-IF
+           END-IF
+      *    県単用項目
+           IF      FLG-RECE11          =   ZERO
+               IF      RECE11-RECEDEN-FTNMONEY(IDX)
+                                           =   999999999
+                   MOVE    ZERO                TO  WRK-NUM
+                   MOVE    8                   TO  WRK-NAGASA
                END-IF
-           END-IF    
+           END-IF
            PERFORM 5005-NUM-HENSYU-SEC
       *    負担金額（公費給付対象外来一部負担金）
-      *    宮崎地方公費対応
-           IF    ( RECE02-PREFNUM      =   "45"                  )
-           AND   ( RECE02-SRYYM        >=  WRK-CONS-SRYYM-200709 )
-           AND   ( RECE02-TEISYUTUSAKI =   "2"                   )
-           AND   ( RECE02-KOHNUM (IDY) =   "190"                 )
-               CONTINUE
-           ELSE
-               IF      RECE02-ZAITAKU-SAIKEI   >   ZERO
-               AND     IDY                     =   1
-                   MOVE   RECE02-ZAITAKU-SAIKEI    TO  WRK-NUM
-                   MOVE    6                       TO  WRK-NAGASA
-               END-IF
+           IF      RECE02-ZAITAKU-SAIKEI   >   ZERO
+           AND     IDY                     =   1
+               MOVE   RECE02-ZAITAKU-SAIKEI    TO  WRK-NUM
+               MOVE    6                       TO  WRK-NAGASA
            END-IF
            PERFORM 5005-NUM-HENSYU-SEC
       *    負担金額（公費給付対象入院一部負担金）
