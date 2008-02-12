@@ -2914,13 +2914,23 @@ grpsys             MOVE    SRY-HOSPNUM          TO  PTCOM-HOSPNUM
                            MOVE   1       TO    FLG-KHNTEN21
                       END-IF
                    END-IF
-                   ADD    WK-ZAIKAISU     TO    RECE100-KAISU(21)
+                   IF  (SRY-SRYCD(IDX3)(1:1)   =   "8"  )
+                   OR  (SRY-SRYCD(IDX3)(1:3)   =   "008")
+                      CONTINUE
+                   ELSE
+                      ADD    WK-ZAIKAISU     TO    RECE100-KAISU(21)
+                   END-IF
                    COMPUTE   RECE100-TENSU(21 1)  =
                              RECE100-TENSU(21 1)  +
                             (WRK-TNS-TEN(IDX3)  *  ACCT-ZAIKAISU)
       *    麻毒のレセ点数欄の編集
                WHEN    "26"
-                   ADD    WK-ZAIKAISU     TO   RECE100-KAISU(22)
+                   IF  (SRY-SRYCD(IDX3)(1:1)   =   "8"  )
+                   OR  (SRY-SRYCD(IDX3)(1:3)   =   "008")
+                      CONTINUE
+                   ELSE
+                      ADD    WK-ZAIKAISU     TO    RECE100-KAISU(22)
+                   END-IF
                    IF SRY-SRYCD(IDX3)      =    "120001310"
                     COMPUTE WRK-MADOKU-SHOHO = WRK-MADOKU-SHOHO +
                                                WK-ZAIKAISU 
@@ -2930,7 +2940,12 @@ grpsys             MOVE    SRY-HOSPNUM          TO  PTCOM-HOSPNUM
                             (WRK-TNS-TEN(IDX3)  *  ACCT-ZAIKAISU)
       *    調基のレセ点数欄の編集
                WHEN    "27"
-      ***          ADD    WK-ZAIKAISU     TO   RECE100-KAISU(23)
+      ***          IF  (SRY-SRYCD(IDX3)(1:1)   =   "8"  )
+      ***          OR  (SRY-SRYCD(IDX3)(1:3)   =   "008")
+      ***             CONTINUE
+      ***          ELSE
+      ***             ADD    WK-ZAIKAISU     TO    RECE100-KAISU(23)
+      ***          END-IF
                    COMPUTE   RECE100-TENSU(23 1)  =
                              RECE100-TENSU(23 1)  +
                             (WRK-TNS-TEN(IDX3)  *  ACCT-ZAIKAISU)

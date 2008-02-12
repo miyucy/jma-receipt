@@ -131,6 +131,7 @@
       *  04.01.05    NACL-ÌçÏÆ    07/11/30  Â¾ÊÝ¸±¤Ë¤Æ¿Ç»¡ÎÁ»»ÄêºÑ¤ÎÌ¾¾ÎÃÖ´¹
       *  04.01.06    NACL-ÌçÏÆ    07/12/19  Æþ±¡ÎÁÌ¤»»ÄêÆüÂÐ±þ
       *  04.01.07    NACL-ÌçÏÆ    08/01/15  ¸ø³²ÂÐ±þ
+      *  04.01.08    NACL-ÌçÏÆ    08/02/12  ½èÊýÎÁÅù¥«¥¦¥ó¥È½¤Àµ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -3292,13 +3293,23 @@ grpsys        MOVE    SPA-HOSPNUM          TO    SYS-HOSPNUM
                             (WK-ZAITEN   *   WK-ZAIKAISU)
       *    Ä´ºÞ¤Î¥ì¥»ÅÀ¿ôÍó¤ÎÊÔ½¸
                WHEN    "24"
-                   ADD    WK-ZAIKAISU    TO   RECE82-KAISU(7)
+                   IF  (SRY-SRYCD(IDX3)(1:1)   =   "8"  )
+                   OR  (SRY-SRYCD(IDX3)(1:3)   =   "008")
+                      CONTINUE
+                   ELSE
+                      ADD    WK-ZAIKAISU     TO    RECE82-KAISU(7)
+                   END-IF
                    COMPUTE   RECE82-TENSU(7)  =
                              RECE82-TENSU(7)  +
                             (TNS-TEN   *   ACCT-ZAIKAISU)
       *    ËãÆÇ¤Î¥ì¥»ÅÀ¿ôÍó¤ÎÊÔ½¸
                WHEN    "26"
-                   ADD    WK-ZAIKAISU    TO   RECE82-KAISU(8)
+                   IF  (SRY-SRYCD(IDX3)(1:1)   =   "8"  )
+                   OR  (SRY-SRYCD(IDX3)(1:3)   =   "008")
+                      CONTINUE
+                   ELSE
+                      ADD    WK-ZAIKAISU     TO    RECE82-KAISU(8)
+                   END-IF
                    COMPUTE   RECE82-TENSU(8)  =
                              RECE82-TENSU(8)  +
                             (TNS-TEN   *   ACCT-ZAIKAISU)
@@ -3606,7 +3617,12 @@ grpsys        MOVE    SPA-HOSPNUM          TO    SYS-HOSPNUM
                            MOVE   1       TO    FLG-KHNTEN7-JI
                       END-IF
                    END-IF
-                   ADD    WK-ZAIKAISU    TO   RECE82-KAISU(7)
+                   IF  (SRY-SRYCD(IDX3)(1:1)   =   "8"  )
+                   OR  (SRY-SRYCD(IDX3)(1:3)   =   "008")
+                      CONTINUE
+                   ELSE
+                      ADD    WK-ZAIKAISU     TO    RECE82-KAISU(7)
+                   END-IF
                    COMPUTE   RECE82-TENSU(7)  =
                              RECE82-TENSU(7)  +
                             (TNS-TEN   *   ACCT-ZAIKAISU)
@@ -3622,7 +3638,12 @@ grpsys        MOVE    SPA-HOSPNUM          TO    SYS-HOSPNUM
                       END-IF
                     END-IF
                    END-IF
-                   ADD    WK-ZAIKAISU    TO   RECE82-KAISU(8)
+                   IF  (SRY-SRYCD(IDX3)(1:1)   =   "8"  )
+                   OR  (SRY-SRYCD(IDX3)(1:3)   =   "008")
+                      CONTINUE
+                   ELSE
+                      ADD    WK-ZAIKAISU     TO    RECE82-KAISU(8)
+                   END-IF
                    COMPUTE   RECE82-TENSU(8)  =
                              RECE82-TENSU(8)  +
                             (TNS-TEN   *   ACCT-ZAIKAISU)
@@ -3636,7 +3657,12 @@ grpsys        MOVE    SPA-HOSPNUM          TO    SYS-HOSPNUM
                            MOVE   1       TO    FLG-KHNTEN9-JI
                       END-IF
                    END-IF
-                   ADD    WK-ZAIKAISU    TO   RECE82-KAISU(9)
+                   IF  (SRY-SRYCD(IDX3)(1:1)   =   "8"  )
+                   OR  (SRY-SRYCD(IDX3)(1:3)   =   "008")
+                      CONTINUE
+                   ELSE
+                      ADD    WK-ZAIKAISU     TO    RECE82-KAISU(9)
+                   END-IF
                    COMPUTE   RECE82-TENSU(9)  =
                              RECE82-TENSU(9)  +
                             (TNS-TEN   *   ACCT-ZAIKAISU)
@@ -4067,7 +4093,12 @@ grpsys        MOVE    SPA-HOSPNUM          TO    SYS-HOSPNUM
                       END-IF
                      END-IF
                    END-IF
-                   ADD    WK-ZAIKAISU    TO   RECE82-KAISU(7)
+                   IF  (SRY-SRYCD(IDX3)(1:1)   =   "8"  )
+                   OR  (SRY-SRYCD(IDX3)(1:3)   =   "008")
+                      CONTINUE
+                   ELSE
+                      ADD    WK-ZAIKAISU     TO    RECE82-KAISU(7)
+                   END-IF
                    COMPUTE   RECE82-TENSU(7)  =
                              RECE82-TENSU(7)  +
                             (TNS-TEN   *   ACCT-ZAIKAISU)
@@ -4086,7 +4117,12 @@ grpsys        MOVE    SPA-HOSPNUM          TO    SYS-HOSPNUM
                       END-IF
                      END-IF
                    END-IF
-                   ADD    WK-ZAIKAISU    TO   RECE82-KAISU(8)
+                   IF  (SRY-SRYCD(IDX3)(1:1)   =   "8"  )
+                   OR  (SRY-SRYCD(IDX3)(1:3)   =   "008")
+                      CONTINUE
+                   ELSE
+                      ADD    WK-ZAIKAISU     TO    RECE82-KAISU(8)
+                   END-IF
                    COMPUTE   RECE82-TENSU(8)  =
                              RECE82-TENSU(8)  +
                             (TNS-TEN   *   ACCT-ZAIKAISU)
@@ -4105,7 +4141,12 @@ grpsys        MOVE    SPA-HOSPNUM          TO    SYS-HOSPNUM
                       END-IF
                      END-IF
                    END-IF
-                   ADD    WK-ZAIKAISU    TO   RECE82-KAISU(9)
+                   IF  (SRY-SRYCD(IDX3)(1:1)   =   "8"  )
+                   OR  (SRY-SRYCD(IDX3)(1:3)   =   "008")
+                      CONTINUE
+                   ELSE
+                      ADD    WK-ZAIKAISU     TO    RECE82-KAISU(9)
+                   END-IF
                    COMPUTE   RECE82-TENSU(9)  =
                              RECE82-TENSU(9)  +
                             (TNS-TEN   *   ACCT-ZAIKAISU)
@@ -4524,13 +4565,23 @@ grpsys        MOVE    SPA-HOSPNUM          TO    SYS-HOSPNUM
                             (WK-ZAITEN   *   WK-ZAIKAISU)
       *    Ä´ºÞ¤Î¥ì¥»ÅÀ¿ôÍó¤ÎÊÔ½¸
                WHEN    "24"
-                   ADD    WK-ZAIKAISU    TO   RECE82-KAISU(22)
+                   IF  (SRY-SRYCD(IDX3)(1:1)   =   "8"  )
+                   OR  (SRY-SRYCD(IDX3)(1:3)   =   "008")
+                      CONTINUE
+                   ELSE
+                      ADD    WK-ZAIKAISU     TO    RECE82-KAISU(22)
+                   END-IF
                    COMPUTE   RECE82-TENSU(22)  =
                              RECE82-TENSU(22)  +
                             (TNS-TEN   *   ACCT-ZAIKAISU)
       *    ËãÆÇ¤Î¥ì¥»ÅÀ¿ôÍó¤ÎÊÔ½¸
                WHEN    "26"
-                   ADD    WK-ZAIKAISU    TO   RECE82-KAISU(23)
+                   IF  (SRY-SRYCD(IDX3)(1:1)   =   "8"  )
+                   OR  (SRY-SRYCD(IDX3)(1:3)   =   "008")
+                      CONTINUE
+                   ELSE
+                      ADD    WK-ZAIKAISU     TO    RECE82-KAISU(23)
+                   END-IF
                    COMPUTE   RECE82-TENSU(23)  =
                              RECE82-TENSU(23)  +
                             (TNS-TEN   *   ACCT-ZAIKAISU)

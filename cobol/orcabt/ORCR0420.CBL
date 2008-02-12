@@ -140,6 +140,7 @@
       *  04.01.02    NACL-ÃÁœ∆    07/10/31  ∏¯Ã≥∫“≥≤¬–±˛
       *  04.01.03    NACL-ÃÁœ∆    07/11/26  ∆√ƒÍ¥Ô∫‡æ¶… Ãæµ≠∫‹¬–±˛
       *  04.01.04    NACL-ÃÁœ∆    07/11/30  ¬æ ›∏±§À§∆ø«ª°Œ¡ªªƒÍ∫—§ŒÃææŒ√÷¥π
+      *  04.01.05    NACL-ÃÁœ∆    08/02/12  ΩË ˝Œ¡≈˘•´•¶•Û•»Ω§¿µ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -3465,13 +3466,23 @@ grpsys        MOVE    SPA-HOSPNUM         TO  SYS-4003-HOSPNUM
                            MOVE   1       TO    FLG-KHNTEN19
                       END-IF
                    END-IF
-                   ADD    WK-ZAIKAISU     TO    RECE41-KAISU(19)
+                   IF  (SRY-SRYCD(IDX3)(1:1)   =   "8"  )
+                   OR  (SRY-SRYCD(IDX3)(1:3)   =   "008")
+                      CONTINUE
+                   ELSE
+                      ADD    WK-ZAIKAISU     TO    RECE41-KAISU(19)
+                   END-IF
                    COMPUTE   RECE41-TENSU(19)  =
                              RECE41-TENSU(19)  +
                             (WRK-TNS-TEN(IDX3) * ACCT-ZAIKAISU)
       *    À„∆«§Œ•Ï•ª≈¿øÙÕÛ§Œ ‘Ω∏
                WHEN    "26"
-                   ADD    WK-ZAIKAISU     TO   RECE41-KAISU(20)
+                   IF  (SRY-SRYCD(IDX3)(1:1)   =   "8"  )
+                   OR  (SRY-SRYCD(IDX3)(1:3)   =   "008")
+                      CONTINUE
+                   ELSE
+                      ADD    WK-ZAIKAISU     TO    RECE41-KAISU(20)
+                   END-IF
                    IF SRY-SRYCD(IDX3)      =    "120001310"
                     COMPUTE WRK-MADOKU-SHOHO = WRK-MADOKU-SHOHO +
                                                WK-ZAIKAISU 
@@ -3865,13 +3876,23 @@ grpsys        MOVE    SPA-HOSPNUM         TO  SYS-4003-HOSPNUM
                       COMPUTE  WRK-CYOKI-SKAN  =  WRK-CYOKI-SKAN +      
                                                   WK-ZAIKAISU           
                    END-IF                                               
-                   ADD    WK-ZAIKAISU     TO    RECE41-KAISU(12)
+                   IF  (SRY-SRYCD(IDX3)(1:1)   =   "8"  )
+                   OR  (SRY-SRYCD(IDX3)(1:3)   =   "008")
+                      CONTINUE
+                   ELSE
+                      ADD    WK-ZAIKAISU     TO    RECE41-KAISU(12)
+                   END-IF
                    COMPUTE   RECE41-TENSU(12)  =
                              RECE41-TENSU(12)  +
                             (WRK-TNS-TEN(IDX3) * WRK-ZAIKAISU-XXX)
       *    À„∆«§Œ•Ï•ª≈¿øÙÕÛ§Œ ‘Ω∏
                WHEN    "26"
-                   ADD    WK-ZAIKAISU     TO   RECE41-KAISU(13)
+                   IF  (SRY-SRYCD(IDX3)(1:1)   =   "8"  )
+                   OR  (SRY-SRYCD(IDX3)(1:3)   =   "008")
+                      CONTINUE
+                   ELSE
+                      ADD    WK-ZAIKAISU     TO    RECE41-KAISU(13)
+                   END-IF
                    IF SRY-SRYCD(IDX3)      =    "120001310"
                     COMPUTE WRK-MADOKU-SHOHO = WRK-MADOKU-SHOHO +
                                                WK-ZAIKAISU 
@@ -4269,13 +4290,23 @@ grpsys        MOVE    SPA-HOSPNUM         TO  SYS-4003-HOSPNUM
                            MOVE   1       TO    FLG-KHNTEN14-JI
                       END-IF
                    END-IF
-                   ADD    WK-ZAIKAISU     TO    RECE41-KAISU(14)
+                   IF  (SRY-SRYCD(IDX3)(1:1)   =   "8"  )
+                   OR  (SRY-SRYCD(IDX3)(1:3)   =   "008")
+                      CONTINUE
+                   ELSE
+                      ADD    WK-ZAIKAISU     TO    RECE41-KAISU(14)
+                   END-IF
                    COMPUTE   RECE41-TENSU(14)  =
                              RECE41-TENSU(14)  +
                             (WRK-TNS-TEN(IDX3) * ACCT-ZAIKAISU)
       *    À„∆«§Œ•Ï•ª≈¿øÙÕÛ§Œ ‘Ω∏
                WHEN    "26"
-                   ADD    WK-ZAIKAISU     TO   RECE41-KAISU(15)
+                   IF  (SRY-SRYCD(IDX3)(1:1)   =   "8"  )
+                   OR  (SRY-SRYCD(IDX3)(1:3)   =   "008")
+                      CONTINUE
+                   ELSE
+                      ADD    WK-ZAIKAISU     TO    RECE41-KAISU(15)
+                   END-IF
                    IF SRY-SRYCD(IDX3)      =    "120001310"
                     COMPUTE WRK-MADOKU-SHOHO = WRK-MADOKU-SHOHO +
                                                WK-ZAIKAISU 
@@ -4285,7 +4316,12 @@ grpsys        MOVE    SPA-HOSPNUM         TO  SYS-4003-HOSPNUM
                             (WRK-TNS-TEN(IDX3) * ACCT-ZAIKAISU)
       *    ƒ¥¥§Œ•Ï•ª≈¿øÙÕÛ§Œ ‘Ω∏
                WHEN    "27"
-                   ADD    WK-ZAIKAISU     TO   RECE41-KAISU(16)
+                   IF  (SRY-SRYCD(IDX3)(1:1)   =   "8"  )
+                   OR  (SRY-SRYCD(IDX3)(1:3)   =   "008")
+                      CONTINUE
+                   ELSE
+                      ADD    WK-ZAIKAISU     TO    RECE41-KAISU(16)
+                   END-IF
                    COMPUTE   RECE41-TENSU(16)  =
                              RECE41-TENSU(16)  +
                             (WRK-TNS-TEN(IDX3) * ACCT-ZAIKAISU)
@@ -5010,7 +5046,12 @@ grpsys        MOVE    SPA-HOSPNUM         TO  SYS-4003-HOSPNUM
                            MOVE   1       TO    FLG-KHNTEN15-JI2
                       END-IF
                    END-IF
-                   ADD    WK-ZAIKAISU     TO    RECE41-KAISU(15)
+                   IF  (SRY-SRYCD(IDX3)(1:1)   =   "8"  )
+                   OR  (SRY-SRYCD(IDX3)(1:3)   =   "008")
+                      CONTINUE
+                   ELSE
+                      ADD    WK-ZAIKAISU     TO    RECE41-KAISU(15)
+                   END-IF
                    COMPUTE   RECE41-TENSU(15)   =
                              RECE41-TENSU(15)   +
                             (WRK-TNS-TEN(IDX3) * ACCT-ZAIKAISU)
@@ -5019,7 +5060,12 @@ grpsys        MOVE    SPA-HOSPNUM         TO  SYS-4003-HOSPNUM
                             (WRK-TNS-TEN(IDX3) * ACCT-ZAIKAISU)
       *    À„∆«§Œ•Ï•ª≈¿øÙÕÛ§Œ ‘Ω∏
                WHEN    "26"
-                   ADD    WK-ZAIKAISU     TO   RECE41-KAISU(16)
+                   IF  (SRY-SRYCD(IDX3)(1:1)   =   "8"  )
+                   OR  (SRY-SRYCD(IDX3)(1:3)   =   "008")
+                      CONTINUE
+                   ELSE
+                      ADD    WK-ZAIKAISU     TO    RECE41-KAISU(16)
+                   END-IF
                    IF SRY-SRYCD(IDX3)      =    "120001310"
                     COMPUTE WRK-MADOKU-SHOHO = WRK-MADOKU-SHOHO +
                                                WK-ZAIKAISU 
@@ -5032,7 +5078,12 @@ grpsys        MOVE    SPA-HOSPNUM         TO  SYS-4003-HOSPNUM
                             (WRK-TNS-TEN(IDX3) * ACCT-ZAIKAISU)
       *    ƒ¥¥§Œ•Ï•ª≈¿øÙÕÛ§Œ ‘Ω∏
                WHEN    "27"
-                   ADD    WK-ZAIKAISU     TO   RECE41-KAISU(17)
+                   IF  (SRY-SRYCD(IDX3)(1:1)   =   "8"  )
+                   OR  (SRY-SRYCD(IDX3)(1:3)   =   "008")
+                      CONTINUE
+                   ELSE
+                      ADD    WK-ZAIKAISU     TO    RECE41-KAISU(17)
+                   END-IF
                    COMPUTE   RECE41-TENSU(17)   =
                              RECE41-TENSU(17)   +
                             (WRK-TNS-TEN(IDX3) * ACCT-ZAIKAISU)
@@ -5577,13 +5628,23 @@ grpsys        MOVE    SPA-HOSPNUM         TO  SYS-4003-HOSPNUM
                            MOVE   1       TO    FLG-KHNTEN22-KO
                       END-IF
                    END-IF
-                   ADD    WK-ZAIKAISU     TO    RECE41-KAISU(22)
+                   IF  (SRY-SRYCD(IDX3)(1:1)   =   "8"  )
+                   OR  (SRY-SRYCD(IDX3)(1:3)   =   "008")
+                      CONTINUE
+                   ELSE
+                      ADD    WK-ZAIKAISU     TO    RECE41-KAISU(22)
+                   END-IF
                    COMPUTE   RECE41-TENSU(22)   =
                              RECE41-TENSU(22)   +
                             (WRK-TNS-TEN(IDX3) * ACCT-ZAIKAISU)
       *    À„∆«§Œ•Ï•ª≈¿øÙÕÛ§Œ ‘Ω∏
                WHEN    "26"
-                   ADD    WK-ZAIKAISU     TO   RECE41-KAISU(23)
+                   IF  (SRY-SRYCD(IDX3)(1:1)   =   "8"  )
+                   OR  (SRY-SRYCD(IDX3)(1:3)   =   "008")
+                      CONTINUE
+                   ELSE
+                      ADD    WK-ZAIKAISU     TO    RECE41-KAISU(23)
+                   END-IF
                    IF SRY-SRYCD(IDX3)      =    "120001310"
                     COMPUTE WRK-MADOKU-SHOHO = WRK-MADOKU-SHOHO +
                                                WK-ZAIKAISU 

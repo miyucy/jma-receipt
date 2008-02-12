@@ -2443,13 +2443,23 @@
                             (WK-ZAITEN   *   WK-ZAIKAISU)
       *    調剤のレセ点数欄の編集
                WHEN    "24"
-                   ADD    WK-ZAIKAISU    TO   RECE200-KAISU(7)
+                   IF  (SRY-SRYCD(IDX3)(1:1)   =   "8"  )
+                   OR  (SRY-SRYCD(IDX3)(1:3)   =   "008")
+                      CONTINUE
+                   ELSE
+                      ADD    WK-ZAIKAISU     TO    RECE200-KAISU(7)
+                   END-IF
                    COMPUTE   RECE200-TENSU(7 1)  =
                              RECE200-TENSU(7 1)  +
                             (TNS-TEN     *   ACCT-ZAIKAISU)
       *    麻毒のレセ点数欄の編集
                WHEN    "26"
-                   ADD    WK-ZAIKAISU    TO   RECE200-KAISU(8)
+                   IF  (SRY-SRYCD(IDX3)(1:1)   =   "8"  )
+                   OR  (SRY-SRYCD(IDX3)(1:3)   =   "008")
+                      CONTINUE
+                   ELSE
+                      ADD    WK-ZAIKAISU     TO    RECE200-KAISU(8)
+                   END-IF
                    COMPUTE   RECE200-TENSU(8 1)  =
                              RECE200-TENSU(8 1)  +
                             (TNS-TEN     *   ACCT-ZAIKAISU)
