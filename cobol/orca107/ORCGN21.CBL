@@ -425,7 +425,11 @@
       *    デフォルト画像フォルダーセット
            PERFORM 900-SYS1030-READ-SEC
            IF      SYS-1030-GAZOFOLDER =   SPACE
-               MOVE    WRK-CONS-PASS   TO  SPA-GMN-FOLDER
+               STRING  WRK-CONS-PASS   DELIMITED BY SIZE
+                       SPA-HOSPNUM     DELIMITED BY SIZE
+                       "/"             DELIMITED BY SIZE
+                               INTO    SPA-GMN-FOLDER
+               END-STRING
            ELSE
                MOVE    SYS-1030-GAZOFOLDER
                                        TO  SPA-GMN-FOLDER
@@ -1011,7 +1015,7 @@
            IF      FILECHK-RC      NOT =   0
                MOVE    "0014"          TO  SPA-ERRCD
                MOVE    10              TO  SPA-GMN-CUR
-               GO  TO  430-GAZOCHK-HENSYU-SEC
+               GO  TO  430-GAZOCHK-HENSYU-EXT
            END-IF
       *
       *    拡張子チェック

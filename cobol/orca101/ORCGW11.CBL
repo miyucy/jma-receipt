@@ -510,7 +510,11 @@
       *
       *----(03.03.01)--ADD-START---
            IF      SPA-GMN-GAZOFOLDER  =   SPACE
-               MOVE    WRK-CONS-PASS   TO  SPA-GMN-GAZOFOLDER
+               STRING  WRK-CONS-PASS   DELIMITED BY SIZE
+                       SPA-HOSPNUM     DELIMITED BY SIZE
+                       "/"             DELIMITED BY SIZE
+                               INTO    SPA-GMN-GAZOFOLDER
+               END-STRING
            END-IF
       *----(03.03.01)--ADD-END-----
       *
@@ -2599,7 +2603,11 @@
                                        TO  SYS-1030-GAZOFOLDER
       *----(03.03.01)--ADD-START---
            ELSE
-               MOVE    WRK-CONS-PASS   TO  SYS-1030-GAZOFOLDER
+               STRING  WRK-CONS-PASS   DELIMITED BY SIZE
+                       SPA-HOSPNUM     DELIMITED BY SIZE
+                       "/"             DELIMITED BY SIZE
+                               INTO    SYS-1030-GAZOFOLDER
+               END-STRING
       *----(03.03.01)--ADD-END-----
            END-IF
       *----(02.00.12)--ADD-END-----

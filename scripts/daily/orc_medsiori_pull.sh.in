@@ -9,7 +9,7 @@ fi
 
 . $JMARECEIPT_ENV
 
-MEDPHOTOTEMP="/tmp/medphoto"
+MEDPHOTOTEMP="/tmp/medphoto/"$8
 
 #-------------------------------------------#
 #    薬剤情報マスタ医薬品しおりダウンロード処理

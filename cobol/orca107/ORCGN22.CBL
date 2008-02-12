@@ -741,7 +741,11 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        4115-GAZOSET-SEC            SECTION.
       *
            INITIALIZE                  WRK-GAZOFILE
-           MOVE    WRK-FILE-FOLDER TO  WRK-GAZOFILE
+           STRING  WRK-FILE-FOLDER     DELIMITED BY SIZE
+                   SPA-HOSPNUM         DELIMITED BY SIZE
+                   "/"                 DELIMITED BY SIZE
+                               INTO    WRK-GAZOFILE
+           END-STRING
            PERFORM VARYING IDY     FROM    128 BY  -1
                    UNTIL   IDY     <       1
                IF  WRK-GAZOFILE(IDY:1)     NOT =   SPACE

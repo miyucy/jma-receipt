@@ -9,7 +9,7 @@ fi
 
 . $JMARECEIPT_ENV
 
-MEDPHOTOTEMP="/tmp/medphoto"
+MEDPHOTOTEMP="/tmp/medphoto/"$6
 
 #-------------------------------------------#
 #    薬剤情報マスタ医薬品写真複写処理
@@ -26,6 +26,10 @@ MEDPHOTOTEMP="/tmp/medphoto"
 #        $MEDPHOTOTEMP
 #-------------------------------------------#
 # 複写元ファイルの存在チェック
+
+if ! [ -d $3 ]; then
+  mkdir $3
+fi
 
 if  [ -e $MEDPHOTOTEMP/$2 ]; then
     echo $3/$1-$2
