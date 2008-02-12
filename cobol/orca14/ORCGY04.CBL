@@ -894,12 +894,12 @@
            MOVE    ZERO                TO  IDY
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX            >   SPA-SINRYO-MAX
-                   IF Y04-SRYNAIYO(1:2)        
+                   IF     Y04-SRYNAIYO(1:2)
                                        =   SPA-GMN-SINRYOLST(IDX)(1:2)
                       MOVE  SPA-GMN-SINRYOLST(IDX)
-                                       TO  Y04-SRYNAIYO
-                      MOVE  IDX        TO  IDY
-                      MOVE  99         TO  IDX
+                                               TO  Y04-SRYNAIYO
+                      MOVE  IDX                TO  IDY
+                      MOVE  SPA-SINRYO-MAX     TO  IDX
                    END-IF
            END-PERFORM
            IF      IDY                 =   ZERO
@@ -928,12 +928,12 @@
            MOVE    ZERO                TO  IDY
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL      (IDX            >   SPA-DRCD-MAX )
-               IF     Y04-DRNAME(1:4)        
+               IF     Y04-DRNAME(1:4)
                                        =   SPA-GMN-DRNAMELST(IDX)(1:4)
-                   MOVE  SPA-GMN-DRNAMELST(IDX)
-                                       TO  Y04-DRNAME
-                   MOVE  IDX           TO  IDY
-                   MOVE  99            TO  IDX
+                   MOVE    SPA-GMN-DRNAMELST(IDX)
+                                           TO  Y04-DRNAME
+                   MOVE    IDX             TO  IDY
+                   MOVE    SPA-DRCD-MAX    TO  IDX
                END-IF
            END-PERFORM
            IF      IDY                 =   ZERO

@@ -1528,7 +1528,7 @@
                                            TO  WRK-DR-SEMONKACD(5)
       *        最後の行へ編集する
                IF      SPA-DRCD-MAX        =   50
-                   MOVE    20              TO  SPA-DRCD-MAX
+                   MOVE    50              TO  SPA-DRCD-MAX
                ELSE
                    ADD     1               TO  SPA-DRCD-MAX
                END-IF
