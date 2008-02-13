@@ -5154,6 +5154,7 @@ grpsys             MOVE    SRY-HOSPNUM          TO  PTCOM-HOSPNUM
                       MOVE  WRK-TNS-TEN(IDX3) TO  RECE02-KHNTEN(19)
                    ELSE
                       IF   RECE02-KHNTEN(19) NOT = WRK-TNS-TEN(IDX3)
+                      AND  WRK-TNS-TEN(IDX3) NOT = ZERO
                            MOVE   ZERO    TO    RECE02-KHNTEN(19)
                            MOVE   1       TO    FLG-KHNTEN19
                       END-IF

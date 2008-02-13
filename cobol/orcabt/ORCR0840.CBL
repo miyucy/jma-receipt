@@ -3613,6 +3613,7 @@ grpsys        MOVE    SPA-HOSPNUM          TO    SYS-HOSPNUM
                          MOVE  TNS-TEN    TO    RECE82-KHNTEN(7)
                    ELSE
                       IF   RECE82-KHNTEN(7) NOT = TNS-TEN
+                      AND  TNS-TEN          NOT = ZERO
                            MOVE   ZERO    TO    RECE82-KHNTEN(7)
                            MOVE   1       TO    FLG-KHNTEN7-JI
                       END-IF
@@ -3633,6 +3634,7 @@ grpsys        MOVE    SPA-HOSPNUM          TO    SYS-HOSPNUM
                          MOVE  TNS-TEN    TO    RECE82-KHNTEN(8)
                     ELSE
                       IF   RECE82-KHNTEN(8) NOT = TNS-TEN
+                      AND  TNS-TEN          NOT = ZERO
                            MOVE   ZERO    TO    RECE82-KHNTEN(8)
                            MOVE   1       TO    FLG-KHNTEN8-JI
                       END-IF
@@ -3653,6 +3655,7 @@ grpsys        MOVE    SPA-HOSPNUM          TO    SYS-HOSPNUM
                          MOVE  TNS-TEN    TO    RECE82-KHNTEN(9)
                    ELSE
                       IF   RECE82-KHNTEN(9) NOT = TNS-TEN
+                      AND  TNS-TEN          NOT = ZERO
                            MOVE   ZERO    TO    RECE82-KHNTEN(9)
                            MOVE   1       TO    FLG-KHNTEN9-JI
                       END-IF
@@ -4088,6 +4091,7 @@ grpsys        MOVE    SPA-HOSPNUM          TO    SYS-HOSPNUM
                          MOVE  TNS-TEN    TO    RECE82-KHNTEN(7)
                      ELSE
                       IF   RECE82-KHNTEN(7) NOT = TNS-TEN
+                      AND  TNS-TEN          NOT = ZERO
                            MOVE   ZERO    TO    RECE82-KHNTEN(7)
                            MOVE   1       TO    FLG-KHNTEN7-JI
                       END-IF
@@ -4112,6 +4116,7 @@ grpsys        MOVE    SPA-HOSPNUM          TO    SYS-HOSPNUM
                          MOVE  TNS-TEN    TO    RECE82-KHNTEN(8)
                      ELSE
                       IF   RECE82-KHNTEN(8) NOT = TNS-TEN
+                      AND  TNS-TEN          NOT = ZERO
                            MOVE   ZERO    TO    RECE82-KHNTEN(8)
                            MOVE   1       TO    FLG-KHNTEN8-JI
                       END-IF
@@ -4136,6 +4141,7 @@ grpsys        MOVE    SPA-HOSPNUM          TO    SYS-HOSPNUM
                          MOVE  TNS-TEN    TO    RECE82-KHNTEN(9)
                      ELSE
                       IF   RECE82-KHNTEN(9) NOT = TNS-TEN
+                      AND  TNS-TEN          NOT = ZERO
                            MOVE   ZERO    TO    RECE82-KHNTEN(9)
                            MOVE   1       TO    FLG-KHNTEN9-JI
                       END-IF

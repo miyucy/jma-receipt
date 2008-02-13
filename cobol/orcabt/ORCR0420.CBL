@@ -3462,6 +3462,7 @@ grpsys        MOVE    SPA-HOSPNUM         TO  SYS-4003-HOSPNUM
                       MOVE  WRK-TNS-TEN(IDX3)  TO  RECE41-KHNTEN(19)
                    ELSE
                       IF   RECE41-KHNTEN(19) NOT = WRK-TNS-TEN(IDX3)
+                      AND  WRK-TNS-TEN(IDX3) NOT = ZERO
                            MOVE   ZERO    TO    RECE41-KHNTEN(19)
                            MOVE   1       TO    FLG-KHNTEN19
                       END-IF
@@ -4286,6 +4287,7 @@ grpsys        MOVE    SPA-HOSPNUM         TO  SYS-4003-HOSPNUM
                       MOVE  WRK-TNS-TEN(IDX3)  TO  RECE41-KHNTEN(14)
                    ELSE
                       IF   RECE41-KHNTEN(14) NOT = WRK-TNS-TEN(IDX3)
+                      AND  WRK-TNS-TEN(IDX3) NOT = ZERO
                            MOVE   ZERO    TO    RECE41-KHNTEN(14)
                            MOVE   1       TO    FLG-KHNTEN14-JI
                       END-IF
@@ -5042,6 +5044,7 @@ grpsys        MOVE    SPA-HOSPNUM         TO  SYS-4003-HOSPNUM
                       MOVE  WRK-TNS-TEN(IDX3)  TO  RECE41-KHNTEN(15)
                    ELSE
                       IF   RECE41-KHNTEN(15) NOT = WRK-TNS-TEN(IDX3)
+                      AND  WRK-TNS-TEN(IDX3) NOT = ZERO
                            MOVE   ZERO    TO    RECE41-KHNTEN(15)
                            MOVE   1       TO    FLG-KHNTEN15-JI2
                       END-IF
@@ -5624,6 +5627,7 @@ grpsys        MOVE    SPA-HOSPNUM         TO  SYS-4003-HOSPNUM
                       MOVE  WRK-TNS-TEN(IDX3)  TO  RECE41-KHNTEN(22)
                    ELSE
                       IF   RECE41-KHNTEN(22) NOT = WRK-TNS-TEN(IDX3)
+                      AND  WRK-TNS-TEN(IDX3) NOT = ZERO
                            MOVE   ZERO    TO    RECE41-KHNTEN(22)
                            MOVE   1       TO    FLG-KHNTEN22-KO
                       END-IF
