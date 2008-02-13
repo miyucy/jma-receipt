@@ -16722,6 +16722,7 @@
                                        I01-SHOKAI-ITM-STT
                                        I01-SHONUM-STT
                                        I01-KAIGO-STT
+                                       I01-KAIGO-ITM-STT
                                        I01-DR-STT (1)
                                        I01-DR-ITM-STT (1)
                                        I01-DR-STT (2)
@@ -16764,6 +16765,7 @@
                                        I01-SHOKAI-ITM-STT
                                        I01-SHONUM-STT
                                        I01-KAIGO-STT
+                                       I01-KAIGO-ITM-STT
                                        I01-TAIINYMD-STT
                                        I01-TAIINCD-STT
                                        I01-TAIINCD-ITM-STT
@@ -16790,6 +16792,7 @@
                                        I01-SHOKAI-ITM-STT
                                        I01-SHONUM-STT
                                        I01-KAIGO-STT
+                                       I01-KAIGO-ITM-STT
                                        I01-TAIINYMD-STT
                                        I01-TAIINCD-STT
                                        I01-TAIINCD-ITM-STT
@@ -16821,6 +16824,10 @@
             AND  ( SPA-GMN-I01-SHOKAI-CD   =   "2" )
                MOVE    WIDGET-NORMAL   TO  I01-SHONUM-STT
                MOVE    WIDGET-NORMAL   TO  I01-KAIGO-STT
+           ELSE
+               MOVE    WIDGET-INSENSITIVE
+                                       TO  I01-KAIGO-STT
+                                           I01-KAIGO-ITM-STT
            END-IF
       *
       *    入院オーダー遷移
@@ -16875,6 +16882,7 @@
                                            I01-SHOKAI-ITM-STT
                                            I01-SHONUM-STT
                                            I01-KAIGO-STT
+                                           I01-KAIGO-ITM-STT
                                            I01-TAIINYMD-STT
                                            I01-TAIINCD-STT
                                            I01-TAIINCD-ITM-STT
