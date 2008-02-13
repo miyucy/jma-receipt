@@ -223,7 +223,8 @@
       *
       *  04.01.01    NACL-藤原    07/10/11  診療科コピー（移動）機能対応
       *  04.01.02    NACL-藤原    07/10/26  公務災害対応
-      *  04.01.03    NACL-藤原    07/10/26  登録年月日の更新時の編集追加
+      *  04.01.03    NACL-藤原    08/02/06  登録年月日の更新時の編集追加
+      *  04.01.04    NACL-藤原    08/02/13  診療科チェックの修正
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -6270,7 +6271,7 @@ grpsys     MOVE    SPA-HOSPNUM         TO  PTBYO-HOSPNUM
        440-SAKUJYO-GID-SEC             SECTION.
       *
            IF      SPA-NAI-C02-PTID    =   ZERO
-           OR      SPA-GMN-C02-BSRYKA  =   SPACE
+      *****OR      SPA-GMN-C02-BSRYKA  =   SPACE
                MOVE    "0050"              TO  SPA-ERRCD
                GO  TO  440-SAKUJYO-GID-EXT
            END-IF
@@ -6278,6 +6279,13 @@ grpsys     MOVE    SPA-HOSPNUM         TO  PTBYO-HOSPNUM
            IF      SPA-GMN-C02-BANGO  =   ZERO
                MOVE    "0004"              TO  SPA-ERRCD
                GO  TO  440-SAKUJYO-GID-EXT
+           END-IF
+      *
+      *    入力項目チェック
+           MOVE    SPA-GMN-C02-BSRYKA-G   TO  C02-BSRYKA
+           PERFORM 41019-BSRYKA-CHK-SEC
+           IF      SPA-ERRCD           NOT =   SPACE         
+               GO  TO  450-TOUROKU-EXT
            END-IF
       *
            MOVE    "0101"             TO  SPA-CIDCD4
@@ -6352,7 +6360,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
        450-TOUROKU-SEC                SECTION.
       *
            IF     (SPA-NAI-C02-PTID         =   ZERO  )
-             OR   (SPA-GMN-C02-BSRYKA       =   SPACE )
+      *****OR     (SPA-GMN-C02-BSRYKA       =   SPACE )
                MOVE    "0050"             TO  SPA-ERRCD
                GO  TO  450-TOUROKU-EXT
            END-IF
