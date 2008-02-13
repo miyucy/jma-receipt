@@ -504,11 +504,15 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                IF      PGKANRI-UPDATEFLG   =   "T"
                    MOVE    "　　済　"      TO  SPA-GMN-SYORIFLG(IDX)
                ELSE
+                 IF      PGKANRI-UPDATEFLG   =   "F"
+                     MOVE    "　未処理"      TO  SPA-GMN-SYORIFLG(IDX)
+                 ELSE
                    IF      PGKANRI-UPDATEFLG   =   "E"
                        MOVE    "　エラー"      TO  SPA-GMN-SYORIFLG(IDX)
                    ELSE
                        MOVE    "　　　　"      TO  SPA-GMN-SYORIFLG(IDX)
                    END-IF
+                 END-IF
                END-IF
       *    内容
                MOVE    PGKANRI-COMMENT     TO  SPA-GMN-NAIYO(IDX)

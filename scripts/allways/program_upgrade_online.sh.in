@@ -75,6 +75,10 @@ if [ $? -ne 0 ] ; then
   exit 99
 fi
 
+rm -rf $HOME/$PRGDIR
+
+sh $SCRIPTSDIR/allways/program_upgrade_check.sh $HOSPNUM $3
+
 #monitor再起動（ＳＩＧＨＵＰ）
 if [ -e /var/run/jma-receipt/monitor.pid ]; then
   echomsg "monitorの再起動を行います" ${LOG}
@@ -85,7 +89,4 @@ fi
 
 echomsg "全ての処理が完了しました" ${LOG}
 
-rm -rf $HOME/$PRGDIR
-
-sh $SCRIPTSDIR/allways/program_upgrade_check.sh $HOSPNUM $3
 #$DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE0000001PRGMNT00,$HOSPNUM
