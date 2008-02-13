@@ -2603,6 +2603,7 @@
                                        TO  SYS-1030-GAZOFOLDER
       *----(03.03.01)--ADD-START---
            ELSE
+               MOVE    SPACE     TO    SYS-1030-GAZOFOLDER
                STRING  WRK-CONS-PASS   DELIMITED BY SIZE
                        SPA-HOSPNUM     DELIMITED BY SIZE
                        "/"             DELIMITED BY SIZE

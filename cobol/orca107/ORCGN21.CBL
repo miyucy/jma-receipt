@@ -425,6 +425,7 @@
       *    デフォルト画像フォルダーセット
            PERFORM 900-SYS1030-READ-SEC
            IF      SYS-1030-GAZOFOLDER =   SPACE
+               MOVE    SPACE       TO  SPA-GMN-FOLDER
                STRING  WRK-CONS-PASS   DELIMITED BY SIZE
                        SPA-HOSPNUM     DELIMITED BY SIZE
                        "/"             DELIMITED BY SIZE
