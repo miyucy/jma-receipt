@@ -9,7 +9,8 @@ fi
 
 . $JMARECEIPT_ENV
 
-MEDPHOTOTEMP="/tmp/medphoto/"$8
+MEDPHOTODIR="/tmp/medphoto"
+MEDPHOTOTEMP="$MEDPHOTODIR"/$8
 
 #-------------------------------------------#
 #    薬剤情報マスタ医薬品しおりダウンロード処理
@@ -30,8 +31,11 @@ MEDPHOTOTEMP="/tmp/medphoto/"$8
 
 # 画像ファイル格納ディレクトリの作成
 
-if ! [ -d   $MEDPHOTOTEMP ];	then
-    mkdir $MEDPHOTOTEMP
+if ! [ -d $MEDPHOTODIR ]; then
+  mkdir $MEDPHOTODIR
+fi
+if ! [ -d $MEDPHOTOTEMP ]; then
+  mkdir $MEDPHOTOTEMP
 fi
 
 # センターサーバより雛型を取り込む
