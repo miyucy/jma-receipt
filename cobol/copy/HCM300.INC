@@ -17,10 +17,10 @@
               03  HCM300-GAZO PIC X(1024).
               03  HCM300-YKZNAME-G.
                 04  HCM300-YKZNAME
-                        PIC X(34)   OCCURS  3 TIMES.
+                        PIC X(32)   OCCURS  3 TIMES.
               03  HCM300-KONOKOKA-G.
                 04  HCM300-KONOKOKA
-                        PIC X(36)   OCCURS  8 TIMES.
+                        PIC X(34)   OCCURS  8 TIMES.
               03  HCM300-KEIJYO-G.
                 04  HCM300-KEIJYO
                         PIC X(20)   OCCURS  8 TIMES.
@@ -32,4 +32,4 @@
                         PIC X(20)   OCCURS  6 TIMES.
               03  HCM300-CYUJKO-G.
                 04  HCM300-CYUJKO
-                        PIC X(46)   OCCURS  8 TIMES.
+                        PIC X(44)   OCCURS  8 TIMES.
