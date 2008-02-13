@@ -43,6 +43,16 @@ path	key2		{
 	};
 };
 
+path	key3		{ 	
+	DBSELECT	{
+		DECLARE tbl_pgkanri_key3_csr CURSOR FOR
+		SELECT *
+		FROM tbl_pgkanri
+			ORDER	BY  PGNO  DESC
+		;
+	};
+};
+
 path	all		{ 	
 	DBSELECT	{
 		DECLARE tbl_pgkanri_all_csr CURSOR FOR

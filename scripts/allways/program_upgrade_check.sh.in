@@ -78,7 +78,7 @@ ruby $SCRIPTSDIR/allways/program_upgrade_check.rb $PACKAGEFILE $PATCHDIR $HOME/$
 if [ $? -ne 0 ]	; then 
   echomsg "更新プログラムのチェック処理が異常終了しました" ${LOG}
   rm -rf $HOME/$PRGDIR
-  $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE0000001PRGMNT99,$HOSPNUM
+  $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE0000001PRGMNT98,$HOSPNUM
   exit 99
 fi
 

@@ -263,7 +263,7 @@
                    PERFORM 410-JOBDEL-SEC
       *        チェック
                WHEN    "CLICKED"   ALSO    "B09"
-                   PERFORM 400-CHECK-SEC
+                   PERFORM 400-CHECK-KAKUNIN-SEC
       *----(03.04.01)---ADD-START---
                WHEN    "CLICKED"   ALSO    "pandatimer1"
       *----(03.04.01)---ADD-END-----
@@ -393,9 +393,16 @@
                        PERFORM 420-KOUSHIN-SEC
                    END-IF
                WHEN    "0204"
+               WHEN    "0206"
                    IF      SPA-MID1-FLG    =   "OK"
       *                削除処理
                        PERFORM 820-JOBKANRI-DEL-SEC
+                       PERFORM 400-JYOKYO-SET-SEC
+                   END-IF
+               WHEN    "0205"
+                   IF      SPA-MID1-FLG    =   "OK"
+      *            チェック処理
+                       PERFORM 400-CHECK-SEC
                    END-IF
                WHEN    "0301"
                    IF      SPA-MID1-FLG    =   "OK"
@@ -414,11 +421,43 @@
            EXIT.
       *
       *****************************************************************
+      *       登録処理
+      *****************************************************************
+       400-CHECK-KAKUNIN-SEC       SECTION.
+      *
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO  TO  400-CHECK-KAKUNIN-EXT
+           END-IF
+      *
+           PERFORM 820-JOBKANRI-READ2-SEC
+      *
+           IF      SKBN-RUN        =   "RUN"
+               MOVE    "0203"          TO  SPA-ERRCD
+               PERFORM 510-ERRSET-SEC
+           ELSE
+               MOVE    "0205"          TO  SPA-MIDCD
+               PERFORM 520-MIDSET-SEC
+           END-IF
+           .
+      *
+       400-CHECK-KAKUNIN-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    チェック
       *****************************************************************
        400-CHECK-SEC               SECTION.
       *
-      *    プログラム更新処理
+      *    ジョブ管理削除
+           PERFORM 820-JOBKANRI-DEL-SEC
+      *
+      *    ジョブ管理作成
+           PERFORM 820-JOBKANRI-JBS-SEC
+      *
+      *    状況更新
+           PERFORM 400-JYOKYO-SET-SEC
+      *
+      *    チェック処理
            MOVE    SPACE           TO  SHELLTBL
            INITIALIZE                  ORCSMKPASSAREA
       *
@@ -506,31 +545,38 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            PERFORM 820-JOBKANRI-READ1-SEC
       *
            IF      SJOBKANRI-RETURN    =   ZERO
-               IF      JOB-ERRCD(1:2)      =   "99"
-                   MOVE    SPACE           TO  SKBN-RUN
-                   MOVE    "プログラム更新は異常終了しました。"
-                                           TO  SPA-GMN-MSG
-                   MOVE    "red"           TO  SPA-GMN-MSG-STYLE
+             IF    JOB-ERRCD(1:2)      =   "99"
+               MOVE    SPACE           TO  SKBN-RUN
+               MOVE    "プログラム更新は異常終了しました。"
+                                       TO  SPA-GMN-MSG
+               MOVE    "red"           TO  SPA-GMN-MSG-STYLE
+             ELSE
+               IF    JOB-ERRCD(1:2)      =   "98"
+                 MOVE    SPACE           TO  SKBN-RUN
+                 MOVE    "プログラムチェックは異常終了しました。"
+                                         TO  SPA-GMN-MSG
+                 MOVE    "red"           TO  SPA-GMN-MSG-STYLE
                ELSE
-                   IF      JOB-ERRCD(1:2)    =   "01"
-                       MOVE    SPACE         TO  SKBN-RUN
-                       MOVE    "更新データはありませんでした。"
-                                             TO  SPA-GMN-MSG
-                       MOVE    "blue"        TO  SPA-GMN-MSG-STYLE
+                 IF      JOB-ERRCD(1:2)    =   "01"
+                   MOVE    SPACE         TO  SKBN-RUN
+                   MOVE    "更新データはありませんでした。"
+                                         TO  SPA-GMN-MSG
+                   MOVE    "blue"        TO  SPA-GMN-MSG-STYLE
+                 ELSE
+                   IF  (JOB-ENDTIME       NOT =   SPACE)  AND
+                       (JOB-ENDYMD        NOT =   SPACE)
+                       MOVE    SPACE        TO  SKBN-RUN
+                       MOVE    "処理は正常に終了しました。"
+                                            TO  SPA-GMN-MSG
+                       MOVE    "blue"       TO  SPA-GMN-MSG-STYLE
                    ELSE
-                       IF  (JOB-ENDTIME       NOT =   SPACE)  AND
-                           (JOB-ENDYMD        NOT =   SPACE)
-                           MOVE    SPACE        TO  SKBN-RUN
-                       MOVE    "プログラム更新は正常に終了しました。"
-                                                TO  SPA-GMN-MSG
-                           MOVE    "blue"       TO  SPA-GMN-MSG-STYLE
-                       ELSE
-                           MOVE    "プログラム更新中です。"
-                                                TO  SPA-GMN-MSG
-                           MOVE    "blue"       TO  SPA-GMN-MSG-STYLE
-                       END-IF
+                       MOVE    "処理中です。"
+                                            TO  SPA-GMN-MSG
+                       MOVE    "blue"       TO  SPA-GMN-MSG-STYLE
                    END-IF
+                 END-IF
                END-IF
+             END-IF
            ELSE
                MOVE    SPACE           TO  SPA-GMN-MSG
                MOVE    SPACE           TO  SPA-GMN-MSG-STYLE
@@ -592,12 +638,11 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            PERFORM 820-JOBKANRI-READ2-SEC
       *
            IF      SKBN-RUN        =   "RUN"
-               MOVE    "0203"          TO  SPA-ERRCD
-               PERFORM 510-ERRSET-SEC
+               MOVE    "0206"          TO  SPA-MIDCD
            ELSE
                MOVE    "0204"          TO  SPA-MIDCD
-               PERFORM 520-MIDSET-SEC
            END-IF
+           PERFORM 520-MIDSET-SEC
            .
       *
        410-JOBDEL-EXT.
@@ -817,7 +862,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE    "更新処理が実行中の為、削除できません"
                                             TO  SPA-ERRMSG
                WHEN    "0203"
-                   MOVE    "プログラム更新は実行中です。"
+                   MOVE    "処理中です。"
                                             TO  SPA-ERRMSG
                WHEN    OTHER
                    MOVE    SPACE            TO  SPA-ERRMSG
@@ -849,8 +894,16 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN    "0204"
                    MOVE    "ジョブ管理を削除します。よろしいですか？"
                                            TO  WRK-MIDMSG
+               WHEN    "0205"
+	       MOVE    SPACE               TO  WRK-MIDMSG
+               STRING "プログラムの適用状態をチェ"   DELIMITED BY SIZE
+                      "ックします。よろしいですか？" DELIMITED BY SIZE
+                                         INTO  WRK-MIDMSG
+               WHEN    "0206"
+                   MOVE    "処理中ですがジョブ管理を削除しますか？"
+                                           TO  WRK-MIDMSG
                WHEN    "0301"
-                   MOVE    "プログラム更新中です。よろしいですか？"
+                   MOVE    "処理中ですがよろしいですか？"
                                            TO  WRK-MIDMSG
                WHEN    OTHER
                    MOVE    SPA-MIDCD       TO  WRK-MIDMSG
@@ -1017,7 +1070,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    "M00"           TO  SPA-SAKIPG
            MOVE    "M97"           TO  SPA-MOTOPG
            MOVE    "M00"           TO  MCP-WINDOW
-           MOVE    "CHANGE"        TO  MCP-PUTTYPE
+           MOVE    "JOIN"          TO  MCP-PUTTYPE
       *
            PERFORM 900-PUT-WINDOW
       *
@@ -1035,7 +1088,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            INITIALIZE                  PGKANRI-REC
            MOVE    "DBSELECT"      TO  MCP-FUNC
            MOVE    "tbl_pgkanri"   TO  MCP-TABLE
-           MOVE    "all"           TO  MCP-PATHNAME
+           MOVE    "key3"          TO  MCP-PATHNAME
 grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                                MCPDATA-REC
                                                SPA-AREA
@@ -1057,7 +1110,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            MOVE    "DBFETCH"       TO  MCP-FUNC
            MOVE    "tbl_pgkanri"   TO  MCP-TABLE
-           MOVE    "all"           TO  MCP-PATHNAME
+           MOVE    "key3"          TO  MCP-PATHNAME
 grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                                MCPDATA-REC
                                                SPA-AREA
@@ -1080,7 +1133,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
            MOVE    "tbl_pgkanri"   TO  MCP-TABLE
-           MOVE    "all"           TO  MCP-PATHNAME
+           MOVE    "key3"          TO  MCP-PATHNAME
 grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                                MCPDATA-REC
                                                SPA-AREA
