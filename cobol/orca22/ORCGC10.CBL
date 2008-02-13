@@ -2158,6 +2158,8 @@ grpsys                 MOVE    SPA-HOSPNUM         TO  PTBYO-HOSPNUM
            ELSE
                IF      SPA-CIDCD       =   "0103"    OR  SPACE
                    MOVE    "OK"            TO  SPA-CID1-FLG
+               ELSE
+                   MOVE    "DL"            TO  SPA-CID1-FLG
                END-IF
            END-IF
       *
