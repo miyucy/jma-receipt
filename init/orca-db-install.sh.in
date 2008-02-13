@@ -267,6 +267,10 @@ do
         echo "update tbl_dbkanri set dbsversion1='${UPD:0:21}',dbsversion2='${UPD:0:21}' where kanricd='ORCADB00';" | su - orca -c "psql -e orca 2>&1 | tee -a $INSTALLLOG $THISTIMELOG"
 done
 
+#vacuum analyze
+
+echo "vacuum analyze;" | su - orca -c "psql -e orca 2>&1 | tee -a $INSTALLLOG $THISTIMELOG"
+
 echo  "全ての処理が完了しました" 2>&1 | tee -a $INSTALLLOG $THISTIMELOG
 #注意☆☆☆テストが終了したら元に戻す
 rm -r $HOME/$MSTDIR
