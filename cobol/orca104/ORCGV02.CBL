@@ -388,24 +388,23 @@
            ELSE
       *        初期画面セット
                PERFORM 300-SCREEN-SEC
-               IF      FLG-END             =   1
-                   GO  TO  100-INIT-EXT
-               END-IF
       *        画面編集
-               PERFORM 500-GMNHEN-SEC
-               IF      SPA-ERRCD       NOT =   SPACE
-                   PERFORM 510-ERRSET-SEC
-                   GO  TO  100-INIT-EXT
+               IF      FLG-END             =   ZERO
+                   PERFORM 500-GMNHEN-SEC
+                   IF      SPA-ERRCD       NOT =   SPACE
+                       PERFORM 510-ERRSET-SEC
+                   END-IF
                END-IF
            END-IF
       *
-           MOVE    SPACE               TO  LINKAREA
+           IF      FLG-END             =   ZERO
+               MOVE    SPACE               TO  LINKAREA
       * 
-      ***  MOVE    "NEW"                TO  MCP-PUTTYPE
-           MOVE    SPACE                TO  MCP-PUTTYPE
-           MOVE    "V02"                TO  MCP-WINDOW
-           PERFORM 900-PUT-WINDOW
-           MOVE    1                    TO  FLG-END
+               MOVE    SPACE                TO  MCP-PUTTYPE
+               MOVE    "V02"                TO  MCP-WINDOW
+               PERFORM 900-PUT-WINDOW
+               MOVE    1                    TO  FLG-END
+           END-IF
            .
        100-INIT-EXT.
            EXIT.
@@ -423,10 +422,9 @@
            EVALUATE    SPA-MOTOPG
                WHEN    "VID1"
                    PERFORM 330-VID1-SET-SEC
-                   GO      TO      300-SCREEN-EXT
+               WHEN    OTHER
+                   PERFORM 310-SPASET-SEC
            END-EVALUATE
-      *
-           PERFORM 310-SPASET-SEC
       *
            .
        300-SCREEN-EXT.
@@ -896,9 +894,6 @@
            PERFORM 4101-GMN-SPA-SET-SEC
       *    基本チェック処理
            PERFORM 4102-KIHON-CHK-SEC
-           IF      SPA-ERRCD       NOT =   SPACE
-               GO      TO      410-INPUT-CHK-EXT
-           END-IF
       *
            .
        410-INPUT-CHK-EXT.
@@ -991,88 +986,69 @@
        4102-KIHON-CHK-SEC       SECTION.
       *
            PERFORM 4100-HBTNUM-CHK-SEC
-           IF      SPA-ERRCD       NOT =   SPACE
-               GO      TO      4102-KIHON-CHK-EXT
-           END-IF
       *    制度名チェック
-           PERFORM 4101-SEIDONAME-CHK-SEC
-           IF      SPA-ERRCD       NOT =   SPACE
-               GO      TO      4102-KIHON-CHK-EXT
+           IF      SPA-ERRCD           =   SPACE
+               PERFORM 4101-SEIDONAME-CHK-SEC
            END-IF
       *
-           PERFORM 4102-TANSEIDONAME-CHK-SEC
-           IF      SPA-ERRCD       NOT =   SPACE
-               GO      TO      4102-KIHON-CHK-EXT
+           IF      SPA-ERRCD           =   SPACE
+               PERFORM 4102-TANSEIDONAME-CHK-SEC
            END-IF
       *
-           PERFORM 4103-HKNKOHSBTKBN-CHK-SEC
-           IF      SPA-ERRCD       NOT =   SPACE
-               GO      TO      4102-KIHON-CHK-EXT
+           IF      SPA-ERRCD           =   SPACE
+               PERFORM 4103-HKNKOHSBTKBN-CHK-SEC
            END-IF
       *
-           PERFORM 4103-HBTNUMCHKKBN-CHK-SEC
-           IF      SPA-ERRCD       NOT =   SPACE
-               GO      TO      4102-KIHON-CHK-EXT
+           IF      SPA-ERRCD           =   SPACE
+               PERFORM 4103-HBTNUMCHKKBN-CHK-SEC
            END-IF
       *
-           PERFORM 4104-KENSNUMCHKKBN-CHK-SEC
-           IF      SPA-ERRCD       NOT =   SPACE
-               GO      TO      4102-KIHON-CHK-EXT
+           IF      SPA-ERRCD           =   SPACE
+               PERFORM 4104-KENSNUMCHKKBN-CHK-SEC
            END-IF
       *
-           PERFORM 4105-JKYSKENSNUMCHKKBN-CHK-SEC
-           IF      SPA-ERRCD       NOT =   SPACE
-               GO      TO      4102-KIHON-CHK-EXT
+           IF      SPA-ERRCD           =   SPACE
+               PERFORM 4105-JKYSKENSNUMCHKKBN-CHK-SEC
            END-IF
       *
-           PERFORM 4106-HKNKOHKBN-CHK-SEC
-           IF      SPA-ERRCD       NOT =   SPACE
-               GO      TO      4102-KIHON-CHK-EXT
+           IF      SPA-ERRCD           =   SPACE
+               PERFORM 4106-HKNKOHKBN-CHK-SEC
            END-IF
       *
-           PERFORM 4130-RECESKYKBN-CHK-SEC
-           IF      SPA-ERRCD       NOT =   SPACE
-               GO      TO      4102-KIHON-CHK-EXT
+           IF      SPA-ERRCD           =   SPACE
+               PERFORM 4130-RECESKYKBN-CHK-SEC
            END-IF
       *
-           PERFORM 4140-RECEFTNDSPKBN-CHK-SEC
-           IF      SPA-ERRCD       NOT =   SPACE
-               GO      TO      4102-KIHON-CHK-EXT
+           IF      SPA-ERRCD           =   SPACE
+               PERFORM 4140-RECEFTNDSPKBN-CHK-SEC
            END-IF
       *
-           PERFORM 4150-RECEFTNJGNDSPKBN-CHK-SEC
-           IF      SPA-ERRCD       NOT =   SPACE
-               GO      TO      4102-KIHON-CHK-EXT
+           IF      SPA-ERRCD           =   SPACE
+               PERFORM 4150-RECEFTNJGNDSPKBN-CHK-SEC
            END-IF
       *
-           PERFORM 4111-GAIFTNKBN-CHK-SEC
-           IF      SPA-ERRCD       NOT =   SPACE
-               GO      TO      4102-KIHON-CHK-EXT
+           IF      SPA-ERRCD           =   SPACE
+               PERFORM 4111-GAIFTNKBN-CHK-SEC
            END-IF
       *
-           PERFORM 4112-GAIKFTNRATE-CHK-SEC
-           IF      SPA-ERRCD       NOT =   SPACE
-               GO      TO      4102-KIHON-CHK-EXT
+           IF      SPA-ERRCD           =   SPACE
+               PERFORM 4112-GAIKFTNRATE-CHK-SEC
            END-IF
       *
-           PERFORM 4113-GAIKKOTGAK-CHK-SEC
-           IF      SPA-ERRCD       NOT =   SPACE
-               GO      TO      4102-KIHON-CHK-EXT
+           IF      SPA-ERRCD           =   SPACE
+               PERFORM 4113-GAIKKOTGAK-CHK-SEC
            END-IF
       *
-           PERFORM 4120-GAIYKZFTNKBN-CHK-SEC
-           IF      SPA-ERRCD       NOT =   SPACE
-               GO      TO      4102-KIHON-CHK-EXT
+           IF      SPA-ERRCD           =   SPACE
+               PERFORM 4120-GAIYKZFTNKBN-CHK-SEC
            END-IF
       *
-           PERFORM 4121-NYUFTNKBN-CHK-SEC
-           IF      SPA-ERRCD       NOT =   SPACE
-               GO      TO      4102-KIHON-CHK-EXT
+           IF      SPA-ERRCD           =   SPACE
+               PERFORM 4121-NYUFTNKBN-CHK-SEC
            END-IF
       *
-           PERFORM 4129-NYUSKJRYYKBN-CHK-SEC
-           IF      SPA-ERRCD       NOT =   SPACE
-               GO      TO      4102-KIHON-CHK-EXT
+           IF      SPA-ERRCD           =   SPACE
+               PERFORM 4129-NYUSKJRYYKBN-CHK-SEC
            END-IF
       *
            .
@@ -1251,7 +1227,6 @@
       *    未入力でもＯＫとする
            IF      SPA-GMN-JKYSKENSNUMCHKKBN   =   SPACE
                MOVE    SPACE           TO  SPA-GMN-JKYSKENSNUMCHKKBN-G
-               GO      TO     4105-JKYSKENSNUMCHKKBN-CHK-EXT
            END-IF
            MOVE    ZERO                TO  FLG-CHK
            PERFORM VARYING     IDX     FROM   1   BY  1
@@ -1266,7 +1241,8 @@
                    MOVE    1               TO  FLG-CHK
                END-IF
            END-PERFORM
-           IF      FLG-CHK             =   ZERO
+           IF     (FLG-CHK             =   ZERO  )  AND
+                  (SPA-GMN-JKYSKENSNUMCHKKBN   NOT =   SPACE )
                MOVE    6                   TO  SPA-GMN-CUR
                MOVE    "0003"              TO  SPA-ERRCD
            END-IF
@@ -1299,10 +1275,10 @@
                   (SPA-GMN-HKNKOHKBN   NOT =   SPACE )
                MOVE    7                   TO  SPA-GMN-CUR
                MOVE    "0004"              TO  SPA-ERRCD
-               GO      TO      4106-HKNKOHKBN-CHK-EXT
            END-IF
       *
-           EVALUATE    SPA-GMN-HKNKOHSBTKBN
+           IF      SPA-ERRCD           =   SPACE
+               EVALUATE    SPA-GMN-HKNKOHSBTKBN
                WHEN    "6"
                    IF      SPA-GMN-HKNKOHKBN   NOT =   SPACE
                        MOVE    "0004"              TO  SPA-ERRCD
@@ -1314,7 +1290,8 @@
       *                 MOVE    "0010"              TO  SPA-ERRCD
       *                 MOVE    7                   TO  SPA-GMN-CUR
       *             END-IF
-           END-EVALUATE
+               END-EVALUATE
+           END-IF
       *
            .
        4106-HKNKOHKBN-CHK-EXT.
@@ -1361,11 +1338,10 @@
       *****************************************************************
        4130-RECESKYKBN-CHK-SEC         SECTION.
       *
-           IF      SPA-GMN-RECESKYKBN    =   SPACE
-               IF      FLG-KOUSIN      NOT =   2
-                   GO      TO  4130-RECESKYKBN-CHK-EXT
-               END-IF
-           END-IF
+      *    IF     (SPA-GMN-RECESKYKBN    =   SPACE )
+      *      AND  (FLG-KOUSIN        NOT =   2     )
+      *        GO      TO  4130-RECESKYKBN-CHK-EXT
+      *    END-IF
       *
            MOVE    ZERO                TO  FLG-CHK
            PERFORM VARYING     IDX     FROM   1   BY  1
@@ -1383,7 +1359,6 @@
                   (SPA-GMN-RECESKYKBN   NOT =   SPACE )
                MOVE    14                  TO  SPA-GMN-CUR
                MOVE    "0005"              TO  SPA-ERRCD
-               GO      TO      4130-RECESKYKBN-CHK-EXT
            END-IF
       *
       *    地方公費の時必須とする
@@ -1405,13 +1380,6 @@
       *****************************************************************
        4140-RECEFTNDSPKBN-CHK-SEC      SECTION.
       *
-           IF      SPA-GMN-RECEFTNDSPKBN    =   SPACE
-               IF      FLG-KOUSIN      NOT =   2
-                   GO      TO  4140-RECEFTNDSPKBN-CHK-EXT
-               END-IF
-           END-IF
-      *
-      *
            MOVE    ZERO                TO  FLG-CHK
            PERFORM VARYING     IDX     FROM   1   BY  1
                    UNTIL       IDX     >   SPA-GMN-RECEFTNDSPKBN-MAX
@@ -1424,11 +1392,9 @@
                    MOVE    1               TO  FLG-CHK
                END-IF
            END-PERFORM
-           IF     (FLG-CHK              =   ZERO )  AND
-                  (SPA-GMN-RECEFTNDSPKBN   NOT =   SPACE )
+           IF     (FLG-CHK              =   ZERO )
                MOVE    15                  TO  SPA-GMN-CUR
                MOVE    "0011"              TO  SPA-ERRCD
-               GO      TO      4130-RECESKYKBN-CHK-EXT
            END-IF
       *
            .
@@ -1439,13 +1405,6 @@
       *    レセ記載チェック
       *****************************************************************
        4150-RECEFTNJGNDSPKBN-CHK-SEC      SECTION.
-      *
-           IF      SPA-GMN-RECEFTNJGNDSPKBN    =   SPACE
-               IF      FLG-KOUSIN      NOT =   2
-                   GO      TO  4150-RECEFTNJGNDSPKBN-CHK-EXT
-               END-IF
-           END-IF
-      *
       *
            MOVE    ZERO                TO  FLG-CHK
            PERFORM VARYING     IDX     FROM   1   BY  1
@@ -1459,11 +1418,9 @@
                    MOVE    1               TO  FLG-CHK
                END-IF
            END-PERFORM
-           IF     (FLG-CHK              =   ZERO )  AND
-                  (SPA-GMN-RECEFTNJGNDSPKBN   NOT =   SPACE )
+           IF     (FLG-CHK              =   ZERO )
                MOVE    17                  TO  SPA-GMN-CUR
                MOVE    "0012"              TO  SPA-ERRCD
-               GO      TO      4150-RECEFTNJGNDSPKBN-CHK-EXT
            END-IF
       *
            .
@@ -1503,20 +1460,18 @@
                END-IF
            END-PERFORM
       *
-           IF      SPA-GMN-GAIFTNKBN (IDX) =   SPACE
-               IF      FLG-KOUSIN      NOT =   2
-                   GO      TO  4111-GAIFTNKBN-CHK-EXT
-               END-IF
-           END-IF
-      *
+      *    IF     (SPA-GMN-GAIFTNKBN (IDX) =   SPACE )
+      *      AND  (FLG-KOUSIN          NOT =   2     )
+      *         GO      TO  4111-GAIFTNKBN-CHK-EXT
+      *    END-IF
       *
            IF      FLG-CHK             =   ZERO
                MOVE    "0006"              TO  SPA-ERRCD
                MOVE    WRK-GMN-CUR         TO  SPA-GMN-CUR
-               GO      TO      4111-GAIFTNKBN-CHK-EXT
            END-IF
       *
           IF      SPA-GMN-GAIFTNKBN (IDX) =   "3"
+          AND   ( SPA-ERRCD            =   SPACE  )
                IF      SPA-V01-HKNNUM (1:1)    >=  "1" AND <= "8"
                    CONTINUE
                ELSE
@@ -1564,16 +1519,15 @@
                END-IF
            END-PERFORM
       *
-           IF      SPA-GMN-GAIYKZFTNKBN (IDX) =   SPACE
-               IF      FLG-KOUSIN      NOT =   2
-                   GO      TO      4120-GAIYKZFTNKBN-CHK-EXT
-               END-IF
-           END-IF
+      *    IF      SPA-GMN-GAIYKZFTNKBN (IDX) =   SPACE
+      *        IF      FLG-KOUSIN      NOT =   2
+      *            GO      TO      4120-GAIYKZFTNKBN-CHK-EXT
+      *        END-IF
+      *    END-IF
       *
            IF      FLG-CHK             =   ZERO
                MOVE    "0007"              TO  SPA-ERRCD
                MOVE    WRK-GMN-CUR         TO  SPA-GMN-CUR
-               GO      TO      4120-GAIYKZFTNKBN-CHK-EXT
            END-IF
       *
            .
@@ -1615,11 +1569,11 @@
                END-IF
            END-PERFORM
       *
-           IF      SPA-GMN-NYUFTNKBN (IDX) =   SPACE
-               IF      FLG-KOUSIN      NOT =   2
-                   GO      TO      4121-NYUFTNKBN-CHK-EXT
-               END-IF
-           END-IF
+      *    IF      SPA-GMN-NYUFTNKBN (IDX) =   SPACE
+      *        IF      FLG-KOUSIN      NOT =   2
+      *            GO      TO      4121-NYUFTNKBN-CHK-EXT
+      *        END-IF
+      *    END-IF
       *
       *
            IF      FLG-CHK             =   ZERO
@@ -1648,16 +1602,16 @@
            EVALUATE    SPA-GMN-PAGENO
                WHEN    0
                    MOVE    1               TO  IDX
-                   MOVE    29              TO  WRK-GMN-CUR
+                   MOVE    39              TO  WRK-GMN-CUR
                WHEN    1
                    MOVE    2               TO  IDX
-                   MOVE    59              TO  WRK-GMN-CUR
+                   MOVE    69              TO  WRK-GMN-CUR
                WHEN    2
                    MOVE    3               TO  IDX
-                   MOVE    89              TO  WRK-GMN-CUR
+                   MOVE    99              TO  WRK-GMN-CUR
                WHEN    3
                    MOVE    4               TO  IDX
-                   MOVE    119             TO  WRK-GMN-CUR
+                   MOVE    129             TO  WRK-GMN-CUR
            END-EVALUATE
       *
            MOVE    ZERO                TO  FLG-CHK
@@ -1674,16 +1628,15 @@
                END-IF
            END-PERFORM
       *
-           IF      SPA-GMN-NYUSKJRYYKBN (IDX) =   SPACE
-               IF      FLG-KOUSIN      NOT =   2
-                   GO      TO      4129-NYUSKJRYYKBN-CHK-EXT
-               END-IF
-           END-IF
+      *    IF      SPA-GMN-NYUSKJRYYKBN (IDX) =   SPACE
+      *        IF      FLG-KOUSIN      NOT =   2
+      *            GO      TO      4129-NYUSKJRYYKBN-CHK-EXT
+      *        END-IF
+      *    END-IF
       *
            IF      FLG-CHK             =   ZERO
                MOVE    "0009"              TO  SPA-ERRCD
                MOVE    WRK-GMN-CUR         TO  SPA-GMN-CUR
-               GO      TO      4129-NYUSKJRYYKBN-CHK-EXT
            END-IF
       *
            .
@@ -1844,10 +1797,9 @@
            IF      WRK-PAGENO      NOT =   SPA-GMN-PAGENO
                MOVE    1                   TO  FLG-KOUSIN
                PERFORM 410-INPUT-CHK-SEC
-               IF      SPA-ERRCD       NOT =   SPACE
-                   GO      TO      440-TAG-CHANGE-EXT
+               IF      SPA-ERRCD            =   SPACE
+                   PERFORM 4900-KANRENCHK-SEC
                END-IF
-               PERFORM 4900-KANRENCHK-SEC
            END-IF
            IF      SPA-ERRCD            =   SPACE
                MOVE    WRK-PAGENO           TO  SPA-GMN-PAGENO
@@ -1923,11 +1875,12 @@
                MOVE    "1002"                  TO  SPA-ERRCD
                DISPLAY "V02 HKNNUM DEL ERR:"  MCP-RC
                        ",KEY:" HKN-KEY
-               GO  TO  4031-DEL-EXT
            END-IF
       *
-           MOVE   "JOIN"               TO  MCP-PUTTYPE
-           PERFORM 210-BACK
+           IF      SPA-ERRCD           =   SPACE
+               MOVE   "JOIN"               TO  MCP-PUTTYPE
+               PERFORM 210-BACK
+           END-IF
            .
        4031-DEL-EXT.
            EXIT.
@@ -1940,11 +1893,10 @@
       *    入力チェック処理
            MOVE    2                   TO  FLG-KOUSIN
            PERFORM 410-INPUT-CHK-SEC
-           IF      SPA-ERRCD       NOT =   SPACE
-               GO      TO      490-TOUROKU-EXT
-           END-IF
       *
-           PERFORM 4900-KANRENCHK-SEC
+           IF      SPA-ERRCD        =   SPACE
+               PERFORM 4900-KANRENCHK-SEC
+           END-IF
            IF      SPA-ERRCD        =   SPACE
                MOVE    "1001"           TO  SPA-VIDCD
            END-IF
@@ -2066,7 +2018,6 @@
                    MOVE    "1001"                  TO  SPA-ERRCD
                    DISPLAY "V02 HKNNUM UPD ERR:"  MCP-RC
                            ",KEY:" HKN-KEY
-                   GO  TO  490-KOUSHIN-EXT
                END-IF
            ELSE
       *        追加
@@ -2084,12 +2035,13 @@
                    MOVE    "1001"                  TO  SPA-ERRCD
                    DISPLAY "V02 HKNNUM INS ERR:"  MCP-RC
                            ",KEY:" HKN-KEY
-                   GO  TO  490-KOUSHIN-EXT
                END-IF
            END-IF
       *
-           MOVE   "JOIN"               TO  MCP-PUTTYPE
-           PERFORM 210-BACK 
+           IF      SPA-ERRCD           =   SPACE
+               MOVE   "JOIN"               TO  MCP-PUTTYPE
+               PERFORM 210-BACK 
+           END-IF
            .
        490-KOUSHIN-EXT.
            EXIT.
@@ -2113,7 +2065,7 @@
       *
            IF      SPA-ERRCD            =   SPACE
                MOVE    WRK-GMN-CUR          TO SPA-GMN-CUR
-           END-IF         
+           END-IF
            .
        4900-KANRENCHK-EXT.
            EXIT.
@@ -2148,6 +2100,9 @@
       *    画面編集処理
       *****************************************************************
        500-GMNHEN-SEC              SECTION.
+      *
+           MOVE    SPACE                TO  V02
+           INITIALIZE                  V02
       *
            MOVE    SPA-GMN-STYUKYMD     TO  V02-STYUKYMD
            MOVE    SPA-GMN-EDYUKYMD     TO  V02-EDYUKYMD
