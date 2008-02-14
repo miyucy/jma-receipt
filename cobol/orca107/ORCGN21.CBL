@@ -51,7 +51,7 @@
       * 03.03.03     NACL-森脇     06/10/23  画像パス名省略処理
       * 03.04.01     NACL-森脇     06/11/13  半角記号文字数チェック
       * 04.01.01     NACL-森脇     07/12/26  薬剤情報提供書文字数変更
-      *                                      形状６行以上の時確認表示
+      *                                      形状８行以上の時確認表示
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1074,7 +1074,7 @@ grpsys         CALL    "ORCDBMAIN"         USING
            END-IF
       *
            MOVE    1               TO  IDX-GYO
-           MOVE    6               TO  GYO-MAX
+           MOVE    8               TO  GYO-MAX
            MOVE    20              TO  KOU-MAX
       *
       *    形状色チェック
@@ -2089,7 +2089,7 @@ grpsys     CALL    "ORCDBMAIN"         USING
                    MOVE    "編集中ですが中止しますか？"
                                            TO  WRK-N21IDMSG
                WHEN    "1004"
-                   MOVE    "色、形、記号が全部で６行を超えています"
+                   MOVE    "色、形、記号が全部で８行を超えています"
                                            TO  WRK-N21IDMSG
            END-EVALUATE
       *
