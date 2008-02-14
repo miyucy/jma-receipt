@@ -1240,6 +1240,9 @@
                WHEN    "0010"
                    MOVE    "プログラム名を入力して下さい。"
                                                TO  SPA-ERRMSG
+               WHEN    "0006"
+                   MOVE    "プログラム名を選択して下さい。"
+                                               TO  SPA-ERRMSG
                WHEN    "0011"
                    MOVE    "区分を入力して下さい。"
                                                TO  SPA-ERRMSG
