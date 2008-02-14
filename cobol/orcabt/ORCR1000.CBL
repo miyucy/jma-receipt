@@ -198,8 +198,6 @@
            COPY    "CPSYSKANRI.INC".
       *    医療機関情報
            COPY  "CPSK1001.INC".
-      *    医療機関情報
-           COPY  "CPSK1005.INC".
       *
       *    患者番号構成管理情報
            COPY    "CPSK1009.INC".
@@ -660,32 +658,13 @@ grpsys             MOVE    SPA-HOSPNUM         TO  COMB-HOSPNUM
                    END-IF    
                END-IF    
            END-IF
-      *     
-      *    レセプト診療科（旧総合病院のとき）
-           IF      SYS-1001-HOSPSBT1   =   1
-               INITIALIZE                  SYS-1005-REC
-               MOVE    "1005"              TO  SYS-1005-KANRICD
-               MOVE    ACCT-SRYKA          TO  SYS-1005-KBNCD
-               MOVE    WRK-STYMD           TO  SYS-1005-STYUKYMD
-                                               SYS-1005-EDYUKYMD 
-               MOVE    SPA-HOSPNUM         TO  SYS-1005-HOSPNUM
-               MOVE    SYS-1005-REC        TO  MCPDATA-REC
-               PERFORM 910-SYSKANRI-INV-SEC
-               MOVE    MCPDATA-REC         TO  SYS-1005-REC
-           ELSE
-               INITIALIZE                  SYS-1005-REC
-           END-IF
       *
            INITIALIZE                      WRK-RECE100-REC
            MOVE    SPA-HOSPNUM         TO  WRK-RECE100-HOSPNUM
            MOVE    WRK-STYMD (1:6)     TO  WRK-RECE100-SRYYM
            MOVE    ACCT-NYUGAIKBN      TO  WRK-RECE100-NYUGAIKBN
            MOVE    COMB-PTID           TO  WRK-RECE100-PTID
-           IF      SYS-1001-HOSPSBT1   =   1
-               MOVE    SYS-1005-RECESRYKA  TO WRK-RECE100-RECEKA
-           ELSE
-               MOVE    SPACE               TO WRK-RECE100-RECEKA
-           END-IF
+           MOVE    SPACE               TO WRK-RECE100-RECEKA
            MOVE    COMB-HKNID          TO  WRK-RECE100-HKNID
            MOVE    COMB-TEKSTYMD       TO  WRK-RECE100-TEKSTYMD
       *
