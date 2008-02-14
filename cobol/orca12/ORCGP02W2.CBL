@@ -82,6 +82,7 @@
       *  04.00.03    NACL-小豆沢  07/12/21  一般療養、特別療養（旧日雇保険）
       *                                     の場合は結核入院の単独を作成可能
       *                                     に変更
+      *  04.00.04    NACL-門脇    08/02/14  自立支援＋生保の組合せを作成しない
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -4505,9 +4506,10 @@ grpsys            CALL    "ORCDBMAIN"         USING   MCPAREA
                                                          OR "016"))
                OR  ( WRK-KCOMB-KOH1HKNNUM (IDX2) = "021" OR "015"
                                                          OR "016" )
-                     MOVE    "3"            TO  WRK-FTN-FLG
-      ****           自立支援＋生保の組合せを作成しない場合
-      ****           MOVE    "2"            TO  WRK-FTN-FLG
+      ****           MOVE    "3"            TO  WRK-FTN-FLG
+      *
+      *              自立支援＋生保の組合せを作成しない
+                     MOVE    "2"            TO  WRK-FTN-FLG
                END-IF
              END-IF
            END-IF
