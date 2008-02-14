@@ -1419,22 +1419,6 @@
 
     <widget>
       <class>GtkLabel</class>
-      <name>label452</name>
-      <x>648</x>
-      <y>464</y>
-      <width>56</width>
-      <height>24</height>
-      <label>注意事項</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
       <name>label457</name>
       <x>160</x>
       <y>464</y>
@@ -1483,22 +1467,6 @@
 
     <widget>
       <class>GtkLabel</class>
-      <name>label453</name>
-      <x>438</x>
-      <y>488</y>
-      <width>32</width>
-      <height>24</height>
-      <label>　色</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
       <name>label454</name>
       <x>438</x>
       <y>548</y>
@@ -1530,11 +1498,43 @@
     </widget>
 
     <widget>
+      <class>GtkLabel</class>
+      <name>label453</name>
+      <x>438</x>
+      <y>488</y>
+      <width>32</width>
+      <height>24</height>
+      <label>　色</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label452</name>
+      <x>664</x>
+      <y>464</y>
+      <width>56</width>
+      <height>24</height>
+      <label>注意事項</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
       <class>GtkPandaText</class>
       <name>NAME</name>
       <x>160</x>
       <y>488</y>
-      <width>256</width>
+      <width>240</width>
       <height>56</height>
       <can_focus>True</can_focus>
       <signal>
@@ -1550,9 +1550,9 @@
 	<last_modification_time>Wed, 24 Jul 2002 02:27:49 GMT</last_modification_time>
       </signal>
       <editable>True</editable>
-      <text>あいうえおかきくけこさしすせそたち
-あいうえおかきくけこさしすせそたち
-あいうえおかきくけこさしすせそたち</text>
+      <text>あいうえおかきくけこさしすせそた
+あいうえおかきくけこさしすせそた
+あいうえおかきくけこさしすせそた</text>
       <xim_enabled>True</xim_enabled>
     </widget>
 
@@ -1561,7 +1561,7 @@
       <name>EFFECT</name>
       <x>160</x>
       <y>568</y>
-      <width>272</width>
+      <width>256</width>
       <height>96</height>
       <can_focus>True</can_focus>
       <signal>
@@ -1577,7 +1577,7 @@
 	<last_modification_time>Wed, 24 Jul 2002 02:28:33 GMT</last_modification_time>
       </signal>
       <editable>True</editable>
-      <text>あいうえおかきくけこさしすせそたちつ
+      <text>あいうえおかきくけこさしすせそたち
 あいうえおかきくけこさしすせそ
 あいうえおかきくけこさしすせそ
 あいうえおかきくけこさしすせそ
@@ -1680,9 +1680,9 @@
     <widget>
       <class>GtkPandaText</class>
       <name>CAUTION</name>
-      <x>648</x>
+      <x>664</x>
       <y>488</y>
-      <width>344</width>
+      <width>328</width>
       <height>176</height>
       <can_focus>True</can_focus>
       <signal>
@@ -1698,7 +1698,7 @@
 	<last_modification_time>Wed, 24 Jul 2002 02:30:54 GMT</last_modification_time>
       </signal>
       <editable>True</editable>
-      <text>あいうえおかきくけこさしすせそたちつてとなにぬ
+      <text>あいうえおかきくけこさしすせそたちつてとなに
 あいうえおかきくけこさしすせそたちつてと
 あいうえおかきくけこさしすせそたちつてと
 あいうえおかきくけこさしすせそたちつてと
