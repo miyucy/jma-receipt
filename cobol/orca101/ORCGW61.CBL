@@ -40,6 +40,7 @@
       *  03.05.00    NACL-多々納  07/05/02  グループ診療対応
       *
       *  04.01.01    NACL-藤原    08/01/10  適用欄コメント対応
+      *  04.01.02    NACL-藤原    08/02/14  保険名称の取得方法の修正
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -633,14 +634,18 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
                MOVE    SYS-2006-HKNNUM     TO  SPA-GMN-THKNNUM   (IDX)
                MOVE    SPACE               TO  HKNNUM-REC
                INITIALIZE                      HKNNUM-REC
-               MOVE    SPA-HOSPNUM          TO  HKN-HOSPNUM
+               MOVE    SPA-HOSPNUM         TO  HKN-HOSPNUM
                MOVE    SYS-2006-HKNNUM     TO  HKN-HKNNUM
                MOVE    "00"                TO  HKN-PAYKBN
                MOVE    HKNNUM-REC          TO  MCPDATA-REC
+               MOVE    SYS-2006-STYUKYMD   TO  SPA-NAI-STYUKYMD
+               MOVE    SYS-2006-EDYUKYMD   TO  SPA-NAI-EDYUKYMD
                PERFORM 900-HKNNUM-READ-SEC
-               MOVE    HKN-SEIDONAME       TO SPA-GMN-TSEIDONAME (IDX)
+               MOVE    HKN-SEIDONAME       TO  SPA-GMN-TSEIDONAME (IDX)
+               INITIALIZE                      SPA-NAI-STYUKYMD
+                                               SPA-NAI-EDYUKYMD
       *
-               MOVE    SYS-2006-HKNJANUM   TO SPA-GMN-THKNJANUM  (IDX)
+               MOVE    SYS-2006-HKNJANUM   TO  SPA-GMN-THKNJANUM  (IDX)
       *
                MOVE    SYS-2006-TEISYUTUSAKI 
                                            TO  WRK-KBN
