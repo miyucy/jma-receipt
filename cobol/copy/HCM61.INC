@@ -9,13 +9,13 @@
               03  HCM61-SRYCD PIC X(11).
               03  HCM61-YKZNAME-G.
                 04  HCM61-YKZNAME
-                        PIC X(34)   OCCURS  3 TIMES.
+                        PIC X(32)   OCCURS  3 TIMES.
               03  HCM61-KONOKOKA-G.
                 04  HCM61-KONOKOKA
-                        PIC X(36)   OCCURS  8 TIMES.
+                        PIC X(34)   OCCURS  8 TIMES.
               03  HCM61-KEIJYO-G.
                 04  HCM61-KEIJYO
                         PIC X(20)   OCCURS  8 TIMES.
               03  HCM61-CYUJKO-G.
                 04  HCM61-CYUJKO
-                        PIC X(46)   OCCURS  8 TIMES.
+                        PIC X(44)   OCCURS  8 TIMES.

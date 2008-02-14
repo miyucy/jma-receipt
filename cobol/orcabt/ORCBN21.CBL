@@ -134,7 +134,7 @@
       *    全角を行毎に編集
        01  WRK-HENSYU-AREA.
            03  WRK-HENSYU-OCC          OCCURS   64.
-               05  WRK-HENSYU          PIC X(46).
+               05  WRK-HENSYU          PIC X(44).
            03  WRK-NAIYOU              PIC X(4000).
            03  GYO-MAX                 PIC 9(04).
            03  KOU-MAX                 PIC 9(04).
@@ -154,13 +154,13 @@
                05  WRK-YKJ-GAZO        PIC X(1024).
                05  WRK-YKJ-SRYCD       PIC X(11).
                05  WRK-YKJ-YKZNAME-G.
-                   07  WRK-YKJ-YKZNAME     PIC X(34)   OCCURS  3.
+                   07  WRK-YKJ-YKZNAME     PIC X(32)   OCCURS  3.
                05  WRK-YKJ-KONOKOKA-G.
-                   07  WRK-YKJ-KONOKOKA    PIC X(36)   OCCURS  64.
+                   07  WRK-YKJ-KONOKOKA    PIC X(34)   OCCURS  64.
                05  WRK-YKJ-KEIJYO-G.
                    07  WRK-YKJ-KEIJYO      PIC X(20)   OCCURS  64.
                05  WRK-YKJ-CYUJKO-G.
-                   07  WRK-YKJ-CYUJKO      PIC X(46)   OCCURS  64.
+                   07  WRK-YKJ-CYUJKO      PIC X(44)   OCCURS  64.
       *
        01  FILE-NAME                   PIC X(512).
       *
@@ -410,7 +410,7 @@
       *    行
            MOVE    61              TO  GYO-MAX
       *    文字数
-           MOVE    36              TO  KOU-MAX
+           MOVE    34              TO  KOU-MAX
            PERFORM 216-HENSYU-SYORI-SEC
       *
            MOVE    ZERO            TO  IDX-GYO1
@@ -437,7 +437,7 @@
       *    行
            MOVE    64              TO  GYO-MAX
       *    文字数
-           MOVE    46              TO  KOU-MAX
+           MOVE    44              TO  KOU-MAX
            PERFORM 216-HENSYU-SYORI-SEC
       *
            PERFORM VARYING IDX-GYO     FROM    1   BY  1
@@ -462,7 +462,7 @@
       *    行
            MOVE    3               TO  GYO-MAX
       *    文字数
-           MOVE    34              TO  KOU-MAX
+           MOVE    32              TO  KOU-MAX
            PERFORM 216-HENSYU-SYORI-SEC
       *
            PERFORM VARYING IDX-GYO     FROM    1   BY  1
@@ -678,17 +678,17 @@
                                    TO  HCM61-YKZNAME-G(CNT-LINE)
            MOVE    WRK-YKJ-KEIJYO-G(1:160)
                                    TO  HCM61-KEIJYO-G(CNT-LINE)
-           MOVE    WRK-YKJ-KONOKOKA-G(1:288)
+           MOVE    WRK-YKJ-KONOKOKA-G(1:272)
                                    TO  HCM61-KONOKOKA-G(CNT-LINE)
-           MOVE    WRK-YKJ-CYUJKO-G(1:368)
+           MOVE    WRK-YKJ-CYUJKO-G(1:352)
                                    TO  HCM61-CYUJKO-G(CNT-LINE)
       *
            MOVE    ZERO            TO  FLG-KEIJYO
            MOVE    ZERO            TO  FLG-KONO
            MOVE    ZERO            TO  FLG-CYUI
            MOVE    161             TO  IDX-KEIJYO
-           MOVE    289             TO  IDX-KONO
-           MOVE    369             TO  IDX-CYUI
+           MOVE    273             TO  IDX-KONO
+           MOVE    353             TO  IDX-CYUI
       *
       *    文字数がオーバーしていたら次行にセット
            PERFORM 220-CHK-BODY-NEXT-SEC
@@ -714,12 +714,12 @@
                MOVE    1           TO  FLG-KEIJYO
            END-IF
       *    効能効果チェック
-           IF    ( IDX-KONO        >=  2304 )  OR
+           IF    ( IDX-KONO        >=  2176 )  OR
                  ( WRK-YKJ-KONOKOKA-G(IDX-KONO:)   =   SPACE )
                MOVE    1           TO  FLG-KONO
            END-IF
       *    注意事項チェック
-           IF    ( IDX-CYUI        >=  2944 )  OR
+           IF    ( IDX-CYUI        >=  2816 )  OR
                  ( WRK-YKJ-CYUJKO-G(IDX-CYUI:)     =   SPACE )
                MOVE    1           TO  FLG-CYUI
            END-IF
@@ -747,15 +747,15 @@
            END-IF
       *
            IF      FLG-KONO        NOT =   1
-               MOVE    WRK-YKJ-KONOKOKA-G(IDX-KONO:288)
+               MOVE    WRK-YKJ-KONOKOKA-G(IDX-KONO:272)
                                        TO  HCM61-KONOKOKA-G(CNT-LINE)
-               COMPUTE IDX-KONO    =   IDX-KONO  +   288
+               COMPUTE IDX-KONO    =   IDX-KONO  +   272
            END-IF
       *
            IF      FLG-CYUI        NOT =   1
-               MOVE    WRK-YKJ-CYUJKO-G(IDX-CYUI:368)
+               MOVE    WRK-YKJ-CYUJKO-G(IDX-CYUI:352)
                                        TO  HCM61-CYUJKO-G(CNT-LINE)
-               COMPUTE IDX-CYUI    =   IDX-CYUI  +   368
+               COMPUTE IDX-CYUI    =   IDX-CYUI  +   352
            END-IF
       *
            .
