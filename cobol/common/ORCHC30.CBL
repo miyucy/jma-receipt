@@ -1461,11 +1461,12 @@
       *    薬剤形状、用量用法セット
            IF    ( FLG-NAIYO       =   1 )  AND
                  ( FLG-KEIJYO      =   1 )
+               CONTINUE
       *        レイヤーオプションセット
-               ADD     1               TO  IDX-LAYER
-               MOVE    " -L DC"        TO  WRK-HENLAYER(IDX-LAYER:6)
-               ADD     6               TO  IDX-LAYER
-               MOVE    CNT-LINE        TO  WRK-HENLAYER(IDX-LAYER:1)
+      *         ADD     1               TO  IDX-LAYER
+      *         MOVE    " -L DC"        TO  WRK-HENLAYER(IDX-LAYER:6)
+      *         ADD     6               TO  IDX-LAYER
+      *         MOVE    CNT-LINE        TO  WRK-HENLAYER(IDX-LAYER:1)
            ELSE
       *        薬剤形状をセットする
                IF      FLG-KEIJYO      NOT =   1
@@ -1483,11 +1484,12 @@
       *
       *    効能効果セット
            IF      FLG-KONO        =   1
+               CONTINUE
       *        レイヤーオプションをセットする
-               ADD     1               TO  IDX-LAYER
-               MOVE    " -L DL"        TO  WRK-HENLAYER(IDX-LAYER:6)
-               ADD     6               TO  IDX-LAYER
-               MOVE    CNT-LINE        TO  WRK-HENLAYER(IDX-LAYER:1)
+      *         ADD     1               TO  IDX-LAYER
+      *         MOVE    " -L DL"        TO  WRK-HENLAYER(IDX-LAYER:6)
+      *         ADD     6               TO  IDX-LAYER
+      *         MOVE    CNT-LINE        TO  WRK-HENLAYER(IDX-LAYER:1)
            ELSE
       *        効能効果をセットする
                MOVE    WRK-YKJ-KONOKOKA-G(IDX-KONO:272)
@@ -1497,11 +1499,12 @@
       *
       *    注意事項セット
            IF      FLG-CYUI        =   1
+               CONTINUE
       *        レイヤーオプションをセットする
-               ADD     1               TO  IDX-LAYER
-               MOVE    " -L DR"        TO  WRK-HENLAYER(IDX-LAYER:6)
-               ADD     6               TO  IDX-LAYER
-               MOVE    CNT-LINE        TO  WRK-HENLAYER(IDX-LAYER:1)
+      *         ADD     1               TO  IDX-LAYER
+      *         MOVE    " -L DR"        TO  WRK-HENLAYER(IDX-LAYER:6)
+      *         ADD     6               TO  IDX-LAYER
+      *         MOVE    CNT-LINE        TO  WRK-HENLAYER(IDX-LAYER:1)
            ELSE
       *        注意事項をセットする
                MOVE    WRK-YKJ-CYUJKO-G(IDX-CYUI:352)
