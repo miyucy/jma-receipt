@@ -2494,21 +2494,25 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *                MOVE    1               TO  FLG-DELETE
       *            END-IF
       *********ELSE
-                   MOVE    1               TO  FLG-DELETE
+      *            MOVE    1               TO  FLG-DELETE
       *********END-IF
       *
+               ADD     1               TO  WRK-CNT
+      *        回数削除
+               PERFORM 20011-NYUINACCT-DELDAY-SEC
+      *        回数がゼロか、外泊・食事で月をすべて削除する時
+               IF      NACCT-ZAIKAISU      =   ZERO
+                   IF     (NACCT-ZAISKBKBN     =   "2"
+                                               OR  "4"
+                                               OR  "3" )
+                       IF     (FLG-DELETE-OK       =   1 )
+                           MOVE    1               TO  FLG-DELETE
+                       END-IF
+                   ELSE
+                       MOVE    1               TO  FLG-DELETE
+                   END-IF
+               END-IF
                IF      FLG-DELETE          =   1
-                   ADD     1               TO  WRK-CNT
-      *            回数削除
-                   PERFORM 20011-NYUINACCT-DELDAY-SEC
-      *            回数がゼロか、外泊・食事で月をすべて削除する時
-                   IF    ((NACCT-ZAISKBKBN NOT =   "2"
-                                               AND "4"  )   AND
-                          (NACCT-ZAIKAISU      =   ZERO ))   OR
-                         ((NACCT-ZAISKBKBN     =   "2" 
-                                               OR  "4"  )  AND
-                          (NACCT-ZAIKAISU      =   ZERO )  AND
-                          (FLG-DELETE-OK       =   1    ))
       *                診療会計削除
                        PERFORM 20012-NYUINACCT-DELETE-SEC
       *                最初の剤が削除の時、外泊も削除とする
@@ -2532,7 +2536,7 @@ grpsys                 CALL    "ORCDBMAIN"         USING   MCPAREA
                                    NACCT-KEY 
                                   ",MCP-RC:" MCP-RC ":" 
                        END-IF
-                   END-IF
+      ************ END-IF
                END-IF
       *
                MOVE    "tbl_nyuinacct"     TO  MCP-TABLE
@@ -2575,7 +2579,8 @@ grpsys                 CALL    "ORCDBMAIN"         USING   MCPAREA
       *        回数がゼロか、外泊で月をすべて削除する時
                ADD     1                   TO  WRK-CNT
                IF     (NACCT-ZAISKBKBN     =   "2"
-                                           OR  "4"  )
+                                           OR  "4"
+                                           OR  "3"  )
                AND    (NACCT-ZAIKAISU      =   ZERO )
                    MOVE    NYUINACCT-REC       TO  HZN-NYUINACCT-REC
                ELSE
