@@ -63,7 +63,6 @@ path	key2	{
 			AND   GRPNUM    =   :GRPNUM
 			AND   YUKOSTYMD <=   :YUKOSTYMD
 			AND   YUKOEDYMD >=   :YUKOEDYMD
-                        AND   CHKERR    <>   8
 			ORDER   BY      DATAKBN,RENNUM
 		;
 	};
