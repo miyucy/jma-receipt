@@ -1085,23 +1085,38 @@
            PERFORM VARYING  IDX-KBN    FROM    1   BY  1
                    UNTIL  ( IDX-KBN    >   5 )
                    OR     ( FLG-KBN    =   1 )
-               MOVE    WRK-HENKBN(IDX-KBN) TO  WRK-SURYO
-      *        ¿ôÎÌ£ÚÊÔ½¸
-               PERFORM 250-ZHEN-SURYO-SET-SEC
-               IF      WRK-HENSURYO(4:)    NOT =   SPACE
-                   MOVE    1               TO  FLG-KBN
-               ELSE
-                   IF    ( PARA-TIMESURYO      =   0 )   AND
-                         ( WRK-HENSURYO(2:1)   =   "." )
-                       COMPUTE WRK-ZENSURYO    =   WRK-ZENSURYO
-                                               +   1
-                       MOVE    "1"         TO  WRK-YKJ-KBN(IDX-KBN)
-                       MOVE    "Êñ"        TO  WRK-TANINAME
+               IF      WRK-HENKBN(IDX-KBN)     NOT =   0
+                   MOVE    WRK-HENKBN(IDX-KBN) TO  WRK-SURYO
+      *            ¿ôÎÌ£ÚÊÔ½¸
+                   PERFORM 250-ZHEN-SURYO-SET-SEC
+                   IF      WRK-HENSURYO(4:)    NOT =   SPACE
+                       MOVE    1               TO  FLG-KBN
                    ELSE
-                       COMPUTE WRK-ZENSURYO    =   WRK-ZENSURYO
-                                               +   WRK-SURYO
-                       MOVE    WRK-HENSURYO(1:3)
-                                           TO  WRK-YKJ-KBN(IDX-KBN)
+                       IF    ( PARA-TIMESURYO      =   0 )   AND
+                             ( WRK-HENSURYO(2:1)   =   "." )
+                           COMPUTE WRK-ZENSURYO    =   WRK-ZENSURYO
+                                                   +   1
+                           MOVE    "1"         TO  WRK-YKJ-KBN(IDX-KBN)
+                           MOVE    "Êñ"        TO  WRK-TANINAME
+                       ELSE
+                           IF      WRK-HENSURYO(2:)    NOT =   SPACE
+                               COMPUTE WRK-ZENSURYO    =   WRK-ZENSURYO
+                                                       +   WRK-SURYO
+                               MOVE    WRK-HENSURYO(1:3)
+                                               TO  WRK-YKJ-KBN(IDX-KBN)
+                           ELSE
+      *                        Á´³ÑÊÑ´¹
+                               MOVE    SPACE       TO  ORCSKANACHKAREA
+                               INITIALIZE              ORCSKANACHKAREA
+                               MOVE    "2"         TO  KANACHK-SYORI
+                               MOVE    WRK-HENSURYO(1:1)
+                                                   TO  KANACHK-MAE-INPUT
+                               CALL    "ORCSKANACHK"   USING
+                                                       ORCSKANACHKAREA
+                               MOVE    KANACHK-OUT-INPUT(1:KANACHK-MAX)
+                                               TO  WRK-YKJ-KBN(IDX-KBN)
+                           END-IF
+                       END-IF
                    END-IF
                END-IF
            END-PERFORM
