@@ -29,7 +29,7 @@
                         PIC X(3)    OCCURS  5 TIMES.
               03  HCM300-NAIYO-G.
                 04  HCM300-NAIYO
-                        PIC X(20)   OCCURS  6 TIMES.
+                        PIC X(20)   OCCURS  8 TIMES.
               03  HCM300-CYUJKO-G.
                 04  HCM300-CYUJKO
                         PIC X(44)   OCCURS  8 TIMES.

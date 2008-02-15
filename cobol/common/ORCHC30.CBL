@@ -217,7 +217,7 @@
                05  WRK-YKJ-KBN-G.
                    07  WRK-YKJ-KBN         PIC X(03)   OCCURS  5.
                05  WRK-YKJ-NAIYO-G.
-                   07  WRK-YKJ-NAIYO       PIC X(20)   OCCURS  48.
+                   07  WRK-YKJ-NAIYO       PIC X(20)   OCCURS  64.
                05  WRK-YKJ-CYUJKO-G.
                    07  WRK-YKJ-CYUJKO      PIC X(44)   OCCURS  64.
       *
@@ -752,8 +752,8 @@
        240-NAIYO-SET-SEC           SECTION.
       *
            INITIALIZE                  WRK-HENSYU-AREA
-           MOVE    1               TO  IDX-GYO
-           MOVE    48              TO  GYO-MAX
+           MOVE    3               TO  IDX-GYO
+           MOVE    64              TO  GYO-MAX
            MOVE    20              TO  KOU-MAX
            MOVE    SPACE           TO  WRK-ZENSUMAE
            MOVE    SPACE           TO  WRK-ZENSUATO
@@ -1269,15 +1269,15 @@
            PERFORM UNTIL   CNT-LINE    >=  8
                ADD     1               TO  CNT-LINE
                ADD     1               TO  IDX-LAYER
-               MOVE    " -L DR"        TO  WRK-HENLAYER(IDX-LAYER:6)
+               MOVE    " -L ST"        TO  WRK-HENLAYER(IDX-LAYER:6)
                ADD     6               TO  IDX-LAYER
                MOVE    CNT-LINE        TO  WRK-HENLAYER(IDX-LAYER:1)
                ADD     1               TO  IDX-LAYER
-               MOVE    " -L DC"        TO  WRK-HENLAYER(IDX-LAYER:6)
+               MOVE    " -L WK"        TO  WRK-HENLAYER(IDX-LAYER:6)
                ADD     6               TO  IDX-LAYER
                MOVE    CNT-LINE        TO  WRK-HENLAYER(IDX-LAYER:1)
                ADD     1               TO  IDX-LAYER
-               MOVE    " -L DL"        TO  WRK-HENLAYER(IDX-LAYER:6)
+               MOVE    " -L ED"        TO  WRK-HENLAYER(IDX-LAYER:6)
                ADD     6               TO  IDX-LAYER
                MOVE    CNT-LINE        TO  WRK-HENLAYER(IDX-LAYER:1)
            END-PERFORM
@@ -1383,7 +1383,7 @@
            MOVE    WRK-YKJ-YKZNAME-G
                                    TO  HCM300-YKZNAME-G(CNT-LINE)
            MOVE    WRK-YKJ-KBN-G   TO  HCM300-KBN-G(CNT-LINE)
-           MOVE    WRK-YKJ-NAIYO-G(1:120)
+           MOVE    WRK-YKJ-NAIYO-G(1:160)
                                    TO  HCM300-NAIYO-G(CNT-LINE)
            MOVE    WRK-YKJ-KEIJYO-G(1:160)
                                    TO  HCM300-KEIJYO-G(CNT-LINE)
@@ -1396,7 +1396,7 @@
            MOVE    ZERO            TO  FLG-KEIJYO
            MOVE    ZERO            TO  FLG-KONO
            MOVE    ZERO            TO  FLG-CYUI
-           MOVE    121             TO  IDX-NAIYO
+           MOVE    161             TO  IDX-NAIYO
            MOVE    161             TO  IDX-KEIJYO
            MOVE    273             TO  IDX-KONO
            MOVE    353             TO  IDX-CYUI
@@ -1426,7 +1426,7 @@
                MOVE    1           TO  FLG-KEIJYO
            END-IF
       *    用量用法チェック
-           IF    ( IDX-NAIYO       >=  960 )   OR
+           IF    ( IDX-NAIYO       >=  1280 )   OR
                  ( WRK-YKJ-NAIYO-G(IDX-NAIYO:)     =   SPACE )
                MOVE    1           TO  FLG-NAIYO
            END-IF
@@ -1454,19 +1454,26 @@
            IF      CNT-LINE    =   8
                PERFORM 400-PRT-WRITE-SEC
                PERFORM 410-HEAD-SET-SEC
+           ELSE
+      *        レイヤーオプションセット
+               ADD     1               TO  IDX-LAYER
+               MOVE    " -L ED"        TO  WRK-HENLAYER(IDX-LAYER:6)
+               ADD     6               TO  IDX-LAYER
+               MOVE    CNT-LINE        TO  WRK-HENLAYER(IDX-LAYER:1)
            END-IF
       *
            COMPUTE CNT-LINE   =    CNT-LINE    +   1
+      *
+      *    レイヤーオプションセット
+           ADD     1               TO  IDX-LAYER
+           MOVE    " -L ST"        TO  WRK-HENLAYER(IDX-LAYER:6)
+           ADD     6               TO  IDX-LAYER
+           MOVE    CNT-LINE        TO  WRK-HENLAYER(IDX-LAYER:1)
       *
       *    薬剤形状、用量用法セット
            IF    ( FLG-NAIYO       =   1 )  AND
                  ( FLG-KEIJYO      =   1 )
                CONTINUE
-      *        レイヤーオプションセット
-      *         ADD     1               TO  IDX-LAYER
-      *         MOVE    " -L DC"        TO  WRK-HENLAYER(IDX-LAYER:6)
-      *         ADD     6               TO  IDX-LAYER
-      *         MOVE    CNT-LINE        TO  WRK-HENLAYER(IDX-LAYER:1)
            ELSE
       *        薬剤形状をセットする
                IF      FLG-KEIJYO      NOT =   1
@@ -1476,20 +1483,15 @@
                END-IF
       *        用量用法をセットする
                IF      FLG-NAIYO       NOT =   1
-                   MOVE    WRK-YKJ-NAIYO-G(IDX-NAIYO:120)
+                   MOVE    WRK-YKJ-NAIYO-G(IDX-NAIYO:160)
                                        TO  HCM300-NAIYO-G(CNT-LINE)
-                   COMPUTE IDX-NAIYO   =   IDX-NAIYO   +   120
+                   COMPUTE IDX-NAIYO   =   IDX-NAIYO   +   160
                END-IF
            END-IF
       *
       *    効能効果セット
            IF      FLG-KONO        =   1
                CONTINUE
-      *        レイヤーオプションをセットする
-      *         ADD     1               TO  IDX-LAYER
-      *         MOVE    " -L DL"        TO  WRK-HENLAYER(IDX-LAYER:6)
-      *         ADD     6               TO  IDX-LAYER
-      *         MOVE    CNT-LINE        TO  WRK-HENLAYER(IDX-LAYER:1)
            ELSE
       *        効能効果をセットする
                MOVE    WRK-YKJ-KONOKOKA-G(IDX-KONO:272)
@@ -1500,11 +1502,6 @@
       *    注意事項セット
            IF      FLG-CYUI        =   1
                CONTINUE
-      *        レイヤーオプションをセットする
-      *         ADD     1               TO  IDX-LAYER
-      *         MOVE    " -L DR"        TO  WRK-HENLAYER(IDX-LAYER:6)
-      *         ADD     6               TO  IDX-LAYER
-      *         MOVE    CNT-LINE        TO  WRK-HENLAYER(IDX-LAYER:1)
            ELSE
       *        注意事項をセットする
                MOVE    WRK-YKJ-CYUJKO-G(IDX-CYUI:352)
