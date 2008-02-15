@@ -2501,10 +2501,12 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                    ADD     1               TO  WRK-CNT
       *            回数削除
                    PERFORM 20011-NYUINACCT-DELDAY-SEC
-      *            回数がゼロか、外泊で月をすべて削除する時
-                   IF    ((NACCT-ZAISKBKBN NOT =   "2"  )  AND
+      *            回数がゼロか、外泊・食事で月をすべて削除する時
+                   IF    ((NACCT-ZAISKBKBN NOT =   "2"
+                                               AND "4"  )   AND
                           (NACCT-ZAIKAISU      =   ZERO ))   OR
-                         ((NACCT-ZAISKBKBN     =   "2"  )  AND
+                         ((NACCT-ZAISKBKBN     =   "2" 
+                                               OR  "4"  )  AND
                           (NACCT-ZAIKAISU      =   ZERO )  AND
                           (FLG-DELETE-OK       =   1    ))
       *                診療会計削除
@@ -2570,9 +2572,11 @@ grpsys                 CALL    "ORCDBMAIN"         USING   MCPAREA
            PERFORM
                UNTIL  (FLG-NYUINACCT       =   1 )  OR
                       (FLG-DELETE          =   1 )
-               ADD     1                   TO  WRK-CNT
       *        回数がゼロか、外泊で月をすべて削除する時
-               IF      NACCT-ZAISKBKBN     =   "2"
+               ADD     1                   TO  WRK-CNT
+               IF     (NACCT-ZAISKBKBN     =   "2"
+                                           OR  "4"  )
+               AND    (NACCT-ZAIKAISU      =   ZERO )
                    MOVE    NYUINACCT-REC       TO  HZN-NYUINACCT-REC
                ELSE
                    MOVE    1               TO  FLG-DELETE
@@ -2586,15 +2590,54 @@ grpsys                 CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    "key15"             TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
       *
-           IF      (FLG-DELETE          =   ZERO )  AND
-                   (WRK-CNT             =   1    )
-               MOVE    HZN-NYUINACCT-REC    TO  NYUINACCT-REC
+           IF      (FLG-DELETE          =   ZERO )
+           AND     (WRK-CNT             >   ZERO )
       *        診療会計削除
-               PERFORM 20012-NYUINACCT-DELETE-SEC
+               PERFORM 50019-NYUINACCT-ALLDELETE-SEC
            END-IF
       *
            .
        5001-NYUINACCT-DEL-EXT.
+           EXIT.
+      *****************************************************************
+      *    診療会計当月分削除処理
+      *****************************************************************
+       50019-NYUINACCT-ALLDELETE-SEC            SECTION.
+      *
+      *    診療会計マスターを特定する
+           INITIALIZE                      NYUINACCT-REC
+           MOVE    SPA-HOSPNUM         TO  NACCT-HOSPNUM
+           MOVE    SPA-NYUGAIKBN       TO  NACCT-NYUGAIKBN
+           MOVE    SPA-PTID            TO  NACCT-PTID
+           MOVE    SPA-SRYKA           TO  NACCT-SRYKA
+           MOVE    WRK-STYMD(1:6)      TO  NACCT-SRYYM
+      *
+           MOVE    NYUINACCT-REC       TO  MCPDATA-REC
+           MOVE    "tbl_nyuinacct"     TO  MCP-TABLE
+           MOVE    "key15"             TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_nyuinacct"     TO  MCP-TABLE
+               MOVE    "key15"             TO  MCP-PATHNAME
+               PERFORM 930-NYUINACCT-READ-SEC
+           ELSE
+               MOVE    1                   TO  FLG-NYUINACCT
+           END-IF
+           PERFORM
+               UNTIL  (FLG-NYUINACCT       =   1 )
+      *        診療会計削除
+               PERFORM 20012-NYUINACCT-DELETE-SEC
+      *
+               MOVE    "tbl_nyuinacct"     TO  MCP-TABLE
+               MOVE    "key15"             TO  MCP-PATHNAME
+               PERFORM 930-NYUINACCT-READ-SEC
+           END-PERFORM
+           MOVE    "tbl_nyuinacct"     TO  MCP-TABLE
+           MOVE    "key15"             TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+      *
+           .
+       50019-NYUINACCT-ALLDELETE-EXT.
            EXIT.
       *****************************************************************
       *    退院取消処理
