@@ -187,6 +187,26 @@
       *
            03  WRK-ERRCD           PIC X(04). 
       *
+           03  WRK-SURYO-X.
+               05  WRK-SURYO-Z1    PIC ZZZZZ.
+               05  WRK-SURYO-Z2    PIC X(01).
+               05  WRK-SURYO-Z3    PIC ZZZ.
+           03  WRK-TENSU-X.
+               05  WRK-TENSU-Z     PIC ZZZZZZZZ.
+           03  WRK-TENSUS-X.
+               05  WRK-TENSUS-Z    PIC ZZZZ9.99.
+           03  WRK-KAISU-X.
+               05  WRK-KAISU-Z     PIC ZZZZ.
+           03  WRK-BUNGSU-X.
+               05  WRK-BUNGSU-Z    PIC ZZZZZZZZ.
+           03  WRK-KEICOM-X.
+               05  WRK-KEICOM-Z    PIC ZZZZZZZ9.
+           03  WRK-KEICOMS-X.
+               05  WRK-KEICOMS-Z   PIC ZZZZ9V99.
+           03  WRK-GOKEI-X.
+               05  WRK-GOKEI-Z     PIC ZZZZZZZZ.
+           03  WRK-NOZ             PIC ZZ9.
+      *
            03  WRK-SYOKEIS         PIC 9(08)V99.
            03  WRK-SYOKEIS2        PIC 9(08)V99.
            03  WRK-SYOKEI          PIC 9(08).
@@ -211,6 +231,10 @@
            03  WRK-TENSU1          PIC 9(08).
       *
            03  WRK-SRYCD           PIC X(09).
+           03  WRK-SURYO           PIC 9(05)V9(03).
+           03  WRK-SURYO-R         REDEFINES   WRK-SURYO.
+               05  WRK-SURYO-S1    PIC 9(05).
+               05  WRK-SURYO-S2    PIC 9(03).
       *
            03  WRK-KEIYMD.
                05  WRK-KEI-YY          PIC 9(04).
@@ -643,8 +667,8 @@
                   AND (WRK-ERRCD               =   SPACE )
       *?????          (WRK-COM-SRYKBN (IDX-Z)  =   "14" )
       *??????     AND  WRK-COM-SRYSYUKBN(IDX-Z)  = "140" )
-      *?????      IF      (WRK-COM-KAIFLG (IDX-Z)  =   1  )  AND
-                  IF      (WRK-COM-KAISU(IDX-Z)    >   1  )
+                  IF      (WRK-COM-KAIFLG (IDX-Z)  =   1  )  AND
+                          (WRK-COM-KAISU(IDX-Z)    >   1  )
                        PERFORM 10012-KAISU-CHK-SEC
                    END-IF
                END-IF
@@ -5245,9 +5269,9 @@
                IF      WRK-COM-INPUTCD (IDY)   NOT =   "099110001"  AND
                                                        "099120001"
                    MOVE    SPACE               TO  WRK-GMN-INPUTCD(IDY)
-               END-IF
-               IF      WRK-COM-ZAIEND (IDY)    =   "1"
-                   MOVE    SPA-MAX-LINE        TO  IDY
+                   IF      WRK-COM-ZAIEND (IDY)    =   "1"
+                       MOVE    SPA-MAX-LINE        TO  IDY
+                   END-IF
                END-IF
            END-PERFORM
            .
