@@ -652,6 +652,7 @@
       *
       *    プログラムオプションで切り替え
            EVALUATE    PARA-STYLE
+               WHEN    SPACE
                WHEN    0
                WHEN    2
                    MOVE    8               TO  GYO-MAX
@@ -706,6 +707,7 @@
       *
       *    プログラムオプションで切り替え
            EVALUATE    PARA-STYLE
+               WHEN    SPACE
                WHEN    0
                WHEN    1
                    GO  TO  231-KEIJYO-SET2-EXT
@@ -1092,7 +1094,7 @@
                    IF      WRK-HENSURYO(4:)    NOT =   SPACE
                        MOVE    1               TO  FLG-KBN
                    ELSE
-                       IF    ( PARA-TIMESURYO      =   0 )   AND
+                       IF    ( PARA-TIMESURYO      NOT =   1 ) AND
                              ( WRK-HENSURYO(2:1)   =   "." )
                            COMPUTE WRK-ZENSURYO    =   WRK-ZENSURYO
                                                    +   1
