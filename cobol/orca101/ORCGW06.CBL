@@ -1226,6 +1226,7 @@
                MOVE    SPA-NAI-TEDYUKYMD (IDX) TO  SPA-MAE-EDYUKYMD
       *        職員情報編集
                PERFORM 2009-SYOKUIN-HENSYU-SEC
+               MOVE    3                   TO  SPA-GMN-CUR
            ELSE
                IF      SPA-GMN-SELNUM      =   ZERO
       *            選択番号が無い時、新規追加とする
@@ -2638,34 +2639,25 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                END-IF
            END-IF
       *    期間重複チェック
-           IF     (SPA-GMN-SELNUM      =   ZERO  )  OR
-                  (SPA-NAI-STYUKYMD    NOT =   SPA-MAE-STYUKYMD)
-               MOVE    1               TO  SPA-GMN-SYORI
+      *    IF     (SPA-GMN-SELNUM      =   ZERO  )  OR
+      *           (SPA-NAI-STYUKYMD    NOT =   SPA-MAE-STYUKYMD)
+      *******  MOVE    1               TO  SPA-GMN-SYORI
                PERFORM VARYING     IDX     FROM    1   BY  1
                        UNTIL      (IDX     >   SPA-GMN-TBL-MAX )
                               OR  (SPA-ERRCD   NOT =   SPACE )
-                   IF      (SPA-NAI-STYUKYMD    >=  SPA-NAI-TSTYUKYMD
-                                                               (IDX))
-                     AND   (SPA-NAI-STYUKYMD    <=  SPA-NAI-TEDYUKYMD
-                                                               (IDX))
-                      MOVE    "0020"           TO  SPA-ERRCD
-                      MOVE    3                TO  SPA-GMN-CUR
-                   END-IF
-                   IF      (SPA-NAI-EDYUKYMD    >=  SPA-NAI-TSTYUKYMD
-                                                               (IDX))
-                     AND  (SPA-NAI-EDYUKYMD    <=  SPA-NAI-TEDYUKYMD
-                                                               (IDX))
-                      MOVE    "0020"           TO  SPA-ERRCD
-                      MOVE    3                TO  SPA-GMN-CUR
-                   END-IF
-                   IF     (SPA-ERRCD       NOT =   SPACE) AND
-                          (SPA-GMN-SELNUM      >   ZERO ) AND
-                          (IDX                 =   SPA-GMN-SELNUM)
-                       MOVE    2               TO  SPA-GMN-SYORI
-                       MOVE    SPACE           TO  SPA-ERRCD
+                   IF      SPA-GMN-SELNUM  NOT =   IDX
+                       IF     (SPA-NAI-TEDYUKYMD (IDX)
+                                           <   SPA-NAI-STYUKYMD )  OR
+                              (SPA-NAI-TSTYUKYMD (IDX)
+                                           >   SPA-NAI-EDYUKYMD )
+                           CONTINUE
+                       ELSE
+                           MOVE    "0020"           TO  SPA-ERRCD
+                           MOVE    3                TO  SPA-GMN-CUR
+                       END-IF
                    END-IF
                END-PERFORM
-           END-IF
+      **** END-IF
       *
            IF      SPA-ERRCD           =   SPACE
       *        システムユーザーチェック
@@ -3186,6 +3178,11 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                                            TO  W06-TSTYUKYMD (IDX)
                MOVE    SPA-GMN-TEDYUKYMD (IDX)
                                            TO  W06-TEDYUKYMD (IDX)
+               IF      SPA-GMN-SELNUM      =   IDX
+                   MOVE    "T"             TO  W06-KIKAN-SELECT(IDX)
+               ELSE
+                   MOVE    "F"             TO  W06-KIKAN-SELECT(IDX)
+               END-IF
            END-PERFORM
            MOVE    SPA-GMN-TBL-MAX         TO  W06-KIKAN-COUNT
            MOVE    SPA-GMN-SELNUM          TO  W06-SELNUM
