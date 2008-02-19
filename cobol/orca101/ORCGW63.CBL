@@ -1202,6 +1202,7 @@
            MOVE    CK4-1102-HKNNUM TO  WRK-CMB-CD
            PERFORM 4200-HKNNUMLST-CHK-SEC
            MOVE    WRK-CMB-ITM     TO  SPA-GMN-HKNNUM-G
+           MOVE    SPA-GMN-HKNNUM  TO  SPA-NAI-HKNNUM-BF
       *
            IF    ( CK4-1102-UPDDUMMY   =   SPACE )
       *
