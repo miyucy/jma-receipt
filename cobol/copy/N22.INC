@@ -46,3 +46,8 @@
                   07  N22-COPYKBNLST   PIC X(14)   OCCURS  3 TIMES.
                 05  N22-GAZO           PIC X(8)    OCCURS  3 TIMES.
                 05  N22-GAZOLABEL      PIC X(14)   OCCURS  3 TIMES.
+                05  N22-EFFECT         PIC X(2000).
+                05  N22-COLOR          PIC X(360).
+                05  N22-SHAPE          PIC X(360).
+                05  N22-MARK           PIC X(360).
+                05  N22-CAUTION        PIC X(4000).

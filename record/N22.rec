@@ -60,5 +60,20 @@ N22	{
 		GAZOLABEL3	{
 			value	varchar(14);
 		};
+		EFFECT	{
+			value	varchar(2000);
+		};
+		COLOR	{
+			value	varchar(360);
+		};
+		SHAPE	{
+			value	varchar(360);
+		};
+		MARK	{
+			value	varchar(360);
+		};
+		CAUTION	{
+			value	varchar(4000);
+		};
 	};
 };

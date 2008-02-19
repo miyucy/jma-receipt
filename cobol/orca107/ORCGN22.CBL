@@ -373,11 +373,11 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    TEMP-YJCD       TO  SPA-N22-TYJCD(IDX)
                MOVE    TEMP-MAKE-COMPANY   TO  SPA-N22-TMAKER(IDX)
                MOVE    TEMP-SALE-COMPANY   TO  SPA-N22-TSELLER(IDX)
-               MOVE    TEMP-EFFECT     TO  SPA-N22-EFFECT(IDX)
-               MOVE    TEMP-COLOR      TO  SPA-N22-COLOR(IDX)
-               MOVE    TEMP-SHAPE      TO  SPA-N22-SHAPE(IDX)
-               MOVE    TEMP-MARK       TO  SPA-N22-MARK(IDX)
-               MOVE    TEMP-CAUTION    TO  SPA-N22-CAUTION(IDX)
+               MOVE    TEMP-EFFECT     TO  SPA-N22-TEFFECT(IDX)
+               MOVE    TEMP-COLOR      TO  SPA-N22-TCOLOR(IDX)
+               MOVE    TEMP-SHAPE      TO  SPA-N22-TSHAPE(IDX)
+               MOVE    TEMP-MARK       TO  SPA-N22-TMARK(IDX)
+               MOVE    TEMP-CAUTION    TO  SPA-N22-TCAUTION(IDX)
                MOVE    TEMP-PHOTO1-FILENAME    TO  SPA-N22-PHOTO1(IDX)
                MOVE    TEMP-PHOTO2-FILENAME    TO  SPA-N22-PHOTO2(IDX)
                MOVE    TEMP-PHOTO3-FILENAME    TO  SPA-N22-PHOTO3(IDX)
@@ -500,6 +500,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    1           TO  SPA-N22-CUR
            INITIALIZE              SPA-N22-GAZOCOMBO
            INITIALIZE              SPA-N22-OBJECTAREA
+           INITIALIZE              SPA-N22-ENTRY
       *
            MOVE    N22-SELNUM  TO  SPA-N22-SELNUM
       *
@@ -730,6 +731,18 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            END-IF
       *
            MOVE    IDX         TO  SPA-N22-GAZOKBN-MAX
+      *
+           INITIALIZE              SPA-N22-ENTRY
+           MOVE    SPA-N22-TEFFECT(SPA-N22-SELNUM)
+                                   TO  SPA-N22-EFFECT
+           MOVE    SPA-N22-TCOLOR(SPA-N22-SELNUM)
+                                   TO  SPA-N22-COLOR
+           MOVE    SPA-N22-TSHAPE(SPA-N22-SELNUM)
+                                   TO  SPA-N22-SHAPE
+           MOVE    SPA-N22-TMARK(SPA-N22-SELNUM)
+                                   TO  SPA-N22-MARK
+           MOVE    SPA-N22-TCAUTION(SPA-N22-SELNUM)
+                                   TO  SPA-N22-CAUTION
            .
       *
        4114-COMBOSET-EXT.
@@ -829,36 +842,36 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            EVALUATE    SPA-N22-COPYKBN
                WHEN    "1"
                    IF      SPA-GMN-EFFECT =  SPACE
-                       MOVE    SPA-N22-EFFECT(SPA-N22-SELNUM)
-                                   TO  SPA-GMN-EFFECT
+                       MOVE    SPA-N22-EFFECT
+                                       TO  SPA-GMN-EFFECT
                    END-IF
                    IF      SPA-GMN-COLOR  = SPACE
-                       MOVE    SPA-N22-COLOR(SPA-N22-SELNUM)
-                                   TO  SPA-GMN-COLOR
+                       MOVE    SPA-N22-COLOR
+                                       TO  SPA-GMN-COLOR
                    END-IF
                    IF      SPA-GMN-SHAPE  = SPACE
-                       MOVE    SPA-N22-SHAPE(SPA-N22-SELNUM)
-                                   TO  SPA-GMN-SHAPE
+                       MOVE    SPA-N22-SHAPE
+                                       TO  SPA-GMN-SHAPE
                    END-IF
                    IF      SPA-GMN-MARK   = SPACE
-                       MOVE    SPA-N22-MARK(SPA-N22-SELNUM)
-                                   TO  SPA-GMN-MARK
+                       MOVE    SPA-N22-MARK
+                                       TO  SPA-GMN-MARK
                    END-IF
                    IF      SPA-GMN-CAUTION  = SPACE
-                       MOVE    SPA-N22-CAUTION(SPA-N22-SELNUM)
-                                   TO  SPA-GMN-CAUTION
+                       MOVE    SPA-N22-CAUTION
+                                       TO  SPA-GMN-CAUTION
                    END-IF
                WHEN     "2"
-                   MOVE    SPA-N22-EFFECT(SPA-N22-SELNUM)
-                                   TO  SPA-GMN-EFFECT
-                   MOVE    SPA-N22-COLOR(SPA-N22-SELNUM)
-                                   TO  SPA-GMN-COLOR
-                   MOVE    SPA-N22-SHAPE(SPA-N22-SELNUM)
-                                   TO  SPA-GMN-SHAPE
-                   MOVE    SPA-N22-MARK(SPA-N22-SELNUM)
-                                   TO  SPA-GMN-MARK
-                   MOVE    SPA-N22-CAUTION(SPA-N22-SELNUM)
-                                   TO  SPA-GMN-CAUTION
+                   MOVE    SPA-N22-EFFECT
+                                       TO  SPA-GMN-EFFECT
+                   MOVE    SPA-N22-COLOR
+                                       TO  SPA-GMN-COLOR
+                   MOVE    SPA-N22-SHAPE
+                                       TO  SPA-GMN-SHAPE
+                   MOVE    SPA-N22-MARK
+                                       TO  SPA-GMN-MARK
+                   MOVE    SPA-N22-CAUTION
+                                       TO  SPA-GMN-CAUTION
            END-EVALUATE
            MOVE    SPA-N22-COPYKBN     TO  SPA-N22-COPY
       *
@@ -937,6 +950,12 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                                        TO  N22-COPYKBNLST(IDX)
            END-PERFORM
            MOVE    SPA-N22-COPYKBN-MAX TO  N22-COPYKBN-COUNT
+      *
+           MOVE    SPA-N22-EFFECT      TO  N22-EFFECT
+           MOVE    SPA-N22-COLOR       TO  N22-COLOR
+           MOVE    SPA-N22-SHAPE       TO  N22-SHAPE
+           MOVE    SPA-N22-MARK        TO  N22-MARK
+           MOVE    SPA-N22-CAUTION     TO  N22-CAUTION
       *
            PERFORM 530-MAPCUR-SEC
       *

@@ -84,6 +84,12 @@
                07  SPA-N22-OBJECT-G    OCCURS   3.
                  09  SPA-N22-OBJECT    PIC X(08).
                  09  SPA-N22-LABEL     PIC X(14).
+             05  SPA-N22-ENTRY.
+               07  SPA-N22-EFFECT    PIC X(2000).
+               07  SPA-N22-COLOR     PIC X(360).
+               07  SPA-N22-SHAPE     PIC X(360).
+               07  SPA-N22-MARK      PIC X(360).
+               07  SPA-N22-CAUTION   PIC X(4000).
       *
              05  SPA-N22-GAZOCOMBO.
                07  SPA-N22-GAZOKBNLST      OCCURS  4.
@@ -116,11 +122,11 @@
                  09  SPA-N22-TGAZO     PIC X(5).
                  09  SPA-N22-TMAKER    PIC X(50).
                  09  SPA-N22-TSELLER   PIC X(50).
-                 09  SPA-N22-EFFECT    PIC X(2000).
-                 09  SPA-N22-COLOR     PIC X(360).
-                 09  SPA-N22-SHAPE     PIC X(360).
-                 09  SPA-N22-MARK      PIC X(360).
-                 09  SPA-N22-CAUTION   PIC X(4000).
+                 09  SPA-N22-TEFFECT   PIC X(2000).
+                 09  SPA-N22-TCOLOR    PIC X(360).
+                 09  SPA-N22-TSHAPE    PIC X(360).
+                 09  SPA-N22-TMARK     PIC X(360).
+                 09  SPA-N22-TCAUTION  PIC X(4000).
                  09  SPA-N22-PHOTO1    PIC X(256).
                  09  SPA-N22-PHOTO2    PIC X(256).
                  09  SPA-N22-PHOTO3    PIC X(256).
