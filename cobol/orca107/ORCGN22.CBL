@@ -29,6 +29,7 @@
       * Maj/Min/Rev  修正者        日付      内容
       *  01.01.01    NACL-森脇     06/09/09  ジョブ管理削除
       *  01.01.02    NACL-森脇     06/10/11  タイマーイベント追加
+      *  04.02.01    NACL-森脇     08/02/19  参照情報表示
       *****************************************************************
       *
        ENVIRONMENT         DIVISION.
@@ -500,7 +501,9 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    1           TO  SPA-N22-CUR
            INITIALIZE              SPA-N22-GAZOCOMBO
            INITIALIZE              SPA-N22-OBJECTAREA
+      *----(04.02.01)--ADD-START---
            INITIALIZE              SPA-N22-ENTRY
+      *----(04.02.01)--ADD-END-----
       *
            MOVE    N22-SELNUM  TO  SPA-N22-SELNUM
       *
@@ -732,6 +735,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            MOVE    IDX         TO  SPA-N22-GAZOKBN-MAX
       *
+      *----(04.02.01)--ADD-START---
            INITIALIZE              SPA-N22-ENTRY
            MOVE    SPA-N22-TEFFECT(SPA-N22-SELNUM)
                                    TO  SPA-N22-EFFECT
@@ -743,6 +747,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                    TO  SPA-N22-MARK
            MOVE    SPA-N22-TCAUTION(SPA-N22-SELNUM)
                                    TO  SPA-N22-CAUTION
+      *----(04.02.01)--ADD-END-----
            .
       *
        4114-COMBOSET-EXT.
@@ -839,6 +844,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            MOVE    "OK"            TO  SPA-N22-FLG
       *
+      *----(04.02.01)--UPD-START---
            EVALUATE    SPA-N22-COPYKBN
                WHEN    "1"
                    IF      SPA-GMN-EFFECT =  SPACE
@@ -873,6 +879,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE    SPA-N22-CAUTION
                                        TO  SPA-GMN-CAUTION
            END-EVALUATE
+      *----(04.02.01)--UPD-END-----
            MOVE    SPA-N22-COPYKBN     TO  SPA-N22-COPY
       *
            PERFORM 450-BACK
@@ -951,11 +958,13 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            END-PERFORM
            MOVE    SPA-N22-COPYKBN-MAX TO  N22-COPYKBN-COUNT
       *
+      *----(04.02.01)--ADD-START---
            MOVE    SPA-N22-EFFECT      TO  N22-EFFECT
            MOVE    SPA-N22-COLOR       TO  N22-COLOR
            MOVE    SPA-N22-SHAPE       TO  N22-SHAPE
            MOVE    SPA-N22-MARK        TO  N22-MARK
            MOVE    SPA-N22-CAUTION     TO  N22-CAUTION
+      *----(04.02.01)--ADD-END-----
       *
            PERFORM 530-MAPCUR-SEC
       *
