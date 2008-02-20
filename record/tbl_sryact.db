@@ -321,8 +321,8 @@ path	del3 	{
 		DELETE
 		FROM tbl_sryact
 			WHERE   HOSPNUM    =   :HOSPNUM
-			AND   PTID        =   :PTID
 			AND   NYUGAIKBN   =   :NYUGAIKBN
+			AND   PTID        =   :PTID
 		;
 	};
 };
