@@ -34,6 +34,7 @@
       *  03.05.00    NACL-多々納  07/04/XX  グループ診療対応
       *  03.05.01    NACL-多々納  07/06/01  セット対応
       *  03.05.01    NACL-多々納  07/07/19  "0085XXXXX"コメント対応
+      *  04.01.00    NACL-多々納  07/11/21  器材商品名表示対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -700,6 +701,8 @@
                               AND (SPA-COM-INPUTCD(IDX-1) =   SPACE ))
                    IF      (SPA-GMN-INPUTCD(IDX-1)(1:1)   =   "P" )  OR
                            (SPA-COM-INPUTCD(IDX-1)(1:1)   =   "P" )
+                       MOVE    SPACE               TO  SPA-COM-KAIFLG
+                                                            (IDX-1)
                        MOVE    IDX-1               TO  SPA-GMN-IDX
                        PERFORM 10028-INPUTSET-SYORI-SEC
                    END-IF
@@ -923,6 +926,13 @@
       *
                    PERFORM 10028-INPUTSET-SYORI-SEC
                END-IF
+           END-PERFORM
+      *    最大行数
+           PERFORM VARYING     IDX-1   FROM    1   BY  1
+                   UNTIL      (IDX-1   >   SPA-MAX-LINE )  OR
+                             ((SPA-COM-INPUTCD(IDX-1)    =   SPACE) AND
+                              (SPA-GMN-INPUTCD(IDX-1)    =   SPACE))
+               MOVE    IDX-1               TO  SPA-GMN-MAX
            END-PERFORM
       *
            IF      WRK-ERRCD1      NOT =   SPACE
@@ -1349,6 +1359,13 @@
                                                            (1:2)
                 MOVE    "0"             TO  LNK-WKSRY-SRYSYUKBN (IDX)
                                                            (3:1)
+            END-IF
+      *
+      *    セット
+           IF     (LNK-WKSRY-SRYCD (IDX IDY)(1:1)  =   "P" )
+                MOVE    ZERO            TO  FLG-SYUBETU
+                MOVE    SPACE           TO  LNK-WKSRY-SRYKBN (IDX)
+                MOVE    SPACE           TO  LNK-WKSRY-SRYSYUKBN (IDX)
             END-IF
       *
             IF      FLG-SYUBETU         =   1
