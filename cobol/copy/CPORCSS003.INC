@@ -29,7 +29,11 @@
                 05  SS003-PTID             PIC 9(10).
                 05  SS003-NYUGAIKBN        PIC X(01).
                 05  SS003-DENPNUM          PIC 9(07).
+                05  SS003-SRYCD            PIC X(09)
+                                           OCCURS   20.
             03  SS003-OT.
                 05  SS003-SYOSAISIN-KBN    PIC X(01).
                 05  SS003-JNISSUGEN-KBN    PIC X(01).
                 05  SS003-JIKANGAI-KBN     PIC X(01).
+                05  SS003-SRYCD-KAISU      PIC 9(05)
+                                           OCCURS   20.

@@ -54,12 +54,16 @@
            03  IDX0                            PIC 9(05).
            03  IDX-ZAINUM                      PIC 9(05).
            03  IDX-SRYCD                       PIC 9(05).
+           03  IDX-KAISU                       PIC 9(05).
       *
       *    一時領域
        01  WRK-AREA.
            03  WRK-SYOSAISIN-KBN               PIC X(01).
            03  WRK-JNISSUGEN-KBN               PIC X(01).
            03  WRK-JIKANGAI-KBN                PIC X(01).
+           03  WRK-SRYYMD.
+               05  WRK-SRYYM                   PIC X(06).
+               05  WRK-SRYDAY                  PIC 9(02).
       *
       *
        01  CONST-AREA.
@@ -205,8 +209,11 @@
                        UNTIL ( IDX-ZAINUM  >  CONST-ZAINUM-MAX )
                         OR   ( FLG-END     NOT =   ZERO )
       *
-                   IF    ( JYURRK-ZAINUM (IDX-ZAINUM)  NOT =   ZERO )
-                       PERFORM 2001-SRYACCT-CHK-SEC
+                   IF    ( JYURRK-SRYYMD(7:2)  >=  "01" )
+                    AND  ( JYURRK-SRYYMD(7:2)  <=  "31" )
+                       IF    ( JYURRK-ZAINUM (IDX-ZAINUM)  NOT =   ZERO)
+                           PERFORM 2001-SRYACCT-CHK-SEC
+                       END-IF
                    END-IF
       *
                END-PERFORM
@@ -235,6 +242,12 @@
       *****************************************************************
        2001-SRYACCT-CHK-SEC            SECTION.
       *
+           MOVE    JYURRK-SRYYMD       TO  WRK-SRYYMD
+           COMPUTE IDX-KAISU   =   JYURRK-RENNUM   +   1
+           IF    ( IDX-KAISU   >   4 )
+               MOVE    4               TO  IDX-KAISU
+           END-IF
+      *
       *    診療会計検索
            MOVE    ZERO                TO  FLG-SRYACCT
            INITIALIZE                      SRYACCT-REC
@@ -259,13 +272,15 @@
       *
       *
            IF   (( ACCT-ZAITEN     NOT =   ZERO )
-             AND ( ACCT-ZAIKAISU   NOT =   ZERO )
+             AND ( ACCT-DAY (IDX-KAISU WRK-SRYDAY)
+                                   NOT =   ZERO )
              AND ( ACCT-SRYKBN         =   "11"
                                        OR  "12" 
                                        OR  "13"
                                        OR  "14" ))
            OR   (( ACCT-ZAITEN         =   ZERO )
-             AND ( ACCT-ZAIKAISU   NOT =   ZERO )
+             AND ( ACCT-DAY (IDX-KAISU WRK-SRYDAY)
+                                   NOT =   ZERO )
              AND(  ACCT-SRYKBN         =   "11"
                                        OR  "12"
                                        OR  "99" ))
@@ -316,6 +331,18 @@
                         OR   ( FLG-END             NOT =   ZERO )
       *
                    PERFORM 2001-SYOSAISIN-CHK-SEC
+      *
+                   PERFORM VARYING IDX0    FROM    1   BY  1
+                           UNTIL ( IDX0    >   20 )
+      *
+                       IF    ( SRY-SRYCD (IDX-SRYCD)
+                                           =   SS003-SRYCD (IDX0) )
+                           COMPUTE SS003-SRYCD-KAISU (IDX0)
+                               =   SS003-SRYCD-KAISU (IDX0)
+                               +   ACCT-DAY (IDX-KAISU WRK-SRYDAY)
+                       END-IF
+      *
+                   END-PERFORM
       *
                END-PERFORM
       *
@@ -415,9 +442,35 @@
       *****************************************************************
        300-END-SEC                     SECTION.
       *
+      *    PERFORM 800-DISPLAY-SEC
       *
            .
        300-END-EXT.
+           EXIT.
+      *****************************************************************
+      *    DISPLAY 処理
+      *****************************************************************
+       800-DISPLAY-SEC                 SECTION.
+      *
+           DISPLAY "SS003-SYOSAISIN-KBN = " 
+                    SS003-SYOSAISIN-KBN
+           DISPLAY "SS003-JNISSUGEN-KBN = " 
+                    SS003-JNISSUGEN-KBN
+           DISPLAY "SS003-JIKANGAI-KBN  = " 
+                    SS003-JIKANGAI-KBN
+           DISPLAY "SS003-SRYCD-KAISU(1)= " 
+                    SS003-SRYCD-KAISU(1)
+           DISPLAY "SS003-SRYCD-KAISU(2)= " 
+                    SS003-SRYCD-KAISU(2)
+           DISPLAY "SS003-SRYCD-KAISU(3)= " 
+                    SS003-SRYCD-KAISU(3)
+           DISPLAY "SS003-SRYCD-KAISU(4)= " 
+                    SS003-SRYCD-KAISU(4)
+           DISPLAY "SS003-SRYCD-KAISU(5)= " 
+                    SS003-SRYCD-KAISU(5)
+      *
+           .
+       800-DISPLAY-EXT.
            EXIT.
       *****************************************************************
       *    点数マスタ検索処理(KEY1)
