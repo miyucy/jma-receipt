@@ -169,8 +169,104 @@
 
     <widget>
       <class>GtkLabel</class>
-      <name>label454</name>
+      <name>teikyo</name>
+      <x>616</x>
+      <y>488</y>
+      <width>272</width>
+      <height>24</height>
+      <label>データ提供「くすりの適正使用協議会」様</label>
+      <justify>GTK_JUSTIFY_LEFT</justify>
+      <wrap>True</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label417</name>
+      <x>16</x>
+      <y>384</y>
+      <width>56</width>
+      <height>24</height>
+      <label>選択番号</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label448</name>
+      <x>648</x>
+      <y>384</y>
+      <width>72</width>
+      <height>24</height>
+      <label>写真選択</label>
+      <justify>GTK_JUSTIFY_LEFT</justify>
+      <wrap>True</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label449</name>
+      <x>648</x>
+      <y>416</y>
+      <width>72</width>
+      <height>24</height>
+      <label>取込選択</label>
+      <justify>GTK_JUSTIFY_LEFT</justify>
+      <wrap>True</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label450</name>
+      <x>544</x>
+      <y>176</y>
+      <width>72</width>
+      <height>24</height>
+      <label>注意事項</label>
+      <justify>GTK_JUSTIFY_LEFT</justify>
+      <wrap>True</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label457</name>
       <x>312</x>
+      <y>200</y>
+      <width>32</width>
+      <height>24</height>
+      <label>色</label>
+      <justify>GTK_JUSTIFY_LEFT</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label454</name>
+      <x>304</x>
       <y>320</y>
       <width>40</width>
       <height>20</height>
@@ -186,45 +282,13 @@
     <widget>
       <class>GtkLabel</class>
       <name>label452</name>
-      <x>320</x>
+      <x>312</x>
       <y>260</y>
       <width>32</width>
       <height>20</height>
       <label>形</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>label457</name>
-      <x>320</x>
-      <y>200</y>
-      <width>32</width>
-      <height>24</height>
-      <label>色</label>
-      <justify>GTK_JUSTIFY_LEFT</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>teikyo</name>
-      <x>616</x>
-      <y>488</y>
-      <width>272</width>
-      <height>24</height>
-      <label>データ提供「くすりの適正使用協議会」様</label>
-      <justify>GTK_JUSTIFY_LEFT</justify>
-      <wrap>True</wrap>
       <xalign>0.5</xalign>
       <yalign>0.5</yalign>
       <xpad>0</xpad>
@@ -396,99 +460,15 @@
     </widget>
 
     <widget>
-      <class>GtkPandaText</class>
-      <name>EFFECT</name>
-      <x>16</x>
-      <y>200</y>
-      <width>296</width>
-      <height>176</height>
-      <can_focus>True</can_focus>
-      <editable>False</editable>
-      <text>あいうえおかきくけこさしすせそたちつてと
-あ
-あ
-あ
-あ</text>
-      <xim_enabled>False</xim_enabled>
-    </widget>
-
-    <widget>
-      <class>GtkPandaText</class>
-      <name>COLOR</name>
-      <x>352</x>
-      <y>200</y>
-      <width>160</width>
-      <height>56</height>
-      <can_focus>True</can_focus>
-      <editable>False</editable>
-      <text>あいうえおかきくけこ
-あ
-あ</text>
-      <xim_enabled>False</xim_enabled>
-    </widget>
-
-    <widget>
-      <class>GtkPandaText</class>
-      <name>SHAPE</name>
-      <x>352</x>
-      <y>260</y>
-      <width>160</width>
-      <height>56</height>
-      <can_focus>True</can_focus>
-      <editable>False</editable>
-      <text>あいうえおかきくけこ
-あ
-あ</text>
-      <xim_enabled>False</xim_enabled>
-    </widget>
-
-    <widget>
-      <class>GtkPandaText</class>
-      <name>MARK</name>
-      <x>352</x>
-      <y>320</y>
-      <width>160</width>
-      <height>56</height>
-      <can_focus>True</can_focus>
-      <editable>False</editable>
-      <text>あいうえおかきくけこ
-あ
-あ</text>
-      <xim_enabled>False</xim_enabled>
-    </widget>
-
-    <widget>
-      <class>GtkPandaText</class>
-      <name>CAUTION</name>
-      <x>520</x>
-      <y>200</y>
-      <width>368</width>
-      <height>176</height>
-      <can_focus>True</can_focus>
-      <editable>False</editable>
-      <text>あいうえおかきくけこさしすせそたちつてとなにぬねの
-あ
-あ
-あ
-あ
-あ
-あ
-あ
-あ
-あ</text>
-      <xim_enabled>False</xim_enabled>
-    </widget>
-
-    <widget>
       <class>GtkLabel</class>
-      <name>label450</name>
-      <x>520</x>
-      <y>176</y>
-      <width>72</width>
+      <name>MESSAGE</name>
+      <x>200</x>
+      <y>488</y>
+      <width>416</width>
       <height>24</height>
-      <label>注意事項</label>
-      <justify>GTK_JUSTIFY_LEFT</justify>
-      <wrap>True</wrap>
+      <label></label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
       <xalign>0.5</xalign>
       <yalign>0.5</yalign>
       <xpad>0</xpad>
@@ -496,13 +476,40 @@
     </widget>
 
     <widget>
-      <class>GtkLabel</class>
-      <name>label417</name>
-      <x>16</x>
+      <class>GnomePixmap</class>
+      <name>GAZO1</name>
+      <x>184</x>
       <y>384</y>
-      <width>56</width>
+      <width>128</width>
+      <height>80</height>
+    </widget>
+
+    <widget>
+      <class>GnomePixmap</class>
+      <name>GAZO2</name>
+      <x>328</x>
+      <y>384</y>
+      <width>128</width>
+      <height>80</height>
+    </widget>
+
+    <widget>
+      <class>GnomePixmap</class>
+      <name>GAZO3</name>
+      <x>472</x>
+      <y>384</y>
+      <width>128</width>
+      <height>80</height>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>GAZOLABEL1</name>
+      <x>184</x>
+      <y>464</y>
+      <width>128</width>
       <height>24</height>
-      <label>選択番号</label>
+      <label></label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -513,14 +520,30 @@
 
     <widget>
       <class>GtkLabel</class>
-      <name>label448</name>
-      <x>648</x>
-      <y>384</y>
-      <width>72</width>
+      <name>GAZOLABEL2</name>
+      <x>328</x>
+      <y>464</y>
+      <width>128</width>
       <height>24</height>
-      <label>写真選択</label>
-      <justify>GTK_JUSTIFY_LEFT</justify>
-      <wrap>True</wrap>
+      <label></label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>GAZOLABEL3</name>
+      <x>472</x>
+      <y>464</y>
+      <width>128</width>
+      <height>24</height>
+      <label></label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
       <xalign>0.5</xalign>
       <yalign>0.5</yalign>
       <xpad>0</xpad>
@@ -568,22 +591,6 @@
     </widget>
 
     <widget>
-      <class>GtkLabel</class>
-      <name>label449</name>
-      <x>648</x>
-      <y>416</y>
-      <width>72</width>
-      <height>24</height>
-      <label>取込選択</label>
-      <justify>GTK_JUSTIFY_LEFT</justify>
-      <wrap>True</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
       <class>GtkPandaCombo</class>
       <name>COPYKBNCOMBO</name>
       <x>728</x>
@@ -624,94 +631,113 @@
     </widget>
 
     <widget>
-      <class>GtkLabel</class>
-      <name>MESSAGE</name>
-      <x>200</x>
-      <y>488</y>
-      <width>416</width>
-      <height>24</height>
-      <label></label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
+      <class>GtkScrolledWindow</class>
+      <name>scrolledwindow2</name>
+      <x>16</x>
+      <y>200</y>
+      <width>272</width>
+      <height>176</height>
+      <hscrollbar_policy>GTK_POLICY_AUTOMATIC</hscrollbar_policy>
+      <vscrollbar_policy>GTK_POLICY_ALWAYS</vscrollbar_policy>
+      <hupdate_policy>GTK_UPDATE_CONTINUOUS</hupdate_policy>
+      <vupdate_policy>GTK_UPDATE_CONTINUOUS</vupdate_policy>
+
+      <widget>
+	<class>GtkPandaText</class>
+	<name>EFFECT</name>
+	<can_focus>True</can_focus>
+	<editable>False</editable>
+	<text>あいうえおかきくけこさしすせそたちつ</text>
+	<xim_enabled>False</xim_enabled>
+      </widget>
     </widget>
 
     <widget>
-      <class>GtkLabel</class>
-      <name>GAZOLABEL3</name>
-      <x>472</x>
-      <y>464</y>
-      <width>128</width>
-      <height>24</height>
-      <label></label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
+      <class>GtkScrolledWindow</class>
+      <name>scrolledwindow3</name>
+      <x>344</x>
+      <y>200</y>
+      <width>176</width>
+      <height>56</height>
+      <hscrollbar_policy>GTK_POLICY_AUTOMATIC</hscrollbar_policy>
+      <vscrollbar_policy>GTK_POLICY_ALWAYS</vscrollbar_policy>
+      <hupdate_policy>GTK_UPDATE_CONTINUOUS</hupdate_policy>
+      <vupdate_policy>GTK_UPDATE_CONTINUOUS</vupdate_policy>
+
+      <widget>
+	<class>GtkPandaText</class>
+	<name>COLOR</name>
+	<can_focus>True</can_focus>
+	<editable>False</editable>
+	<text>あいうえおかきくけこ</text>
+	<xim_enabled>False</xim_enabled>
+      </widget>
     </widget>
 
     <widget>
-      <class>GnomePixmap</class>
-      <name>GAZO3</name>
-      <x>472</x>
-      <y>384</y>
-      <width>128</width>
-      <height>80</height>
+      <class>GtkScrolledWindow</class>
+      <name>scrolledwindow4</name>
+      <x>344</x>
+      <y>260</y>
+      <width>176</width>
+      <height>56</height>
+      <hscrollbar_policy>GTK_POLICY_AUTOMATIC</hscrollbar_policy>
+      <vscrollbar_policy>GTK_POLICY_ALWAYS</vscrollbar_policy>
+      <hupdate_policy>GTK_UPDATE_CONTINUOUS</hupdate_policy>
+      <vupdate_policy>GTK_UPDATE_CONTINUOUS</vupdate_policy>
+
+      <widget>
+	<class>GtkPandaText</class>
+	<name>SHAPE</name>
+	<can_focus>True</can_focus>
+	<editable>False</editable>
+	<text>あいうえおかきくけこ</text>
+	<xim_enabled>False</xim_enabled>
+      </widget>
     </widget>
 
     <widget>
-      <class>GnomePixmap</class>
-      <name>GAZO1</name>
-      <x>184</x>
-      <y>384</y>
-      <width>128</width>
-      <height>80</height>
+      <class>GtkScrolledWindow</class>
+      <name>scrolledwindow5</name>
+      <x>344</x>
+      <y>320</y>
+      <width>176</width>
+      <height>56</height>
+      <hscrollbar_policy>GTK_POLICY_AUTOMATIC</hscrollbar_policy>
+      <vscrollbar_policy>GTK_POLICY_ALWAYS</vscrollbar_policy>
+      <hupdate_policy>GTK_UPDATE_CONTINUOUS</hupdate_policy>
+      <vupdate_policy>GTK_UPDATE_CONTINUOUS</vupdate_policy>
+
+      <widget>
+	<class>GtkPandaText</class>
+	<name>MARK</name>
+	<can_focus>True</can_focus>
+	<editable>False</editable>
+	<text>あいうえおかきくけこ</text>
+	<xim_enabled>False</xim_enabled>
+      </widget>
     </widget>
 
     <widget>
-      <class>GtkLabel</class>
-      <name>GAZOLABEL1</name>
-      <x>184</x>
-      <y>464</y>
-      <width>128</width>
-      <height>24</height>
-      <label></label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
+      <class>GtkScrolledWindow</class>
+      <name>scrolledwindow6</name>
+      <x>544</x>
+      <y>200</y>
+      <width>344</width>
+      <height>176</height>
+      <hscrollbar_policy>GTK_POLICY_AUTOMATIC</hscrollbar_policy>
+      <vscrollbar_policy>GTK_POLICY_ALWAYS</vscrollbar_policy>
+      <hupdate_policy>GTK_UPDATE_CONTINUOUS</hupdate_policy>
+      <vupdate_policy>GTK_UPDATE_CONTINUOUS</vupdate_policy>
 
-    <widget>
-      <class>GnomePixmap</class>
-      <name>GAZO2</name>
-      <x>328</x>
-      <y>384</y>
-      <width>128</width>
-      <height>80</height>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>GAZOLABEL2</name>
-      <x>328</x>
-      <y>464</y>
-      <width>128</width>
-      <height>24</height>
-      <label></label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
+      <widget>
+	<class>GtkPandaText</class>
+	<name>CAUTION</name>
+	<can_focus>True</can_focus>
+	<editable>False</editable>
+	<text>あいうえおかきくけこさしすせそたちつてとなにぬねの</text>
+	<xim_enabled>False</xim_enabled>
+      </widget>
     </widget>
   </widget>
 </widget>

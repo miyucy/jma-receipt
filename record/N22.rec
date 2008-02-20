@@ -1,5 +1,8 @@
 N22	{
 	fixed17	{
+		pandatimer1     {
+			duration        int;
+		};
 		KENCD	{
 			value	varchar(9);
 		};
@@ -7,6 +10,8 @@ N22	{
 			value	varchar(100);
 		};
 		scrolledwindow1	{
+			hpos	int;
+			vpos	int;
 			KEKKALST	{
 				count	int;
 				row	int;
@@ -60,20 +65,40 @@ N22	{
 		GAZOLABEL3	{
 			value	varchar(14);
 		};
-		EFFECT	{
-			value	varchar(2000);
+		scrolledwindow2	{
+			hpos	int;
+			vpos	int;
+			EFFECT	{
+				value	varchar(2000);
+			};
 		};
-		COLOR	{
-			value	varchar(360);
+		scrolledwindow3	{
+			hpos	int;
+			vpos	int;
+			COLOR	{
+				value	varchar(360);
+			};
 		};
-		SHAPE	{
-			value	varchar(360);
+		scrolledwindow4	{
+			hpos	int;
+			vpos	int;
+			SHAPE	{
+				value	varchar(360);
+			};
 		};
-		MARK	{
-			value	varchar(360);
+		scrolledwindow5	{
+			hpos	int;
+			vpos	int;
+			MARK	{
+				value	varchar(360);
+			};
 		};
-		CAUTION	{
-			value	varchar(4000);
+		scrolledwindow6	{
+			hpos	int;
+			vpos	int;
+			CAUTION	{
+				value	varchar(4000);
+			};
 		};
 	};
 };

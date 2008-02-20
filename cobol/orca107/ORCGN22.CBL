@@ -29,7 +29,9 @@
       * Maj/Min/Rev  修正者        日付      内容
       *  01.01.01    NACL-森脇     06/09/09  ジョブ管理削除
       *  01.01.02    NACL-森脇     06/10/11  タイマーイベント追加
-      *  04.02.01    NACL-森脇     08/02/19  参照情報表示
+      *  04.02.01    NACL-森脇     08/02/20  参照情報表示追加
+      *                                      リスト行数５０→４０に変更
+      *                                      タイマーイベントクリア追加
       *****************************************************************
       *
        ENVIRONMENT         DIVISION.
@@ -358,16 +360,25 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            IF      SKBN-RUN        =   "RUN"
                MOVE    "処理中です"    TO  SPA-N22-MESSAGE
                MOVE    "blue"          TO  SPA-N22-MESSAGE-STYLE
+      *----(04.02.01)--ADD-START---
+               MOVE    5               TO  SPA-N22-DURATION
+      *----(04.02.01)--ADD-END-----
                GO  TO  400-JYOKYO-EXT
            ELSE
                MOVE    SPACE           TO  SPA-N22-MESSAGE
                MOVE    SPACE           TO  SPA-N22-MESSAGE-STYLE
+      *----(04.02.01)--ADD-START---
+               MOVE    ZERO            TO  SPA-N22-DURATION
+      *----(04.02.01)--ADD-END-----
            END-IF
       *
            MOVE    ZERO            TO  IDX
            PERFORM 900-TEMP-SELECT-SEC
            PERFORM UNTIL  (FLG-TEMP    =   1)
+      *----(04.02.01)--UPD-START---
+      *             OR     (IDX         >=  50)
                    OR     (IDX         >=  40)
+      *----(04.02.01)--UPD-END-----
                COMPUTE IDX =   IDX     +   1
                MOVE    IDX             TO  WRK-ZZZZ9
                MOVE    WRK-ZZZZ9       TO  SPA-N22-TNO(IDX)
@@ -653,7 +664,10 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            MOVE    ZERO            TO  WRK-HENFLG
            PERFORM VARYING IDX     FROM    1   BY  1
+      *----(04.02.01)--UPD-START---
+      *             UNTIL  (IDX     >       50)
                    UNTIL  (IDX     >       40)
+      *----(04.02.01)--UPD-END-----
                    OR     (WRK-HENFLG  =   1)
                IF      N22-SELECT(IDX)     =   "T"
                    MOVE    IDX             TO  SPA-N22-SELNUM
@@ -964,6 +978,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPA-N22-SHAPE       TO  N22-SHAPE
            MOVE    SPA-N22-MARK        TO  N22-MARK
            MOVE    SPA-N22-CAUTION     TO  N22-CAUTION
+           MOVE    SPA-N22-DURATION    TO  N22-DURATION
       *----(04.02.01)--ADD-END-----
       *
            PERFORM 530-MAPCUR-SEC

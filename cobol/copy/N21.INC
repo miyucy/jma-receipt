@@ -19,7 +19,9 @@
               03  N21-FIXED17.
                 05  N21-B11.
                   07  N21-B11-STATE         PIC S9(9)   BINARY.
-                05  N21-TBL.
+                05  N21-SCROLLEDWINDOW1.
+                  07  N21-SCR1-HPOS   PIC S9(9)   BINARY.
+                  07  N21-SCR1-VPOS   PIC S9(9)   BINARY.
                   07  N21-KEKKALST.
                     09  N21-COUNT     PIC S9(9)   BINARY.
                     09  N21-ROW       PIC S9(9)   BINARY.
@@ -32,11 +34,29 @@
                 05  N21-KENNAIYO      PIC X(26).
                 05  N21-KENNAME       PIC X(100).
                 05  N21-SELNUM        PIC S9(3).
-                05  N21-NAME          PIC X(100).
-                05  N21-EFFECT        PIC X(2000).
-                05  N21-COLOR         PIC X(360).
-                05  N21-SHAPE         PIC X(360).
-                05  N21-MARK          PIC X(360).
-                05  N21-CAUTION       PIC X(4000).
+                05  N21-SCROLLEDWINDOW2.
+                  07  N21-SCR2-HPOS       PIC S9(9)   BINARY.
+                  07  N21-SCR2-VPOS       PIC S9(9)   BINARY.
+                  07  N21-NAME            PIC X(100).
+                05  N21-SCROLLEDWINDOW3.
+                  07  N21-SCR3-HPOS       PIC S9(9)   BINARY.
+                  07  N21-SCR3-VPOS       PIC S9(9)   BINARY.
+                  07  N21-EFFECT          PIC X(2000).
+                05  N21-SCROLLEDWINDOW4.
+                  07  N21-SCR4-HPOS       PIC S9(9)   BINARY.
+                  07  N21-SCR4-VPOS       PIC S9(9)   BINARY.
+                  07  N21-COLOR           PIC X(360).
+                05  N21-SCROLLEDWINDOW5.
+                  07  N21-SCR5-HPOS       PIC S9(9)   BINARY.
+                  07  N21-SCR5-VPOS       PIC S9(9)   BINARY.
+                  07  N21-SHAPE           PIC X(360).
+                05  N21-SCROLLEDWINDOW6.
+                  07  N21-SCR6-HPOS       PIC S9(9)   BINARY.
+                  07  N21-SCR6-VPOS       PIC S9(9)   BINARY.
+                  07  N21-MARK            PIC X(360).
+                05  N21-SCROLLEDWINDOW7.
+                  07  N21-SCR7-HPOS       PIC S9(9)   BINARY.
+                  07  N21-SCR7-VPOS       PIC S9(9)   BINARY.
+                  07  N21-CAUTION         PIC X(4000).
                 05  N21-PHOTO         PIC X(256).
                 05  N21-PHOTOAREA     PIC X(8).

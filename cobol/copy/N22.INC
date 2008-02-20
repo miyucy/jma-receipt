@@ -17,9 +17,12 @@
       ********************************************************************
             02  N22.
               03  N22-FIXED17.
+                05  N22-DURATION       PIC S9(09) BINARY.
                 05  N22-KENCD          PIC X(9).
                 05  N22-KENNAME        PIC X(100).
-                05  N22-TBL.
+                05  N22-SCROLLEDWINDOW1.
+                  07  N22-SCR1-HPOS    PIC S9(9)   BINARY.
+                  07  N22-SCR1-VPOS    PIC S9(9)   BINARY.
                   07  N22-KEKKALST.
                     09  N22-COUNT      PIC S9(9)   BINARY.
                     09  N22-ROW        PIC S9(9)   BINARY.
@@ -46,8 +49,23 @@
                   07  N22-COPYKBNLST   PIC X(14)   OCCURS  3 TIMES.
                 05  N22-GAZO           PIC X(8)    OCCURS  3 TIMES.
                 05  N22-GAZOLABEL      PIC X(14)   OCCURS  3 TIMES.
-                05  N22-EFFECT         PIC X(2000).
-                05  N22-COLOR          PIC X(360).
-                05  N22-SHAPE          PIC X(360).
-                05  N22-MARK           PIC X(360).
-                05  N22-CAUTION        PIC X(4000).
+                05  N22-SCROLLEDWINDOW2.
+                  07  N22-SCR2-HPOS    PIC S9(9)   BINARY.
+                  07  N22-SCR2-VPOS    PIC S9(9)   BINARY.
+                  07  N22-EFFECT       PIC X(2000).
+                05  N22-SCROLLEDWINDOW3.
+                  07  N22-SCR3-HPOS    PIC S9(9)   BINARY.
+                  07  N22-SCR3-VPOS    PIC S9(9)   BINARY.
+                  07  N22-COLOR        PIC X(360).
+                05  N22-SCROLLEDWINDOW4.
+                  07  N22-SCR4-HPOS    PIC S9(9)   BINARY.
+                  07  N22-SCR4-VPOS    PIC S9(9)   BINARY.
+                  07  N22-SHAPE        PIC X(360).
+                05  N22-SCROLLEDWINDOW5.
+                  07  N22-SCR5-HPOS    PIC S9(9)   BINARY.
+                  07  N22-SCR5-VPOS    PIC S9(9)   BINARY.
+                  07  N22-MARK         PIC X(360).
+                05  N22-SCROLLEDWINDOW6.
+                  07  N22-SCR6-HPOS    PIC S9(9)   BINARY.
+                  07  N22-SCR6-VPOS    PIC S9(9)   BINARY.
+                  07  N22-CAUTION      PIC X(4000).
