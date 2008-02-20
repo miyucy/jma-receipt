@@ -367,7 +367,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    ZERO            TO  IDX
            PERFORM 900-TEMP-SELECT-SEC
            PERFORM UNTIL  (FLG-TEMP    =   1)
-                   OR     (IDX         >=  50)
+                   OR     (IDX         >=  40)
                COMPUTE IDX =   IDX     +   1
                MOVE    IDX             TO  WRK-ZZZZ9
                MOVE    WRK-ZZZZ9       TO  SPA-N22-TNO(IDX)
@@ -653,7 +653,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            MOVE    ZERO            TO  WRK-HENFLG
            PERFORM VARYING IDX     FROM    1   BY  1
-                   UNTIL  (IDX     >       50)
+                   UNTIL  (IDX     >       40)
                    OR     (WRK-HENFLG  =   1)
                IF      N22-SELECT(IDX)     =   "T"
                    MOVE    IDX             TO  SPA-N22-SELNUM

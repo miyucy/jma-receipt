@@ -85,11 +85,11 @@
                  09  SPA-N22-OBJECT    PIC X(08).
                  09  SPA-N22-LABEL     PIC X(14).
              05  SPA-N22-ENTRY.
-               07  SPA-N22-EFFECT    PIC X(2000).
-               07  SPA-N22-COLOR     PIC X(360).
-               07  SPA-N22-SHAPE     PIC X(360).
-               07  SPA-N22-MARK      PIC X(360).
-               07  SPA-N22-CAUTION   PIC X(4000).
+               07  SPA-N22-EFFECT      PIC X(2000).
+               07  SPA-N22-COLOR       PIC X(360).
+               07  SPA-N22-SHAPE       PIC X(360).
+               07  SPA-N22-MARK        PIC X(360).
+               07  SPA-N22-CAUTION     PIC X(4000).
       *
              05  SPA-N22-GAZOCOMBO.
                07  SPA-N22-GAZOKBNLST      OCCURS  4.
@@ -116,7 +116,7 @@
                  09  SPA-N22-COPYKBNMEI    PIC X(12).
       *
              05  SPA-N22-TBL.
-               07  SPA-N22-TBL-G       OCCURS  50.
+               07  SPA-N22-TBL-G       OCCURS  40.
                  09  SPA-N22-TNO       PIC X(05).
                  09  SPA-N22-TYJCD     PIC X(12).
                  09  SPA-N22-TGAZO     PIC X(5).

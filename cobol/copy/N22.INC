@@ -24,13 +24,13 @@
                     09  N22-COUNT      PIC S9(9)   BINARY.
                     09  N22-ROW        PIC S9(9)   BINARY.
                     09  N22-ROWATTR    PIC S9(9)   BINARY.
-                    09  N22-ITEM                   OCCURS  50 TIMES.
+                    09  N22-ITEM                   OCCURS  40 TIMES.
                       11  N22-TNO      PIC X(5).
                       11  N22-TYJCD    PIC X(12).
                       11  N22-TGAZO    PIC X(5).
                       11  N22-TMAKER   PIC X(50).
                       11  N22-TSELLER  PIC X(50).
-                    09  N22-SELECT     PIC X       OCCURS  50 TIMES.
+                    09  N22-SELECT     PIC X       OCCURS  40 TIMES.
                 05  N22-SELNUM         PIC S9(3).
                 05  N22-MESSAGE-STYLE  PIC X(20).
                 05  N22-MESSAGE        PIC X(100).
