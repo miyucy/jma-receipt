@@ -45,6 +45,7 @@
       *  03.05.00    NACL-Â¿¡¹Ç¼  07/05/02  ¥°¥ë¡¼¥×¿ÇÎÅÂÐ±þ
       *  04.01.00    NACL-ÂÀÅÄ    07/10/19  ¸øÌ³ºÒ³²¶èÊ¬ÄÉ²Ã
       *                                     ¸øÌ³ºÒ³²±ßÃ±²ÁÄÉ²Ã
+      *  04.02.00    NACL-¾®Æ¦Âô  08/02/20  ¥¢¥Õ¥¿¡¼¥±¥¢Â»½ý¶èÊ¬²þÀµÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -324,6 +325,7 @@
            03  WRK-TNS-YMD         PIC X(08).
            03  WRK-SKIPKNS         PIC 9(05).
            03  WRK-CHK-SRYCD       PIC X(09).
+           03  WRK-W01-YMD         PIC X(08).
       *
        01  WRK-HEN-AREA.
            03  WRK-HENYMDG         PIC X(09).
@@ -353,6 +355,104 @@
            03  CONST-KIZAILST-MAX      PIC 9(02)   VALUE   50.
            03  CONST-SYS-KIZAI-MAX     PIC 9(02)   VALUE   50.
            03  CONST-H180401           PIC X(08)   VALUE   "20060401".
+           03  CONST-SONSHOU-AREA.
+               05  FILLER              PIC X(04)  VALUE "00  ".
+               05  FILLER              PIC X(120) VALUE
+                   "Ãº¹ÛºÒ³²¤Ë¤è¤ë°ì»À²½ÃºÁÇÃæÆÇ".
+               05  FILLER              PIC X(04)  VALUE "01  ".
+               05  FILLER              PIC X(120) VALUE
+                   "¤»¤­¿ñÂ»½ý".
+               05  FILLER              PIC X(04)  VALUE "05  ".
+               05  FILLER              PIC X(120) VALUE
+                   "ÇòÆâ¾ãÅù¤Î´ã¼À´µ".
+               05  FILLER              PIC X(04)  VALUE "06  ".
+               05  FILLER              PIC X(120) VALUE
+                   "¿¶Æ°¾ã³²".
+               05  FILLER              PIC X(04)  VALUE "07  ".
+               05  FILLER              PIC X(120) VALUE
+                   "ÂçÂÜ¹üðôÉô¹üÀÞµÚ¤Ó¸Ô´ØÀáÃ¦±±¡¦Ã¦±±¹üÀÞ".
+               05  FILLER              PIC X(04)  VALUE "08  ".
+               05  FILLER              PIC X(120) VALUE
+                   "¿Í¹©´ØÀá¡¦¿Í¹©¹üÆ¬ÃÖ´¹".
+               05  FILLER              PIC X(04)  VALUE "09  ".
+               05  FILLER              PIC X(120) VALUE
+                   "ËýÀ­²½Ç¿À­¹ü¿ñ±ê".
+               05  FILLER              PIC X(04)  VALUE "11  ".
+               05  FILLER              PIC X(120) VALUE
+                   "Ç¢Ï©·Ï¼ðáç".
+               05  FILLER              PIC X(04)  VALUE "14  ".
+               05  FILLER              PIC X(120) VALUE
+                   "³°½ý¤Ë¤è¤ëËö¾¿¿À·ÐÂ»½ý".
+               05  FILLER              PIC X(04)  VALUE "15  ".
+               05  FILLER              PIC X(120) VALUE
+                   "Ç®½ý".
+               05  FILLER              PIC X(04)  VALUE "16  ".
+               05  FILLER              PIC X(120) VALUE
+                   "¥µ¥ê¥óÃæÆÇ".
+               05  FILLER              PIC X(04)  VALUE "17  ".
+               05  FILLER              PIC X(120) VALUE
+                   "Àº¿À¾ã³²".
+               05  FILLER              PIC X(04)  VALUE "19  ".
+               05  FILLER              PIC X(120) VALUE
+                   "¸ÆµÛµ¡Ç½¾ã³²".
+               05  FILLER              PIC X(04)  VALUE "20  ".
+               05  FILLER              PIC X(120) VALUE
+                   "¾Ã²½´ï¾ã³²".
+               05  FILLER              PIC X(04)  VALUE "21  ".
+               05  FILLER              PIC X(120) VALUE
+                   "Æ¬ðôÉô³°½ý¾É¸õ·²Åù¡ÊÆ¬ðôÉô³°½ý¾É¸õ·²¡Ë".
+               05  FILLER              PIC X(04)  VALUE "22  ".
+               05  FILLER              PIC X(120) VALUE
+                   "Æ¬ðôÉô³°½ý¾É¸õ·²Åù¡Êðô¸ªÏÓ¾ã³²¡Ë".
+               05  FILLER              PIC X(04)  VALUE "23  ".
+               05  FILLER              PIC X(120) VALUE
+                   "Æ¬ðôÉô³°½ý¾É¸õ·²Åù¡Ê¹øÄË¡Ë".
+               05  FILLER              PIC X(04)  VALUE "24  ".
+               05  FILLER              PIC X(120) VALUE
+                   "Ç¢Ï©·Ï¾ã³²¡ÊÇ¢Æ»¶¹¤µ¤¯µÚ¤ÓÇ¢Ï©ÊÑ¸þ½Ñ¸å¡Ë".
+               05  FILLER              PIC X(04)  VALUE "25  ".
+               05  FILLER              PIC X(120) VALUE
+                   "Ç¢Ï©·Ï¾ã³²¡ÊÂåÍÑç¯æùÂ¤Àß¸å¡Ë".
+               05  FILLER              PIC X(04)  VALUE "26  ".
+               05  FILLER              PIC X(120) VALUE
+                 "ËýÀ­´Î±ê¡Ê£È£Â£å¹³¸¶ÍÛÀ­µÚ¤Ó£Ã·¿´Î±ê¥¦¥¤¥ë¥¹´¶À÷¡Ë".
+               05  FILLER              PIC X(04)  VALUE "27  ".
+               05  FILLER              PIC X(120) VALUE
+                   "ËýÀ­´Î±ê¡Ê£È£Â£å¹³¸¶±¢À­¡Ë".
+               05  FILLER              PIC X(04)  VALUE "28  ".
+               05  FILLER              PIC X(120) VALUE
+                   "µõ·ìÀ­¿´¼À´µÅù¡Êµõ·ìÀ­¿´¼À´µ¡Ë".
+               05  FILLER              PIC X(04)  VALUE "29  ".
+               05  FILLER              PIC X(120) VALUE
+                   "µõ·ìÀ­¿´¼À´µÅù¡Ê¥Ú¡¼¥¹¥á¡¼¥«µÚ¤Ó½üºÙÆ°´ï¡Ë".
+               05  FILLER              PIC X(04)  VALUE "30  ".
+               05  FILLER              PIC X(120) VALUE
+               "Ç¾¤Î´ï¼ÁÀ­¾ã³²¡Ê°ì»À²½ÃºÁÇÃæÆÇ¡ÊÃº¹ÛºÒ³²¤ò½ü¤¯¡£¡Ë¡Ë".
+               05  FILLER              PIC X(04)  VALUE "31  ".
+               05  FILLER              PIC X(120) VALUE
+                   "Ç¾¤Î´ï¼ÁÀ­¾ã³²¡Ê³°½ý¤Ë¤è¤ëÇ¾¤Î´ï¼ÁÅªÂ»½ý¡Ë".
+               05  FILLER              PIC X(04)  VALUE "32  ".
+               05  FILLER              PIC X(120) VALUE
+                   "Ç¾¤Î´ï¼ÁÀ­¾ã³²¡Ê¸º°µ¾É¡Ë".
+               05  FILLER              PIC X(04)  VALUE "33  ".
+               05  FILLER              PIC X(120) VALUE
+                   "Ç¾¤Î´ï¼ÁÀ­¾ã³²¡ÊÇ¾·ì´É¼À´µ¡Ë".
+               05  FILLER              PIC X(04)  VALUE "34  ".
+               05  FILLER              PIC X(120) VALUE
+                   "Ç¾¤Î´ï¼ÁÀ­¾ã³²¡ÊÍ­µ¡ÍÏºÞÃæÆÇÅù¡Ë".
+               05  FILLER              PIC X(04)  VALUE "35  ".
+               05  FILLER              PIC X(120) VALUE
+                   "½Û´Ä´ï¾ã³²¡ÊÊÛÂ»½ýµÚ¤Ó¿´ËìÉÂÊÑ¡Ë".
+               05  FILLER              PIC X(04)  VALUE "36  ".
+               05  FILLER              PIC X(120) VALUE
+                   "½Û´Ä´ï¾ã³²¡Ê¿Í¹©ÊÛÃÖ´¹¸å¡Ë".
+               05  FILLER              PIC X(04)  VALUE "37  ".
+               05  FILLER              PIC X(120) VALUE
+                   "½Û´Ä´ï¾ã³²¡Ê¿Í¹©·ì´ÉÃÖ´¹¸å¡Ë".
+           03  CONST-SONSHOU-TABLE    REDEFINES    CONST-SONSHOU-AREA.
+               05  CONST-SONSHOU-TBL     OCCURS   31.
+                   07  CONST-SONSHOU-KBNCD        PIC X(04).
+                   07  CONST-SONSHOU-NAME         PIC X(120).
       *
       *****************************************************************
       *    ¥Õ¥¡¥¤¥ë¥ì¥¤¥¢¥¦¥È
@@ -811,57 +911,91 @@
        3001-SONSHOLIST-HEN-SEC          SECTION.
       *
            MOVE        1               TO  FLG-SONSHOULST-ROW
+           DISPLAY "SPA-W01-STYUKYMDH" SPA-W01-STYUKYMDH
+           INITIALIZE                      STS-AREA-DAY
+           INITIALIZE                      LNK-DAY1-AREA
+           MOVE    "12"                TO  LNK-DAY1-IRAI
+           MOVE    SPACE                  TO  LNK-DAY1-YMD-X(1:1)
+           MOVE    SPA-W01-STYUKYMDH(1:1) TO  LNK-DAY1-YMD(2:1)
+           MOVE    SPA-W01-STYUKYMDH(2:2) TO  LNK-DAY1-YMD(3:2)
+           MOVE    SPA-W01-STYUKYMDH(5:2) TO  LNK-DAY1-YMD(5:2)
+           MOVE    SPA-W01-STYUKYMDH(8:2) TO  LNK-DAY1-YMD(7:2)
+           INSPECT   LNK-DAY1-YMD     REPLACING   ALL " " BY  "0"
+           CALL    "ORCSDAY"            USING  STS-AREA-DAY
+                                               LNK-DAY1-AREA
+           MOVE    LNK-DAY1-YMD        TO  WRK-W01-YMD
       *
-           MOVE    SPACE               TO  SYS-4002-REC
-           INITIALIZE                      SYS-4002-REC
-           MOVE    "4002"              TO  SYS-4002-KANRICD
-           MOVE    SYS-4001-STYUKYMD   TO  SYS-4002-STYUKYMD
-           MOVE    SYS-4001-STYUKYMD   TO  SYS-4002-EDYUKYMD
-           MOVE    SPA-HOSPNUM         TO  SYS-4002-HOSPNUM
-           MOVE    SYS-4002-REC        TO  MCPDATA-REC
-           MOVE    "tbl_syskanri"      TO  MCP-TABLE
-           MOVE    "key2"              TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
-           IF    ( MCP-RC              =   ZERO )
+      *     IF      SYS-4001-STYUKYMD   <=  "20070630"
+           IF      WRK-W01-YMD          <=  "20070630"
+      *
+               MOVE    SPACE               TO  SYS-4002-REC
+               INITIALIZE                      SYS-4002-REC
+               MOVE    "4002"              TO  SYS-4002-KANRICD
+               MOVE    SYS-4001-STYUKYMD   TO  SYS-4002-STYUKYMD
+               MOVE    SYS-4001-STYUKYMD   TO  SYS-4002-EDYUKYMD
+               MOVE    SPA-HOSPNUM         TO  SYS-4002-HOSPNUM
+               MOVE    SYS-4002-REC        TO  MCPDATA-REC
                MOVE    "tbl_syskanri"      TO  MCP-TABLE
                MOVE    "key2"              TO  MCP-PATHNAME
-               PERFORM 900-SYSKANRI-READ-SEC
-           ELSE
-               INITIALIZE                  SYSKANRI-REC
-               MOVE    1               TO  FLG-SYSKANRI
-           END-IF
-      *
-           MOVE    ZERO                TO  IDX
-           PERFORM      UNTIL ( FLG-SYSKANRI   =   1 )
-                         OR   ( IDX           >=   CONST-LINE-MAX )
-      *
-               MOVE    MCPDATA-REC     TO  SYS-4002-REC
-               ADD     1               TO  IDX
-               MOVE    SYS-4002-KBNCD (1:3)
-                                       TO  SPA-NAI-TSONSHOUKBN   (IDX)
-               MOVE    SYS-4002-SONSHOUNAME
-                                       TO  SPA-GMN-TSONSHOUNAME  (IDX)
-               MOVE    SPA-NAI-TSONSHOUKBN1 (IDX)
-                                       TO  SPA-GMN-TSONSHOUKBN1  (IDX)
-               IF      SPA-NAI-TSONSHOUKBN2 (IDX)
-                                                  NOT =   SPACE
-                   MOVE    "-"         TO  SPA-GMN-TSONSHOUKBN-FL(IDX)
-                   MOVE    SPA-NAI-TSONSHOUKBN2 (IDX)
-                                       TO  SPA-GMN-TSONSHOUKBN2  (IDX)
+               PERFORM 910-DBSELECT-SEC
+               IF    ( MCP-RC              =   ZERO )
+                   MOVE    "tbl_syskanri"      TO  MCP-TABLE
+                   MOVE    "key2"              TO  MCP-PATHNAME
+                   PERFORM 900-SYSKANRI-READ-SEC
+               ELSE
+                   INITIALIZE                  SYSKANRI-REC
+                   MOVE    1               TO  FLG-SYSKANRI
                END-IF
       *
+               MOVE    ZERO                TO  IDX
+               PERFORM    UNTIL ( FLG-SYSKANRI   =   1 )
+                           OR   ( IDX           >=   CONST-LINE-MAX )
+      *
+                   MOVE    MCPDATA-REC     TO  SYS-4002-REC
+                   ADD     1               TO  IDX
+                   MOVE    SYS-4002-KBNCD (1:3)
+                                       TO  SPA-NAI-TSONSHOUKBN   (IDX)
+                   MOVE    SYS-4002-SONSHOUNAME
+                                       TO  SPA-GMN-TSONSHOUNAME  (IDX)
+                   MOVE    SPA-NAI-TSONSHOUKBN1 (IDX)
+                                       TO  SPA-GMN-TSONSHOUKBN1  (IDX)
+                   IF      SPA-NAI-TSONSHOUKBN2 (IDX)   NOT =   SPACE
+                       MOVE    "-"     TO  SPA-GMN-TSONSHOUKBN-FL(IDX)
+                       MOVE    SPA-NAI-TSONSHOUKBN2 (IDX)
+                                       TO  SPA-GMN-TSONSHOUKBN2  (IDX)
+                   END-IF
+      *
+                   MOVE    "tbl_syskanri"      TO  MCP-TABLE
+                   MOVE    "key2"              TO  MCP-PATHNAME
+                   PERFORM 900-SYSKANRI-READ-SEC
+      *
+               END-PERFORM
+      *
+               MOVE    IDX                 TO  SPA-GMN-MAX
+      *
+      *        ¥«¡¼¥½¥ë¥¯¥í¡¼¥¹
                MOVE    "tbl_syskanri"      TO  MCP-TABLE
                MOVE    "key2"              TO  MCP-PATHNAME
-               PERFORM 900-SYSKANRI-READ-SEC
+               PERFORM 990-DBCLOSE-SEC
       *
-           END-PERFORM
+           ELSE
       *
-           MOVE    IDX                 TO  SPA-GMN-MAX
+               PERFORM    VARYING   IDX    FROM   1   BY   1
+                          UNTIL    IDX     >    31
+                   MOVE    MCPDATA-REC     TO  SYS-4002-REC
+                   MOVE    CONST-SONSHOU-KBNCD (IDX)(1:2)
+                                       TO  SPA-NAI-TSONSHOUKBN   (IDX)
+                   MOVE    CONST-SONSHOU-NAME(IDX)
+                                       TO  SPA-GMN-TSONSHOUNAME  (IDX)
+                   MOVE    SPA-NAI-TSONSHOUKBN1 (IDX)
+                                       TO  SPA-GMN-TSONSHOUKBN1  (IDX)
+                   MOVE    SPACE       TO  SPA-GMN-TSONSHOUKBN-FL(IDX)
+                   MOVE    SPACE       TO  SPA-GMN-TSONSHOUKBN2  (IDX)
+               END-PERFORM
       *
-      *    ¥«¡¼¥½¥ë¥¯¥í¡¼¥¹
-           MOVE    "tbl_syskanri"      TO  MCP-TABLE
-           MOVE    "key2"              TO  MCP-PATHNAME
-           PERFORM 990-DBCLOSE-SEC
+               MOVE    31                 TO  SPA-GMN-MAX
+      *
+           END-IF
       *
            .
        3001-SONSHOLIST-HEN-EXT.
