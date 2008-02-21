@@ -255,7 +255,10 @@
       *  04.01.02    NACL-Æ£¸¶    08/01/10  ¥ì¥»¥×¥ÈÆÃµ­»ö¹àÊÔ½¸¾ðÊó
       *                                     Å¬ÍÑÍó¥³¥á¥ó¥ÈÂÐ±þ
       *  04.01.03    NACL-Æ£¸¶    08/02/12  µÜºê¸©¡Ö¸øÈñ£¹£°¡×ÂÐ±þ
-      *                                     ÄÌ¾ï¤Îµ­ºÜÊýË¡¤ËÌá¤¹ 
+      *                                     ÄÌ¾ï¤Îµ­ºÜÊýË¡¤ËÌá¤¹
+      *
+      *  04.02.01    NACL-Æ£¸¶    08/02/20  »°¼ï¸øÈñÊ»ÍÑÆÃÎã»þ¤ÎÉéÃ´¶èÊ¬
+      *                                     ÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1334,6 +1337,7 @@ grpsys     COPY    "COMMON-SPA".
       *********¡Ê»ÄÎÌÇÑ´þ¡Ë
       *********05  WRK-CONS-COMMENT4  PIC X(09)   VALUE   "099309901".
       *
+           03  WRK-CONS-SRYYM-200604   PIC 9(06)   VALUE   200604. 
            03  WRK-CONS-SRYYM-200704  PIC 9(06)   VALUE    200704.
       *
       *    ²þ¹Ô¥³¡¼¥É
@@ -1715,6 +1719,35 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SYS-2009-HOSPNUM
       *
       *        ÊÝ¸±ÍúÎò¾ðÊóÊÔ½¸½èÍý
                PERFORM     2001-RIREKI-HEN-SEC 
+      *
+      *        »°¼ï¸øÈñÊ»ÍÑÆÃÎã¤ÎÈ½Äê
+               MOVE    SPACE               TO  WRK-3SYU-KBN
+               PERFORM VARYING IDX FROM    1   BY  1
+                       UNTIL   IDX                 >    4 
+                       OR      RECE02-KOHID (IDX)  =   ZERO
+      *            À¸ÊÝ
+                   IF  RECE02-KOHNUM (IDX) =   "012"
+                       MOVE    "1"         TO  WRK-3SYU (1:1)
+                   END-IF
+      *            ·ë³Ë
+                   IF  RECE02-KOHNUM (IDX) =   "010"  OR  "011"
+                       MOVE    "1"         TO  WRK-3SYU (2:1)
+                   END-IF
+      *
+                   IF      RECE02-SRYYM    <   WRK-CONS-SRYYM-200604
+      *                Àº¿À
+                       IF  RECE02-KOHNUM (IDX) =   "020"  OR  "021"
+                           MOVE    "1"         TO  WRK-3SYU (3:1)
+                       END-IF
+                   ELSE
+      *                ¼«Î©»Ù±çË¡
+                       IF  RECE02-KOHNUM (IDX) =   "021"  OR
+                                                   "015"  OR  "016"  OR
+                                                   "024"
+                           MOVE    "1"         TO  WRK-3SYU (3:1)
+                       END-IF
+                   END-IF
+               END-PERFORM
       *
       *        ¼ÂÆü¿ô¡¿¹ç·×ÅÀ¿ôÅù¤Î£É£Î£Ä£Å£Ø
                MOVE    1               TO  IDX1
@@ -2893,11 +2926,18 @@ grpsys         MOVE    RECE041-HOSPNUM TO  COMB-HOSPNUM
       *        ¸øÈñÃ±ÆÈ¡Ê»°¼ï¸øÈñ¡Ë¤Î¤È¤­      
                IF      WRK-3SYU-KBN       =   ALL "1"  
                    EVALUATE    WRK-KOHNUM (1) ALSO    WRK-KOHNUM (2)
-                       WHEN    1              ALSO    ZERO
+                                                  ALSO    WRK-KOHNUM (3)
+                       WHEN    1          ALSO    ZERO     ALSO    ZERO
+                           MOVE    "5"            TO  WRK-FTNKBN
+                       WHEN    ZERO       ALSO    1        ALSO    ZERO
+                           MOVE    "6"            TO  WRK-FTNKBN
+                       WHEN    1          ALSO    1        ALSO    ZERO
+                           MOVE    "7"            TO  WRK-FTNKBN
+                       WHEN    1          ALSO    ZERO     ALSO    1
                            MOVE    "2"            TO  WRK-FTNKBN
-                       WHEN    ZERO           ALSO    1
+                       WHEN    ZERO       ALSO    1        ALSO    1
                            MOVE    "3"            TO  WRK-FTNKBN
-                       WHEN    1              ALSO    1
+                       WHEN    1          ALSO    1        ALSO    1
                            MOVE    "4"            TO  WRK-FTNKBN
                    END-EVALUATE
                ELSE    

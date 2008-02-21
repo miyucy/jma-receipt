@@ -192,7 +192,12 @@
       *  04.01.02    NACL-Æ£¸¶    08/01/10  ¥ì¥»¥×¥ÈÆÃµ­»ö¹àÊÔ½¸¾ðÊó
       *                                     Å¬ÍÑÍó¥³¥á¥ó¥ÈÂÐ±þ
       *  04.01.03    NACL-Æ£¸¶    08/02/12  µÜºê¸©¡Ö¸øÈñ£¹£°¡×ÂÐ±þ
-      *                                     ÄÌ¾ï¤Îµ­ºÜÊýË¡¤ËÌá¤¹ 
+      *                                     ÄÌ¾ï¤Îµ­ºÜÊýË¡¤ËÌá¤¹
+      *
+      *  04.02.01    NACL-Æ£¸¶    08/02/19  ¸øÈñÃ±ÆÈ¤Î¤È¤­¤Î¿©»öÉéÃ´¤Îµ­
+      *                                     ºÜÊýË¡¤ÎÊÑ¹¹
+      *  04.02.02    NACL-Æ£¸¶    08/02/20  »°¼ï¸øÈñÊ»ÍÑÆÃÎã»þ¤ÎÉéÃ´¶èÊ¬
+      *                                     ÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -376,6 +381,7 @@
            03  FLG-HIT                 PIC 9(01).
            03  FLG-COMMENT             PIC 9(01).
            03  FLG-CHK                 PIC 9(01).
+           03  FLG-PRT                 PIC 9(01).
       *
       *    ¥«¥¦¥ó¥ÈÎÎ°è
        01  CNT-AREA.
@@ -1338,6 +1344,7 @@
                05  WRK-CONS-HYOJYUN-FUTAN15
                                       PIC X(09)   VALUE   "197003010".
       *
+           03  WRK-CONS-SRYYM-200604   PIC 9(06)   VALUE   200604. 
            03  WRK-CONS-SRYYM-200609   PIC 9(06)   VALUE   200609.      
            03  WRK-CONS-SRYYM-200704   PIC 9(06)   VALUE   200704.
       *
@@ -1725,6 +1732,35 @@
                    INITIALIZE                 TBL-KASAN-RECE64-AREA
                                               TBL-KENTAI-RECE64-AREA
                                               TBL-KENSA-RECE64-AREA
+      *
+      *            »°¼ï¸øÈñÊ»ÍÑÆÃÎã¤ÎÈ½Äê
+                   MOVE    SPACE               TO  WRK-3SYU-KBN
+                   PERFORM VARYING IDX FROM    1   BY  1
+                           UNTIL   IDX                 >    4 
+                           OR      RECE62-KOHID (IDX)  =   ZERO
+      *                À¸ÊÝ
+                       IF  RECE62-KOHNUM (IDX) =   "012"
+                           MOVE    "1"         TO  WRK-3SYU (1:1)
+                       END-IF
+      *                ·ë³Ë
+                       IF  RECE62-KOHNUM (IDX) =   "010"  OR  "011"
+                           MOVE    "1"         TO  WRK-3SYU (2:1)
+                       END-IF
+      *
+                       IF      RECE62-SRYYM    <   WRK-CONS-SRYYM-200604
+      *                    Àº¿À
+                           IF  RECE62-KOHNUM (IDX) =   "020"  OR  "021"
+                               MOVE    "1"         TO  WRK-3SYU (3:1)
+                           END-IF
+                       ELSE
+      *                    ¼«Î©»Ù±çË¡
+                           IF  RECE62-KOHNUM (IDX) =   "021"  OR
+                                                   "015"  OR  "016"  OR
+                                                   "024"
+                               MOVE    "1"         TO  WRK-3SYU (3:1)
+                           END-IF
+                       END-IF
+                   END-PERFORM
       *
       *            ¼ÂÆü¿ô¡¦¹ç·×ÅÀ¿ôÅù¤Î£É£Î£Ä£Å£Ø
                    MOVE    1                   TO  IDX1
@@ -3195,11 +3231,18 @@
       *        ¸øÈñÃ±ÆÈ¡Ê»°¼ï¸øÈñ¡Ë¤Î¤È¤­      
                IF      WRK-3SYU-KBN       =   ALL "1"  
                    EVALUATE    WRK-KOHNUM (1) ALSO    WRK-KOHNUM (2)
-                       WHEN    1              ALSO    ZERO
+                                                  ALSO    WRK-KOHNUM (3)
+                       WHEN    1          ALSO    ZERO     ALSO    ZERO
+                           MOVE    "5"            TO  WRK-FTNKBN
+                       WHEN    ZERO       ALSO    1        ALSO    ZERO
+                           MOVE    "6"            TO  WRK-FTNKBN
+                       WHEN    1          ALSO    1        ALSO    ZERO
+                           MOVE    "7"            TO  WRK-FTNKBN
+                       WHEN    1          ALSO    ZERO     ALSO    1
                            MOVE    "2"            TO  WRK-FTNKBN
-                       WHEN    ZERO           ALSO    1
+                       WHEN    ZERO       ALSO    1        ALSO    1
                            MOVE    "3"            TO  WRK-FTNKBN
-                       WHEN    1              ALSO    1
+                       WHEN    1          ALSO    1        ALSO    1
                            MOVE    "4"            TO  WRK-FTNKBN
                    END-EVALUATE
                ELSE    
@@ -5837,6 +5880,7 @@
                                MOVE    1               TO  WRK-END 
                                PERFORM 5004-MOJI-HENSYU-SEC  
                            WHEN    OTHER
+                               MOVE    ZERO            TO  FLG-PRT
                                IF    ( RECE62-RECESYUBETU
                                            =   "1211"  OR  "1221"  OR
                                                "1231"                  )
@@ -5857,43 +5901,68 @@
                                            OR  WRK-CONS-HYOJYUN-FUTAN13
                                            OR  WRK-CONS-HYOJYUN-FUTAN14
                                            OR  WRK-CONS-HYOJYUN-FUTAN15)
-                                   CONTINUE
+                                   EVALUATE    WRK-FTNKBN
+                                       WHEN    "5"
+                                       WHEN    "7"
+                                           IF      RECE62-SHOKUJIFTN (2)
+                                                               >   ZERO
+                                               MOVE    1   TO  FLG-PRT
+                                           END-IF 
+                                       WHEN    "6"
+                                           IF      RECE62-SHOKUJIFTN (3)
+                                                               >   ZERO
+                                               MOVE    1   TO  FLG-PRT
+                                           END-IF 
+                                       WHEN    "1"
+                                       WHEN    "2"
+                                       WHEN    "3"
+                                       WHEN    "4"
+                                           IF      RECE62-SHOKUJIFTN (4)
+                                                               >   ZERO
+                                               MOVE    1   TO  FLG-PRT
+                                           END-IF 
+                                   END-EVALUATE
                                ELSE
-                                 IF    ( RECE62-HKNNUM     =   "002"  )
-                                 AND   ( RECE62-HOJOKBN    =   "1" OR 
-                                                               "2" OR
-                                                               "3" OR
-                                                               "A" OR 
-                                                               "B" OR
-                                                               "C" OR
-                                                               "D" OR 
-                                                               "E" OR
-                                                               "F" OR
-                                                               "G" OR 
-                                                               "H" OR
-                                                               "I"    )
-                                 AND   (  LNK-NYURECEDEN-SRYCD
-                                                       (IDZ1 IDZ2 IDXZ)
-                                           =   WRK-CONS-HYOJYUN-FUTAN1
-                                           OR  WRK-CONS-HYOJYUN-FUTAN2
-                                           OR  WRK-CONS-HYOJYUN-FUTAN3
-                                           OR  WRK-CONS-HYOJYUN-FUTAN4 )
-                                  CONTINUE
-                                 ELSE
-                                  IF    ( RECE62-HKNNUM (1:2)
-                                                          =   "03"   )
-                                  AND   ( RECE62-HOJOKBN  =   "2" OR 
-                                                              "B" OR
-                                                              "E" OR
-                                                              "H"    )
-                                  AND   (  LNK-NYURECEDEN-SRYCD
+                                   IF    ( RECE62-HKNNUM     =   "002" )
+                                   AND   ( RECE62-HOJOKBN    =   "1" OR 
+                                                                 "2" OR
+                                                                 "3" OR
+                                                                 "A" OR 
+                                                                 "B" OR
+                                                                 "C" OR
+                                                                 "D" OR 
+                                                                 "E" OR
+                                                                 "F" OR
+                                                                 "G" OR 
+                                                                 "H" OR
+                                                                 "I"   )
+                                   AND   (  LNK-NYURECEDEN-SRYCD
                                                        (IDZ1 IDZ2 IDXZ)
                                            =   WRK-CONS-HYOJYUN-FUTAN1
                                            OR  WRK-CONS-HYOJYUN-FUTAN2
                                            OR  WRK-CONS-HYOJYUN-FUTAN3
                                            OR  WRK-CONS-HYOJYUN-FUTAN4 )
                                        CONTINUE
-                                  ELSE
+                                   ELSE
+                                      IF    ( RECE62-HKNNUM (1:2)
+                                                          =   "03"   )
+                                      AND   ( RECE62-HOJOKBN  =   "2" OR 
+                                                                  "B" OR
+                                                                  "E" OR
+                                                                  "H"  )
+                                      AND   (  LNK-NYURECEDEN-SRYCD
+                                                       (IDZ1 IDZ2 IDXZ)
+                                           =   WRK-CONS-HYOJYUN-FUTAN1
+                                           OR  WRK-CONS-HYOJYUN-FUTAN2
+                                           OR  WRK-CONS-HYOJYUN-FUTAN3
+                                           OR  WRK-CONS-HYOJYUN-FUTAN4 )
+                                           CONTINUE
+                                       ELSE
+                                           MOVE    1   TO  FLG-PRT
+                                       END-IF 
+                                   END-IF
+                               END-IF   
+                               IF      FLG-PRT         =   1
                                    MOVE    "SI,"           TO  WRK-REC
                                    MOVE    3               TO
                                                        WRK-REC-LENGTH
@@ -5951,8 +6020,6 @@
                                    END-IF
                                    MOVE    1               TO  WRK-END 
                                    PERFORM 5005-NUM-HENSYU-SEC
-                                  END-IF 
-                                 END-IF
                                END-IF
                        END-EVALUATE
                        IF      WRK-REC-LENGTH      >   ZERO 
