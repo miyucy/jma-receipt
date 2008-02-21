@@ -1637,6 +1637,8 @@ grpsys     CALL    "ORCDBMAIN"         USING
                INITIALIZE                  YAKUJYO-REC
                MOVE    "DBINSERT"      TO  MCP-FUNC
                MOVE    SPA-SYSYMD      TO  YAKUJYO-CREYMD
+               MOVE    SYS-TIME        TO  YAKUJYO-UPHMS
+               MOVE    SPA-SYSYMD      TO  YAKUJYO-UPYMD
            END-IF
       *
            MOVE    SPA-HOSPNUM     TO  YAKUJYO-HOSPNUM
