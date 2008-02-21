@@ -1363,13 +1363,6 @@
                                                            (3:1)
             END-IF
       *
-      *    ¥»¥Ã¥È
-           IF     (LNK-WKSRY-SRYCD (IDX IDY)(1:1)  =   "P" )
-                MOVE    ZERO            TO  FLG-SYUBETU
-                MOVE    SPACE           TO  LNK-WKSRY-SRYKBN (IDX)
-                MOVE    SPACE           TO  LNK-WKSRY-SRYSYUKBN (IDX)
-            END-IF
-      *
             IF      FLG-SYUBETU         =   1
                ADD     1                   TO  IDX2
                MOVE    "."                 TO  SPA-GMN-INPUTCD
