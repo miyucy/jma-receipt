@@ -925,8 +925,7 @@
                                                LNK-DAY1-AREA
            MOVE    LNK-DAY1-YMD        TO  WRK-W01-YMD
       *
-      *     IF      SYS-4001-STYUKYMD   <=  "20070630"
-           IF      WRK-W01-YMD          <=  "20070630"
+           IF      WRK-W01-YMD          <=  "20080331"
       *
                MOVE    SPACE               TO  SYS-4002-REC
                INITIALIZE                      SYS-4002-REC
