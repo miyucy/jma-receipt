@@ -370,7 +370,7 @@
 	  <text_visible>True</text_visible>
 	  <text_max_length>15</text_max_length>
 	  <text>123456789012345</text>
-	  <input_mode>XIM</input_mode>
+	  <input_mode>ASCII</input_mode>
 	  <xim_enabled>False</xim_enabled>
 	</widget>
 
@@ -398,7 +398,7 @@
 	  <text_visible>True</text_visible>
 	  <text_max_length>15</text_max_length>
 	  <text>123456789012345</text>
-	  <input_mode>XIM</input_mode>
+	  <input_mode>ASCII</input_mode>
 	  <xim_enabled>False</xim_enabled>
 	</widget>
 
@@ -426,7 +426,7 @@
 	  <text_visible>True</text_visible>
 	  <text_max_length>16</text_max_length>
 	  <text>1234567890123456</text>
-	  <input_mode>XIM</input_mode>
+	  <input_mode>ASCII</input_mode>
 	  <xim_enabled>False</xim_enabled>
 	</widget>
 
@@ -454,7 +454,7 @@
 	  <text_visible>True</text_visible>
 	  <text_max_length>16</text_max_length>
 	  <text>1234567890123456</text>
-	  <input_mode>XIM</input_mode>
+	  <input_mode>ASCII</input_mode>
 	  <xim_enabled>False</xim_enabled>
 	</widget>
 
@@ -482,7 +482,7 @@
 	  <text_visible>True</text_visible>
 	  <text_max_length>16</text_max_length>
 	  <text>1234567890123456</text>
-	  <input_mode>XIM</input_mode>
+	  <input_mode>ASCII</input_mode>
 	  <xim_enabled>False</xim_enabled>
 	</widget>
 
@@ -510,7 +510,7 @@
 	  <text_visible>True</text_visible>
 	  <text_max_length>16</text_max_length>
 	  <text>1234567890123456</text>
-	  <input_mode>XIM</input_mode>
+	  <input_mode>ASCII</input_mode>
 	  <xim_enabled>False</xim_enabled>
 	</widget>
 
@@ -538,7 +538,7 @@
 	  <text_visible>True</text_visible>
 	  <text_max_length>16</text_max_length>
 	  <text>1234567890123456</text>
-	  <input_mode>XIM</input_mode>
+	  <input_mode>ASCII</input_mode>
 	  <xim_enabled>False</xim_enabled>
 	</widget>
 
@@ -566,7 +566,7 @@
 	  <text_visible>True</text_visible>
 	  <text_max_length>16</text_max_length>
 	  <text>1234567890123456</text>
-	  <input_mode>XIM</input_mode>
+	  <input_mode>ASCII</input_mode>
 	  <xim_enabled>False</xim_enabled>
 	</widget>
 
@@ -594,7 +594,7 @@
 	  <text_visible>True</text_visible>
 	  <text_max_length>16</text_max_length>
 	  <text>1234567890123456</text>
-	  <input_mode>XIM</input_mode>
+	  <input_mode>ASCII</input_mode>
 	  <xim_enabled>False</xim_enabled>
 	</widget>
 
@@ -622,7 +622,7 @@
 	  <text_visible>True</text_visible>
 	  <text_max_length>16</text_max_length>
 	  <text>1234567890123456</text>
-	  <input_mode>XIM</input_mode>
+	  <input_mode>ASCII</input_mode>
 	  <xim_enabled>False</xim_enabled>
 	</widget>
 
@@ -2145,7 +2145,7 @@
 	  <text_visible>True</text_visible>
 	  <text_max_length>16</text_max_length>
 	  <text>1234567890123456</text>
-	  <input_mode>XIM</input_mode>
+	  <input_mode>ASCII</input_mode>
 	  <xim_enabled>False</xim_enabled>
 	</widget>
 
@@ -2173,7 +2173,7 @@
 	  <text_visible>True</text_visible>
 	  <text_max_length>16</text_max_length>
 	  <text>1234567890123456</text>
-	  <input_mode>XIM</input_mode>
+	  <input_mode>ASCII</input_mode>
 	  <xim_enabled>False</xim_enabled>
 	</widget>
 
@@ -2201,7 +2201,7 @@
 	  <text_visible>True</text_visible>
 	  <text_max_length>16</text_max_length>
 	  <text>1234567890123456</text>
-	  <input_mode>XIM</input_mode>
+	  <input_mode>ASCII</input_mode>
 	  <xim_enabled>False</xim_enabled>
 	</widget>
 
@@ -2229,7 +2229,7 @@
 	  <text_visible>True</text_visible>
 	  <text_max_length>16</text_max_length>
 	  <text>1234567890123456</text>
-	  <input_mode>XIM</input_mode>
+	  <input_mode>ASCII</input_mode>
 	  <xim_enabled>False</xim_enabled>
 	</widget>
 
@@ -2257,7 +2257,7 @@
 	  <text_visible>True</text_visible>
 	  <text_max_length>16</text_max_length>
 	  <text>1234567890123456</text>
-	  <input_mode>XIM</input_mode>
+	  <input_mode>ASCII</input_mode>
 	  <xim_enabled>False</xim_enabled>
 	</widget>
 
@@ -2285,7 +2285,7 @@
 	  <text_visible>True</text_visible>
 	  <text_max_length>16</text_max_length>
 	  <text>1234567890123456</text>
-	  <input_mode>XIM</input_mode>
+	  <input_mode>ASCII</input_mode>
 	  <xim_enabled>False</xim_enabled>
 	</widget>
 
@@ -2313,7 +2313,7 @@
 	  <text_visible>True</text_visible>
 	  <text_max_length>16</text_max_length>
 	  <text>1234567890123456</text>
-	  <input_mode>XIM</input_mode>
+	  <input_mode>ASCII</input_mode>
 	  <xim_enabled>False</xim_enabled>
 	</widget>
 
@@ -2341,7 +2341,7 @@
 	  <text_visible>True</text_visible>
 	  <text_max_length>16</text_max_length>
 	  <text>1234567890123456</text>
-	  <input_mode>XIM</input_mode>
+	  <input_mode>ASCII</input_mode>
 	  <xim_enabled>False</xim_enabled>
 	</widget>
 
@@ -2717,7 +2717,7 @@
 	  <text_visible>True</text_visible>
 	  <text_max_length>30</text_max_length>
 	  <text>123456789012345678901234567899</text>
-	  <input_mode>XIM</input_mode>
+	  <input_mode>ASCII</input_mode>
 	  <xim_enabled>False</xim_enabled>
 	</widget>
 
@@ -3213,7 +3213,7 @@
 	  <text_visible>True</text_visible>
 	  <text_max_length>8</text_max_length>
 	  <text>12345678</text>
-	  <input_mode>XIM</input_mode>
+	  <input_mode>ASCII</input_mode>
 	  <xim_enabled>False</xim_enabled>
 	</widget>
 
