@@ -1,5 +1,5 @@
 R02	{
-	fixed6	{
+	fi6	{
 		B13	{
 			state	int;
 		};
@@ -7,6 +7,11 @@ R02	{
 			value	bool;
 			label	varchar(9);
 		};
+                scroll2 {
+                        hpos    int;
+                        vpos    int;
+                        view1       {
+                                fi3  {
 		STDATA01	{
 	           	state	int;
 			value	varchar(100);
@@ -1518,6 +1523,9 @@ R02	{
 		PRTFLG36	{
 			style	varchar(20);
 			value	varchar(2);
+		};
+		};
+		};
 		};
 		FILEKBN	{
 			value	varchar(42);
