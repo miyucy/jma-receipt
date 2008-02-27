@@ -4,8 +4,8 @@
                 05  R02-SYOKBN-VALUE   PIC X.
                 05  R02-SYOKBN-LABEL   PIC X(9).
               04  R02-SCROLL.
-                04  R02-SCR-HPOS      PIC S9(9)   BINARY.
-                04  R02-SCR-VPOS      PIC S9(9)   BINARY.
+                05  R02-SCR-HPOS      PIC S9(9)   BINARY.
+                05  R02-SCR-VPOS      PIC S9(9)   BINARY.
               04  R02-TSTDATA-G    OCCURS  36.
                 05  R02-TSTDATA-STATE   PIC S9(09) BINARY.
                 05  R02-TSTDATA.
