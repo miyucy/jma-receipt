@@ -52,6 +52,7 @@
       *  03.05.02    NACL-藤原    07/06/01  realtime preview 処理追加
       *  03.05.03    NACL-門脇    07/07/17  個別時のシステム管理編集修正
       *  04.01.01    NACL-門脇    07/11/01  公務災害対応
+      *  04.02.01    NACL-門脇    08/02/26  請求区分編集
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1178,6 +1179,7 @@ grpsys     MOVE    SPA-HOSPNUM         TO  SPTID-HOSPNUM
       *
            MOVE   PTRSI-KIJYUNYM       TO  WRK-RECE82-KIJYUNYM-KSI
            MOVE   PTRSI-KAISU          TO  WRK-RECE82-KAISU-KSI
+           MOVE   PTRSI-JIBAISEIKBN    TO  WRK-RECE82-SEIKYUKBN
       *
       *    点数単価
            EVALUATE  SYS-4001-TENKBN
