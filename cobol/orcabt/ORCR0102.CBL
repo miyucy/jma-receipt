@@ -123,6 +123,8 @@
       *                                     HCN061V04.red
       *                                     HCN062V04.red
       *                                     HCN063V03.red
+      *
+      *  04.02.01    NACL-藤原    08/02/25  対象なしのときのエラー追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1271,6 +1273,12 @@ grpsys                     PERFORM 900-CALL-ORCSJOB-SEC
       *    終了　　処理
       *****************************************************************
        300-END-SEC                 SECTION.
+      *
+           IF      CNT-OUT             =   ZERO
+               MOVE    "該当のレセプトはありませんでした"
+                                           TO  WRK-RECEERR
+               PERFORM 500-ERR-HENSYU-SEC
+           END-IF
       *     
            IF      WRK-PARA-SHELLID    NOT =   "RECEPTX"
       *        ステップ管理終了処理
