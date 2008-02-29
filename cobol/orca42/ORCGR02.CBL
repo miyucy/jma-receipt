@@ -2336,8 +2336,6 @@ grpsys     PERFORM 900-DBSELECT-SEC
                WHEN    "CLICKED"       ALSO    "CHK34"
                WHEN    "CLICKED"       ALSO    "CHK35"
                WHEN    "CLICKED"       ALSO    "CHK36"
-                   MOVE    MCP-WIDGET          TO  WRK-WIDGET
-                   MOVE    WRK-WIDGET2         TO  IDX 
                    PERFORM 420-CHK-CHK-SEC
            END-EVALUATE
       *
@@ -3261,6 +3259,16 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
       *****************************************************************
        420-CHK-CHK-SEC                SECTION.
       *
+           MOVE    ZERO                TO  FLG-TOUROKU
+      *    入力チェック処理
+           PERFORM 410-INPUT-CHK-SEC
+           IF      SPA-ERRCD   NOT =   SPACE
+               GO  TO  420-CHK-CHK-EXT
+           END-IF
+      *
+           MOVE    MCP-WIDGET          TO  WRK-WIDGET
+           MOVE    WRK-WIDGET2         TO  IDX 
+      *
            IF      SPA-GMN-SYOKBN     =   "T"
                MOVE    "0006"             TO  SPA-ERRCD
                MOVE    199                TO  SPA-GMN-CUR
@@ -3300,6 +3308,13 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
       *    件数出力前処理
       *****************************************************************
        440-PRINT-KENSU-GIDMSG-SEC      SECTION.
+      *
+           MOVE    ZERO                TO  FLG-TOUROKU
+      *    入力チェック処理
+           PERFORM 410-INPUT-CHK-SEC
+           IF      SPA-ERRCD   NOT =   SPACE
+                   GO  TO  440-PRINT-KENSU-GIDMSG-EXT
+           END-IF
       *
       *    ジョブ管理チェック処理
            MOVE    "CHK"           TO  SJOBKANRI-MODE
@@ -4334,6 +4349,13 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
       *****************************************************************
        460-MAEGMN-SEC             SECTION.
       *
+           MOVE    ZERO                TO  FLG-TOUROKU
+      *    入力チェック処理
+           PERFORM 410-INPUT-CHK-SEC
+           IF      SPA-ERRCD   NOT =   SPACE
+               GO  TO  460-MAEGMN-EXT
+           END-IF
+      *
            IF      SPA-GMN-PAGE       =   1
                MOVE    "0009"             TO  SPA-ERRCD
                GO  TO  460-MAEGMN-EXT
@@ -4349,6 +4371,13 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
       *    次頁　処理
       *****************************************************************
        470-ATOGMN-SEC                    SECTION.
+      *
+           MOVE    ZERO                TO  FLG-TOUROKU
+      *    入力チェック処理
+           PERFORM 410-INPUT-CHK-SEC
+           IF      SPA-ERRCD   NOT =   SPACE
+               GO  TO  470-ATOGMN-EXT
+           END-IF
       *
           IF      SPA-GMN-PAGE       =   SPA-GMN-PAGE-MAX
                MOVE    "0010"             TO  SPA-ERRCD
