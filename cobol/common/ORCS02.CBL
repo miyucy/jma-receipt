@@ -2812,7 +2812,7 @@
                                                HOKEN-ZAN-D2-AREA
                                                HOKEN-ZAN-D3-AREA
                                                HOKEN-SKJFUTAN-AREA
-                                               HOKEN-SKJZAN-AREA.
+                                               HOKEN-SKJZAN-AREA
            INITIALIZE                          HOKEN-MAX-AREA
                                                HOKEN-KAISU-TABLE
                                                HOKEN-FUTAN-AREA
@@ -2825,9 +2825,9 @@
                                                HOKEN-ZAN-D2-AREA
                                                HOKEN-ZAN-D3-AREA
                                                HOKEN-SKJFUTAN-AREA
-                                               HOKEN-SKJZAN-AREA.
+                                               HOKEN-SKJZAN-AREA
            MOVE    ALL"9"                TO    WK-KOH-COMPFTN-AREA
-                                               WK-DAY-KOH-COMPFTN-AREA.
+                                               WK-DAY-KOH-COMPFTN-AREA
       *
       *    ¼«ÇåÀÕ¡¦ÎÅÍÜÃ´Åö¼êÅöÍÑÆÃÎã½èÍý
       *    ¡Ê¼«ÇåÀÕ¤Î¾ì¹ç¡¢£±£°ÅÀ¤ò£±£²£°±ß¤ËÆÉ¤ßÂØ¤¨¤ë¡Ë
@@ -2843,9 +2843,9 @@
       *
                COMPUTE  LNK-SYU-RSIETC-MONEY =  LNK-SYU-RSIETC-MONEY
                                              +  ( 120 *  WK-RYOYO )
-           END-IF.
+           END-IF
       *
-           INITIALIZE    WK-SYUHKN-TAIHI-AREA.
+           INITIALIZE    WK-SYUHKN-TAIHI-AREA
       *
       *    ¸øÈñÃ±ÆÈ¤ÇÏ·¿ÍÊÝ¸±ÆþÎÏ¤¬¤¢¤ë¤«¥Á¥§¥Ã¥¯
            IF      COMB-HKNNUM          =   SPACE
@@ -2892,7 +2892,7 @@
                 MOVE    "tbl_ptkohinf"   TO  MCP-TABLE
                 MOVE    "key4"           TO  MCP-PATHNAME
                 PERFORM  DB-CLOSE-SEC
-           END-IF.
+           END-IF
       *
            IF  LNK-S02-KOUREI-NYUIN-KBN     =   SPACE   
       *        ´µ¼ÔÇ¯Îð·×»»
@@ -2943,7 +2943,7 @@
       *
                    MOVE  SPACE       TO  LNK-S02-KOUREI-NYUIN-KBN
                END-IF
-           END-IF.       
+           END-IF
            IF   LNK-S02-KOUREI-NYUIN-KBN   =  "1"
                IF  COMB-SYU-HKNKOHSBTKBN   =   "8"
                    MOVE  SPACE       TO  LNK-S02-KOUREI-NYUIN-KBN
@@ -2952,10 +2952,10 @@
                                 OR "068" OR "069" OR "038"
                    MOVE  SPACE       TO  LNK-S02-KOUREI-NYUIN-KBN
                END-IF
-           END-IF.                                               
+           END-IF                                               
       *
       *    °ìÈÌ·Ð²áÁ¼ÃÖÂÐ¾Ý¼Ô
-           MOVE      ZERO     TO    FLG-KEIKASOCHI-IPAN.
+           MOVE      ZERO     TO    FLG-KEIKASOCHI-IPAN
            IF  (LNK-S02-KOUREI-NYUIN-KBN      =   "1"    )
            AND (LNK-SYU-SRYYMD(1:6)          >=  "200608")
            AND (LNK-SYU-SRYYMD(1:6)          <=  "200808")
@@ -2992,11 +2992,11 @@
                 MOVE    "tbl_ptkohinf"       TO  MCP-TABLE
                 MOVE    "key4"               TO  MCP-PATHNAME
                 PERFORM  DB-CLOSE-SEC
-           END-IF.
+           END-IF
       *
       *    ¸º³Û¡¦ÌÈ½ü¡¦»ÙÊ§Í±Í½ÂÐ¾Ý¼Ô
-           MOVE     ZERO     TO     WK-GENGAKUKBN.
-           MOVE     ZERO     TO     WK-GENGAKU-KOHID.
+           MOVE     ZERO     TO     WK-GENGAKUKBN
+           MOVE     ZERO     TO     WK-GENGAKU-KOHID
       *
            IF   (LNK-SYU-SRYYMD(1:6)       >=  "200610")
            AND  (COMB-HKNNUM            NOT =   SPACE  )
@@ -3061,11 +3061,11 @@
             END-IF
             MOVE   WK-GENGAKUKBN    TO    LNK-SYU-YKZKENNUM
       *
-           END-IF.
+           END-IF
       *
       *    ¹â³Û°ÑÇ¤Ê§¤¤À©ÅÙÂÐ¾Ý¼Ô
-           MOVE      ZERO     TO    FLG-KOHININBARAI.
-           MOVE      ZERO     TO    WK-KOHININBARAI-KOHID.
+           MOVE      ZERO     TO    FLG-KOHININBARAI
+           MOVE      ZERO     TO    WK-KOHININBARAI-KOHID
            IF   LNK-S02-KOUREI-NYUIN-KBN      =   "1"
                 CONTINUE
            ELSE
@@ -3114,10 +3114,10 @@
                 PERFORM  DB-CLOSE-SEC
               END-IF
             END-IF
-           END-IF.
+           END-IF
       *
       *    £·£°ºÐÌ¤Ëþ¹â³Û¸½ÊªµëÉÕÂÐ¾Ý¼Ô
-           MOVE      ZERO     TO    FLG-GENBUTU70.
+           MOVE      ZERO     TO    FLG-GENBUTU70
            IF     LNK-SYU-SRYYMD(1:6)       >=  "200704"
              IF  (LNK-S02-KOUREI-NYUIN-KBN   =   "1"     )
              OR  (COMB-HKNNUM                =   SPACE   )
@@ -3171,10 +3171,10 @@
                  PERFORM  DB-CLOSE-SEC
                END-PERFORM
              END-IF
-           END-IF.
+           END-IF
       *
       *    ¹â³Û£´²óÌÜ°Ê¹ßÂÐ¾Ý¼Ô
-           MOVE      ZERO     TO    FLG-KOHYONKAIME.
+           MOVE      ZERO     TO    FLG-KOHYONKAIME
            IF  ( LNK-S02-KOUREI-NYUIN-KBN      =   "1")
                 INITIALIZE                       PTKOHINF-REC
                 MOVE    LNK-SYU-HOSPNUM      TO  PTKOH-HOSPNUM
@@ -3209,7 +3209,7 @@
                 MOVE    "tbl_ptkohinf"       TO  MCP-TABLE
                 MOVE    "key4"               TO  MCP-PATHNAME
                 PERFORM  DB-CLOSE-SEC
-           END-IF.
+           END-IF
            IF  ( FLG-GENBUTU70             NOT =  ZERO)
                 INITIALIZE                       PTKOHINF-REC
                 MOVE    LNK-SYU-HOSPNUM      TO  PTKOH-HOSPNUM
@@ -3242,12 +3242,12 @@
                 MOVE    "tbl_ptkohinf"       TO  MCP-TABLE
                 MOVE    "key4"               TO  MCP-PATHNAME
                 PERFORM  DB-CLOSE-SEC
-           END-IF.
+           END-IF
       *
            IF    (FLG-GENBUTU70   NOT =  ZERO)
            AND   (FLG-KOHININBARAI    =    1 )
               MOVE   ZERO     TO    FLG-KOHININBARAI
-           END-IF.
+           END-IF
            IF     FLG-GENBUTU70   NOT =  ZERO
               EVALUATE   FLG-GENBUTU70
                 WHEN        1
@@ -3278,24 +3278,24 @@
                     MOVE   20000   TO  WK-GEN70-GENDOGAKU
                  END-IF
               END-IF
-           END-IF.
+           END-IF
       *
       *    Ï«ºÒ¡¦¼«ÇåÀÕ¤ÎÉéÃ´³ä¹ç¤òµá¤á¤ë
       *
       *    IF   WK-HKNKBN              =   "1"
       *
-               MOVE      ZERO               TO      FLG-KENPOJYUNKYO.
+               MOVE      ZERO               TO      FLG-KENPOJYUNKYO
       *
-               INITIALIZE                           PTINF-REC.
-               MOVE    LNK-SYU-HOSPNUM      TO      PTINF-HOSPNUM.
-               MOVE    LNK-SYU-PTID         TO      PTINF-PTID.
-               MOVE    PTINF-REC            TO      MCPDATA-REC.
-               MOVE    "DBSELECT"           TO      MCP-FUNC.
-               MOVE    "tbl_ptinf"          TO      MCP-TABLE.
-               MOVE    "key"                TO      MCP-PATHNAME.
+               INITIALIZE                           PTINF-REC
+               MOVE    LNK-SYU-HOSPNUM      TO      PTINF-HOSPNUM
+               MOVE    LNK-SYU-PTID         TO      PTINF-PTID
+               MOVE    PTINF-REC            TO      MCPDATA-REC
+               MOVE    "DBSELECT"           TO      MCP-FUNC
+               MOVE    "tbl_ptinf"          TO      MCP-TABLE
+               MOVE    "key"                TO      MCP-PATHNAME
                CALL    "ORCDBMAIN"          USING   MCPAREA
                                                     MCPDATA-REC
-                                                    SPA-AREA.
+                                                    SPA-AREA
                IF      MCP-RC               =       ZERO
                    MOVE    "tbl_ptinf"      TO      MCP-TABLE
                    MOVE    "key"            TO      MCP-PATHNAME
@@ -3304,24 +3304,24 @@
                    DISPLAY   "PTINF SELECT ERR"
       *
                    INITIALIZE                   PTINF-REC
-               END-IF.
+               END-IF
       *
-               MOVE    "tbl_ptinf"          TO      MCP-TABLE.
-               MOVE    "key"                TO      MCP-PATHNAME.
-               PERFORM  DB-CLOSE-SEC.
+               MOVE    "tbl_ptinf"          TO      MCP-TABLE
+               MOVE    "key"                TO      MCP-PATHNAME
+               PERFORM  DB-CLOSE-SEC
       *
-               INITIALIZE                  ORCSAGECHKAREA.
-               MOVE    LNK-SYU-HOSPNUM TO  AGECHK-HOSPNUM.
-               MOVE    LNK-SYU-PTID    TO  AGECHK-PTID.
-               MOVE    LNK-SYU-SRYYMD  TO  AGECHK-SRYYMD.
-               MOVE    PTINF-BIRTHDAY  TO  AGECHK-BIRTHDAY.
+               INITIALIZE                  ORCSAGECHKAREA
+               MOVE    LNK-SYU-HOSPNUM TO  AGECHK-HOSPNUM
+               MOVE    LNK-SYU-PTID    TO  AGECHK-PTID
+               MOVE    LNK-SYU-SRYYMD  TO  AGECHK-SRYYMD
+               MOVE    PTINF-BIRTHDAY  TO  AGECHK-BIRTHDAY
                MOVE    LNK-SYU-HKNCOMBINUM 
-                                       TO  AGECHK-HKNCOMBINUM.
+                                       TO  AGECHK-HKNCOMBINUM
                MOVE    LNK-SYU-NYUGAIKBN
-                                       TO  AGECHK-NYUGAIKBN.
+                                       TO  AGECHK-NYUGAIKBN
                CALL    "ORCSAGECHK"        USING
                                            ORCSAGECHKAREA
-                                           SPA-AREA.
+                                           SPA-AREA
                IF      AGECHK-RC       =   ZERO
                    MOVE   AGECHK-FTNRATE  TO  LNK-SYU-PTFTNRATE
                    IF    WK-HKNKBN        =  "1"
@@ -3331,34 +3331,36 @@
                    END-IF
                ELSE
                    DISPLAY  "PTINF AGE-CHK ERR " LNK-SYU-PTID
-               END-IF.
+               END-IF
       *
       *    END-IF.
       *
-           MOVE      15000       TO     WK-SEIHO-GENDO.
+           MOVE      15000       TO     WK-SEIHO-GENDO
            IF  FLG-KOHYONKAIME = 1
               MOVE   24600       TO     WK-SEIHO-GENDO70
            ELSE
               MOVE   35400       TO     WK-SEIHO-GENDO70
-           END-IF.
-           MOVE      10000       TO     WK-CYOKI-GENDO.
-           MOVE      20000       TO     WK-CYOKI-GENDO2.
+           END-IF
+           MOVE      10000       TO     WK-CYOKI-GENDO
+           MOVE      20000       TO     WK-CYOKI-GENDO2
       *
       *    ¸º³Û¡Ê³ä¹ç¡¦¶â³Û¡Ë¤Î¼è¹þ¤ß½èÍý
       *    ¸øÈñÉéÃ´¸ÂÅÙ³Û¤Î¸º³Û
            IF    WK-GENGAKUKBN    NOT  =   ZERO
                PERFORM     2001-KOHGENDO-GEN-SEC
-           END-IF.
+           END-IF
       *
       *    ÊÝ¸±ÈÖ¹æ¥Æ¡¼¥Ö¥ë¤«¤é¸øÈñ¤ÎÉéÃ´¾å¸Â¶â³Û¤Î¼èÆÀ
-           PERFORM         210-HOKEN-KAISU-SEC.
+           PERFORM         210-HOKEN-KAISU-SEC
       *
       *    ¿ÇÎÅ·îÆâ¤Î¼ýÇ¼¥Þ¥¹¥¿¤«¤é¸øÈñËè¤Î´µ¼ÔÉéÃ´¶â³Û¤Î
       *    Îß·×¤òÄ´ºº
-           PERFORM         220-SYUNOU-SEC.
+           PERFORM         220-SYUNOU-SEC
       *
       *    ÊÝ¸±¡¦¸øÈñ¤ÎÉéÃ´¶â·×»»
-           PERFORM         230-FTNKIN-SEC.
+           PERFORM         230-FTNKIN-SEC
+      *
+           .
       *
        200-HKNFTN-SANTEI-EXT.
            EXIT.
