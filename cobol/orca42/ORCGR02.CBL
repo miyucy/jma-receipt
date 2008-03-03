@@ -4396,6 +4396,13 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
       *****************************************************************
        490-HENTETU-SEC                    SECTION.
       *
+           MOVE    ZERO                TO  FLG-TOUROKU
+      *    入力チェック処理
+           PERFORM 410-INPUT-CHK-SEC
+           IF      SPA-ERRCD   NOT =   SPACE
+               GO  TO  490-HENTETU-EXT
+           END-IF
+      *
            MOVE    SPACE               TO  R05
       *
            EVALUATE    SPA-NAI-2008-PREFKBN-PRTJYUN
@@ -4503,6 +4510,13 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
       *****************************************************************
        490-PRINTER-SETTEI-SEC            SECTION.
       *
+           MOVE    ZERO                TO  FLG-TOUROKU
+      *    入力チェック処理
+           PERFORM 410-INPUT-CHK-SEC
+           IF      SPA-ERRCD   NOT =   SPACE
+               GO  TO  490-PRINTER-SETTEI-EXT
+           END-IF
+      *
            MOVE    SPACE               TO  SPA-MOTOPG
            MOVE    SPA-GMN-TPRTNM-G   (SPA-GMN-PAGE 1)
                                        TO  SPA-R01-PRTNM-G 
@@ -4545,6 +4559,13 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
       *    処理確認処理
       *****************************************************************
        490-KAKUNIN-SEC            SECTION.
+      *
+           MOVE    ZERO                TO  FLG-TOUROKU
+      *    入力チェック処理
+           PERFORM 410-INPUT-CHK-SEC
+           IF      SPA-ERRCD   NOT =   SPACE
+               GO  TO  490-KAKUNIN-EXT
+           END-IF
       *                                      
       *    画面移行用のパラメタ
            PERFORM 4901-PARA-HENSYU-SEC
@@ -4680,6 +4701,13 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
       *    情報削除画面へ
       *****************************************************************
        490-JYOUHOU-DEL-SEC             SECTION.
+      *
+           MOVE    ZERO                TO  FLG-TOUROKU
+      *    入力チェック処理
+           PERFORM 410-INPUT-CHK-SEC
+           IF      SPA-ERRCD   NOT =   SPACE
+               GO  TO  490-JYOUHOU-DEL-EXT
+           END-IF
       *
            MOVE    SPACE               TO  LINKAREA
            MOVE    SPA-KYOUTU          TO  LNK-COMMON
