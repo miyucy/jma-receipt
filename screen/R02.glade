@@ -78,12 +78,6 @@
 	<key>GDK_F2</key>
 	<signal>clicked</signal>
       </accelerator>
-      <signal>
-	<name>clicked</name>
-	<handler>send_event</handler>
-	<data>CLICKED</data>
-	<last_modification_time>Tue, 26 Dec 2000 00:42:45 GMT</last_modification_time>
-      </signal>
       <label></label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
@@ -101,12 +95,6 @@
 	<key>GDK_F3</key>
 	<signal>clicked</signal>
       </accelerator>
-      <signal>
-	<name>clicked</name>
-	<handler>send_event</handler>
-	<data>CLICKED</data>
-	<last_modification_time>Tue, 26 Dec 2000 00:43:04 GMT</last_modification_time>
-      </signal>
       <label></label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
@@ -147,12 +135,6 @@
 	<key>GDK_F5</key>
 	<signal>clicked</signal>
       </accelerator>
-      <signal>
-	<name>clicked</name>
-	<handler>send_event</handler>
-	<data>CLICKED</data>
-	<last_modification_time>Tue, 26 Dec 2000 00:43:16 GMT</last_modification_time>
-      </signal>
       <label></label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
@@ -239,12 +221,6 @@
 	<key>GDK_F9</key>
 	<signal>clicked</signal>
       </accelerator>
-      <signal>
-	<name>clicked</name>
-	<handler>send_event</handler>
-	<data>CLICKED</data>
-	<last_modification_time>Mon, 02 Apr 2001 07:12:50 GMT</last_modification_time>
-      </signal>
       <label></label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
@@ -262,12 +238,6 @@
 	<key>GDK_F10</key>
 	<signal>clicked</signal>
       </accelerator>
-      <signal>
-	<name>clicked</name>
-	<handler>send_event</handler>
-	<data>CLICKED</data>
-	<last_modification_time>Tue, 26 Dec 2000 00:43:57 GMT</last_modification_time>
-      </signal>
       <label></label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
