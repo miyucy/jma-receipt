@@ -111,6 +111,174 @@ W21	{
 			value	number(6);
 			state	int;
 		};
+		LBLKSN01	{
+			value	varchar(36);
+		};
+		LBLKSN02	{
+			value	varchar(36);
+		};
+		LBLKSN03	{
+			value	varchar(36);
+		};
+		LBLKSN04	{
+			value	varchar(36);
+		};
+		LBLKSN05	{
+			value	varchar(36);
+		};
+		LBLKSN06	{
+			value	varchar(36);
+		};
+		LBLKSN07	{
+			value	varchar(36);
+		};
+		LBLKSN08	{
+			value	varchar(36);
+		};
+		LBLKSN09	{
+			value	varchar(36);
+		};
+		LBLKSN10	{
+			value	varchar(36);
+		};
+		LBLKSN11	{
+			value	varchar(36);
+		};
+		LBLKSN12	{
+			value	varchar(36);
+		};
+		LBLKSN13	{
+			value	varchar(36);
+		};
+		LBLKSN14	{
+			value	varchar(36);
+		};
+		CMB_KSN01	{
+			KSN01	{
+				value	varchar(27);
+				state	int;
+			};
+			count	int;
+			item	varchar(27)[10];
+			state	int;
+		};
+		CMB_KSN02	{
+			KSN02	{
+				value	varchar(27);
+				state	int;
+			};
+			count	int;
+			item	varchar(27)[10];
+			state	int;
+		};
+		CMB_KSN03	{
+			KSN03	{
+				value	varchar(27);
+				state	int;
+			};
+			count	int;
+			item	varchar(27)[10];
+			state	int;
+		};
+		CMB_KSN04	{
+			KSN04	{
+				value	varchar(27);
+				state	int;
+			};
+			count	int;
+			item	varchar(27)[10];
+			state	int;
+		};
+		CMB_KSN05	{
+			KSN05	{
+				value	varchar(27);
+				state	int;
+			};
+			count	int;
+			item	varchar(27)[10];
+			state	int;
+		};
+		CMB_KSN06	{
+			KSN06	{
+				value	varchar(27);
+				state	int;
+			};
+			count	int;
+			item	varchar(27)[10];
+			state	int;
+		};
+		CMB_KSN07	{
+			KSN07	{
+				value	varchar(27);
+				state	int;
+			};
+			count	int;
+			item	varchar(27)[10];
+			state	int;
+		};
+		CMB_KSN08	{
+			KSN08	{
+				value	varchar(27);
+				state	int;
+			};
+			count	int;
+			item	varchar(27)[10];
+			state	int;
+		};
+		CMB_KSN09	{
+			KSN09	{
+				value	varchar(27);
+				state	int;
+			};
+			count	int;
+			item	varchar(27)[10];
+			state	int;
+		};
+		CMB_KSN10	{
+			KSN10	{
+				value	varchar(27);
+				state	int;
+			};
+			count	int;
+			item	varchar(27)[10];
+			state	int;
+		};
+		CMB_KSN11	{
+			KSN11	{
+				value	varchar(27);
+				state	int;
+			};
+			count	int;
+			item	varchar(27)[10];
+			state	int;
+		};
+		CMB_KSN12	{
+			KSN12	{
+				value	varchar(27);
+				state	int;
+			};
+			count	int;
+			item	varchar(27)[10];
+			state	int;
+		};
+		CMB_KSN13	{
+			KSN13	{
+				value	varchar(27);
+				state	int;
+			};
+			count	int;
+			item	varchar(27)[10];
+			state	int;
+		};
+		CMB_KSN14	{
+			KSN14	{
+				value	varchar(27);
+				state	int;
+			};
+			count	int;
+			item	varchar(27)[10];
+			state	int;
+		};
 		YUKOSTYMD	{
 			value	varchar(10);
 			state	int;

@@ -86,6 +86,7 @@
            03  IDX3                                PIC 9(05).
            03  IDX4                                PIC 9(05).
            03  IDX5                                PIC 9(05).
+           03  IDX6                                PIC 9(05).
            03  IDX-CMB                             PIC 9(05).
            03  IDX-MAX                             PIC 9(05).
            03  IDX-LST                             PIC 9(05).
@@ -142,8 +143,10 @@
            03  WRK-BASE-CUR                        PIC 9(03).
            03  WRK-KSNCD                           PIC X(09).
            03  WRK-KSNKSNKBN                       PIC 9(03).
-           03  WRK-KHNKSNKBN                       PIC 9(03).
-           03  WRK-TOKKSNKBN                       PIC 9(03).
+           03  WRK-NYUKSNKBN-G.
+               03  WRK-NYUKSNKBN-MAX               PIC 9(03).
+               03  WRK-NYUKSNKBN                   PIC 9(03)
+                                                   OCCURS   10.
            03  WRK-KSNKBN                          PIC 9(03).
            03  WRK-NYUINKBN                        PIC 9(03).
            03  WRK-SSTKJNCD-G.
@@ -154,7 +157,7 @@
                        WRK-SSTKJNCD.
                        09  WRK-SSTKJNCD9           PIC 9(03).
            03  WRK-KSNMEI                          PIC X(100).
-           03  WRK-PNT                             PIC 9(03)..
+           03  WRK-PNT                             PIC 9(03).
       *
        01  WRK-ROW.
            03  WRK-BTULST-ROW                      PIC S9(9)   BINARY.
@@ -2418,7 +2421,8 @@
       *
            IF    ( SPA-NAI-W20-YUKOSTYMD  >=   CONST-H180401 )
                IF    ( SPA-GMN-W20-SBT NOT =   "04" )
-                   MOVE    SPACE       TO  SPA-GMN-W20-YKNKNG-G
+                   MOVE  SPA-GMN-W20-YKNKNGLST (01)
+                                       TO  SPA-GMN-W20-YKNKNG-G
                END-IF
            END-IF
       *
@@ -4024,15 +4028,22 @@
            INITIALIZE                  WRK-SSTKJNCD-G
            MOVE    ZERO            TO  FLG-SSTKIJUNERR
                                        FLG-KSNERR
-                                       WRK-KHNKSNKBN
-                                       WRK-TOKKSNKBN
+                                       WRK-NYUKSNKBN-G
                                        WRK-KSNKSNKBN
       *
            IF    ( SPA-NAI-W20-KHNSRYCD    NOT =   SPACE )
-               MOVE    SPA-NAI-W20-KHNSRYCD    TO  WRK-TNS-SRYCD
+               EVALUATE    SPA-NAI-W20-KHNSRYCD
+               WHEN    "099999950"
+                   MOVE    "190097010"         TO  WRK-TNS-SRYCD
+               WHEN    "099999951"
+                   MOVE    "190097210"         TO  WRK-TNS-SRYCD
+               WHEN    OTHER
+                   MOVE    SPA-NAI-W20-KHNSRYCD
+                                               TO  WRK-TNS-SRYCD
+               END-EVALUATE
                MOVE    SPA-NAI-W20-YUKOSTYMD   TO  WRK-TNS-KJNYMD
                PERFORM 900-TENSU-KEY-SEL-SEC
-               MOVE    TNS-NYUKHNKSNKBN        TO WRK-KHNKSNKBN
+               MOVE    TNS-NYUKHNKSNKBN        TO WRK-NYUKSNKBN (1)
            END-IF
       *
            IF    ( SPA-GMN-W20-TOKNYUIN    NOT =   SPACE )
@@ -4041,8 +4052,10 @@
                MOVE    WRK-CMB-ITM3            TO  WRK-TNS-SRYCD
                MOVE    SPA-NAI-W20-YUKOSTYMD   TO  WRK-TNS-KJNYMD
                PERFORM 900-TENSU-KEY-SEL-SEC
-               MOVE    TNS-NYUKHNKSNKBN        TO WRK-TOKKSNKBN
+               MOVE    TNS-NYUKHNKSNKBN        TO WRK-NYUKSNKBN (2)
            END-IF
+      *
+           MOVE    2                           TO  WRK-NYUKSNKBN-MAX
       *
            MOVE    WRK-KSNCD                   TO  WRK-TNS-SRYCD
            MOVE    SPA-NAI-W20-YUKOSTYMD       TO  WRK-TNS-KJNYMD
@@ -4079,34 +4092,20 @@
       *
                MOVE    ZERO        TO  FLG-HIT
       *
-               IF    ( WRK-KSNCD       =   "190109670"
-                                        OR "190117070" )
-                   IF    ( SPA-NAI-W20-KHNSRYCD
-                                       =   "099999950" )
-                       MOVE    1       TO  FLG-HIT
-                   END-IF
-               ELSE
-                   IF    ( WRK-KHNKSNKBN           >   ZERO )
-                       MOVE    WRK-KHNKSNKBN       TO  WRK-NYUINKBN
-                       MOVE    WRK-KSNKSNKBN       TO  WRK-KSNKBN
-                       MOVE    SPA-NAI-W20-YUKOSTYMD
-                                                   TO  WRK-YUKOSTYMD
+               PERFORM VARYING IDX6    FROM    1   BY  1
+                       UNTIL ( IDX6    >   WRK-NYUKSNKBN-MAX )
+                        OR   ( FLG-HIT =   1 )
+      *
+                   IF    ( WRK-NYUKSNKBN (IDX6)    >   ZERO )
+                       MOVE    WRK-NYUKSNKBN (IDX6)    TO  WRK-NYUINKBN
+                       MOVE    WRK-KSNKSNKBN           TO  WRK-KSNKBN
+                       MOVE    SPA-NAI-W20-YUKOSTYMD   TO  WRK-YUKOSTYMD
                        PERFORM 900-NYUKSNCHK-KEY-SEL-SEC
                        IF    ( NYUKSNCHK-CHKKBN    =   "1" OR "2" )
                            MOVE    1       TO  FLG-HIT
                        END-IF
                    END-IF
-                   IF    ( WRK-TOKKSNKBN           >   ZERO )
-                       MOVE    WRK-TOKKSNKBN       TO  WRK-NYUINKBN
-                       MOVE    WRK-KSNKSNKBN       TO  WRK-KSNKBN
-                       MOVE    SPA-NAI-W20-YUKOSTYMD
-                                                   TO  WRK-YUKOSTYMD
-                       PERFORM 900-NYUKSNCHK-KEY-SEL-SEC
-                       IF    ( NYUKSNCHK-CHKKBN    =   "1" OR "2" )
-                           MOVE    1       TO  FLG-HIT
-                       END-IF
-                   END-IF
-               END-IF
+               END-PERFORM
       *
                IF    ( FLG-HIT     =       ZERO )
                    MOVE    1       TO      FLG-KSNERR

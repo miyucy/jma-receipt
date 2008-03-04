@@ -81,6 +81,20 @@
                 05  W21-KHNRYO-ITM-STT     PIC S9(9)   BINARY.
               04  W21-KHNTEN               PIC S9(6).
               04  W21-KHNTEN-STT           PIC S9(9)   BINARY.
+      *
+              04  W21-LBLKSN-G.
+                05  W21-LBLKSN             PIC X(36)
+                                           OCCURS      14.
+      *
+              04  W21-CMB-KSN-G.
+                05  W21-CMB-KSN-OCC        OCCURS      14.
+      *
+                  06  W21-KSN              PIC X(27).
+                  06  W21-KSN-STATE        PIC S9(9)   BINARY.
+      *
+                  06  W21-KSN-CNT          PIC S9(9)   BINARY.
+                  06  W21-KSN-ITM          PIC X(27)   OCCURS  10.
+                  06  W21-KSN-ITM-STATE    PIC S9(9)   BINARY.
               04  W21-YUKOSTYMD            PIC X(10).
               04  W21-YUKOSTYMD-STT        PIC S9(9)   BINARY.
               04  W21-YUKOEDYMD            PIC X(10).
