@@ -31,6 +31,7 @@
       *  01.00.02    NACL−小豆沢 06/12/15  MONFUNC対応
       *
       *  03.05.01    NACL-藤原    07/04/19  グループ診療対応
+      *  04.02.01    NACL-門脇    08/02/29  平成２０年４月改正対応
       *****************************************************************
       *
       *
@@ -204,6 +205,7 @@ grpsys     MOVE    LNK-SKOHPLUS-HOSPNUM
       *
       *老人保健該当者かを判定
            IF     COMB-KOHHKNNUM(1)    =    "027"
+           OR     COMB-HKNNUM          =    "039"
                   MOVE     1           TO   FLG-RJNHKN
            END-IF
       *
