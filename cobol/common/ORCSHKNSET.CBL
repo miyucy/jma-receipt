@@ -35,6 +35,7 @@
       * 03.05.00     NACL-多々納  07/04/XX  グループ診療対応
       * 04.01.00     NACL-多々納  07/10/19  公務災害追加
       * 04.01.01     NACL-多々納  07/11/12  非表示区分対応追加
+      * 04.02.00     NACL-多々納  08/03/XX  Ｈ２０．４改正対応
       *****************************************************************
       *
       *
@@ -160,13 +161,15 @@
       *
       *    全角チェックパラメタ
            COPY    "CPORCSKANACHK.INC".
+      *    年齢・負担割合サブ
+           COPY    "CPORCSAGECHK.INC".
       *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
            COPY    "CPORCMCP.INC".
       *
            COPY    "MCPAREA".
-           COPY    "ORCA-SPA".
+      *****COPY    "ORCA-SPA".
       *
       *
       *****************************************************************
@@ -220,30 +223,42 @@
       *
            MOVE    SPA-BIRTHDAY        TO  WRK-BYMD
       *
-      *    １日以外の誕生日の時は、翌月１日を基準とする
-           IF      WRK-BDD             >   01
-               COMPUTE WRK-BMM         =   WRK-BMM     +   1
-               IF      WRK-BMM         >   12
-                   COMPUTE WRK-BYY         =   WRK-BYY     +   1
-                   MOVE    01              TO  WRK-BMM
-               END-IF
-               MOVE    01              TO  WRK-BDD
-           END-IF
+      *    保険算定年齢
+           INITIALIZE                  ORCSAGECHKAREA
+           MOVE    SPA-HOSPNUM         TO  AGECHK-HOSPNUM
+           MOVE    SPA-PTID            TO  AGECHK-PTID
+           MOVE    SPA-SRYYMD          TO  AGECHK-SRYYMD
+           MOVE    SPA-BIRTHDAY        TO  AGECHK-BIRTHDAY
+           MOVE    SPA-NYUGAIKBN       TO  AGECHK-NYUGAIKBN
+           CALL    "ORCSAGECHK"        USING
+                                       ORCSAGECHKAREA
+                                       SPA-AREA
+      *    保険年齢
+           MOVE    AGECHK-NENREI       TO  WRK-NENREI
+      *****１日以外の誕生日の時は、翌月１日を基準とする
+      *    IF      WRK-BDD             >   01
+      *        COMPUTE WRK-BMM         =   WRK-BMM     +   1
+      *        IF      WRK-BMM         >   12
+      *            COMPUTE WRK-BYY         =   WRK-BYY     +   1
+      *            MOVE    01              TO  WRK-BMM
+      *        END-IF
+      *        MOVE    01              TO  WRK-BDD
+      *    END-IF
       *
       *    年齢を計算する
-           MOVE    SPA-SRYYMD          TO  WRK-SYMD
-           COMPUTE WRK-NENREI-YY       =   WRK-SYY
-                                       -   WRK-BYY
-           IF      WRK-BYMD(5:4)       >   WRK-SYMD(5:4)
-               COMPUTE WRK-NENREI-YY       =   WRK-NENREI-YY
-                                           -   1
-               COMPUTE WRK-NENREI-MM       =  (WRK-BMM   +  12 )
-                                           -   WRK-SMM
-           ELSE
-               COMPUTE WRK-NENREI-MM       =   WRK-BMM
-                                           -   WRK-SMM
-           END-IF
-           MOVE    WRK-NENREI-YY       TO  WRK-NENREI
+      *    MOVE    SPA-SRYYMD          TO  WRK-SYMD
+      *    COMPUTE WRK-NENREI-YY       =   WRK-SYY
+      *                                -   WRK-BYY
+      *    IF      WRK-BYMD(5:4)       >   WRK-SYMD(5:4)
+      *        COMPUTE WRK-NENREI-YY       =   WRK-NENREI-YY
+      *                                    -   1
+      *        COMPUTE WRK-NENREI-MM       =  (WRK-BMM   +  12 )
+      *                                    -   WRK-SMM
+      *    ELSE
+      *        COMPUTE WRK-NENREI-MM       =   WRK-BMM
+      *                                    -   WRK-SMM
+      *    END-IF
+      ***  MOVE    WRK-NENREI-YY       TO  WRK-NENREI
       *
            .
        1001-NENREI-EXT.
@@ -454,9 +469,13 @@
                                                                (IDX)
            END-IF
       *    ３歳未満の時、２割を上限とする
-           IF     (COMB-TEKEDYMD       >=  "20021001") AND
+           IF    ((COMB-TEKEDYMD       >=  "20021001") AND
                   (SPA-SRYYMD          >=  "20021001") AND
-                  (WRK-NENREI          <   03        )
+                  (WRK-NENREI          <   03        ))
+      *    Ｈ２０．４改正
+             OR  ((COMB-TEKEDYMD       >=  "20080401") AND
+                  (SPA-SRYYMD          >=  "20080401") AND
+                  (AGECHK-SYUGAKUKBN   =   1         ))
       *        主保険が自費以外の時
                PERFORM 3001-HKNNUM-CHK-SEC
       *        自費・治験

@@ -62,6 +62,7 @@
       *  03.05.01    NACL-多々納  07/08/16  患者メモ削除追加
       *                                     ＱＲ受付削除
       *  04.01.00    NACL-多々納  07/12/XX  患者禁忌薬剤マスタ追加
+      *  04.02.00    NACL-多々納  08/03/XX  平成２０年４月改正対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -4376,6 +4377,30 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                                TO  SPA-ERRMSG
                    MOVE    "登録して下さい。"
                                                TO  SPA-ERRMSG(37:)
+      *Ｈ２０．４から
+               WHEN    "0120"
+                   STRING  "後期高齢者に到達しました。"
+                           "後期高齢者の保険を登録して下さい。"
+                                               DELIMITED   BY  SPACE
+                                               INTO   SPA-ERRMSG
+                   END-STRING
+               WHEN    "0121"
+                   STRING  "後期高齢者に到達しました。"
+                       "後期高齢者の保険以外は保険終了させて下さい。"
+                                               DELIMITED   BY  SPACE
+                                               INTO   SPA-ERRMSG
+                   END-STRING
+               WHEN    "0122"
+                   STRING  "適用開始日が７５歳以上です。"
+                                               DELIMITED   BY  SPACE
+                                               INTO   SPA-ERRMSG
+                   END-STRING
+               WHEN    "K123"
+                   STRING  "警告！！Ｈ２０年３月まで"
+                           "老人公費が適用されていました。"
+                                               DELIMITED   BY  SPACE
+                                               INTO   SPA-ERRMSG
+                   END-STRING
       *    更新前エラー
                WHEN    "0100"
                    MOVE    "カナ氏名は必ず入力して下さい"

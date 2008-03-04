@@ -50,8 +50,10 @@
       *                                     ¡ÊÏ·¿Í³ä¹çÊÑ¹¹¡Ë
       * 03.03.00     NACL-Â¿¡¹Ç¼  06/10/24  Àº¿ÀÆþ±¡Ã±ÆÈÄÉ²Ã
       * 03.04.00     NACL-Â¿¡¹Ç¼  06/12/01  ¼«ÇåÀÕ·òÊÝ½àµòÄÉ²Ã
-      *  03.05.00    NACL-Â¿¡¹Ç¼  07/04/XX  ¥°¥ë¡¼¥×¿ÇÎÅÂÐ±þ
+      * 03.05.00     NACL-Â¿¡¹Ç¼  07/04/XX  ¥°¥ë¡¼¥×¿ÇÎÅÂÐ±þ
       * 04.01.00     NACL-Â¿¡¹Ç¼  07/10/19  ¸øÌ³ºÒ³²ÄÉ²Ã
+      * 04.02.00     NACL-Â¿¡¹Ç¼  08/03/XX  Ê¿À®£²£°Ç¯£´·î²þÀµÂÐ±þ
+      *                                     ¡Ê¸å´ü¹âÎð¼Ô¡¢½¢³ØÁ°È½Äê¡Ë
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -87,6 +89,7 @@
            03  FLG-ERR             PIC 9(01).
            03  FLG-ERR2            PIC 9(01).
            03  FLG-KAKUNIN         PIC 9(01).
+           03  FLG-CHK-OK          PIC 9(01).
       *
       *    Åº»úÎÎ°è
        01  IDX-AREA.
@@ -97,8 +100,9 @@
        01  WRK-AREA.
            03  WRK-SYMD.
                05  WRK-SYY             PIC 9(04).
-               05  WRK-SMM             PIC 9(02).
-               05  WRK-SDD             PIC 9(02).
+               05  WRK-SMMDD.
+                   07  WRK-SMM             PIC 9(02).
+                   07  WRK-SDD             PIC 9(02).
            03  WRK-BYMD.
                05  WRK-BYY             PIC 9(04).
                05  WRK-BMM             PIC 9(02).
@@ -122,6 +126,9 @@
            03  WRK-BIRTHDAY            PIC X(08).
            03  WRK-ROU-NEN             PIC 9(03).
       *
+           03  WRK-N-STRYMD.
+               05  WRK-N-SYY           PIC 9(04).
+               05  WRK-N-SMD           PIC X(04).
       *
       *   ÆüÉÕÊÑ´¹¥µ¥Ö
            COPY    "CPORCSDAY.INC".
@@ -194,16 +201,15 @@
            IF     (AGECHK-HOSPNUM      =   ZERO    ) OR
                   (AGECHK-PTID         NOT NUMERIC )
                MOVE    99              TO  AGECHK-RC
-               GO      TO      000-PROC-EXT
            END-IF
       *    Ç¯Îð·×»»
-           PERFORM 100-NENREI-SEC
-           IF      AGECHK-RC       NOT =   ZERO
-               GO      TO      000-PROC-EXT
+           IF      AGECHK-RC           =   ZERO
+               PERFORM 100-NENREI-SEC
            END-IF
       *
       *    ÊÝ¸±ÁÈ¹çÈÖ¹æ¤¬¤¢¤ë¤È¤­¡¢ÉéÃ´³ä¹ç¤ò»»Äê¤¹¤ë
-           IF      AGECHK-HKNCOMBINUM  NOT =   SPACE
+           IF     (AGECHK-RC           =   ZERO  )
+             AND  (AGECHK-HKNCOMBINUM  NOT =   SPACE)
                PERFORM 200-FTNRATE-SEC
            END-IF
       *
@@ -301,16 +307,61 @@
            END-IF
            MOVE    WRK-NENREI-YY       TO  AGECHK-NENREI
       *
+      *    £È£²£°¡¥£´²þÀµ
+      *    ½¢³ØÁ°È½Äê
+           IF     (AGECHK-SRYYMD       >=   "20080401" )  AND
+                  (WRK-BIRTHDAY        >=   "20020402" )
+               PERFORM 1001-SYUGAKU-NEN-SEC
+           END-IF
+      *
       *    Ç¯Îð¤Ç¤ÎÏ·¿ÍÈ½Äê
+           IF     (AGECHK-SRYYMD       >=   "20080401" )
+      *        £È£²£°¡¥£´¤«¤é
+               PERFORM 1003-ROUJIN-CHK2008-SEC
+           ELSE
+      *        £È£²£°¡¥£´¤Þ¤Ç
+               PERFORM 1002-ROUJIN-CHK2002-SEC
+           END-IF
+           .
+       100-NENREI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ½¢³ØÁ°È½Äê½èÍý
+      *****************************************************************
+       1001-SYUGAKU-NEN-SEC                SECTION.
+      *
+      *    ¥·¥¹¥Æ¥àÆü¤Ç½¢³ØÁ°¤«¤ÎÈ½ÃÇ
+           MOVE    AGECHK-SRYYMD       TO  WRK-SYMD
+           IF      WRK-SMMDD           >=  "0401"
+               COMPUTE WRK-N-SYY           =   WRK-SYY   -   6
+           ELSE
+               COMPUTE WRK-N-SYY           =   WRK-SYY   -   7
+           END-IF
+           MOVE    "0401"              TO  WRK-N-SMD
+      *    ¥·¥¹¥Æ¥àÇ¯ÅÙ¡Ý£¶Ç¯¤Î£´¡¥£±°Ê¹ß¤ÎÃÂÀ¸Æü¤¬½¢³ØÁ°
+           IF      WRK-BIRTHDAY        >   WRK-N-STRYMD
+               MOVE    1               TO  AGECHK-SYUGAKUKBN
+           END-IF
+      *
+           .
+       1001-SYUGAKU-NEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    Ç¯Îð¤Ç¤ÎÏ·¿ÍÈ½Äê¡Ê£È£²£°¡¥£³¤Þ¤Ç¡Ë
+      *****************************************************************
+       1002-ROUJIN-CHK2002-SEC         SECTION.
+      *
       *    £È£±£´¡¥£±£°°Ê¹ß£·£°ºÐ¤ò£·£µºÐ¤È¤¹¤ë
-      *    £È£±£´¡¥£±£°»þÅÀ¤Ç£·£°ºÐÌ¤Ëþ¤Î»þ
            IF     (AGECHK-SRYYMD       >=   "20021001" )  AND
                   (WRK-BIRTHDAY        >=   "19321001" )
                MOVE    75                   TO  WRK-ROU-NEN
            ELSE
+      *    £È£±£´¡¥£±£°»þÅÀ¤Ç£·£°ºÐÌ¤Ëþ¤Î»þ
                MOVE    70                   TO  WRK-ROU-NEN
            END-IF
-      *    £·£°ºÐ°Ê¾å¤ÏÏ·¿Í¤È¤¹¤ë¡Ê³ºÅö·î£±Æü¤Ë£·£°ºÐ¡Ë
+      *    Ï·¿ÍÇ¯Îð°Ê¾å¤ÏÏ·¿Í¤È¤¹¤ë¡Ê³ºÅö·î£±Æü¤Ë£·£°ºÐ¡¦£·£µºÐ¡Ë
       *    ÊÝ¸±Ç¯Îð·×»»È½Äê
            IF      AGECHK-NENREI       >=  WRK-ROU-NEN
                MOVE    1               TO  AGECHK-ROUJIN
@@ -327,9 +378,36 @@
            END-IF
       *
            .
-       100-NENREI-EXT.
+       1002-ROUJIN-CHK2002-EXT.
            EXIT.
+      *****************************************************************
+      *    Ç¯Îð¤Ç¤ÎÏ·¿ÍÈ½Äê¡Ê£È£²£°¡¥£´¤«¤é¡Ë
+      *****************************************************************
+       1003-ROUJIN-CHK2008-SEC         SECTION.
       *
+      *    £·£µºÐ¤ò·Þ¤¨¤ëÆü
+           MOVE    WRK-BIRTHDAY        TO  WRK-SYMD
+           COMPUTE WRK-SYY             =   WRK-SYY     +   75
+           IF      WRK-SYMD            <=  AGECHK-SRYYMD
+               MOVE    1                   TO  AGECHK-ROUJIN
+           END-IF
+      *    £¶£µºÐ°Ê¾å¤Î»þ¡¢¸å´ü¹âÎð¼Ô¤ò¤â¤Ã¤Æ¤¤¤ë¤«¤ÎÈ½Äê
+           IF      AGECHK-NENREI       >=  65
+               IF      AGECHK-ROUJIN       =   ZERO
+                   IF      AGECHK-ROUJIN2      =   ZERO
+                       PERFORM 20011-ROUJIN-CHK3-SEC
+                   END-IF
+               ELSE
+                   MOVE    AGECHK-ROUJIN       TO  AGECHK-ROUJIN2
+               END-IF
+           END-IF
+           IF     (AGECHK-SRYYMD       >=   "20021001" )  AND
+                  (WRK-BIRTHDAY        >=   "19321001" )
+               MOVE    75                   TO  WRK-ROU-NEN
+           END-IF
+           .
+       1003-ROUJIN-CHK2008-EXT.
+           EXIT.
       *****************************************************************
       *    ÉéÃ´³ä¹ç¤ò»»Äê½èÍý
       *****************************************************************
@@ -410,8 +488,11 @@
            END-IF
       *    £È£±£´¡¥£±£°²þÀµ¸å
       *    £³ºÐÌ¤Ëþ¤Î»þ¡¢£²³ä¤ò¾å¸Â¤È¤¹¤ë
-           IF     (AGECHK-SRYYMD       >=  "20021001") AND
-                  (AGECHK-NENREI       <   03        )
+           IF    ((AGECHK-SRYYMD       >=  "20021001") AND
+                  (AGECHK-NENREI       <   03        )) 
+      *    £È£²£°¡¥£´ ²þÀµ
+             OR  ((AGECHK-SRYYMD       >=  "20080401") AND
+                  (AGECHK-SYUGAKUKBN   =   1         ))
       *        ¼çÊÝ¸±¤¬¼«Èñ°Ê³°¤Î»þ
                MOVE    COMB-HKNNUM         TO  WRK-HKNNUM
                MOVE    ZERO                TO  WRK-PAYKBN
@@ -434,7 +515,12 @@
            END-IF
       *
       *    Ï·¿ÍÈ½Äê
-           PERFORM 2009-ROUJIN-HANTEI-SEC
+           IF      AGECHK-SRYYMD       <   "20080401"
+               PERFORM 2009-ROUJIN-HANTEI-SEC
+           ELSE
+      *        £È£²£°¡¥£´¤«¤é¸å´ü¹âÎð¼Ô
+               PERFORM 20010-ROUJIN-HANTEI2-SEC
+           END-IF
       *
       *    ÃÏÊý¸øÈñÃ±ÆÈÈ½Äê
            PERFORM 2010-KOHONLY-CHK-SEC
@@ -602,50 +688,20 @@
       *
       *    ³Æ¸øÈñ¤¬Ï·¿Í¸øÈñ¤«¤ÎÈ½Äê
            IF      FLG-OK2             =   ZERO
-      *        ¸øÈñ£±
-               IF      COMB-KOH1HKNNUM     NOT =   SPACE
-                   MOVE    COMB-KOH1HKNNUM     TO  WRK-HKNNUM
-                   MOVE    COMB-KOH1PAYKBN     TO  WRK-PAYKBN
-                   PERFORM 3001-HKNNUM-CHK-SEC
-                   IF      FLG-HKNNUM          =   ZERO
-                       IF      HKN-HKNKOHSBTKBN    =   "3" OR "6"
-                           PERFORM 2001-KOH-CHK-SEC
+               PERFORM VARYING     IDX     FROM    1   BY  1
+                       UNTIL       IDX     >   4
+      *            ¸øÈñ
+                   IF      COMB-KOHHKNNUM (IDX)    NOT =   SPACE
+                       MOVE    COMB-KOHHKNNUM (IDX)    TO  WRK-HKNNUM
+                       MOVE    COMB-KOHPAYKBN (IDX)    TO  WRK-PAYKBN
+                       PERFORM 3001-HKNNUM-CHK-SEC
+                       IF      FLG-HKNNUM          =   ZERO
+                           IF      HKN-HKNKOHSBTKBN    =   "3" OR "6"
+                               PERFORM 2001-KOH-CHK-SEC
+                           END-IF
                        END-IF
                    END-IF
-               END-IF
-      *        ¸øÈñ£²
-               IF      COMB-KOH2HKNNUM     NOT =   SPACE
-                   MOVE    COMB-KOH2HKNNUM     TO  WRK-HKNNUM
-                   MOVE    COMB-KOH2PAYKBN     TO  WRK-PAYKBN
-                   PERFORM 3001-HKNNUM-CHK-SEC
-                   IF      FLG-HKNNUM          =   ZERO
-                       IF      HKN-HKNKOHSBTKBN    =   "3" OR "6"
-                           PERFORM 2001-KOH-CHK-SEC
-                       END-IF
-                   END-IF
-               END-IF
-      *        ¸øÈñ£³
-               IF      COMB-KOH3HKNNUM     NOT =   SPACE
-                   MOVE    COMB-KOH3HKNNUM     TO  WRK-HKNNUM
-                   MOVE    COMB-KOH3PAYKBN     TO  WRK-PAYKBN
-                   PERFORM 3001-HKNNUM-CHK-SEC
-                   IF      FLG-HKNNUM          =   ZERO
-                       IF      HKN-HKNKOHSBTKBN    =   "3" OR "6"
-                           PERFORM 2001-KOH-CHK-SEC
-                       END-IF
-                   END-IF
-               END-IF
-      *        ¸øÈñ£´
-               IF      COMB-KOH4HKNNUM     NOT =   SPACE
-                   MOVE    COMB-KOH4HKNNUM     TO  WRK-HKNNUM
-                   MOVE    COMB-KOH4PAYKBN     TO  WRK-PAYKBN
-                   PERFORM 3001-HKNNUM-CHK-SEC
-                   IF      FLG-HKNNUM          =   ZERO
-                       IF      HKN-HKNKOHSBTKBN    =   "3" OR "6"
-                           PERFORM 2001-KOH-CHK-SEC
-                       END-IF
-                   END-IF
-               END-IF
+               END-PERFORM
            END-IF
       *
       *    Ï·¿Í¶èÊ¬¤Ê¤·
@@ -657,9 +713,18 @@
            IF     (AGECHK-RJNCHK       =   ZERO )  AND
                   (FLG-OK          NOT =   3    )
       *    £·£µºÐ°Ê¾å¤Î»þ¡¢Ï·¿Í¸øÈñ¤¬¤¢¤ë¤³¤È
-               IF     (AGECHK-NENREI       >=  WRK-ROU-NEN )  AND
-                      (FLG-OK2             =   ZERO)
-                   MOVE    2               TO  AGECHK-RJNCHK
+               IF      AGECHK-SRYYMD       <   "20080401"
+                   IF     (AGECHK-NENREI       >=  WRK-ROU-NEN )  AND
+                          (FLG-OK2             =   ZERO)
+                       MOVE    2               TO  AGECHK-RJNCHK
+                   END-IF
+               ELSE
+      *            £È£²£°¡¥£´¤«¤é
+      *            £·£µºÐ°Ê¾å¤Ç¸å´ü¹âÎð¼Ô¤¬¤Ê¤¤»þ
+                   IF     (AGECHK-ROUJIN       =   1   )  AND
+                          (FLG-OK2             =   ZERO)
+                       MOVE    4               TO  AGECHK-RJNCHK
+                   END-IF
                END-IF
            END-IF
       *
@@ -667,7 +732,9 @@
            IF    ((FLG-ERR             =   1   )  AND
                   (FLG-OK2             =   ZERO) )  OR
                   (FLG-ERR2            =   1   )
-               MOVE    3               TO  AGECHK-RJNCHK
+               IF      (AGECHK-RJNCHK   NOT =   4   )
+                   MOVE    3               TO  AGECHK-RJNCHK
+               END-IF
            END-IF
       *
       *    ¹ñÊÝ¤ÎÁ°´ü¹âÎð¼Ô°Ê¹ß¤Î³ÎÇ§Í­Ìµ
@@ -886,6 +953,10 @@
                            MOVE    2               TO  FLG-OK
                        END-IF
                    END-IF
+      *        £È£²£°¡¥£´¤«¤é¡Ê¸å´ü¹âÎð¼Ô¡Ë
+               WHEN    "038"
+               WHEN    "039"
+                   MOVE    4                   TO  FLG-OK
                WHEN    OTHER
       *            ¤½¤ÎÂ¾
                    IF     PTHKN-HOJOKBN        =   "7"
@@ -1157,7 +1228,43 @@
            .
        2009-ROUJIN-HANTEI-EXT.
            EXIT.
+      *****************************************************************
+      *    Ï·¿Í¡¦°ìÈÌÄê¡Ê£È£²£°¡¥£´¤«¤é¡Ë½èÍý
+      *****************************************************************
+       20010-ROUJIN-HANTEI2-SEC         SECTION.
       *
+           MOVE    ZERO                TO  AGECHK-ROUJIN2
+      *    ¸å´ü¹âÎð¼Ô¤òÁªÂò¤·¤Æ¤¤¤ë¾ì¹ç¡¢Ï·¿Í
+           IF      COMB-HKNNUM         =   "039"
+                                       OR  "038"
+               MOVE    1               TO  AGECHK-ROUJIN
+           END-IF
+      *    £¶£µºÐ°Ê¾å¤Î»þ¡¢¸å´ü¹âÎð¼Ô¤ò¤â¤Ã¤Æ¤¤¤ë¤«¤ÎÈ½Äê
+           IF      AGECHK-NENREI       >=  65
+               IF      AGECHK-ROUJIN       =   ZERO
+                   IF      AGECHK-ROUJIN2      =   ZERO
+                       PERFORM 20011-ROUJIN-CHK3-SEC
+                   END-IF
+               ELSE
+                   MOVE    AGECHK-ROUJIN       TO  AGECHK-ROUJIN2
+               END-IF
+           END-IF
+      *    À¸³èÊÝ¸î¡¢¸øÈñÃ±ÆÈ¤Ç¸å´ü¸øÈñ¤ò»ý¤Ã¤Æ¤¤¤ë¾ì¹ç¡¢Ï·¿Í
+           IF     (COMB-HKNNUM         =   SPACE )  AND
+                  (AGECHK-NENREI       >=  65    )  AND
+                  (AGECHK-ROUJIN       =   ZERO  )
+               PERFORM 20012-KOH-ROJIN-SEC
+           END-IF
+      *    Ï«ºÒ¡¦¼«ÇåÀÕ¡¦¸ø³²¤Î»þ¡¢¤¹¤Ù¤Æ°ìÈÌ¤Ø
+           IF      COMB-HKNNUM         =   "971"
+                                       OR  "973"
+                                       OR  "975"
+               MOVE    ZERO            TO  AGECHK-ROUJIN
+           END-IF
+      *
+           .
+       20010-ROUJIN-HANTEI2-EXT.
+           EXIT.
       *****************************************************************
       *    Ï·¿Í¸øÈñÈ½Äê½èÍý
       *****************************************************************
@@ -1225,12 +1332,77 @@
            PERFORM 990-DBCLOSE-SEC
       *
            IF      FLG-PTKOHINF        =   ZERO
-               MOVE    1                   TO  AGECHK-ROUJIN2
+               MOVE    1                   TO  AGECHK-ROUJIN
            END-IF
       *
            .
       *
        20010-ROUJIN-CHK2-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ¸å´ü¹âÎð¼ÔÈ½Äê½èÍý
+      *****************************************************************
+       20011-ROUJIN-CHK3-SEC         SECTION.
+      *
+      *    ¸å´ü¹âÎð¼Ô³ºÅö
+           INITIALIZE                  PTKOHINF-REC
+           MOVE    AGECHK-HOSPNUM      TO  PTKOH-HOSPNUM
+           MOVE    AGECHK-PTID         TO  PTKOH-PTID
+           MOVE    "968"               TO  PTKOH-KOHNUM
+           MOVE    AGECHK-SRYYMD       TO  PTKOH-TEKSTYMD
+           MOVE    AGECHK-SRYYMD       TO  PTKOH-TEKEDYMD
+      *
+           MOVE    PTKOHINF-REC        TO  MCPDATA-REC
+           MOVE    "tbl_ptkohinf"      TO  MCP-TABLE
+           MOVE    "key6"              TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_ptkohinf"      TO  MCP-TABLE
+               MOVE    "key6"              TO  MCP-PATHNAME
+               PERFORM 920-PTKOHINF-READ-SEC
+           ELSE
+               MOVE    1               TO  FLG-PTKOHINF
+           END-IF
+           MOVE    "tbl_ptkohinf"      TO  MCP-TABLE
+           MOVE    "key6"              TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+      *
+           IF      FLG-PTKOHINF        =   ZERO
+               MOVE    1                   TO  AGECHK-ROUJIN2
+           END-IF
+           .
+       20011-ROUJIN-CHK3-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ¸øÈñÃ±ÆÈÏ·¿ÍÈ½Äê½èÍý
+      *****************************************************************
+       20012-KOH-ROJIN-SEC         SECTION.
+      *
+           IF     (COMB-HKNNUM         =   SPACE )
+      *        À¸³èÊÝ¸î¡¦Àº¿ÀÄÌ±¡¡¦¹¹Àµ
+               IF    ((COMB-KOH1HKNNUM     =   "012" )  OR
+                      (COMB-KOH2HKNNUM     =   "012" )  OR
+                      (COMB-KOH3HKNNUM     =   "012" ))
+                 OR  ((COMB-KOH1HKNNUM     =   "015" )  OR
+                      (COMB-KOH2HKNNUM     =   "015" )  OR
+                      (COMB-KOH3HKNNUM     =   "015" )  OR
+                      (COMB-KOH4HKNNUM     =   "015" ))
+                 OR  ((COMB-KOH1HKNNUM     =   "021" )  OR
+                      (COMB-KOH2HKNNUM     =   "021" )  OR
+                      (COMB-KOH3HKNNUM     =   "021" )  OR
+                      (COMB-KOH4HKNNUM     =   "021" ))
+      *            Àº¿ÀÆþ±¡
+                 OR  ((COMB-KOH1HKNNUM     =   "020" )  OR
+                      (COMB-KOH2HKNNUM     =   "020" )  OR
+                      (COMB-KOH3HKNNUM     =   "020" )  OR
+                      (COMB-KOH4HKNNUM     =   "020" ))
+                   MOVE    AGECHK-ROUJIN2      TO  AGECHK-ROUJIN
+               END-IF
+           END-IF
+           .
+       20012-KOH-ROJIN-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1249,72 +1421,36 @@
                    (COMB-KOH4HKNNUM     =   SPACE )
                PERFORM 20101-KOH186-CHK-SEC
            END-IF
-           IF      FLG-KOH186           =   ZERO
-             IF      (COMB-HKNNUM         =   SPACE )  AND
-                     (COMB-KOH1HKNNUM     >=  "100"  AND
-                                          <=  "899"  )  AND
-                    ((COMB-KOH2HKNNUM     =   SPACE  ) OR
-                     (COMB-KOH2HKNNUM     >=  "100"  AND
-                                          <=  "899"  )) AND
-                     ((COMB-KOH3HKNNUM     =   SPACE  ) OR
-                      (COMB-KOH3HKNNUM     >=  "100"  AND
-                                           <=  "899"  )) AND
-                     ((COMB-KOH4HKNNUM     =   SPACE  ) OR
-                      (COMB-KOH4HKNNUM     >=  "100"  AND
-                                           <=  "899"  ))
-      *        ¸øÈñ£±
-               IF      COMB-KOH1HKNNUM     NOT =   SPACE
-                   MOVE    COMB-KOH1HKNNUM     TO  WRK-HKNNUM
-                   MOVE    COMB-KOH1PAYKBN     TO  WRK-PAYKBN
-                   PERFORM 3001-HKNNUM-CHK-SEC
-                   IF      FLG-HKNNUM          =   ZERO
-                       IF      HKN-HKNKOHSBTKBN    =   "6"
-                           CONTINUE
-                       ELSE
+           IF     (FLG-KOH186           =   ZERO  )  AND
+                  (COMB-HKNNUM          =   SPACE )  AND
+                  (COMB-KOH1HKNNUM NOT  =   SPACE )
+               MOVE    ZERO             TO  FLG-CHK-OK
+               PERFORM VARYING     IDX     FROM    1   BY  1
+                       UNTIL       IDX     >   4
+                   IF    (COMB-KOHHKNNUM(IDX)  =   SPACE  )
+                     OR  (COMB-KOHHKNNUM(IDX)  >=  "100"  AND
+                                               <=  "899"  )
+                       CONTINUE
+                   ELSE
+                       MOVE    1               TO  FLG-CHK-OK
+                   END-IF
+               END-PERFORM
+      *
+               PERFORM VARYING     IDX     FROM    1   BY  1
+                       UNTIL      (IDX     >   4   )
+                             OR   (FLG-CHK-OK  =   1   )
+      *            ¸øÈñ
+                   IF      COMB-KOHHKNNUM (IDX)    NOT =   SPACE
+                       MOVE    COMB-KOHHKNNUM (IDX)    TO  WRK-HKNNUM
+                       MOVE    COMB-KOHPAYKBN (IDX)    TO  WRK-PAYKBN
+                       PERFORM 3001-HKNNUM-CHK-SEC
+                       IF     (FLG-HKNNUM          =   ZERO  )
+                          AND (HKN-HKNKOHSBTKBN    NOT =   "6" )
+      *                    Ã±ÆÈ¸øÈñ°Ê³°
                            MOVE    1               TO  FLG-KOHCHK
                        END-IF
                    END-IF
-               END-IF
-      *        ¸øÈñ£²
-               IF      COMB-KOH2HKNNUM     NOT =   SPACE
-                   MOVE    COMB-KOH2HKNNUM     TO  WRK-HKNNUM
-                   MOVE    COMB-KOH2PAYKBN     TO  WRK-PAYKBN
-                   PERFORM 3001-HKNNUM-CHK-SEC
-                   IF      FLG-HKNNUM          =   ZERO
-                       IF      HKN-HKNKOHSBTKBN    =   "6"
-                           CONTINUE
-                       ELSE
-                           MOVE    1               TO  FLG-KOHCHK
-                       END-IF
-                   END-IF
-               END-IF
-      *        ¸øÈñ£³
-               IF      COMB-KOH3HKNNUM     NOT =   SPACE
-                   MOVE    COMB-KOH3HKNNUM     TO  WRK-HKNNUM
-                   MOVE    COMB-KOH3PAYKBN     TO  WRK-PAYKBN
-                   PERFORM 3001-HKNNUM-CHK-SEC
-                   IF      FLG-HKNNUM          =   ZERO
-                       IF      HKN-HKNKOHSBTKBN    =   "6"
-                           CONTINUE
-                       ELSE
-                           MOVE    1               TO  FLG-KOHCHK
-                       END-IF
-                   END-IF
-               END-IF
-      *        ¸øÈñ£´
-               IF      COMB-KOH4HKNNUM     NOT =   SPACE
-                   MOVE    COMB-KOH4HKNNUM     TO  WRK-HKNNUM
-                   MOVE    COMB-KOH4PAYKBN     TO  WRK-PAYKBN
-                   PERFORM 3001-HKNNUM-CHK-SEC
-                   IF      FLG-HKNNUM          =   ZERO
-                       IF      HKN-HKNKOHSBTKBN    =   "6"
-                           CONTINUE
-                       ELSE
-                           MOVE    1               TO  FLG-KOHCHK
-                       END-IF
-                   END-IF
-               END-IF
-             END-IF
+               END-PERFORM
            END-IF
            IF      FLG-KOHCHK          =   1
                MOVE    1                   TO  AGECHK-KOHCHK
@@ -1404,15 +1540,14 @@
       *****************************************************************
        400-PTHKNCHK-SEC         SECTION.
       *
-           IF      COMB-HKNNUM         =   SPACE
-               GO      TO      400-PTHKNCHK-EXT
-           END-IF
+           IF      COMB-HKNNUM     NOT =   SPACE
       *
-           MOVE    COMB-HKNNUM         TO  WRK-HKNNUM
-           MOVE    ZERO                TO  WRK-PAYKBN
-           PERFORM 4101-KIKANCHK-CHK-SEC
-           IF      FLG-HKNNUM-OK       =   ZERO
-               MOVE    1               TO  AGECHK-HKNCHK
+               MOVE    COMB-HKNNUM         TO  WRK-HKNNUM
+               MOVE    ZERO                TO  WRK-PAYKBN
+               PERFORM 4101-KIKANCHK-CHK-SEC
+               IF      FLG-HKNNUM-OK       =   ZERO
+                   MOVE    1               TO  AGECHK-HKNCHK
+               END-IF
            END-IF
       *
            .
@@ -1424,48 +1559,20 @@
       *****************************************************************
        410-PTKOHCHK-SEC         SECTION.
       *
-           IF      COMB-KOH1HKNNUM     NOT =   SPACE
-      *        ¸øÈñ¤Î´ü¸ÂÀÚ¤ì¥Á¥§¥Ã¥¯
-               MOVE    COMB-KOH1HKNNUM     TO  WRK-HKNNUM
-               MOVE    COMB-KOH1PAYKBN     TO  WRK-PAYKBN
-               PERFORM 4101-KIKANCHK-CHK-SEC
-               IF      FLG-HKNNUM-OK       =   ZERO
-                   MOVE    2               TO  AGECHK-HKNCHK
-                   GO      TO      410-PTKOHCHK-EXT
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL      (IDX     >   4   )
+                       OR     (AGECHK-HKNCHK   NOT =   ZERO )
+      *        ¸øÈñ
+               IF      COMB-KOHHKNNUM (IDX)    NOT =   SPACE
+                   MOVE    COMB-KOHHKNNUM (IDX)    TO  WRK-HKNNUM
+                   MOVE    COMB-KOHPAYKBN (IDX)    TO  WRK-PAYKBN
+      *            ¸øÈñ¤Î´ü¸ÂÀÚ¤ì¥Á¥§¥Ã¥¯
+                   PERFORM 4101-KIKANCHK-CHK-SEC
+                   IF      FLG-HKNNUM-OK       =   ZERO
+                       MOVE    2               TO  AGECHK-HKNCHK
+                   END-IF
                END-IF
-           END-IF
-      *
-           IF      COMB-KOH2HKNNUM     NOT =   SPACE
-      *        ¸øÈñ¤Î´ü¸ÂÀÚ¤ì¥Á¥§¥Ã¥¯
-               MOVE    COMB-KOH2HKNNUM     TO  WRK-HKNNUM
-               MOVE    COMB-KOH2PAYKBN     TO  WRK-PAYKBN
-               PERFORM 4101-KIKANCHK-CHK-SEC
-               IF      FLG-HKNNUM-OK       =   ZERO
-                   MOVE    2               TO  AGECHK-HKNCHK
-                   GO      TO      410-PTKOHCHK-EXT
-               END-IF
-           END-IF
-      *
-           IF      COMB-KOH3HKNNUM     NOT =   SPACE
-      *        ¸øÈñ¤Î´ü¸ÂÀÚ¤ì¥Á¥§¥Ã¥¯
-               MOVE    COMB-KOH3HKNNUM     TO  WRK-HKNNUM
-               MOVE    COMB-KOH3PAYKBN     TO  WRK-PAYKBN
-               PERFORM 4101-KIKANCHK-CHK-SEC
-               IF      FLG-HKNNUM-OK       =   ZERO
-                   MOVE    2               TO  AGECHK-HKNCHK
-                   GO      TO      410-PTKOHCHK-EXT
-               END-IF
-           END-IF
-      *
-           IF      COMB-KOH4HKNNUM     NOT =   SPACE
-      *        ¸øÈñ¤Î´ü¸ÂÀÚ¤ì¥Á¥§¥Ã¥¯
-               MOVE    COMB-KOH4HKNNUM     TO  WRK-HKNNUM
-               MOVE    COMB-KOH4PAYKBN     TO  WRK-PAYKBN
-               PERFORM 4101-KIKANCHK-CHK-SEC
-               IF      FLG-HKNNUM-OK       =   ZERO
-                   MOVE    2               TO  AGECHK-HKNCHK
-               END-IF
-           END-IF
+           END-PERFORM
       *
            .
        410-PTKOHCHK-EXT.

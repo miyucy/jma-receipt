@@ -44,6 +44,7 @@
       *                                     （老人割合変更）
       * 03.04.00     NACL-多々納  06/10/30  受給者検証番号警告追加
       * 03.05.00     NACL-多々納  07/05/XX  グループ診療対応
+      * 04.02.00     NACL-多々納  08/03/XX  平成２０年４月改正対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -300,6 +301,8 @@
            END-IF
       *
       *    確定処理の時、関連チェックを行う
+           IF     (FLG-AUTO            =   ZERO )
+      *
            PERFORM VARYING     IDX-K   FROM    1   BY  1
                    UNTIL      (IDX-K       >   3   )  OR
                               (SPA-ERRCD   NOT =   SPACE )  OR
@@ -311,20 +314,20 @@
                END-IF
            END-PERFORM
       *
+           END-IF
       *    自動振替えの時、警告は表示しない
            IF     (FLG-AUTO            =   1     )  AND
                   (SPA-ERRCD(1:1)      =   "K"   )
                MOVE    SPACE               TO  SPA-ERRCD
                MOVE    WRK-CUR             TO  SPA-GMN-CUR
            END-IF
-           IF     (SPA-ERRCD       NOT =   SPACE )  OR
-                  (SPA-PIDCD       NOT =   SPACE )
-               GO      TO      000-PROC-EXT
-           END-IF
       *
       *    すべてのエラーがない時、公費期間重複チェック
-           IF      SPA-HKNKOH-FLG      =   1
-               PERFORM 300-KANREN-KOH-CHECK-SEC
+           IF     (SPA-ERRCD           =   SPACE )  AND
+                  (SPA-PIDCD           =   SPACE )
+               IF      SPA-HKNKOH-FLG      =   1
+                   PERFORM 300-KANREN-KOH-CHECK-SEC
+               END-IF
            END-IF
       *
            .
@@ -1266,7 +1269,6 @@
            IF      SPA-GMN-KTEKEDYMD (IDX-K)   =   SPACE
                MOVE    "0078"          TO  SPA-ERRCD
                MOVE    24              TO  SPA-GMN-CUR
-               GO      TO      2001-HISSU-CHK-EXT
            END-IF
            .
        2001-HISSU-CHK-EXT.
@@ -1648,7 +1650,6 @@
            WHEN    ( SPA-NAI-KTEKSTYMD(IDX-K)  <   WRK-YMD65 )
                MOVE    "0087"           TO  SPA-ERRCD
                MOVE    23               TO  SPA-GMN-CUR
-               GO      TO               20041-RJN-TAISYOAGE-09-EXT
            END-EVALUATE
       *
            .
@@ -1688,7 +1689,6 @@
            WHEN    ( SPA-NAI-KTEKSTYMD(IDX-K)  <   WRK-YMD65 )
                MOVE    "0087"           TO  SPA-ERRCD
                MOVE    23               TO  SPA-GMN-CUR
-               GO      TO               20042-RJN-TAISYOAGE-10-EXT
            END-EVALUATE
       *
            .

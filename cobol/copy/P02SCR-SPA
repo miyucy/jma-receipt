@@ -409,6 +409,11 @@
                        09 SPA-B75-YY               PIC 9(04).
                        09 SPA-B75-MM               PIC 9(02).
                        09 SPA-B75-DD               PIC 9(02).
+      *        ７５歳到達年月日（誕生日）
+                   07  SPA-BYMD-75-2.
+                       09 SPA-B75-YY2             PIC 9(04).
+                       09 SPA-B75-MM2             PIC 9(02).
+                       09 SPA-B75-DD2             PIC 9(02).
       *        ユーザプログラム起動フラグ
                    07  SPA-NAI-GYOUMU-FLG          PIC X(01).
                    07  SPA-NAI-GYOUMU-ARI          PIC X(01).
@@ -421,30 +426,6 @@
       *            低所得有無
                    07  SPA-NAI-TSYRRK          PIC 9(01).
                    07  SPA-NAI-TNKRRK          PIC 9(01).
-      *            保険表示連番
-      **************7  SPA-NAI-HKNEDANUM       PIC 9(04).
-      *
-      *************07  SPA-NAI-KAKUNINYMDW     PIC X(09).
-      *************07  SPA-NAI-KAKUNINYMD      PIC 9(08).
-      *            二重登録チェック済みフラグ
-      *            07  SPA-NAI-TRKCHK          PIC X(01).
-      *            旧姓履歴追加フラグ
-      *            07  SPA-NAI-KYUFLG          PIC 9(01).
-      *            旧姓履歴件数（元）
-      *            07  SPA-NAI-KYUCNT          PIC 9(04).
-      *            患者番号採番存在フラグ
-      *            07  SPA-NAI-KNJSAIFLG       PIC X(01).
-      *            患者氏名変更フラグ
-      *            07  SPA-NAI-NAMEFLG         PIC 9(01).
-      *            保険・公費変更フラグ
-      *            07  SPA-NAI-HENFLG          PIC X(01).
-      *            患者マスタ存在フラグ
-      *            07  SPA-NAI-PTINFFLG        PIC 9(01).
-      *            07  SPA-NAI-HKNID           PIC 9(10).
-      *            07  SPA-NAI-KOHID           PIC 9(10).
-      *            保険公費画面表示件数
-      *            07  SPA-NAI-HCNT            PIC 9(04).
-      ***********  07  SPA-NAI-KCNT            PIC 9(04).
       *        入力前領域
                05  SPA-P02-MAE-AREA.
                    07  SPA-MAE-KANANAME        PIC X(50).
@@ -459,6 +440,10 @@
                05  SPA-NAI-RSIONLY             PIC 9(01).
       *        退職国保と老人公費チェック
                05  SPA-NAI-TAICHK             PIC 9(01).
+      *Ｈ２０．４
+      *        後期高齢者警告
+               05  SPA-KEI-KOUKI              PIC 9(01).
+               05  SPA-KEI-KOUKI2             PIC 9(01).
       *
       *    保険・公費情報
            03  SPA-HKNKOH-AREA.

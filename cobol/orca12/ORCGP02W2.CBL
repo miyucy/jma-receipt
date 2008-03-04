@@ -83,6 +83,7 @@
       *                                     の場合は結核入院の単独を作成可能
       *                                     に変更
       *  04.00.04    NACL-門脇    08/02/14  自立支援＋生保の組合せを作成しない
+      *  04.02.00    NACL-多々納  08/03/XX  Ｈ２０．４改正対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -545,6 +546,8 @@
                       (PTKOH-KOHNUM        =   "978" OR  "979" ) OR
                       (PTKOH-KOHNUM        >=  "960"   AND
                                            <=  "967"           )
+      *               Ｈ２０．４から
+                 OR   (PTKOH-KOHNUM        =   "968"  )
                    CONTINUE
                ELSE
                    ADD     1               TO  CNT-KOH
@@ -976,7 +979,8 @@ grpsys            CALL    "ORCDBMAIN"         USING   MCPAREA
              IF  WRK-HKN-SBT (IDX)     =   "1"
       *!       特別療養費は対象外
              AND (WRK-HKN-HKNNUM (IDX) NOT =   "068"
-                                           AND "069" )
+                                           AND "038"
+                                           AND "069")
       *!
       *        一般療養、特別療養（旧日雇、旧特別日雇）の判定
                IF   WRK-HKN-HKNNUM (IDX)       =   "003"  OR "004"
@@ -1101,7 +1105,10 @@ grpsys            CALL    "ORCDBMAIN"         USING   MCPAREA
       *           公費表中より生保を検索し、適用開始日順に
       *                                インデックス取得
                    INITIALIZE                WRK-IDXSRT-AREA
-                   IF  WRK-KCOMB-HKNNUM (IDX2)    NOT =   "060"
+                   IF  WRK-KCOMB-HKNNUM (IDX2)        =   "060"
+                                                      OR  "039"
+                     CONTINUE
+                   ELSE
                      MOVE    WRK-KCOMB-TEKSTYMD (IDX2)
                                              TO  WRK-SRT-STYMD
                      MOVE    WRK-KCOMB-TEKEDYMD (IDX2)
@@ -1868,6 +1875,7 @@ grpsys            CALL    "ORCDBMAIN"         USING   MCPAREA
                           MOVE    HKN-KZK  TO  WRK-LCOMB-TNK   (IDX2)
                       END-IF
                       IF  HKN-HKNNUM               =   "060"
+                                                   OR  "039"
       *----(02.00.0) LINE UPD START -------------------------------
       *                   国保の保険割合を補助区分より編集
                           PERFORM 570120-KOKUHO-SET-SEC
@@ -1883,6 +1891,7 @@ grpsys            CALL    "ORCDBMAIN"         USING   MCPAREA
       *----(02.00.0) LINE UPD END   -------------------------------
                           IF  HKN-HKNNUM               =   "068"
                                                        OR  "069"
+                                                       OR  "038"
       *                       特別療養費対象外
                               CONTINUE
                           ELSE
@@ -3225,6 +3234,7 @@ grpsys            CALL    "ORCDBMAIN"         USING   MCPAREA
                        IF  WRK-HKN-SBT(IDY2)  =   "1"
       *!       特別療養費は対象外
                        AND (WRK-HKN-HKNNUM (IDY2)  NOT =   "068"
+                                                       AND "038"
                                                        AND "069" )
       *!
       ****                 IF  ((WRK-HKN-HKNNUM (IDY)  =   "002") AND
@@ -3805,7 +3815,10 @@ grpsys            CALL    "ORCDBMAIN"         USING   MCPAREA
       *
              EVALUATE    WRK-FTN-FLG
              WHEN    "1"
-               IF  WRK-KCOMB-HKNNUM (IDX2)    NOT =   "060"
+               IF  WRK-KCOMB-HKNNUM (IDX2)        =   "060"
+                                                  OR  "039"
+                   CONTINUE
+               ELSE
       *           公費表中より生保を検索し、適用開始日順に
       *                                           インデックス取得
                    MOVE    WRK-KCOMB-TEKSTYMD (IDX2)
@@ -3843,7 +3856,10 @@ grpsys            CALL    "ORCDBMAIN"         USING   MCPAREA
                                            TO  WRK-RCOMB-REC
                                                      (WRK-RCOMB-MAX)
                  IF  WRK-FTN-FLG           =   "3"
-                   IF  WRK-KCOMB-HKNNUM (IDX2)    NOT =   "060"
+                   IF  WRK-KCOMB-HKNNUM (IDX2)        =   "060"
+                                                      OR  "039"
+                       CONTINUE
+                   ELSE
       *                公費表中より生保を検索し、
       *                               適用開始日順にインデックス取得
                        MOVE    WRK-KCOMB-TEKSTYMD (IDX2)
@@ -4653,6 +4669,7 @@ grpsys            CALL    "ORCDBMAIN"         USING   MCPAREA
              IF  ((WRK-HKN-SBT(IDZ)     =   "1"  )  AND
       *!         特別療養費は対象外
                   (WRK-HKN-HKNNUM (IDZ)  NOT =   "068"
+                                              AND "038"
                                               AND "069" )) AND
       *!
                  (WRK-HKN-SAKJOKBN (IDZ)     =   SPACE)
@@ -4958,6 +4975,7 @@ grpsys            CALL    "ORCDBMAIN"         USING   MCPAREA
              IF  ((WRK-HKN-SBT   (IDX)  =   "4" OR "8" OR "9")
       *!          特別療養費 対象
                OR (WRK-HKN-HKNNUM (IDX) =   "068"
+                                        OR  "038"
                                         OR  "069" )) AND
       *!
                  (WRK-HKN-SAKJOKBN    (IDX)  =   SPACE)

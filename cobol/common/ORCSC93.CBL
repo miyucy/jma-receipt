@@ -1466,6 +1466,8 @@
                            END-IF
       *                後発医薬品への変更可（処方せん毎）
                        WHEN    "099209902"
+      *                後発医薬品への変更不可
+                       WHEN    "099209904"
                            MOVE    "98"            TO  SPA-COM-SRYKBN
                                                                   (IDX)
                            MOVE    "980"           TO  SPA-COM-SRYSYUKBN
