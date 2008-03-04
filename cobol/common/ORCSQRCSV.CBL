@@ -29,6 +29,7 @@
       * Maj/Min/Rev  修正者       日付      内容
       *  03.05.00    NACL-多々納  07/05/31  グループ診療対応
       *  04.01.00    NACL-多々納  08/01/21  公費編集パラメタ対応
+      * 04.02.00     NACL-多々納  08/03/XX  Ｈ２０年４月改正対応
       *****************************************************************
       *
       *
@@ -233,10 +234,10 @@
            END-IF
       *
       *    ＱＲデータ削除
-      *TST MOVE    ZERO                TO  IF-RESULT
-      *    MOVE    FILE-NAME1          TO  IF-FILENAME
-      *    CALL    "orcfiledel"        USING
-      *                                ORCSFDELAREA
+           MOVE    ZERO                TO  IF-RESULT
+           MOVE    FILE-NAME1          TO  IF-FILENAME
+           CALL    "orcfiledel"        USING
+                                       ORCSFDELAREA
            .
        000-PROC-EXT.
            EXIT    PROGRAM
@@ -349,6 +350,10 @@
       *       自費
               WHEN     "980"  THRU  "989"
                   MOVE    "6"          TO  TBL-QRCSV-DATA (2)
+      *       後期高齢者
+              WHEN     "038"
+              WHEN     "039"
+                  MOVE    "7"          TO  TBL-QRCSV-DATA (2)
       *       医保、公費
               WHEN     OTHER
                   MOVE    "1"          TO  TBL-QRCSV-DATA (2)

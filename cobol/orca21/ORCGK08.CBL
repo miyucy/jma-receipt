@@ -5659,6 +5659,14 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE    "9002"          TO  SPA-ERRCD
                END-IF
            END-IF
+      *@!!
+      *    ４月のレセプト適用までエラー
+           IF      SPA-ERRCD           =   SPACE
+               IF      SPA-SRYYMD          >=  "20080401"
+                   MOVE    "9009"          TO  SPA-ERRCD
+               END-IF
+           END-IF
+      *@
            IF      SPA-ERRCD           =   SPACE
                IF      SPA-NYUGAIKBN       =   "1"
                    PERFORM 40101-PREVIEW-NYU-SEC
@@ -6394,8 +6402,11 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                    END-STRING
       *@@
                WHEN    "9009"
-                   MOVE    "改正対応前です。プレビューできません。"
-                                       TO  SPA-ERRMSG
+                   STRING  "レセプトの４月改正は未対応です。"
+                           "４月診療以降のプレビューはできません。"
+                                       DELIMITED  BY  SIZE
+                                       INTO  SPA-ERRMSG
+                   END-STRING
       *@@
       *!
                WHEN    "K001"

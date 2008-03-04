@@ -64,6 +64,7 @@
       *                                     器材商品名コード対応
       * 04.01.00     NACL-多々納  08/01/20  編集処理変更
       *                                     パラメタによる編集対応
+      * 04.02.00     NACL-多々納  08/03/XX  Ｈ２０年４月改正対応
       *****************************************************************
       *
       *
@@ -148,6 +149,14 @@
            03  FLG-KOUHATU-FUKA        PIC 9(01).
       *    公費編集
            03  FLG-KOHERR              PIC 9(01).
+      *
+      *---(04.02.00) LINE ADD START ------------------------------------
+      *    後発医薬品変更不可あり
+           03  FLG-KOUHATUFUKA-IN      PIC 9(01).
+           03  FLG-KOUHATUFUKA-ARI     PIC 9(01).
+      *    後発品・先発品あり
+           03  FLG-KOUHATU-ARI         PIC 9(01).
+      *---(04.02.00) LINE ADD END   ------------------------------------
       *
       *    添字領域
        01  IDX-AREA.
@@ -629,7 +638,6 @@
            MOVE    "SRYKA"             TO  WRK-PARA-NAME
            PERFORM 1001-OPTION-CALL-SEC
            MOVE    WRK-PARA(1:1)       TO  PARA-SRYKAKBN
-      *
       *    ドクター
            MOVE    "DRKBN"             TO  WRK-PARA-NAME
            PERFORM 1001-OPTION-CALL-SEC
@@ -648,7 +656,7 @@
        1001-OPTION-CALL-SEC             SECTION.
       *
            INITIALIZE                  ORCSPRGOPTIONAREA
-           MOVE    "ORCHC02"          TO  ORCSPRGOPTION-PRGID
+           MOVE    "ORCHC02"           TO  ORCSPRGOPTION-PRGID
            MOVE    WRK-PARA-NAME       TO  ORCSPRGOPTION-IN-DATA
            CALL    "ORCSPRGOPTION"     USING   SPA-AREA
                                                ORCSPRGOPTIONAREA
@@ -968,11 +976,22 @@
            CALL    "ORCSAGECHK"        USING
                                        ORCSAGECHKAREA
                                        SPA-AREA
-      *    ３歳未満
-           IF      AGECHK-NENREI       <   03
-               MOVE    "（３歳）"          TO  WRK-BIKOU
-               MOVE    "3"                 TO  WRK-BIKOU-FTN
+      *---(04.02.00) LINE UPD START ------------------------------------
+           IF      SPA-SRYYMD          <   "20080401"
+      *        ３歳未満
+               IF      AGECHK-NENREI       <   03
+                   MOVE    "（３歳）"          TO  WRK-BIKOU
+                   MOVE    "3"                 TO  WRK-BIKOU-FTN
+               END-IF
+           ELSE
+      *        就学前
+               IF      AGECHK-SYUGAKUKBN   =   1
+                   MOVE    "（義務教育就学前）"
+                                               TO  WRK-BIKOU
+                   MOVE    "3"                 TO  WRK-BIKOU-FTN
+               END-IF
            END-IF
+      *---(04.02.00) LINE UPD END   ------------------------------------
       *    ７０歳以上
            MOVE    ZERO                TO  FLG-RJNHKN
            IF      AGECHK-NENREI       >=  70
@@ -988,6 +1007,17 @@
                            WHEN    "3"
                                MOVE    3           TO  FLG-RJNHKN
                        END-EVALUATE
+      *---(04.02.00) LINE ADD START ------------------------------------
+                   WHEN    "039"
+                   WHEN    "038"
+      *                後期高齢者
+                       EVALUATE    COMB-HOJOKBN
+                           WHEN    "1"
+                               MOVE    1           TO  FLG-RJNHKN
+                           WHEN    "3"
+                               MOVE    3           TO  FLG-RJNHKN
+                       END-EVALUATE
+      *---(04.02.00) LINE ADD END   ------------------------------------
       *                以外
                    WHEN    OTHER
       *                自費以外
@@ -1249,6 +1279,19 @@
            MOVE    WRK-HKNJA-G         TO  HC02-HKNJA
       *    記号・番号
            MOVE    WRK-HEN-KIGONUM     TO  HC02-KIGONUM
+      *---(04.02.00) LINE ADD START ------------------------------------
+      *    後期高齢者は番号のみ
+           IF      COMB-HKNNUM         =   "039"
+               MOVE    WRK-NUM             TO  HC02-KIGONUM
+           ELSE
+      *        記号・番号で１６文字以上は別行に編集
+               IF      WRK-HEN-KIGONUM(33:)    NOT =   SPACE
+                   MOVE    SPACE               TO  HC02-KIGONUM
+                   MOVE    WRK-KIGONUM         TO  HC02-KIGO
+                   MOVE    WRK-NUM             TO  HC02-NUM
+               END-IF
+           END-IF
+      *---(04.02.00) LINE ADD END   ------------------------------------
       *    本人家族区分
            EVALUATE    PTHKN-HONKZKKBN
                WHEN    "1"
@@ -1318,8 +1361,15 @@
                PERFORM 3009-COMMENT-HEN-SEC
            END-IF
       *
+      *---(04.02.00) LINE UPD START ------------------------------------
       *    後発医薬品変更可
-           PERFORM 30010-KOUHATU-HEN-SEC
+           IF      SPA-SRYYMD          <   "20080401"
+               PERFORM 30010-KOUHATU-HEN-SEC
+           ELSE
+      *        Ｈ２０年４月から
+               PERFORM 30010-KOUHATU-HEN20-SEC
+           END-IF
+      *---(04.02.00) LINE UPD END   ------------------------------------
       *
       *ＱＲ対応
       *    ＱＲイメージ編集
@@ -1441,6 +1491,36 @@
            .
        30010-KOUHATU-HEN-EXT.
            EXIT.
+      *---(04.02.00) LINE ADD START ------------------------------------
+      *****************************************************************
+      *        後発医薬品変更可編集処理（Ｈ２０．４から）
+      *****************************************************************
+       30010-KOUHATU-HEN20-SEC      SECTION.
+      *
+      *    見出し
+           STRING  "後発医薬品（ジェネリック医薬品）"
+                   "への変更不可の時、以下に署名"
+                                       DELIMITED  BY  SIZE
+                                       INTO    HC02-MIDASHI2
+           END-STRING
+      *
+      *    変更可の署名あり、変更不可の入力がある時
+      *    後発医薬品・先発品がない
+           IF     (FLG-KOUHATU-HEN     =   1  )  OR
+                  (FLG-KOUHATUFUKA-ARI =   1  )  OR
+                  (FLG-KOUHATU-ARI     =   ZERO )
+               CONTINUE
+           ELSE
+      *        変更不可の署名
+               IF      (FLG-KOUHATUFUKA-IN     =   1  )
+                   OR  (SYS-1030-KOUHATUKA     =   "0")
+                   MOVE    WRK-DRNAME          TO  HC02-HKNINAME
+               END-IF
+           END-IF
+           .
+       30010-KOUHATU-HEN20-EXT.
+           EXIT.
+      *---(04.02.00) LINE END START ------------------------------------
       *
       *****************************************************************
       *    パラメタによる編集処理
@@ -1775,6 +1855,11 @@
            MOVE    ZERO                TO  FLG-KOUHATU-HEN
            MOVE    ZERO                TO  FLG-KOUHATU-CHK
            MOVE    ZERO                TO  FLG-KOUHATU-1-CHK
+      *---(04.02.00) LINE END START ------------------------------------
+           MOVE    ZERO                TO  FLG-KOUHATUFUKA-IN
+           MOVE    ZERO                TO  FLG-KOUHATUFUKA-ARI
+           MOVE    ZERO                TO  FLG-KOUHATU-ARI
+      *---(04.02.00) LINE END END   ------------------------------------
            INITIALIZE                  WRK-BIKOU-AREA
       *
       *ＱＲ対応
@@ -2474,6 +2559,10 @@
                MOVE    TNS-NAME            TO  WRK-KOU-TNSNAME
            END-IF
            MOVE    1                   TO  FLG-KOUHATU-FUKA
+      *
+      *---(04.02.00) LINE ADD START ------------------------------------
+           MOVE    1                   TO  FLG-KOUHATUFUKA-ARI
+      *---(04.02.00) LINE ADD END   ------------------------------------
            .
        31039-KOUHATU-NAME-EXT.
            EXIT.
@@ -2670,6 +2759,16 @@
                    MOVE    1               TO  FLG-KOUHATU-1-CHK
                END-IF
            END-IF
+      *---(04.02.00) LINE ADD START ------------------------------------
+      *    後発医薬品・先発品で変更不可のない薬品
+           IF     (FLG-KOUHATU         =   1  )  OR
+                  (FLG-KOUHATU-1       =   1  )
+               IF      FLG-KOUHATU-FUKA    =   ZERO
+                   MOVE    1               TO  FLG-KOUHATU-ARI
+               END-IF
+           END-IF
+      *---(04.02.00) LINE ADD END   ------------------------------------
+      *
            MOVE    ZERO                TO  FLG-KOUHATU-1
            MOVE    ZERO                TO  FLG-KOUHATU
            MOVE    ZERO                TO  FLG-KOUHATU-FUKA
@@ -2863,9 +2962,17 @@
            PERFORM VARYING     IDXA    FROM    1   BY  1
                    UNTIL      (IDXA    >   WRK-SRY-MAX   )  OR
                               (WRK-SRY-SRYCD (IDXA)   =   SPACE)
-      *        後発医薬品への変更
+      *---(04.02.00) LINE UPD START ------------------------------------
                IF      WRK-SRY-SRYCD (IDXA)    =   "099209902"
-                   MOVE    1                   TO  FLG-KOUHATU-HEN
+                                               OR  "099209904"
+                   IF      WRK-SRY-SRYCD (IDXA)    =   "099209902"
+      *                後発医薬品への変更
+                       MOVE    1               TO  FLG-KOUHATU-HEN
+                   ELSE
+      *                後発医薬品への変更不可
+                       MOVE    1               TO  FLG-KOUHATUFUKA-IN
+                   END-IF
+      *---(04.02.00) LINE UPD END   ------------------------------------
                ELSE
                    MOVE    WRK-SRY-SRYCD (IDXA)    TO  TNS-SRYCD
                    PERFORM 910-TENSU-READ-SEC

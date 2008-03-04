@@ -437,12 +437,21 @@
            MOVE    "日毎１行"          TO  SPA-GMN-KARUTE3KBNLST(2)(3:)
            MOVE    2                   TO  SPA-GMN-KARUTE3KBN-MAX
       *
+      ***  MOVE    "0"                 TO  SPA-GMN-KOUHATUKALST(1)
+      *    MOVE    "記載しない"        TO  SPA-GMN-KOUHATUKALST(1)(3:)
+      *    MOVE    "1"                 TO  SPA-GMN-KOUHATUKALST(2)
+      *    MOVE    "記載する"          TO  SPA-GMN-KOUHATUKALST(2)(3:)
+      *    MOVE    "2"                 TO  SPA-GMN-KOUHATUKALST(3)
+      *    MOVE    "記載する（後発）"  TO  SPA-GMN-KOUHATUKALST(3)(3:)
+      **** MOVE    3                   TO  SPA-GMN-KOUHATUKA-MAX
+      *
+      *    Ｈ２０．４改正に合わせて変更
            MOVE    "0"                 TO  SPA-GMN-KOUHATUKALST(1)
-           MOVE    "記載しない"        TO  SPA-GMN-KOUHATUKALST(1)(3:)
+           MOVE    "変更不可"          TO  SPA-GMN-KOUHATUKALST(1)(3:)
            MOVE    "1"                 TO  SPA-GMN-KOUHATUKALST(2)
-           MOVE    "記載する"          TO  SPA-GMN-KOUHATUKALST(2)(3:)
+           MOVE    "変更可"            TO  SPA-GMN-KOUHATUKALST(2)(3:)
            MOVE    "2"                 TO  SPA-GMN-KOUHATUKALST(3)
-           MOVE    "記載する（後発）"  TO  SPA-GMN-KOUHATUKALST(3)(3:)
+           MOVE    "変更可（後発）"    TO  SPA-GMN-KOUHATUKALST(3)(3:)
            MOVE    3                   TO  SPA-GMN-KOUHATUKA-MAX
       *
            MOVE    SPACE               TO  SYSKANRI-REC
@@ -452,18 +461,9 @@
            PERFORM 900-SYSKANRI-INV-SEC
            IF  (   FLG-SYSKANRI        =   ZERO )
                MOVE    SYSKANRI-REC    TO  SYS-1030-REC
+      *
                MOVE    SYS-1030-SYOHOGEPRTFLG
                                        TO  SPA-GMN-SYOHOGEPRTFLG
-               PERFORM VARYING IDY FROM    1   BY  1
-                       UNTIL ( IDY >   SPA-GMN-SYOHOGEPRTFLG-MAX )
-                   IF    ( SPA-GMN-SYOHOGEPRTFLG
-                                   =   SPA-GMN-SYOHOGEPRTFLGL (IDY) )
-                       MOVE    SPA-GMN-SYOHOGEPRTFLGLST (IDY)
-                                       TO  SPA-GMN-SYOHOGEPRTFLG-G
-                       MOVE    SPA-GMN-SYOHOGEPRTFLG-MAX
-                                       TO  IDY
-                   END-IF
-               END-PERFORM
       *        後発医薬品表示名
                MOVE    SYS-1030-SYOHODSPNAME
                                        TO  SPA-GMN-SYOHODSPNAME
@@ -478,9 +478,24 @@
                MOVE    SYS-1030-GAZOFOLDER
                                        TO  SPA-GMN-GAZOFOLDER
       *----(02.00.12)--ADD-END-----
-           ELSE
-               MOVE    SPA-GMN-SYOHOGEPRTFLGL (1)
-                                       TO  SPA-GMN-SYOHOGEPRTFLG
+           END-IF
+      *    
+           MOVE    ZERO                TO  FLG-CHK
+           PERFORM VARYING IDY FROM    1   BY  1
+                   UNTIL   IDY >       SPA-GMN-SYOHOGEPRTFLG-MAX
+               IF      SPA-GMN-SYOHOGEPRTFLG
+                                   =   SPA-GMN-SYOHOGEPRTFLGLST
+                                                       (IDY)(1:1)
+                   MOVE    SPA-GMN-SYOHOGEPRTFLGLST (IDY)
+                                           TO  SPA-GMN-SYOHOGEPRTFLG-G
+                   MOVE    SPA-GMN-SYOHOGEPRTFLG-MAX
+                                           TO  IDY
+                   MOVE    1               TO  FLG-CHK
+               END-IF
+           END-PERFORM
+           IF      FLG-CHK             =   ZERO
+               MOVE    SPA-GMN-SYOHOGEPRTFLGLST (1)
+                                       TO  SPA-GMN-SYOHOGEPRTFLG-G
            END-IF
       *
            IF      SPA-GMN-KARUTE3KBN  =   "1"
@@ -503,10 +518,10 @@
                    MOVE    1               TO  FLG-CHK
                END-IF
            END-PERFORM
-           IF      FLG-CHK             =   ZERO
-               MOVE    SPA-GMN-KOUHATUKALST(1)
-                                       TO  SPA-GMN-KOUHATUKA-G
-           END-IF
+      *    IF      FLG-CHK             =   ZERO
+      *        MOVE    SPA-GMN-KOUHATUKALST(1)
+      *                                TO  SPA-GMN-KOUHATUKA-G
+      *    END-IF
       *
       *----(03.03.01)--ADD-START---
            IF      SPA-GMN-GAZOFOLDER  =   SPACE
@@ -1684,7 +1699,7 @@
            END-PERFORM
       *
            IF      FLG-CHK             =   ZERO
-               MOVE    "0001"              TO  SPA-ERRCD
+               MOVE    "0014"              TO  SPA-ERRCD
                MOVE    305                 TO  SPA-GMN-CUR
            END-IF
       *
@@ -3558,6 +3573,9 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EVALUATE    SPA-ERRCD
                WHEN    "0001"
                    MOVE    "処方せんＧＥ表示区分入力エラー"
+                                                      TO  SPA-ERRMSG
+               WHEN    "0014"
+                   MOVE    "後発医薬品への変更可否署名区分入力エラー"
                                                       TO  SPA-ERRMSG
                WHEN    "0013"
                    MOVE    "カルテ３号紙内容入力エラー"

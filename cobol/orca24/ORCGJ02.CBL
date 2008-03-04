@@ -5073,7 +5073,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            MOVE    ZERO                TO  WRK-SELNUM
            MOVE    ZERO                TO  WRK-SELNUM2
-      *
            PERFORM VARYING     IDX     FROM   1   BY  1
                    UNTIL       IDX     >   SPA-GMN-MAX
               IF      J02-DATALIST-SELECT (IDX)   =  "T"
@@ -5916,6 +5915,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *
                MOVE    SMCNDATE-YMD        TO  JYURRK-UPYMD
                MOVE    SMCNDATE-HMS        TO  JYURRK-UPHMS
+               MOVE    SPA-OPID            TO  JYURRK-OPID
       *
                MOVE    JYURRK-REC          TO  MCPDATA-REC
                MOVE    "DBUPDATE"          TO  MCP-FUNC
@@ -6089,6 +6089,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *
                    MOVE    SMCNDATE-YMD        TO  ACCT-UPYMD
                    MOVE    SMCNDATE-HMS        TO  ACCT-UPHMS
+                   MOVE    SPA-OPID            TO  ACCT-OPID
       *
                    MOVE    SRYACCT-REC         TO  MCPDATA-REC
                    MOVE    "DBUPDATE"          TO  MCP-FUNC
@@ -6164,6 +6165,7 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
       *
                MOVE    SMCNDATE-YMD        TO  SYU-UPYMD
                MOVE    SMCNDATE-HMS        TO  SYU-UPHMS
+               MOVE    SPA-OPID            TO  SYU-OPID
       *
                MOVE    SYUNOU-REC          TO  MCPDATA-REC
                MOVE    "DBUPDATE"          TO  MCP-FUNC
@@ -6217,6 +6219,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *
                MOVE    SMCNDATE-YMD        TO  SYUTTL-UPYMD
                MOVE    SMCNDATE-HMS        TO  SYUTTL-UPHMS
+               MOVE    SPA-OPID            TO  SYUTTL-OPID
       *
                MOVE    SYUTTL-REC          TO  MCPDATA-REC
                MOVE    "DBUPDATE"          TO  MCP-FUNC
@@ -6332,6 +6335,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *
                    MOVE    SMCNDATE-YMD        TO  JYURRK-UPYMD
                    MOVE    SMCNDATE-HMS        TO  JYURRK-UPHMS
+                   MOVE    SPA-OPID            TO  JYURRK-OPID
       *
                    MOVE    JYURRK-REC          TO  MCPDATA-REC
                    MOVE    "DBUPDATE"          TO  MCP-FUNC
@@ -6515,6 +6519,7 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    SMCNDATE-YMD        TO  JYURRK-CREYMD
                MOVE    SMCNDATE-YMD        TO  JYURRK-UPYMD
                MOVE    SMCNDATE-HMS        TO  JYURRK-UPHMS
+               MOVE    SPA-OPID            TO  JYURRK-OPID
       *
                MOVE    JYURRK-REC          TO  MCPDATA-REC
                MOVE    "DBINSERT"          TO  MCP-FUNC
@@ -6697,6 +6702,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    SMCNDATE-YMD        TO  SYU-CREYMD
                MOVE    SMCNDATE-YMD        TO  SYU-UPYMD
                MOVE    SMCNDATE-HMS        TO  SYU-UPHMS
+               MOVE    SPA-OPID            TO  SYU-OPID
       *
                MOVE    SYUNOU-REC          TO  MCPDATA-REC
                MOVE    "DBINSERT"          TO  MCP-FUNC
@@ -6759,6 +6765,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    SMCNDATE-YMD        TO  SYUTTL-CREYMD
                MOVE    SMCNDATE-YMD        TO  SYUTTL-UPYMD
                MOVE    SMCNDATE-HMS        TO  SYUTTL-UPHMS
+               MOVE    SPA-OPID            TO  SYUTTL-OPID
       *
                MOVE    SYUTTL-REC          TO  MCPDATA-REC
                MOVE    "DBINSERT"          TO  MCP-FUNC
@@ -7603,6 +7610,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            MOVE    SMCNDATE-YMD        TO  JYURRK-UPYMD
            MOVE    SMCNDATE-HMS        TO  JYURRK-UPHMS
+           MOVE    SPA-OPID            TO  JYURRK-OPID
       *
            MOVE    JYURRK-REC          TO  MCPDATA-REC
            MOVE    "DBUPDATE"          TO  MCP-FUNC
@@ -7812,17 +7820,18 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            END-IF
       *
       *    診療開始年月日
-           MOVE    ZERO                TO  SPA-J02-SRYYMD(7:2)
-           PERFORM VARYING     IDX-D   FROM    1   BY  1
-                   UNTIL       IDX-D   >   31
-               IF      SPA-GMN-DAY (IDX-D) NOT =   ZERO
-                   MOVE    IDX-D           TO  WRK-DD
-                   MOVE    WRK-DD          TO  SPA-J02-SRYYMD(7:2)
-                   MOVE    31              TO  IDX-D
-               END-IF
-           END-PERFORM
            IF      SPA-NAI-BANGO       =   ZERO
                MOVE    "01"                TO  SPA-J02-SRYYMD(7:2)
+           ELSE
+               MOVE    ZERO                TO  SPA-J02-SRYYMD(7:2)
+               PERFORM VARYING     IDX-D   FROM    1   BY  1
+                       UNTIL       IDX-D   >   31
+                   IF      SPA-GMN-DAY (IDX-D) NOT =   ZERO
+                       MOVE    IDX-D           TO  WRK-DD
+                       MOVE    WRK-DD          TO  SPA-J02-SRYYMD(7:2)
+                       MOVE    31              TO  IDX-D
+                   END-IF
+               END-PERFORM
            END-IF
       *
            MOVE    SPA-SRYYMD          TO  SPA-MAE-SRYYMD
@@ -9468,6 +9477,7 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
       *
                    MOVE    SMCNDATE-YMD        TO  ACCT-UPYMD
                    MOVE    SMCNDATE-HMS        TO  ACCT-UPHMS
+                   MOVE    SPA-OPID            TO  ACCT-OPID
       *
                    MOVE    SRYACCT-REC         TO  MCPDATA-REC
                    MOVE    "DBUPDATE"          TO  MCP-FUNC
@@ -9822,6 +9832,7 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    JYURRK-KEY          TO  JYURRK-UPKEY
            MOVE    SMCNDATE-YMD        TO  JYURRK-UPYMD
            MOVE    SMCNDATE-HMS        TO  JYURRK-UPHMS
+           MOVE    SPA-OPID            TO  JYURRK-OPID
       *
            MOVE    JYURRK-REC          TO  MCPDATA-REC
            MOVE    "DBUPDATE"          TO  MCP-FUNC
@@ -9852,6 +9863,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SMCNDATE-YMD        TO  JYURRK-CREYMD
            MOVE    SMCNDATE-YMD        TO  JYURRK-UPYMD
            MOVE    SMCNDATE-HMS        TO  JYURRK-UPHMS
+           MOVE    SPA-OPID            TO  JYURRK-OPID
       *
            MOVE    JYURRK-REC          TO  MCPDATA-REC
            MOVE    "DBINSERT"          TO  MCP-FUNC
@@ -10008,6 +10020,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SMCNDATE-YMD        TO  SYU-CREYMD
            MOVE    SMCNDATE-YMD        TO  SYU-UPYMD
            MOVE    SMCNDATE-HMS        TO  SYU-UPHMS
+           MOVE    SPA-OPID            TO  SYU-OPID
       *
            MOVE    SYUNOU-REC          TO  MCPDATA-REC
            MOVE    "DBINSERT"          TO  MCP-FUNC
@@ -10066,7 +10079,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *
                MOVE    SMCNDATE-YMD        TO  SYS-0041-UPYMD
                MOVE    SMCNDATE-HMS        TO  SYS-0041-UPHMS
-      *
       *
                MOVE    SYS-0041-REC        TO  MCPDATA-REC
                MOVE    "DBUPDATE"          TO  MCP-FUNC
@@ -10189,6 +10201,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *
                MOVE    SMCNDATE-YMD        TO  SYU-UPYMD
                MOVE    SMCNDATE-HMS        TO  SYU-UPHMS
+               MOVE    SPA-OPID            TO  SYU-OPID
       *
                MOVE    SYUNOU-REC          TO  MCPDATA-REC
                MOVE    "DBUPDATE"          TO  MCP-FUNC
@@ -10446,6 +10459,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *
                    MOVE    SMCNDATE-YMD        TO  SYU-UPYMD
                    MOVE    SMCNDATE-HMS        TO  SYU-UPHMS
+                   MOVE    SPA-OPID            TO  SYU-OPID
       *
                    MOVE    SYUNOU-REC          TO  MCPDATA-REC
                    MOVE    "DBUPDATE"          TO  MCP-FUNC
@@ -10496,6 +10510,7 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            MOVE    SMCNDATE-YMD        TO  SYU-UPYMD
            MOVE    SMCNDATE-HMS        TO  SYU-UPHMS
+           MOVE    SPA-OPID            TO  SYU-OPID
       *
            MOVE    SYUNOU-REC          TO  MCPDATA-REC
            MOVE    "DBUPDATE"          TO  MCP-FUNC
@@ -10585,6 +10600,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *
                MOVE    SMCNDATE-YMD        TO  SYUTTL-UPYMD
                MOVE    SMCNDATE-HMS        TO  SYUTTL-UPHMS
+               MOVE    SPA-OPID            TO  SYUTTL-OPID
       *
                MOVE    SYUTTL-REC          TO  MCPDATA-REC
                MOVE    "DBUPDATE"          TO  MCP-FUNC
@@ -10663,6 +10679,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SMCNDATE-YMD        TO  SMEI-UPYMD
            MOVE    SMCNDATE-HMS        TO  SMEI-UPHMS
            MOVE    SMCNDATE-HMS        TO  SMEI-CREHMS
+           MOVE    SPA-OPID            TO  SMEI-OPID
       *
            MOVE    SMEI-CREYMD         TO  SDAILYKEY-CREYMD
            MOVE    SMEI-CREHMS         TO  SDAILYKEY-CREHMS
@@ -10812,6 +10829,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *
                MOVE    SMCNDATE-YMD        TO  JYURRK-UPYMD
                MOVE    SMCNDATE-HMS        TO  JYURRK-UPHMS
+               MOVE    SPA-OPID            TO  JYURRK-OPID
       *
                MOVE    JYURRK-REC          TO  MCPDATA-REC
                MOVE    "DBUPDATE"          TO  MCP-FUNC
@@ -11971,6 +11989,14 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            IF      SPA-GMN-BANGO   NOT =   ZERO
                MOVE    "0009"          TO  SPA-ERRCD
            END-IF
+      *@!!
+      *    ４月のレセプト適用までエラー
+           IF      SPA-ERRCD           =   SPACE
+               IF      SPA-NAI-SRYYM       >=  "200804"
+                   MOVE    "9009"          TO  SPA-ERRCD
+               END-IF
+           END-IF
+      *@
       *
            MOVE    SPACE               TO  SPA-XC01-HKNKBN
            MOVE    SPACE               TO  SPA-XC01-RSI-HKNKBN
@@ -12708,8 +12734,11 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                                        TO  WRK-ERRMSG
       *@@
                WHEN    "9009"
-                   MOVE    "改正対応前です。プレビューできません。"
-                                       TO  WRK-ERRMSG
+                   STRING  "レセプトの４月改正は未対応です。"
+                           "４月診療以降のプレビューはできません。"
+                                       DELIMITED  BY  SIZE
+                                       INTO  SPA-ERRMSG
+                   END-STRING
       *@@
       *
                WHEN    "9999"

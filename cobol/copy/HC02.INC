@@ -39,3 +39,6 @@
             02  HC02-FTNRATE    PIC X(3).
             02  HC02-FTNWARI    PIC X(2).
             02  HC02-MIDASHI    PIC X(20).
+            02  HC02-KIGO   PIC X(32).
+            02  HC02-NUM    PIC X(32).
+            02  HC02-MIDASHI2   PIC X(64).

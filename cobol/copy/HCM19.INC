@@ -39,3 +39,6 @@
             02  HCM19-FTNRATE   PIC X(3).
             02  HCM19-FTNWARI   PIC X(2).
             02  HCM19-MIDASHI   PIC X(20).
+            02  HCM19-KIGO  PIC X(32).
+            02  HCM19-NUM   PIC X(32).
+            02  HCM19-MIDASHI2  PIC X(64).
