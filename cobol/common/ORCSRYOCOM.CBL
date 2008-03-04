@@ -345,7 +345,7 @@
                MOVE    "key10"         TO  MCP-PATHNAME
                PERFORM  910-SYSKANRI-READ-SEC
                IF    FLG-SYSKANRI   =    ZERO
-                   IF   SYS-5000-ADLINPUTKBN   =   "0"  OR  SPACE
+                   IF   SYS-5000-ADLINPUTKBN   =   "0"
                        MOVE     5      TO  LNK-RYOCOM-RC
                    END-IF
                END-IF
