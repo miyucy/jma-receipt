@@ -22,16 +22,19 @@
               04  W20-B06-STATE            PIC S9(9)   BINARY.
               04  W20-B07-STATE            PIC S9(9)   BINARY.
               04  W20-B08-STATE            PIC S9(9)   BINARY.
-              04  W20-B09                  PIC X(04).
-              04  W20-B09-STATE            PIC S9(9)   BINARY.
+              04  W20-B09-G.
+                05  W20-B09                PIC X(04).
+                05  W20-B09-STATE          PIC S9(9)   BINARY.
               04  W20-B12-STATE            PIC S9(9)   BINARY.
               04  W20-BTUNUM               PIC S9(2).
       *
-              04  W20-NAME                 PIC X(20).
-              04  W20-NAME-STATE           PIC S9(9)   BINARY.
+              04  W20-NAME-G.
+                05  W20-NAME               PIC X(20).
+                05  W20-NAME-STATE         PIC S9(9)   BINARY.
       *
-              04  W20-TANNAME              PIC X(10).
-              04  W20-TANNAME-STATE        PIC S9(9)   BINARY.
+              04  W20-TANNAME-G.
+                05  W20-TANNAME            PIC X(10).
+                05  W20-TANNAME-STATE      PIC S9(9)   BINARY.
       *
               04  W20-CMB-TOKUTEINYUIN.
       *
@@ -64,34 +67,18 @@
                 05  W20-SBT-ITM            PIC X(23)   OCCURS  15.
                 05  W20-SBT-ITM-STATE      PIC S9(9)   BINARY.
       *
-              04  W20-CMB-KNGHJOKSN.
+              04  W20-CMB-KHNRYO.
       *
-                05  W20-KNGHJOKSN          PIC X(41).
-                05  W20-KNGHJOKSN-STATE    PIC S9(9)   BINARY.
-      *
-                05  W20-KNGHJOKSN-CNT      PIC S9(9)   BINARY.
-                05  W20-KNGHJOKSN-ITM      PIC X(41)   OCCURS  10.
-                05  W20-KNGHJOKSN-ITM-STATE
-                                           PIC S9(9)   BINARY.
-      *
-              04  W20-CMB-YAKANKNGKSN.
-      *
-                05  W20-YAKANKNGKSN        PIC X(23).
-                05  W20-YAKANKNGKSN-STATE  PIC S9(9)   BINARY.
-      *
-                05  W20-YKNKNGKSN-CNT      PIC S9(9)   BINARY.
-                05  W20-YKNKNGKSN-ITM      PIC X(23)   OCCURS  10.
-                05  W20-YKNKNGKSN-ITM-STATE
-                                           PIC S9(9)   BINARY.
-      *
-              04  W20-CHK-SYOKUDOKBN       PIC X.
-              04  W20-CHK-SYOKUDOKBN-LBL   PIC X(10).
-              04  W20-CHK-SYOKUDOKBN-STATE PIC S9(9)   BINARY.
+                05  W20-KHNRYO             PIC X(63).
+                05  W20-KHNRYO-STATE       PIC S9(9)   BINARY.
+                05  W20-KHNRYO-CNT         PIC S9(9)   BINARY.
+                05  W20-KHNRYO-ITM         PIC X(63)   OCCURS  50.
+                05  W20-KHNRYO-ITM-STATE   PIC S9(9)   BINARY.
       *
       *
-              04  W20-CHK-HIKSISUKBN       PIC X.
-              04  W20-CHK-HIKSISUKBN-STATE PIC S9(9)   BINARY.
-      *
+              04  W20-KHNTEN-G.
+                05  W20-KHNTEN               PIC S9(6).
+                05  W20-KHNTEN-STATE         PIC S9(9)   BINARY.
       *
               04  W20-CMB-RECEDSPKBN.
       *
@@ -104,6 +91,32 @@
                 05  W20-RECEDSPKBN-ITM-STATE
                                            PIC S9(9)   BINARY.
       *
+              04  W20-SELNUM               PIC S9(2).
+      *
+              04  W20-LBLKNGHJO            PIC X(36).
+              04  W20-CMB-KNGHJO.
+      *
+                05  W20-KNGHJO             PIC X(41).
+                05  W20-KNGHJO-STATE       PIC S9(9)   BINARY.
+      *
+                05  W20-KNGHJO-CNT         PIC S9(9)   BINARY.
+                05  W20-KNGHJO-ITM         PIC X(41)   OCCURS  10.
+                05  W20-KNGHJO-ITM-STATE
+                                           PIC S9(9)   BINARY.
+      *
+              04  W20-LBLKSN-G.
+                05  W20-LBLKSN             PIC X(36)
+                                           OCCURS      14.
+      *
+              04  W20-CMB-KSN-G.
+                05  W20-CMB-KSN-OCC        OCCURS      14.
+      *
+                  06  W20-KSN              PIC X(27).
+                  06  W20-KSN-STATE        PIC S9(9)   BINARY.
+      *
+                  06  W20-KSN-CNT          PIC S9(9)   BINARY.
+                  06  W20-KSN-ITM          PIC X(27)   OCCURS  10.
+                  06  W20-KSN-ITM-STATE    PIC S9(9)   BINARY.
               04  W20-YUKOSTYMD            PIC X(10).
               04  W20-YUKOSTYMD-STATE      PIC S9(9)   BINARY.
       *
@@ -118,19 +131,6 @@
                 05  W20-EDKBN-ITM          PIC X(8)    OCCURS  2.
                 05  W20-EDKBN-ITM-STATE    PIC S9(9)   BINARY.
       *
-      *
-              04  W20-CMB-KHNRYO.
-      *
-                05  W20-KHNRYO             PIC X(63).
-                05  W20-KHNRYO-STATE       PIC S9(9)   BINARY.
-                05  W20-KHNRYO-CNT         PIC S9(9)   BINARY.
-                05  W20-KHNRYO-ITM         PIC X(63)   OCCURS  50.
-                05  W20-KHNRYO-ITM-STATE   PIC S9(9)   BINARY.
-      *
-      *
-              04  W20-KHNTEN               PIC S9(6).
-              04  W20-KHNTEN-STATE         PIC S9(9)   BINARY.
-              04  W20-SELNUM               PIC S9(2).
               04  W20-SCROLLEDWINDOW28.
                 05  W20-BTULST-TBL.
                   06  W20-BTULST-CNT       PIC S9(9)   BINARY.
