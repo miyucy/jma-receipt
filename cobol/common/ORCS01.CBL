@@ -362,6 +362,7 @@
            03  FLG-SYUKEI              PIC 9(01).
            03  FLG-SYUKEI2             PIC 9(01).
            03  FLG-KENPOJYUNKYO        PIC 9(01).
+           03  FLG-SYUGAKUMAE          PIC 9(01).
       *
        01  WRK-AREA.
            03  WK-END                  PIC 9(08).
@@ -2843,6 +2844,8 @@
                 PERFORM  DB-CLOSE-SEC
            END-IF
       *
+           MOVE      ZERO       TO    FLG-KENPOJYUNKYO
+                                      FLG-SYUGAKUMAE
            IF    LNK-SYU-SRYYMD(1:6)    >=   "200210"
       *        ´µ¼ÔÇ¯Îð·×»»
                INITIALIZE                           PTINF-REC
@@ -2872,6 +2875,10 @@
                MOVE    LNK-SYU-PTID    TO  AGECHK-PTID
                MOVE    LNK-SYU-SRYYMD  TO  AGECHK-SRYYMD
                MOVE    PTINF-BIRTHDAY  TO  AGECHK-BIRTHDAY
+               MOVE    LNK-SYU-HKNCOMBINUM 
+                                       TO  AGECHK-HKNCOMBINUM
+               MOVE    LNK-SYU-NYUGAIKBN
+                                       TO  AGECHK-NYUGAIKBN
                CALL    "ORCSAGECHK"        USING
                                            ORCSAGECHKAREA
                                            SPA-AREA
@@ -2885,6 +2892,16 @@
                          COMB-HKNNUM      = "039"    )
                        MOVE    "1"     TO  FLG-KOUREI-KBN
                    END-IF
+                   IF    LNK-S01-SAIKEISAN-KBN  =   "1"
+                     MOVE   AGECHK-FTNRATE  TO  LNK-SYU-PTFTNRATE
+                   END-IF
+                   IF    WK-HKNKBN              =   "1"
+                     IF     AGECHK-HKNKBN   =   4  OR  5
+                         MOVE     1         TO  FLG-KENPOJYUNKYO
+                     END-IF
+                   END-IF
+                   MOVE     AGECHK-SYUGAKUKBN
+                                            TO  FLG-SYUGAKUMAE
                ELSE
                    DISPLAY  "PTINF AGE-CHK ERR " LNK-SYU-PTID
                END-IF
@@ -3231,61 +3248,6 @@
                     MOVE   20000   TO  WK-GEN70-GENDOGAKU
                  END-IF
               END-IF
-           END-IF
-      *
-      *    Ï«ºÒ¡¦¼«ÇåÀÕ¤ÎºÆ·×»»»þ¤ÎÉéÃ´³ä¹ç¤òµá¤á¤ë
-      *
-           MOVE      ZERO       TO    FLG-KENPOJYUNKYO
-           IF  (LNK-S01-SAIKEISAN-KBN  =   "1")
-           OR  (WK-HKNKBN              =   "1")
-      *
-               INITIALIZE                           PTINF-REC
-               MOVE    LNK-SYU-HOSPNUM      TO      PTINF-HOSPNUM
-               MOVE    LNK-SYU-PTID         TO      PTINF-PTID
-               MOVE    PTINF-REC            TO      MCPDATA-REC
-               MOVE    "DBSELECT"           TO      MCP-FUNC
-               MOVE    "tbl_ptinf"          TO      MCP-TABLE
-               MOVE    "key"                TO      MCP-PATHNAME
-               CALL    "ORCDBMAIN"          USING   MCPAREA
-                                                    MCPDATA-REC
-                                                    SPA-AREA
-               IF      MCP-RC               =       ZERO
-                   MOVE    "tbl_ptinf"      TO      MCP-TABLE
-                   MOVE    "key"            TO      MCP-PATHNAME
-                   PERFORM  PTINF-READ-SEC
-               ELSE
-                   DISPLAY "PTINF SELECT ERR"
-                   INITIALIZE      PTINF-REC
-               END-IF
-               MOVE    "tbl_ptinf"          TO       MCP-TABLE
-               MOVE    "key"                TO       MCP-PATHNAME
-               PERFORM  DB-CLOSE-SEC
-      *
-               INITIALIZE                  ORCSAGECHKAREA
-               MOVE    LNK-SYU-HOSPNUM TO  AGECHK-HOSPNUM
-               MOVE    LNK-SYU-PTID    TO  AGECHK-PTID
-               MOVE    LNK-SYU-SRYYMD  TO  AGECHK-SRYYMD
-               MOVE    PTINF-BIRTHDAY  TO  AGECHK-BIRTHDAY
-               MOVE    LNK-SYU-HKNCOMBINUM 
-                                       TO  AGECHK-HKNCOMBINUM
-               MOVE    LNK-SYU-NYUGAIKBN
-                                       TO  AGECHK-NYUGAIKBN
-               CALL    "ORCSAGECHK"        USING
-                                           ORCSAGECHKAREA
-                                           SPA-AREA
-               IF      AGECHK-RC       =   ZERO
-                 IF    LNK-S01-SAIKEISAN-KBN  =   "1"
-                   MOVE   AGECHK-FTNRATE  TO  LNK-SYU-PTFTNRATE
-                 END-IF
-                 IF    WK-HKNKBN              =   "1"
-                   IF     AGECHK-HKNKBN   =   4  OR  5
-                       MOVE     1         TO  FLG-KENPOJYUNKYO
-                   END-IF
-                 END-IF
-               ELSE
-                   DISPLAY  "PTINF AGE-CHK ERR " LNK-SYU-PTID
-               END-IF
-      *
            END-IF
       *
            MOVE       8000       TO     WK-SEIHO-GENDO
@@ -12742,6 +12704,7 @@
       *
       *    Ç¯Îð£³ºÐÌ¤Ëþ
            IF      LNK-SYU-SRYYMD       >=      "20021001"
+           AND     LNK-SYU-SRYYMD       <=      "20080331"
                INITIALIZE                           PTINF-REC
                MOVE    LNK-SYU-HOSPNUM      TO      PTINF-HOSPNUM
                MOVE    LNK-SYU-PTID         TO      PTINF-PTID
@@ -12787,6 +12750,29 @@
                PERFORM  DB-CLOSE-SEC
       *
                IF      WRK-NENREI         <     3
+                   IF   COMB-HKNNUM       =     "060"
+                       IF   COMB-HOJOKBN  =     "0"  OR  "1"
+                                                     OR  "4"
+                           CONTINUE
+                       ELSE
+                           MOVE   20      TO   HKN-HON-GAIKFTNRATE
+                                               HKN-KZK-GAIKFTNRATE
+                                               HKN-TSY-GAIKFTNRATE
+                                               HKN-TNK-GAIKFTNRATE
+                       END-IF
+                   ELSE
+                       IF    HKN-HKNKOHSBTKBN  =  "1" 
+                           MOVE   20      TO   HKN-HON-GAIKFTNRATE
+                                               HKN-KZK-GAIKFTNRATE
+                                               HKN-TSY-GAIKFTNRATE
+                                               HKN-TNK-GAIKFTNRATE
+                       END-IF 
+                   END-IF
+               END-IF
+           END-IF.
+      *    µÁÌ³¶µ°é½¢³ØÁ°
+           IF      LNK-SYU-SRYYMD       >=      "20080401"
+               IF      FLG-SYUGAKUMAE    =       1
                    IF   COMB-HKNNUM       =     "060"
                        IF   COMB-HOJOKBN  =     "0"  OR  "1"
                                                      OR  "4"

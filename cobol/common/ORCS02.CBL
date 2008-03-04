@@ -313,6 +313,7 @@
            03  FLG-GENBUTU-TAISYODATA  PIC 9(01).
            03  FLG-GENBUTU-TAISYOOK    PIC 9(01).
            03  FLG-KENPOJYUNKYO        PIC 9(01).
+           03  FLG-SYUGAKUMAE          PIC 9(01).
       *
        01  WRK-AREA.
            03  WK-PAYKBN               PIC X(02).
@@ -2894,7 +2895,9 @@
                 PERFORM  DB-CLOSE-SEC
            END-IF
       *
-           IF  LNK-S02-KOUREI-NYUIN-KBN     =   SPACE   
+           MOVE      ZERO       TO    FLG-KENPOJYUNKYO
+                                      FLG-SYUGAKUMAE
+           IF    LNK-SYU-SRYYMD(1:6)    >=   "200210"
       *        ¥µº‘«ØŒ∑◊ªª
                INITIALIZE                           PTINF-REC
                MOVE    LNK-SYU-HOSPNUM      TO      PTINF-HOSPNUM
@@ -2912,7 +2915,6 @@
                    PERFORM  PTINF-READ-SEC
                ELSE
                    DISPLAY   "PTINF SELECT ERR"
-      *
                    INITIALIZE                   PTINF-REC
                END-IF
       *
@@ -2925,9 +2927,12 @@
                MOVE    LNK-SYU-PTID      TO  AGECHK-PTID
                MOVE    LNK-SYU-SRYYMD    TO  AGECHK-SRYYMD
                MOVE    PTINF-BIRTHDAY    TO  AGECHK-BIRTHDAY
-               CALL    "ORCSAGECHK"        USING
-                                           ORCSAGECHKAREA
-                                           SPA-AREA
+               MOVE    LNK-SYU-HKNCOMBINUM
+                                         TO  AGECHK-HKNCOMBINUM
+               MOVE    LNK-SYU-NYUGAIKBN TO  AGECHK-NYUGAIKBN
+               CALL    "ORCSAGECHK"          USING
+                                             ORCSAGECHKAREA
+                                             SPA-AREA
                IF      AGECHK-RC       =   ZERO
                    IF  ( AGECHK-NENREI   >=  70      ) OR
                        ( AGECHK-NENREI   >=  65  AND
@@ -2936,14 +2941,24 @@
                          FLG-ROUJINHOKEN  = "1"      ) OR
                        ( AGECHK-NENREI   >=  65  AND
                          COMB-HKNNUM      = "039"    )
+                     IF  LNK-S02-KOUREI-NYUIN-KBN     =   SPACE
                        MOVE  "1"     TO  LNK-S02-KOUREI-NYUIN-KBN
+                     END-IF
                    END-IF
+                   MOVE   AGECHK-FTNRATE  TO  LNK-SYU-PTFTNRATE
+                   IF    WK-HKNKBN        =  "1"
+                     IF   AGECHK-HKNKBN   =   4  OR  5
+                       MOVE     1         TO  FLG-KENPOJYUNKYO
+                     END-IF
+                   END-IF
+                   MOVE   AGECHK-SYUGAKUKBN
+                                          TO  FLG-SYUGAKUMAE
                ELSE
                    DISPLAY  "PTINF AGE-CHK ERR " LNK-SYU-PTID
-      *
                    MOVE  SPACE       TO  LNK-S02-KOUREI-NYUIN-KBN
                END-IF
            END-IF
+      *
            IF   LNK-S02-KOUREI-NYUIN-KBN   =  "1"
                IF  COMB-SYU-HKNKOHSBTKBN   =   "8"
                    MOVE  SPACE       TO  LNK-S02-KOUREI-NYUIN-KBN
@@ -3279,61 +3294,6 @@
                  END-IF
               END-IF
            END-IF
-      *
-      *    œ´∫“°¶º´«Â¿’§Œ…È√¥≥‰πÁ§Úµ·§·§Î
-      *
-      *    IF   WK-HKNKBN              =   "1"
-      *
-               MOVE      ZERO               TO      FLG-KENPOJYUNKYO
-      *
-               INITIALIZE                           PTINF-REC
-               MOVE    LNK-SYU-HOSPNUM      TO      PTINF-HOSPNUM
-               MOVE    LNK-SYU-PTID         TO      PTINF-PTID
-               MOVE    PTINF-REC            TO      MCPDATA-REC
-               MOVE    "DBSELECT"           TO      MCP-FUNC
-               MOVE    "tbl_ptinf"          TO      MCP-TABLE
-               MOVE    "key"                TO      MCP-PATHNAME
-               CALL    "ORCDBMAIN"          USING   MCPAREA
-                                                    MCPDATA-REC
-                                                    SPA-AREA
-               IF      MCP-RC               =       ZERO
-                   MOVE    "tbl_ptinf"      TO      MCP-TABLE
-                   MOVE    "key"            TO      MCP-PATHNAME
-                   PERFORM  PTINF-READ-SEC
-               ELSE
-                   DISPLAY   "PTINF SELECT ERR"
-      *
-                   INITIALIZE                   PTINF-REC
-               END-IF
-      *
-               MOVE    "tbl_ptinf"          TO      MCP-TABLE
-               MOVE    "key"                TO      MCP-PATHNAME
-               PERFORM  DB-CLOSE-SEC
-      *
-               INITIALIZE                  ORCSAGECHKAREA
-               MOVE    LNK-SYU-HOSPNUM TO  AGECHK-HOSPNUM
-               MOVE    LNK-SYU-PTID    TO  AGECHK-PTID
-               MOVE    LNK-SYU-SRYYMD  TO  AGECHK-SRYYMD
-               MOVE    PTINF-BIRTHDAY  TO  AGECHK-BIRTHDAY
-               MOVE    LNK-SYU-HKNCOMBINUM 
-                                       TO  AGECHK-HKNCOMBINUM
-               MOVE    LNK-SYU-NYUGAIKBN
-                                       TO  AGECHK-NYUGAIKBN
-               CALL    "ORCSAGECHK"        USING
-                                           ORCSAGECHKAREA
-                                           SPA-AREA
-               IF      AGECHK-RC       =   ZERO
-                   MOVE   AGECHK-FTNRATE  TO  LNK-SYU-PTFTNRATE
-                   IF    WK-HKNKBN        =  "1"
-                     IF   AGECHK-HKNKBN   =   4  OR  5
-                       MOVE     1         TO  FLG-KENPOJYUNKYO
-                     END-IF
-                   END-IF
-               ELSE
-                   DISPLAY  "PTINF AGE-CHK ERR " LNK-SYU-PTID
-               END-IF
-      *
-      *    END-IF.
       *
            MOVE      15000       TO     WK-SEIHO-GENDO
            IF  FLG-KOHYONKAIME = 1
@@ -12734,17 +12694,19 @@
            END-IF.
       *
       *    «ØŒ£≥∫–Ã§À˛
-           INITIALIZE                           PTINF-REC
-           MOVE    LNK-SYU-HOSPNUM      TO      PTINF-HOSPNUM
-           MOVE    LNK-SYU-PTID         TO      PTINF-PTID
-           MOVE    PTINF-REC            TO      MCPDATA-REC
-           MOVE    "DBSELECT"           TO      MCP-FUNC
-           MOVE    "tbl_ptinf"          TO      MCP-TABLE
-           MOVE    "key"                TO      MCP-PATHNAME
-           CALL    "ORCDBMAIN"          USING   MCPAREA
-                                                MCPDATA-REC
-                                                SPA-AREA
-           IF      MCP-RC               =       ZERO
+           IF      LNK-SYU-SRYYMD       >=      "20021001"
+           AND     LNK-SYU-SRYYMD       <=      "20080331"
+             INITIALIZE                           PTINF-REC
+             MOVE    LNK-SYU-HOSPNUM      TO      PTINF-HOSPNUM
+             MOVE    LNK-SYU-PTID         TO      PTINF-PTID
+             MOVE    PTINF-REC            TO      MCPDATA-REC
+             MOVE    "DBSELECT"           TO      MCP-FUNC
+             MOVE    "tbl_ptinf"          TO      MCP-TABLE
+             MOVE    "key"                TO      MCP-PATHNAME
+             CALL    "ORCDBMAIN"          USING   MCPAREA
+                                                  MCPDATA-REC
+                                                  SPA-AREA
+             IF      MCP-RC               =       ZERO
                MOVE    "tbl_ptinf"      TO      MCP-TABLE
                MOVE    "key"            TO      MCP-PATHNAME
                PERFORM  PTINF-READ-SEC
@@ -12769,16 +12731,16 @@
                     DISPLAY  "PTINF FETCH ERR"
                     MOVE     ZERO   TO      WRK-NENREI
                END-IF
-           ELSE
+             ELSE
                DISPLAY   "PTINF SELECT ERR"
                MOVE     ZERO   TO      WRK-NENREI
-           END-IF
+             END-IF
       *
-           MOVE    "tbl_ptinf"          TO       MCP-TABLE
-           MOVE    "key"                TO       MCP-PATHNAME
-           PERFORM  DB-CLOSE-SEC
+             MOVE    "tbl_ptinf"          TO       MCP-TABLE
+             MOVE    "key"                TO       MCP-PATHNAME
+             PERFORM  DB-CLOSE-SEC
       *
-           IF      WRK-NENREI         <     3
+             IF      WRK-NENREI         <     3
                IF   COMB-HKNNUM       =     "060"
                    IF   COMB-HOJOKBN  =     "0"  OR  "1"
                                        OR   "4"  OR  "5"
@@ -12797,6 +12759,31 @@
                                            HKN-TNK-NYUKFTNRATE
                    END-IF 
                END-IF
+             END-IF
+           END-IF.
+      *
+      *    µ¡Ã≥∂µ∞ÈΩ¢≥ÿ¡∞
+           IF      LNK-SYU-SRYYMD       >=      "20080401"
+             IF        FLG-SYUGAKUMAE    =       1
+                   IF   COMB-HKNNUM       =     "060"
+                       IF   COMB-HOJOKBN  =     "0"  OR  "1"
+                                           OR   "4"  OR  "5"
+                           CONTINUE
+                       ELSE
+                           MOVE   20      TO   HKN-HON-NYUKFTNRATE
+                                               HKN-KZK-NYUKFTNRATE
+                                               HKN-TSY-NYUKFTNRATE
+                                               HKN-TNK-NYUKFTNRATE
+                       END-IF
+                   ELSE
+                       IF    HKN-HKNKOHSBTKBN  =  "1" 
+                           MOVE   20      TO   HKN-HON-NYUKFTNRATE
+                                               HKN-KZK-NYUKFTNRATE
+                                               HKN-TSY-NYUKFTNRATE
+                                               HKN-TNK-NYUKFTNRATE
+                       END-IF
+                   END-IF
+             END-IF
            END-IF.
       *
       *     ›∏±¡»πÁ§ª•∆°º•÷•Î§Œ ‰Ωı∂Ë ¨§´§È¥µº‘§Œ…È√¥≥‰πÁ§Ú ›∏±»÷πÊ
