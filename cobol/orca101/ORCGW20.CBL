@@ -144,8 +144,8 @@
            03  WRK-KSNCD                           PIC X(09).
            03  WRK-KSNKSNKBN                       PIC 9(03).
            03  WRK-NYUKSNKBN-G.
-               03  WRK-NYUKSNKBN-MAX               PIC 9(03).
-               03  WRK-NYUKSNKBN                   PIC 9(03)
+               05  WRK-NYUKSNKBN-MAX               PIC 9(03).
+               05  WRK-NYUKSNKBN                   PIC 9(03)
                                                    OCCURS   10.
            03  WRK-KSNKBN                          PIC 9(03).
            03  WRK-NYUINKBN                        PIC 9(03).
