@@ -63,6 +63,7 @@
       *  03.05.00    NACL-多々納  07/04/XX  グループ診療対応
       *  03.05.00    NACL-多々納  07/05/22  再印刷処理追加
       *  03.05.01    NACL-多々納  07/08/06  訂正請求書合計印刷対応
+      *  04.02.00    NACL-多々納  08/03/05  お薬手帳発行区分追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -506,6 +507,9 @@
       *    薬情報印刷パラメタ
            COPY    "CPORCSCH30.INC".
       *
+      *    お薬手帳発行サブパラメタ
+           COPY    "CPORCSCH62.INC".
+      *
       *   診療科算定履歴更新サブ
            COPY    "CPORCSKARRK.INC".
       *
@@ -946,6 +950,47 @@
                                                           (IDX) (1:1)
                    MOVE    SPA-GMN-YAKJYOLST(IDX)
                                            TO  SPA-GMN-YAKJYOFLG-G
+               END-IF
+           END-PERFORM
+      *
+      *    お薬情報発行行フラグ
+           MOVE    "0 発行なし"        TO  SPA-GMN-OKUSURILST (01)
+           MOVE    "1 発行あり"        TO  SPA-GMN-OKUSURILST (02)
+           MOVE    "2 院外分発行"      TO  SPA-GMN-OKUSURILST (03)
+           MOVE    3                   TO  SPA-OKUSURIFLG-MAX
+           EVALUATE    SPA-OKUSURIPRTFLG
+               WHEN    "0"
+                   MOVE    SPA-OKUSURIPRTFLG   TO  SPA-GMN-OKUSURIFLG
+               WHEN    "1"
+      *            後期高齢者のみ
+                   IF      SPA-NAI-ROUJIN      =   1
+                       MOVE    "1"             TO  SPA-GMN-OKUSURIFLG
+                   ELSE
+                       MOVE    "0"             TO  SPA-GMN-OKUSURIFLG
+                   END-IF
+               WHEN    "2"
+      *            後期高齢者のみ
+                   IF     (SPA-NAI-ROUJIN      =   1     )
+                     AND  (SPA-SYORIFLG        =   ZERO  )
+                       MOVE    "1"             TO  SPA-GMN-OKUSURIFLG
+                   ELSE
+                       MOVE    "0"             TO  SPA-GMN-OKUSURIFLG
+                   END-IF
+               WHEN    "3"
+                   MOVE    "1"             TO  SPA-GMN-OKUSURIFLG
+               WHEN    "4"
+                   IF      SPA-SYORIFLG        =   ZERO
+                       MOVE    "1"             TO  SPA-GMN-OKUSURIFLG
+                   ELSE
+                       MOVE    "0"             TO  SPA-GMN-OKUSURIFLG
+                   END-IF
+           END-EVALUATE
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-OKUSURIFLG-MAX
+               IF      SPA-GMN-OKUSURIFLG       =   SPA-GMN-OKUSURILST
+                                                          (IDX) (1:1)
+                   MOVE    SPA-GMN-OKUSURILST(IDX)
+                                           TO  SPA-GMN-OKUSURIFLG-G
                END-IF
            END-PERFORM
       *
@@ -2790,6 +2835,14 @@
                                            TO  K03-YAKJYOFLG-ITEM(IDX)
            END-PERFORM
            MOVE    SPA-YAKJYOFLG-MAX   TO  K03-YAKJYOFLG-COUNT
+      *    お薬手帳報発行
+           MOVE    SPA-GMN-OKUSURIFLG-G    TO  K03-OKUSURIFLG
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-OKUSURIFLG-MAX
+               MOVE    SPA-GMN-OKUSURILST (IDX)
+                                           TO  K03-OKUSURIFLG-ITEM(IDX)
+           END-PERFORM
+           MOVE    SPA-OKUSURIFLG-MAX   TO  K03-OKUSURIFLG-COUNT
       *    Ｕ・Ｐ
            MOVE    SPA-GMN-USERPG-G    TO  K03-USERPG
            PERFORM VARYING     IDX     FROM    1   BY  1
@@ -3107,6 +3160,8 @@
                    MOVE    "USERPG"          TO  MCP-WIDGET
                WHEN    16
                    MOVE    "MEIPRTFLG"       TO  MCP-WIDGET
+               WHEN    17
+                   MOVE    "OKUSURIFLG"      TO  MCP-WIDGET
                WHEN    90
                    MOVE    "B12"             TO  MCP-WIDGET
       *!       WHEN    08
@@ -3172,14 +3227,18 @@
                    MOVE    04          TO  SPA-GMN-CUR
       *       薬剤情報発行フラグ
                WHEN    "YAKJYOFLG"
+      ****         IF      (SPA-GMN-SYOHOPRTFLG    =   ZERO )  OR
+      *                    (SPA-DRCD-MAX           =   ZERO )
+      *                MOVE    90                TO  SPA-GMN-CUR
+      *            ELSE
+      *                MOVE    5                 TO  SPA-GMN-CUR
+      *****        END-IF
+                   MOVE    17          TO  SPA-GMN-CUR
+      *        お薬手帳報発行フラグ
+               WHEN    "OKUSURIFLG"
                    IF      (SPA-GMN-SYOHOPRTFLG    =   ZERO )  OR
                            (SPA-DRCD-MAX           =   ZERO )
                        MOVE    90                TO  SPA-GMN-CUR
-      *!               複数科継続中の時、確定へ
-      *!               IF     (SPA-FUKU-DENPNUM    NOT =   ZERO )  AND
-      *!                      (SPA-SYORIFLG            =   ZERO )
-      *!                   MOVE    09              TO  SPA-GMN-CUR
-      *!               END-IF
                    ELSE
                        MOVE    5                 TO  SPA-GMN-CUR
                    END-IF
@@ -3394,6 +3453,7 @@
            MOVE    K03-HAKHOUFLG       TO  SPA-GMN-HAKHOUFLG-G
            MOVE    K03-SYOHOPRTFLG     TO  SPA-GMN-SYOHOPRTFLG-G
            MOVE    K03-YAKJYOFLG       TO  SPA-GMN-YAKJYOFLG-G
+           MOVE    K03-OKUSURIFLG      TO  SPA-GMN-OKUSURIFLG-G
            MOVE    K03-MEIPRTFLG       TO  SPA-GMN-MEIPRTFLG-G
            MOVE    K03-DRCD            TO  SPA-GMN-DRCD-G
            MOVE    K03-USERPG          TO  SPA-GMN-USERPG-G
@@ -3458,6 +3518,10 @@
       *    薬剤情報発行フラグ
            IF      SPA-ERRCD           =   SPACE
                PERFORM 430-YAKJYOFLG-CHK-SEC
+           END-IF
+      *    お薬手帳発行フラグ
+           IF      SPA-ERRCD           =   SPACE
+               PERFORM 430-OKUSURIFLG-CHK-SEC
            END-IF
       *    ドクター
            IF      SPA-ERRCD           =   SPACE
@@ -4515,7 +4579,35 @@
            .
        430-YAKJYOFLG-CHK-EXT.
            EXIT.
+      *****************************************************************
+      *    お薬手帳発行フラグ入力　処理
+      *****************************************************************
+       430-OKUSURIFLG-CHK-SEC              SECTION.
       *
+           IF      SPA-GMN-OKUSURIFLG  =   SPACE
+               MOVE    ZERO                TO  SPA-GMN-OKUSURIFLG
+           END-IF
+      *
+           MOVE    ZERO                TO  FLG-CHK
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL      (IDX     >   SPA-OKUSURIFLG-MAX)  OR
+                              (FLG-CHK NOT =   ZERO )
+               IF      SPA-GMN-OKUSURIFLG   =   SPA-GMN-OKUSURILST(IDX)
+                                                               (1:1)
+                   MOVE    SPA-GMN-OKUSURILST (IDX)
+                                           TO  SPA-GMN-OKUSURIFLG-G
+                   MOVE    1               TO  FLG-CHK
+               END-IF
+           END-PERFORM
+      *
+           IF      FLG-CHK               =   ZERO
+               MOVE    "0018"            TO  SPA-ERRCD
+               MOVE    17                TO  SPA-GMN-CUR
+           END-IF
+      *
+           .
+       430-OKUSURIFLG-CHK-EXT.
+           EXIT.
       *****************************************************************
       *    Ｕ・Ｐ入力　処理
       *****************************************************************
@@ -5691,6 +5783,15 @@
                                            SPA-AREA
                                            ORCHC04AREA
            END-IF
+      *    お薬手帳出力
+           IF      SPA-GMN-OKUSURIFLG  =   "1"  OR  "2"
+               INITIALIZE                      ORCSCH62AREA
+               MOVE    WRK-DENPNUM         TO  ORCSCH62-DENPNUM
+               MOVE    SPA-GMN-OKUSURIFLG  TO  ORCSCH62-KBN
+               MOVE    "05"                TO  SPA-PRT-FLG
+               CALL    "ORCSCH62"          USING   SPA-AREA
+                                                   ORCSCH62AREA
+           END-IF
            MOVE    SPACE               TO  SPA-PRT-FLG
            .
        45009-PRINT-EXT.
@@ -6139,6 +6240,9 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                                        TO  SPA-ERRMSG
                WHEN    "0017"
                    MOVE    "発行方法区分がありません。"
+                                       TO  SPA-ERRMSG
+               WHEN    "0018"
+                   MOVE    "お薬手帳区分がありません。"
                                        TO  SPA-ERRMSG
                WHEN    "0027"
                    MOVE    "Ｕ・Ｐがありません。"

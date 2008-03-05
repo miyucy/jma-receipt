@@ -136,6 +136,18 @@
                WHEN    "CLICKED"       ALSO    "B09"
                    MOVE    "F9"            TO  SPA-KAID2-FLG
                    PERFORM 210-BACK
+      *     ¤ªÌô¼êÄ¢¡¦ÌôºÞ¾ðÊó°õºþ
+               WHEN    "CLICKED"       ALSO    "B06"
+                   MOVE    "F6"            TO  SPA-KAID2-FLG
+                   PERFORM 210-BACK
+      *     ¤ªÌô¼êÄ¢¡¦ÌôºÞ¾ðÊó°õºþ
+               WHEN    "CLICKED"       ALSO    "B07"
+                   MOVE    "F7"            TO  SPA-KAID2-FLG
+                   PERFORM 210-BACK
+      *     °õºþ
+               WHEN    "CLICKED"       ALSO    "B11"
+                   MOVE    "F11"            TO  SPA-KAID2-FLG
+                   PERFORM 210-BACK
            END-EVALUATE
       *
            .

@@ -250,6 +250,9 @@
       *            ¿ÇÎÅÈñÌÀºÙ½ñ
                    WHEN    "00000008"
                        MOVE    "ORCHC04"       TO  ORCSPRTNM-PRTPG
+      *            ¤ªÌô¼êÄ¢
+                   WHEN    "00000009"
+                       MOVE    "ORCHC62"       TO  ORCSPRTNM-PRTPG
                END-EVALUATE
            END-IF
       *

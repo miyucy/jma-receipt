@@ -374,6 +374,13 @@ K03	{
 			count	int;
 			item	varchar(24)[3];
 		};
+		OKUSURIFLG_COMB	{
+			OKUSURIFLG	{
+				value	varchar(18);
+			};
+			count	int;
+			item	varchar(18)[3];
+		};
 		HENKIN	{
 	           	state	int;
 			value	varchar(10);

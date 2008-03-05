@@ -63,6 +63,7 @@
       *  03.05.00    NACL-多々納  07/05/02  グループ診療対応
       *  04.01.00    NACL-太田    07/10/19  減免計算対象区分追加
       *  04.01.00    NACL-多々納  08/01/29  予約内容情報追加
+      *  04.02.00    NACL-多々納  08/03/XX  お薬手帳発行追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -141,6 +142,13 @@
                                                       PIC X(28).
                        09  SPA-YAKUJYOFLG-MAX         PIC 9(02).
       *----(01.00.09) LINE ADD END   ----------------------------------
+      *お薬手帳
+                       09  SPA-GMN-OKUSURIFLGLST      OCCURS  9.
+                           11  SPA-GMN-OKUSURIFLGL    PIC X(01).
+                           11  SPA-GMN-F10L           PIC X(01).
+                           11  SPA-GMN-OKUSURIFLGMEIL
+                                                      PIC X(34).
+                       09  SPA-OKUSURIFLG-MAX         PIC 9(02).
                        09  SPA-GMN-MEIPRTFLGLST      OCCURS  2.
                            11  SPA-GMN-MEIPRTFLGL    PIC X(01).
                            11  SPA-GMN-F14L           PIC X(01).
@@ -263,6 +271,13 @@
                                13  SPA-GMN-F10        PIC X(01).
                                13  SPA-GMN-YAKUJYOFLGMEI
                                                       PIC X(28).
+      *お薬手帳発行フラグ
+                           11  SPA-GMN-OKUSURIFLG-G.
+                               13  SPA-GMN-OKUSURIFLG
+                                                      PIC X(01).
+                               13  SPA-GMN-F12        PIC X(01).
+                               13  SPA-GMN-OKUSURIFLG-MEI
+                                                      PIC X(34).
       *診療費明細書発行区分フラグ
                            11  SPA-GMN-MEIPRTFLG-G.
                                13  SPA-GMN-MEIPRTFLG
@@ -930,6 +945,22 @@
                                       TO  SPA-GMN-YAKUJYOFLGMEIL (3)
            MOVE    3                  TO  SPA-YAKUJYOFLG-MAX
       *----(01.00.09) LINE ADD END   ----------------------------------
+      *    お薬手帳
+           MOVE    "0"                TO  SPA-GMN-OKUSURIFLGL    (1)
+           MOVE    "発行しない"       TO  SPA-GMN-OKUSURIFLGMEIL (1)
+           MOVE    "1"                TO  SPA-GMN-OKUSURIFLGL    (2)
+           MOVE    "発行する（後期高齢）"
+                                      TO  SPA-GMN-OKUSURIFLGMEIL (2)
+           MOVE    "2"                TO  SPA-GMN-OKUSURIFLGL    (3)
+           MOVE    "発行する（後期高齢）（訂正時なし）"
+                                      TO  SPA-GMN-OKUSURIFLGMEIL (3)
+           MOVE    "3"                TO  SPA-GMN-OKUSURIFLGL    (4)
+           MOVE    "発行する"         TO  SPA-GMN-OKUSURIFLGMEIL (4)
+           MOVE    "4"                TO  SPA-GMN-OKUSURIFLGL    (5)
+           MOVE    "発行する（訂正時なし）"
+                                      TO  SPA-GMN-OKUSURIFLGMEIL (5)
+           MOVE    5                  TO  SPA-OKUSURIFLG-MAX
+      *
            MOVE    "0"                TO  SPA-GMN-MEIPRTFLGL    (1)
            MOVE    "発行しない"       TO  SPA-GMN-MEIPRTFLGMEIL (1)
            MOVE    "1"                TO  SPA-GMN-MEIPRTFLGL    (2)
@@ -1497,6 +1528,20 @@
                    MOVE    SPA-YAKUJYOFLG-MAX  TO  IDY
                END-IF
            END-PERFORM
+      *    お薬手帳発効空白の時、ゼロとする
+           IF      SYS-1001-OKUSURIPRTFLG  =   SPACE
+               MOVE    ZERO                TO  SYS-1001-OKUSURIPRTFLG
+           END-IF
+           MOVE    SYS-1001-OKUSURIPRTFLG  TO  SPA-GMN-OKUSURIFLG
+           PERFORM VARYING IDY     FROM    1   BY  1
+                   UNTIL   IDY     >       SPA-OKUSURIFLG-MAX
+               IF      SYS-1001-OKUSURIPRTFLG
+                                       =   SPA-GMN-OKUSURIFLGL (IDY)
+                   MOVE    SPA-GMN-OKUSURIFLGLST (IDY)
+                                           TO  SPA-GMN-OKUSURIFLG-G
+                   MOVE    SPA-OKUSURIFLG-MAX  TO  IDY
+               END-IF
+           END-PERFORM
       *    診療費明細書発行区分空白の時、ゼロとする
            IF      SYS-1001-MEIPRTFLG  =   SPACE
                MOVE    ZERO                TO  SYS-1001-MEIPRTFLG
@@ -1839,6 +1884,7 @@
            MOVE    W02-SYOHOPRTFLG     TO  SPA-GMN-SYOHOPRTFLG-G
            MOVE    W02-ZENSYOHOFLG     TO  SPA-GMN-ZENSYOHOFLG-G
            MOVE    W02-YAKUJYOFLG      TO  SPA-GMN-YAKUJYOFLG-G
+           MOVE    W02-OKUSURIFLG      TO  SPA-GMN-OKUSURIFLG-G
            MOVE    W02-MEIPRTFLG       TO  SPA-GMN-MEIPRTFLG-G
            MOVE    W02-CHIHOUNUMKBN    TO  SPA-GMN-CHIHOUNUMKBN-G
            MOVE    W02-DISCOUNTHASU    TO  SPA-GMN-DISCOUNT-HASU-KBN-G
@@ -2012,6 +2058,9 @@
       *
            IF      SPA-ERRCD           =   SPACE
                PERFORM 4129-MEIPRTFLG-CHK-SEC
+           END-IF
+           IF      SPA-ERRCD           =   SPACE
+               PERFORM 4129-OKUSURIFLG-CHK-SEC
            END-IF
       *
            IF      SPA-ERRCD           =   SPACE
@@ -2655,6 +2704,29 @@
       *
            .
        4129-MEIPRTFLG-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    お薬手帳発行フラグ
+      *****************************************************************
+       4129-OKUSURIFLG-CHK-SEC       SECTION.
+      *
+           MOVE    ZERO                TO  FLG-OK
+           PERFORM VARYING IDY     FROM    1   BY  1
+                   UNTIL   IDY     >       SPA-OKUSURIFLG-MAX
+               IF      SPA-GMN-OKUSURIFLG =   SPA-GMN-OKUSURIFLGL
+                                                              (IDY)
+                   MOVE    SPA-GMN-OKUSURIFLGLST (IDY)
+                                           TO  SPA-GMN-OKUSURIFLG-G
+                   MOVE    1               TO  FLG-OK
+               END-IF
+           END-PERFORM
+           IF      FLG-OK              =   ZERO
+               MOVE    "0028"              TO  SPA-ERRCD
+               MOVE   209                  TO  SPA-GMN-CUR
+           END-IF
+      *
+           .
+       4129-OKUSURIFLG-CHK-EXT.
            EXIT.
       *****************************************************************
       *    地方公費保険番号タブ区分フラグ
@@ -3348,6 +3420,8 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE    SPA-GMN-YAKUJYOFLG
                                        TO  SYS-1001-YAKUJYOPRTFLG
       *----(01.00.09) LINE ADD END   ----------------------------------
+                   MOVE    SPA-GMN-OKUSURIFLG
+                                       TO  SYS-1001-OKUSURIPRTFLG
                    MOVE    SPA-GMN-MEIPRTFLG
                                        TO  SYS-1001-MEIPRTFLG
                    MOVE    SPA-GMN-CHIHOUNUMKBN
@@ -3789,6 +3863,8 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPA-GMN-YAKUJYOFLG-G
                                        TO  W02-YAKUJYOFLG
       *----(01.00.09) LINE ADD END   ----------------------------------
+           MOVE    SPA-GMN-OKUSURIFLG-G
+                                       TO  W02-OKUSURIFLG
            MOVE    SPA-GMN-DISCOUNT-HASU-KBN-G
                                        TO  W02-DISCOUNTHASU
            MOVE    SPA-GMN-DISCOUNT-HASU-KBN2-G
@@ -3859,8 +3935,15 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                    UNTIL   IDX >       SPA-YAKUJYOFLG-MAX
                MOVE    SPA-GMN-YAKUJYOFLGLST(IDX)
                                        TO  W02-YAKUJYOFLGLST  (IDX)
-           END-PERFORM    
+           END-PERFORM
            MOVE    SPA-YAKUJYOFLG-MAX  TO  W02-YAKUJYOFLG-COUNT
+      *    お薬手帳
+           PERFORM VARYING IDX FROM    1   BY  1
+                   UNTIL   IDX >       SPA-OKUSURIFLG-MAX
+               MOVE    SPA-GMN-OKUSURIFLGLST(IDX)
+                                       TO  W02-OKUSURIFLG-ITEM(IDX)
+           END-PERFORM    
+           MOVE    SPA-OKUSURIFLG-MAX  TO  W02-OKUSURIFLG-COUNT
       *    診療費明細書発行区分
            MOVE    SPA-GMN-MEIPRTFLG-G
                                        TO  W02-MEIPRTFLG
@@ -4146,6 +4229,9 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN    "0011"
                    MOVE    "薬剤情報発行フラグ入力エラー"
                                                TO  SPA-ERRMSG
+               WHEN    "0028"
+                   MOVE    "お薬手帳発行フラグ入力エラー"
+                                               TO  SPA-ERRMSG
                WHEN    "0025"
                    MOVE    "診療費明細書発行フラグ入力エラー"
                                                TO  SPA-ERRMSG
@@ -4367,6 +4453,8 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                     MOVE  "MEIPRTFLG"      TO   MCP-WIDGET
                 WHEN    207
                     MOVE  "CHIHOUNUMKBN"   TO   MCP-WIDGET
+                WHEN    209
+                    MOVE  "OKUSURIFLG"     TO   MCP-WIDGET
       *
                 WHEN    40
                     MOVE  "TEIRITU"        TO   MCP-WIDGET
@@ -4488,6 +4576,9 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *********** MOVE    12               TO  SPA-GMN-CUR
                   MOVE    206              TO  SPA-GMN-CUR
               WHEN    "MEIPRTFLG"
+      ************MOVE    12               TO  SPA-GMN-CUR
+                  MOVE    209              TO  SPA-GMN-CUR
+              WHEN    "OKUSURIFLG"
                   MOVE    12               TO  SPA-GMN-CUR
               WHEN    "HOSPCDN"
                   MOVE    38               TO  SPA-GMN-CUR

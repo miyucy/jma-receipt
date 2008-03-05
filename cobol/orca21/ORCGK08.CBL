@@ -5660,12 +5660,12 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                END-IF
            END-IF
       *@!!
-      *    ４月のレセプト適用までエラー
-           IF      SPA-ERRCD           =   SPACE
-               IF      SPA-SRYYMD          >=  "20080401"
-                   MOVE    "9009"          TO  SPA-ERRCD
-               END-IF
-           END-IF
+      ***  ４月のレセプト適用までエラー
+      *    IF      SPA-ERRCD           =   SPACE
+      *        IF      SPA-SRYYMD          >=  "20080401"
+      *            MOVE    "9009"          TO  SPA-ERRCD
+      *        END-IF
+      ***  END-IF
       *@
            IF      SPA-ERRCD           =   SPACE
                IF      SPA-NYUGAIKBN       =   "1"

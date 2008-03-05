@@ -620,6 +620,11 @@
                IF      SYS-1001-YAKUJYOPRTFLG  =   SPACE
                    MOVE    ZERO                TO  SPA-YAKJYOPRTFLG
                END-IF
+      *        お薬手帳発行フラグ
+               MOVE    SYS-1001-OKUSURIPRTFLG  TO  SPA-OKUSURIPRTFLG
+               IF      SYS-1001-OKUSURIPRTFLG  =   SPACE
+                   MOVE    ZERO                TO  SPA-OKUSURIPRTFLG
+               END-IF
       *        消費税端数設定
                MOVE    SYS-1001-TAX-HASU-KBN   TO  SPA-TAX-HASU-KBN
            END-IF
@@ -1303,6 +1308,11 @@
                MOVE    SYS-1001-YAKUJYOPRTFLG  TO  SPA-YAKJYOPRTFLG
                IF      SYS-1001-YAKUJYOPRTFLG  =   SPACE
                    MOVE    ZERO                TO  SPA-YAKJYOPRTFLG
+               END-IF
+      *        お薬手帳発行フラグ
+               MOVE    SYS-1001-OKUSURIPRTFLG  TO  SPA-OKUSURIPRTFLG
+               IF      SYS-1001-OKUSURIPRTFLG  =   SPACE
+                   MOVE    ZERO                TO  SPA-OKUSURIPRTFLG
                END-IF
       *        消費税端数設定
                MOVE    SYS-1001-TAX-HASU-KBN   TO  SPA-TAX-HASU-KBN

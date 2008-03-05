@@ -28,6 +28,7 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *  03.05.00    NACL-多々納  07/05/10  グループ診療対応
+      *  04.02.00    NACL-多々納  08/03/XX  お薬手帳対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -433,6 +434,9 @@
       *
       *    薬情報印刷パラメタ
            COPY    "CPORCSCH30.INC".
+      *
+      *    お薬手帳発行サブパラメタ
+           COPY    "CPORCSCH62.INC".
       *    表示名称編集パラメタ領域
            COPY    "CPORCSMEIHEN.INC".
       *
@@ -1801,6 +1805,23 @@
                    ELSE
                        MOVE    1               TO  SPA-GMN-CUR
                    END-IF
+      *        お薬手帳前回印刷
+               WHEN    "0107"
+                   IF      SPA-KAID1-FLG        =   "OK"
+                       MOVE    2                TO  FLG-PRINT
+                       PERFORM 4104-OKUSURI-PRINT-SEC
+                   ELSE
+                       MOVE    1               TO  SPA-GMN-CUR
+                   END-IF
+      *        薬剤情報・お薬手帳前回印刷
+               WHEN    "0108"
+                   IF      SPA-KAID1-FLG        =   "OK"
+                       MOVE    2                TO  FLG-PRINT
+                       PERFORM 4103-YAKJYO-PRINT-SEC
+                       PERFORM 4104-OKUSURI-PRINT-SEC
+                   ELSE
+                       MOVE    1               TO  SPA-GMN-CUR
+                   END-IF
       *        再印刷確認
                WHEN    "0301"
                    IF      SPA-KAID1-FLG       =   "OK"
@@ -1843,6 +1864,21 @@
                            MOVE    1                TO  FLG-PRINT
                            PERFORM 4102-SYOHOU-PRINT-SEC
                            PERFORM 4103-YAKJYO-PRINT-SEC
+                       WHEN    "F6"
+      *                    お薬手帳再印刷
+                           MOVE    1                TO  FLG-PRINT
+                           PERFORM 4104-OKUSURI-PRINT-SEC
+                       WHEN    "F7"
+      *                    薬剤情報・お薬手帳再印刷
+                           MOVE    1                TO  FLG-PRINT
+                           PERFORM 4103-YAKJYO-PRINT-SEC
+                           PERFORM 4104-OKUSURI-PRINT-SEC
+                       WHEN    "F10"
+      *                    全部再印刷
+                           MOVE    1                TO  FLG-PRINT
+                           PERFORM 4102-SYOHOU-PRINT-SEC
+                           PERFORM 4103-YAKJYO-PRINT-SEC
+                           PERFORM 4104-OKUSURI-PRINT-SEC
                        WHEN    OTHER
                            MOVE    1               TO  SPA-GMN-CUR
                    END-EVALUATE
@@ -1893,6 +1929,12 @@
       *        薬剤情報印刷
                WHEN    "CLICKED"       ALSO    "B11"
                     PERFORM 411-YAKUZAI-PRT-SEC
+      *        薬剤情報・お薬手帳印刷
+               WHEN    "CLICKED"       ALSO    "B10S"
+                    PERFORM 410-YAKUOKUSU-PRT-SEC
+      *        お薬手帳印刷
+               WHEN    "CLICKED"       ALSO    "B11S"
+                    PERFORM 411-OKUSURI-PRT-SEC
       *        処方せん印刷
                WHEN    "CLICKED"       ALSO    "B12"
                     PERFORM 412-SYOHOU-PRT-SEC
@@ -2764,6 +2806,31 @@
       *
        409-SYOHOYAKU-PRT-EXT.
            EXIT.
+      *****************************************************************
+      *    お薬手帳・薬剤情報印刷
+      *****************************************************************
+       410-YAKUOKUSU-PRT-SEC       SECTION.
+      *
+           IF      SPA-GMN-SELNUM1     =   ZERO
+               MOVE    "0100"          TO  SPA-ERRCD
+               MOVE    1               TO  SPA-GMN-CUR
+           ELSE
+               MOVE    1                TO  FLG-KOUSIN
+               PERFORM 410-INPUT-CHK-SEC
+               IF      SPA-ERRCD       =   SPACE
+      *            対象チェック処理
+                   PERFORM 4104-TBL-CHK-SEC
+               END-IF
+           END-IF
+      *
+           IF      SPA-ERRCD           =   SPACE
+               MOVE    1                   TO  SPA-PRINT-SYORI
+               MOVE    "0108"              TO  SPA-KAID1CD
+           END-IF
+           .
+      *
+       409-YAKUOKUSU-PRT-EXT.
+           EXIT.
       *
       *****************************************************************
       *    印刷内容チェック処理
@@ -2827,6 +2894,31 @@
            END-IF
            .
        411-YAKUZAI-PRT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    お薬手帳印刷処理
+      *****************************************************************
+       411-OKUSURI-PRT-SEC       SECTION.
+      *
+           IF      SPA-GMN-SELNUM1     =   ZERO
+               MOVE    "0100"          TO  SPA-ERRCD
+               MOVE    1               TO  SPA-GMN-CUR
+           ELSE
+               MOVE    1                TO  FLG-KOUSIN
+               PERFORM 410-INPUT-CHK-SEC
+               IF      SPA-ERRCD       =   SPACE
+      *            対象チェック処理
+                   PERFORM 4104-TBL-CHK-SEC
+               END-IF
+           END-IF
+      *
+           IF      SPA-ERRCD           =   SPACE
+               MOVE    1                   TO  SPA-PRINT-SYORI
+               MOVE    "0107"              TO  SPA-KAID1CD
+           END-IF
+           .
+       411-OKUSURI-PRT-EXT.
            EXIT.
       *
       *****************************************************************
@@ -3129,6 +3221,114 @@
        41031-ORCSCH30-HENSYU-EXT.
            EXIT.
       *
+      *****************************************************************
+      *    お薬手帳印刷処理
+      *****************************************************************
+       4104-OKUSURI-PRINT-SEC             SECTION.
+      *
+           MOVE    SPA-AREA            TO  HZN-SPA-AREA
+           INITIALIZE                      ORCSCH62AREA
+           EVALUATE    FLG-PRINT
+               WHEN    1
+      *            再印刷
+                   IF      SPA-NAI-INNAI       =   "1"
+      *                院外
+                       MOVE    "2"                 TO  ORCSCH62-KBN
+                   ELSE
+      *                院内
+                       MOVE    "1"                 TO  ORCSCH62-KBN
+                   END-IF
+                   MOVE    SPA-NAI-RRK-DENPNUM (SPA-GMN-SELNUM1)
+                                               TO  ORCSCH62-DENPNUM
+      *
+                   MOVE    SPA-NAI-RRKYMD (SPA-GMN-SELNUM1)
+                                               TO  SPA-SRYYMD
+                   MOVE    SPA-NAI-RRK-HKNCOMBI (SPA-GMN-SELNUM1)
+                                               TO  SPA-HKNCOMBINUM
+                   MOVE    SPA-NAI-RRK-SRYKA (SPA-GMN-SELNUM1)
+                                               TO  SPA-SRYKA
+                   MOVE    SPA-NAI-RRK-DRCD (SPA-GMN-SELNUM1)
+                                               TO  SPA-DRCD
+               WHEN    2
+               WHEN    3
+      *            前回処方（内容変更）
+                   MOVE    "5"                 TO  ORCSCH62-KBN
+                   MOVE    SPA-GMN-HKNCOMBINUM TO  SPA-HKNCOMBINUM
+                   MOVE    "1"                 TO  SPA-DRCD(1:1)
+                   MOVE    SPA-GMN-DRCD        TO  SPA-DRCD(2:4)
+                   MOVE    SPA-NAI-RRK-SRYKA (SPA-GMN-SELNUM1)
+                                               TO  SPA-SRYKA
+                   PERFORM 41041-ORCSCH62-HENSYU-SEC
+           END-EVALUATE
+      *
+           IF      SPA-ERRCD           =   SPACE
+               MOVE    SPACE               TO  SPA-PRT-FLG
+               CALL    "ORCSCH62"          USING   SPA-AREA
+                                                   ORCSCH62AREA
+           END-IF
+      *
+           MOVE    HZN-SPA-AREA         TO  SPA-AREA
+           .
+       4104-OKUSURI-PRINT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    薬剤情報明細編集処理
+      *****************************************************************
+       41041-ORCSCH62-HENSYU-SEC             SECTION.
+      *
+           MOVE    ZERO                TO  IDX1
+           PERFORM VARYING     IDX-W   FROM    1   BY  1
+                   UNTIL       IDX-W   >   SPA-WKSRY-MAX
+               IF     ( SPA-WKSRY-ZAIKAIKEI(IDX-W) =   ZERO  )
+                 OR   ((SPA-SEL-SYORI              =   1    )  AND
+                       (SPA-WKSRY-SELFLG (IDX-W)   =   ZERO ))
+                   CONTINUE
+               ELSE
+                   ADD     1               TO  IDX1
+                   MOVE    IDX1            TO  ORCSCH62-ZAI-MAX
+                   MOVE    SPA-WKSRY-ZAIKAIKEI (IDX-W)
+                                           TO  ORCSCH62-ZAIKAIKEI (IDX1)
+                   MOVE    SPA-WKSRY-SRYSYUKBN (IDX-W)
+                                           TO  ORCSCH62-SRYSYUKBN (IDX1)
+                   MOVE    SPA-WKSRY-SRYKBN (IDX-W)
+                                           TO  ORCSCH62-SRYKBN (IDX1)
+                   MOVE    ZERO            TO  IDX2
+                   PERFORM VARYING     IDX-W2  FROM    1   BY  1
+                           UNTIL      (IDX-W2  >   50      )  OR
+                                      (SPA-WKSRY-SRYCD (IDX-W IDX-W2)
+                                                   =   SPACE)
+      *            （減）は対象外
+                       IF     (SPA-WKSRY-SRYSURYO (IDX-W IDX-W2)
+                                                   =   ZERO )  OR
+                              (SPA-WKSRY-SRYCD (IDX-W IDX-W2)
+                                                   =   "820000047"
+                                                   OR  "099209902" )
+                           CONTINUE
+                       ELSE
+                           ADD     1           TO  IDX2
+                           MOVE    SPA-WKSRY-SRYCD (IDX-W IDX-W2)
+                                           TO  ORCSCH62-SRYCD(IDX1 IDX2)
+                           MOVE    SPA-WKSRY-SRYSURYO (IDX-W IDX-W2)
+                                           TO  ORCSCH62-SRYSURYO
+                                                             (IDX1 IDX2)
+                           MOVE    SPA-WKSRY-SRYKAISU (IDX-W IDX-W2)
+                                           TO  ORCSCH62-SRYKAISU
+                                                             (IDX1 IDX2)
+                           MOVE    SPA-WKSRY-INPUTCOMENT (IDX-W IDX-W2)
+                                           TO  ORCSCH62-INPUTCOMENT
+                                                             (IDX1 IDX2)
+                       END-IF
+                   END-PERFORM
+               END-IF
+           END-PERFORM
+           IF      ORCSCH62-ZAI-MAX    =   ZERO
+               MOVE    "0101"          TO  SPA-ERRCD
+           END-IF
+      *
+           .
+       41041-ORCSCH62-HENSYU-EXT.
+           EXIT.
       *****************************************************************
       *    西暦和暦編集処理
       *****************************************************************
@@ -3551,6 +3751,20 @@
                    END-STRING
                WHEN    "0106"
                    STRING  "変更内容で処方せんを印刷します。"
+                                           DELIMITED  BY  SIZE
+                           "よろしいですか？"
+                                           DELIMITED  BY  SIZE
+                                       INTO   KAID1-ID1MSG
+                   END-STRING
+               WHEN    "0107"
+                   STRING  "変更内容でお薬手帳を印刷します。"
+                                           DELIMITED  BY  SIZE
+                           "よろしいですか？"
+                                           DELIMITED  BY  SIZE
+                                       INTO   KAID1-ID1MSG
+                   END-STRING
+               WHEN    "0108"
+                   STRING  "変更内容で薬剤情報・お薬手帳を印刷します。"
                                            DELIMITED  BY  SIZE
                            "よろしいですか？"
                                            DELIMITED  BY  SIZE

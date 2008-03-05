@@ -33,5 +33,5 @@
       *
            03  SPA-KAID2CD               PIC  X(04).
            03  SPA-KAID2-AREA.
-               05  SPA-KAID2-FLG         PIC  X(02).
+               05  SPA-KAID2-FLG         PIC  X(03).
       *

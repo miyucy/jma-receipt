@@ -176,6 +176,13 @@ W02	{
 					count	int;
 					item	varchar(10)[2];
 				};
+				OKUSURIFLG_COMB	{
+					OKUSURIFLG	{
+						value	varchar(36);
+					};
+					count	int;
+					item	varchar(36)[9];
+				};
 			};
 	            N01	{
 	            	state	int;

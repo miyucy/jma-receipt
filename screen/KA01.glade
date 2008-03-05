@@ -1152,6 +1152,52 @@
 	</widget>
       </widget>
     </widget>
+
+    <widget>
+      <class>GtkButton</class>
+      <name>B10S</name>
+      <x>760</x>
+      <y>696</y>
+      <width>80</width>
+      <height>24</height>
+      <can_focus>True</can_focus>
+      <accelerator>
+	<modifiers>GDK_SHIFT_MASK</modifiers>
+	<key>GDK_F10</key>
+	<signal>clicked</signal>
+      </accelerator>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Tue, 20 Sep 2005 04:15:43 GMT</last_modification_time>
+      </signal>
+      <label>Ìô¾ð¡¦¼êÄ¢</label>
+      <relief>GTK_RELIEF_NORMAL</relief>
+    </widget>
+
+    <widget>
+      <class>GtkButton</class>
+      <name>B11S</name>
+      <x>840</x>
+      <y>696</y>
+      <width>80</width>
+      <height>24</height>
+      <can_focus>True</can_focus>
+      <accelerator>
+	<modifiers>GDK_SHIFT_MASK</modifiers>
+	<key>GDK_F11</key>
+	<signal>clicked</signal>
+      </accelerator>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Wed, 02 Nov 2005 06:42:59 GMT</last_modification_time>
+      </signal>
+      <label>¼êÄ¢°õºþ</label>
+      <relief>GTK_RELIEF_NORMAL</relief>
+    </widget>
   </widget>
 </widget>
 

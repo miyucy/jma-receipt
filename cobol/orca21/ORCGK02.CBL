@@ -888,6 +888,9 @@
       *    薬情報印刷パラメタ
            COPY    "CPORCSCH30.INC".
       *
+      *    お薬手帳発行サブパラメタ
+           COPY    "CPORCSCH62.INC".
+      *
       *    全角チェックパラメタ
            COPY    "CPORCSKANACHK.INC".
       *
@@ -3609,6 +3612,11 @@
            IF      AGECHK-RJNCHK       =   3
                MOVE    "1070"              TO  SPA-ERRCD
                MOVE    2                   TO  SPA-RJN-ERR
+           END-IF
+      *    Ｈ２０．４から後期高齢者の保険がない時
+           IF      AGECHK-RJNCHK       =   4
+               MOVE    "1076"              TO  SPA-ERRCD
+               MOVE    3                   TO  SPA-RJN-ERR
            END-IF
       *
       *    老人判定
@@ -11463,6 +11471,11 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    "1070"              TO  SPA-ERRCD
                GO      TO      41001-KIHON-CHK-EXT
            END-IF
+      *    後期高齢者の保険がない時
+           IF      SPA-RJN-ERR         =   3
+               MOVE    "1076"              TO  SPA-ERRCD
+               GO      TO      41001-KIHON-CHK-EXT
+           END-IF
       *    保険エラーがある時、エラーとする
            IF      SPA-HKN-ERR         =   1
                MOVE    "1028"              TO  SPA-ERRCD
@@ -12073,6 +12086,26 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                    PERFORM 4124-SYOHOU-SYORI-SEC
       *            薬剤情報発行
                    PERFORM 4125-YAKJYO-SYORI-SEC
+               WHEN    "P4"
+      *            お薬手帳発行
+                   PERFORM 4126-OKUSURI-SYORI-SEC
+               WHEN    "P5"
+      *            薬剤情報発行
+                   PERFORM 4125-YAKJYO-SYORI-SEC
+      *            お薬手帳発行
+                   PERFORM 4126-OKUSURI-SYORI-SEC
+               WHEN    "P6"
+      *            処方せん発行
+                   IF      FLG-SYOHOU-ARI      =   1
+                       MOVE    3                   TO  FLG-SYOHOU
+                    ELSE
+                       MOVE    4                   TO  FLG-SYOHOU
+                   END-IF
+                   PERFORM 4124-SYOHOU-SYORI-SEC
+      *            薬剤情報発行
+                   PERFORM 4125-YAKJYO-SYORI-SEC
+      *            お薬手帳発行
+                   PERFORM 4126-OKUSURI-SYORI-SEC
            END-EVALUATE
            MOVE    SPACE               TO  SPA-KID1-FLG
       *
@@ -12139,6 +12172,26 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            .
        4125-YAKJYO-SYORI-EXT.
+           EXIT.
+      *****************************************************************
+      *    お薬手帳発行処理
+      *****************************************************************
+       4126-OKUSURI-SYORI-SEC             SECTION.
+      *
+           INITIALIZE                      ORCSCH62AREA
+           IF      FLG-SYOHOU-ARI      =   1
+      *        院外分
+               MOVE    "4"                 TO  ORCSCH62-KBN
+           ELSE
+      *        院内分
+               MOVE    "3"                 TO  ORCSCH62-KBN
+           END-IF
+           MOVE    "03"                TO  SPA-PRT-FLG
+           CALL    "ORCSCH62"          USING   SPA-AREA
+                                               ORCSCH62AREA
+      *
+           .
+       4126-OKUSURI-SYORI-EXT.
            EXIT.
       *****************************************************************
       *    ワーク診療行為データ出力処理
@@ -12274,6 +12327,10 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *    老人保険編集エラーがある時、エラーとする
            IF      SPA-RJN-ERR         =   2
                MOVE    "1070"              TO  SPA-ERRCD
+           END-IF
+      *    後期高齢者の保険がない時
+           IF      SPA-RJN-ERR         =   3
+               MOVE    "1076"              TO  SPA-ERRCD
            END-IF
       *    保険エラーがある時、エラーとする
            IF      SPA-HKN-ERR         =   1

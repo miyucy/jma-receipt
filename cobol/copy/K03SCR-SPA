@@ -131,6 +131,15 @@
                        09  SPA-GMN-YAKJYOLST        PIC X(18)
                                                     OCCURS   3.
                    07  SPA-YAKJYOFLG-MAX          PIC 9(04).
+      *            ¤ªÌô¼êÄ¢
+                   07  SPA-GMN-OKUSURIFLG-G.
+                       09  SPA-GMN-OKUSURIFLG       PIC X(01).
+                       09  SPA-GMN-OKUSURHH         PIC X(01).
+                       09  SPA-GMN-OKUSURIFLGMSG    PIC X(16).
+                   07  SPA-GMN-OKUSURIFLG-LIST.
+                       09  SPA-GMN-OKUSURILST       PIC X(18)
+                                                    OCCURS   3.
+                   07  SPA-OKUSURIFLG-MAX           PIC 9(02).
       *
                    07  SPA-GMN-JIHIMSG           PIC X(20)
                                                  OCCURS   10.

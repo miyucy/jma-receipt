@@ -266,6 +266,12 @@
                 04  K03-MEIPRTFLG-COUNT   PIC S9(9)   BINARY.
                 04  K03-MEIPRTFLG-ITEM
                         PIC X(24)   OCCURS  3 TIMES.
+              03  K03-OKUSURIFLG-COMB.
+                04  K03-OKUSURIFLG.
+                  05  K03-VALUE   PIC X(18).
+                04  K03-OKUSURIFLG-COUNT   PIC S9(9)   BINARY.
+                04  K03-OKUSURIFLG-ITEM
+                        PIC X(18)   OCCURS  3 TIMES.
               03  K03-HENKIN-G.
                 04  K03-HENKIN-STATE   PIC S9(9)   BINARY.
                 04  K03-HENKIN   PIC X(10).

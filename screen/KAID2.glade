@@ -14,7 +14,7 @@
   <class>GtkWindow</class>
   <name>KAID2</name>
   <width>600</width>
-  <height>120</height>
+  <height>159</height>
   <signal>
     <name>map_event</name>
     <handler>map_event</handler>
@@ -62,9 +62,9 @@
     <widget>
       <class>GtkButton</class>
       <name>B01</name>
-      <x>8</x>
-      <y>88</y>
-      <width>56</width>
+      <x>20</x>
+      <y>120</y>
+      <width>84</width>
       <height>24</height>
       <can_focus>True</can_focus>
       <accelerator>
@@ -103,7 +103,7 @@
       <name>B05</name>
       <x>128</x>
       <y>88</y>
-      <width>112</width>
+      <width>120</width>
       <height>24</height>
       <can_focus>True</can_focus>
       <accelerator>
@@ -117,16 +117,16 @@
 	<data>CLICKED</data>
 	<last_modification_time>Wed, 14 Feb 2001 00:38:53 GMT</last_modification_time>
       </signal>
-      <label>F5 薬剤情報発行</label>
+      <label>F5 薬剤情報      </label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
     <widget>
       <class>GtkButton</class>
       <name>B09</name>
-      <x>408</x>
-      <y>88</y>
-      <width>156</width>
+      <x>260</x>
+      <y>120</y>
+      <width>120</width>
       <height>24</height>
       <can_focus>True</can_focus>
       <accelerator>
@@ -140,16 +140,16 @@
 	<data>CLICKED</data>
 	<last_modification_time>Wed, 14 Feb 2001 00:38:53 GMT</last_modification_time>
       </signal>
-      <label>F9 処方せん・薬情発行</label>
+      <label>F9 処方箋・薬情</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
     <widget>
       <class>GtkButton</class>
       <name>B08</name>
-      <x>272</x>
-      <y>88</y>
-      <width>112</width>
+      <x>128</x>
+      <y>120</y>
+      <width>120</width>
       <height>24</height>
       <can_focus>True</can_focus>
       <accelerator>
@@ -164,6 +164,75 @@
 	<last_modification_time>Wed, 14 Feb 2001 00:38:53 GMT</last_modification_time>
       </signal>
       <label>F8 処方せん発行</label>
+      <relief>GTK_RELIEF_NORMAL</relief>
+    </widget>
+
+    <widget>
+      <class>GtkButton</class>
+      <name>B06</name>
+      <x>260</x>
+      <y>88</y>
+      <width>120</width>
+      <height>24</height>
+      <can_focus>True</can_focus>
+      <accelerator>
+	<modifiers>0</modifiers>
+	<key>GDK_F6</key>
+	<signal>clicked</signal>
+      </accelerator>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Wed, 14 Feb 2001 00:38:53 GMT</last_modification_time>
+      </signal>
+      <label>F6 お薬手帳      </label>
+      <relief>GTK_RELIEF_NORMAL</relief>
+    </widget>
+
+    <widget>
+      <class>GtkButton</class>
+      <name>B07</name>
+      <x>388</x>
+      <y>88</y>
+      <width>120</width>
+      <height>24</height>
+      <can_focus>True</can_focus>
+      <accelerator>
+	<modifiers>0</modifiers>
+	<key>GDK_F7</key>
+	<signal>clicked</signal>
+      </accelerator>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Wed, 14 Feb 2001 00:38:53 GMT</last_modification_time>
+      </signal>
+      <label>F7 薬情・手帳    </label>
+      <relief>GTK_RELIEF_NORMAL</relief>
+    </widget>
+
+    <widget>
+      <class>GtkButton</class>
+      <name>B10</name>
+      <x>388</x>
+      <y>120</y>
+      <width>120</width>
+      <height>24</height>
+      <can_focus>True</can_focus>
+      <accelerator>
+	<modifiers>0</modifiers>
+	<key>GDK_F11</key>
+	<signal>clicked</signal>
+      </accelerator>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Wed, 14 Feb 2001 00:38:53 GMT</last_modification_time>
+      </signal>
+      <label>F10     全部        </label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
   </widget>

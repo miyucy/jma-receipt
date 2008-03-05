@@ -29,6 +29,7 @@
       * Maj/Min/Rev  修正者       日付      内容
       *  01.00.01    NACL−多々納 02/08/26  薬剤情報発行を追加
       *  01.00.02    NACL-多々納  05/11/17  MONFUNC 対応
+      *  04.02.00    NACL-多々納  08/03/XX  お薬手帳対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -159,6 +160,18 @@
       *     処方せん・薬剤情報印刷
                WHEN    "CLICKED"       ALSO    "B09"
                    MOVE    "P3"            TO  SPA-KID2-FLG
+                   PERFORM 210-BACK
+      *     お薬手帳
+               WHEN    "CLICKED"       ALSO    "B06"
+                   MOVE    "P4"            TO  SPA-KID2-FLG
+                   PERFORM 210-BACK
+      *     薬剤情報・お薬手帳
+               WHEN    "CLICKED"       ALSO    "B07"
+                   MOVE    "P5"            TO  SPA-KID2-FLG
+                   PERFORM 210-BACK
+      *     全部
+               WHEN    "CLICKED"       ALSO    "B10"
+                   MOVE    "P6"            TO  SPA-KID2-FLG
                    PERFORM 210-BACK
       *     登録
                WHEN    "CLICKED"       ALSO    "B12"
