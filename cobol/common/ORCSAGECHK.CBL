@@ -722,6 +722,7 @@
       *            £È£²£°¡¥£´¤«¤é
       *            £·£µºÐ°Ê¾å¤Ç¸å´ü¹âÎð¼Ô¤¬¤Ê¤¤»þ
                    IF     (AGECHK-ROUJIN       =   1   )  AND
+                          (FLG-OK          NOT =   4   )  AND
                           (FLG-OK2             =   ZERO)
                        MOVE    4               TO  AGECHK-RJNCHK
                    END-IF

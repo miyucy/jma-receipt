@@ -528,6 +528,10 @@
       *            その他
                        PERFORM 1003-HKNNUM-HBTNUM-SEC
                END-EVALUATE
+      *        後期高齢者
+               IF      SPA-GMN-HKNJANUM(1:2)   =   "39"
+                   MOVE    "039"           TO  WRK-HKNJA-HKNNUM
+               END-IF
            END-IF
       *
            IF      WRK-HKNJA-HKNNUM    =   SPACE
@@ -542,6 +546,8 @@
                       (SPA-MAE-HKNNUM      =   "068" ))
                   OR ((WRK-HKNJA-HKNNUM    =   "067" ) AND
                       (SPA-MAE-HKNNUM      =   "069" ))
+                  OR ((WRK-HKNJA-HKNNUM    =   "039" ) AND
+                      (SPA-MAE-HKNNUM      =   "038" ))
                    MOVE    SPA-MAE-HKNNUM      TO  WRK-HKNJA-HKNNUM
                END-IF
       *
@@ -566,6 +572,8 @@
                           (SPA-GMN-HKNNUM      =   "068" ))
                       OR ((WRK-HKNJA-HKNNUM    =   "067" ) AND
                           (SPA-GMN-HKNNUM      =   "069" ))
+                      OR ((WRK-HKNJA-HKNNUM    =   "039" ) AND
+                          (SPA-GMN-HKNNUM      =   "038" ))
                         CONTINUE
                    ELSE
                         MOVE    WRK-HKNJA-HKNNUM    TO  SPA-GMN-HKNNUM
