@@ -41,7 +41,7 @@
                05  SYS-5110-SRYCD       PIC  X(09).
       *ÆÃÄêÆþ±¡ÎÁÌ¾¾Î
                05  SYS-5110-BTU-TOKUTEINYUIN-NM
-                                        PIC  X(40).
+                                        PIC  X(60).
       *ÆÃÄêÆþ±¡ÎÁÌ¾¾Î£²
                05  SYS-5110-BTU-TOKUTEINYUIN-NM2
                                         PIC  X(24).
@@ -49,7 +49,7 @@
                05  SYS-5110-SEIKATU-RYOKBN
                                         PIC  X(01).
       *Í½È÷
-               05                       PIC  X(426).
+               05                       PIC  X(406).
       *Ã¼Ëö£É£Ä
            03  SYS-5110-TERMID          PIC  X(16).
       *¥ª¥Ú¡¼¥ì¡¼¥¿£É£Ä
