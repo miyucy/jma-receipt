@@ -45,7 +45,7 @@
                 05  W20-TOKUTEINYUIN-CNT
                                            PIC S9(9)   BINARY.
                 05  W20-TOKUTEINYUIN-ITM
-                                           PIC X(43)   OCCURS  20.
+                                           PIC X(43)   OCCURS  30.
                 05  W20-TOKUTEINYUIN-ITM-STATE
                                            PIC S9(9)   BINARY.
       *

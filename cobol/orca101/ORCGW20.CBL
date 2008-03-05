@@ -158,6 +158,8 @@
                        09  WRK-SSTKJNCD9           PIC 9(03).
            03  WRK-KSNMEI                          PIC X(100).
            03  WRK-PNT                             PIC 9(03).
+           03  WRK-STYMD                           PIC X(08).
+           03  WRK-EDYMD                           PIC X(08).
       *
        01  WRK-ROW.
            03  WRK-BTULST-ROW                      PIC S9(9)   BINARY.
@@ -174,7 +176,7 @@
        01  CONST-AREA.
            03  CONST-BTULST-MAX        PIC 9(03) VALUE 50.
            03  CONST-RIREKILST-MAX     PIC 9(03) VALUE 20.
-           03  CONST-TOKNYUIN-MAX      PIC 9(03) VALUE 15.
+           03  CONST-TOKNYUIN-MAX      PIC 9(03) VALUE 30.
            03  CONST-SRYKA-MAX         PIC 9(03) VALUE 99.
            03  CONST-SBT-MAX           PIC 9(03) VALUE 15.
            03  CONST-YKNKNG-MAX        PIC 9(03) VALUE 10.
@@ -228,10 +230,26 @@
                05  CONST-KNGHJOCD-OCC  OCCURS 15.
                    07  CONST-KNGHJOCDL PIC X(02).
                    07  CONST-KNGHJOCD  PIC X(09).
+           03  CONST-DRHJO-VAL.
+               05                      PIC X(10) VALUE "1190127110".
+               05                      PIC X(10) VALUE "2190127210".
+               05                      PIC X(10) VALUE "3190127310".
+               05                      PIC X(10) VALUE "4190127410".
+           03  CONST-DRHJO-R           REDEFINES   CONST-DRHJO-VAL.
+               05  CONST-DRHJO-OCC     OCCURS 4.
+                   07  CONST-DRHJOL    PIC X(01).
+                   07  CONST-DRHJO     PIC X(09).
+           03  CONST-JKAIFUKU          PIC X(09) VALUE "190129870".
+
+
+           
+           
            03  CONST-KNGHJOCD-MAX      PIC 9(03) VALUE 15.
            03  CONST-H180401           PIC X(08) VALUE "20060401".
            03  CONST-H180701           PIC X(08) VALUE "20060701".
            03  CONST-H181001           PIC X(08) VALUE "20061001".
+           03  CONST-H200401           PIC X(08) VALUE "20080401".
+           03  CONST-H200701           PIC X(08) VALUE "20080701".
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -1635,18 +1653,7 @@
                GO  TO  420-TUIKA-EXT
            END-IF
       *
-      *    病棟リストを再編集する
-           PERFORM 3101-EDIT-BTULST-SEC 
-      *
-           PERFORM 4100-BTUNUM-LSTSEL-SEC
-           MOVE    IDX-BTULST      TO  SPA-GMN-W20-BTULST-SEL
-      *
-      *    履歴リストを再編集する
-           PERFORM 4100-RIREKI-AREA-EDIT-SEC
-           MOVE    ZERO            TO  SPA-GMN-W20-RIREKILST-SEL
-      *
-      *    入力項目を初期化する
-           PERFORM 4201-INPUT-AREA-CLEAR-SEC
+           PERFORM 310-SPASET-SEC
       *
       *    病棟リスト最大件数チェック
            IF    ( SPA-GMN-W20-BTULST-MAX  >=  CONST-BTULST-MAX )
@@ -1724,23 +1731,7 @@
                GO  TO  420-HENKOU-EXT
            END-IF
       *
-      *    病棟リストを再編集する
-           PERFORM 3101-EDIT-BTULST-SEC 
-      *
-           PERFORM 4100-BTUNUM-LSTSEL-SEC
-           IF    ( IDX-BTULST      >   ZERO )
-               MOVE    IDX-BTULST
-                                   TO  SPA-GMN-W20-BTULST-SEL
-      *        履歴リストを再編集する
-               PERFORM 4100-RIREKI-AREA-EDIT-SEC
-               MOVE    ZERO        TO  SPA-GMN-W20-RIREKILST-SEL
-      *
-      *        入力項目を初期化する
-               PERFORM 4201-INPUT-AREA-CLEAR-SEC
-           ELSE
-      *        画面を初期化する
-               PERFORM 420-CLEAR-SEC
-           END-IF
+           PERFORM 310-SPASET-SEC
       *
            MOVE    ZERO            TO  FLG-BTULST-ROW
       *
@@ -1834,24 +1825,8 @@
                GO  TO  421-SAKUJO-EXT
            END-IF
       *
-      *    病棟リストを再編集する
-           PERFORM 3101-EDIT-BTULST-SEC 
       *
-           PERFORM 4100-BTUNUM-LSTSEL-SEC
-           IF    ( IDX-BTULST  >   ZERO )
-      *
-               MOVE    IDX-BTULST  TO  SPA-GMN-W20-BTULST-SEL
-      *
-      *        履歴リストを再編集する
-               PERFORM 4100-RIREKI-AREA-EDIT-SEC
-               MOVE    ZERO        TO  SPA-GMN-W20-RIREKILST-SEL
-      *
-      *        入力項目を初期化する
-               PERFORM 4201-INPUT-AREA-CLEAR-SEC
-           ELSE
-      *        画面を初期化する
-               PERFORM 420-CLEAR-SEC
-           END-IF
+           PERFORM 310-SPASET-SEC
       *
            MOVE    ZERO            TO  FLG-BTULST-ROW
       *
@@ -2784,15 +2759,25 @@
                PERFORM 4100-SYS-KANRI-SAI-SET-SEC
            END-IF
       *
+           MOVE    SPA-NAI-W20-YUKOSTYMD-MOT   TO  WRK-STYMD
+           MOVE    SPA-NAI-W20-YUKOSTYMD       TO  WRK-EDYMD
+           IF    ( SPA-NAI-W20-YUKOSTYMD-MOT
+                               >    SPA-NAI-W20-YUKOSTYMD )
+               MOVE    SPA-NAI-W20-YUKOSTYMD       TO  WRK-STYMD
+               MOVE    SPA-NAI-W20-YUKOSTYMD-MOT   TO  WRK-EDYMD
+           END-IF
+      *
+           EVALUATE    TRUE
+           WHEN  ( WRK-EDYMD                  >=   CONST-H180401 )
+             AND ( WRK-STYMD                  <    CONST-H180401 )
+           WHEN  ( WRK-EDYMD                  >=   CONST-H200401 )
+             AND ( WRK-STYMD                  <    CONST-H200401 )
+           WHEN  ( WRK-EDYMD                  >=   CONST-H200701 )
+             AND ( WRK-STYMD                   <   CONST-H200701 )
+                   PERFORM 4101-NYUINRYO-CLEAR-SEC
+           END-EVALUATE
+      *
            IF    ( SPA-NAI-W20-YUKOSTYMD  >=   CONST-H180401 )
-               IF    ( SPA-NAI-W20-YUKOSTYMD-MOT   <   CONST-H180401 )
-                   INITIALIZE              SPA-NAI-W20-KHNSRYCD
-                                           SPA-NAI-W20-KHNTEN
-                                           SPA-GMN-W20-KHNRYO-G
-      *
-                   PERFORM 4201-KSN-AREA-CLEAR-SEC
-               END-IF
-      *
                IF    ( SPA-GMN-W20-SBT NOT =   "04" )
                    MOVE  SPA-GMN-W20-YKNKNGLST (01)
                                            TO  SPA-GMN-W20-YKNKNG-G
@@ -2800,20 +2785,16 @@
       *
            END-IF
       *
-           IF    ( SPA-NAI-W20-YUKOSTYMD  >=   CONST-H180701 )
-               IF    ( SPA-NAI-W20-YUKOSTYMD-MOT   <   CONST-H180701 )
+           IF    ( WRK-EDYMD      >=   CONST-H180701 )
+               IF    ( WRK-STYMD   <   CONST-H180701 )
                    IF    ( SPA-GMN-W20-SBT =   "04" OR "09" )
-                       INITIALIZE              SPA-NAI-W20-KHNSRYCD
-                                               SPA-NAI-W20-KHNTEN
-                                               SPA-GMN-W20-KHNRYO-G
-      *
-                       PERFORM 4201-KSN-AREA-CLEAR-SEC
+                       PERFORM 4101-NYUINRYO-CLEAR-SEC
                    END-IF
       *
-                   MOVE  SPA-GMN-W20-YKNKNGLST (01)
-                                           TO  SPA-GMN-W20-YKNKNG-G
-      *
                END-IF
+      *
+               MOVE  SPA-GMN-W20-YKNKNGLST (01)
+                                           TO  SPA-GMN-W20-YKNKNG-G
            END-IF
       *
            MOVE    SPA-NAI-W20-YUKOSTYMD
@@ -2822,6 +2803,20 @@
            .
       *
        4101-YUKOSTYMD-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    入院料初期化処理
+      *****************************************************************
+       4101-NYUINRYO-CLEAR-SEC          SECTION.
+      *
+           INITIALIZE              SPA-NAI-W20-KHNSRYCD
+                                   SPA-NAI-W20-KHNTEN
+                                   SPA-GMN-W20-KHNRYO-G
+      *
+           PERFORM 4201-KSN-AREA-CLEAR-SEC
+      *
+           .
+       4101-NYUINRYO-CLEAR-EXT.
            EXIT.
       *****************************************************************
       *    有効期間終了日
