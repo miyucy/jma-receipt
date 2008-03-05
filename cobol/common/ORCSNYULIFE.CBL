@@ -255,7 +255,7 @@
       *    入院会計クローズ
            MOVE    "tbl_nyuinacct"         TO  MCP-TABLE
            MOVE    "key17"                 TO  MCP-PATHNAME
-           PERFORM   910-DB-CLOSE-SEC
+           PERFORM   900-CLOSE-SEC-SEC
            .
        100-PRM-CHK-EXT.
            EXIT.
@@ -341,7 +341,7 @@
       *    入院会計クローズ
            MOVE    "tbl_nyuinacct"         TO  MCP-TABLE
            MOVE    "key17"                 TO  MCP-PATHNAME
-           PERFORM   910-DB-CLOSE-SEC
+           PERFORM   900-CLOSE-SEC-SEC
       *
       *    短期滞在手術基本料２（短期滞在手術基本料３）の入院料未算定日
       *    について生活療養の該当日と軽減区分２の情報を取得（サブプロより取得）
@@ -379,7 +379,7 @@
            MOVE    SYSKANRI-REC        TO  MCPDATA-REC
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key10"             TO  MCP-PATHNAME
-           PERFORM   910-DBSELECT-SEC
+           PERFORM   900-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
                MOVE    "tbl_syskanri"  TO  MCP-TABLE
                MOVE    "key10"         TO  MCP-PATHNAME
@@ -404,7 +404,7 @@
       *    システム管理クローズ
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key10"             TO  MCP-PATHNAME
-           PERFORM   910-DB-CLOSE-SEC
+           PERFORM   900-CLOSE-SEC-SEC
       *−−−−医療機関食事情報取得取得ここまで−−−−−−−−−−−
       *
       *
@@ -437,7 +437,7 @@
       *            患者公費情報クローズ
                    MOVE    "tbl_ptkohinf"       TO  MCP-TABLE
                    MOVE    "key4"               TO  MCP-PATHNAME
-                   PERFORM   910-DB-CLOSE-SEC
+                   PERFORM   900-CLOSE-SEC-SEC
                ELSE
       *            後期高齢者の判定（保険番号０３９）
                    MOVE    ZERO                 TO  FLG-RJN 
@@ -464,7 +464,7 @@
       *            患者保険情報クローズ
                    MOVE    "tbl_pthkninf"       TO  MCP-TABLE
                    MOVE    "key8"               TO  MCP-PATHNAME
-                   PERFORM   910-DB-CLOSE-SEC
+                   PERFORM   900-CLOSE-SEC-SEC
       *            後期該当の判定（公費番号９６８）
                    MOVE    ZERO                 TO  FLG-RJN 
                    INITIALIZE                       PTKOHINF-REC
@@ -490,7 +490,7 @@
       *            患者公費情報クローズ
                    MOVE    "tbl_ptkohinf"       TO  MCP-TABLE
                    MOVE    "key4"               TO  MCP-PATHNAME
-                   PERFORM   910-DB-CLOSE-SEC
+                   PERFORM   900-CLOSE-SEC-SEC
                END-IF
       *
       *−−−−サブルーチンでの患者所得情報の取得ここから−−−−−
@@ -713,7 +713,7 @@
       *    入院行為クローズ
            MOVE     "tbl_nyuinact"     TO  MCP-TABLE
            MOVE     "key9"             TO  MCP-PATHNAME
-           PERFORM   910-DB-CLOSE-SEC
+           PERFORM   900-CLOSE-SEC-SEC
       *
            .
        210-NYUINACT-GET-EXT.
@@ -724,7 +724,7 @@
       *****************************************************************
        910-SYSKANRI-READ-SEC         SECTION.
       *
-           PERFORM   910-DBFETCH-SEC
+           PERFORM   900-DBFETCH-SEC
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC         TO  SYS-5000-REC
                MOVE    ZERO                TO  FLG-SYSKANRI
@@ -745,11 +745,11 @@
            MOVE    PTINF-REC           TO  MCPDATA-REC
            MOVE    "tbl_ptinf"         TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
-           PERFORM   910-DBSELECT-SEC
+           PERFORM   900-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
                MOVE    "tbl_ptinf"         TO  MCP-TABLE
                MOVE    "key"               TO  MCP-PATHNAME
-               PERFORM   910-DBFETCH-SEC
+               PERFORM   900-DBFETCH-SEC
                IF      MCP-RC          =   ZERO
                    MOVE    MCPDATA-REC TO  PTINF-REC
                    MOVE    ZERO        TO  FLG-PTINF
@@ -764,7 +764,7 @@
       *
            MOVE    "tbl_ptinf"         TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
-           PERFORM   910-DB-CLOSE-SEC
+           PERFORM   900-CLOSE-SEC-SEC
       *
            .
        900-PTINF-READ-EXT.
@@ -776,7 +776,7 @@
        910-PTHKNINF-SELECT-SEC        SECTION.
       *
            MOVE    PTHKNINF-REC        TO  MCPDATA-REC
-           PERFORM   910-DBSELECT-SEC
+           PERFORM   900-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
                MOVE    ZERO               TO  FLG-PTHKNINF
            ELSE
@@ -792,7 +792,7 @@
       *****************************************************************
        910-PTHKNINF-READ-SEC        SECTION.
       *
-           PERFORM   910-DBFETCH-SEC
+           PERFORM   900-DBFETCH-SEC
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC        TO  PTHKNINF-REC
                MOVE    ZERO               TO  FLG-PTHKNINF
@@ -811,7 +811,7 @@
        910-PTKOHINF-SELECT-SEC        SECTION.
       *
            MOVE    PTKOHINF-REC        TO  MCPDATA-REC
-           PERFORM   910-DBSELECT-SEC
+           PERFORM   900-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
                MOVE    ZERO               TO  FLG-PTKOHINF
            ELSE
@@ -827,7 +827,7 @@
       *****************************************************************
        910-PTKOHINF-READ-SEC        SECTION.
       *
-           PERFORM   910-DBFETCH-SEC
+           PERFORM   900-DBFETCH-SEC
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC        TO  PTKOHINF-REC
                MOVE    ZERO               TO  FLG-PTKOHINF
@@ -846,7 +846,7 @@
        910-NYUINACCT-SELECT-SEC        SECTION.
       *
            MOVE    NYUINACCT-REC       TO  MCPDATA-REC
-           PERFORM   910-DBSELECT-SEC
+           PERFORM   900-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
                MOVE    ZERO               TO  FLG-NYUINACCT
            ELSE
@@ -862,7 +862,7 @@
       *****************************************************************
        910-NYUINACCT-READ-SEC        SECTION.
       *
-           PERFORM   910-DBFETCH-SEC
+           PERFORM   900-DBFETCH-SEC
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC        TO  NYUINACCT-REC
                MOVE    ZERO               TO  FLG-NYUINACCT
@@ -881,7 +881,7 @@
        910-TSYRRK-SELECT-SEC        SECTION.
       *
            MOVE    TSYRRK-REC          TO  MCPDATA-REC
-           PERFORM   910-DBSELECT-SEC
+           PERFORM   900-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
                MOVE    ZERO               TO  FLG-TSYRRK
            ELSE
@@ -897,7 +897,7 @@
       *****************************************************************
        910-TSYRRK-READ-SEC        SECTION.
       *
-           PERFORM   910-DBFETCH-SEC
+           PERFORM   900-DBFETCH-SEC
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC        TO  TSYRRK-REC
                MOVE    ZERO               TO  FLG-TSYRRK
@@ -916,7 +916,7 @@
        910-TNKRRK-SELECT-SEC        SECTION.
       *
            MOVE    TNKRRK-REC          TO  MCPDATA-REC
-           PERFORM   910-DBSELECT-SEC
+           PERFORM   900-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
                MOVE    ZERO               TO  FLG-TNKRRK
            ELSE
@@ -932,7 +932,7 @@
       *****************************************************************
        910-TNKRRK-READ-SEC        SECTION.
       *
-           PERFORM   910-DBFETCH-SEC
+           PERFORM   900-DBFETCH-SEC
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC        TO  TNKRRK-REC
                MOVE    ZERO               TO  FLG-TNKRRK
@@ -951,7 +951,7 @@
        910-NYUINACT-SELECT-SEC        SECTION.
       *
            MOVE    NYUINACT-REC        TO  MCPDATA-REC
-           PERFORM   910-DBSELECT-SEC
+           PERFORM   900-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
                MOVE    ZERO               TO  FLG-NYUINACT
            ELSE
@@ -967,7 +967,7 @@
       *****************************************************************
        910-NYUINACT-READ-SEC         SECTION.
       *
-           PERFORM   910-DBFETCH-SEC
+           PERFORM   900-DBFETCH-SEC
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC         TO  NYUINACT-REC
                MOVE    ZERO                TO  FLG-NYUINACT
@@ -983,36 +983,30 @@
       *****************************************************************
       *    ＤＢＳＥＬＥＣＴ処理
       *****************************************************************
-       910-DBSELECT-SEC                SECTION.
+       900-DBSELECT-SEC                SECTION.
       *
            MOVE    "DBSELECT"          TO  MCP-FUNC
            PERFORM 900-ORCDBMAIN-SEC
-           IF      MCP-RC              =   ZERO
-               CONTINUE
-           ELSE
-               DISPLAY "SELECT ERR table=" MCP-TABLE
-                       " pathname="        MCP-PATHNAME
-           END-IF
            .
-       910-DBSELECT-EXT.
+       900-DBSELECT-EXT.
            EXIT.
       *
       *****************************************************************
       *    ＤＢＦＥＴＣＨ処理
       *****************************************************************
-       910-DBFETCH-SEC                SECTION.
+       900-DBFETCH-SEC                SECTION.
       *
            MOVE    "DBFETCH"           TO  MCP-FUNC
            PERFORM 900-ORCDBMAIN-SEC
       *
            .
-       910-DBFETCH-EXT.
+       900-DBFETCH-EXT.
            EXIT.
       *
       *****************************************************************
       *    テーブルアクセス処理
       *****************************************************************
-       910-ORCDBMAIN-SEC               SECTION.
+       900-ORCDBMAIN-SEC               SECTION.
       *
            CALL    "ORCDBMAIN"         USING   MCPAREA
                                                MCPDATA-REC
@@ -1023,14 +1017,14 @@
            EXIT.
       *
       *****************************************************************
-      *    ＤＢクローズ処理
+      *    テーブルクローズ処理
       *****************************************************************
-       910-DB-CLOSE-SEC                 SECTION.
+       900-CLOSE-SEC-SEC                 SECTION.
       *
            MOVE    "DBCLOSECURSOR"      TO  MCP-FUNC
            PERFORM 900-ORCDBMAIN-SEC
       *
            .
       *
-       910-DB-CLOSE-EXT.
+       900-CLOSE-SEC-EXT.
            EXIT.

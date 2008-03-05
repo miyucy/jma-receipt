@@ -195,7 +195,7 @@
       *    入院会計クローズ
            MOVE    "tbl_nyuinacct"        TO  MCP-TABLE
            MOVE    "key17"                TO  MCP-PATHNAME
-           PERFORM   910-DB-CLOSE-SEC
+           PERFORM   900-CLOSE-SEC
            .
        100-PRM-CHK-EXT.
            EXIT.
@@ -267,7 +267,7 @@
       *    患者入院履歴クローズ
            MOVE    "tbl_ptnyuinrrk"        TO  MCP-TABLE
            MOVE    "key49"                 TO  MCP-PATHNAME
-           PERFORM   910-DB-CLOSE-SEC
+           PERFORM   900-CLOSE-SEC
       *
       *    入院履歴より短期滞在手術基本料２（生活療養）の算定有無を特定
            INITIALIZE                     PTNYUINRRK-REC
@@ -331,7 +331,7 @@
       *    患者入院履歴クローズ
            MOVE    "tbl_ptnyuinrrk"        TO  MCP-TABLE
            MOVE    "key49"                 TO  MCP-PATHNAME
-           PERFORM   910-DB-CLOSE-SEC
+           PERFORM   900-CLOSE-SEC
       *
       *    入院履歴より短期滞在手術基本料３の算定有無を特定
            INITIALIZE                     PTNYUINRRK-REC
@@ -395,7 +395,7 @@
       *    患者入院履歴クローズ
            MOVE    "tbl_ptnyuinrrk"        TO  MCP-TABLE
            MOVE    "key49"                 TO  MCP-PATHNAME
-           PERFORM   910-DB-CLOSE-SEC
+           PERFORM   900-CLOSE-SEC
       *
       *    入院履歴より短期滞在手術基本料３（生活療養）の算定有無を特定
            INITIALIZE                     PTNYUINRRK-REC
@@ -459,7 +459,7 @@
       *    患者入院履歴クローズ
            MOVE    "tbl_ptnyuinrrk"        TO  MCP-TABLE
            MOVE    "key49"                 TO  MCP-PATHNAME
-           PERFORM   910-DB-CLOSE-SEC
+           PERFORM   900-CLOSE-SEC
       *
       *    短期滞在手術基本料２（生活療養含む）又は短期滞在手術基本料３（生活療養含む）
       *    に該当する入院料を判定し、入院会計で算定済みの場合は返却値をクリアする
@@ -502,7 +502,7 @@
       *    入院会計クローズ
            MOVE    "tbl_nyuinacct"         TO  MCP-TABLE
            MOVE    "key17"                 TO  MCP-PATHNAME
-           PERFORM   910-DB-CLOSE-SEC
+           PERFORM   900-CLOSE-SEC
       *
       *    入院区分のセット
            PERFORM    VARYING   IDX   FROM   1   BY   1
@@ -543,7 +543,7 @@
       *    入院行為クローズ
            MOVE     "tbl_nyuinact"     TO  MCP-TABLE
            MOVE     "key9"             TO  MCP-PATHNAME
-           PERFORM   910-DB-CLOSE-SEC
+           PERFORM   900-CLOSE-SEC
       *
            .
        210-NYUINACT-GET-EXT.
@@ -555,19 +555,13 @@
        900-PTINF-READ-SEC         SECTION.
       *
            MOVE    PTINF-REC           TO  MCPDATA-REC
-           MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "tbl_ptinf"         TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
-           CALL    "ORCDBMAIN"     USING   MCPAREA
-                                           MCPDATA-REC
-                                           SPA-AREA
+           PERFORM   900-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
-               MOVE    "DBFETCH"       TO  MCP-FUNC
                MOVE    "tbl_ptinf"         TO  MCP-TABLE
                MOVE    "key"               TO  MCP-PATHNAME
-               CALL    "ORCDBMAIN"     USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+               PERFORM   900-DBFETCH-SEC
                IF      MCP-RC          =   ZERO
                    MOVE    MCPDATA-REC TO  PTINF-REC
                    MOVE    ZERO        TO  FLG-PTINF
@@ -582,7 +576,7 @@
       *
            MOVE    "tbl_ptinf"         TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
-           PERFORM   910-DB-CLOSE-SEC
+           PERFORM   900-CLOSE-SEC
       *
            .
        900-PTINF-READ-EXT.
@@ -594,10 +588,7 @@
        910-PTNYUINRRK-SELECT-SEC        SECTION.
       *
            MOVE    PTNYUINRRK-REC      TO  MCPDATA-REC
-           MOVE    "DBSELECT"          TO  MCP-FUNC
-           CALL    "ORCDBMAIN"     USING   MCPAREA
-                                           MCPDATA-REC
-                                           SPA-AREA
+           PERFORM   900-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
                MOVE    ZERO               TO  FLG-PTNYUINRRK
            ELSE
@@ -613,10 +604,7 @@
       *****************************************************************
        910-PTNYUINRRK-READ-SEC         SECTION.
       *
-           MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "ORCDBMAIN"     USING   MCPAREA
-                                           MCPDATA-REC
-                                           SPA-AREA
+           PERFORM   900-DBFETCH-SEC
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC         TO  PTNYUINRRK-REC
                MOVE    ZERO                TO  FLG-PTNYUINRRK
@@ -635,10 +623,7 @@
        910-NYUINACCT-SELECT-SEC        SECTION.
       *
            MOVE    NYUINACCT-REC       TO  MCPDATA-REC
-           MOVE    "DBSELECT"          TO  MCP-FUNC
-           CALL    "ORCDBMAIN"     USING   MCPAREA
-                                           MCPDATA-REC
-                                           SPA-AREA
+           PERFORM   900-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
                MOVE    ZERO               TO  FLG-NYUINACCT
            ELSE
@@ -654,10 +639,7 @@
       *****************************************************************
        910-NYUINACCT-READ-SEC        SECTION.
       *
-           MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "ORCDBMAIN"     USING   MCPAREA
-                                           MCPDATA-REC
-                                           SPA-AREA
+           PERFORM   900-DBFETCH-SEC
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC        TO  NYUINACCT-REC
                MOVE    ZERO               TO  FLG-NYUINACCT
@@ -676,10 +658,7 @@
        910-NYUINACT-SELECT-SEC        SECTION.
       *
            MOVE    NYUINACT-REC        TO  MCPDATA-REC
-           MOVE    "DBSELECT"          TO  MCP-FUNC
-           CALL    "ORCDBMAIN"     USING   MCPAREA
-                                           MCPDATA-REC
-                                           SPA-AREA
+           PERFORM   900-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
                MOVE    ZERO               TO  FLG-NYUINACT
            ELSE
@@ -695,10 +674,7 @@
       *****************************************************************
        910-NYUINACT-READ-SEC         SECTION.
       *
-           MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "ORCDBMAIN"     USING   MCPAREA
-                                           MCPDATA-REC
-                                           SPA-AREA
+           PERFORM   900-DBFETCH-SEC
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC         TO  NYUINACT-REC
                MOVE    ZERO                TO  FLG-NYUINACT
@@ -712,16 +688,50 @@
            EXIT.
       *
       *****************************************************************
-      *    ＤＢクローズ処理
+      *    ＤＢＳＥＬＥＣＴ処理
       *****************************************************************
-       910-DB-CLOSE-SEC                 SECTION.
+       900-DBSELECT-SEC                SECTION.
+      *
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           PERFORM 900-ORCDBMAIN-SEC
+           .
+       900-DBSELECT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ＤＢＦＥＴＣＨ処理
+      *****************************************************************
+       900-DBFETCH-SEC                SECTION.
+      *
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           PERFORM 900-ORCDBMAIN-SEC
+      *
+           .
+       900-DBFETCH-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    テーブルアクセス処理
+      *****************************************************************
+       900-ORCDBMAIN-SEC               SECTION.
+      *
+           CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
+           .
+      *
+       900-ORCDBMAIN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    テーブルクローズ処理
+      *****************************************************************
+       900-CLOSE-SEC                 SECTION.
       *
            MOVE    "DBCLOSECURSOR"      TO  MCP-FUNC
-           CALL    "ORCDBMAIN"      USING   MCPAREA
-                                            MCPDATA-REC
-                                            SPA-AREA
+           PERFORM 900-ORCDBMAIN-SEC
       *
            .
       *
-       910-DB-CLOSE-EXT.
+       900-CLOSE-EXT.
            EXIT.
