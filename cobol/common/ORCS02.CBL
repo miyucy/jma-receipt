@@ -12637,7 +12637,7 @@
       *
       *    保険組合せテーブルの補助区分から患者の負担割合を保険番号
       *    テーブルに再セット（国保のみ）
-           IF    COMB-HKNNUM           =    "060"
+           IF    COMB-HKNNUM           =    "060" OR "039"
                EVALUATE   COMB-HOJOKBN
                    WHEN   "0"
                    WHEN   "4"
