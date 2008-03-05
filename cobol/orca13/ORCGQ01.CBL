@@ -3489,12 +3489,16 @@
                EVALUATE    TRUE
                WHEN  ( FLG-PAGENO-00   =   1 )
                    MOVE    ZERO    TO  SPA-GMN-Q01-PAGENO
+                   MOVE    101     TO  SPA-GMN-Q01-CUR
                WHEN  ( FLG-PAGENO-01   =   1 )
                    MOVE    1       TO  SPA-GMN-Q01-PAGENO
+                   MOVE    201     TO  SPA-GMN-Q01-CUR
                WHEN  ( FLG-PAGENO-02   =   1 )
                    MOVE    2       TO  SPA-GMN-Q01-PAGENO
+                   MOVE    301     TO  SPA-GMN-Q01-CUR
                WHEN    OTHER
                    MOVE    ZERO    TO  SPA-GMN-Q01-PAGENO
+                   MOVE    101     TO  SPA-GMN-Q01-CUR
                END-EVALUATE
       *
                PERFORM 4101-GMN-SPA-SET-SEC
