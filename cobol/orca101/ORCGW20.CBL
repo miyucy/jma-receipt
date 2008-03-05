@@ -3966,17 +3966,24 @@
                                            TO  WRK-KSNCD
                        END-IF
                    WHEN    CONST-KANGOCD (1)
-                       PERFORM VARYING IDX1    FROM    1   BY  1
-                               UNTIL ( IDX1    >   5 )
-                                OR   ( WRK-KSNCD   NOT =   SPACE )
+                       IF    ( SPA-NAI-W20-YUKOSTYMD >=  CONST-H180401 )
+                          IF    ( SPA-GMN-W20-HICH    =   "2" )
+                              MOVE    CONST-KANGOCD (1)
+                                                      TO  WRK-KSNCD
+                          END-IF
+                       ELSE
+                           PERFORM VARYING IDX1    FROM    1   BY  1
+                                   UNTIL ( IDX1    >   5 )
+                                    OR   ( WRK-KSNCD   NOT =   SPACE )
       *
-                           IF    ( SPA-GMN-W20-HICH
+                               IF    ( SPA-GMN-W20-HICH
                                                =   CONST-KANGOCDL(IDX1))
-                               MOVE    CONST-KANGOCD (IDX1)
+                                   MOVE    CONST-KANGOCD (IDX1)
                                                TO  WRK-KSNCD
-                           END-IF
+                               END-IF
       *
-                       END-PERFORM
+                           END-PERFORM
+                       END-IF
                    WHEN    CONST-KNGTEKCD
                        IF    ( SPA-GMN-W20-HICHTEK     =   "2" )
                            MOVE    CONST-KNGTEKCD
