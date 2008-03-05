@@ -117,6 +117,8 @@
       *
       *  04.01.01    NACL-藤原    07/10/25  公務災害対応
       *  04.01.02    NACL-藤原    07/11/22  公害レセプト対応
+      *
+      *  04.02.01    NACL-藤原    08/03/04  平成２０年４月改正対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -2267,22 +2269,42 @@ grpsys                 MOVE    NACCT-HOSPNUM       TO  COMB-HOSPNUM
                            IF      SPA-NAI-R01-SRYYM    <   200210
                                MOVE    "1"      TO  SPA-NAI-R01-SYOKBN
                            ELSE
-                               MOVE    "2"      TO  SPA-NAI-R01-SYOKBN
+                               IF      SPA-NAI-R01-SRYYM    <   200804
+                                   MOVE    "2"  TO  SPA-NAI-R01-SYOKBN
+                               ELSE
+                                   MOVE    "3"  TO  SPA-NAI-R01-SYOKBN
+                               END-IF
                            END-IF
                        ELSE
-                           IF      SPA-NAI-R01-SYOKBN   =   "1"
-                               IF      SPA-NAI-R01-SRYYM    <   200210
-                                   CONTINUE
-                               ELSE
-                                   MOVE    "0007"       TO  SPA-ERRCD
-                               END-IF                                  
-                           ELSE
-                               IF      SPA-NAI-R01-SRYYM    >=  200210
-                                   CONTINUE
-                               ELSE
-                                   MOVE    "0007"       TO  SPA-ERRCD
-                               END-IF                                  
-                           END-IF
+                           EVALUATE    SPA-NAI-R01-SYOKBN
+                               WHEN    "1"
+                                   IF      SPA-NAI-R01-SRYYM
+                                                           <   200210
+                                       CONTINUE
+                                   ELSE
+                                       IF      SPA-NAI-R01-SRYYM
+                                                           >=  200804
+                                           MOVE    "0039"  TO  SPA-ERRCD
+                                       ELSE 
+                                           MOVE    "0007"  TO  SPA-ERRCD
+                                       END-IF
+                                   END-IF                                  
+                               WHEN    "2"
+                                   IF      SPA-NAI-R01-SRYYM
+                                                           <   200210
+                                       MOVE    "0007"      TO  SPA-ERRCD
+                                   ELSE
+                                       IF      SPA-NAI-R01-SRYYM
+                                                           >=  200804
+                                           MOVE    "0039"  TO  SPA-ERRCD
+                                       END-IF
+                                   END-IF
+                               WHEN    "3"
+                                   IF      SPA-NAI-R01-SRYYM
+                                                           <   200804
+                                       MOVE    "0039"      TO  SPA-ERRCD
+                                   END-IF                                  
+                           END-EVALUATE
                        END-IF
                    END-IF                  
                WHEN    "3"             ALSO    "1"
@@ -3098,7 +3120,12 @@ grpsys             MOVE    SPA-HOSPNUM     TO  PTINF-HOSPNUM
                                         <   200210
                    MOVE    "1"              TO  SPA-NAI-R01-SYOKBN
                ELSE
-                   MOVE    "2"              TO  SPA-NAI-R01-SYOKBN
+                   IF      SPA-NAI-R01-TSRYYM (1)
+                                            >=  200804
+                       MOVE    "3"              TO  SPA-NAI-R01-SYOKBN
+                   ELSE 
+                       MOVE    "2"              TO  SPA-NAI-R01-SYOKBN
+                   END-IF
                END-IF
            END-IF
       *
@@ -4655,6 +4682,13 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
                    STRING  "請求データ削除済データとして既に"
                                            DELIMITED   BY  SIZE  
                            "入力済です"    DELIMITED   BY  SIZE  
+                                           INTO        SPA-ERRMSG
+                   END-STRING
+               WHEN    "0039"
+                   STRING  "改正前と改正後（２００８年４月）の"
+                                           DELIMITED   BY  SIZE
+                           "レセプトは同時に処理できません"
+                                           DELIMITED   BY  SIZE
                                            INTO        SPA-ERRMSG
                    END-STRING
                WHEN    "1001"

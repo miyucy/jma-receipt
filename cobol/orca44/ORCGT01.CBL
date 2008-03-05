@@ -93,6 +93,8 @@
       *                                     ２００７年９月〜１２月対象 
       *
       *  04.01.01    NACL-藤原    07/11/22  公害レセプト対応
+      *
+      *  04.02.01    NACL-藤原    08/03/04  平成２０年４月改正対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -2004,6 +2006,11 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
                END-IF
            END-IF
       *
+           IF    ( SPA-ERRCD           =   SPACE  )
+           AND   ( SPA-NAI-SKYYM       >=  200804 ) 
+               MOVE    "0200"          TO  SPA-ERRCD
+           END-IF
+      *
       *    ファイル保存情報
            PERFORM 3102-FILE-INFO-CHECK-SEC
       *
@@ -2209,6 +2216,11 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
                    END-IF
                END-PERFORM
            END-IF
+      *
+           IF      SPA-NAI-SKYYM       >=  200804 
+               PERFORM 210-BACK-SYORI-SEC         
+               GO  TO  210-BACK-EXT
+           END-IF
       *        
       *    定点調査研究事業 収集データ作成・送信チェック
            INITIALIZE                  ORCSCOLCHKAREA
@@ -2225,9 +2237,9 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
                    GO  TO  210-BACK-EXT
            END-IF    
            IF      COLCHK-RC           =   30
-	           PERFORM 490-TEITEN-SEC
-                   GO  TO  210-BACK-EXT
-	   END-IF
+               PERFORM 490-TEITEN-SEC
+               GO  TO  210-BACK-EXT
+           END-IF
       *
            PERFORM 210-BACK-SYORI-SEC         
            .
@@ -3322,14 +3334,11 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
       *****************************************************************
        460-RECEDEN-GID-SEC                SECTION.
       *
-           IF      SPA-NAI-SKYYM       =   ZERO
-               MOVE    "0001"              TO  SPA-ERRCD
-           END-IF    
-      *
-           IF      SPA-ERRCD           =   SPACE
-               IF      SPA-NAI-SKYYMD      =   ZERO
-                   MOVE    "0002"              TO  SPA-ERRCD
-               END-IF    
+      *    入力チェック
+           MOVE    0               TO  FLG-TOUROKU
+           PERFORM 410-INPUT-CHK-SEC
+           IF    ( SPA-ERRCD   NOT =   SPACE )
+               GO  TO  460-RECEDEN-GID-EXT
            END-IF
       *
       *    ジョブ管理チェック処理
@@ -3662,10 +3671,12 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
            END-IF    
       *
            IF      SPA-ERRCD           =   SPACE
-               IF      SPA-NAI-SKYYM       =   ZERO
-                   MOVE    "0001"              TO  SPA-ERRCD
+      *        入力チェック
+               MOVE    0               TO  FLG-TOUROKU
+               PERFORM 410-INPUT-CHK-SEC
+               IF    ( SPA-ERRCD   NOT =   SPACE )
                    GO  TO  480-PRINT-GID-EXT
-               END-IF    
+               END-IF
            END-IF    
       *
            IF      SPA-ERRCD           =   SPACE
@@ -3934,13 +3945,12 @@ grpsys             PERFORM 900-ORCDBMAIN-SEC
       *****************************************************************
        480-CSV-SYORI-SEC             SECTION.
       *
-           IF      SPA-NAI-SKYYM       =   ZERO
-               MOVE    "0001"              TO  SPA-ERRCD
-           END-IF    
-      *
-           IF      SPA-GMN-DATAKBN     =   SPACE
-               MOVE    "0002"              TO  SPA-ERRCD
-           END-IF    
+      *    入力チェック
+           MOVE    0               TO  FLG-TOUROKU
+           PERFORM 410-INPUT-CHK-SEC
+           IF    ( SPA-ERRCD   NOT =   SPACE )
+               GO  TO  480-CSV-SYORI-EXT
+           END-IF
       *
            MOVE    SPACE               TO  SPA-MOTOPG
            MOVE    SPA-T01KYOUTU       TO  SPA-WORK
@@ -3978,15 +3988,12 @@ grpsys             PERFORM 900-ORCDBMAIN-SEC
       *****************************************************************
        490-KOBETU-SEC             SECTION.
       *
-           IF      SPA-NAI-SKYYM       =   ZERO
-               MOVE    "0001"              TO  SPA-ERRCD
-           END-IF    
-      *
-           IF      SPA-ERRCD           =   SPACE
-               IF      SPA-NAI-SKYYMD      =   ZERO
-                   MOVE    "0002"              TO  SPA-ERRCD
-               END-IF    
-           END-IF    
+      *    入力チェック
+           MOVE    0               TO  FLG-TOUROKU
+           PERFORM 410-INPUT-CHK-SEC
+           IF    ( SPA-ERRCD   NOT =   SPACE )
+               GO  TO  490-KOBETU-EXT
+           END-IF
       *
       *    パラメタＤＢ削除処理
            INITIALIZE                  BTPARA-REC
@@ -4470,6 +4477,12 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
                                                        TO  SPA-ERRMSG
                WHEN    "0012"
                    MOVE    "再印刷できない帳票です"    TO  SPA-ERRMSG
+      *
+               WHEN    "0200"
+                   MOVE
+                       "平成２０年４月改正未対応のため処理できません"
+                                                       TO  SPA-ERRMSG
+      *
                WHEN    "1001"
                    MOVE    "パラメタＤＢの削除処理でエラーとなりました" 
                                                        TO  SPA-ERRMSG

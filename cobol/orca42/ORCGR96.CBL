@@ -33,6 +33,8 @@
       *  04.01.01    NACL-藤原    07/11/22  公害レセプト対応
       *  04.01.02    NACL-藤原    07/01/21  月途中の負担者番号変更対応
       *                                     （生保の公費単独のみ） 
+      *
+      *  04.02.01    NACL-藤原    08/03/04  平成２０年４月改正対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -681,6 +683,11 @@ grpsys         MOVE    SPA-HOSPNUM TO  PTINF-HOSPNUM
                END-IF
            ELSE
                MOVE    "0007"              TO  SPA-ERRCD
+           END-IF
+      *
+           IF    ( SPA-ERRCD           =   SPACE  )
+           AND   ( SPA-NAI-R96-SRYYM   >=  200804 ) 
+               MOVE    "0200"          TO  SPA-ERRCD
            END-IF
       *
            IF      SPA-ERRCD           =   SPACE
@@ -1802,6 +1809,12 @@ grpsys         MOVE    SPA-HOSPNUM         TO  SYUKA-HOSPNUM
                            "患者で個別処理を行って下さい"
                                            DELIMITED   BY  SIZE 
                                                        INTO   SPA-ERRMSG
+                   END-STRING
+      *
+               WHEN    "0200"
+                   MOVE
+                       "平成２０年４月改正未対応のため処理できません"
+                                                       TO  SPA-ERRMSG
       *
                WHEN    "1001"
                    MOVE    "未請求設定ができませんでした"

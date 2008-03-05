@@ -31,6 +31,8 @@
       *  02.07.00    NACL-太田    05.10.26  クリアボタン追加
       *  03.05.00    NACL-太田    07.05.15  グループ診療対応
       *  03.05.01    NACL-藤原    07/09/19  クライアント保存対応
+      *
+      *  04.02.01    NACL-藤原    08/03/04  平成２０年４月改正対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -628,6 +630,11 @@
                MOVE    WRK-HENYMDG3        TO  SPA-NAI-L02-SRYYMDH
            ELSE
                MOVE    "0001"          TO  SPA-ERRCD
+           END-IF
+      *
+           IF    ( SPA-ERRCD           =   SPACE    )
+           AND   ( SPA-NAI-L02-SRYYMD  >=  20080401 ) 
+               MOVE    "0200"          TO  SPA-ERRCD
            END-IF
            .
        41021-SRYYM-CHK-EXT.
@@ -1323,6 +1330,10 @@
                                                      DELIMITED  BY  SIZE
                                                      INTO  SPA-ERRMSG
                    END-STRING
+               WHEN    "0200"
+                   MOVE
+                       "平成２０年４月改正未対応のため処理できません"
+                                                       TO  SPA-ERRMSG
                WHEN    "7777"
                    MOVE    WRK-TOUKEIERR               TO  SPA-ERRMSG
            END-EVALUATE

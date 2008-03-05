@@ -38,6 +38,8 @@
       *
       *  04.01.01    NACL-藤原    07/01/21  月途中の負担者番号変更対応
       *                                     （生保の公費単独のみ） 
+      *
+      *  04.02.01    NACL-藤原    08/03/04  平成２０年４月改正対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -172,6 +174,12 @@
                    07  SPA-NAI-SRYYM               PIC 9(06).
                    07  SPA-NAI-SRYYMH              PIC X(16).
                    07  SPA-NAI-NYUGAIKBN           PIC X(06).
+      *
+                   07  SPA-NAI-SRYYM-OLD           PIC 9(06).
+                   07  SPA-NAI-NYUGAIKBN-OLD       PIC X(01).
+                   07  SPA-NAI-HTEISYUTUSAKI-OLD   PIC X(01).
+                   07  SPA-NAI-HYOUJIKBN-OLD       PIC X(01).
+      *
                    07  SPA-NAI-KOUMOKU. 
                        09  SPA-NAI-PTID            PIC 9(10).
                        09  SPA-NAI-HOJOKBN         PIC X(01).
@@ -211,7 +219,7 @@
            03  FLG-PTNUM-ROW       PIC 9(01).
            03  FLG-DSP             PIC 9(01).
            03  FLG-CHK             PIC 9(01).
-      *
+           03  FLG-TOUROKU         PIC 9(01).
       *
            03  WRK-PTID            PIC 9(10).
       *
@@ -1031,18 +1039,6 @@ grpsys     MOVE    SPA-HOSPNUM     TO  PTINF-HOSPNUM
            MOVE    MCP-WIDGET          TO  WRK-MCP-WIDGET
       *
            EVALUATE    MCP-EVENT       ALSO    MCP-WIDGET
-               WHEN    "ACTIVATE"      ALSO    "SRYYM"
-                   PERFORM 41023-SRYYM-CHK-SEC
-      *
-               WHEN    "ACTIVATE"      ALSO    "NYUGAIKBN"
-                   PERFORM 41024-NYUGAIKBN-CHK-SEC
-      *
-               WHEN    "ACTIVATE"      ALSO    "HTEISYUTUSAKI"
-                   PERFORM 41026-HTEISYUTUSAKI-CHK-SEC
-      *
-               WHEN    "ACTIVATE"      ALSO    "HYOUJIKBN"
-                   PERFORM 41025-HYOUJIKBN-CHK-SEC
-      *
                WHEN    "ACTIVATE"      ALSO    "SELNUM"
                    PERFORM 41020-SELNUM-CHK-SEC
       *
@@ -1057,10 +1053,132 @@ grpsys     MOVE    SPA-HOSPNUM     TO  PTINF-HOSPNUM
       *        患者レセプト一覧
                WHEN    ANY             ALSO    "PTNUMLST"
                    PERFORM 400-PTNUMLST-CHK-SEC
+      *        一括分
+               WHEN    "ACTIVATE"       ALSO    ANY
+                   PERFORM 400-ENTRY-SYORI-SEC
            END-EVALUATE
            .
       *
        200-ENTRY-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    一括分入力処理
+      *****************************************************************
+       400-ENTRY-SYORI-SEC             SECTION.
+      *
+           MOVE    MCP-WIDGET          TO  WRK-MCP-WIDGET
+           MOVE    ZERO                TO  SPA-GMN-CUR
+      *
+      *    入力チェック処理
+           MOVE    ZERO                TO  FLG-TOUROKU
+           PERFORM 410-INPUT-CHK-SEC
+      *
+           IF      SPA-ERRCD       NOT =   SPACE
+               INITIALIZE                  SPA-GMN-SYUKA-TABLE
+                                           SPA-GMN-PTNUM-TABLE
+                                           SPA-NAI-SYUKA-TABLE
+                                           SPA-GMN-KOUMOKU
+                                           SPA-NAI-KOUMOKU
+           ELSE
+               IF    ( SPA-NAI-SRYYM
+                                   NOT =   SPA-NAI-SRYYM-OLD         )
+               OR    ( SPA-GMN-HYOUJIKBN
+                                   NOT =   SPA-NAI-HYOUJIKBN-OLD     )
+               OR    ( SPA-GMN-NYUGAIKBN
+                                   NOT =   SPA-NAI-NYUGAIKBN-OLD     )
+               OR    ( SPA-GMN-HTEISYUTUSAKI
+                                   NOT =   SPA-NAI-HTEISYUTUSAKI-OLD )
+                   INITIALIZE                  SPA-GMN-SYUKA-TABLE
+                                               SPA-GMN-PTNUM-TABLE
+                                               SPA-NAI-SYUKA-TABLE
+                                               SPA-GMN-KOUMOKU
+                                               SPA-NAI-KOUMOKU
+               END-IF
+           END-IF
+           .
+       400-ENTRY-SYORI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    入力チェック処理
+      *****************************************************************
+       410-INPUT-CHK-SEC       SECTION.
+      *
+      *   入力チェック
+           EVALUATE    MCP-EVENT       ALSO    MCP-WIDGET
+               WHEN    "ACTIVATE"      ALSO    "SRYYM"
+               WHEN    "ACTIVATE"      ALSO    "NYUGAIKBN"
+               WHEN    "ACTIVATE"      ALSO    "HTEISYUTUSAKI"
+               WHEN    "ACTIVATE"      ALSO    "HYOUJIKBN"
+                   IF      SPA-NAI-PTID        >   ZERO
+                       MOVE    "0103"              TO  SPA-ERRCD
+                       MOVE    3                   TO  SPA-GMN-CUR 
+                       GO  TO  410-INPUT-CHK-EXT
+                   END-IF
+           END-EVALUATE
+      *
+      *    画面をＳＰＡセット
+           PERFORM 4101-GMN-SPA-SET-SEC
+      *    基本チェック処理
+           PERFORM 4102-KIHON-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      410-INPUT-CHK-EXT
+           END-IF
+      *
+           IF      FLG-TOUROKU         =   1
+      *        更新前
+               PERFORM 4101-KAKUTEI-CHK-SEC
+           END-IF
+      *
+           .
+       410-INPUT-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    画面をＳＰＡセット処理
+      *****************************************************************
+       4101-GMN-SPA-SET-SEC       SECTION.
+      *
+           MOVE    SPA-NAI-SRYYM       TO  SPA-NAI-SRYYM-OLD
+           MOVE    SPA-GMN-NYUGAIKBN   TO  SPA-NAI-NYUGAIKBN-OLD
+           MOVE    SPA-GMN-HTEISYUTUSAKI
+                                       TO  SPA-NAI-HTEISYUTUSAKI-OLD
+           MOVE    SPA-GMN-HYOUJIKBN   TO  SPA-NAI-HYOUJIKBN-OLD
+      *
+           MOVE    R97-SRYYM           TO  SPA-GMN-SRYYM
+           MOVE    R97-NYUGAIKBN       TO  SPA-GMN-NYUGAIKBN-G
+           MOVE    R97-HTEISYUTUSAKI   TO  SPA-GMN-HTEISYUTUSAKI-G
+           MOVE    R97-HYOUJIKBN       TO  SPA-GMN-HYOUJIKBN-G
+      *
+           .
+       4101-GMN-SPA-SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    基本チェック処理
+      *****************************************************************
+       4102-KIHON-CHK-SEC       SECTION.
+      *
+           PERFORM 41023-SRYYM-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      4102-KIHON-CHK-EXT
+           END-IF
+      *
+           PERFORM 41024-NYUGAIKBN-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      4102-KIHON-CHK-EXT
+           END-IF
+      *
+           PERFORM 41026-HTEISYUTUSAKI-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      4102-KIHON-CHK-EXT
+           END-IF
+      *
+           PERFORM 41025-HYOUJIKBN-CHK-SEC
+           .
+      *
+       4102-KIHON-CHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1616,14 +1734,6 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SYUKA-HOSPNUM
       *****************************************************************
        41023-SRYYM-CHK-SEC           SECTION.
       *
-           IF      SPA-NAI-PTID        >   ZERO
-               MOVE    "0103"              TO  SPA-ERRCD
-               GO  TO  41023-SRYYM-CHK-EXT
-           END-IF
-      *
-           MOVE    4                  TO  SPA-GMN-CUR
-      *
-           MOVE   R97-SRYYM           TO  SPA-GMN-SRYYM
            MOVE    ZERO               TO  SPA-NAI-SRYYM
            MOVE    SPACE              TO  SPA-NAI-SRYYMH
       *
@@ -1641,16 +1751,16 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SYUKA-HOSPNUM
                MOVE    WRK-HENYMDG3(1:16)  TO  SPA-NAI-SRYYMH
            ELSE
                MOVE    "0007"          TO  SPA-ERRCD
-               GO  TO  41023-SRYYM-CHK-EXT
            END-IF
       *
-           INITIALIZE                  SPA-GMN-SYUKA-TABLE
-                                       SPA-GMN-PTNUM-TABLE
-                                       SPA-NAI-SYUKA-TABLE
-                                       SPA-GMN-KOUMOKU
-                                       SPA-NAI-KOUMOKU
+           IF    ( SPA-ERRCD           =   SPACE  )
+           AND   ( SPA-NAI-SRYYM       >=  200804 ) 
+               MOVE    "0200"          TO  SPA-ERRCD
+           END-IF
       *
-           MOVE    5                  TO  SPA-GMN-CUR
+           IF      SPA-ERRCD       NOT =   SPACE
+               MOVE    4               TO  SPA-GMN-CUR
+           END-IF
            .
        41023-SRYYM-CHK-EXT.
            EXIT.
@@ -1660,14 +1770,6 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SYUKA-HOSPNUM
       *****************************************************************
        41024-NYUGAIKBN-CHK-SEC                SECTION.
       *
-           IF      SPA-NAI-PTID        >   ZERO
-               MOVE    "0103"              TO  SPA-ERRCD
-               GO  TO  41024-NYUGAIKBN-CHK-EXT
-           END-IF
-      *   
-           MOVE    5                    TO  SPA-GMN-CUR
-      *
-           MOVE    R97-NYUGAIKBN        TO  SPA-GMN-NYUGAIKBN-G
            MOVE    SPACE                TO  SPA-NAI-NYUGAIKBN
       *
            PERFORM VARYING IDY FROM   1   BY  1
@@ -1688,13 +1790,8 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SYUKA-HOSPNUM
                                            TO  SPA-NAI-NYUGAIKBN
            END-IF
       *
-           IF      SPA-ERRCD           =   SPACE
-               INITIALIZE                  SPA-GMN-SYUKA-TABLE
-                                           SPA-GMN-PTNUM-TABLE
-                                           SPA-NAI-SYUKA-TABLE
-                                           SPA-GMN-KOUMOKU
-                                           SPA-NAI-KOUMOKU
-               MOVE    7                   TO  SPA-GMN-CUR
+           IF      SPA-ERRCD       NOT =   SPACE
+               MOVE    5               TO  SPA-GMN-CUR
            END-IF
       *             
            .
@@ -1705,15 +1802,6 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SYUKA-HOSPNUM
       *    表示条件入力処理
       *****************************************************************
        41025-HYOUJIKBN-CHK-SEC                SECTION.
-      *
-           IF      SPA-NAI-PTID        >   ZERO
-               MOVE    "0103"              TO  SPA-ERRCD
-               GO  TO  41025-HYOUJIKBN-CHK-EXT
-           END-IF
-      *   
-           MOVE    6                    TO  SPA-GMN-CUR
-      *
-           MOVE    R97-HYOUJIKBN        TO  SPA-GMN-HYOUJIKBN-G
       *
            PERFORM VARYING IDY FROM   1   BY  1
                    UNTIL   IDY >      SPA-GMN-HYOUJIKBN-MAX
@@ -1730,13 +1818,8 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SYUKA-HOSPNUM
                MOVE    "0009"              TO  SPA-ERRCD
            END-IF
       *
-           IF      SPA-ERRCD           =   SPACE
-               INITIALIZE                  SPA-GMN-SYUKA-TABLE
-                                           SPA-GMN-PTNUM-TABLE
-                                           SPA-NAI-SYUKA-TABLE
-                                           SPA-GMN-KOUMOKU
-                                           SPA-NAI-KOUMOKU
-               MOVE    91                  TO  SPA-GMN-CUR
+           IF      SPA-ERRCD       NOT =   SPACE
+               MOVE    6               TO  SPA-GMN-CUR
            END-IF
       *             
            .
@@ -1747,15 +1830,6 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SYUKA-HOSPNUM
       *    提出先入力処理
       *****************************************************************
        41026-HTEISYUTUSAKI-CHK-SEC                SECTION.
-      *
-           IF      SPA-NAI-PTID        >   ZERO
-               MOVE    "0103"              TO  SPA-ERRCD
-               GO  TO  41026-HTEISYUTUSAKI-CHK-EXT
-           END-IF
-      *   
-           MOVE    7                   TO  SPA-GMN-CUR
-      *
-           MOVE    R97-HTEISYUTUSAKI   TO  SPA-GMN-HTEISYUTUSAKI-G
       *
            PERFORM VARYING IDY FROM    1   BY  1
                    UNTIL   IDY >       SPA-GMN-HTEISYUTUSAKI-MAX
@@ -1772,17 +1846,22 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SYUKA-HOSPNUM
                MOVE    "0010"              TO  SPA-ERRCD
            END-IF
       *
-           IF      SPA-ERRCD           =   SPACE
-               INITIALIZE                  SPA-GMN-SYUKA-TABLE
-                                           SPA-GMN-PTNUM-TABLE
-                                           SPA-NAI-SYUKA-TABLE
-                                           SPA-GMN-KOUMOKU
-                                           SPA-NAI-KOUMOKU
-               MOVE    6                   TO  SPA-GMN-CUR
+           IF      SPA-ERRCD       NOT =   SPACE
+               MOVE    7               TO  SPA-GMN-CUR
            END-IF
       *             
            .
        41026-HTEISYUTUSAKI-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    一括取得処理前チェック処理
+      *****************************************************************
+       4101-KAKUTEI-CHK-SEC        SECTION.
+      *
+      *
+           .
+       4101-KAKUTEI-CHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -2044,6 +2123,13 @@ grpsys         MOVE    SPA-HOSPNUM     TO  SYUKA-HOSPNUM
                GO  TO  490-KENSAKU-EXT
            END-IF
       *
+           MOVE    1               TO  FLG-TOUROKU
+      *    入力チェック処理
+           PERFORM 410-INPUT-CHK-SEC
+           IF      SPA-ERRCD   NOT =   SPACE
+               GO  TO  490-KENSAKU-EXT
+           END-IF
+      *
            MOVE    1                   TO  SPA-GMN-PAGE
            INITIALIZE                      SPA-NAI-PAGE-TABLE
       *
@@ -2109,6 +2195,13 @@ grpsys         MOVE    SPA-HOSPNUM     TO  SYUKA-HOSPNUM
       *    一括取得前処理
       *****************************************************************
        450-TOUROKU-MAE-SEC                SECTION.
+      *
+      *    入力チェック
+           MOVE    1               TO  FLG-TOUROKU
+           PERFORM 410-INPUT-CHK-SEC
+           IF      SPA-ERRCD   NOT =   SPACE
+               GO  TO  450-TOUROKU-MAE-EXT
+           END-IF
       *
       *    ジョブ管理チェック処理
            PERFORM 4501-JOBKANRI-CHK-SEC
@@ -2636,6 +2729,11 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
                    MOVE    "主科が未設定となります"    TO  SPA-ERRMSG
                WHEN    "0103"
                    MOVE    "患者番号選択中です"        TO  SPA-ERRMSG
+      *
+               WHEN    "0200"
+                   MOVE
+                       "平成２０年４月改正未対応のため処理できません"
+                                                       TO  SPA-ERRMSG
       *
                WHEN    "1001"
                    MOVE    "主科マスタが更新できませんでした"
