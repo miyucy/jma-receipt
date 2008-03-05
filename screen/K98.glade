@@ -16,7 +16,7 @@
   <x>260</x>
   <y>170</y>
   <width>754</width>
-  <height>580</height>
+  <height>590</height>
   <signal>
     <name>map_event</name>
     <handler>map_event</handler>
