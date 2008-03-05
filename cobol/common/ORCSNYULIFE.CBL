@@ -33,6 +33,12 @@
       *                                     ルーチンに変更
       *  04.01.00    NACL-小豆沢  07/12/17  短期滞在手術基本料２の入院
       *                                     翌日食事算定対応
+      *平静２０年４月改定対応
+      *  04.02.00    NACL-小豆沢  08/03/05  後期高齢者の判定変更
+      *                                     生活療養の入院料判定追加
+      *                                       短期滞在手術基本料３
+      *                                       回復期リハビリテーション病棟入院料１
+      *                                       回復期リハビリテーション病棟入院料２
       *****************************************************************
       *
       *
@@ -52,6 +58,7 @@
            03  FLG-NYUINACCT               PIC 9(01).
            03  FLG-NYUINACT                PIC 9(01).
            03  FLG-PTINF                   PIC 9(01).
+           03  FLG-PTHKNINF                PIC 9(01).
            03  FLG-PTKOHINF                PIC 9(01).
            03  FLG-SYSKANRI                PIC 9(01).
            03  FLG-OK                      PIC 9(01).
@@ -65,6 +72,7 @@
            03  TSY90-IDX                   PIC 9(02).
       *
       *    コンスタント値
+      *    生活療養に関する入院診療コード
        01  CONSTANT-AREA.
       *    療養病棟入院基本料２
            03   CONS-RYOYO2A               PIC X(09) VALUE "190123710".
@@ -82,12 +90,18 @@
            03   CONS-SRYOYO2TOKU           PIC X(09) VALUE "190124810".
       *    回復期リハビリテーション病棟入院料
            03   CONS-KAIFUKU               PIC X(09) VALUE "190124910".
+      *    回復期リハビリテーション病棟入院料１
+           03   CONS-KAIFUKU1              PIC X(09) VALUE "190129510".
+      *    回復期リハビリテーション病棟入院料２
+           03   CONS-KAIFUKU2              PIC X(09) VALUE "190129710".
       *    診療所老人医療管理料
            03   CONS-ROUKAN1               PIC X(09) VALUE "190125010".
            03   CONS-ROUKAN2               PIC X(09) VALUE "190125110".
            03   CONS-ROUKAN3               PIC X(09) VALUE "190125210".
       *    短期滞在手術基本料２
            03   CONS-TANKI2                PIC X(09) VALUE "190125310".
+      *    短期滞在手術基本料３
+           03   CONS-TANKI3                PIC X(09) VALUE "190130510".
       *
       *    一時領域
        01  WRK-AREA.
@@ -118,6 +132,10 @@
       *    患者公費情報マスタ−
        01  PTKOHINF-REC.
            COPY    "CPPTKOHINF.INC".
+      *
+      *    患者保険情報マスタ−
+       01  PTHKNINF-REC.
+           COPY    "CPPTHKNINF.INC".
       *
       *    低所得
        01  TSYRRK-REC.
@@ -281,10 +299,13 @@
                                                CONS-SRYOYO2E    OR
                                                CONS-SRYOYO2TOKU OR
                                                CONS-KAIFUKU     OR
+                                               CONS-KAIFUKU1    OR
+                                               CONS-KAIFUKU2    OR
                                                CONS-ROUKAN1     OR
                                                CONS-ROUKAN2     OR
                                                CONS-ROUKAN3     OR
-                                               CONS-TANKI2
+                                               CONS-TANKI2      OR
+                                               CONS-TANKI3
                           PERFORM    VARYING   IDX1   FROM   1   BY   1
                                   UNTIL     IDX1   >   31
                             IF     NACCT-DAY(IDX1)  NOT =  ZERO
@@ -299,8 +320,11 @@
                                                      CONS-SRYOYO2B OR
                                                      CONS-SRYOYO2C OR
                                                      CONS-KAIFUKU  OR
+                                                     CONS-KAIFUKU1 OR
+                                                     CONS-KAIFUKU2 OR
                                                      CONS-ROUKAN1  OR
-                                                     CONS-TANKI2
+                                                     CONS-TANKI2   OR
+                                                     CONS-TANKI3
                                    MOVE   "1"   TO   
                                              LNK-NYULIFE-FTNKBN2(IDX1)
                                END-IF
@@ -319,8 +343,8 @@
            MOVE    "key17"                 TO  MCP-PATHNAME
            PERFORM   910-DB-CLOSE-SEC
       *
-      *    短期滞在手術基本料２の入院料未算定日について生活療養の該当日と
-      *    軽減区分２の情報を取得（サブプロより取得）
+      *    短期滞在手術基本料２（短期滞在手術基本料３）の入院料未算定日
+      *    について生活療養の該当日と軽減区分２の情報を取得（サブプロより取得）
            INITIALIZE                          ORCSNYUINDAY-AREA
            MOVE    LNK-NYULIFE-HOSPNUM     TO  LNK-NYUINDAY-HOSPNUM
            MOVE    LNK-NYULIFE-PTID        TO  LNK-NYUINDAY-PTID
@@ -353,12 +377,9 @@
            MOVE    "01"                TO  SYS-STYUKYMD(7:2)
            MOVE    SYS-STYUKYMD        TO  SYS-EDYUKYMD
            MOVE    SYSKANRI-REC        TO  MCPDATA-REC
-           MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key10"             TO  MCP-PATHNAME
-           CALL    "ORCDBMAIN"     USING   MCPAREA
-                                           MCPDATA-REC
-                                           SPA-AREA
+           PERFORM   910-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
                MOVE    "tbl_syskanri"  TO  MCP-TABLE
                MOVE    "key10"         TO  MCP-PATHNAME
@@ -389,32 +410,88 @@
       *
            IF    FLG-OK   =    1
       *
-      *        老人保健のチェック
-               MOVE    ZERO                 TO  FLG-RJN 
-               INITIALIZE                       PTKOHINF-REC
-               MOVE    LNK-NYULIFE-HOSPNUM  TO  PTKOH-HOSPNUM
-               MOVE    LNK-NYULIFE-PTID     TO  PTKOH-PTID
-               MOVE    "027"                TO  PTKOH-KOHNUM
-               MOVE    "tbl_ptkohinf"       TO  MCP-TABLE
-               MOVE    "key4"               TO  MCP-PATHNAME
-               PERFORM 910-PTKOHINF-SELECT-SEC
-               IF      FLG-PTKOHINF         =   ZERO
+      *        老人保健のチェック（平成２０年４月以降は後期高齢者チェック）
+               IF      LNK-NYULIFE-SANTEIYM <=  "200803"
+      *            老人保健の判定
+                   MOVE    ZERO                 TO  FLG-RJN 
+                   INITIALIZE                       PTKOHINF-REC
+                   MOVE    LNK-NYULIFE-HOSPNUM  TO  PTKOH-HOSPNUM
+                   MOVE    LNK-NYULIFE-PTID     TO  PTKOH-PTID
+                   MOVE    "027"                TO  PTKOH-KOHNUM
                    MOVE    "tbl_ptkohinf"       TO  MCP-TABLE
                    MOVE    "key4"               TO  MCP-PATHNAME
-                   PERFORM   910-PTKOHINF-READ-SEC
-                   PERFORM   UNTIL   (FLG-PTKOHINF   =   1)
-                       IF    PTKOH-SAKJOKBN     =    SPACE
-                             MOVE   1           TO   FLG-RJN
-                       END-IF
-                       MOVE    "tbl_ptkohinf"   TO  MCP-TABLE
-                       MOVE    "key4"           TO  MCP-PATHNAME
-                       PERFORM 910-PTKOHINF-READ-SEC
-                   END-PERFORM
+                   PERFORM 910-PTKOHINF-SELECT-SEC
+                   IF      FLG-PTKOHINF         =   ZERO
+                       MOVE    "tbl_ptkohinf"       TO  MCP-TABLE
+                       MOVE    "key4"               TO  MCP-PATHNAME
+                       PERFORM   910-PTKOHINF-READ-SEC
+                       PERFORM   UNTIL   (FLG-PTKOHINF   =   1)
+                           IF    PTKOH-SAKJOKBN     =    SPACE
+                                 MOVE   1           TO   FLG-RJN
+                           END-IF
+                           MOVE    "tbl_ptkohinf"   TO  MCP-TABLE
+                           MOVE    "key4"           TO  MCP-PATHNAME
+                           PERFORM 910-PTKOHINF-READ-SEC
+                       END-PERFORM
+                   END-IF
+      *            患者公費情報クローズ
+                   MOVE    "tbl_ptkohinf"       TO  MCP-TABLE
+                   MOVE    "key4"               TO  MCP-PATHNAME
+                   PERFORM   910-DB-CLOSE-SEC
+               ELSE
+      *            後期高齢者の判定（保険番号０３９）
+                   MOVE    ZERO                 TO  FLG-RJN 
+                   INITIALIZE                       PTHKNINF-REC
+                   MOVE    LNK-NYULIFE-HOSPNUM  TO  PTHKN-HOSPNUM
+                   MOVE    LNK-NYULIFE-PTID     TO  PTHKN-PTID
+                   MOVE    "039"                TO  PTHKN-HKNNUM
+                   MOVE    "tbl_pthkninf"       TO  MCP-TABLE
+                   MOVE    "key8"               TO  MCP-PATHNAME
+                   PERFORM 910-PTHKNINF-SELECT-SEC
+                   IF      FLG-PTHKNINF         =   ZERO
+                       MOVE    "tbl_pthkninf"       TO  MCP-TABLE
+                       MOVE    "key8"               TO  MCP-PATHNAME
+                       PERFORM   910-PTHKNINF-READ-SEC
+                       PERFORM   UNTIL   (FLG-PTHKNINF   =   1)
+                           IF    PTHKN-SAKJOKBN     =    SPACE
+                                 MOVE   1           TO   FLG-RJN
+                           END-IF
+                           MOVE    "tbl_pthkninf"   TO  MCP-TABLE
+                           MOVE    "key8"           TO  MCP-PATHNAME
+                           PERFORM 910-PTHKNINF-READ-SEC
+                       END-PERFORM
+                   END-IF
+      *            患者保険情報クローズ
+                   MOVE    "tbl_pthkninf"       TO  MCP-TABLE
+                   MOVE    "key8"               TO  MCP-PATHNAME
+                   PERFORM   910-DB-CLOSE-SEC
+      *            後期該当の判定（公費番号９６８）
+                   MOVE    ZERO                 TO  FLG-RJN 
+                   INITIALIZE                       PTKOHINF-REC
+                   MOVE    LNK-NYULIFE-HOSPNUM  TO  PTKOH-HOSPNUM
+                   MOVE    LNK-NYULIFE-PTID     TO  PTKOH-PTID
+                   MOVE    "968"                TO  PTKOH-KOHNUM
+                   MOVE    "tbl_ptkohinf"       TO  MCP-TABLE
+                   MOVE    "key4"               TO  MCP-PATHNAME
+                   PERFORM 910-PTKOHINF-SELECT-SEC
+                   IF      FLG-PTKOHINF         =   ZERO
+                       MOVE    "tbl_ptkohinf"       TO  MCP-TABLE
+                       MOVE    "key4"               TO  MCP-PATHNAME
+                       PERFORM   910-PTKOHINF-READ-SEC
+                       PERFORM   UNTIL   (FLG-PTKOHINF   =   1)
+                           IF    PTKOH-SAKJOKBN     =    SPACE
+                                 MOVE   1           TO   FLG-RJN
+                           END-IF
+                           MOVE    "tbl_ptkohinf"   TO  MCP-TABLE
+                           MOVE    "key4"           TO  MCP-PATHNAME
+                           PERFORM 910-PTKOHINF-READ-SEC
+                       END-PERFORM
+                   END-IF
+      *            患者公費情報クローズ
+                   MOVE    "tbl_ptkohinf"       TO  MCP-TABLE
+                   MOVE    "key4"               TO  MCP-PATHNAME
+                   PERFORM   910-DB-CLOSE-SEC
                END-IF
-      *        患者公費情報クローズ
-               MOVE    "tbl_ptkohinf"       TO  MCP-TABLE
-               MOVE    "key4"               TO  MCP-PATHNAME
-               PERFORM   910-DB-CLOSE-SEC
       *
       *−−−−サブルーチンでの患者所得情報の取得ここから−−−−−
                INITIALIZE                          ORCSSYOTOKUAREA
@@ -647,10 +724,7 @@
       *****************************************************************
        910-SYSKANRI-READ-SEC         SECTION.
       *
-           MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "ORCDBMAIN"     USING   MCPAREA
-                                           MCPDATA-REC
-                                           SPA-AREA
+           PERFORM   910-DBFETCH-SEC
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC         TO  SYS-5000-REC
                MOVE    ZERO                TO  FLG-SYSKANRI
@@ -669,19 +743,13 @@
        900-PTINF-READ-SEC         SECTION.
       *
            MOVE    PTINF-REC           TO  MCPDATA-REC
-           MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "tbl_ptinf"         TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
-           CALL    "ORCDBMAIN"     USING   MCPAREA
-                                           MCPDATA-REC
-                                           SPA-AREA
+           PERFORM   910-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
-               MOVE    "DBFETCH"       TO  MCP-FUNC
                MOVE    "tbl_ptinf"         TO  MCP-TABLE
                MOVE    "key"               TO  MCP-PATHNAME
-               CALL    "ORCDBMAIN"     USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+               PERFORM   910-DBFETCH-SEC
                IF      MCP-RC          =   ZERO
                    MOVE    MCPDATA-REC TO  PTINF-REC
                    MOVE    ZERO        TO  FLG-PTINF
@@ -703,15 +771,47 @@
            EXIT.
       *
       *****************************************************************
+      *    患者保険情報マスター検索
+      *****************************************************************
+       910-PTHKNINF-SELECT-SEC        SECTION.
+      *
+           MOVE    PTHKNINF-REC        TO  MCPDATA-REC
+           PERFORM   910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    ZERO               TO  FLG-PTHKNINF
+           ELSE
+               MOVE    1                  TO  FLG-PTHKNINF
+           END-IF
+      *
+           .
+       910-PTHKNINF-SELECT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    患者保険情報マスター読込
+      *****************************************************************
+       910-PTHKNINF-READ-SEC        SECTION.
+      *
+           PERFORM   910-DBFETCH-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC        TO  PTHKNINF-REC
+               MOVE    ZERO               TO  FLG-PTHKNINF
+           ELSE
+               INITIALIZE                     PTHKNINF-REC
+               MOVE    1                  TO  FLG-PTHKNINF
+           END-IF
+      *
+           .
+       910-PTHKNINF-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    患者公費情報マスター検索
       *****************************************************************
        910-PTKOHINF-SELECT-SEC        SECTION.
       *
            MOVE    PTKOHINF-REC        TO  MCPDATA-REC
-           MOVE    "DBSELECT"          TO  MCP-FUNC
-           CALL    "ORCDBMAIN"     USING   MCPAREA
-                                           MCPDATA-REC
-                                           SPA-AREA
+           PERFORM   910-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
                MOVE    ZERO               TO  FLG-PTKOHINF
            ELSE
@@ -727,10 +827,7 @@
       *****************************************************************
        910-PTKOHINF-READ-SEC        SECTION.
       *
-           MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "ORCDBMAIN"     USING   MCPAREA
-                                           MCPDATA-REC
-                                           SPA-AREA
+           PERFORM   910-DBFETCH-SEC
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC        TO  PTKOHINF-REC
                MOVE    ZERO               TO  FLG-PTKOHINF
@@ -749,10 +846,7 @@
        910-NYUINACCT-SELECT-SEC        SECTION.
       *
            MOVE    NYUINACCT-REC       TO  MCPDATA-REC
-           MOVE    "DBSELECT"          TO  MCP-FUNC
-           CALL    "ORCDBMAIN"     USING   MCPAREA
-                                           MCPDATA-REC
-                                           SPA-AREA
+           PERFORM   910-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
                MOVE    ZERO               TO  FLG-NYUINACCT
            ELSE
@@ -768,10 +862,7 @@
       *****************************************************************
        910-NYUINACCT-READ-SEC        SECTION.
       *
-           MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "ORCDBMAIN"     USING   MCPAREA
-                                           MCPDATA-REC
-                                           SPA-AREA
+           PERFORM   910-DBFETCH-SEC
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC        TO  NYUINACCT-REC
                MOVE    ZERO               TO  FLG-NYUINACCT
@@ -790,10 +881,7 @@
        910-TSYRRK-SELECT-SEC        SECTION.
       *
            MOVE    TSYRRK-REC          TO  MCPDATA-REC
-           MOVE    "DBSELECT"          TO  MCP-FUNC
-           CALL    "ORCDBMAIN"     USING   MCPAREA
-                                           MCPDATA-REC
-                                           SPA-AREA
+           PERFORM   910-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
                MOVE    ZERO               TO  FLG-TSYRRK
            ELSE
@@ -809,10 +897,7 @@
       *****************************************************************
        910-TSYRRK-READ-SEC        SECTION.
       *
-           MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "ORCDBMAIN"     USING   MCPAREA
-                                           MCPDATA-REC
-                                           SPA-AREA
+           PERFORM   910-DBFETCH-SEC
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC        TO  TSYRRK-REC
                MOVE    ZERO               TO  FLG-TSYRRK
@@ -831,10 +916,7 @@
        910-TNKRRK-SELECT-SEC        SECTION.
       *
            MOVE    TNKRRK-REC          TO  MCPDATA-REC
-           MOVE    "DBSELECT"          TO  MCP-FUNC
-           CALL    "ORCDBMAIN"     USING   MCPAREA
-                                           MCPDATA-REC
-                                           SPA-AREA
+           PERFORM   910-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
                MOVE    ZERO               TO  FLG-TNKRRK
            ELSE
@@ -850,10 +932,7 @@
       *****************************************************************
        910-TNKRRK-READ-SEC        SECTION.
       *
-           MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "ORCDBMAIN"     USING   MCPAREA
-                                           MCPDATA-REC
-                                           SPA-AREA
+           PERFORM   910-DBFETCH-SEC
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC        TO  TNKRRK-REC
                MOVE    ZERO               TO  FLG-TNKRRK
@@ -872,10 +951,7 @@
        910-NYUINACT-SELECT-SEC        SECTION.
       *
            MOVE    NYUINACT-REC        TO  MCPDATA-REC
-           MOVE    "DBSELECT"          TO  MCP-FUNC
-           CALL    "ORCDBMAIN"     USING   MCPAREA
-                                           MCPDATA-REC
-                                           SPA-AREA
+           PERFORM   910-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
                MOVE    ZERO               TO  FLG-NYUINACT
            ELSE
@@ -891,10 +967,7 @@
       *****************************************************************
        910-NYUINACT-READ-SEC         SECTION.
       *
-           MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "ORCDBMAIN"     USING   MCPAREA
-                                           MCPDATA-REC
-                                           SPA-AREA
+           PERFORM   910-DBFETCH-SEC
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC         TO  NYUINACT-REC
                MOVE    ZERO                TO  FLG-NYUINACT
@@ -908,14 +981,54 @@
            EXIT.
       *
       *****************************************************************
+      *    ＤＢＳＥＬＥＣＴ処理
+      *****************************************************************
+       910-DBSELECT-SEC                SECTION.
+      *
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           PERFORM 900-ORCDBMAIN-SEC
+           IF      MCP-RC              =   ZERO
+               CONTINUE
+           ELSE
+               DISPLAY "SELECT ERR table=" MCP-TABLE
+                       " pathname="        MCP-PATHNAME
+           END-IF
+           .
+       910-DBSELECT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ＤＢＦＥＴＣＨ処理
+      *****************************************************************
+       910-DBFETCH-SEC                SECTION.
+      *
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           PERFORM 900-ORCDBMAIN-SEC
+      *
+           .
+       910-DBFETCH-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    テーブルアクセス処理
+      *****************************************************************
+       910-ORCDBMAIN-SEC               SECTION.
+      *
+           CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
+           .
+      *
+       910-ORCDBMAIN-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    ＤＢクローズ処理
       *****************************************************************
        910-DB-CLOSE-SEC                 SECTION.
       *
            MOVE    "DBCLOSECURSOR"      TO  MCP-FUNC
-           CALL    "ORCDBMAIN"     USING   MCPAREA
-                                           MCPDATA-REC
-                                           SPA-AREA
+           PERFORM 900-ORCDBMAIN-SEC
       *
            .
       *

@@ -27,6 +27,8 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *平静２０年４月改定対応
+      *  04.02.00    NACL-小豆沢  08/03/05  短期滞在手術基本料３の入院追加
       *****************************************************************
       *
       *
@@ -61,6 +63,10 @@
            03   CONS-TANKI2                PIC X(09) VALUE "190076810".
       *    短期滞在手術基本料２（生活療養）
            03   CONS-TANKI2-SEIKATSU       PIC X(09) VALUE "190125310".
+      *    短期滞在手術基本料３
+           03   CONS-TANKI3                PIC X(09) VALUE "190130410".
+      *    短期滞在手術基本料３（生活療養）
+           03   CONS-TANKI3-SEIKATSU       PIC X(09) VALUE "190130510".
       *
       *    一時領域
        01  WRK-AREA.
@@ -327,8 +333,136 @@
            MOVE    "key49"                 TO  MCP-PATHNAME
            PERFORM   910-DB-CLOSE-SEC
       *
-      *    短期滞在手術基本料２（生活療養含む）に該当する入院料を判定し、
-      *    入院会計で算定済みの場合は返却値をクリアする
+      *    入院履歴より短期滞在手術基本料３の算定有無を特定
+           INITIALIZE                     PTNYUINRRK-REC
+           MOVE    LNK-NYUINDAY-HOSPNUM   TO  PTNYUINRRK-HOSPNUM
+           MOVE    LNK-NYUINDAY-PTID      TO  PTNYUINRRK-PTID
+           MOVE    "3"                    TO  PTNYUINRRK-TOKUTEI-KBN
+           MOVE    "52"                   TO  PTNYUINRRK-TOKUTEI-NYUIN
+           MOVE    "tbl_ptnyuinrrk"       TO  MCP-TABLE
+           MOVE    "key49"                TO  MCP-PATHNAME
+           PERFORM 910-PTNYUINRRK-SELECT-SEC
+           IF      FLG-PTNYUINRRK         =   ZERO
+               MOVE    "tbl_ptnyuinrrk"   TO  MCP-TABLE
+               MOVE    "key49"            TO  MCP-PATHNAME
+               PERFORM   910-PTNYUINRRK-READ-SEC
+               PERFORM   UNTIL   (FLG-PTNYUINRRK   =   1)
+                 IF (PTNYUINRRK-TENNYUYMD(1:6) = LNK-NYUINDAY-SANTEIYM)
+                                   OR
+                   ((PTNYUINRRK-TENSTUYMD(1:6) = LNK-NYUINDAY-SANTEIYM)
+                                   OR
+                    (PTNYUINRRK-TENSTUYMD(1:6) = "999999"))
+                      MOVE     ZERO       TO     IDX-ST
+                                                 IDX-ED
+                      IF  (PTNYUINRRK-TENNYUYMD(1:6)
+                                          =  LNK-NYUINDAY-SANTEIYM) AND
+                          (PTNYUINRRK-TENSTUYMD(1:6)
+                                          =  LNK-NYUINDAY-SANTEIYM)
+                          MOVE  PTNYUINRRK-TENNYUYMD(7:2)  TO  IDX-ST
+                          MOVE  PTNYUINRRK-TENSTUYMD(7:2)  TO  IDX-ED
+                      END-IF
+                      IF  (PTNYUINRRK-TENNYUYMD(1:6)
+                                          <  LNK-NYUINDAY-SANTEIYM) AND
+                          (PTNYUINRRK-TENSTUYMD(1:6)
+                                            =  LNK-NYUINDAY-SANTEIYM)
+                          MOVE  1                          TO  IDX-ST
+                          MOVE  PTNYUINRRK-TENSTUYMD(7:2)  TO  IDX-ED
+                      END-IF
+                      IF  (PTNYUINRRK-TENNYUYMD(1:6)
+                                          =  LNK-NYUINDAY-SANTEIYM) AND
+                          (PTNYUINRRK-TENSTUYMD(1:6)
+                                          >  LNK-NYUINDAY-SANTEIYM)
+                          MOVE  PTNYUINRRK-TENNYUYMD(7:2)  TO  IDX-ST
+                          MOVE  PTNYUINRRK-TENNYUYMD(7:2)  TO  IDX-ED
+                      END-IF
+                      IF      PTNYUINRRK-TENSTUYMD(1:6) = "999999"
+                           MOVE   99     TO    IDX-ED
+                      END-IF
+                      PERFORM    VARYING   IDX   FROM   1   BY   1
+                               UNTIL     IDX   >   31
+                         IF    (IDX-ST    <=    IDX)   AND
+                               (IDX-ED    >=    IDX)
+                            MOVE  "1"  TO  LNK-NYUINDAY-TANKI2-KBN(IDX)
+                         END-IF
+                      END-PERFORM
+                 END-IF
+                 MOVE    "tbl_ptnyuinrrk"     TO  MCP-TABLE
+                 MOVE    "key49"              TO  MCP-PATHNAME
+                 PERFORM 910-PTNYUINRRK-READ-SEC
+               END-PERFORM
+           END-IF
+      *
+      *    患者入院履歴クローズ
+           MOVE    "tbl_ptnyuinrrk"        TO  MCP-TABLE
+           MOVE    "key49"                 TO  MCP-PATHNAME
+           PERFORM   910-DB-CLOSE-SEC
+      *
+      *    入院履歴より短期滞在手術基本料３（生活療養）の算定有無を特定
+           INITIALIZE                     PTNYUINRRK-REC
+           MOVE    LNK-NYUINDAY-HOSPNUM   TO  PTNYUINRRK-HOSPNUM
+           MOVE    LNK-NYUINDAY-PTID      TO  PTNYUINRRK-PTID
+           MOVE    "3"                    TO  PTNYUINRRK-TOKUTEI-KBN
+           MOVE    "53"                   TO  PTNYUINRRK-TOKUTEI-NYUIN
+           MOVE    "tbl_ptnyuinrrk"       TO  MCP-TABLE
+           MOVE    "key49"                TO  MCP-PATHNAME
+           PERFORM 910-PTNYUINRRK-SELECT-SEC
+           IF      FLG-PTNYUINRRK         =   ZERO
+               MOVE    "tbl_ptnyuinrrk"   TO  MCP-TABLE
+               MOVE    "key49"            TO  MCP-PATHNAME
+               PERFORM   910-PTNYUINRRK-READ-SEC
+               PERFORM   UNTIL   (FLG-PTNYUINRRK   =   1)
+                 IF (PTNYUINRRK-TENNYUYMD(1:6) = LNK-NYUINDAY-SANTEIYM)
+                                   OR
+                   ((PTNYUINRRK-TENSTUYMD(1:6) = LNK-NYUINDAY-SANTEIYM)
+                                   OR
+                    (PTNYUINRRK-TENSTUYMD(1:6) = "999999"))
+                      MOVE     ZERO       TO     IDX-ST
+                                                 IDX-ED
+                      IF  (PTNYUINRRK-TENNYUYMD(1:6)
+                                          =  LNK-NYUINDAY-SANTEIYM) AND
+                          (PTNYUINRRK-TENSTUYMD(1:6)
+                                          =  LNK-NYUINDAY-SANTEIYM)
+                          MOVE  PTNYUINRRK-TENNYUYMD(7:2)  TO  IDX-ST
+                          MOVE  PTNYUINRRK-TENSTUYMD(7:2)  TO  IDX-ED
+                      END-IF
+                      IF  (PTNYUINRRK-TENNYUYMD(1:6)
+                                          <  LNK-NYUINDAY-SANTEIYM) AND
+                          (PTNYUINRRK-TENSTUYMD(1:6)
+                                            =  LNK-NYUINDAY-SANTEIYM)
+                          MOVE  1                          TO  IDX-ST
+                          MOVE  PTNYUINRRK-TENSTUYMD(7:2)  TO  IDX-ED
+                      END-IF
+                      IF  (PTNYUINRRK-TENNYUYMD(1:6)
+                                          =  LNK-NYUINDAY-SANTEIYM) AND
+                          (PTNYUINRRK-TENSTUYMD(1:6)
+                                          >  LNK-NYUINDAY-SANTEIYM)
+                          MOVE  PTNYUINRRK-TENNYUYMD(7:2)  TO  IDX-ST
+                          MOVE  PTNYUINRRK-TENNYUYMD(7:2)  TO  IDX-ED
+                      END-IF
+                      IF      PTNYUINRRK-TENSTUYMD(1:6) = "999999"
+                           MOVE   99     TO    IDX-ED
+                      END-IF
+                      PERFORM    VARYING   IDX   FROM   1   BY   1
+                               UNTIL     IDX   >   31
+                         IF    (IDX-ST    <=    IDX)   AND
+                               (IDX-ED    >=    IDX)
+                            MOVE  "2"  TO  LNK-NYUINDAY-TANKI2-KBN(IDX)
+                         END-IF
+                      END-PERFORM
+                 END-IF
+                 MOVE    "tbl_ptnyuinrrk"     TO  MCP-TABLE
+                 MOVE    "key49"              TO  MCP-PATHNAME
+                 PERFORM 910-PTNYUINRRK-READ-SEC
+               END-PERFORM
+           END-IF
+      *
+      *    患者入院履歴クローズ
+           MOVE    "tbl_ptnyuinrrk"        TO  MCP-TABLE
+           MOVE    "key49"                 TO  MCP-PATHNAME
+           PERFORM   910-DB-CLOSE-SEC
+      *
+      *    短期滞在手術基本料２（生活療養含む）又は短期滞在手術基本料３（生活療養含む）
+      *    に該当する入院料を判定し、入院会計で算定済みの場合は返却値をクリアする
            INITIALIZE                          NYUINACCT-REC
            MOVE    LNK-NYUINDAY-HOSPNUM    TO  NACCT-HOSPNUM
            MOVE    LNK-NYUINDAY-PTID       TO  NACCT-PTID
@@ -347,7 +481,9 @@
                    ELSE
                        PERFORM    210-NYUINACT-GET-SEC
                        IF   NSRY-SRYCD(1)   =  CONS-TANKI2     OR
-                                               CONS-TANKI2-SEIKATSU
+                                               CONS-TANKI2-SEIKATSU OR
+                                               CONS-TANKI3     OR
+                                               CONS-TANKI3-SEIKATSU
                           PERFORM    VARYING   IDX   FROM   1   BY   1
                                   UNTIL     IDX   >   31
                             IF     NACCT-DAY(IDX)  NOT =  ZERO
