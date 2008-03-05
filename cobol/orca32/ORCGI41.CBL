@@ -80,6 +80,8 @@
       *  03.05.00    NACL-多々納  07/08/06  入院料重複チェック追加
       *  04.01.00    NACL-小豆沢  07/12/13  ９１日以上の表示に他院歴（特別な
       *                                     関係にある医療機関）を加算
+      *平成２０年４月改定対応
+      *  04.02.00    NACL-小豆沢  08/03/05  亜急性期入院医療管理料２
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -5226,6 +5228,16 @@
                END-IF
            END-IF
       *
+      *    亜急性期入院医療管理料２の場合は最長６０日間の算定の為、
+      *    次月の会計作成時に６０日経過時は無条件に一般の入院料算定とする
+           IF   PTNYUINRRK-TOKUTEI-KBN   =   "3"
+               IF   PTNYUINRRK-TOKUTEI-NYUIN = "54"
+                   IF       STUSAN-NISSU06  >=  60
+                       MOVE    SPACE   TO    WRK-TOKUTEI-NYUIN
+                   END-IF
+               END-IF
+           END-IF
+      *
            IF      WRK-TOKUTEI-NYUIN           NOT =   SPACE
                PERFORM 410191-TOKTEI-NYUIN-SET-SEC
            ELSE
@@ -5628,6 +5640,72 @@
                  DISPLAY "WRK-IPN-HANTEI-YMD2 = " WRK-IPN-HANTEI-YMD2
                IF     (WRK-IPN-HANTEI-YMD1      >  WRK-IPN-HANTEI-YMD2)
                  AND  (WRK-IPN-HANTEI-YMD2(1:6) =  SPA-NAI-SRYYM)
+                   MOVE    "1"             TO  IPN-NYUKAIKEI-SAKUSEI-FLG
+               END-IF
+           END-IF
+      *
+      *    亜急性期入院医療管理料２
+           IF      SYOKIKSN-IN-KHNSRYCD    =   "190129910"
+               MOVE   SPACE                TO  IPN-NYUKAIKEI-SAKUSEI-FLG
+               MOVE   SPA-NAI-SRYYM        TO  PTNYUINRRK-TENNYUYMD(1:6)
+               MOVE   "01"                 TO  PTNYUINRRK-TENNYUYMD(7:2)
+               MOVE   SPACE                TO  SYOKIKSN-IN-KHNSRYCD
+                                           LNK-SCNYUACCT-NYUKHN-SRYCD(1)
+      *        亜急性期入院医療管理料２の算定可能日数を計算
+               MOVE     ZERO               TO  WK-TOKUTEI-DAY
+               COMPUTE  WK-TOKUTEI-DAY     =   60  -    STUSAN-NISSU06
+               IF       STUSAN-NISSU06     <   60
+                   MOVE   "190129910"          TO
+                                           LNK-SCNYUACCT-KAGEN-SRYCD(1)
+                   MOVE   PTNYUINRRK-TENNYUYMD TO
+                                           LNK-SCNYUACCT-KAGEN-STYUKYMD
+                                                                   (1)
+                   INITIALIZE                  STS-AREA-DAY
+                   INITIALIZE                  LNK-DAY6-AREA
+                   MOVE    "61"                TO  LNK-DAY6-IRAI
+                   MOVE   PTNYUINRRK-TENNYUYMD
+                                               TO  LNK-DAY6-KIJUN
+                   MOVE    "1"                 TO  LNK-DAY6-ZOGENPTN
+                   COMPUTE LNK-DAY6-ZOGEN      =   WK-TOKUTEI-DAY  -  1
+                   CALL    "ORCSDAY"           USING   STS-AREA-DAY
+                                                       LNK-DAY6-AREA
+                   MOVE    LNK-DAY6-KEISAN     TO
+                                           LNK-SCNYUACCT-KAGEN-EDYUKYMD
+                                                                    (1)
+               END-IF
+      *        一般入院料の算定開始日を算定
+               INITIALIZE                  STS-AREA-DAY
+               INITIALIZE                  LNK-DAY6-AREA
+               MOVE    "61"                TO  LNK-DAY6-IRAI
+               MOVE   PTNYUINRRK-TENNYUYMD
+                                           TO  LNK-DAY6-KIJUN
+               MOVE    "1"                 TO  LNK-DAY6-ZOGENPTN
+               MOVE   WK-TOKUTEI-DAY       TO  LNK-DAY6-ZOGEN
+               CALL   "ORCSDAY"            USING   STS-AREA-DAY
+                                                   LNK-DAY6-AREA
+               MOVE    LNK-DAY6-KEISAN     TO  IPN-SANTEISTYMD
+      *        特定入院期間（６０日経過）した際の一般入院料作成の
+      *        可否を判定
+               MOVE    PTNYUINRRK-TENNYUYMD
+                                           TO  WRK-IPN-HANTEI-YMD1
+               IF      WRK-IPN-HANTEI-M1   =   12
+                   ADD    1                TO  WRK-IPN-HANTEI-Y1
+                   MOVE   1                TO  WRK-IPN-HANTEI-M1
+               ELSE
+                   ADD    1                TO  WRK-IPN-HANTEI-M1
+               END-IF
+      *        月末日を算定
+               INITIALIZE                  STS-AREA-DAY
+               INITIALIZE                  LNK-DAY7-AREA
+               MOVE    "71"                TO  LNK-DAY7-IRAI
+               MOVE   WRK-IPN-HANTEI-YM1   TO  LNK-DAY7-YM
+               CALL   "ORCSDAY"            USING   STS-AREA-DAY
+                                                   LNK-DAY7-AREA
+               MOVE    LNK-DAY7-KOYOMI     TO  WRK-IPN-HANTEI-YMD1
+               MOVE    LNK-SCNYUACCT-KAGEN-EDYUKYMD(1)
+                                           TO  WRK-IPN-HANTEI-YMD2
+      *        一般入院会計作成用のフラグ設定
+               IF      WRK-IPN-HANTEI-YMD1 >   WRK-IPN-HANTEI-YMD2
                    MOVE    "1"             TO  IPN-NYUKAIKEI-SAKUSEI-FLG
                END-IF
            END-IF
@@ -6325,6 +6403,8 @@
                        MOVE   "190125310"   TO  SYOKIKSN-IN-KHNSRYCD
                    WHEN    "51"
                        MOVE   "190125210"   TO  SYOKIKSN-IN-KHNSRYCD
+                   WHEN    "54"
+                       MOVE   "190129910"   TO  SYOKIKSN-IN-KHNSRYCD
                END-EVALUATE
            END-IF
       *
