@@ -422,6 +422,9 @@
            05  SPA-GMN-W21-MAX                         PIC 9(04).
            05  SPA-GMN-W21-CUR                         PIC 9(03).
            05  SPA-GMN-W21-MOTOPG                      PIC X(08).
+           05  SPA-GMN-W21-KJNYMD-G.
+             07  SPA-NAI-W21-KJNYMD                    PIC X(08).
+             07  SPA-GMN-W21-KJNYMD                    PIC X(10).
            05  SPA-GMN-W21-AREA.
       *      ヘッダ項目領域
              07  SPA-GMN-W21-HEAD-AREA.
@@ -437,7 +440,7 @@
       *        病棟ボタン（状態）
                09  SPA-GMN-W21-B09                 PIC X(04).
       *        選択番号１
-               09  SPA-GMN-W21-SELNUM1             PIC S9(3).
+               09  SPA-GMN-W21-SELNUM1             PIC X(50).
       *        病室番号
                09  SPA-GMN-W21-BRMNUM              PIC X(06).
       *        病室種別
@@ -717,6 +720,9 @@
                09  SPA-NAI-W21-BTUTOKCD            PIC X(09).
       *      入力領域内部領域
              07  SPA-NAI-W21-INPUT-AREA.
+               09  SPA-NAI-W21-INPUT-MODE          PIC 9(1).
+               09  SPA-NAI-W21-SELNUM-FLG          PIC 9(1)
+                                                   OCCURS  200.
       *        区分コード（変更・削除時使用）
                09  SPA-NAI-W21-5002-KBNCD          PIC X(08).
       *        病室番号
@@ -756,6 +762,18 @@
                  11  SPA-NAI-W21-KSNINF-OCC        OCCURS 7.
                    13  SPA-NAI-W21-KSNINF-CD       PIC 9(09).
                    13  SPA-NAI-W21-KSNINF-IDX      PIC 9(03).
+             07  SPA-NAI-W21-BRMLST.
+               09  SPA-NAI-W21-BRMLST-OCC          OCCURS  200.
+      *
+      *          病室番号
+                 11  SPA-NAI-W21-TBRMNUM           PIC X(8).
+      *          特定入院料
+                 11  SPA-NAI-W21-TTOKNYUIN         PIC X(9).
+      *          有効開始日
+                 11  SPA-NAI-W21-TYUKOSTYMD        PIC X(8).
+      *          有効終了日
+                 11  SPA-NAI-W21-TYUKOEDYMD        PIC X(8).
+               
       *      履歴リスト内部領域
              07  SPA-NAI-W21-RIREKILST.
                09  SPA-NAI-W21-RIREKILST-OCC       OCCURS  20.

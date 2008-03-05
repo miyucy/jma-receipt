@@ -30,7 +30,8 @@
                 05  W21-BTU-NAME-CNT       PIC S9(9)   BINARY.
                 05  W21-BTU-NAME-ITM       PIC X(23)   OCCURS  50.
               04  W21-BTU-KHNRYO           PIC X(60).
-              04  W21-SELNUM1              PIC S9(3).
+              04  W21-KJNYMD               PIC X(10).
+              04  W21-SELNUM1              PIC X(50).
               04  W21-BRM-NUM              PIC X(6).
               04  W21-BRM-NUM-STT          PIC S9(9)   BINARY.
               04  W21-CMB-BRM-SBT.
@@ -100,6 +101,11 @@
               04  W21-YUKOEDYMD            PIC X(10).
               04  W21-YUKOEDYMD-STT        PIC S9(9)   BINARY.
               04  W21-SELNUM2              PIC S9(2).
+              04  W21-SELNUM2-STT          PIC S9(9)   BINARY.
+              04  W21-LBLMODE-STYLE        PIC X(20).
+              04  W21-LBLMODE              PIC X(40).
+              04  W21-LBLINFO-STYLE        PIC X(20).
+              04  W21-LBLINFO              PIC X(100).
               04  W21-SCRW28.
                 05  W21-BRMLST-TBL.
                   06  W21-TKHNRYO-TITLE    PIC X(20).

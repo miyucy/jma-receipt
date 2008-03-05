@@ -80,6 +80,7 @@
       *
       *    添字領域
        01  IDX-AREA.
+           03  IDX0                                PIC 9(05).
            03  IDX1                                PIC 9(05).
            03  IDX2                                PIC 9(05).
            03  IDX3                                PIC 9(05).
@@ -91,10 +92,12 @@
            03  IDX-KSN                             PIC 9(05).
            03  IDX-GKSN                            PIC 9(05).
            03  IDX-SST                             PIC 9(05).
+           03  IDX-MUL                             PIC 9(05).
       *
       *    カウント領域
        01  CNT-AREA.
            03  CNT-SST                             PIC 9(05).
+           03  CNT-SEL                             PIC 9(05).
       *
       *    一時領域
        01  WRK-AREA.
@@ -125,6 +128,7 @@
            03  WRK-KJNYMD                          PIC X(08).
            03  WRK-STR1                            PIC X(20).
            03  WRK-STR2                            PIC X(20).
+           03  WRK-STR-TMP                         PIC X(100).
            03  WRK-IDX1                            PIC 9(05).
            03  WRK-IDX2                            PIC 9(05).
            03  WRK-IDX3                            PIC 9(05).
@@ -132,7 +136,6 @@
            03  WRK-BRMNUM-KEY                      PIC X(06).
            03  WRK-BRMNUM-IN                       PIC X(06).
            03  WRK-BRMNUM-OT                       PIC X(06).
-           03  WRK-SELNUM                          PIC 9(05).
            03  WRK-TOKNYUIN                        PIC X(02).
            03  WRK-KHNSRYCD                        PIC X(09).
            03  WRK-KJN-YUKSTYMD                    PIC X(08).
@@ -161,6 +164,26 @@
                        09  WRK-SSTKJNCD9           PIC 9(03).
            03  WRK-KSNMEI                          PIC X(100).
            03  WRK-PNT                             PIC 9(03).
+           03  WRK-BTUNUM                          PIC X(02).
+           03  WRK-SELNUM-G.
+               05  WRK-SELNUM-MUL                  PIC X(50).
+               05  WRK-INPUT-MODE                  PIC 9(01).
+               05  WRK-SELNUM-X                    PIC X(50).
+               05  WRK-SELNUM                      PIC 9(03).
+               05  WRK-SELNUM-FLG                  PIC 9(01)
+                                                   OCCURS  200.
+           03  WRK-MULTI-AREA.
+               05  WRK-MUL-NUM             PIC X(10)
+                                           OCCURS 20.
+               05  WRK-MUL-TENSU-X         PIC X(10).
+               05  WRK-MUL-STNUM-X         PIC X(10).
+               05  WRK-MUL-EDNUM-X         PIC X(10).
+               05  WRK-MUL-TENSU           PIC 9(05).
+               05  WRK-MUL-STNUM           PIC 9(05).
+               05  WRK-MUL-EDNUM           PIC 9(05).
+           03  WRK-ZZZ-G.
+               05  WRK-ZZZ                 PIC ZZZ.
+           03  WRK-STIDX                   PIC 9(05).
       *
        01  SSTKJN-AREA.
            03  SSTKJN-VAL.
@@ -239,6 +262,9 @@
       *   日付変換サブ
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
+      *
+      *    数字変換領域
+           COPY    "CPORCSNUM.INC".
       *
       *    画面日付変換サブ
            COPY    "CPORCSGDAY.INC".
@@ -462,6 +488,20 @@
       *
            INITIALIZE              SPA-W21-AREA
       *
+           MOVE    SPA-SYSYMD      TO  SPA-NAI-W21-KJNYMD
+           MOVE    SPA-SYSYMDWH    TO  SPA-GMN-W21-KJNYMD
+      *
+           PERFORM 311-SPASET-SEC
+      *
+           .
+       310-SPASET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    スパ初期編集処理
+      *****************************************************************
+       311-SPASET-SEC              SECTION.
+      *
       *    病棟情報取得処理
            PERFORM 3101-SYS-5001-GET-SEC
       *
@@ -470,9 +510,8 @@
            MOVE    1               TO  SPA-GMN-W21-CUR
       *
            .
-       310-SPASET-EXT.
+       311-SPASET-EXT.
            EXIT.
-      *
       *****************************************************************
       *    病棟名称設定処理（病棟画面より遷移時）
       *****************************************************************
@@ -594,7 +633,7 @@
       *    システム管理マスタ検索処理
            INITIALIZE                  SYSKANRI-REC
            MOVE    "5001"          TO  SYS-KANRICD
-           MOVE    SPA-SYSYMD      TO  SYS-STYUKYMD
+           MOVE    SPA-NAI-W21-KJNYMD  TO  SYS-STYUKYMD
                                        SYS-EDYUKYMD
            PERFORM 900-SYSKANRI-KEY2-SEL-SEC
            MOVE    SYSKANRI-REC    TO  SYS-5001-REC
@@ -1110,6 +1149,7 @@
        3101-SYS-5002-GET-SEC       SECTION.
       *
            INITIALIZE  SPA-GMN-W21-BRMLST
+                       SPA-NAI-W21-BRMLST
       *
            INITIALIZE  SYSKANRI-REC
            MOVE    "5002"          TO  SYS-KANRICD
@@ -1120,7 +1160,7 @@
                                    TO  SADDSIGN-STR
            CALL    "ORCSADDSIGN"       USING   ORCSADDSIGNAREA
            MOVE    SADDSIGN-STR    TO  SYS-KBNCD
-           MOVE    SPA-SYSYMD      TO  SYS-STYUKYMD
+           MOVE    SPA-NAI-W21-KJNYMD  TO  SYS-STYUKYMD
                                        SYS-EDYUKYMD
            PERFORM 900-SYSKANRI-KEY9-SEL-SEC
            MOVE    MCPDATA-REC     TO  SYS-5002-REC
@@ -1176,6 +1216,9 @@
            MOVE    SYS-5002-BRM-NUM
                            TO  SPA-GMN-W21-TBRMNUM2 (IDX1)
       *
+           MOVE    SYS-5002-KBNCD
+                           TO  SPA-NAI-W21-TBRMNUM  (IDX1)
+      *
       *    病室種別
            INITIALIZE                      SYSKANRI-REC
            MOVE    "5108"              TO  SYS-KANRICD
@@ -1197,6 +1240,7 @@
            MOVE    SYSKANRI-REC        TO  SYS-5111-REC
            MOVE    SYS-5111-BRM-TOKUTEINYUIN-NM2
                                        TO  SPA-GMN-W21-TTOKNYUIN (IDX1)
+           MOVE    SYS-5111-SRYCD      TO  SPA-NAI-W21-TTOKNYUIN (IDX1)
       *
       *    収容人数
            MOVE    SYS-5002-BRM-NINZU
@@ -1258,6 +1302,8 @@
            PERFORM 800-HIZUKE-CHK-SEC
            MOVE    WRK-HENYMDG
                            TO  SPA-GMN-W21-TYUKOSTYMD (IDX1)
+           MOVE    SYS-5002-STYUKYMD
+                           TO  SPA-NAI-W21-TYUKOSTYMD (IDX1)
       *
       *    有効終了日
            MOVE    SYS-5002-EDYUKYMD
@@ -1265,6 +1311,8 @@
            PERFORM 800-HIZUKE-CHK-SEC
            MOVE    WRK-HENYMDG
                            TO  SPA-GMN-W21-TYUKOEDYMD (IDX1)
+           MOVE    SYS-5002-EDYUKYMD
+                           TO  SPA-NAI-W21-TYUKOEDYMD (IDX1)
       *
            .
        3102-BRMLST-EDIT-EXT.
@@ -1307,7 +1355,20 @@
                                    TO  SPA-NAI-W21-5002-KBNCD
       *
       *    選択番号１
-           MOVE    WRK-SELNUM      TO  SPA-GMN-W21-SELNUM1
+           IF    ( SPA-NAI-W21-INPUT-MODE    =   1 )
+               MOVE    WRK-SELNUM  TO  WRK-ZZZ
+      *
+               IF    ( WRK-ZZZ-G (1:1)     =   SPACE )
+      *
+                   UNSTRING    WRK-ZZZ-G   DELIMITED   BY  ALL SPACE
+                   INTO        WRK-STR-TMP
+                               SPA-GMN-W21-SELNUM1
+                   END-UNSTRING
+      *
+               ELSE
+                   MOVE    WRK-ZZZ-G   TO  SPA-GMN-W21-SELNUM1
+               END-IF
+           END-IF
       *
       *    病室番号
            MOVE    SYS-5002-BRM-NUM
@@ -1602,6 +1663,8 @@
                EVALUATE    SPA-WIDCD
                WHEN "2001"
                        PERFORM 421-SAKUJO-SEC
+               WHEN "3001"
+                       PERFORM 42021-HENKOU-SEC
                END-EVALUATE
            END-IF
       *
@@ -1634,6 +1697,12 @@
       *    削除
            WHEN    "CLICKED"       ALSO    "B08"
                PERFORM 420-SAKUJO-SEC
+      *    基準日
+           WHEN    "CLICKED"       ALSO    "B04"
+      *
+               PERFORM 4101-GMN-SPA-SET-SEC
+               MOVE    101         TO      SPA-GMN-W21-CUR
+      *
       *    病棟管理情報画面へ
            WHEN    "CLICKED"       ALSO    "B09"
                IF  ( SPA-MOTOPG    =       "W01" )
@@ -1655,6 +1724,9 @@
       *    病棟名称
            WHEN    "ACTIVATE"      ALSO    "BTU_NAME"
                PERFORM 4100-BTUNUM-CHK-SEC
+      *    基準日
+           WHEN    ANY             ALSO    "KJNYMD"
+               PERFORM 4100-KJNYMD-CHK-SEC
       *    選択番号１
            WHEN    "ACTIVATE"      ALSO    "SELNUM1"
                PERFORM 4100-SELNUM1-CHK-SEC
@@ -1782,6 +1854,11 @@
            END-IF
       *
            IF    ( SPA-ERRCD       =   SPACE )
+      *        選択番号１チェック
+               PERFORM 4101-SELNUM1-CHK-SEC
+           END-IF
+      *
+           IF    ( SPA-ERRCD       =   SPACE )
       *        有効期間開始日チェック処理
                PERFORM 4100-YUKOSTYMD-CHK-SEC
            END-IF
@@ -1898,6 +1975,7 @@
            INITIALIZE  SPA-GMN-W21-RIREKILST
                        SPA-NAI-W21-RIREKILST
                        SPA-GMN-W21-BRMLST
+                       SPA-NAI-W21-BRMLST
       *
            PERFORM 4201-HEAD-AREA-CLEAR-SEC
       *
@@ -1976,13 +2054,25 @@
            END-IF
       *
       *    選択番号が入力されていること
-           IF    ( SPA-GMN-W21-SELNUM1 NOT =   ZERO )
-               CONTINUE
-           ELSE
+           IF    ( SPA-GMN-W21-SELNUM1 =   SPACE )
                MOVE    "1105"      TO  SPA-ERRCD
                MOVE    2           TO  SPA-GMN-W21-CUR
                GO  TO  420-HENKOU-EXT
            END-IF
+      *
+           IF    ( SPA-NAI-W21-INPUT-MODE  =   2 )
+               PERFORM 4202-HENKOU-SEC
+           ELSE
+               PERFORM 4201-HENKOU-SEC
+           END-IF
+      *
+           .
+       420-HENKOU-EXT.
+           EXIT.
+      *****************************************************************
+      *    変更処理(通常の変更処理)
+      *****************************************************************
+       4201-HENKOU-SEC                 SECTION.
       *
       *    病室番号が変更されていないこと
            IF    ( SPA-GMN-W21-BRMNUM     =   SPA-NAI-W21-BRMNUM-OLD )
@@ -1990,83 +2080,171 @@
            ELSE
                MOVE    "1106"      TO  SPA-ERRCD
                MOVE    3           TO  SPA-GMN-W21-CUR
-               GO  TO  420-HENKOU-EXT
            END-IF
       *
-      *    共通関連チェック
-           PERFORM 4900-KANRENCHK-SEC
-           IF    ( SPA-ERRCD   NOT =   SPACE )
-               GO  TO  420-HENKOU-EXT
+           IF    ( SPA-ERRCD       =   SPACE )
+      *        共通関連チェック
+               PERFORM 4900-KANRENCHK-SEC
            END-IF
       *
-      *    有効期間の開始日と終了日が同時に変更されていないこと
-           IF    ( SPA-NAI-W21-YUKOSTYMD
+           IF    ( SPA-ERRCD       =   SPACE )
+      *        有効期間の開始日と終了日が同時に変更されていないこと
+               IF    ( SPA-NAI-W21-YUKOSTYMD
                                NOT =   SPA-NAI-W21-YUKOSTYMD-OLD )
-            AND
-                 ( SPA-NAI-W21-YUKOEDYMD
+                AND
+                     ( SPA-NAI-W21-YUKOEDYMD
                                NOT =   SPA-NAI-W21-YUKOEDYMD-OLD )
-               MOVE    "1107"      TO  SPA-ERRCD
-               MOVE    11          TO  SPA-GMN-W21-CUR
-               GO  TO  420-HENKOU-EXT
+                   MOVE    "1107"      TO  SPA-ERRCD
+                   MOVE    11          TO  SPA-GMN-W21-CUR
+               END-IF
            END-IF
       *
-      *    既存の履歴データをチェックし、期間の重複したデータが
-      *    存在しないこと
-           MOVE    2                   TO  FLG-UPD-KBN
-           PERFORM 4100-RIREKI-CHK-SEC
-           IF   ( FLG-KIKAN-DABURI NOT =   ZERO )
-               MOVE    "1104"          TO  SPA-ERRCD
-               MOVE    11          TO  SPA-GMN-W21-CUR
-               GO  TO  420-HENKOU-EXT
+           IF    ( SPA-ERRCD       =   SPACE )
+      *        既存の履歴データをチェックし、期間の重複したデータが
+      *        存在しないこと
+               MOVE    2                   TO  FLG-UPD-KBN
+               PERFORM 4100-RIREKI-CHK-SEC
+               IF   ( FLG-KIKAN-DABURI NOT =   ZERO )
+                   MOVE    "1104"          TO  SPA-ERRCD
+                   MOVE    11          TO  SPA-GMN-W21-CUR
+               END-IF
            END-IF
       *
-      *    病室リスト更新処理
-           PERFORM 4201-BRM-UPDATE-SEC
-           IF    ( SPA-ERRCD   NOT =   SPACE )
-               GO  TO  420-HENKOU-EXT
+           IF    ( SPA-ERRCD       =   SPACE )
+      *        病室リスト更新処理
+               PERFORM 4201-BRM-UPDATE-SEC
            END-IF
       *
-      *    病室リストを再編集する
-           PERFORM 3101-SYS-5002-GET-SEC
+           IF    ( SPA-ERRCD       =   SPACE )
+      *        病室リストを再編集する
+               PERFORM 3101-SYS-5002-GET-SEC
       *
-           PERFORM 4100-BRM-NUM-LSTSEL-SEC
-           IF    ( FLG-BRM-NUM =   ZERO )
-               MOVE    IDX-BRMLST
+               PERFORM 4100-BRM-NUM-LSTSEL-SEC
+               IF    ( FLG-BRM-NUM =   ZERO )
+                   MOVE    IDX-BRMLST
                                    TO  SPA-GMN-W21-BRMLST-SEL
-      *        履歴リストを再編集する
-               PERFORM 4100-RIREKI-AREA-EDIT-SEC
-               MOVE    ZERO        TO  SPA-GMN-W21-RIREKILST-SEL
+      *            履歴リストを再編集する
+                   PERFORM 4100-RIREKI-AREA-EDIT-SEC
+                   MOVE    ZERO    TO  SPA-GMN-W21-RIREKILST-SEL
       *
-      *        入力項目を初期化する
-               PERFORM 4201-INPUT-AREA-CLEAR-SEC
-           ELSE
-      *        入力項目を初期化する
-               PERFORM 4201-INPUT-AREA-CLEAR-SEC
-               PERFORM 4201-RIREKI-AREA-CLEAR-SEC
+      *            入力項目を初期化する
+                   PERFORM 4201-INPUT-AREA-CLEAR-SEC
+               ELSE
+      *            入力項目を初期化する
+                   PERFORM 4201-INPUT-AREA-CLEAR-SEC
+                   PERFORM 4201-RIREKI-AREA-CLEAR-SEC
+               END-IF
            END-IF
       *
            .
-       420-HENKOU-EXT.
+       4201-HENKOU-EXT.
+           EXIT.
+      *****************************************************************
+      *    変更処理(加算一括変更)
+      *****************************************************************
+       4202-HENKOU-SEC                 SECTION.
+      *
+           PERFORM VARYING IDX0    FROM    1   BY  1
+                   UNTIL ( IDX0    >   SPA-GMN-W21-BRMLST-MAX )
+                    OR   ( SPA-ERRCD   NOT =   SPACE )
+      *
+               IF    ( SPA-NAI-W21-SELNUM-FLG (IDX0)   =   1 )
+                   COMPUTE WRK-STIDX   =   IDX0    +   1
+                   PERFORM VARYING IDX1    FROM    WRK-STIDX   BY  1
+                           UNTIL ( IDX1    >   SPA-GMN-W21-BRMLST-MAX )
+                            OR   ( SPA-ERRCD   NOT =   SPACE )
+      *
+                       IF    ( SPA-NAI-W21-SELNUM-FLG (IDX1)   =   1 )
+                           IF    ( SPA-NAI-W21-TTOKNYUIN (IDX0)
+                                   NOT =   SPA-NAI-W21-TTOKNYUIN (IDX1))
+                               MOVE    "1012"  TO  SPA-ERRCD
+                               MOVE    2       TO  SPA-GMN-W21-CUR
+                           END-IF
+                       END-IF
+      *
+                   END-PERFORM
+               END-IF
+           END-PERFORM
+      *
+           IF    ( SPA-ERRCD   =   SPACE )
+      *        入院加算情報チェック処理-施設基準チェック処理
+               PERFORM 4901-SSTKIJUN-CHK-SEC
+           END-IF
+      *
+           IF    ( SPA-ERRCD   =   SPACE )
+               MOVE    "3001"           TO  SPA-WIDCD
+           END-IF
+      *
+           .
+       4202-HENKOU-EXT.
+           EXIT.
+      *****************************************************************
+      *    変更処理(加算一括変更)
+      *****************************************************************
+       42021-HENKOU-SEC                SECTION.
+      *
+           PERFORM VARYING IDX0    FROM    1   BY  1
+                   UNTIL ( IDX0    >   SPA-GMN-W21-BRMLST-MAX )
+                    OR   ( SPA-ERRCD   NOT =   SPACE )
+      *
+               IF  ( SPA-NAI-W21-SELNUM-FLG (IDX0) =   1 )
+      *
+                   INITIALIZE                  SYSKANRI-REC
+                   MOVE    "5002"          TO  SYS-KANRICD
+                   MOVE    SPA-NAI-W21-TBRMNUM (IDX0)
+                                           TO  SYS-KBNCD
+                   MOVE    SPA-NAI-W21-TYUKOSTYMD (IDX0)
+                                           TO  SYS-STYUKYMD
+                                               SYS-EDYUKYMD
+                   PERFORM 900-SYSKANRI-KEY10-SEL-SEC
+                   IF    ( FLG-SYSKANRI    =   ZERO )
+      *
+                       MOVE    SYSKANRI-REC    TO  SYS-5002-REC
+      *
+      *                病室加算情報編集処理
+                       PERFORM 4201-BRM-KSN-EDIT-SEC
+      *
+                       MOVE    SYS-5002-REC    TO  SYSKANRI-REC
+                       PERFORM 800-MCNDATE-SEC
+                       MOVE    SMCNDATE-YMD    TO  SYS-UPYMD
+                       MOVE    SMCNDATE-HMS    TO  SYS-UPHMS
+                       MOVE    SYSKANRI-REC    TO  MCPDATA-REC
+                       MOVE    "tbl_syskanri"  TO  MCP-TABLE
+                       MOVE    "key"           TO  MCP-PATHNAME
+                       PERFORM 910-DBUPDATE-SEC
+                       IF   (  MCP-RC          NOT =   ZERO )
+                           MOVE    "1204"      TO  SPA-ERRCD
+                       END-IF
+                   END-IF
+               END-IF
+      *
+           END-PERFORM
+      *
+           IF    ( SPA-ERRCD       =    SPACE )
+      *
+               MOVE    SPA-GMN-W21-BTUNUM
+                                   TO  W21-BTU-NAME
+               PERFORM 4100-BTUNUM-CHK-SEC
+           END-IF
+      *
+      *
+           .
+       42021-HENKOU-EXT.
            EXIT.
       *****************************************************************
       *    削除処理
       *****************************************************************
        420-SAKUJO-SEC                  SECTION.
       *
-      *    選択番号が入力されていること
-           IF    ( SPA-GMN-W21-SELNUM1 NOT =   ZERO )
-               CONTINUE
-           ELSE
-               MOVE    "1105"      TO  SPA-ERRCD
+           PERFORM 4101-SELNUM1-CHK-SEC
+           IF    ( SPA-ERRCD       NOT =   SPACE )
                MOVE    2           TO  SPA-GMN-W21-CUR
                GO  TO  420-SAKUJO-EXT
            END-IF
       *
-      *    範囲内の選択番号が入力されていること
-           IF    ( SPA-GMN-W21-SELNUM1 <=  SPA-GMN-W21-BRMLST-MAX )
-               CONTINUE
-           ELSE
-               MOVE    "1008"      TO  SPA-ERRCD
+      *    選択番号が入力されていること
+           IF    ( SPA-GMN-W21-SELNUM1 =   SPACE )
+               MOVE    "1105"      TO  SPA-ERRCD
                MOVE    2           TO  SPA-GMN-W21-CUR
                GO  TO  420-SAKUJO-EXT
            END-IF
@@ -2455,8 +2633,6 @@
       *****************************************************************
        4201-BRM-KSN-EDIT-SEC           SECTION.
       *
-      *    --  加算情報に初期値を設定  --
-      *
       *    新生児入院医療管理加算
            MOVE    CONST-SINSEIJI  TO  SYS-5002-SINSEIJI-CD
            IF    ( SPA-GMN-W21-SINSEIJI    = "2" )
@@ -2616,35 +2792,74 @@
        4101-BTUNUM-CHK-EXT.
            EXIT.
       *****************************************************************
+      *    基準日
+      *****************************************************************
+       4100-KJNYMD-CHK-SEC             SECTION.
+      *
+           MOVE    ZERO        TO  SPA-GMN-W21-CUR
+           MOVE    W21-KJNYMD  TO  WRK-YMD
+           PERFORM 800-HIZUKE-CHK-SEC
+           IF  ( SPA-ERRCD         =   SPACE )
+      *
+               MOVE    SPA-GMN-W21-BTUNUM
+                                   TO   WRK-BTUNUM
+      *
+               INITIALIZE              SPA-W21-AREA
+      *
+               MOVE    WRK-HENYMDG TO  SPA-GMN-W21-KJNYMD
+               MOVE    WRK-SYMD    TO  SPA-NAI-W21-KJNYMD
+      *
+               PERFORM 311-SPASET-SEC
+      *
+               MOVE    WRK-BTUNUM  TO  W21-BTU-NAME
+               PERFORM 4100-BTUNUM-CHK-SEC
+               MOVE    SPACE       TO  SPA-ERRCD
+      *
+           ELSE
+               MOVE    "0014"      TO  SPA-ERRCD
+               MOVE    101         TO  SPA-GMN-W21-CUR
+           END-IF
+      *
+           .
+      *
+       4100-KJNYMD-CHK-EXT.
+           EXIT.
+      *****************************************************************
       *    選択番号１
       *****************************************************************
        4100-SELNUM1-CHK-SEC            SECTION.
       *
            MOVE    ZERO        TO  SPA-GMN-W21-CUR
       *
+           INITIALIZE                  WRK-SELNUM-G
+           MOVE    ZERO            TO  SPA-NAI-W21-INPUT-MODE
+      *
            MOVE    W21-SELNUM1 TO  SPA-GMN-W21-SELNUM1
       *
-           IF    ( SPA-GMN-W21-SELNUM1 =   ZERO )
+           IF    ( SPA-GMN-W21-SELNUM1 =  SPACE )
                PERFORM 4201-INPUT-AREA-CLEAR-SEC
                PERFORM 4201-RIREKI-AREA-CLEAR-SEC
                MOVE    3           TO  SPA-GMN-W21-CUR
                GO  TO  4100-SELNUM1-CHK-EXT
            END-IF
       *
-           IF    ( SPA-GMN-W21-SELNUM1 <=  SPA-GMN-W21-BRMLST-MAX )
-               CONTINUE
-           ELSE
+           MOVE    SPA-GMN-W21-SELNUM1 TO  WRK-KANACHK-INPUT
+           PERFORM 800-ENRTRY-CHK-SEC
+           MOVE    WRK-KANACHK-INPUT   TO  SPA-GMN-W21-SELNUM1
+      *
+           PERFORM 4101-SELNUM1-CHK-SEC
+           IF    ( SPA-ERRCD   NOT =   SPACE )
                PERFORM 4201-INPUT-AREA-CLEAR-SEC
                PERFORM 4201-RIREKI-AREA-CLEAR-SEC
                MOVE    W21-SELNUM1     TO  SPA-GMN-W21-SELNUM1
-               MOVE    "1008"          TO  SPA-ERRCD
+               MOVE    "0001"          TO  SPA-ERRCD
                GO  TO  4100-SELNUM1-CHK-EXT
            END-IF
       *
       *    入力項目領域編集処理
-           MOVE    SPA-GMN-W21-TBRMNUM2 (SPA-GMN-W21-SELNUM1)
+           MOVE    SPA-GMN-W21-TBRMNUM2 (WRK-SELNUM)
                                        TO  WRK-BRMNUM
-           MOVE    SPA-SYSYMD          TO  WRK-KJNYMD
+           MOVE    SPA-NAI-W21-KJNYMD  TO  WRK-KJNYMD
       *
       *    入力領域初期化
            PERFORM 4201-INPUT-AREA-CLEAR-SEC
@@ -2652,15 +2867,26 @@
       *    履歴領域初期化
            PERFORM 4201-RIREKI-AREA-CLEAR-SEC
       *
+           IF    ( WRK-INPUT-MODE      =   2 )
+               MOVE    W21-SELNUM1 TO  SPA-GMN-W21-SELNUM1
+               PERFORM VARYING IDX0    FROM    1   BY  1
+                       UNTIL ( IDX0    >   SPA-GMN-W21-BRMLST-MAX )
+                   MOVE    WRK-SELNUM-FLG (IDX0)
+                                   TO  SPA-NAI-W21-SELNUM-FLG (IDX0)
+               END-PERFORM
+           END-IF
+      *
       *    入力データ編集処理
-           MOVE    W21-SELNUM1         TO  WRK-SELNUM
+           MOVE    WRK-INPUT-MODE  TO  SPA-NAI-W21-INPUT-MODE
            PERFORM 4100-INPUT-AREA-EDIT-SEC
            IF    ( FLG-INPUT-AREA  =   ZERO )
       *
-               MOVE    W21-SELNUM1 TO  SPA-GMN-W21-BRMLST-SEL
+               MOVE    WRK-SELNUM  TO  SPA-GMN-W21-BRMLST-SEL
       *
-      *        履歴データ編集処理
-               PERFORM 4100-RIREKI-AREA-EDIT-SEC
+               IF    ( SPA-NAI-W21-INPUT-MODE  =   1 )
+      *            履歴データ編集処理
+                   PERFORM 4100-RIREKI-AREA-EDIT-SEC
+               END-IF
            ELSE
                PERFORM 4201-INPUT-AREA-CLEAR-SEC
                PERFORM 4201-RIREKI-AREA-CLEAR-SEC
@@ -2672,6 +2898,176 @@
            .
       *
        4100-SELNUM1-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    選択番号１チェック処理
+      *****************************************************************
+       4101-SELNUM1-CHK-SEC            SECTION.
+      *
+           IF    ( SPA-GMN-W21-SELNUM1 =  SPACE )
+               CONTINUE
+           ELSE
+               IF    ( SPA-GMN-W21-SELNUM1 (1:1)    =   "." )
+                   MOVE    SPA-GMN-W21-SELNUM1 (2:)
+                                           TO  WRK-SELNUM-MUL
+               ELSE
+                   MOVE    SPA-GMN-W21-SELNUM1 TO  WRK-SELNUM-MUL
+               END-IF
+      *
+               PERFORM 41011-MULTI-SEL-CHK-SEC
+           END-IF
+      *
+           .
+      *
+       4101-SELNUM1-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    複数行選択チェック処理
+      *****************************************************************
+       41011-MULTI-SEL-CHK-SEC         SECTION.
+      *
+           INITIALIZE                  WRK-MULTI-AREA
+      *
+           MOVE    ZERO            TO  WRK-INPUT-MODE
+      *
+           UNSTRING    WRK-SELNUM-MUL  DELIMITED   BY  ","
+                                                   OR  "."
+           INTO        WRK-MUL-NUM (1)
+                       WRK-MUL-NUM (2)
+                       WRK-MUL-NUM (3)
+                       WRK-MUL-NUM (4)
+                       WRK-MUL-NUM (5)
+                       WRK-MUL-NUM (6)
+                       WRK-MUL-NUM (7)
+                       WRK-MUL-NUM (8)
+                       WRK-MUL-NUM (9)
+                       WRK-MUL-NUM (10)
+                       WRK-MUL-NUM (11)
+                       WRK-MUL-NUM (12)
+                       WRK-MUL-NUM (13)
+                       WRK-MUL-NUM (14)
+                       WRK-MUL-NUM (15)
+                       WRK-MUL-NUM (16)
+                       WRK-MUL-NUM (17)
+                       WRK-MUL-NUM (18)
+                       WRK-MUL-NUM (19)
+                       WRK-MUL-NUM (20)
+           ON  OVERFLOW
+               MOVE    2           TO  SPA-GMN-W21-CUR
+               MOVE    "0015"      TO  SPA-ERRCD  
+               GO  TO  41011-MULTI-SEL-CHK-EXT
+           END-UNSTRING
+      *
+           PERFORM VARYING IDX-MUL    FROM    1   BY  1
+                   UNTIL ( IDX-MUL    >       20 )
+      *
+               IF    ( WRK-MUL-NUM (IDX-MUL)  =   SPACE )
+                   CONTINUE
+               ELSE
+      *
+                   INITIALIZE  WRK-MUL-STNUM-X
+                               WRK-MUL-EDNUM-X
+                               WRK-MUL-STNUM
+                               WRK-MUL-EDNUM
+      *
+                   UNSTRING    WRK-MUL-NUM (IDX-MUL) DELIMITED   BY  "-"
+                   INTO        WRK-MUL-STNUM-X
+                               WRK-MUL-EDNUM-X
+                   END-UNSTRING
+      *
+                   IF    ( WRK-MUL-STNUM-X     =   SPACE )
+                    AND  ( WRK-MUL-EDNUM-X     =   SPACE )
+                       MOVE    1           TO  SPA-GMN-W21-CUR
+                       MOVE    "0001"      TO  SPA-ERRCD
+                       GO  TO  41011-MULTI-SEL-CHK-EXT
+                   ELSE
+                       EVALUATE    TRUE
+                       WHEN  ( WRK-MUL-EDNUM-X     =   SPACE )
+                           MOVE    WRK-MUL-STNUM-X
+                                           TO  WRK-MUL-EDNUM-X
+                       WHEN  ( WRK-MUL-STNUM-X     =   SPACE )
+                           MOVE    WRK-MUL-EDNUM-X
+                                           TO  WRK-MUL-STNUM-X
+                       END-EVALUATE
+                   END-IF
+      *
+                   MOVE    WRK-MUL-STNUM-X     TO  WRK-SELNUM-X
+                   PERFORM 4101-SELNUM-LIMIT-CHK-SEC
+                   IF    ( SPA-ERRCD   NOT =   SPACE )
+                       GO  TO  41011-MULTI-SEL-CHK-EXT
+                   END-IF
+                   MOVE    WRK-SELNUM  TO  WRK-MUL-STNUM
+      *
+                   MOVE    WRK-MUL-EDNUM-X TO  WRK-SELNUM-X
+                   PERFORM 4101-SELNUM-LIMIT-CHK-SEC
+                   IF    ( SPA-ERRCD   NOT =   SPACE )
+                       GO  TO  41011-MULTI-SEL-CHK-EXT
+                   END-IF
+                   MOVE    WRK-SELNUM  TO  WRK-MUL-EDNUM
+      *
+      *
+                   PERFORM VARYING IDX1    FROM    WRK-MUL-STNUM   BY  1
+                           UNTIL ( IDX1    >       WRK-MUL-EDNUM )
+                       IF    ( IDX1        >=  1 )
+                        AND  ( IDX1        <=  SPA-GMN-W21-BRMLST-MAX )
+                           MOVE    1       TO  WRK-SELNUM-FLG (IDX1)
+                       END-IF
+                   END-PERFORM
+      *
+               END-IF
+      *
+           END-PERFORM
+      *
+           MOVE    ZERO            TO  CNT-SEL
+                                       WRK-SELNUM
+           PERFORM VARYING IDX1    FROM    1   BY  1
+                   UNTIL ( IDX1    >       SPA-GMN-W21-BRMLST-MAX )
+      *
+               IF    ( WRK-SELNUM-FLG (IDX1)   =   1 )
+                   COMPUTE CNT-SEL =   CNT-SEL +   1
+                   IF    ( CNT-SEL =   1 )
+                       MOVE    IDX1    TO  WRK-SELNUM
+                   END-IF
+               END-IF
+      *
+           END-PERFORM
+      *
+           IF    ( CNT-SEL         >   1 )
+               MOVE    2           TO  WRK-INPUT-MODE
+           ELSE
+               MOVE    1           TO  WRK-INPUT-MODE
+           END-IF
+      *
+           .
+       41011-MULTI-SEL-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    選択番号範囲チェック処理
+      *****************************************************************
+       4101-SELNUM-LIMIT-CHK-SEC       SECTION.
+      *
+           INITIALIZE                  ORCSNUMAREA
+           MOVE    WRK-SELNUM-X    TO  SNUM-INX
+           CALL    "ORCSNUM"       USING   ORCSNUMAREA
+           IF    ( SNUM-RC         =   ZERO )
+            AND  ( SNUM-MINKBN     =   SPACE )
+            AND  ( SNUM-SYOKBN     =   SPACE ) 
+               MOVE    SNUM-OUTNUM TO  WRK-SELNUM
+               IF    ( WRK-SELNUM  >=  1 )
+                AND  ( WRK-SELNUM  <=  SPA-GMN-W21-BRMLST-MAX )
+                   CONTINUE
+               ELSE
+                   MOVE    "0001"  TO  SPA-ERRCD
+                   MOVE    2       TO  SPA-GMN-W21-CUR
+               END-IF
+      *
+           ELSE
+                   MOVE    "0001"  TO  SPA-ERRCD
+                   MOVE    2       TO  SPA-GMN-W21-CUR
+           END-IF
+      *
+           .
+       4101-SELNUM-LIMIT-CHK-EXT.
            EXIT.
       *****************************************************************
       *    病室番号
@@ -3046,10 +3442,10 @@
       *
       *    日付妥当性チェック＆編集処理
            IF    ( SPA-GMN-W21-YUKOSTYMD   =   SPACE )
-               MOVE    SPA-SYSYMDWH (1 : 6)
+               MOVE    SPA-GMN-W21-KJNYMD  (1 : 6)
                                        TO  SPA-GMN-W21-YUKOSTYMD (1 : 6)
                MOVE    ". 1"           TO  SPA-GMN-W21-YUKOSTYMD (7 : 3)
-               MOVE    SPA-SYSYMD   (1 : 6)
+               MOVE    SPA-NAI-W21-KJNYMD  (1 : 6)
                                        TO  SPA-NAI-W21-YUKOSTYMD (1 : 6)
                MOVE    "01"            TO  SPA-NAI-W21-YUKOSTYMD (7 : 2)
       *
@@ -3196,10 +3592,12 @@
       *    入力領域初期化
            PERFORM 4201-INPUT-AREA-CLEAR-SEC
       *
+      *
+           MOVE    1       TO  SPA-NAI-W21-INPUT-MODE
+           MOVE    SPA-NAI-W21-RIREKILST-SELNUM
+                                   TO  WRK-SELNUM
            PERFORM 4100-INPUT-AREA-EDIT-SEC
       *
-           MOVE    SPA-NAI-W21-RIREKILST-SELNUM
-                                   TO  SPA-GMN-W21-SELNUM1
            MOVE    W21-SELNUM2     TO  SPA-GMN-W21-SELNUM2
       *
            MOVE    ZERO            TO  SPA-GMN-W21-CUR
@@ -3221,7 +3619,8 @@
       *            入力項目領域編集処理
                    MOVE    SPA-GMN-W21-TBRMNUM2 (IDX2)
                                            TO  WRK-BRMNUM
-                   MOVE    SPA-SYSYMD      TO  WRK-KJNYMD
+                   MOVE    SPA-NAI-W21-KJNYMD
+                                           TO  WRK-KJNYMD
       *
       *            入力領域初期化
                    PERFORM 4201-INPUT-AREA-CLEAR-SEC
@@ -3229,7 +3628,9 @@
       *            履歴領域初期化
                    PERFORM 4201-RIREKI-AREA-CLEAR-SEC
       *
+      *
       *            入力データ編集処理
+                   MOVE    1               TO  SPA-NAI-W21-INPUT-MODE
                    MOVE    IDX2            TO  WRK-SELNUM
                    PERFORM 4100-INPUT-AREA-EDIT-SEC
       *
@@ -3266,10 +3667,12 @@
       *            入力領域初期化
                    PERFORM 4201-INPUT-AREA-CLEAR-SEC
       *
+      *
+                   MOVE    1       TO  SPA-NAI-W21-INPUT-MODE
+                   MOVE    SPA-NAI-W21-RIREKILST-SELNUM
+                                       TO  WRK-SELNUM
                    PERFORM 4100-INPUT-AREA-EDIT-SEC
       *
-                   MOVE    SPA-NAI-W21-RIREKILST-SELNUM
-                                       TO  SPA-GMN-W21-SELNUM1
                    MOVE    IDX2        TO  SPA-GMN-W21-RIREKILST-SEL
                                            SPA-GMN-W21-SELNUM2
       *
@@ -3303,10 +3706,10 @@
                        SPA-NAI-W21-INPUT-AREA
       *
       *    有効期間の開始日と終了日を設定
-           MOVE    SPA-SYSYMDWH (1 : 6)
+           MOVE    SPA-GMN-W21-KJNYMD  (1 : 6)
                                    TO  SPA-GMN-W21-YUKOSTYMD (1 : 6)
            MOVE    ". 1"           TO  SPA-GMN-W21-YUKOSTYMD (7 : 3)
-           MOVE    SPA-SYSYMD   (1 : 6)
+           MOVE    SPA-NAI-W21-KJNYMD  (1 : 6)
                                    TO  SPA-NAI-W21-YUKOSTYMD (1 : 6)
            MOVE    "01"            TO  SPA-NAI-W21-YUKOSTYMD (7 : 2)
       *
@@ -3850,8 +4253,177 @@
       *    病棟入院基本料
            MOVE    SPA-GMN-W21-BTUKHNRYO   TO  W21-BTU-KHNRYO
       *
+      *    基準日
+           MOVE    SPA-GMN-W21-KJNYMD      TO  W21-KJNYMD
+      *
       *    選択番号１
            MOVE    SPA-GMN-W21-SELNUM1     TO  W21-SELNUM1
+      *
+           IF    ( SPA-NAI-W21-INPUT-MODE  =   2 )
+              CONTINUE
+           ELSE
+              PERFORM 5001-GMNHEN-SEC
+           END-IF
+      *
+      *    入院料加算
+           PERFORM VARYING IDX-KSN FROM    1   BY  1
+                   UNTIL ( IDX-KSN >   CONST-KSN-MAX )
+      *
+               MOVE    SPA-NAI-W21-KSNINF-IDX (IDX-KSN)
+                                   TO  IDX-GKSN
+      *
+               IF    ( IDX-GKSN    >   ZERO )
+                   MOVE    SPA-GMN-W21-KSN-LBL    (IDX-KSN)
+                                   TO  W21-LBLKSN (IDX-GKSN)
+                   MOVE    SPA-GMN-W21-KSN     (IDX-KSN)
+                                   TO  W21-KSN (IDX-GKSN)
+                   MOVE    SPA-GMN-W21-KSNLST-MAX (IDX-KSN)
+                                   TO  W21-KSN-CNT(IDX-GKSN)
+                                       WRK-MAX
+                   PERFORM VARYING IDX1    FROM    1   BY  1
+                           UNTIL ( IDX1    >   WRK-MAX )
+                       MOVE   SPA-GMN-W21-KSNLST (IDX-KSN IDX1)
+                                   TO  W21-KSN-ITM (IDX-GKSN IDX1)
+                   END-PERFORM
+               END-IF
+      *
+           END-PERFORM
+      *
+      *    病室リスト
+           MOVE    SPACE                   TO  W21-BRMLST-TBL
+      *
+           MOVE    SPA-GMN-W21-BRMLST-MAX  TO  W21-BRMLST-CNT
+           PERFORM VARYING IDX1    FROM    1   BY  1
+               UNTIL     ( IDX1    >   W21-BRMLST-CNT )
+      *
+               MOVE    SPA-GMN-W21-TSELNUM  (IDX1)
+                                       TO  WRK-ZZZ9
+               MOVE    WRK-ZZZ9
+                                       TO  W21-TSELNUM  (IDX1)
+               IF    ( SPA-NAI-W21-INPUT-MODE  =   2 )
+                   IF    ( SPA-NAI-W21-SELNUM-FLG (IDX1)
+                                       =   1 )
+                       MOVE    "*"     TO  W21-TSELNUM  (IDX1)(1:1)
+                   END-IF
+               END-IF
+      *
+               STRING  "    "
+                       SPA-GMN-W21-TBRMNUM (IDX1)
+                       DELIMITED   BY  SIZE
+               INTO    W21-TBRM-NUM (IDX1)
+               END-STRING
+      *
+               MOVE    SPA-GMN-W21-TSBT (IDX1)
+                                       TO  W21-TBRM-SBT (IDX1)
+               MOVE    SPA-GMN-W21-TTOKNYUIN (IDX1)
+                                       TO  W21-TBRM-TOKUTEINYUIN (IDX1)
+               MOVE    SPA-GMN-W21-TNINZU (IDX1)
+                                       TO  WRK-ZZZZZZZZZ9
+               MOVE    WRK-ZZZZZZZZZ9
+                                       TO  W21-TBRM-NINZU (IDX1)
+               MOVE    SPA-GMN-W21-TSAGAKU (IDX1)
+                                       TO  WRK-ZZZZZZZZZ9
+               MOVE    WRK-ZZZZZZZZZ9
+                                       TO  W21-TBRM-SAGAKU (IDX1)
+               MOVE    SPA-GMN-W21-TSEX (IDX1)
+                                       TO  W21-TBRM-SEX (IDX1)
+               MOVE    SPA-GMN-W21-TNAITEL (IDX1)
+                                       TO  W21-TBRM-NAITEL (IDX1)
+               MOVE    SPA-GMN-W21-TSRYKA  (IDX1)
+                                       TO  W21-TBRM-KA (IDX1)
+               MOVE    SPA-GMN-W21-TKHNRYO  (IDX1)
+                                       TO  W21-TKHNRYO (IDX1)
+               MOVE    SPA-GMN-W21-TYUKOSTYMD (IDX1)
+                                       TO  W21-TYUKOSTYMD (IDX1)
+               MOVE    SPA-GMN-W21-TYUKOEDYMD (IDX1)
+                                       TO  W21-TYUKOEDYMD (IDX1)
+      *
+               IF    ( SPA-NAI-W21-INPUT-MODE  =   2 )
+                   CONTINUE
+               ELSE
+                   IF    ( SPA-GMN-W21-BRMLST-SEL  =   IDX1 )
+                       MOVE    "T"     TO  W21-BRMLST-SEL (IDX1)
+                   ELSE
+                       MOVE    "F"     TO  W21-BRMLST-SEL (IDX1)
+                   END-IF
+               END-IF
+      *
+           END-PERFORM
+      *
+      *    履歴リスト
+           INITIALIZE                      W21-RIREKILST-TBL
+           MOVE    SPA-GMN-W21-RIREKILST-MAX
+                                       TO  W21-RIREKILST-CNT
+      *
+           PERFORM VARYING IDX1    FROM    1   BY  1
+               UNTIL     ( IDX1    >   SPA-GMN-W21-RIREKILST-MAX )
+      *
+               MOVE    SPA-GMN-W21-TRSELNUM (IDX1)
+                                       TO  WRK-ZZZ9
+               MOVE    WRK-ZZZ9        TO  W21-TRSELNUM (IDX1)
+      *
+               STRING  SPA-GMN-W21-TRYUKOSTYMD (IDX1)
+                       " 〜 "
+                       SPA-GMN-W21-TRYUKOEDYMD (IDX1)
+                       DELIMITED   BY  SIZE
+               INTO    W21-TRIREKI (IDX1)
+               END-STRING
+      *
+               IF    ( IDX1    =   SPA-GMN-W21-RIREKILST-SEL )
+                   MOVE    "T"         TO  W21-RIREKILST-SEL (IDX1)
+               ELSE
+                   MOVE    "F"         TO  W21-RIREKILST-SEL (IDX1)
+               END-IF
+      *
+           END-PERFORM
+      *
+           IF    ( SPA-NAI-W21-YUKOSTYMD  >=   CONST-H180701 )
+            AND  ( SPA-NAI-W21-BTUSBT      =   "04" OR "09" )
+               MOVE    "入院基本料"    TO  W21-LBLKHNRYO1
+               MOVE    "点"            TO  W21-LBLKHNRYO2
+           END-IF
+      *
+           IF    ( SPA-NAI-W21-KJNYMD     >=   CONST-H180701 )
+            AND  ( SPA-NAI-W21-BTUSBT      =   "04" OR "09" )
+               MOVE    "入院基本料"    TO  W21-TKHNRYO-TITLE
+           END-IF
+      *
+           MOVE    "black"                 TO  W21-LBLINFO-STYLE
+           IF    ( SPA-NAI-W21-RYO-IDX >   ZERO )
+               IF    ( SPA-NAI-W21-YUKOSTYMD   <   CONST-H180401 )
+                AND  ( SPA-NAI-W21-YUKOEDYMD   >=  CONST-H180401 )
+                   MOVE    "red"               TO  W21-LBLINFO-STYLE
+                   STRING "※療養病棟環境加算１、２、３は"
+                                               DELIMITED   BY  SIZE
+                          "平成１８年４月以降"
+                                               DELIMITED   BY  SIZE
+                          "それぞれ２、３、４とみなします。"
+                                               DELIMITED   BY  SIZE
+                   INTO   W21-LBLINFO
+                   END-STRING
+               END-IF
+           END-IF
+      *
+           MOVE    "black"                 TO  W21-LBLMODE-STYLE
+           IF    ( SPA-NAI-W21-INPUT-MODE  =   2 )
+               MOVE    "blue"              TO  W21-LBLMODE-STYLE
+               MOVE    "<入院料加算一括変更＞"
+                                           TO  W21-LBLMODE
+           END-IF
+      *
+      *    項目状態編集
+           PERFORM 500-GMNHEN-STATE-EDIT-SEC
+      *
+           PERFORM 5001-MAPCUR-SEC
+      *
+           .
+       500-GMNHEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    画面編集処理
+      *****************************************************************
+       5001-GMNHEN-SEC                 SECTION.
       *
       *    病室番号
            MOVE    SPA-GMN-W21-BRMNUM      TO  W21-BRM-NUM
@@ -3926,130 +4498,12 @@
       *    有効期間終了日
            MOVE    SPA-GMN-W21-YUKOEDYMD   TO  W21-YUKOEDYMD
       *
-      *    入院料加算
-           PERFORM VARYING IDX-KSN FROM    1   BY  1
-                   UNTIL ( IDX-KSN >   CONST-KSN-MAX )
-      *
-               MOVE    SPA-NAI-W21-KSNINF-IDX (IDX-KSN)
-                                   TO  IDX-GKSN
-      *
-               IF    ( IDX-GKSN    >   ZERO )
-                   MOVE    SPA-GMN-W21-KSN-LBL    (IDX-KSN)
-                                   TO  W21-LBLKSN (IDX-GKSN)
-                   MOVE    SPA-GMN-W21-KSN     (IDX-KSN)
-                                   TO  W21-KSN (IDX-GKSN)
-                   MOVE    SPA-GMN-W21-KSNLST-MAX (IDX-KSN)
-                                   TO  W21-KSN-CNT(IDX-GKSN)
-                                       WRK-MAX
-                   PERFORM VARYING IDX1    FROM    1   BY  1
-                           UNTIL ( IDX1    >   WRK-MAX )
-                       MOVE   SPA-GMN-W21-KSNLST (IDX-KSN IDX1)
-                                   TO  W21-KSN-ITM (IDX-GKSN IDX1)
-                   END-PERFORM
-               END-IF
-      *
-           END-PERFORM
-      *
       *    選択番号２
            MOVE    SPA-GMN-W21-SELNUM2     TO  W21-SELNUM2
       *
-      *    病室リスト
-           MOVE    SPACE                   TO  W21-BRMLST-TBL
-      *
-           MOVE    SPA-GMN-W21-BRMLST-MAX  TO  W21-BRMLST-CNT
-           PERFORM VARYING IDX1    FROM    1   BY  1
-               UNTIL     ( IDX1    >   W21-BRMLST-CNT )
-      *
-               MOVE    SPA-GMN-W21-TSELNUM  (IDX1)
-                                       TO  WRK-ZZZ9
-               MOVE    WRK-ZZZ9
-                                       TO  W21-TSELNUM  (IDX1)
-               STRING  "    "
-                       SPA-GMN-W21-TBRMNUM (IDX1)
-                       DELIMITED   BY  SIZE
-               INTO    W21-TBRM-NUM (IDX1)
-               END-STRING
-      *
-               MOVE    SPA-GMN-W21-TSBT (IDX1)
-                                       TO  W21-TBRM-SBT (IDX1)
-               MOVE    SPA-GMN-W21-TTOKNYUIN (IDX1)
-                                       TO  W21-TBRM-TOKUTEINYUIN (IDX1)
-               MOVE    SPA-GMN-W21-TNINZU (IDX1)
-                                       TO  WRK-ZZZZZZZZZ9
-               MOVE    WRK-ZZZZZZZZZ9
-                                       TO  W21-TBRM-NINZU (IDX1)
-               MOVE    SPA-GMN-W21-TSAGAKU (IDX1)
-                                       TO  WRK-ZZZZZZZZZ9
-               MOVE    WRK-ZZZZZZZZZ9
-                                       TO  W21-TBRM-SAGAKU (IDX1)
-               MOVE    SPA-GMN-W21-TSEX (IDX1)
-                                       TO  W21-TBRM-SEX (IDX1)
-               MOVE    SPA-GMN-W21-TNAITEL (IDX1)
-                                       TO  W21-TBRM-NAITEL (IDX1)
-               MOVE    SPA-GMN-W21-TSRYKA  (IDX1)
-                                       TO  W21-TBRM-KA (IDX1)
-               MOVE    SPA-GMN-W21-TKHNRYO  (IDX1)
-                                       TO  W21-TKHNRYO (IDX1)
-               MOVE    SPA-GMN-W21-TYUKOSTYMD (IDX1)
-                                       TO  W21-TYUKOSTYMD (IDX1)
-               MOVE    SPA-GMN-W21-TYUKOEDYMD (IDX1)
-                                       TO  W21-TYUKOEDYMD (IDX1)
-      *
-               IF    ( SPA-GMN-W21-BRMLST-SEL  =   IDX1 )
-                   MOVE    "T"         TO  W21-BRMLST-SEL (IDX1)
-               ELSE
-                   MOVE    "F"         TO  W21-BRMLST-SEL (IDX1)
-               END-IF
-      *
-           END-PERFORM
-      *
-      *    履歴リスト
-           INITIALIZE                      W21-RIREKILST-TBL
-           MOVE    SPA-GMN-W21-RIREKILST-MAX
-                                       TO  W21-RIREKILST-CNT
-      *
-           PERFORM VARYING IDX1    FROM    1   BY  1
-               UNTIL     ( IDX1    >   SPA-GMN-W21-RIREKILST-MAX )
-      *
-               MOVE    SPA-GMN-W21-TRSELNUM (IDX1)
-                                       TO  WRK-ZZZ9
-               MOVE    WRK-ZZZ9        TO  W21-TRSELNUM (IDX1)
-      *
-               STRING  SPA-GMN-W21-TRYUKOSTYMD (IDX1)
-                       " 〜 "
-                       SPA-GMN-W21-TRYUKOEDYMD (IDX1)
-                       DELIMITED   BY  SIZE
-               INTO    W21-TRIREKI (IDX1)
-               END-STRING
-      *
-               IF    ( IDX1    =   SPA-GMN-W21-RIREKILST-SEL )
-                   MOVE    "T"         TO  W21-RIREKILST-SEL (IDX1)
-               ELSE
-                   MOVE    "F"         TO  W21-RIREKILST-SEL (IDX1)
-               END-IF
-      *
-           END-PERFORM
-      *
-           IF    ( SPA-NAI-W21-YUKOSTYMD  >=   CONST-H180701 )
-            AND  ( SPA-NAI-W21-BTUSBT      =   "04" OR "09" )
-               MOVE    "入院基本料"    TO  W21-LBLKHNRYO1
-               MOVE    "点"            TO  W21-LBLKHNRYO2
-           END-IF
-      *
-           IF    ( SPA-SYSYMD             >=   CONST-H180701 )
-            AND  ( SPA-NAI-W21-BTUSBT      =   "04" OR "09" )
-               MOVE    "入院基本料"    TO  W21-TKHNRYO-TITLE
-           END-IF
-      *
-      *    項目状態編集
-           PERFORM 500-GMNHEN-STATE-EDIT-SEC
-      *
-           PERFORM 5001-MAPCUR-SEC
-      *
            .
-       500-GMNHEN-EXT.
+       5001-GMNHEN-EXT.
            EXIT.
-      *
       *****************************************************************
       *    項目状態編集処理
       *****************************************************************
@@ -4080,10 +4534,37 @@
                                            W21-KHNRYO-STT
                                            W21-KHNRYO-ITM-STT
                                            W21-KHNTEN-STT
+                                           W21-SELNUM2-STT
       *
       *
            IF    ( SPA-GMN-W21-BRMLST-MAX  >=  200 )
                MOVE    WIDGET-INSENSITIVE  TO  W21-B06-STATE
+           END-IF
+      *
+           IF    ( SPA-NAI-W21-INPUT-MODE   =  2 )
+               MOVE    WIDGET-INSENSITIVE
+                                       TO  W21-B06-STATE
+                                           W21-B08-STATE
+                                           W21-B09-STATE
+                                           W21-BRM-NUM-STT
+                                           W21-BRM-SBT-STT
+                                           W21-BRM-SBT-ITM-STT
+                                           W21-BRM-TOKUTEINYUIN-STT
+                                           W21-BRM-TOKUTEINYUIN-ITM-STT
+                                           W21-BRM-NINZU-STT
+                                           W21-BRM-SAGAKU-STT
+                                           W21-BRM-SAGAKU-ITM-STT
+                                           W21-BRM-SEX-STT
+                                           W21-BRM-SEX-ITM-STT
+                                           W21-BRM-NAITEL-STT
+                                           W21-BRM-KA-STT
+                                           W21-BRM-KA-ITM-STT
+                                           W21-YUKOSTYMD-STT
+                                           W21-YUKOEDYMD-STT
+                                           W21-KHNRYO-STT
+                                           W21-KHNRYO-ITM-STT
+                                           W21-KHNTEN-STT
+                                           W21-SELNUM2-STT
            END-IF
       *
            PERFORM VARYING IDX-GKSN FROM    1   BY  1
@@ -4184,6 +4665,8 @@
                MOVE    "KSN14"             TO  MCP-WIDGET
            WHEN    100
                MOVE    "SELNUM2"           TO  MCP-WIDGET
+           WHEN    101
+               MOVE    "KJNYMD"            TO  MCP-WIDGET
            WHEN    206
                MOVE    "B06"               TO  MCP-WIDGET
            WHEN    207
@@ -4256,6 +4739,8 @@
                MOVE    206             TO  SPA-GMN-W21-CUR
            WHEN    "SELNUM2"
                MOVE    003             TO  SPA-GMN-W21-CUR
+           WHEN    "KJNYMD"
+               MOVE    002             TO  SPA-GMN-W21-CUR
            END-EVALUATE
       *
            .
@@ -4300,6 +4785,19 @@
                IF    ( W21-B06-STATE   =   WIDGET-INSENSITIVE )
                    MOVE    207         TO  SPA-GMN-W21-CUR
                END-IF
+           END-IF
+      *
+           IF    ( SPA-NAI-W21-INPUT-MODE  =   2 )
+               EVALUATE    SPA-GMN-W21-CUR
+               WHEN    1
+               WHEN    14  THRU    27
+               WHEN    207
+                   CONTINUE
+               WHEN    11
+                   COMPUTE SPA-GMN-W21-CUR =   207
+               WHEN    OTHER
+                   COMPUTE SPA-GMN-W21-CUR =   14
+               END-EVALUATE
            END-IF
       *
            .
@@ -4351,6 +4849,12 @@
                                        TO  SPA-ERRMSG
            WHEN    "0013"
                MOVE    "室歴番号入力エラー"
+                                       TO  SPA-ERRMSG
+           WHEN    "0014"
+               MOVE    "基準日入力エラー"
+                                       TO  SPA-ERRMSG
+           WHEN    "0015"
+               MOVE    "選択された番号が多すぎます"
                                        TO  SPA-ERRMSG
            WHEN    "0100"
                MOVE    SPACE           TO  SPA-ERRMSG
@@ -4417,6 +4921,11 @@
                                        DELIMITED   BY  SIZE
                INTO    SPA-ERRMSG
                END-STRING
+           WHEN    "1012"
+               MOVE    "選択中の病室に複数の入院料が存在する場合"
+                                       TO  SPA-ERRMSG (1 : 40)
+               MOVE    "は変更できません"
+                                       TO  SPA-ERRMSG (41 : )
            WHEN    "1101"
                MOVE     "病室番号を入力してください"
                                        TO  SPA-ERRMSG
@@ -4442,6 +4951,7 @@
                MOVE    "入院中の患者が存在するため削除できません"
                                        TO  SPA-ERRMSG
            WHEN    "1201"
+           WHEN    "1204"
                MOVE    "更新できませんでした"
                                        TO  SPA-ERRMSG
            WHEN    "1202"
@@ -4482,6 +4992,11 @@
            WHEN    "2001"
                MOVE    "該当の病室を削除します。よろしいですか"
                                         TO  WRK-WIDMSG
+           WHEN    "3001"
+               MOVE    "選択中の病室について入院料加算を変更しま"
+                                        TO  WRK-WIDMSG (1 : 40)
+               MOVE    "す"
+                                        TO  WRK-WIDMSG (41 : )
            END-EVALUATE
       *
       *
