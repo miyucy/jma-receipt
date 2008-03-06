@@ -1581,10 +1581,10 @@
                IF     (SPA-NAI-HTEKSTYMD   NOT =   SPACE )  AND
                       (SPA-NAI-HTEKSTYMD       <   SPA-BYMD-75-2)
                  AND  (FLG-KOH-CHK             =   ZERO    )
-                   IF      SPA-KEI-KOUKI       =   ZERO
+                   IF      SPA-ROU-KEIFLG      =   ZERO
                        MOVE    "K002"              TO  SPA-ERRCD
                        MOVE    16                  TO  SPA-GMN-CUR
-                       MOVE    1                   TO  SPA-KEI-KOUKI
+                       MOVE    1                   TO  SPA-ROU-KEIFLG
                    END-IF
                END-IF
            ELSE

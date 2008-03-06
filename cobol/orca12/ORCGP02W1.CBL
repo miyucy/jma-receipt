@@ -1358,6 +1358,13 @@
                    MOVE    1               TO  SPA-NUM-KEIFLG
                END-IF
            END-IF
+      *    後期高齢者警告
+           MOVE    SPA-PTHKN-ROU-KEIFLG (IDX)
+                                       TO  SPA-ROU-KEIFLG
+      *    新規以外はチェック済みとする
+           IF      SPA-PTHKN-SINKIKBN (IDX)    =   SPACE
+               MOVE    1                   TO  SPA-ROU-KEIFLG
+           END-IF
       *
       *    保険者番号　検索チェック
            INITIALIZE                    HKNJAINF-REC
@@ -2552,6 +2559,10 @@
                MOVE    P02-P02-KIGO        TO  SPA-GMN-KIGO
                MOVE    P02-P02-NUM         TO  SPA-GMN-NUM
                MOVE    P02-P02-SKKGETYMD   TO  SPA-GMN-SKKGETYMD
+      *        開始日変更で警告クリア
+               IF      P02-P02-HTEKSTYMD   NOT =   SPA-GMN-HTEKSTYMD
+                   MOVE    ZERO                TO  SPA-ROU-KEIFLG
+               END-IF
                MOVE    P02-P02-HTEKSTYMD   TO  SPA-GMN-HTEKSTYMD
                MOVE    P02-P02-HTEKEDYMD   TO  SPA-GMN-HTEKEDYMD
                MOVE    P02-P02-HIHKNJANAME TO  SPA-GMN-HIHKNJANAME
@@ -4261,6 +4272,8 @@
            MOVE    SPA-HKNJA-KEIFLG    TO  SPA-PTHKN-KEIFLG  (IDX)
            MOVE    SPA-KIGO-KEIFLG     TO  SPA-PTHKN-KIGO-KEIFLG (IDX)
            MOVE    SPA-NUM-KEIFLG      TO  SPA-PTHKN-NUM-KEIFLG (IDX)
+      *    後期高齢者警告
+           MOVE    SPA-ROU-KEIFLG      TO  SPA-PTHKN-ROU-KEIFLG (IDX)
       *
       *    新規の時保険ＩＤ取得（労災は労災画面で取得する）
            IF      SPA-NAI-HKNID       =   ZERO
@@ -4966,6 +4979,11 @@
       *        生活保護の場合エラー
                IF      SPA-PTKOH-HKN-SBTKBN (IDY)  =   "5"
                    MOVE    "0089"              TO  SPA-ERRCD
+      *
+                   IF      SPA-PTHKN-HKNNUM(IDX)    =   "039"
+                                                    OR  "038"
+                       MOVE    "0124"          TO  SPA-ERRCD
+                   END-IF
                END-IF
            END-IF
       *
