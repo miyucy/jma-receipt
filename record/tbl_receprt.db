@@ -1103,3 +1103,15 @@ path	upd2	{
 		;
 	};
 };
+path    key43   {
+        DBSELECT        {
+		DECLARE tbl_receprt_key43_csr CURSOR FOR
+		SELECT *
+                FROM tbl_receprt
+		WHERE 	HOSPNUM	= :HOSPNUM
+                    AND   PRTID        =   :PRTID
+                    AND     RECEYM       =   :RECEYM
+                    AND     PTNUM        =   :PTNUM
+                ;
+        };
+};
