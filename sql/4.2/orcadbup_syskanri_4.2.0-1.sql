@@ -7,6 +7,14 @@ delete from tbl_syskanri where kanricd = '5111' and kbncd = '18' and styukymd = 
 delete from tbl_syskanri where kanricd = '5111' and kbncd = '52' and styukymd = '20080401' and edyukymd = '99999999';
 delete from tbl_syskanri where kanricd = '5111' and kbncd = '53' and styukymd = '20080401' and edyukymd = '99999999';
 delete from tbl_syskanri where kanricd = '5111' and kbncd = '54' and styukymd = '20080401' and edyukymd = '99999999';   
+delete from tbl_syskanri where kanricd ='5111' and kbncd = '22' and styukymd = '00000000' and  edyukymd = '99999999';
+delete from tbl_syskanri where kanricd ='5111' and kbncd = '22' and styukymd = '00000000' and  edyukymd = '20060331';
+delete from tbl_syskanri where kanricd ='5111' and kbncd = '22' and styukymd = '20060401' and  edyukymd = '20080331';
+delete from tbl_syskanri where kanricd ='5111' and kbncd = '22' and styukymd = '20080401' and  edyukymd = '99999999';
+delete from tbl_syskanri where kanricd ='5111' and kbncd = '24' and styukymd = '00000000' and  edyukymd = '99999999';
+delete from tbl_syskanri where kanricd ='5111' and kbncd = '24' and styukymd = '00000000' and  edyukymd = '20060331';
+delete from tbl_syskanri where kanricd ='5111' and kbncd = '24' and styukymd = '20060401' and  edyukymd = '20080331';
+delete from tbl_syskanri where kanricd ='5111' and kbncd = '24' and styukymd = '20080401' and  edyukymd = '99999999';
 
 
 COPY tbl_syskanri (kanricd, kbncd, styukymd, edyukymd, kanritbl, termid, opid, creymd, upymd, uphms, hospnum) FROM stdin;
@@ -49,4 +57,10 @@ COPY tbl_syskanri (kanricd, kbncd, styukymd, edyukymd, kanritbl, termid, opid, c
 5111	52      	20080401	99999999	190130410短期滞在手術基本料３                                        短期滞在３              02			        	        	      	1
 5111	53      	20080401	99999999	190130510短期滞在手術基本料３（生活療養）                            短期滞在３（生活療養）  021			        	        	      	1
 5111	54      	20080401	99999999	190130210亜急性期入院医療管理料２                                    亜急性期２              01			        	        	      	1
+5111	22      	00000000	20060331	190799410老人一般病棟特定入院基本料                                  老人特定                03			        	        	      	1
+5111	22      	20060401	20080331	190799410老人特定入院基本料                                          老人特定                03			        	        	      	1
+5111	22      	20080401	99999999	190799410後期高齢者特定入院基本料                                    後期特定                03			        	        	      	1
+5111	24      	00000000	20060331	190799510老人一般病棟特定入院基本料（老人特別入院基本料算定患者）    老人特定（老特入基算定）03			        	        	      	1
+5111	24      	20060401	20080331	190799510老人特定入院基本料（老人特別入院基本料算定患者）            老人特定（老特入基算定）03			        	        	      	1
+5111	24      	20080401	99999999	190799510後期高齢者特定入院基本料（特別入院基本料算定患者）          後期特定（特別入基算定）03			        	        	      	1
 \.
