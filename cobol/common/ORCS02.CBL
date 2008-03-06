@@ -203,6 +203,7 @@
       *  04.01.08    NACL-ÌçÏÆ    08/01/21  Æ±ÆüºÆÆþ±¡¿©»öÂÐ±þ
       *  04.01.09    NACL-ÌçÏÆ    08/01/25  ·ë³ËÆþ±¡¸ÂÅÙ³ÛÂÐ±þ
       *  04.02.01    NACL-ÌçÏÆ    08/02/29  Ê¿À®£²£°Ç¯£´·î²þÀµÂÐ±þ
+      *  04.02.02    NACL-ÌçÏÆ    08/03/06  À¸ÊÝ°ìÉôÉéÃ´¶âÊÔ½¸½¤Àµ
       ****************************************************************
        ENVIRONMENT         DIVISION.
        CONFIGURATION       SECTION.
@@ -13597,6 +13598,10 @@
       *
            IF   COMB-KOHHKNNUM(KOH-IDX)  =  "011"
            AND  LNK-SYU-SRYYMD(1:6)     >=  "200704"
+                MOVE    "2"                  TO   HKN-RECEFTNDSPKBN
+           END-IF.
+           IF   COMB-KOHHKNNUM(KOH-IDX)  =  "012"
+           AND  LNK-SYU-SRYYMD(1:6)     >=  "200604"
                 MOVE    "2"                  TO   HKN-RECEFTNDSPKBN
            END-IF.
       *

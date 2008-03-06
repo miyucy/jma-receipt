@@ -242,6 +242,7 @@
       *  04.01.07    NACL-ÌçÏÆ    08/01/18  ºë¶Ì¸©ÀîÅçÄ®ÃÏÊý¸øÈñÂÐ±þ
       *  04.01.08    NACL-ÌçÏÆ    08/01/31  ÂçºåÉÜ£²£¸£°ÄÉ²Ã¤ËÈ¼¤¦½¤Àµ
       *  04.02.01    NACL-ÌçÏÆ    08/02/29  Ê¿À®£²£°Ç¯£´·î²þÀµÂÐ±þ
+      *  04.02.02    NACL-ÌçÏÆ    08/03/06  À¸ÊÝ°ìÉôÉéÃ´¶âÊÔ½¸½¤Àµ
       *****************************************************************
        ENVIRONMENT         DIVISION.
        CONFIGURATION       SECTION.
@@ -13501,6 +13502,11 @@
            IF   COMB-KOHHKNNUM(KOH-IDX)  =  "027"
              MOVE    HKN-HON-GAIKFTNRATE  TO   WK-KOH-FTNRATE
              MOVE    "1"                  TO   HKN-RECEFTNDSPKBN
+           END-IF.
+      *
+           IF   COMB-KOHHKNNUM(KOH-IDX)  =  "012"
+           AND  LNK-SYU-SRYYMD(1:6)     >=  "200604"
+             MOVE    "2"                  TO   HKN-RECEFTNDSPKBN
            END-IF.
       *
            IF   COMB-KOHHKNNUM(KOH-IDX)  =  "010" OR "021"
