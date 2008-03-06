@@ -139,6 +139,8 @@
       *                                     °¡µÞÀ­´üÆþ±¡°åÎÅ´ÉÍýÎÁ£²¡ÊÁ´ÈÌ¡Ë
       *                                     Àº¿À²ÊµßµÞÆþ±¡ÎÁ£²
       *                                     ¾®»ùÆþ±¡°åÎÅ´ÉÍýÎÁ£±
+      *                                     ²óÉü´ü¥ê¥Ï¥Ó¥ê¥Æ¡¼¥·¥ç¥óÆþ±¡ÎÁ£±
+      *                                     ²óÉü´ü¥ê¥Ï¥Ó¥ê¥Æ¡¼¥·¥ç¥óÆþ±¡ÎÁ£²
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -16261,6 +16263,14 @@
                        MOVE   "190124910"   TO  SYOKIKSN-IN-KHNSRYCD
                WHEN    "17"
                        MOVE   "190129310"   TO  SYOKIKSN-IN-KHNSRYCD
+               WHEN    "18"
+                       MOVE   "190129410"   TO  SYOKIKSN-IN-KHNSRYCD
+               WHEN    "19"
+                       MOVE   "190129510"   TO  SYOKIKSN-IN-KHNSRYCD
+               WHEN    "20"
+                       MOVE   "190129610"   TO  SYOKIKSN-IN-KHNSRYCD
+               WHEN    "21"
+                       MOVE   "190129710"   TO  SYOKIKSN-IN-KHNSRYCD
                WHEN    "22"
                        MOVE   "190130010"   TO  SYOKIKSN-IN-KHNSRYCD
              END-EVALUATE
