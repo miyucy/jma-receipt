@@ -77,6 +77,8 @@
            03  FLG-KSNERR                          PIC 9(01).
            03  FLG-HIT                             PIC 9(01).
            03  FLG-NYUKSNCHK                       PIC 9(01).
+           03  FLG-BFH2004                         PIC 9(01).
+           03  FLG-AFH2004                         PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -197,6 +199,7 @@
        01  CONST-AREA.
            03  CONST-H180401           PIC X(08) VALUE "20060401".
            03  CONST-H180701           PIC X(08) VALUE "20060701".
+           03  CONST-H200401           PIC X(08) VALUE "20080401".
            03  CONST-KSN-MAX           PIC 9(03) VALUE 7.
            03  CONST-GKSN-MAX          PIC 9(03) VALUE 14.
            03  CONST-SINSEIJI          PIC X(09) VALUE "190109770".
@@ -2019,20 +2022,12 @@
                GO  TO  420-TUIKA-EXT
            END-IF
       *
-      *    病棟リストを再編集する
-           PERFORM 3101-SYS-5002-GET-SEC
+           IF    ( SPA-ERRCD       =   SPACE )
       *
-           PERFORM 4100-BRM-NUM-LSTSEL-SEC
-           IF    ( FLG-BRM-NUM =   ZERO )
-               MOVE    IDX-BRMLST  TO  SPA-GMN-W21-BRMLST-SEL
+               MOVE    SPA-GMN-W21-BTUNUM
+                                   TO  W21-BTU-NAME
+               PERFORM 4100-BTUNUM-CHK-SEC
            END-IF
-      *
-      *    履歴リストを再編集する
-           PERFORM 4100-RIREKI-AREA-EDIT-SEC
-           MOVE    ZERO            TO  SPA-GMN-W21-RIREKILST-SEL
-      *
-      *    入力項目を初期化する
-           PERFORM 4201-INPUT-AREA-CLEAR-SEC
       *
       *    病棟リスト最大件数チェック
            IF    ( SPA-GMN-W21-BRMLST-MAX  >=  200 )
@@ -2116,24 +2111,10 @@
            END-IF
       *
            IF    ( SPA-ERRCD       =   SPACE )
-      *        病室リストを再編集する
-               PERFORM 3101-SYS-5002-GET-SEC
       *
-               PERFORM 4100-BRM-NUM-LSTSEL-SEC
-               IF    ( FLG-BRM-NUM =   ZERO )
-                   MOVE    IDX-BRMLST
-                                   TO  SPA-GMN-W21-BRMLST-SEL
-      *            履歴リストを再編集する
-                   PERFORM 4100-RIREKI-AREA-EDIT-SEC
-                   MOVE    ZERO    TO  SPA-GMN-W21-RIREKILST-SEL
-      *
-      *            入力項目を初期化する
-                   PERFORM 4201-INPUT-AREA-CLEAR-SEC
-               ELSE
-      *            入力項目を初期化する
-                   PERFORM 4201-INPUT-AREA-CLEAR-SEC
-                   PERFORM 4201-RIREKI-AREA-CLEAR-SEC
-               END-IF
+               MOVE    SPA-GMN-W21-BTUNUM
+                                   TO  W21-BTU-NAME
+               PERFORM 4100-BTUNUM-CHK-SEC
            END-IF
       *
            .
@@ -2272,23 +2253,13 @@
                GO  TO  421-SAKUJO-EXT
            END-IF
       *
-      *    病室リストを再編集する
-           PERFORM 3101-SYS-5002-GET-SEC
+           IF    ( SPA-ERRCD       =   SPACE )
       *
-           PERFORM 4100-BRM-NUM-LSTSEL-SEC
-           IF    ( FLG-BRM-NUM =   ZERO )
-               MOVE    IDX-BRMLST  TO  SPA-GMN-W21-BRMLST-SEL
-      *        履歴リストを再編集する
-               PERFORM 4100-RIREKI-AREA-EDIT-SEC
-               MOVE    ZERO        TO  SPA-GMN-W21-RIREKILST-SEL
-      *
-      *        入力項目を初期化する
-               PERFORM 4201-INPUT-AREA-CLEAR-SEC
-           ELSE
-      *        画面を初期化する
-               PERFORM 4201-INPUT-AREA-CLEAR-SEC
-               PERFORM 4201-RIREKI-AREA-CLEAR-SEC
+               MOVE    SPA-GMN-W21-BTUNUM
+                                   TO  W21-BTU-NAME
+               PERFORM 4100-BTUNUM-CHK-SEC
            END-IF
+      *
            .
        421-SAKUJO-EXT.
            EXIT.
@@ -2852,7 +2823,6 @@
                PERFORM 4201-INPUT-AREA-CLEAR-SEC
                PERFORM 4201-RIREKI-AREA-CLEAR-SEC
                MOVE    W21-SELNUM1     TO  SPA-GMN-W21-SELNUM1
-               MOVE    "0001"          TO  SPA-ERRCD
                GO  TO  4100-SELNUM1-CHK-EXT
            END-IF
       *
@@ -2917,6 +2887,34 @@
                PERFORM 41011-MULTI-SEL-CHK-SEC
            END-IF
       *
+           IF    ( SPA-ERRCD       =   SPACE )
+               IF    ( WRK-INPUT-MODE  =   2 )
+      *
+                   MOVE    ZERO                TO  FLG-BFH2004
+                   MOVE    ZERO                TO  FLG-AFH2004
+                   PERFORM VARYING IDX1    FROM    1   BY  1
+                           UNTIL ( IDX1    >   SPA-GMN-W21-BRMLST-MAX )
+      *
+                       IF    ( WRK-SELNUM-FLG (IDX1)   =   1 )
+                           IF    ( SPA-NAI-W21-TYUKOSTYMD (IDX1)
+                                                   >=  CONST-H200401 )
+                               MOVE    1       TO  FLG-AFH2004
+                           ELSE
+                               MOVE    1       TO  FLG-BFH2004
+                           END-IF
+                       END-IF
+      *
+                   END-PERFORM
+      *
+                   IF    ( FLG-BFH2004 =   1 )
+                    AND  ( FLG-AFH2004 =   1 )
+                       MOVE    "0016"  TO  SPA-ERRCD
+                       MOVE    2       TO  SPA-GMN-W21-CUR
+                   END-IF
+      *
+               END-IF
+           END-IF
+      *
            .
       *
        4101-SELNUM1-CHK-EXT.
@@ -2958,6 +2956,8 @@
                GO  TO  41011-MULTI-SEL-CHK-EXT
            END-UNSTRING
       *
+           MOVE    ZERO            TO  CNT-SEL
+                                       WRK-SELNUM
            PERFORM VARYING IDX-MUL    FROM    1   BY  1
                    UNTIL ( IDX-MUL    >       20 )
       *
@@ -3010,6 +3010,10 @@
                            UNTIL ( IDX1    >       WRK-MUL-EDNUM )
                        IF    ( IDX1        >=  1 )
                         AND  ( IDX1        <=  SPA-GMN-W21-BRMLST-MAX )
+                           COMPUTE CNT-SEL  =   CNT-SEL  +   1
+                           IF    ( CNT-SEL  =   1 )
+                               MOVE    IDX1    TO  WRK-SELNUM
+                           END-IF
                            MOVE    1       TO  WRK-SELNUM-FLG (IDX1)
                        END-IF
                    END-PERFORM
@@ -3019,15 +3023,11 @@
            END-PERFORM
       *
            MOVE    ZERO            TO  CNT-SEL
-                                       WRK-SELNUM
            PERFORM VARYING IDX1    FROM    1   BY  1
                    UNTIL ( IDX1    >       SPA-GMN-W21-BRMLST-MAX )
       *
                IF    ( WRK-SELNUM-FLG (IDX1)   =   1 )
                    COMPUTE CNT-SEL =   CNT-SEL +   1
-                   IF    ( CNT-SEL =   1 )
-                       MOVE    IDX1    TO  WRK-SELNUM
-                   END-IF
                END-IF
       *
            END-PERFORM
@@ -4116,28 +4116,35 @@
                END-IF
            END-IF
       *
-           IF    ( FLG-SSTKIJUNERR     =   ZERO )
-            AND  ( WRK-KSNKSNKBN       >   ZERO )
       *
-               MOVE    ZERO        TO  FLG-HIT
+           IF    ( SPA-GMN-W20-SBT     =   "04"  OR  "09" )
+               CONTINUE
+           ELSE
+               IF    ( FLG-SSTKIJUNERR     =   ZERO )
+                AND  ( WRK-KSNKSNKBN       >   ZERO )
       *
-               PERFORM VARYING IDX6    FROM    1   BY  1
-                       UNTIL ( IDX6    >   WRK-NYUKSNKBN-MAX )
-                        OR   ( FLG-HIT =   1 )
+                   MOVE    ZERO        TO  FLG-HIT
       *
-                   IF    ( WRK-NYUKSNKBN (IDX6)    >   ZERO )
-                       MOVE    WRK-NYUKSNKBN (IDX6)    TO  WRK-NYUINKBN
-                       MOVE    WRK-KSNKSNKBN           TO  WRK-KSNKBN
-                       MOVE    SPA-NAI-W21-YUKOSTYMD   TO  WRK-YUKOSTYMD
-                       PERFORM 900-NYUKSNCHK-KEY-SEL-SEC
-                       IF    ( NYUKSNCHK-CHKKBN    =   "1" OR "2" )
-                           MOVE    1       TO  FLG-HIT
+                   PERFORM VARYING IDX6    FROM    1   BY  1
+                           UNTIL ( IDX6    >   WRK-NYUKSNKBN-MAX )
+                            OR   ( FLG-HIT =   1 )
+      *
+                       IF    ( WRK-NYUKSNKBN (IDX6)    >   ZERO )
+                           MOVE    WRK-NYUKSNKBN (IDX6)
+                                                       TO  WRK-NYUINKBN
+                           MOVE    WRK-KSNKSNKBN       TO  WRK-KSNKBN
+                           MOVE    SPA-NAI-W21-YUKOSTYMD
+                                                       TO  WRK-YUKOSTYMD
+                           PERFORM 900-NYUKSNCHK-KEY-SEL-SEC
+                           IF    ( NYUKSNCHK-CHKKBN    =   "1" OR "2" )
+                               MOVE    1       TO  FLG-HIT
+                           END-IF
                        END-IF
-                   END-IF
-               END-PERFORM
+                   END-PERFORM
       *
-               IF    ( FLG-HIT     =       ZERO )
-                   MOVE    1       TO      FLG-KSNERR
+                   IF    ( FLG-HIT     =       ZERO )
+                       MOVE    1       TO      FLG-KSNERR
+                   END-IF
                END-IF
            END-IF
       *
@@ -4856,6 +4863,11 @@
            WHEN    "0015"
                MOVE    "選択された番号が多すぎます"
                                        TO  SPA-ERRMSG
+           WHEN    "0016"
+               MOVE    "有効開始日が平成２０年４月以降の病室と３"
+                                       TO  SPA-ERRMSG (1:40)
+               MOVE    "月以前の病室は同時に選択できません"
+                                       TO  SPA-ERRMSG (41:)
            WHEN    "0100"
                MOVE    SPACE           TO  SPA-ERRMSG
                STRING  "有効開始日は平成１４年４月１日以降にして"
