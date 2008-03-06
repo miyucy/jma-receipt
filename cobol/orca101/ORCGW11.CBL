@@ -62,6 +62,7 @@
       * 03.04.00     NACL-太田    06/12/20  自費内訳明細書追加
       * 03.05.00     NACL-多々納  07/05/02  グループ診療対応
       * 04.00000     NACL-多々納  07/09/19  処方せんＱＲプログラム追加他
+      * 04.02.01     NACL-森脇    08/03/06  お薬手帳追加
       *****************************************************************
       *
        ENVIRONMENT                               DIVISION.
@@ -143,11 +144,13 @@
       *----(01.00.05) LINE UPD START --------------------------
       *----(02.00.03)--UPD-START---
       *----(02.00.08)--UPD-START---
-           03  WRK-ORCAORGCHK-G  OCCURS   8.
+      *----(04.02.01)--UPD-START---
+           03  WRK-ORCAORGCHK-G  OCCURS   9.
                05  WRK-ORCAORGCHK  PIC X(01).
-           03  WRK-ORCACSTCHK-G  OCCURS   8.
+           03  WRK-ORCACSTCHK-G  OCCURS   9.
                05  WRK-ORCACSTCHK  PIC X(01).
            03  FLG-HENFLG          PIC 9(01).
+      *----(04.02.01)--UPD-END-----
       *----(02.00.08)--UPD-END-----
       *----(02.00.03)--UPD-END-----
       *----(01.00.05) LINE UPD END   --------------------------
@@ -716,6 +719,9 @@
                                        TO  SPA-GMN-TNAME (14)
            MOVE    "自費内訳明細書"
                                        TO  SPA-GMN-TNAME (15)
+      *----(04.02.01)--ADD-START---
+           MOVE    "お薬手帳"          TO  SPA-GMN-TNAME (16)
+      *----(04.02.01)--ADD-END-----
       *
       *    カルテ１号紙
            MOVE    "ORCHC01"       TO  SPA-GMN-TORGPGNM (1)
@@ -750,8 +756,16 @@
            MOVE    "ORCHC04"       TO  SPA-GMN-TORGPGNM (8)
            MOVE    "T"             TO  SPA-GMN-TORGPGCHK(8)
            MOVE    "F"             TO  SPA-GMN-TCSTPGCHK(8)
+      *----(04.02.01)--ADD-START---
+      *    お薬手帳
+           MOVE    "ORCHC62"       TO  SPA-GMN-TORGPGNM (9)
+           MOVE    "T"             TO  SPA-GMN-TORGPGCHK(9)
+           MOVE    "F"             TO  SPA-GMN-TCSTPGCHK(9)
+      *----(04.02.01)--ADD-END-----
+      *----(04.02.01)--UPD-START---
       *    カスタマイズ帳票最大
-           MOVE    8                   TO  SPA-GPGNM-MAX
+           MOVE    9                   TO  SPA-GPGNM-MAX
+      *----(04.02.01)--UPD-END-----
       *
            .
        3101-PRTNAME-SYOKI-EXT.
@@ -1259,6 +1273,9 @@
            WHEN    "CLICKED"       ALSO    "ORCAORGCHK07"
            WHEN    "CLICKED"       ALSO    "ORCAORGCHK08"
       *----(02.00.08)--ADD-START---
+      *----(04.02.01)--ADD-START---
+           WHEN    "CLICKED"       ALSO    "ORCAORGCHK09"
+      *----(04.02.01)--ADD-END-----
                MOVE    MCP-WIDGET  TO      WRK-WIDGET
                PERFORM  4101-ORCAORGCHK-CHK-SEC
       *    カスタマイズプログラム選択時
@@ -1272,6 +1289,9 @@
            WHEN    "CLICKED"       ALSO    "ORCACSTCHK07"
            WHEN    "CLICKED"       ALSO    "ORCACSTCHK08"
       *----(02.00.08)--ADD-START---
+      *----(04.02.01)--ADD-START---
+           WHEN    "CLICKED"       ALSO    "ORCACSTCHK09"
+      *----(04.02.01)--ADD-END-----
                MOVE    MCP-WIDGET  TO      WRK-WIDGET
                PERFORM  4101-ORCACSTCHK-CHK-SEC
       *    標準プログラム選択時 ＝ 入院 ＝
@@ -3130,6 +3150,10 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                         TO  W11-ORCAORGNM07
            MOVE    SPA-GMN-TORGPGNM  (8)
                                         TO  W11-ORCAORGNM08
+      *----(04.02.01)--ADD-START---
+           MOVE    SPA-GMN-TORGPGNM  (9)
+                                        TO  W11-ORCAORGNM09
+      *----(04.02.01)--ADD-END-----
       *    処方せん
            PERFORM VARYING IDX2    FROM    1   BY  1
                    UNTIL   IDX2    >       SPA-GMN-ORGPGNM02-MAX
@@ -3440,6 +3464,10 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN    "ORCACSTNM07"
                    MOVE    28          TO  SPA-GMN-CUR
                WHEN    "ORCACSTNM08"
+      *----(04.02.01)--ADD-START---
+                   MOVE    29          TO  SPA-GMN-CUR
+               WHEN    "ORCACSTNM09"
+      *----(04.02.01)--ADD-END-----
       *----(02.00.08)--ADD-END-----
       *            外来最終
                    IF    ( SPA-BEDSU       >   ZERO )

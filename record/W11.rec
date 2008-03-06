@@ -198,6 +198,9 @@ W11	{
 						ORCAORGNM08	{
 							value	varchar(20);
 						};
+						ORCAORGNM09	{
+							value	varchar(20);
+						};
 						ORCAORGCHK01	{
 							value	bool;
 						};
@@ -220,6 +223,9 @@ W11	{
 							value	bool;
 						};
 						ORCAORGCHK08	{
+							value	bool;
+						};
+						ORCAORGCHK09	{
 							value	bool;
 						};
 						ORCACSTNM01	{
@@ -246,6 +252,9 @@ W11	{
 						ORCACSTNM08	{
 							value	varchar(20);
 						};
+						ORCACSTNM09	{
+							value	varchar(20);
+						};
 						ORCACSTCHK01	{
 							value	bool;
 						};
@@ -268,6 +277,9 @@ W11	{
 							value	bool;
 						};
 						ORCACSTCHK08	{
+							value	bool;
+						};
+						ORCACSTCHK09	{
 							value	bool;
 						};
 					};

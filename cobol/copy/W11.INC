@@ -75,11 +75,12 @@
                       07  W11-ORCAORGNM06      PIC X(20).
                       07  W11-ORCAORGNM07      PIC X(20).
                       07  W11-ORCAORGNM08      PIC X(20).
-                      07  W11-ORCAORGCHK-G     OCCURS   8.
+                      07  W11-ORCAORGNM09      PIC X(20).
+                      07  W11-ORCAORGCHK-G     OCCURS   9.
                         08  W11-ORCAORGCHK     PIC X.
-                      07  W11-ORCACSTNM-G      OCCURS   8.
+                      07  W11-ORCACSTNM-G      OCCURS   9.
                         08  W11-ORCACSTNM      PIC X(20).
-                      07  W11-ORCACSTCHK-G     OCCURS   8.
+                      07  W11-ORCACSTCHK-G     OCCURS   9.
                         08  W11-ORCACSTCHK     PIC X.
                     06  W11-N0101-STATE        PIC S9(9)   BINARY.
                     06  W11-FIXED4.
