@@ -128,6 +128,8 @@
                    09  SYS-5001-DRTEK-CD       PIC X(09).
                    09  SYS-5001-DRTEK-KBN      PIC X(01).
       *入院料加算再定義
+      *平成２０年４月以降は算定する加算コードが配列の１番目より
+      *順次設定される。
                05  SYS-5001-KSNTBLR  REDEFINES SYS-5001-KSNAREA.
                  07  SYS-5001-KSN              OCCURS  14.
                    09  SYS-5001-KSNCD          PIC X(09).
