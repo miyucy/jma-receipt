@@ -141,6 +141,7 @@
       *                                     ¾®»ùÆþ±¡°åÎÅ´ÉÍýÎÁ£±
       *                                     ²óÉü´ü¥ê¥Ï¥Ó¥ê¥Æ¡¼¥·¥ç¥óÆþ±¡ÎÁ£±
       *                                     ²óÉü´ü¥ê¥Ï¥Ó¥ê¥Æ¡¼¥·¥ç¥óÆþ±¡ÎÁ£²
+      *  04.02.00    NACL-ÂÀÅÄ    08/03/06  ¸å´ü¹âÎð¼ÔÈ½ÄêÄÉ²Ã
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -238,6 +239,7 @@
            03  IDX-BTUNUM                  PIC 9(05).
            03  IDX-SYU                     PIC 9(05).
            03  IDX-MATSUBI                 PIC 9(02).
+           03  IDX-LIFE                    PIC 9(05).
       *
       *    ¥«¥¦¥ó¥ÈÎÎ°è
        01  CNT-AREA.
@@ -380,8 +382,9 @@
            03  WRK-KBNCD                   PIC X(08).
            03  WRK-YUKYMD                  PIC X(08).
            03  WRK-TOKNYUIN-NM             PIC X(60).
-           03  WRK-TOKNYUIN-KBN            PIC X(01).
-           03  WRK-TOKNYUIN-CD             PIC X(02).
+           03  WRK-TOKNYUIN.
+               05  WRK-TOKNYUIN-KBN        PIC X(01).
+               05  WRK-TOKNYUIN-CD         PIC X(02).
            03  WRK-TOKNYUIN-SRYCD-X.
                05  WRK-TOKNYUIN-SRYCD      PIC 9(09).
            03  WRK-TOKNYUIN-SRYCDTTL       PIC 9(14).
@@ -486,7 +489,6 @@
                05  BAK-AGE-BIRTHDAY        PIC X(08).
                05  BAK-AGE-KJNYMD          PIC X(08).
                05  BAK-AGE-NENREI          PIC 9(03).
-               03  BAK-AGE-FLG-ROUJIN      PIC 9(01).
       *
       *    ´µ¼ÔÇ¯Îð»»½ÐÍÑ¥¨¥ê¥¢
        01  WRK-NENREI-AREA.
@@ -514,6 +516,7 @@
            03  CONST-H181001               PIC X(08)   VALUE "20061001".
            03  CONST-H180401               PIC X(08)   VALUE "20060401".
            03  CONST-H180701               PIC X(08)   VALUE "20060701".
+           03  CONST-H200401               PIC X(08)   VALUE "20080401".
            03  CONST-SYORIKBN-G.
                05  CONST-SYORIKBN-VAL.
       *
@@ -614,6 +617,12 @@
                    07                      PIC X(03)   VALUE   "213".
                    07                      PIC X(03)   VALUE   "216".
       *
+                   07                      PIC X(03)   VALUE   "218".
+                   07                      PIC X(03)   VALUE   "219".
+      *
+                   07                      PIC X(03)   VALUE   "220".
+                   07                      PIC X(03)   VALUE   "221".
+      *
                    07                      PIC X(03)   VALUE   "302".
                    07                      PIC X(03)   VALUE   "349".
       *
@@ -658,13 +667,16 @@
       *
                    07                      PIC X(03)   VALUE   "323".
                    07                      PIC X(03)   VALUE   "351".
+      *
+                   07                      PIC X(03)   VALUE   "352".
+                   07                      PIC X(03)   VALUE   "353".
                05  CONST-TOK-LIFECD-R  REDEFINES   CONST-TOK-LIFECD-VAL.
-                   07  CONST-TOK-LIFECD-OCC    OCCURS  16.
+                   07  CONST-TOK-LIFECD-OCC    OCCURS  19.
                        09  CONST-TOK-LIFECD-IPN
                                            PIC X(03).
                        09  CONST-TOK-LIFECD-LIFE
                                            PIC X(03).
-               05  CONST-TOK-LIFECD-MAX    PIC 9(05)   VALUE   16.
+               05  CONST-TOK-LIFECD-MAX    PIC 9(05)   VALUE   19.
       *
       *    ¥¹¥ÑÎÎ°è ¥ï¡¼¥¯
            COPY    "COMMON-SPA"      REPLACING
@@ -812,6 +824,10 @@
       *    Æþ±¡²ñ·×
        01  NYUINACCT-REC.
            COPY    "CPNYUINACCT.INC".
+      *
+      *    ´µ¼ÔÊÝ¸±¾ðÊó
+       01  PTHKNINF-REC.
+           COPY    "CPPTHKNINF.INC".
       *
       *    ´µ¼Ô¸øÈñ¾ðÊó
        01  PTKOHINF-REC.
@@ -4737,20 +4753,6 @@
                            MOVE    "2"         TO  WRK-TOKNYUIN-KBN
                            PERFORM 4100-CMB-TOKNYUIN-DAT-SET-SEC
                        END-IF
-                   WHEN  ( SYS-5001-BTU-TOKTEI-NYUIN
-                                       =   "13" OR "16" )
-                       IF    ( FLG-LIFE-RJN        =   ZERO )
-                        OR   ( SPA-NAI-I01-BTUSBT  NOT =   "04" )
-                           MOVE    "5110"      TO  WRK-KANRICD
-                           MOVE    "13"        TO  WRK-KBNCD
-                           MOVE    "2"         TO  WRK-TOKNYUIN-KBN
-                           PERFORM 4100-CMB-TOKNYUIN-DAT-SET-SEC
-                       ELSE
-                           MOVE    "5110"      TO  WRK-KANRICD
-                           MOVE    "16"        TO  WRK-KBNCD
-                           MOVE    "2"         TO  WRK-TOKNYUIN-KBN
-                           PERFORM 4100-CMB-TOKNYUIN-DAT-SET-SEC
-                       END-IF
                    WHEN    OTHER
                        MOVE    "5110"      TO  WRK-KANRICD
                        MOVE    SYS-5001-BTU-TOKTEI-NYUIN
@@ -4780,31 +4782,17 @@
                IF    ( SYS-5002-BRM-TOKTEI-NYUIN
                                NOT =   SPACE )
                    EVALUATE    TRUE
-                   WHEN    ( SYS-5002-BRM-TOKTEI-NYUIN   =   "02"
-                                                          OR "49")
+                   WHEN    ( SYS-5002-BRM-TOKTEI-NYUIN   =   "02" )
       *
-                       IF    ( FLG-LIFE-RJN        =   ZERO )
-                        OR   ( SPA-NAI-I01-BTUSBT  NOT =   "09" )
-                           MOVE    "5111"      TO  WRK-KANRICD
-                           MOVE    "02"        TO  WRK-KBNCD
-                           MOVE    "3"         TO  WRK-TOKNYUIN-KBN
-                           PERFORM 4100-CMB-TOKNYUIN-DAT-SET-SEC
+                       MOVE    "5111"      TO  WRK-KANRICD
+                       MOVE    "02"        TO  WRK-KBNCD
+                       MOVE    "3"         TO  WRK-TOKNYUIN-KBN
+                       PERFORM 4100-CMB-TOKNYUIN-DAT-SET-SEC
       *
-                           MOVE    "5111"      TO  WRK-KANRICD
-                           MOVE    "23"        TO  WRK-KBNCD
-                           MOVE    "3"         TO  WRK-TOKNYUIN-KBN
-                           PERFORM 4100-CMB-TOKNYUIN-DAT-SET-SEC
-                       ELSE
-                           MOVE    "5111"      TO  WRK-KANRICD
-                           MOVE    "49"        TO  WRK-KBNCD
-                           MOVE    "3"         TO  WRK-TOKNYUIN-KBN
-                           PERFORM 4100-CMB-TOKNYUIN-DAT-SET-SEC
-      *
-                           MOVE    "5111"      TO  WRK-KANRICD
-                           MOVE    "51"        TO  WRK-KBNCD
-                           MOVE    "3"         TO  WRK-TOKNYUIN-KBN
-                           PERFORM 4100-CMB-TOKNYUIN-DAT-SET-SEC
-                       END-IF
+                       MOVE    "5111"      TO  WRK-KANRICD
+                       MOVE    "23"        TO  WRK-KBNCD
+                       MOVE    "3"         TO  WRK-TOKNYUIN-KBN
+                       PERFORM 4100-CMB-TOKNYUIN-DAT-SET-SEC
       *
                    WHEN    OTHER
                        MOVE    "5111"      TO  WRK-KANRICD
@@ -4834,19 +4822,15 @@
            END-IF
       *
       *    Ã»´üÂÚºß¼ê½Ñ´ðËÜÎÁ¤ò¥³¥ó¥Ü¤ËÀßÄê
-           IF    ( FLG-LIFE-RJN        =   ZERO )
-            OR  (( SPA-NAI-I01-BTUSBT  NOT =   "04" )
-             AND ( SPA-NAI-I01-BTUSBT  NOT =   "09" ))
-               MOVE    "5111"      TO  WRK-KANRICD
-               MOVE    "21"        TO  WRK-KBNCD
-               MOVE    "3"         TO  WRK-TOKNYUIN-KBN
-               PERFORM 4100-CMB-TOKNYUIN-DAT-SET-SEC
-           ELSE
-               MOVE    "5111"      TO  WRK-KANRICD
-               MOVE    "50"        TO  WRK-KBNCD
-               MOVE    "3"         TO  WRK-TOKNYUIN-KBN
-               PERFORM 4100-CMB-TOKNYUIN-DAT-SET-SEC
-           END-IF
+           MOVE    "5111"      TO  WRK-KANRICD
+           MOVE    "21"        TO  WRK-KBNCD
+           MOVE    "3"         TO  WRK-TOKNYUIN-KBN
+           PERFORM 4100-CMB-TOKNYUIN-DAT-SET-SEC
+      *
+           MOVE    "5111"      TO  WRK-KANRICD
+           MOVE    "52"        TO  WRK-KBNCD
+           MOVE    "3"         TO  WRK-TOKNYUIN-KBN
+           PERFORM 4100-CMB-TOKNYUIN-DAT-SET-SEC
       *
            .
        4101-CMB-TOKNYUIN-SET-EXT.
@@ -4857,7 +4841,6 @@
        41011-PT-AGE-SEC            SECTION.
       *
            MOVE    ZERO                TO  WRK-NENREI
-                                           FLG-ROUJIN
       *
            IF    ( BAK-AGE-PTID            =   ZERO )
             OR  (( BAK-AGE-PTID        NOT =   SPA-NAI-I01-PTID )
@@ -4873,17 +4856,13 @@
                     COMPUTE WRK-NENREI =   WRK-NENREI  -   1
                END-IF
       *
-               PERFORM 410111-ROUJIN-CHK-SEC
-      *
                MOVE    SPA-NAI-I01-PTID    TO  BAK-AGE-PTID
                MOVE    SPA-NAI-I01-BIRTHDAY
                                            TO  BAK-AGE-BIRTHDAY
                MOVE    WRK-KJNYMD          TO  BAK-AGE-KJNYMD
                MOVE    WRK-NENREI          TO  BAK-AGE-NENREI
-               MOVE    FLG-ROUJIN          TO  BAK-AGE-FLG-ROUJIN
            ELSE
                MOVE    BAK-AGE-NENREI      TO  WRK-NENREI
-               MOVE    BAK-AGE-FLG-ROUJIN  TO  FLG-ROUJIN
            END-IF
       *
            .
@@ -4891,28 +4870,72 @@
            EXIT.
       *
       *****************************************************************
-      *    Ï·¿Í¸øÈñÈ½Äê½èÍý
+      *    Ï·¿ÍÈ½Äê½èÍý
       *****************************************************************
-       410111-ROUJIN-CHK-SEC          SECTION.
+       410111-ROUJIN-CHK-SEC           SECTION.
       *
-           INITIALIZE                  PTKOHINF-REC
-           MOVE    SPA-HOSPNUM          TO  PTKOH-HOSPNUM
-           MOVE    SPA-NAI-I01-PTID    TO  PTKOH-PTID
-           MOVE    "027"               TO  PTKOH-KOHNUM
-           MOVE    WRK-KJNYMD          TO  PTKOH-TEKSTYMD
-           MOVE    WRK-KJNYMD          TO  PTKOH-TEKEDYMD
+           MOVE    ZERO                TO  FLG-ROUJIN
       *
-           MOVE    PTKOHINF-REC        TO  MCPDATA-REC
-           MOVE    "tbl_ptkohinf"      TO  MCP-TABLE
-           MOVE    "key6"              TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
-           IF    ( MCP-RC              =   ZERO )
-               MOVE    1               TO  FLG-ROUJIN
+           IF    ( WRK-KJNYMD         >=  CONST-H200401 )
+      *
+               INITIALIZE                  PTHKNINF-REC
+               MOVE    SPA-HOSPNUM         TO  PTHKN-HOSPNUM
+               MOVE    SPA-NAI-I01-PTID    TO  PTHKN-PTID
+               MOVE    "039"               TO  PTHKN-HKNNUM
+               MOVE    WRK-KJNYMD          TO  PTHKN-TEKSTYMD
+               MOVE    WRK-KJNYMD          TO  PTHKN-TEKEDYMD
+      *
+               MOVE    PTHKNINF-REC        TO  MCPDATA-REC
+               MOVE    "tbl_pthkninf"      TO  MCP-TABLE
+               MOVE    "key9"              TO  MCP-PATHNAME
+               PERFORM 910-DBSELECT-SEC
+               IF    ( MCP-RC              =   ZERO )
+                   MOVE    1               TO  FLG-ROUJIN
+               END-IF
+      *
+               MOVE    "tbl_pthkninf"      TO  MCP-TABLE
+               MOVE    "key9"              TO  MCP-PATHNAME
+               PERFORM 910-DBCLOSECURSOR-SEC
+      *
+               INITIALIZE                  PTKOHINF-REC
+               MOVE    SPA-HOSPNUM         TO  PTKOH-HOSPNUM
+               MOVE    SPA-NAI-I01-PTID    TO  PTKOH-PTID
+               MOVE    "968"               TO  PTKOH-KOHNUM
+               MOVE    WRK-KJNYMD          TO  PTKOH-TEKSTYMD
+               MOVE    WRK-KJNYMD          TO  PTKOH-TEKEDYMD
+      *
+               MOVE    PTKOHINF-REC        TO  MCPDATA-REC
+               MOVE    "tbl_ptkohinf"      TO  MCP-TABLE
+               MOVE    "key6"              TO  MCP-PATHNAME
+               PERFORM 910-DBSELECT-SEC
+               IF    ( MCP-RC              =   ZERO )
+                   MOVE    1               TO  FLG-ROUJIN
+               END-IF
+      *
+               MOVE    "tbl_ptkohinf"      TO  MCP-TABLE
+               MOVE    "key6"              TO  MCP-PATHNAME
+               PERFORM 910-DBCLOSECURSOR-SEC
+           ELSE
+      *
+               INITIALIZE                  PTKOHINF-REC
+               MOVE    SPA-HOSPNUM         TO  PTKOH-HOSPNUM
+               MOVE    SPA-NAI-I01-PTID    TO  PTKOH-PTID
+               MOVE    "027"               TO  PTKOH-KOHNUM
+               MOVE    WRK-KJNYMD          TO  PTKOH-TEKSTYMD
+               MOVE    WRK-KJNYMD          TO  PTKOH-TEKEDYMD
+      *
+               MOVE    PTKOHINF-REC        TO  MCPDATA-REC
+               MOVE    "tbl_ptkohinf"      TO  MCP-TABLE
+               MOVE    "key6"              TO  MCP-PATHNAME
+               PERFORM 910-DBSELECT-SEC
+               IF    ( MCP-RC              =   ZERO )
+                   MOVE    1               TO  FLG-ROUJIN
+               END-IF
+      *
+               MOVE    "tbl_ptkohinf"      TO  MCP-TABLE
+               MOVE    "key6"              TO  MCP-PATHNAME
+               PERFORM 910-DBCLOSECURSOR-SEC
            END-IF
-      *
-           MOVE    "tbl_ptkohinf"      TO  MCP-TABLE
-           MOVE    "key6"              TO  MCP-PATHNAME
-           PERFORM 910-DBCLOSECURSOR-SEC
       *
            .
       *
@@ -4922,6 +4945,27 @@
       *    ÆÃÄêÆþ±¡ÎÁ¥³¥ó¥Ü¥Ç¡¼¥¿¥»¥Ã¥È½èÍý
       *****************************************************************
        4100-CMB-TOKNYUIN-DAT-SET-SEC   SECTION.
+      *
+           MOVE    WRK-KBNCD           TO  WRK-TOKNYUIN-CD
+      *
+           IF    ( SPA-NAI-I01-BTUSBT  =   "04" OR "09" )
+            AND  ( FLG-ROUJIN          =   1 )
+      *
+               PERFORM VARYING IDX-LIFE    FROM    1   BY  1
+                       UNTIL ( IDX-LIFE    >   CONST-TOK-LIFECD-MAX )
+      *
+                   IF    ( WRK-TOKNYUIN    =   CONST-TOK-LIFECD-IPN
+                                                             (IDX-LIFE))
+                       MOVE    CONST-TOK-LIFECD-LIFE (IDX-LIFE)
+                                           TO  WRK-TOKNYUIN
+                       MOVE    CONST-TOK-LIFECD-MAX
+                                           TO  IDX-LIFE
+                   END-IF
+      *
+               END-PERFORM
+           END-IF
+      *
+           MOVE    WRK-TOKNYUIN-CD TO  WRK-KBNCD
       *
            MOVE    WRK-KJNYMD      TO  WRK-YUKYMD
            PERFORM 900-SYSKANRI-KEY10-SEL-SEC
@@ -16463,6 +16507,10 @@
       *****************************************************************
        4801-RJN-TAISYO-CHK-SEC         SECTION.
       *
+      *    ´µ¼Ô¸øÈñ¾ðÊó¤«¤éÏ·¿ÍÊÝ·ò¤ÎÅÐÏ¿¥Á¥§¥Ã¥¯
+           MOVE    WRK-AGECHK-SRYYMD TO  WRK-KJNYMD
+           PERFORM 410111-ROUJIN-CHK-SEC
+      *
            MOVE    ZERO                TO  FLG-RJN
            MOVE    ZERO                TO  FLG-LIFE-RJN
 
@@ -16513,34 +16561,13 @@
            END-IF
       *
       *    Ï·¿ÍÂÐ¾Ý´µ¼ÔÈ½Äê
-           IF    ((FLG-HKNCOMBI     =   ZERO)    AND
-                  (COMB-KOH1HKNNUM  =   "027"))      OR
+           IF    ( FLG-ROUJIN       =   1 )      OR
                  ( AGECHK-NENREI   >=    75)         OR
                  ((AGECHK-NENREI   >=    70)     AND
                   (PTINF-BIRTHDAY  <=   "19320930")) OR
                   (AGECHK-ROUJIN    =    1)
                MOVE    1            TO  FLG-RJN
            END-IF
-      *
-      *    ´µ¼Ô¸øÈñ¾ðÊó¤«¤éÏ·¿ÍÊÝ·ò¤ÎÅÐÏ¿¥Á¥§¥Ã¥¯
-           INITIALIZE                    PTKOHINF-REC
-           MOVE    SPA-HOSPNUM       TO   PTKOH-HOSPNUM
-           MOVE    SPA-NAI-I01-PTID TO   PTKOH-PTID
-           MOVE    "027"            TO   PTKOH-KOHNUM
-           MOVE    WRK-AGECHK-SRYYMD
-                                    TO   PTKOH-TEKSTYMD
-           MOVE    WRK-AGECHK-SRYYMD
-                                    TO   PTKOH-TEKEDYMD
-           MOVE    PTKOHINF-REC     TO   MCPDATA-REC
-           MOVE    "tbl_ptkohinf"   TO   MCP-TABLE
-           MOVE    "key6"           TO   MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC 
-           IF    ( MCP-RC      =   ZERO )
-               MOVE    1            TO  FLG-RJN
-           END-IF
-           MOVE    "tbl_ptkohinf"   TO   MCP-TABLE
-           MOVE    "key6"           TO   MCP-PATHNAME
-           PERFORM 910-DBCLOSECURSOR-SEC
       *
            IF    ( WRK-AGECHK-SRYYMD   >=  CONST-H181001 )
             AND  ( SPA-NAI-I01-RSI-HKNKBN
@@ -16549,8 +16576,7 @@
                MOVE    FLG-RJN      TO  FLG-LIFE-RJN
       *
       *        Ï·¿ÍÂÐ¾Ý´µ¼ÔÈ½Äê
-               IF    ((FLG-HKNCOMBI     =   ZERO)    AND
-                      (COMB-KOH1HKNNUM  =   "027"))      OR
+               IF    ( FLG-ROUJIN       =   1 )      OR
                       (AGECHK-NENREI   >=    70)
                    MOVE    1        TO  FLG-LIFE-RJN
                END-IF
