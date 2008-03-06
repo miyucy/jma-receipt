@@ -87,6 +87,7 @@
       *                                     回復期リハビリテーション入院料１
       *                                     回復期リハビリテーション入院料２
       *                                     精神科救急・合併症入院料
+      *                                     短期滞在手術基本料３
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -6496,6 +6497,10 @@
                        MOVE   "190125310"   TO  SYOKIKSN-IN-KHNSRYCD
                    WHEN    "51"
                        MOVE   "190125210"   TO  SYOKIKSN-IN-KHNSRYCD
+                   WHEN    "52"
+                       MOVE   "190130410"   TO  SYOKIKSN-IN-KHNSRYCD
+                   WHEN    "53"
+                       MOVE   "190130510"   TO  SYOKIKSN-IN-KHNSRYCD
                    WHEN    "54"
                        MOVE   "190129910"   TO  SYOKIKSN-IN-KHNSRYCD
                END-EVALUATE
