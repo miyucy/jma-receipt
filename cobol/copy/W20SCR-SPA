@@ -28,6 +28,9 @@
            05  SPA-GMN-W20-MAX                     PIC 9(04).
            05  SPA-GMN-W20-CUR                     PIC 9(03).
            05  SPA-GMN-W20-MOTOPG                  PIC X(08).
+           05  SPA-GMN-W20-KJNYMD-G.
+             07  SPA-GMN-W20-KJNYMD                PIC X(10).
+             07  SPA-NAI-W20-KJNYMD                PIC X(08).
            05  SPA-GMN-W20-AREA.
       *      ∆˛Œœπ‡Ã‹ŒŒ∞Ë
              07  SPA-GMN-W20-INPUT-AREA.
@@ -513,8 +516,8 @@
            05  SPA-GMN-W21-CUR                         PIC 9(03).
            05  SPA-GMN-W21-MOTOPG                      PIC X(08).
            05  SPA-GMN-W21-KJNYMD-G.
-             07  SPA-NAI-W21-KJNYMD                    PIC X(08).
              07  SPA-GMN-W21-KJNYMD                    PIC X(10).
+             07  SPA-NAI-W21-KJNYMD                    PIC X(08).
            05  SPA-GMN-W21-AREA.
       *      •ÿ•√•¿π‡Ã‹ŒŒ∞Ë
              07  SPA-GMN-W21-HEAD-AREA.

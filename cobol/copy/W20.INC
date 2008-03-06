@@ -26,6 +26,7 @@
                 05  W20-B09                PIC X(04).
                 05  W20-B09-STATE          PIC S9(9)   BINARY.
               04  W20-B12-STATE            PIC S9(9)   BINARY.
+              04  W20-KJNYMD               PIC X(10).
               04  W20-BTUNUM               PIC S9(2).
       *
               04  W20-NAME-G.

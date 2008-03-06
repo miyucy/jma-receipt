@@ -1025,11 +1025,11 @@
       *****************************************************************
        3101-CMB-SNRRYO-SET-SEC         SECTION.
       *
-           MOVE    "0"                 TO  SPA-GMN-W21-SNRRYOL(1)
+           MOVE    "1"                 TO  SPA-GMN-W21-SNRRYOL(1)
            MOVE    "»»Äê¤·¤Ê¤¤"        TO  SPA-GMN-W21-SNRRYOMEIL(1)
-           MOVE    "1"                 TO  SPA-GMN-W21-SNRRYOL(2)
+           MOVE    "2"                 TO  SPA-GMN-W21-SNRRYOL(2)
            MOVE    "²Ã»»£±"            TO  SPA-GMN-W21-SNRRYOMEIL(2)
-           MOVE    "2"                 TO  SPA-GMN-W21-SNRRYOL(3)
+           MOVE    "3"                 TO  SPA-GMN-W21-SNRRYOL(3)
            MOVE    "²Ã»»£²"            TO  SPA-GMN-W21-SNRRYOMEIL(3)
            MOVE    3                   TO  SPA-GMN-W21-SNRRYO-MAX
       *
@@ -1072,40 +1072,40 @@
            EVALUATE    TRUE
            WHEN  ( WRK-KJN-YUKSTYMD    >=  CONST-H180401 )
       *
-               MOVE    "0"                 TO  SPA-GMN-W21-BTURYOL(1)
+               MOVE    "1"                 TO  SPA-GMN-W21-BTURYOL(1)
                MOVE    "»»Äê¤·¤Ê¤¤"        TO  SPA-GMN-W21-BTURYOMEIL(1)
       *
-               MOVE    "1"                 TO  SPA-GMN-W21-BTURYOL(2)
+               MOVE    "2"                 TO  SPA-GMN-W21-BTURYOL(2)
                MOVE    "ÎÅÍÜÉÂÅïÎÅÍÜ´Ä¶­²Ã»»£±"
                                            TO  SPA-GMN-W21-BTURYOMEIL(2)
       *
-               MOVE    "2"                 TO  SPA-GMN-W21-BTURYOL(3)
+               MOVE    "3"                 TO  SPA-GMN-W21-BTURYOL(3)
                MOVE    "ÎÅÍÜÉÂÅïÎÅÍÜ´Ä¶­²Ã»»£²"
                                            TO  SPA-GMN-W21-BTURYOMEIL(3)
       *
-               MOVE    "3"                 TO  SPA-GMN-W21-BTURYOL(4)
+               MOVE    "4"                 TO  SPA-GMN-W21-BTURYOL(4)
                MOVE    "ÎÅÍÜÉÂÅïÎÅÍÜ´Ä¶­²Ã»»£³"
                                            TO  SPA-GMN-W21-BTURYOMEIL(4)
       *
-               MOVE    "4"                 TO  SPA-GMN-W21-BTURYOL(5)
+               MOVE    "5"                 TO  SPA-GMN-W21-BTURYOL(5)
                MOVE    "ÎÅÍÜÉÂÅïÎÅÍÜ´Ä¶­²Ã»»£´"
                                            TO  SPA-GMN-W21-BTURYOMEIL(5)
       *
                MOVE    5                   TO  SPA-GMN-W21-BTURYO-MAX
            WHEN    OTHER
       *
-               MOVE    "0"                 TO  SPA-GMN-W21-BTURYOL(1)
+               MOVE    "1"                 TO  SPA-GMN-W21-BTURYOL(1)
                MOVE    "»»Äê¤·¤Ê¤¤"        TO  SPA-GMN-W21-BTURYOMEIL(1)
       *
-               MOVE    "1"                 TO  SPA-GMN-W21-BTURYOL(2)
+               MOVE    "2"                 TO  SPA-GMN-W21-BTURYOL(2)
                MOVE    "ÎÅÍÜÉÂÅïÎÅÍÜ´Ä¶­²Ã»»£±"
                                            TO  SPA-GMN-W21-BTURYOMEIL(2)
       *
-               MOVE    "2"                 TO  SPA-GMN-W21-BTURYOL(3)
+               MOVE    "3"                 TO  SPA-GMN-W21-BTURYOL(3)
                MOVE    "ÎÅÍÜÉÂÅïÎÅÍÜ´Ä¶­²Ã»»£²"
                                            TO  SPA-GMN-W21-BTURYOMEIL(3)
       *
-               MOVE    "3"                 TO  SPA-GMN-W21-BTURYOL(4)
+               MOVE    "4"                 TO  SPA-GMN-W21-BTURYOL(4)
                MOVE    "ÎÅÍÜÉÂÅïÎÅÍÜ´Ä¶­²Ã»»£³"
                                            TO  SPA-GMN-W21-BTURYOMEIL(4)
       *
@@ -1121,11 +1121,11 @@
       *****************************************************************
        3101-CMB-JYUTOK-SET-SEC         SECTION.
       *
-           MOVE    "0"                 TO  SPA-GMN-W21-JYUTOKL(1)
+           MOVE    "1"                 TO  SPA-GMN-W21-JYUTOKL(1)
            MOVE    "»»Äê¤·¤Ê¤¤"        TO  SPA-GMN-W21-JYUTOKMEIL(1)
-           MOVE    "1"                 TO  SPA-GMN-W21-JYUTOKL(2)
+           MOVE    "2"                 TO  SPA-GMN-W21-JYUTOKL(2)
            MOVE    "¸Ä¼¼"              TO  SPA-GMN-W21-JYUTOKMEIL(2)
-           MOVE    "2"                 TO  SPA-GMN-W21-JYUTOKL(3)
+           MOVE    "3"                 TO  SPA-GMN-W21-JYUTOKL(3)
            MOVE    "£²¿ÍÉô²°"          TO  SPA-GMN-W21-JYUTOKMEIL(3)
            MOVE    3                   TO  SPA-GMN-W21-JYUTOK-MAX
       *
@@ -1450,12 +1450,12 @@
            MOVE    WRK-CMB-ITM         TO  SPA-GMN-W21-SINSEIJI-G
       *
       *    ¿ÇÎÅ½êÎÅÍÜÉÂ¾²ÎÅÍÜ´Ä¶­²Ã»»
-           MOVE    "0"                 TO  WRK-CMB-CD
+           MOVE    "1"                 TO  WRK-CMB-CD
            EVALUATE    TRUE
            WHEN  ( SYS-5002-SNR-RYOYO-KBN (1)  =   "2" )
-               MOVE    "1"             TO  WRK-CMB-CD
-           WHEN  ( SYS-5002-SNR-RYOYO-KBN (2)  =   "2" )
                MOVE    "2"             TO  WRK-CMB-CD
+           WHEN  ( SYS-5002-SNR-RYOYO-KBN (2)  =   "2" )
+               MOVE    "3"             TO  WRK-CMB-CD
            WHEN    OTHER
                MOVE    SPACE           TO  WRK-CMB-CD
            END-EVALUATE
@@ -1475,14 +1475,14 @@
            MOVE    WRK-CMB-ITM         TO  SPA-GMN-W21-RYO-G
       *
       *    ÎÅÍÜÉÂÅïÎÅÍÜ´Ä¶­²Ã»»
-           MOVE    "0"                 TO  WRK-CMB-CD
+           MOVE    "1"                 TO  WRK-CMB-CD
            EVALUATE    TRUE
            WHEN  ( SYS-5002-BTU-RYOYO-KBN (1)  =   "2" )
-               MOVE    "1"             TO  WRK-CMB-CD
-           WHEN  ( SYS-5002-BTU-RYOYO-KBN (2)  =   "2" )
                MOVE    "2"             TO  WRK-CMB-CD
-           WHEN  ( SYS-5002-BTU-RYOYO-KBN (3)  =   "2" )
+           WHEN  ( SYS-5002-BTU-RYOYO-KBN (2)  =   "2" )
                MOVE    "3"             TO  WRK-CMB-CD
+           WHEN  ( SYS-5002-BTU-RYOYO-KBN (3)  =   "2" )
+               MOVE    "4"             TO  WRK-CMB-CD
            WHEN    OTHER
                MOVE    SPACE           TO  WRK-CMB-CD
            END-EVALUATE
@@ -1490,12 +1490,12 @@
            MOVE    WRK-CMB-ITM         TO  SPA-GMN-W21-BTURYO-G
       *
       *    ½Å¾É¼ÔÅùÎÅÍÜ´Ä¶­ÆÃÊÌ²Ã»»
-           MOVE    "0"                 TO  WRK-CMB-CD
+           MOVE    "1"                 TO  WRK-CMB-CD
            EVALUATE    TRUE
            WHEN  ( SYS-5002-JYUTOK1-KBN  =   "2" )
-               MOVE    "1"             TO  WRK-CMB-CD
-           WHEN  ( SYS-5002-JYUTOK2-KBN  =   "2" )
                MOVE    "2"             TO  WRK-CMB-CD
+           WHEN  ( SYS-5002-JYUTOK2-KBN  =   "2" )
+               MOVE    "3"             TO  WRK-CMB-CD
            WHEN    OTHER
                MOVE    SPACE           TO  WRK-CMB-CD
            END-EVALUATE
@@ -1518,12 +1518,12 @@
            MOVE    WRK-CMB-ITM         TO  SPA-GMN-W21-SINSEIJI-G
       *
       *    ¿ÇÎÅ½êÎÅÍÜÉÂ¾²ÎÅÍÜ´Ä¶­²Ã»»
-           MOVE    "0"                 TO  WRK-CMB-CD
+           MOVE    "1"                 TO  WRK-CMB-CD
            EVALUATE    TRUE
            WHEN  ( SYS-5002-SNR-RYOYO-KBN (1)  =   "2" )
-               MOVE    "1"             TO  WRK-CMB-CD
-           WHEN  ( SYS-5002-SNR-RYOYO-KBN (2)  =   "2" )
                MOVE    "2"             TO  WRK-CMB-CD
+           WHEN  ( SYS-5002-SNR-RYOYO-KBN (2)  =   "2" )
+               MOVE    "3"             TO  WRK-CMB-CD
            END-EVALUATE
            PERFORM 4200-SNRRYOLST-CHK-SEC
            MOVE    WRK-CMB-ITM         TO  SPA-GMN-W21-SNRRYO-G
@@ -1541,27 +1541,27 @@
            MOVE    WRK-CMB-ITM         TO  SPA-GMN-W21-RYO-G
       *
       *    ÎÅÍÜÉÂÅïÎÅÍÜ´Ä¶­²Ã»»
-           MOVE    "0"                 TO  WRK-CMB-CD
+           MOVE    "1"                 TO  WRK-CMB-CD
            EVALUATE    TRUE
            WHEN  ( SYS-5002-BTU-RYOYO-H18-KBN  =   "2" )
-               MOVE    "1"             TO  WRK-CMB-CD
-           WHEN  ( SYS-5002-BTU-RYOYO-KBN (1)  =   "2" )
                MOVE    "2"             TO  WRK-CMB-CD
-           WHEN  ( SYS-5002-BTU-RYOYO-KBN (2)  =   "2" )
+           WHEN  ( SYS-5002-BTU-RYOYO-KBN (1)  =   "2" )
                MOVE    "3"             TO  WRK-CMB-CD
-           WHEN  ( SYS-5002-BTU-RYOYO-KBN (3)  =   "2" )
+           WHEN  ( SYS-5002-BTU-RYOYO-KBN (2)  =   "2" )
                MOVE    "4"             TO  WRK-CMB-CD
+           WHEN  ( SYS-5002-BTU-RYOYO-KBN (3)  =   "2" )
+               MOVE    "5"             TO  WRK-CMB-CD
            END-EVALUATE
            PERFORM 4200-BTURYOLST-CHK-SEC
            MOVE    WRK-CMB-ITM         TO  SPA-GMN-W21-BTURYO-G
       *
       *    ½Å¾É¼ÔÅùÎÅÍÜ´Ä¶­ÆÃÊÌ²Ã»»
-           MOVE    "0"                 TO  WRK-CMB-CD
+           MOVE    "1"                 TO  WRK-CMB-CD
            EVALUATE    TRUE
            WHEN  ( SYS-5002-JYUTOK1-KBN  =   "2" )
-               MOVE    "1"             TO  WRK-CMB-CD
-           WHEN  ( SYS-5002-JYUTOK2-KBN  =   "2" )
                MOVE    "2"             TO  WRK-CMB-CD
+           WHEN  ( SYS-5002-JYUTOK2-KBN  =   "2" )
+               MOVE    "3"             TO  WRK-CMB-CD
            END-EVALUATE
            PERFORM 4200-JYUTOKLST-CHK-SEC
            MOVE    WRK-CMB-ITM         TO  SPA-GMN-W21-JYUTOK-G
@@ -2620,9 +2620,9 @@
                MOVE    "1"         TO  SYS-5002-SNR-RYOYO-KBN (IDX1)
            END-PERFORM
            EVALUATE    SPA-GMN-W21-SNRRYO
-           WHEN    "1"
-               MOVE    "2"         TO  SYS-5002-SNR-RYOYO-KBN (1)
            WHEN    "2"
+               MOVE    "2"         TO  SYS-5002-SNR-RYOYO-KBN (1)
+           WHEN    "3"
                MOVE    "2"         TO  SYS-5002-SNR-RYOYO-KBN (2)
            END-EVALUATE
       *
@@ -2655,22 +2655,22 @@
            EVALUATE    TRUE
            WHEN  ( SPA-NAI-W21-YUKOSTYMD   >=  CONST-H180401 )
                EVALUATE    SPA-GMN-W21-BTURYO
-               WHEN    "1"
+               WHEN    "2"
                    MOVE    "2"     TO  SYS-5002-BTU-RYOYO-H18-KBN
+               WHEN    "3"
+                   MOVE    "2"     TO  SYS-5002-BTU-RYOYO-KBN (1)
+               WHEN    "4"
+                   MOVE    "2"     TO  SYS-5002-BTU-RYOYO-KBN (2)
+               WHEN    "5"
+                   MOVE    "2"     TO  SYS-5002-BTU-RYOYO-KBN (3)
+               END-EVALUATE
+           WHEN    OTHER
+               EVALUATE    SPA-GMN-W21-BTURYO
                WHEN    "2"
                    MOVE    "2"     TO  SYS-5002-BTU-RYOYO-KBN (1)
                WHEN    "3"
                    MOVE    "2"     TO  SYS-5002-BTU-RYOYO-KBN (2)
                WHEN    "4"
-                   MOVE    "2"     TO  SYS-5002-BTU-RYOYO-KBN (3)
-               END-EVALUATE
-           WHEN    OTHER
-               EVALUATE    SPA-GMN-W21-BTURYO
-               WHEN    "1"
-                   MOVE    "2"     TO  SYS-5002-BTU-RYOYO-KBN (1)
-               WHEN    "2"
-                   MOVE    "2"     TO  SYS-5002-BTU-RYOYO-KBN (2)
-               WHEN    "3"
                    MOVE    "2"     TO  SYS-5002-BTU-RYOYO-KBN (3)
                END-EVALUATE
            END-EVALUATE
@@ -2683,9 +2683,9 @@
            MOVE    CONST-JYUTOK2   TO  SYS-5002-JYUTOK2-CD
            MOVE    "1"             TO  SYS-5002-JYUTOK2-KBN
            EVALUATE    SPA-GMN-W21-JYUTOK
-           WHEN    "1"
-               MOVE    "2"         TO  SYS-5002-JYUTOK1-KBN
            WHEN    "2"
+               MOVE    "2"         TO  SYS-5002-JYUTOK1-KBN
+           WHEN    "3"
                MOVE    "2"         TO  SYS-5002-JYUTOK2-KBN
            END-EVALUATE
       *
@@ -3947,9 +3947,9 @@
                        END-IF
                    WHEN    CONST-SNR-RYOYO(1)
                        EVALUATE    SPA-GMN-W21-SNRRYO
-                       WHEN   "1"
-                           MOVE    CONST-SNR-RYOYO(1)  TO  WRK-KSNCD
                        WHEN   "2"
+                           MOVE    CONST-SNR-RYOYO(1)  TO  WRK-KSNCD
+                       WHEN   "3"
                            MOVE    CONST-SNR-RYOYO(2)  TO  WRK-KSNCD
                        END-EVALUATE
                    WHEN    CONST-HOSYASEN
@@ -3965,9 +3965,21 @@
                        WHEN  ( SPA-NAI-W21-YUKOSTYMD
                                                >=  CONST-H180401 )
                            EVALUATE    SPA-GMN-W21-BTURYO
-                           WHEN    "1"
+                           WHEN    "2"
                                MOVE    CONST-BTU-RYOYO-H18
                                                        TO  WRK-KSNCD
+                           WHEN    "3"
+                               MOVE    CONST-BTU-RYOYO (1)
+                                                       TO  WRK-KSNCD
+                           WHEN    "4"
+                               MOVE    CONST-BTU-RYOYO (2)
+                                                       TO  WRK-KSNCD
+                           WHEN    "5"
+                               MOVE    CONST-BTU-RYOYO (3)
+                                                       TO  WRK-KSNCD
+                           END-EVALUATE
+                       WHEN    OTHER
+                           EVALUATE    SPA-GMN-W21-BTURYO
                            WHEN    "2"
                                MOVE    CONST-BTU-RYOYO (1)
                                                        TO  WRK-KSNCD
@@ -3978,24 +3990,12 @@
                                MOVE    CONST-BTU-RYOYO (3)
                                                        TO  WRK-KSNCD
                            END-EVALUATE
-                       WHEN    OTHER
-                           EVALUATE    SPA-GMN-W21-BTURYO
-                           WHEN    "1"
-                               MOVE    CONST-BTU-RYOYO (1)
-                                                       TO  WRK-KSNCD
-                           WHEN    "2"
-                               MOVE    CONST-BTU-RYOYO (2)
-                                                       TO  WRK-KSNCD
-                           WHEN    "3"
-                               MOVE    CONST-BTU-RYOYO (3)
-                                                       TO  WRK-KSNCD
-                           END-EVALUATE
                        END-EVALUATE
                    WHEN    CONST-JYUTOK1
                        EVALUATE    SPA-GMN-W21-JYUTOK
-                       WHEN    "1"
-                           MOVE    CONST-JYUTOK1       TO  WRK-KSNCD
                        WHEN    "2"
+                           MOVE    CONST-JYUTOK1       TO  WRK-KSNCD
+                       WHEN    "3"
                            MOVE    CONST-JYUTOK2       TO  WRK-KSNCD
                        END-EVALUATE
                    WHEN    CONST-MUKIN

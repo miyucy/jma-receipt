@@ -202,11 +202,11 @@
            03  CONST-JIDOCD            PIC X(09) VALUE "190110170".
            03  CONST-SEISINCD          PIC X(09) VALUE "190106970".
            03  CONST-KANGOCD-VAL.
-               05                      PIC X(10) VALUE "1190102070".
-               05                      PIC X(10) VALUE "2190102170".
-               05                      PIC X(10) VALUE "3190102270".
-               05                      PIC X(10) VALUE "4190102370".
-               05                      PIC X(10) VALUE "5190102470".
+               05                      PIC X(10) VALUE "2190102070".
+               05                      PIC X(10) VALUE "3190102170".
+               05                      PIC X(10) VALUE "4190102270".
+               05                      PIC X(10) VALUE "5190102370".
+               05                      PIC X(10) VALUE "6190102470".
            03  CONST-KANGOCD-R         REDEFINES   CONST-KANGOCD-VAL.
                05  CONST-KANGOCD-OCC   OCCURS 5.
                    07  CONST-KANGOCDL  PIC X(01).
@@ -520,12 +520,26 @@
       *
            INITIALIZE                  SPA-W20-AREA
       *
+           MOVE    SPA-SYSYMD      TO  SPA-NAI-W20-KJNYMD
+           MOVE    SPA-SYSYMDWH    TO  SPA-GMN-W20-KJNYMD
+      *
+           PERFORM 311-SPASET-SEC
+      *
+           .
+       310-SPASET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    スパ初期編集処理
+      *****************************************************************
+       311-SPASET-SEC              SECTION.
+      *
       *    医療機関情報取得処理
-           MOVE    SPA-SYSYMD      TO  WRK-KJN-YUKSTYMD
+           MOVE    SPA-NAI-W20-KJNYMD      TO  WRK-KJN-YUKSTYMD
            PERFORM 3101-GET-SYS1001-SEC
       *
       *    コンボ初期処理
-           MOVE    SPA-SYSYMD      TO  WRK-KJN-YUKSTYMD
+           MOVE    SPA-NAI-W20-KJNYMD      TO  WRK-KJN-YUKSTYMD
            PERFORM 3101-CMB-SYOKI-SEC
       *
            MOVE    SPA-GMN-W20-EDKBNLST (1)
@@ -538,9 +552,8 @@
            PERFORM 4201-INPUT-AREA-CLEAR-SEC
       *
            .
-       310-SPASET-EXT.
+       311-SPASET-EXT.
            EXIT.
-      *
       *****************************************************************
       *    病棟情報設定処理（病室画面より遷移時）
       *****************************************************************
@@ -551,7 +564,7 @@
       *    入力項目領域編集処理
            MOVE    SPA-W20-W21-BTUNUM
                                    TO  WRK-BTUNUM 
-           MOVE    SPA-SYSYMD      TO  WRK-KIJUN-YMD
+           MOVE    SPA-NAI-W20-KJNYMD      TO  WRK-KIJUN-YMD
       *
       *    画面初期化
            PERFORM 420-CLEAR-SEC
@@ -901,26 +914,26 @@
                MOVE    2                   TO  SPA-GMN-W20-HICH-MAX
            WHEN    OTHER
       *
-               MOVE    "0"                 TO  SPA-GMN-W20-HICHL (1)
+               MOVE    "1"                 TO  SPA-GMN-W20-HICHL (1)
                MOVE    "算定しない"        TO  SPA-GMN-W20-HICHMEIL (1)
       *
-               MOVE    "1"                 TO  SPA-GMN-W20-HICHL (2)
+               MOVE    "2"                 TO  SPA-GMN-W20-HICHL (2)
                MOVE    "算定する（入院基本料３）"
                                            TO  SPA-GMN-W20-HICHMEIL (2)
       *
-               MOVE    "2"                 TO  SPA-GMN-W20-HICHL (3)
+               MOVE    "3"                 TO  SPA-GMN-W20-HICHL (3)
                MOVE    "算定する（入院基本料４）"
                                            TO  SPA-GMN-W20-HICHMEIL (3)
       *
-               MOVE    "3"                 TO  SPA-GMN-W20-HICHL (4)
+               MOVE    "4"                 TO  SPA-GMN-W20-HICHL (4)
                MOVE    "算定する（入院基本料５）"
                                            TO  SPA-GMN-W20-HICHMEIL (4)
       *
-               MOVE    "4"                 TO  SPA-GMN-W20-HICHL (5)
+               MOVE    "5"                 TO  SPA-GMN-W20-HICHL (5)
                MOVE    "算定する（入院基本料６）"
                                            TO  SPA-GMN-W20-HICHMEIL (5)
       *
-               MOVE    "5"                 TO  SPA-GMN-W20-HICHL (6)
+               MOVE    "6"                 TO  SPA-GMN-W20-HICHL (6)
                MOVE    "算定する（入院基本料７）"
                                            TO  SPA-GMN-W20-HICHMEIL (6)
       *
@@ -963,15 +976,15 @@
       *****************************************************************
        3101-CMB-DRHJO-SET-SEC          SECTION.
       *
-           MOVE    "0"                 TO  SPA-GMN-W20-DRHJOL(1)
+           MOVE    "1"                 TO  SPA-GMN-W20-DRHJOL(1)
            MOVE    "算定しない"        TO  SPA-GMN-W20-DRHJOMEIL(1)
-           MOVE    "1"                 TO  SPA-GMN-W20-DRHJOL(2)
+           MOVE    "2"                 TO  SPA-GMN-W20-DRHJOL(2)
            MOVE    "２５対１"          TO  SPA-GMN-W20-DRHJOMEIL(2)
-           MOVE    "2"                 TO  SPA-GMN-W20-DRHJOL(3)
+           MOVE    "3"                 TO  SPA-GMN-W20-DRHJOL(3)
            MOVE    "５０対１"          TO  SPA-GMN-W20-DRHJOMEIL(3)
-           MOVE    "3"                 TO  SPA-GMN-W20-DRHJOL(4)
+           MOVE    "4"                 TO  SPA-GMN-W20-DRHJOL(4)
            MOVE    "７５対１"          TO  SPA-GMN-W20-DRHJOMEIL(4)
-           MOVE    "4"                 TO  SPA-GMN-W20-DRHJOL(5)
+           MOVE    "5"                 TO  SPA-GMN-W20-DRHJOL(5)
            MOVE    "１００対１"        TO  SPA-GMN-W20-DRHJOMEIL(5)
            MOVE    5                   TO  SPA-GMN-W20-DRHJO-MAX
       *
@@ -1011,11 +1024,11 @@
       *****************************************************************
        3101-CMB-SNRHICH-SET-SEC          SECTION.
       *
-           MOVE    "0"             TO  SPA-GMN-W20-SNRHICHL(1)
+           MOVE    "1"             TO  SPA-GMN-W20-SNRHICHL(1)
            MOVE    "算定しない"    TO  SPA-GMN-W20-SNRHICHMEIL(1)
-           MOVE    "1"             TO  SPA-GMN-W20-SNRHICHL(2)
+           MOVE    "2"             TO  SPA-GMN-W20-SNRHICHL(2)
            MOVE    "看護配置加算１" TO SPA-GMN-W20-SNRHICHMEIL(2)
-           MOVE    "2"             TO  SPA-GMN-W20-SNRHICHL(3)
+           MOVE    "3"             TO  SPA-GMN-W20-SNRHICHL(3)
            MOVE    "看護配置加算２" TO SPA-GMN-W20-SNRHICHMEIL(3)
            MOVE    3               TO  SPA-GMN-W20-SNRHICH-MAX
       *
@@ -1027,12 +1040,12 @@
       *****************************************************************
        3101-CMB-YKNHICH-SET-SEC        SECTION.
       *
-           MOVE    "0"                 TO  SPA-GMN-W20-YKNHICHL(1)
+           MOVE    "1"                 TO  SPA-GMN-W20-YKNHICHL(1)
            MOVE    "算定しない"        TO  SPA-GMN-W20-YKNHICHMEIL(1)
-           MOVE    "1"                 TO  SPA-GMN-W20-YKNHICHL(2)
+           MOVE    "2"                 TO  SPA-GMN-W20-YKNHICHL(2)
            MOVE    "夜間看護配置加算１"
                                        TO  SPA-GMN-W20-YKNHICHMEIL(2)
-           MOVE    "2"                 TO  SPA-GMN-W20-YKNHICHL(3)
+           MOVE    "3"                 TO  SPA-GMN-W20-YKNHICHL(3)
            MOVE    "夜間看護配置加算２"
                                        TO  SPA-GMN-W20-YKNHICHMEIL(3)
            MOVE    3                   TO  SPA-GMN-W20-YKNHICH-MAX
@@ -1223,14 +1236,14 @@
        3101-EDIT-BTULST-SEC        SECTION.
       *
       *    システム日付の内容でコンボを再編集
-           MOVE    SPA-SYSYMD      TO  WRK-KJN-YUKSTYMD
+           MOVE    SPA-NAI-W20-KJNYMD      TO  WRK-KJN-YUKSTYMD
            PERFORM 3101-CMB-SYOKI-SEC
       *
            INITIALIZE                  SPA-GMN-W20-BTULST
       *
            INITIALIZE                  SYSKANRI-REC
            MOVE    "5001"          TO  SYS-KANRICD
-           MOVE    SPA-SYSYMD      TO  SYS-STYUKYMD
+           MOVE    SPA-NAI-W20-KJNYMD      TO  SYS-STYUKYMD
                                        SYS-EDYUKYMD
            PERFORM 900-SYSKANRI-KEY7-SEL-SEC
       *
@@ -1405,7 +1418,7 @@
                MOVE    SPA-GMN-W20-TBTUNUM (IDX-LST)
                                        TO  SYS-KBNCD
                MOVE    "%"             TO  SYS-KBNCD(3:1)
-               MOVE    SPA-SYSYMD      TO  SYS-STYUKYMD
+               MOVE    SPA-NAI-W20-KJNYMD      TO  SYS-STYUKYMD
                                            SYS-EDYUKYMD
                PERFORM 900-SYSKANRI-KEY-SEL-SEC
       *
@@ -1467,6 +1480,10 @@
       *    クリア
            WHEN    "CLICKED"       ALSO    "B02"
                PERFORM 420-CLEAR-SEC
+      *    基準日
+           WHEN    "CLICKED"       ALSO    "B04"
+               PERFORM 4101-GMN-SPA-SET-SEC
+               MOVE    101         TO      SPA-GMN-W20-CUR
       *    追加
            WHEN    "CLICKED"       ALSO    "B06"
                PERFORM 420-TUIKA-SEC
@@ -1502,6 +1519,9 @@
       *    病棟種別
            WHEN    "ACTIVATE"      ALSO    "SBT"
                    PERFORM 4100-SBT-CHK-SEC
+      *    基準日
+           WHEN    "ACTIVATE"      ALSO    "KJNYMD"
+                   PERFORM 4100-KJNYMD-CHK-SEC
       *    選択番号
            WHEN    "ACTIVATE"      ALSO    "SELNUM"
                    PERFORM 4100-SELNUM-CHK-SEC
@@ -2069,7 +2089,7 @@
            MOVE    SPA-GMN-W20-BTUNUM
                                    TO  SYS-KBNCD
            MOVE    "%"             TO  SYS-KBNCD(3:1)
-           MOVE    SPA-SYSYMD      TO  SYS-STYUKYMD
+           MOVE    SPA-NAI-W20-KJNYMD      TO  SYS-STYUKYMD
                                        SYS-EDYUKYMD
            PERFORM 900-SYSKANRI-KEY-SEL-SEC
       *
@@ -2531,8 +2551,9 @@
            END-IF
       *
       *    医師事務作業補助体制加算
-           IF    ( SPA-GMN-W20-DRHJO   =  "1" OR "2" OR "3" OR "4" )
+           IF    ( SPA-GMN-W20-DRHJO   =  "2" OR "3" OR "4" OR "5" )
                MOVE    SPA-GMN-W20-DRHJO  TO  WRK-KBN1-G
+               COMPUTE WRK-KBN1    =   WRK-KBN1    -   1
                MOVE    CONST-DRHJO (WRK-KBN1)
                                           TO  WRK-KSNCD
                PERFORM 420121-BTU-KSN-EDIT-SEC
@@ -2557,16 +2578,18 @@
            END-IF
       *
       *    看護配置加算（診療所）
-           IF    ( SPA-GMN-W20-SNRHICH     =  "1" OR "2" )
+           IF    ( SPA-GMN-W20-SNRHICH     =  "2" OR "3" )
                MOVE    SPA-GMN-W20-SNRHICH TO  WRK-KBN1-G
+               COMPUTE WRK-KBN1    =   WRK-KBN1    -   1
                MOVE    CONST-SNRHICH (WRK-KBN1)
                                           TO  WRK-KSNCD
                PERFORM 420121-BTU-KSN-EDIT-SEC
            END-IF
       *
       *    夜間看護配置加算
-           IF    ( SPA-GMN-W20-YKNHICH     =  "1" OR "2" )
+           IF    ( SPA-GMN-W20-YKNHICH     =  "2" OR "3" )
                MOVE    SPA-GMN-W20-YKNHICH TO  WRK-KBN1-G
+               COMPUTE WRK-KBN1    =   WRK-KBN1    -   1
                MOVE    CONST-YKNHICH (WRK-KBN1)
                                           TO  WRK-KSNCD
                PERFORM 420121-BTU-KSN-EDIT-SEC
@@ -2608,7 +2631,7 @@
       *
       *    入力項目領域編集処理
            MOVE    SPA-GMN-W20-BTUNUM  TO  WRK-BTUNUM
-           MOVE    SPA-SYSYMD          TO  WRK-KIJUN-YMD
+           MOVE    SPA-NAI-W20-KJNYMD          TO  WRK-KIJUN-YMD
       *
       *    画面初期化
            PERFORM 420-CLEAR-SEC
@@ -3003,10 +3026,10 @@
       *
       *    日付妥当性チェック＆編集処理
            IF    ( SPA-GMN-W20-YUKOSTYMD   =   SPACE )
-               MOVE    SPA-SYSYMDWH (1 : 6)
+               MOVE    SPA-GMN-W20-KJNYMD (1 : 6)
                                        TO  SPA-GMN-W20-YUKOSTYMD (1 : 6)
                MOVE    ". 1"           TO  SPA-GMN-W20-YUKOSTYMD (7 : 3)
-               MOVE    SPA-SYSYMD   (1 : 6)
+               MOVE    SPA-NAI-W20-KJNYMD   (1 : 6)
                                        TO  SPA-NAI-W20-YUKOSTYMD (1 : 6)
                MOVE    "01"            TO  SPA-NAI-W20-YUKOSTYMD (7 : 2)
       *
@@ -3503,6 +3526,32 @@
        4101-YKNHICH-CHK-EXT.
            EXIT.
       *****************************************************************
+      *    基準日
+      *****************************************************************
+       4100-KJNYMD-CHK-SEC             SECTION.
+      *
+           MOVE    ZERO        TO  SPA-GMN-W20-CUR
+           MOVE    W20-KJNYMD  TO  WRK-YMD
+           PERFORM 800-SEIWA-HEN-SEC
+           IF  ( SPA-ERRCD         =   SPACE )
+      *
+               INITIALIZE              SPA-W20-AREA
+      *
+               MOVE    WRK-HENYMDG TO  SPA-GMN-W20-KJNYMD
+               MOVE    WRK-SYMD    TO  SPA-NAI-W20-KJNYMD
+      *
+               PERFORM 311-SPASET-SEC
+      *
+           ELSE
+               MOVE    "0014"      TO  SPA-ERRCD
+               MOVE    101         TO  SPA-GMN-W20-CUR
+           END-IF
+      *
+           .
+      *
+       4100-KJNYMD-CHK-EXT.
+           EXIT.
+      *****************************************************************
       *    選択番号
       *****************************************************************
        4100-SELNUM-CHK-SEC             SECTION.
@@ -3560,7 +3609,7 @@
       *            入力項目領域編集処理
                    MOVE    SPA-GMN-W20-TBTUNUM (IDX2)
                                            TO  WRK-BTUNUM 
-                   MOVE    SPA-SYSYMD      TO  WRK-KIJUN-YMD
+                   MOVE    SPA-NAI-W20-KJNYMD      TO  WRK-KIJUN-YMD
       *
       *            画面初期化
                    PERFORM 420-CLEAR-SEC
@@ -3793,15 +3842,15 @@
            MOVE    "0"                 TO  WRK-CMB-CD
            EVALUATE    TRUE
            WHEN  ( SYS-5001-KANGO-KBN (1)  =   "2" )
-               MOVE    "1"             TO  WRK-CMB-CD
-           WHEN  ( SYS-5001-KANGO-KBN (2)  =   "2" )
                MOVE    "2"             TO  WRK-CMB-CD
-           WHEN  ( SYS-5001-KANGO-KBN (3)  =   "2" )
+           WHEN  ( SYS-5001-KANGO-KBN (2)  =   "2" )
                MOVE    "3"             TO  WRK-CMB-CD
-           WHEN  ( SYS-5001-KANGO-KBN (4)  =   "2" )
+           WHEN  ( SYS-5001-KANGO-KBN (3)  =   "2" )
                MOVE    "4"             TO  WRK-CMB-CD
-           WHEN  ( SYS-5001-KANGO-KBN (5)  =   "2" )
+           WHEN  ( SYS-5001-KANGO-KBN (4)  =   "2" )
                MOVE    "5"             TO  WRK-CMB-CD
+           WHEN  ( SYS-5001-KANGO-KBN (5)  =   "2" )
+               MOVE    "6"             TO  WRK-CMB-CD
            END-EVALUATE
            PERFORM 4200-HICHLST-CHK-SEC
            MOVE    WRK-CMB-ITM         TO  SPA-GMN-W20-HICH-G
@@ -3932,19 +3981,19 @@
                        PERFORM 4200-HICHLST-CHK-SEC
                        MOVE    WRK-CMB-ITM TO  SPA-GMN-W20-HICH-G
                    WHEN    CONST-DRHJO (1)
-                       MOVE    "1"         TO  WRK-CMB-CD
-                       PERFORM 4200-DRHJOLST-CHK-SEC
-                       MOVE    WRK-CMB-ITM TO  SPA-GMN-W20-DRHJO-G
-                   WHEN    CONST-DRHJO (2)
                        MOVE    "2"         TO  WRK-CMB-CD
                        PERFORM 4200-DRHJOLST-CHK-SEC
                        MOVE    WRK-CMB-ITM TO  SPA-GMN-W20-DRHJO-G
-                   WHEN    CONST-DRHJO (3)
+                   WHEN    CONST-DRHJO (2)
                        MOVE    "3"         TO  WRK-CMB-CD
                        PERFORM 4200-DRHJOLST-CHK-SEC
                        MOVE    WRK-CMB-ITM TO  SPA-GMN-W20-DRHJO-G
-                   WHEN    CONST-DRHJO (4)
+                   WHEN    CONST-DRHJO (3)
                        MOVE    "4"         TO  WRK-CMB-CD
+                       PERFORM 4200-DRHJOLST-CHK-SEC
+                       MOVE    WRK-CMB-ITM TO  SPA-GMN-W20-DRHJO-G
+                   WHEN    CONST-DRHJO (4)
+                       MOVE    "5"         TO  WRK-CMB-CD
                        PERFORM 4200-DRHJOLST-CHK-SEC
                        MOVE    WRK-CMB-ITM TO  SPA-GMN-W20-DRHJO-G
                    WHEN    CONST-JKAIFUKU
@@ -3960,19 +4009,19 @@
                        PERFORM 4200-YKNKNKYULST-CHK-SEC
                        MOVE    WRK-CMB-ITM TO  SPA-GMN-W20-YKNKNKYU-G
                    WHEN    CONST-SNRHICH (1)
-                       MOVE    "1"         TO  WRK-CMB-CD
+                       MOVE    "2"         TO  WRK-CMB-CD
                        PERFORM 4200-SNRHICHLST-CHK-SEC
                        MOVE    WRK-CMB-ITM TO  SPA-GMN-W20-SNRHICH-G
                    WHEN    CONST-SNRHICH (2)
-                       MOVE    "2"         TO  WRK-CMB-CD
+                       MOVE    "3"         TO  WRK-CMB-CD
                        PERFORM 4200-SNRHICHLST-CHK-SEC
                        MOVE    WRK-CMB-ITM TO  SPA-GMN-W20-SNRHICH-G
                    WHEN    CONST-YKNHICH (1)
-                       MOVE    "1"         TO  WRK-CMB-CD
+                       MOVE    "2"         TO  WRK-CMB-CD
                        PERFORM 4200-YKNHICHLST-CHK-SEC
                        MOVE    WRK-CMB-ITM TO  SPA-GMN-W20-YKNHICH-G
                    WHEN    CONST-YKNHICH (2)
-                       MOVE    "2"         TO  WRK-CMB-CD
+                       MOVE    "3"         TO  WRK-CMB-CD
                        PERFORM 4200-YKNHICHLST-CHK-SEC
                        MOVE    WRK-CMB-ITM TO  SPA-GMN-W20-YKNHICH-G
                    END-EVALUATE
@@ -4055,10 +4104,10 @@
            END-IF
       *
       *    有効期間の開始日と終了日を設定
-           MOVE    SPA-SYSYMDWH (1 : 6)
+           MOVE    SPA-GMN-W20-KJNYMD (1 : 6)
                                    TO  SPA-GMN-W20-YUKOSTYMD (1 : 6)
            MOVE    ". 1"           TO  SPA-GMN-W20-YUKOSTYMD (7 : 3)
-           MOVE    SPA-SYSYMD   (1 : 6)
+           MOVE    SPA-NAI-W20-KJNYMD   (1 : 6)
                                    TO  SPA-NAI-W20-YUKOSTYMD (1 : 6)
            MOVE    "01"            TO  SPA-NAI-W20-YUKOSTYMD (7 : 2)
       *
@@ -4518,13 +4567,13 @@
                        END-IF
                    WHEN    CONST-DRHJO (1)
                        EVALUATE    SPA-GMN-W20-DRHJO
-                       WHEN    "1"
-                           MOVE    CONST-DRHJO (1) TO  WRK-KSNCD
                        WHEN    "2"
-                           MOVE    CONST-DRHJO (2) TO  WRK-KSNCD
+                           MOVE    CONST-DRHJO (1) TO  WRK-KSNCD
                        WHEN    "3"
-                           MOVE    CONST-DRHJO (3) TO  WRK-KSNCD
+                           MOVE    CONST-DRHJO (2) TO  WRK-KSNCD
                        WHEN    "4"
+                           MOVE    CONST-DRHJO (3) TO  WRK-KSNCD
+                       WHEN    "5"
                            MOVE    CONST-DRHJO (4) TO  WRK-KSNCD
                        END-EVALUATE
                    WHEN    CONST-JKAIFUKU
@@ -4536,20 +4585,20 @@
                            MOVE    CONST-YKNKNKYU  TO  WRK-KSNCD
                        END-IF
                    WHEN    CONST-SNRHICH (1)
-                       EVALUATE    SPA-GMN-W20-SNRHICH
+                       EVALUATE    "2"
                        WHEN    CONST-SNRHICH (1)
                            MOVE    CONST-SNRHICH (1)
                                                    TO  WRK-KSNCD
-                       WHEN    CONST-SNRHICH (2)
+                       WHEN        "3"
                            MOVE    CONST-SNRHICH (2)
                                                    TO  WRK-KSNCD
                        END-EVALUATE
                    WHEN    CONST-YKNHICH (1)
                        EVALUATE    SPA-GMN-W20-YKNHICH
-                       WHEN    CONST-YKNHICH (1)
+                       WHEN    "2"
                            MOVE    CONST-YKNHICH (1)
                                                    TO  WRK-KSNCD
-                       WHEN    CONST-YKNHICH (2)
+                       WHEN    "3"
                            MOVE    CONST-YKNHICH (2)
                                                    TO  WRK-KSNCD
                        END-EVALUATE
@@ -4891,6 +4940,11 @@
       *
            END-PERFORM
       *
+           IF    ( WRK-CMB-CD      =   SPACE )
+                   MOVE    SPA-GMN-W20-SYOKUDOLST (1)
+                                       TO  WRK-CMB-ITM
+           END-IF
+      *
            .
        4200-SYOKUDOLST-CHK-EXT.
            EXIT.
@@ -4912,6 +4966,11 @@
                END-IF
       *
            END-PERFORM
+      *
+           IF    ( WRK-CMB-CD      =   SPACE )
+                   MOVE    SPA-GMN-W20-HOIKULST (1)
+                                       TO  WRK-CMB-ITM
+           END-IF
       *
            .
        4200-HOIKULST-CHK-EXT.
@@ -4935,6 +4994,11 @@
       *
            END-PERFORM
       *
+           IF    ( WRK-CMB-CD      =   SPACE )
+                   MOVE    SPA-GMN-W20-NANBYOLST (1)
+                                       TO  WRK-CMB-ITM
+           END-IF
+      *
            .
        4200-NANBYOLST-CHK-EXT.
            EXIT.
@@ -4956,6 +5020,10 @@
                END-IF
       *
            END-PERFORM
+           IF    ( WRK-CMB-CD      =   SPACE )
+                   MOVE    SPA-GMN-W20-TOKUSYULST (1)
+                                       TO  WRK-CMB-ITM
+           END-IF
       *
            .
        4200-TOKUSYULST-CHK-EXT.
@@ -4979,6 +5047,11 @@
       *
            END-PERFORM
       *
+           IF    ( WRK-CMB-CD      =   SPACE )
+                   MOVE    SPA-GMN-W20-JIDOLST (1)
+                                       TO  WRK-CMB-ITM
+           END-IF
+      *
            .
        4200-JIDOLST-CHK-EXT.
            EXIT.
@@ -5000,6 +5073,11 @@
                END-IF
       *
            END-PERFORM
+      *
+           IF    ( WRK-CMB-CD      =   SPACE )
+                   MOVE    SPA-GMN-W20-SEISINLST (1)
+                                       TO  WRK-CMB-ITM
+           END-IF
       *
            .
        4200-SEISINLST-CHK-EXT.
@@ -5023,6 +5101,11 @@
       *
            END-PERFORM
       *
+           IF    ( WRK-CMB-CD      =   SPACE )
+                   MOVE    SPA-GMN-W20-HICHLST (1)
+                                       TO  WRK-CMB-ITM
+           END-IF
+      *
            .
        4200-HICHLST-CHK-EXT.
            EXIT.
@@ -5044,6 +5127,11 @@
                END-IF
       *
            END-PERFORM
+      *
+           IF    ( WRK-CMB-CD      =   SPACE )
+                   MOVE    SPA-GMN-W20-DRTEKLST (1)
+                                       TO  WRK-CMB-ITM
+           END-IF
       *
            .
        4200-DRTEKLST-CHK-EXT.
@@ -5067,6 +5155,11 @@
       *
            END-PERFORM
       *
+           IF    ( WRK-CMB-CD      =   SPACE )
+                   MOVE    SPA-GMN-W20-HICHTEKLST (1)
+                                       TO  WRK-CMB-ITM
+           END-IF
+      *
            .
        4200-HICHTEKLST-CHK-EXT.
            EXIT.
@@ -5088,6 +5181,11 @@
                END-IF
       *
            END-PERFORM
+      *
+           IF    ( WRK-CMB-CD      =   SPACE )
+                   MOVE    SPA-GMN-W20-DRHJOLST (1)
+                                       TO  WRK-CMB-ITM
+           END-IF
       *
            .
        4200-DRHJOLST-CHK-EXT.
@@ -5111,6 +5209,11 @@
       *
            END-PERFORM
       *
+           IF    ( WRK-CMB-CD      =   SPACE )
+                   MOVE    SPA-GMN-W20-JKAIFUKULST (1)
+                                       TO  WRK-CMB-ITM
+           END-IF
+      *
            .
        4200-JKAIFUKULST-CHK-EXT.
            EXIT.
@@ -5132,6 +5235,11 @@
                END-IF
       *
            END-PERFORM
+      *
+           IF    ( WRK-CMB-CD      =   SPACE )
+                   MOVE    SPA-GMN-W20-YKNKNKYULST (1)
+                                       TO  WRK-CMB-ITM
+           END-IF
       *
            .
        4200-YKNKNKYULST-CHK-EXT.
@@ -5155,6 +5263,11 @@
       *
            END-PERFORM
       *
+           IF    ( WRK-CMB-CD      =   SPACE )
+                   MOVE    SPA-GMN-W20-SNRHICHLST (1)
+                                       TO  WRK-CMB-ITM
+           END-IF
+      *
            .
        4200-SNRHICHLST-CHK-EXT.
            EXIT.
@@ -5176,6 +5289,11 @@
                END-IF
       *
            END-PERFORM
+      *
+           IF    ( WRK-CMB-CD      =   SPACE )
+                   MOVE    SPA-GMN-W20-YKNHICHLST (1)
+                                       TO  WRK-CMB-ITM
+           END-IF
       *
            .
        4200-YKNHICHLST-CHK-EXT.
@@ -5344,6 +5462,9 @@
       *
       *    病室ボタン
            MOVE    SPA-GMN-W20-B09         TO  W20-B09
+      *
+      *    基準日
+           MOVE    SPA-GMN-W20-KJNYMD      TO  W20-KJNYMD
       *
       *    病棟番号
            MOVE    SPA-GMN-W20-BTUNUM      TO  W20-BTUNUM
@@ -5717,6 +5838,8 @@
                MOVE    "EDKBN"             TO  MCP-WIDGET
            WHEN    100
                MOVE    "SELNUM"            TO  MCP-WIDGET
+           WHEN    101
+               MOVE    "KJNYMD"            TO  MCP-WIDGET
            WHEN    206
                MOVE    "B06"               TO  MCP-WIDGET
            WHEN    207
@@ -5827,6 +5950,8 @@
                MOVE    206             TO  SPA-GMN-W20-CUR
            WHEN    "SELNUM"
                MOVE    002             TO  SPA-GMN-W20-CUR
+           WHEN    "KJNYMD"
+               MOVE    001             TO  SPA-GMN-W20-CUR
            END-EVALUATE
       *
            .
@@ -5878,6 +6003,9 @@
                                        TO  SPA-ERRMSG
            WHEN    "0013"
                    MOVE    "選択番号入力エラー"
+                                       TO  SPA-ERRMSG
+           WHEN    "0014"
+                   MOVE    "基準日入力エラー"
                                        TO  SPA-ERRMSG
            WHEN    "1001"
                MOVE    "追加可能最大件数に達しました"

@@ -22,6 +22,9 @@ W20	{
 		B12	{
 			state	int;
 		};
+		KJNYMD	{
+			value	varchar(10);
+		};
 		BTUNUM	{
 			value	number(2);
 		};

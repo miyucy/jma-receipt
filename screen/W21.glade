@@ -2218,8 +2218,8 @@
     <widget>
       <class>GtkLabel</class>
       <name>LBLMODE</name>
-      <x>788</x>
-      <y>8</y>
+      <x>244</x>
+      <y>356</y>
       <width>172</width>
       <height>24</height>
       <label>°„∆˛±°Œ¡≤√ªª∞Ï≥Á —ππ°‰</label>

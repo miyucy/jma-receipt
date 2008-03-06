@@ -118,6 +118,12 @@
 	<key>GDK_F4</key>
 	<signal>clicked</signal>
       </accelerator>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Thu, 06 Mar 2008 05:22:51 GMT</last_modification_time>
+      </signal>
       <label></label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
@@ -571,22 +577,6 @@
       <name>LBLKSN05</name>
       <x>12</x>
       <y>596</y>
-      <width>260</width>
-      <height>24</height>
-      <label>保育士・プレイルーム加算</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>LBLKSN06</name>
-      <x>12</x>
-      <y>620</y>
       <width>260</width>
       <height>24</height>
       <label>保育士・プレイルーム加算</label>
@@ -1233,22 +1223,6 @@
       <width>76</width>
       <height>24</height>
       <label>短縮病棟名</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>label476</name>
-      <x>12</x>
-      <y>328</y>
-      <width>64</width>
-      <height>24</height>
-      <label>病棟番号</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0</xalign>
@@ -2021,6 +1995,82 @@
       <width>25</width>
       <height>24</height>
       <label>点</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label476</name>
+      <x>12</x>
+      <y>328</y>
+      <width>64</width>
+      <height>24</height>
+      <label>病棟番号</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>LBLKSN06</name>
+      <x>12</x>
+      <y>620</y>
+      <width>260</width>
+      <height>24</height>
+      <label>保育士・プレイルーム加算</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkPandaEntry</class>
+      <name>KJNYMD</name>
+      <x>516</x>
+      <y>328</y>
+      <width>75</width>
+      <height>25</height>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>activate</name>
+	<handler>send_event</handler>
+	<data>ACTIVATE</data>
+	<last_modification_time>Tue, 26 Dec 2000 01:16:19 GMT</last_modification_time>
+      </signal>
+      <signal>
+	<name>changed</name>
+	<handler>entry_changed</handler>
+	<data>CHANGED</data>
+	<last_modification_time>Tue, 26 Dec 2000 01:16:40 GMT</last_modification_time>
+      </signal>
+      <editable>True</editable>
+      <text_visible>True</text_visible>
+      <text_max_length>10</text_max_length>
+      <text>99999999</text>
+      <input_mode>XIM</input_mode>
+      <xim_enabled>False</xim_enabled>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>LBLKJNYMD</name>
+      <x>468</x>
+      <y>328</y>
+      <width>48</width>
+      <height>24</height>
+      <label>基準日</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0</xalign>
