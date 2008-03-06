@@ -484,6 +484,7 @@
            03  WRK-CMB-TOKNYUIN-AREA           PIC X(3000).
            03  WRK-ERRMSG                  PIC X(10).
            03  WRK-SKYMONEY                PIC S9(08).
+           03  WRK-RJNYMD                  PIC X(08).
       *
        01  BAK-AREA.
            03  BAK-AGE-G.
@@ -4878,14 +4879,14 @@
       *
            MOVE    ZERO                TO  FLG-ROUJIN
       *
-           IF    ( WRK-KJNYMD         >=  CONST-H200401 )
+           IF    ( WRK-RJNYMD         >=  CONST-H200401 )
       *
                INITIALIZE                  PTHKNINF-REC
                MOVE    SPA-HOSPNUM         TO  PTHKN-HOSPNUM
                MOVE    SPA-NAI-I01-PTID    TO  PTHKN-PTID
                MOVE    "039"               TO  PTHKN-HKNNUM
-               MOVE    WRK-KJNYMD          TO  PTHKN-TEKSTYMD
-               MOVE    WRK-KJNYMD          TO  PTHKN-TEKEDYMD
+               MOVE    WRK-RJNYMD          TO  PTHKN-TEKSTYMD
+               MOVE    WRK-RJNYMD          TO  PTHKN-TEKEDYMD
       *
                MOVE    PTHKNINF-REC        TO  MCPDATA-REC
                MOVE    "tbl_pthkninf"      TO  MCP-TABLE
@@ -4903,8 +4904,8 @@
                MOVE    SPA-HOSPNUM         TO  PTKOH-HOSPNUM
                MOVE    SPA-NAI-I01-PTID    TO  PTKOH-PTID
                MOVE    "968"               TO  PTKOH-KOHNUM
-               MOVE    WRK-KJNYMD          TO  PTKOH-TEKSTYMD
-               MOVE    WRK-KJNYMD          TO  PTKOH-TEKEDYMD
+               MOVE    WRK-RJNYMD          TO  PTKOH-TEKSTYMD
+               MOVE    WRK-RJNYMD          TO  PTKOH-TEKEDYMD
       *
                MOVE    PTKOHINF-REC        TO  MCPDATA-REC
                MOVE    "tbl_ptkohinf"      TO  MCP-TABLE
@@ -4923,8 +4924,8 @@
                MOVE    SPA-HOSPNUM         TO  PTKOH-HOSPNUM
                MOVE    SPA-NAI-I01-PTID    TO  PTKOH-PTID
                MOVE    "027"               TO  PTKOH-KOHNUM
-               MOVE    WRK-KJNYMD          TO  PTKOH-TEKSTYMD
-               MOVE    WRK-KJNYMD          TO  PTKOH-TEKEDYMD
+               MOVE    WRK-RJNYMD          TO  PTKOH-TEKSTYMD
+               MOVE    WRK-RJNYMD          TO  PTKOH-TEKEDYMD
       *
                MOVE    PTKOHINF-REC        TO  MCPDATA-REC
                MOVE    "tbl_ptkohinf"      TO  MCP-TABLE
@@ -16696,8 +16697,9 @@
        4801-RJN-TAISYO-CHK-SEC         SECTION.
       *
       *    ´µ¼Ô¸øÈñ¾ðÊó¤«¤éÏ·¿ÍÊÝ·ò¤ÎÅÐÏ¿¥Á¥§¥Ã¥¯
-           MOVE    WRK-AGECHK-SRYYMD TO  WRK-KJNYMD
+           MOVE    WRK-AGECHK-SRYYMD TO  WRK-RJNYMD
            PERFORM 410111-ROUJIN-CHK-SEC
+           DISPLAY "FLG-ROUJIN = " FLG-ROUJIN " " WRK-RJNYMD
       *
            MOVE    ZERO                TO  FLG-RJN
            MOVE    ZERO                TO  FLG-LIFE-RJN
