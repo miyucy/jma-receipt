@@ -49,6 +49,7 @@
       *                                     ¾®»ùÆþ±¡°åÎÅ´ÉÍýÎÁ£±
       *                                     ²óÉü´ü¥ê¥Ï¥Ó¥ê¥Æ¡¼¥·¥ç¥óÆþ±¡ÎÁ£±
       *                                     ²óÉü´ü¥ê¥Ï¥Ó¥ê¥Æ¡¼¥·¥ç¥óÆþ±¡ÎÁ£²
+      *                                     Àº¿À²ÊµßµÞ¡¦¹çÊ»¾ÉÆþ±¡ÎÁ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1773,6 +1774,43 @@
                                                                   (2)
            END-IF
       *
+      *    Àº¿À²ÊµßµÞ¡¦¹çÊ»¾ÉÆþ±¡ÎÁ
+           IF      SYOKIKSN-IN-KHNSRYCD    =   "190130210"
+               MOVE   SPACE            TO  SYOKIKSN-IN-KHNSRYCD
+               MOVE   "190130310"      TO  LNK-SCNYUACCT-NYUKHN-SRYCD
+                                                                    (1)
+               MOVE   "190130210"      TO  LNK-SCNYUACCT-KAGEN-SRYCD(1)
+               MOVE   PTNYUINRRK-TENNYUYMD
+                                       TO  LNK-SCNYUACCT-KAGEN-STYUKYMD
+                                                                    (1)
+               INITIALIZE                  STS-AREA-DAY
+               INITIALIZE                  LNK-DAY6-AREA
+               MOVE    "61"            TO  LNK-DAY6-IRAI
+               MOVE    PTNYUINRRK-TENNYUYMD
+                                       TO  LNK-DAY6-KIJUN
+               MOVE    "1"             TO  LNK-DAY6-ZOGENPTN
+               MOVE    29              TO  LNK-DAY6-ZOGEN
+               CALL    "ORCSDAY"       USING   STS-AREA-DAY
+                                               LNK-DAY6-AREA
+               MOVE    LNK-DAY6-KEISAN TO  LNK-SCNYUACCT-KAGEN-EDYUKYMD
+                                                                   (1)
+      *
+               MOVE   "190130310"      TO  LNK-SCNYUACCT-KAGEN-SRYCD(2)
+               INITIALIZE                  STS-AREA-DAY
+               INITIALIZE                  LNK-DAY6-AREA
+               MOVE    "61"            TO  LNK-DAY6-IRAI
+               MOVE    LNK-SCNYUACCT-KAGEN-EDYUKYMD(1)
+                                       TO  LNK-DAY6-KIJUN
+               MOVE    "1"             TO  LNK-DAY6-ZOGENPTN
+               MOVE     1              TO  LNK-DAY6-ZOGEN
+               CALL  "ORCSDAY"         USING   STS-AREA-DAY
+                                               LNK-DAY6-AREA
+               MOVE    LNK-DAY6-KEISAN TO  LNK-SCNYUACCT-KAGEN-STYUKYMD
+                                                                  (2)
+               MOVE    "99999999"      TO  LNK-SCNYUACCT-KAGEN-EDYUKYMD
+                                                                  (2)
+           END-IF
+      *
       *    Àº¿À²ÊµÞÀ­´ü¼£ÎÅÉÂÅïÆþ±¡ÎÁ£±
            IF      SYOKIKSN-IN-KHNSRYCD    =   "190121110"
                MOVE   SPACE            TO  SYOKIKSN-IN-KHNSRYCD
@@ -2298,6 +2336,8 @@
                        MOVE   "190129710"   TO  SYOKIKSN-IN-KHNSRYCD
                    WHEN    "22"
                        MOVE   "190130010"   TO  SYOKIKSN-IN-KHNSRYCD
+                   WHEN    "23"
+                       MOVE   "190130210"   TO  SYOKIKSN-IN-KHNSRYCD
                END-EVALUATE
            END-IF
       *    ÉÂ¼¼
